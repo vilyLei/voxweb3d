@@ -71,7 +71,6 @@ export default class Sphere3DMesh extends MeshBase {
             let pr2: number = this.m_radius * 2.01;
             let py2: number = 0.0;
             let f: number = 1.0 / this.m_radius;
-            //float pz;
             for (; i < this.m_latitudeNumSegments; ++i) {
                 yRad = (Math.PI * i) / this.m_latitudeNumSegments;
                 px = Math.sin(yRad);

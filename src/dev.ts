@@ -289,7 +289,7 @@
 
 //  import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
-//  import {DemoScene as Demo} from "./demo/DemoScene";
+import {DemoScene as Demo} from "./demo/DemoScene";
 
 //  import {DemoSubScene as Demo} from "./demo/DemoSubScene";
 
@@ -357,7 +357,7 @@
 
 //  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
-import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
+//  import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
 
 //  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 

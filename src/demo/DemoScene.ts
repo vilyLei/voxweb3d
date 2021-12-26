@@ -17,15 +17,14 @@ import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
-import CameraTrack from "../vox/view/CameraTrack";
+import { UserInteraction } from "../vox/engine/UserInteraction";
 
 export class DemoScene {
     constructor() { }
 
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
-    private m_camTrack: CameraTrack = null;
-
+    private m_interaction: UserInteraction = new UserInteraction();
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -40,14 +39,13 @@ export class DemoScene {
             RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             let rparam: RendererParam = new RendererParam();
-            rparam.setMatrix4AllocateSize(8192 * 4);
-            rparam.setCamProject(45.0, 10.1, 5000.0);
+            rparam.setCamProject(45.0, 10.1, 9000.0);
             rparam.setCamPosition(2500.0, 2500.0, 2500.0);
 
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
-            this.m_rscene.setRendererProcessParam(1, true, true);
-            this.m_rscene.updateCamera();
+            this.m_interaction.initialize( this.m_rscene );
+            
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
@@ -55,11 +53,15 @@ export class DemoScene {
             RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
 
             this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-            this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
             let tex0: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-            let tex1: TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
+            let tex1: TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");            
+            let tex2: TextureProxy = this.getImageTexByUrl("static/assets/displacement_01.jpg");
+
+            let asph = new Sphere3DEntity();
+            asph.initialize(250, 20, 20, [tex2]);
+            this.m_rscene.addEntity(asph);
+            return;
 
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(200.0);
@@ -71,12 +73,10 @@ export class DemoScene {
             let plane: Plane3DEntity = null;
             for (i = 0; i < 5; ++i) {
                 plane = new Plane3DEntity();
-                plane.name = "plane_" + i;
                 plane.showDoubleFace();
                 plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [tex0]);
                 plane.setXYZ(Math.random() * 3000.0 - 1500.0, Math.random() * 3000.0 - 1500.0, Math.random() * 2000.0 - 1000.0);
                 this.m_rscene.addEntity(plane);
-                plane.mouseEnabled = true;
             }
 
             let srcBox: Box3DEntity = new Box3DEntity();
@@ -85,7 +85,6 @@ export class DemoScene {
             let box: Box3DEntity = null;
             for (i = 0; i < total; ++i) {
                 box = new Box3DEntity();
-                box.name = "box_" + i;
                 if (srcBox != null) box.setMesh(srcBox.getMesh());
                 box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex1]);
                 if (total > 1) {
@@ -103,7 +102,6 @@ export class DemoScene {
             total = 5;
             for (i = 0; i < total; ++i) {
                 sph = new Sphere3DEntity();
-                sph.name = "sphere_" + i;
                 sph.initialize(100, 20, 20, [tex1]);
                 if (total > 1) {
                     sph.setXYZ(Math.random() * 2000.0 - 1000.0, Math.random() * 2000.0 - 1000.0, Math.random() * 2000.0 - 1000.0);
@@ -121,9 +119,9 @@ export class DemoScene {
     }
     run(): void {
         this.m_rscene.setClearColor(this.m_bgColor);
+        this.m_interaction.run();
 
         this.m_rscene.run();
-        this.m_camTrack.rotationOffsetAngleWorldY(-0.2);;
 
         if (this.m_profileInstance != null) {
             this.m_profileInstance.run();
