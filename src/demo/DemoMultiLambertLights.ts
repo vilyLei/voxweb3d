@@ -69,6 +69,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
             this.m_engine.interaction.zoomLookAtPosition = new Vector3D();
 
             this.initMaterialCtx();
+            this.update();
 
             // this.initScene();
         }
@@ -246,7 +247,6 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         //*/
 
         this.initEnvBox();
-        this.update();
 
         // let pl = new ScreenFixedAlignPlaneEntity();
         // pl.initialize(-1.0,-1.0,0.2,0.2,[this.m_materialCtx.vsmModule.getShadowMap()]);
