@@ -6,15 +6,15 @@
 /***************************************************************************/
 
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
-import {UniformComp} from "./UniformComp";
-class VertUniformComp extends UniformComp{
-    
-    private m_params: Float32Array = null;
-    private m_paramsTotal: number = 2;
+import { UniformComp } from "./UniformComp";
+class VertUniformComp extends UniformComp {
+   
+    vtxUVTransformEnabled: boolean = false;
+    vtCurveMoveEnabled: boolean = false;
     constructor() {
         super();
     }
-    
+
     setUVScale(uScale: number, vScale: number): void {
         if (this.m_params != null) {
             this.m_params[0] = uScale;
@@ -40,7 +40,7 @@ class VertUniformComp extends UniformComp{
         }
     }
     initialize(): void {
-        
+
     }
     use(shaderBuilder: IShaderCodeBuilder): void {
 
@@ -52,4 +52,4 @@ class VertUniformComp extends UniformComp{
 
     }
 }
-export {VertUniformComp};
+export { VertUniformComp };

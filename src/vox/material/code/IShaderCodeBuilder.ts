@@ -12,8 +12,8 @@ import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 
 export default interface IShaderCodeBuilder {
 
-    normalEanbled: boolean;
-    normalMapEanbled: boolean;
+    normalEnabled: boolean;
+    normalMapEnabled: boolean;
     mapLodEnabled: boolean;
     derivatives: boolean;
     vertMatrixInverseEnabled: boolean;

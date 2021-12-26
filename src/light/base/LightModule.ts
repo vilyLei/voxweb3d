@@ -233,7 +233,7 @@ class LightModule implements IMaterialPipe {
 
         if (this.m_uProbe != null) {
 
-            shaderBuilder.normalEanbled = true;
+            shaderBuilder.normalEnabled = true;
             let lightsTotal: number = this.getPointLightsTotal() + this.getDirecLightsTotal() + this.getSpotLightsTotal();
             if (lightsTotal > 0) {
                 shaderBuilder.addDefine("VOX_LIGHTS_TOTAL", "" + lightsTotal);

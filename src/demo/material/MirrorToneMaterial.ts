@@ -27,7 +27,7 @@ class MirrorToneShaderBuffer extends ShaderCodeBuffer {
     }
     private buildThisCode(): void {
         let coder = this.m_coder;
-        coder.normalMapEanbled = true;
+        coder.normalMapEnabled = true;
         coder.mapLodEnabled = this.mapLodEnabled;
         coder.reset();
         coder.addVertLayout("vec3", "a_vs");

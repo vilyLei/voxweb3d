@@ -25,6 +25,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     parallaxParamIndex: number = 1;
     lightParamsIndex: number = 2;
 
+    normalEnabled: boolean = true;
     buildFlag: boolean = true;
     constructor() {
         super();
@@ -34,8 +35,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
         
         super.reset();
         
-        this.m_coder.normalEanbled = true;
-        this.m_coder.normalMapEanbled = true;
+        this.m_coder.normalEnabled = true;
         this.m_coder.vertMatrixInverseEnabled = true;
 
         this.m_texList = [];

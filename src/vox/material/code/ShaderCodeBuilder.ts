@@ -88,8 +88,9 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
 
     readonly uniform: IShaderCodeUniform;
     mathDefineEanbled: boolean = true;
-    normalEanbled: boolean = false;
-    normalMapEanbled: boolean = false;
+
+    normalEnabled: boolean = false;
+    normalMapEnabled: boolean = false;
     mapLodEnabled: boolean = false;
     derivatives: boolean = false;
     vertMatrixInverseEnabled: boolean = false;
@@ -165,8 +166,8 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         this.m_texturePrecise = "";
 
         this.mathDefineEanbled = true;
-        this.normalEanbled = false;
-        this.normalMapEanbled = false;
+        this.normalEnabled = false;
+        this.normalMapEnabled = false;
         this.mapLodEnabled = false;
         this.vertMatrixInverseEnabled = false;
         this.fragMatrixInverseEnabled = false;
@@ -390,10 +391,11 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
             this.addVarying("vec2", "v_uv");
         }
 
-        if (this.normalEanbled || this.normalMapEanbled || this.m_vertLayoutNames.includes("a_nvs")) {
+        if (this.normalEnabled || this.normalMapEnabled || this.m_vertLayoutNames.includes("a_nvs")) {
             this.addVertLayout("vec3", "a_nvs");
             this.addVarying("vec3", "v_worldNormal");
             this.addVarying("vec3", "v_worldPosition");
+            this.addDefine("VOX_USE_NORMAL");
         }
         // 保证 顶点shader 中 vtx数据的顺序 a_vs -> a_uvs -> a_nvs
         let words: string[] = ["a_vs", "a_uvs", "a_nvs"];
@@ -448,7 +450,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
             if (this.m_fragOutputNames.length > 1) {
                 code += "\n#extension GL_EXT_draw_buffers: require";
             }
-            if (this.normalMapEanbled || this.derivatives) {
+            if (this.normalMapEnabled || this.derivatives) {
                 code += "\n#extension GL_OES_standard_derivatives : enable";
             }
             if (this.mapLodEnabled) {

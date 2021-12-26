@@ -28,6 +28,7 @@ export default class LambertLightMaterial extends MaterialBase {
     private m_lightParamsIndex: number = 1;
 
     colorEnabled: boolean = true;
+    normalEnabled: boolean = true;
 
     diffuseMap: TextureProxy = null;
     normalMap: TextureProxy = null;
@@ -64,6 +65,7 @@ export default class LambertLightMaterial extends MaterialBase {
         this.colorEnabled = src.colorEnabled;
         this.lightEnabled = src.lightEnabled;
         this.fogEnabled = src.fogEnabled;
+        this.normalEnabled = src.normalEnabled;
 
         if(this.diffuseMap == null) this.diffuseMap = src.diffuseMap;
         if(this.normalMap == null) this.normalMap = src.normalMap;
@@ -74,8 +76,6 @@ export default class LambertLightMaterial extends MaterialBase {
         if(this.shadowMap == null) this.shadowMap = src.shadowMap;
 
         this.specularMode = src.specularMode;
-        this.lightEnabled = src.lightEnabled;
-        this.fogEnabled = src.fogEnabled;
 
         this.m_vertLocalParams = src.m_vertLocalParams.slice();
         this.m_fragLocalParams = src.m_fragLocalParams.slice();
@@ -116,15 +116,10 @@ export default class LambertLightMaterial extends MaterialBase {
             
             this.m_vertLocalParamsTotal = vertParamsTotal;
             this.m_vertLocalParams = new Float32Array(this.m_vertLocalParamsTotal * 4);
-            // this.m_vertLocalParams.set([
-            //     1.0,1.0, 0.0,0.0,      // u scale, v scale, translation u, translation v
-            //     10.0, 0.0, 0.0,0.0     // displacement scale, bias, undefined, undefined
-            // ], 0);
-            this.m_vertLocalParams = new Float32Array([
+            this.m_vertLocalParams.set([
                 1.0,1.0, 0.0,0.0,      // u scale, v scale, translation u, translation v
                 10.0, 0.0, 0.0,0.0     // displacement scale, bias, undefined, undefined
-            ]);
-
+            ], 0);
 
             if (this.parallaxMap != null) {
                 this.m_fragLocalParamsTotal += 1;
@@ -169,6 +164,7 @@ export default class LambertLightMaterial extends MaterialBase {
         buf.lightParamsIndex = this.m_lightParamsIndex;
         buf.lightEnabled = this.lightEnabled;
         buf.fogEnabled = this.fogEnabled;
+        buf.normalEnabled = this.normalEnabled;
         buf.getShaderCodeBuilder().vtxUVTransfromEnabled = this.vtxUVTransformEnabled;
 
         buf.shadowReceiveEnabled = this.shadowMap != null;

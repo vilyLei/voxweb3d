@@ -128,6 +128,7 @@ class ShaderCodeUniform implements IShaderCodeUniform {
      */
     addNormalMap(): void {
         this.m_codeBuilder.addTextureSample2D("VOX_NORMAL_MAP", true, true, false);
+        this.m_codeBuilder.normalMapEnabled = true;
         this.m_uniqueNSKeys[1] = 1;
         this.m_uniqueNSKeyFlag = true;
     }

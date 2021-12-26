@@ -160,7 +160,7 @@ export default class PBRShaderDecorator {
 
         let coder: ShaderCodeBuilder = this.codeBuilder;
 
-        coder.normalMapEanbled = this.normalMapEnabled;
+        coder.normalMapEnabled = this.normalMapEnabled;
         coder.mapLodEnabled = true;
 
         coder.useHighPrecious();

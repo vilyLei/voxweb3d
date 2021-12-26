@@ -7,12 +7,14 @@
 
 import { IMaterialPipe } from "../pipeline/IMaterialPipe";
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
-class UniformComp{
-    
+class UniformComp {
+
+    protected m_params: Float32Array = null;
+    private m_paramsTotal: number = 0;
+    private m_beginIndex: number = 0;
     constructor() {
     }
     initialize(): void {
-        
     }
     use(shaderBuilder: IShaderCodeBuilder): void {
 
@@ -23,5 +25,8 @@ class UniformComp{
     destroy(): void {
 
     }
+    clone(): UniformComp {
+        return null;
+    }
 }
-export {UniformComp};
+export { UniformComp };
