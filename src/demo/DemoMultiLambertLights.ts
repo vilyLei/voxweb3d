@@ -32,6 +32,7 @@ import { PointLight } from "../light/base/PointLight";
 import Matrix4 from "../vox/math/Matrix4";
 import { ILightEntity } from "./light/ILightEntity";
 import { RotateYPointLightEntity, FloatYPointLightEntity, PointLightEntity } from "./light/PointLightEntity";
+import DivLog from "../vox/utils/DivLog";
 
 export class DemoMultiLambertLights implements IShaderLibListener {
 
@@ -50,6 +51,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
 
         if (this.m_engine == null) {
 
+            //DivLog.SetDebugEnabled(true);
+            
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 

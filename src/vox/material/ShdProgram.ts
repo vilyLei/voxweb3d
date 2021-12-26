@@ -12,7 +12,8 @@ import UniformLine from "../../vox/material/code/UniformLine";
 import IVtxShdCtr from "../../vox/material/IVtxShdCtr";
 import IShdProgram from "../../vox/material/IShdProgram";
 import IShaderData from "../../vox/material/IShaderData";
-export default class ShdProgram implements IVtxShdCtr,IShdProgram {
+import DivLog from "../utils/DivLog";
+export default class ShdProgram implements IVtxShdCtr, IShdProgram {
     private m_shdData: IShaderData = null;
     private m_uid: number = -1;
     private m_program: any = null;
@@ -32,13 +33,13 @@ export default class ShdProgram implements IVtxShdCtr,IShdProgram {
     private m_attriSizeList: number[] = null;
     private m_uniformDict: Map<string, UniformLine> = new Map();
     private m_uLocationDict: Map<string, any> = new Map();
-    private m_vtxShd: any = null;
-    private m_frgShd: any = null;
+    private m_vertShader: any = null;
+    private m_fragShader: any = null;
     // recode shader uniform including status
     dataUniformEnabled: boolean = false;
-    
+
     constructor(uid: number) {
-        this.m_uid = uid;//ShdProgram.s_uid++;
+        this.m_uid = uid;
     }
 
     setShdData(shdData: IShaderData): void {
@@ -86,8 +87,8 @@ export default class ShdProgram implements IVtxShdCtr,IShdProgram {
                     ++i;
                 }
                 this.m_attriSizeList = [];
-                for(i = 0; i < this.m_attribTypeSizeList.length; ++i) {
-                    if(this.m_attribTypeSizeList[i] > 0) {
+                for (i = 0; i < this.m_attribTypeSizeList.length; ++i) {
+                    if (this.m_attribTypeSizeList[i] > 0) {
                         this.m_attriSizeList.push(this.m_attribTypeSizeList[i]);
                     }
                 }
@@ -168,16 +169,16 @@ export default class ShdProgram implements IVtxShdCtr,IShdProgram {
 
     private m_attrid: number = 0;
     private m_attridIndex: number = 0;
-    
+
     testVertexAttribPointerOffset(offsetList: number[]): boolean {
         let flag: boolean = false;
-        if(offsetList != null && this.m_attriSizeList != null) {
+        if (offsetList != null && this.m_attriSizeList != null) {
             // 使用大于等于，例如绘制深度图的时候不需要法线和uv而只需要顶点数据即可
-            if(offsetList.length >= this.m_attriSizeList.length) {
+            if (offsetList.length >= this.m_attriSizeList.length) {
                 let offset: number = 0;
                 let i: number = 0;
-                for(; i < this.m_attriSizeList.length; ++i) {
-                    if(offset != offsetList[i]) {
+                for (; i < this.m_attriSizeList.length; ++i) {
+                    if (offset != offsetList[i]) {
                         break;
                     }
                     offset += this.m_attriSizeList[i] * 4;
@@ -185,8 +186,8 @@ export default class ShdProgram implements IVtxShdCtr,IShdProgram {
                 flag = i >= this.m_attriSizeList.length;
             }
         }
-        if(!flag) {
-            console.error("顶点数据layout和顶点着色器中的layout("+this.m_attriSizeList+")不匹配");
+        if (!flag) {
+            console.error("顶点数据layout和顶点着色器中的layout(" + this.m_attriSizeList + ")不匹配");
             throw Error("Shader program vertx attributes layout can not match float attribute vertex data !!!");
         }
         return flag;
@@ -278,48 +279,53 @@ export default class ShdProgram implements IVtxShdCtr,IShdProgram {
         let fshd_str: string = this.m_shdData.getFSCodeStr();
         //console.log("ShdProgram::initShdProgram(), this: ",this);
         let pr: RegExp;
-        if (RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
-            if (vshd_str.indexOf(" mediump ") >= 0) {
-                pr = new RegExp(" mediump ", "g");
-                vshd_str = vshd_str.replace(pr, " highp ");
-            }
-            if (vshd_str.indexOf(" lowp ") >= 0) {
-                pr = new RegExp(" lowp ", "g");
-                vshd_str = vshd_str.replace(pr, " highp ");
+        if (this.m_shdData.preCompileInfo == null) {
+            if (RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
+                if (vshd_str.indexOf(" mediump ") >= 0) {
+                    pr = new RegExp(" mediump ", "g");
+                    vshd_str = vshd_str.replace(pr, " highp ");
+                }
+                if (vshd_str.indexOf(" lowp ") >= 0) {
+                    pr = new RegExp(" lowp ", "g");
+                    vshd_str = vshd_str.replace(pr, " highp ");
+                }
             }
         }
         if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
             console.log("vert shader code: \n" + vshd_str);
         }
-        let vtxShd: any = this.loadShader(this.m_gl.VERTEX_SHADER, vshd_str);
-        if (RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
-            if (fshd_str.indexOf(" mediump ") >= 0) {
-                pr = new RegExp(" mediump ", "g");
-                fshd_str = fshd_str.replace(pr, " highp ");
-            }
-            if (fshd_str.indexOf(" lowp ") >= 0) {
-                pr = new RegExp(" lowp ", "g");
-                fshd_str = fshd_str.replace(pr, " highp ");
+        let vertShader: any = this.loadShader(this.m_gl.VERTEX_SHADER, vshd_str);
+        if (this.m_shdData.preCompileInfo == null) {
+            if (RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
+                if (fshd_str.indexOf(" mediump ") >= 0) {
+                    pr = new RegExp(" mediump ", "g");
+                    fshd_str = fshd_str.replace(pr, " highp ");
+                }
+                if (fshd_str.indexOf(" lowp ") >= 0) {
+                    pr = new RegExp(" lowp ", "g");
+                    fshd_str = fshd_str.replace(pr, " highp ");
+                }
             }
         }
         if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
             console.log("frag shader code: \n" + fshd_str);
         }
-        let frgShd: any = this.loadShader(this.m_gl.FRAGMENT_SHADER, fshd_str);
+        let fragShader = this.loadShader(this.m_gl.FRAGMENT_SHADER, fshd_str);
+        
         // Create the shader program      
-        let shdProgram: any = this.m_gl.createProgram();
-        this.m_gl.attachShader(shdProgram, frgShd);
-        this.m_gl.attachShader(shdProgram, vtxShd);
+        let shdProgram = this.m_gl.createProgram();
+        this.m_gl.attachShader(shdProgram, fragShader);
+        this.m_gl.attachShader(shdProgram, vertShader);
         this.m_gl.linkProgram(shdProgram);
-        // If creating the shader program failed, alert
+        
         if (!this.m_gl.getProgramParameter(shdProgram, this.m_gl.LINK_STATUS)) {
             if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
                 console.log('Unable to initialize the shader program: ' + this.m_gl.getProgramInfoLog(shdProgram));
             }
             return null;
         }
-        this.m_vtxShd = vtxShd;
-        this.m_frgShd = frgShd;
+        this.m_vertShader = vertShader;
+        this.m_fragShader = fragShader;
         return shdProgram;
     }
 
@@ -376,10 +382,10 @@ export default class ShdProgram implements IVtxShdCtr,IShdProgram {
             this.m_texTotal = 0;
         }
         if (this.m_program != null) {
-            this.m_gl.deleteShader(this.m_vtxShd);
-            this.m_gl.deleteShader(this.m_frgShd);
-            this.m_vtxShd = null;
-            this.m_frgShd = null;
+            this.m_gl.deleteShader(this.m_vertShader);
+            this.m_gl.deleteShader(this.m_fragShader);
+            this.m_vertShader = null;
+            this.m_fragShader = null;
             this.m_gl.deleteProgram(this.m_program);
             this.m_program = null;
         }
