@@ -19,6 +19,7 @@ export default class Sphere3DEntity extends DisplayEntity {
     }
     doubleTriFaceEnabled: boolean = false;
     wireframe: boolean = false;
+    inverseUV: boolean = false;
     private m_radius: number = 50.0;
     private m_longitudeNumSegments: number = 10;
     private m_latitudeNumSegments: number = 10;
@@ -90,6 +91,7 @@ export default class Sphere3DEntity extends DisplayEntity {
         if (this.getMesh() == null) {
             let mesh = new Sphere3DMesh();
             mesh.wireframe = this.wireframe;
+            mesh.inverseUV = this.inverseUV;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.setBufSortFormat(material.getBufSortFormat());
             mesh.initialize(this.m_radius, this.m_longitudeNumSegments, this.m_latitudeNumSegments, this.doubleTriFaceEnabled);

@@ -153,6 +153,7 @@ export class DemoLambertLight {
             //material.specularMap = null;
             material.fogEnabled = false;
             material.lightEnabled = true;
+            material.vtxUVTransformEnabled = true;
             material.specularMode = SpecularMode.FragColor;
             
             material.initializeLocalData();

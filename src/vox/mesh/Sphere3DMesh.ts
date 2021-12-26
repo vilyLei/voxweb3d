@@ -23,7 +23,9 @@ export default class Sphere3DMesh extends MeshBase {
     private m_uvs: Float32Array = null;
     private m_nvs: Float32Array = null;
     private m_cvs: Float32Array = null;
+
     inverseUV: boolean = false;
+    uvScale: number = 1.0;
 
     getVS(): Float32Array { return this.m_vs; }
     getUVS(): Float32Array { return this.m_uvs; }
@@ -54,7 +56,7 @@ export default class Sphere3DMesh extends MeshBase {
             }
 
             let i: number = 1, j = 0, trisTot = 0;
-            let yRad: number = 0.0, px = 0.0, py = 0.0;
+            let xRad: number = 0.0, yRad: number = 0.0, px = 0.0, py = 0.0;
             let vtx: MeshVertex = new MeshVertex(0, -this.m_radius, 0, trisTot);
 
             // 计算绕 y轴 的纬度线上的点
@@ -62,46 +64,54 @@ export default class Sphere3DMesh extends MeshBase {
             let vtxRows: MeshVertex[][] = [];
             vtxRows.push([]);
             let vtxRow: MeshVertex[] = vtxRows[0];
-            vtx.u = 0.5; vtx.v = 0.5;
+            let centerUV: number = this.inverseUV ? 1.0 : 0.5;
+            
+            vtx.u = vtx.v = centerUV;
             vtx.nx = 0.0; vtx.ny = -1.0; vtx.nz = 0.0;
             vtxRow.push(vtx.cloneVertex());
             vtxVec.push(vtxRow[0]);
-            //
+                        
             let pr: number = 0.0
             let pr2: number = this.m_radius * 2.01;
             let py2: number = 0.0;
             let f: number = 1.0 / this.m_radius;
-            for (; i < this.m_latitudeNumSegments; ++i) {
-                yRad = (Math.PI * i) / this.m_latitudeNumSegments;
+            let quarterArc: number = 0.5 * Math.PI * this.m_radius * this.m_radius;
+            for (i = 0; i < this.m_latitudeNumSegments; ++i) {
+                yRad = Math.PI * i / this.m_latitudeNumSegments;
                 px = Math.sin(yRad);
                 py = Math.cos(yRad);
+
                 vtx.y = -this.m_radius * py;
                 pr = this.m_radius * px;
-                //
-                py2 = vtx.y;
-                if (py2 < 0) py2 = -py2;
+                
+                // py2 = vtx.y;
+                // if (py2 < 0) py2 = -py2;
                 // uv inverse yes or no
-                if (!this.inverseUV) py2 = this.m_radius - py2;
-                py2 /= pr2;
-                //
+                //if (!this.inverseUV) py2 = this.m_radius - py2;
+                //py2 /= pr2;
+
+                if (this.inverseUV) {
+                    py2 = Math.abs(yRad / Math.PI - 0.5);
+                }
+                else {
+                    py2 = 0.5 - Math.abs(yRad / Math.PI - 0.5);
+                }
+                py2 *= this.uvScale;
                 vtxRows.push([]);
                 let row = vtxRows[i];
                 for (j = 0; j < this.m_longitudeNumSegments; ++j) {
-                    yRad = (Math.PI * 2 * j) / this.m_longitudeNumSegments;
+                    xRad = (Math.PI * 2 * j) / this.m_longitudeNumSegments;
                     ++trisTot;
-                    px = Math.sin(yRad);
-                    py = Math.cos(yRad);
+                    px = Math.sin(xRad);
+                    py = Math.cos(xRad);
                     vtx.x = px * pr;
                     vtx.z = py * pr;
                     vtx.index = trisTot;
                     // calc uv
-                    px *= py2;
-                    py *= py2;
-                    vtx.u = 0.5 + px;
-                    vtx.v = 0.5 + py;
-                    //
+                    vtx.u = 0.5 + px * py2;
+                    vtx.v = 0.5 + py * py2;
                     vtx.nx = vtx.x * f; vtx.ny = vtx.y * f; vtx.nz = vtx.z * f;
-                    //
+
                     row.push(vtx.cloneVertex());
                     vtxVec.push(row[j]);
                 }
@@ -110,7 +120,7 @@ export default class Sphere3DMesh extends MeshBase {
             ++trisTot;
             vtx.index = trisTot;
             vtx.x = 0; vtx.y = this.m_radius; vtx.z = 0;
-            vtx.u = 0.5; vtx.v = 0.5;
+            vtx.u = vtx.v = centerUV;
             vtx.nx = 0.0; vtx.ny = 1.0; vtx.nz = 0.0;
             vtxRows.push([]);
             let lastRow = vtxRows[this.m_latitudeNumSegments];
@@ -205,12 +215,12 @@ export default class Sphere3DMesh extends MeshBase {
 
             this.updateWireframeIvs();
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
-            if(this.m_vbuf == null) {
+            if (this.m_vbuf == null) {
                 this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
                 this.m_vbuf.setUint16IVSData(this.m_ivs);
             }
             else {
-                if(this.forceUpdateIVS) {
+                if (this.forceUpdateIVS) {
                     this.m_vbuf.setUint16IVSData(this.m_ivs);
                 }
                 ROVertexBuffer.UpdateBufData(this.m_vbuf);

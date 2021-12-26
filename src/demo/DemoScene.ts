@@ -57,15 +57,18 @@ export class DemoScene {
             let tex0: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
             let tex1: TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");            
             let tex2: TextureProxy = this.getImageTexByUrl("static/assets/displacement_01.jpg");
-
-            let asph = new Sphere3DEntity();
-            asph.initialize(250, 20, 20, [tex2]);
-            this.m_rscene.addEntity(asph);
-            return;
+            let tex3: TextureProxy = this.getImageTexByUrl("static/assets/flare_core_02.jpg");
 
             let axis: Axis3DEntity = new Axis3DEntity();
-            axis.initialize(200.0);
+            axis.initialize(600.0);
             this.m_rscene.addEntity(axis);
+            
+            // let asph = new Sphere3DEntity();
+            // //asph.inverseUV = true;
+            // asph.initialize(250, 20, 20, [tex3]);
+            // this.m_rscene.addEntity(asph);
+            // return;
+
 
             let i: number = 0;
             let total: number = 0;
