@@ -13,8 +13,8 @@ export default class DracoWasmLoader {
         this.m_loaded_callback = loaded_callback;
         this.m_loaded_callback_target = loaded_callback_target;
 
-        let wapperUrl: string = "static/extern/draco/w.md";
-        let wasmUrl: string = "static/extern/draco/d.md";
+        let wapperUrl: string = "static/extern/draco/w2.md";
+        let wasmUrl: string = "static/extern/draco/d2.md";
 
         let wapperXHR: XMLHttpRequest = new XMLHttpRequest();
         wapperXHR.open("GET", wapperUrl, true);

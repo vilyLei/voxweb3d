@@ -276,9 +276,13 @@ export class DemoSSAO3 implements DracoTaskListener {
     }
     
     private m_urls: string[] = [
-        "static/assets/modules/bunny.rawmd",
-        "static/assets/modules/loveass.rawmd",
-        "static/assets/modules/cloth02.rawmd"
+        "static/assets/modules/loveass.rawmd",        
+        //"static/assets/modules/bunny.rawmd"
+        //"static/assets/modules/cloth02.rawmd"
+
+        // "static/assets/modules/loveass.rawmd",
+        // "static/assets/modules/bunny.rawmd",
+        // "static/assets/modules/cloth02.rawmd"
     ];
     private m_scale: number = 1.0;
     private m_pos: Vector3D = null;
