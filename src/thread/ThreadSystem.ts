@@ -46,17 +46,19 @@ class ThreadSystem {
     }
     static SendDataToWorkerAt(i: number, sendData: IThreadSendData): void {
         if(i >= 0 && i < ThreadSystem.s_maxThreadsTotal) {
-            for(;;) {
-                if(i >= ThreadSystem.s_threadsTotal) {
-                    ThreadSystem.CreateThread();
-                }
-                else {
-                    break;
+            if(i >= ThreadSystem.s_threadsTotal) {
+                for(;;) {
+                    if(i >= ThreadSystem.s_threadsTotal) {
+                        ThreadSystem.CreateThread();
+                    }
+                    else {
+                        break;
+                    }
                 }
             }
             if (sendData != null && sendData.sendStatus < 0) {
-                sendData.sendStatus = 0;
                 if (ThreadSystem.s_threads[i].isFree()) {
+                    sendData.sendStatus = 0;
                     ThreadSystem.s_threads[i].sendDataTo( sendData );
                 }
                 else {

@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import ThreadTask from "../../thread/control/ThreadTask";
+import ThreadSystem from "../../thread/ThreadSystem";
 
 export interface DracoTaskListener {
     dracoParse(module: any, index: number, total: number): void;
@@ -33,11 +34,21 @@ class DracoTask extends ThreadTask {
 
     private initCurrTask(wasmBin: ArrayBuffer, index: number = 0): void {
         this.m_enabled = false;
-        this.addDataWithParam("DRACO_INIT", [new Uint8Array(wasmBin)], null);
+
+        let sd = this.createSendData();
+        sd.taskCmd = "DRACO_INIT";
+        sd.streams = [new Uint8Array(wasmBin)];
+        sd.descriptor = null;
+        sd.srcuid = this.getUid();
+        sd.taskclass = this.getTaskClass();
+        
+        ThreadSystem.SendDataToWorkerAt(index, sd);
+        //this.addDataWithParam("DRACO_INIT", [new Uint8Array(wasmBin)], null);
     }
 
     initTask(wasmBin: ArrayBuffer): void {
         if (wasmBin != null && !DracoTask.s_inited && this.m_enabled) {
+            this.m_wasmBin = wasmBin;
             this.initCurrTask(wasmBin);
         }
     }
@@ -86,15 +97,15 @@ class DracoTask extends ThreadTask {
                 this.m_enabled = true;
                 DracoTask.s_inited = true;
                 this.m_wasmBin = data.streams[0].buffer;
-                DracoTask.s_initedTaskTotal++;
                 if (DracoTask.s_initedTaskTotal >= DracoTask.s_taskTotal) {
                     if (this.m_segIndex == 0 && this.m_segs != null && this.m_segs.length > 0) {
                         this.parseNextSeg();
                     }
                 }
                 else {
-                    this.initCurrTask(data.data, DracoTask.s_initedTaskTotal);
+                    this.initCurrTask(this.m_wasmBin, DracoTask.s_initedTaskTotal);
                 }
+                DracoTask.s_initedTaskTotal++;
                 break;
             case "DRACO_PARSE":
                 this.m_enabled = true;

@@ -316,14 +316,12 @@ function DracoParser() {
         let streams = data.streams;
         selfT.drawMode = 0;
         selfT.vsScale = 1.0;
-        console.log("XXX data: ",data);
         selfT.attMap = {};
         selfT.attOpts = { position: {} };
         let errorFlag = 0;
         let dataObj = null;
         if (streams != null) {
             let descriptor = data.descriptor;
-            console.log("descriptor: ", descriptor);
             if (descriptor.endI > descriptor.beginI) {
                 let u8arr = streams[0];
                 try {
@@ -373,6 +371,7 @@ function ThreadDraco() {
         let bin = data.streams[0].buffer;
         selfT.decoder["wasmBinary"] = bin;
         selfT.decoder["onModuleLoaded"] = function (module) {
+            console.log("build draco module finish");
             selfT.parser = module;
             dracoParser.parser = module;
             postDataMessage(data, [bin]);
@@ -382,8 +381,7 @@ function ThreadDraco() {
     this.receiveData = function (data) {
         m_srcuid = data.srcuid;
         m_dataIndex = data.dataIndex;
-        console.log("ThreadDraco::receiveData(), data: ", data);
-
+        
         //console.log("data.taskCmd: ", data.taskCmd);
         switch (data.taskCmd) {
             case "DRACO_PARSE":
@@ -393,6 +391,8 @@ function ThreadDraco() {
                 postDataMessage(data, parseData.transfers);
                 break;
             case "DRACO_INIT":
+                this.threadIndex = data.threadIndex;
+                //console.log("DRACO_INIT, this.threadIndex: ", this.threadIndex);
                 initDecoder(data);
                 break;
             default:

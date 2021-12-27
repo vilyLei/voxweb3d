@@ -68,7 +68,7 @@ export class DemoSSAO3 implements DracoTaskListener {
 
         console.log("DemoSSAO3::initialize()......");
         if (this.m_rscene == null) {
-            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             let rparam: RendererParam = new RendererParam();
@@ -276,13 +276,9 @@ export class DemoSSAO3 implements DracoTaskListener {
     }
     
     private m_urls: string[] = [
-        "static/assets/modules/loveass.rawmd",        
-        //"static/assets/modules/bunny.rawmd"
-        //"static/assets/modules/cloth02.rawmd"
-
-        // "static/assets/modules/loveass.rawmd",
-        // "static/assets/modules/bunny.rawmd",
-        // "static/assets/modules/cloth02.rawmd"
+        "static/assets/modules/loveass.rawmd",
+        "static/assets/modules/bunny.rawmd",
+        "static/assets/modules/cloth02.rawmd"
     ];
     private m_scale: number = 1.0;
     private m_pos: Vector3D = null;
@@ -307,7 +303,6 @@ export class DemoSSAO3 implements DracoTaskListener {
     }
     dracoParseFinish(modules: any[], total: number): void {
 
-        console.log("dracoParseFinish, modules total: ", total);
 
         let aoTex: RTTTextureProxy = this.m_blurModule.getDstTexture();
         let material: AOEntityMaterial = new AOEntityMaterial()
@@ -335,6 +330,7 @@ export class DemoSSAO3 implements DracoTaskListener {
         entity.update();
         this.m_rscene.addEntity(entity);
 
+        console.log("dracoParseFinish, modules total: ", total, pos);
         this.loadNext();
     }
 }

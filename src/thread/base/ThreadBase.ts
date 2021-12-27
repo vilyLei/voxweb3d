@@ -67,6 +67,7 @@ class ThreadBase implements IThreadBase {
             sendData.dataIndex = thrData.dataIndex;
             sendData.streams = thrData.streams;
             sendData.cmd = ThreadCMD.DATA_PARSE;
+            sendData.threadIndex = this.m_uid;
 
             // this.m_time = Date.now();
             if (sendData.streams != null) {

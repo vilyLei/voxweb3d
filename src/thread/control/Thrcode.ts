@@ -93,6 +93,7 @@ function ThreadCore() {
                             // build code from string
                             eval(param.srccode);
                             if (param.moduleName != undefined && param.moduleName != "") {
+                                //console.log("build worker task ins,param.moduleName: ",param.moduleName);
                                 var mins = "workerIns_" + param.moduleName;
                                 var tmcodeStr = "var " + mins + " = new " + param.moduleName + "();";
                                 tmcodeStr += "\\ninitializeExternModule(" + mins + ");";
