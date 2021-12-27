@@ -13,16 +13,18 @@ import DracoWasmLoader from "../../voxmesh/draco/DracoWasmLoader";
 import RendererDevice from "../../vox/render/RendererDevice";
 
 export class DracoMeshBuilder {
-    constructor() {
-    }
-    
     private m_listener: DracoTaskListener = null;
     private m_wasmLoader: DracoWasmLoader = null;
     private m_dracoTask: DracoTask = null;
     private m_threadsTotal: number = 1;
+    private m_dracoWasmVersion: number = 0;
 
     multiBuffers: boolean = true;
     zipParseEnabled: boolean = false;
+    constructor(dracoWasmVersion: number = 0) {
+        this.m_dracoWasmVersion = dracoWasmVersion;
+    }
+    
     setListener(l: DracoTaskListener): void {
         this.m_listener = l;
         if(this.m_dracoTask != null) {
@@ -34,10 +36,9 @@ export class DracoMeshBuilder {
         if(this.m_wasmLoader == null) {
 
             this.m_threadsTotal = threadTotal > 0 ? threadTotal : 1;
-            if(RendererDevice.IsWebGL1()) {
-                //this.m_threadsTotal = 1;
-            }
+
             this.m_wasmLoader = new DracoWasmLoader();
+            this.m_wasmLoader.wasmVersion = this.m_dracoWasmVersion;
             this.m_wasmLoader.load(this.onWasmLoaded, this);
         }
     }

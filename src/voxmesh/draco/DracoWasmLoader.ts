@@ -2,6 +2,7 @@
 export default class DracoWasmLoader {
     wapperStr: string = null;
     wasmBin: any = null;
+    wasmVersion: number = 0;
     private m_loaded_callback: (evt: any) => void = null;
     private m_loaded_callback_target: any = null;
     constructor() {
@@ -12,9 +13,12 @@ export default class DracoWasmLoader {
 
         this.m_loaded_callback = loaded_callback;
         this.m_loaded_callback_target = loaded_callback_target;
-
         let wapperUrl: string = "static/extern/draco/w2.md";
         let wasmUrl: string = "static/extern/draco/d2.md";
+        if(this.wasmVersion != 0) {
+            wapperUrl = "static/extern/draco/w1.md";
+            wasmUrl = "static/extern/draco/d1.md";
+        }
 
         let wapperXHR: XMLHttpRequest = new XMLHttpRequest();
         wapperXHR.open("GET", wapperUrl, true);

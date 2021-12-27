@@ -18,8 +18,6 @@ import DracoMeshBuilder from "../../voxmesh/draco/DracoMeshBuilder";
 import ThreadSystem from "../../thread/ThreadSystem";
 import HdrBrnCubeMapMapMaterial from "../../vox/material/mcase/HdrBrnCubeMapMaterial";
 
-
-import {DracoModuleLoader, DracoWholeModuleLoader, DracoMultiPartsModuleLoader} from "../../voxmesh/draco/DracoModuleLoader";
 import {PBRWholeDracoModule, PBRMultiPartsDracoModule} from "./PBRDracoModule";
 import Box3DEntity from "../../vox/entity/Box3DEntity";
 export default class PBREntityManager
@@ -30,7 +28,7 @@ export default class PBREntityManager
     private m_uiModule: DefaultPBRUI;
     private m_specularEnvMap: TextureProxy = null;
     private m_paramEntities:PBRParamEntity[] = [];
-    private m_dracoMeshLoader: DracoMeshBuilder = new DracoMeshBuilder();
+    private m_dracoMeshLoader: DracoMeshBuilder = new DracoMeshBuilder(1);
     private m_reflectPlaneY: number = -220.0;
     private m_dracoModule: PBRMultiPartsDracoModule = new PBRMultiPartsDracoModule();
     aoMapEnabled: boolean = false;
