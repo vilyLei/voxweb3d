@@ -372,7 +372,6 @@ function ThreadDraco() {
         let bin = data.streams[0].buffer;
         selfT.decoder["wasmBinary"] = bin;
         selfT.decoder["onModuleLoaded"] = function (module) {
-            console.log("build draco module finish");
             selfT.parser = module;
             dracoParser.parser = module;
             postDataMessage(data, [bin]);

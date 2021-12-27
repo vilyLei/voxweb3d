@@ -55,7 +55,7 @@ export class DemoSSAO3 implements DracoTaskListener {
 
     private m_blurModule: PingpongBlur = null;
     
-    private m_dracoMeshLoader: DracoMeshBuilder = new DracoMeshBuilder();
+    private m_dracoMeshLoader: DracoMeshBuilder = new DracoMeshBuilder(0);
 
     private m_clearColor: Color4 = new Color4();
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
@@ -283,9 +283,9 @@ export class DemoSSAO3 implements DracoTaskListener {
     private m_scale: number = 1.0;
     private m_pos: Vector3D = null;
     private m_scales: number[] = [
-        300.0,
         1.0,
-        1.0
+        300.0,
+        1
     ];
     private m_posList: Vector3D[] = [
         new Vector3D(-600.0,0.0,-600.0),
@@ -301,14 +301,23 @@ export class DemoSSAO3 implements DracoTaskListener {
     }
     dracoParse(pmodule: any, index: number, total: number): void {
     }
+    private m_l_flag: number = 0;
     dracoParseFinish(modules: any[], total: number): void {
-
-
+        // this.m_l_flag ++;
+        // if(this.m_l_flag > 1) {
+            
+        // }
+        // else {
+        //     this.loadNext();
+        //     return;
+        // }
+        
+        console.log("dracoParseFinish, modules total: ", total, modules,this.m_scale);
         let aoTex: RTTTextureProxy = this.m_blurModule.getDstTexture();
-        let material: AOEntityMaterial = new AOEntityMaterial()
-        material.initializeByCodeBuf( true );
+        let material: AOEntityMaterial = new AOEntityMaterial();
         //material.setTextureList( [this.getImageTexByUrl("static/assets/noise.jpg"), aoTex] );
         material.setTextureList( [this.getImageTexByUrl("static/assets/wood_01.jpg"), aoTex] );
+        material.initializeByCodeBuf( true );
         let scale = this.m_scale;
         
         let mesh: DracoMesh = new DracoMesh();
@@ -318,8 +327,7 @@ export class DemoSSAO3 implements DracoTaskListener {
         entity.setMaterial( material );
         entity.setMesh( mesh );
         entity.setScaleXYZ(scale, scale, scale);
-        //entity.setRotationXYZ(0, Math.random() * 300, 0);
-        this.m_rscene.addEntity(entity);
+        entity.update();
         let pos: Vector3D = new Vector3D();
         entity.getPosition( pos );
         let pv: Vector3D = entity.getGlobalBounds().min;
@@ -330,7 +338,6 @@ export class DemoSSAO3 implements DracoTaskListener {
         entity.update();
         this.m_rscene.addEntity(entity);
 
-        console.log("dracoParseFinish, modules total: ", total, pos);
         this.loadNext();
     }
 }
