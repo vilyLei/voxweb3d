@@ -38,8 +38,8 @@ class TrackWheelRole {
         if (this.boxTrack != null) {
             this.boxTrack.setXYZ(this.m_px, 0.0, this.m_pz);
             let f: number = Math.random() > 0.5 ? 1 : -1;
-            // this.m_spdx = f * 2.0;
-            // this.m_tspdx = 2.0 * f;
+            this.m_spdx = f * 2.0;
+            this.m_tspdx = 2.0 * f;
         }
     }
     run(): void {
@@ -82,12 +82,12 @@ class TrackWheelLightRole {
         }
     }
     setSpeed(spd: number): void {
-        if(this.m_spdx > 0) {
-            this.m_spdx = spd;
-        }
-        else if(this.m_spdx < 0) {
-            this.m_spdx = -spd;
-        }
+        // if(this.m_spdx > 0) {
+        //     this.m_spdx = spd;
+        // }
+        // else if(this.m_spdx < 0) {
+        //     this.m_spdx = -spd;
+        // }
     }
     run(): void {
         if (this.trackEntity != null) {
@@ -152,26 +152,11 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         
         let lightModule = this.m_materialCtx.lightModule;
         let direcLight = lightModule.getDirectionLightAt(0);
+        direcLight.color.setRGB3f(0.3, 1.0, 0.3);
         direcLight.direction.setXYZ(-0.5, -0.5, 0.5);
         direcLight = lightModule.getDirectionLightAt(1);
+        direcLight.color.setRGB3f(1.0, 0.3, 0.3);
         direcLight.direction.setXYZ(0.5, -0.5, 0.5);
-/*
-        let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
-        pointLight.position.setXYZ(0.0, 150.0, -50.0);
-        pointLight.color.setRGB3f(1.0, 1.0, 1.0);
-        pointLight.attenuationFactor1 = 0.00001;
-        pointLight.attenuationFactor2 = 0.000001;
-        
-        pointLight = this.m_materialCtx.lightModule.getPointLightAt(1);
-        pointLight.color.setRGB3f(1.0, 0.0, 0.0);
-        pointLight.attenuationFactor1 = 0.00001;
-        pointLight.attenuationFactor2 = 0.000001;
-
-        pointLight = this.m_materialCtx.lightModule.getPointLightAt(2);
-        pointLight.color.setRGB3f(0.0, 1.0, 1.0);
-        pointLight.attenuationFactor1 = 0.00001;
-        pointLight.attenuationFactor2 = 0.000001;
-//*/
         this.m_materialCtx.lightModule.update();
     }
     initialize(): void {
@@ -201,8 +186,8 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         }
     }
     
-    private m_track01: TrackWheelLightRole = new TrackWheelLightRole();
-    private m_track02: TrackWheelLightRole = new TrackWheelLightRole();
+    private m_track01: TrackWheelLightRole = null;
+    private m_track02: TrackWheelLightRole = null;
     private initScene(): void {
 
         let tex0: TextureProxy = this.getImageTexByUrl("static/assets/image_003.jpg");
@@ -240,26 +225,8 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         this.m_role0.boxTrack = this.m_boxTrack;
         this.m_role0.initialize();
 
-        let dataTex = this.m_boxTrack.animator.getPosDataTexture();
-        let posTotal = this.m_boxTrack.animator.getPosTotal();
-        let trackMaterial: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
-        trackMaterial.diffuseMap = tex0;
-        trackMaterial.fogEnabled = false;
-        trackMaterial.vertUniform = new VertUniformComp();
-        trackMaterial.vertUniform.curveMoveMap = dataTex;
-        trackMaterial.initializeByCodeBuf( true );
-        trackMaterial.vertUniform.setCurveMoveParam(dataTex.getWidth(), posTotal);
-        trackMaterial.vertUniform.setCurveMoveDistance(0.0);
-        
-        let trackEntity: DisplayEntity = new DisplayEntity();
-        trackEntity.setMaterial(trackMaterial);
-        trackEntity.copyMeshFrom( this.m_boxTrack.animator );
-        this.m_rscene.addEntity( trackEntity );
-        this.m_track01.trackEntity = trackEntity;
-        this.m_track01.trackData = trackMaterial.vertUniform;
-        this.m_track01.setSpeed(2.0);
-
-        return;
+        this.m_track01 = this.createTrackEntity(this.m_boxTrack, tex0);
+        this.m_track02 = this.createTrackEntity(this.m_boxTrack, tex0);
         ///*
         let boxTrack: BoxGroupTrack = new BoxGroupTrack();
         boxTrack.initializeFrom(this.m_boxTrack, [tex0]);
@@ -273,6 +240,30 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         curveLine.initializeByPosition(this.m_boxTrack.getTrackPosList());
         this.m_rscene.addEntity(curveLine);
     }
+    private createTrackEntity(boxTrack: BoxGroupTrack, diffuseMap: TextureProxy): TrackWheelLightRole {
+
+        let dataTex = boxTrack.animator.getPosDataTexture();
+        let posTotal = boxTrack.animator.getPosTotal();
+        let trackMaterial: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
+        trackMaterial.diffuseMap = diffuseMap;
+        trackMaterial.fogEnabled = false;
+        trackMaterial.vertUniform = new VertUniformComp();
+        trackMaterial.vertUniform.curveMoveMap = dataTex;
+        trackMaterial.initializeByCodeBuf( true );
+        trackMaterial.setBlendFactor(0.8, 0.8);
+        trackMaterial.vertUniform.setCurveMoveParam(dataTex.getWidth(), posTotal);
+        trackMaterial.vertUniform.setCurveMoveDistance(0.0);
+        
+        let trackEntity: DisplayEntity = new DisplayEntity();
+        trackEntity.setMaterial(trackMaterial);
+        trackEntity.copyMeshFrom( boxTrack.animator );
+        this.m_rscene.addEntity( trackEntity );
+        let trackRole: TrackWheelLightRole = new TrackWheelLightRole();
+        trackRole.trackEntity = trackEntity;
+        trackRole.trackData = trackMaterial.vertUniform;
+        trackRole.initialize();
+        return trackRole;
+    }
     private m_timeoutId: any = -1;
     private update(): void {
         if (this.m_timeoutId > -1) {
@@ -283,9 +274,10 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         this.m_statusDisp.render();
 
         this.m_role0.run();
-        //this.m_role1.run();
+        this.m_role1.run();
         
-        this.m_track01.run();
+        if(this.m_track01 != null) this.m_track01.run();
+        if(this.m_track02 != null) this.m_track02.run();
     }
     run(): void {
         this.m_interaction.run();
