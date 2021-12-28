@@ -23,12 +23,13 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     specularMode: SpecularMode = SpecularMode.Default;
 
     fragLocalParamsTotal: number = 2;
-    //parallaxParamIndex: number = 1;
     lightParamsIndex: number = 2;
 
     normalEnabled: boolean = true;
     buildFlag: boolean = true;
+    
     vertUniform: VertUniformComp = null;
+
     constructor() {
         super();
     }

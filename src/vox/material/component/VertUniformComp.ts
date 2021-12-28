@@ -8,7 +8,9 @@
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import { UniformComp } from "./UniformComp";
 import TextureProxy from "../../texture/TextureProxy";
-
+/**
+ * manage uniform data for the vertex calculation
+ */
 class VertUniformComp extends UniformComp {
    
     private m_uvTransParam: Float32Array = null;

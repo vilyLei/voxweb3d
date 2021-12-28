@@ -23,16 +23,12 @@ export default class LambertLightMaterial extends MaterialBase {
     private m_parallaxParamIndex: number = 1;
 
     private m_lightParamsArray: Float32Array = null;
-    // private m_vertLocalParams: Float32Array = null;
     private m_fragLocalParams: Float32Array = null;
-    // private m_vertLocalParamsTotal: number = 2;
     private m_fragLocalParamsTotal: number = 1;
     private m_lightParamsIndex: number = 1;
 
     colorEnabled: boolean = true;
     normalEnabled: boolean = true;
-
-    //displacementMap: TextureProxy = null;
 
     diffuseMap: TextureProxy = null;
     normalMap: TextureProxy = null;
@@ -45,7 +41,6 @@ export default class LambertLightMaterial extends MaterialBase {
 
     lightEnabled: boolean = true;
     fogEnabled: boolean = false;
-    //vtxUVTransformEnabled: boolean = false;
 
     vertUniform: VertUniformComp = null;
     constructor() {
@@ -72,8 +67,6 @@ export default class LambertLightMaterial extends MaterialBase {
         this.normalEnabled = src.normalEnabled;
         this.vertUniform = src.vertUniform;
 
-        //if(this.displacementMap == null) this.displacementMap = src.displacementMap;
-
         if(this.diffuseMap == null) this.diffuseMap = src.diffuseMap;
         if(this.normalMap == null) this.normalMap = src.normalMap;
         if(this.parallaxMap == null) this.parallaxMap = src.parallaxMap;
@@ -83,7 +76,6 @@ export default class LambertLightMaterial extends MaterialBase {
 
         this.specularMode = src.specularMode;
 
-        //this.m_vertLocalParams = src.m_vertLocalParams != null ? src.m_vertLocalParams.slice() : null;
         this.m_fragLocalParams = src.m_fragLocalParams.slice();
 
         let lightParamsIndex: number = 2;
@@ -130,15 +122,7 @@ export default class LambertLightMaterial extends MaterialBase {
         if (this.m_fragLocalParams == null) {
 
             this.m_fragLocalParamsTotal = 2;
-            //let vertParamsTotal = 2;
             
-            // this.m_vertLocalParamsTotal = vertParamsTotal;
-            // this.m_vertLocalParams = new Float32Array(this.m_vertLocalParamsTotal * 4);
-            // this.m_vertLocalParams.set([
-            //     1.0,1.0, 0.0,0.0,      // u scale, v scale, translation u, translation v
-            //     10.0, 0.0, 0.0,0.0     // displacement scale, bias, undefined, undefined
-            // ], 0);
-
             if (this.parallaxMap != null) {
                 this.m_fragLocalParamsTotal += 1;
             }
@@ -183,8 +167,7 @@ export default class LambertLightMaterial extends MaterialBase {
         buf.fogEnabled = this.fogEnabled;
         buf.normalEnabled = this.normalEnabled;
         buf.vertUniform = this.vertUniform;
-        //buf.getShaderCodeBuilder().vtxUVTransfromEnabled = this.vertUniform == null ? this.vtxUVTransformEnabled : false;
-
+        
         buf.shadowReceiveEnabled = this.shadowMap != null;
         buf.fragLocalParamsTotal = this.m_fragLocalParamsTotal;
 
@@ -231,29 +214,6 @@ export default class LambertLightMaterial extends MaterialBase {
             this.m_lightParamsArray[7] = lightFactor;
         }
     }
-    // setUVScale(uScale: number, vScale: number): void {
-    //     if (this.m_vertLocalParams != null) {
-    //         this.m_vertLocalParams[0] = uScale;
-    //         this.m_vertLocalParams[1] = vScale;
-    //     }
-    // }
-    // setUVTranslation(tu: number, tv: number): void {
-    //     if (this.m_vertLocalParams != null) {
-    //         this.m_vertLocalParams[2] = tu;
-    //         this.m_vertLocalParams[3] = tv;
-    //     }
-    // }
-    /**
-     * 设置顶点置换贴图参数
-     * @param scale 缩放值
-     * @param bias 偏移量
-     */
-    // setDisplacementParams(scale: number, bias: number): void {
-    //     if (this.m_vertLocalParams != null) {
-    //         this.m_vertLocalParams[4] = scale;
-    //         this.m_vertLocalParams[5] = bias;
-    //     }
-    // }
     /**
      * 设置环境光因子
      * @param fx ambient red factor
