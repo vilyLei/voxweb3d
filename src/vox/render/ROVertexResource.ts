@@ -10,12 +10,12 @@ import IROVtxBuilder from "../../vox/render/IROVtxBuilder";
 import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
 import IRenderResource from "../../vox/render/IRenderResource";
 import DivLog from "../utils/DivLog";
-import {GpuVtxObect} from "./vtx/GpuVtxObect";
+import {GpuVtxObject} from "./vtx/GpuVtxObject";
 
 // gpu vertex buffer renderer resource
 class ROVertexResource implements IRenderResource {
-    private m_resMap: Map<number, GpuVtxObect> = new Map();
-    private m_freeMap: Map<number, GpuVtxObect> = new Map();
+    private m_resMap: Map<number, GpuVtxObject> = new Map();
+    private m_freeMap: Map<number, GpuVtxObject> = new Map();
     private m_updateIds: number[] = [];
     // 显存的vtx buffer的总数
     private m_vtxResTotal: number = 0;
@@ -98,7 +98,7 @@ class ROVertexResource implements IRenderResource {
             }
         }
     }
-    addVertexRes(object: GpuVtxObect): void {
+    addVertexRes(object: GpuVtxObject): void {
         if (!this.m_resMap.has(object.resUid)) {
             object.waitDelTimes = 0;
 
@@ -107,7 +107,7 @@ class ROVertexResource implements IRenderResource {
             this.m_vtxResTotal++;
         }
     }
-    getVertexRes(resUid: number): GpuVtxObect {
+    getVertexRes(resUid: number): GpuVtxObject {
         return this.m_resMap.get(resUid);
     }
     destroyRes(resUid: number): void {
@@ -118,7 +118,7 @@ class ROVertexResource implements IRenderResource {
     __$attachRes(resUid: number): void {
         if (this.m_resMap.has(resUid)) {
             this.m_attachTotal++;
-            let object: GpuVtxObect = this.m_resMap.get(resUid);
+            let object: GpuVtxObject = this.m_resMap.get(resUid);
             if (object.getAttachCount() < 1) {
                 if (this.m_freeMap.has(resUid)) {
                     this.m_freeMap.delete(resUid);
@@ -131,7 +131,7 @@ class ROVertexResource implements IRenderResource {
     __$detachRes(resUid: number): void {
         if (this.m_resMap.has(resUid)) {
             if (this.m_resMap.has(resUid)) {
-                let object: GpuVtxObect = this.m_resMap.get(resUid);
+                let object: GpuVtxObject = this.m_resMap.get(resUid);
                 if (object.getAttachCount() > 0) {
                     this.m_attachTotal--;
                     object.__$detachThis();
@@ -144,7 +144,7 @@ class ROVertexResource implements IRenderResource {
         }
     }
     getVROByResUid(resUid: number, shdp: IVtxShdCtr, vaoEnabled: boolean): IVertexRenderObj {
-        let vtxObj: GpuVtxObect = this.m_resMap.get(resUid);
+        let vtxObj: GpuVtxObject = this.m_resMap.get(resUid);
         if (vtxObj != null) {
             return vtxObj.createVRO(this.m_vtxBuilder, shdp, vaoEnabled);
         }

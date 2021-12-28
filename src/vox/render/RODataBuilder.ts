@@ -24,7 +24,7 @@ import RPOUnit from "../../vox/render/RPOUnit";
 import { RCRPObj, RPOUnitBuilder } from "../../vox/render/RPOUnitBuilder";
 import RenderProcessBuider from "../../vox/render/RenderProcessBuider";
 import ROTransPool from "../../vox/render/ROTransPool";
-import { GpuVtxObect } from "../../vox/render/vtx/GpuVtxObect";
+import { GpuVtxObject } from "../../vox/render/vtx/GpuVtxObject";
 import { ROVertexResource } from "../../vox/render/ROVertexResource";
 import ROTextureResource from "../../vox/render/ROTextureResource";
 import IRenderBuffer from "../../vox/render/IRenderBuffer";
@@ -278,12 +278,12 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
             runit.trisNumber = disp.trisNumber;
             // build vertex gpu resoure 
             let resUid: number = disp.vbuf.getUid();
-            let vtx: GpuVtxObect;
+            let vtx: GpuVtxObject;
             let needBuild: boolean = true;
             if (vtxRes.hasResUid(resUid)) {
                 vtx = vtxRes.getVertexRes(resUid);
                 needBuild = vtx.version != disp.vbuf.version;
-                //console.log("GpuVtxObect instance repeat to be used,needBuild: "+needBuild,vtx.getAttachCount());
+                //console.log("GpuVtxObject instance repeat to be used,needBuild: "+needBuild,vtx.getAttachCount());
                 if (needBuild) {
                     vtxRes.destroyRes(resUid);
                     vtx.rcuid = vtxRes.getRCUid();
@@ -291,11 +291,11 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                 }
             }
             else {
-                vtx = new GpuVtxObect();
+                vtx = new GpuVtxObject();
                 vtx.rcuid = vtxRes.getRCUid();
                 vtx.resUid = resUid;
                 vtxRes.addVertexRes(vtx);
-                //console.log("GpuVtxObect instance create new: ",vtx.resUid);
+                //console.log("GpuVtxObject instance create new: ",vtx.resUid);
             }
             if (needBuild) {
                 vtx.indices.ibufStep = disp.vbuf.getIBufStep();

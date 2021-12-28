@@ -11,7 +11,7 @@ import IVertexRenderObj from "../../../vox/render/IVertexRenderObj";
 import {ROVertexRes} from "./ROVertexRes";
 import {ROIndicesRes} from "./ROIndicesRes";
 
-class GpuVtxObect {
+class GpuVtxObject {
     version: number = -1;
     // wait del times
     waitDelTimes: number = 0;
@@ -27,14 +27,14 @@ class GpuVtxObect {
     private m_attachCount: number = 0;
     __$attachThis(): void {
         ++this.m_attachCount;
-        //console.log("GpuVtxObect::__$attachThis() this.m_attachCount: "+this.m_attachCount);
+        //console.log("GpuVtxObject::__$attachThis() this.m_attachCount: "+this.m_attachCount);
     }
     __$detachThis(): void {
         --this.m_attachCount;
-        //console.log("GpuVtxObect::__$detachThis() this.m_attachCount: "+this.m_attachCount);
+        //console.log("GpuVtxObject::__$detachThis() this.m_attachCount: "+this.m_attachCount);
         if (this.m_attachCount < 1) {
             this.m_attachCount = 0;
-            console.log("GpuVtxObect::__$detachThis() this.m_attachCount value is 0.");
+            console.log("GpuVtxObject::__$detachThis() this.m_attachCount value is 0.");
             // do something
         }
     }
@@ -60,4 +60,4 @@ class GpuVtxObect {
     }
 }
 
-export {GpuVtxObect};
+export {GpuVtxObject};
