@@ -102,7 +102,26 @@ class ThreadTask {
      * @returns 默认返回 ThreadSendData 实例, 这个实例由系统自行管理
      */
     protected createSendData(): ThreadSendData {
-        return ThreadSendData.Create();
+        let sd = ThreadSendData.Create();
+        sd.srcuid = this.getUid();
+        sd.taskclass = this.getTaskClass();
+        return sd;
+    }
+    /**
+     * 通过参数, 創建发送给子线程的数据
+     * @param taskCmd 处理当前数据的任务命令名字符串
+     * @param streams 用于内存所有权转换的数据流数组, 例如 Float32Array 数组, 默认值是null
+     * @param descriptor 会发送到子线程的用于当前数据处理的数据描述对象, for example: {flag : 0, type: 12, name: "First"}, 默认值是 null
+     */
+    protected createSendDataWithParam(taskCmd: string, streams: StreamType[] = null, descriptor: any = null): ThreadSendData {
+        
+        let sd = ThreadSendData.Create();
+        sd.srcuid = this.getUid();
+        sd.taskclass = this.getTaskClass();
+        sd.taskCmd = taskCmd;
+        sd.streams = streams;
+        sd.descriptor = null;
+        return sd;
     }
     /**
      * 通过参数, 添加发送给子线程的数据

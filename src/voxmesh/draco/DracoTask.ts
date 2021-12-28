@@ -34,16 +34,7 @@ class DracoTask extends ThreadTask {
 
     private initCurrTask(wasmBin: ArrayBuffer, index: number = 0): void {
         this.m_enabled = false;
-
-        let sd = this.createSendData();
-        sd.taskCmd = "DRACO_INIT";
-        sd.streams = [new Uint8Array(wasmBin)];
-        sd.descriptor = null;
-        sd.srcuid = this.getUid();
-        sd.taskclass = this.getTaskClass();
-        
-        ThreadSystem.SendDataToWorkerAt(index, sd);
-        //this.addDataWithParam("DRACO_INIT", [new Uint8Array(wasmBin)], null);
+        ThreadSystem.SendDataToWorkerAt(index, this.createSendDataWithParam("DRACO_INIT", [new Uint8Array(wasmBin)]));
     }
 
     initTask(wasmBin: ArrayBuffer): void {
