@@ -83,8 +83,8 @@ export default interface IPBRMaterial {
     getAO(): number;
     setF0(f0x: number, f0y: number, f0z: number): void;
     getF0(colorFactor: Color4): void;
-    setUVScale(sx: number, sy: number): void;
-    getUVScale(scaleV:Vector3D): void;
+    // setUVScale(sx: number, sy: number): void;
+    // getUVScale(scaleV:Vector3D): void;
     
 
     setAlbedoColor(pr: number, pg: number, pb: number): void;

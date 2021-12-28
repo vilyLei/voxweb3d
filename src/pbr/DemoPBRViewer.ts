@@ -127,10 +127,8 @@ export class DemoPBRViewer implements IShaderLibListener {
         mcParam.shaderCodeBinary = true;
         mcParam.lambertMaterialEnabled = false;
         mcParam.pbrMaterialEnabled = true;
-        //this.m_materialCtx.initialize(this.m_rscene, mcParam, libConfig);
         this.m_materialCtx.addShaderLibListener( this );
         this.m_materialCtx.initialize(this.m_rscene, mcParam);
-
 
         let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
         if (pointLight != null) {
@@ -251,7 +249,7 @@ export class DemoPBRViewer implements IShaderLibListener {
         let sph: Sphere3DEntity;
         ///*
         let vertUniform: VertUniformComp = new VertUniformComp();
-        material = this.createMaterial(1, 1);
+        material = this.createMaterial();
         material.vertUniform = vertUniform;
         //material.decorator.normalMapEnabled = false;
         material.decorator.aoMapEnabled = this.aoMapEnabled;
@@ -262,9 +260,7 @@ export class DemoPBRViewer implements IShaderLibListener {
         material.decorator.diffuseMap = diffuseMap;
         material.decorator.normalMap = normalMap;
         material.decorator.aoMap = aoMap;
-        if(material.vertUniform != null) {
-            material.vertUniform.displacementMap = displacementMap;
-        }
+        vertUniform.displacementMap = displacementMap;
         
         material.decorator.parallaxMap = parallaxMap;
         
@@ -303,7 +299,7 @@ export class DemoPBRViewer implements IShaderLibListener {
         srcSph.setRotation3(this.m_rotV);
         this.m_rscene.addEntity(srcSph);
         this.m_target = srcSph;
-        return;
+        //return;
         console.log("material clone doing...");
         let new_sph = new Sphere3DEntity();
         let new_material = material.clone();
@@ -324,7 +320,7 @@ export class DemoPBRViewer implements IShaderLibListener {
             rad = Math.random() * 100.0;
             uvscale = Math.random() * 7.0 + 0.6;
 
-            material = this.createMaterial(uvscale, uvscale);
+            material = this.createMaterial();
             material.decorator.aoMapEnabled = this.aoMapEnabled;
             //  material.setTextureList(texList);
             material.decorator.specularEnvMap = this.m_specularEnvMap;
@@ -415,11 +411,11 @@ export class DemoPBRViewer implements IShaderLibListener {
 
         return material;
     }
-    createMaterial(uscale: number, vscale: number): PBRMaterial {
+    createMaterial(): PBRMaterial {
 
         let material: PBRMaterial;
         material = this.makePBRMaterial(0.9, 0.0, 1.0);
-
+        
         let decorator: PBRShaderDecorator = material.decorator;
         decorator.shadowReceiveEnabled = false;
         decorator.fogEnabled = this.fogEnabled;
@@ -427,9 +423,6 @@ export class DemoPBRViewer implements IShaderLibListener {
         decorator.specularEnvMapEnabled = true;
         decorator.diffuseMapEnabled = true;
         decorator.normalMapEnabled = true;
-
-        material.setUVScale(uscale, vscale);
-
         //material.setTextureList(ptexList);
         return material;
     }
@@ -455,7 +448,7 @@ export class ViewerDracoModule extends DracoWholeModuleLoader {
         console.log("ViewerDracoModule dracoParseFinish, modules: ", modules, this.m_pos);
 
         let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6;
-        let material: PBRMaterial = this.viewer.createMaterial(uvscale, uvscale);
+        let material: PBRMaterial = this.viewer.createMaterial();
 
         material.decorator.specularEnvMap = this.specularEnvMap;
         material.decorator.diffuseMap = this.materialCtx.getTextureByUrl("static/assets/modules/skirt/baseColor.jpg");

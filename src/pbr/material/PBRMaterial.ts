@@ -80,10 +80,6 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
             1.0, 1.0, 1.0,              // env map specular color factor x,y,z
             0.07                        // envMap lod mipMapLv parameter((100.0 * fract(0.07)) - (100.0 * fract(0.07)) * k + floor(0.07))
         ]);
-    private m_vertLocalParams: Float32Array = new Float32Array([
-            1.0,1.0, 0.0,0.0,      // u scale, v scale, undefined, undefined
-            10.0, 0.0, 0.0,0.0     // displacement scale, bias, undefined, undefined
-        ]);
     private m_fragLocalParams: Float32Array = null;
     private m_parallaxParams: Float32Array = null;
     private m_mirrorParam: Float32Array = new Float32Array([
@@ -162,7 +158,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         // console.log("copyFrom src: ",src);
         // console.log("copyFrom this: ",this);
         
-        this.vertUniform = this.vertUniform;
+        this.vertUniform = src.vertUniform;
         if(this.m_pbrParams == null || this.m_pbrParams.length != src.m_pbrParams.length) {
             this.m_pbrParams = src.m_pbrParams.slice();
         }
@@ -174,12 +170,6 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         }
         else {
             this.m_fragLocalParams.set(src.m_fragLocalParams);
-        }
-        if(this.m_vertLocalParams == null || this.m_vertLocalParams.length != src.m_vertLocalParams.length) {
-            this.m_vertLocalParams = src.m_vertLocalParams.slice();
-        }
-        else {
-            this.m_vertLocalParams.set(src.m_vertLocalParams);
         }
         
         if(this.m_mirrorParam == null || this.m_mirrorParam.length != src.m_mirrorParam.length) {
@@ -338,27 +328,6 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         colorFactor.g = this.m_fragLocalParams[1];
         colorFactor.b = this.m_fragLocalParams[2];
     }
-    setUVScale(sx: number, sy: number): void {
-
-        this.m_vertLocalParams[0] = sx;
-        this.m_vertLocalParams[1] = sy;
-    }
-    getUVScale(scaleV:Vector3D): void {
-
-        scaleV.x = this.m_vertLocalParams[0];
-        scaleV.y = this.m_vertLocalParams[1];
-    }
-    /**
-     * 设置顶点置换贴图参数
-     * @param scale 缩放值
-     * @param bias 偏移量
-     */
-    setDisplacementParams(scale: number, bias: number): void {
-        if (this.m_vertLocalParams != null) {
-            this.m_vertLocalParams[4] = scale;
-            this.m_vertLocalParams[5] = bias;
-        }
-    }
     setAlbedoColor(pr: number, pg: number, pb: number): void {
         this.m_fragLocalParams[4] = pr;
         this.m_fragLocalParams[5] = pg;
@@ -388,7 +357,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     }
     createSelfUniformData(): ShaderUniformData {
 
-        let vertLocalParams = this.vertUniform != null ? this.vertUniform.getParams() :  this.m_vertLocalParams;
+        let vertLocalParams = this.vertUniform != null ? this.vertUniform.getParams() :  null;
 
         let oum: ShaderUniformData = new ShaderUniformData();
         if(vertLocalParams == null) {

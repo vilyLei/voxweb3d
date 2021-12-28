@@ -134,6 +134,8 @@ export default class PBRShaderDecorator {
         this.hdrBrnEnabled = src.hdrBrnEnabled;
         this.vtxFlatNormal = src.vtxFlatNormal;
         
+        this.fragLocalParamsTotal = src.fragLocalParamsTotal;
+        
         if(this.specularEnvMap == null) this.specularEnvMap = src.specularEnvMap;
         if(this.diffuseMap == null) this.diffuseMap = src.diffuseMap;
         if(this.normalMap == null) this.normalMap = src.normalMap;

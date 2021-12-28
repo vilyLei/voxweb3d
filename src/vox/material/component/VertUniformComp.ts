@@ -8,6 +8,7 @@
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import { UniformComp } from "./UniformComp";
 import TextureProxy from "../../texture/TextureProxy";
+import Vector3D from "../../math/Vector3D";
 /**
  * manage uniform data for the vertex calculation
  */
@@ -119,6 +120,12 @@ class VertUniformComp extends UniformComp {
         if (this.m_uvTransParam != null) {
             this.m_uvTransParam[0] = uScale;
             this.m_uvTransParam[1] = vScale;
+        }
+    }
+    getUVScale(scaleV:Vector3D): void {
+        if (this.m_uvTransParam != null) {
+            scaleV.x = this.m_uvTransParam[0];
+            scaleV.y = this.m_uvTransParam[1];
         }
     }
     setUVTranslation(tu: number, tv: number): void {
