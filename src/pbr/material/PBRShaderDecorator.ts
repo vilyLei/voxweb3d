@@ -100,7 +100,7 @@ export default class PBRShaderDecorator {
         }
         if(this.displacementMap != null) {
             texList.push( this.displacementMap );
-            uniform.addDisplacementMap();
+            uniform.addDisplacementMap(1);
         }
         if(this.parallaxMap != null) {
             texList.push( this.parallaxMap );

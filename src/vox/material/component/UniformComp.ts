@@ -11,8 +11,7 @@ import TextureProxy from "../../texture/TextureProxy";
 class UniformComp {
 
     protected m_params: Float32Array = null;
-    private m_paramsTotal: number = 0;
-    private m_beginIndex: number = 0;
+    protected m_uniqueNSKeyString: string = "";
     constructor() {
     }
     initialize(): void {
@@ -20,10 +19,8 @@ class UniformComp {
     use(shaderBuilder: IShaderCodeBuilder): void {
 
     }
-    getTextures(inTexList: TextureProxy[]): TextureProxy[] {
+    getTextures(shaderBuilder: IShaderCodeBuilder): TextureProxy[] {
 
-        // if(inTexList) {
-        // }
         return null;
     }
     reset(): void {
@@ -32,8 +29,14 @@ class UniformComp {
     destroy(): void {
 
     }
+    getUniqueNSKeyString(): string {
+        return this.m_uniqueNSKeyString;
+    }
     clone(): UniformComp {
         return null;
+    }
+    getParams(): Float32Array {
+        return this.m_params;
     }
 }
 export { UniformComp };

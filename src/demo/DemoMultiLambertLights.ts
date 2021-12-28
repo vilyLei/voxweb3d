@@ -33,6 +33,7 @@ import Matrix4 from "../vox/math/Matrix4";
 import { ILightEntity } from "./light/ILightEntity";
 import { RotateYPointLightEntity, FloatYPointLightEntity, PointLightEntity } from "./light/PointLightEntity";
 import DivLog from "../vox/utils/DivLog";
+import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 
 export class DemoMultiLambertLights implements IShaderLibListener {
 
@@ -84,7 +85,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         mcParam.loadAllShaderCode = true;
         mcParam.shaderCodeBinary = true;
         mcParam.pbrMaterialEnabled = false;
-        //mcParam.vsmEnabled = false;
+        mcParam.vsmEnabled = false;
         //mcParam.buildBinaryFile = true;
 
         this.m_materialCtx.addShaderLibListener(this);
@@ -152,7 +153,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
 
         let color: Color4 = new Color4(1.0, 1.0, 0.0);
         let colorBias: Color4 = new Color4(0.0, 0.0, 0.0);
-        ///*
+        /*
         // let box: Box3DEntity = new Box3DEntity();
         // box.pipeTypes = [MaterialPipeType.FOG_EXP2];
         // box.setMaterialPipeline( this.m_materialCtx.pipeline );
@@ -179,15 +180,21 @@ export class DemoMultiLambertLights implements IShaderLibListener {
 
         ///*
         let material: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
+        material.vertUniform = new VertUniformComp();
+        material.vertUniform.uvTransformEnabled = true;
         this.useMaps(material, "metal_08", true, true, true);
         material.fogEnabled = true;
-        material.vtxUVTransformEnabled = true;
+        //material.vtxUVTransformEnabled = true;
         material.initializeLocalData();
-        material.setDisplacementParams(10.0, -10.0);
+        let vertUniform = material.vertUniform;
+        vertUniform.setUVScale(8.0, 8.0);
+        vertUniform.setDisplacementParams(10.0, -10.0);
+
+        // material.setDisplacementParams(10.0, -10.0);
         color.normalizeRandom(0.5);
         colorBias.randomRGB();
         material.setColor(color, colorBias);
-        material.setUVScale(8.0, 8.0);
+        // material.setUVScale(8.0, 8.0);
 
         material.setSpecularIntensity(128.0);
         material.setBlendFactor(0.3, 0.7);
@@ -206,15 +213,20 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         //*/
         ///*
         material = this.m_materialCtx.createLambertLightMaterial();
+        material.vertUniform = new VertUniformComp();
+        material.vertUniform.uvTransformEnabled = true;
         this.useMaps(material, "lava_03", true, true, true);
         material.fogEnabled = true;
-        material.vtxUVTransformEnabled = true;
+        // material.vtxUVTransformEnabled = true;
         material.initializeLocalData();
+        vertUniform = material.vertUniform;
+        vertUniform.setUVScale(6.0, 6.0);
+        vertUniform.setDisplacementParams(10.0, -10.0);
         color.normalizeRandom(1.1);
         colorBias.normalizeRandom(0.5);
         material.setColor(color, colorBias);
-        material.setUVScale(4.0, 4.0);
-        material.setDisplacementParams(10.0, -10.0);
+        // material.setUVScale(4.0, 4.0);
+        // material.setDisplacementParams(10.0, -10.0);
         material.setSpecularColor(new Color4(1.0, 1.0, 1.0, 1.0));
         material.setSpecularIntensity(64);
         //material.setAmbientFactor(0.1,0.1,0.1);
@@ -229,12 +241,16 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         //*/
         ///*
         material = this.m_materialCtx.createLambertLightMaterial();
+        material.vertUniform = new VertUniformComp();
+        //material.vertUniform.uvTransformEnabled = true;
         this.useMaps(material, "box", true, false, true);
         material.setMaterialPipeline(null);
         material.fogEnabled = true;
         material.lightEnabled = true;
         material.initializeLocalData();
-        material.setDisplacementParams(3.0, 0.0);
+        vertUniform = material.vertUniform;
+        vertUniform.setDisplacementParams(3.0, 0.0);
+        // material.setDisplacementParams(3.0, 0.0);
         material.setSpecularIntensity(64.0);
         color.normalizeRandom(1.1);
         material.setSpecularColor(color);
@@ -267,7 +283,9 @@ export class DemoMultiLambertLights implements IShaderLibListener {
             material.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_OCC.png");
         }
         if (displacementMap) {
-            material.displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+            if(material.vertUniform != null) {
+                material.vertUniform.displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+            }
         }
         if (shadowReceiveEnabled && this.m_materialCtx.vsmModule != null) {
             material.shadowMap = this.m_materialCtx.vsmModule.getShadowMap();

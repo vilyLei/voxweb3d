@@ -8,6 +8,7 @@ void displaceLocalVtx(in vec2 param) {
 
 void initLocalVtx() {
     localPosition = vec4(a_vs.xyz, 1.0);
+    int paramIndex = 0;
     // vertex transform calculation
     #ifdef VOX_VTX_CURVE_MOVE_PARAM_INDEX
         vec4 params = u_vertLocalParams[VOX_VTX_CURVE_MOVE_PARAM_INDEX];
@@ -17,8 +18,9 @@ void initLocalVtx() {
         localPosition.xyz += VOX_Texture2D(VTX_CURVE_MOVE_MAP, puv).xyz;
     #endif
         
-    #ifdef VOX_USE_UV_VTX_TRANSFORM
-        v_uv = a_uvs.xy * u_vertLocalParams[0].xy + u_vertLocalParams[0].zw;
+    #ifdef VOX_VTX_TRANSFORM_PARAM_INDEX
+        paramIndex = VOX_VTX_TRANSFORM_PARAM_INDEX;
+        v_uv = a_uvs.xy * u_vertLocalParams[paramIndex].xy + u_vertLocalParams[paramIndex].zw;
     #elif VOX_USE_2D_MAP
         v_uv = a_uvs.xy;
     #endif

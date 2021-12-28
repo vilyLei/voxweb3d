@@ -418,7 +418,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
             this.addFragOutput("vec4", "FragColor0");
         }
         if(this.vtxUVTransfromEnabled) {
-            this.addDefine("VOX_USE_UV_VTX_TRANSFORM", "1");
+            this.addDefine("VOX_VTX_TRANSFORM_PARAM_INDEX", "0");
         }
     }
     buildFragCode(): string {

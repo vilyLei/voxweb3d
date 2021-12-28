@@ -14,6 +14,7 @@ import TextureProxy from "../../texture/TextureProxy";
 import { SpecularMode } from "./SpecularMode";
 import { LambertLightShaderCode } from "../mcase/glsl/LambertLightShaderCode";
 import { ShadowMode } from "./ShadowMode";
+import { VertUniformComp } from "../component/VertUniformComp";
 
 class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     private m_uniqueName: string = "";
@@ -27,6 +28,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
 
     normalEnabled: boolean = true;
     buildFlag: boolean = true;
+    vertUniform: VertUniformComp = null;
     constructor() {
         super();
     }
@@ -105,7 +107,9 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     }
 
     buildShader(): void {
-        
+        if(this.vertUniform != null) {
+            this.vertUniform.use(this.m_coder);
+        }
         this.m_coder.addVertUniform("vec4", "u_vertLocalParams", 2);
         this.m_coder.addFragUniform("vec4", "u_fragLocalParams", this.fragLocalParamsTotal);
         if (this.lightEnabled) {
@@ -113,16 +117,16 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
         }
     }
     
-    // getShaderCodeObject(): IShaderCodeObject {
-    //     return LambertLightShaderCode;
-    // }
-
     getShaderCodeObjectUUID(): ShaderCodeUUID {
         return ShaderCodeUUID.Lambert;
     }
     getUniqueShaderName(): string {
-        //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
-        return this.m_uniqueName + this.keysString;
+        if(this.vertUniform != null) {
+            return this.m_uniqueName + this.keysString + this.vertUniform.getUniqueNSKeyString();
+        }
+        else {
+            return this.m_uniqueName + this.keysString;
+        }
     }
     toString(): string {
         return "[LambertLightShaderBuffer()]";
