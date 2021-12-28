@@ -45,6 +45,9 @@ Feature:
     12.PC鼠标和移动端(包括Pad)touch事件支持。
        pc web client mouse event and mobile(pad) touch event support.
 
+    13.Features that will be supported in the future:
+       RSM, SSDO, VXGI
+
 Engine code under the path: "src\vox\"
 
 [More Demos](http://www.artvily.com)

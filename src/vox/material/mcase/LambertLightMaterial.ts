@@ -100,9 +100,6 @@ export default class LambertLightMaterial extends MaterialBase {
         if(this.vertUniform != null) {
             textures = this.vertUniform.getTextures();
         }
-        else {
-            //buf.addDisplacementMap( this.displacementMap, 1 );
-        }
 
         buf.addDiffuseMap( this.diffuseMap );
         buf.addNormalMap( this.normalMap );
