@@ -8,7 +8,7 @@ import MouseEvent from "../vox/event/MouseEvent";
 import DemoInstance from "./DemoInstance";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import ThreadSystem from "../thread/ThreadSystem";
-import {UserInteraction} from "../vox/engine/UserInteraction";
+import { UserInteraction } from "../vox/engine/UserInteraction";
 
 import { ToyCarScene } from "./thread/toyCar/scene/ToyCarScene";
 
@@ -33,7 +33,7 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
     private m_statusDisp: RenderStatusDisplay = null;
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_userInteraction: UserInteraction = new UserInteraction();
-    
+
     // private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 
@@ -58,15 +58,15 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
         this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
         if (this.m_profileInstance != null) this.m_profileInstance.initialize(this.m_rscene.getRenderer());
         if (this.m_statusDisp != null) this.m_statusDisp.initialize();
-        
-        this.m_userInteraction.initialize( this.m_rscene );
 
-        
+        this.m_userInteraction.initialize(this.m_rscene);
+
+
         this.update();
         //this.initScene();
         this.initMaterialCtx();
     }
-    
+
     private initMaterialCtx(): void {
 
         let mcParam: MaterialContextParam = new MaterialContextParam();
@@ -77,44 +77,46 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
         //mcParam.vsmEnabled = false;
         mcParam.loadAllShaderCode = true;
         mcParam.shaderCodeBinary = true;
-        this.m_materialCtx.addShaderLibListener( this );
-        this.m_materialCtx.initialize( this.m_rscene, mcParam );
+        this.m_materialCtx.addShaderLibListener(this);
+        this.m_materialCtx.initialize(this.m_rscene, mcParam);
 
         let lightModule = this.m_materialCtx.lightModule;
         let direcLight: DirectionLight = lightModule.getDirectionLightAt(0);
-        direcLight.direction.setXYZ(-0.5,-0.5,0.5);
-        
-        
+        direcLight.direction.setXYZ(-0.5, -0.5, 0.5);
+
+
         // let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
         // pointLight.position.setXYZ(0.0, 150.0, -50.0);
         // pointLight.color.setRGB3f(1.0, 1.0, 1.0);
         // pointLight.attenuationFactor1 = 0.00001;
         // pointLight.attenuationFactor2 = 0.000001;
-                
+
         this.m_materialCtx.lightModule.update();
     }
-    
-    private applyMaterial(material: LambertLightMaterial, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = false, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
-        
-        material.setMaterialPipeline( this.m_materialCtx.pipeline );
 
-        material.diffuseMap =           this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
-        material.specularMap =          this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_SPEC.png");
-        if(normalMapEnabled) {
-            material.normalMap =        this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_NRM.png");
+    private applyMaterial(material: LambertLightMaterial, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = false, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
+
+        material.setMaterialPipeline(this.m_materialCtx.pipeline);
+
+        material.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_COLOR.png");
+        material.specularMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_SPEC.png");
+        if (normalMapEnabled) {
+            material.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_NRM.png");
         }
-        if(aoMapEnabled) {
-            material.aoMap =            this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_OCC.png");
+        if (aoMapEnabled) {
+            material.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_OCC.png");
         }
-        if(displacementMap) {
-            material.displacementMap =  this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
+        if (displacementMap) {
+            if (material.vertUniform != null) {
+                material.vertUniform.displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+            }
         }
-        if(shadowReceiveEnabled && this.m_materialCtx.vsmModule != null) {
-            material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();
+        if (shadowReceiveEnabled && this.m_materialCtx.vsmModule != null) {
+            material.shadowMap = this.m_materialCtx.vsmModule.getShadowMap();
         }
     }
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
-        console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ",loadingTotal, loadedTotal);
+        console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
         this.initScene();
     }
     private m_material: LambertLightMaterial;
@@ -159,33 +161,33 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
         this.m_downFlag++;
         this.m_userInteraction.viewRay.intersectPlane();
         let pv: Vector3D = this.m_userInteraction.viewRay.position;
-        this.m_toyCarScene.testDose( pv );
+        this.m_toyCarScene.testDose(pv);
     }
     private m_timeoutId: any = -1;
     private update(): void {
-        
+
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
         //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
         this.m_timeoutId = setTimeout(this.update.bind(this), 30);// 20 fps
-        
+
         this.m_toyCarScene.run();
         this.m_toyCarScene.updateThread();
     }
     runBegin(): void {
-        
+
         this.m_userInteraction.run();
-        
+
         if (this.m_statusDisp != null) this.m_statusDisp.update();
-        
+
     }
     private m_dv: Vector3D = new Vector3D();
     run(): void {
-        if(this.m_material != null) {
-            this.m_material.setUVTranslation(this.m_dv.x, this.m_dv.y);
-            this.m_dv.x += 0.05;
-        }
+        // if (this.m_material != null) {
+        //     this.m_material.vertUniform.setUVTranslation(this.m_dv.x, this.m_dv.y);
+        //     this.m_dv.x += 0.05;
+        // }
         ThreadSystem.Run();
 
         this.m_rscene.run();

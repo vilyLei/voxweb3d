@@ -120,11 +120,11 @@ export class DemoNormalMap {
             this.useMaps(material, "metal_08", true, true, true);
             material.fogEnabled = true;
             material.initializeLocalData();
-            material.setDisplacementParams(10.0, -10.0);
+            //material.setDisplacementParams(10.0, -10.0);
             color.normalizeRandom(0.5);
             colorBias.randomRGB();
             material.setColor( color, colorBias );
-            material.setUVScale(8.0,8.0);
+            //material.setUVScale(8.0,8.0);
            
             material.setSpecularIntensity(128.0);
             material.setBlendFactor(0.3,0.7);
@@ -148,8 +148,8 @@ export class DemoNormalMap {
             color.normalizeRandom(1.1);
             colorBias.normalizeRandom(0.5);
             material.setColor( color, colorBias );
-            material.setUVScale(4.0,4.0);
-            material.setDisplacementParams(10.0, -10.0);
+            //material.setUVScale(4.0,4.0);
+            //material.setDisplacementParams(10.0, -10.0);
             material.setSpecularColor(new Color4(1.0,1.0,1.0,1.0));
             material.setSpecularIntensity(64);
             //material.setAmbientFactor(0.1,0.1,0.1);
@@ -169,7 +169,7 @@ export class DemoNormalMap {
             material.fogEnabled = true;
             material.lightEnabled = true;
             material.initializeLocalData();
-            material.setDisplacementParams(3.0, 0.0);
+            //material.setDisplacementParams(3.0, 0.0);
             material.setSpecularIntensity(64.0);
             color.normalizeRandom(1.1);
             material.setSpecularColor( color );
@@ -225,7 +225,9 @@ export class DemoNormalMap {
             material.aoMap =            this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_OCC.png");
         }
         if(displacementMap) {
-            material.displacementMap =  this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
+            if(material.vertUniform != null) {
+                material.vertUniform.displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+            }
         }
         if(shadowReceiveEnabled && this.m_materialCtx.vsmModule != null) {
             material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();

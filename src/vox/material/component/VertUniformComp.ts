@@ -91,7 +91,7 @@ class VertUniformComp extends UniformComp {
 
     }
 
-    getTextures(shaderBuilder: IShaderCodeBuilder): TextureProxy[] {
+    getTextures(): TextureProxy[] {
 
         let texList: TextureProxy[] = [];
         if(this.m_curveMoveParamIndex >= 0) {
@@ -136,6 +136,14 @@ class VertUniformComp extends UniformComp {
             this.m_displacementParam[0] = scale;
             this.m_displacementParam[1] = bias;
         }
+    }
+    
+    clone(): UniformComp {
+        let u = new VertUniformComp();
+        u.uvTransformEnabled = this.uvTransformEnabled;
+        u.displacementMap = this.displacementMap;
+        u.curveMoveMap = this.curveMoveMap;
+        return u;
     }
 }
 export { VertUniformComp };

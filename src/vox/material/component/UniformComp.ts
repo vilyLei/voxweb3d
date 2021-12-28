@@ -38,5 +38,8 @@ class UniformComp {
     getParams(): Float32Array {
         return this.m_params;
     }
+    getParamsTotal(): number {
+        return this.m_params != null ? this.m_params.length >> 2 : 0;
+    }
 }
 export { UniformComp };

@@ -161,7 +161,7 @@ export class DemoCookTorrance {
             material.setLightBlendFactor(0.7,0.3);
             material.setBlendFactor(0.2,0.8);
             material.setParallaxParams(1, 5, 2.0, 0.01);
-            material.setUVScale(4.0, 4.0);
+            //material.setUVScale(4.0, 4.0);
             material.setSpecularColor(new Color4(2.0, 2.0, 2.0));
             material.setColor(new Color4(1.0,1.0,1.0,1.0), new Color4(0.4,0.4,0.4));
             //material
@@ -181,7 +181,7 @@ export class DemoCookTorrance {
             //sphMaterial.initializeByCodeBuf(true);
             ///*
             let sph = new Sphere3DEntity();
-            sphMaterial.setUVScale(4.0, 4.0);
+            //sphMaterial.setUVScale(4.0, 4.0);
             sph.setMaterial(sphMaterial);
             sph.initialize(100,20,20)
             sph.setXYZ(0, -110, 0);
@@ -223,8 +223,10 @@ export class DemoCookTorrance {
         if(aoMapEnabled) {
             material.aoMap =            this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_OCC.png");
         }
-        if(displacementMap) {
-            material.displacementMap =  this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
+        if (displacementMap) {
+            if(material.vertUniform != null) {
+                material.vertUniform.displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+            }
         }
         if(parallaxMapEnabled) {
             material.parallaxMap =  this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");

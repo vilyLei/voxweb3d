@@ -42,7 +42,9 @@ class ViewerTexSystem {
             material.aoMap = this.getImageTexByUrl("static/assets/disp/" + ns + "_OCC.png");
         }
         if (displacementMap) {
-            material.displacementMap = this.getImageTexByUrl("static/assets/disp/" + ns + "_DISP.png");
+            if(material.vertUniform != null) {
+                material.vertUniform.displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+            }
         }
         if (shadowReceiveEnabled) {
             material.shadowMap = this.m_materialCtx.vsmModule.getShadowMap();

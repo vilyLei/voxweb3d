@@ -153,7 +153,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
 
         let color: Color4 = new Color4(1.0, 1.0, 0.0);
         let colorBias: Color4 = new Color4(0.0, 0.0, 0.0);
-        /*
+        ///*
         // let box: Box3DEntity = new Box3DEntity();
         // box.pipeTypes = [MaterialPipeType.FOG_EXP2];
         // box.setMaterialPipeline( this.m_materialCtx.pipeline );
@@ -177,16 +177,17 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         // this.m_pointLight = pointLight;
         // this.m_target = crossAxis;
         //*/
-
+        let vertUniform: VertUniformComp;
+        let material: LambertLightMaterial;
         ///*
-        let material: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
+        material = this.m_materialCtx.createLambertLightMaterial();
         material.vertUniform = new VertUniformComp();
         material.vertUniform.uvTransformEnabled = true;
         this.useMaps(material, "metal_08", true, true, true);
         material.fogEnabled = true;
         //material.vtxUVTransformEnabled = true;
         material.initializeLocalData();
-        let vertUniform = material.vertUniform;
+        vertUniform = material.vertUniform;
         vertUniform.setUVScale(8.0, 8.0);
         vertUniform.setDisplacementParams(10.0, -10.0);
 
@@ -242,9 +243,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         ///*
         material = this.m_materialCtx.createLambertLightMaterial();
         material.vertUniform = new VertUniformComp();
-        //material.vertUniform.uvTransformEnabled = true;
+        material.vertUniform.uvTransformEnabled = true;
         this.useMaps(material, "box", true, false, true);
-        material.setMaterialPipeline(null);
         material.fogEnabled = true;
         material.lightEnabled = true;
         material.initializeLocalData();
@@ -255,13 +255,12 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         color.normalizeRandom(1.1);
         material.setSpecularColor(color);
         let plane: Plane3DEntity = new Plane3DEntity();
-        plane.setMaterialPipeline(this.m_materialCtx.pipeline);
+        //plane.setMaterialPipeline(this.m_materialCtx.pipeline);
         plane.setMaterial(material);
         plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0);
         plane.setXYZ(0.0, -200.0, 0.0);
         this.m_engine.rscene.addEntity(plane);
         //*/
-
         this.initEnvBox();
 
         // let pl = new ScreenFixedAlignPlaneEntity();

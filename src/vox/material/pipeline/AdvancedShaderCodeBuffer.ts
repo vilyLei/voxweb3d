@@ -109,8 +109,8 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     buildShader(): void {
         if(this.vertUniform != null) {
             this.vertUniform.use(this.m_coder);
+            this.m_coder.addVertUniform("vec4", "u_vertLocalParams", this.vertUniform.getParamsTotal());
         }
-        this.m_coder.addVertUniform("vec4", "u_vertLocalParams", 2);
         this.m_coder.addFragUniform("vec4", "u_fragLocalParams", this.fragLocalParamsTotal);
         if (this.lightEnabled) {
             this.m_coder.addDefine("VOX_LIGHT_LOCAL_PARAMS_INDEX", "" + this.lightParamsIndex);
