@@ -15,6 +15,9 @@ class VSTexturePosIdRenderShaderBuffer extends ShaderCodeBuffer {
     }
     private static s_instance: VSTexturePosIdRenderShaderBuffer = null;
     private m_uniqueName: string = "";
+
+    normalEnabled: boolean = false;
+
     initialize(texEnabled: boolean): void {
         super.initialize(texEnabled);
         //console.log("VSTexturePosIdRenderShaderBuffer::initialize()...");
@@ -25,7 +28,9 @@ class VSTexturePosIdRenderShaderBuffer extends ShaderCodeBuffer {
     buildShader(): void {
 
         let coder = this.m_coder;
+        coder.normalEnabled = this.normalEnabled;
         coder.addVertLayout("vec4", "a_vs");
+        
         coder.addFragUniform("vec4", "u_color");
         coder.addVertUniform("vec4", "u_vtxParam");
         this.m_uniform.add2DMap("VTX_TRANSFORM_MAP", false, false, true);
@@ -47,6 +52,7 @@ void  initLocalPos() {
         coder.addFragMainCode(
             `
     FragColor0 = VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv) * u_color;
+    //FragColor0.xyz *= abs(v_worldNormal.xyz);
 `
         );
         coder.addVertMainCode(
@@ -57,6 +63,7 @@ void  initLocalPos() {
     viewPosition = u_viewMat * worldPosition;
     gl_Position = u_projMat * viewPosition;
     v_uv = a_uvs;
+    v_worldNormal = normalize(a_nvs.xyz * inverse(mat3(u_objMat)));
 `
         )
     }
@@ -75,8 +82,13 @@ void  initLocalPos() {
     }
 }
 export class VSTexturePosIdMaterial extends MaterialBase {
+    normalEnabled: boolean = false;
     constructor() {
         super();
+    }
+    protected buildBuf(): void {
+        let buf = VSTexturePosIdRenderShaderBuffer.GetInstance();
+        buf.normalEnabled = this.normalEnabled;
     }
     getCodeBuf(): ShaderCodeBuffer {
         return VSTexturePosIdRenderShaderBuffer.GetInstance();
@@ -89,7 +101,7 @@ export class VSTexturePosIdMaterial extends MaterialBase {
     setPositionsTotal(total: number): void {
         this.m_posParam[2] = total;
     }
-    setMoveDistance(index: number): void {
+    setCurveMoveDistance(index: number): void {
         this.m_posParam[1] = index;
     }
     setRGB3f(pr: number, pg: number, pb: number): void {

@@ -81,7 +81,7 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
         this.m_materialCtx.initialize(this.m_rscene, mcParam);
 
         let lightModule = this.m_materialCtx.lightModule;
-        let direcLight: DirectionLight = lightModule.getDirectionLightAt(0);
+        let direcLight = lightModule.getDirectionLightAt(0);
         direcLight.direction.setXYZ(-0.5, -0.5, 0.5);
 
 

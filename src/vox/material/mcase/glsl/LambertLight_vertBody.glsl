@@ -7,5 +7,5 @@ gl_Position = u_projMat * viewPosition;
 v_worldPosition = worldPosition.xyz;
 
 #ifdef VOX_USE_NORMAL
-    v_worldNormal = normalize(a_nvs * inverse(mat3(u_objMat)));
+    v_worldNormal = normalize(a_nvs.xyz * inverse(mat3(u_objMat)));
 #endif

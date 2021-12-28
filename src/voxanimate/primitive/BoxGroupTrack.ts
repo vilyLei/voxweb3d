@@ -85,14 +85,16 @@ export default class BoxGroupTrack {
         this.m_unitMaxV.scaleBy(-1.0);
     }
     initializeFrom(srcTrack: BoxGroupTrack, texList: TextureProxy[]): void {
+        
         if (srcTrack != null) {
+
+            this.m_radius = srcTrack.m_radius;
+            this.m_longFactor = srcTrack.m_longFactor;
+            this.m_unitMinV.copyFrom(srcTrack.m_unitMinV);
+            this.m_unitMaxV.copyFrom(srcTrack.m_unitMaxV);
             this.animator.copyTransformFrom(srcTrack.animator);
             this.animator.setPosData(srcTrack.animator.getPosDataTexture(), srcTrack.animator.getPosData(), srcTrack.animator.getPosTotal());
             this.animator.copyMeshFrom(srcTrack.animator);
-            let unitMinV: Vector3D = new Vector3D();
-            unitMinV.copyFrom(srcTrack.m_unitMinV);
-            let unitMaxV: Vector3D = new Vector3D();
-            unitMaxV.copyFrom(srcTrack.m_unitMaxV);
             this.animator.initialize(srcTrack.m_unitsTotal, srcTrack.m_stepFactor, texList);
         }
     }
@@ -100,7 +102,6 @@ export default class BoxGroupTrack {
         this.createTrackData();
 
         let pos: Vector3D;
-        //for(let i:number = 0; i < this.m_trackPosList.length; ++i)
         for (let i: number = this.m_trackPosList.length - 1; i >= 0; --i) {
             pos = this.m_trackPosList[i];
             pos.scaleVector(this.m_trackScale);
@@ -128,6 +129,7 @@ export default class BoxGroupTrack {
         let material: VSTexturePosIdMaterial = null;
         if(this.animator.getMesh() == null && this.animator.getGroupSrcMesh() == null) {
             material = new VSTexturePosIdMaterial();
+            material.normalEnabled = this.animator.normalEnabled;
             material.initializeByCodeBuf( true );
             let boxMesh: Box3DMesh = new Box3DMesh();
             boxMesh.setBufSortFormat(material.getBufSortFormat());
@@ -172,8 +174,5 @@ export default class BoxGroupTrack {
     }
     update(): void {
         this.animator.update();
-    }
-    toString(): string {
-        return "BoxGroupTrack()";
     }
 }

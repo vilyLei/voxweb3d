@@ -16,11 +16,19 @@ import RendererScene from "../vox/scene/RendererScene";
 import BoxGroupTrack from "../voxanimate/primitive/BoxGroupTrack";
 import { UserInteraction } from "../vox/engine/UserInteraction";
 
+import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
+import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
+import { IShaderLibListener, CommonMaterialContext, MaterialContextParam } from "../materialLab/base/CommonMaterialContext";
+import { DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import DisplayEntity from "../vox/entity/DisplayEntity";
+import { VertUniformComp } from "../vox/material/component/VertUniformComp";
+
 class TrackWheelRole {
     private m_pz: number = Math.random() * 1000.0 - 500.00;
     private m_px: number = Math.random() * 200.0 - 100.00;
     private m_spdx: number = 1.0;
-    private m_tspdx: number = 3.0;
+    private m_tspdx: number = 2.0;
 
     boxTrack: BoxGroupTrack = null;
     maxV: Vector3D = new Vector3D(400.0, 0.0, 0.0);
@@ -30,8 +38,8 @@ class TrackWheelRole {
         if (this.boxTrack != null) {
             this.boxTrack.setXYZ(this.m_px, 0.0, this.m_pz);
             let f: number = Math.random() > 0.5 ? 1 : -1;
-            this.m_spdx = f * 2.0;
-            this.m_tspdx = 2.0 * f;
+            // this.m_spdx = f * 2.0;
+            // this.m_tspdx = 2.0 * f;
         }
     }
     run(): void {
@@ -52,7 +60,55 @@ class TrackWheelRole {
     }
 
 }
-export class DemoBoxGroupTrack {
+
+class TrackWheelLightRole {
+    private m_pz: number = Math.random() * 1000.0 - 500.00;
+    private m_px: number = Math.random() * 200.0 - 100.00;
+    private m_spdx: number = 1.0;
+    private m_tspdx: number = 2.0;
+    private m_distance: number = 0.0;
+
+    trackEntity: DisplayEntity = null;
+    trackData: VertUniformComp = null;
+    maxV: Vector3D = new Vector3D(400.0, 0.0, 0.0);
+    minV: Vector3D = new Vector3D(-400.0, 0.0, 0.0);
+    constructor() { }
+    initialize(): void {
+        if (this.trackEntity != null) {
+            this.trackEntity.setXYZ(this.m_px, 0.0, this.m_pz);
+            let f: number = Math.random() > 0.5 ? 1 : -1;
+            this.m_spdx = f * 2.0;
+            this.m_tspdx = 2.0 * f;
+        }
+    }
+    setSpeed(spd: number): void {
+        if(this.m_spdx > 0) {
+            this.m_spdx = spd;
+        }
+        else if(this.m_spdx < 0) {
+            this.m_spdx = -spd;
+        }
+    }
+    run(): void {
+        if (this.trackEntity != null) {
+            this.m_distance += this.m_tspdx * 0.25;
+            this.trackData.setCurveMoveDistance( this.m_distance );
+            this.m_px += this.m_spdx;
+            if (this.m_spdx > 0 && this.m_px > this.maxV.x) {
+                this.m_spdx *= -1.0;
+                this.m_tspdx *= -1.0;
+            }
+            else if (this.m_spdx < 0 && this.m_px < this.minV.x) {
+                this.m_spdx *= -1.0;
+                this.m_tspdx *= -1.0;
+            }
+            this.trackEntity.setXYZ(this.m_px, 0.0, this.m_pz);
+            this.trackEntity.update();
+        }
+    }
+}
+export class DemoBoxGroupTrack implements IShaderLibListener {
+
     constructor() {
     }
     private m_rscene: RendererScene = null;
@@ -63,6 +119,10 @@ export class DemoBoxGroupTrack {
     private m_boxTrack: BoxGroupTrack = new BoxGroupTrack();
     private m_role0: TrackWheelRole = new TrackWheelRole();
     private m_role1: TrackWheelRole = new TrackWheelRole();
+    
+    // private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
+    private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
+
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
@@ -71,6 +131,49 @@ export class DemoBoxGroupTrack {
     }
 
 
+    shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
+        console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
+        this.initScene();
+    }
+    private initMaterialCtx(): void {
+
+        let mcParam: MaterialContextParam = new MaterialContextParam();
+        mcParam.pointLightsTotal = 0;
+        mcParam.directionLightsTotal = 2;
+        mcParam.spotLightsTotal = 0;
+        mcParam.loadAllShaderCode = true;
+        mcParam.shaderCodeBinary = true;
+        mcParam.pbrMaterialEnabled = false;
+        mcParam.vsmEnabled = false;
+        //mcParam.buildBinaryFile = true;
+
+        this.m_materialCtx.addShaderLibListener(this);
+        this.m_materialCtx.initialize(this.m_rscene, mcParam);
+        
+        let lightModule = this.m_materialCtx.lightModule;
+        let direcLight = lightModule.getDirectionLightAt(0);
+        direcLight.direction.setXYZ(-0.5, -0.5, 0.5);
+        direcLight = lightModule.getDirectionLightAt(1);
+        direcLight.direction.setXYZ(0.5, -0.5, 0.5);
+/*
+        let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
+        pointLight.position.setXYZ(0.0, 150.0, -50.0);
+        pointLight.color.setRGB3f(1.0, 1.0, 1.0);
+        pointLight.attenuationFactor1 = 0.00001;
+        pointLight.attenuationFactor2 = 0.000001;
+        
+        pointLight = this.m_materialCtx.lightModule.getPointLightAt(1);
+        pointLight.color.setRGB3f(1.0, 0.0, 0.0);
+        pointLight.attenuationFactor1 = 0.00001;
+        pointLight.attenuationFactor2 = 0.000001;
+
+        pointLight = this.m_materialCtx.lightModule.getPointLightAt(2);
+        pointLight.color.setRGB3f(0.0, 1.0, 1.0);
+        pointLight.attenuationFactor1 = 0.00001;
+        pointLight.attenuationFactor2 = 0.000001;
+//*/
+        this.m_materialCtx.lightModule.update();
+    }
     initialize(): void {
         console.log("DemoBoxGroupTrack::initialize()......");
         if (this.m_rscene == null) {
@@ -92,41 +195,83 @@ export class DemoBoxGroupTrack {
 
             this.m_statusDisp.initialize();
 
-            let tex0: TextureProxy = this.getImageTexByUrl("static/assets/metal_02.jpg");
-            let tex1: TextureProxy = this.getImageTexByUrl("static/assets/green.jpg");
-
-            let axis: Axis3DEntity = new Axis3DEntity();
-            axis.initialize(310);
-            this.m_rscene.addEntity(axis);
-
-            //  this.m_boxTrack.setTrackScaleXYZ(0.2,0.2,0.2);
-            //  this.m_boxTrack.initialize(this.m_rscene.textureBlock,0.5,[tex0]);
-            let distanceFactor: number = 0.98;
-            this.m_boxTrack.setTrackScaleXYZ(0.4, 0.4, 1.0);
-            //this.m_boxTrack.setFactor(2,5,2);
-            //this.m_boxTrack.initialize(this.m_rscene.textureBlock,0.5,[tex0], distanceFactor);
-            this.m_boxTrack.setFactor(5, 5, 5);
-            this.m_boxTrack.animator.setGroupPositions([new Vector3D(), new Vector3D(0.0,0.0, 70.0), new Vector3D(0.0,0.0, 140.0)]);
-            this.m_boxTrack.initialize(this.m_rscene.textureBlock, 5.0, [tex0], distanceFactor);
-            //this.m_boxTrack.setScale(2.2);
-            this.m_rscene.addEntity(this.m_boxTrack.animator);
-
-            this.m_role0.boxTrack = this.m_boxTrack;
-            this.m_role0.initialize();
-            ///*
-            let boxTrack: BoxGroupTrack = new BoxGroupTrack();
-            boxTrack.initializeFrom(this.m_boxTrack, [tex0]);
-            this.m_rscene.addEntity(boxTrack.animator);
-
-            this.m_role1.boxTrack = boxTrack;
-            this.m_role1.initialize();
-            //*/
-            let curveLine: DashedLine3DEntity = new DashedLine3DEntity();
-            curveLine.initializeByPosition(this.m_boxTrack.getTrackPosList());
-            this.m_rscene.addEntity(curveLine);
-
+            //initScene();
+            this.initMaterialCtx();
             this.update();
         }
+    }
+    
+    private m_track01: TrackWheelLightRole = new TrackWheelLightRole();
+    private m_track02: TrackWheelLightRole = new TrackWheelLightRole();
+    private initScene(): void {
+
+        let tex0: TextureProxy = this.getImageTexByUrl("static/assets/image_003.jpg");
+        let tex1: TextureProxy = this.getImageTexByUrl("static/assets/box_wood01.jpg");
+        this.m_rscene.setClearRGBColor3f(0.1, 0.2, 0.1);
+        let axis: Axis3DEntity = new Axis3DEntity();
+        axis.initialize(310);
+        this.m_rscene.addEntity(axis);
+
+        let material: LambertLightMaterial;
+
+        // material = this.m_materialCtx.createLambertLightMaterial();
+        // material.fogEnabled = false;
+        // material.diffuseMap = tex1;
+        // material.initializeByCodeBuf(true);
+        // material.setBlendFactor(0.5,0.8);
+        // let box: Box3DEntity = new Box3DEntity();
+        // box.setMaterial(material);
+        // box.initializeCube(200.0, [tex1]);
+        // this.m_rscene.addEntity(box);
+
+        //  this.m_boxTrack.setTrackScaleXYZ(0.2,0.2,0.2);
+        //  this.m_boxTrack.initialize(this.m_rscene.textureBlock,0.5,[tex0]);
+        let distanceFactor: number = 0.98;
+        this.m_boxTrack.animator.normalEnabled = true;
+        this.m_boxTrack.setTrackScaleXYZ(0.4, 0.4, 1.0);
+        //this.m_boxTrack.setFactor(2,5,2);
+        //this.m_boxTrack.initialize(this.m_rscene.textureBlock,0.5,[tex0], distanceFactor);
+        this.m_boxTrack.setFactor(5, 5, 5);
+        //this.m_boxTrack.animator.setGroupPositions([new Vector3D(), new Vector3D(0.0,0.0, 70.0), new Vector3D(0.0,0.0, 140.0)]);
+        this.m_boxTrack.initialize(this.m_rscene.textureBlock, 5.0, [tex0], distanceFactor);
+        //this.m_boxTrack.setScale(2.2);
+        this.m_rscene.addEntity(this.m_boxTrack.animator);
+
+        this.m_role0.boxTrack = this.m_boxTrack;
+        this.m_role0.initialize();
+
+        let dataTex = this.m_boxTrack.animator.getPosDataTexture();
+        let posTotal = this.m_boxTrack.animator.getPosTotal();
+        let trackMaterial: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
+        trackMaterial.diffuseMap = tex0;
+        trackMaterial.fogEnabled = false;
+        trackMaterial.vertUniform = new VertUniformComp();
+        trackMaterial.vertUniform.curveMoveMap = dataTex;
+        trackMaterial.initializeByCodeBuf( true );
+        trackMaterial.vertUniform.setCurveMoveParam(dataTex.getWidth(), posTotal);
+        trackMaterial.vertUniform.setCurveMoveDistance(0.0);
+        
+        let trackEntity: DisplayEntity = new DisplayEntity();
+        trackEntity.setMaterial(trackMaterial);
+        trackEntity.copyMeshFrom( this.m_boxTrack.animator );
+        this.m_rscene.addEntity( trackEntity );
+        this.m_track01.trackEntity = trackEntity;
+        this.m_track01.trackData = trackMaterial.vertUniform;
+        this.m_track01.setSpeed(2.0);
+
+        return;
+        ///*
+        let boxTrack: BoxGroupTrack = new BoxGroupTrack();
+        boxTrack.initializeFrom(this.m_boxTrack, [tex0]);
+        this.m_rscene.addEntity(boxTrack.animator);
+
+        this.m_role1.boxTrack = boxTrack;
+        this.m_role1.initialize();
+        //*/
+
+        let curveLine: DashedLine3DEntity = new DashedLine3DEntity();
+        curveLine.initializeByPosition(this.m_boxTrack.getTrackPosList());
+        this.m_rscene.addEntity(curveLine);
     }
     private m_timeoutId: any = -1;
     private update(): void {
@@ -138,7 +283,9 @@ export class DemoBoxGroupTrack {
         this.m_statusDisp.render();
 
         this.m_role0.run();
-        this.m_role1.run();
+        //this.m_role1.run();
+        
+        this.m_track01.run();
     }
     run(): void {
         this.m_interaction.run();

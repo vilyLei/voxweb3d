@@ -6,13 +6,9 @@
 /***************************************************************************/
 
 import {ShaderCodeUUID} from "../../../vox/material/ShaderCodeUUID";
-import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
-import { MaterialPipeType } from "../pipeline/MaterialPipeType";
-import Color4 from "../Color4";
 import TextureProxy from "../../texture/TextureProxy";
 import { SpecularMode } from "./SpecularMode";
-import { LambertLightShaderCode } from "../mcase/glsl/LambertLightShaderCode";
 import { ShadowMode } from "./ShadowMode";
 import { VertUniformComp } from "../component/VertUniformComp";
 
@@ -108,10 +104,11 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     }
 
     buildShader(): void {
+
         if(this.vertUniform != null) {
             this.vertUniform.use(this.m_coder);
             this.m_coder.addVertUniform("vec4", "u_vertLocalParams", this.vertUniform.getParamsTotal());
-        }
+        }        
         this.m_coder.addFragUniform("vec4", "u_fragLocalParams", this.fragLocalParamsTotal);
         if (this.lightEnabled) {
             this.m_coder.addDefine("VOX_LIGHT_LOCAL_PARAMS_INDEX", "" + this.lightParamsIndex);

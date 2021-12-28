@@ -34,7 +34,7 @@ class IdMeshGroupAnimator extends DisplayEntity {
     private m_idDistance: number = 300;
     private m_unitTotal: number = 0;
     private m_idStep: number = 10;
-
+    normalEnabled: boolean = false;
     constructor(transform: ROTransform = null) {
         super(transform);
     }
@@ -44,7 +44,7 @@ class IdMeshGroupAnimator extends DisplayEntity {
     getGroupSrcMesh(): MeshBase {
         return this.m_groupSrcMesh;
     }
-    createDataTexture(textureBlock: TextureBlock, positionsTotal: number): void {
+    createDataTexture(textureBlock: TextureBlock, positionsTotal: number): FloatTextureProxy {
         if (positionsTotal > 0) {
             this.m_posTotal = positionsTotal;
             this.m_texSize = Math.sqrt(positionsTotal);
@@ -61,6 +61,7 @@ class IdMeshGroupAnimator extends DisplayEntity {
             posTex.setDataFromBytes(fs, 0, texSize, texSize);
             this.m_posDataTex = posTex;
             this.m_texData = fs;
+            return this.m_posDataTex;
         }
     }
     setPosData(posDataTex: FloatTextureProxy, posData: Float32Array, posTotal: number): void {
@@ -98,14 +99,6 @@ class IdMeshGroupAnimator extends DisplayEntity {
         pos.y = this.m_texData[i++];
         pos.y = this.m_texData[i];
     }
-    moveIdDistanceOffset(distanceOffset: number): void {
-        this.m_idDistance += distanceOffset;
-        this.m_idMaterial.setMoveDistance(this.m_idDistance);
-    }
-    moveIdDistance(distance: number): void {
-        this.m_idDistance = distance;
-        this.m_idMaterial.setMoveDistance(distance);
-    }
     setVtxTransformMatrix(matrix: Matrix4): void {
         this.m_transMatrix = matrix;
     }
@@ -113,7 +106,9 @@ class IdMeshGroupAnimator extends DisplayEntity {
         
         let material = this.getMaterial() as VSTexturePosIdMaterial;
         if (material == null) {
+
             material = new VSTexturePosIdMaterial();
+            material.normalEnabled = this.normalEnabled;            
             material.setTexSize(this.m_texSize);
             material.setPositionsTotal(this.m_posTotal);
             material.setTextureList(texList);
@@ -123,6 +118,14 @@ class IdMeshGroupAnimator extends DisplayEntity {
             material.setTextureList(texList);
         }
         this.m_idMaterial = material;
+    }
+    moveIdDistanceOffset(distanceOffset: number): void {
+        this.m_idDistance += distanceOffset;
+        this.m_idMaterial.setCurveMoveDistance(this.m_idDistance);
+    }
+    moveIdDistance(distance: number): void {
+        this.m_idDistance = distance;
+        this.m_idMaterial.setCurveMoveDistance(distance);
     }
     showBackFace(): void {
         this.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
@@ -165,6 +168,7 @@ class IdMeshGroupAnimator extends DisplayEntity {
         else if (this.getMesh().getIVS() == null) {
             mesh = this.getMesh() as IdGroupMesh;
         }
+        
         if (mesh != null) {
 
             mesh.srcMesh = this.m_groupSrcMesh;

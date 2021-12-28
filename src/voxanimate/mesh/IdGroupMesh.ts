@@ -125,7 +125,7 @@ class IdGroupMesh extends MeshBase {
     }
     
     private buildGroupData(src: Float32Array, total: number, bufStep: number): Float32Array {
-        let srcLength = this.m_uvs.length;
+        let srcLength = src.length;
         let new_fs = new Float32Array(srcLength * total);
         for (let i: number = 0; i < total; ++i) {
             new_fs.set(src, 0);

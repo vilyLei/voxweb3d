@@ -42,6 +42,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     private m_engine: EngineBase = null;
     private m_profileInstance: ProfileInstance = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
+
     // private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 
@@ -81,15 +82,14 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         mcParam.pointLightsTotal = 3;
         mcParam.directionLightsTotal = 0;
         mcParam.spotLightsTotal = 0;
-        //mcParam.vsmEnabled = false;
         mcParam.loadAllShaderCode = true;
         mcParam.shaderCodeBinary = true;
         mcParam.pbrMaterialEnabled = false;
-        mcParam.vsmEnabled = false;
+        // mcParam.vsmEnabled = false;
         //mcParam.buildBinaryFile = true;
 
         this.m_materialCtx.addShaderLibListener(this);
-        this.m_materialCtx.initialize(this.m_engine.rscene, mcParam, null);
+        this.m_materialCtx.initialize(this.m_engine.rscene, mcParam);
 
         let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
         pointLight.position.setXYZ(0.0, 150.0, -50.0);
