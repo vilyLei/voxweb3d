@@ -81,14 +81,6 @@ class TrackWheelLightRole {
             this.m_tspdx = 2.0 * f;
         }
     }
-    setSpeed(spd: number): void {
-        // if(this.m_spdx > 0) {
-        //     this.m_spdx = spd;
-        // }
-        // else if(this.m_spdx < 0) {
-        //     this.m_spdx = -spd;
-        // }
-    }
     run(): void {
         if (this.trackEntity != null) {
             this.m_distance += this.m_tspdx * 0.25;
@@ -129,7 +121,6 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
-
 
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);

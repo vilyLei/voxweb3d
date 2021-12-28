@@ -371,7 +371,7 @@
 
 //  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
-//  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
+import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
 //  import {DemoPBRDisplacement as Demo} from "./pbr/DemoPBRDisplacement";
 
@@ -393,7 +393,7 @@
 //  import * as BoFrame from "./app/BoFrame";
 //  import Demo = BoFrame.app.BoFrame;
 
-import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
+//  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
 //  import {RbtDrama as Demo} from "./app/RbtDrama";
 

@@ -18,6 +18,7 @@ import TextureProxy from "../../vox/texture/TextureProxy";
 
 //  import { PBRShaderCode } from "./glsl/PBRShaderCode";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
+import { VertUniformComp } from "../../vox/material/component/VertUniformComp";
 
 class PBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
@@ -26,6 +27,8 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
     private static s_instance: PBRShaderBuffer = new PBRShaderBuffer();
     decorator: PBRShaderDecorator = null;
     texturesTotal: number = 0;
+
+    vertUniform: VertUniformComp = null;
     initialize(texEnabled: boolean): void {
 
         texEnabled = this.texturesTotal > 0;
@@ -33,16 +36,23 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
         this.adaptationShaderVersion = false;
     }
     buildShader(): void {
+        
+        if(this.vertUniform != null) {
+            this.vertUniform.use(this.m_coder);
+            this.m_coder.addVertUniform("vec4", "u_vertLocalParams", this.vertUniform.getParamsTotal());
+        }
         this.decorator.buildShader();
     }
-    // getShaderCodeObject(): IShaderCodeObject {
-    //     return PBRShaderCode;
-    // }
     getShaderCodeObjectUUID(): ShaderCodeUUID {
         return ShaderCodeUUID.PBR;
     }
     getUniqueShaderName(): string {
-        return this.decorator.getUniqueShaderName();
+        if(this.vertUniform != null) {
+            return this.decorator.getUniqueShaderName() + this.vertUniform.getUniqueNSKeyString();
+        }
+        else {
+            return this.decorator.getUniqueShaderName();
+        }
     }
     toString(): string {
         return "[PBRShaderBuffer()]";
@@ -86,7 +96,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     ///////////////////////////////////////////////////////
 
     decorator: PBRShaderDecorator = null;
-
+    vertUniform: VertUniformComp = null;
     constructor() {
         super();
     }
@@ -101,14 +111,21 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         buf.fogEnabled = decorator.fogEnabled;
 
         buf.decorator = decorator;
+        buf.vertUniform = this.vertUniform;
         buf.decorator.codeBuilder = buf.getShaderCodeBuilder();
         
         if(this.m_fragLocalParams == null) {
             this.initializeLocalData();
         }
         
-        let texList: TextureProxy[] = decorator.createTextureList();
-        super.setTextureList(texList);
+        let textures: TextureProxy[] = null;
+        if(this.vertUniform != null) {
+            textures = this.vertUniform.getTextures();
+        }
+
+        let list: TextureProxy[] = decorator.createTextureList();
+        list = textures != null ? list.concat(textures) : list;
+        super.setTextureList(list);
         buf.texturesTotal = this.decorator.texturesTotal;
     }
     getCodeBuf(): ShaderCodeBuffer {
@@ -143,6 +160,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         // console.log("copyFrom src: ",src);
         // console.log("copyFrom this: ",this);
         
+        this.vertUniform = this.vertUniform;
         if(this.m_pbrParams == null || this.m_pbrParams.length != src.m_pbrParams.length) {
             this.m_pbrParams = src.m_pbrParams.slice();
         }
@@ -367,9 +385,26 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         }
     }
     createSelfUniformData(): ShaderUniformData {
+
+        let vertLocalParams = this.vertUniform != null ? this.vertUniform.getParams() :  this.m_vertLocalParams;
+
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_pbrParams", "u_vertLocalParams", "u_fragLocalParams", "u_mirrorParams"];
-        oum.dataList = [this.m_pbrParams, this.m_vertLocalParams, this.m_fragLocalParams, this.m_mirrorParam];
+        if(vertLocalParams == null) {
+            oum.uniformNameList = ["u_pbrParams", "u_fragLocalParams", "u_mirrorParams"];
+            oum.dataList = [this.m_pbrParams, this.m_fragLocalParams, this.m_mirrorParam];
+        }
+        else {
+            oum.uniformNameList = ["u_pbrParams", "u_vertLocalParams", "u_fragLocalParams", "u_mirrorParams"];
+            oum.dataList = [this.m_pbrParams, vertLocalParams, this.m_fragLocalParams, this.m_mirrorParam];
+        }
         return oum;
+    }
+    destroy(): void {
+        
+        this.vertUniform = null;
+        this.m_pbrParams = null;
+        this.m_fragLocalParams = null;
+        this.m_mirrorParam = null;
+        super.destroy();
     }
 }

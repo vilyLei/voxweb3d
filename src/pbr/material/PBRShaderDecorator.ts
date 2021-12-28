@@ -27,6 +27,7 @@ export default class PBRShaderDecorator {
     shadowMap: TextureProxy = null;
     parallaxMap: TextureProxy = null;
     roughnessMap: TextureProxy = null;
+    
     displacementMap: TextureProxy = null;
     
     woolEnabled: boolean = true;

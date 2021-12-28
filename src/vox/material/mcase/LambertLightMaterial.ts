@@ -96,6 +96,7 @@ export default class LambertLightMaterial extends MaterialBase {
 
         let buf: AdvancedShaderCodeBuffer = LambertLightMaterial.s_shaderCodeBuffer;
         buf.setIRenderTextureList([]);
+        
         let textures: TextureProxy[] = null;
         if(this.vertUniform != null) {
             textures = this.vertUniform.getTextures();
