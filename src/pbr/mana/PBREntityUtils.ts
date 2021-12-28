@@ -67,7 +67,7 @@ export default class PBREntityUtils {
         }
     }
 
-    createMaterial(uscale: number, vscale: number): PBRMaterial {
+    createMaterial(): PBRMaterial {
 
         let matBuilder: PBRMaterialBuilder = this.m_materialBuilder;
         let material: PBRMaterial;
@@ -81,7 +81,7 @@ export default class PBREntityUtils {
         decorator.diffuseMapEnabled = true;
         decorator.normalMapEnabled = true;
 
-        material.setUVScale(uscale, vscale);
+        //material.setUVScale(uscale, vscale);
         return material;
     }
     createMirrorEntity(param: PBRParamEntity, material: PBRMaterial, mirrorType: number): void {

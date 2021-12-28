@@ -157,7 +157,7 @@ export class DemoLambertLight {
             material.fogEnabled = false;
             material.lightEnabled = true;
             material.specularMode = SpecularMode.FragColor;
-            
+            material.vertUniform.uvTransformEnabled = true;
             material.initializeLocalData();
             material.vertUniform.setUVScale(2.0, 2.0);
             //material.setSpecularColor(new Color4(0.5,0.5,0.5,1.0));
@@ -183,6 +183,7 @@ export class DemoLambertLight {
             //sphMaterial.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/default.jpg");
             sphMaterial.copyFrom(material);
             sphMaterial.vertUniform = sphMaterial.vertUniform.clone() as VertUniformComp;
+            sphMaterial.vertUniform.uvTransformEnabled = true;
             sphMaterial.vertUniform.initialize();
             sphMaterial.vertUniform.setUVScale(4.0, 4.0);
             //sphMaterial.initializeByCodeBuf(true);

@@ -22,7 +22,6 @@ vec3 rand(vec3 seed) {
   return vec3(noiseX, noiseY, noiseZ);
 }
 
-///*
 void initLocalVtx() {
     localPosition = vec4(a_vs.xyz, 1.0);
     int paramIndex = 0;
@@ -46,4 +45,3 @@ void initLocalVtx() {
         displaceLocalVtx( u_vertLocalParams[VOX_DISPLACEMENT_PARAMS_INDEX].xy );
     #endif
 }
-//*/

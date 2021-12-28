@@ -12,7 +12,7 @@ import PBREntityManager from "../../pbr/mana/PBREntityManager";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import { SpecularTextureLoader } from "../mana/TextureLoader";
 
-import { MaterialContext } from "../../materialLab/base/MaterialContext";
+import { CommonMaterialContext } from "../../materialLab/base/CommonMaterialContext";
 import { DirectionLight } from "../../light/base/DirectionLight";
 
 export default class PBRScene {
@@ -30,7 +30,7 @@ export default class PBRScene {
 
     private m_reflectPlaneY: number = -220.0;
 
-    private m_materialCtx: MaterialContext;
+    private m_materialCtx: CommonMaterialContext;
 
     fogEnabled: boolean = true;
     hdrBrnEnabled: boolean = true;
@@ -39,7 +39,7 @@ export default class PBRScene {
     constructor() {
     }
 
-    initialize(rscene: RendererScene, materialCtx: MaterialContext, uiModule: DefaultPBRUI): void {
+    initialize(rscene: RendererScene, materialCtx: CommonMaterialContext, uiModule: DefaultPBRUI): void {
 
         if (this.m_rscene == null) {
             this.m_rscene = rscene;
@@ -68,7 +68,7 @@ export default class PBRScene {
             materialCtx.lightModule.update();
 
             this.m_materialBuilder = new PBRMaterialBuilder();
-            this.m_materialBuilder.pipeline = materialCtx.pipeline;
+            this.m_materialBuilder.pipeline = materialCtx.pbrPipeline;
             this.m_materialBuilder.hdrBrnEnabled = this.hdrBrnEnabled;
             this.m_materialBuilder.vtxFlatNormal = this.vtxFlatNormal;
 

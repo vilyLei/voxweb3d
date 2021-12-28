@@ -8,6 +8,7 @@
 import PBRShaderDecorator from "../../pbr/material/PBRShaderDecorator";
 import PBRMaterial from "../../pbr/material/PBRMaterial";
 import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
+import { VertUniformComp } from "../../vox/material/component/VertUniformComp";
 
 export default class PBRMaterialBuilder {
 
@@ -21,6 +22,7 @@ export default class PBRMaterialBuilder {
     makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
 
         let material: PBRMaterial = new PBRMaterial();
+        material.vertUniform = new VertUniformComp();
         material.setMaterialPipeline( this.pipeline );
         let decorator: PBRShaderDecorator = new PBRShaderDecorator();
         material.decorator = decorator;

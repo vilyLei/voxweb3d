@@ -17,14 +17,14 @@ import DebugFlag from "../vox/debug/DebugFlag";
 import PBRScene from "./mana/PBRScene";
 import OcclusionPostOutline from "../renderingtoy/mcase/outline/OcclusionPostOutline";
 
-import { IShaderLibConfigure, ShaderCodeType, ShaderCodeUUID, ShaderCodeConfigure, IShaderLibListener, MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
+import { IShaderLibListener, CommonMaterialContext, MaterialContextParam } from "../materialLab/base/CommonMaterialContext";
+import { DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 
 export class DemoPBR implements IShaderLibListener {
     constructor() { }
 
     private m_rscene: RendererScene = null;
     private m_ruisc: RendererSubScene = null;
-    private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
     //private m_profileInstance: ProfileInstance = new ProfileInstance();
@@ -32,7 +32,8 @@ export class DemoPBR implements IShaderLibListener {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     //private m_stencilOutline: StencilOutline = new StencilOutline();
 
-    private m_materialCtx: MaterialContext = new MaterialContext();
+    //private m_materialCtx: MaterialContext = new MaterialContext();
+    private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 
     private m_postOutline: OcclusionPostOutline = new OcclusionPostOutline();
     private m_uiModule: DefaultPBRUI = new DefaultPBRUI();
@@ -44,7 +45,7 @@ export class DemoPBR implements IShaderLibListener {
         console.log("DemoPBR::initialize()......");
         if (this.m_rscene == null) {
 
-            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             RendererDevice.SetWebBodyColor();
@@ -77,25 +78,10 @@ export class DemoPBR implements IShaderLibListener {
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera(), false);
-            this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rscene.getCamera());
-
+            
             this.m_statusDisp.initialize();
 
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-
-            let libConfig: IShaderLibConfigure = this.m_materialCtx.createShaderLibConfig();
-            let configure = new ShaderCodeConfigure();
-            configure.uuid = ShaderCodeUUID.PBR;
-            configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
-            configure.urls = [
-                "static/shader/glsl/pbr/glsl01.bin",
-                "static/shader/glsl/pbr/glsl02.bin",
-                "static/shader/glsl/pbr/glsl03.bin",
-                "static/shader/glsl/pbr/glsl04.bin"
-            ]
-            configure.binary = true;
-            libConfig.shaderCodeConfigures.push( configure );
 
             let mcParam: MaterialContextParam = new MaterialContextParam();
             mcParam.pointLightsTotal = 0;
@@ -104,8 +90,10 @@ export class DemoPBR implements IShaderLibListener {
             mcParam.vsmFboIndex = 2;
             mcParam.loadAllShaderCode = true;
             mcParam.vsmEnabled = true;
-            this.m_materialCtx.initialize(this.m_rscene, mcParam, libConfig);
+            mcParam.lambertMaterialEnabled = false;
+            mcParam.pbrMaterialEnabled = true;
             this.m_materialCtx.addShaderLibListener( this );
+            this.m_materialCtx.initialize(this.m_rscene, mcParam);
             
         }
     }

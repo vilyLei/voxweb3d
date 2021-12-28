@@ -29,14 +29,14 @@ import MathConst from "../../vox/math/MathConst";
 import MaterialBase from "../../vox/material/MaterialBase";
 import AABB2D from "../../vox/geom/AABB2D";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
-import { MaterialContext } from "../../materialLab/base/MaterialContext";
+import { CommonMaterialContext } from "../../materialLab/base/CommonMaterialContext";
 import OcclusionPostOutline from "../../renderingtoy/mcase/outline/OcclusionPostOutline";
 
 export class DefaultPBRUI implements IPBRUI {
     constructor() { }
 
     private m_rscene: RendererScene = null;
-    private m_materialCtx: MaterialContext = null;
+    private m_materialCtx: CommonMaterialContext = null;
     
     postOutline: OcclusionPostOutline;
     ruisc: RendererSubScene = null;
@@ -61,7 +61,7 @@ export class DefaultPBRUI implements IPBRUI {
     absorbBtn: SelectionBar;
     vtxNoiseBtn: SelectionBar;
 
-    initialize(rscene: RendererScene, materialCtx: MaterialContext, buildDisplay: boolean = true): void {
+    initialize(rscene: RendererScene, materialCtx: CommonMaterialContext, buildDisplay: boolean = true): void {
 
         if (this.m_rscene == null) {
 

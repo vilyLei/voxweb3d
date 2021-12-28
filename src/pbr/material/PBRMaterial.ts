@@ -39,7 +39,7 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
         
         if(this.vertUniform != null) {
             this.vertUniform.use(this.m_coder);
-            this.m_coder.addVertUniform("vec4", "u_vertLocalParams", this.vertUniform.getParamsTotal());
+            //this.m_coder.addVertUniform("vec4", "u_vertLocalParams", this.vertUniform.getParamsTotal());
         }
         this.decorator.buildShader();
     }
@@ -122,7 +122,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         let list: TextureProxy[] = decorator.createTextureList();
         list = textures != null ? list.concat(textures) : list;
         super.setTextureList(list);
-        buf.texturesTotal = this.decorator.texturesTotal;
+        buf.texturesTotal = list.length;
     }
     getCodeBuf(): ShaderCodeBuffer {
         return PBRShaderBuffer.GetInstance();

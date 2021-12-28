@@ -29,7 +29,7 @@ export class PBRMirror {
     private m_uiModule: DefaultPBRUI = null;
     private m_rprocessIDList: number[] = [0];
     private m_fboIndex: number = 1;
-    
+
     reflectPlaneY: number = -220.0;
     materialBuilder: PBRMaterialBuilder;
     specularEnvMap: TextureProxy = null;
@@ -92,7 +92,7 @@ export class PBRMirror {
 
         let plane: Plane3DEntity = null;
         let material: PBRMaterial;
-        let shadowTex = this.vsmModule!= null ? this.vsmModule.getShadowMap() : null;
+        let shadowTex = this.vsmModule != null ? this.vsmModule.getShadowMap() : null;
 
         this.m_mirrorMapLodEnabled = true;
         ///*
@@ -111,20 +111,24 @@ export class PBRMirror {
         decorator.aoMapEnabled = true;
 
         this.m_material = material;
-        
+
         decorator.specularEnvMap = this.specularEnvMap;
         decorator.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big.jpg");
         decorator.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/brickwall_normal.jpg");
         decorator.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_occ.jpg");
         decorator.mirrorMap = this.getMirrorMap();
         decorator.shadowMap = shadowTex;
+        console.log("PBRMirror::initMirrorEffect(), decorator.shadowMap: ",decorator.shadowMap);
+        console.log("PBRMirror::initMirrorEffect(), material.getMaterialPipeline(): ",material.getMaterialPipeline());
 
         if (this.m_mirrorMapLodEnabled) {
             this.m_fboIns.enableMipmapRTTAt(0);
             material.setMirrorMapLodLevel(1.0);
-        }
-        
-        material.setUVScale(3.0, 3.0);
+        }        
+        material.vertUniform.uvTransformEnabled = true;
+        material.initializeByCodeBuf(true);
+        material.vertUniform.setUVScale(3.0, 3.0);
+        //material.setUVScale(3.0, 3.0);
         material.setMirrorIntensity(0.9);
         material.setMirrorMixFactor(0.2);
         ///*
@@ -167,7 +171,7 @@ export class PBRMirror {
 
         this.m_mirrorEntities.push(mEntity);
     }
-    
+
     private m_rendererStatus: number = -1;
     private m_cameraVersion: number = -1;
     private m_preMaterialStatusVersion: number = -1;
@@ -176,31 +180,33 @@ export class PBRMirror {
 
 
         // --------------------------------------------- mirror inverted reflection fbo run begin
-        
-        let flag = false;
-        if (this.m_rendererStatus != this.m_rscene.getRendererStatus()) {
-            this.m_rendererStatus = this.m_rscene.getRendererStatus();
-            flag = true;
-        }
-        if(this.m_cameraVersion != this.m_rscene.getCamera().version) {
-            this.m_cameraVersion = this.m_rscene.getCamera().version;
-            flag = true;
-        }
-        if(this.m_preMaterialStatusVersion != this.materialStatusVersion) {
-            this.m_preMaterialStatusVersion = this.materialStatusVersion;
-            flag = true;
-        }
-        if ( flag ) {
+        if (this.m_rscene != null) {
 
-            let nv: Vector3D = this.m_rscene.getCamera().getNV();
-            nv.y *= -1.0;
-            this.m_material.setMirrorViewNV(nv);            
-            this.m_fboIns.run();
-            if (this.m_mirrorMapLodEnabled) {
-                this.m_fboIns.generateMipmapTextureAt(0);
+            let flag = false;
+            if (this.m_rendererStatus != this.m_rscene.getRendererStatus()) {
+                this.m_rendererStatus = this.m_rscene.getRendererStatus();
+                flag = true;
             }
+            if (this.m_cameraVersion != this.m_rscene.getCamera().version) {
+                this.m_cameraVersion = this.m_rscene.getCamera().version;
+                flag = true;
+            }
+            if (this.m_preMaterialStatusVersion != this.materialStatusVersion) {
+                this.m_preMaterialStatusVersion = this.materialStatusVersion;
+                flag = true;
+            }
+            if (flag) {
+
+                let nv: Vector3D = this.m_rscene.getCamera().getNV();
+                nv.y *= -1.0;
+                this.m_material.setMirrorViewNV(nv);
+                this.m_fboIns.run();
+                if (this.m_mirrorMapLodEnabled) {
+                    this.m_fboIns.generateMipmapTextureAt(0);
+                }
+            }
+            // --------------------------------------------- mirror inverted reflection fbo run end
         }
-        // --------------------------------------------- mirror inverted reflection fbo run end
 
     }
 }

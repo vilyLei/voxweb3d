@@ -7,6 +7,7 @@ import PBRMaterial from "../../pbr/material/PBRMaterial";
 import PBRShaderDecorator from "../../pbr/material/PBRShaderDecorator";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import TextureProxy from "../../vox/texture/TextureProxy";
+import { VertUniformComp } from "../../vox/material/component/VertUniformComp";
 
 /**
  * 实现 material 构造 pipeline 的上下文
@@ -39,10 +40,11 @@ class CommonMaterialContext extends MaterialContext {
         material.setMaterialPipeline(this.lambertPipeline);
         return material;
     }
-    createPBRLightMaterial(): PBRMaterial {
+    createPBRLightMaterial(decorator: boolean = true, vertUniform: boolean = false): PBRMaterial {
         let material: PBRMaterial = new PBRMaterial();
         material.setMaterialPipeline(this.pbrPipeline);
-        material.decorator = new PBRShaderDecorator();
+        if(decorator) material.decorator = new PBRShaderDecorator();
+        if(vertUniform) material.vertUniform = new VertUniformComp();
         return material;
     }
     initialize(rscene: RendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
@@ -106,6 +108,8 @@ class CommonMaterialContext extends MaterialContext {
         let selfT: any = this;
         if (this.pbrPipeline == null) selfT.pbrPipeline = this.createPipeline();
         if (this.lambertPipeline == null) selfT.lambertPipeline = this.createPipeline();
+        this.pbrPipeline.uuid = "pbr";
+        this.lambertPipeline.uuid = "lambert";
         super.initEnd(param);
     }
 }

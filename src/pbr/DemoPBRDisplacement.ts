@@ -29,10 +29,12 @@ import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
 import { SpotLight } from "../light/base/SpotLight";
-import { MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
+// import { MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
+import { MaterialContextParam, IShaderLibListener,DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import DataMesh from "../vox/mesh/DataMesh";
 import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
+import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 
 export class DemoPBRDisplacement {
     constructor() { }
@@ -48,7 +50,7 @@ export class DemoPBRDisplacement {
     private m_reflectPlaneY: number = -220;
     private m_specularEnvMap: TextureProxy = null;
 
-    private m_materialCtx: MaterialContext = new MaterialContext();
+    private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 
     fogEnabled: boolean = false;
     hdrBrnEnabled: boolean = true;
@@ -220,7 +222,9 @@ export class DemoPBRDisplacement {
         let material: PBRMaterial;
         let sph: Sphere3DEntity;
         ///*
-        material = this.createMaterial(1, 1);
+        let vertUniform: VertUniformComp = new VertUniformComp();
+        material = this.createMaterial();
+        material.vertUniform = vertUniform;
         //material.decorator.normalMapEnabled = false;
         material.decorator.aoMapEnabled = this.aoMapEnabled;
         //material.decorator.aoMapEnabled = false;
@@ -230,13 +234,15 @@ export class DemoPBRDisplacement {
         material.decorator.diffuseMap = diffuseMap;
         material.decorator.normalMap = normalMap;
         material.decorator.aoMap = aoMap;
-        material.decorator.displacementMap = displacementMap;
+        //material.decorator.displacementMap = displacementMap;
+        vertUniform.displacementMap = displacementMap;
         material.decorator.parallaxMap = parallaxMap;
         material.initializeLocalData();
+        vertUniform.setDisplacementParams(50, 0);
         material.setAlbedoColor(1.0,1.0,1.0);
         material.setRoughness(0.3);
         material.setScatterIntensity(64.0);
-        material.setDisplacementParams(50,0);
+        //material.setDisplacementParams(50,0);
         material.setParallaxParams(1, 10, 5.0, 0.02);
         material.initializeByCodeBuf(true);
         material.setSideIntensity(8);
@@ -283,7 +289,7 @@ export class DemoPBRDisplacement {
             rad = Math.random() * 100.0;
             uvscale = Math.random() * 7.0 + 0.6;
 
-            material = this.createMaterial(uvscale, uvscale);
+            material = this.createMaterial();
             material.decorator.aoMapEnabled = this.aoMapEnabled;
             //  material.setTextureList(texList);
             material.decorator.specularEnvMap = this.m_specularEnvMap;
@@ -348,9 +354,7 @@ export class DemoPBRDisplacement {
     
     makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
 
-        let material: PBRMaterial = new PBRMaterial();
-        //material.setMaterialPipeline( this.m_pipeline );
-        material.setMaterialPipeline(this.m_materialCtx.pipeline);
+        let material: PBRMaterial = this.m_materialCtx.createPBRLightMaterial();
         material.decorator = new PBRShaderDecorator();
 
         let decorator: PBRShaderDecorator = material.decorator;
@@ -373,7 +377,7 @@ export class DemoPBRDisplacement {
 
         return material;
     }
-    createMaterial(uscale: number, vscale: number): PBRMaterial {
+    createMaterial(): PBRMaterial {
 
         let material: PBRMaterial;
         material = this.makePBRMaterial(0.9, 0.0, 1.0);
@@ -386,9 +390,6 @@ export class DemoPBRDisplacement {
         decorator.diffuseMapEnabled = true;
         decorator.normalMapEnabled = true;
 
-        material.setUVScale(uscale, vscale);
-
-        //material.setTextureList(ptexList);
         return material;
     }
 }

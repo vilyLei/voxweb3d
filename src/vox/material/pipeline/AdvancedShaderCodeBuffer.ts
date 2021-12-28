@@ -107,7 +107,6 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
 
         if(this.vertUniform != null) {
             this.vertUniform.use(this.m_coder);
-            this.m_coder.addVertUniform("vec4", "u_vertLocalParams", this.vertUniform.getParamsTotal());
         }        
         this.m_coder.addFragUniform("vec4", "u_fragLocalParams", this.fragLocalParamsTotal);
         if (this.lightEnabled) {

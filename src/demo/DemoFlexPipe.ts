@@ -24,7 +24,7 @@ import {MorphPipeObject} from "./morph/MorphPipeObject";
 
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
-import { IShaderLibConfigure, ShaderCodeType, ShaderCodeUUID, ShaderCodeConfigure, IShaderLibListener, MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
+import { IShaderLibListener, DebugMaterialContext, MaterialContextParam } from "../materialLab/base/DebugMaterialContext";
 import { SpecularTextureLoader } from "../pbr/mana/TextureLoader";
 import { PointLight } from "../light/base/PointLight";
 import { SpotLight } from "../light/base/SpotLight";
@@ -47,7 +47,7 @@ export class DemoFlexPipe implements IShaderLibListener {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     
-    private m_materialCtx: MaterialContext = new MaterialContext();
+    private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
     private m_specularEnvMap: TextureProxy;
     fogEnabled: boolean = false;
     hdrBrnEnabled: boolean = true;
@@ -116,7 +116,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         loader.hdrBrnEnabled = this.hdrBrnEnabled;
         loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
         this.m_specularEnvMap = loader.texture;
-
+        /*
         let libConfig: IShaderLibConfigure = {shaderCodeConfigures:[]};
         let configure = new ShaderCodeConfigure();
         configure.uuid = ShaderCodeUUID.PBR;
@@ -129,6 +129,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         ]
         configure.binary = true;
         libConfig.shaderCodeConfigures.push( configure );
+        //*/
 
         let mcParam: MaterialContextParam = new MaterialContextParam();
         mcParam.pointLightsTotal = 1;
@@ -136,9 +137,9 @@ export class DemoFlexPipe implements IShaderLibListener {
         mcParam.spotLightsTotal = 0;
         mcParam.loadAllShaderCode = true;
         mcParam.shaderCodeBinary = true;
-        this.m_materialCtx.initialize(this.m_rscene, mcParam, libConfig);
-        this.m_materialCtx.envData.setFogDensity(0.0002);
         this.m_materialCtx.addShaderLibListener( this );
+        this.m_materialCtx.initialize(this.m_rscene, mcParam);
+        this.m_materialCtx.envData.setFogDensity(0.0002);
 
         let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
         if (pointLight != null) {
@@ -192,10 +193,8 @@ export class DemoFlexPipe implements IShaderLibListener {
     }
     makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
 
-        let material: PBRMaterial = new PBRMaterial();
-        material.setMaterialPipeline(this.m_materialCtx.pipeline);
-        material.decorator = new PBRShaderDecorator();
-
+        let material: PBRMaterial = this.m_materialCtx.createPBRLightMaterial(true, true);
+        
         let decorator: PBRShaderDecorator = material.decorator;
         decorator.scatterEnabled = false;
         decorator.woolEnabled = true;
@@ -215,7 +214,7 @@ export class DemoFlexPipe implements IShaderLibListener {
 
         return material;
     }
-    createMaterial(uscale: number, vscale: number): PBRMaterial {
+    createMaterial(): PBRMaterial {
 
         let material: PBRMaterial;
         material = this.makePBRMaterial(0.9, 0.0, 1.0);
@@ -228,14 +227,13 @@ export class DemoFlexPipe implements IShaderLibListener {
         decorator.diffuseMapEnabled = true;
         decorator.normalMapEnabled = true;
 
-        material.setUVScale(uscale, vscale);
         return material;
     }
     private createPipeMaterial(scaleU: number, scaleV: number, mapNS: string = "lava_03"): PBRMaterial {
         
         let material: PBRMaterial;
         ///*
-        material = this.createMaterial(scaleU, scaleV);
+        material = this.createMaterial();
         //material.decorator.normalMapEnabled = false;
         material.decorator.aoMapEnabled = this.aoMapEnabled;
         //material.decorator.aoMapEnabled = false;
@@ -243,11 +241,13 @@ export class DemoFlexPipe implements IShaderLibListener {
 
         this.useMaps( material, mapNS );
 
+        material.vertUniform.uvTransformEnabled = true;
         material.initializeLocalData();
         material.setAlbedoColor(1.0,1.0,1.0);
         material.setRoughness(0.3);
         material.setScatterIntensity(64.0);
-        material.setDisplacementParams(50,0);
+        material.vertUniform.setUVScale(scaleU, scaleV);
+        //material.vertUniform.setDisplacementParams(50,0);
         material.setParallaxParams(1, 10, 5.0, 0.02);
         material.initializeByCodeBuf(true);
         material.setSideIntensity(8);

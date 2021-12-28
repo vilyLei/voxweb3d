@@ -30,15 +30,18 @@ export class PBRWholeDracoModule extends DracoWholeModuleLoader {
 
         let mesh: DracoMesh = new DracoMesh();
         mesh.initialize(modules);
-
-        let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6;        
-        let material: PBRMaterial = this.entityUtils.createMaterial(uvscale, uvscale);
+      
+        let material: PBRMaterial = this.entityUtils.createMaterial();
         let texList: TextureProxy[] = material.getTextureList().slice(0, 1);
         material.setTextureList(texList);
         material.decorator.diffuseMapEnabled = false;
         material.decorator.normalMapEnabled = false;
         material.decorator.vtxFlatNormal = false;
         material.decorator.aoMapEnabled = false;//this.aoMapEnabled;
+        material.vertUniform.uvTransformEnabled = true;
+        material.initializeByCodeBuf( true );
+        let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6; 
+        material.vertUniform.setUVScale(uvscale, uvscale);
         let scale: number = 1.0;
         let entity: DisplayEntity = new DisplayEntity();
         entity.setMaterial(material);
@@ -79,9 +82,8 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader {
     dracoParseFinish(modules: any[], total: number): void {
 
         console.log("pbrDracoParseFinish, modules: ", modules, this.m_pos);
-
-        let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6;        
-        let material: PBRMaterial = this.entityUtils.createMaterial(uvscale, uvscale);
+       
+        let material: PBRMaterial = this.entityUtils.createMaterial();
         let decorator = material.decorator;
         decorator.indirectEnvMapEnabled = true;
         const keyNS: string = "/dracos_42";
@@ -113,7 +115,11 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader {
                 aoTex
             );
         }
+        material.vertUniform.uvTransformEnabled = true;
         material.initializeByCodeBuf(true);
+        
+        let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6; 
+        material.vertUniform.setUVScale(uvscale, uvscale);
 
         let mesh: DracoMesh = new DracoMesh();
         mesh.setBufSortFormat(material.getBufSortFormat());

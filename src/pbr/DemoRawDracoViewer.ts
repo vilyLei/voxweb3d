@@ -191,7 +191,7 @@ export class DemoRawDracoViewer {
 
         return material;
     }
-    createMaterial(uscale: number, vscale: number): PBRMaterial {
+    createMaterial(): PBRMaterial {
 
         let material: PBRMaterial;
         material = this.makePBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
@@ -203,8 +203,6 @@ export class DemoRawDracoViewer {
         decorator.specularEnvMapEnabled = true;
         decorator.diffuseMapEnabled = true;
         decorator.normalMapEnabled = true;
-
-        material.setUVScale(uscale, vscale);
         return material;
     }
     createTexListForMaterial(material: PBRMaterial, env: TextureProxy, diffuse: TextureProxy = null, normal: TextureProxy = null, ao: TextureProxy = null): TextureProxy[] {
@@ -257,7 +255,7 @@ export class DemoRawDracoViewer {
         }
         let material: PBRMaterial;
         let sph: Sphere3DEntity;
-        material = this.createMaterial(1, 1);
+        material = this.createMaterial();
         material.decorator.aoMapEnabled = this.aoMapEnabled;
         //material.setTextureList(texList);
         this.useMaterialTex(material);
@@ -276,7 +274,7 @@ export class DemoRawDracoViewer {
             rad = Math.random() * 100.0;
             uvscale = Math.random() * 7.0 + 0.6;
 
-            material = this.createMaterial(uvscale, uvscale);
+            material = this.createMaterial();
             material.decorator.aoMapEnabled = this.aoMapEnabled;
             this.useMaterialTex(material);
             material.initializeLocalData();
@@ -341,7 +339,7 @@ export class ViewerDracoModule extends DracoWholeModuleLoader {
 
         console.log("ViewerDracoModule dracoParseFinish, modules: ", modules, this.m_pos);
         let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6;        
-        let material: PBRMaterial = this.viewer.createMaterial(uvscale, uvscale);
+        let material: PBRMaterial = this.viewer.createMaterial();
 
         let decorator = material.decorator;
         decorator.specularEnvMap = this.specularEnvMap;

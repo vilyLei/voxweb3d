@@ -35,7 +35,7 @@ class MaterialPipeline implements IMaterialPipeline {
     private m_sharedUniforms: ShaderGlobalUniform[] = null;
     private m_shaderLib: IShaderLib = null;
     private m_appendKeyStr: string = "";
-
+    uuid: string = "";
     constructor(shaderLib: IShaderLib = null) {
         this.m_shaderLib = shaderLib;
     }

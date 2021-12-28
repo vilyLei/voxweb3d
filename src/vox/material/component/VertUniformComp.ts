@@ -13,7 +13,7 @@ import Vector3D from "../../math/Vector3D";
  * manage uniform data for the vertex calculation
  */
 class VertUniformComp extends UniformComp {
-   
+
     private m_uvTransParam: Float32Array = null;
     private m_curveMoveParam: Float32Array = null;
     private m_displacementParam: Float32Array = null;
@@ -29,40 +29,40 @@ class VertUniformComp extends UniformComp {
     constructor() {
         super();
     }
-    
+
     initialize(): void {
-        if(this.m_params == null) {
+        if (this.m_params == null) {
             this.m_uniqueNSKeyString = "";
             let paramsTotal: number = 0;
-            if(this.uvTransformEnabled) {
+            if (this.uvTransformEnabled) {
                 this.m_uvTransformParamIndex = paramsTotal;
                 paramsTotal++;
-                this.m_uniqueNSKeyString +="UV";
+                this.m_uniqueNSKeyString += "UV";
             }
-            if(this.curveMoveMap != null) {
+            if (this.curveMoveMap != null) {
                 this.m_curveMoveParamIndex = paramsTotal;
                 paramsTotal++;
-                this.m_uniqueNSKeyString +="CM";
+                this.m_uniqueNSKeyString += "CM";
             }
-            if(this.displacementMap != null) {
+            if (this.displacementMap != null) {
                 this.m_displacementParamIndex = paramsTotal;
                 paramsTotal++;
-                this.m_uniqueNSKeyString +="DC";
+                this.m_uniqueNSKeyString += "DC";
             }
-            if(paramsTotal > 0) {
+            if (paramsTotal > 0) {
                 this.m_params = new Float32Array(paramsTotal * 4);
                 let i: number = this.m_uvTransformParamIndex;
-                if(i >= 0) {
+                if (i >= 0) {
                     this.m_uvTransParam = this.m_params.subarray(i * 4, (i + 1) * 4);
                     // u scale, v scale, translation u, translation v
                     this.m_uvTransParam.set([1.0, 1.0, 0.0, 0.0]);
                 }
                 i = this.m_curveMoveParamIndex;
-                if(i >= 0) {
+                if (i >= 0) {
                     this.m_curveMoveParam = this.m_params.subarray(i * 4, (i + 1) * 4);
                 }
                 i = this.m_displacementParamIndex;
-                if(i >= 0) {
+                if (i >= 0) {
                     this.m_displacementParam = this.m_params.subarray(i * 4, (i + 1) * 4);
                     // displacement scale, bias, undefined, undefined
                     this.m_displacementParam.set([10.0, 0.0, 0.0, 0.0]);
@@ -71,20 +71,24 @@ class VertUniformComp extends UniformComp {
         }
     }
     use(shaderBuilder: IShaderCodeBuilder): void {
+        if (this.getParamsTotal() > 0) {
+            
+            shaderBuilder.addVertUniform("vec4", "u_vertLocalParams", this.getParamsTotal());
 
-        if(this.m_curveMoveParamIndex >= 0) {
-            shaderBuilder.addVertLayout("vec4","a_vs");
-        }
-        
-        if(this.m_uvTransformParamIndex >= 0) {
-            shaderBuilder.addDefine("VOX_VTX_TRANSFORM_PARAM_INDEX", ""+this.m_uvTransformParamIndex);
-        }
-        if(this.m_curveMoveParamIndex >= 0) {
-            shaderBuilder.uniform.add2DMap("VTX_CURVE_MOVE_MAP", false, false, true);
-            shaderBuilder.addDefine("VOX_VTX_CURVE_MOVE_PARAM_INDEX", ""+this.m_curveMoveParamIndex);
-        }
-        if(this.m_displacementParamIndex >= 0) {
-            shaderBuilder.uniform.addDisplacementMap(this.m_displacementParamIndex);
+            if (this.m_curveMoveParamIndex >= 0) {
+                shaderBuilder.addVertLayout("vec4", "a_vs");
+            }
+
+            if (this.m_uvTransformParamIndex >= 0) {
+                shaderBuilder.addDefine("VOX_VTX_TRANSFORM_PARAM_INDEX", "" + this.m_uvTransformParamIndex);
+            }
+            if (this.m_curveMoveParamIndex >= 0) {
+                shaderBuilder.uniform.add2DMap("VTX_CURVE_MOVE_MAP", false, false, true);
+                shaderBuilder.addDefine("VOX_VTX_CURVE_MOVE_PARAM_INDEX", "" + this.m_curveMoveParamIndex);
+            }
+            if (this.m_displacementParamIndex >= 0) {
+                shaderBuilder.uniform.addDisplacementMap(this.m_displacementParamIndex);
+            }
         }
     }
     reset(): void {
@@ -95,24 +99,26 @@ class VertUniformComp extends UniformComp {
     }
 
     getTextures(): TextureProxy[] {
-
-        let texList: TextureProxy[] = [];
-        if(this.m_curveMoveParamIndex >= 0) {
-            texList.push( this.curveMoveMap );
+        if (this.getParamsTotal() > 0) {
+            let texList: TextureProxy[] = [];
+            if (this.m_curveMoveParamIndex >= 0) {
+                texList.push(this.curveMoveMap);
+            }
+            if (this.m_displacementParamIndex >= 0) {
+                texList.push(this.displacementMap);
+            }
+            return texList;
         }
-        if(this.m_displacementParamIndex >= 0) {
-            texList.push( this.displacementMap );
-        }
-        return texList;
+        return null;
     }
     setCurveMoveParam(texSize: number, posTotal: number): void {
-        if(this.m_curveMoveParam != null) {
+        if (this.m_curveMoveParam != null) {
             this.m_curveMoveParam[0] = 1.0 / texSize;
             this.m_curveMoveParam[2] = posTotal;
         }
     }
     setCurveMoveDistance(index: number): void {
-        if(this.m_curveMoveParam != null) {
+        if (this.m_curveMoveParam != null) {
             this.m_curveMoveParam[1] = index;
         }
     }
@@ -122,7 +128,7 @@ class VertUniformComp extends UniformComp {
             this.m_uvTransParam[1] = vScale;
         }
     }
-    getUVScale(scaleV:Vector3D): void {
+    getUVScale(scaleV: Vector3D): void {
         if (this.m_uvTransParam != null) {
             scaleV.x = this.m_uvTransParam[0];
             scaleV.y = this.m_uvTransParam[1];
@@ -146,7 +152,7 @@ class VertUniformComp extends UniformComp {
             this.m_displacementParam[1] = bias;
         }
     }
-    
+
     clone(): UniformComp {
         let u = new VertUniformComp();
         u.uvTransformEnabled = this.uvTransformEnabled;
