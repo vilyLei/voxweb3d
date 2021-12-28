@@ -27,9 +27,7 @@ export default class PBRShaderDecorator {
     shadowMap: TextureProxy = null;
     parallaxMap: TextureProxy = null;
     roughnessMap: TextureProxy = null;
-    
-    displacementMap: TextureProxy = null;
-    
+
     woolEnabled: boolean = true;
     toneMappingEnabled: boolean = true;
     specularEnvMapEnabled: boolean = true;
@@ -53,7 +51,7 @@ export default class PBRShaderDecorator {
     shadowReceiveEnabled: boolean = false;
     fogEnabled: boolean = false;
     texturesTotal: number = 1;
-    vertLocalParamsTotal: number = 2;
+    
     fragLocalParamsTotal: number = 2;
     parallaxParamIndex: number = 2;
 
@@ -99,10 +97,7 @@ export default class PBRShaderDecorator {
             uniform.addShadowMap(ShadowMode.VSM);
             // console.log("VOX_VSM_SHADOW_MAP");
         }
-        if(this.displacementMap != null) {
-            texList.push( this.displacementMap );
-            uniform.addDisplacementMap(1);
-        }
+        
         if(this.parallaxMap != null) {
             texList.push( this.parallaxMap );
             uniform.addParallaxMap( this.parallaxParamIndex );
@@ -147,7 +142,7 @@ export default class PBRShaderDecorator {
         if(this.indirectEnvMap == null && this.indirectEnvMapEnabled) this.indirectEnvMap = src.indirectEnvMap;
 
         if(this.shadowMap == null && this.shadowReceiveEnabled) this.shadowMap = src.shadowMap;
-        if(this.displacementMap == null) this.displacementMap = src.displacementMap;
+        
         if(this.parallaxMap == null) this.parallaxMap = src.parallaxMap;
         if(this.roughnessMap == null) this.roughnessMap = src.roughnessMap;
         // if(this.specularMap == null) this.specularMap = src.specularMap;
@@ -182,7 +177,6 @@ export default class PBRShaderDecorator {
         if (this.hdrBrnEnabled) coder.addDefine("VOX_HDR_BRN", "1");
         if (this.vtxFlatNormal) coder.addDefine("VOX_VTX_FLAT_NORMAL", "1");
 
-        coder.addVertUniform("vec4", "u_vertLocalParams", this.vertLocalParamsTotal);
         coder.addFragUniform("vec4", "u_fragLocalParams", this.fragLocalParamsTotal);
         coder.addFragUniform("vec4", "u_pbrParams", 4);
 

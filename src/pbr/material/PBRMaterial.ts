@@ -132,8 +132,10 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         return PBRShaderBuffer.GetInstance();
     }
     initializeLocalData(): void {
+        if(this.vertUniform != null) {
+            this.vertUniform.initialize();
+        }
         let decorator = this.decorator;
-
         decorator.fragLocalParamsTotal = 2;
         decorator.parallaxParamIndex = 2;
         if(decorator.parallaxMap != null) {
@@ -400,7 +402,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         return oum;
     }
     destroy(): void {
-        
+
         this.vertUniform = null;
         this.m_pbrParams = null;
         this.m_fragLocalParams = null;

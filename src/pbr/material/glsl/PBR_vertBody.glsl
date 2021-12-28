@@ -1,5 +1,5 @@
-    // initLocalVtx();
-    ///*
+    initLocalVtx();
+    /*
     localPosition = vec4(a_vs, 1.0);
 
     #ifdef VOX_USE_2D_MAP

@@ -38,6 +38,7 @@ import { DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import DataMesh from "../vox/mesh/DataMesh";
 import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
+import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 
 export class DemoPBRViewer implements IShaderLibListener {
     constructor() { }
@@ -249,7 +250,9 @@ export class DemoPBRViewer implements IShaderLibListener {
         let material: PBRMaterial;
         let sph: Sphere3DEntity;
         ///*
+        let vertUniform: VertUniformComp = new VertUniformComp();
         material = this.createMaterial(1, 1);
+        material.vertUniform = vertUniform;
         //material.decorator.normalMapEnabled = false;
         material.decorator.aoMapEnabled = this.aoMapEnabled;
         //material.decorator.aoMapEnabled = false;
@@ -259,15 +262,18 @@ export class DemoPBRViewer implements IShaderLibListener {
         material.decorator.diffuseMap = diffuseMap;
         material.decorator.normalMap = normalMap;
         material.decorator.aoMap = aoMap;
-        material.decorator.displacementMap = displacementMap;
+        if(material.vertUniform != null) {
+            material.vertUniform.displacementMap = displacementMap;
+        }
+        
         material.decorator.parallaxMap = parallaxMap;
-        material.initializeLocalData();
+        
+        material.initializeByCodeBuf(true);
+        material.vertUniform.setDisplacementParams(50.0, 0.0);
         material.setAlbedoColor(1.0,1.0,1.0);
         material.setRoughness(0.3);
-        material.setScatterIntensity(64.0);
-        material.setDisplacementParams(50,0);
+        material.setScatterIntensity(64.0);        
         material.setParallaxParams(1, 10, 5.0, 0.02);
-        material.initializeByCodeBuf(true);
         material.setSideIntensity(8);
         material.setMetallic(0.1);
 
@@ -297,6 +303,7 @@ export class DemoPBRViewer implements IShaderLibListener {
         srcSph.setRotation3(this.m_rotV);
         this.m_rscene.addEntity(srcSph);
         this.m_target = srcSph;
+        return;
         console.log("material clone doing...");
         let new_sph = new Sphere3DEntity();
         let new_material = material.clone();
