@@ -33,7 +33,8 @@ import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
 import { SpotLight } from "../light/base/SpotLight";
-import { IShaderLibConfigure, ShaderCodeType, ShaderCodeUUID, ShaderCodeConfigure, IShaderLibListener, MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
+import { IShaderLibConfigure, ShaderCodeType, ShaderCodeUUID, ShaderCodeConfigure, IShaderLibListener, CommonMaterialContext, MaterialContext, MaterialContextParam } from "../materialLab/base/CommonMaterialContext";
+import { DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import DataMesh from "../vox/mesh/DataMesh";
 import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
@@ -53,8 +54,9 @@ export class DemoPBRViewer implements IShaderLibListener {
     //  private m_envData: EnvLightData = null;
     private m_specularEnvMap: TextureProxy = null;
 
-
-    private m_materialCtx: MaterialContext = new MaterialContext();
+    //private m_materialCtx: MaterialContext = new MaterialContext();
+    //private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
+    private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 
     fogEnabled: boolean = false;
     hdrBrnEnabled: boolean = true;
@@ -116,28 +118,18 @@ export class DemoPBRViewer implements IShaderLibListener {
         loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
         this.m_specularEnvMap = loader.texture;
 
-        let libConfig = this.m_materialCtx.createShaderLibConfig();
-        let configure = new ShaderCodeConfigure();
-        configure.uuid = ShaderCodeUUID.PBR;
-        configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
-        configure.urls = [
-            "static/shader/glsl/pbr/glsl01.bin",
-            "static/shader/glsl/pbr/glsl02.bin",
-            "static/shader/glsl/pbr/glsl03.bin",
-            "static/shader/glsl/pbr/glsl04.bin"
-        ]
-        configure.binary = true;
-        libConfig.shaderCodeConfigures.push( configure );
-
         let mcParam: MaterialContextParam = new MaterialContextParam();
         mcParam.pointLightsTotal = 1;
         mcParam.directionLightsTotal = 2;
         mcParam.spotLightsTotal = 0;
         mcParam.loadAllShaderCode = true;
         mcParam.shaderCodeBinary = true;
-        this.m_materialCtx.initialize(this.m_rscene, mcParam, libConfig);
-
+        mcParam.lambertMaterialEnabled = false;
+        mcParam.pbrMaterialEnabled = true;
+        //this.m_materialCtx.initialize(this.m_rscene, mcParam, libConfig);
         this.m_materialCtx.addShaderLibListener( this );
+        this.m_materialCtx.initialize(this.m_rscene, mcParam);
+
 
         let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
         if (pointLight != null) {
@@ -390,9 +382,10 @@ export class DemoPBRViewer implements IShaderLibListener {
     
     makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
 
-        let material: PBRMaterial = new PBRMaterial();
+        //let material: PBRMaterial = new PBRMaterial();
+        let material: PBRMaterial = this.m_materialCtx.createPBRLightMaterial();//new PBRMaterial();
         //material.setMaterialPipeline( this.m_pipeline );
-        material.setMaterialPipeline(this.m_materialCtx.pipeline);
+        //material.setMaterialPipeline(this.m_materialCtx.pipeline);
         material.decorator = new PBRShaderDecorator();
 
         let decorator: PBRShaderDecorator = material.decorator;
