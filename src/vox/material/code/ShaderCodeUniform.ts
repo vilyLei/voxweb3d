@@ -149,10 +149,17 @@ class ShaderCodeUniform implements IShaderCodeUniform {
     }
     /**
      * add displacement map uniform code
+     * @param parallaxParamIndex vec4 param array index in the vertex shader
      */
-    addDisplacementMap(): void {        
+    addDisplacementMap(displacementParamIndex: number): void {
         this.m_codeBuilder.addTextureSample2D("VOX_DISPLACEMENT_MAP", true, false, true);
-        this.m_uniqueNSKeys[3] = 1;
+        if(displacementParamIndex >= 0) {
+            this.m_codeBuilder.addDefine("VOX_DISPLACEMENT_PARAMS_INDEX", "" + displacementParamIndex);
+            this.m_uniqueNSKeys[3] = 1 + (displacementParamIndex << 1);
+        }
+        else {
+            this.m_uniqueNSKeys[3] = 1;
+        }
         this.m_uniqueNSKeyFlag = true;
     }
     

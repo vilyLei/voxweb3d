@@ -19,21 +19,23 @@ export default class LambertLightMaterial extends MaterialBase {
     private static s_shaderCodeBuffer: AdvancedShaderCodeBuffer = null;
 
     private m_parallaxParams: Float32Array = null;
+    private m_parallaxParamIndex: number = 1;
+
     private m_lightParamsArray: Float32Array = null;
     private m_vertLocalParams: Float32Array = null;
     private m_fragLocalParams: Float32Array = null;
     private m_vertLocalParamsTotal: number = 2;
     private m_fragLocalParamsTotal: number = 1;
-    private m_parallaxParamIndex: number = 1;
     private m_lightParamsIndex: number = 1;
 
     colorEnabled: boolean = true;
     normalEnabled: boolean = true;
 
+    displacementMap: TextureProxy = null;
+
     diffuseMap: TextureProxy = null;
     normalMap: TextureProxy = null;
     parallaxMap: TextureProxy = null;
-    displacementMap: TextureProxy = null;
     aoMap: TextureProxy = null;
     specularMap: TextureProxy = null;
     shadowMap: TextureProxy = null;
@@ -67,10 +69,11 @@ export default class LambertLightMaterial extends MaterialBase {
         this.fogEnabled = src.fogEnabled;
         this.normalEnabled = src.normalEnabled;
 
+        if(this.displacementMap == null) this.displacementMap = src.displacementMap;
+
         if(this.diffuseMap == null) this.diffuseMap = src.diffuseMap;
         if(this.normalMap == null) this.normalMap = src.normalMap;
         if(this.parallaxMap == null) this.parallaxMap = src.parallaxMap;
-        if(this.displacementMap == null) this.displacementMap = src.displacementMap;
         if(this.aoMap == null) this.aoMap = src.aoMap;
         if(this.specularMap == null) this.specularMap = src.specularMap;
         if(this.shadowMap == null) this.shadowMap = src.shadowMap;
@@ -98,10 +101,12 @@ export default class LambertLightMaterial extends MaterialBase {
 
         let buf: AdvancedShaderCodeBuffer = LambertLightMaterial.s_shaderCodeBuffer;
         buf.setIRenderTextureList([]);
+        
+        buf.addDisplacementMap( this.displacementMap, 1 );
+        
         buf.addDiffuseMap( this.diffuseMap );
         buf.addNormalMap( this.normalMap );
-        buf.addParallaxMap( this.parallaxMap );
-        buf.addDisplacementMap( this.displacementMap );
+        buf.addParallaxMap( this.parallaxMap, this.m_parallaxParamIndex );
         buf.addAOMap( this.aoMap );
         buf.addSpecularMap( this.specularMap );
         buf.addShadowMap( this.shadowMap );
@@ -160,7 +165,7 @@ export default class LambertLightMaterial extends MaterialBase {
         }
         let buf: AdvancedShaderCodeBuffer = LambertLightMaterial.s_shaderCodeBuffer;
         buf.colorEnabled = this.colorEnabled;
-        buf.parallaxParamIndex = this.m_parallaxParamIndex;
+        //buf.parallaxParamIndex = this.m_parallaxParamIndex;
         buf.lightParamsIndex = this.m_lightParamsIndex;
         buf.lightEnabled = this.lightEnabled;
         buf.fogEnabled = this.fogEnabled;
@@ -285,9 +290,17 @@ export default class LambertLightMaterial extends MaterialBase {
 
     createSelfUniformData(): ShaderUniformData {
         
+        let vertLocalParams = this.m_vertLocalParams;
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_vertLocalParams", "u_fragLocalParams"];
-        oum.dataList = [this.m_vertLocalParams, this.m_fragLocalParams];
+        
+        if(vertLocalParams != null) {
+            oum.uniformNameList = ["u_vertLocalParams", "u_fragLocalParams"];
+            oum.dataList = [vertLocalParams, this.m_fragLocalParams];
+        }
+        else {
+            oum.uniformNameList = ["u_fragLocalParams"];
+            oum.dataList = [this.m_fragLocalParams];
+        }
 
         return oum;
     }

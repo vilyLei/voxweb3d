@@ -83,9 +83,7 @@ export class VSTexturePosIdMaterial extends MaterialBase {
     }
     private m_colorArray: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
     private m_posParam: Float32Array = new Float32Array([1.0 / 16, 0.0, 0.0, 0.0]);
-    private m_texSize: number = 16.0;
     setTexSize(size: number): void {
-        this.m_texSize = size;
         this.m_posParam[0] = 1.0 / size;
     }
     setPositionsTotal(total: number): void {

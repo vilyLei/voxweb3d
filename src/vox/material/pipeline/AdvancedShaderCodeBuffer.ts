@@ -22,7 +22,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     specularMode: SpecularMode = SpecularMode.Default;
 
     fragLocalParamsTotal: number = 2;
-    parallaxParamIndex: number = 1;
+    //parallaxParamIndex: number = 1;
     lightParamsIndex: number = 2;
 
     normalEnabled: boolean = true;
@@ -55,19 +55,19 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
             if(this.buildFlag) this.m_uniform.addNormalMap();
         }
     }
-    addParallaxMap(map: TextureProxy): void {
+    addParallaxMap(map: TextureProxy, parallaxParamIndex: number = 0): void {
 
         if(map != null && this.lightEnabled) {
             this.m_texList.push(map);
-            if(this.buildFlag) this.m_uniform.addParallaxMap( this.parallaxParamIndex );
+            if(this.buildFlag) this.m_uniform.addParallaxMap( parallaxParamIndex );
         }
     }
 
-    addDisplacementMap(map: TextureProxy): void {
+    addDisplacementMap(map: TextureProxy, displacementParamIndex: number = 0): void {
 
         if(map != null) {
             this.m_texList.push(map);
-            if(this.buildFlag) this.m_uniform.addDisplacementMap();
+            if(this.buildFlag) this.m_uniform.addDisplacementMap(displacementParamIndex);
         }
     }
 
@@ -105,7 +105,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     }
 
     buildShader(): void {
-
+        
         this.m_coder.addVertUniform("vec4", "u_vertLocalParams", 2);
         this.m_coder.addFragUniform("vec4", "u_fragLocalParams", this.fragLocalParamsTotal);
         if (this.lightEnabled) {

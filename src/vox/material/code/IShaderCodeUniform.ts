@@ -54,8 +54,9 @@ interface IShaderCodeUniform {
     addParallaxMap(parallaxParamIndex: number): void;
     /**
      * add displacement map uniform code
+     * @param displacementParamIndex vec4 param array index in the vertex shader
      */
-    addDisplacementMap(): void;
+    addDisplacementMap(displacementParamIndex: number): void;
     /**
      * add ambient occlusion map uniform code
      */
