@@ -116,7 +116,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         
         let textures: TextureProxy[] = null;
         if(this.vertUniform != null) {
-            textures = this.vertUniform.getTextures();
+            textures = this.vertUniform.getTextures(buf.getShaderCodeBuilder());
         }
 
         let list: TextureProxy[] = decorator.createTextureList();

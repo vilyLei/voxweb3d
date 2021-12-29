@@ -82,13 +82,6 @@ class VertUniformComp extends UniformComp {
             if (this.m_uvTransformParamIndex >= 0) {
                 shaderBuilder.addDefine("VOX_VTX_TRANSFORM_PARAM_INDEX", "" + this.m_uvTransformParamIndex);
             }
-            if (this.m_curveMoveParamIndex >= 0) {
-                shaderBuilder.uniform.add2DMap("VTX_CURVE_MOVE_MAP", false, false, true);
-                shaderBuilder.addDefine("VOX_VTX_CURVE_MOVE_PARAM_INDEX", "" + this.m_curveMoveParamIndex);
-            }
-            if (this.m_displacementParamIndex >= 0) {
-                shaderBuilder.uniform.addDisplacementMap(this.m_displacementParamIndex);
-            }
         }
     }
     reset(): void {
@@ -98,14 +91,17 @@ class VertUniformComp extends UniformComp {
 
     }
 
-    getTextures(): TextureProxy[] {
+    getTextures(shaderBuilder: IShaderCodeBuilder): TextureProxy[] {
         if (this.getParamsTotal() > 0) {
             let texList: TextureProxy[] = [];
             if (this.m_curveMoveParamIndex >= 0) {
                 texList.push(this.curveMoveMap);
+                shaderBuilder.uniform.add2DMap("VTX_CURVE_MOVE_MAP", false, false, true);
+                shaderBuilder.addDefine("VOX_VTX_CURVE_MOVE_PARAM_INDEX", "" + this.m_curveMoveParamIndex);
             }
             if (this.m_displacementParamIndex >= 0) {
                 texList.push(this.displacementMap);
+                shaderBuilder.uniform.addDisplacementMap(this.m_displacementParamIndex);
             }
             return texList;
         }
