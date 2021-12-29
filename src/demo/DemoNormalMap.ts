@@ -29,6 +29,7 @@ import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import EngineBase from "../vox/engine/EngineBase";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import { PointLight } from "../light/base/PointLight";
+import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 
 export class DemoNormalMap {
 
@@ -226,7 +227,7 @@ export class DemoNormalMap {
         }
         if(displacementMap) {
             if(material.vertUniform != null) {
-                material.vertUniform.displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+                (material.vertUniform as VertUniformComp).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
             }
         }
         if(shadowReceiveEnabled && this.m_materialCtx.vsmModule != null) {

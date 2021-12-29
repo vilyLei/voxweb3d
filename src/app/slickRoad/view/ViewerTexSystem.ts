@@ -3,6 +3,7 @@ import TextureProxy from "../../../vox/texture/TextureProxy";
 import LambertLightMaterial from "../../../vox/material/mcase/LambertLightMaterial";
 import { MaterialContext } from "../../../materialLab/base/MaterialContext";
 import { TextureConst } from "../../../vox/texture/TextureConst";
+import { VertUniformComp } from "../../../vox/material/component/VertUniformComp";
 
 class ViewerTexSystem {
 
@@ -43,7 +44,7 @@ class ViewerTexSystem {
         }
         if (displacementMap) {
             if(material.vertUniform != null) {
-                material.vertUniform.displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+                (material.vertUniform as VertUniformComp).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
             }
         }
         if (shadowReceiveEnabled) {

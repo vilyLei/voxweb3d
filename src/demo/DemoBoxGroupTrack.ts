@@ -238,12 +238,13 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         let trackMaterial: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
         trackMaterial.diffuseMap = diffuseMap;
         trackMaterial.fogEnabled = false;
-        trackMaterial.vertUniform = new VertUniformComp();
-        trackMaterial.vertUniform.curveMoveMap = dataTex;
+        let vertUniform = new VertUniformComp();
+        trackMaterial.vertUniform = vertUniform;
+        vertUniform.curveMoveMap = dataTex;
         trackMaterial.initializeByCodeBuf( true );
         trackMaterial.setBlendFactor(0.8, 0.8);
-        trackMaterial.vertUniform.setCurveMoveParam(dataTex.getWidth(), posTotal);
-        trackMaterial.vertUniform.setCurveMoveDistance(0.0);
+        vertUniform.setCurveMoveParam(dataTex.getWidth(), posTotal);
+        vertUniform.setCurveMoveDistance(0.0);
         
         let trackEntity: DisplayEntity = new DisplayEntity();
         trackEntity.setMaterial(trackMaterial);
@@ -251,7 +252,7 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         this.m_rscene.addEntity( trackEntity );
         let trackRole: TrackWheelLightRole = new TrackWheelLightRole();
         trackRole.trackEntity = trackEntity;
-        trackRole.trackData = trackMaterial.vertUniform;
+        trackRole.trackData = vertUniform;
         trackRole.initialize();
         return trackRole;
     }

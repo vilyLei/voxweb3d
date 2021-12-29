@@ -265,7 +265,7 @@ export class DemoPBRViewer implements IShaderLibListener {
         material.decorator.parallaxMap = parallaxMap;
         
         material.initializeByCodeBuf(true);
-        material.vertUniform.setDisplacementParams(50.0, 0.0);
+        vertUniform.setDisplacementParams(50.0, 0.0);
         material.setAlbedoColor(1.0,1.0,1.0);
         material.setRoughness(0.3);
         material.setScatterIntensity(64.0);        

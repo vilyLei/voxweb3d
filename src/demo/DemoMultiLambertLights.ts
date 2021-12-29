@@ -180,13 +180,13 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         let material: LambertLightMaterial;
         ///*
         material = this.m_materialCtx.createLambertLightMaterial();
-        material.vertUniform = new VertUniformComp();
-        material.vertUniform.uvTransformEnabled = true;
+        vertUniform= new VertUniformComp();
+        material.vertUniform = vertUniform;
+        vertUniform.uvTransformEnabled = true;
         this.useMaps(material, "metal_08", true, true, true);
         material.fogEnabled = true;
         //material.vtxUVTransformEnabled = true;
         material.initializeLocalData();
-        vertUniform = material.vertUniform;
         vertUniform.setUVScale(8.0, 8.0);
         vertUniform.setDisplacementParams(10.0, -10.0);
 
@@ -213,13 +213,13 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         //*/
         ///*
         material = this.m_materialCtx.createLambertLightMaterial();
-        material.vertUniform = new VertUniformComp();
-        material.vertUniform.uvTransformEnabled = true;
+        vertUniform = new VertUniformComp();
+        material.vertUniform = vertUniform;
+        vertUniform.uvTransformEnabled = true;
         this.useMaps(material, "lava_03", true, true, true);
         material.fogEnabled = true;
         // material.vtxUVTransformEnabled = true;
         material.initializeLocalData();
-        vertUniform = material.vertUniform;
         vertUniform.setUVScale(6.0, 6.0);
         vertUniform.setDisplacementParams(10.0, -10.0);
         color.normalizeRandom(1.1);
@@ -240,14 +240,15 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_engine.rscene.addEntity(sph);
         //*/
         ///*
+        
         material = this.m_materialCtx.createLambertLightMaterial();
-        material.vertUniform = new VertUniformComp();
-        material.vertUniform.uvTransformEnabled = true;
+        vertUniform = new VertUniformComp();
+        material.vertUniform = vertUniform;
+        vertUniform.uvTransformEnabled = true;
         this.useMaps(material, "box", true, false, true);
         material.fogEnabled = true;
         material.lightEnabled = true;
         material.initializeLocalData();
-        vertUniform = material.vertUniform;
         vertUniform.setDisplacementParams(3.0, 0.0);
         // material.setDisplacementParams(3.0, 0.0);
         material.setSpecularIntensity(64.0);
@@ -282,7 +283,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         }
         if (displacementMap) {
             if(material.vertUniform != null) {
-                material.vertUniform.displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+                (material.vertUniform as VertUniformComp).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
             }
         }
         if (shadowReceiveEnabled && this.m_materialCtx.vsmModule != null) {

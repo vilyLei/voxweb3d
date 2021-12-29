@@ -18,7 +18,7 @@ import TextureProxy from "../../vox/texture/TextureProxy";
 
 //  import { PBRShaderCode } from "./glsl/PBRShaderCode";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
-import { VertUniformComp } from "../../vox/material/component/VertUniformComp";
+import { UniformComp } from "../../vox/material/component/UniformComp";
 
 class PBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
@@ -28,7 +28,7 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
     decorator: PBRShaderDecorator = null;
     texturesTotal: number = 0;
 
-    vertUniform: VertUniformComp = null;
+    vertUniform: UniformComp = null;
     initialize(texEnabled: boolean): void {
 
         texEnabled = this.texturesTotal > 0;
@@ -92,7 +92,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     ///////////////////////////////////////////////////////
 
     decorator: PBRShaderDecorator = null;
-    vertUniform: VertUniformComp = null;
+    vertUniform: UniformComp = null;
     constructor() {
         super();
     }

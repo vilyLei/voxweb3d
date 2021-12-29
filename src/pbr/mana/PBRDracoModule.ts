@@ -9,6 +9,7 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Vector3D from "../../vox/math/Vector3D";
 import DracoMesh from "../../voxmesh/draco/DracoMesh";
 import { DracoModuleLoader, DracoWholeModuleLoader, DracoMultiPartsModuleLoader } from "../../voxmesh/draco/DracoModuleLoader";
+import { VertUniformComp } from "../../vox/material/component/VertUniformComp";
 
 
 export class PBRWholeDracoModule extends DracoWholeModuleLoader {
@@ -38,10 +39,11 @@ export class PBRWholeDracoModule extends DracoWholeModuleLoader {
         material.decorator.normalMapEnabled = false;
         material.decorator.vtxFlatNormal = false;
         material.decorator.aoMapEnabled = false;//this.aoMapEnabled;
-        material.vertUniform.uvTransformEnabled = true;
+        let vertUniform: VertUniformComp = material.vertUniform as VertUniformComp;
+        vertUniform.uvTransformEnabled = true;
         material.initializeByCodeBuf( true );
         let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6; 
-        material.vertUniform.setUVScale(uvscale, uvscale);
+        vertUniform.setUVScale(uvscale, uvscale);
         let scale: number = 1.0;
         let entity: DisplayEntity = new DisplayEntity();
         entity.setMaterial(material);
@@ -115,11 +117,12 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader {
                 aoTex
             );
         }
-        material.vertUniform.uvTransformEnabled = true;
+        let vertUniform: VertUniformComp = material.vertUniform as VertUniformComp;
+        vertUniform.uvTransformEnabled = true;
         material.initializeByCodeBuf(true);
         
         let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6; 
-        material.vertUniform.setUVScale(uvscale, uvscale);
+        vertUniform.setUVScale(uvscale, uvscale);
 
         let mesh: DracoMesh = new DracoMesh();
         mesh.setBufSortFormat(material.getBufSortFormat());

@@ -20,6 +20,7 @@ import HdrBrnCubeMapMapMaterial from "../../vox/material/mcase/HdrBrnCubeMapMate
 
 import { PBRWholeDracoModule, PBRMultiPartsDracoModule } from "./PBRDracoModule";
 import Box3DEntity from "../../vox/entity/Box3DEntity";
+import { VertUniformComp } from "../../vox/material/component/VertUniformComp";
 export default class PBREntityManager {
     private m_rscene: RendererScene = null;
     private m_entityUtils: PBREntityUtils = null;
@@ -151,10 +152,11 @@ export default class PBREntityManager {
             //uvscale,uvscale
             material.decorator.aoMapEnabled = this.aoMapEnabled;
             material.decorator.shadowReceiveEnabled = false;
-            material.vertUniform.uvTransformEnabled = true;
+            let vertUniform: VertUniformComp = material.vertUniform as VertUniformComp;
+            vertUniform.uvTransformEnabled = true;
             this.useMaterial(material);
             material.initializeByCodeBuf(true);
-            material.vertUniform.setUVScale(uvscale, uvscale);
+            vertUniform.setUVScale(uvscale, uvscale);
             scale = 0.8 + Math.random();
             let pr: number = scale * 100.0;
             sph = new Sphere3DEntity();

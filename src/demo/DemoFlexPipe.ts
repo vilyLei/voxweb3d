@@ -34,6 +34,7 @@ import DisplayEntity from "../vox/entity/DisplayEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
 import { Bezier2Curve } from "../vox/geom/curve/BezierCurve";
+import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 
 export class DemoFlexPipe implements IShaderLibListener {
     constructor() { }
@@ -240,13 +241,13 @@ export class DemoFlexPipe implements IShaderLibListener {
         material.decorator.scatterEnabled = false;
 
         this.useMaps( material, mapNS );
-
-        material.vertUniform.uvTransformEnabled = true;
+        let vertUniform: VertUniformComp = material.vertUniform as VertUniformComp;
+        vertUniform.uvTransformEnabled = true;
         material.initializeLocalData();
         material.setAlbedoColor(1.0,1.0,1.0);
         material.setRoughness(0.3);
         material.setScatterIntensity(64.0);
-        material.vertUniform.setUVScale(scaleU, scaleV);
+        vertUniform.setUVScale(scaleU, scaleV);
         //material.vertUniform.setDisplacementParams(50,0);
         material.setParallaxParams(1, 10, 5.0, 0.02);
         material.initializeByCodeBuf(true);

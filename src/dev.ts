@@ -263,7 +263,7 @@
 
 //  import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
 // free-shaped morph animation
-//  import {DemoFlexPipe as Demo} from "./demo/DemoFlexPipe";
+import {DemoFlexPipe as Demo} from "./demo/DemoFlexPipe";
 
 //  import {DemoFaceDirec as Demo} from "./demo/DemoFaceDirec";
 
@@ -369,7 +369,7 @@
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
-import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 

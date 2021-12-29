@@ -132,10 +132,12 @@ export class DemoLambertLight {
             // this.m_rscene.addEntity(axis);
 
             let material: LambertLightMaterial;
-
+            
+            let vertUniform: VertUniformComp;
             material = new LambertLightMaterial();
-            material.vertUniform = new VertUniformComp();
-            material.vertUniform.uvTransformEnabled = true;
+            vertUniform = new VertUniformComp()
+            material.vertUniform = vertUniform;
+            vertUniform.uvTransformEnabled = true;
             ///*
             //material.setMaterialPipeline( this.m_materialCtx.pipeline );            
             //material.diffuseMap =             this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
@@ -157,9 +159,8 @@ export class DemoLambertLight {
             material.fogEnabled = false;
             material.lightEnabled = true;
             material.specularMode = SpecularMode.FragColor;
-            material.vertUniform.uvTransformEnabled = true;
             material.initializeLocalData();
-            material.vertUniform.setUVScale(2.0, 2.0);
+            vertUniform.setUVScale(2.0, 2.0);
             //material.setSpecularColor(new Color4(0.5,0.5,0.5,1.0));
             material.setSpecularIntensity(64.0);
             material.setLightBlendFactor(0.7,0.3);
@@ -182,10 +183,11 @@ export class DemoLambertLight {
             let sphMaterial: LambertLightMaterial = new LambertLightMaterial();
             //sphMaterial.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/default.jpg");
             sphMaterial.copyFrom(material);
-            sphMaterial.vertUniform = sphMaterial.vertUniform.clone() as VertUniformComp;
-            sphMaterial.vertUniform.uvTransformEnabled = true;
+            vertUniform = sphMaterial.vertUniform.clone() as VertUniformComp;
+            sphMaterial.vertUniform = vertUniform;
+            vertUniform.uvTransformEnabled = true;
             sphMaterial.vertUniform.initialize();
-            sphMaterial.vertUniform.setUVScale(4.0, 4.0);
+            vertUniform.setUVScale(4.0, 4.0);
             //sphMaterial.initializeByCodeBuf(true);
             ///*
             let sph = new Sphere3DEntity();
@@ -232,7 +234,7 @@ export class DemoLambertLight {
         }
         if (displacementMap) {
             if(material.vertUniform != null) {
-                material.vertUniform.displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+                (material.vertUniform as VertUniformComp).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
             }
         }
         if(parallaxMapEnabled) {

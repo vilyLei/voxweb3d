@@ -29,6 +29,7 @@ import RendererState from "../vox/render/RendererState";
 import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
 import { SpotLight } from "../light/base/SpotLight";
+import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 
 export class DemoCookTorrance {
 
@@ -225,7 +226,7 @@ export class DemoCookTorrance {
         }
         if (displacementMap) {
             if(material.vertUniform != null) {
-                material.vertUniform.displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+                (material.vertUniform as VertUniformComp).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
             }
         }
         if(parallaxMapEnabled) {

@@ -20,7 +20,7 @@ class UniformComp {
     use(shaderBuilder: IShaderCodeBuilder): void {
 
     }
-    getTextures(shaderBuilder: IShaderCodeBuilder): TextureProxy[] {
+    getTextures(shaderBuilder: IShaderCodeBuilder, outList: TextureProxy[] = null): TextureProxy[] {
 
         return null;
     }

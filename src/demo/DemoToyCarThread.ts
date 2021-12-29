@@ -108,7 +108,7 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
         }
         if (displacementMap) {
             if (material.vertUniform != null) {
-                material.vertUniform.displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+                //material.vertUniform.displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
             }
         }
         if (shadowReceiveEnabled && this.m_materialCtx.vsmModule != null) {

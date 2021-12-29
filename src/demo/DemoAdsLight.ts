@@ -16,6 +16,7 @@ import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
 import { MaterialContextParam, DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
+import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 
 export class DemoAdsLight {
     constructor() { }
@@ -105,7 +106,7 @@ export class DemoAdsLight {
         }
         if(displacementMap) {
             if(material.vertUniform != null) {
-                material.vertUniform.displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+                (material.vertUniform as VertUniformComp).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
             }
         }
         if(parallaxMapEnabled) {

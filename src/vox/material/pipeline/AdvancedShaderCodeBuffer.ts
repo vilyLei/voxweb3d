@@ -10,7 +10,7 @@ import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import TextureProxy from "../../texture/TextureProxy";
 import { SpecularMode } from "./SpecularMode";
 import { ShadowMode } from "./ShadowMode";
-import { VertUniformComp } from "../component/VertUniformComp";
+import { UniformComp } from "../component/UniformComp";
 
 class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     private m_uniqueName: string = "";
@@ -24,7 +24,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     normalEnabled: boolean = true;
     buildFlag: boolean = true;
     
-    vertUniform: VertUniformComp = null;
+    vertUniform: UniformComp = null;
 
     constructor() {
         super();

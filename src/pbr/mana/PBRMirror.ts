@@ -22,6 +22,7 @@ import EnvLightData from "../../light/base/EnvLightData";
 import PBRShaderDecorator from "../material/PBRShaderDecorator";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 import { MaterialContext } from "../../materialLab/base/MaterialContext";
+import { VertUniformComp } from "../../vox/material/component/VertUniformComp";
 
 export class PBRMirror {
     private m_rscene: RendererScene = null;
@@ -124,10 +125,11 @@ export class PBRMirror {
         if (this.m_mirrorMapLodEnabled) {
             this.m_fboIns.enableMipmapRTTAt(0);
             material.setMirrorMapLodLevel(1.0);
-        }        
-        material.vertUniform.uvTransformEnabled = true;
+        }
+        let vertUniform: VertUniformComp = material.vertUniform as VertUniformComp;
+        vertUniform.uvTransformEnabled = true;
         material.initializeByCodeBuf(true);
-        material.vertUniform.setUVScale(3.0, 3.0);
+        vertUniform.setUVScale(3.0, 3.0);
         //material.setUVScale(3.0, 3.0);
         material.setMirrorIntensity(0.9);
         material.setMirrorMixFactor(0.2);

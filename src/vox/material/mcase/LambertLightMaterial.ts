@@ -13,7 +13,7 @@ import { SpecularMode } from "../pipeline/SpecularMode";
 import { AdvancedShaderCodeBuffer } from "../pipeline/AdvancedShaderCodeBuffer";
 import Color4 from "../Color4";
 import TextureProxy from "../../texture/TextureProxy";
-import { VertUniformComp } from "../component/VertUniformComp";
+import { UniformComp } from "../component/UniformComp";
 
 export default class LambertLightMaterial extends MaterialBase {
 
@@ -42,7 +42,7 @@ export default class LambertLightMaterial extends MaterialBase {
     lightEnabled: boolean = true;
     fogEnabled: boolean = false;
 
-    vertUniform: VertUniformComp = null;
+    vertUniform: UniformComp = null;
     constructor() {
         super();
         if(LambertLightMaterial.s_shaderCodeBuffer == null) {
