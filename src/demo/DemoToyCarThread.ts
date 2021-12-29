@@ -112,9 +112,6 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
             }
         }        
         material.shadowReceiveEnabled = shadowReceiveEnabled;
-        // if (shadowReceiveEnabled && this.m_materialCtx.vsmModule != null) {
-        //     material.shadowMap = this.m_materialCtx.vsmModule.getShadowMap();
-        // }
     }
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);

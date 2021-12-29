@@ -85,14 +85,6 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
             if(this.buildFlag) this.m_uniform.addSpecularMap(this.specularMode);
         }
     }
-    addShadowMap(map: TextureProxy): void {
-
-        if(map != null) {
-            this.m_texList.push(map);
-            if(this.buildFlag) this.m_uniform.addShadowMap(ShadowMode.VSM);
-        }
-    }
-
     initialize(texEnabled: boolean): void {
         
         texEnabled = this.m_texList != null && this.m_texList.length > 0;

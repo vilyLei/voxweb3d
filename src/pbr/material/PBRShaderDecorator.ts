@@ -92,11 +92,11 @@ export default class PBRShaderDecorator {
             // console.log("VOX_INDIRECT_ENV_MAP");
         }
 
-        if (this.shadowReceiveEnabled && this.shadowMap != null) {
-            texList.push( this.shadowMap );
-            uniform.addShadowMap(ShadowMode.VSM);
-            // console.log("VOX_VSM_SHADOW_MAP");
-        }
+        // if (this.shadowReceiveEnabled && this.shadowMap != null) {
+        //     texList.push( this.shadowMap );
+        //     uniform.addShadowMap(ShadowMode.VSM);
+        //     // console.log("VOX_VSM_SHADOW_MAP");
+        // }
         
         if(this.parallaxMap != null) {
             texList.push( this.parallaxMap );

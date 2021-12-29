@@ -55,9 +55,6 @@ export default class ShadowVSMData implements IMaterialPipe {
         if (this.m_uProbe != null) {
             shaderBuilder.addDefine("VOX_USE_SHADOW", "1");
             shaderBuilder.addVarying("vec4", "v_shadowPos");
-
-            // shaderBuilder.addFragUniformParam(UniformConst.ShadowVSMParams);
-            // shaderBuilder.addVertUniformParam(UniformConst.ShadowMatrix);
             this.m_uniformParam.use(shaderBuilder);
             shaderBuilder.addShaderObject(VSMShaderCode);
         }

@@ -105,6 +105,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         buf.lightEnabled = decorator.lightEnabled;
         buf.shadowReceiveEnabled = decorator.shadowReceiveEnabled;
         buf.fogEnabled = decorator.fogEnabled;
+        buf.buildPipelineParams();
 
         buf.decorator = decorator;
         buf.vertUniform = this.vertUniform;
@@ -116,7 +117,9 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         
         let list: TextureProxy[] = decorator.createTextureList();
         if(this.vertUniform != null) this.vertUniform.getTextures(buf.getShaderCodeBuilder(), list);
-        super.setTextureList(list);
+        buf.getTexturesFromPipeline( list );
+
+        super.setTextureList( list );
         buf.texturesTotal = list.length;
     }
     getCodeBuf(): ShaderCodeBuffer {

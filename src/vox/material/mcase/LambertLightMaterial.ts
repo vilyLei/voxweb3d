@@ -35,8 +35,6 @@ export default class LambertLightMaterial extends MaterialBase {
     parallaxMap: TextureProxy = null;
     aoMap: TextureProxy = null;
     specularMap: TextureProxy = null;
-    //shadowMap: TextureProxy = null;
-
     specularMode: SpecularMode = SpecularMode.Default;
 
     shadowReceiveEnabled: boolean = false;
@@ -74,7 +72,6 @@ export default class LambertLightMaterial extends MaterialBase {
         if(this.parallaxMap == null) this.parallaxMap = src.parallaxMap;
         if(this.aoMap == null) this.aoMap = src.aoMap;
         if(this.specularMap == null) this.specularMap = src.specularMap;
-        //if(this.shadowMap == null) this.shadowMap = src.shadowMap;
 
         this.specularMode = src.specularMode;
 
@@ -104,7 +101,6 @@ export default class LambertLightMaterial extends MaterialBase {
         buf.addParallaxMap( this.parallaxMap, this.m_parallaxParamIndex );
         buf.addAOMap( this.aoMap );
         buf.addSpecularMap( this.specularMap );
-        //buf.addShadowMap( this.shadowMap );
 
         let list = buf.getIRenderTextureList() as TextureProxy[];
         if(this.vertUniform != null) this.vertUniform.getTextures(buf.getShaderCodeBuilder(), list);
@@ -273,7 +269,6 @@ export default class LambertLightMaterial extends MaterialBase {
     destroy(): void {
         super.destroy();
         
-        // this.m_vertLocalParams = null;
         this.m_fragLocalParams = null;
         if(this.vertUniform != null) {
             this.vertUniform = null;

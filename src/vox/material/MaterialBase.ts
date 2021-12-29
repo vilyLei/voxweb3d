@@ -65,7 +65,6 @@ export default class MaterialBase implements IRenderMaterial {
     hasShaderData(): boolean {
         if (this.m_shdData != null) {
             if (this.m_shdData.haveTexture()) {
-                // console.log("this.texDataEnabled(): ",this.texDataEnabled());
                 return this.texDataEnabled();
             }
             else {

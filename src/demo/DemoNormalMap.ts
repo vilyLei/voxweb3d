@@ -231,9 +231,6 @@ export class DemoNormalMap {
             }
         }
         material.shadowReceiveEnabled = shadowReceiveEnabled;
-        // if(shadowReceiveEnabled && this.m_materialCtx.vsmModule != null) {
-        //     material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();
-        // }
     }
     private initEnvBox(): void {
         

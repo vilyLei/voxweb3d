@@ -241,9 +241,6 @@ export class DemoLambertLight {
             material.parallaxMap =  this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
         }
         material.shadowReceiveEnabled = shadowReceiveEnabled;
-        // if(shadowReceiveEnabled) {
-        //     material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();
-        // }
     }
     private initEnvBox(): void {
         
