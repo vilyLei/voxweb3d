@@ -196,17 +196,17 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         // material.diffuseMap = tex1;
         // material.initializeByCodeBuf(true);
         // material.setBlendFactor(0.5,0.8);
-        let material = this.createPBRMaterial(null,null);
-        let box: Box3DEntity = new Box3DEntity();
-        box.setMaterial(material);
-        box.initializeCube(200.0, [tex1]);
-        this.m_rscene.addEntity(box);
-
-        return;
+        // let material = this.createPBRMaterial(null,null);
+        // let box: Box3DEntity = new Box3DEntity();
+        // box.setMaterial(material);
+        // box.initializeCube(200.0, [tex1]);
+        // this.m_rscene.addEntity(box);
+        // return;
         //  this.m_boxTrack.setTrackScaleXYZ(0.2,0.2,0.2);
         //  this.m_boxTrack.initialize(this.m_rscene.textureBlock,0.5,[tex0]);
         let distanceFactor: number = 0.98;
         this.m_boxTrack.animator.normalEnabled = true;
+        this.m_boxTrack.animator.diffuseMapEnabled = false;
         this.m_boxTrack.setTrackScaleXYZ(0.4, 0.4, 1.0);
         //this.m_boxTrack.setFactor(2,5,2);
         //this.m_boxTrack.initialize(this.m_rscene.textureBlock,0.5,[tex0], distanceFactor);
@@ -225,9 +225,10 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
 
         this.m_track01 = this.createTrackEntity(this.m_boxTrack, tex0);
         //this.m_track02 = this.createTrackEntity(this.m_boxTrack, tex0);
-        let boxTrack: BoxGroupTrack = new BoxGroupTrack();
-        boxTrack.initializeFrom(this.m_boxTrack, [tex0]);
-        this.m_rscene.addEntity(boxTrack.animator);
+
+        // let boxTrack: BoxGroupTrack = new BoxGroupTrack();
+        // boxTrack.initializeFrom(this.m_boxTrack, [tex0]);
+        // this.m_rscene.addEntity(boxTrack.animator);
 
         // let curveLine: DashedLine3DEntity = new DashedLine3DEntity();
         // curveLine.initializeByPosition(this.m_boxTrack.getTrackPosList());

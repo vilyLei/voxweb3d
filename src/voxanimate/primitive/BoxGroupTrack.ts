@@ -130,6 +130,7 @@ export default class BoxGroupTrack {
         if(this.animator.getMesh() == null && this.animator.getGroupSrcMesh() == null) {
             material = new VSTexturePosIdMaterial();
             material.normalEnabled = this.animator.normalEnabled;
+            material.diffuseMapEnabled = this.animator.diffuseMapEnabled;
             material.initializeByCodeBuf( true );
             let boxMesh: Box3DMesh = new Box3DMesh();
             boxMesh.setBufSortFormat(material.getBufSortFormat());

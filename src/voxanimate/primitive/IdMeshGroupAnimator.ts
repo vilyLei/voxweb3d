@@ -35,6 +35,7 @@ class IdMeshGroupAnimator extends DisplayEntity {
     private m_unitTotal: number = 0;
     private m_idStep: number = 10;
     normalEnabled: boolean = false;
+    diffuseMapEnabled: boolean = true;
     constructor(transform: ROTransform = null) {
         super(transform);
     }
@@ -108,7 +109,8 @@ class IdMeshGroupAnimator extends DisplayEntity {
         if (material == null) {
 
             material = new VSTexturePosIdMaterial();
-            material.normalEnabled = this.normalEnabled;            
+            material.normalEnabled = this.normalEnabled;
+            material.diffuseMapEnabled = this.diffuseMapEnabled;
             material.setTexSize(this.m_texSize);
             material.setPositionsTotal(this.m_posTotal);
             material.setTextureList(texList);

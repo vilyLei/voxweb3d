@@ -17,6 +17,7 @@ class VSTexturePosIdRenderShaderBuffer extends ShaderCodeBuffer {
     private m_uniqueName: string = "";
 
     normalEnabled: boolean = false;
+    diffuseMapEnabled: boolean = true;
 
     initialize(texEnabled: boolean): void {
         super.initialize(texEnabled);
@@ -33,8 +34,10 @@ class VSTexturePosIdRenderShaderBuffer extends ShaderCodeBuffer {
         
         coder.addFragUniform("vec4", "u_color");
         coder.addVertUniform("vec4", "u_vtxParam");
-        this.m_uniform.add2DMap("VTX_TRANSFORM_MAP", false, false, true);
-        this.m_uniform.addDiffuseMap();
+        this.m_uniform.add2DMap("VTX_CURVE_MOVE_MAP", false, false, true);
+        if(this.diffuseMapEnabled) {
+            this.m_uniform.addDiffuseMap();
+        }
 
         coder.addVertFunction(
             `
@@ -45,13 +48,17 @@ void  initLocalPos() {
     float index = abs(mod((a_vs.w + params[1]),params[2]));
     index *= params[0];
     vec2 puv = vec2(fract(index), floor(index) * params[0]);
-    localPosition.xyz += VOX_Texture2D(VTX_TRANSFORM_MAP, puv).xyz;
+    localPosition.xyz += VOX_Texture2D(VTX_CURVE_MOVE_MAP, puv).xyz;
 }
             `
         );
         coder.addFragMainCode(
             `
-    FragColor0 = VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv) * u_color;
+    #ifdef VOX_USE_2D_MAP
+        FragColor0 = VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv) * u_color;
+    #else
+        FragColor0 = u_color;
+    #endif
     //FragColor0.xyz *= abs(v_worldNormal.xyz);
 `
         );
@@ -62,8 +69,12 @@ void  initLocalPos() {
     worldPosition = u_objMat * localPosition;
     viewPosition = u_viewMat * worldPosition;
     gl_Position = u_projMat * viewPosition;
-    v_uv = a_uvs;
-    v_worldNormal = normalize(a_nvs.xyz * inverse(mat3(u_objMat)));
+    #ifdef VOX_USE_2D_MAP
+        v_uv = a_uvs;
+    #endif
+    #ifdef VOX_USE_NORMAL
+        v_worldNormal = normalize(a_nvs.xyz * inverse(mat3(u_objMat)));
+    #endif
 `
         )
     }
@@ -83,12 +94,14 @@ void  initLocalPos() {
 }
 export class VSTexturePosIdMaterial extends MaterialBase {
     normalEnabled: boolean = false;
+    diffuseMapEnabled: boolean = true;
     constructor() {
         super();
     }
     protected buildBuf(): void {
         let buf = VSTexturePosIdRenderShaderBuffer.GetInstance();
         buf.normalEnabled = this.normalEnabled;
+        buf.diffuseMapEnabled = this.diffuseMapEnabled;
     }
     getCodeBuf(): ShaderCodeBuffer {
         return VSTexturePosIdRenderShaderBuffer.GetInstance();
