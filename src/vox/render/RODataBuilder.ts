@@ -14,7 +14,7 @@ import UniformConst from "../../vox/material/UniformConst";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import ShaderUniform from "../../vox/material/ShaderUniform";
 import ShdProgram from "../../vox/material/ShdProgram";
-import IRenderTexture from '../../vox/render/IRenderTexture';
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import { TextureRenderObj, EmptyTexRenderObj } from '../../vox/render/TextureRenderObj';
 import ShdUniformTool from '../../vox/material/ShdUniformTool';
 import IRenderMaterial from '../../vox/render/IRenderMaterial';

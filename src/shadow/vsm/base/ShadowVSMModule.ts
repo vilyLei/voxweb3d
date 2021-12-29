@@ -190,6 +190,7 @@ export class ShadowVSMModule {
         // this.m_vsmData.setShadowBias(this.m_shadowBias);
         // this.m_vsmData.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
         // this.m_vsmData.update();
+        this.m_vsmData.setShadowMap( this.getShadowMap() );
         this.updateData();
 
     }

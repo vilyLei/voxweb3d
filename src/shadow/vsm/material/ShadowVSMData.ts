@@ -17,10 +17,11 @@ import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipe } from "../../../vox/material/pipeline/IMaterialPipe";
 
-import IRenderTexture from '../../../vox/render/IRenderTexture';
+import IRenderTexture from "../../../vox/render/IRenderTexture";
 import { GlobalVSMShadowUniformParam } from "../../../vox/material/GlobalUniformParam";
 import { VSMShaderCode } from "./VSMShaderCode";
-
+import RTTTextureProxy from "../../../vox/texture/RTTTextureProxy";
+import { ShadowMode } from "../../../vox/material/pipeline/ShadowMode";
 
 export default class ShadowVSMData implements IMaterialPipe {
 
@@ -30,6 +31,7 @@ export default class ShadowVSMData implements IMaterialPipe {
     private m_direcMatrix: Matrix4 = null;
     private m_params: Float32Array = null;
     private m_offetMatrix: Matrix4 = null;
+    private m_shadowMap: RTTTextureProxy = null;
     private m_camVersion: number = -1;
     private m_dirty: boolean = false;
     private m_uslotIndex: number = 0;
@@ -37,8 +39,16 @@ export default class ShadowVSMData implements IMaterialPipe {
     constructor(slotIndex: number = 0) {
         this.m_uslotIndex = slotIndex;
     }
-
+    setShadowMap(shadowMap: RTTTextureProxy): void {
+        this.m_shadowMap = shadowMap;
+    }
     getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[]): IRenderTexture[] {
+        if(this.m_shadowMap != null) {
+            if(outList == null) outList = [];
+            outList.push(this.m_shadowMap);
+            shaderBuilder.uniform.addShadowMap(ShadowMode.VSM);
+            return outList;
+        }
         return null;
     }
     useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void {

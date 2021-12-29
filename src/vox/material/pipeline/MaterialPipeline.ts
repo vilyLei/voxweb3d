@@ -17,6 +17,7 @@ import { IMaterialPipeline } from "./IMaterialPipeline";
 
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
+import IRenderTexture from "../../../vox/render/IRenderTexture";
 
 /**
  * 材质功能组装流水线, 组装符合一个流水线系统设定的材质, 最终形成完整的shader, 以及对应的数据输入
@@ -34,6 +35,7 @@ class MaterialPipeline implements IMaterialPipeline {
     private m_keys: string[] = [];
     private m_sharedUniforms: ShaderGlobalUniform[] = null;
     private m_shaderLib: IShaderLib = null;
+    private m_pipetypes: MaterialPipeType[] = null;
     private m_appendKeyStr: string = "";
     uuid: string = "";
     constructor(shaderLib: IShaderLib = null) {
@@ -101,7 +103,7 @@ class MaterialPipeline implements IMaterialPipeline {
     buildSharedUniforms(pipetypes: MaterialPipeType[]): void {
 
         this.m_sharedUniforms = [];
-
+        this.m_pipetypes = pipetypes;
         if (pipetypes != null) {
 
             let pipe: IMaterialPipe;
@@ -116,17 +118,17 @@ class MaterialPipeline implements IMaterialPipeline {
             }
         }
     }
-    build(shaderBuilder: IShaderCodeBuilder, pipetypes: MaterialPipeType[]): void {
+    build(shaderBuilder: IShaderCodeBuilder): void {
 
         // console.log("#### MaterialPipeline::build(), pipetypes: ",pipetypes,", this.m_shaderCode != null: ",this.m_shaderCode != null);
         if (this.m_shaderCodeFlag && this.m_shaderCode != null) {
             shaderBuilder.addShaderObject(this.m_shaderCode);
         }
-        if (pipetypes != null) {
+        if (this.m_pipetypes != null) {
 
             let pipe: IMaterialPipe;
             let type: MaterialPipeType;
-            let types: MaterialPipeType[] = pipetypes;
+            let types: MaterialPipeType[] = this.m_pipetypes;
             for (let i: number = 0; i < types.length; ++i) {
                 type = types[i];
                 if (this.m_pipeMap.has(type)) {
@@ -138,6 +140,23 @@ class MaterialPipeline implements IMaterialPipeline {
         }
     }
 
+    getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[]): void {
+
+        if (this.m_pipetypes != null) {
+
+            let pipe: IMaterialPipe;
+            let type: MaterialPipeType;
+            let types: MaterialPipeType[] = this.m_pipetypes;
+            for (let i: number = 0; i < types.length; ++i) {
+                type = types[i];
+                if (this.m_pipeMap.has(type)) {
+                    pipe = this.m_pipeMap.get(type);
+                    pipe.getTextures(shaderBuilder, outList);
+                }
+            }
+
+        }
+    }
     getSharedUniforms(): ShaderGlobalUniform[] {
 
         return this.m_sharedUniforms;
@@ -169,6 +188,7 @@ class MaterialPipeline implements IMaterialPipeline {
         this.m_sharedUniforms = null;
         this.m_shaderCode = null;
         this.m_shaderLib = null;
+        this.m_pipetypes = null;
     }
 
 }

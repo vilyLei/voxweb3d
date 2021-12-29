@@ -16,7 +16,7 @@ import MathConst from "../../vox/math/MathConst";
 import { PointLight } from "./PointLight";
 import { DirectionLight } from "./DirectionLight";
 import { SpotLight } from "./SpotLight";
-import IRenderTexture from '../../vox/render/IRenderTexture';
+import IRenderTexture from "../../vox/render/IRenderTexture";
 
 class LightModule implements IMaterialPipe {
 

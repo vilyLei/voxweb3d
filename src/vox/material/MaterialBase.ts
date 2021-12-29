@@ -119,7 +119,7 @@ export default class MaterialBase implements IRenderMaterial {
                         else {
                             buf.pipeline.addShaderCodeWithUUID(buf.getShaderCodeObjectUUID(), false);
                         }
-                        buf.pipeline.build(buf.getShaderCodeBuilder(), buf.pipeTypes);
+                        buf.pipeline.build(buf.getShaderCodeBuilder());
                     }
                     let fshdCode: string = buf.getFragShaderCode();
                     let vshdCode: string = buf.getVertShaderCode();

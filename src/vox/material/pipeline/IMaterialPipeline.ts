@@ -14,6 +14,7 @@ import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
+import IRenderTexture from "../../../vox/render/IRenderTexture";
 
 /**
  * 材质功能组装流水线行为规范
@@ -35,7 +36,8 @@ interface IMaterialPipeline {
     hasPipeByType(type: MaterialPipeType): boolean;
     createKeys(pipetypes: MaterialPipeType[]): void;
     buildSharedUniforms(pipetypes: MaterialPipeType[]): void;
-    build(shaderBuilder: IShaderCodeBuilder, pipetypes: MaterialPipeType[]): void;
+    build(shaderBuilder: IShaderCodeBuilder): void;
+    getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[]): void;
     getSharedUniforms(): ShaderGlobalUniform[];
     getSelfUniformData(): ShaderUniformData;
     appendKeyString(key: string): void;
