@@ -176,4 +176,7 @@ export default class ShadowVSMData implements IMaterialPipe {
             this.m_uProbe.update();
         }
     }
+    destroy(): void {
+        this.m_shadowMap = null;
+    }
 }

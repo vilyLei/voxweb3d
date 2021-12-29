@@ -286,9 +286,10 @@ export class DemoMultiLambertLights implements IShaderLibListener {
                 (material.vertUniform as VertUniformComp).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
             }
         }
-        if (shadowReceiveEnabled && this.m_materialCtx.vsmModule != null) {
-            material.shadowMap = this.m_materialCtx.vsmModule.getShadowMap();
-        }
+        material.shadowReceiveEnabled = shadowReceiveEnabled;
+        // if (shadowReceiveEnabled && this.m_materialCtx.vsmModule != null) {
+        //     material.shadowMap = this.m_materialCtx.vsmModule.getShadowMap();
+        // }
     }
     private initEnvBox(): void {
 

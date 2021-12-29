@@ -110,10 +110,11 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
             if (material.vertUniform != null) {
                 //material.vertUniform.displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
             }
-        }
-        if (shadowReceiveEnabled && this.m_materialCtx.vsmModule != null) {
-            material.shadowMap = this.m_materialCtx.vsmModule.getShadowMap();
-        }
+        }        
+        material.shadowReceiveEnabled = shadowReceiveEnabled;
+        // if (shadowReceiveEnabled && this.m_materialCtx.vsmModule != null) {
+        //     material.shadowMap = this.m_materialCtx.vsmModule.getShadowMap();
+        // }
     }
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);

@@ -154,7 +154,7 @@ export class DemoLambertLight {
             //material.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
             this.useMaps(material,"lava_03",true,false,false,true,true);
             //*/
-            material.shadowMap = null;
+            material.shadowReceiveEnabled = false;
             //material.specularMap = null;
             material.fogEnabled = false;
             material.lightEnabled = true;
@@ -240,9 +240,10 @@ export class DemoLambertLight {
         if(parallaxMapEnabled) {
             material.parallaxMap =  this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
         }
-        if(shadowReceiveEnabled) {
-            material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();
-        }
+        material.shadowReceiveEnabled = shadowReceiveEnabled;
+        // if(shadowReceiveEnabled) {
+        //     material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();
+        // }
     }
     private initEnvBox(): void {
         

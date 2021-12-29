@@ -47,9 +47,9 @@ class ViewerTexSystem {
                 (material.vertUniform as VertUniformComp).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
             }
         }
-        if (shadowReceiveEnabled) {
-            material.shadowMap = this.m_materialCtx.vsmModule.getShadowMap();
-        }
+        
+        material.shadowReceiveEnabled = shadowReceiveEnabled;
+        
     }
 }
 

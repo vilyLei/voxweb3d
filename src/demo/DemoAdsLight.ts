@@ -111,10 +111,11 @@ export class DemoAdsLight {
         }
         if(parallaxMapEnabled) {
             material.parallaxMap =  this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
-        }
-        if(shadowReceiveEnabled) {
-            material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();
-        }
+        }        
+        material.shadowReceiveEnabled = shadowReceiveEnabled;
+        // if(shadowReceiveEnabled) {
+        //     material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();
+        // }
     }
     private mouseDown(evt: any): void {
         console.log("mouse down... ...");

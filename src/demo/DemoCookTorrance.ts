@@ -150,7 +150,7 @@ export class DemoCookTorrance {
             material.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/color_01.jpg");
             this.useMaps(material,"brick_n_256",true,false,false,true,true);
             //*/
-            material.shadowMap = null;
+            material.shadowReceiveEnabled = false;
             //material.specularMap = null;
             material.fogEnabled = false;
             material.lightEnabled = true;
@@ -231,10 +231,11 @@ export class DemoCookTorrance {
         }
         if(parallaxMapEnabled) {
             material.parallaxMap =  this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
-        }
-        if(shadowReceiveEnabled) {
-            material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();
-        }
+        }        
+        material.shadowReceiveEnabled = shadowReceiveEnabled;
+        // if(shadowReceiveEnabled) {
+        //     material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();
+        // }
     }
     private initEnvBox(): void {
         

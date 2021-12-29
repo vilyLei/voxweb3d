@@ -35,10 +35,11 @@ export default class LambertLightMaterial extends MaterialBase {
     parallaxMap: TextureProxy = null;
     aoMap: TextureProxy = null;
     specularMap: TextureProxy = null;
-    shadowMap: TextureProxy = null;
+    //shadowMap: TextureProxy = null;
 
     specularMode: SpecularMode = SpecularMode.Default;
 
+    shadowReceiveEnabled: boolean = false;
     lightEnabled: boolean = true;
     fogEnabled: boolean = false;
 
@@ -63,6 +64,7 @@ export default class LambertLightMaterial extends MaterialBase {
 
         this.colorEnabled = src.colorEnabled;
         this.lightEnabled = src.lightEnabled;
+        this.shadowReceiveEnabled = src.shadowReceiveEnabled;
         this.fogEnabled = src.fogEnabled;
         this.normalEnabled = src.normalEnabled;
         this.vertUniform = src.vertUniform;
@@ -72,7 +74,7 @@ export default class LambertLightMaterial extends MaterialBase {
         if(this.parallaxMap == null) this.parallaxMap = src.parallaxMap;
         if(this.aoMap == null) this.aoMap = src.aoMap;
         if(this.specularMap == null) this.specularMap = src.specularMap;
-        if(this.shadowMap == null) this.shadowMap = src.shadowMap;
+        //if(this.shadowMap == null) this.shadowMap = src.shadowMap;
 
         this.specularMode = src.specularMode;
 
@@ -156,7 +158,8 @@ export default class LambertLightMaterial extends MaterialBase {
         }
         let buf: AdvancedShaderCodeBuffer = LambertLightMaterial.s_shaderCodeBuffer;
         buf.lightEnabled = this.lightEnabled;
-        buf.shadowReceiveEnabled = this.shadowMap != null;
+        //buf.shadowReceiveEnabled = this.shadowMap != null;
+        buf.shadowReceiveEnabled = this.shadowReceiveEnabled;
         buf.fogEnabled = this.fogEnabled;
         buf.buildPipelineParams();
 
