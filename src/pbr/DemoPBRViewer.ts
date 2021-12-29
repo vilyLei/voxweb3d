@@ -442,8 +442,8 @@ export class ViewerDracoModule extends DracoWholeModuleLoader {
         material.decorator.normalMapEnabled = true;
         material.decorator.vtxFlatNormal = false;
         material.decorator.aoMapEnabled = this.aoMapEnabled;
-        material.setAlbedoColor(Math.random() * 3, Math.random() * 3, Math.random() * 3);
         material.initializeByCodeBuf(true);
+        material.setAlbedoColor(Math.random() * 3, Math.random() * 3, Math.random() * 3);
         let scale: number = 3.0;
         let entity: DisplayEntity = new DisplayEntity();
 
