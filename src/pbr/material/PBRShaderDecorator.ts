@@ -24,7 +24,6 @@ export default class PBRShaderDecorator {
     aoMap: TextureProxy = null;
     mirrorMap: TextureProxy = null;
     indirectEnvMap: TextureProxy = null;
-    shadowMap: TextureProxy = null;
     parallaxMap: TextureProxy = null;
     roughnessMap: TextureProxy = null;
 
@@ -91,12 +90,6 @@ export default class PBRShaderDecorator {
             uniform.addCubeMap("VOX_INDIRECT_ENV_MAP",true ,false);
             // console.log("VOX_INDIRECT_ENV_MAP");
         }
-
-        // if (this.shadowReceiveEnabled && this.shadowMap != null) {
-        //     texList.push( this.shadowMap );
-        //     uniform.addShadowMap(ShadowMode.VSM);
-        //     // console.log("VOX_VSM_SHADOW_MAP");
-        // }
         
         if(this.parallaxMap != null) {
             texList.push( this.parallaxMap );
@@ -143,8 +136,6 @@ export default class PBRShaderDecorator {
         if(this.mirrorMap == null) this.mirrorMap = src.mirrorMap;
         if(this.indirectEnvMap == null && this.indirectEnvMapEnabled) this.indirectEnvMap = src.indirectEnvMap;
 
-        if(this.shadowMap == null && this.shadowReceiveEnabled) this.shadowMap = src.shadowMap;
-        
         if(this.parallaxMap == null) this.parallaxMap = src.parallaxMap;
         if(this.roughnessMap == null) this.roughnessMap = src.roughnessMap;
         // if(this.specularMap == null) this.specularMap = src.specularMap;

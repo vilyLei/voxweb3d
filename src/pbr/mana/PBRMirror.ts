@@ -2,15 +2,11 @@
 import Vector3D from "../../vox/math/Vector3D";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import TextureProxy from "../../vox/texture/TextureProxy";
-import { TextureConst } from "../../vox/texture/TextureConst";
-import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import RendererScene from "../../vox/scene/RendererScene";
 
 import DefaultPBRUI from "./DefaultPBRUI";
 import FBOInstance from "../../vox/scene/FBOInstance";
 import CameraBase from "../../vox/view/CameraBase";
-
-import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
 
 import PBRParamEntity from "./PBRParamEntity";
 import PBRMaterial from "../../pbr/material/PBRMaterial";
@@ -18,7 +14,6 @@ import PBRMaterialBuilder from "../../pbr/mana/PBRMaterialBuilder";
 import MirrorProjEntity from "./MirrorProjEntity";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import ScreenAlignPlaneEntity from "../../vox/entity/ScreenAlignPlaneEntity";
-import EnvLightData from "../../light/base/EnvLightData";
 import PBRShaderDecorator from "../material/PBRShaderDecorator";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 import { MaterialContext } from "../../materialLab/base/MaterialContext";
@@ -34,7 +29,6 @@ export class PBRMirror {
     reflectPlaneY: number = -220.0;
     materialBuilder: PBRMaterialBuilder;
     specularEnvMap: TextureProxy = null;
-    vsmModule: ShadowVSMModule = null;
     fogEnabled: boolean = false;
     constructor(fboIndex: number) {
         this.m_fboIndex = fboIndex;
@@ -93,8 +87,6 @@ export class PBRMirror {
 
         let plane: Plane3DEntity = null;
         let material: PBRMaterial;
-        let shadowTex = this.vsmModule != null ? this.vsmModule.getShadowMap() : null;
-
         this.m_mirrorMapLodEnabled = true;
         ///*
         // mirror plane
@@ -118,8 +110,6 @@ export class PBRMirror {
         decorator.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/brickwall_normal.jpg");
         decorator.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_occ.jpg");
         decorator.mirrorMap = this.getMirrorMap();
-        decorator.shadowMap = shadowTex;
-        console.log("PBRMirror::initMirrorEffect(), decorator.shadowMap: ",decorator.shadowMap);
         console.log("PBRMirror::initMirrorEffect(), material.getMaterialPipeline(): ",material.getMaterialPipeline());
 
         if (this.m_mirrorMapLodEnabled) {

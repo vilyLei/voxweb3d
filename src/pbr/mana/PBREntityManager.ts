@@ -88,9 +88,6 @@ export default class PBREntityManager {
         if (material.decorator.indirectEnvMapEnabled) {
             material.decorator.indirectEnvMap = this.m_entityUtils.getCubeRttBuilder().getCubeTexture();
         }
-        if (material.decorator.shadowReceiveEnabled) {
-            material.decorator.shadowMap = this.m_entityUtils.getVSMModule() != null ? this.m_entityUtils.getVSMModule().getShadowMap() : null;
-        }
     }
     private initPrimitive(): void {
 

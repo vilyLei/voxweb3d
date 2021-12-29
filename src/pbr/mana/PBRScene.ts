@@ -125,11 +125,10 @@ export default class PBRScene {
 
             this.m_mirrorEffector.fogEnabled = this.fogEnabled;
             this.m_mirrorEffector.specularEnvMap = this.m_specularEnvMap;
-            this.m_mirrorEffector.vsmModule = vsmModule;
             this.m_mirrorEffector.materialBuilder = this.m_materialBuilder;
             this.m_mirrorEffector.initialize(this.m_rscene, materialCtx, this.m_uiModule, [this.m_mirrorRprIndex]);
 
-            this.m_entityUtils = new PBREntityUtils(this.m_materialBuilder, this.m_cubeRTTBuilder, vsmModule);
+            this.m_entityUtils = new PBREntityUtils(this.m_materialBuilder, this.m_cubeRTTBuilder);
             this.m_entityUtils.initialize(this.m_rscene, materialCtx, this.m_mirrorEffector, this.m_mirrorRprIndex);
             this.m_entityManager = new PBREntityManager();
             this.m_entityManager.initialize(this.m_rscene, this.m_entityUtils, this.m_mirrorEffector, uiModule, this.m_specularEnvMap);

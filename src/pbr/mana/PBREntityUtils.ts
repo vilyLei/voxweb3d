@@ -1,8 +1,5 @@
 
 import TextureProxy from "../../vox/texture/TextureProxy";
-import { TextureConst } from "../../vox/texture/TextureConst";
-import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
-
 import RendererScene from "../../vox/scene/RendererScene";
 
 import PBRMaterial from "../../pbr/material/PBRMaterial";
@@ -10,8 +7,6 @@ import PBRMaterialBuilder from "../../pbr/mana/PBRMaterialBuilder";
 import PBRParamEntity from "./PBRParamEntity";
 import PBRMirror from "./PBRMirror";
 import CubeRttBuilder from "../../renderingtoy/mcase/CubeRTTBuilder";
-import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
-import EnvLightData from "../../light/base/EnvLightData";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import PBRShaderDecorator from "../material/PBRShaderDecorator";
 import { MaterialContext } from "../../materialLab/base/MaterialContext";
@@ -23,25 +18,20 @@ export default class PBREntityUtils {
     private m_mirrorEffector: PBRMirror = null;
     private m_materialBuilder: PBRMaterialBuilder;
     private m_cubeRTTBuilder: CubeRttBuilder;
-    private m_vsmModule: ShadowVSMModule;
     private m_mirrorRprIndex: number = 3;
 
     fogEnabled: boolean = true;
 
-    constructor(materialBuilder: PBRMaterialBuilder, cubeRTTBuilder: CubeRttBuilder, vsmModule: ShadowVSMModule) {
+    constructor(materialBuilder: PBRMaterialBuilder, cubeRTTBuilder: CubeRttBuilder) {
 
         this.m_materialBuilder = materialBuilder;
         this.m_cubeRTTBuilder = cubeRTTBuilder;
-        this.m_vsmModule = vsmModule;
     }
     getTextureByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         return this.materialCtx.getTextureByUrl(purl, wrapRepeat, mipmapEnabled);
     }
     getCubeRttBuilder(): CubeRttBuilder {
         return this.m_cubeRTTBuilder;
-    }
-    getVSMModule(): ShadowVSMModule {
-        return this.m_vsmModule;
     }
     initialize(rscene: RendererScene, materialCtx: MaterialContext, mirrorEffector: PBRMirror, mirrorRprIndex: number): void {
         if (this.m_rscene != rscene) {
@@ -61,9 +51,6 @@ export default class PBREntityUtils {
         
         if (decorator.indirectEnvMapEnabled) {
             decorator.indirectEnvMap = this.m_cubeRTTBuilder.getCubeTexture();
-        }
-        if (decorator.shadowReceiveEnabled && this.m_vsmModule != null) {
-            decorator.shadowMap = this.m_vsmModule.getShadowMap();
         }
     }
 
