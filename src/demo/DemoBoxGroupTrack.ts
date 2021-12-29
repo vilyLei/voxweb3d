@@ -24,6 +24,7 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 import PBRMaterial from "../pbr/material/PBRMaterial";
+import MaterialBase from "../vox/material/MaterialBase";
 
 class TrackWheelRole {
     private m_pz: number = Math.random() * 1000.0 - 500.00;
@@ -216,15 +217,15 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         //this.m_boxTrack.setScale(2.2);
         this.m_rscene.addEntity(this.m_boxTrack.animator);
 
-        /*
         this.m_role0.boxTrack = this.m_boxTrack;
         this.m_role0.initialize();
+        /*
         this.m_role1.boxTrack = boxTrack;
         this.m_role1.initialize();
         //*/
 
         this.m_track01 = this.createTrackEntity(this.m_boxTrack, tex0);
-        //this.m_track02 = this.createTrackEntity(this.m_boxTrack, tex0);
+        this.m_track02 = this.createTrackEntity(this.m_boxTrack, tex0, 1);
 
         // let boxTrack: BoxGroupTrack = new BoxGroupTrack();
         // boxTrack.initializeFrom(this.m_boxTrack, [tex0]);
@@ -260,11 +261,11 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         //trackMaterial.diffuseMap = diffuseMap;
         trackMaterial.decorator.diffuseMapEnabled = true;
         trackMaterial.decorator.normalMapEnabled = true;
-        trackMaterial.decorator.aoMapEnabled = false;
+        trackMaterial.decorator.aoMapEnabled = true;
         //trackMaterial.decorator.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/default.jpg");
         trackMaterial.decorator.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
         trackMaterial.decorator.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
-        //trackMaterial.decorator.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
+        trackMaterial.decorator.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
         trackMaterial.decorator.fogEnabled = false;
         let vertUniform = trackMaterial.vertUniform as VertUniformComp;
         vertUniform.uvTransformEnabled = true;
@@ -274,16 +275,28 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         trackMaterial.setAmbientFactor(0.4, 0.4, 0.4);
         trackMaterial.setAlbedoColor(1.0, 1.0, 1.0);
         trackMaterial.setRoughness(0.2);
+        trackMaterial.setToneMapingExposure(3.0);
         //trackMaterial.setBlendFactor(0.7, 0.7);
         if(boxTrack != null) vertUniform.setCurveMoveParam(boxTrack.animator.getPosDataTexture().getWidth(), boxTrack.animator.getPosTotal());
         if(boxTrack != null) vertUniform.setCurveMoveDistance(0.0);
         vertUniform.setUVScale(4.0,1.0);
         return trackMaterial;
     }
-    private createTrackEntity(boxTrack: BoxGroupTrack, diffuseMap: TextureProxy): TrackWheelLightRole {
+    private createTrackEntity(boxTrack: BoxGroupTrack, diffuseMap: TextureProxy, type: number = 0): TrackWheelLightRole {
 
-        //let material = this.createLambertMaterial(boxTrack, diffuseMap);
-        let material = this.createPBRMaterial(boxTrack, diffuseMap);
+        let vertUniform: VertUniformComp;// = material.vertUniform as VertUniformComp;
+        let material: MaterialBase;
+        if(type == 0) {
+            let mt = this.createLambertMaterial(boxTrack, diffuseMap);
+            vertUniform = mt.vertUniform as VertUniformComp;
+            material = mt;
+        }
+        else {
+            let mt = this.createPBRMaterial(boxTrack, diffuseMap);
+            material = mt;
+            vertUniform = mt.vertUniform as VertUniformComp;
+        }
+        
 
         let trackEntity: DisplayEntity = new DisplayEntity();
         trackEntity.setMaterial(material);
@@ -291,7 +304,7 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         this.m_rscene.addEntity( trackEntity );
         let trackRole: TrackWheelLightRole = new TrackWheelLightRole();
         trackRole.trackEntity = trackEntity;
-        trackRole.trackData = material.vertUniform as VertUniformComp;
+        trackRole.trackData = vertUniform;
         trackRole.initialize();
         return trackRole;
     }
@@ -304,7 +317,7 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         this.m_timeoutId = setTimeout(this.update.bind(this), 30);// 33 fps
         this.m_statusDisp.render();
 
-        // this.m_role0.run();
+        this.m_role0.run();
         // this.m_role1.run();
         
         if(this.m_track01 != null) this.m_track01.run();
