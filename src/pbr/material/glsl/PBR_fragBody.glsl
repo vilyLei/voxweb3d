@@ -8,8 +8,11 @@
     float metallic = param4.x;
     float roughness = param4.y;
     float ao = param4.z;
-
+    #ifdef VOX_USE_2D_MAP
     vec2 texUV = v_uv.xy;
+    #else
+    vec2 texUV = vec2(0.0);
+    #endif
     
     float colorGlossiness = 1.0 - roughness;
     float reflectionIntensity = u_pbrParams[1].y;

@@ -369,7 +369,7 @@
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
-import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
@@ -393,7 +393,7 @@ import {DemoPBR as Demo} from "./pbr/DemoPBR";
 //  import * as BoFrame from "./app/BoFrame";
 //  import Demo = BoFrame.app.BoFrame;
 
-//  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
+import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
 //  import {RbtDrama as Demo} from "./app/RbtDrama";
 

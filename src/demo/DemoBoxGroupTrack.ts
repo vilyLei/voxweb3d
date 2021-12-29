@@ -154,7 +154,7 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
     initialize(): void {
         console.log("DemoBoxGroupTrack::initialize()......");
         if (this.m_rscene == null) {
-            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
@@ -185,22 +185,24 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         let tex0: TextureProxy = this.getImageTexByUrl("static/assets/image_003.jpg");
         let tex1: TextureProxy = this.getImageTexByUrl("static/assets/box_wood01.jpg");
         this.m_rscene.setClearRGBColor3f(0.1, 0.2, 0.1);
-        let axis: Axis3DEntity = new Axis3DEntity();
-        axis.initialize(310);
-        this.m_rscene.addEntity(axis);
 
-        let material: LambertLightMaterial;
+        // let axis: Axis3DEntity = new Axis3DEntity();
+        // axis.initialize(310);
+        // this.m_rscene.addEntity(axis);
 
+        // let material: LambertLightMaterial;
         // material = this.m_materialCtx.createLambertLightMaterial();
         // material.fogEnabled = false;
         // material.diffuseMap = tex1;
         // material.initializeByCodeBuf(true);
         // material.setBlendFactor(0.5,0.8);
-        // let box: Box3DEntity = new Box3DEntity();
-        // box.setMaterial(material);
-        // box.initializeCube(200.0, [tex1]);
-        // this.m_rscene.addEntity(box);
+        let material = this.createPBRMaterial(null,null);
+        let box: Box3DEntity = new Box3DEntity();
+        box.setMaterial(material);
+        box.initializeCube(200.0, [tex1]);
+        this.m_rscene.addEntity(box);
 
+        return;
         //  this.m_boxTrack.setTrackScaleXYZ(0.2,0.2,0.2);
         //  this.m_boxTrack.initialize(this.m_rscene.textureBlock,0.5,[tex0]);
         let distanceFactor: number = 0.98;
@@ -214,23 +216,22 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         //this.m_boxTrack.setScale(2.2);
         this.m_rscene.addEntity(this.m_boxTrack.animator);
 
+        /*
         this.m_role0.boxTrack = this.m_boxTrack;
         this.m_role0.initialize();
-
-        this.m_track01 = this.createTrackEntity(this.m_boxTrack, tex0);
-        this.m_track02 = this.createTrackEntity(this.m_boxTrack, tex0);
-        ///*
-        let boxTrack: BoxGroupTrack = new BoxGroupTrack();
-        boxTrack.initializeFrom(this.m_boxTrack, [tex0]);
-        this.m_rscene.addEntity(boxTrack.animator);
-
         this.m_role1.boxTrack = boxTrack;
         this.m_role1.initialize();
         //*/
 
-        let curveLine: DashedLine3DEntity = new DashedLine3DEntity();
-        curveLine.initializeByPosition(this.m_boxTrack.getTrackPosList());
-        this.m_rscene.addEntity(curveLine);
+        this.m_track01 = this.createTrackEntity(this.m_boxTrack, tex0);
+        //this.m_track02 = this.createTrackEntity(this.m_boxTrack, tex0);
+        let boxTrack: BoxGroupTrack = new BoxGroupTrack();
+        boxTrack.initializeFrom(this.m_boxTrack, [tex0]);
+        this.m_rscene.addEntity(boxTrack.animator);
+
+        // let curveLine: DashedLine3DEntity = new DashedLine3DEntity();
+        // curveLine.initializeByPosition(this.m_boxTrack.getTrackPosList());
+        // this.m_rscene.addEntity(curveLine);
     }
     private createLambertMaterial(boxTrack: BoxGroupTrack, diffuseMap: TextureProxy): LambertLightMaterial {
         let dataTex = boxTrack.animator.getPosDataTexture();
@@ -239,40 +240,43 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         //trackMaterial.diffuseMap = diffuseMap;
         trackMaterial.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
         trackMaterial.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
+        trackMaterial.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
         trackMaterial.fogEnabled = false;
         let vertUniform = trackMaterial.vertUniform as VertUniformComp;
         vertUniform.uvTransformEnabled = true;
         trackMaterial.vertUniform = vertUniform;
         vertUniform.curveMoveMap = dataTex;
         trackMaterial.initializeByCodeBuf( true );
-        trackMaterial.setBlendFactor(0.7, 0.7);
+        trackMaterial.setBlendFactor(0.9, 1.5);
         vertUniform.setCurveMoveParam(dataTex.getWidth(), posTotal);
         vertUniform.setCurveMoveDistance(0.0);
         vertUniform.setUVScale(4.0,1.0);
         return trackMaterial;
     }
     private createPBRMaterial(boxTrack: BoxGroupTrack, diffuseMap: TextureProxy): PBRMaterial {
-        let dataTex = boxTrack.animator.getPosDataTexture();
-        let posTotal = boxTrack.animator.getPosTotal();
+
         let trackMaterial = this.m_materialCtx.createPBRLightMaterial(true, true, true);
         //trackMaterial.diffuseMap = diffuseMap;
+        trackMaterial.decorator.aoMapEnabled = false;
         trackMaterial.decorator.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
         trackMaterial.decorator.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
+        //trackMaterial.decorator.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
         trackMaterial.decorator.fogEnabled = false;
         let vertUniform = trackMaterial.vertUniform as VertUniformComp;
         vertUniform.uvTransformEnabled = true;
         trackMaterial.vertUniform = vertUniform;
-        vertUniform.curveMoveMap = dataTex;
+        if(boxTrack != null) vertUniform.curveMoveMap = boxTrack.animator.getPosDataTexture();
         trackMaterial.initializeByCodeBuf( true );
         //trackMaterial.setBlendFactor(0.7, 0.7);
-        vertUniform.setCurveMoveParam(dataTex.getWidth(), posTotal);
-        vertUniform.setCurveMoveDistance(0.0);
+        if(boxTrack != null) vertUniform.setCurveMoveParam(boxTrack.animator.getPosDataTexture().getWidth(), boxTrack.animator.getPosTotal());
+        if(boxTrack != null) vertUniform.setCurveMoveDistance(0.0);
         vertUniform.setUVScale(4.0,1.0);
         return trackMaterial;
     }
     private createTrackEntity(boxTrack: BoxGroupTrack, diffuseMap: TextureProxy): TrackWheelLightRole {
 
-        let material = this.createLambertMaterial(boxTrack, diffuseMap);
+        //let material = this.createLambertMaterial(boxTrack, diffuseMap);
+        let material = this.createPBRMaterial(boxTrack, diffuseMap);
 
         let trackEntity: DisplayEntity = new DisplayEntity();
         trackEntity.setMaterial(material);
@@ -293,11 +297,11 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         this.m_timeoutId = setTimeout(this.update.bind(this), 30);// 33 fps
         this.m_statusDisp.render();
 
-        this.m_role0.run();
-        this.m_role1.run();
+        // this.m_role0.run();
+        // this.m_role1.run();
         
-        if(this.m_track01 != null) this.m_track01.run();
-        if(this.m_track02 != null) this.m_track02.run();
+        //if(this.m_track01 != null) this.m_track01.run();
+        //if(this.m_track02 != null) this.m_track02.run();
     }
     run(): void {
         this.m_interaction.run();

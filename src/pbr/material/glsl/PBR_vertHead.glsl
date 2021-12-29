@@ -33,12 +33,13 @@ void initLocalVtx() {
         vec2 puv = vec2(fract(index), floor(index) * params[0]);
         localPosition.xyz += VOX_Texture2D(VTX_CURVE_MOVE_MAP, puv).xyz;
     #endif
-        
-    #ifdef VOX_VTX_TRANSFORM_PARAM_INDEX
-        paramIndex = VOX_VTX_TRANSFORM_PARAM_INDEX;
-        v_uv = a_uvs.xy * u_vertLocalParams[paramIndex].xy + u_vertLocalParams[paramIndex].zw;
-    #elif VOX_USE_2D_MAP
-        v_uv = a_uvs.xy;
+    #ifdef VOX_USE_2D_MAP
+        #ifdef VOX_VTX_TRANSFORM_PARAM_INDEX
+            paramIndex = VOX_VTX_TRANSFORM_PARAM_INDEX;
+            v_uv = a_uvs.xy * u_vertLocalParams[paramIndex].xy + u_vertLocalParams[paramIndex].zw;
+        #else
+            v_uv = a_uvs.xy;
+        #endif
     #endif
 
     #ifdef VOX_DISPLACEMENT_MAP
