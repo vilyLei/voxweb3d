@@ -91,19 +91,20 @@ class VertUniformComp extends UniformComp {
 
     }
 
-    getTextures(shaderBuilder: IShaderCodeBuilder): TextureProxy[] {
+    getTextures(shaderBuilder: IShaderCodeBuilder, outList: TextureProxy[] = null): TextureProxy[] {
         if (this.getParamsTotal() > 0) {
-            let texList: TextureProxy[] = [];
+
+            if(outList == null) outList = [];
             if (this.m_curveMoveParamIndex >= 0) {
-                texList.push(this.curveMoveMap);
+                outList.push(this.curveMoveMap);
                 shaderBuilder.uniform.add2DMap("VTX_CURVE_MOVE_MAP", false, false, true);
                 shaderBuilder.addDefine("VOX_VTX_CURVE_MOVE_PARAM_INDEX", "" + this.m_curveMoveParamIndex);
             }
             if (this.m_displacementParamIndex >= 0) {
-                texList.push(this.displacementMap);
+                outList.push(this.displacementMap);
                 shaderBuilder.uniform.addDisplacementMap(this.m_displacementParamIndex);
             }
-            return texList;
+            return outList;
         }
         return null;
     }

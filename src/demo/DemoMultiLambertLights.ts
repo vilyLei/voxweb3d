@@ -119,7 +119,6 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         rotLightEntity.displayEntity = this.createPointLightDisp(pointLight);
         this.m_lightEntities.push(rotLightEntity);
 
-
         pointLight = this.m_materialCtx.lightModule.getPointLightAt(2);
         pointLight.color.setRGB3f(0.0, 1.0, 1.0);
         pointLight.attenuationFactor1 = 0.00001;
@@ -153,7 +152,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
 
         let color: Color4 = new Color4(1.0, 1.0, 0.0);
         let colorBias: Color4 = new Color4(0.0, 0.0, 0.0);
-        ///*
+        /*
         // let box: Box3DEntity = new Box3DEntity();
         // box.pipeTypes = [MaterialPipeType.FOG_EXP2];
         // box.setMaterialPipeline( this.m_materialCtx.pipeline );

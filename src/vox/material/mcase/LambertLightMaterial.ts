@@ -97,11 +97,6 @@ export default class LambertLightMaterial extends MaterialBase {
         let buf: AdvancedShaderCodeBuffer = LambertLightMaterial.s_shaderCodeBuffer;
         buf.setIRenderTextureList([]);
         
-        let textures: TextureProxy[] = null;
-        if(this.vertUniform != null) {
-            textures = this.vertUniform.getTextures(buf.getShaderCodeBuilder());
-        }
-
         buf.addDiffuseMap( this.diffuseMap );
         buf.addNormalMap( this.normalMap );
         buf.addParallaxMap( this.parallaxMap, this.m_parallaxParamIndex );
@@ -110,7 +105,7 @@ export default class LambertLightMaterial extends MaterialBase {
         buf.addShadowMap( this.shadowMap );
 
         let list = buf.getIRenderTextureList() as TextureProxy[];
-        list = textures != null ? list.concat(textures) : list;
+        if(this.vertUniform != null) this.vertUniform.getTextures(buf.getShaderCodeBuilder(), list);
         return list;
     }
     initializeLocalData(): void {
