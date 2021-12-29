@@ -352,18 +352,13 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     }
     createSelfUniformData(): ShaderUniformData {
 
-        let vertLocalParams = this.vertUniform != null ? this.vertUniform.getParams() :  null;
-
-        let oum: ShaderUniformData = new ShaderUniformData();
-        if(vertLocalParams == null) {
-            oum.uniformNameList = ["u_pbrParams", "u_fragLocalParams", "u_mirrorParams"];
-            oum.dataList = [this.m_pbrParams, this.m_fragLocalParams, this.m_mirrorParam];
+        let sud: ShaderUniformData = new ShaderUniformData();
+        sud.uniformNameList = ["u_pbrParams", "u_fragLocalParams", "u_mirrorParams"];
+        sud.dataList = [this.m_pbrParams, this.m_fragLocalParams, this.m_mirrorParam];
+        if(this.vertUniform != null) {
+            this.vertUniform.buildShaderUniformData(sud);
         }
-        else {
-            oum.uniformNameList = ["u_pbrParams", "u_vertLocalParams", "u_fragLocalParams", "u_mirrorParams"];
-            oum.dataList = [this.m_pbrParams, vertLocalParams, this.m_fragLocalParams, this.m_mirrorParam];
-        }
-        return oum;
+        return sud;
     }
     destroy(): void {
 

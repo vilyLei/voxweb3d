@@ -7,6 +7,7 @@
 
 import { IMaterialPipe } from "../pipeline/IMaterialPipe";
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
+import ShaderUniformData from "../ShaderUniformData";
 import TextureProxy from "../../texture/TextureProxy";
 class UniformComp {
 
@@ -40,6 +41,9 @@ class UniformComp {
     }
     getParamsTotal(): number {
         return this.m_params != null ? this.m_params.length >> 2 : 0;
+    }
+    buildShaderUniformData(data: ShaderUniformData): void {
+        
     }
 }
 export { UniformComp };

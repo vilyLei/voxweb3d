@@ -9,6 +9,7 @@ import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import { UniformComp } from "./UniformComp";
 import TextureProxy from "../../texture/TextureProxy";
 import Vector3D from "../../math/Vector3D";
+import ShaderUniformData from "../ShaderUniformData";
 /**
  * manage uniform data for the vertex calculation
  */
@@ -156,6 +157,13 @@ class VertUniformComp extends UniformComp {
         u.displacementMap = this.displacementMap;
         u.curveMoveMap = this.curveMoveMap;
         return u;
+    }
+    
+    buildShaderUniformData(data: ShaderUniformData): void {
+        if(this.getParamsTotal() > 0) {
+            data.uniformNameList.push("u_vertLocalParams");
+            data.dataList.push(this.getParams());
+        }
     }
 }
 export { VertUniformComp };

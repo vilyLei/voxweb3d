@@ -255,21 +255,14 @@ export default class LambertLightMaterial extends MaterialBase {
 
     createSelfUniformData(): ShaderUniformData {
         
-        //let vertLocalParams = this.vertUniform != null ? this.vertUniform.getParams() : this.m_vertLocalParams;
-        let vertLocalParams = this.vertUniform != null ? this.vertUniform.getParams() : null;
-        
-        let oum: ShaderUniformData = new ShaderUniformData();
-        
-        if(vertLocalParams != null) {
-            oum.uniformNameList = ["u_vertLocalParams", "u_fragLocalParams"];
-            oum.dataList = [vertLocalParams, this.m_fragLocalParams];
-        }
-        else {
-            oum.uniformNameList = ["u_fragLocalParams"];
-            oum.dataList = [this.m_fragLocalParams];
+        let sud: ShaderUniformData = new ShaderUniformData();
+        sud.uniformNameList = ["u_fragLocalParams"];
+        sud.dataList = [this.m_fragLocalParams];
+        if(this.vertUniform != null) {
+            this.vertUniform.buildShaderUniformData( sud );
         }
 
-        return oum;
+        return sud;
     }
     destroy(): void {
         super.destroy();
