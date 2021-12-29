@@ -15,6 +15,7 @@ import { IMaterialPipe } from "../../vox/material/pipeline/IMaterialPipe";
 
 import { EnvShaderCode } from "../material/EnvShaderCode";
 import { GlobalEnvLightUniformParam } from "../../vox/material/GlobalUniformParam";
+import IRenderTexture from '../../vox/render/IRenderTexture';
 
 export default class EnvLightData implements IMaterialPipe {
 
@@ -70,6 +71,9 @@ export default class EnvLightData implements IMaterialPipe {
         this.m_dirty = true;
     }
 
+    getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[]): IRenderTexture[] {
+        return null;
+    }
     useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void {
 
         if (this.m_uProbe != null) {

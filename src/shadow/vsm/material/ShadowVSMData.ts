@@ -17,11 +17,12 @@ import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipe } from "../../../vox/material/pipeline/IMaterialPipe";
 
+import IRenderTexture from '../../../vox/render/IRenderTexture';
 import { GlobalVSMShadowUniformParam } from "../../../vox/material/GlobalUniformParam";
 import { VSMShaderCode } from "./VSMShaderCode";
 
 
-export default class ShadowVSMData implements IMaterialPipe{
+export default class ShadowVSMData implements IMaterialPipe {
 
     private m_uniformParam: GlobalVSMShadowUniformParam = new GlobalVSMShadowUniformParam();
     private m_uProbe: ShaderUniformProbe = null;
@@ -35,6 +36,10 @@ export default class ShadowVSMData implements IMaterialPipe{
 
     constructor(slotIndex: number = 0) {
         this.m_uslotIndex = slotIndex;
+    }
+
+    getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[]): IRenderTexture[] {
+        return null;
     }
     useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void {
         if (this.m_uProbe != null) {
@@ -53,7 +58,7 @@ export default class ShadowVSMData implements IMaterialPipe{
     getPipeKey(pipeType: MaterialPipeType): string {
         switch (pipeType) {
             case MaterialPipeType.VSM_SHADOW:
-                    return "["+pipeType+"]";
+                return "[" + pipeType + "]";
                 break;
             default:
                 break;
@@ -92,7 +97,7 @@ export default class ShadowVSMData implements IMaterialPipe{
             this.m_uProbe.bindSlotAt(this.m_uslotIndex);
             this.m_uProbe.addMat4Data(this.m_direcMatrix.getLocalFS32(), 1);
             this.m_uProbe.addVec4Data(this.m_params, UniformConst.ShadowVSMParams.arrayLength);
-            this.m_suo = this.m_uniformParam.createGlobalUinform( this.m_uProbe );
+            this.m_suo = this.m_uniformParam.createGlobalUinform(this.m_uProbe);
             this.m_uProbe.update();
         }
     }

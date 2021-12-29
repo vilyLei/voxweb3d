@@ -16,6 +16,7 @@ import MathConst from "../../vox/math/MathConst";
 import { PointLight } from "./PointLight";
 import { DirectionLight } from "./DirectionLight";
 import { SpotLight } from "./SpotLight";
+import IRenderTexture from '../../vox/render/IRenderTexture';
 
 class LightModule implements IMaterialPipe {
 
@@ -228,6 +229,9 @@ class LightModule implements IMaterialPipe {
 
         console.log("showInfo(), this.m_lightPosData: ", this.m_lightPosData);
         console.log("showInfo(), this.m_lightColors: ", this.m_lightColors);
+    }
+    getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[]): IRenderTexture[] {
+        return null;
     }
     useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void {
 
