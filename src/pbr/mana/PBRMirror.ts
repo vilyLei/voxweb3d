@@ -28,7 +28,7 @@ export class PBRMirror {
 
     reflectPlaneY: number = -220.0;
     materialBuilder: PBRMaterialBuilder;
-    specularEnvMap: TextureProxy = null;
+    //specularEnvMap: TextureProxy = null;
     fogEnabled: boolean = false;
     constructor(fboIndex: number) {
         this.m_fboIndex = fboIndex;
@@ -79,18 +79,13 @@ export class PBRMirror {
         let camPos: Vector3D = camera.getPosition();
         camPos.y *= -1.0;
 
-        let texList: TextureProxy[] = [
-            this.m_fboIns.getRTTAt(0),
-            this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big.jpg"),
-            this.m_materialCtx.getTextureByUrl("static/assets/brickwall_normal.jpg")
-        ];
-
         let plane: Plane3DEntity = null;
         let material: PBRMaterial;
         this.m_mirrorMapLodEnabled = true;
         ///*
-        // mirror plane
+        
         material = this.materialBuilder.makePBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
+        this.m_material = material;
 
         let decorator: PBRShaderDecorator = material.decorator;
 
@@ -103,14 +98,11 @@ export class PBRMirror {
         decorator.normalMapEnabled = true;
         decorator.aoMapEnabled = true;
 
-        this.m_material = material;
 
-        decorator.specularEnvMap = this.specularEnvMap;
         decorator.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big.jpg");
         decorator.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/brickwall_normal.jpg");
         decorator.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_occ.jpg");
         decorator.mirrorMap = this.getMirrorMap();
-        console.log("PBRMirror::initMirrorEffect(), material.getMaterialPipeline(): ",material.getMaterialPipeline());
 
         if (this.m_mirrorMapLodEnabled) {
             this.m_fboIns.enableMipmapRTTAt(0);

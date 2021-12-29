@@ -9,23 +9,23 @@ import PBRShaderDecorator from "../../pbr/material/PBRShaderDecorator";
 import PBRMaterial from "../../pbr/material/PBRMaterial";
 import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
 import { VertUniformComp } from "../../vox/material/component/VertUniformComp";
+import { CommonMaterialContext } from "../../materialLab/base/CommonMaterialContext";
 
 export default class PBRMaterialBuilder {
 
     hdrBrnEnabled: boolean = false;
     vtxFlatNormal: boolean = false;
 
-    pipeline:MaterialPipeline = null;
+    materialCtx: CommonMaterialContext;
+    //pipeline:MaterialPipeline = null;
     constructor() {
     }
 
     makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
 
-        let material: PBRMaterial = new PBRMaterial();
-        material.vertUniform = new VertUniformComp();
-        material.setMaterialPipeline( this.pipeline );
-        let decorator: PBRShaderDecorator = new PBRShaderDecorator();
-        material.decorator = decorator;
+        let material = this.materialCtx.createPBRLightMaterial(true, true, true);
+        let decorator = material.decorator;
+        console.log("makePBRMaterial(), decorator: ",decorator);
 
         decorator.woolEnabled = true;
         decorator.toneMappingEnabled = true;

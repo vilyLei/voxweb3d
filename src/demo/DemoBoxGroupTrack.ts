@@ -23,6 +23,7 @@ import { DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import { VertUniformComp } from "../vox/material/component/VertUniformComp";
+import PBRMaterial from "../pbr/material/PBRMaterial";
 
 class TrackWheelRole {
     private m_pz: number = Math.random() * 1000.0 - 500.00;
@@ -231,28 +232,55 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         curveLine.initializeByPosition(this.m_boxTrack.getTrackPosList());
         this.m_rscene.addEntity(curveLine);
     }
-    private createTrackEntity(boxTrack: BoxGroupTrack, diffuseMap: TextureProxy): TrackWheelLightRole {
-
+    private createLambertMaterial(boxTrack: BoxGroupTrack, diffuseMap: TextureProxy): LambertLightMaterial {
         let dataTex = boxTrack.animator.getPosDataTexture();
         let posTotal = boxTrack.animator.getPosTotal();
-        let trackMaterial: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
-        trackMaterial.diffuseMap = diffuseMap;
+        let trackMaterial = this.m_materialCtx.createLambertLightMaterial(true);
+        //trackMaterial.diffuseMap = diffuseMap;
+        trackMaterial.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
+        trackMaterial.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
         trackMaterial.fogEnabled = false;
-        let vertUniform = new VertUniformComp();
+        let vertUniform = trackMaterial.vertUniform as VertUniformComp;
+        vertUniform.uvTransformEnabled = true;
         trackMaterial.vertUniform = vertUniform;
         vertUniform.curveMoveMap = dataTex;
         trackMaterial.initializeByCodeBuf( true );
-        trackMaterial.setBlendFactor(0.8, 0.8);
+        trackMaterial.setBlendFactor(0.7, 0.7);
         vertUniform.setCurveMoveParam(dataTex.getWidth(), posTotal);
         vertUniform.setCurveMoveDistance(0.0);
-        
+        vertUniform.setUVScale(4.0,1.0);
+        return trackMaterial;
+    }
+    private createPBRMaterial(boxTrack: BoxGroupTrack, diffuseMap: TextureProxy): PBRMaterial {
+        let dataTex = boxTrack.animator.getPosDataTexture();
+        let posTotal = boxTrack.animator.getPosTotal();
+        let trackMaterial = this.m_materialCtx.createPBRLightMaterial(true, true, true);
+        //trackMaterial.diffuseMap = diffuseMap;
+        trackMaterial.decorator.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
+        trackMaterial.decorator.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
+        trackMaterial.decorator.fogEnabled = false;
+        let vertUniform = trackMaterial.vertUniform as VertUniformComp;
+        vertUniform.uvTransformEnabled = true;
+        trackMaterial.vertUniform = vertUniform;
+        vertUniform.curveMoveMap = dataTex;
+        trackMaterial.initializeByCodeBuf( true );
+        //trackMaterial.setBlendFactor(0.7, 0.7);
+        vertUniform.setCurveMoveParam(dataTex.getWidth(), posTotal);
+        vertUniform.setCurveMoveDistance(0.0);
+        vertUniform.setUVScale(4.0,1.0);
+        return trackMaterial;
+    }
+    private createTrackEntity(boxTrack: BoxGroupTrack, diffuseMap: TextureProxy): TrackWheelLightRole {
+
+        let material = this.createLambertMaterial(boxTrack, diffuseMap);
+
         let trackEntity: DisplayEntity = new DisplayEntity();
-        trackEntity.setMaterial(trackMaterial);
+        trackEntity.setMaterial(material);
         trackEntity.copyMeshFrom( boxTrack.animator );
         this.m_rscene.addEntity( trackEntity );
         let trackRole: TrackWheelLightRole = new TrackWheelLightRole();
         trackRole.trackEntity = trackEntity;
-        trackRole.trackData = vertUniform;
+        trackRole.trackData = material.vertUniform as VertUniformComp;
         trackRole.initialize();
         return trackRole;
     }

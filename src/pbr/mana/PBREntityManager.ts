@@ -26,7 +26,6 @@ export default class PBREntityManager {
     private m_entityUtils: PBREntityUtils = null;
     private m_mirrorEffector: PBRMirror = null;
     private m_uiModule: DefaultPBRUI;
-    private m_specularEnvMap: TextureProxy = null;
     private m_paramEntities: PBRParamEntity[] = [];
     private m_dracoMeshLoader: DracoMeshBuilder = new DracoMeshBuilder(1);
     private m_reflectPlaneY: number = -220.0;
@@ -34,7 +33,7 @@ export default class PBREntityManager {
     aoMapEnabled: boolean = false;
     constructor() {
     }
-    initialize(rscene: RendererScene, entityUtils: PBREntityUtils, mirrorEffector: PBRMirror, uiModule: DefaultPBRUI, specularEnvMap: TextureProxy): void {
+    initialize(rscene: RendererScene, entityUtils: PBREntityUtils, mirrorEffector: PBRMirror, uiModule: DefaultPBRUI): void {
 
         if (this.m_rscene != rscene) {
 
@@ -42,7 +41,6 @@ export default class PBREntityManager {
             this.m_entityUtils = entityUtils;
             this.m_mirrorEffector = mirrorEffector;
             this.m_uiModule = uiModule;
-            this.m_specularEnvMap = specularEnvMap;
 
             this.m_dracoMeshLoader.initialize(2);
 
@@ -51,7 +49,6 @@ export default class PBREntityManager {
             this.m_dracoModule.paramEntities = this.m_paramEntities;
             this.m_dracoModule.reflectPlaneY = this.m_reflectPlaneY;
             this.m_dracoModule.aoMapEnabled = this.aoMapEnabled;
-            this.m_dracoModule.specularEnvMap = this.m_specularEnvMap;
             //"static/assets/modules/skirt/dracos_"+ i +".drc.zip"
             let urlsTotal: number = 30;
             let urls: string[] = [];
@@ -75,7 +72,6 @@ export default class PBREntityManager {
     }
     private useMaterial(material: PBRMaterial): void {
 
-        material.decorator.specularEnvMap = this.m_specularEnvMap;
         // base color map
         material.decorator.diffuseMap = this.m_entityUtils.getTextureByUrl("static/assets/disp/normal_4_256_COLOR.png");
         // normal map
@@ -184,7 +180,7 @@ export default class PBREntityManager {
         material.decorator.shadowReceiveEnabled = false;
 
         material.setRoughness(0.4);
-        this.m_entityUtils.useTexForMaterial(material, this.m_specularEnvMap, this.m_entityUtils.getTextureByUrl("static/assets/noise.jpg"));
+        this.m_entityUtils.useTexForMaterial(material, this.m_entityUtils.getTextureByUrl("static/assets/noise.jpg"));
         let envSph: Sphere3DEntity = new Sphere3DEntity();
         envSph.setMaterial(material);
         envSph.showFrontFace();

@@ -14,7 +14,6 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import RendererSubScene from "../vox/scene/RendererSubScene";
 import DebugFlag from "../vox/debug/DebugFlag";
 import TextureProxy from "../vox/texture/TextureProxy";
-import { SpecularTextureLoader } from "./mana/TextureLoader";
 
 import PBRMaterial from "./material/PBRMaterial";
 import PBRShaderDecorator from "./material/PBRShaderDecorator";
@@ -33,7 +32,7 @@ import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
 import { SpotLight } from "../light/base/SpotLight";
-import { IShaderLibConfigure, ShaderCodeType, ShaderCodeUUID, ShaderCodeConfigure, IShaderLibListener, CommonMaterialContext, MaterialContext, MaterialContextParam } from "../materialLab/base/CommonMaterialContext";
+import { IShaderLibListener, CommonMaterialContext, MaterialContextParam } from "../materialLab/base/CommonMaterialContext";
 import { DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import DataMesh from "../vox/mesh/DataMesh";
@@ -43,7 +42,6 @@ import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 export class DemoPBRViewer implements IShaderLibListener {
     constructor() { }
     private m_rscene: RendererScene = null;
-    private m_ruisc: RendererSubScene = null;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
@@ -52,8 +50,6 @@ export class DemoPBRViewer implements IShaderLibListener {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     
     private m_reflectPlaneY: number = -220;
-    //  private m_envData: EnvLightData = null;
-    private m_specularEnvMap: TextureProxy = null;
 
     //private m_materialCtx: MaterialContext = new MaterialContext();
     //private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
@@ -109,15 +105,6 @@ export class DemoPBRViewer implements IShaderLibListener {
         }
     }
     private initMaterialCtx(): void {
-
-        let envMapUrl: string = "static/bytes/spe.mdf";
-        if (this.hdrBrnEnabled) {
-            envMapUrl = "static/bytes/spe.hdrBrn";
-        }
-        let loader: SpecularTextureLoader = new SpecularTextureLoader();
-        loader.hdrBrnEnabled = this.hdrBrnEnabled;
-        loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
-        this.m_specularEnvMap = loader.texture;
 
         let mcParam: MaterialContextParam = new MaterialContextParam();
         mcParam.pointLightsTotal = 1;
@@ -248,15 +235,16 @@ export class DemoPBRViewer implements IShaderLibListener {
         let material: PBRMaterial;
         let sph: Sphere3DEntity;
         ///*
-        let vertUniform: VertUniformComp = new VertUniformComp();
+        let vertUniform: VertUniformComp;
         material = this.createMaterial();
-        material.vertUniform = vertUniform;
+        vertUniform = material.vertUniform as VertUniformComp;
+        
         //material.decorator.normalMapEnabled = false;
         material.decorator.aoMapEnabled = this.aoMapEnabled;
         //material.decorator.aoMapEnabled = false;
         material.decorator.scatterEnabled = false;
 
-        material.decorator.specularEnvMap = this.m_specularEnvMap;
+        // material.decorator.specularEnvMap = this.m_specularEnvMap;
         material.decorator.diffuseMap = diffuseMap;
         material.decorator.normalMap = normalMap;
         material.decorator.aoMap = aoMap;
@@ -323,7 +311,7 @@ export class DemoPBRViewer implements IShaderLibListener {
             material = this.createMaterial();
             material.decorator.aoMapEnabled = this.aoMapEnabled;
             //  material.setTextureList(texList);
-            material.decorator.specularEnvMap = this.m_specularEnvMap;
+            //material.decorator.specularEnvMap = this.m_specularEnvMap;
             material.decorator.diffuseMap = diffuseMap;
             material.decorator.normalMap = normalMap;
             material.decorator.aoMap = aoMap;
@@ -385,12 +373,7 @@ export class DemoPBRViewer implements IShaderLibListener {
     
     makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
 
-        //let material: PBRMaterial = new PBRMaterial();
-        let material: PBRMaterial = this.m_materialCtx.createPBRLightMaterial();//new PBRMaterial();
-        //material.setMaterialPipeline( this.m_pipeline );
-        //material.setMaterialPipeline(this.m_materialCtx.pipeline);
-        material.decorator = new PBRShaderDecorator();
-
+        let material: PBRMaterial = this.m_materialCtx.createPBRLightMaterial(true, true, true);
         let decorator: PBRShaderDecorator = material.decorator;
         decorator.scatterEnabled = false;
         decorator.woolEnabled = true;
@@ -435,7 +418,7 @@ export class ViewerDracoModule extends DracoWholeModuleLoader {
     aoMapEnabled: boolean = false;
     specularEnvMap: TextureProxy;
     viewer: DemoPBRViewer;
-    materialCtx: MaterialContext;
+    materialCtx: CommonMaterialContext;
     constructor() {
         super();
     }

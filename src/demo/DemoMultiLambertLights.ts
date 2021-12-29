@@ -255,7 +255,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         color.normalizeRandom(1.1);
         material.setSpecularColor(color);
         let plane: Plane3DEntity = new Plane3DEntity();
-        //plane.setMaterialPipeline(this.m_materialCtx.pipeline);
+        
         plane.setMaterial(material);
         plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0);
         plane.setXYZ(0.0, -200.0, 0.0);

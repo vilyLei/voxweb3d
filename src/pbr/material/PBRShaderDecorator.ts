@@ -5,11 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-
 import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
 import UniformConst from "../../vox/material/UniformConst";
 import TextureProxy from '../../vox/texture/TextureProxy';
-import { ShadowMode } from "../../vox/material/pipeline/ShadowMode";
 
 export default class PBRShaderDecorator {
     constructor() {
@@ -203,7 +201,7 @@ export default class PBRShaderDecorator {
         if (this.fogEnabled) ns += "Fog";
         if (this.hdrBrnEnabled) ns += "HdrBrn";
         if (this.vtxFlatNormal) ns += "vtxFlagN";
-        console.log("getUNS(), this.texturesTotal: ",this.texturesTotal);
+        
         ns += "_T" + this.texturesTotal;
         this.m_uniqueName = ns;
 

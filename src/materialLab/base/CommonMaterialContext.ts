@@ -8,12 +8,15 @@ import PBRShaderDecorator from "../../pbr/material/PBRShaderDecorator";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import { VertUniformComp } from "../../vox/material/component/VertUniformComp";
+import { SpecularTextureLoader } from "../../pbr/mana/TextureLoader";
 
 /**
  * 实现 material 构造 pipeline 的上下文
  */
 class CommonMaterialContext extends MaterialContext {
 
+    private m_specularLoader: SpecularTextureLoader = null;
+    private m_specularEnvMap: TextureProxy = null;
     /**
      * 构造 lambert light material流水线
      */
@@ -35,16 +38,36 @@ class CommonMaterialContext extends MaterialContext {
         }
         return material;
     }
-    createLambertLightMaterial(): LambertLightMaterial {
+    createLambertLightMaterial(vertUniform: boolean = false): LambertLightMaterial {
         let material: LambertLightMaterial = new LambertLightMaterial();
         material.setMaterialPipeline(this.lambertPipeline);
+        if(vertUniform) material.vertUniform = new VertUniformComp();
         return material;
     }
-    createPBRLightMaterial(decorator: boolean = true, vertUniform: boolean = false): PBRMaterial {
+    createPBRLightMaterial(decorator: boolean = true, vertUniform: boolean = false, specularEnvMapEnabled: boolean = false): PBRMaterial {
+
         let material: PBRMaterial = new PBRMaterial();
         material.setMaterialPipeline(this.pbrPipeline);
         if(decorator) material.decorator = new PBRShaderDecorator();
         if(vertUniform) material.vertUniform = new VertUniformComp();
+        if(material.decorator != null) {
+            if(specularEnvMapEnabled) {
+                material.decorator.hdrBrnEnabled = true;
+                if(this.m_specularEnvMap == null) {
+                    let envMapUrl: string = "static/bytes/spe.mdf";
+                    if (material.decorator.hdrBrnEnabled) {
+                        envMapUrl = "static/bytes/spe.hdrBrn";
+                    }
+                    this.m_specularLoader = new SpecularTextureLoader();
+                    this.m_specularLoader.hdrBrnEnabled = material.decorator.hdrBrnEnabled;
+                    this.m_specularLoader.loadTextureWithUrl(envMapUrl, this.m_rscene);
+                    this.m_specularEnvMap = this.m_specularLoader.texture;
+                    this.m_specularEnvMap.__$attachThis();
+                }
+                material.decorator.specularEnvMap = this.m_specularEnvMap;
+            }
+            
+        }
         return material;
     }
     initialize(rscene: RendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {

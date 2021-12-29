@@ -76,30 +76,27 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader {
     paramEntities: PBRParamEntity[] = [];
     reflectPlaneY: number = -220.0;
     aoMapEnabled: boolean = false;
-    specularEnvMap: TextureProxy;
     constructor() {
         super();
     }
 
     dracoParseFinish(modules: any[], total: number): void {
 
-        console.log("pbrDracoParseFinish, modules: ", modules, this.m_pos);
-       
+        //console.log("pbrDracoParseFinish, modules: ", modules, this.m_pos);
         let material: PBRMaterial = this.entityUtils.createMaterial();
         let decorator = material.decorator;
         decorator.indirectEnvMapEnabled = true;
         const keyNS: string = "/dracos_42";
         if (this.m_url.indexOf(keyNS) > 0) {
-
             decorator.diffuseMapEnabled = true;
             decorator.normalMapEnabled = false;
             decorator.vtxFlatNormal = false;
             decorator.aoMapEnabled = false;
             decorator.shadowReceiveEnabled = false;
-            this.entityUtils.useTexForMaterial(material, this.specularEnvMap, this.entityUtils.getTextureByUrl("static/assets/noise.jpg"));
+            // avatar
+            this.entityUtils.useTexForMaterial(material, this.entityUtils.getTextureByUrl("static/assets/noise.jpg"));
         }
         else {
-
             decorator.diffuseMapEnabled = true;
             decorator.normalMapEnabled = true;
             decorator.aoMapEnabled = true;
@@ -111,7 +108,6 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader {
             }
             this.entityUtils.useTexForMaterial(
                 material,
-                this.specularEnvMap,
                 this.entityUtils.getTextureByUrl("static/assets/modules/skirt/baseColor.jpg"),
                 this.entityUtils.getTextureByUrl("static/assets/modules/skirt/normal.jpg"),
                 aoTex

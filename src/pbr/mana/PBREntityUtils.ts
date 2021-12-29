@@ -41,10 +41,9 @@ export default class PBREntityUtils {
             this.m_mirrorRprIndex = mirrorRprIndex;
         }
     }
-    useTexForMaterial(material: PBRMaterial, specularEnvMap: TextureProxy, diffuseMap: TextureProxy = null, normalMap: TextureProxy = null, aoMap: TextureProxy = null): void {
+    useTexForMaterial(material: PBRMaterial, diffuseMap: TextureProxy = null, normalMap: TextureProxy = null, aoMap: TextureProxy = null): void {
         
         let decorator: PBRShaderDecorator = material.decorator;
-        decorator.specularEnvMap = specularEnvMap;
         decorator.diffuseMap = diffuseMap;
         decorator.normalMap = normalMap;
         decorator.aoMap = aoMap;
