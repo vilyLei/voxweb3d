@@ -20,6 +20,9 @@ import TrackWheelRole from "../../../app/robot/base/TrackWheelRole";
 import { TerrainModule } from "../../../app/robot/terrain/TerrainModule";
 
 import { CommonMaterialContext } from "../../../materialLab/base/CommonMaterialContext";
+import LambertLightMaterial from "../../../vox/material/mcase/LambertLightMaterial";
+import MaterialBase from "../../../vox/material/MaterialBase";
+import Color4 from "../../../vox/material/Color4";
 
 class RoleBuilder {
 
@@ -190,17 +193,34 @@ class RoleBuilder {
     }
     private m_sillyRole_lowerBox: Box3DEntity;
     private m_sillyRole_upperBox: Box3DEntity;
+    
+    private createLambertMaterial(diffuseMap: TextureProxy): LambertLightMaterial {
+        let trackMaterial = this.m_materialCtx.createLambertLightMaterial(false);
+        trackMaterial.diffuseMap = diffuseMap;
+        //trackMaterial.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
+        trackMaterial.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
+        trackMaterial.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
+        trackMaterial.fogEnabled = false;
+        trackMaterial.initializeByCodeBuf( true );
+        trackMaterial.setBlendFactor(0.6, 0.7);
+        return trackMaterial;
+    }
     createSillyRoles(): void {
 
         let tex3 = this.m_texList[3];
         let tex4 = this.m_texList[4];
         let tex5 = this.m_texList[5];
+
+        let material: MaterialBase
+
         if(this.m_sillyRole_lowerBox == null) {
-            
+            material = this.createLambertMaterial(tex3);
             this.m_sillyRole_lowerBox = new Box3DEntity();
+            this.m_sillyRole_lowerBox.setMaterial( material );
             this.m_sillyRole_lowerBox.initializeSizeXYZ(50.0, 40, 50, [tex3]);
             this.m_sillyRole_lowerBox.setXYZ(0.0, 20.0, 0.0);
             this.m_sillyRole_upperBox = new Box3DEntity();
+            this.m_sillyRole_upperBox.setMaterial( material );
             this.m_sillyRole_upperBox.initializeSizeXYZ(30.0, 20, 30, [tex5]);
             this.m_sillyRole_upperBox.setXYZ(0.0, 50.0, 0.0);
 
@@ -208,7 +228,7 @@ class RoleBuilder {
         let srcSillyRole: SillyRole = null;
         let lowerBox: Box3DEntity = this.m_sillyRole_lowerBox;
         let upperBox: Box3DEntity = this.m_sillyRole_upperBox;
-        
+        let color = new Color4();
         for (let i: number = 0; i < 10; ++i) {
 
             let sillyRole: SillyRole = new SillyRole();
@@ -217,15 +237,24 @@ class RoleBuilder {
             }
             else {
                 let box0: Box3DEntity = new Box3DEntity();
+                
+                let pmaterial = this.createLambertMaterial(tex5);
+                color.randomRGB();
+                pmaterial.setColor( color );
+                box0.setMaterial(pmaterial);
                 box0.copyMeshFrom(lowerBox);
                 box0.initializeSizeXYZ(50.0, 40, 50, [tex5]);
                 box0.setXYZ(0.0, 20.0, 0.0);
-                (box0.getMaterial() as any).setRGB3f(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2);
+                //(box0.getMaterial() as any).setRGB3f(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2);
                 let box1: Box3DEntity = new Box3DEntity();
+                pmaterial = this.createLambertMaterial(tex4);
+                color.randomRGB();
+                pmaterial.setColor( color );
+                box0.setMaterial(pmaterial);
                 box1.copyMeshFrom(upperBox);
                 box1.initializeSizeXYZ(30.0, 20, 30, [tex4]);
                 box1.setXYZ(0.0, 50.0, 0.0);
-                (box1.getMaterial() as any).setRGB3f(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4);
+                //(box1.getMaterial() as any).setRGB3f(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4);
                 sillyRole.initialize(this.m_rscene, 0, box0, box1);
             }
 
