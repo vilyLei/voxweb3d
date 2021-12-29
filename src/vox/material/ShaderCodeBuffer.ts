@@ -100,26 +100,32 @@ class ShaderCodeBuffer {
         this.bufInitWithPipeline();
     }
 
-    private bufInitWithPipeline(): void {
-
+    buildPipelineParams(): void {
         if (this.pipeline != null) {
             if(this.pipeTypes == null) {
                 this.pipeTypes = [];
-                if (this.lightEnabled) {
-                    this.pipeTypes.push(MaterialPipeType.GLOBAL_LIGHT);
-                }
-                if (this.shadowReceiveEnabled) {
-                    this.pipeTypes.push(MaterialPipeType.VSM_SHADOW);
-                }
-                if (this.fogEnabled) {
-                    this.pipeTypes.push(MaterialPipeType.FOG_EXP2);
-                }
+                if (this.lightEnabled) this.pipeTypes.push(MaterialPipeType.GLOBAL_LIGHT);                    
+                if (this.shadowReceiveEnabled) this.pipeTypes.push(MaterialPipeType.VSM_SHADOW);
+                if (this.fogEnabled) this.pipeTypes.push(MaterialPipeType.FOG_EXP2);
             }
+        }
+    }
+    
+    getTexturesFromPipeline(outList: IRenderTexture[]): void {
+        if (this.pipeline != null) {
+            this.pipeline.getTextures(this.m_coder, outList, this.pipeTypes);
+        }
+    }
+    private bufInitWithPipeline(): void {
+
+        if (this.pipeline != null) {
+            this.buildPipelineParams();
             this.pipeline.buildSharedUniforms(this.pipeTypes);
             this.pipeline.createKeys(this.pipeTypes);
             this.keysString = this.pipeline.getKeysString();
         }
     }
+    
     isTexEanbled(): boolean {
         return this.m_texEnabled;
     }

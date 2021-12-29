@@ -37,7 +37,7 @@ interface IMaterialPipeline {
     createKeys(pipetypes: MaterialPipeType[]): void;
     buildSharedUniforms(pipetypes: MaterialPipeType[]): void;
     build(shaderBuilder: IShaderCodeBuilder): void;
-    getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[]): void;
+    getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[], pipetypes: MaterialPipeType[]): void;
     getSharedUniforms(): ShaderGlobalUniform[];
     getSelfUniformData(): ShaderUniformData;
     appendKeyString(key: string): void;

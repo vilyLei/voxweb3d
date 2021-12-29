@@ -140,13 +140,13 @@ class MaterialPipeline implements IMaterialPipeline {
         }
     }
 
-    getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[]): void {
+    getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[], pipetypes: MaterialPipeType[]): void {
 
-        if (this.m_pipetypes != null) {
+        if (pipetypes != null) {
 
             let pipe: IMaterialPipe;
             let type: MaterialPipeType;
-            let types: MaterialPipeType[] = this.m_pipetypes;
+            let types: MaterialPipeType[] = pipetypes;
             for (let i: number = 0; i < types.length; ++i) {
                 type = types[i];
                 if (this.m_pipeMap.has(type)) {

@@ -102,10 +102,11 @@ export default class LambertLightMaterial extends MaterialBase {
         buf.addParallaxMap( this.parallaxMap, this.m_parallaxParamIndex );
         buf.addAOMap( this.aoMap );
         buf.addSpecularMap( this.specularMap );
-        buf.addShadowMap( this.shadowMap );
+        //buf.addShadowMap( this.shadowMap );
 
         let list = buf.getIRenderTextureList() as TextureProxy[];
         if(this.vertUniform != null) this.vertUniform.getTextures(buf.getShaderCodeBuilder(), list);
+        buf.getTexturesFromPipeline(list);
         return list;
     }
     initializeLocalData(): void {
@@ -154,18 +155,20 @@ export default class LambertLightMaterial extends MaterialBase {
             this.initializeLocalData();
         }
         let buf: AdvancedShaderCodeBuffer = LambertLightMaterial.s_shaderCodeBuffer;
+        buf.lightEnabled = this.lightEnabled;
+        buf.shadowReceiveEnabled = this.shadowMap != null;
+        buf.fogEnabled = this.fogEnabled;
+        buf.buildPipelineParams();
+
         buf.colorEnabled = this.colorEnabled;
         buf.lightParamsIndex = this.m_lightParamsIndex;
-        buf.lightEnabled = this.lightEnabled;
-        buf.fogEnabled = this.fogEnabled;
         buf.normalEnabled = this.normalEnabled;
         buf.vertUniform = this.vertUniform;
         
-        buf.shadowReceiveEnabled = this.shadowMap != null;
         buf.fragLocalParamsTotal = this.m_fragLocalParamsTotal;
 
         buf.buildFlag = this.m_uniqueShaderName == "";
-        let texList = this.buildTextureList();        
+        let texList = this.buildTextureList();
         super.setTextureList( texList );
         buf.buildFlag = false;
     }
