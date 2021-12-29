@@ -8,9 +8,10 @@ import {SceneModule} from "../app/robot/scene/SceneModule";
 
 import { UserInteraction } from "../vox/engine/UserInteraction";
 
-import { IShaderLibListener, CommonMaterialContext, MaterialContextParam } from "../materialLab/base/CommonMaterialContext";
-import { DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
+import { CommonMaterialContext } from "../materialLab/base/CommonMaterialContext";
+import { IShaderLibListener, MaterialContextParam,DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 import { DirectionLight } from "../light/base/DirectionLight";
+
 export class RbtDrama implements IShaderLibListener{
     constructor() { }
 
