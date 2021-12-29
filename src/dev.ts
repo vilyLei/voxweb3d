@@ -393,9 +393,9 @@
 //  import * as BoFrame from "./app/BoFrame";
 //  import Demo = BoFrame.app.BoFrame;
 
-import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
+//  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
-//  import {RbtDrama as Demo} from "./app/RbtDrama";
+import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {SlickRoad as Demo} from "./app/SlickRoad";
 

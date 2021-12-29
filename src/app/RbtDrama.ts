@@ -30,10 +30,10 @@ export class RbtDrama implements IShaderLibListener{
         this.initScene();
     }
     private initMaterialCtx(): void {
-
+        
         let mcParam: MaterialContextParam = new MaterialContextParam();
         mcParam.pointLightsTotal = 0;
-        mcParam.directionLightsTotal = 1;
+        mcParam.directionLightsTotal = 2;
         mcParam.spotLightsTotal = 0;
         mcParam.pbrMaterialEnabled = false;
         //mcParam.vsmEnabled = false;
@@ -42,16 +42,21 @@ export class RbtDrama implements IShaderLibListener{
         this.m_materialCtx.addShaderLibListener( this );
         this.m_materialCtx.initialize( this.m_rscene, mcParam );
 
-        let lightModule = this.m_materialCtx.lightModule;
-        let direcLight: DirectionLight = lightModule.getDirectionLightAt(0);
-        direcLight.direction.setXYZ(-0.5,-0.5,0.5);
-        
         // let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
         // pointLight.position.setXYZ(0.0, 150.0, -50.0);
         // pointLight.color.setRGB3f(1.0, 1.0, 1.0);
         // pointLight.attenuationFactor1 = 0.00001;
         // pointLight.attenuationFactor2 = 0.000001;
-        
+        let colorScale: number = 3.0;
+        let lightModule = this.m_materialCtx.lightModule;
+        let direcLight = lightModule.getDirectionLightAt(0);
+        direcLight.color.setRGB3f(0.3 * colorScale, 1.0 * colorScale, 0.3 * colorScale);
+        direcLight.direction.setXYZ(-0.5, -0.5, 0.5);
+        direcLight = lightModule.getDirectionLightAt(1);
+        direcLight.color.setRGB3f(1.0 * colorScale, 0.3 * colorScale, 0.3 * colorScale);
+        direcLight.direction.setXYZ(0.5, -0.5, 0.5);
+        this.m_materialCtx.lightModule.update();
+
         this.m_materialCtx.lightModule.update();
     }
     
