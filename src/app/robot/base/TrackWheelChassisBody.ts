@@ -14,8 +14,7 @@ import DisplayEntityContainer from "../../../vox/entity/DisplayEntityContainer";
 import RendererScene from "../../../vox/scene/RendererScene";
 import WeapMoudle from "../../../app/robot/WeapMoudle";
 import { CampType } from "../../../app/robot/camp/Camp";
-import { CommonMaterialContext } from "../../../materialLab/base/CommonMaterialContext";
-import LambertLightMaterial from "../../../vox/material/mcase/LambertLightMaterial";
+import {RoleMaterialBuilder} from "../scene/RoleMaterialBuilder";
 import MaterialBase from "../../../vox/material/MaterialBase";
 
 export default class TrackWheelChassisBody {
@@ -27,7 +26,7 @@ export default class TrackWheelChassisBody {
     private m_container: DisplayEntityContainer = null;
 
     private m_weapType: number = 0;
-    materialCtx: CommonMaterialContext = null;
+    materialBuilder: RoleMaterialBuilder = null;
     weap: WeapMoudle = null;
     campType: CampType = CampType.Blue;
     constructor(container: DisplayEntityContainer = null) {
@@ -37,16 +36,6 @@ export default class TrackWheelChassisBody {
         else {
             this.m_container = container;
         }
-    }
-    private createMaterial(diffuseMap: TextureProxy): LambertLightMaterial {
-        let trackMaterial = this.materialCtx.createLambertLightMaterial(false);
-        trackMaterial.diffuseMap = diffuseMap;
-        trackMaterial.normalMap = this.materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
-        trackMaterial.aoMap = this.materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
-        trackMaterial.fogEnabled = false;
-        trackMaterial.initializeByCodeBuf( true );
-        trackMaterial.setBlendFactor(0.6, 0.7);
-        return trackMaterial;
     }
     getContainer(): DisplayEntityContainer {
         return this.m_container;
@@ -72,13 +61,13 @@ export default class TrackWheelChassisBody {
         let material: MaterialBase;
         if (TrackWheelChassisBody.m_box01 == null) {
             TrackWheelChassisBody.m_box01 = new Box3DEntity();
-            material = this.createMaterial( tex0 );
+            material = this.materialBuilder.createMaterial( tex0 );
             TrackWheelChassisBody.m_box01.setMaterial( material );
             TrackWheelChassisBody.m_box01.initializeSizeXYZ(60.0, 30, 60, [tex0]);
             TrackWheelChassisBody.m_box01.setXYZ(0.0, 70.0, 0.0);
         }
         let twUpperBox: Box3DEntity = new Box3DEntity();
-        material = this.createMaterial( tex0 );
+        material = this.materialBuilder.createMaterial( tex0 );
         twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelChassisBody.m_box01);
         twUpperBox.initializeSizeXYZ(60.0, 30, 60, [tex0]);
@@ -92,7 +81,7 @@ export default class TrackWheelChassisBody {
         if (TrackWheelChassisBody.m_box01 == null) {
             let scale: number = 1.0;
             let box: Box3DEntity = new Box3DEntity();
-            material = this.createMaterial( tex0 );
+            material = this.materialBuilder.createMaterial( tex0 );
             box.setMaterial( material );
             box.initializeSizeXYZ(80.0, 20, 60, [tex0]);
             box.setXYZ(0.0, 70.0, 0.0);
@@ -106,7 +95,7 @@ export default class TrackWheelChassisBody {
             TrackWheelChassisBody.m_box01 = box;
 
             box = new Box3DEntity();
-            material = this.createMaterial( tex0 );
+            material = this.materialBuilder.createMaterial( tex0 );
             box.setMaterial( material );
             box.initializeSizeXYZ(80.0, 12, 60, [tex0]);
             box.setXYZ(0.0, 70.0 + 10 + 6, 0.0);
@@ -121,7 +110,7 @@ export default class TrackWheelChassisBody {
 
         }
         let twUpperBox: Box3DEntity = new Box3DEntity();
-        material = this.createMaterial( tex0 );
+        material = this.materialBuilder.createMaterial( tex0 );
         twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelChassisBody.m_box01);
         twUpperBox.copyTransformFrom(TrackWheelChassisBody.m_box01);
@@ -129,7 +118,7 @@ export default class TrackWheelChassisBody {
         this.m_entity01 = twUpperBox;
 
         twUpperBox = new Box3DEntity();
-        material = this.createMaterial( tex0 );
+        material = this.materialBuilder.createMaterial( tex0 );
         twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelChassisBody.m_box02);
         twUpperBox.copyTransformFrom(TrackWheelChassisBody.m_box02);
@@ -157,6 +146,6 @@ export default class TrackWheelChassisBody {
         this.m_container.getPosition(position);
     }
     destroy(): void {
-        this.materialCtx = null;
+        this.materialBuilder = null;
     }
 }

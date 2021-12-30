@@ -17,7 +17,7 @@ import BoxGroupTrack from "../../../voxanimate/primitive/BoxGroupTrack";
 import TrackWheelWeaponBody from "../../../app/robot/base/TrackWheelWeaponBody";
 import TrackWheelChassisBody from "../../../app/robot/base/TrackWheelChassisBody";
 import Vector3D from "../../../vox/math/Vector3D";
-import { CommonMaterialContext } from "../../../materialLab/base/CommonMaterialContext";
+import {RoleMaterialBuilder} from "../scene/RoleMaterialBuilder";
 
 export default class TrackWheeRoleFactory {
     private m_roleCamp: IRoleCamp = null;
@@ -27,11 +27,11 @@ export default class TrackWheeRoleFactory {
 
     private m_boxTrack: BoxGroupTrack = null;
     private m_srcTwUpperBox: Box3DEntity = null;
-    private m_materialCtx: CommonMaterialContext = null;
+    private m_materialBuilder: RoleMaterialBuilder = null;
     constructor() {
     }
-    setMaterialContext(materialCtx: CommonMaterialContext): void {
-        this.m_materialCtx = materialCtx;
+    setMaterialBuilder(materialBuilder: RoleMaterialBuilder): void {
+        this.m_materialBuilder = materialBuilder;
     }
     initialize(rscene: RendererScene, renderProcessIndex: number, roleCamp: IRoleCamp, terrainData: TerrainData, dis: number = 50.0): void {
         
@@ -64,13 +64,13 @@ export default class TrackWheeRoleFactory {
         twRole.lifeTime = 200;
 
         let weaponBody: TrackWheelWeaponBody = new TrackWheelWeaponBody();
-        weaponBody.materialCtx = this.m_materialCtx;
+        weaponBody.materialBuilder = this.m_materialBuilder;
         weaponBody.initWeap01(tex1);
         //weaponBody.initWeap02(tex0);
         weaponBody.initialize(this.m_rscene, twRole.getAttackModule().getContainer());
 
         let chassisBody: TrackWheelChassisBody = new TrackWheelChassisBody();
-        chassisBody.materialCtx = this.m_materialCtx;
+        chassisBody.materialBuilder = this.m_materialBuilder;
         //chassisBody.initWeap01(tex0);
         chassisBody.initWeap02(tex0);
         chassisBody.initialize(this.m_rscene, twRole.getMotionModule().getContainer());

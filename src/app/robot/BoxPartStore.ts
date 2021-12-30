@@ -13,8 +13,7 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import Box3DEntity from "../../vox/entity/Box3DEntity";
 import IPartStore from "../../app/robot/IPartStore";
-import { CommonMaterialContext } from "../../materialLab/base/CommonMaterialContext";
-import LambertLightMaterial from "../../vox/material/mcase/LambertLightMaterial";
+import {RoleMaterialBuilder} from "./scene/RoleMaterialBuilder";
 import MaterialBase from "../../vox/material/MaterialBase";
 
 export default class BoxPartStore implements IPartStore {
@@ -43,20 +42,11 @@ export default class BoxPartStore implements IPartStore {
     private m_tex1: TextureProxy;
     private m_tex2: TextureProxy;
     
-    materialCtx: CommonMaterialContext;
+    materialBuilder: RoleMaterialBuilder;
     constructor() {
         this.m_baseColor.normalizeRandom(1.1);
     }
-    private createMaterial(diffuseMap: TextureProxy): LambertLightMaterial {
-        let trackMaterial = this.materialCtx.createLambertLightMaterial(false);
-        trackMaterial.diffuseMap = diffuseMap;
-        trackMaterial.normalMap = this.materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
-        trackMaterial.aoMap = this.materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
-        trackMaterial.fogEnabled = false;
-        trackMaterial.initializeByCodeBuf( true );
-        trackMaterial.setBlendFactor(0.6, 0.7);
-        return trackMaterial;
-    }
+    
     setParam(coreWidth: number, bgLong: number, sgLong: number): void {
         this.m_coreWidth = coreWidth;
         this.m_bgLong = bgLong;
@@ -98,7 +88,7 @@ export default class BoxPartStore implements IPartStore {
             let boxBase: Box3DEntity;
             let material: MaterialBase;
             if (BoxPartStore.s_baseBox == null) {
-                material = this.createMaterial( this.m_tex1 );
+                material = this.materialBuilder.createMaterial( this.m_tex1 );
                 boxBase = this.m_bgBox = new Box3DEntity();
                 this.m_bgBox.setMaterial( material );
                 boxBase.initialize(BoxPartStore.s_v0, BoxPartStore.s_v1, [this.m_tex1]);
@@ -129,14 +119,14 @@ export default class BoxPartStore implements IPartStore {
             );
 
             this.m_bgBox = new Box3DEntity();
-            material = this.createMaterial( this.m_tex1 );
+            material = this.materialBuilder.createMaterial( this.m_tex1 );
             this.m_bgBox.setMaterial( material );
             this.m_bgBox.setMesh(bgMesh);
             this.m_bgBox.initialize(new Vector3D(-15.0, this.getBGLong(), -15.0), new Vector3D(15.0, 0.0, 15.0), [this.m_tex1]);
             this.updateBoxUV(this.m_bgBox);
 
             this.m_sgBox = new Box3DEntity();
-            material = this.createMaterial( this.m_tex1 );
+            material = this.materialBuilder.createMaterial( this.m_tex1 );
             this.m_sgBox.setMaterial( material );
             this.m_sgBox.setMesh(sgMesh);
             this.m_sgBox.initialize(new Vector3D(-10.0, this.getSGLong(), -10.0), new Vector3D(10.0, 0.0, 10.0), [this.m_tex1]);
@@ -166,7 +156,7 @@ export default class BoxPartStore implements IPartStore {
     getEngityBGL(): DisplayEntity {
         if (this.m_bgLBox == null) {
             this.m_bgLBox = new Box3DEntity();            
-            let material = this.createMaterial( this.m_tex1 );
+            let material = this.materialBuilder.createMaterial( this.m_tex1 );
             this.m_bgLBox.setMaterial( material );
             this.m_bgLBox.copyMeshFrom(this.m_bgBox);
             this.m_bgLBox.initialize(BoxPartStore.s_v0, BoxPartStore.s_v1, [this.m_tex1]);
@@ -177,7 +167,7 @@ export default class BoxPartStore implements IPartStore {
     getEngityBGR(): DisplayEntity {
         if (this.m_bgRBox == null) {
             this.m_bgRBox = new Box3DEntity();
-            let material = this.createMaterial( this.m_tex1 );
+            let material = this.materialBuilder.createMaterial( this.m_tex1 );
             this.m_bgRBox.setMaterial( material );
             this.m_bgRBox.copyMeshFrom(this.m_bgBox);
             this.m_bgRBox.initialize(BoxPartStore.s_v0, BoxPartStore.s_v1, [this.m_tex1]);
@@ -188,7 +178,7 @@ export default class BoxPartStore implements IPartStore {
     getEngitySGL(): DisplayEntity {
         if (this.m_sgLBox == null) {
             this.m_sgLBox = new Box3DEntity();
-            let material = this.createMaterial( this.m_tex1 );
+            let material = this.materialBuilder.createMaterial( this.m_tex1 );
             this.m_sgLBox.setMaterial( material );
             this.m_sgLBox.copyMeshFrom(this.m_sgBox);
             this.m_sgLBox.initialize(BoxPartStore.s_v0, BoxPartStore.s_v1, [this.m_tex1]);
@@ -199,7 +189,7 @@ export default class BoxPartStore implements IPartStore {
     getEngitySGR(): DisplayEntity {
         if (this.m_sgRBox == null) {
             this.m_sgRBox = new Box3DEntity();
-            let material = this.createMaterial( this.m_tex1 );
+            let material = this.materialBuilder.createMaterial( this.m_tex1 );
             this.m_sgRBox.setMaterial( material );
             this.m_sgRBox.copyMeshFrom(this.m_sgBox);
             this.m_sgRBox.initialize(BoxPartStore.s_v0, BoxPartStore.s_v1, [this.m_tex1]);
@@ -217,6 +207,6 @@ export default class BoxPartStore implements IPartStore {
         box.reinitializeMesh();
     }
     destroy(): void {
-        this.materialCtx = null;
+        this.materialBuilder = null;
     }
 }
