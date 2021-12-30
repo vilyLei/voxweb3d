@@ -68,6 +68,7 @@ export class RbtDrama implements IShaderLibListener{
             RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
             let rparam: RendererParam = new RendererParam();
+            rparam.maxWebGLVersion = 1;
             rparam.setAttriAlpha(false);
             rparam.setAttriAntialias(true);
             rparam.setMatrix4AllocateSize(4096 * 8)

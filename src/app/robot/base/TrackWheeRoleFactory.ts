@@ -26,10 +26,10 @@ export default class TrackWheeRoleFactory {
     private m_renderProcessIndex: number = 0;
 
     private m_boxTrack: BoxGroupTrack = null;
-    private m_srcTwUpperBox: Box3DEntity = null;
     private m_materialBuilder: RoleMaterialBuilder = null;
     constructor() {
     }
+
     setMaterialBuilder(materialBuilder: RoleMaterialBuilder): void {
         this.m_materialBuilder = materialBuilder;
     }
@@ -42,19 +42,20 @@ export default class TrackWheeRoleFactory {
 
         if (this.m_boxTrack == null) {
             this.m_boxTrack = new BoxGroupTrack();
+            this.m_boxTrack.animator.diffuseMapEnabled = true;
+            this.m_boxTrack.animator.normalEnabled = true;
+
             this.m_boxTrack.setTrackScaleXYZ(0.5, 0.4, 1.0);
             this.m_boxTrack.setFactor(5, 5, 5);
             this.m_boxTrack.animator.setGroupPositions([new Vector3D(0.0, 0.0, -0.5 * dis), new Vector3D(0.0, 0.0, 0.5 * dis)]);
             this.m_boxTrack.initialize(this.m_rscene.textureBlock, 5.0, [AssetsModule.GetImageTexByUrl("static/assets/default.jpg")], 0.98);
             this.m_boxTrack.animator.setXYZ(0.0, 20.0, 0.0);
-
-            this.m_srcTwUpperBox = new Box3DEntity();
-            this.m_srcTwUpperBox.initializeSizeXYZ(60.0, 30, 60, [AssetsModule.GetImageTexByUrl("static/assets/default.jpg")]);
-            this.m_srcTwUpperBox.setXYZ(0.0, 70.0, 0.0);
         }
     }
     create(tex0: TextureProxy, tex1: TextureProxy, tex2: TextureProxy, campType: CampType, bodyWidth: number): TrackWheelRole {
+
         let twRole: TrackWheelRole = new TrackWheelRole();
+        twRole.materialBuilder = this.m_materialBuilder;
 
         twRole.roleCamp = this.m_roleCamp;
         twRole.terrainData = this.m_terrainData;

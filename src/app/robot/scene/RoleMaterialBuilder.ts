@@ -7,6 +7,8 @@ import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import { CommonMaterialContext } from "../../../materialLab/base/CommonMaterialContext";
 import LambertLightMaterial from "../../../vox/material/mcase/LambertLightMaterial";
 import MaterialBase from "../../../vox/material/MaterialBase";
+import BoxGroupTrack from "../../../voxanimate/primitive/BoxGroupTrack";
+import { VertUniformComp } from "../../../vox/material/component/VertUniformComp";
 
 class RoleMaterialBuilder {
 
@@ -21,17 +23,37 @@ class RoleMaterialBuilder {
         }
     }
     
+    createTrackLambertMaterial(boxTrack: BoxGroupTrack, diffuseMap: TextureProxy,  normalMap: TextureProxy = null, aoMap: TextureProxy = null): LambertLightMaterial {
+        
+        let dataTex = boxTrack.animator.getPosDataTexture();
+        let posTotal = boxTrack.animator.getPosTotal();
+        let material = this.m_materialCtx.createLambertLightMaterial(true);
+        material.diffuseMap = diffuseMap;
+        material.normalMap = normalMap != null ? normalMap : this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
+        material.aoMap = aoMap != null ? aoMap : this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
+        material.fogEnabled = false;
+        let vertUniform = material.vertUniform as VertUniformComp;
+        vertUniform.uvTransformEnabled = true;
+        material.vertUniform = vertUniform;
+        vertUniform.curveMoveMap = dataTex;
+        material.initializeByCodeBuf( true );
+        material.setBlendFactor(0.6, 0.7);
+        vertUniform.setCurveMoveParam(dataTex.getWidth(), posTotal);
+        vertUniform.setCurveMoveDistance(0.0);
+        vertUniform.setUVScale(2.0,1.0);
+        return material;
+    }
     createLambertMaterial(diffuseMap: TextureProxy, normalMap: TextureProxy = null, aoMap: TextureProxy = null): LambertLightMaterial {
 
-        let trackMaterial = this.m_materialCtx.createLambertLightMaterial(false);
-        trackMaterial.diffuseMap = diffuseMap;
-        trackMaterial.normalMap = normalMap != null ? normalMap : this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
-        trackMaterial.aoMap = aoMap != null ? aoMap : this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
-        trackMaterial.fogEnabled = false;
-        trackMaterial.initializeByCodeBuf( true );
-        trackMaterial.setBlendFactor(0.6, 0.7);
+        let material = this.m_materialCtx.createLambertLightMaterial(false);
+        material.diffuseMap = diffuseMap;
+        material.normalMap = normalMap != null ? normalMap : this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
+        material.aoMap = aoMap != null ? aoMap : this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
+        material.fogEnabled = false;
+        material.initializeByCodeBuf( true );
+        material.setBlendFactor(0.6, 0.7);
 
-        return trackMaterial;
+        return material;
     }
     createMaterial(diffuseMap: TextureProxy, normalMap: TextureProxy = null, aoMap: TextureProxy = null): MaterialBase {
         return this.createLambertMaterial(diffuseMap, normalMap, aoMap);

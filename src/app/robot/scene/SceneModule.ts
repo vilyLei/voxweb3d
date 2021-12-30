@@ -41,7 +41,6 @@ class SceneModule {
     private init(): void {
 
         let axis: Axis3DEntity = new Axis3DEntity();
-        //axis.initializeCross(600.0);
         axis.initialize(300.0);
         this.m_rscene.addEntity(axis);
 

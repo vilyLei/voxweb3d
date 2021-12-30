@@ -29,6 +29,7 @@ export default class TrackWheelWeaponBody {
 
     private m_attackClock: TriggerClock = new TriggerClock();
     private m_weapType: number = 0;
+    
     materialBuilder: RoleMaterialBuilder = null;
     weap: WeapMoudle = null;
     campType: CampType = CampType.Blue;

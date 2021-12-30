@@ -15,6 +15,7 @@ import BoxGroupTrack from "../../../voxanimate/primitive/BoxGroupTrack";
 import FireCtrlRadar from "../../../app/robot/attack/FireCtrlRadar";
 import TrackWheelWeaponBody from "../../../app/robot/base/TrackWheelWeaponBody";
 import TrackWheelChassisBody from "../../../app/robot/base/TrackWheelChassisBody";
+import {RoleMaterialBuilder} from "../scene/RoleMaterialBuilder";
 
 export default class TrackWheelRole extends RbtRole implements IAttackDst {
     private m_renderProcessIndex: number = 0;
@@ -22,6 +23,8 @@ export default class TrackWheelRole extends RbtRole implements IAttackDst {
     private m_armModule: TrackWheelUpperBody = null;
 
     private m_srcTrackWheel: BoxGroupTrack = null;
+
+    materialBuilder: RoleMaterialBuilder = null;
     constructor() {
         super();
 
@@ -45,6 +48,8 @@ export default class TrackWheelRole extends RbtRole implements IAttackDst {
             this.m_srcTrackWheel = srcTrackWheel;
 
             let offsetPos: Vector3D = new Vector3D(0.0, 6.0, 0.0);
+            this.m_legModule.materialBuilder = this.materialBuilder;
+            
             this.m_legModule.initialize(sc, renderProcessIndex, chassisBody, this.m_srcTrackWheel, dis, offsetPos);
             offsetPos.setXYZ(0.0,0.0,0.0);
             this.m_armModule.initialize(sc, renderProcessIndex, weapBody, offsetPos);
@@ -83,5 +88,8 @@ export default class TrackWheelRole extends RbtRole implements IAttackDst {
     }
     attackTest(): boolean {
         return true;
+    }
+    destroy(): void {
+        this.materialBuilder = null;
     }
 }

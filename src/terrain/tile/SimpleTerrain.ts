@@ -11,6 +11,8 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from "../../vox/material/MaterialBase";
 import Color4 from "../../vox/material/Color4";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
+import TextureProxy from "../../vox/texture/TextureProxy";
+import LambertLightMaterial from "../../vox/material/mcase/LambertLightMaterial";
 
 class SimpleTerrain {
 
@@ -30,7 +32,18 @@ class SimpleTerrain {
             this.initTerrain();
         }
     }
+    createLambertMaterial(diffuseMap: TextureProxy, normalMap: TextureProxy = null, aoMap: TextureProxy = null): LambertLightMaterial {
 
+        let trackMaterial = this.m_materialCtx.createLambertLightMaterial(false);
+        trackMaterial.diffuseMap = diffuseMap;
+        trackMaterial.normalMap = normalMap;
+        trackMaterial.aoMap = aoMap;
+        trackMaterial.fogEnabled = false;
+        trackMaterial.initializeByCodeBuf( true );
+        trackMaterial.setBlendFactor(0.6, 0.7);
+
+        return trackMaterial;
+    }
     private initTerrain(): void {
 
         let size: number = this.m_terrainData.gridSize;

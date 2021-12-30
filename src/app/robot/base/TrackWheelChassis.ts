@@ -15,13 +15,21 @@ import IRbtModule from "../../../app/robot/base/IRbtModule";
 import TrackWheelChassisBody from "../../../app/robot/base/TrackWheelChassisBody";
 import AssetsModule from "../../../app/robot/assets/AssetsModule";
 import BoxGroupTrack from "../../../voxanimate/primitive/BoxGroupTrack";
+import {RoleMaterialBuilder} from "../scene/RoleMaterialBuilder";
+import { VertUniformComp } from "../../../vox/material/component/VertUniformComp";
+import MaterialBase from "../../../vox/material/MaterialBase";
+import DisplayEntity from "../../../vox/entity/DisplayEntity";
 
 export default class TrackWheelChassis implements IRbtModule, IPoseture {
     private m_sc: RendererScene = null;
     private m_container: DisplayEntityContainer = null;
-    private m_trackWheel: BoxGroupTrack = new BoxGroupTrack();
+    private m_trackWheel: BoxGroupTrack = null;
     private m_pos: Vector3D = new Vector3D();
+    private m_trackEntity: DisplayEntity = null;
+    private m_vertUniform: VertUniformComp = null;
+    private m_trackMoveDis: number = 0.0;
 
+    materialBuilder: RoleMaterialBuilder = null;
     degreeTween: DegreeTween = new DegreeTween();
     constructor(container: DisplayEntityContainer = null) {
         if (container == null) {
@@ -50,7 +58,11 @@ export default class TrackWheelChassis implements IRbtModule, IPoseture {
         return this.m_container.getRotationY();
     }
     direcByDegree(degree: number, finished: boolean): void {
-        this.m_trackWheel.moveDistanceOffset(0.75);
+
+        this.m_trackMoveDis += 0.75;
+        this.m_vertUniform.setCurveMoveDistance( this.m_trackMoveDis );
+        if(this.m_trackWheel != null) this.m_trackWheel.moveDistanceOffset(0.75);
+
         this.degreeTween.runRotY(degree);
         if (this.degreeTween.isDegreeChanged()) {
             this.m_container.update();
@@ -67,16 +79,31 @@ export default class TrackWheelChassis implements IRbtModule, IPoseture {
     isPoseRunning(): boolean {
         return false;
     }
+
     initialize(sc: RendererScene, renderProcessIndex: number, chassisBody: TrackWheelChassisBody, srcTrackWheel: BoxGroupTrack, dis: number, offsetPos: Vector3D = null): void {
         if (this.m_sc == null) {
             this.m_sc = sc;
-
+            //createTrackLambertMaterial
             sc.addContainer(this.m_container, renderProcessIndex);
-            this.m_trackWheel.initializeFrom(srcTrackWheel, [AssetsModule.GetImageTexByUrl("static/assets/metal_02.jpg")]);
+            // this.m_trackWheel = new BoxGroupTrack();
+            // this.m_trackWheel.initializeFrom(srcTrackWheel, [AssetsModule.GetImageTexByUrl("static/assets/metal_02.jpg")]);
+
             srcTrackWheel.getPosition(this.m_pos);
             this.m_pos.addBy( offsetPos );
-            this.m_trackWheel.setPosition(this.m_pos);
-            this.m_container.addEntity(this.m_trackWheel.animator);
+
+            let material: MaterialBase;
+            let tm = this.materialBuilder.createTrackLambertMaterial(srcTrackWheel, AssetsModule.GetImageTexByUrl("static/assets/metal_02.jpg") );
+            this.m_vertUniform = tm.vertUniform as VertUniformComp;
+            material = tm;
+            
+            this.m_trackEntity = new DisplayEntity();
+            this.m_trackEntity.setMaterial( material );
+            this.m_trackEntity.copyMeshFrom( srcTrackWheel.animator );
+            this.m_trackEntity.setPosition(this.m_pos);
+            this.m_container.addEntity( this.m_trackEntity );
+
+            // this.m_trackWheel.setPosition(this.m_pos);
+            // this.m_container.addEntity(this.m_trackWheel.animator);
             this.degreeTween.bindTarget(this.m_container);
         }
     }
