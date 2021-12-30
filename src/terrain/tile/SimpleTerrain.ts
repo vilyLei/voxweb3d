@@ -86,13 +86,14 @@ class SimpleTerrain {
         material2.vertColorEnabled = true;
         material2.setTextureList([tex2]);
         material2.initializeByCodeBuf();
-
+        
+        let colorBrn: number = 0.6;
         let rn: number = this.m_terrainData.rn;
         let cn: number = this.m_terrainData.cn;
         let pv: Vector3D;
         for (let r: number = 0; r < rn; r++) {
             for (let c: number = 0; c < cn; c++) {
-                color.setRGB3f(0.8 * c / cn, 0.8, 0.0 + 0.8 * r / rn);
+                color.setRGB3f(colorBrn * c / cn, colorBrn, colorBrn * r / rn);
                 
                 pv = this.m_terrainData.getGridPositionByRC(r, c);
                 let flag: number = this.m_terrainData.getGridStatusByRC(r, c);

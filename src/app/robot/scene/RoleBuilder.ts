@@ -82,7 +82,7 @@ class RoleBuilder {
         }
     }
     //*/
-    createLimbRoles(): void {
+    createLimbRoles(total: number = 20): void {
         
         let tex0 = this.m_texList[0];
         let tex1 = this.m_texList[1];
@@ -91,7 +91,7 @@ class RoleBuilder {
         let limbRole: FourLimbRole;
         let campType: CampType;
         let bodySize: number = 40.0;
-        for (let i: number = 0; i < 10; ++i) {
+        for (let i: number = 0; i < total; ++i) {
             bodySize = Math.round(Math.random() * 60.0) + 30.0;
             switch (i % 3) {
                 case 1:
@@ -113,7 +113,7 @@ class RoleBuilder {
             this.campModule.redCamp.addRole(limbRole);
         }
     }
-    createTrackWheelRoles(): void {
+    createTrackWheelRoles(total: number = 20): void {
         
         let campType: CampType;
         let bodySize: number = 40.0;
@@ -122,7 +122,7 @@ class RoleBuilder {
         let tex6 = this.m_texList[6];
         let tex7 = this.m_texList[7];
 
-        for (let i: number = 0; i < 20; ++i) {
+        for (let i: number = 0; i < total; ++i) {
             switch (i % 3) {
                 case 1:
                     campType = CampType.Red;
@@ -145,7 +145,7 @@ class RoleBuilder {
     private m_sillyRole_lowerBox: Box3DEntity;
     private m_sillyRole_upperBox: Box3DEntity;
     
-    createSillyRoles(): void {
+    createSillyRoles(total: number = 20): void {
 
         let tex3 = this.m_texList[3];
         let tex4 = this.m_texList[4];
@@ -169,7 +169,7 @@ class RoleBuilder {
         let lowerBox: Box3DEntity = this.m_sillyRole_lowerBox;
         let upperBox: Box3DEntity = this.m_sillyRole_upperBox;
         
-        for (let i: number = 0; i < 10; ++i) {
+        for (let i: number = 0; i < total; ++i) {
 
             let sillyRole: SillyRole = new SillyRole();
             if (srcSillyRole != null) {
