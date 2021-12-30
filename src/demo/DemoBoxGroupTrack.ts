@@ -25,6 +25,7 @@ import DisplayEntity from "../vox/entity/DisplayEntity";
 import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 import PBRMaterial from "../pbr/material/PBRMaterial";
 import MaterialBase from "../vox/material/MaterialBase";
+import Color4 from "../vox/material/Color4";
 
 class TrackWheelRole {
     private m_pz: number = Math.random() * 1000.0 - 500.00;
@@ -197,12 +198,20 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         // material.diffuseMap = tex1;
         // material.initializeByCodeBuf(true);
         // material.setBlendFactor(0.5,0.8);
+
         // let material = this.createPBRMaterial(null,null);
         // let box: Box3DEntity = new Box3DEntity();
         // box.setMaterial(material);
         // box.initializeCube(200.0, [tex1]);
         // this.m_rscene.addEntity(box);
-        // return;
+
+        let material = this.createLambertMaterial(null,null, true);
+        let box: Box3DEntity = new Box3DEntity();
+        box.vtxColor = new Color4(1.0,0.0,1.0);
+        box.setMaterial(material);
+        box.initializeCube(200.0, [tex1]);
+        this.m_rscene.addEntity(box);
+        return;
         //  this.m_boxTrack.setTrackScaleXYZ(0.2,0.2,0.2);
         //  this.m_boxTrack.initialize(this.m_rscene.textureBlock,0.5,[tex0]);
         let distanceFactor: number = 0.98;
@@ -235,11 +244,10 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         // curveLine.initializeByPosition(this.m_boxTrack.getTrackPosList());
         // this.m_rscene.addEntity(curveLine);
     }
-    private createLambertMaterial(boxTrack: BoxGroupTrack, diffuseMap: TextureProxy): LambertLightMaterial {
-        let dataTex = boxTrack.animator.getPosDataTexture();
-        let posTotal = boxTrack.animator.getPosTotal();
+    private createLambertMaterial(boxTrack: BoxGroupTrack, diffuseMap: TextureProxy, vtxColor: boolean = false): LambertLightMaterial {
         let trackMaterial = this.m_materialCtx.createLambertLightMaterial(true);
         trackMaterial.diffuseMap = diffuseMap;
+        trackMaterial.vertColorEnabled = vtxColor;
         //trackMaterial.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
         trackMaterial.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
         trackMaterial.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
@@ -247,11 +255,11 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         let vertUniform = trackMaterial.vertUniform as VertUniformComp;
         vertUniform.uvTransformEnabled = true;
         trackMaterial.vertUniform = vertUniform;
-        vertUniform.curveMoveMap = dataTex;
+        if(boxTrack != null) vertUniform.curveMoveMap = boxTrack.animator.getPosDataTexture();
         trackMaterial.initializeByCodeBuf( true );
         trackMaterial.setBlendFactor(0.6, 0.7);
-        vertUniform.setCurveMoveParam(dataTex.getWidth(), posTotal);
-        vertUniform.setCurveMoveDistance(0.0);
+        if(boxTrack != null) vertUniform.setCurveMoveParam(boxTrack.animator.getPosDataTexture().getWidth(), boxTrack.animator.getPosTotal());
+        if(boxTrack != null) vertUniform.setCurveMoveDistance(0.0);
         vertUniform.setUVScale(4.0,1.0);
         return trackMaterial;
     }

@@ -40,6 +40,7 @@ export default class LambertLightMaterial extends MaterialBase {
     shadowReceiveEnabled: boolean = false;
     lightEnabled: boolean = true;
     fogEnabled: boolean = false;
+    vertColorEnabled: boolean = false;
 
     vertUniform: UniformComp = null;
     constructor() {
@@ -65,6 +66,7 @@ export default class LambertLightMaterial extends MaterialBase {
         this.shadowReceiveEnabled = src.shadowReceiveEnabled;
         this.fogEnabled = src.fogEnabled;
         this.normalEnabled = src.normalEnabled;
+        this.vertColorEnabled = src.vertColorEnabled;
         this.vertUniform = src.vertUniform;
 
         if(this.diffuseMap == null) this.diffuseMap = src.diffuseMap;
@@ -154,12 +156,12 @@ export default class LambertLightMaterial extends MaterialBase {
         }
         let buf: AdvancedShaderCodeBuffer = LambertLightMaterial.s_shaderCodeBuffer;
         buf.lightEnabled = this.lightEnabled;
-        //buf.shadowReceiveEnabled = this.shadowMap != null;
         buf.shadowReceiveEnabled = this.shadowReceiveEnabled;
         buf.fogEnabled = this.fogEnabled;
         buf.buildPipelineParams();
-
+        
         buf.colorEnabled = this.colorEnabled;
+        buf.vertColorEnabled = this.vertColorEnabled;
         buf.lightParamsIndex = this.m_lightParamsIndex;
         buf.normalEnabled = this.normalEnabled;
         buf.vertUniform = this.vertUniform;

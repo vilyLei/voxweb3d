@@ -94,8 +94,8 @@ class ShaderCodeBuffer {
         }
         this.m_texEnabled = texEnabled;
 
-        if (this.premultiplyAlpha) this.m_coder.addDefine("VOX_PREMULTIPLY_ALPHA", "1");
-        if (this.vertColorEnabled) this.m_coder.addDefine("VOX_USE_VTX_COLOR", "1");
+        if (this.premultiplyAlpha) this.m_coder.addDefine("VOX_PREMULTIPLY_ALPHA");
+        if (this.vertColorEnabled) this.m_coder.addDefine("VOX_USE_VTX_COLOR");
 
         this.bufInitWithPipeline();
     }

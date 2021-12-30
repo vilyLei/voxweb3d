@@ -47,6 +47,7 @@ export class RbtDrama implements IShaderLibListener{
         // pointLight.color.setRGB3f(1.0, 1.0, 1.0);
         // pointLight.attenuationFactor1 = 0.00001;
         // pointLight.attenuationFactor2 = 0.000001;
+        
         let colorScale: number = 3.0;
         let lightModule = this.m_materialCtx.lightModule;
         let direcLight = lightModule.getDirectionLightAt(0);
@@ -68,7 +69,7 @@ export class RbtDrama implements IShaderLibListener{
             RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
             let rparam: RendererParam = new RendererParam();
-            rparam.maxWebGLVersion = 1;
+            //rparam.maxWebGLVersion = 1;
             rparam.setAttriAlpha(false);
             rparam.setAttriAntialias(true);
             rparam.setMatrix4AllocateSize(4096 * 8)

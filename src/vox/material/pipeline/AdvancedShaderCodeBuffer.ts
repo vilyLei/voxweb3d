@@ -24,6 +24,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     normalEnabled: boolean = true;
     buildFlag: boolean = true;
     
+    vertColorEnabled: boolean = false;
     vertUniform: UniformComp = null;
 
     constructor() {
@@ -103,6 +104,10 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
         this.m_coder.addFragUniform("vec4", "u_fragLocalParams", this.fragLocalParamsTotal);
         if (this.lightEnabled) {
             this.m_coder.addDefine("VOX_LIGHT_LOCAL_PARAMS_INDEX", "" + this.lightParamsIndex);
+        }
+        if (this.vertColorEnabled) {
+            this.m_coder.addVertLayout("vec3", "a_cvs");
+            this.m_coder.addVarying("vec3", "v_cv");
         }
     }
     

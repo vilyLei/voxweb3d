@@ -18,7 +18,7 @@ import Box3DMesh from "../../vox/mesh/Box3DMesh";
 import Color4 from "../material/Color4";
 
 export default class Box3DEntity extends DisplayEntity {
-    
+
     private m_normalType: number = VtxNormalType.FLAT;
     private m_minV: Vector3D = new Vector3D(-50.0, -50.0, -50.0);
     private m_maxV: Vector3D = new Vector3D(50.0, 50.0, 50.0);
@@ -55,16 +55,16 @@ export default class Box3DEntity extends DisplayEntity {
             this.getMaterial().setTextureList(texList);
         }
     }
-    
+
     private initializeThis(texList: TextureProxy[]): void {
 
-        if(this.m_initFlag) {
+        if (this.m_initFlag) {
             this.createMaterial(texList);
             this.activeDisplay();
         }
         else {
             let mesh: Box3DMesh = this.getMesh() as Box3DMesh;
-            if(mesh != null) {
+            if (mesh != null) {
                 mesh.initialize(this.m_minV, this.m_maxV);
             }
         }
@@ -103,8 +103,8 @@ export default class Box3DEntity extends DisplayEntity {
      * @param texList  TextureProxy instance list
      */
     initialize(minV: Vector3D, maxV: Vector3D, texList: TextureProxy[] = null): void {
-        if(minV != null) this.m_minV.copyFrom(minV);
-        if(maxV != null) this.m_maxV.copyFrom(maxV);
+        if (minV != null) this.m_minV.copyFrom(minV);
+        if (maxV != null) this.m_maxV.copyFrom(maxV);
 
         this.initializeThis(texList);
     }
@@ -118,14 +118,14 @@ export default class Box3DEntity extends DisplayEntity {
         cubeSize *= 0.5;
         this.m_minV.setXYZ(-cubeSize, -cubeSize, -cubeSize);
         this.m_maxV.setXYZ(cubeSize, cubeSize, cubeSize);
-        
+
         this.initializeThis(texList);
     }
     initializeSizeXYZ(widthSize: number, heightSize: number, longSize: number, texList: TextureProxy[] = null): void {
 
         this.m_minV.setXYZ(-widthSize * 0.5, -heightSize * 0.5, -longSize * 0.5);
         this.m_maxV.setXYZ(widthSize * 0.5, heightSize * 0.5, longSize * 0.5);
-        
+
         this.initializeThis(texList);
     }
 
@@ -178,7 +178,7 @@ export default class Box3DEntity extends DisplayEntity {
         this.vtxColor = null;
         this.m_currMesh = null;
         this.m_initFlag = true;
-            this.vtxColor = null;
+        this.vtxColor = null;
     }
     toString(): string {
         return "[Box3DEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";

@@ -41,7 +41,6 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
         if (this.vertColorEnabled) {
             coder.addVertLayout("vec3", "a_cvs");
             coder.addVarying("vec3", "v_cv");
-            coder.addDefine("VOX_USE_VTX_COLOR", "1");
         }
 
         coder.addFragOutput("vec4", "FragColor0");
@@ -54,7 +53,7 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
         FragColor0 *= VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv.xy);
     #endif
     #ifdef VOX_USE_VTX_COLOR
-        FragColor0 *= vec4(v_cv.xyz,1.0);
+        FragColor0.xyz *= v_cv.xyz;
     #endif
     #ifdef VOX_PREMULTIPLY_ALPHA
         FragColor0.rgb *= u_color.xyz;
