@@ -15,169 +15,179 @@ import RendererScene from "../../../vox/scene/RendererScene";
 import IAttackDst from "../../../app/robot/attack/IAttackDst";
 import TriggerClock from "../../../vox/utils/TriggerClock";
 import WeapMoudle from "../../../app/robot/WeapMoudle";
-import {CampType} from "../../../app/robot/camp/Camp";
+import { CampType } from "../../../app/robot/camp/Camp";
+import { CommonMaterialContext } from "../../../materialLab/base/CommonMaterialContext";
+import LambertLightMaterial from "../../../vox/material/mcase/LambertLightMaterial";
+import MaterialBase from "../../../vox/material/MaterialBase";
 
-export default class TrackWheelWeaponBody
-{
-    private m_pos:Vector3D = new Vector3D();
-    private m_entity01:DisplayEntity = null;
-    private m_entity02:DisplayEntity = null;
+export default class TrackWheelWeaponBody {
+    private m_pos: Vector3D = new Vector3D();
+    private m_entity01: DisplayEntity = null;
+    private m_entity02: DisplayEntity = null;
 
-    private m_parentContainer:DisplayEntityContainer = null;
-    private m_container:DisplayEntityContainer = null;
-    
-    private m_attackClock:TriggerClock = new TriggerClock();
-    private m_weapType:number = 0;
-    weap:WeapMoudle = null;
-    campType:CampType = CampType.Blue;
-    constructor(container:DisplayEntityContainer = null)
-    {
-        if(container == null)
-        {
+    private m_parentContainer: DisplayEntityContainer = null;
+    private m_container: DisplayEntityContainer = null;
+
+    private m_attackClock: TriggerClock = new TriggerClock();
+    private m_weapType: number = 0;
+    materialCtx: CommonMaterialContext = null;
+    weap: WeapMoudle = null;
+    campType: CampType = CampType.Blue;
+    constructor(container: DisplayEntityContainer = null) {
+        if (container == null) {
             this.m_container = new DisplayEntityContainer();
         }
-        else
-        {
+        else {
             this.m_container = container;
         }
     }
-    getContainer():DisplayEntityContainer
-    {
+    
+    private createMaterial(diffuseMap: TextureProxy): LambertLightMaterial {
+        let trackMaterial = this.materialCtx.createLambertLightMaterial(false);
+        trackMaterial.diffuseMap = diffuseMap;
+        trackMaterial.normalMap = this.materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
+        trackMaterial.aoMap = this.materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
+        trackMaterial.fogEnabled = false;
+        trackMaterial.initializeByCodeBuf( true );
+        trackMaterial.setBlendFactor(0.6, 0.7);
+        return trackMaterial;
+    }
+    getContainer(): DisplayEntityContainer {
         return this.m_container;
     }
-    
-    setVisible(boo:boolean):void
-    {
+
+    setVisible(boo: boolean): void {
         this.m_container.setVisible(boo);
     }
-    getVisible():boolean
-    {
+    getVisible(): boolean {
         return this.m_container.getVisible();
     }
-    
-    setRotationY(rotation:number):void
-    {
+
+    setRotationY(rotation: number): void {
         this.m_container.setRotationY(rotation);
     }
-    getRotationY():number
-    {
+    getRotationY(): number {
         return this.m_container.getRotationY();
     }
-    private static m_box01:Box3DEntity = null;
-    private static m_box02:Box3DEntity = null;
-    initWeap01(tex0:TextureProxy):void{
-        let height:number = 30.0;
-        if(TrackWheelWeaponBody.m_box01 == null)
-        {
+    private static m_box01: Box3DEntity = null;
+    private static m_box02: Box3DEntity = null;
+    initWeap01(tex0: TextureProxy): void {
+        let height: number = 30.0;
+        let material: MaterialBase;
+        if (TrackWheelWeaponBody.m_box01 == null) {
             TrackWheelWeaponBody.m_box01 = new Box3DEntity();
-            TrackWheelWeaponBody.m_box01.initializeSizeXYZ(60.0,30,60,[tex0]);
-            let mat4:Matrix4 = new Matrix4();
+            material = this.createMaterial(tex0);
+            TrackWheelWeaponBody.m_box01.setMaterial( material );
+            TrackWheelWeaponBody.m_box01.initializeSizeXYZ(60.0, 30, 60, [tex0]);
+            let mat4: Matrix4 = new Matrix4();
             mat4.identity();
-            mat4.setScaleXYZ(1.0,1.1,1.0);
-            mat4.appendTranslationXYZ(0.0, 0.5 * height * 0.1,0.0);
-            TrackWheelWeaponBody.m_box01.transformFaceAt(2,mat4);
+            mat4.setScaleXYZ(1.0, 1.1, 1.0);
+            mat4.appendTranslationXYZ(0.0, 0.5 * height * 0.1, 0.0);
+            TrackWheelWeaponBody.m_box01.transformFaceAt(2, mat4);
             TrackWheelWeaponBody.m_box01.reinitializeMesh();
         }
-        let twUpperBox:Box3DEntity = new Box3DEntity();
+        let twUpperBox: Box3DEntity = new Box3DEntity();
+        material = this.createMaterial(tex0);
+        twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelWeaponBody.m_box01);
-        twUpperBox.initializeSizeXYZ(60.0,height,60,[tex0]);
-        twUpperBox.setXYZ(0.0,75.0,0.0);
-        
+        twUpperBox.initializeSizeXYZ(60.0, height, 60, [tex0]);
+        twUpperBox.setXYZ(0.0, 75.0, 0.0);
+
 
         this.m_entity01 = twUpperBox;
         this.m_weapType = 0;
     }
-    initWeap02(tex0:TextureProxy):void{
-        if(TrackWheelWeaponBody.m_box01 == null)
-        {
-            let scale:number = 1.0;
-            let box:Box3DEntity = new Box3DEntity();
+    initWeap02(tex0: TextureProxy): void {
+
+        let material: MaterialBase;
+        if (TrackWheelWeaponBody.m_box01 == null) {
+            let scale: number = 1.0;
+            let box: Box3DEntity = new Box3DEntity();
+            material = this.createMaterial(tex0);
+            box.setMaterial( material );
             box.initializeSizeXYZ(80.0, 20, 60, [tex0]);
-            box.setXYZ(0.0,70.0,0.0);
+            box.setXYZ(0.0, 70.0, 0.0);
             box.setScaleXYZ(scale, scale, scale);
-            let mat4:Matrix4 = new Matrix4();
+            let mat4: Matrix4 = new Matrix4();
             mat4.identity();
-            mat4.setScaleXYZ(0.7,1.0,0.9);
-            mat4.appendTranslationXYZ(-8.0,0.0,0.0);
-            box.transformFaceAt(0,mat4);
+            mat4.setScaleXYZ(0.7, 1.0, 0.9);
+            mat4.appendTranslationXYZ(-8.0, 0.0, 0.0);
+            box.transformFaceAt(0, mat4);
             box.reinitializeMesh();
             TrackWheelWeaponBody.m_box01 = box;
 
             box = new Box3DEntity();
+            material = this.createMaterial(tex0);
+            box.setMaterial( material );
             box.initializeSizeXYZ(80.0, 12, 60, [tex0]);
-            box.setXYZ(0.0,70.0 + 10 + 6,0.0);                    
+            box.setXYZ(0.0, 70.0 + 10 + 6, 0.0);
             box.setScaleXYZ(scale, scale, scale);
             mat4 = new Matrix4();
             mat4.identity();
-            mat4.setScaleXYZ(0.6,1.0,0.8);
-            mat4.appendTranslationXYZ(-20.0,0.0,0.0);
-            box.transformFaceAt(1,mat4);
+            mat4.setScaleXYZ(0.6, 1.0, 0.8);
+            mat4.appendTranslationXYZ(-20.0, 0.0, 0.0);
+            box.transformFaceAt(1, mat4);
             box.reinitializeMesh();
             TrackWheelWeaponBody.m_box02 = box;
-            
+
         }
-        let twUpperBox:Box3DEntity = new Box3DEntity();
+        let twUpperBox: Box3DEntity = new Box3DEntity();
+        material = this.createMaterial(tex0);
+        twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelWeaponBody.m_box01);
         twUpperBox.copyTransformFrom(TrackWheelWeaponBody.m_box01);
-        twUpperBox.initializeSizeXYZ(60.0,30,60,[tex0]);
+        twUpperBox.initializeSizeXYZ(60.0, 30, 60, [tex0]);
         this.m_entity01 = twUpperBox;
 
         twUpperBox = new Box3DEntity();
+        material = this.createMaterial(tex0);
+        twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelWeaponBody.m_box02);
         twUpperBox.copyTransformFrom(TrackWheelWeaponBody.m_box02);
-        twUpperBox.initializeSizeXYZ(60.0,30,60,[tex0]);
+        twUpperBox.initializeSizeXYZ(60.0, 30, 60, [tex0]);
         this.m_entity02 = twUpperBox;
 
         this.m_weapType = 1;
     }
-    initialize(sc:RendererScene,parentContainer:DisplayEntityContainer,offsetPos:Vector3D = null):void
-    {
-        if(this.m_parentContainer == null)
-        {
+    initialize(sc: RendererScene, parentContainer: DisplayEntityContainer, offsetPos: Vector3D = null): void {
+        if (this.m_parentContainer == null) {
             this.m_parentContainer = parentContainer;
             parentContainer.addChild(this.m_container);
-            if(this.m_weapType == 0)
-            {
+            if (this.m_weapType == 0) {
                 this.m_container.addEntity(this.m_entity01);
             }
-            else if(this.m_weapType == 1)
-            {
+            else if (this.m_weapType == 1) {
                 this.m_container.addEntity(this.m_entity01);
                 this.m_container.addEntity(this.m_entity02);
                 this.m_container.setScaleXYZ(1.5, 1.3, 1.7);
-                this.m_container.setXYZ(0.0,-50.0,0.0);
+                this.m_container.setXYZ(0.0, -50.0, 0.0);
             }
-            
-            let pv:Vector3D = new Vector3D();
-            if(offsetPos != null)
-            {
+
+            let pv: Vector3D = new Vector3D();
+            if (offsetPos != null) {
                 pv.addBy(offsetPos);
             }
-            
+
             this.m_attackClock.setPeriod(16);
-            this.m_attackClock.setTriggerTimeAt(0,6);
+            this.m_attackClock.setTriggerTimeAt(0, 6);
             this.weap = new WeapMoudle(sc);
         }
     }
-    getPosition(position:Vector3D):void
-    {
+    getPosition(position: Vector3D): void {
         this.m_container.getPosition(position);
     }
-    
-    private m_beginPos:Vector3D = new Vector3D();
-    run(attackDst:IAttackDst,degreeDis:number,attPos:Vector3D):void
-    {
+
+    private m_beginPos: Vector3D = new Vector3D();
+    run(attackDst: IAttackDst, degreeDis: number, attPos: Vector3D): void {
         this.m_attackClock.run();
-        if(degreeDis < 2.0)
-        {
-            let index:number = this.m_attackClock.getTriggerIndex();
-            if(index > -1)
-            {
-                this.m_parentContainer.getPosition( this.m_beginPos );
-                this.m_entity01.getPosition( this.m_pos );
+        if (degreeDis < 2.0) {
+            let index: number = this.m_attackClock.getTriggerIndex();
+            if (index > -1) {
+                this.m_parentContainer.getPosition(this.m_beginPos);
+                this.m_entity01.getPosition(this.m_pos);
                 this.m_beginPos.y += this.m_pos.y + 10;
                 //  attack 姿态控制
-                this.weap.createAtt(0,this.m_beginPos,attPos, attackDst, this.campType);
+                this.weap.createAtt(0, this.m_beginPos, attPos, attackDst, this.campType);
             }
         }
     }

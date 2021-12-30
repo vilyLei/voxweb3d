@@ -47,9 +47,11 @@ class RoleBuilder {
             this.initTexture();
         }
     }
+    
     private initTexture(): void {
         
         this.m_texList = [
+
             this.m_materialCtx.getTextureByUrl("static/assets/wood_01.jpg"),
             this.m_materialCtx.getTextureByUrl("static/assets/yanj.jpg"),
             this.m_materialCtx.getTextureByUrl("static/assets/skin_01.jpg"),
@@ -60,7 +62,9 @@ class RoleBuilder {
             this.m_materialCtx.getTextureByUrl("static/assets/metal_08.jpg")
         ]
         
-        this.m_flrFactory.initialize(this.m_rscene, 0, this.campModule.redCamp, this.terrain.getTerrainData(), this.m_materialCtx);
+        this.m_flrFactory.setMaterialContext( this.m_materialCtx );
+        this.m_twrFactory.setMaterialContext( this.m_materialCtx );
+        this.m_flrFactory.initialize(this.m_rscene, 0, this.campModule.redCamp, this.terrain.getTerrainData());
         this.m_twrFactory.initialize(this.m_rscene, 0, this.campModule.redCamp, this.terrain.getTerrainData(), 70.0);
     }
     /*

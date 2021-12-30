@@ -22,12 +22,14 @@ export default class FourLimbRoleFactory {
     private m_renderProcessIndex: number = 0;
     
     constructor() { }
-    initialize(rscene: RendererScene, renderProcessIndex: number, roleCamp: IRoleCamp, terrainData: TerrainData, materialCtx: CommonMaterialContext): void {
+    setMaterialContext(materialCtx: CommonMaterialContext): void {
+        this.m_materialCtx = materialCtx;
+    }
+    initialize(rscene: RendererScene, renderProcessIndex: number, roleCamp: IRoleCamp, terrainData: TerrainData): void {
         this.m_rscene = rscene;
         this.m_renderProcessIndex = renderProcessIndex;
         this.m_roleCamp = roleCamp;
         this.m_terrainData = terrainData;
-        this.m_materialCtx = materialCtx;
     }
     create(tex0: TextureProxy, tex1: TextureProxy, tex2: TextureProxy, campType: CampType, bodyWidth: number): FourLimbRole {
         let boxPart0: BoxPartStore = new BoxPartStore();
