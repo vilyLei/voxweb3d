@@ -237,6 +237,11 @@ export default class LambertLightMaterial extends MaterialBase {
             this.m_parallaxParams[3] = stepFactor;
         }
     }
+    setRGB3f(pr: number, pg: number, pb: number): void {
+        this.m_fragLocalParams[0] = pr;
+        this.m_fragLocalParams[1] = pg;
+        this.m_fragLocalParams[2] = pb;
+    }
     setColor(factor: Color4, bias: Color4 = null): void {
         if (factor != null) {
             this.m_fragLocalParams[0] = factor.r;

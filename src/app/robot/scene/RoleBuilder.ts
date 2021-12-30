@@ -43,8 +43,7 @@ class RoleBuilder {
         if (this.m_rscene == null) {
             this.m_rscene = rscene;
             this.m_materialCtx = materialCtx;
-
-            //this.init();
+            
             this.initTexture();
         }
     }
@@ -61,27 +60,11 @@ class RoleBuilder {
             this.m_materialCtx.getTextureByUrl("static/assets/metal_08.jpg")
         ]
         
-        this.m_flrFactory.initialize(this.m_rscene, 0, this.campModule.redCamp, this.terrain.getTerrainData());
+        this.m_flrFactory.initialize(this.m_rscene, 0, this.campModule.redCamp, this.terrain.getTerrainData(), this.m_materialCtx);
         this.m_twrFactory.initialize(this.m_rscene, 0, this.campModule.redCamp, this.terrain.getTerrainData(), 70.0);
     }
     /*
     private init(): void {
-
-        this.terrain.initialize(this.m_rscene, this.m_materialCtx);
-
-        AssetsModule.GetInstance().initialize(this.m_materialCtx);
-
-        this.campModule.initialize(this.m_rscene);
-
-
-        let axis: Axis3DEntity = new Axis3DEntity();
-        //axis.initializeCross(600.0);
-        axis.initialize(300.0);
-        this.m_rscene.addEntity(axis);
-
-        axis = new Axis3DEntity();
-        axis.initializeCross(200.0);
-        this.m_rscene.addEntity(axis);
 
         let srcBox: Box3DEntity = new Box3DEntity();
         srcBox.initializeCube(100.0, [tex2]);
@@ -100,34 +83,6 @@ class RoleBuilder {
             redRole.radius = 80;
             redRole.dispEntity = box;
             this.campModule.redCamp.addRole(redRole);
-        }
-
-        this.m_flrFactory.initialize(this.m_rscene, 0, this.campModule.redCamp, this.terrain.getTerrainData());
-        this.m_twrFactory.initialize(this.m_rscene, 0, this.campModule.redCamp, this.terrain.getTerrainData(), 70.0);
-
-        let limbRole: FourLimbRole;
-        let campType: CampType;
-        let bodySize: number = 40.0;
-        for (i = 0; i < 10; ++i) {
-            bodySize = Math.round(Math.random() * 60.0) + 30.0;
-            switch (i % 3) {
-                case 1:
-                    campType = CampType.Red;
-                    break;
-                case 2:
-                    campType = CampType.Green;
-                    break;
-                default:
-                    campType = CampType.Blue;
-                    break;
-
-            }
-            limbRole = this.m_flrFactory.create(tex0, tex1, tex2, campType, bodySize);
-            limbRole.lifeTime = 100 + Math.round(100.0 * Math.random());
-            limbRole.setXYZ(Math.random() * 1600.0 - 800.0, 0.0, Math.random() * 1600.0 - 800.0);
-            limbRole.moveToXZ(Math.random() * 1600.0 - 800.0, Math.random() * 1600.0 - 800.0);
-
-            this.campModule.redCamp.addRole(limbRole);
         }
     }
     //*/
@@ -197,7 +152,6 @@ class RoleBuilder {
     private createLambertMaterial(diffuseMap: TextureProxy): LambertLightMaterial {
         let trackMaterial = this.m_materialCtx.createLambertLightMaterial(false);
         trackMaterial.diffuseMap = diffuseMap;
-        //trackMaterial.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
         trackMaterial.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
         trackMaterial.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
         trackMaterial.fogEnabled = false;
@@ -211,7 +165,7 @@ class RoleBuilder {
         let tex4 = this.m_texList[4];
         let tex5 = this.m_texList[5];
 
-        let material: MaterialBase
+        let material: MaterialBase = null;
 
         if(this.m_sillyRole_lowerBox == null) {
             material = this.createLambertMaterial(tex3);
@@ -239,8 +193,9 @@ class RoleBuilder {
                 let box0: Box3DEntity = new Box3DEntity();
                 
                 let pmaterial = this.createLambertMaterial(tex5);
-                color.randomRGB();
+                color.setRGB3f(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2);
                 pmaterial.setColor( color );
+                // pmaterial.setAmbientFactor(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2);
                 box0.setMaterial(pmaterial);
                 box0.copyMeshFrom(lowerBox);
                 box0.initializeSizeXYZ(50.0, 40, 50, [tex5]);
@@ -248,9 +203,10 @@ class RoleBuilder {
                 //(box0.getMaterial() as any).setRGB3f(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2);
                 let box1: Box3DEntity = new Box3DEntity();
                 pmaterial = this.createLambertMaterial(tex4);
-                color.randomRGB();
+                color.setRGB3f(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2);
                 pmaterial.setColor( color );
-                box0.setMaterial(pmaterial);
+                // pmaterial.setAmbientFactor(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2);
+                box1.setMaterial(pmaterial);
                 box1.copyMeshFrom(upperBox);
                 box1.initializeSizeXYZ(30.0, 20, 30, [tex4]);
                 box1.setXYZ(0.0, 50.0, 0.0);

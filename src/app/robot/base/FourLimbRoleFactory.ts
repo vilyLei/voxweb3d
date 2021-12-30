@@ -12,26 +12,31 @@ import FourLimbRole from "../../../app/robot/base/FourLimbRole";
 import IRoleCamp from "../../../app/robot/IRoleCamp";
 import { CampType } from "../../../app/robot/camp/Camp";
 import { TerrainData } from "../../../terrain/tile/TerrainData";
+import { CommonMaterialContext } from "../../../materialLab/base/CommonMaterialContext";
 
 export default class FourLimbRoleFactory {
     private m_roleCamp: IRoleCamp = null;
     private m_terrainData: TerrainData = null;
     private m_rscene: RendererScene = null;
+    private m_materialCtx: CommonMaterialContext = null;
     private m_renderProcessIndex: number = 0;
     
     constructor() { }
-    initialize(rscene: RendererScene, renderProcessIndex: number, roleCamp: IRoleCamp, terrainData: TerrainData): void {
+    initialize(rscene: RendererScene, renderProcessIndex: number, roleCamp: IRoleCamp, terrainData: TerrainData, materialCtx: CommonMaterialContext): void {
         this.m_rscene = rscene;
         this.m_renderProcessIndex = renderProcessIndex;
         this.m_roleCamp = roleCamp;
         this.m_terrainData = terrainData;
+        this.m_materialCtx = materialCtx;
     }
     create(tex0: TextureProxy, tex1: TextureProxy, tex2: TextureProxy, campType: CampType, bodyWidth: number): FourLimbRole {
         let boxPart0: BoxPartStore = new BoxPartStore();
+        boxPart0.materialCtx = this.m_materialCtx;
         boxPart0.setSgSize(10, 15);
         boxPart0.initilize(tex0, tex2, tex1);
 
         let boxPart1: BoxPartStore = new BoxPartStore();
+        boxPart1.materialCtx = this.m_materialCtx;
         boxPart1.setParam(100.0, -40.0, -30.0);
         boxPart1.setBgSize(10, 8);
         boxPart1.setSgSize(7, 5);
