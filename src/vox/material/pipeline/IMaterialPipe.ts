@@ -18,7 +18,7 @@ import IRenderTexture from "../../../vox/render/IRenderTexture";
  */
 interface IMaterialPipe {
     resetPipe(): void;
-    getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[]): IRenderTexture[];
+    getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[], pipeType: MaterialPipeType): IRenderTexture[];
     useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void;
     getPipeTypes(): MaterialPipeType[];
     getGlobalUinform(): ShaderGlobalUniform;
