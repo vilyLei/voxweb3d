@@ -6,7 +6,7 @@
 /***************************************************************************/
 import IUniformParam from "./IUniformParam";
 
-class ShadowVSMParams implements IUniformParam{
+class ShadowVSMParams implements IUniformParam {
     constructor() { }
     readonly type: string = "vec4";
     readonly data: Float32Array = null;
@@ -19,7 +19,7 @@ class ShadowVSMParams implements IUniformParam{
      */
     readonly arrayLength: number = 3;
 }
-class EnvLightParam implements IUniformParam{
+class EnvLightParam implements IUniformParam {
     constructor() { }
     readonly type: string = "vec4";
     readonly data: Float32Array = new Float32Array([
@@ -32,11 +32,11 @@ class EnvLightParam implements IUniformParam{
         600.0,                      // fogNear
         3500.0,                     // fogFar
 
-        0.3,0.0,0.9,                // fog color(r, g, b)
+        0.3, 0.0, 0.9,              // fog color(r, g, b)
         0.0005,                     // fog density
 
-        0.0,0.0,                    // fog area offset x and z
-        800.0,800.0                 // fog area width and height
+        0.0, 0.0,                   // fog area offset x and z
+        800.0, 800.0                // fog area width and height
 
     ]);
     /**
@@ -51,7 +51,7 @@ class EnvLightParam implements IUniformParam{
 /**
  * shadow view matatrix4 float32array data
  */
-class ShadowMat4UniformParam implements IUniformParam{
+class ShadowMat4UniformParam implements IUniformParam {
     constructor() { }
     readonly type: string = "mat4";
     readonly data: Float32Array = null;
@@ -67,7 +67,7 @@ class ShadowMat4UniformParam implements IUniformParam{
 /**
  * stage param shader uniform name string, vec4: [2.0/stageWidth,2.0/stageHeight, stageWidth,stageHeight]
  */
-class StageUniformParam implements IUniformParam{
+class StageUniformParam implements IUniformParam {
     constructor() { }
     readonly type: string = "vec4";
     readonly data: Float32Array = null;
@@ -84,7 +84,7 @@ class StageUniformParam implements IUniformParam{
 /**
  * view port param shader uniform name string, vec4: [viewPortX, viewPortY, viewPortWidth, viewPortHeight]
  */
- class ViewUniformParam implements IUniformParam{
+class ViewUniformParam implements IUniformParam {
     constructor() { }
     readonly type: string = "vec4";
     readonly data: Float32Array = null;
@@ -100,7 +100,7 @@ class StageUniformParam implements IUniformParam{
 /**
  * camera frustrum param shader uniform name string,vec4: [camera zNear,camera zFar, camera nearPlaneHalfW, camera nearPlaneHalfH]
  */
-class FrustumUniformParam implements IUniformParam{
+class FrustumUniformParam implements IUniformParam {
     constructor() { }
     readonly type: string = "vec4";
     readonly data: Float32Array = null;
@@ -117,7 +117,7 @@ class FrustumUniformParam implements IUniformParam{
 /**
  * camera world position param shader uniform name string,vec4: [x, y, z, w]
  */
- class CameraPosUniformParam implements IUniformParam{
+class CameraPosUniformParam implements IUniformParam {
     constructor() { }
     readonly type: string = "vec4";
     readonly data: Float32Array = null;

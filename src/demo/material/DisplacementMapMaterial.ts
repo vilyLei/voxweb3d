@@ -93,9 +93,7 @@ gl_Position = u_projMat * viewPos;
 `
         );
         if(this.fogEnabled) {
-            if (this.envData != null) {
-                this.envData.useUniformsForFog(coder);
-            }
+            throw Error("obsolete material!");
         }
     }
 

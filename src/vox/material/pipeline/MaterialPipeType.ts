@@ -9,6 +9,7 @@
 enum MaterialPipeType {
     
     ENV_LIGHT_PARAM,
+    ENV_AMBIENT,
     FOG,
     FOG_EXP2,
     VSM_SHADOW,

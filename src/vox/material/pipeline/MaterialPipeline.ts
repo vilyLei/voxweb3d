@@ -113,6 +113,7 @@ class MaterialPipeline implements IMaterialPipeline {
                 type = types[i];
                 if (this.m_pipeMap.has(type)) {
                     pipe = this.m_pipeMap.get(type);
+                    pipe.resetPipe();
                     this.m_sharedUniforms.push(pipe.getGlobalUinform());
                 }
             }

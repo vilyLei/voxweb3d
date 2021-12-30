@@ -64,8 +64,7 @@ vec3 ao = vec3(1.0);
     ao = VOX_Texture2D(VOX_AO_MAP, texUV).yyy;
 #endif
 color.xyz *= ao;
-// ambient
-color.xyz += ((u_fragLocalParams[ VOX_LIGHT_LOCAL_PARAMS_INDEX + 2 ].xyz)) * ao;
+color.xyz += u_fragLocalParams[ VOX_LIGHT_LOCAL_PARAMS_INDEX + 2 ].xyz * ao;
 
 FragColor0 = color;
 //[x: displacement, y: ao, z: specular, w: occ]

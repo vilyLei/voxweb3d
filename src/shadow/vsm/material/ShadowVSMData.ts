@@ -42,6 +42,9 @@ export default class ShadowVSMData implements IMaterialPipe {
     setShadowMap(shadowMap: RTTTextureProxy): void {
         this.m_shadowMap = shadowMap;
     }
+    resetPipe(): void {
+        
+    }
     getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[]): IRenderTexture[] {
         if(this.m_shadowMap != null) {
             if(outList == null) outList = [];

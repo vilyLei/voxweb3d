@@ -17,6 +17,7 @@ import IRenderTexture from "../../../vox/render/IRenderTexture";
  * 材质功能组装流水线中的pipe行为规范
  */
 interface IMaterialPipe {
+    resetPipe(): void;
     getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[]): IRenderTexture[];
     useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void;
     getPipeTypes(): MaterialPipeType[];

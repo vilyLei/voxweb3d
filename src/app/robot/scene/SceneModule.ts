@@ -48,9 +48,9 @@ class SceneModule {
         axis.initializeCross(200.0);
         this.m_rscene.addEntity(axis);
         
-        this.m_roleBuilder.createLimbRoles(100);
-        this.m_roleBuilder.createTrackWheelRoles(100);
-        this.m_roleBuilder.createSillyRoles(100);
+        this.m_roleBuilder.createLimbRoles(12);
+        this.m_roleBuilder.createTrackWheelRoles(12);
+        this.m_roleBuilder.createSillyRoles(12);
     }
 
 

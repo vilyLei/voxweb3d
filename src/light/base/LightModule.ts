@@ -230,6 +230,10 @@ class LightModule implements IMaterialPipe {
         console.log("showInfo(), this.m_lightPosData: ", this.m_lightPosData);
         console.log("showInfo(), this.m_lightColors: ", this.m_lightColors);
     }
+    
+    resetPipe(): void {
+        
+    }
     getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[]): IRenderTexture[] {
         return null;
     }
