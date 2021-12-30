@@ -5,7 +5,11 @@ vec4 color = u_fragLocalParams[0];
 #ifdef VOX_DIFFUSE_MAP
     color = color * VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv.xy);
 #endif
+
 color.xyz += u_fragLocalParams[1].xyz;
+#ifdef VOX_USE_VTX_COLOR
+    color.xyz *= v_cv.xyz;
+#endif
 
 vec2 texUV = v_uv.xy;
 #ifdef VOX_LIGHT_LOCAL_PARAMS_INDEX
