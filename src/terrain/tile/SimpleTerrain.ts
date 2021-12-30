@@ -35,6 +35,8 @@ class SimpleTerrain {
     createLambertMaterial(diffuseMap: TextureProxy, normalMap: TextureProxy = null, aoMap: TextureProxy = null, vtxColorEnabled: boolean = false): LambertLightMaterial {
 
         let material = this.m_materialCtx.createLambertLightMaterial(false);
+        material.envAmbientLightEnabled = true;
+        material.vertColorEnabled = true;
         material.vertColorEnabled = vtxColorEnabled;
         material.diffuseMap = diffuseMap;
         material.normalMap = normalMap;
@@ -71,23 +73,17 @@ class SimpleTerrain {
 
         //let obsMaterial = new Default3DMaterial();
         let obsMaterial = this.createLambertMaterial(tex0, null, null, true);
-        obsMaterial.vertColorEnabled = true;
-        obsMaterial.setTextureList([tex0]);
         obsMaterial.initializeByCodeBuf();
 
         //let material1 = new Default3DMaterial();
         let material1 = this.createLambertMaterial(tex1, null, null, true);
-        material1.vertColorEnabled = true;
-        material1.setTextureList([tex1]);
         material1.initializeByCodeBuf();
 
         //let material2 = new Default3DMaterial();
         let material2 = this.createLambertMaterial(tex2, null, null, true);
-        material2.vertColorEnabled = true;
-        material2.setTextureList([tex2]);
         material2.initializeByCodeBuf();
         
-        let colorBrn: number = 0.6;
+        let colorBrn: number = 0.5;
         let rn: number = this.m_terrainData.rn;
         let cn: number = this.m_terrainData.cn;
         let pv: Vector3D;

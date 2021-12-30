@@ -196,9 +196,9 @@
     #endif
     
     vec3 Lo = rL.diffuse * diffuse + specularColor;
-    #ifdef VOX_ENV_AMBIENT_LIGHT_MAP
+    #ifdef VOX_ENV_AMBIENT_LIGHT_LIGHT_MAP
         param4 = u_envLightParams[4];
-        Lo += diffuse * VOX_Texture2D(VOX_ENV_AMBIENT_LIGHT_MAP, (param4.xy + worldPosition.xz) / param4.zw).xyz;
+        Lo += diffuse * VOX_Texture2D(VOX_ENV_AMBIENT_LIGHT_LIGHT_MAP, (param4.xy + worldPosition.xz) / param4.zw).xyz;
     #endif
     
     // ambient lighting (note that the next IBL tutorial will replace

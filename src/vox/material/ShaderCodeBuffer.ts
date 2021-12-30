@@ -109,7 +109,7 @@ class ShaderCodeBuffer {
                 if (this.lightEnabled) this.pipeTypes.push(MaterialPipeType.GLOBAL_LIGHT);                    
                 if (this.shadowReceiveEnabled) this.pipeTypes.push(MaterialPipeType.VSM_SHADOW);
                 if (this.fogEnabled) this.pipeTypes.push(MaterialPipeType.FOG_EXP2);
-                if (this.envAmbientLightEnabled) this.pipeTypes.push(MaterialPipeType.ENV_AMBIENT);
+                if (this.envAmbientLightEnabled) this.pipeTypes.push(MaterialPipeType.ENV_AMBIENT_LIGHT);
             }
         }
     }

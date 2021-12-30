@@ -28,6 +28,7 @@ class SceneModule {
             this.m_materialCtx = materialCtx;
 
             this.m_terrain.initialize(this.m_rscene, this.m_materialCtx);
+
             AssetsModule.GetInstance().initialize(this.m_materialCtx);    
             this.m_campModule.initialize(this.m_rscene);
 
@@ -47,10 +48,10 @@ class SceneModule {
         axis = new Axis3DEntity();
         axis.initializeCross(200.0);
         this.m_rscene.addEntity(axis);
-        
-        this.m_roleBuilder.createLimbRoles(12);
-        this.m_roleBuilder.createTrackWheelRoles(12);
-        this.m_roleBuilder.createSillyRoles(12);
+        let total: number = 50.0;
+        this.m_roleBuilder.createLimbRoles(total);
+        this.m_roleBuilder.createTrackWheelRoles(total);
+        this.m_roleBuilder.createSillyRoles(total);
     }
 
 

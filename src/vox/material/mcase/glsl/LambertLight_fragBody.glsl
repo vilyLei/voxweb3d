@@ -57,9 +57,10 @@ vec2 texUV = v_uv.xy;
     #endif
     vec3 destColor = getLambertLightColor(light);
 
-    #ifdef VOX_ENV_AMBIENT_LIGHT_MAP
+    #ifdef VOX_ENV_AMBIENT_LIGHT_LIGHT_MAP
         param4 = u_envLightParams[4];
-        destColor.xyz += color.xyz * VOX_Texture2D(VOX_ENV_AMBIENT_LIGHT_MAP, (param4.xy + worldPosition.xz) / param4.zw).xyz;
+        param4.xyz = color.xyz * VOX_Texture2D(VOX_ENV_AMBIENT_LIGHT_LIGHT_MAP, (param4.xy + worldPosition.xz) / param4.zw).xyz;
+        destColor.xyz += param4.xyz * u_envLightParams[0].xyz;
     #endif
     color.xyz = color.xyz * param.z + param.w * destColor;
 #endif

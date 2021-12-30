@@ -26,6 +26,10 @@ export class RbtDrama implements IShaderLibListener{
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
+        this.m_materialCtx.envData.setAmbientColorRGB3f(2.0,2.0,2.0);
+        this.m_materialCtx.envData.setEnvAmbientLightAreaOffset(-1200.0, -1200.0);
+        this.m_materialCtx.envData.setEnvAmbientLightAreaSize(2400.0, 2400.0);
+        this.m_materialCtx.envData.setEnvAmbientMap( this.m_materialCtx.getTextureByUrl("static/assets/flare_core_02.jpg") );
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ",loadingTotal, loadedTotal);
         this.initScene();
     }

@@ -270,6 +270,9 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         // this.m_rscene.addEntity(pl, 2);
     }
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
+        this.m_materialCtx.envData.setAmbientColorRGB3f(1.0,1.0,1.0);
+        this.m_materialCtx.envData.setEnvAmbientLightAreaOffset(-500.0, -500.0);
+        this.m_materialCtx.envData.setEnvAmbientLightAreaSize(1000.0, 1000.0);
         this.m_materialCtx.envData.setEnvAmbientMap( this.m_materialCtx.getTextureByUrl("static/assets/flare_core_02.jpg") );
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
         this.initScene();

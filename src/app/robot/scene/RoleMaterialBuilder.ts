@@ -28,6 +28,7 @@ class RoleMaterialBuilder {
         let dataTex = boxTrack.animator.getPosDataTexture();
         let posTotal = boxTrack.animator.getPosTotal();
         let material = this.m_materialCtx.createLambertLightMaterial(true);
+        material.envAmbientLightEnabled = true;
         material.diffuseMap = diffuseMap;
         material.normalMap = normalMap != null ? normalMap : this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
         material.aoMap = aoMap != null ? aoMap : this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
@@ -46,6 +47,7 @@ class RoleMaterialBuilder {
     createLambertMaterial(diffuseMap: TextureProxy, normalMap: TextureProxy = null, aoMap: TextureProxy = null): LambertLightMaterial {
 
         let material = this.m_materialCtx.createLambertLightMaterial(false);
+        material.envAmbientLightEnabled = true;
         material.diffuseMap = diffuseMap;
         material.normalMap = normalMap != null ? normalMap : this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
         material.aoMap = aoMap != null ? aoMap : this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
