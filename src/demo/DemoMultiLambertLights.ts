@@ -90,7 +90,6 @@ export class DemoMultiLambertLights implements IShaderLibListener {
 
         this.m_materialCtx.addShaderLibListener(this);
         this.m_materialCtx.initialize(this.m_engine.rscene, mcParam);
-
         let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
         pointLight.position.setXYZ(0.0, 150.0, -50.0);
         pointLight.color.setRGB3f(1.0, 1.0, 1.0);
@@ -136,6 +135,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     }
     private createPointLightDisp(pointLight: PointLight): Billboard3DEntity {
 
+        return;
         let billboard: Billboard3DEntity = new Billboard3DEntity();
         billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
         billboard.setMaterialPipeline(this.m_materialCtx.pipeline);
@@ -180,7 +180,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         let material: LambertLightMaterial;
         ///*
         material = this.m_materialCtx.createLambertLightMaterial();
-        vertUniform= new VertUniformComp();
+        material.envAmbientLightEnabled = true;
+        vertUniform = new VertUniformComp();
         material.vertUniform = vertUniform;
         vertUniform.uvTransformEnabled = true;
         this.useMaps(material, "metal_08", true, true, true);
@@ -213,6 +214,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         //*/
         ///*
         material = this.m_materialCtx.createLambertLightMaterial();
+        material.envAmbientLightEnabled = true;
         vertUniform = new VertUniformComp();
         material.vertUniform = vertUniform;
         vertUniform.uvTransformEnabled = true;
@@ -240,8 +242,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_engine.rscene.addEntity(sph);
         //*/
         ///*
-        
         material = this.m_materialCtx.createLambertLightMaterial();
+        material.envAmbientLightEnabled = true;
         vertUniform = new VertUniformComp();
         material.vertUniform = vertUniform;
         vertUniform.uvTransformEnabled = true;
@@ -268,6 +270,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         // this.m_rscene.addEntity(pl, 2);
     }
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
+        this.m_materialCtx.envData.setEnvAmbientMap( this.m_materialCtx.getTextureByUrl("static/assets/flare_core_02.jpg") );
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
         this.initScene();
     }

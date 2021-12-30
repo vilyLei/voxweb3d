@@ -28,6 +28,7 @@ export default class EnvLightData implements IMaterialPipe {
     private m_dirty: boolean = false;
     private m_uslotIndex: number = 0;
     private m_shaderCodeEnabled: boolean = true;
+    private m_uniformCodeEnabled: boolean = true;
     private m_ambientMap: TextureProxy = null;
 
     constructor(slotIndex: number = 0) {
@@ -36,6 +37,7 @@ export default class EnvLightData implements IMaterialPipe {
     }
 
     setEnvAmbientMap(tex: TextureProxy): void {
+        console.log("setEnvAmbientMap(), tex: ",tex);
         if(this.m_ambientMap == null && tex != null) {
             this.m_ambientMap = tex;
             this.m_ambientMap.__$attachThis();
@@ -70,25 +72,37 @@ export default class EnvLightData implements IMaterialPipe {
         UniformConst.EnvLightParams.data[7] = far;
         this.m_dirty = true;
     }
-    setFogAreaSize(width: number, height: number): void {
-        UniformConst.EnvLightParams.data[14] = width;
-        UniformConst.EnvLightParams.data[15] = width;
-        this.m_dirty = true;
-    }
     setFogAreaOffset(px: number, pz: number): void {
         UniformConst.EnvLightParams.data[12] = px;
         UniformConst.EnvLightParams.data[13] = pz;
         this.m_dirty = true;
     }
+    setFogAreaSize(width: number, height: number): void {
+        UniformConst.EnvLightParams.data[14] = width;
+        UniformConst.EnvLightParams.data[15] = height;
+        this.m_dirty = true;
+    }
+    
+    setEnvAmbientAreaOffset(px: number, pz: number): void {
+        UniformConst.EnvLightParams.data[16] = px;
+        UniformConst.EnvLightParams.data[17] = pz;
+        this.m_dirty = true;
+    }
+    setEnvAmbientAreaSize(width: number, height: number): void {
+        UniformConst.EnvLightParams.data[18] = width;
+        UniformConst.EnvLightParams.data[19] = height;
+        this.m_dirty = true;
+    }
 
     resetPipe(): void {
         this.m_shaderCodeEnabled = true;
+        this.m_uniformCodeEnabled = true;
     }
     getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[], pipeType: MaterialPipeType): IRenderTexture[] {
         if(this.m_ambientMap != null && pipeType == MaterialPipeType.ENV_AMBIENT) {
             if(outList == null) outList = [];
             outList.push(this.m_ambientMap);
-            shaderBuilder.uniform.add2DMap("VOX_AMBIENT_MAP", true, true, false);
+            shaderBuilder.uniform.add2DMap("VOX_ENV_AMBIENT_LIGHT_MAP", true, true, false);
             return outList;
         }
         return null;
@@ -99,18 +113,20 @@ export default class EnvLightData implements IMaterialPipe {
             switch (pipeType) {
 
                 case MaterialPipeType.ENV_LIGHT_PARAM:
-
-                    this.m_uniformParam.use(shaderBuilder);
+                    this.buildUniformCode( shaderBuilder );
                     break;
 
                 case MaterialPipeType.FOG:
                 case MaterialPipeType.FOG_EXP2:
 
-                    this.m_uniformParam.use(shaderBuilder);
+                    this.buildUniformCode( shaderBuilder );
                     this.useFogData(shaderBuilder, pipeType == MaterialPipeType.FOG_EXP2, true);
                     break;
+
                 case MaterialPipeType.ENV_AMBIENT:
-                        this.m_uniformParam.use(shaderBuilder);
+
+                    this.buildUniformCode( shaderBuilder );
+                    //this.useShaderCode(shaderBuilder, true);
                     break;
                 default:
                     break;
@@ -125,6 +141,7 @@ export default class EnvLightData implements IMaterialPipe {
             case MaterialPipeType.ENV_LIGHT_PARAM:
             case MaterialPipeType.FOG:
             case MaterialPipeType.FOG_EXP2:
+            case MaterialPipeType.ENV_AMBIENT:
                 return "["+pipeType+"]";
                 break;
             default:
@@ -137,7 +154,12 @@ export default class EnvLightData implements IMaterialPipe {
             shaderBuilder.addFragUniformParam(UniformConst.EnvLightParams);
         }
     }
-
+    private buildUniformCode(shaderBuilder: IShaderCodeBuilder): void {
+        if(this.m_uniformCodeEnabled) {
+            this.m_uniformCodeEnabled = false;
+            this.m_uniformParam.use( shaderBuilder );
+        }
+    }
     private useFogData(shaderBuilder: IShaderCodeBuilder, fogExp2Enabled: boolean, autoAppendShd: boolean): void {
 
         shaderBuilder.addDefine("VOX_USE_FOG", "1");
@@ -180,16 +202,15 @@ export default class EnvLightData implements IMaterialPipe {
                 0.0,0.0,                    // fog area offset x and z
                 800.0,800.0                 // fog area width and height
 
+                -500.0, -500.0,             // env ambient area offset x,z
+                1000.0, 1000.0              // env ambient area width, height
+
             ]);
             */
             this.m_uProbe = new ShaderUniformProbe();
             this.m_uProbe.bindSlotAt(this.m_uslotIndex);
             this.m_uProbe.addVec4Data(UniformConst.EnvLightParams.data, UniformConst.EnvLightParams.arrayLength);
-            //this.m_uProbe.addVec4Data(this.m_data, 2);
-
-            // this.m_suo = new ShaderGlobalUniform();
-            // this.m_suo.uniformNameList = [UniformConst.EnvLightParams.name];
-            // this.m_suo.copyDataFromProbe(this.m_uProbe);
+            
             this.m_suo = this.m_uniformParam.createGlobalUinform( this.m_uProbe );
             this.m_uProbe.update();
 

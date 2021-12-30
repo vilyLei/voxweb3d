@@ -56,6 +56,11 @@ vec2 texUV = v_uv.xy;
         light.specularPower = max(1.0, light.specularPower * param4.z);
     #endif
     vec3 destColor = getLambertLightColor(light);
+
+    #ifdef VOX_ENV_AMBIENT_LIGHT_MAP
+        param4 = u_envLightParams[4];
+        destColor.xyz += color.xyz * VOX_Texture2D(VOX_ENV_AMBIENT_LIGHT_MAP, (param4.xy + worldPosition.xz) / param4.zw).xyz;
+    #endif
     color.xyz = color.xyz * param.z + param.w * destColor;
 #endif
 

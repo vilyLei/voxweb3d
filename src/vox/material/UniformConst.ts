@@ -36,7 +36,10 @@ class EnvLightParam implements IUniformParam {
         0.0005,                     // fog density
 
         0.0, 0.0,                   // fog area offset x and z
-        800.0, 800.0                // fog area width and height
+        800.0, 800.0,               // fog area width and height
+
+        -500.0, -500.0,             // env ambient area offset x,z
+        1000.0, 1000.0              // env ambient area width, height
 
     ]);
     /**
@@ -46,7 +49,7 @@ class EnvLightParam implements IUniformParam {
     /**
      * uniform array length
      */
-    readonly arrayLength: number = 4;
+    readonly arrayLength: number = 5;
 }
 /**
  * shadow view matatrix4 float32array data

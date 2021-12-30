@@ -34,6 +34,7 @@ class ShaderCodeBuffer {
     shadowReceiveEnabled: boolean = false;
     lightEnabled: boolean = false;
     fogEnabled: boolean = false;
+    envAmbientLightEnabled: boolean = false;
 
     pipeTypes: MaterialPipeType[] = null;
     keysString: string = "";
@@ -65,6 +66,7 @@ class ShaderCodeBuffer {
         this.shadowReceiveEnabled = false;
         this.lightEnabled = false;
         this.fogEnabled = false;
+        this.envAmbientLightEnabled = false;
     }
     clear(): void {
         this.m_coder = null;
@@ -107,6 +109,7 @@ class ShaderCodeBuffer {
                 if (this.lightEnabled) this.pipeTypes.push(MaterialPipeType.GLOBAL_LIGHT);                    
                 if (this.shadowReceiveEnabled) this.pipeTypes.push(MaterialPipeType.VSM_SHADOW);
                 if (this.fogEnabled) this.pipeTypes.push(MaterialPipeType.FOG_EXP2);
+                if (this.envAmbientLightEnabled) this.pipeTypes.push(MaterialPipeType.ENV_AMBIENT);
             }
         }
     }
