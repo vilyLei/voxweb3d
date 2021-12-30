@@ -178,7 +178,6 @@ export default class Box3DEntity extends DisplayEntity {
         this.vtxColor = null;
         this.m_currMesh = null;
         this.m_initFlag = true;
-        this.vtxColor = null;
     }
     toString(): string {
         return "[Box3DEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";

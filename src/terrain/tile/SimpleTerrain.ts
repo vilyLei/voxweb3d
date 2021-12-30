@@ -32,17 +32,18 @@ class SimpleTerrain {
             this.initTerrain();
         }
     }
-    createLambertMaterial(diffuseMap: TextureProxy, normalMap: TextureProxy = null, aoMap: TextureProxy = null): LambertLightMaterial {
+    createLambertMaterial(diffuseMap: TextureProxy, normalMap: TextureProxy = null, aoMap: TextureProxy = null, vtxColorEnabled: boolean = false): LambertLightMaterial {
 
-        let trackMaterial = this.m_materialCtx.createLambertLightMaterial(false);
-        trackMaterial.diffuseMap = diffuseMap;
-        trackMaterial.normalMap = normalMap;
-        trackMaterial.aoMap = aoMap;
-        trackMaterial.fogEnabled = false;
-        trackMaterial.initializeByCodeBuf( true );
-        trackMaterial.setBlendFactor(0.6, 0.7);
+        let material = this.m_materialCtx.createLambertLightMaterial(false);
+        material.vertColorEnabled = vtxColorEnabled;
+        material.diffuseMap = diffuseMap;
+        material.normalMap = normalMap;
+        material.aoMap = aoMap;
+        material.fogEnabled = false;
+        material.initializeByCodeBuf( true );
+        material.setBlendFactor(0.6, 0.7);
 
-        return trackMaterial;
+        return material;
     }
     private initTerrain(): void {
 
@@ -53,8 +54,10 @@ class SimpleTerrain {
         let obstacleMinV = new Vector3D(-size * 0.5, 0, -size * 0.5);
         let obstacleMaxV = new Vector3D(size * 0.5, this.m_terrainData.obstacleHeight, size * 0.5);
         let color: Color4 = new Color4();
+        let material = this.createLambertMaterial(this.m_materialCtx.getTextureByUrl("static/assets/default.jpg"), null, null, true);
         let srcBox: Box3DEntity = new Box3DEntity();
         srcBox.vtxColor = color;
+        srcBox.setMaterial( material );
         srcBox.initialize(minV, maxV, [this.m_materialCtx.getTextureByUrl("static/assets/default.jpg")]);
 
         let obsMeshMerger: GeometryMerger = new GeometryMerger();
@@ -66,19 +69,20 @@ class SimpleTerrain {
         let tex1 = this.m_materialCtx.getTextureByUrl("static/assets/moss_01.jpg");
         let tex2 = this.m_materialCtx.getTextureByUrl("static/assets/moss_03.jpg");
 
-        let obsMaterial: Default3DMaterial = new Default3DMaterial();
+        //let obsMaterial = new Default3DMaterial();
+        let obsMaterial = this.createLambertMaterial(tex0, null, null, true);
         obsMaterial.vertColorEnabled = true;
         obsMaterial.setTextureList([tex0]);
         obsMaterial.initializeByCodeBuf();
-        // let obsMaterial = this.m_materialCtx.createLambertLightMaterial();
-        // obsMaterial.fogEnabled = false;
 
-        let material1: Default3DMaterial = new Default3DMaterial();
+        //let material1 = new Default3DMaterial();
+        let material1 = this.createLambertMaterial(tex1, null, null, true);
         material1.vertColorEnabled = true;
         material1.setTextureList([tex1]);
         material1.initializeByCodeBuf();
 
-        let material2: Default3DMaterial = new Default3DMaterial();
+        //let material2 = new Default3DMaterial();
+        let material2 = this.createLambertMaterial(tex2, null, null, true);
         material2.vertColorEnabled = true;
         material2.setTextureList([tex2]);
         material2.initializeByCodeBuf();
@@ -88,7 +92,8 @@ class SimpleTerrain {
         let pv: Vector3D;
         for (let r: number = 0; r < rn; r++) {
             for (let c: number = 0; c < cn; c++) {
-                color.setRGB3f(0.0 + 1.5 * c / cn, 1.0, 0.0 + 1.5 * r / rn);
+                color.setRGB3f(0.8 * c / cn, 0.8, 0.0 + 0.8 * r / rn);
+                
                 pv = this.m_terrainData.getGridPositionByRC(r, c);
                 let flag: number = this.m_terrainData.getGridStatusByRC(r, c);
                 

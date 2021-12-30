@@ -205,13 +205,13 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         // box.initializeCube(200.0, [tex1]);
         // this.m_rscene.addEntity(box);
 
-        let material = this.createLambertMaterial(null,null, true);
-        let box: Box3DEntity = new Box3DEntity();
-        box.vtxColor = new Color4(1.0,0.0,1.0);
-        box.setMaterial(material);
-        box.initializeCube(200.0, [tex1]);
-        this.m_rscene.addEntity(box);
-        return;
+        // let material = this.createLambertMaterial(null,null, true);
+        // let box: Box3DEntity = new Box3DEntity();
+        // box.vtxColor = new Color4(1.0,0.0,1.0);
+        // box.setMaterial(material);
+        // box.initializeCube(200.0, [tex1]);
+        // this.m_rscene.addEntity(box);
+        // return;
         //  this.m_boxTrack.setTrackScaleXYZ(0.2,0.2,0.2);
         //  this.m_boxTrack.initialize(this.m_rscene.textureBlock,0.5,[tex0]);
         let distanceFactor: number = 0.98;
