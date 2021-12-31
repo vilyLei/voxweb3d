@@ -46,7 +46,7 @@ export default class BillboardGroupShaderBuffer extends ShaderCodeBuffer {
             let code: string =
                 `
 // calculate clip uv
-temp = u_billParam[`+ paramIndex + `];//(x:cn,y:total,z:du,w:dv)
+temp = u_billParam[ BILL_PARAM_INDEX ];//(x:cn,y:total,z:du,w:dv)
 float clipf0 = floor(fi * temp.y);
 float clipf1 = min(clipf0+1.0,temp.y-1.0);
 clipf0 /= temp.x;
@@ -64,7 +64,7 @@ v_texUV.zw = (vec2(floor(fract(clipf1) * temp.x), floor(clipf1)) + a_uvs.xy) * t
             let code: string =
                 `
 // calculate clip uv
-temp = u_billParam[`+ paramIndex + `];//(x:cn,y:total,z:du,w:dv)
+temp = u_billParam[ BILL_PARAM_INDEX ];//(x:cn,y:total,z:du,w:dv)
 float clipf = floor(fi * temp.y);
 clipf /= temp.x;
 // vec2(floor(fract(clipf) * temp.x), floor(clipf)) -> ve2(cn u,rn v)
@@ -107,8 +107,11 @@ v_colorOffset = u_billParam[2];
         coder.addVarying("vec4", "v_colorOffset");
         coder.addVarying("vec4", "v_texUV");
         coder.addVarying("vec4", "v_factor");
-        if (this.m_clipEnabled && this.clipMixEnabled) {
+        if (this.m_clipEnabled) {
             coder.addDefine("VOX_USE_CLIP");
+            if(this.clipMixEnabled) {
+                coder.addDefine("VOX_USE_CLIP_MIX");
+            }
         }
         coder.addDefine("FADE_VAR", "v_factor");
         coder.addDefine("FADE_STATUS", "" + this.m_billFS.getBrnAlphaStatus());

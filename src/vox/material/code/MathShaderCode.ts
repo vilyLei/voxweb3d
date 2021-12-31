@@ -4,14 +4,12 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-export default class MathShaderCode
-{
-    constructor(){}
-    static GetRadianByXY_Func():string
-    {
-        
-        let shdCode:string = 
-`
+export default class MathShaderCode {
+    constructor() { }
+    static GetRadianByXY_Func(): string {
+
+        let shdCode: string =
+            `
 // 3.141592653589793
 #define MATH_PI 3.14159265
 // 4.71238898038469
@@ -28,5 +26,5 @@ float getRadianByXY(float dx, float dy) {
 }
 `;
         return shdCode;
-    }                
+    }
 }

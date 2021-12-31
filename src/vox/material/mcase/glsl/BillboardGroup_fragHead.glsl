@@ -1,4 +1,3 @@
-
 vec3 getOffsetColor() {
     #ifdef VOX_OFFSET_COLOR_MAP
         #ifdef VOX_USE_RAW_UV

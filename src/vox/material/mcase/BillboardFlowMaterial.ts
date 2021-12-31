@@ -21,8 +21,8 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
         super();
     }
     initialize(texEnabled: boolean): void {
-        
-        super.initialize( texEnabled );
+
+        super.initialize(texEnabled);
         this.m_uniqueName = "BillboardFlowShader";
         if (this.playOnce && this.direcEnabled) {
             this.m_uniqueName += "_OD";
@@ -35,11 +35,33 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
         if (this.clipMixEnabled) this.m_uniqueName += "Mix";
         if (this.premultiplyAlpha) this.m_uniqueName += "PreMAlpha";
     }
+
+    buildFragShd(): void {
+
+        let coder = this.m_coder;
+        coder.addVertLayout("vec4", "a_vs");
+        coder.addVertLayout("vec4", "a_vs2");
+        coder.addVertLayout("vec4", "a_uvs");
+        coder.addVertLayout("vec4", "a_uvs2");
+        coder.addVertLayout("vec4", "a_nvs");
+        coder.addVertLayout("vec4", "a_nvs2");
+
+        let paramTotal: number = this.m_clipEnabled ? 5 : 4;
+
+        coder.addVertUniform("vec4", "u_billParam", paramTotal);
+
+        if (this.direcEnabled) coder.addDefine("ROTATION_DIRECT");
+        if (this.playOnce) coder.addDefine("PLAY_ONCE");
+        if (this.spdScaleEnabled) coder.addDefine("SPEED_SCALE");
+        coder.addDefine("BILL_PARAM_INDEX", "4");
+
+    }
     getVertShaderCode(): string {
         let paramTotal: number = this.m_clipEnabled ? 5 : 4;
         let vtxCode0: string =
             `#version 300 es
 precision mediump float;
+#define BILL_PARAM_INDEX 4
 layout(location = 0) in vec4 a_vs;
 layout(location = 1) in vec4 a_vs2;
 layout(location = 2) in vec2 a_uvs;
@@ -127,6 +149,7 @@ vtx = vec2(vtx.x * cosv - vtx.y * sinv, vtx.x * sinv + vtx.y * cosv);
 vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV,1.0);
 `;
         }
+
         let vtxCode4: string =
             `
 pos.xy += vtx.xy;
