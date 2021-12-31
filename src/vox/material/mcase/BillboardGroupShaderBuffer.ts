@@ -19,12 +19,14 @@ import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import BillboardFSBase from "../../../vox/material/mcase/BillboardFSBase";
 
 export default class BillboardGroupShaderBuffer extends ShaderCodeBuffer {
+
     private m_billFS: BillboardFSBase = new BillboardFSBase();
     protected m_clipEnabled: boolean = false;
     protected m_hasOffsetColorTex: boolean = false;
     protected m_useRawUVEnabled: boolean = false
     protected m_brightnessEnabled: boolean = false
     clipMixEnabled: boolean = false;
+    
     constructor() {
         super();
     }
