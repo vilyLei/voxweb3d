@@ -25,6 +25,8 @@ class ShadowEntity {
     srcEntity: IEntityTransform = null;
     entity: DisplayEntity = null;
     bounds: AABB = new AABB();
+
+    type: number = 0;
     constructor() {
     }
 
@@ -41,8 +43,12 @@ class ShadowEntity {
         let bounds = this.bounds;
         this.m_height = bounds.getHeight();
         let entity = new DisplayEntity();
-        entity.copyMaterialFrom(ShadowEntity.s_sph);
-        entity.copyMeshFrom(ShadowEntity.s_sph);
+        let src: DisplayEntity = ShadowEntity.s_sph;
+        if(this.type == 1) {
+            src = ShadowEntity.s_box;
+        }
+        entity.copyMaterialFrom( src );
+        entity.copyMeshFrom( src );
         entity.setScaleXYZ(bounds.getWidth() * this.sizeScaleX, this.m_height * 0.5, bounds.getLong() * this.sizeScaleZ);
         entity.setXYZ(0.0, this.m_height + 20.0, 0.0);
         this.entity = entity;

@@ -51,10 +51,10 @@ class SceneModule {
         axis = new Axis3DEntity();
         axis.initializeCross(200.0);
         this.m_rscene.addEntity(axis);
-        let total: number = 3;
+        let total: number = 5;
         this.m_roleBuilder.createLimbRoles(total);
-        // this.m_roleBuilder.createTrackWheelRoles(total);
-        // this.m_roleBuilder.createSillyRoles(total);
+        this.m_roleBuilder.createTrackWheelRoles(total);
+        this.m_roleBuilder.createSillyRoles(total);
     }
 
 

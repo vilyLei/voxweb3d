@@ -27,11 +27,11 @@ export class RbtDrama implements IShaderLibListener {
     private updateShadow(): void {
         let vsmModule = this.m_materialCtx.vsmModule;
         if(vsmModule != null) {
-            vsmModule.setRendererProcessIDList([1, 3]);
+            vsmModule.setRendererProcessIDList([3, 1]);
             vsmModule.setCameraPosition(new Vector3D(1, 1200, 1));
             vsmModule.setCameraNear( 100.0 );
             vsmModule.setCameraFar( 2000.0 );
-            vsmModule.setMapSize(190.0, 190.0);
+            vsmModule.setMapSize(300.0, 300.0);
             vsmModule.setCameraViewSize(2600, 2600);
             vsmModule.setShadowRadius(1.0);
             vsmModule.setShadowBias(-0.001);

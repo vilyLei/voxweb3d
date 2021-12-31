@@ -12,6 +12,7 @@ import SillyLowerBody from "../../../app/robot/base/SillyLowerBody";
 import SillyUpperBody from "../../../app/robot/base/SillyUpperBody";
 import IAttackDst from "../../../app/robot/attack/IAttackDst";
 import RbtRole from "../../../app/robot/base/RbtRole";
+import { ShadowEntity } from "./ShadowEntity";
 
 export default class SillyRole extends RbtRole implements IAttackDst {
     private m_renderProcessIndex: number = 0;
@@ -60,6 +61,22 @@ export default class SillyRole extends RbtRole implements IAttackDst {
 
             this.m_motionModule = this.m_legModule;
             this.m_attackModule = this.m_armModule;
+
+            // for building shadow entity
+            this.m_motionModule.direcByDegree(0, false);
+            let container = this.m_legModule.getContainer();
+            container.update();
+            let bounds = container.getGlobalBounds();
+
+            this.shadowEntity = new ShadowEntity();
+            let shadowEntity = this.shadowEntity;
+            shadowEntity.type = 1;
+            shadowEntity.sizeScaleX = 1.0;
+            shadowEntity.sizeScaleZ = 1.0;
+            shadowEntity.srcEntity = container;
+            shadowEntity.bounds.copyFrom( bounds );
+            shadowEntity.initialize();
+            sc.addEntity(shadowEntity.entity, 3);
         }
     }
     wake(): void {

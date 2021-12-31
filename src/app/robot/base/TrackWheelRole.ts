@@ -16,6 +16,7 @@ import FireCtrlRadar from "../../../app/robot/attack/FireCtrlRadar";
 import TrackWheelWeaponBody from "../../../app/robot/base/TrackWheelWeaponBody";
 import TrackWheelChassisBody from "../../../app/robot/base/TrackWheelChassisBody";
 import {RoleMaterialBuilder} from "../scene/RoleMaterialBuilder";
+import { ShadowEntity } from "./ShadowEntity";
 
 export default class TrackWheelRole extends RbtRole implements IAttackDst {
     private m_renderProcessIndex: number = 0;
@@ -65,6 +66,23 @@ export default class TrackWheelRole extends RbtRole implements IAttackDst {
             findRadar.srcRole = this;
             findRadar.campType = this.campType;
             this.m_findRadar = findRadar;
+
+            // for building shadow entity
+            this.m_motionModule.direcByDegree(0, false);
+            let container = this.m_legModule.getContainer();
+            container.update();
+            let bounds = container.getGlobalBounds();
+            
+            this.shadowEntity = new ShadowEntity();
+            let shadowEntity = this.shadowEntity;
+            shadowEntity.type = 1;
+            shadowEntity.sizeScaleX = 1.0;
+            shadowEntity.sizeScaleZ = 1.0;
+            shadowEntity.srcEntity = container;
+            shadowEntity.bounds.copyFrom( bounds );
+            shadowEntity.initialize();
+            sc.addEntity(shadowEntity.entity, 3);
+
         }
     }
     wake(): void {

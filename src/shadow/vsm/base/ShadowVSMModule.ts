@@ -251,7 +251,6 @@ export class ShadowVSMModule {
         let flag: boolean = this.force;
         if (flag) {
             this.buildShadow();
-            this.force = false;
         }
         else {
             if (this.m_rendererStatus != this.m_rscene.getRendererStatus()) {
@@ -273,6 +272,7 @@ export class ShadowVSMModule {
                 this.buildShadow();
             }
         }
+        this.force = false;
     }
     private buildShadow(): void {
 
