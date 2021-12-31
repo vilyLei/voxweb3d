@@ -36,7 +36,7 @@ class BillboardShaderBuffer extends ShaderCodeBuffer {
                 fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG_EXP2);
                 fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG);
             }
-            if(fogEnabled) coder.addDefine("VOX_USE_BRIGHtNESS_OVERLAY_COLOR","1");
+            if(fogEnabled) coder.addDefine("VOX_USE_BRIGHtNESS_OVERLAY_COLOR");
         }
 
         coder.addVertLayout("vec2","a_vs");

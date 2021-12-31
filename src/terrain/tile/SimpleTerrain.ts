@@ -62,11 +62,11 @@ class SimpleTerrain {
         let obstacleMinV = new Vector3D(-size * 0.5, 0, -size * 0.5);
         let obstacleMaxV = new Vector3D(size * 0.5, this.m_terrainData.obstacleHeight, size * 0.5);
         let color: Color4 = new Color4();
-        let material = this.createLambertMaterial(this.m_materialCtx.getTextureByUrl("static/assets/default.jpg"), null, null, true);
+        let material = this.createLambertMaterial(this.m_materialCtx.getTextureByUrl("static/assets/box_wood01.jpg"), null, null, true);
         let srcBox: Box3DEntity = new Box3DEntity();
         srcBox.vtxColor = color;
         srcBox.setMaterial( material );
-        srcBox.initialize(minV, maxV, [this.m_materialCtx.getTextureByUrl("static/assets/default.jpg")]);
+        srcBox.initialize(minV, maxV, [this.m_materialCtx.getTextureByUrl("static/assets/box_wood01.jpg")]);
 
         let obsMeshMerger: GeometryMerger = new GeometryMerger();
         let meshMerger1: GeometryMerger = new GeometryMerger();

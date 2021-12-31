@@ -62,6 +62,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
             rparam.setCamProject(45, 10.0, 8000.0);
             rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);
+            rparam.setAttriAlpha(false);
             rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
             rparam.setCamPosition(800.0, 800.0, 800.0);
             //rparam.setCamProject(45, 20.0, 9000.0);
@@ -151,6 +152,17 @@ export class DemoMultiLambertLights implements IShaderLibListener {
 
         let color: Color4 = new Color4(1.0, 1.0, 0.0);
         let colorBias: Color4 = new Color4(0.0, 0.0, 0.0);
+
+        let billboard: Billboard3DEntity = new Billboard3DEntity();
+        billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        billboard.setMaterialPipeline(this.m_materialCtx.pipeline);
+        //billboard.toBrightnessBlend();
+        billboard.toTransparentBlend();
+        billboard.initialize(120.0, 120.0, [this.m_materialCtx.getTextureByUrl("static/assets/guangyun_40.png")]);
+        billboard.setXYZ(200,300,200);
+        //billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
+        this.m_engine.rscene.addEntity(billboard, 3);
+
         /*
         // let box: Box3DEntity = new Box3DEntity();
         // box.pipeTypes = [MaterialPipeType.FOG_EXP2];
