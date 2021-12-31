@@ -4,15 +4,15 @@ import Vector3D from "../vox/math/Vector3D";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import MouseEvent from "../vox/event/MouseEvent";
 import RendererScene from "../vox/scene/RendererScene";
-import {SceneModule} from "../app/robot/scene/SceneModule";
+import { SceneModule } from "../app/robot/scene/SceneModule";
 
 import { UserInteraction } from "../vox/engine/UserInteraction";
 
 import { CommonMaterialContext } from "../materialLab/base/CommonMaterialContext";
-import { IShaderLibListener, MaterialContextParam,DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
+import { IShaderLibListener, MaterialContextParam, DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 import { DirectionLight } from "../light/base/DirectionLight";
 
-export class RbtDrama implements IShaderLibListener{
+export class RbtDrama implements IShaderLibListener {
     constructor() { }
 
     private m_rscene: RendererScene = null;
@@ -21,38 +21,55 @@ export class RbtDrama implements IShaderLibListener{
     private m_interaction: UserInteraction = new UserInteraction();
 
     private m_scene: SceneModule = new SceneModule();
-    
+
     // private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
-
+    private updateShadow(): void {
+        let vsmModule = this.m_materialCtx.vsmModule;
+        if(vsmModule != null) {
+            vsmModule.setRendererProcessIDList([1, 3]);
+            vsmModule.setCameraPosition(new Vector3D(1, 1200, 1));
+            vsmModule.setCameraNear( 100.0 );
+            vsmModule.setCameraFar( 2000.0 );
+            vsmModule.setMapSize(190.0, 190.0);
+            vsmModule.setCameraViewSize(2600, 2600);
+            vsmModule.setShadowRadius(1.0);
+            vsmModule.setShadowBias(-0.001);
+            vsmModule.setShadowIntensity(0.85);
+            vsmModule.setColorIntensity(0.4);
+            vsmModule.upate();
+        }
+    }
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
+
+        this.updateShadow();
         let brn: number = 5.0;
         this.m_materialCtx.envData.setAmbientColorRGB3f(brn, brn, brn);
         this.m_materialCtx.envData.setEnvAmbientLightAreaOffset(-1200.0, -1200.0);
         this.m_materialCtx.envData.setEnvAmbientLightAreaSize(2400.0, 2400.0);
-        this.m_materialCtx.envData.setEnvAmbientMap( this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg") );
-        console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ",loadingTotal, loadedTotal);
+        this.m_materialCtx.envData.setEnvAmbientMap(this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg"));
+        console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
         this.initScene();
     }
     private initMaterialCtx(): void {
-        
+
         let mcParam: MaterialContextParam = new MaterialContextParam();
         mcParam.pointLightsTotal = 0;
         mcParam.directionLightsTotal = 2;
         mcParam.spotLightsTotal = 0;
         mcParam.pbrMaterialEnabled = false;
-        //mcParam.vsmEnabled = false;
+        mcParam.vsmEnabled = true;
         mcParam.loadAllShaderCode = true;
         mcParam.shaderCodeBinary = true;
-        this.m_materialCtx.addShaderLibListener( this );
-        this.m_materialCtx.initialize( this.m_rscene, mcParam );
+        this.m_materialCtx.addShaderLibListener(this);
+        this.m_materialCtx.initialize(this.m_rscene, mcParam);
 
         // let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
         // pointLight.position.setXYZ(0.0, 150.0, -50.0);
         // pointLight.color.setRGB3f(1.0, 1.0, 1.0);
         // pointLight.attenuationFactor1 = 0.00001;
         // pointLight.attenuationFactor2 = 0.000001;
-        
+
         let colorScale: number = 3.0;
         let lightModule = this.m_materialCtx.lightModule;
         let direcLight = lightModule.getDirectionLightAt(0);
@@ -65,7 +82,7 @@ export class RbtDrama implements IShaderLibListener{
 
         this.m_materialCtx.lightModule.update();
     }
-    
+
     initialize(): void {
         console.log("RbtDrama::initialize()......");
         if (this.m_rscene == null) {
@@ -90,7 +107,6 @@ export class RbtDrama implements IShaderLibListener{
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();
-
             this.m_interaction.initialize(this.m_rscene);
 
             this.m_statusDisp.initialize();
@@ -125,8 +141,20 @@ export class RbtDrama implements IShaderLibListener{
         this.m_statusDisp.update();
 
         this.m_interaction.run();
+        if (this.m_scene.shadowEnabled) {
+            this.m_materialCtx.vsmModule.force = true;
+            this.m_materialCtx.run();
+        }
 
-        this.m_rscene.run();
+        //this.m_rscene.run();
+        this.m_rscene.runBegin();
+        this.m_rscene.update();
+        //this.m_rscene.run(false);
+        this.m_rscene.runAt(0);
+        this.m_rscene.runAt(1);
+        this.m_rscene.runAt(2);
+
+        this.m_rscene.runEnd();
     }
 }
 export default RbtDrama;

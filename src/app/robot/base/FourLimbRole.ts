@@ -64,6 +64,8 @@ export default class FourLimbRole extends RbtRole implements IAttackDst {
             
             this.shadowEntity = new ShadowEntity();
             let shadowEntity = this.shadowEntity;
+            shadowEntity.sizeScaleX = 0.35;
+            shadowEntity.sizeScaleZ = 0.5;
             shadowEntity.srcEntity = container;
             shadowEntity.bounds.copyFrom( bounds );
             shadowEntity.initialize();

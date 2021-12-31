@@ -135,7 +135,6 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     }
     private createPointLightDisp(pointLight: PointLight): Billboard3DEntity {
 
-        return;
         let billboard: Billboard3DEntity = new Billboard3DEntity();
         billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
         billboard.setMaterialPipeline(this.m_materialCtx.pipeline);
@@ -270,10 +269,10 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         // this.m_rscene.addEntity(pl, 2);
     }
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
-        this.m_materialCtx.envData.setAmbientColorRGB3f(1.0,1.0,1.0);
+        this.m_materialCtx.envData.setAmbientColorRGB3f(3.0,3.0,3.0);
         this.m_materialCtx.envData.setEnvAmbientLightAreaOffset(-500.0, -500.0);
         this.m_materialCtx.envData.setEnvAmbientLightAreaSize(1000.0, 1000.0);
-        this.m_materialCtx.envData.setEnvAmbientMap( this.m_materialCtx.getTextureByUrl("static/assets/flare_core_02.jpg") );
+        this.m_materialCtx.envData.setEnvAmbientMap( this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg") );
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
         this.initScene();
     }

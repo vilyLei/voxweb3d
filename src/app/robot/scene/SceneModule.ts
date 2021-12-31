@@ -18,8 +18,8 @@ class SceneModule {
     private m_campModule: CampMoudle = new CampMoudle();
     private m_terrain: TerrainModule = new TerrainModule();
     private m_roleBuilder: RoleBuilder = new RoleBuilder();
-
     private m_materialCtx: CommonMaterialContext;
+    shadowEnabled: boolean = true;
 
     initialize(rscene: RendererScene, materialCtx: CommonMaterialContext): void {
         
@@ -27,6 +27,7 @@ class SceneModule {
             this.m_rscene = rscene;
             this.m_materialCtx = materialCtx;
 
+            this.m_terrain.terrain.shadowReceiveEnabled = this.shadowEnabled;
             this.m_terrain.terrain.renderProcessIndex = 1;
             this.m_terrain.terrain.colorBrightness = 0.4;
             this.m_terrain.initialize(this.m_rscene, this.m_materialCtx);
@@ -50,7 +51,7 @@ class SceneModule {
         axis = new Axis3DEntity();
         axis.initializeCross(200.0);
         this.m_rscene.addEntity(axis);
-        let total: number = 1.0;
+        let total: number = 3;
         this.m_roleBuilder.createLimbRoles(total);
         // this.m_roleBuilder.createTrackWheelRoles(total);
         // this.m_roleBuilder.createSillyRoles(total);

@@ -3,6 +3,7 @@ import Vector3D from "../../../vox/math/Vector3D";
 import AABB from "../../../vox/geom/AABB";
 import Box3DEntity from "../../../vox/entity/Box3DEntity";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
+import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
 
 /***************************************************************************/
 /*                                                                         */
@@ -14,10 +15,12 @@ import IEntityTransform from "../../../vox/entity/IEntityTransform";
 class ShadowEntity {
 
     private static s_box: Box3DEntity = null;
+    private static s_sph: Sphere3DEntity = null;
     private static s_pos: Vector3D = new Vector3D();
     private static s_rotV: Vector3D = new Vector3D();
     private m_height: number = 0.0;
-    private m_sizeScale: number = 0.7;
+    sizeScaleX: number = 0.7;
+    sizeScaleZ: number = 0.7;
 
     srcEntity: IEntityTransform = null;
     entity: DisplayEntity = null;
@@ -31,12 +34,16 @@ class ShadowEntity {
             ShadowEntity.s_box = new Box3DEntity();
             ShadowEntity.s_box.initializeCube(1.0);
         }
+        if(ShadowEntity.s_sph == null) {
+            ShadowEntity.s_sph = new Sphere3DEntity();
+            ShadowEntity.s_sph.initialize(1.0,15,15);
+        }
         let bounds = this.bounds;
         this.m_height = bounds.getHeight();
         let entity = new DisplayEntity();
-        entity.copyMaterialFrom(ShadowEntity.s_box);
-        entity.copyMeshFrom(ShadowEntity.s_box);
-        entity.setScaleXYZ(bounds.getWidth() * this.m_sizeScale, this.m_height * 0.5, bounds.getLong() * this.m_sizeScale);
+        entity.copyMaterialFrom(ShadowEntity.s_sph);
+        entity.copyMeshFrom(ShadowEntity.s_sph);
+        entity.setScaleXYZ(bounds.getWidth() * this.sizeScaleX, this.m_height * 0.5, bounds.getLong() * this.sizeScaleZ);
         entity.setXYZ(0.0, this.m_height + 20.0, 0.0);
         this.entity = entity;
 

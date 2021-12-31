@@ -21,6 +21,8 @@ class SimpleTerrain {
     private m_rscene: RendererScene = null;
     private m_materialCtx: CommonMaterialContext = null;
     private m_terrainData: TerrainData;
+    
+    shadowReceiveEnabled: boolean = false;
     renderProcessIndex: number = 1;
     colorBrightness: number = 1.0;
     initialize(scene: RendererScene, materialCtx: CommonMaterialContext, terrainData: TerrainData): void {
@@ -36,6 +38,7 @@ class SimpleTerrain {
     createLambertMaterial(diffuseMap: TextureProxy, normalMap: TextureProxy = null, aoMap: TextureProxy = null, vtxColorEnabled: boolean = false): LambertLightMaterial {
 
         let material = this.m_materialCtx.createLambertLightMaterial(false);
+        material.shadowReceiveEnabled = this.shadowReceiveEnabled;
         material.envAmbientLightEnabled = true;
         material.vertColorEnabled = true;
         material.vertColorEnabled = vtxColorEnabled;

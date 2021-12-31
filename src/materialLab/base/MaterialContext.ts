@@ -132,7 +132,7 @@ class MaterialContext {
             this.envData.setFogColorRGB3f(0.0, 0.8, 0.1);
             if (param.vsmEnabled) {
                 selfT.vsmModule = new ShadowVSMModule(param.vsmFboIndex);
-                this.vsmModule.setCameraPosition(new Vector3D(120, 800, 120));
+                this.vsmModule.setCameraPosition(new Vector3D(1, 800, 1));
                 this.vsmModule.setCameraNear(10.0);
                 this.vsmModule.setCameraFar(3000.0);
                 this.vsmModule.setMapSize(512.0, 512.0);

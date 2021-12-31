@@ -120,7 +120,7 @@ export class ShadowVSMModule {
         return this.m_direcCamera;
     }
     setRendererProcessIDList(processIDList: number[]): void {
-        if (this.m_fboDepth != null) {            
+        if (this.m_fboDepth != null) {
             this.m_processIDList = processIDList.slice(0);
             this.m_fboDepth.setRProcessIDList(processIDList);
         }
@@ -190,12 +190,12 @@ export class ShadowVSMModule {
         // this.m_vsmData.setShadowBias(this.m_shadowBias);
         // this.m_vsmData.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
         // this.m_vsmData.update();
-        this.m_vsmData.setShadowMap( this.getShadowMap() );
+        this.m_vsmData.setShadowMap(this.getShadowMap());
         this.updateData();
 
     }
     private updateData(): void {
-        
+
         if (this.m_direcCamera != null) {
 
             let viewWidth: number = this.m_viewWidth;
@@ -249,28 +249,33 @@ export class ShadowVSMModule {
         }
 
         let flag: boolean = this.force;
-        if (this.m_rendererStatus != this.m_rscene.getRendererStatus()) {
-            let status: number = this.getRendererProcessStatus();
-            if (this.m_rendererProcessStatus != status) {
-                this.m_rendererProcessStatus = status;
-                flag = true;
-            }
-            this.m_rendererStatus = this.m_rscene.getRendererStatus();
-        }
-        //let flag: boolean = this.force || this.m_rendererStatus != this.m_rscene.getRendererStatus();
-        if (this.m_buildShadowDelay > 0) {
-            if (this.m_buildShadowDelay % 15 == 0) {
-                flag = true;
-            }
-            this.m_buildShadowDelay--;
-        }
         if (flag) {
             this.buildShadow();
+            this.force = false;
         }
-        this.force = false;
+        else {
+            if (this.m_rendererStatus != this.m_rscene.getRendererStatus()) {
+                let status: number = this.getRendererProcessStatus();
+                if (this.m_rendererProcessStatus != status) {
+                    this.m_rendererProcessStatus = status;
+                    flag = true;
+                }
+                this.m_rendererStatus = this.m_rscene.getRendererStatus();
+            }
+            //let flag: boolean = this.force || this.m_rendererStatus != this.m_rscene.getRendererStatus();
+            if (this.m_buildShadowDelay > 0) {
+                if (this.m_buildShadowDelay % 15 == 0) {
+                    flag = true;
+                }
+                this.m_buildShadowDelay--;
+            }
+            if (flag) {
+                this.buildShadow();
+            }
+        }
     }
     private buildShadow(): void {
-        
+
         this.m_fboDepth.useCamera(this.m_direcCamera);
         this.m_fboDepth.run(true, true);
         this.m_fboDepth.useMainCamera();

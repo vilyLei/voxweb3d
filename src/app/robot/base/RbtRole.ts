@@ -98,6 +98,9 @@ export default class RbtRole implements IRunnable {
     setVisible(visible: boolean): void {
         this.m_motionModule.setVisible(visible);
         this.m_attackModule.setVisible(visible);
+        if(this.shadowEntity != null) {
+            this.shadowEntity.setVisible( visible );
+        }
     }
     setXYZ(px: number, py: number, pz: number): void {
         this.m_motionModule.setXYZ(px, py, pz);
