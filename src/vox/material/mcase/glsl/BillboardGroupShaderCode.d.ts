@@ -6,4 +6,4 @@
 /***************************************************************************/
 import IShaderCodeObject from "../../IShaderCodeObject";
 
-export const LambertLightShaderCode: IShaderCodeObject;
+export const BillboardGroupShaderCode: IShaderCodeObject;

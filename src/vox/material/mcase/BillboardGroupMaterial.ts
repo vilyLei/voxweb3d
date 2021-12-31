@@ -6,14 +6,11 @@
 /***************************************************************************/
 
 
-
-
 import MathConst from "../../../vox/math/MathConst";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import Color4 from "../../../vox/material/Color4";
 import MaterialBase from "../../../vox/material/MaterialBase";
-
 
 class BillGroupShaderBuffer extends ShaderCodeBuffer {
     constructor() {
@@ -35,9 +32,9 @@ in vec2 v_texUV;
 layout(location = 0) out vec4 FragColor;
 void main()
 {
-vec4 color = texture(u_sampler0, v_texUV);
-color.rgb = max(color.rgb * v_colorMult.xyz + v_colorOffset.xyz,0.0);
-FragColor = color;
+    vec4 color = texture(u_sampler0, v_texUV);
+    color.rgb = max(color.rgb * v_colorMult.xyz + v_colorOffset.xyz,0.0);
+    FragColor = color;
 }
 `;
         return fragCode;
@@ -58,14 +55,14 @@ out vec4 v_colorOffset;
 out vec2 v_texUV;
 void main()
 {
-vec4 temp = u_billParam[0];
-vec2 vtx = vec2(a_vs.x * temp.x, a_vs.y * temp.y);
-vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz,1.0);
-pos.xy += vtx.xy;
-gl_Position =  u_projMat * pos;
-v_texUV = a_uvs;
-v_colorMult = u_billParam[1];
-v_colorOffset = u_billParam[2];
+    vec4 temp = u_billParam[0];
+    vec2 vtx = vec2(a_vs.x * temp.x, a_vs.y * temp.y);
+    vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz,1.0);
+    pos.xy += vtx.xy;
+    gl_Position =  u_projMat * pos;
+    v_texUV = a_uvs;
+    v_colorMult = u_billParam[1];
+    v_colorOffset = u_billParam[2];
 }
 `;
         return vtxCode;

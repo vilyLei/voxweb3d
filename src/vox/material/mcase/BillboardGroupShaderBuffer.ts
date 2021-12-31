@@ -24,15 +24,16 @@ export default class BillboardGroupShaderBuffer extends ShaderCodeBuffer {
     protected m_clipEnabled: boolean = false;
     protected m_hasOffsetColorTex: boolean = false;
     protected m_useRawUVEnabled: boolean = false
-    protected m_brightnessEnabled: boolean = false
+    protected m_brightnessEnabled: boolean = false;
+    protected m_uniqueName: string = "";
     clipMixEnabled: boolean = false;
-    
+
     constructor() {
         super();
     }
-    protected m_uniqueName: string = "BillboardGroupFlareShader";
     initialize(texEnabled: boolean): void {
         super.initialize(texEnabled);
+        this.m_uniqueName = "BillboardGroupFlareShader";
     }
     setParam(brightnessEnabled: boolean, alphaEnabled: boolean, clipEnabled: boolean, hasOffsetColorTex: boolean): void {
         this.m_brightnessEnabled = brightnessEnabled;
@@ -91,21 +92,50 @@ v_colorOffset = u_billParam[2];
 `;
         return vtxCode1 + vtxCodeEnd;
     }
+
+    buildFragShd(): void {
+        let coder = this.m_coder;
+        this.m_uniform.addDiffuseMap();
+        if (this.m_hasOffsetColorTex) {
+            this.m_uniform.add2DMap("VOX_OFFSET_COLOR_MAP");
+            if (this.m_useRawUVEnabled) {
+                coder.addDefine("VOX_USE_RAW_UV");
+                coder.addVarying("vec4", "v_uv");
+            }
+        }
+        coder.addVarying("vec4", "v_colorMult");
+        coder.addVarying("vec4", "v_colorOffset");
+        coder.addVarying("vec4", "v_texUV");
+        coder.addVarying("vec4", "v_factor");
+        if (this.m_clipEnabled && this.clipMixEnabled) {
+            coder.addDefine("VOX_USE_CLIP");
+        }
+        coder.addDefine("FADE_VAR", "v_factor");
+        coder.addDefine("FADE_STATUS", "" + this.m_billFS.getBrnAlphaStatus());
+        
+        coder.addFragMainCode(``);
+    }
     getFragShaderCode(): string {
+        if(this.pipeline != null) {
+            return super.getFragShaderCode();
+        }
         let fragCodeHead: string =
             `#version 300 es
 precision mediump float;
+#define FADE_VAR v_factor
 `;
         if (this.premultiplyAlpha) fragCodeHead += "\n#define VOX_PREMULTIPLY_ALPHA";
 
         fragCodeHead +=
             `
+#define VOX_DIFFUSE_MAP u_sampler0
 uniform sampler2D u_sampler0;
 `;
         let fragCode0: string = "";
         if (this.m_hasOffsetColorTex) {
             fragCode0 =
                 `
+#define VOX_OFFSET_COLOR_MAP u_sampler1
 uniform sampler2D u_sampler1;
 `;
         }
@@ -122,25 +152,25 @@ in vec4 v_colorMult;
 in vec4 v_colorOffset;
 in vec4 v_texUV;
 in vec4 v_factor;
-layout(location = 0) out vec4 FragColor;
+layout(location = 0) out vec4 FragColor0;
 void main()
 {
-vec4 color = texture(u_sampler0, v_texUV.xy);
+    vec4 color = texture(VOX_DIFFUSE_MAP, v_texUV.xy);
 `;
         if (this.m_clipEnabled && this.clipMixEnabled) {
             fragCode1 +=
                 `
-color = mix(color,texture(u_sampler0, v_texUV.zw),v_factor.x);
+    color = mix(color,texture(VOX_DIFFUSE_MAP, v_texUV.zw),v_factor.x);
 `;
         }
-        let fragCode2: string = this.m_billFS.getOffsetColorCode(1, this.m_hasOffsetColorTex);
+        let fragCode2: string = this.m_billFS.getOffsetColorCode(this.m_hasOffsetColorTex);
         let fadeCode: string = this.m_billFS.getBrnAndAlphaCode("v_factor");
         let endCode: string =
             `
-#ifdef VOX_PREMULTIPLY_ALPHA
-    color.xyz *= color.a;
-#endif
-FragColor = color;
+    #ifdef VOX_PREMULTIPLY_ALPHA
+        color.xyz *= color.a;
+    #endif
+    FragColor0 = color;
 }
 `;
         return fragCodeHead + fragCode0 + fragCode1 + fragCode2 + fadeCode + endCode;

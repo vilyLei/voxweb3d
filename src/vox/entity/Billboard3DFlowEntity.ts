@@ -14,6 +14,7 @@ import TextureProxy from "../../vox/texture/TextureProxy";
 import BillboardPlaneFlowMesh from "../../vox/mesh/BillboardPlaneFlowMesh";
 
 export default class Billboard3DFlowEntity extends DisplayEntity {
+
     private m_currMaterial: BillboardFlowMaterial = null;
     private m_billMesh: BillboardPlaneFlowMesh = null;
     private m_brightnessEnabled: boolean = true;
@@ -25,6 +26,7 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
     private m_spdScaleEnabled: boolean = false;
     flipVerticalUV: boolean = false;
     premultiplyAlpha: boolean = false;
+    
     constructor(transform: ROTransform = null) {
         super(transform);
         this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);

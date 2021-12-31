@@ -21,14 +21,15 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
         super();
     }
     initialize(texEnabled: boolean): void {
+        
         super.initialize( texEnabled );
         this.m_uniqueName = "BillboardFlowShader";
         if (this.playOnce && this.direcEnabled) {
             this.m_uniqueName += "_OD";
         } else if (this.playOnce) {
-            this.m_uniqueName = "_O";
+            this.m_uniqueName += "_O";
         } else if (this.direcEnabled) {
-            this.m_uniqueName = "_D";
+            this.m_uniqueName += "_D";
             if (this.spdScaleEnabled) this.m_uniqueName += "SpdScale";
         }
         if (this.clipMixEnabled) this.m_uniqueName += "Mix";
@@ -167,7 +168,7 @@ export default class BillboardFlowMaterial extends MaterialBase {
     private m_color: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
     private m_brightness: number = 1.0;
     premultiplyAlpha: boolean = false;
-    
+
     constructor(brightnessEnabled: boolean = true, alphaEnabled: boolean = false, clipEnabled: boolean = false) {
         super();
         this.m_brightnessEnabled = brightnessEnabled;

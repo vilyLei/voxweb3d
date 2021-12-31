@@ -11,82 +11,70 @@ import EruptionSomke from "../../particle/effect/EruptionSmoke";
 import ParticleEffectPool from "../../particle/effect/ParticleEffectPool";
 import IRenderer from "../../vox/scene/IRenderer";
 
-export default class EruptionSmokePool extends ParticleEffectPool
-{
-    private m_efSrcList:EruptionSomke[] = [];
-    private m_texture:TextureProxy = null;
-    private m_colorTexture:TextureProxy = null;
-    private m_clipMixEnabled:boolean = false;
-    constructor(){super();}
+export default class EruptionSmokePool extends ParticleEffectPool {
+    private m_efSrcList: EruptionSomke[] = [];
+    private m_texture: TextureProxy = null;
+    private m_colorTexture: TextureProxy = null;
+    private m_clipMixEnabled: boolean = false;
+    constructor() { super(); }
 
-    initialize(renderer:IRenderer,processIndex:number,particleTotal:number, texture:TextureProxy,colorTexture:TextureProxy,clipMixEnabled:boolean = false):void
-    {
-        if(this.m_texture == null)
-        {
+    initialize(renderer: IRenderer, processIndex: number, particleTotal: number, texture: TextureProxy, colorTexture: TextureProxy, clipMixEnabled: boolean = false): void {
+        if (this.m_texture == null) {
             this.m_clipMixEnabled = clipMixEnabled;
             this.m_texture = texture;
             this.m_colorTexture = colorTexture;
 
             this.m_renderer = renderer;
             this.m_renderProcessI = processIndex;
-            let efSrc:EruptionSomke = new EruptionSomke();
-            efSrc.initialize(particleTotal,this.m_texture,this.m_colorTexture,this.m_clipMixEnabled);
+            let efSrc: EruptionSomke = new EruptionSomke();
+            efSrc.initialize(particleTotal, this.m_texture, this.m_colorTexture, this.m_clipMixEnabled);
             this.m_efSrcList.push(efSrc);
         }
     }
-    appendEffectSrc(particleTotal:number,clipMixEnabled:boolean):void
-    {
-        let efSrc:EruptionSomke = new EruptionSomke();
-        efSrc.initialize(particleTotal,this.m_texture,this.m_colorTexture,clipMixEnabled);
+    appendEffectSrc(particleTotal: number, clipMixEnabled: boolean): void {
+        let efSrc: EruptionSomke = new EruptionSomke();
+        efSrc.initialize(particleTotal, this.m_texture, this.m_colorTexture, clipMixEnabled);
         this.m_efSrcList.push(efSrc);
     }
-    appendEffect(texture:TextureProxy,colorTexture:TextureProxy,srcIndex:number = -1):void
-    {
-        let eff:EruptionSomke = new EruptionSomke();
-        if(texture == null) texture = this.m_texture;
-        if(colorTexture == null) colorTexture = this.m_colorTexture;
-        let efSrc:EruptionSomke;
-        if(srcIndex < 0)
-        {
+    appendEffect(texture: TextureProxy, colorTexture: TextureProxy, srcIndex: number = -1): void {
+        let eff: EruptionSomke = new EruptionSomke();
+        if (texture == null) texture = this.m_texture;
+        if (colorTexture == null) colorTexture = this.m_colorTexture;
+        let efSrc: EruptionSomke;
+        if (srcIndex < 0) {
             efSrc = this.m_efSrcList[Math.floor((this.m_efSrcList.length - 0.5) * Math.random())];
         }
-        else
-        {
-            srcIndex = srcIndex<this.m_efSrcList.length?srcIndex:this.m_efSrcList.length-1;
+        else {
+            srcIndex = srcIndex < this.m_efSrcList.length ? srcIndex : this.m_efSrcList.length - 1;
             efSrc = this.m_efSrcList[srcIndex];
         }
-        eff.initializeFrom(efSrc,texture,colorTexture, this.m_clipMixEnabled);
+        eff.initializeFrom(efSrc, texture, colorTexture, this.m_clipMixEnabled);
         this.m_freeEffList.push(eff);
         this.m_renderer.addEntity(eff.smokeEntity, this.m_renderProcessI, false);
         eff.setVisible(false);
     }
-    createEffect(pv:Vector3D):EruptionSomke
-    {
-        return this.createEffectWithTexture(pv, this.m_texture,this.m_colorTexture);
+    createEffect(pv: Vector3D): EruptionSomke {
+        return this.createEffectWithTexture(pv, this.m_texture, this.m_colorTexture);
     }
-    createEffectWithTexture(pv:Vector3D,texture:TextureProxy,colorTexture:TextureProxy):EruptionSomke
-    {
-        let eff:EruptionSomke;
-        if(this.m_freeEffList.length < 1)
-        {
+    createEffectWithTexture(pv: Vector3D, texture: TextureProxy, colorTexture: TextureProxy): EruptionSomke {
+        let eff: EruptionSomke;
+        if (this.m_freeEffList.length < 1) {
             eff = new EruptionSomke();
-            if(texture == null) texture = this.m_texture;
-            if(colorTexture == null) colorTexture = this.m_colorTexture;
-            let efSrc:EruptionSomke = this.m_efSrcList[Math.floor((this.m_efSrcList.length - 0.5) * Math.random())];
-            eff.initializeFrom(efSrc,texture,colorTexture, this.m_clipMixEnabled);
+            if (texture == null) texture = this.m_texture;
+            if (colorTexture == null) colorTexture = this.m_colorTexture;
+            let efSrc: EruptionSomke = this.m_efSrcList[Math.floor((this.m_efSrcList.length - 0.5) * Math.random())];
+            eff.initializeFrom(efSrc, texture, colorTexture, this.m_clipMixEnabled);
             this.m_renderer.addEntity(eff.smokeEntity, this.m_renderProcessI, false);
         }
-        else
-        {
+        else {
             eff = this.m_freeEffList.pop() as EruptionSomke;
         }
         this.m_effList.push(eff);
         eff.setVisible(true);
-        eff.setRotationXYZ(0.0,Math.random() * 360.0,0.0);
+        eff.setRotationXYZ(0.0, Math.random() * 360.0, 0.0);
         eff.setTime(0.0);
         //          eff.smokeEntity.setRGB3f(Math.random() + 0.2,Math.random() + 0.2,Math.random() + 0.2);
-        if(pv != null)
-        {
+        if (pv != null) {
             eff.setPosition(pv);
             //  let scale:number = 1.0;
             //  pv.setXYZ(Math.random() + 0.2,Math.random() + 0.2,Math.random() + 0.2);

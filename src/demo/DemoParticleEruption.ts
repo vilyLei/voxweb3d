@@ -63,7 +63,7 @@ export class DemoParticleEruption {
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
             this.m_statusDisp.initialize();
-            ///*
+            /*
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.name = "axis";
             axis.initialize(100.0);
@@ -89,6 +89,8 @@ export class DemoParticleEruption {
             textures.push(this.getImageTexByUrl("static/assets/testEFT4.jpg"));
             textures.push(this.getImageTexByUrl("static/assets/xulie_02_07.png"));
             this.m_textures = textures;
+
+            ///*
             let plane: Plane3DEntity = new Plane3DEntity();
             plane.initializeXOZ(-500.0, -500.0, 1000.0, 1000.0, [textures[0]]);
             //plane.toTransparentBlend(false);
@@ -96,6 +98,7 @@ export class DemoParticleEruption {
             this.m_rscene.addEntity(plane);
             let material: any = plane.getMaterial();
             //material.setRGB3f(0.8,0.8,0.8);
+            //*/
             this.m_rscene.setClearRGBColor3f(0.1, 0.1, 0.1);
             this.update();
         }
@@ -125,9 +128,9 @@ export class DemoParticleEruption {
         if (this.m_eff0Pool != null) {
             this.m_viewRay.intersectPlane();
 
-            this.m_axis.setPosition(this.m_viewRay.position);
-            this.m_axis.update();
-            //  this.m_eff1Pool.createEffect(this.m_viewRay.position);
+            // //this.m_eff0Pool.createEffect(this.m_viewRay.position);
+            // this.m_eff1Pool.createEffect(this.m_viewRay.position);
+            // return;
 
             if (Math.random() > -0.5) {
                 this.m_eff0Pool.createEffect(this.m_viewRay.position);
@@ -140,6 +143,7 @@ export class DemoParticleEruption {
     private m_effInited: boolean = true;
     private m_timeoutId: any = -1;
     private update(): void {
+
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
@@ -161,7 +165,7 @@ export class DemoParticleEruption {
         }
     }
     run(): void {
-        this.m_rscene.run()
+        this.m_rscene.run();
 
         this.m_statusDisp.statusInfo = "/" + RendererState.DrawCallTimes;
         this.m_statusDisp.update();
