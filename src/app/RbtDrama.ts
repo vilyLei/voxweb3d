@@ -39,6 +39,9 @@ export class RbtDrama implements IShaderLibListener {
             vsmModule.setColorIntensity(0.4);
             vsmModule.upate();
         }
+        let envData = this.m_materialCtx.envData;
+        envData.setFogDensity(0.00015);
+        envData.update();
     }
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
 
@@ -94,16 +97,8 @@ export class RbtDrama implements IShaderLibListener {
             //rparam.maxWebGLVersion = 1;
             rparam.setAttriAlpha(false);
             rparam.setAttriAntialias(true);
-            rparam.setMatrix4AllocateSize(4096 * 8)
             rparam.setCamProject(45.0, 30.0, 9000.0);
-            //rparam.setCamPosition(10.0,1800.0,10.0);
-            //rparam.setCamPosition(3500.0,3500.0,3500.0);
-            //rparam.setCamPosition(1200.0,1200.0,1200.0);
             rparam.setCamPosition(1800.0, 1800.0, 1800.0);
-            //rparam.setCamPosition(2800.0,2800.0,2800.0);
-            //rparam.setCamPosition(800.0,800.0,800.0);
-            //rparam.setCamPosition(1200.0,1200.0,0.0);
-            //rparam.setCamPosition(0.0,200.0,1200.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();
@@ -153,6 +148,7 @@ export class RbtDrama implements IShaderLibListener {
         this.m_rscene.runAt(0);
         this.m_rscene.runAt(1);
         this.m_rscene.runAt(2);
+        this.m_rscene.runAt(4);
 
         this.m_rscene.runEnd();
     }

@@ -24,7 +24,7 @@ class RoleBuilder {
     private m_materialCtx: CommonMaterialContext;
     private m_flrFactory: FourLimbRoleFactory = new FourLimbRoleFactory();
     private m_twrFactory: TrackWheeRoleFactory = new TrackWheeRoleFactory();
-    private m_materialBuilder: RoleMaterialBuilder = new RoleMaterialBuilder();
+    readonly materialBuilder: RoleMaterialBuilder = new RoleMaterialBuilder();
 
     envAmbientLightEnabled: boolean = false;
     fogEnabled: boolean = false;
@@ -37,9 +37,9 @@ class RoleBuilder {
         if (this.m_rscene == null) {
             this.m_rscene = rscene;
             this.m_materialCtx = materialCtx;
-            this.m_materialBuilder.envAmbientLightEnabled = this.envAmbientLightEnabled;
-            this.m_materialBuilder.fogEnabled = this.fogEnabled;
-            this.m_materialBuilder.initialize( materialCtx );
+            this.materialBuilder.envAmbientLightEnabled = this.envAmbientLightEnabled;
+            this.materialBuilder.fogEnabled = this.fogEnabled;
+            this.materialBuilder.initialize( materialCtx );
             this.initTexture();
         }
     }
@@ -58,8 +58,8 @@ class RoleBuilder {
             this.m_materialCtx.getTextureByUrl("static/assets/metal_08.jpg")
         ]
         
-        this.m_flrFactory.setMaterialBuilder( this.m_materialBuilder );
-        this.m_twrFactory.setMaterialBuilder( this.m_materialBuilder );
+        this.m_flrFactory.setMaterialBuilder( this.materialBuilder );
+        this.m_twrFactory.setMaterialBuilder( this.materialBuilder );
         this.m_flrFactory.initialize(this.m_rscene, 0, this.campModule.redCamp, this.terrain.getTerrainData());
         this.m_twrFactory.initialize(this.m_rscene, 0, this.campModule.redCamp, this.terrain.getTerrainData(), 70.0);
     }
@@ -158,7 +158,7 @@ class RoleBuilder {
         let material: MaterialBase = null;
 
         if(this.m_sillyRole_lowerBox == null) {
-            material = this.m_materialBuilder.createMaterial( tex3 );
+            material = this.materialBuilder.createMaterial( tex3 );
             this.m_sillyRole_lowerBox = new Box3DEntity();
             this.m_sillyRole_lowerBox.setMaterial( material );
             this.m_sillyRole_lowerBox.initializeSizeXYZ(50.0, 40, 50, [tex3]);
@@ -182,7 +182,7 @@ class RoleBuilder {
             else {
                 let box0: Box3DEntity = new Box3DEntity();
                 
-                let pmaterial = this.m_materialBuilder.createMaterial(tex5);
+                let pmaterial = this.materialBuilder.createMaterial(tex5);
                 
                 (pmaterial as any).setRGB3f(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2);
                 box0.setMaterial(pmaterial);
@@ -191,7 +191,7 @@ class RoleBuilder {
                 box0.setXYZ(0.0, 20.0, 0.0);
                 
                 let box1: Box3DEntity = new Box3DEntity();
-                pmaterial = this.m_materialBuilder.createMaterial(tex4);
+                pmaterial = this.materialBuilder.createMaterial(tex4);
                 (pmaterial as any).setRGB3f(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4);
                 box1.setMaterial(pmaterial);
                 box1.copyMeshFrom(upperBox);

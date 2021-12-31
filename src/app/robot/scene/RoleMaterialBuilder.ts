@@ -36,7 +36,6 @@ class RoleMaterialBuilder {
         material.diffuseMap = diffuseMap;
         material.normalMap = normalMap != null ? normalMap : this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
         material.aoMap = aoMap != null ? aoMap : this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
-        material.fogEnabled = false;
         let vertUniform = material.vertUniform as VertUniformComp;
         vertUniform.uvTransformEnabled = true;
         material.vertUniform = vertUniform;
@@ -56,6 +55,19 @@ class RoleMaterialBuilder {
         material.diffuseMap = diffuseMap;
         material.normalMap = normalMap != null ? normalMap : this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
         material.aoMap = aoMap != null ? aoMap : this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
+        material.initializeByCodeBuf( true );
+        material.setBlendFactor(0.6, 0.7);
+
+        return material;
+    }
+    createBaseLambertMaterial(diffuseMap: TextureProxy, normalMap: TextureProxy = null, aoMap: TextureProxy = null, envAmbientLightEnabled: boolean = false): LambertLightMaterial {
+
+        let material = this.m_materialCtx.createLambertLightMaterial(false);
+        material.fogEnabled = this.fogEnabled;
+        material.envAmbientLightEnabled = envAmbientLightEnabled;
+        material.diffuseMap = diffuseMap;
+        material.normalMap = normalMap;
+        material.aoMap = aoMap;
         material.initializeByCodeBuf( true );
         material.setBlendFactor(0.6, 0.7);
 

@@ -8,24 +8,25 @@ import { TerrainModule } from "../../../app/robot/terrain/TerrainModule";
 
 import { CommonMaterialContext } from "../../../materialLab/base/CommonMaterialContext";
 import { RoleBuilder } from "./RoleBuilder";
+import Box3DEntity from "../../../vox/entity/Box3DEntity";
 
 class SceneModule {
 
     constructor() { }
 
     private m_rscene: RendererScene = null;
-    
+
     private m_campModule: CampMoudle = new CampMoudle();
     private m_terrain: TerrainModule = new TerrainModule();
     private m_roleBuilder: RoleBuilder = new RoleBuilder();
     private m_materialCtx: CommonMaterialContext;
-    
+
     envAmbientLightEnabled: boolean = true;
     shadowEnabled: boolean = true;
-    fogEnabled: boolean = false;
+    fogEnabled: boolean = true;
 
     initialize(rscene: RendererScene, materialCtx: CommonMaterialContext): void {
-        
+
         if (this.m_rscene == null) {
             this.m_rscene = rscene;
             this.m_materialCtx = materialCtx;
@@ -37,7 +38,7 @@ class SceneModule {
             this.m_terrain.terrain.colorBrightness = 0.4;
             this.m_terrain.initialize(this.m_rscene, this.m_materialCtx);
 
-            AssetsModule.GetInstance().initialize(this.m_materialCtx);    
+            AssetsModule.GetInstance().initialize(this.m_materialCtx);
             this.m_campModule.initialize(this.m_rscene);
 
             this.m_roleBuilder.envAmbientLightEnabled = this.envAmbientLightEnabled;
@@ -62,8 +63,26 @@ class SceneModule {
         this.m_roleBuilder.createLimbRoles(total);
         this.m_roleBuilder.createTrackWheelRoles(total);
         this.m_roleBuilder.createSillyRoles(total);
+
+        this.initEnvBox();
     }
 
+    private initEnvBox(): void {
+
+        let materialBuilder = this.m_roleBuilder.materialBuilder;
+        let material = materialBuilder.createBaseLambertMaterial(
+            this.m_materialCtx.getTextureByUrl("static/assets/image_003.jpg")
+            , null, null
+            , true
+            );
+        material.setRGB3f(0.2, 0.2, 0.2);
+        let envBox: Box3DEntity = new Box3DEntity();
+        envBox.normalScale = -1.0;
+        envBox.setMaterial(material);
+        envBox.showFrontFace();
+        envBox.initializeCube(4000.0);
+        this.m_rscene.addEntity(envBox, 4);
+    }
 
     run(): void {
         this.m_campModule.run();
