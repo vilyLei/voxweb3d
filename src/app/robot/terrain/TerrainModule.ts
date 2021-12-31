@@ -9,7 +9,7 @@ class TerrainModule {
 
     private m_rscene: RendererScene = null;
     private m_terrainData: TerrainData = null;
-    private m_toyTerrain: SimpleTerrain = new SimpleTerrain();
+    terrain: SimpleTerrain = new SimpleTerrain();
     
     private m_materialCtx: CommonMaterialContext;
 
@@ -55,9 +55,7 @@ class TerrainModule {
     }
     
     private initTerrainIns(terrData: TerrainData): void {
-
-        this.m_toyTerrain = new SimpleTerrain();
-        this.m_toyTerrain.initialize(this.m_rscene, this.m_materialCtx, terrData);
+        this.terrain.initialize(this.m_rscene, this.m_materialCtx, terrData);
 
     }
         

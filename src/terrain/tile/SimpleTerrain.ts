@@ -21,7 +21,7 @@ class SimpleTerrain {
     private m_rscene: RendererScene = null;
     private m_materialCtx: CommonMaterialContext = null;
     private m_terrainData: TerrainData;
-
+    colorBrightness: number = 1.0;
     initialize(scene: RendererScene, materialCtx: CommonMaterialContext, terrainData: TerrainData): void {
         
         if (this.m_rscene == null) {
@@ -83,7 +83,7 @@ class SimpleTerrain {
         let material2 = this.createLambertMaterial(tex2, null, null, true);
         material2.initializeByCodeBuf();
         
-        let colorBrn: number = 0.5;
+        let colorBrn: number = this.colorBrightness;
         let rn: number = this.m_terrainData.rn;
         let cn: number = this.m_terrainData.cn;
         let pv: Vector3D;

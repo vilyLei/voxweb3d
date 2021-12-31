@@ -27,6 +27,7 @@ class SceneModule {
             this.m_rscene = rscene;
             this.m_materialCtx = materialCtx;
 
+            this.m_terrain.terrain.colorBrightness = 0.4;
             this.m_terrain.initialize(this.m_rscene, this.m_materialCtx);
 
             AssetsModule.GetInstance().initialize(this.m_materialCtx);    
@@ -48,7 +49,7 @@ class SceneModule {
         axis = new Axis3DEntity();
         axis.initializeCross(200.0);
         this.m_rscene.addEntity(axis);
-        let total: number = 50.0;
+        let total: number = 100.0;
         this.m_roleBuilder.createLimbRoles(total);
         this.m_roleBuilder.createTrackWheelRoles(total);
         this.m_roleBuilder.createSillyRoles(total);
