@@ -17,8 +17,10 @@ import IRbtModule from "../../../app/robot/base/IRbtModule";
 import RunnableModule from "../../../app/robot/scene/RunnableModule";
 import IDstFinder from "../../../app/robot/attack/IDstFinder";
 import { TerrainData } from "../../../terrain/tile/TerrainData";
+import { ShadowEntity } from "./ShadowEntity";
 
 export default class RbtRole implements IRunnable {
+
     private m_synMaxDegree: number = 50.0;
     protected m_rscene: RendererScene = null;
     protected m_isMoving: boolean = true;
@@ -30,6 +32,8 @@ export default class RbtRole implements IRunnable {
     protected m_findRadar: IDstFinder = null;
     protected m_attackModule: IRbtModule = null;
     protected m_motionModule: IRbtModule = null;
+
+    shadowEntity: ShadowEntity = null;
 
     position: Vector3D = new Vector3D();
     attackDis: number = 50;
@@ -140,6 +144,9 @@ export default class RbtRole implements IRunnable {
             }
             //  执行leg动动作
             this.m_motionModule.direcByDegree(optionalDegree, !state);
+            if(this.shadowEntity != null) {
+                this.shadowEntity.update();
+            }
             this.m_movingFlag = moveFlag ? true : this.m_motionModule.isPoseRunning();
         }
         else {
@@ -158,6 +165,7 @@ export default class RbtRole implements IRunnable {
         this.m_attackModule.setDstDirecDegree(direcDegree);
     }
     protected attackRun(): void {
+
         let direcDegree: number = this.m_attackModule.getRotationY();
         let attDst: IAttackDst = this.m_findRadar != null ? this.m_findRadar.findAttDst(direcDegree) : null;
 
@@ -197,6 +205,7 @@ export default class RbtRole implements IRunnable {
     protected freeRun(): void {
         let direcDegree: number = this.m_attackModule.getRotationY();
         let attDst: IAttackDst = this.m_findRadar != null ? this.m_findRadar.testAttDst(direcDegree) : null;
+
         let moveEnabled: boolean = this.attackMove(false, direcDegree);
         if (moveEnabled) {
             this.armMove(this.position, this.m_motionModule.getRotationY());

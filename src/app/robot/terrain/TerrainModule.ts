@@ -55,7 +55,7 @@ class TerrainModule {
     }
     
     private initTerrainIns(terrData: TerrainData): void {
-        this.terrain.initialize(this.m_rscene, this.m_materialCtx, terrData);
+        // this.terrain.initialize(this.m_rscene, this.m_materialCtx, terrData);
 
     }
         
