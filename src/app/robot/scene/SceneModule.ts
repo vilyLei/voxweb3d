@@ -19,7 +19,10 @@ class SceneModule {
     private m_terrain: TerrainModule = new TerrainModule();
     private m_roleBuilder: RoleBuilder = new RoleBuilder();
     private m_materialCtx: CommonMaterialContext;
+    
+    envAmbientLightEnabled: boolean = true;
     shadowEnabled: boolean = true;
+    fogEnabled: boolean = false;
 
     initialize(rscene: RendererScene, materialCtx: CommonMaterialContext): void {
         
@@ -28,6 +31,8 @@ class SceneModule {
             this.m_materialCtx = materialCtx;
 
             this.m_terrain.terrain.shadowReceiveEnabled = this.shadowEnabled;
+            this.m_terrain.terrain.envAmbientLightEnabled = this.envAmbientLightEnabled;
+            this.m_terrain.terrain.fogEnabled = this.fogEnabled;
             this.m_terrain.terrain.renderProcessIndex = 1;
             this.m_terrain.terrain.colorBrightness = 0.4;
             this.m_terrain.initialize(this.m_rscene, this.m_materialCtx);
@@ -35,6 +40,8 @@ class SceneModule {
             AssetsModule.GetInstance().initialize(this.m_materialCtx);    
             this.m_campModule.initialize(this.m_rscene);
 
+            this.m_roleBuilder.envAmbientLightEnabled = this.envAmbientLightEnabled;
+            this.m_roleBuilder.fogEnabled = this.fogEnabled;
             this.m_roleBuilder.terrain = this.m_terrain;
             this.m_roleBuilder.campModule = this.m_campModule;
             this.m_roleBuilder.initialize(rscene, materialCtx);

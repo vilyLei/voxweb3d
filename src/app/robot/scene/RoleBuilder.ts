@@ -26,6 +26,8 @@ class RoleBuilder {
     private m_twrFactory: TrackWheeRoleFactory = new TrackWheeRoleFactory();
     private m_materialBuilder: RoleMaterialBuilder = new RoleMaterialBuilder();
 
+    envAmbientLightEnabled: boolean = false;
+    fogEnabled: boolean = false;
     campModule: CampMoudle;
     terrain: TerrainModule;
 
@@ -35,6 +37,8 @@ class RoleBuilder {
         if (this.m_rscene == null) {
             this.m_rscene = rscene;
             this.m_materialCtx = materialCtx;
+            this.m_materialBuilder.envAmbientLightEnabled = this.envAmbientLightEnabled;
+            this.m_materialBuilder.fogEnabled = this.fogEnabled;
             this.m_materialBuilder.initialize( materialCtx );
             this.initTexture();
         }

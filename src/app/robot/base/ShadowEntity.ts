@@ -38,7 +38,7 @@ class ShadowEntity {
         }
         if(ShadowEntity.s_sph == null) {
             ShadowEntity.s_sph = new Sphere3DEntity();
-            ShadowEntity.s_sph.initialize(1.0,15,15);
+            ShadowEntity.s_sph.initialize(1.0,6,6);
         }
         let bounds = this.bounds;
         this.m_height = bounds.getHeight();
@@ -50,15 +50,12 @@ class ShadowEntity {
         entity.copyMaterialFrom( src );
         entity.copyMeshFrom( src );
         entity.setScaleXYZ(bounds.getWidth() * this.sizeScaleX, this.m_height * 0.5, bounds.getLong() * this.sizeScaleZ);
-        entity.setXYZ(0.0, this.m_height + 20.0, 0.0);
+        entity.setXYZ(0.0, this.m_height, 0.0);
         this.entity = entity;
 
     }
     setVisible(visible: boolean): void {
         this.entity.setVisible(visible);
-    }
-    setPosition(pv: Vector3D): void {
-        //this.entity.setPosition( pv );
     }
     update(): void {
         

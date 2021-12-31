@@ -21,8 +21,10 @@ class SimpleTerrain {
     private m_rscene: RendererScene = null;
     private m_materialCtx: CommonMaterialContext = null;
     private m_terrainData: TerrainData;
-    
+
+    envAmbientLightEnabled: boolean = false;
     shadowReceiveEnabled: boolean = false;
+    fogEnabled: boolean = false;
     renderProcessIndex: number = 1;
     colorBrightness: number = 1.0;
     initialize(scene: RendererScene, materialCtx: CommonMaterialContext, terrainData: TerrainData): void {
@@ -39,13 +41,13 @@ class SimpleTerrain {
 
         let material = this.m_materialCtx.createLambertLightMaterial(false);
         material.shadowReceiveEnabled = this.shadowReceiveEnabled;
-        material.envAmbientLightEnabled = true;
+        material.envAmbientLightEnabled = this.envAmbientLightEnabled;
+        material.fogEnabled = this.fogEnabled;
         material.vertColorEnabled = true;
         material.vertColorEnabled = vtxColorEnabled;
         material.diffuseMap = diffuseMap;
         material.normalMap = normalMap;
         material.aoMap = aoMap;
-        material.fogEnabled = false;
         material.initializeByCodeBuf( true );
         material.setBlendFactor(0.6, 0.7);
 
