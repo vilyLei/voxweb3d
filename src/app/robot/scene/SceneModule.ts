@@ -27,6 +27,7 @@ class SceneModule {
             this.m_rscene = rscene;
             this.m_materialCtx = materialCtx;
 
+            this.m_terrain.terrain.renderProcessIndex = 1;
             this.m_terrain.terrain.colorBrightness = 0.4;
             this.m_terrain.initialize(this.m_rscene, this.m_materialCtx);
 

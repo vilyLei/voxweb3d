@@ -11,71 +11,60 @@ import RendererScene from "../../vox/scene/RendererScene";
 import RunnableModule from "../../app/robot/scene/RunnableModule";
 import BulEntity from "../../app/robot/BulEntity";
 import IAttackDst from "../../app/robot/attack/IAttackDst";
-import {CampType} from "../../app/robot/camp/Camp";
+import { CampType } from "../../app/robot/camp/Camp";
 
-export default class WeapMoudle implements IRunnable
-{
-    private m_rsc:RendererScene = null;
-    private m_freePool:BulEntity[] = [];
-    private m_bulList:BulEntity[] = [];
-    constructor(rsc:RendererScene)
-    {
+export default class WeapMoudle implements IRunnable {
+    private m_rsc: RendererScene = null;
+    private m_freePool: BulEntity[] = [];
+    private m_bulList: BulEntity[] = [];
+    effectRenderProcessIndex: number = 2;
+    constructor(rsc: RendererScene) {
         this.m_rsc = rsc;
     }
-    createAtt(type:number,pos0:Vector3D,pos1:Vector3D,attDst:IAttackDst,campType:CampType):void
-    {
-        let bul:BulEntity;
-        if(this.m_bulList.length > 0)
-        {
+    createAtt(type: number, pos0: Vector3D, pos1: Vector3D, attDst: IAttackDst, campType: CampType): void {
+        let bul: BulEntity;
+        if (this.m_bulList.length > 0) {
             bul = this.m_bulList.pop();
             bul.reset();
         }
-        else
-        {
+        else {
             bul = new BulEntity(this.m_rsc);
+            bul.effectRenderProcessIndex = this.effectRenderProcessIndex;
             bul.initialize(0);
         }
-        bul.setPosParam(pos0, pos1, attDst,campType);
+        bul.setPosParam(pos0, pos1, attDst, campType);
         this.m_bulList.push(bul);
-        RunnableModule.RunnerQueue.addRunner( this );
+        RunnableModule.RunnerQueue.addRunner(this);
     }
 
-    
-    private m_runFlag:number = 0;
-    setRunFlag(flag:number):void
-    {
+
+    private m_runFlag: number = 0;
+    setRunFlag(flag: number): void {
         this.m_runFlag = flag;
     }
-    getRunFlag():number
-    {
+    getRunFlag(): number {
         return this.m_runFlag;
     }
-    isRunning():boolean
-    {
+    isRunning(): boolean {
         return true;
     }
-    isStopped():boolean
-    {
+    isStopped(): boolean {
         return false;
     }
-    run():void
-    {
-        let bul:BulEntity;
-        for(let i:number = 0, il:number = this.m_bulList.length; i < il; ++i)
-        {
+    run(): void {
+        let bul: BulEntity;
+        for (let i: number = 0, il: number = this.m_bulList.length; i < il; ++i) {
             bul = this.m_bulList[i];
             bul.run();
-            if(bul.isHiding())
-            {
-                this.m_bulList.splice(i,1);
+            if (bul.isHiding()) {
+                this.m_bulList.splice(i, 1);
                 i--;
                 il--;
                 this.m_bulList.push(bul);
             }
         }
-        if(this.m_bulList.length < 1)
-        {
-            RunnableModule.RunnerQueue.removeRunner( this );
+        if (this.m_bulList.length < 1) {
+            RunnableModule.RunnerQueue.removeRunner(this);
         }
     }
 }

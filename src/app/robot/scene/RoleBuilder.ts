@@ -106,7 +106,7 @@ class RoleBuilder {
 
             }
             limbRole = this.m_flrFactory.create(tex0, tex1, tex2, campType, bodySize);
-            limbRole.lifeTime = 100 + Math.round(100.0 * Math.random());
+            limbRole.lifeTime = 100 + Math.round(300.0 * Math.random());
             limbRole.setXYZ(Math.random() * 1600.0 - 800.0, 0.0, Math.random() * 1600.0 - 800.0);
             limbRole.moveToXZ(Math.random() * 1600.0 - 800.0, Math.random() * 1600.0 - 800.0);
 
@@ -135,7 +135,7 @@ class RoleBuilder {
                     break;
             }
             let twRole: TrackWheelRole = this.m_twrFactory.create(tex6, tex7, tex2, campType, bodySize);
-            twRole.lifeTime = 100 + Math.round(100.0 * Math.random());
+            twRole.lifeTime = 100 + Math.round(300.0 * Math.random());
             twRole.setXYZ(Math.random() * 1600.0 - 800.0, 0.0, Math.random() * 1600.0 - 800.0);
             twRole.moveToXZ(Math.random() * 1600.0 - 800.0, Math.random() * 1600.0 - 800.0);
             twRole.wake();
@@ -203,7 +203,7 @@ class RoleBuilder {
             sillyRole.terrainData = this.terrain.getTerrainData();
             sillyRole.attackDis = 50;
             sillyRole.radius = 80;
-            sillyRole.lifeTime = 200;
+            sillyRole.lifeTime = 200 + Math.round(200.0 * Math.random());
             sillyRole.wake();
             this.campModule.redCamp.addRole(sillyRole);
         }

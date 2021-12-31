@@ -22,6 +22,7 @@ export default class CampMoudle {
     redCamp: RedCamp = new RedCamp();
     blueCamp: BlueCamp = new BlueCamp();
 
+    effectRenderProcessIndex: number = 2;
     constructor() { }
 
     initialize(rsc: RendererScene): void {
@@ -38,7 +39,7 @@ export default class CampMoudle {
             //let colorTexture:TextureProxy = AssetsModule.GetImageTexByUrl("static/assets/color_06.jpg");
             //let colorTexture:TextureProxy = AssetsModule.GetImageTexByUrl("static/assets/RandomNoiseB.png");
             this.m_eff1Pool = new EruptionSmokePool();
-            this.m_eff1Pool.initialize(this.m_rsc, 1, 10, texture, colorTexture, true);
+            this.m_eff1Pool.initialize(this.m_rsc, this.effectRenderProcessIndex, 10, texture, colorTexture, true);
             this.m_eff1Pool.appendEffectSrc(20, true);
             this.m_eff1Pool.appendEffectSrc(8, true);
             this.m_eff1Pool.appendEffectSrc(10, true);

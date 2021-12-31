@@ -21,6 +21,7 @@ class SimpleTerrain {
     private m_rscene: RendererScene = null;
     private m_materialCtx: CommonMaterialContext = null;
     private m_terrainData: TerrainData;
+    renderProcessIndex: number = 1;
     colorBrightness: number = 1.0;
     initialize(scene: RendererScene, materialCtx: CommonMaterialContext, terrainData: TerrainData): void {
         
@@ -138,7 +139,7 @@ class SimpleTerrain {
         let entity: DisplayEntity = new DisplayEntity();
         entity.setMaterial(material);
         entity.setMesh(dataMesh);
-        this.m_rscene.addEntity(entity, 1);
+        this.m_rscene.addEntity(entity, this.renderProcessIndex);
     }
     run(): void {
 
