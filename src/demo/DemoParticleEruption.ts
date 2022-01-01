@@ -128,7 +128,7 @@ export class DemoParticleEruption {
         if (this.m_eff0Pool != null || this.m_eff1Pool != null) {
             this.m_viewRay.intersectPlane();
 
-            // this.m_eff0Pool.createEffect(this.m_viewRay.position);
+            // //this.m_eff0Pool.createEffect(this.m_viewRay.position);
             // this.m_eff1Pool.createEffect(this.m_viewRay.position);
             // return;
 

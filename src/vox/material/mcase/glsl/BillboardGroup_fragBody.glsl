@@ -11,3 +11,5 @@
         color.xyz *= color.a;
     #endif
     FragColor0 = color;
+    // for test
+    // FragColor0 = vec4(vec3(0.3), 1.0);

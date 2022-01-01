@@ -30,7 +30,7 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
 
         console.log("BillboardFlowShaderBuffer::initialize()...");
 
-        //this.m_coderEnabled = true;
+        this.m_coderEnabled = true;
         super.initialize(texEnabled);
         this.m_uniqueName = "flow_"+this.m_uniqueName;
         if (this.playOnce && this.direcEnabled) {
@@ -50,10 +50,10 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
 
         let coder = this.m_coder;
         coder.addVertLayout("vec4", "a_vs");
-        coder.addVertLayout("vec4", "a_vs2");
-        coder.addVertLayout("vec4", "a_uvs");
-        coder.addVertLayout("vec4", "a_uvs2");
+        coder.addVertLayout("vec2", "a_uvs");
         coder.addVertLayout("vec4", "a_nvs");
+        coder.addVertLayout("vec4", "a_vs2");
+        coder.addVertLayout("vec4", "a_uvs2");
         coder.addVertLayout("vec4", "a_nvs2");
 
         let paramTotal: number = this.m_clipEnabled ? 5 : 4;
@@ -97,10 +97,10 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
             `#version 300 es
 precision mediump float;
 layout(location = 0) in vec4 a_vs;
-layout(location = 1) in vec4 a_vs2;
 layout(location = 2) in vec2 a_uvs;
-layout(location = 3) in vec4 a_uvs2;
 layout(location = 4) in vec4 a_nvs;
+layout(location = 1) in vec4 a_vs2;
+layout(location = 3) in vec4 a_uvs2;
 layout(location = 5) in vec4 a_nvs2;
 const vec3 biasV3 = vec3(0.1);
 uniform mat4 u_objMat;
@@ -185,56 +185,7 @@ void calculateClipUV(float fi) {
 #endif
 
 vec4 motionCalc(float time, inout vec2 vtx) {
-
-    vec3 timeV = vec3(time);
-    vec3 acc3 = u_billParam[3].xyz + a_nvs2.xyz;
-    #ifdef ROTATION_DIRECT
-        #ifdef SPEED_SCALE
-            float v0scale = clamp(length(a_nvs.xyz + acc3 * timeV)/u_billParam[1].w,1.0,u_billParam[3].w);
-            vtx *= vec2(v0scale, 1.0);
-        #endif
-
-        vec3 pv0 = a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV;
-        timeV += biasV3;
-        vec3 pv1 = a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV;
-
-        mat4 voMat = u_viewMat * u_objMat;
-        vec4 pos = voMat * vec4(pv0,1.0);
-        vec4 pos1 = voMat * vec4(pv1,1.0);
-        float rad = getRadianByXY(pos1.x - pos.x, pos1.y - pos.y);
-        float cosv = cos(rad);
-        float sinv = sin(rad);
-
-        // rotate
-        vtx = vec2(vtx.x * cosv - vtx.y * sinv, vtx.x * sinv + vtx.y * cosv);
-    #else
-        vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV,1.0);
-    #endif
-
-    return pos;
-}
-`;
-        //let vtxCode01: string = this.direcEnabled ? MathShaderCode.GetRadianByXY_Func() : "";
-        let vtxCode02: string =
-            `
-void main()
-{
-    vec4 temp = u_billParam[0];
-    float time = max(a_nvs.w * temp.z - a_uvs2.w, 0.0);
-
-    #ifdef PLAY_ONCE
-        time = min(time, a_uvs2.x);
-    #endif
-
-    float kf = fract(time/a_uvs2.x);
-    float fi = kf;
-    time = kf * a_uvs2.x;
-    kf = min(kf/a_uvs2.y,1.0) * (1.0 - max((kf - a_uvs2.z)/(1.0 - a_uvs2.z),0.0));
-    // scale
-    vec2 vtx = a_vs.xy * temp.xy * vec2(a_vs.z + kf * a_vs.w);
-
-    vec4 pos = motionCalc(time, vtx);
-    /*
+    ///*
     vec3 timeV = vec3(time);
     vec3 acc3 = u_billParam[3].xyz + a_nvs2.xyz;
     #ifdef ROTATION_DIRECT
@@ -260,6 +211,33 @@ void main()
         vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV,1.0);
     #endif
     //*/
+    // vec3 acc3 = u_billParam[3].xyz + a_nvs2.xyz;
+    // vec3 timeV = vec3(0.9);
+    // vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV,1.0);
+
+    return pos;
+}
+`;
+        let vtxCode02: string =
+            `
+void main()
+{
+    vec4 temp = u_billParam[0];
+    float time = max(a_nvs.w * temp.z - a_uvs2.w, 0.0);
+
+    #ifdef PLAY_ONCE
+        time = min(time, a_uvs2.x);
+    #endif
+
+    float kf = fract(time/a_uvs2.x);
+    float fi = kf;
+    time = kf * a_uvs2.x;
+    kf = min(kf/a_uvs2.y,1.0) * (1.0 - max((kf - a_uvs2.z)/(1.0 - a_uvs2.z),0.0));
+    // scale
+    vec2 vtx = a_vs.xy * temp.xy * vec2(a_vs.z + kf * a_vs.w);
+    //vec2 vtx = a_vs.xy;
+
+    vec4 pos = motionCalc(time, vtx);
     
     pos.xy += vtx.xy;
     gl_Position =  u_projMat * pos;
@@ -279,53 +257,7 @@ void main()
 }
 `;
 
-
-/*
-        let vtxCode3: string =
-            `
-vec3 timeV = vec3(time);
-vec3 acc3 = u_billParam[3].xyz + a_nvs2.xyz;
-`;
-        if (this.direcEnabled) {
-            if (this.spdScaleEnabled) {
-                vtxCode3 +=
-                    `
-float v0scale = clamp(length(a_nvs.xyz + acc3 * timeV)/u_billParam[1].w,1.0,u_billParam[3].w);
-vtx *= vec2(v0scale, 1.0);
-`;
-            }
-            vtxCode3 +=
-                `
-vec3 pv0 = a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV;
-timeV += biasV3;
-vec3 pv1 = a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV;
-
-mat4 voMat = u_viewMat * u_objMat;
-vec4 pos = voMat * vec4(pv0,1.0);
-vec4 pos1 = voMat * vec4(pv1,1.0);
-float rad = getRadianByXY(pos1.x - pos.x, pos1.y - pos.y);
-float cosv = cos(rad);
-float sinv = sin(rad);
-
-// rotate
-vtx = vec2(vtx.x * cosv - vtx.y * sinv, vtx.x * sinv + vtx.y * cosv);
-`;
-        }
-        else {
-            vtxCode3 +=
-                `
-vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV,1.0);
-`;
-        }
-*/
-
-//         if (this.m_hasOffsetColorTex && this.m_useRawUVEnabled) {
-//             vtxCode4 +=
-//                 `
-// v_uv = vec4(a_uvs.xy,0.0,0.0);
-// `;
-//         }
-        return vtxCode0 + vtxCode02;// + this.getVSEndCode(4);
+        return vtxCode0 + vtxCode02;
     }
     toString(): string {
         return "[BillboardFlowShaderBuffer()]";
