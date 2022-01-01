@@ -11,9 +11,9 @@
     // scale
     vec2 vtx = a_vs.xy * temp.xy * vec2(a_vs.z + kf * a_vs.w);
 
+
     vec3 timeV = vec3(time);
     vec3 acc3 = u_billParam[3].xyz + a_nvs2.xyz;
-
     #ifdef ROTATION_DIRECT
         #ifdef SPEED_SCALE
             float v0scale = clamp(length(a_nvs.xyz + acc3 * timeV)/u_billParam[1].w,1.0,u_billParam[3].w);
@@ -38,13 +38,14 @@
 
     pos.xy += vtx.xy;
     gl_Position =  u_projMat * pos;
-    v_factor = vec4(0.0,0.0, kf * a_vs2.w,fi);
+    v_factor = vec4(0.0,0.0, kf * a_vs2.w, fi);
+    
     #ifdef VOX_USE_RAW_UV
         v_uv = vec4(a_uvs.xy,0.0,0.0);
     #endif
 
     #ifdef VOX_USE_CLIP
-        calculateClipUV();
+        calculateClipUV( fi );
     #else
         v_texUV = vec4(a_uvs.xy, a_uvs.xy);
     #endif

@@ -11,7 +11,7 @@ vec3 getOffsetColor() {
     return offsetColor;
 }
 
-void blendBrightnessORAlpha() {
+void blendBrightnessORAlpha(inout vec4 color, in vec3 offsetColor) {
 
     #if FADE_STATUS == 11
         color.rgb = color.rgb * v_colorMult.xyz + color.aaa * offsetColor;

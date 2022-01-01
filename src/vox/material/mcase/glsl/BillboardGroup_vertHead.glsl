@@ -5,6 +5,8 @@
 // 1.5707963267948966
 #define MATH_1PER2PI 1.57079633
 
+const vec3 biasV3 = vec3(0.1);
+
 float getRadianByXY(float dx, float dy) {
 
     if(abs(dx) < 0.00001) {
@@ -13,11 +15,12 @@ float getRadianByXY(float dx, float dy) {
     float rad = atan(dy/dx);
     return dx >= 0.0 ? rad: (MATH_PI + rad);
 }
-void calculateClipUV() {
-
+#ifdef VOX_USE_CLIP
+void calculateClipUV(float fi) {
+    
     #ifdef VOX_USE_CLIP_MIX
         // calculate clip uv
-        temp = u_billParam[ BILL_PARAM_INDEX ];//(x:cn,y:total,z:du,w:dv)
+        vec4 temp = u_billParam[ BILL_PARAM_INDEX ];//(x:cn,y:total,z:du,w:dv)
         float clipf0 = floor(fi * temp.y);
         float clipf1 = min(clipf0 + 1.0, temp.y - 1.0);
         clipf0 /= temp.x;
@@ -30,10 +33,11 @@ void calculateClipUV() {
         v_texUV.zw = (vec2(floor(fract(clipf1) * temp.x), floor(clipf1)) + a_uvs.xy) * temp.zw;
     #else
         // calculate clip uv
-        temp = u_billParam[ BILL_PARAM_INDEX ];//(x:cn,y:total,z:du,w:dv)
+        vec4 temp = u_billParam[ BILL_PARAM_INDEX ];//(x:cn,y:total,z:du,w:dv)
         float clipf = floor(fi * temp.y);
         clipf /= temp.x;
         // vec2(floor(fract(clipf) * temp.x), floor(clipf)) -> vec2(cn u,rn v)
         v_texUV.xy = (vec2(floor(fract(clipf) * temp.x), floor(clipf)) + a_uvs.xy) * temp.zw;
     #endif
 }
+#endif

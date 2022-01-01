@@ -104,14 +104,14 @@ export class DemoParticleEruption {
         }
     }
     private initializeEffect(): void {
-        if (this.m_eff0Pool == null) {
-            let texFlame: TextureProxy = this.m_textures[8];
-            let texSolid: TextureProxy = this.m_textures[3];
-            this.m_eff0Pool = new EruptionEffectPool();
-            this.m_eff0Pool.solidPremultiplyAlpha = true;
-            this.m_eff0Pool.initialize(this.m_rscene, 1, 60, 50, texFlame, texSolid, true);
-            //  this.m_eff0Pool.createEffect(null);
-        }
+        // if (this.m_eff0Pool == null) {
+        //     let texFlame: TextureProxy = this.m_textures[8];
+        //     let texSolid: TextureProxy = this.m_textures[3];
+        //     this.m_eff0Pool = new EruptionEffectPool();
+        //     this.m_eff0Pool.solidPremultiplyAlpha = true;
+        //     this.m_eff0Pool.initialize(this.m_rscene, 1, 60, 50, texFlame, texSolid, true);
+        //     //  this.m_eff0Pool.createEffect(null);
+        // }
         if (this.m_eff1Pool == null) {
 
             let texture: TextureProxy = this.m_textures[9];
@@ -125,7 +125,7 @@ export class DemoParticleEruption {
     mouseDownListener(evt: any): void {
         //console.log("mouseDownListener call, this.m_rscene: "+this.m_rscene.toString());
 
-        if (this.m_eff0Pool != null) {
+        if (this.m_eff0Pool != null || this.m_eff1Pool != null) {
             this.m_viewRay.intersectPlane();
 
             // this.m_eff0Pool.createEffect(this.m_viewRay.position);
@@ -159,6 +159,8 @@ export class DemoParticleEruption {
 
             if (this.m_eff0Pool != null) {
                 this.m_eff0Pool.run();
+            }
+            if (this.m_eff1Pool != null) {
                 this.m_eff1Pool.run();
             }
             this.m_camTrack.rotationOffsetAngleWorldY(-0.1);

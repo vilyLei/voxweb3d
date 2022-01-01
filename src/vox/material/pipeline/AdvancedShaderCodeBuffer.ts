@@ -13,6 +13,7 @@ import { ShadowMode } from "./ShadowMode";
 import { UniformComp } from "../component/UniformComp";
 
 class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
+    
     private m_uniqueName: string = "";
     
     colorEnabled: boolean = true;

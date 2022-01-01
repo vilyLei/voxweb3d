@@ -85,6 +85,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
     fragMainCodeUnlock: boolean = true;
     vertHeadCodeUnlock: boolean = true;
     vertMainCodeUnlock: boolean = true;
+    autoBuildHeadCodeEnabled = true;
 
     readonly uniform: IShaderCodeUniform;
     mathDefineEanbled: boolean = true;
@@ -124,6 +125,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         this.fragMainCodeUnlock = true;
         this.vertHeadCodeUnlock = true;
         this.vertMainCodeUnlock = true;
+        this.autoBuildHeadCodeEnabled = true;
 
         this.m_use2DMap = false;
 
@@ -382,7 +384,6 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         if(this.fragHeadCodeUnlock) this.addFragHeadCode(shaderObj.frag_head);
         if(this.vertHeadCodeUnlock) this.addVertMainCode(shaderObj.vert_head);
     }
-
     private autoBuildHeadCode(): void {
 
         this.addVertLayout("vec3", "a_vs");
@@ -414,16 +415,19 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         this.m_vertLayoutNames = nameList.concat(this.m_vertLayoutNames);
         this.m_vertLayoutTypes = typeList.concat(this.m_vertLayoutTypes);
 
-        if (this.m_fragOutputNames.length < 1) {
-            this.addFragOutput("vec4", "FragColor0");
-        }
         if(this.vtxUVTransfromEnabled) {
             this.addDefine("VOX_VTX_TRANSFORM_PARAM_INDEX", "0");
         }
     }
     buildFragCode(): string {
 
-        this.autoBuildHeadCode();
+        if(this.autoBuildHeadCodeEnabled) {
+            this.autoBuildHeadCode();
+        }
+        
+        if (this.m_fragOutputNames.length < 1) {
+            this.addFragOutput("vec4", "FragColor0");
+        }
 
         let i: number = 0;
         let len: number = 0;

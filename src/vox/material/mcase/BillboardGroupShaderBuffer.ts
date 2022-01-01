@@ -35,7 +35,7 @@ export default class BillboardGroupShaderBuffer extends ShaderCodeBuffer {
     }
     initialize(texEnabled: boolean): void {
         super.initialize(texEnabled);
-        this.m_uniqueName = "BillboardGroupFlareShader";
+        this.m_uniqueName = "BillboardGroupShader";
     }
     setParam(brightnessEnabled: boolean, alphaEnabled: boolean, clipEnabled: boolean, hasOffsetColorTex: boolean): void {
         this.m_brightnessEnabled = brightnessEnabled;
@@ -43,6 +43,7 @@ export default class BillboardGroupShaderBuffer extends ShaderCodeBuffer {
         this.m_clipEnabled = clipEnabled;
         this.m_hasOffsetColorTex = hasOffsetColorTex;
     }
+    /*
     getClipCalcVSCode(paramIndex: number): string {
         if (this.clipMixEnabled) {
             let code: string =
@@ -75,10 +76,32 @@ v_texUV.xy = (vec2(floor(fract(clipf) * temp.x), floor(clipf)) + a_uvs.xy) * tem
             return code;
         }
     }
+    //*/
     getVSEndCode(paramIndex: number): string {
-        let vtxCode1: string = "";
+        let vtxCode1: string =
+
+`
+#ifdef VOX_USE_CLIP
+    calculateClipUV( fi );
+#else
+    v_texUV = vec4(a_uvs.xy, a_uvs.xy);
+#endif
+
+v_colorMult = u_billParam[1];
+v_colorOffset = u_billParam[2];
+}
+`;
+        return vtxCode1;
+
         if (this.m_clipEnabled) {
-            vtxCode1 = this.getClipCalcVSCode(paramIndex);
+            // vtxCode1 = this.getClipCalcVSCode(paramIndex);
+            //VOX_USE_CLIP
+            vtxCode1 = 
+`
+    #ifdef VOX_USE_CLIP
+        calculateClipUV( fi );
+    #endif
+`;
         }
         else {
             vtxCode1 =
@@ -96,7 +119,7 @@ v_colorOffset = u_billParam[2];
     }
 
     buildFragShd(): void {
-        
+
         let coder = this.m_coder;
         this.m_uniform.addDiffuseMap();
         if (this.m_hasOffsetColorTex) {
@@ -119,19 +142,119 @@ v_colorOffset = u_billParam[2];
         coder.addDefine("FADE_VAR", "v_factor");
         coder.addDefine("FADE_STATUS", "" + this.m_billFS.getBrnAlphaStatus());
         
-        coder.addFragMainCode(``);
     }
     getFragShaderCode(): string {
 
         if(this.pipeline != null || this.m_coderEnabled) {
-            return super.getFragShaderCode();
+            return this.m_coder.buildFragCode();
         }
+/*
+        let ttstr: string =
+`#version 300 es
+
+precision highp float;
+#define VOX_GLSL_ES3 1
+#define VOX_IN in
+#define VOX_Texture2D texture
+#define VOX_TextureCube texture
+#define PI 3.141592653589793
+#define PI2 6.283185307179586
+#define PI_HALF 1.5707963267948966
+#define RECIPROCAL_PI 0.3183098861837907
+#define RECIPROCAL_PI2 0.15915494309189535
+#define EPSILON 1e-6
+
+#define VOX_USE_CLIP 1
+#define VOX_USE_CLIP_MIX 1
+#define FADE_VAR v_factor
+#define FADE_STATUS 10
+#define PLAY_ONCE 1
+#define BILL_PARAM_INDEX 4
+#define VOX_DIFFUSE_MAP u_sampler0
+#define VOX_OFFSET_COLOR_MAP u_sampler1
+#define VOX_USE_2D_MAP 1
+uniform sampler2D u_sampler0;
+uniform sampler2D u_sampler1;
+in vec4 v_colorMult;
+in vec4 v_colorOffset;
+in vec4 v_texUV;
+in vec4 v_factor;
+vec4 localPosition = vec4(0.0,0.0,0.0,1.0);
+vec4 worldPosition = vec4(0.0,0.0,0.0,1.0);
+// view space position
+vec4 viewPosition = vec4(0.0,0.0,0.0,1.0);
+vec3 worldNormal = vec3(0.0, 0.0, 1.0);
+
+vec3 getOffsetColor() {
+    #ifdef VOX_OFFSET_COLOR_MAP
+        #ifdef VOX_USE_RAW_UV
+            vec3 offsetColor = clamp(v_colorOffset.xyz + VOX_Texture2D(VOX_OFFSET_COLOR_MAP, v_uv.xy).xyz,vec3(0.0),vec3(1.0));
+        #else
+            vec3 offsetColor = clamp(v_colorOffset.xyz + VOX_Texture2D(VOX_OFFSET_COLOR_MAP, v_texUV.xy).xyz,vec3(0.0),vec3(1.0));
+        #endif
+    #else
+        vec3 offsetColor = v_colorOffset.xyz;
+    #endif
+    return offsetColor;
+}
+
+void blendBrightnessORAlpha(inout vec4 color, in vec3 offsetColor) {
+
+    #if FADE_STATUS == 11
+        color.rgb = color.rgb * v_colorMult.xyz + color.aaa * offsetColor;
+        color *= FADE_VAR.zzzz;
+    #elif FADE_STATUS == 10
+        color.rgb = min(color.rgb * v_colorMult.xyz + color.rgb * offsetColor, vec3(1.0));
+        color.rgb *= FADE_VAR.zzz;
+    #elif FADE_STATUS == 1
+        color.rgb = color.rgb * v_colorMult.xyz + color.aaa * offsetColor;
+        color.a *= FADE_VAR.z;
+    #else
+        color.rgb = color.rgb * v_colorMult.xyz + offsetColor;
+        color.a *= FADE_VAR.z;
+    #endif
+}
+layout(location = 0) out vec4 FragColor0;
+void main() {
+
+    vec4 color = VOX_Texture2D(VOX_DIFFUSE_MAP, v_texUV.xy);
+    #ifdef VOX_USE_CLIP_MIX
+        color = mix(color, VOX_Texture2D(VOX_DIFFUSE_MAP, v_texUV.zw),v_factor.x);
+    #endif
+
+    vec3 offsetColor = getOffsetColor();
+    
+    blendBrightnessORAlpha( color, offsetColor );
+
+    #ifdef VOX_PREMULTIPLY_ALPHA
+        color.xyz *= color.aaa;
+    #endif
+    FragColor0 = color;
+}
+`;
+return ttstr;
+//*/
         let fragCodeHead: string =
             `#version 300 es
 precision mediump float;
 #define FADE_VAR v_factor
 `;
         if (this.premultiplyAlpha) fragCodeHead += "\n#define VOX_PREMULTIPLY_ALPHA";
+        // for test...................begin
+        console.log("for test, this.m_hasOffsetColorTex, this.m_useRawUVEnabled: ", this.m_hasOffsetColorTex, this.m_useRawUVEnabled);
+        console.log("for test, this.m_billFS.getBrnAlphaStatus(): ", this.m_billFS.getBrnAlphaStatus());
+        if (this.m_hasOffsetColorTex) {
+            if (this.m_useRawUVEnabled) {
+                fragCodeHead += "#define VOX_USE_RAW_UV 1\n";
+            }
+        }
+        if (this.m_clipEnabled) {
+            fragCodeHead += "#define VOX_USE_CLIP 1\n";
+            if(this.clipMixEnabled) {
+                fragCodeHead += "#define VOX_USE_CLIP_MIX 1\n";
+            }
+        }
+        // for test...................end
 
         fragCodeHead +=
             `

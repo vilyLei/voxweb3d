@@ -12,6 +12,10 @@ import Color4 from "../../../vox/material/Color4";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import BillboardGroupShaderBuffer from "../../../vox/material/mcase/BillboardGroupShaderBuffer";
 
+import IShaderCodeObject from "../IShaderCodeObject";
+import { BillboardGroupShaderCode } from "../mcase/glsl/BillboardGroupShaderCode";
+
+
 class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
 
     playOnce: boolean = false;
@@ -24,8 +28,11 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
 
     initialize(texEnabled: boolean): void {
 
+        console.log("BillboardFlowShaderBuffer::initialize()...");
+
+        //this.m_coderEnabled = true;
         super.initialize(texEnabled);
-        this.m_uniqueName = "BillboardFlowShader";
+        this.m_uniqueName = "flow_"+this.m_uniqueName;
         if (this.playOnce && this.direcEnabled) {
             this.m_uniqueName += "_OD";
         } else if (this.playOnce) {
@@ -36,6 +43,7 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
         }
         if (this.clipMixEnabled) this.m_uniqueName += "Mix";
         if (this.premultiplyAlpha) this.m_uniqueName += "PreMAlpha";
+        this.adaptationShaderVersion = !this.m_coderEnabled;
     }
 
     buildVertShd(): void {
@@ -49,31 +57,45 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
         coder.addVertLayout("vec4", "a_nvs2");
 
         let paramTotal: number = this.m_clipEnabled ? 5 : 4;
-
         coder.addVertUniform("vec4", "u_billParam", paramTotal);
 
         if (this.direcEnabled) coder.addDefine("ROTATION_DIRECT");
         if (this.playOnce) coder.addDefine("PLAY_ONCE");
         if (this.spdScaleEnabled) coder.addDefine("SPEED_SCALE");
-        coder.addDefine("BILL_PARAM_INDEX", "4");
+        if (this.m_clipEnabled) coder.addDefine("BILL_PARAM_INDEX", "4");
 
     }
-    buildShader(): void {
+    
+    getShaderCodeObject(): IShaderCodeObject {
+        console.log("BillboardFlowShaderBuffer::getShaderCodeObject()...");
+        console.log("this.m_coderEnabled: ",this.m_coderEnabled,"whole uns: ",this.getUniqueShaderName(), "uns: ",this.m_uniqueName);
         if(this.pipeline != null || this.m_coderEnabled) {
+            return BillboardGroupShaderCode;
+        }
+        return super.getShaderCodeObject();
+    }
+    buildShader(): void {
+        console.log("BillboardFlowShaderBuffer::buildShader()..., this.m_coderEnabled: ",this.m_coderEnabled);
+        if(this.pipeline != null || this.m_coderEnabled) {
+            this.m_coder.autoBuildHeadCodeEnabled = false;
             this.buildFragShd();
             this.buildVertShd();
+            if (this.pipeline == null) {
+                this.m_coder.addShaderObject( BillboardGroupShaderCode );
+            }
         }
     }
     getVertShaderCode(): string {
 
         if(this.pipeline != null || this.m_coderEnabled) {
-            return super.getVertShaderCode();
+            return this.m_coder.buildVertCode();
         }
         let paramTotal: number = this.m_clipEnabled ? 5 : 4;
+        console.log("BillboardFlowShaderBuffer::getVertShaderCode(),clipEnabled: ",this.m_clipEnabled, "paramTotal: ",paramTotal);
+        console.log("this.m_coderEnabled: ",this.m_coderEnabled,"whole uns: ",this.getUniqueShaderName(), "uns: ",this.m_uniqueName);
         let vtxCode0: string =
             `#version 300 es
 precision mediump float;
-#define BILL_PARAM_INDEX 4
 layout(location = 0) in vec4 a_vs;
 layout(location = 1) in vec4 a_vs2;
 layout(location = 2) in vec2 a_uvs;
@@ -85,7 +107,23 @@ uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
 uniform vec4 u_billParam[`+ paramTotal + `];
+
 `;
+        if (this.m_hasOffsetColorTex) {
+            if (this.m_useRawUVEnabled) {
+                vtxCode0 += "#define VOX_USE_RAW_UV 1\n";
+            }
+        }
+        if (this.m_clipEnabled) {
+            vtxCode0 += "#define VOX_USE_CLIP 1\n";
+            vtxCode0 += "#define BILL_PARAM_INDEX 4\n";
+            if(this.clipMixEnabled) {
+                vtxCode0 += "#define VOX_USE_CLIP_MIX 1\n";
+            }
+        }
+        if (this.direcEnabled) vtxCode0 += "#define ROTATION_DIRECT 1\n";
+        if (this.playOnce) vtxCode0 += "#define PLAY_ONCE 1\n";
+        if (this.spdScaleEnabled) vtxCode0 += "#define SPEED_SCALE 1\n";
 
         if (this.m_hasOffsetColorTex && this.m_useRawUVEnabled) {
             vtxCode0 +=
@@ -99,32 +137,98 @@ out vec4 v_colorMult;
 out vec4 v_colorOffset;
 out vec4 v_texUV;
 out vec4 v_factor;
+
+#ifdef VOX_USE_CLIP
+void calculateClipUV(float fi) {
+    
+    #ifdef VOX_USE_CLIP_MIX
+        // calculate clip uv
+        vec4 temp = u_billParam[ BILL_PARAM_INDEX ];//(x:cn,y:total,z:du,w:dv)
+        float clipf0 = floor(fi * temp.y);
+        float clipf1 = min(clipf0 + 1.0, temp.y - 1.0);
+        clipf0 /= temp.x;
+        // vec2(floor(fract(clipf0) * temp.x), floor(clipf0)) -> vec2(cn u,rn v)
+        v_texUV.xy = (vec2(floor(fract(clipf0) * temp.x), floor(clipf0)) + a_uvs.xy) * temp.zw;
+
+        v_factor.x = fract(fi * temp.y);
+
+        clipf1 /= temp.x;
+        v_texUV.zw = (vec2(floor(fract(clipf1) * temp.x), floor(clipf1)) + a_uvs.xy) * temp.zw;
+    #else
+        // calculate clip uv
+        vec4 temp = u_billParam[ BILL_PARAM_INDEX ];//(x:cn,y:total,z:du,w:dv)
+        float clipf = floor(fi * temp.y);
+        clipf /= temp.x;
+        // vec2(floor(fract(clipf) * temp.x), floor(clipf)) -> vec2(cn u,rn v)
+        v_texUV.xy = (vec2(floor(fract(clipf) * temp.x), floor(clipf)) + a_uvs.xy) * temp.zw;
+    #endif
+}
+#endif
 `;
         let vtxCode01: string = this.direcEnabled ? MathShaderCode.GetRadianByXY_Func() : "";
         let vtxCode02: string =
             `
 void main()
 {
-vec4 temp = u_billParam[0];
-float time = max(a_nvs.w * temp.z - a_uvs2.w, 0.0);    
-`;
-        let vtxCode1: string = "";
-        if (this.playOnce) {
-            vtxCode1 =
-                `
-time = min(time, a_uvs2.x);
-`;
-        }
+    vec4 temp = u_billParam[0];
+    float time = max(a_nvs.w * temp.z - a_uvs2.w, 0.0);
 
-        let vtxCode2: string =
-            `
-float kf = fract(time/a_uvs2.x);
-float fi = kf;
-time = kf * a_uvs2.x;
-kf = min(kf/a_uvs2.y,1.0) * (1.0 - max((kf - a_uvs2.z)/(1.0 - a_uvs2.z),0.0));
-// scale
-vec2 vtx = a_vs.xy * temp.xy * vec2(a_vs.z + kf * a_vs.w);
+    #ifdef PLAY_ONCE
+        time = min(time, a_uvs2.x);
+    #endif
+
+    float kf = fract(time/a_uvs2.x);
+    float fi = kf;
+    time = kf * a_uvs2.x;
+    kf = min(kf/a_uvs2.y,1.0) * (1.0 - max((kf - a_uvs2.z)/(1.0 - a_uvs2.z),0.0));
+    // scale
+    vec2 vtx = a_vs.xy * temp.xy * vec2(a_vs.z + kf * a_vs.w);
+
+    vec3 timeV = vec3(time);
+    vec3 acc3 = u_billParam[3].xyz + a_nvs2.xyz;
+    #ifdef ROTATION_DIRECT
+        #ifdef SPEED_SCALE
+            float v0scale = clamp(length(a_nvs.xyz + acc3 * timeV)/u_billParam[1].w,1.0,u_billParam[3].w);
+            vtx *= vec2(v0scale, 1.0);
+        #endif
+
+        vec3 pv0 = a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV;
+        timeV += biasV3;
+        vec3 pv1 = a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV;
+
+        mat4 voMat = u_viewMat * u_objMat;
+        vec4 pos = voMat * vec4(pv0,1.0);
+        vec4 pos1 = voMat * vec4(pv1,1.0);
+        float rad = getRadianByXY(pos1.x - pos.x, pos1.y - pos.y);
+        float cosv = cos(rad);
+        float sinv = sin(rad);
+
+        // rotate
+        vtx = vec2(vtx.x * cosv - vtx.y * sinv, vtx.x * sinv + vtx.y * cosv);
+    #else
+        vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV,1.0);
+    #endif
+    
+    pos.xy += vtx.xy;
+    gl_Position =  u_projMat * pos;
+    v_factor = vec4(0.0,0.0, kf * a_vs2.w,fi);
+
+    #ifdef VOX_USE_RAW_UV
+        v_uv = vec4(a_uvs.xy,0.0,0.0);
+    #endif
+    #ifdef VOX_USE_CLIP
+        calculateClipUV( fi );
+    #else
+        v_texUV = vec4(a_uvs.xy, a_uvs.xy);
+    #endif
+
+    v_colorMult = u_billParam[1];
+    v_colorOffset = u_billParam[2];
+}
 `;
+
+
+/*
         let vtxCode3: string =
             `
 vec3 timeV = vec3(time);
@@ -161,20 +265,15 @@ vtx = vec2(vtx.x * cosv - vtx.y * sinv, vtx.x * sinv + vtx.y * cosv);
 vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV,1.0);
 `;
         }
+*/
 
-        let vtxCode4: string =
-            `
-pos.xy += vtx.xy;
-gl_Position =  u_projMat * pos;
-v_factor = vec4(0.0,0.0, kf * a_vs2.w,fi);
-`;
-        if (this.m_hasOffsetColorTex && this.m_useRawUVEnabled) {
-            vtxCode4 +=
-                `
-v_uv = vec4(a_uvs.xy,0.0,0.0);
-`;
-        }
-        return vtxCode0 + vtxCode01 + vtxCode02 + vtxCode1 + vtxCode2 + vtxCode3 + vtxCode4 + this.getVSEndCode(4);
+//         if (this.m_hasOffsetColorTex && this.m_useRawUVEnabled) {
+//             vtxCode4 +=
+//                 `
+// v_uv = vec4(a_uvs.xy,0.0,0.0);
+// `;
+//         }
+        return vtxCode0 + vtxCode01 + vtxCode02;// + this.getVSEndCode(4);
     }
     toString(): string {
         return "[BillboardFlowShaderBuffer()]";
@@ -229,7 +328,7 @@ export default class BillboardFlowMaterial extends MaterialBase {
         this.m_clipMixEnabled = clipMixEnabled;
         this.m_spdScaleEnabled = spdScaleEnabled;
     }
-    getCodeBuf(): ShaderCodeBuffer {
+    protected buildBuf(): void {
         let buf: BillboardFlowShaderBuffer = BillboardFlowShaderBuffer.GetInstance();
         buf.playOnce = this.m_playOnce;
         buf.direcEnabled = this.m_direcEnabled;
@@ -237,7 +336,18 @@ export default class BillboardFlowMaterial extends MaterialBase {
         buf.spdScaleEnabled = this.m_spdScaleEnabled;
         buf.premultiplyAlpha = this.premultiplyAlpha;
         buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled, this.m_clipEnabled, this.getTextureTotal() > 1);
-        return buf;
+    }
+
+    getCodeBuf(): ShaderCodeBuffer {
+        return BillboardFlowShaderBuffer.GetInstance();
+        // let buf: BillboardFlowShaderBuffer = BillboardFlowShaderBuffer.GetInstance();
+        // buf.playOnce = this.m_playOnce;
+        // buf.direcEnabled = this.m_direcEnabled;
+        // buf.clipMixEnabled = this.m_clipMixEnabled;
+        // buf.spdScaleEnabled = this.m_spdScaleEnabled;
+        // buf.premultiplyAlpha = this.premultiplyAlpha;
+        // buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled, this.m_clipEnabled, this.getTextureTotal() > 1);
+        // return buf;
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
