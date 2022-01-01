@@ -13,6 +13,7 @@ import MaterialBase from "../../../vox/material/MaterialBase";
 import BillboardGroupShaderBuffer from "../../../vox/material/mcase/BillboardGroupShaderBuffer";
 
 class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
+
     playOnce: boolean = false;
     direcEnabled: boolean = false;
     // 因为速度增加，在x轴方向缩放(拉长或者缩短)
@@ -20,6 +21,7 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
     constructor() {
         super();
     }
+
     initialize(texEnabled: boolean): void {
 
         super.initialize(texEnabled);
@@ -36,7 +38,7 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
         if (this.premultiplyAlpha) this.m_uniqueName += "PreMAlpha";
     }
 
-    buildFragShd(): void {
+    buildVertShd(): void {
 
         let coder = this.m_coder;
         coder.addVertLayout("vec4", "a_vs");
@@ -56,7 +58,17 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
         coder.addDefine("BILL_PARAM_INDEX", "4");
 
     }
+    buildShader(): void {
+        if(this.pipeline != null || this.m_coderEnabled) {
+            this.buildFragShd();
+            this.buildVertShd();
+        }
+    }
     getVertShaderCode(): string {
+
+        if(this.pipeline != null || this.m_coderEnabled) {
+            return super.getVertShaderCode();
+        }
         let paramTotal: number = this.m_clipEnabled ? 5 : 4;
         let vtxCode0: string =
             `#version 300 es

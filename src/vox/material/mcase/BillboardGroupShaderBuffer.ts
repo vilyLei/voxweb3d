@@ -25,6 +25,8 @@ export default class BillboardGroupShaderBuffer extends ShaderCodeBuffer {
     protected m_hasOffsetColorTex: boolean = false;
     protected m_useRawUVEnabled: boolean = false
     protected m_brightnessEnabled: boolean = false;
+    
+    protected m_coderEnabled: boolean = false;
     protected m_uniqueName: string = "";
     clipMixEnabled: boolean = false;
 
@@ -94,6 +96,7 @@ v_colorOffset = u_billParam[2];
     }
 
     buildFragShd(): void {
+        
         let coder = this.m_coder;
         this.m_uniform.addDiffuseMap();
         if (this.m_hasOffsetColorTex) {
@@ -119,7 +122,8 @@ v_colorOffset = u_billParam[2];
         coder.addFragMainCode(``);
     }
     getFragShaderCode(): string {
-        if(this.pipeline != null) {
+
+        if(this.pipeline != null || this.m_coderEnabled) {
             return super.getFragShaderCode();
         }
         let fragCodeHead: string =
