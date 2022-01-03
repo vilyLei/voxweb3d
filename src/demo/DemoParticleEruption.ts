@@ -187,12 +187,11 @@ export class DemoParticleEruption {
                 this.m_eff0Pool = new EruptionEffectPool();
                 this.m_eff0Pool.materialPipeline = this.m_materialCtx.pipeline;
                 this.m_eff0Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
-                this.m_eff0Pool.solidPremultiplyAlpha = false;
+                this.m_eff0Pool.solidPremultiplyAlpha = true;
                 this.m_eff0Pool.initialize(this.m_rscene, 3, 60, 50, texFlame, texSolid, true);
                 //  this.m_eff0Pool.createEffect(null);
             }
-            // if (this.m_eff1Pool == null) {
-    
+            // if (this.m_eff1Pool == null) {    
             //     let texture: TextureProxy = this.m_textures[9];
             //     let colorTexture: TextureProxy = this.m_textures[10];
             //     this.m_eff1Pool = new EruptionSmokePool();

@@ -46,11 +46,11 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
         this.m_uniqueName += this.brightnessEnabled ? "Brn": "Alp";
         this.adaptationShaderVersion = !this.m_coderEnabled;
     }
-    //flow_BillboardGroupShader_ODMixAlp_1Mix
+    
     buildVertShd(): void {
 
         let coder = this.m_coder;
-        console.log("TTTT this.brightnessEnabled: ",this.brightnessEnabled);
+        console.log("TTTT brightnessEnabled: ",this.brightnessEnabled, "premultiplyAlpha: ",this.premultiplyAlpha);
         if(this.brightnessEnabled) {
             let fogEnabled: boolean = this.fogEnabled;
             if(this.pipeline != null) {

@@ -7,7 +7,7 @@
             return color;
         }
     #endif
-    void useFog(inout vec3 color) {
+    void useFog(inout vec4 color) {
         vec3 fogColor = u_envLightParams[2].xyz;
         #ifdef VOX_FOG_COLOR_MAP
             fogColor *= fogEnvColor;
@@ -21,9 +21,12 @@
             float fogFactor = smoothstep( fogNear, fogFar, v_fogDepth );
         #endif
         #ifdef VOX_USE_BRIGHTNESS_OVERLAY_COLOR
-            color = mix( color.rgb, fogColor, fogFactor ) * length(color.rgb) * (1.0 - fogFactor);
+            color.xyz = mix( color.rgb, fogColor, fogFactor ) * length(color.rgb) * (1.0 - fogFactor);
         #else
-            color = mix( color.rgb, fogColor, fogFactor );
+            color.xyz = mix( color.rgb, fogColor, fogFactor );
+            #ifdef VOX_PREMULTIPLY_ALPHA
+                color.xyz *= color.w;
+            #endif
         #endif
     }
 #endif

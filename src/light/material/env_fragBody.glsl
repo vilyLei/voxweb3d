@@ -3,5 +3,5 @@
 #endif
 
 #ifdef VOX_USE_FOG
-    useFog( FragColor0.xyz );
+    useFog( FragColor0 );
 #endif 
