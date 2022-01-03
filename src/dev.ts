@@ -149,7 +149,7 @@
 
 //  import {DemoLockDrawEntity as Demo} from "./demo/DemoLockDrawEntity";
 
-import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
+//  import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 
 //  import {DemoBaseRenderer as Demo} from "./demo/DemoBaseRenderer";
 
@@ -357,7 +357,7 @@ import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 
 //  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
-//  import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
+import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
 
 //  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 

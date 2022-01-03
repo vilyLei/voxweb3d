@@ -34,6 +34,7 @@ import { ILightEntity } from "./light/ILightEntity";
 import { RotateYPointLightEntity, FloatYPointLightEntity, PointLightEntity } from "./light/PointLightEntity";
 import DivLog from "../vox/utils/DivLog";
 import { VertUniformComp } from "../vox/material/component/VertUniformComp";
+import BillboardLine3DEntity from "../vox/entity/BillboardLine3DEntity";
 
 export class DemoMultiLambertLights implements IShaderLibListener {
 
@@ -149,6 +150,10 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     }
     private m_pos01: Vector3D = new Vector3D(-150.0, 100.0, -170.0);
     private m_pos02: Vector3D = new Vector3D(150, 0.0, 150);
+    private m_billLine: BillboardLine3DEntity = null;
+    private m_beginPos: Vector3D = new Vector3D(0.0, 0.0, 0.0);
+    private m_endPos: Vector3D = new Vector3D(0.0, 500.0, -100.0);
+    private m_uvPos: Vector3D = new Vector3D(0.3, 0.0);
     private initScene(): void {
 
         let color: Color4 = new Color4(1.0, 1.0, 0.0);
@@ -163,7 +168,23 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         billboard.setXYZ(200,300,200);
         //billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
         this.m_engine.rscene.addEntity(billboard, 3);
-
+        
+        
+        let tex4: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/flare_core_01.jpg");
+        let billLine: BillboardLine3DEntity = new BillboardLine3DEntity();
+        //lightLine.showDoubleFace();
+        billLine.toBrightnessBlend();
+        billLine.initialize([tex4]);
+        billLine.setBeginAndEndPos(this.m_beginPos, this.m_endPos);
+        billLine.setLineWidth(50.0);
+        billLine.setRGB3f(0.1, 0.1, 0.1);
+        //billLine.setUVOffset(0.0,0.5);
+        billLine.setUVOffset(this.m_uvPos.x, this.m_uvPos.y);
+        billLine.setFadeRange(0.3, 0.7);
+        billLine.setRGBOffset3f(Math.random() * 1.5 + 0.1, Math.random() * 1.5 + 0.1, Math.random() * 1.5 + 0.1);
+        this.m_engine.rscene.addEntity(billLine, 3);
+        //billLine.setFadeFactor(0.5);
+        this.m_billLine = billLine;
         ///*
         // let box: Box3DEntity = new Box3DEntity();
         // box.pipeTypes = [MaterialPipeType.FOG_EXP2];
@@ -339,7 +360,19 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
         this.m_statusDisp.render();
     }
+    private m_time: number = 1.1;
     run(): void {
+        
+        if (this.m_billLine != null) {
+            
+            this.m_beginPos.x = 200.0 * Math.sin(this.m_time);            
+            this.m_time += 0.02;
+            this.m_uvPos.x += 0.01;
+            this.m_uvPos.y += 0.01;            
+            this.m_billLine.setUVOffset(this.m_uvPos.x, this.m_uvPos.y);            
+            this.m_billLine.setBeginPos(this.m_beginPos);
+            
+        }
         for (let i: number = 0; i < this.m_lightEntities.length; ++i) {
             if (this.m_lightEntities[i] != null) {
                 this.m_lightEntities[i].run();
