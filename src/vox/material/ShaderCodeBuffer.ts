@@ -68,6 +68,7 @@ class ShaderCodeBuffer {
         this.lightEnabled = false;
         this.fogEnabled = false;
         this.envAmbientLightEnabled = false;
+        this.brightnessOverlayEnabeld = false;
         this.keysString = "";
     }
     clear(): void {

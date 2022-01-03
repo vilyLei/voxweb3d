@@ -130,7 +130,6 @@ export class DemoParticleEruption {
             this.m_rscene.setClearRGBColor3f(0.1, 0.1, 0.1);
             this.initTex();
             this.initMaterialCtx();
-
             this.update();
         }
     }
@@ -146,7 +145,7 @@ export class DemoParticleEruption {
     private initScene(): void {
 
         let textures = this.m_textures;
-        ///*
+        /*
         let plane: Plane3DEntity = new Plane3DEntity();
         plane.pipeTypes = [MaterialPipeType.FOG_EXP2];
         plane.setMaterialPipeline(this.m_materialCtx.pipeline);
@@ -163,7 +162,7 @@ export class DemoParticleEruption {
         //*/
         this.initEnvBox();
         
-        this.initializeEffect();
+        //this.initializeEffect();
         //this.initBillGroup();
 
     }
@@ -177,26 +176,32 @@ export class DemoParticleEruption {
         envBox.initializeCube(4000.0, [this.m_materialCtx.getTextureByUrl("static/assets/box_wood01.jpg")]);
         this.m_rscene.addEntity(envBox, 1);
     }
+    
+    private m_effInited: boolean = true;
     private initializeEffect(): void {
-        // if (this.m_eff0Pool == null) {
-        //     let texFlame: TextureProxy = this.m_textures[8];
-        //     let texSolid: TextureProxy = this.m_textures[3];
-        //     this.m_eff0Pool = new EruptionEffectPool();
-        //     // this.m_eff0Pool.materialPipeline = this.m_materialCtx.pipeline;
-        //     // this.m_eff0Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
-        //     this.m_eff0Pool.solidPremultiplyAlpha = true;
-        //     this.m_eff0Pool.initialize(this.m_rscene, 3, 60, 50, texFlame, texSolid, true);
-        //     //  this.m_eff0Pool.createEffect(null);
-        // }
-        if (this.m_eff1Pool == null) {
+        if(this.m_effInited) {
 
-            let texture: TextureProxy = this.m_textures[9];
-            let colorTexture: TextureProxy = this.m_textures[10];
-            this.m_eff1Pool = new EruptionSmokePool();
-            this.m_eff1Pool.materialPipeline = this.m_materialCtx.pipeline;
-            this.m_eff1Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
-            this.m_eff1Pool.initialize(this.m_rscene, 3, 10, texture, colorTexture, true);
-            //  this.m_eff1Pool.createEffect(null);
+            if (this.m_eff0Pool == null) {
+                let texFlame: TextureProxy = this.m_textures[8];
+                let texSolid: TextureProxy = this.m_textures[3];
+                this.m_eff0Pool = new EruptionEffectPool();
+                this.m_eff0Pool.materialPipeline = this.m_materialCtx.pipeline;
+                this.m_eff0Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
+                this.m_eff0Pool.solidPremultiplyAlpha = false;
+                this.m_eff0Pool.initialize(this.m_rscene, 3, 60, 50, texFlame, texSolid, true);
+                //  this.m_eff0Pool.createEffect(null);
+            }
+            // if (this.m_eff1Pool == null) {
+    
+            //     let texture: TextureProxy = this.m_textures[9];
+            //     let colorTexture: TextureProxy = this.m_textures[10];
+            //     this.m_eff1Pool = new EruptionSmokePool();
+            //     this.m_eff1Pool.materialPipeline = this.m_materialCtx.pipeline;
+            //     this.m_eff1Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
+            //     this.m_eff1Pool.initialize(this.m_rscene, 3, 10, texture, colorTexture, true);
+            //     //  this.m_eff1Pool.createEffect(null);
+            // }
+            this.m_effInited = false;
         }
     }
     private getUVParamsByRNCN(rn: number, cn: number): number[][] {
@@ -240,11 +245,13 @@ export class DemoParticleEruption {
     mouseDownListener(evt: any): void {
         //console.log("mouseDownListener call, this.m_rscene: "+this.m_rscene.toString());
         let viewRay = this.m_interaction.viewRay;
+
+        this.initializeEffect();
         if (this.m_eff0Pool != null || this.m_eff1Pool != null) {
             viewRay.intersectPlane();
 
-            // //this.m_eff0Pool.createEffect(this.m_viewRay.position);
-            this.m_eff1Pool.createEffect(viewRay.position);
+            this.m_eff0Pool.createEffect(viewRay.position);
+            // this.m_eff1Pool.createEffect(viewRay.position);
             return;
 
             if (Math.random() > 0.5) {
@@ -255,7 +262,6 @@ export class DemoParticleEruption {
             }
         }
     }
-    private m_effInited: boolean = true;
     private m_timeoutId: any = -1;
     private update(): void {
 
