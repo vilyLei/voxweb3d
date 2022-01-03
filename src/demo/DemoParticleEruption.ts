@@ -24,6 +24,7 @@ import Billboard3DGroupEntity from "../vox/entity/Billboard3DGroupEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
 import { UserInteraction } from "../vox/engine/UserInteraction";
+import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 
 export class DemoParticleEruption {
     constructor() { }
@@ -93,8 +94,9 @@ export class DemoParticleEruption {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
             let rparam: RendererParam = new RendererParam();
-            //rparam.setAttriAlpha(false);
-            rparam.setMatrix4AllocateSize(4096);
+            rparam.setAttriStencil(true);
+            rparam.setAttriAntialias(true);
+            rparam.setAttriAlpha(false);
             rparam.setCamProject(45.0, 10.0, 8000.0);
             rparam.setCamPosition(1500.0, 1500.0, 1500.0);
 
@@ -144,7 +146,7 @@ export class DemoParticleEruption {
     private initScene(): void {
 
         let textures = this.m_textures;
-        ///*
+        /*
         let plane: Plane3DEntity = new Plane3DEntity();
         plane.pipeTypes = [MaterialPipeType.FOG_EXP2];
         plane.setMaterialPipeline(this.m_materialCtx.pipeline);
@@ -152,17 +154,17 @@ export class DemoParticleEruption {
         plane.setXYZ(0.0, -80.0, 0.0);
         this.m_rscene.addEntity(plane);
 
-        plane = new Plane3DEntity();
-        plane.pipeTypes = [MaterialPipeType.FOG_EXP2];
-        plane.setMaterialPipeline(this.m_materialCtx.pipeline);
-        plane.initializeXOZ(-800.0, -800.0, 1600.0, 1600.0, [textures[0]]);
-        plane.setXYZ(0.0, -280.0, 0.0);
-        this.m_rscene.addEntity(plane);
+        // plane = new Plane3DEntity();
+        // plane.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        // plane.setMaterialPipeline(this.m_materialCtx.pipeline);
+        // plane.initializeXOZ(-800.0, -800.0, 1600.0, 1600.0, [textures[0]]);
+        // plane.setXYZ(0.0, -280.0, 0.0);
+        // this.m_rscene.addEntity(plane);
         //*/
         this.initEnvBox();
         
         //  this.initializeEffect();
-        // this.initBillGroup();
+        this.initBillGroup();
 
     }
     
@@ -209,15 +211,29 @@ export class DemoParticleEruption {
         return params;
     }
     private initBillGroup(): void {
-
+        
+        /*
+        let billboard: Billboard3DEntity = new Billboard3DEntity();
+        billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        billboard.setMaterialPipeline(this.m_materialCtx.pipeline);
+        billboard.toBrightnessBlend();
+        //billboard.toTransparentBlend();
+        //billboard.initialize(120.0, 120.0, [this.m_materialCtx.getTextureByUrl("static/assets/guangyun_40.png")]);
+        billboard.initialize(120.0, 120.0, [this.m_materialCtx.getTextureByUrl("static/assets/xulie_02_07.png")]);
+        billboard.setXYZ(200,300,200);
+        //billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
+        this.m_rscene.addEntity(billboard, 2);
+        return;
+        //*/
         let size: number = 100;
         let params: number[][] = this.getUVParamsByRNCN(4, 4);        
-        let tex: TextureProxy = this.getImageTexByUrl("static/assets/testTex.png");
-        let total: number = 80;
+        let tex: TextureProxy = this.getImageTexByUrl("static/assets/xulie_02_07.png");
+        let total: number = 150;
         let billGroup: Billboard3DGroupEntity = new Billboard3DGroupEntity();
         billGroup.pipeTypes = [MaterialPipeType.FOG_EXP2];
         billGroup.setMaterialPipeline(this.m_materialCtx.pipeline);
         billGroup.toBrightnessBlend();
+        //billGroup.toTransparentBlend();
         billGroup.createGroup(total);
         for (let i: number = 0; i < total; ++i) {
             size = Math.random() * Math.random() * Math.random() * 180 + 10.0;

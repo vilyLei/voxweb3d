@@ -63,9 +63,9 @@ class BillGroupShaderBuffer extends ShaderCodeBuffer {
 `
     vec4 temp = u_billParam[0];
     vec2 vtx = vec2(a_vs.x * temp.x, a_vs.y * temp.y);
-    vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz,1.0);
-    pos.xy += vtx.xy;
-    gl_Position =  u_projMat * pos;
+    viewPosition = u_viewMat * u_objMat * vec4(a_vs2.xyz,1.0);
+    viewPosition.xy += vtx.xy;
+    gl_Position =  u_projMat * viewPosition;
     v_uv = a_uvs;
     v_colorMult = u_billParam[1];
     v_colorOffset = u_billParam[2];
