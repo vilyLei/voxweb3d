@@ -46,11 +46,11 @@ class SceneModule {
             this.m_roleBuilder.fogEnabled = this.fogEnabled;
             this.m_roleBuilder.terrain = this.m_terrain;
             this.m_roleBuilder.campModule = this.m_campModule;
-            this.m_roleBuilder.initialize(rscene, materialCtx);
-
+            this.m_roleBuilder.initTexture( this.m_materialCtx );
             this.init();
         }
     }
+    
     private init(): void {
 
         let axis: Axis3DEntity = new Axis3DEntity();
@@ -61,9 +61,14 @@ class SceneModule {
         axis.setMaterialPipeline( this.m_materialCtx.pipeline );
         axis.pipeTypes = [ MaterialPipeType.FOG_EXP2 ];
         axis.initializeCross(200.0);
-        
+
         this.m_rscene.addEntity(axis);
-        let total: number = 5;
+    }
+    private initScene(): void {
+
+        this.m_roleBuilder.initialize(this.m_rscene, this.m_materialCtx);
+
+        let total: number = 50;
         this.m_roleBuilder.createLimbRoles(total);
         this.m_roleBuilder.createTrackWheelRoles(total);
         this.m_roleBuilder.createSillyRoles(total);
@@ -87,10 +92,20 @@ class SceneModule {
         envBox.initializeCube(4000.0);
         this.m_rscene.addEntity(envBox, 4);
     }
-
+    private m_loaded: boolean = false;
+    statusInfo: string = "(加载资源...)";
     run(): void {
-        this.m_campModule.run();
-        RunnableModule.Run();
+
+        if(this.m_loaded) {
+            this.m_campModule.run();
+            RunnableModule.Run();
+        }
+        else if(this.m_materialCtx.isTextureLoadedAll()) {
+
+            this.m_loaded = true;
+            this.statusInfo = "";
+            this.initScene();
+        }
     }
 }
 export { SceneModule };

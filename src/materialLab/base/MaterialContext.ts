@@ -70,6 +70,10 @@ class MaterialContext {
             MaterialContext.ShaderLib.setListener(listener);
         }
     }
+    
+    isTextureLoadedAll(): boolean {
+        return this.m_texLoader.isLoadedAll();
+    }
     getTextureByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let tex: TextureProxy = null;
         let suffix: string = purl.slice(purl.lastIndexOf(".") + 1);

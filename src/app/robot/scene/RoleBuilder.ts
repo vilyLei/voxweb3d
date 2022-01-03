@@ -20,6 +20,7 @@ class RoleBuilder {
     constructor() { }
 
     private m_rscene: RendererScene = null;
+    private m_texList: TextureProxy[] = null;
 
     private m_materialCtx: CommonMaterialContext;
     private m_flrFactory: FourLimbRoleFactory = new FourLimbRoleFactory();
@@ -30,8 +31,6 @@ class RoleBuilder {
     fogEnabled: boolean = false;
     campModule: CampMoudle;
     terrain: TerrainModule;
-
-    private m_texList: TextureProxy[] = null;
     initialize(rscene: RendererScene, materialCtx: CommonMaterialContext): void {
         
         if (this.m_rscene == null) {
@@ -40,28 +39,30 @@ class RoleBuilder {
             this.materialBuilder.envAmbientLightEnabled = this.envAmbientLightEnabled;
             this.materialBuilder.fogEnabled = this.fogEnabled;
             this.materialBuilder.initialize( materialCtx );
-            this.initTexture();
+
+            this.initTexture(materialCtx);
+            
+            this.m_flrFactory.setMaterialBuilder( this.materialBuilder );
+            this.m_twrFactory.setMaterialBuilder( this.materialBuilder );
+            this.m_flrFactory.initialize(this.m_rscene, 0, this.campModule.redCamp, this.terrain.getTerrainData());
+            this.m_twrFactory.initialize(this.m_rscene, 0, this.campModule.redCamp, this.terrain.getTerrainData(), 70.0);
         }
     }
 
-    private initTexture(): void {
-        
-        this.m_texList = [
-
-            this.m_materialCtx.getTextureByUrl("static/assets/wood_01.jpg"),
-            this.m_materialCtx.getTextureByUrl("static/assets/yanj.jpg"),
-            this.m_materialCtx.getTextureByUrl("static/assets/skin_01.jpg"),
-            this.m_materialCtx.getTextureByUrl("static/assets/default.jpg"),
-            this.m_materialCtx.getTextureByUrl("static/assets/warter_01.jpg"),
-            this.m_materialCtx.getTextureByUrl("static/assets/metal_02.jpg"),
-            this.m_materialCtx.getTextureByUrl("static/assets/image_003.jpg"),
-            this.m_materialCtx.getTextureByUrl("static/assets/metal_08.jpg")
-        ]
-        
-        this.m_flrFactory.setMaterialBuilder( this.materialBuilder );
-        this.m_twrFactory.setMaterialBuilder( this.materialBuilder );
-        this.m_flrFactory.initialize(this.m_rscene, 0, this.campModule.redCamp, this.terrain.getTerrainData());
-        this.m_twrFactory.initialize(this.m_rscene, 0, this.campModule.redCamp, this.terrain.getTerrainData(), 70.0);
+    initTexture(materialCtx: CommonMaterialContext): void {
+        if(this.m_texList == null) {
+            this.m_texList = [    
+                materialCtx.getTextureByUrl("static/assets/wood_01.jpg"),
+                materialCtx.getTextureByUrl("static/assets/yanj.jpg"),
+                materialCtx.getTextureByUrl("static/assets/skin_01.jpg"),
+                materialCtx.getTextureByUrl("static/assets/default.jpg"),
+                materialCtx.getTextureByUrl("static/assets/warter_01.jpg"),
+                materialCtx.getTextureByUrl("static/assets/metal_02.jpg"),
+                materialCtx.getTextureByUrl("static/assets/image_003.jpg"),
+                materialCtx.getTextureByUrl("static/assets/metal_08.jpg")
+            ];
+            
+        }
     }
     /*
     private init(): void {
