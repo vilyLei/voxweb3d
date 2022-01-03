@@ -14,6 +14,7 @@ import BillboardGroupShaderBuffer from "../../../vox/material/mcase/BillboardGro
 
 import IShaderCodeObject from "../IShaderCodeObject";
 import { BillboardGroupShaderCode } from "../mcase/glsl/BillboardGroupShaderCode";
+import { MaterialPipeType } from "../pipeline/MaterialPipeType";
 
 
 class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
@@ -22,6 +23,7 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
     direcEnabled: boolean = false;
     // 因为速度增加，在x轴方向缩放(拉长或者缩短)
     spdScaleEnabled: boolean = false;
+    brightnessEnabled: boolean = false;
     constructor() {
         super();
     }
@@ -41,12 +43,23 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
         }
         if (this.clipMixEnabled) this.m_uniqueName += "Mix";
         if (this.premultiplyAlpha) this.m_uniqueName += "PreMAlpha";
+        if (this.brightnessEnabled) this.m_uniqueName += "Brn";
         this.adaptationShaderVersion = !this.m_coderEnabled;
     }
 
     buildVertShd(): void {
 
         let coder = this.m_coder;
+        
+        if(this.brightnessEnabled) {
+            let fogEnabled: boolean = this.fogEnabled;
+            if(this.pipeline != null) {
+                fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG_EXP2);
+                fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG);
+            }
+            this.brightnessOverlayEnabeld = fogEnabled;
+        }
+
         coder.addVertLayout("vec4", "a_vs");
         coder.addVertLayout("vec2", "a_uvs");
         coder.addVertLayout("vec4", "a_nvs");
@@ -146,6 +159,7 @@ export default class BillboardFlowMaterial extends MaterialBase {
         buf.clipMixEnabled = this.m_clipMixEnabled;
         buf.spdScaleEnabled = this.m_spdScaleEnabled;
         buf.premultiplyAlpha = this.premultiplyAlpha;
+        buf.brightnessEnabled = this.m_brightnessEnabled;
         buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled, this.m_clipEnabled, this.getTextureTotal() > 1);
     }
 
