@@ -334,15 +334,15 @@ export class DemoParticleGroup {
         return params;
     }
     private initBillGroup(textures: TextureProxy[]): void {
-        
+
         let size: number = 100;
-        let params: number[][] = this.getUVParams(4, 4);
+        let params: number[][] = this.getUVParams(2, 2);
         //console.log("XXXX params: ",params);
-        //let tex: TextureProxy = textures[textures.length - 1];
-        let tex: TextureProxy = this.getImageTexByUrl("static/assets/particle/xuelie/xulie_00046.png");
-        //let tex: TextureProxy = this.getImageTexByUrl("static/assets/xulie_00046.jpg");
-        let total: number = 800;
+        let tex: TextureProxy = textures[textures.length - 1];
+        //let tex: TextureProxy = this.getImageTexByUrl("static/assets/particle/xuelie/xulie_00046.png");
+        let total: number = 80;
         let billGroup: Billboard3DGroupEntity = new Billboard3DGroupEntity();
+        billGroup.toBrightnessBlend();
         billGroup.createGroup(total);
         for (let i: number = 0; i < total; ++i) {
             size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
@@ -356,9 +356,7 @@ export class DemoParticleGroup {
         billGroup.initialize([tex]);
         this.m_rscene.addEntity(billGroup);
     }
-    private m_charTex: TextureProxy = null;
-    private m_ripple: TextureProxy = null;
-
+    
     private m_timeoutId: any = -1;
 
     mouseDownListener(evt: any): void {

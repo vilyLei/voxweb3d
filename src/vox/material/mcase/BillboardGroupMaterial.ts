@@ -11,16 +11,68 @@ import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import Color4 from "../../../vox/material/Color4";
 import MaterialBase from "../../../vox/material/MaterialBase";
+import { MaterialPipeType } from "../pipeline/MaterialPipeType";
+import BillboardFSBase from "../../../vox/material/mcase/BillboardFSBase";
 
 class BillGroupShaderBuffer extends ShaderCodeBuffer {
+    private m_uniqueName: string = "";
+    billFS: BillboardFSBase = new BillboardFSBase();
+    brightnessEnabled: boolean = false;
     constructor() {
         super();
     }
-    private m_uniqueName: string = "";
-    initialize(texEnabled: boolean): void {        
+    initialize(texEnabled: boolean): void {
         super.initialize( texEnabled );
         this.m_uniqueName = "BillGroupShader";
     }
+    buildShader(): void {
+        
+        let coder = this.m_coder;
+        if(this.brightnessEnabled) {
+            let fogEnabled: boolean = this.fogEnabled;
+            if(this.pipeline != null) {
+                fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG_EXP2);
+                fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG);
+            }
+            this.brightnessOverlayEnabeld = fogEnabled;
+        }
+        this.m_uniform.addDiffuseMap();
+        coder.addVertLayout("vec2","a_vs");
+        coder.addVertLayout("vec2","a_uvs");
+        coder.addVertLayout("vec3","a_vs2");
+
+        coder.addVarying("vec4","v_colorMult");
+        coder.addVarying("vec4","v_colorOffset");
+        coder.addVarying("vec2","v_uv");
+        coder.addVertUniform("vec4","u_billParam",3);
+        coder.addDefine("FADE_VAR","fv4");
+
+        let fragCode0: string =
+`
+    vec4 color = VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv);
+    vec3 offsetColor = v_colorOffset.rgb;
+    vec4 fv4 = v_colorMult.wwww;
+`;
+        let fadeCode: string = this.billFS.getBrnAndAlphaCode();
+        let fragCode2: string =
+            `
+    FragColor0 = color;
+`;
+        coder.addFragMainCode(fragCode0 + fadeCode + fragCode2);
+        coder.addVertMainCode(
+`
+    vec4 temp = u_billParam[0];
+    vec2 vtx = vec2(a_vs.x * temp.x, a_vs.y * temp.y);
+    vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz,1.0);
+    pos.xy += vtx.xy;
+    gl_Position =  u_projMat * pos;
+    v_uv = a_uvs;
+    v_colorMult = u_billParam[1];
+    v_colorOffset = u_billParam[2];
+`
+        );
+    }
+    /*
     getFragShaderCode(): string {
         let fragCode: string =
             `#version 300 es
@@ -67,7 +119,10 @@ void main()
 `;
         return vtxCode;
     }
+    //*/
     getUniqueShaderName(): string {
+        let ns: string = this.m_uniqueName;
+        ns += this.brightnessEnabled ? "Brn" : "Alp"
         return this.m_uniqueName;
     }
     toString(): string {
@@ -84,14 +139,22 @@ void main()
 }
 
 export default class BillboardGroupMaterial extends MaterialBase {
-    constructor() {
-        super();
-    }
+    
     private m_rz: number = 0;
-    private m_uniformData: Float32Array = new Float32Array([1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
+    private m_uniformData: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0]);
     private m_color: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
     private m_brightness: number = 1.0;
+    private m_brightnessEnabled: boolean = false;
 
+    constructor(brightnessEnabled: boolean = false) {
+        super();
+        this.m_brightnessEnabled = brightnessEnabled;
+    }
+    protected buildBuf(): void {
+        let buf = BillGroupShaderBuffer.GetInstance();
+        buf.brightnessEnabled = this.m_brightnessEnabled;
+        buf.billFS.setBrightnessAndAlpha(this.m_brightnessEnabled, !this.m_brightnessEnabled)
+    }
     getCodeBuf(): ShaderCodeBuffer {
         let buf: ShaderCodeBuffer = BillGroupShaderBuffer.GetInstance();
         return buf;
@@ -120,6 +183,14 @@ export default class BillboardGroupMaterial extends MaterialBase {
         this.m_uniformData[4] = pr * this.m_brightness;
         this.m_uniformData[5] = pg * this.m_brightness;
         this.m_uniformData[6] = pb * this.m_brightness;
+    }
+    setFadeFactor(pa: number): void {
+
+        this.m_uniformData[7] = pa;
+    }
+    getFadeFactor(): number {
+
+        return this.m_uniformData[7];
     }
     setAlpha(pa: number): void {
         this.m_uniformData[7] = pa;

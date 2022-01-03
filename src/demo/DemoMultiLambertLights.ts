@@ -149,7 +149,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     private m_pos01: Vector3D = new Vector3D(-150.0, 100.0, -170.0);
     private m_pos02: Vector3D = new Vector3D(150, 0.0, 150);
     private initScene(): void {
-
+        
         let color: Color4 = new Color4(1.0, 1.0, 0.0);
         let colorBias: Color4 = new Color4(0.0, 0.0, 0.0);
 

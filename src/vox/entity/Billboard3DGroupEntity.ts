@@ -14,13 +14,14 @@ import BillboardGroupMaterial from "../../vox/material/mcase/BillboardGroupMater
 import BillboardPlaneGroupMesh from "../../vox/mesh/BillboardPlaneGroupMesh";
 
 export default class Billboard3DGroupEntity extends DisplayEntity {
+    private m_brightnessEnabled: boolean = true;
+    private m_currMaterial: BillboardGroupMaterial = null;
+    private m_billMesh: BillboardPlaneGroupMesh = null;
+    flipVerticalUV: boolean = false;
     constructor(transform: ROTransform = null) {
         super(transform);
         this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
     }
-    flipVerticalUV: boolean = false;
-    private m_currMaterial: BillboardGroupMaterial = null;
-    private m_billMesh: BillboardPlaneGroupMesh = null;
     createGroup(billboardTotal: number): void {
         if (billboardTotal > 0 && this.m_billMesh == null && this.getMesh() == null) {
             this.m_billMesh = new BillboardPlaneGroupMesh();
@@ -90,17 +91,19 @@ export default class Billboard3DGroupEntity extends DisplayEntity {
         this.m_currMaterial.setScaleXY(sx, sy);
     }
     createMaterial(texList: TextureProxy[]): void {
+        
         if (this.getMaterial() == null) {
-            this.m_currMaterial = new BillboardGroupMaterial();
-            this.m_currMaterial.setTextureList(texList);
-            this.setMaterial(this.m_currMaterial);
+            this.m_currMaterial = new BillboardGroupMaterial( this.m_brightnessEnabled );
+            this.m_currMaterial.setTextureList( texList );
+            this.setMaterial( this.m_currMaterial );
         }
-        else {
+        else if(this.getMaterial().getTextureTotal() < 1){
             this.m_currMaterial = this.getMaterial() as BillboardGroupMaterial;
-            this.m_currMaterial.setTextureList(texList);
+            this.m_currMaterial.setTextureList( texList );
         }
     }
     toTransparentBlend(always: boolean = false): void {
+        this.m_brightnessEnabled = false;
         if (always) {
             this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         }
@@ -109,6 +112,7 @@ export default class Billboard3DGroupEntity extends DisplayEntity {
         }
     }
     toBrightnessBlend(always: boolean = false): void {
+        this.m_brightnessEnabled = true;
         if (always) {
             this.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
         }

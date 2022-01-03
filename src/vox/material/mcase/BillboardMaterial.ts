@@ -40,6 +40,7 @@ class BillboardShaderBuffer extends ShaderCodeBuffer {
         }
 
         coder.addVertLayout("vec2","a_vs");
+        coder.addVertLayout("vec2","a_uvs");
         coder.addVarying("vec4","v_colorMult");
         coder.addVarying("vec4","v_colorOffset");
         coder.addVarying("vec2","v_uv");
