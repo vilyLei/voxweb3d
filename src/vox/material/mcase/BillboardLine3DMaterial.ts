@@ -12,31 +12,27 @@ import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 
-class BillboardLine3DShaderBuffer extends ShaderCodeBuffer
-{
-    billFS:BillboardFSBase = new BillboardFSBase();
-    constructor()
-    {
+class BillboardLine3DShaderBuffer extends ShaderCodeBuffer {
+    billFS: BillboardFSBase = new BillboardFSBase();
+    constructor() {
         super();
     }
-    private m_uniqueName:string = "";
-    initialize(texEnabled:boolean):void
-    {
+    private m_uniqueName: string = "";
+    initialize(texEnabled: boolean): void {
         this.m_uniqueName = "BillboardLine3DShader";
     }
-    getFragShaderCode():string
-    {
+    getFragShaderCode(): string {
         
-        let fragCode0:string =
-`#version 300 es
+        let fragCode0: string =
+            `#version 300 es
 precision mediump float;
-#define FADE_VAR fv4;
+#define FADE_VAR fv4
 uniform sampler2D u_sampler0;
 in vec4 v_colorMult;
 in vec4 v_colorOffset;
 in vec4 v_texUV;
 in vec4 v_fadeV;
-layout(location = 0) out vec4 FragColor;
+layout(location = 0) out vec4 FragColor0;
 void main()
 {
 vec4 color = texture(u_sampler0, v_texUV.xy);
@@ -46,18 +42,17 @@ float kf = v_texUV.z;
 kf = min(kf / v_fadeV.x, 1.0) * (1.0 - max((kf - v_fadeV.y)/(1.0 - v_fadeV.y),0.0));
 vec4 fv4 = vec4(v_colorMult.w * kf * v_fadeV.w);
 `;
-        let fadeCode:string = this.billFS.getBrnAndAlphaCode();
-        let fragCode2:string =
-`
-FragColor = color;
+        let fadeCode: string = this.billFS.getBrnAndAlphaCode();
+        let fragCode2: string =
+            `
+FragColor0 = color;
 }
 `;
         return fragCode0 + fadeCode + fragCode2;
     }
-    getVertShaderCode():string
-    {
-        let vtxCode:string =
-`#version 300 es
+    getVertShaderCode(): string {
+        let vtxCode: string =
+            `#version 300 es
 precision mediump float;
 const vec4  direcV = vec4(1.0,-1.0,-1.0,1.0);
 
@@ -95,19 +90,15 @@ v_fadeV = vec4(u_billParam[4].w, u_billParam[5].w, 1.0,1.0);
 `;
         return vtxCode;
     }
-    getUniqueShaderName(): string
-    {
-        return this.m_uniqueName + "_"+this.billFS.getBrnAlphaStatus();
+    getUniqueShaderName(): string {
+        return this.m_uniqueName + "_" + this.billFS.getBrnAlphaStatus();
     }
-    toString():string
-    {
+    toString(): string {
         return "[BillboardLine3DShaderBuffer()]";
     }
-    private static s_instance:BillboardLine3DShaderBuffer = new BillboardLine3DShaderBuffer();
-    static GetInstance():BillboardLine3DShaderBuffer
-    {
-        if(BillboardLine3DShaderBuffer.s_instance != null)
-        {
+    private static s_instance: BillboardLine3DShaderBuffer = new BillboardLine3DShaderBuffer();
+    static GetInstance(): BillboardLine3DShaderBuffer {
+        if (BillboardLine3DShaderBuffer.s_instance != null) {
             return BillboardLine3DShaderBuffer.s_instance;
         }
         BillboardLine3DShaderBuffer.s_instance = new BillboardLine3DShaderBuffer();
@@ -115,164 +106,143 @@ v_fadeV = vec4(u_billParam[4].w, u_billParam[5].w, 1.0,1.0);
     }
 }
 
-export default class BillboardLine3DMaterial extends MaterialBase
-{
-    private m_brightnessEnabled:boolean = true;
-    private m_alphaEnabled:boolean = false;
-    private m_beginPos:Vector3D = new Vector3D();
-    private m_endPos:Vector3D = new Vector3D();
-    private m_endPos2:Vector3D = new Vector3D();
-    private m_uvRotation:number = 0;
-    constructor(brightnessEnabled:boolean = true,alphaEnabled:boolean = false)
-    {
+export default class BillboardLine3DMaterial extends MaterialBase {
+    private m_brightnessEnabled: boolean = true;
+    private m_alphaEnabled: boolean = false;
+    private m_beginPos: Vector3D = new Vector3D();
+    private m_endPos: Vector3D = new Vector3D();
+    private m_endPos2: Vector3D = new Vector3D();
+    private m_uvRotation: number = 0;
+    constructor(brightnessEnabled: boolean = true, alphaEnabled: boolean = false) {
         super();
         this.m_brightnessEnabled = brightnessEnabled;
         this.m_alphaEnabled = alphaEnabled;
     }
-    
-    private m_uniformData:Float32Array = new Float32Array([
-        1.0,1.0, 0.0,0.0,        // uscale,vscale,uoffset,voffset
-        1.0,1.0,1.0, 1.0,        // rgb scale coefficient: r,g,b, fade factor(0.0 -> 1.0)default 1.0
-        0.0,0.0,0.0, 0.0,        // rgb offset: r,g,b, and uv rotation rad
 
-        0.0,0.0,0.0, 10.0,      // begin pos x,y,z, line half width
-        100.0,0.0,0.0, 0.3,     // end pos x,y,z, fade in value
-        200.0,0.0,0.0, 0.7,     // second end pos x,y,z, fade out value
+    private m_uniformData: Float32Array = new Float32Array([
+        1.0, 1.0, 0.0, 0.0,        // uscale,vscale,uoffset,voffset
+        1.0, 1.0, 1.0, 1.0,        // rgb scale coefficient: r,g,b, fade factor(0.0 -> 1.0)default 1.0
+        0.0, 0.0, 0.0, 0.0,        // rgb offset: r,g,b, and uv rotation rad
+
+        0.0, 0.0, 0.0, 10.0,      // begin pos x,y,z, line half width
+        100.0, 0.0, 0.0, 0.3,     // end pos x,y,z, fade in value
+        200.0, 0.0, 0.0, 0.7,     // second end pos x,y,z, fade out value
     ]);
-    getCodeBuf():ShaderCodeBuffer
-    {
-        let buf:BillboardLine3DShaderBuffer = BillboardLine3DShaderBuffer.GetInstance();
-        buf.billFS.setBrightnessAndAlpha(this.m_brightnessEnabled,this.m_alphaEnabled);
+    getCodeBuf(): ShaderCodeBuffer {
+        let buf: BillboardLine3DShaderBuffer = BillboardLine3DShaderBuffer.GetInstance();
+        buf.billFS.setBrightnessAndAlpha(this.m_brightnessEnabled, this.m_alphaEnabled);
         return buf;
     }
-    createSelfUniformData():ShaderUniformData
-    {
-        let oum:ShaderUniformData = new ShaderUniformData();
+    createSelfUniformData(): ShaderUniformData {
+        let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_billParam"];
         oum.dataList = [this.m_uniformData];
         return oum;
     }
-    setBeginAndEndPos(beginPos:Vector3D, endPos:Vector3D):void
-    {
+    setBeginAndEndPos(beginPos: Vector3D, endPos: Vector3D): void {
         this.m_beginPos.copyFrom(beginPos);
         this.m_endPos.copyFrom(endPos);
-        this.m_endPos2.subVecsTo(endPos,beginPos);
+        this.m_endPos2.subVecsTo(endPos, beginPos);
         this.m_endPos2.addBy(endPos);
 
         this.m_uniformData[12] = beginPos.x;
         this.m_uniformData[13] = beginPos.y;
         this.m_uniformData[14] = beginPos.z;
-        
+
         this.m_uniformData[16] = endPos.x;
         this.m_uniformData[17] = endPos.y;
         this.m_uniformData[18] = endPos.z;
 
-        
+
         this.m_uniformData[20] = this.m_endPos2.x;
         this.m_uniformData[21] = this.m_endPos2.y;
         this.m_uniformData[22] = this.m_endPos2.z;
     }
-    
-    setBeginPos(beginPos:Vector3D):void
-    {
+
+    setBeginPos(beginPos: Vector3D): void {
         this.m_beginPos.copyFrom(beginPos);
-        this.m_endPos2.subVecsTo(this.m_endPos,beginPos);
+        this.m_endPos2.subVecsTo(this.m_endPos, beginPos);
         this.m_endPos2.addBy(this.m_endPos);
 
         this.m_uniformData[12] = beginPos.x;
         this.m_uniformData[13] = beginPos.y;
         this.m_uniformData[14] = beginPos.z;
-        
+
         this.m_uniformData[20] = this.m_endPos2.x;
         this.m_uniformData[21] = this.m_endPos2.y;
         this.m_uniformData[22] = this.m_endPos2.z;
     }
-    setEndPos(endPos:Vector3D):void
-    {
-        
+    setEndPos(endPos: Vector3D): void {
+
         this.m_endPos.copyFrom(endPos);
-        this.m_endPos2.subVecsTo(endPos,this.m_beginPos);
+        this.m_endPos2.subVecsTo(endPos, this.m_beginPos);
         this.m_endPos2.addBy(endPos);
 
         this.m_uniformData[16] = endPos.x;
         this.m_uniformData[17] = endPos.y;
         this.m_uniformData[18] = endPos.z;
-        
+
         this.m_uniformData[20] = this.m_endPos2.x;
         this.m_uniformData[21] = this.m_endPos2.y;
         this.m_uniformData[22] = this.m_endPos2.z;
     }
-    
-    setLineWidth(lineWidth:number):void
-    {
+
+    setLineWidth(lineWidth: number): void {
         this.m_uniformData[15] = 0.5 * lineWidth;
     }
-    getLineWidth():number
-    {
+    getLineWidth(): number {
         return this.m_uniformData[15];
     }
-    setUVRotation(uvDegree:number):void
-    {
+    setUVRotation(uvDegree: number): void {
         this.m_uvRotation = uvDegree;
         //uvDegree = MathConst.DegreeToRadian(uvDegree);
         //7,11
         //this.m_uniformData[7] = Math.cos(uvDegree);
         this.m_uniformData[11] = MathConst.DegreeToRadian(uvDegree);//Math.sin(uvDegree);
     }
-    getUVRotation():number
-    {
+    getUVRotation(): number {
         return this.m_uvRotation;
     }
-    setUVParam(uScale:number,vScale:number,uOffset:number,vOffset:number):void
-    {
+    setUVParam(uScale: number, vScale: number, uOffset: number, vOffset: number): void {
         this.m_uniformData[0] = uScale;
         this.m_uniformData[1] = vScale;
         this.m_uniformData[2] = uOffset;
         this.m_uniformData[3] = vOffset;
     }
-    setUVScale(uScale:number,vScale:number):void
-    {
+    setUVScale(uScale: number, vScale: number): void {
         this.m_uniformData[0] = uScale;
         this.m_uniformData[1] = vScale;
     }
-    setUVOffset(uOffset:number,vOffset:number):void
-    {
+    setUVOffset(uOffset: number, vOffset: number): void {
         this.m_uniformData[2] = uOffset;
         this.m_uniformData[3] = vOffset;
     }
-    setRGB3f(pr:number,pg:number,pb:number)
-    {
+    setRGB3f(pr: number, pg: number, pb: number) {
         this.m_uniformData[4] = pr;
         this.m_uniformData[5] = pg;
         this.m_uniformData[6] = pb;
     }
-    setFadeRange(fadeMin:number, fadeMax:number):void
-    {
+    setFadeRange(fadeMin: number, fadeMax: number): void {
         this.m_uniformData[19] = fadeMin;
         this.m_uniformData[23] = fadeMax;
     }
-    setFadeFactor(pa:number):void
-    {
+    setFadeFactor(pa: number): void {
         this.m_uniformData[7] = pa;
     }
-    getFadeFactor():number
-    {
+    getFadeFactor(): number {
         return this.m_uniformData[7];
     }
 
-    setRGBOffset3f(pr:number,pg:number,pb:number):void
-    {
+    setRGBOffset3f(pr: number, pg: number, pb: number): void {
         this.m_uniformData[8] = pr;
         this.m_uniformData[9] = pg;
         this.m_uniformData[10] = pb;
     }
-    getUniformData():Float32Array
-    {
+    getUniformData(): Float32Array {
         return this.m_uniformData;
     }
 
-    destroy()
-    {
+    destroy() {
         super.destroy();
         this.m_uniformData = null;
     }

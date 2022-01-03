@@ -14,192 +14,147 @@ import TextureProxy from "../../vox/texture/TextureProxy";
 import LightLine3DMesh from "../../vox/mesh/LightLine3DMesh";
 import ROTransform from "../../vox/display/ROTransform";
 
-export default class BillboardLine3DEntity extends DisplayEntity
-{
-    private m_brightnessEnabled:boolean = true;
-    private m_alphaEnabled:boolean = false;
-    private m_currMaterial:BillboardLine3DMaterial = null;
-    flipVerticalUV:boolean = false;
-    flip90UV:boolean = false;
-    constructor(transform:ROTransform = null)
-    {
+export default class BillboardLine3DEntity extends DisplayEntity {
+    private m_brightnessEnabled: boolean = true;
+    private m_alphaEnabled: boolean = false;
+    private m_currMaterial: BillboardLine3DMaterial = null;
+    flipVerticalUV: boolean = false;
+    flip90UV: boolean = false;
+    constructor(transform: ROTransform = null) {
         super(transform);
         this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
     }
-    createMaterial(texList:TextureProxy[]):void
-    {
-        if(this.getMaterial() == null)
-        {
-            this.m_currMaterial = new BillboardLine3DMaterial(this.m_brightnessEnabled,this.m_alphaEnabled)
+    createMaterial(texList: TextureProxy[]): void {
+        if (this.getMaterial() == null) {
+            this.m_currMaterial = new BillboardLine3DMaterial(this.m_brightnessEnabled, this.m_alphaEnabled)
             this.m_currMaterial.setTextureList(texList);
             this.setMaterial(this.m_currMaterial);
         }
-        else
-        {
+        else {
             this.m_currMaterial = this.getMaterial() as BillboardLine3DMaterial;
             this.m_currMaterial.setTextureList(texList);
         }
     }
-    showDoubleFace(doubleFace:boolean = true):void
-    {
-        if(doubleFace)
-        {
+    showDoubleFace(doubleFace: boolean = true): void {
+        if (doubleFace) {
             this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
         }
-        else
-        {
+        else {
             this.setRenderState(RendererState.NORMAL_STATE);
         }
     }
-    toTransparentBlend(always:boolean = false):void
-    {
+    toTransparentBlend(always: boolean = false): void {
         this.m_brightnessEnabled = false;
         this.m_alphaEnabled = true;
-        if(always)
-        {
+        if (always) {
             this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         }
-        else
-        {
+        else {
             this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
         }
     }
-    toBrightnessBlend(always:boolean = false):void
-    {
+    toBrightnessBlend(always: boolean = false): void {
         this.m_brightnessEnabled = true;
         this.m_alphaEnabled = false;
-        if(always)
-        {
+        if (always) {
             this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
         }
-        else
-        {
+        else {
             this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
         }
     }
-    setRGB3f(pr:number,pg:number,pb:number):void
-    {
-        if(this.m_currMaterial != null)
-        {
-            this.m_currMaterial.setRGB3f(pr,pg,pb);
+    setRGB3f(pr: number, pg: number, pb: number): void {
+        if (this.m_currMaterial != null) {
+            this.m_currMaterial.setRGB3f(pr, pg, pb);
         }
     }
-    setRGBOffset3f(pr:number,pg:number,pb:number):void
-    {
-        if(this.m_currMaterial != null)
-        {
-            this.m_currMaterial.setRGBOffset3f(pr,pg,pb);
+    setRGBOffset3f(pr: number, pg: number, pb: number): void {
+        if (this.m_currMaterial != null) {
+            this.m_currMaterial.setRGBOffset3f(pr, pg, pb);
         }
     }
-    
-    setFadeFactor(pa:number):void
-    {
-        if(this.m_currMaterial != null)
-        {
+
+    setFadeFactor(pa: number): void {
+        if (this.m_currMaterial != null) {
             this.m_currMaterial.setFadeFactor(pa);
         }
     }
-    getFadeFactor():number
-    {
+    getFadeFactor(): number {
         return this.m_currMaterial.getFadeFactor();
     }
-    setBeginAndEndPos(begnPos:Vector3D, endPos:Vector3D):void
-    {
-        
-        if(this.m_currMaterial != null)
-        {
-            return this.m_currMaterial.setBeginAndEndPos(begnPos,endPos);
+    setBeginAndEndPos(begnPos: Vector3D, endPos: Vector3D): void {
+
+        if (this.m_currMaterial != null) {
+            return this.m_currMaterial.setBeginAndEndPos(begnPos, endPos);
         }
     }
-    
-    setBeginPos(beginPos:Vector3D):void
-    {
-        
-        if(this.m_currMaterial != null)
-        {
+
+    setBeginPos(beginPos: Vector3D): void {
+
+        if (this.m_currMaterial != null) {
             return this.m_currMaterial.setBeginPos(beginPos);
         }
     }
-    setEndPos(endPos:Vector3D):void
-    {
-        
-        if(this.m_currMaterial != null)
-        {
+    setEndPos(endPos: Vector3D): void {
+
+        if (this.m_currMaterial != null) {
             return this.m_currMaterial.setEndPos(endPos);
         }
     }
-    
-    setLineWidth(lineWidth:number):void
-    {
-        if(this.m_currMaterial != null)
-        {
+
+    setLineWidth(lineWidth: number): void {
+        if (this.m_currMaterial != null) {
             return this.m_currMaterial.setLineWidth(lineWidth);
         }
     }
-    getLineWidth():number
-    {
-        if(this.m_currMaterial != null)
-        {
+    getLineWidth(): number {
+        if (this.m_currMaterial != null) {
             return this.m_currMaterial.getLineWidth();
         }
         return 0.0;
     }
-    
-    setUVParam(uScale:number,vScale:number,uOffset:number,vOffset:number):void
-    {
-        if(this.m_currMaterial != null)
-        {
-            return this.m_currMaterial.setUVParam(uScale,vScale,uOffset,vOffset);
+
+    setUVParam(uScale: number, vScale: number, uOffset: number, vOffset: number): void {
+        if (this.m_currMaterial != null) {
+            return this.m_currMaterial.setUVParam(uScale, vScale, uOffset, vOffset);
         }
     }
-    setUVScale(uScale:number,vScale:number):void
-    {
-        if(this.m_currMaterial != null)
-        {
-            return this.m_currMaterial.setUVScale(uScale,vScale);
+    setUVScale(uScale: number, vScale: number): void {
+        if (this.m_currMaterial != null) {
+            return this.m_currMaterial.setUVScale(uScale, vScale);
         }
     }
-    setUVOffset(uOffset:number,vOffset:number):void
-    {
-        if(this.m_currMaterial != null)
-        {
-            return this.m_currMaterial.setUVOffset(uOffset,vOffset);
+    setUVOffset(uOffset: number, vOffset: number): void {
+        if (this.m_currMaterial != null) {
+            return this.m_currMaterial.setUVOffset(uOffset, vOffset);
         }
     }
-    setFadeRange(fadeMin:number, fadeMax:number):void
-    {
-        if(this.m_currMaterial != null)
-        {
-            return this.m_currMaterial.setFadeRange(fadeMin,fadeMax);
+    setFadeRange(fadeMin: number, fadeMax: number): void {
+        if (this.m_currMaterial != null) {
+            return this.m_currMaterial.setFadeRange(fadeMin, fadeMax);
         }
     }
-    setUVRotation(uvDegree:number):void
-    {
-        if(this.m_currMaterial != null)
-        {
+    setUVRotation(uvDegree: number): void {
+        if (this.m_currMaterial != null) {
             return this.m_currMaterial.setUVRotation(uvDegree);
         }
     }
-    initialize(texList:TextureProxy[] = null):void
-    {
+    initialize(texList: TextureProxy[] = null): void {
         this.createMaterial(texList);
         this.activeDisplay();
     }
-    protected __activeMesh(material:MaterialBase)
-    {
-        if(this.getMesh() == null)
-        {
-            let mesh:LightLine3DMesh = new LightLine3DMesh();
+    protected __activeMesh(material: MaterialBase) {
+        if (this.getMesh() == null) {
+            let mesh: LightLine3DMesh = new LightLine3DMesh();
             mesh.flipVerticalUV = this.flipVerticalUV;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.flip90UV = this.flip90UV;
-            mesh.setBufSortFormat( material.getBufSortFormat() );
+            mesh.setBufSortFormat(material.getBufSortFormat());
             mesh.initializeBill();
             this.setMesh(mesh);
         }
     }
-    toString():string
-    {
+    toString(): string {
         return "[BillboardLine3DEntity]";
     }
 }

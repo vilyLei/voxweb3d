@@ -141,7 +141,7 @@
 
 //  import {DemoParticleGroup as Demo} from "./demo/DemoParticleGroup";
 
-import {DemoParticleEruption as Demo} from "./demo/DemoParticleEruption";
+//  import {DemoParticleEruption as Demo} from "./demo/DemoParticleEruption";
 
 //  import {DemoParticleClips as Demo} from "./demo/DemoParticleClips";
 
@@ -149,7 +149,7 @@ import {DemoParticleEruption as Demo} from "./demo/DemoParticleEruption";
 
 //  import {DemoLockDrawEntity as Demo} from "./demo/DemoLockDrawEntity";
 
-//  import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
+import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 
 //  import {DemoBaseRenderer as Demo} from "./demo/DemoBaseRenderer";
 

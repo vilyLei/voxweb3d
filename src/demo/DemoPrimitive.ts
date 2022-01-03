@@ -105,7 +105,7 @@ export class DemoPrimitive {
             // axis.initialize(110.0);
             // this.m_renderer.addEntity(axis);
             // return;
-            ///*
+            /*
             let plane: Plane3DEntity = new Plane3DEntity();
             //plane.wireframe = true;
             plane.color0.setRGB3f(1.0, 0.0, 0.0);
@@ -134,7 +134,7 @@ export class DemoPrimitive {
             this.m_renderer.addEntity(billLine, 1);
             //billLine.setFadeFactor(0.5);
             this.m_billLine = billLine;
-            //return;
+            return;
             //*/
             /*
             let lightLine:LightLine3DEntity = new LightLine3DEntity();
