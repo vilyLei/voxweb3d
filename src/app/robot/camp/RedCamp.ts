@@ -13,6 +13,7 @@ import { CampType, CampFindMode } from "../../../app/robot/camp/Camp";
 import AssetsModule from "../../../app/robot/assets/AssetsModule";
 import RendererScene from "../../../vox/scene/RendererScene";
 import EruptionEffectPool from "../../../particle/effect/EruptionEffectPool";
+import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
 
 export default class RedCamp implements IRoleCamp {
     private m_rsc: RendererScene = null;
@@ -31,6 +32,9 @@ export default class RedCamp implements IRoleCamp {
                 //  let texFlame:TextureProxy = this.m_textures[8];//"static/assets/testEFT4.jpg"
                 //  let texSolid:TextureProxy = this.m_textures[3];
                 this.m_eff0Pool = new EruptionEffectPool();
+                
+                this.m_eff0Pool.materialPipeline = AssetsModule.GetMaterialPipeline();
+                this.m_eff0Pool.pipeTypes = [ MaterialPipeType.FOG_EXP2 ];
                 this.m_eff0Pool.timeSpeed = 15.0;
                 this.m_eff0Pool.initialize(this.m_rsc, 1, 60, 50,
                     AssetsModule.GetImageTexByUrl("static/assets/testEFT4.jpg"),

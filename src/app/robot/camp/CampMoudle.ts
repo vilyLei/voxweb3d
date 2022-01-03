@@ -14,6 +14,7 @@ import AssetsModule from "../../../app/robot/assets/AssetsModule";
 
 import TextureProxy from "../../../vox/texture/TextureProxy";
 import EruptionSmokePool from "../../../particle/effect/EruptionSmokePool";
+import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
 
 export default class CampMoudle {
     private m_rsc: RendererScene = null;
@@ -39,6 +40,9 @@ export default class CampMoudle {
             //let colorTexture:TextureProxy = AssetsModule.GetImageTexByUrl("static/assets/color_06.jpg");
             //let colorTexture:TextureProxy = AssetsModule.GetImageTexByUrl("static/assets/RandomNoiseB.png");
             this.m_eff1Pool = new EruptionSmokePool();
+            this.m_eff1Pool.materialPipeline = AssetsModule.GetMaterialPipeline();
+            this.m_eff1Pool.pipeTypes = [ MaterialPipeType.FOG_EXP2 ];
+            
             this.m_eff1Pool.initialize(this.m_rsc, this.effectRenderProcessIndex, 10, texture, colorTexture, true);
             this.m_eff1Pool.appendEffectSrc(20, true);
             this.m_eff1Pool.appendEffectSrc(8, true);

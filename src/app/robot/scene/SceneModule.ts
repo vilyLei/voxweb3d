@@ -9,6 +9,7 @@ import { TerrainModule } from "../../../app/robot/terrain/TerrainModule";
 import { CommonMaterialContext } from "../../../materialLab/base/CommonMaterialContext";
 import { RoleBuilder } from "./RoleBuilder";
 import Box3DEntity from "../../../vox/entity/Box3DEntity";
+import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
 
 class SceneModule {
 
@@ -57,7 +58,10 @@ class SceneModule {
         this.m_rscene.addEntity(axis);
 
         axis = new Axis3DEntity();
+        axis.setMaterialPipeline( this.m_materialCtx.pipeline );
+        axis.pipeTypes = [ MaterialPipeType.FOG_EXP2 ];
         axis.initializeCross(200.0);
+        
         this.m_rscene.addEntity(axis);
         let total: number = 5;
         this.m_roleBuilder.createLimbRoles(total);
