@@ -15,7 +15,7 @@ class BillboardFlareShaderBuffer extends BillboardGroupShaderBuffer {
     constructor() {
         super();
     }
-    initialize(texEnabled: boolean): void {        
+    initialize(texEnabled: boolean): void {
         super.initialize( texEnabled );
         this.m_uniqueName = "BillboardFlareShader" + (this.clipMixEnabled ? "Mix" : "");
     }
@@ -26,8 +26,8 @@ class BillboardFlareShaderBuffer extends BillboardGroupShaderBuffer {
             `#version 300 es
 precision mediump float;
 layout(location = 0) in vec4 a_vs;
-layout(location = 1) in vec4 a_vs2;
-layout(location = 2) in vec2 a_uvs;
+layout(location = 1) in vec2 a_uvs;
+layout(location = 2) in vec4 a_vs2;
 layout(location = 3) in vec4 a_uvs2;
 uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
@@ -50,7 +50,8 @@ gl_Position =  u_projMat * pos;
 v_factor = vec4(0.0,0.0, kf * a_vs2.w,fi);
 `;
 
-        return vtxCode + this.getVSEndCode(3);
+        // return vtxCode + this.getVSEndCode(3);
+        return vtxCode;// + this.getVSEndCode(3);
     }
     toString(): string {
         return "[BillboardFlareShaderBuffer()]";

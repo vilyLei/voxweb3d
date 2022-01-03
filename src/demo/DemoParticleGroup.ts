@@ -20,6 +20,7 @@ import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import CameraViewRay from "../vox/view/CameraViewRay";
+import { UserInteraction } from "../vox/engine/UserInteraction";
 
 
 export class DemoParticleGroup {
@@ -31,6 +32,8 @@ export class DemoParticleGroup {
     private m_axis: Axis3DEntity = null;
     private m_textures: TextureProxy[] = null;
     private m_viewRay: CameraViewRay = new CameraViewRay();
+    private m_interaction: UserInteraction = new UserInteraction();
+
     getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
@@ -58,13 +61,14 @@ export class DemoParticleGroup {
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-            this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rscene.getCamera());
+            // this.m_camTrack = new CameraTrack();
+            // this.m_camTrack.bindCamera(this.m_rscene.getCamera());
+            this.m_interaction.initialize( this.m_rscene );
 
             this.m_statusDisp.initialize();
             RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
             RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
-            ///*
+            /*
             let axis:Axis3DEntity = new Axis3DEntity();
             axis.name = "axis";
             axis.initialize(100.0);
@@ -79,6 +83,7 @@ export class DemoParticleGroup {
 
             //*/
             let textures: TextureProxy[] = [];
+
             textures.push(this.getImageTexByUrl("static/assets/default.jpg"));
             textures.push(this.getImageTexByUrl("static/assets/color_05.jpg"));
             textures.push(this.getImageTexByUrl("static/assets/color_03.jpg"));
@@ -91,6 +96,7 @@ export class DemoParticleGroup {
             textures.push(this.getImageTexByUrl("static/assets/xulie_02_07.png"));
             textures.push(this.getImageTexByUrl("static/assets/testEFT4.jpg"));
             textures.push(this.getImageTexByUrl("static/assets/testFT4.jpg"));
+
             this.m_textures = textures;
             //      let plane:Plane3DEntity = new Plane3DEntity();
             //      plane.initializeXOZ(-500.0,-500.0,1000.0,1000.0,[textures[0]]);
@@ -118,7 +124,7 @@ export class DemoParticleGroup {
             //this.initFlowBillOneByOne(this.m_textures);
             //this.initFlowDirecBill(this.m_textures[7], null, false, true,true,true);
             //  this.initFlowDirecBill(this.m_textures[4], null, false, true, true, true);
-            this.initFlowBill(this.m_textures[this.m_textures.length - 1],this.m_textures[2], true);
+            //this.initFlowBill(this.m_textures[this.m_textures.length - 1],this.m_textures[2], true);
             //this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, false, true);
             //this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, true, true);
             //this.initFlowBill(this.m_textures[this.m_textures.length - 2],null, true, true,false,true);
@@ -128,7 +134,7 @@ export class DemoParticleGroup {
             //this.initFlareBill(this.m_textures[this.m_textures.length - 1], null, true);
             //this.initFlareBill(this.m_textures[this.m_textures.length - 2], null, true, true);
             //this.initFlareBill(this.m_textures[this.m_textures.length - 1], null, false);
-            //this.initBillGroup(this.m_textures);
+            this.initBillGroup(this.m_textures);
             //*/
         }
     }
@@ -322,6 +328,7 @@ export class DemoParticleGroup {
             [0.5, 0.5, 0.5, 0.5]
         ];
         let tex: TextureProxy = textures[textures.length - 1];
+        //let tex: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
         let total: number = 800;
         let billGroup: Billboard3DGroupEntity = new Billboard3DGroupEntity();
         billGroup.createGroup(total);
@@ -331,7 +338,7 @@ export class DemoParticleGroup {
             //  billGroup.setUVRectAt(i, 0.0,0.0, 0.5,0.5);
             let uvparam: number[] = params[Math.floor((params.length - 1) * Math.random() + 0.5)];
             billGroup.setUVRectAt(i, uvparam[0], uvparam[1], uvparam[2], uvparam[3]);
-            //billGroup.setPositionAt(i,100.0,0.0,100.0);
+            //billGroup.setPositionAt(i,0.0,0.0,0.0);
             billGroup.setPositionAt(i, Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0);
         }
         billGroup.initialize([tex]);
@@ -374,7 +381,7 @@ export class DemoParticleGroup {
         this.m_timeoutId = setTimeout(this.update.bind(this), 20);// 50 fps
 
         //console.log(this.m_textures[0].isDataEnough());
-        this.m_rscene.update();
+        //this.m_rscene.update();
         if (this.m_textures[0].isDataEnough()) {
             if (this.m_billInited) {
                 this.initializeBillEntity();
@@ -386,39 +393,9 @@ export class DemoParticleGroup {
         }
         //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
     }
-    private testUpdate(): void {
-        if (this.m_charTex != null) {
-            if (this.m_charTex.isDataEnough() && this.m_ripple.isDataEnough()) {
-                let plane: Plane3DEntity;
-                let sortFlag: boolean = true;
-                if (sortFlag) {
-                    plane = new Plane3DEntity();
-                    plane.initializeXOZ(-128, -128, 256, 256, [this.m_charTex]);
-                    plane.toTransparentBlend(false);
-                    this.m_rscene.addEntity(plane);
-
-                    plane = new Plane3DEntity();
-                    plane.initializeXOZ(-256, -256, 512, 512, [this.m_ripple]);
-                    plane.toTransparentBlend(false);
-                    this.m_rscene.addEntity(plane);
-                }
-                else {
-                    plane = new Plane3DEntity();
-                    plane.initializeXOZ(-256, -256, 512, 512, [this.m_ripple]);
-                    plane.toTransparentBlend(false);
-                    this.m_rscene.addEntity(plane);
-
-                    plane = new Plane3DEntity();
-                    plane.initializeXOZ(-128, -128, 256, 256, [this.m_charTex]);
-                    plane.toTransparentBlend(false);
-                    this.m_rscene.addEntity(plane);
-                }
-                this.m_charTex = null;
-            }
-        }
-    }
     run(): void {
-        this.testUpdate();
+        
+        this.m_interaction.run();
 
         this.m_rscene.run();
 

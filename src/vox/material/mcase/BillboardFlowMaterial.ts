@@ -28,8 +28,6 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
 
     initialize(texEnabled: boolean): void {
 
-        console.log("BillboardFlowShaderBuffer::initialize()...");
-
         this.m_coderEnabled = true;
         super.initialize(texEnabled);
         this.m_uniqueName = "flow_"+this.m_uniqueName;
@@ -67,8 +65,6 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
     }
     
     getShaderCodeObject(): IShaderCodeObject {
-        console.log("BillboardFlowShaderBuffer::getShaderCodeObject()...");
-        console.log("this.m_coderEnabled: ",this.m_coderEnabled,"whole uns: ",this.getUniqueShaderName(), "uns: ",this.m_uniqueName);
         if(this.pipeline != null || this.m_coderEnabled) {
             return BillboardGroupShaderCode;
         }
@@ -97,10 +93,10 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
             `#version 300 es
 precision mediump float;
 layout(location = 0) in vec4 a_vs;
-layout(location = 2) in vec2 a_uvs;
-layout(location = 4) in vec4 a_nvs;
-layout(location = 1) in vec4 a_vs2;
-layout(location = 3) in vec4 a_uvs2;
+layout(location = 1) in vec2 a_uvs;
+layout(location = 2) in vec4 a_nvs;
+layout(location = 3) in vec4 a_vs2;
+layout(location = 4) in vec4 a_uvs2;
 layout(location = 5) in vec4 a_nvs2;
 const vec3 biasV3 = vec3(0.1);
 uniform mat4 u_objMat;

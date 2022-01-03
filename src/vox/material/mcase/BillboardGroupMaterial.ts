@@ -33,7 +33,7 @@ layout(location = 0) out vec4 FragColor;
 void main()
 {
     vec4 color = texture(u_sampler0, v_texUV);
-    color.rgb = max(color.rgb * v_colorMult.xyz + v_colorOffset.xyz,0.0);
+    //color.rgb = max(color.rgb * v_colorMult.xyz + v_colorOffset.xyz,0.0);
     FragColor = color;
 }
 `;
@@ -44,8 +44,8 @@ void main()
             `#version 300 es
 precision mediump float;
 layout(location = 0) in vec2 a_vs;
-layout(location = 1) in vec3 a_vs2;
-layout(location = 2) in vec2 a_uvs;
+layout(location = 1) in vec2 a_uvs;
+layout(location = 2) in vec3 a_vs2;
 uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;

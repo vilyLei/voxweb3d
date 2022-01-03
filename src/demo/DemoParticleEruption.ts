@@ -132,7 +132,7 @@ export class DemoParticleEruption {
             // this.m_eff1Pool.createEffect(this.m_viewRay.position);
             // return;
 
-            if (Math.random() > -0.5) {
+            if (Math.random() > 0.5) {
                 this.m_eff0Pool.createEffect(this.m_viewRay.position);
             }
             else {
