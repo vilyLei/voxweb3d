@@ -68,6 +68,7 @@ class ShaderCodeBuffer {
         this.lightEnabled = false;
         this.fogEnabled = false;
         this.envAmbientLightEnabled = false;
+        this.keysString = "";
     }
     clear(): void {
         this.m_coder = null;
@@ -96,8 +97,6 @@ class ShaderCodeBuffer {
             }
         }
         this.m_texEnabled = texEnabled;
-
-
         this.bufInitWithPipeline();
     }
     buildDefine(): void {

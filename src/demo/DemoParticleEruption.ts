@@ -36,7 +36,6 @@ export class DemoParticleEruption {
     private m_textures: TextureProxy[] = null;
     private m_eff0Pool: EruptionEffectPool = null;
     private m_eff1Pool: EruptionSmokePool = null;
-    // private m_viewRay: CameraViewRay = new CameraViewRay();
     private m_interaction: UserInteraction = new UserInteraction();
 
     // private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
@@ -58,7 +57,7 @@ export class DemoParticleEruption {
         mcParam.loadAllShaderCode = true;
         mcParam.shaderCodeBinary = true;
         mcParam.pbrMaterialEnabled = false;
-        // mcParam.vsmEnabled = false;
+        mcParam.vsmEnabled = false;
         //mcParam.buildBinaryFile = true;
 
         this.m_materialCtx.addShaderLibListener(this);
@@ -145,24 +144,30 @@ export class DemoParticleEruption {
     private initScene(): void {
 
         let textures = this.m_textures;
-        /*
+        ///*
         let plane: Plane3DEntity = new Plane3DEntity();
+        plane.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        plane.setMaterialPipeline(this.m_materialCtx.pipeline);
         plane.initializeXOZ(-500.0, -500.0, 1000.0, 1000.0, [textures[0]]);
-        //plane.toTransparentBlend(false);
         plane.setXYZ(0.0, -80.0, 0.0);
         this.m_rscene.addEntity(plane);
-        let material: any = plane.getMaterial();
-        //material.setRGB3f(0.8,0.8,0.8);
+
+        plane = new Plane3DEntity();
+        plane.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        plane.setMaterialPipeline(this.m_materialCtx.pipeline);
+        plane.initializeXOZ(-800.0, -800.0, 1600.0, 1600.0, [textures[0]]);
+        plane.setXYZ(0.0, -280.0, 0.0);
+        this.m_rscene.addEntity(plane);
         //*/
         this.initEnvBox();
         
-        this.initializeEffect();
-        this.initBillGroup();
+        //  this.initializeEffect();
+        // this.initBillGroup();
 
     }
     
     private initEnvBox(): void {
-        console.log("initEnvBox ... ...");
+        
         let envBox: Box3DEntity = new Box3DEntity();
         envBox.pipeTypes = [MaterialPipeType.FOG_EXP2];
         envBox.setMaterialPipeline(this.m_materialCtx.pipeline);
@@ -210,6 +215,8 @@ export class DemoParticleEruption {
         let tex: TextureProxy = this.getImageTexByUrl("static/assets/testTex.png");
         let total: number = 80;
         let billGroup: Billboard3DGroupEntity = new Billboard3DGroupEntity();
+        billGroup.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        billGroup.setMaterialPipeline(this.m_materialCtx.pipeline);
         billGroup.toBrightnessBlend();
         billGroup.createGroup(total);
         for (let i: number = 0; i < total; ++i) {

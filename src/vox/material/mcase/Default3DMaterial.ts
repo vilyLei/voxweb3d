@@ -27,7 +27,7 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
     }
     
     buildShader(): void {
-
+        
         let coder = this.m_coder;
         coder.addVertLayout("vec3", "a_vs");
         coder.addFragUniform("vec4", "u_color");

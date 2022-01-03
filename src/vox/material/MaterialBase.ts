@@ -90,14 +90,13 @@ export default class MaterialBase implements IRenderMaterial {
                     this.m_shduns = shdCode_uniqueName;
                 }
                 if(shdData == null) {
-
                     if (MaterialBase.s_codeBuffer == null) {
                         MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
                     }
                     ShaderCodeBuffer.UseShaderBuffer(buf);
                     texEnabled = texEnabled || this.getTextureTotal() > 0;
                     buf.initialize(texEnabled);
-                    shdCode_uniqueName = buf.getUniqueShaderName() + buf.getShaderCodeBuilder().getUniqueNSKeyString();
+                    shdCode_uniqueName = buf.getUniqueShaderName() + buf.keysString + buf.getShaderCodeBuilder().getUniqueNSKeyString();
                     this.m_shduns = shdCode_uniqueName;
                     this.__$initShd(this.m_shduns);
                     shdData = MaterialResource.FindData(shdCode_uniqueName);
