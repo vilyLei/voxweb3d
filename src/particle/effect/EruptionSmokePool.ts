@@ -10,14 +10,21 @@ import TextureProxy from "../../vox/texture/TextureProxy";
 import EruptionSomke from "../../particle/effect/EruptionSmoke";
 import ParticleEffectPool from "../../particle/effect/ParticleEffectPool";
 import IRenderer from "../../vox/scene/IRenderer";
+import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
+import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 
 export default class EruptionSmokePool extends ParticleEffectPool {
     private m_efSrcList: EruptionSomke[] = [];
     private m_texture: TextureProxy = null;
     private m_colorTexture: TextureProxy = null;
     private m_clipMixEnabled: boolean = false;
+
+    materialPipeline: IMaterialPipeline = null;
+    pipeTypes: MaterialPipeType[] = null;
+
     uvGridCN: number = 4;
     uvGridsTotal: number = 16;
+
     constructor() { super(); }
 
     initialize(renderer: IRenderer, processIndex: number, particleTotal: number, texture: TextureProxy, colorTexture: TextureProxy, clipMixEnabled: boolean = false): void {
@@ -29,6 +36,8 @@ export default class EruptionSmokePool extends ParticleEffectPool {
             this.m_renderer = renderer;
             this.m_renderProcessI = processIndex;
             let efSrc: EruptionSomke = new EruptionSomke();
+            efSrc.materialPipeline = this.materialPipeline;
+            efSrc.pipeTypes = this.pipeTypes;
             efSrc.uvGridCN = this.uvGridCN;
             efSrc.uvGridsTotal = this.uvGridsTotal;
             efSrc.initialize(particleTotal, this.m_texture, this.m_colorTexture, this.m_clipMixEnabled);
@@ -37,6 +46,8 @@ export default class EruptionSmokePool extends ParticleEffectPool {
     }
     appendEffectSrc(particleTotal: number, clipMixEnabled: boolean): void {
         let efSrc: EruptionSomke = new EruptionSomke();
+        efSrc.materialPipeline = this.materialPipeline;
+        efSrc.pipeTypes = this.pipeTypes;
         efSrc.uvGridCN = this.uvGridCN;
         efSrc.uvGridsTotal = this.uvGridsTotal;
         efSrc.initialize(particleTotal, this.m_texture, this.m_colorTexture, clipMixEnabled);
@@ -44,6 +55,8 @@ export default class EruptionSmokePool extends ParticleEffectPool {
     }
     appendEffect(texture: TextureProxy, colorTexture: TextureProxy, srcIndex: number = -1): void {
         let eff: EruptionSomke = new EruptionSomke();
+        eff.materialPipeline = this.materialPipeline;
+        eff.pipeTypes = this.pipeTypes;
         eff.uvGridCN = this.uvGridCN;
         eff.uvGridsTotal = this.uvGridsTotal;
         if (texture == null) texture = this.m_texture;
@@ -68,6 +81,8 @@ export default class EruptionSmokePool extends ParticleEffectPool {
         let eff: EruptionSomke;
         if (this.m_freeEffList.length < 1) {
             eff = new EruptionSomke();
+            eff.materialPipeline = this.materialPipeline;
+            eff.pipeTypes = this.pipeTypes;
             eff.uvGridCN = this.uvGridCN;
             eff.uvGridsTotal = this.uvGridsTotal;
             if (texture == null) texture = this.m_texture;
@@ -98,5 +113,10 @@ export default class EruptionSmokePool extends ParticleEffectPool {
         }
         eff.update();
         return eff;
+    }
+    destory(): void {
+        
+        this.materialPipeline = null;
+        this.pipeTypes = null;
     }
 }

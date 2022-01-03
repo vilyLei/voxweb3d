@@ -146,7 +146,7 @@ export class DemoParticleEruption {
     private initScene(): void {
 
         let textures = this.m_textures;
-        /*
+        ///*
         let plane: Plane3DEntity = new Plane3DEntity();
         plane.pipeTypes = [MaterialPipeType.FOG_EXP2];
         plane.setMaterialPipeline(this.m_materialCtx.pipeline);
@@ -163,8 +163,8 @@ export class DemoParticleEruption {
         //*/
         this.initEnvBox();
         
-        //  this.initializeEffect();
-        this.initBillGroup();
+        this.initializeEffect();
+        //this.initBillGroup();
 
     }
     
@@ -182,6 +182,8 @@ export class DemoParticleEruption {
         //     let texFlame: TextureProxy = this.m_textures[8];
         //     let texSolid: TextureProxy = this.m_textures[3];
         //     this.m_eff0Pool = new EruptionEffectPool();
+        //     // this.m_eff0Pool.materialPipeline = this.m_materialCtx.pipeline;
+        //     // this.m_eff0Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
         //     this.m_eff0Pool.solidPremultiplyAlpha = true;
         //     this.m_eff0Pool.initialize(this.m_rscene, 3, 60, 50, texFlame, texSolid, true);
         //     //  this.m_eff0Pool.createEffect(null);
@@ -191,7 +193,8 @@ export class DemoParticleEruption {
             let texture: TextureProxy = this.m_textures[9];
             let colorTexture: TextureProxy = this.m_textures[10];
             this.m_eff1Pool = new EruptionSmokePool();
-            
+            this.m_eff1Pool.materialPipeline = this.m_materialCtx.pipeline;
+            this.m_eff1Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
             this.m_eff1Pool.initialize(this.m_rscene, 3, 10, texture, colorTexture, true);
             //  this.m_eff1Pool.createEffect(null);
         }
@@ -212,19 +215,6 @@ export class DemoParticleEruption {
     }
     private initBillGroup(): void {
         
-        /*
-        let billboard: Billboard3DEntity = new Billboard3DEntity();
-        billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
-        billboard.setMaterialPipeline(this.m_materialCtx.pipeline);
-        billboard.toBrightnessBlend();
-        //billboard.toTransparentBlend();
-        //billboard.initialize(120.0, 120.0, [this.m_materialCtx.getTextureByUrl("static/assets/guangyun_40.png")]);
-        billboard.initialize(120.0, 120.0, [this.m_materialCtx.getTextureByUrl("static/assets/xulie_02_07.png")]);
-        billboard.setXYZ(200,300,200);
-        //billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
-        this.m_rscene.addEntity(billboard, 2);
-        return;
-        //*/
         let size: number = 100;
         let params: number[][] = this.getUVParamsByRNCN(4, 4);        
         let tex: TextureProxy = this.getImageTexByUrl("static/assets/xulie_02_07.png");

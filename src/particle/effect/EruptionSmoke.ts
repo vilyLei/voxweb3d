@@ -9,12 +9,17 @@ import Vector3D from "../../vox/math/Vector3D";
 import Billboard3DFlowEntity from "../../vox/entity/Billboard3DFlowEntity";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import IParticleEffect from "../../particle/effect/IParticleEffect";
+import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
+import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 
 export default class EruptionSmoke implements IParticleEffect {
     private m_clipMixEnabled: boolean = false;
     smokeEntity: Billboard3DFlowEntity = null;
     uvGridCN: number = 4;
     uvGridsTotal: number = 16;
+    
+    materialPipeline: IMaterialPipeline = null;
+    pipeTypes: MaterialPipeType[] = null;
     constructor() { }
     initialize(particleTotal: number, texture: TextureProxy, colorTexture: TextureProxy, clipMixEnabled: boolean = false): void {
         if (this.smokeEntity == null && particleTotal > 0) {
@@ -29,8 +34,11 @@ export default class EruptionSmoke implements IParticleEffect {
         }
     }
     private initSmoke(srcEntity: Billboard3DFlowEntity, total: number, tex: TextureProxy, offsetColorTex: TextureProxy): void {
+
         let entity: Billboard3DFlowEntity = new Billboard3DFlowEntity();
-        //total = 1;
+        entity.setMaterialPipeline(this.materialPipeline);
+        entity.pipeTypes = this.pipeTypes;
+
         if (srcEntity != null) {
             entity.copyMeshFrom(srcEntity);
             entity.createGroup(total);
@@ -132,5 +140,10 @@ export default class EruptionSmoke implements IParticleEffect {
             return this.smokeEntity.isAwake();
         }
         return false;
+    }
+    destory(): void {
+
+        this.materialPipeline = null;
+        this.pipeTypes = null;
     }
 }

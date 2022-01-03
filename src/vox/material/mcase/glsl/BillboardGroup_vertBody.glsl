@@ -12,10 +12,10 @@
     // scale
     vec2 vtx = a_vs.xy * temp.xy * vec2(a_vs.z + kf * a_vs.w);
 
-    vec4 pos = motionCalc(time, vtx);
+    viewPosition = motionCalc(time, vtx);
     
-    pos.xy += vtx.xy;
-    gl_Position =  u_projMat * pos;
+    viewPosition.xy += vtx.xy;
+    gl_Position =  u_projMat * viewPosition;
     v_factor = vec4(0.0,0.0, kf * a_vs2.w,fi);
 
     #ifdef VOX_USE_RAW_UV
