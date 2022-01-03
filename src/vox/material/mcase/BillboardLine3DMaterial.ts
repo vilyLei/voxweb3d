@@ -11,6 +11,7 @@ import BillboardFSBase from "../../../vox/material/mcase/BillboardFSBase";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
+import { MaterialPipeType } from "../pipeline/MaterialPipeType";
 
 class BillboardLine3DShaderBuffer extends ShaderCodeBuffer {
     billFS: BillboardFSBase = new BillboardFSBase();
@@ -18,78 +19,84 @@ class BillboardLine3DShaderBuffer extends ShaderCodeBuffer {
         super();
     }
     private m_uniqueName: string = "";
+    brightnessEnabled: boolean = false;
     initialize(texEnabled: boolean): void {
+
+        super.initialize(texEnabled);
         this.m_uniqueName = "BillboardLine3DShader";
+        this.m_uniqueName += this.brightnessEnabled ? "Brn" : "Alp";
     }
-    getFragShaderCode(): string {
-        
+
+    buildShader(): void {
+
+        let coder = this.m_coder;
+        if (this.brightnessEnabled) {
+
+            let fogEnabled: boolean = this.fogEnabled;
+            if (this.pipeline != null) {
+                fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG_EXP2);
+                fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG);
+            }
+            this.brightnessOverlayEnabeld = fogEnabled;
+        }
+
+        this.m_uniform.addDiffuseMap();
+
+        coder.addVertLayout("vec2", "a_vs");
+        coder.addVertLayout("vec2", "a_uvs");
+        coder.addVarying("vec4", "v_colorMult");
+        coder.addVarying("vec4", "v_colorOffset");
+        coder.addVarying("vec4", "v_fadeV");
+        coder.addVarying("vec4", "v_uv");
+        coder.addVertUniform("vec4", "u_billParam", 6);
+        coder.addDefine("FADE_VAR", "fv4");
+        coder.addVertHeadCode(
+            `
+    const vec4  direcV = vec4(1.0,-1.0,-1.0,1.0);
+`
+        )
+
         let fragCode0: string =
-            `#version 300 es
-precision mediump float;
-#define FADE_VAR fv4
-uniform sampler2D u_sampler0;
-in vec4 v_colorMult;
-in vec4 v_colorOffset;
-in vec4 v_texUV;
-in vec4 v_fadeV;
-layout(location = 0) out vec4 FragColor0;
-void main()
-{
-vec4 color = texture(u_sampler0, v_texUV.xy);
-vec3 offsetColor = v_colorOffset.rgb;
-float kf = v_texUV.z;
-//kf = min(kf / 0.3, 1.0) * (1.0 - max((kf - 0.7)/(1.0 - 0.7),0.0));
-kf = min(kf / v_fadeV.x, 1.0) * (1.0 - max((kf - v_fadeV.y)/(1.0 - v_fadeV.y),0.0));
-vec4 fv4 = vec4(v_colorMult.w * kf * v_fadeV.w);
+            `
+    vec4 color = VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv.xy);
+    vec3 offsetColor = v_colorOffset.rgb;
+    float kf = v_uv.z;
+    //kf = min(kf / 0.3, 1.0) * (1.0 - max((kf - 0.7)/(1.0 - 0.7),0.0));
+    kf = min(kf / v_fadeV.x, 1.0) * (1.0 - max((kf - v_fadeV.y)/(1.0 - v_fadeV.y),0.0));
+    vec4 fv4 = vec4(v_colorMult.w * kf * v_fadeV.w);
 `;
         let fadeCode: string = this.billFS.getBrnAndAlphaCode();
         let fragCode2: string =
             `
-FragColor0 = color;
-}
+    FragColor0 = color;
 `;
-        return fragCode0 + fadeCode + fragCode2;
-    }
-    getVertShaderCode(): string {
-        let vtxCode: string =
-            `#version 300 es
-precision mediump float;
-const vec4  direcV = vec4(1.0,-1.0,-1.0,1.0);
+        coder.addFragMainCode(fragCode0 + fadeCode + fragCode2);
 
-layout(location = 0) in vec2 a_vs;
-layout(location = 1) in vec2 a_uvs;
-uniform mat4 u_objMat;
-uniform mat4 u_viewMat;
-uniform mat4 u_projMat;
-uniform vec4 u_billParam[6];
-out vec4 v_texUV;
-out vec4 v_colorMult;
-out vec4 v_colorOffset;
-out vec4 v_fadeV;
-void main()
-{
-int i = int(a_vs.x);
-mat4 voMat4 = u_viewMat * u_objMat;
-vec4 pv0 = voMat4 * vec4(u_billParam[i].xyz,1.0);
-vec4 pv1 = voMat4 * vec4(u_billParam[i+1].xyz,1.0);
-pv1.xy = pv1.xy - pv0.xy;
-pv1.xy = pv1.yx * (a_vs.y > 0.0 ? direcV.xy : direcV.zw);
-pv0.xy += normalize(pv1.xy) * abs(u_billParam[3].w);
-pv0 = u_projMat * pv0;
-gl_Position = pv0;
-vec2 puv = a_uvs * u_billParam[0].xy;
-float cosv = cos(u_billParam[2].w);
-float sinv = sin(u_billParam[2].w);
-puv = vec2(puv.x * cosv - puv.y * sinv, puv.x * sinv + puv.y * cosv);
-v_texUV.xy = puv + u_billParam[0].zw;
-v_texUV.zw = a_uvs;
-v_colorMult = u_billParam[1];
-v_colorOffset = u_billParam[2];
-v_fadeV = vec4(u_billParam[4].w, u_billParam[5].w, 1.0,1.0);
-}
-`;
-        return vtxCode;
+        coder.addVertMainCode(
+            `
+    int i = int(a_vs.x);
+    mat4 voMat4 = u_viewMat * u_objMat;
+    viewPosition = voMat4 * vec4(u_billParam[i].xyz,1.0);
+    vec4 pv1 = voMat4 * vec4(u_billParam[i+1].xyz,1.0);
+    pv1.xy = pv1.xy - viewPosition.xy;
+    pv1.xy = pv1.yx * (a_vs.y > 0.0 ? direcV.xy : direcV.zw);
+    viewPosition.xy += normalize(pv1.xy) * abs(u_billParam[3].w);
+    gl_Position = u_projMat * viewPosition;
+    
+    vec2 puv = a_uvs * u_billParam[0].xy;
+    float cosv = cos(u_billParam[2].w);
+    float sinv = sin(u_billParam[2].w);
+    puv = vec2(puv.x * cosv - puv.y * sinv, puv.x * sinv + puv.y * cosv);
+    v_uv.xy = puv + u_billParam[0].zw;
+    v_uv.zw = a_uvs;
+    v_colorMult = u_billParam[1];
+    v_colorOffset = u_billParam[2];
+    v_fadeV = vec4(u_billParam[4].w, u_billParam[5].w, 1.0,1.0);
+`
+        );
+
     }
+    
     getUniqueShaderName(): string {
         return this.m_uniqueName + "_" + this.billFS.getBrnAlphaStatus();
     }
@@ -128,10 +135,13 @@ export default class BillboardLine3DMaterial extends MaterialBase {
         100.0, 0.0, 0.0, 0.3,     // end pos x,y,z, fade in value
         200.0, 0.0, 0.0, 0.7,     // second end pos x,y,z, fade out value
     ]);
-    getCodeBuf(): ShaderCodeBuffer {
+    protected buildBuf(): void {
         let buf: BillboardLine3DShaderBuffer = BillboardLine3DShaderBuffer.GetInstance();
         buf.billFS.setBrightnessAndAlpha(this.m_brightnessEnabled, this.m_alphaEnabled);
-        return buf;
+        buf.brightnessEnabled = this.m_brightnessEnabled;
+    }
+    getCodeBuf(): ShaderCodeBuffer {
+        return BillboardLine3DShaderBuffer.GetInstance();
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();

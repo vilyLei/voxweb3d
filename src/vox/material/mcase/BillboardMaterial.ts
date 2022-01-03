@@ -24,8 +24,8 @@ class BillboardShaderBuffer extends ShaderCodeBuffer {
     initialize(texEnabled: boolean): void {
         super.initialize(texEnabled);
         this.m_uniqueName = "BillboardShader";
-        if(this.rotationEnabled) this.m_uniqueName += "Rot";        
-        this.m_uniform.addDiffuseMap();
+        if(this.rotationEnabled) this.m_uniqueName += "Rot";
+        this.m_uniqueName += this.brightnessEnabled ? "Brn" : "Alp";
     }
     buildShader(): void {
         let coder = this.m_coder;
@@ -38,6 +38,7 @@ class BillboardShaderBuffer extends ShaderCodeBuffer {
             }
             this.brightnessOverlayEnabeld = fogEnabled;
         }
+        this.m_uniform.addDiffuseMap();
 
         coder.addVertLayout("vec2","a_vs");
         coder.addVertLayout("vec2","a_uvs");

@@ -172,6 +172,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         
         let tex4: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/flare_core_01.jpg");
         let billLine: BillboardLine3DEntity = new BillboardLine3DEntity();
+        billLine.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        billLine.setMaterialPipeline(this.m_materialCtx.pipeline);
         //lightLine.showDoubleFace();
         billLine.toBrightnessBlend();
         billLine.initialize([tex4]);
