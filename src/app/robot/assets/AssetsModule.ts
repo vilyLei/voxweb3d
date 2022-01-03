@@ -46,6 +46,28 @@ export default class AssetsModule {
             this.m_materialCtx = materialCtx;
 
             AssetsModule.s_materialCtx = materialCtx;
+
+                materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
+                materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
+
+                materialCtx.getTextureByUrl("static/assets/testEFT4.jpg");
+                materialCtx.getTextureByUrl("static/assets/stones_02.jpg");
+
+                materialCtx.getTextureByUrl("static/assets/image_003.jpg");
+                materialCtx.getTextureByUrl("static/assets/brn_03.jpg");
+                materialCtx.getTextureByUrl("static/assets/flare_core_02.jpg");
+
+                materialCtx.getTextureByUrl("static/assets/xulie_02_07.jpg");
+                materialCtx.getTextureByUrl("static/assets/color_05.jpg");
+
+                materialCtx.getTextureByUrl("static/assets/wood_01.jpg");
+                materialCtx.getTextureByUrl("static/assets/yanj.jpg");
+                materialCtx.getTextureByUrl("static/assets/skin_01.jpg");
+                materialCtx.getTextureByUrl("static/assets/default.jpg");
+                materialCtx.getTextureByUrl("static/assets/warter_01.jpg");
+                materialCtx.getTextureByUrl("static/assets/metal_02.jpg");
+                materialCtx.getTextureByUrl("static/assets/image_003.jpg");
+                materialCtx.getTextureByUrl("static/assets/metal_08.jpg");
         }
     }
     static GetMaterialPipeline(): IMaterialPipeline {
