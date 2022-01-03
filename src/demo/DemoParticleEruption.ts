@@ -82,12 +82,17 @@ export class DemoParticleEruption {
             textures.push(this.getImageTexByUrl("static/assets/arrow01.png"));
             textures.push(this.getImageTexByUrl("static/assets/partile_tex_001.jpg"));
             textures.push(this.getImageTexByUrl("static/assets/stones_02.png"));
+
             textures.push(this.getImageTexByUrl("static/assets/guangyun_H_0007.png"));
             textures.push(this.getImageTexByUrl("static/assets/flare_core_01.jpg"));
             textures.push(this.getImageTexByUrl("static/assets/flare_core_02.jpg"));
             textures.push(this.getImageTexByUrl("static/assets/a_02_c.jpg"));
+
             textures.push(this.getImageTexByUrl("static/assets/testEFT4.jpg"));
             textures.push(this.getImageTexByUrl("static/assets/xulie_02_07.png"));
+            textures.push(this.getImageTexByUrl("static/assets/color_02.jpg"));
+            textures.push(this.getImageTexByUrl("static/assets/particle/xuelie/xulie_00046.png"));
+            textures.push(this.getImageTexByUrl("static/assets/testTex.png"));
             this.m_textures = textures;
 
             ///*
@@ -104,19 +109,20 @@ export class DemoParticleEruption {
         }
     }
     private initializeEffect(): void {
-        if (this.m_eff0Pool == null) {
-            let texFlame: TextureProxy = this.m_textures[8];
-            let texSolid: TextureProxy = this.m_textures[3];
-            this.m_eff0Pool = new EruptionEffectPool();
-            this.m_eff0Pool.solidPremultiplyAlpha = true;
-            this.m_eff0Pool.initialize(this.m_rscene, 1, 60, 50, texFlame, texSolid, true);
-            //  this.m_eff0Pool.createEffect(null);
-        }
+        // if (this.m_eff0Pool == null) {
+        //     let texFlame: TextureProxy = this.m_textures[8];
+        //     let texSolid: TextureProxy = this.m_textures[3];
+        //     this.m_eff0Pool = new EruptionEffectPool();
+        //     this.m_eff0Pool.solidPremultiplyAlpha = true;
+        //     this.m_eff0Pool.initialize(this.m_rscene, 1, 60, 50, texFlame, texSolid, true);
+        //     //  this.m_eff0Pool.createEffect(null);
+        // }
         if (this.m_eff1Pool == null) {
 
             let texture: TextureProxy = this.m_textures[9];
-            let colorTexture: TextureProxy = this.m_textures[3];
+            let colorTexture: TextureProxy = this.m_textures[10];
             this.m_eff1Pool = new EruptionSmokePool();
+            
             this.m_eff1Pool.initialize(this.m_rscene, 1, 10, texture, colorTexture, true);
             //  this.m_eff1Pool.createEffect(null);
         }
@@ -129,8 +135,8 @@ export class DemoParticleEruption {
             this.m_viewRay.intersectPlane();
 
             // //this.m_eff0Pool.createEffect(this.m_viewRay.position);
-            // this.m_eff1Pool.createEffect(this.m_viewRay.position);
-            // return;
+            this.m_eff1Pool.createEffect(this.m_viewRay.position);
+            return;
 
             if (Math.random() > 0.5) {
                 this.m_eff0Pool.createEffect(this.m_viewRay.position);
@@ -164,12 +170,12 @@ export class DemoParticleEruption {
                 this.m_eff1Pool.run();
             }
             this.m_camTrack.rotationOffsetAngleWorldY(-0.1);
+            this.m_statusDisp.statusInfo = "/" + RendererState.DrawCallTimes;
         }
     }
     run(): void {
         this.m_rscene.run();
 
-        this.m_statusDisp.statusInfo = "/" + RendererState.DrawCallTimes;
         this.m_statusDisp.update();
     }
 }

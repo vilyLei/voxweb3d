@@ -13,6 +13,8 @@ import IParticleEffect from "../../particle/effect/IParticleEffect";
 export default class EruptionSmoke implements IParticleEffect {
     private m_clipMixEnabled: boolean = false;
     smokeEntity: Billboard3DFlowEntity = null;
+    uvGridCN: number = 4;
+    uvGridsTotal: number = 16;
     constructor() { }
     initialize(particleTotal: number, texture: TextureProxy, colorTexture: TextureProxy, clipMixEnabled: boolean = false): void {
         if (this.smokeEntity == null && particleTotal > 0) {
@@ -38,32 +40,7 @@ export default class EruptionSmoke implements IParticleEffect {
             entity.createGroup(total);
             let pv: Vector3D = new Vector3D();
             let uvparam: number[] = [0.0, 0.0, 1.0, 1.0];
-            // for test
-            /*
-            for (let i: number = 0; i < total; ++i) {
-                //entity.setSizeAndScaleAt(i,size,size,0.5,3.0);
-                entity.setSizeAndScaleAt(i, size, size, 2.0, 1.0);
-                entity.setUVRectAt(i, uvparam[0], uvparam[1], uvparam[2], uvparam[3]);
-                //entity.setTimeAt(i, 200.0 * Math.random() + 100, 0.4,0.6, i * 10);
-                //entity.setTimeAt(i, 100, 0.01,0.99, 0);
-                entity.setTimeAt(i, 50.0 * Math.random() + 80, 0.01, 0.95, 0);
-                //entity.setTimeAt(i, 100, 0.4,0.6, 1.0);
-                //entity.setBrightnessAt(i,Math.random() * 0.8 + 0.8);
-                entity.setBrightnessAt(i, 1.0);
-                entity.setTimeSpeedAt(i, Math.random() * 1.0 + 0.5);
-                //entity.setPositionAt(i,100.0,0.0,100.0);
-                //entity.setPositionAt(i, Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0);
-                pv.setTo(Math.random() * 100.0 - 50.0, Math.random() * 50.0 + 50.0, Math.random() * 100.0 - 50.0);
-                pv.scaleBy(0.2);
-                //entity.setPositionAt(i, pv.x, pv.y, pv.z);
-                //entity.setAccelerationAt(i,0.003,-0.004,0.0);
-                //entity.setAccelerationAt(i, Math.random() * 0.006 - 0.003, -0.004, Math.random() * 0.006 - 0.003);
-                //entity.setVelocityAt(i, 0.0, Math.random() * 1.5 + 0.5, 0.0);
-                //pv.normalize();
-                //pv.scaleBy((Math.random() * 2.0 + 0.2) * 1.0);
-                //entity.setVelocityAt(i,pv.x,pv.y,pv.z);
-            }
-            //*/
+            
             ///*
             // origin
             for (let i: number = 0; i < total; ++i) {
@@ -100,7 +77,9 @@ export default class EruptionSmoke implements IParticleEffect {
         //entity.setRGBOffset3f(Math.random() * 1.0,Math.random() * 1.0,Math.random() * 1.0);
         entity.setRGB3f(0.1, 0.1, 0.1);
         //entity.setUVParam(3,9,0.33,0.33);
-        entity.setClipUVParam(4, 16, 0.25, 0.25);
+        let du: number = 1.0 / this.uvGridCN;
+        let dv: number = 1.0 / Math.floor(this.uvGridsTotal / this.uvGridCN);
+        entity.setClipUVParam(this.uvGridCN, this.uvGridsTotal, du, dv);
         this.smokeEntity = entity;
     }
     setTime(time: number): void {

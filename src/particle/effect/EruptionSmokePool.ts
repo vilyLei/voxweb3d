@@ -16,6 +16,8 @@ export default class EruptionSmokePool extends ParticleEffectPool {
     private m_texture: TextureProxy = null;
     private m_colorTexture: TextureProxy = null;
     private m_clipMixEnabled: boolean = false;
+    uvGridCN: number = 4;
+    uvGridsTotal: number = 16;
     constructor() { super(); }
 
     initialize(renderer: IRenderer, processIndex: number, particleTotal: number, texture: TextureProxy, colorTexture: TextureProxy, clipMixEnabled: boolean = false): void {
@@ -27,17 +29,23 @@ export default class EruptionSmokePool extends ParticleEffectPool {
             this.m_renderer = renderer;
             this.m_renderProcessI = processIndex;
             let efSrc: EruptionSomke = new EruptionSomke();
+            efSrc.uvGridCN = this.uvGridCN;
+            efSrc.uvGridsTotal = this.uvGridsTotal;
             efSrc.initialize(particleTotal, this.m_texture, this.m_colorTexture, this.m_clipMixEnabled);
             this.m_efSrcList.push(efSrc);
         }
     }
     appendEffectSrc(particleTotal: number, clipMixEnabled: boolean): void {
         let efSrc: EruptionSomke = new EruptionSomke();
+        efSrc.uvGridCN = this.uvGridCN;
+        efSrc.uvGridsTotal = this.uvGridsTotal;
         efSrc.initialize(particleTotal, this.m_texture, this.m_colorTexture, clipMixEnabled);
         this.m_efSrcList.push(efSrc);
     }
     appendEffect(texture: TextureProxy, colorTexture: TextureProxy, srcIndex: number = -1): void {
         let eff: EruptionSomke = new EruptionSomke();
+        eff.uvGridCN = this.uvGridCN;
+        eff.uvGridsTotal = this.uvGridsTotal;
         if (texture == null) texture = this.m_texture;
         if (colorTexture == null) colorTexture = this.m_colorTexture;
         let efSrc: EruptionSomke;
@@ -60,6 +68,8 @@ export default class EruptionSmokePool extends ParticleEffectPool {
         let eff: EruptionSomke;
         if (this.m_freeEffList.length < 1) {
             eff = new EruptionSomke();
+            eff.uvGridCN = this.uvGridCN;
+            eff.uvGridsTotal = this.uvGridsTotal;
             if (texture == null) texture = this.m_texture;
             if (colorTexture == null) colorTexture = this.m_colorTexture;
             let efSrc: EruptionSomke = this.m_efSrcList[Math.floor((this.m_efSrcList.length - 0.5) * Math.random())];

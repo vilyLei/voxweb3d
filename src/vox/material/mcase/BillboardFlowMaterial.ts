@@ -165,14 +165,6 @@ export default class BillboardFlowMaterial extends MaterialBase {
 
     getCodeBuf(): ShaderCodeBuffer {
         return BillboardFlowShaderBuffer.GetInstance();
-        // let buf: BillboardFlowShaderBuffer = BillboardFlowShaderBuffer.GetInstance();
-        // buf.playOnce = this.m_playOnce;
-        // buf.direcEnabled = this.m_direcEnabled;
-        // buf.clipMixEnabled = this.m_clipMixEnabled;
-        // buf.spdScaleEnabled = this.m_spdScaleEnabled;
-        // buf.premultiplyAlpha = this.premultiplyAlpha;
-        // buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled, this.m_clipEnabled, this.getTextureTotal() > 1);
-        // return buf;
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
