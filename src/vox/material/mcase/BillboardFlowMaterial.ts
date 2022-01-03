@@ -71,7 +71,7 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
         return super.getShaderCodeObject();
     }
     buildShader(): void {
-        console.log("BillboardFlowShaderBuffer::buildShader()..., this.m_coderEnabled: ",this.m_coderEnabled);
+        
         if(this.pipeline != null || this.m_coderEnabled) {
             this.m_coder.autoBuildHeadCodeEnabled = false;
             this.buildFragShd();
@@ -81,180 +81,11 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
             }
         }
     }
+    
     getVertShaderCode(): string {
-
-        if(this.pipeline != null || this.m_coderEnabled) {
-            return this.m_coder.buildVertCode();
-        }
-        let paramTotal: number = this.m_clipEnabled ? 5 : 4;
-        console.log("BillboardFlowShaderBuffer::getVertShaderCode(),clipEnabled: ",this.m_clipEnabled, "paramTotal: ",paramTotal);
-        console.log("this.m_coderEnabled: ",this.m_coderEnabled,"whole uns: ",this.getUniqueShaderName(), "uns: ",this.m_uniqueName);
-        let vtxCode0: string =
-            `#version 300 es
-precision mediump float;
-layout(location = 0) in vec4 a_vs;
-layout(location = 1) in vec2 a_uvs;
-layout(location = 2) in vec4 a_nvs;
-layout(location = 3) in vec4 a_vs2;
-layout(location = 4) in vec4 a_uvs2;
-layout(location = 5) in vec4 a_nvs2;
-const vec3 biasV3 = vec3(0.1);
-uniform mat4 u_objMat;
-uniform mat4 u_viewMat;
-uniform mat4 u_projMat;
-uniform vec4 u_billParam[`+ paramTotal + `];
-
-`;
-        if (this.m_hasOffsetColorTex) {
-            if (this.m_useRawUVEnabled) {
-                vtxCode0 += "#define VOX_USE_RAW_UV 1\n";
-            }
-        }
-        if (this.m_clipEnabled) {
-            vtxCode0 += "#define VOX_USE_CLIP 1\n";
-            vtxCode0 += "#define BILL_PARAM_INDEX 4\n";
-            if(this.clipMixEnabled) {
-                vtxCode0 += "#define VOX_USE_CLIP_MIX 1\n";
-            }
-        }
-        if (this.direcEnabled) vtxCode0 += "#define ROTATION_DIRECT 1\n";
-        if (this.playOnce) vtxCode0 += "#define PLAY_ONCE 1\n";
-        if (this.spdScaleEnabled) vtxCode0 += "#define SPEED_SCALE 1\n";
-
-        if (this.m_hasOffsetColorTex && this.m_useRawUVEnabled) {
-            vtxCode0 +=
-                `
-out vec4 v_uv;
-`;
-        }
-        vtxCode0 +=
-            `
-out vec4 v_colorMult;
-out vec4 v_colorOffset;
-out vec4 v_texUV;
-out vec4 v_factor;
-
-#ifdef ROTATION_DIRECT
-
-// 3.141592653589793
-#define MATH_PI 3.14159265
-// 4.71238898038469
-#define MATH_3PER2PI 4.71238898
-// 1.5707963267948966
-#define MATH_1PER2PI 1.57079633
-
-float getRadianByXY(float dx, float dy) {
-
-    if(abs(dx) < 0.00001) {
-        return (dy >= 0.0) ? MATH_1PER2PI : MATH_3PER2PI;
+        return this.m_coder.buildVertCode();
     }
-    float rad = atan(dy/dx);
-    return dx >= 0.0 ? rad: (MATH_PI + rad);
-}
-#endif
-
-#ifdef VOX_USE_CLIP
-void calculateClipUV(float fi) {
     
-    #ifdef VOX_USE_CLIP_MIX
-        // calculate clip uv
-        vec4 temp = u_billParam[ BILL_PARAM_INDEX ];//(x:cn,y:total,z:du,w:dv)
-        float clipf0 = floor(fi * temp.y);
-        float clipf1 = min(clipf0 + 1.0, temp.y - 1.0);
-        clipf0 /= temp.x;
-        // vec2(floor(fract(clipf0) * temp.x), floor(clipf0)) -> vec2(cn u,rn v)
-        v_texUV.xy = (vec2(floor(fract(clipf0) * temp.x), floor(clipf0)) + a_uvs.xy) * temp.zw;
-
-        v_factor.x = fract(fi * temp.y);
-
-        clipf1 /= temp.x;
-        v_texUV.zw = (vec2(floor(fract(clipf1) * temp.x), floor(clipf1)) + a_uvs.xy) * temp.zw;
-    #else
-        // calculate clip uv
-        vec4 temp = u_billParam[ BILL_PARAM_INDEX ];//(x:cn,y:total,z:du,w:dv)
-        float clipf = floor(fi * temp.y);
-        clipf /= temp.x;
-        // vec2(floor(fract(clipf) * temp.x), floor(clipf)) -> vec2(cn u,rn v)
-        v_texUV.xy = (vec2(floor(fract(clipf) * temp.x), floor(clipf)) + a_uvs.xy) * temp.zw;
-    #endif
-}
-#endif
-
-vec4 motionCalc(float time, inout vec2 vtx) {
-    ///*
-    vec3 timeV = vec3(time);
-    vec3 acc3 = u_billParam[3].xyz + a_nvs2.xyz;
-    #ifdef ROTATION_DIRECT
-        #ifdef SPEED_SCALE
-            float v0scale = clamp(length(a_nvs.xyz + acc3 * timeV)/u_billParam[1].w,1.0,u_billParam[3].w);
-            vtx *= vec2(v0scale, 1.0);
-        #endif
-
-        vec3 pv0 = a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV;
-        timeV += biasV3;
-        vec3 pv1 = a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV;
-
-        mat4 voMat = u_viewMat * u_objMat;
-        vec4 pos = voMat * vec4(pv0,1.0);
-        vec4 pos1 = voMat * vec4(pv1,1.0);
-        float rad = getRadianByXY(pos1.x - pos.x, pos1.y - pos.y);
-        float cosv = cos(rad);
-        float sinv = sin(rad);
-
-        // rotate
-        vtx = vec2(vtx.x * cosv - vtx.y * sinv, vtx.x * sinv + vtx.y * cosv);
-    #else
-        vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV,1.0);
-    #endif
-    //*/
-    // vec3 acc3 = u_billParam[3].xyz + a_nvs2.xyz;
-    // vec3 timeV = vec3(0.9);
-    // vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV,1.0);
-
-    return pos;
-}
-`;
-        let vtxCode02: string =
-            `
-void main()
-{
-    vec4 temp = u_billParam[0];
-    float time = max(a_nvs.w * temp.z - a_uvs2.w, 0.0);
-
-    #ifdef PLAY_ONCE
-        time = min(time, a_uvs2.x);
-    #endif
-
-    float kf = fract(time/a_uvs2.x);
-    float fi = kf;
-    time = kf * a_uvs2.x;
-    kf = min(kf/a_uvs2.y,1.0) * (1.0 - max((kf - a_uvs2.z)/(1.0 - a_uvs2.z),0.0));
-    // scale
-    vec2 vtx = a_vs.xy * temp.xy * vec2(a_vs.z + kf * a_vs.w);
-    //vec2 vtx = a_vs.xy;
-
-    vec4 pos = motionCalc(time, vtx);
-    
-    pos.xy += vtx.xy;
-    gl_Position =  u_projMat * pos;
-    v_factor = vec4(0.0,0.0, kf * a_vs2.w,fi);
-
-    #ifdef VOX_USE_RAW_UV
-        v_uv = vec4(a_uvs.xy,0.0,0.0);
-    #endif
-    #ifdef VOX_USE_CLIP
-        calculateClipUV( fi );
-    #else
-        v_texUV = vec4(a_uvs.xy, a_uvs.xy);
-    #endif
-
-    v_colorMult = u_billParam[1];
-    v_colorOffset = u_billParam[2];
-}
-`;
-
-        return vtxCode0 + vtxCode02;
-    }
     toString(): string {
         return "[BillboardFlowShaderBuffer()]";
     }

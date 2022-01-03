@@ -149,7 +149,7 @@ class ShaderCodeBuffer {
         return this.m_coder.buildFragCode();
     }
     getVertShaderCode(): string {
-
+        
         if (ShaderCodeBuffer.__$s_csBuf != this) return ShaderCodeBuffer.__$s_csBuf.getVertShaderCode();
         return this.m_coder.buildVertCode();
     }
