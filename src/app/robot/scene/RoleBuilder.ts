@@ -49,7 +49,7 @@ class RoleBuilder {
         }
     }
 
-    initTexture(materialCtx: CommonMaterialContext): void {
+    private initTexture(materialCtx: CommonMaterialContext): void {
         if(this.m_texList == null) {
             this.m_texList = [    
                 materialCtx.getTextureByUrl("static/assets/wood_01.jpg"),

@@ -29,8 +29,6 @@ export default class RedCamp implements IRoleCamp {
             this.m_rsc = rsc;
 
             if (this.m_eff0Pool == null) {
-                //  let texFlame:TextureProxy = this.m_textures[8];//"static/assets/testEFT4.jpg"
-                //  let texSolid:TextureProxy = this.m_textures[3];
                 this.m_eff0Pool = new EruptionEffectPool();
                 
                 this.m_eff0Pool.materialPipeline = AssetsModule.GetMaterialPipeline();

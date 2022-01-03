@@ -32,21 +32,10 @@ class SceneModule {
             this.m_rscene = rscene;
             this.m_materialCtx = materialCtx;
 
-            this.m_terrain.terrain.shadowReceiveEnabled = this.shadowEnabled;
-            this.m_terrain.terrain.envAmbientLightEnabled = this.envAmbientLightEnabled;
-            this.m_terrain.terrain.fogEnabled = this.fogEnabled;
-            this.m_terrain.terrain.renderProcessIndex = 1;
-            this.m_terrain.terrain.colorBrightness = 0.4;
-            this.m_terrain.initialize(this.m_rscene, this.m_materialCtx);
-
             AssetsModule.GetInstance().initialize(this.m_materialCtx);
-            this.m_campModule.initialize(this.m_rscene);
 
-            this.m_roleBuilder.envAmbientLightEnabled = this.envAmbientLightEnabled;
-            this.m_roleBuilder.fogEnabled = this.fogEnabled;
-            this.m_roleBuilder.terrain = this.m_terrain;
-            this.m_roleBuilder.campModule = this.m_campModule;
-            this.m_roleBuilder.initTexture( this.m_materialCtx );
+
+            
             this.init();
         }
     }
@@ -66,6 +55,20 @@ class SceneModule {
     }
     private initScene(): void {
 
+        this.m_terrain.terrain.shadowReceiveEnabled = this.shadowEnabled;
+        this.m_terrain.terrain.envAmbientLightEnabled = this.envAmbientLightEnabled;
+        this.m_terrain.terrain.fogEnabled = this.fogEnabled;
+        this.m_terrain.terrain.renderProcessIndex = 1;
+        this.m_terrain.terrain.colorBrightness = 0.4;
+        this.m_terrain.initialize(this.m_rscene, this.m_materialCtx);
+
+        this.m_campModule.initialize(this.m_rscene);
+
+        this.m_roleBuilder.envAmbientLightEnabled = this.envAmbientLightEnabled;
+        this.m_roleBuilder.fogEnabled = this.fogEnabled;
+        this.m_roleBuilder.terrain = this.m_terrain;
+        this.m_roleBuilder.campModule = this.m_campModule;
+        
         this.m_roleBuilder.initialize(this.m_rscene, this.m_materialCtx);
 
         let total: number = 50;

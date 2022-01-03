@@ -47,17 +47,21 @@ export default class AssetsModule {
 
             AssetsModule.s_materialCtx = materialCtx;
 
+                materialCtx.getTextureByUrl("static/assets/box_wood01.jpg");
+                materialCtx.getTextureByUrl("static/assets/moss_01.jpg");
+                materialCtx.getTextureByUrl("static/assets/moss_03.jpg");
+            
                 materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
                 materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
 
                 materialCtx.getTextureByUrl("static/assets/testEFT4.jpg");
-                materialCtx.getTextureByUrl("static/assets/stones_02.jpg");
+                materialCtx.getTextureByUrl("static/assets/stones_02.png");
 
                 materialCtx.getTextureByUrl("static/assets/image_003.jpg");
                 materialCtx.getTextureByUrl("static/assets/brn_03.jpg");
                 materialCtx.getTextureByUrl("static/assets/flare_core_02.jpg");
 
-                materialCtx.getTextureByUrl("static/assets/xulie_02_07.jpg");
+                materialCtx.getTextureByUrl("static/assets/xulie_02_07.png");
                 materialCtx.getTextureByUrl("static/assets/color_05.jpg");
 
                 materialCtx.getTextureByUrl("static/assets/wood_01.jpg");
