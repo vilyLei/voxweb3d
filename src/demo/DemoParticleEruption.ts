@@ -145,7 +145,7 @@ export class DemoParticleEruption {
     private initScene(): void {
 
         let textures = this.m_textures;
-        /*
+        ///*
         let plane: Plane3DEntity = new Plane3DEntity();
         plane.pipeTypes = [MaterialPipeType.FOG_EXP2];
         plane.setMaterialPipeline(this.m_materialCtx.pipeline);
@@ -191,15 +191,15 @@ export class DemoParticleEruption {
                 this.m_eff0Pool.initialize(this.m_rscene, 3, 60, 50, texFlame, texSolid, true);
                 //  this.m_eff0Pool.createEffect(null);
             }
-            // if (this.m_eff1Pool == null) {    
-            //     let texture: TextureProxy = this.m_textures[9];
-            //     let colorTexture: TextureProxy = this.m_textures[10];
-            //     this.m_eff1Pool = new EruptionSmokePool();
-            //     this.m_eff1Pool.materialPipeline = this.m_materialCtx.pipeline;
-            //     this.m_eff1Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
-            //     this.m_eff1Pool.initialize(this.m_rscene, 3, 10, texture, colorTexture, true);
-            //     //  this.m_eff1Pool.createEffect(null);
-            // }
+            if (this.m_eff1Pool == null) {    
+                let texture: TextureProxy = this.m_textures[9];
+                let colorTexture: TextureProxy = this.m_textures[10];
+                this.m_eff1Pool = new EruptionSmokePool();
+                this.m_eff1Pool.materialPipeline = this.m_materialCtx.pipeline;
+                this.m_eff1Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
+                this.m_eff1Pool.initialize(this.m_rscene, 3, 10, texture, colorTexture, true);
+                //  this.m_eff1Pool.createEffect(null);
+            }
             this.m_effInited = false;
         }
     }
@@ -249,9 +249,9 @@ export class DemoParticleEruption {
         if (this.m_eff0Pool != null || this.m_eff1Pool != null) {
             viewRay.intersectPlane();
 
-            this.m_eff0Pool.createEffect(viewRay.position);
+            //this.m_eff0Pool.createEffect(viewRay.position);
             // this.m_eff1Pool.createEffect(viewRay.position);
-            return;
+            //return;
 
             if (Math.random() > 0.5) {
                 this.m_eff0Pool.createEffect(viewRay.position);
