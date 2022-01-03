@@ -37,8 +37,6 @@ import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 
 export class DemoMultiLambertLights implements IShaderLibListener {
 
-    constructor() { }
-
     private m_engine: EngineBase = null;
     private m_profileInstance: ProfileInstance = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
@@ -47,6 +45,9 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 
     private m_lightEntities: ILightEntity[] = [];
+
+    constructor() { }
+
     initialize(): void {
 
         console.log("DemoMultiLambertLights::initialize()......");
@@ -149,7 +150,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     private m_pos01: Vector3D = new Vector3D(-150.0, 100.0, -170.0);
     private m_pos02: Vector3D = new Vector3D(150, 0.0, 150);
     private initScene(): void {
-        
+
         let color: Color4 = new Color4(1.0, 1.0, 0.0);
         let colorBias: Color4 = new Color4(0.0, 0.0, 0.0);
 
@@ -163,7 +164,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         //billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
         this.m_engine.rscene.addEntity(billboard, 3);
 
-        /*
+        ///*
         // let box: Box3DEntity = new Box3DEntity();
         // box.pipeTypes = [MaterialPipeType.FOG_EXP2];
         // box.setMaterialPipeline( this.m_materialCtx.pipeline );
@@ -307,18 +308,21 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     }
     private initEnvBox(): void {
 
-        let material: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
-        this.useMaps(material, "box", false, false);
-        material.fogEnabled = true;
-
-        material.initializeLocalData();
-        material.initializeByCodeBuf(true);
+        // let material: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
+        // this.useMaps(material, "box", false, false);
+        // material.fogEnabled = true;
+        // material.initializeLocalData();
+        // material.initializeByCodeBuf(true);
 
         let envBox: Box3DEntity = new Box3DEntity();
         envBox.normalScale = -1.0;
-        envBox.setMaterial(material);
+        // envBox.setMaterial(material);
+
+        envBox.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        envBox.setMaterialPipeline(this.m_materialCtx.pipeline);
+
         envBox.showFrontFace();
-        envBox.initializeCube(4000.0);
+        envBox.initializeCube(4000.0, [this.m_materialCtx.getTextureByUrl("static/assets/disp/box_COLOR.png")]);
         this.m_engine.rscene.addEntity(envBox, 2);
     }
     private m_dispHeight: number = 10;

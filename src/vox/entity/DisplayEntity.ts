@@ -676,6 +676,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
         }
         this.m_globalBounds = null;
         this.m_localBounds = null;
+        this.m_pipeLine = null;
     }
     toString(): string {
         return "DisplayEntity(name=" + this.name + ",uid = " + this.m_uid + ", rseFlag = " + this.__$rseFlag + ")";

@@ -319,7 +319,7 @@ export class DemoParticleGroup {
         billGroup.setTime(0.0);
         this.m_flareBill = billGroup;
     }
-    private getUVParams(rn: number, cn: number): number[][] {
+    private getUVParamsByRNCN(rn: number, cn: number): number[][] {
 
         let dw: number = 1.0 / cn;
         let dh: number = 1.0 / rn;
@@ -336,7 +336,7 @@ export class DemoParticleGroup {
     private initBillGroup(textures: TextureProxy[]): void {
 
         let size: number = 100;
-        let params: number[][] = this.getUVParams(2, 2);
+        let params: number[][] = this.getUVParamsByRNCN(2, 2);
         //console.log("XXXX params: ",params);
         let tex: TextureProxy = textures[textures.length - 1];
         //let tex: TextureProxy = this.getImageTexByUrl("static/assets/particle/xuelie/xulie_00046.png");
