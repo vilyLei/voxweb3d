@@ -319,16 +319,28 @@ export class DemoParticleGroup {
         billGroup.setTime(0.0);
         this.m_flareBill = billGroup;
     }
+    private getUVParams(rn: number, cn: number): number[][] {
+
+        let dw: number = 1.0 / cn;
+        let dh: number = 1.0 / rn;
+        let trn: number = rn;
+        let tcn: number = cn;
+        let params: number[][] = [];
+        for(let i: number = 0; i < rn; ++i) {
+            for(let j: number = 0; j < cn; ++j) {
+                params.push([j * dw, i * dh, dw, dh]);
+            }
+        }
+        return params;
+    }
     private initBillGroup(textures: TextureProxy[]): void {
+        
         let size: number = 100;
-        let params: number[][] = [
-            [0.0, 0.0, 0.5, 0.5],
-            [0.5, 0.0, 0.5, 0.5],
-            [0.0, 0.5, 0.5, 0.5],
-            [0.5, 0.5, 0.5, 0.5]
-        ];
-        let tex: TextureProxy = textures[textures.length - 1];
-        //let tex: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
+        let params: number[][] = this.getUVParams(4, 4);
+        //console.log("XXXX params: ",params);
+        //let tex: TextureProxy = textures[textures.length - 1];
+        let tex: TextureProxy = this.getImageTexByUrl("static/assets/particle/xuelie/xulie_00046.png");
+        //let tex: TextureProxy = this.getImageTexByUrl("static/assets/xulie_00046.jpg");
         let total: number = 800;
         let billGroup: Billboard3DGroupEntity = new Billboard3DGroupEntity();
         billGroup.createGroup(total);

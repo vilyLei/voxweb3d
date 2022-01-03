@@ -30,6 +30,7 @@ class BillboardLine3DShaderBuffer extends ShaderCodeBuffer
         let fragCode0:string =
 `#version 300 es
 precision mediump float;
+#define FADE_VAR fv4;
 uniform sampler2D u_sampler0;
 in vec4 v_colorMult;
 in vec4 v_colorOffset;
@@ -45,7 +46,7 @@ float kf = v_texUV.z;
 kf = min(kf / v_fadeV.x, 1.0) * (1.0 - max((kf - v_fadeV.y)/(1.0 - v_fadeV.y),0.0));
 vec4 fv4 = vec4(v_colorMult.w * kf * v_fadeV.w);
 `;
-        let fadeCode:string = this.billFS.getBrnAndAlphaCode("fv4");
+        let fadeCode:string = this.billFS.getBrnAndAlphaCode();
         let fragCode2:string =
 `
 FragColor = color;

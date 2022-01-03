@@ -35,6 +35,7 @@ class ShaderCodeBuffer {
     lightEnabled: boolean = false;
     fogEnabled: boolean = false;
     envAmbientLightEnabled: boolean = false;
+    brightnessOverlayEnabeld: boolean = false;
 
     pipeTypes: MaterialPipeType[] = null;
     keysString: string = "";
@@ -96,12 +97,14 @@ class ShaderCodeBuffer {
         }
         this.m_texEnabled = texEnabled;
 
-        if (this.premultiplyAlpha) this.m_coder.addDefine("VOX_PREMULTIPLY_ALPHA");
-        if (this.vertColorEnabled) this.m_coder.addDefine("VOX_USE_VTX_COLOR");
 
         this.bufInitWithPipeline();
     }
-
+    buildDefine(): void {
+        if (this.premultiplyAlpha) this.m_coder.addDefine("VOX_PREMULTIPLY_ALPHA");
+        if (this.vertColorEnabled) this.m_coder.addDefine("VOX_USE_VTX_COLOR");
+        if (this.brightnessOverlayEnabeld) this.m_coder.addDefine("VOX_USE_BRIGHTNESS_OVERLAY_COLOR");
+    }
     buildPipelineParams(): void {
         if (this.pipeline != null) {
             if(this.pipeTypes == null) {

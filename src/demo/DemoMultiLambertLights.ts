@@ -104,7 +104,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         floatPointLight.light = pointLight;
         floatPointLight.displayEntity = this.createPointLightDisp(pointLight);
         this.m_lightEntities.push(floatPointLight);
-
+        
         let rotLightEntity: RotateYPointLightEntity;
         pointLight = this.m_materialCtx.lightModule.getPointLightAt(1);
         pointLight.color.setRGB3f(1.0, 0.0, 0.0);

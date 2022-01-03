@@ -109,8 +109,8 @@ export default class MaterialBase implements IRenderMaterial {
                     buf.initialize(texEnabled);
                 }
                 if (shdData == null) {
-
                     buf.buildShader();
+                    buf.buildDefine();
                     if (buf.pipeline != null) {
                         if(buf.getShaderCodeObject() != null) {
                             buf.pipeline.addShaderCode(buf.getShaderCodeObject(), false);

@@ -128,7 +128,6 @@ v_texUV.xy = (vec2(floor(fract(clipf) * temp.x), floor(clipf)) + a_uvs.xy) * tem
         let fragCodeHead: string =
             `#version 300 es
 precision mediump float;
-#define FADE_VAR v_factor
 `;
         if (this.premultiplyAlpha) fragCodeHead += "\n#define VOX_PREMULTIPLY_ALPHA";
         // for test...................begin
@@ -185,7 +184,7 @@ void main()
 `;
         }
         let fragCode2: string = this.m_billFS.getOffsetColorCode(this.m_hasOffsetColorTex);
-        let fadeCode: string = this.m_billFS.getBrnAndAlphaCode("v_factor");
+        let fadeCode: string = this.m_billFS.getBrnAndAlphaCode();
         let endCode: string =
             `
     #ifdef VOX_PREMULTIPLY_ALPHA

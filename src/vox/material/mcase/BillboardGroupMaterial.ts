@@ -28,12 +28,12 @@ precision mediump float;
 uniform sampler2D u_sampler0;
 in vec4 v_colorMult;
 in vec4 v_colorOffset;
-in vec2 v_texUV;
+in vec2 v_uv;
 layout(location = 0) out vec4 FragColor;
 void main()
 {
-    vec4 color = texture(u_sampler0, v_texUV);
-    //color.rgb = max(color.rgb * v_colorMult.xyz + v_colorOffset.xyz,0.0);
+    vec4 color = texture(u_sampler0, v_uv);
+    color.rgb = max(color.rgb * v_colorMult.xyz + v_colorOffset.xyz,0.0);
     FragColor = color;
 }
 `;
@@ -52,7 +52,7 @@ uniform mat4 u_projMat;
 uniform vec4 u_billParam[3];
 out vec4 v_colorMult;
 out vec4 v_colorOffset;
-out vec2 v_texUV;
+out vec2 v_uv;
 void main()
 {
     vec4 temp = u_billParam[0];
@@ -60,7 +60,7 @@ void main()
     vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz,1.0);
     pos.xy += vtx.xy;
     gl_Position =  u_projMat * pos;
-    v_texUV = a_uvs;
+    v_uv = a_uvs;
     v_colorMult = u_billParam[1];
     v_colorOffset = u_billParam[2];
 }
@@ -138,10 +138,6 @@ export default class BillboardGroupMaterial extends MaterialBase {
     }
 
     setRGBAOffset4f(pr: number, pg: number, pb: number, pa: number): void {
-        //this.m_colorOffset.r = pr;
-        //this.m_colorOffset.g = pg;
-        //this.m_colorOffset.b = pb;
-        //this.m_colorOffset.a = pa;
         this.m_uniformData[8] = pr;
         this.m_uniformData[9] = pg;
         this.m_uniformData[10] = pb;

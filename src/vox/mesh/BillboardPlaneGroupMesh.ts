@@ -155,10 +155,10 @@ export default class BillboardPlaneGroupMesh extends MeshBase {
         this.vtCount = this.m_ivs.length;
         this.vtxTotal = 4 * this.m_total;
         this.trisNumber = 2 * this.m_total;
-        console.log("vs: "+this.m_vs);
-        console.log("vs: "+this.m_vs2);
-        console.log("uvs: "+this.m_uvs);
-        console.log("ivs: "+this.m_ivs);
+        // console.log("vs: "+this.m_vs);
+        // console.log("vs: "+this.m_vs2);
+        // console.log("uvs: "+this.m_uvs);
+        // console.log("ivs: "+this.m_ivs);
         //  console.log("this.m_ivs.length: "+this.m_ivs.length);
         //  console.log("vtCount: "+this.vtCount);
         this.buildEnd();

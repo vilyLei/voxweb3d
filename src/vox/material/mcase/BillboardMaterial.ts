@@ -36,7 +36,7 @@ class BillboardShaderBuffer extends ShaderCodeBuffer {
                 fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG_EXP2);
                 fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG);
             }
-            if(fogEnabled) coder.addDefine("VOX_USE_BRIGHtNESS_OVERLAY_COLOR");
+            this.brightnessOverlayEnabeld = fogEnabled;
         }
 
         coder.addVertLayout("vec2","a_vs");
@@ -44,6 +44,7 @@ class BillboardShaderBuffer extends ShaderCodeBuffer {
         coder.addVarying("vec4","v_colorOffset");
         coder.addVarying("vec2","v_uv");
         coder.addVertUniform("vec4","u_billParam",3);
+        coder.addDefine("FADE_VAR","fv4");
 
         let fragCode0: string =
 `
@@ -51,7 +52,7 @@ class BillboardShaderBuffer extends ShaderCodeBuffer {
     vec3 offsetColor = v_colorOffset.rgb;
     vec4 fv4 = v_colorMult.wwww;
 `;
-        let fadeCode: string = this.billFS.getBrnAndAlphaCode("fv4");
+        let fadeCode: string = this.billFS.getBrnAndAlphaCode();
         let fragCode2: string =
             `
     FragColor0 = color;

@@ -15,7 +15,7 @@ export default class BillboardFSBase {
     setBrightnessAndAlpha(brightnessEnabled: boolean, alphaEnabled: boolean): void {
         this.m_brnAStatus = Number(brightnessEnabled) * 10 + Number(alphaEnabled);
     }
-    getBrnAndAlphaCode(factorNS: string = "v_texUV"): string {
+    getBrnAndAlphaCode(): string {
         let fadeCode: string;
         if (this.m_brnAStatus == 11) {
             fadeCode =

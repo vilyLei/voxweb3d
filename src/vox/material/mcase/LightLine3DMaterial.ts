@@ -27,6 +27,7 @@ class LightLine3DShaderBuffer extends ShaderCodeBuffer
         let fragCode0:string =
 `#version 300 es
 precision mediump float;
+#define FADE_VAR fv4
 uniform sampler2D u_sampler0;
 in vec4 v_colorMult;
 in vec4 v_colorOffset;
@@ -38,7 +39,7 @@ vec4 color = texture(u_sampler0, v_texUV);
 vec3 offsetColor = v_colorOffset.rgb;
 vec4 fv4 = v_colorMult.wwww;
 `;
-        let fadeCode:string = this.billFS.getBrnAndAlphaCode("fv4");
+        let fadeCode:string = this.billFS.getBrnAndAlphaCode();
         let fragCode2:string =
 `
 FragColor = color;
