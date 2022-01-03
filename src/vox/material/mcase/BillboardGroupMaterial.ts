@@ -72,58 +72,11 @@ class BillGroupShaderBuffer extends ShaderCodeBuffer {
 `
         );
     }
-    /*
-    getFragShaderCode(): string {
-        let fragCode: string =
-            `#version 300 es
-precision mediump float;
-uniform sampler2D u_sampler0;
-in vec4 v_colorMult;
-in vec4 v_colorOffset;
-in vec2 v_uv;
-layout(location = 0) out vec4 FragColor;
-void main()
-{
-    vec4 color = texture(u_sampler0, v_uv);
-    color.rgb = max(color.rgb * v_colorMult.xyz + v_colorOffset.xyz,0.0);
-    FragColor = color;
-}
-`;
-        return fragCode;
-    }
-    getVertShaderCode(): string {
-        let vtxCode: string =
-            `#version 300 es
-precision mediump float;
-layout(location = 0) in vec2 a_vs;
-layout(location = 1) in vec2 a_uvs;
-layout(location = 2) in vec3 a_vs2;
-uniform mat4 u_objMat;
-uniform mat4 u_viewMat;
-uniform mat4 u_projMat;
-uniform vec4 u_billParam[3];
-out vec4 v_colorMult;
-out vec4 v_colorOffset;
-out vec2 v_uv;
-void main()
-{
-    vec4 temp = u_billParam[0];
-    vec2 vtx = vec2(a_vs.x * temp.x, a_vs.y * temp.y);
-    vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz,1.0);
-    pos.xy += vtx.xy;
-    gl_Position =  u_projMat * pos;
-    v_uv = a_uvs;
-    v_colorMult = u_billParam[1];
-    v_colorOffset = u_billParam[2];
-}
-`;
-        return vtxCode;
-    }
-    //*/
+
     getUniqueShaderName(): string {
         let ns: string = this.m_uniqueName;
         ns += this.brightnessEnabled ? "Brn" : "Alp"
-        return this.m_uniqueName;
+        return ns;
     }
     toString(): string {
         return "[BillGroupShaderBuffer()]";
