@@ -11,14 +11,14 @@ import { UserInteraction } from "../vox/engine/UserInteraction";
 import { CommonMaterialContext } from "../materialLab/base/CommonMaterialContext";
 import { IShaderLibListener, MaterialContextParam, DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 import { DirectionLight } from "../light/base/DirectionLight";
+import EngineBase from "../vox/engine/EngineBase";
 
 export class RbtDrama implements IShaderLibListener {
     constructor() { }
 
     private m_rscene: RendererScene = null;
+    private m_engine: EngineBase = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-
-    private m_interaction: UserInteraction = new UserInteraction();
 
     private m_scene: SceneModule = new SceneModule();
 
@@ -88,7 +88,7 @@ export class RbtDrama implements IShaderLibListener {
 
     initialize(): void {
         console.log("RbtDrama::initialize()......");
-        if (this.m_rscene == null) {
+        if (this.m_engine == null) {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -96,18 +96,23 @@ export class RbtDrama implements IShaderLibListener {
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
             rparam.setAttriAlpha(false);
-            rparam.setAttriAntialias(true);
+            rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
             rparam.setCamProject(45.0, 30.0, 9000.0);
             rparam.setCamPosition(1800.0, 1800.0, 1800.0);
-            this.m_rscene = new RendererScene();
-            this.m_rscene.initialize(rparam, 5);
-            this.m_rscene.updateCamera();
-            this.m_interaction.initialize(this.m_rscene);
+
+            this.m_engine = new EngineBase();
+            this.m_engine.initialize(rparam, 5);
+            this.m_engine.setProcessIdListAt(0, [0,1,2,4]);
+            this.m_rscene = this.m_engine.rscene;
+            // this.m_rscene = new RendererScene();
+            // this.m_rscene.initialize(rparam, 5);
+            // this.m_rscene.updateCamera();
+            // this.m_interaction.initialize(this.m_rscene);
 
             this.m_statusDisp.initialize();
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
-
+            
             //this.initScene();
             this.initMaterialCtx();
             this.update();
@@ -119,8 +124,8 @@ export class RbtDrama implements IShaderLibListener {
     }
 
     private mouseDown(evt: any): void {
-        this.m_interaction.viewRay.intersectPlane();
-        let pv: Vector3D = this.m_interaction.viewRay.position;
+        this.m_engine.interaction.viewRay.intersectPlane();
+        let pv: Vector3D = this.m_engine.interaction.viewRay.position;
     }
 
     private m_timeoutId: any = -1;
@@ -135,12 +140,12 @@ export class RbtDrama implements IShaderLibListener {
     run(): void {
         this.m_statusDisp.update();
 
-        this.m_interaction.run();
         if (this.m_scene.shadowEnabled) {
             this.m_materialCtx.vsmModule.force = true;
             this.m_materialCtx.run();
         }
-
+        this.m_engine.run();
+        /*
         //this.m_rscene.run();
         this.m_rscene.runBegin();
         this.m_rscene.update();
@@ -151,6 +156,7 @@ export class RbtDrama implements IShaderLibListener {
         this.m_rscene.runAt(4);
 
         this.m_rscene.runEnd();
+        //*/
     }
 }
 export default RbtDrama;
