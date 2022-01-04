@@ -21,12 +21,13 @@ export default class TextRectMesh extends MeshBase {
     private m_height: number = 0;
     private m_charsTotal: number = 0;
     private m_charsStr: string = "";
-    //texCharTable:FontTexCharTable = null;
+
     flipVerticalUV: boolean = false;
     vtxUVEnabled: boolean = true;
     vertColorEnabled: boolean = false;
     alignFactorX: number = 0.5;
     alignFactorY: number = 0.5;
+
     fontSystem: H5FontSystem = null;
     getWidth(): number {
         return this.m_width;
@@ -43,7 +44,7 @@ export default class TextRectMesh extends MeshBase {
         this.m_charsTotal = charsTot;
         let expand: boolean = false;
         let fontSystem: H5FontSystem = this.fontSystem;
-        if(fontSystem == null) {
+        if (fontSystem == null) {
             fontSystem = H5FontSystem.GetInstance();
         }
         if (charsTot > 0) {
@@ -85,7 +86,7 @@ export default class TextRectMesh extends MeshBase {
                     this.m_uvs = new Float32Array(charsTot * 8);
                     this.m_vs = new Float32Array(charsTot * 8);
                 }
-                
+
                 for (; i < charsTot; ++i) {
                     charTable.getUV8AndSizeFromChar(charsStr.charAt(i), this.m_uvs, sizeArr, i * 8);
                     if (this.m_height < sizeArr[1]) {
@@ -170,5 +171,6 @@ export default class TextRectMesh extends MeshBase {
             this.m_uvs = null;
             super.__$destroy();
         }
+        this.fontSystem = null;
     }
 }

@@ -21,6 +21,7 @@ export default class TextBillboard3DEntity extends DisplayEntity {
     private m_alignFactorX: number = 0.5;
     private m_alignFactorY: number = 0.5;
     flipVerticalUV: boolean = false;
+    fontSystem: H5FontSystem = null;
     constructor(dynamicEnbaled: boolean = true) {
         super();
         this.m_dynamicEnbaled = dynamicEnbaled;
@@ -108,7 +109,8 @@ export default class TextBillboard3DEntity extends DisplayEntity {
     initialize(charsStr: string, texList: TextureProxy[] = null): void {
         this.m_charsStr = charsStr;
         if (texList == null) {
-            this.createMaterial([H5FontSystem.GetInstance().getTextureAt(0)]);
+            let tex: TextureProxy = this.fontSystem != null ? this.fontSystem.getTextureAt(0) : H5FontSystem.GetInstance().getTextureAt(0);
+            this.createMaterial([tex]);
         }
         else {
             this.createMaterial(texList);
@@ -121,6 +123,7 @@ export default class TextBillboard3DEntity extends DisplayEntity {
     protected __activeMesh(material: MaterialBase): void {
         if (this.getMesh() == null) {
             let mesh: TextRectMesh = new TextRectMesh();
+            mesh.fontSystem = this.fontSystem;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.alignFactorX = this.m_alignFactorX;
             mesh.alignFactorY = this.m_alignFactorY;
@@ -131,10 +134,16 @@ export default class TextBillboard3DEntity extends DisplayEntity {
         }
     }
     update(): void {
-        if (this.m_dynamicEnbaled && this.m_mesh.isGeomDynamic()) {
-            this.setIvsParam(0, this.m_mesh.vtCount);
+        if(this.m_transfrom != null) {
+            if (this.m_dynamicEnbaled && this.m_mesh.isGeomDynamic()) {
+                this.setIvsParam(0, this.m_mesh.vtCount);
+            }
+            this.m_transfrom.update();
         }
-        this.m_transfrom.update();
+    }
+    destroy(): void {
+        super.destroy();
+        this.fontSystem = null;
     }
     toString(): string {
         return "TextBillboard3DEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";
