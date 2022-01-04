@@ -13,7 +13,7 @@ import BillboardGroupShaderBuffer from "../../../vox/material/mcase/BillboardGro
 
 import IShaderCodeObject from "../IShaderCodeObject";
 import { BillboardGroupShaderCode } from "../mcase/glsl/BillboardGroupShaderCode";
-import { MaterialPipeType } from "../pipeline/MaterialPipeType";
+
 class BillboardFlareShaderBuffer extends BillboardGroupShaderBuffer {
 
     constructor() {
@@ -57,9 +57,9 @@ class BillboardFlareShaderBuffer extends BillboardGroupShaderBuffer {
         }
     }
     
-    getVertShaderCode(): string {
-        return this.m_coder.buildVertCode();
-    }
+    // getVertShaderCode(): string {
+    //     return this.m_coder.buildVertCode();
+    // }
     /*
     getVertShaderCode(): string {
         let paramTotal: number = this.m_clipEnabled ? 4 : 3;

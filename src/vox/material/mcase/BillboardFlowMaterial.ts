@@ -95,9 +95,9 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
         }
     }
     
-    getVertShaderCode(): string {
-        return this.m_coder.buildVertCode();
-    }
+    // getVertShaderCode(): string {
+    //     return this.m_coder.buildVertCode();
+    // }
     
     toString(): string {
         return "[BillboardFlowShaderBuffer()]";
