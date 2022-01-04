@@ -34,8 +34,6 @@ class SceneModule {
 
             AssetsModule.GetInstance().initialize(this.m_materialCtx);
 
-
-            
             this.init();
         }
     }
@@ -68,7 +66,7 @@ class SceneModule {
         this.m_roleBuilder.fogEnabled = this.fogEnabled;
         this.m_roleBuilder.terrain = this.m_terrain;
         this.m_roleBuilder.campModule = this.m_campModule;
-        
+
         this.m_roleBuilder.initialize(this.m_rscene, this.m_materialCtx);
 
         let total: number = 50;

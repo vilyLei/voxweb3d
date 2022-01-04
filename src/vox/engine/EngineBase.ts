@@ -16,6 +16,7 @@ import {IRendererSceneAccessor} from "../../vox/scene/IRendererSceneAccessor";
 class RendererSceneNode {
     private m_rscene: IRendererScene = null;
     priority: number = 0;
+    processIdList: number[] = null;
     contextResetEnabled: boolean = false;
     constructor(rscene: IRendererScene) {
         if (rscene == null) {
@@ -121,6 +122,11 @@ export class EngineBase {
     getRendererScenesTotal(): number {
         return this.m_sceneList.length;
     }
+    setProcessIdListAt(i: number, processIdList: number[]): void {
+        if (i >= 0 && i < this.m_sceneList.length) {
+            this.m_sceneList[i].processIdList = processIdList;
+        }
+    }
     setPriorityAt(i: number, priority: number): void {
         if (priority < 1) {
             throw Error("priority < 1 !!!");
@@ -207,7 +213,15 @@ export class EngineBase {
             node = list[i];
             scene = list[i].getRScene();
             scene.renderBegin(node.contextResetEnabled);
-            scene.run(false);
+            const idList: number[] = node.processIdList;
+            if(idList == null) {
+                scene.run(false);
+            }
+            else {
+                for(let j: number = 0; j < idList.length; ++j) {
+                    scene.runAt(idList[j]);
+                }
+            }
             scene.runEnd();
         }
     }
