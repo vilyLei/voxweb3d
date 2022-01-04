@@ -11,6 +11,7 @@ color.xyz += u_fragLocalParams[1].xyz;
     color.xyz *= v_cv.xyz;
 #endif
 
+vec3 ao = vec3(1.0);
 vec2 texUV = v_uv.xy;
 #ifdef VOX_LIGHT_LOCAL_PARAMS_INDEX
     vec4 param;
@@ -31,6 +32,10 @@ vec2 texUV = v_uv.xy;
         #ifdef VOX_NORMAL_MAP
             N = normalize(getNormalFromMap(VOX_NORMAL_MAP, texUV, worldNormal.xyz));
         #endif
+    #endif
+
+    #ifdef VOX_AO_MAP
+        ao = VOX_Texture2D(VOX_AO_MAP, texUV).yyy;
     #endif
 
     int lightParamIndex = VOX_LIGHT_LOCAL_PARAMS_INDEX;
@@ -60,15 +65,15 @@ vec2 texUV = v_uv.xy;
     #ifdef VOX_ENV_AMBIENT_LIGHT_LIGHT_MAP
         param4 = u_envLightParams[4];
         param4.xyz = color.xyz * VOX_Texture2D(VOX_ENV_AMBIENT_LIGHT_LIGHT_MAP, (param4.xy + worldPosition.xz) / param4.zw).xyz;
-        destColor.xyz += param4.xyz * u_envLightParams[0].xyz;
+        destColor.xyz += param4.xyz * u_envLightParams[0].xyz * ao;
     #endif
     color.xyz = color.xyz * param.z + param.w * destColor;
+#else
+    #ifdef VOX_AO_MAP
+        ao = VOX_Texture2D(VOX_AO_MAP, texUV).yyy;
+    #endif
 #endif
 
-vec3 ao = vec3(1.0);
-#ifdef VOX_AO_MAP
-    ao = VOX_Texture2D(VOX_AO_MAP, texUV).yyy;
-#endif
 color.xyz *= ao;
 color.xyz += u_fragLocalParams[ VOX_LIGHT_LOCAL_PARAMS_INDEX + 2 ].xyz * ao;
 
