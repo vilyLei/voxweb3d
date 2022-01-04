@@ -10,6 +10,8 @@ import { CommonMaterialContext } from "../../../materialLab/base/CommonMaterialC
 import { RoleBuilder } from "./RoleBuilder";
 import Box3DEntity from "../../../vox/entity/Box3DEntity";
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
+import TextBillboard3DEntity from "../../../vox/text/TextBillboard3DEntity";
+import H5FontSystem from "../../../vox/text/H5FontSys";
 
 class SceneModule {
 
@@ -37,8 +39,16 @@ class SceneModule {
             this.init();
         }
     }
-    
+    private m_loadingEntity: TextBillboard3DEntity;
     private init(): void {
+        
+        H5FontSystem.GetInstance().setRenderProxy(this.m_rscene.getRenderProxy());
+        H5FontSystem.GetInstance().initialize("fontTex", 32, 512, 512, false, true);
+
+        this.m_loadingEntity = new TextBillboard3DEntity();
+        this.m_loadingEntity.initialize("resource loading 100%");
+        this.m_loadingEntity.setScaleXY(2.0, 2.0);
+        this.m_rscene.addEntity( this.m_loadingEntity );
 
         let axis: Axis3DEntity = new Axis3DEntity();
         axis.initialize(300.0);
@@ -105,7 +115,7 @@ class SceneModule {
 
             this.m_loaded = true;
             this.statusInfo = "";
-            this.initScene();
+            // this.initScene();
         }
     }
 }

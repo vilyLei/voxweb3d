@@ -145,7 +145,4 @@ export default class TextBillboard3DEntity extends DisplayEntity {
         super.destroy();
         this.fontSystem = null;
     }
-    toString(): string {
-        return "TextBillboard3DEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";
-    }
 }
