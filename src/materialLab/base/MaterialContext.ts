@@ -39,6 +39,7 @@ class MaterialContextParam {
 class MaterialContext {
 
     private m_initFlag: boolean = true;
+    private m_texLoader: ImageTextureLoader = null;
     private m_param: MaterialContextParam;
     protected m_rscene: RendererScene = null;
     /**
@@ -62,13 +63,15 @@ class MaterialContext {
      */
     static readonly ShaderLib: ShaderLib = new ShaderLib();
     
-    private m_texLoader: ImageTextureLoader = null;
     constructor() { }
 
     addShaderLibListener(listener: IShaderLibListener): void {
         if(MaterialContext.ShaderLib != null) {
             MaterialContext.ShaderLib.setListener(listener);
         }
+    }
+    getTextureLoader(): ImageTextureLoader {
+        return this.m_texLoader;
     }
     
     isTextureLoadedAll(): boolean {

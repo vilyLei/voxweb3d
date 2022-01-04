@@ -23,6 +23,7 @@ class SceneModule {
     private m_terrain: TerrainModule = new TerrainModule();
     private m_roleBuilder: RoleBuilder = new RoleBuilder();
     private m_materialCtx: CommonMaterialContext;
+    private m_waitingTotal: number = 0;
 
     envAmbientLightEnabled: boolean = true;
     shadowEnabled: boolean = true;
@@ -35,7 +36,8 @@ class SceneModule {
             this.m_materialCtx = materialCtx;
 
             AssetsModule.GetInstance().initialize(this.m_materialCtx);
-
+            this.m_waitingTotal = this.m_materialCtx.getTextureLoader().getWaitTotal();
+            console.log("xxx this.m_waitingTotal: ",this.m_waitingTotal);
             this.init();
         }
     }
@@ -47,7 +49,8 @@ class SceneModule {
 
         this.m_loadingEntity = new TextBillboard3DEntity();
         this.m_loadingEntity.initialize("resource loading 100%");
-        this.m_loadingEntity.setScaleXY(2.0, 2.0);
+        this.m_loadingEntity.setXYZ(0.0,-260.0, 0.0);
+        this.m_loadingEntity.setScaleXY(3.0, 3.0);
         this.m_rscene.addEntity( this.m_loadingEntity );
 
         let axis: Axis3DEntity = new Axis3DEntity();
@@ -104,18 +107,32 @@ class SceneModule {
         this.m_rscene.addEntity(envBox, 4);
     }
     private m_loaded: boolean = false;
-    statusInfo: string = "(加载资源...)";
+    
     run(): void {
 
         if(this.m_loaded) {
             this.m_campModule.run();
             RunnableModule.Run();
+            if(this.m_loadingEntity != null) {
+                this.m_rscene.removeEntity( this.m_loadingEntity );
+                this.m_loadingEntity = null;
+                this.initScene();
+            }
         }
-        else if(this.m_materialCtx.isTextureLoadedAll()) {
-
-            this.m_loaded = true;
-            this.statusInfo = "";
-            // this.initScene();
+        else {
+            if(this.m_materialCtx.isTextureLoadedAll()) {
+                this.m_loaded = true;
+                this.m_loadingEntity.setText("resource loading 100%");
+                this.m_loadingEntity.updateMeshToGpu();
+                this.m_loadingEntity.update();
+            }
+            else {
+                let f: number = (this.m_waitingTotal - this.m_materialCtx.getTextureLoader().getWaitTotal()) / this.m_waitingTotal;
+                console.log("xxx f: ",f);
+                this.m_loadingEntity.setText("resource loading " + Math.round(f * 100) + "%");
+                this.m_loadingEntity.updateMeshToGpu();
+                this.m_loadingEntity.update();
+            }
         }
     }
 }

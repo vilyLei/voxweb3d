@@ -451,6 +451,9 @@ export default class ImageTextureLoader implements IRunnable {
             }
         }
     }
+    getWaitTotal(): number {
+        return this.m_waitLoadList.length;
+    }
     isLoadedAll(): boolean {
         return this.m_waitLoadList.length < 1;
     }

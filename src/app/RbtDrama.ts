@@ -134,7 +134,6 @@ export class RbtDrama implements IShaderLibListener {
             clearTimeout(this.m_timeoutId);
         }
         this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
-        this.m_statusDisp.statusInfo = this.m_scene.statusInfo;
         this.m_scene.run();
     }
     run(): void {
