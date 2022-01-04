@@ -145,8 +145,6 @@
 
 //  import {DemoParticleClips as Demo} from "./demo/DemoParticleClips";
 
-//  import {DemoFontText as Demo} from "./demo/DemoFontText";
-
 //  import {DemoLockDrawEntity as Demo} from "./demo/DemoLockDrawEntity";
 
 //  import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
@@ -395,7 +393,7 @@
 
 //  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
-import {RbtDrama as Demo} from "./app/RbtDrama";
+//  import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {SlickRoad as Demo} from "./app/SlickRoad";
 
@@ -414,6 +412,8 @@ import {RbtDrama as Demo} from "./app/RbtDrama";
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     UI     ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+import {DemoFontText as Demo} from "./demo/DemoFontText";
 
 //  import {DemoOrthoBtn as Demo} from "./orthoui/demos/DemoOrthoBtn";
 
