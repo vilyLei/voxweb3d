@@ -23,7 +23,7 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
     direcEnabled: boolean = false;
     // 因为速度增加，在x轴方向缩放(拉长或者缩短)
     spdScaleEnabled: boolean = false;
-    brightnessEnabled: boolean = false;
+    //brightnessEnabled: boolean = false;
     constructor() {
         super();
     }
@@ -41,24 +41,24 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
             this.m_uniqueName += "_D";
             if (this.spdScaleEnabled) this.m_uniqueName += "SpdScale";
         }
-        if (this.clipMixEnabled) this.m_uniqueName += "Mix";
+        //if (this.clipMixEnabled) this.m_uniqueName += "Mix";
         if (this.premultiplyAlpha) this.m_uniqueName += "PreMAlpha";
-        this.m_uniqueName += this.brightnessEnabled ? "Brn": "Alp";
-        this.adaptationShaderVersion = !this.m_coderEnabled;
+        //this.m_uniqueName += this.brightnessEnabled ? "Brn": "Alp";
+        //this.adaptationShaderVersion = !this.m_coderEnabled;
     }
     
     buildVertShd(): void {
 
         let coder = this.m_coder;
-        console.log("TTTT brightnessEnabled: ",this.brightnessEnabled, "premultiplyAlpha: ",this.premultiplyAlpha);
-        if(this.brightnessEnabled) {
-            let fogEnabled: boolean = this.fogEnabled;
-            if(this.pipeline != null) {
-                fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG_EXP2);
-                fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG);
-            }
-            this.brightnessOverlayEnabeld = fogEnabled;
-        }
+        
+        // if(this.brightnessEnabled) {
+        //     let fogEnabled: boolean = this.fogEnabled;
+        //     if(this.pipeline != null) {
+        //         fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG_EXP2);
+        //         fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG);
+        //     }
+        //     this.brightnessOverlayEnabeld = fogEnabled;
+        // }
 
         coder.addVertLayout("vec4", "a_vs");
         coder.addVertLayout("vec2", "a_uvs");

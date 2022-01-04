@@ -11,15 +11,56 @@ import Color4 from "../../../vox/material/Color4";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import BillboardGroupShaderBuffer from "../../../vox/material/mcase/BillboardGroupShaderBuffer";
 
+import IShaderCodeObject from "../IShaderCodeObject";
+import { BillboardGroupShaderCode } from "../mcase/glsl/BillboardGroupShaderCode";
+import { MaterialPipeType } from "../pipeline/MaterialPipeType";
 class BillboardFlareShaderBuffer extends BillboardGroupShaderBuffer {
+
     constructor() {
         super();
     }
     initialize(texEnabled: boolean): void {
         super.initialize( texEnabled );
-        this.m_uniqueName = "BillboardFlareShader" + (this.clipMixEnabled ? "Mix" : "");
+        this.m_uniqueName = "flare_"+this.m_uniqueName;
     }
+    buildVertShd(): void {
 
+        let coder = this.m_coder;
+        
+        coder.addVertLayout("vec4", "a_vs");
+        coder.addVertLayout("vec2", "a_uvs");
+        coder.addVertLayout("vec4", "a_vs2");
+        coder.addVertLayout("vec4", "a_uvs2");
+
+        let paramTotal: number = this.m_clipEnabled ? 4 : 3;
+        coder.addVertUniform("vec4", "u_billParam", paramTotal);
+
+        if (this.m_clipEnabled) coder.addDefine("BILL_PARAM_INDEX", "3");
+
+    }
+    
+    getShaderCodeObject(): IShaderCodeObject {
+        if(this.pipeline != null || this.m_coderEnabled) {
+            return BillboardGroupShaderCode;
+        }
+        return super.getShaderCodeObject();
+    }
+    buildShader(): void {
+        
+        if(this.pipeline != null || this.m_coderEnabled) {
+            this.m_coder.autoBuildHeadCodeEnabled = false;
+            this.buildFragShd();
+            this.buildVertShd();
+            if (this.pipeline == null) {
+                this.m_coder.addShaderObject( BillboardGroupShaderCode );
+            }
+        }
+    }
+    
+    getVertShaderCode(): string {
+        return this.m_coder.buildVertCode();
+    }
+    /*
     getVertShaderCode(): string {
         let paramTotal: number = this.m_clipEnabled ? 4 : 3;
         let vtxCode: string =
@@ -40,19 +81,23 @@ out vec4 v_factor;
 void main()
 {
 vec4 temp = u_billParam[0];
+
 float kf = fract(a_uvs2.w * temp.z/a_uvs2.x);
 float fi = kf;
 kf = min(kf/a_uvs2.y,1.0) * (1.0 - max((kf-a_uvs2.z)/(1.0 - a_uvs2.z),0.0));
+
 vec2 vtx = a_vs.xy * temp.xy * vec2(a_vs.z + kf * a_vs.w);
-vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz,1.0);
-pos.xy += vtx.xy;
-gl_Position =  u_projMat * pos;
+
+viewPosition = u_viewMat * u_objMat * vec4(a_vs2.xyz,1.0);
+viewPosition.xy += vtx.xy;
+gl_Position =  u_projMat * viewPosition;
 v_factor = vec4(0.0,0.0, kf * a_vs2.w,fi);
 `;
 
         // return vtxCode + this.getVSEndCode(3);
         return vtxCode;// + this.getVSEndCode(3);
     }
+    //*/
     toString(): string {
         return "[BillboardFlareShaderBuffer()]";
     }
@@ -89,11 +134,15 @@ export default class BillboardFlareMaterial extends MaterialBase {
     private m_color: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
     private m_brightness: number = 1.0;
 
-    getCodeBuf(): ShaderCodeBuffer {
+    protected buildBuf(): void {
+
         let buf: BillboardFlareShaderBuffer = BillboardFlareShaderBuffer.GetInstance();
         buf.clipMixEnabled = this.m_clipMixEnabled;
+        buf.brightnessEnabled = this.m_brightnessEnabled;
         buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled, this.m_clipEnabled, this.getTextureTotal() > 1);
-        return buf;
+    }
+    getCodeBuf(): ShaderCodeBuffer {
+        return BillboardFlareShaderBuffer.GetInstance();
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();

@@ -17,6 +17,7 @@
 
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import BillboardFSBase from "../../../vox/material/mcase/BillboardFSBase";
+import { MaterialPipeType } from "../pipeline/MaterialPipeType";
 
 export default class BillboardGroupShaderBuffer extends ShaderCodeBuffer {
 
@@ -29,6 +30,7 @@ export default class BillboardGroupShaderBuffer extends ShaderCodeBuffer {
     protected m_coderEnabled: boolean = false;
     protected m_uniqueName: string = "";
     clipMixEnabled: boolean = false;
+    brightnessEnabled: boolean = false;
 
     constructor() {
         super();
@@ -36,6 +38,10 @@ export default class BillboardGroupShaderBuffer extends ShaderCodeBuffer {
     initialize(texEnabled: boolean): void {
         super.initialize(texEnabled);
         this.m_uniqueName = "BillboardGroupShader";
+        if (this.clipMixEnabled) this.m_uniqueName += "Mix";
+        this.m_uniqueName += this.brightnessEnabled ? "Brn": "Alp";
+        
+        this.adaptationShaderVersion = !this.m_coderEnabled;
     }
     setParam(brightnessEnabled: boolean, alphaEnabled: boolean, clipEnabled: boolean, hasOffsetColorTex: boolean): void {
         this.m_brightnessEnabled = brightnessEnabled;
@@ -95,6 +101,15 @@ v_texUV.xy = (vec2(floor(fract(clipf) * temp.x), floor(clipf)) + a_uvs.xy) * tem
 //     }
 
     buildFragShd(): void {
+        
+        if(this.brightnessEnabled) {
+            let fogEnabled: boolean = this.fogEnabled;
+            if(this.pipeline != null) {
+                fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG_EXP2);
+                fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG);
+            }
+            this.brightnessOverlayEnabeld = fogEnabled;
+        }
 
         let coder = this.m_coder;
         this.m_uniform.addDiffuseMap();
@@ -124,7 +139,7 @@ v_texUV.xy = (vec2(floor(fract(clipf) * temp.x), floor(clipf)) + a_uvs.xy) * tem
         if(this.pipeline != null || this.m_coderEnabled) {
             return this.m_coder.buildFragCode();
         }
-
+        /*
         let fragCodeHead: string =
             `#version 300 es
 precision mediump float;
@@ -196,6 +211,7 @@ void main()
 }
 `;
         return fragCodeHead + fragCode0 + fragCode1 + fragCode2 + fadeCode + endCode;
+        //*/
     }
     getVertShaderCode(): string {
         return ""

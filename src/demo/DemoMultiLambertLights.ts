@@ -138,11 +138,12 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     }
     private createPointLightDisp(pointLight: PointLight): Billboard3DEntity {
 
+        let size: number = 60.0;
         let billboard: Billboard3DEntity = new Billboard3DEntity();
         billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
         billboard.setMaterialPipeline(this.m_materialCtx.pipeline);
         billboard.toBrightnessBlend();
-        billboard.initialize(60.0, 60.0, [this.m_materialCtx.getTextureByUrl("static/assets/flare_core_03.jpg")]);
+        billboard.initialize(size, size, [this.m_materialCtx.getTextureByUrl("static/assets/flare_core_03.jpg")]);
         billboard.setPosition(pointLight.position);
         billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
         this.m_engine.rscene.addEntity(billboard, 3);
@@ -196,11 +197,12 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         // box.setXYZ(-200,50,200);
         // this.m_engine.rscene.addEntity(box);
 
+        let radius: number = 1.0;
         let sph02: Sphere3DEntity = new Sphere3DEntity();
         sph02.pipeTypes = [MaterialPipeType.FOG_EXP2];
         sph02.setMaterialPipeline(this.m_materialCtx.pipeline);
-        sph02.initialize(30, 20, 20, [this.m_materialCtx.getTextureByUrl("static/assets/color_02.jpg")]);
-        sph02.setXYZ(-350, -170, 350);
+        sph02.initialize(radius, 20, 20, [this.m_materialCtx.getTextureByUrl("static/assets/color_02.jpg")]);
+        sph02.setXYZ(-350, -170 + radius, 350);
         this.m_engine.rscene.addEntity(sph02);
 
         let crossAxis: Axis3DEntity = new Axis3DEntity();
