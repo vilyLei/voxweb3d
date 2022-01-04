@@ -194,7 +194,12 @@
     #ifdef VOX_ABSORB
         specularColor *= vec3(reflectionIntensity);
     #endif
+    
     vec3 Lo = rL.diffuse * diffuse + specularColor;
+    #ifdef VOX_ENV_AMBIENT_LIGHT_LIGHT_MAP
+        param4 = u_envLightParams[4];
+        Lo += diffuse * VOX_Texture2D(VOX_ENV_AMBIENT_LIGHT_LIGHT_MAP, (param4.xy + worldPosition.xz) / param4.zw).xyz;
+    #endif
     
     // ambient lighting (note that the next IBL tutorial will replace
     // this ambient lighting with environment lighting).
@@ -226,11 +231,6 @@
         #else
         vec4 mirrorColor4 = ao * VOX_Texture2D(VOX_MIRROR_PROJ_MAP, (gl_FragCoord.xy/u_stageParam.zw) + (N  * vec3(0.02)).xy);
         #endif
-        // // for test
-        // mirrorColor4 = VOX_Texture2D(VOX_MIRROR_PROJ_MAP, gl_FragCoord.xy/u_stageParam.zw);
-        // FragColor0 = mirrorColor4;
-        // return;
-
         factorY = mix(1.0, factorY, glossinessSquare);
         color.xyz = mix(mirrorColor4.xyz, color.xyz, factorY);
     #endif

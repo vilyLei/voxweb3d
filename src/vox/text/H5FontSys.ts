@@ -250,8 +250,9 @@ class H5FontSystem {
   getFontSize(): number {
     return this.m_fontSize;
   }
+  mobileEnabled: boolean = true;
   initialize(canvas_id_name: string, fontSize: number = 10, texWidth: number = 512, texHeight: number = 512, canvas_visible: boolean = false, mipmapEnabled: boolean = false) {
-    if (RendererDevice.IsMobileWeb()) {
+    if (this.mobileEnabled && RendererDevice.IsMobileWeb()) {
       fontSize *= 2;
       texWidth = texHeight = texHeight * 2;
     }
