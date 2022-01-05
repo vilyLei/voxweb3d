@@ -163,7 +163,7 @@ export class DemoParticleEruption {
         this.initEnvBox();
         
         //this.initializeEffect();
-        //this.initBillGroup();
+        this.initBillGroup();
 
     }
     

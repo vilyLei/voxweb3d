@@ -11,9 +11,6 @@ import Color4 from "../../../vox/material/Color4";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import BillboardGroupShaderBuffer from "../../../vox/material/mcase/BillboardGroupShaderBuffer";
 
-import IShaderCodeObject from "../IShaderCodeObject";
-import { BillboardGroupShaderCode } from "../mcase/glsl/BillboardGroupShaderCode";
-
 class BillboardFlareShaderBuffer extends BillboardGroupShaderBuffer {
 
     constructor() {
@@ -39,23 +36,6 @@ class BillboardFlareShaderBuffer extends BillboardGroupShaderBuffer {
 
     }
     
-    getShaderCodeObject(): IShaderCodeObject {
-        if(this.pipeline != null || this.m_coderEnabled) {
-            return BillboardGroupShaderCode;
-        }
-        return super.getShaderCodeObject();
-    }
-    buildShader(): void {
-        
-        if(this.pipeline != null || this.m_coderEnabled) {
-            this.m_coder.autoBuildHeadCodeEnabled = false;
-            this.buildFragShd();
-            this.buildVertShd();
-            if (this.pipeline == null) {
-                this.m_coder.addShaderObject( BillboardGroupShaderCode );
-            }
-        }
-    }
     
     // getVertShaderCode(): string {
     //     return this.m_coder.buildVertCode();

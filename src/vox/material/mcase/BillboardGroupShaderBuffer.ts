@@ -23,13 +23,13 @@ import { BillboardGroupShaderCode } from "../mcase/glsl/BillboardGroupShaderCode
 
 export default class BillboardGroupShaderBuffer extends ShaderCodeBuffer {
 
-    private m_billFS: BillboardFSBase = new BillboardFSBase();
+    private static s_billFS: BillboardFSBase = new BillboardFSBase();
     protected m_clipEnabled: boolean = false;
     protected m_hasOffsetColorTex: boolean = false;
     protected m_useRawUVEnabled: boolean = false
     protected m_brightnessEnabled: boolean = false;
     
-    protected m_coderEnabled: boolean = false;
+    //protected m_coderEnabled: boolean = false;
     protected m_uniqueName: string = "";
     clipMixEnabled: boolean = false;
     brightnessEnabled: boolean = false;
@@ -43,31 +43,27 @@ export default class BillboardGroupShaderBuffer extends ShaderCodeBuffer {
         if (this.clipMixEnabled) this.m_uniqueName += "Mix";
         this.m_uniqueName += this.brightnessEnabled ? "Brn": "Alp";
 
-        this.adaptationShaderVersion = !this.m_coderEnabled;
+        this.adaptationShaderVersion = false;//!this.m_coderEnabled;
     }
     setParam(brightnessEnabled: boolean, alphaEnabled: boolean, clipEnabled: boolean, hasOffsetColorTex: boolean): void {
         this.m_brightnessEnabled = brightnessEnabled;
-        this.m_billFS.setBrightnessAndAlpha(brightnessEnabled, alphaEnabled);
+        BillboardGroupShaderBuffer.s_billFS.setBrightnessAndAlpha(brightnessEnabled, alphaEnabled);
         this.m_clipEnabled = clipEnabled;
         this.m_hasOffsetColorTex = hasOffsetColorTex;
     }
     buildVertShd(): void {
     }
     getShaderCodeObject(): IShaderCodeObject {
-        if(this.pipeline != null || this.m_coderEnabled) {
-            return BillboardGroupShaderCode;
-        }
-        return super.getShaderCodeObject();
+        return BillboardGroupShaderCode;
+        //return super.getShaderCodeObject();
     }
     buildShader(): void {
         
-        if(this.pipeline != null || this.m_coderEnabled) {
-            this.m_coder.autoBuildHeadCodeEnabled = false;
-            this.buildFragShd();
-            this.buildVertShd();
-            if (this.pipeline == null) {
-                this.m_coder.addShaderObject( BillboardGroupShaderCode );
-            }
+        this.m_coder.autoBuildHeadCodeEnabled = false;
+        this.buildFragShd();
+        this.buildVertShd();
+        if (this.pipeline == null) {
+            this.m_coder.addShaderObject( BillboardGroupShaderCode );
         }
     }
 
@@ -153,14 +149,14 @@ v_texUV.xy = (vec2(floor(fract(clipf) * temp.x), floor(clipf)) + a_uvs.xy) * tem
             }
         }
         coder.addDefine("FADE_VAR", "v_factor");
-        coder.addDefine("FADE_STATUS", "" + this.m_billFS.getBrnAlphaStatus());
+        coder.addDefine("FADE_STATUS", "" + BillboardGroupShaderBuffer.s_billFS.getBrnAlphaStatus());
         
     }
     getFragShaderCodeTT(): string {
-
-        if(this.pipeline != null || this.m_coderEnabled) {
-            return this.m_coder.buildFragCode();
-        }
+        return "";
+        // if(this.pipeline != null || this.m_coderEnabled) {
+        //     return this.m_coder.buildFragCode();
+        // }
         /*
         let fragCodeHead: string =
             `#version 300 es
@@ -239,7 +235,7 @@ void main()
     //     return ""
     // }
     getUniqueShaderName(): string {
-        let ns: string = this.m_uniqueName + "_" + this.m_billFS.getBrnAlphaStatus();
+        let ns: string = this.m_uniqueName + "_" + BillboardGroupShaderBuffer.s_billFS.getBrnAlphaStatus();
         if (this.m_hasOffsetColorTex && this.m_clipEnabled) {
             ns += "ClipColorTex";
         }        

@@ -5,16 +5,16 @@
 /*                                                                         */
 /***************************************************************************/
 
-import MathShaderCode from "../../../vox/material/code/MathShaderCode";
+// import MathShaderCode from "../../../vox/material/code/MathShaderCode";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import Color4 from "../../../vox/material/Color4";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import BillboardGroupShaderBuffer from "../../../vox/material/mcase/BillboardGroupShaderBuffer";
 
-import IShaderCodeObject from "../IShaderCodeObject";
-import { BillboardGroupShaderCode } from "../mcase/glsl/BillboardGroupShaderCode";
-import { MaterialPipeType } from "../pipeline/MaterialPipeType";
+// import IShaderCodeObject from "../IShaderCodeObject";
+// import { BillboardGroupShaderCode } from "../mcase/glsl/BillboardGroupShaderCode";
+// import { MaterialPipeType } from "../pipeline/MaterialPipeType";
 
 
 class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
@@ -30,7 +30,7 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
 
     initialize(texEnabled: boolean): void {
 
-        this.m_coderEnabled = true;
+        //this.m_coderEnabled = true;
         super.initialize(texEnabled);
         this.m_uniqueName = "flow_"+this.m_uniqueName;
         if (this.playOnce && this.direcEnabled) {
@@ -77,23 +77,23 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
 
     }
     
-    getShaderCodeObject(): IShaderCodeObject {
-        if(this.pipeline != null || this.m_coderEnabled) {
-            return BillboardGroupShaderCode;
-        }
-        return super.getShaderCodeObject();
-    }
-    buildShader(): void {
+    // getShaderCodeObject(): IShaderCodeObject {
+    //     if(this.pipeline != null || this.m_coderEnabled) {
+    //         return BillboardGroupShaderCode;
+    //     }
+    //     return super.getShaderCodeObject();
+    // }
+    // buildShader(): void {
         
-        if(this.pipeline != null || this.m_coderEnabled) {
-            this.m_coder.autoBuildHeadCodeEnabled = false;
-            this.buildFragShd();
-            this.buildVertShd();
-            if (this.pipeline == null) {
-                this.m_coder.addShaderObject( BillboardGroupShaderCode );
-            }
-        }
-    }
+    //     if(this.pipeline != null || this.m_coderEnabled) {
+    //         this.m_coder.autoBuildHeadCodeEnabled = false;
+    //         this.buildFragShd();
+    //         this.buildVertShd();
+    //         if (this.pipeline == null) {
+    //             this.m_coder.addShaderObject( BillboardGroupShaderCode );
+    //         }
+    //     }
+    // }
     
     // getVertShaderCode(): string {
     //     return this.m_coder.buildVertCode();
