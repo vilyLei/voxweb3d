@@ -17,8 +17,8 @@ class BillboardFlareShaderBuffer extends BillboardGroupShaderBuffer {
         super();
     }
     initialize(texEnabled: boolean): void {
-        super.initialize( texEnabled );
-        this.m_uniqueName = "flare_"+this.m_uniqueName;
+        super.initialize(texEnabled);
+        this.m_uniqueName = "flare_" + this.m_uniqueName;
     }
     buildVertShd(): void {
 
@@ -34,52 +34,6 @@ class BillboardFlareShaderBuffer extends BillboardGroupShaderBuffer {
 
         if (this.m_clipEnabled) coder.addDefine("BILL_PARAM_INDEX", "3");
 
-    }
-    
-    
-    // getVertShaderCode(): string {
-    //     return this.m_coder.buildVertCode();
-    // }
-    /*
-    getVertShaderCode(): string {
-        let paramTotal: number = this.m_clipEnabled ? 4 : 3;
-        let vtxCode: string =
-            `#version 300 es
-precision mediump float;
-layout(location = 0) in vec4 a_vs;
-layout(location = 1) in vec2 a_uvs;
-layout(location = 2) in vec4 a_vs2;
-layout(location = 3) in vec4 a_uvs2;
-uniform mat4 u_objMat;
-uniform mat4 u_viewMat;
-uniform mat4 u_projMat;
-uniform vec4 u_billParam[`+ paramTotal + `];
-out vec4 v_colorMult;
-out vec4 v_colorOffset;
-out vec4 v_texUV;
-out vec4 v_factor;
-void main()
-{
-vec4 temp = u_billParam[0];
-
-float kf = fract(a_uvs2.w * temp.z/a_uvs2.x);
-float fi = kf;
-kf = min(kf/a_uvs2.y,1.0) * (1.0 - max((kf-a_uvs2.z)/(1.0 - a_uvs2.z),0.0));
-
-vec2 vtx = a_vs.xy * temp.xy * vec2(a_vs.z + kf * a_vs.w);
-
-viewPosition = u_viewMat * u_objMat * vec4(a_vs2.xyz,1.0);
-viewPosition.xy += vtx.xy;
-gl_Position =  u_projMat * viewPosition;
-v_factor = vec4(0.0,0.0, kf * a_vs2.w,fi);
-`;
-
-        // return vtxCode + this.getVSEndCode(3);
-        return vtxCode;// + this.getVSEndCode(3);
-    }
-    //*/
-    toString(): string {
-        return "[BillboardFlareShaderBuffer()]";
     }
     private static s_instance: BillboardFlareShaderBuffer = new BillboardFlareShaderBuffer();
     static GetInstance(): BillboardFlareShaderBuffer {

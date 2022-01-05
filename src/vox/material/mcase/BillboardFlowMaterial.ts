@@ -5,17 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-// import MathShaderCode from "../../../vox/material/code/MathShaderCode";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import Color4 from "../../../vox/material/Color4";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import BillboardGroupShaderBuffer from "../../../vox/material/mcase/BillboardGroupShaderBuffer";
-
-// import IShaderCodeObject from "../IShaderCodeObject";
-// import { BillboardGroupShaderCode } from "../mcase/glsl/BillboardGroupShaderCode";
-// import { MaterialPipeType } from "../pipeline/MaterialPipeType";
-
 
 class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
 
@@ -23,16 +17,15 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
     direcEnabled: boolean = false;
     // 因为速度增加，在x轴方向缩放(拉长或者缩短)
     spdScaleEnabled: boolean = false;
-    //brightnessEnabled: boolean = false;
+
     constructor() {
         super();
     }
 
     initialize(texEnabled: boolean): void {
 
-        //this.m_coderEnabled = true;
         super.initialize(texEnabled);
-        this.m_uniqueName = "flow_"+this.m_uniqueName;
+        this.m_uniqueName = "flow_" + this.m_uniqueName;
         if (this.playOnce && this.direcEnabled) {
             this.m_uniqueName += "_OD";
         } else if (this.playOnce) {
@@ -41,24 +34,12 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
             this.m_uniqueName += "_D";
             if (this.spdScaleEnabled) this.m_uniqueName += "SpdScale";
         }
-        //if (this.clipMixEnabled) this.m_uniqueName += "Mix";
         if (this.premultiplyAlpha) this.m_uniqueName += "PreMAlpha";
-        //this.m_uniqueName += this.brightnessEnabled ? "Brn": "Alp";
-        //this.adaptationShaderVersion = !this.m_coderEnabled;
     }
-    
+
     buildVertShd(): void {
 
         let coder = this.m_coder;
-        
-        // if(this.brightnessEnabled) {
-        //     let fogEnabled: boolean = this.fogEnabled;
-        //     if(this.pipeline != null) {
-        //         fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG_EXP2);
-        //         fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG);
-        //     }
-        //     this.brightnessOverlayEnabeld = fogEnabled;
-        // }
 
         coder.addVertLayout("vec4", "a_vs");
         coder.addVertLayout("vec2", "a_uvs");
@@ -76,29 +57,7 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
         if (this.m_clipEnabled) coder.addDefine("BILL_PARAM_INDEX", "4");
 
     }
-    
-    // getShaderCodeObject(): IShaderCodeObject {
-    //     if(this.pipeline != null || this.m_coderEnabled) {
-    //         return BillboardGroupShaderCode;
-    //     }
-    //     return super.getShaderCodeObject();
-    // }
-    // buildShader(): void {
-        
-    //     if(this.pipeline != null || this.m_coderEnabled) {
-    //         this.m_coder.autoBuildHeadCodeEnabled = false;
-    //         this.buildFragShd();
-    //         this.buildVertShd();
-    //         if (this.pipeline == null) {
-    //             this.m_coder.addShaderObject( BillboardGroupShaderCode );
-    //         }
-    //     }
-    // }
-    
-    // getVertShaderCode(): string {
-    //     return this.m_coder.buildVertCode();
-    // }
-    
+
     toString(): string {
         return "[BillboardFlowShaderBuffer()]";
     }
