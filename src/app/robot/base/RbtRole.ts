@@ -8,7 +8,7 @@
 import Vector3D from "../../../vox/math/Vector3D";
 import RendererScene from "../../../vox/scene/RendererScene";
 import DirectXZModule from "../../../voxmotion/primitive/DirectXZModule";
-import { CampType } from "../../../app/robot/camp/Camp";
+import {CampRoleStatus, CampType } from "../../../app/robot/camp/Camp";
 import IRoleCamp from "../../../app/robot/IRoleCamp";
 import IAttackDst from "../../../app/robot/attack/IAttackDst";
 import IRunnable from "../../../vox/base/IRunnable";
@@ -40,6 +40,7 @@ export default class RbtRole implements IRunnable {
     radius: number = 100;
     lifeTime: number = 3000;
     campType: CampType = CampType.Blue;
+    status: number = CampRoleStatus.Free;
 
     terrainData: TerrainData = null;
     roleCamp: IRoleCamp = null;

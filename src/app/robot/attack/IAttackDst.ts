@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import Vector3D from "../../../vox/math/Vector3D";
-import {CampType} from "../../../app/robot/camp/Camp";
+import {CampRoleStatus, CampType} from "../../../app/robot/camp/Camp";
 
 
 export default interface IAttackDst
@@ -15,6 +15,7 @@ export default interface IAttackDst
     lifeTime:number;
     radius:number;
     position:Vector3D;
+    status: CampRoleStatus;
 
     attackDis:number;
     getPosition(pos:Vector3D):void;

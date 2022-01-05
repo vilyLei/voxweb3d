@@ -9,12 +9,14 @@ import MathConst from "../../../vox/math/MathConst";
 import Vector3D from "../../../vox/math/Vector3D";
 import IRoleCamp from "../../../app/robot/IRoleCamp";
 import IAttackDst from "../../../app/robot/attack/IAttackDst";
-import { CampType, CampFindMode } from "../../../app/robot/camp/Camp";
+import { CampRoleStatus, CampType, CampFindMode } from "../../../app/robot/camp/Camp";
 import AssetsModule from "../../../app/robot/assets/AssetsModule";
 import RendererScene from "../../../vox/scene/RendererScene";
 import EruptionEffectPool from "../../../particle/effect/EruptionEffectPool";
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
-
+class CampStatus {
+    constructor() { }
+}
 export default class RedCamp implements IRoleCamp {
     private m_rsc: RendererScene = null;
     private m_roles: IAttackDst[] = [];
@@ -32,9 +34,9 @@ export default class RedCamp implements IRoleCamp {
 
             if (this.m_eff0Pool == null) {
                 this.m_eff0Pool = new EruptionEffectPool();
-                
+
                 this.m_eff0Pool.materialPipeline = AssetsModule.GetMaterialPipeline();
-                this.m_eff0Pool.pipeTypes = [ MaterialPipeType.FOG_EXP2 ];
+                this.m_eff0Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
                 this.m_eff0Pool.timeSpeed = 15.0;
                 this.m_eff0Pool.initialize(this.m_rsc, 1, 60, 50,
                     AssetsModule.GetImageTexByUrl("static/assets/testEFT4.jpg"),
@@ -45,7 +47,10 @@ export default class RedCamp implements IRoleCamp {
         }
     }
     addRole(role: IAttackDst): void {
-        if (role != null) this.m_roles.push(role);
+        if (role != null && role.status == CampRoleStatus.Free) {
+            role.status = CampRoleStatus.Busy;
+            this.m_roles.push(role);
+        }
     }
     private m_rsn: IAttackDst = null;
     private m_rsnList: IAttackDst[] = new Array(128);
@@ -121,35 +126,21 @@ export default class RedCamp implements IRoleCamp {
         return null;
     }
     findAttDst(pos: Vector3D, radius: number, findMode: CampFindMode, srcCampType: CampType, direcDegree: number, fov: number = -1): IAttackDst {
-        
-        let list: IAttackDst[] = this.m_blackRoles;
-        let len: number = list.length;
-        if (len > 0) {
-            let tlist: number[] = this.m_blactimeList;
-            for (let i: number = 0; i < len; ++i) {
 
-                tlist[i] --;
-                if(tlist[i] < 1) {
-
-                    this.m_freeRoles.push( list[i] );
-                    list[i].setVisible(false);
-                    list.splice(i, 1);
-                    tlist.splice(i, 1);
-                    i--;
-                    len--;
-                }
-            }
-        }
-        list = this.m_roles;
-        len = list.length;
+        let list = this.m_roles;
+        let len = list.length;
         if (len > 0) {
-            
+
             let role: IAttackDst = null;
             let rsnLen: number = 0;
+            // let campFlag: number = 1;
+            // let cfTotal: number = 1;
             let dis: number;
             for (let i: number = 0; i < len; ++i) {
                 role = list[i];
                 if (role.lifeTime > 0) {
+                    // campFlag += role.campType;
+                    // cfTotal += cfTotal;
                     if (role.campType != srcCampType) {
                         dis = radius + role.radius;
                         dis *= dis;
@@ -180,6 +171,7 @@ export default class RedCamp implements IRoleCamp {
                 }
             }
             if (rsnLen > 1) {
+                //campFlag / cfTotal;
                 this.snsort(0, rsnLen - 1);
             }
             if (rsnLen > 0) {
@@ -190,6 +182,25 @@ export default class RedCamp implements IRoleCamp {
         return null;
     }
     run(): void {
+        
+        let list: IAttackDst[] = this.m_blackRoles;
+        let len: number = list.length;
+        if (len > 0) {
+            let tlist: number[] = this.m_blactimeList;
+            for (let i: number = 0; i < len; ++i) {
+
+                tlist[i]--;
+                if (tlist[i] < 1) {
+                    list[i].status = CampRoleStatus.Free;
+                    this.m_freeRoles.push(list[i]);
+                    list[i].setVisible(false);
+                    list.splice(i, 1);
+                    tlist.splice(i, 1);
+                    i--;
+                    len--;
+                }
+            }
+        }
         this.m_eff0Pool.run();
     }
     destroy() {
