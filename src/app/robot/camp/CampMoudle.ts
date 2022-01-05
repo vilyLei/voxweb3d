@@ -21,7 +21,7 @@ export default class CampMoudle {
     private m_eff1Pool: EruptionSmokePool = null;
 
     redCamp: RedCamp = new RedCamp();
-    blueCamp: BlueCamp = new BlueCamp();
+    //blueCamp: BlueCamp = new BlueCamp();
 
     effectRenderProcessIndex: number = 2;
     constructor() { }

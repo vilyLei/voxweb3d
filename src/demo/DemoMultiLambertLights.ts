@@ -197,7 +197,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         // box.setXYZ(-200,50,200);
         // this.m_engine.rscene.addEntity(box);
 
-        let radius: number = 1.0;
+        let radius: number = 30;
         let sph02: Sphere3DEntity = new Sphere3DEntity();
         sph02.pipeTypes = [MaterialPipeType.FOG_EXP2];
         sph02.setMaterialPipeline(this.m_materialCtx.pipeline);

@@ -19,6 +19,8 @@ export default class RedCamp implements IRoleCamp {
     private m_rsc: RendererScene = null;
     private m_roles: IAttackDst[] = [];
     private m_freeRoles: IAttackDst[] = [];
+    private m_blackRoles: IAttackDst[] = [];
+    private m_blactimeList: number[] = [];
     private m_tempV0: Vector3D = new Vector3D();
     private m_eff0Pool: EruptionEffectPool = null;
     distance: number = 0.0;
@@ -119,14 +121,33 @@ export default class RedCamp implements IRoleCamp {
         return null;
     }
     findAttDst(pos: Vector3D, radius: number, findMode: CampFindMode, srcCampType: CampType, direcDegree: number, fov: number = -1): IAttackDst {
-        let list: IAttackDst[] = this.m_roles;
+        
+        let list: IAttackDst[] = this.m_blackRoles;
         let len: number = list.length;
         if (len > 0) {
-            let i: number = 0;
+            let tlist: number[] = this.m_blactimeList;
+            for (let i: number = 0; i < len; ++i) {
+
+                tlist[i] --;
+                if(tlist[i] < 1) {
+
+                    this.m_freeRoles.push( list[i] );
+                    list[i].setVisible(false);
+                    list.splice(i, 1);
+                    tlist.splice(i, 1);
+                    i--;
+                    len--;
+                }
+            }
+        }
+        list = this.m_roles;
+        len = list.length;
+        if (len > 0) {
+            
             let role: IAttackDst = null;
             let rsnLen: number = 0;
             let dis: number;
-            for (; i < len; ++i) {
+            for (let i: number = 0; i < len; ++i) {
                 role = list[i];
                 if (role.lifeTime > 0) {
                     if (role.campType != srcCampType) {
@@ -152,8 +173,10 @@ export default class RedCamp implements IRoleCamp {
                     list.splice(i, 1);
                     i--;
                     len--;
-                    this.m_freeRoles.push(role);
-                    role.setVisible(false);
+                    this.m_blackRoles.push(role);
+                    this.m_blactimeList.push(8);
+                    //this.m_freeRoles.push(role);
+                    //role.setVisible(false);
                 }
             }
             if (rsnLen > 1) {
