@@ -44,7 +44,7 @@ void calculateClipUV(float fi) {
     #endif
 }
 #endif
-
+#ifndef VOX_PARTICLE_FLARE
 vec4 motionCalc(float time, inout vec2 vtx) {
     vec3 timeV = vec3(time);
     vec3 acc3 = u_billParam[3].xyz + a_nvs2.xyz;
@@ -72,3 +72,4 @@ vec4 motionCalc(float time, inout vec2 vtx) {
     #endif
     return pos;
 }
+#endif

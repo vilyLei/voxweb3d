@@ -23,7 +23,7 @@ class BillboardFlareShaderBuffer extends BillboardGroupShaderBuffer {
     buildVertShd(): void {
 
         let coder = this.m_coder;
-        
+        coder.addDefine("VOX_PARTICLE_FLARE", "1");
         coder.addVertLayout("vec4", "a_vs");
         coder.addVertLayout("vec2", "a_uvs");
         coder.addVertLayout("vec4", "a_vs2");

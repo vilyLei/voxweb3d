@@ -128,12 +128,12 @@ export class DemoParticleGroup {
             //this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, true, true);
             //this.initFlowBill(this.m_textures[this.m_textures.length - 2],null, true, true,false,true);
             //this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, false, false);
-            //this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], true);
+            this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], true);
             //this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], false);
             //this.initFlareBill(this.m_textures[this.m_textures.length - 1], null, true);
             //this.initFlareBill(this.m_textures[this.m_textures.length - 2], null, true, true);
             //this.initFlareBill(this.m_textures[this.m_textures.length - 1], null, false);
-            this.initBillGroup(this.m_textures);
+            //this.initBillGroup(this.m_textures);
             //*/
         }
     }
