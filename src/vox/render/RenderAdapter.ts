@@ -89,9 +89,11 @@ class RenderAdapter implements IRenderAdapter{
 			else this.m_gl.disable(this.m_gl.DITHER);
 			this.m_gl.frontFace(this.m_gl.CCW);
 			if (param.getPolygonOffsetEanbled()) {
+				console.warn("POLYGON_OFFSET_FILL enable !!!");
 				this.m_gl.enable(this.m_gl.POLYGON_OFFSET_FILL);
 			}
 			else {
+				console.warn("POLYGON_OFFSET_FILL disable !!!");
 				this.m_gl.disable(this.m_gl.POLYGON_OFFSET_FILL);
 			}
 
@@ -137,7 +139,7 @@ class RenderAdapter implements IRenderAdapter{
 	 */
 	resetPolygonOffset(): void {
 		if (this.m_polygonOffset) {
-			this.m_gl.polygonOffset(0.0, 0.0);
+			//this.m_gl.polygonOffset(0.0, 0.0);
 			this.m_polygonOffset = false;
 		}
 	}

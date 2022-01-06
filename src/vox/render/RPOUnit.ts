@@ -119,10 +119,12 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         let ivsCount = this.indicesRes.getVTCount();
         if (this.ivsCount <= ivsCount) ivsCount = this.ivsCount;
 
-        if(this.polygonOffset != null)
-            rc.setPolygonOffset(this.polygonOffset[0],this.polygonOffset[1]);
-        else
-            rc.resetPolygonOffset();
+        // if(this.polygonOffset != null) {
+        //     rc.setPolygonOffset(this.polygonOffset[0],this.polygonOffset[1]);
+        // }
+        // // else {
+        // //     rc.resetPolygonOffset();
+        // // }
         
         switch (this.drawMode) {
             case RenderDrawMode.ELEMENTS_TRIANGLES:
@@ -172,10 +174,12 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         let ivsCount = this.indicesRes.getVTCount();
         if (this.ivsCount <= ivsCount) ivsCount = this.ivsCount;
 
-        if(this.polygonOffset != null)
-            rc.setPolygonOffset(this.polygonOffset[0],this.polygonOffset[1]);
-        else
-            rc.resetPolygonOffset();
+        // if(this.polygonOffset != null) {
+        //     rc.setPolygonOffset(this.polygonOffset[0],this.polygonOffset[1]);
+        // }
+        // // else {
+        // //     rc.resetPolygonOffset();
+        // // }
 
         let i: number = 0;
         let gl: any = rc.RContext;

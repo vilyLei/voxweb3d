@@ -13,6 +13,7 @@ import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
 import BaseColorMaterial from "../vox/material/mcase/BaseColorMaterial";
 import { UserInteraction } from "../vox/engine/UserInteraction";
+import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 
 export class DemoGLState {
 
@@ -30,6 +31,7 @@ export class DemoGLState {
 
             let rparam: RendererParam = new RendererParam();
             rparam.setAttriAntialias(true);
+            rparam.setPolygonOffsetEanbled(true);
             rparam.setCamPosition(800.0, 800.0, 800.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
@@ -45,8 +47,10 @@ export class DemoGLState {
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(300.0);
             this.m_rscene.addEntity(axis);
+
             let plane: Plane3DEntity = new Plane3DEntity();
             plane.initializeXOZSquare(900.0, [this.m_texLoader.getTexByUrl("static/assets/wood_02.jpg")]);
+            plane.showDoubleFace();
             plane.setXYZ(0.0, -200.0, 0.0);
             this.m_rscene.addEntity(plane);
             //*/
@@ -57,14 +61,34 @@ export class DemoGLState {
             //*/
 
             //this.m_runType = 2;
-            this.initBlendTest();
+            this.initPolygonOffsetTest();
+            //this.initBlendTest();
             this.update();
         }
+    }
+    private initPolygonOffsetTest(): void {
+        this.m_runType = 3;
+        let bill: Billboard3DEntity = new Billboard3DEntity();
+        bill.initialize(100,100,[this.m_texLoader.getTexByUrl("static/assets/flare_core_02.jpg")]);
+        bill.setXYZ(200.0,-190.0,0.0);
+        //bill.getMaterial().setPolygonOffset(30.0,0.0);
+        this.m_rscene.addEntity(bill, 1);
+
+        bill = new Billboard3DEntity();
+        bill.initialize(100,100,[this.m_texLoader.getTexByUrl("static/assets/flare_core_01.jpg")]);
+        bill.setXYZ(-100.0,-190.0,0.0);
+        //bill.getMaterial().setPolygonOffset(30.0,0.0);
+        this.m_rscene.addEntity(bill, 2);
+
+        
+        this.m_rscene.getRenderProxy().setPolygonOffset(30.0, 0.0);
     }
     private step(edge: number, value: number): number {
         return value < edge ? 0.0 : 1.0;
     }
+    private m_flag: boolean = true;
     private mouseDown(evt: any): void {
+        this.m_flag = true;
     }
     private m_timeoutId: any = -1;
     private update(): void {
@@ -77,6 +101,13 @@ export class DemoGLState {
         this.m_statusDisp.render();
     }
     run(): void {
+        if(this.m_flag) {
+            this.m_flag = false;
+        }
+        else {
+            //return;
+        }
+        //console.log("run start...");
 
         this.m_statusDisp.update(false);
         this.m_interacion.run();
@@ -87,6 +118,9 @@ export class DemoGLState {
                 break;
             case 2:
                 this.runPolygonOffset();
+                break;
+            case 3:
+                this.runPolygonOffset2();
                 break;
             default:
                 this.runBase();
@@ -162,6 +196,17 @@ export class DemoGLState {
         this.m_rscene.runAt(0);
         this.m_rscene.getRenderProxy().setPolygonOffset(-70, 1);
         this.m_rscene.runAt(1);
+    }
+    private runPolygonOffset2(): void {
+        
+        this.m_rscene.update();
+        this.m_rscene.runBegin();
+        //this.m_rscene.getRenderProxy().setPolygonOffset(0.0, 0.0);
+        this.m_rscene.runAt(0);
+        //this.m_rscene.getRenderProxy().setPolygonOffset(130, 0.0);
+        this.m_rscene.runAt(1);
+        //this.m_rscene.getRenderProxy().setPolygonOffset(-100, 0.0);
+        this.m_rscene.runAt(2);
     }
     private runBase(): void {
         this.m_rscene.run();

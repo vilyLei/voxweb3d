@@ -319,8 +319,8 @@ export default class RendererInstanceContext implements IRendererInstanceContext
     renderBegin(cameraDataUpdate: boolean = true): void {
         if (this.m_adapter != null) {
             this.m_adapter.unlockViewport();
+            //this.m_adapter.resetPolygonOffset();
             this.m_adapter.setClearDepth(1.0);
-            this.m_adapter.resetPolygonOffset();
             this.m_renderProxy.Vertex.renderBegin();
             this.m_materialProxy.renderBegin();
             this.m_adapter.update();
