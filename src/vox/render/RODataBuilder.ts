@@ -224,6 +224,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                 else {
                     runit.transUniform = ShdUniformTool.UpdateLocalFromTransformV(runit.transUniform, hasTrans ? disp.getMatrixFS32() : null, shdp);
                 }
+                runit.polygonOffset = material.getPolygonOffset();
                 runit.uniform = material.__$uniform;
 
             }

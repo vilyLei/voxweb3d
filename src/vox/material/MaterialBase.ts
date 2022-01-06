@@ -30,6 +30,7 @@ export default class MaterialBase implements IRenderMaterial {
     // use rgb normalize bias enabled
     private m_shduns: string = "";
     private m_shdData: ShaderData = null;
+    private m_polygonOffset: number[] = null;
     // tex list unique hash value
     __$troMid: number = -1;
     __$uniform: IShaderUniform = null;
@@ -38,6 +39,24 @@ export default class MaterialBase implements IRenderMaterial {
      */
     pipeTypes: MaterialPipeType[] = null;
 
+    /*
+     * specifies the scale factors and units to calculate depth values.
+     * @param factor the value is a GLfloat which sets the scale factor for the variable depth offset for each polygon. The default value is 0.
+     * @param units the value is a which sets the multiplier by which an implementation-specific value is multiplied with to create a constant depth offset. The default value is 0.
+     */
+    setPolygonOffset(factor: number, units: number = 0.0): void {
+        if(this.m_polygonOffset == null) {
+            this.m_polygonOffset = [factor, units];
+        }
+        else {
+            this.m_polygonOffset[0] = factor;
+            this.m_polygonOffset[1] = units;
+        }
+    }
+    getPolygonOffset(): number[] {
+        return this.m_polygonOffset;
+    }
+    
     setMaterialPipeline(pipeline: IMaterialPipeline): void {
         this.m_pipeLine = pipeline;
     }

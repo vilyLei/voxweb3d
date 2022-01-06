@@ -71,6 +71,10 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     tro: ITextureRenderObj = null;
     texMid: number = -1;
     ubo: ShaderUBO = null;
+    /**
+     *  for example: [-70.0,1.0]
+     */
+    polygonOffset: number[] = null;
     constructor() {
     }
     private testDrawFlag(): void {
@@ -115,6 +119,11 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         let ivsCount = this.indicesRes.getVTCount();
         if (this.ivsCount <= ivsCount) ivsCount = this.ivsCount;
 
+        if(this.polygonOffset != null)
+            rc.setPolygonOffset(this.polygonOffset[0],this.polygonOffset[1]);
+        else
+            rc.resetPolygonOffset();
+        
         switch (this.drawMode) {
             case RenderDrawMode.ELEMENTS_TRIANGLES:
                 //console.log("RPOUnit::run(), TRIANGLES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
@@ -158,6 +167,15 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
 
         ++RendererState.DrawCallTimes;
         RendererState.DrawTrisNumber += this.trisNumber;
+
+        // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
+        let ivsCount = this.indicesRes.getVTCount();
+        if (this.ivsCount <= ivsCount) ivsCount = this.ivsCount;
+
+        if(this.polygonOffset != null)
+            rc.setPolygonOffset(this.polygonOffset[0],this.polygonOffset[1]);
+        else
+            rc.resetPolygonOffset();
 
         let i: number = 0;
         let gl: any = rc.RContext;
@@ -246,6 +264,8 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     reset(): void {
         //  console.log("RPOUnit::reset(), uid: ",this.getUid());
         this.indicesRes = null;
+        this.polygonOffset = null;
+        
         this.vro.__$detachThis();
         this.vro = null;
         this.tro.__$detachThis();

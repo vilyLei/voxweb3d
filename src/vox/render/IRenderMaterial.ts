@@ -14,6 +14,7 @@ interface IRenderMaterial
 {
     __$troMid:number;
     __$uniform:IShaderUniform;
+    getPolygonOffset(): number[];
     initializeByCodeBuf(textureEnabled:boolean):void;
     createSharedUniforms():IShaderUniform[];
     createSelfUniformData():ShaderUniformData;
