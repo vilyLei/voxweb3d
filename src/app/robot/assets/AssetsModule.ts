@@ -55,7 +55,8 @@ export default class AssetsModule {
                 materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
 
                 materialCtx.getTextureByUrl("static/assets/testEFT4.jpg");
-                materialCtx.getTextureByUrl("static/assets/stones_02.png");
+                // materialCtx.getTextureByUrl("static/assets/stones_02.png");
+                materialCtx.getTextureByUrl("static/assets/stones_06.png");
 
                 materialCtx.getTextureByUrl("static/assets/image_003.jpg");
                 materialCtx.getTextureByUrl("static/assets/brn_03.jpg");

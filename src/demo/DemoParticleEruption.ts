@@ -185,9 +185,9 @@ export class DemoParticleEruption {
                 let texFlame: TextureProxy = this.m_textures[8];
                 //let texSolid: TextureProxy = this.m_textures[3];
                 //let texSolid: TextureProxy = this.getImageTexByUrl("static/assets/stones_02.png");
-                let texSolid: TextureProxy = this.getImageTexByUrl("static/assets/stones_03.png");
+                let texSolid: TextureProxy = this.getImageTexByUrl("static/assets/stones_04.png");
                 this.m_eff0Pool = new EruptionEffectPool();
-                this.m_eff0Pool.solidCN = this.m_eff0Pool.solidRN = 4;
+                this.m_eff0Pool.solidCN = this.m_eff0Pool.solidRN = 2;
                 this.m_eff0Pool.materialPipeline = this.m_materialCtx.pipeline;
                 this.m_eff0Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
                 this.m_eff0Pool.solidPremultiplyAlpha = true;

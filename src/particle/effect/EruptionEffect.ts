@@ -21,6 +21,9 @@ export default class EruptionEffect implements IParticleEffect {
     solidEntity: Billboard3DFlowEntity = null;
     materialPipeline: IMaterialPipeline = null;
     pipeTypes: MaterialPipeType[] = null;
+    gravityFactor: number = -1.5;
+    minSpeed: number = 1.5;
+    maxSpeed: number = 2.5;
 
     solidRN: number = 2;
     solidCN: number = 2;
@@ -55,19 +58,21 @@ export default class EruptionEffect implements IParticleEffect {
         else {
             entity.createGroup(total);
             let pv: Vector3D = new Vector3D();
+            let dtSpeed: number = this.maxSpeed - this.minSpeed; 
             for (let i: number = 0; i < total; ++i) {
                 size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
+                //size = Math.random() * 40 + 10.0;
                 entity.setSizeAndScaleAt(i, size, size, 0.2, 1.0);
-                let uvparam: number[] = params[Math.floor((params.length - 1) * Math.random() + 0.5)];
+                let uvparam: number[] = params[Math.round(Math.random() * 1000) % params.length];
                 entity.setUVRectAt(i, uvparam[0], uvparam[1], uvparam[2], uvparam[3]);
                 entity.setTimeAt(i, 50.0 * Math.random() + 150, 0.1, 0.7, Math.random() * 5);
                 entity.setBrightnessAt(i, 1.0);
                 entity.setTimeSpeedAt(i, Math.random() * 1.0 + 0.5);
                 pv.setTo(Math.random() * 50.0 - 25.0, Math.random() * 10.0 + 10.0, Math.random() * 50.0 - 25.0);
                 entity.setPositionAt(i, pv.x, pv.y, pv.z);
-                entity.setAccelerationAt(i, Math.random() * 0.01 - 0.005, -0.004, 0.0);
+                entity.setAccelerationAt(i, Math.random() * 0.01 - 0.005, 0.004 * this.gravityFactor, 0.0);
                 pv.normalize();
-                pv.scaleBy((Math.random() * 1.0 + 1.5));
+                pv.scaleBy((Math.random() * dtSpeed + this.minSpeed));
                 entity.setVelocityAt(i, pv.x, pv.y, pv.z);
             }
         }

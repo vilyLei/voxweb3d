@@ -12,6 +12,7 @@ import ParticleEffectPool from "../../particle/effect/ParticleEffectPool";
 import IRenderer from "../../vox/scene/IRenderer";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
+import Color4 from "../../vox/material/Color4";
 
 export default class EruptionEffectPool extends ParticleEffectPool {
     private m_efSrcList: EruptionEffect[] = [];
@@ -22,11 +23,13 @@ export default class EruptionEffectPool extends ParticleEffectPool {
     materialPipeline: IMaterialPipeline = null;
     pipeTypes: MaterialPipeType[] = null;
     depthOffset: number = 0.0;
+    gravityFactor: number = -1.5;
 
     solidPremultiplyAlpha: boolean = false;
     flamePremultiplyAlpha: boolean = false;
     solidRN: number = 2;
     solidCN: number = 2;
+    solidColor: Color4 = new Color4();
     constructor() { super(); }
 
     initialize(renderer: IRenderer, processIndex: number, flameTotal: number, solidTotal: number, flameTexture: TextureProxy, solidTexture: TextureProxy, clipMixEnabled: boolean = false): void {
@@ -41,6 +44,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
             this.m_renderProcessI = processIndex;
 
             let efSrc: EruptionEffect = new EruptionEffect();
+            efSrc.gravityFactor = this.gravityFactor;
             efSrc.solidRN = this.solidRN;
             efSrc.solidCN = this.solidCN;
             efSrc.materialPipeline = this.materialPipeline;
@@ -53,6 +57,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
 
     appendEffectSrc(flameTotal: number, solidTotal: number, clipMixEnabled: boolean): void {
         let efSrc: EruptionEffect = new EruptionEffect();
+        efSrc.gravityFactor = this.gravityFactor;
         efSrc.solidRN = this.solidRN;
         efSrc.solidCN = this.solidCN;
         efSrc.materialPipeline = this.materialPipeline;
@@ -63,6 +68,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
     }
     appendEffect(flameTexture: TextureProxy, solidTexture: TextureProxy, srcIndex: number = -1): void {
         let eff: EruptionEffect = new EruptionEffect();
+        eff.gravityFactor = this.gravityFactor;
         eff.solidRN = this.solidRN;
         eff.solidCN = this.solidCN;
         eff.materialPipeline = this.materialPipeline;
@@ -96,6 +102,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
             if (solidTexture == null) solidTexture = this.m_solidTexture;
             let efSrc: EruptionEffect = this.m_efSrcList[Math.floor((this.m_efSrcList.length - 0.5) * Math.random())];
             eff = new EruptionEffect();
+            eff.gravityFactor = this.gravityFactor;
             eff.solidRN = this.solidRN;
             eff.solidCN = this.solidCN;
             eff.materialPipeline = this.materialPipeline;
@@ -116,7 +123,9 @@ export default class EruptionEffectPool extends ParticleEffectPool {
         //  eff.setSizeScale(0.3);
         eff.setPositionScale(0.5);
         //  eff.solidEntity.setRGBOffset3f(Math.random() * 0.2,Math.random() * 0.2,Math.random() * 0.2);
-        eff.solidEntity.setRGB3f(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2);
+        //eff.solidEntity.setRGBOffset3f(this.solidColor.r, this.solidColor.g, this.solidColor.b);
+        eff.solidEntity.setRGB3f(this.solidColor.r, this.solidColor.g, this.solidColor.b);
+        //eff.solidEntity.setRGB3f(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2);
         if (pv != null) {
             
             eff.setPosition(pv);

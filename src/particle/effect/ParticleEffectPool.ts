@@ -9,55 +9,45 @@ import Vector3D from "../../vox/math/Vector3D";
 import IParticleEffect from "../../particle/effect/IParticleEffect";
 import IRenderer from "../../vox/scene/IRenderer";
 import IRunnable from "../../vox/base/IRunnable";
-export default class ParticleEffectPool implements IRunnable
-{
-    protected m_effList:IParticleEffect[] = [];
-    protected m_freeEffList:IParticleEffect[] = [];
-    protected m_renderer:IRenderer = null;
-    protected m_renderProcessI:number = 0;
-    timeSpeed:number = 6.0;
-    constructor(){}
+export default class ParticleEffectPool implements IRunnable {
+    protected m_effList: IParticleEffect[] = [];
+    protected m_freeEffList: IParticleEffect[] = [];
+    protected m_renderer: IRenderer = null;
+    protected m_renderProcessI: number = 0;
+    timeSpeed: number = 6.0;
+    constructor() { }
 
-    createEffect(pv:Vector3D):void
-    {
+    createEffect(pv: Vector3D): void {
 
     }
-    
-    private m_runFlag:number = 0;
-    setRunFlag(flag:number):void
-    {
+
+    private m_runFlag: number = 0;
+    setRunFlag(flag: number): void {
         this.m_runFlag = flag;
     }
-    getRunFlag():number
-    {
+    getRunFlag(): number {
         return this.m_runFlag;
     }
-    isRunning():boolean
-    {
+    isRunning(): boolean {
         return true;
     }
-    isStopped():boolean
-    {
+    isStopped(): boolean {
         return false;
     }
-    run():void
-    {
-        let list:IParticleEffect[] = this.m_effList;
-        let len:number = list.length;
-        let i:number = 0;
-        let eff:IParticleEffect;
-        for(; i < len; ++i)
-        {
+    run(): void {
+        let list: IParticleEffect[] = this.m_effList;
+        let len: number = list.length;
+        let i: number = 0;
+        let eff: IParticleEffect;
+        for (; i < len; ++i) {
             eff = list[i];
             //console.log("eff.isAwake():",eff.isAwake());
-            if(eff.isAwake())
-            {
+            if (eff.isAwake()) {
                 eff.updateTime(this.timeSpeed);
             }
-            else
-            {
+            else {
                 eff.setVisible(false);
-                list.splice(i,1);
+                list.splice(i, 1);
                 i--;
                 len--;
                 this.m_freeEffList.push(eff);
