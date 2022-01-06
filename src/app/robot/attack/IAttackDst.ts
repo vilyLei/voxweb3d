@@ -30,4 +30,8 @@ export default interface IAttackDst
     getDestroyedPos(outPos:Vector3D):void;
     consume(power:number):void;
     attackTest():boolean;
+    /**
+     * 复活
+     */
+    // revive(): void;
 }

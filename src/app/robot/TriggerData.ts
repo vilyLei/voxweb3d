@@ -10,6 +10,7 @@ import IAttackDst from "../../app/robot/attack/IAttackDst";
 import { CampType } from "../../app/robot/camp/Camp";
 
 export default class TriggerData {
+    
     campType: CampType = CampType.Blue;
     attackDst: IAttackDst = null;
     dstPos: Vector3D = new Vector3D();

@@ -15,7 +15,7 @@ import IRbtModule from "../../../app/robot/base/IRbtModule";
 import TrackWheelChassisBody from "../../../app/robot/base/TrackWheelChassisBody";
 import AssetsModule from "../../../app/robot/assets/AssetsModule";
 import BoxGroupTrack from "../../../voxanimate/primitive/BoxGroupTrack";
-import {RoleMaterialBuilder} from "../scene/RoleMaterialBuilder";
+import { RoleMaterialBuilder } from "../scene/RoleMaterialBuilder";
 import { VertUniformComp } from "../../../vox/material/component/VertUniformComp";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
@@ -60,8 +60,8 @@ export default class TrackWheelChassis implements IRbtModule, IPoseture {
     direcByDegree(degree: number, finished: boolean): void {
 
         this.m_trackMoveDis += 0.75;
-        this.m_vertUniform.setCurveMoveDistance( this.m_trackMoveDis );
-        if(this.m_trackWheel != null) this.m_trackWheel.moveDistanceOffset(0.75);
+        this.m_vertUniform.setCurveMoveDistance(this.m_trackMoveDis);
+        if (this.m_trackWheel != null) this.m_trackWheel.moveDistanceOffset(0.75);
 
         this.degreeTween.runRotY(degree);
         if (this.degreeTween.isDegreeChanged()) {
@@ -89,18 +89,18 @@ export default class TrackWheelChassis implements IRbtModule, IPoseture {
             // this.m_trackWheel.initializeFrom(srcTrackWheel, [AssetsModule.GetImageTexByUrl("static/assets/metal_02.jpg")]);
 
             srcTrackWheel.getPosition(this.m_pos);
-            this.m_pos.addBy( offsetPos );
+            this.m_pos.addBy(offsetPos);
 
             let material: MaterialBase;
-            let tm = this.materialBuilder.createTrackLambertMaterial(srcTrackWheel, AssetsModule.GetImageTexByUrl("static/assets/metal_02.jpg") );
+            let tm = this.materialBuilder.createTrackLambertMaterial(srcTrackWheel, AssetsModule.GetImageTexByUrl("static/assets/metal_02.jpg"));
             this.m_vertUniform = tm.vertUniform as VertUniformComp;
             material = tm;
-            
+
             this.m_trackEntity = new DisplayEntity();
-            this.m_trackEntity.setMaterial( material );
-            this.m_trackEntity.copyMeshFrom( srcTrackWheel.animator );
+            this.m_trackEntity.setMaterial(material);
+            this.m_trackEntity.copyMeshFrom(srcTrackWheel.animator);
             this.m_trackEntity.setPosition(this.m_pos);
-            this.m_container.addEntity( this.m_trackEntity );
+            this.m_container.addEntity(this.m_trackEntity);
 
             // this.m_trackWheel.setPosition(this.m_pos);
             // this.m_container.addEntity(this.m_trackWheel.animator);

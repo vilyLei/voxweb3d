@@ -63,4 +63,9 @@ export default class RedRole implements IAttackDst {
             }
         }
     }
+    // /**
+    //  * 复活
+    //  */
+    // revive(): void {
+    // }
 }

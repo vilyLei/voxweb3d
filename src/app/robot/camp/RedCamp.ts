@@ -78,6 +78,37 @@ export default class RedCamp implements IRoleCamp {
     getFreeRoles(): IAttackDst[] {
         return this.m_freeRoles;
     }
+    reviveRole(total: number): void {
+        let roles = this.m_freeRoles;
+        let len: number = roles.length;
+        if(len > total) {
+            len = total;
+        }
+        for (let i: number = 0; i < len; ++i) {
+            const role = roles[i];
+            role.lifeTime = 100 + Math.round(300.0 * Math.random());
+            role.setVisible(true);
+            if(role.campType != CampType.Free) {
+                const flag = role.lifeTime % 3;
+                switch (flag) {
+                    case 1:
+                        role.campType = CampType.Red;
+                        break;
+                    case 2:
+                            role.campType = CampType.Green;
+                        break;
+                    default:
+                        role.campType = CampType.Blue;
+                        break;
+                }
+            }
+            this.addRole( role );
+            roles.splice(i, 1);
+            i--;
+            len--;
+
+        }
+    }
     initialize(rsc: RendererScene): void {
         if (this.m_rsc == null) {
             this.m_rsc = rsc;
@@ -225,10 +256,19 @@ export default class RedCamp implements IRoleCamp {
         }
         return null;
     }
+    private m_revivingDelay: number = 200;
     run(): void {
-        // if(this.roleManager.getCampTeamsTotal() == 1) {
-        //     console.log("...vv....");
-        // }
+        if(this.roleManager.getCampTeamsTotal() < 2) {
+            if(this.m_revivingDelay < 1) {
+                this.m_revivingDelay = 200;
+                let tot: number = Math.round( Math.random() * 30 + 10 );
+                console.log("### revive roles total: ", tot);
+                this.reviveRole( tot );
+            }
+            else {
+                this.m_revivingDelay --;
+            }
+        }
         let list: IAttackDst[] = this.m_blackRoles;
         let len: number = list.length;
         if (len > 0) {
