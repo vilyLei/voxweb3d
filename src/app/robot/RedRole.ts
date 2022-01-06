@@ -25,6 +25,8 @@ export default class RedRole implements IAttackDst {
 
     constructor() { }
 
+    wake(): void {        
+    }
     getPosition(pv: Vector3D): void {
         pv.copyFrom(this.position);
     }

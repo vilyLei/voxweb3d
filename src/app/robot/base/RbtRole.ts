@@ -60,12 +60,14 @@ export default class RbtRole implements IRunnable {
         return this.m_isMoving;
     }
     wake(): void {
+        
         RunnableModule.RunnerQueue.addRunner(this);
         this.m_isMoving = true;
         this.m_movingFlag = true;
 
     }
     sleep(): void {
+        
         RunnableModule.RunnerQueue.removeRunner(this);
         this.m_isMoving = false;
     }

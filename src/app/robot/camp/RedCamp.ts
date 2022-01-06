@@ -68,7 +68,7 @@ export default class RedCamp implements IRoleCamp {
     private m_roles: IAttackDst[] = [];
     private m_freeRoles: IAttackDst[] = [];
     private m_blackRoles: IAttackDst[] = [];
-    private m_blactimeList: number[] = [];
+    private m_blackTimeList: number[] = [];
     private m_tempV0: Vector3D = new Vector3D();
     private m_eff0Pool: EruptionEffectPool = null;
     readonly roleManager: CampRoleManager = new CampRoleManager();
@@ -95,13 +95,14 @@ export default class RedCamp implements IRoleCamp {
                         role.campType = CampType.Red;
                         break;
                     case 2:
-                            role.campType = CampType.Green;
+                        role.campType = CampType.Green;
                         break;
                     default:
                         role.campType = CampType.Blue;
                         break;
                 }
             }
+            role.wake();
             this.addRole( role );
             roles.splice(i, 1);
             i--;
@@ -243,7 +244,7 @@ export default class RedCamp implements IRoleCamp {
                     i--;
                     len--;
                     this.m_blackRoles.push(role);
-                    this.m_blactimeList.push(10);
+                    this.m_blackTimeList.push(8);
                 }
             }
             if (rsnLen > 1) {
@@ -256,11 +257,11 @@ export default class RedCamp implements IRoleCamp {
         }
         return null;
     }
-    private m_revivingDelay: number = 200;
+    private m_revivingDelay: number = 100;
     run(): void {
         if(this.roleManager.getCampTeamsTotal() < 2) {
             if(this.m_revivingDelay < 1) {
-                this.m_revivingDelay = 200;
+                this.m_revivingDelay = 100;
                 let tot: number = Math.round( Math.random() * 30 + 10 );
                 console.log("### revive roles total: ", tot);
                 this.reviveRole( tot );
@@ -272,16 +273,16 @@ export default class RedCamp implements IRoleCamp {
         let list: IAttackDst[] = this.m_blackRoles;
         let len: number = list.length;
         if (len > 0) {
-            let tlist: number[] = this.m_blactimeList;
+            let timeList: number[] = this.m_blackTimeList;
             for (let i: number = 0; i < len; ++i) {
-                tlist[i]--;
-                if (tlist[i] < 1) {
+                timeList[i]--;
+                if (timeList[i] < 1) {
                     this.roleManager.removeRole(list[i]);
                     list[i].status = CampRoleStatus.Free;
                     this.m_freeRoles.push(list[i]);
                     list[i].setVisible(false);
                     list.splice(i, 1);
-                    tlist.splice(i, 1);
+                    timeList.splice(i, 1);
                     i--;
                     len--;
                 }

@@ -18,6 +18,7 @@ export default interface IAttackDst
     status: CampRoleStatus;
 
     attackDis:number;
+    wake(): void;
     getPosition(pos:Vector3D):void;
     setVisible(visible:boolean):void;
     /**
