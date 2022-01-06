@@ -73,7 +73,7 @@ class RoleMaterialBuilder {
 
         return material;
     }
-    createMaterial(diffuseMap: TextureProxy, normalMap: TextureProxy = null, aoMap: TextureProxy = null): MaterialBase {
+    createMaterial(diffuseMap: TextureProxy, normalMap: TextureProxy = null, aoMap: TextureProxy = null): LambertLightMaterial {
         return this.createLambertMaterial(diffuseMap, normalMap, aoMap);
     }
 }

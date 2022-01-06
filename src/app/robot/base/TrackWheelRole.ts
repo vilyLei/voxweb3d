@@ -34,6 +34,10 @@ export default class TrackWheelRole extends RbtRole implements IAttackDst {
         this.m_motionModule = this.m_legModule;
         this.m_attackModule = this.m_armModule;
     }
+    
+    setBrightness(brn: number): void {
+        
+    }
     initializeFrom(srcRole: TrackWheelRole): void {
         if (srcRole != null) {
             this.campType = srcRole.campType;

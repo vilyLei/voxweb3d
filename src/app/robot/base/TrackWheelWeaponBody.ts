@@ -45,6 +45,9 @@ export default class TrackWheelWeaponBody {
         }
     }
     
+    setBrightness(brn: number): void {
+        
+    }
     getContainer(): DisplayEntityContainer {
         return this.m_container;
     }
@@ -66,10 +69,9 @@ export default class TrackWheelWeaponBody {
     private static m_box02: Box3DEntity = null;
     initWeap01(tex0: TextureProxy): void {
         let height: number = 30.0;
-        let material: MaterialBase;
         if (TrackWheelWeaponBody.m_box01 == null) {
             TrackWheelWeaponBody.m_box01 = new Box3DEntity();
-            material = this.materialBuilder.createMaterial(tex0);
+            let material = this.materialBuilder.createMaterial(tex0);
             TrackWheelWeaponBody.m_box01.setMaterial( material );
             TrackWheelWeaponBody.m_box01.initializeSizeXYZ(60.0, 30, 60, [tex0]);
             let mat4: Matrix4 = new Matrix4();
@@ -81,8 +83,8 @@ export default class TrackWheelWeaponBody {
         }
         let color = this.color;
         let twUpperBox: Box3DEntity = new Box3DEntity();
-        material = this.materialBuilder.createMaterial(tex0);
-        (material as any).setRGB3f(color.r, color.g, color.b);
+        let material = this.materialBuilder.createMaterial(tex0);
+        material.setRGB3f(color.r, color.g, color.b);
         twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelWeaponBody.m_box01);
         twUpperBox.initializeSizeXYZ(60.0, height, 60, [tex0]);
@@ -94,11 +96,10 @@ export default class TrackWheelWeaponBody {
     }
     initWeap02(tex0: TextureProxy): void {
 
-        let material: MaterialBase;
         if (TrackWheelWeaponBody.m_box01 == null) {
             let scale: number = 1.0;
             let box: Box3DEntity = new Box3DEntity();
-            material = this.materialBuilder.createMaterial(tex0);
+            let material = this.materialBuilder.createMaterial(tex0);
             box.setMaterial( material );
             box.initializeSizeXYZ(80.0, 20, 60, [tex0]);
             box.setXYZ(0.0, 70.0, 0.0);
@@ -112,7 +113,6 @@ export default class TrackWheelWeaponBody {
             TrackWheelWeaponBody.m_box01 = box;
 
             box = new Box3DEntity();
-            material = this.materialBuilder.createMaterial(tex0);
             box.setMaterial( material );
             box.initializeSizeXYZ(80.0, 12, 60, [tex0]);
             box.setXYZ(0.0, 70.0 + 10 + 6, 0.0);
@@ -128,8 +128,8 @@ export default class TrackWheelWeaponBody {
         }
         let color = this.color;
         let twUpperBox: Box3DEntity = new Box3DEntity();
-        material = this.materialBuilder.createMaterial(tex0);
-        (material as any).setRGB3f(color.r, color.g, color.b);
+        let material = this.materialBuilder.createMaterial(tex0);
+        material.setRGB3f(color.r, color.g, color.b);
         twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelWeaponBody.m_box01);
         twUpperBox.copyTransformFrom(TrackWheelWeaponBody.m_box01);
@@ -138,7 +138,7 @@ export default class TrackWheelWeaponBody {
 
         twUpperBox = new Box3DEntity();
         material = this.materialBuilder.createMaterial(tex0);
-        (material as any).setRGB3f(color.r, color.g, color.b);
+        material.setRGB3f(color.r, color.g, color.b);
         twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelWeaponBody.m_box02);
         twUpperBox.copyTransformFrom(TrackWheelWeaponBody.m_box02);

@@ -42,6 +42,9 @@ export default class TrackWheelChassisBody {
             this.m_container = container;
         }
     }
+    setBrightness(brn: number): void {
+        
+    }
     getContainer(): DisplayEntityContainer {
         return this.m_container;
     }
@@ -61,16 +64,17 @@ export default class TrackWheelChassisBody {
     }
     initWeap01(tex0: TextureProxy): void {
 
-        let material: MaterialBase;
         if (TrackWheelChassisBody.s_box01 == null) {
             TrackWheelChassisBody.s_box01 = new Box3DEntity();
-            material = this.materialBuilder.createMaterial( tex0 );
+            let material = this.materialBuilder.createMaterial( tex0 );
             TrackWheelChassisBody.s_box01.setMaterial( material );
             TrackWheelChassisBody.s_box01.initializeSizeXYZ(60.0, 30, 60, [tex0]);
             TrackWheelChassisBody.s_box01.setXYZ(0.0, 70.0, 0.0);
         }
+        let color: Color4 =  this.color;
         let twUpperBox: Box3DEntity = new Box3DEntity();
-        material = this.materialBuilder.createMaterial( tex0 );
+        let material = this.materialBuilder.createMaterial( tex0 );
+        material.setRGB3f(color.r, color.g, color.b);
         twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelChassisBody.s_box01);
         twUpperBox.initializeSizeXYZ(60.0, 30, 60, [tex0]);
@@ -80,11 +84,10 @@ export default class TrackWheelChassisBody {
     }
     initWeap02(tex0: TextureProxy): void {
 
-        let material: MaterialBase;
         if (TrackWheelChassisBody.s_box01 == null) {
             let scale: number = 1.0;
             let box: Box3DEntity = new Box3DEntity();
-            material = this.materialBuilder.createMaterial( tex0 );
+            let material = this.materialBuilder.createMaterial( tex0 );
             box.setMaterial( material );
             box.initializeSizeXYZ(80.0, 20, 60, [tex0]);
             box.setXYZ(0.0, 70.0, 0.0);
@@ -98,7 +101,6 @@ export default class TrackWheelChassisBody {
             TrackWheelChassisBody.s_box01 = box;
 
             box = new Box3DEntity();
-            material = this.materialBuilder.createMaterial( tex0 );
             box.setMaterial( material );
             box.initializeSizeXYZ(80.0, 12, 60, [tex0]);
             box.setXYZ(0.0, 70.0 + 10 + 6, 0.0);
@@ -116,8 +118,8 @@ export default class TrackWheelChassisBody {
         let color: Color4 =  this.color;
         
         let twUpperBox: Box3DEntity = new Box3DEntity();
-        material = this.materialBuilder.createMaterial( tex0 );
-        (material as any).setRGB3f(color.r, color.g, color.b);
+        let material = this.materialBuilder.createMaterial( tex0 );
+        material.setRGB3f(color.r, color.g, color.b);
         twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelChassisBody.s_box01);
         twUpperBox.copyTransformFrom(TrackWheelChassisBody.s_box01);
@@ -126,7 +128,7 @@ export default class TrackWheelChassisBody {
 
         twUpperBox = new Box3DEntity();
         material = this.materialBuilder.createMaterial( tex0 );
-        (material as any).setRGB3f(color.r, color.g, color.b);
+        material.setRGB3f(color.r, color.g, color.b);
         twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelChassisBody.s_box02);
         twUpperBox.copyTransformFrom(TrackWheelChassisBody.s_box02);

@@ -60,7 +60,7 @@ export default class EruptionEffect implements IParticleEffect {
             let pv: Vector3D = new Vector3D();
             let dtSpeed: number = this.maxSpeed - this.minSpeed; 
             for (let i: number = 0; i < total; ++i) {
-                size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
+                size = Math.random() * Math.random() * Math.random() * 150 + 10.0;
                 //size = Math.random() * 40 + 10.0;
                 entity.setSizeAndScaleAt(i, size, size, 0.2, 1.0);
                 let uvparam: number[] = params[Math.round(Math.random() * 1000) % params.length];

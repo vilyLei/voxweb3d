@@ -46,10 +46,12 @@ export default class RbtRole implements IRunnable {
     roleCamp: IRoleCamp = null;
     constructor() {
     }
+    setBrightness(brn: number): void {
+        
+    }
     getRendererScene(): RendererScene {
         return this.m_rscene;
     }
-
     getAttackModule(): IRbtModule {
         return this.m_attackModule;
     }

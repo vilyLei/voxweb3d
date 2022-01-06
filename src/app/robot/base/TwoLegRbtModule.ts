@@ -38,6 +38,9 @@ export default class TwoLegRbtModule implements IRbtModule, IPoseture {
             this.m_container = container;
         }
     }
+    setBrightness(brn: number): void {
+        
+    }
     getContainer(): DisplayEntityContainer {
         return this.m_container;
     }

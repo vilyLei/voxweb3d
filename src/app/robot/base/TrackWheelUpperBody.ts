@@ -36,6 +36,9 @@ export default class TrackWheelUpperBody implements IRbtModule {
             this.m_container = container;
         }
     }
+    setBrightness(brn: number): void {
+        
+    }
     getContainer(): DisplayEntityContainer {
         return this.m_container;
     }
