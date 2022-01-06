@@ -12,6 +12,7 @@ import IParticleEffect from "../../particle/effect/IParticleEffect";
 import RendererState from "../../../src/vox/render/RendererState";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
+import { UVTool } from "../../vox/utils/UVTool";
 
 export default class EruptionEffect implements IParticleEffect {
     private m_clipMixEnabled: boolean = false;
@@ -20,6 +21,9 @@ export default class EruptionEffect implements IParticleEffect {
     solidEntity: Billboard3DFlowEntity = null;
     materialPipeline: IMaterialPipeline = null;
     pipeTypes: MaterialPipeType[] = null;
+
+    solidRN: number = 2;
+    solidCN: number = 2;
     constructor() { }
     initialize(flameTotal: number, solidTotal: number, flameTexture: TextureProxy, solidTexture: TextureProxy, clipMixEnabled: boolean = false): void {
         if (this.solidEntity == null) {
@@ -37,12 +41,7 @@ export default class EruptionEffect implements IParticleEffect {
     }
     private initSolid(srcSolidEntity: Billboard3DFlowEntity, total: number, tex: TextureProxy): void {
         let size: number = 100;
-        let params: number[][] = [
-            [0.0, 0.0, 0.5, 0.5],
-            [0.5, 0.0, 0.5, 0.5],
-            [0.0, 0.5, 0.5, 0.5],
-            [0.5, 0.5, 0.5, 0.5]
-        ];
+        let params: number[][] = UVTool.GetUVParamsByRNCN(this.solidRN, this.solidCN);
         let entity: Billboard3DFlowEntity = new Billboard3DFlowEntity();
 
         entity.setMaterialPipeline(this.materialPipeline);

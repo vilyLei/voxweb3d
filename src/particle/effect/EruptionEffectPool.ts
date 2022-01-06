@@ -25,6 +25,8 @@ export default class EruptionEffectPool extends ParticleEffectPool {
 
     solidPremultiplyAlpha: boolean = false;
     flamePremultiplyAlpha: boolean = false;
+    solidRN: number = 2;
+    solidCN: number = 2;
     constructor() { super(); }
 
     initialize(renderer: IRenderer, processIndex: number, flameTotal: number, solidTotal: number, flameTexture: TextureProxy, solidTexture: TextureProxy, clipMixEnabled: boolean = false): void {
@@ -39,6 +41,8 @@ export default class EruptionEffectPool extends ParticleEffectPool {
             this.m_renderProcessI = processIndex;
 
             let efSrc: EruptionEffect = new EruptionEffect();
+            efSrc.solidRN = this.solidRN;
+            efSrc.solidCN = this.solidCN;
             efSrc.materialPipeline = this.materialPipeline;
             efSrc.pipeTypes = this.pipeTypes;
             efSrc.initialize(flameTotal, solidTotal, this.m_flameTexture, this.m_solidTexture, this.m_clipMixEnabled);
@@ -49,6 +53,8 @@ export default class EruptionEffectPool extends ParticleEffectPool {
 
     appendEffectSrc(flameTotal: number, solidTotal: number, clipMixEnabled: boolean): void {
         let efSrc: EruptionEffect = new EruptionEffect();
+        efSrc.solidRN = this.solidRN;
+        efSrc.solidCN = this.solidCN;
         efSrc.materialPipeline = this.materialPipeline;
         efSrc.pipeTypes = this.pipeTypes;
         efSrc.initialize(flameTotal, solidTotal, this.m_flameTexture, this.m_solidTexture, clipMixEnabled);
@@ -57,6 +63,8 @@ export default class EruptionEffectPool extends ParticleEffectPool {
     }
     appendEffect(flameTexture: TextureProxy, solidTexture: TextureProxy, srcIndex: number = -1): void {
         let eff: EruptionEffect = new EruptionEffect();
+        eff.solidRN = this.solidRN;
+        eff.solidCN = this.solidCN;
         eff.materialPipeline = this.materialPipeline;
         eff.pipeTypes = this.pipeTypes;
         if (flameTexture == null) flameTexture = this.m_flameTexture;
@@ -88,6 +96,8 @@ export default class EruptionEffectPool extends ParticleEffectPool {
             if (solidTexture == null) solidTexture = this.m_solidTexture;
             let efSrc: EruptionEffect = this.m_efSrcList[Math.floor((this.m_efSrcList.length - 0.5) * Math.random())];
             eff = new EruptionEffect();
+            eff.solidRN = this.solidRN;
+            eff.solidCN = this.solidCN;
             eff.materialPipeline = this.materialPipeline;
             eff.pipeTypes = this.pipeTypes;
             eff.initializeFrom(efSrc, flameTexture, solidTexture, this.m_clipMixEnabled);

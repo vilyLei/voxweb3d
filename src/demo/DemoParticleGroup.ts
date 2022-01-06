@@ -20,6 +20,7 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import CameraViewRay from "../vox/view/CameraViewRay";
 import { UserInteraction } from "../vox/engine/UserInteraction";
+import { UVTool } from "../vox/utils/UVTool";
 
 
 export class DemoParticleGroup {
@@ -318,24 +319,11 @@ export class DemoParticleGroup {
         billGroup.setTime(0.0);
         this.m_flareBill = billGroup;
     }
-    private getUVParamsByRNCN(rn: number, cn: number): number[][] {
 
-        let dw: number = 1.0 / cn;
-        let dh: number = 1.0 / rn;
-        let trn: number = rn;
-        let tcn: number = cn;
-        let params: number[][] = [];
-        for(let i: number = 0; i < rn; ++i) {
-            for(let j: number = 0; j < cn; ++j) {
-                params.push([j * dw, i * dh, dw, dh]);
-            }
-        }
-        return params;
-    }
     private initBillGroup(textures: TextureProxy[]): void {
 
         let size: number = 100;
-        let params: number[][] = this.getUVParamsByRNCN(2, 2);
+        let params: number[][] = UVTool.GetUVParamsByRNCN(2, 2);
         //console.log("XXXX params: ",params);
         let tex: TextureProxy = textures[textures.length - 1];
         //let tex: TextureProxy = this.getImageTexByUrl("static/assets/particle/xuelie/xulie_00046.png");

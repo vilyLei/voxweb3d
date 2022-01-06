@@ -163,7 +163,7 @@ export class DemoParticleEruption {
         this.initEnvBox();
         
         //this.initializeEffect();
-        this.initBillGroup();
+        //this.initBillGroup();
 
     }
     
@@ -183,23 +183,26 @@ export class DemoParticleEruption {
 
             if (this.m_eff0Pool == null) {
                 let texFlame: TextureProxy = this.m_textures[8];
-                let texSolid: TextureProxy = this.m_textures[3];
+                //let texSolid: TextureProxy = this.m_textures[3];
+                //let texSolid: TextureProxy = this.getImageTexByUrl("static/assets/stones_02.png");
+                let texSolid: TextureProxy = this.getImageTexByUrl("static/assets/stones_03.png");
                 this.m_eff0Pool = new EruptionEffectPool();
+                this.m_eff0Pool.solidCN = this.m_eff0Pool.solidRN = 4;
                 this.m_eff0Pool.materialPipeline = this.m_materialCtx.pipeline;
                 this.m_eff0Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
                 this.m_eff0Pool.solidPremultiplyAlpha = true;
                 this.m_eff0Pool.initialize(this.m_rscene, 3, 60, 50, texFlame, texSolid, true);
                 //  this.m_eff0Pool.createEffect(null);
             }
-            if (this.m_eff1Pool == null) {    
-                let texture: TextureProxy = this.m_textures[9];
-                let colorTexture: TextureProxy = this.m_textures[10];
-                this.m_eff1Pool = new EruptionSmokePool();
-                this.m_eff1Pool.materialPipeline = this.m_materialCtx.pipeline;
-                this.m_eff1Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
-                this.m_eff1Pool.initialize(this.m_rscene, 3, 10, texture, colorTexture, true);
-                //  this.m_eff1Pool.createEffect(null);
-            }
+            // if (this.m_eff1Pool == null) {    
+            //     let texture: TextureProxy = this.m_textures[9];
+            //     let colorTexture: TextureProxy = this.m_textures[10];
+            //     this.m_eff1Pool = new EruptionSmokePool();
+            //     this.m_eff1Pool.materialPipeline = this.m_materialCtx.pipeline;
+            //     this.m_eff1Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
+            //     this.m_eff1Pool.initialize(this.m_rscene, 3, 10, texture, colorTexture, true);
+            //     //  this.m_eff1Pool.createEffect(null);
+            // }
             this.m_effInited = false;
         }
     }
@@ -253,11 +256,11 @@ export class DemoParticleEruption {
             // this.m_eff1Pool.createEffect(viewRay.position);
             //return;
 
-            if (Math.random() > 0.5) {
-                this.m_eff0Pool.createEffect(viewRay.position);
+            if (Math.random() > -0.5) {
+                if(this.m_eff0Pool != null) this.m_eff0Pool.createEffect(viewRay.position);
             }
             else {
-                this.m_eff1Pool.createEffect(viewRay.position);
+                if(this.m_eff1Pool != null) this.m_eff1Pool.createEffect(viewRay.position);
             }
         }
     }
