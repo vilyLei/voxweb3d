@@ -15,10 +15,19 @@ export default interface IAttackDst
     lifeTime:number;
     radius:number;
     position:Vector3D;
+    /**
+     * 自身的范围半径
+     */
     status: CampRoleStatus;
-
+    /**
+     * 自身能攻击到的距离
+     */
     attackDis:number;
+    /**
+     * 重新启动激活
+     */
     wake(): void;
+    
     getPosition(pos:Vector3D):void;
     setVisible(visible:boolean):void;
     /**

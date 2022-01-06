@@ -262,8 +262,7 @@ export default class RedCamp implements IRoleCamp {
         if(this.roleManager.getCampTeamsTotal() < 2) {
             if(this.m_revivingDelay < 1) {
                 this.m_revivingDelay = 100;
-                let tot: number = Math.round( Math.random() * 30 + 10 );
-                console.log("### revive roles total: ", tot);
+                let tot: number = Math.round( Math.random() * 20 + 20 );
                 this.reviveRole( tot );
             }
             else {
