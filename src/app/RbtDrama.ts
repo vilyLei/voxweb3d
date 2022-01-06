@@ -95,6 +95,7 @@ export class RbtDrama implements IShaderLibListener {
 
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
+            rparam.setPolygonOffsetEanbled(false);
             rparam.setAttriAlpha(false);
             rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
             rparam.setCamProject(45.0, 30.0, 9000.0);

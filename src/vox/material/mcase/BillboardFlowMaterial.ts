@@ -93,7 +93,7 @@ export default class BillboardFlowMaterial extends MaterialBase {
         this.m_clipEnabled = clipEnabled;
         if (clipEnabled) {
             this.m_uniformData = new Float32Array([
-                1.0, 1.0, 0.0, 1.0,        // sx,sy,time, undefined
+                1.0, 1.0, 0.0, 0.0,        // sx,sy,time, depth offset
                 1.0, 1.0, 1.0, 1.0,        // r,g,b, spdScaleFactor(0.1 -> 5.0)
                 0.0, 0.0, 0.0, 0.0,
                 0.0, 0.0, 0.0, 2.0,        // whole acceleration x,y,z,  speed scale max value
@@ -101,7 +101,7 @@ export default class BillboardFlowMaterial extends MaterialBase {
             ]);
         }
         else {
-            this.m_uniformData = new Float32Array([1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0]);
+            this.m_uniformData = new Float32Array([1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0]);
         }
     }
 
@@ -213,6 +213,13 @@ export default class BillboardFlowMaterial extends MaterialBase {
     setScaleXY(sx: number, sy: number): void {
         this.m_uniformData[0] = sx;
         this.m_uniformData[1] = sy;
+    }
+    /**
+     * 设置深度偏移量
+     * @param offset the value range: [-2.0 -> 2.0]
+     */
+    setDepthOffset(offset: number): void {
+        this.m_uniformData[3] = offset;
     }
     getUniformData(): Float32Array {
         return this.m_uniformData;

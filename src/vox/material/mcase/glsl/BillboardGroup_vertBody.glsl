@@ -23,6 +23,10 @@
 
     viewPosition.xy += vtx.xy;
     gl_Position =  u_projMat * viewPosition;
+    temp = u_billParam[0];
+    // use depth offset
+    gl_Position.z = ((gl_Position.z / gl_Position.w) + temp.w) * gl_Position.w;
+
     v_factor = vec4(0.0,0.0, kf * a_vs2.w, fi);
 
     #ifdef VOX_USE_RAW_UV

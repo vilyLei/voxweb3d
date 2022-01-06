@@ -90,6 +90,15 @@ export default class EruptionSmoke implements IParticleEffect {
         entity.setClipUVParam(this.uvGridCN, this.uvGridsTotal, du, dv);
         this.smokeEntity = entity;
     }
+    /**
+     * 设置深度偏移量
+     * @param offset the value range: [-2.0 -> 2.0]
+     */
+    setDepthOffset(offset: number): void {
+        if (this.smokeEntity != null) {
+            this.smokeEntity.setDepthOffset(offset);
+        }
+    }
     setTime(time: number): void {
         if (this.smokeEntity != null) {
             this.smokeEntity.setTime(time);

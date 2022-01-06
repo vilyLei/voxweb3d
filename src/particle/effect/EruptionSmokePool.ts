@@ -21,6 +21,7 @@ export default class EruptionSmokePool extends ParticleEffectPool {
 
     materialPipeline: IMaterialPipeline = null;
     pipeTypes: MaterialPipeType[] = null;
+    depthOffset: number = 0.0;
 
     uvGridCN: number = 4;
     uvGridsTotal: number = 16;
@@ -41,6 +42,7 @@ export default class EruptionSmokePool extends ParticleEffectPool {
             efSrc.uvGridCN = this.uvGridCN;
             efSrc.uvGridsTotal = this.uvGridsTotal;
             efSrc.initialize(particleTotal, this.m_texture, this.m_colorTexture, this.m_clipMixEnabled);
+            efSrc.setDepthOffset( this.depthOffset );
             this.m_efSrcList.push(efSrc);
         }
     }
@@ -51,6 +53,7 @@ export default class EruptionSmokePool extends ParticleEffectPool {
         efSrc.uvGridCN = this.uvGridCN;
         efSrc.uvGridsTotal = this.uvGridsTotal;
         efSrc.initialize(particleTotal, this.m_texture, this.m_colorTexture, clipMixEnabled);
+        efSrc.setDepthOffset( this.depthOffset );
         this.m_efSrcList.push(efSrc);
     }
     appendEffect(texture: TextureProxy, colorTexture: TextureProxy, srcIndex: number = -1): void {
@@ -73,6 +76,7 @@ export default class EruptionSmokePool extends ParticleEffectPool {
         this.m_freeEffList.push(eff);
         this.m_renderer.addEntity(eff.smokeEntity, this.m_renderProcessI, false);
         eff.setVisible(false);
+        eff.setDepthOffset( this.depthOffset );
     }
     createEffect(pv: Vector3D): EruptionSomke {
         return this.createEffectWithTexture(pv, this.m_texture, this.m_colorTexture);
@@ -89,6 +93,7 @@ export default class EruptionSmokePool extends ParticleEffectPool {
             if (colorTexture == null) colorTexture = this.m_colorTexture;
             let efSrc: EruptionSomke = this.m_efSrcList[Math.floor((this.m_efSrcList.length - 0.5) * Math.random())];
             eff.initializeFrom(efSrc, texture, colorTexture, this.m_clipMixEnabled);
+            eff.setDepthOffset( this.depthOffset );
             this.m_renderer.addEntity(eff.smokeEntity, this.m_renderProcessI, false);
         }
         else {

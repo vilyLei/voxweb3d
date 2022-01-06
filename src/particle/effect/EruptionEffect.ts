@@ -125,6 +125,17 @@ export default class EruptionEffect implements IParticleEffect {
         entity.initialize(true, false, false, [tex]);
 
         this.flameEntity = entity;
+    }/**
+     * 设置深度偏移量
+     * @param offset the value range: [-2.0 -> 2.0]
+     */
+    setDepthOffset(offset: number): void {
+        if (this.solidEntity != null) {
+            this.solidEntity.setDepthOffset(offset);
+        }
+        if (this.flameEntity != null) {
+            this.flameEntity.setDepthOffset(offset);
+        }
     }
     setTime(time: number): void {
         if (this.solidEntity != null) {

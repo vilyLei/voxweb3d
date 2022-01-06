@@ -40,6 +40,7 @@ export default class CampMoudle {
             //let colorTexture:TextureProxy = AssetsModule.GetImageTexByUrl("static/assets/color_06.jpg");
             //let colorTexture:TextureProxy = AssetsModule.GetImageTexByUrl("static/assets/RandomNoiseB.png");
             this.m_eff1Pool = new EruptionSmokePool();
+            this.m_eff1Pool.depthOffset = AssetsModule.GetInstance().particleGroupDepthOffset;
             this.m_eff1Pool.materialPipeline = AssetsModule.GetMaterialPipeline();
             this.m_eff1Pool.pipeTypes = [ MaterialPipeType.FOG_EXP2 ];
             

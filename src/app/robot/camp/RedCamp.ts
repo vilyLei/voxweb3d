@@ -117,7 +117,7 @@ export default class RedCamp implements IRoleCamp {
 
             if (this.m_eff0Pool == null) {
                 this.m_eff0Pool = new EruptionEffectPool();
-
+                this.m_eff0Pool.depthOffset = AssetsModule.GetInstance().particleGroupDepthOffset;
                 this.m_eff0Pool.materialPipeline = AssetsModule.GetMaterialPipeline();
                 this.m_eff0Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
                 this.m_eff0Pool.timeSpeed = 15.0;

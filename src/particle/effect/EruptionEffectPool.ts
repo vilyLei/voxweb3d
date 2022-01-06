@@ -21,6 +21,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
     
     materialPipeline: IMaterialPipeline = null;
     pipeTypes: MaterialPipeType[] = null;
+    depthOffset: number = 0.0;
 
     solidPremultiplyAlpha: boolean = false;
     flamePremultiplyAlpha: boolean = false;
@@ -41,6 +42,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
             efSrc.materialPipeline = this.materialPipeline;
             efSrc.pipeTypes = this.pipeTypes;
             efSrc.initialize(flameTotal, solidTotal, this.m_flameTexture, this.m_solidTexture, this.m_clipMixEnabled);
+            efSrc.setDepthOffset( this.depthOffset );
             this.m_efSrcList.push(efSrc);
         }
     }
@@ -50,6 +52,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
         efSrc.materialPipeline = this.materialPipeline;
         efSrc.pipeTypes = this.pipeTypes;
         efSrc.initialize(flameTotal, solidTotal, this.m_flameTexture, this.m_solidTexture, clipMixEnabled);
+        efSrc.setDepthOffset( this.depthOffset );
         this.m_efSrcList.push(efSrc);
     }
     appendEffect(flameTexture: TextureProxy, solidTexture: TextureProxy, srcIndex: number = -1): void {
@@ -72,6 +75,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
         this.m_renderer.addEntity(eff.solidEntity, this.m_renderProcessI, false);
         this.m_renderer.addEntity(eff.flameEntity, this.m_renderProcessI, false);
         eff.setVisible(false);
+        eff.setDepthOffset( this.depthOffset );
 
     }
     createEffect(pv: Vector3D): EruptionEffect {
@@ -87,6 +91,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
             eff.materialPipeline = this.materialPipeline;
             eff.pipeTypes = this.pipeTypes;
             eff.initializeFrom(efSrc, flameTexture, solidTexture, this.m_clipMixEnabled);
+            eff.setDepthOffset( this.depthOffset );
             this.m_renderer.addEntity(eff.solidEntity, this.m_renderProcessI, false);
             this.m_renderer.addEntity(eff.flameEntity, this.m_renderProcessI, false);
         }

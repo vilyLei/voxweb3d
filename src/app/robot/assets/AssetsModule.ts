@@ -17,7 +17,7 @@ export default class AssetsModule {
     private m_materialCtx: MaterialContext = null;
     private static s_materialCtx: MaterialContext = null;
     private static s_ins: AssetsModule = null;
-
+    particleGroupDepthOffset: number = -0.0004;
     constructor() {
         if (AssetsModule.s_ins != null) {
             throw Error("AssetsModule is a singleton class.");

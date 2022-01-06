@@ -145,6 +145,13 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
     setTime(time: number): void {
         this.m_currMaterial.setTime(time);
     }
+    /**
+     * 设置深度偏移量
+     * @param offset the value range: [-2.0 -> 2.0]
+     */
+    setDepthOffset(offset: number): void {
+        this.m_currMaterial.setDepthOffset( offset );
+    }
     updateTime(timeOffset: number): void {
         this.m_currMaterial.updateTime(timeOffset);
     }
