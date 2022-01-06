@@ -14,10 +14,56 @@ import AssetsModule from "../../../app/robot/assets/AssetsModule";
 import RendererScene from "../../../vox/scene/RendererScene";
 import EruptionEffectPool from "../../../particle/effect/EruptionEffectPool";
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
-class CampStatus {
+
+class CampRoleManager {
+    private m_statusList: number[] = [0, 0, 0, 0, 0, 0];
+    private m_campTeamsTotal: number = 0;
     constructor() { }
+
+    private updateStatus(role: IAttackDst, flag: number): void {
+        let i: number = 0;
+        switch (role.campType) {
+            case CampType.Green:
+                i = 1;
+                break;
+            case CampType.Red:
+                i = 2;
+                break;
+            case CampType.Blue:
+                i = 3;
+                break;
+            default:
+                i = 0;
+                break;
+        }
+        this.m_statusList[i] += flag;
+    }
+    addRole(role: IAttackDst): void {
+        this.updateStatus(role, 1);
+        this.calcCampTeamsTotal();
+    }
+    removeRole(role: IAttackDst): void {
+        this.updateStatus(role, -1);
+        this.calcCampTeamsTotal();
+    }
+    private calcCampTeamsTotal(): void {
+        this.m_campTeamsTotal = 0;
+        for (let i: number = 0; i < 6; ++i) {
+            this.m_campTeamsTotal += this.m_statusList[i] > 0 ? 1 : 0;
+        }
+    }
+    getCampTeamsTotal(): number {
+        return this.m_campTeamsTotal;
+    }
+    reset(): void {
+        for (let i: number = 0; i < 6; ++i) {
+            this.m_statusList[i] = 0;
+        }
+        this.m_campTeamsTotal = 0;
+    }
 }
 export default class RedCamp implements IRoleCamp {
+
     private m_rsc: RendererScene = null;
     private m_roles: IAttackDst[] = [];
     private m_freeRoles: IAttackDst[] = [];
@@ -25,8 +71,12 @@ export default class RedCamp implements IRoleCamp {
     private m_blactimeList: number[] = [];
     private m_tempV0: Vector3D = new Vector3D();
     private m_eff0Pool: EruptionEffectPool = null;
+    readonly roleManager: CampRoleManager = new CampRoleManager();
     distance: number = 0.0;
     constructor() {
+    }
+    getFreeRoles(): IAttackDst[] {
+        return this.m_freeRoles;
     }
     initialize(rsc: RendererScene): void {
         if (this.m_rsc == null) {
@@ -50,6 +100,7 @@ export default class RedCamp implements IRoleCamp {
         if (role != null && role.status == CampRoleStatus.Free) {
             role.status = CampRoleStatus.Busy;
             this.m_roles.push(role);
+            this.roleManager.addRole(role);
         }
     }
     private m_rsn: IAttackDst = null;
@@ -133,14 +184,10 @@ export default class RedCamp implements IRoleCamp {
 
             let role: IAttackDst = null;
             let rsnLen: number = 0;
-            // let campFlag: number = 1;
-            // let cfTotal: number = 1;
             let dis: number;
             for (let i: number = 0; i < len; ++i) {
                 role = list[i];
                 if (role.lifeTime > 0) {
-                    // campFlag += role.campType;
-                    // cfTotal += cfTotal;
                     if (role.campType != srcCampType) {
                         dis = radius + role.radius;
                         dis *= dis;
@@ -165,13 +212,10 @@ export default class RedCamp implements IRoleCamp {
                     i--;
                     len--;
                     this.m_blackRoles.push(role);
-                    this.m_blactimeList.push(8);
-                    //this.m_freeRoles.push(role);
-                    //role.setVisible(false);
+                    this.m_blactimeList.push(10);
                 }
             }
             if (rsnLen > 1) {
-                //campFlag / cfTotal;
                 this.snsort(0, rsnLen - 1);
             }
             if (rsnLen > 0) {
@@ -182,15 +226,17 @@ export default class RedCamp implements IRoleCamp {
         return null;
     }
     run(): void {
-        
+        // if(this.roleManager.getCampTeamsTotal() == 1) {
+        //     console.log("...vv....");
+        // }
         let list: IAttackDst[] = this.m_blackRoles;
         let len: number = list.length;
         if (len > 0) {
             let tlist: number[] = this.m_blactimeList;
             for (let i: number = 0; i < len; ++i) {
-
                 tlist[i]--;
                 if (tlist[i] < 1) {
+                    this.roleManager.removeRole(list[i]);
                     list[i].status = CampRoleStatus.Free;
                     this.m_freeRoles.push(list[i]);
                     list[i].setVisible(false);
