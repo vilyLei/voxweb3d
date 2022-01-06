@@ -68,20 +68,36 @@ export class DemoGLState {
     }
     private initPolygonOffsetTest(): void {
         this.m_runType = 3;
-        let bill: Billboard3DEntity = new Billboard3DEntity();
+        let plane: Plane3DEntity;
+
+        // plane = new Plane3DEntity();
+        // plane.initializeYOZ(-50.0, -50.0, 100.0, 100.0, [this.m_texLoader.getTexByUrl("static/assets/partile_tex_001.jpg")]);
+        // plane.toBrightnessBlend();
+        // plane.setXYZ(400.0,-190.0,0.0);
+        // plane.getMaterial().setPolygonOffset(0.0, 0);
+        // //this.m_rscene.addEntity(plane, 1);
+
+        // plane = new Plane3DEntity();
+        // plane.initializeYOZ(-50.0, -50.0, 100.0, 100.0, [this.m_texLoader.getTexByUrl("static/assets/partile_tex_001.jpg")]);
+        // plane.toBrightnessBlend();
+        // plane.setXYZ(-100.0,-190.0,0.0);
+        // plane.getMaterial().setPolygonOffset(-130.0, 0);
+        // this.m_rscene.addEntity(plane, 2);
+
+        let bill: Billboard3DEntity;
+        bill = new Billboard3DEntity();
         bill.initialize(100,100,[this.m_texLoader.getTexByUrl("static/assets/flare_core_02.jpg")]);
-        bill.setXYZ(200.0,-190.0,0.0);
-        //bill.getMaterial().setPolygonOffset(30.0,0.0);
+        bill.setXYZ(170.0,-190.0,0.0);
+        bill.getMaterial().setDepthOffset(-0.4);
         this.m_rscene.addEntity(bill, 1);
 
         bill = new Billboard3DEntity();
-        bill.initialize(100,100,[this.m_texLoader.getTexByUrl("static/assets/flare_core_01.jpg")]);
-        bill.setXYZ(-100.0,-190.0,0.0);
-        //bill.getMaterial().setPolygonOffset(30.0,0.0);
+        bill.initialize(100,100,[this.m_texLoader.getTexByUrl("static/assets/flare_core_02.jpg")]);
+        bill.setXYZ(220.0,-190.0,0.0);
         this.m_rscene.addEntity(bill, 2);
 
         
-        this.m_rscene.getRenderProxy().setPolygonOffset(30.0, 0.0);
+        //this.m_rscene.getRenderProxy().setPolygonOffset(30.0, 0.0);
     }
     private step(edge: number, value: number): number {
         return value < edge ? 0.0 : 1.0;
@@ -101,12 +117,12 @@ export class DemoGLState {
         this.m_statusDisp.render();
     }
     run(): void {
-        if(this.m_flag) {
-            this.m_flag = false;
-        }
-        else {
-            //return;
-        }
+        // if(this.m_flag) {
+        //     this.m_flag = false;
+        // }
+        // else {
+        //     return;
+        // }
         //console.log("run start...");
 
         this.m_statusDisp.update(false);
@@ -201,11 +217,8 @@ export class DemoGLState {
         
         this.m_rscene.update();
         this.m_rscene.runBegin();
-        //this.m_rscene.getRenderProxy().setPolygonOffset(0.0, 0.0);
         this.m_rscene.runAt(0);
-        //this.m_rscene.getRenderProxy().setPolygonOffset(130, 0.0);
         this.m_rscene.runAt(1);
-        //this.m_rscene.getRenderProxy().setPolygonOffset(-100, 0.0);
         this.m_rscene.runAt(2);
     }
     private runBase(): void {

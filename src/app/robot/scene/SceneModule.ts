@@ -76,6 +76,9 @@ class SceneModule {
         axis.initializeCross(200.0);
 
         this.m_rscene.addEntity(axis);
+
+        
+        //this.m_rscene.getRenderProxy().setPolygonOffset(30.0, 0.0);
     }
     private initScene(): void {
 

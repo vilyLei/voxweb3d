@@ -39,6 +39,8 @@ class RenderAdapter implements IRenderAdapter{
 	private m_fboBufList: FrameBufferObject[] = [null, null, null, null, null, null, null, null];
 	private m_fboClearBoo: boolean = true;
 	private m_fboViewRectBoo: boolean = false;
+	private m_polygonOffsetFlag: boolean = false;
+	private m_polygonOffset: boolean = false;
 	private m_viewX: number = 0;
 	private m_viewY: number = 0;
 	private m_viewWidth: number = 800;
@@ -80,6 +82,8 @@ class RenderAdapter implements IRenderAdapter{
 				console.warn("STENCIL_TEST disable !!!");
 				this.m_gl.disable(this.m_gl.STENCIL_TEST);
 			}
+			if (param.getPolygonOffsetEanbled()) this.enabledPolygonOffset();
+			else this.disabledPolygonOffset();
 
 			this.m_gl.enable(this.m_gl.CULL_FACE);
 			this.m_gl.cullFace(this.m_gl.BACK);
@@ -88,14 +92,6 @@ class RenderAdapter implements IRenderAdapter{
 			if (param.getDitherEanbled()) this.m_gl.enable(this.m_gl.DITHER);
 			else this.m_gl.disable(this.m_gl.DITHER);
 			this.m_gl.frontFace(this.m_gl.CCW);
-			if (param.getPolygonOffsetEanbled()) {
-				console.warn("POLYGON_OFFSET_FILL enable !!!");
-				this.m_gl.enable(this.m_gl.POLYGON_OFFSET_FILL);
-			}
-			else {
-				console.warn("POLYGON_OFFSET_FILL disable !!!");
-				this.m_gl.disable(this.m_gl.POLYGON_OFFSET_FILL);
-			}
 
 			//m_gl.hint(m_gl.PERSPECTIVE_CORRECTION_HINT, m_gl.NICEST);	// Really Nice Perspective Calculations
 			this.m_clearMask = this.m_gl.COLOR_BUFFER_BIT | this.m_gl.DEPTH_BUFFER_BIT | this.m_gl.STENCIL_BUFFER_BIT;
@@ -124,7 +120,20 @@ class RenderAdapter implements IRenderAdapter{
 			this.m_fontFaceFlipped = faceFlipped;
 		}
 	}
-	private m_polygonOffset: boolean = false;
+    enabledPolygonOffset(): void {
+		if(!this.m_polygonOffset) {
+			this.m_polygonOffset = true;
+			console.warn("POLYGON_OFFSET_FILL enable !!!");
+			this.m_gl.enable(this.m_gl.POLYGON_OFFSET_FILL);
+		}
+    }
+    disabledPolygonOffset(): void {
+		if(this.m_polygonOffset) {
+			this.m_polygonOffset = false;
+			console.warn("POLYGON_OFFSET_FILL disable !!!");
+			this.m_gl.disable(this.m_gl.POLYGON_OFFSET_FILL);
+		}
+    }
 	/*
 	 * specifies the scale factors and units to calculate depth values.
 	 * @param factor the value is a GLfloat which sets the scale factor for the variable depth offset for each polygon. The default value is 0.
@@ -132,15 +141,15 @@ class RenderAdapter implements IRenderAdapter{
 	 */
 	setPolygonOffset(factor: number, units: number = 0.0): void {
 		this.m_gl.polygonOffset(factor, units);
-		this.m_polygonOffset = true;
+		this.m_polygonOffsetFlag = true;
 	}
 	/*
 	 * reset the scale factors and units value is default value(0.0).
 	 */
 	resetPolygonOffset(): void {
-		if (this.m_polygonOffset) {
-			//this.m_gl.polygonOffset(0.0, 0.0);
-			this.m_polygonOffset = false;
+		if (this.m_polygonOffsetFlag) {
+			this.m_gl.polygonOffset(0.0, 0.0);
+			this.m_polygonOffsetFlag = false;
 		}
 	}
 	getDiv(): any {

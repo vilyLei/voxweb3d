@@ -488,7 +488,12 @@ class RenderProxy implements IRenderProxy{
     setFrontFaceFlipped(faceFlipped: boolean): void {
         this.m_adapter.setFrontFaceFlipped(faceFlipped);
     }
-
+    enabledPolygonOffset(): void {
+        this.m_adapter.enabledPolygonOffset();
+    }
+    disabledPolygonOffset(): void {
+        this.m_adapter.disabledPolygonOffset();
+    }
     /*
      * specifies the scale factors and units to calculate depth values.
      * @param factor the value is a GLfloat which sets the scale factor for the variable depth offset for each polygon. The default value is 0.

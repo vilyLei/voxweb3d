@@ -56,7 +56,12 @@ export default class MaterialBase implements IRenderMaterial {
     getPolygonOffset(): number[] {
         return this.m_polygonOffset;
     }
-    
+    /**
+     * 设置深度偏移量
+     * @param offset the value range: [-2.0 -> 2.0]
+     */
+    setDepthOffset(offset: number): void {
+    }
     setMaterialPipeline(pipeline: IMaterialPipeline): void {
         this.m_pipeLine = pipeline;
     }

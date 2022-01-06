@@ -71,6 +71,7 @@ class BillboardShaderBuffer extends ShaderCodeBuffer {
     viewPosition = u_viewMat * u_objMat * vec4(0.0,0.0,0.0,1.0);
     viewPosition.xy += vtx_pos.xy;
     gl_Position =  u_projMat * viewPosition;
+    gl_Position.z = ((gl_Position.z / gl_Position.w) + temp.w) * gl_Position.w;
     v_uv = a_uvs;
     v_colorMult = u_billParam[1];
     v_colorOffset = u_billParam[2];
@@ -99,7 +100,7 @@ export default class BillboardMaterial extends MaterialBase {
     private m_alphaEnabled: boolean = false;
     private m_rotationEnabled: boolean = false;
     private m_rz: number = 0;
-    private m_uniformData: Float32Array = new Float32Array([1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0]);
+    private m_uniformData: Float32Array = new Float32Array([1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0]);
 
     constructor(brightnessEnabled: boolean = true, alphaEnabled: boolean = false, rotationEnabled: boolean = false) {
 
@@ -177,6 +178,13 @@ export default class BillboardMaterial extends MaterialBase {
 
         this.m_uniformData[0] = sx;
         this.m_uniformData[1] = sy;
+    }
+    /**
+     * 设置深度偏移量
+     * @param offset the value range: [-2.0 -> 2.0]
+     */
+    setDepthOffset(offset: number): void {
+        this.m_uniformData[3] = offset;
     }
     getUniformData(): Float32Array {
 
