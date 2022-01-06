@@ -118,8 +118,8 @@ export default class RedCamp implements IRoleCamp {
             if (this.m_eff0Pool == null) {
                 this.m_eff0Pool = new EruptionEffectPool();
                 
-                this.m_eff0Pool.solidRN = 4;
-                this.m_eff0Pool.solidCN = 8
+                this.m_eff0Pool.solidRN = 2;
+                this.m_eff0Pool.solidCN = 2
                 this.m_eff0Pool.depthOffset = AssetsModule.GetInstance().particleGroupDepthOffset;
                 this.m_eff0Pool.materialPipeline = AssetsModule.GetMaterialPipeline();
                 this.m_eff0Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
@@ -129,10 +129,10 @@ export default class RedCamp implements IRoleCamp {
                 this.m_eff0Pool.solidColor.setRGB3f(0.3,0.3,0.3);
                 this.m_eff0Pool.initialize(this.m_rsc, this.effectRenderProcessIndex, 60, 50,
                     AssetsModule.GetImageTexByUrl("static/assets/testEFT4.jpg"),
-                    //AssetsModule.GetImageTexByUrl("static/assets/stones_02.png"),
+                    AssetsModule.GetImageTexByUrl("static/assets/stones_02.png"),
                     //AssetsModule.GetImageTexByUrl("static/assets/stones_01.png"),
                     //AssetsModule.GetImageTexByUrl("static/assets/stones_05.png"),
-                    AssetsModule.GetImageTexByUrl("static/assets/stones_06.png"),
+                    //AssetsModule.GetImageTexByUrl("static/assets/stones_06.png"),
                     true);
                 //  this.m_eff0Pool.createEffect(null);
             }

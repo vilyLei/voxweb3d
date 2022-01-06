@@ -18,6 +18,7 @@ import TrackWheelWeaponBody from "../../../app/robot/base/TrackWheelWeaponBody";
 import TrackWheelChassisBody from "../../../app/robot/base/TrackWheelChassisBody";
 import Vector3D from "../../../vox/math/Vector3D";
 import {RoleMaterialBuilder} from "../scene/RoleMaterialBuilder";
+import Color4 from "../../../vox/material/Color4";
 
 export default class TrackWheeRoleFactory {
     private m_roleCamp: IRoleCamp = null;
@@ -63,14 +64,20 @@ export default class TrackWheeRoleFactory {
         twRole.attackDis = 50;
         twRole.radius = 80;
         twRole.lifeTime = 200;
+        
+        let color: Color4 =  new Color4();
+        //color.setRGB3f(Math.random() * 0.7 + 0.4, Math.random() * 0.7 + 0.4, Math.random() * 0.7 + 0.4);
+        color.normalizeRandom(2.0);
 
         let weaponBody: TrackWheelWeaponBody = new TrackWheelWeaponBody();
+        weaponBody.color = color;
         weaponBody.materialBuilder = this.m_materialBuilder;
         weaponBody.initWeap01(tex1);
         //weaponBody.initWeap02(tex0);
         weaponBody.initialize(this.m_rscene, twRole.getAttackModule().getContainer());
 
         let chassisBody: TrackWheelChassisBody = new TrackWheelChassisBody();
+        chassisBody.color = color;
         chassisBody.materialBuilder = this.m_materialBuilder;
         //chassisBody.initWeap01(tex0);
         chassisBody.initWeap02(tex0);

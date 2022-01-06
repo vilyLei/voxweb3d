@@ -19,7 +19,7 @@ import {RoleMaterialBuilder} from "../scene/RoleMaterialBuilder";
 import { ShadowEntity } from "./ShadowEntity";
 
 export default class TrackWheelRole extends RbtRole implements IAttackDst {
-    private m_renderProcessIndex: number = 0;
+    
     private m_legModule: TrackWheelChassis = null;
     private m_armModule: TrackWheelUpperBody = null;
 
@@ -40,7 +40,6 @@ export default class TrackWheelRole extends RbtRole implements IAttackDst {
             this.lifeTime = srcRole.lifeTime;
             this.attackDis = srcRole.attackDis;
             this.radius = srcRole.radius;
-            //this.initialize(srcRole.getRendererScene(), srcRole.m_renderProcessIndex, srcRole.m_srcTrackWheel, null, upperrEntity);
         }
     }
     initialize(sc: RendererScene, renderProcessIndex: number, srcTrackWheel: BoxGroupTrack, weapBody: TrackWheelWeaponBody, chassisBody: TrackWheelChassisBody, dis: number = 50.0): void {

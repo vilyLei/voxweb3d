@@ -18,6 +18,7 @@ import WeapMoudle from "../../../app/robot/WeapMoudle";
 import { CampType } from "../../../app/robot/camp/Camp";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import {RoleMaterialBuilder} from "../scene/RoleMaterialBuilder";
+import Color4 from "../../../vox/material/Color4";
 
 export default class TrackWheelWeaponBody {
     private m_pos: Vector3D = new Vector3D();
@@ -33,6 +34,8 @@ export default class TrackWheelWeaponBody {
     materialBuilder: RoleMaterialBuilder = null;
     weap: WeapMoudle = null;
     campType: CampType = CampType.Blue;
+    color: Color4 = null;
+
     constructor(container: DisplayEntityContainer = null) {
         if (container == null) {
             this.m_container = new DisplayEntityContainer();
@@ -76,8 +79,10 @@ export default class TrackWheelWeaponBody {
             TrackWheelWeaponBody.m_box01.transformFaceAt(2, mat4);
             TrackWheelWeaponBody.m_box01.reinitializeMesh();
         }
+        let color = this.color;
         let twUpperBox: Box3DEntity = new Box3DEntity();
         material = this.materialBuilder.createMaterial(tex0);
+        (material as any).setRGB3f(color.r, color.g, color.b);
         twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelWeaponBody.m_box01);
         twUpperBox.initializeSizeXYZ(60.0, height, 60, [tex0]);
@@ -121,8 +126,10 @@ export default class TrackWheelWeaponBody {
             TrackWheelWeaponBody.m_box02 = box;
 
         }
+        let color = this.color;
         let twUpperBox: Box3DEntity = new Box3DEntity();
         material = this.materialBuilder.createMaterial(tex0);
+        (material as any).setRGB3f(color.r, color.g, color.b);
         twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelWeaponBody.m_box01);
         twUpperBox.copyTransformFrom(TrackWheelWeaponBody.m_box01);
@@ -131,6 +138,7 @@ export default class TrackWheelWeaponBody {
 
         twUpperBox = new Box3DEntity();
         material = this.materialBuilder.createMaterial(tex0);
+        (material as any).setRGB3f(color.r, color.g, color.b);
         twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelWeaponBody.m_box02);
         twUpperBox.copyTransformFrom(TrackWheelWeaponBody.m_box02);

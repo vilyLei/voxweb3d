@@ -38,7 +38,7 @@ class SceneModule {
 
             AssetsModule.GetInstance().initialize(this.m_materialCtx);
             this.m_waitingTotal = this.m_materialCtx.getTextureLoader().getWaitTotal();
-            console.log("xxx this.m_waitingTotal: ",this.m_waitingTotal);
+            
             this.init();
         }
     }
