@@ -62,7 +62,9 @@ class SimpleTerrain {
         let obstacleMinV = new Vector3D(-size * 0.5, 0, -size * 0.5);
         let obstacleMaxV = new Vector3D(size * 0.5, this.m_terrainData.obstacleHeight, size * 0.5);
         let color: Color4 = new Color4();
-        let material = this.createLambertMaterial(this.m_materialCtx.getTextureByUrl("static/assets/box_wood01.jpg"), null, null, true);
+        let normalMap = null;//this.m_materialCtx.getTextureByUrl("static/assets/disp/box_NRM.png");
+        let aoMap = null;//this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
+        let material = this.createLambertMaterial(this.m_materialCtx.getTextureByUrl("static/assets/box_wood01.jpg"), normalMap, aoMap, true);
         let srcBox: Box3DEntity = new Box3DEntity();
         srcBox.vtxColor = color;
         srcBox.setMaterial( material );
@@ -73,20 +75,22 @@ class SimpleTerrain {
         let meshMerger2: GeometryMerger = new GeometryMerger();
 
         ///*
+        //let tex0 = this.m_materialCtx.getTextureByUrl("static/assets/disp/box_COLOR.png");
         let tex0 = this.m_materialCtx.getTextureByUrl("static/assets/box_wood01.jpg");
+        //let tex0_n = this.m_materialCtx.getTextureByUrl("static/assets/disp/box_NRM.png");
         let tex1 = this.m_materialCtx.getTextureByUrl("static/assets/moss_01.jpg");
         let tex2 = this.m_materialCtx.getTextureByUrl("static/assets/moss_03.jpg");
 
         //let obsMaterial = new Default3DMaterial();
-        let obsMaterial = this.createLambertMaterial(tex0, null, null, true);
+        let obsMaterial = this.createLambertMaterial(tex0, normalMap, aoMap, true);
         obsMaterial.initializeByCodeBuf();
-
+        normalMap = null;
         //let material1 = new Default3DMaterial();
-        let material1 = this.createLambertMaterial(tex1, null, null, true);
+        let material1 = this.createLambertMaterial(tex1, normalMap, aoMap, true);
         material1.initializeByCodeBuf();
 
         //let material2 = new Default3DMaterial();
-        let material2 = this.createLambertMaterial(tex2, null, null, true);
+        let material2 = this.createLambertMaterial(tex2, normalMap, aoMap, true);
         material2.initializeByCodeBuf();
         
         let colorBrn: number = this.colorBrightness;

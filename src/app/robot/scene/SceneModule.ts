@@ -134,7 +134,7 @@ class SceneModule {
                 this.initScene();
             }
         }
-        else {
+        else if(this.m_materialCtx != null){
             if(this.m_materialCtx.isTextureLoadedAll()) {
                 this.m_loaded = true;
                 this.m_loadingEntity.setText("loading 100%");

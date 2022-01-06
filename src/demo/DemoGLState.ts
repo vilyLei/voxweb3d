@@ -1,4 +1,3 @@
-
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererState from "../vox/render/RendererState";
@@ -13,44 +12,42 @@ import MouseEvent from "../vox/event/MouseEvent";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
 import BaseColorMaterial from "../vox/material/mcase/BaseColorMaterial";
+import { UserInteraction } from "../vox/engine/UserInteraction";
 
-export class DemoGLState
-{
-    constructor(){}
-    private m_rscene:RendererScene = null;
-    private m_camTrack:CameraTrack = null;
-    private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-    private m_texLoader:ImageTextureLoader = null;
-    private m_runType:number = 0;
-    initialize():void
-    {
+export class DemoGLState {
+
+    constructor() { }
+    private m_rscene: RendererScene = null;
+    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
+    private m_texLoader: ImageTextureLoader = null;
+    private m_interacion: UserInteraction = new UserInteraction();
+    private m_runType: number = 0;
+    initialize(): void {
         console.log("DemoGLState::initialize()......");
-        if(this.m_rscene == null)
-        {
+        if (this.m_rscene == null) {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
-            let rparam:RendererParam = new RendererParam();
+            let rparam: RendererParam = new RendererParam();
             rparam.setAttriAntialias(true);
-            rparam.setCamPosition(800.0,800.0,800.0);
+            rparam.setCamPosition(800.0, 800.0, 800.0);
             this.m_rscene = new RendererScene();
-            this.m_rscene.initialize(rparam,3);
+            this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-            
-            this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rscene.getCamera());
+
             this.m_statusDisp.initialize();
-            this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
+            this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+            this.m_interacion.initialize( this.m_rscene );
             //this.m_rscene.getRenderProxy().setFrontFaceFlipped(true);
             ///*
-            let axis:Axis3DEntity = new Axis3DEntity();
+            let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(300.0);
             this.m_rscene.addEntity(axis);
-            let plane:Plane3DEntity = new Plane3DEntity();
-            plane.initializeXOZSquare(900.0,[this.m_texLoader.getTexByUrl("static/assets/wood_02.jpg")]);
-            plane.setXYZ(0.0,-200.0,0.0);
+            let plane: Plane3DEntity = new Plane3DEntity();
+            plane.initializeXOZSquare(900.0, [this.m_texLoader.getTexByUrl("static/assets/wood_02.jpg")]);
+            plane.setXYZ(0.0, -200.0, 0.0);
             this.m_rscene.addEntity(plane);
             //*/
             /*
@@ -64,30 +61,27 @@ export class DemoGLState
             this.update();
         }
     }
-    private step(edge:number,value:number):number
-    {
-        return value < edge ? 0.0:1.0;
+    private step(edge: number, value: number): number {
+        return value < edge ? 0.0 : 1.0;
     }
-    private mouseDown(evt:any):void
-    {
+    private mouseDown(evt: any): void {
     }
-    private m_timeoutId:any = -1;
-    private update():void
-    {
-        if(this.m_timeoutId > -1)
-        {
+    private m_timeoutId: any = -1;
+    private update(): void {
+        if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
         //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
-        this.m_timeoutId = setTimeout(this.update.bind(this),50);// 20 fps
+        this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
 
         this.m_statusDisp.render();
     }
-    run():void
-    {
+    run(): void {
+
         this.m_statusDisp.update(false);
-        switch(this.m_runType)
-        {
+        this.m_interacion.run();
+
+        switch (this.m_runType) {
             case 1:
                 this.runBlend();
                 break;
@@ -99,21 +93,21 @@ export class DemoGLState
                 break;
         }
     }
-    private m_target:Sphere3DEntity = null;
-    private initBlendTest():void
-    {
-        let material:BaseColorMaterial;
-        let sphere:Sphere3DEntity = new Sphere3DEntity();
+    private m_target: Sphere3DEntity = null;
+    private initBlendTest(): void {
+
+        let material: BaseColorMaterial;
+        let sphere: Sphere3DEntity = new Sphere3DEntity();
         material = new BaseColorMaterial();
         material.setTextureList([this.m_texLoader.getTexByUrl("static/assets/default.jpg")]);
         sphere.setMaterial(material);
         //sphere.doubleTriFaceEnabled = true;
         //sphere.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
         //sphere.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-        sphere.initialize(100,30,30,[this.m_texLoader.getTexByUrl("static/assets/default.jpg")]);
+        sphere.initialize(100, 30, 30, [this.m_texLoader.getTexByUrl("static/assets/default.jpg")]);
         //sphere.setIvsParam(300,30);
-        sphere.setScaleXYZ(1.4,1.4,1.4);
-        this.m_rscene.addEntity(sphere,1);
+        sphere.setScaleXYZ(1.4, 1.4, 1.4);
+        this.m_rscene.addEntity(sphere, 1);
         //return;
         this.m_runType = 1;
         this.m_target = sphere;
@@ -122,20 +116,19 @@ export class DemoGLState
         sphere.copyMeshFrom(this.m_target);
         sphere.setMaterial(new BaseColorMaterial())
         sphere.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
-        sphere.initialize(100,10,10,[this.m_texLoader.getTexByUrl("static/assets/color_02.jpg")]);
+        sphere.initialize(100, 10, 10, [this.m_texLoader.getTexByUrl("static/assets/color_02.jpg")]);
         //sphere.initializeFrom(this.m_target, [this.m_texLoader.getTexByUrl("static/assets/color_02.jpg")]);
-        sphere.setScaleXYZ(0.4,0.4,0.4);
-        sphere.setXYZ(-80.0,50.0,0.0);
+        sphere.setScaleXYZ(0.4, 0.4, 0.4);
+        sphere.setXYZ(-80.0, 50.0, 0.0);
         //sphere.setIvsParam(300,30);
-        this.m_rscene.addEntity(sphere,1);
+        this.m_rscene.addEntity(sphere, 1);
     }
-    private runBlend():void
-    {
+    private runBlend(): void {
         this.m_rscene.update();
         this.m_rscene.runBegin();
         this.m_rscene.runAt(0);
-        let ivsIndex:number = this.m_target.getIvsIndex();
-        let ivsCount:number = this.m_target.getIvsCount();
+        let ivsIndex: number = this.m_target.getIvsIndex();
+        let ivsCount: number = this.m_target.getIvsCount();
         ///*
         this.m_target.setIvsParam(2700, 500);
         (this.m_target.getMaterial() as any).setAlpha(1.0);
@@ -159,22 +152,19 @@ export class DemoGLState
         this.m_rscene.drawEntity(this.m_target);
         //*/
 
-        this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-    }
-    private runPolygonOffset():void
-    {
-        this.m_rscene.update();
-        this.m_rscene.runBegin();
-        this.m_rscene.getRenderProxy().setPolygonOffset(0.0,0.0);
-        this.m_rscene.runAt(0);
-        this.m_rscene.getRenderProxy().setPolygonOffset(-70,1);
-        this.m_rscene.runAt(1);
         //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
     }
-    private runBase():void
-    {
+
+    private runPolygonOffset(): void {
+        this.m_rscene.update();
+        this.m_rscene.runBegin();
+        this.m_rscene.getRenderProxy().setPolygonOffset(0.0, 0.0);
+        this.m_rscene.runAt(0);
+        this.m_rscene.getRenderProxy().setPolygonOffset(-70, 1);
+        this.m_rscene.runAt(1);
+    }
+    private runBase(): void {
         this.m_rscene.run();
-        this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
     }
 }
 

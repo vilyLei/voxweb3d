@@ -412,9 +412,6 @@ class RenderProxy implements IRenderProxy{
     flush(): void {
         this.m_rc.flush();
     }
-    //createCamera(): IRenderCamera {
-    //    return new IRenderCamera(this.m_uid);
-    //}
     setClearRGBColor3f(pr: number, pg: number, pb: number): void {
         this.m_adapter.bgColor.setRGB3f(pr, pg, pb);
     }

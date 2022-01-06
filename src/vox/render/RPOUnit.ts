@@ -19,7 +19,7 @@ import ShaderUBO from "../../vox/material/ShaderUBO";
 import IShaderUniform from "../../vox/material/IShaderUniform";
 import IRPODisplay from "../../vox/render/IRPODisplay";
 import IPoolNode from "../../vox/base/IPoolNode";
-import {ROIndicesRes} from "./vtx/ROIndicesRes";
+import { ROIndicesRes } from "./vtx/ROIndicesRes";
 import DebugFlag from "../debug/DebugFlag";
 
 
@@ -38,8 +38,6 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     // 这个posotion和bounds的center会是同一个实例
     pos: Vector3D = null;
     bounds: AABB = null;
-    constructor() {
-    }
     // 记录对应的RODisplay的渲染所需的状态数据
     ibufType: number = 0;                // UNSIGNED_SHORT or UNSIGNED_INT
     ibufStep: number = 2;                // 2 or 4
@@ -73,6 +71,8 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     tro: ITextureRenderObj = null;
     texMid: number = -1;
     ubo: ShaderUBO = null;
+    constructor() {
+    }
     private testDrawFlag(): void {
         if (this.shader.drawFlag != this.drawFlag) {
             this.shader.drawFlag = this.drawFlag;
@@ -108,12 +108,12 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         this.drawFlag = (rcolorMask << 10) + renderState;
     }
     drawThis(rc: RenderProxy): void {
-        
+
         ++RendererState.DrawCallTimes;
         RendererState.DrawTrisNumber += this.trisNumber;
         // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
         let ivsCount = this.indicesRes.getVTCount();
-        if(this.ivsCount <= ivsCount ) ivsCount = this.ivsCount;
+        if (this.ivsCount <= ivsCount) ivsCount = this.ivsCount;
 
         switch (this.drawMode) {
             case RenderDrawMode.ELEMENTS_TRIANGLES:
@@ -155,8 +155,10 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     }
 
     drawPart(rc: RenderProxy): void {
+
         ++RendererState.DrawCallTimes;
         RendererState.DrawTrisNumber += this.trisNumber;
+
         let i: number = 0;
         let gl: any = rc.RContext;
         switch (this.drawMode) {

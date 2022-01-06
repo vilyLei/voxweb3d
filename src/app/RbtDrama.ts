@@ -22,7 +22,7 @@ export class RbtDrama implements IShaderLibListener {
 
     private m_scene: SceneModule = new SceneModule();
 
-    // private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
+    //private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
     private updateShadow(): void {
         let vsmModule = this.m_materialCtx.vsmModule;

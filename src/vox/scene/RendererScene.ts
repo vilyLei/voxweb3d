@@ -48,6 +48,7 @@ import Matrix4Pool from "../math/Matrix4Pool";
 import { IRendererSceneAccessor } from "./IRendererSceneAccessor";
 
 export default class RendererScene implements IRenderer, IRendererScene {
+    
     private static s_uid: number = 0;
     private m_uid: number = -1;
     private m_adapter: IRenderAdapter = null;

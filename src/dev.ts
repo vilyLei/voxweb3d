@@ -184,7 +184,7 @@
 
 //  import {DemoRGBETex as Demo} from "./demo/DemoRGBETex";
 
-//  import {DemoGLState as Demo} from "./demo/DemoGLState";
+import {DemoGLState as Demo} from "./demo/DemoGLState";
 
 //  import {DemoStencil as Demo} from "./demo/DemoStencil";
 
@@ -393,7 +393,7 @@
 
 //  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
-import {RbtDrama as Demo} from "./app/RbtDrama";
+//  import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {SlickRoad as Demo} from "./app/SlickRoad";
 
