@@ -117,7 +117,7 @@ class SceneModule {
         envBox.setMaterial(material);
         envBox.showFrontFace();
         envBox.initializeCube(4000.0);
-        this.m_rscene.addEntity(envBox, 4);
+        this.m_rscene.addEntity(envBox, 2);
     }
     private m_loaded: boolean = false;
     

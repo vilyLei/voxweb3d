@@ -72,6 +72,7 @@ export default class RedCamp implements IRoleCamp {
     private m_tempV0: Vector3D = new Vector3D();
     private m_eff0Pool: EruptionEffectPool = null;
     readonly roleManager: CampRoleManager = new CampRoleManager();
+    effectRenderProcessIndex: number = 4;
     distance: number = 0.0;
     constructor() {
     }
@@ -120,7 +121,7 @@ export default class RedCamp implements IRoleCamp {
                 this.m_eff0Pool.materialPipeline = AssetsModule.GetMaterialPipeline();
                 this.m_eff0Pool.pipeTypes = [MaterialPipeType.FOG_EXP2];
                 this.m_eff0Pool.timeSpeed = 15.0;
-                this.m_eff0Pool.initialize(this.m_rsc, 1, 60, 50,
+                this.m_eff0Pool.initialize(this.m_rsc, this.effectRenderProcessIndex, 60, 50,
                     AssetsModule.GetImageTexByUrl("static/assets/testEFT4.jpg"),
                     AssetsModule.GetImageTexByUrl("static/assets/stones_02.png"),
                     true);

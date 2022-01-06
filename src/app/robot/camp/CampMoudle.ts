@@ -23,7 +23,7 @@ export default class CampMoudle {
     redCamp: RedCamp = new RedCamp();
     //blueCamp: BlueCamp = new BlueCamp();
 
-    effectRenderProcessIndex: number = 2;
+    effectRenderProcessIndex: number = 4;
     constructor() { }
 
     initialize(rsc: RendererScene): void {
