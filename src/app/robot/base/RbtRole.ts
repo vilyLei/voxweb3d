@@ -107,6 +107,7 @@ export default class RbtRole implements IRunnable {
         this.runThis();
     }
     protected runThis(): void {
+        // harm action end
         if(this.m_brnDelay > 0) {
             this.m_brnDelay --;
             if(this.m_brnDelay == 0) {
@@ -116,7 +117,7 @@ export default class RbtRole implements IRunnable {
     }
     huarmAction(): void {        
         this.m_brnDelay = 3;
-        this.setBrightness(Math.random() * 0.5 + 1.2);
+        this.setBrightness(Math.random() * 0.4 + 1.1);
     }
 
     setVisible(visible: boolean): void {
