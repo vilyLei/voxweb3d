@@ -23,7 +23,11 @@ export default class TrackWheelRole extends RbtRole implements IAttackDst {
     private m_legModule: TrackWheelChassis = null;
     private m_armModule: TrackWheelUpperBody = null;
 
+    private m_weapBody: TrackWheelWeaponBody = null;
+    private m_chassisBody: TrackWheelChassisBody = null;
+
     private m_srcTrackWheel: BoxGroupTrack = null;
+
 
     materialBuilder: RoleMaterialBuilder = null;
     constructor() {
@@ -36,7 +40,8 @@ export default class TrackWheelRole extends RbtRole implements IAttackDst {
     }
     
     setBrightness(brn: number): void {
-        
+        this.m_weapBody.setBrightness(brn, this.color);
+        this.m_chassisBody.setBrightness(brn, this.color);
     }
     initializeFrom(srcRole: TrackWheelRole): void {
         if (srcRole != null) {
@@ -53,7 +58,11 @@ export default class TrackWheelRole extends RbtRole implements IAttackDst {
 
             let offsetPos: Vector3D = new Vector3D(0.0, 6.0, 0.0);
             this.m_legModule.materialBuilder = this.materialBuilder;
-            
+
+            this.m_weapBody = weapBody;
+            this.m_chassisBody = chassisBody;
+            this.setBrightness(1.0);
+
             this.m_legModule.initialize(sc, renderProcessIndex, chassisBody, this.m_srcTrackWheel, dis, offsetPos);
             offsetPos.setXYZ(0.0,0.0,0.0);
             this.m_armModule.initialize(sc, renderProcessIndex, weapBody, offsetPos);
@@ -102,7 +111,11 @@ export default class TrackWheelRole extends RbtRole implements IAttackDst {
         outPos.y += 30;
     }
     consume(power: number): void {
+
+        this.huarmAction();
+
         this.lifeTime -= power;
+
         if (this.lifeTime < 1) {
             this.sleep();
         }
@@ -111,6 +124,9 @@ export default class TrackWheelRole extends RbtRole implements IAttackDst {
         return true;
     }
     destroy(): void {
+
         this.materialBuilder = null;
+        this.m_weapBody = null;
+        this.m_chassisBody = null;
     }
 }

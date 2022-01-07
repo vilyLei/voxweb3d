@@ -32,7 +32,7 @@ export default class BoxPartStore implements IPartStore {
     private m_sgLBox: Box3DEntity = null;
     private m_sgRBox: Box3DEntity = null;
 
-    private m_baseColor: Color4 = new Color4();
+    //private m_baseColor: Color4 = new Color4();
     private static s_baseBox: Box3DEntity = null;
 
     private static s_v0: Vector3D = new Vector3D(-10, -10, -10);
@@ -44,7 +44,7 @@ export default class BoxPartStore implements IPartStore {
     
     materialBuilder: RoleMaterialBuilder;
     constructor() {
-        this.m_baseColor.normalizeRandom(1.1);
+        //this.m_baseColor.normalizeRandom(1.1);
     }
     
     setParam(coreWidth: number, bgLong: number, sgLong: number): void {
@@ -160,7 +160,7 @@ export default class BoxPartStore implements IPartStore {
             this.m_bgLBox.setMaterial( material );
             this.m_bgLBox.copyMeshFrom(this.m_bgBox);
             this.m_bgLBox.initialize(BoxPartStore.s_v0, BoxPartStore.s_v1, [this.m_tex1]);
-            (this.m_bgLBox.getMaterial() as any).setRGB3f(this.m_baseColor.r, this.m_baseColor.g, this.m_baseColor.b);
+            //(this.m_bgLBox.getMaterial() as any).setRGB3f(this.m_baseColor.r, this.m_baseColor.g, this.m_baseColor.b);
         }
         return this.m_bgLBox;
     }
@@ -171,7 +171,7 @@ export default class BoxPartStore implements IPartStore {
             this.m_bgRBox.setMaterial( material );
             this.m_bgRBox.copyMeshFrom(this.m_bgBox);
             this.m_bgRBox.initialize(BoxPartStore.s_v0, BoxPartStore.s_v1, [this.m_tex1]);
-            (this.m_bgRBox.getMaterial() as any).setRGB3f(this.m_baseColor.r, this.m_baseColor.g, this.m_baseColor.b);
+            //(this.m_bgRBox.getMaterial() as any).setRGB3f(this.m_baseColor.r, this.m_baseColor.g, this.m_baseColor.b);
         }
         return this.m_bgRBox;
     }
@@ -182,7 +182,7 @@ export default class BoxPartStore implements IPartStore {
             this.m_sgLBox.setMaterial( material );
             this.m_sgLBox.copyMeshFrom(this.m_sgBox);
             this.m_sgLBox.initialize(BoxPartStore.s_v0, BoxPartStore.s_v1, [this.m_tex1]);
-            (this.m_sgLBox.getMaterial() as any).setRGB3f(this.m_baseColor.r, this.m_baseColor.g, this.m_baseColor.b);
+            //(this.m_sgLBox.getMaterial() as any).setRGB3f(this.m_baseColor.r, this.m_baseColor.g, this.m_baseColor.b);
         }
         return this.m_sgLBox;
     }
@@ -193,9 +193,24 @@ export default class BoxPartStore implements IPartStore {
             this.m_sgRBox.setMaterial( material );
             this.m_sgRBox.copyMeshFrom(this.m_sgBox);
             this.m_sgRBox.initialize(BoxPartStore.s_v0, BoxPartStore.s_v1, [this.m_tex1]);
-            (this.m_sgRBox.getMaterial() as any).setRGB3f(this.m_baseColor.r, this.m_baseColor.g, this.m_baseColor.b);
+            //(this.m_sgRBox.getMaterial() as any).setRGB3f(this.m_baseColor.r, this.m_baseColor.g, this.m_baseColor.b);
         }
         return this.m_sgRBox;
+    }
+    setBrightness(brn: number, color: Color4): void {
+        if(this.m_bgLBox != null) {
+            (this.m_bgLBox.getMaterial() as any).setRGB3f(color.r * brn, color.g * brn, color.b * brn);
+        }        
+        if(this.m_bgRBox != null) {
+            (this.m_bgRBox.getMaterial() as any).setRGB3f(color.r * brn, color.g * brn, color.b * brn);
+        }
+
+        if(this.m_sgRBox != null) {
+            (this.m_sgRBox.getMaterial() as any).setRGB3f(color.r * brn, color.g * brn, color.b * brn);
+        }
+        if(this.m_sgLBox != null) {
+            (this.m_sgLBox.getMaterial() as any).setRGB3f(color.r * brn, color.g * brn, color.b * brn);
+        }
     }
     private updateBoxUV(box: Box3DEntity): void {
         box.scaleUVFaceAt(0, 0.5, 0.5, 0.5, 0.5);

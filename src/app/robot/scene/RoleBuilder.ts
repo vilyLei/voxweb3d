@@ -14,6 +14,7 @@ import { TerrainModule } from "../../../app/robot/terrain/TerrainModule";
 import { CommonMaterialContext } from "../../../materialLab/base/CommonMaterialContext";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import {RoleMaterialBuilder} from "./RoleMaterialBuilder";
+import Color4 from "../../../vox/material/Color4";
 
 class RoleBuilder {
 
@@ -177,6 +178,8 @@ class RoleBuilder {
         for (let i: number = 0; i < total; ++i) {
 
             let sillyRole: SillyRole = new SillyRole();
+            sillyRole.color = new Color4();
+            sillyRole.color.setRGB3f(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2);
             if (srcSillyRole != null) {
                 sillyRole.initializeFrom(srcSillyRole);
             }
@@ -185,7 +188,7 @@ class RoleBuilder {
                 
                 let pmaterial = this.materialBuilder.createMaterial(tex5);
                 
-                (pmaterial as any).setRGB3f(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2);
+                //(pmaterial as any).setRGB3f(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2);
                 box0.setMaterial(pmaterial);
                 box0.copyMeshFrom(lowerBox);
                 box0.initializeSizeXYZ(50.0, 40, 50, [tex5]);
@@ -193,7 +196,7 @@ class RoleBuilder {
                 
                 let box1: Box3DEntity = new Box3DEntity();
                 pmaterial = this.materialBuilder.createMaterial(tex4);
-                (pmaterial as any).setRGB3f(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4);
+                //(pmaterial as any).setRGB3f(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4);
                 box1.setMaterial(pmaterial);
                 box1.copyMeshFrom(upperBox);
                 box1.initializeSizeXYZ(30.0, 20, 30, [tex4]);

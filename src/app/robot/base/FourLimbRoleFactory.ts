@@ -13,6 +13,7 @@ import IRoleCamp from "../../../app/robot/IRoleCamp";
 import { CampType } from "../../../app/robot/camp/Camp";
 import { TerrainData } from "../../../terrain/tile/TerrainData";
 import {RoleMaterialBuilder} from "../scene/RoleMaterialBuilder";
+import Color4 from "../../../vox/material/Color4";
 
 export default class FourLimbRoleFactory {
     
@@ -46,6 +47,11 @@ export default class FourLimbRoleFactory {
         boxPart1.initilize(tex0, tex2, tex1);
 
         let limbRole: FourLimbRole = new FourLimbRole();
+        limbRole.color = new Color4();
+        limbRole.color.normalizeRandom( 1.1 );
+        limbRole.color1 = new Color4();
+        limbRole.color1.normalizeRandom( 1.1 );
+
         limbRole.roleCamp = this.m_roleCamp;
         limbRole.terrainData = this.m_terrainData;
         limbRole.radius = (bodyWidth * 2.0) + 15.0;

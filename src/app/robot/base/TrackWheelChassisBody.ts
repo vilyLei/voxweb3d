@@ -33,8 +33,9 @@ export default class TrackWheelChassisBody {
     materialBuilder: RoleMaterialBuilder = null;
     weap: WeapMoudle = null;
     campType: CampType = CampType.Blue;
-    color: Color4 = null;
+    
     constructor(container: DisplayEntityContainer = null) {
+
         if (container == null) {
             this.m_container = new DisplayEntityContainer();
         }
@@ -42,8 +43,15 @@ export default class TrackWheelChassisBody {
             this.m_container = container;
         }
     }
-    setBrightness(brn: number): void {
+
+    setBrightness(brn: number, color: Color4): void {
         
+        if(this.m_entity01 != null) {
+            (this.m_entity01.getMaterial() as any).setRGB3f(color.r * brn, color.g * brn, color.b * brn);
+        }
+        if(this.m_entity02 != null) {
+            (this.m_entity02.getMaterial() as any).setRGB3f(color.r * brn, color.g * brn, color.b * brn);
+        }
     }
     getContainer(): DisplayEntityContainer {
         return this.m_container;
@@ -71,10 +79,10 @@ export default class TrackWheelChassisBody {
             TrackWheelChassisBody.s_box01.initializeSizeXYZ(60.0, 30, 60, [tex0]);
             TrackWheelChassisBody.s_box01.setXYZ(0.0, 70.0, 0.0);
         }
-        let color: Color4 =  this.color;
+        //let color: Color4 =  this.color;
         let twUpperBox: Box3DEntity = new Box3DEntity();
         let material = this.materialBuilder.createMaterial( tex0 );
-        material.setRGB3f(color.r, color.g, color.b);
+        //material.setRGB3f(color.r, color.g, color.b);
         twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelChassisBody.s_box01);
         twUpperBox.initializeSizeXYZ(60.0, 30, 60, [tex0]);
@@ -115,11 +123,8 @@ export default class TrackWheelChassisBody {
 
         }
 
-        let color: Color4 =  this.color;
-        
         let twUpperBox: Box3DEntity = new Box3DEntity();
         let material = this.materialBuilder.createMaterial( tex0 );
-        material.setRGB3f(color.r, color.g, color.b);
         twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelChassisBody.s_box01);
         twUpperBox.copyTransformFrom(TrackWheelChassisBody.s_box01);
@@ -128,7 +133,6 @@ export default class TrackWheelChassisBody {
 
         twUpperBox = new Box3DEntity();
         material = this.materialBuilder.createMaterial( tex0 );
-        material.setRGB3f(color.r, color.g, color.b);
         twUpperBox.setMaterial( material );
         twUpperBox.copyMeshFrom(TrackWheelChassisBody.s_box02);
         twUpperBox.copyTransformFrom(TrackWheelChassisBody.s_box02);

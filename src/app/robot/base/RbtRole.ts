@@ -18,6 +18,7 @@ import RunnableModule from "../../../app/robot/scene/RunnableModule";
 import IDstFinder from "../../../app/robot/attack/IDstFinder";
 import { TerrainData } from "../../../terrain/tile/TerrainData";
 import { ShadowEntity } from "./ShadowEntity";
+import Color4 from "../../../vox/material/Color4";
 
 export default class RbtRole implements IRunnable {
 
@@ -32,6 +33,8 @@ export default class RbtRole implements IRunnable {
     protected m_findRadar: IDstFinder = null;
     protected m_attackModule: IRbtModule = null;
     protected m_motionModule: IRbtModule = null;
+    
+    protected m_brnDelay: number = 0;
 
     shadowEntity: ShadowEntity = null;
 
@@ -44,8 +47,11 @@ export default class RbtRole implements IRunnable {
 
     terrainData: TerrainData = null;
     roleCamp: IRoleCamp = null;
+
+    color: Color4 = null;
     constructor() {
     }
+    
     setBrightness(brn: number): void {
         
     }
@@ -98,6 +104,19 @@ export default class RbtRole implements IRunnable {
             default:
                 break;
         }
+        this.runThis();
+    }
+    protected runThis(): void {
+        if(this.m_brnDelay > 0) {
+            this.m_brnDelay --;
+            if(this.m_brnDelay == 0) {
+                this.setBrightness(1.0);
+            }
+        }
+    }
+    huarmAction(): void {        
+        this.m_brnDelay = 3;
+        this.setBrightness(Math.random() * 0.5 + 1.2);
     }
 
     setVisible(visible: boolean): void {
@@ -230,5 +249,8 @@ export default class RbtRole implements IRunnable {
             this.m_runMode = RoleActMode.ATTACK_RUN;
         }
         this.wake();
+    }
+    destroy(): void {
+        this.color = null;
     }
 }

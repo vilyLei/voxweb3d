@@ -14,20 +14,32 @@ import IAttackDst from "../../../app/robot/attack/IAttackDst";
 import FireCtrlRadar from "../../../app/robot/attack/FireCtrlRadar";
 import RbtRole from "../../../app/robot/base/RbtRole";
 import { ShadowEntity } from "./ShadowEntity";
+import Color4 from "../../../vox/material/Color4";
 
 export default class FourLimbRole extends RbtRole implements IAttackDst {
 
     private m_legModule: TwoLegRbtModule = null;
     private m_armModule: TwoArmRbtModule = null;
+    private m_partStore0: IPartStore = null;
+    private m_partStore1: IPartStore = null;
+
+    color1: Color4 = null;
 
     constructor() {
         super();
     }
 
+    setBrightness(brn: number): void {
+        this.m_partStore0.setBrightness(brn, this.color);
+        this.m_partStore1.setBrightness(brn, this.color1);
+    }
     initialize(sc: RendererScene, renderProcessIndex: number, partStore0: IPartStore, partStore1: IPartStore, dis: number = 100.0): void {
         if (sc != null && partStore0 != null && partStore1 != null) {
             this.m_legModule = new TwoLegRbtModule();
             this.m_armModule = new TwoArmRbtModule();
+
+            this.m_partStore0 = partStore0;
+            this.m_partStore1 = partStore1;
 
             let offsetPos: Vector3D = new Vector3D(0.0, 0.0, 0.0);
             this.m_legModule.initialize(sc, renderProcessIndex, partStore0, offsetPos);
@@ -55,6 +67,8 @@ export default class FourLimbRole extends RbtRole implements IAttackDst {
             this.m_findRadar = findRadar;
             this.m_motionModule = this.m_legModule;
             this.m_attackModule = this.m_armModule;
+            
+            this.setBrightness(1.0);
 
             // for building shadow entity
             this.m_motionModule.direcByDegree(0, false);
@@ -90,6 +104,7 @@ export default class FourLimbRole extends RbtRole implements IAttackDst {
         outPos.y += 60.0;
     }
     consume(power: number): void {
+        this.huarmAction();
         this.lifeTime -= power;
         if (this.lifeTime < 1) {
             this.sleep();

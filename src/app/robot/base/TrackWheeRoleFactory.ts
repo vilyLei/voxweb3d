@@ -65,19 +65,16 @@ export default class TrackWheeRoleFactory {
         twRole.radius = 80;
         twRole.lifeTime = 200;
         
-        let color: Color4 =  new Color4();
-        //color.setRGB3f(Math.random() * 0.7 + 0.4, Math.random() * 0.7 + 0.4, Math.random() * 0.7 + 0.4);
-        color.normalizeRandom(2.0);
+        twRole.color =  new Color4();
+        twRole.color.normalizeRandom(2.0);
 
         let weaponBody: TrackWheelWeaponBody = new TrackWheelWeaponBody();
-        weaponBody.color = color;
         weaponBody.materialBuilder = this.m_materialBuilder;
         weaponBody.initWeap01(tex1);
         //weaponBody.initWeap02(tex0);
         weaponBody.initialize(this.m_rscene, twRole.getAttackModule().getContainer());
 
         let chassisBody: TrackWheelChassisBody = new TrackWheelChassisBody();
-        chassisBody.color = color;
         chassisBody.materialBuilder = this.m_materialBuilder;
         //chassisBody.initWeap01(tex0);
         chassisBody.initWeap02(tex0);

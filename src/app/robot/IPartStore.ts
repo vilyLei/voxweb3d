@@ -7,6 +7,7 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
+import Color4 from "../../vox/material/Color4";
 
 export default interface IPartStore
 {
@@ -19,4 +20,5 @@ export default interface IPartStore
     getEngityBGR():DisplayEntity;
     getEngitySGL():DisplayEntity;
     getEngitySGR():DisplayEntity;
+    setBrightness(brn: number, color: Color4): void;
 }

@@ -13,6 +13,7 @@ import SillyUpperBody from "../../../app/robot/base/SillyUpperBody";
 import IAttackDst from "../../../app/robot/attack/IAttackDst";
 import RbtRole from "../../../app/robot/base/RbtRole";
 import { ShadowEntity } from "./ShadowEntity";
+import Color4 from "../../../vox/material/Color4";
 
 export default class SillyRole extends RbtRole implements IAttackDst {
     private m_renderProcessIndex: number = 0;
@@ -21,8 +22,18 @@ export default class SillyRole extends RbtRole implements IAttackDst {
 
     private m_lowerEntity: DisplayEntity = null;
     private m_upperrEntity: DisplayEntity = null;
+
+    color: Color4 = null;
+
     constructor() {
         super();
+    }
+    
+    setBrightness(brn: number): void {
+        
+        let color = this.color;
+        (this.m_lowerEntity.getMaterial() as any).setRGB3f(color.r * brn, color.g * brn, color.b * brn);
+        (this.m_upperrEntity.getMaterial() as any).setRGB3f(color.r * brn, color.g * brn, color.b * brn);
     }
     initializeFrom(srcRole: SillyRole): void {
         if (srcRole != null) {
@@ -44,6 +55,8 @@ export default class SillyRole extends RbtRole implements IAttackDst {
             this.m_rscene = sc;
             this.m_lowerEntity = lowerEntity;
             this.m_upperrEntity = upperrEntity;
+
+            this.setBrightness(1.0);
 
             this.m_legModule = new SillyLowerBody();
             this.m_armModule = new SillyUpperBody();
@@ -93,6 +106,7 @@ export default class SillyRole extends RbtRole implements IAttackDst {
         outPos.y += 30;
     }
     consume(power: number): void {
+        this.huarmAction();
         this.lifeTime -= power;
         if (this.lifeTime < 1) {
             this.sleep();
@@ -100,5 +114,10 @@ export default class SillyRole extends RbtRole implements IAttackDst {
     }
     attackTest(): boolean {
         return true;
+    }
+    destroy(): void {
+        this.color = null;
+        this.m_lowerEntity = null;
+        this.m_upperrEntity = null;
     }
 }
