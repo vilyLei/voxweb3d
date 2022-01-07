@@ -102,8 +102,8 @@ export class RbtDrama implements IShaderLibListener {
             rparam.setCamPosition(1800.0, 1800.0, 1800.0);
 
             this.m_engine = new EngineBase();
-            this.m_engine.initialize(rparam, 5);
-            this.m_engine.setProcessIdListAt(0, [0,1,2,4]);
+            this.m_engine.initialize(rparam, 7);
+            this.m_engine.setProcessIdListAt(0, [0,1,2,4,5,6]);
             this.m_rscene = this.m_engine.rscene;
             // this.m_rscene = new RendererScene();
             // this.m_rscene.initialize(rparam, 5);
