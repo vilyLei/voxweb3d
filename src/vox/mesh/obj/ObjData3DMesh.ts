@@ -10,29 +10,72 @@ import VtxBufConst from "../../../vox/mesh/VtxBufConst";
 import ROVertexBuffer from "../../../vox/mesh/ROVertexBuffer";
 import AABB from "../../../vox/geom/AABB";
 import MeshBase from "../../../vox/mesh/MeshBase";
-import ObjDataParser from "../../../vox/mesh/obj/ObjDataParser";
+import {ObjStrDataParser} from "./ObjStrDataParser";
 import Vector3D from "../../math/Vector3D";
 
+import { ObjDataParser } from "../../../vox/assets/ObjDataParser";
+
 export default class ObjData3DMesh extends MeshBase {
-    constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
-        super(bufDataUsage);
-    }
-    moduleScale: number = 1.0;
     private m_vs: Float32Array = null;
     private m_uvs: Float32Array = null;
     private m_nvs: Float32Array = null;
+    private m_strDataParser: ObjStrDataParser = null;
+    moduleScale: number = 1.0;
+    constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
+        super(bufDataUsage);
+    }
     //
     getVS(): Float32Array { return this.m_vs; }
     getUVS(): Float32Array { return this.m_uvs; }
     getNVS(): Float32Array { return this.m_nvs; }
 
-    private m_parser: ObjDataParser = new ObjDataParser();
     initialize(objDataStr: string, dataIsZxy: boolean = false): void {
-        this.m_parser.parseStrData(objDataStr, this.moduleScale, dataIsZxy);
 
-        this.m_vs = new Float32Array(this.m_parser.getVS());
-        this.m_uvs = new Float32Array(this.m_parser.getUVS());
-        this.m_ivs = new Uint16Array(this.m_parser.getIVS());
+        let baseParsering: boolean = false;
+        if(baseParsering) {
+            this.m_strDataParser = new ObjStrDataParser();
+            this.m_strDataParser.parseStrData(objDataStr, this.moduleScale, dataIsZxy);
+    
+            this.m_vs = new Float32Array(this.m_strDataParser.getVS());
+            if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
+                this.m_uvs = new Float32Array(this.m_strDataParser.getUVS());
+            }
+            this.m_ivs = new Uint16Array(this.m_strDataParser.getIVS());
+        }
+        else {
+            
+            let objParser = new ObjDataParser();
+            let objMeshes = objParser.Parse( objDataStr );
+            let objMesh = objMeshes[0];
+            let geom = objMesh.geometry;
+            if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
+                this.m_uvs = new Float32Array(geom.uvs);
+            }
+            if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
+                this.m_nvs = new Float32Array(geom.normals);
+            }
+            let len: number = geom.vertices.length / 3;
+            this.m_ivs = len > 65535? new Uint32Array(len) : new Uint16Array(len);
+            if(dataIsZxy) {
+                let k: number = 0;
+                let srcVS: number[] = geom.vertices;
+                this.m_vs = new Float32Array(geom.vertices.length);
+                let vs = this.m_vs;
+                for(let i: number = 0; i < len; ++i) {
+                    vs[k] = srcVS[k + 1];
+                    vs[k + 1] = srcVS[k + 2];
+                    vs[k + 2] = srcVS[k];
+                    this.m_ivs[i] = i;
+                    k += 3;
+                }
+            }
+            else {
+                this.m_vs = new Float32Array(geom.vertices);
+                for(let i: number = 0; i < len; ++i) {
+                    this.m_ivs[i] = i;
+                }
+            }
+        }
 
         this.bounds = new AABB();
         this.bounds.addXYZFloat32Arr(this.m_vs);
@@ -45,7 +88,7 @@ export default class ObjData3DMesh extends MeshBase {
             ROVertexBuffer.AddFloat32Data(this.m_uvs, 2);
         }
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
-            this.m_nvs = new Float32Array(this.m_parser.getNVS());
+            this.m_nvs = new Float32Array(this.m_strDataParser.getNVS());
             ROVertexBuffer.AddFloat32Data(this.m_nvs, 3);
         }
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX)) {

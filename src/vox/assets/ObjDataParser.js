@@ -22,7 +22,7 @@ function ObjDataParser() {
       materials: {},
       materialLibraries: [],
 
-      startObject: function(name, fromDeclaration) {
+      startObject: function (name, fromDeclaration) {
         // If the current object (initial from reset) is not from a g/o declaration in the parsed
         // file. We need to use it for the first parsed g/o to keep things in sync.
 
@@ -53,7 +53,7 @@ function ObjDataParser() {
 
           smooth: true,
 
-          startMaterial: function(name, libraries) {
+          startMaterial: function (name, libraries) {
             var previous = this._finalize(false);
 
             // New usemtl declaration overwrites an inherited material, except if faces were declared
@@ -75,7 +75,7 @@ function ObjDataParser() {
               groupCount: -1,
               inherited: false,
 
-              clone: function(index) {
+              clone: function (index) {
                 var cloned = {
                   index: typeof index === "number" ? index : this.index,
                   name: this.name,
@@ -98,7 +98,7 @@ function ObjDataParser() {
             return material;
           },
 
-          currentMaterial: function() {
+          currentMaterial: function () {
             if (this.materials.length > 0) {
               return this.materials[this.materials.length - 1];
             }
@@ -106,7 +106,7 @@ function ObjDataParser() {
             return undefined;
           },
 
-          _finalize: function(end) {
+          _finalize: function (end) {
             var lastMultiMaterial = this.currentMaterial();
 
             if (lastMultiMaterial && lastMultiMaterial.groupEnd === -1) {
@@ -158,31 +158,31 @@ function ObjDataParser() {
         this.objects.push(this.object);
       },
 
-      finalize: function() {
+      finalize: function () {
         if (this.object && typeof this.object._finalize === "function") {
           this.object._finalize(true);
         }
       },
 
-      parseVertexIndex: function(value, len) {
+      parseVertexIndex: function (value, len) {
         var index = parseInt(value, 10);
 
         return (index >= 0 ? index - 1 : index + len / 3) * 3;
       },
 
-      parseNormalIndex: function(value, len) {
+      parseNormalIndex: function (value, len) {
         var index = parseInt(value, 10);
 
         return (index >= 0 ? index - 1 : index + len / 3) * 3;
       },
 
-      parseUVIndex: function(value, len) {
+      parseUVIndex: function (value, len) {
         var index = parseInt(value, 10);
 
         return (index >= 0 ? index - 1 : index + len / 2) * 2;
       },
 
-      addVertex: function(a, b, c) {
+      addVertex: function (a, b, c) {
         var src = this.vertices;
 
         var dst = this.object.geometry.vertices;
@@ -192,21 +192,21 @@ function ObjDataParser() {
         dst.push(src[c + 0], src[c + 1], src[c + 2]);
       },
 
-      addVertexPoint: function(a) {
+      addVertexPoint: function (a) {
         var src = this.vertices;
 
         var dst = this.object.geometry.vertices;
         dst.push(src[a + 0], src[a + 1], src[a + 2]);
       },
 
-      addVertexLine: function(a) {
+      addVertexLine: function (a) {
         var src = this.vertices;
 
         var dst = this.object.geometry.vertices;
         dst.push(src[a + 0], src[a + 1], src[a + 2]);
       },
 
-      addNormal: function(a, b, c) {
+      addNormal: function (a, b, c) {
         var src = this.normals;
 
         var dst = this.object.geometry.normals;
@@ -216,7 +216,7 @@ function ObjDataParser() {
         dst.push(src[c + 0], src[c + 1], src[c + 2]);
       },
 
-      addColor: function(a, b, c) {
+      addColor: function (a, b, c) {
         var src = this.colors;
 
         var dst = this.object.geometry.colors;
@@ -226,7 +226,7 @@ function ObjDataParser() {
         dst.push(src[c + 0], src[c + 1], src[c + 2]);
       },
 
-      addUV: function(a, b, c) {
+      addUV: function (a, b, c) {
         var src = this.uvs;
 
         var dst = this.object.geometry.uvs;
@@ -236,7 +236,7 @@ function ObjDataParser() {
         dst.push(src[c + 0], src[c + 1]);
       },
 
-      addUVLine: function(a) {
+      addUVLine: function (a) {
         var src = this.uvs;
 
         var dst = this.object.geometry.uvs;
@@ -244,7 +244,7 @@ function ObjDataParser() {
         dst.push(src[a + 0], src[a + 1]);
       },
 
-      addFace: function(a, b, c, ua, ub, uc, na, nb, nc) {
+      addFace: function (a, b, c, ua, ub, uc, na, nb, nc) {
         var vLen = this.vertices.length;
 
         var ia = this.parseVertexIndex(a, vLen);
@@ -281,7 +281,7 @@ function ObjDataParser() {
         }
       },
 
-      addPointGeometry: function(vertices) {
+      addPointGeometry: function (vertices) {
         this.object.geometry.type = "Points";
 
         var vLen = this.vertices.length;
@@ -291,7 +291,7 @@ function ObjDataParser() {
         }
       },
 
-      addLineGeometry: function(vertices, uvs) {
+      addLineGeometry: function (vertices, uvs) {
         this.object.geometry.type = "Line";
 
         var vLen = this.vertices.length;
@@ -313,7 +313,7 @@ function ObjDataParser() {
     return state;
   }
 
-  this.Parse = function(text) {
+  this.Parse = function (text) {
     var state = new ParserState();
 
     if (text.indexOf("\r\n") !== -1) {
@@ -537,5 +537,4 @@ function ObjDataParser() {
     return state.objects;
   };
 }
-// module.exports = ObjDataParser;
 export { ObjDataParser };

@@ -13,6 +13,7 @@ import CameraTrack from "../vox/view/CameraTrack";
 import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
 import { UserInteraction } from "../vox/engine/UserInteraction";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Vector3D from "../vox/math/Vector3D";
 
 export class DemoObjModel {
     constructor() { }
@@ -35,23 +36,27 @@ export class DemoObjModel {
             this.m_interation.initialize( this.m_rscene );
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-            
+
             let tex0: TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
+            let tex1: TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/box_wood01.jpg");
 
             this.m_statusDisp.initialize();
+            this.m_interation.zoomLookAtPosition = new Vector3D();
 
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(300);
             this.m_rscene.addEntity(axis);
-
+            
             //let objUrl: string = "static/assets/obj/box01.obj";
             let objUrl: string = "static/assets/obj/monkey.obj";
             //objUrl = "static/assets/obj/building_001.obj";
             let objDisp: ObjData3DEntity = new ObjData3DEntity();
-            objDisp.showDoubleFace();
-            objDisp.moduleScale = 100.0;//10.0 + Math.random() * 5.5;
-            objDisp.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
-            objDisp.initializeByObjDataUrl(objUrl, [tex0]);
+            //objDisp.showDoubleFace();
+            //objDisp.dataIsZxy = true;
+            let moduleScale = 100.0;//10.0 + Math.random() * 5.5;
+            //objDisp.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
+            objDisp.initializeByObjDataUrl(objUrl, [tex1]);
+            objDisp.setScaleXYZ(moduleScale, moduleScale, moduleScale);
             //objDisp.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
             this.m_rscene.addEntity(objDisp);
         }
