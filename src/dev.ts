@@ -244,7 +244,7 @@
 
 //  import {DemoMotion as Demo} from "./demo/DemoMotion";
 
-// physic force simulation
+//  physic force simulation
 //  import {DemoBase as Demo} from "./voxmotion/DemoBase";
 
 //  import {DemoCameraRoaming as Demo} from "./demo/DemoCameraRoaming";
