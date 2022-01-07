@@ -35,6 +35,7 @@ export default class CameraZoomController {
     private m_flagDrag: number = 0;
     private m_flagZoom: number = 0;
     private m_windowsEnvFlag: boolean = true;
+    syncLookAt:boolean = false;
     /**
      * 取值为2, 表示相机的拉近拉远
      * 取值为1, 表示相机的拖动 
@@ -148,6 +149,9 @@ export default class CameraZoomController {
         }
 
         if (this.m_camera != null) {
+            if(this.syncLookAt) {
+                this.m_camera.setLookAtPosition( lookAtPos );
+            }
             if (this.m_flagType == 2) {
                 // camera foward update
                 if(Math.abs(this.m_fowardDis) > 0.001) {

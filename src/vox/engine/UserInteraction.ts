@@ -42,8 +42,8 @@ class UserInteraction {
     run(): void {
 
         if (this.cameraCtrlEnabled) {
-            this.stageDragCtrl.runWithYAxis();
             this.cameraZoomController.run( this.zoomLookAtPosition, this.zoomMinDistance );
+            this.stageDragCtrl.runWithYAxis();
         }
     }
 }

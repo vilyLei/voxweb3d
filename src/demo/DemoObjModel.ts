@@ -41,14 +41,15 @@ export class DemoObjModel {
             let tex1: TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/box_wood01.jpg");
 
             this.m_statusDisp.initialize();
-            this.m_interation.zoomLookAtPosition = new Vector3D();
+            this.m_interation.cameraZoomController.syncLookAt = true;
 
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(300);
             this.m_rscene.addEntity(axis);
-            
+
             //let objUrl: string = "static/assets/obj/box01.obj";
             let objUrl: string = "static/assets/obj/monkey.obj";
+            tex1.flipY = true;
             //objUrl = "static/assets/obj/building_001.obj";
             let objDisp: ObjData3DEntity = new ObjData3DEntity();
             //objDisp.showDoubleFace();
@@ -62,7 +63,6 @@ export class DemoObjModel {
         }
     }
     run(): void {
-
         this.m_statusDisp.update();
         this.m_interation.run();
         this.m_rscene.run();

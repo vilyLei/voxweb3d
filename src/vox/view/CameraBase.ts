@@ -14,7 +14,7 @@ import AABB from "../../vox/geom/AABB";
 import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
 import {IRenderCamera} from "../../vox/render/IRenderCamera";
 
-class CameraBase implements IRenderCamera{
+class CameraBase implements IRenderCamera {
 
     constructor() {
     }
@@ -503,7 +503,18 @@ class CameraBase implements IRenderCamera{
     getRV(): Vector3D { this.m_tempRV.copyFrom(this.m_initRV); return this.m_tempRV; }
     getPosition():Vector3D { this.m_tempCamPos.copyFrom(this.m_camPos); return this.m_tempCamPos; }
     getLookAtPosition(): Vector3D { this.m_tempLookAtPos.copyFrom(this.m_lookAtPos); return this.m_tempLookAtPos; }
-    setLookAtPosition(px: number, py: number, pz: number): void {
+    setLookAtPosition(pv: Vector3D): void {
+        if (this.m_unlock) {
+            this.m_lookAtPos.copyFrom(pv);
+            this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+            this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+            this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+            this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
+            this.m_lookDirectNV.normalize();
+            this.m_changed = true;
+        }
+    }
+    setLookAtXYZ(px: number, py: number, pz: number): void {
         if (this.m_unlock) {
             this.m_lookAtPos.setTo(px, py, pz);
             this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
