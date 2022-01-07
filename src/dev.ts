@@ -23,7 +23,7 @@
 
 //  import {DemoQuadLine as Demo} from "./demo/DemoQuadLine";
 
-//  import {DemoObjModel as Demo} from "./demo/DemoObjModel";
+import {DemoObjModel as Demo} from "./demo/DemoObjModel";
 
 //  import {DemoTexture as Demo} from "./demo/DemoTexture";
 
@@ -393,7 +393,7 @@
 
 //  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
-import {RbtDrama as Demo} from "./app/RbtDrama";
+//  import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {SlickRoad as Demo} from "./app/SlickRoad";
 

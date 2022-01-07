@@ -180,7 +180,7 @@ export class DemoVSMModule {
         
         let envBox: Box3DEntity = new Box3DEntity();
         this.useMaterial(envBox);
-        envBox.showAllFace();
+        envBox.showDoubleFace();
         envBox.initializeCube(4000.0, [shadowTex, this.m_materialCtx.getTextureByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(envBox);
 

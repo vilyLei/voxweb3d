@@ -11,6 +11,7 @@ import ROTransform from '../../vox/display/ROTransform';
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import ObjData3DMesh from "../../vox/mesh/obj/ObjData3DMesh";
+import RendererState from "../render/RendererState";
 
 export default class ObjData3DEntity extends DisplayEntity {
     moduleScale: number = 1.0;
@@ -32,6 +33,15 @@ export default class ObjData3DEntity extends DisplayEntity {
     initialize(objDataStr: string, texList: TextureProxy[] = null): void {
         this.m_str = objDataStr;
         this.activeDisplay();
+    }
+    showBackFace(): void {
+        this.setRenderState(RendererState.BACK_CULLFACE_NORMAL_STATE);
+    }
+    showFrontFace(): void {
+        this.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
+    }
+    showDoubleFace(): void {
+        this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
     }
     initializeByObjDataUrl(objDataUrl: string, texList: TextureProxy[] = null): void {
         this.createMaterial(texList);
