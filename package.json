@@ -38,7 +38,6 @@
     "core-js": "^3.3.2",
     "dat.gui": "^0.7.6",
     "dom-to-image": "^2.6.0",
-    "draco3d": "http://116.62.211.118:8700/WeiChanghua/lt-draco3d.git",
     "encoding-japanese": "^1.0.30",
     "flyio": "^0.6.14",
     "jszip": "^3.2.2",
