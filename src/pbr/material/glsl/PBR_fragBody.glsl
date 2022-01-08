@@ -58,7 +58,11 @@
         metallic = color4.z;
     #endif
 
-    float colorGlossiness = 1.0 - roughness;
+    #ifdef VOX_USE_GLOSSINESS
+        float colorGlossiness = 1.0 - roughness;
+    #else
+        float colorGlossiness = roughness;
+    #endif
     float reflectionIntensity = u_pbrParams[1].y;
     float glossinessSquare = colorGlossiness * colorGlossiness;
     float specularPower = exp2(8.0 * glossinessSquare + 1.0);

@@ -30,7 +30,8 @@ export default class PBRShaderDecorator {
      * add ao, roughness, metalness map uniform code
      */
     armMap: TextureProxy = null;
-
+    
+    glossinessEnabeld: boolean = true;
     woolEnabled: boolean = true;
     toneMappingEnabled: boolean = true;
     specularEnvMapEnabled: boolean = true;

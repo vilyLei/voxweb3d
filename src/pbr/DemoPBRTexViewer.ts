@@ -162,18 +162,23 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         // let axis: Axis3DEntity = new Axis3DEntity();
         // axis.initialize(300.0);
         // this.m_rscene.addEntity(axis);
-        this.aoMapEnabled = true;
-        let ns: string = "lava_03";
-        let diffuseMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/metal_plate_diff_1k.jpg");
-        let normalMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/metal_plate_nor_1k.jpg");
-        let armMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/metal_plate_arm_1k.jpg");
+        let diffuseMap: TextureProxy = null;
+        let normalMap: TextureProxy = null;
+        let armMap: TextureProxy = null;
         let aoMap: TextureProxy = null;
+        this.aoMapEnabled = true;
+        //let ns: string = "rust_coarse_01";
+        let ns: string = "metal_plate";
+        diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_diff_1k.jpg");
+        normalMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_nor_1k.jpg");
+        armMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_arm_1k.jpg");
+
         if (this.aoMapEnabled) {
             //aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_OCC.png");
             //aoMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
         }
         let displacementMap: TextureProxy = null;
-        //displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
+        //displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_disp_1k.jpg");
         let parallaxMap: TextureProxy = null;
         //parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/brick_bumpy01.jpg");
 
@@ -196,7 +201,7 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         let sph: Sphere3DEntity;
         ///*
         let vertUniform: VertUniformComp;
-        material = this.createMaterial(1.0, 0.4, 1.0);
+        material = this.createMaterial(1.0, 1.0, 1.0);
         vertUniform = material.vertUniform as VertUniformComp;
 
         material.decorator.aoMapEnabled = this.aoMapEnabled;
@@ -208,12 +213,13 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         material.decorator.diffuseMap = diffuseMap;
         material.decorator.normalMap = normalMap;
         material.decorator.aoMap = aoMap;
+
         vertUniform.displacementMap = displacementMap;
 
         material.decorator.parallaxMap = parallaxMap;
 
         material.initializeByCodeBuf(true);
-        vertUniform.setDisplacementParams(50.0, 0.0);
+        vertUniform.setDisplacementParams(10.0, -5.0);
         material.setAlbedoColor(1.0, 1.0, 1.0);
         material.setScatterIntensity(64.0);
         material.setParallaxParams(1, 10, 5.0, 0.02);
@@ -221,6 +227,7 @@ export class DemoPBRTexViewer implements IShaderLibListener {
 
         //material.setTextureList(texList);
         let srcSph = new Sphere3DEntity();
+        srcSph.uvScale = 0.7;
         srcSph.setMaterial(material);
         srcSph.initialize(100.0, 150, 150);
         srcSph.setRotation3(this.m_rotV);

@@ -36,6 +36,7 @@ class ShaderCodeBuffer {
     fogEnabled: boolean = false;
     envAmbientLightEnabled: boolean = false;
     brightnessOverlayEnabeld: boolean = false;
+    glossinessEnabeld: boolean = true;
 
     pipeTypes: MaterialPipeType[] = null;
     keysString: string = "";
@@ -69,6 +70,8 @@ class ShaderCodeBuffer {
         this.fogEnabled = false;
         this.envAmbientLightEnabled = false;
         this.brightnessOverlayEnabeld = false;
+        this.glossinessEnabeld = true;
+
         this.keysString = "";
     }
     clear(): void {
@@ -101,9 +104,22 @@ class ShaderCodeBuffer {
         this.bufInitWithPipeline();
     }
     buildDefine(): void {
-        if (this.premultiplyAlpha) this.m_coder.addDefine("VOX_PREMULTIPLY_ALPHA");
-        if (this.vertColorEnabled) this.m_coder.addDefine("VOX_USE_VTX_COLOR");
-        if (this.brightnessOverlayEnabeld) this.m_coder.addDefine("VOX_USE_BRIGHTNESS_OVERLAY_COLOR");
+        if (this.premultiplyAlpha) {
+            this.m_coder.addDefine("VOX_PREMULTIPLY_ALPHA");
+            this.keysString += "A";
+        }
+        if (this.vertColorEnabled) {
+            this.m_coder.addDefine("VOX_USE_VTX_COLOR");
+            this.keysString += "UVC";
+        }
+        if (this.brightnessOverlayEnabeld) {
+            this.m_coder.addDefine("VOX_USE_BRIGHTNESS_OVERLAY_COLOR");
+            this.keysString += "UBOC";
+        }
+        if (this.glossinessEnabeld) {
+            this.m_coder.addDefine("VOX_USE_GLOSSINESS");
+            this.keysString += "UG";
+        }
     }
     buildPipelineParams(): void {
         if (this.pipeline != null) {
@@ -128,7 +144,7 @@ class ShaderCodeBuffer {
             this.buildPipelineParams();
             this.pipeline.buildSharedUniforms(this.pipeTypes);
             this.pipeline.createKeys(this.pipeTypes);
-            this.keysString = this.pipeline.getKeysString();
+            this.keysString += this.pipeline.getKeysString();
         }
     }
     

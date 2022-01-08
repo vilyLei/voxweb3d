@@ -105,6 +105,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         buf.lightEnabled = decorator.lightEnabled;
         buf.shadowReceiveEnabled = decorator.shadowReceiveEnabled;
         buf.fogEnabled = decorator.fogEnabled;
+        buf.glossinessEnabeld = decorator.glossinessEnabeld;
         buf.buildPipelineParams();
 
         buf.decorator = decorator;
