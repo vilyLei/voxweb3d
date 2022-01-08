@@ -63,6 +63,9 @@ export default class PBRShaderDecorator {
         let coder: ShaderCodeBuilder = this.codeBuilder;
         let uniform = coder.uniform;
         let texList: TextureProxy[] = [];
+        if(this.armMap != null) {
+            this.aoMapEnabled = true;
+        }
 
         if (this.specularEnvMapEnabled && this.specularEnvMap != null ) {
             texList.push( this.specularEnvMap );

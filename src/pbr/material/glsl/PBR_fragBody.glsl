@@ -43,16 +43,19 @@
     #endif
     
     #ifdef VOX_AO_MAP
-        ao = mix(1.0, VOX_Texture2D(VOX_AO_MAP, texUV).y, ao);
+        ao = mix(1.0, VOX_Texture2D(VOX_AO_MAP, texUV).x, ao);
     #endif
     #ifdef VOX_ROUGHNESS_MAP
         roughness = mix(1.0, VOX_Texture2D(VOX_ROUGHNESS_MAP, texUV).y, roughness);
     #endif
     #ifdef VOX_METALNESS_MAP
-        metallic = mix(1.0, VOX_Texture2D(VOX_METALNESS_MAP, texUV).y, metallic);
+        metallic = mix(1.0, VOX_Texture2D(VOX_METALNESS_MAP, texUV).z, metallic);
     #endif
     #ifdef VOX_ARM_MAP
-        ao = mix(vec3(1.0), VOX_Texture2D(VOX_ARM_MAP, texUV).xyz, vec3(ao, roughness, metallic));
+        color4.xyz = mix(vec3(1.0, 0.0, 1.0), VOX_Texture2D(VOX_ARM_MAP, texUV).xyz, vec3(ao, roughness, metallic));
+        ao = color4.x;
+        roughness = color4.y;
+        metallic = color4.z;
     #endif
 
     float colorGlossiness = 1.0 - roughness;
@@ -233,4 +236,4 @@
         color.xyz = mix(mirrorColor4.xyz, color.xyz, factorY);
     #endif
     FragColor0 = vec4(color, 1.0);
-//[x: displacement, y: ao, z: specular, w: occ]
+//[x: ao, y: rough, z: metal, w: displacement]
