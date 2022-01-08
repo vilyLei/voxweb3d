@@ -48,11 +48,12 @@ export class DemoObjModel {
             this.m_rscene.addEntity(axis);
 
             //let objUrl: string = "static/assets/obj/box01.obj";
-            let objUrl: string = "static/assets/obj/monkey.obj";
+            //let objUrl: string = "static/assets/obj/monkey.obj";
+            let objUrl: string = "static/assets/obj/room_01.obj";
             tex1.flipY = true;
             //objUrl = "static/assets/obj/building_001.obj";
             let objDisp: ObjData3DEntity = new ObjData3DEntity();
-            //objDisp.showDoubleFace();
+            objDisp.showDoubleFace();
             //objDisp.dataIsZxy = true;
             let moduleScale = 100.0;//10.0 + Math.random() * 5.5;
             //objDisp.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);

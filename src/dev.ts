@@ -23,7 +23,7 @@
 
 //  import {DemoQuadLine as Demo} from "./demo/DemoQuadLine";
 
-import {DemoObjModel as Demo} from "./demo/DemoObjModel";
+//  import {DemoObjModel as Demo} from "./demo/DemoObjModel";
 
 //  import {DemoTexture as Demo} from "./demo/DemoTexture";
 
@@ -370,6 +370,8 @@ import {DemoObjModel as Demo} from "./demo/DemoObjModel";
 //  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
+
+import {DemoPBRTexViewer as Demo} from "./pbr/DemoPBRTexViewer";
 
 //  import {DemoPBRDisplacement as Demo} from "./pbr/DemoPBRDisplacement";
 

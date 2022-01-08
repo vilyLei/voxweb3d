@@ -47,6 +47,7 @@ export default class ObjData3DMesh extends MeshBase {
             let objParser = new ObjDataParser();
             let objMeshes = objParser.Parse( objDataStr );
             let objMesh = objMeshes[0];
+            console.log("objMesh: ",objMesh);
             let geom = objMesh.geometry;
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
                 this.m_uvs = new Float32Array(geom.uvs);
