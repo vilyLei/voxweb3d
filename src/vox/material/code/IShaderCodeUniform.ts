@@ -90,6 +90,10 @@ interface IShaderCodeUniform {
      */
     addMetalnessMap(): void;
     /**
+     * add ao, roughness, metalness map uniform code
+     */
+    addARMMap(): void;
+    /**
      * add sampler2d texture uniform code
      * @param macroName shader code macro define name, the default vaule is empty string
      * @param map2DEnabled texture 2d enabled, the default vaule is true

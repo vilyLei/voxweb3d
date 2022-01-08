@@ -25,6 +25,11 @@ export default class PBRShaderDecorator {
     aoMap: TextureProxy = null;
     roughnessMap: TextureProxy = null;
     metalhnessMap: TextureProxy = null;
+    
+    /**
+     * add ao, roughness, metalness map uniform code
+     */
+    armMap: TextureProxy = null;
 
     woolEnabled: boolean = true;
     toneMappingEnabled: boolean = true;
@@ -74,11 +79,29 @@ export default class PBRShaderDecorator {
             uniform.addNormalMap();
             // console.log("VOX_NORMAL_MAP");
         }
+
+        if(this.parallaxMap != null) {
+            texList.push( this.parallaxMap );
+            uniform.addParallaxMap( this.parallaxParamIndex );
+        }
         if (this.aoMapEnabled && this.aoMap != null) {
             texList.push( this.aoMap );
             uniform.addAOMap();
             // console.log("VOX_AO_MAP");
         }
+        if(this.roughnessMap != null) {
+            texList.push( this.roughnessMap );
+            uniform.addRoughnessMap();
+        }
+        if(this.metalhnessMap != null) {
+            texList.push( this.metalhnessMap );
+            uniform.addMetalnessMap();
+        }
+        if(this.armMap != null) {
+            texList.push( this.armMap );
+            uniform.addARMMap();
+        }
+        
         if (this.mirrorProjEnabled && this.mirrorMap != null) {
             texList.push( this.mirrorMap );
             uniform.add2DMap("VOX_MIRROR_PROJ_MAP",true, true ,false);
@@ -90,18 +113,6 @@ export default class PBRShaderDecorator {
             // console.log("VOX_INDIRECT_ENV_MAP");
         }
         
-        if(this.parallaxMap != null) {
-            texList.push( this.parallaxMap );
-            uniform.addParallaxMap( this.parallaxParamIndex );
-        }
-        if(this.roughnessMap != null) {
-            texList.push( this.roughnessMap );
-            uniform.addRoughnessMap();
-        }
-        if(this.metalhnessMap != null) {
-            texList.push( this.metalhnessMap );
-            uniform.addMetalnessMap();
-        }
 
         this.texturesTotal = texList.length;
         //  console.log("this.texturesTotal: ",this.texturesTotal);

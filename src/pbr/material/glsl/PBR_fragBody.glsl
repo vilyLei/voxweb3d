@@ -1,6 +1,3 @@
-
-// ----------------------------------------------------------------------------
-
     vec3 color = vec3(0.0);
 
     vec4 param4 = u_pbrParams[0];
@@ -47,24 +44,21 @@
     
     #ifdef VOX_AO_MAP
         ao = mix(1.0, VOX_Texture2D(VOX_AO_MAP, texUV).y, ao);
-    #endif    
+    #endif
     #ifdef VOX_ROUGHNESS_MAP
         roughness = mix(1.0, VOX_Texture2D(VOX_ROUGHNESS_MAP, texUV).y, roughness);
     #endif
     #ifdef VOX_METALNESS_MAP
         metallic = mix(1.0, VOX_Texture2D(VOX_METALNESS_MAP, texUV).y, metallic);
     #endif
+    #ifdef VOX_ARM_MAP
+        ao = mix(vec3(1.0), VOX_Texture2D(VOX_ARM_MAP, texUV).xyz, vec3(ao, roughness, metallic));
+    #endif
 
     float colorGlossiness = 1.0 - roughness;
     float reflectionIntensity = u_pbrParams[1].y;
     float glossinessSquare = colorGlossiness * colorGlossiness;
     float specularPower = exp2(8.0 * glossinessSquare + 1.0);
-
-
-    // #ifdef VOX_NORMAL_MAP
-    //     N = getNormalFromMap(VOX_NORMAL_MAP, texUV, worldPosition.xyz, worldNormal);
-    //     N = normalize(mix(worldNormal, N, u_fragLocalParams[0].w));
-    // #endif
 
     #ifdef VOX_PIXEL_NORMAL_NOISE
         N = normalize(N + rand(N) * u_pbrParams[0].w);
@@ -88,17 +82,14 @@
     albedo = gammaToLinear(albedo);
 
     vec3 specularColor = vec3(mix(0.025 * reflectionIntensity, 0.078 * reflectionIntensity, colorGlossiness));
-    #ifdef VOX_METALLIC_CORRECTION
-        //if(metallic > 0.0){
-            vec3 specularColorMetal = mix(F0, albedo, metallic);
-            float ratio = clamp(metallic, 0.0, 1.0);
-            specularColor = mix(specularColor, specularColorMetal, ratio);
-        //}
+    #ifdef VOX_METALLIC_CORRECTION    
+        vec3 specularColorMetal = mix(F0, albedo, metallic);
+        float ratio = clamp(metallic, 0.0, 1.0);
+        specularColor = mix(specularColor, specularColorMetal, ratio);
     #endif
     albedo = mix(albedo, F0, metallic);
     
     specularColor *= u_pbrParams[3].xyz;
-
     
     #ifdef VOX_ENV_MAP
         float mipLv = floor(100.0 * fract(u_pbrParams[3].w));
