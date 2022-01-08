@@ -9,16 +9,11 @@
     float roughness = param4.y;
     float ao = param4.z;
     #ifdef VOX_USE_2D_MAP
-    vec2 texUV = v_uv.xy;
+        vec2 texUV = v_uv.xy;
     #else
-    vec2 texUV = vec2(0.0);
+        vec2 texUV = vec2(0.0);
     #endif
     
-    float colorGlossiness = 1.0 - roughness;
-    float reflectionIntensity = u_pbrParams[1].y;
-    float glossinessSquare = colorGlossiness * colorGlossiness;
-    float specularPower = exp2(8.0 * glossinessSquare + 1.0);
-
     worldPosition.xyz = v_worldPosition.xyz;
     vec3 V = normalize(u_cameraPosition.xyz - worldPosition.xyz);
 
@@ -52,7 +47,19 @@
     
     #ifdef VOX_AO_MAP
         ao = mix(1.0, VOX_Texture2D(VOX_AO_MAP, texUV).y, ao);
+    #endif    
+    #ifdef VOX_ROUGHNESS_MAP
+        roughness = mix(1.0, VOX_Texture2D(VOX_ROUGHNESS_MAP, texUV).y, roughness);
     #endif
+    #ifdef VOX_METALNESS_MAP
+        metallic = mix(1.0, VOX_Texture2D(VOX_METALNESS_MAP, texUV).y, metallic);
+    #endif
+
+    float colorGlossiness = 1.0 - roughness;
+    float reflectionIntensity = u_pbrParams[1].y;
+    float glossinessSquare = colorGlossiness * colorGlossiness;
+    float specularPower = exp2(8.0 * glossinessSquare + 1.0);
+
 
     // #ifdef VOX_NORMAL_MAP
     //     N = getNormalFromMap(VOX_NORMAL_MAP, texUV, worldPosition.xyz, worldNormal);

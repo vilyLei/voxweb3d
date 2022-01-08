@@ -58,10 +58,6 @@ interface IShaderCodeUniform {
      */
     addDisplacementMap(displacementParamIndex: number): void;
     /**
-     * add ambient occlusion map uniform code
-     */
-    addAOMap(): void;
-    /**
      * add specular map uniform code
      * @param specularMode is SpecularMode type value, the default is SpecularMode.Default
      */
@@ -82,9 +78,17 @@ interface IShaderCodeUniform {
      */
     addspecularEnvMap(cubeMap: boolean): void;
     /**
+     * add ambient occlusion map uniform code
+     */
+    addAOMap(): void;
+    /**
      * add roughness map uniform code
      */
     addRoughnessMap(): void;
+    /**
+     * add metalness map uniform code
+     */
+    addMetalnessMap(): void;
     /**
      * add sampler2d texture uniform code
      * @param macroName shader code macro define name, the default vaule is empty string

@@ -17,7 +17,7 @@ class ShaderCodeUniform implements IShaderCodeUniform {
 
     private m_uniqueNSKeyString: string = "";
     private m_uniqueNSKeys: Uint16Array = new Uint16Array(128);
-    private m_uniqueNSKeysTotal: number = 10;
+    private m_uniqueNSKeysTotal: number = 16;
     private m_uniqueNSKeyFlag: boolean = false;
     constructor(){}
     
@@ -164,14 +164,6 @@ class ShaderCodeUniform implements IShaderCodeUniform {
     }
     
     /**
-     * add ambient occlusion map uniform code
-     */
-    addAOMap(): void {
-        this.m_codeBuilder.addTextureSample2D("VOX_AO_MAP", true, true, false);
-        this.m_uniqueNSKeys[4] = 1;
-        this.m_uniqueNSKeyFlag = true;
-    }
-    /**
      * add specular map uniform code
      * @param specularMode is SpecularMode type value, the default is SpecularMode.Default
      */
@@ -215,11 +207,27 @@ class ShaderCodeUniform implements IShaderCodeUniform {
         this.m_uniqueNSKeyFlag = true;
     }
     /**
+     * add ambient occlusion map uniform code
+     */
+    addAOMap(): void {
+        this.m_codeBuilder.addTextureSample2D("VOX_AO_MAP", true, true, false);
+        this.m_uniqueNSKeys[4] = 1;
+        this.m_uniqueNSKeyFlag = true;
+    }
+    /**
      * add roughness map uniform code
      */
     addRoughnessMap(): void {
         this.m_codeBuilder.addTextureSample2D("VOX_ROUGHNESS_MAP", true, true, false);
         this.m_uniqueNSKeys[9] = 1;
+        this.m_uniqueNSKeyFlag = true;
+    }
+    /**
+     * add metalness map uniform code
+     */
+     addMetalnessMap(): void {
+        this.m_codeBuilder.addTextureSample2D("VOX_METALNESS_MAP", true, true, false);
+        this.m_uniqueNSKeys[10] = 1;
         this.m_uniqueNSKeyFlag = true;
     }
     

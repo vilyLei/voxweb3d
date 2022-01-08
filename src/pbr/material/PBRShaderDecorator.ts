@@ -19,11 +19,12 @@ export default class PBRShaderDecorator {
     specularEnvMap: TextureProxy = null;
     diffuseMap: TextureProxy = null;
     normalMap: TextureProxy = null;
-    aoMap: TextureProxy = null;
     mirrorMap: TextureProxy = null;
     indirectEnvMap: TextureProxy = null;
     parallaxMap: TextureProxy = null;
+    aoMap: TextureProxy = null;
     roughnessMap: TextureProxy = null;
+    metalhnessMap: TextureProxy = null;
 
     woolEnabled: boolean = true;
     toneMappingEnabled: boolean = true;
@@ -96,6 +97,10 @@ export default class PBRShaderDecorator {
         if(this.roughnessMap != null) {
             texList.push( this.roughnessMap );
             uniform.addRoughnessMap();
+        }
+        if(this.metalhnessMap != null) {
+            texList.push( this.metalhnessMap );
+            uniform.addMetalnessMap();
         }
 
         this.texturesTotal = texList.length;
