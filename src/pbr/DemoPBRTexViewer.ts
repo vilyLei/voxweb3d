@@ -168,8 +168,10 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         let aoMap: TextureProxy = null;
         this.aoMapEnabled = true;
         //let ns: string = "rust_coarse_01";
-        let ns: string = "metal_plate";
-        diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_diff_1k.jpg");
+        let ns: string = "medieval_blocks_02";
+        //let ns: string = "metal_plate";
+        //diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_diff_1k.jpg");
+        diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
         normalMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_nor_1k.jpg");
         armMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_arm_1k.jpg");
 
@@ -178,9 +180,10 @@ export class DemoPBRTexViewer implements IShaderLibListener {
             //aoMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
         }
         let displacementMap: TextureProxy = null;
-        //displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_disp_1k.jpg");
+        displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_disp_1k.jpg");
         let parallaxMap: TextureProxy = null;
-        //parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/brick_bumpy01.jpg");
+        //  parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/brick_bumpy01.jpg");
+        parallaxMap = displacementMap;
 
         let disSize: number = 700.0;
         let dis: number = 500.0;
@@ -227,7 +230,7 @@ export class DemoPBRTexViewer implements IShaderLibListener {
 
         //material.setTextureList(texList);
         let srcSph = new Sphere3DEntity();
-        srcSph.uvScale = 0.7;
+        //srcSph.uvScale = 0.7;
         srcSph.setMaterial(material);
         srcSph.initialize(100.0, 150, 150);
         srcSph.setRotation3(this.m_rotV);
