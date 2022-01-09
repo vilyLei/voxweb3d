@@ -12,6 +12,7 @@ import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import Sphere3DMesh from "../../vox/mesh/Sphere3DMesh"
 import RendererState from "../render/RendererState";
+import Color4 from "../material/Color4";
 
 export default class Sphere3DEntity extends DisplayEntity {
     constructor(transform: ROTransform = null) {
@@ -21,6 +22,7 @@ export default class Sphere3DEntity extends DisplayEntity {
     wireframe: boolean = false;
     inverseUV: boolean = false;
     uvScale: number = 1.0;
+    vtxColor: Color4 = null;
     private m_radius: number = 50.0;
     private m_longitudeNumSegments: number = 10;
     private m_latitudeNumSegments: number = 10;
@@ -64,10 +66,11 @@ export default class Sphere3DEntity extends DisplayEntity {
     createMaterial(texList: TextureProxy[]): void {
         if (this.getMaterial() == null) {
             let cm: Default3DMaterial = new Default3DMaterial();
+            cm.vertColorEnabled = this.vtxColor != null;
             cm.setTextureList(texList);
             this.setMaterial(cm);
         }
-        else if (texList != null) {
+        else if (texList != null && this.getMaterial().getTextureTotal() < 1) {
             this.getMaterial().setTextureList(texList);
         }
     }

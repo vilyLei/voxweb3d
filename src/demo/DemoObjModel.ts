@@ -49,7 +49,8 @@ export class DemoObjModel {
 
             //let objUrl: string = "static/assets/obj/box01.obj";
             //let objUrl: string = "static/assets/obj/monkey.obj";
-            let objUrl: string = "static/assets/obj/room_01.obj";
+            //let objUrl: string = "static/assets/obj/room_01.obj";
+            let objUrl: string = "static/assets/obj/ellipsoid_01.obj";
             tex1.flipY = true;
             //objUrl = "static/assets/obj/building_001.obj";
             let objDisp: ObjData3DEntity = new ObjData3DEntity();

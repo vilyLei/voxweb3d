@@ -168,10 +168,11 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         let aoMap: TextureProxy = null;
         this.aoMapEnabled = true;
         //let ns: string = "rust_coarse_01";
-        let ns: string = "medieval_blocks_02";
+        //let ns: string = "medieval_blocks_02";
+        let ns: string = "rough_plaster_broken";
         //let ns: string = "metal_plate";
-        //diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_diff_1k.jpg");
-        diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
+        diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_diff_1k.jpg");
+        //diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
         normalMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_nor_1k.jpg");
         armMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_arm_1k.jpg");
 
@@ -182,8 +183,8 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         let displacementMap: TextureProxy = null;
         displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_disp_1k.jpg");
         let parallaxMap: TextureProxy = null;
-        //  parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/brick_bumpy01.jpg");
-        parallaxMap = displacementMap;
+        parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/brick_bumpy01.jpg");
+        //parallaxMap = displacementMap;
 
         let disSize: number = 700.0;
         let dis: number = 500.0;
@@ -204,7 +205,7 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         let sph: Sphere3DEntity;
         ///*
         let vertUniform: VertUniformComp;
-        material = this.createMaterial(1.0, 1.0, 1.0);
+        material = this.createMaterial(1.0, 0.4, 1.0);
         vertUniform = material.vertUniform as VertUniformComp;
 
         material.decorator.aoMapEnabled = this.aoMapEnabled;
@@ -223,8 +224,8 @@ export class DemoPBRTexViewer implements IShaderLibListener {
 
         material.initializeByCodeBuf(true);
         vertUniform.setDisplacementParams(10.0, -5.0);
-        material.setAlbedoColor(1.0, 1.0, 1.0);
-        material.setScatterIntensity(64.0);
+        material.setAlbedoColor(1.0,1.0,1.0);
+        material.setScatterIntensity(8.0);
         material.setParallaxParams(1, 10, 5.0, 0.02);
         material.setSideIntensity(8.0);
 

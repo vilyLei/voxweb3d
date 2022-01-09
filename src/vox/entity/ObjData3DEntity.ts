@@ -12,21 +12,25 @@ import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import ObjData3DMesh from "../../vox/mesh/obj/ObjData3DMesh";
 import RendererState from "../render/RendererState";
+import Color4 from "../material/Color4";
 
 export default class ObjData3DEntity extends DisplayEntity {
     moduleScale: number = 1.0;
     dataIsZxy: boolean = false;
+    vtxColor: Color4 = null;
+    private m_str: string = "";
+
     constructor(transform: ROTransform = null) {
         super(transform);
     }
-    private m_str: string = "";
-    private createMaterial(texList: TextureProxy[]) {
+    private createMaterial(texList: TextureProxy[]): void {
         if (this.getMaterial() == null) {
             let cm: Default3DMaterial = new Default3DMaterial();
+            cm.vertColorEnabled = this.vtxColor != null;
             cm.setTextureList(texList);
             this.setMaterial(cm);
         }
-        else {
+        else if (texList != null && this.getMaterial().getTextureTotal() < 1) {
             this.getMaterial().setTextureList(texList);
         }
     }
