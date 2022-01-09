@@ -273,6 +273,7 @@ export default class RedCamp implements IRoleCamp {
             if(this.m_revivingDelay < 1) {
                 this.m_revivingDelay = 100;
                 let tot: number = Math.round( Math.random() * 20 + 20 );
+                // 用于测试的部分复活功能
                 this.reviveRole( tot );
             }
             else {

@@ -58,12 +58,15 @@ class Color4 {
         this.g = 1.0 - this.g;
         this.b = 1.0 - this.b;
     }
-    randomRGB(density: number = 1.0): void {
+    randomRGB(density: number = 1.0, bias: number = 0.0): void {
         this.r = Math.random() * density;
         this.g = Math.random() * density;
         this.b = Math.random() * density;
+        this.r += bias;
+        this.g += bias;
+        this.b += bias;
     }
-    normalizeRandom(density: number = 1.0): void {
+    normalizeRandom(density: number = 1.0, bias: number = 0.0): void {
         this.r = Math.random();
         this.g = Math.random();
         this.b = Math.random();
@@ -73,6 +76,9 @@ class Color4 {
             this.g = density * this.g / d;
             this.b = density * this.b / d;
         }
+        this.r += bias;
+        this.g += bias;
+        this.b += bias;
     }
     normalize(density: number): void {
         if (density == undefined) density = 1.0;

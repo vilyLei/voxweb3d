@@ -46,8 +46,6 @@ export default class BulEntity {
     setPosParam(pos0: Vector3D, pos1: Vector3D, attDst: IAttackDst, campType: CampType): void {
 
         let billLine: BillboardLine3DEntity = this.m_entity;
-        AssetsModule.UseFog(billLine);
-
         this.m_endPos.subVecsTo(pos1, pos0);
         if (this.m_endPos.getLengthSquared() > 40000.0) {
             this.m_endPos.normalize();

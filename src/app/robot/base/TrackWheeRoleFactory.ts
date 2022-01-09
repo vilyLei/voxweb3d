@@ -66,7 +66,7 @@ export default class TrackWheeRoleFactory {
         twRole.lifeTime = 200;
         
         twRole.color =  new Color4();
-        twRole.color.normalizeRandom(2.0);
+        twRole.color.normalizeRandom(1.0, 0.5);
 
         let weaponBody: TrackWheelWeaponBody = new TrackWheelWeaponBody();
         weaponBody.materialBuilder = this.m_materialBuilder;

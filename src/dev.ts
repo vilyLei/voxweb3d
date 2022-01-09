@@ -371,7 +371,7 @@
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
-import {DemoPBRTexViewer as Demo} from "./pbr/DemoPBRTexViewer";
+//  import {DemoPBRTexViewer as Demo} from "./pbr/DemoPBRTexViewer";
 
 //  import {DemoPBRDisplacement as Demo} from "./pbr/DemoPBRDisplacement";
 
@@ -395,7 +395,7 @@ import {DemoPBRTexViewer as Demo} from "./pbr/DemoPBRTexViewer";
 
 //  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
-//  import {RbtDrama as Demo} from "./app/RbtDrama";
+import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {SlickRoad as Demo} from "./app/SlickRoad";
 

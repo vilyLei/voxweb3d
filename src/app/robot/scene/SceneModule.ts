@@ -55,7 +55,7 @@ class SceneModule {
         this.m_loadingNSEntity = new TextBillboard3DEntity();
         this.m_loadingNSEntity.initialize("resource");
         this.m_loadingNSEntity.setXYZ(0.0,-230.0, 0.0);
-        this.m_loadingNSEntity.setScaleXY(3.0, 3.0);
+        this.m_loadingNSEntity.setScaleXY(2.0, 2.0);
         this.m_loadingNSEntity.setRGB3f(0.3, 1.7, 0.5);
         this.m_rscene.addEntity( this.m_loadingNSEntity );
 
