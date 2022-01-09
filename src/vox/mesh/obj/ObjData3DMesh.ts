@@ -59,6 +59,7 @@ export default class ObjData3DMesh extends MeshBase {
                 this.m_nvs = new Float32Array(geom.normals);
             }
             let len: number = geom.vertices.length / 3;
+            console.log("xxx ivs len: ",len);
             this.m_ivs = len > 65535? new Uint32Array(len) : new Uint16Array(len);
             if(dataIsZxy) {
                 let k: number = 0;
@@ -80,9 +81,9 @@ export default class ObjData3DMesh extends MeshBase {
                 }
             }
             
-            console.log("XXX m_vs: ", this.m_vs);
-            console.log("XXX m_uvs: ", this.m_uvs);
-            console.log("XXX m_nvs: ", this.m_nvs);
+            // console.log("XXX m_vs: ", this.m_vs);
+            // console.log("XXX m_uvs: ", this.m_uvs);
+            // console.log("XXX m_nvs: ", this.m_nvs);
         }
 
         this.bounds = new AABB();
@@ -116,11 +117,11 @@ export default class ObjData3DMesh extends MeshBase {
         ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
         if (this.m_vbuf == null) {
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-            this.m_vbuf.setUint16IVSData(this.m_ivs);
+            this.m_vbuf.setUintIVSData(this.m_ivs);
         }
         else {
             if (this.forceUpdateIVS) {
-                this.m_vbuf.setUint16IVSData(this.m_ivs);
+                this.m_vbuf.setUintIVSData(this.m_ivs);
             }
             ROVertexBuffer.UpdateBufData(this.m_vbuf);
         }

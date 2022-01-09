@@ -19,6 +19,7 @@ export default class ObjData3DEntity extends DisplayEntity {
     dataIsZxy: boolean = false;
     vtxColor: Color4 = null;
     normalEnabled: boolean = false;
+    wireframe: boolean = false;
     private m_str: string = "";
 
     constructor(transform: ROTransform = null) {
@@ -76,6 +77,7 @@ export default class ObjData3DEntity extends DisplayEntity {
             let mesh: ObjData3DMesh = new ObjData3DMesh();
             mesh.moduleScale = this.moduleScale;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
+            mesh.wireframe = this.wireframe;
             mesh.setBufSortFormat(this.getMaterial().getBufSortFormat());
             mesh.initialize(this.m_str, this.dataIsZxy);
             this.setMesh(mesh);

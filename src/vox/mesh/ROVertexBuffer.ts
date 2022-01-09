@@ -85,26 +85,6 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
             this.indicesVer++;
         }
     }
-    setUint16IVSData(uint16Arr: Uint16Array | Uint32Array, status: number = VtxBufConst.VTX_STATIC_DRAW): void {
-        if ((uint16Arr instanceof Uint16Array)) {
-            this.m_ivs = uint16Arr;
-            this.indicesVer++;
-            this.m_ibufStep = 2;
-        }
-        else {
-            console.error("Error: uint16Arr is not an Uint16Array bufferArray instance !!!!");
-        }
-    }
-    setUint32IVSData(uint32Arr: Uint16Array | Uint32Array, status: number = VtxBufConst.VTX_STATIC_DRAW): void {
-        if ((uint32Arr instanceof Uint32Array)) {
-            this.m_ivs = uint32Arr;
-            this.indicesVer++;
-            this.m_ibufStep = 4;
-        }
-        else {
-            console.error("Error: uint32Arr is not an Uint32Array bufferArray instance !!!!");
-        }
-    }
     setData4fAt(vertexI: number, attribI: number, px: number, py: number, pz: number, pw: number): void {
         if (this.m_vtxBuf != null) {
             this.m_vtxBuf.setData4fAt(vertexI, attribI, px, py, pz, pw);

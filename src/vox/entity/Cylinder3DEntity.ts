@@ -20,6 +20,7 @@ export default class Cylinder3DEntity extends DisplayEntity {
     private m_transMatrix: Matrix4 = null;
     uScale: number = 1.0;
     vScale: number = 1.0;
+    normalEnabled: boolean = false;
     wireframe: boolean = false;
     private m_radius: number = 50.0;
     private m_height: number = 100.0;
@@ -32,6 +33,7 @@ export default class Cylinder3DEntity extends DisplayEntity {
     createMaterial(texList: TextureProxy[]): void {
         if (this.getMaterial() == null) {
             let cm: Default3DMaterial = new Default3DMaterial();
+            cm.normalEnabled = this.normalEnabled;
             cm.setTextureList(texList);
             this.setMaterial(cm);
         }

@@ -29,6 +29,7 @@ export default class Box3DEntity extends DisplayEntity {
     uScale: number = 1.0;
     vScale: number = 1.0;
     normalScale: number = 1.0;
+    normalEnabled: boolean = false;
     // uvPartsNumber value is 4 or 6
     uvPartsNumber: number = 0;
     wireframe: boolean = false;
@@ -47,6 +48,7 @@ export default class Box3DEntity extends DisplayEntity {
     private createMaterial(texList: TextureProxy[]): void {
         if (this.getMaterial() == null) {
             let cm: Default3DMaterial = new Default3DMaterial();
+            cm.normalEnabled = this.normalEnabled;
             cm.vertColorEnabled = this.vtxColor != null;
             cm.setTextureList(texList);
             this.setMaterial(cm);

@@ -202,11 +202,11 @@ export default class Cone3DMesh extends MeshBase {
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
             if(this.m_vbuf == null) {
                 this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-                this.m_vbuf.setUint16IVSData(this.m_ivs);
+                this.m_vbuf.setUintIVSData(this.m_ivs);
             }
             else {
                 if(this.forceUpdateIVS) {
-                    this.m_vbuf.setUint16IVSData(this.m_ivs);
+                    this.m_vbuf.setUintIVSData(this.m_ivs);
                 }
                 ROVertexBuffer.UpdateBufData(this.m_vbuf);
             }

@@ -114,7 +114,7 @@ class IdGroupMesh extends MeshBase {
         if (newBuild) {
             this.m_ivs = GeometryMerger.MergeSameIvs(this.srcMesh.getIVS(), this.m_vs, 4, total);
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-            this.m_vbuf.setUint16IVSData(this.m_ivs);
+            this.m_vbuf.setUintIVSData(this.m_ivs);
             this.vtCount = this.m_ivs.length;
             this.trisNumber = 12 * total;
             this.buildEnd();

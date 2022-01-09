@@ -18,6 +18,7 @@ export default class Sphere3DEntity extends DisplayEntity {
     constructor(transform: ROTransform = null) {
         super(transform);
     }
+    normalEnabled: boolean = false;
     doubleTriFaceEnabled: boolean = false;
     wireframe: boolean = false;
     inverseUV: boolean = false;
@@ -67,6 +68,7 @@ export default class Sphere3DEntity extends DisplayEntity {
         if (this.getMaterial() == null) {
             let cm: Default3DMaterial = new Default3DMaterial();
             cm.vertColorEnabled = this.vtxColor != null;
+            cm.normalEnabled = this.normalEnabled;
             cm.setTextureList(texList);
             this.setMaterial(cm);
         }

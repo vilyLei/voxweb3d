@@ -123,7 +123,7 @@ export default class TextRectMesh extends MeshBase {
             ROVertexBuffer.AddFloat32Data(this.m_uvs, 2);
         }
         if (expand) {
-            this.m_vbuf.setUint16IVSData(this.m_ivs);
+            this.m_vbuf.setUintIVSData(this.m_ivs);
         }
         this.vtCount = charsTot * 6;
         this.vtxTotal = charsTot * 4;
@@ -151,7 +151,7 @@ export default class TextRectMesh extends MeshBase {
 
         ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
         this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-        this.m_vbuf.setUint16IVSData(this.m_ivs);
+        this.m_vbuf.setUintIVSData(this.m_ivs);
         //this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLE_STRIP;
         this.buildEnd();
     }

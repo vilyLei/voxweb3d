@@ -424,14 +424,14 @@ export default class Box3DMesh extends MeshBase {
         
         if (this.m_vbuf == null) {
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-            this.m_vbuf.setUint16IVSData(this.m_ivs);
+            this.m_vbuf.setUintIVSData(this.m_ivs);
             this.vtCount = this.m_ivs.length;
             this.trisNumber = 12;
             this.buildEnd();
         }
         else {
             if(this.forceUpdateIVS) {
-                this.m_vbuf.setUint16IVSData(this.m_ivs);
+                this.m_vbuf.setUintIVSData(this.m_ivs);
             }
             ROVertexBuffer.UpdateBufData(this.m_vbuf);
         }

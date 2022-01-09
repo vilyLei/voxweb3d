@@ -168,10 +168,11 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         let armMap: TextureProxy = null;
         let aoMap: TextureProxy = null;
         this.aoMapEnabled = true;
-        //let ns: string = "rust_coarse_01";
-        //let ns: string = "medieval_blocks_02";
-        let ns: string = "rough_plaster_broken";
-        //let ns: string = "metal_plate";
+        let ns: string = "rust_coarse_01";
+        ns = "medieval_blocks_02";
+        ns = "rough_plaster_broken";
+        //ns = "metal_plate";
+
         diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_diff_1k.jpg");
         //diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
         normalMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_nor_1k.jpg");
@@ -224,13 +225,15 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         material.decorator.parallaxMap = parallaxMap;
 
         material.initializeByCodeBuf(true);
-        vertUniform.setDisplacementParams(10.0, -5.0);
+        //vertUniform.setDisplacementParams(10.0, -5.0);
+        vertUniform.setDisplacementParams(0.2, -0.1);
         material.setAlbedoColor(1.0,1.0,1.0);
         material.setScatterIntensity(8.0);
         material.setParallaxParams(1, 10, 5.0, 0.02);
         material.setSideIntensity(8.0);
         
-        let objUrl: string = "static/assets/obj/ellipsoid_01.obj";
+        // let objUrl: string = "static/assets/obj/ellipsoid_01.obj";
+        let objUrl: string = "static/assets/obj/apple_01.obj";
         //objUrl = "static/assets/obj/building_001.obj";
         let objDisp: ObjData3DEntity = new ObjData3DEntity();
         objDisp.setMaterial(material);

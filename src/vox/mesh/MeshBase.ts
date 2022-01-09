@@ -131,7 +131,7 @@ export default class MeshBase {
                 }
                 this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
                 if (this.m_ivs != null) {
-                    this.m_vbuf.setUint16IVSData(this.m_ivs);
+                    this.m_vbuf.setUintIVSData(this.m_ivs);
                     this.vtCount = this.m_ivs.length;
                 }
             }
