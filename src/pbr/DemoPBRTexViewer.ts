@@ -29,6 +29,8 @@ import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
 import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 import { UserInteraction } from "../vox/engine/UserInteraction";
 import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
+import H5FontSystem from "../vox/text/H5FontSys";
+import TextBillboard3DEntity from "../vox/text/TextBillboard3DEntity";
 
 export class DemoPBRTexViewer implements IShaderLibListener {
 
@@ -41,6 +43,10 @@ export class DemoPBRTexViewer implements IShaderLibListener {
 
     //private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
+    
+    private m_loadingEntity: TextBillboard3DEntity;
+    private m_loaded: boolean = false; 
+    
 
     fogEnabled: boolean = false;
     vtxFlatNormal: boolean = false;
@@ -77,7 +83,22 @@ export class DemoPBRTexViewer implements IShaderLibListener {
 
             this.m_rscene.setClearRGBColor3f(0.2, 0.2, 0.2);
 
+
+            let fontSys = H5FontSystem.GetInstance();
+            fontSys.mobileEnabled = false;
+            fontSys.setRenderProxy(this.m_rscene.getRenderProxy());
+            fontSys.initialize("fontTex", 32, 512, 512, false, true);
+            
+            this.m_loadingEntity = new TextBillboard3DEntity();
+            this.m_loadingEntity.initialize("loading...");
+            this.m_loadingEntity.setXYZ(0.0, -370.0, 0.0);
+            this.m_loadingEntity.setScaleXY(2.0, 2.0);
+            this.m_loadingEntity.setRGB3f(0.5, 0.5, 1.3);
+            this.m_rscene.addEntity( this.m_loadingEntity );
+        
             this.initMaterialCtx();
+            
+            this.update();
         }
     }
     private initMaterialCtx(): void {
@@ -246,6 +267,7 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         objDisp.setScaleXYZ(moduleScale, moduleScale, moduleScale);
         //objDisp.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
         this.m_rscene.addEntity(objDisp);
+        this.m_target = objDisp;
     }
     private m_runFlag: boolean = true;
     private mouseDown(evt: any): void {
@@ -254,12 +276,16 @@ export class DemoPBRTexViewer implements IShaderLibListener {
     }
     private mouseUp(evt: any): void {
     }
+    private m_timeoutId: any = -1;
     private update(): void {
-
-        this.m_statusDisp.update(true);
+        if (this.m_timeoutId > -1) {
+            clearTimeout(this.m_timeoutId);
+        }
+        this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
+        this.m_statusDisp.render();
     }
-    private m_lookV: Vector3D = new Vector3D(0.0, 300.0, 0.0);
     run(): void {
+        this.m_statusDisp.update(false);
         /*
         if(this.m_runFlag) {
             this.m_runFlag = false;
@@ -269,15 +295,12 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         }
         //*/
         if (this.m_target != null) {
-            this.m_target.setRotation3(this.m_rotV);
-            this.m_target.update();
-            // this.m_rotV.x += 0.2;
-            // this.m_rotV.z += 0.3;
-            this.m_rotV.y += 0.2;
+            if(this.m_target.isInRendererProcess()) {
+                this.m_target = null;
+                this.m_rscene.removeEntity( this.m_loadingEntity );
+            }
         }
-        // ThreadSystem.Run();
-
-        this.update();
+        // this.update();
         this.m_interaction.run();
         this.m_rscene.run();
 
