@@ -185,8 +185,8 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         let displacementMap: TextureProxy = null;
         displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_disp_1k.jpg");
         let parallaxMap: TextureProxy = null;
-        parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/brick_bumpy01.jpg");
-        //parallaxMap = displacementMap;
+        //parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/brick_bumpy01.jpg");
+        parallaxMap = displacementMap;
 
         let disSize: number = 700.0;
         let dis: number = 500.0;
@@ -226,7 +226,7 @@ export class DemoPBRTexViewer implements IShaderLibListener {
 
         material.initializeByCodeBuf(true);
         //vertUniform.setDisplacementParams(10.0, -5.0);
-        vertUniform.setDisplacementParams(0.2, -0.1);
+        vertUniform.setDisplacementParams(0.02, -0.01);
         material.setAlbedoColor(1.0,1.0,1.0);
         material.setScatterIntensity(8.0);
         material.setParallaxParams(1, 10, 5.0, 0.02);
@@ -236,67 +236,16 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         let objUrl: string = "static/assets/obj/apple_01.obj";
         //objUrl = "static/assets/obj/building_001.obj";
         let objDisp: ObjData3DEntity = new ObjData3DEntity();
+        objDisp.baseParsering = false;
         objDisp.setMaterial(material);
-        //objDisp.showDoubleFace();
+        objDisp.showDoubleFace();
         //objDisp.dataIsZxy = true;
-        let moduleScale: number = 100.0;//10.0 + Math.random() * 5.5;
+        let moduleScale: number = 400.0;//10.0 + Math.random() * 5.5;
         //objDisp.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
         objDisp.initializeByObjDataUrl(objUrl);
         objDisp.setScaleXYZ(moduleScale, moduleScale, moduleScale);
         //objDisp.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
         this.m_rscene.addEntity(objDisp);
-        return;
-        //material.setTextureList(texList);
-        let srcSph = new Sphere3DEntity();
-        //srcSph.uvScale = 0.7;
-        srcSph.setMaterial(material);
-        srcSph.initialize(100.0, 150, 150);
-        srcSph.setRotation3(this.m_rotV);
-        this.m_rscene.addEntity(srcSph);
-        this.m_target = srcSph;
-        // //return;
-        // console.log("material clone doing...");
-        // let new_sph = new Sphere3DEntity();
-        // let new_material = material.clone();
-        // new_sph.setMaterial(new_material);
-        // new_sph.initialize(100.0, 150, 150);
-        // new_sph.setXYZ(200,0.0,200);
-        // this.m_rscene.addEntity(new_sph);
-
-        return;
-        //*/
-        let scale: number = 1.0;
-        let uvscale: number;
-        let total: number = posList.length;
-        total = 1;
-        let rad: number;
-        for (let i: number = 0; i < total; ++i) {
-
-            rad = Math.random() * 100.0;
-            uvscale = Math.random() * 7.0 + 0.6;
-
-            material = this.createMaterial();
-            material.decorator.aoMapEnabled = this.aoMapEnabled;
-            //  material.setTextureList(texList);
-            //material.decorator.specularEnvMap = this.m_specularEnvMap;
-            material.decorator.diffuseMap = diffuseMap;
-            material.decorator.normalMap = normalMap;
-            material.decorator.aoMap = aoMap;
-
-            material.setAlbedoColor(Math.random() * 3, Math.random() * 3, Math.random() * 3);
-
-            scale = 0.8 + Math.random();
-            let pr: number = scale * 100.0;
-            sph = new Sphere3DEntity();
-            sph.setMaterial(material);
-            if (srcSph != null) sph.copyMeshFrom(srcSph);
-            sph.initialize(100.0, 20, 20);
-            //sph.setRotationXYZ(Math.random() * 300.0, Math.random() * 300.0, Math.random() * 300.0);
-            sph.setScaleXYZ(scale, scale, scale);
-            posList[i].y += (this.m_reflectPlaneY + 10) + pr + 5;
-            sph.setPosition(posList[i]);
-            this.m_rscene.addEntity(sph);
-        }
     }
     private m_runFlag: boolean = true;
     private mouseDown(evt: any): void {

@@ -21,18 +21,17 @@ export default class ObjData3DMesh extends MeshBase {
     private m_nvs: Float32Array = null;
     private m_strDataParser: ObjStrDataParser = null;
     moduleScale: number = 1.0;
+    baseParsering: boolean = false;
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         super(bufDataUsage);
     }
-    //
     getVS(): Float32Array { return this.m_vs; }
     getUVS(): Float32Array { return this.m_uvs; }
     getNVS(): Float32Array { return this.m_nvs; }
 
     initialize(objDataStr: string, dataIsZxy: boolean = false): void {
 
-        let baseParsering: boolean = false;
-        if(baseParsering) {
+        if(this.baseParsering) {
             this.m_strDataParser = new ObjStrDataParser();
             this.m_strDataParser.parseStrData(objDataStr, this.moduleScale, dataIsZxy);
     
@@ -49,41 +48,56 @@ export default class ObjData3DMesh extends MeshBase {
             
             let objParser = new ObjDataParser();
             let objMeshes = objParser.Parse( objDataStr );
-            let objMesh = objMeshes[0];
-            console.log("objMesh: ",objMesh);
-            let geom = objMesh.geometry;
+            let objMeshesTotal: number = objMeshes.length;
+            let vsTotalLen: number = 0;
+            for(let i: number = 0; i < objMeshesTotal; ++i) {
+                vsTotalLen += objMeshes[i].geometry.vertices.length;
+            }
+            let vtxTotal = vsTotalLen / 3;
+            let uvsTotalLen: number = 2 * vtxTotal;
+            this.m_vs = new Float32Array(vsTotalLen);
+            let k: number = 0;
+            for(let i: number = 0; i < objMeshesTotal; ++i) {
+                this.m_vs.set(objMeshes[i].geometry.vertices, k);
+                k += objMeshes[i].geometry.vertices.length;
+            }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
-                this.m_uvs = new Float32Array(geom.uvs);
+                this.m_uvs = new Float32Array( uvsTotalLen );
+                k = 0;
+                for(let i: number = 0; i < objMeshesTotal; ++i) {
+                    this.m_uvs.set(objMeshes[i].geometry.uvs, k);
+                    k += objMeshes[i].geometry.uvs.length;
+                }
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
-                this.m_nvs = new Float32Array(geom.normals);
+                this.m_nvs = new Float32Array( vsTotalLen );
+                k = 0;
+                for(let i: number = 0; i < objMeshesTotal; ++i) {
+                    this.m_nvs.set(objMeshes[i].geometry.normals, k);
+                    k += objMeshes[i].geometry.normals.length;
+                }
             }
-            let len: number = geom.vertices.length / 3;
-            console.log("xxx ivs len: ",len);
-            this.m_ivs = len > 65535? new Uint32Array(len) : new Uint16Array(len);
+
+            this.m_ivs = vtxTotal > 65535? new Uint32Array(vtxTotal) : new Uint16Array(vtxTotal);
+            for(let i: number = 0; i < vtxTotal; ++i) {
+                this.m_ivs[i] = i;
+            }
+
             if(dataIsZxy) {
-                let k: number = 0;
-                let srcVS: number[] = geom.vertices;
-                this.m_vs = new Float32Array(geom.vertices.length);
                 let vs = this.m_vs;
-                for(let i: number = 0; i < len; ++i) {
-                    vs[k] = srcVS[k + 1];
-                    vs[k + 1] = srcVS[k + 2];
-                    vs[k + 2] = srcVS[k];
-                    this.m_ivs[i] = i;
+                let px: number;
+                let py: number;
+                let pz: number;
+                for(let i: number = 0; i < vtxTotal; ++i) {
+                    px = vs[k];
+                    py = vs[k+1];
+                    pz = vs[k+2];
+                    vs[k] = py;
+                    vs[k + 1] = pz;
+                    vs[k + 2] = px;
                     k += 3;
                 }
             }
-            else {
-                this.m_vs = new Float32Array(geom.vertices);
-                for(let i: number = 0; i < len; ++i) {
-                    this.m_ivs[i] = i;
-                }
-            }
-            
-            // console.log("XXX m_vs: ", this.m_vs);
-            // console.log("XXX m_uvs: ", this.m_uvs);
-            // console.log("XXX m_nvs: ", this.m_nvs);
         }
 
         this.bounds = new AABB();

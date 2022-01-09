@@ -20,6 +20,7 @@ export default class ObjData3DEntity extends DisplayEntity {
     vtxColor: Color4 = null;
     normalEnabled: boolean = false;
     wireframe: boolean = false;
+    baseParsering: boolean = false;
     private m_str: string = "";
 
     constructor(transform: ROTransform = null) {
@@ -75,6 +76,7 @@ export default class ObjData3DEntity extends DisplayEntity {
     protected __activeMesh(material: MaterialBase): void {
         if (this.getMesh() == null) {
             let mesh: ObjData3DMesh = new ObjData3DMesh();
+            mesh.baseParsering = this.baseParsering;
             mesh.moduleScale = this.moduleScale;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.wireframe = this.wireframe;
