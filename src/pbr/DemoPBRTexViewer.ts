@@ -28,6 +28,7 @@ import DataMesh from "../vox/mesh/DataMesh";
 import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
 import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 import { UserInteraction } from "../vox/engine/UserInteraction";
+import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
 
 export class DemoPBRTexViewer implements IShaderLibListener {
 
@@ -228,7 +229,20 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         material.setScatterIntensity(8.0);
         material.setParallaxParams(1, 10, 5.0, 0.02);
         material.setSideIntensity(8.0);
-
+        
+        let objUrl: string = "static/assets/obj/ellipsoid_01.obj";
+        //objUrl = "static/assets/obj/building_001.obj";
+        let objDisp: ObjData3DEntity = new ObjData3DEntity();
+        objDisp.setMaterial(material);
+        //objDisp.showDoubleFace();
+        //objDisp.dataIsZxy = true;
+        let moduleScale: number = 100.0;//10.0 + Math.random() * 5.5;
+        //objDisp.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
+        objDisp.initializeByObjDataUrl(objUrl);
+        objDisp.setScaleXYZ(moduleScale, moduleScale, moduleScale);
+        //objDisp.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        this.m_rscene.addEntity(objDisp);
+        return;
         //material.setTextureList(texList);
         let srcSph = new Sphere3DEntity();
         //srcSph.uvScale = 0.7;

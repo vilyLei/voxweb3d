@@ -13,7 +13,7 @@ import Color4 from "../Color4";
 class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
 
     private m_uniqueName: string = "";
-    
+    normalEnabled: boolean = false;
     constructor() {
         super();
     }
@@ -37,6 +37,11 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
             this.m_uniform.addDiffuseMap();
             coder.addVertLayout("vec2", "a_uvs");
             coder.addVarying("vec2", "v_uv");
+        }
+        coder.normalEnabled = this.normalEnabled;
+        if(this.normalEnabled) {
+            coder.addVertLayout("vec3", "a_nvs");
+            coder.addVarying("vec3", "v_nv");
         }
         if (this.vertColorEnabled) {
             coder.addVertLayout("vec3", "a_cvs");
@@ -62,6 +67,9 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
     #else
         FragColor0 *= u_color;
     #endif
+    #ifdef VOX_USE_NORMAL
+        FragColor0.xyz *= abs(v_nv.xyz);
+    #endif
 `
         );
         
@@ -74,6 +82,9 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
 
     #ifdef VOX_USE_2D_MAP
         v_uv = a_uvs.xy;
+    #endif
+    #ifdef VOX_USE_NORMAL
+        v_nv = a_nvs.xyz;
     #endif
     #ifdef VOX_USE_VTX_COLOR
         v_cv = a_cvs.xyz;
@@ -93,6 +104,7 @@ export default class Default3DMaterial extends MaterialBase {
     private m_colorArray: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
     vertColorEnabled: boolean = false;
     premultiplyAlpha: boolean = false;
+    normalEnabled: boolean = false;
     constructor() {
         super();
         if(Default3DMaterial.s_shdCodeBuffer == null) {
@@ -103,6 +115,7 @@ export default class Default3DMaterial extends MaterialBase {
         let buf: Default3DShaderCodeBuffer = Default3DMaterial.s_shdCodeBuffer;
         buf.vertColorEnabled = this.vertColorEnabled;
         buf.premultiplyAlpha = this.premultiplyAlpha;
+        buf.normalEnabled = this.normalEnabled;
     }
     /**
      * get a shader code buf instance, for sub class override

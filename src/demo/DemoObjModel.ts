@@ -54,9 +54,10 @@ export class DemoObjModel {
             tex1.flipY = true;
             //objUrl = "static/assets/obj/building_001.obj";
             let objDisp: ObjData3DEntity = new ObjData3DEntity();
-            objDisp.showDoubleFace();
+            objDisp.normalEnabled = true;
+            // objDisp.showDoubleFace();
             //objDisp.dataIsZxy = true;
-            let moduleScale = 100.0;//10.0 + Math.random() * 5.5;
+            let moduleScale: number = 100.0;//10.0 + Math.random() * 5.5;
             //objDisp.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
             objDisp.initializeByObjDataUrl(objUrl, [tex1]);
             objDisp.setScaleXYZ(moduleScale, moduleScale, moduleScale);

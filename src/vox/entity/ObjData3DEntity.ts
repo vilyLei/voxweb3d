@@ -18,6 +18,7 @@ export default class ObjData3DEntity extends DisplayEntity {
     moduleScale: number = 1.0;
     dataIsZxy: boolean = false;
     vtxColor: Color4 = null;
+    normalEnabled: boolean = false;
     private m_str: string = "";
 
     constructor(transform: ROTransform = null) {
@@ -26,6 +27,7 @@ export default class ObjData3DEntity extends DisplayEntity {
     private createMaterial(texList: TextureProxy[]): void {
         if (this.getMaterial() == null) {
             let cm: Default3DMaterial = new Default3DMaterial();
+            cm.normalEnabled = this.normalEnabled;
             cm.vertColorEnabled = this.vtxColor != null;
             cm.setTextureList(texList);
             this.setMaterial(cm);

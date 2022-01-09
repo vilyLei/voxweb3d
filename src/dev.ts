@@ -23,8 +23,6 @@
 
 //  import {DemoQuadLine as Demo} from "./demo/DemoQuadLine";
 
-import {DemoObjModel as Demo} from "./demo/DemoObjModel";
-
 //  import {DemoTexture as Demo} from "./demo/DemoTexture";
 
 //  import {DemoCamVisibleTest as Demo} from "./demo/DemoCamVisibleTest";
@@ -219,6 +217,8 @@ import {DemoObjModel as Demo} from "./demo/DemoObjModel";
 //  import {DemoCamera as Demo} from "./demo/DemoCamera";
 
 //  import {DemoPureEntity as Demo} from "./demo/DemoPureEntity";
+
+import {DemoObjModel as Demo} from "./demo/DemoObjModel";
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////   thread    /////////////////////////////////////

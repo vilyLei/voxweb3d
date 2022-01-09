@@ -40,6 +40,9 @@ export default class ObjData3DMesh extends MeshBase {
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
                 this.m_uvs = new Float32Array(this.m_strDataParser.getUVS());
             }
+            if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
+                this.m_nvs = new Float32Array(this.m_strDataParser.getNVS());
+            }
             this.m_ivs = new Uint16Array(this.m_strDataParser.getIVS());
         }
         else {
@@ -76,6 +79,10 @@ export default class ObjData3DMesh extends MeshBase {
                     this.m_ivs[i] = i;
                 }
             }
+            
+            console.log("XXX m_vs: ", this.m_vs);
+            console.log("XXX m_uvs: ", this.m_uvs);
+            console.log("XXX m_nvs: ", this.m_nvs);
         }
 
         this.bounds = new AABB();
@@ -89,7 +96,6 @@ export default class ObjData3DMesh extends MeshBase {
             ROVertexBuffer.AddFloat32Data(this.m_uvs, 2);
         }
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
-            this.m_nvs = new Float32Array(this.m_strDataParser.getNVS());
             ROVertexBuffer.AddFloat32Data(this.m_nvs, 3);
         }
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX)) {
@@ -105,10 +111,21 @@ export default class ObjData3DMesh extends MeshBase {
             ROVertexBuffer.AddFloat32Data(tvs, 3);
             ROVertexBuffer.AddFloat32Data(btvs, 3);
         }
+        
+        this.updateWireframeIvs();
         ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
-        this.m_vbuf = ROVertexBuffer.CreateBySaveData();
-        this.m_vbuf.setUint16IVSData(this.m_ivs);
+        if (this.m_vbuf == null) {
+            this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
+            this.m_vbuf.setUint16IVSData(this.m_ivs);
+        }
+        else {
+            if (this.forceUpdateIVS) {
+                this.m_vbuf.setUint16IVSData(this.m_ivs);
+            }
+            ROVertexBuffer.UpdateBufData(this.m_vbuf);
+        }
         this.vtCount = this.m_ivs.length;
+        this.trisNumber = this.vtCount / 3;
 
         this.buildEnd();
     }
