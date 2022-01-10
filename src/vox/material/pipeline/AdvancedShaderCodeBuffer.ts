@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import {ShaderCodeUUID} from "../../../vox/material/ShaderCodeUUID";
+import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import TextureProxy from "../../texture/TextureProxy";
 import { SpecularMode } from "./SpecularMode";
@@ -13,9 +13,9 @@ import { ShadowMode } from "./ShadowMode";
 import { UniformComp } from "../component/UniformComp";
 
 class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
-    
+
     private m_uniqueName: string = "";
-    
+
     colorEnabled: boolean = true;
     specularMode: SpecularMode = SpecularMode.Default;
 
@@ -24,18 +24,19 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
 
     normalEnabled: boolean = true;
     buildFlag: boolean = true;
-    
+    diffuseMap2Matrix: boolean = true;
+
     vertColorEnabled: boolean = false;
     vertUniform: UniformComp = null;
 
     constructor() {
         super();
     }
-    
+
     reset(): void {
-        
+
         super.reset();
-        
+
         this.m_coder.normalEnabled = true;
         this.m_coder.vertMatrixInverseEnabled = true;
 
@@ -44,54 +45,68 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     }
     addDiffuseMap(map: TextureProxy): void {
 
-        if(map != null) {
+        if (map != null) {
             this.m_texList.push(map);
-            if(this.buildFlag) this.m_uniform.addDiffuseMap();
+            if (this.buildFlag) this.m_uniform.addDiffuseMap();
+        }
+    }
+    addDiffuseMap2(map: TextureProxy): void {
+
+        if (map != null) {
+            this.m_texList.push(map);
+            if (this.buildFlag) {
+                if(this.diffuseMap2Matrix) {
+                    this.m_coder.addDefine("VOX_USE_DIFFUSEMAP2_MAT");
+                    this.m_coder.addVarying("vec4", "v_map2Pos");
+                    this.m_coder.addVertUniform("mat4", "u_map2ViewMat");
+                }
+                this.m_uniform.add2DMap("VOX_DIFFUSE_MAP2", !this.diffuseMap2Matrix, true, false);
+            }
         }
     }
     addNormalMap(map: TextureProxy): void {
 
-        if(map != null && this.lightEnabled) {             
+        if (map != null && this.lightEnabled) {
             this.m_texList.push(map);
-            if(this.buildFlag) this.m_uniform.addNormalMap();
+            if (this.buildFlag) this.m_uniform.addNormalMap();
         }
     }
     addParallaxMap(map: TextureProxy, parallaxParamIndex: number = 0): void {
 
-        if(map != null && this.lightEnabled) {
+        if (map != null && this.lightEnabled) {
             this.m_texList.push(map);
-            if(this.buildFlag) this.m_uniform.addParallaxMap( parallaxParamIndex );
+            if (this.buildFlag) this.m_uniform.addParallaxMap(parallaxParamIndex);
         }
     }
 
     addDisplacementMap(map: TextureProxy, displacementParamIndex: number = 0): void {
 
-        if(map != null) {
+        if (map != null) {
             this.m_texList.push(map);
-            if(this.buildFlag) this.m_uniform.addDisplacementMap(displacementParamIndex);
+            if (this.buildFlag) this.m_uniform.addDisplacementMap(displacementParamIndex);
         }
     }
 
     addAOMap(map: TextureProxy): void {
 
-        if(map != null) {
+        if (map != null) {
             this.m_texList.push(map);
-            if(this.buildFlag) this.m_uniform.addAOMap();
+            if (this.buildFlag) this.m_uniform.addAOMap();
         }
     }
 
     addSpecularMap(map: TextureProxy): void {
 
-        if(map != null && this.lightEnabled) {
+        if (map != null && this.lightEnabled) {
             this.m_texList.push(map);
-            if(this.buildFlag) this.m_uniform.addSpecularMap(this.specularMode);
+            if (this.buildFlag) this.m_uniform.addSpecularMap(this.specularMode);
         }
     }
     initialize(texEnabled: boolean): void {
-        
+
         texEnabled = this.m_texList != null && this.m_texList.length > 0;
         super.initialize(texEnabled);
-        if(this.colorEnabled) {
+        if (this.colorEnabled) {
             this.m_uniqueName += "Col";
         }
         this.m_uniqueName += this.fragLocalParamsTotal;
@@ -99,9 +114,9 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
 
     buildShader(): void {
 
-        if(this.vertUniform != null) {
+        if (this.vertUniform != null) {
             this.vertUniform.use(this.m_coder);
-        }        
+        }
         this.m_coder.addFragUniform("vec4", "u_fragLocalParams", this.fragLocalParamsTotal);
         if (this.lightEnabled) {
             this.m_coder.addDefine("VOX_LIGHT_LOCAL_PARAMS_INDEX", "" + this.lightParamsIndex);
@@ -111,12 +126,12 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
             this.m_coder.addVarying("vec3", "v_cv");
         }
     }
-    
+
     getShaderCodeObjectUUID(): ShaderCodeUUID {
         return ShaderCodeUUID.Lambert;
     }
     getUniqueShaderName(): string {
-        if(this.vertUniform != null) {
+        if (this.vertUniform != null) {
             return this.m_uniqueName + this.keysString + this.vertUniform.getUniqueNSKeyString();
         }
         else {

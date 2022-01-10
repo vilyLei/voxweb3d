@@ -10,7 +10,8 @@
         oWorldPosition = worldPosition;
     #endif
     v_worldPosition.xyz = oWorldPosition.xyz;
-    #ifdef VOX_DIFFUSE_MAP2
+
+    #ifdef VOX_USE_DIFFUSEMAP2_MAT
         v_map2Pos = u_map2ViewMat * oWorldPosition;
     #endif
 

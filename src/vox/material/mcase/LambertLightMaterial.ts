@@ -14,6 +14,7 @@ import { AdvancedShaderCodeBuffer } from "../pipeline/AdvancedShaderCodeBuffer";
 import Color4 from "../Color4";
 import TextureProxy from "../../texture/TextureProxy";
 import { UniformComp } from "../component/UniformComp";
+import Matrix4 from "../../math/Matrix4";
 
 export default class LambertLightMaterial extends MaterialBase {
 
@@ -31,6 +32,7 @@ export default class LambertLightMaterial extends MaterialBase {
     normalEnabled: boolean = true;
 
     diffuseMap: TextureProxy = null;
+    diffuseMap2: TextureProxy = null;
     normalMap: TextureProxy = null;
     parallaxMap: TextureProxy = null;
     aoMap: TextureProxy = null;
@@ -43,6 +45,7 @@ export default class LambertLightMaterial extends MaterialBase {
     vertColorEnabled: boolean = false;
     envAmbientLightEnabled: boolean = false;
 
+    diffuseMap2Matrix: Matrix4 = null;
     vertUniform: UniformComp = null;
     constructor() {
         super();
@@ -71,8 +74,10 @@ export default class LambertLightMaterial extends MaterialBase {
         this.envAmbientLightEnabled = src.envAmbientLightEnabled;
 
         this.vertUniform = src.vertUniform;
+        this.diffuseMap2Matrix = src.diffuseMap2Matrix;
 
         if(this.diffuseMap == null) this.diffuseMap = src.diffuseMap;
+        if(this.diffuseMap2 == null) this.diffuseMap = src.diffuseMap2;
         if(this.normalMap == null) this.normalMap = src.normalMap;
         if(this.parallaxMap == null) this.parallaxMap = src.parallaxMap;
         if(this.aoMap == null) this.aoMap = src.aoMap;
@@ -102,6 +107,7 @@ export default class LambertLightMaterial extends MaterialBase {
         buf.setIRenderTextureList([]);
         
         buf.addDiffuseMap( this.diffuseMap );
+        buf.addDiffuseMap2( this.diffuseMap2 );
         buf.addNormalMap( this.normalMap );
         buf.addParallaxMap( this.parallaxMap, this.m_parallaxParamIndex );
         buf.addAOMap( this.aoMap );
@@ -169,6 +175,7 @@ export default class LambertLightMaterial extends MaterialBase {
         buf.lightParamsIndex = this.m_lightParamsIndex;
         buf.normalEnabled = this.normalEnabled;
         buf.vertUniform = this.vertUniform;
+        buf.diffuseMap2Matrix = this.diffuseMap2Matrix != null;
         
         buf.fragLocalParamsTotal = this.m_fragLocalParamsTotal;
 
@@ -278,12 +285,20 @@ export default class LambertLightMaterial extends MaterialBase {
         return sud;
     }
     destroy(): void {
+
         super.destroy();
         
         this.m_fragLocalParams = null;
-        if(this.vertUniform != null) {
-            this.vertUniform = null;
-        }
+
+        this.vertUniform = null;
+        this.diffuseMap2Matrix = null;
+        
+        this.diffuseMap = null;
+        this.diffuseMap2 = null;
+        this.normalMap = null;
+        this.parallaxMap = null;
+        this.aoMap = null;
+        this.specularMap = null;
     }
 
 }

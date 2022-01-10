@@ -31,7 +31,7 @@ vec2 texUV = v_uv.xy;
         #endif
     #endif
 
-    calcDiffuse( color );
+    calcDiffuse( color, texUV.xy );
 
     #ifdef VOX_AO_MAP
         ao = VOX_Texture2D(VOX_AO_MAP, texUV).yyy;
@@ -69,7 +69,7 @@ vec2 texUV = v_uv.xy;
     color.xyz = color.xyz * param.z + param.w * destColor;
 #else
 
-    calcDiffuse( color );
+    calcDiffuse( color, texUV.xy );
 
     #ifdef VOX_AO_MAP
         ao = VOX_Texture2D(VOX_AO_MAP, texUV).yyy;

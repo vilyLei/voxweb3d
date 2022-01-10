@@ -34,7 +34,7 @@ float VSMShadow (sampler2D shadow, vec2 uv, float compare ) {
 }
 float getVSMShadow( sampler2D shadowMap, vec2 shadowMapSize, float shadowBias, float shadowRadius, vec4 shadowCoord ) {
 
-    float shadow = 1.0;
+    //float shadow = 1.0;
     
     shadowCoord.xyz /= shadowCoord.w;
     shadowCoord.z += shadowBias;
@@ -49,10 +49,11 @@ float getVSMShadow( sampler2D shadowMap, vec2 shadowMapSize, float shadowBias, f
 
     bool frustumTest = all( frustumTestVec );
 
-    if ( frustumTest ) {
-        shadow = VSMShadow( shadowMap, shadowCoord.xy, shadowCoord.z );
-    }
-    return shadow;
+    return frustumTest ? VSMShadow( shadowMap, shadowCoord.xy, shadowCoord.z ) : 1.0;
+    // if ( frustumTest ) {
+    //     shadow = VSMShadow( shadowMap, shadowCoord.xy, shadowCoord.z );
+    // }
+    // return shadow;
 }
 float getVSMShadowFactor(in vec4 shadowPos) {
     

@@ -247,7 +247,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         sph02.pipeTypes = [MaterialPipeType.FOG_EXP2];
         sph02.setMaterialPipeline(this.m_materialCtx.pipeline);
         sph02.initialize(radius, 20, 20, [this.m_materialCtx.getTextureByUrl("static/assets/color_02.jpg")]);
-        sph02.setXYZ(-350, -170 + radius, 350);
+        sph02.setXYZ(-200, -170 + radius, 200);
         this.m_engine.rscene.addEntity(sph02);
 
         let crossAxis: Axis3DEntity = new Axis3DEntity();
@@ -428,7 +428,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
             this.m_uvPos.x += 0.01;
             this.m_uvPos.y += 0.01;            
             this.m_billLine.setUVOffset(this.m_uvPos.x, this.m_uvPos.y);            
-            this.m_billLine.setBeginPos(this.m_beginPos);
+            ///this.m_billLine.setBeginPos(this.m_beginPos);
             
         }
         for (let i: number = 0; i < this.m_lightEntities.length; ++i) {
