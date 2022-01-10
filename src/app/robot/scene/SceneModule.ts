@@ -121,7 +121,7 @@ class SceneModule {
         envBox.setMaterial(material);
         envBox.showFrontFace();
         envBox.initializeCube(4000.0);
-        this.m_rscene.addEntity(envBox, RenderModule.GetInstance().envBoxLayerIndex);
+        RenderModule.GetInstance().addEnvBoxEntity( envBox );
     }
     private m_loaded: boolean = false;
     

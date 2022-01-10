@@ -15,6 +15,7 @@ import FireCtrlRadar from "../../../app/robot/attack/FireCtrlRadar";
 import RbtRole from "../../../app/robot/base/RbtRole";
 import { ShadowEntity } from "./ShadowEntity";
 import Color4 from "../../../vox/material/Color4";
+import { RenderModule } from "../scene/RenderModule";
 
 export default class FourLimbRole extends RbtRole implements IAttackDst {
 
@@ -83,7 +84,6 @@ export default class FourLimbRole extends RbtRole implements IAttackDst {
             shadowEntity.srcEntity = container;
             shadowEntity.bounds.copyFrom( bounds );
             shadowEntity.initialize();
-            sc.addEntity(shadowEntity.entity, 3);
         }
     }
     wake(): void {

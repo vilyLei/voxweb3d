@@ -1,6 +1,9 @@
 import RendererScene from "../../../vox/scene/RendererScene";
 import { CommonMaterialContext } from "../../../materialLab/base/CommonMaterialContext";
-
+import IRenderEntity from "../../../vox/render/IRenderEntity";
+/**
+ * rendering process management module.
+ */
 class RenderModule {
 
     private static s_ins: RenderModule = null;
@@ -21,8 +24,9 @@ class RenderModule {
     readonly roleLayerIndex: number = 0;
     readonly terrainLayerIndex: number = 1;
     readonly envBoxLayerIndex: number = 2;
-    readonly particleLayerIndex: number = 4;
-    readonly explosionFlareLayerIndex: number = 4;
+    readonly shadowBuildLayerIndex: number = 3;
+    readonly particleLayerIndex: number = 5;
+    readonly explosionFlareLayerIndex: number = 5;
 
     initialize(rscene: RendererScene, materialCtx: CommonMaterialContext): void {
 
@@ -30,11 +34,25 @@ class RenderModule {
             this.m_rscene = rscene;
             this.m_materialCtx = materialCtx;
 
-            this.init();
         }
     }
-    private init(): void {
-
+    addRole(entity: IRenderEntity): void {
+        this.m_rscene.addEntity(entity);
+    }
+    addShadowEntity(entity: IRenderEntity): void {
+        this.m_rscene.addEntity(entity, this.shadowBuildLayerIndex);
+    }
+    addExplosionFlareEntity(entity: IRenderEntity): void {
+        this.m_rscene.addEntity(entity, this.explosionFlareLayerIndex);
+    }
+    addParticleEntity(entity: IRenderEntity): void {
+        this.m_rscene.addEntity(entity, this.particleLayerIndex);
+    }
+    addEnvBoxEntity(entity: IRenderEntity): void {
+        this.m_rscene.addEntity(entity, this.envBoxLayerIndex);
+    }
+    addTerrainEntity(entity: IRenderEntity): void {
+        this.m_rscene.addEntity(entity, this.terrainLayerIndex);
     }
     
     static GetInstance(): RenderModule {

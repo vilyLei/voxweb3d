@@ -84,12 +84,11 @@ export default class SillyRole extends RbtRole implements IAttackDst {
             this.shadowEntity = new ShadowEntity();
             let shadowEntity = this.shadowEntity;
             shadowEntity.type = 1;
-            shadowEntity.sizeScaleX = 1.0;
-            shadowEntity.sizeScaleZ = 1.0;
+            shadowEntity.sizeScaleX = 1.1;
+            shadowEntity.sizeScaleZ = 1.1;
             shadowEntity.srcEntity = container;
             shadowEntity.bounds.copyFrom( bounds );
             shadowEntity.initialize();
-            sc.addEntity(shadowEntity.entity, 3);
         }
     }
     wake(): void {

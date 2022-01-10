@@ -93,7 +93,6 @@ export default class TrackWheelRole extends RbtRole implements IAttackDst {
             shadowEntity.srcEntity = container;
             shadowEntity.bounds.copyFrom( bounds );
             shadowEntity.initialize();
-            sc.addEntity(shadowEntity.entity, 3);
 
         }
     }

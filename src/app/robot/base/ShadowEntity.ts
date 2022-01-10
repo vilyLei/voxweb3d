@@ -4,6 +4,7 @@ import AABB from "../../../vox/geom/AABB";
 import Box3DEntity from "../../../vox/entity/Box3DEntity";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
 import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
+import { RenderModule } from "../scene/RenderModule";
 
 /***************************************************************************/
 /*                                                                         */
@@ -52,6 +53,7 @@ class ShadowEntity {
         entity.setScaleXYZ(bounds.getWidth() * this.sizeScaleX, this.m_height * 0.5, bounds.getLong() * this.sizeScaleZ);
         entity.setXYZ(0.0, this.m_height, 0.0);
         this.entity = entity;
+        RenderModule.GetInstance().addShadowEntity(entity);
 
     }
     setVisible(visible: boolean): void {
