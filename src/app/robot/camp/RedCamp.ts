@@ -15,6 +15,9 @@ import RendererScene from "../../../vox/scene/RendererScene";
 import EruptionEffectPool from "../../../particle/effect/EruptionEffectPool";
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
 import { RenderModule } from "../scene/RenderModule";
+import DisplayEntity from "../../../vox/entity/DisplayEntity";
+import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
+import RendererState from "../../../vox/render/RendererState";
 
 class CampRoleManager {
     private m_statusList: number[] = [0, 0, 0, 0, 0, 0];
@@ -250,6 +253,9 @@ export default class RedCamp implements IRoleCamp {
                     //console.log("del a role, because of its life time value is less 0.");
                     role.getDestroyedPos(this.m_tempV0);
                     this.m_eff0Pool.createEffect(this.m_tempV0);
+                    
+                    // 产生 detsroy 效果
+                    this.createDestroyEffect( role );
                     //m_tempV0
                     list.splice(i, 1);
                     i--;
@@ -269,6 +275,36 @@ export default class RedCamp implements IRoleCamp {
         return null;
     }
     private m_revivingDelay: number = 100;
+    /**
+     * 产生 detsroy 效果
+     * @param role 被destroy的role
+     */
+    private createDestroyEffect(role: IAttackDst): void {
+        let pv: Vector3D = new Vector3D();
+        let tex = AssetsModule.GetImageTexByUrl( "static/assets/particle/explosion/explodeBg_01c.png" );
+        //tex.premultiplyAlpha = true;
+        role.getPosition(pv);
+        //let ab = role.radius
+        pv.y += 2.0;
+        let scaleX: number = role.splashRadius + Math.random() * 40 - 20;
+        let scaleZ: number = role.splashRadius + Math.random() * 40 - 20;
+        let material = new Default3DMaterial();
+        //material.premultiplyAlpha = tex.premultiplyAlpha;
+        let color = role.color;
+        material.initializeByCodeBuf(true);
+        material.setAlpha(0.6);
+        material.setTextureList( [tex] );
+        material.setRGB3f(color.r, color.g, color.b);
+        let entity: DisplayEntity = new DisplayEntity();
+        entity.setMaterial( material );
+        entity.copyMeshFrom(AssetsModule.GetInstance().unitPlane);
+        entity.setPosition(pv);
+        entity.setScaleXYZ(scaleX, 1.0, scaleZ);
+        entity.setRotationXYZ(0.0, Math.random() * 1000.0, 0.0);
+        entity.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+        RenderModule.GetInstance().addBottomParticleEntity(entity);
+
+    }
     run(): void {
         if(this.roleManager.getCampTeamsTotal() < 2) {
             if(this.m_revivingDelay < 1) {

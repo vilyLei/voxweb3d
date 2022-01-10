@@ -38,10 +38,7 @@ export default class AssetsModule {
         return new AssetsModule();
     }
     getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_materialCtx.getTextureByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
+        return this.m_materialCtx.getTextureByUrl(purl, wrapRepeat, mipmapEnabled);
     }
     static GetImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         return AssetsModule.s_ins.getImageTexByUrl(purl, wrapRepeat, mipmapEnabled);
@@ -53,6 +50,7 @@ export default class AssetsModule {
 
             AssetsModule.s_materialCtx = materialCtx;
 
+            materialCtx.getTextureByUrl("static/assets/particle/explosion/explodeBg_01c.png");
             materialCtx.getTextureByUrl("static/assets/box_wood01.jpg");
             materialCtx.getTextureByUrl("static/assets/moss_01.jpg");
             materialCtx.getTextureByUrl("static/assets/moss_03.jpg");
@@ -83,6 +81,7 @@ export default class AssetsModule {
             this.initGeomData();
         }
     }
+    
     private initGeomData(): void {
 
         let materialCtx = AssetsModule.s_materialCtx;

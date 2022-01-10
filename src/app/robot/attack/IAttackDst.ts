@@ -6,15 +6,18 @@
 /***************************************************************************/
 
 import Vector3D from "../../../vox/math/Vector3D";
-import {CampRoleStatus, CampType} from "../../../app/robot/camp/Camp";
+import { CampRoleStatus, CampType } from "../../../app/robot/camp/Camp";
+import Color4 from "../../../vox/material/Color4";
 
 
-export default interface IAttackDst
-{
-    campType:CampType;
-    lifeTime:number;
-    radius:number;
-    position:Vector3D;
+export default interface IAttackDst {
+    
+    color: Color4;
+    campType: CampType;
+    lifeTime: number;
+    radius: number;
+    splashRadius: number;
+    position: Vector3D;
     /**
      * 自身的范围半径
      */
@@ -22,24 +25,24 @@ export default interface IAttackDst
     /**
      * 自身能攻击到的距离
      */
-    attackDis:number;
+    attackDis: number;
     /**
      * 重新启动激活
      */
     wake(): void;
-    
-    getPosition(pos:Vector3D):void;
-    setVisible(visible:boolean):void;
+
+    getPosition(pos: Vector3D): void;
+    setVisible(visible: boolean): void;
     /**
      * 获得被击中位置
      */
-    getHitPos(outPos:Vector3D):void;
+    getHitPos(outPos: Vector3D): void;
     /**
      * 获得被击毁位置
     */
-    getDestroyedPos(outPos:Vector3D):void;
-    consume(power:number):void;
-    attackTest():boolean;
+    getDestroyedPos(outPos: Vector3D): void;
+    consume(power: number): void;
+    attackTest(): boolean;
     /**
      * 复活
      */

@@ -47,13 +47,9 @@ class SceneModule {
     private init(): void {
 
         let axis: Axis3DEntity = new Axis3DEntity();
-        axis.initialize(300.0);
-        this.m_rscene.addEntity(axis);
-
-        axis = new Axis3DEntity();
         axis.setMaterialPipeline(this.m_materialCtx.pipeline);
         axis.pipeTypes = [MaterialPipeType.FOG_EXP2];
-        axis.initializeCross(200.0);
+        axis.initializeCross(300.0);
         this.m_rscene.addEntity(axis);
 
         this.m_loading.step = 4.0;
@@ -79,7 +75,7 @@ class SceneModule {
 
         this.m_roleBuilder.initialize(this.m_rscene, this.m_materialCtx);
 
-        let total: number = 50;
+        let total: number = 16;
         this.m_roleBuilder.createLimbRoles(total);
         this.m_roleBuilder.createTrackWheelRoles(total);
         this.m_roleBuilder.createSillyRoles(total);

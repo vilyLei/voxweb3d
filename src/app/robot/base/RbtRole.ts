@@ -41,6 +41,7 @@ export default class RbtRole implements IRunnable {
     position: Vector3D = new Vector3D();
     attackDis: number = 50;
     radius: number = 100;
+    splashRadius:number = 100;
     lifeTime: number = 3000;
     campType: CampType = CampType.Blue;
     status: number = CampRoleStatus.Free;

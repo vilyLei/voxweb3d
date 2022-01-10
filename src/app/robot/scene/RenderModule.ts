@@ -25,6 +25,7 @@ class RenderModule {
     readonly terrainLayerIndex: number = 1;
     readonly envBoxLayerIndex: number = 2;
     readonly shadowBuildLayerIndex: number = 3;
+    readonly bottomParticleLayerIndex: number = 4;
     readonly particleLayerIndex: number = 5;
     readonly explosionFlareLayerIndex: number = 5;
 
@@ -38,6 +39,9 @@ class RenderModule {
     }
     addRole(entity: IRenderEntity): void {
         this.m_rscene.addEntity(entity);
+    }
+    addBottomParticleEntity(entity: IRenderEntity): void {
+        this.m_rscene.addEntity(entity, this.bottomParticleLayerIndex);
     }
     addShadowEntity(entity: IRenderEntity): void {
         this.m_rscene.addEntity(entity, this.shadowBuildLayerIndex);

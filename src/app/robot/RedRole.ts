@@ -9,11 +9,15 @@ import Vector3D from "../../vox/math/Vector3D";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IAttackDst from "../../app/robot/attack/IAttackDst";
 import { CampRoleStatus, CampType } from "../../app/robot/camp/Camp";
+import Color4 from "../../vox/material/Color4";
 export default class RedRole implements IAttackDst {
+    
+    private m_changed: boolean = true;
     campType: CampType = CampType.Red;
     status: CampRoleStatus = CampRoleStatus.Free;
     lifeTime: number = 150;
     radius: number = 50.0;
+    splashRadius: number = 50.0;
 
     attackPosOffset: Vector3D = new Vector3D(0.0, 50.0, 0.0);
     destroyPosOffset: Vector3D = new Vector3D(0.0, 15.0, 0.0);
@@ -21,7 +25,7 @@ export default class RedRole implements IAttackDst {
     dispEntity: DisplayEntity = null;
 
     attackDis: number = 0;
-    private m_changed: boolean = true;
+    color: Color4 = null;
 
     constructor() { }
 

@@ -112,6 +112,7 @@ class RoleBuilder {
 
             }
             limbRole = this.m_flrFactory.create(tex0, tex1, tex2, campType, bodySize);
+            limbRole.splashRadius = 270.0;
             limbRole.lifeTime = 100 + Math.round(300.0 * Math.random());
             limbRole.setXYZ(Math.random() * 1600.0 - 800.0, 0.0, Math.random() * 1600.0 - 800.0);
             limbRole.moveToXZ(Math.random() * 1600.0 - 800.0, Math.random() * 1600.0 - 800.0);
@@ -141,6 +142,8 @@ class RoleBuilder {
                     break;
             }
             let twRole: TrackWheelRole = this.m_twrFactory.create(tex6, tex7, tex2, campType, bodySize);
+            
+            twRole.splashRadius = 240.0;
             twRole.lifeTime = 100 + Math.round(300.0 * Math.random());
             twRole.setXYZ(Math.random() * 1600.0 - 800.0, 0.0, Math.random() * 1600.0 - 800.0);
             twRole.moveToXZ(Math.random() * 1600.0 - 800.0, Math.random() * 1600.0 - 800.0);
@@ -178,6 +181,7 @@ class RoleBuilder {
         for (let i: number = 0; i < total; ++i) {
 
             let sillyRole: SillyRole = new SillyRole();
+            sillyRole.splashRadius = 170.0;
             sillyRole.color = new Color4();
             sillyRole.color.setRGB3f(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2);
             if (srcSillyRole != null) {
