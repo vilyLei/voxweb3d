@@ -15,22 +15,22 @@ class MathShaderCode {
 #define RECIPROCAL_PI2 0.15915494309189535
 #define EPSILON 1e-6
 `;
-    static readonly FragPredefined: string =
-        `
-`;
-    static readonly FragDefined: string =
-        `
-`;
-    static readonly VertPredefined: string =
-        `
-`;
-    static readonly VertDefined: string =
-        `
-vec4 localPosition = vec4(0.0,0.0,0.0,1.0);
-vec4 worldPosition = vec4(0.0,0.0,0.0,1.0);
-// view space position
-vec4 viewPosition = vec4(0.0,0.0,0.0,1.0);
-`;
+//     static readonly FragPredefined: string =
+//         `
+// `;
+//     static readonly FragDefined: string =
+//         `
+// `;
+//     static readonly VertPredefined: string =
+//         `
+// `;
+//     static readonly VertDefined: string =
+//         `
+// vec4 localPosition = vec4(0.0,0.0,0.0,1.0);
+// vec4 worldPosition = vec4(0.0,0.0,0.0,1.0);
+// // view space position
+// vec4 viewPosition = vec4(0.0,0.0,0.0,1.0);
+// `;
 }
 class ShaderCode {
     constructor() { }
@@ -50,6 +50,8 @@ vec3 worldNormal = vec3(0.0, 0.0, 1.0);
 `;
     static readonly VertPredefined: string =
         `
+// origin world position
+vec4 oWorldPosition = vec4(0.0,0.0,0.0,1.0);
 `;
     static readonly VertDefined: string =
         `

@@ -740,7 +740,8 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
             }
         }
 
-        code += ShaderCode.BasePredefined;
+        code += ShaderCode.BasePredefined;        
+        code += ShaderCode.VertPredefined;
         if (this.vertMatrixInverseEnabled && RendererDevice.IsWebGL1()) {
             this.addVertFunction(GLSLConverter.__glslInverseMat3);
             this.addVertFunction(GLSLConverter.__glslInverseMat4);

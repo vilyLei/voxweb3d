@@ -3,12 +3,13 @@
     worldPosition = u_objMat * localPosition;
     viewPosition = u_viewMat * worldPosition;
     gl_Position = u_projMat * viewPosition;
-    // temporary code plan
+    
     #ifdef VOX_DISPLACEMENT_MAP
-        v_worldPosition.xyz = (u_objMat * vec4(a_vs.xyz, 1.0)).xyz;
+        oWorldPosition = (u_objMat * vec4(a_vs.xyz, 1.0));
     #else
-        v_worldPosition.xyz = worldPosition.xyz;
+        oWorldPosition = worldPosition;
     #endif
+    v_worldPosition.xyz = oWorldPosition.xyz;
 
     #ifdef VOX_USE_NORMAL
         v_worldNormal.xyz = normalize(a_nvs.xyz * inverse(mat3(u_objMat)));

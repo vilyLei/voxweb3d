@@ -8,6 +8,7 @@ void displaceLocalVtx(in vec2 param) {
 
 void initLocalVtx() {
     localPosition = vec4(a_vs.xyz, 1.0);
+    
     int paramIndex = 0;
     // vertex transform calculation
     #ifdef VOX_VTX_CURVE_MOVE_PARAM_INDEX

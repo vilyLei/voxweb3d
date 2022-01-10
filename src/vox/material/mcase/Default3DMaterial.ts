@@ -77,6 +77,7 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
             `
     localPosition = vec4(a_vs.xyz,1.0);
     worldPosition = u_objMat * localPosition;
+    oWorldPosition = worldPosition;
     viewPosition = u_viewMat * worldPosition;
     gl_Position = u_projMat * viewPosition;
 

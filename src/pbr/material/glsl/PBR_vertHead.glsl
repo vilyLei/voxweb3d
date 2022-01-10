@@ -1,4 +1,4 @@
-const vec4 zeroPosition = vec4(0.0,0.0,0.0, 1.0);
+// const vec4 zeroPosition = vec4(0.0,0.0,0.0, 1.0);
 
 #ifdef VOX_DISPLACEMENT_MAP
 void displaceLocalVtx(in vec2 param) {    
