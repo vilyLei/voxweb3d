@@ -13,12 +13,14 @@ import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeTyp
 import { IMaterialPipeline } from "../../../vox/material/pipeline/IMaterialPipeline";
 import Box3DEntity from "../../../vox/entity/Box3DEntity";
 import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
+import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 
 export default class AssetsModule {
 
     private static s_ins: AssetsModule = null;
     private m_materialCtx: MaterialContext = null;
     private static s_materialCtx: MaterialContext = null;
+    readonly unitPlane: Plane3DEntity = new Plane3DEntity();
     readonly unitBox: Box3DEntity = new Box3DEntity();
     readonly unitSphere: Sphere3DEntity = new Sphere3DEntity();
     particleGroupDepthOffset: number = -0.001;
@@ -84,6 +86,9 @@ export default class AssetsModule {
     private initGeomData(): void {
 
         let materialCtx = AssetsModule.s_materialCtx;
+        
+        this.unitPlane.normalEnabled = true;
+        this.unitPlane.initializeXOZSquare(1.0, [materialCtx.getTextureByUrl("static/assets/box_wood01.jpg")]);
         this.unitBox.normalEnabled = true;
         this.unitBox.initializeCube(1.0, [materialCtx.getTextureByUrl("static/assets/box_wood01.jpg")]);
         this.unitSphere.normalEnabled = true;

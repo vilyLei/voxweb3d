@@ -288,10 +288,11 @@ export default class RedCamp implements IRoleCamp {
             for (let i: number = 0; i < len; ++i) {
                 timeList[i]--;
                 if (timeList[i] < 1) {
-                    this.roleManager.removeRole(list[i]);
-                    list[i].status = CampRoleStatus.Free;
-                    this.m_freeRoles.push(list[i]);
-                    list[i].setVisible(false);
+                    const role = list[i];
+                    this.roleManager.removeRole(role);
+                    role.status = CampRoleStatus.Free;
+                    this.m_freeRoles.push(role);
+                    role.setVisible(false);
                     list.splice(i, 1);
                     timeList.splice(i, 1);
                     i--;

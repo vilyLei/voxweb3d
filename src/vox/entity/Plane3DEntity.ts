@@ -35,6 +35,7 @@ export default class Plane3DEntity extends DisplayEntity {
     uScale: number = 1.0;
     vScale: number = 1.0;
 
+    normalEnabled: boolean = false;
     wireframe: boolean = false;
     uvs: Float32Array = null;
     flipVerticalUV: boolean = false;
@@ -68,6 +69,7 @@ export default class Plane3DEntity extends DisplayEntity {
             }
             else {
                 let cm: Default3DMaterial = new Default3DMaterial();
+                cm.normalEnabled = this.normalEnabled;
                 cm.vertColorEnabled = this.vertColorEnabled;
                 cm.premultiplyAlpha = this.premultiplyAlpha;
                 cm.setTextureList(texList);
