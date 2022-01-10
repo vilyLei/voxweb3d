@@ -7,6 +7,7 @@
 import RAdapterContext from "../../vox/render/RAdapterContext";
 import { RenderColorMask, RenderStateObject, RODrawState } from "../../vox/render/RODrawState";
 import { CullFaceMode, RenderBlendMode, DepthTestMode, GLBlendMode, GLBlendEquation } from "../../vox/render/RenderConst";
+import VROBase from "./VROBase";
 class RendererState {
     private static s_initBoo: boolean = true;
     static readonly Rstate: RODrawState = null;
@@ -142,6 +143,7 @@ class RendererState {
         RenderColorMask.Reset();
         RenderStateObject.Reset();
         RendererState.Rstate.reset();
+        VROBase.Reset();
     }
     static Reset(context: RAdapterContext): void {
         RenderColorMask.Reset();

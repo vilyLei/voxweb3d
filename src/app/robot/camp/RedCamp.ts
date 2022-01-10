@@ -289,6 +289,10 @@ export default class RedCamp implements IRoleCamp {
         let scaleX: number = role.splashRadius + Math.random() * 40 - 20;
         let scaleZ: number = role.splashRadius + Math.random() * 40 - 20;
         let material = new Default3DMaterial();
+        
+        // material.setMaterialPipeline( AssetsModule.GetMaterialPipeline() );// = AssetsModule.GetMaterialPipeline();
+        // material.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        AssetsModule.UseFogToMaterial(material);
         //material.premultiplyAlpha = tex.premultiplyAlpha;
         let color = role.color;
         material.initializeByCodeBuf(true);
@@ -296,7 +300,6 @@ export default class RedCamp implements IRoleCamp {
         material.setTextureList( [tex] );
         material.setRGB3f(color.r, color.g, color.b);
         let entity: DisplayEntity = new DisplayEntity();
-        AssetsModule.UseFog(entity);
         entity.setMaterial( material );
         entity.copyMeshFrom(AssetsModule.GetInstance().unitPlane);
         entity.setPosition(pv);

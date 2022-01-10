@@ -38,7 +38,7 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
             coder.addVertLayout("vec2", "a_uvs");
             coder.addVarying("vec2", "v_uv");
         }
-        coder.normalEnabled = this.normalEnabled;
+        
         if(this.normalEnabled) {
             coder.addVertLayout("vec3", "a_nvs");
             coder.addVarying("vec3", "v_nv");
@@ -113,6 +113,8 @@ export default class Default3DMaterial extends MaterialBase {
     }
     protected buildBuf(): void {
         let buf: Default3DShaderCodeBuffer = Default3DMaterial.s_shdCodeBuffer;
+        
+        buf.getShaderCodeBuilder().normalEnabled = this.normalEnabled;
         buf.vertColorEnabled = this.vertColorEnabled;
         buf.premultiplyAlpha = this.premultiplyAlpha;
         buf.normalEnabled = this.normalEnabled;

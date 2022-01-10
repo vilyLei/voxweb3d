@@ -396,6 +396,13 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
             }
             //if(this.m_display.getMaterial() != m && this.__$wuid == RSEntityFlag.RENDERER_UID_FLAG && this.m_display.__$ruid < 0)
             if (this.m_display.getMaterial() != m && (RSEntityFlag.RENDERER_UID_FLAG & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAG && this.m_display.__$ruid < 0) {
+                
+                // if(m.getMaterialPipeline() == null && this.getMaterialPipeline() != null) {
+                //     m.setMaterialPipeline( this.getMaterialPipeline() );
+                // }
+                // if(m.pipeTypes == null) {
+                //     m.pipeTypes = this.pipeTypes;
+                // }
                 this.m_display.renderState = this.m_renderState;
                 this.m_display.rcolorMask = this.m_rcolorMask;
                 this.m_display.setMaterial(m);

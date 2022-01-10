@@ -104,11 +104,13 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
     }
 
     getUniqueNSKeyID(): number {
+        throw Error("功能未完成...");
         return this.uniform.getUniqueNSKeyID();
     }
     getUniqueNSKeyString(): string {
         let ns: string = this.m_uniqueNSKeyString;
         if(this.vtxUVTransfromEnabled) ns += "VtxUVT";
+        if(this.normalEnabled) ns += "Nor";
         return this.uniform.getUniqueNSKeyString() + ns;
     }
     reset(): void {

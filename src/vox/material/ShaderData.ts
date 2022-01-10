@@ -21,6 +21,8 @@ export default class ShaderData implements IShaderData {
     private static s_uid: number = 0;
 
     private static s_codeParser: ShaderCodeParser = new ShaderCodeParser();
+    private static s_midMap: Map<number, number> = new Map();
+    private static s_mid: number = 1;
     private m_uid: number = -1;
     adaptationShaderVersion: boolean = true;
     preCompileInfo: ShaderCompileInfo = null;
@@ -90,63 +92,69 @@ export default class ShaderData implements IShaderData {
         this.m_attriSizeList = [];
 
         this.m_layoutBit = 0x0;
-        let mid: number = 31;
+        let locationsTotal: number = 0;
         while (i < len) {
             attri = pattributes[i];
             if (attri != null) {
                 this.m_attriNSList.push(attri.name);
                 this.m_attriSizeList.push(attri.typeSize);
-
+                locationsTotal += 1;
                 switch (VtxBufConst.GetVBufTypeByNS(attri.name)) {
                     case VtxBufConst.VBUF_VS:
-                        mid += mid * 131 + 1;
+                        //mid += mid * 131 + 1;
                         this.m_layoutBit |= BitConst.BIT_ONE_0;
                         break;
                     case VtxBufConst.VBUF_UVS:
-                        mid += mid * 131 + 2;
+                        //mid += mid * 131 + 2;
                         this.m_layoutBit |= BitConst.BIT_ONE_1;
                         break;
                     case VtxBufConst.VBUF_NVS:
-                        mid += mid * 131 + 3;
+                        //mid += mid * 131 + 3;
                         this.m_layoutBit |= BitConst.BIT_ONE_2;
                         break;
                     case VtxBufConst.VBUF_CVS:
-                        mid += mid * 131 + 4;
+                        //mid += mid * 131 + 4;
                         this.m_layoutBit |= BitConst.BIT_ONE_3;
                         break;
                     case VtxBufConst.VBUF_TVS:
-                        mid += mid * 131 + 5;
+                        //mid += mid * 131 + 5;
                         this.m_layoutBit |= BitConst.BIT_ONE_4;
                         break;
 
                     case VtxBufConst.VBUF_VS2:
-                        mid += mid * 131 + 6;
+                        //mid += mid * 131 + 6;
                         this.m_layoutBit |= BitConst.BIT_ONE_5;
                         break;
                     case VtxBufConst.VBUF_UVS2:
-                        mid += mid * 131 + 7;
+                        //mid += mid * 131 + 7;
                         this.m_layoutBit |= BitConst.BIT_ONE_6;
                         break;
                     case VtxBufConst.VBUF_NVS2:
-                        mid += mid * 131 + 8;
+                        //mid += mid * 131 + 8;
                         this.m_layoutBit |= BitConst.BIT_ONE_7;
                         break;
                     case VtxBufConst.VBUF_CVS2:
-                        mid += mid * 131 + 9;
+                        //mid += mid * 131 + 9;
                         this.m_layoutBit |= BitConst.BIT_ONE_8;
                         break;
                     case VtxBufConst.VBUF_TVS2:
-                        mid += mid * 131 + 11;
+                        //mid += mid * 131 + 11;
                         this.m_layoutBit |= BitConst.BIT_ONE_9;
                         break;
                     default:
+                        locationsTotal -= 1;
                         break;
                 }
             }
             ++i;
         }
-
-        this.m_mid = mid;
+        let mid = (locationsTotal << 11) + this.m_layoutBit;
+        if(!ShaderData.s_midMap.has( mid )) {
+            ShaderData.s_midMap.set( mid, ShaderData.s_mid);
+            ShaderData.s_mid ++;
+        }
+        this.m_mid = ShaderData.s_midMap.get( mid );
+        // console.log("shader data, this.m_mid: ",this.m_mid, "locationsTotal: ",locationsTotal);
         this.m_texTotal = ShaderData.s_codeParser.texTotal;
         
         this.m_useTex = this.m_texTotal > 0;

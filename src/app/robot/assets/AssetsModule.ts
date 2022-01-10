@@ -14,6 +14,7 @@ import { IMaterialPipeline } from "../../../vox/material/pipeline/IMaterialPipel
 import Box3DEntity from "../../../vox/entity/Box3DEntity";
 import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
+import MaterialBase from "../../../vox/material/MaterialBase";
 
 export default class AssetsModule {
 
@@ -96,6 +97,13 @@ export default class AssetsModule {
     static GetMaterialPipeline(): IMaterialPipeline {
         if (AssetsModule.s_materialCtx != null) {
             return AssetsModule.s_materialCtx.pipeline;
+        }
+    }
+    static UseFogToMaterial(material: MaterialBase): void {
+
+        if (AssetsModule.s_materialCtx != null) {
+            material.setMaterialPipeline(AssetsModule.s_materialCtx.pipeline);
+            material.pipeTypes = [ MaterialPipeType.FOG_EXP2 ];
         }
     }
     static UseFog(entity: DisplayEntity): void {

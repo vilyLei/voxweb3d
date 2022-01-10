@@ -35,6 +35,8 @@ import { RotateYPointLightEntity, FloatYPointLightEntity, PointLightEntity } fro
 import DivLog from "../vox/utils/DivLog";
 import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 import BillboardLine3DEntity from "../vox/entity/BillboardLine3DEntity";
+import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
+import RendererState from "../vox/render/RendererState";
 
 export class DemoMultiLambertLights implements IShaderLibListener {
 
@@ -72,6 +74,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
             this.m_engine = new EngineBase();
             this.m_engine.initialize(rparam, 6);
             this.m_engine.interaction.zoomLookAtPosition = new Vector3D();
+            this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
             this.initMaterialCtx();
             this.update();
@@ -88,7 +91,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         mcParam.loadAllShaderCode = true;
         mcParam.shaderCodeBinary = true;
         mcParam.pbrMaterialEnabled = false;
-        // mcParam.vsmEnabled = false;
+        mcParam.vsmEnabled = false;
         //mcParam.buildBinaryFile = true;
 
         this.m_materialCtx.addShaderLibListener(this);
@@ -137,7 +140,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_materialCtx.lightModule.update();
     }
     private createPointLightDisp(pointLight: PointLight): Billboard3DEntity {
-
+        return null;
         let size: number = 60.0;
         let billboard: Billboard3DEntity = new Billboard3DEntity();
         billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
@@ -155,8 +158,49 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     private m_beginPos: Vector3D = new Vector3D(0.0, 0.0, 0.0);
     private m_endPos: Vector3D = new Vector3D(0.0, 500.0, -100.0);
     private m_uvPos: Vector3D = new Vector3D(0.3, 0.0);
+    /**
+     * 产生 detsroy 效果
+     */
+     private createDestroyEffect(pv: Vector3D): void {
+        //let pv: Vector3D = new Vector3D();
+        let scaleX: number = 200.0;
+        let scaleZ: number = 200.0;
+        let tex = this.m_materialCtx.getTextureByUrl( "static/assets/particle/explosion/explodeBg_01c.png" );
+        let unitPlane: Plane3DEntity = new Plane3DEntity();
+        unitPlane.normalEnabled = true;
+        unitPlane.initializeXOZSquare(1.0, [tex]);
+        unitPlane.setScaleXYZ(scaleX, 1.0, scaleZ);
+        this.m_engine.rscene.addEntity(unitPlane, 3);
+        
+        pv.y += 2.0;
+        let material = new Default3DMaterial();
+        //material.premultiplyAlpha = tex.premultiplyAlpha;
+        let color = new Color4(1.3,0.8,0.3);
+        
+        material.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        material.setMaterialPipeline(this.m_materialCtx.pipeline);
+        material.initializeByCodeBuf(true);
+        material.setAlpha(0.6);
+        material.setTextureList( [tex] );
+        material.setRGB3f(color.r, color.g, color.b);
+        let entity: DisplayEntity = new DisplayEntity();
+        // entity.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        // entity.setMaterialPipeline(this.m_materialCtx.pipeline);
+        
+        entity.setMaterial( material );
+        entity.copyMeshFrom(unitPlane);
+        entity.setPosition(pv);
+        entity.setScaleXYZ(scaleX, 1.0, scaleZ);
+        entity.setRotationXYZ(0.0, Math.random() * 1000.0, 0.0);
+        entity.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+        this.m_engine.rscene.addEntity(entity, 3);
+
+    }
     private initScene(): void {
 
+        this.createDestroyEffect(new Vector3D(200,-188.0,-200));
+        this.initEnvBox();
+        return;
         let color: Color4 = new Color4(1.0, 1.0, 0.0);
         let colorBias: Color4 = new Color4(0.0, 0.0, 0.0);
 
@@ -170,7 +214,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         //billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
         this.m_engine.rscene.addEntity(billboard, 3);
         
-        
+
         let tex4: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/flare_core_01.jpg");
         let billLine: BillboardLine3DEntity = new BillboardLine3DEntity();
         billLine.pipeTypes = [MaterialPipeType.FOG_EXP2];
@@ -353,8 +397,9 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     }
     private m_dispHeight: number = 10;
     private m_material: LambertLightMaterial = null;
+    private m_flag: boolean = true;
     private mouseDown(evt: any): void {
-
+        this.m_flag = true;
     }
 
     private m_timeoutId: any = -1;
@@ -367,7 +412,14 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     }
     private m_time: number = 1.1;
     run(): void {
-        
+        // if(this.m_flag) {
+        //     this.m_flag = false;
+        // }
+        // else {
+        //     return;
+        // }
+        // console.log("run()......");
+
         if (this.m_billLine != null) {
             
             this.m_beginPos.x = 200.0 * Math.sin(this.m_time);            

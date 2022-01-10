@@ -159,24 +159,15 @@ class ROVertexRes {
      */
     private getVROMid(rc: IROVtxBuilder, shdp: IVtxShdCtr, vaoEnabled: boolean, ibufId: number): number {
         let mid: number = (131 + rc.getRCUid()) * this.m_vtxUid;
-        if (vaoEnabled) {
-            // 之所以 + 0xf0000 这样区分，是因为 shdp.getLayoutBit() 的取值范围不会超过short(double bytes)取值范围
-            //  mid = mid * 131 + shdp.getLayoutBit() + 0xf0000;
-            mid = mid * 131 + shdp.getMid();
-            mid = mid * 131 + 3;
-        }
-        else {
-            //mid = mid * 131 + shdp.getLayoutBit();
-            mid = mid * 131 + shdp.getMid();
-        }
-        mid = mid * 131 + shdp.getLocationsTotal();
+        if (vaoEnabled) mid = mid * 131 + 1;
+        mid = mid * 131 + shdp.getMid();
         mid = mid * 131 + ibufId;
-
         return mid;
     }
 
     // 创建被 RPOUnit 使用的 vro 实例
     createVRO(rc: IROVtxBuilder, shdp: IVtxShdCtr, vaoEnabled: boolean, ibufRes: ROIndicesRes, ibufId: number): IVertexRenderObj {
+
         let attribsTotal: number = shdp.getLocationsTotal();
         if ((this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal) {
             let mid: number = this.getVROMid(rc, shdp, vaoEnabled, ibufId);
@@ -186,13 +177,15 @@ class ROVertexRes {
             if (pvro != null) {
                 return pvro;
             }
-            //console.log("VtxCombinedBuf::createVROBegin(), this.m_type: ",this.m_type);
-            let flag: boolean = shdp.testVertexAttribPointerOffset(this.m_offsetList);
-            //DivLog.ShowLog("createVRO testVertexAttribPointerOffset flag: "+flag);
+            // console.log("VtxCombinedBuf::createVROBegin(), this.m_type: ",this.m_type, "mid: ",mid);
+            // TODO(vilyLei): 暂时注释掉下面这行代码
+            // let flag: boolean = shdp.testVertexAttribPointerOffset(this.m_offsetList);
+            // console.log("createVRO testVertexAttribPointerOffset flag: ",flag, this.m_typeList);
+            // DivLog.ShowLog("createVRO testVertexAttribPointerOffset flag: "+flag);
             if (vaoEnabled) {
                 // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的
-                //console.log("VtxCombinedBuf::createVROBegin(), "+this.m_typeList+" /// "+this.m_wholeStride+" /// "+this.m_offsetList);
-                //console.log("VtxCombinedBuf::createVROBegin(), "+this.m_type);
+                // console.log("VtxCombinedBuf::createVROBegin(), "+this.m_typeList+" /// "+this.m_wholeStride+" /// "+this.m_offsetList);
+                // console.log("VtxCombinedBuf::createVROBegin(), "+this.m_type);
                 let vro: VaoVertexRenderObj = VaoVertexRenderObj.Create(rc, mid, this.m_vtx.getUid());
                 vro.indicesRes = ibufRes;
                 vro.vao = rc.createVertexArray();
@@ -212,7 +205,7 @@ class ROVertexRes {
                 }
                 pvro = vro;
                 vro.ibuf = ibufRes.getGpuBuf();
-                //rc.bindEleBuf(ibuf);
+                // rc.bindEleBuf(vro.ibuf);
                 rc.bindVertexArray(null);
             }
             else {

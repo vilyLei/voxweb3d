@@ -10,6 +10,7 @@ import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
 import {ROIndicesRes} from "../../vox/render/vtx/ROIndicesRes";
 
 export default class VROBase implements IVertexRenderObj {
+    protected static s_mid: number = 0;
     protected m_uid: number = 0;
     // vtx attribute hash map id
     protected m_mid: number = 0;
@@ -79,5 +80,8 @@ export default class VROBase implements IVertexRenderObj {
     }
     static GetByMid(mid: number): IVertexRenderObj {
         return VROBase.s_midMap.get(mid);
+    }
+    static Reset(): void {
+        VROBase.s_mid = -1;
     }
 }
