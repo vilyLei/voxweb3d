@@ -29,8 +29,7 @@ import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
 import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 import { UserInteraction } from "../vox/engine/UserInteraction";
 import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
-import H5FontSystem from "../vox/text/H5FontSys";
-import TextBillboard3DEntity from "../vox/text/TextBillboard3DEntity";
+import { TextBillboardLoading } from "../loading/base/TextBillboardLoading";
 
 export class DemoPBRTexViewer implements IShaderLibListener {
 
@@ -39,15 +38,13 @@ export class DemoPBRTexViewer implements IShaderLibListener {
 
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_interaction: UserInteraction = new UserInteraction();
-    private m_reflectPlaneY: number = -220;
 
     //private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
     
-    private m_loadingEntity: TextBillboard3DEntity;
-    private m_loaded: boolean = false; 
+    private m_loading: TextBillboardLoading = new TextBillboardLoading();
+    private m_waitingTotal: number = 0;
     
-
     fogEnabled: boolean = false;
     vtxFlatNormal: boolean = false;
     aoMapEnabled: boolean = false;
@@ -82,21 +79,11 @@ export class DemoPBRTexViewer implements IShaderLibListener {
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
             this.m_rscene.setClearRGBColor3f(0.2, 0.2, 0.2);
-
-
-            let fontSys = H5FontSystem.GetInstance();
-            fontSys.mobileEnabled = false;
-            fontSys.setRenderProxy(this.m_rscene.getRenderProxy());
-            fontSys.initialize("fontTex", 32, 512, 512, false, true);
             
-            this.m_loadingEntity = new TextBillboard3DEntity();
-            this.m_loadingEntity.initialize("loading...");
-            this.m_loadingEntity.setXYZ(0.0, -370.0, 0.0);
-            this.m_loadingEntity.setScaleXY(2.0, 2.0);
-            this.m_loadingEntity.setRGB3f(0.5, 0.5, 1.3);
-            this.m_rscene.addEntity( this.m_loadingEntity );
-        
             this.initMaterialCtx();
+
+            this.m_loading.loadingInfoScale = this.m_loading.loadingNameScale = 1.0;
+            this.m_loading.initialize( this.m_rscene );
             
             this.update();
         }
@@ -147,6 +134,9 @@ export class DemoPBRTexViewer implements IShaderLibListener {
     private initScene(): void {
 
         this.createEntity();
+        this.m_waitingTotal = this.m_materialCtx.getTextureLoader().getWaitTotal();
+
+        //this.m_waitingTotal = 
     }
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
@@ -294,13 +284,12 @@ export class DemoPBRTexViewer implements IShaderLibListener {
             return;
         }
         //*/
-        if (this.m_target != null) {
-            if(this.m_target.isInRendererProcess()) {
-                this.m_target = null;
-                this.m_rscene.removeEntity( this.m_loadingEntity );
-            }
+        if(!this.m_loading.isLoaded()) {
+            let curr: number = this.m_target != null && this.m_target.isInRendererProcess() ? 1 : 0;            
+            let progress: number = (curr + this.m_waitingTotal - this.m_materialCtx.getTextureLoader().getWaitTotal()) / (this.m_waitingTotal + 1);
+            this.m_loading.run( progress );
         }
-        // this.update();
+        
         this.m_interaction.run();
         this.m_rscene.run();
 

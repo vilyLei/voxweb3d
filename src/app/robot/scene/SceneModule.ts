@@ -55,9 +55,10 @@ class SceneModule {
         axis.pipeTypes = [MaterialPipeType.FOG_EXP2];
         axis.initializeCross(200.0);
         this.m_rscene.addEntity(axis);
-        
-        this.m_loading.initialize(this.m_rscene);
+
         this.m_loading.step = 4.0;
+        this.m_loading.loadingInfoScale = this.m_loading.loadingNameScale = 1.0;
+        this.m_loading.initialize(this.m_rscene);
 
     }
     private initScene(): void {
@@ -107,7 +108,7 @@ class SceneModule {
             this.m_campModule.run();
             RunnableModule.Run();
         } else {
-            let progress: number = (this.m_waitingTotal - this.m_materialCtx.getTextureLoader().getWaitTotal()) / this.m_waitingTotal
+            let progress: number = (this.m_waitingTotal - this.m_materialCtx.getTextureLoader().getWaitTotal()) / this.m_waitingTotal;
             this.m_loading.run(progress);
             if (this.m_loading.isLoaded()) {
                 this.initScene();

@@ -44,8 +44,8 @@ export class RbtDrama implements IShaderLibListener {
 
         this.updateShadow();
         let envData = this.m_materialCtx.envData;
-        let brn: number = 5.0;
-        envData.setAmbientColorRGB3f(brn, brn, brn);
+        let brnScale: number = 5.0;
+        envData.setAmbientColorRGB3f(brnScale, brnScale, brnScale);
         envData.setEnvAmbientLightAreaOffset(-1200.0, -1200.0);
         envData.setEnvAmbientLightAreaSize(2400.0, 2400.0);
         envData.setEnvAmbientMap(this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg"));
