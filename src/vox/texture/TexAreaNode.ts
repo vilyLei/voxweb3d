@@ -42,10 +42,10 @@ export class TexArea {
 export class TexAreaNode {
     rect: AABB2D = null;
     subNodes: TexAreaNode[] = null;
-    
+
     uniqueNS: string = "TexAreaNode";
     subIndex: number = 0;
-    
+
     // 记录自身的填满方式
     protected m_fillType: TexAreaFillType = TexAreaFillType.NONE;
 
@@ -254,15 +254,15 @@ export class TexAreaNode {
         return boo;
     }
     findByXY(px: number, py: number): TexAreaNode {
-        if(this.rect.containsXY(px,py)) {
+        if (this.rect.containsXY(px, py)) {
             if (this.subNodes != null) {
-                if(this.m_fillType == TexAreaFillType.ONE) {
+                if (this.m_fillType == TexAreaFillType.ONE) {
                     return this;
                 }
                 let node: TexAreaNode;
                 for (let i: number = 0; i < this.subNodes.length; ++i) {
-                    node = this.subNodes[i].findByXY(px,py);
-                    if(node != null) {
+                    node = this.subNodes[i].findByXY(px, py);
+                    if (node != null) {
                         return node;
                     }
                 }

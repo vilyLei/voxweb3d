@@ -38,7 +38,7 @@ class SceneModule {
             this.m_materialCtx = materialCtx;
             RenderModule.GetInstance().initialize(this.m_rscene, this.m_materialCtx);
             AssetsModule.GetInstance().initialize(this.m_rscene, this.m_materialCtx);
-            
+
             this.m_waitingTotal = this.m_materialCtx.getTextureLoader().getWaitTotal();
 
             this.init();
@@ -75,7 +75,7 @@ class SceneModule {
 
         this.m_roleBuilder.initialize(this.m_rscene, this.m_materialCtx);
 
-        let total: number = 16;
+        let total: number = 50;
         this.m_roleBuilder.createLimbRoles(total);
         this.m_roleBuilder.createTrackWheelRoles(total);
         this.m_roleBuilder.createSillyRoles(total);

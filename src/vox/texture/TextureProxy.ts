@@ -9,7 +9,7 @@ import { TextureConst, TextureFormat, TextureDataType, TextureTarget, TexturePro
 import MathConst from "../../vox/math/MathConst";
 
 import ITexData from "../../vox/texture/ITexData";
-import {IRenderProxy} from "../../vox/render/IRenderProxy";
+import { IRenderProxy } from "../../vox/render/IRenderProxy";
 import IRenderResource from "../../vox/render/IRenderResource";
 import IRenderTexture from "../../vox/render/IRenderTexture";
 import TextureResSlot from "../../vox/texture/TextureResSlot";
@@ -180,7 +180,7 @@ export class TextureProxy implements IRenderTexture {
     isDataEnough(): boolean { return this.m_haveRData; }
 
     uploadFromFbo(texResource: IRenderResource, fboWidth: number, fboHeight: number): void {
-        
+
     }
     protected __$buildParam(gl: any): void {
         this.m_texBufW = this.m_texWidth;

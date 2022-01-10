@@ -1,6 +1,6 @@
 
 import AABB2D from "../geom/AABB2D";
-import {TexArea,TexAreaNode} from "./TexAreaNode";
+import { TexArea, TexAreaNode } from "./TexAreaNode";
 
 export default class TextureAtlas {
 
@@ -15,8 +15,8 @@ export default class TextureAtlas {
     protected m_height: number = 32;
     protected m_uvFlipY: boolean = false;
     constructor(width: number, height: number) {
-        if(width < 128) width = 128;
-        if(height < 128) height = 128;
+        if (width < 128) width = 128;
+        if (height < 128) height = 128;
         this.m_width = width;
         this.m_height = height;
         this.m_texAreaNode = new TexAreaNode(0, 0, width, height);
@@ -31,22 +31,21 @@ export default class TextureAtlas {
     getHeight(): number {
         return this.m_height;
     }
-    setMinSize(minSize: number): void 
-    {
-        this.m_minSize = Math.max(minSize,4);
+    setMinSize(minSize: number): void {
+        this.m_minSize = Math.max(minSize, 4);
     }
-    
+
     getAreaByName(uniqueNS: string): TexArea {
         if (this.m_keyMap.has(uniqueNS)) {
             return this.m_keyMap.get(uniqueNS);
         }
         return null;
     }
-    
+
     getTexAreaByXY(px: number, py: number): TexArea {
 
-        let node:TexAreaNode = this.m_texAreaNode.findByXY(px,py);
-        if(node != null) {
+        let node: TexAreaNode = this.m_texAreaNode.findByXY(px, py);
+        if (node != null) {
             if (this.m_keyMap.has(node.uniqueNS)) {
                 return this.m_keyMap.get(node.uniqueNS);
             }
@@ -54,8 +53,8 @@ export default class TextureAtlas {
         return null;
     }
     addSubTexArea(uniqueNS: string, areaWidth: number, areaHeight: number): TexArea {
-        if(uniqueNS == undefined || uniqueNS == "") {
-            if(uniqueNS == undefined) {
+        if (uniqueNS == undefined || uniqueNS == "") {
+            if (uniqueNS == undefined) {
                 console.error("the value of the uniqueNS is invalid(uniqueNS value is undefined).");
             }
             else {
@@ -73,37 +72,37 @@ export default class TextureAtlas {
             area.uniqueNS = uniqueNS;
             area.rect.width = areaWidth + area.offset * 2;
             area.rect.height = areaHeight + area.offset * 2;
-    
+
             let flag: boolean = this.m_texAreaNode.addTexArea(area);
-            if( flag ) {
+            if (flag) {
 
                 area = new TexArea();
                 area.copyFrom(this.m_area);
                 this.m_keyMap.set(uniqueNS, area);
                 area.atlasUid = this.m_uid;
-                
+
                 let rect: AABB2D = area.rect;
                 let texRect: AABB2D = area.texRect;
                 texRect.copyFrom(rect);
 
                 texRect.x += area.offset;
-                texRect.y += area.offset;                
+                texRect.y += area.offset;
                 texRect.width -= area.offset * 2;
                 texRect.height -= area.offset * 2;
                 texRect.flipY(this.m_height);
-                                
+
                 let uMin: number = texRect.x / this.m_width;
                 let vMin: number = texRect.y / this.m_height;
                 let uMax: number = texRect.getRight() / this.m_width;
                 let vMax: number = texRect.getTop() / this.m_height;
-                
-                if(this.m_uvFlipY) {
+
+                if (this.m_uvFlipY) {
                     area.uvs.set([
                         uMin, vMax,
                         uMax, vMax,
                         uMax, vMin,
                         uMin, vMin
-                    ],0);
+                    ], 0);
                 }
                 else {
                     area.uvs.set([
@@ -111,12 +110,12 @@ export default class TextureAtlas {
                         uMax, vMin,
                         uMax, vMax,
                         uMin, vMax
-                    ],0);
+                    ], 0);
                 }
                 return area;
             }
             else {
-                console.warn(this.m_uid+",####### 超出了...");
+                console.warn(this.m_uid + ",####### 超出了...");
                 return null;
             }
         }

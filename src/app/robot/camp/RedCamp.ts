@@ -275,38 +275,60 @@ export default class RedCamp implements IRoleCamp {
         return null;
     }
     private m_revivingDelay: number = 100;
+    private m_burnningSpots: DisplayEntity[] = [];
     /**
      * 产生 detsroy 效果
      * @param role 被destroy的role
      */
     private createDestroyEffect(role: IAttackDst): void {
+        let entity: DisplayEntity;
+        if(this.m_burnningSpots.length > 30) {
+            //console.log("repeat use a old spot entity.");
+            entity = this.m_burnningSpots.shift();
+        }
+        else {            
+            let tex = AssetsModule.GetImageTexByUrl( "static/assets/particle/explosion/explodeBg_01c.png" );
+            let material = new Default3DMaterial();
+            AssetsModule.UseFogToMaterial(material);
+            let color = role.color;
+            material.initializeByCodeBuf(true);
+            material.setAlpha(0.6);
+            material.setTextureList( [tex] );
+            material.setRGB3f(color.r, color.g, color.b);
+            entity = new DisplayEntity();
+            entity.setMaterial( material );
+            entity.copyMeshFrom(AssetsModule.GetInstance().unitPlane);
+            entity.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+            RenderModule.GetInstance().addBottomParticleEntity(entity);
+        }
+        
         let pv: Vector3D = new Vector3D();
-        let tex = AssetsModule.GetImageTexByUrl( "static/assets/particle/explosion/explodeBg_01c.png" );
+        // let tex = AssetsModule.GetImageTexByUrl( "static/assets/particle/explosion/explodeBg_01c.png" );
         //tex.premultiplyAlpha = true;
         role.getPosition(pv);
         //let ab = role.radius
         pv.y += 2.0;
         let scaleX: number = role.splashRadius + Math.random() * 40 - 20;
         let scaleZ: number = role.splashRadius + Math.random() * 40 - 20;
-        let material = new Default3DMaterial();
-        
+      
         // material.setMaterialPipeline( AssetsModule.GetMaterialPipeline() );// = AssetsModule.GetMaterialPipeline();
         // material.pipeTypes = [MaterialPipeType.FOG_EXP2];
-        AssetsModule.UseFogToMaterial(material);
+        // AssetsModule.UseFogToMaterial(material);
         //material.premultiplyAlpha = tex.premultiplyAlpha;
         let color = role.color;
-        material.initializeByCodeBuf(true);
-        material.setAlpha(0.6);
-        material.setTextureList( [tex] );
-        material.setRGB3f(color.r, color.g, color.b);
-        let entity: DisplayEntity = new DisplayEntity();
-        entity.setMaterial( material );
-        entity.copyMeshFrom(AssetsModule.GetInstance().unitPlane);
+        // material.initializeByCodeBuf(true);
+        // material.setAlpha(0.6);
+        // material.setTextureList( [tex] );
+        (entity.getMaterial() as any).setRGB3f(color.r, color.g, color.b);
+        // entity = new DisplayEntity();
+        // entity.setMaterial( material );
+        // entity.copyMeshFrom(AssetsModule.GetInstance().unitPlane);
         entity.setPosition(pv);
         entity.setScaleXYZ(scaleX, 1.0, scaleZ);
         entity.setRotationXYZ(0.0, Math.random() * 1000.0, 0.0);
-        entity.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
-        RenderModule.GetInstance().addBottomParticleEntity(entity);
+        // entity.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+        // RenderModule.GetInstance().addBottomParticleEntity(entity);
+        this.m_burnningSpots.push(entity);
 
     }
     run(): void {
