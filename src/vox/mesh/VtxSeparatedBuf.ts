@@ -35,6 +35,10 @@ export default class VtxSeparatedBuf implements IVtxBuf {
     getBuffersTotal(): number {
         return this.m_f32List.length;
     }
+    
+    getAttribsTotal(): number {
+        return this.m_f32List.length;
+    }
     getF32DataAt(index: number): Float32Array {
         return this.m_f32List[index];
     }

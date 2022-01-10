@@ -29,6 +29,9 @@ export default class VtxCombinedBuf implements IVtxBuf {
     getBuffersTotal(): number {
         return 1;
     }
+    getAttribsTotal(): number {
+        return this.m_offsetList.length;
+    }
     getF32DataAt(index: number): Float32Array {
         return this.m_f32;
     }

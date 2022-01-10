@@ -140,7 +140,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_materialCtx.lightModule.update();
     }
     private createPointLightDisp(pointLight: PointLight): Billboard3DEntity {
-        return null;
+        // return null;
         let size: number = 60.0;
         let billboard: Billboard3DEntity = new Billboard3DEntity();
         billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
@@ -162,7 +162,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
      * 产生 detsroy 效果
      */
      private createDestroyEffect(pv: Vector3D): void {
-        //let pv: Vector3D = new Vector3D();
+        
         let scaleX: number = 200.0;
         let scaleZ: number = 200.0;
         let tex = this.m_materialCtx.getTextureByUrl( "static/assets/particle/explosion/explodeBg_01c.png" );
@@ -171,6 +171,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         unitPlane.initializeXOZSquare(1.0, [tex]);
         unitPlane.setScaleXYZ(scaleX, 1.0, scaleZ);
         this.m_engine.rscene.addEntity(unitPlane, 3);
+        unitPlane.setVisible(false);
         
         pv.y += 2.0;
         let material = new Default3DMaterial();
@@ -199,8 +200,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     private initScene(): void {
 
         this.createDestroyEffect(new Vector3D(200,-188.0,-200));
-        this.initEnvBox();
-        return;
+        // // this.initEnvBox();
+        // return;
         let color: Color4 = new Color4(1.0, 1.0, 0.0);
         let colorBias: Color4 = new Color4(0.0, 0.0, 0.0);
 

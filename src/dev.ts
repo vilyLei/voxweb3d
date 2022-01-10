@@ -355,7 +355,7 @@
 
 //  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
-import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
+//  import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
 
 //  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 

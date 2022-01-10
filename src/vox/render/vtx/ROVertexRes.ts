@@ -142,7 +142,12 @@ class ROVertexRes {
             this.m_vtx = vtx;
             this.m_vtxUid = vtx.getUid();
             this.m_type = vtx.getType();
+            if(shdp.getLocationsTotal() != vtx.getAttribsTotal()) {
+                console.error("shdp.getLocationsTotal() != vtx.getAttribsTotal()");
+            }
             this.m_attribsTotal = shdp.getLocationsTotal();
+            // 暂时还不能用下面这一句代码
+            // this.m_attribsTotal = vtx.getAttribsTotal();
 
             if (this.m_type < 1) {
                 // combined buf

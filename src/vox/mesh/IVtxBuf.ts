@@ -10,6 +10,7 @@ export default interface IVtxBuf
     getUid():number;
     getType():number;
     getBuffersTotal():number;
+    getAttribsTotal(): number;
     getF32DataAt(index:number):Float32Array;
     setF32DataAt(index:number,float32Arr:Float32Array,stepFloatsTotal:number,setpOffsets:number[]):void;
     setData4fAt(vertexI:number,attribI:number,px:number,py:number,pz:number,pw:number):void;

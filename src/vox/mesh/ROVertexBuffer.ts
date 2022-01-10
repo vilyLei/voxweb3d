@@ -58,6 +58,10 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
     getBuffersTotal(): number {
         return this.m_vtxBuf.getBuffersTotal();
     }
+    
+    getAttribsTotal(): number {
+        return this.m_vtxBuf.getAttribsTotal();
+    }
     getF32DataAt(index: number): Float32Array {
         return this.m_vtxBuf.getF32DataAt(index);
     }
