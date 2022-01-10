@@ -165,7 +165,6 @@ export class DemoVSMModule {
     private initSceneObjs(): void {
 
         this.loadNext();
-
         let frustrum: FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
         frustrum.initiazlize(this.m_materialCtx.vsmModule.getCamera());
         this.m_rscene.addEntity(frustrum, 1);
@@ -181,7 +180,7 @@ export class DemoVSMModule {
         let envBox: Box3DEntity = new Box3DEntity();
         this.useMaterial(envBox);
         envBox.showDoubleFace();
-        envBox.initializeCube(4000.0, [shadowTex, this.m_materialCtx.getTextureByUrl("static/assets/metal_02.jpg")]);
+        envBox.initializeCube(5000.0, [shadowTex, this.m_materialCtx.getTextureByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(envBox);
 
         let box: Box3DEntity = new Box3DEntity();
