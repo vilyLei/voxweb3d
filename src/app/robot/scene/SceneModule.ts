@@ -13,6 +13,7 @@ import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeTyp
 import TextBillboard3DEntity from "../../../vox/text/TextBillboard3DEntity";
 import H5FontSystem from "../../../vox/text/H5FontSys";
 import RendererDevice from "../../../vox/render/RendererDevice";
+import { RenderModule } from "./RenderModule";
 
 class SceneModule {
 
@@ -33,8 +34,10 @@ class SceneModule {
     initialize(rscene: RendererScene, materialCtx: CommonMaterialContext): void {
 
         if (this.m_rscene == null) {
+
             this.m_rscene = rscene;
             this.m_materialCtx = materialCtx;
+            RenderModule.GetInstance().initialize(this.m_rscene, this.m_materialCtx);
 
             AssetsModule.GetInstance().initialize(this.m_materialCtx);
             this.m_waitingTotal = this.m_materialCtx.getTextureLoader().getWaitTotal();
@@ -83,7 +86,7 @@ class SceneModule {
         this.m_terrain.terrain.shadowReceiveEnabled = this.shadowEnabled;
         this.m_terrain.terrain.envAmbientLightEnabled = this.envAmbientLightEnabled;
         this.m_terrain.terrain.fogEnabled = this.fogEnabled;
-        this.m_terrain.terrain.renderProcessIndex = 1;
+        this.m_terrain.terrain.renderProcessIndex = RenderModule.GetInstance().terrainLayerIndex;
         this.m_terrain.terrain.colorBrightness = 0.4;
         this.m_terrain.initialize(this.m_rscene, this.m_materialCtx);
 
@@ -118,7 +121,7 @@ class SceneModule {
         envBox.setMaterial(material);
         envBox.showFrontFace();
         envBox.initializeCube(4000.0);
-        this.m_rscene.addEntity(envBox, 2);
+        this.m_rscene.addEntity(envBox, RenderModule.GetInstance().envBoxLayerIndex);
     }
     private m_loaded: boolean = false;
     

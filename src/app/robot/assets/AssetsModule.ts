@@ -14,10 +14,10 @@ import { IMaterialPipeline } from "../../../vox/material/pipeline/IMaterialPipel
 
 export default class AssetsModule {
 
+    private static s_ins: AssetsModule = null;
     private m_materialCtx: MaterialContext = null;
     private static s_materialCtx: MaterialContext = null;
-    private static s_ins: AssetsModule = null;
-    particleGroupDepthOffset: number = -0.0004;
+    particleGroupDepthOffset: number = -0.001;
     constructor() {
         if (AssetsModule.s_ins != null) {
             throw Error("AssetsModule is a singleton class.");

@@ -13,6 +13,7 @@ import TriggerData from "../../app/robot/TriggerData";
 import AttackDataPool from "../../app/robot/scene/AttackDataPool";
 import { CampType } from "../../app/robot/camp/Camp";
 import AssetsModule from "../../app/robot/assets/AssetsModule";
+import { RenderModule } from "./scene/RenderModule";
 
 export default class BulEntity {
     private m_entity: BillboardLine3DEntity = null;
@@ -22,7 +23,7 @@ export default class BulEntity {
     private m_beginPos: Vector3D = new Vector3D();
     private m_endPos: Vector3D = new Vector3D();
     private m_triggerData: TriggerData = null;
-    effectRenderProcessIndex: number = 2;
+    
     constructor(rsc: RendererScene) {
         this.m_rsc = rsc;
     }
@@ -37,7 +38,7 @@ export default class BulEntity {
             //billLine.initialize([this.getImageTexByUrl("static/assets/color_02.jpg")]);
             //billLine.setLineWidth(12.0);
             billLine.setLineWidth(20.0);
-            this.m_rsc.addEntity(billLine, this.effectRenderProcessIndex);
+            this.m_rsc.addEntity(billLine, RenderModule.GetInstance().particleLayerIndex);
             this.m_entity = billLine;
             this.m_uoffset = 0.2;
             this.m_entity.setUVOffset(this.m_uoffset, 0.0);

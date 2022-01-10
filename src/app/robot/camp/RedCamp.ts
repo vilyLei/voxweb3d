@@ -14,6 +14,7 @@ import AssetsModule from "../../../app/robot/assets/AssetsModule";
 import RendererScene from "../../../vox/scene/RendererScene";
 import EruptionEffectPool from "../../../particle/effect/EruptionEffectPool";
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
+import { RenderModule } from "../scene/RenderModule";
 
 class CampRoleManager {
     private m_statusList: number[] = [0, 0, 0, 0, 0, 0];
@@ -72,7 +73,6 @@ export default class RedCamp implements IRoleCamp {
     private m_tempV0: Vector3D = new Vector3D();
     private m_eff0Pool: EruptionEffectPool = null;
     readonly roleManager: CampRoleManager = new CampRoleManager();
-    effectRenderProcessIndex: number = 4;
     distance: number = 0.0;
     constructor() {
     }
@@ -127,7 +127,8 @@ export default class RedCamp implements IRoleCamp {
                 this.m_eff0Pool.timeSpeed = 15.0;
                 this.m_eff0Pool.solidPremultiplyAlpha = true;
                 this.m_eff0Pool.solidColor.setRGB3f(0.3,0.3,0.3);
-                this.m_eff0Pool.initialize(this.m_rsc, this.effectRenderProcessIndex, 60, 50,
+                
+                this.m_eff0Pool.initialize(this.m_rsc, RenderModule.GetInstance().explosionFlareLayerIndex, 60, 50,
                     AssetsModule.GetImageTexByUrl("static/assets/testEFT4.jpg"),
                     AssetsModule.GetImageTexByUrl("static/assets/stones_02.png"),
                     //AssetsModule.GetImageTexByUrl("static/assets/stones_01.png"),

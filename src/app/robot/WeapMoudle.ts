@@ -17,7 +17,6 @@ export default class WeapMoudle implements IRunnable {
     private m_rsc: RendererScene = null;
     private m_freePool: BulEntity[] = [];
     private m_bulList: BulEntity[] = [];
-    effectRenderProcessIndex: number = 2;
     constructor(rsc: RendererScene) {
         this.m_rsc = rsc;
     }
@@ -29,7 +28,6 @@ export default class WeapMoudle implements IRunnable {
         }
         else {
             bul = new BulEntity(this.m_rsc);
-            bul.effectRenderProcessIndex = this.effectRenderProcessIndex;
             bul.initialize(0);
         }
         bul.setPosParam(pos0, pos1, attDst, campType);
