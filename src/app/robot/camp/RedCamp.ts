@@ -296,6 +296,7 @@ export default class RedCamp implements IRoleCamp {
         material.setTextureList( [tex] );
         material.setRGB3f(color.r, color.g, color.b);
         let entity: DisplayEntity = new DisplayEntity();
+        AssetsModule.UseFog(entity);
         entity.setMaterial( material );
         entity.copyMeshFrom(AssetsModule.GetInstance().unitPlane);
         entity.setPosition(pv);
