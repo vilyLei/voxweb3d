@@ -2,9 +2,6 @@ worldNormal.xyz = v_worldNormal;
 worldPosition.xyz = v_worldPosition;
 vec3 N = worldNormal.xyz;
 vec4 color = u_fragLocalParams[0];
-#ifdef VOX_DIFFUSE_MAP
-    color = color * VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv.xy);
-#endif
 
 color.xyz += u_fragLocalParams[1].xyz;
 #ifdef VOX_USE_VTX_COLOR
@@ -33,6 +30,8 @@ vec2 texUV = v_uv.xy;
             N = normalize(getNormalFromMap(VOX_NORMAL_MAP, texUV, worldNormal.xyz));
         #endif
     #endif
+
+    calcDiffuse( color );
 
     #ifdef VOX_AO_MAP
         ao = VOX_Texture2D(VOX_AO_MAP, texUV).yyy;
@@ -69,6 +68,9 @@ vec2 texUV = v_uv.xy;
     #endif
     color.xyz = color.xyz * param.z + param.w * destColor;
 #else
+
+    calcDiffuse( color );
+
     #ifdef VOX_AO_MAP
         ao = VOX_Texture2D(VOX_AO_MAP, texUV).yyy;
     #endif

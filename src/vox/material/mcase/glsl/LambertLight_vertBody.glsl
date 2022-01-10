@@ -10,6 +10,9 @@
         oWorldPosition = worldPosition;
     #endif
     v_worldPosition.xyz = oWorldPosition.xyz;
+    #ifdef VOX_DIFFUSE_MAP2
+        v_map2Pos = u_map2ViewMat * oWorldPosition;
+    #endif
 
     #ifdef VOX_USE_NORMAL
         v_worldNormal.xyz = normalize(a_nvs.xyz * inverse(mat3(u_objMat)));

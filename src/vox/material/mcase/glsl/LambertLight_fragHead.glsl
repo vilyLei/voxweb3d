@@ -1,3 +1,12 @@
+void calcDiffuse(inout vec4 color) {
+    #ifdef VOX_DIFFUSE_MAP
+        color *= VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv.xy);
+    #endif
+    #ifdef VOX_DIFFUSE_MAP2
+        // v_map2Pos = u_map2ViewMat * oWorldPosition;
+        // v_map2Pos.xy / v_map2Pos.w;
+    #endif
+}
 #ifdef VOX_NORMAL_MAP
 vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 nv)
 {

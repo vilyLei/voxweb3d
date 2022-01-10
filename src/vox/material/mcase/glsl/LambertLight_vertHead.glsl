@@ -29,4 +29,5 @@ void initLocalVtx() {
     #ifdef VOX_DISPLACEMENT_MAP
         displaceLocalVtx( u_vertLocalParams[VOX_DISPLACEMENT_PARAMS_INDEX].xy );
     #endif
+    
 }
