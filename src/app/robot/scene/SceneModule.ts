@@ -37,8 +37,8 @@ class SceneModule {
             this.m_rscene = rscene;
             this.m_materialCtx = materialCtx;
             RenderModule.GetInstance().initialize(this.m_rscene, this.m_materialCtx);
-
-            AssetsModule.GetInstance().initialize(this.m_materialCtx);
+            AssetsModule.GetInstance().initialize(this.m_rscene, this.m_materialCtx);
+            
             this.m_waitingTotal = this.m_materialCtx.getTextureLoader().getWaitTotal();
 
             this.init();

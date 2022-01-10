@@ -15,10 +15,12 @@ import Box3DEntity from "../../../vox/entity/Box3DEntity";
 import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import MaterialBase from "../../../vox/material/MaterialBase";
+import RendererScene from "../../../vox/scene/RendererScene";
 
 export default class AssetsModule {
-
+    
     private static s_ins: AssetsModule = null;
+    private m_rscene: RendererScene = null;
     private m_materialCtx: MaterialContext = null;
     private static s_materialCtx: MaterialContext = null;
     readonly unitPlane: Plane3DEntity = new Plane3DEntity();
@@ -44,9 +46,11 @@ export default class AssetsModule {
     static GetImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         return AssetsModule.s_ins.getImageTexByUrl(purl, wrapRepeat, mipmapEnabled);
     }
-    initialize(materialCtx: MaterialContext): void {
+    initialize(rscene: RendererScene, materialCtx: MaterialContext): void {
 
         if (this.m_materialCtx == null) {
+
+            this.m_rscene = rscene;
             this.m_materialCtx = materialCtx;
 
             AssetsModule.s_materialCtx = materialCtx;
@@ -93,6 +97,13 @@ export default class AssetsModule {
         this.unitBox.initializeCube(1.0, [materialCtx.getTextureByUrl("static/assets/box_wood01.jpg")]);
         this.unitSphere.normalEnabled = true;
         this.unitSphere.initialize(0.5,10,10, [materialCtx.getTextureByUrl("static/assets/box_wood01.jpg")]);
+
+        this.m_rscene.addEntity(this.unitPlane);
+        this.m_rscene.addEntity(this.unitBox);
+        this.m_rscene.addEntity(this.unitSphere);
+        this.unitSphere.setVisible( false );
+        this.unitBox.setVisible( false );
+        this.unitSphere.setVisible( false );
     }
     static GetMaterialPipeline(): IMaterialPipeline {
         if (AssetsModule.s_materialCtx != null) {
