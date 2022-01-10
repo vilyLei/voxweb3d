@@ -329,6 +329,7 @@ export default class RedCamp implements IRoleCamp {
         // entity.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         // RenderModule.GetInstance().addBottomParticleEntity(entity);
         this.m_burnningSpots.push(entity);
+        entity.update();
 
     }
     run(): void {
