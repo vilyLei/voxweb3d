@@ -104,7 +104,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
     }
 
     getUniqueNSKeyID(): number {
-        throw Error("功能未完成...");
+        throw Error("can not use this function !!!");
         return this.uniform.getUniqueNSKeyID();
     }
     getUniqueNSKeyString(): string {

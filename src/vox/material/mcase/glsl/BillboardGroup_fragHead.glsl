@@ -3,7 +3,7 @@ vec3 getOffsetColor() {
         #ifdef VOX_USE_RAW_UV
             vec3 offsetColor = clamp(v_colorOffset.xyz + VOX_Texture2D(VOX_OFFSET_COLOR_MAP, v_uv.xy).xyz,vec3(0.0),vec3(1.0));
         #else
-            vec3 offsetColor = clamp(v_colorOffset.xyz + texture(VOX_OFFSET_COLOR_MAP, v_texUV.xy).xyz,vec3(0.0),vec3(1.0));
+            vec3 offsetColor = clamp(v_colorOffset.xyz + VOX_Texture2D(VOX_OFFSET_COLOR_MAP, v_texUV.xy).xyz,vec3(0.0),vec3(1.0));
         #endif
     #else
         vec3 offsetColor = v_colorOffset.xyz;
