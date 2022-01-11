@@ -66,15 +66,14 @@ export class DemoMultiLambertLights implements IShaderLibListener {
             
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            RendererDevice.SetWebBodyColor("black");
 
             let rparam: RendererParam = new RendererParam();
             rparam.setCamProject(45, 10.0, 8000.0);
             rparam.setAttriStencil(true);
-            rparam.setAttriAntialias(true);
             rparam.setAttriAlpha(false);
             rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
             rparam.setCamPosition(800.0, 800.0, 800.0);
-            //rparam.setCamProject(45, 20.0, 9000.0);
 
             this.m_engine = new EngineBase();
             this.m_engine.initialize(rparam, 7);
@@ -206,7 +205,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     }
     private initScene(): void {
         
-        this.m_viewtexMaker = new ViewTextureMaker(1, true);
+        this.m_viewtexMaker = new ViewTextureMaker(1, false);
+        this.m_viewtexMaker.setClearColorEnabled(false);
         this.m_viewtexMaker.setCameraViewSize(2048, 2048);
         this.m_viewtexMaker.setMapSize(2048, 2048);
         this.m_viewtexMaker.initialize(this.m_engine.rscene, [4]);
@@ -442,13 +442,18 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         DebugFlag.Flag_0 = 1;
         this.m_times ++;
 
-        let tex = this.m_materialCtx.getTextureByUrl( "static/assets/particle/explosion/explodeBg_01c.png" );
-        // tex2.flipY = true;
+        let tex = this.m_materialCtx.getTextureByUrl( "static/assets/particle/explosion/explodeBg_01a.png" );
+        //let tex = this.m_materialCtx.getTextureByUrl( "static/assets/particle/explosion/explodeBg_02a.png" );
+        tex.premultiplyAlpha = true;
         let clipPl: Plane3DEntity = new Plane3DEntity();
         clipPl.spaceCullMask = SpaceCullingMask.NONE;
-        clipPl.toTransparentBlend(true);
+        clipPl.premultiplyAlpha = true;
+        //clipPl.toTransparentBlend(true);
+        clipPl.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+        //clipPl.toBrightnessBlend(false);
         //clipPl.initializeXOZSquare(200.0, [tex]);
         clipPl.initializeXOZSquare(50.0 + Math.random() * 200.0, [tex]);
+        clipPl.setRotationXYZ(0.0, Math.random() * 400.0, 0.0);
         //this.m_currPos.setXYZ(0.0, -180.0, 0.0);
         this.m_currPos.setXYZ(Math.random() * 400.0 - 200.0, -180.0, Math.random() * 400.0 - 200.0);
         clipPl.setPosition(this.m_currPos);
@@ -524,19 +529,13 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         }
 
         this.m_statusDisp.update(false);
-        if(this.m_currDisp != null && this.m_currDisp.isInRendererProcess() && (this.m_currDisp.getVisible() || DebugFlag.Flag_0 > 0)) {
-        //if(this.m_currDisp != null && this.m_currDisp.isInRendererProcess() && this.m_currDisp.getVisible()) {
-            //this.m_currDisp.update();
-            //this.m_currDisp.setVisible(true);
-            // this.m_currDisp.setVisible(this.m_times < 10);
-            // //if(DebugFlag.Flag_0 > 0) {
-            //     console.log("start fbo render XXXX this.m_currDisp.getVisible(): ", this.m_currDisp.getVisible(),"");
-            // //}
-            this.m_viewtexMaker.force = true;
-            this.m_viewtexMaker.histroyUpdating = true;
-            this.m_viewtexMaker.run();
-            this.m_currDisp.setVisible(false);
-        }
+
+        // if(this.m_currDisp != null && this.m_currDisp.isInRendererProcess() && (this.m_currDisp.getVisible() || DebugFlag.Flag_0 > 0)) {
+        //     this.m_viewtexMaker.force = true;
+        //     this.m_viewtexMaker.histroyUpdating = true;
+        //     this.m_viewtexMaker.run();
+        //     this.m_currDisp.setVisible(false);
+        // }
         if(this.m_clips.length > 0) {
             let clipsBoo: boolean = false;
             for(let i: number = 0; i < this.m_clips.length; ++i) {
@@ -544,7 +543,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
                     clipsBoo = true;
                 }
             }
-            if(clipsBoo) {
+            if(clipsBoo && DebugFlag.Flag_0 > 0) {
                 this.m_viewtexMaker.force = true;
                 this.m_viewtexMaker.histroyUpdating = true;
                 this.m_viewtexMaker.run();
@@ -554,9 +553,6 @@ export class DemoMultiLambertLights implements IShaderLibListener {
                 this.m_clips = [];
             }
         }
-        // this.m_viewtexMaker.force = true;
-        // this.m_viewtexMaker.run();
-
         //this.m_material.setDisplacementParams(this.m_dispHeight * (1.0 + Math.cos(this.m_time)), 0.0);
         this.m_engine.rscene.setClearRGBColor3f(0.2, 0.2, 0.2);
         this.m_materialCtx.run();

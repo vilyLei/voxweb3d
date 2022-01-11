@@ -552,7 +552,6 @@ export default class FBOInstance {
                 this.runBeginDo();
             // rendering running
             for (let i: number = 0, len: number = this.m_rindexs.length; i < len; ++i) {
-                console.log("fbo ins this.m_renderer.runAt("+i+")");
                 this.m_renderer.runAt(this.m_rindexs[i]);
             }
         }
