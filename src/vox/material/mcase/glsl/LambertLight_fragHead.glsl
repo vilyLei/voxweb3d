@@ -9,9 +9,9 @@ void calcDiffuse(inout vec4 color, vec2 uv) {
             vec4 srcColor = VOX_Texture2D( VOX_DIFFUSE_MAP2, uv );
         #endif
         //color.xyz = mix(color.xyz, srcColor.xyz, srcColor.www);
-        color.xyzw = color.xyzw * vec4(1.0 - srcColor.w) + srcColor.xyzw * srcColor.wwww;
-        //color.xyz = srcColor.xyz;
-        // color.w = min(color.w + srcColor.w, 1.0);
+        //srcColor.w *= 0.9;
+        color = color * vec4(1.0 - srcColor.w) + srcColor * srcColor.wwww;
+        
     #endif
 }
 #ifdef VOX_NORMAL_MAP

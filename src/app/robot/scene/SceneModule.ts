@@ -5,6 +5,7 @@ import AssetsModule from "../../../app/robot/assets/AssetsModule";
 import RunnableModule from "../../../app/robot/scene/RunnableModule";
 
 import { TerrainModule } from "../../../app/robot/terrain/TerrainModule";
+import { TerrainEffect } from "../../../app/robot/terrain/TerrainEffect";
 
 import { CommonMaterialContext } from "../../../materialLab/base/CommonMaterialContext";
 import { RoleBuilder } from "./RoleBuilder";
@@ -21,6 +22,7 @@ class SceneModule {
 
     private m_campModule: CampMoudle = new CampMoudle();
     private m_terrain: TerrainModule = new TerrainModule();
+    private m_terrainEff: TerrainEffect = new TerrainEffect();
     private m_roleBuilder: RoleBuilder = new RoleBuilder();
     private m_materialCtx: CommonMaterialContext;
     private m_waitingTotal: number = 0;
@@ -59,11 +61,19 @@ class SceneModule {
     }
     private initScene(): void {
 
-        this.m_terrain.terrain.shadowReceiveEnabled = this.shadowEnabled;
-        this.m_terrain.terrain.envAmbientLightEnabled = this.envAmbientLightEnabled;
-        this.m_terrain.terrain.fogEnabled = this.fogEnabled;
-        this.m_terrain.terrain.renderProcessIndex = RenderModule.GetInstance().terrainLayerIndex;
-        this.m_terrain.terrain.colorBrightness = 0.4;
+        this.m_terrainEff.initialize(this.m_rscene, 1, [RenderModule.GetInstance().bottomParticleLayerIndex]);
+        this.m_campModule.redCamp.terrainEff = this.m_terrainEff;
+        
+        let texMaker = this.m_terrainEff.getVierTexMaker();
+        let terrain = this.m_terrain.terrain;
+        terrain.diffuseMap2 = texMaker.getMap();
+        terrain.diffuseMap2Matrix = texMaker.getMatrix();
+
+        terrain.shadowReceiveEnabled = this.shadowEnabled;
+        terrain.envAmbientLightEnabled = this.envAmbientLightEnabled;
+        terrain.fogEnabled = this.fogEnabled;
+        terrain.renderProcessIndex = RenderModule.GetInstance().terrainLayerIndex;
+        terrain.colorBrightness = 0.4;
         this.m_terrain.initialize(this.m_rscene, this.m_materialCtx);
 
         this.m_campModule.initialize(this.m_rscene);
@@ -103,6 +113,7 @@ class SceneModule {
         if (this.m_loading.isLoaded()) {
             this.m_campModule.run();
             RunnableModule.Run();
+            this.m_terrainEff.run();
         } else {
             let progress: number = (this.m_waitingTotal - this.m_materialCtx.getTextureLoader().getWaitTotal()) / this.m_waitingTotal;
             this.m_loading.run(progress);

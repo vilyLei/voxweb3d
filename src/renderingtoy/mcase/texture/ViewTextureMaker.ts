@@ -120,6 +120,7 @@ class ViewTextureMaker {
             this.m_fbo.setRenderToRGBATexture( this.m_viewRtt, 0 );
 
             this.m_colorPlane = new ScreenFixedAlignPlaneEntity();
+            this.m_colorPlane.setRenderState(RendererState.BACK_ALPHA_ADD_BLENDSORT_STATE);
             this.m_colorPlane.initialize(-1.0,-1.0,2.0,2.0,[this.m_colorMap]);
 
             // let pl = new ScreenFixedAlignPlaneEntity();

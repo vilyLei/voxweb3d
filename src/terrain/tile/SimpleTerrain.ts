@@ -13,6 +13,7 @@ import Color4 from "../../vox/material/Color4";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import LambertLightMaterial from "../../vox/material/mcase/LambertLightMaterial";
+import Matrix4 from "../../vox/math/Matrix4";
 
 class SimpleTerrain {
 
@@ -27,6 +28,8 @@ class SimpleTerrain {
     fogEnabled: boolean = false;
     renderProcessIndex: number = 1;
     colorBrightness: number = 1.0;
+    diffuseMap2: TextureProxy = null;
+    diffuseMap2Matrix: Matrix4 = null;
     initialize(scene: RendererScene, materialCtx: CommonMaterialContext, terrainData: TerrainData): void {
         
         if (this.m_rscene == null) {
@@ -40,6 +43,9 @@ class SimpleTerrain {
     createLambertMaterial(diffuseMap: TextureProxy, normalMap: TextureProxy = null, aoMap: TextureProxy = null, vtxColorEnabled: boolean = false): LambertLightMaterial {
 
         let material = this.m_materialCtx.createLambertLightMaterial(false);
+        material.diffuseMap2 = this.diffuseMap2;
+        material.diffuseMap2Matrix = this.diffuseMap2Matrix;
+        
         material.shadowReceiveEnabled = this.shadowReceiveEnabled;
         material.envAmbientLightEnabled = this.envAmbientLightEnabled;
         material.fogEnabled = this.fogEnabled;

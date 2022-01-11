@@ -5,7 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-import MathConst from "../../../vox/math/MathConst";
 import Vector3D from "../../../vox/math/Vector3D";
 import IRoleCamp from "../../../app/robot/IRoleCamp";
 import IAttackDst from "../../../app/robot/attack/IAttackDst";
@@ -15,9 +14,8 @@ import RendererScene from "../../../vox/scene/RendererScene";
 import EruptionEffectPool from "../../../particle/effect/EruptionEffectPool";
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
 import { RenderModule } from "../scene/RenderModule";
-import DisplayEntity from "../../../vox/entity/DisplayEntity";
-import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
-import RendererState from "../../../vox/render/RendererState";
+
+import { TerrainEffect } from "../../../app/robot/terrain/TerrainEffect";
 
 class CampRoleManager {
     private m_statusList: number[] = [0, 0, 0, 0, 0, 0];
@@ -76,6 +74,7 @@ export default class RedCamp implements IRoleCamp {
     private m_tempV0: Vector3D = new Vector3D();
     private m_eff0Pool: EruptionEffectPool = null;
     readonly roleManager: CampRoleManager = new CampRoleManager();
+    terrainEff: TerrainEffect = null;
     distance: number = 0.0;
     constructor() {
     }
@@ -255,7 +254,7 @@ export default class RedCamp implements IRoleCamp {
                     this.m_eff0Pool.createEffect(this.m_tempV0);
                     
                     // 产生 detsroy 效果
-                    this.createDestroyEffect( role );
+                    this.terrainEff.createDestroyEffect( role );
                     //m_tempV0
                     list.splice(i, 1);
                     i--;
@@ -275,63 +274,6 @@ export default class RedCamp implements IRoleCamp {
         return null;
     }
     private m_revivingDelay: number = 100;
-    private m_burnningSpots: DisplayEntity[] = [];
-    /**
-     * 产生 detsroy 效果
-     * @param role 被destroy的role
-     */
-    private createDestroyEffect(role: IAttackDst): void {
-        let entity: DisplayEntity;
-        if(this.m_burnningSpots.length > 30) {
-            //console.log("repeat use a old spot entity.");
-            entity = this.m_burnningSpots.shift();
-        }
-        else {            
-            let tex = AssetsModule.GetImageTexByUrl( "static/assets/particle/explosion/explodeBg_01c.png" );
-            let material = new Default3DMaterial();
-            AssetsModule.UseFogToMaterial(material);
-            let color = role.color;
-            material.initializeByCodeBuf(true);
-            material.setAlpha(0.6);
-            material.setTextureList( [tex] );
-            material.setRGB3f(color.r, color.g, color.b);
-            entity = new DisplayEntity();
-            entity.setMaterial( material );
-            entity.copyMeshFrom(AssetsModule.GetInstance().unitPlane);
-            entity.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
-            RenderModule.GetInstance().addBottomParticleEntity(entity);
-        }
-        
-        let pv: Vector3D = new Vector3D();
-        // let tex = AssetsModule.GetImageTexByUrl( "static/assets/particle/explosion/explodeBg_01c.png" );
-        //tex.premultiplyAlpha = true;
-        role.getPosition(pv);
-        //let ab = role.radius
-        pv.y += 2.0;
-        let scaleX: number = role.splashRadius + Math.random() * 40 - 20;
-        let scaleZ: number = role.splashRadius + Math.random() * 40 - 20;
-      
-        // material.setMaterialPipeline( AssetsModule.GetMaterialPipeline() );// = AssetsModule.GetMaterialPipeline();
-        // material.pipeTypes = [MaterialPipeType.FOG_EXP2];
-        // AssetsModule.UseFogToMaterial(material);
-        //material.premultiplyAlpha = tex.premultiplyAlpha;
-        let color = role.color;
-        // material.initializeByCodeBuf(true);
-        // material.setAlpha(0.6);
-        // material.setTextureList( [tex] );
-        (entity.getMaterial() as any).setRGB3f(color.r, color.g, color.b);
-        // entity = new DisplayEntity();
-        // entity.setMaterial( material );
-        // entity.copyMeshFrom(AssetsModule.GetInstance().unitPlane);
-        entity.setPosition(pv);
-        entity.setScaleXYZ(scaleX, 1.0, scaleZ);
-        entity.setRotationXYZ(0.0, Math.random() * 1000.0, 0.0);
-        // entity.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
-        // RenderModule.GetInstance().addBottomParticleEntity(entity);
-        this.m_burnningSpots.push(entity);
-        entity.update();
-
-    }
     run(): void {
         if(this.roleManager.getCampTeamsTotal() < 2) {
             if(this.m_revivingDelay < 1) {
