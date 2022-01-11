@@ -39,6 +39,8 @@ import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import RendererState from "../vox/render/RendererState";
 import { ViewTextureMaker } from "../renderingtoy/mcase/texture/ViewTextureMaker";
 import FrustrumFrame3DEntity from "../vox/entity/FrustrumFrame3DEntity";
+import DebugFlag from "../vox/debug/DebugFlag";
+import { SpaceCullingMask } from "../vox/space/SpaceCullingMask";
 
 export class DemoMultiLambertLights implements IShaderLibListener {
 
@@ -75,7 +77,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
             //rparam.setCamProject(45, 20.0, 9000.0);
 
             this.m_engine = new EngineBase();
-            this.m_engine.initialize(rparam, 6);
+            this.m_engine.initialize(rparam, 7);
             this.m_engine.setProcessIdListAt(0, [0,1,2,3,5]);
             this.m_engine.interaction.zoomLookAtPosition = new Vector3D();
             this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
@@ -204,15 +206,15 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     }
     private initScene(): void {
         
-        this.m_viewtexMaker = new ViewTextureMaker(1);
+        this.m_viewtexMaker = new ViewTextureMaker(1, true);
         this.m_viewtexMaker.setCameraViewSize(2048, 2048);
-        this.m_viewtexMaker.setMapSize(1024, 1024);
+        this.m_viewtexMaker.setMapSize(2048, 2048);
         this.m_viewtexMaker.initialize(this.m_engine.rscene, [4]);
         this.m_viewtexMaker.upate();
 
-        let frame = new FrustrumFrame3DEntity();
-        frame.initiazlize(this.m_viewtexMaker.getCamera());
-        this.m_engine.rscene.addEntity(frame, 3);
+        // let frame = new FrustrumFrame3DEntity();
+        // frame.initiazlize(this.m_viewtexMaker.getCamera());
+        // this.m_engine.rscene.addEntity(frame, 3);
         
         let color: Color4 = new Color4(1.0, 1.0, 0.0);
         let colorBias: Color4 = new Color4(0.0, 0.0, 0.0);
@@ -339,19 +341,19 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         sph.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
         this.m_engine.rscene.addEntity(sph);
         //*/
-        let tex2 = this.m_materialCtx.getTextureByUrl( "static/assets/letterA.png" );
-        tex2.flipY = true;
-        let plane2: Plane3DEntity = new Plane3DEntity();
-        plane2.toTransparentBlend();
-        plane2.initializeXOZSquare(200.0, [tex2]);
-        plane2.setXYZ(0.0, -190.0, 0.0);
-        this.m_engine.rscene.addEntity(plane2, 4);
+        // let tex2 = this.m_materialCtx.getTextureByUrl( "static/assets/letterA.png" );
+        // tex2.flipY = true;
+        // let plane2: Plane3DEntity = new Plane3DEntity();
+        // plane2.toTransparentBlend();
+        // plane2.initializeXOZSquare(200.0, [tex2]);
+        // plane2.setXYZ(0.0, -190.0, 0.0);
+        // this.m_engine.rscene.addEntity(plane2, 4);
 
-        plane2 = new Plane3DEntity();
-        plane2.toTransparentBlend();
-        plane2.initializeXOZSquare(200.0, [this.m_materialCtx.getTextureByUrl( "static/assets/particle/explosion/explodeBg_01c.png" )]);
-        plane2.setXYZ(200.0, -190.0, 200.0);
-        this.m_engine.rscene.addEntity(plane2, 4);
+        // plane2 = new Plane3DEntity();
+        // plane2.toTransparentBlend();
+        // plane2.initializeXOZSquare(200.0, [this.m_materialCtx.getTextureByUrl( "static/assets/particle/explosion/explodeBg_01c.png" )]);
+        // plane2.setXYZ(200.0, -190.0, 200.0);
+        // this.m_engine.rscene.addEntity(plane2, 4);
         
         // let pl = new ScreenFixedAlignPlaneEntity();
         // pl.initialize(-1.0,-1.0, 0.5, 0.5, [this.m_viewtexMaker.getMap()]);
@@ -374,12 +376,17 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         material.setSpecularIntensity(64.0);
         color.normalizeRandom(1.1);
         material.setSpecularColor(color);
-        let plane: Plane3DEntity = new Plane3DEntity();
-        
-        plane.setMaterial(material);
-        plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0);
-        plane.setXYZ(0.0, -200.0, 0.0);
-        this.m_engine.rscene.addEntity(plane);
+        // let plane: Plane3DEntity = new Plane3DEntity();
+        // plane.setMaterial(material);
+        // plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0);
+        // plane.setXYZ(0.0, -200.0, 0.0);
+        // this.m_engine.rscene.addEntity(plane);
+
+        let box: Box3DEntity = new Box3DEntity();
+        box.setMaterial( material );
+        box.initializeSizeXYZ(800.0,20,800.0);
+        box.setXYZ(0.0, -200.0, 0.0);
+        this.m_engine.rscene.addEntity(box);
         //*/
         //this.initEnvBox();
 
@@ -415,19 +422,10 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     }
     private initEnvBox(): void {
 
-        // let material: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
-        // this.useMaps(material, "box", false, false);
-        // material.fogEnabled = true;
-        // material.initializeLocalData();
-        // material.initializeByCodeBuf(true);
-
         let envBox: Box3DEntity = new Box3DEntity();
         envBox.normalScale = -1.0;
-        // envBox.setMaterial(material);
-
         envBox.pipeTypes = [MaterialPipeType.FOG_EXP2];
         envBox.setMaterialPipeline(this.m_materialCtx.pipeline);
-
         envBox.showFrontFace();
         envBox.initializeCube(4000.0, [this.m_materialCtx.getTextureByUrl("static/assets/disp/box_COLOR.png")]);
         this.m_engine.rscene.addEntity(envBox, 2);
@@ -435,8 +433,57 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     private m_dispHeight: number = 10;
     private m_material: LambertLightMaterial = null;
     private m_flag: boolean = true;
+    private m_currDisp: DisplayEntity = null;
+    private m_currPos: Vector3D = new Vector3D(0.0, -90.0, 0.0);
+    private m_times: number = 0;
+    private m_clips: DisplayEntity[] = [];
     private mouseDown(evt: any): void {
         this.m_flag = true;
+        DebugFlag.Flag_0 = 1;
+        this.m_times ++;
+
+        let tex = this.m_materialCtx.getTextureByUrl( "static/assets/particle/explosion/explodeBg_01c.png" );
+        // tex2.flipY = true;
+        let clipPl: Plane3DEntity = new Plane3DEntity();
+        clipPl.spaceCullMask = SpaceCullingMask.NONE;
+        clipPl.toTransparentBlend(true);
+        //clipPl.initializeXOZSquare(200.0, [tex]);
+        clipPl.initializeXOZSquare(50.0 + Math.random() * 200.0, [tex]);
+        //this.m_currPos.setXYZ(0.0, -180.0, 0.0);
+        this.m_currPos.setXYZ(Math.random() * 400.0 - 200.0, -180.0, Math.random() * 400.0 - 200.0);
+        clipPl.setPosition(this.m_currPos);
+        (clipPl.getMaterial() as any).setAlpha(0.7);
+        this.m_engine.rscene.addEntity(clipPl, 4);
+        this.m_clips.push(clipPl);
+        /*
+        if(this.m_currDisp == null) {
+
+            let tex2 = this.m_materialCtx.getTextureByUrl( "static/assets/letterA.png" );
+            tex2.flipY = true;
+            let plane2: Plane3DEntity = new Plane3DEntity();
+            plane2.spaceCullMask = SpaceCullingMask.NONE;
+            plane2.toTransparentBlend();
+            plane2.initializeXOZSquare(200.0, [tex2]);
+            this.m_currPos.setXYZ(0.0, -180.0, 0.0);
+            plane2.setPosition(this.m_currPos);
+            this.m_engine.rscene.addEntity(plane2, 4);
+            this.m_currDisp = plane2;
+
+            // let sph: Sphere3DEntity = new Sphere3DEntity();
+            // sph.initialize(100,10,10, [tex2]);
+            // sph.setPosition( this.m_currPos );
+            // sph.spaceCullMask = SpaceCullingMask.NONE;
+            // this.m_engine.rscene.addEntity(sph, 4);
+            // this.m_currDisp = sph;
+        }
+        else {
+            console.log("^^^^^^^^^^^^ use new pos...");
+            this.m_currPos.x += 10;
+            this.m_currDisp.setPosition( this.m_currPos );
+            this.m_currDisp.update();
+            this.m_currDisp.setVisible(this.m_times < 10);
+        }
+        //*/
     }
 
     private m_timeoutId: any = -1;
@@ -477,12 +524,45 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         }
 
         this.m_statusDisp.update(false);
-        this.m_viewtexMaker.force = true;
-        this.m_viewtexMaker.run();
+        if(this.m_currDisp != null && this.m_currDisp.isInRendererProcess() && (this.m_currDisp.getVisible() || DebugFlag.Flag_0 > 0)) {
+        //if(this.m_currDisp != null && this.m_currDisp.isInRendererProcess() && this.m_currDisp.getVisible()) {
+            //this.m_currDisp.update();
+            //this.m_currDisp.setVisible(true);
+            // this.m_currDisp.setVisible(this.m_times < 10);
+            // //if(DebugFlag.Flag_0 > 0) {
+            //     console.log("start fbo render XXXX this.m_currDisp.getVisible(): ", this.m_currDisp.getVisible(),"");
+            // //}
+            this.m_viewtexMaker.force = true;
+            this.m_viewtexMaker.histroyUpdating = true;
+            this.m_viewtexMaker.run();
+            this.m_currDisp.setVisible(false);
+        }
+        if(this.m_clips.length > 0) {
+            let clipsBoo: boolean = false;
+            for(let i: number = 0; i < this.m_clips.length; ++i) {
+                if(this.m_clips[i].isInRendererProcess()) {
+                    clipsBoo = true;
+                }
+            }
+            if(clipsBoo) {
+                this.m_viewtexMaker.force = true;
+                this.m_viewtexMaker.histroyUpdating = true;
+                this.m_viewtexMaker.run();
+                for(let i: number = 0; i < this.m_clips.length; ++i) {
+                    this.m_clips[i].setVisible( false );
+                }
+                this.m_clips = [];
+            }
+        }
+        // this.m_viewtexMaker.force = true;
+        // this.m_viewtexMaker.run();
+
         //this.m_material.setDisplacementParams(this.m_dispHeight * (1.0 + Math.cos(this.m_time)), 0.0);
         this.m_engine.rscene.setClearRGBColor3f(0.2, 0.2, 0.2);
         this.m_materialCtx.run();
         this.m_engine.run();
+
+        DebugFlag.Flag_0 = 0;
     }
 }
 export default DemoMultiLambertLights;

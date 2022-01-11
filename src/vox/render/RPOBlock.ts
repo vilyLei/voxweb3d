@@ -19,6 +19,7 @@ import { RenderStateObject, RenderColorMask } from "../../vox/render/RODrawState
 import RenderProxy from "../../vox/render/RenderProxy";
 import RenderShader from '../../vox/render/RenderShader';
 import ROVertexResource from "../../vox/render/ROVertexResource";
+import DebugFlag from "../debug/DebugFlag";
 //import DebugFlag from "../debug/DebugFlag";
 
 export default class RPOBlock {
@@ -75,7 +76,6 @@ export default class RPOBlock {
         }
     }
     private run0(rc: RenderProxy): void {
-
         let nextNode: RPONode = this.m_nodeLinker.getBegin();
         if (nextNode != null) {
             
@@ -125,8 +125,10 @@ export default class RPOBlock {
                     texFlag = true;
                 }
                 texTotal--;
+                // if(DebugFlag.Flag_0 > 0) console.log("nextNode.drawEnabled: ",nextNode.drawEnabled);
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
+                    // if(DebugFlag.Flag_0 > 0) console.log("unit.drawEnabled: ",unit.drawEnabled);
                     if (unit.drawEnabled) {
                         if (vtxFlag) {
                             nextNode.vro.run();
@@ -284,6 +286,7 @@ export default class RPOBlock {
             if (forceUpdateUniform) {
                 this.m_shader.resetUniform();
             }
+            // console.log("***8** drawLockMaterialByUnit(), unit: ",unit);
             if (RendererDevice.IsMobileWeb()) {
                 // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在某些设备上会有问题(例如ip6s上无法正常绘制)
                 // 注意临时产生的 vro 对象的回收问题

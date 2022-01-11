@@ -4,11 +4,13 @@ void calcDiffuse(inout vec4 color, vec2 uv) {
     #endif
     #ifdef VOX_DIFFUSE_MAP2
         #ifdef VOX_USE_DIFFUSEMAP2_MAT
-            vec4 dstColor = VOX_Texture2D( VOX_DIFFUSE_MAP2, v_map2Pos.xy / v_map2Pos.ww );
+            vec4 srcColor = VOX_Texture2D( VOX_DIFFUSE_MAP2, v_map2Pos.xy / v_map2Pos.ww );
         #else
-            vec4 dstColor = VOX_Texture2D( VOX_DIFFUSE_MAP2, uv );
+            vec4 srcColor = VOX_Texture2D( VOX_DIFFUSE_MAP2, uv );
         #endif
-        color.xyz = mix(color.xyz, dstColor.xyz, dstColor.www);
+        
+        color.xyz = mix(color.xyz, srcColor.xyz, srcColor.www);
+        color.w = min(color.w + srcColor.w, 1.0);
     #endif
 }
 #ifdef VOX_NORMAL_MAP

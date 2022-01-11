@@ -105,6 +105,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     setVisible(boo: boolean): void {
         this.visible = boo;
         this.drawEnabled = boo && this.ivsCount > 0;
+        // if(DebugFlag.Flag_0 > 0) console.log("#### setVisible(): ", boo, "this.drawEnabled: ",this.drawEnabled);
     }
     setDrawFlag(renderState: number, rcolorMask: number): void {
         this.renderState = renderState;
@@ -128,7 +129,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         
         switch (this.drawMode) {
             case RenderDrawMode.ELEMENTS_TRIANGLES:
-                //console.log("RPOUnit::run(), TRIANGLES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
+                // if(DebugFlag.Flag_0 > 0)console.log("RPOUnit::run(), TRIANGLES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
                 //rc.RContext.drawElements(rc.TRIANGLES, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
                 rc.RContext.drawElements(rc.TRIANGLES, ivsCount, this.ibufType, this.drawOffset);
                 break;

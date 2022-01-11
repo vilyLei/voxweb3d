@@ -397,15 +397,7 @@ export default class FBOInstance {
      * @param outputIndex framebuffer output attachment index
      */
     setRenderToRGBATexture(texture: RTTTextureProxy, outputIndex: number = 0): RTTTextureProxy {
-        if (texture == null) {
-            texture = new RTTTextureProxy(32, 32);
-            texture.internalFormat = TextureFormat.RGBA;
-            texture.srcFormat = TextureFormat.RGBA;
-            texture.dataType = TextureDataType.UNSIGNED_BYTE;
-            texture.minFilter = TextureConst.LINEAR;
-            texture.magFilter = TextureConst.LINEAR;
-            texture.__$setRenderProxy(this.m_renderProxy);
-        }
+        if (texture == null) texture = this.createRGBATexture();
         return this.setRenderToTexture(texture, outputIndex);
     }
     /**
@@ -416,7 +408,16 @@ export default class FBOInstance {
     setRenderToDepthTextureAt(systemDepthRTTTexIndex: number, outputIndex: number = 0): RTTTextureProxy {
         return this.setRenderToTexture(this.m_texStore.getDepthTextureAt(systemDepthRTTTexIndex), outputIndex);
     }
-
+    createRGBATexture(): RTTTextureProxy {
+        let texture = new RTTTextureProxy(32, 32);
+        texture.internalFormat = TextureFormat.RGBA;
+        texture.srcFormat = TextureFormat.RGBA;
+        texture.dataType = TextureDataType.UNSIGNED_BYTE;
+        texture.minFilter = TextureConst.LINEAR;
+        texture.magFilter = TextureConst.LINEAR;
+        texture.__$setRenderProxy(this.m_renderProxy);
+        return texture;
+    }
     setClearState(clearColorBoo: boolean, clearDepthBoo: boolean, clearStencilBoo: boolean = false): void {
         this.m_clearColorBoo = clearColorBoo;
         this.m_clearDepthBoo = clearDepthBoo;
@@ -551,6 +552,7 @@ export default class FBOInstance {
                 this.runBeginDo();
             // rendering running
             for (let i: number = 0, len: number = this.m_rindexs.length; i < len; ++i) {
+                console.log("fbo ins this.m_renderer.runAt("+i+")");
                 this.m_renderer.runAt(this.m_rindexs[i]);
             }
         }

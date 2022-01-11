@@ -11,44 +11,40 @@ import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
 import ITextureRenderObj from "../../vox/render/ITextureRenderObj";
 import RPOUnit from "../../vox/render/RPOUnit";
 import IPoolNode from "../../vox/base/IPoolNode";
+import DebugFlag from "../debug/DebugFlag";
 
 // 为了渲染循环执行中持有RPOUnit和对应的Disp
-export default class RPONode implements IPoolNode
-{
-    constructor()
-    {
+export default class RPONode implements IPoolNode {
+    constructor() {
     }
-    __$ruid:number = -1;
-    drawEnabled:boolean = true;
-    uid:number = -1;
-    index:number = -1;
+    __$ruid: number = -1;
+    drawEnabled: boolean = true;
+    uid: number = -1;
+    index: number = -1;
     // only for show info
-    drawMode:number = 0;
-    ivsIndex:number = 0;
-    ivsCount:number = 0;
-    insCount:number = 0;
-    shdUid:number = -1;
-    vtxUid:number = -1;
-    texMid:number = -1;
-    rtokey:number = -1;
-    prev:RPONode = null;
-    next:RPONode = null;
-    unit:RPOUnit = null;
-    vro:IVertexRenderObj = null;
-    tro:ITextureRenderObj = null;
-    rvroI:number = -1;
-    rtroI:number = -1;
-    setValue(value:number):void
-    {
+    drawMode: number = 0;
+    ivsIndex: number = 0;
+    ivsCount: number = 0;
+    insCount: number = 0;
+    shdUid: number = -1;
+    vtxUid: number = -1;
+    texMid: number = -1;
+    rtokey: number = -1;
+    prev: RPONode = null;
+    next: RPONode = null;
+    unit: RPOUnit = null;
+    vro: IVertexRenderObj = null;
+    tro: ITextureRenderObj = null;
+    rvroI: number = -1;
+    rtroI: number = -1;
+    setValue(value: number): void {
         this.unit.value = value;
     }
-    isVsible():boolean
-    {
+    isVsible(): boolean {
         return this.unit == null || this.unit.drawEnabled;
     }
-    updateData():void
-    {
-        let p:RPOUnit = this.unit;
+    updateData(): void {
+        let p: RPOUnit = this.unit;
         this.drawMode = p.drawMode;
         this.ivsIndex = p.ivsIndex;
         this.ivsCount = p.ivsCount;
@@ -61,8 +57,7 @@ export default class RPONode implements IPoolNode
         this.texMid = p.texMid;
         this.tro = p.tro;
     }
-    reset():void
-    {
+    reset(): void {
         this.drawEnabled = true;
         this.uid = -1;
         this.index = -1;
@@ -80,8 +75,7 @@ export default class RPONode implements IPoolNode
         this.prev = null;
         this.next = null;
     }
-    toString():string
-    {
-        return "[Object RPONode(uid = "+this.uid+", index = "+this.index+", shdUid = "+this.shdUid+", vtxUid = "+this.vtxUid+")]";
+    toString(): string {
+        return "[Object RPONode(uid = " + this.uid + ", index = " + this.index + ", shdUid = " + this.shdUid + ", vtxUid = " + this.vtxUid + ")]";
     }
 }

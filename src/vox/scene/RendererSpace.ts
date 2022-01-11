@@ -22,6 +22,7 @@ import Entity3DNodeLinker from "../../vox/scene/Entity3DNodeLinker";
 import IRenderer from "../../vox/scene/IRenderer";
 import IRaySelector from "../../vox/scene/IRaySelector";
 import ISpaceCullingor from "../../vox/scene/ISpaceCullingor";
+import DebugFlag from '../debug/DebugFlag';
 
 export default class RendererSpace implements IRendererSpace {
     private static s_uid: number = 0;
@@ -190,6 +191,7 @@ export default class RendererSpace implements IRendererSpace {
                         nextNode.entity.drawEnabled = false;
                         nextNode.rpoNode.drawEnabled = false;
                     }
+                    // if(DebugFlag.Flag_0 > 0) console.log("nextNode.rpoNode.isVsible(): ",nextNode.rpoNode.isVsible(), nextNode.entity.isDrawEnabled(), nextNode.drawEnabled);
                     nextNode = nextNode.next;
                 }
             }

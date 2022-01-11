@@ -13,10 +13,8 @@ import RPONode from "../../vox/render/RPONode";
 /*
  * render process object node pool management
  */
-export default class RPONodeBuilder extends PoolNodeBuilder
-{
-    protected createNode():IPoolNode
-    {
+export default class RPONodeBuilder extends PoolNodeBuilder {
+    protected createNode(): IPoolNode {
         return new RPONode();
     }
 }

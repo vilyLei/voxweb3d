@@ -5,6 +5,10 @@ import CameraBase from "../../../vox/view/CameraBase";
 
 import RTTTextureProxy from "../../../vox/texture/RTTTextureProxy";
 import Matrix4 from "../../../vox/math/Matrix4";
+import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
+import TextureProxy from "../../../vox/texture/TextureProxy";
+import WrapperTextureProxy from "../../../vox/texture/WrapperTextureProxy";
+import ScreenFixedAlignPlaneEntity from "../../../vox/entity/ScreenFixedAlignPlaneEntity";
 
 class ViewTextureMaker {
 
@@ -22,20 +26,27 @@ class ViewTextureMaker {
     private m_near: number = 10;
     private m_far: number = 2000.0;
     private m_viewRtt: RTTTextureProxy = null;
+    private m_colorRtt: RTTTextureProxy = null;
+    private m_colorMap: WrapperTextureProxy = null;
+    private m_map: WrapperTextureProxy = null;
     private m_fboIndex: number = 0;
     private m_processIDList: number[] = null;
     private m_rendererStatus: number = -1;
     private m_rendererProcessStatus: number = -1;
-
-    constructor(fboIndex: number) {
+    private m_colorPlane: ScreenFixedAlignPlaneEntity;
+    
+    private m_savingHistroy: boolean = false;
+    histroyUpdating: boolean = false;
+    constructor(fboIndex: number, savingHistroy: boolean = false) {
         this.m_fboIndex = fboIndex;
+        this.m_savingHistroy = savingHistroy;
     }
 
     initialize(rscene: RendererScene, processIDList: number[]): void {
         if (this.m_rscene == null) {
             this.m_rscene = rscene;
             this.m_processIDList = processIDList.slice(0);
-            this.initConfig(processIDList, false);
+            this.initConfig(processIDList);
         }
     }
     /**
@@ -72,9 +83,10 @@ class ViewTextureMaker {
         this.m_viewWidth = viewW;
         this.m_viewHeight = viewH;
     }
-
-    getMap(): RTTTextureProxy {
-        return this.m_viewRtt;
+    
+    getMap(): TextureProxy {
+        return this.m_map;
+        //return this.m_viewRtt;
     }
     getMatrix(): Matrix4 {
         return this.m_direcMatrix;
@@ -88,13 +100,37 @@ class ViewTextureMaker {
             this.m_fbo.setRProcessIDList(processIDList);
         }
     }
-    private initConfig(processIDList: number[], blurEnabled: boolean = false): void {
+    private initConfig(processIDList: number[]): void {
 
         this.m_fbo = this.m_rscene.createFBOInstance();
         this.m_fbo.asynFBOSizeWithViewport();
         this.m_fbo.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);
-        this.m_fbo.createFBOAt(this.m_fboIndex, this.m_mapWidth, this.m_mapHeight, true, true);
-        this.m_viewRtt = this.m_fbo.setRenderToRGBATexture(null, 0);
+        this.m_fbo.createFBOAt(this.m_fboIndex, this.m_mapWidth, this.m_mapHeight, true, false);
+        if(this.m_savingHistroy) {
+            this.m_colorRtt = this.m_fbo.setRenderToRGBATexture(null, 0);
+            this.m_viewRtt = this.m_fbo.setRenderToRGBATexture(null, 0);
+
+            this.m_colorMap = this.m_rscene.textureBlock.createWrapperTex(64,64);
+            this.m_colorMap.attachTex( this.m_colorRtt );
+            this.m_fbo.setRenderToRGBATexture( this.m_viewRtt, 0 );
+
+            this.m_colorPlane = new ScreenFixedAlignPlaneEntity();
+            //this.m_colorPlane.toTransparentBlend();
+            this.m_colorPlane.initialize(-1.0,-1.0,2.0,2.0,[this.m_colorMap]);
+
+            // let pl = new ScreenFixedAlignPlaneEntity();
+            // pl.initialize(-1.0,-1.0,0.4,0.4,[this.m_colorRtt]);
+            // this.m_rscene.addEntity(pl, 5);
+            // pl = new ScreenFixedAlignPlaneEntity();
+            // pl.initialize(-1.0,-0.5,0.4,0.4,[this.m_viewRtt]);
+            // this.m_rscene.addEntity(pl, 5);
+
+        }else {
+            this.m_viewRtt = this.m_fbo.setRenderToRGBATexture(null, 0);
+        }
+        this.m_map = this.m_rscene.textureBlock.createWrapperTex(64,64);
+        this.m_map.attachTex( this.m_viewRtt );
+
         this.m_fbo.setRProcessIDList(processIDList);
 
         this.m_direcCamera = new CameraBase();
@@ -113,7 +149,7 @@ class ViewTextureMaker {
         if (this.m_direcCamera != null) {
 
             this.m_fbo.resizeFBO(this.m_mapWidth, this.m_mapHeight);
-            
+
             let viewWidth: number = this.m_viewWidth;
             let viewHeight: number = this.m_viewHeight;
             this.m_direcCamera.lookAtRH(this.m_camPos, Vector3D.ZERO, Vector3D.Z_AXIS);
@@ -168,10 +204,36 @@ class ViewTextureMaker {
     }
     private build(): void {
 
+        // console.log("this.tex maker build(), begin.");
+        // console.log("this.tex maker build(), this.histroyUpdating: ",this.histroyUpdating);
         this.m_fbo.useCamera(this.m_direcCamera);
+        if(this.m_savingHistroy) {
+            if(this.histroyUpdating) {
+    
+                let color = this.m_colorRtt;
+                let rtt = this.m_viewRtt;
+                if(this.m_map.getAttachTex() == this.m_viewRtt) {
+                    color = this.m_viewRtt;
+                    rtt = this.m_colorRtt;
+                }
+                
+                // console.log("this.tex maker build(), tex: ", color.getUid(), rtt.getUid());
+
+                this.m_colorMap.attachTex( color );
+                this.m_map.attachTex( rtt );
+                this.m_fbo.setRenderToRGBATexture( rtt, 0 );
+                
+                this.histroyUpdating = false;
+            }
+            // console.log("this.m_colorRtt.isDataEnough(): ",this.m_colorRtt.isDataEnough());
+            this.m_fbo.runBegin();
+            this.m_fbo.drawEntity(this.m_colorPlane);
+        }
         this.m_fbo.run();
         this.m_fbo.useMainCamera();
         this.m_fbo.setRenderToBackBuffer();
+        // console.log("this.tex maker build(), end.");
+
     }
 }
 export { ViewTextureMaker };

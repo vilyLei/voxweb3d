@@ -353,7 +353,9 @@ export class RendererInstance implements IRenderer {
      * 在任意阶段绘制一个指定的 entity,只要其资源数据准备完整
      */
     drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
-        if (entity != null && entity.getVisible() && !this.m_renderProxy.isContextLost()) {
+        
+        if (entity != null && entity.getVisible() && !this.m_renderProxy.isContextLost()) {            
+            // console.log("***8** rendewrer ins drawEntity(), entity: ",entity, entity.getRendererUid() == this.m_uid);
             if (entity.getRendererUid() == this.m_uid) {
                 this.m_fixProcess.drawDisp(entity.getDisplay(), useGlobalUniform, forceUpdateUniform);
             }

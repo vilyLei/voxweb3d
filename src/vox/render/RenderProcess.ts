@@ -325,8 +325,9 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
         }
     }
     drawDisp(disp: IRODisplay, useGlobalUniform: boolean = false,  forceUpdateUniform: boolean = true): void {
+        
         if (disp != null) {
-            let unit: RPOUnit = disp.__$$runit as RPOUnit;
+            let unit: RPOUnit = disp.__$$runit as RPOUnit;            
             if (unit != null) {
                 if (this.m_shader.isUnLocked()) {
                     if(forceUpdateUniform) {
