@@ -56,6 +56,7 @@ export default class AssetsModule {
             AssetsModule.s_materialCtx = materialCtx;
 
             materialCtx.getTextureByUrl("static/assets/particle/explosion/explodeBg_01c.png");
+            materialCtx.getTextureByUrl("static/assets/particle/explosion/explosionCrack01.png");
             materialCtx.getTextureByUrl("static/assets/box_wood01.jpg");
             materialCtx.getTextureByUrl("static/assets/moss_01.jpg");
             materialCtx.getTextureByUrl("static/assets/moss_03.jpg");

@@ -1,4 +1,3 @@
-
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import RendererScene from "../../../vox/scene/RendererScene";
 import { ViewTextureMaker } from "../../../renderingtoy/mcase/texture/ViewTextureMaker";
@@ -30,12 +29,11 @@ class TerrainEffect {
 
         this.m_viewTexMaker = new ViewTextureMaker(fboIndex);
         this.m_viewTexMaker.setClearColorEnabled(false);
-        this.m_viewTexMaker.setCameraViewSize(2048, 2048);
+        this.m_viewTexMaker.setCameraViewSize(2400, 2400);
         this.m_viewTexMaker.setMapSize(2048, 2048);
         this.m_viewTexMaker.initialize(this.m_rscene, processIDList);
         this.m_viewTexMaker.upate();
         this.m_viewTexMaker.force = true;
-        // this.m_viewTexMaker.histroyUpdating = true;
         this.m_viewTexMaker.run();
     }
     
@@ -48,12 +46,14 @@ class TerrainEffect {
      */
     createDestroyEffect(role: IAttackDst): void {
         let entity: DisplayEntity;
-        if(this.m_burnningSpots.length > 30) {
-            //console.log("repeat use a old spot entity.");
+        if(this.m_burnningSpots.length > 20) {
             entity = this.m_burnningSpots.shift();
         }
-        else {
-            let tex = AssetsModule.GetImageTexByUrl( "static/assets/particle/explosion/explodeBg_01c.png" );
+        else {            
+            let tex1 = AssetsModule.GetImageTexByUrl( "static/assets/particle/explosion/explodeBg_01c.png" );
+            let tex2 = AssetsModule.GetImageTexByUrl( "static/assets/particle/explosion/explosionCrack01.png" );
+            let tex = Math.random() > 0.4 ? tex1 : tex2;
+
             tex.premultiplyAlpha = true;
             let material = new Default3DMaterial();
             material.premultiplyAlpha = true;
@@ -72,10 +72,7 @@ class TerrainEffect {
         }
         
         let pv: Vector3D = this.m_pv;
-        // let tex = AssetsModule.GetImageTexByUrl( "static/assets/particle/explosion/explodeBg_01c.png" );
-        //tex.premultiplyAlpha = true;
         role.getPosition(pv);
-        //let ab = role.radius
         pv.y += 2.0;
         let scaleX: number = role.splashRadius + Math.random() * 40 - 20;
         let scaleZ: number = role.splashRadius + Math.random() * 40 - 20;
