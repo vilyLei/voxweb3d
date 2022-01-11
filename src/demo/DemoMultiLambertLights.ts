@@ -69,6 +69,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
             RendererDevice.SetWebBodyColor("black");
 
             let rparam: RendererParam = new RendererParam();
+            // rparam.maxWebGLVersion = 1;
             rparam.setCamProject(45, 10.0, 8000.0);
             rparam.setAttriStencil(true);
             rparam.setAttriAlpha(false);
@@ -204,12 +205,14 @@ export class DemoMultiLambertLights implements IShaderLibListener {
 
     }
     private initScene(): void {
-        
-        //this.m_viewTexMaker = new ViewTextureMaker(1, true);
-        //this.m_viewTexMaker.setClearColorEnabled(true);
-
-        this.m_viewTexMaker = new ViewTextureMaker(1);
-        this.m_viewTexMaker.setClearColorEnabled(false);
+        if(RendererDevice.IsWebGL1()) {
+            this.m_viewTexMaker = new ViewTextureMaker(1, true);
+            this.m_viewTexMaker.setClearColorEnabled(true);
+        }
+        else {
+            this.m_viewTexMaker = new ViewTextureMaker(1);
+            this.m_viewTexMaker.setClearColorEnabled(false);
+        }
         this.m_viewTexMaker.setCameraViewSize(2048, 2048);
         this.m_viewTexMaker.setMapSize(2048, 2048);
         this.m_viewTexMaker.initialize(this.m_engine.rscene, [4]);
@@ -448,8 +451,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         DebugFlag.Flag_0 = 1;
         this.m_times ++;
 
-        let tex = this.m_materialCtx.getTextureByUrl( "static/assets/particle/explosion/explodeBg_01a.png" );
-        //let tex = this.m_materialCtx.getTextureByUrl( "static/assets/particle/explosion/explodeBg_02a.png" );
+        let tex = this.m_materialCtx.getTextureByUrl( "static/assets/particle/explosion/explodeBg_01c.png" );
         tex.premultiplyAlpha = true;
         let clipPl: Plane3DEntity = new Plane3DEntity();
         clipPl.spaceCullMask = SpaceCullingMask.NONE;

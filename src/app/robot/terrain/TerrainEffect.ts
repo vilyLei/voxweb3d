@@ -8,6 +8,7 @@ import { SpaceCullingMask } from "../../../vox/space/SpaceCullingMask";
 import RendererState from "../../../vox/render/RendererState";
 import { RenderModule } from "../scene/RenderModule";
 import Vector3D from "../../../vox/math/Vector3D";
+import RendererDevice from "../../../vox/render/RendererDevice";
 
 class TerrainEffect {
 
@@ -27,8 +28,15 @@ class TerrainEffect {
     }
     private init(fboIndex: number,  processIDList: number[]): void {
 
-        this.m_viewTexMaker = new ViewTextureMaker(fboIndex);
-        this.m_viewTexMaker.setClearColorEnabled(false);
+        if(RendererDevice.IsWebGL1()) {
+            this.m_viewTexMaker = new ViewTextureMaker(fboIndex, true);
+            this.m_viewTexMaker.setClearColorEnabled(true);
+        }
+        else {
+            this.m_viewTexMaker = new ViewTextureMaker(fboIndex);
+            this.m_viewTexMaker.setClearColorEnabled(false);
+        }
+
         this.m_viewTexMaker.setCameraViewSize(2400, 2400);
         this.m_viewTexMaker.setMapSize(2048, 2048);
         this.m_viewTexMaker.initialize(this.m_rscene, processIDList);
