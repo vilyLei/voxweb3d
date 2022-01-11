@@ -281,6 +281,10 @@ export default class LambertLightMaterial extends MaterialBase {
         if(this.vertUniform != null) {
             this.vertUniform.buildShaderUniformData( sud );
         }
+        if(this.diffuseMap2Matrix != null) {
+            sud.uniformNameList.push("u_map2ViewMat");
+            sud.dataList.push( this.diffuseMap2Matrix.getLocalFS32() );
+        }
 
         return sud;
     }

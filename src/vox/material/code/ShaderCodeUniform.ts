@@ -40,7 +40,8 @@ class ShaderCodeUniform implements IShaderCodeUniform {
         if(this.m_uniqueNSKeyFlag) {
             this.m_uniqueNSKeyString = "[" + this.m_uniqueNSKeys[0];
             for(let i: number = 1; i < this.m_uniqueNSKeysTotal; ++i) {
-                this.m_uniqueNSKeyString += "-"+this.m_uniqueNSKeys[i];
+                //this.m_uniqueNSKeyString += "-"+this.m_uniqueNSKeys[i];
+                this.m_uniqueNSKeyString += ""+this.m_uniqueNSKeys[i];
             }
             this.m_uniqueNSKeyString += "]";
             return this.m_uniqueNSKeyString;

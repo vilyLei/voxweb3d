@@ -181,6 +181,9 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
 
         this.uniform.reset();
     }
+    addUniqueNSKeyString(key: string): void {
+        this.m_uniqueNSKeyString += key;
+    }
     /**
      * 预编译信息
      * @returns 返回预编译信息

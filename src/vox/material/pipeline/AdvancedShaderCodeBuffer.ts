@@ -59,6 +59,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
                     this.m_coder.addDefine("VOX_USE_DIFFUSEMAP2_MAT");
                     this.m_coder.addVarying("vec4", "v_map2Pos");
                     this.m_coder.addVertUniform("mat4", "u_map2ViewMat");
+                    this.m_coder.addUniqueNSKeyString("M2VM");
                 }
                 this.m_uniform.add2DMap("VOX_DIFFUSE_MAP2", !this.diffuseMap2Matrix, true, false);
             }

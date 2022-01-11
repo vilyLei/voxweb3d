@@ -1,0 +1,177 @@
+import Vector3D from "../../../vox/math/Vector3D";
+import RendererScene from "../../../vox/scene/RendererScene";
+import FBOInstance from "../../../vox/scene/FBOInstance";
+import CameraBase from "../../../vox/view/CameraBase";
+
+import RTTTextureProxy from "../../../vox/texture/RTTTextureProxy";
+import Matrix4 from "../../../vox/math/Matrix4";
+
+class ViewTextureMaker {
+
+    private m_rscene: RendererScene = null;
+    private m_direcCamera: CameraBase = null;
+    private m_offetMatrix: Matrix4 = null;
+    private m_direcMatrix: Matrix4 = null;
+    private m_fbo: FBOInstance = null;
+
+    private m_camPos: Vector3D = new Vector3D(0.0, 800.0, 0.0);
+    private m_mapWidth: number = 128;
+    private m_mapHeight: number = 128;
+    private m_viewWidth: number = 1300;
+    private m_viewHeight: number = 1300;
+    private m_near: number = 10;
+    private m_far: number = 2000.0;
+    private m_viewRtt: RTTTextureProxy = null;
+    private m_fboIndex: number = 0;
+    private m_processIDList: number[] = null;
+    private m_rendererStatus: number = -1;
+    private m_rendererProcessStatus: number = -1;
+
+    constructor(fboIndex: number) {
+        this.m_fboIndex = fboIndex;
+    }
+
+    initialize(rscene: RendererScene, processIDList: number[]): void {
+        if (this.m_rscene == null) {
+            this.m_rscene = rscene;
+            this.m_processIDList = processIDList.slice(0);
+            this.initConfig(processIDList, false);
+        }
+    }
+    /**
+     * set shawow rtt texture size
+     * @param mapW view rtt texture width
+     * @param mapH view rtt texture height
+     */
+    setMapSize(mapW: number, mapH: number): void {
+        this.m_mapWidth = mapW;
+        this.m_mapHeight = mapH;
+    }
+    /**
+     * set view camera world position 
+     * @param pos view camera position in world.
+     */
+    setCameraPosition(pos: Vector3D): void {
+        this.m_camPos.copyFrom(pos);
+    }
+    /**
+     * set view camera near plane distance 
+     * @param near view camera near plane distance 
+     */
+    setCameraNear(near: number): void {
+        this.m_near = near;
+    }
+    /**
+     * set view camera far plane distance 
+     * @param far view camera far plane distance 
+     */
+    setCameraFar(far: number): void {
+        this.m_far = far;
+    }
+    setCameraViewSize(viewW: number, viewH: number): void {
+        this.m_viewWidth = viewW;
+        this.m_viewHeight = viewH;
+    }
+
+    getMap(): RTTTextureProxy {
+        return this.m_viewRtt;
+    }
+    getMatrix(): Matrix4 {
+        return this.m_direcMatrix;
+    }
+    getCamera(): CameraBase {
+        return this.m_direcCamera;
+    }
+    setRendererProcessIDList(processIDList: number[]): void {
+        if (this.m_fbo != null) {
+            this.m_processIDList = processIDList.slice(0);
+            this.m_fbo.setRProcessIDList(processIDList);
+        }
+    }
+    private initConfig(processIDList: number[], blurEnabled: boolean = false): void {
+
+        this.m_fbo = this.m_rscene.createFBOInstance();
+        this.m_fbo.asynFBOSizeWithViewport();
+        this.m_fbo.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);
+        this.m_fbo.createFBOAt(this.m_fboIndex, this.m_mapWidth, this.m_mapHeight, true, true);
+        this.m_viewRtt = this.m_fbo.setRenderToRGBATexture(null, 0);
+        this.m_fbo.setRProcessIDList(processIDList);
+
+        this.m_direcCamera = new CameraBase();
+
+        this.m_direcMatrix = new Matrix4();
+        this.m_offetMatrix = new Matrix4();
+        this.m_offetMatrix.identity();
+        this.m_offetMatrix.setScaleXYZ(0.5, 0.5, 0.5);
+        this.m_offetMatrix.setTranslationXYZ(0.5, 0.5, 0.5);
+
+        this.updateData();
+
+    }
+    private updateData(): void {
+
+        if (this.m_direcCamera != null) {
+
+            this.m_fbo.resizeFBO(this.m_mapWidth, this.m_mapHeight);
+            
+            let viewWidth: number = this.m_viewWidth;
+            let viewHeight: number = this.m_viewHeight;
+            this.m_direcCamera.lookAtRH(this.m_camPos, Vector3D.ZERO, Vector3D.Z_AXIS);
+            this.m_direcCamera.orthoRH(this.m_near, this.m_far, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
+            this.m_direcCamera.setViewXY(0, 0);
+            this.m_direcCamera.setViewSize(viewWidth, viewHeight);
+            this.m_direcCamera.update();
+
+            this.m_direcMatrix.copyFrom(this.m_direcCamera.getVPMatrix());
+            this.m_direcMatrix.append(this.m_offetMatrix);
+        }
+    }
+    private mm_camVersion: number = -1;
+    force: boolean = true;
+
+    upate(): void {
+
+        this.mm_camVersion = this.m_direcCamera.version;
+        this.updateData();
+    }
+    private getRendererProcessStatus(): number {
+        let status: number = 31;
+        for (let i: number = 0; i < this.m_processIDList.length; ++i) {
+            status += status * this.m_rscene.getRenderProcessAt(i).getStatus();
+        }
+        return status;
+    }
+    run(): void {
+
+        if (this.m_direcCamera.version != this.mm_camVersion) {
+            this.mm_camVersion = this.m_direcCamera.version;
+        }
+
+        let flag: boolean = this.force;
+        if (flag) {
+            this.build();
+        }
+        else {
+            if (this.m_rendererStatus != this.m_rscene.getRendererStatus()) {
+                let status: number = this.getRendererProcessStatus();
+                if (this.m_rendererProcessStatus != status) {
+                    this.m_rendererProcessStatus = status;
+                    flag = true;
+                }
+                this.m_rendererStatus = this.m_rscene.getRendererStatus();
+            }
+            if (flag) {
+                this.build();
+            }
+        }
+        this.force = false;
+    }
+    private build(): void {
+
+        this.m_fbo.useCamera(this.m_direcCamera);
+        this.m_fbo.run();
+        this.m_fbo.useMainCamera();
+        this.m_fbo.setRenderToBackBuffer();
+    }
+}
+export { ViewTextureMaker };
