@@ -96,11 +96,12 @@ class TextBillboardLoading {
             if (this.m_progress > this.m_dstProgress) {
                 this.m_progress = this.m_dstProgress;
             }
-            let f: number = this.m_progress / this.m_dstProgress;
+            let f: number = this.m_progress / 100.0;
             this.m_loadingEntity.setText(this.loadingInfo + " " + Math.round(f * 100) + "%");
             this.m_loadingEntity.updateMeshToGpu();
             this.m_loadingEntity.update();
         }
+
         let f: number = dstProgress;
         this.m_dstProgress = Math.round(f * 100);
 

@@ -89,7 +89,7 @@ export class RbtDrama implements IShaderLibListener {
     initialize(): void {
         console.log("RbtDrama::initialize()......");
         if (this.m_engine == null) {
-            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
