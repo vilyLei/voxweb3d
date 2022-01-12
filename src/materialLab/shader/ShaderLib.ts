@@ -35,6 +35,7 @@ class ShaderCodeObjectLoader {
     private m_loadingTotal: number = 0;
     private m_shaderCodeObject: ShaderCodeObject = new ShaderCodeObject();
     private m_configure: ShaderCodeConfigure = null;
+    version: string = "";
     constructor(configure: ShaderCodeConfigure) {
         this.m_configure = configure;
     }
@@ -144,9 +145,10 @@ class ShaderCodeObjectLoader {
 
         this.m_loadingTotal = 0;
         if (this.m_configure.urls == null) {
+            let version = this.version != "" ? this.version + "/" : "";
             let suffix: string = this.m_configure.binary ? ".bin" : ".glsl";
             for (let i: number = 0; i < this.m_configure.types.length; ++i) {
-                let url: string = "static/shader/glsl/" + this.m_configure.uuid + "/" + this.m_configure.types[i] + suffix;
+                let url: string = "static/shader/" + version + "glsl/" + this.m_configure.uuid + "/" + this.m_configure.types[i] + suffix;
                 this.loadCode(url, this.m_configure.types[i], loadedCallback);
             }
         } else {

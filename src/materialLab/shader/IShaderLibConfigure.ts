@@ -4,6 +4,7 @@ import { ShaderCodeType } from "./ShaderCodeType";
 import { ShaderCodeConfigure } from "./ShaderCodeConfigure";
 
 interface IShaderLibConfigure {
+    version: string;
     shaderCodeConfigures: ShaderCodeConfigure[];
 }
 

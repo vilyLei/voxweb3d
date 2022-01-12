@@ -23,6 +23,7 @@ class MaterialContextParam {
     vsmEnabled: boolean = true;
     loadAllShaderCode: boolean = false;
     shaderCodeBinary: boolean = false;
+    shaderLibVersion: number = 0;
 
     lambertMaterialEnabled: boolean = true;
     pbrMaterialEnabled: boolean = true;
@@ -97,7 +98,7 @@ class MaterialContext {
         return tex;
     }
     createShaderLibConfig(): IShaderLibConfigure {
-        return {shaderCodeConfigures:[]};
+        return {shaderCodeConfigures:[], version: ""};
     }
     initialize(rscene: RendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
 

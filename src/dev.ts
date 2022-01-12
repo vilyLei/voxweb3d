@@ -354,7 +354,7 @@
 
 //  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
-//  import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
+import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
 
 //  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 
@@ -370,7 +370,7 @@
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
-import {DemoPBRTexViewer as Demo} from "./pbr/DemoPBRTexViewer";
+//  import {DemoPBRTexViewer as Demo} from "./pbr/DemoPBRTexViewer";
 
 //  import {DemoPBRDisplacement as Demo} from "./pbr/DemoPBRDisplacement";
 
