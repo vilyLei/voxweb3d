@@ -23,7 +23,7 @@ class MaterialContextParam {
     vsmEnabled: boolean = true;
     loadAllShaderCode: boolean = false;
     shaderCodeBinary: boolean = false;
-    shaderLibVersion: number = 0;
+    shaderLibVersion: string = "";
 
     lambertMaterialEnabled: boolean = true;
     pbrMaterialEnabled: boolean = true;
@@ -113,7 +113,8 @@ class MaterialContext {
                 param = new MaterialContextParam();
             }
             this.m_param = param;
-
+            if(param.shaderLibVersion != "") shaderLibConfigure.version = param.shaderLibVersion;
+            
             MaterialContext.ShaderLib.initialize(shaderLibConfigure, param.shaderCodeBinary);
             if(param.loadAllShaderCode) {
                 MaterialContext.ShaderLib.addAllShaderCodeObject();

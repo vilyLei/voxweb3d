@@ -48,8 +48,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     private m_profileInstance: ProfileInstance = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
-    // private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
-    private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
+    private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
+    //private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
     private m_viewTexMaker: ViewTextureMaker = null;
 
     private m_lightEntities: ILightEntity[] = [];
@@ -91,11 +91,12 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     private initMaterialCtx(): void {
 
         let mcParam: MaterialContextParam = new MaterialContextParam();
+        mcParam.shaderLibVersion = "v101";
         mcParam.pointLightsTotal = 3;
         mcParam.directionLightsTotal = 0;
         mcParam.spotLightsTotal = 0;
         mcParam.loadAllShaderCode = true;
-        mcParam.shaderCodeBinary = true;
+        mcParam.shaderCodeBinary = false;
         mcParam.pbrMaterialEnabled = false;
         mcParam.vsmFboIndex = 0;
         //mcParam.vsmEnabled = false;

@@ -172,6 +172,7 @@ class ShaderLib implements IShaderLib{
     private m_shaderCodeMap: Map<ShaderCodeUUID, ShaderCodeObject> = new Map();
     private m_configLib: ShaderCodeConfigureLib = null;
     private m_listener: IShaderLibListener = null;
+    private m_version: string = "";
 
     constructor() { }
 
@@ -190,8 +191,8 @@ class ShaderLib implements IShaderLib{
             let list: ShaderCodeConfigure[] = null;
             if (shaderLibConfigure != null) {
                 list = shaderLibConfigure.shaderCodeConfigures;
+                this.m_version = shaderLibConfigure.version;
             }
-            
             if(list != null) {
                 for(let i: number = 0; i < list.length; ++i) {
                     configure = list[i];
@@ -226,6 +227,7 @@ class ShaderLib implements IShaderLib{
         if (!this.m_shaderCodeMap.has(uuid) && !this.m_loadStatusMap.has(uuid)) {
             this.m_loadingTotal ++;
             let loader: ShaderCodeObjectLoader = new ShaderCodeObjectLoader(this.m_configLib.getConfigureWithUUID(uuid));
+            loader.version = this.m_version;
             loader.load((uuid: ShaderCodeUUID, shaderCodeobject: ShaderCodeObject): void => {
 
                 this.m_shaderCodeMap.set(uuid, shaderCodeobject);                
