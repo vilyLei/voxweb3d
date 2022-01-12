@@ -17,6 +17,7 @@ class CommonMaterialContext extends MaterialContext {
 
     private m_specularLoader: SpecularTextureLoader = null;
     private m_specularEnvMap: TextureProxy = null;
+    
     /**
      * 构造 lambert light material流水线
      */
@@ -87,6 +88,7 @@ class CommonMaterialContext extends MaterialContext {
             }
             param.loadAllShaderCode = true;
 
+            let baseUrl: string = "static/shader/" + (param.shaderLibVersion != null ? param.shaderLibVersion + "/" : "");
             if (param.loadAllShaderCode) {
                 if (param.lambertMaterialEnabled) {
                     configure = new ShaderCodeConfigure();
@@ -94,12 +96,14 @@ class CommonMaterialContext extends MaterialContext {
                     configure.uuid = ShaderCodeUUID.Lambert;
                     configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
                     if (param.shaderCodeBinary) {
-                        configure.urls = [
-                            "static/shader/glsl/lambert/glsl01.bin",
-                            "static/shader/glsl/lambert/glsl02.bin",
-                            "static/shader/glsl/lambert/glsl03.bin",
-                            "static/shader/glsl/lambert/glsl04.bin"
-                        ]
+                        if(param.shaderFileRename) {
+                            configure.urls = [
+                                baseUrl + "glsl/lambert/glsl01.bin",
+                                baseUrl + "glsl/lambert/glsl02.bin",
+                                baseUrl + "glsl/lambert/glsl03.bin",
+                                baseUrl + "glsl/lambert/glsl04.bin"
+                            ];
+                        }
                     }
                     configure.binary = param.shaderCodeBinary;
                     libConfig.shaderCodeConfigures.push(configure);
@@ -110,12 +114,14 @@ class CommonMaterialContext extends MaterialContext {
                     configure.uuid = ShaderCodeUUID.PBR;
                     configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
                     if (param.shaderCodeBinary) {
-                        configure.urls = [
-                            "static/shader/glsl/pbr/glsl01.bin",
-                            "static/shader/glsl/pbr/glsl02.bin",
-                            "static/shader/glsl/pbr/glsl03.bin",
-                            "static/shader/glsl/pbr/glsl04.bin"
-                        ]
+                        if(param.shaderFileRename) {
+                            configure.urls = [
+                                baseUrl + "glsl/pbr/glsl01.bin",
+                                baseUrl + "glsl/pbr/glsl02.bin",
+                                baseUrl + "glsl/pbr/glsl03.bin",
+                                baseUrl + "glsl/pbr/glsl04.bin"
+                            ];
+                        }
                         configure.binary = param.shaderCodeBinary;
                     }
                     libConfig.shaderCodeConfigures.push(configure);

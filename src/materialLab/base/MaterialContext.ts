@@ -24,6 +24,7 @@ class MaterialContextParam {
     loadAllShaderCode: boolean = false;
     shaderCodeBinary: boolean = false;
     shaderLibVersion: string = "";
+    shaderFileRename: boolean = false;
 
     lambertMaterialEnabled: boolean = true;
     pbrMaterialEnabled: boolean = true;
