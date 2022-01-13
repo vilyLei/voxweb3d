@@ -94,7 +94,6 @@ class CommonMaterialContext extends MaterialContext {
                     configure = new ShaderCodeConfigure();
                     configure.buildBinaryFile = param.buildBinaryFile;
                     configure.uuid = ShaderCodeUUID.Lambert;
-                    configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
                     if (param.shaderCodeBinary) {
                         if(param.shaderFileRename) {
                             configure.urls = [
@@ -112,7 +111,6 @@ class CommonMaterialContext extends MaterialContext {
                     configure = new ShaderCodeConfigure();
                     configure.buildBinaryFile = param.buildBinaryFile;
                     configure.uuid = ShaderCodeUUID.PBR;
-                    configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
                     if (param.shaderCodeBinary) {
                         if(param.shaderFileRename) {
                             configure.urls = [

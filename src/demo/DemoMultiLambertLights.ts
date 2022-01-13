@@ -259,7 +259,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         billLine.setFadeRange(0.3, 0.7);
         billLine.setXYZ(20,0.0,20);
         billLine.setRGBOffset3f(Math.random() * 1.5 + 0.1, Math.random() * 1.5 + 0.1, Math.random() * 1.5 + 0.1);
-        //this.m_engine.rscene.addEntity(billLine, 3);
+        this.m_engine.rscene.addEntity(billLine, 3);
         //billLine.setFadeFactor(0.5);
         this.m_billLine = billLine;
         //*/

@@ -6,6 +6,9 @@
   "author": "vily",
   "license": "MIT",
   "scripts": {
+
+    "buildLib": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/app/VoxApp.ts",
+
     "build": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main.ts",
     "buildvox": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/dev.ts",
     "buildvoxweb": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/devWeb.ts",
