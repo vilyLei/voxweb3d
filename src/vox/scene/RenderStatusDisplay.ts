@@ -91,6 +91,7 @@ class RenderStatusDisplay {
                 let t: number = Date.now();
                 if (this.m_lastTime > 0) {
                     this.m_lastTime = t - this.m_lastTime;
+                    if(this.m_lastTime < 1) this.m_lastTime = 1;
                     this.m_fps = Math.round(1000.0 / this.m_lastTime);
                     if (immediaterender) {
                         this.render();

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>vox app base</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link type="text/css" rel="stylesheet" href="main.css">
+</head>
+<!-- <script src="../build/VoxApp.umd.min.js"></script> -->
+<script src="../build/VoxApp.package.js"></script>
+
+<body>
+	<script type="module">
+		
+		console.log("vox app base init...", VoxApp);
+		let voxAppIns = new VoxApp.VoxAppInstance();
+		console.log("vox app base voxAppIns...", voxAppIns);
+		
+		function initScene() {
+			let axix = new VoxApp.Axis3DEntity();
+			axix.initialize(30);
+			axix.setXYZ(300, 0.0,0.0);
+			voxAppIns.addEntity(axix);
+			let box = new VoxApp.Box3DEntity();
+			box.initializeCube(100.0, [voxAppIns.getImageTexByUrl("../../static/assets/default.jpg")]);
+			voxAppIns.addEntity(box);
+		}
+		function main() {
+			console.log("------ demo --- init ------");
+			voxAppIns.initialize();
+			initScene();
+			function mainLoop(now) {
+				voxAppIns.run();
+				window.requestAnimationFrame(mainLoop);
+			}
+			window.requestAnimationFrame(mainLoop);
+			console.log("------ demo --- running ------");
+		}
+		main();
+
+	</script>
+
+</body>
+
+</html>

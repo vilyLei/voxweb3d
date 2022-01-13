@@ -6,19 +6,50 @@ import MouseEvent from "../vox/event/MouseEvent";
 import RendererScene from "../vox/scene/RendererScene";
 import EngineBase from "../vox/engine/EngineBase";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
-
-class VoxApp {
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import IRenderEntity from "../vox/render/IRenderEntity";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import TextureProxy from "../vox/texture/TextureProxy";
+import { TextureConst } from "../vox/texture/TextureConst";
+import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
+import RendererState from "../vox/render/RendererState";
+// export class VoxAppInstance {
+class VoxAppInstance {
 
     private m_rscene: RendererScene = null;
     private m_engine: EngineBase = null;
-    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-    private m_axis: Axis3DEntity = new Axis3DEntity();
-    
+    private m_statusDisp: RenderStatusDisplay = null;
+    private m_timeoutId: any = -1;
+    private m_timeerDelay: number = 50;
+    private m_texLoader: ImageTextureLoader = null;
     constructor() { }
 
-    initialize(): void {
-        console.log("VoxApp::initialize()......");
+    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+        if(this.m_texLoader != null) {
+            let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+            ptex.mipmapEnabled = mipmapEnabled;
+            if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
+            return ptex;
+        }
+        return null;
+    }
+    addEntity(entity: IRenderEntity, processIndex: number = 0): void {
+        if (this.m_engine != null) {
+            this.m_rscene.addEntity(entity, processIndex);
+        }
+    }
+    getRendererScene(): RendererScene {
+        return this.m_engine.rscene;
+    }
+    getEngine(): EngineBase {
+        return this.m_engine;
+    }
+    initialize(timeerDelay: number = 50, renderStatus: boolean = true): void {
+        console.log("this::initialize()......");
         if (this.m_engine == null) {
+
+            this.m_timeerDelay = timeerDelay;
+            
             RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -33,29 +64,33 @@ class VoxApp {
 
             this.m_engine = new EngineBase();
             this.m_engine.initialize(rparam, 7);
+            this.m_engine.setProcessIdListAt(0, [0,1,2,4,5,6]);
             this.m_rscene = this.m_engine.rscene;
-            this.m_statusDisp.initialize();
 
-            this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
-            
+            this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+            if(renderStatus) {
+                this.m_statusDisp = new RenderStatusDisplay();
+                this.m_statusDisp.initialize();
+            }
+
             this.update();
         }
     }
-    private mouseDown(evt: any): void {
-        this.m_engine.interaction.viewRay.intersectPlane();
-        let pv: Vector3D = this.m_engine.interaction.viewRay.position;
-    }
-
-    private m_timeoutId: any = -1;
     private update(): void {
+
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
-        this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
+        this.m_timeoutId = setTimeout(this.update.bind(this), this.m_timeerDelay);
+        if(this.m_statusDisp != null) this.m_statusDisp.update(true);
     }
     run(): void {
-        this.m_statusDisp.update();
-        this.m_engine.run();
+        if (this.m_engine != null) {
+            if(this.m_statusDisp != null) this.m_statusDisp.update(false);
+            this.m_engine.run();
+        }
     }
 }
-export default VoxApp;
+
+// export default VoxAppInstance;
+export {RendererDevice, VoxAppInstance, Vector3D, Axis3DEntity, Box3DEntity, Sphere3DEntity, RendererState, RendererParam, EngineBase};
