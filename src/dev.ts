@@ -309,8 +309,6 @@
 
 //  import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 
-//  import {DemoDisplacementMap as Demo} from "./demo/DemoDisplacementMap";
-
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     event    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -334,9 +332,7 @@
 /////////////////////////////     shadow    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoBase as Demo} from "./shadow/vsm/DemoBase";
-
-//  import {DemoVSM as Demo} from "./shadow/vsm/DemoVSM";
+import {DemoBase as Demo} from "./shadow/vsm/DemoBase";
 
 //  import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
 
@@ -354,7 +350,7 @@
 
 //  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
- import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
+//  import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
 
 //  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 
