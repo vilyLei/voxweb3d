@@ -8,7 +8,7 @@
 import Color4 from "../../vox/material/Color4";
 import IRenderProcess from "../../vox/render/IRenderProcess";
 import IRenderEntity from "../../vox/render/IRenderEntity";
-import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
+import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 import {IRenderCamera} from "../render/IRenderCamera";
 import IRenderStage3D from "../render/IRenderStage3D";
 import RenderProxy from "../../vox/render/RenderProxy";
@@ -60,15 +60,15 @@ interface IRendererScene {
     removeEntity(entity: IRenderEntity): void;
     /**
      * add an entity container from the renderer process of the renderer instance
-     * @param container a DisplayEntityContainer instance
+     * @param container a IRenderEntityContainer instance
      * @param processid this destination renderer process id
      */
-    addContainer(container: DisplayEntityContainer, processid: number): void;
+    addContainer(container: IRenderEntityContainer, processid: number): void;
     /**
      * remove an entity container from the renderer instance
      * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
      */
-    removeContainer(child: DisplayEntityContainer): void;
+    removeContainer(child: IRenderEntityContainer): void;
 
     /**
      * @param type event type

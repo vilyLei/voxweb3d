@@ -16,7 +16,7 @@ import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import RenderProxy from "../../vox/render/RenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
-import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
+import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 import RendererParam from "../../vox/scene/RendererParam";
 import IRenderProcess from "../../vox/render/IRenderProcess";
 import RenderProcess from "../../vox/render/RenderProcess";
@@ -347,9 +347,9 @@ export default class RendererScene implements IRenderer, IRendererScene {
     getRenderProcessAt(processIndex: number): IRenderProcess {
         return this.m_renderer.getProcessAt(this.m_processids[processIndex]);
     }
-    private m_containers: DisplayEntityContainer[] = [];
+    private m_containers: IRenderEntityContainer[] = [];
     private m_containersTotal: number = 0;
-    addContainer(container: DisplayEntityContainer, processIndex: number = 0): void {
+    addContainer(container: IRenderEntityContainer, processIndex: number = 0): void {
         if (processIndex < 0) {
             processIndex = 0;
         }
@@ -369,7 +369,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
             }
         }
     }
-    removeContainer(container: DisplayEntityContainer): void {
+    removeContainer(container: IRenderEntityContainer): void {
         if (container != null && container.__$wuid == this.m_uid && container.getRenderer() == this.m_renderer) {
             let i: number = 0;
             for (; i < this.m_containersTotal; ++i) {

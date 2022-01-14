@@ -8,6 +8,7 @@
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 
 export default interface IDisplayEntityContainer extends IRenderEntityContainer {
+    
     addChild(child: IDisplayEntityContainer): void;
     removeChild(child: IDisplayEntityContainer): void;
 }
