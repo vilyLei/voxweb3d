@@ -6,8 +6,6 @@
 /***************************************************************************/
 
 import UniformConst from "../../vox/material/UniformConst";
-import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
-import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipe } from "../../vox/material/pipeline/IMaterialPipe";
@@ -18,17 +16,8 @@ import { PointLight } from "./PointLight";
 import { DirectionLight } from "./DirectionLight";
 import { SpotLight } from "./SpotLight";
 import IRenderTexture from "../../vox/render/IRenderTexture";
-import RenderProxy from "../../vox/render/RenderProxy";
 
 class LightModule extends MaterialPipeBase implements IMaterialPipe {
-
-    // static s_uid: number = 0;
-    // private m_uid: number = -1;
-
-    // private m_uniformParam: GlobalLightUniformParam = null;//new GlobalLightUniformParam();
-    // private m_uProbe: ShaderUniformProbe = null;
-    // private m_suo: ShaderGlobalUniform = null;
-    // private m_uslotIndex: number = 0;
 
     private m_lightPosData: Float32Array = null;
     private m_lightColors: Float32Array = null;
@@ -39,16 +28,7 @@ class LightModule extends MaterialPipeBase implements IMaterialPipe {
     private m_pointLightList: PointLight[] = null;
     private m_direcLightList: DirectionLight[] = null;
     private m_spotLightList: SpotLight[] = null;
-    // private m_renderProxy: RenderProxy = null;
-
-    // constructor(renderProxy: RenderProxy) {
-
-    //     this.m_renderProxy = renderProxy;
-    //     this.m_uid = LightModule.s_uid++;
-    // }
-    // getUid(): number {
-    //     return this.m_uid;
-    // }
+    
     getPointLightsTotal(): number {
         return this.m_pointLightList != null ? this.m_pointLightList.length : 0;
     }
@@ -110,7 +90,7 @@ class LightModule extends MaterialPipeBase implements IMaterialPipe {
             let posFS: Float32Array = this.m_lightPosData;
             let colFS: Float32Array = this.m_lightColors;
             let j: number = 0;
-            for(let i: number = 0; i < this.m_pointLightList.length; ++i) {
+            for (let i: number = 0; i < this.m_pointLightList.length; ++i) {
 
                 light = this.m_pointLightList[i];
 
@@ -136,7 +116,7 @@ class LightModule extends MaterialPipeBase implements IMaterialPipe {
             let offset: number = this.m_pointLightList != null ? this.m_pointLightList.length : 0;
             offset *= 4;
 
-            for(let i: number = 0; i < this.m_direcLightList.length; ++i) {
+            for (let i: number = 0; i < this.m_direcLightList.length; ++i) {
 
                 light = this.m_direcLightList[i];
 
@@ -145,7 +125,7 @@ class LightModule extends MaterialPipeBase implements IMaterialPipe {
                 posFS[j + 1] = light.direction.y;
                 posFS[j + 2] = light.direction.z;
                 posFS[j + 3] = light.attenuationFactor1;
-                
+
                 colFS[j] = light.color.r;
                 colFS[j + 1] = light.color.g;
                 colFS[j + 2] = light.color.b;
@@ -163,7 +143,7 @@ class LightModule extends MaterialPipeBase implements IMaterialPipe {
             offset += this.m_direcLightList != null ? this.m_direcLightList.length : 0;
             offset *= 4;
 
-            for(let i: number = 0; i < this.m_spotLightList.length; ++i) {
+            for (let i: number = 0; i < this.m_spotLightList.length; ++i) {
 
                 light = this.m_spotLightList[i];
 
@@ -172,7 +152,7 @@ class LightModule extends MaterialPipeBase implements IMaterialPipe {
                 posFS[j + 1] = light.position.y;
                 posFS[j + 2] = light.position.z;
                 posFS[j + 3] = light.attenuationFactor1;
-                
+
                 colFS[j] = light.color.r;
                 colFS[j + 1] = light.color.g;
                 colFS[j + 2] = light.color.b;
@@ -180,17 +160,17 @@ class LightModule extends MaterialPipeBase implements IMaterialPipe {
             }
 
             offset += this.m_spotLightList.length * 4;
-            for(let i: number = 0; i < this.m_spotLightList.length; ++i) {
+            for (let i: number = 0; i < this.m_spotLightList.length; ++i) {
 
                 light = this.m_spotLightList[i];
-                let value: number = 90 - MathConst.Clamp(light.angleDegree, 0.0, 90.0);      
+                let value: number = 90 - MathConst.Clamp(light.angleDegree, 0.0, 90.0);
                 value = Math.cos(MathConst.DegreeToRadian(value));
                 j = offset + i * 4;
                 posFS[j] = light.direction.x;
                 posFS[j + 1] = light.direction.y;
                 posFS[j + 2] = light.direction.z;
                 posFS[j + 3] = value;
-                
+
             }
         }
     }
@@ -212,29 +192,26 @@ class LightModule extends MaterialPipeBase implements IMaterialPipe {
             }
             if (this.m_lightColors == null) this.m_lightColors = new Float32Array(colorsTotal * 4);
 
-            this.m_uniformParam = new GlobalLightUniformParam( this.m_renderProxy );
+            this.m_uniformParam = new GlobalLightUniformParam(this.m_renderProxy);
 
-            // this.m_uProbe = this.m_renderProxy.uniformContext.createShaderUniformProbe();
-            // this.m_uProbe.bindSlotAt(this.m_uslotIndex);
             this.m_uniformParam.uProbe.addVec4Data(this.m_lightPosData, this.m_lightPosDataVec4Total);
             this.m_uniformParam.uProbe.addVec4Data(this.m_lightColors, colorsTotal);
             this.m_uniformParam.buildData();
-            // this.m_suo = this.m_uniformParam.createGlobalUinform(this.m_uProbe, this.m_renderProxy);
-            // console.log("this.m_uProbe.getUid(): ", this.m_uProbe.getUid());
+            
         }
         this.updatePointLightData();
         this.updateDirecLighttData();
         this.updateSpotLighttData();
-            
+
     }
     showInfo(): void {
 
         console.log("showInfo(), this.m_lightPosData: ", this.m_lightPosData);
         console.log("showInfo(), this.m_lightColors: ", this.m_lightColors);
     }
-    
+
     resetPipe(): void {
-        
+
     }
     getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[], pipeType: MaterialPipeType): IRenderTexture[] {
         return null;
@@ -290,14 +267,11 @@ class LightModule extends MaterialPipeBase implements IMaterialPipe {
     }
     update(): void {
         this.buildData();
-        if(this.m_uniformParam != null) this.m_uniformParam.uProbe.update();
+        if (this.m_uniformParam != null) this.m_uniformParam.uProbe.update();
     }
 
-    // getGlobalUinform(): ShaderGlobalUniform {
-    //     return this.m_uniformParam != null ? this.m_uniformParam.uniform.clone() : null;
-    // }
     destroy(): void {
-        
+
         this.m_lightPosData = null;
         this.m_lightColors = null;
         this.m_lightsTotal = 0;
@@ -308,4 +282,4 @@ class LightModule extends MaterialPipeBase implements IMaterialPipe {
     }
 }
 
-export {LightModule};
+export { LightModule };

@@ -10,7 +10,6 @@ import Matrix4 from "../../../vox/math/Matrix4";
 
 import UniformConst from "../../../vox/material/UniformConst";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
-import ShaderUniformProbe from "../../../vox/material/ShaderUniformProbe";
 import CameraBase from "../../../vox/view/CameraBase";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 
@@ -23,33 +22,24 @@ import { GlobalVSMShadowUniformParam } from "../../../vox/material/GlobalUniform
 import { VSMShaderCode } from "./VSMShaderCode";
 import RTTTextureProxy from "../../../vox/texture/RTTTextureProxy";
 import { ShadowMode } from "../../../vox/material/pipeline/ShadowMode";
-import RenderProxy from "../../../vox/render/RenderProxy";
 
 export default class ShadowVSMData extends MaterialPipeBase implements IMaterialPipe {
 
-    // private m_uniformParam: GlobalVSMShadowUniformParam = null;//new GlobalVSMShadowUniformParam();
-    // private m_uProbe: ShaderUniformProbe = null;
-    // private m_suo: ShaderGlobalUniform = null;
     private m_direcMatrix: Matrix4 = null;
     private m_params: Float32Array = null;
     private m_offetMatrix: Matrix4 = null;
     private m_shadowMap: RTTTextureProxy = null;
     private m_camVersion: number = -1;
-    // private m_dirty: boolean = false;
-    // private m_renderProxy: RenderProxy = null;
 
-    // constructor(renderProxy: RenderProxy) {
-    //     this.m_renderProxy = renderProxy;
-    // }
     setShadowMap(shadowMap: RTTTextureProxy): void {
         this.m_shadowMap = shadowMap;
     }
     resetPipe(): void {
-        
+
     }
     getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[], pipeType: MaterialPipeType): IRenderTexture[] {
-        if(this.m_shadowMap != null) {
-            if(outList == null) outList = [];
+        if (this.m_shadowMap != null) {
+            if (outList == null) outList = [];
             outList.push(this.m_shadowMap);
             shaderBuilder.uniform.addShadowMap(ShadowMode.VSM);
             return outList;
@@ -104,14 +94,11 @@ export default class ShadowVSMData extends MaterialPipeBase implements IMaterial
                     , 0.0                // undefined
                 ]
             );
-            this.m_uniformParam = new GlobalVSMShadowUniformParam( this.m_renderProxy );
+            this.m_uniformParam = new GlobalVSMShadowUniformParam(this.m_renderProxy);
 
-            // this.m_uProbe = this.m_renderProxy.uniformContext.createShaderUniformProbe();
             this.m_uniformParam.uProbe.addMat4Data(this.m_direcMatrix.getLocalFS32(), 1);
             this.m_uniformParam.uProbe.addVec4Data(this.m_params, UniformConst.ShadowVSMParams.arrayLength);
             this.m_uniformParam.buildData();
-            // this.m_suo = this.m_uniformParam.createGlobalUinform(this.m_uProbe, this.m_renderProxy);
-            //this.m_uProbe.update();
         }
     }
     getGlobalUinformAt(i: number): ShaderGlobalUniform {
@@ -120,7 +107,7 @@ export default class ShadowVSMData extends MaterialPipeBase implements IMaterial
         return suo;
     }
     updateShadowCamera(camera: CameraBase): void {
-        //console.log("this.m_camVersion,camera.version: ",this.m_camVersion,camera.version);
+
         if (this.m_camVersion != camera.version) {
 
             this.m_camVersion = camera.version;
@@ -169,26 +156,15 @@ export default class ShadowVSMData extends MaterialPipeBase implements IMaterial
         this.m_params[10] = -v3.z;
         this.m_dirty = true;
     }
-    // update(): void {
 
-    //     if (this.m_dirty && this.m_uniformParam != null) {
-    //         this.m_dirty = false;
-    //         this.m_uniformParam.uProbe.update();
-    //     }
-    // }
-    // getGlobalUinform(): ShaderGlobalUniform {
-    //     return this.m_uniformParam != null ? this.m_uniformParam.uniform.clone() : null;
-    // }
     destroy(): void {
-        
+
         this.m_shadowMap = null;
         this.m_direcMatrix = null;
         this.m_params = null;
         this.m_offetMatrix = null;
 
         super.destroy();
-        // if(this.m_uniformParam != null) this.m_uniformParam.destroy();
-        // this.m_uniformParam = null;
-        // this.m_renderProxy = null;
+
     }
 }
