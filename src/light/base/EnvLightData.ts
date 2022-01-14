@@ -7,7 +7,6 @@
 
 import UniformConst from "../../vox/material/UniformConst";
 import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
-import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
@@ -23,9 +22,7 @@ export default class EnvLightData implements IMaterialPipe {
 
     private static s_uid: number = 0;
     private m_uid: number = -1;
-    private m_uniformParam: GlobalEnvLightUniformParam = null;//new GlobalEnvLightUniformParam();
-    // private m_uProbe: ShaderUniformProbe = null;
-    // private m_suo: ShaderGlobalUniform = null;
+    private m_uniformParam: GlobalEnvLightUniformParam = null;
     private m_dirty: boolean = false;
     // private m_uslotIndex: number = 0;
     private m_shaderCodeEnabled: boolean = true;
@@ -39,9 +36,14 @@ export default class EnvLightData implements IMaterialPipe {
     }
 
     setEnvAmbientMap(tex: TextureProxy): void {
-        if(this.m_ambientMap == null && tex != null) {
+        if(this.m_ambientMap != tex) {
+            if( this.m_ambientMap != null ) {
+                this.m_ambientMap.__$detachThis();
+            }
             this.m_ambientMap = tex;
-            this.m_ambientMap.__$attachThis();
+            if( this.m_ambientMap != null ) {
+                this.m_ambientMap.__$attachThis();
+            }
         }
     }
     getUid(): number {
@@ -209,14 +211,9 @@ export default class EnvLightData implements IMaterialPipe {
 
             ]);
             // */
-            // this.m_uProbe = new ShaderUniformProbe();
-            // this.m_uProbe.bindSlotAt(this.m_uslotIndex);
             this.m_uniformParam = new GlobalEnvLightUniformParam( this.m_renderProxy );
-            // this.m_uProbe = this.m_renderProxy.uniformContext.createShaderUniformProbe();
             this.m_uniformParam.uProbe.addVec4Data(UniformConst.EnvLightParams.data, UniformConst.EnvLightParams.arrayLength);
             this.m_uniformParam.buildData();
-            // this.m_suo = this.m_uniformParam.createGlobalUinform( this.m_uProbe, this.m_renderProxy);
-            // this.m_uProbe.update();
 
         }
     }
@@ -230,6 +227,7 @@ export default class EnvLightData implements IMaterialPipe {
         return this.m_uniformParam != null ? this.m_uniformParam.uniform.clone() : null;
     }
     destroy(): void {
+        this.setEnvAmbientMap(null);
         if(this.m_uniformParam != null) this.m_uniformParam.destroy();
         this.m_uniformParam = null;
         this.m_renderProxy = null;
