@@ -273,7 +273,7 @@
 
 //  import {DemoContainerTransform as Demo}  from "./demo/DemoContainerTransform";
 
-//  import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
+//  import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";ses
 
 //  import {DemoTransFromTex as Demo} from "./demo/DemoTransFromTex";
 
@@ -332,7 +332,7 @@
 /////////////////////////////     shadow    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-import {DemoBase as Demo} from "./shadow/vsm/DemoBase";
+//  import {DemoBase as Demo} from "./shadow/vsm/DemoBase";
 
 //  import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
 
@@ -350,7 +350,7 @@ import {DemoBase as Demo} from "./shadow/vsm/DemoBase";
 
 //  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
-//  import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
+import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
 
 //  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 

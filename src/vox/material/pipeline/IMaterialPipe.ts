@@ -10,7 +10,7 @@ import RendererDevice from "../../../vox/render/RendererDevice";
 import IUniformParam from "../../../vox/material/IUniformParam";
 import { MaterialPipeType } from "./MaterialPipeType";
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
-import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
+import IShaderUniform from "../../../vox/material/IShaderUniform";
 import IRenderTexture from "../../../vox/render/IRenderTexture";
 
 /**
@@ -21,7 +21,7 @@ interface IMaterialPipe {
     getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[], pipeType: MaterialPipeType): IRenderTexture[];
     useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void;
     getPipeTypes(): MaterialPipeType[];
-    getGlobalUinform(): ShaderGlobalUniform;
+    getGlobalUinform(): IShaderUniform;
     getPipeKey(pipeType: MaterialPipeType): string;
 }
 export { IMaterialPipe }

@@ -8,8 +8,8 @@
 import ShaderData from "../../vox/material/ShaderData";
 import MaterialResource from "../../vox/material/MaterialResource";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
+// import IShaderUniform from "../../vox/material/IShaderUniform";
 import IShaderUniform from "../../vox/material/IShaderUniform";
-import ShaderUniform from "../../vox/material/ShaderUniform";
 
 import TextureProxy from '../../vox/texture/TextureProxy';
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
@@ -21,7 +21,7 @@ import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline
 export default class MaterialBase implements IRenderMaterial {
 
     private static s_codeBuffer: ShaderCodeBuffer = null;
-    protected m_sharedUniforms: ShaderUniform[] = null;
+    protected m_sharedUniforms: IShaderUniform[] = null;
     protected m_shaderUniformData: ShaderUniformData = null;
     protected m_pipeLine: IMaterialPipeline = null;
     protected m_uniqueShaderName: string = "";
@@ -259,7 +259,7 @@ export default class MaterialBase implements IRenderMaterial {
         return false;
     }
 
-    createSharedUniforms(): ShaderUniform[] {
+    createSharedUniforms(): IShaderUniform[] {
         return this.m_sharedUniforms;
     }
     createSharedUniformsData(): ShaderUniformData[] {

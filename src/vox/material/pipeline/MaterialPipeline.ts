@@ -16,7 +16,7 @@ import { MaterialPipeType } from "./MaterialPipeType";
 import { IMaterialPipeline } from "./IMaterialPipeline";
 
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
-import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
+import IShaderUniform from "../../../vox/material/IShaderUniform";
 import IRenderTexture from "../../../vox/render/IRenderTexture";
 
 /**
@@ -33,7 +33,7 @@ class MaterialPipeline implements IMaterialPipeline {
     private m_shaderCodeFlag: boolean = false;
     private m_pipeMap: Map<MaterialPipeType, IMaterialPipe> = new Map();
     private m_keys: string[] = [];
-    private m_sharedUniforms: ShaderGlobalUniform[] = null;
+    private m_sharedUniforms: IShaderUniform[] = null;
     private m_shaderLib: IShaderLib = null;
     private m_pipetypes: MaterialPipeType[] = null;
     private m_appendKeyStr: string = "";
@@ -158,7 +158,7 @@ class MaterialPipeline implements IMaterialPipeline {
 
         }
     }
-    getSharedUniforms(): ShaderGlobalUniform[] {
+    getSharedUniforms(): IShaderUniform[] {
 
         return this.m_sharedUniforms;
     }

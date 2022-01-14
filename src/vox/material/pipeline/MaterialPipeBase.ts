@@ -5,7 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
+import IShaderUniform from "../../../vox/material/IShaderUniform";
+// import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import { GlobalUniformParamBase } from "../../../vox/material/GlobalUniformParam";
 import RenderProxy from "../../../vox/render/RenderProxy";
 
@@ -25,20 +26,13 @@ class MaterialPipeBase {
     getUid(): number {
         return this.m_uid;
     }
-    // initialize(): void {
-    //     if (this.m_uniformParam == null) {
-    //         this.m_uniformParam = new GlobalEnvLightUniformParam( this.m_renderProxy );
-    //         this.m_uniformParam.uProbe.addVec4Data(UniformConst.EnvLightParams.data, UniformConst.EnvLightParams.arrayLength);
-    //         this.m_uniformParam.buildData();
-    //     }
-    // }
     update(): void {
         if (this.m_uniformParam != null && this.m_dirty) {
             this.m_dirty = false;
             this.m_uniformParam.uProbe.update();
         }
     }
-    getGlobalUinform(): ShaderGlobalUniform {
+    getGlobalUinform(): IShaderUniform {
         return this.m_uniformParam != null ? this.m_uniformParam.uniform.clone() : null;
     }
     destroy(): void {
