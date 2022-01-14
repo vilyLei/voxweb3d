@@ -175,7 +175,7 @@ export default class EnvLightData extends MaterialPipeBase implements IMaterialP
 
         if (this.m_uniformParam == null) {
             
-            let uniformParam = new GlobalEnvLightUniformParam(this.m_renderProxy);
+            let uniformParam = new GlobalEnvLightUniformParam(this.m_shdCtx);
             this.m_data = uniformParam.buildUniformData();
             this.m_uniformParam = uniformParam;
 

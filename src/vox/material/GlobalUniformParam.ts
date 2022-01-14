@@ -8,33 +8,38 @@ import UniformConst from "./UniformConst";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import IShaderUniform from "../../vox/material/IShaderUniform";
 import{IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
+import{IShaderUniformContext} from "../../vox/material/IShaderUniformContext";
 import RenderProxy from "../render/RenderProxy";
 
 class GlobalUniformParamBase {
 
-    private m_rc: RenderProxy = null;
+    protected m_shdCtx: IShaderUniformContext = null;
+
     uProbe: IShaderUniformProbe = null;
     uniform: IShaderUniform = null;
-    constructor(rc: RenderProxy, autoBuild: boolean = true) {
-        this.m_rc = rc;
+    
+    constructor(shdCtx: IShaderUniformContext, autoBuild: boolean = true) {
+        this.m_shdCtx = shdCtx;
         if(autoBuild) {
-            this.uProbe = rc.uniformContext.createShaderUniformProbe();
-            this.uniform = rc.uniformContext.createShaderGlobalUniform();
+            this.uProbe = shdCtx.createShaderUniformProbe();
+            this.uniform = shdCtx.createShaderGlobalUniform();
         }
     }
     getNames(): string[] {
         return [];
     }
     cloneUniform(): IShaderUniform {
-        return this.m_rc.uniformContext.cloneShaderGlobalUniform( this.uniform );
+        return this.m_shdCtx.cloneShaderGlobalUniform( this.uniform );
     }
     buildData(): void {
-        this.m_rc.uniformContext.updateGlobalUinformDataFromProbe(this.uniform, this.uProbe, this.getNames());
+        this.m_shdCtx.updateGlobalUinformDataFromProbe(this.uniform, this.uProbe, this.getNames());
         this.uProbe.update();
     }
     destroy(): void {
+
         this.uProbe = null;
         this.uniform = null;
+        this.m_shdCtx = null;
     }
 }
 

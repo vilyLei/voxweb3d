@@ -135,6 +135,7 @@ class LightModule extends MaterialPipeBase implements IMaterialPipe {
     }
     private updateSpotLighttData(): void {
         if (this.m_spotLightList != null) {
+
             let light: SpotLight;
             let posFS: Float32Array = this.m_lightPosData;
             let colFS: Float32Array = this.m_lightColors;
@@ -192,7 +193,7 @@ class LightModule extends MaterialPipeBase implements IMaterialPipe {
             }
             if (this.m_lightColors == null) this.m_lightColors = new Float32Array(colorsTotal * 4);
 
-            let uniformParam = new GlobalLightUniformParam(this.m_renderProxy);
+            let uniformParam = new GlobalLightUniformParam(this.m_shdCtx);
             uniformParam.buildUniformData(this.m_lightPosData, this.m_lightPosDataVec4Total, this.m_lightColors, colorsTotal);
             this.m_uniformParam = uniformParam;
            

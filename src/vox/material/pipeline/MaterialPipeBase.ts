@@ -7,7 +7,7 @@
 
 import IShaderUniform from "../../../vox/material/IShaderUniform";
 import { GlobalUniformParamBase } from "../../../vox/material/GlobalUniformParam";
-import RenderProxy from "../../../vox/render/RenderProxy";
+import { IShaderUniformContext } from "../../../vox/material/IShaderUniformContext";
 
 class MaterialPipeBase {
 
@@ -15,10 +15,10 @@ class MaterialPipeBase {
     private m_uid: number = -1;
     protected m_uniformParam: GlobalUniformParamBase = null;
     protected m_dirty: boolean = false;
-    protected m_renderProxy: RenderProxy = null;
+    protected m_shdCtx: IShaderUniformContext = null;
 
-    constructor(renderProxy: RenderProxy) {
-        this.m_renderProxy = renderProxy;
+    constructor(shdCtx: IShaderUniformContext) {
+        this.m_shdCtx = shdCtx;
         this.m_uid = MaterialPipeBase.s_uid++;
     }
 
@@ -35,10 +35,10 @@ class MaterialPipeBase {
         return this.m_uniformParam != null ? this.m_uniformParam.cloneUniform() : null;
     }
     destroy(): void {
-
+        
         if(this.m_uniformParam != null) this.m_uniformParam.destroy();
         this.m_uniformParam = null;
-        this.m_renderProxy = null;
+        this.m_shdCtx = null;
     }
 }
 export { MaterialPipeBase }

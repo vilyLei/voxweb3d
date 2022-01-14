@@ -77,7 +77,7 @@ export default class ShadowVSMData extends MaterialPipeBase implements IMaterial
             this.m_offetMatrix.setScaleXYZ(0.5, 0.5, 0.5);
             this.m_offetMatrix.setTranslationXYZ(0.5, 0.5, 0.5);
 
-            let uniformParam = new GlobalVSMShadowUniformParam(this.m_renderProxy);
+            let uniformParam = new GlobalVSMShadowUniformParam(this.m_shdCtx);
             this.m_params = uniformParam.buildUniformData(this.m_direcMatrix.getLocalFS32());
             this.m_uniformParam = uniformParam;            
         }

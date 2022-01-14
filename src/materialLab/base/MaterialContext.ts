@@ -125,7 +125,8 @@ class MaterialContext {
             param.directionLightsTotal = MathConst.Clamp(param.directionLightsTotal, 0, 256);
             param.spotLightsTotal = MathConst.Clamp(param.spotLightsTotal, 0, 256);
 
-            selfT.lightModule = new LightModule( this.m_rscene.getRenderProxy() );
+            let shdCtx = this.m_rscene.getRenderProxy().uniformContext;
+            selfT.lightModule = new LightModule( shdCtx );
             for (let i: number = 0; i < param.pointLightsTotal; ++i) {
                 this.lightModule.appendPointLight();
             }
@@ -137,7 +138,7 @@ class MaterialContext {
             }
             this.lightModule.update();
 
-            selfT.envData = new EnvLightData( this.m_rscene.getRenderProxy() );
+            selfT.envData = new EnvLightData( shdCtx );
             this.envData.initialize();
             this.envData.setFogColorRGB3f(0.0, 0.8, 0.1);
             if (param.vsmEnabled) {
