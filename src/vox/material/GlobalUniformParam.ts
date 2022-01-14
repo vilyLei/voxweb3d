@@ -12,21 +12,34 @@ import RenderProxy from "../render/RenderProxy";
 
 class GlobalUniformParamBase {
 
-    constructor() {
+    private m_rc: RenderProxy = null;
+    uProbe: ShaderUniformProbe = null;
+    uniform: ShaderGlobalUniform = null;
+    constructor(rc: RenderProxy, autoBuild: boolean = true) {
+        this.m_rc = rc;
+        if(autoBuild) {
+            this.uProbe = rc.uniformContext.createShaderUniformProbe();
+            this.uniform = rc.uniformContext.createShaderGlobalUniform();
+        }
     }
     getNames(): string[] {
         return [];
     }
-    createGlobalUinform(uProbe: ShaderUniformProbe, rc: RenderProxy): ShaderGlobalUniform {
-        return rc.uniformContext.createGlobalUinformFromProbe(uProbe, this.getNames());
+    // createGlobalUinform(uProbe: ShaderUniformProbe, rc: RenderProxy): ShaderGlobalUniform {
+    //     return rc.uniformContext.createGlobalUinformFromProbe(uProbe, this.getNames());
+    // }
+    buildData(): void {
+        this.m_rc.uniformContext.updateGlobalUinformDataFromProbe(this.uniform, this.uProbe, this.getNames());
+        this.uProbe.update();
+    }
+    destroy(): void {
+        this.uProbe = null;
+        this.uniform = null;
     }
 }
 
 class GlobalEnvLightUniformParam extends GlobalUniformParamBase {
 
-    constructor() {
-        super();
-    }
     getNames(): string[] {
         return [UniformConst.EnvLightParams.name];
     }
@@ -38,9 +51,6 @@ class GlobalEnvLightUniformParam extends GlobalUniformParamBase {
 
 class GlobalVSMShadowUniformParam extends GlobalUniformParamBase {
 
-    constructor() {
-        super();
-    }
     getNames(): string[] {
         return [UniformConst.ShadowMatrix.name, UniformConst.ShadowVSMParams.name];
     }
@@ -52,9 +62,6 @@ class GlobalVSMShadowUniformParam extends GlobalUniformParamBase {
 }
 class GlobalLightUniformParam extends GlobalUniformParamBase {
 
-    constructor() {
-        super();
-    }
     getNames(): string[] {
         return [UniformConst.GlobalLight.positionName, UniformConst.GlobalLight.colorName];
     }

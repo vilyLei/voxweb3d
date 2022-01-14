@@ -121,7 +121,6 @@ class MaterialContext {
                 MaterialContext.ShaderLib.addAllShaderCodeObject();
             }
 
-
             param.pointLightsTotal = MathConst.Clamp(param.pointLightsTotal, 0, 256);
             param.directionLightsTotal = MathConst.Clamp(param.directionLightsTotal, 0, 256);
             param.spotLightsTotal = MathConst.Clamp(param.spotLightsTotal, 0, 256);

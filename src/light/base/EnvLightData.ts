@@ -23,9 +23,9 @@ export default class EnvLightData implements IMaterialPipe {
 
     private static s_uid: number = 0;
     private m_uid: number = -1;
-    private m_uniformParam: GlobalEnvLightUniformParam = new GlobalEnvLightUniformParam();
-    private m_uProbe: ShaderUniformProbe = null;
-    private m_suo: ShaderGlobalUniform = null;
+    private m_uniformParam: GlobalEnvLightUniformParam = null;//new GlobalEnvLightUniformParam();
+    // private m_uProbe: ShaderUniformProbe = null;
+    // private m_suo: ShaderGlobalUniform = null;
     private m_dirty: boolean = false;
     // private m_uslotIndex: number = 0;
     private m_shaderCodeEnabled: boolean = true;
@@ -111,7 +111,7 @@ export default class EnvLightData implements IMaterialPipe {
     }
     useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void {
 
-        if (this.m_uProbe != null) {
+        if (this.m_uniformParam != null) {
             switch (pipeType) {
 
                 case MaterialPipeType.ENV_LIGHT_PARAM:
@@ -152,7 +152,7 @@ export default class EnvLightData implements IMaterialPipe {
         return "";
     }
     useUniforms(shaderBuilder: IShaderCodeBuilder): void {
-        if (this.m_uProbe != null) {
+        if (this.m_uniformParam != null) {
             shaderBuilder.addFragUniformParam(UniformConst.EnvLightParams);
         }
     }
@@ -185,7 +185,7 @@ export default class EnvLightData implements IMaterialPipe {
     }
     initialize(): void {
 
-        if (this.m_uProbe == null) {
+        if (this.m_uniformParam == null) {
             /*
             readonly data: Float32Array = new Float32Array([
 
@@ -211,21 +211,27 @@ export default class EnvLightData implements IMaterialPipe {
             // */
             // this.m_uProbe = new ShaderUniformProbe();
             // this.m_uProbe.bindSlotAt(this.m_uslotIndex);
-            this.m_uProbe = this.m_renderProxy.uniformContext.createShaderUniformProbe();
-            this.m_uProbe.addVec4Data(UniformConst.EnvLightParams.data, UniformConst.EnvLightParams.arrayLength);
-            
-            this.m_suo = this.m_uniformParam.createGlobalUinform( this.m_uProbe, this.m_renderProxy);
-            this.m_uProbe.update();
+            this.m_uniformParam = new GlobalEnvLightUniformParam( this.m_renderProxy );
+            // this.m_uProbe = this.m_renderProxy.uniformContext.createShaderUniformProbe();
+            this.m_uniformParam.uProbe.addVec4Data(UniformConst.EnvLightParams.data, UniformConst.EnvLightParams.arrayLength);
+            this.m_uniformParam.buildData();
+            // this.m_suo = this.m_uniformParam.createGlobalUinform( this.m_uProbe, this.m_renderProxy);
+            // this.m_uProbe.update();
 
         }
     }
     update(): void {
-        if (this.m_uProbe != null && this.m_dirty) {
+        if (this.m_uniformParam != null && this.m_dirty) {
             this.m_dirty = false;
-            this.m_uProbe.update();
+            this.m_uniformParam.uProbe.update();
         }
     }
     getGlobalUinform(): ShaderGlobalUniform {
-        return this.m_suo.clone();
+        return this.m_uniformParam != null ? this.m_uniformParam.uniform.clone() : null;
+    }
+    destroy(): void {
+        if(this.m_uniformParam != null) this.m_uniformParam.destroy();
+        this.m_uniformParam = null;
+        this.m_renderProxy = null;
     }
 }

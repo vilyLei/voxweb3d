@@ -28,13 +28,20 @@ class ShaderUniformContext {
         probe.bindSlotAt( this.m_rcuid );
         return probe;
     }
-    createGlobalUinformFromProbe(uProbe: ShaderUniformProbe, uniformNames: string[]): ShaderGlobalUniform {
+    createGlobalUinformFromProbe(uProbe: ShaderUniformProbe, uniformNames: string[] = null): ShaderGlobalUniform {
 
-        let suo: ShaderGlobalUniform = new ShaderGlobalUniform();
-        suo.uniformNameList = uniformNames;
+        let suo: ShaderGlobalUniform = this.createShaderGlobalUniform();
+        // suo.uniformNameList = uniformNames != null ? uniformNames : uProbe.uniformNames;
+        // suo.copyDataFromProbe(uProbe);
+        // uProbe.update();
+        this.updateGlobalUinformDataFromProbe(suo, uProbe, uniformNames);
+        return suo;
+    }
+    updateGlobalUinformDataFromProbe(suo: ShaderGlobalUniform, uProbe: ShaderUniformProbe, uniformNames: string[] = null): void {
+
+        suo.uniformNameList = uniformNames != null ? uniformNames : uProbe.uniformNames;
         suo.copyDataFromProbe(uProbe);
         uProbe.update();
-        return suo;
     }
     createShaderGlobalUniform(): ShaderGlobalUniform {
         return new ShaderGlobalUniform();

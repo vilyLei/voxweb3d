@@ -24,9 +24,9 @@ class LightModule implements IMaterialPipe {
     static s_uid: number = 0;
     private m_uid: number = -1;
 
-    private m_uniformParam: GlobalLightUniformParam = new GlobalLightUniformParam();
-    private m_uProbe: ShaderUniformProbe = null;
-    private m_suo: ShaderGlobalUniform = null;
+    private m_uniformParam: GlobalLightUniformParam = null;//new GlobalLightUniformParam();
+    // private m_uProbe: ShaderUniformProbe = null;
+    // private m_suo: ShaderGlobalUniform = null;
     // private m_uslotIndex: number = 0;
 
     private m_lightPosData: Float32Array = null;
@@ -41,7 +41,7 @@ class LightModule implements IMaterialPipe {
     private m_renderProxy: RenderProxy = null;
 
     constructor(renderProxy: RenderProxy) {
-        
+
         this.m_renderProxy = renderProxy;
         this.m_uid = LightModule.s_uid++;
     }
@@ -195,7 +195,7 @@ class LightModule implements IMaterialPipe {
     }
     private buildData(): void {
 
-        if (this.m_uProbe == null) {
+        if (this.m_uniformParam == null) {
 
             let total: number = this.m_lightsTotal;
             let colorsTotal: number = this.m_lightsTotal;
@@ -211,11 +211,14 @@ class LightModule implements IMaterialPipe {
             }
             if (this.m_lightColors == null) this.m_lightColors = new Float32Array(colorsTotal * 4);
 
-            this.m_uProbe = this.m_renderProxy.uniformContext.createShaderUniformProbe();
+            this.m_uniformParam = new GlobalLightUniformParam( this.m_renderProxy );
+
+            // this.m_uProbe = this.m_renderProxy.uniformContext.createShaderUniformProbe();
             // this.m_uProbe.bindSlotAt(this.m_uslotIndex);
-            this.m_uProbe.addVec4Data(this.m_lightPosData, this.m_lightPosDataVec4Total);
-            this.m_uProbe.addVec4Data(this.m_lightColors, colorsTotal);
-            this.m_suo = this.m_uniformParam.createGlobalUinform(this.m_uProbe, this.m_renderProxy);
+            this.m_uniformParam.uProbe.addVec4Data(this.m_lightPosData, this.m_lightPosDataVec4Total);
+            this.m_uniformParam.uProbe.addVec4Data(this.m_lightColors, colorsTotal);
+            this.m_uniformParam.buildData();
+            // this.m_suo = this.m_uniformParam.createGlobalUinform(this.m_uProbe, this.m_renderProxy);
             // console.log("this.m_uProbe.getUid(): ", this.m_uProbe.getUid());
         }
         this.updatePointLightData();
@@ -223,11 +226,6 @@ class LightModule implements IMaterialPipe {
         this.updateSpotLighttData();
             
     }
-    update(): void {
-        this.buildData();
-        this.m_uProbe.update();
-    }
-
     showInfo(): void {
 
         console.log("showInfo(), this.m_lightPosData: ", this.m_lightPosData);
@@ -242,7 +240,7 @@ class LightModule implements IMaterialPipe {
     }
     useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void {
 
-        if (this.m_uProbe != null) {
+        if (this.m_uniformParam != null) {
 
             shaderBuilder.normalEnabled = true;
             let lightsTotal: number = this.getPointLightsTotal() + this.getDirecLightsTotal() + this.getSpotLightsTotal();
@@ -284,13 +282,23 @@ class LightModule implements IMaterialPipe {
     }
 
     useUniforms(shaderBuilder: IShaderCodeBuilder): void {
-        if (this.m_uProbe != null) {
+        if (this.m_uniformParam != null) {
             shaderBuilder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.positionName, this.m_lightPosDataVec4Total);
             shaderBuilder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.colorName, this.m_lightsTotal);
         }
     }
+    update(): void {
+        this.buildData();
+        this.m_uniformParam.uProbe.update();
+    }
+
     getGlobalUinform(): ShaderGlobalUniform {
-        return this.m_suo.clone();
+        return this.m_uniformParam != null ? this.m_uniformParam.uniform.clone() : null;
+    }
+    destroy(): void {
+        if(this.m_uniformParam != null) this.m_uniformParam.destroy();
+        this.m_renderProxy = null;
+        this.m_uniformParam = null;
     }
 }
 

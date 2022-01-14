@@ -26,9 +26,9 @@ import RenderProxy from "../../../vox/render/RenderProxy";
 
 export default class ShadowVSMData implements IMaterialPipe {
 
-    private m_uniformParam: GlobalVSMShadowUniformParam = new GlobalVSMShadowUniformParam();
-    private m_uProbe: ShaderUniformProbe = null;
-    private m_suo: ShaderGlobalUniform = null;
+    private m_uniformParam: GlobalVSMShadowUniformParam = null;//new GlobalVSMShadowUniformParam();
+    // private m_uProbe: ShaderUniformProbe = null;
+    // private m_suo: ShaderGlobalUniform = null;
     private m_direcMatrix: Matrix4 = null;
     private m_params: Float32Array = null;
     private m_offetMatrix: Matrix4 = null;
@@ -56,7 +56,7 @@ export default class ShadowVSMData implements IMaterialPipe {
         return null;
     }
     useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void {
-        if (this.m_uProbe != null) {
+        if (this.m_uniformParam != null) {
             shaderBuilder.addDefine("VOX_USE_SHADOW", "1");
             shaderBuilder.addVarying("vec4", "v_shadowPos");
             this.m_uniformParam.use(shaderBuilder);
@@ -78,7 +78,7 @@ export default class ShadowVSMData implements IMaterialPipe {
     }
     initialize(): void {
 
-        if (this.m_uProbe == null) {
+        if (this.m_uniformParam == null) {
 
             this.m_direcMatrix = new Matrix4();
             this.m_offetMatrix = new Matrix4();
@@ -103,20 +103,19 @@ export default class ShadowVSMData implements IMaterialPipe {
                     , 0.0                // undefined
                 ]
             );
+            this.m_uniformParam = new GlobalVSMShadowUniformParam( this.m_renderProxy );
 
-            this.m_uProbe = this.m_renderProxy.uniformContext.createShaderUniformProbe();
-            this.m_uProbe.addMat4Data(this.m_direcMatrix.getLocalFS32(), 1);
-            this.m_uProbe.addVec4Data(this.m_params, UniformConst.ShadowVSMParams.arrayLength);
-            this.m_suo = this.m_uniformParam.createGlobalUinform(this.m_uProbe, this.m_renderProxy);
-            this.m_uProbe.update();
+            // this.m_uProbe = this.m_renderProxy.uniformContext.createShaderUniformProbe();
+            this.m_uniformParam.uProbe.addMat4Data(this.m_direcMatrix.getLocalFS32(), 1);
+            this.m_uniformParam.uProbe.addVec4Data(this.m_params, UniformConst.ShadowVSMParams.arrayLength);
+            this.m_uniformParam.buildData();
+            // this.m_suo = this.m_uniformParam.createGlobalUinform(this.m_uProbe, this.m_renderProxy);
+            //this.m_uProbe.update();
         }
-    }
-    getGlobalUinform(): ShaderGlobalUniform {
-        return this.m_suo.clone();
     }
     getGlobalUinformAt(i: number): ShaderGlobalUniform {
         let suo: ShaderGlobalUniform = new ShaderGlobalUniform();
-        suo.copyDataFromProbeAt(i, this.m_uProbe);
+        suo.copyDataFromProbeAt(i, this.m_uniformParam.uProbe);
         return suo;
     }
     updateShadowCamera(camera: CameraBase): void {
@@ -171,12 +170,18 @@ export default class ShadowVSMData implements IMaterialPipe {
     }
     update(): void {
 
-        if (this.m_dirty && this.m_uProbe != null) {
+        if (this.m_dirty && this.m_uniformParam != null) {
             this.m_dirty = false;
-            this.m_uProbe.update();
+            this.m_uniformParam.uProbe.update();
         }
     }
+    getGlobalUinform(): ShaderGlobalUniform {
+        return this.m_uniformParam != null ? this.m_uniformParam.uniform.clone() : null;
+    }
     destroy(): void {
+        if(this.m_uniformParam != null) this.m_uniformParam.destroy();
+        this.m_uniformParam = null;
         this.m_shadowMap = null;
+        this.m_renderProxy = null;
     }
 }
