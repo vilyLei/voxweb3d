@@ -14,7 +14,7 @@ import RendererState from "../../vox/render/RendererState";
 import RAdapterContext from "../../vox/render/RAdapterContext";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
-import RenderProxy from "../../vox/render/RenderProxy";
+import {RenderProxyParam, RenderProxy} from "../../vox/render/RenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import ShdUniformTool from "../../vox/material/ShdUniformTool";
 import RODataBuilder from "../../vox/render/RODataBuilder";
@@ -24,7 +24,16 @@ import ROVtxBuilder from "../../vox/render/ROVtxBuilder";
 import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import Color4 from "../material/Color4";
 
-export default class RendererInstanceContext implements IRendererInstanceContext {
+class RendererInstanceContextParam {
+
+    camera: IRenderCamera = null;
+    stage: IRenderStage3D = null;
+    builder: RODataBuilder = null;
+    vtxBuilder: ROVtxBuilder = null;
+    constructor(){}
+
+}
+class RendererInstanceContext implements IRendererInstanceContext {
 
     private m_adapter: IRenderAdapter = null;
     private m_renderProxy: RenderProxy = null;
@@ -269,18 +278,26 @@ export default class RendererInstanceContext implements IRendererInstanceContext
             this.m_renderProxy.setCameraParam(fov, near, far);
         }
     }
-    initialize(param: RendererParam, camera: IRenderCamera, stage: IRenderStage3D, builder: RODataBuilder, vtxBuilder: ROVtxBuilder): void {
+    // initialize(param: RendererParam, camera: IRenderCamera, stage: IRenderStage3D, builder: RODataBuilder, vtxBuilder: ROVtxBuilder): void {
+    initialize(param: RendererParam, camera: IRenderCamera, contextParam: RendererInstanceContextParam): void {
+
         if (this.m_adapter == null) {
+
             UniformDataSlot.Initialize(this.m_renderProxy.getUid());
 
             this.m_renderProxy.setCameraParam(this.m_cameraFov, this.m_cameraNear, this.m_cameraFar);
             this.m_renderProxy.setWebGLMaxVersion(param.maxWebGLVersion);
+            
+            let proxyParam = new RenderProxyParam();
+            proxyParam.vtxBufUpdater = contextParam.builder;
+            proxyParam.materialUpdater = contextParam.builder;
+            proxyParam.vtxBuilder = contextParam.vtxBuilder;
 
-            this.m_renderProxy.initialize(param, camera, stage, builder, builder, vtxBuilder);
+            this.m_renderProxy.initialize(param, camera, contextParam.stage, proxyParam);
 
             this.m_rcuid = this.m_renderProxy.getRCUid();
 
-            vtxBuilder.initialize(this.m_rcuid, this.m_renderProxy.getRC(), this.m_renderProxy.getGLVersion());
+            contextParam.vtxBuilder.initialize(this.m_rcuid, this.m_renderProxy.getRC(), this.m_renderProxy.getGLVersion());
 
             this.m_adapter = this.m_renderProxy.getRenderAdapter();
             this.m_adapter.bgColor.setRGBA4f(0.0, 0.0, 0.0, 1.0);
@@ -347,3 +364,5 @@ export default class RendererInstanceContext implements IRendererInstanceContext
     runEnd(): void {
     }
 }
+export {RendererInstanceContextParam, RendererInstanceContext};
+export default RendererInstanceContext;

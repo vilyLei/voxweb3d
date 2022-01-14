@@ -34,6 +34,14 @@ import {IRenderProxy} from "./IRenderProxy";
 import ShaderUniformProbe from "../material/ShaderUniformProbe";
 import AABB2D from "../geom/AABB2D";
 
+class RenderProxyParam {
+
+    materialUpdater: IROMaterialUpdater = null;
+    vtxBufUpdater: IROVertexBufUpdater = null;
+    vtxBuilder: IROVtxBuilder = null;
+
+    constructor(){}
+}
 class RenderProxy implements IRenderProxy{
 
     readonly RGBA: number = 0;
@@ -222,7 +230,6 @@ class RenderProxy implements IRenderProxy{
     }
     testViewPortChanged(px: number, py: number, pw: number, ph: number): boolean {
         return this.m_viewPortRect.testEqualWithParams(px, py, pw, ph);
-        //return this.m_viewX != px || this.m_viewY != py || rect.width != pw || rect.height != ph;
     }
     testRCViewPortChanged(px: number, py: number, pw: number, ph: number): boolean {
         return this.m_adapterContext.testViewPortChanged(px,py,pw,ph);
@@ -297,7 +304,9 @@ class RenderProxy implements IRenderProxy{
     getGLVersion(): number {
         return this.m_WEBGL_VER;
     }
-    initialize(param: RendererParam, camera: IRenderCamera, stage: IRenderStage3D, materialUpdater: IROMaterialUpdater, vtxBufUpdater: IROVertexBufUpdater, vtxBuilder: IROVtxBuilder): void {
+    //RenderProxyParam
+    //initialize(param: RendererParam, camera: IRenderCamera, stage: IRenderStage3D, materialUpdater: IROMaterialUpdater, vtxBufUpdater: IROVertexBufUpdater, vtxBuilder: IROVtxBuilder): void {
+    initialize(param: RendererParam, camera: IRenderCamera, stage: IRenderStage3D, proxyParam: RenderProxyParam): void {
         if (this.m_rc != null) {
             return;
         }
@@ -346,13 +355,13 @@ class RenderProxy implements IRenderProxy{
 
         let selfT: any = this;
         let gl: any = this.m_rc;
-        let vtxRes: ROVertexResource = new ROVertexResource(this.m_uid, gl, vtxBuilder);
+        let vtxRes: ROVertexResource = new ROVertexResource(this.m_uid, gl, proxyParam.vtxBuilder);
         let texRes: ROTextureResource = new ROTextureResource(this.m_uid, gl);
         this.m_vtxRes = vtxRes;
         selfT.Vertex = vtxRes;
         selfT.Texture = texRes;
-        selfT.MaterialUpdater = materialUpdater;
-        selfT.VtxBufUpdater = vtxBufUpdater;
+        selfT.MaterialUpdater = proxyParam.materialUpdater;
+        selfT.VtxBufUpdater = proxyParam.vtxBufUpdater;
         
         let rect = this.m_viewPortRect;
         rect.setSize(this.m_adapterContext.getRCanvasWidth(), this.m_adapterContext.getRCanvasHeight());
@@ -525,4 +534,5 @@ class RenderProxy implements IRenderProxy{
         return "[Object RenderProxy()]";
     }
 }
+export {RenderProxyParam, RenderProxy}
 export default RenderProxy;

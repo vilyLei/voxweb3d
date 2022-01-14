@@ -4,15 +4,14 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// 真正位于高频运行的渲染管线中的被使用的渲染关键代理对象
 
 import IVtxShdCtr from "../../vox/material/IVtxShdCtr";
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import RCExtension from "../../vox/render/RCExtension";
 import IROVtxBuilder from "../../vox/render/IROVtxBuilder";
 
-
 export default class ROVtxBuilder implements IROVtxBuilder {
+    
     private m_rcuid: number = 0;
     private m_glVer: number = 2;
     private m_rc: any = null;
@@ -166,8 +165,5 @@ export default class ROVtxBuilder implements IROVtxBuilder {
     renderBegin(): void {
         this.vroUid = -2;
         this.rioUid = -3;
-    }
-    toString(): string {
-        return "[Object ROVtxBuilder()]";
     }
 }        

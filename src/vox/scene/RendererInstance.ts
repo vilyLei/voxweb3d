@@ -19,7 +19,7 @@ import IRenderProcess from "../../vox/render/IRenderProcess";
 import RenderProcess from "../../vox/render/RenderProcess";
 import RenderProcessBuider from "../../vox/render/RenderProcessBuider";
 import ROVtxBuilder from "../../vox/render/ROVtxBuilder";
-import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import {RendererInstanceContextParam, RendererInstanceContext} from "../../vox/scene/RendererInstanceContext";
 import IRenderer from "../../vox/scene/IRenderer";
 
 import { RPOUnitBuilder } from "../../vox/render/RPOUnitBuilder";
@@ -47,7 +47,7 @@ export class RendererInstance implements IRenderer {
     private m_rpoUnitBuilder: RPOUnitBuilder = new RPOUnitBuilder();
     private m_rpoNodeBuilder: RPONodeBuilder = new RPONodeBuilder();
     private m_processBuider: RenderProcessBuider = new RenderProcessBuider();
-    private m_roVtxBuild: ROVtxBuilder = null;
+    private m_roVtxBuilder: ROVtxBuilder = null;
     private m_stage3D: IRenderStage3D = null;
     private m_fixProcess: RenderProcess = null;
     constructor() {
@@ -121,13 +121,18 @@ export class RendererInstance implements IRenderer {
             this.m_renderProxy = this.m_renderInsContext.getRenderProxy();
 
             this.m_dataBuilder = new RODataBuilder();
-            this.m_roVtxBuild = new ROVtxBuilder();
+            this.m_roVtxBuilder = new ROVtxBuilder();
             this.m_renderInsContext.setCameraParam(param.camProjParam.x, param.camProjParam.y, param.camProjParam.z);
-            
-            this.m_renderInsContext.initialize(param, camera, this.m_stage3D, this.m_dataBuilder, this.m_roVtxBuild);
+            let contextParam = new RendererInstanceContextParam();
+            contextParam.camera = camera;
+            contextParam.stage = this.m_stage3D;
+            contextParam.builder = this.m_dataBuilder;
+            contextParam.vtxBuilder = this.m_roVtxBuilder;
+
+            this.m_renderInsContext.initialize(param, camera, contextParam);
             this.m_adapter = this.m_renderProxy.getRenderAdapter();
             this.m_uid = this.m_renderProxy.getUid();
-            this.m_dataBuilder.initialize(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider, this.m_roVtxBuild);
+            this.m_dataBuilder.initialize(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider, this.m_roVtxBuilder);
             this.m_renderInsContext.initManager(this.m_dataBuilder);
             this.m_entity3DMana = new DispEntity3DManager(this.m_uid, this.m_dataBuilder, this.m_rpoUnitBuilder, this.m_processBuider);
 
