@@ -285,49 +285,62 @@ class RenderAdapter implements IRenderAdapter {
 		//console.log("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
 		this.m_gl.viewport( size.x, size.y, size.width, size.height );
 	}
-	// private checkViewPort(dstSize: AABB2D): void {
-	// }
+	private checkViewPort(dstSize: AABB2D): void {
+
+		let srcSize = this.m_viewPortSize;
+		let k: number = this.m_rcontext.getDevicePixelRatio();
+		let boo = srcSize.testEqual(dstSize);
+		boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
+		if (boo) {
+			this.m_devPRatio = k;
+			srcSize.copyFrom( dstSize );
+			this.updateViewPort();
+		}
+	}
 	reseizeViewPort(): void {
 
 		if (this.m_viewportUnlock) {
 
-			let srcSize = this.m_viewPortSize;
-			let dstSize = this.m_rcontext.getViewPortSize();
+			this.checkViewPort( this.m_rcontext.getViewPortSize() );
+			// let srcSize = this.m_viewPortSize;
+			// let dstSize = this.m_rcontext.getViewPortSize();
 
-			let k: number = this.m_rcontext.getDevicePixelRatio();
-			let boo = srcSize.testEqual(dstSize);
-			boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
-			if (boo) {
-				this.m_devPRatio = k;
-				srcSize.copyFrom( dstSize );
-				this.updateViewPort();
-			}
+			// let k: number = this.m_rcontext.getDevicePixelRatio();
+			// let boo = srcSize.testEqual(dstSize);
+			// boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
+			// if (boo) {
+			// 	this.m_devPRatio = k;
+			// 	srcSize.copyFrom( dstSize );
+			// 	this.updateViewPort();
+			// }
 		}
 	}
 	private reseizeFBOViewPort(): void {
 		if (this.m_viewportUnlock) {
 
-			let srcSize = this.m_viewPortSize;//this.m_rcontext.getViewPortSize();
-			let dstSize = this.m_fboViewPortSize;
+			this.checkViewPort( this.m_fboViewPortSize );
 
-			let k: number = this.m_rcontext.getDevicePixelRatio();
-			let boo = srcSize.testEqual(dstSize);
-			// let boo: boolean = this.m_viewX != this.m_fboViewPortSize.x || this.m_viewY != this.m_fboViewPortSize.y;
-			// boo = boo || this.m_viewWidth != this.m_fboViewPortSize.width;
-			// boo = boo || this.m_viewHeight != this.m_fboViewPortSize.height;
-			boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
-			if (boo) {
+			// let srcSize = this.m_viewPortSize;//this.m_rcontext.getViewPortSize();
+			// let dstSize = this.m_fboViewPortSize;
 
-				this.m_devPRatio = k;
-				// this.m_viewX = this.m_fboViewPortSize.x;
-				// this.m_viewY = this.m_fboViewPortSize.y;
-				// this.m_viewWidth = this.m_fboViewPortSize.width;
-				// this.m_viewHeight = this.m_fboViewPortSize.height;
-				srcSize.copyFrom( dstSize );
-				//this.m_viewPortSize.copyFrom(srcSize);
+			// let k: number = this.m_rcontext.getDevicePixelRatio();
+			// let boo = srcSize.testEqual(dstSize);
+			// // let boo: boolean = this.m_viewX != this.m_fboViewPortSize.x || this.m_viewY != this.m_fboViewPortSize.y;
+			// // boo = boo || this.m_viewWidth != this.m_fboViewPortSize.width;
+			// // boo = boo || this.m_viewHeight != this.m_fboViewPortSize.height;
+			// boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
+			// if (boo) {
 
-				this.updateViewPort();
-			}
+			// 	this.m_devPRatio = k;
+			// 	// this.m_viewX = this.m_fboViewPortSize.x;
+			// 	// this.m_viewY = this.m_fboViewPortSize.y;
+			// 	// this.m_viewWidth = this.m_fboViewPortSize.width;
+			// 	// this.m_viewHeight = this.m_fboViewPortSize.height;
+			// 	srcSize.copyFrom( dstSize );
+			// 	//this.m_viewPortSize.copyFrom(srcSize);
+
+			// 	this.updateViewPort();
+			// }
 		}
 	}
 	setViewProbeValue(x: number, y: number, width: number, height: number): void {
