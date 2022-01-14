@@ -69,10 +69,6 @@ class RenderProxy implements IRenderProxy{
     private m_vtxRes: ROVertexResource;
     private m_rc: any = null;
     private m_perspectiveEnabled = true;
-    // private m_viewX: number = 0;
-    // private m_viewY: number = 0;
-    // private m_viewW: number = 800;
-    // private m_viewH: number = 600;
     private m_viewPortRect: AABB2D = new AABB2D(0, 0, 800, 600);
     private m_cameraNear: number = 0.1;
     private m_cameraFar: number = 5000.0;
@@ -243,10 +239,6 @@ class RenderProxy implements IRenderProxy{
         let stage: IRenderStage3D = this.m_adapterContext.getStage();
         if (stage != null) {
             stage.setViewPort(pw, py, pw, ph);
-            // if (this.m_camera != null) {
-            //     this.m_camera.setViewXY(px, py);
-            //     this.m_camera.setViewSize(pw, ph);
-            // }
             this.updateCameraView();
         }
         this.m_adapterContext.setViewport(px, py, pw, ph);
@@ -270,10 +262,6 @@ class RenderProxy implements IRenderProxy{
         // console.log("XXX resizeCallback(), m_autoSynViewAndStage: "+this.m_autoSynViewAndStage);
         if (this.m_autoSynViewAndStage) {
             let rect = this.m_viewPortRect;
-            // this.m_viewX = 0;
-            // this.m_viewY = 0;
-            // rect.width = this.m_adapterContext.getRCanvasWidth();
-            // rect.height = this.m_adapterContext.getRCanvasHeight();
             rect.setSize(this.m_adapterContext.getRCanvasWidth(), this.m_adapterContext.getRCanvasHeight());
 
             this.createMainCamera();
@@ -300,8 +288,6 @@ class RenderProxy implements IRenderProxy{
             else {
                 this.m_camera.orthoRH(this.m_cameraNear, this.m_cameraFar, -0.5 * rect.height, 0.5 * rect.height, -0.5 * rect.width, 0.5 * rect.width);
             }
-            // this.m_camera.setViewXY(rect.x, rect.y);
-            // this.m_camera.setViewSize(rect.width, rect.height);
             this.updateCameraView();
         }
     }
@@ -369,8 +355,6 @@ class RenderProxy implements IRenderProxy{
         selfT.VtxBufUpdater = vtxBufUpdater;
         
         let rect = this.m_viewPortRect;
-        // rect.width = this.m_adapterContext.getViewportWidth();
-        // rect.height = this.m_adapterContext.getViewportHeight();
         rect.setSize(this.m_adapterContext.getRCanvasWidth(), this.m_adapterContext.getRCanvasHeight());
 
         this.m_adapter = new RenderAdapter(this.m_uid, texRes);
