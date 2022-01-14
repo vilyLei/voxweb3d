@@ -174,29 +174,6 @@ export default class EnvLightData extends MaterialPipeBase implements IMaterialP
     initialize(): void {
 
         if (this.m_uniformParam == null) {
-            /*
-            readonly data: Float32Array = new Float32Array([
-
-                0.1, 0.1, 0.1,              // ambient factor x,y,z
-                1.0,                        // scatterIntensity
-
-                1.0,                        // tone map exposure
-                0.1,                        // reflectionIntensity
-
-                600.0,                      // fogNear
-                3500.0,                     // fogFar
-
-                0.3,0.0,0.9,                // fog color(r, g, b)
-                0.0005,                     // fog density
-
-                0.0,0.0,                    // fog area offset x and z
-                800.0,800.0                 // fog area width and height
-
-                -500.0, -500.0,             // env ambient area offset x,z
-                1000.0, 1000.0              // env ambient area width, height
-
-            ]);
-            // */
             
             let uniformParam = new GlobalEnvLightUniformParam(this.m_renderProxy);
             this.m_data = uniformParam.buildUniformData();
