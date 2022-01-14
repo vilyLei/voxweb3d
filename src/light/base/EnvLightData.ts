@@ -11,6 +11,7 @@ import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipe } from "../../vox/material/pipeline/IMaterialPipe";
+import { MaterialPipeBase } from "../../vox/material/pipeline/MaterialPipeBase";
 
 import { EnvShaderCode } from "../material/EnvShaderCode";
 import { GlobalEnvLightUniformParam } from "../../vox/material/GlobalUniformParam";
@@ -18,22 +19,22 @@ import IRenderTexture from "../../vox/render/IRenderTexture";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import RenderProxy from "../../vox/render/RenderProxy";
 
-export default class EnvLightData implements IMaterialPipe {
+export default class EnvLightData extends MaterialPipeBase implements IMaterialPipe {
 
-    private static s_uid: number = 0;
-    private m_uid: number = -1;
-    private m_uniformParam: GlobalEnvLightUniformParam = null;
-    private m_dirty: boolean = false;
+    // private static s_uid: number = 0;
+    // private m_uid: number = -1;
+    // private m_uniformParam: GlobalEnvLightUniformParam = null;
+    // private m_dirty: boolean = false;
     // private m_uslotIndex: number = 0;
     private m_shaderCodeEnabled: boolean = true;
     private m_uniformCodeEnabled: boolean = true;
     private m_ambientMap: TextureProxy = null;
-    private m_renderProxy: RenderProxy = null;
+    // private m_renderProxy: RenderProxy = null;
 
-    constructor(renderProxy: RenderProxy) {
-        this.m_renderProxy = renderProxy;
-        this.m_uid = EnvLightData.s_uid++;
-    }
+    // constructor(renderProxy: RenderProxy) {
+    //     this.m_renderProxy = renderProxy;
+    //     this.m_uid = EnvLightData.s_uid++;
+    // }
 
     setEnvAmbientMap(tex: TextureProxy): void {
         if(this.m_ambientMap != tex) {
@@ -46,9 +47,9 @@ export default class EnvLightData implements IMaterialPipe {
             }
         }
     }
-    getUid(): number {
-        return this.m_uid;
-    }
+    // getUid(): number {
+    //     return this.m_uid;
+    // }
     setAmbientColorRGB3f(pr: number, pg: number, pb: number): void {
         let data: Float32Array = UniformConst.EnvLightParams.data;
         data[0] = pr;
@@ -228,8 +229,9 @@ export default class EnvLightData implements IMaterialPipe {
     }
     destroy(): void {
         this.setEnvAmbientMap(null);
-        if(this.m_uniformParam != null) this.m_uniformParam.destroy();
-        this.m_uniformParam = null;
-        this.m_renderProxy = null;
+        super.destroy();
+        // if(this.m_uniformParam != null) this.m_uniformParam.destroy();
+        // this.m_uniformParam = null;
+        // this.m_renderProxy = null;
     }
 }
