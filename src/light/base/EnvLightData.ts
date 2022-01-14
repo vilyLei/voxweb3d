@@ -22,7 +22,7 @@ export default class EnvLightData extends MaterialPipeBase implements IMaterialP
     private m_shaderCodeEnabled: boolean = true;
     private m_uniformCodeEnabled: boolean = true;
     private m_ambientMap: TextureProxy = null;
-
+    private m_data: Float32Array = null;
     setEnvAmbientMap(tex: TextureProxy): void {
         if (this.m_ambientMap != tex) {
             if (this.m_ambientMap != null) {
@@ -36,50 +36,50 @@ export default class EnvLightData extends MaterialPipeBase implements IMaterialP
     }
 
     setAmbientColorRGB3f(pr: number, pg: number, pb: number): void {
-        let data: Float32Array = UniformConst.EnvLightParams.data;
+        let data: Float32Array = this.m_data;
         data[0] = pr;
         data[1] = pg;
         data[2] = pb;
         this.m_dirty = true;
     }
     setFogColorRGB3f(pr: number, pg: number, pb: number): void {
-        let data: Float32Array = UniformConst.EnvLightParams.data;
+        let data: Float32Array = this.m_data;
         data[8] = pr;
         data[9] = pg;
         data[10] = pb;
         this.m_dirty = true;
     }
     setFogDensity(density: number): void {
-        UniformConst.EnvLightParams.data[11] = density;
+        this.m_data[11] = density;
         this.m_dirty = true;
     }
     setFogNear(near: number): void {
-        UniformConst.EnvLightParams.data[6] = near;
+        this.m_data[6] = near;
         this.m_dirty = true;
     }
     setFogFar(far: number): void {
-        UniformConst.EnvLightParams.data[7] = far;
+        this.m_data[7] = far;
         this.m_dirty = true;
     }
     setFogAreaOffset(px: number, pz: number): void {
-        UniformConst.EnvLightParams.data[12] = px;
-        UniformConst.EnvLightParams.data[13] = pz;
+        this.m_data[12] = px;
+        this.m_data[13] = pz;
         this.m_dirty = true;
     }
     setFogAreaSize(width: number, height: number): void {
-        UniformConst.EnvLightParams.data[14] = width;
-        UniformConst.EnvLightParams.data[15] = height;
+        this.m_data[14] = width;
+        this.m_data[15] = height;
         this.m_dirty = true;
     }
 
     setEnvAmbientLightAreaOffset(px: number, pz: number): void {
-        UniformConst.EnvLightParams.data[16] = px;
-        UniformConst.EnvLightParams.data[17] = pz;
+        this.m_data[16] = px;
+        this.m_data[17] = pz;
         this.m_dirty = true;
     }
     setEnvAmbientLightAreaSize(width: number, height: number): void {
-        UniformConst.EnvLightParams.data[18] = width;
-        UniformConst.EnvLightParams.data[19] = height;
+        this.m_data[18] = width;
+        this.m_data[19] = height;
         this.m_dirty = true;
     }
 
@@ -197,8 +197,9 @@ export default class EnvLightData extends MaterialPipeBase implements IMaterialP
 
             ]);
             // */
+            this.m_data = UniformConst.EnvLightParams.data.slice();
             this.m_uniformParam = new GlobalEnvLightUniformParam(this.m_renderProxy);
-            this.m_uniformParam.uProbe.addVec4Data(UniformConst.EnvLightParams.data, UniformConst.EnvLightParams.arrayLength);
+            this.m_uniformParam.uProbe.addVec4Data(this.m_data, UniformConst.EnvLightParams.arrayLength);
             this.m_uniformParam.buildData();
 
         }
@@ -206,6 +207,7 @@ export default class EnvLightData extends MaterialPipeBase implements IMaterialP
 
     destroy(): void {
         this.setEnvAmbientMap(null);
+        this.m_data = null;
         super.destroy();
     }
 }
