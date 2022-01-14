@@ -20,8 +20,8 @@ import TextureProxy from "../../vox/texture/TextureProxy";
 
 export default class EnvLightData implements IMaterialPipe {
 
-    private m_uid: number = -1;
     private static s_uid: number = 0;
+    private m_uid: number = -1;
     private m_uniformParam: GlobalEnvLightUniformParam = new GlobalEnvLightUniformParam();
     private m_uProbe: ShaderUniformProbe = null;
     private m_suo: ShaderGlobalUniform = null;

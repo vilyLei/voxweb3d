@@ -23,7 +23,7 @@ import UniformVec4Probe from "../../vox/material/UniformVec4Probe";
 import RendererParam from "../../vox/scene/RendererParam";
 import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
 
-class RenderAdapter implements IRenderAdapter{
+class RenderAdapter implements IRenderAdapter {
 	
 	// renderer context uid
 	private m_rcuid: number = 0;
@@ -315,31 +315,18 @@ class RenderAdapter implements IRenderAdapter{
 				this.m_viewY = this.m_fboViewSize.y;
 				this.m_viewWidth = this.m_fboViewSize.z;
 				this.m_viewHeight = this.m_fboViewSize.w;
-				this.uViewProbe.setVec4Data(
-					this.m_viewX,
-					this.m_viewY,
-					this.m_viewWidth,
-					this.m_viewHeight
-				);
+
+				this.uViewProbe.setVec4Data( this.m_viewX, this.m_viewY, this.m_viewWidth, this.m_viewHeight );
 				this.uViewProbe.update();
+
 				//DivLog.ShowLog("reseizeFBOViewPort: " + this.m_viewX + "," + this.m_viewY + "," + this.m_viewWidth + "," + this.m_viewHeight);
 				//console.log("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
-				this.m_gl.viewport(
-					this.m_viewX,
-					this.m_viewY,
-					this.m_viewWidth,
-					this.m_viewHeight
-				);
+				this.m_gl.viewport(this.m_viewX, this.m_viewY, this.m_viewWidth, this.m_viewHeight );
 			}
 		}
 	}
 	setViewProbeValue(x: number, y: number, width: number, height: number): void {
-		this.uViewProbe.setVec4Data(
-			x,
-			y,
-			width,
-			height
-		);
+		this.uViewProbe.setVec4Data( x, y, width, height );
 		this.uViewProbe.update();
 	}
 	lockViewport(): void {

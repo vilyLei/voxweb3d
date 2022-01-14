@@ -5,10 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-import MathConst from "../../vox/math/MathConst";
-import Vector3D from "../../vox/math/Vector3D";
-
-
 export default class AABB2D {
 	private m_right: number = 100;
 	private m_top: number = 100;
@@ -92,6 +88,13 @@ export default class AABB2D {
 		this.m_right = this.width + this.x;
 		this.m_top = this.height + this.y;
 	}
+	
+    testEqual(dst: AABB2D): boolean {
+        return this.x != dst.x || this.y != dst.y || this.width != dst.width || this.height != dst.height;
+    }
+    testEqualWithParams(px: number, py: number, pw: number, ph: number): boolean {
+        return this.x != px || this.y != py || this.width != pw || this.height != ph;
+    }
 	update(): void {
 		this.m_right = this.width + this.x;
 		this.m_top = this.height + this.y;

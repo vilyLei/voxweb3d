@@ -13,9 +13,10 @@ import Color4 from "../../vox/material/Color4";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import ContextMouseEvtDispatcher from "../../vox/render/ContextMouseEvtDispatcher";
 import { GLBlendMode, GLBlendEquation, CullFaceMode, GLStencilFunc, GLStencilOp } from "./RenderConst";
+import AABB2D from "../geom/AABB2D";
 
 class RAdapterContext {
-    constructor() { }
+
 	private static s_uid:number = 0;
 	private m_uid:number = RAdapterContext.s_uid++;
     private m_mouseEvtDisplather: ContextMouseEvtDispatcher = new ContextMouseEvtDispatcher();
@@ -30,10 +31,7 @@ class RAdapterContext {
     private m_gl: WebGLRenderingContext = null;
     private m_stage: IRenderStage3D = null;
 
-    private m_viewPortX: number = 0;
-    private m_viewPortY: number = 0;
-    private m_viewPortWidth: number = 800;
-    private m_viewPortHeight: number = 600;
+    private m_viewPortSize: AABB2D = new AABB2D(0, 0, 800, 600);
     private m_maxWebGLVersion: number = 2;
     private m_webGLVersion: number = 2;
     private m_devicePixelRatio: number = 1.0;
@@ -41,8 +39,9 @@ class RAdapterContext {
     private m_viewEle: RViewElement = new RViewElement();    
     // display 3d view buf size auto sync window size
     autoSyncRenderBufferAndWindowSize: boolean = true;
-    //
     offscreenRenderEnabled: boolean = false;
+    constructor() { }
+
     private contextrestoredHandler(evt: any): void {
         console.log("webglcontextrestored...!!!");
         console.log(evt);
@@ -375,43 +374,35 @@ class RAdapterContext {
         return this.m_displayHeight;
     }
     setViewport(px: number, py: number, pw: number, ph: number): void {
-        let boo: boolean = this.m_viewPortX != px || this.m_viewPortY != py;
-        if (this.m_viewPortWidth != pw || this.m_viewPortHeight != ph || boo) {
-            this.m_viewPortX = px;
-            this.m_viewPortY = py;
-            this.m_viewPortWidth = pw;
-            this.m_viewPortHeight = ph;
-            console.log("size to view port: ", pw, ph);
-        }
+        this.m_viewPortSize.setTo(px, py, pw, ph);
     }
     setViewportSize(pw: number, ph: number): void {
-        if (this.m_viewPortWidth != pw || this.m_viewPortHeight != ph) {
-            this.m_viewPortWidth = pw;
-            this.m_viewPortHeight = ph;
-        }
+        this.m_viewPortSize.setSize(pw, ph);
     }
     testViewPortChanged(px: number, py: number, pw: number, ph: number): boolean {
-        
-        return this.m_viewPortX != px || this.m_viewPortY != py || this.m_viewPortWidth != pw || this.m_viewPortHeight != ph;
+        return this.m_viewPortSize.testEqualWithParams(px, py, pw, ph);
     }
     getViewportX(): number {
-        return this.m_viewPortX;
+        return this.m_viewPortSize.x;
     }
     getViewportY(): number {
-        return this.m_viewPortY;
+        return this.m_viewPortSize.y;
     }
     getViewportWidth(): number {
-        return this.m_viewPortWidth;
+        return this.m_viewPortSize.width;
     }
     getViewportHeight(): number {
-        return this.m_viewPortHeight;
+        return this.m_viewPortSize.height;
+    }
+    getViewPortSize(): AABB2D {
+        return this.m_viewPortSize;
     }
 
     getFBOWidth(): number {
-        return this.m_viewPortWidth < RendererDevice.MAX_RENDERBUFFER_SIZE ? this.m_viewPortWidth : RendererDevice.MAX_RENDERBUFFER_SIZE;
+        return this.m_viewPortSize.width < RendererDevice.MAX_RENDERBUFFER_SIZE ? this.m_viewPortSize.width : RendererDevice.MAX_RENDERBUFFER_SIZE;
     }
     getFBOHeight(): number {
-        return this.m_viewPortHeight < RendererDevice.MAX_RENDERBUFFER_SIZE ? this.m_viewPortHeight : RendererDevice.MAX_RENDERBUFFER_SIZE;
+        return this.m_viewPortSize.height < RendererDevice.MAX_RENDERBUFFER_SIZE ? this.m_viewPortSize.height : RendererDevice.MAX_RENDERBUFFER_SIZE;
     }
     getRCanvasWidth(): number {
         return this.m_rcanvasWidth;
