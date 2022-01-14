@@ -6,7 +6,7 @@
 /***************************************************************************/
 import UniformConst from "./UniformConst";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
-import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
+import IShaderUniform from "../../vox/material/IShaderUniform";
 import{IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
 import RenderProxy from "../render/RenderProxy";
 
@@ -14,7 +14,7 @@ class GlobalUniformParamBase {
 
     private m_rc: RenderProxy = null;
     uProbe: IShaderUniformProbe = null;
-    uniform: ShaderGlobalUniform = null;
+    uniform: IShaderUniform = null;
     constructor(rc: RenderProxy, autoBuild: boolean = true) {
         this.m_rc = rc;
         if(autoBuild) {
@@ -24,6 +24,9 @@ class GlobalUniformParamBase {
     }
     getNames(): string[] {
         return [];
+    }
+    cloneUniform(): IShaderUniform {
+        return this.m_rc.uniformContext.cloneShaderGlobalUniform( this.uniform );
     }
     buildData(): void {
         this.m_rc.uniformContext.updateGlobalUinformDataFromProbe(this.uniform, this.uProbe, this.getNames());
