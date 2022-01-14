@@ -16,6 +16,7 @@ import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipe } from "../../../vox/material/pipeline/IMaterialPipe";
+import { MaterialPipeBase } from "../../../vox/material/pipeline/MaterialPipeBase";
 
 import IRenderTexture from "../../../vox/render/IRenderTexture";
 import { GlobalVSMShadowUniformParam } from "../../../vox/material/GlobalUniformParam";
@@ -24,9 +25,9 @@ import RTTTextureProxy from "../../../vox/texture/RTTTextureProxy";
 import { ShadowMode } from "../../../vox/material/pipeline/ShadowMode";
 import RenderProxy from "../../../vox/render/RenderProxy";
 
-export default class ShadowVSMData implements IMaterialPipe {
+export default class ShadowVSMData extends MaterialPipeBase implements IMaterialPipe {
 
-    private m_uniformParam: GlobalVSMShadowUniformParam = null;//new GlobalVSMShadowUniformParam();
+    // private m_uniformParam: GlobalVSMShadowUniformParam = null;//new GlobalVSMShadowUniformParam();
     // private m_uProbe: ShaderUniformProbe = null;
     // private m_suo: ShaderGlobalUniform = null;
     private m_direcMatrix: Matrix4 = null;
@@ -34,12 +35,12 @@ export default class ShadowVSMData implements IMaterialPipe {
     private m_offetMatrix: Matrix4 = null;
     private m_shadowMap: RTTTextureProxy = null;
     private m_camVersion: number = -1;
-    private m_dirty: boolean = false;
-    private m_renderProxy: RenderProxy = null;
+    // private m_dirty: boolean = false;
+    // private m_renderProxy: RenderProxy = null;
 
-    constructor(renderProxy: RenderProxy) {
-        this.m_renderProxy = renderProxy;
-    }
+    // constructor(renderProxy: RenderProxy) {
+    //     this.m_renderProxy = renderProxy;
+    // }
     setShadowMap(shadowMap: RTTTextureProxy): void {
         this.m_shadowMap = shadowMap;
     }
@@ -168,20 +169,26 @@ export default class ShadowVSMData implements IMaterialPipe {
         this.m_params[10] = -v3.z;
         this.m_dirty = true;
     }
-    update(): void {
+    // update(): void {
 
-        if (this.m_dirty && this.m_uniformParam != null) {
-            this.m_dirty = false;
-            this.m_uniformParam.uProbe.update();
-        }
-    }
-    getGlobalUinform(): ShaderGlobalUniform {
-        return this.m_uniformParam != null ? this.m_uniformParam.uniform.clone() : null;
-    }
+    //     if (this.m_dirty && this.m_uniformParam != null) {
+    //         this.m_dirty = false;
+    //         this.m_uniformParam.uProbe.update();
+    //     }
+    // }
+    // getGlobalUinform(): ShaderGlobalUniform {
+    //     return this.m_uniformParam != null ? this.m_uniformParam.uniform.clone() : null;
+    // }
     destroy(): void {
-        if(this.m_uniformParam != null) this.m_uniformParam.destroy();
-        this.m_uniformParam = null;
+        
         this.m_shadowMap = null;
-        this.m_renderProxy = null;
+        this.m_direcMatrix = null;
+        this.m_params = null;
+        this.m_offetMatrix = null;
+
+        super.destroy();
+        // if(this.m_uniformParam != null) this.m_uniformParam.destroy();
+        // this.m_uniformParam = null;
+        // this.m_renderProxy = null;
     }
 }

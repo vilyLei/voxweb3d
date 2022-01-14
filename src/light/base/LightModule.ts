@@ -11,6 +11,7 @@ import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipe } from "../../vox/material/pipeline/IMaterialPipe";
+import { MaterialPipeBase } from "../../vox/material/pipeline/MaterialPipeBase";
 import { GlobalLightUniformParam } from "../../vox/material/GlobalUniformParam";
 import MathConst from "../../vox/math/MathConst";
 import { PointLight } from "./PointLight";
@@ -19,12 +20,12 @@ import { SpotLight } from "./SpotLight";
 import IRenderTexture from "../../vox/render/IRenderTexture";
 import RenderProxy from "../../vox/render/RenderProxy";
 
-class LightModule implements IMaterialPipe {
+class LightModule extends MaterialPipeBase implements IMaterialPipe {
 
-    static s_uid: number = 0;
-    private m_uid: number = -1;
+    // static s_uid: number = 0;
+    // private m_uid: number = -1;
 
-    private m_uniformParam: GlobalLightUniformParam = null;//new GlobalLightUniformParam();
+    // private m_uniformParam: GlobalLightUniformParam = null;//new GlobalLightUniformParam();
     // private m_uProbe: ShaderUniformProbe = null;
     // private m_suo: ShaderGlobalUniform = null;
     // private m_uslotIndex: number = 0;
@@ -38,16 +39,16 @@ class LightModule implements IMaterialPipe {
     private m_pointLightList: PointLight[] = null;
     private m_direcLightList: DirectionLight[] = null;
     private m_spotLightList: SpotLight[] = null;
-    private m_renderProxy: RenderProxy = null;
+    // private m_renderProxy: RenderProxy = null;
 
-    constructor(renderProxy: RenderProxy) {
+    // constructor(renderProxy: RenderProxy) {
 
-        this.m_renderProxy = renderProxy;
-        this.m_uid = LightModule.s_uid++;
-    }
-    getUid(): number {
-        return this.m_uid;
-    }
+    //     this.m_renderProxy = renderProxy;
+    //     this.m_uid = LightModule.s_uid++;
+    // }
+    // getUid(): number {
+    //     return this.m_uid;
+    // }
     getPointLightsTotal(): number {
         return this.m_pointLightList != null ? this.m_pointLightList.length : 0;
     }
@@ -257,7 +258,7 @@ class LightModule implements IMaterialPipe {
                 shaderBuilder.addDefine("VOX_LIGHTS_TOTAL", "0");
             }
 
-            this.m_uniformParam.use(shaderBuilder, this.m_lightPosDataVec4Total, this.m_lightsTotal);
+            (this.m_uniformParam as GlobalLightUniformParam).use(shaderBuilder, this.m_lightPosDataVec4Total, this.m_lightsTotal);
         }
     }
     getPipeTypes(): MaterialPipeType[] {
@@ -289,16 +290,21 @@ class LightModule implements IMaterialPipe {
     }
     update(): void {
         this.buildData();
-        this.m_uniformParam.uProbe.update();
+        if(this.m_uniformParam != null) this.m_uniformParam.uProbe.update();
     }
 
-    getGlobalUinform(): ShaderGlobalUniform {
-        return this.m_uniformParam != null ? this.m_uniformParam.uniform.clone() : null;
-    }
+    // getGlobalUinform(): ShaderGlobalUniform {
+    //     return this.m_uniformParam != null ? this.m_uniformParam.uniform.clone() : null;
+    // }
     destroy(): void {
-        if(this.m_uniformParam != null) this.m_uniformParam.destroy();
-        this.m_renderProxy = null;
-        this.m_uniformParam = null;
+        
+        this.m_lightPosData = null;
+        this.m_lightColors = null;
+        this.m_lightsTotal = 0;
+        this.m_pointLightList = null;
+        this.m_direcLightList = null;
+        this.m_spotLightList = null;
+        super.destroy();
     }
 }
 

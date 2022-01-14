@@ -218,15 +218,15 @@ export default class EnvLightData extends MaterialPipeBase implements IMaterialP
 
         }
     }
-    update(): void {
-        if (this.m_uniformParam != null && this.m_dirty) {
-            this.m_dirty = false;
-            this.m_uniformParam.uProbe.update();
-        }
-    }
-    getGlobalUinform(): ShaderGlobalUniform {
-        return this.m_uniformParam != null ? this.m_uniformParam.uniform.clone() : null;
-    }
+    // update(): void {
+    //     if (this.m_uniformParam != null && this.m_dirty) {
+    //         this.m_dirty = false;
+    //         this.m_uniformParam.uProbe.update();
+    //     }
+    // }
+    // getGlobalUinform(): ShaderGlobalUniform {
+    //     return this.m_uniformParam != null ? this.m_uniformParam.uniform.clone() : null;
+    // }
     destroy(): void {
         this.setEnvAmbientMap(null);
         super.destroy();
