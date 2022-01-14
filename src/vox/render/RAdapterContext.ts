@@ -31,7 +31,7 @@ class RAdapterContext {
     private m_gl: WebGLRenderingContext = null;
     private m_stage: IRenderStage3D = null;
 
-    private m_viewPortSize: AABB2D = new AABB2D(0, 0, 800, 600);
+    private m_viewPortRect: AABB2D = new AABB2D(0, 0, 800, 600);
     private m_maxWebGLVersion: number = 2;
     private m_webGLVersion: number = 2;
     private m_devicePixelRatio: number = 1.0;
@@ -335,7 +335,7 @@ class RAdapterContext {
             }
             this.m_canvas.style.width = this.m_displayWidth + 'px';
             this.m_canvas.style.height = this.m_displayHeight + 'px';
-            
+
             if (this.m_stage != null) {
                 this.m_stage.stageWidth = this.m_rcanvasWidth;
                 this.m_stage.stageHeight = this.m_rcanvasHeight;
@@ -377,35 +377,35 @@ class RAdapterContext {
         return this.m_displayHeight;
     }
     setViewport(px: number, py: number, pw: number, ph: number): void {
-        this.m_viewPortSize.setTo(px, py, pw, ph);
+        this.m_viewPortRect.setTo(px, py, pw, ph);
     }
     setViewportSize(pw: number, ph: number): void {
-        this.m_viewPortSize.setSize(pw, ph);
+        this.m_viewPortRect.setSize(pw, ph);
     }
     testViewPortChanged(px: number, py: number, pw: number, ph: number): boolean {
-        return this.m_viewPortSize.testEqualWithParams(px, py, pw, ph);
+        return this.m_viewPortRect.testEqualWithParams(px, py, pw, ph);
     }
     getViewportX(): number {
-        return this.m_viewPortSize.x;
+        return this.m_viewPortRect.x;
     }
     getViewportY(): number {
-        return this.m_viewPortSize.y;
+        return this.m_viewPortRect.y;
     }
     getViewportWidth(): number {
-        return this.m_viewPortSize.width;
+        return this.m_viewPortRect.width;
     }
     getViewportHeight(): number {
-        return this.m_viewPortSize.height;
+        return this.m_viewPortRect.height;
     }
     getViewPortSize(): AABB2D {
-        return this.m_viewPortSize;
+        return this.m_viewPortRect;
     }
 
     getFBOWidth(): number {
-        return this.m_viewPortSize.width < RendererDevice.MAX_RENDERBUFFER_SIZE ? this.m_viewPortSize.width : RendererDevice.MAX_RENDERBUFFER_SIZE;
+        return this.m_viewPortRect.width < RendererDevice.MAX_RENDERBUFFER_SIZE ? this.m_viewPortRect.width : RendererDevice.MAX_RENDERBUFFER_SIZE;
     }
     getFBOHeight(): number {
-        return this.m_viewPortSize.height < RendererDevice.MAX_RENDERBUFFER_SIZE ? this.m_viewPortSize.height : RendererDevice.MAX_RENDERBUFFER_SIZE;
+        return this.m_viewPortRect.height < RendererDevice.MAX_RENDERBUFFER_SIZE ? this.m_viewPortRect.height : RendererDevice.MAX_RENDERBUFFER_SIZE;
     }
     getRCanvasWidth(): number {
         return this.m_rcanvasWidth;

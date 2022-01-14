@@ -39,23 +39,18 @@ class RenderAdapter implements IRenderAdapter {
 	private m_fboType: number = FrameBufferType.FRAMEBUFFER;
 	private m_fboBufList: FrameBufferObject[] = [null, null, null, null, null, null, null, null];
 	private m_fboClearBoo: boolean = true;
-	private m_fboViewRectBoo: boolean = false;
+	private m_fboViewportRectBoo: boolean = false;
 	private m_polygonOffsetFlag: boolean = false;
 	private m_polygonOffset: boolean = false;
 
-	// private m_viewX: number = 0;
-	// private m_viewY: number = 0;
-	// private m_viewWidth: number = 800;
-	// private m_viewHeight: number = 600;
-
 	private m_clearDepth: number = 1.0;
 	private m_preDepth: number = 0.0;
-	private m_viewPortSize: AABB2D = new AABB2D(0, 0, 800, 600);
-	private m_fboViewPortSize: AABB2D = new AABB2D(0, 0, 800, 600);
+	private m_viewPortRect: AABB2D = new AABB2D(0, 0, 800, 600);
+	private m_fboViewportRect: AABB2D = new AABB2D(0, 0, 800, 600);
 	private m_fboSizeFactor: number = 1.0;
 	private m_clearStencil: number = 0x0;
-	private m_fboBiltRect: Uint16Array = new Uint16Array(8);
-	private m_fboViewRect: Uint16Array = new Uint16Array(4);
+	private m_fboBiltRectData: Uint16Array = new Uint16Array(8);
+	private m_fboViewportRectData: Uint16Array = new Uint16Array(4);
 	private m_activeAttachmentTotal: number = 1;
 	private m_scissorEnabled: boolean = false;
 	private m_rState: RODrawState = null;
@@ -104,7 +99,7 @@ class RenderAdapter implements IRenderAdapter {
 			//console.log("RenderAdapter::initialize() finish...");
 			if (this.uViewProbe == null) {
 
-				let size = this.m_viewPortSize;
+				let size = this.m_viewPortRect;
 				let self: any = this;
 				self.uViewProbe = new UniformVec4Probe(1);
 				this.uViewProbe.bindSlotAt(this.m_rcuid);
@@ -278,7 +273,7 @@ class RenderAdapter implements IRenderAdapter {
 	private m_viewportUnlock: boolean = true;
 
 	private updateViewPort(): void {
-		let size = this.m_viewPortSize;
+		let size = this.m_viewPortRect;
 		this.uViewProbe.setVec4Data( size.x, size.y, size.width, size.height );
 		this.uViewProbe.update();
 		//DivLog.ShowLog("reseizeFBOViewPort: " + this.m_viewX + "," + this.m_viewY + "," + this.m_viewWidth + "," + this.m_viewHeight);
@@ -287,7 +282,7 @@ class RenderAdapter implements IRenderAdapter {
 	}
 	private checkViewPort(dstSize: AABB2D): void {
 
-		let srcSize = this.m_viewPortSize;
+		let srcSize = this.m_viewPortRect;
 		let k: number = this.m_rcontext.getDevicePixelRatio();
 		let boo = srcSize.testEqual(dstSize);
 		boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
@@ -302,45 +297,12 @@ class RenderAdapter implements IRenderAdapter {
 		if (this.m_viewportUnlock) {
 
 			this.checkViewPort( this.m_rcontext.getViewPortSize() );
-			// let srcSize = this.m_viewPortSize;
-			// let dstSize = this.m_rcontext.getViewPortSize();
-
-			// let k: number = this.m_rcontext.getDevicePixelRatio();
-			// let boo = srcSize.testEqual(dstSize);
-			// boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
-			// if (boo) {
-			// 	this.m_devPRatio = k;
-			// 	srcSize.copyFrom( dstSize );
-			// 	this.updateViewPort();
-			// }
 		}
 	}
 	private reseizeFBOViewPort(): void {
 		if (this.m_viewportUnlock) {
 
-			this.checkViewPort( this.m_fboViewPortSize );
-
-			// let srcSize = this.m_viewPortSize;//this.m_rcontext.getViewPortSize();
-			// let dstSize = this.m_fboViewPortSize;
-
-			// let k: number = this.m_rcontext.getDevicePixelRatio();
-			// let boo = srcSize.testEqual(dstSize);
-			// // let boo: boolean = this.m_viewX != this.m_fboViewPortSize.x || this.m_viewY != this.m_fboViewPortSize.y;
-			// // boo = boo || this.m_viewWidth != this.m_fboViewPortSize.width;
-			// // boo = boo || this.m_viewHeight != this.m_fboViewPortSize.height;
-			// boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
-			// if (boo) {
-
-			// 	this.m_devPRatio = k;
-			// 	// this.m_viewX = this.m_fboViewPortSize.x;
-			// 	// this.m_viewY = this.m_fboViewPortSize.y;
-			// 	// this.m_viewWidth = this.m_fboViewPortSize.width;
-			// 	// this.m_viewHeight = this.m_fboViewPortSize.height;
-			// 	srcSize.copyFrom( dstSize );
-			// 	//this.m_viewPortSize.copyFrom(srcSize);
-
-			// 	this.updateViewPort();
-			// }
+			this.checkViewPort( this.m_fboViewportRect );
 		}
 	}
 	setViewProbeValue(x: number, y: number, width: number, height: number): void {
@@ -381,12 +343,12 @@ class RenderAdapter implements IRenderAdapter {
 	readPixels(px: number, py: number, width: number, height: number, format: number, dataType: number, pixels: Uint8Array): void {
 		this.m_gl.readPixels(px, py, width, height, TextureFormat.ToGL(this.m_gl, format), TextureDataType.ToGL(this.m_gl, dataType), pixels);
 	}
-	setFBOViewRect(px: number, py: number, pw: number, ph: number): void {
-		this.m_fboViewRect[0] = px;
-		this.m_fboViewRect[1] = py;
-		this.m_fboViewRect[2] = pw;
-		this.m_fboViewRect[3] = ph;
-		this.m_fboViewRectBoo = true;
+	setFBOViewportRect(px: number, py: number, pw: number, ph: number): void {
+		this.m_fboViewportRectData[0] = px;
+		this.m_fboViewportRectData[1] = py;
+		this.m_fboViewportRectData[2] = pw;
+		this.m_fboViewportRectData[3] = ph;
+		this.m_fboViewportRectBoo = true;
 	}
 	createFBOAt(index: number, fboType: number, pw: number, ph: number, enableDepth: boolean = false, enableStencil: boolean = false, multisampleLevel: number = 0): void {
 		if (this.m_fboBufList[index] == null) {
@@ -505,8 +467,8 @@ class RenderAdapter implements IRenderAdapter {
 						this.m_fboBuf.initialize(this.m_gl, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
 					}
 					else {
-						if (this.m_fboViewRectBoo) {
-							this.m_fboBuf.initialize(this.m_gl, this.m_fboViewRect[2], this.m_fboViewRect[3]);
+						if (this.m_fboViewportRectBoo) {
+							this.m_fboBuf.initialize(this.m_gl, this.m_fboViewportRectData[2], this.m_fboViewportRectData[3]);
 						}
 						else if (!this.m_fboBuf.sizeFixed) {
 							this.m_fboBuf.initialize(this.m_gl, texProxy.getWidth(), texProxy.getHeight());
@@ -523,8 +485,8 @@ class RenderAdapter implements IRenderAdapter {
 							this.m_fboBuf.initialize(this.m_gl, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
 						}
 						else {
-							if (this.m_fboViewRectBoo) {
-								this.m_fboBuf.initialize(this.m_gl, this.m_fboViewRect[2], this.m_fboViewRect[3]);
+							if (this.m_fboViewportRectBoo) {
+								this.m_fboBuf.initialize(this.m_gl, this.m_fboViewportRectData[2], this.m_fboViewportRectData[3]);
 							}
 							else {
 								this.m_fboBuf.initialize(this.m_gl, texProxy.getWidth(), texProxy.getHeight());
@@ -578,26 +540,26 @@ class RenderAdapter implements IRenderAdapter {
 					// m_gl.colorMask(m_colorMask.mr,m_colorMask.mg,m_colorMask.mb,m_colorMask.ma);
 					this.m_gl.clear(this.m_clearMask);
 				}
-				let size = this.m_viewPortSize;
-				this.m_fboBiltRect[4] = this.m_fboBiltRect[0] = size.x;
-				this.m_fboBiltRect[5] = this.m_fboBiltRect[1] = size.y;
-				this.m_fboBiltRect[6] = this.m_fboBiltRect[2] = size.getRight();
-				this.m_fboBiltRect[7] = this.m_fboBiltRect[3] = size.getTop();
-				if (this.m_fboViewRectBoo) {
-					this.m_fboViewRectBoo = false;
-					this.m_fboViewPortSize.setTo(this.m_fboViewRect[0], this.m_fboViewRect[1], this.m_fboViewRect[2], this.m_fboViewRect[3]);
+				let size = this.m_viewPortRect;
+				this.m_fboBiltRectData[4] = this.m_fboBiltRectData[0] = size.x;
+				this.m_fboBiltRectData[5] = this.m_fboBiltRectData[1] = size.y;
+				this.m_fboBiltRectData[6] = this.m_fboBiltRectData[2] = size.getRight();
+				this.m_fboBiltRectData[7] = this.m_fboBiltRectData[3] = size.getTop();
+				if (this.m_fboViewportRectBoo) {
+					this.m_fboViewportRectBoo = false;
+					this.m_fboViewportRect.setTo(this.m_fboViewportRectData[0], this.m_fboViewportRectData[1], this.m_fboViewportRectData[2], this.m_fboViewportRectData[3]);
 					this.reseizeFBOViewPort();
 				}
 				else {
 					if (this.m_synFBOSizeWithViewport) {
 						//console.log("this.m_fboSizeFactor: "+this.m_fboSizeFactor);
-						this.m_fboViewPortSize.setTo(0, 0, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
+						this.m_fboViewportRect.setTo(0, 0, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
 					}
 					else {
 						if(this.m_fboBuf.isSizeChanged()) {
 							this.m_fboBuf.initialize(this.m_gl, this.m_fboBuf.getWidth(), this.m_fboBuf.getHeight());
 						}
-						this.m_fboViewPortSize.setTo(0, 0, this.m_fboBuf.getWidth(), this.m_fboBuf.getHeight());
+						this.m_fboViewportRect.setTo(0, 0, this.m_fboBuf.getWidth(), this.m_fboBuf.getHeight());
 					}
 					this.reseizeFBOViewPort();
 				}
@@ -621,16 +583,16 @@ class RenderAdapter implements IRenderAdapter {
 		}
 	}
 	setBlitFboSrcRect(px: number, py: number, pw: number, ph: number): void {
-		this.m_fboBiltRect[0] = px;
-		this.m_fboBiltRect[1] = py;
-		this.m_fboBiltRect[2] = px + pw;
-		this.m_fboBiltRect[3] = py + ph;
+		this.m_fboBiltRectData[0] = px;
+		this.m_fboBiltRectData[1] = py;
+		this.m_fboBiltRectData[2] = px + pw;
+		this.m_fboBiltRectData[3] = py + ph;
 	}
 	setBlitFboDstRect(px: number, py: number, pw: number, ph: number): void {
-		this.m_fboBiltRect[4] = px;
-		this.m_fboBiltRect[5] = py;
-		this.m_fboBiltRect[6] = px + pw;
-		this.m_fboBiltRect[7] = py + ph;
+		this.m_fboBiltRectData[4] = px;
+		this.m_fboBiltRectData[5] = py;
+		this.m_fboBiltRectData[6] = px + pw;
+		this.m_fboBiltRectData[7] = py + ph;
 	}
 	/**
 	 * @oaram			clearType, it is RenderProxy.COLOR or RenderProxy.DEPTH or RenderProxy.STENCIL or RenderProxy.DEPTH_STENCIL
@@ -666,7 +628,7 @@ class RenderAdapter implements IRenderAdapter {
 			}
 			this.m_gl.clearBufferfv(clearType, clearIndex, dataArr);
 		}
-		let fs: Uint16Array = this.m_fboBiltRect;
+		let fs: Uint16Array = this.m_fboBiltRectData;
 		//copyTexSubImage2D 可以在gles2中代替下面的函数
 		this.m_gl.blitFramebuffer(fs[0], fs[1], fs[2], fs[3], fs[4], fs[5], fs[6], fs[7], mask_bitfiled, filter);
 	}

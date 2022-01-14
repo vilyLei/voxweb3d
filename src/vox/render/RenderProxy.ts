@@ -32,6 +32,7 @@ import DivLog from "../../vox/utils/DivLog";
 import RendererState from "./RendererState";
 import {IRenderProxy} from "./IRenderProxy";
 import ShaderUniformProbe from "../material/ShaderUniformProbe";
+import AABB2D from "../geom/AABB2D";
 
 class RenderProxy implements IRenderProxy{
 
@@ -68,10 +69,11 @@ class RenderProxy implements IRenderProxy{
     private m_vtxRes: ROVertexResource;
     private m_rc: any = null;
     private m_perspectiveEnabled = true;
-    private m_viewX: number = 0;
-    private m_viewY: number = 0;
-    private m_viewW: number = 800;
-    private m_viewH: number = 600;
+    // private m_viewX: number = 0;
+    // private m_viewY: number = 0;
+    // private m_viewW: number = 800;
+    // private m_viewH: number = 600;
+    private m_viewPortRect: AABB2D = new AABB2D(0, 0, 800, 600);
     private m_cameraNear: number = 0.1;
     private m_cameraFar: number = 5000.0;
     private m_cameraFov: number = 45.0;
@@ -223,31 +225,31 @@ class RenderProxy implements IRenderProxy{
         this.m_camera.getWorldPickingRayByScreenXY(stage.mouseX, stage.mouseY, rl_position, rl_tv);
     }
     testViewPortChanged(px: number, py: number, pw: number, ph: number): boolean {
-        
-        return this.m_viewX != px || this.m_viewY != py || this.m_viewW != pw || this.m_viewH != ph;
+        return this.m_viewPortRect.testEqualWithParams(px, py, pw, ph);
+        //return this.m_viewX != px || this.m_viewY != py || rect.width != pw || rect.height != ph;
     }
     testRCViewPortChanged(px: number, py: number, pw: number, ph: number): boolean {
         return this.m_adapterContext.testViewPortChanged(px,py,pw,ph);
     }
-    getViewX(): number {return this.m_viewX;}
-    getViewY(): number {return this.m_viewY;}
-    getViewWidth(): number {return this.m_viewW;}
-    getViewHeight(): number {return this.m_viewH;}
+    getViewX(): number {return this.m_viewPortRect.x;}
+    getViewY(): number {return this.m_viewPortRect.y;}
+    getViewWidth(): number {return this.m_viewPortRect.width;}
+    getViewHeight(): number {return this.m_viewPortRect.height;}
     setViewPort(px: number, py: number, pw: number, ph: number): void {
+
         this.m_autoSynViewAndStage = false;
-        this.m_viewX = px;
-        this.m_viewY = py;
-        this.m_viewW = pw;
-        this.m_viewH = ph;
+        
+        this.m_viewPortRect.setTo(px, py, pw, ph);
         let stage: IRenderStage3D = this.m_adapterContext.getStage();
         if (stage != null) {
             stage.setViewPort(pw, py, pw, ph);
-            if (this.m_camera != null) {
-                this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
-                this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
-            }
+            // if (this.m_camera != null) {
+            //     this.m_camera.setViewXY(px, py);
+            //     this.m_camera.setViewSize(pw, ph);
+            // }
+            this.updateCameraView();
         }
-        this.m_adapterContext.setViewport(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
+        this.m_adapterContext.setViewport(px, py, pw, ph);
     }
     setRCViewPort(px: number, py: number, pw: number, ph: number,autoSynViewAndStage: boolean = false): void {
         this.m_autoSynViewAndStage = autoSynViewAndStage;
@@ -257,20 +259,29 @@ class RenderProxy implements IRenderProxy{
         this.m_adapter.unlockViewport();
         this.m_adapter.reseizeViewPort();
     }
+    private updateCameraView(): void {        
+        if (this.m_camera != null) {
+            let rect = this.m_viewPortRect;
+            this.m_camera.setViewXY(rect.x, rect.y);
+            this.m_camera.setViewSize(rect.width, rect.height);
+        }
+    }
     private resizeCallback(): void {
-        //console.log("resizeCallback(), m_autoSynViewAndStage: "+this.m_autoSynViewAndStage);
+        // console.log("XXX resizeCallback(), m_autoSynViewAndStage: "+this.m_autoSynViewAndStage);
         if (this.m_autoSynViewAndStage) {
-            this.m_viewX = 0;
-            this.m_viewY = 0;
-            this.m_viewW = this.m_adapterContext.getRCanvasWidth();
-            this.m_viewH = this.m_adapterContext.getRCanvasHeight();
+            let rect = this.m_viewPortRect;
+            // this.m_viewX = 0;
+            // this.m_viewY = 0;
+            // rect.width = this.m_adapterContext.getRCanvasWidth();
+            // rect.height = this.m_adapterContext.getRCanvasHeight();
+            rect.setSize(this.m_adapterContext.getRCanvasWidth(), this.m_adapterContext.getRCanvasHeight());
 
             this.createMainCamera();
 
-            //console.log("resizeCallback(), viewW,viewH: ", this.m_viewW+","+this.m_viewH);
-            this.m_adapterContext.setViewport(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
-            this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
-            this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
+            //console.log("resizeCallback(), viewW,viewH: ", rect.width+","+rect.height);
+            this.m_adapterContext.setViewport(rect.x, rect.y, rect.width, rect.height);
+
+            this.updateCameraView();
         }
     }
     private m_initMainCamera: boolean = true;
@@ -281,14 +292,17 @@ class RenderProxy implements IRenderProxy{
             this.m_initMainCamera = false;
             this.m_camera.uniformEnabled = true;
             
+            let rect = this.m_viewPortRect;
+            
             if (this.m_perspectiveEnabled) {
-                this.m_camera.perspectiveRH(MathConst.DegreeToRadian(this.m_cameraFov), this.m_viewW / this.m_viewH, this.m_cameraNear, this.m_cameraFar);
+                this.m_camera.perspectiveRH(MathConst.DegreeToRadian(this.m_cameraFov), rect.width / rect.height, this.m_cameraNear, this.m_cameraFar);
             }
             else {
-                this.m_camera.orthoRH(this.m_cameraNear, this.m_cameraFar, -0.5 * this.m_viewH, 0.5 * this.m_viewH, -0.5 * this.m_viewW, 0.5 * this.m_viewW);
+                this.m_camera.orthoRH(this.m_cameraNear, this.m_cameraFar, -0.5 * rect.height, 0.5 * rect.height, -0.5 * rect.width, 0.5 * rect.width);
             }
-            this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
-            this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
+            // this.m_camera.setViewXY(rect.x, rect.y);
+            // this.m_camera.setViewSize(rect.width, rect.height);
+            this.updateCameraView();
         }
     }
     readPixels(px: number, py: number, width: number, height: number, format: number, dataType: number, pixels: Uint8Array): void {
@@ -330,7 +344,7 @@ class RenderProxy implements IRenderProxy{
         let posV3: Vector3D = param.camPosition;
         let lookAtPosV3: Vector3D = param.camLookAtPos;
         let upV3: Vector3D = param.camUpDirect;
-        if (posV3 == null) posV3 = new Vector3D(500.0, 500.0, 500.0);
+        if (posV3 == null) posV3 = new Vector3D(800.0, 800.0, 800.0);
         if (lookAtPosV3 == null) lookAtPosV3 = new Vector3D(0.0, 0.0, 0.0);
         if (upV3 == null) upV3 = new Vector3D(0.0, 1.0, 0.0);
         this.m_perspectiveEnabled = param.cameraPerspectiveEnabled;
@@ -353,8 +367,11 @@ class RenderProxy implements IRenderProxy{
         selfT.Texture = texRes;
         selfT.MaterialUpdater = materialUpdater;
         selfT.VtxBufUpdater = vtxBufUpdater;
-        this.m_viewW = this.m_adapterContext.getViewportWidth();
-        this.m_viewH = this.m_adapterContext.getViewportHeight();
+        
+        let rect = this.m_viewPortRect;
+        // rect.width = this.m_adapterContext.getViewportWidth();
+        // rect.height = this.m_adapterContext.getViewportHeight();
+        rect.setSize(this.m_adapterContext.getRCanvasWidth(), this.m_adapterContext.getRCanvasHeight());
 
         this.m_adapter = new RenderAdapter(this.m_uid, texRes);
         this.m_adapter.initialize(this.m_adapterContext, param, RendererState.Rstate);
@@ -362,14 +379,13 @@ class RenderProxy implements IRenderProxy{
         if (this.m_autoSynViewAndStage) {
             let stage: IRenderStage3D = this.m_adapterContext.getStage();
             if (stage != null) {
-                this.m_viewW = stage.stageWidth;
-                this.m_viewH = stage.stageHeight;
+                rect.setSize(rect.width, rect.height);
             }
         }
         
         this.createMainCamera();
 
-        this.m_adapterContext.setViewport(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
+        this.m_adapterContext.setViewport(rect.x, rect.y, rect.width, rect.height);
         this.m_camera.lookAtRH(posV3, lookAtPosV3, upV3);
         this.m_camera.update();
         this.m_adapter.bgColor.setRGB3f(0.0, 0.0, 0.0);
