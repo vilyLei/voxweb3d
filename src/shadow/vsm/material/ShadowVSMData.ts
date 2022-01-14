@@ -50,7 +50,7 @@ export default class ShadowVSMData extends MaterialPipeBase implements IMaterial
         if (this.m_uniformParam != null) {
             shaderBuilder.addDefine("VOX_USE_SHADOW", "1");
             shaderBuilder.addVarying("vec4", "v_shadowPos");
-            this.m_uniformParam.use(shaderBuilder);
+            (this.m_uniformParam as GlobalVSMShadowUniformParam).use(shaderBuilder);
             shaderBuilder.addShaderObject(VSMShaderCode);
         }
     }
@@ -78,27 +78,13 @@ export default class ShadowVSMData extends MaterialPipeBase implements IMaterial
             this.m_offetMatrix.setScaleXYZ(0.5, 0.5, 0.5);
             this.m_offetMatrix.setTranslationXYZ(0.5, 0.5, 0.5);
 
-            this.m_params = new Float32Array(
-                [
-                    -0.0005             // shadowBias
-                    , 0.0               // shadowNormalBias
-                    , 4                 // shadowRadius
-                    , 0.8               // shadow intensity
-
-                    , 512, 512          // shadowMapSize(width, height)
-                    , 0.1               // color intensity
-                    , 0.0               // undefined
-
-
-                    , 1.0, 1.0, 1.0      // direc light nv(x,y,z)
-                    , 0.0                // undefined
-                ]
-            );
-            this.m_uniformParam = new GlobalVSMShadowUniformParam(this.m_renderProxy);
-
-            this.m_uniformParam.uProbe.addMat4Data(this.m_direcMatrix.getLocalFS32(), 1);
-            this.m_uniformParam.uProbe.addVec4Data(this.m_params, UniformConst.ShadowVSMParams.arrayLength);
-            this.m_uniformParam.buildData();
+            let uniformParam = new GlobalVSMShadowUniformParam(this.m_renderProxy);
+            this.m_params = uniformParam.buildUniformData(this.m_direcMatrix.getLocalFS32());
+            this.m_uniformParam = uniformParam;
+            
+            // this.m_uniformParam.uProbe.addMat4Data(this.m_direcMatrix.getLocalFS32(), 1);
+            // this.m_uniformParam.uProbe.addVec4Data(this.m_params, UniformConst.ShadowVSMParams.arrayLength);
+            // this.m_uniformParam.buildData();
         }
     }
     getGlobalUinformAt(i: number): ShaderGlobalUniform {

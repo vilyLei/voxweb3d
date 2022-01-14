@@ -192,11 +192,13 @@ class LightModule extends MaterialPipeBase implements IMaterialPipe {
             }
             if (this.m_lightColors == null) this.m_lightColors = new Float32Array(colorsTotal * 4);
 
-            this.m_uniformParam = new GlobalLightUniformParam(this.m_renderProxy);
+            let uniformParam = new GlobalLightUniformParam(this.m_renderProxy);
+            uniformParam.buildUniformData(this.m_lightPosData, this.m_lightPosDataVec4Total, this.m_lightColors, colorsTotal);
+            this.m_uniformParam = uniformParam;
 
-            this.m_uniformParam.uProbe.addVec4Data(this.m_lightPosData, this.m_lightPosDataVec4Total);
-            this.m_uniformParam.uProbe.addVec4Data(this.m_lightColors, colorsTotal);
-            this.m_uniformParam.buildData();
+            // this.m_uniformParam.uProbe.addVec4Data(this.m_lightPosData, this.m_lightPosDataVec4Total);
+            // this.m_uniformParam.uProbe.addVec4Data(this.m_lightColors, colorsTotal);
+            // this.m_uniformParam.buildData();
             
         }
         this.updatePointLightData();

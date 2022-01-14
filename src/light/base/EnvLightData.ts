@@ -147,7 +147,7 @@ export default class EnvLightData extends MaterialPipeBase implements IMaterialP
     private buildUniformCode(shaderBuilder: IShaderCodeBuilder): void {
         if (this.m_uniformCodeEnabled) {
             this.m_uniformCodeEnabled = false;
-            this.m_uniformParam.use(shaderBuilder);
+            (this.m_uniformParam as GlobalEnvLightUniformParam).use(shaderBuilder);
         }
     }
     private useFogData(shaderBuilder: IShaderCodeBuilder, fogExp2Enabled: boolean, autoAppendShd: boolean): void {
@@ -197,10 +197,10 @@ export default class EnvLightData extends MaterialPipeBase implements IMaterialP
 
             ]);
             // */
-            this.m_data = UniformConst.EnvLightParams.data.slice();
-            this.m_uniformParam = new GlobalEnvLightUniformParam(this.m_renderProxy);
-            this.m_uniformParam.uProbe.addVec4Data(this.m_data, UniformConst.EnvLightParams.arrayLength);
-            this.m_uniformParam.buildData();
+            
+            let uniformParam = new GlobalEnvLightUniformParam(this.m_renderProxy);
+            this.m_data = uniformParam.buildUniformData();
+            this.m_uniformParam = uniformParam;
 
         }
     }

@@ -6,14 +6,14 @@
 /***************************************************************************/
 
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
-import { GlobalEnvLightUniformParam } from "../../../vox/material/GlobalUniformParam";
+import { GlobalUniformParamBase } from "../../../vox/material/GlobalUniformParam";
 import RenderProxy from "../../../vox/render/RenderProxy";
 
 class MaterialPipeBase {
 
     private static s_uid: number = 0;
     private m_uid: number = -1;
-    protected m_uniformParam: GlobalEnvLightUniformParam = null;
+    protected m_uniformParam: GlobalUniformParamBase = null;
     protected m_dirty: boolean = false;
     protected m_renderProxy: RenderProxy = null;
 
