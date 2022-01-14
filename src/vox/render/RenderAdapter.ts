@@ -19,6 +19,7 @@ import IRenderTexture from "../../vox/render/IRenderTexture";
 import RAdapterContext from "../../vox/render/RAdapterContext";
 import { RODrawState, RenderStateObject, RenderColorMask } from "../../vox/render/RODrawState";
 import RendererState from "../../vox/render/RendererState";
+import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
 import UniformVec4Probe from "../../vox/material/UniformVec4Probe";
 import RendererParam from "../../vox/scene/RendererParam";
 import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
@@ -56,7 +57,8 @@ class RenderAdapter implements IRenderAdapter {
 	private m_rState: RODrawState = null;
 	private m_webglVer: number = 2;
 	readonly bgColor: Color4 = new Color4();
-	readonly uViewProbe: UniformVec4Probe = null;
+	
+	readonly uViewProbe: IShaderUniformProbe = null;
 
 	constructor(rcuid: number, texResource: ROTextureResource) {
 		this.m_texResource = texResource;

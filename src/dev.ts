@@ -281,7 +281,7 @@
 ////////////////////////////   renderer    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoEmptyRenderer as Demo} from "./demo/DemoEmptyRenderer";
+import {DemoEmptyRenderer as Demo} from "./demo/DemoEmptyRenderer";
 
 //  import {DemoEmptyRendererScene as Demo} from "./demo/DemoEmptyRendererScene";
 
@@ -394,7 +394,7 @@
 
 //  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
-import {RbtDrama as Demo} from "./app/RbtDrama";
+//  import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 

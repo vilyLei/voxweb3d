@@ -4,7 +4,6 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// 真正位于高频运行的渲染管线中的被使用的渲染关键代理对象
 
 import RenderFilter from "../../vox/render/RenderFilter";
 import RenderMaskBitfield from "../../vox/render/RenderMaskBitfield";
@@ -42,6 +41,9 @@ class RenderProxyParam {
 
     constructor(){}
 }
+/**
+ * 真正位于高频运行的渲染管线中的被使用的渲染关键代理对象
+ */
 class RenderProxy implements IRenderProxy{
 
     readonly RGBA: number = 0;
@@ -304,8 +306,7 @@ class RenderProxy implements IRenderProxy{
     getGLVersion(): number {
         return this.m_WEBGL_VER;
     }
-    //RenderProxyParam
-    //initialize(param: RendererParam, camera: IRenderCamera, stage: IRenderStage3D, materialUpdater: IROMaterialUpdater, vtxBufUpdater: IROVertexBufUpdater, vtxBuilder: IROVtxBuilder): void {
+    
     initialize(param: RendererParam, camera: IRenderCamera, stage: IRenderStage3D, proxyParam: RenderProxyParam): void {
         if (this.m_rc != null) {
             return;

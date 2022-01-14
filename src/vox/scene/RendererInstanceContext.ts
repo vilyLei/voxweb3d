@@ -42,6 +42,7 @@ class RendererInstanceContext implements IRendererInstanceContext {
     private m_cameraFar: number = 5000.0;
     private m_cameraFov: number = 45.0;
     private m_rcuid: number = 0;
+    
     constructor(rcuid: number) {
         this.m_rcuid = rcuid;
         this.m_renderProxy = new RenderProxy(rcuid);
@@ -93,13 +94,6 @@ class RendererInstanceContext implements IRendererInstanceContext {
     cameraUnlock(): void {
         this.m_renderProxy.cameraUnlock();
     }
-    //createCamera():IRenderCamera
-    //{
-    //    if(this.m_renderProxy == null)
-    //    {
-    //        return this.m_renderProxy.createCamera();
-    //    }
-    //}
     updateCamera(): void {
         if (this.m_renderProxy != null) {
             this.m_renderProxy.updateCamera();
@@ -278,7 +272,7 @@ class RendererInstanceContext implements IRendererInstanceContext {
             this.m_renderProxy.setCameraParam(fov, near, far);
         }
     }
-    // initialize(param: RendererParam, camera: IRenderCamera, stage: IRenderStage3D, builder: RODataBuilder, vtxBuilder: ROVtxBuilder): void {
+    
     initialize(param: RendererParam, camera: IRenderCamera, contextParam: RendererInstanceContextParam): void {
 
         if (this.m_adapter == null) {

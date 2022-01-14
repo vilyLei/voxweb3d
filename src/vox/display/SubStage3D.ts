@@ -8,11 +8,15 @@
 import EventBase from "../../vox/event/EventBase";
 import MouseEvent from "../../vox/event/MouseEvent";
 import KeyboardEvent from "../../vox/event/KeyboardEvent";
+
 import UniformVec4Probe from "../../vox/material/UniformVec4Probe";
+import { IShaderUniformProbe } from "../../vox/material/IShaderUniformProbe";
+
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 
 class SubStage3D implements IRenderStage3D {
+
     private m_rcuid: number = 0;
     constructor(rcuid: number, pdocument: any) {
         this.m_rcuid = rcuid;
@@ -50,12 +54,13 @@ class SubStage3D implements IRenderStage3D {
     private m_keyDown_ers: any[] = [];
     private m_keyUp_listener: ((evt: any) => void)[] = [];
     private m_keyUp_ers: any[] = [];
-    uProbe: UniformVec4Probe = null;
     private m_preStageWidth: number = 0;
     private m_preStageHeight: number = 0;
     private m_mouseEvt: MouseEvent = new MouseEvent();
     // 是否舞台尺寸和view自动同步一致
     private m_autoSynViewAndStageSize: boolean = true;
+
+    uProbe: IShaderUniformProbe = null;
     getDevicePixelRatio(): number {
         return window.devicePixelRatio;
     }

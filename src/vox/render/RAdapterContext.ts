@@ -9,7 +9,6 @@ import DivLog from "../../vox/utils/DivLog";
 import RCExtension from "../../vox/render/RCExtension";
 import RendererDevice from "../../vox/render/RendererDevice";
 import RViewElement from "../../vox/render/RViewElement";
-import Color4 from "../../vox/material/Color4";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import ContextMouseEvtDispatcher from "../../vox/render/ContextMouseEvtDispatcher";
 import { GLBlendMode, GLBlendEquation, CullFaceMode, GLStencilFunc, GLStencilOp } from "./RenderConst";

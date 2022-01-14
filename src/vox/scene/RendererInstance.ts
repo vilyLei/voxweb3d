@@ -27,7 +27,7 @@ import RPONodeBuilder from "../../vox/render/RPONodeBuilder";
 import DispEntity3DManager from "../../vox/scene/DispEntity3DManager";
 
 /**
- * kernal system, it is the renderer instance for the renderer runtime, it is very very very important class.
+ * kernal system instance, it is the renderer instance for the renderer runtime, it is very very very important class.
  */
 export class RendererInstance implements IRenderer {
     private ___$$$$$$$Author:string = "VilyLei(vily313@126.com)";

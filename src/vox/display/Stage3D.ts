@@ -9,8 +9,8 @@ import EventBase from "../../vox/event/EventBase";
 import MouseEvent from "../../vox/event/MouseEvent";
 import KeyboardEvent from "../../vox/event/KeyboardEvent";
 import Keyboard from "../../vox/ui/Keyboard";
-import { IShaderUniformProbe } from "../../vox/material/IShaderUniformProbe";
 import UniformVec4Probe from "../../vox/material/UniformVec4Probe";
+import { IShaderUniformProbe } from "../../vox/material/IShaderUniformProbe";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 
@@ -18,7 +18,7 @@ class Stage3D implements IRenderStage3D {
     private m_rcuid: number = 0;
     private static s_document: any = null;
 
-    uProbe: UniformVec4Probe = null;
+    uProbe: IShaderUniformProbe = null;
 
     pixelRatio: number = 1.0;
     stageWidth: number = 800;
