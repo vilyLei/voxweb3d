@@ -160,6 +160,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
         if (evt3DCtr != null) {
             if (this.m_currStage3D == null) {
                 this.m_currStage3D = new SubStage3D(this.m_renderProxy.getRCUid(), null);
+                this.m_currStage3D.uProbe = this.m_renderProxy.uniformContext.createUniformVec4Probe(1);
             }
             evt3DCtr.initialize(this.getStage3D(), this.m_currStage3D);
             evt3DCtr.setRaySelector(this.m_rspace.getRaySelector());

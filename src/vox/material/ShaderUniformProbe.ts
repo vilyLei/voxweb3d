@@ -9,8 +9,8 @@ import MaterialConst from "../../vox/material/MaterialConst";
 import UniformDataSlot from "../../vox/material/UniformDataSlot";
 import { IShaderUniformProbe } from "../../vox/material/IShaderUniformProbe";
 
-
 class ShaderUniformProbe implements IShaderUniformProbe {
+
     private static s_uid: number = 0;
     private m_uid: number = ShaderUniformProbe.s_uid++;
     private m_slot: UniformDataSlot = null;

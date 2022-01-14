@@ -13,12 +13,12 @@ class GlobalUniformParamBase {
 
     constructor() {
     }
-    geNames(): string[] {
+    getNames(): string[] {
         return [];
     }
     createGlobalUinform(uProbe: ShaderUniformProbe): ShaderGlobalUniform {
         let suo: ShaderGlobalUniform = new ShaderGlobalUniform();
-        suo.uniformNameList = this.geNames();
+        suo.uniformNameList = this.getNames();
         suo.copyDataFromProbe(uProbe);
         uProbe.update();
         return suo;
@@ -30,7 +30,7 @@ class GlobalEnvLightUniformParam extends GlobalUniformParamBase {
     constructor() {
         super();
     }
-    geNames(): string[] {
+    getNames(): string[] {
         return [UniformConst.EnvLightParams.name];
     }
     use(shaderBuilder: IShaderCodeBuilder, total: number = 1): void {
@@ -44,7 +44,7 @@ class GlobalVSMShadowUniformParam extends GlobalUniformParamBase {
     constructor() {
         super();
     }
-    geNames(): string[] {
+    getNames(): string[] {
         return [UniformConst.ShadowMatrix.name, UniformConst.ShadowVSMParams.name];
     }
     use(shaderBuilder: IShaderCodeBuilder, total: number = 1): void {
@@ -58,7 +58,7 @@ class GlobalLightUniformParam extends GlobalUniformParamBase {
     constructor() {
         super();
     }
-    geNames(): string[] {
+    getNames(): string[] {
         return [UniformConst.GlobalLight.positionName, UniformConst.GlobalLight.colorName];
     }
     use(shaderBuilder: IShaderCodeBuilder, paramsTotal: number = 1, colorsTotal: number = 1): void {

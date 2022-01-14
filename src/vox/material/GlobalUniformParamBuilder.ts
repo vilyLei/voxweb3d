@@ -9,7 +9,7 @@ import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 
 class GlobalLightUniformParamBuilder {
 
-    geNames(): string[] {
+    getNames(): string[] {
         return [UniformConst.GlobalLight.positionName, UniformConst.GlobalLight.colorName];
     }
     use(shaderBuilder: IShaderCodeBuilder, lightsTotal: number): void {        

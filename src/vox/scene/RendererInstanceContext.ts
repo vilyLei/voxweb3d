@@ -4,7 +4,6 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// 真正位于高频运行的渲染管线中的被使用的渲染关键代理对象上下文
 
 import FrameBufferType from "../render/FrameBufferType";
 import UniformDataSlot from "../../vox/material/UniformDataSlot";
@@ -14,12 +13,16 @@ import RendererState from "../../vox/render/RendererState";
 import RAdapterContext from "../../vox/render/RAdapterContext";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
-import {RenderProxyParam, RenderProxy} from "../../vox/render/RenderProxy";
+
+import { ShaderUniformContext } from "../../vox/material/ShaderUniformContext";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import ShdUniformTool from "../../vox/material/ShdUniformTool";
+import RenderMaterialProxy from "../../vox/render/RenderMaterialProxy";
+
+import {RenderProxyParam, RenderProxy} from "../../vox/render/RenderProxy";
+
 import RODataBuilder from "../../vox/render/RODataBuilder";
 import RendererParam from "../../vox/scene/RendererParam";
-import RenderMaterialProxy from "../../vox/render/RenderMaterialProxy";
 import ROVtxBuilder from "../../vox/render/ROVtxBuilder";
 import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import Color4 from "../material/Color4";
@@ -30,9 +33,14 @@ class RendererInstanceContextParam {
     stage: IRenderStage3D = null;
     builder: RODataBuilder = null;
     vtxBuilder: ROVtxBuilder = null;
+    uniformContext: ShaderUniformContext = null;
+
     constructor(){}
 
 }
+/**
+ * 渲染器实例上下文
+ */
 class RendererInstanceContext implements IRendererInstanceContext {
 
     private m_adapter: IRenderAdapter = null;
@@ -42,7 +50,7 @@ class RendererInstanceContext implements IRendererInstanceContext {
     private m_cameraFar: number = 5000.0;
     private m_cameraFov: number = 45.0;
     private m_rcuid: number = 0;
-    
+
     constructor(rcuid: number) {
         this.m_rcuid = rcuid;
         this.m_renderProxy = new RenderProxy(rcuid);
@@ -278,11 +286,12 @@ class RendererInstanceContext implements IRendererInstanceContext {
         if (this.m_adapter == null) {
 
             UniformDataSlot.Initialize(this.m_renderProxy.getUid());
-
+            
             this.m_renderProxy.setCameraParam(this.m_cameraFov, this.m_cameraNear, this.m_cameraFar);
             this.m_renderProxy.setWebGLMaxVersion(param.maxWebGLVersion);
             
             let proxyParam = new RenderProxyParam();
+            proxyParam.uniformContext = contextParam.uniformContext;
             proxyParam.vtxBufUpdater = contextParam.builder;
             proxyParam.materialUpdater = contextParam.builder;
             proxyParam.vtxBuilder = contextParam.vtxBuilder;

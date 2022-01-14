@@ -11,6 +11,7 @@ import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
 import { IRenderCamera } from '../render/IRenderCamera';
 import RenderProxy from "../../vox/render/RenderProxy";
 
+import { ShaderUniformContext } from "../../vox/material/ShaderUniformContext";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import RODataBuilder from "../../vox/render/RODataBuilder";
@@ -119,11 +120,13 @@ export class RendererInstance implements IRenderer {
             this.m_processFixedState = param.processFixedState;
 
             this.m_renderProxy = this.m_renderInsContext.getRenderProxy();
+            this.m_uid = this.m_renderProxy.getUid();
 
             this.m_dataBuilder = new RODataBuilder();
             this.m_roVtxBuilder = new ROVtxBuilder();
             this.m_renderInsContext.setCameraParam(param.camProjParam.x, param.camProjParam.y, param.camProjParam.z);
             let contextParam = new RendererInstanceContextParam();
+            contextParam.uniformContext = new ShaderUniformContext( this.m_renderProxy.getRCUid() );
             contextParam.camera = camera;
             contextParam.stage = this.m_stage3D;
             contextParam.builder = this.m_dataBuilder;
@@ -131,7 +134,6 @@ export class RendererInstance implements IRenderer {
 
             this.m_renderInsContext.initialize(param, camera, contextParam);
             this.m_adapter = this.m_renderProxy.getRenderAdapter();
-            this.m_uid = this.m_renderProxy.getUid();
             this.m_dataBuilder.initialize(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider, this.m_roVtxBuilder);
             this.m_renderInsContext.initManager(this.m_dataBuilder);
             this.m_entity3DMana = new DispEntity3DManager(this.m_uid, this.m_dataBuilder, this.m_rpoUnitBuilder, this.m_processBuider);

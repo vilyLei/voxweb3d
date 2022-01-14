@@ -5,11 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RenderFilter from "../../vox/render/RenderFilter";
-import RenderMaskBitfield from "../../vox/render/RenderMaskBitfield";
 import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
+import AABB2D from "../geom/AABB2D";
 import Color4 from "../../vox/material/Color4";
+
+import RenderFilter from "../../vox/render/RenderFilter";
+import RenderMaskBitfield from "../../vox/render/RenderMaskBitfield";
 import {IRenderCamera} from "./IRenderCamera";
 import RendererParam from "../../vox/scene/RendererParam";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
@@ -31,13 +33,14 @@ import DivLog from "../../vox/utils/DivLog";
 import RendererState from "./RendererState";
 import {IRenderProxy} from "./IRenderProxy";
 import ShaderUniformProbe from "../material/ShaderUniformProbe";
-import AABB2D from "../geom/AABB2D";
+import { ShaderUniformContext } from "../../vox/material/ShaderUniformContext";
 
 class RenderProxyParam {
 
     materialUpdater: IROMaterialUpdater = null;
     vtxBufUpdater: IROVertexBufUpdater = null;
     vtxBuilder: IROVtxBuilder = null;
+    uniformContext: ShaderUniformContext = null;
 
     constructor(){}
 }
@@ -69,7 +72,8 @@ class RenderProxy implements IRenderProxy{
     readonly Texture: IRenderTexResource = null;
     readonly VtxBufUpdater: IROVertexBufUpdater = null;
     readonly MaterialUpdater: IROMaterialUpdater = null;
-    
+    readonly uniformContext: ShaderUniformContext = null;
+
     readonly adapter: IRenderAdapter = null;
 
     private m_uid: number = 0;
@@ -337,12 +341,16 @@ class RenderProxy implements IRenderProxy{
                 new Float32Array([500.0,500.0,500.0,1.0]),
             1);
         }
+        
         let posV3: Vector3D = param.camPosition;
         let lookAtPosV3: Vector3D = param.camLookAtPos;
         let upV3: Vector3D = param.camUpDirect;
         if (posV3 == null) posV3 = new Vector3D(800.0, 800.0, 800.0);
         if (lookAtPosV3 == null) lookAtPosV3 = new Vector3D(0.0, 0.0, 0.0);
         if (upV3 == null) upV3 = new Vector3D(0.0, 1.0, 0.0);
+        
+        stage.uProbe = proxyParam.uniformContext.createUniformVec4Probe(1);
+
         this.m_perspectiveEnabled = param.cameraPerspectiveEnabled;
         this.m_adapterContext.autoSyncRenderBufferAndWindowSize = param.autoSyncRenderBufferAndWindowSize;
         this.m_adapterContext.setResizeCallback(this, this.resizeCallback);
@@ -351,9 +359,7 @@ class RenderProxy implements IRenderProxy{
         this.m_WEBGL_VER = this.m_adapterContext.getWebGLVersion();
 
         this.m_rc = this.m_adapterContext.getRC();
-        RendererState.Initialize();
-        RendererState.Rstate.setRenderContext( this.m_adapterContext );
-
+        
         let selfT: any = this;
         let gl: any = this.m_rc;
         let vtxRes: ROVertexResource = new ROVertexResource(this.m_uid, gl, proxyParam.vtxBuilder);
@@ -363,12 +369,17 @@ class RenderProxy implements IRenderProxy{
         selfT.Texture = texRes;
         selfT.MaterialUpdater = proxyParam.materialUpdater;
         selfT.VtxBufUpdater = proxyParam.vtxBufUpdater;
+        selfT.uniformContext = proxyParam.uniformContext;
+
+        RendererState.Initialize();
+        RendererState.Rstate.setRenderContext( this.m_adapterContext );
+
         
         let rect = this.m_viewPortRect;
         rect.setSize(this.m_adapterContext.getRCanvasWidth(), this.m_adapterContext.getRCanvasHeight());
 
         this.m_adapter = new RenderAdapter(this.m_uid, texRes);
-        this.m_adapter.initialize(this.m_adapterContext, param, RendererState.Rstate);
+        this.m_adapter.initialize(this.m_adapterContext, param, RendererState.Rstate, this.uniformContext.createUniformVec4Probe(1));
         selfT.adapter = this.m_adapter; 
         if (this.m_autoSynViewAndStage) {
             let stage: IRenderStage3D = this.m_adapterContext.getStage();

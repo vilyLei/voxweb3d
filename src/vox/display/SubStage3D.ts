@@ -9,7 +9,6 @@ import EventBase from "../../vox/event/EventBase";
 import MouseEvent from "../../vox/event/MouseEvent";
 import KeyboardEvent from "../../vox/event/KeyboardEvent";
 
-import UniformVec4Probe from "../../vox/material/UniformVec4Probe";
 import { IShaderUniformProbe } from "../../vox/material/IShaderUniformProbe";
 
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
@@ -87,10 +86,10 @@ class SubStage3D implements IRenderStage3D {
         }
     }
     private updateViewUData(): void {
-        if (this.uProbe == null) {
-            this.uProbe = new UniformVec4Probe(1);
-            this.uProbe.bindSlotAt(this.m_rcuid);
-        }
+        // if (this.uProbe == null) {
+        //     this.uProbe = new UniformVec4Probe(1);
+        //     this.uProbe.bindSlotAt(this.m_rcuid);
+        // }
         this.uProbe.setVec4Data(
             2.0 / (this.m_viewW * this.pixelRatio)
             , 2.0 / (this.m_viewH * this.pixelRatio)

@@ -20,7 +20,7 @@ import RAdapterContext from "../../vox/render/RAdapterContext";
 import { RODrawState, RenderStateObject, RenderColorMask } from "../../vox/render/RODrawState";
 import RendererState from "../../vox/render/RendererState";
 import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
-import UniformVec4Probe from "../../vox/material/UniformVec4Probe";
+// import UniformVec4Probe from "../../vox/material/UniformVec4Probe";
 import RendererParam from "../../vox/scene/RendererParam";
 import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
 import AABB2D from "../geom/AABB2D";
@@ -57,7 +57,7 @@ class RenderAdapter implements IRenderAdapter {
 	private m_rState: RODrawState = null;
 	private m_webglVer: number = 2;
 	readonly bgColor: Color4 = new Color4();
-	
+
 	readonly uViewProbe: IShaderUniformProbe = null;
 
 	constructor(rcuid: number, texResource: ROTextureResource) {
@@ -65,13 +65,13 @@ class RenderAdapter implements IRenderAdapter {
 		this.m_rcuid = rcuid;
 	}
 
-	initialize(context: RAdapterContext, param: RendererParam, rState: RODrawState): void {
+	initialize(context: RAdapterContext, param: RendererParam, rState: RODrawState, uViewProbe: IShaderUniformProbe): void {
 		if (this.m_rcontext == null) {
 			this.m_webglVer = context.getWebGLVersion();
 			this.m_rState = rState;
 			this.m_rcontext = context;
 			this.m_gl = context.getRC();
-
+			
 			this.m_gl.disable(this.m_gl.SCISSOR_TEST);
 			if (context.isDepthTestEnabled()) this.m_gl.enable(this.m_gl.DEPTH_TEST);
 			else this.m_gl.disable(this.m_gl.DEPTH_TEST);
@@ -103,8 +103,8 @@ class RenderAdapter implements IRenderAdapter {
 
 				let size = this.m_viewPortRect;
 				let self: any = this;
-				self.uViewProbe = new UniformVec4Probe(1);
-				this.uViewProbe.bindSlotAt(this.m_rcuid);
+				self.uViewProbe = uViewProbe;//new UniformVec4Probe(1);
+				// this.uViewProbe.bindSlotAt(this.m_rcuid);
 				this.uViewProbe.setVec4DataWithArr4([size.x, size.y, size.width, size.height]);
 			}
 		}
