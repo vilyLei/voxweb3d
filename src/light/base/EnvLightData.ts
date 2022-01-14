@@ -17,6 +17,7 @@ import { EnvShaderCode } from "../material/EnvShaderCode";
 import { GlobalEnvLightUniformParam } from "../../vox/material/GlobalUniformParam";
 import IRenderTexture from "../../vox/render/IRenderTexture";
 import TextureProxy from "../../vox/texture/TextureProxy";
+import RenderProxy from "../../vox/render/RenderProxy";
 
 export default class EnvLightData implements IMaterialPipe {
 
@@ -26,13 +27,14 @@ export default class EnvLightData implements IMaterialPipe {
     private m_uProbe: ShaderUniformProbe = null;
     private m_suo: ShaderGlobalUniform = null;
     private m_dirty: boolean = false;
-    private m_uslotIndex: number = 0;
+    // private m_uslotIndex: number = 0;
     private m_shaderCodeEnabled: boolean = true;
     private m_uniformCodeEnabled: boolean = true;
     private m_ambientMap: TextureProxy = null;
+    private m_renderProxy: RenderProxy = null;
 
-    constructor(slotIndex: number = 0) {
-        this.m_uslotIndex = slotIndex;
+    constructor(renderProxy: RenderProxy) {
+        this.m_renderProxy = renderProxy;
         this.m_uid = EnvLightData.s_uid++;
     }
 
@@ -206,12 +208,13 @@ export default class EnvLightData implements IMaterialPipe {
                 1000.0, 1000.0              // env ambient area width, height
 
             ]);
-            */
-            this.m_uProbe = new ShaderUniformProbe();
-            this.m_uProbe.bindSlotAt(this.m_uslotIndex);
+            // */
+            // this.m_uProbe = new ShaderUniformProbe();
+            // this.m_uProbe.bindSlotAt(this.m_uslotIndex);
+            this.m_uProbe = this.m_renderProxy.uniformContext.createShaderUniformProbe();
             this.m_uProbe.addVec4Data(UniformConst.EnvLightParams.data, UniformConst.EnvLightParams.arrayLength);
             
-            this.m_suo = this.m_uniformParam.createGlobalUinform( this.m_uProbe );
+            this.m_suo = this.m_uniformParam.createGlobalUinform( this.m_uProbe, this.m_renderProxy);
             this.m_uProbe.update();
 
         }

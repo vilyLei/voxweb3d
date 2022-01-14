@@ -22,6 +22,8 @@ class ShaderUniformProbe implements IShaderUniformProbe {
 
     rst: number = -1;
     uniformsTotal: number = 0;
+    
+    uniformNames: string[] = null;
     // array -> [SHADER_MAT4, SHADER_VEC3]
     uniformTypes: number[] = null;
     // array -> [1, 3], the "3" is uniform Array,length is 3

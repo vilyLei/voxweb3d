@@ -8,6 +8,7 @@ import UniformConst from "./UniformConst";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
 import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
+import RenderProxy from "../render/RenderProxy";
 
 class GlobalUniformParamBase {
 
@@ -16,12 +17,8 @@ class GlobalUniformParamBase {
     getNames(): string[] {
         return [];
     }
-    createGlobalUinform(uProbe: ShaderUniformProbe): ShaderGlobalUniform {
-        let suo: ShaderGlobalUniform = new ShaderGlobalUniform();
-        suo.uniformNameList = this.getNames();
-        suo.copyDataFromProbe(uProbe);
-        uProbe.update();
-        return suo;
+    createGlobalUinform(uProbe: ShaderUniformProbe, rc: RenderProxy): ShaderGlobalUniform {
+        return rc.uniformContext.createGlobalUinformFromProbe(uProbe, this.getNames());
     }
 }
 

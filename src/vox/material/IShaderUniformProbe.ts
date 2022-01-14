@@ -9,6 +9,8 @@ interface IShaderUniformProbe {
 
     rst: number;
     uniformsTotal: number;
+
+    uniformNames: string[];
     // array -> [SHADER_MAT4, SHADER_VEC3]
     uniformTypes: number[];
     // array -> [1, 3], the "3" is uniform Array,length is 3

@@ -17,6 +17,7 @@ import { PointLight } from "./PointLight";
 import { DirectionLight } from "./DirectionLight";
 import { SpotLight } from "./SpotLight";
 import IRenderTexture from "../../vox/render/IRenderTexture";
+import RenderProxy from "../../vox/render/RenderProxy";
 
 class LightModule implements IMaterialPipe {
 
@@ -26,7 +27,7 @@ class LightModule implements IMaterialPipe {
     private m_uniformParam: GlobalLightUniformParam = new GlobalLightUniformParam();
     private m_uProbe: ShaderUniformProbe = null;
     private m_suo: ShaderGlobalUniform = null;
-    private m_uslotIndex: number = 0;
+    // private m_uslotIndex: number = 0;
 
     private m_lightPosData: Float32Array = null;
     private m_lightColors: Float32Array = null;
@@ -37,9 +38,11 @@ class LightModule implements IMaterialPipe {
     private m_pointLightList: PointLight[] = null;
     private m_direcLightList: DirectionLight[] = null;
     private m_spotLightList: SpotLight[] = null;
+    private m_renderProxy: RenderProxy = null;
 
-    constructor(slotIndex: number = 0) {
-        this.m_uslotIndex = slotIndex;
+    constructor(renderProxy: RenderProxy) {
+        
+        this.m_renderProxy = renderProxy;
         this.m_uid = LightModule.s_uid++;
     }
     getUid(): number {
@@ -208,11 +211,11 @@ class LightModule implements IMaterialPipe {
             }
             if (this.m_lightColors == null) this.m_lightColors = new Float32Array(colorsTotal * 4);
 
-            this.m_uProbe = new ShaderUniformProbe();
-            this.m_uProbe.bindSlotAt(this.m_uslotIndex);
+            this.m_uProbe = this.m_renderProxy.uniformContext.createShaderUniformProbe();
+            // this.m_uProbe.bindSlotAt(this.m_uslotIndex);
             this.m_uProbe.addVec4Data(this.m_lightPosData, this.m_lightPosDataVec4Total);
             this.m_uProbe.addVec4Data(this.m_lightColors, colorsTotal);
-            this.m_suo = this.m_uniformParam.createGlobalUinform(this.m_uProbe);
+            this.m_suo = this.m_uniformParam.createGlobalUinform(this.m_uProbe, this.m_renderProxy);
             // console.log("this.m_uProbe.getUid(): ", this.m_uProbe.getUid());
         }
         this.updatePointLightData();

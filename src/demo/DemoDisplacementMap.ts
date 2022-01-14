@@ -96,7 +96,7 @@ export class DemoDisplacementMap {
             heightMap03_normal.jpg
             //*/
             
-            this.m_envData = new EnvLightData();
+            this.m_envData = new EnvLightData(this.m_rscene.getRenderProxy());
             this.m_envData.initialize();
             this.m_envData.setFogDensity(0.0008);
             this.m_envData.setFogColorRGB3f(1.0, 1.0, 1.0);

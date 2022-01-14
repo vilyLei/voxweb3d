@@ -68,7 +68,7 @@ export class DemoCameraRoaming {
     private m_materialPipeline: MaterialPipeline = new MaterialPipeline();
     private initTerrain(): void {
 
-        let envData: EnvLightData = new EnvLightData();
+        let envData: EnvLightData = new EnvLightData( this.m_rscene.getRenderProxy() );
         envData.initialize();
         envData.setFogDensity(0.003);
         envData.setFogColorRGB3f(1.0, 1.0, 1.0);

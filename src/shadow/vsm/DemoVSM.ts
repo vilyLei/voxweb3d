@@ -118,7 +118,7 @@ export class DemoVSM {
 
     private initConfig(): void {
 
-        this.m_vsmData = new ShadowVSMData();
+        this.m_vsmData = new ShadowVSMData( this.m_rscene.getRenderProxy() );
         this.m_vsmData.initialize();
 
         let fboIndex: number = 0;

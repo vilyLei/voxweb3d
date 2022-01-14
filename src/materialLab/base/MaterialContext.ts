@@ -47,11 +47,11 @@ class MaterialContext {
     /**
      * 全局的灯光模块
      */
-    readonly lightModule: LightModule = new LightModule();
+    readonly lightModule: LightModule;
     /**
      * 全局的环境参数
      */
-    readonly envData: EnvLightData = new EnvLightData();
+    readonly envData: EnvLightData = null;
     /**
      * vsm 阴影
      */
@@ -126,6 +126,7 @@ class MaterialContext {
             param.directionLightsTotal = MathConst.Clamp(param.directionLightsTotal, 0, 256);
             param.spotLightsTotal = MathConst.Clamp(param.spotLightsTotal, 0, 256);
 
+            selfT.lightModule = new LightModule( this.m_rscene.getRenderProxy() );
             for (let i: number = 0; i < param.pointLightsTotal; ++i) {
                 this.lightModule.appendPointLight();
             }
@@ -137,7 +138,7 @@ class MaterialContext {
             }
             this.lightModule.update();
 
-            selfT.envData = new EnvLightData();
+            selfT.envData = new EnvLightData( this.m_rscene.getRenderProxy() );
             this.envData.initialize();
             this.envData.setFogColorRGB3f(0.0, 0.8, 0.1);
             if (param.vsmEnabled) {

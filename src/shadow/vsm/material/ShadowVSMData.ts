@@ -22,6 +22,7 @@ import { GlobalVSMShadowUniformParam } from "../../../vox/material/GlobalUniform
 import { VSMShaderCode } from "./VSMShaderCode";
 import RTTTextureProxy from "../../../vox/texture/RTTTextureProxy";
 import { ShadowMode } from "../../../vox/material/pipeline/ShadowMode";
+import RenderProxy from "../../../vox/render/RenderProxy";
 
 export default class ShadowVSMData implements IMaterialPipe {
 
@@ -34,10 +35,10 @@ export default class ShadowVSMData implements IMaterialPipe {
     private m_shadowMap: RTTTextureProxy = null;
     private m_camVersion: number = -1;
     private m_dirty: boolean = false;
-    private m_uslotIndex: number = 0;
+    private m_renderProxy: RenderProxy = null;
 
-    constructor(slotIndex: number = 0) {
-        this.m_uslotIndex = slotIndex;
+    constructor(renderProxy: RenderProxy) {
+        this.m_renderProxy = renderProxy;
     }
     setShadowMap(shadowMap: RTTTextureProxy): void {
         this.m_shadowMap = shadowMap;
@@ -103,11 +104,10 @@ export default class ShadowVSMData implements IMaterialPipe {
                 ]
             );
 
-            this.m_uProbe = new ShaderUniformProbe();
-            this.m_uProbe.bindSlotAt(this.m_uslotIndex);
+            this.m_uProbe = this.m_renderProxy.uniformContext.createShaderUniformProbe();
             this.m_uProbe.addMat4Data(this.m_direcMatrix.getLocalFS32(), 1);
             this.m_uProbe.addVec4Data(this.m_params, UniformConst.ShadowVSMParams.arrayLength);
-            this.m_suo = this.m_uniformParam.createGlobalUinform(this.m_uProbe);
+            this.m_suo = this.m_uniformParam.createGlobalUinform(this.m_uProbe, this.m_renderProxy);
             this.m_uProbe.update();
         }
     }

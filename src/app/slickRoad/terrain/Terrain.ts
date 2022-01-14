@@ -43,7 +43,7 @@ class Terrain {
     }
     private initTerrain(): void {
 
-        let envData: EnvLightData = new EnvLightData();
+        let envData: EnvLightData = new EnvLightData( this.m_engine.rscene.getRenderProxy() );
         envData.initialize();
         envData.setFogDensity(0.0008);
         envData.setFogColorRGB3f(1.0, 1.0, 1.0);

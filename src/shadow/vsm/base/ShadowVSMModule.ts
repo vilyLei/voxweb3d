@@ -127,7 +127,7 @@ export class ShadowVSMModule {
     }
     private initConfig(processIDList: number[], blurEnabled: boolean = false): void {
 
-        this.m_vsmData = new ShadowVSMData();
+        this.m_vsmData = new ShadowVSMData( this.m_rscene.getRenderProxy() );
         this.m_vsmData.initialize();
         this.m_vsmData.setShadowIntensity(this.m_shadowIntensity);
 
