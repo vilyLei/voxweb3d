@@ -23,13 +23,14 @@ export default class AABB2D {
 		this.update();
 	}
 	copyFrom(dst: AABB2D): void {
-
+		
 		this.x = dst.x;
 		this.y = dst.y;
-		this.m_right = dst.m_right;
-		this.m_top = dst.m_top;
 		this.width = dst.width;
 		this.height = dst.height;
+
+		this.m_right = dst.m_right;
+		this.m_top = dst.m_top;
 	}
 	clone(): AABB2D {
 		return new AABB2D(this.x, this.y, this.width, this.height);

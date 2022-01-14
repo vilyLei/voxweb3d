@@ -22,6 +22,7 @@ import RendererState from "../../vox/render/RendererState";
 import UniformVec4Probe from "../../vox/material/UniformVec4Probe";
 import RendererParam from "../../vox/scene/RendererParam";
 import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
+import AABB2D from "../geom/AABB2D";
 
 class RenderAdapter implements IRenderAdapter {
 	
@@ -41,13 +42,16 @@ class RenderAdapter implements IRenderAdapter {
 	private m_fboViewRectBoo: boolean = false;
 	private m_polygonOffsetFlag: boolean = false;
 	private m_polygonOffset: boolean = false;
-	private m_viewX: number = 0;
-	private m_viewY: number = 0;
-	private m_viewWidth: number = 800;
-	private m_viewHeight: number = 600;
+
+	// private m_viewX: number = 0;
+	// private m_viewY: number = 0;
+	// private m_viewWidth: number = 800;
+	// private m_viewHeight: number = 600;
+
 	private m_clearDepth: number = 1.0;
 	private m_preDepth: number = 0.0;
-	private m_fboViewSize: Vector3D = new Vector3D(0, 0, 800, 600);
+	private m_viewPortSize: AABB2D = new AABB2D(0, 0, 800, 600);
+	private m_fboViewPortSize: AABB2D = new AABB2D(0, 0, 800, 600);
 	private m_fboSizeFactor: number = 1.0;
 	private m_clearStencil: number = 0x0;
 	private m_fboBiltRect: Uint16Array = new Uint16Array(8);
@@ -99,10 +103,12 @@ class RenderAdapter implements IRenderAdapter {
 			//this.m_rState = context.getRenderState();
 			//console.log("RenderAdapter::initialize() finish...");
 			if (this.uViewProbe == null) {
+
+				let size = this.m_viewPortSize;
 				let self: any = this;
 				self.uViewProbe = new UniformVec4Probe(1);
 				this.uViewProbe.bindSlotAt(this.m_rcuid);
-				this.uViewProbe.setVec4DataWithArr4([this.m_viewX, this.m_viewY, this.m_viewWidth, this.m_viewHeight]);
+				this.uViewProbe.setVec4DataWithArr4([size.x, size.y, size.width, size.height]);
 			}
 		}
 	}
@@ -270,58 +276,57 @@ class RenderAdapter implements IRenderAdapter {
 	}
 	private m_devPRatio: number = 1.0;
 	private m_viewportUnlock: boolean = true;
+
+	private updateViewPort(): void {
+		let size = this.m_viewPortSize;
+		this.uViewProbe.setVec4Data( size.x, size.y, size.width, size.height );
+		this.uViewProbe.update();
+		//DivLog.ShowLog("reseizeFBOViewPort: " + this.m_viewX + "," + this.m_viewY + "," + this.m_viewWidth + "," + this.m_viewHeight);
+		//console.log("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
+		this.m_gl.viewport( size.x, size.y, size.width, size.height );
+	}
+	// private checkViewPort(dstSize: AABB2D): void {
+	// }
 	reseizeViewPort(): void {
+
 		if (this.m_viewportUnlock) {
+
+			let srcSize = this.m_viewPortSize;
+			let dstSize = this.m_rcontext.getViewPortSize();
+
 			let k: number = this.m_rcontext.getDevicePixelRatio();
-			let boo: boolean = this.m_viewX != this.m_rcontext.getViewportX() || this.m_viewY != this.m_rcontext.getViewportY();
-			boo = boo || this.m_viewWidth != this.m_rcontext.getViewportWidth();
-			boo = boo || this.m_viewHeight != this.m_rcontext.getViewportHeight();
+			let boo = srcSize.testEqual(dstSize);
 			boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
 			if (boo) {
 				this.m_devPRatio = k;
-				this.m_viewX = this.m_rcontext.getViewportX();
-				this.m_viewY = this.m_rcontext.getViewportY();
-				this.m_viewWidth = this.m_rcontext.getViewportWidth();
-				this.m_viewHeight = this.m_rcontext.getViewportHeight();
-
-				this.uViewProbe.setVec4Data(
-					this.m_viewX,
-					this.m_viewY,
-					this.m_viewWidth,
-					this.m_viewHeight
-				);
-				this.uViewProbe.update();
-				//DivLog.ShowLog("reseizeViewPort: " + this.m_viewX + "," + this.m_viewY + "," + this.m_viewWidth + "," + this.m_viewHeight);
-				//console.log("reseizeViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
-				this.m_gl.viewport(
-					this.m_viewX,
-					this.m_viewY,
-					this.m_viewWidth,
-					this.m_viewHeight
-				);
+				srcSize.copyFrom( dstSize );
+				this.updateViewPort();
 			}
 		}
 	}
 	private reseizeFBOViewPort(): void {
 		if (this.m_viewportUnlock) {
+
+			let srcSize = this.m_viewPortSize;//this.m_rcontext.getViewPortSize();
+			let dstSize = this.m_fboViewPortSize;
+
 			let k: number = this.m_rcontext.getDevicePixelRatio();
-			let boo: boolean = this.m_viewX != this.m_fboViewSize.x || this.m_viewY != this.m_fboViewSize.y;
-			boo = boo || this.m_viewWidth != this.m_fboViewSize.z;
-			boo = boo || this.m_viewHeight != this.m_fboViewSize.w;
+			let boo = srcSize.testEqual(dstSize);
+			// let boo: boolean = this.m_viewX != this.m_fboViewPortSize.x || this.m_viewY != this.m_fboViewPortSize.y;
+			// boo = boo || this.m_viewWidth != this.m_fboViewPortSize.width;
+			// boo = boo || this.m_viewHeight != this.m_fboViewPortSize.height;
 			boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
 			if (boo) {
+
 				this.m_devPRatio = k;
-				this.m_viewX = this.m_fboViewSize.x;
-				this.m_viewY = this.m_fboViewSize.y;
-				this.m_viewWidth = this.m_fboViewSize.z;
-				this.m_viewHeight = this.m_fboViewSize.w;
+				// this.m_viewX = this.m_fboViewPortSize.x;
+				// this.m_viewY = this.m_fboViewPortSize.y;
+				// this.m_viewWidth = this.m_fboViewPortSize.width;
+				// this.m_viewHeight = this.m_fboViewPortSize.height;
+				srcSize.copyFrom( dstSize );
+				//this.m_viewPortSize.copyFrom(srcSize);
 
-				this.uViewProbe.setVec4Data( this.m_viewX, this.m_viewY, this.m_viewWidth, this.m_viewHeight );
-				this.uViewProbe.update();
-
-				//DivLog.ShowLog("reseizeFBOViewPort: " + this.m_viewX + "," + this.m_viewY + "," + this.m_viewWidth + "," + this.m_viewHeight);
-				//console.log("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
-				this.m_gl.viewport(this.m_viewX, this.m_viewY, this.m_viewWidth, this.m_viewHeight );
+				this.updateViewPort();
 			}
 		}
 	}
@@ -557,29 +562,29 @@ class RenderAdapter implements IRenderAdapter {
 					this.m_fboBuf.clearOnlyStencil(0xff);
 				}
 				if (this.m_webglVer == 1) {
-					//m_gl.colorMask(m_colorMask.mr,m_colorMask.mg,m_colorMask.mb,m_colorMask.ma);
+					// m_gl.colorMask(m_colorMask.mr,m_colorMask.mg,m_colorMask.mb,m_colorMask.ma);
 					this.m_gl.clear(this.m_clearMask);
 				}
-
-				this.m_fboBiltRect[4] = this.m_fboBiltRect[0] = this.m_viewX;
-				this.m_fboBiltRect[5] = this.m_fboBiltRect[1] = this.m_viewY;
-				this.m_fboBiltRect[6] = this.m_fboBiltRect[2] = this.m_viewX + this.m_viewWidth;
-				this.m_fboBiltRect[7] = this.m_fboBiltRect[3] = this.m_viewY + this.m_viewHeight;
+				let size = this.m_viewPortSize;
+				this.m_fboBiltRect[4] = this.m_fboBiltRect[0] = size.x;
+				this.m_fboBiltRect[5] = this.m_fboBiltRect[1] = size.y;
+				this.m_fboBiltRect[6] = this.m_fboBiltRect[2] = size.getRight();
+				this.m_fboBiltRect[7] = this.m_fboBiltRect[3] = size.getTop();
 				if (this.m_fboViewRectBoo) {
 					this.m_fboViewRectBoo = false;
-					this.m_fboViewSize.setTo(this.m_fboViewRect[0], this.m_fboViewRect[1], this.m_fboViewRect[2], this.m_fboViewRect[3]);
+					this.m_fboViewPortSize.setTo(this.m_fboViewRect[0], this.m_fboViewRect[1], this.m_fboViewRect[2], this.m_fboViewRect[3]);
 					this.reseizeFBOViewPort();
 				}
 				else {
 					if (this.m_synFBOSizeWithViewport) {
 						//console.log("this.m_fboSizeFactor: "+this.m_fboSizeFactor);
-						this.m_fboViewSize.setTo(0, 0, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
+						this.m_fboViewPortSize.setTo(0, 0, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
 					}
 					else {
 						if(this.m_fboBuf.isSizeChanged()) {
 							this.m_fboBuf.initialize(this.m_gl, this.m_fboBuf.getWidth(), this.m_fboBuf.getHeight());
 						}
-						this.m_fboViewSize.setTo(0, 0, this.m_fboBuf.getWidth(), this.m_fboBuf.getHeight());
+						this.m_fboViewPortSize.setTo(0, 0, this.m_fboBuf.getWidth(), this.m_fboBuf.getHeight());
 					}
 					this.reseizeFBOViewPort();
 				}

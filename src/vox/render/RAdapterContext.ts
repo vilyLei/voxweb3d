@@ -319,10 +319,12 @@ class RAdapterContext {
         // console.log("this.m_devicePixelRatio: "+this.m_devicePixelRatio);
 
         if (this.m_displayWidth != pw || this.m_displayHeight != ph || dprChanged) {
+
             this.m_displayWidth = pw;
             this.m_displayHeight = ph;
             this.m_rcanvasWidth = Math.floor(pw * k)
             this.m_rcanvasHeight = Math.floor(ph * k);
+
             if (this.m_offcanvas == null) {
                 this.m_canvas.width = this.m_rcanvasWidth;
                 this.m_canvas.height = this.m_rcanvasHeight;
@@ -333,6 +335,7 @@ class RAdapterContext {
             }
             this.m_canvas.style.width = this.m_displayWidth + 'px';
             this.m_canvas.style.height = this.m_displayHeight + 'px';
+            
             if (this.m_stage != null) {
                 this.m_stage.stageWidth = this.m_rcanvasWidth;
                 this.m_stage.stageHeight = this.m_rcanvasHeight;
