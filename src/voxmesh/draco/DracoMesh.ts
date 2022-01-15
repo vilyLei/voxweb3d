@@ -132,9 +132,8 @@ export default class DracoMesh extends MeshBase {
             DracoMesh.s_dracoVtxTotal += this.vtxTotal;
             DracoMesh.s_dracoTriTotal += this.trisNumber;
             console.log("vtCount: " + this.vtCount+", trisNumber: "+this.trisNumber);
-            console.log("draco vtCount: " + DracoMesh.s_dracoVtxTotal + ", draco trisNumber: "+ DracoMesh.s_dracoTriTotal);
             this.buildEnd();
-        
+            console.log("DracoMesh::initialize() draco vtCount: " + DracoMesh.s_dracoVtxTotal + ", draco trisNumber: "+ DracoMesh.s_dracoTriTotal);
         }
     }
 
@@ -174,9 +173,7 @@ export default class DracoMesh extends MeshBase {
         this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
 
         this.buildEnd();
-    }
-    toString(): string {
-        return "DracoMesh()";
+        console.log("DracoMesh::initialize2() draco this.vtxTotal: " + this.vtxTotal + ", draco trisNumber: "+ this.trisNumber);
     }
     __$destroy(): void {
         if (this.isResFree()) {

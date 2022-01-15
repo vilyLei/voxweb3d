@@ -187,7 +187,6 @@ export default class MeshBase {
     getIVS(): Uint16Array | Uint32Array { return this.m_ivs; }
 
     setVtxBufRenderData(vtxData: IVtxBufRenderData): void {
-        
         if(vtxData != null) {
             this.m_bufTypeList = vtxData.getBufTypeList();
             this.m_bufSizeList = vtxData.getBufSizeList();
@@ -208,18 +207,18 @@ export default class MeshBase {
         return this.m_layoutBit;
     }
     
-    // setBufTypeList(list: number[]): void {
-    //     this.m_bufTypeList = list;
-    // }
-    // setBufSizeList(list: number[]): void {
-    //     this.m_bufSizeList = list;
-    // }
-    // getBufTypeList(): number[] {
-    //     return this.m_bufTypeList;
-    // }
-    // getBufSizeList(): number[] {
-    //     return this.m_bufSizeList;
-    // }
+    setBufTypeList(list: number[]): void {
+        this.m_bufTypeList = list;
+    }
+    setBufSizeList(list: number[]): void {
+        this.m_bufSizeList = list;
+    }
+    getBufTypeList(): number[] {
+        return this.m_bufTypeList;
+    }
+    getBufSizeList(): number[] {
+        return this.m_bufSizeList;
+    }
 
     isVBufEnabledAt(i: number): boolean {
         return (i & this.m_layoutBit) > 0;

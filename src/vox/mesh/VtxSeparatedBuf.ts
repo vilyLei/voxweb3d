@@ -26,35 +26,40 @@ export default class VtxSeparatedBuf implements IVtxBuf {
     //private m_pOffsetList:number[] = null;
     private m_f32List: Float32Array[] = null;
     private m_f32SizeList: number[] = null;
-    private m_f32PreSizeList: number[] = null;
+    //private m_f32PreSizeList: number[] = null;
     private m_f32ChangedList: boolean[] = null;
     private m_f32Bufs: any[] = null;
-    private m_stepFloatsTotal: number = 0;
+    private m_bufersTotal: number = 0;
+    // private m_stepFloatsTotal: number = 0;
 
 
     getBuffersTotal(): number {
-        return this.m_f32List.length;
+        return this.m_bufersTotal;
     }
     
     getAttribsTotal(): number {
-        return this.m_f32List.length;
+        return this.m_bufersTotal;
     }
     getF32DataAt(index: number): Float32Array {
         return this.m_f32List[index];
     }
     setF32DataAt(index: number, float32Arr: Float32Array, stepFloatsTotal: number, setpOffsets: number[]): void {
+        
+        if(index < 1) this.m_bufersTotal = 1;
+        else this.m_bufersTotal = index + 1;
+
         if (this.m_f32List == null) {
             this.m_f32List = [null, null, null, null, null, null, null, null];
             this.m_f32ChangedList = [false, false, false, false, false, false, false, false];
             this.m_f32SizeList = [0, 0, 0, 0, 0, 0, 0, 0];
-            this.m_f32PreSizeList = [0, 0, 0, 0, 0, 0, 0, 0];
+            //this.m_f32PreSizeList = [0, 0, 0, 0, 0, 0, 0, 0];
         }
         this.m_f32List[index] = float32Arr;
         if (this.m_f32Bufs != null && float32Arr != null) {
             this.m_f32ChangedList[index] = true;
         }
         if (setpOffsets != null) this.m_fOffsetList = setpOffsets;
-        this.m_stepFloatsTotal = stepFloatsTotal;
+        //this.m_stepFloatsTotal = stepFloatsTotal;
         //console.log("VtxSeparatedBuf::setF32DataAt(),"+this+" m_f32List.length: "+float32Arr.length+", this.m_f32PreSizeList: "+this.m_f32PreSizeList);
         if (float32Arr != null) {
             this.m_f32SizeList[index] = float32Arr.length;
@@ -82,7 +87,7 @@ export default class VtxSeparatedBuf implements IVtxBuf {
         this.m_f32List = null;
         this.m_f32ChangedList = null;
         this.m_f32SizeList = null;
-        this.m_f32PreSizeList = null;
+        //this.m_f32PreSizeList = null;
 
         console.log("VtxSeparatedBuf::__$destroy()... ", this);
         this.m_f32List = null;

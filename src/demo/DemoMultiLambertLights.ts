@@ -226,7 +226,11 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         // let frame = new FrustrumFrame3DEntity();
         // frame.initiazlize(this.m_viewTexMaker.getCamera());
         // this.m_engine.rscene.addEntity(frame, 3);
-        
+
+        // let axisT: Axis3DEntity = new Axis3DEntity();
+        // axisT.initialize(300);
+        // this.m_engine.rscene.addEntity(axisT);
+
         let color: Color4 = new Color4(1.0, 1.0, 0.0);
         let colorBias: Color4 = new Color4(0.0, 0.0, 0.0);
         ///*
