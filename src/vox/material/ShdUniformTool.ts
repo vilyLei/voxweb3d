@@ -34,70 +34,72 @@ class EmptyShdUniform extends ShaderUniform implements IShaderUniform {
 }
 
 export default class ShdUniformTool {
-    private static s_initBoo: boolean = true;
-    private static s_uniformDict: Map<string, IUniformBuilder> = new Map();
-    private static s_builders: IUniformBuilder[] = [];
-    private static s_buildersTot: number = 0;
 
-    private static appendUniformBuilder(builder: IUniformBuilder): void {
+    private m_initFlag: boolean = true;
+    private m_uniformDict: Map<string, IUniformBuilder> = new Map();
+    private m_builders: IUniformBuilder[] = [];
+    private m_buildersTot: number = 0;
+    private m_emptyUniform: ShaderUniform = new ShaderUniform();
 
-        if(!ShdUniformTool.s_uniformDict.has(builder.getIDNS())) {
-            ShdUniformTool.s_builders.push(builder);
-            ShdUniformTool.s_uniformDict.set(builder.getIDNS(), builder);
-            ShdUniformTool.s_buildersTot = ShdUniformTool.s_builders.length;
+    private appendUniformBuilder(builder: IUniformBuilder): void {
+
+        if(!this.m_uniformDict.has(builder.getIDNS())) {
+            this.m_builders.push(builder);
+            this.m_uniformDict.set(builder.getIDNS(), builder);
+            this.m_buildersTot = this.m_builders.length;
         }
     }
-    static Initialize(): void {
-        if (ShdUniformTool.s_initBoo) {
-            ShdUniformTool.s_initBoo = false;
+    initialize(): void {
+        if (this.m_initFlag) {
+            this.m_initFlag = false;
             
-            ShdUniformTool.appendUniformBuilder( new CameraUniformBuilder() );
-            ShdUniformTool.appendUniformBuilder( new FrustumUniformBuilder() );
-            ShdUniformTool.appendUniformBuilder( new CameraPosUniformBuilder() );
+            this.appendUniformBuilder( new CameraUniformBuilder() );
+            this.appendUniformBuilder( new FrustumUniformBuilder() );
+            this.appendUniformBuilder( new CameraPosUniformBuilder() );
 
-            ShdUniformTool.appendUniformBuilder( new StageParamUniformBuilder() );
-            ShdUniformTool.appendUniformBuilder( new ViewParamUniformBuilder() );            
+            this.appendUniformBuilder( new StageParamUniformBuilder() );
+            this.appendUniformBuilder( new ViewParamUniformBuilder() );            
         }
     }
-    static AddSharedUniformBuilder(builder: IUniformBuilder): void {
-        if (builder != null && !ShdUniformTool.s_uniformDict.has(builder.getIDNS())) {
-            ShdUniformTool.s_builders.push(builder);
-            ShdUniformTool.s_uniformDict.set(builder.getIDNS(), builder);
-            ++ShdUniformTool.s_buildersTot;
+    addSharedUniformBuilder(builder: IUniformBuilder): void {
+        if (builder != null && !this.m_uniformDict.has(builder.getIDNS())) {
+            this.m_builders.push(builder);
+            this.m_uniformDict.set(builder.getIDNS(), builder);
+            ++this.m_buildersTot;
         }
     }
-    static removeSharedUniformBuilder(builder: IUniformBuilder): void {
-        if (builder != null && ShdUniformTool.s_uniformDict.has(builder.getIDNS())) {
-            for (let i: number = 0; i < ShdUniformTool.s_buildersTot; ++i) {
-                if (builder == ShdUniformTool.s_builders[i]) {
-                    ShdUniformTool.s_builders.splice(i, 1);
-                    --ShdUniformTool.s_buildersTot;
+    removeSharedUniformBuilder(builder: IUniformBuilder): void {
+        if (builder != null && this.m_uniformDict.has(builder.getIDNS())) {
+            for (let i: number = 0; i < this.m_buildersTot; ++i) {
+                if (builder == this.m_builders[i]) {
+                    this.m_builders.splice(i, 1);
+                    --this.m_buildersTot;
                     break;
                 }
             }
-            ShdUniformTool.s_uniformDict.delete(builder.getIDNS());
+            this.m_uniformDict.delete(builder.getIDNS());
         }
     }
-    static removeSharedUniformBuilderByName(builderNS: string): void {
-        if (ShdUniformTool.s_uniformDict.has(builderNS)) {
-            let builder: IUniformBuilder = ShdUniformTool.s_uniformDict.get(builderNS);
-            for (let i: number = 0; i < ShdUniformTool.s_buildersTot; ++i) {
-                if (builder == ShdUniformTool.s_builders[i]) {
-                    ShdUniformTool.s_builders.splice(i, 1);
-                    --ShdUniformTool.s_buildersTot;
+    removeSharedUniformBuilderByName(builderNS: string): void {
+        if (this.m_uniformDict.has(builderNS)) {
+            let builder: IUniformBuilder = this.m_uniformDict.get(builderNS);
+            for (let i: number = 0; i < this.m_buildersTot; ++i) {
+                if (builder == this.m_builders[i]) {
+                    this.m_builders.splice(i, 1);
+                    --this.m_buildersTot;
                     break;
                 }
             }
-            ShdUniformTool.s_uniformDict.delete(builderNS);
+            this.m_uniformDict.delete(builderNS);
         }
     }
-    static BuildShared(guniforms: ShaderUniform[], rc: RenderProxy, shdp: ShdProgram): ShaderUniform {
+    buildShared(guniforms: ShaderUniform[], rc: RenderProxy, shdp: ShdProgram): ShaderUniform {
         let guniform: ShaderUniform;
         let headU: ShaderUniform = null;
         let prevU: ShaderUniform = null;
-        let builders: IUniformBuilder[] = ShdUniformTool.s_builders;
+        let builders: IUniformBuilder[] = this.m_builders;
         let i: number = 0;
-        let len: number = ShdUniformTool.s_buildersTot;
+        let len: number = this.m_buildersTot;
         let puo: ShaderUniform = null;
         for (; i < len; ++i) {
             puo = builders[i].create(rc, shdp);
@@ -160,8 +162,7 @@ export default class ShdUniformTool {
         }
         return guniform;
     }
-    private static s_emptyUniform: ShaderUniform = new ShaderUniform();
-    static BuildLocalFromTransformV(transformData: Float32Array, shdp: ShdProgram): IShaderUniform {
+    buildLocalFromTransformV(transformData: Float32Array, shdp: ShdProgram): IShaderUniform {
         if (transformData != null) {
             let shdUniform: ShaderUniform;
             shdUniform = new ShaderMat4Uniform();
@@ -179,9 +180,9 @@ export default class ShdUniformTool {
             shdUniform.dataSizeList.push(1);
             return shdUniform;
         }
-        return ShdUniformTool.s_emptyUniform;
+        return this.m_emptyUniform;
     }
-    static UpdateLocalFromTransformV(dstUniform: IShaderUniform, transformData: Float32Array, shdp: ShdProgram): IShaderUniform {
+    updateLocalFromTransformV(dstUniform: IShaderUniform, transformData: Float32Array, shdp: ShdProgram): IShaderUniform {
         if (transformData != null) {
             let shdUniform: ShaderUniform;
             let srcUniform: ShaderMat4Uniform = dstUniform as ShaderMat4Uniform;
@@ -207,9 +208,9 @@ export default class ShdUniformTool {
             }
             return shdUniform;
         }
-        return ShdUniformTool.s_emptyUniform;
+        return this.m_emptyUniform;
     }
-    static BuildLocalFromData(uniformData: ShaderUniformData, shdp: ShdProgram): IShaderUniform {
+    buildLocalFromData(uniformData: ShaderUniformData, shdp: ShdProgram): IShaderUniform {
         if (uniformData != null) {
             // collect all uniform data,create a new runned uniform
             let shdUniform: ShaderUniform;
@@ -249,7 +250,7 @@ export default class ShdUniformTool {
         }
         return EmptyShdUniform.EmptyUniform;
     }
-    static BuildLocal(sUniform: ShaderUniform, shdp: ShdProgram): ShaderUniform {
+    buildLocal(sUniform: ShaderUniform, shdp: ShdProgram): ShaderUniform {
         // collect all uniform data,create a new runned uniform
         let shdUniform: ShaderUniform = new ShaderUniform();
         shdUniform.uniformNameList = [];

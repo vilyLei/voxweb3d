@@ -16,7 +16,6 @@ import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 
 import { ShaderUniformContext } from "../../vox/material/ShaderUniformContext";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
-import ShdUniformTool from "../../vox/material/ShdUniformTool";
 import RenderMaterialProxy from "../../vox/render/RenderMaterialProxy";
 
 import {RenderProxyParam, RenderProxy} from "../../vox/render/RenderProxy";
@@ -308,7 +307,6 @@ class RendererInstanceContext implements IRendererInstanceContext {
             let context: RAdapterContext = this.m_renderProxy.getContext();
             context.setViewport(0, 0, context.getRCanvasWidth(), context.getRCanvasHeight());
 
-            ShdUniformTool.Initialize();
         }
     }
     initManager(builder: RODataBuilder): void {

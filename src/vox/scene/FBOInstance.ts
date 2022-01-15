@@ -619,7 +619,7 @@ export default class FBOInstance {
     }
 
     clone(): FBOInstance {
-
+        
         let ins: FBOInstance = new FBOInstance(this.m_renderer, this.m_texStore);
         ins.m_fboSizeFactor = this.m_fboSizeFactor;
         ins.m_bgColor.copyFrom(this.m_bgColor);

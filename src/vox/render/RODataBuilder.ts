@@ -47,6 +47,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
     private m_deferredTROs: IRODisplay[] = [];
     private m_deferredTextures: IRenderBuffer[] = [];
     private m_haveDeferredUpdate: boolean = false;
+    private m_shdUniformTool: ShdUniformTool;
     constructor() {
     }
     initialize(rc: RenderProxy, rpoUnitBuilder: RPOUnitBuilder, processBuider: RenderProcessBuider, roVtxBuild: ROVtxBuilder): void {
@@ -59,6 +60,8 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
             this.m_processBuider = processBuider;
             this.m_roVtxBuild = roVtxBuild;
             this.m_emptyTRO = new EmptyTexRenderObj(this.m_texRes);
+            this.m_shdUniformTool = new ShdUniformTool();
+            this.m_shdUniformTool.initialize();
         }
     }
     getRenderProxy(): RenderProxy {
@@ -201,11 +204,11 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                             sharedMList[i].program = shdp.getGPUProgram();
                         }
                     }
-                    this.m_shader.setSharedUniformByShd(shdp, ShdUniformTool.BuildShared(sharedMList, rc, shdp));
+                    this.m_shader.setSharedUniformByShd(shdp, this.m_shdUniformTool.buildShared(sharedMList, rc, shdp));
                 }
                 let hasTrans: boolean = shdp.hasUniformByName(UniformConst.LocalTransformMatUNS);
                 if (material.__$uniform == null) {
-                    material.__$uniform = ShdUniformTool.BuildLocalFromData(material.createSelfUniformData(), shdp);
+                    material.__$uniform = this.m_shdUniformTool.buildLocalFromData(material.createSelfUniformData(), shdp);
                 }
 
                 if (hasTrans) {
@@ -219,11 +222,11 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                 // console.log("RODataBuilder::updateDispMaterial(), runit.uid: ",runit.getUid());
                 //  console.log("RODataBuilder::updateDispMaterial(), runit.transUniform == null: ",runit.transUniform == null);
                 if (runit.transUniform == null) {
-                    runit.transUniform = ShdUniformTool.BuildLocalFromTransformV(hasTrans ? disp.getMatrixFS32() : null, shdp);
+                    runit.transUniform = this.m_shdUniformTool.buildLocalFromTransformV(hasTrans ? disp.getMatrixFS32() : null, shdp);
                     ROTransPool.SetTransUniform(disp.getTransform(), runit.transUniform);
                 }
                 else {
-                    runit.transUniform = ShdUniformTool.UpdateLocalFromTransformV(runit.transUniform, hasTrans ? disp.getMatrixFS32() : null, shdp);
+                    runit.transUniform = this.m_shdUniformTool.updateLocalFromTransformV(runit.transUniform, hasTrans ? disp.getMatrixFS32() : null, shdp);
                 }
                 runit.polygonOffset = material.getPolygonOffset();
                 runit.uniform = material.__$uniform;
@@ -386,7 +389,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                 sharedMList = [];
                 for (let i: number = 0; i < dataList.length; ++i) {
                     if (dataList[i] != null) {
-                        let uniform: ShaderUniform = ShdUniformTool.BuildLocalFromData(dataList[i], shdp) as ShaderUniform;
+                        let uniform: ShaderUniform = this.m_shdUniformTool.buildLocalFromData(dataList[i], shdp) as ShaderUniform;
                         sharedMList.push(uniform);
                     }
                 }
@@ -428,11 +431,11 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                         sharedMList[i].program = shdp.getGPUProgram();
                     }
                 }
-                this.m_shader.setSharedUniformByShd(shdp, ShdUniformTool.BuildShared(sharedMList, rc, shdp));
+                this.m_shader.setSharedUniformByShd(shdp, this.m_shdUniformTool.buildShared(sharedMList, rc, shdp));
             }
 
             if (material.__$uniform == null) {
-                material.__$uniform = ShdUniformTool.BuildLocalFromData(material.createSelfUniformData(), shdp);
+                material.__$uniform = this.m_shdUniformTool.buildLocalFromData(material.createSelfUniformData(), shdp);
             }
             this.m_shader.__$globalUniform = material.__$uniform;
             this.m_shader.bindToGpu(shdp.getUid());
