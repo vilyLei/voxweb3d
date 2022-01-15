@@ -29,7 +29,7 @@ class ShaderUniformContext implements IShaderUniformContext {
         return this.m_rcuid;
     }
     createShaderUniformProbe(): IShaderUniformProbe {
-        let probe = new ShaderUniformProbe( this.m_udSlot );
+        let probe = new ShaderUniformProbe(this.m_udSlot);
         return probe;
     }
     createUniformVec4Probe(vec4Total: number): IShaderUniformProbe {
@@ -49,13 +49,14 @@ class ShaderUniformContext implements IShaderUniformContext {
         uProbe.update();
     }
     createShaderGlobalUniform(): IShaderUniform {
-        let suo = new ShaderGlobalUniform( this.m_udSlot );
+        let suo = new ShaderGlobalUniform(this.m_udSlot);
         return suo;
     }
-    createShaderGlobalUniformFromProbe(uProbe: IShaderUniformProbe,uns: string, uniformNames: string[] = null, index: number = -1): IShaderUniform {
-        let suo = new ShaderGlobalUniform( this.m_udSlot );
+    createShaderGlobalUniformFromProbe(uProbe: IShaderUniformProbe, puns: string, uniformNames: string[] = null, index: number = -1): IShaderUniform {
+        let suo = new ShaderGlobalUniform(this.m_udSlot);
+        suo.uns = puns;
         suo.uniformNameList = uniformNames != null ? uniformNames : uProbe.uniformNames;
-        if(index < 0) {
+        if (index < 0) {
             suo.copyDataFromProbe(uProbe);
         }
         else {
