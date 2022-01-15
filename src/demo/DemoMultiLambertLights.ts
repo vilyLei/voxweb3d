@@ -100,8 +100,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         mcParam.pbrMaterialEnabled = false;
         mcParam.shaderFileRename = true;
         mcParam.vsmFboIndex = 0;
-        mcParam.vsmEnabled = false;
-        //mcParam.buildBinaryFile = true;
+        // mcParam.vsmEnabled = false;
+        // mcParam.buildBinaryFile = true;
 
         this.m_materialCtx.addShaderLibListener(this);
         this.m_materialCtx.initialize(this.m_engine.rscene, mcParam);
@@ -149,7 +149,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_materialCtx.lightModule.update();
     }
     private createPointLightDisp(pointLight: PointLight): Billboard3DEntity {
-        return null;
+
         let size: number = 60.0;
         let billboard: Billboard3DEntity = new Billboard3DEntity();
         billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
@@ -206,51 +206,43 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         entity.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         this.m_engine.rscene.addEntity(entity, 3);
 
-        let unitBox: Sphere3DEntity = new Sphere3DEntity();
-        unitBox.normalEnabled = true;
-        unitBox.initialize(1.0, 20, 20, [tex]);
-        //this.m_engine.rscene.addEntity(entity, 0);
-        
-        entity = new DisplayEntity();
-        // entity.pipeTypes = [MaterialPipeType.FOG_EXP2];
-        // entity.setMaterialPipeline(this.m_materialCtx.pipeline);
-        
-        color = new Color4(1.3,0.8,0.3);
-        material = new Default3DMaterial();
-        //material.premultiplyAlpha = tex.premultiplyAlpha;
-        
-        material.pipeTypes = [MaterialPipeType.FOG_EXP2];
-        material.setMaterialPipeline(this.m_materialCtx.pipeline);
-        material.initializeByCodeBuf(true);
-        material.setAlpha(0.6);
-        material.setTextureList( [tex] );
-        material.setRGB3f(color.r, color.g, color.b);
+        // let unitBox: Sphere3DEntity = new Sphere3DEntity();
+        // unitBox.normalEnabled = true;
+        // unitBox.initialize(1.0, 20, 20, [tex]);
 
-        entity.setMaterial( material );
-        entity.copyMeshFrom( unitBox );
-        entity.setPosition(new Vector3D(100,0.0,-200.0));
-        entity.setScaleXYZ(100,100,100);
-        // entity.setRotationXYZ(0.0, Math.random() * 1000.0, 0.0);
-        // entity.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
-        this.m_engine.rscene.addEntity(entity, 0);
+        // entity = new DisplayEntity();
+        // color = new Color4(1.3,0.8,0.3);
+        // material = new Default3DMaterial();        
+        // material.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        // material.setMaterialPipeline(this.m_materialCtx.pipeline);
+        // material.initializeByCodeBuf(true);
+        // material.setAlpha(0.6);
+        // material.setTextureList( [tex] );
+        // material.setRGB3f(color.r, color.g, color.b);
+
+        // entity.setMaterial( material );
+        // entity.copyMeshFrom( unitBox );
+        // entity.setPosition(new Vector3D(100,0.0,-200.0));
+        // entity.setScaleXYZ(100,100,100);
+        // this.m_engine.rscene.addEntity(entity, 0);
 
     }
     private initScene(): void {
-        // if(RendererDevice.IsWebGL1()) {
-        //     this.m_viewTexMaker = new ViewTextureMaker(1, true);
-        //     this.m_viewTexMaker.setClearColorEnabled(true);
-        // }
-        // else {
-        //     this.m_viewTexMaker = new ViewTextureMaker(1);
-        //     this.m_viewTexMaker.setClearColorEnabled(false);
-        // }
-        // this.m_viewTexMaker.setCameraViewSize(2048, 2048);
-        // this.m_viewTexMaker.setMapSize(2048, 2048);
-        // this.m_viewTexMaker.initialize(this.m_engine.rscene, [4]);
-        // this.m_viewTexMaker.upate();
-        // this.m_viewTexMaker.force = true;
-        // this.m_viewTexMaker.histroyUpdating = true;
-        // this.m_viewTexMaker.run();
+        if(RendererDevice.IsWebGL1()) {
+            this.m_viewTexMaker = new ViewTextureMaker(1, true);
+            this.m_viewTexMaker.setClearColorEnabled(true);
+        }
+        else {
+            this.m_viewTexMaker = new ViewTextureMaker(1);
+            this.m_viewTexMaker.setClearColorEnabled(false);
+        }
+        this.m_viewTexMaker.setCameraViewSize(2048, 2048);
+        this.m_viewTexMaker.setMapSize(2048, 2048);
+        this.m_viewTexMaker.initialize(this.m_engine.rscene, [4]);
+        this.m_viewTexMaker.upate();
+        this.m_viewTexMaker.force = true;
+        this.m_viewTexMaker.histroyUpdating = true;
+        this.m_viewTexMaker.run();
 
         // let frame = new FrustrumFrame3DEntity();
         // frame.initiazlize(this.m_viewTexMaker.getCamera());
@@ -265,7 +257,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         ///*
         this.createDestroyEffect(new Vector3D(200,-188.0,-200));
         // // this.initEnvBox();
-        return;
+        // return;
         let billboard: Billboard3DEntity = new Billboard3DEntity();
         billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
         billboard.setMaterialPipeline(this.m_materialCtx.pipeline);
@@ -502,7 +494,14 @@ export class DemoMultiLambertLights implements IShaderLibListener {
             clipPl.initializeXOZSquare(50.0 + Math.random() * 200.0, [tex]);
             clipPl.setRotationXYZ(0.0, Math.random() * 400.0, 0.0);
             //this.m_currPos.setXYZ(0.0, -180.0, 0.0);
-            this.m_currPos.setXYZ(Math.random() * 400.0 - 200.0, -180.0, Math.random() * 400.0 - 200.0);
+            // this.m_currPos.setXYZ(Math.random() * 400.0 - 200.0, -180.0, Math.random() * 400.0 - 200.0);
+            // this.m_engine.interaction.viewRay.
+            this.m_engine.interaction.viewRay.setPlaneParam(Vector3D.Y_AXIS, -180.0)
+            this.m_engine.interaction.viewRay.intersectPlane();
+            let pv: Vector3D = this.m_engine.interaction.viewRay.position;
+
+            this.m_currPos.copyFrom( pv );
+            
             clipPl.setPosition(this.m_currPos);
             (clipPl.getMaterial() as any).setRGB3f(Math.random() * 0.7, Math.random() * 0.7, Math.random() * 0.7);
             (clipPl.getMaterial() as any).setAlpha(0.7);
