@@ -14,6 +14,7 @@ import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import IRenderShader from "../../vox/render/IRenderShader";
 import IRenderResource from "../../vox/render/IRenderResource";
 import IShaderUniform from "../../vox/material/IShaderUniform";
+import { IShaderProgramBuilder } from "../../vox/material/IShaderProgramBuilder";
 
 /**
  * 作为渲染器运行时 material shader 资源的管理类
@@ -21,9 +22,9 @@ import IShaderUniform from "../../vox/material/IShaderUniform";
  */
 export default class RenderShader implements IRenderShader, IRenderResource {
     
-    private m_shdDict: Map<string, ShdProgram> = new Map();
-    private m_shdList: ShdProgram[] = [];
-    private m_shdListLen: number = 0;
+    // private m_shdDict: Map<string, ShdProgram> = new Map();
+    // private m_shdList: ShdProgram[] = [];
+    // private m_shdListLen: number = 0;
     private m_sharedUniformList: IShaderUniform[] = [];
     private m_unlocked: boolean = true;
     private m_texUnlocked: boolean = false;
@@ -39,12 +40,16 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     private m_uniform: IShaderUniform = null;
     // 只有transform相关的信息uniform
     private m_transformUniform: IShaderUniform = null;
+    private m_shdProgramBuilder: IShaderProgramBuilder = null;
     // 用于记录 renderState(低10位)和ColorMask(高10位) 的状态组合
     drawFlag: number = -1;
-    constructor(rcuid: number, gl: any, adapter: IRenderAdapter) {
+
+    constructor(rcuid: number, gl: any, adapter: IRenderAdapter, shdProgramBuilder: IShaderProgramBuilder) {
+
         this.m_rcuid = rcuid;
-        this.m_adapter = adapter;
         this.m_rc = gl;
+        this.m_adapter = adapter;
+        this.m_shdProgramBuilder = shdProgramBuilder;
     }
     createResByParams3(resUid: number, param0: number, param1: number, param2: number): boolean {
         return false;
@@ -85,36 +90,42 @@ export default class RenderShader implements IRenderShader, IRenderResource {
             uniform.use(this);
         }
     }
-    create(shdData: IShaderData): ShdProgram {
-        //console.log("this.Create() begin...");
-        let uns: string = shdData.getUniqueShaderName();
-        if (this.m_shdDict.has(uns)) { return this.m_shdDict.get(uns); }
-        let p: ShdProgram = new ShdProgram(this.m_shdListLen);
-        p.setShdData(shdData);
-        this.m_shdList[p.getUid()] = p;
-        this.m_sharedUniformList[p.getUid()] = null;
-        ++this.m_shdListLen;
-        this.m_shdDict.set(uns, p);
+    // /**
+    //  * 这里的program生成过程已经能适配多GPU context的情况了
+    //  */
+    // create(shdData: IShaderData): ShdProgram {
+    //     // console.log("this.Create() begin...");
+    //     let uns: string = shdData.getUniqueShaderName();
+    //     if (this.m_shdDict.has(uns)) { return this.m_shdDict.get(uns); }
+    //     let p: ShdProgram = new ShdProgram(this.m_shdListLen);
+    //     p.setShdData(shdData);
+    //     this.m_shdList[p.getUid()] = p;
+    //     this.m_sharedUniformList[p.getUid()] = null;
+    //     ++this.m_shdListLen;
+    //     this.m_shdDict.set(uns, p);
 
-        if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
-            console.log("this.Create() a new ShdProgram: ", p.toString());
-        }
-        return p;
-    }
+    //     if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
+    //         console.log("this.Create() a new ShdProgram: ", p.toString());
+    //     }
+    //     return p;
+    // }
     findShdProgramByUid(uid: number): ShdProgram {
-        return this.m_shdList[uid];
+        // return this.m_shdList[uid];
+        return this.m_shdProgramBuilder.findShdProgramByUid( uid );
     }
     findShdProgram(unique_name_str: string): ShdProgram {
-        if (this.m_shdDict.has(unique_name_str)) { return this.m_shdDict.get(unique_name_str); }
-        return null;
+        // if (this.m_shdDict.has(unique_name_str)) { return this.m_shdDict.get(unique_name_str); }
+        // return null;
+        return this.m_shdProgramBuilder.findShdProgram( unique_name_str );
     }
     findShdProgramByShdData(shdData: IShaderData): ShdProgram {
-        if (shdData != null) {
-            if (this.m_shdDict.has(shdData.getUniqueShaderName())) {
-                return this.m_shdDict.get(shdData.getUniqueShaderName());
-            }
-        }
-        return null;
+        // if (shdData != null) {
+        //     if (this.m_shdDict.has(shdData.getUniqueShaderName())) {
+        //         return this.m_shdDict.get(shdData.getUniqueShaderName());
+        //     }
+        // }
+        // return null;
+        return this.m_shdProgramBuilder.findShdProgramByShdData( shdData );
     }
     unlock(): void {
         this.m_unlocked = true;
@@ -153,18 +164,21 @@ export default class RenderShader implements IRenderShader, IRenderResource {
      * @returns has or has not resource by unique id
      */
     hasResUid(resUid: number): boolean {
-        return this.m_shdList[resUid] != null;
+        // return this.m_shdList[resUid] != null;
+        return this.m_shdProgramBuilder.hasUid( resUid );
     }
     /**
      * bind the renderer runtime resource(by renderer runtime resource unique id) to the current renderer context
      * @param resUid renderer runtime resource unique id
      */
     bindToGpu(resUid: number): void {
-        if (this.m_unlocked && resUid > -1 && resUid < this.m_shdListLen) {
+        //if (this.m_unlocked && resUid > -1 && resUid < this.m_shdListLen) {
+        if (this.m_unlocked && this.m_shdProgramBuilder.containsUid( resUid )) {
             if (this.m_preuid != resUid) {
                 this.m_preuid = resUid;
 
-                let shd: ShdProgram = this.m_shdList[resUid];
+                //let shd: ShdProgram = this.m_shdList[resUid];
+                let shd: ShdProgram = this.m_shdProgramBuilder.findShdProgramByUid(resUid);
                 this.m_fragOutputTotal = shd.getFragOutputTotal();
                 if (this.m_fragOutputTotal != this.getActiveAttachmentTotal()) {
                     //if(RendererDevice.SHOWLOG_ENABLED) {

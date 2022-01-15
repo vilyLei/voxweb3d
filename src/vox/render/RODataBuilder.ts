@@ -30,6 +30,7 @@ import ROTextureResource from "../../vox/render/ROTextureResource";
 import IRenderBuffer from "../../vox/render/IRenderBuffer";
 import IROMaterialUpdater from "../../vox/render/IROMaterialUpdater";
 import IROVertexBufUpdater from "../../vox/render/IROVertexBufUpdater";
+import { IShaderProgramBuilder } from "../../vox/material/IShaderProgramBuilder";
 
 /**
  * 本类实现了将 系统内存数据 合成为 渲染运行时系统所需的数据资源(包括: 渲染运行时管理数据和显存数据)
@@ -48,14 +49,16 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
     private m_deferredTextures: IRenderBuffer[] = [];
     private m_haveDeferredUpdate: boolean = false;
     private m_shdUniformTool: ShdUniformTool;
-    constructor() {
+    private m_shdProgramBuilder: IShaderProgramBuilder = null;
+    constructor(shdProgramBuilder: IShaderProgramBuilder) {
+        this.m_shdProgramBuilder = shdProgramBuilder;
     }
     initialize(rc: RenderProxy, rpoUnitBuilder: RPOUnitBuilder, processBuider: RenderProcessBuider, roVtxBuild: ROVtxBuilder): void {
         if (this.m_shader == null) {
             this.m_rc = rc;
             this.m_vtxRes = rc.Vertex as ROVertexResource;
             this.m_texRes = rc.Texture as ROTextureResource;
-            this.m_shader = new RenderShader(rc.getRCUid(), rc.getRC(), rc.getRenderAdapter());
+            this.m_shader = new RenderShader(rc.getRCUid(), rc.getRC(), rc.getRenderAdapter(), this.m_shdProgramBuilder);
             this.m_rpoUnitBuilder = rpoUnitBuilder;
             this.m_processBuider = processBuider;
             this.m_roVtxBuild = roVtxBuild;
@@ -165,7 +168,8 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                     let texEnabled: boolean = ((texList != null && texList != null) && texList.length > 0);
                     material.initializeByCodeBuf(texEnabled);
                 }
-                shdp = this.m_shader.create(material.getShaderData());
+                // shdp = this.m_shader.create(material.getShaderData());
+                shdp = this.m_shdProgramBuilder.create(material.getShaderData());
 
                 shdp.upload(rc.RContext, rc.getUid());
                 runit.shdUid = shdp.getUid();
@@ -415,7 +419,8 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
             else {
                 texList = material.getTextureList();
             }
-            shdp = this.m_shader.create(material.getShaderData());
+            // shdp = this.m_shader.create(material.getShaderData());
+            shdp = this.m_shdProgramBuilder.create(material.getShaderData());
             shdp.upload(rc.RContext, rc.getUid());
             let texTotal: number = shdp.getTexTotal();
             if (texTotal > 0) {

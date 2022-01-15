@@ -20,7 +20,7 @@ import IRODisplay from "../../vox/display/IRODisplay";
 import RODisplay from "../../vox/display/RODisplay";
 
 import RenderProxy from "../../vox/render/RenderProxy";
-import TextureProxy from '../../vox/texture/TextureProxy';
+import TextureProxy from "../../vox/texture/TextureProxy";
 
 export default class EntityBase
 {

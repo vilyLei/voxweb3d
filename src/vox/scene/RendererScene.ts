@@ -46,6 +46,7 @@ import RendererSubScene from "../../vox/scene/RendererSubScene";
 import RenderShader from "../render/RenderShader";
 import Matrix4Pool from "../math/Matrix4Pool";
 import { IRendererSceneAccessor } from "./IRendererSceneAccessor";
+import { ShaderProgramBuilder } from "../../vox/material/ShaderProgramBuilder";
 
 export default class RendererScene implements IRenderer, IRendererScene {
     
@@ -304,7 +305,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
             Matrix4Pool.Allocate(rparam.getMatrix4AllocateSize());
             let camera: CameraBase = new CameraBase();
 
-            this.m_renderer.initialize(rparam, camera);
+            this.m_renderer.initialize(rparam, camera, new ShaderProgramBuilder( this.m_renderer.getRCUid() ));
             this.m_processids[0] = 0;
             this.m_processidsLen++;
             let process: RenderProcess = null;

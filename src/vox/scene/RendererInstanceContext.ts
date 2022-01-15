@@ -13,6 +13,7 @@ import RAdapterContext from "../../vox/render/RAdapterContext";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 
+import { IShaderProgramBuilder } from "../../vox/material/IShaderProgramBuilder";
 import { ShaderUniformContext } from "../../vox/material/ShaderUniformContext";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import RenderMaterialProxy from "../../vox/render/RenderMaterialProxy";
@@ -32,6 +33,7 @@ class RendererInstanceContextParam {
     builder: RODataBuilder = null;
     vtxBuilder: ROVtxBuilder = null;
     uniformContext: ShaderUniformContext = null;
+    shaderProgramBuilder: IShaderProgramBuilder = null;
 
     constructor(){}
 

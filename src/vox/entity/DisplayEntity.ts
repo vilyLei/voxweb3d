@@ -24,7 +24,7 @@ import IEntityTransform from "../../vox/entity/IEntityTransform";
 import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 
 import RenderProxy from "../../vox/render/RenderProxy";
-import TextureProxy from '../../vox/texture/TextureProxy';
+import TextureProxy from "../../vox/texture/TextureProxy";
 import DebugFlag from '../debug/DebugFlag';
 
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";

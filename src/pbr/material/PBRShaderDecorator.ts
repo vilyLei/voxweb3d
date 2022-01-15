@@ -7,7 +7,7 @@
 
 import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
 import UniformConst from "../../vox/material/UniformConst";
-import TextureProxy from '../../vox/texture/TextureProxy';
+import TextureProxy from "../../vox/texture/TextureProxy";
 
 export default class PBRShaderDecorator {
     constructor() {
