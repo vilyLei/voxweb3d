@@ -70,17 +70,31 @@ class ROVertexRes {
         this.m_gpuBufsTotal = 1;
         this.m_sizeList = [fvs.length];
         if (this.m_typeList == null) {
+
             this.m_wholeStride = 0;
             this.m_typeList = new Array(this.m_attribsTotal);
             this.m_offsetList = new Array(this.m_attribsTotal);
+            let typeList: number[] = vtx.getBufTypeList();
+            let sizeList: number[] = vtx.getBufSizeList();
 
-            for (let i: number = 0; i < this.m_attribsTotal; ++i) {
-                this.m_offsetList[i] = this.m_wholeStride;
-                this.m_wholeStride += shdp.getLocationSizeByIndex(i) * 4;
-                this.m_typeList[i] = (shdp.getLocationTypeByIndex(i));
+            if(typeList != null) {
+        
+                for (let i: number = 0; i < this.m_attribsTotal; ++i) {
+                    this.m_offsetList[i] = this.m_wholeStride;
+                    this.m_wholeStride += sizeList[i] * 4;
+                    this.m_typeList[i] = typeList[i];
+                }
             }
-            console.log("XXX this.m_typeList: ",this.m_typeList);
+            else {
+                
+                for (let i: number = 0; i < this.m_attribsTotal; ++i) {
+                    this.m_offsetList[i] = this.m_wholeStride;
+                    this.m_wholeStride += shdp.getLocationSizeByIndex(i) * 4;
+                    this.m_typeList[i] = (shdp.getLocationTypeByIndex(i));
+                }
+            }
         }
+
     }
     private uploadSeparated(rc: IROVtxBuilder, shdp: IVtxShdCtr): void {
         let vtx: IROVtxBuf = this.m_vtx;
@@ -143,10 +157,13 @@ class ROVertexRes {
             this.m_vtx = vtx;
             this.m_vtxUid = vtx.getUid();
             this.m_type = vtx.getType();
+
+            let typeList: number[] = vtx.getBufTypeList();
+            let sizeList: number[] = vtx.getBufSizeList();
             if(shdp.getLocationsTotal() != vtx.getAttribsTotal()) {
-                console.error("shdp.getLocationsTotal() != vtx.getAttribsTotal()");
+                console.warn("shdp.getLocationsTotal() != vtx.getAttribsTotal()");
             }
-            this.m_attribsTotal = shdp.getLocationsTotal();
+            this.m_attribsTotal = typeList != null ? vtx.getAttribsTotal() : shdp.getLocationsTotal();
             // 暂时还不能用下面这一句代码
             // this.m_attribsTotal = vtx.getAttribsTotal();
 

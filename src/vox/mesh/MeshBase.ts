@@ -185,6 +185,15 @@ export default class MeshBase {
      * @returns vertex indices buffer Uint16Array or Uint32Array
      */
     getIVS(): Uint16Array | Uint32Array { return this.m_ivs; }
+
+    setVtxBufRenderData(vtxData: IVtxBufRenderData): void {
+        
+        if(vtxData != null) {
+            this.m_bufTypeList = vtxData.getBufTypeList();
+            this.m_bufSizeList = vtxData.getBufSizeList();
+            this.setBufSortFormat( vtxData.getBufSortFormat() );
+        }
+    }
     /**
      * @param layoutBit vertex shader vertex attributes layout bit status.
      *                  the value of layoutBit comes from the material shdder program.
@@ -199,12 +208,12 @@ export default class MeshBase {
         return this.m_layoutBit;
     }
     
-    setBufTypeList(list: number[]): void {
-        this.m_bufTypeList = list;
-    }
-    setBufSizeList(list: number[]): void {
-        this.m_bufSizeList = list;
-    }
+    // setBufTypeList(list: number[]): void {
+    //     this.m_bufTypeList = list;
+    // }
+    // setBufSizeList(list: number[]): void {
+    //     this.m_bufSizeList = list;
+    // }
     // getBufTypeList(): number[] {
     //     return this.m_bufTypeList;
     // }
