@@ -16,7 +16,7 @@ import { ShaderCodeUniform } from "../../vox/material/code/ShaderCodeUniform";
 
 class ShaderCodeBuffer {
 
-    private static __$s_csBuf: ShaderCodeBuffer = null;
+    // private static __$s_csBuf: ShaderCodeBuffer = null;
     protected static s_coder: ShaderCodeBuilder;
     protected static s_uniform: ShaderCodeUniform;
     protected m_coder: ShaderCodeBuilder = null;
@@ -95,11 +95,11 @@ class ShaderCodeBuffer {
 
     initialize(texEnabled: boolean): void {
 
-        if (ShaderCodeBuffer.__$s_csBuf != null) {
-            if (ShaderCodeBuffer.__$s_csBuf != this) {
-                ShaderCodeBuffer.__$s_csBuf.initialize(texEnabled);
-            }
-        }
+        // if (ShaderCodeBuffer.__$s_csBuf != null) {
+        //     if (ShaderCodeBuffer.__$s_csBuf != this) {
+        //         ShaderCodeBuffer.__$s_csBuf.initialize(texEnabled);
+        //     }
+        // }
         this.m_texEnabled = texEnabled;
         this.bufInitWithPipeline();
     }
@@ -161,25 +161,27 @@ class ShaderCodeBuffer {
     }
     getFragShaderCode(): string {
 
-        if (ShaderCodeBuffer.__$s_csBuf != this) return ShaderCodeBuffer.__$s_csBuf.getFragShaderCode();
+        //if (ShaderCodeBuffer.__$s_csBuf != this) return ShaderCodeBuffer.__$s_csBuf.getFragShaderCode();
         return this.m_coder.buildFragCode();
     }
     getVertShaderCode(): string {
         
-        if (ShaderCodeBuffer.__$s_csBuf != this) return ShaderCodeBuffer.__$s_csBuf.getVertShaderCode();
+        //if (ShaderCodeBuffer.__$s_csBuf != this) return ShaderCodeBuffer.__$s_csBuf.getVertShaderCode();
         return this.m_coder.buildVertCode();
     }
     getUniqueShaderName(): string {
-        if (ShaderCodeBuffer.__$s_csBuf != this) return ShaderCodeBuffer.__$s_csBuf.getUniqueShaderName();
+        //if (ShaderCodeBuffer.__$s_csBuf != this) return ShaderCodeBuffer.__$s_csBuf.getUniqueShaderName();
+        throw Error("Illgel operation !!!");
+        return "";
     }
     toString(): string {
         return "[ShaderCodeBuffer()]";
     }
-    static UseShaderBuffer(buf: ShaderCodeBuffer): void {
-        if (ShaderCodeBuffer.__$s_csBuf != null) {
-            ShaderCodeBuffer.__$s_csBuf.clear();
-        }
-        ShaderCodeBuffer.__$s_csBuf = buf;
-    }
+    // static UseShaderBuffer(buf: ShaderCodeBuffer): void {
+    //     if (ShaderCodeBuffer.__$s_csBuf != null) {
+    //         ShaderCodeBuffer.__$s_csBuf.clear();
+    //     }
+    //     ShaderCodeBuffer.__$s_csBuf = buf;
+    // }
 }
 export default ShaderCodeBuffer;

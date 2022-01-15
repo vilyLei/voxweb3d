@@ -20,17 +20,16 @@ import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline
 
 export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData {
 
-    private static s_codeBuffer: ShaderCodeBuffer = null;
+    //private static s_codeBuffer: ShaderCodeBuffer = null;
+    private m_shduns: string = "";
+    private m_shdData: ShaderData = null;
+    private m_polygonOffset: number[] = null;
+
     protected m_sharedUniforms: IShaderUniform[] = null;
     protected m_shaderUniformData: ShaderUniformData = null;
     protected m_pipeLine: IMaterialPipeline = null;
     protected m_uniqueShaderName: string = "";
-    constructor() { }
-
-    // use rgb normalize bias enabled
-    private m_shduns: string = "";
-    private m_shdData: ShaderData = null;
-    private m_polygonOffset: number[] = null;
+    
     // tex list unique hash value
     __$troMid: number = -1;
     __$uniform: IShaderUniform = null;
@@ -38,6 +37,8 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
      * pipes type list for material pipeline
      */
     pipeTypes: MaterialPipeType[] = null;
+
+    constructor() { }
 
     /*
      * specifies the scale factors and units to calculate depth values.
@@ -80,11 +81,13 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
     }
     // get a shader code buf instance, for sub class override
     getCodeBuf(): ShaderCodeBuffer {
-        if (MaterialBase.s_codeBuffer != null) {
-            return MaterialBase.s_codeBuffer;
-        }
-        MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
-        return MaterialBase.s_codeBuffer;
+        // if (MaterialBase.s_codeBuffer != null) {
+        //     return MaterialBase.s_codeBuffer;
+        // }
+        // MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
+        // return MaterialBase.s_codeBuffer;
+        throw Error("Illgel operation !!!");
+        return null;
     }
     hasShaderData(): boolean {
         if (this.m_shdData != null) {
@@ -96,6 +99,8 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
             }
         }
         return false;
+    }
+    initializeByRenderer(texEnabled: boolean = false): void {
     }
     initializeByCodeBuf(texEnabled: boolean = false): void {
         if (this.m_shdData == null) {
@@ -114,10 +119,10 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
                     this.m_shduns = shdCode_uniqueName;
                 }
                 if(shdData == null) {
-                    if (MaterialBase.s_codeBuffer == null) {
-                        MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
-                    }
-                    ShaderCodeBuffer.UseShaderBuffer(buf);
+                    // if (MaterialBase.s_codeBuffer == null) {
+                    //     MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
+                    // }
+                    // ShaderCodeBuffer.UseShaderBuffer(buf);
                     texEnabled = texEnabled || this.getTextureTotal() > 0;
                     buf.initialize(texEnabled);
                     shdCode_uniqueName = buf.getUniqueShaderName() + buf.keysString + buf.getShaderCodeBuilder().getUniqueNSKeyString();
@@ -127,7 +132,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
                     this.m_uniqueShaderName = this.m_shduns;
                 }
                 else {
-                    ShaderCodeBuffer.UseShaderBuffer(buf);
+                    // ShaderCodeBuffer.UseShaderBuffer(buf);
                     texEnabled = texEnabled || this.getTextureTotal() > 0;
                     buf.initialize(texEnabled);
                 }
@@ -157,7 +162,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
                     this.m_sharedUniforms = this.m_pipeLine.getSharedUniforms();
                 }
 
-                ShaderCodeBuffer.UseShaderBuffer(null);
+                // ShaderCodeBuffer.UseShaderBuffer(null);
                 this.m_shdData = shdData;
             }
         }
