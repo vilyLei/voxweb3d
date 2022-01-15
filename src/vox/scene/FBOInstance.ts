@@ -200,8 +200,8 @@ export default class FBOInstance {
             if (material != null) {
                 material.__$attachThis();
             }
+            this.m_gMateiral = material;
         }
-        this.m_gMateiral = material;
     }
     lockMaterial(): void {
         if (this.m_gMateiral != null) {
@@ -214,9 +214,9 @@ export default class FBOInstance {
     unlockMaterial(): void {
         this.m_rcontext.unlockMaterial();
     }
-    
+
     updateGlobalMaterialUniform(): void {
-        this.m_rcontext.updateMaterialUniform( this.m_gMateiral );
+        this.m_rcontext.updateMaterialUniform(this.m_gMateiral);
     }
     clearDepth(clearDepth: number = 1.0): void {
         this.m_adapter.clearFBODepthAt(this.m_fboIndex, clearDepth);
@@ -607,6 +607,7 @@ export default class FBOInstance {
         this.m_renderer.useMainCamera();
     }
     reset(): void {
+        this.setGlobalMaterial( null );
         let i: number = 0;
         for (; i < this.m_texsTot; ++i) {
             this.m_texs[i] = null;
@@ -614,11 +615,7 @@ export default class FBOInstance {
         this.m_runFlag = false;
         this.m_fboIndex = -1;
         this.m_texsTot = 0;
-        this.m_rindexs = [];
-        if (this.m_gMateiral != null) {
-            this.m_gMateiral.__$detachThis();
-            this.m_gMateiral = null;
-        }
+        this.m_rindexs = [];        
     }
 
     clone(): FBOInstance {
