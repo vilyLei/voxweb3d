@@ -32,7 +32,7 @@ import EnvLightData from "../light/base/EnvLightData";
 import { MaterialPipeline } from "../vox/material/pipeline/MaterialPipeline";
 import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
 
-import Pipe3DEntity from "../vox/entity/Pipe3DEntity";
+import Tube3DEntity from "../vox/entity/Tube3DEntity";
 
 import { SceneDataLoader } from "../app/slickRoad/view/SceneDataLoader";
 import { ViewerTexSystem } from "../app/slickRoad/view/ViewerTexSystem";
@@ -246,7 +246,7 @@ export class DemoCameraWalkRoad {
         ]);
         material2.initializeByCodeBuf(true);
         // 四周的边界几何体
-        let pipe: Pipe3DEntity = new Pipe3DEntity();
+        let pipe: Tube3DEntity = new Tube3DEntity();
         //pipe.wireframe = true;
         pipe.setMaterial(material2);
         pipe.setRotationXYZ(0, 45, 0);

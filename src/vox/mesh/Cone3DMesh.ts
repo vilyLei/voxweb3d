@@ -203,6 +203,7 @@ export default class Cone3DMesh extends MeshBase {
             if(this.m_vbuf == null) {
                 this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
                 this.m_vbuf.setUintIVSData(this.m_ivs);
+                this.buildEnd();
             }
             else {
                 if(this.forceUpdateIVS) {
@@ -212,7 +213,6 @@ export default class Cone3DMesh extends MeshBase {
             }
             this.vtCount = this.m_ivs.length;
             this.trisNumber = this.vtCount / 3;
-            this.buildEnd();
         }
     }
     __$destroy(): void {

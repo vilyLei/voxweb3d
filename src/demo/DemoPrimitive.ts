@@ -12,7 +12,7 @@ import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
-import Pipe3DEntity from "../vox/entity/Pipe3DEntity";
+import Tube3DEntity from "../vox/entity/Tube3DEntity";
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import BillboardLine3DEntity from "../vox/entity/BillboardLine3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
@@ -150,7 +150,7 @@ export class DemoPrimitive {
             //*/
             //let posV:Vector3D = new Vector3D();
             ///*
-            let pipe: Pipe3DEntity = new Pipe3DEntity();
+            let pipe: Tube3DEntity = new Tube3DEntity();
             //pipe.wireframe = true;
             pipe.showDoubleFace();
             //pipe.toBrightnessBlend(false,true);

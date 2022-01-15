@@ -100,7 +100,7 @@ export default class Sphere3DEntity extends DisplayEntity {
             mesh.inverseUV = this.inverseUV;
             mesh.uvScale = this.uvScale;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
-            mesh.setBufSortFormat(material.getBufSortFormat());
+            mesh.setVtxBufRenderData(material);
             mesh.initialize(this.m_radius, this.m_longitudeNumSegments, this.m_latitudeNumSegments, this.doubleTriFaceEnabled);
             this.setMesh(mesh);
         }

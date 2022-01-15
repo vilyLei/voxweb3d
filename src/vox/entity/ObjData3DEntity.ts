@@ -80,7 +80,7 @@ export default class ObjData3DEntity extends DisplayEntity {
             mesh.moduleScale = this.moduleScale;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.wireframe = this.wireframe;
-            mesh.setBufSortFormat(this.getMaterial().getBufSortFormat());
+            mesh.setVtxBufRenderData(material);
             mesh.initialize(this.m_str, this.dataIsZxy);
             this.setMesh(mesh);
         }

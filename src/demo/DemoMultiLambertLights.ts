@@ -206,9 +206,9 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         entity.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         this.m_engine.rscene.addEntity(entity, 3);
 
-        let unitBox: Box3DEntity = new Box3DEntity();
+        let unitBox: Sphere3DEntity = new Sphere3DEntity();
         unitBox.normalEnabled = true;
-        unitBox.initializeCube(1.0, [tex]);
+        unitBox.initialize(1.0, 20, 20, [tex]);
         //this.m_engine.rscene.addEntity(entity, 0);
         
         entity = new DisplayEntity();

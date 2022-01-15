@@ -63,7 +63,7 @@ export default class Cylinder3DEntity extends DisplayEntity {
             mesh.vScale = this.vScale;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.wireframe = this.wireframe;
-            mesh.setBufSortFormat(material.getBufSortFormat());
+            mesh.setVtxBufRenderData(material);
             mesh.initialize(this.m_radius, this.m_height, this.m_plongitudeNumSegments, 2, this.m_uvType, this.m_alignYRatio);
             this.setMesh(mesh);
             mesh.setTransformMatrix(null);

@@ -2,19 +2,19 @@
 import Vector3D from "../../vox/math/Vector3D";
 import Matrix4 from "../../vox/math/Matrix4";
 
-import Pipe3DEntity from "../../vox/entity/Pipe3DEntity";
+import Tube3DEntity from "../../vox/entity/Tube3DEntity";
 import TextureProxy from "../../vox/texture/TextureProxy";
 
 import PipeGeometry from "../../voxmesh/geometry/primitive/PipeGeometry";
-import Pipe3DMesh from "../../vox/mesh/Pipe3DMesh";
+import Tube3DMesh from "../../vox/mesh/Tube3DMesh";
 import MaterialBase from "../../vox/material/MaterialBase";
 import MathConst from "../../vox/math/MathConst";
 import { Bezier2Curve } from "../../vox/geom/curve/BezierCurve";
 
 class MorphPipeObject {
 
-    private m_pipeEntity: Pipe3DEntity = null;
-    private m_pipeMesh: Pipe3DMesh = null;
+    private m_pipeEntity: Tube3DEntity = null;
+    private m_pipeMesh: Tube3DMesh = null;
     private m_pipeGeometry: PipeGeometry = null;
     private m_latitudeNum: number = 2;
 
@@ -39,14 +39,14 @@ class MorphPipeObject {
 
         this.m_latitudeNum = latitudeNum;
         this.m_bez2VS = new Array(latitudeNum + 1);
-        this.m_pipeEntity = new Pipe3DEntity();
+        this.m_pipeEntity = new Tube3DEntity();
         if (material != null) {
             this.m_pipeEntity.setMaterial(material);
         }
         this.m_bendIndex = Math.floor(this.m_latitudeNum * 0.5 * Math.random()) - 2;
         this.m_pipeEntity.showDoubleFace();
         this.m_pipeEntity.initialize(radius, height, longitudeNum, latitudeNum, texList, 1, 0.0);
-        this.m_pipeMesh = this.m_pipeEntity.getMesh() as Pipe3DMesh;
+        this.m_pipeMesh = this.m_pipeEntity.getMesh() as Tube3DMesh;
         this.m_pipeGeometry = this.m_pipeMesh.geometry.clone() as PipeGeometry;
         this.m_scaleChangeFactor = Math.random();
         this.m_scaleChangeAmplitude = Math.random() * 2.0 - 1.0;
@@ -54,7 +54,7 @@ class MorphPipeObject {
         this.m_pipeEntity.reinitialize();
         this.m_pipeEntity.updateMeshToGpu();
     }
-    getEntity(): Pipe3DEntity {
+    getEntity(): Tube3DEntity {
         return this.m_pipeEntity;
     }
     private morphCalc(rotV: Vector3D): void {

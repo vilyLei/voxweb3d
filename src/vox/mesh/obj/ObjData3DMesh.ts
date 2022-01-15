@@ -132,6 +132,7 @@ export default class ObjData3DMesh extends MeshBase {
         if (this.m_vbuf == null) {
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
             this.m_vbuf.setUintIVSData(this.m_ivs);
+            this.buildEnd();
         }
         else {
             if (this.forceUpdateIVS) {
@@ -141,8 +142,6 @@ export default class ObjData3DMesh extends MeshBase {
         }
         this.vtCount = this.m_ivs.length;
         this.trisNumber = this.vtCount / 3;
-
-        this.buildEnd();
     }
     /**
      * 射线和自身的相交检测(多面体或几何函数(例如球体))

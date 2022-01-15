@@ -218,6 +218,7 @@ export default class Sphere3DMesh extends MeshBase {
             if (this.m_vbuf == null) {
                 this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
                 this.m_vbuf.setUintIVSData(this.m_ivs);
+                this.buildEnd();
             }
             else {
                 if (this.forceUpdateIVS) {

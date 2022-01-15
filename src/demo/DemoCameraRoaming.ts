@@ -24,7 +24,7 @@ import EnvLightData from "../light/base/EnvLightData";
 import { MaterialPipeline } from "../vox/material/pipeline/MaterialPipeline";
 import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
 
-import Pipe3DEntity from "../vox/entity/Pipe3DEntity";
+import Tube3DEntity from "../vox/entity/Tube3DEntity";
 
 export class DemoCameraRoaming {
     constructor() { }
@@ -116,7 +116,7 @@ export class DemoCameraRoaming {
         ]);
         material2.initializeByCodeBuf(true);
 
-        let pipe: Pipe3DEntity = new Pipe3DEntity();
+        let pipe: Tube3DEntity = new Tube3DEntity();
         //pipe.wireframe = true;
         pipe.setMaterial(material2);
         pipe.setRotationXYZ(0, 45, 0);

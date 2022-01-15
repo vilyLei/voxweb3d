@@ -13,15 +13,15 @@ import MaterialBase from '../../vox/material/MaterialBase';
 import RendererState from "../../vox/render/RendererState";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import TextureProxy from "../../vox/texture/TextureProxy";
-import Pipe3DMesh from "../../vox/mesh/Pipe3DMesh";
+import Tube3DMesh from "../../vox/mesh/Tube3DMesh";
 
-export default class Pipe3DEntity extends DisplayEntity {
+export default class Tube3DEntity extends DisplayEntity {
     private m_longitudeNum: number = 10;
     private m_latitudeNum: number = 1;
     private m_uvType: number = 1;
     private m_alignYRatio: number = -0.5;
     private m_transMatrix: Matrix4 = null;
-    private m_currMesh: Pipe3DMesh = null;
+    private m_currMesh: Tube3DMesh = null;
 
     uScale: number = 1.0;
     vScale: number = 1.0;
@@ -85,9 +85,9 @@ export default class Pipe3DEntity extends DisplayEntity {
     }
 
     protected __activeMesh(material: MaterialBase): void {
-        this.m_currMesh = this.getMesh() as Pipe3DMesh;
+        this.m_currMesh = this.getMesh() as Tube3DMesh;
         if (this.m_currMesh == null) {
-            this.m_currMesh = new Pipe3DMesh();
+            this.m_currMesh = new Tube3DMesh();
 
             if (this.m_transMatrix != null) {
                 this.m_currMesh.setTransformMatrix(this.m_transMatrix);
@@ -96,7 +96,7 @@ export default class Pipe3DEntity extends DisplayEntity {
             this.m_currMesh.vScale = this.vScale;
             this.m_currMesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             this.m_currMesh.wireframe = this.wireframe;
-            this.m_currMesh.setBufSortFormat(material.getBufSortFormat());
+            this.m_currMesh.setVtxBufRenderData(material);
             this.m_currMesh.initialize(this.m_radius, this.m_height, this.m_longitudeNum, this.m_latitudeNum, this.m_uvType, this.m_alignYRatio);
             this.setMesh(this.m_currMesh);
             this.m_currMesh.setTransformMatrix(null);
@@ -119,6 +119,6 @@ export default class Pipe3DEntity extends DisplayEntity {
         }
     }
     toString(): string {
-        return "[Pipe3DEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")]";
+        return "[Tube3DEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")]";
     }
 }

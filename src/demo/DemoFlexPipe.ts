@@ -269,7 +269,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         // //srcSph.setRotation3(this.m_rotV);
         // this.m_rscene.addEntity(srcSph);
 
-        // let pipe: Pipe3DEntity = new Pipe3DEntity();
+        // let pipe: Tube3DEntity = new Tube3DEntity();
         // pipe.setMaterial(material);
         // pipe.initialize(100,200,10,20);
         // this.m_rscene.addEntity(pipe);

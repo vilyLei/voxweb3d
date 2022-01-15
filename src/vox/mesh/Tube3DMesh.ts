@@ -13,7 +13,7 @@ import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import MeshBase from "../../vox/mesh/MeshBase";
 import PipeGeometry from "../../voxmesh/geometry/primitive/PipeGeometry";
 
-export default class Pipe3DMesh extends MeshBase {
+export default class Tube3DMesh extends MeshBase {
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         super(bufDataUsage);
     }
@@ -121,6 +121,6 @@ export default class Pipe3DMesh extends MeshBase {
         }
     }
     toString(): string {
-        return "Pipe3DMesh()";
+        return "Tube3DMesh()";
     }
 }
