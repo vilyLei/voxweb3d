@@ -350,7 +350,7 @@ class RenderProxy implements IRenderProxy{
         if (lookAtPosV3 == null) lookAtPosV3 = new Vector3D(0.0, 0.0, 0.0);
         if (upV3 == null) upV3 = new Vector3D(0.0, 1.0, 0.0);
         
-        stage.uProbe = proxyParam.uniformContext.createUniformVec4Probe(1);
+        if(stage != null) stage.uProbe = proxyParam.uniformContext.createUniformVec4Probe(1);
 
         this.m_perspectiveEnabled = param.cameraPerspectiveEnabled;
         this.m_adapterContext.autoSyncRenderBufferAndWindowSize = param.autoSyncRenderBufferAndWindowSize;
