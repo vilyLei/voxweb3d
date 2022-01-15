@@ -174,15 +174,12 @@ class ROVertexRes {
             this.m_type = vtx.getType();
 
             let typeList: number[] = vtx.getBufTypeList();
-            let sizeList: number[] = vtx.getBufSizeList();
+            //let sizeList: number[] = vtx.getBufSizeList();
             this.m_attribsTotal = typeList != null ? typeList.length : shdp.getLocationsTotal();
             
             if(shdp.getLocationsTotal() != vtx.getAttribsTotal()) {
                 console.warn("shdp.getLocationsTotal() is "+shdp.getLocationsTotal()+" != vtx.getAttribsTotal() is "+vtx.getAttribsTotal()+"/"+(typeList != null ? typeList.length : 0));
             }
-            // 暂时还不能用下面这一句代码
-            // this.m_attribsTotal = vtx.getAttribsTotal();
-
             if (this.m_type < 1) {
                 // combined buf
                 this.uploadCombined(rc, shdp);

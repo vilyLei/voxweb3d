@@ -56,10 +56,11 @@ class ShaderCodeBuffer {
     reset(): void {
 
         this.m_coder = ShaderCodeBuffer.s_coder;
-        this.m_uniform = ShaderCodeBuffer.s_uniform;
+        this.m_uniform = ShaderCodeBuffer.s_uniform;        
         this.m_texture = this.m_uniform;
         
         this.m_coder.reset();
+        
         this.m_texList = null;
         this.pipeTypes = null;
 

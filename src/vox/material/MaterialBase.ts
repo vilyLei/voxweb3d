@@ -72,13 +72,13 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
     getShdUniqueName(): string {
         return this.m_shduns;
     }
-    initializeByUniqueName(shdCode_uniqueName: string) {
-        if (this.getShaderData() == null) {
-            let shdData: ShaderData = MaterialResource.FindData(shdCode_uniqueName);
-            if (shdData != null) this.m_shdData = shdData;
-        }
-        return this.getShaderData() != null;
-    }
+    // initializeByUniqueName(shdCode_uniqueName: string) {
+    //     if (this.getShaderData() == null) {
+    //         let shdData: ShaderData = MaterialResource.FindData(shdCode_uniqueName);
+    //         if (shdData != null) this.m_shdData = shdData;
+    //     }
+    //     return this.getShaderData() != null;
+    // }
     // get a shader code buf instance, for sub class override
     getCodeBuf(): ShaderCodeBuffer {
         // if (MaterialBase.s_codeBuffer != null) {
