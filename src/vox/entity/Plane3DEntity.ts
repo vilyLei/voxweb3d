@@ -222,6 +222,8 @@ export default class Plane3DEntity extends DisplayEntity {
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.axisFlag = this.m_flag;
             mesh.setBufSortFormat(material.getBufSortFormat());
+            mesh.setBufSizeList(material.getBufSizeList());
+            mesh.setBufSizeList(material.getBufTypeList());
             mesh.initialize(this.m_startX, this.m_startZ, this.m_pwidth, this.m_plong);
             this.setMesh(mesh);
         }

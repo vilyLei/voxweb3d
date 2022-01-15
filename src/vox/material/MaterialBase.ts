@@ -8,17 +8,17 @@
 import ShaderData from "../../vox/material/ShaderData";
 import MaterialResource from "../../vox/material/MaterialResource";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
-// import IShaderUniform from "../../vox/material/IShaderUniform";
 import IShaderUniform from "../../vox/material/IShaderUniform";
 
 import TextureProxy from '../../vox/texture/TextureProxy';
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
+import { IVtxBufRenderData } from "../../vox/render/IVtxBufRenderData";
 
 import { MaterialPipeType } from "./pipeline/MaterialPipeType";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 
-export default class MaterialBase implements IRenderMaterial {
+export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData {
 
     private static s_codeBuffer: ShaderCodeBuffer = null;
     protected m_sharedUniforms: IShaderUniform[] = null;

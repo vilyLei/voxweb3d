@@ -11,8 +11,8 @@ import AABB from "../../vox/geom/AABB";
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
-
 import { RenderDrawMode } from "../../vox/render/RenderConst";
+import { IVtxBufRenderData } from "../../vox/render/IVtxBufRenderData";
 
 /**
  * mesh(Polygon face convex mesh or Parametric geometry Objecct:):
@@ -20,16 +20,20 @@ import { RenderDrawMode } from "../../vox/render/RenderConst";
  *      2.基于空间几何方程描述的空间几何体(Parametric geometry Objecct,for example: Sphere(px,py,pz,radius))
 */
 export default class MeshBase {
+    
     private m_bufDataUsage: number = 0;
-    //private m_isDyn:boolean = false;
-    private m_layoutBit: number = 0x0;
-    // very important!!!
-    protected m_transMatrix: Matrix4 = null;
-    protected m_vbuf: ROVertexBuffer = null;
-    protected m_ivs: Uint16Array | Uint32Array = null;
     private m_bufDataList: Float32Array[] = null;
     private m_bufDataStepList: number[] = null;
     private m_bufStatusList: number[] = null;
+    private m_bufTypeList: number[] = null;
+    private m_bufSizeList: number[] = null;
+    //private m_isDyn:boolean = false;
+    // very important!!!
+    private m_layoutBit: number = 0x0;
+    protected m_transMatrix: Matrix4 = null;
+    protected m_vbuf: ROVertexBuffer = null;
+    protected m_ivs: Uint16Array | Uint32Array = null;
+
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         this.m_bufDataUsage = bufDataUsage;
         //this.m_isDyn = bufDataUsage == VtxBufConst.VTX_DYNAMIC_DRAW;
@@ -91,6 +95,10 @@ export default class MeshBase {
         }
     }
     protected buildEnd(): void {
+
+        this.m_vbuf.setBufTypeList( this.m_bufTypeList );
+        this.m_vbuf.setBufSizeList( this.m_bufSizeList );
+
         this.m_bufDataList = ROVertexBuffer.BufDataList;
         this.m_bufDataStepList = ROVertexBuffer.BufDataStepList;
         this.m_bufStatusList = ROVertexBuffer.BufStatusList;
@@ -190,6 +198,20 @@ export default class MeshBase {
     getBufSortFormat(): number {
         return this.m_layoutBit;
     }
+    
+    setBufTypeList(list: number[]): void {
+        this.m_bufTypeList = list;
+    }
+    setBufSizeList(list: number[]): void {
+        this.m_bufSizeList = list;
+    }
+    // getBufTypeList(): number[] {
+    //     return this.m_bufTypeList;
+    // }
+    // getBufSizeList(): number[] {
+    //     return this.m_bufSizeList;
+    // }
+
     isVBufEnabledAt(i: number): boolean {
         return (i & this.m_layoutBit) > 0;
     }
@@ -233,7 +255,9 @@ export default class MeshBase {
      * really destroy this instance all data
      */
     __$destroy(): void {
+
         if (this.isResFree()) {
+
             //console.log("MeshBase::__$destroy()... this.m_attachCount: "+this.m_attachCount);
             this.m_ivs = null;
             this.m_bufDataList = null;
@@ -241,6 +265,9 @@ export default class MeshBase {
             this.m_bufStatusList = null;
             this.trisNumber = 0;
             this.m_transMatrix = null;
+            
+            this.m_bufTypeList = null;
+            this.m_bufSizeList = null;
         }
     }
     toString(): string {

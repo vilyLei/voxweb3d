@@ -59,13 +59,13 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
     setBufSizeList(list: number[]): void {
         this.m_bufSizeList = list;
     }
-    
     getBufTypeList(): number[] {
         return this.m_bufTypeList;
     }
     getBufSizeList(): number[] {
         return this.m_bufSizeList;
     }
+
     getIBufStep(): number {
         return this.m_ibufStep;
     }
