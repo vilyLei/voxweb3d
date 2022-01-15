@@ -11,7 +11,7 @@ import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import RendererState from "../../vox/render/RendererState";
 import RAdapterContext from "../../vox/render/RAdapterContext";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
-import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 
 import { IShaderProgramBuilder } from "../../vox/material/IShaderProgramBuilder";
 import { ShaderUniformContext } from "../../vox/material/ShaderUniformContext";
@@ -232,7 +232,7 @@ class RendererInstanceContext implements IRendererInstanceContext {
      * @param enableStencil  enable stencil buffer yes or no
      * @param attachmentIndex  fbo attachment index
      */
-    setRenderToTexture(texProxy: RTTTextureProxy, enableDepth: boolean = false, enableStencil: boolean = false, attachmentIndex: number = 0): void {
+    setRenderToTexture(texProxy: IRenderTexture, enableDepth: boolean = false, enableStencil: boolean = false, attachmentIndex: number = 0): void {
         this.m_adapter.setRenderToTexture(texProxy, enableDepth, enableStencil, attachmentIndex);
     }
     useFBO(clearColorBoo: boolean = false, clearDepthBoo: boolean = false, clearStencilBoo: boolean = false): void {
