@@ -22,6 +22,12 @@ class ShaderUniformContext implements IShaderUniformContext {
         this.m_rcuid = rcuid;
         this.m_udSlot = new UniformDataSlot(rcuid, dataTotal);
     }
+    /**
+     * @returns return renderer context unique id
+     */
+    getRCUid(): number {
+        return this.m_rcuid;
+    }
     createShaderUniformProbe(): IShaderUniformProbe {
         let probe = new ShaderUniformProbe( this.m_udSlot );
         return probe;
