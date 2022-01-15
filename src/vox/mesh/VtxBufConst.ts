@@ -167,6 +167,9 @@ class VtxBufConst {
     static GetVBufAttributeTypeByNS(pns: string): number {
         return VtxBufConst.GetVBufTypeByNS(pns) - 3000;
     }
+    static GetVBufAttributeTypeByVBufType(vbufType: number): number {
+        return vbufType - 3000;
+    }
 }
 class VtxNormalType {
     static FLAT: number = 210;

@@ -100,7 +100,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         mcParam.pbrMaterialEnabled = false;
         mcParam.shaderFileRename = true;
         mcParam.vsmFboIndex = 0;
-        //mcParam.vsmEnabled = false;
+        mcParam.vsmEnabled = false;
         //mcParam.buildBinaryFile = true;
 
         this.m_materialCtx.addShaderLibListener(this);
@@ -149,7 +149,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_materialCtx.lightModule.update();
     }
     private createPointLightDisp(pointLight: PointLight): Billboard3DEntity {
-        // return null;
+        return null;
         let size: number = 60.0;
         let billboard: Billboard3DEntity = new Billboard3DEntity();
         billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
@@ -179,8 +179,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         unitPlane.normalEnabled = true;
         unitPlane.initializeXOZSquare(1.0, [tex]);
         unitPlane.setScaleXYZ(scaleX, 1.0, scaleZ);
-        this.m_engine.rscene.addEntity(unitPlane, 3);
-        unitPlane.setVisible(false);
+        // this.m_engine.rscene.addEntity(unitPlane, 3);
+        // unitPlane.setVisible(false);
         
         pv.y += 2.0;
         let material = new Default3DMaterial();
@@ -207,21 +207,21 @@ export class DemoMultiLambertLights implements IShaderLibListener {
 
     }
     private initScene(): void {
-        if(RendererDevice.IsWebGL1()) {
-            this.m_viewTexMaker = new ViewTextureMaker(1, true);
-            this.m_viewTexMaker.setClearColorEnabled(true);
-        }
-        else {
-            this.m_viewTexMaker = new ViewTextureMaker(1);
-            this.m_viewTexMaker.setClearColorEnabled(false);
-        }
-        this.m_viewTexMaker.setCameraViewSize(2048, 2048);
-        this.m_viewTexMaker.setMapSize(2048, 2048);
-        this.m_viewTexMaker.initialize(this.m_engine.rscene, [4]);
-        this.m_viewTexMaker.upate();
-        this.m_viewTexMaker.force = true;
-        this.m_viewTexMaker.histroyUpdating = true;
-        this.m_viewTexMaker.run();
+        // if(RendererDevice.IsWebGL1()) {
+        //     this.m_viewTexMaker = new ViewTextureMaker(1, true);
+        //     this.m_viewTexMaker.setClearColorEnabled(true);
+        // }
+        // else {
+        //     this.m_viewTexMaker = new ViewTextureMaker(1);
+        //     this.m_viewTexMaker.setClearColorEnabled(false);
+        // }
+        // this.m_viewTexMaker.setCameraViewSize(2048, 2048);
+        // this.m_viewTexMaker.setMapSize(2048, 2048);
+        // this.m_viewTexMaker.initialize(this.m_engine.rscene, [4]);
+        // this.m_viewTexMaker.upate();
+        // this.m_viewTexMaker.force = true;
+        // this.m_viewTexMaker.histroyUpdating = true;
+        // this.m_viewTexMaker.run();
 
         // let frame = new FrustrumFrame3DEntity();
         // frame.initiazlize(this.m_viewTexMaker.getCamera());
@@ -232,7 +232,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         ///*
         this.createDestroyEffect(new Vector3D(200,-188.0,-200));
         // // this.initEnvBox();
-        // return;
+        return;
         let billboard: Billboard3DEntity = new Billboard3DEntity();
         billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
         billboard.setMaterialPipeline(this.m_materialCtx.pipeline);
@@ -450,28 +450,32 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     private m_times: number = 0;
     private m_clips: DisplayEntity[] = [];
     private mouseDown(evt: any): void {
+
         this.m_flag = true;
         DebugFlag.Flag_0 = 1;
         this.m_times ++;
 
-        let tex = this.m_materialCtx.getTextureByUrl( "static/assets/particle/explosion/explodeBg_01c.png" );
-        tex.premultiplyAlpha = true;
-        let clipPl: Plane3DEntity = new Plane3DEntity();
-        clipPl.spaceCullMask = SpaceCullingMask.NONE;
-        clipPl.premultiplyAlpha = true;
-        //clipPl.toTransparentBlend(true);
-        clipPl.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
-        //clipPl.toBrightnessBlend(false);
-        //clipPl.initializeXOZSquare(200.0, [tex]);
-        clipPl.initializeXOZSquare(50.0 + Math.random() * 200.0, [tex]);
-        clipPl.setRotationXYZ(0.0, Math.random() * 400.0, 0.0);
-        //this.m_currPos.setXYZ(0.0, -180.0, 0.0);
-        this.m_currPos.setXYZ(Math.random() * 400.0 - 200.0, -180.0, Math.random() * 400.0 - 200.0);
-        clipPl.setPosition(this.m_currPos);
-        (clipPl.getMaterial() as any).setRGB3f(Math.random() * 0.7, Math.random() * 0.7, Math.random() * 0.7);
-        (clipPl.getMaterial() as any).setAlpha(0.7);
-        this.m_engine.rscene.addEntity(clipPl, 4);
-        this.m_clips.push(clipPl);
+        if(this.m_viewTexMaker != null) {
+
+            let tex = this.m_materialCtx.getTextureByUrl( "static/assets/particle/explosion/explodeBg_01c.png" );
+            tex.premultiplyAlpha = true;
+            let clipPl: Plane3DEntity = new Plane3DEntity();
+            clipPl.spaceCullMask = SpaceCullingMask.NONE;
+            clipPl.premultiplyAlpha = true;
+            //clipPl.toTransparentBlend(true);
+            clipPl.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+            //clipPl.toBrightnessBlend(false);
+            //clipPl.initializeXOZSquare(200.0, [tex]);
+            clipPl.initializeXOZSquare(50.0 + Math.random() * 200.0, [tex]);
+            clipPl.setRotationXYZ(0.0, Math.random() * 400.0, 0.0);
+            //this.m_currPos.setXYZ(0.0, -180.0, 0.0);
+            this.m_currPos.setXYZ(Math.random() * 400.0 - 200.0, -180.0, Math.random() * 400.0 - 200.0);
+            clipPl.setPosition(this.m_currPos);
+            (clipPl.getMaterial() as any).setRGB3f(Math.random() * 0.7, Math.random() * 0.7, Math.random() * 0.7);
+            (clipPl.getMaterial() as any).setAlpha(0.7);
+            this.m_engine.rscene.addEntity(clipPl, 4);
+            this.m_clips.push(clipPl);
+        }
         /*
         if(this.m_currDisp == null) {
 
@@ -553,7 +557,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_materialCtx.run();
         this.m_engine.run();
 
-        if(this.m_clips.length > 0) {
+        if(this.m_viewTexMaker != null && this.m_clips.length > 0) {
             let clipsBoo: boolean = false;
             for(let i: number = 0; i < this.m_clips.length; ++i) {
                 if(this.m_clips[i].isInRendererProcess()) {

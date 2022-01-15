@@ -79,6 +79,7 @@ class ROVertexRes {
                 this.m_wholeStride += shdp.getLocationSizeByIndex(i) * 4;
                 this.m_typeList[i] = (shdp.getLocationTypeByIndex(i));
             }
+            console.log("XXX this.m_typeList: ",this.m_typeList);
         }
     }
     private uploadSeparated(rc: IROVtxBuilder, shdp: IVtxShdCtr): void {

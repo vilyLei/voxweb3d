@@ -276,10 +276,13 @@ export default class MaterialBase implements IRenderMaterial {
     }
     getBufSortFormat(): number {
         //trace("null != m_shdData: "+(null != m_shdData));
-        if (null != this.m_shdData) {
-            return this.m_shdData.getLayoutBit();
-        }
-        return 0x0;
+        return this.m_shdData != null ? this.m_shdData.getLayoutBit() : 0x0;
+    }
+    getBufTypeList(): number[] {
+        return this.m_shdData != null ? this.m_shdData.getLocationTypes() : null;
+    }
+    getBufSizeList(): number[] {        
+        return this.m_shdData != null ? this.m_shdData.getAttriSizeList() : null;
     }
     private m_attachCount: number = 0;
     __$attachThis(): void {

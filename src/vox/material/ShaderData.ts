@@ -42,6 +42,7 @@ export default class ShaderData implements IShaderData {
     private m_aLocationTypes: number[] = null;
     private m_uniformDict: Map<string, UniformLine> = new Map();
 
+    private m_layoutTypes: number[] = null;
     private m_haveCommonUniform: boolean = false;
     private m_layoutBit: number = 0x0;
     private m_mid: number = 0x0;
@@ -53,6 +54,9 @@ export default class ShaderData implements IShaderData {
     }
     getFSCodeStr(): string {
         return this.m_fshdCode;
+    }
+    getLocationTypes(): number[] {
+        return this.m_layoutTypes;
     }
     getLayoutBit(): number {
         return this.m_layoutBit;
@@ -79,8 +83,8 @@ export default class ShaderData implements IShaderData {
             }
         }
         // 直接使用 preCompileInfo 中的 uniform / attribute 等等关键信息
-        if(this.preCompileInfo != null) {
-            
+        if (this.preCompileInfo != null) {
+
         }
         this.parseCode(vshdsrc, fshdSrc);
         let pattributes: AttributeLine[] = ShaderData.s_codeParser.attributes;
@@ -93,13 +97,15 @@ export default class ShaderData implements IShaderData {
 
         this.m_layoutBit = 0x0;
         let locationsTotal: number = 0;
+        let layoutTypes: number[] = this.m_layoutTypes = [];
         while (i < len) {
             attri = pattributes[i];
             if (attri != null) {
                 this.m_attriNSList.push(attri.name);
                 this.m_attriSizeList.push(attri.typeSize);
                 locationsTotal += 1;
-                switch (VtxBufConst.GetVBufTypeByNS(attri.name)) {
+                let vbufType = VtxBufConst.GetVBufTypeByNS(attri.name);
+                switch (vbufType) {
                     case VtxBufConst.VBUF_VS:
                         //mid += mid * 131 + 1;
                         this.m_layoutBit |= BitConst.BIT_ONE_0;
@@ -143,20 +149,24 @@ export default class ShaderData implements IShaderData {
                         break;
                     default:
                         locationsTotal -= 1;
+                        vbufType = 0;
                         break;
+                }
+                if (vbufType > 0) {
+                    layoutTypes.push(VtxBufConst.GetVBufAttributeTypeByVBufType(vbufType));
                 }
             }
             ++i;
         }
         let mid = (locationsTotal << 11) + this.m_layoutBit;
-        if(!ShaderData.s_midMap.has( mid )) {
-            ShaderData.s_midMap.set( mid, ShaderData.s_mid);
-            ShaderData.s_mid ++;
+        if (!ShaderData.s_midMap.has(mid)) {
+            ShaderData.s_midMap.set(mid, ShaderData.s_mid);
+            ShaderData.s_mid++;
         }
-        this.m_mid = ShaderData.s_midMap.get( mid );
+        this.m_mid = ShaderData.s_midMap.get(mid);
         // console.log("shader data, this.m_mid: ",this.m_mid, "locationsTotal: ",locationsTotal);
         this.m_texTotal = ShaderData.s_codeParser.texTotal;
-        
+
         this.m_useTex = this.m_texTotal > 0;
         if (this.m_useTex) {
             this.m_texUniformNames = ShaderData.s_codeParser.texUniformNameListStr.split(",");
