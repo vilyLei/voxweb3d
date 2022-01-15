@@ -310,12 +310,10 @@ class RenderProxy implements IRenderProxy{
     getGLVersion(): number {
         return this.m_WEBGL_VER;
     }
-    
-    initialize(param: RendererParam, camera: IRenderCamera, stage: IRenderStage3D, proxyParam: RenderProxyParam): void {
-        if (this.m_rc != null) {
-            return;
-        }
-        this.m_camera = camera;
+    private buildCameraParam(): void {
+
+        let camera = this.m_camera;
+
         if (camera.matUProbe == null) {
             camera.matUProbe = new ShaderUniformProbe();
             camera.matUProbe.bindSlotAt(this.m_uid);
@@ -340,7 +338,13 @@ class RenderProxy implements IRenderProxy{
             camera.ucameraPosProbe.addVec4Data(
                 new Float32Array([500.0,500.0,500.0,1.0]),
             1);
+        }        
+    }
+    initialize(param: RendererParam, camera: IRenderCamera, stage: IRenderStage3D, proxyParam: RenderProxyParam): void {
+        if (this.m_rc != null) {
+            return;
         }
+        this.m_camera = camera;
         
         let posV3: Vector3D = param.camPosition;
         let lookAtPosV3: Vector3D = param.camLookAtPos;
@@ -370,10 +374,10 @@ class RenderProxy implements IRenderProxy{
         selfT.MaterialUpdater = proxyParam.materialUpdater;
         selfT.VtxBufUpdater = proxyParam.vtxBufUpdater;
         selfT.uniformContext = proxyParam.uniformContext;
-
         RendererState.Initialize();
         RendererState.Rstate.setRenderContext( this.m_adapterContext );
 
+        this.buildCameraParam();
         
         let rect = this.m_viewPortRect;
         rect.setSize(this.m_adapterContext.getRCanvasWidth(), this.m_adapterContext.getRCanvasHeight());

@@ -9,7 +9,6 @@ import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import IShaderUniform from "../../vox/material/IShaderUniform";
 import{IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
 import{IShaderUniformContext} from "../../vox/material/IShaderUniformContext";
-import RenderProxy from "../render/RenderProxy";
 
 class GlobalUniformParamBase {
 

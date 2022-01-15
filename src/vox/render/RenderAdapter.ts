@@ -103,8 +103,7 @@ class RenderAdapter implements IRenderAdapter {
 
 				let size = this.m_viewPortRect;
 				let self: any = this;
-				self.uViewProbe = uViewProbe;//new UniformVec4Probe(1);
-				// this.uViewProbe.bindSlotAt(this.m_rcuid);
+				self.uViewProbe = uViewProbe;
 				this.uViewProbe.setVec4DataWithArr4([size.x, size.y, size.width, size.height]);
 			}
 		}
