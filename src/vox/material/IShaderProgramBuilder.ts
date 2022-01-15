@@ -7,7 +7,7 @@
 /***************************************************************************/
 
 import IShaderData from "../../vox/material/IShaderData";
-import ShdProgram from "../../vox/material/ShdProgram";
+import IShdProgram from "../../vox/material/IShdProgram";
 
 interface IShaderProgramBuilder {
     
@@ -18,10 +18,10 @@ interface IShaderProgramBuilder {
     /**
      * 这里的program生成过程已经能适配多GPU context的情况了
      */
-    create(shdData: IShaderData): ShdProgram;
-    findShdProgramByUid(uid: number): ShdProgram;
-    findShdProgram(unique_name_str: string): ShdProgram;
-    findShdProgramByShdData(shdData: IShaderData): ShdProgram;
+    create(shdData: IShaderData): IShdProgram;
+    findShdProgramByUid(uid: number): IShdProgram;
+    findShdProgram(unique_name_str: string): IShdProgram;
+    findShdProgramByShdData(shdData: IShaderData): IShdProgram;
     hasUid(resUid: number): boolean;
     getTotal(): number;
     containsUid(uid: number): boolean;

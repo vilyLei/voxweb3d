@@ -13,7 +13,7 @@ import ROVtxBuilder from "../../vox/render/ROVtxBuilder";
 import UniformConst from "../../vox/material/UniformConst";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import ShaderUniform from "../../vox/material/ShaderUniform";
-import ShdProgram from "../../vox/material/ShdProgram";
+import IShdProgram from "../../vox/material/IShdProgram";
 import IRenderTexture from "../../vox/render/IRenderTexture";
 import { TextureRenderObj, EmptyTexRenderObj } from '../../vox/render/TextureRenderObj';
 import ShdUniformTool from '../../vox/material/ShdUniformTool';
@@ -123,7 +123,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                 let runit: RPOUnit = disp.__$$runit as RPOUnit;
                 let tro: TextureRenderObj = TextureRenderObj.GetByMid(texRes.getRCUid(), material.__$troMid);
                 if (runit.tro != null && (tro == null || runit.tro.getMid() != tro.getMid())) {
-                    let shdp: ShdProgram = this.m_shader.findShdProgramByShdData(material.getShaderData());
+                    let shdp: IShdProgram = this.m_shader.findShdProgramByShdData(material.getShaderData());
                     if (shdp != null) {
                         if (shdp.getTexTotal() > 0) {
                             if (tro == null) {
@@ -157,8 +157,8 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
             }
         }
     }
-    updateDispMaterial(runit: RPOUnit, disp: IRODisplay): ShdProgram {
-        let shdp: ShdProgram = null;
+    updateDispMaterial(runit: RPOUnit, disp: IRODisplay): IShdProgram {
+        let shdp: IShdProgram = null;
         if (disp.__$ruid >= 0) {
             let rc: RenderProxy = this.m_rc;
             let material: IRenderMaterial = disp.getMaterial();
@@ -272,7 +272,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
         }
     }
     // build vtx gpu data
-    private buildVtxRes(disp: IRODisplay, runit: RPOUnit, shdp: ShdProgram): void {
+    private buildVtxRes(disp: IRODisplay, runit: RPOUnit, shdp: IShdProgram): void {
         if (disp.vbuf != null) {
             let vtxRes: ROVertexResource = this.m_vtxRes;
             runit.ivsIndex = disp.ivsIndex;
@@ -384,7 +384,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
             }
         }
     }
-    private createsharedMList(material: IRenderMaterial, shdp: ShdProgram): ShaderUniform[] {
+    private createsharedMList(material: IRenderMaterial, shdp: IShdProgram): ShaderUniform[] {
         let sharedMList: ShaderUniform[] = material.createSharedUniforms() as ShaderUniform[];
         if (sharedMList == null) {
             // 通过shader uniform data 创建 shared uniform
@@ -408,7 +408,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
         if (material != null) {
             let rc: RenderProxy = this.m_rc;
             let tro: TextureRenderObj = null;
-            let shdp: ShdProgram = null;
+            let shdp: IShdProgram = null;
             let texList: IRenderTexture[] = null;
             let texEnabled: boolean = false;
             if (material.getShaderData() == null) {

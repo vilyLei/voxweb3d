@@ -8,6 +8,7 @@
 
 import RendererDevice from "../../vox/render/RendererDevice";
 import IShaderData from "../../vox/material/IShaderData";
+import IShdProgram from "../../vox/material/IShdProgram";
 import ShdProgram from "../../vox/material/ShdProgram";
 import IShaderUniform from "../../vox/material/IShaderUniform";
 
@@ -30,7 +31,7 @@ class ShaderProgramBuilder {
     /**
      * 这里的program生成过程已经能适配多GPU context的情况了
      */
-    create(shdData: IShaderData): ShdProgram {
+    create(shdData: IShaderData): IShdProgram {
         // console.log("this.Create() begin...");
         let uns: string = shdData.getUniqueShaderName();
         if (this.m_shdDict.has(uns)) { return this.m_shdDict.get(uns); }
@@ -47,14 +48,14 @@ class ShaderProgramBuilder {
         return p;
     }
     
-    findShdProgramByUid(uid: number): ShdProgram {
+    findShdProgramByUid(uid: number): IShdProgram {
         return this.m_shdList[uid];
     }
-    findShdProgram(unique_name_str: string): ShdProgram {
+    findShdProgram(unique_name_str: string): IShdProgram {
         if (this.m_shdDict.has(unique_name_str)) { return this.m_shdDict.get(unique_name_str); }
         return null;
     }
-    findShdProgramByShdData(shdData: IShaderData): ShdProgram {
+    findShdProgramByShdData(shdData: IShaderData): IShdProgram {
         if (shdData != null) {
             if (this.m_shdDict.has(shdData.getUniqueShaderName())) {
                 return this.m_shdDict.get(shdData.getUniqueShaderName());

@@ -6,14 +6,14 @@
 /***************************************************************************/
 
 import UniformConst from "../../../vox/material/UniformConst";
-import ShdProgram from "../../../vox/material/ShdProgram";
+import IShdProgram from "../../../vox/material/IShdProgram";
 import IShaderUniform from "../../../vox/material/IShaderUniform";
 import IUniformBuilder from "../../../vox/material/shared/IUniformBuilder";
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import RenderProxy from "../../../vox/render/RenderProxy";
 
 export default class CameraUniformBuilder implements IUniformBuilder {
-    create(rc: RenderProxy, shdp: ShdProgram): IShaderUniform {
+    create(rc: RenderProxy, shdp: IShdProgram): IShaderUniform {
         let suo: IShaderUniform = null;
         let cam: IRenderCamera = rc.getCamera();
 

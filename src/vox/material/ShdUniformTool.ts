@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import RendererDevice from "../../vox/render/RendererDevice";
-import ShdProgram from "../../vox/material/ShdProgram";
+import IShdProgram from "../../vox/material/IShdProgram";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import IShaderUniform from "../../vox/material/IShaderUniform";
 import { ShaderUniform, ShaderUniformV1, ShaderUniformV2, ShaderMat4Uniform } from "../../vox/material/ShaderUniform";
@@ -25,7 +25,7 @@ class EmptyShdUniform extends ShaderUniform implements IShaderUniform {
     }
     useByLocation(rc: IRenderShader, type: number, location: any, i: number): void {
     }
-    useByShd(rc: IRenderShader, shd: ShdProgram): void {
+    useByShd(rc: IRenderShader, shd: IShdProgram): void {
     }
     updateData(): void {
     }
@@ -93,7 +93,7 @@ export default class ShdUniformTool {
             this.m_uniformDict.delete(builderNS);
         }
     }
-    buildShared(guniforms: ShaderUniform[], rc: RenderProxy, shdp: ShdProgram): ShaderUniform {
+    buildShared(guniforms: ShaderUniform[], rc: RenderProxy, shdp: IShdProgram): ShaderUniform {
         let guniform: ShaderUniform;
         let headU: ShaderUniform = null;
         let prevU: ShaderUniform = null;
@@ -162,7 +162,7 @@ export default class ShdUniformTool {
         }
         return guniform;
     }
-    buildLocalFromTransformV(transformData: Float32Array, shdp: ShdProgram): IShaderUniform {
+    buildLocalFromTransformV(transformData: Float32Array, shdp: IShdProgram): IShaderUniform {
         if (transformData != null) {
             let shdUniform: ShaderUniform;
             shdUniform = new ShaderMat4Uniform();
@@ -182,7 +182,7 @@ export default class ShdUniformTool {
         }
         return this.m_emptyUniform;
     }
-    updateLocalFromTransformV(dstUniform: IShaderUniform, transformData: Float32Array, shdp: ShdProgram): IShaderUniform {
+    updateLocalFromTransformV(dstUniform: IShaderUniform, transformData: Float32Array, shdp: IShdProgram): IShaderUniform {
         if (transformData != null) {
             let shdUniform: ShaderUniform;
             let srcUniform: ShaderMat4Uniform = dstUniform as ShaderMat4Uniform;
@@ -210,7 +210,7 @@ export default class ShdUniformTool {
         }
         return this.m_emptyUniform;
     }
-    buildLocalFromData(uniformData: ShaderUniformData, shdp: ShdProgram): IShaderUniform {
+    buildLocalFromData(uniformData: ShaderUniformData, shdp: IShdProgram): IShaderUniform {
         if (uniformData != null) {
             // collect all uniform data,create a new runned uniform
             let shdUniform: ShaderUniform;
@@ -250,7 +250,7 @@ export default class ShdUniformTool {
         }
         return EmptyShdUniform.EmptyUniform;
     }
-    buildLocal(sUniform: ShaderUniform, shdp: ShdProgram): ShaderUniform {
+    buildLocal(sUniform: ShaderUniform, shdp: IShdProgram): ShaderUniform {
         // collect all uniform data,create a new runned uniform
         let shdUniform: ShaderUniform = new ShaderUniform();
         shdUniform.uniformNameList = [];

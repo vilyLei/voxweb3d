@@ -9,7 +9,7 @@
 import RendererDevice from "../../vox/render/RendererDevice";
 import MaterialConst from "../../vox/material/MaterialConst";
 import IShaderData from "../../vox/material/IShaderData";
-import ShdProgram from "../../vox/material/ShdProgram";
+import IShdProgram from "../../vox/material/IShdProgram";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import IRenderShader from "../../vox/render/IRenderShader";
 import IRenderResource from "../../vox/render/IRenderResource";
@@ -22,14 +22,14 @@ import { IShaderProgramBuilder } from "../../vox/material/IShaderProgramBuilder"
  */
 export default class RenderShader implements IRenderShader, IRenderResource {
     
-    // private m_shdDict: Map<string, ShdProgram> = new Map();
-    // private m_shdList: ShdProgram[] = [];
+    // private m_shdDict: Map<string, IShdProgram> = new Map();
+    // private m_shdList: IShdProgram[] = [];
     // private m_shdListLen: number = 0;
     private m_sharedUniformList: IShaderUniform[] = [];
     private m_unlocked: boolean = true;
     private m_texUnlocked: boolean = false;
     private m_preuid: number = -1;
-    private m_currShd: ShdProgram = null;
+    private m_currShd: IShdProgram = null;
     private m_fragOutputTotal: number = 1;
     private m_rcuid: number = -1;
     private m_rc: any = null;
@@ -93,11 +93,11 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     // /**
     //  * 这里的program生成过程已经能适配多GPU context的情况了
     //  */
-    // create(shdData: IShaderData): ShdProgram {
+    // create(shdData: IShaderData): IShdProgram {
     //     // console.log("this.Create() begin...");
     //     let uns: string = shdData.getUniqueShaderName();
     //     if (this.m_shdDict.has(uns)) { return this.m_shdDict.get(uns); }
-    //     let p: ShdProgram = new ShdProgram(this.m_shdListLen);
+    //     let p: IShdProgram = new IShdProgram(this.m_shdListLen);
     //     p.setShdData(shdData);
     //     this.m_shdList[p.getUid()] = p;
     //     this.m_sharedUniformList[p.getUid()] = null;
@@ -105,20 +105,20 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     //     this.m_shdDict.set(uns, p);
 
     //     if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
-    //         console.log("this.Create() a new ShdProgram: ", p.toString());
+    //         console.log("this.Create() a new IShdProgram: ", p.toString());
     //     }
     //     return p;
     // }
-    findShdProgramByUid(uid: number): ShdProgram {
+    findShdProgramByUid(uid: number): IShdProgram {
         // return this.m_shdList[uid];
         return this.m_shdProgramBuilder.findShdProgramByUid( uid );
     }
-    findShdProgram(unique_name_str: string): ShdProgram {
+    findShdProgram(unique_name_str: string): IShdProgram {
         // if (this.m_shdDict.has(unique_name_str)) { return this.m_shdDict.get(unique_name_str); }
         // return null;
         return this.m_shdProgramBuilder.findShdProgram( unique_name_str );
     }
-    findShdProgramByShdData(shdData: IShaderData): ShdProgram {
+    findShdProgramByShdData(shdData: IShaderData): IShdProgram {
         // if (shdData != null) {
         //     if (this.m_shdDict.has(shdData.getUniqueShaderName())) {
         //         return this.m_shdDict.get(shdData.getUniqueShaderName());
@@ -149,10 +149,10 @@ export default class RenderShader implements IRenderShader, IRenderResource {
         this.m_texUnlocked = false;
     }
 
-    setSharedUniformByShd(shd: ShdProgram, uniform: IShaderUniform): void {
+    setSharedUniformByShd(shd: IShdProgram, uniform: IShaderUniform): void {
         this.m_sharedUniformList[shd.getUid()] = uniform;
     }
-    getSharedUniformByShd(shd: ShdProgram): IShaderUniform {
+    getSharedUniformByShd(shd: IShdProgram): IShaderUniform {
         return this.m_sharedUniformList[shd.getUid()];
     }
     getCurrFragOutputTotal(): number {
@@ -177,8 +177,8 @@ export default class RenderShader implements IRenderShader, IRenderResource {
             if (this.m_preuid != resUid) {
                 this.m_preuid = resUid;
 
-                //let shd: ShdProgram = this.m_shdList[resUid];
-                let shd: ShdProgram = this.m_shdProgramBuilder.findShdProgramByUid(resUid);
+                //let shd: IShdProgram = this.m_shdList[resUid];
+                let shd: IShdProgram = this.m_shdProgramBuilder.findShdProgramByUid(resUid);
                 this.m_fragOutputTotal = shd.getFragOutputTotal();
                 if (this.m_fragOutputTotal != this.getActiveAttachmentTotal()) {
                     //if(RendererDevice.SHOWLOG_ENABLED) {
@@ -226,7 +226,7 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     getGpuBuffer(resUid: number): any {
         return null;
     }
-    getCurrentShd(): ShdProgram {
+    getCurrentShd(): IShdProgram {
         return this.m_currShd;
     }
     getCurrentShdUid(): number {

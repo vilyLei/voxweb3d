@@ -6,7 +6,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-export default interface IShdProgram {
+import IVtxShdCtr from "../../vox/material/IVtxShdCtr";
+
+export default interface IShdProgram extends IVtxShdCtr{
     getUid(): number;
     getTexTotal(): number;
     useTexLocation(): void;
@@ -16,4 +18,13 @@ export default interface IShdProgram {
     getUniformTypeNameByNS(ns: string): string;
     hasUniformByName(ns: string): boolean;
     getUniformLengthByNS(ns: string): number;
+    getUniformTypeByNS(ns: string): number;
+
+    getFragOutputTotal(): number;
+    getUniqueShaderName(): string;
+    /**
+     * @returns return current gpu shader  program
+     */
+     getGPUProgram(): any;
+     upload(gl: any, rcuid: number): void;
 }
