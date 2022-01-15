@@ -22,6 +22,9 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
     private m_ivs: Uint16Array | Uint32Array = null;
     private m_bufDataUsage: number = 0;
     private m_ibufStep: number = 2;// 2 or 4
+    private m_bufTypeList: number[] = null;
+    private m_bufSizeList: number[] = null;
+
     layoutBit: number = 0x0;
     vertexVer: number = 0;
     indicesVer: number = 0;
@@ -40,20 +43,34 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
             }
         }
     }
+    private setBufDataUsage(bufDataUsage: number): void {
+        this.m_bufDataUsage = bufDataUsage;
+    }
     getUid(): number {
         return this.m_uid;
     }
     getType(): number {
         return this.m_vtxBuf.getType();
     }
+    
+    setBufTypeList(list: number[]): void {
+        this.m_bufTypeList = list;
+    }
+    setBufSizeList(list: number[]): void {
+        this.m_bufSizeList = list;
+    }
+    
+    getBufTypeList(): number[] {
+        return this.m_bufTypeList;
+    }
+    getBufSizeList(): number[] {
+        return this.m_bufSizeList;
+    }
     getIBufStep(): number {
         return this.m_ibufStep;
     }
     getBufDataUsage(): number {
         return this.m_bufDataUsage;
-    }
-    private setBufDataUsage(bufDataUsage: number): void {
-        this.m_bufDataUsage = bufDataUsage;
     }
     getBuffersTotal(): number {
         return this.m_vtxBuf.getBuffersTotal();
@@ -127,6 +144,8 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
         this.m_vtxBuf = null;
         this.m_ivs = null;
         this.bufData = null;
+        this.m_bufTypeList = null;
+        this.m_bufSizeList = null;
     }
     toString(): string {
         return "ROVertexBuffer(uid = " + this.m_uid + ")";

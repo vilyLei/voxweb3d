@@ -13,6 +13,7 @@ interface IROVtxBuf {
     indicesVer: number;
     version: number;
     bufData: VtxBufData;
+
     getIvsData(): Uint16Array | Uint32Array;
     getUid(): number;
     getType(): number;
@@ -21,5 +22,8 @@ interface IROVtxBuf {
     getAttribsTotal(): number;
     getF32DataAt(index: number): Float32Array;
     getIBufStep(): number;
+    
+    getBufTypeList(): number[];
+    getBufSizeList(): number[];
 }
 export default IROVtxBuf;
