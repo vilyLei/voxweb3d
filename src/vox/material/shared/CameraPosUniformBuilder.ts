@@ -15,16 +15,11 @@ import RenderProxy from "../../../vox/render/RenderProxy";
 
 export default class CameraPosUniformBuilder implements IUniformBuilder {
     create(rc: RenderProxy, shdp: IShdProgram): IShaderUniform {
-        let suo: IShaderUniform = null;
+        
         let param: IUniformParam = UniformConst.CameraPosParam;
-        if (shdp.hasUniformByName(param.name)) {
-            suo = rc.uniformContext.createShaderGlobalUniformFromProbe(rc.getCamera().ucameraPosProbe, param.name, [param.name]);
-            // suo = new ShaderGlobalUniform();
-            // suo.uns = param.name;
-            // suo.uniformNameList = [param.name];
-            // suo.copyDataFromProbe(rc.getCamera().ucameraPosProbe);
-        }
-        return suo;
+        if (shdp.hasUniformByName(param.name))
+            return rc.uniformContext.createShaderGlobalUniformFromProbe(rc.getCamera().ucameraPosProbe, param.name, [param.name]);
+        return null;
     }
     getIDNS(): string {
         return "CameraPosUniformBuilder";

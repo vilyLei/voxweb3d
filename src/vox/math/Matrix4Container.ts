@@ -17,7 +17,7 @@ import MathConst from "../../vox/math/MathConst";
 
 export default class Matrix4Container
 {
-    private static __s_uid:number = 0;
+    private static s_uid:number = 0;
     private static s_initData:Float32Array = new Float32Array([
         1.0,0.0,0.0,0.0,
         0.0,1.0,0.0,0.0,
@@ -51,7 +51,7 @@ export default class Matrix4Container
         {
             mat = Matrix4Pool.GetMatrix();
         }
-        this.m_uid = Matrix4Container.__s_uid++;
+        this.m_uid = Matrix4Container.s_uid++;
         this.m_fs32.set(Matrix4Container.s_initData,0);
         this.m_localMat = this.m_omat = mat;
     }

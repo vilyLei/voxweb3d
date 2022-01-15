@@ -10,7 +10,7 @@ import ShdProgram from "../../vox/material/ShdProgram";
 
 export default class ShaderUBO
 {
-    private static __s_uid:number = 0;
+    private static s_uid:number = 0;
     private m_uid:number = -1;
     private m_uboNS:string = "";
     private m_bindingIndex:number = -1;
@@ -18,7 +18,7 @@ export default class ShaderUBO
     private m_uboBuf:any = null;
     constructor()
     {
-        this.m_uid = ShaderUBO.__s_uid++
+        this.m_uid = ShaderUBO.s_uid++
     }
     private m_dataArray:Float32Array = null;
     private m_changed:boolean = true;

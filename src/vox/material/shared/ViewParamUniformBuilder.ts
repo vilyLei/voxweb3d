@@ -13,16 +13,13 @@ import IUniformBuilder from "../../../vox/material/shared/IUniformBuilder";
 import RenderProxy from "../../../vox/render/RenderProxy";
 
 export default class ViewParamUniformBuilder implements IUniformBuilder {
+    
     create(rc: RenderProxy, shdp: IShdProgram): IShaderUniform {
-        let suo: IShaderUniform = null;
+        
         let param: IUniformParam = UniformConst.ViewportParam;
-        if (shdp.hasUniformByName(param.name)) {
-            suo = rc.uniformContext.createShaderGlobalUniformFromProbe((rc.getRenderAdapter() as any).uViewProbe, param.name, [param.name]);
-            // suo.uns = param.name;
-            // suo.uniformNameList = [param.name];
-            // suo.copyDataFromProbe((rc.getRenderAdapter() as any).uViewProbe);
-        }
-        return suo;
+        if (shdp.hasUniformByName(param.name))
+            return rc.uniformContext.createShaderGlobalUniformFromProbe((rc.getRenderAdapter() as any).uViewProbe, param.name, [param.name]);
+        return null;
     }
     getIDNS(): string {
         return "ViewParamUniformBuilder";

@@ -45,7 +45,7 @@ import Color4 from "../material/Color4";
 import { IRendererSceneAccessor } from "./IRendererSceneAccessor";
 
 export default class RendererSubScene implements IRenderer, IRendererScene {
-    private static __s_uid: number = 0;
+    private static s_uid: number = 0;
     private m_uid: number = -1;
     private m_adapter: IRenderAdapter = null;
     private m_renderProxy: RenderProxy = null;
@@ -86,7 +86,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
         this.m_parent = parent;
         this.m_renderer = renderer;
         this.m_shader = renderer.getDataBuilder().getRenderShader();
-        this.m_uid = 1024 + RendererSubScene.__s_uid++;
+        this.m_uid = 1024 + RendererSubScene.s_uid++;
     }
     enable(): void {
         this.m_enabled = true;

@@ -22,9 +22,6 @@ import { IShaderProgramBuilder } from "../../vox/material/IShaderProgramBuilder"
  */
 export default class RenderShader implements IRenderShader, IRenderResource {
     
-    // private m_shdDict: Map<string, IShdProgram> = new Map();
-    // private m_shdList: IShdProgram[] = [];
-    // private m_shdListLen: number = 0;
     private m_sharedUniformList: IShaderUniform[] = [];
     private m_unlocked: boolean = true;
     private m_texUnlocked: boolean = false;
@@ -90,43 +87,6 @@ export default class RenderShader implements IRenderShader, IRenderResource {
             uniform.use(this);
         }
     }
-    // /**
-    //  * 这里的program生成过程已经能适配多GPU context的情况了
-    //  */
-    // create(shdData: IShaderData): IShdProgram {
-    //     // console.log("this.Create() begin...");
-    //     let uns: string = shdData.getUniqueShaderName();
-    //     if (this.m_shdDict.has(uns)) { return this.m_shdDict.get(uns); }
-    //     let p: IShdProgram = new IShdProgram(this.m_shdListLen);
-    //     p.setShdData(shdData);
-    //     this.m_shdList[p.getUid()] = p;
-    //     this.m_sharedUniformList[p.getUid()] = null;
-    //     ++this.m_shdListLen;
-    //     this.m_shdDict.set(uns, p);
-
-    //     if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
-    //         console.log("this.Create() a new IShdProgram: ", p.toString());
-    //     }
-    //     return p;
-    // }
-    findShdProgramByUid(uid: number): IShdProgram {
-        // return this.m_shdList[uid];
-        return this.m_shdProgramBuilder.findShdProgramByUid( uid );
-    }
-    findShdProgram(unique_name_str: string): IShdProgram {
-        // if (this.m_shdDict.has(unique_name_str)) { return this.m_shdDict.get(unique_name_str); }
-        // return null;
-        return this.m_shdProgramBuilder.findShdProgram( unique_name_str );
-    }
-    findShdProgramByShdData(shdData: IShaderData): IShdProgram {
-        // if (shdData != null) {
-        //     if (this.m_shdDict.has(shdData.getUniqueShaderName())) {
-        //         return this.m_shdDict.get(shdData.getUniqueShaderName());
-        //     }
-        // }
-        // return null;
-        return this.m_shdProgramBuilder.findShdProgramByShdData( shdData );
-    }
     unlock(): void {
         this.m_unlocked = true;
         this.__$globalUniform = null;
@@ -137,7 +97,6 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     lock(): void {
         this.m_unlocked = false;
     }
-
 
     textureUnlock(): void {
         this.m_texUnlocked = true;
@@ -283,12 +242,7 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     useUniformV2(ult: any, type: number, f32Arr: Float32Array, dataSize: number, offset: number): void {
         switch (type) {
             case MaterialConst.SHADER_MAT4:
-                if (offset < 1) {
-                    this.m_rc.uniformMatrix4fv(ult, false, f32Arr);
-                }
-                else {
-                    this.m_rc.uniformMatrix4fv(ult, false, f32Arr, offset, dataSize * 16);
-                }
+                this.m_rc.uniformMatrix4fv(ult, false, f32Arr, offset, dataSize * 16);
                 break;
             case MaterialConst.SHADER_MAT3:
                 this.m_rc.uniformMatrix3fv(ult, false, f32Arr, 0, dataSize * 9);

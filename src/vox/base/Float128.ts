@@ -27,7 +27,7 @@ export namespace vox
 				1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0,
 				1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0,1.0, 1.0, 1.0, 1.0
 			]);
-			private static __s_uid:number = 0;
+			private static s_uid:number = 0;
 			private m_uid:number = -1;
 			private m_index:number = 0;
 			private m_fs32:Float32Array = null;
@@ -37,7 +37,7 @@ export namespace vox
 
 			constructor(pfs32:Float32Array = null,index:number = 0)
 			{
-				this.m_uid = Float128.__s_uid++;
+				this.m_uid = Float128.s_uid++;
 				this.m_index = index;
 				if(pfs32 != null)
 				{

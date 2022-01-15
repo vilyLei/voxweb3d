@@ -6,9 +6,9 @@
 /***************************************************************************/
 export default class VtxBufID
 {
-    private static __s_uid:number = 0;
+    private static s_uid:number = 0;
     static CreateNewID():number
     {
-        return VtxBufID.__s_uid++;
+        return VtxBufID.s_uid++;
     }
 }
