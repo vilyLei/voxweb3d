@@ -5,10 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
+// import {UniformDataSlot} from "../../vox/material/UniformDataSlot";
 /**
  * renderer rendering runtime uniform data operations
  */
 export default interface IRenderShader {
+    // udSlot: UniformDataSlot;
     /**
      * @returns return system gpu context
      */

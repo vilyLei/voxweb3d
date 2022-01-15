@@ -7,21 +7,22 @@
 
 import UniformConst from "../../../vox/material/UniformConst";
 import ShdProgram from "../../../vox/material/ShdProgram";
-import ShaderUniform from "../../../vox/material/ShaderUniform";
+import IShaderUniform from "../../../vox/material/IShaderUniform";
 import IUniformParam from "../../../vox/material/IUniformParam";
-import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
+// import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import IUniformBuilder from "../../../vox/material/shared/IUniformBuilder";
 import RenderProxy from "../../../vox/render/RenderProxy";
 
 export default class FrustumUniformBuilder implements IUniformBuilder {
-    create(rc: RenderProxy, shdp: ShdProgram): ShaderUniform {
-        let suo: ShaderGlobalUniform = null;
+    create(rc: RenderProxy, shdp: ShdProgram): IShaderUniform {
+        let suo: IShaderUniform = null;
         let param: IUniformParam = UniformConst.FrustumParam;
         if (shdp.hasUniformByName(param.name)) {
-            suo = new ShaderGlobalUniform();
-            suo.uns = param.name;
-            suo.uniformNameList = [param.name];
-            suo.copyDataFromProbe(rc.getCamera().ufrustumProbe);
+            // suo = new ShaderGlobalUniform();
+            suo = rc.uniformContext.createShaderGlobalUniformFromProbe(rc.getCamera().ufrustumProbe, param.name, [param.name]);
+            // suo.uns = param.name;
+            // suo.uniformNameList = [param.name];
+            // suo.copyDataFromProbe(rc.getCamera().ufrustumProbe);
         }
         return suo;
     }

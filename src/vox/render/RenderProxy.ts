@@ -315,14 +315,13 @@ class RenderProxy implements IRenderProxy{
         let camera = this.m_camera;
 
         if (camera.matUProbe == null) {
-            camera.matUProbe = new ShaderUniformProbe();
-            camera.matUProbe.bindSlotAt(this.m_uid);
+            camera.matUProbe = this.uniformContext.createShaderUniformProbe();
             camera.matUProbe.addMat4Data(new Float32Array(16), 1);
             camera.matUProbe.addMat4Data(new Float32Array(16), 1);
         }
         if (camera.ufrustumProbe == null) {
-            camera.ufrustumProbe = new ShaderUniformProbe();
-            camera.ufrustumProbe.bindSlotAt(this.m_uid);
+            // camera.ufrustumProbe = new ShaderUniformProbe();
+            camera.ufrustumProbe = this.uniformContext.createShaderUniformProbe();
             camera.ufrustumProbe.addVec4Data(
                 new Float32Array([
                 camera.getZNear(),
@@ -333,8 +332,9 @@ class RenderProxy implements IRenderProxy{
             1);
         }
         if (camera.ucameraPosProbe == null) {
-            camera.ucameraPosProbe = new ShaderUniformProbe();
-            camera.ucameraPosProbe.bindSlotAt(this.m_uid);
+            // camera.ucameraPosProbe = new ShaderUniformProbe();
+            camera.ucameraPosProbe = this.uniformContext.createShaderUniformProbe();
+            // camera.ucameraPosProbe.bindSlotAt(this.m_uid);
             camera.ucameraPosProbe.addVec4Data(
                 new Float32Array([500.0,500.0,500.0,1.0]),
             1);

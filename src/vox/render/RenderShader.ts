@@ -20,6 +20,7 @@ import IShaderUniform from "../../vox/material/IShaderUniform";
  * renderer runtime material shader resource manager
  */
 export default class RenderShader implements IRenderShader, IRenderResource {
+    
     private m_shdDict: Map<string, ShdProgram> = new Map();
     private m_shdList: ShdProgram[] = [];
     private m_shdListLen: number = 0;

@@ -95,10 +95,10 @@ export namespace voxvat
                 {
                     if(ParalLightData.s_uProbe == null)
                     {
-                        ParalLightData.s_uProbe = new ShaderUniformProbe();
-                        ParalLightData.s_uProbe.bindSlotAt( 0 );
-                        ParalLightData.s_uProbe.addVec4Data(ParalLightData.s_lightPosData, 16);
-                        ParalLightData.s_uProbe.addVec4Data(ParalLightData.s_lightParamData, 33);
+                        // ParalLightData.s_uProbe = new ShaderUniformProbe();
+                        // ParalLightData.s_uProbe.bindSlotAt( 0 );
+                        // ParalLightData.s_uProbe.addVec4Data(ParalLightData.s_lightPosData, 16);
+                        // ParalLightData.s_uProbe.addVec4Data(ParalLightData.s_lightParamData, 33);
                     }
                     ParalLightData.s_uProbe.update();
                 }

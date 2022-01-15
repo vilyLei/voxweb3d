@@ -7,21 +7,20 @@
 
 import UniformConst from "../../../vox/material/UniformConst";
 import ShdProgram from "../../../vox/material/ShdProgram";
-import ShaderUniform from "../../../vox/material/ShaderUniform";
-import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
+import IShaderUniform from "../../../vox/material/IShaderUniform";
 import IUniformParam from "../../../vox/material/IUniformParam";
 import IUniformBuilder from "../../../vox/material/shared/IUniformBuilder";
 import RenderProxy from "../../../vox/render/RenderProxy";
 
 export default class ViewParamUniformBuilder implements IUniformBuilder {
-    create(rc: RenderProxy, shdp: ShdProgram): ShaderUniform {
-        let suo: ShaderGlobalUniform = null;
+    create(rc: RenderProxy, shdp: ShdProgram): IShaderUniform {
+        let suo: IShaderUniform = null;
         let param: IUniformParam = UniformConst.ViewportParam;
         if (shdp.hasUniformByName(param.name)) {
-            suo = new ShaderGlobalUniform();
-            suo.uns = param.name;
-            suo.uniformNameList = [param.name];
-            suo.copyDataFromProbe((rc.getRenderAdapter() as any).uViewProbe);
+            suo = rc.uniformContext.createShaderGlobalUniformFromProbe((rc.getRenderAdapter() as any).uViewProbe, param.name, [param.name]);
+            // suo.uns = param.name;
+            // suo.uniformNameList = [param.name];
+            // suo.copyDataFromProbe((rc.getRenderAdapter() as any).uViewProbe);
         }
         return suo;
     }

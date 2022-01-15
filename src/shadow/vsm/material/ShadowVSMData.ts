@@ -8,7 +8,6 @@
 import Vector3D from "../../../vox/math/Vector3D";
 import Matrix4 from "../../../vox/math/Matrix4";
 
-import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import CameraBase from "../../../vox/view/CameraBase";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 
@@ -81,11 +80,6 @@ export default class ShadowVSMData extends MaterialPipeBase implements IMaterial
             this.m_params = uniformParam.buildUniformData(this.m_direcMatrix.getLocalFS32());
             this.m_uniformParam = uniformParam;            
         }
-    }
-    getGlobalUinformAt(i: number): ShaderGlobalUniform {
-        let suo: ShaderGlobalUniform = new ShaderGlobalUniform();
-        suo.copyDataFromProbeAt(i, this.m_uniformParam.uProbe);
-        return suo;
     }
     updateShadowCamera(camera: CameraBase): void {
 

@@ -6,7 +6,6 @@
 /***************************************************************************/
 
 import FrameBufferType from "../render/FrameBufferType";
-import UniformDataSlot from "../../vox/material/UniformDataSlot";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import RendererState from "../../vox/render/RendererState";
@@ -284,8 +283,6 @@ class RendererInstanceContext implements IRendererInstanceContext {
 
         if (this.m_adapter == null) {
 
-            UniformDataSlot.Initialize(this.m_renderProxy.getUid());
-            
             this.m_renderProxy.setCameraParam(this.m_cameraFov, this.m_cameraNear, this.m_cameraFar);
             this.m_renderProxy.setWebGLMaxVersion(param.maxWebGLVersion);
             

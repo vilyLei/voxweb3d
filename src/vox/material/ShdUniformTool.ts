@@ -102,7 +102,7 @@ export default class ShdUniformTool {
         let len: number = this.m_buildersTot;
         let puo: ShaderUniform = null;
         for (; i < len; ++i) {
-            puo = builders[i].create(rc, shdp);
+            puo = builders[i].create(rc, shdp) as ShaderUniform;
             if (puo != null) {
                 if (prevU != null) {
                     prevU.next = puo;

@@ -5,8 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
+import { UniformDataSlot } from "../../vox/material/UniformDataSlot";
 import MaterialConst from "../../vox/material/MaterialConst";
-import UniformDataSlot from "../../vox/material/UniformDataSlot";
 import { IShaderUniformProbe } from "../../vox/material/IShaderUniformProbe";
 
 class ShaderUniformProbe implements IShaderUniformProbe {
@@ -28,8 +28,26 @@ class ShaderUniformProbe implements IShaderUniformProbe {
     uniformTypes: number[] = null;
     // array -> [1, 3], the "3" is uniform Array,length is 3
     dataSizeList: number[] = null;
-    constructor() { }
+    constructor(slot: UniformDataSlot) {
+        this.bindSlot( slot );
+    }
 
+    private bindSlot(slot: UniformDataSlot): void {
+        
+        if (this.rst >= 0) {
+            this.reset();
+        }
+        if (this.m_fsList == null) {
+            this.m_fsList = [];
+            this.uniformTypes = [];
+            this.dataSizeList = [];
+        }
+        this.m_slot = slot;
+        this.rst = 1;
+
+        this.m_slotBeginIndex = slot.index;
+        this.m_fsIndex = slot.index;
+    }
     getUid(): number {
         return this.m_uid;
     }
@@ -39,8 +57,11 @@ class ShaderUniformProbe implements IShaderUniformProbe {
     getSlotBeginIndex(): number {
         return this.m_slotBeginIndex;
     }
-    getSlotUid(): number {
-        return this.m_slot.getUid();
+    /**
+     * @returns return renderer context unique id
+     */
+    getRCUid(): number {
+        return this.m_slot.getRCUid();
     }
     getFS32At(i: number): Float32Array {
         return this.m_fsList[i];
@@ -93,22 +114,6 @@ class ShaderUniformProbe implements IShaderUniformProbe {
     }
     isEnabled(): boolean {
         return this.rst >= 0;
-    }
-    bindSlotAt(i: number): void {
-        let slot: UniformDataSlot = UniformDataSlot.GetSlotAt(i);
-        if (this.rst >= 0) {
-            this.reset();
-        }
-        if (this.m_fsList == null) {
-            this.m_fsList = [];
-            this.uniformTypes = [];
-            this.dataSizeList = [];
-        }
-        this.m_slot = slot;
-        this.rst = 1;
-
-        this.m_slotBeginIndex = slot.index;
-        this.m_fsIndex = slot.index;
     }
     update(): void {
         //如果溢出，可能有问题

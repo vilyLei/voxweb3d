@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
+import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 
 class ShaderGlobalUniformData extends ShaderUniformData {
@@ -19,19 +19,19 @@ class ShaderGlobalUniformData extends ShaderUniformData {
     locationIndexList: number[] = null;
     locations: any[] = null;
     rst = 0;
-    copyDataFromProbe(probe: ShaderUniformProbe): void {
+    copyDataFromProbe(probe: IShaderUniformProbe): void {
         this.types = probe.uniformTypes.slice(0);
         this.slotIndex = probe.getSlotBeginIndex();
         this.slotSize = probe.uniformsTotal;
-        this.slotId = probe.getSlotUid();
+        this.slotId = probe.getRCUid();
     }
-    copyDataFromProbeAt(i: number, probe: ShaderUniformProbe): void {
+    copyDataFromProbeAt(i: number, probe: IShaderUniformProbe): void {
         if (this.types == null) {
             this.types = [];
         }
         this.slotIndex = probe.getSlotBeginIndex();
         this.slotSize = probe.uniformsTotal;
-        this.slotId = probe.getSlotUid();
+        this.slotId = probe.getRCUid();
         this.types.push(probe.uniformTypes[i]);
     }
     destroy(): void {

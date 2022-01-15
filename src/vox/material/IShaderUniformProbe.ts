@@ -20,7 +20,11 @@ interface IShaderUniformProbe {
      */
     getSlotBeginIndex(): number;
 
-    getSlotUid(): number;
+    /**
+     * @returns return renderer context unique id
+     */
+    getRCUid(): number;
+    
     getFS32At(i: number): Float32Array;
     setFS32At(fs32: Float32Array, i: number): void;
     setVec4DataAt(index: number, f0: number, f1: number, f2: number, f3: number): void;
@@ -31,7 +35,6 @@ interface IShaderUniformProbe {
 
     addMat4Data(f32: Float32Array, mat4Total: number): void;
     isEnabled(): boolean;
-    bindSlotAt(i: number): void;
     update(): void;
     reset(): void;
     destroy(): void;

@@ -256,10 +256,11 @@ v_VTBNM3 = mMToVTBN3;
                 
                 createSharedUniforms():ShaderGlobalUniform[]
                 {
-                    let headU:ShaderGlobalUniform = new ShaderGlobalUniform();
-                    headU.uniformNameList = ["vV4U_0","fV4U_1"];
-                    headU.copyDataFromProbe(ParalLightData.getUProbe());
-                    return [headU];
+                    // let headU:ShaderGlobalUniform = new ShaderGlobalUniform();
+                    // headU.uniformNameList = ["vV4U_0","fV4U_1"];
+                    // headU.copyDataFromProbe(ParalLightData.getUProbe());
+                    // return [headU];
+                    return null;
                 }
                 createSelfUniformData():ShaderUniformData
                 {
