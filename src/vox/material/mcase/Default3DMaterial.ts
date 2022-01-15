@@ -68,7 +68,7 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
         FragColor0 *= u_color;
     #endif
     #ifdef VOX_USE_NORMAL
-        FragColor0.xyz *= abs(v_nv.xyz);
+        //FragColor0.xyz *= abs(v_nv.xyz);
     #endif
 `
         );

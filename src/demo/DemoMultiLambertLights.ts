@@ -183,9 +183,9 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         // unitPlane.setVisible(false);
         
         pv.y += 2.0;
+        let color = new Color4(1.3,0.8,0.3);
         let material = new Default3DMaterial();
         //material.premultiplyAlpha = tex.premultiplyAlpha;
-        let color = new Color4(1.3,0.8,0.3);
         
         material.pipeTypes = [MaterialPipeType.FOG_EXP2];
         material.setMaterialPipeline(this.m_materialCtx.pipeline);
@@ -193,17 +193,46 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         material.setAlpha(0.6);
         material.setTextureList( [tex] );
         material.setRGB3f(color.r, color.g, color.b);
+
         let entity: DisplayEntity = new DisplayEntity();
         // entity.pipeTypes = [MaterialPipeType.FOG_EXP2];
         // entity.setMaterialPipeline(this.m_materialCtx.pipeline);
         
         entity.setMaterial( material );
-        entity.copyMeshFrom(unitPlane);
+        entity.copyMeshFrom( unitPlane );
         entity.setPosition(pv);
         entity.setScaleXYZ(scaleX, 1.0, scaleZ);
         entity.setRotationXYZ(0.0, Math.random() * 1000.0, 0.0);
         entity.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         this.m_engine.rscene.addEntity(entity, 3);
+
+        let unitBox: Box3DEntity = new Box3DEntity();
+        unitBox.normalEnabled = true;
+        unitBox.initializeCube(1.0, [tex]);
+        //this.m_engine.rscene.addEntity(entity, 0);
+        
+        entity = new DisplayEntity();
+        // entity.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        // entity.setMaterialPipeline(this.m_materialCtx.pipeline);
+        
+        color = new Color4(1.3,0.8,0.3);
+        material = new Default3DMaterial();
+        //material.premultiplyAlpha = tex.premultiplyAlpha;
+        
+        material.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        material.setMaterialPipeline(this.m_materialCtx.pipeline);
+        material.initializeByCodeBuf(true);
+        material.setAlpha(0.6);
+        material.setTextureList( [tex] );
+        material.setRGB3f(color.r, color.g, color.b);
+
+        entity.setMaterial( material );
+        entity.copyMeshFrom( unitBox );
+        entity.setPosition(new Vector3D(100,0.0,-200.0));
+        entity.setScaleXYZ(100,100,100);
+        // entity.setRotationXYZ(0.0, Math.random() * 1000.0, 0.0);
+        // entity.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+        this.m_engine.rscene.addEntity(entity, 0);
 
     }
     private initScene(): void {

@@ -149,7 +149,7 @@ export default class Box3DEntity extends DisplayEntity {
             mesh.normalScale = this.normalScale;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.uvPartsNumber = this.uvPartsNumber;
-            mesh.setBufSortFormat(material.getBufSortFormat());
+            mesh.setVtxBufRenderData( this.getMaterial() );
             mesh.initialize(this.m_minV, this.m_maxV);
             this.setMesh(mesh);
             mesh.setTransformMatrix(null);
