@@ -21,7 +21,7 @@ import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import RendererState from "../../vox/render/RendererState";
 import MeshBase from "../../vox/mesh/MeshBase";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
-import MaterialBase from "../../vox/material/MaterialBase";
+// import IRenderMaterial from "../../vox/material/IRenderMaterial";
 import IRODisplay from "../../vox/display/IRODisplay";
 import RODisplay from "../../vox/display/RODisplay";
 import IRenderEntity from "../../vox/render/IRenderEntity";
@@ -192,7 +192,7 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
     }
     updateTextureList(texList: IRenderTexture[]): void {
         if (this.m_display != null && this.m_display.__$ruid > -1) {
-            let material = this.m_display.getMaterial() as MaterialBase;
+            let material = this.m_display.getMaterial() as IRenderMaterial;
             if (material != null) {
                 material.setTextureList(texList);
                 this.m_texChanged = true;
@@ -201,7 +201,7 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
     }
     updateTextureAt(index: number, tex: IRenderTexture): void {
         if (this.m_display != null && this.m_display.__$ruid > -1) {
-            let material = this.m_display.getMaterial() as MaterialBase;
+            let material = this.m_display.getMaterial() as IRenderMaterial;
             if (material != null) {
                 material.setTextureAt(index, tex);
                 this.m_texChanged = true;
@@ -349,9 +349,9 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
         return this.m_mesh.testRay(rlpv, rltv, outV, boundsHit);
     }
     /**
-     * 只允许在加入渲染器之前设置 MaterialBase 实例
+     * 只允许在加入渲染器之前设置 IRenderMaterial 实例
      */
-    setMaterial(m: MaterialBase): void {
+    setMaterial(m: IRenderMaterial): void {
         if (m != null) {
             if (this.m_display == null) {
                 this.createDisplay();
@@ -372,9 +372,9 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
             }
         }
     }
-    getMaterial(): MaterialBase {
+    getMaterial(): IRenderMaterial {
         if (this.m_display != null) {
-            return this.m_display.getMaterial() as MaterialBase;
+            return this.m_display.getMaterial() as IRenderMaterial;
         }
         return null;
     }
@@ -443,7 +443,7 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
     }
     activeDisplay(): void {
         if (this.m_display != null) {
-            let material: MaterialBase = this.m_display.getMaterial() as MaterialBase;
+            let material: IRenderMaterial = this.m_display.getMaterial() as IRenderMaterial;
             if (material != null && material.getShaderData() == null) {
                 if (material.getCodeBuf() != null) {
                     if (material.getShaderData() == null) {
@@ -457,7 +457,7 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
         }
     }
     // for sub class override
-    protected __activeMesh(material: MaterialBase): void {
+    protected __activeMesh(material: IRenderMaterial): void {
     }
     getUid(): number { return this.m_uid; }
 

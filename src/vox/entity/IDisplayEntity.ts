@@ -9,7 +9,7 @@ import AABB from "../../vox/geom/AABB";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import MeshBase from "../../vox/mesh/MeshBase";
 import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
-import MaterialBase from "../../vox/material/MaterialBase";
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRODisplay from "../../vox/display/IRODisplay";
 
 
@@ -48,10 +48,10 @@ export default interface IDisplayEntity {
      */
     isPolyhedral(): boolean;
     /**
-     * 只允许在加入渲染器之前设置 MaterialBase 实例
+     * 只允许在加入渲染器之前设置 IRenderMaterial 实例
      */
-    setMaterial(m: MaterialBase): void;
-    getMaterial(): MaterialBase;
+    setMaterial(m: IRenderMaterial): void;
+    getMaterial(): IRenderMaterial;
     getDisplay(): IRODisplay;
 
     getUid(): number;

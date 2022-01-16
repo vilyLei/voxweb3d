@@ -10,18 +10,47 @@ import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import IShaderUniform from "../../vox/material/IShaderUniform";
 import IRenderTexture from "../../vox/render/IRenderTexture";
+import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
+import { MaterialPipeType } from "../material/pipeline/MaterialPipeType";
+
 interface IRenderMaterial {
+
     __$troMid: number;
     __$uniform: IShaderUniform;
-    initializeByCodeBuf(textureEnabled: boolean): void;
+    /**
+     * pipes type list for material pipeline
+     */
+    pipeTypes: MaterialPipeType[];
+
+    initializeByRenderer(texEnabled: boolean): void;
+    initializeByCodeBuf(texEnabled: boolean): void;
+    
     getPolygonOffset(): number[];
     createSharedUniforms(): IShaderUniform[];
     createSelfUniformData(): ShaderUniformData;
     createSharedUniformsData(): ShaderUniformData[];
     hasShaderData(): boolean;
     getShaderData(): IShaderData;
-    getTextureList(): IRenderTexture[];
     getCodeBuf(): ShaderCodeBuffer;
+    getShdUniqueName(): string;
+
+    setDepthOffset(offset: number): void;
+
+    getBufSortFormat(): number;
+    getBufTypeList(): number[];
+    getBufSizeList(): number[];
+    /**
+     * set TextuerProxy instances
+     * @param texList [tex0,tex1,...]
+     */
+    setTextureList(texList: IRenderTexture[]): void;
+    setTextureAt(index: number, tex: IRenderTexture): void;
+    getTextureList(): IRenderTexture[];
+    getTextureAt(index: number): IRenderTexture;
+    getTextureTotal(): number;
+    setMaterialPipeline(pipeline: IMaterialPipeline): void;
+    getMaterialPipeline(): IMaterialPipeline;
+
     destroy(): void;
     __$attachThis(): void;
     __$detachThis(): void;

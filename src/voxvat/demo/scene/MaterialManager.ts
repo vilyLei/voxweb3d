@@ -60,7 +60,7 @@ export namespace voxvat
                     if(m != null && MaterialManager.s_selectTarget != null)
                     {
                         let entity:DisplayEntity = MaterialManager.s_selectTarget;
-                        let dispM:MaterialBase = entity.getMaterial();
+                        let dispM:MaterialBase = entity.getMaterial() as MaterialBase;
                         if(dispM != null)
                         {
                             MaterialManager.s_rsc.removeEntity(entity);
@@ -142,7 +142,7 @@ export namespace voxvat
                 {
                     if(MaterialManager.s_selectTarget != null)
                     {
-                        let pm:MaterialBase = MaterialManager.s_selectTarget.getMaterial();
+                        let pm:MaterialBase = MaterialManager.s_selectTarget.getMaterial() as MaterialBase;
                         let m:MaterialBase;
                         
                         if(MaterialManager.s_materialList[i].getShdUniqueName() != pm.getShdUniqueName())
