@@ -21,16 +21,11 @@ import RenderProxy from "../../vox/render/RenderProxy";
 
 class EmptyShdUniform extends ShaderUniform implements IShaderUniform {
     static EmptyUniform: EmptyShdUniform = new EmptyShdUniform();
-    use(rc: IRenderShader): void {
-    }
-    useByLocation(rc: IRenderShader, type: number, location: any, i: number): void {
-    }
-    useByShd(rc: IRenderShader, shd: IShdProgram): void {
-    }
-    updateData(): void {
-    }
-    destroy(): void {
-    }
+    use(rc: IRenderShader): void {}
+    useByLocation(rc: IRenderShader, type: number, location: any, i: number): void {}
+    useByShd(rc: IRenderShader, shd: IShdProgram): void {}
+    updateData(): void {}
+    destroy(): void {}
 }
 
 export default class ShdUniformTool {
@@ -249,34 +244,5 @@ export default class ShdUniformTool {
             return shdUniform;
         }
         return EmptyShdUniform.EmptyUniform;
-    }
-    buildLocal(sUniform: ShaderUniform, shdp: IShdProgram): ShaderUniform {
-        // collect all uniform data,create a new runned uniform
-        let shdUniform: ShaderUniform = new ShaderUniform();
-        shdUniform.uniformNameList = [];
-        shdUniform.types = [];
-        shdUniform.locations = [];
-        shdUniform.dataList = [];
-        shdUniform.dataSizeList = [];
-        shdUniform.uniformSize = 0;
-        let pdata: ShaderUniform = sUniform;
-        let i: number = 0;
-        while (pdata != null) {
-            if (pdata.uniformNameList != null && pdata.locations == null) {
-                shdUniform.uniformSize += pdata.uniformNameList.length;
-                for (i = 0; i < shdUniform.uniformSize; ++i) {
-                    shdUniform.uniformNameList.push(pdata.uniformNameList[i]);
-                    shdUniform.types.push(shdp.getUniformTypeByNS(pdata.uniformNameList[i]));
-                    shdUniform.locations.push(shdp.getUniformLocationByNS(pdata.uniformNameList[i]));
-                    shdUniform.dataList.push(pdata.dataList[i]);
-                    shdUniform.dataSizeList.push(shdp.getUniformLengthByNS(pdata.uniformNameList[i]));
-                }
-                //  console.log("local uniform names: "+shdUniform.uniformNameList);
-                //  console.log("local uniform types: "+shdUniform.types);
-                //  console.log("local uniform locations: "+shdUniform.locations);
-            }
-            pdata = pdata.next;
-        }
-        return shdUniform;
     }
 }

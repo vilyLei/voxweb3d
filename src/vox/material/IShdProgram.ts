@@ -27,4 +27,5 @@ export default interface IShdProgram extends IVtxShdCtr{
      */
      getGPUProgram(): any;
      upload(gl: any, rcuid: number): void;
+     uniformBlockBinding(uniform_block_ns: string, bindingIndex: number): void;
 }
