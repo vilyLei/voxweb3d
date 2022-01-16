@@ -63,6 +63,7 @@ interface IRenderCamera {
     setNearPlaneHeight(value: number): void;
     getFov(): number;
     
+    getWordFrustumVtxArr(): Vector3D[];
     getWordFrustumWAABBCenter(): Vector3D;
     visiTestSphere2(w_cv: Vector3D, radius: number): boolean;
 
@@ -84,6 +85,7 @@ interface IRenderCamera {
 
     setPosition(pos: Vector3D): void;
     getPosition(): Vector3D;
+    getNV(): Vector3D;
     
     getLookAtPosition(): Vector3D;
 }

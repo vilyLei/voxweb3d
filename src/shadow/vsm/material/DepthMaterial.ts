@@ -6,40 +6,29 @@
 /***************************************************************************/
 
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
-import ShaderCodeBuilder from "../../../vox/material/code/ShaderCodeBuilder";
-import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
-import Vector3D from "../../../vox/math/Vector3D";
-import RendererDevice from "../../../vox/render/RendererDevice";
 
-class DepthShaderBuffer extends ShaderCodeBuffer
-{
-    constructor()
-    {
+class DepthShaderBuffer extends ShaderCodeBuffer {
+    
+    private static s_instance: DepthShaderBuffer = new DepthShaderBuffer();
+    private m_uniqueName: string = "";
+
+    constructor() {
         super();
     }
-    private static s_instance:DepthShaderBuffer = new DepthShaderBuffer();
-    private m_uniqueName:string = "";
-    initialize(texEnabled:boolean):void
-    {
+    initialize(texEnabled: boolean): void {
+
         super.initialize(texEnabled);
         //console.log("DepthShaderBuffer::initialize()...,texEnabled: "+texEnabled);
         this.m_uniqueName = "DepthShd";
         this.adaptationShaderVersion = false;
     }
-    private buildThisCode():void
-    {
+    private buildThisCode(): void {
 
-        let coder:ShaderCodeBuilder = this.m_coder;
-        coder.reset();
-        coder.addVertLayout("vec3","a_vs");
-        
+        let coder = this.m_coder;
         coder.addVarying("vec4", "v_pos");
-        coder.addFragOutput("vec4", "FragColor0");
-        
-        coder.useVertSpaceMats(true,true,true);
         coder.addFragFunction(
-`
+            `
 
 const float PackUpscale = 256. / 255.; // fraction -> 0..1 (including 1)
 const float UnpackDownscale = 255. / 256.; // 0..1 -> fraction (excluding 1)
@@ -57,26 +46,25 @@ vec4 packDepthToRGBA( const in float v ) {
 `
         );
     }
-    getFragShaderCode():string
-    {
+    getFragShaderCode(): string {
         this.buildThisCode();
 
         this.m_coder.addFragMainCode(
-`
+            `
 void main() {
     // Higher precision equivalent of gl_FragCoord.z. This assumes depthRange has been left to its default values.
     float fragCoordZ = 0.5 * v_pos[2] / v_pos[3] + 0.5;
     FragColor0 = packDepthToRGBA( fragCoordZ );
 }
 `
-                        );
-        
-        return this.m_coder.buildFragCode();                    
+        );
+
+        return this.m_coder.buildFragCode();
     }
-    getVertShaderCode():string
-    {
+    getVertShaderCode(): string {
+
         this.m_coder.addVertMainCode(
-`
+            `
 void main() {
     vec4 wpos = u_objMat * vec4(a_vs, 1.0);
     vec4 viewPos = u_viewMat * wpos;
@@ -84,39 +72,20 @@ void main() {
     v_pos = gl_Position;
 }
 `
-                        );
+        );
         return this.m_coder.buildVertCode();
 
     }
-    getUniqueShaderName(): string
-    {
-        //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
+    getUniqueShaderName(): string {
         return this.m_uniqueName;
     }
-    toString():string
-    {
-        return "[DepthShaderBuffer()]";
-    }
-    static GetInstance():DepthShaderBuffer
-    {
+    static GetInstance(): DepthShaderBuffer {
         return DepthShaderBuffer.s_instance;
     }
 }
 
-export default class DepthMaterial extends MaterialBase
-{
-    constructor()
-    {
-        super();
-    }
-    
-    getCodeBuf():ShaderCodeBuffer
-    {        
+export default class DepthMaterial extends MaterialBase {
+    getCodeBuf(): ShaderCodeBuffer {
         return DepthShaderBuffer.GetInstance();
-    }
-
-    createSelfUniformData():ShaderUniformData
-    {
-        return null;
     }
 }

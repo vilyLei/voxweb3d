@@ -424,6 +424,9 @@ class Camera implements IRenderCamera{
         return this.m_fovy;
     }
     
+    getWordFrustumVtxArr(): Vector3D[] {
+        return null;
+    }
     getWordFrustumWAABB(): AABB { return this.m_frustumWAABB; }
     getWordFrustumWAABBCenter(): Vector3D { return this.m_frustumWAABB.center; }
     visiTestSphere2(w_cv: Vector3D, radius: number): boolean {

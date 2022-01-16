@@ -172,7 +172,7 @@ export class DemoSSAO3 implements DracoTaskListener {
         let aoMaterial: AOMaterial = new AOMaterial(aoNoise, 9);
         this.m_aoSrcPlane = new ScreenAlignPlaneEntity();
         this.m_aoSrcPlane.setMaterial(aoMaterial);
-        this.m_aoSrcPlane.initialize(-1.0, -1.0, 2.0, 2.0, [this.m_aoPreFBO.getRTTAt(0) as TextureProxy, aoNoise.createNoiseTex(128)]);
+        this.m_aoSrcPlane.initialize(-1.0, -1.0, 2.0, 2.0, [this.m_aoPreFBO.getRTTAt(0), aoNoise.createNoiseTex(128)]);
         //this.m_rscene.addEntity(this.m_aoSrcPlane, 1);
 
         this.m_aoFBO = this.m_rscene.createFBOInstance();
@@ -181,7 +181,7 @@ export class DemoSSAO3 implements DracoTaskListener {
         this.m_aoFBO.setRenderToRTTTextureAt(1, 0);             // framebuffer color attachment 0: ao color texture
 
         this.m_aoDstPlane = new ScreenAlignPlaneEntity();
-        this.m_aoDstPlane.initialize(-1.0, -1.0, 2.0, 2.0, [this.m_aoFBO.getRTTAt(0) as TextureProxy]);
+        this.m_aoDstPlane.initialize(-1.0, -1.0, 2.0, 2.0, [this.m_aoFBO.getRTTAt(0)]);
         //this.m_rscene.addEntity(this.m_aoDstPlane, 1);
 
         let size: number = 256;

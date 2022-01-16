@@ -181,6 +181,10 @@ class OrthoUIScene implements IRendererScene {
     updateCamera(): void {
         this.m_rscene.updateCamera();
     }
+    
+    createCamera(): IRenderCamera {
+        return null;
+    }
     getCamera(): IRenderCamera {
         return this.m_rscene.getCamera();
     }

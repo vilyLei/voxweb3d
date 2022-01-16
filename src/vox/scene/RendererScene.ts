@@ -197,7 +197,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
     getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void {
         this.m_renderProxy.getMouseXYWorldRay(rl_position, rl_tv);
     }
-    createCamera(): CameraBase {
+    createCamera(): IRenderCamera {
         return new CameraBase();
     }
     createFBOInstance(): FBOInstance {

@@ -15,7 +15,7 @@ import { OrthoUIScene } from "../../vox/ui/OrthoUIScene";
 //import ThreadSystem from "../../thread/ThreadSystem";
 
 export class EngineThread {
-
+    
     constructor() { }
 
     private m_sceneList: IRendererScene[] = [];

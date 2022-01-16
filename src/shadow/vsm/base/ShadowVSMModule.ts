@@ -1,8 +1,8 @@
-
 import Vector3D from "../../../vox/math/Vector3D";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import RendererScene from "../../../vox/scene/RendererScene";
 import FBOInstance from "../../../vox/scene/FBOInstance";
+import {IRenderCamera} from "../../../vox/render/IRenderCamera";
 import CameraBase from "../../../vox/view/CameraBase";
 import DepthMaterial from "../material/DepthMaterial";
 import OccBlurMaterial from "../material/OccBlurMaterial";
@@ -17,7 +17,7 @@ export class ShadowVSMModule {
     private m_rscene: RendererScene = null;
     private m_vsmData: ShadowVSMData = null;
 
-    private m_direcCamera: CameraBase = null;
+    private m_direcCamera: IRenderCamera = null;
     private m_fboDepth: FBOInstance = null;
     private m_fboOccBlur: FBOInstance = null;
     private m_verOccBlurPlane: Plane3DEntity = null;
@@ -116,7 +116,7 @@ export class ShadowVSMModule {
     getVSMData(): ShadowVSMData {
         return this.m_vsmData;
     }
-    getCamera(): CameraBase {
+    getCamera(): IRenderCamera {
         return this.m_direcCamera;
     }
     setRendererProcessIDList(processIDList: number[]): void {
@@ -174,7 +174,7 @@ export class ShadowVSMModule {
         //     this.m_blurModule.setBackbufferVisible(false);
         // }
 
-        this.m_direcCamera = new CameraBase();
+        this.m_direcCamera = this.m_rscene.createCamera();;
 
         this.m_vsmData.setShadowMap(this.getShadowMap());
         this.updateData();
@@ -261,7 +261,7 @@ export class ShadowVSMModule {
         this.force = false;
     }
     private buildShadow(): void {
-        
+
         this.m_fboDepth.useCamera(this.m_direcCamera);
         this.m_fboDepth.run(true, true);
         this.m_fboDepth.useMainCamera();

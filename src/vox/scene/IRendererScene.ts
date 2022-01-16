@@ -98,6 +98,7 @@ interface IRendererScene {
     setClearColor(color: Color4): void;
     setRenderToBackBuffer(): void;
     updateCamera(): void;
+    createCamera(): IRenderCamera;
     getCamera(): IRenderCamera;
     getStage3D(): IRenderStage3D;
     getRenderProxy(): RenderProxy;

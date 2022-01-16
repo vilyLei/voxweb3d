@@ -11,7 +11,8 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from '../../vox/material/MaterialBase';
 import Line3DMaterial from '../../vox/material/mcase/Line3DMaterial';
 import Color4 from '../material/Color4';
-import CameraBase from '../view/CameraBase';
+import {IRenderCamera} from "../../vox/render/IRenderCamera";
+
 export default class FrustrumFrame3DEntity extends DisplayEntity
 {
     private m_currMaterial:Line3DMaterial = null;
@@ -50,7 +51,7 @@ export default class FrustrumFrame3DEntity extends DisplayEntity
         4,5,5,6,6,7,7,4,    // near plane
         0,4,1,5,2,6,3,7,    // side plane
     ];
-    initiazlize(camera:CameraBase, farColor: Color4 = null, nearColor: Color4 = null, sideDownColor: Color4 = null, sideUpColor: Color4 = null): void {
+    initiazlize(camera:IRenderCamera, farColor: Color4 = null, nearColor: Color4 = null, sideDownColor: Color4 = null, sideUpColor: Color4 = null): void {
         
         let pvs:Vector3D[] = camera.getWordFrustumVtxArr();
         if(this.m_posarr == null)this.m_posarr = new Array(72);
@@ -88,8 +89,8 @@ export default class FrustrumFrame3DEntity extends DisplayEntity
         this.activeDisplay();
     }
     private m_cameraVersion: number = -1;
-    private m_camera: CameraBase = null;
-    updateFrame(camera:CameraBase): boolean {
+    private m_camera: IRenderCamera = null;
+    updateFrame(camera:IRenderCamera): boolean {
         if(this.m_camera != camera) {
             this.m_camera = camera;
             this.m_cameraVersion = -1;

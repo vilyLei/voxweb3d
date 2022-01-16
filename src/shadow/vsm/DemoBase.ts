@@ -142,7 +142,7 @@ export class DemoBase {
         occMaterial.setShadowRadius(this.m_setShadowRadius);
         occBlurPlane =  new Plane3DEntity();
         occBlurPlane.setMaterial( occMaterial );
-        occBlurPlane.initializeXOY(-1,-1,2,2, [this.m_fboDepth.getRTTAt(0) as TextureProxy]);
+        occBlurPlane.initializeXOY(-1,-1,2,2, [this.m_fboDepth.getRTTAt(0)]);
         this.m_rscene.addEntity(occBlurPlane, 1);
         this.m_verOccBlurPlane = occBlurPlane;
 
@@ -150,7 +150,7 @@ export class DemoBase {
         occMaterial.setShadowRadius(this.m_setShadowRadius);
         occBlurPlane =  new Plane3DEntity();
         occBlurPlane.setMaterial( occMaterial );
-        occBlurPlane.initializeXOY(-1,-1,2,2, [this.m_fboOccBlurV.getRTTAt(0) as TextureProxy]);
+        occBlurPlane.initializeXOY(-1,-1,2,2, [this.m_fboOccBlurV.getRTTAt(0)]);
         this.m_rscene.addEntity(occBlurPlane, 2);
         this.m_horOccBlurPlane = occBlurPlane;
 
@@ -186,7 +186,7 @@ export class DemoBase {
         shadowMatrix.copyFrom(this.m_direcCamera.getVPMatrix());
         shadowMatrix.append(testMatrix);
         
-        let shadowTex: TextureProxy = this.m_fboOccBlurH.getRTTAt(0) as TextureProxy;
+        let shadowTex = this.m_fboOccBlurH.getRTTAt(0);
         //let shadowTex: TextureProxy = this.m_fboDepth.getRTTAt(0);
         let shadowMaterial: ShadowEntityMaterial = new ShadowEntityMaterial();
         // add common 3d display entity

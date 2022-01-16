@@ -8,7 +8,7 @@
 import Vector3D from "../../../vox/math/Vector3D";
 import Matrix4 from "../../../vox/math/Matrix4";
 
-import CameraBase from "../../../vox/view/CameraBase";
+import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
@@ -17,8 +17,8 @@ import { MaterialPipeBase } from "../../../vox/material/pipeline/MaterialPipeBas
 
 import IRenderTexture from "../../../vox/render/IRenderTexture";
 import { GlobalVSMShadowUniformParam } from "../../../vox/material/GlobalUniformParam";
-import { VSMShaderCode } from "./VSMShaderCode";
 import { ShadowMode } from "../../../vox/material/pipeline/ShadowMode";
+import { VSMShaderCode } from "./VSMShaderCode";
 
 export default class ShadowVSMData extends MaterialPipeBase implements IMaterialPipe {
 
@@ -80,12 +80,12 @@ export default class ShadowVSMData extends MaterialPipeBase implements IMaterial
             this.m_uniformParam = uniformParam;            
         }
     }
-    updateShadowCamera(camera: CameraBase): void {
+    updateShadowCamera(camera: IRenderCamera): void {
 
         if (this.m_camVersion != camera.version) {
 
             this.m_camVersion = camera.version;
-            this.m_direcMatrix.copyFrom(camera.getVPMatrix());
+            this.m_direcMatrix.copyFrom((camera as any).getVPMatrix());
             this.m_direcMatrix.append(this.m_offetMatrix);
             this.setDirec(camera.getNV());
             this.m_dirty = true;
