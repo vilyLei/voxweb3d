@@ -33,15 +33,14 @@ import IROMaterialUpdater from '../../vox/render/IROMaterialUpdater';
 import DivLog from "../../vox/utils/DivLog";
 import RendererState from "./RendererState";
 import {IRenderProxy} from "./IRenderProxy";
-import ShaderUniformProbe from "../material/ShaderUniformProbe";
-import { ShaderUniformContext } from "../../vox/material/ShaderUniformContext";
+import { IShaderUniformContext } from "../../vox/material/IShaderUniformContext";
 
 class RenderProxyParam {
 
     materialUpdater: IROMaterialUpdater = null;
     vtxBufUpdater: IROVertexBufUpdater = null;
     vtxBuilder: IROVtxBuilder = null;
-    uniformContext: ShaderUniformContext = null;
+    uniformContext: IShaderUniformContext = null;
 
     constructor(){}
 }
@@ -73,7 +72,7 @@ class RenderProxy implements IRenderProxy{
     readonly Texture: IRenderTexResource = null;
     readonly VtxBufUpdater: IROVertexBufUpdater = null;
     readonly MaterialUpdater: IROMaterialUpdater = null;
-    readonly uniformContext: ShaderUniformContext = null;
+    readonly uniformContext: IShaderUniformContext = null;
 
     readonly adapter: IRenderAdapter = null;
 

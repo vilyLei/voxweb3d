@@ -52,7 +52,15 @@ class ShaderUniformContext implements IShaderUniformContext {
         let suo = new ShaderGlobalUniform(this.m_udSlot);
         return suo;
     }
-    createShaderGlobalUniformFromProbe(uProbe: IShaderUniformProbe, puns: string, uniformNames: string[] = null, index: number = -1): IShaderUniform {
+    createShaderGlobalUniformFromProbe(uProbe: IShaderUniformProbe, puns: string, uniformNames: string[] = null): IShaderUniform {
+        let suo = new ShaderGlobalUniform(this.m_udSlot);
+        suo.uns = puns;
+        suo.uniformNameList = uniformNames != null ? uniformNames : uProbe.uniformNames;
+        suo.copyDataFromProbe(uProbe);
+        uProbe.update();
+        return suo;
+    }
+    createShaderGlobalUniformFromProbeAt(uProbe: IShaderUniformProbe, puns: string, uniformNames: string[] = null, index: number): IShaderUniform {
         let suo = new ShaderGlobalUniform(this.m_udSlot);
         suo.uns = puns;
         suo.uniformNameList = uniformNames != null ? uniformNames : uProbe.uniformNames;

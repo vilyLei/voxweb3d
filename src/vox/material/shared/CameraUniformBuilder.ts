@@ -15,16 +15,16 @@ import RenderProxy from "../../../vox/render/RenderProxy";
 export default class CameraUniformBuilder implements IUniformBuilder {
     
     create(rc: RenderProxy, shdp: IShdProgram): IShaderUniform {
-
+        
         let cam: IRenderCamera = rc.getCamera();
         if (shdp.hasUniformByName(UniformConst.CameraViewMatUNS) && shdp.hasUniformByName(UniformConst.CameraProjectiveMatUNS)) {
             return rc.uniformContext.createShaderGlobalUniformFromProbe(cam.matUProbe, "u_viewAndProjMat", [UniformConst.CameraViewMatUNS, UniformConst.CameraProjectiveMatUNS]);
         }
         else if (shdp.hasUniformByName(UniformConst.CameraViewMatUNS)) {
-            return rc.uniformContext.createShaderGlobalUniformFromProbe(cam.matUProbe, "u_viewMat", [UniformConst.CameraViewMatUNS], 0);
+            return rc.uniformContext.createShaderGlobalUniformFromProbeAt(cam.matUProbe, "u_viewMat", [UniformConst.CameraViewMatUNS], 0);
         }
         else if (shdp.hasUniformByName(UniformConst.CameraProjectiveMatUNS)) {
-            return rc.uniformContext.createShaderGlobalUniformFromProbe(cam.matUProbe, "u_projMat", [UniformConst.CameraProjectiveMatUNS], 1);
+            return rc.uniformContext.createShaderGlobalUniformFromProbeAt(cam.matUProbe, "u_projMat", [UniformConst.CameraProjectiveMatUNS], 1);
         }
         return null;
     }
