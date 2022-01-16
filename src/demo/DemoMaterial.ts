@@ -8,35 +8,31 @@ import TextureProxy from "../vox/texture/TextureProxy";
 import RendererScene from "../vox/scene/RendererScene";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 
-export class DemoMaterial
-{
-    constructor(){}
+export class DemoMaterial {
+    constructor() { }
 
-    private m_rscene:RendererScene = null;
-    private m_texLoader:ImageTextureLoader = null;
-    private m_uniformData:Float32Array = null;
-    private m_time:number = 0;
-    getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
-    {
+    private m_rscene: RendererScene = null;
+    private m_texLoader: ImageTextureLoader = null;
+    private m_uniformData: Float32Array = null;
+    private m_time: number = 0;
+    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         return this.m_texLoader.getImageTexByUrl(purl);
     }
-    private cylinder:Cylinder3DEntity = null;
-    private rendererInit():void
-    {
-        let rparam:RendererParam = new RendererParam();
-        rparam.setCamPosition(800.0,800.0,800.0);
+    private cylinder: Cylinder3DEntity = null;
+    private rendererInit(): void {
+        let rparam: RendererParam = new RendererParam();
+        rparam.setCamPosition(800.0, 800.0, 800.0);
         this.m_rscene = new RendererScene();
-        this.m_rscene.initialize(rparam,3);
+        this.m_rscene.initialize(rparam, 3);
         this.m_rscene.updateCamera();
         this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
-        this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
+        this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
     }
-    initialize():void
-    {
+    initialize(): void {
         this.rendererInit();
 
-        let fragCode:string = 
-`
+        let fragCode: string =
+            `
 precision mediump float;
 uniform sampler2D u_sampler0;
 uniform vec4 u_colors[2];
@@ -48,8 +44,8 @@ color4 *= u_colors[0];
 gl_FragColor = color4 * sin(u_colors[1]);
 }
 `;
-        let vtxCode:string = 
-`
+        let vtxCode: string =
+            `
 precision mediump float;
 attribute vec3 a_vs;
 attribute vec2 a_uvs;
@@ -64,31 +60,29 @@ gl_Position = u_projMat * viewPos;
 v_uvs = a_uvs;
 }
 `;
-        this.m_uniformData = new Float32Array([0.0,1.0,1.0,1.0, 1.0,1.0,1.0,1.0]);
-        let material:ShaderMaterial = new ShaderMaterial("testShaderMaterial");
+        this.m_uniformData = new Float32Array([0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]);
+        let material: ShaderMaterial = new ShaderMaterial("testShaderMaterial");
         material.setFragShaderCode(fragCode);
         material.setVtxShaderCode(vtxCode);
         material.addUniformDataAt("u_colors", this.m_uniformData);
 
-        let cylinder:Cylinder3DEntity = new Cylinder3DEntity();
+        let cylinder: Cylinder3DEntity = new Cylinder3DEntity();
         cylinder.setMaterial(material);
-        cylinder.initialize(100.0,200.0,15,[this.getImageTexByUrl("static/assets/tree_scenery.jpg")]);
+        cylinder.initialize(100.0, 200.0, 15, [this.getImageTexByUrl("static/assets/tree_scenery.jpg")]);
         //cylinder.setScaleXYZ(0.1,0.1,0.1);
         this.m_rscene.addEntity(cylinder);
 
         this.cylinder = cylinder;
-        let axis:Axis3DEntity = new Axis3DEntity();
+        let axis: Axis3DEntity = new Axis3DEntity();
         axis.initialize(300.0);
-        this.m_rscene.addEntity(axis);                
+        this.m_rscene.addEntity(axis);
     }
-    private m_flag:boolean = false;
-    private m_pos:Vector3D = new Vector3D();
-    private mouseDown():void
-    {
+    private m_flag: boolean = false;
+    private m_pos: Vector3D = new Vector3D();
+    private mouseDown(): void {
         this.m_flag = !this.m_flag;
     }
-    run():void
-    {
+    run(): void {
         // 修改uniform数据
         this.m_time += 1.0;
         this.m_uniformData[0] = Math.abs(Math.sin(this.m_time * 0.01));

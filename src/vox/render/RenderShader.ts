@@ -6,9 +6,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDevice from "../../vox/render/RendererDevice";
 import MaterialConst from "../../vox/material/MaterialConst";
-import IShaderData from "../../vox/material/IShaderData";
 import IShdProgram from "../../vox/material/IShdProgram";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import IRenderShader from "../../vox/render/IRenderShader";
