@@ -16,6 +16,7 @@ import {IRenderCamera} from "./IRenderCamera";
 import RendererParam from "../../vox/scene/RendererParam";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import { RODrawState, RenderStateObject, RenderColorMask } from "../../vox/render/RODrawState";
+import { IRAdapterContext } from "./IRAdapterContext";
 import RAdapterContext from "../../vox/render/RAdapterContext";
 import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
 import RenderAdapter from "../../vox/render/RenderAdapter";
@@ -222,7 +223,7 @@ class RenderProxy implements IRenderProxy{
         return this.m_adapter;
     }
     
-	getRenderContext(): RAdapterContext {
+	getRenderContext(): IRAdapterContext {
 		return this.m_adapter.getRenderContext();
 	}
     setCameraParam(fov: number, near: number, far: number): void {

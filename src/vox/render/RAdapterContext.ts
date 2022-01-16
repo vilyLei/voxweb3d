@@ -13,18 +13,16 @@ import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import ContextMouseEvtDispatcher from "../../vox/render/ContextMouseEvtDispatcher";
 import { GLBlendMode, GLBlendEquation, CullFaceMode, GLStencilFunc, GLStencilOp } from "./RenderConst";
 import AABB2D from "../geom/AABB2D";
+import { IRAdapterContext } from "./IRAdapterContext";
 
-class RAdapterContext {
+class RAdapterContext implements IRAdapterContext {
 
-	private static s_uid:number = 0;
-	private m_uid:number = RAdapterContext.s_uid++;
     private m_mouseEvtDisplather: ContextMouseEvtDispatcher = new ContextMouseEvtDispatcher();
     private m_div: HTMLElement = null;
     private m_canvas: HTMLCanvasElement = null;
-    private m_document: HTMLElement = null;
     private m_scissorEnabled: boolean = false;
     private m_depthTestEnabled: boolean = true;
-    //STENCIL_TEST
+    
     private m_stencilTestEnabled: boolean = true;
     private m_offcanvas: HTMLCanvasElement = null;
     private m_gl: WebGLRenderingContext = null;
@@ -35,7 +33,7 @@ class RAdapterContext {
     private m_webGLVersion: number = 2;
     private m_devicePixelRatio: number = 1.0;
 
-    private m_viewEle: RViewElement = new RViewElement();    
+    private m_viewEle: RViewElement = new RViewElement();
     // display 3d view buf size auto sync window size
     autoSyncRenderBufferAndWindowSize: boolean = true;
     offscreenRenderEnabled: boolean = false;
@@ -89,12 +87,12 @@ class RAdapterContext {
             console.log("RAdapterContext::initialize(), document is undefined.");
         }
         if (pdocument != null) {
-            
+
             this.m_viewEle.setDiv(div);
             this.m_viewEle.createViewEle(pdocument, this.autoSyncRenderBufferAndWindowSize);
             this.m_div = div = this.m_viewEle.getDiv();
             let canvas: any = this.m_canvas = this.m_viewEle.getCanvas();
-            
+
             this.m_devicePixelRatio = window.devicePixelRatio;
             this.m_mouseEvtDisplather.dpr = this.m_devicePixelRatio;
 
@@ -149,7 +147,7 @@ class RAdapterContext {
             }
             let gl: any = this.m_gl;
             gl.rcuid = rcuid;
-            
+
             let glStencilFunc: any = GLStencilFunc;
             glStencilFunc.NEVER = gl.NEVER;
             glStencilFunc.LESS = gl.LESS;
@@ -169,7 +167,7 @@ class RAdapterContext {
             stendilOp.DECR_WRAP = gl.DECR_WRAP;
             stendilOp.INVERT = gl.INVERT;
 
-            let glBlendMode: any = GLBlendMode;            
+            let glBlendMode: any = GLBlendMode;
             glBlendMode.ZERO = gl.ZERO;
             glBlendMode.ONE = gl.ONE;
             glBlendMode.SRC_COLOR = gl.SRC_COLOR;
@@ -178,7 +176,7 @@ class RAdapterContext {
             glBlendMode.DST_ALPHA = gl.DST_ALPHA;
             glBlendMode.ONE_MINUS_SRC_ALPHA = gl.ONE_MINUS_SRC_ALPHA;
 
-            
+
             let glBlendEq: any = GLBlendEquation;
             glBlendEq.FUNC_ADD = gl.FUNC_ADD;
             glBlendEq.FUNC_SUBTRACT = gl.FUNC_SUBTRACT;
@@ -192,7 +190,7 @@ class RAdapterContext {
             glFaceCull.BACK = gl.BACK;
             glFaceCull.FRONT = gl.FRONT;
             glFaceCull.FRONT_AND_BACK = gl.FRONT_AND_BACK;
-            
+
             let device: any = RendererDevice;
             //MAX_RENDERBUFFER_SIZE
             device.MAX_TEXTURE_SIZE = this.m_gl.getParameter(this.m_gl.MAX_TEXTURE_SIZE);
@@ -202,14 +200,14 @@ class RAdapterContext {
             device.MAX_VIEWPORT_HEIGHT = viewPortIMS[1];
             RCExtension.Initialize(this.m_webGLVersion, this.m_gl);
             RendererDevice.Initialize([this.m_webGLVersion]);
-            
-            console.log("RadapterContext stage: ",stage);
+
+            console.log("RadapterContext stage: ", stage);
             if (stage != null) this.m_mouseEvtDisplather.initialize(canvas, div, stage);
             //  console.log("viewPortIMS: ",viewPortIMS);
-            console.log("MAX_TEXTURE_SIZE: ",RendererDevice.MAX_TEXTURE_SIZE);
-            console.log("IsMobileWeb: ",RendererDevice.IsMobileWeb());
-            console.log("IsAndroidOS: ",RendererDevice.IsAndroidOS());
-            console.log("IsIOS: ",RendererDevice.IsIOS());
+            console.log("MAX_TEXTURE_SIZE: ", RendererDevice.MAX_TEXTURE_SIZE);
+            console.log("IsMobileWeb: ", RendererDevice.IsMobileWeb());
+            console.log("IsAndroidOS: ", RendererDevice.IsAndroidOS());
+            console.log("IsIOS: ", RendererDevice.IsIOS());
             //  console.log("MAX_RENDERBUFFER_SIZE: ",RendererDevice.MAX_RENDERBUFFER_SIZE);
             //  console.log("MAX_VIEWPORT_WIDTH: ",RendererDevice.MAX_VIEWPORT_WIDTH);
             //  console.log("MAX_VIEWPORT_HEIGHT: ",RendererDevice.MAX_VIEWPORT_HEIGHT);
@@ -230,7 +228,7 @@ class RAdapterContext {
                 device.GPU_RENDERER = webgl_renderer;
                 console.log("webgl_vendor: ", webgl_vendor);
                 console.log("webgl_renderer: ", webgl_renderer);
-                if(!RendererDevice.IsWinExternalVideoCard()) {
+                if (!RendererDevice.IsWinExternalVideoCard()) {
                     console.warn("当前浏览器没有使用独立显卡");
                 }
                 // DivLog.ShowLog("webgl_vendor: " + webgl_vendor);
@@ -254,14 +252,14 @@ class RAdapterContext {
             console.log("initialize WebGL failure!");
         }
     }
-    private m_WEBGL_lose_context:any = null;
-    
+    private m_WEBGL_lose_context: any = null;
+
     loseContext(): void {
 
-        if(this.m_WEBGL_lose_context == null) {
+        if (this.m_WEBGL_lose_context == null) {
             this.m_WEBGL_lose_context = this.m_gl.getExtension('WEBGL_lose_context');
-        }        
-        if(this.m_WEBGL_lose_context == null) {
+        }
+        if (this.m_WEBGL_lose_context == null) {
             this.m_WEBGL_lose_context.loseContext();
         }
     }

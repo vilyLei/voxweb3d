@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import { RenderBlendMode, CullFaceMode, DepthTestMode, GLBlendEquation } from "../../vox/render/RenderConst";
-import RAdapterContext from "../../vox/render/RAdapterContext";
+import { IRAdapterContext } from "../../vox/render/IRAdapterContext";
 import DebugFlag from "../debug/DebugFlag";
 
 export class RenderColorMask {
@@ -339,7 +339,7 @@ export class RODrawState {
     private m_cullMode: number = CullFaceMode.NONE;
     private m_depthTestType: number = DepthTestMode.DISABLE;
     private m_cullDisabled: boolean = true;
-    private m_context: RAdapterContext = null;
+    private m_context: IRAdapterContext = null;
     private m_gl: any = null;
     public roColorMask: number = -11;
     constructor() {
@@ -347,7 +347,7 @@ export class RODrawState {
     reset(): void {
         this.roColorMask = -11;
     }
-    setRenderContext(context: RAdapterContext): void {
+    setRenderContext(context: IRAdapterContext): void {
         this.m_context = context;
         this.m_gl = context.getRC();
         let rcui = this.m_gl.rcuid as number;

@@ -9,7 +9,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import Color4 from "../../vox/material/Color4";
 import {IRenderCamera} from "./IRenderCamera";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
-import RAdapterContext from "../../vox/render/RAdapterContext";
+import {IRAdapterContext} from "../../vox/render/IRAdapterContext";
 import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
 
 import IRenderResource from '../../vox/render/IRenderResource';
@@ -79,7 +79,7 @@ interface IRenderProxy {
     getStage3D(): IRenderStage3D;
     getRenderAdapter(): IRenderAdapter;
     
-	getRenderContext(): RAdapterContext;
+	getRenderContext(): IRAdapterContext;
     setCameraParam(fov: number, near: number, far: number): void;
     getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void;
     testViewPortChanged(px: number, py: number, pw: number, ph: number): boolean;

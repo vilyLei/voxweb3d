@@ -4,12 +4,14 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import RAdapterContext from "../../vox/render/RAdapterContext";
+import { IRAdapterContext } from "../../vox/render/IRAdapterContext";
 import { RenderColorMask, RenderStateObject, RODrawState } from "../../vox/render/RODrawState";
 import { CullFaceMode, RenderBlendMode, DepthTestMode, GLBlendMode, GLBlendEquation } from "../../vox/render/RenderConst";
 import VROBase from "./VROBase";
 class RendererState {
+
     private static s_initBoo: boolean = true;
+    
     static readonly Rstate: RODrawState = null;
     static DrawCallTimes: number = 0;
     static DrawTrisNumber: number = 0;
@@ -69,18 +71,18 @@ class RendererState {
             let rso = RenderStateObject;
 
             let rBlendMode: any = RenderBlendMode;
-            
-            rBlendMode.NORMAL = rso.CreateBlendMode("NORMAL",GLBlendMode.ONE,GLBlendMode.ZERO,GLBlendEquation.FUNC_ADD);
-            rBlendMode.OPAQUE = rso.CreateBlendMode("OPAQUE",GLBlendMode.ONE,GLBlendMode.ZERO,GLBlendEquation.FUNC_ADD);
-            rBlendMode.TRANSPARENT = rso.CreateBlendMode("TRANSPARENT",GLBlendMode.SRC_ALPHA, GLBlendMode.ONE_MINUS_SRC_ALPHA,GLBlendEquation.FUNC_ADD);
-            rBlendMode.ALPHA_ADD = rso.CreateBlendMode("ALPHA_ADD",GLBlendMode.ONE,GLBlendMode.ONE_MINUS_SRC_ALPHA,GLBlendEquation.FUNC_ADD);
-            rBlendMode.ADD = rso.CreateBlendMode("ADD",GLBlendMode.SRC_ALPHA,GLBlendMode.ONE,GLBlendEquation.FUNC_ADD);
-            rBlendMode.ADD_LINEAR = rso.CreateBlendMode("ADD_LINEAR",GLBlendMode.ONE,GLBlendMode.ONE,GLBlendEquation.FUNC_ADD);            
-            rBlendMode.INVERSE_ALPHA = rso.CreateBlendMode("INVERSE_ALPHA",GLBlendMode.ONE,GLBlendMode.SRC_ALPHA,GLBlendEquation.FUNC_ADD);
-            
-            rBlendMode.BLAZE = rso.CreateBlendMode("BLAZE",GLBlendMode.SRC_COLOR,GLBlendMode.ONE,GLBlendEquation.FUNC_ADD);
-            rBlendMode.OVERLAY = rso.CreateBlendMode("OVERLAY",GLBlendMode.DST_COLOR,GLBlendMode.DST_ALPHA,GLBlendEquation.FUNC_ADD);
-            rBlendMode.OVERLAY2 = rso.CreateBlendMode("OVERLAY2",GLBlendMode.DST_COLOR,GLBlendMode.SRC_ALPHA,GLBlendEquation.FUNC_ADD);
+
+            rBlendMode.NORMAL = rso.CreateBlendMode("NORMAL", GLBlendMode.ONE, GLBlendMode.ZERO, GLBlendEquation.FUNC_ADD);
+            rBlendMode.OPAQUE = rso.CreateBlendMode("OPAQUE", GLBlendMode.ONE, GLBlendMode.ZERO, GLBlendEquation.FUNC_ADD);
+            rBlendMode.TRANSPARENT = rso.CreateBlendMode("TRANSPARENT", GLBlendMode.SRC_ALPHA, GLBlendMode.ONE_MINUS_SRC_ALPHA, GLBlendEquation.FUNC_ADD);
+            rBlendMode.ALPHA_ADD = rso.CreateBlendMode("ALPHA_ADD", GLBlendMode.ONE, GLBlendMode.ONE_MINUS_SRC_ALPHA, GLBlendEquation.FUNC_ADD);
+            rBlendMode.ADD = rso.CreateBlendMode("ADD", GLBlendMode.SRC_ALPHA, GLBlendMode.ONE, GLBlendEquation.FUNC_ADD);
+            rBlendMode.ADD_LINEAR = rso.CreateBlendMode("ADD_LINEAR", GLBlendMode.ONE, GLBlendMode.ONE, GLBlendEquation.FUNC_ADD);
+            rBlendMode.INVERSE_ALPHA = rso.CreateBlendMode("INVERSE_ALPHA", GLBlendMode.ONE, GLBlendMode.SRC_ALPHA, GLBlendEquation.FUNC_ADD);
+
+            rBlendMode.BLAZE = rso.CreateBlendMode("BLAZE", GLBlendMode.SRC_COLOR, GLBlendMode.ONE, GLBlendEquation.FUNC_ADD);
+            rBlendMode.OVERLAY = rso.CreateBlendMode("OVERLAY", GLBlendMode.DST_COLOR, GLBlendMode.DST_ALPHA, GLBlendEquation.FUNC_ADD);
+            rBlendMode.OVERLAY2 = rso.CreateBlendMode("OVERLAY2", GLBlendMode.DST_COLOR, GLBlendMode.SRC_ALPHA, GLBlendEquation.FUNC_ADD);
 
             state.NORMAL_STATE = rso.Create("normal", CullFaceMode.BACK, RenderBlendMode.NORMAL, DepthTestMode.OPAQUE);
             state.BACK_CULLFACE_NORMAL_STATE = state.NORMAL_STATE;
@@ -145,7 +147,7 @@ class RendererState {
         RendererState.Rstate.reset();
         VROBase.Reset();
     }
-    static Reset(context: RAdapterContext): void {
+    static Reset(context: IRAdapterContext): void {
         RenderColorMask.Reset();
         RenderStateObject.Reset();
         RendererState.Rstate.setRenderContext(context);
