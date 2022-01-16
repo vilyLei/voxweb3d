@@ -10,7 +10,7 @@ import MaterialResource from "../../vox/material/MaterialResource";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import IShaderUniform from "../../vox/material/IShaderUniform";
 
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import { IVtxBufRenderData } from "../../vox/render/IVtxBufRenderData";
@@ -174,7 +174,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
     }
     getShaderData(): ShaderData { return this.m_shdData; }
 
-    private m_texList: TextureProxy[] = null;
+    private m_texList: IRenderTexture[] = null;
     private m_texListLen: number = 0;
     private m_texDataEnabled: boolean = false;
 
@@ -182,7 +182,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
      * set TextuerProxy instances
      * @param texList [tex0,tex1,...]
      */
-    setTextureList(texList: TextureProxy[]): void {
+    setTextureList(texList: IRenderTexture[]): void {
         if (this.m_texList != texList) {
             this.m_texDataEnabled = false;
             if (texList != null) {
@@ -212,9 +212,9 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
             }
         }
     }
-    setTextureAt(index: number, tex: TextureProxy): void {
+    setTextureAt(index: number, tex: IRenderTexture): void {
         if (index >= 0 && tex != null) {
-            let texList: TextureProxy[] = this.m_texList;
+            let texList: IRenderTexture[] = this.m_texList;
             let len: number = texList.length;
             if (texList != null && texList[index] != tex && index < len && len > 0) {
                 texList = texList.slice(0);
@@ -231,8 +231,8 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
             }
         }
     }
-    getTextureList(): TextureProxy[] { return this.m_texList; }
-    getTextureAt(index: number): TextureProxy { return this.m_texList[index]; }
+    getTextureList(): IRenderTexture[] { return this.m_texList; }
+    getTextureAt(index: number): IRenderTexture { return this.m_texList[index]; }
     getTextureTotal(): number { return this.m_texListLen; }
     getShdTexTotal(): number {
         if (this.m_shdData != null) {
@@ -246,7 +246,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
                 return true;
             }
             let boo: boolean = true;
-            let texList: TextureProxy[] = this.m_texList;
+            let texList: IRenderTexture[] = this.m_texList;
             for (let i: number = 0; i < this.m_texListLen; ++i) {
                 if (!texList[i].isDataEnough()) {
                     boo = false;

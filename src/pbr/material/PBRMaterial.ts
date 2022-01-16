@@ -14,11 +14,12 @@ import MathConst from "../../vox/math/MathConst";
 import IPBRMaterial from "./IPBRMaterial";
 import PBRShaderDecorator from "./PBRShaderDecorator";
 import Color4 from "../../vox/material/Color4";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 
 //  import { PBRShaderCode } from "./glsl/PBRShaderCode";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import { UniformComp } from "../../vox/material/component/UniformComp";
+import TextureProxy from "../../vox/texture/TextureProxy";
 
 class PBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
@@ -178,7 +179,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
             this.m_mirrorParam.set(src.m_mirrorParam);
         }
     }
-    setTextureList(texList: TextureProxy[]): void {
+    setTextureList(texList: IRenderTexture[]): void {
         //throw Error("illegal operator.");
     }
     

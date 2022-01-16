@@ -1,4 +1,4 @@
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import RendererScene from "../../vox/scene/RendererScene";
 import DefaultPBRUI from "./DefaultPBRUI";
 import PBRMaterial from "../../pbr/material/PBRMaterial";
@@ -10,6 +10,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import DracoMesh from "../../voxmesh/draco/DracoMesh";
 import { DracoModuleLoader, DracoWholeModuleLoader, DracoMultiPartsModuleLoader } from "../../voxmesh/draco/DracoModuleLoader";
 import { VertUniformComp } from "../../vox/material/component/VertUniformComp";
+import TextureProxy from "../../vox/texture/TextureProxy";
 
 
 export class PBRWholeDracoModule extends DracoWholeModuleLoader {
@@ -19,7 +20,7 @@ export class PBRWholeDracoModule extends DracoWholeModuleLoader {
     paramEntities: PBRParamEntity[] = [];
     reflectPlaneY: number = -220.0;
     aoMapEnabled: boolean = false;
-    specularEnvMap: TextureProxy;
+    specularEnvMap: IRenderTexture;
     constructor() {
         super();
     }
@@ -33,7 +34,7 @@ export class PBRWholeDracoModule extends DracoWholeModuleLoader {
         mesh.initialize(modules);
       
         let material: PBRMaterial = this.entityUtils.createMaterial();
-        let texList: TextureProxy[] = material.getTextureList().slice(0, 1);
+        let texList: IRenderTexture[] = material.getTextureList().slice(0, 1);
         material.setTextureList(texList);
         material.decorator.diffuseMapEnabled = false;
         material.decorator.normalMapEnabled = false;
@@ -102,6 +103,7 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader {
             decorator.aoMapEnabled = true;
             decorator.vtxFlatNormal = false;
             decorator.aoMapEnabled = this.aoMapEnabled;
+            
             let aoTex: TextureProxy = null;
             if (material.decorator.aoMapEnabled) {
                 aoTex = this.entityUtils.getTextureByUrl("static/assets/modules/skirt/ao.jpg");

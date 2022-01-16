@@ -7,7 +7,7 @@
 
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import { UniformComp } from "./UniformComp";
-import TextureProxy from "../../texture/TextureProxy";
+import IRenderTexture from "../../render/IRenderTexture";
 import Vector3D from "../../math/Vector3D";
 import ShaderUniformData from "../ShaderUniformData";
 /**
@@ -24,8 +24,8 @@ class VertUniformComp extends UniformComp {
     private m_displacementParamIndex: number = -1;
 
     uvTransformEnabled: boolean = false;
-    curveMoveMap: TextureProxy = null;
-    displacementMap: TextureProxy = null;
+    curveMoveMap: IRenderTexture = null;
+    displacementMap: IRenderTexture = null;
 
     constructor() {
         super();
@@ -92,7 +92,7 @@ class VertUniformComp extends UniformComp {
 
     }
 
-    getTextures(shaderBuilder: IShaderCodeBuilder, outList: TextureProxy[] = null): TextureProxy[] {
+    getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[] = null): IRenderTexture[] {
         if (this.getParamsTotal() > 0) {
 
             if(outList == null) outList = [];

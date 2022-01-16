@@ -25,7 +25,7 @@ import IEntityTransform from "../../vox/entity/IEntityTransform";
 import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 
 import {IRenderProxy} from "../../vox/render/IRenderProxy";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import DebugFlag from '../debug/DebugFlag';
 
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
@@ -212,7 +212,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     /**
      * set new textures list for the material of this instance.
      */
-    setTextureList(texList: TextureProxy[]): void {
+    setTextureList(texList: IRenderTexture[]): void {
         if (this.m_display != null && this.m_display.__$ruid > -1) {
             let material = this.m_display.getMaterial() as MaterialBase;
             if (material != null) {
@@ -224,7 +224,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     /**
      * set new texture by the index in the material textures list for the material of this instance.
      */
-    setTextureAt(index: number, tex: TextureProxy): void {
+    setTextureAt(index: number, tex: IRenderTexture): void {
         if (this.m_display != null && this.m_display.__$ruid > -1) {
             let material = this.m_display.getMaterial() as MaterialBase;
             if (material != null) {
@@ -483,7 +483,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
                 if (material.getShaderData() == null) {
                     if (material.getCodeBuf() != null) {
                         if (material.getShaderData() == null) {
-                            let texList: TextureProxy[] = material.getTextureList();
+                            let texList: IRenderTexture[] = material.getTextureList();
                             let texEnabled: boolean = (texList != null && texList.length > 0);
                             if(material.getMaterialPipeline() == null && this.getMaterialPipeline() != null) {
                                 material.setMaterialPipeline( this.getMaterialPipeline() );

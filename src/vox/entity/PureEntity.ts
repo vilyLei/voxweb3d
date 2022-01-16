@@ -28,7 +28,7 @@ import IRenderEntity from "../../vox/render/IRenderEntity";
 import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 
 import { IRenderProxy } from "../../vox/render/IRenderProxy";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import ROTransPool from '../../vox/render/ROTransPool';
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 
@@ -190,7 +190,7 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
             }
         }
     }
-    updateTextureList(texList: TextureProxy[]): void {
+    updateTextureList(texList: IRenderTexture[]): void {
         if (this.m_display != null && this.m_display.__$ruid > -1) {
             let material = this.m_display.getMaterial() as MaterialBase;
             if (material != null) {
@@ -199,7 +199,7 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
             }
         }
     }
-    updateTextureAt(index: number, tex: TextureProxy): void {
+    updateTextureAt(index: number, tex: IRenderTexture): void {
         if (this.m_display != null && this.m_display.__$ruid > -1) {
             let material = this.m_display.getMaterial() as MaterialBase;
             if (material != null) {
@@ -447,7 +447,7 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
             if (material != null && material.getShaderData() == null) {
                 if (material.getCodeBuf() != null) {
                     if (material.getShaderData() == null) {
-                        let texList: TextureProxy[] = material.getTextureList();
+                        let texList: IRenderTexture[] = material.getTextureList();
                         let texEnabled: boolean = (texList != null && texList.length > 0);
                         material.initializeByCodeBuf(texEnabled);
                     }

@@ -6,8 +6,8 @@
 /***************************************************************************/
 
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
+import IRenderTexture from "../../render/IRenderTexture";
 import { UniformComp } from "./UniformComp";
-import TextureProxy from "../../texture/TextureProxy";
 import Vector3D from "../../math/Vector3D";
 /**
  * manage uniform data for the vertex calculation
@@ -45,7 +45,7 @@ class FragUniformComp extends UniformComp {
 
     }
 
-    getTextures(shaderBuilder: IShaderCodeBuilder, outList: TextureProxy[] = null): TextureProxy[] {
+    getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[] = null): IRenderTexture[] {
         if (this.getParamsTotal() > 0) {
 
             if(outList == null) outList = [];

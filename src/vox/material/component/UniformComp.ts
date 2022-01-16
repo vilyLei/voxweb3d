@@ -8,7 +8,7 @@
 import { IMaterialPipe } from "../pipeline/IMaterialPipe";
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import ShaderUniformData from "../ShaderUniformData";
-import TextureProxy from "../../texture/TextureProxy";
+import IRenderTexture from "../../render/IRenderTexture";
 class UniformComp {
 
     protected m_params: Float32Array = null;
@@ -20,7 +20,7 @@ class UniformComp {
     use(shaderBuilder: IShaderCodeBuilder): void {
 
     }
-    getTextures(shaderBuilder: IShaderCodeBuilder, outList: TextureProxy[] = null): TextureProxy[] {
+    getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[] = null): IRenderTexture[] {
 
         return null;
     }
