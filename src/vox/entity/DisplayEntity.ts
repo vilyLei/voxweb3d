@@ -23,7 +23,7 @@ import IRenderEntity from "../../vox/render/IRenderEntity";
 import IEntityTransform from "../../vox/entity/IEntityTransform";
 import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 
-import RenderProxy from "../../vox/render/RenderProxy";
+import {IRenderProxy} from "../../vox/render/IRenderProxy";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import DebugFlag from '../debug/DebugFlag';
 
@@ -57,7 +57,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     protected m_globalBounds: AABB = null;
     protected m_localBuondsVer: number = -1;
     protected m_parent: IDisplayEntityContainer = null;
-    protected m_renderProxy: RenderProxy = null;
+    protected m_renderProxy: IRenderProxy = null;
     protected m_pipeLine: IMaterialPipeline = null;
 
     /**
@@ -94,7 +94,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     protected createBounds(): void {
         this.m_globalBounds = new AABB();
     }
-    __$setRenderProxy(rc: RenderProxy): void {
+    __$setRenderProxy(rc: IRenderProxy): void {
         this.m_renderProxy = rc;
     }
     __$setParent(parent: IDisplayEntityContainer): void {
@@ -183,7 +183,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
      * 更新有两种形式, 1: 只是更改资源内部的数据, 2: 替换资源本身
      * 更新过程可以通过DisplayEntity对象来控制，也可以通过资源本身来控制
      */
-    updateMeshToGpu(rc: RenderProxy = null, deferred: boolean = true): void {
+    updateMeshToGpu(rc: IRenderProxy = null, deferred: boolean = true): void {
         if (rc != null) this.m_renderProxy = rc;
         if (this.m_renderProxy != null && this.m_display != null && this.m_display.__$ruid > -1) {
             if (this.m_meshChanged) {
@@ -200,7 +200,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
      * 更新有两种形式, 1: 只是更改资源内部的数据, 2: 替换资源本身
      * 更新过程可以通过DisplayEntity对象来控制，也可以通过资源本身来控制
      */
-    updateMaterialToGpu(rc: RenderProxy = null, deferred: boolean = true): void {
+    updateMaterialToGpu(rc: IRenderProxy = null, deferred: boolean = true): void {
         if (rc != null) this.m_renderProxy = rc;
         if (this.m_renderProxy != null && this.m_display != null && this.m_display.__$ruid > -1) {
             if (this.m_texChanged) {

@@ -16,6 +16,7 @@ import IRenderResource from '../../vox/render/IRenderResource';
 import IRenderTexResource from '../../vox/render/IRenderTexResource';
 import IROVertexBufUpdater from '../../vox/render/IROVertexBufUpdater';
 import IROMaterialUpdater from '../../vox/render/IROMaterialUpdater';
+import { IShaderUniformContext } from "../../vox/material/IShaderUniformContext";
 
 interface IRenderProxy {
     
@@ -42,6 +43,7 @@ interface IRenderProxy {
     Texture: IRenderTexResource;
     VtxBufUpdater: IROVertexBufUpdater;
     MaterialUpdater: IROMaterialUpdater;
+    uniformContext: IShaderUniformContext;
 
     /**
      * @returns return system gpu context

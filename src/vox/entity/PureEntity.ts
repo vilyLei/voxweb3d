@@ -26,7 +26,7 @@ import RODisplay from "../../vox/display/RODisplay";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 
-import RenderProxy from "../../vox/render/RenderProxy";
+import { IRenderProxy } from "../../vox/render/IRenderProxy";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import ROTransPool from '../../vox/render/ROTransPool';
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
@@ -52,7 +52,7 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
     private m_renderState: number = RendererState.BACK_CULLFACE_NORMAL_STATE;
     private m_display: RODisplay = null;
     protected m_mesh: MeshBase = null;
-    protected m_renderProxy: RenderProxy = null;
+    protected m_renderProxy: IRenderProxy = null;
     // 如果一个entity如果包含了多个mesh,则这个bounds就是多个mesh aabb 合并的aabb
     // 如果一个entity如果包含了多个mesh,则这个bounds就是多个mesh aabb 合并的aabb
     protected m_localBounds: AABB = null;
@@ -78,7 +78,7 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
     //
     vbWholeDataEnabled: boolean = true;
 
-    __$setRenderProxy(rc: RenderProxy): void {
+    __$setRenderProxy(rc: IRenderProxy): void {
         this.m_renderProxy = rc;
     }
     protected createBounds(): void {
@@ -163,7 +163,7 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
      * 更新有两种形式, 1: 只是更改资源内部的数据, 2: 替换资源本身
      * 更新过程可以通过DisplayEntity对象来控制，也可以通过资源本身来控制
      */
-    updateMeshToGpu(rc: RenderProxy, deferred: boolean = true): void {
+    updateMeshToGpu(rc: IRenderProxy, deferred: boolean = true): void {
         if (rc != null) this.m_renderProxy = rc;
         if (this.m_renderProxy != null && this.m_display != null && this.m_display.__$ruid > -1) {
             if (this.m_meshChanged) {
@@ -180,7 +180,7 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
      * 更新有两种形式, 1: 只是更改资源内部的数据, 2: 替换资源本身
      * 更新过程可以通过DisplayEntity对象来控制，也可以通过资源本身来控制
      */
-    updateMaterialToGpu(rc: RenderProxy, deferred: boolean = true): void {
+    updateMaterialToGpu(rc: IRenderProxy, deferred: boolean = true): void {
         if (rc != null) this.m_renderProxy = rc;
         if (this.m_renderProxy != null && this.m_display != null && this.m_display.__$ruid > -1) {
             if (this.m_texChanged) {
