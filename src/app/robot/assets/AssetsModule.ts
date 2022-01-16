@@ -99,12 +99,12 @@ export default class AssetsModule {
         this.unitSphere.normalEnabled = true;
         this.unitSphere.initialize(0.5,10,10, [materialCtx.getTextureByUrl("static/assets/box_wood01.jpg")]);
 
-        this.m_rscene.addEntity(this.unitPlane);
-        this.m_rscene.addEntity(this.unitBox);
-        this.m_rscene.addEntity(this.unitSphere);
-        this.unitSphere.setVisible( false );
-        this.unitBox.setVisible( false );
-        this.unitSphere.setVisible( false );
+        // this.m_rscene.addEntity(this.unitPlane);
+        // this.m_rscene.addEntity(this.unitBox);
+        // this.m_rscene.addEntity(this.unitSphere);
+        // this.unitSphere.setVisible( false );
+        // this.unitBox.setVisible( false );
+        // this.unitSphere.setVisible( false );
     }
     static GetMaterialPipeline(): IMaterialPipeline {
         if (AssetsModule.s_materialCtx != null) {

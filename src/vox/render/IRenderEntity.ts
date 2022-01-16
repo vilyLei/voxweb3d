@@ -10,7 +10,7 @@ import Matrix4 from "../../vox/math/Matrix4";
 import AABB from "../../vox/geom/AABB";
 import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
-import RenderProxy from "../../vox/render/RenderProxy";
+import {IRenderProxy} from "../../vox/render/IRenderProxy";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import IRODisplay from "../../vox/display/IRODisplay";
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
@@ -19,7 +19,7 @@ import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
  * to be used by renderer runtime
  */
 export default interface IRenderEntity {
-    __$setRenderProxy(rc: RenderProxy): void;
+    __$setRenderProxy(rc: IRenderProxy): void;
     /**
      * renderer scene entity flag, be used by the renderer system
      * 第0位到第19位总共20位存放自身在space中的 index id(最小值为1, 最大值为1048575,默认值是0, 也就是最多只能展示1048575个entitys),
