@@ -10,17 +10,16 @@
 import { DisplayRenderSign, RenderDrawMode } from "../../vox/render/RenderConst";
 import RendererState from "../../vox/render/RendererState";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
-import MaterialBase from "../../vox/material/MaterialBase";
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import Matrix4 from "../../vox/math/Matrix4";
 import IRODisplay from "../../vox/display/IRODisplay";
 import IRPODisplay from "../../vox/render/IRPODisplay";
-
 
 export default class RODisplay implements IRODisplay {
     private static s_uid: number = 0;
     private m_uid: number = 0;
 
-    private m_material: MaterialBase = null;
+    private m_material: IRenderMaterial = null;
     // 只是持有引用不做任何管理操作
     private m_matFS32: Float32Array = null;
 
@@ -83,10 +82,10 @@ export default class RODisplay implements IRODisplay {
     disableDrawInstanced(): void {
         this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
     }
-    getMaterial(): MaterialBase {
+    getMaterial(): IRenderMaterial {
         return this.m_material;
     }
-    setMaterial(m: MaterialBase): void {
+    setMaterial(m: IRenderMaterial): void {
         if (this.m_material != null) {
             if (this.m_material != m) {
                 this.m_material.__$detachThis();

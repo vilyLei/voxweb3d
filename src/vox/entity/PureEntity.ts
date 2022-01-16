@@ -20,6 +20,7 @@ import MouseEvent from "../../vox/event/MouseEvent";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import RendererState from "../../vox/render/RendererState";
 import MeshBase from "../../vox/mesh/MeshBase";
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import MaterialBase from "../../vox/material/MaterialBase";
 import IRODisplay from "../../vox/display/IRODisplay";
 import RODisplay from "../../vox/display/RODisplay";
@@ -191,16 +192,18 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
     }
     updateTextureList(texList: TextureProxy[]): void {
         if (this.m_display != null && this.m_display.__$ruid > -1) {
-            if (this.m_display.getMaterial() != null) {
-                this.m_display.getMaterial().setTextureList(texList);
+            let material = this.m_display.getMaterial() as MaterialBase;
+            if (material != null) {
+                material.setTextureList(texList);
                 this.m_texChanged = true;
             }
         }
     }
     updateTextureAt(index: number, tex: TextureProxy): void {
         if (this.m_display != null && this.m_display.__$ruid > -1) {
-            if (this.m_display.getMaterial() != null) {
-                this.m_display.getMaterial().setTextureAt(index, tex);
+            let material = this.m_display.getMaterial() as MaterialBase;
+            if (material != null) {
+                material.setTextureAt(index, tex);
                 this.m_texChanged = true;
             }
         }
@@ -371,7 +374,7 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
     }
     getMaterial(): MaterialBase {
         if (this.m_display != null) {
-            return this.m_display.getMaterial();
+            return this.m_display.getMaterial() as MaterialBase;
         }
         return null;
     }
@@ -440,7 +443,7 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
     }
     activeDisplay(): void {
         if (this.m_display != null) {
-            let material: MaterialBase = this.m_display.getMaterial();
+            let material: MaterialBase = this.m_display.getMaterial() as MaterialBase;
             if (material != null && material.getShaderData() == null) {
                 if (material.getCodeBuf() != null) {
                     if (material.getShaderData() == null) {

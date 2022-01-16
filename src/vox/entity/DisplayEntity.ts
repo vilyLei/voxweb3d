@@ -14,6 +14,7 @@ import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import IDisplayEntityContainer from "../../vox/entity/IDisplayEntityContainer";
 import RendererState from "../../vox/render/RendererState";
 import MeshBase from "../../vox/mesh/MeshBase";
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import MaterialBase from "../../vox/material/MaterialBase";
 import ROTransform from "../../vox/display/ROTransform";
 import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
@@ -43,7 +44,6 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
         else {
             this.m_transfrom = transform;
         }
-        // this.__$rseFlag = RSEntityFlag.AddRendererUid(this.__$rseFlag, -1);
         this.createBounds();
     }
     private m_visible: boolean = true;
@@ -214,8 +214,9 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
      */
     setTextureList(texList: TextureProxy[]): void {
         if (this.m_display != null && this.m_display.__$ruid > -1) {
-            if (this.m_display.getMaterial() != null) {
-                this.m_display.getMaterial().setTextureList(texList);
+            let material = this.m_display.getMaterial() as MaterialBase;
+            if (material != null) {
+                material.setTextureList(texList);
                 this.m_texChanged = true;
             }
         }
@@ -225,8 +226,9 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
      */
     setTextureAt(index: number, tex: TextureProxy): void {
         if (this.m_display != null && this.m_display.__$ruid > -1) {
-            if (this.m_display.getMaterial() != null) {
-                this.m_display.getMaterial().setTextureAt(index, tex);
+            let material = this.m_display.getMaterial() as MaterialBase;
+            if (material != null) {
+                material.setTextureAt(index, tex);
                 this.m_texChanged = true;
             }
         }
@@ -411,7 +413,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     }
     getMaterial(): MaterialBase {
         if (this.m_display != null) {
-            return this.m_display.getMaterial();
+            return this.m_display.getMaterial() as MaterialBase;
         }
         return null;
     }
@@ -475,7 +477,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     activeDisplay(): void {
 
         if (this.m_display != null) {
-            let material: MaterialBase = this.m_display.getMaterial();
+            let material: MaterialBase = this.m_display.getMaterial() as MaterialBase;
             if (material != null) {
 
                 if (material.getShaderData() == null) {

@@ -12,6 +12,7 @@ import {IRenderProxy} from "../../vox/render/IRenderProxy";
 interface IRenderTexture extends IRenderBuffer
 {
     internalFormat: number;
+    isDataEnough(): boolean;
     isDirect():boolean;
     getUid():number;
     getResUid():number;

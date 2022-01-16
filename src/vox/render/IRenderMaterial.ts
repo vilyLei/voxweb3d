@@ -22,6 +22,7 @@ interface IRenderMaterial {
     getShaderData(): IShaderData;
     getTextureList(): IRenderTexture[];
     getCodeBuf(): ShaderCodeBuffer;
+    destroy(): void;
     __$attachThis(): void;
     __$detachThis(): void;
 }
