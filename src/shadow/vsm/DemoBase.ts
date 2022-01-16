@@ -142,7 +142,7 @@ export class DemoBase {
         occMaterial.setShadowRadius(this.m_setShadowRadius);
         occBlurPlane =  new Plane3DEntity();
         occBlurPlane.setMaterial( occMaterial );
-        occBlurPlane.initializeXOY(-1,-1,2,2, [this.m_fboDepth.getRTTAt(0)]);
+        occBlurPlane.initializeXOY(-1,-1,2,2, [this.m_fboDepth.getRTTAt(0) as TextureProxy]);
         this.m_rscene.addEntity(occBlurPlane, 1);
         this.m_verOccBlurPlane = occBlurPlane;
 
@@ -150,7 +150,7 @@ export class DemoBase {
         occMaterial.setShadowRadius(this.m_setShadowRadius);
         occBlurPlane =  new Plane3DEntity();
         occBlurPlane.setMaterial( occMaterial );
-        occBlurPlane.initializeXOY(-1,-1,2,2, [this.m_fboOccBlurV.getRTTAt(0)]);
+        occBlurPlane.initializeXOY(-1,-1,2,2, [this.m_fboOccBlurV.getRTTAt(0) as TextureProxy]);
         this.m_rscene.addEntity(occBlurPlane, 2);
         this.m_horOccBlurPlane = occBlurPlane;
 
@@ -186,7 +186,7 @@ export class DemoBase {
         shadowMatrix.copyFrom(this.m_direcCamera.getVPMatrix());
         shadowMatrix.append(testMatrix);
         
-        let shadowTex: TextureProxy = this.m_fboOccBlurH.getRTTAt(0);
+        let shadowTex: TextureProxy = this.m_fboOccBlurH.getRTTAt(0) as TextureProxy;
         //let shadowTex: TextureProxy = this.m_fboDepth.getRTTAt(0);
         let shadowMaterial: ShadowEntityMaterial = new ShadowEntityMaterial();
         // add common 3d display entity
@@ -261,17 +261,17 @@ export class DemoBase {
         //box_wood01
         
         let depthScrPlane: ScreenFixedAlignPlaneEntity =  new ScreenFixedAlignPlaneEntity();
-        depthScrPlane.initialize(-1.0,-1.0,0.4,0.4, [this.m_fboDepth.getRTTAt(0)]);
+        depthScrPlane.initialize(-1.0,-1.0,0.4,0.4, [this.m_fboDepth.getRTTAt(0) as TextureProxy]);
         //depthScrPlane.initialize(-1.0,-1.0,2.0,2.0, [this.m_fboDepth.getRTTAt(0)]);
         this.m_rscene.addEntity(depthScrPlane, 3);
 
         let occBlurVScrPlane: ScreenFixedAlignPlaneEntity =  new ScreenFixedAlignPlaneEntity();
-        occBlurVScrPlane.initialize(-0.59,-1.0, 0.4,0.4, [this.m_fboOccBlurV.getRTTAt(0)]);
+        occBlurVScrPlane.initialize(-0.59,-1.0, 0.4,0.4, [this.m_fboOccBlurV.getRTTAt(0) as TextureProxy]);
         //occBlurVScrPlane.initialize(-1.0,-1.0,2.0,2.0, [this.m_fboOccBlurV.getRTTAt(0)]);
         this.m_rscene.addEntity(occBlurVScrPlane, 3);
         ///*
         let occBlurHScrPlane: ScreenFixedAlignPlaneEntity =  new ScreenFixedAlignPlaneEntity();
-        occBlurHScrPlane.initialize(-0.18,-1.0, 0.4,0.4, [this.m_fboOccBlurH.getRTTAt(0)]);
+        occBlurHScrPlane.initialize(-0.18,-1.0, 0.4,0.4, [this.m_fboOccBlurH.getRTTAt(0) as TextureProxy]);
         //occBlurHScrPlane.initialize(-1.0,-1.0,2.0,2.0, [this.m_fboOccBlurH.getRTTAt(0)]);
         this.m_rscene.addEntity(occBlurHScrPlane, 3);
         //*/

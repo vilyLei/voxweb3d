@@ -141,7 +141,7 @@ export class DemoProjectPlane {
         
         this.m_fboIns.getRTTAt(0).setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         let texList: TextureProxy[] = [
-            this.m_fboIns.getRTTAt(0),
+            this.m_fboIns.getRTTAt(0) as TextureProxy,
             this.getImageTexByUrl("static/assets/brickwall_big.jpg"),
             this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
         ];

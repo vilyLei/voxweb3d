@@ -10,7 +10,7 @@ import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from '../../vox/material/MaterialBase';
 import BillboardMaterial from "../../vox/material/mcase/BillboardMaterial";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import BillboardPlaneMesh from "../../vox/mesh/BillboardPlaneMesh";
 
 export default class Billboard3DEntity extends DisplayEntity {
@@ -55,7 +55,7 @@ export default class Billboard3DEntity extends DisplayEntity {
     setScaleXY(sx: number, sy: number): void {
         this.m_currMaterial.setScaleXY(sx, sy);
     }
-    createMaterial(texList: TextureProxy[]): void {
+    createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
             this.m_currMaterial = new BillboardMaterial(this.m_brightnessEnabled, this.m_alphaEnabled);
             this.m_currMaterial.setTextureList(texList);
@@ -86,13 +86,13 @@ export default class Billboard3DEntity extends DisplayEntity {
             this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
         }
     }
-    initializeSquare(size: number, texList: TextureProxy[]): void {
+    initializeSquare(size: number, texList: IRenderTexture[]): void {
         this.m_bw = size;
         this.m_bh = size;
         this.createMaterial(texList);
         this.activeDisplay();
     }
-    initialize(bw: number, bh: number, texList: TextureProxy[]): void {
+    initialize(bw: number, bh: number, texList: IRenderTexture[]): void {
         this.m_bw = bw;
         this.m_bh = bh;
         this.createMaterial(texList);

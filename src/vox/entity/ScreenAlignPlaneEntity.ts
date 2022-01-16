@@ -9,7 +9,7 @@ import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from '../../vox/material/MaterialBase';
 import ScreenPlaneMaterial from "../../vox/material/mcase/ScreenPlaneMaterial";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
 import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
 
@@ -43,7 +43,7 @@ export default class ScreenAlignPlaneEntity extends DisplayEntity {
             this.m_currMaterial.setTextureLodLevel( lodLv );
         }
     }
-    createMaterial(texList: TextureProxy[]): void {
+    createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
             this.m_currMaterial = new ScreenPlaneMaterial();
             this.m_currMaterial.mapLodEnabled = this.mapLodEnabled;
@@ -57,7 +57,7 @@ export default class ScreenAlignPlaneEntity extends DisplayEntity {
     showDoubleFace(): void {
         this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
     }
-    initialize(startX: number, startY: number, pwidth: number, pheight: number, texList: TextureProxy[] = null): void {
+    initialize(startX: number, startY: number, pwidth: number, pheight: number, texList: IRenderTexture[] = null): void {
         this.m_startX = startX;
         this.m_startZ = startY;
         this.m_pwidth = pwidth;

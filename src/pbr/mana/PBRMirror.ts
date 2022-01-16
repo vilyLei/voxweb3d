@@ -55,7 +55,7 @@ export class PBRMirror {
     private m_material: PBRMaterial;
 
     getMirrorMap(): TextureProxy {
-        return this.m_fboIns.getRTTAt(0);
+        return this.m_fboIns.getRTTAt(0) as TextureProxy ;
     }
     private initMirrorEffect(): void {
 

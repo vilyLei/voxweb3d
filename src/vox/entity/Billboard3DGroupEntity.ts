@@ -9,7 +9,7 @@ import ROTransform from "../../vox/display/ROTransform";
 import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from '../../vox/material/MaterialBase';
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import BillboardGroupMaterial from "../../vox/material/mcase/BillboardGroupMaterial";
 import BillboardPlaneGroupMesh from "../../vox/mesh/BillboardPlaneGroupMesh";
 
@@ -90,7 +90,7 @@ export default class Billboard3DGroupEntity extends DisplayEntity {
     setScaleXY(sx: number, sy: number): void {
         this.m_currMaterial.setScaleXY(sx, sy);
     }
-    createMaterial(texList: TextureProxy[]): void {
+    createMaterial(texList: IRenderTexture[]): void {
         
         if (this.getMaterial() == null) {
             this.m_currMaterial = new BillboardGroupMaterial( this.m_brightnessEnabled );
@@ -120,7 +120,7 @@ export default class Billboard3DGroupEntity extends DisplayEntity {
             this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
         }
     }
-    initialize(texList: TextureProxy[]): void {
+    initialize(texList: IRenderTexture[]): void {
         if (this.m_billMesh != null) {
             this.createMaterial(texList);
             this.activeDisplay();

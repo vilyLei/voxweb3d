@@ -9,7 +9,7 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from '../../vox/material/MaterialBase';
 import ROTransform from '../../vox/display/ROTransform';
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import ObjData3DMesh from "../../vox/mesh/obj/ObjData3DMesh";
 import RendererState from "../render/RendererState";
 import Color4 from "../material/Color4";
@@ -26,7 +26,7 @@ export default class ObjData3DEntity extends DisplayEntity {
     constructor(transform: ROTransform = null) {
         super(transform);
     }
-    private createMaterial(texList: TextureProxy[]): void {
+    private createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
             let cm: Default3DMaterial = new Default3DMaterial();
             cm.normalEnabled = this.normalEnabled;
@@ -38,7 +38,7 @@ export default class ObjData3DEntity extends DisplayEntity {
             this.getMaterial().setTextureList(texList);
         }
     }
-    initialize(objDataStr: string, texList: TextureProxy[] = null): void {
+    initialize(objDataStr: string, texList: IRenderTexture[] = null): void {
         this.m_str = objDataStr;
         this.activeDisplay();
     }
@@ -51,7 +51,7 @@ export default class ObjData3DEntity extends DisplayEntity {
     showDoubleFace(): void {
         this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
     }
-    initializeByObjDataUrl(objDataUrl: string, texList: TextureProxy[] = null): void {
+    initializeByObjDataUrl(objDataUrl: string, texList: IRenderTexture[] = null): void {
         this.createMaterial(texList);
         if (this.getMesh() == null) {
             

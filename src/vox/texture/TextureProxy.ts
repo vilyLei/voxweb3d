@@ -180,7 +180,7 @@ export class TextureProxy implements IRenderTexture {
     isDataEnough(): boolean { return this.m_haveRData; }
 
     uploadFromFbo(texResource: IRenderResource, fboWidth: number, fboHeight: number): void {
-
+        throw Error("Illegal operation !!!");
     }
     protected __$buildParam(gl: any): void {
         this.m_texBufW = this.m_texWidth;
@@ -204,6 +204,7 @@ export class TextureProxy implements IRenderTexture {
             gl.generateMipmap(this.m_sampler);
         }
     }
+    enableMipmap(): void {}
     generateMipmap(texRes: IRenderResource): void {
         if (this.mipmapEnabled && this.m_generateMipmap) {
             let gl: any = texRes.getRC();

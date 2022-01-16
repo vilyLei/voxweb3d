@@ -18,7 +18,6 @@ import { MaterialPipeBase } from "../../../vox/material/pipeline/MaterialPipeBas
 import IRenderTexture from "../../../vox/render/IRenderTexture";
 import { GlobalVSMShadowUniformParam } from "../../../vox/material/GlobalUniformParam";
 import { VSMShaderCode } from "./VSMShaderCode";
-import RTTTextureProxy from "../../../vox/texture/RTTTextureProxy";
 import { ShadowMode } from "../../../vox/material/pipeline/ShadowMode";
 
 export default class ShadowVSMData extends MaterialPipeBase implements IMaterialPipe {
@@ -26,10 +25,10 @@ export default class ShadowVSMData extends MaterialPipeBase implements IMaterial
     private m_direcMatrix: Matrix4 = null;
     private m_params: Float32Array = null;
     private m_offetMatrix: Matrix4 = null;
-    private m_shadowMap: RTTTextureProxy = null;
+    private m_shadowMap: IRenderTexture = null;
     private m_camVersion: number = -1;
 
-    setShadowMap(shadowMap: RTTTextureProxy): void {
+    setShadowMap(shadowMap: IRenderTexture): void {
         this.m_shadowMap = shadowMap;
     }
     resetPipe(): void {

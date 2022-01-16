@@ -10,7 +10,7 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from '../../vox/material/MaterialBase';
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import ScreenPlaneMaterial from "../../vox/material/mcase/ScreenPlaneMaterial";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
 import ROTransform from "../../vox/display/ROTransform";
 import Color4 from "../material/Color4";
@@ -60,7 +60,7 @@ export default class Plane3DEntity extends DisplayEntity {
     setScreenAlignEnable(enable: boolean): void {
         this.m_screenAlignEnabled = enable;
     }
-    createMaterial(texList: TextureProxy[]): void {
+    createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
             if (this.m_screenAlignEnabled) {
                 let cm: ScreenPlaneMaterial = new ScreenPlaneMaterial();
@@ -118,7 +118,7 @@ export default class Plane3DEntity extends DisplayEntity {
      * initialize a rectangle fix screen size plane ,and it parallel the 3d space XOY plane
      * @param texList textures list, default value is null.
      */
-    initializeFixScreen(texList: TextureProxy[] = null): void {
+    initializeFixScreen(texList: IRenderTexture[] = null): void {
         this.initializeXOY(-1.0, -1.0, 2.0, 2.0, texList);
     }
     /**
@@ -129,7 +129,7 @@ export default class Plane3DEntity extends DisplayEntity {
      * @param height the height of the rectangle plane.
      * @param texList textures list, default value is null.
      */
-    initializeXOY(minX: number, minY: number, pwidth: number, pheight: number, texList: TextureProxy[] = null): void {
+    initializeXOY(minX: number, minY: number, pwidth: number, pheight: number, texList: IRenderTexture[] = null): void {
         this.m_startX = minX;
         this.m_startZ = minY;
         this.m_pwidth = pwidth;
@@ -143,7 +143,7 @@ export default class Plane3DEntity extends DisplayEntity {
      * @param size the width and height of the rectangle plane.
      * @param texList textures list, default value is null.
      */
-    initializeXOYSquare(size: number, texList: TextureProxy[] = null): void {
+    initializeXOYSquare(size: number, texList: IRenderTexture[] = null): void {
         this.m_startX = -0.5 * size;
         this.m_startZ = -0.5 * size;
         this.m_pwidth = size;
@@ -160,7 +160,7 @@ export default class Plane3DEntity extends DisplayEntity {
      * @param plong the long of the rectangle plane.
      * @param texList textures list, default value is null.
      */
-    initializeXOZ(minX: number, minZ: number, pwidth: number, plong: number, texList: TextureProxy[] = null): void {
+    initializeXOZ(minX: number, minZ: number, pwidth: number, plong: number, texList: IRenderTexture[] = null): void {
         this.m_flag = 1;
         this.m_startX = minX;
         this.m_startZ = minZ;
@@ -177,7 +177,7 @@ export default class Plane3DEntity extends DisplayEntity {
      * @param plong the long of the rectangle plane.
      * @param texList textures list, default value is null.
      */
-    initializeYOZ(minY: number, minZ: number, pwidth: number, plong: number, texList: TextureProxy[] = null): void {
+    initializeYOZ(minY: number, minZ: number, pwidth: number, plong: number, texList: IRenderTexture[] = null): void {
         this.m_flag = 2;
         this.m_startX = minY;
         this.m_startZ = minZ;
@@ -191,7 +191,7 @@ export default class Plane3DEntity extends DisplayEntity {
      * @param size the width and long of the rectangle plane.
      * @param texList textures list, default value is null.
      */
-    initializeXOZSquare(size: number, texList: TextureProxy[] = null): void {
+    initializeXOZSquare(size: number, texList: IRenderTexture[] = null): void {
         this.m_flag = 1;
         this.m_startX = -0.5 * size;
         this.m_startZ = -0.5 * size;

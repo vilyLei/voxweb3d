@@ -12,7 +12,7 @@ import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from '../../vox/material/MaterialBase';
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
 import Box3DMesh from "../../vox/mesh/Box3DMesh";
 import Color4 from "../material/Color4";
@@ -45,7 +45,7 @@ export default class Box3DEntity extends DisplayEntity {
     useGourandNormal(): void {
         this.m_normalType = VtxNormalType.GOURAND;
     }
-    private createMaterial(texList: TextureProxy[]): void {
+    private createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
             let cm: Default3DMaterial = new Default3DMaterial();
             cm.normalEnabled = this.normalEnabled;
@@ -58,7 +58,7 @@ export default class Box3DEntity extends DisplayEntity {
         }
     }
 
-    private initializeThis(texList: TextureProxy[]): void {
+    private initializeThis(texList: IRenderTexture[]): void {
 
         if (this.m_initFlag) {
             this.createMaterial(texList);
@@ -102,9 +102,9 @@ export default class Box3DEntity extends DisplayEntity {
      * initialize a box geometry data and texture data
      * @param minV the min position of the box
      * @param maxV the max position of the box
-     * @param texList  TextureProxy instance list
+     * @param texList  IRenderTexture instance list
      */
-    initialize(minV: Vector3D, maxV: Vector3D, texList: TextureProxy[] = null): void {
+    initialize(minV: Vector3D, maxV: Vector3D, texList: IRenderTexture[] = null): void {
         if (minV != null) this.m_minV.copyFrom(minV);
         if (maxV != null) this.m_maxV.copyFrom(maxV);
 
@@ -113,9 +113,9 @@ export default class Box3DEntity extends DisplayEntity {
     /**
      * initialize a box(geometry data and texture data) to a cube with the cube size value
      * @param cubeSize  cube size value
-     * @param texList  TextureProxy instance list
+     * @param texList  IRenderTexture instance list
      */
-    initializeCube(cubeSize: number, texList: TextureProxy[] = null): void {
+    initializeCube(cubeSize: number, texList: IRenderTexture[] = null): void {
 
         cubeSize *= 0.5;
         this.m_minV.setXYZ(-cubeSize, -cubeSize, -cubeSize);
@@ -123,7 +123,7 @@ export default class Box3DEntity extends DisplayEntity {
 
         this.initializeThis(texList);
     }
-    initializeSizeXYZ(widthSize: number, heightSize: number, longSize: number, texList: TextureProxy[] = null): void {
+    initializeSizeXYZ(widthSize: number, heightSize: number, longSize: number, texList: IRenderTexture[] = null): void {
 
         this.m_minV.setXYZ(-widthSize * 0.5, -heightSize * 0.5, -longSize * 0.5);
         this.m_maxV.setXYZ(widthSize * 0.5, heightSize * 0.5, longSize * 0.5);

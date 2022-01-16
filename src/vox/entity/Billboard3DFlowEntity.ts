@@ -10,7 +10,7 @@ import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from '../../vox/material/MaterialBase';
 import BillboardFlowMaterial from "../../vox/material/mcase/BillboardFlowMaterial";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import BillboardPlaneFlowMesh from "../../vox/mesh/BillboardPlaneFlowMesh";
 
 export default class Billboard3DFlowEntity extends DisplayEntity {
@@ -162,7 +162,7 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
     setScaleXY(sx: number, sy: number): void {
         this.m_currMaterial.setScaleXY(sx, sy);
     }
-    createMaterial(texList: TextureProxy[]): void {
+    createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
             this.m_currMaterial = new BillboardFlowMaterial(this.m_brightnessEnabled, this.m_alphaEnabled, this.m_clipEnabled);
             this.m_currMaterial.setPlayParam(this.m_playOnce, this.m_direcEnabled, this.m_clipMixEnabled, this.m_spdScaleEnabled);
@@ -197,7 +197,7 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
         this.m_clipMixEnabled = clipMixEnabled;
         this.m_spdScaleEnabled = spdScaleEnabled;
     }
-    initialize(brightnessEnabled: boolean, alphaEnabled: boolean, clipEnabled: boolean, texList: TextureProxy[]): void {
+    initialize(brightnessEnabled: boolean, alphaEnabled: boolean, clipEnabled: boolean, texList: IRenderTexture[]): void {
         this.m_clipEnabled = clipEnabled;
         this.m_brightnessEnabled = brightnessEnabled;
         this.m_alphaEnabled = alphaEnabled;

@@ -21,6 +21,9 @@ interface IRenderTexture extends IRenderBuffer {
     getHeight(): number;
     getTargetType(): number;
     uploadFromFbo(texResource: IRenderResource, fboWidth: number, fboHeight: number): void;
+    enableMipmap(): void;
+    generateMipmap(texRes: IRenderResource): void;
+
     __$setRenderProxy(rc: IRenderProxy): void
     __$attachThis(): void;
     __$detachThis(): void;

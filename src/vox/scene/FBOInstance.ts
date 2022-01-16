@@ -4,7 +4,6 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// FBO Manager
 
 import RenderFilter from "../../vox/render/RenderFilter";
 import RenderMaskBitfield from "../../vox/render/RenderMaskBitfield";
@@ -18,6 +17,7 @@ import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import FrameBufferType from "../../vox/render/FrameBufferType";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderer from "../../vox/scene/IRenderer";
@@ -46,7 +46,7 @@ export default class FBOInstance {
     private m_gRState: number = -1;
     private m_gRColorMask: number = -1;
     private m_rindexs: number[] = [];
-    private m_texs: RTTTextureProxy[] = [null, null, null, null, null, null, null, null];
+    private m_texs: IRenderTexture[] = [null, null, null, null, null, null, null, null];
     private m_texStore: RTTTextureStore = null;
     private m_texsTot: number = 0;
     private m_synFBOSizeWithViewport: boolean = true;
@@ -334,7 +334,7 @@ export default class FBOInstance {
      * @returns get framebuffer output attachment texture by attachment index
      */
     getRTTAt(i: number): RTTTextureProxy {
-        return this.m_texs[i];
+        return this.m_texs[i] as RTTTextureProxy;
     }
     enableMipmapRTTAt(i: number): void {
         this.m_texs[i].enableMipmap();

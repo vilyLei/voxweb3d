@@ -9,7 +9,7 @@ import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from '../../vox/material/MaterialBase';
 import ScreenFixedPlaneMaterial from "../../vox/material/mcase/ScreenFixedPlaneMaterial";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
 import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
 
@@ -36,7 +36,7 @@ export default class ScreenFixedAlignPlaneEntity extends DisplayEntity {
     setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
         if (this.m_currMaterial != null) this.m_currMaterial.setRGBA4f(pr, pg, pb, pa);
     }
-    createMaterial(texList: TextureProxy[]): void {
+    createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
             this.m_currMaterial = new ScreenFixedPlaneMaterial();
             this.m_currMaterial.setTextureList(texList);
@@ -76,7 +76,7 @@ export default class ScreenFixedAlignPlaneEntity extends DisplayEntity {
             else this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
         }
     }
-    initialize(startX: number, startY: number, pwidth: number, pheight: number, texList: TextureProxy[] = null): void {
+    initialize(startX: number, startY: number, pwidth: number, pheight: number, texList: IRenderTexture[] = null): void {
         this.m_startX = startX;
         this.m_startZ = startY;
         this.m_pwidth = pwidth;

@@ -12,7 +12,7 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from '../../vox/material/MaterialBase';
 import RendererState from "../../vox/render/RendererState";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import Tube3DMesh from "../../vox/mesh/Tube3DMesh";
 
 export default class Tube3DEntity extends DisplayEntity {
@@ -34,7 +34,7 @@ export default class Tube3DEntity extends DisplayEntity {
     setVtxTransformMatrix(matrix: Matrix4): void {
         this.m_transMatrix = matrix;
     }
-    createMaterial(texList: TextureProxy[]): void {
+    createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
             let cm: Default3DMaterial = new Default3DMaterial();
             cm.setTextureList(texList);
@@ -72,7 +72,7 @@ export default class Tube3DEntity extends DisplayEntity {
             else this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
         }
     }
-    initialize(radius: number, height: number, longitudeNum: number, latitudeNum: number, texList: TextureProxy[] = null, uvType: number = 1, alignYRatio: number = -0.5): void {
+    initialize(radius: number, height: number, longitudeNum: number, latitudeNum: number, texList: IRenderTexture[] = null, uvType: number = 1, alignYRatio: number = -0.5): void {
         this.m_radius = radius;
         this.m_height = height;
         this.m_longitudeNum = longitudeNum;

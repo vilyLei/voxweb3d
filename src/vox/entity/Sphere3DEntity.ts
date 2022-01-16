@@ -9,7 +9,7 @@ import ROTransform from "../../vox/display/ROTransform";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from '../../vox/material/MaterialBase';
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import Sphere3DMesh from "../../vox/mesh/Sphere3DMesh"
 import RendererState from "../render/RendererState";
 import Color4 from "../material/Color4";
@@ -64,7 +64,7 @@ export default class Sphere3DEntity extends DisplayEntity {
             else this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
         }
     }
-    createMaterial(texList: TextureProxy[]): void {
+    createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
             let cm: Default3DMaterial = new Default3DMaterial();
             cm.vertColorEnabled = this.vtxColor != null;
@@ -77,14 +77,14 @@ export default class Sphere3DEntity extends DisplayEntity {
         }
     }
 
-    initializeFrom(entity: DisplayEntity, texList: TextureProxy[] = null) {
+    initializeFrom(entity: DisplayEntity, texList: IRenderTexture[] = null) {
         this.copyMeshFrom(entity);
         this.copyMaterialFrom(entity);
 
         this.createMaterial(texList);
         this.activeDisplay();
     }
-    initialize(radius: number, longitudeNumSegments: number, latitudeNumSegments: number, texList: TextureProxy[] = null) {
+    initialize(radius: number, longitudeNumSegments: number, latitudeNumSegments: number, texList: IRenderTexture[] = null) {
         this.m_radius = radius;
         this.m_longitudeNumSegments = longitudeNumSegments;
         this.m_latitudeNumSegments = latitudeNumSegments;

@@ -8,6 +8,7 @@ import { IRAdapterContext } from "../../vox/render/IRAdapterContext";
 import { RenderColorMask, RenderStateObject, RODrawState } from "../../vox/render/RODrawState";
 import { CullFaceMode, RenderBlendMode, DepthTestMode, GLBlendMode, GLBlendEquation } from "../../vox/render/RenderConst";
 import VROBase from "./VROBase";
+
 class RendererState {
 
     private static s_initBoo: boolean = true;

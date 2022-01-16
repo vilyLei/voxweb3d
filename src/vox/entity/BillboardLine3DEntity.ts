@@ -10,7 +10,7 @@ import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from '../../vox/material/MaterialBase';
 import BillboardLine3DMaterial from "../../vox/material/mcase/BillboardLine3DMaterial";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import LightLine3DMesh from "../../vox/mesh/LightLine3DMesh";
 import ROTransform from "../../vox/display/ROTransform";
 
@@ -24,7 +24,7 @@ export default class BillboardLine3DEntity extends DisplayEntity {
         super(transform);
         this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
     }
-    createMaterial(texList: TextureProxy[]): void {
+    createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
             this.m_currMaterial = new BillboardLine3DMaterial(this.m_brightnessEnabled, this.m_alphaEnabled)
             this.m_currMaterial.setTextureList(texList);
@@ -139,7 +139,7 @@ export default class BillboardLine3DEntity extends DisplayEntity {
             return this.m_currMaterial.setUVRotation(uvDegree);
         }
     }
-    initialize(texList: TextureProxy[] = null): void {
+    initialize(texList: IRenderTexture[] = null): void {
         this.createMaterial(texList);
         this.activeDisplay();
     }

@@ -8,7 +8,6 @@
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
-import UniformConst from "../../../vox/material/UniformConst";
 
 class OccBlurShaderBuffer extends ShaderCodeBuffer {
     constructor() {

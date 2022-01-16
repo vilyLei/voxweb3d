@@ -152,7 +152,7 @@ export class DemoRTTLod {
         this.m_rscene.addEntity(blurPlane, 1);
 
         this.m_wrapperTex = this.m_rscene.textureBlock.createWrapperTex(64,64);
-        this.m_wrapperTex.attachTex( this.m_srcRTTFboIns.getRTTAt(0) );
+        this.m_wrapperTex.attachTex( this.m_srcRTTFboIns.getRTTAt(0) as TextureProxy );
         this.m_srcRTTPlane =  new ScreenAlignPlaneEntity();
         this.m_srcRTTPlane.initialize(-1,-1,2,2, [this.m_wrapperTex]);
         this.m_rscene.addEntity(this.m_srcRTTPlane, 3);
