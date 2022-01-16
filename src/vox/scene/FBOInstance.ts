@@ -26,10 +26,11 @@ import { IRendererInstanceContext } from "./IRendererInstanceContext";
 import RendererState from "../render/RendererState";
 
 export default class FBOInstance {
+
     private m_backBufferColor: Color4 = new Color4();
     private m_adapter: IRenderAdapter = null;
     private m_renderProxy: IRenderProxy = null;
-    //private m_materialProxy: RenderMaterialProxy = null;
+
     private m_rcontext: IRendererInstanceContext = null;
     private m_bgColor: Color4 = new Color4();
     private m_renderer: IRenderer = null;
@@ -435,7 +436,6 @@ export default class FBOInstance {
     getViewportHeight(): number { return this.m_adapter.getViewportHeight(); }
     getFBOWidth(): number { return this.m_adapter.getFBOWidthAt(this.m_fboIndex); }
     getFBOHeight(): number { return this.m_adapter.getFBOHeightAt(this.m_fboIndex); }
-
 
     resetAttachmentMask(boo: boolean): void {
         this.m_adapter.resetFBOAttachmentMask(boo);

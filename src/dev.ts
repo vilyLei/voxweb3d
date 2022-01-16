@@ -48,7 +48,7 @@
 //  import * as DemoRayTest from "./demo/DemoRayTest";
 //  import Demo = DemoRayTest.demo.DemoRayTest;
 
-//  import {DemoSphScreenRect as Demo} from "./demo/DemoSphScreenRect";
+// import {DemoSphScreenRect as Demo} from "./demo/DemoSphScreenRect";
 
 //  import * as DemoGeom from "./demo/DemoGeom";
 //  import Demo = DemoGeom.demo.DemoGeom;
@@ -350,7 +350,7 @@
 
 //  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
-//  import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
+import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
 
 //  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 
@@ -388,7 +388,7 @@
 
 //  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
-import {RbtDrama as Demo} from "./app/RbtDrama";
+//  import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 

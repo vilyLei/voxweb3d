@@ -21,7 +21,6 @@ import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import RendererState from "../../vox/render/RendererState";
 import MeshBase from "../../vox/mesh/MeshBase";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
-// import IRenderMaterial from "../../vox/material/IRenderMaterial";
 import IRODisplay from "../../vox/display/IRODisplay";
 import RODisplay from "../../vox/display/RODisplay";
 import IRenderEntity from "../../vox/render/IRenderEntity";
