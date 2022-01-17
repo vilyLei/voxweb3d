@@ -32,6 +32,11 @@ export default class RectPlaneMesh extends MeshBase {
     vScale: number = 1.0;
 
     flipVerticalUV: boolean = false;
+    /**
+     * axisFlag = 0 is XOY plane
+     * axisFlag = 1 is XOZ plane
+     * axisFlag = 2 is YOZ plane
+     */
     axisFlag: number = 0;
     
     private m_polyhedralBoo: boolean = true;
@@ -59,7 +64,6 @@ export default class RectPlaneMesh extends MeshBase {
     getNVS(): Float32Array { return this.m_nvs; }
     
     getCVS(): Float32Array { return this.m_cvs; }
-
     initialize(startX: number, startY: number, pwidth: number, pheight: number): void {
         if (this.m_vs != null) {
             return;

@@ -36,8 +36,8 @@ class OccBlurShaderBuffer extends ShaderCodeBuffer {
         coder.addDefine("SAMPLE_RATE", "0.25");
         coder.addDefine("HALF_SAMPLE_RATE", "0.125");
 
-        coder.addTextureSample2D("",false);
-        coder.uniform.useViewPort(false,true);
+        coder.addTextureSample2D("", false);
+        coder.uniform.useViewPort(false, true);
         coder.addFragUniform("vec4", "u_param");
     }
     getFragShaderCode(): string {
@@ -130,7 +130,7 @@ void main() {
     toString(): string {
         return "[OccBlurShaderBuffer()]";
     }
-
+    
     static GetInstance(): OccBlurShaderBuffer {
         if (OccBlurShaderBuffer.s_instance != null) {
             return OccBlurShaderBuffer.s_instance;
@@ -146,11 +146,13 @@ export default class OccBlurMaterial extends MaterialBase {
         super();
         this.m_horizonal = horizonal;
     }
-
-    getCodeBuf(): ShaderCodeBuffer {
-        let buf: OccBlurShaderBuffer = OccBlurShaderBuffer.GetInstance();
+    protected buildBuf(): void {
+        let buf = OccBlurShaderBuffer.GetInstance();
         buf.horizonal = this.m_horizonal;
-        return buf;
+        
+    }
+    getCodeBuf(): ShaderCodeBuffer {
+        return OccBlurShaderBuffer.GetInstance();
     }
     private m_param: Float32Array = new Float32Array([1.0, 1.0, 1.0, 4.0]);
     setShadowRadius(radius: number): void {

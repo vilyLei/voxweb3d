@@ -185,7 +185,7 @@ export default class MeshBase {
      * @returns vertex indices buffer Uint16Array or Uint32Array
      */
     getIVS(): Uint16Array | Uint32Array { return this.m_ivs; }
-
+    
     setVtxBufRenderData(vtxData: IVtxBufRenderData): void {
         if(vtxData != null) {
             this.m_bufTypeList = vtxData.getBufTypeList();
