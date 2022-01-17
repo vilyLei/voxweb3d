@@ -15,8 +15,11 @@ import RenderProxy from "../../vox/render/RenderProxy";
 import Vector3D from "../math/Vector3D";
 
 import { IFBOInstance } from "./IFBOInstance";
+import { IRenderableEntityBlock } from "./IRenderableEntityBlock";
 
 interface IRendererScene {
+
+    entityBlock: IRenderableEntityBlock;
     
     enable(): void;
     disable(): void;

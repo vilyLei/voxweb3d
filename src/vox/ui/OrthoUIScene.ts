@@ -7,6 +7,7 @@
 /***************************************************************************/
 
 import RendererScene from "../scene/RendererScene";
+import {IRenderableEntityBlock} from "../scene/IRenderableEntityBlock";
 import RendererSubScene from "../scene/RendererSubScene";
 import EventBase from "../event/EventBase";
 import RendererParam from "../scene/RendererParam";
@@ -23,8 +24,11 @@ import Vector3D from "../math/Vector3D";
 import RenderProxy from "../render/RenderProxy";
 
 class OrthoUIScene implements IRendererScene {
+
     private m_rscene: RendererScene = null;
     private m_ruisc: RendererSubScene = null;
+    
+    entityBlock: IRenderableEntityBlock = null;
     constructor() { }
 
     initialize(rscene: RendererScene): void {

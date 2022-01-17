@@ -43,6 +43,7 @@ import TextureBlock from "../texture/TextureBlock";
 import FBOInstance from "./FBOInstance";
 import Color4 from "../material/Color4";
 import { IRendererSceneAccessor } from "./IRendererSceneAccessor";
+import {IRenderableEntityBlock} from "./IRenderableEntityBlock";
 
 export default class RendererSubScene implements IRenderer, IRendererScene {
     private static s_uid: number = 0;
@@ -80,6 +81,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     private m_enabled: boolean = true;
     
     readonly textureBlock: TextureBlock = null;
+    entityBlock: IRenderableEntityBlock = null;
 
     constructor(parent: IRenderer, renderer: RendererInstance, evtFlowEnabled: boolean) {
         this.m_evtFlowEnabled = evtFlowEnabled;
