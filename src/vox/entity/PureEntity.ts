@@ -135,6 +135,7 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
         }
         return -1;
     }
+    
     __$setDrawEnabled(boo: boolean): void {
         if (this.m_drawEnabled != boo) {
             //  console.log("PureEntity::__$setDrawEnabled: "+boo);
@@ -231,6 +232,10 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
         if (entity != null) {
             this.setMaterial(entity.getMaterial());
         }
+    }
+    copyPositionFrom(entity: PureEntity): void {
+    }
+    copyTransformFrom(entity: PureEntity): void {
     }
     private initDisplay(m: MeshBase): void {
         this.m_display.vbuf = m.__$attachVBuf();
