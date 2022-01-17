@@ -1,25 +1,24 @@
 import Vector3D from "../../../vox/math/Vector3D";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
-import RendererScene from "../../../vox/scene/RendererScene";
-import FBOInstance from "../../../vox/scene/FBOInstance";
+import { IFBOInstance } from "../../../vox/scene/IFBOInstance";
+import IRendererScene from "../../../vox/scene/IRendererScene";
 import {IRenderCamera} from "../../../vox/render/IRenderCamera";
-import CameraBase from "../../../vox/view/CameraBase";
 import DepthMaterial from "../material/DepthMaterial";
 import OccBlurMaterial from "../material/OccBlurMaterial";
 import ShadowVSMData from "../material/ShadowVSMData";
 import RendererState from "../../../vox/render/RendererState";
-import RTTTextureProxy from "../../../vox/texture/RTTTextureProxy";
+import IRenderTexture from "../../../vox/render/IRenderTexture";
 
 // import PingpongBlur from "../../../renderingtoy/mcase/PingpongBlur";
 
 export class ShadowVSMModule {
 
-    private m_rscene: RendererScene = null;
+    private m_rscene: IRendererScene = null;
     private m_vsmData: ShadowVSMData = null;
 
     private m_direcCamera: IRenderCamera = null;
-    private m_fboDepth: FBOInstance = null;
-    private m_fboOccBlur: FBOInstance = null;
+    private m_fboDepth: IFBOInstance = null;
+    private m_fboOccBlur: IFBOInstance = null;
     private m_verOccBlurPlane: Plane3DEntity = null;
     private m_horOccBlurPlane: Plane3DEntity = null;
     // private m_blurModule: PingpongBlur = null;
@@ -35,8 +34,8 @@ export class ShadowVSMModule {
     private m_viewHeight: number = 1300;
     private m_near: number = 0.01;
     private m_far: number = 3000.0;
-    private m_depthRtt: RTTTextureProxy = null;
-    private m_occBlurRtt: RTTTextureProxy = null;
+    private m_depthRtt: any = null;
+    private m_occBlurRtt: any = null;
     private m_fboIndex: number = 0;
     private m_processIDList: number[] = null;
     private m_rendererStatus: number = -1;
@@ -46,7 +45,7 @@ export class ShadowVSMModule {
         this.m_fboIndex = fboIndex;
     }
 
-    initialize(rscene: RendererScene, processIDList: number[], buildShadowDelay: number = 120, blurEnabled: boolean = false): void {
+    initialize(rscene: IRendererScene, processIDList: number[], buildShadowDelay: number = 120, blurEnabled: boolean = false): void {
         if (this.m_rscene == null) {
             this.m_rscene = rscene;
             this.m_buildShadowDelay = buildShadowDelay;
@@ -107,7 +106,7 @@ export class ShadowVSMModule {
         }
     }
 
-    getShadowMap(): RTTTextureProxy {
+    getShadowMap(): IRenderTexture {
         // if (this.m_blurModule != null) {
         //     return this.m_blurModule.getDstTexture();
         // }
@@ -134,16 +133,16 @@ export class ShadowVSMModule {
         this.m_fboDepth = this.m_rscene.createFBOInstance();
         this.m_fboDepth.asynFBOSizeWithViewport();
         this.m_fboDepth.setClearRGBAColor4f(1.0, 1.0, 1.0, 1.0);
-        this.m_fboDepth.createFBOAt(this.m_fboIndex, this.m_shadowMapW, this.m_shadowMapH, true, false);
+        this.m_fboDepth.createFBOAt(this.m_fboIndex, this.m_shadowMapW, this.m_shadowMapH, true, false,0);
         this.m_depthRtt = this.m_fboDepth.setRenderToRGBATexture(null, 0);
         this.m_fboDepth.setRProcessIDList(processIDList);
         this.m_fboDepth.setGlobalRenderState(RendererState.NORMAL_STATE);
-        this.m_fboDepth.setGlobalMaterial(new DepthMaterial());
+        this.m_fboDepth.setGlobalMaterial(new DepthMaterial(), false,false);
 
         this.m_fboOccBlur = this.m_rscene.createFBOInstance();
         this.m_fboOccBlur.asynFBOSizeWithViewport();
         this.m_fboOccBlur.setClearRGBAColor4f(1.0, 1.0, 1.0, 1.0);
-        this.m_fboOccBlur.createFBOAt(this.m_fboIndex, this.m_shadowMapW, this.m_shadowMapH, true, false);
+        this.m_fboOccBlur.createFBOAt(this.m_fboIndex, this.m_shadowMapW, this.m_shadowMapH, true, false, 0);
         this.m_occBlurRtt = this.m_fboOccBlur.setRenderToRGBATexture(null, 0);
 
         let occMaterial: OccBlurMaterial;
@@ -262,18 +261,18 @@ export class ShadowVSMModule {
     }
     private buildShadow(): void {
 
-        this.m_fboDepth.useCamera(this.m_direcCamera);
-        this.m_fboDepth.run(true, true);
+        this.m_fboDepth.useCamera(this.m_direcCamera, false);
+        this.m_fboDepth.run(true, true, true, true);
         this.m_fboDepth.useMainCamera();
         // drawing vertical
         this.m_fboOccBlur.setRenderToRGBATexture(this.m_occBlurRtt, 0);
         this.m_fboOccBlur.runBegin();
-        this.m_fboOccBlur.drawEntity(this.m_verOccBlurPlane);
+        this.m_fboOccBlur.drawEntity(this.m_verOccBlurPlane, false, true);
         this.m_fboOccBlur.runEnd();
         // drawing horizonal
         this.m_fboOccBlur.setRenderToRGBATexture(this.m_depthRtt, 0);
         this.m_fboOccBlur.runBegin();
-        this.m_fboOccBlur.drawEntity(this.m_horOccBlurPlane);
+        this.m_fboOccBlur.drawEntity(this.m_horOccBlurPlane, false, true);
         this.m_fboOccBlur.runEnd();
         // pingpong blur
         // if (this.m_blurModule != null) {

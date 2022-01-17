@@ -24,6 +24,7 @@ import IRenderer from "../../vox/scene/IRenderer";
 import IRenderProcess from "../../vox/render/IRenderProcess";
 import { IRendererInstanceContext } from "./IRendererInstanceContext";
 import RendererState from "../render/RendererState";
+import { IFBOInstance } from "./IFBOInstance";
 
 export default class FBOInstance {
 
@@ -444,7 +445,7 @@ export default class FBOInstance {
         this.m_adapter.setFBOAttachmentMaskAt(index, boo);
     }
 
-    setClearRGBColor3f(pr: number, pg: number, pb: number) {
+    setClearRGBColor3f(pr: number, pg: number, pb: number): void {
         this.m_bgColor.setRGB3f(pr, pg, pb);
     }
     setClearColorEnabled(boo: boolean): void {
@@ -547,13 +548,18 @@ export default class FBOInstance {
         if (lockRenderState) this.lockRenderState();
         if (lockMaterial && !autoRunBegin) this.lockMaterial();
 
-        if (this.m_fboIndex >= 0 && this.m_rindexs != null) {
+        if (this.m_fboIndex >= 0) {
+
             if (autoRunBegin)
                 this.runBeginDo();
-            // rendering running
-            for (let i: number = 0, len: number = this.m_rindexs.length; i < len; ++i) {
-                this.m_renderer.runAt(this.m_rindexs[i]);
+
+            if (this.m_rindexs != null) {
+                // rendering running
+                for (let i: number = 0, len: number = this.m_rindexs.length; i < len; ++i) {
+                    this.m_renderer.runAt(this.m_rindexs[i]);
+                }
             }
+
         }
         // this.m_runFlag = true;
         if (lockRenderState) this.unlockRenderState();
@@ -607,7 +613,7 @@ export default class FBOInstance {
         this.m_renderer.useMainCamera();
     }
     reset(): void {
-        this.setGlobalMaterial( null );
+        this.setGlobalMaterial(null);
         let i: number = 0;
         for (; i < this.m_texsTot; ++i) {
             this.m_texs[i] = null;
@@ -615,11 +621,11 @@ export default class FBOInstance {
         this.m_runFlag = false;
         this.m_fboIndex = -1;
         this.m_texsTot = 0;
-        this.m_rindexs = [];        
+        this.m_rindexs = [];
     }
 
     clone(): FBOInstance {
-        
+
         let ins: FBOInstance = new FBOInstance(this.m_renderer, this.m_texStore);
         ins.m_fboSizeFactor = this.m_fboSizeFactor;
         ins.m_bgColor.copyFrom(this.m_bgColor);

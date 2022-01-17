@@ -14,6 +14,7 @@ import CanvasTextureTool from "../../orthoui/assets/CanvasTextureTool";
 import Color4 from "../material/Color4";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
+import { IFBOInstance } from "../../vox/scene/IFBOInstance";
 import IRendererScene from "../../vox/scene/IRendererScene";
 import { IRenderCamera } from "../render/IRenderCamera";
 import IRenderProcess from "../render/IRenderProcess";
@@ -201,6 +202,10 @@ class OrthoUIScene implements IRendererScene {
      */
     getRenderProcessAt(processIndex: number): IRenderProcess {
         return this.m_ruisc.getRenderProcessAt(processIndex);
+    }
+    
+    createFBOInstance(): IFBOInstance {
+        return null;
     }
 }
 export { OrthoUIScene };

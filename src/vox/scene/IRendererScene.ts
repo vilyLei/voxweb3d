@@ -13,12 +13,16 @@ import {IRenderCamera} from "../render/IRenderCamera";
 import IRenderStage3D from "../render/IRenderStage3D";
 import RenderProxy from "../../vox/render/RenderProxy";
 import Vector3D from "../math/Vector3D";
+
+import { IFBOInstance } from "./IFBOInstance";
+
 interface IRendererScene {
     
     enable(): void;
     disable(): void;
     isEnabled(): boolean;
     getUid(): number;
+    createFBOInstance(): IFBOInstance;
     /**
      * 是否启用鼠标或者touch交互功能
      * @param gpuTestEnabled the default value is true.
