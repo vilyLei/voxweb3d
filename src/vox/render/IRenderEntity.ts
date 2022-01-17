@@ -76,6 +76,12 @@ export default interface IRenderEntity {
      */
     isPolyhedral(): boolean;
 
+    
+    copyPositionFrom(entity: IRenderEntity): void;
+    copyMeshFrom(entity: IRenderEntity): void;
+    copyMaterialFrom(entity: IRenderEntity): void;
+    copyTransformFrom(entity: IRenderEntity): void;
+
     getMaterial(): IRenderMaterial;
     getDisplay(): IRODisplay;
     getInvMatrix(): Matrix4

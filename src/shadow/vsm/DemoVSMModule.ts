@@ -128,7 +128,7 @@ export class DemoVSMModule {
 
         console.log("dracoParseFinish, modules: ", modules);
 
-        let shadowTex: TextureProxy = this.m_materialCtx.vsmModule.getShadowMap();
+        let shadowTex = this.m_materialCtx.vsmModule.getShadowMap();
         
         let uvscale: number = Math.random() * 7.0 + 0.6;
         let shadowMaterial: ShadowVSMMaterial = new ShadowVSMMaterial();
@@ -169,7 +169,7 @@ export class DemoVSMModule {
         frustrum.initiazlize(this.m_materialCtx.vsmModule.getCamera());
         this.m_rscene.addEntity(frustrum, 1);
 
-        let shadowTex: TextureProxy = this.m_materialCtx.vsmModule.getShadowMap();
+        let shadowTex = this.m_materialCtx.vsmModule.getShadowMap();
         
         let plane: Plane3DEntity = new Plane3DEntity();
         this.useMaterial(plane);

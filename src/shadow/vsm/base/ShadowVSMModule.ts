@@ -34,8 +34,8 @@ export class ShadowVSMModule {
     private m_viewHeight: number = 1300;
     private m_near: number = 0.01;
     private m_far: number = 3000.0;
-    private m_depthRtt: any = null;
-    private m_occBlurRtt: any = null;
+    private m_depthRtt: IRenderTexture = null;
+    private m_occBlurRtt: IRenderTexture = null;
     private m_fboIndex: number = 0;
     private m_processIDList: number[] = null;
     private m_rendererStatus: number = -1;
