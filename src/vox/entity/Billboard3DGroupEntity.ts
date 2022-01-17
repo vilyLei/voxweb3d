@@ -8,7 +8,7 @@
 import ROTransform from "../../vox/display/ROTransform";
 import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
-import MaterialBase from '../../vox/material/MaterialBase';
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderTexture from "../../vox/render/IRenderTexture";
 import BillboardGroupMaterial from "../../vox/material/mcase/BillboardGroupMaterial";
 import BillboardPlaneGroupMesh from "../../vox/mesh/BillboardPlaneGroupMesh";
@@ -131,7 +131,7 @@ export default class Billboard3DGroupEntity extends DisplayEntity {
     }
     protected createBounds(): void {
     }
-    protected __activeMesh(material: MaterialBase): void {
+    protected __activeMesh(material: IRenderMaterial): void {
         if (this.getMesh() == null) {
             let mesh: BillboardPlaneGroupMesh = this.m_billMesh;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;

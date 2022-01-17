@@ -8,7 +8,7 @@
 import ROTransform from "../../vox/display/ROTransform";
 import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
-import MaterialBase from '../../vox/material/MaterialBase';
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import BillboardFlowMaterial from "../../vox/material/mcase/BillboardFlowMaterial";
 import IRenderTexture from "../../vox/render/IRenderTexture";
 import BillboardPlaneFlowMesh from "../../vox/mesh/BillboardPlaneFlowMesh";
@@ -211,7 +211,7 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
     }
     protected createBounds(): void {
     }
-    protected __activeMesh(material: MaterialBase): void {
+    protected __activeMesh(material: IRenderMaterial): void {
         if (this.getMesh() == null) {
             let mesh: BillboardPlaneFlowMesh = this.m_billMesh;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;

@@ -10,7 +10,7 @@ import Matrix4 from "../../vox/math/Matrix4";
 import ROTransform from "../../vox/display/ROTransform";
 import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
-import MaterialBase from '../../vox/material/MaterialBase';
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import IRenderTexture from "../../vox/render/IRenderTexture";
 import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
@@ -131,7 +131,7 @@ export default class Box3DEntity extends DisplayEntity {
         this.initializeThis(texList);
     }
 
-    protected __activeMesh(material: MaterialBase): void {
+    protected __activeMesh(material: IRenderMaterial): void {
         this.m_currMesh = this.getMesh() as Box3DMesh;
         if (this.m_currMesh == null) {
             this.m_currMesh = new Box3DMesh();

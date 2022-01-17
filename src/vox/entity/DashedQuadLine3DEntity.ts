@@ -9,7 +9,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import DashedQuadLineMesh from '../../vox/mesh/DashedQuadLineMesh';
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Color4 from '../../vox/material/Color4';
-import MaterialBase from '../../vox/material/MaterialBase';
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import QuadLine3DMaterial from '../../vox/material/mcase/QuadLine3DMaterial';
 
 export default class DashedQuadLine3DEntity extends DisplayEntity
@@ -30,7 +30,7 @@ export default class DashedQuadLine3DEntity extends DisplayEntity
             this.setMaterial(cm);
         }
     }
-    protected __activeMesh(material:MaterialBase):void
+    protected __activeMesh(material:IRenderMaterial):void
     {
         if(this.getMesh() == null)
         {

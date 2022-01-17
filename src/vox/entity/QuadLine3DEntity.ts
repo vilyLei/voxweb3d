@@ -9,7 +9,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import QuadLineMesh from '../../vox/mesh/QuadLineMesh';
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Color4 from '../../vox/material/Color4';
-import MaterialBase from '../../vox/material/MaterialBase';
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import BrokenQuadLine3DMaterial from '../../vox/material/mcase/BrokenQuadLine3DMaterial';
 
 class QuadLine3DEntity extends DisplayEntity
@@ -29,7 +29,7 @@ class QuadLine3DEntity extends DisplayEntity
             this.setMaterial(cm);
         }
     }
-    protected __activeMesh(material:MaterialBase):void
+    protected __activeMesh(material:IRenderMaterial):void
     {
         if(this.getMesh() == null)
         {
@@ -93,7 +93,7 @@ class QuadBrokenLine3DEntity extends DisplayEntity
             this.setMaterial(cm);
         }
     }
-    protected __activeMesh(material:MaterialBase):void
+    protected __activeMesh(material:IRenderMaterial):void
     {
         if(this.getMesh() == null)
         {

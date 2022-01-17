@@ -9,7 +9,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import DashedLineMesh from '../../vox/mesh/DashedLineMesh';
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Color4 from '../../vox/material/Color4';
-import MaterialBase from '../../vox/material/MaterialBase';
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import Line3DMaterial from '../../vox/material/mcase/Line3DMaterial';
 
 export default class Line3DEntity extends DisplayEntity {
@@ -34,7 +34,7 @@ export default class Line3DEntity extends DisplayEntity {
             this.setMaterial(this.m_material);
         }
     }
-    protected __activeMesh(material: MaterialBase): void {
+    protected __activeMesh(material: IRenderMaterial): void {
         if (this.getMesh() == null) {
 
             let mesh: DashedLineMesh = new DashedLineMesh();

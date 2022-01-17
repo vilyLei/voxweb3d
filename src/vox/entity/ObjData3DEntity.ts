@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import DisplayEntity from "../../vox/entity/DisplayEntity";
-import MaterialBase from '../../vox/material/MaterialBase';
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import ROTransform from '../../vox/display/ROTransform';
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import IRenderTexture from "../../vox/render/IRenderTexture";
@@ -73,7 +73,7 @@ export default class ObjData3DEntity extends DisplayEntity {
             request.send();
         }
     }
-    protected __activeMesh(material: MaterialBase): void {
+    protected __activeMesh(material: IRenderMaterial): void {
         if (this.getMesh() == null) {
             let mesh: ObjData3DMesh = new ObjData3DMesh();
             mesh.baseParsering = this.baseParsering;

@@ -835,7 +835,7 @@ class Matrix4 implements Float32Data {
 		scale = null;
 		return true;
 	}
-	setThreeAxes(x_axis: Vector3D, y_axis: Vector3D, z_axis: Vector3D, ): void {
+	setThreeAxes(x_axis: Vector3D, y_axis: Vector3D, z_axis: Vector3D,): void {
 		let vs: Float32Array = this.m_localFS32;
 		vs[0] = x_axis.x; vs[1] = x_axis.y; vs[2] = x_axis.z;
 		vs[4] = y_axis.x; vs[5] = y_axis.y; vs[6] = y_axis.z;

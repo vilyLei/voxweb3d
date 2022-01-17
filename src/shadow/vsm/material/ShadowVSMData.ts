@@ -32,7 +32,6 @@ export default class ShadowVSMData extends MaterialPipeBase implements IMaterial
         this.m_shadowMap = shadowMap;
     }
     resetPipe(): void {
-
     }
     getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[], pipeType: MaterialPipeType): IRenderTexture[] {
         if (this.m_shadowMap != null) {
@@ -139,6 +138,5 @@ export default class ShadowVSMData extends MaterialPipeBase implements IMaterial
         this.m_offetMatrix = null;
 
         super.destroy();
-
     }
 }

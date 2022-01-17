@@ -8,7 +8,7 @@
 import DashedLineMesh from '../../vox/mesh/DashedLineMesh';
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Color4 from '../../vox/material/Color4';
-import MaterialBase from '../../vox/material/MaterialBase';
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import Line3DMaterial from '../../vox/material/mcase/Line3DMaterial';
 import Vector3D from '../math/Vector3D';
 
@@ -34,7 +34,7 @@ export default class Axis3DEntity extends DisplayEntity {
             this.setMaterial(cm);
         }
     }
-    protected __activeMesh(material: MaterialBase): void {
+    protected __activeMesh(material: IRenderMaterial): void {
         if (this.getMesh() == null) {
             let colorarr: number[] = [
                 this.colorX.r, this.colorX.g, this.colorX.b, this.colorX.r, this.colorX.g, this.colorX.b

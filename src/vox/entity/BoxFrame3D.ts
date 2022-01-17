@@ -11,7 +11,7 @@ import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import DashedLineMesh from '../../vox/mesh/DashedLineMesh';
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Color4 from '../../vox/material/Color4';
-import MaterialBase from '../../vox/material/MaterialBase';
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import Line3DMaterial from '../../vox/material/mcase/Line3DMaterial';
 
 export default class BoxFrame3D extends DisplayEntity
@@ -53,7 +53,7 @@ export default class BoxFrame3D extends DisplayEntity
             this.setMaterial( this.m_currMaterial );
         }
     }
-    protected __activeMesh(material:MaterialBase):void
+    protected __activeMesh(material:IRenderMaterial):void
     {
         if(this.getMesh() == null)
         {

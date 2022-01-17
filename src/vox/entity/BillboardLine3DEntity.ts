@@ -8,7 +8,7 @@
 import Vector3D from "../../vox/math/Vector3D";
 import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
-import MaterialBase from '../../vox/material/MaterialBase';
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import BillboardLine3DMaterial from "../../vox/material/mcase/BillboardLine3DMaterial";
 import IRenderTexture from "../../vox/render/IRenderTexture";
 import LightLine3DMesh from "../../vox/mesh/LightLine3DMesh";
@@ -143,7 +143,7 @@ export default class BillboardLine3DEntity extends DisplayEntity {
         this.createMaterial(texList);
         this.activeDisplay();
     }
-    protected __activeMesh(material: MaterialBase) {
+    protected __activeMesh(material: IRenderMaterial) {
         if (this.getMesh() == null) {
             let mesh: LightLine3DMesh = new LightLine3DMesh();
             mesh.flipVerticalUV = this.flipVerticalUV;

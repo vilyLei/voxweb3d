@@ -7,7 +7,7 @@
 
 import ROTransform from "../../vox/display/ROTransform";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
-import MaterialBase from '../../vox/material/MaterialBase';
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import IRenderTexture from "../../vox/render/IRenderTexture";
 import Cone3DMesh from "../../vox/mesh/Cone3DMesh";
@@ -51,7 +51,7 @@ export default class Cone3DEntity extends DisplayEntity {
         this.activeDisplay();
     }
 
-    protected __activeMesh(material: MaterialBase): void {
+    protected __activeMesh(material: IRenderMaterial): void {
         if (this.getMesh() == null) {
             let mesh: Cone3DMesh = new Cone3DMesh();
             if (this.m_transMatrix != null) {

@@ -7,7 +7,7 @@
 
 import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
-import MaterialBase from '../../vox/material/MaterialBase';
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import ScreenFixedPlaneMaterial from "../../vox/material/mcase/ScreenFixedPlaneMaterial";
 import IRenderTexture from "../../vox/render/IRenderTexture";
 import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
@@ -86,7 +86,7 @@ export default class ScreenFixedAlignPlaneEntity extends DisplayEntity {
         this.createMaterial(texList);
         this.activeDisplay();
     }
-    protected __activeMesh(material: MaterialBase) {
+    protected __activeMesh(material: IRenderMaterial) {
         if (this.getMesh() == null) {
             let mesh: RectPlaneMesh = new RectPlaneMesh();
             mesh.flipVerticalUV = this.flipVerticalUV;

@@ -9,7 +9,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import Matrix4 from "../../vox/math/Matrix4";
 import ROTransform from "../../vox/display/ROTransform";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
-import MaterialBase from '../../vox/material/MaterialBase';
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import RendererState from "../../vox/render/RendererState";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import IRenderTexture from "../../vox/render/IRenderTexture";
@@ -84,7 +84,7 @@ export default class Tube3DEntity extends DisplayEntity {
         this.activeDisplay();
     }
 
-    protected __activeMesh(material: MaterialBase): void {
+    protected __activeMesh(material: IRenderMaterial): void {
         this.m_currMesh = this.getMesh() as Tube3DMesh;
         if (this.m_currMesh == null) {
             this.m_currMesh = new Tube3DMesh();

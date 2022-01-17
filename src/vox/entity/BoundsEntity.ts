@@ -10,27 +10,21 @@
 import Vector3D from "../../vox/math/Vector3D";
 import ROTransform from "../../vox/display/ROTransform";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
-import MaterialBase from '../../vox/material/MaterialBase';
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import BoundsMesh from "../../vox/mesh/BoundsMesh";
 import AABB from "../../vox/geom/AABB";
-export default class BoundsEntity extends DisplayEntity
-{
-    private m_boundsMesh:BoundsMesh = null;
-    constructor(transform:ROTransform = null)
-    {
+export default class BoundsEntity extends DisplayEntity {
+    private m_boundsMesh: BoundsMesh = null;
+    constructor(transform: ROTransform = null) {
         super(transform);
     }
-    setMaterial(m:MaterialBase):void
-    {
+    setMaterial(m: IRenderMaterial): void {
     }
-    protected createDisplay():void
-    {
+    protected createDisplay(): void {
     }
-    initialize(minV:Vector3D, maxV:Vector3D):void
-    {
+    initialize(minV: Vector3D, maxV: Vector3D): void {
         this.mouseEnabled = true;
-        if(this.getMesh() == null)
-        {
+        if (this.getMesh() == null) {
             this.m_boundsMesh = new BoundsMesh();
             this.m_boundsMesh.bounds = new AABB();
             this.m_boundsMesh.bounds.min.copyFrom(minV);
@@ -39,22 +33,18 @@ export default class BoundsEntity extends DisplayEntity
             this.setMesh(this.m_boundsMesh);
         }
     }
-    setBounds(minV:Vector3D, maxV:Vector3D):void
-    {
+    setBounds(minV: Vector3D, maxV: Vector3D): void {
         this.m_boundsMesh.bounds.min.copyFrom(minV);
         this.m_boundsMesh.bounds.max.copyFrom(maxV);
         this.m_boundsMesh.bounds.updateFast();
     }
-    toString():string
-    {
-        return "BoundsEntity(uid = "+this.getUid()+", rseFlag = "+this.__$rseFlag+")";
+    toString(): string {
+        return "BoundsEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";
     }
-    isPolyhedral():boolean
-    {
+    isPolyhedral(): boolean {
         return false;
     }
-    destroy():void
-    {
+    destroy(): void {
         super.destroy();
         this.m_boundsMesh = null;
     }
