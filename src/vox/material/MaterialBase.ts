@@ -19,7 +19,7 @@ import { MaterialPipeType } from "./pipeline/MaterialPipeType";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 
 export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData {
-    
+
     //private static s_codeBuffer: ShaderCodeBuffer = null;
     private m_shduns: string = "";
     private m_shdData: ShaderData = null;
@@ -29,7 +29,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
     protected m_shaderUniformData: ShaderUniformData = null;
     protected m_pipeLine: IMaterialPipeline = null;
     protected m_uniqueShaderName: string = "";
-    
+
     // tex list unique hash value
     __$troMid: number = -1;
     __$uniform: IShaderUniform = null;
@@ -46,7 +46,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
      * @param units the value is a which sets the multiplier by which an implementation-specific value is multiplied with to create a constant depth offset. The default value is 0.
      */
     setPolygonOffset(factor: number, units: number = 0.0): void {
-        if(this.m_polygonOffset == null) {
+        if (this.m_polygonOffset == null) {
             this.m_polygonOffset = [factor, units];
         }
         else {
@@ -101,6 +101,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
         return false;
     }
     initializeByRenderer(texEnabled: boolean = false): void {
+        this.initializeByCodeBuf(true);
     }
     initializeByCodeBuf(texEnabled: boolean = false): void {
         if (this.m_shdData == null) {
@@ -114,11 +115,11 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
 
                 let shdData: ShaderData;
                 let shdCode_uniqueName: string = this.m_uniqueShaderName;
-                if(shdCode_uniqueName != "") {
+                if (shdCode_uniqueName != "") {
                     shdData = MaterialResource.FindData(shdCode_uniqueName);
                     this.m_shduns = shdCode_uniqueName;
                 }
-                if(shdData == null) {
+                if (shdData == null) {
                     // if (MaterialBase.s_codeBuffer == null) {
                     //     MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
                     // }
@@ -140,7 +141,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
                     buf.buildShader();
                     buf.buildDefine();
                     if (buf.pipeline != null) {
-                        if(buf.getShaderCodeObject() != null) {
+                        if (buf.getShaderCodeObject() != null) {
                             buf.pipeline.addShaderCode(buf.getShaderCodeObject(), false);
                         }
                         else {
@@ -258,7 +259,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
         }
         else {
             if (this.m_shdData != null && this.m_shdData.getTexTotal() > 0) {
-                console.warn("this material("+this.m_shdData.getUniqueShaderName()+") texList is null, need " + this.m_shdData.getTexTotal() + " textures.");
+                console.warn("this material(" + this.m_shdData.getUniqueShaderName() + ") texList is null, need " + this.m_shdData.getTexTotal() + " textures.");
             }
         }
         return false;
@@ -286,7 +287,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
     getBufTypeList(): number[] {
         return this.m_shdData != null ? this.m_shdData.getLocationTypes() : null;
     }
-    getBufSizeList(): number[] {        
+    getBufSizeList(): number[] {
         return this.m_shdData != null ? this.m_shdData.getAttriSizeList() : null;
     }
     private m_attachCount: number = 0;

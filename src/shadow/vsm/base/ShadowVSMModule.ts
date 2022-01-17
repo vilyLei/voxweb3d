@@ -1,5 +1,5 @@
 import Vector3D from "../../../vox/math/Vector3D";
-import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
+// import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import { IFBOInstance } from "../../../vox/scene/IFBOInstance";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import {IRenderCamera} from "../../../vox/render/IRenderCamera";
@@ -8,6 +8,7 @@ import OccBlurMaterial from "../material/OccBlurMaterial";
 import ShadowVSMData from "../material/ShadowVSMData";
 import RendererState from "../../../vox/render/RendererState";
 import IRenderTexture from "../../../vox/render/IRenderTexture";
+import IRenderEntity from "../../../vox/render/IRenderEntity";
 
 // import PingpongBlur from "../../../renderingtoy/mcase/PingpongBlur";
 
@@ -19,8 +20,8 @@ export class ShadowVSMModule {
     private m_direcCamera: IRenderCamera = null;
     private m_fboDepth: IFBOInstance = null;
     private m_fboOccBlur: IFBOInstance = null;
-    private m_verOccBlurPlane: Plane3DEntity = null;
-    private m_horOccBlurPlane: Plane3DEntity = null;
+    private m_verOccBlurPlane: IRenderEntity = null;
+    private m_horOccBlurPlane: IRenderEntity = null;
     // private m_blurModule: PingpongBlur = null;
 
     private m_camPos: Vector3D = new Vector3D(600.0, 800.0, -600.0);
@@ -147,18 +148,24 @@ export class ShadowVSMModule {
 
         let occMaterial: OccBlurMaterial;
         occMaterial = new OccBlurMaterial(false);
+        occMaterial.setTextureList([this.m_depthRtt]);
         occMaterial.setShadowRadius(this.m_shadowRadius);
-        let verOccBlurPlane: Plane3DEntity = new Plane3DEntity();
+        //let verOccBlurPlane: Plane3DEntity = new Plane3DEntity();
+        let verOccBlurPlane = this.m_rscene.entityBlock.createEntity();
+        verOccBlurPlane.copyMeshFrom( this.m_rscene.entityBlock.unitXOYPlane );
         verOccBlurPlane.setMaterial(occMaterial);
-        verOccBlurPlane.initializeXOY(-1, -1, 2, 2, [this.m_depthRtt]);
+        // verOccBlurPlane.initializeXOY(-1, -1, 2, 2);
         this.m_verOccBlurPlane = verOccBlurPlane;
 
         occMaterial = new OccBlurMaterial(true);
+        occMaterial.setTextureList([this.m_occBlurRtt]);
         occMaterial.setShadowRadius(this.m_shadowRadius);
-        let horOccBlurPlane: Plane3DEntity = new Plane3DEntity();
-        horOccBlurPlane.copyMeshFrom(verOccBlurPlane);
+        //let horOccBlurPlane: Plane3DEntity = new Plane3DEntity();
+        let horOccBlurPlane = this.m_rscene.entityBlock.createEntity();
+        // horOccBlurPlane.copyMeshFrom(verOccBlurPlane);
+        horOccBlurPlane.copyMeshFrom( this.m_rscene.entityBlock.unitXOYPlane );
         horOccBlurPlane.setMaterial(occMaterial);
-        horOccBlurPlane.initializeXOY(-1, -1, 2, 2, [this.m_occBlurRtt]);
+        // horOccBlurPlane.initializeXOY(-1, -1, 2, 2);
         this.m_horOccBlurPlane = horOccBlurPlane;
 
         // this.m_blurEnabled = blurEnabled;

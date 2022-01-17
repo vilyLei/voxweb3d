@@ -82,6 +82,7 @@ export default interface IRenderEntity {
     copyMaterialFrom(entity: IRenderEntity): void;
     copyTransformFrom(entity: IRenderEntity): void;
 
+    setMaterial(material: IRenderMaterial): void;
     getMaterial(): IRenderMaterial;
     getDisplay(): IRODisplay;
     getInvMatrix(): Matrix4
