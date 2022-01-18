@@ -47,7 +47,9 @@ import RenderShader from "../render/RenderShader";
 import Matrix4Pool from "../math/Matrix4Pool";
 import { IRendererSceneAccessor } from "./IRendererSceneAccessor";
 import { ShaderProgramBuilder } from "../../vox/material/ShaderProgramBuilder";
-import { IRenderableEntityBlock } from "./IRenderableEntityBlock";
+
+import { IRenderableMaterialBlock } from "./block/IRenderableMaterialBlock";
+import { IRenderableEntityBlock } from "./block/IRenderableEntityBlock";
 
 export default class RendererScene implements IRenderer, IRendererScene {
     
@@ -90,6 +92,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
     readonly textureBlock: TextureBlock = new TextureBlock();
     readonly stage3D: Stage3D = null;
 
+    materialBlock: IRenderableMaterialBlock = null;
     entityBlock: IRenderableEntityBlock = null;
     
     constructor() {

@@ -1,7 +1,7 @@
 import IRendererScene from "../../vox/scene/IRendererScene";
 import Vector3D from "../../vox/math/Vector3D";
 
-import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
+import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 import { LightModule } from "../../light/base/LightModule";
 import Color4 from "../../vox/material/Color4";
 import EnvLightData from "../../light/base/EnvLightData";
@@ -59,7 +59,7 @@ class MaterialContext {
     /**
      * material 构造material流水线, 这是一个默认的material pipeline
      */
-    readonly pipeline: MaterialPipeline = null;
+    readonly pipeline: IMaterialPipeline = null;
     /**
      * shader code management module
      */
@@ -174,7 +174,7 @@ class MaterialContext {
     addShaderCodeObject(uuid: ShaderCodeUUID, shaderCodeObject: ShaderCodeObject): void {
         MaterialContext.ShaderLib.addShaderCodeObject(uuid, shaderCodeObject);
     }
-    addPipeline(pipeline: MaterialPipeline): void {
+    addPipeline(pipeline: IMaterialPipeline): void {
         if (pipeline != null && pipeline != this.pipeline) {
             pipeline.addPipe(this.lightModule);
             pipeline.addPipe(this.envData);
@@ -183,8 +183,8 @@ class MaterialContext {
             }
         }
     }
-    createPipeline(): MaterialPipeline {
-        let pipeline = new MaterialPipeline(MaterialContext.ShaderLib);
+    createPipeline(): IMaterialPipeline {
+        let pipeline = this.m_rscene.materialBlock.createMaterialPipeline(MaterialContext.ShaderLib);
         pipeline.addPipe(this.lightModule);
         pipeline.addPipe(this.envData);
         if (this.vsmModule != null) {

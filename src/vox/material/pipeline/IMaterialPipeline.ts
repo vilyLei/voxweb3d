@@ -20,6 +20,7 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
  * 材质功能组装流水线行为规范
  */
 interface IMaterialPipeline {
+    uuid:string;
     /**
      * @param shaderCodeUUID IShaderCodeObject instance uuid
      * @param force default value is false

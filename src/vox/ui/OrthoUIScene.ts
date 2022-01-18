@@ -6,8 +6,9 @@
 /*                                                                         */
 /***************************************************************************/
 
+import {IRenderableMaterialBlock} from "../scene/block/IRenderableMaterialBlock";
+import {IRenderableEntityBlock} from "../scene/block/IRenderableEntityBlock";
 import RendererScene from "../scene/RendererScene";
-import {IRenderableEntityBlock} from "../scene/IRenderableEntityBlock";
 import RendererSubScene from "../scene/RendererSubScene";
 import EventBase from "../event/EventBase";
 import RendererParam from "../scene/RendererParam";
@@ -29,6 +30,7 @@ class OrthoUIScene implements IRendererScene {
     private m_ruisc: RendererSubScene = null;
     
     entityBlock: IRenderableEntityBlock = null;
+    materialBlock: IRenderableMaterialBlock = null;
     constructor() { }
 
     initialize(rscene: RendererScene): void {

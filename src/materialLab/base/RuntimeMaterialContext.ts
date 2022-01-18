@@ -92,7 +92,7 @@ class RuntimeMaterialContext {
         }
     }
     protected initEnd(param: RuntimeMaterialContextParam): void {
-
+        
     }
 
     addShaderCodeObject(uuid: ShaderCodeUUID, shaderCodeObject: ShaderCodeObject): void {

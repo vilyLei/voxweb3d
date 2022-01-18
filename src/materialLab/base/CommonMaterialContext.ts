@@ -1,5 +1,5 @@
 import RendererScene from "../../vox/scene/RendererScene";
-import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
+import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 import { IShaderLibConfigure, ShaderCodeType, ShaderCodeUUID, ShaderCodeConfigure, IShaderLibListener, MaterialContext, MaterialContextParam } from "./MaterialContext";
 
 import LambertLightMaterial from "../../vox/material/mcase/LambertLightMaterial";
@@ -21,11 +21,11 @@ class CommonMaterialContext extends MaterialContext {
     /**
      * 构造 lambert light material流水线
      */
-    readonly lambertPipeline: MaterialPipeline = null;
+    readonly lambertPipeline: IMaterialPipeline = null;
     /**
      * 构造 pbr light material流水线
      */
-    readonly pbrPipeline: MaterialPipeline = null;
+    readonly pbrPipeline: IMaterialPipeline = null;
     constructor() {
         super();
     }

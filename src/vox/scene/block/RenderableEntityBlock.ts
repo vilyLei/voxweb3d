@@ -5,15 +5,15 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IRenderEntity from "../../vox/render/IRenderEntity";
-import DisplayEntity from "../entity/DisplayEntity";
-import Vector3D from "../math/Vector3D";
-import Box3DMesh from "../mesh/Box3DMesh";
-import RectPlaneMesh from "../mesh/RectPlaneMesh";
-import { VtxBufRenderData } from "../mesh/VtxBufRenderData";
+import IRenderEntity from "../../../vox/render/IRenderEntity";
+import DisplayEntity from "../../../vox/entity/DisplayEntity";
+import Vector3D from "../../../vox/math/Vector3D";
+import Box3DMesh from "../../../vox/mesh/Box3DMesh";
+import RectPlaneMesh from "../../../vox/mesh/RectPlaneMesh";
+import { VtxBufRenderData } from "../../../vox/mesh/VtxBufRenderData";
 import { IRenderableEntityBlock } from "./IRenderableEntityBlock";
 
-class RendererableEntityBlock implements IRenderableEntityBlock {
+class RenderableEntityBlock implements IRenderableEntityBlock {
     
     private m_initFlag: boolean = true;
 
@@ -61,4 +61,4 @@ class RendererableEntityBlock implements IRenderableEntityBlock {
     }
 }
 
-export { RendererableEntityBlock }
+export { RenderableEntityBlock }

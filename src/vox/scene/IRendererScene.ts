@@ -14,11 +14,13 @@ import IRenderStage3D from "../render/IRenderStage3D";
 import RenderProxy from "../../vox/render/RenderProxy";
 import Vector3D from "../math/Vector3D";
 
+import { IRenderableMaterialBlock } from "./block/IRenderableMaterialBlock";
+import { IRenderableEntityBlock } from "./block/IRenderableEntityBlock";
 import { IFBOInstance } from "./IFBOInstance";
-import { IRenderableEntityBlock } from "./IRenderableEntityBlock";
 
 interface IRendererScene {
 
+    materialBlock: IRenderableMaterialBlock;
     entityBlock: IRenderableEntityBlock;
     
     enable(): void;

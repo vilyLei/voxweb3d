@@ -41,7 +41,8 @@ import { ViewTextureMaker } from "../renderingtoy/mcase/texture/ViewTextureMaker
 import FrustrumFrame3DEntity from "../vox/entity/FrustrumFrame3DEntity";
 import DebugFlag from "../vox/debug/DebugFlag";
 import { SpaceCullingMask } from "../vox/space/SpaceCullingMask";
-import { RendererableEntityBlock } from "../vox/scene/RenderableEntityBlock";
+import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
+import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
 
 export class DemoMultiLambertLights implements IShaderLibListener {
 
@@ -83,7 +84,11 @@ export class DemoMultiLambertLights implements IShaderLibListener {
             this.m_engine.interaction.zoomLookAtPosition = new Vector3D();
             this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
-            let entityBlock = new RendererableEntityBlock();
+            let materialBlock = new RenderableMaterialBlock();
+            materialBlock.initialize();
+            this.m_engine.rscene.materialBlock = materialBlock;
+
+            let entityBlock = new RenderableEntityBlock();
             entityBlock.initialize();
             this.m_engine.rscene.entityBlock = entityBlock;
 

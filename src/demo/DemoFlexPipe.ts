@@ -34,7 +34,7 @@ import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
 import { Bezier2Curve } from "../vox/geom/curve/BezierCurve";
 import { VertUniformComp } from "../vox/material/component/VertUniformComp";
-import { RendererableEntityBlock } from "../vox/scene/RenderableEntityBlock";
+import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
 
 export class DemoFlexPipe implements IShaderLibListener {
     constructor() { }
@@ -78,7 +78,7 @@ export class DemoFlexPipe implements IShaderLibListener {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
 
-            let entityBlock = new RendererableEntityBlock();
+            let entityBlock = new RenderableEntityBlock();
             entityBlock.initialize();
             this.m_rscene.entityBlock = entityBlock;
 

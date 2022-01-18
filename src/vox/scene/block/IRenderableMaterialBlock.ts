@@ -5,17 +5,15 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IRenderEntity from "../../vox/render/IRenderEntity";
+import { IShaderLib } from "../../../vox/material/IShaderLib";
+import { IMaterialPipeline } from "../../material/pipeline/IMaterialPipeline";
+import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 
-interface IRenderableEntityBlock {
+interface IRenderableMaterialBlock {
     
-    readonly screenPlane: IRenderEntity;
-    readonly unitXOYPlane: IRenderEntity;
-    readonly unitXOZPlane: IRenderEntity;
-    readonly unitBox: IRenderEntity;
-
     initialize(): void;
-    createEntity(): IRenderEntity;
+    createMaterial(): IRenderMaterial;
+    createMaterialPipeline(shaderLib: IShaderLib): IMaterialPipeline;
 }
 
-export { IRenderableEntityBlock }
+export { IRenderableMaterialBlock }

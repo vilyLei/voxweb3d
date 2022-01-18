@@ -19,7 +19,7 @@ import OcclusionPostOutline from "../renderingtoy/mcase/outline/OcclusionPostOut
 
 import { IShaderLibListener, CommonMaterialContext, MaterialContextParam } from "../materialLab/base/CommonMaterialContext";
 import { DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
-import { RendererableEntityBlock } from "../vox/scene/RenderableEntityBlock";
+import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
 import { Axis3DEntity } from "../app/VoxApp";
 import ScreenAlignPlaneEntity from "../vox/entity/ScreenAlignPlaneEntity";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
@@ -66,7 +66,7 @@ export class DemoPBR implements IShaderLibListener {
             this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();
             
-            let entityBlock = new RendererableEntityBlock();
+            let entityBlock = new RenderableEntityBlock();
             entityBlock.initialize();
             this.m_rscene.entityBlock = entityBlock;
             
