@@ -7,7 +7,7 @@
 
 import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
-import TextureProxy from "../../texture/TextureProxy";
+import IRenderTexture from "../../render/texture/IRenderTexture";
 import { SpecularMode } from "./SpecularMode";
 import { ShadowMode } from "./ShadowMode";
 import { UniformComp } from "../component/UniformComp";
@@ -43,14 +43,14 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
         this.m_texList = [];
         this.m_uniqueName = "LambertShd";
     }
-    addDiffuseMap(map: TextureProxy): void {
+    addDiffuseMap(map: IRenderTexture): void {
 
         if (map != null) {
             this.m_texList.push(map);
             if (this.buildFlag) this.m_uniform.addDiffuseMap();
         }
     }
-    addDiffuseMap2(map: TextureProxy): void {
+    addDiffuseMap2(map: IRenderTexture): void {
 
         if (map != null) {
             this.m_texList.push(map);
@@ -65,14 +65,14 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
             }
         }
     }
-    addNormalMap(map: TextureProxy): void {
+    addNormalMap(map: IRenderTexture): void {
 
         if (map != null && this.lightEnabled) {
             this.m_texList.push(map);
             if (this.buildFlag) this.m_uniform.addNormalMap();
         }
     }
-    addParallaxMap(map: TextureProxy, parallaxParamIndex: number = 0): void {
+    addParallaxMap(map: IRenderTexture, parallaxParamIndex: number = 0): void {
 
         if (map != null && this.lightEnabled) {
             this.m_texList.push(map);
@@ -80,7 +80,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
         }
     }
 
-    addDisplacementMap(map: TextureProxy, displacementParamIndex: number = 0): void {
+    addDisplacementMap(map: IRenderTexture, displacementParamIndex: number = 0): void {
 
         if (map != null) {
             this.m_texList.push(map);
@@ -88,7 +88,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
         }
     }
 
-    addAOMap(map: TextureProxy): void {
+    addAOMap(map: IRenderTexture): void {
 
         if (map != null) {
             this.m_texList.push(map);
@@ -96,7 +96,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
         }
     }
 
-    addSpecularMap(map: TextureProxy): void {
+    addSpecularMap(map: IRenderTexture): void {
 
         if (map != null && this.lightEnabled) {
             this.m_texList.push(map);

@@ -9,7 +9,9 @@ import { TextureProxyType } from "../../vox/texture/TextureProxyType";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import IRenderResource from "../../vox/render/IRenderResource";
-class WrapperTextureProxy extends TextureProxy {
+import { IWrapperTexture } from "../../vox/render/texture/IWrapperTexture";
+
+class WrapperTextureProxy extends TextureProxy implements IWrapperTexture {
     private m_tex: IRenderTexture = null;
     constructor(texWidth: number, texHeight: number, powerof2Boo: boolean = false) {
         super(texWidth, texHeight, powerof2Boo);
@@ -38,8 +40,12 @@ class WrapperTextureProxy extends TextureProxy {
         return this.m_tex;
     }
     attachTex(tex: IRenderTexture): void {
-        if (tex != null && tex != this) {
-            if (this.m_tex != tex) {
+
+        if (this.m_tex != tex) {
+            if (this.m_tex != null) {
+                this.m_tex.__$detachThis();
+            }
+            if (tex != null) {
                 tex.__$attachThis();
             }
             this.m_tex = tex;
@@ -119,9 +125,6 @@ class WrapperTextureProxy extends TextureProxy {
      */
     getTargetType(): number {
         return this.m_tex.getTargetType();
-    }
-    toString(): string {
-        return "[WrapperTextureProxy(name:" + this.name + ",uid=" + this.getUid() + ",width=" + this.getWidth() + ",height=" + this.getHeight() + ")]";
     }
 }
 export default WrapperTextureProxy;

@@ -23,12 +23,15 @@ import BinaryLoader from "../vox/assets/BinaryLoader";
 import DDSLoader from "../vox/assets/DDSLoader";
 import BytesCubeTextureProxy from "../vox/texture/BytesCubeTextureProxy";
 import RCExtension from "../vox/render/RCExtension";
+import { IBytesCubeTexture } from "../vox/render/texture/IBytesCubeTexture";
+import { IFloatCubeTexture } from "../vox/render/texture/IFloatCubeTexture";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 
 ///*
 class TextureLoader {
 
     protected m_rscene: RendererScene = null;
-    texture: FloatCubeTextureProxy = null;
+    texture: IBytesCubeTexture | IFloatCubeTexture = null;
     constructor() {
     }
 
@@ -57,7 +60,7 @@ class TextureLoader {
         let size: number = width * height * 3;
         let fs32: Float32Array = new Float32Array(buffer);
         let subArr: Float32Array = null;
-        let tex: FloatCubeTextureProxy = this.texture;
+        let tex = this.texture as IFloatCubeTexture;
         tex.toRGBFormat();
         for (let i: number = 0, len: number = 6; i < len; ++i) {
             subArr = fs32.slice(begin, begin + size);
@@ -107,7 +110,7 @@ class SpecularTextureLoader extends TextureLoader {
         let fs32: Float32Array = new Float32Array(buffer);
         let subArr: Float32Array = null;
 
-        let tex: FloatCubeTextureProxy = this.texture;
+        let tex = this.texture as IFloatCubeTexture;
         if(this.float32Enabled) {
             tex.toRGBFormatFloat32F();
         }
@@ -139,11 +142,11 @@ class SpecularTextureLoader extends TextureLoader {
             height >>= 1;
         }
     }
-    createBytesCube(rscene: RendererScene): BytesCubeTextureProxy {
+    createBytesCube(rscene: RendererScene): IBytesCubeTexture {
 
         let width: number = 128;
         let height: number = 128;
-        let tex: BytesCubeTextureProxy = rscene.textureBlock.createBytesCubeTex(width, height);
+        let tex = rscene.textureBlock.createBytesCubeTex(width, height);
         tex.mipmapEnabled = false;
         tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
         tex.magFilter = TextureConst.LINEAR;
@@ -238,7 +241,7 @@ export class DemoCubeMap {
         //let ddsUrl: string = "static/bytes/forestIrradiance.dds";
         //let ddsUrl: string = "static/bytes/forestReflection.dds";
 
-        let floatCubeTex: FloatCubeTextureProxy = this.m_rscene.textureBlock.createFloatCubeTex(32, 32);
+        let floatCubeTex = this.m_rscene.textureBlock.createFloatCubeTex(32, 32);
         floatCubeTex.mipmapEnabled = false;
         
         floatCubeTex.toRGBAFormat();
@@ -258,7 +261,7 @@ export class DemoCubeMap {
 
         this.createCubeBox( floatCubeTex );
     }
-    private createCubeBox(cubeTex: TextureProxy): void {
+    private createCubeBox(cubeTex: IRenderTexture): void {
 
         cubeTex.mipmapEnabled = true;
         cubeTex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;

@@ -8,6 +8,15 @@ import { TextureProxyType } from "../../vox/texture/TextureProxyType";
 import { TextureConst, TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
 import Color4 from "../../vox/material/Color4";
 import IRunnable from "../../vox/base/IRunnable";
+
+
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
+import { IRTTTexture } from "../../vox/render/texture/IRTTTexture";
+import { IDepthTexture } from "../../vox/render/texture/IDepthTexture";
+import { IWrapperTexture } from "../../vox/render/texture/IWrapperTexture";
+import { IFloatCubeTexture } from "../../vox/render/texture/IFloatCubeTexture";
+import { IBytesCubeTexture } from "../../vox/render/texture/IBytesCubeTexture";
+
 import TextureProxy from "../../vox/texture/TextureProxy";
 import TexturePool from "../../vox/texture/TexturePool";
 import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
@@ -18,8 +27,8 @@ import FloatCubeTextureProxy from "../../vox/texture/FloatCubeTextureProxy";
 import BytesCubeTextureProxy from "../../vox/texture/BytesCubeTextureProxy";
 import ImageCubeTextureProxy from "../../vox/texture/ImageCubeTextureProxy";
 import Texture3DProxy from "../../vox/texture/Texture3DProxy";
-import { IRTTTexture } from "../../vox/render/texture/IRTTTexture";
-import { IDepthTexture } from "../../vox/render/texture/IDepthTexture";
+
+
 import WrapperTextureProxy from "../../vox/texture/WrapperTextureProxy";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import TextureResSlot from "../../vox/texture/TextureResSlot";
@@ -73,10 +82,11 @@ export class TextureBlock {
     getRTTStrore(): RTTTextureStore {
         return this.m_rttStore;
     }
-    createWrapperTex(pw: number, ph: number, powerof2Boo: boolean = false): WrapperTextureProxy {
-        let tex: WrapperTextureProxy = new WrapperTextureProxy(pw, ph, powerof2Boo);
-        tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
-        return tex;
+    createWrapperTex(pw: number, ph: number, powerof2Boo: boolean = false): IWrapperTexture {
+        // let tex = new WrapperTextureProxy(pw, ph, powerof2Boo);
+        // tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+        // return tex;
+        return this.m_rttStore.createWrapperTex(pw, ph, powerof2Boo);
     }
     createRTTTex2D(pw: number, ph: number, powerof2Boo: boolean = false): IRTTTexture {
         let tex: IRTTTexture = this.m_rttStore.createRTTTex2D(pw, ph, powerof2Boo);
@@ -118,11 +128,11 @@ export class TextureBlock {
     createUint16Tex2D(pw: number, ph: number, powerof2Boo: boolean = false): Uint16TextureProxy {
         return new Uint16TextureProxy(pw, ph, powerof2Boo);
     }
-    createFloatCubeTex(pw: number, ph: number, powerof2Boo: boolean = false): FloatCubeTextureProxy {
+    createFloatCubeTex(pw: number, ph: number, powerof2Boo: boolean = false): IFloatCubeTexture {
         return new FloatCubeTextureProxy(pw, ph);
     }
     createBytesTex(texW: number, texH: number): BytesTextureProxy {
-        let tex: BytesTextureProxy = this.m_texPool.getTexture(TextureProxyType.Bytes) as BytesTextureProxy;
+        let tex = this.m_texPool.getTexture(TextureProxyType.Bytes) as BytesTextureProxy;
         if (tex == null) {
             tex = new BytesTextureProxy(texW, texH);
         }
@@ -130,8 +140,8 @@ export class TextureBlock {
         return tex;
     }
 
-    createBytesCubeTex(texW: number, texH: number): BytesCubeTextureProxy {
-        let tex: BytesCubeTextureProxy = new BytesCubeTextureProxy(texW, texH);
+    createBytesCubeTex(texW: number, texH: number): IBytesCubeTexture {
+        let tex = new BytesCubeTextureProxy(texW, texH);
         tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
         return tex;
     }
@@ -226,7 +236,7 @@ export class TextureBlock {
             /**
              * 准备释放回收 texture resource.
              */
-            let tex: TextureProxy;
+            let tex: IRenderTexture;
             this.m_clearDelay = 128;
 
             let freeMap: Map<number, number> = TextureResSlot.GetInstance().getFreeResUidMap();
@@ -238,7 +248,7 @@ export class TextureBlock {
                 total--;
                 if (value > 2) {
                     freeMap.delete(key);
-                    tex = TextureResSlot.GetInstance().removeTextureByUid(key) as TextureProxy;
+                    tex = TextureResSlot.GetInstance().removeTextureByUid(key);
                     if (tex != null) {
                         this.m_texPool.addTexture(tex);
                     }

@@ -174,8 +174,7 @@ export class DemoCubeFloatTex implements ILoaderListerner {
         let fs32: Float32Array = new Float32Array(buffer);
         let subArr: Float32Array = null;
 
-        let tex: FloatCubeTextureProxy;
-        tex = this.m_rscene.textureBlock.createFloatCubeTex(width, height);
+        let tex = this.m_rscene.textureBlock.createFloatCubeTex(width, height);
         tex.toRGBFormat();
         //tex.toRGBFormatHalfFloat();
         //tex.mipmapEnabled = false;
@@ -209,7 +208,7 @@ export class DemoCubeFloatTex implements ILoaderListerner {
         console.log("parseHdrBrnCubeMap, width: ",width, "height: ",height);
         let size: number = 0;
         let bytes: Uint8Array = currBytes.subarray(32);
-        let tex: BytesCubeTextureProxy  = this.m_rscene.textureBlock.createBytesCubeTex(width, height);
+        let tex  = this.m_rscene.textureBlock.createBytesCubeTex(width, height);
         if(mipMapMaxLv > 1) {
             tex.mipmapEnabled = false;
             tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
@@ -252,8 +251,7 @@ export class DemoCubeFloatTex implements ILoaderListerner {
         let fs32: Float32Array = new Float32Array(buffer);
         let subArr: Float32Array = null;
 
-        let tex: FloatCubeTextureProxy;
-        tex = this.m_rscene.textureBlock.createFloatCubeTex(width, height);
+        let tex = this.m_rscene.textureBlock.createFloatCubeTex(width, height);
         tex.toRGBFormat();
         tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
         tex.mipmapEnabled = false;

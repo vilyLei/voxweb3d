@@ -28,6 +28,7 @@ import CameraBase from "../vox/view/CameraBase";
 import MathConst from "../vox/math/MathConst";
 import RTTTextureProxy from "../vox/texture/RTTTextureProxy";
 import WrapperTextureProxy from "../vox/texture/WrapperTextureProxy";
+import { IWrapperTexture } from "../vox/render/texture/IWrapperTexture";
 
 export class DemoRTTLod {
     constructor() { }
@@ -95,7 +96,7 @@ export class DemoRTTLod {
     private m_srcRTTFboIns: FBOInstance = null;
     private m_dstRttFboIns: FBOInstance = null;
     private m_rttCamera:CameraBase = null;
-    private m_wrapperTex: WrapperTextureProxy;
+    private m_wrapperTex: IWrapperTexture;
     private m_srcRTTPlane: ScreenAlignPlaneEntity;
     private m_srcRTT:RTTTextureProxy = new RTTTextureProxy(512,512);
     private m_dstRTT:RTTTextureProxy = new RTTTextureProxy(512,512);

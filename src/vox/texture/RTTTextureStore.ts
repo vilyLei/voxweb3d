@@ -9,6 +9,7 @@ import { TextureConst, TextureFormat, TextureDataType } from "../../vox/texture/
 
 import { IRTTTexture } from "../../vox/render/texture/IRTTTexture";
 import { IDepthTexture } from "../../vox/render/texture/IDepthTexture";
+import { IWrapperTexture } from "../../vox/render/texture/IWrapperTexture";
 
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 import DepthTextureProxy from "../../vox/texture/DepthTextureProxy";
@@ -27,7 +28,7 @@ export class RTTTextureStore {
     getRenderProxy(): IRenderProxy {
         return this.m_renderProxy;
     }
-    createWrapperTex(pw: number, ph: number, powerof2Boo: boolean = false): WrapperTextureProxy {
+    createWrapperTex(pw: number, ph: number, powerof2Boo: boolean = false): IWrapperTexture {
         let tex: WrapperTextureProxy = new WrapperTextureProxy(pw, ph, powerof2Boo);
         return tex;
     }

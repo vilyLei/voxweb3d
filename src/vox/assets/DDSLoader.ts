@@ -12,12 +12,14 @@ import FloatCubeTextureProxy from "../texture/FloatCubeTextureProxy";
 import FloatTextureProxy from "../texture/FloatTextureProxy";
 import { TextureProxyType } from "../texture/TextureProxyType";
 import TextureProxy from "../texture/TextureProxy";
+import { IBytesCubeTexture } from "../../vox/render/texture/IBytesCubeTexture";
+import { IFloatCubeTexture } from "../../vox/render/texture/IFloatCubeTexture";
 import BinaryLoader from "./BinaryLoader";
 
 export default class DDSLoader {
     
     uuid: string = "DDSLoader";
-    texture: TextureProxy = null;
+    texture: IBytesCubeTexture | IFloatCubeTexture = null;
     constructor() {
     }
 
@@ -147,10 +149,12 @@ export default class DDSLoader {
                     else if (texType == TextureProxyType.Float || TextureProxyType.Bytes) {
                         if (floating) {
                             //console.log("float i: ",i,mipWidth,mipHeight,texData);
-                            (this.texture as FloatTextureProxy).setDataFromBytes(texData as Float32Array, mipWidth, mipHeight, i);
+                            // (this.texture as FloatTextureProxy).setDataFromBytes(texData as Float32Array, mipWidth, mipHeight, i);
+                            (this.texture as any).setDataFromBytes(texData as Float32Array, mipWidth, mipHeight, i);
                         }
                         else {
-                            (this.texture as BytesTextureProxy).setDataFromBytes(texData as Uint8Array, mipWidth, mipHeight, i);
+                            // (this.texture as BytesTextureProxy).setDataFromBytes(texData as Uint8Array, mipWidth, mipHeight, i);
+                            (this.texture as any).setDataFromBytes(texData as Uint8Array, mipWidth, mipHeight, i);
                         }
                     }
                 }

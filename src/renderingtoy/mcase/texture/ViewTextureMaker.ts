@@ -11,6 +11,8 @@ import WrapperTextureProxy from "../../../vox/texture/WrapperTextureProxy";
 import ScreenFixedAlignPlaneEntity from "../../../vox/entity/ScreenFixedAlignPlaneEntity";
 import RendererState from "../../../vox/render/RendererState";
 import { IRTTTexture } from "../../../vox/render/texture/IRTTTexture";
+import { IWrapperTexture } from "../../../vox/render/texture/IWrapperTexture";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
 class ViewTextureMaker {
 
@@ -29,8 +31,8 @@ class ViewTextureMaker {
     private m_far: number = 2000.0;
     private m_viewRtt: IRTTTexture = null;
     private m_colorRtt: IRTTTexture = null;
-    private m_colorMap: WrapperTextureProxy = null;
-    private m_map: WrapperTextureProxy = null;
+    private m_colorMap: IWrapperTexture = null;
+    private m_map: IWrapperTexture = null;
     private m_fboIndex: number = 0;
     private m_processIDList: number[] = null;
     private m_rendererStatus: number = -1;
@@ -86,7 +88,7 @@ class ViewTextureMaker {
         this.m_viewHeight = viewH;
     }
     
-    getMap(): TextureProxy {
+    getMap(): IRenderTexture {
         return this.m_map;
         //return this.m_viewRtt;
     }

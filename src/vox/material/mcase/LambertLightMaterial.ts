@@ -12,7 +12,7 @@ import MaterialBase from "../../vox/../material/MaterialBase";
 import { SpecularMode } from "../pipeline/SpecularMode";
 import { AdvancedShaderCodeBuffer } from "../pipeline/AdvancedShaderCodeBuffer";
 import Color4 from "../Color4";
-import TextureProxy from "../../texture/TextureProxy";
+import IRenderTexture from "../../render/texture/IRenderTexture";
 import { UniformComp } from "../component/UniformComp";
 import Matrix4 from "../../math/Matrix4";
 
@@ -31,12 +31,12 @@ export default class LambertLightMaterial extends MaterialBase {
     colorEnabled: boolean = true;
     normalEnabled: boolean = true;
 
-    diffuseMap: TextureProxy = null;
-    diffuseMap2: TextureProxy = null;
-    normalMap: TextureProxy = null;
-    parallaxMap: TextureProxy = null;
-    aoMap: TextureProxy = null;
-    specularMap: TextureProxy = null;
+    diffuseMap: IRenderTexture = null;
+    diffuseMap2: IRenderTexture = null;
+    normalMap: IRenderTexture = null;
+    parallaxMap: IRenderTexture = null;
+    aoMap: IRenderTexture = null;
+    specularMap: IRenderTexture = null;
     specularMode: SpecularMode = SpecularMode.Default;
 
     shadowReceiveEnabled: boolean = false;
@@ -101,7 +101,7 @@ export default class LambertLightMaterial extends MaterialBase {
         this.m_fragLocalParamsTotal = src.m_fragLocalParamsTotal;
         this.m_uniqueShaderName = src.m_uniqueShaderName;
     }
-    protected buildTextureList(): TextureProxy[] {
+    protected buildTextureList(): IRenderTexture[] {
 
         let buf: AdvancedShaderCodeBuffer = LambertLightMaterial.s_shaderCodeBuffer;
         buf.setIRenderTextureList([]);
@@ -113,7 +113,7 @@ export default class LambertLightMaterial extends MaterialBase {
         buf.addAOMap( this.aoMap );
         buf.addSpecularMap( this.specularMap );
 
-        let list = buf.getIRenderTextureList() as TextureProxy[];
+        let list = buf.getIRenderTextureList() as IRenderTexture[];
         if(this.vertUniform != null) this.vertUniform.getTextures(buf.getShaderCodeBuilder(), list);
         buf.getTexturesFromPipeline(list);
         return list;

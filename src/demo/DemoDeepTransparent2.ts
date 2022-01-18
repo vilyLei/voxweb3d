@@ -21,6 +21,7 @@ import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import DeepColorMaterial from "../demo/deepTransparent/DeepColorMaterial";
 import PeelColorMaterial from "../demo/deepTransparent/PeelColorMaterial";
 import { IDepthTexture } from "../vox/render/texture/IDepthTexture";
+import { IWrapperTexture } from "../vox/render/texture/IWrapperTexture";
 
 
 export class DemoDeepTransparent2 extends DemoInstance {
@@ -30,7 +31,7 @@ export class DemoDeepTransparent2 extends DemoInstance {
 
     private m_depTex0: IDepthTexture = null;
     private m_depTex1: IDepthTexture = null;
-    private m_wrapperTex: WrapperTextureProxy = null;
+    private m_wrapperTex: IWrapperTexture = null;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = null;
     private m_profileInstance: ProfileInstance = null;

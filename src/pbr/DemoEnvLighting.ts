@@ -24,13 +24,14 @@ import BinaryLoader from "../vox/assets/BinaryLoader";
 
 import PBREnvLightingMaterial from "../pbr/material/PBREnvLightingMaterial";
 import PBRTexLightingMaterial from "./material/PBRTexLightingMaterial";
+import { IFloatCubeTexture } from "../vox/render/texture/IFloatCubeTexture";
 import FloatCubeTextureProxy from "../vox/texture/FloatCubeTextureProxy";
 import { TextureConst } from "../vox/texture/TextureConst";
 
 class TextureLoader {
 
     protected m_rscene: RendererScene = null;
-    texture: FloatCubeTextureProxy = null;
+    texture: IFloatCubeTexture = null;
     constructor() {        
     }
     
@@ -59,7 +60,7 @@ class TextureLoader {
         let size: number = width * height * 3;
         let fs32: Float32Array = new Float32Array(buffer);
         let subArr: Float32Array = null;
-        let tex: FloatCubeTextureProxy = this.texture;
+        let tex = this.texture;
         tex.toRGBFormat();
         for (let i: number = 0, len: number = 6; i < len; ++i) {
             subArr = fs32.slice(begin, begin + size);
@@ -83,7 +84,7 @@ class SpecularTextureLoader extends TextureLoader {
         let fs32: Float32Array = new Float32Array(buffer);
         let subArr: Float32Array = null;
 
-        let tex: FloatCubeTextureProxy = this.texture;
+        let tex = this.texture;
         tex.toRGBFormat();
         tex.mipmapEnabled = false;
         tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
@@ -218,7 +219,7 @@ export class DemoEnvLighting {
             }
         }
     }
-    private initLighting(d_envTex: FloatCubeTextureProxy,s_envTex: FloatCubeTextureProxy): void {
+    private initLighting(d_envTex: IFloatCubeTexture,s_envTex: IFloatCubeTexture): void {
 
         let radius:number = 150.0;
         let rn:number = 7;

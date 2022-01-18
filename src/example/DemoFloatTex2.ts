@@ -51,7 +51,7 @@ export namespace demo {
         }
         //CreateFloatCubeTex
         private CreateFloatCubeTex(): TextureProxy {
-            let tex: FloatCubeTextureProxy = this.m_rscene.textureBlock.createFloatCubeTex(16, 16, true);
+            let tex = this.m_rscene.textureBlock.createFloatCubeTex(16, 16, true);
             let vs: Float32Array = new Float32Array(tex.getWidth() * tex.getHeight() * 4);
 
             let c: number = 0;
@@ -73,7 +73,7 @@ export namespace demo {
             for (k = 0; k < 6; ++k) {
                 tex.setDataFromBytesToFaceAt(k, vs, tex.getWidth(), tex.getHeight(), 0);
             }
-            return tex;
+            return tex as any;
         }
         private createFloatTex(): TextureProxy {
             let size: number = 64;
@@ -353,8 +353,7 @@ export namespace demo {
             let subArr: Uint8Array = null;
 
             console.log("parseUint8DataToCube....fs32.length: " + fs32.length);
-            let tex: BytesCubeTextureProxy;
-            tex = this.m_rscene.textureBlock.createBytesCubeTex(width, height);
+            let tex = this.m_rscene.textureBlock.createBytesCubeTex(width, height);
 
 
             for (let i: number = 0, len: number = 6; i < len; ++i) {
@@ -379,8 +378,7 @@ export namespace demo {
             let subArr: Float32Array = null;
 
             console.log("parseUint8DataToCube....fs32.length: " + fs32.length);
-            let tex: FloatCubeTextureProxy;
-            tex = this.m_rscene.textureBlock.createFloatCubeTex(width, height);
+            let tex = this.m_rscene.textureBlock.createFloatCubeTex(width, height);
             tex.toRGBFormat();
             tex.mipmapEnabled = false;
             for (let i: number = 0, len: number = 6; i < len; ++i) {
