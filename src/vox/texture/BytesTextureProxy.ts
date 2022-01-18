@@ -8,8 +8,9 @@
 import { TextureProxyType } from "../../vox/texture/TextureProxyType";
 import { TextureFormat } from "../../vox/texture/TextureConst";
 import RawDataTextureProxy from "../../vox/texture/RawDataTextureProxy";
+import { IBytesTexture } from "../../vox/render/texture/IBytesTexture";
 
-class BytesTextureProxy extends RawDataTextureProxy {
+class BytesTextureProxy extends RawDataTextureProxy implements IBytesTexture {
     constructor(texWidth: number, texHeight: number, powerof2Boo: boolean = false) {
         super(texWidth, texHeight, powerof2Boo);
         this.m_type = TextureProxyType.Bytes;

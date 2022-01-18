@@ -138,7 +138,7 @@ export namespace example
                 //tex4.minFilter = TextureConst.NEAREST_MIPMAP_LINEAR;
                 //let tex5:TextureProxy = this.getTexByUrl("./static/pics/rectBorder_01.png");
                 */
-                let colorTex:TextureProxy = this.m_rscene.textureBlock.createRGBATex2D(128,128,new Color4(1.0,1.0,1.0,1.0));
+                let colorTex = this.m_rscene.textureBlock.createRGBATex2D(128,128,new Color4(1.0,1.0,1.0,1.0));
                 colorTex.mipmapEnabled = true;
                 //this.m_statusDisp.initialize("rstatus");
                 let material:TwoPngTexMateria = new TwoPngTexMateria();

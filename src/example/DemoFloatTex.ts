@@ -99,7 +99,7 @@ export namespace demo {
             let tex: BytesTextureProxy;
             let vs: Uint8Array;
             ///*
-            tex = this.m_rscene.textureBlock.createBytesTex(4, 4);
+            tex = this.m_rscene.textureBlock.createBytesTex(4, 4) as BytesTextureProxy;
             vs = new Uint8Array(tex.getWidth() * tex.getHeight() * 4);
 
             for (let i: number = 0; i < tex.getHeight(); ++i) {

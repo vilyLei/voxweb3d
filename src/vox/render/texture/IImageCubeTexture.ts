@@ -16,4 +16,4 @@ interface IImageCubeTexture extends IRenderTexture {
      */
     setDataFromImageToFaceAt(index: number, img: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap, miplevel: number): void;
 }
-export { IImageCubeTexture };
+export { IImageCubeTexture }

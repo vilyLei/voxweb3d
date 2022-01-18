@@ -18,6 +18,8 @@ import { IFloatCubeTexture } from "../../vox/render/texture/IFloatCubeTexture";
 import { IBytesCubeTexture } from "../../vox/render/texture/IBytesCubeTexture";
 import { IImageTexture } from "../../vox/render/texture/IImageTexture";
 import { IImageCubeTexture } from "../../vox/render/texture/IImageCubeTexture";
+import { ITexture3D } from "../../vox/render/texture/ITexture3D";
+import { IBytesTexture } from "../../vox/render/texture/IBytesTexture";
 
 // import TextureProxy from "../../vox/texture/TextureProxy";
 import TexturePool from "../../vox/texture/TexturePool";
@@ -129,7 +131,7 @@ export class TextureBlock {
     createFloatCubeTex(pw: number, ph: number, powerof2Boo: boolean = false): IFloatCubeTexture {
         return new FloatCubeTextureProxy(pw, ph);
     }
-    createBytesTex(texW: number, texH: number): BytesTextureProxy {
+    createBytesTex(texW: number, texH: number): IBytesTexture {
         let tex = this.m_texPool.getTexture(TextureProxyType.Bytes) as BytesTextureProxy;
         if (tex == null) {
             tex = new BytesTextureProxy(texW, texH);
@@ -148,19 +150,19 @@ export class TextureBlock {
         tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
         return tex;
     }
-    createTex3D(texW: number, texH: number, depth: number = 1): Texture3DProxy {
+    createTex3D(texW: number, texH: number, depth: number = 1): ITexture3D {
         if (depth < 1) {
             depth = 1;
         }
-        let tex: Texture3DProxy = new Texture3DProxy(texW, texH, depth);
+        let tex = new Texture3DProxy(texW, texH, depth);
         tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
         return tex;
     }
-    createRGBATex2D(pw: number, ph: number, color: Color4): BytesTextureProxy {
+    createRGBATex2D(pw: number, ph: number, color: Color4): IBytesTexture {
         pw = pw > 1 ? pw : 1;
         ph = ph > 1 ? ph : 1;
         let tot: number = pw * ph;
-        let tex: BytesTextureProxy = this.createBytesTex(pw, ph);
+        let tex = this.createBytesTex(pw, ph);
         let bytes: Uint8Array = new Uint8Array(tot * 4);
         let pr: number = Math.round(color.r * 255.0);
         let pg: number = Math.round(color.g * 255.0);
@@ -172,27 +174,27 @@ export class TextureBlock {
             bytes.set(fs, k);
             k += 4;
         }
-        tex.setDataFromBytes(bytes, 0, pw, ph);
+        tex.setDataFromBytes(bytes, 0, pw, ph, 0,0,false);
         tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
         return tex;
         return tex;
     }
-    createAlphaTex2D(pw: number, ph: number, alpha: number): BytesTextureProxy {
+    createAlphaTex2D(pw: number, ph: number, alpha: number): IBytesTexture {
         pw = pw > 1 ? pw : 1;
         ph = ph > 1 ? ph : 1;
         let size: number = pw * ph;
-        let tex: BytesTextureProxy = this.createBytesTex(pw, ph);
+        let tex = this.createBytesTex(pw, ph);
         tex.toAlphaFormat();
         let bytes: Uint8Array = new Uint8Array(size);
         let value: number = Math.round(alpha * 255.0);
         bytes.fill(value, 0, size);
-        tex.setDataFromBytes(bytes, 0, pw, ph);
+        tex.setDataFromBytes(bytes, 0, pw, ph, 0,0,false);
         tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
         return tex;
     }
-    createAlphaTexBytes2D(pw: number, ph: number, bytes: Uint8Array): BytesTextureProxy {
-        let tex: BytesTextureProxy = this.createBytesTex(pw, ph);
-        tex.setDataFromBytes(bytes, 0, pw, ph);
+    createAlphaTexBytes2D(pw: number, ph: number, bytes: Uint8Array): IBytesTexture {
+        let tex = this.createBytesTex(pw, ph);
+        tex.setDataFromBytes(bytes, 0, pw, ph, 0,0,false);
         tex.toAlphaFormat();
         tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
         return tex;

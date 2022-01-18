@@ -47,8 +47,8 @@ export namespace example {
             img.src = purl;
             return ptex;
         }
-        getBytesTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-            let ptex: BytesTextureProxy = this.m_rscene.textureBlock.createBytesTex(64, 64);
+        getBytesTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+            let ptex = this.m_rscene.textureBlock.createBytesTex(64, 64);
             ptex.mipmapEnabled = true;
             if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
             let img: any = new Image();
@@ -57,7 +57,7 @@ export namespace example {
                 let obj: any = null;
                 for (let i: number = 0, len: number = mips.length; i < len; ++i) {
                     obj = mips[i];
-                    ptex.setDataFromBytes(obj.data, i, obj.width, obj.height);
+                    ptex.setDataFromBytes(obj.data, i, obj.width, obj.height, 0,0,false);
                 }
 
             }
@@ -156,7 +156,7 @@ export namespace example {
             console.log("Mouse down.");
             //this.m_targetTex
             let selfT: MipmapTexture = this;
-            this.m_targetBytesTex
+            
             let bytetex: BytesTextureProxy = this.m_targetBytesTex;
             let img: any = new Image();
             img.onload = function (params: any) {

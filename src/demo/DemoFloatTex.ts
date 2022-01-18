@@ -28,6 +28,7 @@ import MouseEvent from "../vox/event/MouseEvent";
 import DivLog from "../vox/utils/DivLog";
 import RCExtension from "../vox/render/RCExtension";
 import UfloatFromBytesMaterial from "./material/UfloatFromBytesMaterial";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 export class DemoFloatTex implements ILoaderListerner {
     constructor() { }
     private m_rscene: RendererScene = null;
@@ -96,15 +97,15 @@ export class DemoFloatTex implements ILoaderListerner {
         posTex.setDataFromBytes(fs, 0, pw, ph);
         return posTex;
     }
-    private createByteTexByBytes(bytes: Uint8Array, pw: number, ph: number): BytesTextureProxy {
+    private createByteTexByBytes(bytes: Uint8Array, pw: number, ph: number): IRenderTexture {
 
-        let posTex: BytesTextureProxy = this.m_rscene.textureBlock.createBytesTex(pw, ph);
+        let posTex = this.m_rscene.textureBlock.createBytesTex(pw, ph);
         posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         //posTex.mipmapEnabled = false;
         posTex.minFilter = TextureConst.NEAREST;
         posTex.magFilter = TextureConst.NEAREST;
 
-        posTex.setDataFromBytes(bytes, 0, pw, ph);
+        posTex.setDataFromBytes(bytes, 0, pw, ph, 0,0,false);
         return posTex;
     }
     // 2.12 34 56
@@ -256,7 +257,7 @@ export class DemoFloatTex implements ILoaderListerner {
         console.log("initHdrBrnDisp mipMapMaxLv: ", mipMapMaxLv,data16);
         //console.log("initHdrBrnDisp bytes: ", bytes);
         //new UfloatFromBytesMaterial
-        let bytesTex: BytesTextureProxy = this.m_rscene.textureBlock.createBytesTex(width, height);
+        let bytesTex = this.m_rscene.textureBlock.createBytesTex(width, height);
 
         for (let j: number = 0; j < mipMapMaxLv; j++) {
             for (let i: number = 0; i < 6; i++) {
@@ -268,7 +269,7 @@ export class DemoFloatTex implements ILoaderListerner {
                 }
                 subArr = bytes.slice(begin, begin + size);
                 //console.log("width: ",width, "subArr.length: ",subArr.length);
-                bytesTex.setDataFromBytes(subArr, j, width, width);
+                bytesTex.setDataFromBytes(subArr, j, width, width, 0,0,false);
                 
                 begin += size;
             }
@@ -350,7 +351,7 @@ export class DemoFloatTex implements ILoaderListerner {
         return;
         let subArr: Float32Array = null;
         
-        let bytesTex: BytesTextureProxy = this.m_rscene.textureBlock.createBytesTex(width, height);
+        let bytesTex = this.m_rscene.textureBlock.createBytesTex(width, height);
         bytesTex.mipmapEnabled = false;
 
         for (let j: number = 0; j < 8; j++) {
@@ -370,7 +371,7 @@ export class DemoFloatTex implements ILoaderListerner {
                     this.ufloat32To4Bytes(subArr[k * 3], k * 4, dstArr);
                 }
 
-                bytesTex.setDataFromBytes(dstArr, j, width, width);
+                bytesTex.setDataFromBytes(dstArr, j, width, width, 0,0,false);
 
                 begin += size;
             }
@@ -462,7 +463,7 @@ export class DemoFloatTex implements ILoaderListerner {
         let rgbe: RGBE = parser.parse(buffer);
         console.log("parse rgbeData: ", rgbe);
 
-        let ftex: TextureProxy = this.createByteTexByBytes(rgbe.data as Uint8Array, rgbe.width, rgbe.height);
+        let ftex = this.createByteTexByBytes(rgbe.data as Uint8Array, rgbe.width, rgbe.height);
 
         this.m_hdrRGBEMaterial = new HDRRGBETexMaterial();
         this.m_hdrRGBEMaterial.setTextureList([ftex]);

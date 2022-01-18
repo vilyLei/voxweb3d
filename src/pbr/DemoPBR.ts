@@ -25,6 +25,7 @@ import ScreenAlignPlaneEntity from "../vox/entity/ScreenAlignPlaneEntity";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import ScreenPlaneMaterial from "../vox/material/mcase/ScreenPlaneMaterial";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
 
 export class DemoPBR implements IShaderLibListener {
     constructor() { }
@@ -66,7 +67,11 @@ export class DemoPBR implements IShaderLibListener {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();
-            
+
+            let materialBlock = new RenderableMaterialBlock();
+            materialBlock.initialize();
+            this.m_rscene.materialBlock = materialBlock;
+
             let entityBlock = new RenderableEntityBlock();
             entityBlock.initialize();
             this.m_rscene.entityBlock = entityBlock;

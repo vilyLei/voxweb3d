@@ -78,10 +78,10 @@ export class DemoVtx
             
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
 
-            let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-            let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-            let tex4:TextureProxy = this.getImageTexByUrl("static/assets/yanj.jpg");
-            let tex5:TextureProxy = this.m_rscene.textureBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
+            let tex0 = this.getImageTexByUrl("static/assets/default.jpg");
+            let tex1 = this.getImageTexByUrl("static/assets/broken_iron.jpg");
+            let tex4 = this.getImageTexByUrl("static/assets/yanj.jpg");
+            let tex5 = this.m_rscene.textureBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
             
             let boxFrame:BoxFrame3D;
 

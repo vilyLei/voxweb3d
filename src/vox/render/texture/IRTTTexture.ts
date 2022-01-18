@@ -12,4 +12,4 @@ interface IRTTTexture extends IRenderTexture {
     toCubeTexture(): void;
     setSize(fboTextureWidth: number, fboTextureHeight: number): void;
 }
-export { IRTTTexture };
+export { IRTTTexture }

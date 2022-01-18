@@ -115,7 +115,7 @@ export namespace demo {
             let vs: Uint8Array;
             ///*
             console.log("create bytes tex...");
-            tex = this.m_rscene.textureBlock.createBytesTex(4, 4);
+            tex = this.m_rscene.textureBlock.createBytesTex(4, 4) as BytesTextureProxy;
             vs = new Uint8Array(tex.getWidth() * tex.getHeight() * 4);
 
             for (let i: number = 0; i < tex.getHeight(); ++i) {
@@ -143,7 +143,7 @@ export namespace demo {
             let vs: Uint8Array;
             ///*
             console.log("create bytes tex...");
-            tex = this.m_rscene.textureBlock.createBytesTex(4, 4);
+            tex = this.m_rscene.textureBlock.createBytesTex(4, 4) as BytesTextureProxy;
             vs = new Uint8Array(tex.getWidth() * tex.getHeight() * 4);
 
             for (let i: number = 0; i < tex.getHeight(); ++i) {
@@ -170,7 +170,7 @@ export namespace demo {
             let vs: Uint8Array;
             ///*
             let size: number = 4;
-            tex = this.m_rscene.textureBlock.createBytesTex(size, size);
+            tex = this.m_rscene.textureBlock.createBytesTex(size, size) as BytesTextureProxy;
             tex.srcFormat = TextureFormat.RGB;
             tex.internalFormat = TextureFormat.RGB;
             vs = new Uint8Array(tex.getWidth() * tex.getHeight() * 3);
@@ -331,7 +331,7 @@ export namespace demo {
 
             console.log("parseUint8Data....fs32.length: " + fs32.length);
             let tex: BytesTextureProxy;
-            tex = this.m_rscene.textureBlock.createBytesTex(width, height);
+            tex = this.m_rscene.textureBlock.createBytesTex(width, height) as BytesTextureProxy;
             tex.srcFormat = TextureFormat.RGB;
             tex.internalFormat = TextureFormat.RGB;
             for (let i: number = 0, len: number = 1; i < len; ++i) {

@@ -21,7 +21,7 @@ import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger"
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
 import { RGBE,RGBEParser } from '../vox/assets/RGBEParser.js';
-import BytesTextureProxy from "../vox/texture/BytesTextureProxy";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import BinaryLoader from "../vox/assets/BinaryLoader";
 import CylindricMapMaterial from "./material/CylindricMapMaterial";
 
@@ -133,15 +133,15 @@ export class DemoHdrCylindricalMap {
         }
     }
 
-    private createByteTexByBytes(bytes: Uint8Array, pw: number, ph: number): BytesTextureProxy {
+    private createByteTexByBytes(bytes: Uint8Array, pw: number, ph: number): IRenderTexture {
         
-        let posTex: BytesTextureProxy = this.m_rscene.textureBlock.createBytesTex(pw, ph);
+        let posTex = this.m_rscene.textureBlock.createBytesTex(pw, ph);
         posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         //posTex.mipmapEnabled = false;
         //posTex.minFilter = TextureConst.NEAREST;
         //posTex.magFilter = TextureConst.NEAREST;
 
-        posTex.setDataFromBytes(bytes, 0, pw, ph);
+        posTex.setDataFromBytes(bytes, 0, pw, ph, 0,0,false);
         return posTex;
     }
     loaded(buffer: ArrayBuffer, uuid: string): void {
@@ -152,7 +152,7 @@ export class DemoHdrCylindricalMap {
         let rgbe:RGBE = parser.parse(buffer);
         console.log("parse finish, rgbeData: ",rgbe);
 
-        let ftex:TextureProxy = this.createByteTexByBytes(rgbe.data as Uint8Array, rgbe.width, rgbe.height);
+        let ftex = this.createByteTexByBytes(rgbe.data as Uint8Array, rgbe.width, rgbe.height);
 
         this.m_hdrRGBEMaterial = new HdrCylMapMaterial();
         let sph: Sphere3DEntity = new Sphere3DEntity();

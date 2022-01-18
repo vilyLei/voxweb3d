@@ -293,7 +293,7 @@ export default class ImageTextureLoader implements IRunnable {
             t = new ImgResUnit(purl, mipLevel);
             t.premultipliedAlpha = false;
             this.m_resMap.set(purl, t);
-            let tex: BytesTextureProxy = this.m_texBlock.createBytesTex(1, 1);
+            let tex: BytesTextureProxy = this.m_texBlock.createBytesTex(1, 1) as BytesTextureProxy;
             tex.name = purl;
             t.bytesTex = tex;
             this.m_waitLoadList.push(t);
@@ -301,7 +301,7 @@ export default class ImageTextureLoader implements IRunnable {
         }
         else {
             if (t.bytesTex.isDestroyed()) {
-                t.bytesTex = this.m_texBlock.createBytesTex(1, 1);
+                t.bytesTex = this.m_texBlock.createBytesTex(1, 1) as BytesTextureProxy;
             }
             return t.bytesTex;
         }
@@ -315,7 +315,7 @@ export default class ImageTextureLoader implements IRunnable {
         if (t == null) {
             t = new ImgResUnit(purl, mipLevel);
             this.m_resMap.set(purl, t);
-            let tex: BytesTextureProxy = this.m_texBlock.createBytesTex(1, 1);
+            let tex = this.m_texBlock.createBytesTex(1, 1) as BytesTextureProxy;
             tex.name = purl;
             t.bytesTex = tex;
             this.m_waitLoadList.push(t);
@@ -323,7 +323,7 @@ export default class ImageTextureLoader implements IRunnable {
         }
         else {
             if (t.bytesTex.isDestroyed()) {
-                t.bytesTex = this.m_texBlock.createBytesTex(1, 1);
+                t.bytesTex = this.m_texBlock.createBytesTex(1, 1) as BytesTextureProxy;
             }
             return t.bytesTex;
         }

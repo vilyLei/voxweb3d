@@ -12,4 +12,4 @@ interface IWrapperTexture extends IRenderTexture {
     attachTex(tex: IRenderTexture): void;
     detachTex(): void;
 }
-export { IWrapperTexture };
+export { IWrapperTexture }

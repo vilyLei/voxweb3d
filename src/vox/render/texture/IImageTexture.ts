@@ -18,4 +18,4 @@ interface IImageTexture extends IRenderTexture {
      */
     setDataFromImage(img: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap, miplevel: number, offsetx: number, offsety: number, rebuild: boolean): void
 }
-export { IImageTexture };
+export { IImageTexture }

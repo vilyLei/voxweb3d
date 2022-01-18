@@ -28,6 +28,7 @@ import FloatCubeTextureProxy from "../vox/texture/FloatCubeTextureProxy";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import HdrBrnCubeMapMapMaterial from "../vox/material/mcase/HdrBrnCubeMapMaterial";
 import BytesCubeTextureProxy from "../vox/texture/BytesCubeTextureProxy";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 
 export class DemoCubeFloatTex implements ILoaderListerner {
     constructor() { }
@@ -79,15 +80,15 @@ export class DemoCubeFloatTex implements ILoaderListerner {
         posTex.setDataFromBytes(fs, 0, pw, ph);
         return posTex;
     }
-    private createByteTexByBytes(bytes: Uint8Array, pw: number, ph: number): BytesTextureProxy {
+    private createByteTexByBytes(bytes: Uint8Array, pw: number, ph: number): IRenderTexture {
 
-        let posTex: BytesTextureProxy = this.m_rscene.textureBlock.createBytesTex(pw, ph);
+        let posTex = this.m_rscene.textureBlock.createBytesTex(pw, ph);
         posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         //posTex.mipmapEnabled = false;
         posTex.minFilter = TextureConst.NEAREST;
         posTex.magFilter = TextureConst.NEAREST;
 
-        posTex.setDataFromBytes(bytes, 0, pw, ph);
+        posTex.setDataFromBytes(bytes, 0, pw, ph, 0,0,false);
         return posTex;
     }
     initialize(): void {
