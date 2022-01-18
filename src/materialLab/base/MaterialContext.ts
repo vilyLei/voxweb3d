@@ -11,7 +11,7 @@ import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import { TextureConst } from "../../vox/texture/TextureConst";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
-import { ShaderCodeConfigure, ShaderCodeType, IShaderLibConfigure, IShaderLibListener,ShaderLib } from "../shader/ShaderLib";
+import { ShaderCodeConfigure, ShaderCodeType, IShaderLibConfigure, IShaderLibListener, ShaderLib } from "../shader/ShaderLib";
 import { ShaderCodeObject } from "../shader/ShaderCodeObject";
 
 class MaterialContextParam {
@@ -39,7 +39,7 @@ class MaterialContextParam {
  * 实现 material 构造 pipeline 的上下文
  */
 class MaterialContext {
-    
+
     private m_initFlag: boolean = true;
     private m_texLoader: ImageTextureLoader = null;
     private m_param: MaterialContextParam;
@@ -64,18 +64,18 @@ class MaterialContext {
      * shader code management module
      */
     static readonly ShaderLib: ShaderLib = new ShaderLib();
-    
+
     constructor() { }
 
     addShaderLibListener(listener: IShaderLibListener): void {
-        if(MaterialContext.ShaderLib != null) {
+        if (MaterialContext.ShaderLib != null) {
             MaterialContext.ShaderLib.setListener(listener);
         }
     }
     getTextureLoader(): ImageTextureLoader {
         return this.m_texLoader;
     }
-    
+
     isTextureLoadedAll(): boolean {
         return this.m_texLoader.isLoadedAll();
     }
@@ -99,7 +99,7 @@ class MaterialContext {
         return tex;
     }
     createShaderLibConfig(): IShaderLibConfigure {
-        return {shaderCodeConfigures:[], version: ""};
+        return { shaderCodeConfigures: [], version: "" };
     }
     initialize(rscene: IRendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
 
@@ -114,10 +114,10 @@ class MaterialContext {
                 param = new MaterialContextParam();
             }
             this.m_param = param;
-            if(param.shaderLibVersion != "") shaderLibConfigure.version = param.shaderLibVersion;
-            
+            if (param.shaderLibVersion != "") shaderLibConfigure.version = param.shaderLibVersion;
+
             MaterialContext.ShaderLib.initialize(shaderLibConfigure, param.shaderCodeBinary);
-            if(param.loadAllShaderCode) {
+            if (param.loadAllShaderCode) {
                 MaterialContext.ShaderLib.addAllShaderCodeObject();
             }
 
@@ -126,7 +126,7 @@ class MaterialContext {
             param.spotLightsTotal = MathConst.Clamp(param.spotLightsTotal, 0, 256);
 
             let shdCtx = this.m_rscene.getRenderProxy().uniformContext;
-            selfT.lightModule = new LightModule( shdCtx );
+            selfT.lightModule = new LightModule(shdCtx);
             for (let i: number = 0; i < param.pointLightsTotal; ++i) {
                 this.lightModule.appendPointLight();
             }
@@ -138,7 +138,7 @@ class MaterialContext {
             }
             this.lightModule.update();
 
-            selfT.envData = new EnvLightData( shdCtx );
+            selfT.envData = new EnvLightData(shdCtx);
             this.envData.initialize();
             this.envData.setFogColorRGB3f(0.0, 0.8, 0.1);
             if (param.vsmEnabled) {
@@ -156,12 +156,12 @@ class MaterialContext {
             }
 
             selfT.pipeline = this.createPipeline();
-            
-            this.initEnd( param );
-            
-            if(!param.loadAllShaderCode) {
+
+            this.initEnd(param);
+
+            if (!param.loadAllShaderCode) {
                 let listener = MaterialContext.ShaderLib.getListener();
-                if(listener != null) {
+                if (listener != null) {
                     listener.shaderLibLoadComplete(0, 0);
                 }
             }
@@ -170,12 +170,12 @@ class MaterialContext {
     protected initEnd(param: MaterialContextParam): void {
 
     }
-    
+
     addShaderCodeObject(uuid: ShaderCodeUUID, shaderCodeObject: ShaderCodeObject): void {
         MaterialContext.ShaderLib.addShaderCodeObject(uuid, shaderCodeObject);
     }
     addPipeline(pipeline: MaterialPipeline): void {
-        if(pipeline != null && pipeline != this.pipeline) {
+        if (pipeline != null && pipeline != this.pipeline) {
             pipeline.addPipe(this.lightModule);
             pipeline.addPipe(this.envData);
             if (this.vsmModule != null) {
@@ -184,11 +184,12 @@ class MaterialContext {
         }
     }
     createPipeline(): MaterialPipeline {
-        let pipeline = new MaterialPipeline( MaterialContext.ShaderLib );
+        let pipeline = new MaterialPipeline(MaterialContext.ShaderLib);
         pipeline.addPipe(this.lightModule);
         pipeline.addPipe(this.envData);
         if (this.vsmModule != null) {
-            pipeline.addPipe(this.vsmModule.getVSMData());
+            // pipeline.addPipe(this.vsmModule.getVSMData());
+            pipeline.addPipe(this.vsmModule);
         }
         return pipeline;
     }

@@ -10,9 +10,9 @@ import Matrix4 from "../../../vox/math/Matrix4";
 
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
-
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipe } from "../../../vox/material/pipeline/IMaterialPipe";
+
 import { MaterialPipeBase } from "../../../vox/material/pipeline/MaterialPipeBase";
 
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
@@ -63,6 +63,7 @@ export default class ShadowVSMData extends MaterialPipeBase implements IMaterial
         }
         return "";
     }
+
     initialize(): void {
 
         if (this.m_uniformParam == null) {

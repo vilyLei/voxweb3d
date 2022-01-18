@@ -10,9 +10,14 @@ import RendererState from "../../../vox/render/RendererState";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
 
+import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
+import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
+import { IMaterialPipe } from "../../../vox/material/pipeline/IMaterialPipe";
+import IShaderUniform from "../../../vox/material/IShaderUniform";
+
 // import PingpongBlur from "../../../renderingtoy/mcase/PingpongBlur";
 
-export class ShadowVSMModule {
+export class ShadowVSMModule implements IMaterialPipe {
 
     private m_rscene: IRendererScene = null;
     private m_vsmData: ShadowVSMData = null;
@@ -44,6 +49,26 @@ export class ShadowVSMModule {
     // private m_blurEnabled: boolean = false;
     constructor(fboIndex: number) {
         this.m_fboIndex = fboIndex;
+    }
+
+    resetPipe(): void {
+    }
+    getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[], pipeType: MaterialPipeType): IRenderTexture[] {
+        return this.m_vsmData.getTextures(shaderBuilder, outList, pipeType);
+    }
+
+    useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void {
+        this.m_vsmData.useShaderPipe(shaderBuilder, pipeType);
+    }
+    getPipeTypes(): MaterialPipeType[] {
+        return this.m_vsmData.getPipeTypes();
+    }
+    getPipeKey(pipeType: MaterialPipeType): string {
+        return this.m_vsmData.getPipeKey( pipeType );
+    }
+    
+    getGlobalUinform(): IShaderUniform {
+        return this.m_vsmData.getGlobalUinform();
     }
 
     initialize(rscene: IRendererScene, processIDList: number[], buildShadowDelay: number = 120, blurEnabled: boolean = false): void {
