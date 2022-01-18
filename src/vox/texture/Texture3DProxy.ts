@@ -5,7 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import {TextureProxyType,TextureFormat,TextureTarget} from "../../vox/texture/TextureConst";
+import { TextureProxyType } from "../../vox/texture/TextureProxyType";
+import { TextureFormat, TextureTarget } from "../../vox/texture/TextureConst";
 import IRenderResource from "../../vox/render/IRenderResource";
 import TextureProxy from "../../vox/texture/TextureProxy";
 class Texture3DProxy extends TextureProxy

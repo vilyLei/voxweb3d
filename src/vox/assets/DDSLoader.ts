@@ -10,11 +10,12 @@ import BytesCubeTextureProxy from "../texture/BytesCubeTextureProxy";
 import BytesTextureProxy from "../texture/BytesTextureProxy";
 import FloatCubeTextureProxy from "../texture/FloatCubeTextureProxy";
 import FloatTextureProxy from "../texture/FloatTextureProxy";
-import { TextureProxyType } from "../texture/TextureConst";
+import { TextureProxyType } from "../texture/TextureProxyType";
 import TextureProxy from "../texture/TextureProxy";
 import BinaryLoader from "./BinaryLoader";
 
 export default class DDSLoader {
+    
     uuid: string = "DDSLoader";
     texture: TextureProxy = null;
     constructor() {

@@ -5,10 +5,15 @@
 /*                                                                         */
 /***************************************************************************/
 
+import { TextureProxyType } from "../../vox/texture/TextureProxyType";
 import IRenderResource from '../../vox/render/IRenderResource';
-import { TextureConst, TextureFormat, TextureDataType, TextureTarget, TextureProxyType } from "../../vox/texture/TextureConst";
+
+import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../../vox/texture/TextureConst";
 import TextureProxy from "../../vox/texture/TextureProxy";
-class RTTTextureProxy extends TextureProxy {
+import { IRTTTexture } from "../../vox/render/texture/IRTTTexture";
+
+class RTTTextureProxy extends TextureProxy implements IRTTTexture {
+
     constructor(texWidth: number, texHeight: number, powerof2Boo: boolean = false) {
         super(texWidth, texHeight, powerof2Boo);
         this.m_type = TextureProxyType.RTT;
@@ -18,7 +23,13 @@ class RTTTextureProxy extends TextureProxy {
     to2DTexture(): void {
         this.m_texTarget = TextureTarget.TEXTURE_2D;
     }
-
+    toCubeTexture(): void {
+        this.m_texTarget = TextureTarget.TEXTURE_CUBE;
+    }
+    setSize(fboTextureWidth: number, fboTextureHeight: number): void {
+        this.m_texWidth = fboTextureWidth;
+        this.m_texHeight = fboTextureHeight;
+    }
     enableMipmap(): void {
         this.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
         this.magFilter = TextureConst.LINEAR;
@@ -28,13 +39,6 @@ class RTTTextureProxy extends TextureProxy {
         this.minFilter = TextureConst.NEAREST;
         this.magFilter = TextureConst.NEAREST;
         this.mipmapEnabled = false;
-    }
-    toCubeTexture(): void {
-        this.m_texTarget = TextureTarget.TEXTURE_CUBE;
-    }
-    setSize(fboTextureWidth: number, fboTextureHeight: number): void {
-        this.m_texWidth = fboTextureWidth;
-        this.m_texHeight = fboTextureHeight;
     }
     uploadFromFbo(texResource: IRenderResource, fboWidth: number, fboHeight: number): void {
         let gl: any = texResource.getRC();

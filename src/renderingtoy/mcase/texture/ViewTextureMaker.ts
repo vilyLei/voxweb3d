@@ -10,6 +10,7 @@ import TextureProxy from "../../../vox/texture/TextureProxy";
 import WrapperTextureProxy from "../../../vox/texture/WrapperTextureProxy";
 import ScreenFixedAlignPlaneEntity from "../../../vox/entity/ScreenFixedAlignPlaneEntity";
 import RendererState from "../../../vox/render/RendererState";
+import { IRTTTexture } from "../../../vox/render/texture/IRTTTexture";
 
 class ViewTextureMaker {
 
@@ -26,8 +27,8 @@ class ViewTextureMaker {
     private m_viewHeight: number = 1300;
     private m_near: number = 10;
     private m_far: number = 2000.0;
-    private m_viewRtt: RTTTextureProxy = null;
-    private m_colorRtt: RTTTextureProxy = null;
+    private m_viewRtt: IRTTTexture = null;
+    private m_colorRtt: IRTTTexture = null;
     private m_colorMap: WrapperTextureProxy = null;
     private m_map: WrapperTextureProxy = null;
     private m_fboIndex: number = 0;

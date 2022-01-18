@@ -18,6 +18,7 @@ import RendererState from "../../../vox/render/RendererState";
 import AABB from "../../../vox/geom/AABB";
 import Box3DEntity from "../../../vox/entity/Box3DEntity";
 import Plane from "../../../vox/geom/Plane";
+import { IRTTTexture } from "../../../vox/render/texture/IRTTTexture";
 
 export default class OcclusionPostOutline {
     constructor() { }
@@ -33,8 +34,8 @@ export default class OcclusionPostOutline {
     private m_running: boolean = true;
     private m_runningFlag: boolean = true;
     private m_sizeScaleRatio: number = 0.5;
-    private m_preColorRTT: RTTTextureProxy = null;
-    private m_outLineRTT: RTTTextureProxy = null;
+    private m_preColorRTT: IRTTTexture = null;
+    private m_outLineRTT: IRTTTexture = null;
     private m_preColorFboIns: FBOInstance = null;
     private m_outlineFboIns: FBOInstance = null;
     private m_boundsOffset: number = 10.0;
@@ -99,7 +100,7 @@ export default class OcclusionPostOutline {
         }
     }
 
-    getPreColorRTT(): RTTTextureProxy {
+    getPreColorRTT(): IRTTTexture {
         return this.m_preColorRTT;
     }
     setFBOSizeScaleRatio(scaleRatio: number): void {

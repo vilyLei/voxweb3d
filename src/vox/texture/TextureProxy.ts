@@ -5,7 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { TextureConst, TextureFormat, TextureDataType, TextureTarget, TextureProxyType } from "../../vox/texture/TextureConst";
+import { TextureProxyType } from "../../vox/texture/TextureProxyType";
+import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../../vox/texture/TextureConst";
 import MathConst from "../../vox/math/MathConst";
 
 import ITexData from "../../vox/texture/ITexData";
@@ -205,6 +206,7 @@ export class TextureProxy implements IRenderTexture {
         }
     }
     enableMipmap(): void {}
+    disableMipmap(): void {}
     generateMipmap(texRes: IRenderResource): void {
         if (this.mipmapEnabled && this.m_generateMipmap) {
             let gl: any = texRes.getRC();

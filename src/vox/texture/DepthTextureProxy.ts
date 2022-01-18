@@ -5,12 +5,14 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { TextureConst, TextureFormat, TextureDataType, TextureProxyType } from "../../vox/texture/TextureConst";
+import { TextureProxyType } from "../../vox/texture/TextureProxyType";
+import { TextureConst, TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
 import IRenderResource from "../../vox/render/IRenderResource";
+import { IDepthTexture } from "../../vox/render/texture/IDepthTexture";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
-import RCExtension from "../render/RCExtension";
 
-class DepthTextureProxy extends RTTTextureProxy {
+class DepthTextureProxy extends RTTTextureProxy implements IDepthTexture {
+
     constructor(texWidth: number, texHeight: number, powerof2Boo: boolean = false) {
         super(texWidth, texHeight, powerof2Boo);
         this.minFilter = TextureConst.NEAREST;

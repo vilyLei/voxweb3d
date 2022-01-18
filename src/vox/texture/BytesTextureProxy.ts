@@ -5,7 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { TextureProxyType, TextureFormat } from "../../vox/texture/TextureConst";
+import { TextureProxyType } from "../../vox/texture/TextureProxyType";
+import { TextureFormat } from "../../vox/texture/TextureConst";
 import RawDataTextureProxy from "../../vox/texture/RawDataTextureProxy";
 
 class BytesTextureProxy extends RawDataTextureProxy {
@@ -33,6 +34,7 @@ class BytesTextureProxy extends RawDataTextureProxy {
         this.internalFormat = TextureFormat.RGBA;
         this.unpackAlignment = 4;
     }
+    
     setDataFromBytes(bytes: Uint8Array, miplevel: number = 0, imgWidth: number = -1, imgHeight: number = -1, offsetx: number = 0, offsety: number = 0, rebuild: boolean = false): void {
         super.setDataFromBytes(bytes, miplevel, imgWidth, imgHeight, offsetx, offsety, rebuild);
     }

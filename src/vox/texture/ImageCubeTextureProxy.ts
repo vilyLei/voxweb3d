@@ -4,7 +4,8 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import { TextureProxyType, TextureFormat, TextureDataType, TextureTarget } from "../../vox/texture/TextureConst";
+import { TextureProxyType } from "../../vox/texture/TextureProxyType";
+import { TextureFormat, TextureDataType, TextureTarget } from "../../vox/texture/TextureConst";
 import IRenderResource from "../../vox/render/IRenderResource";
 import TextureProxy from "../../vox/texture/TextureProxy";
 
@@ -20,7 +21,7 @@ class ImageCubeTextureProxy extends TextureProxy {
         this.mipmapEnabled = true;
     }
 
-    setDataFromImageToFaceAt(index: number, img: any, miplevel: number = 0) {
+    setDataFromImageToFaceAt(index: number, img: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap, miplevel: number = 0) {
         if (img != null) {
             if (this.m_imgDataList == null) {
                 this.m_imgDataList = [null, null, null, null, null, null];

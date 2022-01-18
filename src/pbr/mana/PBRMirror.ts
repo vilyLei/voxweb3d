@@ -18,6 +18,7 @@ import PBRShaderDecorator from "../material/PBRShaderDecorator";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 import { MaterialContext } from "../../materialLab/base/MaterialContext";
 import { VertUniformComp } from "../../vox/material/component/VertUniformComp";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 export class PBRMirror {
     private m_rscene: RendererScene = null;
@@ -54,8 +55,8 @@ export class PBRMirror {
     private m_mirrorMapLodEnabled: boolean = true;
     private m_material: PBRMaterial;
 
-    getMirrorMap(): TextureProxy {
-        return this.m_fboIns.getRTTAt(0) as TextureProxy ;
+    getMirrorMap(): IRenderTexture {
+        return this.m_fboIns.getRTTAt(0) ;
     }
     private initMirrorEffect(): void {
 

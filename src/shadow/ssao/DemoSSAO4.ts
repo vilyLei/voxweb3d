@@ -103,7 +103,7 @@ export class DemoSSAO4 {
         this.m_aoPreMaterial.initializeByCodeBuf(true);
 
 
-        let depthTex: DepthTextureProxy = this.m_rscene.textureBlock.getDepthTextureAt(0);
+        let depthTex = this.m_rscene.textureBlock.getDepthTextureAt(0);
         depthTex.toDepthUnsignedInt();
         //depthTex.toDepthAndStencil();
         this.m_aoPreFBO = this.m_rscene.createFBOInstance();

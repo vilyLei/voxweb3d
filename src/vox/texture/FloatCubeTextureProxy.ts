@@ -4,7 +4,8 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import { TextureProxyType, TextureFormat, TextureDataType, TextureTarget, TextureConst } from "../../vox/texture/TextureConst";
+import { TextureProxyType } from "../../vox/texture/TextureProxyType";
+import { TextureFormat, TextureDataType, TextureTarget, TextureConst } from "../../vox/texture/TextureConst";
 import IRenderResource from "../../vox/render/IRenderResource";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import { IFloatCubeTexture } from "../../vox/render/texture/IFloatCubeTexture";

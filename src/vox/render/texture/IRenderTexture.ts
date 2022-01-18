@@ -5,28 +5,41 @@
 /*                                                                         */
 /***************************************************************************/
 
+import { TextureProxyType } from "../../../vox/texture/TextureProxyType";
 import IRenderResource from "../../../vox/render/IRenderResource";
 import IRenderBuffer from "../../../vox/render/IRenderBuffer";
 import { IRenderProxy } from "../../../vox/render/IRenderProxy";
 
 interface IRenderTexture extends IRenderBuffer {
     
+    name: string;
     mipmapEnabled: boolean;
+    srcFormat: number;
+    dataType: number;
     minFilter: number;
     magFilter: number;
     internalFormat: number;
-
+    
+    setWrap(wrap: number): void;
+    isGpuEnabled(): boolean;
     isDataEnough(): boolean;
     isDirect(): boolean;
     getUid(): number;
     getResUid(): number;
     getSampler(): number;
+    /**
+     * @returns 返回自己的纹理类型(value: TextureProxyType)
+     */
+    getType(): TextureProxyType;
     getAttachCount(): number;
+    getBufWidth(): number;
+    getBufHeight(): number;
     getWidth(): number;
     getHeight(): number;
     getTargetType(): number;
     uploadFromFbo(texResource: IRenderResource, fboWidth: number, fboHeight: number): void;
     enableMipmap(): void;
+    disableMipmap(): void;
     generateMipmap(texRes: IRenderResource): void;
 
     __$setRenderProxy(rc: IRenderProxy): void

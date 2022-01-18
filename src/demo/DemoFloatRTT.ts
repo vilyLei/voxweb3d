@@ -14,6 +14,7 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
 import RTTTextureProxy from "../vox/texture/RTTTextureProxy";
+import { IRTTTexture } from "../vox/render/texture/IRTTTexture";
 
 export class DemoFloatRTT {
     constructor() {
@@ -23,7 +24,7 @@ export class DemoFloatRTT {
     private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-    private m_rttTex: RTTTextureProxy = null;
+    private m_rttTex: IRTTTexture = null;
     getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;

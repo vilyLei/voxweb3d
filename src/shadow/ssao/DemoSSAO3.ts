@@ -207,7 +207,7 @@ export class DemoSSAO3 implements DracoTaskListener {
         ///*
         let srcPlane: ScreenAlignPlaneEntity = new ScreenAlignPlaneEntity();
         //srcPlane.initialize(-1.0, -1.0, 1.0, 1.0, [this.m_aoPreFBO.getRTTAt(0)]);
-        srcPlane.initialize(-1.0, -1.0, 0.8, 0.8, [this.m_aoFBO.getRTTAt(0) as TextureProxy]);
+        srcPlane.initialize(-1.0, -1.0, 0.8, 0.8, [this.m_aoFBO.getRTTAt(0)]);
         this.m_rscene.addEntity(srcPlane, 2);
         //*/
     }

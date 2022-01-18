@@ -15,6 +15,7 @@ import FBOInstance from "../../../vox/scene/FBOInstance";
 import RTTTextureProxy from "../../../vox/texture/RTTTextureProxy";
 import ScreenAlignPlaneEntity from "../../../vox/entity/ScreenAlignPlaneEntity";
 import RendererState from "../../../vox/render/RendererState";
+import { IRTTTexture } from "../../../vox/render/texture/IRTTTexture";
 
 export default class PostOutline {
     constructor() { }
@@ -27,7 +28,7 @@ export default class PostOutline {
     private m_postPlane: ScreenAlignPlaneEntity = null;
     private m_running: boolean = true;
     private m_sizeScaleRatio: number = 0.5;
-    private m_preColorRTT: RTTTextureProxy = null;
+    private m_preColorRTT: IRTTTexture = null;
     //private m_rindexs: number[] = [];
     private m_fboIns: FBOInstance = null;
 
@@ -64,7 +65,7 @@ export default class PostOutline {
         }
     }
 
-    getpreColorRTT(): RTTTextureProxy {
+    getpreColorRTT(): IRTTTexture {
         return this.m_preColorRTT;
     }
     setFBOSizeScaleRatio(scaleRatio: number): void {

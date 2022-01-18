@@ -140,7 +140,7 @@ class DispScene {
         }
         switch (index) {
             case 0:
-                this.m_texs[index] = this.m_texBlock.getRTTTextureAt(0)
+                this.m_texs[index] = this.m_texBlock.getRTTTextureAt(0) as any
                 this.m_texs[index].internalFormat = TextureFormat.RGBA16F;
                 this.m_texs[index].srcFormat = TextureFormat.RGBA;
                 this.m_texs[index].dataType = TextureDataType.FLOAT;
@@ -148,7 +148,7 @@ class DispScene {
                 break;
 
             case 1:
-                this.m_texs[index] = this.m_texBlock.getRTTTextureAt(1)
+                this.m_texs[index] = this.m_texBlock.getRTTTextureAt(1) as any
                 this.m_texs[index].internalFormat = TextureFormat.RGBA;
                 this.m_texs[index].srcFormat = TextureFormat.RGBA;
                 return this.m_texs[index];

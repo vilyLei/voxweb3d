@@ -4,20 +4,20 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import { TextureProxyType } from "../../vox/texture/TextureConst";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import { TextureProxyType } from "../../vox/texture/TextureProxyType";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 /**
  * 本类作基础纹理对象的对象池
  */
 export class TexturePool {
-    private m_imgTexList: TextureProxy[] = [];
-    private m_bytesTexList: TextureProxy[] = [];
-    private m_floatTexList: TextureProxy[] = [];
-    private m_wrapperTexList: TextureProxy[] = [];
+    private m_imgTexList: IRenderTexture[] = [];
+    private m_bytesTexList: IRenderTexture[] = [];
+    private m_floatTexList: IRenderTexture[] = [];
+    private m_wrapperTexList: IRenderTexture[] = [];
     constructor() {
     }
-    addTexture(texture: TextureProxy): void {
+    addTexture(texture: IRenderTexture): void {
         switch (texture.getType()) {
             case TextureProxyType.Image:
                 this.m_imgTexList.push(texture);
@@ -35,7 +35,7 @@ export class TexturePool {
                 break;
         }
     }
-    getTexture(type: TextureProxyType): TextureProxy {
+    getTexture(type: TextureProxyType): IRenderTexture {
         switch (type) {
             case TextureProxyType.Image:
                 if (this.m_imgTexList.length > 0) {

@@ -8,7 +8,7 @@
 import RenderFilter from "../../vox/render/RenderFilter";
 import RenderMaskBitfield from "../../vox/render/RenderMaskBitfield";
 import { TextureConst, TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
-import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
+import { IRTTTexture } from "../../vox/render/texture/IRTTTexture";
 import RTTTextureStore from "../../vox/texture/RTTTextureStore";
 import Color4 from "../../vox/material/Color4";
 
@@ -334,8 +334,8 @@ export default class FBOInstance {
     /**
      * @returns get framebuffer output attachment texture by attachment index
      */
-    getRTTAt(i: number): RTTTextureProxy {
-        return this.m_texs[i] as RTTTextureProxy;
+    getRTTAt(i: number): IRTTTexture {
+        return this.m_texs[i] as IRTTTexture;
     }
     enableMipmapRTTAt(i: number): void {
         this.m_texs[i].enableMipmap();
@@ -348,7 +348,7 @@ export default class FBOInstance {
      * @param rttTexProxy 作为渲染到目标的目标纹理对象
      * @param outputIndex framebuffer output attachment index
      */
-    setRenderToTexture(texture: RTTTextureProxy, outputIndex: number = 0): RTTTextureProxy {
+    setRenderToTexture(texture: IRTTTexture, outputIndex: number = 0): IRTTTexture {
         if (outputIndex == 0) {
             this.m_texsTot = 1;
         }
@@ -380,9 +380,9 @@ export default class FBOInstance {
      * @param systemFloatRTTTexIndex 作为渲染到目标的目标纹理对象在系统float rtt 纹理中的序号(0 -> 15)
      * @param outputIndex framebuffer output attachment index
      */
-    setRenderToHalfFloatTexture(texture: RTTTextureProxy, outputIndex: number = 0): RTTTextureProxy {
+    setRenderToHalfFloatTexture(texture: IRTTTexture, outputIndex: number = 0): IRTTTexture {
         if (texture == null) {
-            texture = new RTTTextureProxy(128, 128);
+            texture = this.m_texStore.createRTTTex2D(128, 128);
             texture.__$setRenderProxy(this.m_renderProxy);
             texture.internalFormat = TextureFormat.RGBA16F;
             texture.srcFormat = TextureFormat.RGBA;
@@ -398,7 +398,7 @@ export default class FBOInstance {
      * @param systemFloatRTTTexIndex 作为渲染到目标的目标纹理对象在系统float rtt 纹理中的序号(0 -> 15)
      * @param outputIndex framebuffer output attachment index
      */
-    setRenderToRGBATexture(texture: RTTTextureProxy, outputIndex: number = 0): RTTTextureProxy {
+    setRenderToRGBATexture(texture: IRTTTexture, outputIndex: number = 0): IRTTTexture {
         if (texture == null) texture = this.createRGBATexture();
         return this.setRenderToTexture(texture, outputIndex);
     }
@@ -407,11 +407,11 @@ export default class FBOInstance {
      * @param systemDepthRTTTexIndex 作为渲染到目标的目标纹理对象在系统depth rtt 纹理中的序号(0 -> 15)
      * @param outputIndex framebuffer output attachment index
      */
-    setRenderToDepthTextureAt(systemDepthRTTTexIndex: number, outputIndex: number = 0): RTTTextureProxy {
+    setRenderToDepthTextureAt(systemDepthRTTTexIndex: number, outputIndex: number = 0): IRTTTexture {
         return this.setRenderToTexture(this.m_texStore.getDepthTextureAt(systemDepthRTTTexIndex), outputIndex);
     }
-    createRGBATexture(): RTTTextureProxy {
-        let texture = new RTTTextureProxy(32, 32);
+    createRGBATexture(): IRTTTexture {
+        let texture = this.m_texStore.createRTTTex2D(32, 32);
         texture.internalFormat = TextureFormat.RGBA;
         texture.srcFormat = TextureFormat.RGBA;
         texture.dataType = TextureDataType.UNSIGNED_BYTE;

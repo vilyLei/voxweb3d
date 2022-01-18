@@ -5,7 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { TextureConst, TextureFormat, TextureDataType, TextureProxyType } from "../../vox/texture/TextureConst";
+import { TextureProxyType } from "../../vox/texture/TextureProxyType";
+import { TextureConst, TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
 import RawDataTextureProxy from "../../vox/texture/RawDataTextureProxy";
 
 class Uint16TextureProxy extends RawDataTextureProxy {

@@ -4,7 +4,8 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import { TextureConst, TextureFormat, TextureDataType, TextureProxyType } from "../../vox/texture/TextureConst";
+import { TextureProxyType } from "../../vox/texture/TextureProxyType";
+import { TextureConst, TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
 import Color4 from "../../vox/material/Color4";
 import IRunnable from "../../vox/base/IRunnable";
 import TextureProxy from "../../vox/texture/TextureProxy";
@@ -17,8 +18,8 @@ import FloatCubeTextureProxy from "../../vox/texture/FloatCubeTextureProxy";
 import BytesCubeTextureProxy from "../../vox/texture/BytesCubeTextureProxy";
 import ImageCubeTextureProxy from "../../vox/texture/ImageCubeTextureProxy";
 import Texture3DProxy from "../../vox/texture/Texture3DProxy";
-import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
-import DepthTextureProxy from "../../vox/texture/DepthTextureProxy";
+import { IRTTTexture } from "../../vox/render/texture/IRTTTexture";
+import { IDepthTexture } from "../../vox/render/texture/IDepthTexture";
 import WrapperTextureProxy from "../../vox/texture/WrapperTextureProxy";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import TextureResSlot from "../../vox/texture/TextureResSlot";
@@ -77,8 +78,8 @@ export class TextureBlock {
         tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
         return tex;
     }
-    createRTTTex2D(pw: number, ph: number, powerof2Boo: boolean = false): RTTTextureProxy {
-        let tex: RTTTextureProxy = new RTTTextureProxy(pw, ph, powerof2Boo);
+    createRTTTex2D(pw: number, ph: number, powerof2Boo: boolean = false): IRTTTexture {
+        let tex: IRTTTexture = this.m_rttStore.createRTTTex2D(pw, ph, powerof2Boo);
         tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
         return tex;
     }
@@ -190,28 +191,28 @@ export class TextureBlock {
     }
 
     // reusable rtt texture resources for one renderer context
-    getCubeRTTTextureAt(i: number): RTTTextureProxy {
+    getCubeRTTTextureAt(i: number): IRTTTexture {
         return this.m_rttStore.getCubeRTTTextureAt(i);
     }
-    createCubeRTTTextureAt(i: number, pw: number, ph: number): RTTTextureProxy {
+    createCubeRTTTextureAt(i: number, pw: number, ph: number): IRTTTexture {
         return this.m_rttStore.createCubeRTTTextureAt(i, pw, ph);
     }
-    getRTTTextureAt(i: number): RTTTextureProxy {
+    getRTTTextureAt(i: number): IRTTTexture {
         return this.m_rttStore.getRTTTextureAt(i);
     }
-    createRTTTextureAt(i: number, pw: number, ph: number): RTTTextureProxy {
+    createRTTTextureAt(i: number, pw: number, ph: number): IRTTTexture {
         return this.m_rttStore.createRTTTextureAt(i, pw, ph);
     }
-    getDepthTextureAt(i: number): DepthTextureProxy {
+    getDepthTextureAt(i: number): IDepthTexture {
         return this.m_rttStore.getDepthTextureAt(i);
     }
-    createDepthTextureAt(i: number, pw: number, ph: number): DepthTextureProxy {
+    createDepthTextureAt(i: number, pw: number, ph: number): IDepthTexture {
         return this.m_rttStore.createDepthTextureAt(i, pw, ph);
     }
-    getRTTFloatTextureAt(i: number): RTTTextureProxy {
+    getRTTFloatTextureAt(i: number): IRTTTexture {
         return this.m_rttStore.getRTTFloatTextureAt(i);
     }
-    createRTTFloatTextureAt(i: number, pw: number, ph: number): RTTTextureProxy {
+    createRTTFloatTextureAt(i: number, pw: number, ph: number): IRTTTexture {
         return this.m_rttStore.createRTTFloatTextureAt(i, pw, ph);
     }
     private m_clearDelay: number = 128;

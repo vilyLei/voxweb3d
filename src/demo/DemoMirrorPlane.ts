@@ -152,7 +152,7 @@ export class DemoMirrorPlane {
         this.m_rttCamera.update();
         
         this.m_fboIns.getRTTAt(0).setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
-        let texList: TextureProxy[] = [
+        let texList = [
             this.m_fboIns.getRTTAt(0),
             this.getImageTexByUrl("static/assets/brickwall_big.jpg"),
             this.getImageTexByUrl("static/assets/brickwall_normal.jpg")

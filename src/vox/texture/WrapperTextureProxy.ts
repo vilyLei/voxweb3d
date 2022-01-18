@@ -5,11 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { TextureProxyType } from "../../vox/texture/TextureConst";
+import { TextureProxyType } from "../../vox/texture/TextureProxyType";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import IRenderResource from "../../vox/render/IRenderResource";
 class WrapperTextureProxy extends TextureProxy {
-    private m_tex: TextureProxy = null;
+    private m_tex: IRenderTexture = null;
     constructor(texWidth: number, texHeight: number, powerof2Boo: boolean = false) {
         super(texWidth, texHeight, powerof2Boo);
         this.m_type = TextureProxyType.Wrapper;
@@ -33,10 +34,10 @@ class WrapperTextureProxy extends TextureProxy {
     isDirect(): boolean {
         return false;
     }
-    getAttachTex(): TextureProxy {
+    getAttachTex(): IRenderTexture {
         return this.m_tex;
     }
-    attachTex(tex: TextureProxy): void {
+    attachTex(tex: IRenderTexture): void {
         if (tex != null && tex != this) {
             if (this.m_tex != tex) {
                 tex.__$attachThis();
