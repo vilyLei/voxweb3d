@@ -19,6 +19,7 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
 import CubeMapMaterial from "../vox/material/mcase/CubeMapMaterial";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 
 //import CubeMapMaterial = CubeMapMaterialT.vox.material.mcase.CubeMapMaterial;
 
@@ -65,10 +66,10 @@ export namespace demo {
             }
             return tex as any;
         }
-        private createFloatTex(): TextureProxy {
+        private createFloatTex(): IRenderTexture {
             let size: number = 64;
             //let tex:FloatTextureProxy = this.m_rscene.textureBlock.createHalfFloatTex2D(4,4,true);
-            let tex: FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(size, size, true);
+            let tex = this.m_rscene.textureBlock.createFloatTex2D(size, size, true);
             //let vs:Float32Array = new Float32Array(tex.getWidth() * tex.getHeight() * 4);
             let vs: Float32Array = new Float32Array(tex.getWidth() * tex.getHeight() * 4);
 
@@ -86,10 +87,10 @@ export namespace demo {
                     vs[k + 3] = c;
                 }
             }
-
+            
             tex.mipmapEnabled = true;
             tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
-            tex.setDataFromBytes(vs, 0);
+            tex.setDataFromBytes(vs, 0, -1,-1, 0,0, false);
             return tex;
         }
 
@@ -150,8 +151,8 @@ export namespace demo {
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
-                let floatTex: TextureProxy = null;
-                let bytesTex: TextureProxy = null;
+                let floatTex: IRenderTexture = null;
+                let bytesTex: IRenderTexture = null;
                 ///*
                 floatTex = this.createFloatTex();
 

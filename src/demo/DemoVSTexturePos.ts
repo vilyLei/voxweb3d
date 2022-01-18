@@ -17,6 +17,7 @@ import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
 import {VSTexturePosMaterial} from "./material/VSTexturePosMaterial";
 import PathTrack from "../voxnav/path/PathTrack";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 
 export class DemoVSTexturePos {
     constructor() {
@@ -32,14 +33,14 @@ export class DemoVSTexturePos {
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
-    private m_posTex: FloatTextureProxy = null;
+    private m_posTex: IRenderTexture = null;
     private m_texSize: number = 16;
     private m_texData: Float32Array = null;
     private cratePosTex(): void {
 
         //let texWidth:number = 16 * 16;
         let texSize: number = this.m_texSize;
-        let posTex: FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(texSize, texSize);
+        let posTex = this.m_rscene.textureBlock.createFloatTex2D(texSize, texSize);
         posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         posTex.mipmapEnabled = false;
         posTex.minFilter = TextureConst.NEAREST;
@@ -50,7 +51,7 @@ export class DemoVSTexturePos {
             for (let c: number = 0; c < texSize; ++c) {
             }
         }
-        posTex.setDataFromBytes(fs, 0, texSize, texSize);
+        posTex.setDataFromBytes(fs, 0, texSize, texSize, 0,0,false);
         this.m_posTex = posTex;
         this.m_texData = fs;
     }

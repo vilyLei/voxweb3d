@@ -8,8 +8,9 @@
 import { TextureProxyType } from "../../vox/texture/TextureProxyType";
 import { TextureConst, TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
 import RawDataTextureProxy from "../../vox/texture/RawDataTextureProxy";
+import { IFloatTexture } from "../../vox/render/texture/IFloatTexture";
 
-class FloatTextureProxy extends RawDataTextureProxy {
+class FloatTextureProxy extends RawDataTextureProxy implements IFloatTexture {
     constructor(texWidth: number, texHeight: number, powerof2Boo: boolean = false) {
         super(texWidth, texHeight, powerof2Boo);
         this.m_type = TextureProxyType.Float;

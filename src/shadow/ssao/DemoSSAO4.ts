@@ -118,7 +118,7 @@ export class DemoSSAO4 {
         let aoNoise: SSAONoiseData = new SSAONoiseData();
         aoNoise.initialize(this.m_rscene.textureBlock);
         //random.png
-        let noiseTex: TextureProxy = aoNoise.createNoiseTex();
+        let noiseTex = aoNoise.createNoiseTex();
         //let noiseTex: TextureProxy = this.getImageTexByUrl("static/assets/random.png");
         let aoMaterial: AODepTexMaterial = new AODepTexMaterial(aoNoise, 16);
         this.m_aoSrcPlane = new ScreenAlignPlaneEntity();

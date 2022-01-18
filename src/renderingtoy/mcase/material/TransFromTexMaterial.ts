@@ -156,11 +156,11 @@ export class Matrix4Texture {
 
             let dataFS32: Float32Array = new Float32Array(width * height * 4);
 
-            let tex: FloatTextureProxy = texBlock.createFloatTex2D(width, width);
+            let tex = texBlock.createFloatTex2D(width, width) as FloatTextureProxy;
             tex.mipmapEnabled = false;
             tex.minFilter = TextureConst.NEAREST;
             tex.magFilter = TextureConst.NEAREST;
-            tex.setDataFromBytes(dataFS32, 0, width, width);
+            tex.setDataFromBytes(dataFS32, 0, width, width, 0,0,false);
             tex.__$attachThis();
             this.m_tex = tex;
             this.m_dataFS32 = dataFS32;

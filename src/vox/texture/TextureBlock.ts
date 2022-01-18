@@ -20,6 +20,7 @@ import { IImageTexture } from "../../vox/render/texture/IImageTexture";
 import { IImageCubeTexture } from "../../vox/render/texture/IImageCubeTexture";
 import { ITexture3D } from "../../vox/render/texture/ITexture3D";
 import { IBytesTexture } from "../../vox/render/texture/IBytesTexture";
+import { IFloatTexture } from "../../vox/render/texture/IFloatTexture";
 
 // import TextureProxy from "../../vox/texture/TextureProxy";
 import TexturePool from "../../vox/texture/TexturePool";
@@ -104,8 +105,8 @@ export class TextureBlock {
         return tex;
     }
 
-    createHalfFloatTex2D(pw: number, ph: number, powerof2Boo: boolean = false): FloatTextureProxy {
-        let tex: FloatTextureProxy = this.m_texPool.getTexture(TextureProxyType.Float) as FloatTextureProxy;
+    createHalfFloatTex2D(pw: number, ph: number, powerof2Boo: boolean = false): IFloatTexture {
+        let tex = this.m_texPool.getTexture(TextureProxyType.Float) as FloatTextureProxy;
         if (tex == null) {
             tex = new FloatTextureProxy(pw, ph, powerof2Boo);
         }
@@ -116,9 +117,8 @@ export class TextureBlock {
         //tex.dataType = TextureDataType.FLOAT;
         return tex;
     }
-    createFloatTex2D(pw: number, ph: number, powerof2Boo: boolean = false): FloatTextureProxy {
-        let tex: FloatTextureProxy = this.m_texPool.getTexture(TextureProxyType.Float) as FloatTextureProxy;
-
+    createFloatTex2D(pw: number, ph: number, powerof2Boo: boolean = false): IFloatTexture {
+        let tex = this.m_texPool.getTexture(TextureProxyType.Float) as FloatTextureProxy;
         if (tex == null) {
             tex = new FloatTextureProxy(pw, ph, powerof2Boo);
         }

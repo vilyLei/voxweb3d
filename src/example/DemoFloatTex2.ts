@@ -29,6 +29,7 @@ import * as BytesDataLoaderT from "../example/data/BytesDataLoader";
 import BytesDataLoader = BytesDataLoaderT.example.data.BytesDataLoader;
 import RendererState from "../vox/render/RendererState";
 import FloatCubeMapMaterial from "../vox/material/mcase/FloatCubeMapMaterial";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 
 
 export namespace demo {
@@ -75,10 +76,10 @@ export namespace demo {
             }
             return tex as any;
         }
-        private createFloatTex(): TextureProxy {
+        private createFloatTex(): IRenderTexture {
             let size: number = 64;
             //let tex:FloatTextureProxy = this.m_rscene.textureBlock.createHalfFloatTex2D(4,4,true);
-            let tex: FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(size, size, true);
+            let tex = this.m_rscene.textureBlock.createFloatTex2D(size, size, true);
             //let vs:Float32Array = new Float32Array(tex.getWidth() * tex.getHeight() * 4);
             let vs: Float32Array = new Float32Array(tex.getWidth() * tex.getHeight() * 4);
 
@@ -104,7 +105,7 @@ export namespace demo {
             //tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
             //  tex.minFilter = TextureConst.LINEAR;
             //  tex.magFilter = TextureConst.LINEAR;
-            tex.setDataFromBytes(vs, 0, size, size);
+            tex.setDataFromBytes(vs, 0, size, size, 0,0,false);
             return tex;
         }
 
@@ -191,10 +192,10 @@ export namespace demo {
 
         }
 
-        private createRGBFloatTex(): TextureProxy {
+        private createRGBFloatTex(): IRenderTexture {
             let size: number = 4;
             //let tex:FloatTextureProxy = this.m_rscene.textureBlock.createHalfFloatTex2D(4,4,true);
-            let tex: FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(size, size, true);
+            let tex = this.m_rscene.textureBlock.createFloatTex2D(size, size, true);
             tex.toRGBFormat();
             tex.unpackAlignment = 1;
             tex.srcFormat = TextureFormat.RGB;
@@ -230,7 +231,7 @@ export namespace demo {
             //tex.minFilter = TextureConst.NEAREST;
             //tex.magFilter = TextureConst.LINEAR_MIPMAP_NEAREST;
             //tex.magFilter = TextureConst.LINEAR;
-            tex.setDataFromBytes(vs, 0, size, size);
+            tex.setDataFromBytes(vs, 0, size, size, 0,0,false);
             return tex;
         }
         initialize(): void {

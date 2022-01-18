@@ -19,7 +19,8 @@ interface IRenderTexture extends IRenderBuffer {
     minFilter: number;
     magFilter: number;
     internalFormat: number;
-
+    
+    unpackAlignment: number;
     premultiplyAlpha: boolean;
     
     setWrap(wrap: number): void;

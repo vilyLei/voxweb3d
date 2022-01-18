@@ -14,8 +14,7 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from '../../vox/material/MaterialBase';
 import VSTexturePosIdMaterial from "../../voxanimate/material/VSTexturePosIdMaterial";
 import { TextureConst } from "../../vox/texture/TextureConst";
-import TextureProxy from "../../vox/texture/TextureProxy";
-import FloatTextureProxy from "../../vox/texture/FloatTextureProxy";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import TextureBlock from "../../vox/texture/TextureBlock";
 import { IdGroupMesh } from "../../voxanimate/mesh/IdGroupMesh";
 import MeshBase from "../../vox/mesh/MeshBase";
@@ -26,7 +25,7 @@ class IdMeshGroupAnimator extends DisplayEntity {
     private m_groupPositions: Vector3D[] = null;
     private m_transMatrix: Matrix4 = null;
 
-    private m_posDataTex: FloatTextureProxy = null;
+    private m_posDataTex: IRenderTexture = null;
     private m_texSize: number = 64;
     private m_posTotal: number = 64;
     private m_texData: Float32Array = null;
@@ -45,7 +44,7 @@ class IdMeshGroupAnimator extends DisplayEntity {
     getGroupSrcMesh(): MeshBase {
         return this.m_groupSrcMesh;
     }
-    createDataTexture(textureBlock: TextureBlock, positionsTotal: number): FloatTextureProxy {
+    createDataTexture(textureBlock: TextureBlock, positionsTotal: number): IRenderTexture {
         if (positionsTotal > 0) {
             this.m_posTotal = positionsTotal;
             this.m_texSize = Math.sqrt(positionsTotal);
@@ -53,19 +52,19 @@ class IdMeshGroupAnimator extends DisplayEntity {
             if (this.m_texSize < 8) this.m_texSize = 8;
 
             let texSize: number = this.m_texSize;
-            let posTex: FloatTextureProxy = textureBlock.createFloatTex2D(texSize, texSize);
+            let posTex = textureBlock.createFloatTex2D(texSize, texSize);
             posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
             posTex.mipmapEnabled = false;
             posTex.minFilter = TextureConst.NEAREST;
             posTex.magFilter = TextureConst.NEAREST;
             let fs: Float32Array = new Float32Array(texSize * texSize * 4);
-            posTex.setDataFromBytes(fs, 0, texSize, texSize);
+            posTex.setDataFromBytes(fs, 0, texSize, texSize, 0,0, false);
             this.m_posDataTex = posTex;
             this.m_texData = fs;
             return this.m_posDataTex;
         }
     }
-    setPosData(posDataTex: FloatTextureProxy, posData: Float32Array, posTotal: number): void {
+    setPosData(posDataTex: IRenderTexture, posData: Float32Array, posTotal: number): void {
         if (posDataTex != null && posData != null) {
             this.m_texSize = posDataTex.getWidth();
             this.m_posTotal = posTotal;
@@ -73,7 +72,7 @@ class IdMeshGroupAnimator extends DisplayEntity {
             this.m_texData = posData;
         }
     }
-    getPosDataTexture(): FloatTextureProxy {
+    getPosDataTexture(): IRenderTexture {
         return this.m_posDataTex;
     }
     getPosData(): Float32Array {
@@ -103,7 +102,7 @@ class IdMeshGroupAnimator extends DisplayEntity {
     setVtxTransformMatrix(matrix: Matrix4): void {
         this.m_transMatrix = matrix;
     }
-    private createMaterial(texList: TextureProxy[]): void {
+    private createMaterial(texList: IRenderTexture[]): void {
         
         let material = this.getMaterial() as VSTexturePosIdMaterial;
         if (material == null) {
@@ -142,14 +141,14 @@ class IdMeshGroupAnimator extends DisplayEntity {
      * initialize a box geometry data and texture data
      * @param minV the min position of the box
      * @param maxV the max position of the box
-     * @param texList  TextureProxy instance list
+     * @param texList  IRenderTexture instance list
      */
-    initialize(unitTotal: number = 1, idStep: number = 10, texList: TextureProxy[] = null): void {
+    initialize(unitTotal: number = 1, idStep: number = 10, texList: IRenderTexture[] = null): void {
         if (texList == null) {
             texList = [this.m_posDataTex];
         }
         let len: number = texList.length;
-        let texArr: TextureProxy[] = [];
+        let texArr: IRenderTexture[] = [];
         texArr[0] = this.m_posDataTex;
         let i: number = texList[0] != this.m_posDataTex ? 0 : 1;
         for (; i < len; ++i) {

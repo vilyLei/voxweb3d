@@ -65,10 +65,10 @@ export namespace example {
             return ptex;
         }
 
-        private createFloatTex(): TextureProxy {
+        private createFloatTex(): IRenderTexture {
             let size: number = 64;
             //let tex:FloatTextureProxy = this.m_rscene.textureBlock.createHalfFloatTex2D(4,4,true);
-            let tex: FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(size, size, true);
+            let tex = this.m_rscene.textureBlock.createFloatTex2D(size, size, true);
             //let vs:Float32Array = new Float32Array(tex.getWidth() * tex.getHeight() * 4);
             let vs: Float32Array = new Float32Array(tex.getWidth() * tex.getHeight() * 4);
 
@@ -88,7 +88,7 @@ export namespace example {
             }
             tex.minFilter = TextureConst.LINEAR;
             tex.magFilter = TextureConst.LINEAR;
-            tex.setDataFromBytes(vs, 0, tex.getWidth(), tex.getHeight());
+            tex.setDataFromBytes(vs, 0, tex.getWidth(), tex.getHeight(), 0,0,false);
             return tex;
         }
         initialize(): void {
@@ -96,7 +96,7 @@ export namespace example {
             if (this.m_rcontext == null) {
 
                 RendererDevice.SHADERCODE_TRACE_ENABLED = true;
-                let tex1: TextureProxy;
+                let tex1: IRenderTexture;
                 H5FontSystem.GetInstance().initialize("fontTex", 18, 512, 512, false, false);
                 //let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 //tex1 = this.getImageTexByUrl("static/assets/broken_iron.jpg");

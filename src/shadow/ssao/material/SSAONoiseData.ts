@@ -9,8 +9,8 @@ import Matrix4 from "../../../vox/math/Matrix4";
 import MathConst from "../../../vox/math/MathConst";
 import Vector3D from "../../../vox/math/Vector3D";
 import TextureBlock from "../../../vox/texture/TextureBlock";
-import FloatTextureProxy from "../../../vox/texture/FloatTextureProxy";
 import { TextureConst } from "../../../vox/texture/TextureConst";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
 export default class SSAONoiseData {
     private m_texBlock: TextureBlock = null;
@@ -242,7 +242,7 @@ export default class SSAONoiseData {
         }
         return dataArr;
     }
-    createNoiseTex(size: number = 32): FloatTextureProxy {
+    createNoiseTex(size: number = 32): IRenderTexture {
         let width: number = size;
         let height: number = width;
         let pixels: Float32Array = new Float32Array(width * height * 4);
@@ -264,11 +264,11 @@ export default class SSAONoiseData {
             }
         }
 
-        let tex: FloatTextureProxy = this.m_texBlock.createFloatTex2D(width, width);
+        let tex = this.m_texBlock.createFloatTex2D(width, width);
         tex.mipmapEnabled = false;
         tex.minFilter = TextureConst.NEAREST;
         tex.magFilter = TextureConst.NEAREST;
-        tex.setDataFromBytes(pixels, 0, width, width);
+        tex.setDataFromBytes(pixels, 0, width, width, 0,0,false);
         return tex;
     }
     destroy(): void {

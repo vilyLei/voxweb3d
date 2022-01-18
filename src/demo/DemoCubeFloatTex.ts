@@ -47,9 +47,9 @@ export class DemoCubeFloatTex implements ILoaderListerner {
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
-    private createFloatTex(): FloatTextureProxy {
+    private createFloatTex(): IRenderTexture {
         let texSize: number = 32;
-        let posTex: FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(texSize, texSize);
+        let posTex = this.m_rscene.textureBlock.createFloatTex2D(texSize, texSize);
         posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         posTex.mipmapEnabled = true;
         //posTex.minFilter = TextureConst.NEAREST;
@@ -65,19 +65,19 @@ export class DemoCubeFloatTex implements ILoaderListerner {
                 //fs[k + 2] = 0.0;
             }
         }
-        posTex.setDataFromBytes(fs, 0, texSize, texSize);
+        posTex.setDataFromBytes(fs, 0, texSize, texSize, 0,0,false);
         return posTex;
     }
 
-    private createFloatTexByBytes(fs: Float32Array, pw: number, ph: number): FloatTextureProxy {
+    private createFloatTexByBytes(fs: Float32Array, pw: number, ph: number): IRenderTexture {
 
-        let posTex: FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(pw, ph);
+        let posTex = this.m_rscene.textureBlock.createFloatTex2D(pw, ph);
         posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         //posTex.mipmapEnabled = false;
         posTex.minFilter = TextureConst.NEAREST;
         posTex.magFilter = TextureConst.NEAREST;
 
-        posTex.setDataFromBytes(fs, 0, pw, ph);
+        posTex.setDataFromBytes(fs, 0, pw, ph, 0,0,false);
         return posTex;
     }
     private createByteTexByBytes(bytes: Uint8Array, pw: number, ph: number): IRenderTexture {

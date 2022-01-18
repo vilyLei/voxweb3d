@@ -46,9 +46,9 @@ export class DemoFloatTex implements ILoaderListerner {
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
-    private createFloatTex(size: number = 32, mipmap: boolean = false): FloatTextureProxy {
+    private createFloatTex(size: number = 32, mipmap: boolean = false): IRenderTexture {
 
-        let posTex: FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(size, size);
+        let posTex = this.m_rscene.textureBlock.createFloatTex2D(size, size);
         posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         posTex.mipmapEnabled = !mipmap;
         if (RendererDevice.IsWebGL2()) {
@@ -78,7 +78,7 @@ export class DemoFloatTex implements ILoaderListerner {
                     fs[k + 2] = 0.0;
                 }
             }
-            posTex.setDataFromBytes(fs, i, texSize, texSize);
+            posTex.setDataFromBytes(fs, i, texSize, texSize, 0,0,false);
             texSize = texSize >> 1;
             i++;
         }
@@ -86,15 +86,15 @@ export class DemoFloatTex implements ILoaderListerner {
         return posTex;
     }
 
-    private createFloatTexByBytes(fs: Float32Array, pw: number, ph: number): FloatTextureProxy {
+    private createFloatTexByBytes(fs: Float32Array, pw: number, ph: number): IRenderTexture {
 
-        let posTex: FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(pw, ph);
+        let posTex = this.m_rscene.textureBlock.createFloatTex2D(pw, ph);
         posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         //posTex.mipmapEnabled = false;
         posTex.minFilter = TextureConst.NEAREST;
         posTex.magFilter = TextureConst.NEAREST;
 
-        posTex.setDataFromBytes(fs, 0, pw, ph);
+        posTex.setDataFromBytes(fs, 0, pw, ph, 0,0,false);
         return posTex;
     }
     private createByteTexByBytes(bytes: Uint8Array, pw: number, ph: number): IRenderTexture {
@@ -179,7 +179,7 @@ export class DemoFloatTex implements ILoaderListerner {
     }
     private initFloatTexEntity(): void {
 
-        let tex: TextureProxy = this.createFloatTex(32, true);
+        let tex = this.createFloatTex(32, true);
         let material: FloatTexMaterial = new FloatTexMaterial();
         material.setTextureList([tex]);
 
@@ -402,7 +402,7 @@ export class DemoFloatTex implements ILoaderListerner {
         //Math.log2(height);
         console.log("Math.log2(height): ", Math.log2(height));
 
-        let tex: FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(width, height);
+        let tex = this.m_rscene.textureBlock.createFloatTex2D(width, height);
         tex.toRGBFormat();
         tex.mipmapEnabled = false;
         for (let j: number = 0; j < 8; j++) {
@@ -429,7 +429,7 @@ export class DemoFloatTex implements ILoaderListerner {
                 subArr = dstArr;
                 //*/
                 //console.log(j,"width: ", width,subArr);
-                tex.setDataFromBytes(subArr, j, width, width, 0, 0);
+                tex.setDataFromBytes(subArr, j, width, width, 0, 0,false);
                 begin += size;
             }
             width >>= 1;
@@ -475,7 +475,7 @@ export class DemoFloatTex implements ILoaderListerner {
     }
     private initFloat(buffer: ArrayBuffer): void {
 
-        let tex: TextureProxy = this.createFloatTex();
+        let tex = this.createFloatTex();
         let material: FloatTexMaterial = new FloatTexMaterial();
         material.setTextureList([tex]);
 
