@@ -14,7 +14,7 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
 import RendererSubScene from "../vox/scene/RendererSubScene";
 import DebugFlag from "../vox/debug/DebugFlag";
-import TextureProxy from "../vox/texture/TextureProxy";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import { SpecularTextureLoader } from "./mana/TextureLoader";
 
 import PBRMaterial from "./material/PBRMaterial";
@@ -48,7 +48,7 @@ export class DemoPBRDisplacement {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     
     private m_reflectPlaneY: number = -220;
-    private m_specularEnvMap: TextureProxy = null;
+    private m_specularEnvMap: IRenderTexture = null;
 
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 
@@ -186,20 +186,20 @@ export class DemoPBRDisplacement {
         //  this.m_rscene.addEntity(axis);
         this.aoMapEnabled = true;
         let ns: string = "lava_03";
-        //let diffuseMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
-        let diffuseMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/color_01.jpg");
+        //let diffuseMap: IRenderTexture = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
+        let diffuseMap: IRenderTexture = this.m_materialCtx.getTextureByUrl("static/assets/color_01.jpg");
         //diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
-        //let normalMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_NRM.png");
-        let normalMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_norm.png");
-        let aoMap: TextureProxy = null;
+        //let normalMap: IRenderTexture = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_NRM.png");
+        let normalMap: IRenderTexture = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_norm.png");
+        let aoMap: IRenderTexture = null;
         if (this.aoMapEnabled) {
             //aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_OCC.png");
             aoMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
         }
-        let displacementMap: TextureProxy = null;
+        let displacementMap: IRenderTexture = null;
         //displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
         displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
-        let parallaxMap: TextureProxy = null;
+        let parallaxMap: IRenderTexture = null;
         //parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
         //parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
         parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/brick_bumpy01.jpg");

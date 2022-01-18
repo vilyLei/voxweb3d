@@ -10,7 +10,7 @@ import MaterialResource from "../../vox/material/MaterialResource";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import IShaderUniform from "../../vox/material/IShaderUniform";
 
-import IRenderTexture from "../../vox/render/IRenderTexture";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import { IVtxBufRenderData } from "../../vox/render/IVtxBufRenderData";

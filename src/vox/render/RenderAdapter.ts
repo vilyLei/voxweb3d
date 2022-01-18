@@ -15,7 +15,7 @@ import ROTextureResource from '../../vox/render/ROTextureResource';
 import FrameBufferObject from "../../vox/render/FrameBufferObject";
 import { CullFaceMode, DepthTestMode } from "../../vox/render/RenderConst";
 import { TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
-import IRenderTexture from "../../vox/render/IRenderTexture";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import RAdapterContext from "../../vox/render/RAdapterContext";
 import { RODrawState, RenderStateObject, RenderColorMask } from "../../vox/render/RODrawState";
 import RendererState from "../../vox/render/RendererState";

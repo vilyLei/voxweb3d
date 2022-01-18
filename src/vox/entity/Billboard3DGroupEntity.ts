@@ -9,7 +9,7 @@ import ROTransform from "../../vox/display/ROTransform";
 import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
-import IRenderTexture from "../../vox/render/IRenderTexture";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import BillboardGroupMaterial from "../../vox/material/mcase/BillboardGroupMaterial";
 import BillboardPlaneGroupMesh from "../../vox/mesh/BillboardPlaneGroupMesh";
 

@@ -10,7 +10,7 @@ import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import BillboardLine3DMaterial from "../../vox/material/mcase/BillboardLine3DMaterial";
-import IRenderTexture from "../../vox/render/IRenderTexture";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import LightLine3DMesh from "../../vox/mesh/LightLine3DMesh";
 import ROTransform from "../../vox/display/ROTransform";
 

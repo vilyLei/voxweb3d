@@ -17,7 +17,7 @@ import { IMaterialPipeline } from "./IMaterialPipeline";
 
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import IShaderUniform from "../../../vox/material/IShaderUniform";
-import IRenderTexture from "../../../vox/render/IRenderTexture";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
 /**
  * 材质功能组装流水线, 组装符合一个流水线系统设定的材质, 最终形成完整的shader, 以及对应的数据输入

@@ -5,21 +5,21 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererScene from "../../vox/scene/RendererScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import {TextureConst} from "../../vox/texture/TextureConst";
-import FloatCubeTextureProxy from "../../vox/texture/FloatCubeTextureProxy";
+import { IFloatCubeTexture } from "../../vox/render/texture/IFloatCubeTexture";
+import { IBytesCubeTexture } from "../../vox/render/texture/IBytesCubeTexture";
 import BinaryLoader from "../../vox/assets/BinaryLoader";
-import BytesCubeTextureProxy from "../../vox/texture/BytesCubeTextureProxy";
 
 export class TextureLoader {
 
-    protected m_rscene: RendererScene = null;
-    texture: FloatCubeTextureProxy | BytesCubeTextureProxy = null;
-    constructor() {        
+    protected m_rscene: IRendererScene = null;
+    texture: IFloatCubeTexture | IBytesCubeTexture = null;
+    constructor() {
     }
     
-    loadTextureWithUrl(url:string, rscene: RendererScene): void {
+    loadTextureWithUrl(url:string, rscene: IRendererScene): void {
         //let url: string = "static/bytes/spe.mdf";
         let loader: BinaryLoader = new BinaryLoader();
         loader.uuid = url;
@@ -29,7 +29,7 @@ export class TextureLoader {
     }
     protected createTexture(): void {
 
-        this.texture = this.m_rscene.textureBlock.createFloatCubeTex(32, 32);
+        this.texture = (this.m_rscene as any).textureBlock.createFloatCubeTex(32, 32);
     }
     loaded(buffer: ArrayBuffer, uuid: string): void {
         //console.log("loaded... uuid: ", uuid, buffer.byteLength);
@@ -48,7 +48,7 @@ export class TextureLoader {
         let size: number = width * height * 3;
         let fs32: Float32Array = new Float32Array(buffer);
         let subArr: Float32Array = null;
-        let tex: FloatCubeTextureProxy = this.texture as FloatCubeTextureProxy;
+        let tex: IFloatCubeTexture = this.texture as IFloatCubeTexture;
         tex.toRGBFormat();
         for (let i: number = 0, len: number = 6; i < len; ++i) {
             subArr = fs32.slice(begin, begin + size);
@@ -67,10 +67,10 @@ export class SpecularTextureLoader extends TextureLoader {
     
     protected createTexture(): void {
         if(this.hdrBrnEnabled) {
-            this.texture = this.m_rscene.textureBlock.createBytesCubeTex(32, 32);
+            this.texture = (this.m_rscene as any).textureBlock.createBytesCubeTex(32, 32);
         }
         else {
-            this.texture = this.m_rscene.textureBlock.createFloatCubeTex(32, 32);
+            this.texture = (this.m_rscene as any).textureBlock.createFloatCubeTex(32, 32);
         }
     }
     private parseFloat(buffer: ArrayBuffer): void {
@@ -83,7 +83,7 @@ export class SpecularTextureLoader extends TextureLoader {
         let fs32: Float32Array = new Float32Array(buffer);
         let subArr: Float32Array = null;
   
-        let tex: FloatCubeTextureProxy = this.texture as FloatCubeTextureProxy;
+        let tex: IFloatCubeTexture = this.texture as IFloatCubeTexture;
         tex.toRGBFormat();
         //tex.toRGBFormatFloat32F();
         tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
@@ -111,7 +111,7 @@ export class SpecularTextureLoader extends TextureLoader {
         console.log("parseHdrBrn, width: ",width, "height: ",height,"mipMapMaxLv: ",mipMapMaxLv);
         let size: number = 0;
         let bytes: Uint8Array = currBytes.subarray(32);
-        let tex: BytesCubeTextureProxy = this.texture as BytesCubeTextureProxy;
+        let tex: IBytesCubeTexture = this.texture as IBytesCubeTexture;
         if(mipMapMaxLv > 1) {
             tex.mipmapEnabled = false;
             tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;

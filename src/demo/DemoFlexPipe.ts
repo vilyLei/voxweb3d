@@ -1,4 +1,3 @@
-
 import Vector3D from "../vox/math/Vector3D";
 import Matrix4 from "../vox/math/Matrix4";
 import RendererDevice from "../vox/render/RendererDevice";
@@ -9,7 +8,7 @@ import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../vox/texture/TextureConst";
-import TextureProxy from "../vox/texture/TextureProxy";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
 
 import MouseEvent from "../vox/event/MouseEvent";
@@ -35,6 +34,7 @@ import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
 import { Bezier2Curve } from "../vox/geom/curve/BezierCurve";
 import { VertUniformComp } from "../vox/material/component/VertUniformComp";
+import { RendererableEntityBlock } from "../vox/scene/RenderableEntityBlock";
 
 export class DemoFlexPipe implements IShaderLibListener {
     constructor() { }
@@ -49,7 +49,7 @@ export class DemoFlexPipe implements IShaderLibListener {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
-    private m_specularEnvMap: TextureProxy;
+    private m_specularEnvMap: IRenderTexture;
     fogEnabled: boolean = false;
     hdrBrnEnabled: boolean = true;
     vtxFlatNormal: boolean = false;
@@ -77,6 +77,11 @@ export class DemoFlexPipe implements IShaderLibListener {
             rparam.setCamPosition(1300.0, 1300.0, 1300.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
+
+            let entityBlock = new RendererableEntityBlock();
+            entityBlock.initialize();
+            this.m_rscene.entityBlock = entityBlock;
+
             this.m_rscene.updateCamera();
             this.m_rcontext = this.m_rscene.getRendererContext();
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
@@ -174,16 +179,16 @@ export class DemoFlexPipe implements IShaderLibListener {
     }
     private useMaps(material: PBRMaterial, ns: string = "lava_03"): void {
         
-        let diffuseMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
-        let normalMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_NRM.png");
-        let aoMap: TextureProxy = null;
+        let diffuseMap: IRenderTexture = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
+        let normalMap: IRenderTexture = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_NRM.png");
+        let aoMap: IRenderTexture = null;
         if (this.aoMapEnabled) {
             aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_OCC.png");
         }
-        let displacementMap: TextureProxy = null;
+        let displacementMap: IRenderTexture = null;
         //displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
         //displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
-        let parallaxMap: TextureProxy = null;
+        let parallaxMap: IRenderTexture = null;
         parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
 
         material.decorator.specularEnvMap = this.m_specularEnvMap;

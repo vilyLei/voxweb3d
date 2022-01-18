@@ -1,4 +1,4 @@
-import RendererScene from "../../vox/scene/RendererScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import Vector3D from "../../vox/math/Vector3D";
 
 import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
@@ -39,11 +39,11 @@ class MaterialContextParam {
  * 实现 material 构造 pipeline 的上下文
  */
 class MaterialContext {
-
+    
     private m_initFlag: boolean = true;
     private m_texLoader: ImageTextureLoader = null;
     private m_param: MaterialContextParam;
-    protected m_rscene: RendererScene = null;
+    protected m_rscene: IRendererScene = null;
     /**
      * 全局的灯光模块
      */
@@ -101,13 +101,13 @@ class MaterialContext {
     createShaderLibConfig(): IShaderLibConfigure {
         return {shaderCodeConfigures:[], version: ""};
     }
-    initialize(rscene: RendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
+    initialize(rscene: IRendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
 
         if (this.m_initFlag) {
 
             this.m_initFlag = false;
             this.m_rscene = rscene;
-            this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+            this.m_texLoader = new ImageTextureLoader((this.m_rscene as any).textureBlock);
 
             let selfT: any = this;
             if (param == null) {

@@ -8,7 +8,7 @@
 import MathConst from '../../vox/math/MathConst';
 import ROTextureResource from '../../vox/render/ROTextureResource';
 import ITextureRenderObj from "../../vox/render/ITextureRenderObj";
-import IRenderTexture from "../../vox/render/IRenderTexture";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 
 /**

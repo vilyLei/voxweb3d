@@ -7,8 +7,9 @@
 import { TextureProxyType, TextureFormat, TextureDataType, TextureTarget, TextureConst } from "../../vox/texture/TextureConst";
 import IRenderResource from "../../vox/render/IRenderResource";
 import TextureProxy from "../../vox/texture/TextureProxy";
+import { IFloatCubeTexture } from "../../vox/render/texture/IFloatCubeTexture";
 
-class FloatCubeTextureProxy extends TextureProxy {
+class FloatCubeTextureProxy extends TextureProxy implements IFloatCubeTexture {
     private m_imgDataList: any[] = null;
     constructor(texWidth: number, texHeight: number) {
         super(texWidth, texHeight, false);
@@ -18,6 +19,17 @@ class FloatCubeTextureProxy extends TextureProxy {
         this.dataType = TextureDataType.FLOAT;
         this.mipmapEnabled = true;
     }
+    toAlphaFormat(): void {
+        this.srcFormat = TextureFormat.ALPHA;
+        this.internalFormat = TextureFormat.ALPHA;
+        this.unpackAlignment = 1;
+    }
+    
+    toRedFormat(): void {
+        this.srcFormat = TextureFormat.RED;
+        this.internalFormat = TextureFormat.RED;
+        this.unpackAlignment = 1;
+    }
     toRGBFormat(): void {
         this.unpackAlignment = 1;
         this.srcFormat = TextureFormat.RGB;
@@ -26,6 +38,12 @@ class FloatCubeTextureProxy extends TextureProxy {
         this.magFilter = TextureConst.NEAREST;
         this.mipmapEnabled = false;
     }
+    toRGBAFormat(): void {
+        this.unpackAlignment = 4;
+        this.srcFormat = TextureFormat.RGBA;
+        this.internalFormat = TextureFormat.RGBA16F;
+    }
+    
     toRGBFormatFloat32F(): void {
         this.unpackAlignment = 1;
         this.srcFormat = TextureFormat.RGB;
@@ -33,11 +51,6 @@ class FloatCubeTextureProxy extends TextureProxy {
         this.minFilter = TextureConst.NEAREST;
         this.magFilter = TextureConst.NEAREST;
         this.mipmapEnabled = false;
-    }
-    toRGBAFormat(): void {
-        this.unpackAlignment = 4;
-        this.srcFormat = TextureFormat.RGBA;
-        this.internalFormat = TextureFormat.RGBA16F;
     }
     toRGBAFormatFloat32F(): void {
         this.unpackAlignment = 4;

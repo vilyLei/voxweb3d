@@ -14,7 +14,7 @@ import MathConst from "../../vox/math/MathConst";
 import IPBRMaterial from "./IPBRMaterial";
 import PBRShaderDecorator from "./PBRShaderDecorator";
 import Color4 from "../../vox/material/Color4";
-import IRenderTexture from "../../vox/render/IRenderTexture";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 //  import { PBRShaderCode } from "./glsl/PBRShaderCode";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
@@ -117,7 +117,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
             this.initializeLocalData();
         }
         
-        let list: TextureProxy[] = decorator.createTextureList();
+        let list = decorator.createTextureList();
         if(this.vertUniform != null) this.vertUniform.getTextures(buf.getShaderCodeBuilder(), list);
         buf.getTexturesFromPipeline( list );
 

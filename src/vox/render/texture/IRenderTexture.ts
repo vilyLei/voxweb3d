@@ -5,12 +5,17 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IRenderResource from "../../vox/render/IRenderResource";
-import IRenderBuffer from "../../vox/render/IRenderBuffer";
-import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderResource from "../../../vox/render/IRenderResource";
+import IRenderBuffer from "../../../vox/render/IRenderBuffer";
+import { IRenderProxy } from "../../../vox/render/IRenderProxy";
 
 interface IRenderTexture extends IRenderBuffer {
+    
+    mipmapEnabled: boolean;
+    minFilter: number;
+    magFilter: number;
     internalFormat: number;
+
     isDataEnough(): boolean;
     isDirect(): boolean;
     getUid(): number;

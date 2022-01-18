@@ -7,7 +7,7 @@
 
 import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
 import UniformConst from "../../vox/material/UniformConst";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 export default class PBRShaderDecorator {
     constructor() {
@@ -16,20 +16,20 @@ export default class PBRShaderDecorator {
     private m_uniqueName: string = "PBRShd";
     
     codeBuilder: ShaderCodeBuilder = null;
-    specularEnvMap: TextureProxy = null;
-    diffuseMap: TextureProxy = null;
-    normalMap: TextureProxy = null;
-    mirrorMap: TextureProxy = null;
-    indirectEnvMap: TextureProxy = null;
-    parallaxMap: TextureProxy = null;
-    aoMap: TextureProxy = null;
-    roughnessMap: TextureProxy = null;
-    metalhnessMap: TextureProxy = null;
+    specularEnvMap: IRenderTexture = null;
+    diffuseMap: IRenderTexture = null;
+    normalMap: IRenderTexture = null;
+    mirrorMap: IRenderTexture = null;
+    indirectEnvMap: IRenderTexture = null;
+    parallaxMap: IRenderTexture = null;
+    aoMap: IRenderTexture = null;
+    roughnessMap: IRenderTexture = null;
+    metalhnessMap: IRenderTexture = null;
     
     /**
      * add ao, roughness, metalness map uniform code
      */
-    armMap: TextureProxy = null;
+    armMap: IRenderTexture = null;
     
     glossinessEnabeld: boolean = true;
     woolEnabled: boolean = true;
@@ -59,11 +59,11 @@ export default class PBRShaderDecorator {
     fragLocalParamsTotal: number = 2;
     parallaxParamIndex: number = 2;
 
-    createTextureList(): TextureProxy[] {
+    createTextureList(): IRenderTexture[] {
         
         let coder: ShaderCodeBuilder = this.codeBuilder;
         let uniform = coder.uniform;
-        let texList: TextureProxy[] = [];
+        let texList: IRenderTexture[] = [];
         if(this.armMap != null) {
             this.aoMapEnabled = true;
         }

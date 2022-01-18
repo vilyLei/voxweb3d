@@ -4,47 +4,41 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import {TextureProxyType,TextureFormat,TextureDataType,TextureTarget} from "../../vox/texture/TextureConst";
+import { TextureProxyType, TextureFormat, TextureDataType, TextureTarget } from "../../vox/texture/TextureConst";
 import IRenderResource from '../../vox/render/IRenderResource';
 import TextureProxy from "../../vox/texture/TextureProxy";
+import { IBytesCubeTexture } from "../../vox/render/texture/IBytesCubeTexture";
 
-class BytesCubeTextureProxy extends TextureProxy
-{
-    private m_imgDataList:any[] = null;
-    constructor(texWidth:number,texHeight:number)
-    {
-        super(texWidth,texHeight,false);
+class BytesCubeTextureProxy extends TextureProxy implements IBytesCubeTexture {
+    private m_imgDataList: any[] = null;
+    constructor(texWidth: number, texHeight: number) {
+        super(texWidth, texHeight, false);
         this.m_texTarget = TextureTarget.TEXTURE_CUBE;
         this.mipmapEnabled = true;
         this.m_type = TextureProxyType.BytesCube;
     }
-    
-    toAlphaFormat():void
-    {
+
+    toAlphaFormat(): void {
         this.srcFormat = TextureFormat.ALPHA;
         this.internalFormat = TextureFormat.ALPHA;
         this.unpackAlignment = 1;
     }
-    toRedFormat():void
-    {
+    toRedFormat(): void {
         this.srcFormat = TextureFormat.RED;
         this.internalFormat = TextureFormat.RED;
         this.unpackAlignment = 1;
     }
-    toRGBFormat():void
-    {
+    toRGBFormat(): void {
         this.srcFormat = TextureFormat.RGB;
         this.internalFormat = TextureFormat.RGB;
         this.unpackAlignment = 1;
     }
-    toRGBAFormat():void
-    {
+    toRGBAFormat(): void {
         this.srcFormat = TextureFormat.RGBA;
         this.internalFormat = TextureFormat.RGBA;
         this.unpackAlignment = 4;
     }
-    setDataFromBytesToFaceAt(index:number,bytes:Uint8Array,pw:number,ph:number, miplevel:number = 0)
-    {
+    setDataFromBytesToFaceAt(index: number, bytes: Uint8Array, pw: number, ph: number, miplevel: number = 0) {
         if (this.m_imgDataList == null) {
             this.m_imgDataList = [null, null, null, null, null, null];
         }
@@ -59,13 +53,12 @@ class BytesCubeTextureProxy extends TextureProxy
             }
             let arr: any[] = this.m_imgDataList[index];
             arr[miplevel] = { width: pw, height: ph, imgData: bytes, miplevel: miplevel };
-            
+
             this.m_haveRData = arr[miplevel].imgData != null;
         }
     }
-    
-    protected uploadData(texRes:IRenderResource):void
-    {
+
+    protected uploadData(texRes: IRenderResource): void {
         let gl: any = texRes.getRC();
         let imo: any = null;
         let width: number = this.getWidth();
@@ -95,21 +88,15 @@ class BytesCubeTextureProxy extends TextureProxy
         }
         this.version = 0;
     }
-    toString():string
-    {
-        return "[BytesCubeTextureProxy(name:"+this.name+",uid="+this.getUid()+",width="+this.getWidth()+",height="+this.getHeight()+")]";
+    toString(): string {
+        return "[BytesCubeTextureProxy(name:" + this.name + ",uid=" + this.getUid() + ",width=" + this.getWidth() + ",height=" + this.getHeight() + ")]";
     }
-    __$destroy():void
-    {
-        if(this.getAttachCount() < 1)
-        {
+    __$destroy(): void {
+        if (this.getAttachCount() < 1) {
             this.version = 0;
-            if( this.m_imgDataList != null)
-            {
-                for(let i:number = 0; i < 6; ++i)
-                {
-                    if( this.m_imgDataList[i] != null)
-                    {
+            if (this.m_imgDataList != null) {
+                for (let i: number = 0; i < 6; ++i) {
+                    if (this.m_imgDataList[i] != null) {
                         this.m_imgDataList[i].imgData = null;
                     }
                 }

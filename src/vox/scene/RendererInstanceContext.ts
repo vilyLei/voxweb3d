@@ -11,7 +11,7 @@ import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import RendererState from "../../vox/render/RendererState";
 import RAdapterContext from "../../vox/render/RAdapterContext";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
-import IRenderTexture from "../../vox/render/IRenderTexture";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 import { IShaderProgramBuilder } from "../../vox/material/IShaderProgramBuilder";
 import { ShaderUniformContext } from "../../vox/material/ShaderUniformContext";

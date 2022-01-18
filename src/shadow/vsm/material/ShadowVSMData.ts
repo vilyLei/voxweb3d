@@ -15,7 +15,7 @@ import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeTyp
 import { IMaterialPipe } from "../../../vox/material/pipeline/IMaterialPipe";
 import { MaterialPipeBase } from "../../../vox/material/pipeline/MaterialPipeBase";
 
-import IRenderTexture from "../../../vox/render/IRenderTexture";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { GlobalVSMShadowUniformParam } from "../../../vox/material/GlobalUniformParam";
 import { ShadowMode } from "../../../vox/material/pipeline/ShadowMode";
 import { VSMShaderCode } from "./VSMShaderCode";

@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import {ShaderCodeUUID} from './ShaderCodeUUID';
-import IRenderTexture from "../../vox/render/IRenderTexture";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
 import ShaderCompileInfo from "../../vox/material/code/ShaderCompileInfo";
 import IShaderCodeObject from "./IShaderCodeObject";

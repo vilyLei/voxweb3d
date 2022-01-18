@@ -11,7 +11,7 @@ import MathConst from "../../vox/math/MathConst";
 import ITexData from "../../vox/texture/ITexData";
 import { IRenderProxy } from "../../vox/render/IRenderProxy";
 import IRenderResource from "../../vox/render/IRenderResource";
-import IRenderTexture from "../../vox/render/IRenderTexture";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import TextureResSlot from "../../vox/texture/TextureResSlot";
 
 /**

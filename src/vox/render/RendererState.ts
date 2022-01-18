@@ -164,7 +164,6 @@ class RendererState {
         RendererState.Rstate.setDepthTestEnable(enable);
     }
     static SetBlendEnable(enable: boolean): void {
-
         RendererState.Rstate.setBlendEnable(enable);
     }
     /**

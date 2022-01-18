@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IRenderTexture from "../../vox/render/IRenderTexture";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import Color4 from "../../vox/material/Color4";
 
 interface IRenderAdapter {

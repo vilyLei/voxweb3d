@@ -10,7 +10,7 @@ import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import BillboardMaterial from "../../vox/material/mcase/BillboardMaterial";
-import IRenderTexture from "../../vox/render/IRenderTexture";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import BillboardPlaneMesh from "../../vox/mesh/BillboardPlaneMesh";
 
 export default class Billboard3DEntity extends DisplayEntity {

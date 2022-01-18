@@ -7,7 +7,7 @@ import DepthMaterial from "../material/DepthMaterial";
 import OccBlurMaterial from "../material/OccBlurMaterial";
 import ShadowVSMData from "../material/ShadowVSMData";
 import RendererState from "../../../vox/render/RendererState";
-import IRenderTexture from "../../../vox/render/IRenderTexture";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
 
 // import PingpongBlur from "../../../renderingtoy/mcase/PingpongBlur";
@@ -24,13 +24,13 @@ export class ShadowVSMModule {
     private m_horOccBlurPlane: IRenderEntity = null;
     // private m_blurModule: PingpongBlur = null;
 
-    private m_camPos: Vector3D = new Vector3D(600.0, 800.0, -600.0);
+    private m_camPos: Vector3D = new Vector3D(1.0, 800.0, 1.0);
     private m_shadowBias: number = -0.0005;
     private m_shadowRadius: number = 2.0;
     private m_shadowIntensity: number = 0.8;
     private m_colorIntensity: number = 0.1;
-    private m_shadowMapW: number = 128;
-    private m_shadowMapH: number = 128;
+    private m_shadowMapW: number = 512;
+    private m_shadowMapH: number = 512;
     private m_viewWidth: number = 1300;
     private m_viewHeight: number = 1300;
     private m_near: number = 0.01;

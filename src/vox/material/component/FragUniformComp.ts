@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
-import IRenderTexture from "../../render/IRenderTexture";
+import IRenderTexture from "../../render/texture/IRenderTexture";
 import { UniformComp } from "./UniformComp";
 import Vector3D from "../../math/Vector3D";
 /**

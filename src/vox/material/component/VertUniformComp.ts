@@ -7,7 +7,7 @@
 
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import { UniformComp } from "./UniformComp";
-import IRenderTexture from "../../render/IRenderTexture";
+import IRenderTexture from "../../render/texture/IRenderTexture";
 import Vector3D from "../../math/Vector3D";
 import ShaderUniformData from "../ShaderUniformData";
 /**

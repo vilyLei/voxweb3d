@@ -12,7 +12,7 @@ import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
-import IRenderTexture from "../../vox/render/IRenderTexture";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
 import Box3DMesh from "../../vox/mesh/Box3DMesh";
 import Color4 from "../material/Color4";

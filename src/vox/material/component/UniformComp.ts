@@ -8,7 +8,7 @@
 import { IMaterialPipe } from "../pipeline/IMaterialPipe";
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import ShaderUniformData from "../ShaderUniformData";
-import IRenderTexture from "../../render/IRenderTexture";
+import IRenderTexture from "../../render/texture/IRenderTexture";
 class UniformComp {
 
     protected m_params: Float32Array = null;

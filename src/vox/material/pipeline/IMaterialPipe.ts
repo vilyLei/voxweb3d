@@ -11,7 +11,7 @@ import IUniformParam from "../../../vox/material/IUniformParam";
 import { MaterialPipeType } from "./MaterialPipeType";
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import IShaderUniform from "../../../vox/material/IShaderUniform";
-import IRenderTexture from "../../../vox/render/IRenderTexture";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
 /**
  * 材质功能组装流水线中的pipe行为规范

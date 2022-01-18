@@ -9,7 +9,7 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import ROTransform from '../../vox/display/ROTransform';
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
-import IRenderTexture from "../../vox/render/IRenderTexture";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import ObjData3DMesh from "../../vox/mesh/obj/ObjData3DMesh";
 import RendererState from "../render/RendererState";
 import Color4 from "../material/Color4";

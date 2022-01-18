@@ -1,4 +1,4 @@
-import IRenderTexture from "../../vox/render/IRenderTexture";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import RendererScene from "../../vox/scene/RendererScene";
 import DefaultPBRUI from "./DefaultPBRUI";
 import PBRMaterial from "../../pbr/material/PBRMaterial";

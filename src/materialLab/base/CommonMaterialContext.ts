@@ -6,7 +6,7 @@ import LambertLightMaterial from "../../vox/material/mcase/LambertLightMaterial"
 import PBRMaterial from "../../pbr/material/PBRMaterial";
 import PBRShaderDecorator from "../../pbr/material/PBRShaderDecorator";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { VertUniformComp } from "../../vox/material/component/VertUniformComp";
 import { SpecularTextureLoader } from "../../pbr/mana/TextureLoader";
 
@@ -16,7 +16,7 @@ import { SpecularTextureLoader } from "../../pbr/mana/TextureLoader";
 class CommonMaterialContext extends MaterialContext {
 
     private m_specularLoader: SpecularTextureLoader = null;
-    private m_specularEnvMap: TextureProxy = null;
+    private m_specularEnvMap: IRenderTexture = null;
     
     /**
      * 构造 lambert light material流水线
@@ -29,7 +29,7 @@ class CommonMaterialContext extends MaterialContext {
     constructor() {
         super();
     }
-    createDefaultMaterial(textures: TextureProxy[], initialization: boolean = true): Default3DMaterial {
+    createDefaultMaterial(textures: IRenderTexture[], initialization: boolean = true): Default3DMaterial {
         let material: Default3DMaterial = new Default3DMaterial();
         material.setMaterialPipeline(this.pipeline);
         material.setTextureList(textures);
@@ -66,8 +66,7 @@ class CommonMaterialContext extends MaterialContext {
                     this.m_specularEnvMap.__$attachThis();
                 }
                 material.decorator.specularEnvMap = this.m_specularEnvMap;
-            }
-            
+            }            
         }
         return material;
     }

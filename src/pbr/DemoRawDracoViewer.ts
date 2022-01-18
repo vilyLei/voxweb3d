@@ -13,7 +13,7 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
 import RendererSubScene from "../vox/scene/RendererSubScene";
 import DebugFlag from "../vox/debug/DebugFlag";
-import TextureProxy from "../vox/texture/TextureProxy";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import { SpecularTextureLoader } from "./mana/TextureLoader";
 
 import PBRMaterial from "./material/PBRMaterial";
@@ -47,7 +47,7 @@ export class DemoRawDracoViewer {
     private m_dracoMeshLoader: DracoMeshRawBuilder = new DracoMeshRawBuilder();
     private m_dracoModule: ViewerDracoModule = null;
     private m_reflectPlaneY: number = -220;
-    private m_envMap: TextureProxy = null;
+    private m_envMap: IRenderTexture = null;
 
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 
@@ -205,8 +205,8 @@ export class DemoRawDracoViewer {
         decorator.normalMapEnabled = true;
         return material;
     }
-    createTexListForMaterial(material: PBRMaterial, env: TextureProxy, diffuse: TextureProxy = null, normal: TextureProxy = null, ao: TextureProxy = null): TextureProxy[] {
-        let texList: TextureProxy[] = [env];
+    createTexListForMaterial(material: PBRMaterial, env: IRenderTexture, diffuse: IRenderTexture = null, normal: IRenderTexture = null, ao: IRenderTexture = null): IRenderTexture[] {
+        let texList: IRenderTexture[] = [env];
         if (diffuse != null) {
             texList.push(diffuse)
         }
@@ -325,7 +325,7 @@ export class ViewerDracoModule extends DracoWholeModuleLoader {
     materialCtx: DebugMaterialContext;
     reflectPlaneY: number = -220.0;
     aoMapEnabled: boolean = false;
-    specularEnvMap: TextureProxy;
+    specularEnvMap: IRenderTexture;
     viewer: DemoRawDracoViewer;
 
     constructor() {

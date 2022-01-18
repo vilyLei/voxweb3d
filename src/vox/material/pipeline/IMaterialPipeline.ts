@@ -14,7 +14,7 @@ import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import IShaderUniform from "../../../vox/material/IShaderUniform";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
-import IRenderTexture from "../../../vox/render/IRenderTexture";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
 /**
  * 材质功能组装流水线行为规范
