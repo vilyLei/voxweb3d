@@ -19,6 +19,11 @@ import OcclusionPostOutline from "../renderingtoy/mcase/outline/OcclusionPostOut
 
 import { IShaderLibListener, CommonMaterialContext, MaterialContextParam } from "../materialLab/base/CommonMaterialContext";
 import { DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
+import { RendererableEntityBlock } from "../vox/scene/RenderableEntityBlock";
+import { Axis3DEntity } from "../app/VoxApp";
+import ScreenAlignPlaneEntity from "../vox/entity/ScreenAlignPlaneEntity";
+import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
+import ScreenPlaneMaterial from "../vox/material/mcase/ScreenPlaneMaterial";
 
 export class DemoPBR implements IShaderLibListener {
     constructor() { }
@@ -61,6 +66,10 @@ export class DemoPBR implements IShaderLibListener {
             this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();
             
+            let entityBlock = new RendererableEntityBlock();
+            entityBlock.initialize();
+            this.m_rscene.entityBlock = entityBlock;
+            
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_CLICK, this, this.mouseBgClick);
@@ -93,11 +102,43 @@ export class DemoPBR implements IShaderLibListener {
             mcParam.lambertMaterialEnabled = false;
             mcParam.pbrMaterialEnabled = true;
             this.m_materialCtx.addShaderLibListener( this );
-            this.m_materialCtx.initialize(this.m_rscene, mcParam);
+            this.m_materialCtx.initialize(this.m_rscene, mcParam); 
             
         }
     }
+    private initTest(): void {
+
+        /*
+        let scrPlane: ScreenAlignPlaneEntity =  new ScreenAlignPlaneEntity();
+        //scrPlane.initialize(-0.9,-0.9,0.4,0.4, [this.m_fboIns.getRTTAt(0)]);
+        scrPlane.initialize(-1,-1,2,2);
+        (scrPlane.getMaterial() as any).setRGB3f(1.0, 0.5, 0.3);
+        //scrPlane.setOffsetRGB3f(0.1,0.1,0.1);
+        this.m_rscene.addEntity(scrPlane, 0);
+
+        let axis: Axis3DEntity = new Axis3DEntity();
+        axis.initialize(300.0);
+        this.m_rscene.addEntity( axis );
+        //*/
+        //ScreenPlaneMaterial
+        let material = new ScreenPlaneMaterial();
+        // material.initializeByCodeBuf(true);
+        //material.setTextureList([this.m_materialCtx.getTextureByUrl("static/assets/default.jpg")]);
+        material.setRGB3f(0.0,0.2,0.3);
+        let horOccBlurPlane = this.m_rscene.entityBlock.createEntity();
+        // horOccBlurPlane.copyMeshFrom(verOccBlurPlane);
+        horOccBlurPlane.copyMeshFrom( this.m_rscene.entityBlock.unitXOYPlane );
+        horOccBlurPlane.setMaterial( material );
+        horOccBlurPlane.setScaleXYZ(1.8, 1.8, 1.0);
+        horOccBlurPlane.update();
+        this.m_rscene.addEntity( horOccBlurPlane );
+    }
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
+
+        // this.initTest();
+        this.initPBRSC();
+    }
+    private initPBRSC(): void {
 
         this.m_uiModule.initialize(this.m_rscene, this.m_materialCtx, true);
         this.m_ruisc = this.m_uiModule.ruisc;
@@ -106,7 +147,6 @@ export class DemoPBR implements IShaderLibListener {
 
         this.m_pbrScene = new PBRScene();
         this.m_pbrScene.initialize(this.m_rscene, this.m_materialCtx, this.m_uiModule);
-
     }
 
     private m_runFlag: boolean = true;
@@ -134,6 +174,9 @@ export class DemoPBR implements IShaderLibListener {
         }
     }
 
+    runT(): void {
+        this.m_rscene.run();
+    }
     run(): void {
 
         if(this.m_pbrScene != null) {

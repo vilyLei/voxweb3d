@@ -12,6 +12,7 @@ import { CommonMaterialContext } from "../materialLab/base/CommonMaterialContext
 import { IShaderLibListener, MaterialContextParam, DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 import { DirectionLight } from "../light/base/DirectionLight";
 import EngineBase from "../vox/engine/EngineBase";
+import { RendererableEntityBlock } from "../vox/scene/RenderableEntityBlock";
 
 export class RbtDrama implements IShaderLibListener {
     constructor() { }
@@ -105,10 +106,10 @@ export class RbtDrama implements IShaderLibListener {
             this.m_engine.initialize(rparam, 7);
             this.m_engine.setProcessIdListAt(0, [0,1,2,4,5,6]);
             this.m_rscene = this.m_engine.rscene;
-            // this.m_rscene = new RendererScene();
-            // this.m_rscene.initialize(rparam, 5);
-            // this.m_rscene.updateCamera();
-            // this.m_interaction.initialize(this.m_rscene);
+            
+            let entityBlock = new RendererableEntityBlock();
+            entityBlock.initialize();
+            this.m_rscene.entityBlock = entityBlock;
 
             this.m_statusDisp.initialize();
 

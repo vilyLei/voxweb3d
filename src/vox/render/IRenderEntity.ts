@@ -76,7 +76,10 @@ export default interface IRenderEntity {
      */
     isPolyhedral(): boolean;
 
-    
+    setXYZ(px: number, py: number, pz: number): void;
+    setRotationXYZ(rx: number, ry: number, rz: number): void;
+    setScaleXYZ(sx: number, sy: number, sz: number): void;
+
     copyPositionFrom(entity: IRenderEntity): void;
     copyMeshFrom(entity: IRenderEntity): void;
     copyMaterialFrom(entity: IRenderEntity): void;

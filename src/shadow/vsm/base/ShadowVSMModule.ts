@@ -137,8 +137,8 @@ export class ShadowVSMModule {
         this.m_fboDepth.createFBOAt(this.m_fboIndex, this.m_shadowMapW, this.m_shadowMapH, true, false,0);
         this.m_depthRtt = this.m_fboDepth.setRenderToRGBATexture(null, 0);
         this.m_fboDepth.setRProcessIDList(processIDList);
-        this.m_fboDepth.setGlobalRenderState(RendererState.NORMAL_STATE);
-        this.m_fboDepth.setGlobalMaterial(new DepthMaterial(), false,false);
+        this.m_fboDepth.setGlobalRenderState( RendererState.NORMAL_STATE);
+        this.m_fboDepth.setGlobalMaterial( new DepthMaterial(), false,false );
 
         this.m_fboOccBlur = this.m_rscene.createFBOInstance();
         this.m_fboOccBlur.asynFBOSizeWithViewport();
@@ -152,8 +152,9 @@ export class ShadowVSMModule {
         occMaterial.setShadowRadius(this.m_shadowRadius);
         //let verOccBlurPlane: Plane3DEntity = new Plane3DEntity();
         let verOccBlurPlane = this.m_rscene.entityBlock.createEntity();
-        verOccBlurPlane.copyMeshFrom( this.m_rscene.entityBlock.unitXOYPlane );
+        verOccBlurPlane.copyMeshFrom( this.m_rscene.entityBlock.screenPlane );
         verOccBlurPlane.setMaterial(occMaterial);
+        // verOccBlurPlane.update();
         // verOccBlurPlane.initializeXOY(-1, -1, 2, 2);
         this.m_verOccBlurPlane = verOccBlurPlane;
 
@@ -163,8 +164,9 @@ export class ShadowVSMModule {
         //let horOccBlurPlane: Plane3DEntity = new Plane3DEntity();
         let horOccBlurPlane = this.m_rscene.entityBlock.createEntity();
         // horOccBlurPlane.copyMeshFrom(verOccBlurPlane);
-        horOccBlurPlane.copyMeshFrom( this.m_rscene.entityBlock.unitXOYPlane );
+        horOccBlurPlane.copyMeshFrom( this.m_rscene.entityBlock.screenPlane );
         horOccBlurPlane.setMaterial(occMaterial);
+        // horOccBlurPlane.update();
         // horOccBlurPlane.initializeXOY(-1, -1, 2, 2);
         this.m_horOccBlurPlane = horOccBlurPlane;
 

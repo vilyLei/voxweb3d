@@ -223,6 +223,16 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
     getVisible(): boolean {
         return this.m_visible;
     }
+    
+    setXYZ(px: number, py: number, pz: number): void {
+        
+    }
+    setRotationXYZ(rx: number, ry: number, rz: number): void {
+        
+    }
+    setScaleXYZ(sx: number, sy: number, sz: number): void {
+
+    }
     copyMeshFrom(entity: IDisplayEntity): void {
         if (entity != null) {
             this.setMesh(entity.getMesh());

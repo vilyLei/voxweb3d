@@ -33,8 +33,8 @@ export default class RectPlaneMesh extends MeshBase {
 
     flipVerticalUV: boolean = false;
     /**
-     * axisFlag = 0 is XOY plane
-     * axisFlag = 1 is XOZ plane
+     * axisFlag = 0 is XOY plane,
+     * axisFlag = 1 is XOZ plane,
      * axisFlag = 2 is YOZ plane
      */
     axisFlag: number = 0;
