@@ -14,8 +14,10 @@ else if(process.env.npm_lifecycle_script == "vue-cli-service serve --voxtype=dev
   devDstStr = "./src/devWeb.ts";
   appDstStr = "./src/devWeb.ts";
 }
-if(process.env.npm_lifecycle_script.indexOf("./src/app/VoxApp.") > 0) appDstStr = "./src/app/VoxApp.ts";
-
+if(process.env.npm_lifecycle_script.indexOf("./src/app/VoxApp.") > 0) {
+  devDstStr = appDstStr = "./src/app/VoxApp.ts";
+}
+console.log("devDstStr, appDstStr: ",devDstStr,appDstStr);
 module.exports = {
   pages: {
     index: {
