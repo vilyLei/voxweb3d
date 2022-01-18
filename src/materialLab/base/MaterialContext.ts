@@ -179,7 +179,7 @@ class MaterialContext {
             pipeline.addPipe(this.lightModule);
             pipeline.addPipe(this.envData);
             if (this.vsmModule != null) {
-                pipeline.addPipe(this.vsmModule.getVSMData());
+                pipeline.addPipe(this.vsmModule);
             }
         }
     }
@@ -188,7 +188,6 @@ class MaterialContext {
         pipeline.addPipe(this.lightModule);
         pipeline.addPipe(this.envData);
         if (this.vsmModule != null) {
-            // pipeline.addPipe(this.vsmModule.getVSMData());
             pipeline.addPipe(this.vsmModule);
         }
         return pipeline;
