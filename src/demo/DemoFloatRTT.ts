@@ -57,7 +57,7 @@ export class DemoFloatRTT {
 
             this.m_statusDisp.initialize();
 
-            this.m_rttTex = this.m_rscene.textureBlock.createRTTTex2D(128, 128);
+            this.m_rttTex = this.m_rscene.textureBlock.createRTTTex2D(128, 128, false);
             this.m_rttTex.to2DTexture();
             this.m_rttTex.internalFormat = TextureFormat.RGBA16F;
             this.m_rttTex.srcFormat = TextureFormat.RGBA;

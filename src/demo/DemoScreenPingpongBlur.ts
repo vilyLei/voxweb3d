@@ -14,7 +14,7 @@ import {TextureConst} from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 
-import TextureBlock from "../vox/texture/TextureBlock";
+import { TextureBlock } from "../vox/texture/TextureBlock";
 import CameraBase from "../vox/view/CameraBase";
 
 export namespace demo

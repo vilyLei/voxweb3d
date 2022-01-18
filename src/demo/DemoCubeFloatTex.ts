@@ -49,7 +49,7 @@ export class DemoCubeFloatTex implements ILoaderListerner {
     }
     private createFloatTex(): IRenderTexture {
         let texSize: number = 32;
-        let posTex = this.m_rscene.textureBlock.createFloatTex2D(texSize, texSize);
+        let posTex = this.m_rscene.textureBlock.createFloatTex2D(texSize, texSize, false);
         posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         posTex.mipmapEnabled = true;
         //posTex.minFilter = TextureConst.NEAREST;
@@ -71,7 +71,7 @@ export class DemoCubeFloatTex implements ILoaderListerner {
 
     private createFloatTexByBytes(fs: Float32Array, pw: number, ph: number): IRenderTexture {
 
-        let posTex = this.m_rscene.textureBlock.createFloatTex2D(pw, ph);
+        let posTex = this.m_rscene.textureBlock.createFloatTex2D(pw, ph, false);
         posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         //posTex.mipmapEnabled = false;
         posTex.minFilter = TextureConst.NEAREST;
@@ -175,7 +175,7 @@ export class DemoCubeFloatTex implements ILoaderListerner {
         let fs32: Float32Array = new Float32Array(buffer);
         let subArr: Float32Array = null;
 
-        let tex = this.m_rscene.textureBlock.createFloatCubeTex(width, height);
+        let tex = this.m_rscene.textureBlock.createFloatCubeTex(width, height, false);
         tex.toRGBFormat();
         //tex.toRGBFormatHalfFloat();
         //tex.mipmapEnabled = false;
@@ -252,7 +252,7 @@ export class DemoCubeFloatTex implements ILoaderListerner {
         let fs32: Float32Array = new Float32Array(buffer);
         let subArr: Float32Array = null;
 
-        let tex = this.m_rscene.textureBlock.createFloatCubeTex(width, height);
+        let tex = this.m_rscene.textureBlock.createFloatCubeTex(width, height, false);
         tex.toRGBFormat();
         tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
         tex.mipmapEnabled = false;

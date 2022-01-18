@@ -379,7 +379,7 @@ export namespace demo {
             let subArr: Float32Array = null;
 
             console.log("parseUint8DataToCube....fs32.length: " + fs32.length);
-            let tex = this.m_rscene.textureBlock.createFloatCubeTex(width, height);
+            let tex = this.m_rscene.textureBlock.createFloatCubeTex(width, height, false);
             tex.toRGBFormat();
             tex.mipmapEnabled = false;
             for (let i: number = 0, len: number = 6; i < len; ++i) {

@@ -166,7 +166,7 @@ export class CanvasTextureTool {
         ctx2D.fillStyle = "white";
         ctx2D.fillRect(0, 0, size, size);
 
-        let tex = this.m_sc.textureBlock.createImageTex2D(32, 32);
+        let tex = this.m_sc.textureBlock.createImageTex2D(32, 32, false);
         tex.setDataFromImage(canvas, 0, 0, 0, false);
         this.m_whiteTex = tex;
         tex.premultiplyAlpha = true;

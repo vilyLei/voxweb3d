@@ -40,7 +40,7 @@ export class DemoVSTexturePos {
 
         //let texWidth:number = 16 * 16;
         let texSize: number = this.m_texSize;
-        let posTex = this.m_rscene.textureBlock.createFloatTex2D(texSize, texSize);
+        let posTex = this.m_rscene.textureBlock.createFloatTex2D(texSize, texSize, false);
         posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         posTex.mipmapEnabled = false;
         posTex.minFilter = TextureConst.NEAREST;

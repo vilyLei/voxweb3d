@@ -48,7 +48,7 @@ export class DemoFloatTex implements ILoaderListerner {
     }
     private createFloatTex(size: number = 32, mipmap: boolean = false): IRenderTexture {
 
-        let posTex = this.m_rscene.textureBlock.createFloatTex2D(size, size);
+        let posTex = this.m_rscene.textureBlock.createFloatTex2D(size, size, false);
         posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         posTex.mipmapEnabled = !mipmap;
         if (RendererDevice.IsWebGL2()) {
@@ -88,7 +88,7 @@ export class DemoFloatTex implements ILoaderListerner {
 
     private createFloatTexByBytes(fs: Float32Array, pw: number, ph: number): IRenderTexture {
 
-        let posTex = this.m_rscene.textureBlock.createFloatTex2D(pw, ph);
+        let posTex = this.m_rscene.textureBlock.createFloatTex2D(pw, ph, false);
         posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         //posTex.mipmapEnabled = false;
         posTex.minFilter = TextureConst.NEAREST;
@@ -402,7 +402,7 @@ export class DemoFloatTex implements ILoaderListerner {
         //Math.log2(height);
         console.log("Math.log2(height): ", Math.log2(height));
 
-        let tex = this.m_rscene.textureBlock.createFloatTex2D(width, height);
+        let tex = this.m_rscene.textureBlock.createFloatTex2D(width, height, false);
         tex.toRGBFormat();
         tex.mipmapEnabled = false;
         for (let j: number = 0; j < 8; j++) {

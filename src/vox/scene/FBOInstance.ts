@@ -9,7 +9,7 @@ import RenderFilter from "../../vox/render/RenderFilter";
 import RenderMaskBitfield from "../../vox/render/RenderMaskBitfield";
 import { TextureConst, TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
 import { IRTTTexture } from "../../vox/render/texture/IRTTTexture";
-import RTTTextureStore from "../../vox/texture/RTTTextureStore";
+import { IRTTTextureStore } from "../../vox/texture/IRTTTextureStore";
 import Color4 from "../../vox/material/Color4";
 
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
@@ -48,7 +48,7 @@ export default class FBOInstance implements IFBOInstance {
     private m_gRColorMask: number = -1;
     private m_rindexs: number[] = [];
     private m_texs: IRenderTexture[] = [null, null, null, null, null, null, null, null];
-    private m_texStore: RTTTextureStore = null;
+    private m_texStore: IRTTTextureStore = null;
     private m_texsTot: number = 0;
     private m_synFBOSizeWithViewport: boolean = true;
     private m_fboSizeFactor: number = 1.0;
@@ -64,7 +64,7 @@ export default class FBOInstance implements IFBOInstance {
      */
     uns: string = "FBOInstance";
 
-    constructor(renderer: IRenderer, texStroe: RTTTextureStore) {
+    constructor(renderer: IRenderer, texStroe: IRTTTextureStore) {
 
         this.m_renderer = renderer;
         this.m_texStore = texStroe;
@@ -382,7 +382,7 @@ export default class FBOInstance implements IFBOInstance {
      */
     setRenderToHalfFloatTexture(texture: IRTTTexture, outputIndex: number = 0): IRTTTexture {
         if (texture == null) {
-            texture = this.m_texStore.createRTTTex2D(128, 128);
+            texture = this.m_texStore.createRTTTex2D(128, 128, false);
             texture.__$setRenderProxy(this.m_renderProxy);
             texture.internalFormat = TextureFormat.RGBA16F;
             texture.srcFormat = TextureFormat.RGBA;
@@ -411,7 +411,7 @@ export default class FBOInstance implements IFBOInstance {
         return this.setRenderToTexture(this.m_texStore.getDepthTextureAt(systemDepthRTTTexIndex), outputIndex);
     }
     createRGBATexture(): IRTTTexture {
-        let texture = this.m_texStore.createRTTTex2D(32, 32);
+        let texture = this.m_texStore.createRTTTex2D(32, 32, false);
         texture.internalFormat = TextureFormat.RGBA;
         texture.srcFormat = TextureFormat.RGBA;
         texture.dataType = TextureDataType.UNSIGNED_BYTE;

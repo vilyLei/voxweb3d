@@ -63,7 +63,7 @@ export class DemoDeepTransparent2 extends DemoInstance {
         this.m_depTex0 = this.m_rscene.textureBlock.createDepthTextureAt(0, this.m_rscene.getStage3D().stageWidth, this.m_rscene.getStage3D().stageHeight);
         this.m_depTex1 = this.m_rscene.textureBlock.createDepthTextureAt(1, this.m_rscene.getStage3D().stageWidth, this.m_rscene.getStage3D().stageHeight);
 
-        this.m_wrapperTex = this.m_rscene.textureBlock.createWrapperTex(64, 64);
+        this.m_wrapperTex = this.m_rscene.textureBlock.createWrapperTex(64, 64, false);
         this.m_wrapperTex.attachTex(this.m_depTex1);
         //this.m_wrapperTex.attachTex(tex0);
         console.log("tex uids: ", tex0.getUid(), this.m_depTex0.getUid(), this.m_depTex1.getUid()

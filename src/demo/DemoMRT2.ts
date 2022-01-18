@@ -19,7 +19,7 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import DefaultMRTMaterial from "../vox/material/mcase/DefaultMRTMaterial";
 
-import TextureBlock from "../vox/texture/TextureBlock";
+import { TextureBlock } from "../vox/texture/TextureBlock";
 
 //import DefaultMRTMaterial = DefaultMRTMaterialT.vox.material.mcase.DefaultMRTMaterial;
 

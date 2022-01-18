@@ -42,7 +42,7 @@ class TextureLoader {
         loader.load(url, this);
         this.m_rscene = rscene;
 
-        this.texture = this.m_rscene.textureBlock.createFloatCubeTex(32, 32);
+        this.texture = this.m_rscene.textureBlock.createFloatCubeTex(32, 32, false);
     }
     loaded(buffer: ArrayBuffer, uuid: string): void {
         //console.log("loaded... uuid: ", uuid, buffer.byteLength);

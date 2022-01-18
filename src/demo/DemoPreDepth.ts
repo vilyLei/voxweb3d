@@ -19,7 +19,7 @@ import ScreenFixedPlaneMaterial from "../vox/material/mcase/ScreenFixedPlaneMate
 import * as PSDepthMaterialT from "../demo/material/PSDepthMaterial";
 
 
-import TextureBlock from "../vox/texture/TextureBlock";
+import { TextureBlock } from "../vox/texture/TextureBlock";
 //import ScreenFixedPlaneMaterial = ScreenFixedPlaneMaterialT.vox.material.mcase.ScreenFixedPlaneMaterial;
 import PSDepthMaterial = PSDepthMaterialT.demo.material.PSDepthMaterial;
 

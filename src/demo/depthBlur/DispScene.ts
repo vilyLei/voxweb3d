@@ -7,7 +7,7 @@ import RendererInstance from "../../vox/scene/RendererInstance";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../../vox/texture/TextureConst";
-import TextureBlock from "../../vox/texture/TextureBlock";
+import { TextureBlock } from "../../vox/texture/TextureBlock";
 import { ScrDepBaseMaterial } from "../material/ScrDepBaseMaterial";
 import { ScrDepBlurMaterial } from "../material/ScrDepBlurMaterial";
 import ScreenPlaneMaterial from "../../vox/material/mcase/ScreenPlaneMaterial";

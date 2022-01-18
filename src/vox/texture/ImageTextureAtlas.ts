@@ -48,7 +48,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
         this.m_canvas2D.fillRect(0, 0, canvasWidth, canvasHeight);
 
         this.m_uvFlipY = true;
-        this.m_texture = this.m_rscene.textureBlock.createImageTex2D(32, 32);
+        this.m_texture = this.m_rscene.textureBlock.createImageTex2D(32, 32, false);
         this.m_texture.__$setRenderProxy(this.m_rscene.getRenderProxy());
         this.m_texture.setDataFromImage(this.m_canvas, 0, 0, 0, false);
         this.m_texture.premultiplyAlpha = true;

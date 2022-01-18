@@ -18,7 +18,7 @@ import BillboardLine3DEntity from "../vox/entity/BillboardLine3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
 import { TextureConst } from "../vox/texture/TextureConst";
 
-import TextureBlock from "../vox/texture/TextureBlock";
+import { TextureBlock } from "../vox/texture/TextureBlock";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 

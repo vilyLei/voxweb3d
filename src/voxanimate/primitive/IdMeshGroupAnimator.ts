@@ -15,7 +15,7 @@ import MaterialBase from '../../vox/material/MaterialBase';
 import VSTexturePosIdMaterial from "../../voxanimate/material/VSTexturePosIdMaterial";
 import { TextureConst } from "../../vox/texture/TextureConst";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
-import TextureBlock from "../../vox/texture/TextureBlock";
+import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import { IdGroupMesh } from "../../voxanimate/mesh/IdGroupMesh";
 import MeshBase from "../../vox/mesh/MeshBase";
 
@@ -44,7 +44,7 @@ class IdMeshGroupAnimator extends DisplayEntity {
     getGroupSrcMesh(): MeshBase {
         return this.m_groupSrcMesh;
     }
-    createDataTexture(textureBlock: TextureBlock, positionsTotal: number): IRenderTexture {
+    createDataTexture(textureBlock: ITextureBlock, positionsTotal: number): IRenderTexture {
         if (positionsTotal > 0) {
             this.m_posTotal = positionsTotal;
             this.m_texSize = Math.sqrt(positionsTotal);
@@ -52,7 +52,7 @@ class IdMeshGroupAnimator extends DisplayEntity {
             if (this.m_texSize < 8) this.m_texSize = 8;
 
             let texSize: number = this.m_texSize;
-            let posTex = textureBlock.createFloatTex2D(texSize, texSize);
+            let posTex = textureBlock.createFloatTex2D(texSize, texSize, false);
             posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
             posTex.mipmapEnabled = false;
             posTex.minFilter = TextureConst.NEAREST;

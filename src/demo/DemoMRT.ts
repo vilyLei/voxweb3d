@@ -10,7 +10,7 @@ import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
 import {TextureConst} from "../vox/texture/TextureConst";
-import TextureBlock from "../vox/texture/TextureBlock";
+import { TextureBlock } from "../vox/texture/TextureBlock";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import DefaultMRTMaterial from "../vox/material/mcase/DefaultMRTMaterial";

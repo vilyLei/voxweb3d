@@ -18,7 +18,7 @@ export class DemoAPlane {
     }
     private createPlane(): void {
 
-        let tex = this.m_rscene.textureBlock.createImageTex2D(64, 64);
+        let tex = this.m_rscene.textureBlock.createImageTex2D(64, 64, false);
 
         this.m_plane = new Plane3DEntity();
         this.m_plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex]);

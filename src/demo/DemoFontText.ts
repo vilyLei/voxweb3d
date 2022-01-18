@@ -16,7 +16,7 @@ import H5FontSystem from "../vox/text/H5FontSys";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import TextBillboard3DEntity from "../vox/text/TextBillboard3DEntity";
-import TextureBlock from "../vox/texture/TextureBlock";
+import { TextureBlock } from "../vox/texture/TextureBlock";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 

@@ -118,7 +118,7 @@ class ViewTextureMaker {
             this.m_colorRtt = this.m_fbo.setRenderToRGBATexture(null, 0);
             this.m_viewRtt = this.m_fbo.setRenderToRGBATexture(null, 0);
 
-            this.m_colorMap = this.m_rscene.textureBlock.createWrapperTex(64,64);
+            this.m_colorMap = this.m_rscene.textureBlock.createWrapperTex(64, 64, false);
             this.m_colorMap.attachTex( this.m_colorRtt );
             this.m_fbo.setRenderToRGBATexture( this.m_viewRtt, 0 );
 
@@ -136,7 +136,7 @@ class ViewTextureMaker {
         }else {
             this.m_viewRtt = this.m_fbo.setRenderToRGBATexture(null, 0);
         }
-        this.m_map = this.m_rscene.textureBlock.createWrapperTex(64,64);
+        this.m_map = this.m_rscene.textureBlock.createWrapperTex(64,64, false);
         this.m_map.attachTex( this.m_viewRtt );
 
         // let pl3 = new Plane3DEntity();

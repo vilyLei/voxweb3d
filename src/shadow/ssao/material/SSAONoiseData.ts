@@ -8,12 +8,12 @@
 import Matrix4 from "../../../vox/math/Matrix4";
 import MathConst from "../../../vox/math/MathConst";
 import Vector3D from "../../../vox/math/Vector3D";
-import TextureBlock from "../../../vox/texture/TextureBlock";
+import { ITextureBlock } from "../../../vox/texture/ITextureBlock";
 import { TextureConst } from "../../../vox/texture/TextureConst";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
 export default class SSAONoiseData {
-    private m_texBlock: TextureBlock = null;
+    private m_texBlock: ITextureBlock = null;
 
     grad3: number[][] = [[1, 1, 0], [- 1, 1, 0], [1, - 1, 0], [- 1, - 1, 0],
     [1, 0, 1], [- 1, 0, 1], [1, 0, - 1], [- 1, 0, - 1],
@@ -168,7 +168,7 @@ export default class SSAONoiseData {
         return 32.0 * (n0 + n1 + n2 + n3);
 
     };
-    initialize(texBlock: TextureBlock): void {
+    initialize(texBlock: ITextureBlock): void {
         this.m_texBlock = texBlock;
     }
     private lerp(a: number, b: number, f: number): number {
@@ -264,7 +264,7 @@ export default class SSAONoiseData {
             }
         }
 
-        let tex = this.m_texBlock.createFloatTex2D(width, width);
+        let tex = this.m_texBlock.createFloatTex2D(width, width, false);
         tex.mipmapEnabled = false;
         tex.minFilter = TextureConst.NEAREST;
         tex.magFilter = TextureConst.NEAREST;

@@ -50,8 +50,8 @@ export default class OcclusionPostOutline {
             this.m_preMaterial = new PostOutlinePreMaterial();
             this.m_preMaterial.initializeByCodeBuf(false);
 
-            this.m_preColorRTT = this.m_rscene.textureBlock.createRTTTex2D(32, 32);
-            this.m_outLineRTT = this.m_rscene.textureBlock.createRTTTex2D(32, 32);
+            this.m_preColorRTT = this.m_rscene.textureBlock.createRTTTex2D(32, 32, false);
+            this.m_outLineRTT = this.m_rscene.textureBlock.createRTTTex2D(32, 32, false);
 
             this.m_preColorFboIns = this.m_rscene.createFBOInstance();
             //this.m_preColorFboIns.asynFBOSizeWithViewport();

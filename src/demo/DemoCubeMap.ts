@@ -12,7 +12,7 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
 import { TextureConst } from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
-import TextureBlock from "../vox/texture/TextureBlock";
+import { TextureBlock } from "../vox/texture/TextureBlock";
 import CameraTrack from "../vox/view/CameraTrack";
 import CubeMapMaterial from "../vox/material/mcase/CubeMapMaterial";
 import FloatCubeTextureProxy from "../vox/texture/FloatCubeTextureProxy";
@@ -42,7 +42,7 @@ class TextureLoader {
         loader.load(url, this);
         this.m_rscene = rscene;
 
-        this.texture = this.m_rscene.textureBlock.createFloatCubeTex(32, 32);
+        this.texture = this.m_rscene.textureBlock.createFloatCubeTex(32, 32, false);
     }
     loaded(buffer: ArrayBuffer, uuid: string): void {
         //console.log("loaded... uuid: ", uuid, buffer.byteLength);
@@ -241,7 +241,7 @@ export class DemoCubeMap {
         //let ddsUrl: string = "static/bytes/forestIrradiance.dds";
         //let ddsUrl: string = "static/bytes/forestReflection.dds";
 
-        let floatCubeTex = this.m_rscene.textureBlock.createFloatCubeTex(32, 32);
+        let floatCubeTex = this.m_rscene.textureBlock.createFloatCubeTex(32, 32, false);
         floatCubeTex.mipmapEnabled = false;
         
         floatCubeTex.toRGBAFormat();

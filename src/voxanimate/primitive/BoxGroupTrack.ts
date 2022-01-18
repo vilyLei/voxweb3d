@@ -7,7 +7,7 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import TextureProxy from "../../vox/texture/TextureProxy";
-import TextureBlock from "../../vox/texture/TextureBlock";
+import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import {IdMeshGroupAnimator} from "../../voxanimate/primitive/IdMeshGroupAnimator";
 import PathTrack from "../../voxnav/path/PathTrack";
 import Box3DMesh from "../../vox/mesh/Box3DMesh";
@@ -98,7 +98,7 @@ export default class BoxGroupTrack {
             this.animator.initialize(srcTrack.m_unitsTotal, srcTrack.m_stepFactor, texList);
         }
     }
-    initialize(textureBlock: TextureBlock, stepDis: number = 0.5, texList: TextureProxy[] = null, distanceFactor: number = 1.0): void {
+    initialize(textureBlock: ITextureBlock, stepDis: number = 0.5, texList: TextureProxy[] = null, distanceFactor: number = 1.0): void {
         this.createTrackData();
 
         let pos: Vector3D;

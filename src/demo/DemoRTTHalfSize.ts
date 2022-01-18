@@ -21,7 +21,7 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import ScreenFixedPlaneMaterial from "../vox/material/mcase/ScreenFixedPlaneMaterial";
 import CameraTrack from "../vox/view/CameraTrack";
 
-import TextureBlock from "../vox/texture/TextureBlock";
+import { TextureBlock } from "../vox/texture/TextureBlock";
 
 
 export namespace demo

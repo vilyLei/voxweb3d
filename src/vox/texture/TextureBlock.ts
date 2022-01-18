@@ -4,11 +4,11 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
+
 import { TextureProxyType } from "../../vox/texture/TextureProxyType";
 import { TextureConst, TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
 import Color4 from "../../vox/material/Color4";
 import IRunnable from "../../vox/base/IRunnable";
-
 
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { IRTTTexture } from "../../vox/render/texture/IRTTTexture";
@@ -23,7 +23,6 @@ import { IBytesTexture } from "../../vox/render/texture/IBytesTexture";
 import { IFloatTexture } from "../../vox/render/texture/IFloatTexture";
 import { IUint16Texture } from "../../vox/render/texture/IUint16Texture";
 
-// import TextureProxy from "../../vox/texture/TextureProxy";
 import TexturePool from "../../vox/texture/TexturePool";
 import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
 import BytesTextureProxy from "../../vox/texture/BytesTextureProxy";
@@ -37,12 +36,12 @@ import Texture3DProxy from "../../vox/texture/Texture3DProxy";
 // import WrapperTextureProxy from "../../vox/texture/WrapperTextureProxy";
 import { IRenderProxy } from "../../vox/render/IRenderProxy";
 import TextureResSlot from "../../vox/texture/TextureResSlot";
-import RTTTextureStore from "../../vox/texture/RTTTextureStore";
+import { RTTTextureStore } from "../../vox/texture/RTTTextureStore";
 
 /**
  * 本类作为所有基础纹理对象的管理类,只允许在RendererInstance之上的类中使用
  */
-export class TextureBlock {
+class TextureBlock {
     private m_texPool: TexturePool = new TexturePool();
     private m_rttStore: RTTTextureStore = null;
     private m_renderProxy: IRenderProxy = null;
@@ -175,7 +174,7 @@ export class TextureBlock {
             bytes.set(fs, k);
             k += 4;
         }
-        tex.setDataFromBytes(bytes, 0, pw, ph, 0,0,false);
+        tex.setDataFromBytes(bytes, 0, pw, ph, 0, 0, false);
         tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
         return tex;
@@ -189,19 +188,22 @@ export class TextureBlock {
         let bytes: Uint8Array = new Uint8Array(size);
         let value: number = Math.round(alpha * 255.0);
         bytes.fill(value, 0, size);
-        tex.setDataFromBytes(bytes, 0, pw, ph, 0,0,false);
+        tex.setDataFromBytes(bytes, 0, pw, ph, 0, 0, false);
         tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
     }
     createAlphaTexBytes2D(pw: number, ph: number, bytes: Uint8Array): IBytesTexture {
         let tex = this.createBytesTex(pw, ph);
-        tex.setDataFromBytes(bytes, 0, pw, ph, 0,0,false);
+        tex.setDataFromBytes(bytes, 0, pw, ph, 0, 0, false);
         tex.toAlphaFormat();
         tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
     }
 
-    // reusable rtt texture resources for one renderer context
+    /**
+     * get a system cube rtt texture
+     * @param i rtt texture index in the system
+     */
     getCubeRTTTextureAt(i: number): IRTTTexture {
         return this.m_rttStore.getCubeRTTTextureAt(i);
     }
@@ -267,4 +269,4 @@ export class TextureBlock {
     }
 
 }
-export default TextureBlock;
+export { TextureBlock }

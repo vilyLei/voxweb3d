@@ -2,7 +2,7 @@ import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../../vox/render/R
 import RendererState from "../../vox/render/RendererState";
 import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
-import TextureBlock from "../../vox/texture/TextureBlock";
+import { TextureBlock } from "../../vox/texture/TextureBlock";
 import CameraTrack from "../../vox/view/CameraTrack";
 import { EntityManager } from "./EntityManager";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";

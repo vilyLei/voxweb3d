@@ -28,7 +28,8 @@ import RunnableQueue from "../../vox/base/RunnableQueue";
 import RPONodeBuilder from "../../vox/render/RPONodeBuilder";
 import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
-import TextureBlock from "../../vox/texture/TextureBlock";
+import { ITextureBlock } from "../../vox/texture/ITextureBlock";
+import { TextureBlock } from "../../vox/texture/TextureBlock";
 import IRenderer from "../../vox/scene/IRenderer";
 import IRendererSpace from "../../vox/scene/IRendererSpace";
 import IRendererScene from "../../vox/scene/IRendererScene";
@@ -89,7 +90,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
     private m_enabled: boolean = true;
 
     readonly runnableQueue: RunnableQueue = new RunnableQueue();
-    readonly textureBlock: TextureBlock = new TextureBlock();
+    readonly textureBlock: ITextureBlock = new TextureBlock();
     readonly stage3D: Stage3D = null;
 
     materialBlock: IRenderableMaterialBlock = null;

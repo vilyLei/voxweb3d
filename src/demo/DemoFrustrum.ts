@@ -18,7 +18,7 @@ import DashedLine3DEntity from "../vox/entity/DashedLine3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
 import { TextureConst, } from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
-import TextureBlock from "../vox/texture/TextureBlock";
+import { TextureBlock } from "../vox/texture/TextureBlock";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
 

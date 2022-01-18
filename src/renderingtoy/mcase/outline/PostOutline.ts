@@ -40,7 +40,7 @@ export default class PostOutline {
             this.m_preMaterial = new PostOutlinePreMaterial();
             this.m_preMaterial.initializeByCodeBuf(false);
 
-            this.m_preColorRTT = this.m_rscene.textureBlock.createRTTTex2D(32, 32);
+            this.m_preColorRTT = this.m_rscene.textureBlock.createRTTTex2D(32, 32, false);
 
             this.m_fboIns = this.m_rscene.createFBOInstance();
             this.m_fboIns.asynFBOSizeWithViewport();

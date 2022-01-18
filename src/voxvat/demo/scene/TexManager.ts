@@ -3,7 +3,7 @@
 import { TextureConst } from "../../../vox/texture/TextureConst";
 import TextureProxy from "../../../vox/texture/TextureProxy";
 import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
-import TextureBlock from "../../../vox/texture/TextureBlock";
+import { ITextureBlock } from "../../../vox/texture/ITextureBlock";
 
 export namespace voxvat
 {
@@ -14,7 +14,7 @@ export namespace voxvat
             export class TexManager
             {
                 static TexLoader:ImageTextureLoader = null;
-                static Initialize(texBlock:TextureBlock):void
+                static Initialize(texBlock:ITextureBlock):void
                 {
                     TexManager.TexLoader = new ImageTextureLoader(texBlock);
                 }

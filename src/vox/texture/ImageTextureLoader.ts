@@ -12,7 +12,7 @@ import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
 import ImageCubeTextureProxy from "../../vox/texture/ImageCubeTextureProxy";
 import BytesTextureProxy from "../../vox/texture/BytesTextureProxy";
-import TextureBlock from "../../vox/texture/TextureBlock";
+import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import RendererDevice from "../render/RendererDevice";
 
 
@@ -269,8 +269,8 @@ export default class ImageTextureLoader implements IRunnable {
     private m_loadDelayTime: number = 17;
     private m_testDelay: number = 512;
     private m_testDelayTime: number = 512;
-    private m_texBlock: TextureBlock = null;
-    constructor(texBlock: TextureBlock) {
+    private m_texBlock: ITextureBlock = null;
+    constructor(texBlock: ITextureBlock) {
         this.m_texBlock = texBlock;
         if (texBlock != null) {
             texBlock.addTexLoader(this);
@@ -349,10 +349,10 @@ export default class ImageTextureLoader implements IRunnable {
             t = new ImgResUnit(purl, mipLevel);
             t.powerOf2Fix = powerOf2Fix;
             if (offsetTexEnabled) {
-                t.offsetTex = this.m_texBlock.createImageTex2D(1, 1) as ImageTextureProxy;
+                t.offsetTex = this.m_texBlock.createImageTex2D(1, 1, false) as ImageTextureProxy;
             }
             this.m_resMap.set(purl, t);
-            let tex = this.m_texBlock.createImageTex2D(1, 1) as ImageTextureProxy;
+            let tex = this.m_texBlock.createImageTex2D(1, 1, false) as ImageTextureProxy;
             tex.name = purl;
             t.texture = tex;
             this.m_waitLoadList.push(t);
@@ -360,7 +360,7 @@ export default class ImageTextureLoader implements IRunnable {
         }
         else {
             if (t.texture.isDestroyed()) {
-                t.texture = this.m_texBlock.createImageTex2D(1, 1) as ImageTextureProxy;
+                t.texture = this.m_texBlock.createImageTex2D(1, 1, false) as ImageTextureProxy;
             }
             return t.texture;
         }

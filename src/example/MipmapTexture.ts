@@ -34,7 +34,7 @@ export namespace example {
         private m_targetBytesTex: BytesTextureProxy = null;
         private m_profileInstance: ProfileInstance = new ProfileInstance();
         getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
-            let ptex = this.m_rscene.textureBlock.createImageTex2D(64, 64);
+            let ptex = this.m_rscene.textureBlock.createImageTex2D(64, 64, false);
             ptex.mipmapEnabled = true;
             if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
             let img: any = new Image();

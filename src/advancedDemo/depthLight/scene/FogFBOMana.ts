@@ -36,7 +36,7 @@ export namespace advancedDemo
                 {
                     return this.m_texs[index];
                 }
-                this.m_texs[index] = this.m_rc.textureBlock.createRTTTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight()) as any;
+                this.m_texs[index] = this.m_rc.textureBlock.createRTTTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight(), false) as any;
                 this.m_texs[index].internalFormat = TextureFormat.RGBA;
                 this.m_texs[index].srcFormat = TextureFormat.RGBA;
                 this.m_texs[index].magFilter = TextureConst.NEAREST;

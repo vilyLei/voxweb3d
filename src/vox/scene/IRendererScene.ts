@@ -9,9 +9,11 @@ import Color4 from "../../vox/material/Color4";
 import IRenderProcess from "../../vox/render/IRenderProcess";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
-import {IRenderCamera} from "../render/IRenderCamera";
+import { IRenderCamera } from "../render/IRenderCamera";
 import IRenderStage3D from "../render/IRenderStage3D";
 import RenderProxy from "../../vox/render/RenderProxy";
+
+import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import Vector3D from "../math/Vector3D";
 
 import { IRenderableMaterialBlock } from "./block/IRenderableMaterialBlock";
@@ -20,9 +22,10 @@ import { IFBOInstance } from "./IFBOInstance";
 
 interface IRendererScene {
 
+    textureBlock: ITextureBlock;
     materialBlock: IRenderableMaterialBlock;
     entityBlock: IRenderableEntityBlock;
-    
+
     enable(): void;
     disable(): void;
     isEnabled(): boolean;
@@ -99,8 +102,8 @@ interface IRendererScene {
      * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform, default value: false
      * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform, default value: true
      */
-    drawEntity(entity: IRenderEntity, useGlobalUniform: boolean,  forceUpdateUniform: boolean): void;
-    
+    drawEntity(entity: IRenderEntity, useGlobalUniform: boolean, forceUpdateUniform: boolean): void;
+
     setClearUint24Color(colorUint24: number, alpha: number): void;
     setClearRGBColor3f(pr: number, pg: number, pb: number): void;
     setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void;

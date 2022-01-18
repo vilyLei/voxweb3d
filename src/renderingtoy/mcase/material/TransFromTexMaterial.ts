@@ -11,7 +11,7 @@ import MaterialBase from "../../../vox/material/MaterialBase";
 import Color4 from "../../../vox/material/Color4";
 import FloatTextureProxy from "../../../vox/texture/FloatTextureProxy";
 import { TextureConst } from "../../../vox/texture/TextureConst";
-import TextureBlock from "../../../vox/texture/TextureBlock";
+import { ITextureBlock } from "../../../vox/texture/ITextureBlock";
 import Matrix4 from "../../../vox/math/Matrix4";
 import MathConst from "../../../vox/math/MathConst";
 
@@ -142,7 +142,7 @@ export class Matrix4Texture {
     getTexture(): FloatTextureProxy {
         return this.m_tex;
     }
-    inittialize(texBlock: TextureBlock, total: number = 64): void {
+    inittialize(texBlock: ITextureBlock, total: number = 64): void {
 
         if (this.m_tex == null) {
 
@@ -156,7 +156,7 @@ export class Matrix4Texture {
 
             let dataFS32: Float32Array = new Float32Array(width * height * 4);
 
-            let tex = texBlock.createFloatTex2D(width, width) as FloatTextureProxy;
+            let tex = texBlock.createFloatTex2D(width, width, false) as FloatTextureProxy;
             tex.mipmapEnabled = false;
             tex.minFilter = TextureConst.NEAREST;
             tex.magFilter = TextureConst.NEAREST;

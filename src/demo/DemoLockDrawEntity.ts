@@ -22,7 +22,7 @@ import {TextureConst} from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import PSColorMaterial from "./material/PSColorMaterial";
-import TextureBlock from "../vox/texture/TextureBlock";
+import { TextureBlock } from "../vox/texture/TextureBlock";
 import RendererScene from "../vox/scene/RendererScene";
 
 export class DemoLockDrawEntity

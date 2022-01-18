@@ -12,7 +12,7 @@ import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
 import ClipsBillboard3DEntity from "../../vox/entity/ClipsBillboard3DEntity";
 import TextureProxy from "../../vox/texture/TextureProxy";
-import TextureBlock from "../../vox/texture/TextureBlock";
+import { TextureBlock } from "../../vox/texture/TextureBlock";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import { EntityDisp } from "../base/EntityDisp";
 import { EntityDispQueue } from "../base/EntityDispQueue";

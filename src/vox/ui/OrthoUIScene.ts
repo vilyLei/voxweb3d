@@ -6,6 +6,7 @@
 /*                                                                         */
 /***************************************************************************/
 
+import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import {IRenderableMaterialBlock} from "../scene/block/IRenderableMaterialBlock";
 import {IRenderableEntityBlock} from "../scene/block/IRenderableEntityBlock";
 import RendererScene from "../scene/RendererScene";
@@ -24,13 +25,17 @@ import IRenderStage3D from "../render/IRenderStage3D";
 import Vector3D from "../math/Vector3D";
 import RenderProxy from "../render/RenderProxy";
 
+
 class OrthoUIScene implements IRendererScene {
 
     private m_rscene: RendererScene = null;
     private m_ruisc: RendererSubScene = null;
     
+    readonly textureBlock: ITextureBlock;
+
     entityBlock: IRenderableEntityBlock = null;
     materialBlock: IRenderableMaterialBlock = null;
+
     constructor() { }
 
     initialize(rscene: RendererScene): void {

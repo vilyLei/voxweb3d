@@ -16,11 +16,12 @@ import DepthTextureProxy from "../../vox/texture/DepthTextureProxy";
 import WrapperTextureProxy from "../../vox/texture/WrapperTextureProxy";
 import { IRenderProxy } from "../../vox/render/IRenderProxy";
 import RendererDevice from "../render/RendererDevice";
+import { IRTTTextureStore } from "./IRTTTextureStore";
 
 /**
  * 本类作为所有RTT纹理对象的管理类
  */
-export class RTTTextureStore {
+class RTTTextureStore implements IRTTTextureStore {
     private m_renderProxy: IRenderProxy = null;
     constructor(renderProxy: IRenderProxy) {
         this.m_renderProxy = renderProxy;
@@ -173,4 +174,4 @@ export class RTTTextureStore {
     }
 }
 
-export default RTTTextureStore;
+export { RTTTextureStore }

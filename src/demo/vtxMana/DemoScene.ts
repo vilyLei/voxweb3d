@@ -28,7 +28,7 @@ import { TextureConst } from "../../vox/texture/TextureConst";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import { EntityDisp } from "../base/EntityDisp";
 import { EntityDispQueue } from "../base/EntityDispQueue";
-import TextureBlock from "../../vox/texture/TextureBlock";
+import { TextureBlock } from "../../vox/texture/TextureBlock";
 
 class DemoScene {
     constructor() {
