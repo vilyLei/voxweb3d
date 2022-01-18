@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
+import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import UniformConst from "../../vox/material/UniformConst";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
@@ -15,7 +15,7 @@ export default class PBRShaderDecorator {
 
     private m_uniqueName: string = "PBRShd";
     
-    codeBuilder: ShaderCodeBuilder = null;
+    // codeBuilder: ShaderCodeBuilder = null;
     specularEnvMap: IRenderTexture = null;
     diffuseMap: IRenderTexture = null;
     normalMap: IRenderTexture = null;
@@ -59,9 +59,9 @@ export default class PBRShaderDecorator {
     fragLocalParamsTotal: number = 2;
     parallaxParamIndex: number = 2;
 
-    createTextureList(): IRenderTexture[] {
-        
-        let coder: ShaderCodeBuilder = this.codeBuilder;
+    createTextureList(coder: IShaderCodeBuilder): IRenderTexture[] {
+        //IShaderCodeBuilder
+        //let coder: ShaderCodeBuilder = this.codeBuilder;
         let uniform = coder.uniform;
         let texList: IRenderTexture[] = [];
         if(this.armMap != null) {
@@ -163,9 +163,9 @@ export default class PBRShaderDecorator {
 
         //this.m_uniqueName = src.m_uniqueName;
     }
-    buildShader(): void {
+    buildShader(coder: IShaderCodeBuilder): void {
 
-        let coder: ShaderCodeBuilder = this.codeBuilder;
+        //let coder: ShaderCodeBuilder = this.codeBuilder;
 
         coder.normalMapEnabled = this.normalMapEnabled;
         coder.mapLodEnabled = true;
@@ -173,16 +173,16 @@ export default class PBRShaderDecorator {
         coder.useHighPrecious();
 
         let mirrorProjEnabled: boolean = this.mirrorProjEnabled && this.texturesTotal > 0;
-        if (this.normalNoiseEnabled) coder.addDefine("VOX_NORMAL_NOISE");
+        if (this.normalNoiseEnabled) coder.addDefine("VOX_NORMAL_NOISE","1");
 
-        if (this.woolEnabled) coder.addDefine("VOX_WOOL");
-        if (this.toneMappingEnabled) coder.addDefine("VOX_TONE_MAPPING");
-        if (this.scatterEnabled) coder.addDefine("VOX_SCATTER");
-        if (this.specularBleedEnabled) coder.addDefine("VOX_SPECULAR_BLEED");
-        if (this.metallicCorrection) coder.addDefine("VOX_METALLIC_CORRECTION");
-        if (this.gammaCorrection) coder.addDefine("VOX_GAMMA_CORRECTION");
-        if (this.absorbEnabled) coder.addDefine("VOX_ABSORB");
-        if (this.pixelNormalNoiseEnabled) coder.addDefine("VOX_PIXEL_NORMAL_NOISE");
+        if (this.woolEnabled) coder.addDefine("VOX_WOOL","1");
+        if (this.toneMappingEnabled) coder.addDefine("VOX_TONE_MAPPING","1");
+        if (this.scatterEnabled) coder.addDefine("VOX_SCATTER","1");
+        if (this.specularBleedEnabled) coder.addDefine("VOX_SPECULAR_BLEED","1");
+        if (this.metallicCorrection) coder.addDefine("VOX_METALLIC_CORRECTION","1");
+        if (this.gammaCorrection) coder.addDefine("VOX_GAMMA_CORRECTION","1");
+        if (this.absorbEnabled) coder.addDefine("VOX_ABSORB","1");
+        if (this.pixelNormalNoiseEnabled) coder.addDefine("VOX_PIXEL_NORMAL_NOISE","1");
 
         if (this.mirrorMapLodEnabled) coder.addDefine("VOX_MIRROR_MAP_LOD", "1");
         if (this.hdrBrnEnabled) coder.addDefine("VOX_HDR_BRN", "1");

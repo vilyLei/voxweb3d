@@ -4,6 +4,7 @@ import { IShaderLibConfigure, ShaderCodeType, ShaderCodeUUID, ShaderCodeConfigur
 import { LambertLightShaderCode } from "../../vox/material/mcase/glsl/LambertLightShaderCode";
 
 import { PBRShaderCode } from "../../pbr/material/glsl/PBRShaderCode";
+
 /**
  * 实现 material 构造 pipeline 的上下文, 用于debug测试(会打包shader代码到程序中)
  */

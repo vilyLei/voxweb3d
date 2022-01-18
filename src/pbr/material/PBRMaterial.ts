@@ -42,7 +42,7 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
             this.vertUniform.use(this.m_coder);
             //this.m_coder.addVertUniform("vec4", "u_vertLocalParams", this.vertUniform.getParamsTotal());
         }
-        this.decorator.buildShader();
+        this.decorator.buildShader( this.m_coder );
     }
     getShaderCodeObjectUUID(): ShaderCodeUUID {
         return ShaderCodeUUID.PBR;
@@ -111,13 +111,13 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
 
         buf.decorator = decorator;
         buf.vertUniform = this.vertUniform;
-        buf.decorator.codeBuilder = buf.getShaderCodeBuilder();
+        //buf.decorator.codeBuilder = buf.getShaderCodeBuilder();
         
         if(this.m_fragLocalParams == null) {
             this.initializeLocalData();
         }
         
-        let list = decorator.createTextureList();
+        let list = decorator.createTextureList( buf.getShaderCodeBuilder() );
         if(this.vertUniform != null) this.vertUniform.getTextures(buf.getShaderCodeBuilder(), list);
         buf.getTexturesFromPipeline( list );
 
@@ -356,7 +356,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         }
     }
     createSelfUniformData(): ShaderUniformData {
-
+        
         let sud: ShaderUniformData = new ShaderUniformData();
         sud.uniformNameList = ["u_pbrParams", "u_fragLocalParams", "u_mirrorParams"];
         sud.dataList = [this.m_pbrParams, this.m_fragLocalParams, this.m_mirrorParam];

@@ -23,6 +23,11 @@ export default interface IShaderCodeBuilder {
     useHighPrecious(): void;
     useMediumPrecious(): void;
     useLowPrecious(): void;
+    /**
+     * 
+     * @param name macro name string
+     * @param value the default value is "1"
+     */
     addDefine(name: string, value: string): void;
     addVertLayout(type: string, name: string): void;
     addFragOutput(type: string, name: string): void;
