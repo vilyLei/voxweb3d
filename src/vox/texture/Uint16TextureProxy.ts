@@ -8,8 +8,9 @@
 import { TextureProxyType } from "../../vox/texture/TextureProxyType";
 import { TextureConst, TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
 import RawDataTextureProxy from "../../vox/texture/RawDataTextureProxy";
+import { IUint16Texture } from "../../vox/render/texture/IUint16Texture";
 
-class Uint16TextureProxy extends RawDataTextureProxy {
+class Uint16TextureProxy extends RawDataTextureProxy implements IUint16Texture {
     constructor(texWidth: number, texHeight: number, powerof2Boo: boolean = false) {
         super(texWidth, texHeight, powerof2Boo);
         this.m_type = TextureProxyType.Uint16;

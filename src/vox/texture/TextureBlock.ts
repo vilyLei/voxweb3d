@@ -21,6 +21,7 @@ import { IImageCubeTexture } from "../../vox/render/texture/IImageCubeTexture";
 import { ITexture3D } from "../../vox/render/texture/ITexture3D";
 import { IBytesTexture } from "../../vox/render/texture/IBytesTexture";
 import { IFloatTexture } from "../../vox/render/texture/IFloatTexture";
+import { IUint16Texture } from "../../vox/render/texture/IUint16Texture";
 
 // import TextureProxy from "../../vox/texture/TextureProxy";
 import TexturePool from "../../vox/texture/TexturePool";
@@ -125,7 +126,7 @@ export class TextureBlock {
         tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
         return tex;
     }
-    createUint16Tex2D(pw: number, ph: number, powerof2Boo: boolean = false): Uint16TextureProxy {
+    createUint16Tex2D(pw: number, ph: number, powerof2Boo: boolean = false): IUint16Texture {
         return new Uint16TextureProxy(pw, ph, powerof2Boo);
     }
     createFloatCubeTex(pw: number, ph: number, powerof2Boo: boolean = false): IFloatCubeTexture {
