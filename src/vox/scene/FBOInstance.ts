@@ -26,7 +26,7 @@ import { IRendererInstanceContext } from "./IRendererInstanceContext";
 import RendererState from "../render/RendererState";
 import { IFBOInstance } from "./IFBOInstance";
 
-export default class FBOInstance {
+export default class FBOInstance implements IFBOInstance {
 
     private m_backBufferColor: Color4 = new Color4();
     private m_adapter: IRenderAdapter = null;

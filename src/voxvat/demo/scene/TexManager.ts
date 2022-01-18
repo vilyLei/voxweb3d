@@ -27,7 +27,7 @@ export namespace voxvat
                 }
                 static getImageTexByUrl(purl:string):TextureProxy
                 {
-                    return TexManager.TexLoader.getTexByUrl(purl);
+                    return TexManager.TexLoader.getTexByUrl(purl) as TextureProxy;
                 }
             }
         }

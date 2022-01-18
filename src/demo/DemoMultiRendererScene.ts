@@ -64,8 +64,8 @@ class LeftScene {
         this.m_rendererScene = rscene;
         this.m_texLoader = texLoader;
 
-        let tex0: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
-        let tex1: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
+        let tex0 = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
+        let tex1 = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
 
         let axis: Axis3DEntity = new Axis3DEntity();
         axis.initialize(600.0);
@@ -111,8 +111,8 @@ class RightScene {
         this.m_rendererScene = rscene;
         this.m_texLoader = texLoader;
 
-        let tex1: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
-        let tex2: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/warter_01.jpg");
+        let tex1 = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
+        let tex2 = this.m_texLoader.getTexByUrl("static/assets/warter_01.jpg");
 
         let axis: Axis3DEntity = new Axis3DEntity();
         axis.initialize(600.0);
@@ -162,8 +162,8 @@ class UIScene {
         this.m_rendererScene = rscene;
         this.m_texLoader = texLoader;
 
-        let tex3: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/caustics_02.jpg");
-        let tex4: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/white.jpg");
+        let tex3 = this.m_texLoader.getTexByUrl("static/assets/caustics_02.jpg");
+        let tex4 = this.m_texLoader.getTexByUrl("static/assets/white.jpg");
         
         let stage3D:Stage3D = this.m_rendererScene.getStage3D() as Stage3D;
         this.m_stage3D = stage3D;

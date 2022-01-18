@@ -16,8 +16,10 @@ import { IDepthTexture } from "../../vox/render/texture/IDepthTexture";
 import { IWrapperTexture } from "../../vox/render/texture/IWrapperTexture";
 import { IFloatCubeTexture } from "../../vox/render/texture/IFloatCubeTexture";
 import { IBytesCubeTexture } from "../../vox/render/texture/IBytesCubeTexture";
+import { IImageTexture } from "../../vox/render/texture/IImageTexture";
+import { IImageCubeTexture } from "../../vox/render/texture/IImageCubeTexture";
 
-import TextureProxy from "../../vox/texture/TextureProxy";
+// import TextureProxy from "../../vox/texture/TextureProxy";
 import TexturePool from "../../vox/texture/TexturePool";
 import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
 import BytesTextureProxy from "../../vox/texture/BytesTextureProxy";
@@ -28,8 +30,7 @@ import BytesCubeTextureProxy from "../../vox/texture/BytesCubeTextureProxy";
 import ImageCubeTextureProxy from "../../vox/texture/ImageCubeTextureProxy";
 import Texture3DProxy from "../../vox/texture/Texture3DProxy";
 
-
-import WrapperTextureProxy from "../../vox/texture/WrapperTextureProxy";
+// import WrapperTextureProxy from "../../vox/texture/WrapperTextureProxy";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import TextureResSlot from "../../vox/texture/TextureResSlot";
 import RTTTextureStore from "../../vox/texture/RTTTextureStore";
@@ -83,9 +84,6 @@ export class TextureBlock {
         return this.m_rttStore;
     }
     createWrapperTex(pw: number, ph: number, powerof2Boo: boolean = false): IWrapperTexture {
-        // let tex = new WrapperTextureProxy(pw, ph, powerof2Boo);
-        // tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
-        // return tex;
         return this.m_rttStore.createWrapperTex(pw, ph, powerof2Boo);
     }
     createRTTTex2D(pw: number, ph: number, powerof2Boo: boolean = false): IRTTTexture {
@@ -93,8 +91,8 @@ export class TextureBlock {
         tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
         return tex;
     }
-    createImageTex2D(pw: number, ph: number, powerof2Boo: boolean = false): ImageTextureProxy {
-        let tex: ImageTextureProxy = this.m_texPool.getTexture(TextureProxyType.Image) as ImageTextureProxy;
+    createImageTex2D(pw: number, ph: number, powerof2Boo: boolean = false): IImageTexture {
+        let tex = this.m_texPool.getTexture(TextureProxyType.Image) as ImageTextureProxy;
         if (tex == null) {
             tex = new ImageTextureProxy(pw, ph, powerof2Boo);
         }
@@ -145,8 +143,8 @@ export class TextureBlock {
         tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
         return tex;
     }
-    createImageCubeTex(texW: number, texH: number): ImageCubeTextureProxy {
-        let tex: ImageCubeTextureProxy = new ImageCubeTextureProxy(texW, texH);
+    createImageCubeTex(texW: number, texH: number): IImageCubeTexture {
+        let tex = new ImageCubeTextureProxy(texW, texH);
         tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
         return tex;
     }

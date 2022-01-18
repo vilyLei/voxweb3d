@@ -34,7 +34,7 @@ export class DemoTextureCubeUV {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        return this.m_texLoader.getTexByUrl(purl,wrapRepeat,mipmapEnabled);
+        return this.m_texLoader.getTexByUrl(purl,wrapRepeat,mipmapEnabled) as TextureProxy;
     }
     initialize(): void {
         console.log("DemoTextureCubeUV::initialize()......");

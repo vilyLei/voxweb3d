@@ -67,10 +67,10 @@ export class DemoCameraSwing {
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-            let tex0: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
-            let tex1: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
-            let tex2: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/warter_01.jpg");
-            let tex3: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/bt_reset_01.png");
+            let tex0 = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
+            let tex1 = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
+            let tex2 = this.m_texLoader.getTexByUrl("static/assets/warter_01.jpg");
+            let tex3 = this.m_texLoader.getTexByUrl("static/assets/bt_reset_01.png");
 
             subScene.enableMouseEvent(false);
             this.m_uiscene = subScene;

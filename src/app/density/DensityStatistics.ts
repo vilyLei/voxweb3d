@@ -201,7 +201,7 @@ export class DensityStatistics {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             let texLoader: ImageTextureLoader = this.m_texLoader;
-            let tex0: TextureProxy = texLoader.getTexByUrl("static/assets/wood_01.jpg");
+            let tex0 = texLoader.getTexByUrl("static/assets/wood_01.jpg");
 
             let axis: Axis3DEntity = new Axis3DEntity();
             //axis.initializeCross(600.0);

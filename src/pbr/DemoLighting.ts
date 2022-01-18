@@ -7,7 +7,7 @@ import DisplayEntity from "../vox/entity/DisplayEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
-import TextureProxy from "../vox/texture/TextureProxy";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 
 import MouseEvent from "../vox/event/MouseEvent";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
@@ -37,7 +37,7 @@ export class DemoLighting {
     private m_materials:PBRLightingMaterial[] = [];
     private m_texMaterials:PBRTexLightingMaterial[] = [];
     
-    private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+    private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
         return this.m_texLoader.getTexByUrl(purl,wrapRepeat,mipmapEnabled);
     }
     initialize(): void {
@@ -100,7 +100,7 @@ export class DemoLighting {
 
         let nameList: string[] = ["gold", "rusted_iron", "grass", "plastic", "wall"];
 
-        let texList: TextureProxy[] = this.getTexList("plastic");
+        let texList: IRenderTexture[] = this.getTexList("plastic");
 
         for(let i:number = 0; i < rn; ++i)
         {
@@ -163,8 +163,8 @@ export class DemoLighting {
             }
         }
     }
-    private getTexList(name: string = "rusted_iron"): TextureProxy[] {
-        let list: TextureProxy[] = [
+    private getTexList(name: string = "rusted_iron"): IRenderTexture[] {
+        let list: IRenderTexture[] = [
             
             this.getImageTexByUrl("static/assets/pbr/"+name+"/albedo.png"),
             this.getImageTexByUrl("static/assets/pbr/"+name+"/normal.png"),

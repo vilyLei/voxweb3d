@@ -8,7 +8,7 @@
 import MathConst from "../../vox/math/MathConst";
 import IRunnable from "../../vox/base/IRunnable";
 import { TextureConst } from "../../vox/texture/TextureConst";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
 import ImageCubeTextureProxy from "../../vox/texture/ImageCubeTextureProxy";
 import BytesTextureProxy from "../../vox/texture/BytesTextureProxy";
@@ -277,13 +277,13 @@ export default class ImageTextureLoader implements IRunnable {
         }
     }
 
-    getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true, powerOf2Fix: boolean = false): TextureProxy {
-        let ptex: TextureProxy = this.getImageTexByUrl(purl, 0, false, powerOf2Fix);
+    getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true, powerOf2Fix: boolean = false): IRenderTexture {
+        let ptex: IRenderTexture = this.getImageTexByUrl(purl, 0, false, powerOf2Fix);
         ptex.mipmapEnabled = mipmapEnabled;
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
-    getBytesNoPremultipliedAlphaTexByUrl(purl: string, mipLevel: number = 0): BytesTextureProxy {
+    getBytesNoPremultipliedAlphaTexByUrl(purl: string, mipLevel: number = 0): IRenderTexture {
         if (purl == "") {
             return null;
         }
@@ -306,7 +306,7 @@ export default class ImageTextureLoader implements IRunnable {
             return t.bytesTex;
         }
     }
-    getBytesTexByUrl(purl: string, mipLevel: number = 0): BytesTextureProxy {
+    getBytesTexByUrl(purl: string, mipLevel: number = 0): IRenderTexture {
         if (purl == "") {
             return null;
         }
@@ -349,10 +349,10 @@ export default class ImageTextureLoader implements IRunnable {
             t = new ImgResUnit(purl, mipLevel);
             t.powerOf2Fix = powerOf2Fix;
             if (offsetTexEnabled) {
-                t.offsetTex = this.m_texBlock.createImageTex2D(1, 1);
+                t.offsetTex = this.m_texBlock.createImageTex2D(1, 1) as ImageTextureProxy;
             }
             this.m_resMap.set(purl, t);
-            let tex: ImageTextureProxy = this.m_texBlock.createImageTex2D(1, 1);
+            let tex = this.m_texBlock.createImageTex2D(1, 1) as ImageTextureProxy;
             tex.name = purl;
             t.texture = tex;
             this.m_waitLoadList.push(t);
@@ -360,7 +360,7 @@ export default class ImageTextureLoader implements IRunnable {
         }
         else {
             if (t.texture.isDestroyed()) {
-                t.texture = this.m_texBlock.createImageTex2D(1, 1);
+                t.texture = this.m_texBlock.createImageTex2D(1, 1) as ImageTextureProxy;
             }
             return t.texture;
         }
@@ -375,7 +375,7 @@ export default class ImageTextureLoader implements IRunnable {
         if (t == null) {
             t = new CubeImgResLoader(purls);
             this.m_cubeDict.set(idns, t);
-            let tex: ImageCubeTextureProxy = this.m_texBlock.createImageCubeTex(8, 8);
+            let tex = this.m_texBlock.createImageCubeTex(8, 8) as ImageCubeTextureProxy;
             t.addTex(tex, mipLevel);
             return tex;
         }
@@ -435,7 +435,7 @@ export default class ImageTextureLoader implements IRunnable {
         --this.m_testDelay;
         if (this.m_testDelay < 1) {
             this.m_testDelay = this.m_testDelayTime;
-            let tex: TextureProxy = null;
+            let tex: IRenderTexture = null;
             let len: number = this.m_loadedList.length;
             for (i = 0; i < len; ++i) {
                 res = this.m_loadedList[i];

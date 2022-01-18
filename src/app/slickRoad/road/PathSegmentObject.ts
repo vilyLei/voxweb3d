@@ -5,7 +5,7 @@ import { PathTool } from "./PathTool";
 import { RoadMesh } from "../geometry/RoadMesh";
 import { RoadGeometryBuilder } from "../geometry/RoadGeometryBuilder";
 import { PathSegmentEntity } from "../entity/PathSegmentEntity";
-import TextureProxy from "../../../vox/texture/TextureProxy";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
 import { Pos3DPool } from "../base/Pos3DPool";
 import { Pos3D } from "../base/Pos3D";
@@ -134,7 +134,7 @@ class PathSegmentObject {
         }
     }
     distance: number = 0;
-    private buildPathEntity(dispEntity: PathSegmentEntity, posTable: Vector3D[][], tex: TextureProxy, uScale: number = 1.0, vScale: number = 1.0, uvType: number = 0): PathSegmentEntity {
+    private buildPathEntity(dispEntity: PathSegmentEntity, posTable: Vector3D[][], tex: IRenderTexture, uScale: number = 1.0, vScale: number = 1.0, uvType: number = 0): PathSegmentEntity {
 
         let mesh: RoadMesh = (dispEntity != null ? dispEntity.getMesh() : null) as RoadMesh;
 
@@ -191,7 +191,7 @@ class PathSegmentObject {
             let data: SegmentData;
             for (let i: number = 0; i < segments.length; ++i) {
                 data = segments[i];
-                let tex: TextureProxy = this.m_engine.texLoader.getTexByUrl(data.texturePath);
+                let tex = this.m_engine.texLoader.getTexByUrl(data.texturePath);
                 entities[i] = this.buildPathEntity(entities[i], data.posTable, tex, data.uScale, data.vScale, data.uvType);
             }
         }

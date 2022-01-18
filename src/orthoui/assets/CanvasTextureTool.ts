@@ -1,6 +1,3 @@
-
-import TextureProxy from "../../vox/texture/TextureProxy";
-import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
 import RendererScene from "../../vox/scene/RendererScene";
 import RendererDevice from "../../vox/render/RendererDevice";
 import ImageTextureAtlas from "../../vox/texture/ImageTextureAtlas";
@@ -8,22 +5,23 @@ import Color4 from "../../vox/material/Color4";
 import AABB2D from "../../vox/geom/AABB2D";
 import { TexArea } from "../../vox/texture/TexAreaNode";
 import { TextureConst } from "../../vox/texture/TextureConst";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 export class CanvasTextureObject {
 
-    constructor(){}
+    constructor() { }
 
     uvs: Float32Array = null;
-    texture: ImageTextureProxy = null;
-    rect:AABB2D = null;
-    clampUVRect:AABB2D = null;
+    texture: IRenderTexture = null;
+    rect: AABB2D = null;
+    clampUVRect: AABB2D = null;
     uniqueName: string = "";
     getWidth(): number {
-        if(this.rect != null) return this.rect.width;
+        if (this.rect != null) return this.rect.width;
         return 0;
     }
     getHeight(): number {
-        if(this.rect != null) return this.rect.height;
+        if (this.rect != null) return this.rect.height;
         return 0;
     }
     destroy(): void {
@@ -36,8 +34,8 @@ export class CanvasTextureTool {
     private m_sc: RendererScene = null;
     private static s_ins: CanvasTextureTool = null;
     private static s_imgMap: Map<string, HTMLImageElement | HTMLCanvasElement> = new Map();
-    private static s_texMap: Map<string, TextureProxy> = new Map();
-    private static s_atlasList: ImageTextureAtlas[] = [ null, null, null, null];
+    private static s_texMap: Map<string, IRenderTexture> = new Map();
+    private static s_atlasList: ImageTextureAtlas[] = [null, null, null, null];
     constructor() {
         if (CanvasTextureTool.s_ins != null) {
             throw Error("class CanvasTextureTool is a singleton class.");
@@ -58,10 +56,10 @@ export class CanvasTextureTool {
     }
 
     initializeAtlas(canvasWidth: number, canvasHeight: number, fillColor: Color4, transparent: boolean = false): void {
-        
+
         let atlas: ImageTextureAtlas = null;
 
-        if(CanvasTextureTool.s_atlasList[0] == null) {
+        if (CanvasTextureTool.s_atlasList[0] == null) {
 
             atlas = new ImageTextureAtlas(this.m_sc, canvasWidth, canvasHeight, fillColor, transparent);
             //  atlas.getTexture().minFilter = TextureConst.NEAREST;
@@ -88,11 +86,11 @@ export class CanvasTextureTool {
         return CanvasTextureTool.s_atlasList[i];
     }
     addcharsToAtlas(chars: string, size: number, fontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"): CanvasTextureObject {
-        
-        if(chars != "") {
+
+        if (chars != "") {
             let atlas: ImageTextureAtlas = CanvasTextureTool.s_atlasList[0];
             let image: HTMLImageElement | HTMLCanvasElement = ImageTextureAtlas.CreateCharsTexture(chars, size, fontStyle, bgStyle);
-            return this.addImageToAtlas(chars,image);
+            return this.addImageToAtlas(chars, image);
         }
         return null;
     }
@@ -100,7 +98,7 @@ export class CanvasTextureTool {
 
         let atlas: ImageTextureAtlas = CanvasTextureTool.s_atlasList[0];
         let texArea: TexArea = atlas.getAreaByName(uniqueName);
-        if(texArea != null) {
+        if (texArea != null) {
 
             let texNode: CanvasTextureObject = new CanvasTextureObject();
             texNode.texture = atlas.getTexture();
@@ -112,7 +110,7 @@ export class CanvasTextureTool {
             texNode.clampUVRect.width /= atlas.getWidth();
             texNode.clampUVRect.height /= atlas.getHeight();
             texNode.uniqueName = texArea.uniqueNS;
-            
+
             return texNode;
         }
         return null;
@@ -120,9 +118,9 @@ export class CanvasTextureTool {
     addImageToAtlas(uniqueName: string, img: HTMLCanvasElement | HTMLImageElement): CanvasTextureObject {
 
         let atlas: ImageTextureAtlas = CanvasTextureTool.s_atlasList[0];
-        let texArea: TexArea =  atlas.addSubImage(uniqueName, img);
+        let texArea: TexArea = atlas.addSubImage(uniqueName, img);
 
-        if(texArea != null) {
+        if (texArea != null) {
 
             let texNode: CanvasTextureObject = new CanvasTextureObject();
             texNode.texture = atlas.getTexture();
@@ -134,7 +132,7 @@ export class CanvasTextureTool {
             texNode.clampUVRect.width /= atlas.getWidth();
             texNode.clampUVRect.height /= atlas.getHeight();
             texNode.uniqueName = texArea.uniqueNS;
-            
+
             return texNode;
         }
         else {
@@ -147,15 +145,15 @@ export class CanvasTextureTool {
     }
 
     createCharsImage(chars: string, size: number, fontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"): HTMLCanvasElement | HTMLImageElement {
-        
+
         if (chars == null || chars == "" || size < 8) {
             return null;
         }
-        return ImageTextureAtlas.CreateCharsTexture(chars,size,fontStyle,bgStyle);
+        return ImageTextureAtlas.CreateCharsTexture(chars, size, fontStyle, bgStyle);
     }
-    
-    private m_whiteTex: TextureProxy = null;
-    createWhiteTex(): TextureProxy {
+
+    private m_whiteTex: IRenderTexture = null;
+    createWhiteTex(): IRenderTexture {
         if (this.m_whiteTex != null) {
             return this.m_whiteTex;
         }
@@ -168,8 +166,8 @@ export class CanvasTextureTool {
         ctx2D.fillStyle = "white";
         ctx2D.fillRect(0, 0, size, size);
 
-        let tex: ImageTextureProxy = this.m_sc.textureBlock.createImageTex2D(32, 32);
-        tex.setDataFromImage(canvas);
+        let tex = this.m_sc.textureBlock.createImageTex2D(32, 32);
+        tex.setDataFromImage(canvas, 0, 0, 0, false);
         this.m_whiteTex = tex;
         tex.premultiplyAlpha = true;
         return tex;

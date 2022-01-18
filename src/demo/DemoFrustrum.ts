@@ -63,7 +63,7 @@ export class DemoFrustrum {
             // this.m_camTrack = new CameraTrack();
             // this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
-            let tex1: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
+            let tex1 = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
             let plane: Plane3DEntity = new Plane3DEntity();
             plane.initializeXOZSquare(1200.0, [tex1]);
             this.m_rscene.addEntity( plane );

@@ -56,8 +56,8 @@ export namespace demo {
                 this.m_texBlock = new TextureBlock();
                 this.m_texBlock.setRenderer(this.m_renderer);
                 this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
-                let tex0: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
-                let tex1: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
+                let tex0 = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
+                let tex1 = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
 
 
                 this.m_camTrack = new CameraTrack();

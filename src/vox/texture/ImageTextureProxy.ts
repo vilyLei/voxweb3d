@@ -11,9 +11,9 @@ import { TextureConst } from "../../vox/texture/TextureConst";
 import ImgTexData from "../../vox/texture/ImgTexData";
 import IRenderResource from "../../vox/render/IRenderResource";
 import TextureProxy from "../../vox/texture/TextureProxy";
+import { IImageTexture } from "../../vox/render/texture/IImageTexture";
 
-
-class ImageTextureProxy extends TextureProxy {
+class ImageTextureProxy extends TextureProxy implements IImageTexture {
     constructor(texWidth: number, texHeight: number, powerof2Boo: boolean = false) {
         super(texWidth, texHeight, powerof2Boo);
         this.mipmapEnabled = true;

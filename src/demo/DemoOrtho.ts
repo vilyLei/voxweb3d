@@ -85,10 +85,10 @@ export class DemoOrtho {
             this.m_rscene.getCamera().translationXYZ(this.m_stage3D.stageHalfWidth, this.m_stage3D.stageHalfHeight, 1500.0);
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-            let tex0: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
-            let tex1: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
-            let tex2: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/warter_01.jpg");
-            let tex3: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/flare_core_02.jpg");
+            let tex0 = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
+            let tex1 = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
+            let tex2 = this.m_texLoader.getTexByUrl("static/assets/warter_01.jpg");
+            let tex3 = this.m_texLoader.getTexByUrl("static/assets/flare_core_02.jpg");
 
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());

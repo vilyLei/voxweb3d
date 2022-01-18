@@ -1,13 +1,14 @@
 
 import { TextureConst } from "../../vox/texture/TextureConst";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
+import { IImageTexture } from "../../vox/render/texture/IImageTexture";
 import AABB2D from "../geom/AABB2D";
 import MathConst from "../math/MathConst";
 import RendererDevice from "../render/RendererDevice";
 import { TexArea, TexAreaNode } from "./TexAreaNode";
 import TextureAtlas from "./TextureAtlas";
 import RendererScene from "../../vox/scene/RendererScene";
-import ImageTextureProxy from "./ImageTextureProxy";
+
 import Color4 from "../material/Color4";
 
 export default class ImageTextureAtlas extends TextureAtlas {
@@ -16,7 +17,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
     private m_canvas: HTMLCanvasElement = null;
     private m_canvas2D: CanvasRenderingContext2D = null;
     private m_rscene: RendererScene = null;
-    private m_texture: ImageTextureProxy = null;
+    private m_texture: IImageTexture = null;
     private m_transparent: boolean = false;
     private m_fillColor: Color4 = null;
     constructor(rscene: RendererScene, canvasWidth: number, canvasHeight: number, fillColor: Color4, transparent: boolean = false, debugEnabled: boolean = false) {
@@ -48,16 +49,16 @@ export default class ImageTextureAtlas extends TextureAtlas {
 
         this.m_uvFlipY = true;
         this.m_texture = this.m_rscene.textureBlock.createImageTex2D(32, 32);
-        this.m_texture.__$setRenderProxy( this.m_rscene.getRenderProxy() );
-        this.m_texture.setDataFromImage(this.m_canvas);
+        this.m_texture.__$setRenderProxy(this.m_rscene.getRenderProxy());
+        this.m_texture.setDataFromImage(this.m_canvas, 0, 0, 0, false);
         this.m_texture.premultiplyAlpha = true;
         this.m_texture.__$attachThis();
     }
     clone(): ImageTextureAtlas {
-        let atlas: ImageTextureAtlas = new ImageTextureAtlas(this.m_rscene, this.m_width, this.m_height,this.m_fillColor, this.m_transparent);
+        let atlas: ImageTextureAtlas = new ImageTextureAtlas(this.m_rscene, this.m_width, this.m_height, this.m_fillColor, this.m_transparent);
         return atlas;
     }
-    getTexture(): ImageTextureProxy {
+    getTexture(): IImageTexture {
         return this.m_texture;
     }
     getCanvas(): HTMLCanvasElement {
@@ -73,8 +74,8 @@ export default class ImageTextureAtlas extends TextureAtlas {
         if (area != null) {
             let rect: AABB2D = area.texRect;
             this.m_canvas2D.drawImage(image, rect.x, rect.y, rect.width, rect.height);
-            this.m_texture.setDataFromImage(this.m_canvas);
-            this.m_texture.updateDataToGpu();
+            this.m_texture.setDataFromImage(this.m_canvas, 0,0,0,false);
+            this.m_texture.updateDataToGpu(null, true);
         }
         return area;
     }
@@ -84,12 +85,12 @@ export default class ImageTextureAtlas extends TextureAtlas {
             return null;
         }
         //size = Math.round(size * RendererDevice.GetDevicePixelRatio());
-        let keyStr: string = chars + "_" + size +"_"+ fontStyle + "_" + bgStyle;
-        
+        let keyStr: string = chars + "_" + size + "_" + fontStyle + "_" + bgStyle;
+
         if (ImageTextureAtlas.s_imgMap.has(keyStr)) {
             return ImageTextureAtlas.s_imgMap.get(keyStr);
         }
-        
+
         let width: number = size;
         let height: number = size + 2;
         if (chars.length > 1) {
@@ -121,14 +122,14 @@ export default class ImageTextureAtlas extends TextureAtlas {
             ctx2D.font = (size - 4) + "px Verdana";
             ctx2D.textBaseline = "top";
         }
-        
+
         ctx2D.fillStyle = bgStyle;
         ctx2D.fillRect(0, 0, width, height);
         ctx2D.textAlign = "left";
         ctx2D.fillStyle = fontStyle;
         //ctx2D.fillText(chars, (size - texWidth) * 0.5, size - (size - metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent * 2.0) * 0.5);
         if (RendererDevice.IsMobileWeb()) {
-            if(RendererDevice.IsIOS()) {
+            if (RendererDevice.IsIOS()) {
                 ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
             }
             else {

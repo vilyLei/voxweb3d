@@ -1,5 +1,4 @@
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
-import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
 import RendererScene from "../vox/scene/RendererScene";
 
 /**
@@ -19,7 +18,7 @@ export class DemoAPlane {
     }
     private createPlane(): void {
 
-        let tex: ImageTextureProxy = this.m_rscene.textureBlock.createImageTex2D(64, 64);
+        let tex = this.m_rscene.textureBlock.createImageTex2D(64, 64);
 
         this.m_plane = new Plane3DEntity();
         this.m_plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex]);
@@ -27,7 +26,7 @@ export class DemoAPlane {
 
         let img: HTMLImageElement = new Image();
         img.onload = (evt: any): void => {
-            tex.setDataFromImage(img);
+            tex.setDataFromImage(img, 0, 0, 0, false);
         }
         img.src = "static/assets/yanj.jpg";
     }

@@ -109,7 +109,7 @@ export class DemoCameraMotion {
     }
 
     private getImageTexByUrl(url: string): TextureProxy {
-        return this.m_texLoader.getTexByUrl(url);
+        return this.m_texLoader.getTexByUrl(url) as TextureProxy;
     }
     private m_materialPipeline: MaterialPipeline = new MaterialPipeline();
     private initTerrain2(): void {

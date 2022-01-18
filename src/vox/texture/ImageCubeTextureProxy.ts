@@ -8,8 +8,9 @@ import { TextureProxyType } from "../../vox/texture/TextureProxyType";
 import { TextureFormat, TextureDataType, TextureTarget } from "../../vox/texture/TextureConst";
 import IRenderResource from "../../vox/render/IRenderResource";
 import TextureProxy from "../../vox/texture/TextureProxy";
+import { IImageCubeTexture } from "../../vox/render/texture/IImageCubeTexture";
 
-class ImageCubeTextureProxy extends TextureProxy {
+class ImageCubeTextureProxy extends TextureProxy implements IImageCubeTexture {
     private m_imgDataList: any[] = null;
     constructor(texWidth: number, texHeight: number) {
         super(texWidth, texHeight, false);
@@ -21,7 +22,7 @@ class ImageCubeTextureProxy extends TextureProxy {
         this.mipmapEnabled = true;
     }
 
-    setDataFromImageToFaceAt(index: number, img: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap, miplevel: number = 0) {
+    setDataFromImageToFaceAt(index: number, img: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap, miplevel: number = 0): void {
         if (img != null) {
             if (this.m_imgDataList == null) {
                 this.m_imgDataList = [null, null, null, null, null, null];

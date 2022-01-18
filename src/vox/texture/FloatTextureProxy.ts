@@ -9,8 +9,6 @@ import { TextureProxyType } from "../../vox/texture/TextureProxyType";
 import { TextureConst, TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
 import RawDataTextureProxy from "../../vox/texture/RawDataTextureProxy";
 
-//import RawDataTextureProxy = RawDataTextureProxyT.vox.texture.RawDataTextureProxy;
-
 class FloatTextureProxy extends RawDataTextureProxy {
     constructor(texWidth: number, texHeight: number, powerof2Boo: boolean = false) {
         super(texWidth, texHeight, powerof2Boo);
@@ -45,6 +43,7 @@ class FloatTextureProxy extends RawDataTextureProxy {
         this.internalFormat = TextureFormat.RGBA16F;
         this.unpackAlignment = 4;
     }
+
     setDataFromBytes(bytes: Float32Array, miplevel: number = 0, imgWidth: number = -1, imgHeight: number = -1, offsetx: number = 0, offsety: number = 0, rebuild: boolean = false): void {
         super.setDataFromBytes(bytes, miplevel, imgWidth, imgHeight, offsetx, offsety, rebuild);
     }
@@ -54,6 +53,7 @@ class FloatTextureProxy extends RawDataTextureProxy {
     getPixels(px: number, py: number, pw: number, ph: number, outBytes: Float32Array): void {
         super.getPixels(px, py, pw, ph, outBytes);
     }
+
     toString(): string {
         return "[FloatTextureProxy(width=" + this.getWidth() + ",height=" + this.getHeight() + ")]";
     }

@@ -81,8 +81,8 @@ export class DemoTexUpdate {
         let img: HTMLImageElement = new Image();
         img.onload = function (evt: any): void {
             console.log("loaded img, and update tex res.");
-            let tex: ImageTextureProxy = rscene.textureBlock.createImageTex2D(img.width, img.height);
-            tex.setDataFromImage(img);
+            let tex = rscene.textureBlock.createImageTex2D(img.width, img.height);
+            tex.setDataFromImage(img, 0, 0, 0, false);
             entityList[0].setTextureList([tex]);
             entityList[0].updateMaterialToGpu(rscene.getRenderProxy());
         }

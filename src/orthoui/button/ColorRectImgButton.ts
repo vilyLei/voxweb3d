@@ -2,7 +2,7 @@
 import MouseEvent from "../../vox/event/MouseEvent";
 import Color4 from "../../vox/material/Color4";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 
 export default class ColorRectImgButton extends Plane3DEntity {
@@ -51,7 +51,7 @@ export default class ColorRectImgButton extends Plane3DEntity {
             this.setEvtDispatcher(this.m_dispatcher);
         }
     }
-    initialize(startX: number, startY: number, pwidth: number, pheight: number, texList: TextureProxy[] = null): void {
+    initialize(startX: number, startY: number, pwidth: number, pheight: number, texList: IRenderTexture[] = null): void {
 
         if (this.m_initFlag) {
             this.m_initFlag = false;

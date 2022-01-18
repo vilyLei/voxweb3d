@@ -42,6 +42,7 @@ import TextureAtlas from "../../vox/texture/TextureAtlas";
 import ImageTextureAtlas from "../../vox/texture/ImageTextureAtlas";
 import { TexArea } from "../../vox/texture/TexAreaNode";
 import Box3DEntity from "../../vox/entity/Box3DEntity";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 class AltasSample {
 
@@ -401,7 +402,7 @@ export class DemoUITexAtlas {
     private createRectAreaPlane(texArea: TexArea, px: number, py: number): AABB2D {
 
         let plane: Plane3DEntity;
-        let tex: ImageTextureProxy;
+        let tex: IRenderTexture;
         //  let texArea: TexArea = this.m_atlasSample0.altas0.getAreaByName( texNS );
         //  if(texArea == null) {
         //      texArea = this.m_atlasSample0.altas1.getAreaByName( texNS );

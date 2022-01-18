@@ -118,7 +118,7 @@ export class DemoEnvLighting {
     private m_texMaterials:PBRTexLightingMaterial[] = [];
     
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        return this.m_texLoader.getTexByUrl(purl,wrapRepeat,mipmapEnabled);
+        return this.m_texLoader.getTexByUrl(purl,wrapRepeat,mipmapEnabled) as TextureProxy;
     }
     initialize(): void {
         console.log("DemoEnvLighting::initialize()......");

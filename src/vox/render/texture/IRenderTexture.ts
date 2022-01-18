@@ -19,6 +19,8 @@ interface IRenderTexture extends IRenderBuffer {
     minFilter: number;
     magFilter: number;
     internalFormat: number;
+
+    premultiplyAlpha: boolean;
     
     setWrap(wrap: number): void;
     isGpuEnabled(): boolean;
@@ -41,6 +43,15 @@ interface IRenderTexture extends IRenderBuffer {
     enableMipmap(): void;
     disableMipmap(): void;
     generateMipmap(texRes: IRenderResource): void;
+    /**
+     * 
+     * @param rc the default value is null
+     * @param deferred the default value is true
+     */
+    updateDataToGpu(rc: IRenderProxy, deferred: boolean): void;/**
+    * @returns This textureProxy instance has been destroyed.
+    */
+   isDestroyed(): boolean;
 
     __$setRenderProxy(rc: IRenderProxy): void
     __$attachThis(): void;

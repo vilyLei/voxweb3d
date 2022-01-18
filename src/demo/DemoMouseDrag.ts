@@ -161,13 +161,13 @@ export class DemoMouseDrag {
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-            let tex0: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
-            let tex1: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
-            let tex2: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/guangyun_H_0007.png");
-            let tex3: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/flare_core_01.jpg");
-            let tex4: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/flare_core_02.jpg");
-            let tex5: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/a_02_c.jpg");
-            let tex6: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/metal_08.jpg");
+            let tex0 = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
+            let tex1 = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
+            let tex2 = this.m_texLoader.getTexByUrl("static/assets/guangyun_H_0007.png");
+            let tex3 = this.m_texLoader.getTexByUrl("static/assets/flare_core_01.jpg");
+            let tex4 = this.m_texLoader.getTexByUrl("static/assets/flare_core_02.jpg");
+            let tex5 = this.m_texLoader.getTexByUrl("static/assets/a_02_c.jpg");
+            let tex6 = this.m_texLoader.getTexByUrl("static/assets/metal_08.jpg");
 
             RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
             RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);

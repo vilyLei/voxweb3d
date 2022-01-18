@@ -191,7 +191,7 @@ export class DemoCameraWalkRoad {
         return materials;
     }
     private getImageTexByUrl(url: string): TextureProxy {
-        return this.m_texLoader.getTexByUrl(url);
+        return this.m_texLoader.getTexByUrl(url) as TextureProxy;
     }
     private m_materialPipeline: MaterialPipeline = new MaterialPipeline();
     private initMaterialSystem(): void {

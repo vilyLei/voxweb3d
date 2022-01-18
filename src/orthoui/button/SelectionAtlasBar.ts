@@ -100,7 +100,7 @@ export class SelectionAtlasBar {
         if(this.m_barName != null && this.m_barName.length > 0) {
             let image = CanvasTextureTool.GetInstance().createCharsImage(this.m_barName, size, "rgba(180,180,180,1.0)");
             let texObj: CanvasTextureObject = CanvasTextureTool.GetInstance().addImageToAtlas(this.m_barName,image);
-            let tex:TextureProxy = texObj.texture;
+            let tex = texObj.texture;
             let nameBtn: ColorRectImgButton = new ColorRectImgButton();
             nameBtn.uvs = texObj.uvs;
             nameBtn.outColor.setRGB3f(1.0, 1.0, 1.0);

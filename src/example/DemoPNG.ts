@@ -69,7 +69,7 @@ export namespace example
 
         getBytesTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):BytesTextureProxy
         {
-            let ptex:BytesTextureProxy = this.m_texLoader.getBytesTexByUrl(purl);
+            let ptex:BytesTextureProxy = this.m_texLoader.getBytesTexByUrl(purl) as BytesTextureProxy;
             ptex.mipmapEnabled = mipmapEnabled;
             if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
             return ptex;
@@ -77,7 +77,7 @@ export namespace example
         
         getNoPreAlphaBytesTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):BytesTextureProxy
         {
-            let ptex:BytesTextureProxy = this.m_texLoader.getBytesNoPremultipliedAlphaTexByUrl(purl);
+            let ptex:BytesTextureProxy = this.m_texLoader.getBytesNoPremultipliedAlphaTexByUrl(purl) as BytesTextureProxy;
             ptex.mipmapEnabled = mipmapEnabled;
             if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
             return ptex;
@@ -149,8 +149,8 @@ export namespace example
                 plane.initializeXOZ(-400.0,-300.0,800.0,500.0,[colorTex]);
                 //this.m_rscene.addEntity(plane);
 
-                let texA:TextureProxy = this.m_texLoader.getTexByUrl("static/test/Image_96.jpg");
-                let texB:TextureProxy = this.m_texLoader.getTexByUrl("static/test/img_96_mask.png");
+                let texA = this.m_texLoader.getTexByUrl("static/test/Image_96.jpg");
+                let texB = this.m_texLoader.getTexByUrl("static/test/img_96_mask.png");
                 texA.minFilter = TextureConst.NEAREST;
                 texA.magFilter = TextureConst.NEAREST;
                 texB.minFilter = TextureConst.NEAREST;

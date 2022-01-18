@@ -116,10 +116,10 @@ export class DemoOrthoBtn
             this.m_stage3D = this.m_rscene.getStage3D() as Stage3D;
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-            let tex0:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
-            let tex1:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
-            let tex2:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/warter_01.jpg");
-            let tex3:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/fruit_01.jpg");
+            let tex0 = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
+            let tex1 = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
+            let tex2 = this.m_texLoader.getTexByUrl("static/assets/warter_01.jpg");
+            let tex3 = this.m_texLoader.getTexByUrl("static/assets/fruit_01.jpg");
 
             let evtCtr:MouseEvt3DController = null;
             this.m_rscene.enableMouseEvent( true );

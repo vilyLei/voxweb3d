@@ -20,7 +20,7 @@ class Terrain {
     private m_engine: EngineBase = null;
     private m_terrainEntity: DisplayEntity = null;
     private getImageTexByUrl(url: string): TextureProxy {
-        return this.m_engine.texLoader.getTexByUrl(url);
+        return this.m_engine.texLoader.getTexByUrl(url) as TextureProxy;
     }
     initialize(engine: EngineBase): void {
 
