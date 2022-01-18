@@ -5,36 +5,29 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RenderProxy from "../../vox/render/RenderProxy"
+import { IRenderProxy } from "../../vox/render/IRenderProxy"
 import IRenderBuffer from "../../vox/render/IRenderBuffer";
-class ROBufferUpdater
-{
-    private m_bufs:IRenderBuffer[] = [];
-    private m_uids:number[] = [];
-    private m_bufsMap:Map<number, IRenderBuffer> = new Map();
-    constructor()
-    {
+class ROBufferUpdater {
+    private m_bufs: IRenderBuffer[] = [];
+    private m_uids: number[] = [];
+    private m_bufsMap: Map<number, IRenderBuffer> = new Map();
+    constructor() {
     }
-    __$addBuf(buf:IRenderBuffer,resUid:number):void
-    {
-        if(!this.m_bufsMap.has(resUid))
-        {
-            this.m_bufsMap.set(resUid,buf);
+    __$addBuf(buf: IRenderBuffer, resUid: number): void {
+        if (!this.m_bufsMap.has(resUid)) {
+            this.m_bufsMap.set(resUid, buf);
             this.m_bufs.push(buf);
             this.m_uids.push(resUid);
         }
     }
-    __$update(rc:RenderProxy):void
-    {
-        let len:number = this.m_bufs.length;
-        if(len > 0)
-        {
-            let uid:number;
-            let bufs:IRenderBuffer[] = this.m_bufs;
-            let buf:IRenderBuffer = null;
-            len = Math.min(16,len);
-            while(len > 0)
-            {
+    __$update(rc: IRenderProxy): void {
+        let len: number = this.m_bufs.length;
+        if (len > 0) {
+            let uid: number;
+            let bufs: IRenderBuffer[] = this.m_bufs;
+            let buf: IRenderBuffer = null;
+            len = Math.min(16, len);
+            while (len > 0) {
                 uid = this.m_uids.pop();
                 this.m_bufsMap.delete(uid);
                 buf = bufs.pop();

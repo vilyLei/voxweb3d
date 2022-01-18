@@ -41,7 +41,7 @@ class DispScene {
 
 
         this.m_texBlock = new TextureBlock();
-        this.m_texBlock.setRenderer(this.m_renderer);
+        this.m_texBlock.setRenderer(this.m_renderer.getRenderProxy());
         this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
         this.m_entityMana.setTextureLoader(this.m_texLoader);
         this.m_rcontext = this.m_renderer.getRendererContext();

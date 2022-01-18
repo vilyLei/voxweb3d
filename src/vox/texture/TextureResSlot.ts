@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import IRenderResource from '../../vox/render/IRenderResource';
-import RenderProxy from "../../vox/render/RenderProxy"
+import { IRenderProxy } from "../../vox/render/IRenderProxy"
 import IRenderTexture from "../../vox/render/texture/IRenderTexture"
 import IRenderBuffer from "../../vox/render/IRenderBuffer";
 import ROBufferUpdater from "../../vox/render/ROBufferUpdater";
@@ -80,7 +80,7 @@ class TextureResSlot {
     getTextureTotal(): number {
         return this.m_textureTotal;
     }
-    setRenderProxy(renderProxy: RenderProxy): void {
+    setRenderProxy(renderProxy: IRenderProxy): void {
         this.m_texResource = renderProxy.Texture;
     }
     setBufferUpdater(bufferUpdater: ROBufferUpdater): void {

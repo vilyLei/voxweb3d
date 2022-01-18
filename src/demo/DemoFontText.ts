@@ -65,7 +65,7 @@ export class DemoFontText {
             H5FontSystem.GetInstance().initialize("fontTex", 18, 512, 512, true, true);
 
             this.m_texBlock = new TextureBlock();
-            this.m_texBlock.setRenderer(this.m_renderer);
+            this.m_texBlock.setRenderer(this.m_renderer.getRenderProxy());
             this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
             stage3D.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
             this.m_camTrack = new CameraTrack();

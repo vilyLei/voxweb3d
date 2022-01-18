@@ -59,7 +59,7 @@ export namespace demo
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
                 this.m_texBlock = new TextureBlock();
-                this.m_texBlock.setRenderer(this.m_renderer);
+                this.m_texBlock.setRenderer(this.m_renderer.getRenderProxy());
                 this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
 
                 

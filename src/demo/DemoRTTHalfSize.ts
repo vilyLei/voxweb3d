@@ -61,7 +61,7 @@ export namespace demo
                 this.m_camera = this.m_rcontext.getCamera();
 
                 this.m_texBlock = new TextureBlock();
-                this.m_texBlock.setRenderer( this.m_renderer );
+                this.m_texBlock.setRenderer( this.m_renderer.getRenderProxy() );
                 this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
                 let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");

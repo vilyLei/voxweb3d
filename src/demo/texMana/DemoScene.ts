@@ -37,7 +37,7 @@ class DemoScene {
             RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
 
             this.m_texBlock = new TextureBlock();
-            this.m_texBlock.setRenderer(this.m_renderer);
+            this.m_texBlock.setRenderer(this.m_renderer.getRenderProxy());
             this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
 
             this.initDisp();

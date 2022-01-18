@@ -329,7 +329,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
             this.m_viewW = stage3D.stageWidth;
             this.m_viewH = stage3D.stageHeight;
             this.m_shader = this.m_renderer.getDataBuilder().getRenderShader();
-            this.textureBlock.setRenderer(this.m_renderer);
+            this.textureBlock.setRenderer(this.m_renderProxy);
             this.m_camDisSorter = new CameraDsistanceSorter(this.m_renderProxy);
             if (this.m_rspace == null) {
                 let space: RendererSpace = new RendererSpace();

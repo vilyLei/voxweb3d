@@ -23,7 +23,7 @@ class DepthBlurScene {
         this.m_renderer = renderer;
         this.m_rcontext = this.m_renderer.getRendererContext();
         this.m_texBlock = new TextureBlock();
-        this.m_texBlock.setRenderer(this.m_renderer);
+        this.m_texBlock.setRenderer(this.m_renderer.getRenderProxy());
         this.m_textureLoader = new ImageTextureLoader(this.m_texBlock);
 
         this.m_renderer.appendProcess();

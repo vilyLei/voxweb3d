@@ -35,7 +35,7 @@ import ImageCubeTextureProxy from "../../vox/texture/ImageCubeTextureProxy";
 import Texture3DProxy from "../../vox/texture/Texture3DProxy";
 
 // import WrapperTextureProxy from "../../vox/texture/WrapperTextureProxy";
-import RendererInstance from "../../vox/scene/RendererInstance";
+import { IRenderProxy } from "../../vox/render/IRenderProxy";
 import TextureResSlot from "../../vox/texture/TextureResSlot";
 import RTTTextureStore from "../../vox/texture/RTTTextureStore";
 
@@ -45,7 +45,7 @@ import RTTTextureStore from "../../vox/texture/RTTTextureStore";
 export class TextureBlock {
     private m_texPool: TexturePool = new TexturePool();
     private m_rttStore: RTTTextureStore = null;
-    private m_renderer: RendererInstance = null;
+    private m_renderProxy: IRenderProxy = null;
     private m_texLoaders: IRunnable[] = [];
     addTexLoader(texLoader: IRunnable): void {
         if (texLoader != null) {
@@ -75,13 +75,13 @@ export class TextureBlock {
     }
     /**
      * 设置当前的渲染器
-     * @param renderer 当前的渲染器
+     * @param renderProxy 当前的渲染器
      */
-    setRenderer(renderer: RendererInstance): void {
-        this.m_renderer = renderer;
-        TextureResSlot.GetInstance().setRenderProxy(renderer.getRenderProxy());
-        if (this.m_rttStore == null && renderer != null) {
-            this.m_rttStore = new RTTTextureStore(renderer.getRenderProxy());
+    setRenderer(renderProxy: IRenderProxy): void {
+        this.m_renderProxy = renderProxy;
+        TextureResSlot.GetInstance().setRenderProxy(renderProxy);
+        if (this.m_rttStore == null && renderProxy != null) {
+            this.m_rttStore = new RTTTextureStore(renderProxy);
         }
     }
     getRTTStrore(): RTTTextureStore {
@@ -92,7 +92,7 @@ export class TextureBlock {
     }
     createRTTTex2D(pw: number, ph: number, powerof2Boo: boolean = false): IRTTTexture {
         let tex: IRTTTexture = this.m_rttStore.createRTTTex2D(pw, ph, powerof2Boo);
-        tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+        tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
     }
     createImageTex2D(pw: number, ph: number, powerof2Boo: boolean = false): IImageTexture {
@@ -100,7 +100,7 @@ export class TextureBlock {
         if (tex == null) {
             tex = new ImageTextureProxy(pw, ph, powerof2Boo);
         }
-        tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+        tex.__$setRenderProxy(this.m_renderProxy);
         tex.mipmapEnabled = true;
         tex.setWrap(TextureConst.WRAP_REPEAT);
         return tex;
@@ -111,7 +111,7 @@ export class TextureBlock {
         if (tex == null) {
             tex = new FloatTextureProxy(pw, ph, powerof2Boo);
         }
-        tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+        tex.__$setRenderProxy(this.m_renderProxy);
         tex.srcFormat = TextureFormat.RGBA;
         tex.dataType = TextureDataType.HALF_FLOAT_OES;
         //tex.srcFormat = TextureFormat.RGBA16F;
@@ -123,7 +123,7 @@ export class TextureBlock {
         if (tex == null) {
             tex = new FloatTextureProxy(pw, ph, powerof2Boo);
         }
-        tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+        tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
     }
     createUint16Tex2D(pw: number, ph: number, powerof2Boo: boolean = false): IUint16Texture {
@@ -137,18 +137,18 @@ export class TextureBlock {
         if (tex == null) {
             tex = new BytesTextureProxy(texW, texH);
         }
-        tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+        tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
     }
 
     createBytesCubeTex(texW: number, texH: number): IBytesCubeTexture {
         let tex = new BytesCubeTextureProxy(texW, texH);
-        tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+        tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
     }
     createImageCubeTex(texW: number, texH: number): IImageCubeTexture {
         let tex = new ImageCubeTextureProxy(texW, texH);
-        tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+        tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
     }
     createTex3D(texW: number, texH: number, depth: number = 1): ITexture3D {
@@ -156,7 +156,7 @@ export class TextureBlock {
             depth = 1;
         }
         let tex = new Texture3DProxy(texW, texH, depth);
-        tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+        tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
     }
     createRGBATex2D(pw: number, ph: number, color: Color4): IBytesTexture {
@@ -176,7 +176,7 @@ export class TextureBlock {
             k += 4;
         }
         tex.setDataFromBytes(bytes, 0, pw, ph, 0,0,false);
-        tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+        tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
         return tex;
     }
@@ -190,14 +190,14 @@ export class TextureBlock {
         let value: number = Math.round(alpha * 255.0);
         bytes.fill(value, 0, size);
         tex.setDataFromBytes(bytes, 0, pw, ph, 0,0,false);
-        tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+        tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
     }
     createAlphaTexBytes2D(pw: number, ph: number, bytes: Uint8Array): IBytesTexture {
         let tex = this.createBytesTex(pw, ph);
         tex.setDataFromBytes(bytes, 0, pw, ph, 0,0,false);
         tex.toAlphaFormat();
-        tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+        tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
     }
 

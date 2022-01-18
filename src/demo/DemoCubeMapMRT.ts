@@ -46,7 +46,7 @@ export class DemoCubeMapMRT {
             this.m_rcontext = this.m_renderer.getRendererContext();
 
             this.m_texBlock = new TextureBlock();
-            this.m_texBlock.setRenderer(this.m_renderer);
+            this.m_texBlock.setRenderer(this.m_renderer.getRenderProxy());
             this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
 
             let tex0: TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
