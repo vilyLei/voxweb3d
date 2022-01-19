@@ -180,7 +180,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         }
     }
     setTextureList(texList: IRenderTexture[]): void {
-        //throw Error("illegal operator.");
+        //throw Error("Illegal operations !!!");
     }
     
     clone(): PBRMaterial {

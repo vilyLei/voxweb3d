@@ -13,7 +13,6 @@ import MouseEvent from "../vox/event/MouseEvent";
 import KeyboardEvent from "../vox/event/KeyboardEvent";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
-import BaseColorMaterial from "../vox/material/mcase/BaseColorMaterial";
 
 import CameraDragController from "../voxeditor/control/CameraDragController";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";

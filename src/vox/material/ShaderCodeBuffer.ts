@@ -15,7 +15,7 @@ import { MaterialPipeType } from "./pipeline/MaterialPipeType";
 import { ShaderCodeUniform } from "../../vox/material/code/ShaderCodeUniform";
 
 class ShaderCodeBuffer {
-
+    
     // private static __$s_csBuf: ShaderCodeBuffer = null;
     protected static s_coder: ShaderCodeBuilder;
     protected static s_uniform: ShaderCodeUniform;

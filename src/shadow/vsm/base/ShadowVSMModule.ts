@@ -36,9 +36,9 @@ export class ShadowVSMModule implements IMaterialPipe {
     private m_colorIntensity: number = 0.1;
     private m_shadowMapW: number = 512;
     private m_shadowMapH: number = 512;
-    private m_viewWidth: number = 1300;
-    private m_viewHeight: number = 1300;
-    private m_near: number = 0.01;
+    private m_viewWidth: number = 3000.0;
+    private m_viewHeight: number = 3000.0;
+    private m_near: number = 10.0;
     private m_far: number = 3000.0;
     private m_depthRtt: IRenderTexture = null;
     private m_occBlurRtt: IRenderTexture = null;

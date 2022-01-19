@@ -8,9 +8,9 @@
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
-import {IShaderCodeWrapper} from "./IShaderCodeWrapper";
+import { IShaderCodeWrapper } from "./IShaderCodeWrapper";
 
-import ShaderUniform from "../../vox/material/ShaderUniform";
+import IShaderUniform from "../../vox/material/IShaderUniform";
 
 class ShaderCodeShaderBuffer extends ShaderCodeBuffer {
 
@@ -20,18 +20,18 @@ class ShaderCodeShaderBuffer extends ShaderCodeBuffer {
     private static s_instance: ShaderCodeShaderBuffer = new ShaderCodeShaderBuffer();
 
     codeWrapper: IShaderCodeWrapper = null;
-    
+
     initialize(texEnabled: boolean): void {
         this.adaptationShaderVersion = false;
         this.codeWrapper.initialize();
     }
-    
+
     getFragShaderCode(): string {
-        
-        return this.codeWrapper.getFragShaderCode( this.getShaderCodeBuilder() );
+
+        return this.codeWrapper.getFragShaderCode(this.getShaderCodeBuilder());
     }
     getVertShaderCode(): string {
-        return this.codeWrapper.getVertShaderCode( this.getShaderCodeBuilder() );
+        return this.codeWrapper.getVertShaderCode(this.getShaderCodeBuilder());
     }
     getUniqueShaderName(): string {
         return this.codeWrapper.getUniqueShaderName();
@@ -60,24 +60,23 @@ export default class ShaderCodeMaterial extends MaterialBase {
     setShaderCodeWrapper(codeWrapper: IShaderCodeWrapper): void {
         this.m_codeWrapper = codeWrapper;
     }
-    getCodeBuf(): ShaderCodeBuffer {
+    protected buildBuf(): void {
         let buf: ShaderCodeShaderBuffer = ShaderCodeShaderBuffer.GetInstance();
         buf.codeWrapper = this.m_codeWrapper;
-        return buf;
+    }
+    getCodeBuf(): ShaderCodeBuffer {
+        return ShaderCodeShaderBuffer.GetInstance();
     }
     setSelfUniformData(data: ShaderUniformData): void {
         this.m_uniformData = data;
     }
-    createSharedUniforms():ShaderUniform[]
-    {
+    createSharedUniforms(): IShaderUniform[] {
         return this.m_codeWrapper.createSharedUniforms();
     }
-    setSharedUniformsData(dataList: ShaderUniformData[]): void
-    {
+    setSharedUniformsData(dataList: ShaderUniformData[]): void {
         this.m_sharedUniformsDataList = dataList;
     }
-    createSharedUniformsData():ShaderUniformData[]
-    {
+    createSharedUniformsData(): ShaderUniformData[] {
         return this.m_sharedUniformsDataList;
     }
     createSelfUniformData(): ShaderUniformData {

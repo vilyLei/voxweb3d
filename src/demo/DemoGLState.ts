@@ -11,7 +11,7 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import MouseEvent from "../vox/event/MouseEvent";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
-import BaseColorMaterial from "../vox/material/mcase/BaseColorMaterial";
+
 import { UserInteraction } from "../vox/engine/UserInteraction";
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 
@@ -146,11 +146,7 @@ export class DemoGLState {
     private m_target: Sphere3DEntity = null;
     private initBlendTest(): void {
 
-        let material: BaseColorMaterial;
         let sphere: Sphere3DEntity = new Sphere3DEntity();
-        material = new BaseColorMaterial();
-        material.setTextureList([this.m_texLoader.getTexByUrl("static/assets/default.jpg")]);
-        sphere.setMaterial(material);
         //sphere.doubleTriFaceEnabled = true;
         //sphere.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
         //sphere.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
@@ -164,7 +160,6 @@ export class DemoGLState {
         //color_02
         sphere = new Sphere3DEntity();
         sphere.copyMeshFrom(this.m_target);
-        sphere.setMaterial(new BaseColorMaterial())
         sphere.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
         sphere.initialize(100, 10, 10, [this.m_texLoader.getTexByUrl("static/assets/color_02.jpg")]);
         //sphere.initializeFrom(this.m_target, [this.m_texLoader.getTexByUrl("static/assets/color_02.jpg")]);

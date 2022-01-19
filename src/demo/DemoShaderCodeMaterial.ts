@@ -33,7 +33,7 @@ class ShaderCodeWrapper implements IShaderCodeWrapper {
         codeBuilder.reset();
         codeBuilder.vertMatrixInverseEnabled = true;
 
-        codeBuilder.addTextureSample2D("", true, true, false);
+        codeBuilder.uniform.addDiffuseMap();
 
         codeBuilder.addVarying("vec2", "v_uv");
         codeBuilder.addVarying("vec3", "v_nv");

@@ -18,6 +18,7 @@ class OccBlurShaderBuffer extends ShaderCodeBuffer {
     private m_hasTex: boolean = false;
     horizonal: boolean = true;
     initialize(texEnabled: boolean): void {
+        super.initialize( texEnabled );
         console.log("OccBlurShaderBuffer::initialize()... texEnabled: " + texEnabled);
         this.m_uniqueName = "OccBlurShd";
         this.m_hasTex = texEnabled;
@@ -25,10 +26,9 @@ class OccBlurShaderBuffer extends ShaderCodeBuffer {
             this.m_uniqueName += "_tex";
         }
     }
-    private buildThisCode(): void {
+    buildShader(): void {
 
-        let coder = this.m_coder;
-        
+        let coder = this.m_coder;        
         if (this.horizonal) {
             coder.addDefine("HORIZONAL_PASS");
         }
@@ -38,12 +38,8 @@ class OccBlurShaderBuffer extends ShaderCodeBuffer {
 
         coder.addTextureSample2D("", false);
         coder.uniform.useViewPort(false, true);
-        coder.addFragUniform("vec4", "u_param");
-    }
-    getFragShaderCode(): string {
-        this.buildThisCode();
-
-        let coder = this.m_coder;
+        coder.addFragUniform("vec4", "u_params");
+        
         coder.addFragMainCode(
             `
 const float PackUpscale = 256. / 255.; // fraction -> 0..1 (including 1)
@@ -78,7 +74,7 @@ void main() {
     
     vec2 resolution = u_viewParam.zw;
     
-    float radius = u_param[3];
+    float radius = u_params[3];
     // This seems totally useless but it's a crazy work around for a Adreno compiler bug
     float depth = unpackRGBAToDepth( VOX_Texture2D( u_sampler0, ( gl_FragCoord.xy ) / resolution ) );
 
@@ -110,10 +106,7 @@ void main() {
 }
 `
         );
-        return this.m_coder.buildFragCode();
-    }
-    getVertShaderCode(): string {
-        let coder = this.m_coder;
+        
         coder.addVertMainCode(
             `
 void main() {
@@ -121,16 +114,11 @@ void main() {
 }
 `
         );
-        return this.m_coder.buildVertCode();
     }
     getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName + (this.horizonal ? "_h" : "_v");
     }
-    toString(): string {
-        return "[OccBlurShaderBuffer()]";
-    }
-    
     static GetInstance(): OccBlurShaderBuffer {
         if (OccBlurShaderBuffer.s_instance != null) {
             return OccBlurShaderBuffer.s_instance;
@@ -160,7 +148,7 @@ export default class OccBlurMaterial extends MaterialBase {
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_param"];
+        oum.uniformNameList = ["u_params"];
         oum.dataList = [this.m_param];
         return oum;
     }
