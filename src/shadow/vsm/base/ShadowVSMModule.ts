@@ -3,10 +3,11 @@ import Vector3D from "../../../vox/math/Vector3D";
 import { IFBOInstance } from "../../../vox/scene/IFBOInstance";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import {IRenderCamera} from "../../../vox/render/IRenderCamera";
-import DepthMaterial from "../material/DepthMaterial";
+// import DepthMaterial from "../material/DepthMaterial";
 // import OccBlurMaterial from "../material/OccBlurMaterial";
 
 import {OccBlurDecorator} from "../material/OccBlurDecorator";
+import {DepthWriteDecorator} from "../material/DepthWriteDecorator";
 import ShadowVSMData from "../material/ShadowVSMData";
 import RendererState from "../../../vox/render/RendererState";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
@@ -158,6 +159,7 @@ export class ShadowVSMModule implements IMaterialPipe {
         this.m_vsmData.initialize();
         this.m_vsmData.setShadowIntensity(this.m_shadowIntensity);
 
+        let depthMaterial = this.m_rscene.materialBlock.createMaterial( new DepthWriteDecorator());
         this.m_fboDepth = this.m_rscene.createFBOInstance();
         this.m_fboDepth.asynFBOSizeWithViewport();
         this.m_fboDepth.setClearRGBAColor4f(1.0, 1.0, 1.0, 1.0);
@@ -165,7 +167,8 @@ export class ShadowVSMModule implements IMaterialPipe {
         this.m_depthRtt = this.m_fboDepth.setRenderToRGBATexture(null, 0);
         this.m_fboDepth.setRProcessIDList(processIDList);
         this.m_fboDepth.setGlobalRenderState( RendererState.NORMAL_STATE);
-        this.m_fboDepth.setGlobalMaterial( new DepthMaterial(), false,false );
+        // this.m_fboDepth.setGlobalMaterial( new DepthMaterial(), false,false );
+        this.m_fboDepth.setGlobalMaterial( depthMaterial, false,false );
 
         this.m_fboOccBlur = this.m_rscene.createFBOInstance();
         this.m_fboOccBlur.asynFBOSizeWithViewport();
