@@ -13,13 +13,15 @@ import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import { RenderDrawMode } from "../../vox/render/RenderConst";
 import { IVtxBufRenderData } from "../../vox/render/IVtxBufRenderData";
+import { IROVertexBuffer } from "../../vox/mesh/IROVertexBuffer";
+import { IMeshBase } from "../../vox/mesh/IMeshBase";
 
 /**
  * mesh(Polygon face convex mesh or Parametric geometry Objecct:):
  *      1.基于面(例如三角面)描述的多面体实体(Polygon face geometry mesh,for example: triangle mesh)
  *      2.基于空间几何方程描述的空间几何体(Parametric geometry Objecct,for example: Sphere(px,py,pz,radius))
 */
-export default class MeshBase {
+export default class MeshBase implements IMeshBase {
     
     private m_bufDataUsage: number = 0;
     private m_bufDataList: Float32Array[] = null;
@@ -155,7 +157,7 @@ export default class MeshBase {
         ROVertexBuffer.__$$AttachAt(this.m_vbuf.getUid());
         return this.m_vbuf;
     }
-    __$detachVBuf(vbuf: ROVertexBuffer): void {
+    __$detachVBuf(vbuf: IROVertexBuffer): void {
         if (this.m_vbuf != vbuf) {
             throw Error("Fatal Error!");
         }

@@ -14,6 +14,7 @@ import {IRenderProxy} from "../../vox/render/IRenderProxy";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import IRODisplay from "../../vox/display/IRODisplay";
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
+import { IMeshBase } from "../mesh/IMeshBase";
 
 /**
  * to be used by renderer runtime
@@ -85,6 +86,7 @@ export default interface IRenderEntity {
     copyMaterialFrom(entity: IRenderEntity): void;
     copyTransformFrom(entity: IRenderEntity): void;
 
+    setMesh(material: IMeshBase): void;
     setMaterial(material: IRenderMaterial): void;
     getMaterial(): IRenderMaterial;
     getDisplay(): IRODisplay;

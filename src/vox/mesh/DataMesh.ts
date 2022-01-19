@@ -193,7 +193,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
             this.m_vbuf.setUintIVSData(this.m_ivs);
             this.trisNumber = this.vtCount / 3;
             this.buildEnd();
-            console.log("dataMesh: ",this);
+            console.log("DataMesh::initialize(), this: ",this);
         }
     }
 

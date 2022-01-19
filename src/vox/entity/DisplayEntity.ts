@@ -291,6 +291,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
      * 这个设置函数也可以动态运行时更新几何相关的顶点数据
      */
     setMesh(m: MeshBase): void {
+        // let m = pm as MeshBase;
         if (this.m_mesh == null) {
             if (m != null) {
                 if (!m.isEnabled()) { m.rebuild() }

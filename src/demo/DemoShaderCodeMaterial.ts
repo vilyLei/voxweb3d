@@ -247,11 +247,12 @@ export class DemoShaderCodeMaterial {
         mesh.setUVS(srcMesh.getUVS());
         mesh.setIVS(srcMesh.getIVS());
         mesh.setVtxBufRenderData( material );
+        mesh.initialize();
 
         let entity = rscene.entityBlock.createEntity();
         entity.setMaterial( material );
-        // entity.setMesh( mesh as any );
-        entity.copyMeshFrom( box );
+        entity.setMesh( mesh );
+        //entity.copyMeshFrom( box );
         this.m_rscene.addEntity( entity );
     }
     private m_flag: boolean = false;
