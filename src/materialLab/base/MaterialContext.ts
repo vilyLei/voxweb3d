@@ -39,7 +39,7 @@ class MaterialContextParam {
  * 实现 material 构造 pipeline 的上下文
  */
 class MaterialContext {
-
+    
     private m_initFlag: boolean = true;
     private m_texLoader: ImageTextureLoader = null;
     private m_param: MaterialContextParam;

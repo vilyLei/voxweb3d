@@ -12,6 +12,7 @@ import PostOutlinePreMaterial from "../material/PostOutlinePreMaterial";
 import OcclusionPostOutlineMaterial from "../material/OcclusionPostOutlineMaterial";
 import { OccPostOutLineDecorator } from "../material/OccPostOutLineDecorator";
 import { OccPostOutLineScreen } from "../material/OccPostOutLineScreen";
+import { OutlinePreDecorator } from "../material/OutlinePreDecorator";
 import Vector3D from "../../../vox/math/Vector3D";
 import { IFBOInstance } from "../../../vox/scene/IFBOInstance";
 // import RTTTextureProxy from "../../../vox/texture/RTTTextureProxy";
@@ -22,6 +23,7 @@ import AABB from "../../../vox/geom/AABB";
 // import Box3DEntity from "../../../vox/entity/Box3DEntity";
 import Plane from "../../../vox/geom/Plane";
 import { IRTTTexture } from "../../../vox/render/texture/IRTTTexture";
+import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 
 export default class OcclusionPostOutline {
     constructor() { }
@@ -29,7 +31,9 @@ export default class OcclusionPostOutline {
     private m_rscene: IRendererScene = null;
 
     private m_targets: IRenderEntity[] = null;
-    private m_preMaterial: PostOutlinePreMaterial = null;
+    private m_preDecor: OutlinePreDecorator = null;
+    private m_preMaterial: IRenderMaterial = null;
+    // private m_preMaterial: PostOutlinePreMaterial = null;
     private m_outlineMaterial0: OccPostOutLineDecorator = null;//OcclusionPostOutlineMaterial = null;
     private m_outlineMaterial1: OccPostOutLineDecorator = null;//OcclusionPostOutlineMaterial = null;
     // private m_outlinePlane: ScreenAlignPlaneEntity = null;
@@ -55,7 +59,11 @@ export default class OcclusionPostOutline {
 
             let materialBlock = this.m_rscene.materialBlock;
 
-            this.m_preMaterial = new PostOutlinePreMaterial();
+            // this.m_preMaterial = new PostOutlinePreMaterial();
+            // this.m_preMaterial.initializeByCodeBuf(false);
+            
+            this.m_preDecor = new OutlinePreDecorator();
+            this.m_preMaterial = materialBlock.createMaterial( this.m_preDecor );
             this.m_preMaterial.initializeByCodeBuf(false);
 
             this.m_preColorRTT = this.m_rscene.textureBlock.createRTTTex2D(32, 32, false);
@@ -186,7 +194,8 @@ export default class OcclusionPostOutline {
 
                 if (this.m_runningFlag) {
 
-                    this.m_preMaterial.setRGB3f(1.0, 0.0, 0.0);
+                    // this.m_preMaterial.setRGB3f(1.0, 0.0, 0.0);
+                    this.m_preDecor.setRGB3f(1.0, 0.0, 0.0);
                     this.m_preColorFboIns.setGlobalMaterial(this.m_preMaterial, false, true);
                     this.m_preColorFboIns.runBegin();
 
@@ -225,7 +234,8 @@ export default class OcclusionPostOutline {
                     for (let i: number = 0; i < this.m_targets.length; ++i)
                         this.m_targets[i].setVisible(true);
 
-                    this.m_preMaterial.setRGB3f(0.0, 1.0, 0.0);
+                    // this.m_preMaterial.setRGB3f(0.0, 1.0, 0.0);
+                    this.m_preDecor.setRGB3f(0.0, 1.0, 0.0);
                     this.m_preColorFboIns.updateGlobalMaterialUniform();
                     for (let i: number = 0; i < this.m_targets.length; ++i)
                         this.m_preColorFboIns.drawEntity(this.m_targets[i], false, true);

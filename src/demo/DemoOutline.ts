@@ -194,6 +194,7 @@ export class DemoOutline {
     private mouseDown(evt: any): void {
 
         this.m_flag = true;
+        console.log("mouse down...");
         DebugFlag.Flag_0 = 1;
     }
     private m_timeoutId: any = -1;
@@ -252,6 +253,7 @@ export class DemoOutline {
             this.m_rscene.runEnd();
         }
 
+        DebugFlag.Flag_0 = 0;
     }
 }
 export default DemoOutline;

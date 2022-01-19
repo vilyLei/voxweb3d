@@ -9,6 +9,7 @@ import IShaderUniform from "../../vox/material/IShaderUniform";
 import { IShaderUniformProbe } from "../../vox/material/IShaderUniformProbe";
 import IShdProgram from "../../vox/material/IShdProgram";
 import IRenderShader from "../../vox/render/IRenderShader";
+import DebugFlag from "../debug/DebugFlag";
 
 class ShaderUniform implements IShaderUniform {
     constructor() {
@@ -126,6 +127,11 @@ class ShaderUniformV2 extends ShaderUniform {
         super();
     }
     use(rc: IRenderShader): void {
+        // new DebugFlag
+        // if(this.uns == "ggg" && DebugFlag.Flag_0 > 0) {
+        //     let arr = this.dataList[0].slice(0);
+        //     console.log("ggg arr: ",arr);
+        // }
         let i: number = 0;
         for (; i < this.uniformSize; ++i) {
             rc.useUniformV2(this.locations[i], this.types[i], this.dataList[i], this.dataSizeList[i], 0);

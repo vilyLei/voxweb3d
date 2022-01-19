@@ -13,6 +13,7 @@ import IRenderShader from "../../vox/render/IRenderShader";
 import IRenderResource from "../../vox/render/IRenderResource";
 import IShaderUniform from "../../vox/material/IShaderUniform";
 import { IShaderProgramBuilder } from "../../vox/material/IShaderProgramBuilder";
+import DebugFlag from "../debug/DebugFlag";
 
 /**
  * 作为渲染器运行时 material shader 资源的管理类
@@ -74,6 +75,9 @@ export default class RenderShader implements IRenderShader, IRenderResource {
         }
     }
     useUniform(uniform: IShaderUniform): void {
+        // if(uniform.uns == "ggg" && DebugFlag.Flag_0 > 0) {
+        //     console.log("ggg this.m_uniform != uniform: ", (this.m_uniform != uniform));
+        // }
         if (this.m_uniform != uniform) {
             this.m_uniform = uniform;
             uniform.use(this);

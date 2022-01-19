@@ -9,6 +9,7 @@ import IRenderTexResource from "../../vox/render/IRenderTexResource";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import RenderShader from "../../vox/render/RenderShader";
 import RODataBuilder from "../../vox/render/RODataBuilder";
+import DebugFlag from "../debug/DebugFlag";
 
 export default class RenderMaterialProxy {
     private m_dispBuilder: RODataBuilder = null;
@@ -49,10 +50,18 @@ export default class RenderMaterialProxy {
     }
     useGlobalMaterial(material: IRenderMaterial, materialUniformUpdate: boolean = false): void {
         if(material != null) {
+            // if( DebugFlag.Flag_0 > 0) {
+            //     material.__$uniform.uns = "ggg";
+            //     console.log("ggg0 setting",material,material.__$uniform);
+            // }
             this.m_dispBuilder.updateGlobalMaterial(material, materialUniformUpdate);
         }
     }
     updateMaterialUniform(material: IRenderMaterial): void {
+        // if( DebugFlag.Flag_0 > 0) {
+        //     material.__$uniform.uns = "ggg";
+        //     console.log("ggg1 setting",material,material.__$uniform);
+        // }
         this.m_shader.updateUniform(material.__$uniform);
     }
 }
