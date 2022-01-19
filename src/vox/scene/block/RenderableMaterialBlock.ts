@@ -8,8 +8,8 @@
 import { IShaderLib } from "../../../vox/material/IShaderLib";
 import { IMaterialPipeline } from "../../material/pipeline/IMaterialPipeline";
 import { MaterialPipeline } from "../../material/pipeline/MaterialPipeline";
-import IRenderMaterial from "../../../vox/render/IRenderMaterial";
-import MaterialBase from "../../material/MaterialBase";
+import { IMaterial } from "../../../vox/material/IMaterial";
+import { Material } from "../../material/Material";
 import { IRenderableMaterialBlock } from "./IRenderableMaterialBlock";
 
 class RenderableMaterialBlock implements IRenderableMaterialBlock {
@@ -23,12 +23,11 @@ class RenderableMaterialBlock implements IRenderableMaterialBlock {
         if(this.m_initFlag) {
             this.m_initFlag = false;
 
-
         }
     }
     
-    createMaterial(): IRenderMaterial {
-        return new MaterialBase();
+    createMaterial(): IMaterial {
+        return new Material();
     }
     createMaterialPipeline(shaderLib: IShaderLib): IMaterialPipeline {
         return new MaterialPipeline( shaderLib );

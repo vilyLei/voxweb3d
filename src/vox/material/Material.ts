@@ -13,6 +13,7 @@ import { IMaterialDecorator } from "./IMaterialDecorator";
 import { UniformComp } from "../../vox/material/component/UniformComp";
 import IShaderCodeObject from "./IShaderCodeObject";
 import IRenderTexture from "../render/texture/IRenderTexture";
+import { IMaterial } from "./IMaterial";
 
 class MaterialShaderBuffer extends ShaderCodeBuffer {
 
@@ -44,10 +45,9 @@ class MaterialShaderBuffer extends ShaderCodeBuffer {
     }
     toString(): string {
         return "[OccBlurShaderBuffer()]";
-    }
-    
+    }    
 }
-export default class Material extends MaterialBase {
+class Material extends MaterialBase implements IMaterial {
     private static s_shdBufins: MaterialShaderBuffer = null;
     private m_decorator: IMaterialDecorator = null;
     vertUniform: UniformComp = null;
@@ -56,6 +56,7 @@ export default class Material extends MaterialBase {
         if(Material.s_shdBufins == null) Material.s_shdBufins = new MaterialShaderBuffer();
     }
     protected buildBuf(): void {
+
         let buf = Material.s_shdBufins;
         let decorator = this.m_decorator;
         buf.decorator = decorator;

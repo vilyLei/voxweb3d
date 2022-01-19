@@ -13,6 +13,8 @@ import { OrthoUIScene } from "../../vox/ui/OrthoUIScene";
 import { UserInteraction } from "./UserInteraction";
 
 import {IRendererSceneAccessor} from "../../vox/scene/IRendererSceneAccessor";
+import { RenderableMaterialBlock } from "../scene/block/RenderableMaterialBlock";
+import { RenderableEntityBlock } from "../scene/block/RenderableEntityBlock";
 class RendererSceneNode {
     private m_rscene: IRendererScene = null;
     priority: number = 0;
@@ -58,6 +60,13 @@ export class EngineBase {
             rscene = new RendererScene();
             rscene.initialize(param, renderProcessesTotal);
             rscene.updateCamera();
+            
+            let materialBlock = new RenderableMaterialBlock();
+            materialBlock.initialize();
+            rscene.materialBlock = materialBlock;
+            let entityBlock = new RenderableEntityBlock();
+            entityBlock.initialize();
+            rscene.entityBlock = entityBlock;
 
             let selfT: any = this;
             selfT.stage3D = rscene.getStage3D();
