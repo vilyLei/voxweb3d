@@ -8,11 +8,12 @@
 import { IShaderLib } from "../../../vox/material/IShaderLib";
 import { IMaterialPipeline } from "../../material/pipeline/IMaterialPipeline";
 import { IMaterial } from "../../../vox/material/IMaterial";
+import { IMaterialDecorator } from "../../../vox/material/IMaterialDecorator";
 
 interface IRenderableMaterialBlock {
     
     initialize(): void;
-    createMaterial(): IMaterial;
+    createMaterial(decorator: IMaterialDecorator): IMaterial;
     createMaterialPipeline(shaderLib: IShaderLib): IMaterialPipeline;
 }
 

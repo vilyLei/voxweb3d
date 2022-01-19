@@ -4,7 +4,8 @@ import { IFBOInstance } from "../../../vox/scene/IFBOInstance";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import {IRenderCamera} from "../../../vox/render/IRenderCamera";
 import DepthMaterial from "../material/DepthMaterial";
-import OccBlurMaterial from "../material/OccBlurMaterial";
+// import OccBlurMaterial from "../material/OccBlurMaterial";
+import {OccBlurDecorator} from "../material/OccBlurDecorator";
 import ShadowVSMData from "../material/ShadowVSMData";
 import RendererState from "../../../vox/render/RendererState";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
@@ -171,10 +172,15 @@ export class ShadowVSMModule implements IMaterialPipe {
         this.m_fboOccBlur.createFBOAt(this.m_fboIndex, this.m_shadowMapW, this.m_shadowMapH, true, false, 0);
         this.m_occBlurRtt = this.m_fboOccBlur.setRenderToRGBATexture(null, 0);
 
-        let occMaterial: OccBlurMaterial;
-        occMaterial = new OccBlurMaterial(false);
-        occMaterial.setTextureList([this.m_depthRtt]);
-        occMaterial.setShadowRadius(this.m_shadowRadius);
+        
+        // let occMaterial: OccBlurMaterial;
+        // occMaterial = new OccBlurMaterial(false);
+        // occMaterial.setTextureList([this.m_depthRtt]);
+        // occMaterial.setShadowRadius(this.m_shadowRadius);
+
+        let occDeco = new OccBlurDecorator(false, this.m_depthRtt, this.m_shadowRadius);
+        let occMaterial = this.m_rscene.materialBlock.createMaterial( occDeco );
+
         //let verOccBlurPlane: Plane3DEntity = new Plane3DEntity();
         let verOccBlurPlane = this.m_rscene.entityBlock.createEntity();
         verOccBlurPlane.copyMeshFrom( this.m_rscene.entityBlock.screenPlane );
@@ -183,9 +189,13 @@ export class ShadowVSMModule implements IMaterialPipe {
         // verOccBlurPlane.initializeXOY(-1, -1, 2, 2);
         this.m_verOccBlurPlane = verOccBlurPlane;
 
-        occMaterial = new OccBlurMaterial(true);
-        occMaterial.setTextureList([this.m_occBlurRtt]);
-        occMaterial.setShadowRadius(this.m_shadowRadius);
+        occDeco = new OccBlurDecorator(true, this.m_occBlurRtt, this.m_shadowRadius);
+        occMaterial = this.m_rscene.materialBlock.createMaterial( occDeco );
+
+        // occMaterial = new OccBlurMaterial(true);
+        // occMaterial.setTextureList([this.m_occBlurRtt]);
+        // occMaterial.setShadowRadius(this.m_shadowRadius);
+
         //let horOccBlurPlane: Plane3DEntity = new Plane3DEntity();
         let horOccBlurPlane = this.m_rscene.entityBlock.createEntity();
         // horOccBlurPlane.copyMeshFrom(verOccBlurPlane);

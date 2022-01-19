@@ -35,6 +35,9 @@ import ScreenFixedAlignPlaneEntity from "../../vox/entity/ScreenFixedAlignPlaneE
 import Matrix4 from "../../vox/math/Matrix4";
 import Cylinder3DEntity from "../../vox/entity/Cylinder3DEntity";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
+import { RenderableMaterialBlock } from "../../vox/scene/block/RenderableMaterialBlock";
+import { RenderableEntityBlock } from "../../vox/scene/block/RenderableEntityBlock";
+import { OccBlurDecorator } from "./material/OccBlurDecorator";
 
 export class DemoBase {
     constructor() { }
@@ -67,6 +70,15 @@ export class DemoBase {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 4);
             this.m_rscene.updateCamera();
+
+            let rscene = this.m_rscene;
+            let materialBlock = new RenderableMaterialBlock();
+            materialBlock.initialize();
+            rscene.materialBlock = materialBlock;
+            let entityBlock = new RenderableEntityBlock();
+            entityBlock.initialize();
+            rscene.entityBlock = entityBlock;
+
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             this.m_rscene.enableMouseEvent(true);
@@ -101,7 +113,7 @@ export class DemoBase {
     private m_horOccBlurPlane: Plane3DEntity = null;
     private m_verOccBlurPlane: Plane3DEntity = null;
     private m_shadowBias: number = -0.0005;
-    private m_setShadowRadius: number = 2.0;
+    private m_shadowRadius: number = 2.0;
     private m_shadowMapW: number = 128;
     private m_shadowMapH: number = 128;
     private m_shadowViewW: number = 1300;
@@ -134,20 +146,35 @@ export class DemoBase {
         this.m_fboOccBlurH.setRenderToRTTTextureAt(2, 0);
         this.m_fboOccBlurH.setRProcessIDList([2]);
 
-        
-        let occMaterial: OccBlurMaterial;
+        let occMaterial: any;
+        let occDeco: OccBlurDecorator = null;
         let occBlurPlane: Plane3DEntity;
 
-        occMaterial = new OccBlurMaterial( false );
-        occMaterial.setShadowRadius(this.m_setShadowRadius);
+        //occDeco = new OccBlurDecorator(false, this.m_fboDepth.getRTTAt(0), this.m_shadowRadius);
+        
+        if(occDeco != null) {
+            occMaterial = this.m_rscene.materialBlock.createMaterial( occDeco );
+        }
+        else {
+            occMaterial = new OccBlurMaterial( false );
+            occMaterial.setShadowRadius(this.m_shadowRadius);
+        }
+
         occBlurPlane =  new Plane3DEntity();
         occBlurPlane.setMaterial( occMaterial );
         occBlurPlane.initializeXOY(-1,-1,2,2, [this.m_fboDepth.getRTTAt(0)]);
         this.m_rscene.addEntity(occBlurPlane, 1);
         this.m_verOccBlurPlane = occBlurPlane;
 
-        occMaterial = new OccBlurMaterial( true );
-        occMaterial.setShadowRadius(this.m_setShadowRadius);
+        if(occDeco != null) {
+            occDeco = new OccBlurDecorator(true, this.m_fboOccBlurV.getRTTAt(0), this.m_shadowRadius);
+            occMaterial = this.m_rscene.materialBlock.createMaterial( occDeco );
+        }
+        else {
+            occMaterial = new OccBlurMaterial( true );
+            occMaterial.setShadowRadius(this.m_shadowRadius);
+        }
+
         occBlurPlane =  new Plane3DEntity();
         occBlurPlane.setMaterial( occMaterial );
         occBlurPlane.initializeXOY(-1,-1,2,2, [this.m_fboOccBlurV.getRTTAt(0)]);
@@ -192,7 +219,7 @@ export class DemoBase {
         // add common 3d display entity
         let plane:Plane3DEntity = new Plane3DEntity();
         shadowMaterial = new ShadowEntityMaterial();
-        shadowMaterial.setShadowRadius(this.m_setShadowRadius);
+        shadowMaterial.setShadowRadius(this.m_shadowRadius);
         shadowMaterial.setShadowBias(this.m_shadowBias);
         shadowMaterial.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
         shadowMaterial.setShadowMatrix( shadowMatrix );
@@ -205,7 +232,7 @@ export class DemoBase {
 
         let box:Box3DEntity = new Box3DEntity();
         shadowMaterial = new ShadowEntityMaterial();
-        shadowMaterial.setShadowRadius(this.m_setShadowRadius);
+        shadowMaterial.setShadowRadius(this.m_shadowRadius);
         shadowMaterial.setShadowBias(this.m_shadowBias);
         shadowMaterial.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
         shadowMaterial.setShadowMatrix( shadowMatrix );
@@ -220,7 +247,7 @@ export class DemoBase {
         
         let cyl:Cylinder3DEntity = new Cylinder3DEntity();
         shadowMaterial = new ShadowEntityMaterial();
-        shadowMaterial.setShadowRadius(this.m_setShadowRadius);
+        shadowMaterial.setShadowRadius(this.m_shadowRadius);
         shadowMaterial.setShadowBias(this.m_shadowBias);
         shadowMaterial.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
         shadowMaterial.setShadowMatrix( shadowMatrix );
@@ -233,7 +260,7 @@ export class DemoBase {
         
         let sph:Sphere3DEntity = new Sphere3DEntity();
         shadowMaterial = new ShadowEntityMaterial();
-        shadowMaterial.setShadowRadius(this.m_setShadowRadius);
+        shadowMaterial.setShadowRadius(this.m_shadowRadius);
         shadowMaterial.setShadowBias(this.m_shadowBias);
         shadowMaterial.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
         shadowMaterial.setShadowMatrix( shadowMatrix );
@@ -246,7 +273,7 @@ export class DemoBase {
         
         sph = new Sphere3DEntity();
         shadowMaterial = new ShadowEntityMaterial();
-        shadowMaterial.setShadowRadius(this.m_setShadowRadius);
+        shadowMaterial.setShadowRadius(this.m_shadowRadius);
         shadowMaterial.setShadowBias(this.m_shadowBias);
         shadowMaterial.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
         shadowMaterial.setShadowMatrix( shadowMatrix );

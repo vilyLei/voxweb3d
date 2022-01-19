@@ -45,12 +45,38 @@ export default interface IShaderCodeBuilder {
     addFragFunction(codeBlock: string): void;
     addVertFunction(codeBlock: string): void;
     useTexturePreciseHighp(): void;
+    /**
+     * @param macroName macro name, the default value is ""
+     * @param map2DEnabled the default value is true
+     * @param fragEnabled the default value is true
+     * @param vertEnabled the default value is false
+     */
     addTextureSample2D(macroName: string, map2DEnabled: boolean, fragEnabled: boolean, vertEnabled: boolean): void;
+    /**
+     * @param macroName macro name, the default value is ""
+     * @param fragEnabled the default value is true
+     * @param vertEnabled the default value is false
+     */
     addTextureSampleCube(macroName: string, fragEnabled: boolean, vertEnabled: boolean): void;
+    /**
+     * @param macroName macro name, the default value is ""
+     * @param fragEnabled the default value is true
+     * @param vertEnabled the default value is false
+     */
     addTextureSample3D(macroName: string, fragEnabled: boolean, vertEnabled: boolean): void;
     isHaveTexture(): boolean;
     isHaveTexture2D(): boolean;
+    /**
+     * @param objMatEnabled the default value is true
+     * @param viewMatEnabled the default value is true
+     * @param projMatEnabled the default value is true
+     */
     useVertSpaceMats(objMatEnabled: boolean, viewMatEnabled: boolean, projMatEnabled: boolean): void;
+    /**
+     * @param objMatEnabled the default value is true
+     * @param viewMatEnabled the default value is true
+     * @param projMatEnabled the default value is true
+     */
     useFragSpaceMats(objMatEnabled: boolean, viewMatEnabled: boolean, projMatEnabled: boolean): void;
 
     addVertExtend(code: string): void;

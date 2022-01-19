@@ -149,7 +149,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_materialCtx.lightModule.update();
     }
     private createPointLightDisp(pointLight: PointLight): Billboard3DEntity {
-
+        return;
         let size: number = 60.0;
         let billboard: Billboard3DEntity = new Billboard3DEntity();
         billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
@@ -228,6 +228,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
 
     }
     private initScene(): void {
+        //return;
         if(RendererDevice.IsWebGL1()) {
             this.m_viewTexMaker = new ViewTextureMaker(1, true);
             this.m_viewTexMaker.setClearColorEnabled(true);

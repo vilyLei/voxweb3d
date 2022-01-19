@@ -44,7 +44,7 @@ class MaterialShaderBuffer extends ShaderCodeBuffer {
         return this.decorator.getShaderCodeObject();
     }
     getUniqueShaderName(): string {
-        return this.m_uniqueName;
+        return this.m_uniqueName + this.decorator.getUniqueName();
     }
     toString(): string {
         return "[OccBlurShaderBuffer()]";
@@ -76,7 +76,7 @@ class Material extends MaterialBase implements IMaterial {
         let list = buf.createTextureList();
         if(this.vertUniform != null) this.vertUniform.getTextures(buf.getShaderCodeBuilder(), list);
         buf.getTexturesFromPipeline( list );
-
+        console.log("occ texture list: ",list);
         super.setTextureList( list );
         //buf.texturesTotal = list.length;
     }
@@ -85,7 +85,8 @@ class Material extends MaterialBase implements IMaterial {
     }
     
     setTextureList(texList: IRenderTexture[]): void {
-        throw Error("Illegal operations !!!");
+        // throw Error("Illegal operations !!!");
+        console.error("Illegal operations !!!");
     }
     setDecorator(decorator: IMaterialDecorator): void {
         this.m_decorator = decorator;

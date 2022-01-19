@@ -32,7 +32,7 @@ class ShaderCodeWrapper implements IShaderCodeWrapper {
     }
     getFragShaderCode(codeBuilder: IShaderCodeBuilder): string {
 
-        console.log("ShaderCodeWrapper getFragShaderCode()...",codeBuilder);
+        console.log("ShaderCodeWrapper getFragShaderCode()...", codeBuilder);
         codeBuilder.reset();
         codeBuilder.vertMatrixInverseEnabled = true;
 
@@ -53,7 +53,7 @@ class ShaderCodeWrapper implements IShaderCodeWrapper {
         codeBuilder.useVertSpaceMats(true, true, true);
 
         codeBuilder.addFragMainCode(
-`
+            `
 vec3 calcLight(vec3 baseColor, vec3 pLightDir, vec3 lightColor, vec3 specColor) {
 
     vec3 nvs = (v_nv);
@@ -88,7 +88,7 @@ void main()
     }
     getVertShaderCode(codeBuilder: IShaderCodeBuilder): string {
         codeBuilder.addVertMainCode(
-`
+            `
 void main(){
     mat4 viewMat4 = u_viewMat * u_objMat;
     vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
@@ -129,7 +129,7 @@ export class DemoShaderCodeMaterial {
         this.m_rscene = new RendererScene();
         this.m_rscene.initialize(rparam, 3);
         this.m_rscene.updateCamera();
-        
+
         let rscene = this.m_rscene;
         let materialBlock = new RenderableMaterialBlock();
         materialBlock.initialize();
@@ -150,26 +150,26 @@ export class DemoShaderCodeMaterial {
 
     private m_colorData: Float32Array;
     private m_LightData: Float32Array = null;
-    private m_lightDir: Vector3D = new Vector3D(1,1,1);
-    private m_lightColor: Color4 = new Color4(1,1,1);
-    private m_lightSpecular: Color4 = new Color4(0.3,0.2,0.8,);
-    private m_tempV: Vector3D = new Vector3D(1,1,1);
+    private m_lightDir: Vector3D = new Vector3D(1, 1, 1);
+    private m_lightColor: Color4 = new Color4(1, 1, 1);
+    private m_lightSpecular: Color4 = new Color4(0.3, 0.2, 0.8,);
+    private m_tempV: Vector3D = new Vector3D(1, 1, 1);
     private m_mat4: Matrix4 = new Matrix4();
     initializeTest(): void {
-        
+
         this.m_LightData = new Float32Array([
-            this.m_lightDir.x,this.m_lightDir.y,this.m_lightDir.z, 1.0
-            ,this.m_lightColor.r,this.m_lightColor.g,this.m_lightColor.b, 1.0
-            ,this.m_lightSpecular.r,this.m_lightSpecular.g,this.m_lightSpecular.b, 1.0
+            this.m_lightDir.x, this.m_lightDir.y, this.m_lightDir.z, 1.0
+            , this.m_lightColor.r, this.m_lightColor.g, this.m_lightColor.b, 1.0
+            , this.m_lightSpecular.r, this.m_lightSpecular.g, this.m_lightSpecular.b, 1.0
         ]);
 
-        
-        this.m_mat4.copyFrom( this.m_rscene.getCamera().getViewInvMatrix());
+
+        this.m_mat4.copyFrom(this.m_rscene.getCamera().getViewInvMatrix());
         this.m_mat4.transpose();
 
-        this.m_lightDir.setXYZ(-1.0,-1.0,-1.0);
+        this.m_lightDir.setXYZ(-1.0, -1.0, -1.0);
         this.m_lightDir.normalize();
-        
+
         let lightUniformData = new ShaderUniformData();
         lightUniformData.uniformNameList = ["u_lightParams"];
         lightUniformData.dataList = [this.m_LightData];
@@ -185,7 +185,7 @@ export class DemoShaderCodeMaterial {
         uniformData1.uniformNameList = ["u_color"];
         uniformData1.dataList = [colorData1];
 
-        
+
         let shaderWrapper: ShaderCodeWrapper = new ShaderCodeWrapper();
 
         this.createObjs(shaderWrapper, uniformData, [lightUniformData], new Vector3D(), 1.0);
@@ -213,20 +213,20 @@ export class DemoShaderCodeMaterial {
         box.setMaterial(material);
         box.initializeCube(200.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
         pos.y += 100.0;
-        box.setPosition( pos );
+        box.setPosition(pos);
         this.m_rscene.addEntity(box);
     }
     initialize(): void {
         this.rendererInit();
 
-        let axis:Axis3DEntity = new Axis3DEntity();
+        let axis: Axis3DEntity = new Axis3DEntity();
         axis.initialize(300.0);
         this.m_rscene.addEntity(axis);
 
         // this.initializeTest();
 
         this.initMaterialDecorator();
-        
+
     }
     private initMaterialDecorator(): void {
 
@@ -237,23 +237,21 @@ export class DemoShaderCodeMaterial {
         let decorator = new ColorMaterialDecorator();
         decorator.diffuseMap = this.getImageTexByUrl("static/assets/default.jpg");
         decorator.initialize();
-        let material = rscene.materialBlock.createMaterial();
-        material.setDecorator( decorator );
-        material.initializeByCodeBuf( true );
+        let material = rscene.materialBlock.createMaterial( decorator );
 
         let srcMesh = box.getMesh();
         let mesh = rscene.entityBlock.createMesh();
         mesh.setVS(srcMesh.getVS());
         mesh.setUVS(srcMesh.getUVS());
         mesh.setIVS(srcMesh.getIVS());
-        mesh.setVtxBufRenderData( material );
+        mesh.setVtxBufRenderData(material);
         mesh.initialize();
 
         let entity = rscene.entityBlock.createEntity();
-        entity.setMaterial( material );
-        entity.setMesh( mesh );
+        entity.setMaterial(material);
+        entity.setMesh(mesh);
         //entity.copyMeshFrom( box );
-        this.m_rscene.addEntity( entity );
+        this.m_rscene.addEntity(entity);
     }
     private m_flag: boolean = false;
     private m_pos: Vector3D = new Vector3D();
@@ -273,13 +271,13 @@ export class DemoShaderCodeMaterial {
 
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
-        
-        if(this.m_LightData != null) {
 
-            this.m_mat4.copyFrom( this.m_rscene.getCamera().getViewInvMatrix());
+        if (this.m_LightData != null) {
+
+            this.m_mat4.copyFrom(this.m_rscene.getCamera().getViewInvMatrix());
             this.m_mat4.transpose();
-            this.m_mat4.deltaTransformOutVector(this.m_lightDir,this.m_tempV);
-    
+            this.m_mat4.deltaTransformOutVector(this.m_lightDir, this.m_tempV);
+
             this.m_LightData[0] = -this.m_tempV.x;
             this.m_LightData[1] = -this.m_tempV.y;
             this.m_LightData[2] = -this.m_tempV.z;

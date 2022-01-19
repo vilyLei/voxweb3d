@@ -11,6 +11,7 @@ import { MaterialPipeline } from "../../material/pipeline/MaterialPipeline";
 import { IMaterial } from "../../../vox/material/IMaterial";
 import { Material } from "../../material/Material";
 import { IRenderableMaterialBlock } from "./IRenderableMaterialBlock";
+import { IMaterialDecorator } from "../../../vox/material/IMaterialDecorator";
 
 class RenderableMaterialBlock implements IRenderableMaterialBlock {
     
@@ -26,8 +27,10 @@ class RenderableMaterialBlock implements IRenderableMaterialBlock {
         }
     }
     
-    createMaterial(): IMaterial {
-        return new Material();
+    createMaterial(decorator: IMaterialDecorator): IMaterial {
+        let m = new Material();
+        m.setDecorator( decorator );
+        return m;
     }
     createMaterialPipeline(shaderLib: IShaderLib): IMaterialPipeline {
         return new MaterialPipeline( shaderLib );
