@@ -102,7 +102,7 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
 export default class Default3DMaterial extends MaterialBase {
 
     private static s_shdCodeBuffer: Default3DShaderCodeBuffer = null;
-    private m_colorArray: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
+    private m_colorData: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
     vertColorEnabled: boolean = false;
     premultiplyAlpha: boolean = false;
     normalEnabled: boolean = false;
@@ -128,31 +128,31 @@ export default class Default3DMaterial extends MaterialBase {
         return Default3DMaterial.s_shdCodeBuffer;
     }
     setRGB3f(pr: number, pg: number, pb: number): void {
-        this.m_colorArray[0] = pr;
-        this.m_colorArray[1] = pg;
-        this.m_colorArray[2] = pb;
+        this.m_colorData[0] = pr;
+        this.m_colorData[1] = pg;
+        this.m_colorData[2] = pb;
     }
     getRGB3f(color: Color4): void {
-        let ds: Float32Array = this.m_colorArray;
+        let ds: Float32Array = this.m_colorData;
         color.setRGB3f(ds[0], ds[1], ds[2]);
     }
     setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
-        this.m_colorArray[0] = pr;
-        this.m_colorArray[1] = pg;
-        this.m_colorArray[2] = pb;
-        this.m_colorArray[3] = pa;
+        this.m_colorData[0] = pr;
+        this.m_colorData[1] = pg;
+        this.m_colorData[2] = pb;
+        this.m_colorData[3] = pa;
     }
     getRGBA4f(color: Color4): void {
-        let ds: Float32Array = this.m_colorArray;
+        let ds: Float32Array = this.m_colorData;
         color.setRGBA4f(ds[0], ds[1], ds[2], ds[3]);
     }
     setAlpha(pa: number): void {
-        this.m_colorArray[3] = pa;
+        this.m_colorData[3] = pa;
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_color"];
-        oum.dataList = [this.m_colorArray];
+        oum.dataList = [this.m_colorData];
         return oum;
     }
 

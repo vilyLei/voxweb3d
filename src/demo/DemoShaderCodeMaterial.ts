@@ -18,6 +18,9 @@ import RendererDevice from "../vox/render/RendererDevice";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import Color4 from "../vox/material/Color4";
+import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
+import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
+import { ColorMaterialDecorator } from "../demo/material/ColorMaterialDecorator";
 
 class ShaderCodeWrapper implements IShaderCodeWrapper {
 
@@ -126,6 +129,15 @@ export class DemoShaderCodeMaterial {
         this.m_rscene = new RendererScene();
         this.m_rscene.initialize(rparam, 3);
         this.m_rscene.updateCamera();
+        
+        let rscene = this.m_rscene;
+        let materialBlock = new RenderableMaterialBlock();
+        materialBlock.initialize();
+        rscene.materialBlock = materialBlock;
+        let entityBlock = new RenderableEntityBlock();
+        entityBlock.initialize();
+        rscene.entityBlock = entityBlock;
+
         this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
         this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
@@ -137,7 +149,7 @@ export class DemoShaderCodeMaterial {
     }
 
     private m_colorData: Float32Array;
-    private m_LightData: Float32Array;
+    private m_LightData: Float32Array = null;
     private m_lightDir: Vector3D = new Vector3D(1,1,1);
     private m_lightColor: Color4 = new Color4(1,1,1);
     private m_lightSpecular: Color4 = new Color4(0.3,0.2,0.8,);
@@ -209,9 +221,30 @@ export class DemoShaderCodeMaterial {
 
         let axis:Axis3DEntity = new Axis3DEntity();
         axis.initialize(300.0);
-        this.m_rscene.addEntity(axis);   
+        this.m_rscene.addEntity(axis);
 
-        this.initializeTest();
+        // this.initializeTest();
+
+        this.initMaterialDecorator();
+        
+    }
+    private initMaterialDecorator(): void {
+
+        let box = new Box3DEntity();
+        box.initializeCube(200.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
+        let rscene = this.m_rscene;
+
+        let decorator = new ColorMaterialDecorator();
+        decorator.diffuseMap = this.getImageTexByUrl("static/assets/default.jpg");
+        decorator.initialize();
+        let material = rscene.materialBlock.createMaterial();
+        material.setDecorator( decorator );
+        material.initializeByCodeBuf( true );
+
+        let entity = rscene.entityBlock.createEntity();
+        entity.setMaterial( material );
+        entity.copyMeshFrom( box );
+        this.m_rscene.addEntity( entity );
     }
     private m_flag: boolean = false;
     private m_pos: Vector3D = new Vector3D();
@@ -232,14 +265,16 @@ export class DemoShaderCodeMaterial {
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
         
-        
-        this.m_mat4.copyFrom( this.m_rscene.getCamera().getViewInvMatrix());
-        this.m_mat4.transpose();
-        this.m_mat4.deltaTransformOutVector(this.m_lightDir,this.m_tempV);
+        if(this.m_LightData != null) {
 
-        this.m_LightData[0] = -this.m_tempV.x;
-        this.m_LightData[1] = -this.m_tempV.y;
-        this.m_LightData[2] = -this.m_tempV.z;
+            this.m_mat4.copyFrom( this.m_rscene.getCamera().getViewInvMatrix());
+            this.m_mat4.transpose();
+            this.m_mat4.deltaTransformOutVector(this.m_lightDir,this.m_tempV);
+    
+            this.m_LightData[0] = -this.m_tempV.x;
+            this.m_LightData[1] = -this.m_tempV.y;
+            this.m_LightData[2] = -this.m_tempV.z;
+        }
         this.m_rscene.run();
     }
 }

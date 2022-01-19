@@ -6,25 +6,68 @@
 /***************************************************************************/
 
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
-import IShaderCodeObject from "./IShaderCodeObject";
-import ShaderUniformData from "./ShaderUniformData";
+import IShaderCodeObject from "../../vox/material/IShaderCodeObject";
+import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 interface IMaterialDecorator {
-    
-    lightEnabled: boolean;
+    /**
+     * the  default  value is false
+     */
+    vertColorEnabled: boolean;
+    /**
+     * the  default  value is false
+     */
+    premultiplyAlpha: boolean;
+    /**
+     * the  default  value is false
+     */
     shadowReceiveEnabled: boolean;
+    /**
+     * the  default  value is false
+     */
+    lightEnabled: boolean;
+    /**
+     * the  default  value is false
+     */
     fogEnabled: boolean;
+    /**
+     * the  default  value is false
+     */
+    envAmbientLightEnabled: boolean;
+    /**
+     * the  default  value is false
+     */
+    brightnessOverlayEnabeld: boolean;
+    /**
+     * the default value is true
+     */
     glossinessEnabeld: boolean;
-    // texturesTotal: number;
 
     buildBufParams(): void;
+    /**
+     * @returns textures list
+     */
     createTextureList(coder: IShaderCodeBuilder): IRenderTexture[];
     buildShader(coder: IShaderCodeBuilder): void;
+    /**
+     * @returns local uniform data
+     */
     createUniformData(): ShaderUniformData;
+    /**
+     * get shader code object uuid, it is defined in the system
+     * @returns shader code object uuid
+     */
     getShaderCodeObjectUUID(): ShaderCodeUUID;
+    /**
+     * get custom shader code object
+     * @returns shader code object
+     */
     getShaderCodeObject(): IShaderCodeObject;
+    /**
+     * @returns unique name string
+     */
     getUniqueName(): string;
     // destroy(): void;
     

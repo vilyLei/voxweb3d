@@ -34,6 +34,12 @@ export default interface IShaderCodeBuilder {
     addVarying(type: string, name: string): void;
     addVertUniform(type: string, name: string, arrayLength: number): void;
     addVertUniformParam(unifromParam: IUniformParam): void;
+    /**
+     * 
+     * @param type uniform type, example: vec4
+     * @param name uniform name
+     * @param arrayLength the default value is 0, it is no a array. if the value greater 0, it is a array.
+     */
     addFragUniform(type: string, name: string, arrayLength: number): void;
     addFragUniformParam(unifromParam: IUniformParam): void;
     addFragFunction(codeBlock: string): void;

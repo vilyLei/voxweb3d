@@ -18,7 +18,6 @@ import { IMaterial } from "./IMaterial";
 class MaterialShaderBuffer extends ShaderCodeBuffer {
 
     private m_uniqueName: string = "";
-    // private m_hasTex: boolean = false;
     horizonal: boolean = true;
     decorator: IMaterialDecorator = null;
     constructor() {
@@ -92,6 +91,11 @@ class Material extends MaterialBase implements IMaterial {
     }    
     createSelfUniformData(): ShaderUniformData {        
         return this.m_decorator.createUniformData();
+    }
+    destroy(): void {
+        super.destroy();
+        this.m_decorator = null;
+        this.vertUniform = null;
     }
 }
 export { Material }

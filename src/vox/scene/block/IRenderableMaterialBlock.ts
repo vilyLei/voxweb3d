@@ -7,12 +7,12 @@
 
 import { IShaderLib } from "../../../vox/material/IShaderLib";
 import { IMaterialPipeline } from "../../material/pipeline/IMaterialPipeline";
-import IRenderMaterial from "../../../vox/render/IRenderMaterial";
+import { IMaterial } from "../../../vox/material/IMaterial";
 
 interface IRenderableMaterialBlock {
     
     initialize(): void;
-    createMaterial(): IRenderMaterial;
+    createMaterial(): IMaterial;
     createMaterialPipeline(shaderLib: IShaderLib): IMaterialPipeline;
 }
 
