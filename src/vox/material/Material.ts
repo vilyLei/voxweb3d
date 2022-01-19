@@ -18,7 +18,6 @@ import { IMaterial } from "./IMaterial";
 class MaterialShaderBuffer extends ShaderCodeBuffer {
 
     private m_uniqueName: string = "";
-    horizonal: boolean = true;
     decorator: IMaterialDecorator = null;
     constructor() {
         super();
@@ -29,6 +28,11 @@ class MaterialShaderBuffer extends ShaderCodeBuffer {
         this.m_uniqueName = "MS_";
         // this.m_hasTex = texEnabled;
         if (texEnabled) this.m_uniqueName += "Tex";
+    }
+    createTextureList(): IRenderTexture[] {
+        this.m_texBulder.reset();
+        this.decorator.createTextureList( this.m_texBulder );
+        return this.m_texBulder.getTextures();
     }
     buildShader(): void {
         this.decorator.buildShader( this.m_coder );
@@ -69,7 +73,7 @@ class Material extends MaterialBase implements IMaterial {
 
         buf.buildPipelineParams();
 
-        let list = decorator.createTextureList( buf.getShaderCodeBuilder() );
+        let list = buf.createTextureList();
         if(this.vertUniform != null) this.vertUniform.getTextures(buf.getShaderCodeBuilder(), list);
         buf.getTexturesFromPipeline( list );
 

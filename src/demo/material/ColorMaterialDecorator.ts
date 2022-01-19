@@ -11,6 +11,7 @@ import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
+import { ShaderTextureBuilder } from "../../vox/material/ShaderTextureBuilder";
 
 class ColorMaterialDecorator implements IMaterialDecorator {
 
@@ -66,14 +67,8 @@ class ColorMaterialDecorator implements IMaterialDecorator {
     buildBufParams(): void {
 
     }
-    createTextureList(coder: IShaderCodeBuilder): IRenderTexture[] {
-        let list: IRenderTexture[] = null;
-        if (this.diffuseMap != null) {
-            list = [];
-            coder.uniform.addDiffuseMap();
-            list.push( this.diffuseMap );
-        }
-        return list;
+    createTextureList(coder: ShaderTextureBuilder): void {
+        coder.addDiffuseMap( this.diffuseMap );
     }
     buildShader(coder: IShaderCodeBuilder): void {
         coder.addFragUniform("vec4", "u_color", 0);

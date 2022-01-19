@@ -9,7 +9,7 @@ import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import IShaderCodeObject from "../../vox/material/IShaderCodeObject";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
-import IRenderTexture from "../../vox/render/texture/IRenderTexture";
+import { ShaderTextureBuilder } from "../../vox/material/ShaderTextureBuilder";
 
 interface IMaterialDecorator {
     /**
@@ -49,7 +49,7 @@ interface IMaterialDecorator {
     /**
      * @returns textures list
      */
-    createTextureList(coder: IShaderCodeBuilder): IRenderTexture[];
+    createTextureList(coder: ShaderTextureBuilder): void;
     buildShader(coder: IShaderCodeBuilder): void;
     /**
      * @returns local uniform data
