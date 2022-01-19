@@ -65,7 +65,7 @@ class ColorMaterialDecorator implements IMaterialDecorator {
     }
 
     buildBufParams(): void {
-
+        
     }
     createTextureList(coder: ShaderTextureBuilder): void {
         coder.addDiffuseMap( this.diffuseMap );
@@ -107,7 +107,6 @@ class ColorMaterialDecorator implements IMaterialDecorator {
     }
     initialize(texEnabled: boolean = true): void {
         texEnabled = this.diffuseMap != null || texEnabled;
-        //console.log("VSTexturePosRenderShaderBuffer::initialize()...");
         this.m_uniqueName = "ColorMaterial";
         if (texEnabled) this.m_uniqueName += "Tex";
     }

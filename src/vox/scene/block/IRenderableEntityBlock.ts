@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import IRenderEntity from "../../../vox/render/IRenderEntity";
+import { IDataMesh } from "../../mesh/IDataMesh";
 
 interface IRenderableEntityBlock {
     
@@ -16,6 +17,7 @@ interface IRenderableEntityBlock {
 
     initialize(): void;
     createEntity(): IRenderEntity;
+    createMesh(): IDataMesh;
 }
 
 export { IRenderableEntityBlock }

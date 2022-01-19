@@ -46,7 +46,9 @@ export default class MeshBase {
      * 是否启用线框模式数据, 默认值为false
      */
     wireframe: boolean = false;
-
+    /**
+     * vtx positons bounds AABB in the local space
+     */
     bounds: AABB = null;
     normalType: number = VtxNormalType.GOURAND;
     normalScale: number = 1.0;

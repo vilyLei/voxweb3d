@@ -9,11 +9,12 @@ import Vector3D from "../../vox/math/Vector3D";
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import MeshBase from "../../vox/mesh/MeshBase";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
+import { IDataMesh } from "../../vox/mesh/IDataMesh";
 import AABB from "../geom/AABB";
 import GeometryBase from "../../vox/mesh/GeometryBase"
 import SurfaceNormalCalc from "../geom/SurfaceNormalCalc";
 
-export default class DataMesh extends MeshBase {
+export default class DataMesh extends MeshBase implements IDataMesh {
     private m_initIVS: Uint16Array | Uint32Array = null;
     private m_boundsChanged: boolean = true;
     private m_vs: Float32Array = null;
@@ -117,7 +118,6 @@ export default class DataMesh extends MeshBase {
 
     initializeFromGeometry(geom: GeometryBase): void {
 
-        console.log("XXX geom: ",geom);
         this.m_vs = geom.getVS();
         this.m_uvs = geom.getUVS();
         this.m_nvs = geom.getNVS();

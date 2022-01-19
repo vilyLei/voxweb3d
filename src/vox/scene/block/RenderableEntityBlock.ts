@@ -5,6 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
+import VtxBufConst from "../../../vox/mesh/VtxBufConst";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import Vector3D from "../../../vox/math/Vector3D";
@@ -12,6 +13,8 @@ import Box3DMesh from "../../../vox/mesh/Box3DMesh";
 import RectPlaneMesh from "../../../vox/mesh/RectPlaneMesh";
 import { VtxBufRenderData } from "../../../vox/mesh/VtxBufRenderData";
 import { IRenderableEntityBlock } from "./IRenderableEntityBlock";
+import { IDataMesh } from "../../mesh/IDataMesh";
+import DataMesh from "../../mesh/DataMesh";
 
 class RenderableEntityBlock implements IRenderableEntityBlock {
     
@@ -58,6 +61,10 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
     }
     createEntity(): IRenderEntity {
         return new DisplayEntity();
+    }
+    //createMesh(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW): IDataMesh {
+    createMesh(): IDataMesh {
+        return new DataMesh();
     }
 }
 

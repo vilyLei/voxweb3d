@@ -24,7 +24,7 @@ import IRenderEntity from "../../vox/render/IRenderEntity";
 import IEntityTransform from "../../vox/entity/IEntityTransform";
 import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 
-import {IRenderProxy} from "../../vox/render/IRenderProxy";
+import { IRenderProxy } from "../../vox/render/IRenderProxy";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import DebugFlag from '../debug/DebugFlag';
 
@@ -120,7 +120,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     getRendererUid(): number {
         return RSEntityFlag.GetRendererUid(this.__$rseFlag);
     }
-    
+
     setMaterialPipeline(pipeline: IMaterialPipeline): void {
         this.m_pipeLine = pipeline;
     }
@@ -135,7 +135,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
         return this.__$rseFlag == RSEntityFlag.DEFAULT;
     }
     dispatchEvt(evt: any): number {
-        
+
         // if (evt.getClassType() == MouseEvent.EventClassType) {
         if (this.m_eventDispatcher != null) {
             return this.m_eventDispatcher.dispatchEvt(evt);
@@ -281,7 +281,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     private initDisplay(m: MeshBase): void {
         this.m_display.vbuf = m.__$attachVBuf();
         this.m_display.ivsIndex = 0;
-        this.m_display.ivsCount = m.vtCount;        
+        this.m_display.ivsCount = m.vtCount;
         this.m_display.drawMode = m.drawMode;
         this.m_display.trisNumber = m.trisNumber;
         this.m_display.visible = this.m_visible && this.m_drawEnabled;
@@ -305,7 +305,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
                         this.initDisplay(m);
                     }
                     //console.log("DisplayEntity::setMesh(), "+this.m_display.toString()+",m.drawMode: "+m.drawMode);
-                    if(this.m_localBounds == null) {
+                    if (this.m_localBounds == null) {
                         this.m_localBounds = m.bounds;
                     }
                     else {
@@ -347,11 +347,11 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
                 this.m_display.__$$runit.setIvsParam(ivsIndex, ivsCount);
                 this.m_display.__$$runit.drawMode = this.m_mesh.drawMode;
 
-                if(updateBounds && this.isPolyhedral()) {
+                if (updateBounds && this.isPolyhedral()) {
 
-                    if(this.m_localBounds == this.m_mesh.bounds) {
+                    if (this.m_localBounds == this.m_mesh.bounds) {
                         this.m_localBounds = new AABB();
-                        this.m_localBounds.copyFrom( this.m_mesh.bounds );
+                        this.m_localBounds.copyFrom(this.m_mesh.bounds);
                     }
                     this.m_transStatus = ROTransform.UPDATE_TRANSFORM;
                     this.m_localBounds.reset();
@@ -398,7 +398,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
             }
             //if(this.m_display.getMaterial() != m && this.__$wuid == RSEntityFlag.RENDERER_UID_FLAG && this.m_display.__$ruid < 0)
             if (this.m_display.getMaterial() != m && (RSEntityFlag.RENDERER_UID_FLAG & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAG && this.m_display.__$ruid < 0) {
-                
+
                 // if(m.getMaterialPipeline() == null && this.getMaterialPipeline() != null) {
                 //     m.setMaterialPipeline( this.getMaterialPipeline() );
                 // }
@@ -485,10 +485,10 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
                         if (material.getShaderData() == null) {
                             let texList: IRenderTexture[] = material.getTextureList();
                             let texEnabled: boolean = (texList != null && texList.length > 0);
-                            if(material.getMaterialPipeline() == null && this.getMaterialPipeline() != null) {
-                                material.setMaterialPipeline( this.getMaterialPipeline() );
+                            if (material.getMaterialPipeline() == null && this.getMaterialPipeline() != null) {
+                                material.setMaterialPipeline(this.getMaterialPipeline());
                             }
-                            if(material.pipeTypes == null) {
+                            if (material.pipeTypes == null) {
                                 material.pipeTypes = this.pipeTypes;
                             }
                             material.initializeByCodeBuf(texEnabled);
@@ -540,12 +540,12 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
         this.m_transfrom.getScaleXYZ(pv);
     }
     localToGlobal(pv: Vector3D): void {
-        if(this.m_transfrom != null) {
+        if (this.m_transfrom != null) {
             this.m_transfrom.localToGlobal(pv);
         }
     }
     globalToLocal(pv: Vector3D): void {
-        if(this.m_transfrom != null) {
+        if (this.m_transfrom != null) {
             this.m_transfrom.globalToLocal(pv);
         }
     }
@@ -575,7 +575,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
         if (this.m_transfrom != null) {
             this.m_transStatus = ROTransform.UPDATE_TRANSFORM;
 
-            if(this.m_mesh != null && this.m_localBounds != this.m_mesh.bounds) {
+            if (this.m_mesh != null && this.m_localBounds != this.m_mesh.bounds) {
 
                 this.m_localBounds.reset();
                 let ivs: Uint16Array | Uint32Array = this.m_mesh.getIVS();
@@ -590,7 +590,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     private updateLocalBoundsVS(bounds: AABB): void {
         let pminV: Vector3D = bounds.min;
         let pmaxV: Vector3D = bounds.max;
-        if(this.m_lBoundsVS == null) {
+        if (this.m_lBoundsVS == null) {
             this.m_lBoundsVS = new Float32Array(24);
         }
         let pvs: Float32Array = this.m_lBoundsVS;
@@ -606,28 +606,28 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     protected updateGlobalBounds(): void {
 
         // 这里的逻辑也有问题,需要再处理，为了支持摄像机等的拾取以及支持遮挡计算等空间管理计算
-        
+
         let bounds: AABB = this.m_localBounds;
         if (this.m_transStatus > ROTransform.UPDATE_POSITION || this.m_localBuondsVer != bounds.version) {
-            
+
             let st: number = this.m_transfrom.updateStatus;
             this.m_transfrom.update();
-            
-            if(this.m_localBuondsVer != bounds.version || st != this.m_transfrom.updateStatus) {
-                
+
+            if (this.m_localBuondsVer != bounds.version || st != this.m_transfrom.updateStatus) {
+
                 this.m_localBuondsVer = bounds.version;
-                this.updateLocalBoundsVS(bounds);                
-            
+                this.updateLocalBoundsVS(bounds);
+
                 let in_vs: Float32Array = this.m_lBoundsVS;
                 let out_vs: Float32Array = DisplayEntity.s_boundsOutVS;
                 this.m_transfrom.getMatrix().transformVectors(in_vs, 24, out_vs);
                 this.m_globalBounds.reset();
                 this.m_globalBounds.addXYZFloat32Arr(out_vs);
                 this.m_globalBounds.update();
-            }            
+            }
         }
         else {
-            
+
             DisplayEntity.s_prePos.setXYZ(0, 0, 0);
             DisplayEntity.s_pos.setXYZ(0, 0, 0);
             let matrix = this.m_transfrom.getMatrix(false);

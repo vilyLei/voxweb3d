@@ -241,8 +241,16 @@ export class DemoShaderCodeMaterial {
         material.setDecorator( decorator );
         material.initializeByCodeBuf( true );
 
+        let srcMesh = box.getMesh();
+        let mesh = rscene.entityBlock.createMesh();
+        mesh.setVS(srcMesh.getVS());
+        mesh.setUVS(srcMesh.getUVS());
+        mesh.setIVS(srcMesh.getIVS());
+        mesh.setVtxBufRenderData( material );
+
         let entity = rscene.entityBlock.createEntity();
         entity.setMaterial( material );
+        // entity.setMesh( mesh as any );
         entity.copyMeshFrom( box );
         this.m_rscene.addEntity( entity );
     }
