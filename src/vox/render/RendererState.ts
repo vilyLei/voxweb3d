@@ -17,6 +17,7 @@ class RendererState {
     static DrawCallTimes: number = 0;
     static DrawTrisNumber: number = 0;
     static POVNumber: number = 0;
+
     static readonly COLOR_MASK_ALL_TRUE: number = 0;
     static readonly COLOR_MASK_ALL_FALSE: number = 1;
     static readonly COLOR_MASK_RED_TRUE: number = 2;
@@ -54,10 +55,13 @@ class RendererState {
     static Initialize(): void {
         if (RendererState.s_initBoo) {
             RendererState.s_initBoo = false;
+
             let state: any = RendererState;
             state.Rstate = new RODrawState();
+
             RenderColorMask.Rstate = RendererState.Rstate;
             RenderStateObject.Rstate = RendererState.Rstate;
+            
             state.COLOR_MASK_ALL_TRUE = RenderColorMask.Create("all_true", true, true, true, true);
             state.COLOR_MASK_ALL_FALSE = RenderColorMask.Create("all_false", false, false, false, false);
             state.COLOR_MASK_RED_TRUE = RenderColorMask.Create("red_true", true, false, false, false);

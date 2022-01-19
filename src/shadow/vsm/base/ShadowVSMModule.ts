@@ -5,6 +5,7 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 import {IRenderCamera} from "../../../vox/render/IRenderCamera";
 import DepthMaterial from "../material/DepthMaterial";
 // import OccBlurMaterial from "../material/OccBlurMaterial";
+
 import {OccBlurDecorator} from "../material/OccBlurDecorator";
 import ShadowVSMData from "../material/ShadowVSMData";
 import RendererState from "../../../vox/render/RendererState";
@@ -19,7 +20,7 @@ import IShaderUniform from "../../../vox/material/IShaderUniform";
 // import PingpongBlur from "../../../renderingtoy/mcase/PingpongBlur";
 
 export class ShadowVSMModule implements IMaterialPipe {
-
+    
     private m_rscene: IRendererScene = null;
     private m_vsmData: ShadowVSMData = null;
 
@@ -171,7 +172,6 @@ export class ShadowVSMModule implements IMaterialPipe {
         this.m_fboOccBlur.setClearRGBAColor4f(1.0, 1.0, 1.0, 1.0);
         this.m_fboOccBlur.createFBOAt(this.m_fboIndex, this.m_shadowMapW, this.m_shadowMapH, true, false, 0);
         this.m_occBlurRtt = this.m_fboOccBlur.setRenderToRGBATexture(null, 0);
-
         
         // let occMaterial: OccBlurMaterial;
         // occMaterial = new OccBlurMaterial(false);
@@ -217,7 +217,7 @@ export class ShadowVSMModule implements IMaterialPipe {
         //     this.m_blurModule.setBackbufferVisible(false);
         // }
 
-        this.m_direcCamera = this.m_rscene.createCamera();;
+        this.m_direcCamera = this.m_rscene.createCamera();
 
         this.m_vsmData.setShadowMap(this.getShadowMap());
         this.updateData();

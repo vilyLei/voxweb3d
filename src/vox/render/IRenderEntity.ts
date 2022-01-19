@@ -56,9 +56,9 @@ export default interface IRenderEntity {
      * @return 返回true表示当前DisplayEntity能被绘制
      */
     isDrawEnabled(): boolean;
-
     setVisible(boo: boolean): void;
     getVisible(): boolean;
+    setRenderState(renderState: number): void;
 
     /**
      * @boundsHit       表示是否包围盒体已经和射线相交了

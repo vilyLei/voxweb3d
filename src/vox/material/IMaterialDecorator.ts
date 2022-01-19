@@ -49,7 +49,7 @@ interface IMaterialDecorator {
     /**
      * @returns textures list
      */
-    createTextureList(coder: ShaderTextureBuilder): void;
+    createTextureList(builder: ShaderTextureBuilder): void;
     buildShader(coder: IShaderCodeBuilder): void;
     /**
      * @returns local uniform data

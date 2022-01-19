@@ -26,6 +26,8 @@ import DracoMeshBuilder from "../voxmesh/draco/DracoMeshBuilder";
 import ThreadSystem from "../thread/ThreadSystem";
 import DracoMesh from "../voxmesh/draco/DracoMesh";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
+import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
+import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
 
 export class DemoOutline {
     constructor() { }
@@ -62,6 +64,15 @@ export class DemoOutline {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();
+            
+            let rscene = this.m_rscene;
+            let materialBlock = new RenderableMaterialBlock();
+            materialBlock.initialize();
+            rscene.materialBlock = materialBlock;
+            let entityBlock = new RenderableEntityBlock();
+            entityBlock.initialize();
+            rscene.entityBlock = entityBlock;
+
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             this.m_rscene.enableMouseEvent(true);

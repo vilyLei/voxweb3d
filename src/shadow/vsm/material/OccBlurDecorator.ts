@@ -69,9 +69,9 @@ class OccBlurDecorator implements IMaterialDecorator {
     buildBufParams(): void {
         
     }
-    createTextureList(coder: ShaderTextureBuilder): void {
-        // coder.addDiffuseMap( this.srcMap );
-        coder.add2DMap(this.m_depthMap,"",false);
+    createTextureList(builder: ShaderTextureBuilder): void {
+        
+        builder.add2DMap(this.m_depthMap,"",false);
     }
     buildShader(coder: IShaderCodeBuilder): void {
         
@@ -161,7 +161,7 @@ void main() {
 `
         );
     }
-    createUniformData(): ShaderUniformData {        
+    createUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_params"];
         oum.dataList = [this.m_paramData];

@@ -159,7 +159,7 @@ export class DemoBase {
             occMaterial = new OccBlurMaterial( false );
             occMaterial.setShadowRadius(this.m_shadowRadius);
         }
-
+        
         occBlurPlane =  new Plane3DEntity();
         occBlurPlane.setMaterial( occMaterial );
         occBlurPlane.initializeXOY(-1,-1,2,2, [this.m_fboDepth.getRTTAt(0)]);

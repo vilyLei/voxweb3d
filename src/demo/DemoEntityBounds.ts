@@ -19,6 +19,8 @@ import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger"
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import MouseEvt3DDispatcher from "../vox/event/MouseEvt3DDispatcher";
 import OcclusionPostOutline from "../renderingtoy/mcase/outline/OcclusionPostOutline";
+import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
+import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
 
 export class DemoEntityBounds {
     constructor() {
@@ -63,6 +65,14 @@ export class DemoEntityBounds {
             rparam.setCamPosition(1500.0, 1500.0, 1500.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam);
+            
+            let rscene = this.m_rscene;
+            let materialBlock = new RenderableMaterialBlock();
+            materialBlock.initialize();
+            rscene.materialBlock = materialBlock;
+            let entityBlock = new RenderableEntityBlock();
+            entityBlock.initialize();
+            rscene.entityBlock = entityBlock;
 
             
             this.m_postOutline.initialize(this.m_rscene, 1, [0]);
