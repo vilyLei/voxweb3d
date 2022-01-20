@@ -166,6 +166,55 @@ class AABB {
 		if (vz < this.min.z || vz > this.max.z) return false;
 		return true;
 	}
+	
+	copyFrom(ab: AABB): void {
+		//this.setRadius(ab.getRadius());
+		this.radius = ab.radius;
+		this.radius2 = ab.radius2;
+		//this.setRadiusSquared(ab.getRadiusSquared());
+		this.min.copyFrom(ab.min);
+		this.max.copyFrom(ab.max);
+		//this.getOCenter().copyFrom(ab.getOCenter());
+		this.center.copyFrom(ab.center);
+		this.updateVolume();
+	}
+	expand(bias: Vector3D): void {
+		this.min.subtractBy(bias);
+		this.max.addBy(bias);
+	}
+	updateVolume(): void {
+
+		this.m_width = this.max.x - this.min.x;
+		this.m_height = this.max.y - this.min.y;
+		this.m_long = this.max.z - this.min.z;
+
+		this.m_halfLong = 0.5 * this.m_long;
+		this.m_halfWidth = 0.5 * this.m_width;
+		this.m_halfHeight = 0.5 * this.m_height;
+
+		++this.version;
+	}
+
+	private updateThis(): void {
+		
+		this.center.x = 0.5 * this.m_width;
+		this.center.y = 0.5 * this.m_height;
+		this.center.z = 0.5 * this.m_long;
+		
+		this.m_halfLong = this.center.z;
+		this.m_halfWidth = this.center.x;
+		this.m_halfHeight = this.center.y;
+		
+		this.radius2 = this.m_halfWidth * this.m_halfWidth + this.m_halfHeight * this.m_halfHeight + this.m_halfLong * this.m_halfLong;
+		this.radius = Math.sqrt(this.radius2);
+		
+		this.center.addBy( this.min );
+		// this.center.x += this.min.x;
+		// this.center.y += this.min.y;
+		// this.center.z += this.min.z;
+		
+		++this.version;
+	}
 	update(): void {
 		// x
 		this.m_width = this.max.x;
@@ -188,66 +237,50 @@ class AABB {
 			this.min.z = this.m_long;
 		}
 		this.m_long = this.max.z - this.min.z;
-		//
-		this.center.x = 0.5 * this.m_width;
-		this.center.y = 0.5 * this.m_height;
-		this.center.z = 0.5 * this.m_long;
-		//
-		this.m_halfLong = this.center.z;
-		this.m_halfWidth = this.center.x;
-		this.m_halfHeight = this.center.y;
-		//
-		this.radius2 = this.m_halfWidth * this.m_halfWidth + this.m_halfHeight * this.m_halfHeight + this.m_halfLong * this.m_halfLong;
-		this.radius = Math.sqrt(this.radius2);
-		//
-		this.center.x += this.min.x;
-		this.center.y += this.min.y;
-		this.center.z += this.min.z;
-		//
-		//this.m_ocenter.copyFrom(this.center);
-		++this.version;
-	}
-	updateVolume(): void {
-		this.m_width = this.max.x - this.min.x;
-		this.m_height = this.max.y - this.min.y;
-		this.m_long = this.max.z - this.min.z;
+		
+		this.updateThis();
 
-		this.m_halfLong = 0.5 * this.m_long;
-		this.m_halfWidth = 0.5 * this.m_width;
-		this.m_halfHeight = 0.5 * this.m_height;
-		++this.version;
-	}
-	copyFrom(ab: AABB): void {
-		//this.setRadius(ab.getRadius());
-		this.radius = ab.radius;
-		this.radius2 = ab.radius2;
-		//this.setRadiusSquared(ab.getRadiusSquared());
-		this.min.copyFrom(ab.min);
-		this.max.copyFrom(ab.max);
-		//this.getOCenter().copyFrom(ab.getOCenter());
-		this.center.copyFrom(ab.center);
-		this.updateVolume();
+		// this.center.x = 0.5 * this.m_width;
+		// this.center.y = 0.5 * this.m_height;
+		// this.center.z = 0.5 * this.m_long;
+		
+		// this.m_halfLong = this.center.z;
+		// this.m_halfWidth = this.center.x;
+		// this.m_halfHeight = this.center.y;
+		
+		// this.radius2 = this.m_halfWidth * this.m_halfWidth + this.m_halfHeight * this.m_halfHeight + this.m_halfLong * this.m_halfLong;
+		// this.radius = Math.sqrt(this.radius2);
+		
+		// this.center.x += this.min.x;
+		// this.center.y += this.min.y;
+		// this.center.z += this.min.z;
+		
+		// ++this.version;
 	}
 	updateFast(): void {
+
 		this.m_width = this.max.x - this.min.x;
 		this.m_height = this.max.y - this.min.y;
 		this.m_long = this.max.z - this.min.z;
 
-		this.center.x = 0.5 * this.m_width;
-		this.center.y = 0.5 * this.m_height;
-		this.center.z = 0.5 * this.m_long;
+		this.updateThis();
 
-		this.m_halfLong = this.center.z;
-		this.m_halfWidth = this.center.x;
-		this.m_halfHeight = this.center.y;
+		// this.center.x = 0.5 * this.m_width;
+		// this.center.y = 0.5 * this.m_height;
+		// this.center.z = 0.5 * this.m_long;
 
-		this.radius2 = this.m_halfWidth * this.m_halfWidth + this.m_halfHeight * this.m_halfHeight + this.m_halfLong * this.m_halfLong;
-		this.radius = Math.sqrt(this.radius2);
+		// this.m_halfLong = this.center.z;
+		// this.m_halfWidth = this.center.x;
+		// this.m_halfHeight = this.center.y;
 
-		this.center.x += this.min.x;
-		this.center.y += this.min.y;
-		this.center.z += this.min.z;
-		++this.version;
+		// this.radius2 = this.m_halfWidth * this.m_halfWidth + this.m_halfHeight * this.m_halfHeight + this.m_halfLong * this.m_halfLong;
+		// this.radius = Math.sqrt(this.radius2);
+
+		// this.center.x += this.min.x;
+		// this.center.y += this.min.y;
+		// this.center.z += this.min.z;
+
+		// ++this.version;
 	}
 	toString(): string {
 		return "[AABB(min->" + this.min + ",size(" + this.m_width + "," + this.m_height + "," + this.m_long + "))]";
