@@ -132,8 +132,8 @@ export default class RODisplay implements IRODisplay {
     __$$rsign: DisplayRenderSign = DisplayRenderSign.NOT_IN_RENDERER;
     __$$runit: IRPODisplay = null;
 
-    private static S_FLAG_BUSY: number = 1;
-    private static S_FLAG_FREE: number = 0;
+    private static s_FLAG_BUSY: number = 1;
+    private static s_FLAG_FREE: number = 0;
     private static m_unitFlagList: number[] = [];
     private static m_unitListLen: number = 0;
     private static m_unitList: RODisplay[] = [];
@@ -148,7 +148,7 @@ export default class RODisplay implements IRODisplay {
         return RODisplay.m_unitList[uid];
     }
     static IsEnabledByUid(uid: number): boolean {
-        return RODisplay.m_unitFlagList[uid] == RODisplay.S_FLAG_BUSY;
+        return RODisplay.m_unitFlagList[uid] == RODisplay.s_FLAG_BUSY;
     }
     static Create(): RODisplay {
         let unit: RODisplay = null;
@@ -156,22 +156,22 @@ export default class RODisplay implements IRODisplay {
         //console.log("RODisplay::Create(), RODisplay.m_unitList.length: "+RODisplay.m_unitList.length);
         if (index >= 0) {
             unit = RODisplay.m_unitList[index];
-            RODisplay.m_unitFlagList[index] = RODisplay.S_FLAG_BUSY;
+            RODisplay.m_unitFlagList[index] = RODisplay.s_FLAG_BUSY;
         }
         else {
             unit = new RODisplay();
             RODisplay.m_unitList.push(unit);
-            RODisplay.m_unitFlagList.push(RODisplay.S_FLAG_BUSY);
+            RODisplay.m_unitFlagList.push(RODisplay.s_FLAG_BUSY);
             RODisplay.m_unitListLen++;
         }
         return unit;
     }
 
     static Restore(pdisp: RODisplay): void {
-        if (pdisp != null && RODisplay.m_unitFlagList[pdisp.getUid()] == RODisplay.S_FLAG_BUSY) {
+        if (pdisp != null && RODisplay.m_unitFlagList[pdisp.getUid()] == RODisplay.s_FLAG_BUSY) {
             let uid: number = pdisp.getUid();
             RODisplay.m_freeIdList.push(uid);
-            RODisplay.m_unitFlagList[uid] = RODisplay.S_FLAG_FREE;
+            RODisplay.m_unitFlagList[uid] = RODisplay.s_FLAG_FREE;
             pdisp.destroy();
         }
     }

@@ -9,8 +9,8 @@ import Matrix4 from "../../vox/math/Matrix4";
 
 class Matrix4Pool
 {
-    private static S_FLAG_BUSY:number = 1;
-    private static S_FLAG_FREE:number = 0;
+    private static s_FLAG_BUSY:number = 1;
+    private static s_FLAG_FREE:number = 0;
     private static s_matList:Matrix4[] = [];
     private static s_matFlagList:number[] = [];
     private static m_freeIdList:number[] = [];        
@@ -63,16 +63,16 @@ class Matrix4Pool
 			for(; i < uid; ++i)
 			{
 				Matrix4Pool.s_matList.push( null );
-            	Matrix4Pool.s_matFlagList.push(Matrix4Pool.S_FLAG_FREE);
+            	Matrix4Pool.s_matFlagList.push(Matrix4Pool.s_FLAG_FREE);
 			}
 			Matrix4Pool.s_matList.push( mat );
-			Matrix4Pool.s_matFlagList.push(Matrix4Pool.S_FLAG_FREE);
+			Matrix4Pool.s_matFlagList.push(Matrix4Pool.s_FLAG_FREE);
 			Matrix4Pool.m_freeIdList.push(mat.getUid());
 			for(i = 1; i < total; ++i)
 			{
 				mat = new Matrix4(Matrix4Pool.s_mfs32Arr,i * 16);
 				Matrix4Pool.s_matList.push( mat );
-            	Matrix4Pool.s_matFlagList.push(Matrix4Pool.S_FLAG_FREE);
+            	Matrix4Pool.s_matFlagList.push(Matrix4Pool.s_FLAG_FREE);
 				Matrix4Pool.m_freeIdList.push(mat.getUid());
 			}
 		}
@@ -85,7 +85,7 @@ class Matrix4Pool
         {
 			mat = Matrix4Pool.s_matList[index];
 			mat.identity();
-			Matrix4Pool.s_matFlagList[index] = Matrix4Pool.S_FLAG_BUSY;
+			Matrix4Pool.s_matFlagList[index] = Matrix4Pool.s_FLAG_BUSY;
 			//console.log("Get a free Matrix !!!");
 		}
 		else
@@ -102,10 +102,10 @@ class Matrix4Pool
 			let uid:number = mat.getUid();
 			if(uid >= Matrix4Pool.s_baseUid && uid < Matrix4Pool.s_maxUid)
 			{
-				if(Matrix4Pool.s_matFlagList[uid - Matrix4Pool.s_baseUid] == Matrix4Pool.S_FLAG_BUSY)
+				if(Matrix4Pool.s_matFlagList[uid - Matrix4Pool.s_baseUid] == Matrix4Pool.s_FLAG_BUSY)
 				{
 					Matrix4Pool.m_freeIdList.push(uid);
-					Matrix4Pool.s_matFlagList[uid - Matrix4Pool.s_baseUid] = Matrix4Pool.S_FLAG_FREE;
+					Matrix4Pool.s_matFlagList[uid - Matrix4Pool.s_baseUid] = Matrix4Pool.s_FLAG_FREE;
 				}
 			}
 		}

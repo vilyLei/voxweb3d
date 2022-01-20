@@ -20,8 +20,8 @@ class Pos3DPool {
         return this.m_uid;
     }
 
-    private static S_FLAG_BUSY: number = 1;
-    private static S_FLAG_FREE: number = 0;
+    private static s_FLAG_BUSY: number = 1;
+    private static s_FLAG_FREE: number = 0;
     private static m_unitFlagList: number[] = [];
     private static m_unitListLen: number = 0;
     private static m_unitList: Pos3D[] = [];
@@ -36,7 +36,7 @@ class Pos3DPool {
         return Pos3DPool.m_unitList[uid];
     }
     static IsEnabledByUid(uid: number): boolean {
-        return Pos3DPool.m_unitFlagList[uid] == Pos3DPool.S_FLAG_BUSY;
+        return Pos3DPool.m_unitFlagList[uid] == Pos3DPool.s_FLAG_BUSY;
     }
     static CreateList(total: number): Pos3D[] {
         
@@ -51,23 +51,23 @@ class Pos3DPool {
         let index: number = Pos3DPool.GetFreeId();
         if (index >= 0) {
             unit = Pos3DPool.m_unitList[index];
-            Pos3DPool.m_unitFlagList[index] = Pos3DPool.S_FLAG_BUSY;
+            Pos3DPool.m_unitFlagList[index] = Pos3DPool.s_FLAG_BUSY;
         }
         else {
             unit = new Pos3D();
             unit.uid = Pos3DPool.m_unitListLen;
             Pos3DPool.m_unitList.push(unit);
-            Pos3DPool.m_unitFlagList.push(Pos3DPool.S_FLAG_BUSY);
+            Pos3DPool.m_unitFlagList.push(Pos3DPool.s_FLAG_BUSY);
             Pos3DPool.m_unitListLen ++;
         }
         return unit;
     }
 
     static Restore(pos: Pos3D): void {
-        if (pos != null && pos.uid >= 0 && Pos3DPool.m_unitFlagList[pos.uid] == Pos3DPool.S_FLAG_BUSY) {
+        if (pos != null && pos.uid >= 0 && Pos3DPool.m_unitFlagList[pos.uid] == Pos3DPool.s_FLAG_BUSY) {
             let uid: number = pos.uid;
             Pos3DPool.m_freeIdList.push(uid);
-            Pos3DPool.m_unitFlagList[uid] = Pos3DPool.S_FLAG_FREE;
+            Pos3DPool.m_unitFlagList[uid] = Pos3DPool.s_FLAG_FREE;
         }
     }
     static RestoreList(list: Pos3D[]): void {
@@ -76,9 +76,9 @@ class Pos3DPool {
         for(let i: number = 0; i < list.length; ++i) {
             pos = list[i];
             uid = pos.uid;
-            if (Pos3DPool.m_unitFlagList[uid] == Pos3DPool.S_FLAG_BUSY) {
+            if (Pos3DPool.m_unitFlagList[uid] == Pos3DPool.s_FLAG_BUSY) {
                 Pos3DPool.m_freeIdList.push(uid);
-                Pos3DPool.m_unitFlagList[uid] = Pos3DPool.S_FLAG_FREE;
+                Pos3DPool.m_unitFlagList[uid] = Pos3DPool.s_FLAG_FREE;
             }
         }
     }
@@ -91,9 +91,9 @@ class Pos3DPool {
             for(let i: number = 0; i < list.length; ++i) {
                 pos = list[i];
                 uid = pos.uid;
-                if (Pos3DPool.m_unitFlagList[uid] == Pos3DPool.S_FLAG_BUSY) {
+                if (Pos3DPool.m_unitFlagList[uid] == Pos3DPool.s_FLAG_BUSY) {
                     Pos3DPool.m_freeIdList.push(uid);
-                    Pos3DPool.m_unitFlagList[uid] = Pos3DPool.S_FLAG_FREE;
+                    Pos3DPool.m_unitFlagList[uid] = Pos3DPool.s_FLAG_FREE;
                 }
             }
         }

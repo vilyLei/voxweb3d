@@ -6,37 +6,8 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 </head>
-<script src="../build/VoxApp.package.js"></script>
-
 <body>
-	<script type="module">
-		
-		let voxAppIns = new VoxApp.VoxAppInstance();
-		
-		function initScene() {
-			
-			let axis = new VoxApp.Axis3DEntity();
-			axis.initialize(30);
-			axis.setXYZ(300, 0.0,0.0);
-			voxAppIns.addEntity(axis);
-			
-			let box = new VoxApp.Box3DEntity();
-			box.initializeCube(100.0, [voxAppIns.getImageTexByUrl("../../static/assets/default.jpg")]);
-			voxAppIns.addEntity(box);
-		}
-		function main() {
-			voxAppIns.initialize();
-			initScene();
-			function mainLoop(now) {
-				voxAppIns.run();
-				window.requestAnimationFrame(mainLoop);
-			}
-			window.requestAnimationFrame(mainLoop);
-		}
-		main();
-
-	</script>
-
+	<script type="text/javascript" src="../build/VoxAppLoader.package.js"></script>
+	<script type="module"></script>
 </body>
-
 </html>

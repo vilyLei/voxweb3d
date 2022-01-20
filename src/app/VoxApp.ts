@@ -17,7 +17,7 @@ import RendererState from "../vox/render/RendererState";
 class VoxAppInstance {
 
     private m_rscene: RendererScene = null;
-    //private m_engine: EngineBase = null;
+    private m_engine: EngineBase = null;
     private m_statusDisp: RenderStatusDisplay = null;
     private m_timeoutId: any = -1;
     private m_timeerDelay: number = 50;
@@ -41,10 +41,9 @@ class VoxAppInstance {
     getRendererScene(): RendererScene {
         return this.m_rscene;
     }
-    // getEngine(): EngineBase {
-    //     //return this.m_engine;
-    //     return null;
-    // }
+    getEngine(): EngineBase {
+        return this.m_engine;
+    }
     initialize(rparam: RendererParam = null, timeerDelay: number = 50, renderStatus: boolean = true): void {
         console.log("this::initialize()......");
         if (this.m_rscene == null) {
@@ -62,13 +61,14 @@ class VoxAppInstance {
             rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
             rparam.setCamProject(45.0, 30.0, 9000.0);
             rparam.setCamPosition(1800.0, 1800.0, 1800.0);
-            this.m_rscene = new RendererScene();
-            this.m_rscene.initialize(rparam, 7);
 
-            // this.m_engine = new EngineBase();
-            // this.m_engine.initialize(rparam, 7);
-            // this.m_engine.setProcessIdListAt(0, [0,1,2,4,5,6]);
-            // this.m_rscene = this.m_engine.rscene;
+            // this.m_rscene = new RendererScene();
+            // this.m_rscene.initialize(rparam, 7);
+
+            this.m_engine = new EngineBase();
+            this.m_engine.initialize(rparam, 7);
+            this.m_engine.setProcessIdListAt(0, [0,1,2,4,5,6]);
+            this.m_rscene = this.m_engine.rscene;
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
             if(renderStatus) {
@@ -88,16 +88,16 @@ class VoxAppInstance {
         if(this.m_statusDisp != null) this.m_statusDisp.update(true);
     }
     run(): void {
-        // if (this.m_engine != null) {
-        //     if(this.m_statusDisp != null) this.m_statusDisp.update(false);
-        //     this.m_engine.run();
-        // }
-        if(this.m_rscene != null) {
-            this.m_rscene.run();
+        if (this.m_engine != null) {
+            if(this.m_statusDisp != null) this.m_statusDisp.update(false);
+            this.m_engine.run();
         }
+        // if(this.m_rscene != null) {
+        //     this.m_rscene.run();
+        // }
     }
 }
 
 // export default VoxAppInstance;
-// export {RendererDevice, VoxAppInstance, Vector3D, Axis3DEntity, Box3DEntity, Sphere3DEntity, RendererState, RendererParam, RendererScene};
-export {RendererDevice, VoxAppInstance, Vector3D, RendererState, RendererParam, RendererScene};
+export {RendererDevice, VoxAppInstance, Vector3D, Axis3DEntity, Box3DEntity, Sphere3DEntity, RendererState, RendererParam, RendererScene};
+// export {RendererDevice, VoxAppInstance, Vector3D, RendererState, RendererParam, RendererScene};

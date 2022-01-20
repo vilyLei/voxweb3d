@@ -43,8 +43,8 @@ class ThreadSendData implements IThreadSendData {
     reset(): void {
     }
 
-    private static S_FLAG_BUSY: number = 1;
-    private static S_FLAG_FREE: number = 0;
+    private static s_FLAG_BUSY: number = 1;
+    private static s_FLAG_FREE: number = 0;
     private static m_unitFlagList: number[] = [];
     private static m_unitListLen: number = 0;
     private static m_unitList: ThreadSendData[] = [];
@@ -63,12 +63,12 @@ class ThreadSendData implements IThreadSendData {
         if (index >= 0) {
             sd = ThreadSendData.m_unitList[index];
             sd.dataIndex = index;
-            ThreadSendData.m_unitFlagList[index] = ThreadSendData.S_FLAG_BUSY;
+            ThreadSendData.m_unitFlagList[index] = ThreadSendData.s_FLAG_BUSY;
         }
         else {
             sd = new ThreadSendData();
             ThreadSendData.m_unitList.push(sd);
-            ThreadSendData.m_unitFlagList.push(ThreadSendData.S_FLAG_BUSY);
+            ThreadSendData.m_unitFlagList.push(ThreadSendData.s_FLAG_BUSY);
             sd.dataIndex = ThreadSendData.m_unitListLen;
             ThreadSendData.m_unitListLen++;
         }
@@ -88,18 +88,18 @@ class ThreadSendData implements IThreadSendData {
 
         if(ThreadSendData.Contains(psd)) {
             let uid: number = psd.dataIndex;
-            if (ThreadSendData.m_unitFlagList[uid] == ThreadSendData.S_FLAG_BUSY) {
+            if (ThreadSendData.m_unitFlagList[uid] == ThreadSendData.s_FLAG_BUSY) {
                 ThreadSendData.m_freeIdList.push(uid);
-                ThreadSendData.m_unitFlagList[uid] = ThreadSendData.S_FLAG_FREE;
+                ThreadSendData.m_unitFlagList[uid] = ThreadSendData.s_FLAG_FREE;
                 psd.sendStatus = -1;
                 psd.reset();
             }
         }
     }
     static RestoreByUid(uid: number): void {
-        if (uid >= 0 && ThreadSendData.m_unitFlagList[uid] == ThreadSendData.S_FLAG_BUSY) {
+        if (uid >= 0 && ThreadSendData.m_unitFlagList[uid] == ThreadSendData.s_FLAG_BUSY) {
             ThreadSendData.m_freeIdList.push(uid);
-            ThreadSendData.m_unitFlagList[uid] = ThreadSendData.S_FLAG_FREE;
+            ThreadSendData.m_unitFlagList[uid] = ThreadSendData.s_FLAG_FREE;
             ThreadSendData.m_unitList[uid].reset();
         }
     }

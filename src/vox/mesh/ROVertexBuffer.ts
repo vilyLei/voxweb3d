@@ -151,8 +151,8 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
     toString(): string {
         return "ROVertexBuffer(uid = " + this.m_uid + ")";
     }
-    private static S_FLAG_BUSY: number = 1;
-    private static S_FLAG_FREE: number = 0;
+    private static s_FLAG_BUSY: number = 1;
+    private static s_FLAG_FREE: number = 0;
     private static s_unitFlagList: number[] = [];
     private static s_unitListLen: number = 0;
     private static s_unitList: ROVertexBuffer[] = [];
@@ -173,12 +173,12 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
         if (index >= 0) {
             unit = ROVertexBuffer.s_unitList[index];
             unit.setBufDataUsage(bufDataUsage);
-            ROVertexBuffer.s_unitFlagList[index] = ROVertexBuffer.S_FLAG_BUSY;
+            ROVertexBuffer.s_unitFlagList[index] = ROVertexBuffer.s_FLAG_BUSY;
         }
         else {
             unit = new ROVertexBuffer(bufDataUsage);
             ROVertexBuffer.s_unitList.push(unit);
-            ROVertexBuffer.s_unitFlagList.push(ROVertexBuffer.S_FLAG_BUSY);
+            ROVertexBuffer.s_unitFlagList.push(ROVertexBuffer.s_FLAG_BUSY);
             ROVertexBuffer.s_unitListLen++;
         }
         unit.vertexVer = 0;
@@ -189,11 +189,11 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
         return unit;
     }
     private static __$Restore(pobj: ROVertexBuffer): void {
-        if (pobj != null && ROVertexBuffer.s_unitFlagList[pobj.getUid()] == ROVertexBuffer.S_FLAG_BUSY) {
+        if (pobj != null && ROVertexBuffer.s_unitFlagList[pobj.getUid()] == ROVertexBuffer.s_FLAG_BUSY) {
             //console.log("ROVertexBuffer::__$Restore, pobj: "+pobj);
             let uid: number = pobj.getUid();
             ROVertexBuffer.s_freeIdList.push(uid);
-            ROVertexBuffer.s_unitFlagList[uid] = ROVertexBuffer.S_FLAG_FREE;
+            ROVertexBuffer.s_unitFlagList[uid] = ROVertexBuffer.s_FLAG_FREE;
             pobj.__$destroy();
         }
     }

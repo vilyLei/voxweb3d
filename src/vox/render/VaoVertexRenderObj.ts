@@ -52,8 +52,8 @@ export default class VaoVertexRenderObj extends VROBase {
     toString(): string {
         return "VaoVertexRenderObj(uid = " + this.m_uid + ", type=" + this.m_mid + ")";
     }
-    private static S_FLAG_BUSY: number = 1;
-    private static S_FLAG_FREE: number = 0;
+    private static s_FLAG_BUSY: number = 1;
+    private static s_FLAG_FREE: number = 0;
     private static s_unitFlagList: number[] = [];
     private static s_unitListLen: number = 0;
     private static s_unitList: VaoVertexRenderObj[] = [];
@@ -75,14 +75,14 @@ export default class VaoVertexRenderObj extends VROBase {
         let index: number = VaoVertexRenderObj.GetFreeId();
         if (index >= 0) {
             unit = VaoVertexRenderObj.s_unitList[index];
-            VaoVertexRenderObj.s_unitFlagList[index] = VaoVertexRenderObj.S_FLAG_BUSY;
+            VaoVertexRenderObj.s_unitFlagList[index] = VaoVertexRenderObj.s_FLAG_BUSY;
             unit.setMidAndBufUid(mid, pvtxUid);
         }
         else {
             unit = new VaoVertexRenderObj();
             unit.setMidAndBufUid(mid, pvtxUid);
             VaoVertexRenderObj.s_unitList.push(unit);
-            VaoVertexRenderObj.s_unitFlagList.push(VaoVertexRenderObj.S_FLAG_BUSY);
+            VaoVertexRenderObj.s_unitFlagList.push(VaoVertexRenderObj.s_FLAG_BUSY);
             VaoVertexRenderObj.s_unitListLen++;
         }
         unit.setRC(rc);
@@ -92,10 +92,10 @@ export default class VaoVertexRenderObj extends VROBase {
 
     private static Restore(pobj: VaoVertexRenderObj): void {
         //console.log("VaoVRO Restore XXXX ("+pobj.getUid()+")pobj.m_attachCount: ",pobj.m_attachCount);
-        if (pobj != null && pobj.m_attachCount < 1 && VaoVertexRenderObj.s_unitFlagList[pobj.getUid()] == VaoVertexRenderObj.S_FLAG_BUSY) {
+        if (pobj != null && pobj.m_attachCount < 1 && VaoVertexRenderObj.s_unitFlagList[pobj.getUid()] == VaoVertexRenderObj.s_FLAG_BUSY) {
             let uid: number = pobj.getUid();
             VaoVertexRenderObj.s_freeIdList.push(uid);
-            VaoVertexRenderObj.s_unitFlagList[uid] = VaoVertexRenderObj.S_FLAG_FREE;
+            VaoVertexRenderObj.s_unitFlagList[uid] = VaoVertexRenderObj.s_FLAG_FREE;
             pobj.__$destroy();
         }
     }

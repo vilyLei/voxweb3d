@@ -283,8 +283,8 @@ export default class ROTransform {
         return "[ROTransform(uid = " + this.m_uid + ")]";
     }
 
-    private static S_FLAG_BUSY: number = 1;
-    private static S_FLAG_FREE: number = 0;
+    private static s_FLAG_BUSY: number = 1;
+    private static s_FLAG_FREE: number = 0;
     private static m_unitFlagList: number[] = [];
     private static m_unitListLen: number = 0;
     private static m_unitList: ROTransform[] = [];
@@ -300,12 +300,12 @@ export default class ROTransform {
         let index: number = ROTransform.GetFreeId();
         if (index >= 0) {
             unit = ROTransform.m_unitList[index];
-            ROTransform.m_unitFlagList[index] = ROTransform.S_FLAG_BUSY;
+            ROTransform.m_unitFlagList[index] = ROTransform.s_FLAG_BUSY;
         }
         else {
             unit = new ROTransform();
             ROTransform.m_unitList.push(unit);
-            ROTransform.m_unitFlagList.push(ROTransform.S_FLAG_BUSY);
+            ROTransform.m_unitFlagList.push(ROTransform.s_FLAG_BUSY);
             ROTransform.m_unitListLen++;
         }
         if (matrix == null) {
@@ -320,10 +320,10 @@ export default class ROTransform {
     }
 
     static Restore(pt: ROTransform): void {
-        if (pt != null && ROTransform.m_unitFlagList[pt.getUid()] == ROTransform.S_FLAG_BUSY) {
+        if (pt != null && ROTransform.m_unitFlagList[pt.getUid()] == ROTransform.s_FLAG_BUSY) {
             let uid: number = pt.getUid();
             ROTransform.m_freeIdList.push(uid);
-            ROTransform.m_unitFlagList[uid] = ROTransform.S_FLAG_FREE;
+            ROTransform.m_unitFlagList[uid] = ROTransform.s_FLAG_FREE;
             pt.destroy();
         }
     }

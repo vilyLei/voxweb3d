@@ -1,10 +1,11 @@
 
 // import {Home as Demo} from "./app/Home";
-// document.title = "Vox APP";
-// let loader: Demo = new Demo();
-// loader.initialize();
+// document.title = "Rendering & Art";
+// let home: Demo = new Demo();
+// home.initialize();
 
-import {Home as Demo} from "./app/Home";
+
+import {AppLoader as Demo} from "./app/AppLoader";
 document.title = "Rendering & Art";
-let home: Demo = new Demo();
-home.initialize();
+let loader: Demo = new Demo();
+loader.initialize();

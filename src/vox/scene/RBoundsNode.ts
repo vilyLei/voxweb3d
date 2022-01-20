@@ -23,8 +23,8 @@ export default class RBoundsNode
         this.bounds = null;
     }
 
-    private static S_FLAG_BUSY:number = 1;
-    private static S_FLAG_FREE:number = 0;
+    private static s_FLAG_BUSY:number = 1;
+    private static s_FLAG_FREE:number = 0;
 
     private static m_nodeListLen:number = 0;
     private static m_nodeList:RBoundsNode[] = [];
@@ -57,7 +57,7 @@ export default class RBoundsNode
         {
             node = RBoundsNode.m_nodeList[index];
             node.uid = index;
-            RBoundsNode.m_nodeFlagList[index] = RBoundsNode.S_FLAG_BUSY;
+            RBoundsNode.m_nodeFlagList[index] = RBoundsNode.s_FLAG_BUSY;
         }
         else
         {
@@ -65,7 +65,7 @@ export default class RBoundsNode
             node = new RBoundsNode();
             RBoundsNode.m_nodeList.push( node );
             //RBoundsNode.m_camVisiList.push(0);
-            RBoundsNode.m_nodeFlagList.push(RBoundsNode.S_FLAG_BUSY);
+            RBoundsNode.m_nodeFlagList.push(RBoundsNode.s_FLAG_BUSY);
             node.uid = RBoundsNode.m_nodeListLen;
             RBoundsNode.m_nodeListLen++;
         }
@@ -73,10 +73,10 @@ export default class RBoundsNode
     }
     static Restore(pnode:RBoundsNode):void
     {
-        if(pnode != null && pnode.uid >= 0 && RBoundsNode.m_nodeFlagList[pnode.uid] == RBoundsNode.S_FLAG_BUSY)
+        if(pnode != null && pnode.uid >= 0 && RBoundsNode.m_nodeFlagList[pnode.uid] == RBoundsNode.s_FLAG_BUSY)
         {
             RBoundsNode.m_freeIdList.push(pnode.uid);
-            RBoundsNode.m_nodeFlagList[pnode.uid] = RBoundsNode.S_FLAG_FREE;
+            RBoundsNode.m_nodeFlagList[pnode.uid] = RBoundsNode.s_FLAG_FREE;
             pnode.reset();
         }
     }

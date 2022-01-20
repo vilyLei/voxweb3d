@@ -12,11 +12,8 @@ import TextureProxy from "../vox/texture/TextureProxy";
 import PBRMaterial from "./material/PBRMaterial";
 import PBRShaderDecorator from "./material/PBRShaderDecorator";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
-import Axis3DEntity from "../vox/entity/Axis3DEntity";
 
 import DisplayEntity from "../vox/entity/DisplayEntity";
-
-import Plane3DEntity from "../vox/entity/Plane3DEntity";
 
 import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";

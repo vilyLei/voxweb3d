@@ -73,8 +73,8 @@ class MatCalcSendData implements IThreadSendData {
         this.sendStatus = -1;
     }
 
-    private static S_FLAG_BUSY: number = 1;
-    private static S_FLAG_FREE: number = 0;
+    private static s_FLAG_BUSY: number = 1;
+    private static s_FLAG_FREE: number = 0;
     private static m_unitFlagList: number[] = [];
     private static m_unitListLen: number = 0;
     private static m_unitList: MatCalcSendData[] = [];
@@ -93,12 +93,12 @@ class MatCalcSendData implements IThreadSendData {
         if (index >= 0) {
             sd = MatCalcSendData.m_unitList[index];
             sd.dataIndex = index;
-            MatCalcSendData.m_unitFlagList[index] = MatCalcSendData.S_FLAG_BUSY;
+            MatCalcSendData.m_unitFlagList[index] = MatCalcSendData.s_FLAG_BUSY;
         }
         else {
             sd = new MatCalcSendData();
             MatCalcSendData.m_unitList.push(sd);
-            MatCalcSendData.m_unitFlagList.push(MatCalcSendData.S_FLAG_BUSY);
+            MatCalcSendData.m_unitFlagList.push(MatCalcSendData.s_FLAG_BUSY);
             sd.dataIndex = MatCalcSendData.m_unitListLen;
             MatCalcSendData.m_unitListLen++;
         }
@@ -106,17 +106,17 @@ class MatCalcSendData implements IThreadSendData {
     }
 
     static Restore(psd: MatCalcSendData): void {
-        if (psd != null && MatCalcSendData.m_unitFlagList[psd.dataIndex] == MatCalcSendData.S_FLAG_BUSY) {
+        if (psd != null && MatCalcSendData.m_unitFlagList[psd.dataIndex] == MatCalcSendData.s_FLAG_BUSY) {
             let uid: number = psd.dataIndex;
             MatCalcSendData.m_freeIdList.push(uid);
-            MatCalcSendData.m_unitFlagList[uid] = MatCalcSendData.S_FLAG_FREE;
+            MatCalcSendData.m_unitFlagList[uid] = MatCalcSendData.s_FLAG_FREE;
             psd.reset();
         }
     }
     static RestoreByUid(uid: number): void {
-        if (uid >= 0 && MatCalcSendData.m_unitFlagList[uid] == MatCalcSendData.S_FLAG_BUSY) {
+        if (uid >= 0 && MatCalcSendData.m_unitFlagList[uid] == MatCalcSendData.s_FLAG_BUSY) {
             MatCalcSendData.m_freeIdList.push(uid);
-            MatCalcSendData.m_unitFlagList[uid] = MatCalcSendData.S_FLAG_FREE;
+            MatCalcSendData.m_unitFlagList[uid] = MatCalcSendData.s_FLAG_FREE;
             MatCalcSendData.m_unitList[uid].reset();
         }
     }

@@ -67,8 +67,8 @@ export default class VertexRenderObj extends VROBase {
         return "VertexRenderObj(uid = " + this.m_uid + ", type=" + this.m_mid + ")";
     }
 
-    private static S_FLAG_BUSY: number = 1;
-    private static S_FLAG_FREE: number = 0;
+    private static s_FLAG_BUSY: number = 1;
+    private static s_FLAG_FREE: number = 0;
     private static s_unitFlagList: number[] = [];
     private static s_unitListLen: number = 0;
     private static s_unitList: VertexRenderObj[] = [];
@@ -92,14 +92,14 @@ export default class VertexRenderObj extends VROBase {
         //console.log("VertexRenderObj::Create(), VertexRenderObj.s_unitList.length: "+VertexRenderObj.s_unitList.length);
         if (index >= 0) {
             unit = VertexRenderObj.s_unitList[index];
-            VertexRenderObj.s_unitFlagList[index] = VertexRenderObj.S_FLAG_BUSY;
+            VertexRenderObj.s_unitFlagList[index] = VertexRenderObj.s_FLAG_BUSY;
             unit.setMidAndBufUid(mid, pvtxUid);
         }
         else {
             unit = new VertexRenderObj();
             unit.setMidAndBufUid(mid, pvtxUid);
             VertexRenderObj.s_unitList.push(unit);
-            VertexRenderObj.s_unitFlagList.push(VertexRenderObj.S_FLAG_BUSY);
+            VertexRenderObj.s_unitFlagList.push(VertexRenderObj.s_FLAG_BUSY);
             VertexRenderObj.s_unitListLen++;
         }
         unit.setRC(rc);
@@ -108,10 +108,10 @@ export default class VertexRenderObj extends VROBase {
     }
 
     private static Restore(pobj: VertexRenderObj): void {
-        if (pobj != null && pobj.m_attachCount < 1 && VertexRenderObj.s_unitFlagList[pobj.getUid()] == VertexRenderObj.S_FLAG_BUSY) {
+        if (pobj != null && pobj.m_attachCount < 1 && VertexRenderObj.s_unitFlagList[pobj.getUid()] == VertexRenderObj.s_FLAG_BUSY) {
             let uid: number = pobj.getUid();
             VertexRenderObj.s_freeIdList.push(uid);
-            VertexRenderObj.s_unitFlagList[uid] = VertexRenderObj.S_FLAG_FREE;
+            VertexRenderObj.s_unitFlagList[uid] = VertexRenderObj.s_FLAG_FREE;
             pobj.__$destroy();
         }
     }

@@ -25,6 +25,7 @@ import CameraTrack from "../vox/view/CameraTrack";
 import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
 import CameraBase from "../vox/view/CameraBase";
 import {EntityDispQueue} from "./base/EntityDispQueue";
+import { ShaderProgramBuilder } from "../vox/material/ShaderProgramBuilder";
 
 export class DemoPrimitive {
     constructor() { }
@@ -61,21 +62,21 @@ export class DemoPrimitive {
             rparam.setCamProject(45.0, 1.0, 3000.0);
             rparam.setCamPosition(1500.0, 1500.0, 1500.0);
             this.m_renderer = new RendererInstance();
-            this.m_renderer.initialize(rparam, new CameraBase());
+            this.m_renderer.initialize(rparam, new CameraBase(), new ShaderProgramBuilder(this.m_renderer.getRCUid()));
             this.m_renderer.appendProcess();
             this.m_renderer.appendProcess();
 
             this.m_rcontext = this.m_renderer.getRendererContext();
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
-
+            
             this.m_texBlock = new TextureBlock();
             this.m_texBlock.setRenderer(this.m_renderer.getRenderProxy());
             this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
 
             if (this.m_statusDisp != null) this.m_statusDisp.initialize();
             let tex0: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-            let tex1: TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
+            let tex1: TextureProxy = this.getImageTexByUrl("static/assets/color_01.jpg");
             let tex2: TextureProxy = this.getImageTexByUrl("static/assets/guangyun_H_0007.png");
             let tex3: TextureProxy = this.getImageTexByUrl("static/assets/flare_core_02.jpg");
             let tex4: TextureProxy = this.getImageTexByUrl("static/assets/flare_core_01.jpg");
@@ -134,7 +135,7 @@ export class DemoPrimitive {
             this.m_renderer.addEntity(billLine, 1);
             //billLine.setFadeFactor(0.5);
             this.m_billLine = billLine;
-            return;
+            // return;
             //*/
             /*
             let lightLine:LightLine3DEntity = new LightLine3DEntity();

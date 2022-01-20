@@ -45,8 +45,8 @@ export default class Entity3DNode
         this.camVisi = 0;
     }
 
-    private static S_FLAG_BUSY:number = 1;
-    private static S_FLAG_FREE:number = 0;
+    private static s_FLAG_BUSY:number = 1;
+    private static s_FLAG_FREE:number = 0;
 
     private static m_nodeListLen:number = 0;
     private static m_nodeList:Entity3DNode[] = [];
@@ -87,14 +87,14 @@ export default class Entity3DNode
         {
             node = Entity3DNode.m_nodeList[index];
             node.uid = index;
-            Entity3DNode.m_nodeFlagList[index] = Entity3DNode.S_FLAG_BUSY;
+            Entity3DNode.m_nodeFlagList[index] = Entity3DNode.s_FLAG_BUSY;
         }
         else
         {
             // create a new nodeIndex
             node = new Entity3DNode();
             Entity3DNode.m_nodeList.push( node );
-            Entity3DNode.m_nodeFlagList.push(Entity3DNode.S_FLAG_BUSY);
+            Entity3DNode.m_nodeFlagList.push(Entity3DNode.s_FLAG_BUSY);
             node.uid = Entity3DNode.m_nodeListLen;
             Entity3DNode.m_nodeListLen++;
         }
@@ -102,10 +102,10 @@ export default class Entity3DNode
     }
     static Restore(pnode:Entity3DNode):void
     {
-        if(pnode != null && pnode.uid >= 0 && Entity3DNode.m_nodeFlagList[pnode.uid] == Entity3DNode.S_FLAG_BUSY)
+        if(pnode != null && pnode.uid >= 0 && Entity3DNode.m_nodeFlagList[pnode.uid] == Entity3DNode.s_FLAG_BUSY)
         {
             Entity3DNode.m_freeIdList.push(pnode.uid);
-            Entity3DNode.m_nodeFlagList[pnode.uid] = Entity3DNode.S_FLAG_FREE;
+            Entity3DNode.m_nodeFlagList[pnode.uid] = Entity3DNode.s_FLAG_FREE;
             pnode.reset();
         }
     }
