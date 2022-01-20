@@ -183,7 +183,7 @@
 
 //  import {DemoGLState as Demo} from "./demo/DemoGLState";
 
-//  import {DemoStencil as Demo} from "./demo/DemoStencil";
+ import {DemoStencil as Demo} from "./demo/DemoStencil";
 
 //  import {DemoBlendMode as Demo} from "./demo/DemoBlendMode";
 
@@ -325,7 +325,7 @@
 //  The reflection in water
 //  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
- import {DemoOutline as Demo} from "./demo/DemoOutline";
+//  import {DemoOutline as Demo} from "./demo/DemoOutline";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////

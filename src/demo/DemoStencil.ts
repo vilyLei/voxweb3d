@@ -126,6 +126,7 @@ export class DemoStencil {
     }
     run01(): void {
 
+        let stencil = this.m_rscene.getRenderProxy().stencil;
         this.m_statusDisp.update(false);
         
         this.m_stageDragSwinger.runWithYAxis();
@@ -135,7 +136,7 @@ export class DemoStencil {
         }
         this.m_rscene.runBegin();
         
-        RendererState.SetStencilMask(0x0);
+        stencil.setStencilMask(0x0);
         //this.m_entity.setVisible(false);
 
 
@@ -143,15 +144,16 @@ export class DemoStencil {
         //this.m_rscene.runAt(0);
         //this.m_rscene.runAt(1);
         
-        RendererState.SetStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);        
-        RendererState.SetStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF); 
-        RendererState.SetStencilMask(0xFF);
+
+        stencil.setStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
+        stencil.setStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF); 
+        stencil.setStencilMask(0xFF);
 
         this.m_entity.setVisible( true );
         this.m_rscene.drawEntity(this.m_entity);
 
-        RendererState.SetStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF); 
-        RendererState.SetStencilMask(0x0);
+        stencil.setStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF);
+        stencil.setStencilMask(0x0);
         
 
         let scale:number = 1.1;
@@ -164,7 +166,8 @@ export class DemoStencil {
         this.m_entity.setScaleXYZ(scale,scale,scale);
         this.m_entity.update();
         this.m_material.setRGB3f(1.0,1.0,1.0);
-        RendererState.SetStencilMask(0xFF);
+        // stencil.setStencilMask(0xFF);
+        stencil.setStencilMask(0xFF);
 
         this.m_rscene.runEnd();
 
@@ -175,6 +178,7 @@ export class DemoStencil {
     
     run02(): void {
 
+        let stencil = this.m_rscene.getRenderProxy().stencil;
         this.m_statusDisp.update(false);
         
         this.m_stageDragSwinger.runWithYAxis();
@@ -183,15 +187,15 @@ export class DemoStencil {
         //this.m_rscene.run(true);
         this.m_rscene.runBegin();
         this.m_rscene.update();
-        RendererState.SetStencilMask(0x00);
+        stencil.setStencilMask(0x00);
         this.m_rscene.runAt(0);
         this.m_rscene.runAt(1);
         
         let scale:number = 1.0;
-        RendererState.SetStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
+        stencil.setStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
         
-        RendererState.SetStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF); 
-        RendererState.SetStencilMask(0xFF);
+        stencil.setStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF); 
+        stencil.setStencilMask(0xFF);
 
         this.m_material.setRGB3f(1.0,1.0,1.0);
         this.m_entity.setScaleXYZ(scale,scale,scale);
@@ -199,10 +203,10 @@ export class DemoStencil {
 
         this.m_rscene.runAt(2);
 
-        RendererState.SetStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF); 
-        RendererState.SetStencilMask(0x00);
+        stencil.setStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF); 
+        stencil.setStencilMask(0x00);
         
-        //RendererState.SetDepthTestEnable( false );
+        //stencil.setDepthTestEnable( false );
 
         scale = 1.02;
         this.m_entity.setScaleXYZ(scale,scale,scale);
@@ -210,11 +214,11 @@ export class DemoStencil {
         this.m_material.setRGB3f(20.0,0.0,0.0);
         this.m_rscene.runAt(2);
 
-        //RendererState.SetDepthTestEnable( true );
+        //stencil.setDepthTestEnable( true );
 
         this.m_rscene.runEnd();
 
-        RendererState.SetStencilMask(0xFF);
+        stencil.setStencilMask(0xFF);
         //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         this.m_profileInstance.run();
     }

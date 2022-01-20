@@ -34,6 +34,8 @@ import DivLog from "../../vox/utils/DivLog";
 import RendererState from "./RendererState";
 import {IRenderProxy} from "./IRenderProxy";
 import { IShaderUniformContext } from "../../vox/material/IShaderUniformContext";
+import { IStencil } from "../../vox/render/rendering/IStencil";
+import { Stencil } from "./rendering/Stencil";
 
 class RenderProxyParam {
 
@@ -65,8 +67,11 @@ class RenderProxy implements IRenderProxy{
 
     readonly MAX: number = 0;
     readonly MIN: number = 0;
+    /**
+     * WebGL GPU Context instance
+     */
     readonly RContext: any = null;
-    readonly RState: RODrawState = null;
+    readonly RDrawState: RODrawState = null;
 
     readonly Vertex: IRenderResource = null;
     readonly Texture: IRenderTexResource = null;
@@ -75,6 +80,7 @@ class RenderProxy implements IRenderProxy{
     readonly uniformContext: IShaderUniformContext = null;
 
     readonly adapter: IRenderAdapter = null;
+    readonly stencil: IStencil = null;
 
     private m_uid: number = 0;
     private m_camUBO: any = null;
@@ -371,8 +377,12 @@ class RenderProxy implements IRenderProxy{
         selfT.MaterialUpdater = proxyParam.materialUpdater;
         selfT.VtxBufUpdater = proxyParam.vtxBufUpdater;
         selfT.uniformContext = proxyParam.uniformContext;
+
+
         RendererState.Initialize();
         RendererState.Rstate.setRenderContext( this.m_adapterContext );
+        
+        selfT.stencil = new Stencil( RendererState.Rstate );
 
         this.buildCameraParam();
         

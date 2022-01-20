@@ -220,7 +220,7 @@ export class DemoOutline {
         //      return;
         //  }
         //  console.log("run begin...");
-
+        
         this.m_statusDisp.update(false);
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);

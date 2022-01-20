@@ -10,12 +10,13 @@ import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import RendererInstanceContext from "../../../vox/scene/RendererInstanceContext";
 import RendererScene from "../../../vox/scene/RendererScene";
 
-import RendererState from "../../../vox/render/RendererState";
+// import RendererState from "../../../vox/render/RendererState";
 import { GLStencilFunc, GLStencilOp } from "../../../vox/render/RenderConst";
 import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
 import DebugFlag from "../../../vox/debug/DebugFlag";
 import Color4 from "../../../vox/material/Color4";
 import Vector3D from "../../../vox/math/Vector3D";
+import { IStencil } from "../../../vox/render/rendering/IStencil";
 
 export default class StencilOutline {
     constructor() { }
@@ -28,9 +29,12 @@ export default class StencilOutline {
     private m_running: boolean = true;
     private m_scaleV: Vector3D = new Vector3D();
     private m_thickness: number = 10.0;
+    private m_stencil: IStencil;
     initialize(rscene: RendererScene): void {
 
         if (this.m_rscene == null) {
+            
+            this.m_stencil = this.m_rscene.getRenderProxy().stencil;
             this.m_rscene = rscene;
             this.m_rctx = rscene.getRendererContext();
             this.m_material = new Default3DMaterial();
@@ -62,7 +66,7 @@ export default class StencilOutline {
         if (this.m_running && this.m_target != null && this.m_target.isRenderEnabled()) {
 
             // draw outline line begin
-            RendererState.SetStencilMask(0x0);
+            this.m_stencil.setStencilMask(0x0);
             this.m_target.setVisible(false);
         }
     }
@@ -74,13 +78,13 @@ export default class StencilOutline {
         let entity: DisplayEntity = this.m_target;
         if (this.m_running && entity != null && entity.isRenderEnabled()) {
 
-            RendererState.SetStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
-            RendererState.SetStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF);
-            RendererState.SetStencilMask(0xFF);
+            this.m_stencil.setStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
+            this.m_stencil.setStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF);
+            this.m_stencil.setStencilMask(0xFF);
             entity.setVisible(true);
             this.m_rscene.drawEntity(entity);
-            RendererState.SetStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF);
-            RendererState.SetStencilMask(0x0);
+            this.m_stencil.setStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF);
+            this.m_stencil.setStencilMask(0x0);
 
             entity.getScaleXYZ( this.m_scaleV );
             
@@ -97,8 +101,8 @@ export default class StencilOutline {
             entity.setScaleXYZ(this.m_scaleV.x, this.m_scaleV.y, this.m_scaleV.z);
             entity.update();
             
-            RendererState.SetStencilFunc(GLStencilFunc.ALWAYS, 1, 0x0);
-            RendererState.SetStencilMask(0xFF);
+            this.m_stencil.setStencilFunc(GLStencilFunc.ALWAYS, 1, 0x0);
+            this.m_stencil.setStencilMask(0xFF);
 
             // draw outline line end
             this.m_rctx.unlockMaterial();
