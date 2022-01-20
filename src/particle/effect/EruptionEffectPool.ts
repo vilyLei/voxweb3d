@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import Vector3D from "../../vox/math/Vector3D";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import EruptionEffect from "../../particle/effect/EruptionEffect";
 import ParticleEffectPool from "../../particle/effect/ParticleEffectPool";
 import IRenderer from "../../vox/scene/IRenderer";
@@ -16,8 +16,8 @@ import Color4 from "../../vox/material/Color4";
 
 export default class EruptionEffectPool extends ParticleEffectPool {
     private m_efSrcList: EruptionEffect[] = [];
-    private m_flameTexture: TextureProxy = null;
-    private m_solidTexture: TextureProxy = null;
+    private m_flameTexture: IRenderTexture = null;
+    private m_solidTexture: IRenderTexture = null;
     private m_clipMixEnabled: boolean = false;
     
     materialPipeline: IMaterialPipeline = null;
@@ -32,7 +32,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
     solidColor: Color4 = new Color4();
     constructor() { super(); }
 
-    initialize(renderer: IRenderer, processIndex: number, flameTotal: number, solidTotal: number, flameTexture: TextureProxy, solidTexture: TextureProxy, clipMixEnabled: boolean = false): void {
+    initialize(renderer: IRenderer, processIndex: number, flameTotal: number, solidTotal: number, flameTexture: IRenderTexture, solidTexture: IRenderTexture, clipMixEnabled: boolean = false): void {
         if (this.m_renderer == null) {
             this.m_clipMixEnabled = clipMixEnabled;
             this.m_flameTexture = flameTexture;
@@ -66,7 +66,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
         efSrc.setDepthOffset( this.depthOffset );
         this.m_efSrcList.push(efSrc);
     }
-    appendEffect(flameTexture: TextureProxy, solidTexture: TextureProxy, srcIndex: number = -1): void {
+    appendEffect(flameTexture: IRenderTexture, solidTexture: IRenderTexture, srcIndex: number = -1): void {
         let eff: EruptionEffect = new EruptionEffect();
         eff.gravityFactor = this.gravityFactor;
         eff.solidRN = this.solidRN;
@@ -95,7 +95,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
     createEffect(pv: Vector3D): EruptionEffect {
         return this.createEffectWithTexture(pv, this.m_flameTexture, this.m_solidTexture);
     }
-    createEffectWithTexture(pv: Vector3D, flameTexture: TextureProxy, solidTexture: TextureProxy): EruptionEffect {
+    createEffectWithTexture(pv: Vector3D, flameTexture: IRenderTexture, solidTexture: IRenderTexture): EruptionEffect {
         let eff: EruptionEffect;
         if (this.m_freeEffList.length < 1) {
             if (flameTexture == null) flameTexture = this.m_flameTexture;

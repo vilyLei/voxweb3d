@@ -4,35 +4,15 @@ import MathConst from "../../vox/math/MathConst";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import { ShaderCodeConfigure, ShaderCodeType, IShaderLibConfigure, IShaderLibListener, ShaderLib } from "../shader/ShaderLib";
 import { ShaderCodeObject } from "../shader/ShaderCodeObject";
+import { MaterialContextParam } from "./MaterialContextParam";
 
-class RuntimeMaterialContextParam {
-
-    pointLightsTotal: number = 1;
-    directionLightsTotal: number = 1;
-    spotLightsTotal: number = 0;
-    vsmFboIndex: number = 0;
-    vsmEnabled: boolean = true;
-    loadAllShaderCode: boolean = false;
-    shaderCodeBinary: boolean = false;
-    shaderLibVersion: string = "";
-    shaderFileRename: boolean = false;
-
-    lambertMaterialEnabled: boolean = true;
-    pbrMaterialEnabled: boolean = true;
-    /**
-     * 生产 二进制 glsl代码文件
-     */
-    buildBinaryFile: boolean = false;
-
-    constructor() { }
-}
 /**
  * 实现 material 构造 pipeline 的上下文
  */
 class RuntimeMaterialContext {
 
     private m_initFlag: boolean = true;
-    private m_param: RuntimeMaterialContextParam;
+    private m_param: MaterialContextParam;
     protected m_rscene: IRendererScene = null;
     
     /**
@@ -55,7 +35,7 @@ class RuntimeMaterialContext {
     createShaderLibConfig(): IShaderLibConfigure {
         return { shaderCodeConfigures: [], version: "" };
     }
-    initialize(rscene: IRendererScene, param: RuntimeMaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
+    initialize(rscene: IRendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
 
         if (this.m_initFlag) {
 
@@ -64,7 +44,7 @@ class RuntimeMaterialContext {
             
             // let selfT: any = this;
             if (param == null) {
-                param = new RuntimeMaterialContextParam();
+                param = new MaterialContextParam();
             }
             this.m_param = param;
             if (param.shaderLibVersion != "") shaderLibConfigure.version = param.shaderLibVersion;
@@ -80,7 +60,6 @@ class RuntimeMaterialContext {
 
             let shdCtx = this.m_rscene.getRenderProxy().uniformContext;
             
-
             this.initEnd(param);
 
             if (!param.loadAllShaderCode) {
@@ -91,7 +70,7 @@ class RuntimeMaterialContext {
             }
         }
     }
-    protected initEnd(param: RuntimeMaterialContextParam): void {
+    protected initEnd(param: MaterialContextParam): void {
         
     }
 
@@ -104,17 +83,10 @@ class RuntimeMaterialContext {
         }
     }
     createPipeline(): IMaterialPipeline {
-        let pipeline: IMaterialPipeline = null;//new MaterialPipeline(RuntimeMaterialContext.ShaderLib);
-        // pipeline.addPipe(this.lightModule);
-        // pipeline.addPipe(this.envData);
-        // if (this.vsmModule != null) {
-        //     // pipeline.addPipe(this.vsmModule.getVSMData());
-        //     pipeline.addPipe(this.vsmModule);
-        // }
+        let pipeline: IMaterialPipeline = null;
         return pipeline;
     }
     run(): void {
-
         // if (this.vsmModule != null && this.m_param.vsmEnabled) {
         //     this.vsmModule.run();
         // }
@@ -123,4 +95,4 @@ class RuntimeMaterialContext {
         this.m_rscene = null;
     }
 }
-export { ShaderCodeUUID, IShaderLibConfigure, IShaderLibListener, ShaderCodeConfigure, ShaderCodeType, RuntimeMaterialContextParam, RuntimeMaterialContext };
+export { ShaderCodeUUID, IShaderLibConfigure, IShaderLibListener, ShaderCodeConfigure, ShaderCodeType, MaterialContextParam, RuntimeMaterialContext };

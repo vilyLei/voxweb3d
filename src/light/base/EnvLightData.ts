@@ -15,15 +15,14 @@ import { MaterialPipeBase } from "../../vox/material/pipeline/MaterialPipeBase";
 import { EnvShaderCode } from "../material/EnvShaderCode";
 import { GlobalEnvLightUniformParam } from "../../vox/material/GlobalUniformParam";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
-import TextureProxy from "../../vox/texture/TextureProxy";
 
 export default class EnvLightData extends MaterialPipeBase implements IMaterialPipe {
 
     private m_shaderCodeEnabled: boolean = true;
     private m_uniformCodeEnabled: boolean = true;
-    private m_ambientMap: TextureProxy = null;
+    private m_ambientMap: IRenderTexture = null;
     private m_data: Float32Array = null;
-    setEnvAmbientMap(tex: TextureProxy): void {
+    setEnvAmbientMap(tex: IRenderTexture): void {
         if (this.m_ambientMap != tex) {
             if (this.m_ambientMap != null) {
                 this.m_ambientMap.__$detachThis();

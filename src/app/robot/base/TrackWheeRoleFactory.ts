@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import TextureProxy from "../../../vox/texture/TextureProxy";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import RendererScene from "../../../vox/scene/RendererScene";
 import TrackWheelRole from "../../../app/robot/base/TrackWheelRole";
 import IRoleCamp from "../../../app/robot/IRoleCamp";
@@ -53,7 +53,7 @@ export default class TrackWheeRoleFactory {
             this.m_boxTrack.animator.setXYZ(0.0, 20.0, 0.0);
         }
     }
-    create(tex0: TextureProxy, tex1: TextureProxy, tex2: TextureProxy, campType: CampType, bodyWidth: number): TrackWheelRole {
+    create(tex0: IRenderTexture, tex1: IRenderTexture, tex2: IRenderTexture, campType: CampType, bodyWidth: number): TrackWheelRole {
 
         let twRole: TrackWheelRole = new TrackWheelRole();
         twRole.materialBuilder = this.m_materialBuilder;

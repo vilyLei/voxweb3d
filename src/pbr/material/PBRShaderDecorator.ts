@@ -15,7 +15,6 @@ export default class PBRShaderDecorator {
 
     private m_uniqueName: string = "PBRShd";
     
-    // codeBuilder: ShaderCodeBuilder = null;
     specularEnvMap: IRenderTexture = null;
     diffuseMap: IRenderTexture = null;
     normalMap: IRenderTexture = null;
@@ -70,7 +69,7 @@ export default class PBRShaderDecorator {
 
         if (this.specularEnvMapEnabled && this.specularEnvMap != null ) {
             texList.push( this.specularEnvMap );
-            uniform.addspecularEnvMap(true);
+            uniform.addSpecularEnvMap(true);
             // console.log("VOX_ENV_MAP");
         }
         if ( this.diffuseMapEnabled && this.diffuseMap != null ) {

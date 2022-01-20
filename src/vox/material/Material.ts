@@ -94,9 +94,13 @@ class Material extends MaterialBase implements IMaterial {
     }
     getDecorator(): IMaterialDecorator {
         return this.m_decorator;
-    }    
-    createSelfUniformData(): ShaderUniformData {        
-        return this.m_decorator.createUniformData();
+    }
+    createSelfUniformData(): ShaderUniformData {
+        let sud: ShaderUniformData = this.m_decorator.createUniformData();
+        if(this.vertUniform != null && sud != null) {
+            this.vertUniform.buildShaderUniformData(sud);
+        }
+        return sud;
     }
     destroy(): void {
         super.destroy();

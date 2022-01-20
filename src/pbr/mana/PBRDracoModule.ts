@@ -10,7 +10,6 @@ import Vector3D from "../../vox/math/Vector3D";
 import DracoMesh from "../../voxmesh/draco/DracoMesh";
 import { DracoModuleLoader, DracoWholeModuleLoader, DracoMultiPartsModuleLoader } from "../../voxmesh/draco/DracoModuleLoader";
 import { VertUniformComp } from "../../vox/material/component/VertUniformComp";
-import TextureProxy from "../../vox/texture/TextureProxy";
 
 
 export class PBRWholeDracoModule extends DracoWholeModuleLoader {
@@ -104,7 +103,7 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader {
             decorator.vtxFlatNormal = false;
             decorator.aoMapEnabled = this.aoMapEnabled;
             
-            let aoTex: TextureProxy = null;
+            let aoTex: IRenderTexture = null;
             if (material.decorator.aoMapEnabled) {
                 aoTex = this.entityUtils.getTextureByUrl("static/assets/modules/skirt/ao.jpg");
             }

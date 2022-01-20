@@ -8,33 +8,13 @@ import EnvLightData from "../../light/base/EnvLightData";
 import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
 import MathConst from "../../vox/math/MathConst";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { TextureConst } from "../../vox/texture/TextureConst";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import { ShaderCodeConfigure, ShaderCodeType, IShaderLibConfigure, IShaderLibListener, ShaderLib } from "../shader/ShaderLib";
 import { ShaderCodeObject } from "../shader/ShaderCodeObject";
+import { MaterialContextParam } from "./MaterialContextParam";
 
-class MaterialContextParam {
-
-    pointLightsTotal: number = 1;
-    directionLightsTotal: number = 1;
-    spotLightsTotal: number = 0;
-    vsmFboIndex: number = 0;
-    vsmEnabled: boolean = true;
-    loadAllShaderCode: boolean = false;
-    shaderCodeBinary: boolean = false;
-    shaderLibVersion: string = "";
-    shaderFileRename: boolean = false;
-
-    lambertMaterialEnabled: boolean = true;
-    pbrMaterialEnabled: boolean = true;
-    /**
-     * 生产 二进制 glsl代码文件
-     */
-    buildBinaryFile: boolean = false;
-
-    constructor() { }
-}
 /**
  * 实现 material 构造 pipeline 的上下文
  */
@@ -79,8 +59,8 @@ class MaterialContext {
     isTextureLoadedAll(): boolean {
         return this.m_texLoader.isLoadedAll();
     }
-    getTextureByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let tex: TextureProxy = null;
+    getTextureByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+        let tex: IRenderTexture = null;
         let suffix: string = purl.slice(purl.lastIndexOf(".") + 1);
         suffix = suffix.toLocaleLowerCase();
         switch (suffix) {

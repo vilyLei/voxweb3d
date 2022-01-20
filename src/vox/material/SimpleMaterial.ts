@@ -70,8 +70,7 @@ class SimpleMaterial extends MaterialBase implements ISimpleMaterial {
     }
     getCodeBuf(): ShaderCodeBuffer {
         return SimpleMaterial.s_shdBufins;
-    }
-    
+    }    
     setTextureList(texList: IRenderTexture[]): void {
         // throw Error("Illegal operations !!!");
         console.error("Illegal operations !!!");
@@ -82,8 +81,13 @@ class SimpleMaterial extends MaterialBase implements ISimpleMaterial {
     getDecorator(): ISimpleMaterialDecorator {
         return this.m_decorator;
     }    
-    createSelfUniformData(): ShaderUniformData {        
-        return this.m_decorator.createUniformData();
+    createSelfUniformData(): ShaderUniformData {
+
+        let sud: ShaderUniformData = this.m_decorator.createUniformData();
+        if(this.vertUniform != null && sud != null) {
+            this.vertUniform.buildShaderUniformData(sud);
+        }
+        return sud;
     }
     destroy(): void {
         super.destroy();

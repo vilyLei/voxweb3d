@@ -5,138 +5,129 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import IShaderCodeObject from "../../vox/material/IShaderCodeObject";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
-import MaterialBase from "../../vox/material/MaterialBase";
 import Vector3D from "../../vox/math/Vector3D";
 import MathConst from "../../vox/math/MathConst";
-import IPBRMaterial from "./IPBRMaterial";
-import PBRShaderDecorator from "./PBRShaderDecorator";
 import Color4 from "../../vox/material/Color4";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 //  import { PBRShaderCode } from "./glsl/PBRShaderCode";
+import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
-import { UniformComp } from "../../vox/material/component/UniformComp";
+import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
+import { ShaderTextureBuilder } from "../../vox/material/ShaderTextureBuilder";
 
-class PBRShaderBuffer extends ShaderCodeBuffer {
-    constructor() {
-        super();
-    }
-    private static s_instance: PBRShaderBuffer = new PBRShaderBuffer();
-    decorator: PBRShaderDecorator = null;
-    texturesTotal: number = 0;
+class PBRDecorator implements IMaterialDecorator {
 
-    vertUniform: UniformComp = null;
-    initialize(texEnabled: boolean): void {
-
-        texEnabled = this.texturesTotal > 0;
-        super.initialize( texEnabled );
-        this.adaptationShaderVersion = false;
-    }
-    buildShader(): void {
-        
-        if(this.vertUniform != null) {
-            this.vertUniform.use(this.m_coder);
-            //this.m_coder.addVertUniform("vec4", "u_vertLocalParams", this.vertUniform.getParamsTotal());
-        }
-        this.decorator.buildShader( this.m_coder );
-    }
-    getShaderCodeObjectUUID(): ShaderCodeUUID {
-        return ShaderCodeUUID.PBR;
-    }
-    getUniqueShaderName(): string {
-        if(this.vertUniform != null) {
-            return this.decorator.getUniqueShaderName() + this.vertUniform.getUniqueNSKeyString();
-        }
-        else {
-            return this.decorator.getUniqueShaderName();
-        }
-    }
-    toString(): string {
-        return "[PBRShaderBuffer()]";
-    }
-
-    static GetInstance(): PBRShaderBuffer {
-        return PBRShaderBuffer.s_instance;
-    }
-}
-
-export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
-
+    private m_uniqueName: string = "PBR";
     private m_envMapWidth: number = 128;
     private m_envMapHeight: number = 128;
-    
-    private m_pbrParams: Float32Array = new Float32Array([
-            0.0, 0.0, 1.0, 0.02,        // [metallic,roughness,ao, pixel noise intensity]
-            1.0,                        // tone map exposure
-            0.1,                        // reflectionIntensity
-            1.0,                        // frontColorScale
-            1.0,                        // sideColorScale
 
-            0.1, 0.1, 0.1,              // ambient factor x,y,z
-            1.0,                        // scatterIntensity
-            1.0, 1.0, 1.0,              // env map specular color factor x,y,z
-            0.07                        // envMap lod mipMapLv parameter((100.0 * fract(0.07)) - (100.0 * fract(0.07)) * k + floor(0.07))
-        ]);
+    private m_pbrParams: Float32Array = new Float32Array([
+        0.0, 0.0, 1.0, 0.02,        // [metallic,roughness,ao, pixel noise intensity]
+        1.0,                        // tone map exposure
+        0.1,                        // reflectionIntensity
+        1.0,                        // frontColorScale
+        1.0,                        // sideColorScale
+
+        0.1, 0.1, 0.1,              // ambient factor x,y,z
+        1.0,                        // scatterIntensity
+        1.0, 1.0, 1.0,              // env map specular color factor x,y,z
+        0.07                        // envMap lod mipMapLv parameter((100.0 * fract(0.07)) - (100.0 * fract(0.07)) * k + floor(0.07))
+    ]);
     private m_fragLocalParams: Float32Array = null;
     private m_parallaxParams: Float32Array = null;
     private m_mirrorParam: Float32Array = new Float32Array([
-            0.0, 0.0, -1.0           // mirror view nv(x,y,z)
-            , 1.0                   // mirror map lod level
+        0.0, 0.0, -1.0           // mirror view nv(x,y,z)
+        , 1.0                   // mirror map lod level
 
-            , 1.0, 0.3              // mirror scale, mirror mix scale
-            , 0.0, 0.0              // undefine, undefine
-        ]);
+        , 1.0, 0.3              // mirror scale, mirror mix scale
+        , 0.0, 0.0              // undefine, undefine
+    ]);
     ///////////////////////////////////////////////////////
 
-    decorator: PBRShaderDecorator = null;
-    vertUniform: UniformComp = null;
+    /**
+     * the  default  value is false
+     */
+    vertColorEnabled: boolean = false;
+    /**
+     * the  default  value is false
+     */
+    premultiplyAlpha: boolean = false;
+    /**
+     * the  default  value is false
+     */
+    shadowReceiveEnabled: boolean = false;
+    /**
+     * the  default  value is false
+     */
+    lightEnabled: boolean = true;
+    /**
+     * the  default  value is false
+     */
+    fogEnabled: boolean = false;
+    /**
+     * the  default  value is false
+     */
+    envAmbientLightEnabled: boolean = false;
+    /**
+     * the  default  value is false
+     */
+    brightnessOverlayEnabeld: boolean = false;
+    /**
+     * the default value is true
+     */
+    glossinessEnabeld: boolean = true;
+
+
+    specularEnvMap: IRenderTexture = null;
+    diffuseMap: IRenderTexture = null;
+    normalMap: IRenderTexture = null;
+    mirrorMap: IRenderTexture = null;
+    indirectEnvMap: IRenderTexture = null;
+    parallaxMap: IRenderTexture = null;
+    aoMap: IRenderTexture = null;
+    roughnessMap: IRenderTexture = null;
+    metalhnessMap: IRenderTexture = null;
+
+    /**
+     * add ao, roughness, metalness map uniform code
+     */
+    armMap: IRenderTexture = null;
+
+    // glossinessEnabeld: boolean = true;
+    woolEnabled: boolean = true;
+    toneMappingEnabled: boolean = true;
+    scatterEnabled: boolean = true;
+    specularBleedEnabled: boolean = true;
+    metallicCorrection: boolean = true;
+    gammaCorrection: boolean = true;
+    absorbEnabled: boolean = false;
+    normalNoiseEnabled: boolean = false;
+    pixelNormalNoiseEnabled: boolean = false;
+    mirrorMapLodEnabled: boolean = false;
+    normalMapEnabled: boolean = false;
+    hdrBrnEnabled: boolean = false;
+    vtxFlatNormal: boolean = false;
+
+    texturesTotal: number = 1;
+    fragLocalParamsTotal: number = 2;
+    parallaxParamIndex: number = 2;
+
     constructor() {
-        super();
-    }
-    
-    protected buildBuf(): void {
 
-        console.log("PBRMaterial::buildBuf()...");
-        let buf: PBRShaderBuffer = PBRShaderBuffer.GetInstance();
-        let decorator = this.decorator;
-        buf.lightEnabled = decorator.lightEnabled;
-        buf.shadowReceiveEnabled = decorator.shadowReceiveEnabled;
-        buf.fogEnabled = decorator.fogEnabled;
-        buf.glossinessEnabeld = decorator.glossinessEnabeld;
-        buf.buildPipelineParams();
-
-        buf.decorator = decorator;
-        buf.vertUniform = this.vertUniform;
-        //buf.decorator.codeBuilder = buf.getShaderCodeBuilder();
-        
-        if(this.m_fragLocalParams == null) {
-            this.initializeLocalData();
-        }
-        
-        let list = decorator.createTextureList( buf.getShaderCodeBuilder() );
-        if(this.vertUniform != null) this.vertUniform.getTextures(buf.getShaderCodeBuilder(), list);
-        buf.getTexturesFromPipeline( list );
-
-        super.setTextureList( list );
-        buf.texturesTotal = list.length;
     }
-    getCodeBuf(): ShaderCodeBuffer {
-        return PBRShaderBuffer.GetInstance();
-    }
-    initializeLocalData(): void {
-        if(this.vertUniform != null) {
-            this.vertUniform.initialize();
+
+    initialize(): void {
+
+        ///*
+        this.fragLocalParamsTotal = 2;
+        this.parallaxParamIndex = 2;
+        if (this.parallaxMap != null) {
+            this.fragLocalParamsTotal += 1;
         }
-        let decorator = this.decorator;
-        decorator.fragLocalParamsTotal = 2;
-        decorator.parallaxParamIndex = 2;
-        if(decorator.parallaxMap != null) {
-            decorator.fragLocalParamsTotal += 1;
-        }
-        this.m_fragLocalParams = new Float32Array(decorator.fragLocalParamsTotal * 4);
+        this.m_fragLocalParams = new Float32Array(this.fragLocalParamsTotal * 4);
         this.m_fragLocalParams.set(
             [
                 0.0, 0.0, 0.0, 1.0,      // f0.r,f0.g,f0.b, mormalMapIntentity(0.0,1.0)
@@ -144,50 +135,13 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
             ],
             0
         );
-        if(decorator.parallaxMap != null) {
-            this.m_parallaxParams = this.m_fragLocalParams.subarray(decorator.parallaxParamIndex * 4, (decorator.parallaxParamIndex + 1) * 4);
+        if (this.parallaxMap != null) {
+            this.m_parallaxParams = this.m_fragLocalParams.subarray(this.parallaxParamIndex * 4, (this.parallaxParamIndex + 1) * 4);
             this.m_parallaxParams.set([1.0, 10.0, 2.0, 0.1]);
         }
+        //*/
     }
-    copyFrom(src: PBRMaterial): void {
 
-        this.setMaterialPipeline(src.m_pipeLine);
-        if(this.decorator == null)this.decorator = new PBRShaderDecorator();
-        this.decorator.copyFrom( src.decorator );
-        // console.log("copyFrom src: ",src);
-        // console.log("copyFrom this: ",this);
-        
-        this.vertUniform = src.vertUniform;
-        if(this.m_pbrParams == null || this.m_pbrParams.length != src.m_pbrParams.length) {
-            this.m_pbrParams = src.m_pbrParams.slice();
-        }
-        else {
-            this.m_pbrParams.set(src.m_pbrParams);
-        }
-        if(this.m_fragLocalParams == null || this.m_fragLocalParams.length != src.m_fragLocalParams.length) {
-            this.m_fragLocalParams = src.m_fragLocalParams.slice();
-        }
-        else {
-            this.m_fragLocalParams.set(src.m_fragLocalParams);
-        }
-        
-        if(this.m_mirrorParam == null || this.m_mirrorParam.length != src.m_mirrorParam.length) {
-            this.m_mirrorParam = src.m_mirrorParam.slice();
-        }
-        else {
-            this.m_mirrorParam.set(src.m_mirrorParam);
-        }
-    }
-    setTextureList(texList: IRenderTexture[]): void {
-        //throw Error("Illegal operations !!!");
-    }
-    
-    clone(): PBRMaterial {
-
-        let m: PBRMaterial = new PBRMaterial();
-        m.copyFrom( this );
-        return m;
-    }
     seNormalMapIntensity(intensity: number): void {
         intensity = Math.min(Math.max(intensity, 0.0), 1.0);
         this.m_fragLocalParams[4] = intensity;
@@ -262,7 +216,6 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         this.m_pbrParams[6] = Math.min(Math.max(surfaceIntensity, 0.001), 32.0);
     }
     getSurfaceIntensity(): number {
-
         return this.m_pbrParams[6];
     }
     /**
@@ -284,7 +237,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         colorFactor.g = this.m_pbrParams[13];
         colorFactor.b = this.m_pbrParams[14];
     }
-    //ambient factor x,y,z
+    // ambient factor x,y,z
     setAmbientFactor(fr: number, fg: number, fb: number): void {
         this.m_pbrParams[8] = fr;
         this.m_pbrParams[9] = fg;
@@ -322,7 +275,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         this.m_fragLocalParams[2] = f0z;
     }
     getF0(colorFactor: Color4): void {
-        
+
         colorFactor.r = this.m_fragLocalParams[0];
         colorFactor.g = this.m_fragLocalParams[1];
         colorFactor.b = this.m_fragLocalParams[2];
@@ -333,12 +286,12 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         this.m_fragLocalParams[6] = pb;
     }
     getAlbedoColor(colorFactor: Color4): void {
-        
+
         colorFactor.r = this.m_fragLocalParams[4];
         colorFactor.g = this.m_fragLocalParams[5];
         colorFactor.b = this.m_fragLocalParams[6];
     }
-    
+
     /**
      * 设置顶点置换贴图参数
      * @param numLayersMin ray march 最小层数, default value is 1.0
@@ -354,22 +307,88 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
             this.m_parallaxParams[3] = stepFactor;
         }
     }
-    createSelfUniformData(): ShaderUniformData {
-        
+
+    buildBufParams(): void {
+    }
+    /**
+     * user build textures list
+     */
+    buildTextureList(builder: ShaderTextureBuilder): void {
+
+        builder.addSpecularEnvMap(this.specularEnvMap, true);
+        builder.addDiffuseMap(this.diffuseMap);
+        builder.addNormalMap(this.normalMap);
+        builder.addParallaxMap(this.parallaxMap, this.parallaxParamIndex);
+
+        builder.addAOMap( this.aoMap );
+        builder.addRoughnessMap( this.roughnessMap );
+        builder.addMetalnessMap( this.metalhnessMap );
+        builder.addARMMap( this.armMap );
+
+        builder.add2DMap( this.mirrorMap, "VOX_MIRROR_PROJ_MAP", true, true, false);
+        builder.addCubeMap( this.indirectEnvMap, "VOX_INDIRECT_ENV_MAP", true, false);
+    }
+    buildShader(coder: IShaderCodeBuilder): void {
+
+    }
+    /**
+     * @returns local uniform data
+     */
+    createUniformData(): ShaderUniformData {
+
         let sud: ShaderUniformData = new ShaderUniformData();
         sud.uniformNameList = ["u_pbrParams", "u_fragLocalParams", "u_mirrorParams"];
         sud.dataList = [this.m_pbrParams, this.m_fragLocalParams, this.m_mirrorParam];
-        if(this.vertUniform != null) {
-            this.vertUniform.buildShaderUniformData(sud);
-        }
         return sud;
+    }
+    /**
+     * get shader code object uuid, it is defined in the system
+     * @returns shader code object uuid
+     */
+    getShaderCodeObjectUUID(): ShaderCodeUUID {
+        return null;
+    }
+    /**
+     * get custom shader code object
+     * @returns shader code object
+     */
+    getShaderCodeObject(): IShaderCodeObject {
+        return null;
+    }
+    /**
+     * @returns unique name string
+     */
+    getUniqueName(): string {
+        
+        let ns: string = this.m_uniqueName;
+
+        if (this.woolEnabled) ns += "_wl";
+        if (this.toneMappingEnabled) ns += "TM";
+        if (this.scatterEnabled) ns += "Sct";
+        if (this.specularBleedEnabled) ns += "SpecBl";
+        if (this.metallicCorrection) ns += "MetCorr";
+        if (this.gammaCorrection) ns += "GmaCorr";
+        if (this.absorbEnabled) ns += "Absorb";
+        if (this.pixelNormalNoiseEnabled) ns += "PNNoise";
+        
+        if (this.normalNoiseEnabled) ns += "NNoise";
+        if (this.indirectEnvMap != null) ns += "IndirEnv";
+        if (this.shadowReceiveEnabled) ns += "Shadow";
+        
+        if (this.fogEnabled) ns += "Fog";
+        if (this.hdrBrnEnabled) ns += "HdrBrn";
+        if (this.vtxFlatNormal) ns += "vtxFlagN";
+        if (this.mirrorMapLodEnabled) ns += "MirLod";
+        
+        this.m_uniqueName = ns;
+
+        return this.m_uniqueName;
     }
     destroy(): void {
 
-        this.vertUniform = null;
+        // this.vertUniform = null;
         this.m_pbrParams = null;
         this.m_fragLocalParams = null;
         this.m_mirrorParam = null;
-        super.destroy();
     }
 }

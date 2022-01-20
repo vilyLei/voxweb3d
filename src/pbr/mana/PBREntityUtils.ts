@@ -1,5 +1,5 @@
 
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import RendererScene from "../../vox/scene/RendererScene";
 
 import PBRMaterial from "../../pbr/material/PBRMaterial";
@@ -27,7 +27,7 @@ export default class PBREntityUtils {
         this.m_materialBuilder = materialBuilder;
         this.m_cubeRTTBuilder = cubeRTTBuilder;
     }
-    getTextureByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+    getTextureByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
         return this.materialCtx.getTextureByUrl(purl, wrapRepeat, mipmapEnabled);
     }
     getCubeRttBuilder(): CubeRttBuilder {
@@ -41,7 +41,7 @@ export default class PBREntityUtils {
             this.m_mirrorRprIndex = mirrorRprIndex;
         }
     }
-    useTexForMaterial(material: PBRMaterial, diffuseMap: TextureProxy = null, normalMap: TextureProxy = null, aoMap: TextureProxy = null): void {
+    useTexForMaterial(material: PBRMaterial, diffuseMap: IRenderTexture = null, normalMap: IRenderTexture = null, aoMap: IRenderTexture = null): void {
         
         let decorator: PBRShaderDecorator = material.decorator;
         decorator.diffuseMap = diffuseMap;

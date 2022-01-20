@@ -6,7 +6,6 @@
 /***************************************************************************/
 
 import Vector3D from "../../../../vox/math/Vector3D";
-import TextureProxy from "../../../../vox/texture/TextureProxy";
 import { AssetPackage } from "./AssetPackage";
 import RendererScene from "../../../../vox/scene/RendererScene";
 import { CommonMaterialContext } from "../../../../materialLab/base/CommonMaterialContext";
@@ -50,7 +49,7 @@ class BallEntity {
             this.m_scene = sc;
             this.m_radius = size * 0.5;
             
-            let tex0: TextureProxy = this.asset.textures[2];
+            let tex0 = this.asset.textures[2];
             let material: LambertLightMaterial;
             if (BallEntity.s_srcSphere == null) {
                 BallEntity.s_srcSphere = new Sphere3DEntity();

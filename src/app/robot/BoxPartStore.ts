@@ -7,7 +7,7 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import Color4 from "../../vox/material/Color4";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import Box3DMesh from "../../vox/mesh/Box3DMesh";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
@@ -38,9 +38,9 @@ export default class BoxPartStore implements IPartStore {
     private static s_v0: Vector3D = new Vector3D(-10, -10, -10);
     private static s_v1: Vector3D = new Vector3D(10, 10, 10);
 
-    private m_tex0: TextureProxy;
-    private m_tex1: TextureProxy;
-    private m_tex2: TextureProxy;
+    private m_tex0: IRenderTexture;
+    private m_tex1: IRenderTexture;
+    private m_tex2: IRenderTexture;
     
     materialBuilder: RoleMaterialBuilder;
     constructor() {
@@ -79,7 +79,7 @@ export default class BoxPartStore implements IPartStore {
             this.m_coreCenterV.copyFrom(store.m_coreCenterV);
         }
     }
-    initilize(tex0: TextureProxy, tex1: TextureProxy, tex2: TextureProxy): void {
+    initilize(tex0: IRenderTexture, tex1: IRenderTexture, tex2: IRenderTexture): void {
         if (this.m_bgBox == null) {
             this.m_tex0 = tex0;
             this.m_tex1 = tex1;

@@ -72,7 +72,7 @@ class CarEntity implements IToyEntity {
             //     this.m_pathCurve.setXYZ(0.0, 20.0, 0.0);
             //     this.m_scene.addEntity(this.m_pathCurve);
             // }
-            let tex0: TextureProxy = this.asset.textures[0];
+            let tex0 = this.asset.textures[0];
             let material: LambertLightMaterial;
             if (CarEntity.s_srcBox0 == null) {
                 CarEntity.s_srcBox0 = new Box3DEntity();
@@ -94,7 +94,7 @@ class CarEntity implements IToyEntity {
             material0.setColor(color);
             material0.setBlendFactor(0.8,0.8);
 
-            let tex1: TextureProxy = this.asset.textures[1];
+            let tex1 = this.asset.textures[1];
             color.setRGBA4f(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4, 1.0);
             let material1 = materialCtx.createLambertLightMaterial();
             material1.diffuseMap = tex1;

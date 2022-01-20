@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import TextureProxy from "../../../vox/texture/TextureProxy";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { TextureConst } from "../../../vox/texture/TextureConst";
 import { MaterialContext } from "../../../materialLab/base/MaterialContext";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
@@ -40,10 +40,10 @@ export default class AssetsModule {
         }
         return new AssetsModule();
     }
-    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
         return this.m_materialCtx.getTextureByUrl(purl, wrapRepeat, mipmapEnabled);
     }
-    static GetImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+    static GetImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
         return AssetsModule.s_ins.getImageTexByUrl(purl, wrapRepeat, mipmapEnabled);
     }
     initialize(rscene: RendererScene, materialCtx: MaterialContext): void {
@@ -126,7 +126,7 @@ export default class AssetsModule {
             entity.pipeTypes = [ MaterialPipeType.FOG_EXP2 ];
         }
     }
-    static GetBulTex(type: number): TextureProxy {
+    static GetBulTex(type: number): IRenderTexture {
         //return AssetsModule.s_ins.getImageTexByUrl("static/assets/flare_core_01.jpg");
         return AssetsModule.s_ins.getImageTexByUrl("static/assets/flare_core_02.jpg");
     }

@@ -7,7 +7,7 @@
 
 import Vector3D from "../../../vox/math/Vector3D";
 import Matrix4 from "../../../vox/math/Matrix4";
-import TextureProxy from "../../../vox/texture/TextureProxy";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import Box3DEntity from "../../../vox/entity/Box3DEntity";
 import DisplayEntityContainer from "../../../vox/entity/DisplayEntityContainer";
@@ -75,7 +75,7 @@ export default class TrackWheelWeaponBody {
     getRotationY(): number {
         return this.m_container.getRotationY();
     }
-    initWeap01(tex0: TextureProxy): void {
+    initWeap01(tex0: IRenderTexture): void {
         
         let height: number = 30.0;
         if (TrackWheelWeaponBody.s_box01 == null) {
@@ -101,7 +101,7 @@ export default class TrackWheelWeaponBody {
         this.m_entity01 = twUpperBox;
         this.m_weapType = 0;
     }
-    initWeap02(tex0: TextureProxy): void {
+    initWeap02(tex0: IRenderTexture): void {
 
         if (TrackWheelWeaponBody.s_box01 == null) {
             let scale: number = 1.0;

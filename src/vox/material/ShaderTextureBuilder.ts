@@ -94,10 +94,10 @@ class ShaderTextureBuilder {
      * add env specular cube map uniform code
      * @param cubeMap yes or no, the default is true
      */
-    addspecularEnvMap(tex: IRenderTexture, cubeMap: boolean = true): void {
+    addSpecularEnvMap(tex: IRenderTexture, cubeMap: boolean = true): void {
 
         if (tex != null) {
-            this.m_uniform.addspecularEnvMap(cubeMap);
+            this.m_uniform.addSpecularEnvMap(cubeMap);
             this.m_texList.push(tex);
         }
     }

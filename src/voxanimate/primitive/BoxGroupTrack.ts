@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import Vector3D from "../../vox/math/Vector3D";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import {IdMeshGroupAnimator} from "../../voxanimate/primitive/IdMeshGroupAnimator";
 import PathTrack from "../../voxnav/path/PathTrack";
@@ -84,7 +84,7 @@ export default class BoxGroupTrack {
         this.m_unitMaxV.copyFrom(this.m_unitMinV);
         this.m_unitMaxV.scaleBy(-1.0);
     }
-    initializeFrom(srcTrack: BoxGroupTrack, texList: TextureProxy[]): void {
+    initializeFrom(srcTrack: BoxGroupTrack, texList: IRenderTexture[]): void {
         
         if (srcTrack != null) {
 
@@ -98,7 +98,7 @@ export default class BoxGroupTrack {
             this.animator.initialize(srcTrack.m_unitsTotal, srcTrack.m_stepFactor, texList);
         }
     }
-    initialize(textureBlock: ITextureBlock, stepDis: number = 0.5, texList: TextureProxy[] = null, distanceFactor: number = 1.0): void {
+    initialize(textureBlock: ITextureBlock, stepDis: number = 0.5, texList: IRenderTexture[] = null, distanceFactor: number = 1.0): void {
         this.createTrackData();
 
         let pos: Vector3D;

@@ -7,7 +7,7 @@ import RendererParam from "../vox/scene/RendererParam";
 import RendererScene from "../vox/scene/RendererScene";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import DebugFlag from "../vox/debug/DebugFlag";
-import TextureProxy from "../vox/texture/TextureProxy";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 
 import PBRMaterial from "./material/PBRMaterial";
 import PBRShaderDecorator from "./material/PBRShaderDecorator";
@@ -37,7 +37,7 @@ export class DemoPBRTexViewer implements IShaderLibListener {
 
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_interaction: UserInteraction = new UserInteraction();
-
+    
     //private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
     
@@ -181,10 +181,10 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         // let axis: Axis3DEntity = new Axis3DEntity();
         // axis.initialize(300.0);
         // this.m_rscene.addEntity(axis);
-        let diffuseMap: TextureProxy = null;
-        let normalMap: TextureProxy = null;
-        let armMap: TextureProxy = null;
-        let aoMap: TextureProxy = null;
+        let diffuseMap: IRenderTexture = null;
+        let normalMap: IRenderTexture = null;
+        let armMap: IRenderTexture = null;
+        let aoMap: IRenderTexture = null;
         this.aoMapEnabled = true;
         let ns: string = "rust_coarse_01";
         ns = "medieval_blocks_02";
@@ -200,9 +200,9 @@ export class DemoPBRTexViewer implements IShaderLibListener {
             //aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_OCC.png");
             //aoMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
         }
-        let displacementMap: TextureProxy = null;
+        let displacementMap: IRenderTexture = null;
         displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_disp_1k.jpg");
-        let parallaxMap: TextureProxy = null;
+        let parallaxMap: IRenderTexture = null;
         //parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/brick_bumpy01.jpg");
         parallaxMap = displacementMap;
 

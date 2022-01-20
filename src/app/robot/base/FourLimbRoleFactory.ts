@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import TextureProxy from "../../../vox/texture/TextureProxy";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import RendererScene from "../../../vox/scene/RendererScene";
 import BoxPartStore from "../../../app/robot/BoxPartStore";
 import FourLimbRole from "../../../app/robot/base/FourLimbRole";
@@ -33,7 +33,7 @@ export default class FourLimbRoleFactory {
         this.m_roleCamp = roleCamp;
         this.m_terrainData = terrainData;
     }
-    create(tex0: TextureProxy, tex1: TextureProxy, tex2: TextureProxy, campType: CampType, bodyWidth: number): FourLimbRole {
+    create(tex0: IRenderTexture, tex1: IRenderTexture, tex2: IRenderTexture, campType: CampType, bodyWidth: number): FourLimbRole {
 
         let boxPart0: BoxPartStore = new BoxPartStore();
         boxPart0.materialBuilder = this.m_materialBuilder;

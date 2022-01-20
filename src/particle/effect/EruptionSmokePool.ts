@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import Vector3D from "../../vox/math/Vector3D";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import EruptionSomke from "../../particle/effect/EruptionSmoke";
 import ParticleEffectPool from "../../particle/effect/ParticleEffectPool";
 import IRenderer from "../../vox/scene/IRenderer";
@@ -15,8 +15,8 @@ import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 
 export default class EruptionSmokePool extends ParticleEffectPool {
     private m_efSrcList: EruptionSomke[] = [];
-    private m_texture: TextureProxy = null;
-    private m_colorTexture: TextureProxy = null;
+    private m_texture: IRenderTexture = null;
+    private m_colorTexture: IRenderTexture = null;
     private m_clipMixEnabled: boolean = false;
 
     materialPipeline: IMaterialPipeline = null;
@@ -28,7 +28,7 @@ export default class EruptionSmokePool extends ParticleEffectPool {
 
     constructor() { super(); }
 
-    initialize(renderer: IRenderer, processIndex: number, particleTotal: number, texture: TextureProxy, colorTexture: TextureProxy, clipMixEnabled: boolean = false): void {
+    initialize(renderer: IRenderer, processIndex: number, particleTotal: number, texture: IRenderTexture, colorTexture: IRenderTexture, clipMixEnabled: boolean = false): void {
         if (this.m_texture == null) {
             this.m_clipMixEnabled = clipMixEnabled;
             this.m_texture = texture;
@@ -56,7 +56,7 @@ export default class EruptionSmokePool extends ParticleEffectPool {
         efSrc.setDepthOffset( this.depthOffset );
         this.m_efSrcList.push(efSrc);
     }
-    appendEffect(texture: TextureProxy, colorTexture: TextureProxy, srcIndex: number = -1): void {
+    appendEffect(texture: IRenderTexture, colorTexture: IRenderTexture, srcIndex: number = -1): void {
         let eff: EruptionSomke = new EruptionSomke();
         eff.materialPipeline = this.materialPipeline;
         eff.pipeTypes = this.pipeTypes;
@@ -81,7 +81,7 @@ export default class EruptionSmokePool extends ParticleEffectPool {
     createEffect(pv: Vector3D): EruptionSomke {
         return this.createEffectWithTexture(pv, this.m_texture, this.m_colorTexture);
     }
-    createEffectWithTexture(pv: Vector3D, texture: TextureProxy, colorTexture: TextureProxy): EruptionSomke {
+    createEffectWithTexture(pv: Vector3D, texture: IRenderTexture, colorTexture: IRenderTexture): EruptionSomke {
         let eff: EruptionSomke;
         if (this.m_freeEffList.length < 1) {
             eff = new EruptionSomke();

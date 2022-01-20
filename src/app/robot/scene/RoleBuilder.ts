@@ -1,4 +1,4 @@
-import TextureProxy from "../../../vox/texture/TextureProxy";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import Box3DEntity from "../../../vox/entity/Box3DEntity";
 import RendererScene from "../../../vox/scene/RendererScene";
 import FourLimbRole from "../../../app/robot/base/FourLimbRole";
@@ -21,7 +21,7 @@ class RoleBuilder {
     constructor() { }
 
     private m_rscene: RendererScene = null;
-    private m_texList: TextureProxy[] = null;
+    private m_texList: IRenderTexture[] = null;
 
     private m_materialCtx: CommonMaterialContext;
     private m_flrFactory: FourLimbRoleFactory = new FourLimbRoleFactory();

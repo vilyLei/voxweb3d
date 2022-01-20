@@ -7,7 +7,7 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import Billboard3DFlowEntity from "../../vox/entity/Billboard3DFlowEntity";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import IParticleEffect from "../../particle/effect/IParticleEffect";
 import RendererState from "../../../src/vox/render/RendererState";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
@@ -28,21 +28,21 @@ export default class EruptionEffect implements IParticleEffect {
     solidRN: number = 2;
     solidCN: number = 2;
     constructor() { }
-    initialize(flameTotal: number, solidTotal: number, flameTexture: TextureProxy, solidTexture: TextureProxy, clipMixEnabled: boolean = false): void {
+    initialize(flameTotal: number, solidTotal: number, flameTexture: IRenderTexture, solidTexture: IRenderTexture, clipMixEnabled: boolean = false): void {
         if (this.solidEntity == null) {
             this.m_clipMixEnabled = clipMixEnabled;
             this.initFlame(null, flameTotal, flameTexture);
             this.initSolid(null, solidTotal, solidTexture);
         }
     }
-    initializeFrom(eruptionEff: EruptionEffect, flameTexture: TextureProxy, solidTexture: TextureProxy, clipMixEnabled: boolean = false): void {
+    initializeFrom(eruptionEff: EruptionEffect, flameTexture: IRenderTexture, solidTexture: IRenderTexture, clipMixEnabled: boolean = false): void {
         if (eruptionEff != null && this.solidEntity == null) {
             this.m_clipMixEnabled = clipMixEnabled;
             this.initFlame(eruptionEff.flameEntity, 50, flameTexture);
             this.initSolid(eruptionEff.solidEntity, 50, solidTexture);
         }
     }
-    private initSolid(srcSolidEntity: Billboard3DFlowEntity, total: number, tex: TextureProxy): void {
+    private initSolid(srcSolidEntity: Billboard3DFlowEntity, total: number, tex: IRenderTexture): void {
         let size: number = 100;
         let params: number[][] = UVTool.GetUVParamsByRNCN(this.solidRN, this.solidCN);
         let entity: Billboard3DFlowEntity = new Billboard3DFlowEntity();
@@ -88,7 +88,7 @@ export default class EruptionEffect implements IParticleEffect {
         this.solidEntity = entity;
     }
 
-    private initFlame(srcFlameEntity: Billboard3DFlowEntity, total: number, tex: TextureProxy): void {
+    private initFlame(srcFlameEntity: Billboard3DFlowEntity, total: number, tex: IRenderTexture): void {
         let size: number = 100;
         let params: number[][] = [
             [0.0, 0.0, 0.5, 0.5],

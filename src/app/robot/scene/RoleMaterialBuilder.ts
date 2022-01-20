@@ -1,8 +1,4 @@
-import Vector3D from "../../../vox/math/Vector3D";
-import TextureProxy from "../../../vox/texture/TextureProxy";
-import Axis3DEntity from "../../../vox/entity/Axis3DEntity";
-import Box3DEntity from "../../../vox/entity/Box3DEntity";
-import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
 import { CommonMaterialContext } from "../../../materialLab/base/CommonMaterialContext";
 import LambertLightMaterial from "../../../vox/material/mcase/LambertLightMaterial";
@@ -26,7 +22,7 @@ class RoleMaterialBuilder {
         }
     }
     
-    createTrackLambertMaterial(boxTrack: BoxGroupTrack, diffuseMap: TextureProxy,  normalMap: TextureProxy = null, aoMap: TextureProxy = null): LambertLightMaterial {
+    createTrackLambertMaterial(boxTrack: BoxGroupTrack, diffuseMap: IRenderTexture,  normalMap: IRenderTexture = null, aoMap: IRenderTexture = null): LambertLightMaterial {
         
         let dataTex = boxTrack.animator.getPosDataTexture();
         let posTotal = boxTrack.animator.getPosTotal();
@@ -47,7 +43,7 @@ class RoleMaterialBuilder {
         vertUniform.setUVScale(2.0,1.0);
         return material;
     }
-    createLambertMaterial(diffuseMap: TextureProxy, normalMap: TextureProxy = null, aoMap: TextureProxy = null): LambertLightMaterial {
+    createLambertMaterial(diffuseMap: IRenderTexture, normalMap: IRenderTexture = null, aoMap: IRenderTexture = null): LambertLightMaterial {
 
         let material = this.m_materialCtx.createLambertLightMaterial(false);
         material.fogEnabled = this.fogEnabled;
@@ -60,7 +56,7 @@ class RoleMaterialBuilder {
 
         return material;
     }
-    createBaseLambertMaterial(diffuseMap: TextureProxy, normalMap: TextureProxy = null, aoMap: TextureProxy = null, envAmbientLightEnabled: boolean = false): LambertLightMaterial {
+    createBaseLambertMaterial(diffuseMap: IRenderTexture, normalMap: IRenderTexture = null, aoMap: IRenderTexture = null, envAmbientLightEnabled: boolean = false): LambertLightMaterial {
 
         let material = this.m_materialCtx.createLambertLightMaterial(false);
         material.fogEnabled = this.fogEnabled;
@@ -73,7 +69,7 @@ class RoleMaterialBuilder {
 
         return material;
     }
-    createMaterial(diffuseMap: TextureProxy, normalMap: TextureProxy = null, aoMap: TextureProxy = null): LambertLightMaterial {
+    createMaterial(diffuseMap: IRenderTexture, normalMap: IRenderTexture = null, aoMap: IRenderTexture = null): LambertLightMaterial {
         return this.createLambertMaterial(diffuseMap, normalMap, aoMap);
     }
 }

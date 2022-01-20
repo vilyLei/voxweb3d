@@ -19,16 +19,16 @@ class ShaderCodeUniform implements IShaderCodeUniform {
     private m_uniqueNSKeys: Uint16Array = new Uint16Array(128);
     private m_uniqueNSKeysTotal: number = 16;
     private m_uniqueNSKeyFlag: boolean = false;
-    constructor(){}
-    
+    constructor() { }
+
     __$setCodeBuilder(codeBuilder: IShaderCodeBuilder): void {
         this.m_codeBuilder = codeBuilder;
     }
     getUniqueNSKeyID(): number {
 
-        if(this.m_uniqueNSKeyFlag) {
+        if (this.m_uniqueNSKeyFlag) {
             let id: number = 31;
-            for(let i: number = 0; i < this.m_uniqueNSKeysTotal; ++i) {
+            for (let i: number = 0; i < this.m_uniqueNSKeysTotal; ++i) {
                 id = id * 131 + this.m_uniqueNSKeys[i];
             }
             return id;
@@ -37,11 +37,11 @@ class ShaderCodeUniform implements IShaderCodeUniform {
     }
     getUniqueNSKeyString(): string {
 
-        if(this.m_uniqueNSKeyFlag) {
+        if (this.m_uniqueNSKeyFlag) {
             this.m_uniqueNSKeyString = "[" + this.m_uniqueNSKeys[0];
-            for(let i: number = 1; i < this.m_uniqueNSKeysTotal; ++i) {
+            for (let i: number = 1; i < this.m_uniqueNSKeysTotal; ++i) {
                 //this.m_uniqueNSKeyString += "-"+this.m_uniqueNSKeys[i];
-                this.m_uniqueNSKeyString += ""+this.m_uniqueNSKeys[i];
+                this.m_uniqueNSKeyString += "" + this.m_uniqueNSKeys[i];
             }
             this.m_uniqueNSKeyString += "]";
             return this.m_uniqueNSKeyString;
@@ -49,9 +49,9 @@ class ShaderCodeUniform implements IShaderCodeUniform {
         return "";
     }
     reset(): void {
-        
-        if(this.m_uniqueNSKeyFlag) {
-            for(let i: number = 0; i < this.m_uniqueNSKeysTotal; ++i) {
+
+        if (this.m_uniqueNSKeyFlag) {
+            for (let i: number = 0; i < this.m_uniqueNSKeysTotal; ++i) {
                 this.m_uniqueNSKeys[i] = 0;
             }
             this.m_uniqueNSKeyFlag = false;
@@ -71,14 +71,14 @@ class ShaderCodeUniform implements IShaderCodeUniform {
             this.m_codeBuilder.addFragUniformParam(UniformConst.CameraPosParam);
         }
     }
-    
+
     /**
      * apply view parameters uniform in the shader,the uniform vec4 data: [viewPortX, viewPortY, viewPortWidth, viewPortHeight]
      * @param vertEnabled whether apply view parameters uniform in the vertex shader, the default value is false
      * @param fragEnabled whether apply view parameters uniform in the fragment shader, the default value is true
      */
     useViewPort(vertEnabled: boolean = false, fragEnabled: boolean = true): void {
-        
+
         if (vertEnabled) {
             this.m_codeBuilder.addVertUniformParam(UniformConst.ViewportParam);
         }
@@ -92,7 +92,7 @@ class ShaderCodeUniform implements IShaderCodeUniform {
      * @param fragEnabled whether apply frustum parameters uniform in the fragment shader, the default value is true
      */
     useFrustum(vertEnabled: boolean = false, fragEnabled: boolean = true): void {
-        
+
         if (vertEnabled) {
             this.m_codeBuilder.addVertUniformParam(UniformConst.FrustumParam);
         }
@@ -106,7 +106,7 @@ class ShaderCodeUniform implements IShaderCodeUniform {
      * @param fragEnabled whether apply stage parameters uniform in the fragment shader, the default value is true
      */
     useStage(vertEnabled: boolean, fragEnabled: boolean): void {
-        
+
         if (vertEnabled) {
             this.m_codeBuilder.addVertUniformParam(UniformConst.StageParam);
         }
@@ -115,7 +115,7 @@ class ShaderCodeUniform implements IShaderCodeUniform {
         }
     }
 
-    
+
     /**
      * add diffuse map uniform code
      */
@@ -137,9 +137,9 @@ class ShaderCodeUniform implements IShaderCodeUniform {
      * add parallax map uniform code
      * @param parallaxParamIndex parallax map parameter uniform data array index
      */
-    addParallaxMap(parallaxParamIndex: number): void {        
+    addParallaxMap(parallaxParamIndex: number): void {
         this.m_codeBuilder.addTextureSample2D("VOX_PARALLAX_MAP", true, true, false);
-        if(parallaxParamIndex >= 0) {
+        if (parallaxParamIndex >= 0) {
             this.m_codeBuilder.addDefine("VOX_PARALLAX_PARAMS_INDEX", "" + parallaxParamIndex);
             this.m_uniqueNSKeys[2] = 1 + (parallaxParamIndex << 1);
         }
@@ -154,7 +154,7 @@ class ShaderCodeUniform implements IShaderCodeUniform {
      */
     addDisplacementMap(displacementParamIndex: number): void {
         this.m_codeBuilder.addTextureSample2D("VOX_DISPLACEMENT_MAP", true, false, true);
-        if(displacementParamIndex >= 0) {
+        if (displacementParamIndex >= 0) {
             this.m_codeBuilder.addDefine("VOX_DISPLACEMENT_PARAMS_INDEX", "" + displacementParamIndex);
             this.m_uniqueNSKeys[3] = 1 + (displacementParamIndex << 1);
         }
@@ -163,7 +163,7 @@ class ShaderCodeUniform implements IShaderCodeUniform {
         }
         this.m_uniqueNSKeyFlag = true;
     }
-    
+
     /**
      * add specular map uniform code
      * @param specularMode is SpecularMode type value, the default is SpecularMode.Default
@@ -197,8 +197,8 @@ class ShaderCodeUniform implements IShaderCodeUniform {
      * add env specular cube map uniform code
      * @param cubeMap yes or no, the default is true
      */
-    addspecularEnvMap(cubeMap: boolean = true): void {
-        if(cubeMap) {
+    addSpecularEnvMap(cubeMap: boolean = true): void {
+        if (cubeMap) {
             this.m_codeBuilder.addTextureSampleCube("VOX_ENV_MAP", true, false);
         }
         else {
@@ -226,21 +226,21 @@ class ShaderCodeUniform implements IShaderCodeUniform {
     /**
      * add metalness map uniform code
      */
-     addMetalnessMap(): void {
+    addMetalnessMap(): void {
         this.m_codeBuilder.addTextureSample2D("VOX_METALNESS_MAP", true, true, false);
         this.m_uniqueNSKeys[10] = 1;
         this.m_uniqueNSKeyFlag = true;
     }
-    
+
     /**
      * add ao, roughness, metalness map uniform code
      */
-     addARMMap(): void {
+    addARMMap(): void {
         this.m_codeBuilder.addTextureSample2D("VOX_ARM_MAP", true, true, false);
         this.m_uniqueNSKeys[11] = 1;
         this.m_uniqueNSKeyFlag = true;
-     }
-    
+    }
+
     add2DMap(macroName: string = "", map2DEnabled: boolean = true, fragEnabled: boolean = true, vertEnabled: boolean = false): void {
         this.m_codeBuilder.addTextureSample2D(macroName, map2DEnabled, fragEnabled, vertEnabled);
     }

@@ -7,7 +7,7 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import Billboard3DFlowEntity from "../../vox/entity/Billboard3DFlowEntity";
-import TextureProxy from "../../vox/texture/TextureProxy";
+import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import IParticleEffect from "../../particle/effect/IParticleEffect";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
@@ -21,19 +21,19 @@ export default class EruptionSmoke implements IParticleEffect {
     materialPipeline: IMaterialPipeline = null;
     pipeTypes: MaterialPipeType[] = null;
     constructor() { }
-    initialize(particleTotal: number, texture: TextureProxy, colorTexture: TextureProxy, clipMixEnabled: boolean = false): void {
+    initialize(particleTotal: number, texture: IRenderTexture, colorTexture: IRenderTexture, clipMixEnabled: boolean = false): void {
         if (this.smokeEntity == null && particleTotal > 0) {
             this.m_clipMixEnabled = clipMixEnabled;
             this.initSmoke(null, particleTotal, texture, colorTexture);
         }
     }
-    initializeFrom(effect: EruptionSmoke, texture: TextureProxy, colorTexture: TextureProxy, clipMixEnabled: boolean = false): void {
+    initializeFrom(effect: EruptionSmoke, texture: IRenderTexture, colorTexture: IRenderTexture, clipMixEnabled: boolean = false): void {
         if (effect != null && this.smokeEntity == null) {
             this.m_clipMixEnabled = clipMixEnabled;
             this.initSmoke(effect.smokeEntity, 50, texture, colorTexture);
         }
     }
-    private initSmoke(srcEntity: Billboard3DFlowEntity, total: number, tex: TextureProxy, offsetColorTex: TextureProxy): void {
+    private initSmoke(srcEntity: Billboard3DFlowEntity, total: number, tex: IRenderTexture, offsetColorTex: IRenderTexture): void {
 
         let entity: Billboard3DFlowEntity = new Billboard3DFlowEntity();
         entity.setMaterialPipeline(this.materialPipeline);

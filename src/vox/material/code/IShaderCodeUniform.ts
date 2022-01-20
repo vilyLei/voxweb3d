@@ -76,7 +76,7 @@ interface IShaderCodeUniform {
      * add env specular cube map uniform code
      * @param cubeMap yes or no, the default is true
      */
-    addspecularEnvMap(cubeMap: boolean): void;
+    addSpecularEnvMap(cubeMap: boolean): void;
     /**
      * add ambient occlusion map uniform code
      */

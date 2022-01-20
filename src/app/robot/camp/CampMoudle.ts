@@ -12,7 +12,6 @@ import RedCamp from "../../../app/robot/camp/RedCamp";
 import BlueCamp from "../../../app/robot/camp/BlueCamp";
 import AssetsModule from "../../../app/robot/assets/AssetsModule";
 
-import TextureProxy from "../../../vox/texture/TextureProxy";
 import EruptionSmokePool from "../../../particle/effect/EruptionSmokePool";
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
 import { RenderModule } from "../scene/RenderModule";
@@ -30,11 +29,11 @@ export default class CampMoudle {
 
             this.redCamp.initialize(rsc);
 
-            let texture: TextureProxy = AssetsModule.GetImageTexByUrl("static/assets/xulie_02_07.png");
+            let texture = AssetsModule.GetImageTexByUrl("static/assets/xulie_02_07.png");
             //let colorTexture:TextureProxy = AssetsModule.GetImageTexByUrl("static/assets/stones_02.png");
             //let colorTexture:TextureProxy = AssetsModule.GetImageTexByUrl("static/assets/warter_01.jpg");
             //let colorTexture:TextureProxy = AssetsModule.GetImageTexByUrl("static/assets/color_01.jpg");
-            let colorTexture: TextureProxy = AssetsModule.GetImageTexByUrl("static/assets/color_05.jpg");
+            let colorTexture = AssetsModule.GetImageTexByUrl("static/assets/color_05.jpg");
             //let colorTexture:TextureProxy = AssetsModule.GetImageTexByUrl("static/assets/color_06.jpg");
             //let colorTexture:TextureProxy = AssetsModule.GetImageTexByUrl("static/assets/RandomNoiseB.png");
             this.m_eff1Pool = new EruptionSmokePool();
