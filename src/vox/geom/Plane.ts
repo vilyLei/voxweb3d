@@ -12,8 +12,10 @@ import RadialLine from "../../vox/geom/RadialLine";
 import StraightLine from "../../vox/geom/StraightLine";
 
 class Plane extends AbsGeomBase {
+
 	static IntersectBoo: boolean = false;
 	static IntersectSatus: number = 0;
+	
 	nv: Vector3D = new Vector3D(0.0, 1.0, 0.0);
 	distance: number = 0.0;
 	intersectBoo: boolean = false;
