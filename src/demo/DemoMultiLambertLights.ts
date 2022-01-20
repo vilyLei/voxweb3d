@@ -36,7 +36,6 @@ import DivLog from "../vox/utils/DivLog";
 import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 import BillboardLine3DEntity from "../vox/entity/BillboardLine3DEntity";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
-import RendererState from "../vox/render/RendererState";
 import { ViewTextureMaker } from "../renderingtoy/mcase/texture/ViewTextureMaker";
 import FrustrumFrame3DEntity from "../vox/entity/FrustrumFrame3DEntity";
 import DebugFlag from "../vox/debug/DebugFlag";
@@ -197,13 +196,13 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         let entity: DisplayEntity = new DisplayEntity();
         // entity.pipeTypes = [MaterialPipeType.FOG_EXP2];
         // entity.setMaterialPipeline(this.m_materialCtx.pipeline);
-        
+        let readeringState = this.m_engine.getRenderProxy().renderingState;
         entity.setMaterial( material );
         entity.copyMeshFrom( unitPlane );
         entity.setPosition(pv);
         entity.setScaleXYZ(scaleX, 1.0, scaleZ);
         entity.setRotationXYZ(0.0, Math.random() * 1000.0, 0.0);
-        entity.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+        entity.setRenderState( readeringState.BACK_TRANSPARENT_STATE );
         this.m_engine.rscene.addEntity(entity, 3);
 
         // let unitBox: Sphere3DEntity = new Sphere3DEntity();
@@ -489,7 +488,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
             clipPl.spaceCullMask = SpaceCullingMask.NONE;
             clipPl.premultiplyAlpha = true;
             //clipPl.toTransparentBlend(true);
-            clipPl.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+            let readeringState = this.m_engine.getRenderProxy().renderingState;
+            clipPl.setRenderState( readeringState.BACK_ALPHA_ADD_ALWAYS_STATE );
             //clipPl.toBrightnessBlend(false);
             //clipPl.initializeXOZSquare(200.0, [tex]);
             clipPl.initializeXOZSquare(50.0 + Math.random() * 200.0, [tex]);

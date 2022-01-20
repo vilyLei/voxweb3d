@@ -12,7 +12,6 @@ import { OccPostOutLineScreen } from "../material/OccPostOutLineScreen";
 import { OutlinePreDecorator } from "../material/OutlinePreDecorator";
 import Vector3D from "../../../vox/math/Vector3D";
 import { IFBOInstance } from "../../../vox/scene/IFBOInstance";
-import RendererState from "../../../vox/render/RendererState";
 import AABB from "../../../vox/geom/AABB";
 import Plane from "../../../vox/geom/Plane";
 import { IRTTTexture } from "../../../vox/render/texture/IRTTTexture";
@@ -72,7 +71,7 @@ export default class OcclusionPostOutline {
             this.m_outlineFBO.createFBOAt(fboIndex, 512, 512, true, false, 0);
             this.m_outlineFBO.setRenderToTexture(this.m_outLineRTT, 0);
             this.m_outlineFBO.setRProcessIDList(null);
-            
+
             this.m_rscene.setRenderToBackBuffer();
 
             this.m_screenDecor = new OccPostOutLineDecorator(true, this.m_preColorRTT);
@@ -93,11 +92,13 @@ export default class OcclusionPostOutline {
             this.m_boundsEntity.copyMeshFrom(this.m_rscene.entityBlock.unitBox);
             this.m_boundsEntity.setMaterial(materialBlock.createSimpleMaterial(this.m_boundsDecor));
 
+            let renderingState = this.m_rscene.getRenderProxy().renderingState;
+
             let plMaterial = materialBlock.createSimpleMaterial(new OccPostOutLineScreen(this.m_outLineRTT));
             this.m_displayPlane = this.m_rscene.entityBlock.createEntity();
             this.m_displayPlane.setMaterial(plMaterial);
             this.m_displayPlane.copyMeshFrom(this.m_outlinePlane);
-            this.m_displayPlane.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+            this.m_displayPlane.setRenderState(renderingState.BACK_TRANSPARENT_ALWAYS_STATE);
 
         }
     }
@@ -166,6 +167,8 @@ export default class OcclusionPostOutline {
 
                 if (this.m_runningFlag) {
 
+
+                    let colorMask = this.m_rscene.getRenderProxy().colorMask;
                     let bounds = this.m_bounds;
                     let colorFBO = this.m_colorFBO;
 
@@ -188,13 +191,13 @@ export default class OcclusionPostOutline {
                     this.m_boundsEntity.setPosition(this.m_bounds.center);
                     this.m_boundsEntity.update();
 
-                    colorFBO.lockColorMask(RendererState.COLOR_MASK_ALL_FALSE);
+                    colorFBO.lockColorMask(colorMask.ALL_FALSE);
                     colorFBO.clearDepth(1.0);
                     for (let i: number = 0; i < this.m_targets.length; ++i)
                         this.m_targets[i].setVisible(false);
 
                     colorFBO.run(false, false, false, true);
-                    colorFBO.lockColorMask(RendererState.COLOR_MASK_GREEN_TRUE);
+                    colorFBO.lockColorMask(colorMask.GREEN_TRUE);
                     for (let i: number = 0; i < this.m_targets.length; ++i)
                         this.m_targets[i].setVisible(true);
 

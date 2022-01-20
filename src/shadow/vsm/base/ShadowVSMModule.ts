@@ -1,15 +1,11 @@
 import Vector3D from "../../../vox/math/Vector3D";
-// import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import { IFBOInstance } from "../../../vox/scene/IFBOInstance";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";
-// import DepthMaterial from "../material/DepthMaterial";
-// import OccBlurMaterial from "../material/OccBlurMaterial";
 
 import { OccBlurDecorator } from "../material/OccBlurDecorator";
 import { DepthWriteDecorator } from "../material/DepthWriteDecorator";
 import ShadowVSMData from "../material/ShadowVSMData";
-import RendererState from "../../../vox/render/RendererState";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
 
@@ -155,6 +151,7 @@ export class ShadowVSMModule implements IMaterialPipe {
     }
     private initConfig(processIDList: number[], blurEnabled: boolean = false): void {
 
+        let renderingState = this.m_rscene.getRenderProxy().renderingState;
         this.m_vsmData = new ShadowVSMData(this.m_rscene.getRenderProxy().uniformContext);
         this.m_vsmData.initialize();
         this.m_vsmData.setShadowIntensity(this.m_shadowIntensity);
@@ -167,8 +164,7 @@ export class ShadowVSMModule implements IMaterialPipe {
         this.m_fboDepth.createFBOAt(this.m_fboIndex, this.m_shadowMapW, this.m_shadowMapH, true, false, 0);
         this.m_depthRtt = this.m_fboDepth.setRenderToRGBATexture(null, 0);
         this.m_fboDepth.setRProcessIDList(processIDList);
-        this.m_fboDepth.setGlobalRenderState(RendererState.NORMAL_STATE);
-        // this.m_fboDepth.setGlobalMaterial( new DepthMaterial(), false,false );
+        this.m_fboDepth.setGlobalRenderState(renderingState.NORMAL_STATE);
         this.m_fboDepth.setGlobalMaterial(depthMaterial, false, false);
 
         this.m_fboOccBlur = this.m_rscene.createFBOInstance();
@@ -177,36 +173,21 @@ export class ShadowVSMModule implements IMaterialPipe {
         this.m_fboOccBlur.createFBOAt(this.m_fboIndex, this.m_shadowMapW, this.m_shadowMapH, true, false, 0);
         this.m_occBlurRtt = this.m_fboOccBlur.setRenderToRGBATexture(null, 0);
 
-        // let occMaterial: OccBlurMaterial;
-        // occMaterial = new OccBlurMaterial(false);
-        // occMaterial.setTextureList([this.m_depthRtt]);
-        // occMaterial.setShadowRadius(this.m_shadowRadius);
 
         let occDeco = new OccBlurDecorator(false, this.m_depthRtt, this.m_shadowRadius);
         let occMaterial = this.m_rscene.materialBlock.createSimpleMaterial(occDeco);
 
-        //let verOccBlurPlane: Plane3DEntity = new Plane3DEntity();
         let verOccBlurPlane = this.m_rscene.entityBlock.createEntity();
         verOccBlurPlane.copyMeshFrom(this.m_rscene.entityBlock.screenPlane);
         verOccBlurPlane.setMaterial(occMaterial);
-        // verOccBlurPlane.update();
-        // verOccBlurPlane.initializeXOY(-1, -1, 2, 2);
         this.m_verOccBlurPlane = verOccBlurPlane;
 
         occDeco = new OccBlurDecorator(true, this.m_occBlurRtt, this.m_shadowRadius);
         occMaterial = this.m_rscene.materialBlock.createSimpleMaterial(occDeco);
 
-        // occMaterial = new OccBlurMaterial(true);
-        // occMaterial.setTextureList([this.m_occBlurRtt]);
-        // occMaterial.setShadowRadius(this.m_shadowRadius);
-
-        //let horOccBlurPlane: Plane3DEntity = new Plane3DEntity();
         let horOccBlurPlane = this.m_rscene.entityBlock.createEntity();
-        // horOccBlurPlane.copyMeshFrom(verOccBlurPlane);
         horOccBlurPlane.copyMeshFrom(this.m_rscene.entityBlock.screenPlane);
         horOccBlurPlane.setMaterial(occMaterial);
-        // horOccBlurPlane.update();
-        // horOccBlurPlane.initializeXOY(-1, -1, 2, 2);
         this.m_horOccBlurPlane = horOccBlurPlane;
 
         // this.m_blurEnabled = blurEnabled;

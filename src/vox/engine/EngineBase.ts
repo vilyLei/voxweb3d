@@ -15,6 +15,7 @@ import { UserInteraction } from "./UserInteraction";
 import {IRendererSceneAccessor} from "../../vox/scene/IRendererSceneAccessor";
 import { RenderableMaterialBlock } from "../scene/block/RenderableMaterialBlock";
 import { RenderableEntityBlock } from "../scene/block/RenderableEntityBlock";
+import { IRenderProxy } from "../render/IRenderProxy";
 class RendererSceneNode {
     private m_rscene: IRendererScene = null;
     priority: number = 0;
@@ -44,7 +45,9 @@ export class EngineBase {
     readonly rscene: RendererScene = null;
     readonly uiScene: OrthoUIScene = null;
     readonly interaction: UserInteraction = new UserInteraction();
-
+    getRenderProxy(): IRenderProxy {
+        return this.rscene.getRenderProxy();
+    }
     initialize(param: RendererParam = null, renderProcessesTotal: number = 3): void {
 
         if (this.rscene == null) {

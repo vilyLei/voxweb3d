@@ -21,7 +21,6 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import DebugFlag from "../vox/debug/DebugFlag";
 import StencilOutline from "../renderingtoy/mcase/outline/StencilOutline";
 import OcclusionPostOutline from "../renderingtoy/mcase/outline/OcclusionPostOutline";
-import RendererState from "../vox/render/RendererState";
 import DracoMeshBuilder from "../voxmesh/draco/DracoMeshBuilder";
 import ThreadSystem from "../thread/ThreadSystem";
 import DracoMesh from "../voxmesh/draco/DracoMesh";
@@ -168,7 +167,7 @@ export class DemoOutline {
         //  this.m_postOutline.setFBOSizeScaleRatio(2.0);
         //  this.m_postOutline.setOutlineThickness(4.0);
         //this.m_postOutline.setRGB3f(2.0,0.0,2.0);
-        //this.m_postOutline.setPostRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
+        //this.m_postOutline.setPostRenderState(renderingState.BACK_ADD_BLENDSORT_STATE);
     }
     private initScene(): void {
 
@@ -220,7 +219,7 @@ export class DemoOutline {
         //      return;
         //  }
         //  console.log("run begin...");
-        
+
         this.m_statusDisp.update(false);
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
