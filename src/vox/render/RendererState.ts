@@ -11,7 +11,7 @@ import { RenderColorMask } from "../../vox/render/rendering/RenderColorMask";
 import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject";
 
 import { CullFaceMode, RenderBlendMode, DepthTestMode, GLBlendMode, GLBlendEquation } from "../../vox/render/RenderConst";
-import { IVRO } from "../../vox/render/IVRO";
+import { IVRO } from "../../vox/render/vtx/IVRO";
 
 class RendererState {
 

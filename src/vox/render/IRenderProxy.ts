@@ -17,7 +17,10 @@ import IRenderTexResource from '../../vox/render/IRenderTexResource';
 import IROVertexBufUpdater from '../../vox/render/IROVertexBufUpdater';
 import IROMaterialUpdater from '../../vox/render/IROMaterialUpdater';
 import { IShaderUniformContext } from "../../vox/material/IShaderUniformContext";
+
 import { IStencil } from "../../vox/render/rendering/IStencil";
+import { IRenderingColorMask } from "./rendering/IRenderingColorMask";
+import { IRenderingState } from "./rendering/IRenderingState";
 
 interface IRenderProxy {
     
@@ -47,6 +50,8 @@ interface IRenderProxy {
     uniformContext: IShaderUniformContext;
 
     readonly stencil: IStencil;
+    readonly renderingState: IRenderingState;
+    readonly colorMask: IRenderingColorMask;
 
     /**
      * @returns return system gpu context

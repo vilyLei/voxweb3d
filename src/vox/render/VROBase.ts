@@ -8,7 +8,7 @@
 import IROVtxBuilder from "../../vox/render/IROVtxBuilder";
 import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
 import { ROIndicesRes } from "../../vox/render/vtx/ROIndicesRes";
-import { IVRO } from "../../vox/render/IVRO";
+import { IVRO } from "../../vox/render/vtx/IVRO";
 
 export default class VROBase implements IVRO, IVertexRenderObj {
     protected static s_mid: number = 0;

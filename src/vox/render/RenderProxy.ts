@@ -42,6 +42,11 @@ import { IStencil } from "../../vox/render/rendering/IStencil";
 import { Stencil } from "./rendering/Stencil";
 import VROBase from "./VROBase";
 
+import { IRenderingColorMask } from "./rendering/IRenderingColorMask";
+import { RenderingColorMask } from "./rendering/RenderingColorMask";
+import { IRenderingState } from "./rendering/IRenderingState";
+import { RenderingState } from "./rendering/RenderingState";
+
 class RenderProxyParam {
 
     materialUpdater: IROMaterialUpdater = null;
@@ -86,6 +91,8 @@ class RenderProxy implements IRenderProxy{
 
     readonly adapter: IRenderAdapter = null;
     readonly stencil: IStencil = null;
+    readonly renderingState: IRenderingState = null;
+    readonly colorMask: IRenderingColorMask = null;
 
     private m_uid: number = 0;
     private m_camUBO: any = null;
@@ -389,6 +396,8 @@ class RenderProxy implements IRenderProxy{
         selfT.RState = rstate;
         selfT.RContext = this.m_rc;
         selfT.stencil = new Stencil( rstate );
+        selfT.renderingState = new RenderingState();
+        selfT.colorMask = new RenderingColorMask();
 
         this.buildCameraParam();
         
