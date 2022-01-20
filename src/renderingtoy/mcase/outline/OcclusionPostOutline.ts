@@ -22,6 +22,7 @@ export default class OcclusionPostOutline {
     constructor() { }
 
     private m_rscene: IRendererScene = null;
+    private m_testPlane: Plane = new Plane();
 
     private m_targets: IRenderEntity[] = null;
     private m_preDecor: OutlinePreDecorator = null;
@@ -37,7 +38,7 @@ export default class OcclusionPostOutline {
     private m_outLineRTT: IRTTTexture = null;
     private m_colorFBO: IFBOInstance = null;
     private m_outlineFBO: IFBOInstance = null;
-    
+
     private m_bounds: AABB = new AABB();
     private m_expandBias: Vector3D = new Vector3D(10.0, 10.0, 10.0);
     private m_boundsEntity: IRenderEntity;
@@ -51,7 +52,7 @@ export default class OcclusionPostOutline {
             let materialBlock = this.m_rscene.materialBlock;
 
             this.m_preDecor = new OutlinePreDecorator();
-            this.m_preMaterial = materialBlock.createSimpleMaterial( this.m_preDecor );
+            this.m_preMaterial = materialBlock.createSimpleMaterial(this.m_preDecor);
             this.m_preMaterial.initializeByCodeBuf(false);
 
             this.m_preColorRTT = this.m_rscene.textureBlock.createRTTTex2D(32, 32, false);
@@ -62,7 +63,7 @@ export default class OcclusionPostOutline {
             this.m_colorFBO.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);
             this.m_colorFBO.createFBOAt(fboIndex, 512, 512, true, false, 0);
             this.m_colorFBO.setRenderToTexture(this.m_preColorRTT, 0);
-            this.m_colorFBO.setRProcessIDList(occlusionRProcessIDList);            
+            this.m_colorFBO.setRProcessIDList(occlusionRProcessIDList);
             this.m_colorFBO.setGlobalMaterial(this.m_preMaterial, false, true);
 
             this.m_outlineFBO = this.m_rscene.createFBOInstance();
@@ -71,31 +72,31 @@ export default class OcclusionPostOutline {
             this.m_outlineFBO.createFBOAt(fboIndex, 512, 512, true, false, 0);
             this.m_outlineFBO.setRenderToTexture(this.m_outLineRTT, 0);
             this.m_outlineFBO.setRProcessIDList(null);
-
+            
             this.m_rscene.setRenderToBackBuffer();
 
-            this.m_screenDecor = new OccPostOutLineDecorator(true, this.m_preColorRTT );
+            this.m_screenDecor = new OccPostOutLineDecorator(true, this.m_preColorRTT);
             this.m_screenDecor.setRGB3f(1.0, 0.0, 0.0);
             this.m_screenDecor.setThickness(1.0);
             this.m_screenDecor.setDensity(1.5);
-            
-            this.m_boundsDecor = new OccPostOutLineDecorator(false, this.m_preColorRTT );
+
+            this.m_boundsDecor = new OccPostOutLineDecorator(false, this.m_preColorRTT);
             this.m_boundsDecor.setRGB3f(1.0, 0.0, 0.0);
             this.m_boundsDecor.setThickness(1.0);
             this.m_boundsDecor.setDensity(1.5);
 
             this.m_outlinePlane = this.m_rscene.entityBlock.createEntity();
-            this.m_outlinePlane.copyMeshFrom( this.m_rscene.entityBlock.screenPlane );
-            this.m_outlinePlane.setMaterial( materialBlock.createSimpleMaterial( this.m_screenDecor ) );
+            this.m_outlinePlane.copyMeshFrom(this.m_rscene.entityBlock.screenPlane);
+            this.m_outlinePlane.setMaterial(materialBlock.createSimpleMaterial(this.m_screenDecor));
 
             this.m_boundsEntity = this.m_rscene.entityBlock.createEntity();
-            this.m_boundsEntity.copyMeshFrom( this.m_rscene.entityBlock.unitBox );
-            this.m_boundsEntity.setMaterial( materialBlock.createSimpleMaterial( this.m_boundsDecor ) );
-            
-            let plMaterial = materialBlock.createSimpleMaterial( new OccPostOutLineScreen( this.m_outLineRTT ) );
+            this.m_boundsEntity.copyMeshFrom(this.m_rscene.entityBlock.unitBox);
+            this.m_boundsEntity.setMaterial(materialBlock.createSimpleMaterial(this.m_boundsDecor));
+
+            let plMaterial = materialBlock.createSimpleMaterial(new OccPostOutLineScreen(this.m_outLineRTT));
             this.m_displayPlane = this.m_rscene.entityBlock.createEntity();
-            this.m_displayPlane.setMaterial( plMaterial );
-            this.m_displayPlane.copyMeshFrom( this.m_outlinePlane );
+            this.m_displayPlane.setMaterial(plMaterial);
+            this.m_displayPlane.copyMeshFrom(this.m_outlinePlane);
             this.m_displayPlane.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
 
         }
@@ -133,7 +134,7 @@ export default class OcclusionPostOutline {
         this.m_targets = targets;
     }
     setBoundsOffset(offset: number): void {
-        if(offset < 1.0) offset = 1.0;
+        if (offset < 1.0) offset = 1.0;
         this.m_expandBias.setXYZ(offset, offset, offset);
     }
     startup(): void {
@@ -146,7 +147,7 @@ export default class OcclusionPostOutline {
         return this.m_running;
     }
     /**
-     * draw outline line begin
+     * draw outline line effect rendring begin
      */
     drawBegin(): void {
 
@@ -165,52 +166,52 @@ export default class OcclusionPostOutline {
 
                 if (this.m_runningFlag) {
 
-                    this.m_preDecor.setRGB3f(1.0, 0.0, 0.0);
-                    this.m_colorFBO.runBegin();
+                    let bounds = this.m_bounds;
+                    let colorFBO = this.m_colorFBO;
 
-                    this.m_bounds.reset();
+                    this.m_preDecor.setRGB3f(1.0, 0.0, 0.0);
+                    colorFBO.runBegin();
+
+                    bounds.reset();
+
                     for (let i: number = 0; i < this.m_targets.length; ++i) {
                         if (this.m_targets[i].isRenderEnabled()) {
-                            this.m_colorFBO.drawEntity(this.m_targets[i], false, true);
-                            this.m_bounds.union(this.m_targets[i].getGlobalBounds());
+                            colorFBO.drawEntity(this.m_targets[i], false, true);
+                            bounds.union(this.m_targets[i].getGlobalBounds());
                         }
                     }
 
-                    this.m_bounds.expand( this.m_expandBias );
-                    this.m_bounds.updateFast();
-                    
-                    let minV = this.m_bounds.min;
-                    let maxV = this.m_bounds.max;
-                    let v3 = this.m_bounds.center;
-                    this.m_boundsEntity.setScaleXYZ(maxV.x - minV.x, maxV.y - minV.y, maxV.z - minV.z);
-                    this.m_boundsEntity.setXYZ(v3.x, v3.y, v3.z);
+                    bounds.expand(this.m_expandBias);
+                    bounds.updateFast();
+
+                    this.m_boundsEntity.setScaleXYZ(bounds.getWidth(), bounds.getHeight(), bounds.getLong());
+                    this.m_boundsEntity.setPosition(this.m_bounds.center);
                     this.m_boundsEntity.update();
 
-                    this.m_colorFBO.lockColorMask(RendererState.COLOR_MASK_ALL_FALSE);
-                    this.m_colorFBO.clearDepth(1.0);
+                    colorFBO.lockColorMask(RendererState.COLOR_MASK_ALL_FALSE);
+                    colorFBO.clearDepth(1.0);
                     for (let i: number = 0; i < this.m_targets.length; ++i)
                         this.m_targets[i].setVisible(false);
 
-                    this.m_colorFBO.run(false, false, false, true);
-                    this.m_colorFBO.lockColorMask(RendererState.COLOR_MASK_GREEN_TRUE);
+                    colorFBO.run(false, false, false, true);
+                    colorFBO.lockColorMask(RendererState.COLOR_MASK_GREEN_TRUE);
                     for (let i: number = 0; i < this.m_targets.length; ++i)
                         this.m_targets[i].setVisible(true);
 
                     this.m_preDecor.setRGB3f(0.0, 1.0, 0.0);
-                    this.m_colorFBO.updateGlobalMaterialUniform();
+                    colorFBO.updateGlobalMaterialUniform();
                     for (let i: number = 0; i < this.m_targets.length; ++i)
-                        this.m_colorFBO.drawEntity(this.m_targets[i], false, true);
+                        colorFBO.drawEntity(this.m_targets[i], false, true);
 
-                    this.m_colorFBO.runEnd();
-                    this.m_colorFBO.unlockRenderColorMask();
-                    this.m_colorFBO.unlockMaterial();
+                    colorFBO.runEnd();
+                    colorFBO.unlockRenderColorMask();
+                    colorFBO.unlockMaterial();
                 }
             }
         }
     }
-    private m_testPlane: Plane = new Plane();
     /**
-     * draw outline
+     * draw outline effect rendring
      */
     draw(): void {
 
@@ -254,7 +255,7 @@ export default class OcclusionPostOutline {
         }
     }
     /**
-     * draw outline line end
+     * draw outline line effect rendring end
      */
     drawEnd(): void {
     }

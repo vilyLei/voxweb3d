@@ -166,7 +166,7 @@ class AABB {
 		if (vz < this.min.z || vz > this.max.z) return false;
 		return true;
 	}
-	
+
 	copyFrom(ab: AABB): void {
 		//this.setRadius(ab.getRadius());
 		this.radius = ab.radius;
@@ -196,23 +196,23 @@ class AABB {
 	}
 
 	private updateThis(): void {
-		
+
 		this.center.x = 0.5 * this.m_width;
 		this.center.y = 0.5 * this.m_height;
 		this.center.z = 0.5 * this.m_long;
-		
+
 		this.m_halfLong = this.center.z;
 		this.m_halfWidth = this.center.x;
 		this.m_halfHeight = this.center.y;
-		
+
 		this.radius2 = this.m_halfWidth * this.m_halfWidth + this.m_halfHeight * this.m_halfHeight + this.m_halfLong * this.m_halfLong;
 		this.radius = Math.sqrt(this.radius2);
-		
-		this.center.addBy( this.min );
+
+		this.center.addBy(this.min);
 		// this.center.x += this.min.x;
 		// this.center.y += this.min.y;
 		// this.center.z += this.min.z;
-		
+
 		++this.version;
 	}
 	update(): void {
@@ -237,24 +237,24 @@ class AABB {
 			this.min.z = this.m_long;
 		}
 		this.m_long = this.max.z - this.min.z;
-		
+
 		this.updateThis();
 
 		// this.center.x = 0.5 * this.m_width;
 		// this.center.y = 0.5 * this.m_height;
 		// this.center.z = 0.5 * this.m_long;
-		
+
 		// this.m_halfLong = this.center.z;
 		// this.m_halfWidth = this.center.x;
 		// this.m_halfHeight = this.center.y;
-		
+
 		// this.radius2 = this.m_halfWidth * this.m_halfWidth + this.m_halfHeight * this.m_halfHeight + this.m_halfLong * this.m_halfLong;
 		// this.radius = Math.sqrt(this.radius2);
-		
+
 		// this.center.x += this.min.x;
 		// this.center.y += this.min.y;
 		// this.center.z += this.min.z;
-		
+
 		// ++this.version;
 	}
 	updateFast(): void {
@@ -360,9 +360,9 @@ class AABB {
 		tymin = (vecs[rsigns[1]].y - lpv.y) * ltInvtv.y;
 		tymax = (vecs[1-rsigns[1]].y - lpv.y) * ltInvtv.y;
 		if ((tmin > tymax) || (tymin > tmax))
-		    return false;
+			return false;
 		if (tymin > tmin)
-		    tmin = tymin;
+			tmin = tymin;
 		if (tymax < tmax)
 			tmax = tymax;
 		
@@ -371,7 +371,7 @@ class AABB {
 		if ((tmin > tymax) || (tymin > tmax))
 			return false;		
 		if (tymin > tmin)
-		    tmin = tymin;
+			tmin = tymin;
 		if (tymax < tmax)
 			tmax = tymax;
 			
@@ -466,7 +466,7 @@ class AABB {
 		outV.copyFrom(ltv);
 		outV.scaleBy(tmin);
 		outV.addBy(lpv);
-		console.log("L Hit outV: " + outV.toString());
+		// console.log("L Hit outV: " + outV.toString());
 		//outV.copyFrom(ltv);
 		//outV.scaleBy(tmax);
 		//outV.addBy(lpv);

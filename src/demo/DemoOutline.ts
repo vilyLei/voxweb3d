@@ -174,7 +174,7 @@ export class DemoOutline {
 
         let scale: number = 2.5;
         let box: Box3DEntity = new Box3DEntity();
-        
+
         box.uvPartsNumber = 6;
         box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixparts.jpg")]);
         box.setScaleXYZ(scale,scale,scale);
@@ -225,11 +225,6 @@ export class DemoOutline {
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
         {
-            
-            this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
-            this.m_rscene.runBegin();
-            this.m_rscene.update(false);
-
             /*
             // draw stencil outline
             this.m_stencilOutline.drawBegin();
@@ -238,9 +233,7 @@ export class DemoOutline {
             this.m_stencilOutline.draw();
             this.m_stencilOutline.drawEnd();
             //*/
-            this.m_rscene.runAt(0);
-            this.m_rscene.runAt(1);
-            this.m_rscene.runAt(2);
+            this.m_rscene.run();
 
             this.m_postOutline.drawBegin();
             this.m_postOutline.draw();

@@ -78,6 +78,8 @@ export default interface IRenderEntity {
     isPolyhedral(): boolean;
 
     setXYZ(px: number, py: number, pz: number): void;
+    setPosition(pos: Vector3D): void;
+    getPosition(resultPos: Vector3D): void;
     setRotationXYZ(rx: number, ry: number, rz: number): void;
     setScaleXYZ(sx: number, sy: number, sz: number): void;
 
