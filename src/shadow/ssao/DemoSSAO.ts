@@ -177,7 +177,7 @@ export class DemoSSAO {
         //this.m_rscene.addEntity(this.m_aoDstPlane, 1);
 
         let size: number = 512;
-        this.m_blurModule = new PingpongBlur(this.m_rscene.getRenderer());
+        this.m_blurModule = new PingpongBlur(this.m_rscene);
         this.m_blurModule.setBlurCount(2);
         this.m_blurModule.setSyncViewSizeEnabled(false);
         this.m_blurModule.setFBOSize(size, size);

@@ -7,6 +7,7 @@ import CameraTrack from "../../vox/view/CameraTrack";
 import { EntityManager } from "./EntityManager";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import { DepthBlur } from "../../renderingtoy/mcase/DepthBlur";
+import IRendererScene from "../../vox/scene/IRendererScene";
 
 class DepthBlurScene {
     private m_renderer: RendererInstance = null;
@@ -19,8 +20,8 @@ class DepthBlurScene {
 
     private m_depthBlur: DepthBlur = new DepthBlur();
     constructor() { }
-    initialize(renderer: RendererInstance): void {
-        this.m_renderer = renderer;
+    initialize(rscene: IRendererScene): void {
+        this.m_renderer = (rscene as any).getRenderer();
         this.m_rcontext = this.m_renderer.getRendererContext();
         this.m_texBlock = new TextureBlock();
         this.m_texBlock.setRenderer(this.m_renderer.getRenderProxy());
@@ -29,7 +30,7 @@ class DepthBlurScene {
         this.m_renderer.appendProcess();
 
         this.m_depthBlur.initialize(
-            renderer,
+            rscene,
             this.m_texBlock,
             this.m_renderer.getProcessAt(0),
             this.m_renderer.getProcessAt(1)
@@ -42,7 +43,7 @@ class DepthBlurScene {
         RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
 
         this.m_entityMana.setTextureLoader(this.m_textureLoader);
-        this.m_entityMana.initialize(renderer);
+        this.m_entityMana.initialize(this.m_renderer);
     }
 
     private runThis(): void {

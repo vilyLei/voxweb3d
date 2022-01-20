@@ -7,11 +7,11 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
-import CameraBase from "../../vox/view/CameraBase";
+import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import Plane from "../../vox/geom/Plane";
 
 export default class CameraViewRay {
-    private m_camera: CameraBase = null;
+    private m_camera: IRenderCamera = null;
     private m_stage: IRenderStage3D = null;
     private m_rlpv: Vector3D = new Vector3D();
     private m_rltv: Vector3D = new Vector3D();
@@ -23,7 +23,7 @@ export default class CameraViewRay {
     position: Vector3D = new Vector3D();
 
     constructor() { }
-    bindCameraAndStage(camera: CameraBase, stage: IRenderStage3D): void {
+    bindCameraAndStage(camera: IRenderCamera, stage: IRenderStage3D): void {
         this.m_camera = camera;
         this.m_stage = stage;
     }

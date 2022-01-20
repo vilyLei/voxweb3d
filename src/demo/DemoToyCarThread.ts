@@ -24,6 +24,8 @@ import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Matrix4 from "../vox/math/Matrix4";
 import MathConst from "../vox/math/MathConst";
+import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
+import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
 
 export class DemoToyCarThread extends DemoInstance implements IShaderLibListener {
     constructor() {
@@ -48,6 +50,15 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
     }
 
     protected initializeSceneObj(): void {
+
+        let rscene = this.m_rscene;
+        let materialBlock = new RenderableMaterialBlock();
+        materialBlock.initialize();
+        rscene.materialBlock = materialBlock;
+        let entityBlock = new RenderableEntityBlock();
+        entityBlock.initialize();
+        rscene.entityBlock = entityBlock;
+
         console.log("DemoToyCarThread::initialize()......");
         this.m_camTrack = new CameraTrack();
         this.m_camTrack.bindCamera(this.m_rcontext.getCamera());

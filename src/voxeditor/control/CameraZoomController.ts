@@ -9,13 +9,13 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
-import CameraBase from "../../vox/view/CameraBase";
+import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import DivLog from "../../vox/utils/DivLog";
 import MouseEvent from "../../vox/event/MouseEvent";
 import RendererDevice from "../../vox/render/RendererDevice";
 
 export default class CameraZoomController {
-    private m_camera: CameraBase = null;
+    private m_camera: IRenderCamera = null;
 
     private m_touchZoomBoo: boolean = false;
     private m_preDis: number = 0;
@@ -57,7 +57,7 @@ export default class CameraZoomController {
     setMouseWheelZoomSpd(spd: number) {
         this.m_mouseWheelZoomSpd = spd;
     }
-    bindCamera(camera: CameraBase) {
+    bindCamera(camera: IRenderCamera) {
         this.m_camera = camera;
     }
     initialize(stage3D: IRenderStage3D): void {
@@ -150,7 +150,7 @@ export default class CameraZoomController {
 
         if (this.m_camera != null) {
             if(this.syncLookAt) {
-                this.m_camera.setLookAtPosition( lookAtPos );
+                (this.m_camera as any).setLookAtPosition( lookAtPos );
             }
             if (this.m_flagType == 2) {
                 // camera foward update
@@ -167,8 +167,8 @@ export default class CameraZoomController {
                         }
                     }
                     if( Math.abs(pd) > 0.1) {
-                        this.m_camera.forward(pd);
-                        if (lookAtEnabled) this.m_camera.setLookPosXYZFixUp(lookAtPos.x, lookAtPos.y, lookAtPos.z);
+                        (this.m_camera as any).forward(pd);
+                        if (lookAtEnabled) (this.m_camera as any).setLookPosXYZFixUp(lookAtPos.x, lookAtPos.y, lookAtPos.z);
                     }
                     if(this.m_windowsEnvFlag) {
                         this.m_fowardDis *= 0.95;
@@ -180,7 +180,7 @@ export default class CameraZoomController {
             }
             else if (this.m_flagType == 1) {
                 // drag to slide
-                this.m_camera.slideViewOffsetXY(-this.m_tempa.x * this.m_slideSpd, this.m_tempa.y * this.m_slideSpd);
+                (this.m_camera as any).slideViewOffsetXY(-this.m_tempa.x * this.m_slideSpd, this.m_tempa.y * this.m_slideSpd);
             }
         }
     }

@@ -1,4 +1,4 @@
-import RendererScene from "../../vox/scene/RendererScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import CameraDragController from "../../voxeditor/control/CameraDragController";
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 
@@ -7,7 +7,7 @@ import CameraViewRay from "../../vox/view/CameraViewRay";
 
 class UserInteraction {
 
-    private m_rscene: RendererScene = null;
+    private m_rscene: IRendererScene = null;
 
     readonly stageDragCtrl: CameraDragController = new CameraDragController();
     readonly cameraZoomController: CameraZoomController = new CameraZoomController();
@@ -22,7 +22,7 @@ class UserInteraction {
      */
     cameraCtrlEnabled: boolean = true;
 
-    initialize(rscene: RendererScene): void {
+    initialize(rscene: IRendererScene): void {
 
         if (this.m_rscene == null) {
 

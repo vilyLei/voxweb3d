@@ -204,6 +204,12 @@ class OrthoUIScene implements IRendererScene {
         return this.m_ruisc.getStage3D();
     }
     
+    getViewWidth(): number {
+        return this.m_ruisc.getViewWidth();
+    }
+    getViewHeight(): number {
+        return this.m_ruisc.getViewHeight();
+    }
     getRenderProxy(): RenderProxy {
         return this.m_ruisc.getRenderProxy();
     }

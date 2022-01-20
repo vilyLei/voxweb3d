@@ -114,6 +114,9 @@ interface IRendererScene {
     getCamera(): IRenderCamera;
     getStage3D(): IRenderStage3D;
     getRenderProxy(): RenderProxy;
+
+    getViewWidth(): number;
+    getViewHeight(): number;
     /**
      * 获取渲染器可渲染对象管理器状态(版本号)
      */

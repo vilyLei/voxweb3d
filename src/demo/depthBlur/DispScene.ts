@@ -15,6 +15,7 @@ import PingpongBlur from "../../renderingtoy/mcase/PingpongBlur";
 import CameraTrack from "../../vox/view/CameraTrack";
 import { EntityManager } from "./EntityManager";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
+import IRendererScene from "../../vox/scene/IRendererScene";
 
 class DispScene {
     
@@ -30,8 +31,8 @@ class DispScene {
     private m_texBlock: TextureBlock;
     constructor() {
     }
-    initialize(renderer: RendererInstance): void {
-        this.m_renderer = renderer;
+    initialize(rscene: IRendererScene): void {
+        this.m_renderer = (rscene as any).getRenderer();
 
         //TextureStore.SetRenderer( this.m_renderer );
         this.m_renderer.appendProcess();
@@ -52,7 +53,7 @@ class DispScene {
         RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
         RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
 
-        this.m_blurModule = new PingpongBlur(renderer);
+        this.m_blurModule = new PingpongBlur(rscene);
         this.m_blurModule.bindSrcProcessId(2);
         this.m_blurModule.setBackbufferVisible(false);
 

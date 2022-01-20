@@ -187,7 +187,7 @@ export class DemoSSAO3 implements DracoTaskListener {
         let size: number = 256;
         let pw: number = Math.round(this.m_rscene.getViewWidth() * 0.5);
         let ph: number = Math.round(this.m_rscene.getViewHeight() * 0.5);
-        this.m_blurModule = new PingpongBlur(this.m_rscene.getRenderer());
+        this.m_blurModule = new PingpongBlur(this.m_rscene);
         this.m_blurModule.setBlurCount(2);
         this.m_blurModule.setSyncViewSizeEnabled(false);
         this.m_blurModule.setFBOSize(pw, ph);

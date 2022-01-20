@@ -5,17 +5,16 @@
 /*                                                                         */
 /***************************************************************************/
 
-import Vector3D from "../../vox/math/Vector3D";
-import CameraBase from "../../vox/view/CameraBase";
+import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 
 class CameraDragSlide {
     constructor() { }
 
     private m_stage3D: IRenderStage3D = null;
-    private m_camera: CameraBase = null;
+    private m_camera: IRenderCamera = null;
     slideSpeed: number = 2.0;
-    initialize(stage3D: IRenderStage3D, camera: CameraBase): void {
+    initialize(stage3D: IRenderStage3D, camera: IRenderCamera): void {
         if (this.m_stage3D == null) {
             this.m_stage3D = stage3D;
             this.m_camera = camera;
@@ -38,7 +37,7 @@ class CameraDragSlide {
         if (this.m_enabled) {
             let dx: number = (this.m_mouseX - this.m_stage3D.mouseX) * this.slideSpeed;
             let dy: number = (this.m_mouseY - this.m_stage3D.mouseY) * this.slideSpeed;
-            this.m_camera.slideViewOffsetXY(dx, dy);
+            (this.m_camera as any).slideViewOffsetXY(dx, dy);
             this.m_mouseX = this.m_stage3D.mouseX;
             this.m_mouseY = this.m_stage3D.mouseY;
         }

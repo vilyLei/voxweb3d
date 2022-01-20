@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import CameraBase from "../../vox/view/CameraBase";
+import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import MouseEvent from "../../vox/event/MouseEvent";
 import {CameraDragSwinger} from "../../voxeditor/control/CameraDragSwinger";
@@ -18,7 +18,7 @@ export default class CameraDragController {
     private m_dragSwinger: CameraDragSwinger = new CameraDragSwinger();
     private m_dragSlider: CameraDragSlide = new CameraDragSlide();
     private m_swing: boolean = true;
-    initialize(stage3D: IRenderStage3D, camera: CameraBase): void {
+    initialize(stage3D: IRenderStage3D, camera: IRenderCamera): void {
         if (this.m_stage3D == null) {
             this.m_stage3D = stage3D;
             this.m_dragSwinger.initialize(stage3D, camera);

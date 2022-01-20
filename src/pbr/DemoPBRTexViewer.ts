@@ -30,6 +30,8 @@ import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 import { UserInteraction } from "../vox/engine/UserInteraction";
 import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
 import { TextBillboardLoading } from "../loading/base/TextBillboardLoading";
+import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
+import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
 
 export class DemoPBRTexViewer implements IShaderLibListener {
 
@@ -67,6 +69,14 @@ export class DemoPBRTexViewer implements IShaderLibListener {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();
+            
+            let rscene = this.m_rscene;
+            let materialBlock = new RenderableMaterialBlock();
+            materialBlock.initialize();
+            rscene.materialBlock = materialBlock;
+            let entityBlock = new RenderableEntityBlock();
+            entityBlock.initialize();
+            rscene.entityBlock = entityBlock;
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);

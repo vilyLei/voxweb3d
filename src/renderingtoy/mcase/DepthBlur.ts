@@ -8,6 +8,7 @@ import {ScrDepBlurMaterial} from "./material/ScrDepBlurMaterial";
 import ScreenPlaneMaterial from "../../vox/material/mcase/ScreenPlaneMaterial";
 import FBOInstance from "../../vox/scene/FBOInstance";
 import PingpongBlur from "../../renderingtoy/mcase/PingpongBlur";
+import IRendererScene from "../../vox/scene/IRendererScene";
 
 class DepthBlur {
     
@@ -26,9 +27,9 @@ class DepthBlur {
     private m_scrDepMaterial: ScrDepBaseMaterial = new ScrDepBaseMaterial();
     constructor() {
     }
-    initialize(renderer: RendererInstance, textureBlock: TextureBlock, opacityProcess: IRenderProcess, blendProcess: IRenderProcess): void {
+    initialize(rscene: IRendererScene, textureBlock: TextureBlock, opacityProcess: IRenderProcess, blendProcess: IRenderProcess): void {
         if (this.m_renderer == null) {
-            this.m_renderer = renderer;
+            this.m_renderer = (rscene as any).getRenderer();
 
             this.m_blurSrcProcess = this.m_renderer.appendProcess();
             this.m_resultProcess = this.m_renderer.appendProcess();
@@ -38,18 +39,18 @@ class DepthBlur {
 
             this.m_textureBlock = textureBlock;
 
-            this.m_blurModule = new PingpongBlur(renderer);
+            this.m_blurModule = new PingpongBlur(rscene);
             this.m_blurModule.bindSrcProcess(this.m_blurSrcProcess);
             this.m_blurModule.setBackbufferVisible(false);
 
-            this.m_depthFbo = new FBOInstance(renderer, textureBlock.getRTTStrore());
+            this.m_depthFbo = new FBOInstance(this.m_renderer, textureBlock.getRTTStrore());
             this.m_depthFbo.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);                     // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
             this.m_depthFbo.createAutoSizeFBOAt(0, true, false);
             this.m_depthFbo.setRenderToHalfFloatTexture(null, 0);                     // framebuffer color attachment 0
             this.m_depthFbo.setRProcessList([this.m_opacityProcess]);
             this.m_depthFbo.useGlobalMaterial(this.m_scrDepMaterial);
 
-            this.m_colorFbo = new FBOInstance(renderer, textureBlock.getRTTStrore());
+            this.m_colorFbo = new FBOInstance(this.m_renderer, textureBlock.getRTTStrore());
             this.m_colorFbo.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);                     // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
             this.m_colorFbo.createAutoSizeFBOAt(0, true, false);
             this.m_colorFbo.setRenderToRGBATexture(null, 0);                          // framebuffer color attachment 0

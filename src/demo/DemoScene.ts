@@ -5,8 +5,7 @@ import Color4 from "../vox/material/Color4";
 import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
-import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../vox/texture/TextureConst";
-import TextureProxy from "../vox/texture/TextureProxy";
+
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import RendererScene from "../vox/scene/RendererScene";
 import MouseEvent from "../vox/event/MouseEvent";
@@ -18,6 +17,7 @@ import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import { UserInteraction } from "../vox/engine/UserInteraction";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 
 export class DemoScene {
     constructor() { }
@@ -26,11 +26,8 @@ export class DemoScene {
     private m_texLoader: ImageTextureLoader = null;
     private m_interaction: UserInteraction = new UserInteraction();
     private m_profileInstance: ProfileInstance = new ProfileInstance();
-    private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
+    private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+        return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled);
     }
     initialize(): void {
         console.log("DemoScene::initialize()......");
@@ -54,22 +51,15 @@ export class DemoScene {
 
             this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
-            let tex0: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-            let tex1: TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");            
-            let tex2: TextureProxy = this.getImageTexByUrl("static/assets/displacement_01.jpg");
-            let tex3: TextureProxy = this.getImageTexByUrl("static/assets/flare_core_02.jpg");
+            let tex0 = this.getImageTexByUrl("static/assets/default.jpg");
+            let tex1 = this.getImageTexByUrl("static/assets/broken_iron.jpg");            
+            let tex2 = this.getImageTexByUrl("static/assets/displacement_01.jpg");
+            let tex3 = this.getImageTexByUrl("static/assets/flare_core_02.jpg");
 
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(600.0);
             this.m_rscene.addEntity(axis);
             
-            // let asph = new Sphere3DEntity();
-            // //asph.inverseUV = true;
-            // asph.initialize(250, 20, 20, [tex3]);
-            // this.m_rscene.addEntity(asph);
-            // return;
-
-
             let i: number = 0;
             let total: number = 0;
             let scaleK: number = 1.0;
@@ -121,7 +111,9 @@ export class DemoScene {
         this.m_bgColor.setRGB3f(0.4 * Math.random(), 0.4 * Math.random(), 0.4 * Math.random());
     }
     run(): void {
+        
         this.m_rscene.setClearColor(this.m_bgColor);
+
         this.m_interaction.run();
 
         this.m_rscene.run();

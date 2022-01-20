@@ -83,7 +83,7 @@ export class DemoRTTLod {
 
             this.update();
             
-            this.m_blurModule = new PingpongBlur(this.m_rscene.getRenderer());
+            this.m_blurModule = new PingpongBlur(this.m_rscene);
             //this.m_blurModule.setSyncViewSizeEnabled(false);
             this.m_blurModule.setFBOSize(256,256);
             this.m_blurModule.setBlurDensity(1.0);
