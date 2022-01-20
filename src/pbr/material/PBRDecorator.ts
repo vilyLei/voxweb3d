@@ -12,7 +12,7 @@ import MathConst from "../../vox/math/MathConst";
 import Color4 from "../../vox/material/Color4";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
-import { PBRShaderCode } from "./glsl/PBRShaderCode";
+// import { PBRShaderCode } from "./glsl/PBRShaderCode";
 import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
@@ -382,7 +382,8 @@ class PBRDecorator implements IMaterialDecorator {
      * @returns shader code object
      */
     getShaderCodeObject(): IShaderCodeObject {
-        return PBRShaderCode;
+        return null;
+        // return PBRShaderCode;
     }
     /**
      * @returns unique name string

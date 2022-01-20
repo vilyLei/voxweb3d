@@ -103,7 +103,6 @@ class Material extends MaterialBase implements IMaterial {
     }
     createSelfUniformData(): ShaderUniformData {
         let sud: ShaderUniformData = this.m_decorator.createUniformData();
-        console.log("this.vertUniform != null, sud != null: ",this.vertUniform != null, sud != null);
         if(this.vertUniform != null && sud != null) {
             this.vertUniform.buildShaderUniformData(sud);
         }
