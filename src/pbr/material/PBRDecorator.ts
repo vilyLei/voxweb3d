@@ -12,7 +12,7 @@ import MathConst from "../../vox/math/MathConst";
 import Color4 from "../../vox/material/Color4";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
-//  import { PBRShaderCode } from "./glsl/PBRShaderCode";
+import { PBRShaderCode } from "./glsl/PBRShaderCode";
 import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
@@ -107,7 +107,7 @@ class PBRDecorator implements IMaterialDecorator {
     normalNoiseEnabled: boolean = false;
     pixelNormalNoiseEnabled: boolean = false;
     mirrorMapLodEnabled: boolean = false;
-    normalMapEnabled: boolean = false;
+    //normalMapEnabled: boolean = false;
     hdrBrnEnabled: boolean = false;
     vtxFlatNormal: boolean = false;
 
@@ -330,6 +330,35 @@ class PBRDecorator implements IMaterialDecorator {
     }
     buildShader(coder: IShaderCodeBuilder): void {
 
+        coder.normalMapEnabled = this.normalMap != null;
+        coder.mapLodEnabled = true;
+
+        coder.useHighPrecious();
+
+        let mirrorProjEnabled: boolean = this.mirrorMap != null && this.texturesTotal > 0;
+        if (this.normalNoiseEnabled) coder.addDefine("VOX_NORMAL_NOISE","1");
+
+        if (this.woolEnabled) coder.addDefine("VOX_WOOL","1");
+        if (this.toneMappingEnabled) coder.addDefine("VOX_TONE_MAPPING","1");
+        if (this.scatterEnabled) coder.addDefine("VOX_SCATTER","1");
+        if (this.specularBleedEnabled) coder.addDefine("VOX_SPECULAR_BLEED","1");
+        if (this.metallicCorrection) coder.addDefine("VOX_METALLIC_CORRECTION","1");
+        if (this.gammaCorrection) coder.addDefine("VOX_GAMMA_CORRECTION","1");
+        if (this.absorbEnabled) coder.addDefine("VOX_ABSORB","1");
+        if (this.pixelNormalNoiseEnabled) coder.addDefine("VOX_PIXEL_NORMAL_NOISE","1");
+
+        if (this.mirrorMapLodEnabled) coder.addDefine("VOX_MIRROR_MAP_LOD", "1");
+        if (this.hdrBrnEnabled) coder.addDefine("VOX_HDR_BRN", "1");
+        if (this.vtxFlatNormal) coder.addDefine("VOX_VTX_FLAT_NORMAL", "1");
+
+        coder.addFragUniform("vec4", "u_fragLocalParams", this.fragLocalParamsTotal);
+        coder.addFragUniform("vec4", "u_pbrParams", 4);
+
+        if (mirrorProjEnabled) {
+            coder.uniform.useStage(false, true);
+            coder.addFragUniform("vec4", "u_mirrorParams", 2);
+        }
+        coder.vertMatrixInverseEnabled = true;
     }
     /**
      * @returns local uniform data
@@ -346,14 +375,14 @@ class PBRDecorator implements IMaterialDecorator {
      * @returns shader code object uuid
      */
     getShaderCodeObjectUUID(): ShaderCodeUUID {
-        return null;
+        return ShaderCodeUUID.PBR;
     }
     /**
      * get custom shader code object
      * @returns shader code object
      */
     getShaderCodeObject(): IShaderCodeObject {
-        return null;
+        return PBRShaderCode;
     }
     /**
      * @returns unique name string
@@ -386,9 +415,9 @@ class PBRDecorator implements IMaterialDecorator {
     }
     destroy(): void {
 
-        // this.vertUniform = null;
         this.m_pbrParams = null;
         this.m_fragLocalParams = null;
         this.m_mirrorParam = null;
     }
 }
+export { PBRDecorator }

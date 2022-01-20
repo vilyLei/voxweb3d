@@ -19,6 +19,7 @@ class MaterialShaderBuffer extends ShaderCodeBuffer {
 
     private m_uniqueName: string = "";
     decorator: IMaterialDecorator = null;
+    vertUniform: UniformComp = null;
     constructor() {
         super();
     }
@@ -35,6 +36,9 @@ class MaterialShaderBuffer extends ShaderCodeBuffer {
         return this.m_texBulder.getTextures();
     }
     buildShader(): void {
+        if(this.vertUniform != null) {
+            this.vertUniform.use(this.m_coder);
+        }
         this.decorator.buildShader( this.m_coder );
     }
     getShaderCodeObjectUUID(): ShaderCodeUUID {
@@ -74,6 +78,8 @@ class Material extends MaterialBase implements IMaterial {
 
         buf.buildPipelineParams();
 
+        buf.vertUniform = this.vertUniform;
+
         let list = buf.createTextureList();
         if(this.vertUniform != null) this.vertUniform.getTextures(buf.getShaderCodeBuilder(), list);
         buf.getTexturesFromPipeline( list );
@@ -97,6 +103,7 @@ class Material extends MaterialBase implements IMaterial {
     }
     createSelfUniformData(): ShaderUniformData {
         let sud: ShaderUniformData = this.m_decorator.createUniformData();
+        console.log("this.vertUniform != null, sud != null: ",this.vertUniform != null, sud != null);
         if(this.vertUniform != null && sud != null) {
             this.vertUniform.buildShaderUniformData(sud);
         }

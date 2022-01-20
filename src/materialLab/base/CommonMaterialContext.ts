@@ -45,6 +45,21 @@ class CommonMaterialContext extends MaterialContext {
         if(vertUniform) material.vertUniform = new VertUniformComp();
         return material;
     }
+    createSpecularTex(hdrBrnEnabled: boolean): IRenderTexture {
+
+        if(this.m_specularEnvMap == null) {
+            let envMapUrl: string = "static/bytes/spe.mdf";
+            if (hdrBrnEnabled) {
+                envMapUrl = "static/bytes/speBrn.bin";
+            }
+            this.m_specularLoader = new SpecularTextureLoader();
+            this.m_specularLoader.hdrBrnEnabled = hdrBrnEnabled;
+            this.m_specularLoader.loadTextureWithUrl(envMapUrl, this.m_rscene);
+            this.m_specularEnvMap = this.m_specularLoader.texture;
+            this.m_specularEnvMap.__$attachThis();
+        }
+        return this.m_specularEnvMap;
+    }
     createPBRLightMaterial(decorator: boolean = true, vertUniform: boolean = false, specularEnvMapEnabled: boolean = false): PBRMaterial {
 
         let material: PBRMaterial = new PBRMaterial();
@@ -54,6 +69,7 @@ class CommonMaterialContext extends MaterialContext {
         if(material.decorator != null) {
             if(specularEnvMapEnabled) {
                 material.decorator.hdrBrnEnabled = true;
+                /*
                 if(this.m_specularEnvMap == null) {
                     let envMapUrl: string = "static/bytes/spe.mdf";
                     if (material.decorator.hdrBrnEnabled) {
@@ -66,7 +82,9 @@ class CommonMaterialContext extends MaterialContext {
                     this.m_specularEnvMap.__$attachThis();
                 }
                 material.decorator.specularEnvMap = this.m_specularEnvMap;
-            }            
+                //*/
+                material.decorator.specularEnvMap = this.createSpecularTex( material.decorator.hdrBrnEnabled );
+            }
         }
         return material;
     }

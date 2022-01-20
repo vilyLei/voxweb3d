@@ -29,6 +29,9 @@ import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
 import { TextBillboardLoading } from "../loading/base/TextBillboardLoading";
 import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
 import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
+import { IMaterial } from "../vox/material/IMaterial";
+import { PBRDecorator } from "./material/PBRDecorator";
+import IRenderMaterial from "../vox/render/IRenderMaterial";
 
 export class DemoPBRTexViewer implements IShaderLibListener {
 
@@ -223,23 +226,19 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         }
         let material: PBRMaterial;
         let sph: Sphere3DEntity;
-        ///*
+        /*
         let vertUniform: VertUniformComp;
         material = this.createMaterial(1.0, 0.4, 1.0);
         vertUniform = material.vertUniform as VertUniformComp;
 
         material.decorator.aoMapEnabled = this.aoMapEnabled;
         material.decorator.armMap = armMap;
-
         material.decorator.scatterEnabled = false;
-
         // material.decorator.specularEnvMap = this.m_specularEnvMap;
         material.decorator.diffuseMap = diffuseMap;
         material.decorator.normalMap = normalMap;
         material.decorator.aoMap = aoMap;
-
         vertUniform.displacementMap = displacementMap;
-
         material.decorator.parallaxMap = parallaxMap;
 
         material.initializeByCodeBuf(true);
@@ -249,13 +248,17 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         material.setScatterIntensity(8.0);
         material.setParallaxParams(1, 10, 5.0, 0.02);
         material.setSideIntensity(8.0);
+        //*/
         
+        //createPBRM
+        //let dispMaterial: IRenderMaterial = material;
+        let dispMaterial: IRenderMaterial = this.createPBRM(1.0, 0.4, 1.0);
         // let objUrl: string = "static/assets/obj/ellipsoid_01.obj";
         let objUrl: string = "static/assets/obj/apple_01.obj";
         //objUrl = "static/assets/obj/building_001.obj";
         let objDisp: ObjData3DEntity = new ObjData3DEntity();
         objDisp.baseParsering = false;
-        objDisp.setMaterial(material);
+        objDisp.setMaterial(dispMaterial);
         objDisp.showDoubleFace();
         //objDisp.dataIsZxy = true;
         let moduleScale: number = 400.0;//10.0 + Math.random() * 5.5;
@@ -303,6 +306,77 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         //DebugFlag.Flag_0 = 0;
     }
 
+    private createPBRM(metallic: number, roughness: number, ao: number): IMaterial {
+
+        let vertUniform: VertUniformComp = new VertUniformComp();
+        let decor: PBRDecorator = new PBRDecorator();
+        let m = this.m_rscene.materialBlock.createMaterial(decor);
+        //specularEnvMap = this.createSpecularTex( material.decorator.hdrBrnEnabled );
+        m.setMaterialPipeline(this.m_materialCtx.pbrPipeline);
+        m.vertUniform = vertUniform;
+
+        decor.specularEnvMap = this.m_materialCtx.createSpecularTex( true );
+
+        decor.scatterEnabled = false;
+        decor.woolEnabled = true;
+        decor.absorbEnabled = false;
+        decor.normalNoiseEnabled = false;
+
+        decor.setMetallic(metallic);
+        decor.setRoughness(roughness);
+        decor.setAO(ao);
+
+        decor.shadowReceiveEnabled = false;
+        decor.fogEnabled = this.fogEnabled;
+        
+
+        let diffuseMap: IRenderTexture = null;
+        let normalMap: IRenderTexture = null;
+        let armMap: IRenderTexture = null;
+        let aoMap: IRenderTexture = null;
+        this.aoMapEnabled = true;
+        let ns: string = "rust_coarse_01";
+        ns = "medieval_blocks_02";
+        ns = "rough_plaster_broken";
+        //ns = "metal_plate";
+
+        diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_diff_1k.jpg");
+        //diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
+        normalMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_nor_1k.jpg");
+        armMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_arm_1k.jpg");
+
+        if (this.aoMapEnabled) {
+            //aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_OCC.png");
+            //aoMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
+        }
+        let displacementMap: IRenderTexture = null;
+        displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/"+ns+"_disp_1k.jpg");
+        let parallaxMap: IRenderTexture = null;
+        //parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/brick_bumpy01.jpg");
+        parallaxMap = displacementMap;
+
+        decor.armMap = armMap;
+        decor.scatterEnabled = false;
+        // decor.decorator.specularEnvMap = this.m_specularEnvMap;
+        decor.diffuseMap = diffuseMap;
+        decor.normalMap = normalMap;
+        decor.aoMap = aoMap;
+        vertUniform.displacementMap = displacementMap;
+        decor.parallaxMap = parallaxMap;
+
+        decor.initialize();
+        vertUniform.initialize();
+
+        //vertUniform.setDisplacementParams(10.0, -5.0);
+        vertUniform.setDisplacementParams(0.02, -0.01);
+        decor.setAlbedoColor(1.0,1.0,1.0);
+        decor.setScatterIntensity(8.0);
+        decor.setParallaxParams(1, 10, 5.0, 0.02);
+        decor.setSideIntensity(8.0);
+
+        m.initializeByCodeBuf( true );
+        return m;
+    }
     private makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
 
         let material: PBRMaterial = this.m_materialCtx.createPBRLightMaterial(true, true, true);
