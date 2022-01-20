@@ -75,9 +75,6 @@ export default class RenderShader implements IRenderShader, IRenderResource {
         }
     }
     useUniform(uniform: IShaderUniform): void {
-        // if(uniform.uns == "ggg" && DebugFlag.Flag_0 > 0) {
-        //     console.log("ggg this.m_uniform != uniform: ", (this.m_uniform != uniform));
-        // }
         if (this.m_uniform != uniform) {
             this.m_uniform = uniform;
             uniform.use(this);

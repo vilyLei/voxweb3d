@@ -5,13 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
-import IShaderCodeObject from "../../vox/material/IShaderCodeObject";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import { ShaderTextureBuilder } from "../../vox/material/ShaderTextureBuilder";
 
-interface IMaterialDecorator {
+interface ISimpleMaterialDecorator {
     /**
      * the  default  value is false
      */
@@ -23,28 +21,8 @@ interface IMaterialDecorator {
     /**
      * the  default  value is false
      */
-    shadowReceiveEnabled: boolean;
-    /**
-     * the  default  value is false
-     */
-    lightEnabled: boolean;
-    /**
-     * the  default  value is false
-     */
     fogEnabled: boolean;
-    /**
-     * the  default  value is false
-     */
-    envAmbientLightEnabled: boolean;
-    /**
-     * the  default  value is false
-     */
-    brightnessOverlayEnabeld: boolean;
-    /**
-     * the default value is true
-     */
-    glossinessEnabeld: boolean;
-
+    
     buildBufParams(): void;
     /**
      * user build textures list
@@ -56,20 +34,9 @@ interface IMaterialDecorator {
      */
     createUniformData(): ShaderUniformData;
     /**
-     * get shader code object uuid, it is defined in the system
-     * @returns shader code object uuid
-     */
-    getShaderCodeObjectUUID(): ShaderCodeUUID;
-    /**
-     * get custom shader code object
-     * @returns shader code object
-     */
-    getShaderCodeObject(): IShaderCodeObject;
-    /**
      * @returns unique name string
      */
     getUniqueName(): string;
-    // destroy(): void;
     
 }
-export { IMaterialDecorator }
+export { ISimpleMaterialDecorator }

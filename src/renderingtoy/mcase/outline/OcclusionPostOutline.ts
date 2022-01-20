@@ -76,6 +76,8 @@ export default class OcclusionPostOutline {
             this.m_preColorFboIns.createFBOAt(fboIndex, 512, 512, true, false, 0);
             this.m_preColorFboIns.setRenderToTexture(this.m_preColorRTT, 0);
             this.m_preColorFboIns.setRProcessIDList(occlusionRProcessIDList);
+            
+            this.m_preColorFboIns.setGlobalMaterial(this.m_preMaterial, false, true);
 
             this.m_outlineFboIns = this.m_rscene.createFBOInstance();
             //this.m_outlineFboIns.asynFBOSizeWithViewport();
@@ -196,7 +198,7 @@ export default class OcclusionPostOutline {
 
                     // this.m_preMaterial.setRGB3f(1.0, 0.0, 0.0);
                     this.m_preDecor.setRGB3f(1.0, 0.0, 0.0);
-                    this.m_preColorFboIns.setGlobalMaterial(this.m_preMaterial, false, true);
+                    // this.m_preColorFboIns.setGlobalMaterial(this.m_preMaterial, false, true);
                     this.m_preColorFboIns.runBegin();
 
                     this.m_bounds.reset();

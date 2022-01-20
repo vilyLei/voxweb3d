@@ -69,7 +69,7 @@ class OccBlurDecorator implements IMaterialDecorator {
     buildBufParams(): void {
         
     }
-    createTextureList(builder: ShaderTextureBuilder): void {
+    buildTextureList(builder: ShaderTextureBuilder): void {
         
         builder.add2DMap(this.m_depthMap,"",false);
     }

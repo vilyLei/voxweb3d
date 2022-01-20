@@ -67,7 +67,7 @@ class ColorMaterialDecorator implements IMaterialDecorator {
     buildBufParams(): void {
         
     }
-    createTextureList(coder: ShaderTextureBuilder): void {
+    buildTextureList(coder: ShaderTextureBuilder): void {
         coder.addDiffuseMap( this.diffuseMap );
     }
     buildShader(coder: IShaderCodeBuilder): void {

@@ -56,8 +56,7 @@ class DepthWriteDecorator implements IMaterialDecorator {
     buildBufParams(): void {
         
     }
-    createTextureList(builder: ShaderTextureBuilder): void {
-        
+    buildTextureList(builder: ShaderTextureBuilder): void {        
     }
     buildShader(coder: IShaderCodeBuilder): void {
         

@@ -5,27 +5,25 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import MaterialBase from "./MaterialBase";
 import ShaderCodeBuffer from "./ShaderCodeBuffer";
 import ShaderUniformData from "./ShaderUniformData";
-import { IMaterialDecorator } from "./IMaterialDecorator";
+import { ISimpleMaterialDecorator } from "./ISimpleMaterialDecorator";
 import { UniformComp } from "../../vox/material/component/UniformComp";
-import IShaderCodeObject from "./IShaderCodeObject";
 import IRenderTexture from "../render/texture/IRenderTexture";
-import { IMaterial } from "./IMaterial";
+import { ISimpleMaterial } from "./ISimpleMaterial";
 
 class MaterialShaderBuffer extends ShaderCodeBuffer {
 
     private m_uniqueName: string = "";
-    decorator: IMaterialDecorator = null;
+    decorator: ISimpleMaterialDecorator = null;
     constructor() {
         super();
     }
     initialize(texEnabled: boolean): void {
         super.initialize( texEnabled );
         console.log("MaterialShaderBuffer::initialize()... texEnabled: " + texEnabled);
-        this.m_uniqueName = "MS_";
+        this.m_uniqueName = "SMS_";
         // this.m_hasTex = texEnabled;
         if (texEnabled) this.m_uniqueName += "Tex";
     }
@@ -37,40 +35,29 @@ class MaterialShaderBuffer extends ShaderCodeBuffer {
     buildShader(): void {
         this.decorator.buildShader( this.m_coder );
     }
-    getShaderCodeObjectUUID(): ShaderCodeUUID {
-        return this.decorator.getShaderCodeObjectUUID();
-    }
-    getShaderCodeObject(): IShaderCodeObject {
-        return this.decorator.getShaderCodeObject();
-    }
     getUniqueShaderName(): string {
         return this.m_uniqueName + this.decorator.getUniqueName();
     }
 }
-class Material extends MaterialBase implements IMaterial {
+class SimpleMaterial extends MaterialBase implements ISimpleMaterial {
     private static s_shdBufins: MaterialShaderBuffer = null;
-    private m_decorator: IMaterialDecorator = null;
+    private m_decorator: ISimpleMaterialDecorator = null;
     vertUniform: UniformComp = null;
     constructor() {
         super();
-        if(Material.s_shdBufins == null) Material.s_shdBufins = new MaterialShaderBuffer();
+        if(SimpleMaterial.s_shdBufins == null) SimpleMaterial.s_shdBufins = new MaterialShaderBuffer();
     }
     protected buildBuf(): void {
 
-        let buf = Material.s_shdBufins;
+        let buf = SimpleMaterial.s_shdBufins;
         let decorator = this.m_decorator;
         buf.decorator = decorator;
 
         decorator.buildBufParams();
 
         buf.vertColorEnabled = decorator.vertColorEnabled;
-        buf.premultiplyAlpha = decorator.premultiplyAlpha;
-        buf.shadowReceiveEnabled = decorator.shadowReceiveEnabled;
-        buf.lightEnabled = decorator.lightEnabled;
+        buf.shadowReceiveEnabled = decorator.premultiplyAlpha;
         buf.fogEnabled = decorator.fogEnabled;
-        buf.envAmbientLightEnabled = decorator.envAmbientLightEnabled;
-        buf.brightnessOverlayEnabeld = decorator.brightnessOverlayEnabeld;
-        buf.glossinessEnabeld = decorator.glossinessEnabeld;
 
         buf.buildPipelineParams();
 
@@ -82,17 +69,17 @@ class Material extends MaterialBase implements IMaterial {
         //buf.texturesTotal = list.length;
     }
     getCodeBuf(): ShaderCodeBuffer {
-        return Material.s_shdBufins;
+        return SimpleMaterial.s_shdBufins;
     }
     
     setTextureList(texList: IRenderTexture[]): void {
         // throw Error("Illegal operations !!!");
         console.error("Illegal operations !!!");
     }
-    setDecorator(decorator: IMaterialDecorator): void {
+    setDecorator(decorator: ISimpleMaterialDecorator): void {
         this.m_decorator = decorator;
     }
-    getDecorator(): IMaterialDecorator {
+    getDecorator(): ISimpleMaterialDecorator {
         return this.m_decorator;
     }    
     createSelfUniformData(): ShaderUniformData {        
@@ -104,4 +91,4 @@ class Material extends MaterialBase implements IMaterial {
         this.vertUniform = null;
     }
 }
-export { Material }
+export { SimpleMaterial }

@@ -62,7 +62,7 @@ class OccPostOutLineScreen implements IMaterialDecorator {
 
     buildBufParams(): void {
     }
-    createTextureList(builder: ShaderTextureBuilder): void {
+    buildTextureList(builder: ShaderTextureBuilder): void {
         builder.addDiffuseMap(this.m_currMap);
     }
     buildShader(coder: IShaderCodeBuilder): void {

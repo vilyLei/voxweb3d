@@ -71,7 +71,7 @@ class OccPostOutLineDecorator implements IMaterialDecorator {
 
     buildBufParams(): void {
     }
-    createTextureList(builder: ShaderTextureBuilder): void {
+    buildTextureList(builder: ShaderTextureBuilder): void {
         builder.addDiffuseMap(this.m_currMap);
     }
     buildShader(coder: IShaderCodeBuilder): void {
@@ -98,6 +98,7 @@ void main() {
     
     vec2 dv = param.ww / param.xy;
     vec4 srcColor = VOX_Texture2D( VOX_DIFFUSE_MAP, puv );
+
     // FragColor0 = vec4(srcColor.xyz, 1.0);
     // return;
 
