@@ -7,8 +7,9 @@
 
 import { RenderBlendMode, CullFaceMode, DepthTestMode, GLBlendEquation } from "../../vox/render/RenderConst";
 import { IRAdapterContext } from "../../vox/render/IRAdapterContext";
+import { IRODrawState } from "../../vox/render/rendering/IRODrawState";
 import DebugFlag from "../debug/DebugFlag";
-
+/*
 export class RenderColorMask {
     private static s_uid: number = 0;
     private static s_state: number = -1;
@@ -327,12 +328,14 @@ export class RenderStateObject {
         RenderStateObject.s_state = -1;
     }
 }
-
+//*/
 class ROStateUnit {
     constructor(){}
     stencilMask: number = -1;
 }
-export class RODrawState {
+
+export class RODrawState implements IRODrawState {
+
     private m_units: ROStateUnit[] = new Array(128);
     private m_unit:ROStateUnit = null;
     private m_blendMode: number = RenderBlendMode.NORMAL;

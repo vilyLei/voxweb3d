@@ -12,7 +12,10 @@ import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
 
 import RenderShader from "../../vox/render/RenderShader";
 import ITextureRenderObj from "../../vox/render/ITextureRenderObj";
-import { RenderStateObject, RenderColorMask } from "../../vox/render/RODrawState";
+
+import { RenderColorMask } from "../../vox/render/rendering/RenderColorMask";
+import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject";
+
 import RendererState from "../../vox/render/RendererState";
 import RenderProxy from "../../vox/render/RenderProxy";
 import ShaderUBO from "../../vox/material/ShaderUBO";

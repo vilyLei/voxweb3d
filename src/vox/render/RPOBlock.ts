@@ -15,7 +15,10 @@ import RPONode from "../../vox/render/RPONode";
 import { RPOUnitBuilder } from "../../vox/render/RPOUnitBuilder";
 import RPONodeBuilder from "../../vox/render/RPONodeBuilder";
 import RPONodeLinker from "../../vox/render/RPONodeLinker";
-import { RenderStateObject, RenderColorMask } from "../../vox/render/RODrawState";
+
+import { RenderColorMask } from "../../vox/render/rendering/RenderColorMask";
+import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject";
+
 import RenderProxy from "../../vox/render/RenderProxy";
 import RenderShader from '../../vox/render/RenderShader';
 import ROVertexResource from "../../vox/render/ROVertexResource";

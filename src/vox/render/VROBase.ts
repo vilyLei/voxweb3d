@@ -7,9 +7,10 @@
 
 import IROVtxBuilder from "../../vox/render/IROVtxBuilder";
 import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
-import {ROIndicesRes} from "../../vox/render/vtx/ROIndicesRes";
+import { ROIndicesRes } from "../../vox/render/vtx/ROIndicesRes";
+import { IVRO } from "../../vox/render/IVRO";
 
-export default class VROBase implements IVertexRenderObj {
+export default class VROBase implements IVRO, IVertexRenderObj {
     protected static s_mid: number = 0;
     protected m_uid: number = 0;
     // vtx attribute hash map id
@@ -26,7 +27,7 @@ export default class VROBase implements IVertexRenderObj {
     constructor() {
     }
     getVTCount(): number {
-        if(this.indicesRes != null) return this.indicesRes.getVTCount();
+        if (this.indicesRes != null) return this.indicesRes.getVTCount();
         return 0;
     }
     setRC(rc: IROVtxBuilder): void {
@@ -81,7 +82,10 @@ export default class VROBase implements IVertexRenderObj {
     static GetByMid(mid: number): IVertexRenderObj {
         return VROBase.s_midMap.get(mid);
     }
-    static Reset(): void {
+    // static Reset(): void {
+    //     VROBase.s_mid = -1;
+    // }
+    __$resetVRO(): void {
         VROBase.s_mid = -1;
     }
 }

@@ -15,7 +15,11 @@ import RenderMaskBitfield from "../../vox/render/RenderMaskBitfield";
 import {IRenderCamera} from "./IRenderCamera";
 import RendererParam from "../../vox/scene/RendererParam";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
-import { RODrawState, RenderStateObject, RenderColorMask } from "../../vox/render/RODrawState";
+
+import { RODrawState } from "../../vox/render/RODrawState";
+import { RenderColorMask } from "../../vox/render/rendering/RenderColorMask";
+import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject";
+
 import { IRAdapterContext } from "./IRAdapterContext";
 import RAdapterContext from "../../vox/render/RAdapterContext";
 import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
@@ -36,6 +40,7 @@ import {IRenderProxy} from "./IRenderProxy";
 import { IShaderUniformContext } from "../../vox/material/IShaderUniformContext";
 import { IStencil } from "../../vox/render/rendering/IStencil";
 import { Stencil } from "./rendering/Stencil";
+import VROBase from "./VROBase";
 
 class RenderProxyParam {
 
@@ -378,11 +383,12 @@ class RenderProxy implements IRenderProxy{
         selfT.VtxBufUpdater = proxyParam.vtxBufUpdater;
         selfT.uniformContext = proxyParam.uniformContext;
 
-
-        RendererState.Initialize();
-        RendererState.Rstate.setRenderContext( this.m_adapterContext );
-        
-        selfT.stencil = new Stencil( RendererState.Rstate );
+        let rstate = new RODrawState();
+        rstate.setRenderContext( this.m_adapterContext );
+        RendererState.Initialize(rstate, new VROBase());
+        selfT.RState = rstate;
+        selfT.RContext = this.m_rc;
+        selfT.stencil = new Stencil( rstate );
 
         this.buildCameraParam();
         
@@ -390,7 +396,7 @@ class RenderProxy implements IRenderProxy{
         rect.setSize(this.m_adapterContext.getRCanvasWidth(), this.m_adapterContext.getRCanvasHeight());
 
         this.m_adapter = new RenderAdapter(this.m_uid, texRes);
-        this.m_adapter.initialize(this.m_adapterContext, param, RendererState.Rstate, this.uniformContext.createUniformVec4Probe(1));
+        this.m_adapter.initialize(this.m_adapterContext, param, rstate, this.uniformContext.createUniformVec4Probe(1));
         selfT.adapter = this.m_adapter; 
         if (this.m_autoSynViewAndStage) {
             let stage: IRenderStage3D = this.m_adapterContext.getStage();
@@ -438,8 +444,6 @@ class RenderProxy implements IRenderProxy{
         classRenderMaskBitfield.DEPTH_BUFFER_BIT = gl.DEPTH_BUFFER_BIT;
         classRenderMaskBitfield.STENCIL_BUFFER_BIT = gl.STENCIL_BUFFER_BIT;
         RenderFBOProxy.SetRenderer(this.m_adapterContext);
-        selfT.RState = RendererState.Rstate;
-        selfT.RContext = this.m_rc;
     }
     flush(): void {
         this.m_rc.flush();

@@ -6,7 +6,6 @@
 /***************************************************************************/
 
 import DivLog from "../../vox/utils/DivLog";
-import Vector3D from "../../vox/math/Vector3D";
 import Color4 from "../../vox/material/Color4";
 import FrameBufferType from "../../vox/render/FrameBufferType";
 import RenderFilter from "../../vox/render/RenderFilter";
@@ -17,10 +16,13 @@ import { CullFaceMode, DepthTestMode } from "../../vox/render/RenderConst";
 import { TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import RAdapterContext from "../../vox/render/RAdapterContext";
-import { RODrawState, RenderStateObject, RenderColorMask } from "../../vox/render/RODrawState";
+
+import { RODrawState } from "../../vox/render/RODrawState";
+import { RenderColorMask } from "../../vox/render/rendering/RenderColorMask";
+import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject";
+
 import RendererState from "../../vox/render/RendererState";
 import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
-// import UniformVec4Probe from "../../vox/material/UniformVec4Probe";
 import RendererParam from "../../vox/scene/RendererParam";
 import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
 import AABB2D from "../geom/AABB2D";

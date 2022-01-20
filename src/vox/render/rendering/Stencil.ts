@@ -5,12 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { RenderColorMask, RenderStateObject, RODrawState } from "../../../vox/render/RODrawState";
+import { IRODrawState } from "../../../vox/render/rendering/IRODrawState";
 import { IStencil } from "../../../vox/render/rendering/IStencil";
 
 class Stencil {
-    private m_rstate: RODrawState = null;
-    constructor(rstate: RODrawState) {
+    private m_rstate: IRODrawState = null;
+    constructor(rstate: IRODrawState) {
         this.m_rstate = rstate;
     }
 

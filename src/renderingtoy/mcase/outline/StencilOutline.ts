@@ -34,11 +34,11 @@ export default class StencilOutline {
 
         if (this.m_rscene == null) {
             
-            this.m_stencil = this.m_rscene.getRenderProxy().stencil;
             this.m_rscene = rscene;
             this.m_rctx = rscene.getRendererContext();
             this.m_material = new Default3DMaterial();
             this.m_material.initializeByCodeBuf(false);
+            this.m_stencil = this.m_rscene.getRenderProxy().stencil;
         }
     }
     setOutlineThickness(thickness: number): void {

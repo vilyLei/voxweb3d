@@ -5,15 +5,20 @@
 /*                                                                         */
 /***************************************************************************/
 import { IRAdapterContext } from "../../vox/render/IRAdapterContext";
-import { RenderColorMask, RenderStateObject, RODrawState } from "../../vox/render/RODrawState";
+import { IRODrawState } from "../../vox/render/rendering/IRODrawState";
+
+import { RenderColorMask } from "../../vox/render/rendering/RenderColorMask";
+import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject";
+
 import { CullFaceMode, RenderBlendMode, DepthTestMode, GLBlendMode, GLBlendEquation } from "../../vox/render/RenderConst";
-import VROBase from "./VROBase";
+import { IVRO } from "../../vox/render/IVRO";
 
 class RendererState {
 
     private static s_initBoo: boolean = true;
-    
-    static readonly Rstate: RODrawState = null;
+
+    private static readonly VRO: IVRO = null;
+    private static readonly Rstate: IRODrawState = null;
     static DrawCallTimes: number = 0;
     static DrawTrisNumber: number = 0;
     static POVNumber: number = 0;
@@ -52,16 +57,17 @@ class RendererState {
     static readonly NONE_CULLFACE_NORMAL_ALWAYS_STATE: number = 19;
     static readonly BACK_ALPHA_ADD_BLENDSORT_STATE: number = 20;
 
-    static Initialize(): void {
+    static Initialize(rstate: IRODrawState, vro: IVRO): void {
         if (RendererState.s_initBoo) {
             RendererState.s_initBoo = false;
 
             let state: any = RendererState;
-            state.Rstate = new RODrawState();
+            state.Rstate = rstate;
+            state.VRO = vro;
 
             RenderColorMask.Rstate = RendererState.Rstate;
             RenderStateObject.Rstate = RendererState.Rstate;
-            
+
             state.COLOR_MASK_ALL_TRUE = RenderColorMask.Create("all_true", true, true, true, true);
             state.COLOR_MASK_ALL_FALSE = RenderColorMask.Create("all_false", false, false, false, false);
             state.COLOR_MASK_RED_TRUE = RenderColorMask.Create("red_true", true, false, false, false);
@@ -74,7 +80,6 @@ class RendererState {
             state.COLOR_MASK_ALPHA_FALSE = RenderColorMask.Create("alpha_false", true, true, true, false);
 
             let rso = RenderStateObject;
-
             let rBlendMode: any = RenderBlendMode;
 
             rBlendMode.NORMAL = rso.CreateBlendMode("NORMAL", GLBlendMode.ONE, GLBlendMode.ZERO, GLBlendEquation.FUNC_ADD);
@@ -149,7 +154,8 @@ class RendererState {
         RenderColorMask.Reset();
         RenderStateObject.Reset();
         RendererState.Rstate.reset();
-        VROBase.Reset();
+        RendererState.VRO.__$resetVRO();
+        // VROBase.Reset();
     }
     static Reset(context: IRAdapterContext): void {
         RenderColorMask.Reset();
