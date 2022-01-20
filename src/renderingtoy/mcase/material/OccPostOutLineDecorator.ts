@@ -10,11 +10,11 @@ import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
-import { IMaterialDecorator } from "../../../vox/material/IMaterialDecorator";
+import { ISimpleMaterialDecorator } from "../../../vox/material/ISimpleMaterialDecorator";
 import { ShaderTextureBuilder } from "../../../vox/material/ShaderTextureBuilder";
 import MathConst from "../../../vox/math/MathConst";
 
-class OccPostOutLineDecorator implements IMaterialDecorator {
+class OccPostOutLineDecorator implements ISimpleMaterialDecorator {
 
     private m_uniqueName: string;
     private m_screenPlaneEnabled: boolean = true;
@@ -35,27 +35,7 @@ class OccPostOutLineDecorator implements IMaterialDecorator {
     /**
      * the  default  value is false
      */
-    shadowReceiveEnabled: boolean = false;
-    /**
-     * the  default  value is false
-     */
-    lightEnabled: boolean = false;
-    /**
-     * the  default  value is false
-     */
     fogEnabled: boolean = false;
-    /**
-     * the  default  value is false
-     */
-    envAmbientLightEnabled: boolean = false;
-    /**
-     * the  default  value is false
-     */
-    brightnessOverlayEnabeld: boolean = false;
-    /**
-     * the default value is true
-     */
-    glossinessEnabeld: boolean = false;
 
     private m_currMap: IRenderTexture = null;
     
@@ -170,15 +150,12 @@ void main() {
         oum.dataList = [this.m_params];
         return oum;
     }
-    getShaderCodeObjectUUID(): ShaderCodeUUID {
-        return ShaderCodeUUID.None;
-    }
-    getShaderCodeObject(): IShaderCodeObject {
-        return null;
-    }
     getUniqueName(): string {
         return this.m_uniqueName;
     }
 
+    destroy(): void {
+        this.m_currMap = null;
+    }
 }
 export { OccPostOutLineDecorator };

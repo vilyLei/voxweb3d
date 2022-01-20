@@ -63,7 +63,7 @@ export default class OcclusionPostOutline {
             // this.m_preMaterial.initializeByCodeBuf(false);
             
             this.m_preDecor = new OutlinePreDecorator();
-            this.m_preMaterial = materialBlock.createMaterial( this.m_preDecor );
+            this.m_preMaterial = materialBlock.createSimpleMaterial( this.m_preDecor );
             this.m_preMaterial.initializeByCodeBuf(false);
 
             this.m_preColorRTT = this.m_rscene.textureBlock.createRTTTex2D(32, 32, false);
@@ -109,19 +109,20 @@ export default class OcclusionPostOutline {
             //this.m_outlinePlane = new ScreenAlignPlaneEntity();
             this.m_outlinePlane = this.m_rscene.entityBlock.createEntity();
             this.m_outlinePlane.copyMeshFrom( this.m_rscene.entityBlock.screenPlane );
-            this.m_outlinePlane.setMaterial( materialBlock.createMaterial( this.m_outlineMaterial0 ) );
+            this.m_outlinePlane.setMaterial( materialBlock.createSimpleMaterial( this.m_outlineMaterial0 ) );
             // this.m_outlinePlane.initialize(-1, -1, 2, 2);
 
             this.m_boundsEntity = this.m_rscene.entityBlock.createEntity();
             this.m_boundsEntity.copyMeshFrom( this.m_rscene.entityBlock.unitBox );
-            this.m_boundsEntity.setMaterial( materialBlock.createMaterial( this.m_outlineMaterial1 ) );
+            this.m_boundsEntity.setMaterial( materialBlock.createSimpleMaterial( this.m_outlineMaterial1 ) );
+            
             // this.m_boundsEntity.initializeCube(1.0);
             // for test
             //  (this.m_boundsEntity.getMaterial() as any).setRGBA4f(1.0,1.0,1.0,0.5);
 
             // this.m_displayPlane = new ScreenAlignPlaneEntity();
             //let plDecor = new OccPostOutLineScreen();
-            let plMaterial = materialBlock.createMaterial( new OccPostOutLineScreen( this.m_outLineRTT ) );
+            let plMaterial = materialBlock.createSimpleMaterial( new OccPostOutLineScreen( this.m_outLineRTT ) );
             // let mp = new ScreenPlaneMaterial();
             // mp.setTextureList( [this.m_outLineRTT] );
             this.m_displayPlane = this.m_rscene.entityBlock.createEntity();

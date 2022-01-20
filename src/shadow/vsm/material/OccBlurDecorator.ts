@@ -5,15 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
-import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
-import { IMaterialDecorator } from "../../../vox/material/IMaterialDecorator";
+import { ISimpleMaterialDecorator } from "../../../vox/material/ISimpleMaterialDecorator";
 import { ShaderTextureBuilder } from "../../../vox/material/ShaderTextureBuilder";
 
-class OccBlurDecorator implements IMaterialDecorator {
+class OccBlurDecorator implements ISimpleMaterialDecorator {
 
     private m_uniqueName: string;
     private m_horizonal: boolean = true;
@@ -29,29 +27,9 @@ class OccBlurDecorator implements IMaterialDecorator {
     /**
      * the  default  value is false
      */
-    shadowReceiveEnabled: boolean = false;
-    /**
-     * the  default  value is false
-     */
-    lightEnabled: boolean = false;
-    /**
-     * the  default  value is false
-     */
     fogEnabled: boolean = false;
-    /**
-     * the  default  value is false
-     */
-    envAmbientLightEnabled: boolean = false;
-    /**
-     * the  default  value is false
-     */
-    brightnessOverlayEnabeld: boolean = false;
-    /**
-     * the default value is true
-     */
-    glossinessEnabeld: boolean = false;
 
-    private m_depthMap: IRenderTexture = null;
+    private m_currMap: IRenderTexture = null;
     
     constructor(horizonal: boolean, tex: IRenderTexture, radius: number) {
         
@@ -59,19 +37,17 @@ class OccBlurDecorator implements IMaterialDecorator {
         this.m_uniqueName = "OccBlur";
         this.m_uniqueName += horizonal? "H" : "V";
 
-        this.m_depthMap = tex;
+        this.m_currMap = tex;
         this.m_paramData[3] = radius;
     }
 
     setShadowRadius(radius: number): void {
         this.m_paramData[3] = radius;
     }
-    buildBufParams(): void {
-        
+    buildBufParams(): void {        
     }
-    buildTextureList(builder: ShaderTextureBuilder): void {
-        
-        builder.add2DMap(this.m_depthMap,"",false);
+    buildTextureList(builder: ShaderTextureBuilder): void {        
+        builder.add2DMap(this.m_currMap,"",false);
     }
     buildShader(coder: IShaderCodeBuilder): void {
         
@@ -166,12 +142,6 @@ void main() {
         oum.uniformNameList = ["u_params"];
         oum.dataList = [this.m_paramData];
         return oum;
-    }
-    getShaderCodeObjectUUID(): ShaderCodeUUID {
-        return ShaderCodeUUID.None;
-    }
-    getShaderCodeObject(): IShaderCodeObject {
-        return null;
     }
     getUniqueName(): string {
         return this.m_uniqueName;

@@ -159,7 +159,8 @@ export class ShadowVSMModule implements IMaterialPipe {
         this.m_vsmData.initialize();
         this.m_vsmData.setShadowIntensity(this.m_shadowIntensity);
 
-        let depthMaterial = this.m_rscene.materialBlock.createMaterial(new DepthWriteDecorator());
+        let depthMaterial = this.m_rscene.materialBlock.createSimpleMaterial(new DepthWriteDecorator());
+        
         this.m_fboDepth = this.m_rscene.createFBOInstance();
         this.m_fboDepth.asynFBOSizeWithViewport();
         this.m_fboDepth.setClearRGBAColor4f(1.0, 1.0, 1.0, 1.0);
@@ -182,7 +183,7 @@ export class ShadowVSMModule implements IMaterialPipe {
         // occMaterial.setShadowRadius(this.m_shadowRadius);
 
         let occDeco = new OccBlurDecorator(false, this.m_depthRtt, this.m_shadowRadius);
-        let occMaterial = this.m_rscene.materialBlock.createMaterial(occDeco);
+        let occMaterial = this.m_rscene.materialBlock.createSimpleMaterial(occDeco);
 
         //let verOccBlurPlane: Plane3DEntity = new Plane3DEntity();
         let verOccBlurPlane = this.m_rscene.entityBlock.createEntity();
@@ -193,7 +194,7 @@ export class ShadowVSMModule implements IMaterialPipe {
         this.m_verOccBlurPlane = verOccBlurPlane;
 
         occDeco = new OccBlurDecorator(true, this.m_occBlurRtt, this.m_shadowRadius);
-        occMaterial = this.m_rscene.materialBlock.createMaterial(occDeco);
+        occMaterial = this.m_rscene.materialBlock.createSimpleMaterial(occDeco);
 
         // occMaterial = new OccBlurMaterial(true);
         // occMaterial.setTextureList([this.m_occBlurRtt]);

@@ -38,6 +38,8 @@ import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import { RenderableMaterialBlock } from "../../vox/scene/block/RenderableMaterialBlock";
 import { RenderableEntityBlock } from "../../vox/scene/block/RenderableEntityBlock";
 import { OccBlurDecorator } from "./material/OccBlurDecorator";
+import { DepthWriteDecorator } from "./material/DepthWriteDecorator";
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 
 export class DemoBase {
     constructor() { }
@@ -105,7 +107,7 @@ export class DemoBase {
     }
 
     private m_direcCamera:CameraBase = null;
-    private m_depMaterial: DepthMaterial = new DepthMaterial();
+    private m_depMaterial: IRenderMaterial = null;//new DepthMaterial();
     //private m_occMaterial: OccBlurMaterial = new OccBlurMaterial();
     private m_fboDepth: FBOInstance = null;
     private m_fboOccBlurH: FBOInstance = null;
@@ -127,6 +129,20 @@ export class DemoBase {
         this.m_fboDepth.setRenderToRTTTextureAt(0, 0);
         this.m_fboDepth.setRProcessIDList([0]);
 
+        let occMaterial: any;
+        let occDeco: OccBlurDecorator = null;
+        let occBlurPlane: Plane3DEntity;
+
+        occDeco = new OccBlurDecorator(false, this.m_fboDepth.getRTTAt(0), this.m_shadowRadius);
+        if(occDeco != null) {
+            this.m_depMaterial = this.m_rscene.materialBlock.createSimpleMaterial(new DepthWriteDecorator());
+        }
+        else {
+            this.m_depMaterial = new DepthMaterial();
+        }
+        // m_depMaterial: IRenderMaterial = new DepthMaterial();
+        // let depthMaterial = this.m_rscene.materialBlock.createSimpleMaterial(new DepthWriteDecorator());
+
         //this.m_fboDepth.setGlobalRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
         this.m_fboDepth.setGlobalRenderState(RendererState.NORMAL_STATE);
         this.m_fboDepth.setGlobalMaterial(this.m_depMaterial);
@@ -146,14 +162,9 @@ export class DemoBase {
         this.m_fboOccBlurH.setRenderToRTTTextureAt(2, 0);
         this.m_fboOccBlurH.setRProcessIDList([2]);
 
-        let occMaterial: any;
-        let occDeco: OccBlurDecorator = null;
-        let occBlurPlane: Plane3DEntity;
-
-        //occDeco = new OccBlurDecorator(false, this.m_fboDepth.getRTTAt(0), this.m_shadowRadius);
         
         if(occDeco != null) {
-            occMaterial = this.m_rscene.materialBlock.createMaterial( occDeco );
+            occMaterial = this.m_rscene.materialBlock.createSimpleMaterial( occDeco );
         }
         else {
             occMaterial = new OccBlurMaterial( false );
@@ -168,7 +179,7 @@ export class DemoBase {
 
         if(occDeco != null) {
             occDeco = new OccBlurDecorator(true, this.m_fboOccBlurV.getRTTAt(0), this.m_shadowRadius);
-            occMaterial = this.m_rscene.materialBlock.createMaterial( occDeco );
+            occMaterial = this.m_rscene.materialBlock.createSimpleMaterial( occDeco );
         }
         else {
             occMaterial = new OccBlurMaterial( true );

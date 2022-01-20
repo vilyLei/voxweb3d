@@ -9,10 +9,10 @@ import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
 import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
-import { IMaterialDecorator } from "../../../vox/material/IMaterialDecorator";
+import { ISimpleMaterialDecorator } from "../../../vox/material/ISimpleMaterialDecorator";
 import { ShaderTextureBuilder } from "../../../vox/material/ShaderTextureBuilder";
 
-class DepthWriteDecorator implements IMaterialDecorator {
+class DepthWriteDecorator implements ISimpleMaterialDecorator {
 
     private m_uniqueName: string;
     /**
@@ -26,27 +26,7 @@ class DepthWriteDecorator implements IMaterialDecorator {
     /**
      * the  default  value is false
      */
-    shadowReceiveEnabled: boolean = false;
-    /**
-     * the  default  value is false
-     */
-    lightEnabled: boolean = false;
-    /**
-     * the  default  value is false
-     */
     fogEnabled: boolean = false;
-    /**
-     * the  default  value is false
-     */
-    envAmbientLightEnabled: boolean = false;
-    /**
-     * the  default  value is false
-     */
-    brightnessOverlayEnabeld: boolean = false;
-    /**
-     * the default value is true
-     */
-    glossinessEnabeld: boolean = false;
     
     constructor() {
         
@@ -54,7 +34,6 @@ class DepthWriteDecorator implements IMaterialDecorator {
     }
 
     buildBufParams(): void {
-        
     }
     buildTextureList(builder: ShaderTextureBuilder): void {        
     }
@@ -77,7 +56,7 @@ vec4 packDepthToRGBA( const in float v ) {
 	return r * PackUpscale;
 }
 void main() {
-    // Higher precision equivalent of gl_FragCoord.z. This assumes depthRange has been left to its default values.
+    // Higher precision equivalent of the gl_FragCoord.z. This assumes depthRange has been left to its default values.
     float fragCoordZ = 0.5 * v_pos[2] / v_pos[3] + 0.5;
     FragColor0 = packDepthToRGBA( fragCoordZ );
 }
@@ -95,12 +74,6 @@ void main() {
         );
     }
     createUniformData(): ShaderUniformData {
-        return null;
-    }
-    getShaderCodeObjectUUID(): ShaderCodeUUID {
-        return ShaderCodeUUID.None;
-    }
-    getShaderCodeObject(): IShaderCodeObject {
         return null;
     }
     getUniqueName(): string {

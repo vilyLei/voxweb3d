@@ -9,10 +9,10 @@ import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
 import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
-import { IMaterialDecorator } from "../../../vox/material/IMaterialDecorator";
+import { ISimpleMaterialDecorator } from "../../../vox/material/ISimpleMaterialDecorator";
 import { ShaderTextureBuilder } from "../../../vox/material/ShaderTextureBuilder";
 
-class OutlinePreDecorator implements IMaterialDecorator {
+class OutlinePreDecorator implements ISimpleMaterialDecorator {
 
     private m_uniqueName: string;
     private m_colorData: Float32Array = new Float32Array([ 1.0,0.0,1.0, 1.0 ]);
@@ -27,27 +27,7 @@ class OutlinePreDecorator implements IMaterialDecorator {
     /**
      * the  default  value is false
      */
-    shadowReceiveEnabled: boolean = false;
-    /**
-     * the  default  value is false
-     */
-    lightEnabled: boolean = false;
-    /**
-     * the  default  value is false
-     */
     fogEnabled: boolean = false;
-    /**
-     * the  default  value is false
-     */
-    envAmbientLightEnabled: boolean = false;
-    /**
-     * the  default  value is false
-     */
-    brightnessOverlayEnabeld: boolean = false;
-    /**
-     * the default value is true
-     */
-    glossinessEnabeld: boolean = false;
     
     constructor() {        
         this.m_uniqueName = "PostOutlinePre";

@@ -174,7 +174,7 @@ export class DemoOutline {
 
         let scale: number = 2.5;
         let box: Box3DEntity = new Box3DEntity();
-
+        
         box.uvPartsNumber = 6;
         box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixparts.jpg")]);
         box.setScaleXYZ(scale,scale,scale);
