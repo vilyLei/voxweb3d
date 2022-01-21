@@ -102,7 +102,7 @@ class FileMG2Header {
         this.sizez = (this.higherBoundz - this.lowerBoundz) / this.divz;
     }
 }
-class FileBody {
+class CTMFileBody {
     indices: Uint32Array;
     vertices: Float32Array;
     normals: Float32Array;
@@ -659,7 +659,7 @@ class CTMStream {
 
 class CTMFile {
     header: FileHeader;
-    body: FileBody;
+    body: CTMFileBody;
     constructor(stream: any) {
         this.load(stream);
     };
@@ -667,7 +667,7 @@ class CTMFile {
     load(stream: any) {
         this.header = new FileHeader(stream);
 
-        this.body = new FileBody(this.header);
+        this.body = new CTMFileBody(this.header);
 
         this.getReader().read(stream, this.body);
     };
@@ -692,4 +692,4 @@ class CTMFile {
 }
 
 
-export { CTMStream, CTMFile }
+export { CTMStream, CTMFileBody, CTMFile }

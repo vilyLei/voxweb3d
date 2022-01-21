@@ -34,12 +34,14 @@ import { SpotLight } from "../light/base/SpotLight";
 import { DebugMaterialContext, MaterialContextParam } from "../materialLab/base/DebugMaterialContext";
 import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
 import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
-import { CTMFile } from "../vox/assets/ctm/CTMFile";
+import { CTMStream, CTMFileBody, CTMFile } from "../vox/assets/ctm/CTMFile";
 
 import ILoaderListerner from "../vox/assets/ILoaderListerner";
 import BinaryLoader from "../vox/assets/BinaryLoader";
+import DataMesh from "../vox/mesh/DataMesh";
+import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 
-export class DemoCTMLoad implements ILoaderListerner {
+export class DemoCTMLoad {
 
     constructor() { }
     private m_rscene: RendererScene = null;
@@ -83,9 +85,9 @@ export class DemoCTMLoad implements ILoaderListerner {
             let materialBlock = new RenderableMaterialBlock();
             materialBlock.initialize();
             rscene.materialBlock = materialBlock;
-            let entityBlock = new RenderableEntityBlock();
-            entityBlock.initialize();
-            rscene.entityBlock = entityBlock;
+            // let entityBlock = new RenderableEntityBlock();
+            // entityBlock.initialize();
+            // rscene.entityBlock = entityBlock;
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
@@ -150,43 +152,90 @@ export class DemoCTMLoad implements ILoaderListerner {
 
             // this.createEntity();
 
-            let axis: Axis3DEntity = new Axis3DEntity();
-            axis.initialize(300);
-            this.m_rscene.addEntity( axis );
+            // let axis: Axis3DEntity = new Axis3DEntity();
+            // axis.initialize(300);
+            // this.m_rscene.addEntity( axis );
 
-            let ctmUrl: string = "static/assets/ctm/hand.ctm";
-            // let ctmLoader: BinaryLoader = new BinaryLoader();
-            // ctmLoader.load(ctmUrl, this);
-            let request: XMLHttpRequest = new XMLHttpRequest();
-            request.open('GET', ctmUrl, true);
-
-            request.onload = () => {
-                if (request.status <= 206) {
-                    let dataStr: string = request.responseText;
-                    console.log("loaded ctm string data !",dataStr);
-                    //this.initialize(request.responseText, texList);
-                    let ctmFile = new CTMFile(dataStr);
-                    console.log("ctmFile: ",ctmFile);
-                }
-                else {
-                    console.error("load ctm format module url error: ", ctmUrl);
-                }
-            };
-            request.onerror = e => {
-                console.error("load obj ctm module url error: ", ctmUrl);
-            };
-
-            request.send();
+            this.initCTM();
         }
     }
-    
-    loaded(buffer: ArrayBuffer, uuid: string): void {
-        console.log("loaded ctm data !",buffer);
-        // let ctmFile = new CTMFile(null);
-    }
-    loadError(status: number, uuid: string): void {
+    private initCTM(): void {
 
+        let ctmUrl: string = "static/assets/ctm/hand.ctm";
+        ctmUrl = "static/assets/ctm/WaltHead.ctm";
+        // let ctmLoader: BinaryLoader = new BinaryLoader();
+        // ctmLoader.load(ctmUrl, this);
+        let request: XMLHttpRequest = new XMLHttpRequest();
+        // request.open('GET', ctmUrl, true);
+
+        request.onload = () => {
+            if (request.status <= 206) {
+                let dataStr: string = request.responseText;
+                console.log("loaded ctm string data !",dataStr.length);
+                //this.initialize(request.responseText, texList);
+                var stream = new CTMStream( dataStr );
+                stream.offset = 0;//offsets[ i ];
+
+                var ctmFile = new CTMFile( stream );
+
+                // let ctmFile = new CTMFile(dataStr);
+                console.log("ctmFile: ",ctmFile);
+                if(ctmFile != null) {
+                    let ctmbody: CTMFileBody = ctmFile.body;
+                    console.log("ctmbody: ",ctmbody);
+                    this.initCTMEntity( ctmbody );
+                }
+            }
+            else {
+                console.error("load ctm format module url error: ", ctmUrl);
+            }
+        };
+        request.onerror = e => {
+            console.error("load obj ctm module url error: ", ctmUrl);
+        };
+        request.overrideMimeType( "text/plain; charset=x-user-defined" );
+        request.open( "GET", ctmUrl, true );
+        request.send( null );
     }
+    private initCTMEntity(ctmbody: CTMFileBody): void {
+
+        // let material: Default3DMaterial = new Default3DMaterial();
+        // material.normalEnabled = true;
+        // material.setTextureList([this.m_materialCtx.getTextureByUrl("static/assets/color_01.jpg")]);
+        // material.initializeByCodeBuf( true );
+
+        let material: PBRMaterial;
+        material = this.createMaterial();
+        material.decorator.aoMapEnabled = this.aoMapEnabled;
+        //material.setTextureList(texList);
+        this.useMaterialTex(material);
+        material.initializeByCodeBuf( true );
+
+        let dataMesh: DataMesh = new DataMesh();
+        dataMesh.setVS(ctmbody.vertices);
+        dataMesh.setUVS(ctmbody.uvMaps[0].uv);
+        dataMesh.setNVS(ctmbody.normals);
+        dataMesh.setIVS( ctmbody.indices );
+        dataMesh.setVtxBufRenderData( material );
+        dataMesh.initialize();
+
+        let scale: number = 50.0;
+        let entity: DisplayEntity = new DisplayEntity();
+        entity.setMesh(dataMesh);
+        entity.setMaterial( material );
+        entity.setScaleXYZ(scale, scale, scale);
+        this.m_rscene.addEntity( entity );
+
+        
+        console.log("ctm entity: ",entity);
+    }
+    // loaded(buffer: ArrayBuffer, uuid: string): void {
+    //     console.log("loaded ctm data !",buffer);
+    //     // let ctmFile = new CTMFile(null);
+    // }
+    // loadError(status: number, uuid: string): void {
+
+    // }
 
     makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
 
