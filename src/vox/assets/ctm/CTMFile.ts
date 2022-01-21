@@ -582,7 +582,7 @@ class ReaderMG2 {
     }
 }
 
-class Stream {
+class CTMStream {
 
     TWO_POW_MINUS23 = Math.pow(2, -23);
     TWO_POW_MINUS126 = Math.pow(2, -126);
@@ -692,4 +692,4 @@ class CTMFile {
 }
 
 
-export { Stream, CTMFile }
+export { CTMStream, CTMFile }

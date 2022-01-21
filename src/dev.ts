@@ -363,11 +363,13 @@
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
- import {DemoPBRTexViewer as Demo} from "./pbr/DemoPBRTexViewer";
+//  import {DemoPBRTexViewer as Demo} from "./pbr/DemoPBRTexViewer";
 
 //  import {DemoPBRDisplacement as Demo} from "./pbr/DemoPBRDisplacement";
 
-//  import {DemoRawDracoViewer as Demo} from "./pbr/DemoRawDracoViewer";
+// import {DemoRawDracoViewer as Demo} from "./pbr/DemoRawDracoViewer";
+
+import {DemoCTMLoad as Demo} from "./pbr/DemoCTMLoad";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   terrain    /////////////////////////////////////
