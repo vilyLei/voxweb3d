@@ -41,8 +41,8 @@ export class DemoPBRTexViewer implements IShaderLibListener {
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_interaction: UserInteraction = new UserInteraction();
     
-    //private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
-    private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
+    private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
+    // private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
     
     private m_loading: TextBillboardLoading = new TextBillboardLoading();
     private m_waitingTotal: number = 0;
@@ -101,6 +101,7 @@ export class DemoPBRTexViewer implements IShaderLibListener {
     private initMaterialCtx(): void {
 
         let mcParam: MaterialContextParam = new MaterialContextParam();
+        mcParam.shaderLibVersion = "v101";
         mcParam.pointLightsTotal = 1;
         mcParam.directionLightsTotal = 2;
         mcParam.spotLightsTotal = 0;
@@ -108,6 +109,9 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         mcParam.shaderCodeBinary = true;
         mcParam.lambertMaterialEnabled = false;
         mcParam.pbrMaterialEnabled = true;
+        mcParam.shaderFileRename = true;
+        // mcParam.vsmEnabled = false;
+        //mcParam.buildBinaryFile = true;
         this.m_materialCtx.addShaderLibListener(this);
         this.m_materialCtx.initialize(this.m_rscene, mcParam);
 
