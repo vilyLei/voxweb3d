@@ -21,6 +21,10 @@ export class DirectionLight {
      * 顶点与点光源之间距离的二次方因子, default value is 0.0005
      */
     attenuationFactor2: number = 0.0;
-    constructor() { }
+
+    constructor(rgbUint24: number = 0xffffff, direction: Vector3D = null) {
+        this.color.setRGBUint24(rgbUint24);
+        if(direction != null) this.direction.copyFrom( direction );
+    }
 
 }

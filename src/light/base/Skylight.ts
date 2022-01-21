@@ -8,7 +8,7 @@
 import Vector3D from "../../vox/math/Vector3D";
 import Color4 from "../../vox/material/Color4";
 
-export class AreaLight {
+export class SkyLight {
 
     readonly position: Vector3D = new Vector3D();
     readonly color: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);

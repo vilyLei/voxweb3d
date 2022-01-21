@@ -22,6 +22,9 @@ export class PointLight {
      */
     attenuationFactor2: number = 0.0005;
 
-    constructor() { }
+    constructor(rgbUint24: number = 0xffffff, pos: Vector3D = null) {
+        this.color.setRGBUint24(rgbUint24);
+        if(pos != null) this.position.copyFrom( pos );
+    }
 
 }
