@@ -154,14 +154,35 @@ export class DemoCTMLoad implements ILoaderListerner {
             axis.initialize(300);
             this.m_rscene.addEntity( axis );
 
-            let ctmLoader: BinaryLoader = new BinaryLoader();
-            //ctmLoader.load(, this);
+            let ctmUrl: string = "static/assets/ctm/hand.ctm";
+            // let ctmLoader: BinaryLoader = new BinaryLoader();
+            // ctmLoader.load(ctmUrl, this);
+            let request: XMLHttpRequest = new XMLHttpRequest();
+            request.open('GET', ctmUrl, true);
+
+            request.onload = () => {
+                if (request.status <= 206) {
+                    let dataStr: string = request.responseText;
+                    console.log("loaded ctm string data !",dataStr);
+                    //this.initialize(request.responseText, texList);
+                    let ctmFile = new CTMFile(dataStr);
+                    console.log("ctmFile: ",ctmFile);
+                }
+                else {
+                    console.error("load ctm format module url error: ", ctmUrl);
+                }
+            };
+            request.onerror = e => {
+                console.error("load obj ctm module url error: ", ctmUrl);
+            };
+
+            request.send();
         }
     }
     
     loaded(buffer: ArrayBuffer, uuid: string): void {
-
-        let ctmFile = new CTMFile(null);
+        console.log("loaded ctm data !",buffer);
+        // let ctmFile = new CTMFile(null);
     }
     loadError(status: number, uuid: string): void {
 
