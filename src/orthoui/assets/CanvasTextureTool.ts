@@ -1,10 +1,8 @@
 import IRendererScene from "../../vox/scene/IRendererScene";
-import RendererDevice from "../../vox/render/RendererDevice";
 import ImageTextureAtlas from "../../vox/texture/ImageTextureAtlas";
 import Color4 from "../../vox/material/Color4";
 import AABB2D from "../../vox/geom/AABB2D";
 import { TexArea } from "../../vox/texture/TexAreaNode";
-import { TextureConst } from "../../vox/texture/TextureConst";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 export class CanvasTextureObject {

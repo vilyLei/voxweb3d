@@ -10,7 +10,7 @@ import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipe } from "../../vox/material/pipeline/IMaterialPipe";
 import { MaterialPipeBase } from "../../vox/material/pipeline/MaterialPipeBase";
-import { GlobalLightUniformParam } from "../../vox/material/GlobalUniformParam";
+import { GlobalLightUniformParam } from "../../vox/material/param/GlobalLightUniformParam";
 import MathConst from "../../vox/math/MathConst";
 import { PointLight } from "./PointLight";
 import { DirectionLight } from "./DirectionLight";

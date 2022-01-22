@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import IShaderUniform from "../../../vox/material/IShaderUniform";
-import { GlobalUniformParamBase } from "../../../vox/material/GlobalUniformParam";
+import { GlobalUniformParamBase } from "../../../vox/material/param/GlobalUniformParamBase";
 import { IShaderUniformContext } from "../../../vox/material/IShaderUniformContext";
 
 class MaterialPipeBase {

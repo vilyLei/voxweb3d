@@ -11,9 +11,9 @@ import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import SubStage3D from "../../vox/display/SubStage3D";
-import {IRenderCamera} from "../../vox/render/IRenderCamera";
+import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import CameraBase from "../../vox/view/CameraBase";
-import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
+import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import RenderProxy from "../../vox/render/RenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
@@ -45,8 +45,8 @@ import Color4 from "../material/Color4";
 import { IRendererSceneAccessor } from "./IRendererSceneAccessor";
 
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
-import {IRenderableMaterialBlock} from "../scene/block/IRenderableMaterialBlock";
-import {IRenderableEntityBlock} from "../scene/block/IRenderableEntityBlock";
+import { IRenderableMaterialBlock } from "../scene/block/IRenderableMaterialBlock";
+import { IRenderableEntityBlock } from "../scene/block/IRenderableEntityBlock";
 
 export default class RendererSubScene implements IRenderer, IRendererScene {
     private static s_uid: number = 0;
@@ -82,7 +82,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     private m_autoRunning: boolean = true;
     private m_currStage3D: SubStage3D = null;
     private m_enabled: boolean = true;
-    
+
     readonly textureBlock: ITextureBlock = null;
     materialBlock: IRenderableMaterialBlock = null;
     entityBlock: IRenderableEntityBlock = null;
@@ -142,7 +142,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     getCurrentStage3D(): IRenderStage3D {
         return this.m_currStage3D;
     }
-    
+
     getViewWidth(): number {
         return this.m_renderProxy.getStage3D().viewWidth;
     }
@@ -152,7 +152,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     getCamera(): CameraBase {
         return this.m_camera as CameraBase;
     }
-    
+
     /**
      * 获取渲染器可渲染对象管理器状态(版本号)
      */
@@ -213,7 +213,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     removeEventListener(type: number, target: any, func: (evt: any) => void): void {
         this.m_currStage3D.removeEventListener(type, target, func);
     }
-    
+
     setAccessor(accessor: IRendererSceneAccessor): void {
         this.m_accessor = accessor;
     }
@@ -347,7 +347,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
      * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform, default value: false
      * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform, default value: true
      */
-    drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false,  forceUpdateUniform: boolean = true): void {
+    drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
         this.m_renderer.drawEntity(entity, useGlobalUniform, forceUpdateUniform);
     }
     /**
@@ -386,7 +386,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     }
     // 这是真正的完全将entity从world中清除
     removeEntity(entity: IRenderEntity): void {
-        if(entity != null) {
+        if (entity != null) {
             let node: Entity3DNode = null;
             if (this.m_nodeWaitLinker != null) {
                 let node: Entity3DNode = this.m_nodeWaitQueue.getNodeByEntity(entity);
@@ -408,13 +408,13 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
         this.m_renderer.updateMaterialUniformToCurrentShd(material);
     }
     // 首先要锁定Material才能用这种绘制方式,再者这个entity已经完全加入渲染器了渲染资源已经准备完毕,这种方式比较耗性能，只能用在特殊的地方
-    drawEntityByLockMaterial(entity: IRenderEntity): void {
-        this.m_renderer.drawEntityByLockMaterial(entity);
-    }
+    // drawEntityByLockMaterial(entity: IRenderEntity): void {
+    //     this.m_renderer.drawEntityByLockMaterial(entity);
+    // }
     showInfoAt(index: number): void {
         this.m_renderer.showInfoAt(index);
     }
-    
+
     updateCameraData(camera: IRenderCamera): void {
 
         this.m_rcontext.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
@@ -430,7 +430,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
         }
         if (this.m_renderProxy.getCamera() != this.m_camera) {
             //let boo: boolean = this.m_renderProxy.testViewPortChanged(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
-            if(this.m_renderProxy.isAutoSynViewAndStage()) {
+            if (this.m_renderProxy.isAutoSynViewAndStage()) {
                 this.m_viewX = this.m_renderProxy.getViewX();
                 this.m_viewY = this.m_renderProxy.getViewY();
                 this.m_viewW = this.m_renderProxy.getViewWidth();
@@ -444,8 +444,8 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
         this.m_camera.update();
         this.m_rcontext.updateCameraDataFromCamera(this.m_camera);
         this.m_shader.renderBegin();
-        if(this.m_accessor != null) {
-            this.m_accessor.renderBegin( this );
+        if (this.m_accessor != null) {
+            this.m_accessor.renderBegin(this);
         }
     }
     /**
@@ -458,7 +458,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
             if (this.m_runFlag >= 0) this.runEnd();
             this.m_runFlag = 0;
         }
-        this.renderBegin( contextBeginEnabled );        
+        this.renderBegin(contextBeginEnabled);
         if (this.m_rspace != null) {
             //this.m_rspace.setCamera(camFlag ? this.m_renderProxy.getCamera() : this.m_currCamera);
             this.m_rspace.setCamera(this.m_camera);
@@ -486,7 +486,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
                 // 是否对已经获得的拾取列表做进一步的gpu拾取
                 let selector: IRaySelector = this.m_rspace.getRaySelector();
                 if (selector != null) {
-                    if(this.m_rayTestEnabled) {
+                    if (this.m_rayTestEnabled) {
                         this.mouseRayTest();
                     }
                     else {
@@ -520,8 +520,8 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
      */
     update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
 
-        if(this.m_currStage3D != null) this.m_currStage3D.enterFrame();
-        
+        if (this.m_currStage3D != null) this.m_currStage3D.enterFrame();
+
         if (autoCycle && this.m_autoRunning) {
             if (this.m_runFlag != 0) this.runBegin();
             this.m_runFlag = 1;
@@ -598,7 +598,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     run(autoCycle: boolean = false): void {
 
         if (this.m_enabled) {
-            
+
             //console.log("rendererSubScene::run...");
             if (autoCycle && this.m_autoRunning) {
                 if (this.m_runFlag != 1) this.update();
@@ -627,8 +627,8 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
         if (this.m_autoRunning) {
             this.m_runFlag = -1;
         }
-        if(this.m_accessor != null) {
-            this.m_accessor.renderEnd( this );
+        if (this.m_accessor != null) {
+            this.m_accessor.renderEnd(this);
         }
     }
     useCamera(camera: IRenderCamera, syncCamView: boolean = false): void {
@@ -660,5 +660,5 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     toString(): string {
         return "[RendererSubScene(uid = " + this.m_uid + ")]";
     }
-    
+
 }
