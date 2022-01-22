@@ -29,7 +29,25 @@ import { IVoxAppInstance } from "./modules/interfaces/IVoxAppInstance";
 import { IVoxAppBase } from "./modules/interfaces/IVoxAppBase";
 
 import { LightModule } from "../light/base/LightModule";
+import EnvLightData from "../light/base/EnvLightData";
+//
 // /*
+class VoxAppEnvLightData {
+    constructor() {
+
+    }
+    createEnvLightData(rsecne: IRendererScene): EnvLightData {
+        let ctx = rsecne.getRenderProxy().uniformContext;
+        return new EnvLightData(ctx);
+    }
+}
+var pwin: any = window;
+pwin["VoxAppEnvLightData"] = VoxAppEnvLightData;
+// export {VoxAppBaseInstance, Axis3DEntity, Box3DEntity, Sphere3DEntity};
+export { EnvLightData, VoxAppEnvLightData };
+//*/
+
+/*
 class VoxAppLightModule {
     constructor() {
 
