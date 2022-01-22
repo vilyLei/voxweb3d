@@ -65,8 +65,8 @@ class RendererState {
             state.Rstate = rstate;
             state.VRO = vro;
 
-            RenderColorMask.Rstate = RendererState.Rstate;
-            RenderStateObject.Rstate = RendererState.Rstate;
+            RenderColorMask.Rstate = rstate;
+            RenderStateObject.Rstate = rstate;
 
             state.COLOR_MASK_ALL_TRUE = RenderColorMask.Create("all_true", true, true, true, true);
             state.COLOR_MASK_ALL_FALSE = RenderColorMask.Create("all_false", false, false, false, false);

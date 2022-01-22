@@ -4,7 +4,7 @@ import RendererInstance from "../vox/scene/RendererInstance";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import { DispScene } from "./depthBlur/DispScene";
-import { RendererScene } from "../app/VoxApp";
+import RendererScene from "../vox/scene/RendererScene";
 
 export class DemoDepthBlur {
     constructor() {

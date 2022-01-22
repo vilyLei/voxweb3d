@@ -16,7 +16,7 @@ import CameraTrack from "../vox/view/CameraTrack";
 
 import { TextureBlock } from "../vox/texture/TextureBlock";
 import CameraBase from "../vox/view/CameraBase";
-import { RendererScene } from "../app/VoxApp";
+import RendererScene from "../vox/scene/RendererScene";
 
 export namespace demo {
     export class DemoScreenPingpongBlur {

@@ -6,7 +6,8 @@ import IRendererScene from "../../vox/scene/IRendererScene";
 import RendererScene from "../../vox/scene/RendererScene";
 import RendererSubScene from "../../vox/scene/RendererSubScene";
 
-import Stage3D from "../../vox/display/Stage3D";
+// import Stage3D from "../../vox/display/Stage3D";
+import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import Vector3D from "../../vox/math/Vector3D";
 import CameraViewRay from "../../vox/view/CameraViewRay";
 import { OrthoUIScene } from "../../vox/ui/OrthoUIScene";
@@ -16,6 +17,7 @@ import {IRendererSceneAccessor} from "../../vox/scene/IRendererSceneAccessor";
 import { RenderableMaterialBlock } from "../scene/block/RenderableMaterialBlock";
 import { RenderableEntityBlock } from "../scene/block/RenderableEntityBlock";
 import { IRenderProxy } from "../render/IRenderProxy";
+
 class RendererSceneNode {
     private m_rscene: IRendererScene = null;
     priority: number = 0;
@@ -41,7 +43,7 @@ export class EngineBase {
     private m_sceneList: RendererSceneNode[] = [];
 
     readonly texLoader: ImageTextureLoader = null;
-    readonly stage3D: Stage3D = null;
+    readonly stage3D: IRenderStage3D = null;
     readonly rscene: RendererScene = null;
     readonly uiScene: OrthoUIScene = null;
     readonly interaction: UserInteraction = new UserInteraction();

@@ -117,6 +117,11 @@ interface IRenderProxy {
     getViewportHeight(): number;
     setRenderToBackBuffer(): void;
     clearBackBuffer(): void;
+    /**
+     * 
+     * @param depth the derault value is 1.0
+     */
+    clearDepth(depth: number): void;
     renderBegin(): void;
 
     renderEnd(): void;

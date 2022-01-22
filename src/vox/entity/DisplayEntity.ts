@@ -414,7 +414,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     }
     getMaterial(): IRenderMaterial {
         if (this.m_display != null) {
-            return this.m_display.getMaterial() as IRenderMaterial;
+            return this.m_display.getMaterial();
         }
         return null;
     }

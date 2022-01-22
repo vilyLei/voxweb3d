@@ -16,14 +16,14 @@ import RendererParam from "../scene/RendererParam";
 import CanvasTextureTool from "../../orthoui/assets/CanvasTextureTool";
 import Color4 from "../material/Color4";
 import IRenderEntity from "../../vox/render/IRenderEntity";
-import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
+import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 import { IFBOInstance } from "../../vox/scene/IFBOInstance";
 import IRendererScene from "../../vox/scene/IRendererScene";
 import { IRenderCamera } from "../render/IRenderCamera";
 import IRenderProcess from "../render/IRenderProcess";
 import IRenderStage3D from "../render/IRenderStage3D";
 import Vector3D from "../math/Vector3D";
-import RenderProxy from "../render/RenderProxy";
+import { IRenderProxy } from "../render/IRenderProxy";
 
 
 class OrthoUIScene implements IRendererScene {
@@ -130,10 +130,10 @@ class OrthoUIScene implements IRendererScene {
         this.m_ruisc.removeEntity(entity);
     }
 
-    addContainer(child: DisplayEntityContainer, processIndex: number = 0): void {
+    addContainer(child: IRenderEntityContainer, processIndex: number = 0): void {
         this.m_ruisc.addContainer(child, processIndex);
     }
-    removeContainer(child: DisplayEntityContainer): void {
+    removeContainer(child: IRenderEntityContainer): void {
         this.m_ruisc.removeContainer(child);
     }
     /**
@@ -210,7 +210,7 @@ class OrthoUIScene implements IRendererScene {
     getViewHeight(): number {
         return this.m_ruisc.getViewHeight();
     }
-    getRenderProxy(): RenderProxy {
+    getRenderProxy(): IRenderProxy {
         return this.m_ruisc.getRenderProxy();
     }
     /**

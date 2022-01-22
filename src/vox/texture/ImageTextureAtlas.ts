@@ -7,7 +7,7 @@ import MathConst from "../math/MathConst";
 import RendererDevice from "../render/RendererDevice";
 import { TexArea, TexAreaNode } from "./TexAreaNode";
 import TextureAtlas from "./TextureAtlas";
-import RendererScene from "../../vox/scene/RendererScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 
 import Color4 from "../material/Color4";
 
@@ -16,11 +16,11 @@ export default class ImageTextureAtlas extends TextureAtlas {
     private static s_imgMap: Map<string, HTMLCanvasElement> = new Map();
     private m_canvas: HTMLCanvasElement = null;
     private m_canvas2D: CanvasRenderingContext2D = null;
-    private m_rscene: RendererScene = null;
+    private m_rscene: IRendererScene = null;
     private m_texture: IImageTexture = null;
     private m_transparent: boolean = false;
     private m_fillColor: Color4 = null;
-    constructor(rscene: RendererScene, canvasWidth: number, canvasHeight: number, fillColor: Color4, transparent: boolean = false, debugEnabled: boolean = false) {
+    constructor(rscene: IRendererScene, canvasWidth: number, canvasHeight: number, fillColor: Color4, transparent: boolean = false, debugEnabled: boolean = false) {
 
         super(canvasWidth, canvasHeight);
         let canvas = document.createElement('canvas');

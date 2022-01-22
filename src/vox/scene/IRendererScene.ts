@@ -11,7 +11,7 @@ import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 import { IRenderCamera } from "../render/IRenderCamera";
 import IRenderStage3D from "../render/IRenderStage3D";
-import RenderProxy from "../../vox/render/RenderProxy";
+import { IRenderProxy } from "../../vox/render/IRenderProxy";
 
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import Vector3D from "../math/Vector3D";
@@ -113,7 +113,7 @@ interface IRendererScene {
     createCamera(): IRenderCamera;
     getCamera(): IRenderCamera;
     getStage3D(): IRenderStage3D;
-    getRenderProxy(): RenderProxy;
+    getRenderProxy(): IRenderProxy;
 
     getViewWidth(): number;
     getViewHeight(): number;

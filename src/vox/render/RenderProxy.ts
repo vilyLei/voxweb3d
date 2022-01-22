@@ -485,6 +485,9 @@ class RenderProxy implements IRenderProxy{
     clearBackBuffer(): void {
         this.m_adapter.clear();
     }
+    clearDepth(depth: number = 1.0): void {
+        this.m_adapter.clearDepth(depth);
+    }
     renderBegin():void {
         this.m_camera.update();
         this.m_adapter.renderBegin();

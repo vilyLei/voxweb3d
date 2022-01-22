@@ -1,4 +1,4 @@
-import RendererScene from "../../vox/scene/RendererScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import RendererDevice from "../../vox/render/RendererDevice";
 import ImageTextureAtlas from "../../vox/texture/ImageTextureAtlas";
 import Color4 from "../../vox/material/Color4";
@@ -31,7 +31,7 @@ export class CanvasTextureObject {
     }
 }
 export class CanvasTextureTool {
-    private m_sc: RendererScene = null;
+    private m_sc: IRendererScene = null;
     private static s_ins: CanvasTextureTool = null;
     private static s_imgMap: Map<string, HTMLImageElement | HTMLCanvasElement> = new Map();
     private static s_texMap: Map<string, IRenderTexture> = new Map();
@@ -49,7 +49,7 @@ export class CanvasTextureTool {
         return new CanvasTextureTool();
     }
 
-    initialize(sc: RendererScene): void {
+    initialize(sc: IRendererScene): void {
         if (this.m_sc == null) {
             this.m_sc = sc;
         }
