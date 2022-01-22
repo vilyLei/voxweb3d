@@ -18,24 +18,28 @@ import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBl
 import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
 import { UserInteraction } from "../vox/engine/UserInteraction";
 
+import { IShadowVSMModule } from "../shadow/vsm/base/IShadowVSMModule";
 import ShadowVSMModule from "../shadow/vsm/base/ShadowVSMModule";
+
 import Matrix4 from "../vox/math/Matrix4";
 import IRenderMaterial from "../vox/render/IRenderMaterial";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 
 import { IVoxAppInstance } from "./modules/interfaces/IVoxAppInstance";
 import { IVoxAppBase } from "./modules/interfaces/IVoxAppBase";
-/*
-class IVoxAppShadow {
+// /*
+class VoxAppShadow {
     constructor() {
 
     }
-    createVSMShadow(vsmFboIndex: number): ShadowVSMModule {
-        return new ShadowVSMModule( vsmFboIndex );
+    createVSMShadow(vsmFboIndex: number): IShadowVSMModule {
+        return new ShadowVSMModule(vsmFboIndex);
     }
 }
+var pwin: any = window;
+pwin["VoxAppShadow"] = VoxAppShadow;
 // export {VoxAppBaseInstance, Axis3DEntity, Box3DEntity, Sphere3DEntity};
-export {ShadowVSMModule, IVoxAppShadow};
+export { ShadowVSMModule, VoxAppShadow };
 //*/
 /*
 class VoxAppBase implements IVoxAppBase {
@@ -63,7 +67,7 @@ pwin["VoxAppBase"] = VoxAppBase;
 export {VoxAppBase};
 //*/
 
-// /*
+/*
 class VoxAppInstance implements IVoxAppInstance {
 
     private m_rscene: IRendererScene = null;

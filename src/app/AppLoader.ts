@@ -1,5 +1,6 @@
 import IRenderMaterial from "../vox/render/IRenderMaterial";
 import IRendererScene from "../vox/scene/IRendererScene";
+import { IShadowVSMModule } from "../shadow/vsm/base/IShadowVSMModule";
 
 var VoxApp: any;
 var VoxAppBase: any;
@@ -23,6 +24,7 @@ class AppShell {
     private m_voxAppIns: any = null;
     private m_voxAppBaseIns: any = null;
     private m_rscene: IRendererScene;
+    private m_shadow: IShadowVSMModule;
     constructor() { }
 
     loadedWithIndex(index: number): void {

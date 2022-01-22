@@ -15,8 +15,9 @@ import { IMaterialPipe } from "../../../vox/material/pipeline/IMaterialPipe";
 import IShaderUniform from "../../../vox/material/IShaderUniform";
 
 // import PingpongBlur from "../../../renderingtoy/mcase/PingpongBlur";
+import { IShadowVSMModule } from "./IShadowVSMModule";
 
-export class ShadowVSMModule implements IMaterialPipe {
+export class ShadowVSMModule implements IMaterialPipe, IShadowVSMModule {
 
     private m_rscene: IRendererScene = null;
     private m_vsmData: ShadowVSMData = null;
