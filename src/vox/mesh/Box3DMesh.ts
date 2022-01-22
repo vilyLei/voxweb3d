@@ -15,6 +15,7 @@ import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
 import AABB from "../../vox/geom/AABB";
 import MeshBase from "../../vox/mesh/MeshBase";
 import Color4 from "../material/Color4";
+import { AABBCalc } from "../geom/AABBCalc";
 
 export default class Box3DMesh extends MeshBase {
     private m_posList: number[][] = [null, null, null, null, null, null, null, null];
@@ -487,7 +488,7 @@ export default class Box3DMesh extends MeshBase {
      * @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
      */
     testRay(rlpv: Vector3D, rltv: Vector3D, outV: Vector3D, boundsHit: boolean): number {
-        let boo: boolean = AABB.IntersectionRL2(rltv, rlpv, this.bounds, outV);
+        let boo: boolean = AABBCalc.IntersectionRL2(rltv, rlpv, this.bounds, outV);
         return boo ? 1 : -1;
     }
     toString(): string {

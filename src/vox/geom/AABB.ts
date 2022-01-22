@@ -7,8 +7,9 @@
 
 import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
-class AABB {
-	static ___pnV: Vector3D = new Vector3D();
+import { IAABB } from "../../vox/geom/IAABB";
+
+class AABB implements IAABB {
 	min: Vector3D = new Vector3D(MathConst.MATH_MAX_POSITIVE, MathConst.MATH_MAX_POSITIVE, MathConst.MATH_MAX_POSITIVE);
 	max: Vector3D = new Vector3D(MathConst.MATH_MIN_NEGATIVE, MathConst.MATH_MIN_NEGATIVE, MathConst.MATH_MIN_NEGATIVE);
 	version: number = -1;
@@ -298,6 +299,7 @@ class AABB {
 		radius *= radius;
 		return radius >= dis;
 	}
+	/*
 	intersectRL(ltv: Vector3D, lpv: Vector3D): boolean {
 		let f: number = 0;
 		let tmin: number = (this.min.x - lpv.x) / ltv.x;
@@ -350,6 +352,7 @@ class AABB {
 			tmax = tzmax;
 		return true;
 	}
+	//*/
 	/*
 	static IntersectionRL3(vecs:Vector3D[],rsigns:Uint8Array,ltInvtv:Vector3D, ltv:Vector3D, lpv:Vector3D,outV:Vector3D):boolean
 	{ 
@@ -382,6 +385,8 @@ class AABB {
 		return true; 
 	}
 	//*/
+
+	/*
 	static IntersectionRL3(vecs: Vector3D[], rsigns: Uint8Array, ltInvtv: Vector3D, ltv: Vector3D, lpv: Vector3D, outV: Vector3D): boolean {
 		ltInvtv.w = (vecs[rsigns[0]].x - lpv.x) * ltInvtv.x;
 		ltv.w = (vecs[1 - rsigns[0]].x - lpv.x) * ltInvtv.x;
@@ -473,7 +478,8 @@ class AABB {
 		//console.log("tmax outV: "+outV.toString());
 		return true;
 	}
-	//
+	//*/
+	/*
 	// 检测射线和AABB是否相交,如果相交计算出交点存放于 outV 中, 这个检测计算是精准高效的
 	// @param				ltv		射线的切向
 	// @param				lpv		射线上的一点
@@ -586,6 +592,7 @@ class AABB {
 
 		return false;
 	}
+	//*/
 }
 
 export default AABB;

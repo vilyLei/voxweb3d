@@ -23,7 +23,7 @@ import { UserInteraction } from "../vox/engine/UserInteraction";
 import ShadowVSMModule from "../shadow/vsm/base/ShadowVSMModule";
 import Matrix4 from "../vox/math/Matrix4";
 
-/*
+// /*
 class VoxAppShadowInstance {
     constructor() {
 
@@ -37,7 +37,7 @@ class VoxAppShadowInstance {
 export {ShadowVSMModule, VoxAppShadowInstance};
 //*/
 
-// /*
+/*
 class VoxAppBaseInstance {
     constructor() {
 

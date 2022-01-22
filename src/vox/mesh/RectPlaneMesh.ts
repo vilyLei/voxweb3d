@@ -16,6 +16,7 @@ import VtxBufData from "../../vox/mesh/VtxBufData";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import { RenderDrawMode } from "../../vox/render/RenderConst";
 import Color4 from "../material/Color4";
+import { AABBCalc } from "../geom/AABBCalc";
 
 export default class RectPlaneMesh extends MeshBase {
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
@@ -274,7 +275,7 @@ export default class RectPlaneMesh extends MeshBase {
     testRay(rlpv: Vector3D, rltv: Vector3D, outV: Vector3D, boundsHit: boolean): number {
         if (this.m_polyhedralBoo) return -1;
         if (boundsHit) {
-            let boo: boolean = AABB.IntersectionRL2(rltv, rlpv, this.bounds, outV);
+            let boo: boolean = AABBCalc.IntersectionRL2(rltv, rlpv, this.bounds, outV);
             return boo ? 1 : -1;
         }
         return -1;

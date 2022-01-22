@@ -16,6 +16,7 @@ import Entity3DNode from "../../vox/scene/Entity3DNode";
 import IRaySelector from '../../vox/scene/IRaySelector';
 import RaySelectedNode from '../../vox/scene/RaySelectedNode';
 import IRenderer from "../../vox/scene/IRenderer";
+import { AABBCalc } from "../geom/AABBCalc";
 
 export default class RaySelector implements IRaySelector {
     private m_renderer: IRenderer = null;
@@ -167,7 +168,7 @@ export default class RaySelector implements IRaySelector {
                         if (nextNode.rayTestState < 1) {
                             this.m_vecs[0] = nextNode.bounds.min;
                             this.m_vecs[1] = nextNode.bounds.max;
-                            if (AABB.IntersectionRL3(this.m_vecs, this.m_rlsiv, this.m_rlinvtv, rtv, rpv, outv)) {
+                            if (AABBCalc.IntersectionRL3(this.m_vecs, this.m_rlsiv, this.m_rlinvtv, rtv, rpv, outv)) {
                                 node = this.m_rsnList[total];
                                 node.entity = nextNode.entity;
                                 node.dis = this.m_rlinvtv.w;

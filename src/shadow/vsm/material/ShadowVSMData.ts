@@ -23,8 +23,8 @@ import { VSMShaderCode } from "./VSMShaderCode";
 export default class ShadowVSMData extends MaterialPipeBase implements IMaterialPipe {
 
     private m_direcMatrix: Matrix4 = null;
-    private m_params: Float32Array = null;
     private m_offetMatrix: Matrix4 = null;
+    private m_params: Float32Array = null;
     private m_shadowMap: IRenderTexture = null;
     private m_camVersion: number = -1;
 

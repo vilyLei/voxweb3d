@@ -478,14 +478,14 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     activeDisplay(): void {
 
         if (this.m_display != null) {
-            let material: IRenderMaterial = this.m_display.getMaterial() as IRenderMaterial;
+            let material: IRenderMaterial = this.m_display.getMaterial();
             if (material != null) {
 
                 if (material.getShaderData() == null) {
                     if (material.getCodeBuf() != null) {
                         if (material.getShaderData() == null) {
-                            let texList: IRenderTexture[] = material.getTextureList();
-                            let texEnabled: boolean = (texList != null && texList.length > 0);
+                            let texList = material.getTextureList();
+                            let texEnabled = (texList != null && texList.length > 0);
                             if (material.getMaterialPipeline() == null && this.getMaterialPipeline() != null) {
                                 material.setMaterialPipeline(this.getMaterialPipeline());
                             }

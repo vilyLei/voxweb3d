@@ -7,10 +7,11 @@
 
 import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
-import Float32Data from "../../vox/base/Float32Data";
+// import Float32Data from "../../vox/base/Float32Data";
 import OrientationType from "../../vox/math/OrientationType";
+import { IMatrix4 } from "../../vox/math/IMatrix4";
 
-class Matrix4 implements Float32Data {
+class Matrix4 implements IMatrix4 {
 	private static s_InitData: Float32Array = new Float32Array([
 		1.0, 0.0, 0.0, 0.0,
 		0.0, 1.0, 0.0, 0.0,
