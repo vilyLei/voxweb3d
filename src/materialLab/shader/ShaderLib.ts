@@ -251,5 +251,36 @@ class ShaderLib implements IShaderLib{
         }
         return obj;
     }
+    createShaderCodeConfigure(param: any): ShaderCodeConfigure {
+
+        let configure: ShaderCodeConfigure;
+        let baseUrl: string = "static/shader/" + (param.shaderLibVersion != "" ? param.shaderLibVersion + "/" : "");
+        baseUrl += "glsl/";
+        let uuid = ShaderCodeUUID.None;
+        if (param.lambertMaterialEnabled) {
+            uuid = ShaderCodeUUID.Lambert;
+        }else if (param.pbrMaterialEnabled) {
+            uuid = ShaderCodeUUID.PBR;
+        }
+        if(uuid != ShaderCodeUUID.None) {
+            configure = new ShaderCodeConfigure();
+            configure.uuid = uuid;
+            configure.buildBinaryFile = param.buildBinaryFile;
+            baseUrl += configure.uuid + "/";
+            if (param.shaderCodeBinary) {
+                if(param.shaderFileRename) {
+                    configure.urls = [
+                        baseUrl + "glsl01.bin",
+                        baseUrl + "glsl02.bin",
+                        baseUrl + "glsl03.bin",
+                        baseUrl + "glsl04.bin"
+                    ];
+                }
+            }
+            configure.binary = param.shaderCodeBinary;
+        }
+        return configure;
+
+    }
 }
 export { ShaderCodeConfigure, IShaderLibConfigure, ShaderCodeType, IShaderLibListener, ShaderLib };

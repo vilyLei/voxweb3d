@@ -151,7 +151,6 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         this.createEntity();
         this.m_waitingTotal = this.m_materialCtx.getTextureLoader().getWaitTotal();
 
-        //this.m_waitingTotal = 
     }
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
@@ -326,13 +325,10 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         let vertUniform: VertUniformComp = new VertUniformComp();
         let decor: PBRDecorator = new PBRDecorator();
         let m = this.m_rscene.materialBlock.createMaterial(decor);
-        //specularEnvMap = this.createSpecularTex( material.decorator.hdrBrnEnabled );
+        
         m.setMaterialPipeline( pipeline );
         m.vertUniform = vertUniform;
-
-        decor.specularEnvMap = this.m_materialCtx.createSpecularTex( true );
-
-        //metallic: number, roughness: number, ao: number,
+        
         decor.scatterEnabled = false;
         decor.woolEnabled = true;
         decor.absorbEnabled = false;

@@ -197,49 +197,8 @@ export class DemoCTMLoad implements ILoaderListerner {
     }
     private initCTMFromBin(ctmUrl: string): void {
 
-        // let ctmUrl: string = "static/assets/ctm/hand.ctm";
-        // ctmUrl = "static/assets/ctm/WaltHead.ctm";
-        // ctmUrl = "static/assets/ctm/bag_01.ctm";
-        // ctmUrl = "static/assets/ctm/bag_02.ctm";
         let ctmLoader: BinaryLoader = new BinaryLoader();
         ctmLoader.load(ctmUrl, this);
-        /*
-        let request: XMLHttpRequest = new XMLHttpRequest();
-        // request.open('GET', ctmUrl, true);
-
-        request.onload = () => {
-            if (request.status <= 206) {
-                let dataStr: string = request.responseText;
-                console.log("loaded ctm string data !",dataStr.length);
-                //this.initialize(request.responseText, texList);
-                let t = Date.now();
-                var stream = new CTMStringStream( dataStr );
-                // var stream = new CTMStream( dataStr );
-                stream.offset = 0;//offsets[ i ];
-
-                var ctmFile = new CTMFile( stream );
-                t = Date.now() - t;
-                
-                DivLog.ShowLog("lost time: " + t + "ms");
-                // let ctmFile = new CTMFile(dataStr);
-                console.log("ctmFile: ",ctmFile);
-                if(ctmFile != null) {
-                    let ctmbody: CTMFileBody = ctmFile.body;
-                    console.log("ctmbody: ",ctmbody);
-                    this.initCTMEntity( ctmbody );
-                }
-            }
-            else {
-                console.error("load ctm format module url error: ", ctmUrl);
-            }
-        };
-        request.onerror = e => {
-            console.error("load obj ctm module url error: ", ctmUrl);
-        };
-        request.overrideMimeType( "text/plain; charset=x-user-defined" );
-        request.open( "GET", ctmUrl, true );
-        request.send( null );
-        //*/
     }
     private initCTMFromStr(ctmUrl: string): void {
 
@@ -301,7 +260,7 @@ export class DemoCTMLoad implements ILoaderListerner {
 
         let dataMesh: DataMesh = new DataMesh();
         dataMesh.setVS(ctmbody.vertices);
-        dataMesh.setUVS(ctmbody.uvMaps[0].uv);
+        dataMesh.setUVS(ctmbody.getUVSAt(0));
         dataMesh.setNVS(ctmbody.normals);
         dataMesh.setIVS(ctmbody.indices);
         dataMesh.setVtxBufRenderData(material);
@@ -310,7 +269,7 @@ export class DemoCTMLoad implements ILoaderListerner {
 
         DivLog.ShowLog("三角面数量: " + dataMesh.trisNumber + "个");
 
-        let scale: number = 2.0;
+        let scale: number = 20.0;
         let entity: DisplayEntity = new DisplayEntity();
         entity.setMesh(dataMesh);
         entity.setMaterial(material);

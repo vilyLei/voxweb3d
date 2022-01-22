@@ -108,6 +108,9 @@ class CTMFileBody {
     normals: Float32Array;
     uvMaps: any[];
     attrMaps: any[];
+    getUVSAt( i: number ): Float32Array {
+        return this.uvMaps[ i ].uv;
+    }
     constructor(header: any) {
         var i = header.triangleCount * 3,
             v = header.vertexCount * 3,
