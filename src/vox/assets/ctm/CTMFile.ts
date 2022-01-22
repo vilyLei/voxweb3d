@@ -10,10 +10,10 @@ import { LZMA } from "./LZMA";
 
 class InterleavedStream {
 
-    data: Uint8Array = null;// = new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
-    offset: number;// = CTM.isLittleEndian? 3: 0;
-    count: number;// = count * 4;
-    len: number;// = this.data.length;
+    data: Uint8Array = null;
+    offset: number;
+    count: number;
+    len: number;
     constructor(data: any, count: number) {
 
         this.data = new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
@@ -38,14 +38,14 @@ class InterleavedStream {
 
 class FileHeader {
 
-    fileFormat: number;// = stream.readInt32();
-    compressionMethod: number;// = stream.readInt32();
-    vertexCount: number;// = stream.readInt32();
-    triangleCount: number;// = stream.readInt32();
-    uvMapCount: number;// = stream.readInt32();
-    attrMapCount: number;// = stream.readInt32();
-    flags: number;// = stream.readInt32();
-    comment: string;// = stream.readString();
+    fileFormat: number;
+    compressionMethod: number;
+    vertexCount: number;
+    triangleCount: number;
+    uvMapCount: number;
+    attrMapCount: number;
+    flags: number;
+    comment: string;
 
     constructor(stream: any) {
 
@@ -65,21 +65,21 @@ class FileHeader {
 }
 class FileMG2Header {
 
-    vertexPrecision: number;// = stream.readFloat32();
-    normalPrecision: number;// = stream.readFloat32();
-    lowerBoundx: number;// = stream.readFloat32();
-    lowerBoundy: number;// = stream.readFloat32();
-    lowerBoundz: number;// = stream.readFloat32();
-    higherBoundx: number;// = stream.readFloat32();
-    higherBoundy: number;// = stream.readFloat32();
-    higherBoundz: number;// = stream.readFloat32();
-    divx: number;// = stream.readInt32();
-    divy: number;// = stream.readInt32();
-    divz: number;// = stream.readInt32();
+    vertexPrecision: number;
+    normalPrecision: number;
+    lowerBoundx: number;
+    lowerBoundy: number;
+    lowerBoundz: number;
+    higherBoundx: number;
+    higherBoundy: number;
+    higherBoundz: number;
+    divx: number;
+    divy: number;
+    divz: number;
 
-    sizex: number;// = (this.higherBoundx - this.lowerBoundx) / this.divx;
-    sizey: number;// = (this.higherBoundy - this.lowerBoundy) / this.divy;
-    sizez: number;// = (this.higherBoundz - this.lowerBoundz) / this.divz;
+    sizex: number;
+    sizey: number;
+    sizez: number;
 
     constructor(stream: any) {
 
@@ -586,23 +586,115 @@ class CTMStream {
 
     TWO_POW_MINUS23 = Math.pow(2, -23);
     TWO_POW_MINUS126 = Math.pow(2, -126);
-    data: any = null;
+    /**
+     * uint8 array
+     */
+    data: Uint8Array = null;
     offset: number = 0;
-    constructor(data: any) {
+    constructor(data: Uint8Array) {
+        this.data = data;
+        this.offset = 0;
+    }
+
+    private decodeUint8Arr(u8array: Uint8Array): string{
+        return new TextDecoder("utf-8").decode(u8array);
+    }
+    readByte(): number {
+        return this.data[this.offset++] & 0xff;
+    }
+
+    readInt32(): number {
+        // var i = this.readByte();
+        // i |= this.readByte() << 8;
+        // i |= this.readByte() << 16;
+        // return i | (this.readByte() << 24);
+
+        let i = this.data[this.offset++];
+        i |= this.data[this.offset++] << 8;
+        i |= this.data[this.offset++] << 16;
+        return i | (this.data[this.offset++] << 24);
+    }
+
+    readFloat32(): number {
+        // var m = this.readByte();
+        // m += this.readByte() << 8;
+
+        // var b1 = this.readByte();
+        // var b2 = this.readByte();
+
+        let m = this.data[this.offset++];
+        m += this.data[this.offset++] << 8;
+
+        var b1 = this.data[this.offset++];
+        var b2 = this.data[this.offset++];
+
+        m += (b1 & 0x7f) << 16;
+        let e = ((b2 & 0x7f) << 1) | ((b1 & 0x80) >>> 7);
+        let s = b2 & 0x80 ? -1 : 1;
+
+        if (e === 255) {
+            return m !== 0 ? NaN : s * Infinity;
+        }
+        if (e > 0) {
+            return s * (1 + (m * this.TWO_POW_MINUS23)) * Math.pow(2, e - 127);
+        }
+        if (m !== 0) {
+            return s * m * this.TWO_POW_MINUS126;
+        }
+        return s * 0;
+    }
+
+    readString(): string {
+        var len = this.readInt32();
+        this.offset += len;
+
+        let bytes = this.data.subarray(this.offset - len, this.offset);
+        return this.decodeUint8Arr( bytes );
+    }
+
+    readArrayInt32(array: any): void {
+        var i = 0, len = array.length;
+
+        while (i < len) {
+            array[i++] = this.readInt32();
+        }
+
+        return array;
+    }
+
+    readArrayFloat32(array: number[]): number[] {
+        var i = 0, len = array.length;
+
+        while (i < len) {
+            array[i++] = this.readFloat32();
+        }
+
+        return array;
+    }
+
+}
+
+class CTMStringStream {
+
+    TWO_POW_MINUS23 = Math.pow(2, -23);
+    TWO_POW_MINUS126 = Math.pow(2, -126);
+    data: string = null;
+    offset: number = 0;
+    constructor(data: string) {
         this.data = data;
         this.offset = 0;
     }
 
     readByte(): number {
         return this.data.charCodeAt(this.offset++) & 0xff;
-    };
+    }
 
     readInt32(): number {
         var i = this.readByte();
         i |= this.readByte() << 8;
         i |= this.readByte() << 16;
         return i | (this.readByte() << 24);
-    };
+    }
 
     readFloat32(): number {
         var m = this.readByte();
@@ -625,7 +717,7 @@ class CTMStream {
             return s * m * this.TWO_POW_MINUS126;
         }
         return s * 0;
-    };
+    }
 
     readString(): string {
         var len = this.readInt32();
@@ -633,7 +725,7 @@ class CTMStream {
         this.offset += len;
 
         return this.data.substr(this.offset - len, len);
-    };
+    }
 
     readArrayInt32(array: any): void {
         var i = 0, len = array.length;
@@ -643,9 +735,9 @@ class CTMStream {
         }
 
         return array;
-    };
+    }
 
-    readArrayFloat32(array: any): void {
+    readArrayFloat32(array: number[]): number[] {
         var i = 0, len = array.length;
 
         while (i < len) {
@@ -662,7 +754,7 @@ class CTMFile {
     body: CTMFileBody;
     constructor(stream: any) {
         this.load(stream);
-    };
+    }
 
     load(stream: any) {
         this.header = new FileHeader(stream);
@@ -670,7 +762,7 @@ class CTMFile {
         this.body = new CTMFileBody(this.header);
 
         this.getReader().read(stream, this.body);
-    };
+    }
 
     getReader = function () {
         var reader;
@@ -688,8 +780,8 @@ class CTMFile {
         }
 
         return reader;
-    };
+    }
 }
 
 
-export { CTMStream, CTMFileBody, CTMFile }
+export { CTMStringStream, CTMStream, CTMFileBody, CTMFile }

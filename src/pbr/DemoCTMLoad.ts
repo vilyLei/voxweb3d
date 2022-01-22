@@ -34,14 +34,15 @@ import { SpotLight } from "../light/base/SpotLight";
 import { DebugMaterialContext, MaterialContextParam } from "../materialLab/base/DebugMaterialContext";
 import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
 import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
-import { CTMStream, CTMFileBody, CTMFile } from "../vox/assets/ctm/CTMFile";
+import { CTMStringStream, CTMStream, CTMFileBody, CTMFile } from "../vox/assets/ctm/CTMFile";
 
 import ILoaderListerner from "../vox/assets/ILoaderListerner";
 import BinaryLoader from "../vox/assets/BinaryLoader";
 import DataMesh from "../vox/mesh/DataMesh";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
+import DivLog from "../vox/utils/DivLog";
 
-export class DemoCTMLoad {
+export class DemoCTMLoad implements ILoaderListerner {
 
     constructor() { }
     private m_rscene: RendererScene = null;
@@ -51,7 +52,7 @@ export class DemoCTMLoad {
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
-    
+
     private m_reflectPlaneY: number = -220;
     private m_envMap: IRenderTexture = null;
 
@@ -61,7 +62,7 @@ export class DemoCTMLoad {
     hdrBrnEnabled: boolean = true;
     vtxFlatNormal: boolean = false;
     aoMapEnabled: boolean = false;
-
+    private m_time: number = 0;
     initialize(): void {
         console.log("DemoCTMLoad::initialize()......");
         if (this.m_rscene == null) {
@@ -69,7 +70,7 @@ export class DemoCTMLoad {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
-
+            DivLog.SetDebugEnabled(true);
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
             rparam.setCamProject(45, 50.0, 10000.0);
@@ -80,7 +81,7 @@ export class DemoCTMLoad {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();
-            
+
             let rscene = this.m_rscene;
             let materialBlock = new RenderableMaterialBlock();
             materialBlock.initialize();
@@ -102,8 +103,10 @@ export class DemoCTMLoad {
             this.m_statusDisp.initialize();
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
-            this.m_rscene.setClearRGBColor3f(0.2, 0.2, 0.2);
+            this.m_rscene.setClearRGBColor3f(0.5, 0.5, 0.5);
 
+            DivLog.ShowLog("renderer inited.");
+            DivLog.ShowLog(RendererDevice.GPU_RENDERER);
             // let k = this.calcTotal(9);
             // console.log("k: ",k);
             // k = this.calcTotal2(55);
@@ -156,15 +159,51 @@ export class DemoCTMLoad {
             // axis.initialize(300);
             // this.m_rscene.addEntity( axis );
 
-            this.initCTM();
+
+            let ctmUrl: string = "static/assets/ctm/hand.ctm";
+            ctmUrl = "static/assets/ctm/WaltHead.ctm";
+
+            this.m_time = Date.now();
+            this.initCTMFromStr( ctmUrl );
+            // this.initCTMFromBin( ctmUrl );
         }
     }
-    private initCTM(): void {
 
-        let ctmUrl: string = "static/assets/ctm/hand.ctm";
-        ctmUrl = "static/assets/ctm/WaltHead.ctm";
-        // let ctmLoader: BinaryLoader = new BinaryLoader();
-        // ctmLoader.load(ctmUrl, this);
+    loaded(buffer: ArrayBuffer, uuid: string): void {
+
+        console.log("bin ctm loaded.");
+        DivLog.ShowLog("二进制流 ctm 加载耗时: "+(Date.now() - this.m_time) + "ms");
+        DivLog.ShowLog("二进制流 ctm loaded.");
+
+        let t = Date.now();
+        var stream = new CTMStream(new Uint8Array(buffer));
+        // var stream = new CTMStream( dataStr );
+        stream.offset = 0;//offsets[ i ];
+
+        var ctmFile = new CTMFile(stream);
+        t = Date.now() - t;
+
+        DivLog.ShowLog("二进制流 ctm 解析耗时: " + t + "ms");
+        // let ctmFile = new CTMFile(dataStr);
+        console.log("ctmFile: ", ctmFile);
+        if (ctmFile != null) {
+            let ctmbody: CTMFileBody = ctmFile.body;
+            console.log("ctmbody: ", ctmbody);
+            this.initCTMEntity(ctmbody);
+        }
+    }
+    loadError(status: number, uuid: string): void {
+
+    }
+    private initCTMFromBin(ctmUrl: string): void {
+
+        // let ctmUrl: string = "static/assets/ctm/hand.ctm";
+        // ctmUrl = "static/assets/ctm/WaltHead.ctm";
+        // ctmUrl = "static/assets/ctm/bag_01.ctm";
+        // ctmUrl = "static/assets/ctm/bag_02.ctm";
+        let ctmLoader: BinaryLoader = new BinaryLoader();
+        ctmLoader.load(ctmUrl, this);
+        /*
         let request: XMLHttpRequest = new XMLHttpRequest();
         // request.open('GET', ctmUrl, true);
 
@@ -173,11 +212,15 @@ export class DemoCTMLoad {
                 let dataStr: string = request.responseText;
                 console.log("loaded ctm string data !",dataStr.length);
                 //this.initialize(request.responseText, texList);
-                var stream = new CTMStream( dataStr );
+                let t = Date.now();
+                var stream = new CTMStringStream( dataStr );
+                // var stream = new CTMStream( dataStr );
                 stream.offset = 0;//offsets[ i ];
 
                 var ctmFile = new CTMFile( stream );
-
+                t = Date.now() - t;
+                
+                DivLog.ShowLog("lost time: " + t + "ms");
                 // let ctmFile = new CTMFile(dataStr);
                 console.log("ctmFile: ",ctmFile);
                 if(ctmFile != null) {
@@ -196,6 +239,51 @@ export class DemoCTMLoad {
         request.overrideMimeType( "text/plain; charset=x-user-defined" );
         request.open( "GET", ctmUrl, true );
         request.send( null );
+        //*/
+    }
+    private initCTMFromStr(ctmUrl: string): void {
+
+        // let ctmLoader: BinaryLoader = new BinaryLoader();
+        // ctmLoader.load(ctmUrl, this);
+        let request: XMLHttpRequest = new XMLHttpRequest();
+        // request.open('GET', ctmUrl, true);
+
+        request.onload = () => {
+            if (request.status <= 206) {
+                console.log("strine ctm loaded.");
+                DivLog.ShowLog("字符串 ctm 加载耗时: "+(Date.now() - this.m_time) + "ms");
+                DivLog.ShowLog("字符串 ctm 加载完毕.");
+                let dataStr: string = request.responseText;
+                console.log("loaded ctm string data !", dataStr.length);
+
+                let t = Date.now();
+                //this.initialize(request.responseText, texList);
+                var stream = new CTMStringStream(dataStr);
+                // var stream = new CTMStream( dataStr );
+                stream.offset = 0;//offsets[ i ];
+
+                var ctmFile = new CTMFile(stream);
+                t = Date.now() - t;
+
+                DivLog.ShowLog("字符串 ctm 解析耗时: " + t + "ms");
+                // let ctmFile = new CTMFile(dataStr);
+                console.log("ctmFile: ", ctmFile);
+                if (ctmFile != null) {
+                    let ctmbody: CTMFileBody = ctmFile.body;
+                    console.log("ctmbody: ", ctmbody);
+                    this.initCTMEntity(ctmbody);
+                }
+            }
+            else {
+                console.error("load ctm format module url error: ", ctmUrl);
+            }
+        };
+        request.onerror = e => {
+            console.error("load obj ctm module url error: ", ctmUrl);
+        };
+        request.overrideMimeType("text/plain; charset=x-user-defined");
+        request.open("GET", ctmUrl, true);
+        request.send(null);
     }
     private initCTMEntity(ctmbody: CTMFileBody): void {
 
@@ -209,25 +297,28 @@ export class DemoCTMLoad {
         material.decorator.aoMapEnabled = this.aoMapEnabled;
         //material.setTextureList(texList);
         this.useMaterialTex(material);
-        material.initializeByCodeBuf( true );
+        material.initializeByCodeBuf(true);
 
         let dataMesh: DataMesh = new DataMesh();
         dataMesh.setVS(ctmbody.vertices);
         dataMesh.setUVS(ctmbody.uvMaps[0].uv);
         dataMesh.setNVS(ctmbody.normals);
-        dataMesh.setIVS( ctmbody.indices );
-        dataMesh.setVtxBufRenderData( material );
+        dataMesh.setIVS(ctmbody.indices);
+        dataMesh.setVtxBufRenderData(material);
         dataMesh.initialize();
+        console.log("ctm dataMesh: ", dataMesh);
 
-        let scale: number = 50.0;
+        DivLog.ShowLog("三角面数量: " + dataMesh.trisNumber + "个");
+
+        let scale: number = 2.0;
         let entity: DisplayEntity = new DisplayEntity();
         entity.setMesh(dataMesh);
-        entity.setMaterial( material );
+        entity.setMaterial(material);
         entity.setScaleXYZ(scale, scale, scale);
-        this.m_rscene.addEntity( entity );
+        this.m_rscene.addEntity(entity);
 
-        
-        console.log("ctm entity: ",entity);
+
+        console.log("ctm entity: ", entity);
     }
     // loaded(buffer: ArrayBuffer, uuid: string): void {
     //     console.log("loaded ctm data !",buffer);
@@ -253,7 +344,7 @@ export class DemoCTMLoad {
         decorator.metallicCorrection = true;
         decorator.absorbEnabled = false;
         decorator.normalNoiseEnabled = false;
-        decorator.pixelNormalNoiseEnabled = true;
+        decorator.pixelNormalNoiseEnabled = false;
         decorator.hdrBrnEnabled = this.hdrBrnEnabled;
         decorator.vtxFlatNormal = this.vtxFlatNormal;
 
