@@ -11,7 +11,6 @@ import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipe } from "../../vox/material/pipeline/IMaterialPipe";
 import { MaterialPipeBase } from "../../vox/material/pipeline/MaterialPipeBase";
 import { GlobalLightUniformParam } from "../../vox/material/param/GlobalLightUniformParam";
-import MathConst from "../../vox/math/MathConst";
 import { PointLight } from "./PointLight";
 import { DirectionLight } from "./DirectionLight";
 import { SpotLight } from "./SpotLight";
@@ -28,7 +27,13 @@ class LightModule extends MaterialPipeBase implements IMaterialPipe {
     private m_pointLightList: PointLight[] = null;
     private m_direcLightList: DirectionLight[] = null;
     private m_spotLightList: SpotLight[] = null;
-    
+
+    clamp(value: number, min: number, max: number): number {
+        return Math.max( Math.min(value, max), min);
+    }
+    degreeToRadian(degree: number): number {
+        return (180.0 * degree) / Math.PI;
+    }
     getPointLightsTotal(): number {
         return this.m_pointLightList != null ? this.m_pointLightList.length : 0;
     }
@@ -164,8 +169,8 @@ class LightModule extends MaterialPipeBase implements IMaterialPipe {
             for (let i: number = 0; i < this.m_spotLightList.length; ++i) {
 
                 light = this.m_spotLightList[i];
-                let value: number = 90 - MathConst.Clamp(light.angleDegree, 0.0, 90.0);
-                value = Math.cos(MathConst.DegreeToRadian(value));
+                let value: number = 90 - this.clamp(light.angleDegree, 0.0, 90.0);
+                value = Math.cos(this.degreeToRadian(value));
                 j = offset + i * 4;
                 posFS[j] = light.direction.x;
                 posFS[j + 1] = light.direction.y;

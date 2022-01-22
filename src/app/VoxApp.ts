@@ -27,7 +27,24 @@ import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 
 import { IVoxAppInstance } from "./modules/interfaces/IVoxAppInstance";
 import { IVoxAppBase } from "./modules/interfaces/IVoxAppBase";
+
+import { LightModule } from "../light/base/LightModule";
 // /*
+class VoxAppLightModule {
+    constructor() {
+
+    }
+    createLightModule(rsecne: IRendererScene): LightModule {
+        let ctx = rsecne.getRenderProxy().uniformContext;
+        return new LightModule(ctx);
+    }
+}
+var pwin: any = window;
+pwin["VoxAppLightModule"] = VoxAppLightModule;
+// export {VoxAppBaseInstance, Axis3DEntity, Box3DEntity, Sphere3DEntity};
+export { LightModule, VoxAppLightModule };
+//*/
+/*
 class VoxAppShadow {
     constructor() {
 
