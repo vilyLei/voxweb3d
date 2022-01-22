@@ -6,7 +6,6 @@
 /***************************************************************************/
 
 import Vector3D from "../../../vox/math/Vector3D";
-import Matrix4 from "../../../vox/math/Matrix4";
 
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
@@ -19,11 +18,12 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { GlobalVSMShadowUniformParam } from "../../../vox/material/param/GlobalVSMShadowUniformParam";
 import { ShadowMode } from "../../../vox/material/pipeline/ShadowMode";
 import { VSMShaderCode } from "./VSMShaderCode";
+import { IMatrix4 } from "../../../vox/math/IMatrix4";
 
 export default class ShadowVSMData extends MaterialPipeBase implements IMaterialPipe {
 
-    private m_direcMatrix: Matrix4 = null;
-    private m_offetMatrix: Matrix4 = null;
+    private m_direcMatrix: IMatrix4 = null;
+    private m_offetMatrix: IMatrix4 = null;
     private m_params: Float32Array = null;
     private m_shadowMap: IRenderTexture = null;
     private m_camVersion: number = -1;
@@ -64,12 +64,12 @@ export default class ShadowVSMData extends MaterialPipeBase implements IMaterial
         return "";
     }
 
-    initialize(): void {
+    initialize(direcMatrix: IMatrix4, offetMatrix: IMatrix4): void {
 
         if (this.m_uniformParam == null) {
 
-            this.m_direcMatrix = new Matrix4();
-            this.m_offetMatrix = new Matrix4();
+            this.m_direcMatrix = direcMatrix;//new Matrix4();
+            this.m_offetMatrix = offetMatrix;//new Matrix4();
 
             this.m_offetMatrix.identity();
             this.m_offetMatrix.setScaleXYZ(0.5, 0.5, 0.5);

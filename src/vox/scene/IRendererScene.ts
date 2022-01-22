@@ -19,6 +19,7 @@ import Vector3D from "../math/Vector3D";
 import { IRenderableMaterialBlock } from "./block/IRenderableMaterialBlock";
 import { IRenderableEntityBlock } from "./block/IRenderableEntityBlock";
 import { IFBOInstance } from "./IFBOInstance";
+import { IMatrix4 } from "../math/IMatrix4";
 
 interface IRendererScene {
 
@@ -31,6 +32,7 @@ interface IRendererScene {
     isEnabled(): boolean;
     getUid(): number;
     createFBOInstance(): IFBOInstance;
+    createMatrix4(): IMatrix4;
     /**
      * 是否启用鼠标或者touch交互功能
      * @param gpuTestEnabled the default value is true.

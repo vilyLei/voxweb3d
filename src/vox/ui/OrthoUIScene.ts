@@ -24,6 +24,7 @@ import IRenderProcess from "../render/IRenderProcess";
 import IRenderStage3D from "../render/IRenderStage3D";
 import Vector3D from "../math/Vector3D";
 import { IRenderProxy } from "../render/IRenderProxy";
+import { IMatrix4 } from "../math/IMatrix4";
 
 
 class OrthoUIScene implements IRendererScene {
@@ -223,6 +224,9 @@ class OrthoUIScene implements IRendererScene {
     
     createFBOInstance(): IFBOInstance {
         return null;
+    }
+    createMatrix4(): IMatrix4 {
+        return this.m_rscene.createMatrix4();
     }
 }
 export { OrthoUIScene };

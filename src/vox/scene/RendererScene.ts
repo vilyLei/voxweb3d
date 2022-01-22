@@ -51,6 +51,8 @@ import { ShaderProgramBuilder } from "../../vox/material/ShaderProgramBuilder";
 
 import { IRenderableMaterialBlock } from "./block/IRenderableMaterialBlock";
 import { IRenderableEntityBlock } from "./block/IRenderableEntityBlock";
+import Matrix4 from "../math/Matrix4";
+import { IMatrix4 } from "../math/IMatrix4";
 
 export default class RendererScene implements IRenderer, IRendererScene {
     
@@ -210,6 +212,10 @@ export default class RendererScene implements IRenderer, IRendererScene {
     }
     createFBOInstance(): FBOInstance {
         return new FBOInstance(this, this.textureBlock.getRTTStrore());
+    }
+    
+    createMatrix4(): IMatrix4 {
+        return new Matrix4();
     }
     setClearUint24Color(colorUint24: number, alpha: number = 1.0): void {
         this.m_renderProxy.setClearUint24Color(colorUint24, alpha);

@@ -151,9 +151,10 @@ export class ShadowVSMModule implements IMaterialPipe {
     }
     private initConfig(processIDList: number[], blurEnabled: boolean = false): void {
 
+        let rscene = this.m_rscene;
         let renderingState = this.m_rscene.getRenderProxy().renderingState;
         this.m_vsmData = new ShadowVSMData(this.m_rscene.getRenderProxy().uniformContext);
-        this.m_vsmData.initialize();
+        this.m_vsmData.initialize(rscene.createMatrix4(), rscene.createMatrix4());
         this.m_vsmData.setShadowIntensity(this.m_shadowIntensity);
 
         let depthMaterial = this.m_rscene.materialBlock.createSimpleMaterial(new DepthWriteDecorator());

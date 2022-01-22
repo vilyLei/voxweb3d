@@ -47,6 +47,8 @@ import { IRendererSceneAccessor } from "./IRendererSceneAccessor";
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import { IRenderableMaterialBlock } from "../scene/block/IRenderableMaterialBlock";
 import { IRenderableEntityBlock } from "../scene/block/IRenderableEntityBlock";
+import Matrix4 from "../math/Matrix4";
+import { IMatrix4 } from "../math/IMatrix4";
 
 export default class RendererSubScene implements IRenderer, IRendererScene {
     private static s_uid: number = 0;
@@ -167,6 +169,10 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     }
     createFBOInstance(): FBOInstance {
         return new FBOInstance(this, this.textureBlock.getRTTStrore());
+    }
+
+    createMatrix4(): IMatrix4 {
+        return new Matrix4();
     }
 
     setEvt3DController(evt3DCtr: IEvt3DController): void {

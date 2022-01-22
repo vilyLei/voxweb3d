@@ -5,8 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-import MathConst from "../../vox/math/MathConst";
-
+// import MathConst from "../../vox/math/MathConst";
+const v_m_180pk = 180.0 / Math.PI;
+const v_m_minp: number = 1e-5;
 class Vector3D {
     x: number = 0.0;
     y: number = 0.0;
@@ -47,7 +48,7 @@ class Vector3D {
     }
     normalize(): void {
         let d: number = Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
-        if (d > MathConst.MATH_MIN_POSITIVE) {
+        if (d > v_m_minp) {
             this.x /= d;
             this.y /= d;
             this.z /= d;
@@ -55,7 +56,7 @@ class Vector3D {
     }
     normalizeTo(a: Vector3D): void {
         let d: number = Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
-        if (d > MathConst.MATH_MIN_POSITIVE) {
+        if (d > v_m_minp) {
             a.x = this.x / d;
             a.y = this.y / d;
             a.z = this.z / d;
@@ -82,10 +83,10 @@ class Vector3D {
         this.z = -this.z;
     }
     equalsXYZ(a: Vector3D): boolean {
-        return Math.abs(this.x - a.x) < MathConst.MATH_MIN_POSITIVE && Math.abs(this.y - a.y) < MathConst.MATH_MIN_POSITIVE && Math.abs(this.z - a.z) < MathConst.MATH_MIN_POSITIVE;
+        return Math.abs(this.x - a.x) < v_m_minp && Math.abs(this.y - a.y) < v_m_minp && Math.abs(this.z - a.z) < v_m_minp;
     }
     equalsAll(a: Vector3D): boolean {
-        return Math.abs(this.x - a.x) < MathConst.MATH_MIN_POSITIVE && Math.abs(this.y - a.y) < MathConst.MATH_MIN_POSITIVE && Math.abs(this.z - a.z) < MathConst.MATH_MIN_POSITIVE && Math.abs(this.w - a.w) < MathConst.MATH_MIN_POSITIVE;
+        return Math.abs(this.x - a.x) < v_m_minp && Math.abs(this.y - a.y) < v_m_minp && Math.abs(this.z - a.z) < v_m_minp && Math.abs(this.w - a.w) < v_m_minp;
     }
     project(): void {
         let t: number = 1.0 / this.w;
@@ -222,7 +223,7 @@ class Vector3D {
     static AngleBetween(v0: Vector3D, v1: Vector3D): number {
         v0.normalizeTo(Vector3D.__vtor3Stv0);
         v1.normalizeTo(Vector3D.__vtor3Stv1);
-        return Math.acos(Vector3D.__vtor3Stv0.dot(Vector3D.__vtor3Stv1)) * MathConst.MATH_180_OVER_PI;
+        return Math.acos(Vector3D.__vtor3Stv0.dot(Vector3D.__vtor3Stv1)) * v_m_180pk;
     }
     /**
      * get angle radian between two Vector3D objects
