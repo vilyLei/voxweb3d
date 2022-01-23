@@ -4,7 +4,7 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
-interface IVoxAppInstance {
+interface IVoxAppEngine {
 
     getImageTexByUrl(purl: string, wrapRepeat: boolean, mipmapEnabled: boolean): IRenderTexture;
     addEntity(entity: IRenderEntity, processIndex: number): void;
@@ -14,4 +14,4 @@ interface IVoxAppInstance {
     run(): void;
 }
 
-export { IVoxAppInstance }
+export { IVoxAppEngine }

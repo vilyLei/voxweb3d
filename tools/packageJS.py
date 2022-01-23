@@ -99,19 +99,17 @@ def isNumLeters(s):
             return False
 #############################################
 cmdParams = sys.argv;
-dirName = "";
-saveFileName = "";
+saveFileName = "VoxApp";
 if len(cmdParams) > 1:
 	print("cmdParams: "+cmdParams[1]);
 	saveFileName = cmdParams[1];
-	dirName = cmdParams[1] + "/";
+	#dirName = cmdParams[1] + "/";
 
 currDir = os.path.abspath(os.path.join(os.path.dirname('packageJS.py'),os.path.pardir));
-filePath = currDir+"/dist/"+dirName+"VoxApp.umd.min.js";
-if len(dirName) < 1:
-	dirName = "VoxApp.package";
+filePath = currDir+"/dist/"+saveFileName+".umd.min.js";
+saveFileName += ".package"
 	#
-fileSavePath = currDir+"/dist/"+dirName+saveFileName+".js";
+fileSavePath = currDir+"/dist/"+saveFileName+".js";
 #filePath = currDir+"/dist/VoxApp.umd.js";
 print("filePath: "+filePath);
 targetFP = open(filePath,"r+");

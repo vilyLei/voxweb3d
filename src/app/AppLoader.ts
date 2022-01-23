@@ -2,8 +2,9 @@ import IRenderMaterial from "../vox/render/IRenderMaterial";
 import IRendererScene from "../vox/scene/IRendererScene";
 import { IShadowVSMModule } from "../shadow/vsm/base/IShadowVSMModule";
 
-var VoxApp: any;
-var VoxAppBase: any;
+declare var VoxAppEngine: any;
+declare var VoxAppBase: any;
+
 var Module: any = window;
 function getSysModule(ns: string): any {
     return Module[ns];
@@ -21,7 +22,7 @@ class AppShell {
 
     private m_loadedTotal: number = 0;
     private m_loadedFlags: number[] = [0, 0, 0, 0, 0, 0];
-    private m_voxAppIns: any = null;
+    private m_voxAppEngineIns: any = null;
     private m_voxAppBaseIns: any = null;
     private m_rscene: IRendererScene;
     private m_shadow: IShadowVSMModule;
@@ -38,25 +39,23 @@ class AppShell {
         }
     }
     initialize(): void {
-        if (this.m_voxAppIns == null) {
+        if (this.m_voxAppEngineIns == null) {
 
-            VoxApp = getSysModule("VoxAppInstance");
-            VoxAppBase = getSysModule("VoxAppBase");
-            // console.log("AppShell::initialize()..., VoxApp: ", VoxApp);
-            // console.log("AppShell::initialize()..., VoxAppBase: ", VoxAppBase);
+            console.log("AppShell::initialize()..., VoxAppEngine: ", VoxAppEngine);
+            console.log("AppShell::initialize()..., VoxAppBase: ", VoxAppBase);
 
-            let voxAppIns = new VoxApp();
-            let voxAppBaseIns = new VoxAppBase();
-            this.m_voxAppIns = voxAppIns;
+            let voxAppEngineIns = new VoxAppEngine.Instance();
+            let voxAppBaseIns = new VoxAppBase.Instance();
+            this.m_voxAppEngineIns = voxAppEngineIns;
             this.m_voxAppBaseIns = voxAppBaseIns;
-            voxAppIns.initialize();
-            console.log("AppShell::initialize()..., voxAppIns: ", voxAppIns);
+            voxAppEngineIns.initialize();
+            console.log("AppShell::initialize()..., voxAppEngineIns: ", voxAppEngineIns);
             console.log("AppShell::initialize()..., voxAppBaseIns: ", voxAppBaseIns);
-            this.m_rscene = voxAppIns.getRendererScene() as IRendererScene;
+            this.m_rscene = voxAppEngineIns.getRendererScene() as IRendererScene;
             voxAppBaseIns.initialize(this.m_rscene);
 
-            main(voxAppIns);
-            this.initScene(voxAppIns);
+            main(voxAppEngineIns);
+            this.initScene(voxAppEngineIns);
         }
     }
 
@@ -65,7 +64,7 @@ class AppShell {
         console.log("AppShell::initScene()..., appIns: ", appIns);
         let rscene = this.m_rscene;
         let material = this.m_voxAppBaseIns.createDefaultMaterial() as IRenderMaterial;
-        material.setTextureList([this.m_voxAppIns.getImageTexByUrl("static/assets/color_01.jpg")]);
+        material.setTextureList([this.m_voxAppEngineIns.getImageTexByUrl("static/assets/color_01.jpg")]);
         material.initializeByCodeBuf(true);
 
         let scale: number = 100.0
@@ -73,7 +72,7 @@ class AppShell {
         entity.setMaterial(material);
         entity.copyMeshFrom(rscene.entityBlock.unitBox);
         entity.setScaleXYZ(scale, scale, scale);
-        rscene.addEntity( entity, 0, true );
+        rscene.addEntity(entity, 0, true);
 
         // let axis = new VoxApp.Axis3DEntity();
         // axis.initialize(30);
@@ -103,8 +102,8 @@ export class AppLoader {
         this.initUI();
         // this.load( url );
 
-        let engine_url = "http://localhost:9000/publish/build/VoxApp.engine.js";
-        let base_url = "http://localhost:9000/publish/build/VoxApp.base.js";
+        let engine_url = "http://localhost:9000/publish/build/VoxAppEngine.package.js";
+        let base_url = "http://localhost:9000/publish/build/VoxAppBase.package.js";
         let engineLoader = new ModuleLoader(0, engine_url, this);
         let baseLoader = new ModuleLoader(1, base_url, this);
     }

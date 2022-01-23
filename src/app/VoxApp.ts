@@ -25,13 +25,13 @@ import Matrix4 from "../vox/math/Matrix4";
 import IRenderMaterial from "../vox/render/IRenderMaterial";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 
-import { IVoxAppInstance } from "./modules/interfaces/IVoxAppInstance";
+import { IVoxAppEngine } from "./modules/interfaces/IVoxAppEngine";
 import { IVoxAppBase } from "./modules/interfaces/IVoxAppBase";
 
 import { LightModule } from "../light/base/LightModule";
 import EnvLightData from "../light/base/EnvLightData";
 //
-// /*
+/*
 class VoxAppEnvLightData {
     constructor() {
 
@@ -76,8 +76,8 @@ pwin["VoxAppShadow"] = VoxAppShadow;
 // export {VoxAppBaseInstance, Axis3DEntity, Box3DEntity, Sphere3DEntity};
 export { ShadowVSMModule, VoxAppShadow };
 //*/
-/*
-class VoxAppBase implements IVoxAppBase {
+// /*
+class Instance implements IVoxAppBase {
     constructor() {
 
     }
@@ -96,14 +96,14 @@ class VoxAppBase implements IVoxAppBase {
     }
 
 }
-var pwin: any = window;
-pwin["VoxAppBase"] = VoxAppBase;
+// var pwin: any = window;
+// pwin["VoxAppBase"] = Instance;
 // export {VoxAppBase, Axis3DEntity, Box3DEntity, Sphere3DEntity};
-export {VoxAppBase};
+export { Instance };
 //*/
 
 /*
-class VoxAppInstance implements IVoxAppInstance {
+class Instance implements IVoxAppEngine {
 
     private m_rscene: IRendererScene = null;
     private m_statusDisp: RenderStatusDisplay = null;
@@ -180,11 +180,11 @@ class VoxAppInstance implements IVoxAppInstance {
         }
     }
 }
-var pwin: any = window;
-pwin["VoxAppInstance"] = VoxAppInstance;
+// var pwin: any = window;
+// pwin["Instance"] = Instance;
 // export default VoxAppInstance;
 // export {RendererDevice, VoxAppInstance, Vector3D, Axis3DEntity, Box3DEntity, Sphere3DEntity, RendererParam, RendererScene}
-export {RendererDevice, VoxAppInstance, Vector3D, Matrix4, RendererParam, RendererScene}
+export {RendererDevice, Instance, Vector3D, Matrix4, RendererParam, RendererScene}
 //*/
 
 /*
