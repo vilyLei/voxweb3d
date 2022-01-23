@@ -28,6 +28,7 @@ import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import { IVoxAppEngine } from "./modules/interfaces/IVoxAppEngine";
 import { IVoxAppBase } from "./modules/interfaces/IVoxAppBase";
 
+import { ILightModule } from "../light/base/ILightModule";
 import { LightModule } from "../light/base/LightModule";
 import EnvLightData from "../light/base/EnvLightData";
 //
@@ -41,26 +42,19 @@ class VoxAppEnvLightData {
         return new EnvLightData(ctx);
     }
 }
-var pwin: any = window;
-pwin["VoxAppEnvLightData"] = VoxAppEnvLightData;
-// export {VoxAppBaseInstance, Axis3DEntity, Box3DEntity, Sphere3DEntity};
 export { EnvLightData, VoxAppEnvLightData };
 //*/
 
-/*
-class VoxAppLightModule {
+// /*
+class Instance {
     constructor() {
-
     }
-    createLightModule(rsecne: IRendererScene): LightModule {
+    createLightModule(rsecne: IRendererScene): ILightModule {
         let ctx = rsecne.getRenderProxy().uniformContext;
         return new LightModule(ctx);
     }
 }
-var pwin: any = window;
-pwin["VoxAppLightModule"] = VoxAppLightModule;
-// export {VoxAppBaseInstance, Axis3DEntity, Box3DEntity, Sphere3DEntity};
-export { LightModule, VoxAppLightModule };
+export { LightModule, Instance };
 //*/
 /*
 class VoxAppShadow {
@@ -71,12 +65,9 @@ class VoxAppShadow {
         return new ShadowVSMModule(vsmFboIndex);
     }
 }
-var pwin: any = window;
-pwin["VoxAppShadow"] = VoxAppShadow;
-// export {VoxAppBaseInstance, Axis3DEntity, Box3DEntity, Sphere3DEntity};
 export { ShadowVSMModule, VoxAppShadow };
 //*/
-// /*
+/*
 class Instance implements IVoxAppBase {
     constructor() {
 

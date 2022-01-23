@@ -9,6 +9,7 @@
 
     "buildAppEngine": "vue-cli-service build --target lib --name VoxAppEngine --dest dist ./src/app/VoxApp.ts",
     "buildAppBase": "vue-cli-service build --target lib --name VoxAppBase --dest dist ./src/app/VoxApp.ts",
+    "buildAppLightModule": "vue-cli-service build --target lib --name VoxAppLightModule --dest dist ./src/app/VoxApp.ts",
 
     "build": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main.ts",
     "buildvox": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/dev.ts",

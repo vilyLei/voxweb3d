@@ -15,8 +15,9 @@ import { PointLight } from "./PointLight";
 import { DirectionLight } from "./DirectionLight";
 import { SpotLight } from "./SpotLight";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
+import { ILightModule } from "./ILightModule";
 
-class LightModule extends MaterialPipeBase implements IMaterialPipe {
+class LightModule extends MaterialPipeBase implements IMaterialPipe, ILightModule {
 
     private m_lightPosData: Float32Array = null;
     private m_lightColors: Float32Array = null;
