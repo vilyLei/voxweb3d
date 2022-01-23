@@ -16,7 +16,7 @@ import { EnvShaderCode } from "../material/EnvShaderCode";
 import { GlobalEnvLightUniformParam } from "../../vox/material/param/GlobalEnvLightUniformParam";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
-export default class EnvLightData extends MaterialPipeBase implements IMaterialPipe {
+export default class EnvLightModule extends MaterialPipeBase implements IMaterialPipe {
 
     private m_shaderCodeEnabled: boolean = true;
     private m_uniformCodeEnabled: boolean = true;

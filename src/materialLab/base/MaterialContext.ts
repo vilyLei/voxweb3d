@@ -4,7 +4,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 import { LightModule } from "../../light/base/LightModule";
 import Color4 from "../../vox/material/Color4";
-import EnvLightData from "../../light/base/EnvLightData";
+import EnvLightModule from "../../light/base/EnvLightModule";
 import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
 import MathConst from "../../vox/math/MathConst";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
@@ -31,7 +31,7 @@ class MaterialContext {
     /**
      * 全局的环境参数
      */
-    readonly envData: EnvLightData = null;
+    readonly envData: EnvLightModule = null;
     /**
      * vsm 阴影
      */
@@ -118,7 +118,7 @@ class MaterialContext {
             }
             this.lightModule.update();
 
-            selfT.envData = new EnvLightData(shdCtx);
+            selfT.envData = new EnvLightModule(shdCtx);
             this.envData.initialize();
             this.envData.setFogColorRGB3f(0.0, 0.8, 0.1);
             if (param.vsmEnabled) {

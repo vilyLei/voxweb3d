@@ -30,22 +30,23 @@ import { IVoxAppBase } from "./modules/interfaces/IVoxAppBase";
 
 import { ILightModule } from "../light/base/ILightModule";
 import { LightModule } from "../light/base/LightModule";
-import EnvLightData from "../light/base/EnvLightData";
-//
-/*
-class VoxAppEnvLightData {
-    constructor() {
 
+import { IEnvLightModule } from "../light/base/IEnvLightModule";
+import EnvLightModule from "../light/base/EnvLightModule";
+//
+// /*
+class Instance {
+    constructor() {
     }
-    createEnvLightData(rsecne: IRendererScene): EnvLightData {
+    createEnvLightData(rsecne: IRendererScene): IEnvLightModule {
         let ctx = rsecne.getRenderProxy().uniformContext;
-        return new EnvLightData(ctx);
+        return new EnvLightModule(ctx);
     }
 }
-export { EnvLightData, VoxAppEnvLightData };
+export { EnvLightModule, Instance };
 //*/
 
-// /*
+/*
 class Instance {
     constructor() {
     }

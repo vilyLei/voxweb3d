@@ -10,7 +10,7 @@ import TextureProxy from "../../../vox/texture/TextureProxy";
 //  import TerrainMaterial from "../material/TerrainMaterial";
 
 import TerrainMaterial from "../../../terrain/heightMap/material/TerrainMaterial";
-import EnvLightData from "../../../light/base/EnvLightData";
+import EnvLightModule from "../../../light/base/EnvLightModule";
 import {MaterialPipeline} from "../../../vox/material/pipeline/MaterialPipeline";
 
 class Terrain {
@@ -43,7 +43,7 @@ class Terrain {
     }
     private initTerrain(): void {
 
-        let envData: EnvLightData = new EnvLightData( this.m_engine.rscene.getRenderProxy().uniformContext );
+        let envData: EnvLightModule = new EnvLightModule( this.m_engine.rscene.getRenderProxy().uniformContext );
         envData.initialize();
         envData.setFogDensity(0.0008);
         envData.setFogColorRGB3f(1.0, 1.0, 1.0);

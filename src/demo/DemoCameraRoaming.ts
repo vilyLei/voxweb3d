@@ -20,7 +20,7 @@ import DataMesh from "../vox/mesh/DataMesh";
 
 import RoadMaterial from "../app/slickRoad/material/RoadMaterial";
 import TerrainMaterial from "../terrain/heightMap/material/TerrainMaterial";
-import EnvLightData from "../light/base/EnvLightData";
+import EnvLightModule from "../light/base/EnvLightModule";
 import { MaterialPipeline } from "../vox/material/pipeline/MaterialPipeline";
 import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
 
@@ -68,7 +68,7 @@ export class DemoCameraRoaming {
     private m_materialPipeline: MaterialPipeline = new MaterialPipeline();
     private initTerrain(): void {
 
-        let envData: EnvLightData = new EnvLightData( this.m_rscene.getRenderProxy().uniformContext );
+        let envData: EnvLightModule = new EnvLightModule( this.m_rscene.getRenderProxy().uniformContext );
         envData.initialize();
         envData.setFogDensity(0.003);
         envData.setFogColorRGB3f(1.0, 1.0, 1.0);

@@ -19,7 +19,7 @@ import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger"
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
 import TerrainMaterial from "./heightMap/material/TerrainMaterial";
-import EnvLightData from "../light/base/EnvLightData";
+import EnvLightModule from "../light/base/EnvLightModule";
 import {MaterialPipeline} from "../vox/material/pipeline/MaterialPipeline";
 
 export class HeightMapTerrain {
@@ -74,7 +74,7 @@ export class HeightMapTerrain {
             //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
             //this.m_rscene.addEntity(plane);
             
-            let envData: EnvLightData = new EnvLightData( this.m_rscene.getRenderProxy().uniformContext );
+            let envData: EnvLightModule = new EnvLightModule( this.m_rscene.getRenderProxy().uniformContext );
             envData.initialize();
             envData.setFogDensity(0.0008);
             envData.setFogColorRGB3f(1.0, 1.0, 1.0);
