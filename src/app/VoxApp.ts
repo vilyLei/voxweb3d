@@ -34,7 +34,7 @@ import { LightModule } from "../light/base/LightModule";
 import { IEnvLightModule } from "../light/base/IEnvLightModule";
 import EnvLightModule from "../light/base/EnvLightModule";
 //
-// /*
+/*
 class Instance {
     constructor() {
     }
@@ -91,10 +91,10 @@ class Instance implements IVoxAppBase {
 // var pwin: any = window;
 // pwin["VoxAppBase"] = Instance;
 // export {VoxAppBase, Axis3DEntity, Box3DEntity, Sphere3DEntity};
-export { Instance };
+export { Instance }
 //*/
 
-/*
+// /*
 class Instance implements IVoxAppEngine {
 
     private m_rscene: IRendererScene = null;
@@ -124,16 +124,16 @@ class Instance implements IVoxAppEngine {
     createRendererScene(): IRendererScene {
         return new RendererScene();
     }
-    initialize(rparam: RendererParam = null, timeerDelay: number = 50, renderStatus: boolean = true): void {
+    initialize(debug: boolean = false, rparam: RendererParam = null, timeerDelay: number = 50, renderStatus: boolean = true): void {
         console.log("VoxAppInstance::initialize()......");
         if (this.m_rscene == null) {
 
             this.m_timeDelay = timeerDelay;
             
-            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = debug;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-
+            console.log("XXX RendererDevice.SHADERCODE_TRACE_ENABLED: ",RendererDevice.SHADERCODE_TRACE_ENABLED);
             if(rparam == null) rparam = new RendererParam();
             // rparam.maxWebGLVersion = 1;
             rparam.setPolygonOffsetEanbled(false);

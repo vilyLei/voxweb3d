@@ -8,6 +8,7 @@
 import DivLog from "../utils/DivLog";
 
 class RendererDevice {
+
     private static s_inited: boolean = true;
     private static s_WEBGL_VER: number = 2;
     private static s_devicePixelRatio: number = 1.0;
@@ -50,7 +51,7 @@ class RendererDevice {
         RendererDevice.s_language = language;
     }
     static GetLanguage(): string {
-        if(RendererDevice.s_language != "") {
+        if (RendererDevice.s_language != "") {
             return RendererDevice.s_language;
         }
         RendererDevice.s_language = navigator.language;
@@ -96,11 +97,11 @@ class RendererDevice {
      */
     static IsWinExternalVideoCard(): boolean {
 
-        if(RendererDevice.s_winExternalVideoCardFlag > 0) {
+        if (RendererDevice.s_winExternalVideoCardFlag > 0) {
             return RendererDevice.s_winExternalVideoCardFlag == 2;
         }
         let flag: boolean = RendererDevice.IsSafariWeb() || RendererDevice.IsMobileWeb();
-        if(!flag) {
+        if (!flag) {
             flag = RendererDevice.GPU_RENDERER.indexOf("Intel(R)") < 0;
         }
         RendererDevice.s_winExternalVideoCardFlag = flag ? 2 : 1;
@@ -116,20 +117,20 @@ class RendererDevice {
     static IsWebGL1(): boolean { return RendererDevice.s_WEBGL_VER == 1; }
     static IsWebGL2(): boolean { return RendererDevice.s_WEBGL_VER == 2; }
     static IsMobileWeb(): boolean {
-        if(RendererDevice.s_mobileFlag > 0) {
+        if (RendererDevice.s_mobileFlag > 0) {
             return RendererDevice.s_mobileFlag == 2;
         }
         return RendererDevice.TestMobileWeb();
     }
     static IsSafariWeb(): boolean {
-        if(RendererDevice.s_safariFlag > 0) {
+        if (RendererDevice.s_safariFlag > 0) {
             return RendererDevice.s_safariFlag == 2;
         }
         RendererDevice.s_safariFlag = RendererDevice.TestSafariWeb() ? 2 : 1;
         return RendererDevice.s_safariFlag == 2;
     }
     static IsIOS(): boolean {
-        if(RendererDevice.s_IOS_Flag > 0) {
+        if (RendererDevice.s_IOS_Flag > 0) {
             return RendererDevice.s_IOS_Flag == 2;
         }
         let boo: boolean = false;
@@ -145,7 +146,7 @@ class RendererDevice {
     }
 
     static IsIpadOS(): boolean {
-        if(RendererDevice.s_IPad_Flag > 0) {
+        if (RendererDevice.s_IPad_Flag > 0) {
             return RendererDevice.s_IPad_Flag == 2;
         }
         let boo: boolean = navigator.maxTouchPoints > 0 &&
@@ -157,13 +158,13 @@ class RendererDevice {
         RendererDevice.s_IPad_Flag = boo ? 2 : 1;
         return boo;
     }
-    
+
     static IsAndroidOS(): boolean {
-        if(RendererDevice.s_Android_Flag > 0) {
+        if (RendererDevice.s_Android_Flag > 0) {
             return RendererDevice.s_Android_Flag == 2;
         }
         let boo: boolean = RendererDevice.TestMobileWeb();
-        
+
         if (boo && (/Android|Linux/i.test(navigator.userAgent))) {
             boo = true;
         }
@@ -174,14 +175,14 @@ class RendererDevice {
         return boo;
     }
     private static TestMobileWeb(): boolean {
-        if(RendererDevice.s_mobileFlag > 0) {
+        if (RendererDevice.s_mobileFlag > 0) {
             return RendererDevice.s_mobileFlag == 2;
         }
         if (/mobile/.test(location.href)) {
             RendererDevice.s_mobileFlag = 2;
             return RendererDevice.s_mobileFlag == 2;
         }
-        
+
         if (/Android/i.test(navigator.userAgent)) {
             if (/Mobile/i.test(navigator.userAgent)) {
                 RendererDevice.s_mobileFlag = 2;
@@ -198,5 +199,6 @@ class RendererDevice {
         return RendererDevice.s_mobileFlag == 2;
     }
 }
-
+//import RendererDevice from
+//import RendererDevice from
 export default RendererDevice;

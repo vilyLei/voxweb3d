@@ -1,9 +1,12 @@
 import IRenderMaterial from "../vox/render/IRenderMaterial";
 import IRendererScene from "../vox/scene/IRendererScene";
 import { IShadowVSMModule } from "../shadow/vsm/base/IShadowVSMModule";
+import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
+import { IEnvLightModule } from "../light/base/IEnvLightModule";
 
 declare var VoxAppEngine: any;
 declare var VoxAppBase: any;
+declare var VoxAppEnvLightModule: any;
 
 var Module: any = window;
 function getSysModule(ns: string): any {
@@ -30,10 +33,16 @@ class AppShell {
 
     loadedWithIndex(index: number): void {
         this.m_loadedTotal++;
-        let list = this.m_loadedFlags;
-        list[index] = 1;
+        let flags = this.m_loadedFlags;
+        flags[index] = 1;
         // if(this.m_loadedTotal >= 2) {
-        if (list[0] > 0 && list[0] == list[1]) {
+
+        // if (list[0] > 0 && list[0] == list[1]) {
+        //     console.log("loaded all engine sys module.");
+        //     this.initialize();
+        // }
+        let flag: number = flags[0] + flags[1] + flags[2];
+        if (flags[0] > 0 && flag == 3) {
             console.log("loaded all engine sys module.");
             this.initialize();
         }
@@ -41,6 +50,8 @@ class AppShell {
     initialize(): void {
         if (this.m_voxAppEngineIns == null) {
 
+            //MaterialPipeType
+            //new MaterialPipeType
             console.log("AppShell::initialize()..., VoxAppEngine: ", VoxAppEngine);
             console.log("AppShell::initialize()..., VoxAppBase: ", VoxAppBase);
 
@@ -49,11 +60,22 @@ class AppShell {
             this.m_voxAppEngineIns = voxAppEngineIns;
             this.m_voxAppBaseIns = voxAppBaseIns;
             voxAppEngineIns.initialize();
+
+            let rDevice = VoxAppEngine.RendererDevice;
+            rDevice.SHADERCODE_TRACE_ENABLED = true;
+            rDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            rDevice.SetWebBodyColor("black");
+            
             console.log("AppShell::initialize()..., voxAppEngineIns: ", voxAppEngineIns);
             console.log("AppShell::initialize()..., voxAppBaseIns: ", voxAppBaseIns);
             this.m_rscene = voxAppEngineIns.getRendererScene() as IRendererScene;
             voxAppBaseIns.initialize(this.m_rscene);
 
+            let flags = this.m_loadedFlags;
+            if(flags[2] == 1) {
+                let envLightModule = new VoxAppEnvLightModule.Instance() as IEnvLightModule;
+                console.log("AppShell::initialize()..., have env light module: ", envLightModule);
+            }
             main(voxAppEngineIns);
             this.initScene(voxAppEngineIns);
         }
@@ -104,8 +126,10 @@ export class AppLoader {
 
         let engine_url = "http://localhost:9000/publish/build/VoxAppEngine.package.js";
         let base_url = "http://localhost:9000/publish/build/VoxAppBase.package.js";
+        let envLightModule_url = "http://localhost:9000/publish/build/VoxAppEnvLightModule.package.js";
         let engineLoader = new ModuleLoader(0, engine_url, this);
         let baseLoader = new ModuleLoader(1, base_url, this);
+        let envLightLoader = new ModuleLoader(2, envLightModule_url, this);
     }
     /*
     private load(purl: string): void {

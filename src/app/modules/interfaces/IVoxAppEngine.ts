@@ -10,7 +10,7 @@ interface IVoxAppEngine {
     addEntity(entity: IRenderEntity, processIndex: number): void;
     getRendererScene(): IRendererScene;
     createRendererScene(): IRendererScene;
-    initialize(rparam: RendererParam, timeerDelay: number, renderStatus: boolean): void;
+    initialize(debug: boolean, rparam: RendererParam, timeerDelay: number, renderStatus: boolean): void;
     run(): void;
 }
 

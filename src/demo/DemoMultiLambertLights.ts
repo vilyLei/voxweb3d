@@ -148,7 +148,6 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_materialCtx.lightModule.update();
     }
     private createPointLightDisp(pointLight: PointLight): Billboard3DEntity {
-        return;
         let size: number = 60.0;
         let billboard: Billboard3DEntity = new Billboard3DEntity();
         billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
