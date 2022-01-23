@@ -40,7 +40,12 @@ class MaterialShaderBuffer extends ShaderCodeBuffer {
         this.decorator.buildShader( this.m_coder );
     }
     getUniqueShaderName(): string {
-        return this.m_uniqueName + this.decorator.getUniqueName();
+        // return this.m_uniqueName + this.decorator.getUniqueName();
+        let ns = this.m_uniqueName + this.decorator.getUniqueName();
+        if(this.vertUniform != null) {
+            ns += this.vertUniform.getUniqueNSKeyString();
+        }
+        return ns;
     }
 }
 class SimpleMaterial extends MaterialBase implements ISimpleMaterial {

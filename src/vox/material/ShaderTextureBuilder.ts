@@ -5,6 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
+import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import { IShaderCodeUniform } from "../../vox/material/code/IShaderCodeUniform";
 import IRenderTexture from "../render/texture/IRenderTexture";
 import { SpecularMode } from "./pipeline/SpecularMode";
@@ -12,10 +13,15 @@ import { ShadowMode } from "./pipeline/ShadowMode";
 
 class ShaderTextureBuilder {
 
+    private m_coderBuilder: IShaderCodeBuilder = null;
     private m_uniform: IShaderCodeUniform = null;
     private m_texList: IRenderTexture[] = [];
-    constructor(uniform: IShaderCodeUniform) {
-        this.m_uniform = uniform;
+    constructor(codeBuilder: IShaderCodeBuilder) {
+        this.m_coderBuilder = codeBuilder;
+        this.m_uniform = codeBuilder.uniform;
+    }
+    getCodeBuilder(): IShaderCodeBuilder {
+        return this.m_coderBuilder;
     }
     reset(): void {
         this.m_texList = [];

@@ -34,6 +34,7 @@ export default interface IShaderCodeBuilder {
     addVarying(type: string, name: string): void;
     addVertUniform(type: string, name: string, arrayLength: number): void;
     addVertUniformParam(unifromParam: IUniformParam): void;
+    addUniqueNSKeyString(key: string): void;
     /**
      * 
      * @param type uniform type, example: vec4

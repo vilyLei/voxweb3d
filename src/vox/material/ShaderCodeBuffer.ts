@@ -53,7 +53,7 @@ class ShaderCodeBuffer {
             ShaderCodeBuffer.s_uniform = new ShaderCodeUniform();
             ShaderCodeBuffer.s_coder = new ShaderCodeBuilder( ShaderCodeBuffer.s_uniform );
             ShaderCodeBuffer.s_uniform.__$setCodeBuilder( ShaderCodeBuffer.s_coder );
-            ShaderCodeBuffer.s_texBulder = new ShaderTextureBuilder( ShaderCodeBuffer.s_uniform );
+            ShaderCodeBuffer.s_texBulder = new ShaderTextureBuilder( ShaderCodeBuffer.s_coder );
         }
     }
 

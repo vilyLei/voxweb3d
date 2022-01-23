@@ -48,7 +48,11 @@ class MaterialShaderBuffer extends ShaderCodeBuffer {
         return this.decorator.getShaderCodeObject();
     }
     getUniqueShaderName(): string {
-        return this.m_uniqueName + this.decorator.getUniqueName();
+        let ns = this.m_uniqueName + this.decorator.getUniqueName();
+        if(this.vertUniform != null) {
+            ns += this.vertUniform.getUniqueNSKeyString();
+        }
+        return ns;
     }
 }
 class Material extends MaterialBase implements IMaterial {
