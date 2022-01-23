@@ -5,10 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
+import { IMaterialPipe } from "../../vox/material/pipeline/IMaterialPipe";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
-interface IEnvLightModule {
+interface IEnvLightModule extends IMaterialPipe{
 
+    initialize(): void;
     setEnvAmbientMap(tex: IRenderTexture): void;
 
     setAmbientColorRGB3f(pr: number, pg: number, pb: number): void;

@@ -38,7 +38,7 @@ import EnvLightModule from "../light/base/EnvLightModule";
 class Instance {
     constructor() {
     }
-    createEnvLightData(rsecne: IRendererScene): IEnvLightModule {
+    createEnvLightModule(rsecne: IRendererScene): IEnvLightModule {
         let ctx = rsecne.getRenderProxy().uniformContext;
         return new EnvLightModule(ctx);
     }
@@ -102,12 +102,12 @@ class Instance implements IVoxAppEngine {
     private m_timeoutId: any = -1;
     private m_timeDelay: number = 50;
     private m_texLoader: ImageTextureLoader = null;
-    
+
     readonly interaction: UserInteraction = new UserInteraction();
     constructor() { }
 
     getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
-        if(this.m_texLoader != null) {
+        if (this.m_texLoader != null) {
             return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled);
         }
         return null;
@@ -120,7 +120,7 @@ class Instance implements IVoxAppEngine {
     getRendererScene(): IRendererScene {
         return this.m_rscene;
     }
-    
+
     createRendererScene(): IRendererScene {
         return new RendererScene();
     }
@@ -129,26 +129,28 @@ class Instance implements IVoxAppEngine {
         if (this.m_rscene == null) {
 
             this.m_timeDelay = timeerDelay;
-            
+
             RendererDevice.SHADERCODE_TRACE_ENABLED = debug;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-            console.log("XXX RendererDevice.SHADERCODE_TRACE_ENABLED: ",RendererDevice.SHADERCODE_TRACE_ENABLED);
-            if(rparam == null) rparam = new RendererParam();
-            // rparam.maxWebGLVersion = 1;
-            rparam.setPolygonOffsetEanbled(false);
-            rparam.setAttriAlpha(false);
-            rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
-            rparam.setCamProject(45.0, 30.0, 9000.0);
-            rparam.setCamPosition(1800.0, 1800.0, 1800.0);
+            console.log("XXX RendererDevice.SHADERCODE_TRACE_ENABLED: ", RendererDevice.SHADERCODE_TRACE_ENABLED);
+            if (rparam == null) {
+                rparam = new RendererParam();
+                // rparam.maxWebGLVersion = 1;
+                rparam.setPolygonOffsetEanbled(false);
+                rparam.setAttriAlpha(false);
+                rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
+                rparam.setCamProject(45.0, 30.0, 9000.0);
+                rparam.setCamPosition(1800.0, 1800.0, 1800.0);
+            }
 
             let rscene = new RendererScene();
-            rscene.initialize(rparam, 7, );
+            rscene.initialize(rparam, 7,);
             this.m_rscene = rscene;
             this.interaction.initialize(this.m_rscene);
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-            if(renderStatus) {
+            if (renderStatus) {
                 this.m_statusDisp = new RenderStatusDisplay();
                 this.m_statusDisp.initialize();
             }
@@ -162,11 +164,11 @@ class Instance implements IVoxAppEngine {
             clearTimeout(this.m_timeoutId);
         }
         this.m_timeoutId = setTimeout(this.update.bind(this), this.m_timeDelay);
-        if(this.m_statusDisp != null) this.m_statusDisp.render();
+        if (this.m_statusDisp != null) this.m_statusDisp.render();
     }
     run(): void {
-        if(this.m_statusDisp != null) this.m_statusDisp.update(false);
-        if(this.m_rscene != null) {
+        if (this.m_statusDisp != null) this.m_statusDisp.update(false);
+        if (this.m_rscene != null) {
             this.interaction.run();
             this.m_rscene.run(true);
         }
@@ -176,7 +178,7 @@ class Instance implements IVoxAppEngine {
 // pwin["Instance"] = Instance;
 // export default VoxAppInstance;
 // export {RendererDevice, VoxAppInstance, Vector3D, Axis3DEntity, Box3DEntity, Sphere3DEntity, RendererParam, RendererScene}
-export {RendererDevice, Instance, Vector3D, Matrix4, RendererParam, RendererScene}
+export { RendererDevice, Instance, Vector3D, Matrix4, RendererParam, RendererScene }
 //*/
 
 /*

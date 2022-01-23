@@ -9,14 +9,14 @@ import UniformConst from "../../vox/material/UniformConst";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
-import { IMaterialPipe } from "../../vox/material/pipeline/IMaterialPipe";
 import { MaterialPipeBase } from "../../vox/material/pipeline/MaterialPipeBase";
 
 import { EnvShaderCode } from "../material/EnvShaderCode";
 import { GlobalEnvLightUniformParam } from "../../vox/material/param/GlobalEnvLightUniformParam";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
+import { IEnvLightModule } from "./IEnvLightModule";
 
-export default class EnvLightModule extends MaterialPipeBase implements IMaterialPipe {
+export default class EnvLightModule extends MaterialPipeBase implements IEnvLightModule {
 
     private m_shaderCodeEnabled: boolean = true;
     private m_uniformCodeEnabled: boolean = true;

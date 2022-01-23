@@ -3,6 +3,8 @@ import IRendererScene from "../vox/scene/IRendererScene";
 import { IShadowVSMModule } from "../shadow/vsm/base/IShadowVSMModule";
 import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
 import { IEnvLightModule } from "../light/base/IEnvLightModule";
+import { IMaterialPipeline } from "../vox/material/pipeline/IMaterialPipeline";
+import RendererParam from "../vox/scene/RendererParam";
 
 declare var VoxAppEngine: any;
 declare var VoxAppBase: any;
@@ -28,6 +30,7 @@ class AppShell {
     private m_voxAppEngineIns: any = null;
     private m_voxAppBaseIns: any = null;
     private m_rscene: IRendererScene;
+    private m_pipeline: IMaterialPipeline;
     private m_shadow: IShadowVSMModule;
     constructor() { }
 
@@ -55,13 +58,23 @@ class AppShell {
             console.log("AppShell::initialize()..., VoxAppEngine: ", VoxAppEngine);
             console.log("AppShell::initialize()..., VoxAppBase: ", VoxAppBase);
 
+            let rDevice = VoxAppEngine.RendererDevice;
             let voxAppEngineIns = new VoxAppEngine.Instance();
             let voxAppBaseIns = new VoxAppBase.Instance();
             this.m_voxAppEngineIns = voxAppEngineIns;
             this.m_voxAppBaseIns = voxAppBaseIns;
-            voxAppEngineIns.initialize();
+            
+            let rparam = new RendererParam();
+            // rparam.maxWebGLVersion = 1;
+            rparam.setPolygonOffsetEanbled(false);
+            rparam.setAttriAlpha(false);
+            // rparam.setAttriAntialias(!rDevice.IsMobileWeb());
+            rparam.setAttriAntialias( true );
+            rparam.setCamProject(45.0, 30.0, 9000.0);
+            rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 
-            let rDevice = VoxAppEngine.RendererDevice;
+            voxAppEngineIns.initialize(false, rparam);
+
             rDevice.SHADERCODE_TRACE_ENABLED = true;
             rDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             rDevice.SetWebBodyColor("black");
@@ -73,24 +86,61 @@ class AppShell {
 
             let flags = this.m_loadedFlags;
             if(flags[2] == 1) {
-                let envLightModule = new VoxAppEnvLightModule.Instance() as IEnvLightModule;
-                console.log("AppShell::initialize()..., have env light module: ", envLightModule);
+                let envLightModuleFactor = new VoxAppEnvLightModule.Instance();// as IEnvLightModule;
+                //  as IEnvLightModule;
+                console.log("AppShell::initialize()..., have env light module: ", envLightModuleFactor);
+                let envLightPipe = envLightModuleFactor.createEnvLightModule( this.m_rscene ) as IEnvLightModule;
+                envLightPipe.initialize();
+                envLightPipe.setFogColorRGB3f(0.0, 0.8, 0.1);
+                
+                this.m_pipeline = this.m_rscene.materialBlock.createMaterialPipeline(null);
+                this.m_pipeline.addPipe( envLightPipe );
             }
             main(voxAppEngineIns);
-            this.initScene(voxAppEngineIns);
+            this.initScene();
         }
     }
 
-    private initScene(appIns: any): void {
+    private initScene(): void {
 
-        console.log("AppShell::initScene()..., appIns: ", appIns);
         let rscene = this.m_rscene;
         let material = this.m_voxAppBaseIns.createDefaultMaterial() as IRenderMaterial;
-        material.setTextureList([this.m_voxAppEngineIns.getImageTexByUrl("static/assets/color_01.jpg")]);
+        material.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        material.setMaterialPipeline(this.m_pipeline);
+        material.setTextureList([this.m_voxAppEngineIns.getImageTexByUrl("static/assets/box.jpg")]);
         material.initializeByCodeBuf(true);
 
-        let scale: number = 100.0
+        let scale: number = 100.0;
         let entity = rscene.entityBlock.createEntity();
+        entity.setMaterial(material);
+        entity.copyMeshFrom(rscene.entityBlock.unitBox);
+        entity.setScaleXYZ(scale, scale, scale);
+        rscene.addEntity(entity, 0, true);
+
+        // let axis = new VoxApp.Axis3DEntity();
+        // axis.initialize(30);
+        // axis.setXYZ(300, 0.0, 0.0);
+        // appIns.addEntity(axis);
+
+        // let box = new VoxApp.Box3DEntity();
+        // box.initializeCube(100.0, [appIns.getImageTexByUrl("./assets/default.jpg")]);
+        // appIns.addEntity(box);
+
+        this.initEnvBox();
+    }
+    private initEnvBox(): void {
+
+        let renderingState = this.m_rscene.getRenderProxy().renderingState;
+        let rscene = this.m_rscene;
+        let material = this.m_voxAppBaseIns.createDefaultMaterial() as IRenderMaterial;
+        material.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        material.setMaterialPipeline(this.m_pipeline);
+        material.setTextureList([this.m_voxAppEngineIns.getImageTexByUrl("static/assets/box.jpg")]);
+        material.initializeByCodeBuf(false);
+
+        let scale: number = 3000.0;
+        let entity = rscene.entityBlock.createEntity();
+        entity.setRenderState(renderingState.FRONT_CULLFACE_NORMAL_STATE);
         entity.setMaterial(material);
         entity.copyMeshFrom(rscene.entityBlock.unitBox);
         entity.setScaleXYZ(scale, scale, scale);
@@ -117,45 +167,20 @@ export class AppLoader {
         console.log("A url: ", url);
         url = this.parseUrl(url);
         console.log("B url: ", url);
-        //url = "http://localhost:9000/publish/build/VoxApp.package.js";
-        // url = "../build/VoxAppEngine.package.js";
-        url = "http://localhost:9000/publish/build/VoxApp.engine.js";
-        // url = "../build/VoxApp.engine.js.js";
         this.initUI();
+
         // this.load( url );
 
-        let engine_url = "http://localhost:9000/publish/build/VoxAppEngine.package.js";
-        let base_url = "http://localhost:9000/publish/build/VoxAppBase.package.js";
-        let envLightModule_url = "http://localhost:9000/publish/build/VoxAppEnvLightModule.package.js";
+        let host = "http://192.168.0.105:9000/";
+        // host = "http://localhost:9000/";
+        let engine_url = host + "publish/build/VoxAppEngine.package.js";
+        let base_url = host + "publish/build/VoxAppBase.package.js";
+        let envLightModule_url = host + "publish/build/VoxAppEnvLightModule.package.js";
+
         let engineLoader = new ModuleLoader(0, engine_url, this);
         let baseLoader = new ModuleLoader(1, base_url, this);
         let envLightLoader = new ModuleLoader(2, envLightModule_url, this);
     }
-    /*
-    private load(purl: string): void {
-        let codeLoader: XMLHttpRequest = new XMLHttpRequest();
-        codeLoader.open("GET", purl, true);
-        //xhr.responseType = "arraybuffer";
-        codeLoader.onerror = function (err) {
-            console.error("load error: ", err);
-        }
-
-        codeLoader.onprogress = (e) => {
-            this.showLoadInfo(e);
-        };
-        codeLoader.onload = () => {
-            let scriptEle: HTMLScriptElement = document.createElement("script");
-            scriptEle.onerror = (e) => {
-                console.error("module script onerror, e: ", e);
-            }
-            scriptEle.innerHTML = codeLoader.response;
-            document.head.appendChild(scriptEle);
-            this.loadFinish();
-            this.initApp();
-        }
-        codeLoader.send(null);
-    }
-    //*/
     private initApp(): void {
 
         let shell = new AppShell();

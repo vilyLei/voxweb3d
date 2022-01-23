@@ -101,9 +101,10 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
         return false;
     }
     initializeByRenderer(texEnabled: boolean = false): void {
-        this.initializeByCodeBuf(true);
+        this.initializeByCodeBuf(texEnabled);
     }
     initializeByCodeBuf(texEnabled: boolean = false): void {
+        texEnabled = texEnabled || this.getTextureTotal() > 0;
         if (this.m_shdData == null) {
             let buf: ShaderCodeBuffer = this.getCodeBuf();
             if (buf != null) {
