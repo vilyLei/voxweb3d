@@ -250,7 +250,7 @@ class AppShell implements IShaderLibListener {
         let boxEntity = rscene.entityBlock.createEntity();
         boxEntity.setMaterial(material);
         boxEntity.copyMeshFrom(rscene.entityBlock.unitBox);
-        boxEntity.setScaleXYZ(scale, scale * 0.02, scale);
+        boxEntity.setScaleXYZ(scale, scale * 0.05, scale);
         rscene.addEntity(boxEntity);
 
         // let axis = new VoxApp.Axis3DEntity();

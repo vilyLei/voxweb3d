@@ -6,7 +6,6 @@
 /***************************************************************************/
 
 import IRendererScene from "../../vox/scene/IRendererScene";
-import TextureProxy from "../../vox/texture/TextureProxy";
 import {TextureConst} from "../../vox/texture/TextureConst";
 import { IFloatCubeTexture } from "../../vox/render/texture/IFloatCubeTexture";
 import { IBytesCubeTexture } from "../../vox/render/texture/IBytesCubeTexture";

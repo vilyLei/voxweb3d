@@ -254,7 +254,6 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         material.setSideIntensity(8.0);
         //*/
         
-        //createPBRM
         //let dispMaterial: IRenderMaterial = material;
         ////metallic: number, roughness: number, ao: number,
         let param: any = {diffuseMap: diffuseMap, normalMap: normalMap, armMap: armMap, displacementMap: displacementMap, parallaxMap: parallaxMap};
@@ -325,9 +324,8 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         let vertUniform: VertUniformComp = new VertUniformComp();
         let decor: PBRDecorator = new PBRDecorator();
         let m = this.m_rscene.materialBlock.createMaterial(decor);
-        
+        decor.vertUniform = vertUniform;        
         m.setMaterialPipeline( pipeline );
-        decor.vertUniform = vertUniform;
         
         decor.scatterEnabled = false;
         decor.woolEnabled = true;
