@@ -1,12 +1,8 @@
 import IRendererScene from "../../vox/scene/IRendererScene";
-import Vector3D from "../../vox/math/Vector3D";
-
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
-import { LightModule } from "../../light/base/LightModule";
-import Color4 from "../../vox/material/Color4";
-import EnvLightModule from "../../light/base/EnvLightModule";
-import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
-import MathConst from "../../vox/math/MathConst";
+import { ILightModule } from "../../light/base/ILightModule";
+import { IEnvLightModule } from "../../light/base/IEnvLightModule";
+import { IShadowVSMModule } from "../../shadow/vsm/base/IShadowVSMModule";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { TextureConst } from "../../vox/texture/TextureConst";
@@ -14,6 +10,9 @@ import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import { ShaderCodeConfigure, ShaderCodeType, IShaderLibConfigure, IShaderLibListener, ShaderLib } from "../shader/ShaderLib";
 import { ShaderCodeObject } from "../shader/ShaderCodeObject";
 import { MaterialContextParam } from "./MaterialContextParam";
+// import { LightModule } from "../../light/base/LightModule";
+// import EnvLightModule from "../../light/base/EnvLightModule";
+// import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
 
 /**
  * 实现 material 构造 pipeline 的上下文
@@ -27,19 +26,19 @@ class MaterialContext {
     /**
      * 全局的灯光模块
      */
-    readonly lightModule: LightModule = null;
+    lightModule: ILightModule = null;
     /**
      * 全局的环境参数
      */
-    readonly envData: EnvLightModule = null;
+    envData: IEnvLightModule = null;
     /**
      * vsm 阴影
      */
-    readonly vsmModule: ShadowVSMModule = null;
+    vsmModule: IShadowVSMModule = null;
     /**
      * material 构造material流水线, 这是一个默认的material pipeline
      */
-    readonly pipeline: IMaterialPipeline = null;
+    pipeline: IMaterialPipeline = null;
     /**
      * shader code management module
      */
@@ -100,40 +99,8 @@ class MaterialContext {
             if (param.loadAllShaderCode) {
                 MaterialContext.ShaderLib.addAllShaderCodeObject();
             }
-
-            param.pointLightsTotal = MathConst.Clamp(param.pointLightsTotal, 0, 256);
-            param.directionLightsTotal = MathConst.Clamp(param.directionLightsTotal, 0, 256);
-            param.spotLightsTotal = MathConst.Clamp(param.spotLightsTotal, 0, 256);
-
-            let shdCtx = this.m_rscene.getRenderProxy().uniformContext;
-            selfT.lightModule = new LightModule(shdCtx);
-            for (let i: number = 0; i < param.pointLightsTotal; ++i) {
-                this.lightModule.appendPointLight();
-            }
-            for (let i: number = 0; i < param.directionLightsTotal; ++i) {
-                this.lightModule.appendDirectionLight();
-            }
-            for (let i: number = 0; i < param.spotLightsTotal; ++i) {
-                this.lightModule.appendSpotLight();
-            }
-            this.lightModule.update();
-
-            selfT.envData = new EnvLightModule(shdCtx);
-            this.envData.initialize();
-            this.envData.setFogColorRGB3f(0.0, 0.8, 0.1);
-            if (param.vsmEnabled) {
-                selfT.vsmModule = new ShadowVSMModule(param.vsmFboIndex);
-                this.vsmModule.setCameraPosition(new Vector3D(1, 800, 1));
-                this.vsmModule.setCameraNear(10.0);
-                this.vsmModule.setCameraFar(3000.0);
-                this.vsmModule.setMapSize(512.0, 512.0);
-                this.vsmModule.setCameraViewSize(4000, 4000);
-                this.vsmModule.setShadowRadius(2);
-                this.vsmModule.setShadowBias(-0.0005);
-                this.vsmModule.initialize(rscene, [0], 3000);
-                this.vsmModule.setShadowIntensity(0.8);
-                this.vsmModule.setColorIntensity(0.3);
-            }
+            
+            this.initPipes( this.m_param );
 
             selfT.pipeline = this.createPipeline();
 
@@ -147,6 +114,9 @@ class MaterialContext {
             }
         }
     }
+    protected initPipes(param: MaterialContextParam): void {
+       
+    }
     protected initEnd(param: MaterialContextParam): void {
 
     }
@@ -156,20 +126,16 @@ class MaterialContext {
     }
     addPipeline(pipeline: IMaterialPipeline): void {
         if (pipeline != null && pipeline != this.pipeline) {
-            pipeline.addPipe(this.lightModule);
-            pipeline.addPipe(this.envData);
-            if (this.vsmModule != null) {
-                pipeline.addPipe(this.vsmModule);
-            }
+            if(this.lightModule != null) pipeline.addPipe(this.lightModule);
+            if(this.envData != null) pipeline.addPipe(this.envData);
+            if (this.vsmModule != null) pipeline.addPipe(this.vsmModule);
         }
     }
     createPipeline(): IMaterialPipeline {
         let pipeline = this.m_rscene.materialBlock.createMaterialPipeline(MaterialContext.ShaderLib);
-        pipeline.addPipe(this.lightModule);
-        pipeline.addPipe(this.envData);
-        if (this.vsmModule != null) {
-            pipeline.addPipe(this.vsmModule);
-        }
+        if(this.lightModule != null) pipeline.addPipe(this.lightModule);
+        if(this.envData != null) pipeline.addPipe(this.envData);
+        if (this.vsmModule != null) pipeline.addPipe(this.vsmModule);
         return pipeline;
     }
     run(): void {

@@ -24,6 +24,7 @@ interface IEnvLightModule extends IMaterialPipe{
     setEnvAmbientLightAreaOffset(px: number, pz: number): void;
     setEnvAmbientLightAreaSize(width: number, height: number): void;
 
+    update(): void;
     destroy(): void;
 }
 

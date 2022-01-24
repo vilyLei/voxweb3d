@@ -22,15 +22,15 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
         super.initialize(texEnabled);
         //console.log("ShadowVSMShaderBuffer::initialize()...,texEnabled: "+texEnabled);
         this.m_uniqueName = "ShadowVSMShd";
-        this.adaptationShaderVersion = false;
+        this.shadowReceiveEnabled = true;
     }
     buildShader(): void {
 
         let coder: ShaderCodeBuilder = this.m_coder;
         coder.normalEnabled = true;
         
-        coder.addTextureSample2D("VOX_VSM_SHADOW_MAP");
-        coder.addTextureSample2D();
+        coder.uniform.addShadowMap();
+        coder.uniform.addDiffuseMap();
 
         coder.addVarying("vec3", "v_worldNormal");
         
@@ -42,7 +42,7 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
         this.m_coder.addFragMainCode(
             `
             
-    vec4 color = VOX_Texture2D( u_sampler1, v_uv );
+    vec4 color = VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv );
 
     worldNormal = v_worldNormal;
     color.xyz *= u_color.xyz;
@@ -53,7 +53,8 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
         );
         this.m_coder.addVertMainCode(
             `
-    worldPosition = u_objMat * vec4(a_vs, 1.0);
+    oWorldPosition = u_objMat * vec4(a_vs, 1.0);
+    worldPosition = oWorldPosition;
     viewPosition = u_viewMat * worldPosition;
     gl_Position =  u_projMat * viewPosition;
     v_uv = a_uvs.xy;
@@ -83,13 +84,14 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
 
 export default class ShadowVSMMaterial extends MaterialBase {
     private m_colorData: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
+    shadowReceiveEnabled: boolean = false;
     constructor() {
         super();
     }
 
     protected buildBuf(): void {
         let buf: ShadowVSMShaderBuffer = ShadowVSMShaderBuffer.GetInstance();
-        buf.shadowReceiveEnabled = true;
+        buf.shadowReceiveEnabled = this.shadowReceiveEnabled;
         buf.fogEnabled = true;
     }
     getCodeBuf(): ShaderCodeBuffer {

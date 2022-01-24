@@ -39,7 +39,6 @@ export class DemoPBR implements IShaderLibListener {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     //private m_stencilOutline: StencilOutline = new StencilOutline();
 
-    //private m_materialCtx: MaterialContext = new MaterialContext();
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 
     private m_postOutline: OcclusionPostOutline = new OcclusionPostOutline();

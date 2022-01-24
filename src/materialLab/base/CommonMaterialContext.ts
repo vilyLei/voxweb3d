@@ -9,6 +9,11 @@ import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { VertUniformComp } from "../../vox/material/component/VertUniformComp";
 import { SpecularTextureLoader } from "../../pbr/mana/TextureLoader";
+import MathConst from "../../vox/math/MathConst";
+import { LightModule } from "../../light/base/LightModule";
+import EnvLightModule from "../../light/base/EnvLightModule";
+import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
+import { Vector3D } from "../../app/VoxApp";
 
 /**
  * 实现 material 构造 pipeline 的上下文
@@ -78,6 +83,47 @@ class CommonMaterialContext extends MaterialContext {
         if (this.m_rscene == null) {
             shaderLibConfigure = this.buildConfigure(param, shaderLibConfigure);
             super.initialize(rscene, param, shaderLibConfigure);
+        }
+    }
+    
+    protected initPipes(param: MaterialContextParam): void {
+        
+        let selfT: any = this;
+        
+        param.pointLightsTotal = MathConst.Clamp(param.pointLightsTotal, 0, 256);
+        param.directionLightsTotal = MathConst.Clamp(param.directionLightsTotal, 0, 256);
+        param.spotLightsTotal = MathConst.Clamp(param.spotLightsTotal, 0, 256);
+
+        let shdCtx = this.m_rscene.getRenderProxy().uniformContext;
+        selfT.lightModule = new LightModule(shdCtx);
+        for (let i: number = 0; i < param.pointLightsTotal; ++i) {
+            this.lightModule.appendPointLight();
+        }
+        for (let i: number = 0; i < param.directionLightsTotal; ++i) {
+            this.lightModule.appendDirectionLight();
+        }
+        for (let i: number = 0; i < param.spotLightsTotal; ++i) {
+            this.lightModule.appendSpotLight();
+        }
+        this.lightModule.update();
+
+        selfT.envData = new EnvLightModule(shdCtx);
+        this.envData.initialize();
+        this.envData.setFogColorRGB3f(0.0, 0.8, 0.1);
+        if (param.vsmEnabled) {
+            let vsmModule = new ShadowVSMModule(param.vsmFboIndex);
+            vsmModule.setCameraPosition(new Vector3D(1, 800, 1));
+            vsmModule.setCameraNear(10.0);
+            vsmModule.setCameraFar(3000.0);
+            vsmModule.setMapSize(512.0, 512.0);
+            vsmModule.setCameraViewSize(4000, 4000);
+            vsmModule.setShadowRadius(2);
+            vsmModule.setShadowBias(-0.0005);
+            vsmModule.initialize(this.m_rscene, [0], 3000);
+            vsmModule.setShadowIntensity(0.8);
+            vsmModule.setColorIntensity(0.3);
+
+            selfT.vsmModule = vsmModule;
         }
     }
     protected buildConfigure(param: MaterialContextParam, shaderLibConfigure: IShaderLibConfigure): IShaderLibConfigure {

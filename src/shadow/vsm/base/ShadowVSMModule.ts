@@ -47,6 +47,9 @@ export class ShadowVSMModule implements IMaterialPipe, IShadowVSMModule {
     private m_rendererStatus: number = -1;
     private m_rendererProcessStatus: number = -1;
     // private m_blurEnabled: boolean = false;
+    /**
+     * @param fboIndex the default value is 0
+     */
     constructor(fboIndex: number) {
         this.m_fboIndex = fboIndex;
     }

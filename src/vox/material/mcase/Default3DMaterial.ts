@@ -106,6 +106,7 @@ export default class Default3DMaterial extends MaterialBase {
     vertColorEnabled: boolean = false;
     premultiplyAlpha: boolean = false;
     normalEnabled: boolean = false;
+    shadowReceiveEnabled: boolean = false;
     constructor() {
         super();
         if(Default3DMaterial.s_shdCodeBuffer == null) {
@@ -119,6 +120,8 @@ export default class Default3DMaterial extends MaterialBase {
         buf.vertColorEnabled = this.vertColorEnabled;
         buf.premultiplyAlpha = this.premultiplyAlpha;
         buf.normalEnabled = this.normalEnabled;
+        buf.shadowReceiveEnabled = this.shadowReceiveEnabled;
+        console.log("buf.shadowReceiveEnabled: ",buf.shadowReceiveEnabled);
     }
     /**
      * get a shader code buf instance, for sub class override

@@ -51,7 +51,6 @@ export class DemoPBRViewer implements IShaderLibListener {
     
     private m_reflectPlaneY: number = -220;
 
-    //private m_materialCtx: MaterialContext = new MaterialContext();
     //private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 

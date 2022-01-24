@@ -8,7 +8,6 @@
 import UniformConst from "../../vox/material/UniformConst";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
-import { IMaterialPipe } from "../../vox/material/pipeline/IMaterialPipe";
 import { MaterialPipeBase } from "../../vox/material/pipeline/MaterialPipeBase";
 import { GlobalLightUniformParam } from "../../vox/material/param/GlobalLightUniformParam";
 import { PointLight } from "./PointLight";
@@ -17,7 +16,7 @@ import { SpotLight } from "./SpotLight";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { ILightModule } from "./ILightModule";
 
-class LightModule extends MaterialPipeBase implements IMaterialPipe, ILightModule {
+class LightModule extends MaterialPipeBase implements ILightModule {
 
     private m_lightPosData: Float32Array = null;
     private m_lightColors: Float32Array = null;

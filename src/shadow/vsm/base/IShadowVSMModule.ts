@@ -1,8 +1,9 @@
 import Vector3D from "../../../vox/math/Vector3D";
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
+import { IMaterialPipe } from "../../../vox/material/pipeline/IMaterialPipe";
 
-interface IShadowVSMModule {
+interface IShadowVSMModule extends IMaterialPipe{
 
     /**
      * set shawow rtt texture size
