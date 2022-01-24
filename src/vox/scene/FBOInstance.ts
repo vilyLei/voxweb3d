@@ -420,7 +420,7 @@ export default class FBOInstance implements IFBOInstance {
         texture.__$setRenderProxy(this.m_renderProxy);
         return texture;
     }
-    setClearState(clearColorBoo: boolean, clearDepthBoo: boolean, clearStencilBoo: boolean = false): void {
+    setClearState(clearColorBoo: boolean = true, clearDepthBoo: boolean = true, clearStencilBoo: boolean = false): void {
         this.m_clearColorBoo = clearColorBoo;
         this.m_clearDepthBoo = clearDepthBoo;
         this.m_clearStencilBoo = clearStencilBoo;

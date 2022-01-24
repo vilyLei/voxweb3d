@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import Vector3D from "../../vox/math/Vector3D";
-import AABB from "../../vox/geom/AABB";
+import {IAABB} from "../../vox/geom/IAABB";
 
 import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
 
@@ -76,7 +76,7 @@ interface IRenderCamera {
     // visibility test
     // 可见性检测这边可以做的更精细，例如上一帧检测过的对象如果摄像机没有移动而且它自身也没有位置等变化，就可以不用检测
     // 例如精细检测可以分类: 圆球，圆柱体，长方体 等不同的检测模型计算方式会有区别
-    visiTestAABB(ab: AABB): boolean;
+    visiTestAABB(ab: IAABB): boolean;
     
     update(): void
     updateCamMatToUProbe(uniformProbe: IShaderUniformProbe): void;

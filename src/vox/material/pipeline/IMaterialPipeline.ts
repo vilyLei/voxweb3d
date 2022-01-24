@@ -25,12 +25,12 @@ interface IMaterialPipeline {
      * @param shaderCodeUUID IShaderCodeObject instance uuid
      * @param force default value is false
      */
-    addShaderCodeWithUUID(shaderCodeUUID: ShaderCodeUUID, force: boolean): void;
+    addShaderCodeWithUUID(shaderCodeUUID: ShaderCodeUUID, force?: boolean): void;
     /**
      * @param shaderCode IShaderCodeObject instance
      * @param force default value is false
      */
-    addShaderCode(shaderCode: IShaderCodeObject, force: boolean): void;
+    addShaderCode(shaderCode: IShaderCodeObject, force?: boolean): void;
     hasShaderCode(): boolean;
     addPipe(pipe: IMaterialPipe): void;
     getPipeByType(type: MaterialPipeType): IMaterialPipe;

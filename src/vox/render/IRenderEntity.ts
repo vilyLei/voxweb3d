@@ -67,7 +67,7 @@ export default interface IRenderEntity {
      * @outV            如果检测相交存放物体坐标空间的交点
      * @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
      */
-    testRay(rlpv: Vector3D, rltv: Vector3D, outV: Vector3D, boundsHit: boolean): number
+    testRay(rlpv: Vector3D, rltv: Vector3D, outV: Vector3D, boundsHit: boolean): number;
     /**
      * @return 返回true表示包含有mesh对象,反之则没有
      */
@@ -76,6 +76,16 @@ export default interface IRenderEntity {
      * @return 返回true是则表示这是基于三角面的可渲染多面体, 返回false则是一个数学方程描述的几何体(例如球体)
      */
     isPolyhedral(): boolean;
+    /**
+     * @param rc the default value is null
+     * @param deferred the default value is true
+     */
+   updateMeshToGpu(rc?: IRenderProxy, deferred?: boolean): void;
+   /**
+    * @param rc the default value is null
+    * @param deferred the default value is true
+    */
+   updateMaterialToGpu(rc?: IRenderProxy, deferred?: boolean): void;
 
     setXYZ(px: number, py: number, pz: number): void;
     setPosition(pos: Vector3D): void;

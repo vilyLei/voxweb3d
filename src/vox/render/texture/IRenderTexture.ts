@@ -49,7 +49,7 @@ interface IRenderTexture extends IRenderBuffer {
      * @param rc the default value is null
      * @param deferred the default value is true
      */
-    updateDataToGpu(rc: IRenderProxy, deferred: boolean): void;/**
+    updateDataToGpu(rc?: IRenderProxy, deferred?: boolean): void;/**
     * @returns This textureProxy instance has been destroyed.
     */
    isDestroyed(): boolean;

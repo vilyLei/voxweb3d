@@ -463,7 +463,11 @@ class RenderProxy implements IRenderProxy{
     setClearColor(color: Color4): void {
         this.m_adapter.bgColor.copyFrom(color);
     }
-    setClearUint24Color(colorUint24: number, alpha: number): void {
+    /**
+     * @param colorUint24 uint24 number rgb color value, example: 0xff0000, it is red rolor
+     * @param alpha the default value is 1.0
+     */
+    setClearUint24Color(colorUint24: number, alpha: number = 1.0): void {
         this.m_adapter.bgColor.setRGBUint24(colorUint24);
         this.m_adapter.bgColor.a = alpha;
     }

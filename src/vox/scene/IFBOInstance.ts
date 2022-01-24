@@ -55,7 +55,7 @@ interface IFBOInstance {
      * 
      * @param colorMask the default value is false
      */
-    lockColorMask(colorMask: number): void;
+    lockColorMask(colorMask?: number): void;
     unlockRenderColorMask(): void;
 
     ////////////////////////////////////////////////////// material conctrl
@@ -65,14 +65,14 @@ interface IFBOInstance {
      * @param texUnlock the default value is false
      * @param materialUniformUpdate the default value is false
      */
-    useGlobalMaterial(m: IRenderMaterial, texUnlock: boolean, materialUniformUpdate: boolean): void;
+    useGlobalMaterial(m: IRenderMaterial, texUnlock?: boolean, materialUniformUpdate?: boolean): void;
     /**
      * 
      * @param material MaterialBase 子类的实例
      * @param texUnlock 是否锁定并使用 material 自身所带的纹理数据,the default value is false
      * @param materialUniformUpdate the default value is false
      */
-    setGlobalMaterial(material: IRenderMaterial, texUnlock: boolean, materialUniformUpdate: boolean): void;
+    setGlobalMaterial(material?: IRenderMaterial, texUnlock?: boolean, materialUniformUpdate?: boolean): void;
     lockMaterial(): void;
     unlockMaterial(): void;
 
@@ -94,7 +94,7 @@ interface IFBOInstance {
      * @param enableStencil the default value is false 
      * @param multisampleLevel the default value is 0 
      */
-    createViewportSizeFBOAt(fboIndex: number, enableDepth: boolean, enableStencil: boolean, multisampleLevel: number): void;
+    createViewportSizeFBOAt(fboIndex: number, enableDepth?: boolean, enableStencil?: boolean, multisampleLevel?: number): void;
 
     /**
      * 创建一个指定序号的 FBO(FrameBufferObject) 渲染运行时管理对象,
@@ -104,7 +104,7 @@ interface IFBOInstance {
      * @param enableStencil FBO 对象的stencil读写是否开启, the default value is false
      * @param multisampleLevel FBO 对象的multisample level, the default value is 0
      */
-    createAutoSizeFBOAt(fboIndex: number, enableDepth: boolean, enableStencil: boolean, multisampleLevel: number): void;
+    createAutoSizeFBOAt(fboIndex: number, enableDepth?: boolean, enableStencil?: boolean, multisampleLevel?: number): void;
     /**
      * 创建一个指定序号的 FBO(FrameBufferObject) 渲染运行时管理对象,
      * renderer中一个序号只会对应一个唯一的 FBO 对象实例
@@ -115,7 +115,7 @@ interface IFBOInstance {
      * @param enableStencil FBO 对象的stencil读写是否开启, the default value is false
      * @param multisampleLevel FBO 对象的multisample level, the default value is false
      */
-    createFBOAt(fboIndex: number, width: number, height: number, enableDepth: boolean, enableStencil: boolean, multisampleLevel: number): void;
+    createFBOAt(fboIndex: number, width: number, height: number, enableDepth?: boolean, enableStencil?: boolean, multisampleLevel?: number): void;
 
     /**
      * 创建一个指定序号的 read FBO(FrameBufferObject) 渲染运行时管理对象,
@@ -127,7 +127,7 @@ interface IFBOInstance {
      * @param enableStencil FBO 对象的stencil读写是否开启, the default value is false
      * @param multisampleLevel FBO 对象的multisample level, the default value is 0
      */
-    createReadFBOAt(fboIndex: number, width: number, height: number, enableDepth: boolean, enableStencil: boolean, multisampleLevel: number): void;
+    createReadFBOAt(fboIndex: number, width: number, height: number, enableDepth?: boolean, enableStencil?: boolean, multisampleLevel?: number): void;
     /**
      * 创建一个指定序号的 draw FBO(FrameBufferObject) 渲染运行时管理对象,
      * renderer中一个序号只会对应一个唯一的 FBO 对象实例
@@ -138,7 +138,7 @@ interface IFBOInstance {
      * @param enableStencil FBO 对象的stencil读写是否开启, the default value is false
      * @param multisampleLevel FBO 对象的multisample level, the default value is 0
      */
-    createDrawFBOAt(fboIndex: number, width: number, height: number, enableDepth: boolean, enableStencil: boolean, multisampleLevel: number): void;
+    createDrawFBOAt(fboIndex: number, width: number, height: number, enableDepth?: boolean, enableStencil?: boolean, multisampleLevel?: number): void;
 
     resizeFBO(fboBufferWidth: number, fboBufferHeight: number): void
     /**
@@ -152,46 +152,46 @@ interface IFBOInstance {
      * @param rttTexProxy 作为渲染到目标的目标纹理对象
      * @param outputIndex framebuffer output attachment index, the default value is 0
      */
-    setRenderToTexture(texture: IRenderTexture, outputIndex: number): IRenderTexture;
+    setRenderToTexture(texture: IRenderTexture, outputIndex?: number): IRenderTexture;
 
     /**
      * 设置渲染到纹理的目标纹理对象(普通 RTT 纹理类型的目标纹理)和framebuffer output attachment index
      * @param systemRTTTexIndex 作为渲染到目标的目标纹理对象在系统普通rtt 纹理中的序号(0 -> 15)
      * @param outputIndex framebuffer output attachment index, the default value is 0
      */
-    setRenderToRTTTextureAt(systemRTTTexIndex: number, outputIndex: number): void;
+    setRenderToRTTTextureAt(systemRTTTexIndex: number, outputIndex?: number): void;
     /**
      * 设置渲染到纹理的目标纹理对象(Float RTT 纹理类型的目标纹理)和framebuffer output attachment index
      * @param systemFloatRTTTexIndex 作为渲染到目标的目标纹理对象在系统float rtt 纹理中的序号(0 -> 15)
      * @param outputIndex framebuffer output attachment index, the default value is 0
      */
-    setRenderToFloatTextureAt(systemFloatRTTTexIndex: number, outputIndex: number): void;
+    setRenderToFloatTextureAt(systemFloatRTTTexIndex: number, outputIndex?: number): void;
     /**
      * 设置渲染到纹理的目标纹理对象(half Float RTT 纹理类型的目标纹理)和framebuffer output attachment index
      * @param systemFloatRTTTexIndex 作为渲染到目标的目标纹理对象在系统float rtt 纹理中的序号(0 -> 15)
      * @param outputIndex framebuffer output attachment index, the default value is 0
      */
-    setRenderToHalfFloatTexture(texture: IRenderTexture, outputIndex: number): IRenderTexture;
+    setRenderToHalfFloatTexture(texture: IRenderTexture, outputIndex?: number): IRenderTexture;
     /**
      * 设置渲染到纹理的目标纹理对象(RGBA RTT 纹理类型的目标纹理)和framebuffer output attachment index
      * @param systemFloatRTTTexIndex 作为渲染到目标的目标纹理对象在系统float rtt 纹理中的序号(0 -> 15)
      * @param outputIndex framebuffer output attachment index, the default value is 0
      */
-    setRenderToRGBATexture(texture: IRenderTexture, outputIndex: number): IRenderTexture;
+    setRenderToRGBATexture(texture: IRenderTexture, outputIndex?: number): IRenderTexture;
     /**
      * 设置渲染到纹理的目标纹理对象(depth RTT 纹理类型的目标纹理)和framebuffer output attachment index
      * @param systemDepthRTTTexIndex 作为渲染到目标的目标纹理对象在系统depth rtt 纹理中的序号(0 -> 15)
      * @param outputIndex framebuffer output attachment index, the default value is 0
      */
-    setRenderToDepthTextureAt(systemDepthRTTTexIndex: number, outputIndex: number): IRenderTexture;
+    setRenderToDepthTextureAt(systemDepthRTTTexIndex: number, outputIndex?: number): IRenderTexture;
     createRGBATexture(): IRenderTexture;
     /**
      * 
-     * @param clearColorBoo 
-     * @param clearDepthBoo 
+     * @param clearColorBoo the default value is true
+     * @param clearDepthBoo the default value is true
      * @param clearStencilBoo the default value is false
      */
-    setClearState(clearColorBoo: boolean, clearDepthBoo: boolean, clearStencilBoo: boolean): void;
+    setClearState(clearColorBoo?: boolean, clearDepthBoo?: boolean, clearStencilBoo?: boolean): void;
     setRenderToBackBuffer(): void;
 
     setClearDepth(depth: number): void;
@@ -211,8 +211,7 @@ interface IFBOInstance {
     setClearDepthEnabled(boo: boolean): void;
     setClearStencilEnabled(boo: boolean): void;
     /**
-     * 
-     * @param colorUint24 
+     * @param colorUint24 uint24 number rgb color value, example: 0xff0000, it is red rolor
      * @param alpha the default value is 1.0
      */
     setClearUint24Color(colorUint24: number, alpha: number): void;
@@ -225,7 +224,7 @@ interface IFBOInstance {
      * @param clearIndex the defualt value is 0
      * @param dataArr the defualt value is null
      */
-    blitFrom(fboIns: IFBOInstance, mask_bitfiled: number, filter: number, clearType: number, clearIndex: number, dataArr: number[]): void;
+    blitFrom(fboIns: IFBOInstance, mask_bitfiled?: number, filter?: number, clearType?: number, clearIndex?: number, dataArr?: number[]): void;
     /**
      * @param fboIns IFBOInstance instance
      * @param mask_bitfiled the defualt value is RenderMaskBitfield.COLOR_BUFFER_BIT
@@ -234,7 +233,7 @@ interface IFBOInstance {
      * @param clearIndex the defualt value is 0
      * @param dataArr the defualt value is null
      */
-    blitColorFrom(fboIns: IFBOInstance, filter: number, clearType: number, clearIndex: number, dataArr: number[]): void;
+    blitColorFrom(fboIns: IFBOInstance, filter?: number, clearType?: number, clearIndex?: number, dataArr?: number[]): void;
     /**
      * @param fboIns IFBOInstance instance
      * @param mask_bitfiled the defualt value is RenderMaskBitfield.COLOR_BUFFER_BIT
@@ -243,7 +242,7 @@ interface IFBOInstance {
      * @param clearIndex the defualt value is 0
      * @param dataArr the defualt value is null
      */
-    blitDepthFrom(fboIns: IFBOInstance, filter: number, clearType: number, clearIndex: number, dataArr: number[]): void;
+    blitDepthFrom(fboIns: IFBOInstance, filter?: number, clearType?: number, clearIndex?: number, dataArr?: number[]): void;
     /**
      * @param fboIns IFBOInstance instance
      * @param mask_bitfiled the defualt value is RenderMaskBitfield.COLOR_BUFFER_BIT
@@ -252,7 +251,7 @@ interface IFBOInstance {
      * @param clearIndex the defualt value is 0
      * @param dataArr the defualt value is null
      */
-    blitColorAndDepthFrom(fboIns: IFBOInstance, filter: number, clearType: number, clearIndex: number, dataArr: number[]): void;
+    blitColorAndDepthFrom(fboIns: IFBOInstance, filter?: number, clearType?: number, clearIndex?: number, dataArr?: number[]): void;
     /**
      * @param fboIns IFBOInstance instance
      * @param mask_bitfiled the defualt value is RenderMaskBitfield.COLOR_BUFFER_BIT
@@ -261,13 +260,13 @@ interface IFBOInstance {
      * @param clearIndex the defualt value is 0
      * @param dataArr the defualt value is null
      */
-    blitStencilFrom(fboIns: IFBOInstance, filter: number, clearType: number, clearIndex: number, dataArr: number[]): void;
+    blitStencilFrom(fboIns: IFBOInstance, filter?: number, clearType?: number, clearIndex?: number, dataArr?: number[]): void;
     /**
      * 
-     * @param i 
+     * @param i framebuffer object output attachment index
      * @param attachmentIndex the default value is 0
      */
-    renderToTextureAt(i: number, attachmentIndex: number): void;
+    renderToTextureAt(i: number, attachmentIndex?: number): void;
     /**
      * 
      * @param lockRenderState the defualt value is false
@@ -275,20 +274,20 @@ interface IFBOInstance {
      * @param autoEnd the defualt value is true
      * @param autoRunBegin the defualt value is true
      */
-    run(lockRenderState: boolean, lockMaterial: boolean, autoEnd: boolean, autoRunBegin: boolean): void;
+    run(lockRenderState: boolean, lockMaterial?: boolean, autoEnd?: boolean, autoRunBegin?: boolean): void;
     /**
      * 
      * @param index 
      * @param autoRunBegin the defualt value is true
      */
-    runAt(index: number, autoRunBegin: boolean): void;
+    runAt(index: number, autoRunBegin?: boolean): void;
     /**
      * 单独绘制可渲染对象, 可能是使用了 global material也可能没有。这种方式比较耗性能,只能用在特殊的地方。
      * @param entity 需要指定绘制的 IRenderEntity 实例
      * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform, the default value is false
      * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform, default value is true
      */
-    drawEntity(entity: IRenderEntity, useGlobalUniform: boolean, forceUpdateUniform: boolean): void;
+    drawEntity(entity: IRenderEntity, useGlobalUniform?: boolean, forceUpdateUniform?: boolean): void;
     runBegin(): void;
     runEnd(): void;
     /**
@@ -296,7 +295,7 @@ interface IFBOInstance {
      * @param camera 
      * @param syncCamView the default value is false
      */
-    useCamera(camera: IRenderCamera, syncCamView: boolean): void;
+    useCamera(camera: IRenderCamera, syncCamView?: boolean): void;
     useMainCamera(): void;
     reset(): void;
 

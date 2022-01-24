@@ -110,8 +110,7 @@ interface IRendererScene {
      */
     drawEntity(entity: IRenderEntity, useGlobalUniform: boolean, forceUpdateUniform?: boolean): void;
     /**
-     * 
-     * @param colorUint24 uint24 rgb color namber value
+     * @param colorUint24 uint24 number rgb color value, example: 0xff0000, it is red rolor
      * @param alpha the default value is 1.0
      */
     setClearUint24Color(colorUint24: number, alpha?: number): void;

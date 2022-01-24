@@ -110,7 +110,11 @@ interface IRenderProxy {
     //}
     setClearRGBColor3f(pr: number, pg: number, pb: number): void;
     setClearColor(color: Color4): void;
-    setClearUint24Color(colorUint24: number, alpha: number): void;
+    /**
+     * @param colorUint24 uint24 number rgb color value, example: 0xff0000, it is red rolor
+     * @param alpha the default value is 1.0
+     */
+    setClearUint24Color(colorUint24: number, alpha?: number): void;
     setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void;
     getClearRGBAColor4f(color4: Color4): void;
     getViewportWidth(): number;
@@ -121,7 +125,7 @@ interface IRenderProxy {
      * 
      * @param depth the derault value is 1.0
      */
-    clearDepth(depth: number): void;
+    clearDepth(depth?: number): void;
     renderBegin(): void;
 
     renderEnd(): void;
