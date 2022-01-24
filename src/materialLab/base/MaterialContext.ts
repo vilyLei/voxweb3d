@@ -27,7 +27,7 @@ class MaterialContext {
     /**
      * 全局的灯光模块
      */
-    readonly lightModule: LightModule;
+    readonly lightModule: LightModule = null;
     /**
      * 全局的环境参数
      */

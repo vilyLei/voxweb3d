@@ -40,6 +40,8 @@ import { ViewTextureMaker } from "../renderingtoy/mcase/texture/ViewTextureMaker
 import FrustrumFrame3DEntity from "../vox/entity/FrustrumFrame3DEntity";
 import DebugFlag from "../vox/debug/DebugFlag";
 import { SpaceCullingMask } from "../vox/space/SpaceCullingMask";
+import IRenderMaterial from "../vox/render/IRenderMaterial";
+import LambertLightDecorator from "../vox/material/mcase/LambertLightDecorator";
 
 export class DemoMultiLambertLights implements IShaderLibListener {
 
@@ -148,6 +150,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_materialCtx.lightModule.update();
     }
     private createPointLightDisp(pointLight: PointLight): Billboard3DEntity {
+        return;
         let size: number = 60.0;
         let billboard: Billboard3DEntity = new Billboard3DEntity();
         billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
@@ -253,8 +256,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
 
         let color: Color4 = new Color4(1.0, 1.0, 0.0);
         let colorBias: Color4 = new Color4(0.0, 0.0, 0.0);
-        ///*
-        this.createDestroyEffect(new Vector3D(200,-188.0,-200));
+        /*
+        // this.createDestroyEffect(new Vector3D(200,-188.0,-200));
         // // this.initEnvBox();
         // return;
         let billboard: Billboard3DEntity = new Billboard3DEntity();
@@ -267,7 +270,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         //billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
         this.m_engine.rscene.addEntity(billboard, 3);
         //*/
-        ///*
+        /*
         let tex4 = this.m_materialCtx.getTextureByUrl("static/assets/flare_core_01.jpg");
         let billLine: BillboardLine3DEntity = new BillboardLine3DEntity();
         billLine.pipeTypes = [MaterialPipeType.FOG_EXP2];
@@ -296,6 +299,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         // this.m_engine.rscene.addEntity(box);
 
         let radius: number = 30;
+        /*
         let sph02: Sphere3DEntity = new Sphere3DEntity();
         sph02.pipeTypes = [MaterialPipeType.FOG_EXP2];
         sph02.setMaterialPipeline(this.m_materialCtx.pipeline);
@@ -309,6 +313,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         crossAxis.initialize(150.0);
         // crossAxis.setPosition(pointLight.position);
         this.m_engine.rscene.addEntity(crossAxis, 2);
+        //*/
         // this.m_pointLight = pointLight;
         // this.m_target = crossAxis;
         //*/
@@ -395,7 +400,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         // pl.initialize(-1.0,-1.0, 0.5, 0.5, [this.m_viewTexMaker.getMap()]);
         // this.m_engine.rscene.addEntity(pl, 2);
         //return
-        ///*
+        let boxMaterial: IRenderMaterial;
+        /*
         material = this.m_materialCtx.createLambertLightMaterial();
         material.diffuseMap2 = this.m_viewTexMaker.getMap();
         material.diffuseMap2Matrix = this.m_viewTexMaker.getMatrix();
@@ -418,8 +424,13 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         // plane.setXYZ(0.0, -200.0, 0.0);
         // this.m_engine.rscene.addEntity(plane);
 
+        boxMaterial = material;
+        //*/
+
+        boxMaterial = this.createLM();
+
         let box: Box3DEntity = new Box3DEntity();
-        box.setMaterial( material );
+        box.setMaterial( boxMaterial );
         box.initializeSizeXYZ(800.0,20,800.0);
         box.setXYZ(0.0, -200.0, 0.0);
         this.m_engine.rscene.addEntity(box);
@@ -431,6 +442,29 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         // this.m_rscene.addEntity(pl, 2);
 
     }
+    private createLM(): IRenderMaterial {
+        let vertUniform: VertUniformComp = new VertUniformComp();
+        let decor = new LambertLightDecorator();
+        let m = this.m_engine.rscene.materialBlock.createMaterial(decor);
+        m.setMaterialPipeline( this.m_materialCtx.lambertPipeline );
+        decor.diffuseMap2 = this.m_viewTexMaker.getMap();
+        decor.diffuseMap2Matrix = this.m_viewTexMaker.getMatrix();
+        decor.envAmbientLightEnabled = true;
+        vertUniform = new VertUniformComp();
+        decor.vertUniform = vertUniform;
+        vertUniform.uvTransformEnabled = true;
+        this.useLMMaps(decor, "box", true, false, true);
+        decor.fogEnabled = true;
+        decor.lightEnabled = true;
+        decor.initialize();
+        vertUniform.setDisplacementParams(3.0, 0.0);
+        // material.setDisplacementParams(3.0, 0.0);
+        decor.setSpecularIntensity(64.0);
+        let color = new Color4();
+        color.normalizeRandom(1.1);
+        decor.setSpecularColor(color);
+        return m;
+    }
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
         this.m_materialCtx.envData.setAmbientColorRGB3f(3.0,3.0,3.0);
         this.m_materialCtx.envData.setEnvAmbientLightAreaOffset(-500.0, -500.0);
@@ -438,6 +472,23 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_materialCtx.envData.setEnvAmbientMap( this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg") );
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
         this.initScene();
+    }
+    private useLMMaps(material: LambertLightDecorator, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
+
+        material.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_COLOR.png");
+        material.specularMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_SPEC.png");
+        if (normalMapEnabled) {
+            material.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_NRM.png");
+        }
+        if (aoMapEnabled) {
+            material.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_OCC.png");
+        }
+        if (displacementMap) {
+            if(material.vertUniform != null) {
+                (material.vertUniform as VertUniformComp).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+            }
+        }
+        material.shadowReceiveEnabled = shadowReceiveEnabled;
     }
     private useMaps(material: LambertLightMaterial, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
 

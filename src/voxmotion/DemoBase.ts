@@ -12,7 +12,6 @@ import Vector3D from "../vox/math/Vector3D";
 
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
-import { MaterialContext } from "../materialLab/base/MaterialContext";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import {EnergyAttenuation} from "./base/EnergyAttenuation";
 import DisplayEntity from "../vox/entity/DisplayEntity";
@@ -30,7 +29,6 @@ export class DemoBase {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_pos: Vector3D = new Vector3D();
     private m_target: DisplayEntity = null;
-    private m_materialCtx: MaterialContext = new MaterialContext();
 
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl, 0, false, false);
@@ -70,7 +68,6 @@ export class DemoBase {
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
             //console.log("isWinExternalVideoCard: ",isWinExternalVideoCard);
-            //this.m_materialCtx.initialize( this.m_rscene );
 
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(300.0);
@@ -121,7 +118,6 @@ export class DemoBase {
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
         this.m_statusDisp.update(false);
 
-        //this.m_materialCtx.run();
         this.m_rscene.run(true);
 
     }
