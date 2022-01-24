@@ -5,10 +5,13 @@ import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
 import { IEnvLightModule } from "../light/base/IEnvLightModule";
 import { IMaterialPipeline } from "../vox/material/pipeline/IMaterialPipeline";
 import RendererParam from "../vox/scene/RendererParam";
+import { IAppEngine } from "./modules/interfaces/IAppEngine";
+import { IAppBase } from "./modules/interfaces/IAppBase";
+import { IAppEnvLightModule } from "./modules/interfaces/IAppEnvLightModule";
 
-declare var VoxAppEngine: any;
-declare var VoxAppBase: any;
-declare var VoxAppEnvLightModule: any;
+declare var AppEngine: any;
+declare var AppBase: any;
+declare var AppEnvLightModule: any;
 
 var Module: any = window;
 function getSysModule(ns: string): any {
@@ -55,12 +58,12 @@ class AppShell {
 
             //MaterialPipeType
             //new MaterialPipeType
-            console.log("AppShell::initialize()..., VoxAppEngine: ", VoxAppEngine);
-            console.log("AppShell::initialize()..., VoxAppBase: ", VoxAppBase);
+            console.log("AppShell::initialize()..., AppEngine: ", AppEngine);
+            console.log("AppShell::initialize()..., AppBase: ", AppBase);
 
-            let rDevice = VoxAppEngine.RendererDevice;
-            let voxAppEngineIns = new VoxAppEngine.Instance();
-            let voxAppBaseIns = new VoxAppBase.Instance();
+            let rDevice = AppEngine.RendererDevice;
+            let voxAppEngineIns = new AppEngine.Instance() as IAppEngine;
+            let voxAppBaseIns = new AppBase.Instance() as IAppBase;
             this.m_voxAppEngineIns = voxAppEngineIns;
             this.m_voxAppBaseIns = voxAppBaseIns;
             
@@ -86,10 +89,10 @@ class AppShell {
 
             let flags = this.m_loadedFlags;
             if(flags[2] == 1) {
-                let envLightModuleFactor = new VoxAppEnvLightModule.Instance();// as IEnvLightModule;
+                let envLightModuleModule = new AppEnvLightModule.Instance() as IAppEnvLightModule;
                 //  as IEnvLightModule;
-                console.log("AppShell::initialize()..., have env light module: ", envLightModuleFactor);
-                let envLightPipe = envLightModuleFactor.createEnvLightModule( this.m_rscene ) as IEnvLightModule;
+                console.log("AppShell::initialize()..., have env light module: ", envLightModuleModule);
+                let envLightPipe = envLightModuleModule.createEnvLightModule( this.m_rscene ) as IEnvLightModule;
                 envLightPipe.initialize();
                 envLightPipe.setFogColorRGB3f(0.0, 0.8, 0.1);
                 
@@ -173,9 +176,10 @@ export class AppLoader {
 
         let host = "http://192.168.0.105:9000/";
         // host = "http://localhost:9000/";
-        let engine_url = host + "publish/build/VoxAppEngine.package.js";
-        let base_url = host + "publish/build/VoxAppBase.package.js";
-        let envLightModule_url = host + "publish/build/VoxAppEnvLightModule.package.js";
+        host = "";
+        let engine_url = host + "publish/build/AppEngine.package.js";
+        let base_url = host + "publish/build/AppBase.package.js";
+        let envLightModule_url = host + "publish/build/AppEnvLightModule.package.js";
 
         let engineLoader = new ModuleLoader(0, engine_url, this);
         let baseLoader = new ModuleLoader(1, base_url, this);

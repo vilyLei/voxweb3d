@@ -10,14 +10,14 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 import { UserInteraction } from "../../../vox/engine/UserInteraction";
 
 import Matrix4 from "../../../vox/math/Matrix4";
-import { IVoxAppEngine } from "../interfaces/IVoxAppEngine";
+import { IAppEngine } from "../interfaces/IAppEngine";
 
-class Instance implements IVoxAppEngine {
+class Instance implements IAppEngine {
 
     private m_rscene: IRendererScene = null;
     private m_statusDisp: RenderStatusDisplay = null;
     private m_timeoutId: any = -1;
-    private m_timeDelay: number = 50;
+    private timerDelay: number = 50;
     private m_texLoader: ImageTextureLoader = null;
 
     readonly interaction: UserInteraction = new UserInteraction();
@@ -45,7 +45,7 @@ class Instance implements IVoxAppEngine {
         console.log("VoxAppInstance::initialize()......");
         if (this.m_rscene == null) {
 
-            this.m_timeDelay = timeerDelay;
+            this.timerDelay = timeerDelay;
 
             RendererDevice.SHADERCODE_TRACE_ENABLED = debug;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -80,7 +80,7 @@ class Instance implements IVoxAppEngine {
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
-        this.m_timeoutId = setTimeout(this.update.bind(this), this.m_timeDelay);
+        this.m_timeoutId = setTimeout(this.update.bind(this), this.timerDelay);
         if (this.m_statusDisp != null) this.m_statusDisp.render();
     }
     run(): void {
@@ -102,7 +102,7 @@ class VoxAppInstance {
     private m_engine: EngineBase = null;
     private m_statusDisp: RenderStatusDisplay = null;
     private m_timeoutId: any = -1;
-    private m_timeDelay: number = 50;
+    private timerDelay: number = 50;
     private m_texLoader: ImageTextureLoader = null;
     constructor() { }
 
@@ -133,7 +133,7 @@ class VoxAppInstance {
         console.log("VoxAppInstance::initialize()......");
         if (this.m_rscene == null) {
 
-            this.m_timeDelay = timeerDelay;
+            this.timerDelay = timeerDelay;
             
             RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -169,7 +169,7 @@ class VoxAppInstance {
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
-        this.m_timeoutId = setTimeout(this.update.bind(this), this.m_timeDelay);
+        this.m_timeoutId = setTimeout(this.update.bind(this), this.timerDelay);
         if(this.m_statusDisp != null) this.m_statusDisp.update(true);
     }
     run(): void {

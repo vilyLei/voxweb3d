@@ -1,8 +1,9 @@
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import { ILightModule } from "../../../light/base/ILightModule";
 import { LightModule } from "../../../light/base/LightModule";
+import { IAppLightModule } from "../interfaces/IAppLightModule";
 
-class Instance {
+class Instance implements IAppLightModule{
     constructor() {
     }
     createLightModule(rsecne: IRendererScene): ILightModule {

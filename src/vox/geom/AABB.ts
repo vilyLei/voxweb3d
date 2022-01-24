@@ -10,8 +10,8 @@ import Vector3D from "../../vox/math/Vector3D";
 import { IAABB } from "../../vox/geom/IAABB";
 
 class AABB implements IAABB {
-	min: Vector3D = new Vector3D(MathConst.MATH_MAX_POSITIVE, MathConst.MATH_MAX_POSITIVE, MathConst.MATH_MAX_POSITIVE);
-	max: Vector3D = new Vector3D(MathConst.MATH_MIN_NEGATIVE, MathConst.MATH_MIN_NEGATIVE, MathConst.MATH_MIN_NEGATIVE);
+	min: Vector3D = new Vector3D();
+	max: Vector3D = new Vector3D();
 	version: number = -1;
 	radius: number = 50;
 	radius2: number = 2500;
@@ -24,6 +24,7 @@ class AABB implements IAABB {
 	private m_halfHeight: number = 50.0;
 	private m_tempV: Vector3D = new Vector3D();
 	constructor() {
+		this.reset();
 	}
 	getLong(): number {
 		return this.m_long;

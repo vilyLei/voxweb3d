@@ -13,7 +13,7 @@ import MathConst from "../../vox/math/MathConst";
 import { LightModule } from "../../light/base/LightModule";
 import EnvLightModule from "../../light/base/EnvLightModule";
 import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
-import { Vector3D } from "../../app/VoxApp";
+import Vector3D from "../../vox/math/Vector3D";
 
 /**
  * 实现 material 构造 pipeline 的上下文
@@ -122,7 +122,6 @@ class CommonMaterialContext extends MaterialContext {
             vsmModule.initialize(this.m_rscene, [0], 3000);
             vsmModule.setShadowIntensity(0.8);
             vsmModule.setColorIntensity(0.3);
-
             selfT.vsmModule = vsmModule;
         }
     }

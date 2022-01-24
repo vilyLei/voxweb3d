@@ -1,7 +1,7 @@
 
 import ShadowVSMModule from "../../../shadow/vsm/base/ShadowVSMModule";
 
-interface IVoxAppShadow {
+interface IAppShadow {
     createVSMShadow(vsmFboIndex: number): ShadowVSMModule;
 }
-export { IVoxAppShadow }
+export { IAppShadow }

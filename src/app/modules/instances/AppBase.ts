@@ -25,8 +25,8 @@ import Matrix4 from "../../../vox/math/Matrix4";
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
 
-import { IVoxAppEngine } from "../interfaces/IVoxAppEngine";
-import { IVoxAppBase } from "../interfaces/IVoxAppBase";
+import { IAppEngine } from "../interfaces/IAppEngine";
+import { IAppBase } from "../interfaces/IAppBase";
 
 import { ILightModule } from "../../../light/base/ILightModule";
 import { LightModule } from "../../../light/base/LightModule";
@@ -69,7 +69,7 @@ class VoxAppShadow {
 export { ShadowVSMModule, VoxAppShadow };
 //*/
 
-class Instance implements IVoxAppBase {
+class Instance implements IAppBase {
     constructor() {
 
     }
