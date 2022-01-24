@@ -14,6 +14,7 @@ import { MaterialContextParam } from "../materialLab/base/MaterialContextParam";
 import { IAppLightModule } from "./modules/interfaces/IAppLightModule";
 import { IShaderLibListener } from "../materialLab/shader/IShaderLibListener";
 import { IMaterialContext } from "../materialLab/base/IMaterialContext";
+import { IMaterial } from "../vox/material/IMaterial";
 
 declare var AppEngine: any;
 declare var AppBase: any;
@@ -37,8 +38,8 @@ class AppShell implements IShaderLibListener {
 
     private m_loadedTotal: number = 0;
     private m_loadedFlags: number[] = [0, 0, 0, 0, 0, 0];
-    private m_voxAppEngineIns: any = null;
-    private m_voxAppBaseIns: any = null;
+    private m_voxAppEngineIns: IAppEngine = null;
+    private m_voxAppBaseIns: IAppBase = null;
     private m_rscene: IRendererScene;
     private m_pipeline: IMaterialPipeline;
     private m_shadow: IShadowVSMModule;
@@ -159,6 +160,8 @@ class AppShell implements IShaderLibListener {
                 lightModule.appendSpotLight();
             }
             this.initLightModuleData(lightModule);
+            
+            this.m_materialCtx.lightModule = lightModule;
             return lightModule;
         }
         return null;
@@ -186,6 +189,29 @@ class AppShell implements IShaderLibListener {
         
         lightModule.update();
     }
+    
+    // private createLM(): IMaterial {
+        
+    //     let m = this.m_voxAppBaseIns.createLambertMaterial();
+    //     let vertUniform: any = m.vertUniform;
+    //     let decor: any = m.getDecorator();
+    //     // let m = this.m_rscene.materialBlock.createMaterial(decor);
+    //     m.setMaterialPipeline( this.m_materialCtx.pipeline );
+    //     decor.envAmbientLightEnabled = true;
+        
+    //     vertUniform.uvTransformEnabled = true;
+    //     this.useLMMaps(decor, "box", true, false, true);
+    //     decor.fogEnabled = true;
+    //     decor.lightEnabled = true;
+    //     decor.initialize();
+    //     vertUniform.setDisplacementParams(3.0, 0.0);
+    //     // material.setDisplacementParams(3.0, 0.0);
+    //     decor.setSpecularIntensity(64.0);
+    //     let color = new Color4();
+    //     color.normalizeRandom(1.1);
+    //     decor.setSpecularColor(color);
+    //     return m;
+    // }
     private initScene(): void {
 
         let rscene = this.m_rscene;
@@ -195,12 +221,12 @@ class AppShell implements IShaderLibListener {
         material.setTextureList([this.m_voxAppEngineIns.getImageTexByUrl("static/assets/box.jpg")]);
         material.initializeByCodeBuf(true);
 
-        let scale: number = 100.0;
-        let entity = rscene.entityBlock.createEntity();
-        entity.setMaterial(material);
-        entity.copyMeshFrom(rscene.entityBlock.unitBox);
-        entity.setScaleXYZ(scale, scale, scale);
-        rscene.addEntity(entity);
+        let scale: number = 500.0;
+        let boxEntity = rscene.entityBlock.createEntity();
+        boxEntity.setMaterial(material);
+        boxEntity.copyMeshFrom(rscene.entityBlock.unitBox);
+        boxEntity.setScaleXYZ(scale, scale * 0.02, scale);
+        rscene.addEntity(boxEntity);
 
         // let axis = new VoxApp.Axis3DEntity();
         // axis.initialize(30);

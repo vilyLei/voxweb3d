@@ -7,6 +7,7 @@
 
 import IShaderCodeObject from "../../vox/material/IShaderCodeObject";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
+import IShaderUniformData from "../../vox/material/IShaderUniformData";
 import Vector3D from "../../vox/math/Vector3D";
 import MathConst from "../../vox/math/MathConst";
 import Color4 from "../../vox/material/Color4";
@@ -17,6 +18,7 @@ import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import { ShaderTextureBuilder } from "../../vox/material/ShaderTextureBuilder";
+import { UniformComp } from "../../vox/material/component/UniformComp";
 
 class PBRDecorator implements IMaterialDecorator {
 
@@ -115,6 +117,7 @@ class PBRDecorator implements IMaterialDecorator {
     fragLocalParamsTotal: number = 2;
     parallaxParamIndex: number = 2;
 
+    vertUniform: UniformComp = null;
     constructor() {
 
     }
@@ -363,9 +366,9 @@ class PBRDecorator implements IMaterialDecorator {
     /**
      * @returns local uniform data
      */
-    createUniformData(): ShaderUniformData {
+    createUniformData(): IShaderUniformData {
 
-        let sud: ShaderUniformData = new ShaderUniformData();
+        let sud: IShaderUniformData = new ShaderUniformData();
         sud.uniformNameList = ["u_pbrParams", "u_fragLocalParams", "u_mirrorParams"];
         sud.dataList = [this.m_pbrParams, this.m_fragLocalParams, this.m_mirrorParam];
         return sud;

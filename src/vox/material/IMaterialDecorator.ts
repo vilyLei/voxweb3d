@@ -7,9 +7,10 @@
 
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import IShaderCodeObject from "../../vox/material/IShaderCodeObject";
-import ShaderUniformData from "../../vox/material/ShaderUniformData";
+import IShaderUniformData from "../../vox/material/IShaderUniformData";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import { ShaderTextureBuilder } from "../../vox/material/ShaderTextureBuilder";
+import { UniformComp } from "../../vox/material/component/UniformComp";
 
 interface IMaterialDecorator {
     /**
@@ -45,6 +46,8 @@ interface IMaterialDecorator {
      */
     glossinessEnabeld: boolean;
 
+    vertUniform?: UniformComp;
+    
     buildBufParams(): void;
     /**
      * user build textures list
@@ -54,7 +57,7 @@ interface IMaterialDecorator {
     /**
      * @returns local uniform data
      */
-    createUniformData(): ShaderUniformData;
+    createUniformData(): IShaderUniformData;
     /**
      * get shader code object uuid, it is defined in the system
      * @returns shader code object uuid

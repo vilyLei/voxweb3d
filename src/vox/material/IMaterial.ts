@@ -11,7 +11,6 @@ import IRenderMaterial from "../render/IRenderMaterial";
 
 interface IMaterial extends IRenderMaterial {
     
-    vertUniform: UniformComp;
     setDecorator(decorator: IMaterialDecorator): void;
     getDecorator(): IMaterialDecorator;
     destroy(): void;

@@ -10,7 +10,6 @@ import MaterialBase from "./MaterialBase";
 import ShaderCodeBuffer from "./ShaderCodeBuffer";
 import IShaderUniformData from "./IShaderUniformData";
 import { IMaterialDecorator } from "./IMaterialDecorator";
-import { UniformComp } from "../../vox/material/component/UniformComp";
 import IShaderCodeObject from "./IShaderCodeObject";
 import IRenderTexture from "../render/texture/IRenderTexture";
 import { IMaterial } from "./IMaterial";
@@ -19,7 +18,6 @@ class MaterialShaderBuffer extends ShaderCodeBuffer {
 
     private m_uniqueName: string = "";
     decorator: IMaterialDecorator = null;
-    vertUniform: UniformComp = null;
     constructor() {
         super();
     }
@@ -36,8 +34,8 @@ class MaterialShaderBuffer extends ShaderCodeBuffer {
         return this.m_texBulder.getTextures();
     }
     buildShader(): void {
-        if(this.vertUniform != null) {
-            this.vertUniform.use(this.m_coder);
+        if(this.decorator.vertUniform != null) {
+            this.decorator.vertUniform.use(this.m_coder);
         }
         this.decorator.buildShader( this.m_coder );
     }
@@ -49,8 +47,8 @@ class MaterialShaderBuffer extends ShaderCodeBuffer {
     }
     getUniqueShaderName(): string {
         let ns = this.m_uniqueName + this.decorator.getUniqueName();
-        if(this.vertUniform != null) {
-            ns += this.vertUniform.getUniqueNSKeyString();
+        if(this.decorator.vertUniform != null) {
+            ns += this.decorator.vertUniform.getUniqueNSKeyString();
         }
         return ns;
     }
@@ -58,7 +56,6 @@ class MaterialShaderBuffer extends ShaderCodeBuffer {
 class Material extends MaterialBase implements IMaterial {
     private static s_shdBufins: MaterialShaderBuffer = null;
     private m_decorator: IMaterialDecorator = null;
-    vertUniform: UniformComp = null;
     constructor() {
         super();
         if(Material.s_shdBufins == null) Material.s_shdBufins = new MaterialShaderBuffer();
@@ -82,10 +79,12 @@ class Material extends MaterialBase implements IMaterial {
 
         buf.buildPipelineParams();
 
-        buf.vertUniform = this.vertUniform;
+        // buf.vertUniform = this.vertUniform;
 
         let list = buf.createTextureList();
-        if(this.vertUniform != null) this.vertUniform.getTextures(buf.getShaderCodeBuilder(), list);
+        //if(this.vertUniform != null) this.vertUniform.getTextures(buf.getShaderCodeBuilder(), list);
+        let vertUniform = decorator.vertUniform
+        if(vertUniform != null) vertUniform.getTextures(buf.getShaderCodeBuilder(), list);
         buf.getTexturesFromPipeline( list );
         console.log(decorator, "texture list: ",list);
         super.setTextureList( list );
@@ -107,15 +106,14 @@ class Material extends MaterialBase implements IMaterial {
     }
     createSelfUniformData(): IShaderUniformData {
         let sud = this.m_decorator.createUniformData();
-        if(this.vertUniform != null && sud != null) {
-            this.vertUniform.buildShaderUniformData(sud);
-        }
+        // if(this.vertUniform != null && sud != null) {
+        //     this.vertUniform.buildShaderUniformData(sud);
+        // }
         return sud;
     }
     destroy(): void {
         super.destroy();
         this.m_decorator = null;
-        this.vertUniform = null;
     }
 }
 export { Material }

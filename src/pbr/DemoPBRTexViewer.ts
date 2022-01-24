@@ -327,7 +327,7 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         let m = this.m_rscene.materialBlock.createMaterial(decor);
         
         m.setMaterialPipeline( pipeline );
-        m.vertUniform = vertUniform;
+        decor.vertUniform = vertUniform;
         
         decor.scatterEnabled = false;
         decor.woolEnabled = true;

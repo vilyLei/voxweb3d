@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
+import IShaderUniformData from "../../../vox/material/IShaderUniformData";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import Color4 from "../../../vox/material/Color4";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
@@ -135,9 +136,9 @@ export default class LambertLightDecorator implements IMaterialDecorator {
         // return PBRShaderCode;
     }
 
-    createUniformData(): ShaderUniformData {
+    createUniformData(): IShaderUniformData {
 
-        let sud: ShaderUniformData = new ShaderUniformData();
+        let sud: IShaderUniformData = new ShaderUniformData();
         sud.uniformNameList = ["u_fragLocalParams"];
         sud.dataList = [this.m_fragLocalParams];
         if (this.vertUniform != null) {
