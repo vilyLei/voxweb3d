@@ -15,6 +15,7 @@ import { IAppLightModule } from "./modules/interfaces/IAppLightModule";
 import { IShaderLibListener } from "../materialLab/shader/IShaderLibListener";
 import { IMaterialContext } from "../materialLab/base/IMaterialContext";
 import { IMaterial } from "../vox/material/IMaterial";
+import Color4 from "../vox/material/Color4";
 
 declare var AppEngine: any;
 declare var AppBase: any;
@@ -105,6 +106,7 @@ class AppShell implements IShaderLibListener {
             // mcParam.buildBinaryFile = true;
             
             this.m_materialCtx = voxAppBaseIns.createMaterialContext();
+            this.m_materialCtx.addShaderLibListener( this );
             
             this.initEnvLight();
             this.buildLightModule( mcParam );
@@ -112,18 +114,20 @@ class AppShell implements IShaderLibListener {
             this.m_materialCtx.initialize(this.m_rscene, mcParam);
             this.m_pipeline = this.m_materialCtx.pipeline;
 
-            main(voxAppEngineIns);
-            this.initScene();
         }
     }
     
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
-        // this.m_materialCtx.envData.setAmbientColorRGB3f(3.0,3.0,3.0);
-        // this.m_materialCtx.envData.setEnvAmbientLightAreaOffset(-500.0, -500.0);
-        // this.m_materialCtx.envData.setEnvAmbientLightAreaSize(1000.0, 1000.0);
-        // this.m_materialCtx.envData.setEnvAmbientMap( this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg") );
+        let envLightModule = this.m_materialCtx.envLightModule;
+        envLightModule.setAmbientColorRGB3f(3.0,3.0,3.0);
+        envLightModule.setEnvAmbientLightAreaOffset(-500.0, -500.0);
+        envLightModule.setEnvAmbientLightAreaSize(1000.0, 1000.0);
+        envLightModule.setEnvAmbientMap( this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg") );
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
-        // this.initScene();
+        
+        
+        main( this.m_voxAppEngineIns );
+        this.initScene();
     }
     private initEnvLight(): void {
         let flags = this.m_loadedFlags;
@@ -190,36 +194,57 @@ class AppShell implements IShaderLibListener {
         lightModule.update();
     }
     
-    // private createLM(): IMaterial {
+    private useLMMaps(docorator: any, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
+
+        docorator.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_COLOR.png");
+        docorator.specularMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_SPEC.png");
+        if (normalMapEnabled) {
+            docorator.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_NRM.png");
+        }
+        if (aoMapEnabled) {
+            docorator.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_OCC.png");
+        }
+        if (displacementMap) {
+            if(docorator.vertUniform != null) {
+                (docorator.vertUniform as any).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+            }
+        }
+        docorator.shadowReceiveEnabled = shadowReceiveEnabled;
+    }
+    private createLM(): IMaterial {
         
-    //     let m = this.m_voxAppBaseIns.createLambertMaterial();
-    //     let vertUniform: any = m.vertUniform;
-    //     let decor: any = m.getDecorator();
-    //     // let m = this.m_rscene.materialBlock.createMaterial(decor);
-    //     m.setMaterialPipeline( this.m_materialCtx.pipeline );
-    //     decor.envAmbientLightEnabled = true;
+        let m = this.m_voxAppBaseIns.createLambertMaterial();
+        let decor: any = m.getDecorator();
+        let vertUniform: any = decor.vertUniform;
+        // let m = this.m_rscene.materialBlock.createMaterial(decor);
+        m.setMaterialPipeline( this.m_materialCtx.pipeline );
+        decor.envAmbientLightEnabled = true;
         
-    //     vertUniform.uvTransformEnabled = true;
-    //     this.useLMMaps(decor, "box", true, false, true);
-    //     decor.fogEnabled = true;
-    //     decor.lightEnabled = true;
-    //     decor.initialize();
-    //     vertUniform.setDisplacementParams(3.0, 0.0);
-    //     // material.setDisplacementParams(3.0, 0.0);
-    //     decor.setSpecularIntensity(64.0);
-    //     let color = new Color4();
-    //     color.normalizeRandom(1.1);
-    //     decor.setSpecularColor(color);
-    //     return m;
-    // }
+        vertUniform.uvTransformEnabled = true;
+        this.useLMMaps(decor, "box", true, false, true);
+        decor.fogEnabled = true;
+        decor.lightEnabled = true;
+        decor.initialize();
+        vertUniform.setDisplacementParams(3.0, 0.0);
+        // material.setDisplacementParams(3.0, 0.0);
+        decor.setSpecularIntensity(64.0);
+        
+        let color = new Color4();
+        color.normalizeRandom(1.1);
+        decor.setSpecularColor(color);
+        return m;
+    }
     private initScene(): void {
 
         let rscene = this.m_rscene;
-        let material = this.m_voxAppBaseIns.createDefaultMaterial() as IRenderMaterial;
-        material.pipeTypes = [MaterialPipeType.FOG_EXP2];
-        material.setMaterialPipeline(this.m_pipeline);
-        material.setTextureList([this.m_voxAppEngineIns.getImageTexByUrl("static/assets/box.jpg")]);
-        material.initializeByCodeBuf(true);
+        // let material = this.m_voxAppBaseIns.createDefaultMaterial() as IRenderMaterial;
+        // material.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        // material.setMaterialPipeline(this.m_pipeline);
+        // // material.setTextureList([this.m_voxAppEngineIns.getImageTexByUrl("static/assets/box.jpg")]);
+        // material.setTextureList([this.m_materialCtx.getTextureByUrl("static/assets/box.jpg")]);
+        // material.initializeByCodeBuf(true);
+
+        let material = this.createLM();
 
         let scale: number = 500.0;
         let boxEntity = rscene.entityBlock.createEntity();
