@@ -292,23 +292,9 @@ export class DemoMaterialCtx implements IShaderLibListener {
         decor.setSpecularColor(color);
         return m;
     }
-    private useMaterial(entity: DisplayEntity, fog: boolean, shadow: boolean): void {
+    private useMaterial(entity: DisplayEntity): void {
         entity.setMaterialPipeline(this.m_materialCtx.pipeline);
-        if (shadow) {
-
-            let material = new ShadowVSMMaterial();
-            material.shadowReceiveEnabled = shadow;
-            if (fog) {
-                entity.pipeTypes = [MaterialPipeType.VSM_SHADOW, MaterialPipeType.FOG_EXP2];
-            }
-            entity.setMaterial(material);
-        }
-        else {
-            // entity.setMaterial( new Default3DMaterial() );
-            if (fog) {
-                entity.pipeTypes = [MaterialPipeType.FOG_EXP2];
-            }
-        }
+        entity.pipeTypes = [MaterialPipeType.FOG_EXP2];
     }
     private m_sphPos: Vector3D = new Vector3D();
     private m_sphEntity: DisplayEntity;
@@ -322,51 +308,8 @@ export class DemoMaterialCtx implements IShaderLibListener {
         tbox.setXYZ(0.0, -200.0, 0.0);
         this.m_rscene.addEntity(tbox);
 
-        /*
-        let frustrum: FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
-        frustrum.initiazlize(this.m_materialCtx.vsmModule.getCamera());
-        this.m_rscene.addEntity(frustrum, 1);
-
-        let shadowTex = this.m_materialCtx.vsmModule.getShadowMap();
-
-        let plane: Plane3DEntity = new Plane3DEntity();
-        this.useMaterial(plane, true, true);
-        plane.initializeXOZ(-600.0, -600.0, 1200.0, 1200.0, [shadowTex, this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big.jpg")]);
-        plane.setXYZ(0.0, -1.0, 0.0);
-        this.m_rscene.addEntity(plane);
-
-        let box: Box3DEntity = new Box3DEntity();
-        this.useMaterial(box, true, true);
-        box.initializeCube(200.0, [shadowTex, this.m_materialCtx.getTextureByUrl("static/assets/metal_02.jpg")]);
-        this.m_rscene.addEntity(box);
-        //box.setRotationXYZ(Math.random() * 300.0,Math.random() * 300.0,Math.random() * 300.0);
-        box.setRotationXYZ(100.0, -60.0, 0.0);
-        box.setXYZ(230.0, 100.0, 0.0);
-        box.update();
-
-        let cyl: Cylinder3DEntity = new Cylinder3DEntity();
-        this.useMaterial(cyl, true, true);
-        cyl.initialize(80.0, 200.0, 20, [shadowTex, this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg")]);
-        this.m_rscene.addEntity(cyl);
-        cyl.setXYZ(-230.0, 100.0, 0.0);
-
-        let sph: Sphere3DEntity = new Sphere3DEntity();
-        this.useMaterial(sph, true, true);
-        sph.initialize(80.0, 20.0, 20, [shadowTex, this.m_materialCtx.getTextureByUrl("static/assets/metal_02.jpg")]);
-        this.m_rscene.addEntity(sph);
-        sph.setXYZ(-230.0, 300.0, -200.0);
-        this.m_sphEntity = sph;
-        sph.getPosition(this.m_sphPos);
-
-        sph = new Sphere3DEntity();
-        this.useMaterial(sph, true, true);
-        sph.initialize(80.0, 20.0, 20, [shadowTex, this.m_materialCtx.getTextureByUrl("static/assets/metal_08.jpg")]);
-        sph.setScaleXYZ(1.2, 1.2, 1.2);
-        sph.setXYZ(-40.0, 100.0, -180.0);
-        this.m_rscene.addEntity(sph);
-        //*/
         let envBox: Box3DEntity = new Box3DEntity();
-        this.useMaterial(envBox, true, false);
+        this.useMaterial(envBox);
         envBox.showDoubleFace();
         envBox.initializeCube(5000.0, [this.m_materialCtx.getTextureByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(envBox);

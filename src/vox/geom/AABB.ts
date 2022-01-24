@@ -35,8 +35,10 @@ class AABB implements IAABB {
 		return this.m_height;
 	}
 	reset(): void {
-		this.min.setXYZ(MathConst.MATH_MAX_POSITIVE, MathConst.MATH_MAX_POSITIVE, MathConst.MATH_MAX_POSITIVE);
-		this.max.setXYZ(MathConst.MATH_MIN_NEGATIVE, MathConst.MATH_MIN_NEGATIVE, MathConst.MATH_MIN_NEGATIVE);
+		let v = this.min;
+		v.x = v.y = v.z = MathConst.MATH_MAX_POSITIVE;
+		v = this.max;
+		v.x = v.y = v.z = MathConst.MATH_MIN_NEGATIVE;
 	}
 	equals(ab: AABB): boolean {
 		return this.min.equalsXYZ(ab.min) && this.max.equalsXYZ(ab.max);

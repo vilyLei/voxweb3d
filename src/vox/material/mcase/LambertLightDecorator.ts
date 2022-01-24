@@ -7,24 +7,17 @@
 
 import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
-import Vector3D from "../../../vox/math/Vector3D";
-import MathConst from "../../../vox/math/MathConst";
 import Color4 from "../../../vox/material/Color4";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
-// import { PBRShaderCode } from "./glsl/PBRShaderCode";
 import { IMaterialDecorator } from "../../../vox/material/IMaterialDecorator";
 import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 import { ShaderTextureBuilder } from "../../../vox/material/ShaderTextureBuilder";
 
-import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
-import MaterialBase from "../../vox/../material/MaterialBase";
-
 import { SpecularMode } from "../pipeline/SpecularMode";
-import { AdvancedShaderCodeBuffer } from "../pipeline/AdvancedShaderCodeBuffer";
 import { UniformComp } from "../component/UniformComp";
-import Matrix4 from "../../math/Matrix4";
+import { IMatrix4 } from "../../math/IMatrix4";
 
 export default class LambertLightDecorator implements IMaterialDecorator {
 
@@ -84,7 +77,7 @@ export default class LambertLightDecorator implements IMaterialDecorator {
     specularMode: SpecularMode = SpecularMode.Default;
 
 
-    diffuseMap2Matrix: Matrix4 = null;
+    diffuseMap2Matrix: IMatrix4 = null;
     vertUniform: UniformComp = null;
     constructor() {
 

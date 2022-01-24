@@ -8,7 +8,7 @@ import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { TextureConst } from "../../vox/texture/TextureConst";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import { ShaderCodeConfigure, ShaderCodeType, IShaderLibConfigure, IShaderLibListener, ShaderLib } from "../shader/ShaderLib";
-import { ShaderCodeObject } from "../shader/ShaderCodeObject";
+import IShaderCodeObject from "../../vox/material/IShaderCodeObject";
 import { MaterialContextParam } from "./MaterialContextParam";
 // import { LightModule } from "../../light/base/LightModule";
 // import EnvLightModule from "../../light/base/EnvLightModule";
@@ -145,7 +145,7 @@ class MaterialContext {
 
     }
 
-    addShaderCodeObject(uuid: ShaderCodeUUID, shaderCodeObject: ShaderCodeObject): void {
+    addShaderCodeObject(uuid: ShaderCodeUUID, shaderCodeObject: IShaderCodeObject): void {
         MaterialContext.ShaderLib.addShaderCodeObject(uuid, shaderCodeObject);
     }
     addPipeline(pipeline: IMaterialPipeline): void {

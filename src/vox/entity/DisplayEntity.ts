@@ -608,6 +608,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
 
         // 这里的逻辑也有问题,需要再处理，为了支持摄像机等的拾取以及支持遮挡计算等空间管理计算
 
+        let DE = DisplayEntity;
         let bounds: AABB = this.m_localBounds;
         if (this.m_transStatus > ROTransform.UPDATE_POSITION || this.m_localBuondsVer != bounds.version) {
 
@@ -620,7 +621,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
                 this.updateLocalBoundsVS(bounds);
 
                 let in_vs: Float32Array = this.m_lBoundsVS;
-                let out_vs: Float32Array = DisplayEntity.s_boundsOutVS;
+                let out_vs: Float32Array = DE.s_boundsOutVS;
                 this.m_transfrom.getMatrix().transformVectors(in_vs, 24, out_vs);
                 this.m_globalBounds.reset();
                 this.m_globalBounds.addXYZFloat32Arr(out_vs);
@@ -628,19 +629,18 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
             }
         }
         else {
-
-            DisplayEntity.s_prePos.setXYZ(0, 0, 0);
-            DisplayEntity.s_pos.setXYZ(0, 0, 0);
+            DE.s_prePos.setXYZ(0, 0, 0);
+            DE.s_pos.setXYZ(0, 0, 0);
             let matrix = this.m_transfrom.getMatrix(false);
-            matrix.transformVector3Self(DisplayEntity.s_prePos);
+            matrix.transformVector3Self(DE.s_prePos);
             this.m_transfrom.update();
             matrix = this.m_transfrom.getMatrix(false);
-            matrix.transformVector3Self(DisplayEntity.s_pos);
-            DisplayEntity.s_pos.subtractBy(DisplayEntity.s_prePos);
+            matrix.transformVector3Self(DE.s_pos);
+            DE.s_pos.subtractBy(DE.s_prePos);
             let gbounds = this.m_globalBounds;
-            gbounds.min.addBy(DisplayEntity.s_pos);
-            gbounds.max.addBy(DisplayEntity.s_pos);
-            gbounds.center.addBy(DisplayEntity.s_pos);
+            gbounds.min.addBy(DE.s_pos);
+            gbounds.max.addBy(DE.s_pos);
+            gbounds.center.addBy(DE.s_pos);
             ++this.m_globalBounds.version;
         }
     }

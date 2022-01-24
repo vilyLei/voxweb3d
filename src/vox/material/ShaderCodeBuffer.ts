@@ -132,10 +132,11 @@ class ShaderCodeBuffer {
             if(this.pipeTypes == null)
                 this.pipeTypes = [];
             
-            if ( this.lightEnabled && !this.pipeTypes.includes(MaterialPipeType.GLOBAL_LIGHT) ) this.pipeTypes.push(MaterialPipeType.GLOBAL_LIGHT);
-            if ( this.shadowReceiveEnabled && !this.pipeTypes.includes(MaterialPipeType.VSM_SHADOW) ) this.pipeTypes.push(MaterialPipeType.VSM_SHADOW);
-            if ( this.fogEnabled && !this.pipeTypes.includes(MaterialPipeType.FOG_EXP2) ) this.pipeTypes.push(MaterialPipeType.FOG_EXP2);
-            if ( this.envAmbientLightEnabled && !this.pipeTypes.includes(MaterialPipeType.ENV_AMBIENT_LIGHT) ) this.pipeTypes.push(MaterialPipeType.ENV_AMBIENT_LIGHT);
+            let MPT = MaterialPipeType;
+            if ( this.lightEnabled && !this.pipeTypes.includes(MPT.GLOBAL_LIGHT) ) this.pipeTypes.push(MPT.GLOBAL_LIGHT);
+            if ( this.shadowReceiveEnabled && !this.pipeTypes.includes(MPT.VSM_SHADOW) ) this.pipeTypes.push(MPT.VSM_SHADOW);
+            if ( this.fogEnabled && !this.pipeTypes.includes(MPT.FOG_EXP2) ) this.pipeTypes.push(MPT.FOG_EXP2);
+            if ( this.envAmbientLightEnabled && !this.pipeTypes.includes(MPT.ENV_AMBIENT_LIGHT) ) this.pipeTypes.push(MPT.ENV_AMBIENT_LIGHT);
         }
     }
     
