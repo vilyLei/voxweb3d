@@ -8,10 +8,15 @@ import RendererParam from "../vox/scene/RendererParam";
 import { IAppEngine } from "./modules/interfaces/IAppEngine";
 import { IAppBase } from "./modules/interfaces/IAppBase";
 import { IAppEnvLightModule } from "./modules/interfaces/IAppEnvLightModule";
+import Vector3D from "../vox/math/Vector3D";
+import { ILightModule } from "../light/base/ILightModule";
+import { MaterialContextParam } from "../materialLab/base/MaterialContextParam";
+import { IAppLightModule } from "./modules/interfaces/IAppLightModule";
 
 declare var AppEngine: any;
 declare var AppBase: any;
 declare var AppEnvLightModule: any;
+declare var AppLightModule: any;
 
 var Module: any = window;
 function getSysModule(ns: string): any {
@@ -53,7 +58,6 @@ class AppShell {
     }
     initialize(): void {
         if (this.m_voxAppEngineIns == null) {
-
             console.log("AppShell::initialize()..., AppEngine: ", AppEngine);
             console.log("AppShell::initialize()..., AppBase: ", AppBase);
 
@@ -83,7 +87,21 @@ class AppShell {
             this.m_rscene = voxAppEngineIns.getRendererScene() as IRendererScene;
             voxAppBaseIns.initialize(this.m_rscene);
 
+            let mcParam = new MaterialContextParam();
+            mcParam.shaderLibVersion = "v101";
+            mcParam.pointLightsTotal = 3;
+            mcParam.directionLightsTotal = 0;
+            mcParam.spotLightsTotal = 0;
+            mcParam.loadAllShaderCode = true;
+            mcParam.shaderCodeBinary = true;
+            mcParam.pbrMaterialEnabled = false;
+            mcParam.shaderFileRename = true;
+            mcParam.vsmFboIndex = 0;
+            // mcParam.vsmEnabled = false;
+            // mcParam.buildBinaryFile = true;
+            let pipeline = this.m_rscene.materialBlock.createMaterialPipeline(null);
             this.initEnvLight();
+            this.buildLightModule( mcParam );
             main(voxAppEngineIns);
             this.initScene();
         }
@@ -101,6 +119,53 @@ class AppShell {
             this.m_pipeline = this.m_rscene.materialBlock.createMaterialPipeline(null);
             this.m_pipeline.addPipe(envLightPipe);
         }
+    }
+    
+    private m_pos01: Vector3D = new Vector3D(-150.0, 100.0, -170.0);
+    private m_pos02: Vector3D = new Vector3D(150, 0.0, 150);
+    
+    protected buildLightModule(param: MaterialContextParam): ILightModule {
+
+        let flags = this.m_loadedFlags;
+        if (flags[3] == 1) {
+            let lightModuleFactor = new AppLightModule.Instance() as IAppLightModule;
+            let lightModule = lightModuleFactor.createLightModule( this.m_rscene );
+            for (let i: number = 0; i < param.pointLightsTotal; ++i) {
+                lightModule.appendPointLight();
+            }
+            for (let i: number = 0; i < param.directionLightsTotal; ++i) {
+                lightModule.appendDirectionLight();
+            }
+            for (let i: number = 0; i < param.spotLightsTotal; ++i) {
+                lightModule.appendSpotLight();
+            }
+            this.initLightModuleData(lightModule);
+            return lightModule;
+        }
+        return null;
+    }
+    private initLightModuleData(lightModule: ILightModule): void {
+        
+        // this.m_materialCtx.initialize(this.m_rscene, mcParam);
+        let pointLight = lightModule.getPointLightAt(0);
+        pointLight.position.setXYZ(0.0, 150.0, -50.0);
+        pointLight.color.setRGB3f(1.0, 1.0, 1.0);
+        pointLight.attenuationFactor1 = 0.00001;
+        pointLight.attenuationFactor2 = 0.000001;
+
+        pointLight = lightModule.getPointLightAt(1);
+        pointLight.position.copyFrom(this.m_pos01);
+        pointLight.color.setRGB3f(1.0, 0.0, 0.0);
+        pointLight.attenuationFactor1 = 0.00001;
+        pointLight.attenuationFactor2 = 0.000001;
+
+        pointLight = lightModule.getPointLightAt(2);
+        pointLight.position.copyFrom(this.m_pos02);
+        pointLight.color.setRGB3f(0.0, 1.0, 1.0);
+        pointLight.attenuationFactor1 = 0.00001;
+        pointLight.attenuationFactor2 = 0.000001;
+        
+        lightModule.update();
     }
     private initScene(): void {
 

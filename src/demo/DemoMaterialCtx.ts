@@ -65,26 +65,7 @@ export class DemoMaterialCtx implements IShaderLibListener {
 
     protected initCtxParam(param: MaterialContextParam): void {
 
-        /*
-        param.pointLightsTotal = MathConst.Clamp(param.pointLightsTotal, 0, 256);
-        param.directionLightsTotal = MathConst.Clamp(param.directionLightsTotal, 0, 256);
-        param.spotLightsTotal = MathConst.Clamp(param.spotLightsTotal, 0, 256);
-
-        let shdCtx = this.m_rscene.getRenderProxy().uniformContext;
-        let lightModule = new LightModule(shdCtx);
-        for (let i: number = 0; i < param.pointLightsTotal; ++i) {
-            lightModule.appendPointLight();
-        }
-        for (let i: number = 0; i < param.directionLightsTotal; ++i) {
-            lightModule.appendDirectionLight();
-        }
-        for (let i: number = 0; i < param.spotLightsTotal; ++i) {
-            lightModule.appendSpotLight();
-        }
-        // lightModule.update();
-        this.initLightData(lightModule);
-        //*/
-        this.m_materialCtx.lightModule = this.createLightModule( param );
+        this.m_materialCtx.lightModule = this.buildLightModule( param );
 
         let envLight = new EnvLightModule(this.m_rscene.getRenderProxy().uniformContext);
         envLight.initialize();
@@ -106,11 +87,7 @@ export class DemoMaterialCtx implements IShaderLibListener {
             this.m_materialCtx.vsmModule = vsmModule;
         }
     }
-    protected createLightModule(param: MaterialContextParam): LightModule {
-
-        param.pointLightsTotal = MathConst.Clamp(param.pointLightsTotal, 0, 256);
-        param.directionLightsTotal = MathConst.Clamp(param.directionLightsTotal, 0, 256);
-        param.spotLightsTotal = MathConst.Clamp(param.spotLightsTotal, 0, 256);
+    protected buildLightModule(param: MaterialContextParam): ILightModule {
 
         let shdCtx = this.m_rscene.getRenderProxy().uniformContext;
         let lightModule = new LightModule(shdCtx);
@@ -124,11 +101,11 @@ export class DemoMaterialCtx implements IShaderLibListener {
             lightModule.appendSpotLight();
         }
         // lightModule.update();
-        this.initLightData(lightModule);
+        this.initLightModuleData(lightModule);
 
         return lightModule;
     }
-    private initLightData(lightModule: LightModule): void {
+    private initLightModuleData(lightModule: ILightModule): void {
         
         // this.m_materialCtx.initialize(this.m_rscene, mcParam);
         let pointLight: PointLight = lightModule.getPointLightAt(0);
@@ -136,43 +113,19 @@ export class DemoMaterialCtx implements IShaderLibListener {
         pointLight.color.setRGB3f(1.0, 1.0, 1.0);
         pointLight.attenuationFactor1 = 0.00001;
         pointLight.attenuationFactor2 = 0.000001;
-        
-        // let floatPointLight: FloatYPointLightEntity = new FloatYPointLightEntity();
-        // floatPointLight.center.copyFrom(pointLight.position);
-        // floatPointLight.center.y = 60.0;
-        // floatPointLight.position.copyFrom(pointLight.position);
-        // floatPointLight.light = pointLight;
-        // floatPointLight.displayEntity = this.createPointLightDisp(pointLight);
-        // this.m_lightEntities.push(floatPointLight);
-        
+                
         let rotLightEntity: RotateYPointLightEntity;
         pointLight = lightModule.getPointLightAt(1);
         pointLight.position.copyFrom(this.m_pos01);
         pointLight.color.setRGB3f(1.0, 0.0, 0.0);
         pointLight.attenuationFactor1 = 0.00001;
         pointLight.attenuationFactor2 = 0.000001;
-        // rotLightEntity = new RotateYPointLightEntity(Math.random() * 10.0);
-        // rotLightEntity.rotationSpd = 0.01;
-        // rotLightEntity.radius = 230.0;
-        // rotLightEntity.center.copyFrom(pointLight.position);
-        // rotLightEntity.center.y += 20.0;
-        // rotLightEntity.light = pointLight;
-        // rotLightEntity.displayEntity = this.createPointLightDisp(pointLight);
-        // this.m_lightEntities.push(rotLightEntity);
 
         pointLight = lightModule.getPointLightAt(2);
         pointLight.position.copyFrom(this.m_pos02);
         pointLight.color.setRGB3f(0.0, 1.0, 1.0);
         pointLight.attenuationFactor1 = 0.00001;
         pointLight.attenuationFactor2 = 0.000001;
-        // rotLightEntity = new RotateYPointLightEntity(Math.random() * 10.0);
-        // rotLightEntity.rotationSpd = 0.01;
-        // rotLightEntity.radius = 230.0;
-        // rotLightEntity.center.copyFrom(pointLight.position);
-        // rotLightEntity.center.y += 20.0;
-        // rotLightEntity.light = pointLight;
-        // rotLightEntity.displayEntity = this.createPointLightDisp(pointLight);
-        // this.m_lightEntities.push(rotLightEntity);
 
         lightModule.update();
     }

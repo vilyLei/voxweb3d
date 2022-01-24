@@ -10,9 +10,6 @@ import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import { ShaderCodeConfigure, ShaderCodeType, IShaderLibConfigure, IShaderLibListener, ShaderLib } from "../shader/ShaderLib";
 import IShaderCodeObject from "../../vox/material/IShaderCodeObject";
 import { MaterialContextParam } from "./MaterialContextParam";
-// import { LightModule } from "../../light/base/LightModule";
-// import EnvLightModule from "../../light/base/EnvLightModule";
-// import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
 
 /**
  * 实现 material 构造 pipeline 的上下文
