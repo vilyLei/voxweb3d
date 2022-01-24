@@ -2,6 +2,9 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 import { ILightModule } from "../../../light/base/ILightModule";
 import { LightModule } from "../../../light/base/LightModule";
 import { IAppLightModule } from "../interfaces/IAppLightModule";
+import { PointLight } from "../../../light/base/PointLight";
+import { DirectionLight } from "../../../light/base/DirectionLight";
+import { SpotLight } from "../../../light/base/SpotLight";
 
 class Instance implements IAppLightModule{
     constructor() {
@@ -11,4 +14,7 @@ class Instance implements IAppLightModule{
         return new LightModule(ctx);
     }
 }
-export { LightModule, Instance };
+new PointLight
+new DirectionLight
+new SpotLight
+export { PointLight, SpotLight, DirectionLight, LightModule, Instance };

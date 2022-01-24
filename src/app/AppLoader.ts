@@ -41,14 +41,12 @@ class AppShell {
         this.m_loadedTotal++;
         let flags = this.m_loadedFlags;
         flags[index] = 1;
-        // if(this.m_loadedTotal >= 2) {
-
-        // if (list[0] > 0 && list[0] == list[1]) {
-        //     console.log("loaded all engine sys module.");
-        //     this.initialize();
-        // }
-        let flag: number = flags[0] + flags[1] + flags[2];
-        if (flags[0] > 0 && flag == 3) {
+        
+        let flag: number = 0;
+        for(let i = 0; i < 5; ++i) {
+            flag += flags[i];
+        }
+        if (flags[0] > 0 && flag == 5) {
             console.log("loaded all engine sys module.");
             this.initialize();
         }
@@ -56,8 +54,6 @@ class AppShell {
     initialize(): void {
         if (this.m_voxAppEngineIns == null) {
 
-            //MaterialPipeType
-            //new MaterialPipeType
             console.log("AppShell::initialize()..., AppEngine: ", AppEngine);
             console.log("AppShell::initialize()..., AppBase: ", AppBase);
 
@@ -66,13 +62,13 @@ class AppShell {
             let voxAppBaseIns = new AppBase.Instance() as IAppBase;
             this.m_voxAppEngineIns = voxAppEngineIns;
             this.m_voxAppBaseIns = voxAppBaseIns;
-            
+
             let rparam = new RendererParam();
             // rparam.maxWebGLVersion = 1;
             rparam.setPolygonOffsetEanbled(false);
             rparam.setAttriAlpha(false);
             // rparam.setAttriAntialias(!rDevice.IsMobileWeb());
-            rparam.setAttriAntialias( true );
+            rparam.setAttriAntialias(true);
             rparam.setCamProject(45.0, 30.0, 9000.0);
             rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 
@@ -81,29 +77,31 @@ class AppShell {
             rDevice.SHADERCODE_TRACE_ENABLED = true;
             rDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             rDevice.SetWebBodyColor("black");
-            
+
             console.log("AppShell::initialize()..., voxAppEngineIns: ", voxAppEngineIns);
             console.log("AppShell::initialize()..., voxAppBaseIns: ", voxAppBaseIns);
             this.m_rscene = voxAppEngineIns.getRendererScene() as IRendererScene;
             voxAppBaseIns.initialize(this.m_rscene);
 
-            let flags = this.m_loadedFlags;
-            if(flags[2] == 1) {
-                let envLightModuleModule = new AppEnvLightModule.Instance() as IAppEnvLightModule;
-                //  as IEnvLightModule;
-                console.log("AppShell::initialize()..., have env light module: ", envLightModuleModule);
-                let envLightPipe = envLightModuleModule.createEnvLightModule( this.m_rscene ) as IEnvLightModule;
-                envLightPipe.initialize();
-                envLightPipe.setFogColorRGB3f(0.0, 0.8, 0.1);
-                
-                this.m_pipeline = this.m_rscene.materialBlock.createMaterialPipeline(null);
-                this.m_pipeline.addPipe( envLightPipe );
-            }
+            this.initEnvLight();
             main(voxAppEngineIns);
             this.initScene();
         }
     }
+    private initEnvLight(): void {
+        let flags = this.m_loadedFlags;
+        if (flags[2] == 1) {
+            let envLightModuleModule = new AppEnvLightModule.Instance() as IAppEnvLightModule;
+            //  as IEnvLightModule;
+            console.log("AppShell::initialize()..., have env light module: ", envLightModuleModule);
+            let envLightPipe = envLightModuleModule.createEnvLightModule(this.m_rscene) as IEnvLightModule;
+            envLightPipe.initialize();
+            envLightPipe.setFogColorRGB3f(0.0, 0.8, 0.1);
 
+            this.m_pipeline = this.m_rscene.materialBlock.createMaterialPipeline(null);
+            this.m_pipeline.addPipe(envLightPipe);
+        }
+    }
     private initScene(): void {
 
         let rscene = this.m_rscene;
@@ -180,10 +178,14 @@ export class AppLoader {
         let engine_url = host + "publish/build/AppEngine.package.js";
         let base_url = host + "publish/build/AppBase.package.js";
         let envLightModule_url = host + "publish/build/AppEnvLightModule.package.js";
+        let LightModule_url = host + "publish/build/AppLightModule.package.js";
+        let shadow_url = host + "publish/build/AppShadow.package.js";
 
         let engineLoader = new ModuleLoader(0, engine_url, this);
         let baseLoader = new ModuleLoader(1, base_url, this);
         let envLightLoader = new ModuleLoader(2, envLightModule_url, this);
+        let LightLoader = new ModuleLoader(3, LightModule_url, this);
+        let shadowLoader = new ModuleLoader(4, shadow_url, this);
     }
     private initApp(): void {
 

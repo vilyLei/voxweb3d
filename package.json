@@ -11,6 +11,7 @@
     "buildAppBase": "vue-cli-service build --target lib --name AppBase --dest dist ./src/app/modules/instances/AppBase.ts",
     "buildAppEnvLightModule": "vue-cli-service build --target lib --name AppEnvLightModule --dest dist ./src/app/modules/instances/AppEnvLightModule.ts",
     "buildAppLightModule": "vue-cli-service build --target lib --name AppLightModule --dest dist ./src/app/modules/instances/AppLightModule.ts",
+    "buildAppShadow": "vue-cli-service build --target lib --name AppShadow --dest dist ./src/app/modules/instances/AppShadow.ts",
 
     "build": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main.ts",
     "buildvox": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/dev.ts",
