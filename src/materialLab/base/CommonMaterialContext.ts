@@ -81,7 +81,7 @@ class CommonMaterialContext extends MaterialContext {
     }
     initialize(rscene: RendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
         if (this.m_rscene == null) {
-            shaderLibConfigure = this.buildConfigure(param, shaderLibConfigure);
+            // shaderLibConfigure = this.buildConfigure(param, shaderLibConfigure);
             super.initialize(rscene, param, shaderLibConfigure);
         }
     }
@@ -127,25 +127,28 @@ class CommonMaterialContext extends MaterialContext {
         }
     }
     protected buildConfigure(param: MaterialContextParam, shaderLibConfigure: IShaderLibConfigure): IShaderLibConfigure {
-
         if (shaderLibConfigure == null) {
-            let libConfig = this.createShaderLibConfig();
-            if (param == null) {
-                param = new MaterialContextParam();
-            }
             param.loadAllShaderCode = true;
-
-            if (param.loadAllShaderCode) {
-
-                let configure: ShaderCodeConfigure = MaterialContext.ShaderLib.createShaderCodeConfigure(param);
-                if (configure != null) {
-                    libConfig.shaderCodeConfigures.push(configure);
-                }
-            }
-
-            shaderLibConfigure = libConfig;
         }
-        return shaderLibConfigure;
+        return super.buildConfigure(param, shaderLibConfigure);
+        // if (shaderLibConfigure == null) {
+        //     let libConfig = this.createShaderLibConfig();
+        //     if (param == null) {
+        //         param = new MaterialContextParam();
+        //     }
+        //     param.loadAllShaderCode = true;
+
+        //     if (param.loadAllShaderCode) {
+
+        //         let configure: ShaderCodeConfigure = MaterialContext.ShaderLib.createShaderCodeConfigure(param);
+        //         if (configure != null) {
+        //             libConfig.shaderCodeConfigures.push(configure);
+        //         }
+        //     }
+
+        //     shaderLibConfigure = libConfig;
+        // }
+        // return shaderLibConfigure;
     }
     protected initEnd(param: MaterialContextParam): void {
 

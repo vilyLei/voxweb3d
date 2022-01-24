@@ -80,9 +80,33 @@ class MaterialContext {
     createShaderLibConfig(): IShaderLibConfigure {
         return { shaderCodeConfigures: [], version: "" };
     }
+    
+    protected buildConfigure(param: MaterialContextParam, shaderLibConfigure: IShaderLibConfigure): IShaderLibConfigure {
+
+        if (shaderLibConfigure == null) {
+            let libConfig = this.createShaderLibConfig();
+            if (param == null) {
+                param = new MaterialContextParam();
+            }
+            // param.loadAllShaderCode = true;
+
+            if (param.loadAllShaderCode) {
+
+                let configure: ShaderCodeConfigure = MaterialContext.ShaderLib.createShaderCodeConfigure(param);
+                if (configure != null) {
+                    libConfig.shaderCodeConfigures.push(configure);
+                }
+            }
+
+            shaderLibConfigure = libConfig;
+        }
+        return shaderLibConfigure;
+    }
     initialize(rscene: IRendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
 
         if (this.m_initFlag) {
+
+            shaderLibConfigure = this.buildConfigure(param, shaderLibConfigure);
 
             this.m_initFlag = false;
             this.m_rscene = rscene;

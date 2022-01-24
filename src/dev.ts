@@ -333,7 +333,7 @@
 
 //  import {DemoBase as Demo} from "./shadow/vsm/DemoBase";
 
- import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
+//  import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
 
 //  import {DemoSSAO as Demo} from "./shadow/ssao/DemoSSAO";
 
@@ -389,7 +389,7 @@
 
 //  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
-//  import {RbtDrama as Demo} from "./app/RbtDrama";
+ import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 

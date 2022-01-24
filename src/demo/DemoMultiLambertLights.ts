@@ -150,7 +150,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_materialCtx.lightModule.update();
     }
     private createPointLightDisp(pointLight: PointLight): Billboard3DEntity {
-        return;
+
         let size: number = 60.0;
         let billboard: Billboard3DEntity = new Billboard3DEntity();
         billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
@@ -256,7 +256,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
 
         let color: Color4 = new Color4(1.0, 1.0, 0.0);
         let colorBias: Color4 = new Color4(0.0, 0.0, 0.0);
-        /*
+        ///*
         // this.createDestroyEffect(new Vector3D(200,-188.0,-200));
         // // this.initEnvBox();
         // return;
@@ -270,7 +270,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         //billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
         this.m_engine.rscene.addEntity(billboard, 3);
         //*/
-        /*
+        ///*
         let tex4 = this.m_materialCtx.getTextureByUrl("static/assets/flare_core_01.jpg");
         let billLine: BillboardLine3DEntity = new BillboardLine3DEntity();
         billLine.pipeTypes = [MaterialPipeType.FOG_EXP2];
