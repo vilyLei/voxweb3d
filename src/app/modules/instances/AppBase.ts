@@ -6,6 +6,8 @@ import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
 
 import { IAppBase } from "../interfaces/IAppBase";
+import { IMaterialContext } from "../../../materialLab/base/IMaterialContext";
+import { MaterialContext } from "../../../materialLab/base/MaterialContext";
 
 class Instance implements IAppBase {
     constructor() {
@@ -24,8 +26,10 @@ class Instance implements IAppBase {
     createDefaultMaterial(): IRenderMaterial {
         return new Default3DMaterial();
     }
-
+    createMaterialContext(): IMaterialContext {
+        return new MaterialContext();
+    }
 }
 
 // export {VoxAppBase, Axis3DEntity, Box3DEntity, Sphere3DEntity};
-export { Instance }
+export { MaterialContext, Instance }

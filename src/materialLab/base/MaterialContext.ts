@@ -10,11 +10,12 @@ import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import { ShaderCodeConfigure, ShaderCodeType, IShaderLibConfigure, IShaderLibListener, ShaderLib } from "../shader/ShaderLib";
 import IShaderCodeObject from "../../vox/material/IShaderCodeObject";
 import { MaterialContextParam } from "./MaterialContextParam";
+import { IMaterialContext } from "./IMaterialContext";
 
 /**
  * 实现 material 构造 pipeline 的上下文
  */
-class MaterialContext {
+class MaterialContext implements IMaterialContext {
     
     private m_initFlag: boolean = true;
     private m_texLoader: ImageTextureLoader = null;
@@ -55,7 +56,7 @@ class MaterialContext {
     isTextureLoadedAll(): boolean {
         return this.m_texLoader.isLoadedAll();
     }
-    getTextureByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+    getTextureByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled: boolean = true): IRenderTexture {
         let tex: IRenderTexture = null;
         let suffix: string = purl.slice(purl.lastIndexOf(".") + 1);
         suffix = suffix.toLocaleLowerCase();

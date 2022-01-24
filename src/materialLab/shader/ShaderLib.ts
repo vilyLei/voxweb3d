@@ -5,6 +5,7 @@ import { ShaderCodeType } from "./ShaderCodeType";
 import { ShaderCodeConfigure } from "./ShaderCodeConfigure";
 import { IShaderLibConfigure } from "./IShaderLibConfigure";
 import { FileIO } from "../../app/slickRoad/io/FileIO";
+import { IShaderLibListener } from "./IShaderLibListener";
 
 class ShaderCodeConfigureLib {
 
@@ -158,9 +159,6 @@ class ShaderCodeObjectLoader {
             }
         }
     }
-}
-interface IShaderLibListener {
-    shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void;
 }
 
 class ShaderLib implements IShaderLib{

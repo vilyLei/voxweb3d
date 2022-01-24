@@ -12,6 +12,7 @@ import Vector3D from "../vox/math/Vector3D";
 import { ILightModule } from "../light/base/ILightModule";
 import { MaterialContextParam } from "../materialLab/base/MaterialContextParam";
 import { IAppLightModule } from "./modules/interfaces/IAppLightModule";
+import { IShaderLibListener } from "../materialLab/shader/IShaderLibListener";
 
 declare var AppEngine: any;
 declare var AppBase: any;
@@ -31,7 +32,7 @@ function main(appIns: any): void {
     window.requestAnimationFrame(mainLoop);
 }
 
-class AppShell {
+class AppShell implements IShaderLibListener {
 
     private m_loadedTotal: number = 0;
     private m_loadedFlags: number[] = [0, 0, 0, 0, 0, 0];
@@ -100,11 +101,21 @@ class AppShell {
             // mcParam.vsmEnabled = false;
             // mcParam.buildBinaryFile = true;
             let pipeline = this.m_rscene.materialBlock.createMaterialPipeline(null);
+            // pipeline.
             this.initEnvLight();
             this.buildLightModule( mcParam );
             main(voxAppEngineIns);
             this.initScene();
         }
+    }
+    
+    shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
+        // this.m_materialCtx.envData.setAmbientColorRGB3f(3.0,3.0,3.0);
+        // this.m_materialCtx.envData.setEnvAmbientLightAreaOffset(-500.0, -500.0);
+        // this.m_materialCtx.envData.setEnvAmbientLightAreaSize(1000.0, 1000.0);
+        // this.m_materialCtx.envData.setEnvAmbientMap( this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg") );
+        console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
+        // this.initScene();
     }
     private initEnvLight(): void {
         let flags = this.m_loadedFlags;
