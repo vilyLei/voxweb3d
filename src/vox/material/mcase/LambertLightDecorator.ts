@@ -103,7 +103,7 @@ export default class LambertLightDecorator implements IMaterialDecorator {
             if (this.diffuseMap2Matrix) {
                 coder.addDefine("VOX_USE_DIFFUSEMAP2_MAT", "1");
                 coder.addVarying("vec4", "v_map2Pos");
-                coder.addVertUniform("mat4", "u_map2ViewMat", 0);
+                coder.addVertUniform("mat4", "u_map2ViewMat");
                 coder.addUniqueNSKeyString("M2VM");
             }
             builder.add2DMap(this.diffuseMap2, "VOX_DIFFUSE_MAP2", !this.diffuseMap2Matrix, true, false);

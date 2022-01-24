@@ -28,20 +28,26 @@ export default interface IShaderCodeBuilder {
      * @param name macro name string
      * @param value the default value is "1"
      */
-    addDefine(name: string, value: string): void;
+    addDefine(name: string, value?: string): void;
     addVertLayout(type: string, name: string): void;
     addFragOutput(type: string, name: string): void;
     addVarying(type: string, name: string): void;
-    addVertUniform(type: string, name: string, arrayLength: number): void;
+    /**
+     * 
+     * @param type vertex shader unifirm variable type, example: vec4
+     * @param name vertex shader uniform variable name
+     * @param arrayLength array length. the default value is 0, it is not a array. if the value is greater 0, it is a array.
+     */
+    addVertUniform(type: string, name: string, arrayLength?: number): void;
     addVertUniformParam(unifromParam: IUniformParam): void;
     addUniqueNSKeyString(key: string): void;
     /**
      * 
-     * @param type uniform type, example: vec4
-     * @param name uniform name
-     * @param arrayLength the default value is 0, it is no a array. if the value is greater 0, it is a array.
+     * @param type vertex shader unifirm variable type, example: vec4
+     * @param name vertex shader uniform variable name
+     * @param arrayLength array length. the default value is 0, it is not a array. if the value is greater 0, it is a array.
      */
-    addFragUniform(type: string, name: string, arrayLength: number): void;
+    addFragUniform(type: string, name: string, arrayLength?: number): void;
     addFragUniformParam(unifromParam: IUniformParam): void;
     addFragFunction(codeBlock: string): void;
     addVertFunction(codeBlock: string): void;
@@ -52,19 +58,19 @@ export default interface IShaderCodeBuilder {
      * @param fragEnabled the default value is true
      * @param vertEnabled the default value is false
      */
-    addTextureSample2D(macroName: string, map2DEnabled: boolean, fragEnabled: boolean, vertEnabled: boolean): void;
+    addTextureSample2D(macroName?: string, map2DEnabled?: boolean, fragEnabled?: boolean, vertEnabled?: boolean): void;
     /**
      * @param macroName macro name, the default value is ""
      * @param fragEnabled the default value is true
      * @param vertEnabled the default value is false
      */
-    addTextureSampleCube(macroName: string, fragEnabled: boolean, vertEnabled: boolean): void;
+    addTextureSampleCube(macroName?: string, fragEnabled?: boolean, vertEnabled?: boolean): void;
     /**
      * @param macroName macro name, the default value is ""
      * @param fragEnabled the default value is true
      * @param vertEnabled the default value is false
      */
-    addTextureSample3D(macroName: string, fragEnabled: boolean, vertEnabled: boolean): void;
+    addTextureSample3D(macroName?: string, fragEnabled?: boolean, vertEnabled?: boolean): void;
     isHaveTexture(): boolean;
     isHaveTexture2D(): boolean;
     /**
@@ -72,13 +78,13 @@ export default interface IShaderCodeBuilder {
      * @param viewMatEnabled the default value is true
      * @param projMatEnabled the default value is true
      */
-    useVertSpaceMats(objMatEnabled: boolean, viewMatEnabled: boolean, projMatEnabled: boolean): void;
+    useVertSpaceMats(objMatEnabled?: boolean, viewMatEnabled?: boolean, projMatEnabled?: boolean): void;
     /**
      * @param objMatEnabled the default value is true
      * @param viewMatEnabled the default value is true
      * @param projMatEnabled the default value is true
      */
-    useFragSpaceMats(objMatEnabled: boolean, viewMatEnabled: boolean, projMatEnabled: boolean): void;
+    useFragSpaceMats(objMatEnabled?: boolean, viewMatEnabled?: boolean, projMatEnabled?: boolean): void;
 
     addVertExtend(code: string): void;
     addFragExtend(code: string): void;

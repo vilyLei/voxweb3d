@@ -14,19 +14,38 @@ interface IRenderStage3D {
      * @returns return renderer context unique id
      */
     getRCUid(): number;
-    pixelRatio: number;// = 1.0;
-    stageWidth: number;// = 800;
-    stageHeight: number;// = 600;
-    // 实际宽高, 和gpu端对齐
-    stageHalfWidth: number;// = 400;
-    stageHalfHeight: number;// = 300;
-    mouseX: number;// = 0;
-    mouseY: number;// = 0;
-    // sdiv页面实际占据的像素宽高
-    viewWidth: number;// = 800;
-    viewHeight: number;// = 600;
-    mouseViewX: number;// = 0;
-    mouseViewY: number;// = 0;
+    /**
+     * the default value is 1.0
+     */
+    pixelRatio: number;
+    /**
+     * gpu backbuffer pixel width, the default value is 800
+     */
+    stageWidth: number;
+    /**
+     * gpu backbuffer pixel height, the default value is 600
+     */
+    stageHeight: number;
+    /**
+     * the default value is 400
+     */
+    stageHalfWidth: number;
+    /**
+     * the default value is 300
+     */
+    stageHalfHeight: number;
+    mouseX: number;
+    mouseY: number;
+    /**
+     * div pixel width, the default vallue is 400
+     */
+    viewWidth: number;
+    /**
+     * div pixel height, the default vallue is 300
+     */
+    viewHeight: number;
+    mouseViewX: number;
+    mouseViewY: number;
 
     getDevicePixelRatio(): number;
     getViewX(): number;
@@ -61,7 +80,14 @@ interface IRenderStage3D {
     mouseMultiUp(posArray: any[]): void;
     //param [{x,y},{x,y},...]
     mouseMultiMove(posArray: any[]): void;
-    addEventListener(type: number, target: any, func: (evt: any) => void, captureEnabled: boolean, bubbleEnabled: boolean): void;
+    /**
+     * @param type event type
+     * @param target event listerner
+     * @param func event listerner callback function
+     * @param captureEnabled the default value is true
+     * @param bubbleEnabled the default value is false
+     */
+    addEventListener(type: number, target: any, func: (evt: any) => void, captureEnabled?: boolean, bubbleEnabled?: boolean): void;
     removeEventListener(type: number, target: any, func: (evt: any) => void): void;
 }
 

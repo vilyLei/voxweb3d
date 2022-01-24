@@ -115,7 +115,7 @@ class AppShell {
         entity.setMaterial(material);
         entity.copyMeshFrom(rscene.entityBlock.unitBox);
         entity.setScaleXYZ(scale, scale, scale);
-        rscene.addEntity(entity, 0, true);
+        rscene.addEntity(entity);
 
         // let axis = new VoxApp.Axis3DEntity();
         // axis.initialize(30);
@@ -144,7 +144,7 @@ class AppShell {
         entity.setMaterial(material);
         entity.copyMeshFrom(rscene.entityBlock.unitBox);
         entity.setScaleXYZ(scale, scale, scale);
-        rscene.addEntity(entity, 0, true);
+        rscene.addEntity(entity);
 
         // let axis = new VoxApp.Axis3DEntity();
         // axis.initialize(30);

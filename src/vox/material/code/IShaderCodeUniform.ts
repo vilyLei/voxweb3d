@@ -19,25 +19,25 @@ interface IShaderCodeUniform {
      * @param vertEnabled whether apply camera position uniform in the vertex shader, the default value is false
      * @param fragEnabled whether apply camera position uniform in the fragment shader, the default value is true
      */
-    useCameraPosition(vertEnabled: boolean, fragEnabled: boolean): void;
+    useCameraPosition(vertEnabled?: boolean, fragEnabled?: boolean): void;
     /**
      * apply view parameters uniform in the shader,the uniform vec4 data: [viewPortX, viewPortY, viewPortWidth, viewPortHeight]
      * @param vertEnabled whether apply view parameters uniform in the vertex shader, the default value is false
      * @param fragEnabled whether apply view parameters uniform in the fragment shader, the default value is true
      */
-    useViewPort(vertEnabled: boolean, fragEnabled: boolean): void;
+    useViewPort(vertEnabled?: boolean, fragEnabled?: boolean): void;
     /**
      * apply frustum parameters uniform in the shader,the uniform vec4 data: [camera zNear,camera zFar, camera nearPlaneHalfWidth, camera nearPlaneHalfHeight]
      * @param vertEnabled whether apply frustum parameters uniform in the vertex shader, the default value is false
      * @param fragEnabled whether apply frustum parameters uniform in the fragment shader, the default value is true
      */
-    useFrustum(vertEnabled: boolean, fragEnabled: boolean): void;
+    useFrustum(vertEnabled?: boolean, fragEnabled?: boolean): void;
     /**
      * apply stage parameters uniform in the shader,the uniform vec4 data: [2.0/stageWidth,2.0/stageHeight, stageWidth,stageHeight]
      * @param vertEnabled whether apply stage parameters uniform in the vertex shader, the default value is false
      * @param fragEnabled whether apply stage parameters uniform in the fragment shader, the default value is true
      */
-    useStage(vertEnabled: boolean, fragEnabled: boolean): void;
+    useStage(vertEnabled?: boolean, fragEnabled?: boolean): void;
 
     /**
      * add diffuse map uniform code
@@ -61,12 +61,12 @@ interface IShaderCodeUniform {
      * add specular map uniform code
      * @param specularMode is SpecularMode type value, the default is SpecularMode.Default
      */
-    addSpecularMap(specularMode: SpecularMode): void;
+    addSpecularMap(specularMode?: SpecularMode): void;
     /**
      * add shadow map uniform code
      * @param shadowMode is shadowMode type value, the default is ShadowMode.VSM
      */
-    addShadowMap(shadowMode: ShadowMode): void;
+    addShadowMap(shadowMode?: ShadowMode): void;
     /**
      * add fog color map uniform code
      */
@@ -76,7 +76,7 @@ interface IShaderCodeUniform {
      * add env specular cube map uniform code
      * @param cubeMap yes or no, the default is true
      */
-    addSpecularEnvMap(cubeMap: boolean): void;
+    addSpecularEnvMap(cubeMap?: boolean): void;
     /**
      * add ambient occlusion map uniform code
      */
@@ -100,20 +100,20 @@ interface IShaderCodeUniform {
      * @param fragEnabled fragment shader applying enabled, the default vaule is true
      * @param vertEnabled vertex shader applying enabled, the default vaule is false
      */
-    add2DMap(macroName: string, map2DEnabled: boolean, fragEnabled: boolean, vertEnabled: boolean): void;
+    add2DMap(macroName?: string, map2DEnabled?: boolean, fragEnabled?: boolean, vertEnabled?: boolean): void;
     /**
      * add sampleCube texture uniform code
      * @param macroName shader code macro define name, the default vaule is empty string
      * @param fragEnabled fragment shader applying enabled, the default vaule is true
      * @param vertEnabled vertex shader applying enabled, the default vaule is false
      */
-    addCubeMap(macroName: string, fragEnabled: boolean, vertEnabled: boolean): void;
+    addCubeMap(macroName?: string, fragEnabled?: boolean, vertEnabled?: boolean): void;
     /**
      * add sample3D texture uniform code
      * @param macroName shader code macro define name, the default vaule is empty string
      * @param fragEnabled fragment shader applying enabled, the default vaule is true
      * @param vertEnabled vertex shader applying enabled, the default vaule is false
      */
-    add3DMap(macroName: string, fragEnabled: boolean, vertEnabled: boolean): void;
+    add3DMap(macroName?: string, fragEnabled?: boolean, vertEnabled?: boolean): void;
 }
 export {IShaderCodeUniform};

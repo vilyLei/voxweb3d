@@ -26,7 +26,7 @@ interface IMatrix4 extends Float32Data {
 	 * @param axis rotation axis, it is a normalized Vector3D instance
 	 * @param pivotPoint the default value is null
 	 */
-	appendRotationPivot(radian: number, axis: Vector3D, pivotPoint: Vector3D): void;
+	appendRotationPivot(radian: number, axis: Vector3D, pivotPoint?: Vector3D): void;
 	appendRotation(radian: number, axis: Vector3D): void;
 	appendRotationX(radian: number): void;
 	appendRotationY(radian: number): void;
@@ -50,7 +50,7 @@ interface IMatrix4 extends Float32Data {
 	 * @param fs32Arr src data
 	 * @param index the default value is 0
 	 */
-	setF32ArrAndIndex(fs32Arr: Float32Array, index: number): void;
+	setF32ArrAndIndex(fs32Arr: Float32Array, index?: number): void;
 	/**
 	 * @param index the default value is 0
 	 */
@@ -61,13 +61,13 @@ interface IMatrix4 extends Float32Data {
 	 * @param fs32Arr src data
 	 * @param index the default value is 0
 	 */
-	copyFromF32Arr(fs32Arr: Float32Array, index: number): void;
+	copyFromF32Arr(fs32Arr: Float32Array, index?: number): void;
 	/**
 	 * 
 	 * @param fs32Arr dst data
 	 * @param index the default value is 0
 	 */
-	copyToF32Arr(fs32Arr: Float32Array, index: number): void;
+	copyToF32Arr(fs32Arr: Float32Array, index?: number): void;
 	copyFrom(smat: IMatrix4): void;
 	copyTo(dmat: IMatrix4): void;
 	/**
@@ -77,7 +77,7 @@ interface IMatrix4 extends Float32Data {
 	 * @param index  the default value is 0
 	 * @param transpose  the default value is false
 	 */
-	copyRawDataFrom(float_rawDataArr: Float32Array, rawDataLength: number, index: number, transpose: Boolean): void;
+	copyRawDataFrom(float_rawDataArr: Float32Array, rawDataLength?: number, index?: number, transpose?: Boolean): void;
 	/**
 	 * 
 	 * @param float_rawDataArr dst data
@@ -85,7 +85,7 @@ interface IMatrix4 extends Float32Data {
 	 * @param index  the default value is 0
 	 * @param transpose  the default value is false
 	 */
-	copyRawDataTo(float_rawDataArr: Float32Array, rawDataLength: number, index: number, transpose: boolean): void;
+	copyRawDataTo(float_rawDataArr: Float32Array, rawDataLength?: number, index?: number, transpose?: boolean): void;
 	copyRowFrom(row_index: number, v3: Vector3D): void;
 	copyRowTo(row_index: number, v3: Vector3D): void;
 	decompose(orientationStyle: number): Vector3D[];
