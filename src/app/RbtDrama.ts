@@ -43,14 +43,14 @@ export class RbtDrama implements IShaderLibListener {
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
 
         this.updateShadow();
-        let envData = this.m_materialCtx.envData;
+        let envLightModule = this.m_materialCtx.envLightModule;
         let brnScale: number = 5.0;
-        envData.setAmbientColorRGB3f(brnScale, brnScale, brnScale);
-        envData.setEnvAmbientLightAreaOffset(-1200.0, -1200.0);
-        envData.setEnvAmbientLightAreaSize(2400.0, 2400.0);
-        envData.setEnvAmbientMap(this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg"));
-        envData.setFogDensity(0.00015);
-        envData.update();
+        envLightModule.setAmbientColorRGB3f(brnScale, brnScale, brnScale);
+        envLightModule.setEnvAmbientLightAreaOffset(-1200.0, -1200.0);
+        envLightModule.setEnvAmbientLightAreaSize(2400.0, 2400.0);
+        envLightModule.setEnvAmbientMap(this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg"));
+        envLightModule.setFogDensity(0.00015);
+        envLightModule.update();
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
         this.initScene();
     }

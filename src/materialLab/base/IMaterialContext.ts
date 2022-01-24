@@ -14,7 +14,7 @@ import { MaterialContextParam } from "./MaterialContextParam";
  * 实现 material 构造 pipeline 的上下文
  */
 interface IMaterialContext {
-    
+
     /**
      * 全局的灯光模块
      */
@@ -22,7 +22,7 @@ interface IMaterialContext {
     /**
      * 全局的环境参数
      */
-    envData: IEnvLightModule;
+    envLightModule: IEnvLightModule;
     /**
      * vsm 阴影
      */
@@ -41,12 +41,13 @@ interface IMaterialContext {
     isTextureLoadedAll(): boolean;
     getTextureByUrl(purl: string, wrapRepeat?: boolean, mipmapEnabled?: boolean): IRenderTexture;
     createShaderLibConfig(): IShaderLibConfigure;
-    
+
     initialize(rscene: IRendererScene, param?: MaterialContextParam, shaderLibConfigure?: IShaderLibConfigure): void;
-    
+
     addShaderCodeObject(uuid: ShaderCodeUUID, shaderCodeObject: IShaderCodeObject): void
     addPipeline(pipeline: IMaterialPipeline): void
-    createPipeline(): IMaterialPipeline
-    destroy(): void
+    createPipeline(): IMaterialPipeline;
+    run(): void;
+    destroy(): void;
 }
 export { IMaterialContext }

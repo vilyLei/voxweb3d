@@ -112,11 +112,11 @@ export default class PBRScene {
             }
 
 
-            let envData = materialCtx.envData;
-            envData.setFogNear(800.0);
-            envData.setFogFar(4000.0);
-            envData.setFogDensity(0.0001);
-            envData.setFogColorRGB3f(0.0, 0.8, 0.1);
+            let envLightModule = materialCtx.envLightModule;
+            envLightModule.setFogNear(800.0);
+            envLightModule.setFogFar(4000.0);
+            envLightModule.setFogDensity(0.0001);
+            envLightModule.setFogColorRGB3f(0.0, 0.8, 0.1);
 
             this.m_mirrorRprIndex = 3;
 

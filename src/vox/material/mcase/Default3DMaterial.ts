@@ -121,7 +121,6 @@ export default class Default3DMaterial extends MaterialBase {
         buf.premultiplyAlpha = this.premultiplyAlpha;
         buf.normalEnabled = this.normalEnabled;
         buf.shadowReceiveEnabled = this.shadowReceiveEnabled;
-        console.log("buf.shadowReceiveEnabled: ",buf.shadowReceiveEnabled);
     }
     /**
      * get a shader code buf instance, for sub class override

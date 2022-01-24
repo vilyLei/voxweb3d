@@ -28,7 +28,7 @@ class MaterialContext implements IMaterialContext {
     /**
      * 全局的环境参数
      */
-    envData: IEnvLightModule = null;
+    envLightModule: IEnvLightModule = null;
     /**
      * vsm 阴影
      */
@@ -149,14 +149,14 @@ class MaterialContext implements IMaterialContext {
     addPipeline(pipeline: IMaterialPipeline): void {
         if (pipeline != null && pipeline != this.pipeline) {
             if(this.lightModule != null) pipeline.addPipe(this.lightModule);
-            if(this.envData != null) pipeline.addPipe(this.envData);
+            if(this.envLightModule != null) pipeline.addPipe(this.envLightModule);
             if (this.vsmModule != null) pipeline.addPipe(this.vsmModule);
         }
     }
     createPipeline(): IMaterialPipeline {
         let pipeline = this.m_rscene.materialBlock.createMaterialPipeline(MaterialContext.ShaderLib);
         if(this.lightModule != null) pipeline.addPipe(this.lightModule);
-        if(this.envData != null) pipeline.addPipe(this.envData);
+        if(this.envLightModule != null) pipeline.addPipe(this.envLightModule);
         if (this.vsmModule != null) pipeline.addPipe(this.vsmModule);
         return pipeline;
     }

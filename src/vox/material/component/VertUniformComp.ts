@@ -9,7 +9,7 @@ import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import { UniformComp } from "./UniformComp";
 import IRenderTexture from "../../render/texture/IRenderTexture";
 import Vector3D from "../../math/Vector3D";
-import ShaderUniformData from "../ShaderUniformData";
+import IShaderUniformData from "../IShaderUniformData";
 /**
  * manage uniform data for the vertex calculation
  */
@@ -159,7 +159,7 @@ class VertUniformComp extends UniformComp {
         return u;
     }
     
-    buildShaderUniformData(data: ShaderUniformData): void {
+    buildShaderUniformData(data: IShaderUniformData): void {
         if(this.getParamsTotal() > 0) {
             data.uniformNameList.push("u_vertLocalParams");
             data.dataList.push(this.getParams());

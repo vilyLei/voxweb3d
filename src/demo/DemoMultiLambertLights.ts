@@ -465,10 +465,10 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         return m;
     }
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
-        this.m_materialCtx.envData.setAmbientColorRGB3f(3.0,3.0,3.0);
-        this.m_materialCtx.envData.setEnvAmbientLightAreaOffset(-500.0, -500.0);
-        this.m_materialCtx.envData.setEnvAmbientLightAreaSize(1000.0, 1000.0);
-        this.m_materialCtx.envData.setEnvAmbientMap( this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg") );
+        this.m_materialCtx.envLightModule.setAmbientColorRGB3f(3.0,3.0,3.0);
+        this.m_materialCtx.envLightModule.setEnvAmbientLightAreaOffset(-500.0, -500.0);
+        this.m_materialCtx.envLightModule.setEnvAmbientLightAreaSize(1000.0, 1000.0);
+        this.m_materialCtx.envLightModule.setEnvAmbientMap( this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg") );
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
         this.initScene();
     }

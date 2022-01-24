@@ -7,8 +7,9 @@
 
 import { IMaterialPipe } from "../pipeline/IMaterialPipe";
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
-import ShaderUniformData from "../ShaderUniformData";
+import IShaderUniformData from "../IShaderUniformData";
 import IRenderTexture from "../../render/texture/IRenderTexture";
+
 class UniformComp {
 
     protected m_params: Float32Array = null;
@@ -42,7 +43,7 @@ class UniformComp {
     getParamsTotal(): number {
         return this.m_params != null ? this.m_params.length >> 2 : 0;
     }
-    buildShaderUniformData(data: ShaderUniformData): void {
+    buildShaderUniformData(data: IShaderUniformData): void {
         
     }
 }

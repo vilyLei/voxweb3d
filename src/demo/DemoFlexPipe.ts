@@ -145,7 +145,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         mcParam.shaderCodeBinary = true;
         this.m_materialCtx.addShaderLibListener( this );
         this.m_materialCtx.initialize(this.m_rscene, mcParam);
-        this.m_materialCtx.envData.setFogDensity(0.0002);
+        this.m_materialCtx.envLightModule.setFogDensity(0.0002);
 
         let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
         if (pointLight != null) {

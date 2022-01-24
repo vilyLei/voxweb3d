@@ -7,7 +7,7 @@
 
 import RendererDevice from "../../vox/render/RendererDevice";
 import IShdProgram from "../../vox/material/IShdProgram";
-import ShaderUniformData from "../../vox/material/ShaderUniformData";
+import IShaderUniformData from "../../vox/material/IShaderUniformData";
 import IShaderUniform from "../../vox/material/IShaderUniform";
 import { ShaderUniform, ShaderUniformV1, ShaderUniformV2, ShaderMat4Uniform } from "../../vox/material/ShaderUniform";
 import IUniformBuilder from "../../vox/material/shared/IUniformBuilder";
@@ -205,7 +205,7 @@ export default class ShdUniformTool {
         }
         return this.m_emptyUniform;
     }
-    buildLocalFromData(uniformData: ShaderUniformData, shdp: IShdProgram): IShaderUniform {
+    buildLocalFromData(uniformData: IShaderUniformData, shdp: IShdProgram): IShaderUniform {
         if (uniformData != null) {
             // collect all uniform data,create a new runned uniform
             let shdUniform: ShaderUniform;
@@ -222,7 +222,7 @@ export default class ShdUniformTool {
             shdUniform.dataList = [];
             shdUniform.dataSizeList = [];
             shdUniform.uniformSize = 0;
-            let pdata: ShaderUniformData = uniformData;
+            let pdata: IShaderUniformData = uniformData;
             let i: number = 0;
             while (pdata != null) {
                 if (pdata.uniformNameList != null && pdata.locations == null) {

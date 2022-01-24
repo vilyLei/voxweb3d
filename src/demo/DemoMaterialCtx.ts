@@ -42,6 +42,7 @@ import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 import LambertLightDecorator from "../vox/material/mcase/LambertLightDecorator";
 import Color4 from "../vox/material/Color4";
 import { ILightModule } from "../light/base/ILightModule";
+import { IMaterialContext } from "../materialLab/base/IMaterialContext";
 
 export class DemoMaterialCtx implements IShaderLibListener {
     constructor() { }
@@ -54,7 +55,7 @@ export class DemoMaterialCtx implements IShaderLibListener {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private m_lightEntities: ILightEntity[] = [];
-    private m_materialCtx: MaterialContext = new MaterialContext();
+    private m_materialCtx: IMaterialContext = new MaterialContext();
 
     private m_pos01: Vector3D = new Vector3D(-150.0, 100.0, -170.0);
     private m_pos02: Vector3D = new Vector3D(150, 0.0, 150);
@@ -70,7 +71,7 @@ export class DemoMaterialCtx implements IShaderLibListener {
         let envLight = new EnvLightModule(this.m_rscene.getRenderProxy().uniformContext);
         envLight.initialize();
         envLight.setFogColorRGB3f(0.0, 0.8, 0.1);
-        this.m_materialCtx.envData = envLight;
+        this.m_materialCtx.envLightModule = envLight;
 
         if (param.vsmEnabled) {
             let vsmModule = new ShadowVSMModule(param.vsmFboIndex);
@@ -267,10 +268,10 @@ export class DemoMaterialCtx implements IShaderLibListener {
         }
     }
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
-        this.m_materialCtx.envData.setAmbientColorRGB3f(3.0,3.0,3.0);
-        this.m_materialCtx.envData.setEnvAmbientLightAreaOffset(-500.0, -500.0);
-        this.m_materialCtx.envData.setEnvAmbientLightAreaSize(1000.0, 1000.0);
-        this.m_materialCtx.envData.setEnvAmbientMap( this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg") );
+        this.m_materialCtx.envLightModule.setAmbientColorRGB3f(3.0,3.0,3.0);
+        this.m_materialCtx.envLightModule.setEnvAmbientLightAreaOffset(-500.0, -500.0);
+        this.m_materialCtx.envLightModule.setEnvAmbientLightAreaSize(1000.0, 1000.0);
+        this.m_materialCtx.envLightModule.setEnvAmbientMap( this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg") );
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
         this.initScene();
     }

@@ -13,6 +13,7 @@ import { ILightModule } from "../light/base/ILightModule";
 import { MaterialContextParam } from "../materialLab/base/MaterialContextParam";
 import { IAppLightModule } from "./modules/interfaces/IAppLightModule";
 import { IShaderLibListener } from "../materialLab/shader/IShaderLibListener";
+import { IMaterialContext } from "../materialLab/base/IMaterialContext";
 
 declare var AppEngine: any;
 declare var AppBase: any;
@@ -41,6 +42,7 @@ class AppShell implements IShaderLibListener {
     private m_rscene: IRendererScene;
     private m_pipeline: IMaterialPipeline;
     private m_shadow: IShadowVSMModule;
+    private m_materialCtx: IMaterialContext;
     constructor() { }
 
     loadedWithIndex(index: number): void {
@@ -100,10 +102,15 @@ class AppShell implements IShaderLibListener {
             mcParam.vsmFboIndex = 0;
             // mcParam.vsmEnabled = false;
             // mcParam.buildBinaryFile = true;
-            let pipeline = this.m_rscene.materialBlock.createMaterialPipeline(null);
-            // pipeline.
+            
+            this.m_materialCtx = voxAppBaseIns.createMaterialContext();
+            
             this.initEnvLight();
             this.buildLightModule( mcParam );
+
+            this.m_materialCtx.initialize(this.m_rscene, mcParam);
+            this.m_pipeline = this.m_materialCtx.pipeline;
+
             main(voxAppEngineIns);
             this.initScene();
         }
@@ -127,8 +134,9 @@ class AppShell implements IShaderLibListener {
             envLightPipe.initialize();
             envLightPipe.setFogColorRGB3f(0.0, 0.8, 0.1);
 
-            this.m_pipeline = this.m_rscene.materialBlock.createMaterialPipeline(null);
-            this.m_pipeline.addPipe(envLightPipe);
+            this.m_materialCtx.envLightModule = envLightPipe;
+            // this.m_pipeline = this.m_rscene.materialBlock.createMaterialPipeline(null);
+            // this.m_pipeline.addPipe(envLightPipe);
         }
     }
     

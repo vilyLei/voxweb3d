@@ -95,7 +95,7 @@ export class DemoVSMModule {
                 let envLight = new EnvLightModule(this.m_rscene.getRenderProxy().uniformContext);
                 envLight.initialize();
                 envLight.setFogColorRGB3f(0.0, 0.8, 0.1);
-                this.m_materialCtx.envData = envLight;
+                this.m_materialCtx.envLightModule = envLight;
                 let vsmModule = new ShadowVSMModule(mcParam.vsmFboIndex);
                 vsmModule.setCameraPosition(new Vector3D(1, 800, 1));
                 vsmModule.setCameraNear(10.0);

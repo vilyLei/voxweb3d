@@ -11,7 +11,7 @@ import IRODisplay from "../../vox/display/IRODisplay";
 import RenderProxy from "../../vox/render/RenderProxy";
 import ROVtxBuilder from "../../vox/render/ROVtxBuilder";
 import UniformConst from "../../vox/material/UniformConst";
-import ShaderUniformData from "../../vox/material/ShaderUniformData";
+import IShaderUniformData from "../../vox/material/IShaderUniformData";
 import ShaderUniform from "../../vox/material/ShaderUniform";
 import IShdProgram from "../../vox/material/IShdProgram";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
@@ -388,7 +388,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
         let sharedMList: ShaderUniform[] = material.createSharedUniforms() as ShaderUniform[];
         if (sharedMList == null) {
             // 通过shader uniform data 创建 shared uniform
-            let dataList: ShaderUniformData[] = material.createSharedUniformsData();
+            let dataList = material.createSharedUniformsData();
             if (dataList != null && dataList.length > 0) {
                 sharedMList = [];
                 for (let i: number = 0; i < dataList.length; ++i) {

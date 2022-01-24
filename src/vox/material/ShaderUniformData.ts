@@ -6,8 +6,9 @@
 /***************************************************************************/
 
 import { IShaderUniformProbe } from "../../vox/material/IShaderUniformProbe";
+import IShaderUniformData from "../../vox/material/IShaderUniformData";
 
-export default class ShaderUniformData {
+export default class ShaderUniformData implements IShaderUniformData {
     constructor() {
     }
     uns: string = "";

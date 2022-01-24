@@ -7,7 +7,7 @@
 
 import MaterialBase from "./MaterialBase";
 import ShaderCodeBuffer from "./ShaderCodeBuffer";
-import ShaderUniformData from "./ShaderUniformData";
+import IShaderUniformData from "./IShaderUniformData";
 import { ISimpleMaterialDecorator } from "./ISimpleMaterialDecorator";
 import { UniformComp } from "../../vox/material/component/UniformComp";
 import IRenderTexture from "../render/texture/IRenderTexture";
@@ -92,9 +92,9 @@ class SimpleMaterial extends MaterialBase implements ISimpleMaterial {
     getDecorator(): ISimpleMaterialDecorator {
         return this.m_decorator;
     }
-    createSelfUniformData(): ShaderUniformData {
+    createSelfUniformData(): IShaderUniformData {
 
-        let sud: ShaderUniformData = this.m_decorator.createUniformData();
+        let sud = this.m_decorator.createUniformData();
         if(this.vertUniform != null && sud != null) {
             this.vertUniform.buildShaderUniformData(sud);
         }

@@ -8,7 +8,7 @@
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import MaterialBase from "./MaterialBase";
 import ShaderCodeBuffer from "./ShaderCodeBuffer";
-import ShaderUniformData from "./ShaderUniformData";
+import IShaderUniformData from "./IShaderUniformData";
 import { IMaterialDecorator } from "./IMaterialDecorator";
 import { UniformComp } from "../../vox/material/component/UniformComp";
 import IShaderCodeObject from "./IShaderCodeObject";
@@ -105,8 +105,8 @@ class Material extends MaterialBase implements IMaterial {
     getDecorator(): IMaterialDecorator {
         return this.m_decorator;
     }
-    createSelfUniformData(): ShaderUniformData {
-        let sud: ShaderUniformData = this.m_decorator.createUniformData();
+    createSelfUniformData(): IShaderUniformData {
+        let sud = this.m_decorator.createUniformData();
         if(this.vertUniform != null && sud != null) {
             this.vertUniform.buildShaderUniformData(sud);
         }

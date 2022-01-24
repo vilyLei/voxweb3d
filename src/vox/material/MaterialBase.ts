@@ -7,7 +7,7 @@
 
 import ShaderData from "../../vox/material/ShaderData";
 import MaterialResource from "../../vox/material/MaterialResource";
-import ShaderUniformData from "../../vox/material/ShaderUniformData";
+import IShaderUniformData from "../../vox/material/IShaderUniformData";
 import IShaderUniform from "../../vox/material/IShaderUniform";
 
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
@@ -26,7 +26,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
     private m_polygonOffset: number[] = null;
 
     protected m_sharedUniforms: IShaderUniform[] = null;
-    protected m_shaderUniformData: ShaderUniformData = null;
+    protected m_shaderUniformData: IShaderUniformData = null;
     protected m_pipeLine: IMaterialPipeline = null;
     protected m_uniqueShaderName: string = "";
 
@@ -269,10 +269,10 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
     createSharedUniforms(): IShaderUniform[] {
         return this.m_sharedUniforms;
     }
-    createSharedUniformsData(): ShaderUniformData[] {
+    createSharedUniformsData(): IShaderUniformData[] {
         return null;
     }
-    createSelfUniformData(): ShaderUniformData {
+    createSelfUniformData(): IShaderUniformData {
         return this.m_shaderUniformData;
     }
     //synchronism ubo data or other displayEntity data

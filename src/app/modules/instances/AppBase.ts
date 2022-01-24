@@ -29,6 +29,9 @@ class Instance implements IAppBase {
     createMaterialContext(): IMaterialContext {
         return new MaterialContext();
     }
+    // createVertUniformComp(): VertUniformComp {
+    //     return new VertUniformComp();
+    // }
 }
 
 // export {VoxAppBase, Axis3DEntity, Box3DEntity, Sphere3DEntity};

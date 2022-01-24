@@ -107,9 +107,9 @@ class CommonMaterialContext extends MaterialContext {
         }
         this.lightModule.update();
 
-        selfT.envData = new EnvLightModule(shdCtx);
-        this.envData.initialize();
-        this.envData.setFogColorRGB3f(0.0, 0.8, 0.1);
+        selfT.envLightModule = new EnvLightModule(shdCtx);
+        this.envLightModule.initialize();
+        this.envLightModule.setFogColorRGB3f(0.0, 0.8, 0.1);
         if (param.vsmEnabled) {
             let vsmModule = new ShadowVSMModule(param.vsmFboIndex);
             vsmModule.setCameraPosition(new Vector3D(1, 800, 1));
