@@ -131,24 +131,6 @@ class CommonMaterialContext extends MaterialContext {
             param.loadAllShaderCode = true;
         }
         return super.buildConfigure(param, shaderLibConfigure);
-        // if (shaderLibConfigure == null) {
-        //     let libConfig = this.createShaderLibConfig();
-        //     if (param == null) {
-        //         param = new MaterialContextParam();
-        //     }
-        //     param.loadAllShaderCode = true;
-
-        //     if (param.loadAllShaderCode) {
-
-        //         let configure: ShaderCodeConfigure = MaterialContext.ShaderLib.createShaderCodeConfigure(param);
-        //         if (configure != null) {
-        //             libConfig.shaderCodeConfigures.push(configure);
-        //         }
-        //     }
-
-        //     shaderLibConfigure = libConfig;
-        // }
-        // return shaderLibConfigure;
     }
     protected initEnd(param: MaterialContextParam): void {
 

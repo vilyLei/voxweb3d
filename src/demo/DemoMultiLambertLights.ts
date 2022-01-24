@@ -86,7 +86,6 @@ export class DemoMultiLambertLights implements IShaderLibListener {
             this.initMaterialCtx();
             this.update();
 
-            // this.initScene();
         }
     }
     private initMaterialCtx(): void {

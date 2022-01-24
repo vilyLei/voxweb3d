@@ -349,6 +349,8 @@
 
 //  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
+import {DemoMaterialCtx as Demo} from "./demo/DemoMaterialCtx";
+
 //  import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
 
 //  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
@@ -389,7 +391,7 @@
 
 //  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
- import {RbtDrama as Demo} from "./app/RbtDrama";
+//  import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 
