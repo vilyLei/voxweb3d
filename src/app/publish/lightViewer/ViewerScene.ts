@@ -64,6 +64,7 @@ class ViewerScene {
     }
     setMaterialContext(materialCtx: IMaterialContext): void  {
         this.m_materialCtx = materialCtx;
+        this.initEnvBox();
     }
     addLamgert(): void {
         if(this.m_appLambert == null) {
@@ -195,7 +196,7 @@ class ViewerScene {
         // box.initializeCube(100.0, [appIns.getImageTexByUrl("./assets/default.jpg")]);
         // appIns.addEntity(box);
 
-        this.initEnvBox();
+        // this.initEnvBox();
     }
     private initEnvBox(): void {
 
@@ -213,7 +214,7 @@ class ViewerScene {
         entity.setMaterial(material);
         entity.copyMeshFrom(rscene.entityBlock.unitBox);
         entity.setScaleXYZ(scale, scale, scale);
-        rscene.addEntity(entity);
+        rscene.addEntity(entity, 1);
 
         // let axis = new VoxApp.Axis3DEntity();
         // axis.initialize(30);
