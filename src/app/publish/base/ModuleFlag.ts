@@ -5,6 +5,7 @@ class ModuleFlag {
     static readonly AppEnvLight: number = 1 << 2;
     static readonly AppLight: number = 1 << 3;
     static readonly AppShadow: number = 1 << 4;
+    static readonly AppObjData: number = 1 << 5;
     
     static readonly ENGINE_LOADED: number = 3;
     static readonly SYS_MODULE_LOADED: number = 31;
@@ -32,6 +33,9 @@ class ModuleFlag {
     }
     hasLightModule(): boolean {
         return (ModuleFlag.AppLight & this.m_flag) == ModuleFlag.AppLight;
+    }
+    hasObjDataModule(): boolean {
+        return (ModuleFlag.AppObjData & this.m_flag) == ModuleFlag.AppObjData;
     }
 }
 export default ModuleFlag;

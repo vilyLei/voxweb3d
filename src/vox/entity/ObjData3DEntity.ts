@@ -70,7 +70,7 @@ export default class ObjData3DEntity extends DisplayEntity {
                 console.error("load obj format module url error: ", objDataUrl);
             };
 
-            request.send();
+            request.send(null);
         }
     }
     protected __activeMesh(material: IRenderMaterial): void {

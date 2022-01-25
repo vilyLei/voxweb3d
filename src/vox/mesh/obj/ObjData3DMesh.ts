@@ -15,12 +15,14 @@ import Vector3D from "../../math/Vector3D";
 
 import { ObjDataParser } from "../../../vox/assets/ObjDataParser";
 import { AABBCalc } from "../../geom/AABBCalc";
+import ObjGeomDataParser from "./ObjGeomDataParser";
 
 export default class ObjData3DMesh extends MeshBase {
     private m_vs: Float32Array = null;
     private m_uvs: Float32Array = null;
     private m_nvs: Float32Array = null;
     private m_strDataParser: ObjStrDataParser = null;
+    private m_dataParser: ObjGeomDataParser = null;
     moduleScale: number = 1.0;
     baseParsering: boolean = false;
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
@@ -31,7 +33,12 @@ export default class ObjData3DMesh extends MeshBase {
     getNVS(): Float32Array { return this.m_nvs; }
 
     initialize(objDataStr: string, dataIsZxy: boolean = false): void {
-
+        
+        this.m_dataParser = new ObjGeomDataParser();
+        this.m_dataParser.moduleScale = this.normalScale;
+        this.m_dataParser.baseParsering = this.baseParsering;
+        this.m_dataParser.parse(objDataStr, dataIsZxy);
+        /*
         if(this.baseParsering) {
             this.m_strDataParser = new ObjStrDataParser();
             this.m_strDataParser.parseStrData(objDataStr, this.moduleScale, dataIsZxy);
@@ -100,7 +107,8 @@ export default class ObjData3DMesh extends MeshBase {
                 }
             }
         }
-
+        //*/
+        this.m_vs = this.m_dataParser.getVS();
         this.bounds = new AABB();
         this.bounds.addXYZFloat32Arr(this.m_vs);
         this.bounds.update();
@@ -109,9 +117,11 @@ export default class ObjData3DMesh extends MeshBase {
         ROVertexBuffer.Reset();
         ROVertexBuffer.AddFloat32Data(this.m_vs, 3);
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
+            this.m_uvs = this.m_dataParser.getUVS();
             ROVertexBuffer.AddFloat32Data(this.m_uvs, 2);
         }
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
+            this.m_nvs = this.m_dataParser.getNVS();
             ROVertexBuffer.AddFloat32Data(this.m_nvs, 3);
         }
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX)) {
@@ -127,7 +137,9 @@ export default class ObjData3DMesh extends MeshBase {
             ROVertexBuffer.AddFloat32Data(tvs, 3);
             ROVertexBuffer.AddFloat32Data(btvs, 3);
         }
-        
+
+        this.m_ivs = this.m_dataParser.getIVS();
+
         this.updateWireframeIvs();
         ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
         if (this.m_vbuf == null) {

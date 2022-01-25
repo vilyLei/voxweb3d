@@ -4,8 +4,6 @@ import { RenderableEntityBlock } from "../../../vox/scene/block/RenderableEntity
 
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
-
-import { IAppBase } from "../interfaces/IAppBase";
 import { IMaterialContext } from "../../../materialLab/base/IMaterialContext";
 import { MaterialContext } from "../../../materialLab/base/MaterialContext";
 import { IMaterial } from "../../../vox/material/IMaterial";
@@ -23,6 +21,7 @@ import { IBytesCubeTexture } from "../../../vox/render/texture/IBytesCubeTexture
 import { IFloatCubeTexture } from "../../../vox/render/texture/IFloatCubeTexture";
 import { TextureConst } from "../../../vox/texture/TextureConst";
 import RectPlaneMesh from "../../../vox/mesh/RectPlaneMesh";
+import { IAppBase } from "../interfaces/IAppBase";
 
 export class SpecularTextureBuilder {
 

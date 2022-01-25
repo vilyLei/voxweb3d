@@ -7,7 +7,7 @@ let host = "static/publish/build/";
 class AppShell {
     private m_viewer: LightViewer = new LightViewer();
     constructor() { }
-    
+
     loadedWithIndex(index: number): void {
         this.m_viewer.setLoadedModuleFlag(index);
     }
@@ -33,9 +33,11 @@ export class AppLoader {
         
         let engine_url = host + "AppEngine.package.js";
         let base_url = host + "AppBase.package.js";
+        let objData_url = host + "AppObjData.package.js";
 
-        let engineLoader = new ModuleLoader(ModuleFlag.AppEngine, engine_url, this);
-        let baseLoader = new ModuleLoader(ModuleFlag.AppBase, base_url, this);
+        let loader = new ModuleLoader(ModuleFlag.AppEngine, engine_url, this);
+        loader = new ModuleLoader(ModuleFlag.AppBase, base_url, this);
+        loader = new ModuleLoader(ModuleFlag.AppObjData, objData_url, this);
     }
     
     private loadEngineFunctions(): void {
@@ -43,9 +45,9 @@ export class AppLoader {
         let envLightModule_url = host + "AppEnvLightModule.package.js";
         let LightModule_url = host + "AppLightModule.package.js";
         let shadow_url = host + "AppShadow.package.js";
-        let envLightLoader = new ModuleLoader(ModuleFlag.AppEnvLight, envLightModule_url, this);
-        let LightLoader = new ModuleLoader(ModuleFlag.AppLight, LightModule_url, this);
-        let shadowLoader = new ModuleLoader(ModuleFlag.AppShadow, shadow_url, this);
+        let loader = new ModuleLoader(ModuleFlag.AppEnvLight, envLightModule_url, this);
+        loader = new ModuleLoader(ModuleFlag.AppLight, LightModule_url, this);
+        loader = new ModuleLoader(ModuleFlag.AppShadow, shadow_url, this);
     }
     private showLoadInfo(e: any, index: number = 0): void {
         if (index == ModuleFlag.AppEngine) {
