@@ -8,6 +8,7 @@ interface IAppEngine {
 
     // getImageTexByUrl(purl: string, wrapRepeat?: boolean, mipmapEnabled?: boolean): IRenderTexture;
     addEntity(entity: IRenderEntity, processIndex?: number): void;
+    removeEntity(entity: IRenderEntity): void;
     getRendererScene(): IRendererScene;
     createRendererScene(): IRendererScene;
     initialize(debug?: boolean, rparam?: RendererParam, timerDelay?: number, renderStatus?: boolean): void;

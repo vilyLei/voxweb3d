@@ -4,8 +4,6 @@ import Vector3D from "../../../vox/math/Vector3D";
 import RenderStatusDisplay from "../../../vox/scene/RenderStatusDisplay";
 import RendererScene from "../../../vox/scene/RendererScene";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
-import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
-import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import { UserInteraction } from "../../../vox/engine/UserInteraction";
 
@@ -18,20 +16,18 @@ class Instance implements IAppEngine {
     private m_statusDisp: RenderStatusDisplay = null;
     private m_timeoutId: any = -1;
     private timerDelay: number = 50;
-    // private m_texLoader: ImageTextureLoader = null;
 
     readonly interaction: UserInteraction = new UserInteraction();
     constructor() { }
 
-    // getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
-    //     if (this.m_texLoader != null) {
-    //         return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled);
-    //     }
-    //     return null;
-    // }
     addEntity(entity: IRenderEntity, processIndex: number = 0): void {
         if (this.m_rscene != null) {
-            this.m_rscene.addEntity(entity, processIndex, true);
+            this.m_rscene.addEntity(entity, processIndex);
+        }
+    }
+    removeEntity(entity: IRenderEntity): void {
+        if (this.m_rscene != null) {
+            this.m_rscene.removeEntity( entity );
         }
     }
     getRendererScene(): IRendererScene {
@@ -42,6 +38,7 @@ class Instance implements IAppEngine {
         return new RendererScene();
     }
     initialize(debug: boolean = false, rparam: RendererParam = null, timeerDelay: number = 50, renderStatus: boolean = true): void {
+
         console.log("VoxAppInstance::initialize()......");
         if (this.m_rscene == null) {
 
@@ -62,7 +59,7 @@ class Instance implements IAppEngine {
             }
 
             let rscene = new RendererScene();
-            rscene.initialize(rparam, 7,);
+            rscene.initialize(rparam, 7);
             this.m_rscene = rscene;
             this.interaction.initialize(this.m_rscene);
 
