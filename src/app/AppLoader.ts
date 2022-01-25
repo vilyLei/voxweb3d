@@ -27,6 +27,7 @@ export class AppLoader {
         console.log("B url: ", url);
         this.initUI();
 
+        ModuleFlag.Initialize();
         // this.load( url );
         this.loadEngine();
     }
@@ -44,7 +45,7 @@ export class AppLoader {
         
     }
     
-    private loadEngineFunctions(): void {
+    private loadAppFunctions(): void {
 
         let envLightModule_url = host + "AppEnvLightModule.package.js";
         let LightModule_url = host + "AppLightModule.package.js";
@@ -52,6 +53,12 @@ export class AppLoader {
         let loader = new ModuleLoader(ModuleFlag.AppEnvLight, envLightModule_url, this);
         loader = new ModuleLoader(ModuleFlag.AppLight, LightModule_url, this);
         loader = new ModuleLoader(ModuleFlag.AppShadow, shadow_url, this);
+
+        let lambert_url = host + "AppLambert.package.js";
+        loader = new ModuleLoader(ModuleFlag.AppLambert, lambert_url, this);
+
+        // let pbr_url = host + "AppPBR.package.js";
+        // loader = new ModuleLoader(ModuleFlag.AppPBR, pbr_url, this);
     }
     private showLoadInfo(e: any, index: number = 0): void {
         if (index == ModuleFlag.AppEngine) {
@@ -127,7 +134,7 @@ export class AppLoader {
         this.m_mf.addFlag(index);
         if(this.m_initOther && this.m_mf.hasEngineModule()) {
             this.m_initOther = false;
-            this.loadEngineFunctions();
+            this.loadAppFunctions();
         }
     }
     private elementCenter(ele: HTMLElement, top: string = "50%", left: string = "50%", position: string = "absolute"): void {

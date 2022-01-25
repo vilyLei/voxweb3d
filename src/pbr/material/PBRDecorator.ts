@@ -9,11 +9,9 @@ import IShaderCodeObject from "../../vox/material/IShaderCodeObject";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import IShaderUniformData from "../../vox/material/IShaderUniformData";
 import Vector3D from "../../vox/math/Vector3D";
-import MathConst from "../../vox/math/MathConst";
 import Color4 from "../../vox/material/Color4";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
-// import { PBRShaderCode } from "./glsl/PBRShaderCode";
 import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
@@ -186,11 +184,19 @@ class PBRDecorator implements IMaterialDecorator {
         base = Math.min(Math.max(base, -7.0), 12.0);
         this.m_pbrParams[15] = Math.round(maxMipLevel) * 0.01 + base;
     }
+    
+    private log2(f: number): number {
+        return Math.log(f) / Math.LN2;
+    }
+    private getMaxMipMapLevel(width: number, height: number): number {
+        return  Math.round(this.log2(Math.max(width, height)) + 1);
+    }
     setEnvMapLodMipMapLevelWithSize(envMapWidth: number, envMapHeight: number, base: number = 0.0): void {
         this.m_envMapWidth = envMapWidth;
         this.m_envMapHeight = envMapHeight;
         base = Math.min(Math.max(base, -7.0), 12.0);
-        this.m_pbrParams[15] = MathConst.GetMaxMipMapLevel(envMapWidth, envMapHeight) * 0.01 + base;
+        let ln2 = Math.log(Math.max(envMapWidth, envMapHeight)) / Math.LN2;
+        this.m_pbrParams[15] = this.getMaxMipMapLevel(envMapWidth, envMapHeight) * 0.01 + base;
     }
     setScatterIntensity(value: number): void {
 

@@ -64,6 +64,8 @@ class ViewerScene {
     }
     setMaterialContext(materialCtx: IMaterialContext): void  {
         this.m_materialCtx = materialCtx;
+        this.m_appLambert = new AppLambert.Instance() as IAppLambert;
+        this.m_appLambert.initialize( this.m_rscene );
     }
     private createDefaultMaterial(): IRenderMaterial {
         let material = this.m_appBase.createDefaultMaterial();
