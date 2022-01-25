@@ -271,7 +271,7 @@ class AppShell implements IShaderLibListener {
         let material = this.m_voxAppBaseIns.createDefaultMaterial() as IRenderMaterial;
         material.pipeTypes = [MaterialPipeType.FOG_EXP2];
         material.setMaterialPipeline(this.m_pipeline);
-        material.setTextureList([this.m_voxAppEngineIns.getImageTexByUrl("static/assets/box.jpg")]);
+        material.setTextureList([this.m_materialCtx.getTextureByUrl("static/assets/box.jpg")]);
         material.initializeByCodeBuf(false);
 
         let scale: number = 3000.0;
@@ -309,12 +309,12 @@ export class AppLoader {
 
         let host = "http://192.168.0.105:9000/";
         // host = "http://localhost:9000/";
-        host = "";
-        let engine_url = host + "publish/build/AppEngine.package.js";
-        let base_url = host + "publish/build/AppBase.package.js";
-        let envLightModule_url = host + "publish/build/AppEnvLightModule.package.js";
-        let LightModule_url = host + "publish/build/AppLightModule.package.js";
-        let shadow_url = host + "publish/build/AppShadow.package.js";
+        host = "static/publish/build/";
+        let engine_url = host + "AppEngine.package.js";
+        let base_url = host + "AppBase.package.js";
+        let envLightModule_url = host + "AppEnvLightModule.package.js";
+        let LightModule_url = host + "AppLightModule.package.js";
+        let shadow_url = host + "AppShadow.package.js";
 
         let engineLoader = new ModuleLoader(0, engine_url, this);
         let baseLoader = new ModuleLoader(1, base_url, this);

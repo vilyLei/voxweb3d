@@ -18,17 +18,17 @@ class Instance implements IAppEngine {
     private m_statusDisp: RenderStatusDisplay = null;
     private m_timeoutId: any = -1;
     private timerDelay: number = 50;
-    private m_texLoader: ImageTextureLoader = null;
+    // private m_texLoader: ImageTextureLoader = null;
 
     readonly interaction: UserInteraction = new UserInteraction();
     constructor() { }
 
-    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
-        if (this.m_texLoader != null) {
-            return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled);
-        }
-        return null;
-    }
+    // getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+    //     if (this.m_texLoader != null) {
+    //         return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled);
+    //     }
+    //     return null;
+    // }
     addEntity(entity: IRenderEntity, processIndex: number = 0): void {
         if (this.m_rscene != null) {
             this.m_rscene.addEntity(entity, processIndex, true);
@@ -66,7 +66,7 @@ class Instance implements IAppEngine {
             this.m_rscene = rscene;
             this.interaction.initialize(this.m_rscene);
 
-            this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+            // this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
             if (renderStatus) {
                 this.m_statusDisp = new RenderStatusDisplay();
                 this.m_statusDisp.initialize();

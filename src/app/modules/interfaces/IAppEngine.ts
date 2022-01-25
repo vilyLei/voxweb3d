@@ -6,7 +6,7 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
 interface IAppEngine {
 
-    getImageTexByUrl(purl: string, wrapRepeat?: boolean, mipmapEnabled?: boolean): IRenderTexture;
+    // getImageTexByUrl(purl: string, wrapRepeat?: boolean, mipmapEnabled?: boolean): IRenderTexture;
     addEntity(entity: IRenderEntity, processIndex?: number): void;
     getRendererScene(): IRendererScene;
     createRendererScene(): IRendererScene;

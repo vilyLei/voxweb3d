@@ -11,8 +11,7 @@ interface IAppBase {
     createMaterialContext(): IMaterialContext;
     createLambertMaterial(vertUniformEnabled?: boolean): IMaterial;
     createPBRMaterial(vertUniformEnabled?: boolean): IMaterial;
-    createSpecularTex(hdrBrnEnabled: boolean): IRenderTexture;
+    createSpecularTex(hdrBrnEnabled: boolean, buffer: ArrayBuffer): IRenderTexture;
 
 }
-// export {VoxAppBase, Axis3DEntity, Box3DEntity, Sphere3DEntity};
 export {IAppBase};

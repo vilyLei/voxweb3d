@@ -15,6 +15,8 @@ export class TextureLoader {
 
     protected m_rscene: IRendererScene = null;
     texture: IFloatCubeTexture | IBytesCubeTexture = null;
+    width: number = 128;
+    height: number = 128;
     constructor() {
     }
     
@@ -28,7 +30,7 @@ export class TextureLoader {
     }
     protected createTexture(): void {
 
-        this.texture = (this.m_rscene as any).textureBlock.createFloatCubeTex(32, 32);
+        this.texture = this.m_rscene.textureBlock.createFloatCubeTex(32, 32);
     }
     loaded(buffer: ArrayBuffer, uuid: string): void {
         //console.log("loaded... uuid: ", uuid, buffer.byteLength);
@@ -42,8 +44,8 @@ export class TextureLoader {
     protected parseTextureBuffer(buffer: ArrayBuffer): void {
         
         let begin: number = 0;
-        let width: number = 128;
-        let height: number = 128;
+        let width: number = this.width;
+        let height: number = this.height;
         let size: number = width * height * 3;
         let fs32: Float32Array = new Float32Array(buffer);
         let subArr: Float32Array = null;
@@ -65,17 +67,19 @@ export class SpecularTextureLoader extends TextureLoader {
     }
     
     protected createTexture(): void {
-        if(this.hdrBrnEnabled) {
-            this.texture = (this.m_rscene as any).textureBlock.createBytesCubeTex(32, 32);
-        }
-        else {
-            this.texture = (this.m_rscene as any).textureBlock.createFloatCubeTex(32, 32);
+        if(this.texture == null) {
+            let block = this.m_rscene.textureBlock;
+            if(this.hdrBrnEnabled) this.texture = block.createBytesCubeTex(32, 32);
+            else this.texture = block.createFloatCubeTex(32, 32);
         }
     }
-    private parseFloat(buffer: ArrayBuffer): void {
+    parseFloat(buffer: ArrayBuffer): void {
+
+        this.createTexture();
+
         let begin: number = 0;
-        let width: number = 128;
-        let height: number = 128;
+        let width: number = this.width;
+        let height: number = this.height;
         
         let component:number = 3;
         
@@ -99,7 +103,9 @@ export class SpecularTextureLoader extends TextureLoader {
             height >>= 1;
         }
     }
-    private parseHdrBrn(buffer: ArrayBuffer): void {
+    parseHdrBrn(buffer: ArrayBuffer): void {
+
+        this.createTexture();
 
         let data16: Uint16Array = new Uint16Array(buffer);
         let currBytes: Uint8Array = new Uint8Array(buffer);
@@ -111,16 +117,9 @@ export class SpecularTextureLoader extends TextureLoader {
         let size: number = 0;
         let bytes: Uint8Array = currBytes.subarray(32);
         let tex: IBytesCubeTexture = this.texture as IBytesCubeTexture;
-        if(mipMapMaxLv > 1) {
-            tex.mipmapEnabled = false;
-            tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
-            tex.magFilter = TextureConst.LINEAR;
-        }
-        else {
-            tex.mipmapEnabled = true;
-            tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
-            tex.magFilter = TextureConst.LINEAR;
-        }
+        tex.mipmapEnabled = mipMapMaxLv <= 1;
+        tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
+        tex.magFilter = TextureConst.LINEAR;
         for (let j: number = 0; j < mipMapMaxLv; j++) {
             for (let i: number = 0; i < 6; i++) {
                 size = width * height * 4;
@@ -130,7 +129,6 @@ export class SpecularTextureLoader extends TextureLoader {
             width >>= 1;
             height >>= 1;
         }
-
     }
     protected parseTextureBuffer(buffer: ArrayBuffer): void {
         if(this.hdrBrnEnabled) {

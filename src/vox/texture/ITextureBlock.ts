@@ -43,39 +43,39 @@ interface ITextureBlock {
      * @param ph texture height
      * @param powerof2Boo the default value is false
      */
-    createWrapperTex(pw: number, ph: number, powerof2Boo: boolean): IWrapperTexture;
+    createWrapperTex(pw: number, ph: number, powerof2Boo?: boolean): IWrapperTexture;
     /**
      * @param pw texture width
      * @param ph texture height
      * @param powerof2Boo the default value is false
      */
-    createRTTTex2D(pw: number, ph: number, powerof2Boo: boolean): IRTTTexture;
+    createRTTTex2D(pw: number, ph: number, powerof2Boo?: boolean): IRTTTexture;
     /**
      * @param pw texture width
      * @param ph texture height
      * @param powerof2Boo the default value is false
      */
-    createImageTex2D(pw: number, ph: number, powerof2Boo: boolean): IImageTexture;
+    createImageTex2D(pw: number, ph: number, powerof2Boo?: boolean): IImageTexture;
 
-    createHalfFloatTex2D(pw: number, ph: number, powerof2Boo: boolean): IFloatTexture;
+    createHalfFloatTex2D(pw: number, ph: number, powerof2Boo?: boolean): IFloatTexture;
     /**
      * @param pw texture width
      * @param ph texture height
      * @param powerof2Boo the default value is false
      */
-    createFloatTex2D(pw: number, ph: number, powerof2Boo: boolean): IFloatTexture;
+    createFloatTex2D(pw: number, ph: number, powerof2Boo?: boolean): IFloatTexture;
     /**
      * @param pw texture width
      * @param ph texture height
      * @param powerof2Boo the default value is false
      */
-    createUint16Tex2D(pw: number, ph: number, powerof2Boo: boolean): IUint16Texture;
+    createUint16Tex2D(pw: number, ph: number, powerof2Boo?: boolean): IUint16Texture;
     /**
      * @param pw texture width
      * @param ph texture height
      * @param powerof2Boo the default value is false
      */
-    createFloatCubeTex(pw: number, ph: number, powerof2Boo: boolean): IFloatCubeTexture;
+    createFloatCubeTex(pw: number, ph: number, powerof2Boo?: boolean): IFloatCubeTexture;
     createBytesTex(texW: number, texH: number): IBytesTexture;
 
     createBytesCubeTex(texW: number, texH: number): IBytesCubeTexture;
@@ -91,7 +91,7 @@ interface ITextureBlock {
      * @param texH texture height
      * @param depth the default value is 1
      */
-    createTex3D(texW: number, texH: number, depth: number): ITexture3D;
+    createTex3D(texW: number, texH: number, depth?: number): ITexture3D;
     createRGBATex2D(pw: number, ph: number, color: Color4): IBytesTexture;
     createAlphaTex2D(pw: number, ph: number, alpha: number): IBytesTexture;
     createAlphaTexBytes2D(pw: number, ph: number, bytes: Uint8Array): IBytesTexture;
