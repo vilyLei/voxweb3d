@@ -37,11 +37,12 @@ import Texture3DProxy from "../../vox/texture/Texture3DProxy";
 import { IRenderProxy } from "../../vox/render/IRenderProxy";
 import TextureResSlot from "../../vox/texture/TextureResSlot";
 import { RTTTextureStore } from "../../vox/texture/RTTTextureStore";
+import { ITextureBlock } from "./ITextureBlock";
 
 /**
  * 本类作为所有基础纹理对象的管理类,只允许在RendererInstance之上的类中使用
  */
-class TextureBlock {
+class TextureBlock implements ITextureBlock{
     private m_texPool: TexturePool = new TexturePool();
     private m_rttStore: RTTTextureStore = null;
     private m_renderProxy: IRenderProxy = null;

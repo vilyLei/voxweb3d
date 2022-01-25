@@ -25,6 +25,7 @@ class ViewerScene {
     initialize(voxAppBase: IAppBase, rscene: IRendererScene): void {
         this.m_voxAppBase = voxAppBase;
         this.m_rscene = rscene;
+        this.m_rscene.setClearRGBColor3f(0.1,0.4,0.2);
     }
     setMaterialContext(materialCtx: IMaterialContext): void  {
         this.m_materialCtx = materialCtx;
