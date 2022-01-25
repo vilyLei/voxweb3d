@@ -15,8 +15,7 @@ import ModuleFlag from "../base/ModuleFlag";
 import ViewerScene from "./ViewerScene";
 import { IAppObjData } from "../../modules/interfaces/IAppObjData";
 import IObjGeomDataParser from "../../../vox/mesh/obj/IObjGeomDataParser";
-import { IDataMesh } from "../../../vox/mesh/IDataMesh";
-import BinaryLoader from "../../../vox/assets/BinaryLoader";
+import { IDataMesh } from "../../../vox/mesh/IDataMesh";;
 
 declare var AppEngine: any;
 declare var AppBase: any;
@@ -43,12 +42,12 @@ class LightViewer implements IShaderLibListener {
 
     private m_mf: ModuleFlag = new ModuleFlag();
     private m_scene: ViewerScene = new ViewerScene();
-    
+
     constructor() { }
 
     setLoadedModuleFlag(flag: number): void {
 
-        this.m_mf.addFlag( flag );
+        this.m_mf.addFlag(flag);
         console.log("setLoadedModuleFlag(), flag: ", flag);
         if (this.m_mf.hasAllSysModules()) {
             console.log("loaded all modules.");
@@ -58,33 +57,19 @@ class LightViewer implements IShaderLibListener {
             console.log("loaded all engine modules.");
             this.initEngine();
         }
-        if(this.m_mf.hasObjDataModule()) {
+        if (this.m_mf.hasObjDataModule()) {
             this.initObjData();
         }
-        if(this.m_mf.isLambert(flag)) {
+        if (this.m_mf.isLambert(flag)) {
             this.m_scene.addLamgert();
         }
     }
-    
-    loaded(buffer: ArrayBuffer, uuid: string): void {
-        console.log("loaded spec map ata.");
-    }
-    loadError(status: number, uuid: string): void {
-    }
-    private loadSpecularData(hdrBrnEnabled: boolean): void {
-        let envMapUrl: string = "static/bytes/spe.mdf";
-        if (hdrBrnEnabled) {
-            envMapUrl = "static/bytes/speBrn.bin";
-        }
-        console.log("start load spec map ata.");
-        let load = new BinaryLoader();
-        load.load(envMapUrl, this);
-    }
+
     private m_geomDataParser: IObjGeomDataParser = null;
     private m_mesh: IDataMesh = null;
     private buildMeshData(): void {
 
-        if(this.m_mesh == null && this.m_rscene != null && this.m_geomDataParser != null) {
+        if (this.m_mesh == null && this.m_rscene != null && this.m_geomDataParser != null) {
 
             let parser = this.m_geomDataParser;
             //console.log("parse obj geom parser: ",parser);
@@ -94,21 +79,21 @@ class LightViewer implements IShaderLibListener {
             mesh.setNVS(parser.getNVS());
             mesh.setIVS(parser.getIVS());
             this.m_mesh = mesh;
-            this.m_scene.addDataMesh( mesh );
+            this.m_scene.addDataMesh(mesh);
 
             this.m_scene.initCommonScene();
         }
     }
     private initObjData(): void {
-        if(this.m_voxAppObjData == null) {
+        if (this.m_voxAppObjData == null) {
             console.log("start load data");
             let objUrl = "static/assets/obj/apple_01.obj";
             let objData = new AppObjData.Instance() as IAppObjData;
             objData.load(objUrl, (parser: IObjGeomDataParser): void => {
                 this.m_geomDataParser = parser;
                 this.buildMeshData();
-                
-                this.loadSpecularData(true);
+
+                // this.m_scene.loadSpecularData(true);
             })
             this.m_voxAppObjData = objData;
         }
@@ -142,10 +127,10 @@ class LightViewer implements IShaderLibListener {
             this.m_rscene = voxAppEngine.getRendererScene() as IRendererScene;
             voxAppBase.initialize(this.m_rscene);
 
-            voxAppEngine.setSyncLookEnabled( true );
-            main( voxAppEngine );
+            voxAppEngine.setSyncLookEnabled(true);
+            main(voxAppEngine);
 
-            this.m_scene.initialize( voxAppBase, this.m_rscene );
+            this.m_scene.initialize(voxAppBase, this.m_rscene);
             this.buildMeshData();
             // this.m_scene.initDefaultEntities();
         }
@@ -176,7 +161,11 @@ class LightViewer implements IShaderLibListener {
             this.buildLightModule(mcParam);
 
             this.m_materialCtx.initialize(this.m_rscene, mcParam);
-            
+
+            this.m_scene.preLoadLMMaps(this.m_materialCtx, "box", true, false, true);
+            this.m_scene.setMaterialContext(this.m_materialCtx);
+            // this.m_scene.initEnvBox();
+
         }
     }
 
@@ -189,17 +178,13 @@ class LightViewer implements IShaderLibListener {
         envLightModule.setEnvAmbientMap(this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg"));
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
 
-        // this.initScene();
-        this.m_scene.setMaterialContext( this.m_materialCtx );
-        // if(this.m_voxAppObjData != null) {
         this.m_scene.initCommonScene();
-        // }
     }
     private initEnvLight(): void {
-        
+
         if (this.m_mf.hasEnvLightModule()) {
             let envLightModuleModule = new AppEnvLightModule.Instance() as IAppEnvLightModule;
-            
+
             let envLightPipe = envLightModuleModule.createEnvLightModule(this.m_rscene) as IEnvLightModule;
             envLightPipe.initialize();
             envLightPipe.setFogColorRGB3f(0.0, 0.8, 0.1);
@@ -216,7 +201,7 @@ class LightViewer implements IShaderLibListener {
         if (this.m_mf.hasLightModule()) {
             let lightModuleFactor = new AppLightModule.Instance() as IAppLightModule;
             let lightModule = lightModuleFactor.createLightModule(this.m_rscene);
-            
+
             for (let i: number = 0; i < param.pointLightsTotal; ++i) {
                 lightModule.appendPointLight();
             }

@@ -43,7 +43,7 @@ interface IMaterialContext {
     createShaderLibConfig(): IShaderLibConfigure;
 
     initialize(rscene: IRendererScene, param?: MaterialContextParam, shaderLibConfigure?: IShaderLibConfigure): void;
-
+    hasShaderCodeObjectWithUUID(uuid: ShaderCodeUUID): boolean;
     addShaderCodeObject(uuid: ShaderCodeUUID, shaderCodeObject: IShaderCodeObject): void
     addPipeline(pipeline: IMaterialPipeline): void
     createPipeline(): IMaterialPipeline;

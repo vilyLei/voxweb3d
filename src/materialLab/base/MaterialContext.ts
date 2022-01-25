@@ -142,7 +142,9 @@ class MaterialContext implements IMaterialContext {
     protected initEnd(param: MaterialContextParam): void {
 
     }
-
+    hasShaderCodeObjectWithUUID(uuid: ShaderCodeUUID): boolean {
+        return MaterialContext.ShaderLib.hasShaderCodeObjectWithUUID( uuid );
+    }
     addShaderCodeObject(uuid: ShaderCodeUUID, shaderCodeObject: IShaderCodeObject): void {
         MaterialContext.ShaderLib.addShaderCodeObject(uuid, shaderCodeObject);
     }

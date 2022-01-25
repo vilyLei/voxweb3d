@@ -219,7 +219,9 @@ class ShaderLib implements IShaderLib{
             if(this.m_listener != null) this.m_listener.shaderLibLoadComplete(0, 0);
         }
     }
-    
+    hasShaderCodeObjectWithUUID(uuid: ShaderCodeUUID): boolean {
+        return this.m_shaderCodeMap.has(uuid)
+    }
     addShaderCodeObjectWithUUID(uuid: ShaderCodeUUID): void {
 
         if (!this.m_shaderCodeMap.has(uuid) && !this.m_loadStatusMap.has(uuid)) {
