@@ -14,6 +14,7 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
 
     private m_uniqueName: string = "";
     normalEnabled: boolean = false;
+    vtxMatrixTransform: boolean = true;
     constructor() {
         super();
     }
@@ -25,23 +26,29 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
         if (this.premultiplyAlpha) this.m_uniqueName += "_preMulAlpha";
         this.adaptationShaderVersion = false;
     }
-    
+
     buildShader(): void {
-        
+
         let coder = this.m_coder;
         coder.addVertLayout("vec3", "a_vs");
         coder.addFragUniform("vec4", "u_color");
-        coder.useVertSpaceMats(true, true, true);
+
+        if (this.vtxMatrixTransform) {
+            coder.addDefine("VOX_VTX_MAT_TRANSFORM");
+            coder.useVertSpaceMats(true, true, true);
+        }
+        else {
+            coder.useVertSpaceMats(false, false, false);
+        }
 
         if (this.m_texEnabled) {
             this.m_uniform.addDiffuseMap();
             coder.addVertLayout("vec2", "a_uvs");
             coder.addVarying("vec2", "v_uv");
         }
-        
-        if(this.normalEnabled) {
-            coder.addVertLayout("vec3", "a_nvs");
-            coder.addVarying("vec3", "v_nv");
+
+        if (this.normalEnabled) {
+            coder.addFragHeadCode("const vec3 direc = normalize(vec3(0.3,0.6,0.9));")
         }
         if (this.vertColorEnabled) {
             coder.addVertLayout("vec3", "a_cvs");
@@ -68,24 +75,32 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
         FragColor0 *= u_color;
     #endif
     #ifdef VOX_USE_NORMAL
-        //FragColor0.xyz *= abs(v_nv.xyz);
+        float nDotL = max(dot(v_worldNormal.xyz, direc), 0.0);
+        FragColor0.xyz = FragColor0.xyz * 0.7 + 0.3 * FragColor0.xyz * vec3(nDotL);
     #endif
 `
         );
-        
+
         coder.addVertMainCode(
             `
     localPosition = vec4(a_vs.xyz,1.0);
-    worldPosition = u_objMat * localPosition;
-    oWorldPosition = worldPosition;
-    viewPosition = u_viewMat * worldPosition;
-    gl_Position = u_projMat * viewPosition;
+    #ifdef VOX_VTX_MAT_TRANSFORM
+        worldPosition = u_objMat * localPosition;
+        oWorldPosition = worldPosition;
+        viewPosition = u_viewMat * worldPosition;
+        gl_Position = u_projMat * viewPosition;
+        #ifdef VOX_USE_NORMAL
+            v_worldNormal = normalize( a_nvs.xyz * inverse(mat3(u_objMat)) );
+        #endif
+    #else
+        gl_Position = localPosition;
+        #ifdef VOX_USE_NORMAL
+            v_worldNormal = normalize( a_nvs.xyz );
+        #endif
+    #endif
 
     #ifdef VOX_USE_2D_MAP
         v_uv = a_uvs.xy;
-    #endif
-    #ifdef VOX_USE_NORMAL
-        v_nv = a_nvs.xyz;
     #endif
     #ifdef VOX_USE_VTX_COLOR
         v_cv = a_cvs.xyz;
@@ -107,20 +122,22 @@ export default class Default3DMaterial extends MaterialBase {
     premultiplyAlpha: boolean = false;
     normalEnabled: boolean = false;
     shadowReceiveEnabled: boolean = false;
+    vtxMatrixTransform: boolean = true;
     constructor() {
         super();
-        if(Default3DMaterial.s_shdCodeBuffer == null) {
+        if (Default3DMaterial.s_shdCodeBuffer == null) {
             Default3DMaterial.s_shdCodeBuffer = new Default3DShaderCodeBuffer();
         }
     }
     protected buildBuf(): void {
         let buf: Default3DShaderCodeBuffer = Default3DMaterial.s_shdCodeBuffer;
-        
+
         buf.getShaderCodeBuilder().normalEnabled = this.normalEnabled;
         buf.vertColorEnabled = this.vertColorEnabled;
         buf.premultiplyAlpha = this.premultiplyAlpha;
         buf.normalEnabled = this.normalEnabled;
         buf.shadowReceiveEnabled = this.shadowReceiveEnabled;
+        buf.vtxMatrixTransform = this.vtxMatrixTransform;
     }
     /**
      * get a shader code buf instance, for sub class override

@@ -11,6 +11,8 @@ import { IMaterial } from "../../../vox/material/IMaterial";
 import Color4 from "../../../vox/material/Color4";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
 
+declare var AppBase: any;
+
 class ViewerScene {
 
     private m_voxAppBase: IAppBase = null;
@@ -30,12 +32,13 @@ class ViewerScene {
     initDefaultEntities(): void {
         let rscene = this.m_rscene;
         let material = this.m_voxAppBase.createDefaultMaterial();
-        material.initializeByCodeBuf(false);
+        (material as any).normalEnabled = true;
+        material.setTextureList( [this.m_rscene.textureBlock.createRGBATex2D(32,32,new Color4(0.2,0.8,0.4))] );
 
         let scale: number = 500.0;
         let boxEntity = rscene.entityBlock.createEntity();
-        boxEntity.setMaterial(material);
-        boxEntity.copyMeshFrom(rscene.entityBlock.unitBox);
+        boxEntity.setMaterial (material );
+        boxEntity.copyMeshFrom( rscene.entityBlock.unitBox );
         boxEntity.setScaleXYZ(scale, scale * 0.05, scale);
         rscene.addEntity(boxEntity);
         this.m_defaultEntities.push( boxEntity );
@@ -83,10 +86,10 @@ class ViewerScene {
     
     private m_timeoutId: any = -1;
     private update(): void {
+
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
-        this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
 
         let rscene = this.m_rscene;
         for(let i: number = 0; i < this.m_entities.length;++i) {
@@ -97,6 +100,9 @@ class ViewerScene {
                 this.m_defaultEntities.splice(i,1);
                 this.m_entities.splice(i,1);
             }
+        }
+        if(this.m_defaultEntities.length > 0) {
+            this.m_timeoutId = setTimeout(this.update.bind(this), 20);// 20 fps
         }
     }
     initCommonScene(): void {

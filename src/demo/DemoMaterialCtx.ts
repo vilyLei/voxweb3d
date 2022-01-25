@@ -43,6 +43,7 @@ import LambertLightDecorator from "../vox/material/mcase/LambertLightDecorator";
 import Color4 from "../vox/material/Color4";
 import { ILightModule } from "../light/base/ILightModule";
 import { IMaterialContext } from "../materialLab/base/IMaterialContext";
+import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 
 export class DemoMaterialCtx implements IShaderLibListener {
     constructor() { }
@@ -218,7 +219,7 @@ export class DemoMaterialCtx implements IShaderLibListener {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             //DivLog.SetDebugEnabled(true);
             let rparam: RendererParam = new RendererParam();
-            //rparam.maxWebGLVersion = 1;
+            rparam.maxWebGLVersion = 1;
             //rparam.setAttriAlpha(false);
             rparam.setCamProject(45.0, 10.0, 8000.0);
             rparam.setAttriStencil(true);
@@ -245,15 +246,7 @@ export class DemoMaterialCtx implements IShaderLibListener {
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-            // let mcParam: MaterialContextParam = new MaterialContextParam();
-            // mcParam.pointLightsTotal = 2;
-            // mcParam.directionLightsTotal = 1;
-            // mcParam.spotLightsTotal = 2;
-            // mcParam.vsmEnabled = true;
-
-            // this.initCtxParam(mcParam);
-            // this.m_materialCtx.initialize(this.m_rscene, mcParam);
-
+            // let mcParam: MaterialContextPara
             this.initMaterialCtx();
 
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
@@ -264,6 +257,24 @@ export class DemoMaterialCtx implements IShaderLibListener {
             // let axis: Axis3DEntity = new Axis3DEntity();
             // axis.initialize(300.0);
             // this.m_rscene.addEntity(axis, 1);
+
+            // let material = new Default3DMaterial();
+            // // material.vtxMatrixTransform = false;
+            // material.normalEnabled = true;
+            // // material.setRGB3f(0.5,0.1,0.3);
+            // let box = new Box3DEntity();
+            // box.setMaterial(material);
+            // box.initializeCube(200.0);
+            // this.m_rscene.addEntity( box );
+
+            // let sph = new Sphere3DEntity();
+            // sph.setMaterial(material);
+            // sph.initialize(100,20,20);
+            // this.m_rscene.addEntity( sph );
+            // let plane = new Plane3DEntity();
+            // plane.setMaterial(material);
+            // plane.initializeXOYSquare(2.0);
+            // this.m_rscene.addEntity( plane );
 
         }
     }

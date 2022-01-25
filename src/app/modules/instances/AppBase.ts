@@ -22,6 +22,7 @@ import Box3DMesh from "../../../vox/mesh/Box3DMesh";
 import { IBytesCubeTexture } from "../../../vox/render/texture/IBytesCubeTexture";
 import { IFloatCubeTexture } from "../../../vox/render/texture/IFloatCubeTexture";
 import { TextureConst } from "../../../vox/texture/TextureConst";
+import RectPlaneMesh from "../../../vox/mesh/RectPlaneMesh";
 
 export class SpecularTextureBuilder {
 
@@ -157,5 +158,5 @@ class Instance implements IAppBase {
     }
 }
 
-// export {VoxAppBase, Axis3DEntity, Box3DEntity, Sphere3DEntity};
-export { DisplayEntity, Box3DMesh, Instance }
+export { DisplayEntity, RectPlaneMesh, Box3DMesh, Box3DEntity, Instance }
+// export { DisplayEntity, Instance }

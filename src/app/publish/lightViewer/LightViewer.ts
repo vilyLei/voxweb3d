@@ -80,8 +80,8 @@ class LightViewer implements IShaderLibListener {
 
             voxAppEngine.initialize(false, rparam);
 
-            rDevice.SHADERCODE_TRACE_ENABLED = true;
-            rDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            // rDevice.SHADERCODE_TRACE_ENABLED = true;
+            // rDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             rDevice.SetWebBodyColor("black");
 
             this.m_rscene = voxAppEngine.getRendererScene() as IRendererScene;
@@ -133,7 +133,7 @@ class LightViewer implements IShaderLibListener {
 
         // this.initScene();
         this.m_scene.setMaterialContext( this.m_materialCtx );
-        this.m_scene.initCommonScene();
+        // this.m_scene.initCommonScene();
     }
     private initEnvLight(): void {
         

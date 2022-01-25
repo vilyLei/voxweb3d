@@ -81,7 +81,7 @@ export default class LambertLightDecorator implements IMaterialDecorator {
     diffuseMap2Matrix: IMatrix4 = null;
     vertUniform: UniformComp = null;
     constructor() {
-
+        
     }
     
     buildBufParams(): void {

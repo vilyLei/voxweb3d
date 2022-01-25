@@ -402,6 +402,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
             this.addVarying("vec3", "v_worldNormal");
             this.addVarying("vec3", "v_worldPosition");
             this.addDefine("VOX_USE_NORMAL");
+            this.vertMatrixInverseEnabled = true;
         }
         // 保证 顶点shader 中 vtx数据的顺序 a_vs -> a_uvs -> a_nvs
         let words: string[] = ["a_vs", "a_uvs", "a_nvs"];
