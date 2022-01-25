@@ -85,22 +85,36 @@ class ImgResUnit {
     }
     startLoad(): void {
         if (this.m_img == null) {
-            let selfT: ImgResUnit = this;
+            // let selfT: ImgResUnit = this;
 
             this.m_img = new Image();
-
-            this.m_img.onload = function (evt: any): void {
-                selfT.m_loaded = true;
-                selfT.buildTex();
+            ///*
+            this.m_img.onload = (evt: any): void => {
+                this.m_loaded = true;
+                this.buildTex();
             }
             this.m_img.addEventListener('error', (evt: any) => {
-                if (selfT.m_url != "") {
-                    console.error("load image url error: ", selfT.m_url);
+                if (this.m_url != "") {
+                    console.error("load image url error: ", this.m_url);
                 }
             });
-            this.m_img.crossOrigin = "";
+            // this.m_img.crossOrigin = "";
             //m_img.setAttribute('crossorigin', 'anonymous');
-            this.m_img.src = this.m_url;
+            // this.m_img.src = this.m_url;
+
+            const request = new XMLHttpRequest();
+            request.open("GET", this.m_url, true);
+            request.responseType = "blob";
+            request.onload = (e) => {
+                let pwin: any = window;
+                var imageUrl = (pwin.URL || pwin.webkitURL).createObjectURL(request.response);
+                this.m_img.src = imageUrl;
+
+            };
+            request.onerror = e => {
+                console.error("load error binary image buffer request.status: ", request.status, "url:" + this.m_url);
+            };
+            request.send(null);
 
         }
     }
@@ -127,7 +141,7 @@ class ImgResUnit {
                 if (tex != null) {
                     tex.setDataFromImage(dobj.canvas, mipLv);
                     console.log("use a base canvas create a img tex.");
-                    tex.name = this.m_img.src;
+                    tex.name = this.m_url;
                     if (offsetTex != null) {
                         dobj = createImageCanvasAlphaOffset(img, pwidth, pheight);
                         offsetTex.setDataFromImage(dobj.canvas, mipLv);
@@ -355,7 +369,13 @@ export default class ImageTextureLoader implements IRunnable {
             let tex = this.m_texBlock.createImageTex2D(1, 1, false) as ImageTextureProxy;
             tex.name = purl;
             t.texture = tex;
-            this.m_waitLoadList.push(t);
+            if (this.m_loadingList.length < 6) {
+                this.m_loadingList.push(t);
+                t.startLoad();
+            }
+            else {
+                this.m_waitLoadList.push(t);
+            }
             return tex;
         }
         else {

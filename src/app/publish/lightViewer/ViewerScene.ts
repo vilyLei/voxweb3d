@@ -128,10 +128,26 @@ class ViewerScene {
     }
     private useLMMaps(decorator: any, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
 
-        // var xhr = new XMLHttpRequest();
-        // xhr.open("GET", "static/assets/default.jpg", true);
-        // xhr.responseType = "arraybuffer";
-        // xhr.send( null );
+        // let url = "static/assets/default.jpg";
+        // const request = new XMLHttpRequest();
+        // request.open("GET", url, true);
+        // request.responseType = "blob";
+        // request.onload = (e) => {
+        //     console.log("loaded binary buffer request.status: ", request.status, e);
+
+        //     //var imageType = request.getResponseHeader("Content-Type");
+        //     //var blob = new Blob([request.response], { type: imageType });
+        //     let pwin: any = window;
+        //     var imageUrl = (pwin.URL || pwin.webkitURL).createObjectURL(request.response);
+        //     // var imageUrl = (window.URL).createObjectURL(blob);
+        //     let img = new Image();
+        //     img.src = imageUrl;
+
+        // };
+        // request.onerror = e => {
+        //     console.log("load error binary buffer request.status: ", request.status);
+        // };
+        // request.send(null);
 
 
         decorator.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_COLOR.png");

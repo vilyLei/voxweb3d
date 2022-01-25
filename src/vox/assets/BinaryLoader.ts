@@ -37,6 +37,6 @@ export default class BinaryLoader {
             console.log("load error binary buffer request.status: ", request.status);
             target.loadError(request.status, this.uuid);
         };
-        request.send();
+        request.send(null);
     }
 }
