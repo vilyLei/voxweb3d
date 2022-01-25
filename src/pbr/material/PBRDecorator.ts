@@ -17,7 +17,7 @@ import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
-import { ShaderTextureBuilder } from "../../vox/material/ShaderTextureBuilder";
+import { IShaderTextureBuilder } from "../../vox/material/IShaderTextureBuilder";
 import { UniformComp } from "../../vox/material/component/UniformComp";
 
 class PBRDecorator implements IMaterialDecorator {
@@ -316,7 +316,7 @@ class PBRDecorator implements IMaterialDecorator {
     /**
      * user build textures list
      */
-    buildTextureList(builder: ShaderTextureBuilder): void {
+    buildTextureList(builder: IShaderTextureBuilder): void {
 
         builder.addSpecularEnvMap(this.specularEnvMap, true);
         builder.addDiffuseMap(this.diffuseMap);

@@ -14,7 +14,7 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { IMaterialDecorator } from "../../../vox/material/IMaterialDecorator";
 import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
-import { ShaderTextureBuilder } from "../../../vox/material/ShaderTextureBuilder";
+import { IShaderTextureBuilder } from "../../../vox/material/IShaderTextureBuilder";
 
 import { SpecularMode } from "../pipeline/SpecularMode";
 import { UniformComp } from "../component/UniformComp";
@@ -89,7 +89,7 @@ export default class LambertLightDecorator implements IMaterialDecorator {
     /**
      * user build textures list
      */
-    buildTextureList(builder: ShaderTextureBuilder): void {
+    buildTextureList(builder: IShaderTextureBuilder): void {
 
         builder.addDiffuseMap(this.diffuseMap);
         if (this.diffuseMap2 != null) {

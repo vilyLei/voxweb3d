@@ -10,8 +10,9 @@ import { IShaderCodeUniform } from "../../vox/material/code/IShaderCodeUniform";
 import IRenderTexture from "../render/texture/IRenderTexture";
 import { SpecularMode } from "./pipeline/SpecularMode";
 import { ShadowMode } from "./pipeline/ShadowMode";
+import { IShaderTextureBuilder } from "./IShaderTextureBuilder";
 
-class ShaderTextureBuilder {
+class ShaderTextureBuilder implements IShaderTextureBuilder {
 
     private m_coderBuilder: IShaderCodeBuilder = null;
     private m_uniform: IShaderCodeUniform = null;
