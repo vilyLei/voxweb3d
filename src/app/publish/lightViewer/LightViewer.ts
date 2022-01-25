@@ -16,6 +16,7 @@ import ViewerScene from "./ViewerScene";
 import { IAppObjData } from "../../modules/interfaces/IAppObjData";
 import IObjGeomDataParser from "../../../vox/mesh/obj/IObjGeomDataParser";
 import { IDataMesh } from "../../../vox/mesh/IDataMesh";
+import BinaryLoader from "../../../vox/assets/BinaryLoader";
 
 declare var AppEngine: any;
 declare var AppBase: any;
@@ -64,9 +65,23 @@ class LightViewer implements IShaderLibListener {
             this.m_scene.addLamgert();
         }
     }
+    
+    loaded(buffer: ArrayBuffer, uuid: string): void {
+        console.log("loaded spec map ata.");
+    }
+    loadError(status: number, uuid: string): void {
+    }
+    private loadSpecularData(hdrBrnEnabled: boolean): void {
+        let envMapUrl: string = "static/bytes/spe.mdf";
+        if (hdrBrnEnabled) {
+            envMapUrl = "static/bytes/speBrn.bin";
+        }
+        console.log("start load spec map ata.");
+        let load = new BinaryLoader();
+        load.load(envMapUrl, this);
+    }
     private m_geomDataParser: IObjGeomDataParser = null;
     private m_mesh: IDataMesh = null;
-
     private buildMeshData(): void {
 
         if(this.m_mesh == null && this.m_rscene != null && this.m_geomDataParser != null) {
@@ -91,7 +106,9 @@ class LightViewer implements IShaderLibListener {
             let objData = new AppObjData.Instance() as IAppObjData;
             objData.load(objUrl, (parser: IObjGeomDataParser): void => {
                 this.m_geomDataParser = parser;
-                this.buildMeshData();                
+                this.buildMeshData();
+                
+                this.loadSpecularData(true);
             })
             this.m_voxAppObjData = objData;
         }

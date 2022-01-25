@@ -33,7 +33,6 @@ export class AppLoader {
     }
     private loadEngine(): void {
         
-
         let loader: ModuleLoader;
         
         let engine_url = host + "AppEngine.package.js";
@@ -51,7 +50,7 @@ export class AppLoader {
     private loadAppFunctions(): void {
 
         let loader: ModuleLoader;
-        
+
         let envLightModule_url = host + "AppEnvLightModule.package.js";
         let LightModule_url = host + "AppLightModule.package.js";
         let shadow_url = host + "AppShadow.package.js";
