@@ -34,23 +34,28 @@ export class AppLoader {
     private loadEngine(): void {
         
 
-        let objData_url = host + "AppObjData.package.js";
-        let loader = new ModuleLoader(ModuleFlag.AppObjData, objData_url, this);
-
+        let loader: ModuleLoader;
         
         let engine_url = host + "AppEngine.package.js";
         let base_url = host + "AppBase.package.js";
         loader = new ModuleLoader(ModuleFlag.AppEngine, engine_url, this);
         loader = new ModuleLoader(ModuleFlag.AppBase, base_url, this);
+
+        let objData_url = host + "AppObjData.package.js";
+        loader = new ModuleLoader(ModuleFlag.AppObjData, objData_url, this);
         
+        // let envLightModule_url = host + "AppEnvLightModule.package.js";
+        // loader = new ModuleLoader(ModuleFlag.AppEnvLight, envLightModule_url, this);
     }
     
     private loadAppFunctions(): void {
 
+        let loader: ModuleLoader;
+        
         let envLightModule_url = host + "AppEnvLightModule.package.js";
         let LightModule_url = host + "AppLightModule.package.js";
         let shadow_url = host + "AppShadow.package.js";
-        let loader = new ModuleLoader(ModuleFlag.AppEnvLight, envLightModule_url, this);
+        loader = new ModuleLoader(ModuleFlag.AppEnvLight, envLightModule_url, this);
         loader = new ModuleLoader(ModuleFlag.AppLight, LightModule_url, this);
         loader = new ModuleLoader(ModuleFlag.AppShadow, shadow_url, this);
 

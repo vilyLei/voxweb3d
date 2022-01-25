@@ -64,8 +64,13 @@ class ViewerScene {
     }
     setMaterialContext(materialCtx: IMaterialContext): void  {
         this.m_materialCtx = materialCtx;
-        this.m_appLambert = new AppLambert.Instance() as IAppLambert;
-        this.m_appLambert.initialize( this.m_rscene );
+    }
+    addLamgert(): void {
+        if(this.m_appLambert == null) {
+            this.m_appLambert = new AppLambert.Instance() as IAppLambert;
+            this.m_appLambert.initialize( this.m_rscene );
+            this.initCommonScene();
+        }
     }
     private createDefaultMaterial(): IRenderMaterial {
         let material = this.m_appBase.createDefaultMaterial();
@@ -154,7 +159,7 @@ class ViewerScene {
     }
     initCommonScene(): void {
         
-        if(this.m_materialCtx == null || this.m_meshs.length < 1) {
+        if(this.m_materialCtx == null || this.m_appLambert == null || this.m_meshs.length < 1) {
             return;
         }
         

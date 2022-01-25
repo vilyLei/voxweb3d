@@ -15,6 +15,7 @@ import ModuleFlag from "../base/ModuleFlag";
 import ViewerScene from "./ViewerScene";
 import { IAppObjData } from "../../modules/interfaces/IAppObjData";
 import IObjGeomDataParser from "../../../vox/mesh/obj/IObjGeomDataParser";
+import { IDataMesh } from "../../../vox/mesh/IDataMesh";
 
 declare var AppEngine: any;
 declare var AppBase: any;
@@ -56,8 +57,31 @@ class LightViewer implements IShaderLibListener {
             console.log("loaded all engine modules.");
             this.initEngine();
         }
-        if(this.m_mf.hasObjDataModule() && this.m_rscene != null) {
+        if(this.m_mf.hasObjDataModule()) {
             this.initObjData();
+        }
+        if(this.m_mf.isLambert(flag)) {
+            this.m_scene.addLamgert();
+        }
+    }
+    private m_geomDataParser: IObjGeomDataParser = null;
+    private m_mesh: IDataMesh = null;
+
+    private buildMeshData(): void {
+
+        if(this.m_mesh == null && this.m_rscene != null && this.m_geomDataParser != null) {
+
+            let parser = this.m_geomDataParser;
+            //console.log("parse obj geom parser: ",parser);
+            let mesh = this.m_rscene.entityBlock.createMesh();
+            mesh.setVS(parser.getVS());
+            mesh.setUVS(parser.getUVS());
+            mesh.setNVS(parser.getNVS());
+            mesh.setIVS(parser.getIVS());
+            this.m_mesh = mesh;
+            this.m_scene.addDataMesh( mesh );
+
+            this.m_scene.initCommonScene();
         }
     }
     private initObjData(): void {
@@ -66,16 +90,8 @@ class LightViewer implements IShaderLibListener {
             let objUrl = "static/assets/obj/apple_01.obj";
             let objData = new AppObjData.Instance() as IAppObjData;
             objData.load(objUrl, (parser: IObjGeomDataParser): void => {
-                //console.log("parse obj geom parser: ",parser);
-                let mesh = this.m_rscene.entityBlock.createMesh();
-                mesh.setVS(parser.getVS());
-                mesh.setUVS(parser.getUVS());
-                mesh.setNVS(parser.getNVS());
-                mesh.setIVS(parser.getIVS());
-
-                this.m_scene.addDataMesh( mesh );
-
-                this.m_scene.initCommonScene();
+                this.m_geomDataParser = parser;
+                this.buildMeshData();                
             })
             this.m_voxAppObjData = objData;
         }
@@ -113,7 +129,8 @@ class LightViewer implements IShaderLibListener {
             main( voxAppEngine );
 
             this.m_scene.initialize( voxAppBase, this.m_rscene );
-            this.m_scene.initDefaultEntities();
+            this.buildMeshData();
+            // this.m_scene.initDefaultEntities();
         }
     }
     private initLightScene(): void {

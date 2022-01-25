@@ -17,8 +17,8 @@ class ModuleFlag {
 
     }
     static Initialize(): void {
-        let mf: any = ModuleFlag;
-        mf.SYS_MODULE_LOADED = 31 | mf.AppLambert;
+        // let mf: any = ModuleFlag;
+        // mf.SYS_MODULE_LOADED = 31 | mf.AppLambert;
     }
 
     reset(): void {
@@ -47,6 +47,9 @@ class ModuleFlag {
     }
     isObjDataModule(flag: number): boolean {
         return flag == ModuleFlag.AppObjData;
+    }
+    isLambert(flag: number): boolean {
+        return flag == ModuleFlag.AppLambert;
     }
 }
 export default ModuleFlag;
