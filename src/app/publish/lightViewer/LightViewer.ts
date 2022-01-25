@@ -1,6 +1,5 @@
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 import IRendererScene from "../../../vox/scene/IRendererScene";
-import { IShadowVSMModule } from "../../../shadow/vsm/base/IShadowVSMModule";
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
 import { IEnvLightModule } from "../../../light/base/IEnvLightModule";
 import { IMaterialPipeline } from "../../../vox/material/pipeline/IMaterialPipeline";
@@ -17,12 +16,12 @@ import { IMaterialContext } from "../../../materialLab/base/IMaterialContext";
 import { IMaterial } from "../../../vox/material/IMaterial";
 import Color4 from "../../../vox/material/Color4";
 import ModuleFlag from "../base/ModuleFlag";
+import ViewerScene from "./ViewerScene";
 
 declare var AppEngine: any;
 declare var AppBase: any;
 declare var AppEnvLightModule: any;
 declare var AppLightModule: any;
-
 
 function main(appIns: any): void {
     appIns.initialize();
@@ -33,58 +32,41 @@ function main(appIns: any): void {
     window.requestAnimationFrame(mainLoop);
 }
 
-
 class LightViewer implements IShaderLibListener {
 
-    private m_voxAppEngineIns: IAppEngine = null;
+    private m_voxAppEngine: IAppEngine = null;
     private m_voxAppBase: IAppBase = null;
     private m_rscene: IRendererScene;
     private m_pipeline: IMaterialPipeline;
     private m_materialCtx: IMaterialContext;
 
-    private m_moduleFlag: number = 0x0;
-    private ENGINE_LOADED: number = ModuleFlag.AppEngine | ModuleFlag.AppBase;
-    private SYS_MODULE_LOADED: number = 3 | (7 << 2);
+    private m_MF: ModuleFlag = new ModuleFlag();
+    private m_scene: ViewerScene = new ViewerScene();
+    
     constructor() { }
 
-    hasEngineModule(): boolean {
-        return (this.ENGINE_LOADED & this.m_moduleFlag) == this.ENGINE_LOADED;
-    }
-    hasAllSysModules(): boolean {
-        console.log("this.SYS_MODULE_LOADED, this.m_moduleFlag: ", this.SYS_MODULE_LOADED, this.m_moduleFlag);
-        return (this.SYS_MODULE_LOADED & this.m_moduleFlag) == this.SYS_MODULE_LOADED;
-    }
-    hasEnvLightModule(): boolean {
-        return (ModuleFlag.AppEnvLight & this.m_moduleFlag) == ModuleFlag.AppEnvLight;
-    }
-    hasLightModule(): boolean {
-        return (ModuleFlag.AppLight & this.m_moduleFlag) == ModuleFlag.AppLight;
-    }
     setLoadedModuleFlag(flag: number): void {
 
-        this.m_moduleFlag |= flag;
-
-        if (this.m_moduleFlag > 0) {
-
-            if (this.hasAllSysModules()) {
-                console.log("loaded all modules.");
-                this.initLightScene();
-            }
-            else if (this.hasEngineModule()) {
-                console.log("loaded all engine modules.");
-                this.initEngine();
-            }
+        this.m_MF.addFlag( flag );
+        console.log("setLoadedModuleFlag(), flag: ", flag);
+        if (this.m_MF.hasAllSysModules()) {
+            console.log("loaded all modules.");
+            this.initLightScene();
+        }
+        else if (this.m_MF.hasEngineModule()) {
+            console.log("loaded all engine modules.");
+            this.initEngine();
         }
     }
     private initEngine(): void {
 
-        if (this.m_voxAppEngineIns == null) {
+        if (this.m_voxAppEngine == null) {
 
             let voxAppEngine = new AppEngine.Instance() as IAppEngine;
             let voxAppBase = new AppBase.Instance() as IAppBase;
 
             let rDevice = AppEngine.RendererDevice;
-            this.m_voxAppEngineIns = voxAppEngine;
+            this.m_voxAppEngine = voxAppEngine;
             this.m_voxAppBase = voxAppBase;
 
             let rparam = new RendererParam();
@@ -106,9 +88,15 @@ class LightViewer implements IShaderLibListener {
             voxAppBase.initialize(this.m_rscene);
 
             main( voxAppEngine );
+
+            this.m_scene.initialize( voxAppBase, this.m_rscene );
+            this.m_scene.initDefaultEntities();
         }
     }
     private initLightScene(): void {
+        if (this.m_voxAppEngine == null) {
+            this.initEngine();
+        }
         if (this.m_materialCtx == null) {
 
             let mcParam = new MaterialContextParam();
@@ -131,7 +119,7 @@ class LightViewer implements IShaderLibListener {
             this.buildLightModule(mcParam);
 
             this.m_materialCtx.initialize(this.m_rscene, mcParam);
-            this.m_pipeline = this.m_materialCtx.pipeline;
+            
         }
     }
 
@@ -143,11 +131,13 @@ class LightViewer implements IShaderLibListener {
         envLightModule.setEnvAmbientMap(this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg"));
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
 
-        this.initScene();
+        // this.initScene();
+        this.m_scene.setMaterialContext( this.m_materialCtx );
+        this.m_scene.initCommonScene();
     }
     private initEnvLight(): void {
         
-        if (this.hasEnvLightModule()) {
+        if (this.m_MF.hasEnvLightModule()) {
             let envLightModuleModule = new AppEnvLightModule.Instance() as IAppEnvLightModule;
             
             console.log("LightViewer::initialize()..., have env light module: ", envLightModuleModule);
@@ -156,8 +146,6 @@ class LightViewer implements IShaderLibListener {
             envLightPipe.setFogColorRGB3f(0.0, 0.8, 0.1);
 
             this.m_materialCtx.envLightModule = envLightPipe;
-            // this.m_pipeline = this.m_rscene.materialBlock.createMaterialPipeline(null);
-            // this.m_pipeline.addPipe(envLightPipe);
         }
     }
 
@@ -166,7 +154,7 @@ class LightViewer implements IShaderLibListener {
 
     protected buildLightModule(param: MaterialContextParam): ILightModule {
 
-        if (this.hasLightModule()) {
+        if (this.m_MF.hasLightModule()) {
             let lightModuleFactor = new AppLightModule.Instance() as IAppLightModule;
             let lightModule = lightModuleFactor.createLightModule(this.m_rscene);
             console.log("LightViewer::initialize()..., have light module: ", lightModule);
@@ -232,7 +220,6 @@ class LightViewer implements IShaderLibListener {
         let m = this.m_voxAppBase.createLambertMaterial();
         let decor: any = m.getDecorator();
         let vertUniform: any = decor.vertUniform;
-        // let m = this.m_rscene.materialBlock.createMaterial(decor);
         m.setMaterialPipeline(this.m_materialCtx.pipeline);
         decor.envAmbientLightEnabled = true;
 
@@ -256,7 +243,7 @@ class LightViewer implements IShaderLibListener {
         // let material = this.m_voxAppBaseIns.createDefaultMaterial() as IRenderMaterial;
         // material.pipeTypes = [MaterialPipeType.FOG_EXP2];
         // material.setMaterialPipeline(this.m_pipeline);
-        // // material.setTextureList([this.m_voxAppEngineIns.getImageTexByUrl("static/assets/box.jpg")]);
+        // // material.setTextureList([this.m_voxAppEngine.getImageTexByUrl("static/assets/box.jpg")]);
         // material.setTextureList([this.m_materialCtx.getTextureByUrl("static/assets/box.jpg")]);
         // material.initializeByCodeBuf(true);
 

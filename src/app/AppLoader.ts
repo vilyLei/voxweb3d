@@ -2,10 +2,12 @@
 import ModuleFlag from "./publish/base/ModuleFlag";
 import LightViewer from "./publish/lightViewer/LightViewer";
 
+let host = "static/publish/build/";
+
 class AppShell {
     private m_viewer: LightViewer = new LightViewer();
     constructor() { }
-
+    
     loadedWithIndex(index: number): void {
         this.m_viewer.setLoadedModuleFlag(index);
     }
@@ -13,6 +15,7 @@ class AppShell {
 export class AppLoader {
 
     private m_appShell: AppShell = new AppShell();
+    private m_MF: ModuleFlag = new ModuleFlag();
     constructor() { }
 
     initialize(): void {
@@ -24,25 +27,28 @@ export class AppLoader {
         this.initUI();
 
         // this.load( url );
-
-        let host = "http://192.168.0.105:9000/";
-        // host = "http://localhost:9000/";
-        host = "static/publish/build/";
+        this.loadEngine();
+    }
+    private loadEngine(): void {
+        
         let engine_url = host + "AppEngine.package.js";
         let base_url = host + "AppBase.package.js";
-        let envLightModule_url = host + "AppEnvLightModule.package.js";
-        let LightModule_url = host + "AppLightModule.package.js";
-        let shadow_url = host + "AppShadow.package.js";
 
         let engineLoader = new ModuleLoader(ModuleFlag.AppEngine, engine_url, this);
         let baseLoader = new ModuleLoader(ModuleFlag.AppBase, base_url, this);
+    }
+    
+    private loadEngineFunctions(): void {
+
+        let envLightModule_url = host + "AppEnvLightModule.package.js";
+        let LightModule_url = host + "AppLightModule.package.js";
+        let shadow_url = host + "AppShadow.package.js";
         let envLightLoader = new ModuleLoader(ModuleFlag.AppEnvLight, envLightModule_url, this);
         let LightLoader = new ModuleLoader(ModuleFlag.AppLight, LightModule_url, this);
         let shadowLoader = new ModuleLoader(ModuleFlag.AppShadow, shadow_url, this);
     }
-    
     private showLoadInfo(e: any, index: number = 0): void {
-        if (index == 0) {
+        if (index == ModuleFlag.AppEngine) {
             this.showLoadProgressInfo(e);
         }
     }
@@ -104,7 +110,7 @@ export class AppLoader {
         this.showInfo("100%");
     }
     loadFinish(index: number = 0): void {
-        if (index == 0) {
+        if (index == ModuleFlag.AppEngine) {
             if (this.m_bodyDiv != null) {
                 this.m_bodyDiv.parentElement.removeChild(this.m_bodyDiv);
                 this.m_bodyDiv = null;
@@ -112,6 +118,10 @@ export class AppLoader {
         }
         console.log("loadFinish(), index: ", index);
         this.m_appShell.loadedWithIndex(index);
+        this.m_MF.addFlag(index);
+        if(this.m_MF.getFlag() == ModuleFlag.ENGINE_LOADED) {
+            this.loadEngineFunctions();
+        }
     }
     private elementCenter(ele: HTMLElement, top: string = "50%", left: string = "50%", position: string = "absolute"): void {
         
