@@ -38,76 +38,7 @@ export default class ObjData3DMesh extends MeshBase {
         this.m_dataParser.moduleScale = this.normalScale;
         this.m_dataParser.baseParsering = this.baseParsering;
         this.m_dataParser.parse(objDataStr, dataIsZxy);
-        /*
-        if(this.baseParsering) {
-            this.m_strDataParser = new ObjStrDataParser();
-            this.m_strDataParser.parseStrData(objDataStr, this.moduleScale, dataIsZxy);
-    
-            this.m_vs = new Float32Array(this.m_strDataParser.getVS());
-            if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
-                this.m_uvs = new Float32Array(this.m_strDataParser.getUVS());
-            }
-            if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
-                this.m_nvs = new Float32Array(this.m_strDataParser.getNVS());
-            }
-            this.m_ivs = new Uint16Array(this.m_strDataParser.getIVS());
-        }
-        else {
-            
-            let objParser = new ObjDataParser();
-            let objMeshes = objParser.Parse( objDataStr );
-            let objMeshesTotal: number = objMeshes.length;
-            let vsTotalLen: number = 0;
-            for(let i: number = 0; i < objMeshesTotal; ++i) {
-                vsTotalLen += objMeshes[i].geometry.vertices.length;
-            }
-            let vtxTotal = vsTotalLen / 3;
-            let uvsTotalLen: number = 2 * vtxTotal;
-            this.m_vs = new Float32Array(vsTotalLen);
-            let k: number = 0;
-            for(let i: number = 0; i < objMeshesTotal; ++i) {
-                this.m_vs.set(objMeshes[i].geometry.vertices, k);
-                k += objMeshes[i].geometry.vertices.length;
-            }
-            if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
-                this.m_uvs = new Float32Array( uvsTotalLen );
-                k = 0;
-                for(let i: number = 0; i < objMeshesTotal; ++i) {
-                    this.m_uvs.set(objMeshes[i].geometry.uvs, k);
-                    k += objMeshes[i].geometry.uvs.length;
-                }
-            }
-            if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
-                this.m_nvs = new Float32Array( vsTotalLen );
-                k = 0;
-                for(let i: number = 0; i < objMeshesTotal; ++i) {
-                    this.m_nvs.set(objMeshes[i].geometry.normals, k);
-                    k += objMeshes[i].geometry.normals.length;
-                }
-            }
-
-            this.m_ivs = vtxTotal > 65535? new Uint32Array(vtxTotal) : new Uint16Array(vtxTotal);
-            for(let i: number = 0; i < vtxTotal; ++i) {
-                this.m_ivs[i] = i;
-            }
-
-            if(dataIsZxy) {
-                let vs = this.m_vs;
-                let px: number;
-                let py: number;
-                let pz: number;
-                for(let i: number = 0; i < vtxTotal; ++i) {
-                    px = vs[k];
-                    py = vs[k+1];
-                    pz = vs[k+2];
-                    vs[k] = py;
-                    vs[k + 1] = pz;
-                    vs[k + 2] = px;
-                    k += 3;
-                }
-            }
-        }
-        //*/
+        
         this.m_vs = this.m_dataParser.getVS();
         this.bounds = new AABB();
         this.bounds.addXYZFloat32Arr(this.m_vs);

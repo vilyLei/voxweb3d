@@ -19,7 +19,10 @@ class Instance implements IAppEngine {
 
     readonly interaction: UserInteraction = new UserInteraction();
     constructor() { }
-
+    
+    setSyncLookEnabled(enabled: boolean): void {
+        this.interaction.cameraZoomController.syncLookAt = enabled;
+    }
     addEntity(entity: IRenderEntity, processIndex: number = 0): void {
         if (this.m_rscene != null) {
             this.m_rscene.addEntity(entity, processIndex);

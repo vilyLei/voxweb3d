@@ -8,6 +8,7 @@
 import AABB from "../../vox/geom/AABB";
 
 export default class GeometryBase {
+    
     protected m_vs: Float32Array = null;
     protected m_uvs: Float32Array = null;
     protected m_nvs: Float32Array = null;

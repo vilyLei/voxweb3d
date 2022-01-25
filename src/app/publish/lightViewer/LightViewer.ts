@@ -13,11 +13,14 @@ import { IShaderLibListener } from "../../../materialLab/shader/IShaderLibListen
 import { IMaterialContext } from "../../../materialLab/base/IMaterialContext";
 import ModuleFlag from "../base/ModuleFlag";
 import ViewerScene from "./ViewerScene";
+import { IAppObjData } from "../../modules/interfaces/IAppObjData";
+import IObjGeomDataParser from "../../../vox/mesh/obj/IObjGeomDataParser";
 
 declare var AppEngine: any;
 declare var AppBase: any;
 declare var AppEnvLightModule: any;
 declare var AppLightModule: any;
+declare var AppObjData: any;
 
 function main(appIns: any): void {
     appIns.initialize();
@@ -32,25 +35,48 @@ class LightViewer implements IShaderLibListener {
 
     private m_voxAppEngine: IAppEngine = null;
     private m_voxAppBase: IAppBase = null;
+    private m_voxAppObjData: IAppObjData = null;
     private m_rscene: IRendererScene;
     private m_materialCtx: IMaterialContext;
 
-    private m_MF: ModuleFlag = new ModuleFlag();
+    private m_mf: ModuleFlag = new ModuleFlag();
     private m_scene: ViewerScene = new ViewerScene();
     
     constructor() { }
 
     setLoadedModuleFlag(flag: number): void {
 
-        this.m_MF.addFlag( flag );
+        this.m_mf.addFlag( flag );
         console.log("setLoadedModuleFlag(), flag: ", flag);
-        if (this.m_MF.hasAllSysModules()) {
+        if (this.m_mf.hasAllSysModules()) {
             console.log("loaded all modules.");
             this.initLightScene();
         }
-        else if (this.m_MF.hasEngineModule()) {
+        else if (this.m_mf.hasEngineModule()) {
             console.log("loaded all engine modules.");
             this.initEngine();
+        }
+        if(this.m_mf.hasObjDataModule() && this.m_rscene != null) {
+            this.initObjData();
+        }
+    }
+    private initObjData(): void {
+        if(this.m_voxAppObjData == null) {
+            let objUrl = "static/assets/obj/apple_01.obj";
+            let objData = new AppObjData.Instance() as IAppObjData;
+            objData.load(objUrl, (parser: IObjGeomDataParser): void => {
+                //console.log("parse obj geom parser: ",parser);
+                let mesh = this.m_rscene.entityBlock.createMesh();
+                mesh.setVS(parser.getVS());
+                mesh.setUVS(parser.getUVS());
+                mesh.setNVS(parser.getNVS());
+                mesh.setIVS(parser.getIVS());
+
+                this.m_scene.addDataMesh( mesh );
+
+                this.m_scene.initCommonScene();
+            })
+            this.m_voxAppObjData = objData;
         }
     }
     private initEngine(): void {
@@ -82,6 +108,7 @@ class LightViewer implements IShaderLibListener {
             this.m_rscene = voxAppEngine.getRendererScene() as IRendererScene;
             voxAppBase.initialize(this.m_rscene);
 
+            voxAppEngine.setSyncLookEnabled( true );
             main( voxAppEngine );
 
             this.m_scene.initialize( voxAppBase, this.m_rscene );
@@ -129,11 +156,13 @@ class LightViewer implements IShaderLibListener {
 
         // this.initScene();
         this.m_scene.setMaterialContext( this.m_materialCtx );
+        // if(this.m_voxAppObjData != null) {
         this.m_scene.initCommonScene();
+        // }
     }
     private initEnvLight(): void {
         
-        if (this.m_MF.hasEnvLightModule()) {
+        if (this.m_mf.hasEnvLightModule()) {
             let envLightModuleModule = new AppEnvLightModule.Instance() as IAppEnvLightModule;
             
             let envLightPipe = envLightModuleModule.createEnvLightModule(this.m_rscene) as IEnvLightModule;
@@ -149,7 +178,7 @@ class LightViewer implements IShaderLibListener {
 
     protected buildLightModule(param: MaterialContextParam): ILightModule {
 
-        if (this.m_MF.hasLightModule()) {
+        if (this.m_mf.hasLightModule()) {
             let lightModuleFactor = new AppLightModule.Instance() as IAppLightModule;
             let lightModule = lightModuleFactor.createLightModule(this.m_rscene);
             

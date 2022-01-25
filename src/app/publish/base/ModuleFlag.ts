@@ -37,5 +37,8 @@ class ModuleFlag {
     hasObjDataModule(): boolean {
         return (ModuleFlag.AppObjData & this.m_flag) == ModuleFlag.AppObjData;
     }
+    isObjDataModule(flag: number): boolean {
+        return flag == ModuleFlag.AppObjData;
+    }
 }
 export default ModuleFlag;

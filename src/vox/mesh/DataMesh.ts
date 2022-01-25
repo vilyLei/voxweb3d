@@ -125,6 +125,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
         this.m_btvs = geom.getBTVS();
         this.m_cvs = geom.getCVS();
         this.m_ivs = geom.getIVS();
+        
         this.m_initIVS = this.m_ivs;
         this.m_boundsChanged = true;
         this.initialize();

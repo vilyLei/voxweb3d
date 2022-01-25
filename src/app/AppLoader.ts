@@ -15,7 +15,8 @@ class AppShell {
 export class AppLoader {
 
     private m_appShell: AppShell = new AppShell();
-    private m_MF: ModuleFlag = new ModuleFlag();
+    private m_mf: ModuleFlag = new ModuleFlag();
+    private m_initOther: boolean = true;
     constructor() { }
 
     initialize(): void {
@@ -120,8 +121,9 @@ export class AppLoader {
         }
         console.log("loadFinish(), index: ", index);
         this.m_appShell.loadedWithIndex(index);
-        this.m_MF.addFlag(index);
-        if(this.m_MF.getFlag() == ModuleFlag.ENGINE_LOADED) {
+        this.m_mf.addFlag(index);
+        if(this.m_initOther && this.m_mf.hasEngineModule()) {
+            this.m_initOther = false;
             this.loadEngineFunctions();
         }
     }

@@ -10,6 +10,8 @@ import { IMaterialContext } from "../../../materialLab/base/IMaterialContext";
 import { IMaterial } from "../../../vox/material/IMaterial";
 import Color4 from "../../../vox/material/Color4";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
+import IObjGeomDataParser from "../../../vox/mesh/obj/IObjGeomDataParser";
+import { IDataMesh } from "../../../vox/mesh/IDataMesh";
 
 declare var AppBase: any;
 
@@ -20,8 +22,37 @@ class ViewerScene {
     private m_materialCtx: IMaterialContext;
     private m_defaultEntities: IRenderEntity[] = [];
     private m_entities: IRenderEntity[] = [];
+    private m_meshs: IDataMesh[] = [];
     constructor() { }
+    addDataMesh(mesh: IDataMesh): void {
+        
+        let rscene = this.m_rscene;
 
+        this.m_meshs.push( mesh );
+
+        let material = this.createDefaultMaterial();
+        material.initializeByCodeBuf(true);
+        
+        mesh.setVtxBufRenderData( material );
+        mesh.initialize();
+        
+        let scale: number = 400.0;
+        let entity = this.m_rscene.entityBlock.createEntity();
+        entity.setMesh( mesh );
+        entity.setMaterial ( material );
+        entity.setScaleXYZ(scale, scale, scale);
+        rscene.addEntity(entity);
+        this.m_defaultEntities.push( entity );
+
+        // let scale: number = 500.0;
+
+        // let boxEntity = rscene.entityBlock.createEntity();
+        // boxEntity.setMaterial (material );
+        // boxEntity.copyMeshFrom( rscene.entityBlock.unitBox );
+        // boxEntity.setScaleXYZ(scale, scale * 0.05, scale);
+        // rscene.addEntity(boxEntity);
+        // this.m_defaultEntities.push( boxEntity );
+    }
     initialize(voxAppBase: IAppBase, rscene: IRendererScene): void {
         this.m_voxAppBase = voxAppBase;
         this.m_rscene = rscene;
@@ -30,7 +61,14 @@ class ViewerScene {
     setMaterialContext(materialCtx: IMaterialContext): void  {
         this.m_materialCtx = materialCtx;
     }
+    private createDefaultMaterial(): IRenderMaterial {
+        let material = this.m_voxAppBase.createDefaultMaterial();
+        (material as any).normalEnabled = true;
+        material.setTextureList( [this.m_rscene.textureBlock.createRGBATex2D(32,32,new Color4(0.2,0.8,0.4))] );
+        return material;
+    }
     initDefaultEntities(): void {
+        /*
         let rscene = this.m_rscene;
         let material = this.m_voxAppBase.createDefaultMaterial();
         (material as any).normalEnabled = true;
@@ -43,6 +81,7 @@ class ViewerScene {
         boxEntity.setScaleXYZ(scale, scale * 0.05, scale);
         rscene.addEntity(boxEntity);
         this.m_defaultEntities.push( boxEntity );
+        //*/
     }
 
     private useLMMaps(decorator: any, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
@@ -99,6 +138,7 @@ class ViewerScene {
                 const et = this.m_defaultEntities[i];
                 rscene.removeEntity(et);
                 this.m_defaultEntities.splice(i,1);
+                // this.m_entities[i].setVisible(false);
                 this.m_entities.splice(i,1);
             }
         }
@@ -107,20 +147,33 @@ class ViewerScene {
         }
     }
     initCommonScene(): void {
-
+        
+        if(this.m_materialCtx == null || this.m_meshs.length < 1) {
+            return;
+        }
+        
         let rscene = this.m_rscene;
 
         this.update();
+        if(this.m_defaultEntities.length > 0) {
+            let material = this.createLM();
 
-        let material = this.createLM();
+            let scale: number = 400.0;
+            let entity = rscene.entityBlock.createEntity();
+            entity.setMaterial(material);
+            entity.copyMeshFrom(this.m_defaultEntities[0]);
+            entity.setScaleXYZ(scale, scale, scale);
+            rscene.addEntity(entity);
+            this.m_entities.push( entity );
+        }
 
-        let scale: number = 500.0;
-        let boxEntity = rscene.entityBlock.createEntity();
-        boxEntity.setMaterial(material);
-        boxEntity.copyMeshFrom(rscene.entityBlock.unitBox);
-        boxEntity.setScaleXYZ(scale, scale * 0.05, scale);
-        rscene.addEntity(boxEntity);
-        this.m_entities.push( boxEntity );
+        // let scale: number = 500.0;
+        // let boxEntity = rscene.entityBlock.createEntity();
+        // boxEntity.setMaterial(material);
+        // boxEntity.copyMeshFrom(rscene.entityBlock.unitBox);
+        // boxEntity.setScaleXYZ(scale, scale * 0.05, scale);
+        // rscene.addEntity(boxEntity);
+        // this.m_entities.push( boxEntity );
 
         // let axis = new VoxApp.Axis3DEntity();
         // axis.initialize(30);
