@@ -62,6 +62,7 @@ class LightViewer implements IShaderLibListener {
     }
     private initObjData(): void {
         if(this.m_voxAppObjData == null) {
+            console.log("start load data");
             let objUrl = "static/assets/obj/apple_01.obj";
             let objData = new AppObjData.Instance() as IAppObjData;
             objData.load(objUrl, (parser: IObjGeomDataParser): void => {

@@ -13,6 +13,8 @@
     "buildAppLightModule": "vue-cli-service build --target lib --name AppLightModule --dest dist ./src/app/modules/instances/AppLightModule.ts",
     "buildAppShadow": "vue-cli-service build --target lib --name AppShadow --dest dist ./src/app/modules/instances/AppShadow.ts",
     "buildAppObjData": "vue-cli-service build --target lib --name AppObjData --dest dist ./src/app/modules/instances/AppObjData.ts",
+    "buildAppLambert": "vue-cli-service build --target lib --name AppLambert --dest dist ./src/app/modules/instances/AppLambert.ts",
+    "buildAppPBR": "vue-cli-service build --target lib --name AppPBR --dest dist ./src/app/modules/instances/AppPBR.ts",
 
     "build": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main.ts",
     "buildvox": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/dev.ts",

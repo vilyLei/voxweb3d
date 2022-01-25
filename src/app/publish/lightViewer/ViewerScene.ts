@@ -12,12 +12,15 @@ import Color4 from "../../../vox/material/Color4";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
 import IObjGeomDataParser from "../../../vox/mesh/obj/IObjGeomDataParser";
 import { IDataMesh } from "../../../vox/mesh/IDataMesh";
+import { IAppLambert } from "../../modules/interfaces/IAppLambert";
 
 declare var AppBase: any;
+declare var AppLambert: any;
 
 class ViewerScene {
 
-    private m_voxAppBase: IAppBase = null;
+    private m_appBase: IAppBase = null;
+    private m_appLambert: IAppLambert = null;
     private m_rscene: IRendererScene;
     private m_materialCtx: IMaterialContext;
     private m_defaultEntities: IRenderEntity[] = [];
@@ -26,6 +29,7 @@ class ViewerScene {
     constructor() { }
     addDataMesh(mesh: IDataMesh): void {
         
+        console.log("add mesh");
         let rscene = this.m_rscene;
 
         this.m_meshs.push( mesh );
@@ -54,7 +58,7 @@ class ViewerScene {
         // this.m_defaultEntities.push( boxEntity );
     }
     initialize(voxAppBase: IAppBase, rscene: IRendererScene): void {
-        this.m_voxAppBase = voxAppBase;
+        this.m_appBase = voxAppBase;
         this.m_rscene = rscene;
         this.m_rscene.setClearRGBColor3f(0.1,0.4,0.2);
     }
@@ -62,7 +66,7 @@ class ViewerScene {
         this.m_materialCtx = materialCtx;
     }
     private createDefaultMaterial(): IRenderMaterial {
-        let material = this.m_voxAppBase.createDefaultMaterial();
+        let material = this.m_appBase.createDefaultMaterial();
         (material as any).normalEnabled = true;
         material.setTextureList( [this.m_rscene.textureBlock.createRGBATex2D(32,32,new Color4(0.2,0.8,0.4))] );
         return material;
@@ -70,7 +74,7 @@ class ViewerScene {
     initDefaultEntities(): void {
         /*
         let rscene = this.m_rscene;
-        let material = this.m_voxAppBase.createDefaultMaterial();
+        let material = this.m_appBase.createDefaultMaterial();
         (material as any).normalEnabled = true;
         material.setTextureList( [this.m_rscene.textureBlock.createRGBATex2D(32,32,new Color4(0.2,0.8,0.4))] );
 
@@ -103,7 +107,7 @@ class ViewerScene {
     }
     private createLM(): IMaterial {
 
-        let m = this.m_voxAppBase.createLambertMaterial();
+        let m = this.m_appLambert.createMaterial();
         let decor: any = m.getDecorator();
         let vertUniform: any = decor.vertUniform;
         m.setMaterialPipeline( this.m_materialCtx.pipeline );
@@ -190,7 +194,7 @@ class ViewerScene {
 
         let renderingState = this.m_rscene.getRenderProxy().renderingState;
         let rscene = this.m_rscene;
-        let material = this.m_voxAppBase.createDefaultMaterial() as IRenderMaterial;
+        let material = this.m_appBase.createDefaultMaterial() as IRenderMaterial;
         material.pipeTypes = [MaterialPipeType.FOG_EXP2];
         material.setMaterialPipeline( this.m_materialCtx.pipeline );
         material.setTextureList([this.m_materialCtx.getTextureByUrl("static/assets/box.jpg")]);

@@ -32,13 +32,16 @@ export class AppLoader {
     }
     private loadEngine(): void {
         
+
+        let objData_url = host + "AppObjData.package.js";
+        let loader = new ModuleLoader(ModuleFlag.AppObjData, objData_url, this);
+
+        
         let engine_url = host + "AppEngine.package.js";
         let base_url = host + "AppBase.package.js";
-        let objData_url = host + "AppObjData.package.js";
-
-        let loader = new ModuleLoader(ModuleFlag.AppEngine, engine_url, this);
+        loader = new ModuleLoader(ModuleFlag.AppEngine, engine_url, this);
         loader = new ModuleLoader(ModuleFlag.AppBase, base_url, this);
-        loader = new ModuleLoader(ModuleFlag.AppObjData, objData_url, this);
+        
     }
     
     private loadEngineFunctions(): void {
