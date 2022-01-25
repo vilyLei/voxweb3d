@@ -10,7 +10,7 @@ import TextureProxy from "../vox/texture/TextureProxy";
 import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
 import BytesTextureProxy from "../vox/texture/BytesTextureProxy";
 import FloatTextureProxy from "../vox/texture/FloatTextureProxy";
-import { TextureConst } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import ImageTool from "../vox/texture/ImageTool";
 import CameraTrack from "../vox/view/CameraTrack";

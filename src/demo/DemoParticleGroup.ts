@@ -15,7 +15,7 @@ import Billboard3DGroupEntity from "../vox/entity/Billboard3DGroupEntity";
 import Billboard3DFlareEntity from "../vox/entity/Billboard3DFlareEntity";
 import Billboard3DFlowEntity from "../vox/entity/Billboard3DFlowEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import CameraViewRay from "../vox/view/CameraViewRay";

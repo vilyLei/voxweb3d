@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
-import { TextureConst } from "../../../vox/texture/TextureConst";
+import TextureConst from "../../../vox/texture/TextureConst";
 import { MaterialContext } from "../../../materialLab/base/MaterialContext";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";

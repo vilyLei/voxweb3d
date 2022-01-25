@@ -6,7 +6,8 @@
 /***************************************************************************/
 
 import { TextureProxyType } from "../../vox/texture/TextureProxyType";
-import { TextureFormat, TextureTarget } from "../../vox/texture/TextureConst";
+import TextureFormat from "../../vox/texture/TextureFormat";
+import TextureTarget from "../../vox/texture/TextureTarget";
 import IRenderResource from "../../vox/render/IRenderResource";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import { ITexture3D } from "../../vox/render/texture/ITexture3D";

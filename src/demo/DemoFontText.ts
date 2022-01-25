@@ -9,7 +9,7 @@ import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import MouseEvent from "../vox/event/MouseEvent";
 import Stage3D from "../vox/display/Stage3D";
 
-import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import TextureProxy from "../vox/texture/TextureProxy";
 import H5FontSystem from "../vox/text/H5FontSys";
 

@@ -23,7 +23,7 @@ import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
 import ClipsBillboard3DEntity from "../../vox/entity/ClipsBillboard3DEntity";
 import ObjData3DEntity from "../../vox/entity/ObjData3DEntity";
 import TextureProxy from "../../vox/texture/TextureProxy";
-import { TextureConst } from "../../vox/texture/TextureConst";
+import TextureConst from "../../vox/texture/TextureConst";
 
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import { EntityDisp } from "../base/EntityDisp";

@@ -7,7 +7,9 @@
 
 import RenderFilter from "../../vox/render/RenderFilter";
 import RenderMaskBitfield from "../../vox/render/RenderMaskBitfield";
-import { TextureConst, TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
+import TextureConst from "../../vox/texture/TextureConst";
+import TextureDataType from "../../vox/texture/TextureDataType";
+import TextureFormat from "../../vox/texture/TextureFormat";
 import { IRTTTexture } from "../../vox/render/texture/IRTTTexture";
 import { IRTTTextureStore } from "../../vox/texture/IRTTTextureStore";
 import Color4 from "../../vox/material/Color4";

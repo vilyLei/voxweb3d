@@ -9,7 +9,7 @@ import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Line3DEntity from "../vox/entity/Line3DEntity";
 import DashedLine3DEntity from "../vox/entity/DashedLine3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 
 import RendererScene from "../vox/scene/RendererScene";

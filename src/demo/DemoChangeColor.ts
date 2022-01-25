@@ -5,7 +5,7 @@ import RendererParam from "../vox/scene/RendererParam";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import Box3DEntity from "../vox/entity/Box3DEntity";
-import { TextureConst } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import TextureProxy from "../vox/texture/TextureProxy";
 
 import MouseEvent from "../vox/event/MouseEvent";

@@ -8,7 +8,7 @@ import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import Box3DEntity from "../../vox/entity/Box3DEntity";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import FrustrumFrame3DEntity from "../../vox/entity/FrustrumFrame3DEntity";
-import { TextureConst } from "../../vox/texture/TextureConst";
+import TextureConst from "../../vox/texture/TextureConst";
 import TextureProxy from "../../vox/texture/TextureProxy";
 
 import MouseEvent from "../../vox/event/MouseEvent";

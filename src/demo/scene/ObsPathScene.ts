@@ -3,7 +3,7 @@ import Box3DEntity from "../../vox/entity/Box3DEntity";
 import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
 import RendererScene from "../../vox/scene/RendererScene";
 import TextureProxy from "../../vox/texture/TextureProxy";
-import {TextureConst} from "../../vox/texture/TextureConst";
+import TextureConst from "../../vox/texture/TextureConst";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import Vector3D from "../../vox/math/Vector3D";
 import Line3DEntity from "../../vox/entity/Line3DEntity";

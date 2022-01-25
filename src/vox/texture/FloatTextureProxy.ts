@@ -6,7 +6,9 @@
 /***************************************************************************/
 
 import { TextureProxyType } from "../../vox/texture/TextureProxyType";
-import { TextureConst, TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
+import TextureConst from "../../vox/texture/TextureConst";
+import TextureFormat from "../../vox/texture/TextureFormat";
+import TextureDataType from "../../vox/texture/TextureDataType";
 import RawDataTextureProxy from "../../vox/texture/RawDataTextureProxy";
 import { IFloatTexture } from "../../vox/render/texture/IFloatTexture";
 

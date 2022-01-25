@@ -1,5 +1,5 @@
 
-import { TextureConst } from "../../vox/texture/TextureConst";
+import TextureConst from "../../vox/texture/TextureConst";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { IImageTexture } from "../../vox/render/texture/IImageTexture";
 import AABB2D from "../geom/AABB2D";

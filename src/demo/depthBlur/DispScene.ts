@@ -1,4 +1,3 @@
-
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../../vox/render/RenderConst";
 import RendererState from "../../vox/render/RendererState";
@@ -6,7 +5,8 @@ import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
-import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../../vox/texture/TextureConst";
+import TextureDataType from "../../vox/texture/TextureDataType";
+import TextureFormat from "../../vox/texture/TextureFormat";
 import { TextureBlock } from "../../vox/texture/TextureBlock";
 import { ScrDepBaseMaterial } from "../material/ScrDepBaseMaterial";
 import { ScrDepBlurMaterial } from "../material/ScrDepBlurMaterial";

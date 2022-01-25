@@ -10,7 +10,7 @@ import Line3DEntity from "../vox/entity/Line3DEntity";
 import DashedLine3DEntity from "../vox/entity/DashedLine3DEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import FloatTextureProxy from "../vox/texture/FloatTextureProxy";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";

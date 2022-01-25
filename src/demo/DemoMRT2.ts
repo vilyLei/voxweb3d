@@ -14,7 +14,7 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
 ////import * as TextureStoreT from "../vox/texture/TextureStore";
-import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import DefaultMRTMaterial from "../vox/material/mcase/DefaultMRTMaterial";

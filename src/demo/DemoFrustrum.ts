@@ -14,17 +14,10 @@ import CameraBase from "../vox/view/CameraBase";
 
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
-import DashedLine3DEntity from "../vox/entity/DashedLine3DEntity";
-import TextureProxy from "../vox/texture/TextureProxy";
-import { TextureConst, } from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
-import { TextureBlock } from "../vox/texture/TextureBlock";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
 
-import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
-import CameraZoomController from "../voxeditor/control/CameraZoomController";
-import Color4 from "../vox/material/Color4";
 import FrustrumFrame3DEntity from "../vox/entity/FrustrumFrame3DEntity";
 import { UserInteraction } from "../vox/engine/UserInteraction";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";

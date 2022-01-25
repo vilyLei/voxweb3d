@@ -7,7 +7,7 @@ import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
-import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
 

@@ -24,7 +24,7 @@ import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import BrokenLine3DEntity from "../vox/entity/BrokenLine3DEntity";
 import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import MouseEvt3DDispatcher from "../vox/event/MouseEvt3DDispatcher";

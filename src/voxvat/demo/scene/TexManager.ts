@@ -1,6 +1,6 @@
 
 
-import { TextureConst } from "../../../vox/texture/TextureConst";
+import TextureConst from "../../../vox/texture/TextureConst";
 import TextureProxy from "../../../vox/texture/TextureProxy";
 import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
 import { ITextureBlock } from "../../../vox/texture/ITextureBlock";

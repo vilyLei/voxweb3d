@@ -6,7 +6,7 @@ import Color4 from "../vox/material/Color4";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import TextureProxy from "../vox/texture/TextureProxy";
-import {TextureConst} from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";

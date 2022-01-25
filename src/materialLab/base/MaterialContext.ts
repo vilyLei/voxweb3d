@@ -5,7 +5,7 @@ import { IEnvLightModule } from "../../light/base/IEnvLightModule";
 import { IShadowVSMModule } from "../../shadow/vsm/base/IShadowVSMModule";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
-import { TextureConst } from "../../vox/texture/TextureConst";
+import TextureConst from "../../vox/texture/TextureConst";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import { ShaderCodeConfigure, ShaderCodeType, IShaderLibConfigure, IShaderLibListener, ShaderLib } from "../shader/ShaderLib";
 import IShaderCodeObject from "../../vox/material/IShaderCodeObject";

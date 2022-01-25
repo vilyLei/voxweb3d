@@ -16,7 +16,7 @@ import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import BoxFrame3D from "../vox/entity/BoxFrame3D";
 import TextureProxy from "../vox/texture/TextureProxy";
-import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import { TextureBlock } from "../vox/texture/TextureBlock";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";

@@ -7,7 +7,7 @@ import Stage3D from "../vox/display/Stage3D";
 import CameraBase from "../vox/view/CameraBase";
 
 import TextureProxy from "../vox/texture/TextureProxy";
-import { TextureConst } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import RendererScene from "../vox/scene/RendererScene";
 class DemoInstance {

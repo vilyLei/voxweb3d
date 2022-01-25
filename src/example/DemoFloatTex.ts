@@ -14,7 +14,7 @@ import BytesTextureProxy from "../vox/texture/BytesTextureProxy";
 import FloatTextureProxy from "../vox/texture/FloatTextureProxy";
 import FloatCubeTextureProxy from "../vox/texture/FloatCubeTextureProxy";
 ////import * as TextureStoreT from "../vox/texture/TextureStore";
-import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";

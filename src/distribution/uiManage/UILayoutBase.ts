@@ -1,6 +1,6 @@
 import RendererScene from "../../vox/scene/RendererScene";
 import RendererSubScene from "../../vox/scene/RendererSubScene";
-import { TextureConst } from "../../vox/texture/TextureConst";
+import TextureConst from "../../vox/texture/TextureConst";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";

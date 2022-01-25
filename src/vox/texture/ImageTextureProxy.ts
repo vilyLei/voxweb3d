@@ -7,7 +7,7 @@
 
 import ITexData from "../../vox/texture/ITexData";
 import { TextureProxyType } from "../../vox/texture/TextureProxyType";
-import { TextureConst } from "../../vox/texture/TextureConst";
+import TextureConst from "../../vox/texture/TextureConst";
 import ImgTexData from "../../vox/texture/ImgTexData";
 import IRenderResource from "../../vox/render/IRenderResource";
 import TextureProxy from "../../vox/texture/TextureProxy";

@@ -9,7 +9,7 @@ import Matrix4 from "../../../vox/math/Matrix4";
 import MathConst from "../../../vox/math/MathConst";
 import Vector3D from "../../../vox/math/Vector3D";
 import { ITextureBlock } from "../../../vox/texture/ITextureBlock";
-import { TextureConst } from "../../../vox/texture/TextureConst";
+import TextureConst from "../../../vox/texture/TextureConst";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
 export default class SSAONoiseData {

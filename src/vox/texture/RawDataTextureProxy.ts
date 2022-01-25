@@ -4,7 +4,10 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import { TextureConst, TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
+import TextureConst from "../../vox/texture/TextureConst";
+import TextureFormat from "../../vox/texture/TextureFormat";
+
+import TextureDataType from "../../vox/texture/TextureDataType";
 import RawTexData from "../../vox/texture/RawTexData";
 import IRenderResource from "../../vox/render/IRenderResource";
 import TextureProxy from "../../vox/texture/TextureProxy";

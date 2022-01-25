@@ -26,7 +26,7 @@ import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import PathTrack from "../voxnav/path/PathTrack";

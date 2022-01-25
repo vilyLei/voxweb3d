@@ -11,7 +11,7 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import BoxFrame3D from "../vox/entity/BoxFrame3D";
 import TextureProxy from "../vox/texture/TextureProxy";
-import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 

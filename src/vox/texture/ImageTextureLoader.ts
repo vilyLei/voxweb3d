@@ -7,7 +7,7 @@
 
 import MathConst from "../../vox/math/MathConst";
 import IRunnable from "../../vox/base/IRunnable";
-import { TextureConst } from "../../vox/texture/TextureConst";
+import TextureConst from "../../vox/texture/TextureConst";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
 import ImageCubeTextureProxy from "../../vox/texture/ImageCubeTextureProxy";

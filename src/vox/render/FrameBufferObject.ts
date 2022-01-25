@@ -7,7 +7,8 @@
 
 import RendererDevice from "../../vox/render/RendererDevice";
 import FrameBufferType from "../../vox/render/FrameBufferType";
-import { TextureFormat, TextureTarget } from "../../vox/texture/TextureConst";
+import TextureFormat from "../../vox/texture/TextureFormat";
+import TextureTarget from "../../vox/texture/TextureTarget";
 import IRenderResource from '../../vox/render/IRenderResource';
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import RenderFBOProxy from "../../vox/render/RenderFBOProxy";

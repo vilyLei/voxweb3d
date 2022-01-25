@@ -8,7 +8,7 @@ import Vector3D from "../../../vox/math/Vector3D";
 import Color4 from "../../../vox/material/Color4";
 import Stage3D from "../../../vox/display/Stage3D";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../../../vox/render/RenderConst";
-import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../../../vox/texture/TextureConst";
+import TextureConst from "../../../vox/texture/TextureConst";
 import TextureProxy from "../../../vox/texture/TextureProxy";
 import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
 

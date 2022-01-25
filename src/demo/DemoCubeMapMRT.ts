@@ -11,7 +11,7 @@ import CubeMapMRTMaterial from "../vox/material/mcase/CubeMapMRTMaterial";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-import { TextureConst } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import { TextureBlock } from "../vox/texture/TextureBlock";
 import CameraTrack from "../vox/view/CameraTrack";

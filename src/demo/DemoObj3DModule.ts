@@ -7,7 +7,7 @@ import DisplayEntity from "../vox/entity/DisplayEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
-import { TextureConst } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import TextureProxy from "../vox/texture/TextureProxy";
 import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";

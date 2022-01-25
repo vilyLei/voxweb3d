@@ -6,7 +6,7 @@ import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-import {TextureConst} from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 
 import MouseEvent from "../vox/event/MouseEvent";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";

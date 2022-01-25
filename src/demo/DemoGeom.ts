@@ -21,7 +21,7 @@ import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 import Cone3DEntity from "../vox/entity/Cone3DEntity";
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-import {TextureConst} from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import { TextureBlock } from "../vox/texture/TextureBlock";

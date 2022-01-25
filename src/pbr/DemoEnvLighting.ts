@@ -26,7 +26,7 @@ import PBREnvLightingMaterial from "../pbr/material/PBREnvLightingMaterial";
 import PBRTexLightingMaterial from "./material/PBRTexLightingMaterial";
 import { IFloatCubeTexture } from "../vox/render/texture/IFloatCubeTexture";
 import FloatCubeTextureProxy from "../vox/texture/FloatCubeTextureProxy";
-import { TextureConst } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 
 class TextureLoader {
 

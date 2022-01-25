@@ -4,7 +4,7 @@ import { VertUniformComp } from "../../../vox/material/component/VertUniformComp
 import { IAppPBR } from "../interfaces/IAppPBR";
 import { PBRDecorator } from "../../../pbr/material/PBRDecorator";
 import { IBytesCubeTexture } from "../../../vox/render/texture/IBytesCubeTexture";
-import { TextureConst } from "../../../vox/texture/TextureConst";
+import TextureConst from "../../../vox/texture/TextureConst";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { IFloatCubeTexture } from "../../../vox/render/texture/IFloatCubeTexture";
 

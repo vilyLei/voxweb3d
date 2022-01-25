@@ -17,7 +17,7 @@ import IRenderTexture from "../vox/render/texture/IRenderTexture";
 
 import PBRMaterial from "./material/PBRMaterial";
 import PBRShaderDecorator from "./material/PBRShaderDecorator";
-import { TextureConst } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 

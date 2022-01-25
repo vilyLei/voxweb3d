@@ -10,7 +10,7 @@ import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import Color4 from "../../../vox/material/Color4";
 import FloatTextureProxy from "../../../vox/texture/FloatTextureProxy";
-import { TextureConst } from "../../../vox/texture/TextureConst";
+import TextureConst from "../../../vox/texture/TextureConst";
 import { ITextureBlock } from "../../../vox/texture/ITextureBlock";
 import Matrix4 from "../../../vox/math/Matrix4";
 import MathConst from "../../../vox/math/MathConst";

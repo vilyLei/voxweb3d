@@ -13,7 +13,8 @@ import RenderMaskBitfield from "../../vox/render/RenderMaskBitfield";
 import ROTextureResource from '../../vox/render/ROTextureResource';
 import FrameBufferObject from "../../vox/render/FrameBufferObject";
 import { CullFaceMode, DepthTestMode } from "../../vox/render/RenderConst";
-import { TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
+import TextureFormat from "../../vox/texture/TextureFormat";
+import TextureDataType from "../../vox/texture/TextureDataType";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import RAdapterContext from "../../vox/render/RAdapterContext";
 

@@ -2,7 +2,7 @@ import EngineBase from "../../../vox/engine/EngineBase";
 import TextureProxy from "../../../vox/texture/TextureProxy";
 import LambertLightMaterial from "../../../vox/material/mcase/LambertLightMaterial";
 import { MaterialContext } from "../../../materialLab/base/MaterialContext";
-import { TextureConst } from "../../../vox/texture/TextureConst";
+import TextureConst from "../../../vox/texture/TextureConst";
 import { VertUniformComp } from "../../../vox/material/component/VertUniformComp";
 
 class ViewerTexSystem {

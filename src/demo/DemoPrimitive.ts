@@ -16,7 +16,7 @@ import Tube3DEntity from "../vox/entity/Tube3DEntity";
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import BillboardLine3DEntity from "../vox/entity/BillboardLine3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-import { TextureConst } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 
 import { TextureBlock } from "../vox/texture/TextureBlock";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";

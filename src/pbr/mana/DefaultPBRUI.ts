@@ -3,7 +3,7 @@ import RendererDevice from "../../vox/render/RendererDevice";
 import MouseEvent from "../../vox/event/MouseEvent";
 
 import TextureProxy from "../../vox/texture/TextureProxy";
-import { TextureConst } from "../../vox/texture/TextureConst";
+import TextureConst from "../../vox/texture/TextureConst";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 
 import RendererParam from "../../vox/scene/RendererParam";

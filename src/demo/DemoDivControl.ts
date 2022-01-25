@@ -9,7 +9,7 @@ import MouseEvent from "../vox/event/MouseEvent";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";

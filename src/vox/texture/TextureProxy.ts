@@ -6,7 +6,10 @@
 /***************************************************************************/
 
 import { TextureProxyType } from "../../vox/texture/TextureProxyType";
-import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../../vox/texture/TextureConst";
+import TextureConst from "../../vox/texture/TextureConst";
+import TextureFormat from "../../vox/texture/TextureFormat";
+import TextureDataType from "../../vox/texture/TextureDataType";
+import TextureTarget from "../../vox/texture/TextureTarget";
 import MathConst from "../../vox/math/MathConst";
 
 import ITexData from "../../vox/texture/ITexData";

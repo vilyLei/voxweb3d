@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import IRendererScene from "../../vox/scene/IRendererScene";
-import {TextureConst} from "../../vox/texture/TextureConst";
+import TextureConst from "../../vox/texture/TextureConst";
 import { IFloatCubeTexture } from "../../vox/render/texture/IFloatCubeTexture";
 import { IBytesCubeTexture } from "../../vox/render/texture/IBytesCubeTexture";
 import BinaryLoader from "../../vox/assets/BinaryLoader";

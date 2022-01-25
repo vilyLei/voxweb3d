@@ -13,7 +13,7 @@ import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Billboard3D3TexMixEntity from "../vox/entity/Billboard3D3TexMixEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 export class DemoParticleMixTex

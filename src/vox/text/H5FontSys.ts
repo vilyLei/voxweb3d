@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { TextureConst } from "../../vox/texture/TextureConst";
+import TextureConst from "../../vox/texture/TextureConst";
 import BytesTextureProxy from "../../vox/texture/BytesTextureProxy";
 import RenderProxy from "../../vox/render/RenderProxy";
 import RendererDevice from "../render/RendererDevice";

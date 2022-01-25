@@ -13,7 +13,7 @@ import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from '../../vox/material/MaterialBase';
 import VSTexturePosIdMaterial from "../../voxanimate/material/VSTexturePosIdMaterial";
-import { TextureConst } from "../../vox/texture/TextureConst";
+import TextureConst from "../../vox/texture/TextureConst";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import { IdGroupMesh } from "../../voxanimate/mesh/IdGroupMesh";

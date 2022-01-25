@@ -5,7 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 import { TextureProxyType } from "../../vox/texture/TextureProxyType";
-import { TextureFormat, TextureDataType, TextureTarget } from "../../vox/texture/TextureConst";
+import TextureFormat from "../../vox/texture/TextureFormat";
+import TextureDataType from "../../vox/texture/TextureDataType";
+import TextureTarget from "../../vox/texture/TextureTarget";
 import IRenderResource from '../../vox/render/IRenderResource';
 import TextureProxy from "../../vox/texture/TextureProxy";
 import { IBytesCubeTexture } from "../../vox/render/texture/IBytesCubeTexture";

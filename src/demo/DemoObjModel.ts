@@ -7,7 +7,7 @@ import RendererScene from "../vox/scene/RendererScene";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import TextureProxy from "../vox/texture/TextureProxy";
-import { TextureConst } from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import ObjData3DEntity from "../vox/entity/ObjData3DEntity";

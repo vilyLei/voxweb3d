@@ -9,7 +9,7 @@ import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-import {TextureConst} from "../vox/texture/TextureConst";
+import TextureConst from "../vox/texture/TextureConst";
 import { TextureBlock } from "../vox/texture/TextureBlock";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
