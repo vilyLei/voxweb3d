@@ -53,10 +53,11 @@ export class AppLoader {
 
         let envLightModule_url = host + "AppEnvLightModule.package.js";
         let LightModule_url = host + "AppLightModule.package.js";
-        let shadow_url = host + "AppShadow.package.js";
         loader = new ModuleLoader(ModuleFlag.AppEnvLight, envLightModule_url, this);
         loader = new ModuleLoader(ModuleFlag.AppLight, LightModule_url, this);
-        loader = new ModuleLoader(ModuleFlag.AppShadow, shadow_url, this);
+
+        // let shadow_url = host + "AppShadow.package.js";
+        // loader = new ModuleLoader(ModuleFlag.AppShadow, shadow_url, this);
 
         let lambert_url = host + "AppLambert.package.js";
         loader = new ModuleLoader(ModuleFlag.AppLambert, lambert_url, this);

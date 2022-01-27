@@ -60,9 +60,13 @@ class LightViewer implements IShaderLibListener {
         if (this.m_mf.hasObjDataModule()) {
             this.initObjData();
         }
-        if (this.m_mf.isLambert(flag)) {
-            this.m_scene.addLamgert();
-        }
+        // if (this.m_mf.isLambert(flag)) {
+        //     this.m_scene.addLamgert();
+        // }
+        // if (this.m_mf.isPBR(flag)) {
+        //     this.m_scene.addLamgert();
+        // }
+        this.m_scene.addMaterial( flag );
     }
 
     private m_geomDataParser: IObjGeomDataParser = null;
@@ -162,7 +166,7 @@ class LightViewer implements IShaderLibListener {
 
             this.m_materialCtx.initialize(this.m_rscene, mcParam);
 
-            this.m_scene.preLoadLMMaps(this.m_materialCtx, "box", true, false, true);
+            // this.m_scene.preLoadLMMaps(this.m_materialCtx, "box", true, false, true);
             this.m_scene.setMaterialContext(this.m_materialCtx);
             // this.m_scene.initEnvBox();
 

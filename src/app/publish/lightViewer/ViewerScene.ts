@@ -14,7 +14,10 @@ import IObjGeomDataParser from "../../../vox/mesh/obj/IObjGeomDataParser";
 import { IDataMesh } from "../../../vox/mesh/IDataMesh";
 import { IAppLambert } from "../../modules/interfaces/IAppLambert";
 import BinaryLoader from "../../../vox/assets/BinaryLoader"
+import IMaterialModule from "./material/IMaterialModule";
 import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
+import MaterialBuilder from "./material/MaterialBuilder";
+import ModuleFlag from "../base/ModuleFlag";
 
 declare var AppBase: any;
 declare var AppLambert: any;
@@ -24,6 +27,7 @@ class ViewerScene {
     private m_appBase: IAppBase = null;
     private m_appLambert: IAppLambert = null;
     private m_rscene: IRendererScene;
+    private m_materialBuilder: MaterialBuilder = new MaterialBuilder();
     private m_materialCtx: IMaterialContext;
     private m_defaultEntities: IRenderEntity[] = [];
     private m_entities: IRenderEntity[] = [];
@@ -51,7 +55,7 @@ class ViewerScene {
 
         this.m_meshs.push(mesh);
 
-        let material = this.createDefaultMaterial();
+        let material = this.m_materialBuilder.createDefaultMaterial();
         material.initializeByCodeBuf(true);
 
         mesh.setVtxBufRenderData(material);
@@ -75,119 +79,22 @@ class ViewerScene {
         // this.m_defaultEntities.push( boxEntity );
     }
     initialize(voxAppBase: IAppBase, rscene: IRendererScene): void {
+
         this.m_appBase = voxAppBase;
         this.m_rscene = rscene;
         this.m_rscene.setClearRGBColor3f(0.1, 0.4, 0.2);
+        this.m_materialBuilder.initialize(this.m_appBase, this.m_rscene);
     }
     setMaterialContext(materialCtx: IMaterialContext): void {
+
         this.m_materialCtx = materialCtx;
+        this.m_materialBuilder.setMaterialContext( this.m_materialCtx );
+
         this.initEnvBox();
     }
-    addLamgert(): void {
-        if (this.m_appLambert == null) {
-            this.m_appLambert = new AppLambert.Instance() as IAppLambert;
-            this.m_appLambert.initialize(this.m_rscene);
-            this.initCommonScene();
-        }
+    addMaterial(flag: number): void {
+        this.m_materialBuilder.addMaterial( flag );
     }
-    private createDefaultMaterial(): IRenderMaterial {
-        let material = this.m_appBase.createDefaultMaterial();
-        (material as any).normalEnabled = true;
-        material.setTextureList([this.m_rscene.textureBlock.createRGBATex2D(32, 32, new Color4(0.2, 0.8, 0.4))]);
-        return material;
-    }
-    initDefaultEntities(): void {
-        /*
-        let rscene = this.m_rscene;
-        let material = this.m_appBase.createDefaultMaterial();
-        (material as any).normalEnabled = true;
-        material.setTextureList( [this.m_rscene.textureBlock.createRGBATex2D(32,32,new Color4(0.2,0.8,0.4))] );
-
-        let scale: number = 500.0;
-        let boxEntity = rscene.entityBlock.createEntity();
-        boxEntity.setMaterial (material );
-        boxEntity.copyMeshFrom( rscene.entityBlock.unitBox );
-        boxEntity.setScaleXYZ(scale, scale * 0.05, scale);
-        rscene.addEntity(boxEntity);
-        this.m_defaultEntities.push( boxEntity );
-        //*/
-    }
-    preLoadLMMaps(materialCtx: IMaterialContext, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
-
-        console.log("##### preLoadLMMaps");
-        materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_COLOR.png");
-        materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_SPEC.png");
-        if (normalMapEnabled) {
-            materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_NRM.png");
-        }
-        if (aoMapEnabled) {
-            materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_OCC.png");
-        }
-        if (displacementMap) {
-        }
-    }
-    private useLMMaps(decorator: any, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
-
-        // let url = "static/assets/default.jpg";
-        // const request = new XMLHttpRequest();
-        // request.open("GET", url, true);
-        // request.responseType = "blob";
-        // request.onload = (e) => {
-        //     console.log("loaded binary buffer request.status: ", request.status, e);
-
-        //     //var imageType = request.getResponseHeader("Content-Type");
-        //     //var blob = new Blob([request.response], { type: imageType });
-        //     let pwin: any = window;
-        //     var imageUrl = (pwin.URL || pwin.webkitURL).createObjectURL(request.response);
-        //     // var imageUrl = (window.URL).createObjectURL(blob);
-        //     let img = new Image();
-        //     img.src = imageUrl;
-
-        // };
-        // request.onerror = e => {
-        //     console.log("load error binary buffer request.status: ", request.status);
-        // };
-        // request.send(null);
-
-
-        decorator.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_COLOR.png");
-        decorator.specularMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_SPEC.png");
-        if (normalMapEnabled) {
-            decorator.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_NRM.png");
-        }
-        if (aoMapEnabled) {
-            decorator.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_OCC.png");
-        }
-        if (displacementMap) {
-            if (decorator.vertUniform != null) {
-                decorator.vertUniform.displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
-            }
-        }
-        decorator.shadowReceiveEnabled = shadowReceiveEnabled;
-    }
-    private createLM(): IMaterial {
-
-        let m = this.m_appLambert.createMaterial();
-        let decor: any = m.getDecorator();
-        let vertUniform: any = decor.vertUniform;
-        m.setMaterialPipeline(this.m_materialCtx.pipeline);
-        decor.envAmbientLightEnabled = true;
-
-        vertUniform.uvTransformEnabled = true;
-        this.useLMMaps(decor, "box", true, false, true);
-        decor.fogEnabled = true;
-        decor.lightEnabled = true;
-        decor.initialize();
-        vertUniform.setDisplacementParams(3.0, 0.0);
-        // material.setDisplacementParams(3.0, 0.0);
-        decor.setSpecularIntensity(64.0);
-
-        let color = new Color4();
-        color.normalizeRandom(1.1);
-        decor.setSpecularColor(color);
-        return m;
-    }
-
     private m_timeoutId: any = -1;
     private update(): void {
 
@@ -210,12 +117,12 @@ class ViewerScene {
             this.m_timeoutId = setTimeout(this.update.bind(this), 20);// 20 fps
         }
     }
+    
     initCommonScene(): void {
 
-        if (this.m_materialCtx == null || this.m_appLambert == null || this.m_meshs.length < 1) {
-            return;
-        }
-        if (!this.m_materialCtx.hasShaderCodeObjectWithUUID(ShaderCodeUUID.Lambert)) {
+        console.log("this.m_materialBuilder.hasMaterialWith(ModuleFlag.AppLambert): ",this.m_materialBuilder.hasMaterialWithFlag(ModuleFlag.AppLambert), this.m_meshs.length > 0);
+        let initFlag = (this.m_materialBuilder.isEnabledWithFlag(ModuleFlag.AppLambert) && this.m_meshs.length > 0);
+        if(!initFlag) {
             return;
         }
 
@@ -223,8 +130,9 @@ class ViewerScene {
 
         this.update();
         if (this.m_defaultEntities.length > 0) {
-            console.log("xxx initCommonScene()...");
-            let material = this.createLM();
+            console.log("lambert initCommonScene()...");
+            // let material = this.createLambertMaterial();
+            let material = this.m_materialBuilder.createLambertMaterial();
 
             let scale: number = 400.0;
             let entity = rscene.entityBlock.createEntity();

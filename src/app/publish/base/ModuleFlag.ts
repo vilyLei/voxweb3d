@@ -17,8 +17,10 @@ class ModuleFlag {
 
     }
     static Initialize(): void {
-        // let mf: any = ModuleFlag;
+        let MF = ModuleFlag;
+        let mf: any = ModuleFlag;
         // mf.SYS_MODULE_LOADED = 31 | mf.AppLambert;
+        mf.SYS_MODULE_LOADED = MF.AppEnvLight | MF.AppLight;// | MF.AppLambert;
     }
 
     reset(): void {
@@ -50,6 +52,9 @@ class ModuleFlag {
     }
     isLambert(flag: number): boolean {
         return flag == ModuleFlag.AppLambert;
+    }
+    isPBR(flag: number): boolean {
+        return flag == ModuleFlag.AppPBR;
     }
 }
 export default ModuleFlag;
