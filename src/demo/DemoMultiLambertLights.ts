@@ -442,6 +442,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
 
     }
     private createLM(): IRenderMaterial {
+
         let vertUniform: VertUniformComp = new VertUniformComp();
         let decor = new LambertLightDecorator();
         let m = this.m_engine.rscene.materialBlock.createMaterial(decor);
@@ -462,9 +463,12 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         let color = new Color4();
         color.normalizeRandom(1.1);
         decor.setSpecularColor(color);
+
+        console.log("decor.shadowReceiveEnabled: ",decor.shadowReceiveEnabled);
         return m;
     }
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
+
         this.m_materialCtx.envLightModule.setAmbientColorRGB3f(3.0,3.0,3.0);
         this.m_materialCtx.envLightModule.setEnvAmbientLightAreaOffset(-500.0, -500.0);
         this.m_materialCtx.envLightModule.setEnvAmbientLightAreaSize(1000.0, 1000.0);
@@ -472,22 +476,22 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
         this.initScene();
     }
-    private useLMMaps(material: LambertLightDecorator, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
-
-        material.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_COLOR.png");
-        material.specularMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_SPEC.png");
+    private useLMMaps(decorator: LambertLightDecorator, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
+        
+        decorator.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_COLOR.png");
+        decorator.specularMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_SPEC.png");
         if (normalMapEnabled) {
-            material.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_NRM.png");
+            decorator.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_NRM.png");
         }
         if (aoMapEnabled) {
-            material.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_OCC.png");
+            decorator.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_OCC.png");
         }
         if (displacementMap) {
-            if(material.vertUniform != null) {
-                (material.vertUniform as VertUniformComp).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
+            if(decorator.vertUniform != null) {
+                (decorator.vertUniform as VertUniformComp).displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_DISP.png");
             }
         }
-        material.shadowReceiveEnabled = shadowReceiveEnabled;
+        decorator.shadowReceiveEnabled = shadowReceiveEnabled;
     }
     private useMaps(material: LambertLightMaterial, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
 

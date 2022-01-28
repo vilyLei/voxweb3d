@@ -338,12 +338,16 @@ export class DemoMaterialCtx implements IShaderLibListener {
     private initSceneObjs(): void {
 
         let boxMaterial = this.createLM();
+        let sph = new Sphere3DEntity();
+        sph.setMaterial( boxMaterial );
+        sph.initialize(50.0, 20,20);
+        this.m_rscene.addEntity(sph);
 
-        let tbox: Box3DEntity = new Box3DEntity();
-        tbox.setMaterial( boxMaterial );
-        tbox.initializeSizeXYZ(800.0,20,800.0);
-        tbox.setXYZ(0.0, -200.0, 0.0);
-        this.m_rscene.addEntity(tbox);
+        let box: Box3DEntity = new Box3DEntity();
+        box.setMaterial( boxMaterial );
+        box.initializeSizeXYZ(800.0,20,800.0);
+        box.setXYZ(0.0, -200.0, 0.0);
+        this.m_rscene.addEntity(box);
 
         let envBox: Box3DEntity = new Box3DEntity();
         this.useMaterial(envBox);
