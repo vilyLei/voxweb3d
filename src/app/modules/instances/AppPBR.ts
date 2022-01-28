@@ -96,7 +96,7 @@ class Instance implements IAppPBR {
     }
     initialize(rsecne: IRendererScene): void {
 
-        if(this.m_specularBuilder == null) {
+        if (this.m_specularBuilder == null) {
             this.m_rscene = rsecne;
             this.m_specularBuilder = new SpecularTextureBuilder();
             console.log("AppPBR::Instance::ini()...");
@@ -105,22 +105,30 @@ class Instance implements IAppPBR {
 
     createMaterial(vertUniformEnabled: boolean = true): IMaterial {
 
-        let vertUniform: VertUniformComp = vertUniformEnabled ? new VertUniformComp() : null;
-        let decor = new PBRDecorator();
-        decor.vertUniform = vertUniform;
-        return this.m_rscene.materialBlock.createMaterial(decor);
+        if (this.m_rscene != null) {
+
+            let vertUniform: VertUniformComp = vertUniformEnabled ? new VertUniformComp() : null;
+            let decor = new PBRDecorator();
+            decor.vertUniform = vertUniform;
+            return this.m_rscene.materialBlock.createMaterial(decor);
+        }
+        return null;
     }
     createSpecularTex(buffer: ArrayBuffer, hdrBrnEnabled: boolean = true, texture: IRenderTexture = null): IRenderTexture {
-        if(texture == null) {
-            texture = this.m_specularBuilder.createTexture(hdrBrnEnabled, this.m_rscene);
-        }
-        if(buffer != null) {
-            if (hdrBrnEnabled) {
-                return this.m_specularBuilder.createHdrBrn(this.m_rscene, buffer, texture);
+        
+        if (this.m_rscene != null) {
+            if (texture == null) {
+                texture = this.m_specularBuilder.createTexture(hdrBrnEnabled, this.m_rscene);
             }
-            return this.m_specularBuilder.createFloat(this.m_rscene, buffer, texture);
+            if (buffer != null) {
+                if (hdrBrnEnabled) {
+                    return this.m_specularBuilder.createHdrBrn(this.m_rscene, buffer, texture);
+                }
+                return this.m_specularBuilder.createFloat(this.m_rscene, buffer, texture);
+            }
+            return texture;
         }
-        return texture;
+        return null;
     }
 }
 

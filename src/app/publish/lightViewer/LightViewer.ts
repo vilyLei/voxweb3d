@@ -63,12 +63,6 @@ class LightViewer implements IShaderLibListener {
         if (this.m_mf.hasObjDataModule()) {
             this.initObjData();
         }
-        // if (this.m_mf.isLambert(flag)) {
-        //     this.m_scene.addLamgert();
-        // }
-        // if (this.m_mf.isPBR(flag)) {
-        //     this.m_scene.addLamgert();
-        // }
         this.m_scene.addMaterial( flag );
     }
 
@@ -99,7 +93,9 @@ class LightViewer implements IShaderLibListener {
             objData.load(objUrl, (parser: IObjGeomDataParser): void => {
                 this.m_geomDataParser = parser;
                 this.buildMeshData();
-
+                // if(this.pbrMaterialEnabled) {
+                //     this.m_scene.addMaterial(ModuleFlag.AppPBR);
+                // }
                 this.m_scene.preloadData();
             })
             this.m_voxAppObjData = objData;

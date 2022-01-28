@@ -79,7 +79,7 @@ export default class MaterialBuilder {
     isEnabledWithFlag(flag: number): boolean {
 
         let builder = this.m_builderMap.get(flag);
-        // DivLog.ShowLog(flag+",isEnabled()): "+(builder != null) + ", " + (builder != null && builder.isEnabled()));
+        DivLog.ShowLog(flag+",isEnabled()): "+(builder != null) + ", " + (builder != null && builder.isEnabled()));
         return (builder != null && builder.isEnabled());
     }
     hasMaterialWithFlag(flag: number): boolean {

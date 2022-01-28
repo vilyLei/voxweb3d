@@ -28,6 +28,7 @@ export default class PBRModule implements IMaterialModule {
     private m_appPBR: IAppPBR = null;
     private m_materialCtx: IMaterialContext;
     private m_preLoadMaps: boolean = true;
+    private m_loadSpecularData: boolean = true;
     private m_specEnvMapbuffer: ArrayBuffer = null;
     private m_specEnvMap: IRenderTexture = null;
 
@@ -38,7 +39,6 @@ export default class PBRModule implements IMaterialModule {
     }
     active(rscene: IRendererScene, materialCtx: IMaterialContext): void {
 
-        console.log("PBRModule active...");
         this.m_materialCtx = materialCtx;
         if (this.m_appPBR == null) {
             this.m_rscene = rscene;
@@ -46,22 +46,30 @@ export default class PBRModule implements IMaterialModule {
             this.m_appPBR.initialize(this.m_rscene);
         }
         this.preloadMap(this.m_materialCtx, "box", true, false, true);
+        // if(this.m_specEnvMapbuffer != null && this.m_specEnvMap == null && this.m_appPBR != null) {
+        //     this.m_specEnvMap = this.m_appPBR.createSpecularTex(this.m_specEnvMapbuffer, true, this.m_specEnvMap);
+        // }
     }
     loaded(buffer: ArrayBuffer, uuid: string): void {
-        console.log("loaded spec map ata.");
         this.m_specEnvMapbuffer = buffer;
-        this.m_specEnvMap = this.m_appPBR.createSpecularTex(this.m_specEnvMapbuffer, true, this.m_specEnvMap);
+        if(this.m_appPBR != null) {
+            this.m_specEnvMap = this.m_appPBR.createSpecularTex(this.m_specEnvMapbuffer, true, this.m_specEnvMap);
+        }
     }
     loadError(status: number, uuid: string): void {
     }
     private loadSpecularData(hdrBrnEnabled: boolean): void {
-        let envMapUrl: string = "static/bytes/spe.mdf";
-        if (hdrBrnEnabled) {
-            envMapUrl = "static/bytes/speBrn.bin";
+
+        if(this.m_loadSpecularData) {
+            let envMapUrl: string = "static/bytes/spe.mdf";
+            if (hdrBrnEnabled) {
+                envMapUrl = "static/bytes/speBrn.bin";
+            }
+            console.log("start load spec map ata.");
+            let load = new BinaryLoader();
+            load.load(envMapUrl, this);
+            this.m_loadSpecularData = false;
         }
-        console.log("start load spec map ata.");
-        let load = new BinaryLoader();
-        load.load(envMapUrl, this);
     }
     private preloadMap(materialCtx: IMaterialContext, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
 
