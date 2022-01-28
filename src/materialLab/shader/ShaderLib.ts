@@ -268,7 +268,7 @@ class ShaderLib implements IShaderLib{
             configure.buildBinaryFile = param.buildBinaryFile;
             baseUrl += configure.uuid + "/";
             if (param.shaderCodeBinary) {
-                if(param.shaderFileRename) {
+                if(param.shaderFileNickname) {
                     configure.urls = [
                         baseUrl + "glsl01.bin",
                         baseUrl + "glsl02.bin",

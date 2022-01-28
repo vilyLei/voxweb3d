@@ -98,7 +98,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         mcParam.loadAllShaderCode = true;
         mcParam.shaderCodeBinary = true;
         mcParam.pbrMaterialEnabled = false;
-        mcParam.shaderFileRename = true;
+        mcParam.shaderFileNickname = true;
         mcParam.vsmFboIndex = 0;
         // mcParam.vsmEnabled = false;
         // mcParam.buildBinaryFile = true;

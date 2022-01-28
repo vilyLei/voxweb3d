@@ -1,17 +1,7 @@
-import IRenderMaterial from "../../../../vox/render/IRenderMaterial";
 import IRendererScene from "../../../../vox/scene/IRendererScene";
-import { MaterialPipeType } from "../../../../vox/material/pipeline/MaterialPipeType";
-import { IEnvLightModule } from "../../../../light/base/IEnvLightModule";
-import { IMaterialPipeline } from "../../../../vox/material/pipeline/IMaterialPipeline";
-import { IAppEngine } from "../../../modules/interfaces/IAppEngine";
-import { IAppBase } from "../../../modules/interfaces/IAppBase";
-import Vector3D from "../../../../vox/math/Vector3D";
 import { IMaterialContext } from "../../../../materialLab/base/IMaterialContext";
 import { IMaterial } from "../../../../vox/material/IMaterial";
 import Color4 from "../../../../vox/material/Color4";
-import IRenderEntity from "../../../../vox/render/IRenderEntity";
-import IObjGeomDataParser from "../../../../vox/mesh/obj/IObjGeomDataParser";
-import { IDataMesh } from "../../../../vox/mesh/IDataMesh";
 import { IAppLambert } from "../../../modules/interfaces/IAppLambert";
 import BinaryLoader from "../../../../vox/assets/BinaryLoader"
 import { ShaderCodeUUID } from "../../../../vox/material/ShaderCodeUUID";
@@ -118,6 +108,7 @@ export default class LambertModule implements IMaterialModule {
         return m;
     }
     isEnabled(): boolean {
+        // console.log("LambertModule::this.m_materialCtx.hasShaderCodeObjectWithUUID("+this.getUUID()+"): ",this.m_materialCtx.hasShaderCodeObjectWithUUID(this.getUUID()));
         return this.m_materialCtx != null && this.m_materialCtx.hasShaderCodeObjectWithUUID(this.getUUID());
     }
 }

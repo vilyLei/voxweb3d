@@ -5,11 +5,11 @@ import LightViewer from "./publish/lightViewer/LightViewer";
 let host = "static/publish/build/";
 
 class AppShell {
-    private m_viewer: LightViewer = new LightViewer();
+    viewer: LightViewer = new LightViewer();
     constructor() { }
 
     loadedWithIndex(index: number): void {
-        this.m_viewer.setLoadedModuleFlag(index);
+        this.viewer.setLoadedModuleFlag(index);
     }
 }
 export class AppLoader {
@@ -59,11 +59,20 @@ export class AppLoader {
         // let shadow_url = host + "AppShadow.package.js";
         // loader = new ModuleLoader(ModuleFlag.AppShadow, shadow_url, this);
 
-        let lambert_url = host + "AppLambert.package.js";
-        loader = new ModuleLoader(ModuleFlag.AppLambert, lambert_url, this);
-
-        // let pbr_url = host + "AppPBR.package.js";
-        // loader = new ModuleLoader(ModuleFlag.AppPBR, pbr_url, this);
+        let viewer = this.m_appShell.viewer;
+        let pbrEnabled: boolean = false;
+        if(pbrEnabled) {
+            let pbr_url = host + "AppPBR.package.js";
+            loader = new ModuleLoader(ModuleFlag.AppPBR, pbr_url, this);
+            viewer.lambertMaterialEnabled = false;
+            viewer.pbrMaterialEnabled = true;
+        }
+        else {
+            let lambert_url = host + "AppLambert.package.js";
+            loader = new ModuleLoader(ModuleFlag.AppLambert, lambert_url, this);
+            viewer.lambertMaterialEnabled = true;
+            viewer.pbrMaterialEnabled = false;
+        }
     }
     private showLoadInfo(e: any, index: number = 0): void {
         if (index == ModuleFlag.AppEngine) {

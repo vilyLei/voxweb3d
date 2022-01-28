@@ -43,6 +43,8 @@ class LightViewer implements IShaderLibListener {
     private m_mf: ModuleFlag = new ModuleFlag();
     private m_scene: ViewerScene = new ViewerScene();
 
+    pbrMaterialEnabled: boolean = false;
+    lambertMaterialEnabled: boolean = true;
     constructor() { }
 
     setLoadedModuleFlag(flag: number): void {
@@ -152,9 +154,11 @@ class LightViewer implements IShaderLibListener {
             mcParam.spotLightsTotal = 0;
             mcParam.loadAllShaderCode = true;
             mcParam.shaderCodeBinary = true;
-            mcParam.pbrMaterialEnabled = false;
-            mcParam.shaderFileRename = true;
+            mcParam.pbrMaterialEnabled = this.pbrMaterialEnabled;
+            mcParam.lambertMaterialEnabled = this.lambertMaterialEnabled;
+            mcParam.shaderFileNickname = true;
             mcParam.vsmFboIndex = 0;
+            //nickname
             // mcParam.vsmEnabled = false;
             // mcParam.buildBinaryFile = true;
 

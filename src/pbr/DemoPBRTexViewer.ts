@@ -110,7 +110,7 @@ export class DemoPBRTexViewer implements IShaderLibListener {
         mcParam.shaderCodeBinary = true;
         mcParam.lambertMaterialEnabled = false;
         mcParam.pbrMaterialEnabled = true;
-        mcParam.shaderFileRename = true;
+        mcParam.shaderFileNickname = true;
         // mcParam.vsmEnabled = false;
         //mcParam.buildBinaryFile = true;
         this.m_materialCtx.addShaderLibListener(this);

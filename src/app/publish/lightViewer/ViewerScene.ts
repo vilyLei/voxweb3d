@@ -26,20 +26,6 @@ class ViewerScene {
     private m_moduleFlag: number = 0;
     constructor() { }
 
-    // loaded(buffer: ArrayBuffer, uuid: string): void {
-    //     console.log("loaded spec map ata.");
-    // }
-    // loadError(status: number, uuid: string): void {
-    // }
-    // loadSpecularData(hdrBrnEnabled: boolean): void {
-    //     let envMapUrl: string = "static/bytes/spe.mdf";
-    //     if (hdrBrnEnabled) {
-    //         envMapUrl = "static/bytes/speBrn.bin";
-    //     }
-    //     console.log("start load spec map ata.");
-    //     let load = new BinaryLoader();
-    //     load.load(envMapUrl, this);
-    // }
     preloadData(): void {
         this.m_materialBuilder.preloadData();
     }
@@ -115,8 +101,8 @@ class ViewerScene {
     
     initCommonScene(): void {
 
-        console.log("this.m_materialBuilder.hasMaterialWith(ModuleFlag.AppLambert): ",this.m_materialBuilder.hasMaterialWithFlag(ModuleFlag.AppLambert), this.m_meshs.length > 0);
-        let initFlag = (this.m_materialBuilder.isEnabledWithFlag(ModuleFlag.AppLambert) && this.m_meshs.length > 0);
+        console.log("this.m_materialBuilder.hasMaterialWith(ModuleFlag.AppLambert): ",this.m_materialBuilder.hasMaterialWithFlag( this.m_moduleFlag ), this.m_meshs.length > 0);
+        let initFlag = (this.m_materialBuilder.isEnabledWithFlag(this.m_moduleFlag) && this.m_meshs.length > 0);
         if(!initFlag) {
             return;
         }
