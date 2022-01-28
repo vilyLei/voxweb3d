@@ -128,7 +128,7 @@ class ViewerScene {
             rscene.addEntity(entity);
             this.m_entities.push(entity);
 
-            // let scale: number = 500.0;
+            scale = 700.0;
             let boxEntity = rscene.entityBlock.createEntity();
             boxEntity.setMaterial(material);
             boxEntity.copyMeshFrom(rscene.entityBlock.unitBox);

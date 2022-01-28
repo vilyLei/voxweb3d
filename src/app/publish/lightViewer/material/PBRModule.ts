@@ -63,7 +63,7 @@ export default class PBRModule implements IMaterialModule {
         if(this.m_loadSpecularData) {
             let envMapUrl: string = "static/bytes/spe.mdf";
             if (hdrBrnEnabled) {
-                envMapUrl = "static/bytes/speBrn.bin";
+                envMapUrl = "static/bytes/spb.bin";
             }
             console.log("start load spec map ata.");
             let load = new BinaryLoader();

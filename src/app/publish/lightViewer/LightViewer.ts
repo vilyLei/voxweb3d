@@ -176,17 +176,21 @@ class LightViewer implements IShaderLibListener {
             // this.m_scene.preLoadLMMaps(this.m_materialCtx, "box", true, false, true);
             this.m_scene.setMaterialContext(this.m_materialCtx);
             // this.m_scene.initEnvBox();
+            this.m_voxAppEngine.setMaterialContext( this.m_materialCtx );
+
 
         }
     }
 
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
 
-        let envLightModule = this.m_materialCtx.envLightModule;
-        envLightModule.setAmbientColorRGB3f(3.0, 3.0, 3.0);
-        envLightModule.setEnvAmbientLightAreaOffset(-500.0, -500.0);
-        envLightModule.setEnvAmbientLightAreaSize(1000.0, 1000.0);
-        envLightModule.setEnvAmbientMap(this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg"));
+        if(this.lambertMaterialEnabled) {
+            let envLightModule = this.m_materialCtx.envLightModule;
+            envLightModule.setAmbientColorRGB3f(3.0, 3.0, 3.0);
+            envLightModule.setEnvAmbientLightAreaOffset(-500.0, -500.0);
+            envLightModule.setEnvAmbientLightAreaSize(1000.0, 1000.0);
+            envLightModule.setEnvAmbientMap(this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg"));
+        }
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
 
         // DivLog.ShowLog("init materialCtx loaded..");
