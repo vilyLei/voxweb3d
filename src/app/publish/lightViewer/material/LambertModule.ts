@@ -25,10 +25,13 @@ export default class LambertModule implements IMaterialModule {
     private m_rscene: IRendererScene;
     private m_appLambert: IAppLambert = null;
     private m_materialCtx: IMaterialContext;
-    private m_preLoadLMMaps: boolean = true;
+    private m_preLoadMaps: boolean = true;
 
     constructor() { }
 
+    preload(): void {
+        
+    }
     active(rscene: IRendererScene, materialCtx: IMaterialContext): void {
 
         console.log("LambertModule active...");
@@ -38,7 +41,7 @@ export default class LambertModule implements IMaterialModule {
             this.m_appLambert = new AppLambert.Instance() as IAppLambert;
             this.m_appLambert.initialize(this.m_rscene);
         }
-        this.preload(this.m_materialCtx, "box", true, false, true);
+        this.preloadMap(this.m_materialCtx, "box", true, false, true);
     }
     loaded(buffer: ArrayBuffer, uuid: string): void {
         console.log("loaded spec map ata.");
@@ -54,11 +57,11 @@ export default class LambertModule implements IMaterialModule {
         let load = new BinaryLoader();
         load.load(envMapUrl, this);
     }
-    preload(materialCtx: IMaterialContext, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
-        
-        if( this.m_preLoadLMMaps ) {
+    private preloadMap(materialCtx: IMaterialContext, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
 
-            this.m_preLoadLMMaps = false;
+        if (this.m_preLoadMaps) {
+
+            this.m_preLoadMaps = false;
             materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_COLOR.png");
             materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_SPEC.png");
             if (normalMapEnabled) {
@@ -69,9 +72,10 @@ export default class LambertModule implements IMaterialModule {
             }
             if (displacementMap) {
             }
+            this.m_preLoadMaps = false;
         }
     }
-    private useLMMaps(decorator: any, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
+    private useMaps(decorator: any, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
 
         decorator.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_COLOR.png");
         decorator.specularMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_SPEC.png");
@@ -100,7 +104,7 @@ export default class LambertModule implements IMaterialModule {
         decor.envAmbientLightEnabled = true;
 
         vertUniform.uvTransformEnabled = true;
-        this.useLMMaps(decor, "box", true, false, true);
+        this.useMaps(decor, "box", true, false, true);
         decor.fogEnabled = true;
         decor.lightEnabled = true;
         decor.initialize();
@@ -112,5 +116,8 @@ export default class LambertModule implements IMaterialModule {
         color.normalizeRandom(1.1);
         decor.setSpecularColor(color);
         return m;
+    }
+    isEnabled(): boolean {
+        return true;
     }
 }

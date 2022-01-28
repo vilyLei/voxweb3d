@@ -1,21 +1,12 @@
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
-import { IEnvLightModule } from "../../../light/base/IEnvLightModule";
-import { IMaterialPipeline } from "../../../vox/material/pipeline/IMaterialPipeline";
-import { IAppEngine } from "../../modules/interfaces/IAppEngine";
 import { IAppBase } from "../../modules/interfaces/IAppBase";
-import Vector3D from "../../../vox/math/Vector3D";
 import { IMaterialContext } from "../../../materialLab/base/IMaterialContext";
-import { IMaterial } from "../../../vox/material/IMaterial";
-import Color4 from "../../../vox/material/Color4";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
-import IObjGeomDataParser from "../../../vox/mesh/obj/IObjGeomDataParser";
 import { IDataMesh } from "../../../vox/mesh/IDataMesh";
 import { IAppLambert } from "../../modules/interfaces/IAppLambert";
 import BinaryLoader from "../../../vox/assets/BinaryLoader"
-import IMaterialModule from "./material/IMaterialModule";
-import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
 import MaterialBuilder from "./material/MaterialBuilder";
 import ModuleFlag from "../base/ModuleFlag";
 
@@ -34,19 +25,22 @@ class ViewerScene {
     private m_meshs: IDataMesh[] = [];
     constructor() { }
 
-    loaded(buffer: ArrayBuffer, uuid: string): void {
-        console.log("loaded spec map ata.");
-    }
-    loadError(status: number, uuid: string): void {
-    }
-    loadSpecularData(hdrBrnEnabled: boolean): void {
-        let envMapUrl: string = "static/bytes/spe.mdf";
-        if (hdrBrnEnabled) {
-            envMapUrl = "static/bytes/speBrn.bin";
-        }
-        console.log("start load spec map ata.");
-        let load = new BinaryLoader();
-        load.load(envMapUrl, this);
+    // loaded(buffer: ArrayBuffer, uuid: string): void {
+    //     console.log("loaded spec map ata.");
+    // }
+    // loadError(status: number, uuid: string): void {
+    // }
+    // loadSpecularData(hdrBrnEnabled: boolean): void {
+    //     let envMapUrl: string = "static/bytes/spe.mdf";
+    //     if (hdrBrnEnabled) {
+    //         envMapUrl = "static/bytes/speBrn.bin";
+    //     }
+    //     console.log("start load spec map ata.");
+    //     let load = new BinaryLoader();
+    //     load.load(envMapUrl, this);
+    // }
+    preloadData(): void {
+        this.m_materialBuilder.preloadData();
     }
     addDataMesh(mesh: IDataMesh): void {
 

@@ -97,7 +97,7 @@ class LightViewer implements IShaderLibListener {
                 this.m_geomDataParser = parser;
                 this.buildMeshData();
 
-                // this.m_scene.loadSpecularData(true);
+                this.m_scene.preloadData();
             })
             this.m_voxAppObjData = objData;
         }

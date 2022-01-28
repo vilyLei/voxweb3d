@@ -18,6 +18,7 @@ import { ShaderCodeUUID } from "../../../../vox/material/ShaderCodeUUID";
 
 export default interface IMaterialModule {
 
+    preload(): void;
     active(rscene: IRendererScene, materialCtx: IMaterialContext): void;
     /**
      * 
@@ -28,7 +29,8 @@ export default interface IMaterialModule {
      * @param shadowReceiveEnabled  the default value is false
      * @param aoMapEnabled  the default value is true
      */
-    preload(materialCtx: IMaterialContext, ns: string, normalMapEnabled?: boolean, displacementMap?: boolean, shadowReceiveEnabled?: boolean, aoMapEnabled?: boolean): void;
+    // preload(materialCtx: IMaterialContext, ns: string, normalMapEnabled?: boolean, displacementMap?: boolean, shadowReceiveEnabled?: boolean, aoMapEnabled?: boolean): void;
     createMaterial(): IMaterial;
     getUUID(): ShaderCodeUUID;
+    isEnabled(): boolean;
 }

@@ -8,6 +8,7 @@ import IMaterialModule from "./IMaterialModule";
 import { ShaderCodeUUID } from "../../../../vox/material/ShaderCodeUUID";
 import ModuleFlag from "../../base/ModuleFlag";
 import LambertModule from "./LambertModule";
+import PBRModule from "./PBRModule";
 
 export default class MaterialBuilder {
 
@@ -32,6 +33,10 @@ export default class MaterialBuilder {
         }
     }
     
+    preloadData(): void {
+        // console.log("NNNNNNNNNNNN MaterialBuilder preloadData...");
+        //this.m_materialBuilder.preloadData();
+    }
     createDefaultMaterial(): IRenderMaterial {
         let material = this.m_appBase.createDefaultMaterial();
         (material as any).normalEnabled = true;
@@ -44,20 +49,24 @@ export default class MaterialBuilder {
         let builder = this.m_builderMap.get(flag);
         if(builder == null) {
             switch(flag) {
-                case ModuleFlag.AppLambert:
-                    
+                case ModuleFlag.AppLambert:                    
                     console.log("MaterialBuilder addMaterial(lambert)...");
                     builder = new LambertModule();
-                    if(this.m_materialCtx != null) {
-                        builder.active(this.m_rscene, this.m_materialCtx);
-                    }
-                    this.m_builderMap.set(flag, builder);
+                    builder.preload();
                     break;
                 case ModuleFlag.AppPBR:
-
+                    console.log("MaterialBuilder addMaterial(pbr)...");
+                    builder = new PBRModule();
+                    builder.preload();
                     break;
                 default:
                     break;
+            }
+            if(builder != null) {
+                if(this.m_materialCtx != null) {
+                    builder.active(this.m_rscene, this.m_materialCtx);
+                }
+                this.m_builderMap.set(flag, builder);
             }
         }
     }
