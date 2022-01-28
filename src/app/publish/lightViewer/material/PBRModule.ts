@@ -17,6 +17,7 @@ import BinaryLoader from "../../../../vox/assets/BinaryLoader"
 import { ShaderCodeUUID } from "../../../../vox/material/ShaderCodeUUID";
 import IMaterialModule from "./IMaterialModule";
 import IRenderTexture from "../../../../vox/render/texture/IRenderTexture";
+import DivLog from "../../../../vox/utils/DivLog";
 
 declare var AppBase: any;
 declare var AppPBR: any;
@@ -49,6 +50,7 @@ export default class PBRModule implements IMaterialModule {
     loaded(buffer: ArrayBuffer, uuid: string): void {
         console.log("loaded spec map ata.");
         this.m_specEnvMapbuffer = buffer;
+        this.m_specEnvMap = this.m_appPBR.createSpecularTex(this.m_specEnvMapbuffer, true, this.m_specEnvMap);
     }
     loadError(status: number, uuid: string): void {
     }
@@ -80,7 +82,7 @@ export default class PBRModule implements IMaterialModule {
         }
     }
     private useMaps(decorator: any, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
-        
+
         decorator.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_COLOR.png");
         decorator.specularMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/" + ns + "_SPEC.png");
         if (normalMapEnabled) {
@@ -101,13 +103,15 @@ export default class PBRModule implements IMaterialModule {
     }
     isEnabled(): boolean {
         let boo = this.m_materialCtx != null && this.m_materialCtx.hasShaderCodeObjectWithUUID(this.getUUID());
-        return boo && this.m_specEnvMapbuffer != null;
+        // DivLog.ShowLog("pbr isEnabled: "+boo);
+        return boo;// && this.m_specEnvMapbuffer != null;
     }
     createMaterial(): IMaterial {
-
+        // console.log("### pbr createMaterial().");
         if (this.m_specEnvMap == null) {
-            this.m_specEnvMap = this.m_appPBR.createSpecularTex(this.m_specEnvMapbuffer);
+            this.m_specEnvMap = this.m_appPBR.createSpecularTex(this.m_specEnvMapbuffer, true, this.m_specEnvMap);
         }
+        // DivLog.ShowLog("pbr createMaterial, uid: "+this.m_specEnvMap.getUid());
         let diffuseMap: IRenderTexture = null;
         let normalMap: IRenderTexture = null;
         let armMap: IRenderTexture = null;

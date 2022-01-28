@@ -9,6 +9,7 @@ import { IAppLambert } from "../../modules/interfaces/IAppLambert";
 import BinaryLoader from "../../../vox/assets/BinaryLoader"
 import MaterialBuilder from "./material/MaterialBuilder";
 import ModuleFlag from "../base/ModuleFlag";
+import DivLog from "../../../vox/utils/DivLog";
 
 declare var AppBase: any;
 declare var AppLambert: any;
@@ -69,12 +70,15 @@ class ViewerScene {
     setMaterialContext(materialCtx: IMaterialContext): void {
 
         this.m_materialCtx = materialCtx;
-        this.m_materialBuilder.setMaterialContext( this.m_materialCtx );
+        this.m_materialBuilder.setMaterialContext(this.m_materialCtx);
 
         this.initEnvBox();
     }
     addMaterial(flag: number): void {
-        this.m_moduleFlag = this.m_materialBuilder.addMaterial( flag );
+        flag = this.m_materialBuilder.addMaterial(flag);
+        if(flag > 0) {
+            this.m_moduleFlag = flag;
+        }
     }
     private m_timeoutId: any = -1;
     private update(): void {
@@ -98,22 +102,23 @@ class ViewerScene {
             this.m_timeoutId = setTimeout(this.update.bind(this), 20);// 20 fps
         }
     }
-    
-    initCommonScene(): void {
 
-        console.log("this.m_materialBuilder.hasMaterialWith(ModuleFlag.AppLambert): ",this.m_materialBuilder.hasMaterialWithFlag( this.m_moduleFlag ), this.m_meshs.length > 0);
+    initCommonScene(phase: number = 0): void {
+
+        console.log("this.m_materialBuilder.hasMaterialWith(ModuleFlag.AppLambert): ", this.m_materialBuilder.isEnabledWithFlag(this.m_moduleFlag), this.m_meshs.length > 0);
+        // DivLog.ShowLog("initCommonScene("+phase+") A, " + this.m_materialBuilder.isEnabledWithFlag(this.m_moduleFlag) + ", len: " + this.m_meshs.length);
         let initFlag = (this.m_materialBuilder.isEnabledWithFlag(this.m_moduleFlag) && this.m_meshs.length > 0);
-        if(!initFlag) {
+        if (!initFlag) {
             return;
         }
 
         let rscene = this.m_rscene;
-
-        this.update();
+        // DivLog.ShowLog("initCommonScene() B, " + this.m_defaultEntities.length);
         if (this.m_defaultEntities.length > 0) {
+            this.update();
             console.log("lambert initCommonScene()...");
             // let material = this.createLambertMaterial();
-            let material = this.m_materialBuilder.createMaterialWithFlag( this.m_moduleFlag );
+            let material = this.m_materialBuilder.createMaterialWithFlag(this.m_moduleFlag);
 
             let scale: number = 400.0;
             let entity = rscene.entityBlock.createEntity();

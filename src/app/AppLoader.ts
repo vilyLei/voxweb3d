@@ -1,4 +1,5 @@
 
+import DivLog from "../vox/utils/DivLog";
 import ModuleFlag from "./publish/base/ModuleFlag";
 import LightViewer from "./publish/lightViewer/LightViewer";
 
@@ -45,12 +46,13 @@ export class AppLoader {
         
         // let envLightModule_url = host + "AppEnvLightModule.package.js";
         // loader = new ModuleLoader(ModuleFlag.AppEnvLight, envLightModule_url, this);
+        // DivLog.SetDebugEnabled(true);
+        // // DivLog.ShowLog("init load engine...");
     }
     
     private loadAppFunctions(): void {
 
         let loader: ModuleLoader;
-
         let envLightModule_url = host + "AppEnvLightModule.package.js";
         let LightModule_url = host + "AppLightModule.package.js";
         loader = new ModuleLoader(ModuleFlag.AppEnvLight, envLightModule_url, this);
@@ -60,7 +62,7 @@ export class AppLoader {
         // loader = new ModuleLoader(ModuleFlag.AppShadow, shadow_url, this);
 
         let viewer = this.m_appShell.viewer;
-        let pbrEnabled: boolean = false;
+        let pbrEnabled: boolean = true;
         if(pbrEnabled) {
             let pbr_url = host + "AppPBR.package.js";
             loader = new ModuleLoader(ModuleFlag.AppPBR, pbr_url, this);

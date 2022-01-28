@@ -15,7 +15,8 @@ import ModuleFlag from "../base/ModuleFlag";
 import ViewerScene from "./ViewerScene";
 import { IAppObjData } from "../../modules/interfaces/IAppObjData";
 import IObjGeomDataParser from "../../../vox/mesh/obj/IObjGeomDataParser";
-import { IDataMesh } from "../../../vox/mesh/IDataMesh";;
+import { IDataMesh } from "../../../vox/mesh/IDataMesh";import DivLog from "../../../vox/utils/DivLog";
+;
 
 declare var AppEngine: any;
 declare var AppBase: any;
@@ -87,7 +88,7 @@ class LightViewer implements IShaderLibListener {
             this.m_mesh = mesh;
             this.m_scene.addDataMesh(mesh);
 
-            this.m_scene.initCommonScene();
+            this.m_scene.initCommonScene(1);
         }
     }
     private initObjData(): void {
@@ -135,7 +136,7 @@ class LightViewer implements IShaderLibListener {
 
             voxAppEngine.setSyncLookEnabled(true);
             main(voxAppEngine);
-
+            // DivLog.ShowLog("init engine..");
             this.m_scene.initialize(voxAppBase, this.m_rscene);
             this.buildMeshData();
             // this.m_scene.initDefaultEntities();
@@ -149,8 +150,8 @@ class LightViewer implements IShaderLibListener {
 
             let mcParam = new MaterialContextParam();
             mcParam.shaderLibVersion = "v101";
-            mcParam.pointLightsTotal = 3;
-            mcParam.directionLightsTotal = 0;
+            mcParam.pointLightsTotal = 1;
+            mcParam.directionLightsTotal = 2;
             mcParam.spotLightsTotal = 0;
             mcParam.loadAllShaderCode = true;
             mcParam.shaderCodeBinary = true;
@@ -165,6 +166,7 @@ class LightViewer implements IShaderLibListener {
             this.m_materialCtx = this.m_voxAppBase.createMaterialContext();
             this.m_materialCtx.addShaderLibListener(this);
 
+            // DivLog.ShowLog("init materialCtx..");
             this.initEnvLight();
             this.buildLightModule(mcParam);
 
@@ -186,7 +188,8 @@ class LightViewer implements IShaderLibListener {
         envLightModule.setEnvAmbientMap(this.m_materialCtx.getTextureByUrl("static/assets/brn_03.jpg"));
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
 
-        this.m_scene.initCommonScene();
+        // DivLog.ShowLog("init materialCtx loaded..");
+        this.m_scene.initCommonScene(2);
     }
     private initEnvLight(): void {
 
@@ -229,6 +232,36 @@ class LightViewer implements IShaderLibListener {
     private initLightModuleData(lightModule: ILightModule): void {
 
         // this.m_materialCtx.initialize(this.m_rscene, mcParam);
+        
+        let pointLight = lightModule.getPointLightAt(0);
+        if (pointLight != null) {
+            // pointLight.position.setXYZ(200.0, 180.0, 200.0);
+            pointLight.position.setXYZ(0.0, 190.0, 0.0);
+            pointLight.color.setRGB3f(0.0, 2.2, 0.0);
+            pointLight.attenuationFactor1 = 0.00001;
+            pointLight.attenuationFactor2 = 0.00005;
+        }
+        let spotLight = lightModule.getSpotLightAt(0);
+        if (spotLight != null) {
+            spotLight.position.setXYZ(0.0, 30.0, 0.0);
+            spotLight.direction.setXYZ(0.0, -1.0, 0.0);
+            spotLight.color.setRGB3f(0.0, 40.2, 0.0);
+            spotLight.attenuationFactor1 = 0.000001;
+            spotLight.attenuationFactor2 = 0.000001;
+            spotLight.angleDegree = 30.0;
+        }
+        let directLight = lightModule.getDirectionLightAt(0);
+        if (directLight != null) {
+            directLight.color.setRGB3f(2.0, 0.0, 0.0);
+            directLight.direction.setXYZ(-1.0, -1.0, 0.0);
+            directLight = lightModule.getDirectionLightAt(1);
+            if (directLight != null) {
+                directLight.color.setRGB3f(0.0, 0.0, 2.0);
+                directLight.direction.setXYZ(1.0, 1.0, 0.0);
+            }
+        }
+        lightModule.update();
+        /*
         let pointLight = lightModule.getPointLightAt(0);
         pointLight.position.setXYZ(0.0, 150.0, -50.0);
         pointLight.color.setRGB3f(1.0, 1.0, 1.0);
@@ -246,8 +279,9 @@ class LightViewer implements IShaderLibListener {
         pointLight.color.setRGB3f(0.0, 1.0, 1.0);
         pointLight.attenuationFactor1 = 0.00001;
         pointLight.attenuationFactor2 = 0.000001;
-
         lightModule.update();
+        //*/
+
     }
 }
 export default LightViewer;

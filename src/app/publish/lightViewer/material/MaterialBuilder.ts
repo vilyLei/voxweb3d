@@ -9,6 +9,7 @@ import { ShaderCodeUUID } from "../../../../vox/material/ShaderCodeUUID";
 import ModuleFlag from "../../base/ModuleFlag";
 import LambertModule from "./LambertModule";
 import PBRModule from "./PBRModule";
+import DivLog from "../../../../vox/utils/DivLog";
 
 export default class MaterialBuilder {
 
@@ -56,6 +57,7 @@ export default class MaterialBuilder {
                     break;
                 case ModuleFlag.AppPBR:
                     console.log("MaterialBuilder addMaterial(pbr)...");
+                    // DivLog.ShowLog(flag + "，addMaterial(pbr)");
                     builder = new PBRModule();
                     builder.preload();
                     break;
@@ -67,6 +69,7 @@ export default class MaterialBuilder {
                     builder.active(this.m_rscene, this.m_materialCtx);
                 }
                 this.m_builderMap.set(flag, builder);
+                // DivLog.ShowLog(flag + "，addMaterial(pbr) B");
                 return flag;
             }
         }
@@ -76,6 +79,7 @@ export default class MaterialBuilder {
     isEnabledWithFlag(flag: number): boolean {
 
         let builder = this.m_builderMap.get(flag);
+        // DivLog.ShowLog(flag+",isEnabled()): "+(builder != null) + ", " + (builder != null && builder.isEnabled()));
         return (builder != null && builder.isEnabled());
     }
     hasMaterialWithFlag(flag: number): boolean {

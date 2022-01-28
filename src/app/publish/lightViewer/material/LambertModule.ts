@@ -7,7 +7,6 @@ import BinaryLoader from "../../../../vox/assets/BinaryLoader"
 import { ShaderCodeUUID } from "../../../../vox/material/ShaderCodeUUID";
 import IMaterialModule from "./IMaterialModule";
 
-declare var AppBase: any;
 declare var AppLambert: any;
 
 export default class LambertModule implements IMaterialModule {
@@ -20,7 +19,6 @@ export default class LambertModule implements IMaterialModule {
     constructor() { }
 
     preload(): void {
-
     }
     active(rscene: IRendererScene, materialCtx: IMaterialContext): void {
 

@@ -6,7 +6,12 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 interface IAppPBR {
     initialize(rsecne: IRendererScene): void;
     createMaterial(vertUniformEnabled?: boolean): IMaterial;
-    createSpecularTex( buffer: ArrayBuffer, hdrBrnEnabled?: boolean ): IRenderTexture;
+    /**
+     * @param buffer 
+     * @param hdrBrnEnabled the default value is true
+     * @param texture the default value is null
+     */
+    createSpecularTex( buffer: ArrayBuffer, hdrBrnEnabled?: boolean, texture?: IRenderTexture ): IRenderTexture;
 
 }
 export { IAppPBR }
