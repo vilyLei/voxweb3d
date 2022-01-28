@@ -30,7 +30,7 @@ export default class LambertModule implements IMaterialModule {
     constructor() { }
 
     preload(): void {
-        
+
     }
     active(rscene: IRendererScene, materialCtx: IMaterialContext): void {
 
@@ -118,6 +118,6 @@ export default class LambertModule implements IMaterialModule {
         return m;
     }
     isEnabled(): boolean {
-        return true;
+        return this.m_materialCtx != null && this.m_materialCtx.hasShaderCodeObjectWithUUID(this.getUUID());
     }
 }

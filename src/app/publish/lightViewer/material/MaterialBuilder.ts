@@ -44,7 +44,7 @@ export default class MaterialBuilder {
         return material;
     }
 
-    addMaterial(flag: number): void {
+    addMaterial(flag: number): number {
 
         let builder = this.m_builderMap.get(flag);
         if(builder == null) {
@@ -67,20 +67,22 @@ export default class MaterialBuilder {
                     builder.active(this.m_rscene, this.m_materialCtx);
                 }
                 this.m_builderMap.set(flag, builder);
+                return flag;
             }
         }
+        return 0;
     }
 
     isEnabledWithFlag(flag: number): boolean {
-        let boo = this.m_builderMap.has( flag );
-        boo = boo && this.m_materialCtx.hasShaderCodeObjectWithUUID(ShaderCodeUUID.Lambert);
-        return boo; 
+
+        let builder = this.m_builderMap.get(flag);
+        return (builder != null && builder.isEnabled());
     }
     hasMaterialWithFlag(flag: number): boolean {
         return this.m_builderMap.has( flag );
     }
-    createLambertMaterial(): IMaterial {
-        let builder = this.m_builderMap.get(ModuleFlag.AppLambert);
+    createMaterialWithFlag(flag: number): IMaterial {
+        let builder = this.m_builderMap.get(flag);
         if(builder != null) {
             return builder.createMaterial();
         }

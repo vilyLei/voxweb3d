@@ -33,7 +33,7 @@ export default class PBRModule implements IMaterialModule {
     constructor() { }
 
     preload(): void {
-        this.loadSpecularData( true );
+        this.loadSpecularData(true);
     }
     active(rscene: IRendererScene, materialCtx: IMaterialContext): void {
 
@@ -100,7 +100,8 @@ export default class PBRModule implements IMaterialModule {
         return ShaderCodeUUID.PBR;
     }
     isEnabled(): boolean {
-        return this.m_specEnvMapbuffer != null;
+        let boo = this.m_materialCtx != null && this.m_materialCtx.hasShaderCodeObjectWithUUID(this.getUUID());
+        return boo && this.m_specEnvMapbuffer != null;
     }
     createMaterial(): IMaterial {
 

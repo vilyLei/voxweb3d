@@ -23,6 +23,7 @@ class ViewerScene {
     private m_defaultEntities: IRenderEntity[] = [];
     private m_entities: IRenderEntity[] = [];
     private m_meshs: IDataMesh[] = [];
+    private m_moduleFlag: number = 0;
     constructor() { }
 
     // loaded(buffer: ArrayBuffer, uuid: string): void {
@@ -87,7 +88,7 @@ class ViewerScene {
         this.initEnvBox();
     }
     addMaterial(flag: number): void {
-        this.m_materialBuilder.addMaterial( flag );
+        this.m_moduleFlag = this.m_materialBuilder.addMaterial( flag );
     }
     private m_timeoutId: any = -1;
     private update(): void {
@@ -126,7 +127,7 @@ class ViewerScene {
         if (this.m_defaultEntities.length > 0) {
             console.log("lambert initCommonScene()...");
             // let material = this.createLambertMaterial();
-            let material = this.m_materialBuilder.createLambertMaterial();
+            let material = this.m_materialBuilder.createMaterialWithFlag( this.m_moduleFlag );
 
             let scale: number = 400.0;
             let entity = rscene.entityBlock.createEntity();
