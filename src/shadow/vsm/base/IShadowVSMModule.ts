@@ -5,6 +5,7 @@ import { IMaterialPipe } from "../../../vox/material/pipeline/IMaterialPipe";
 
 interface IShadowVSMModule extends IMaterialPipe{
 
+    force: boolean;
     /**
      * set shawow rtt texture size
      * @param mapW shadow rtt texture width
@@ -37,8 +38,6 @@ interface IShadowVSMModule extends IMaterialPipe{
     getCamera(): IRenderCamera;
     setRendererProcessIDList(processIDList: number[]): void;
     
-    force: boolean;
-
     upate(): void;
     run(): void;
 }

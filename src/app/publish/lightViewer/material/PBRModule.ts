@@ -151,7 +151,7 @@ export default class PBRModule implements IMaterialModule {
         param.roughness = 0.4;
         param.ao = 1.0;
         param.specularEnvMap = this.m_specEnvMap;
-        param.shadowReceiveEnabled = false;
+        param.shadowReceiveEnabled = true;
 
         param.fogEnabled = fogEnabled;
 

@@ -17,10 +17,11 @@ class ModuleFlag {
 
     }
     static Initialize(): void {
+
         let MF = ModuleFlag;
         let mf: any = ModuleFlag;
         // mf.SYS_MODULE_LOADED = 31 | mf.AppLambert;
-        mf.SYS_MODULE_LOADED = MF.AppEnvLight | MF.AppLight;// | MF.AppLambert;
+        mf.SYS_MODULE_LOADED = MF.AppEnvLight | MF.AppLight | MF.AppShadow;
     }
 
     reset(): void {
@@ -43,6 +44,9 @@ class ModuleFlag {
     }
     hasLightModule(): boolean {
         return (ModuleFlag.AppLight & this.m_flag) == ModuleFlag.AppLight;
+    }
+    hasShadowModule(): boolean {
+        return (ModuleFlag.AppShadow & this.m_flag) == ModuleFlag.AppShadow;
     }
     hasObjDataModule(): boolean {
         return (ModuleFlag.AppObjData & this.m_flag) == ModuleFlag.AppObjData;

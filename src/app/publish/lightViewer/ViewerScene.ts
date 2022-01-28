@@ -127,6 +127,15 @@ class ViewerScene {
             entity.setScaleXYZ(scale, scale, scale);
             rscene.addEntity(entity);
             this.m_entities.push(entity);
+
+            // let scale: number = 500.0;
+            let boxEntity = rscene.entityBlock.createEntity();
+            boxEntity.setMaterial(material);
+            boxEntity.copyMeshFrom(rscene.entityBlock.unitBox);
+            boxEntity.setScaleXYZ(scale, scale * 0.05, scale);
+            boxEntity.setXYZ(0, -200, 0);
+            rscene.addEntity(boxEntity);
+            this.m_entities.push( boxEntity );
         }
 
         // let scale: number = 500.0;

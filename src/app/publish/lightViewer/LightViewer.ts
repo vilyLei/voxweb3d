@@ -16,6 +16,8 @@ import ViewerScene from "./ViewerScene";
 import { IAppObjData } from "../../modules/interfaces/IAppObjData";
 import IObjGeomDataParser from "../../../vox/mesh/obj/IObjGeomDataParser";
 import { IDataMesh } from "../../../vox/mesh/IDataMesh";import DivLog from "../../../vox/utils/DivLog";
+import { IShadowVSMModule } from "../../../shadow/vsm/base/IShadowVSMModule";
+import { IAppShadow } from "../../modules/interfaces/IAppShadow";
 ;
 
 declare var AppEngine: any;
@@ -23,6 +25,7 @@ declare var AppBase: any;
 declare var AppEnvLightModule: any;
 declare var AppLightModule: any;
 declare var AppObjData: any;
+declare var AppShadow: any;
 
 function main(appIns: any): void {
     appIns.initialize();
@@ -38,6 +41,7 @@ class LightViewer implements IShaderLibListener {
     private m_voxAppEngine: IAppEngine = null;
     private m_voxAppBase: IAppBase = null;
     private m_voxAppObjData: IAppObjData = null;
+    private m_voxAppShadow: IAppShadow = null;
     private m_rscene: IRendererScene;
     private m_materialCtx: IMaterialContext;
 
@@ -156,7 +160,7 @@ class LightViewer implements IShaderLibListener {
             mcParam.shaderFileNickname = true;
             mcParam.vsmFboIndex = 0;
             //nickname
-            // mcParam.vsmEnabled = false;
+            mcParam.vsmEnabled = true;
             // mcParam.buildBinaryFile = true;
 
             this.m_materialCtx = this.m_voxAppBase.createMaterialContext();
@@ -165,6 +169,7 @@ class LightViewer implements IShaderLibListener {
             // DivLog.ShowLog("init materialCtx..");
             this.initEnvLight();
             this.buildLightModule(mcParam);
+            this.buildShadowModule(mcParam);
 
             this.m_materialCtx.initialize(this.m_rscene, mcParam);
 
@@ -186,6 +191,26 @@ class LightViewer implements IShaderLibListener {
 
         // DivLog.ShowLog("init materialCtx loaded..");
         this.m_scene.initCommonScene(2);
+    }
+    protected buildShadowModule(param: MaterialContextParam): void {
+
+        if (this.m_mf.hasShadowModule()) {
+            //IShadowVSMModule
+            this.m_voxAppShadow = new AppShadow.Instance();
+            let vsmModule = this.m_voxAppShadow.createVSMShadow(param.vsmFboIndex);
+            vsmModule.setCameraPosition(new Vector3D(1, 800, 1));
+            vsmModule.setCameraNear(10.0);
+            vsmModule.setCameraFar(3000.0);
+            vsmModule.setMapSize(512.0, 512.0);
+            vsmModule.setCameraViewSize(4000, 4000);
+            vsmModule.setShadowRadius(2);
+            vsmModule.setShadowBias(-0.0005);
+            vsmModule.initialize(this.m_rscene, [0], 3000);
+            vsmModule.setShadowIntensity(0.8);
+            vsmModule.setColorIntensity(0.3);
+            this.m_materialCtx.vsmModule = vsmModule;
+            console.log("buildShadowModule(), vsmModule: ",vsmModule);
+        }
     }
     private initEnvLight(): void {
 

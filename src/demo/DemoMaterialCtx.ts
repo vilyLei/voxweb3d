@@ -349,6 +349,13 @@ export class DemoMaterialCtx implements IShaderLibListener {
         box.setXYZ(0.0, -200.0, 0.0);
         this.m_rscene.addEntity(box);
 
+        // let box: Box3DEntity = new Box3DEntity();
+        // box.pipeTypes = [MaterialPipeType.FOG_EXP2, MaterialPipeType.VSM_SHADOW];
+        // box.setMaterialPipeline(this.m_materialCtx.pipeline);
+        // box.initializeSizeXYZ(800.0,20,800.0,);
+        // box.setXYZ(0.0, -200.0, 0.0);
+        // this.m_rscene.addEntity(box);
+
         let envBox: Box3DEntity = new Box3DEntity();
         this.useMaterial(envBox);
         envBox.showDoubleFace();
