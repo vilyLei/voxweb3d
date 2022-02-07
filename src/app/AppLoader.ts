@@ -23,9 +23,7 @@ export class AppLoader {
     initialize(): void {
         console.log("AppLoader::initialize()......");
         let url: string = location.href + "";
-        console.log("A url: ", url);
         url = this.parseUrl(url);
-        console.log("B url: ", url);
         this.initUI();
 
         ModuleFlag.Initialize();
@@ -128,7 +126,8 @@ export class AppLoader {
         this.m_infoDiv.innerHTML = str;
     }
     showLoadProgressInfo(e: any): void {
-        let str: string = "loading " + Math.round(100.0 * e.loaded / e.total) + "% ";
+        let total: number = e.total > 0.0 ? e.total : 1.0;
+        let str: string = "loading " + Math.round(100.0 * e.loaded / total) + "% ";
         this.showInfo(str);
     }
 
