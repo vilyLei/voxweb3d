@@ -26,6 +26,8 @@ import RCExtension from "../vox/render/RCExtension";
 import { IBytesCubeTexture } from "../vox/render/texture/IBytesCubeTexture";
 import { IFloatCubeTexture } from "../vox/render/texture/IFloatCubeTexture";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
+import { UserInteraction } from "../vox/engine/UserInteraction";
+import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 
 ///*
 class TextureLoader {
@@ -170,6 +172,7 @@ export class DemoCubeMap {
     private m_texLoader: ImageTextureLoader;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
+    private m_interaction: UserInteraction = new UserInteraction();
     initialize(): void {
         console.log("DemoCubeMap::initialize()......");
         if (this.m_rscene == null) {
@@ -183,7 +186,9 @@ export class DemoCubeMap {
             rparam.setCamProject(45, 50.0, 10000.0)
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
-            this.m_rscene.updateCamera();
+            
+            this.m_interaction.initialize( this.m_rscene );
+            this.m_interaction.cameraZoomController.syncLookAt = true;
 
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
@@ -220,10 +225,19 @@ export class DemoCubeMap {
             "static/assets/hw_morning/morning_rt.jpg",
             "static/assets/hw_morning/morning_lf.jpg"
         ];
+        urls = [
+            "static/assets/env/shape/shape_ft.jpg",
+            "static/assets/env/shape/shape_bk.jpg",
+            "static/assets/env/shape/shape_up.jpg",
+            "static/assets/env/shape/shape_dn.jpg",
+            "static/assets/env/shape/shape_rt.jpg",
+            "static/assets/env/shape/shape_lf.jpg"
+        ];
 
         let cubeTex0: TextureProxy = this.m_texLoader.getCubeTexAndLoadImg("static/assets/cubeMap", urls);
 
-        this.createCubeBox( cubeTex0 );
+        // this.createCubeBox( cubeTex0 );
+        this.createSphere( cubeTex0 );
         
     }
     private useFloatDataCubeTex(): void {
@@ -260,6 +274,7 @@ export class DemoCubeMap {
         loader.load(ddsUrl);
 
         this.createCubeBox( floatCubeTex );
+        // this.createSphere( floatCubeTex );
     }
     private createCubeBox(cubeTex: IRenderTexture): void {
 
@@ -267,15 +282,33 @@ export class DemoCubeMap {
         cubeTex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
         cubeTex.magFilter = TextureConst.LINEAR;
         let cubeMaterial: CubeMapMaterial = new CubeMapMaterial(true);
-        cubeMaterial.setTextureLodLevel( 7.0 );
+        cubeMaterial.setTextureLodLevel( 1.0 );
         //cubeMaterial.setTextureList
         let size: number = 500.0;
+        size = 300.0;
         let box: Box3DEntity = new Box3DEntity();
         box.useGourandNormal();
-        box.showFrontFace();
+        // box.showFrontFace();
         box.setMaterial(cubeMaterial);
         box.initialize(new Vector3D(-size, -size, -size), new Vector3D(size,size,size), [cubeTex]);
         this.m_rscene.addEntity(box);
+    }
+    private createSphere(cubeTex: IRenderTexture): void {
+
+        cubeTex.mipmapEnabled = true;
+        cubeTex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
+        cubeTex.magFilter = TextureConst.LINEAR;
+        let cubeMaterial: CubeMapMaterial = new CubeMapMaterial(true);
+        cubeMaterial.setTextureLodLevel( 0.0 );
+        //cubeMaterial.setTextureList
+        let size: number = 200.0;
+        
+        let sph = new Sphere3DEntity();
+        sph.showDoubleFace();
+        // box.showFrontFace();
+        sph.setMaterial(cubeMaterial);
+        sph.initialize(size, 20,20, [cubeTex]);
+        this.m_rscene.addEntity(sph);
     }
     private mouseDown(evt: any): void {
         let k: number = (evt.mouseX - 50.0) / 300.0;
@@ -283,9 +316,10 @@ export class DemoCubeMap {
     run(): void {
         this.m_statusDisp.update();
 
+        this.m_interaction.run();
         this.m_rscene.run();
 
-        this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+        // this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
     }
 }
 
