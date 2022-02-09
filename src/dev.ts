@@ -193,7 +193,7 @@
 
 //  import {DemoObj3DModule as Demo} from "./demo/DemoObj3DModule";
 
- import {DemoCubeMap as Demo} from "./demo/DemoCubeMap";
+//  import {DemoCubeMap as Demo} from "./demo/DemoCubeMap";
 
 //  import {DemoRTTCamera as Demo} from "./demo/DemoRTTCamera";
 
@@ -351,7 +351,7 @@
 
 // import {DemoMaterialCtx as Demo} from "./demo/DemoMaterialCtx";
 
-//  import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
+ import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
 
 //  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 

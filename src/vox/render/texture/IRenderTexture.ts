@@ -21,6 +21,7 @@ interface IRenderTexture extends IRenderBuffer {
     internalFormat: number;
     
     unpackAlignment: number;
+    flipY: boolean;
     premultiplyAlpha: boolean;
     
     setWrap(wrap: number): void;

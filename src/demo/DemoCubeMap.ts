@@ -225,19 +225,20 @@ export class DemoCubeMap {
             "static/assets/hw_morning/morning_rt.jpg",
             "static/assets/hw_morning/morning_lf.jpg"
         ];
+        let nsId = "3";
         urls = [
-            "static/assets/env/shape/shape_ft.jpg",
-            "static/assets/env/shape/shape_bk.jpg",
-            "static/assets/env/shape/shape_up.jpg",
-            "static/assets/env/shape/shape_dn.jpg",
-            "static/assets/env/shape/shape_rt.jpg",
-            "static/assets/env/shape/shape_lf.jpg"
+            "static/assets/env/shape/shape"+ nsId +"_ft.jpg",
+            "static/assets/env/shape/shape"+ nsId +"_bk.jpg",
+            "static/assets/env/shape/shape"+ nsId +"_up.jpg",
+            "static/assets/env/shape/shape"+ nsId +"_dn.jpg",
+            "static/assets/env/shape/shape"+ nsId +"_rt.jpg",
+            "static/assets/env/shape/shape"+ nsId +"_lf.jpg"
         ];
 
         let cubeTex0: TextureProxy = this.m_texLoader.getCubeTexAndLoadImg("static/assets/cubeMap", urls);
 
         // this.createCubeBox( cubeTex0 );
-        this.createSphere( cubeTex0 );
+        this.createSphere( cubeTex0, 2700.0 );
         
     }
     private useFloatDataCubeTex(): void {
@@ -293,19 +294,20 @@ export class DemoCubeMap {
         box.initialize(new Vector3D(-size, -size, -size), new Vector3D(size,size,size), [cubeTex]);
         this.m_rscene.addEntity(box);
     }
-    private createSphere(cubeTex: IRenderTexture): void {
+    private createSphere(cubeTex: IRenderTexture, size: number = 200.0): void {
 
         cubeTex.mipmapEnabled = true;
         cubeTex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
         cubeTex.magFilter = TextureConst.LINEAR;
+        // cubeTex.flipY = true;
         let cubeMaterial: CubeMapMaterial = new CubeMapMaterial(true);
         cubeMaterial.setTextureLodLevel( 0.0 );
         //cubeMaterial.setTextureList
-        let size: number = 200.0;
+        //let size: number = 200.0;
         
         let sph = new Sphere3DEntity();
-        sph.showDoubleFace();
-        // box.showFrontFace();
+        //sph.showDoubleFace();
+        sph.showFrontFace();
         sph.setMaterial(cubeMaterial);
         sph.initialize(size, 20,20, [cubeTex]);
         this.m_rscene.addEntity(sph);

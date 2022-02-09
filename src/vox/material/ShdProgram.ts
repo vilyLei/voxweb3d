@@ -274,6 +274,7 @@ export default class ShdProgram implements IShdProgram {
         return 0;
     }
     private initShdProgram(): any {
+        let gl = this.m_gl;
         let vshd_str: string = this.m_shdData.getVSCodeStr();
         let fshd_str: string = this.m_shdData.getFSCodeStr();
         //console.log("ShdProgram::initShdProgram(), this: ",this);
@@ -293,7 +294,7 @@ export default class ShdProgram implements IShdProgram {
         if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
             console.log("vert shader code: \n" + vshd_str);
         }
-        let vertShader: any = this.loadShader(this.m_gl.VERTEX_SHADER, vshd_str);
+        let vertShader: any = this.loadShader(gl.VERTEX_SHADER, vshd_str);
         if (this.m_shdData.preCompileInfo == null) {
             if (RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
                 if (fshd_str.indexOf(" mediump ") >= 0) {
@@ -309,22 +310,28 @@ export default class ShdProgram implements IShdProgram {
         if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
             console.log("frag shader code: \n" + fshd_str);
         }
-        let fragShader = this.loadShader(this.m_gl.FRAGMENT_SHADER, fshd_str);
-        
+        let fragShader = this.loadShader(gl.FRAGMENT_SHADER, fshd_str);
+
         // Create the shader program      
-        let shdProgram = this.m_gl.createProgram();
-        this.m_gl.attachShader(shdProgram, fragShader);
-        this.m_gl.attachShader(shdProgram, vertShader);
-        this.m_gl.linkProgram(shdProgram);
-        
-        if (!this.m_gl.getProgramParameter(shdProgram, this.m_gl.LINK_STATUS)) {
+        let shdProgram = gl.createProgram();
+        gl.attachShader(shdProgram, fragShader);
+        gl.attachShader(shdProgram, vertShader);
+        gl.linkProgram(shdProgram);
+
+        if (!gl.getProgramParameter(shdProgram, gl.LINK_STATUS)) {
             if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
-                console.log('Unable to initialize the shader program: ' + this.m_gl.getProgramInfoLog(shdProgram));
+                console.log('Unable to initialize the shader program: ' + gl.getProgramInfoLog(shdProgram));
             }
             return null;
         }
         this.m_vertShader = vertShader;
         this.m_fragShader = fragShader;
+
+        gl.detachShader(shdProgram, vertShader);
+        gl.detachShader(shdProgram, fragShader);
+
+        gl.deleteShader(vertShader);
+        gl.deleteShader(fragShader);
         return shdProgram;
     }
 
