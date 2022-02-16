@@ -21,7 +21,7 @@ Feature:
 
     5. 支持分布式运行时代码功能。
        Distributed-Runtime strategy support.
-       [Demo](http://www.artvily.com/renderCase?sample=distributedRuntime)
+       [Demo](http://www.artvily.com/renderCase?sample=distributedRuntimeLightViewer)
 
     6. 自动化的内存显存等资源管理。
        Auto resource management: system memory resource and Gpu memory resource, and one system memory resource for Multiple Gpu context memory resource.
