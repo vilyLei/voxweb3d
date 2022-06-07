@@ -5,7 +5,7 @@ import RendererParam from "../vox/scene/RendererParam";
 import RendererState from "../vox/render/RendererState";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import {IThreadSendData} from "../thread/base/IThreadSendData";
+import { IThreadSendData } from "../thread/base/IThreadSendData";
 import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
@@ -35,7 +35,7 @@ export class DemoThread extends DemoInstance {
     }
     // thread code example(demonstrate: 通过后续添加的代码字符串来扩充worker中的功能示例)
     private m_codeStr: string =
-`
+        `
 function ThreadAddNum()
 {
     console.log("ThreadAddNum instance init run ... from code str");
@@ -110,18 +110,19 @@ function ThreadAddNum()
     private initThread(): void {
         // 注意: m_codeStr 代码中描述的 getTaskClass() 返回值 要和 TestNumberAddTask 中的 getTaskClass() 返回值 要相等
 
-        ThreadSystem.InitTaskByURL("static/thread/ThreadAddNum.js",0);
-        ThreadSystem.InitTaskByURL("static/thread/ThreadMultNum",1);
-        ThreadSystem.InitTaskByURL("static/thread/ThreadMathNum",2);
-        
+        // ThreadSystem.InitTaskByURL("static/thread/ThreadAddNum.js", 0);
+        // ThreadSystem.InitTaskByURL("static/thread/ThreadMultNum", 1);
+        // ThreadSystem.InitTaskByURL("static/thread/ThreadMathNum", 2);
+
         //  ThreadSystem.InitTaskByCodeStr(this.m_codeStr, 0, "ThreadAddNum");
         //ThreadSystem.InitTaskByURL("static/thread/ThreadMultNum", 1);
         //ThreadSystem.InitTaskByURL("static/thread/ThreadMathNum", 2);
 
         ThreadSystem.Initialize(1);
-        this.m_numberAddTask.setDataPool(ThreadSystem.GetThrDataPool());
-        this.m_numberMultTask.setDataPool(ThreadSystem.GetThrDataPool());
-        this.m_numberMathTask.setDataPool(ThreadSystem.GetThrDataPool());
+
+        ThreadSystem.BindTask( this.m_numberAddTask );
+        ThreadSystem.BindTask( this.m_numberMultTask );
+        ThreadSystem.BindTask( this.m_numberMathTask );
     }
     private m_flag: number = 0;
     private useMathTask(): void {

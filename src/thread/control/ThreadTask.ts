@@ -12,6 +12,7 @@
 import { StreamType, IThreadSendData } from "../base/IThreadSendData";
 import { ThreadSendData } from "../base/ThreadSendData";
 import { IThrDataPool } from "../control/IThrDataPool";
+import { ThreadCodeSrcType } from "../control/ThreadCodeSrcType";
 
 class ThreadTask {
     // 同时处在运行时状态的最大任务数量: 512个
@@ -25,6 +26,14 @@ class ThreadTask {
 
     protected m_parseIndex: number = 0;
     protected m_parseTotal: number = 0;
+    /**
+     * the task code source type in the thread runtime
+     */
+    threadCodeSrcType: ThreadCodeSrcType = ThreadCodeSrcType.JS_FILE_CODE;
+    /**
+     * the task code source url in the thread runtime
+     */
+    threadCodeURL: string = "";
     constructor() {
         if (ThreadTask.s_freeList == null) {
             ThreadTask.s_taskList = new Array(ThreadTask.s_maxTasksTotal);

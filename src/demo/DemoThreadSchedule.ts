@@ -119,7 +119,7 @@ let workerIns_ThreadAddNum = new ThreadAddNum();
         this.m_thrSchedule.initTaskByCodeStr(this.m_codeStr, 0, "ThreadAddNum");
         this.m_thrSchedule.initTaskByURL("static/thread/ThreadMultNum", 1);
         this.m_thrSchedule.initTaskByURL("static/thread/ThreadMathNum", 2);
-        this.m_thrSchedule.initsialize(1);
+        this.m_thrSchedule.initialize(1);
         this.m_numberAddTask.setDataPool(this.m_thrSchedule.getThrDataPool());
         this.m_numberMultTask.setDataPool(this.m_thrSchedule.getThrDataPool());
         this.m_numberMathTask.setDataPool(this.m_thrSchedule.getThrDataPool());

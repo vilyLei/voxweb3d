@@ -5,12 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-import {StreamType, IThreadSendData} from "../thread/base/IThreadSendData";
-import {ThreadSendData} from "../thread/base/ThreadSendData";
+import { StreamType, IThreadSendData } from "../thread/base/IThreadSendData";
+import { ThreadSendData } from "../thread/base/ThreadSendData";
 import RendererDevice from "../vox/render/RendererDevice";
 import ThreadCore from "../thread/control/Thrcode";
 import ThrDataPool from "../thread/control/ThrDataPool";
 import ThreadBase from "../thread/base/ThreadBase";
+import { ThreadCodeSrcType } from "./control/ThreadCodeSrcType";
 import ThreadTask from "./control/ThreadTask";
 
 class ThreadSystem {
@@ -23,16 +24,16 @@ class ThreadSystem {
     private static s_threads: ThreadBase[] = [null, null, null, null, null, null, null, null];
     private static s_threadsTotal: number = 0;
     private static s_pool: ThrDataPool = new ThrDataPool();
-    
+
     static GetThrDataPool(): ThrDataPool {
         return ThreadSystem.s_pool;
     }
     static BindTask(task: ThreadTask, threadIndex: number = -1): void {
-        if(task != null) {
+        if (task != null) {
             let localPool: ThrDataPool = null;
-            if(threadIndex >= 0 && threadIndex < ThreadSystem.s_maxThreadsTotal) {
-                for(;;) {
-                    if(threadIndex >= ThreadSystem.s_threadsTotal) {
+            if (threadIndex >= 0 && threadIndex < ThreadSystem.s_maxThreadsTotal) {
+                for (; ;) {
+                    if (threadIndex >= ThreadSystem.s_threadsTotal) {
                         ThreadSystem.CreateThread();
                     }
                     else {
@@ -42,13 +43,16 @@ class ThreadSystem {
                 localPool = ThreadSystem.s_threads[threadIndex].localDataPool;
             }
             task.setDataPool(ThreadSystem.s_pool, localPool);
+            if (task.threadCodeSrcType == ThreadCodeSrcType.JS_FILE_CODE && task.threadCodeURL != "") {
+                ThreadSystem.InitTaskByURL(task.threadCodeURL, task.getTaskClass());
+            }
         }
     }
     static SendDataToWorkerAt(i: number, sendData: IThreadSendData): void {
-        if(i >= 0 && i < ThreadSystem.s_maxThreadsTotal) {
-            if(i >= ThreadSystem.s_threadsTotal) {
-                for(;;) {
-                    if(i >= ThreadSystem.s_threadsTotal) {
+        if (i >= 0 && i < ThreadSystem.s_maxThreadsTotal) {
+            if (i >= ThreadSystem.s_threadsTotal) {
+                for (; ;) {
+                    if (i >= ThreadSystem.s_threadsTotal) {
                         ThreadSystem.CreateThread();
                     }
                     else {
@@ -59,7 +63,7 @@ class ThreadSystem {
             if (sendData != null && sendData.sendStatus < 0) {
                 if (ThreadSystem.s_threads[i].isFree()) {
                     sendData.sendStatus = 0;
-                    ThreadSystem.s_threads[i].sendDataTo( sendData );
+                    ThreadSystem.s_threads[i].sendDataTo(sendData);
                 }
                 else {
                     ThreadSystem.s_threads[i].localDataPool.addData(sendData);
@@ -74,7 +78,7 @@ class ThreadSystem {
         return ThreadSystem.s_pool.isEnabled();
     }
     static Run(): void {
-        
+
         if (ThreadSystem.GetThreadEnabled()) {
 
             let i: number = 0;
@@ -103,7 +107,7 @@ class ThreadSystem {
             }
         }
     }
-    
+
     /**
      * 通过参数, 添加发送给子线程的数据
      * @param taskCmd 处理当前数据的任务命令名字符串
@@ -164,8 +168,8 @@ class ThreadSystem {
             thread.initialize(ThreadSystem.s_codeBlob);
             ThreadSystem.s_threads[ThreadSystem.s_threadsTotal] = thread;
 
-            console.log("Create Thread("+ThreadSystem.s_threadsTotal+")");
-            
+            console.log("Create Thread(" + ThreadSystem.s_threadsTotal + ")");
+
             ThreadSystem.s_threadsTotal++;
             let task: any;
             for (let i: number = 0, len: number = ThreadSystem.s_tasks.length; i < len; ++i) {

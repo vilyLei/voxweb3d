@@ -10,6 +10,7 @@ import ThreadTask from "../../thread/control/ThreadTask";
 class TestNumberMultTask extends ThreadTask {
     constructor() {
         super();
+        this.threadCodeURL = "static/thread/ThreadMultNum";
     }
     clacNumberList(typeData: Float32Array): void {
         if (typeData != null) {

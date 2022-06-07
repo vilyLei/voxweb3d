@@ -10,6 +10,7 @@ import ThrDataPool from "../thread/control/ThrDataPool";
 import { StreamType, IThreadSendData } from "../thread/base/IThreadSendData";
 import { ThreadSendData } from "../thread/base/ThreadSendData";
 import ThreadBase from "../thread/base/ThreadBase";
+import { ThreadCodeSrcType } from "./control/ThreadCodeSrcType";
 import ThreadTask from "./control/ThreadTask";
 class ThreadSchedule {
     // allow ThreadSchedule initialize yes or no
@@ -38,6 +39,9 @@ class ThreadSchedule {
                 localPool = this.m_threads[threadIndex].localDataPool;
             }
             task.setDataPool(this.m_pool, localPool);
+            if (task.threadCodeSrcType == ThreadCodeSrcType.JS_FILE_CODE && task.threadCodeURL != "") {
+                this.initTaskByURL(task.threadCodeURL, task.getTaskClass());
+            }
         }
     }
     getThrDataPool(): ThrDataPool {
@@ -176,7 +180,7 @@ class ThreadSchedule {
     /**
      * @param maxThreadsTotal 最大子线程数量
      */
-     initialize(maxThreadsTotal: number): void {
+    initialize(maxThreadsTotal: number): void {
         if (this.m_initBoo) {
             if (this.getThreadEnabled() && this.isSupported()) {
                 //console.log("ThreadCore.CodeStr: \n",ThreadCore.CodeStr);

@@ -24,7 +24,7 @@
 
 //  import {DemoDepthTex as Demo} from "./demo/DemoDepthTex";
 
-//  import {DemoThread as Demo} from "./demo/DemoThread";
+import {DemoThread as Demo} from "./demo/DemoThread";
 
 //  import {DemoDeepTransparent as Demo} from "./demo/DemoDeepTransparent";
 
@@ -156,7 +156,7 @@
 
 //  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
-import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
+// import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
 
 //  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 

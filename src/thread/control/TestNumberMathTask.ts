@@ -10,6 +10,7 @@ import ThreadTask from "../../thread/control/ThreadTask";
 class TestNumberMathTask extends ThreadTask {
     constructor() {
         super();
+        this.threadCodeURL = "static/thread/ThreadMathNum";
     }
     addNumberList(typeData: Float32Array): void {
         if (typeData != null) {
