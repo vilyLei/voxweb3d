@@ -165,6 +165,9 @@ class ThreadBase implements IThreadBase {
                         worker.postMessage({ cmd: ThreadCMD.INIT_PARAM, threadIndex: this.getUid() });
                         break;
                     case ThreadCMD.INIT_TASK:
+                        if(this.m_taskfs[data.taskclass] < 0) {
+                            console.warn("sub worker taskclass and main worker logic taskClass are not equal !!!");
+                        }
                         this.m_taskfs[data.taskclass] = 1;
                         this.m_free = true;
                         //console.log("Main Worker INIT_TASK selfT.m_taskfs: ",selfT.m_taskfs);
@@ -176,11 +179,17 @@ class ThreadBase implements IThreadBase {
                         //console.log("Main worker INIT_PARAM.");
                         this.updateInitTask();
                         break;
+                    case ThreadCMD.ECHO_ERROR:
+                        this.receiveEchoError(data.errorCode);
+                        break;
                     default:
                         break;
                 }
             }
         }
+    }
+    private receiveEchoError(errorCode: number): void {
+        console.error("receive error code: "+errorCode+" !!!");
     }
 }
 

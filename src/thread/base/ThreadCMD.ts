@@ -17,6 +17,7 @@ class ThreadCMD {
     static readonly THREAD_INIT: number = 3601;
     static readonly INIT_TASK: number = 3701;
     static readonly INIT_PARAM: number = 3801;
+    static readonly ECHO_ERROR: number = 3901;
 }
 
 export default ThreadCMD;

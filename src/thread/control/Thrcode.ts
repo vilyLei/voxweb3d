@@ -36,6 +36,11 @@ function initializeExternModule(ext_module) {
         postMessage({cmd:INIT_TASK,taskclass:ext_module.getTaskClass()});
     }
 }
+const ERROR_Task_Already_exists = 1001;
+function echoError(errorCode) {
+    const ECHO_ERROR = 3901;
+    postMessage({cmd:ECHO_ERROR,errorCode:errorCode});
+}
 
 function ThreadCore() {
     let m_initBoo = true;
@@ -77,6 +82,16 @@ function ThreadCore() {
                                 }
                                 js_url = baseUrl + param.taskName + ".js";
                             }
+                            else
+                            {
+                                if(js_url.indexOf(".js") < 1) {
+                                    js_url = baseUrl + js_url + ".js";
+                                }
+                                else
+                                {
+                                    js_url = baseUrl + js_url;
+                                }
+                            }
                             //console.log("importScripts worker js_url: " + js_url);
                             importScripts(js_url);
                         }
@@ -101,6 +116,8 @@ function ThreadCore() {
                                 //  let blob = new Blob([tmcodeStr]);
                                 //  importScripts(URL.createObjectURL(blob));
                             }
+                        }else if(taskSTList[param.taskclass] == 1) {
+                            echoError( ERROR_Task_Already_exists );
                         }
                         break;
                     default:
