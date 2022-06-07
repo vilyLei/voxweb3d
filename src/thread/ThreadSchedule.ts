@@ -22,13 +22,13 @@ class ThreadSchedule {
     private m_threadsTotal: number = 0;
     private m_threadEnabled: boolean = true;
     private m_pool: ThrDataPool = new ThrDataPool();
-    
+
     bindTask(task: ThreadTask, threadIndex: number = -1): void {
-        if(task != null) {
+        if (task != null) {
             let localPool: ThrDataPool = null;
-            if(threadIndex >= 0 && threadIndex < this.m_maxThreadsTotal) {
-                for(;;) {
-                    if(threadIndex >= this.m_threadsTotal) {
+            if (threadIndex >= 0 && threadIndex < this.m_maxThreadsTotal) {
+                for (; ;) {
+                    if (threadIndex >= this.m_threadsTotal) {
                         this.createThread();
                     }
                     else {
@@ -176,7 +176,7 @@ class ThreadSchedule {
     /**
      * @param maxThreadsTotal 最大子线程数量
      */
-    initsialize(maxThreadsTotal: number): void {
+     initialize(maxThreadsTotal: number): void {
         if (this.m_initBoo) {
             if (this.getThreadEnabled() && this.isSupported()) {
                 //console.log("ThreadCore.CodeStr: \n",ThreadCore.CodeStr);

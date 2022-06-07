@@ -330,7 +330,9 @@ class FrameBufferObject {
 		}
 		//trace("XXXXXXXXXXXXXXXXXXXX FrameBufferObject::clearOnlyColor(), m_fbo: ", m_fbo);
 	}
+	
 	clearOnlyDepth(depth: number = 1.0): void {
+
 		if (RendererDevice.IsWebGL2()) {
 			this.m_clearDepthArr[0] = depth;
 			this.m_gl.clearBufferfv(this.m_gl.DEPTH, 0, this.m_clearDepthArr);

@@ -4,7 +4,6 @@
     viewPosition = u_viewMat * worldPosition;
     gl_Position = u_projMat * viewPosition;
 
-
     #ifdef VOX_DISPLACEMENT_MAP
         oWorldPosition = (u_objMat * vec4(a_vs.xyz, 1.0));
     #else
