@@ -2,6 +2,7 @@ import { ThreadSchedule } from "./modules/thread/ThreadSchedule";
 import { GeometryResourceSchedule } from "./schedule/GeometryResourceSchedule";
 import { ReceiverSchedule } from "./schedule/ReceiverSchedule";
 import { TextureResourceSchedule } from "./schedule/TextureResourceSchedule";
+import { CoRuntime } from "./CoRuntime";
 /**
  * (引擎)数据/资源协同空间, 让一个应用程序的功能像种子一样，随着用户的使用而生根发芽枝叶茂盛，功能越加载越多，越使用越丰富
  * 使得基于算力&数据驱动的系统架构更趋于完善
@@ -11,9 +12,11 @@ class CoSpace {
     private m_inited: boolean = true;
     private m_receiver: ReceiverSchedule = new ReceiverSchedule();
 
+    readonly runtime: CoRuntime = new CoRuntime();
     readonly thread: ThreadSchedule = new ThreadSchedule();
-
+    // 静态模块
     readonly geometry: GeometryResourceSchedule = new GeometryResourceSchedule();
+    // 静态模块
     readonly texture: TextureResourceSchedule = new TextureResourceSchedule();
 
     constructor() {
@@ -41,16 +44,7 @@ class CoSpace {
             this.update();
         }
     }
-    /**
-     * 通过唯一标识名
-     * @param uniqueName 主线程功能模块唯一标识名
-     */
-    addModuleByUniqueName(uniqueName: string): void {
-
-    }
-    startupModuleByUniqueName(uniqueName: string): void {
-
-    }
+    
     private m_timeoutId: any = -1;
     /**
      * 定时调度
