@@ -19,7 +19,7 @@ export class DemoThreadLoadJS
     {
         console.log("DemoThreadLoadJS::initialize()...");
 
-        this.m_threadSchedule.initModules(["static/thread/mathLib.js"]);
+        this.m_threadSchedule.initModules(["cospace/thread/mathLib.js"]);
         this.m_threadSchedule.initialize(3, "cospace/core/code/ThreadCore.umd.min.js");
 
         this.m_threadSchedule.bindTask(this.m_numberAddTask);

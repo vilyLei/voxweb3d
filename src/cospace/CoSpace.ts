@@ -3,7 +3,8 @@ import { GeometryResourceSchedule } from "./schedule/GeometryResourceSchedule";
 import { ReceiverSchedule } from "./schedule/ReceiverSchedule";
 import { TextureResourceSchedule } from "./schedule/TextureResourceSchedule";
 /**
- * 引擎数据/资源协同空间
+ * (引擎)数据/资源协同空间, 让一个应用程序的功能像种子一样，随着用户的使用而生根发芽枝叶茂盛，功能越加载越多，越使用越丰富
+ * 使得基于算力&数据驱动的系统架构更趋于完善
  */
 class CoSpace {
 
@@ -21,7 +22,7 @@ class CoSpace {
      * 初始化引擎数据资源协同空间实例
      * @param maxThreadsTotal 最大线程数量
      * @param threadCoreCodeUrl 线程源码字符串url
-     * @param autoSendData 是否自动从任务池里取出并发送数据到子线程, 默认值是false
+     * @param autoSendData 是否自动从任务池里取出并发送任务数据到子线程, 默认值是false
      */
     initialize(maxThreadsTotal: number, threadCoreCodeUrl: string, autoSendData: boolean = false): void {
         if (this.m_inited) {
@@ -45,6 +46,9 @@ class CoSpace {
      * @param uniqueName 主线程功能模块唯一标识名
      */
     addModuleByUniqueName(uniqueName: string): void {
+
+    }
+    startupModuleByUniqueName(uniqueName: string): void {
 
     }
     private m_timeoutId: any = -1;

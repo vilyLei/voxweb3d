@@ -5,7 +5,7 @@ import { TaskJSFileDependency } from "./TaskDependency";
 class ExampleNumberMathTask extends ThreadTask {
     constructor() {
         super();
-        this.dependency = new TaskJSFileDependency("static/thread/ThreadMathNum");
+        this.dependency = new TaskJSFileDependency("cospace/thread/TaskMathNum");
     }
     addNumberList(typeData: Float32Array): void {
         if (typeData != null) {

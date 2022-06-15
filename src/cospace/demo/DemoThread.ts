@@ -56,8 +56,8 @@ function ThreadAddNum()
         this.m_threadSchedule.initialize(1, "cospace/core/code/ThreadCore.umd.min.js");
         // 初始化线程中的公用代码模块, 加载这两个代码模块只是为了测试
         this.m_threadSchedule.initModules([
-            "static/thread/mathLib.js",
-            "static/thread/sortLib.js"
+            "cospace/thread/mathLib.js",
+            "cospace/thread/sortLib.js"
         ]);
 
         
