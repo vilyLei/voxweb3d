@@ -1,6 +1,6 @@
 import { ThreadSchedule } from "../modules/thread/ThreadSchedule";
 import { CTMParseTask } from "../modules/ctm/CTMParseTask";
-import BinaryLoader from "./loader/BinaryLoader";
+import BinaryLoader from "../../vox/assets/BinaryLoader";
 import { GeometryModelDataType } from "../modules/base/GeometryModelDataType";
 /**
  * 通过加载到的CTM模型二进制数据，发送CTM资源解析任务给多线程数据处理系统，获取解析之后的CTM模型数据

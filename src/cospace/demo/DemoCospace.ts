@@ -2,7 +2,7 @@ import { CoSpace } from "../CoSpace";
 import { DataFormat } from "../schedule/base/DataUnit";
 import { GeometryDataUnit } from "../schedule/base/GeometryDataUnit";
 import { TestRenderableEntity } from "./scene/TestRenderableEntity";
-import DivLog from "./base/DivLog";
+import DivLog from "../../vox/utils/DivLog";
 
 /**
  * 引擎数据/资源协同空间

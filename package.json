@@ -31,9 +31,16 @@
     "build_jszip": "vue-cli-service build --target lib --name VoxApp --dest dist/jsZipModule ./src/distribution/rendererIsolate/devJSZipModule.ts",
     
     "buildrplayer": "vue-cli-service build --target lib --name VoxApp --dest dist/player ./src/distribution/rendererIsolate/devPlayerOne.ts",
-    "dev": "vue-cli-service serve --type=dev",
-    "devvox": "vue-cli-service serve --voxtype=dev",
-    "devvoxweb": "vue-cli-service serve --voxtype=devWeb"
+
+    
+    "buildCTMParser": "vue-cli-service build --target lib --name ModuleCTMGeomParser --dest ./public/cospace/modules/ctm ./src/cospace/modules/ctm/ModuleCTMGeomParser.ts",
+    "buildDracoParser": "vue-cli-service build --target lib --name ModuleDracoGeomParser --dest ./public/cospace/modules/draco ./src/cospace/modules/draco/ModuleDracoGeomParser.ts",
+    "buildThreadCore": "vue-cli-service build --target lib --name ThreadCore --dest ./public/cospace/core/code ./src/cospace/modules/thread/control/ThreadCore.ts",
+
+    "dev": "vue-cli-service serve --type=dev[./src/main.ts]",
+    "devvox": "vue-cli-service serve --type=dev[./src/dev.ts]",
+    "devvoxweb": "vue-cli-service serve --type=dev[./src/devWeb.ts]",
+    "devcospace": "vue-cli-service serve --type=dev[./src/cospaceMain.ts]"
   },
   "dependencies": {
     "@tweenjs/tween.js": "^18.4.2",
