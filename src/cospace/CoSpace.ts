@@ -2,6 +2,7 @@ import { ThreadSchedule } from "./modules/thread/ThreadSchedule";
 import { GeometryResourceSchedule } from "./schedule/GeometryResourceSchedule";
 import { ReceiverSchedule } from "./schedule/ReceiverSchedule";
 import { TextureResourceSchedule } from "./schedule/TextureResourceSchedule";
+import { CoSystem } from "./CoSystem";
 import { CoRuntime } from "./CoRuntime";
 /**
  * (引擎)数据/资源协同空间, 让一个应用程序的功能像种子一样，随着用户的使用而生根发芽枝叶茂盛，功能越加载越多，越使用越丰富
@@ -12,6 +13,7 @@ class CoSpace {
     private m_inited: boolean = true;
     private m_receiver: ReceiverSchedule = new ReceiverSchedule();
 
+    readonly system: CoSystem = new CoSystem();
     readonly runtime: CoRuntime = new CoRuntime();
     readonly thread: ThreadSchedule = new ThreadSchedule();
     // 静态模块
@@ -44,7 +46,7 @@ class CoSpace {
             this.update();
         }
     }
-    
+
     private m_timeoutId: any = -1;
     /**
      * 定时调度
