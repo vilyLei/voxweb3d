@@ -5,11 +5,11 @@
 // import { DemoCTMParser as Demo } from "./cospace/demo/DemoCTMParser";
 // import { DemoDracoParser as Demo } from "./cospace/demo/DemoDracoParser";
 // import { DemoDracoParser2 as Demo } from "./cospace/demo/DemoDracoParser2";
-import { DemoMixParser as Demo } from "./cospace/demo/DemoMixParser";
-// import { DemoCospace as Demo } from "./cospace/demo/DemoCospace";
+// import { DemoMixParser as Demo } from "./cospace/demo/DemoMixParser";
+import { DemoCospace as Demo } from "./cospace/demo/DemoCospace";
 // import { DemoDependenceGraph as Demo } from "./cospace/demo/DemoDependenceGraph";
 
-document.title = "Thread APP";
+document.title = "CoSpace APP";
 let demoIns: Demo = new Demo();
 let ins: any = demoIns;
 function main(): void {

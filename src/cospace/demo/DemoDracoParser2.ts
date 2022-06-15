@@ -41,7 +41,7 @@ export class DemoDracoParser2 {
   
   private test01(): void {    
     // draco 模型数据url
-    let url = "static/assets/draco/clothRoll.rawmd";
+    let url = "static/assets/modules/clothRoll.rawmd";
     // draco模型数据字节分段信息
     let segRangeList: number[] = [950486,1900738,0,950486,1900738,1907181,1907181,1912537,1912537,1920151,1920151,1924126];
 
@@ -50,7 +50,7 @@ export class DemoDracoParser2 {
   private test02(): void {
     
     // draco 模型数据url
-    let url = "static/assets/draco/curtain.rawmd";
+    let url = "static/assets/modules/curtain.rawmd";
     // draco模型数据字节分段信息
     let segRangeList: number[] = [0,112515,112515,236485,236485,238437,238437,248046,248046,259869,259869,270012];
 

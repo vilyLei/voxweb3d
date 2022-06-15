@@ -37,7 +37,7 @@ export class DemoDracoParser {
     this.m_dracoGeomBuilder = new DracoGeomBuilder("cospace/modules/draco/ModuleDracoGeomParser.umd.js");
 
     // draco 模型数据url
-    let url = "static/assets/draco/clothRoll.rawmd";
+    let url = "static/assets/modules/clothRoll.rawmd";
     this.m_dracoGeomBuilder.initialize( this.m_threadSchedule );
     this.m_dracoGeomBuilder.setListener( this );
     

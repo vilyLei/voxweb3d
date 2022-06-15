@@ -33,14 +33,14 @@ export class DemoCospace {
     private mouseDown(evt: any): void {
 
         //this.createRequest();
-        // this.createRequestByCallback();
+        this.createRequestByCallback();
         
         // for (let i: number = 0; i < 8; ++i) {
         //     this.createRequestByCallback();
         // }
-        for (let i: number = 1; i <= 39; ++i) {
-            this.createRequestAt(i);
-        }
+        // for (let i: number = 1; i <= 39; ++i) {
+        //     this.createRequestAt(i);
+        // }
     }
     private createRequest(): void {
 
@@ -85,7 +85,7 @@ export class DemoCospace {
         this.m_beginTime = Date.now();
         let baseUrl: string = window.location.href + "static/assets/ctm/sh0/";
 
-        let url: string = baseUrl + "1 ("+ index +").ctm";
+        let url: string = baseUrl + "h("+ index +").ctm";
         this.m_cospace.geometry.getCPUDataByUrlAndCallback(
             url,
             DataFormat.CTM,
