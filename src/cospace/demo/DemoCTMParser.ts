@@ -10,10 +10,10 @@ export class DemoCTMParser {
   private m_ctmParseTask: CTMParseTask;
 
   constructor() {}
+
   initialize(): void {
+
     console.log("DemoCTMParser::initialize()...");
-
-
 
     // 创建多线程调度器(多线程系统)
     let schedule = new ThreadSchedule();
@@ -24,7 +24,6 @@ export class DemoCTMParser {
     let ctmParseTask = new CTMParseTask( "cospace/modules/ctm/ModuleCTMGeomParser.umd.min.js" );
     // 绑定当前任务到多线程调度器
     schedule.bindTask( ctmParseTask );
-
 
     // 设置一个任务完成的侦听器
     ctmParseTask.setListener(this);

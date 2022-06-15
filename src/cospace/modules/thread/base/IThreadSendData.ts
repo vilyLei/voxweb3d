@@ -1,4 +1,4 @@
-type StreamType = Float32Array | Int32Array | Uint16Array | Uint8Array | Int16Array | Int8Array;
+type StreamType = ArrayBuffer | Float32Array | Int32Array | Uint16Array | Uint8Array | Int16Array | Int8Array;
 interface IThreadSendData {
     /**
      * 多线程任务分类id  和task的 getTaskClass() 函数返回值保持一致

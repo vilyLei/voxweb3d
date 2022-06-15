@@ -43,4 +43,4 @@ interface ITaskReceiveData<T1 extends any = unknown, T2 extends any = unknown> {
 
 }
 
-export {ITaskReceiveData};
+export {StreamType, ITaskReceiveData};
