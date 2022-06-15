@@ -16,9 +16,11 @@
     "buildAppLambert": "vue-cli-service build --target lib --name AppLambert --dest dist ./src/app/modules/instances/AppLambert.ts",
     "buildAppPBR": "vue-cli-service build --target lib --name AppPBR --dest dist ./src/app/modules/instances/AppPBR.ts",
 
+
     "build": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main.ts",
     "buildvox": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/dev.ts",
     "buildvoxweb": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/devWeb.ts",
+    "buildCoSpace": "vue-cli-service build --target lib --name CoSpace --dest dist ./src/cospaceMain.ts",
     
     "build_baseRenderer": "vue-cli-service build --target lib --name VoxApp --dest dist/baseRenderer ./src/distribution/rendererIsolate/devBaseRenderer.ts",
     "build_engine": "vue-cli-service build --target lib --name VoxApp --dest dist/engine ./src/distribution/rendererIsolate/devEngine.ts",
