@@ -47,7 +47,7 @@ export class DemoCospace {
     private m_receivedTotal: number = 0;
     private createRequestAt(index: number): void {
 
-        let baseUrl: string = window.location.href + "static/assets/ctm/";
+        let baseUrl: string = window.location.href + "static/assets/private/";
 
         // let url: string = baseUrl + "sh0/1 (" + index +").ctm";
         let url: string = baseUrl + "sh202/sh202_" + index +".ctm";

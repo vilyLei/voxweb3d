@@ -25,3 +25,4 @@ node_modules/
 src/large/
 public/static/modules/
 public/static/assets/pbr/
+public/static/private/
