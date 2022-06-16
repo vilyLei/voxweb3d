@@ -395,9 +395,9 @@
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 
-import {SlickRoad as Demo} from "./app/SlickRoad";
+// import {SlickRoad as Demo} from "./app/SlickRoad";
 
-//  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
+ import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 
 //  import {DemoDraco as Demo} from "./demo/DemoDraco";
 

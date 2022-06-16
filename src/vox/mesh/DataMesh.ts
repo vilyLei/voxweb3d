@@ -111,13 +111,14 @@ export default class DataMesh extends MeshBase implements IDataMesh {
     
     
     setIVS(ivs: Uint16Array | Uint32Array): void {
+
         this.m_initIVS = ivs;
         this.m_ivs = ivs;
         this.m_boundsChanged = true;
     }
 
     initializeFromGeometry(geom: GeometryBase): void {
-
+        
         this.m_vs = geom.getVS();
         this.m_uvs = geom.getUVS();
         this.m_nvs = geom.getNVS();

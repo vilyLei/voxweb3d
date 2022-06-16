@@ -73,10 +73,10 @@ class UIScene {
         let dis: number = 6;
         this.m_btnSize = 20;
         this.m_verticalSpace = 3;
-        if(RendererDevice.IsMobileWeb()) {
-            this.m_btnSize = 64;
-            dis = 40;
-        }
+        // if(RendererDevice.IsMobileWeb()) {
+        //     this.m_btnSize = 64;
+        //     dis = 40;
+        // }
         let fontColor0: Color4 = new Color4(0.1,1.0,1.0);
         let fontColor1: Color4 = new Color4(0.3,1.0,1.0);
         let fontColor2: Color4 = new Color4(1.0,0.0,1.0);

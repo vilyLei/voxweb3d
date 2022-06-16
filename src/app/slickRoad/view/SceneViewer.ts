@@ -16,6 +16,7 @@ import Line3DEntity from "../../../vox/entity/Line3DEntity";
 import Axis3DEntity from "../../../vox/entity/Axis3DEntity";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
+import AABB from "../../../vox/geom/AABB";
 
 class SceneViewer {
 
@@ -95,8 +96,8 @@ class SceneViewer {
         })
     }
     private loadSceneData(): void {
-        //this.loadSceneDataBURL("static/assets/scene/vrdScene_02.vrd");
-        this.loadSceneDataBURL("static/assets/scene/vrdScene_hightway.vrd");
+        this.loadSceneDataBURL("static/assets/scene/vrdScene_02.vrd");
+        // this.loadSceneDataBURL("static/assets/scene/vrdScene_hightway.vrd");
     }
     private createRoadDisplay(roadData: RoadSceneData): void {
 
@@ -131,10 +132,26 @@ class SceneViewer {
                 return this.getLambertMaterials(total);
                 //return this.getDefaultMaterials(total);
             });
+        
+        let aabb: AABB = new AABB();
         for (let k: number = 0; k < entities.length; ++k) {
-            this.m_engine.rscene.addEntity(entities[k]);
-        }
 
+            entities[k].update();
+            this.m_engine.rscene.addEntity(entities[k]);
+
+            if(k > 0) aabb.union( entities[k].getGlobalBounds() );
+            else aabb.copyFrom( entities[k].getGlobalBounds() );
+        }
+        aabb.update();
+        
+        let cv = aabb.center;
+        let offsetV: Vector3D = new Vector3D(-cv.x, -aabb.min.y + 50.0, -cv.z);
+        let pos: Vector3D = new Vector3D();
+        
+        for (let k: number = 0; k < entities.length; ++k) {
+            entities[k].offsetPosition( offsetV );
+            entities[k].update();
+        }
     }
     run(): void {
         // if (this.m_target != null) {

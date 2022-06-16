@@ -25,7 +25,7 @@ export class SlickRoad {
             //DivLog.SetDebugEnabled( true );
             RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-
+            RendererDevice.SetWebBodyColor("white");
             let rparam: RendererParam = new RendererParam();
             rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
             rparam.setCamPosition(1800.0, 1800.0, 1800.0);
@@ -33,7 +33,7 @@ export class SlickRoad {
             
             this.m_engine = new EngineBase();
             this.m_engine.initialize(rparam, 6);
-            
+
             // this.m_profileInstance = new ProfileInstance();
             // this.m_profileInstance.initialize(this.m_engine.rscene.getRenderer());
 
