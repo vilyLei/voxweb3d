@@ -1,3 +1,10 @@
+/***************************************************************************/
+/*                                                                         */
+/*  Copyright 2018-2022 by                                                 */
+/*  Vily(vily313@126.com)                                                  */
+/*                                                                         */
+/***************************************************************************/
+
 import { SubThreadModule } from "../control/SubThreadModule";
 import { IThreadReceiveData } from "../base/IThreadReceiveData";
 import { IThreadCore } from "./IThreadCore";

@@ -1,3 +1,10 @@
+/***************************************************************************/
+/*                                                                         */
+/*  Copyright 2018-2022 by                                                 */
+/*  Vily(vily313@126.com)                                                  */
+/*                                                                         */
+/***************************************************************************/
+
 import { ThreadCMD } from "../../thread/base/ThreadCMD";
 import { IThreadSendData } from "../../thread/base/IThreadSendData";
 import { ThreadSendData } from "../../thread/base/ThreadSendData";

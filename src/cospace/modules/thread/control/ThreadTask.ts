@@ -1,3 +1,10 @@
+/***************************************************************************/
+/*                                                                         */
+/*  Copyright 2018-2022 by                                                 */
+/*  Vily(vily313@126.com)                                                  */
+/*                                                                         */
+/***************************************************************************/
+
 import { ThreadConfigure } from "../base/ThreadConfigure";
 import { StreamType, IThreadSendData } from "../base/IThreadSendData";
 import { ThreadSendData } from "../base/ThreadSendData";
