@@ -33,8 +33,9 @@ export class SlickRoad {
             
             this.m_engine = new EngineBase();
             this.m_engine.initialize(rparam, 6);
-            this.m_profileInstance = new ProfileInstance();
-            this.m_profileInstance.initialize(this.m_engine.rscene.getRenderer());
+            
+            // this.m_profileInstance = new ProfileInstance();
+            // this.m_profileInstance.initialize(this.m_engine.rscene.getRenderer());
 
             this.m_engine.appendRendererScene(null, 3, false);
             this.m_engine.swapSceneAt(1,2);
@@ -60,9 +61,9 @@ export class SlickRoad {
         this.m_uiscene.run();
         this.m_scene.run();
         this.m_engine.run();        
-        if (this.m_profileInstance != null) {
-            this.m_profileInstance.run();
-        }
+        // if (this.m_profileInstance != null) {
+        //     this.m_profileInstance.run();
+        // }
     }
 }
 

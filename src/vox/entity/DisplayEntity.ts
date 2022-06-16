@@ -184,6 +184,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
      * 更新过程可以通过DisplayEntity对象来控制，也可以通过资源本身来控制
      */
     updateMeshToGpu(rc: IRenderProxy = null, deferred: boolean = true): void {
+        
         if (rc != null) this.m_renderProxy = rc;
         if (this.m_renderProxy != null && this.m_display != null && this.m_display.__$ruid > -1) {
             if (this.m_meshChanged) {

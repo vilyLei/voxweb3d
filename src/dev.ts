@@ -351,7 +351,7 @@
 
 // import {DemoMaterialCtx as Demo} from "./demo/DemoMaterialCtx";
 
- import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
+//  import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
 
 //  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 
@@ -395,7 +395,7 @@
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 
-//  import {SlickRoad as Demo} from "./app/SlickRoad";
+import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 

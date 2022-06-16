@@ -1,4 +1,3 @@
-
 import Vector3D from "../vox/math/Vector3D";
 import Matrix4 from "../vox/math/Matrix4";
 import Matrix4Pool from "../vox/math/Matrix4Pool";
@@ -51,12 +50,14 @@ export class DemoFlexMesh {
     initialize(): void {
         console.log("DemoFlexMesh::initialize()......");
         if (this.m_rscene == null) {
-            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
             let rparam: RendererParam = new RendererParam();
             rparam.setCamPosition(800.0, 800.0, 800.0);
+            
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
@@ -71,14 +72,15 @@ export class DemoFlexMesh {
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-            this.m_profileInstance.initialize(this.m_rscene.getRenderer());
+            // this.m_profileInstance.initialize(this.m_rscene.getRenderer());
+
             this.m_statusDisp.initialize();
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
-            let axis: Axis3DEntity = new Axis3DEntity();
-            axis.initialize(300.0);
-            this.m_rscene.addEntity(axis);
+            // let axis: Axis3DEntity = new Axis3DEntity();
+            // axis.initialize(300.0);
+            // this.m_rscene.addEntity(axis);
             //skin_01
             // add common 3d display entity
             //      let plane:Plane3DEntity = new Plane3DEntity();
@@ -131,8 +133,12 @@ export class DemoFlexMesh {
         let mesh: Box3DMesh = this.m_currBox.getMesh() as Box3DMesh;
         mesh.initialize(minV, maxV);
     }
+
     private createAMeshDisp(entity: Box3DEntity): void {
+
         let mesh: Box3DMesh = new Box3DMesh();
+        mesh.vbWholeDataEnabled = false;
+
         this.m_boxMesh = mesh;
         mesh.setBufSortFormat(entity.getMaterial().getBufSortFormat());
         mesh.initializeWithYFace(
@@ -152,11 +158,12 @@ export class DemoFlexMesh {
         this.m_currBox = box;
         //  box.reinitializeMesh();
         //  box.updateMeshToGpu(this.m_rscene.getRenderProxy());
-        if(this.m_frameBox == null) {
-            this.m_frameBox = new BoxFrame3D();
-            this.m_frameBox.initializeByAABB( box.getGlobalBounds() );
-            this.m_rscene.addEntity( this.m_frameBox );
-        }
+
+        // if(this.m_frameBox == null) {
+        //     this.m_frameBox = new BoxFrame3D();
+        //     this.m_frameBox.initializeByAABB( box.getGlobalBounds() );
+        //     this.m_rscene.addEntity( this.m_frameBox );
+        // }
         this.m_box = box;
     }
     private m_testFlag: boolean = true;
@@ -164,6 +171,7 @@ export class DemoFlexMesh {
     private m_pos1: Vector3D = new Vector3D();
     private m_pos2: Vector3D = new Vector3D();
     private m_pos3: Vector3D = new Vector3D();
+
     private deformateDefault(): void {
         if (this.m_testFlag) {
             this.m_boxMesh.initialize(new Vector3D(-60.0, -100.0, -60.0), new Vector3D(60.0, 100.0, 60.0));
@@ -218,13 +226,13 @@ export class DemoFlexMesh {
         // this.m_frameBox.updateFrameByAABB(this.m_box.getGlobalBounds());
         // this.m_frameBox.updateMeshToGpu();
         // reshape pos
-        console.log("MMMMMMMMMMMMMMM");
-        this.reshapeMeshByAABBPos(new Vector3D(130,130,130), new Vector3D(230.0,230.0,230.0));
-        this.m_currBox.updateMeshToGpu();
-        this.m_currBox.updateBounds();
-        this.m_frameBox.updateFrameByAABB(this.m_currBox.getGlobalBounds());
-        this.m_frameBox.updateMeshToGpu();
-        return;
+        // console.log("MMMMMMMMMMMMMMM");
+        // this.reshapeMeshByAABBPos(new Vector3D(130,130,130), new Vector3D(230.0,230.0,230.0));
+        // this.m_currBox.updateMeshToGpu();
+        // this.m_currBox.updateBounds();
+        // this.m_frameBox.updateFrameByAABB(this.m_currBox.getGlobalBounds());
+        // this.m_frameBox.updateMeshToGpu();
+        // return;
         let boo: boolean = this.updateBoxMesh();
         if (boo) return;
         let i: number = 1;
@@ -252,12 +260,16 @@ export class DemoFlexMesh {
             default:
                 break;
         }
+
         this.m_boxMesh.reinitialize();
         this.m_box.updateMeshToGpu();
         this.m_testFlag = !this.m_testFlag;
         this.m_box.updateBounds();
-        this.m_frameBox.updateFrameByAABB(this.m_box.getGlobalBounds());
-        this.m_frameBox.updateMeshToGpu();
+
+        if(this.m_frameBox != null) {
+            this.m_frameBox.updateFrameByAABB(this.m_box.getGlobalBounds());
+            this.m_frameBox.updateMeshToGpu();
+        }
     }
     private m_updateId: number = 0;
     private m_currentDelta: number = 0;

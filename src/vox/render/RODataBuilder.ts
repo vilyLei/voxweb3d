@@ -273,7 +273,9 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
     }
     // build vtx gpu data
     private buildVtxRes(disp: IRODisplay, runit: RPOUnit, shdp: IShdProgram): void {
+
         if (disp.vbuf != null) {
+            
             let vtxRes: ROVertexResource = this.m_vtxRes;
             runit.ivsIndex = disp.ivsIndex;
             runit.ivsCount = disp.ivsCount;
@@ -306,12 +308,14 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                 vtxRes.addVertexRes(vtx);
                 //console.log("GpuVtxObject instance create new: ",vtx.resUid);
             }
+
             if (needBuild) {
                 vtx.indices.ibufStep = disp.vbuf.getIBufStep();
                 vtx.indices.initialize(this.m_roVtxBuild, disp.vbuf);
                 vtx.vertex.initialize(this.m_roVtxBuild, shdp, disp.vbuf);
                 vtx.version = disp.vbuf.version;
             }
+
             vtxRes.__$attachRes(resUid);
             runit.vro = vtx.createVRO(this.m_roVtxBuild, shdp, true);
             runit.indicesRes = runit.vro.indicesRes;

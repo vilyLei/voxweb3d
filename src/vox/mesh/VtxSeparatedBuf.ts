@@ -38,6 +38,7 @@ export default class VtxSeparatedBuf implements IVtxBuf {
     }
     
     getAttribsTotal(): number {
+        console.log("VtxSeparatedBuf::getAttribsTotal(), this.m_bufersTotal: ",this.m_bufersTotal);
         return this.m_bufersTotal;
     }
     getF32DataAt(index: number): Float32Array {
@@ -59,8 +60,8 @@ export default class VtxSeparatedBuf implements IVtxBuf {
             this.m_f32ChangedList[index] = true;
         }
         if (setpOffsets != null) this.m_fOffsetList = setpOffsets;
-        //this.m_stepFloatsTotal = stepFloatsTotal;
-        //console.log("VtxSeparatedBuf::setF32DataAt(),"+this+" m_f32List.length: "+float32Arr.length+", this.m_f32PreSizeList: "+this.m_f32PreSizeList);
+        
+        // console.log("VtxSeparatedBuf::setF32DataAt(), this.m_bufersTotal: ",this.m_bufersTotal);
         if (float32Arr != null) {
             this.m_f32SizeList[index] = float32Arr.length;
         }

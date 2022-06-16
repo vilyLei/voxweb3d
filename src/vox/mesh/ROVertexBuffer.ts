@@ -53,7 +53,7 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
     getType(): number {
         return this.m_vtxBuf.getType();
     }
-    
+
     setBufTypeList(list: number[]): void {
         this.m_bufTypeList = list;
     }
@@ -76,7 +76,7 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
     getBuffersTotal(): number {
         return this.m_vtxBuf.getBuffersTotal();
     }
-    
+
     getAttribsTotal(): number {
         return this.m_vtxBuf.getAttribsTotal();
     }
@@ -270,7 +270,7 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
         return vb;
     }
     static CreateVtxCombinedBuf(vtxfs32: Float32Array, bufDataStepList: number[], bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW, layoutBit: number = 0x0): ROVertexBuffer {
-        
+
         let i: number = 0;
         let stride: number = 0;
         let bufTot: number = bufDataStepList.length;
@@ -293,8 +293,7 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
         vb.setF32DataAt(0, vtxfs32, stride, offsetList);
         return vb;
     }
-
-    static UpdateBufData(vb: ROVertexBuffer): void {
+    private static UpdateCombinedBufData(vb: ROVertexBuffer): void {
         let i: number = 0;
         let k: number = 0;
         let stride: number = 0;
@@ -337,6 +336,14 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
         }
     }
 
+    static UpdateBufData(vb: ROVertexBuffer): void {
+
+        if(vb.getType() == 0) {
+            ROVertexBuffer.UpdateCombinedBufData( vb );
+        }else {
+            ROVertexBuffer.UpdateSeparatedBufData( vb );
+        }
+    }
     static CreateByBufDataSeparate(bufData: VtxBufData, bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW, layoutBit: number = 0x0): ROVertexBuffer {
         let i: number = 0;
         let stride: number = 0;
@@ -361,11 +368,12 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
     }
 
     static CreateBySaveDataSeparate(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW): ROVertexBuffer {
+        
         let i: number = 0;
         let stride: number = 0;
         let bufTot: number = ROVertexBuffer.BufDataStepList.length;
         let offsetList: number[] = new Array(bufTot);
-        offsetList.fill(0);
+        
         let vb: ROVertexBuffer = ROVertexBuffer.Create(bufDataUsage);
         if (ROVertexBuffer.s_separatedBufs.length > 0) {
             let vtx: VtxSeparatedBuf = ROVertexBuffer.s_separatedBufs.pop() as VtxSeparatedBuf;
@@ -374,8 +382,19 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
         else {
             vb.setVtxBuf(new VtxSeparatedBuf());
         }
+
         for (i = 0; i < bufTot; i++) {
             vb.setF32DataAt(i, ROVertexBuffer.BufDataList[i], stride, offsetList);
+        }
+        return vb;
+    }
+    private static UpdateSeparatedBufData(vb: ROVertexBuffer): ROVertexBuffer {
+
+        let bufTot: number = ROVertexBuffer.BufDataStepList.length;
+        let offsetList: number[] = new Array(bufTot);
+        // console.log("ROVertexBuffer::CreateBySaveDataSeparate(), bufTot: "+bufTot);
+        for (let i: number = 0; i < bufTot; i++) {
+            vb.setF32DataAt(i, ROVertexBuffer.BufDataList[i], 0, offsetList);
         }
         return vb;
     }

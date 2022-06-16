@@ -11,7 +11,7 @@ import IVertexRenderObj from "../../../vox/render/IVertexRenderObj";
 import VertexRenderObj from "../../../vox/render/VertexRenderObj";
 import VaoVertexRenderObj from "../../../vox/render/VaoVertexRenderObj";
 import IROVtxBuf from "../../../vox/render/IROVtxBuf";
-import {ROIndicesRes} from "./ROIndicesRes";
+import { ROIndicesRes } from "./ROIndicesRes";
 
 class ROVertexRes {
     version: number;
@@ -77,8 +77,8 @@ class ROVertexRes {
             let typeList: number[] = vtx.getBufTypeList();
             let sizeList: number[] = vtx.getBufSizeList();
 
-            if(typeList != null) {
-        
+            if (typeList != null) {
+
                 for (let i: number = 0; i < this.m_attribsTotal; ++i) {
                     this.m_offsetList[i] = this.m_wholeStride;
                     this.m_wholeStride += sizeList[i] * 4;
@@ -86,7 +86,7 @@ class ROVertexRes {
                 }
             }
             else {
-                
+
                 for (let i: number = 0; i < this.m_attribsTotal; ++i) {
                     this.m_offsetList[i] = this.m_wholeStride;
                     this.m_wholeStride += shdp.getLocationSizeByIndex(i) * 4;
@@ -145,11 +145,11 @@ class ROVertexRes {
 
             this.m_typeList = new Array(this.m_attribsTotal);
             this.m_offsetList = new Array(this.m_attribsTotal);
-            
+
             let typeList: number[] = vtx.getBufTypeList();
             let sizeList: number[] = vtx.getBufSizeList();
-            
-            if(typeList != null) {
+
+            if (typeList != null) {
                 for (let i: number = 0; i < this.m_attribsTotal; ++i) {
                     this.m_offsetList[i] = this.m_wholeStride;
                     this.m_wholeStride += sizeList[i] * 4;
@@ -176,9 +176,9 @@ class ROVertexRes {
             let typeList: number[] = vtx.getBufTypeList();
             //let sizeList: number[] = vtx.getBufSizeList();
             this.m_attribsTotal = typeList != null ? typeList.length : shdp.getLocationsTotal();
-            
-            if(shdp.getLocationsTotal() != vtx.getAttribsTotal()) {
-                console.warn("shdp.getLocationsTotal() is "+shdp.getLocationsTotal()+" != vtx.getAttribsTotal() is "+vtx.getAttribsTotal()+"/"+(typeList != null ? typeList.length : 0));
+
+            if (shdp.getLocationsTotal() != vtx.getAttribsTotal()) {
+                console.warn("shdp.getLocationsTotal() is " + shdp.getLocationsTotal() + " != vtx.getAttribsTotal() is " + vtx.getAttribsTotal() + "/" + (typeList != null ? typeList.length : 0));
             }
             if (this.m_type < 1) {
                 // combined buf

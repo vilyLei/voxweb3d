@@ -39,6 +39,7 @@ class RoadGeometryBuilder {
         else {
             mesh.changed = true;
         }
+        mesh.vbWholeDataEnabled = false;
         //mesh.bounds.copyFrom( geom.bounds );
         mesh.distance = geom.distance;
         // mesh.setVS(geom.getVS());

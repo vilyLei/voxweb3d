@@ -189,6 +189,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
                 ROVertexBuffer.UpdateBufData(this.m_vbuf);
             }
             else {
+                this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage(), this.getBufSortFormat());
                 if(this.vbWholeDataEnabled) {
                     this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage(), this.getBufSortFormat());
                 }else {
