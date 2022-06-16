@@ -176,7 +176,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
                 ROVertexBuffer.AddFloat32Data(this.m_cvs, this.cvsStride);
             }
             else {
-                console.warn("DataMesh hasn't normal(cvs) data.");
+                console.warn("DataMesh hasn't color(cvs) data.");
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX)) {
                 ROVertexBuffer.AddFloat32Data(this.m_tvs, 3);
@@ -189,12 +189,15 @@ export default class DataMesh extends MeshBase implements IDataMesh {
                 ROVertexBuffer.UpdateBufData(this.m_vbuf);
             }
             else {
-                this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage(), this.getBufSortFormat());
+                if(this.vbWholeDataEnabled) {
+                    this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage(), this.getBufSortFormat());
+                }else {
+                    this.m_vbuf = ROVertexBuffer.CreateBySaveDataSeparate(this.getBufDataUsage());
+                }
             }
             this.m_vbuf.setUintIVSData(this.m_ivs);
             this.trisNumber = this.vtCount / 3;
             this.buildEnd();
-            console.log("DataMesh::initialize(), this: ",this);
         }
     }
 
