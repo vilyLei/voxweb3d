@@ -83,13 +83,14 @@ class ModuleCTMGeomParser extends BaseTaskInThread {
                 this.m_parser.parseMeshData(rdata, dataBuf);
                 break;
             case CTMTaskCMD.LOAD_AND_PARSE:
+                let beginTime: number = Date.now();
                 this.loadMeshDataByUrl(
                     rdata.descriptor.url,
                     (buf: ArrayBuffer, url: string): void => {
                         // 创建一个实例来解析，杜绝了异步加载带来的顺序错乱的问题，保证解析的是加载结束后获得的数据
                         let parser = new CTMDataParser();
                         try {
-
+                            console.log("load lossTime: ", (Date.now() - beginTime));
                             parser.parseMeshData(rdata, new Uint8Array(buf));
                         } catch (e) {
 

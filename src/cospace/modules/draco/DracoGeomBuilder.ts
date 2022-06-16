@@ -27,7 +27,7 @@ class DracoGeomBuilder {
             this.m_dracoTask.setListener(l);
         }
     }
-    initialize(threadSchedule: ThreadSchedule, urlDir: string = "cospace/modules/dracoLib/"): void {
+    initialize(threadSchedule: ThreadSchedule, urlDir: string = "static/cospace/modules/dracoLib/"): void {
 
         if(this.m_inited) {
 

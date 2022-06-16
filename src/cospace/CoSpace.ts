@@ -34,16 +34,16 @@ class CoSpace {
     initialize(maxThreadsTotal: number, threadCoreCodeUrl: string, autoSendData: boolean = false): void {
         if (this.m_inited) {
             this.m_inited = false;
-
+            
             this.thread.setParams(autoSendData);
             // 初始化多线程调度器(多线程系统)
             this.thread.initialize(maxThreadsTotal, threadCoreCodeUrl);
 
             let taskModuleUrls: string[] = [
-                "cospace/modules/ctm/ModuleCTMGeomParser.umd.js"
+                "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js"
             ];
             this.geometry.initialize(this.m_receiver, this.thread, taskModuleUrls);
-
+            
             // 启动循环定时调度
             this.update();
         }

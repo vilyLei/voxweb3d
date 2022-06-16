@@ -26,7 +26,7 @@ class UnitReceiverNode {
   testUnit(): boolean {
     if(this.m_flag) {
       if(this.unit.isCpuPhase()) {
-        console.log("a data unit is enabled in the cpu phase.");
+        // console.log("a data unit is enabled in the cpu phase.");
         let list = this.m_receivers;
         for(let i: number = 0, len: number = list.length; i < len; ++i) {
           const r = list[i];
@@ -42,7 +42,7 @@ class UnitReceiverNode {
     return true;
   }
   destroy(receiverPool: ListPool, nodeMap: Map<number, UnitReceiverNode>): void {
-    console.log("destroy an UnitReceiverNode instance.");
+    // console.log("destroy an UnitReceiverNode instance.");
     let list = this.m_receivers;
     for(let i: number = 0, len: number = list.length; i < len; ++i) {
       const r = list[i];

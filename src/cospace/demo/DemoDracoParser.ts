@@ -17,9 +17,9 @@ export class DemoDracoParser {
     let dependencyGraphObj: object = {
       nodes:
           [
-              {uniqueName: "dracoGeomParser",  path: "cospace/modules/draco/ModuleDracoGeomParser.umd.min.js"},
-              {uniqueName: "dracoWasmWrapper", path: "cospace/modules/dracoLib/w2.js"},
-              {uniqueName: "ctmGeomParser", path: "cospace/modules/ctm/ModuleCTMGeomParser.umd.min.js"}
+              {uniqueName: "dracoGeomParser",  path: "static/cospace/modules/draco/ModuleDracoGeomParser.umd.min.js"},
+              {uniqueName: "dracoWasmWrapper", path: "static/cospace/modules/dracoLib/w2.js"},
+              {uniqueName: "ctmGeomParser", path: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.min.js"}
           ],
       maps:
           [
@@ -31,10 +31,10 @@ export class DemoDracoParser {
     // 初始化多线程调度器
     // this.m_threadSchedule.initialize(1, "cospace/core/code/ThreadCore.umd.min.js");
     this.m_threadSchedule.setDependencyGraphJsonString( jsonStr );
-    this.m_threadSchedule.initialize(1, "cospace/core/code/ThreadCore.umd.js");
+    this.m_threadSchedule.initialize(1, "static/cospace/core/code/ThreadCore.umd.js");
 
     // 建立 draco 模型数据builder(包含加载和解析)
-    this.m_dracoGeomBuilder = new DracoGeomBuilder("cospace/modules/draco/ModuleDracoGeomParser.umd.js");
+    this.m_dracoGeomBuilder = new DracoGeomBuilder("static/cospace/modules/draco/ModuleDracoGeomParser.umd.js");
 
     // draco 模型数据url
     let url = "static/assets/modules/clothRoll.rawmd";

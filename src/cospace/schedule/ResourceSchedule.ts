@@ -18,7 +18,7 @@ class ResourceReceiver<DataUnitType extends DataUnit> extends DataReceiverBase {
         console.log("### ResourceReceiver.s_total: ",ResourceReceiver.s_total);
     }
     receiveDataUnit(unit: DataUnitType, status: number): void {
-        console.log("ResourceReceiver::receiveDataUnit(), unit: ", unit);
+        // console.log("ResourceReceiver::receiveDataUnit(), unit: ", unit);
         let callback = this.callback;
         this.callback = null;
         if (callback != null) {

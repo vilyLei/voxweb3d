@@ -9,8 +9,8 @@ export class DemoThread
     private m_threadSchedule: ThreadSchedule = new ThreadSchedule();
     initialize():void
     {
-        // this.m_threadSchedule.initialize(1, "cospace/core/threadCode.thrjs");
-        this.m_threadSchedule.initialize(1, "cospace/core/code/ThreadCore.umd.js");
+        // this.m_threadSchedule.initialize(1, "static/cospace/core/threadCode.thrjs");
+        this.m_threadSchedule.initialize(1, "static/cospace/core/code/ThreadCore.umd.js");
         this.m_threadSchedule.bindTask(this.m_numberAddTask);
         this.useTask();
         this.update();

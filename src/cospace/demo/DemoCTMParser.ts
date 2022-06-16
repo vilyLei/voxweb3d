@@ -18,10 +18,10 @@ export class DemoCTMParser {
     // 创建多线程调度器(多线程系统)
     let schedule = new ThreadSchedule();
     // 初始化多线程调度器
-    schedule.initialize( 2, "cospace/core/code/ThreadCore.umd.min.js" );
+    schedule.initialize( 2, "static/cospace/core/code/ThreadCore.umd.min.js" );
 
     // 创建 ctm 加载解析任务
-    let ctmParseTask = new CTMParseTask( "cospace/modules/ctm/ModuleCTMGeomParser.umd.min.js" );
+    let ctmParseTask = new CTMParseTask( "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.min.js" );
     // 绑定当前任务到多线程调度器
     schedule.bindTask( ctmParseTask );
 

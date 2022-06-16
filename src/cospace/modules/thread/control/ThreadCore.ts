@@ -93,7 +93,7 @@ class Main {
     let ins: any = null;
     /////////////////////////////////////////////////// receive data from Main Worker ///////////////////////////////////
     let data = evt.data;
-    console.log("Sub Worker(" + data.threadIndex + ") receive main data in worker, cmd: " + data.cmd + ", data: ", evt.data);
+    // console.log("Sub Worker(" + data.threadIndex + ") receive main data in worker, cmd: " + data.cmd + ", data: ", evt.data);
     switch (data.cmd) {
       case TCMD.DATA_PARSE:
         data.threadIndex = this.m_threadIndex;
@@ -111,7 +111,7 @@ class Main {
         break;
       case TCMD.INIT_TASK:
         let param = data.param;
-        console.log("Sub Worker(" + data.threadIndex + ") INIT_TASK param.type: ", param.type);
+        // console.log("Sub Worker(" + data.threadIndex + ") INIT_TASK param.type: ", param.type);
         switch (param.type) {
           case TCST.JS_FILE_CODE:
             if (stList[param.taskclass] < 1) {

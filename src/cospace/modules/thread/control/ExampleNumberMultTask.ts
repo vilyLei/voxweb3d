@@ -5,7 +5,7 @@ import { TaskJSFileDependency } from "./TaskDependency";
 class ExampleNumberMultTask extends ThreadTask {
     constructor() {
         super();
-        this.dependency = new TaskJSFileDependency("cospace/thread/TaskMultNum");
+        this.dependency = new TaskJSFileDependency("static/cospace/thread/TaskMultNum");
     }
     clacNumberList(typeData: Float32Array): void {
         if (typeData != null) {

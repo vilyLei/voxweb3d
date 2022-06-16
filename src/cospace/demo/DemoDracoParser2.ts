@@ -16,9 +16,9 @@ export class DemoDracoParser2 {
     let dependencyGraphObj: object = {
       nodes:
           [
-              {uniqueName: "dracoGeomParser",  path: "cospace/modules/draco/ModuleDracoGeomParser.umd.min.js"},
-              {uniqueName: "dracoWasmWrapper", path: "cospace/modules/dracoLib/w2.js"},
-              {uniqueName: "ctmGeomParser", path: "cospace/modules/ctm/ModuleCTMGeomParser.umd.min.js"}
+              {uniqueName: "dracoGeomParser",  path: "static/cospace/modules/draco/ModuleDracoGeomParser.umd.min.js"},
+              {uniqueName: "dracoWasmWrapper", path: "static/cospace/modules/dracoLib/w2.js"},
+              {uniqueName: "ctmGeomParser", path: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.min.js"}
           ],
       maps:
           [
@@ -28,7 +28,7 @@ export class DemoDracoParser2 {
     let jsonStr: string = JSON.stringify(dependencyGraphObj);
     this.m_threadSchedule.setDependencyGraphJsonString( jsonStr );
     // 初始化多线程调度器
-    this.m_threadSchedule.initialize(3, "cospace/core/code/ThreadCore.umd.min.js");
+    this.m_threadSchedule.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js");
 
     document.onmousedown = (evt: any): void => {
       this.mouseDown(evt);
@@ -59,7 +59,7 @@ export class DemoDracoParser2 {
   private build(url: string, segRangeList: number[]): void {
 
     // 建立 draco 模型数据builder(包含加载和解析)
-    let dracoGeomBuilder = new DracoGeomBuilder("cospace/modules/draco/ModuleDracoGeomParser.umd.min.js");
+    let dracoGeomBuilder = new DracoGeomBuilder("static/cospace/modules/draco/ModuleDracoGeomParser.umd.min.js");
 
     // draco 模型数据url
     //let url = "static/assets/draco/clothRoll.rawmd";
