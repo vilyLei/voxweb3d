@@ -28,4 +28,13 @@ export class SpotLight {
 
     constructor() { }
 
+    setParams(px: number, py: number, pz: number, dx: number, dy: number, dz: number, r: number, g: number, b: number, degree: number, f1: number, f2: number): void {
+
+        this.position.setXYZ(px, py, pz);
+        this.direction.setXYZ(dx, dy, dz);
+        this.color.setRGB3f(r, g, b);
+        this.angleDegree = degree;
+        this.attenuationFactor1 = f1;
+        this.attenuationFactor2 = f2;
+    }
 }

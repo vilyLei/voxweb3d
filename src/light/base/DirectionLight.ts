@@ -27,4 +27,11 @@ export class DirectionLight {
         if(direction != null) this.direction.copyFrom( direction );
     }
 
+    setParams(dx: number, dy: number, dz: number, r: number, g: number, b: number, f1: number, f2: number): void {
+        
+        this.direction.setXYZ(dx, dy, dz);
+        this.color.setRGB3f(r, g, b);
+        this.attenuationFactor1 = f1;
+        this.attenuationFactor2 = f2;
+    }
 }

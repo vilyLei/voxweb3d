@@ -192,7 +192,7 @@ export class DemoCTMViewer {
 			// this.m_modelScale = 20.0;
 
 			this.m_modelScale = 2.0;
-			let baseUrl: string = window.location.href + "static/assets/ctm/";
+			let baseUrl: string = window.location.href + "static/private/ctm/";
 			this.m_time = Date.now();
 			// let url: string = baseUrl + "sh0/1 (" + index +").ctm";
 			//for (let i: number = 0; i <= 26; ++i) {

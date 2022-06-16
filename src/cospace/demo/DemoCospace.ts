@@ -40,14 +40,15 @@ export class DemoCospace {
         //     this.createRequestByCallback();
         // }
         //for (let i: number = 1; i <= 39; ++i) {
-        for (let i: number = 0; i <= 26; ++i) {
+        //for (let i: number = 0; i <= 26; ++i) {
+        for (let i: number = 26; i >= 0; --i) {
             this.createRequestAt(i);
         }
     }
     private m_receivedTotal: number = 0;
     private createRequestAt(index: number): void {
 
-        let baseUrl: string = window.location.href + "static/assets/private/";
+        let baseUrl: string = window.location.href + "static/private/ctm/";
 
         // let url: string = baseUrl + "sh0/1 (" + index +").ctm";
         let url: string = baseUrl + "sh202/sh202_" + index +".ctm";
