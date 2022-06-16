@@ -18,7 +18,7 @@ import { IRAdapterContext } from "./IRAdapterContext";
 class RAdapterContext implements IRAdapterContext {
 
     private m_mouseEvtDisplather: ContextMouseEvtDispatcher = new ContextMouseEvtDispatcher();
-    private m_div: HTMLElement = null;
+    private m_div: HTMLDivElement = null;
     private m_canvas: HTMLCanvasElement = null;
     private m_scissorEnabled: boolean = false;
     private m_depthTestEnabled: boolean = true;
@@ -55,7 +55,7 @@ class RAdapterContext implements IRAdapterContext {
     getWebGLVersion(): number {
         return this.m_webGLVersion;
     }
-    getDiv(): any {
+    getDiv(): HTMLDivElement {
         return this.m_div;
     }
     setDivStyleLeftAndTop(px: number, py: number): void {
@@ -64,7 +64,7 @@ class RAdapterContext implements IRAdapterContext {
     setDivStyleSize(pw: number, ph: number): void {
         this.m_viewEle.setDivStyleSize(pw, ph);
     }
-    getCanvas(): any {
+    getCanvas(): HTMLCanvasElement {
         return this.m_canvas;
     }
     isDepthTestEnabled(): boolean {

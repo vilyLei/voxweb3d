@@ -121,10 +121,10 @@ export default class RendererScene implements IRenderer, IRendererScene {
         return this.m_uid;
     }
 
-    getDiv(): any {
+    getDiv(): HTMLDivElement {
         return this.m_renderProxy.getDiv();
     }
-    getCanvas(): any {
+    getCanvas(): HTMLCanvasElement {
         return this.m_renderProxy.getCanvas();
     }
 

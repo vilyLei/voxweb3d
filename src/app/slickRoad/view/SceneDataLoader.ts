@@ -17,11 +17,16 @@ class SceneDataLoader {
             loader.load(url, this);
         }
     }
-    loaded(buffer: ArrayBuffer, uuid: string): void {
-        console.log("loaded the road data.");
+    createSceneData(buffer: ArrayBuffer): RoadSceneData {
+
         let sceneDataParser: RoadSceneFileParser = new RoadSceneFileParser();
         sceneDataParser.parse(new Uint8Array(buffer));
         let sceneData: RoadSceneData = sceneDataParser.getSceneData();
+        return sceneData;
+    }
+    loaded(buffer: ArrayBuffer, uuid: string): void {
+        console.log("loaded the road data.");
+        let sceneData = this.createSceneData( buffer );
         console.log("sceneData: ", sceneData);
         let loadedCallback: (data: RoadSceneData) => void = this.m_map.get( uuid );
         this.m_map.delete(uuid);

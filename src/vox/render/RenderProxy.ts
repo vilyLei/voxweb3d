@@ -143,10 +143,10 @@ class RenderProxy implements IRenderProxy{
     unlockViewport(): void {
         this.m_adapter.unlockViewport();
     }
-    getDiv(): any {
+    getDiv(): HTMLDivElement {
         return this.m_adapter.getDiv();
     }
-    getCanvas(): any {
+    getCanvas(): HTMLCanvasElement {
         return this.m_adapter.getCanvas();
     }
     cameraLock(): void {

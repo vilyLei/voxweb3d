@@ -16,7 +16,7 @@ export class SlickRoadViewer {
         if (this.m_engine == null) {
 
             //DivLog.SetDebugEnabled( true );
-            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
             let rparam: RendererParam = new RendererParam();

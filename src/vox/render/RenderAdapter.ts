@@ -157,10 +157,10 @@ class RenderAdapter implements IRenderAdapter {
 			this.m_polygonOffsetFlag = false;
 		}
 	}
-	getDiv(): any {
+	getDiv(): HTMLDivElement {
 		return this.m_rcontext.getDiv();
 	}
-	getCanvas(): any {
+	getCanvas(): HTMLCanvasElement {
 		return this.m_rcontext.getCanvas();
 	}
 	setClearDepth(depth: number): void {
