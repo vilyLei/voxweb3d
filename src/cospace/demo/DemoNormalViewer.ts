@@ -6,18 +6,10 @@ import CameraTrack from "../../vox/view/CameraTrack";
 
 import RendererParam from "../../vox/scene/RendererParam";
 import RendererScene from "../../vox/scene/RendererScene";
-import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
 import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 
 import DebugFlag from "../../vox/debug/DebugFlag";
-import IRenderTexture from "../../vox/render/texture/IRenderTexture";
-import { SpecularTextureLoader } from "../../pbr/mana/TextureLoader";
-
-import PBRMaterial from "../../pbr/material/PBRMaterial";
-import PBRShaderDecorator from "../../pbr/material/PBRShaderDecorator";
-import Axis3DEntity from "../../vox/entity/Axis3DEntity";
-
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import { RenderableMaterialBlock } from "../../vox/scene/block/RenderableMaterialBlock";
 
@@ -125,7 +117,8 @@ export class DemoNormalViewer {
 			// let axis: Axis3DEntity = new Axis3DEntity();
 			// axis.initialize(300);
 			// this.m_rscene.addEntity(axis);
-
+			
+			// http://localhost:9000/
 
 			// 初始化数据协同中心
 			this.m_cospace.initialize(
@@ -140,7 +133,7 @@ export class DemoNormalViewer {
 			this.m_time = Date.now();
 
 			let multi: boolean = true;
-			// multi = false;
+			multi = false;
 			if(multi) {
 				for (let i: number = 26; i >= 0; --i) {
 					let url: string = baseUrl + "sh202/sh202_" + i + ".ctm";

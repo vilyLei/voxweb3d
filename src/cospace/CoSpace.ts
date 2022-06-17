@@ -1,3 +1,10 @@
+/***************************************************************************/
+/*                                                                         */
+/*  Copyright 2018-2022 by                                                 */
+/*  Vily(vily313@126.com)                                                  */
+/*                                                                         */
+/***************************************************************************/
+
 import { ThreadSchedule } from "./modules/thread/ThreadSchedule";
 import { GeometryResourceSchedule } from "./schedule/GeometryResourceSchedule";
 import { ReceiverSchedule } from "./schedule/ReceiverSchedule";

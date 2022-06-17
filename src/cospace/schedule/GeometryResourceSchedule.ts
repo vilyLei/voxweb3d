@@ -1,3 +1,12 @@
+/***************************************************************************/
+/*                                                                         */
+/*  Copyright 2018-2022 by                                                 */
+/*  Vily(vily313@126.com)                                                  */
+/*                                                                         */
+/***************************************************************************/
+
+import { FileLoader } from "../modules/loaders/FileLoader";
+
 import { DataUnitPool } from "./base/DataUnitPool";
 import { DataFormat } from "./base/DataUnit";
 import { ThreadSchedule } from "../modules/thread/ThreadSchedule";
@@ -13,6 +22,7 @@ class CTMParserListerner {
 	private m_unitPool: DataUnitPool<GeometryDataUnit>;
 	private m_ctmParseTask: CTMParseTask;
 	private m_receiverSchedule: ReceiverSchedule;
+	private m_loader: FileLoader = new FileLoader();
 
 	constructor(unitPool: DataUnitPool<GeometryDataUnit>, ctmParseTask: CTMParseTask, receiverSchedule: ReceiverSchedule) {
 
@@ -22,54 +32,22 @@ class CTMParserListerner {
 		this.m_receiverSchedule = receiverSchedule;
 	}
 	addUrlToTask(url: string): void {
+
 		if (!this.m_unitPool.hasUnitByUrl(url)) {
 			
-			this.loadMeshDataByUrl(
+			this.m_loader.load(
 				url,
 				(buf: ArrayBuffer, url: string): void => {
 					// 创建一个实例来解析，杜绝了异步加载带来的顺序错乱的问题，保证解析的是加载结束后获得的数据
 					this.m_ctmParseTask.addBinaryData(new Uint8Array(buf), url);
 				},
+				null,
 				(status: number, url: string): void => {
 					console.error("loaded ctm mesh data error, url: ", url);
 				}
 			);
 		}
 	}
-
-    private async loadMeshDataByUrl(url: string,
-        loadedCall: (buf: ArrayBuffer, url: string) => void,
-        loadErrorCall: (status: number, url: string) => void,
-        headRange: string = ""
-    ) {
-        console.log("loadBinBuffer, headRange != '': ", headRange != "");
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            loadedCall(<ArrayBuffer>reader.result, url);
-        };
-        const request = new XMLHttpRequest();
-        request.open("GET", url, true);
-        if (headRange != "") {
-            request.setRequestHeader("Range", headRange);
-        }
-        request.responseType = "blob";
-        request.onload = (e) => {
-            console.log("loaded binary buffer request.status: ", request.status, e);
-            if (request.status <= 206) {
-                reader.readAsArrayBuffer(request.response);
-            } else {
-                loadErrorCall(request.status, url);
-            }
-        };
-        request.onerror = (e) => {
-            console.error(
-                "load error binary buffer request.status: ",
-                request.status
-            );
-            loadErrorCall(request.status, url);
-        };
-        request.send(null);
-    }
 	// 一个任务数据处理完成后的侦听器回调函数
 	ctmParseFinish(model: GeometryModelDataType, url: string): void {
 
