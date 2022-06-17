@@ -31,6 +31,7 @@ class CTMParserListerner {
 		ctmParseTask.setListener(this);
 		this.m_receiverSchedule = receiverSchedule;
 	}
+	
 	addUrlToTask(url: string): void {
 
 		if (!this.m_unitPool.hasUnitByUrl(url)) {
