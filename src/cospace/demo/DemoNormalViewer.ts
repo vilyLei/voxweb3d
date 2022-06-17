@@ -22,6 +22,7 @@ import { GeometryDataUnit } from "../schedule/base/GeometryDataUnit";
 import { NormalViewerMaterial } from "./material/NormalViewerMaterial";
 import RendererState from "../../vox/render/RendererState";
 import MeshBase from "../../vox/mesh/MeshBase";
+import { FBXLoader } from "../modules/fbx/FBXLoader";
 
 class GeomNormal {
 
@@ -143,6 +144,16 @@ export class DemoNormalViewer {
 				this.loadCTM("static/private/ctm/errorNormal.ctm");
 			}
 		}
+	}
+	private loadFBX(): void {
+		let url: string = "static/assets/fbx/test01.fbx";
+		let fbxLoader = new FBXLoader();
+		fbxLoader.loadGeometry(
+			url,
+			(model: GeometryModelDataType, url: string): void => {
+				
+			}
+			);
 	}
 	private loadCTM(url: string): void {
 		this.m_cospace.geometry.getCPUDataByUrlAndCallback(
