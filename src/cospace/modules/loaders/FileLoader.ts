@@ -18,7 +18,7 @@ class FileLoader {
 		headRange: string = ""
 	) {
 		console.log("loadBinBuffer, headRange != '': ", headRange != "");
-		if(onload == null) {
+		if(onLoad == null) {
 			throw Error("onload == null !!!");
 		}
 		const reader = new FileReader();
