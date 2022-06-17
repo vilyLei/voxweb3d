@@ -8,7 +8,8 @@
 // import { DemoMixParser as Demo } from "./cospace/demo/DemoMixParser";
 // import { DemoCospace as Demo } from "./cospace/demo/DemoCospace";
 // import { DemoDependenceGraph as Demo } from "./cospace/demo/DemoDependenceGraph";
-import { DemoCTMViewer as Demo } from "./cospace/demo/DemoCTMViewer";
+// import { DemoCTMViewer as Demo } from "./cospace/demo/DemoCTMViewer";
+import { DemoNormalViewer as Demo } from "./cospace/demo/DemoNormalViewer";
 
 document.title = "CoSpace APP";
 let demoIns: Demo = new Demo();
