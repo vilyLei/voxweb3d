@@ -22,7 +22,10 @@ import { GeometryDataUnit } from "../schedule/base/GeometryDataUnit";
 import { NormalViewerMaterial } from "./material/NormalViewerMaterial";
 import RendererState from "../../vox/render/RendererState";
 import MeshBase from "../../vox/mesh/MeshBase";
-
+import { FBXLoader } from "../modules/fbx/FBXLoader";
+import { FBXBufferLoader } from "../modules/fbx/FBXBufferLoader";
+import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
+import AABB from "../../vox/geom/AABB";
 
 class GeomNormal {
 
@@ -35,7 +38,7 @@ class GeomNormal {
 	}
 }
 
-export class DemoNormalViewer {
+export class RenderingVerifier {
 	constructor() {}
 	/**
 	 * (引擎)数据协同中心实例
@@ -48,18 +51,17 @@ export class DemoNormalViewer {
 
 	private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
 	private m_cameraZoomController: CameraZoomController = new CameraZoomController();
+    private m_profileInstance: ProfileInstance = null;
 
-	private m_modelScale: number = 10.0;
+	private m_scaleV: Vector3D = new Vector3D(1.0,1.0,1.0);
 
-	fogEnabled: boolean = false;
-	hdrBrnEnabled: boolean = true;
-	vtxFlatNormal: boolean = false;
-	aoMapEnabled: boolean = false;
 	private m_time: number = 0;
 	initialize(): void {
-		console.log("DemoNormalViewer::initialize()......");
+		
+		console.log("RenderingVerifier::initialize()......");
+
 		if (this.m_rscene == null) {
-			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			//RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 			DivLog.SetDebugEnabled(true);
@@ -74,14 +76,9 @@ export class DemoNormalViewer {
 			this.m_rscene = new RendererScene();
 			this.m_rscene.initialize(rparam, 5);
 			this.m_rscene.updateCamera();
-
-			let rscene = this.m_rscene;
-			let materialBlock = new RenderableMaterialBlock();
-			materialBlock.initialize();
-			rscene.materialBlock = materialBlock;
-			// let entityBlock = new RenderableEntityBlock();
-			// entityBlock.initialize();
-			// rscene.entityBlock = entityBlock;
+			
+            this.m_profileInstance = new ProfileInstance();
+            this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
 			this.m_rscene.addEventListener(
 				MouseEvent.MOUSE_DOWN,
@@ -109,62 +106,103 @@ export class DemoNormalViewer {
 
 			//   DivLog.ShowLog("renderer inited.");
 			//   DivLog.ShowLog(RendererDevice.GPU_RENDERER);
-			// let k = this.calcTotal(9);
-			// console.log("k: ",k);
-			// k = this.calcTotal2(55);
-			// console.log("k2: ",k);
-			// return;
-				
+			
 			// let axis: Axis3DEntity = new Axis3DEntity();
 			// axis.initialize(300);
 			// this.m_rscene.addEntity(axis);
 			
-			// http://localhost:9000/
-
-			// 初始化数据协同中心
-			this.m_cospace.initialize(
-			3,
-			"static/cospace/core/code/ThreadCore.umd.min.js",
-			true
-			);
-			//   this.m_cospace.initialize(4, "cospace/core/code/ThreadCore.umd.js", true);
-
-			this.m_modelScale = 2.0;
-			let baseUrl: string = window.location.href + "static/private/ctm/";
+			// // 初始化数据协同中心
+			this.m_cospace.initialize( 3, "static/cospace/core/code/ThreadCore.umd.min.js", true );
+			// this.m_cospace.initialize(4, "cospace/core/code/ThreadCore.umd.js", true);
+			
 			this.m_time = Date.now();
-
-			let multi: boolean = true;
-			multi = false;
-			if(multi) {
-				for (let i: number = 26; i >= 0; --i) {
-					let url: string = baseUrl + "sh202/sh202_" + i + ".ctm";
-					this.loadCTM(url);
-				}
-			}else {
-				this.loadCTM("static/private/ctm/errorNormal.ctm");
-			}
+			this.loadFBX();
+			// this.loadCTM();
 		}
 	}
-	
-	private loadCTM(url: string): void {
+	private m_entities: DisplayEntity[] = [];
+
+	private fitToCenter(): void {
+		
+		let entities = this.m_entities;
+        let aabb: AABB = new AABB();
+        for (let k: number = 0; k < entities.length; ++k) {
+
+            entities[k].update();
+            if (k > 0) aabb.union(entities[k].getGlobalBounds());
+            else aabb.copyFrom(entities[k].getGlobalBounds());
+        }
+        aabb.update();
+
+        let cv = aabb.center;
+        let offsetV: Vector3D = new Vector3D(-cv.x, -aabb.min.y, -cv.z);
+		// console.log("XXXXXXXXXXXXXXXXXX offsetV: ",offsetV);
+        for (let k: number = 0; k < entities.length; ++k) {
+            entities[k].offsetPosition(offsetV);
+            entities[k].update();
+        }
+	}
+	private loadFBX(): void {
+
+		let url: string = "static/assets/fbx/test01.fbx";
+		// url = "static/assets/fbx/model_500W.fbx";
+		// url = "static/assets/fbx/Samba_Dancing.fbx";
+
+		let fbxBufLoader = new FBXBufferLoader();
+		fbxBufLoader.load(
+			url,
+			(modelMap: Map<number, GeometryModelDataType>, url: string): void => {
+				// this.m_scaleV.setXYZ(-2.0, -2.0, 2.0);
+				this.m_scaleV.setXYZ(2.0, 2.0, 2.0);
+				// console.log("loadFBX(), modelMap: ",modelMap);
+					let partsTotal: number = 0;
+				for(let [key, value] of modelMap) {
+					partsTotal++;
+					this.initCTMEntity(value);
+				}
+				console.log("partsTotal: ", partsTotal);
+				this.fitToCenter();
+			}
+			);
+	}
+	private loadCTM(): void {
+
+		this.m_scaleV.setXYZ(2.0,2.0,2.0);
+
+		let baseUrl: string = window.location.href + "static/private/ctm/";
+
+		let multi: boolean = true;
+		multi = false;
+		if(multi) {
+			for (let i: number = 26; i >= 0; --i) {
+				let url: string = baseUrl + "sh202/sh202_" + i + ".ctm";
+				this.loadCTMByUrl(url);
+			}
+		}else {
+			//this.loadCTMByUrl("static/private/ctm/errorNormal.ctm");
+			this.loadCTMByUrl("static/private/ctm/ctm_500W.ctm");
+		}
+	}
+	private loadCTMByUrl(url: string): void {
 		this.m_cospace.geometry.getCPUDataByUrlAndCallback(
 		url,
 		DataFormat.CTM,
 		(unit: GeometryDataUnit, status: number): void => {
 			let model: GeometryModelDataType = unit.data.model;
 			if (model.normals == null) {
-			console.error("model.normals == null, url: ", url);
+				console.error("model.normals == null, url: ", url);
 			}
 			this.initCTMEntity(model);
 		},
 		true
 		);
 	}
-
+	private m_vtxTotal: number = 0;
 	private initCTMEntity(model: GeometryModelDataType): void {
 		//console.log("lossTime: ", (Date.now() - this.m_time)+" ms");
 		DivLog.ShowLogOnce( "lossTime: " + (Date.now() - this.m_time)+" ms");
 
+		this.m_vtxTotal += model.vertices.length;
 		let time = Date.now();
 
 		let material = new NormalViewerMaterial();
@@ -178,9 +216,11 @@ export class DemoNormalViewer {
 		dataMesh.setVtxBufRenderData(material);
 
 		dataMesh.initialize();
+
 		// console.log("ctm dataMesh: ", dataMesh);
 
 		console.log("build lossTime: ", (Date.now() - time)+" ms");
+		console.log("this.m_vtxTotal: ", this.m_vtxTotal + "个顶点， tris: ",this.m_vtxTotal/3);
 		// DivLog.ShowLog("三角面数量: " + dataMesh.trisNumber + "个");
 
 		let entity: DisplayEntity = new DisplayEntity();
@@ -189,8 +229,9 @@ export class DemoNormalViewer {
 		entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
 		entity.setMesh(dataMesh);
 		entity.setMaterial(material);
-		entity.setScaleXYZ(this.m_modelScale, this.m_modelScale, this.m_modelScale);
+		entity.setScale3( this.m_scaleV );
 		this.m_rscene.addEntity(entity);
+		this.m_entities.push( entity );
 
 	}
 
@@ -212,8 +253,10 @@ export class DemoNormalViewer {
 
     this.m_rscene.run(true);
 
-    DebugFlag.Flag_0 = 0;
+	if (this.m_profileInstance != null) {
+		this.m_profileInstance.run();
+	}
   }
 }
 
-export default DemoNormalViewer;
+export default RenderingVerifier;

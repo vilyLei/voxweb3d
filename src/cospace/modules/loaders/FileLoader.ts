@@ -6,10 +6,13 @@
 /***************************************************************************/
 
 class FileLoader {
-
+	crossOrigin = 'anonymous';
 	constructor() {
 	}
 	
+	setCrossOrigin( crossOrigin: string ): void  {
+		this.crossOrigin = crossOrigin;
+	}
 	async load(url: string,
 		onLoad: (buf: ArrayBuffer, url: string) => void,
 		onProgress: (evt: ProgressEvent, url: string) => void = null,

@@ -44,7 +44,7 @@ class CTMParserListerner {
 				},
 				null,
 				(status: number, url: string): void => {
-					console.error("loaded ctm mesh data error, url: ", url);
+					console.error("load ctm mesh data error, url: ", url);
 				}
 			);
 		}

@@ -1,11 +1,11 @@
+import { BinaryReader } from "./BinaryReader";
+import { FBXTree } from "./FBXTree";
+import * as fflate from '../libs/fflate.module.js';
 
-import { FileLoader } from "../loaders/FileLoader";
-import { LoaderUtils } from "../loaders/LoaderUtils";
-import { GeometryModelDataType } from "../base/GeometryModelDataType";
 // Parse an FBX file in Binary format
 class BinaryParser {
 
-	parse( buffer: ArrayBuffer ) {
+	parse( buffer: ArrayBuffer ): FBXTree {
 
 		const reader = new BinaryReader( buffer );
 		reader.skip( 23 ); // skip magic 23 bytes
@@ -14,7 +14,7 @@ class BinaryParser {
 
 		if ( version < 6400 ) {
 
-			throw new Error( 'THREE.FBXLoader: FBX version not supported, FileVersion: ' + version );
+			throw new Error( 'FBXLoader: FBX version not supported, FileVersion: ' + version );
 
 		}
 
@@ -57,7 +57,7 @@ class BinaryParser {
 	// recursively parse nodes until the end of the file is reached
 	parseNode( reader: BinaryReader, version: number ): any {
 
-		const node = {};
+		const node: any = {};
 
 		// The first three data sizes depends on version.
 		const endOffset = ( version >= 7500 ) ? reader.getUint64() : reader.getUint32();
@@ -107,7 +107,7 @@ class BinaryParser {
 
 	}
 
-	parseSubNode( name, node, subNode ) {
+	parseSubNode( name: string, node: any, subNode: any ): void {
 
 		// special case: child node is single property
 		if ( subNode.singleProperty === true ) {
@@ -128,9 +128,9 @@ class BinaryParser {
 
 		} else if ( name === 'Connections' && subNode.name === 'C' ) {
 
-			const array = [];
+			const array:any[] = [];
 
-			subNode.propertyList.forEach( function ( property, i ) {
+			subNode.propertyList.forEach( function ( property: any, i: number ) {
 
 				// first Connection is FBX type (OO, OP, etc.). We'll discard these
 				if ( i !== 0 ) array.push( property );
@@ -225,7 +225,7 @@ class BinaryParser {
 
 	}
 
-	parseProperty( reader ) {
+	parseProperty( reader: BinaryReader ) {
 
 		const type = reader.getString( 1 );
 		let length;
@@ -299,7 +299,7 @@ class BinaryParser {
 
 				}
 
-				const data = fflate.unzlibSync( new Uint8Array( reader.getArrayBuffer( compressedLength ) ) ); // eslint-disable-line no-undef
+				const data = fflate.unzlibSync( new Uint8Array( reader.getArrayBuffer( compressedLength ) ), null ); // eslint-disable-line no-undef
 				const reader2 = new BinaryReader( data.buffer );
 
 				switch ( type ) {
