@@ -14,18 +14,43 @@ class GeometryBufferParser {
 		if ( 'Geometry' in fbxTree.Objects ) {
 
 			const geoNodes = fbxTree.Objects.Geometry;
-
+			let id: number = 0;
+			let idLst: number[] = [];
+			let relationshsipList: any[] = [];
+			let gNodes: any[] = [];
+			let nodeIDList: string[] = [];
+			// for ( const nodeID in geoNodes ) {
+			// 	id = parseInt( nodeID );
+			// 	const relationships = connections.get( id );
+			// 	const geoBuf = this.parseGeometryBuffer( relationships, geoNodes[ nodeID ], deformers, fbxTree );
+			// 	geometryMap.set( id, geoBuf );
+			// }
 			for ( const nodeID in geoNodes ) {
-
-				const relationships = connections.get( parseInt( nodeID ) );
-				const geoBuf = this.parseGeometryBuffer( relationships, geoNodes[ nodeID ], deformers, fbxTree );
-
-				geometryMap.set( parseInt( nodeID ), geoBuf );
-
+				idLst.push( parseInt( nodeID ) );
+				nodeIDList.push(nodeID);
 			}
+			for(let i: number = 0; i < idLst.length; ++i) {
+				id = idLst[i];
+				const relationships = connections.get( id );
+				const geoBuf = this.parseGeometryBuffer( relationships, geoNodes[ nodeIDList[i] ], deformers, fbxTree );
+				geometryMap.set( id, geoBuf );
+			}
+			// for ( const nodeID in geoNodes ) {
+			// 	id = parseInt( nodeID );
+			// 	const relationships = connections.get( id );
+			// 	idLst.push( id );
+			// 	relationshsipList.push( relationships );
+			// 	gNodes.push( geoNodes[ nodeID ] );
 
+			// }
+			// for(let i: number = 0; i < idLst.length; ++i) {
+			// 	const geoBuf = this.parseGeometryBuffer( relationshsipList[i], gNodes[i], deformers, fbxTree );
+			// 	geometryMap.set( idLst[id], geoBuf );
+			// }
+			// console.log("geoInfo.vertexIndices.length: ", geoInfo.vertexIndices.length);
+			console.log("geometryMap: ",geometryMap);
 		}
-
+		
 		return geometryMap;
 
 	}
@@ -122,14 +147,14 @@ class GeometryBufferParser {
 		let faceWeightIndices: number[] = [];
 
 		const scope = this;
-		console.log("geoInfo.vertexIndices: ", geoInfo.vertexIndices);
-		console.log("geoInfo.vertexIndices.length: ", geoInfo.vertexIndices.length);
+		// console.log("geoInfo.vertexIndices: ", geoInfo.vertexIndices);
+		// console.log("geoInfo.vertexIndices.length: ", geoInfo.vertexIndices.length);
 
 		let vtxTotal: number = geoInfo.vertexIndices.length;
 		
 		// console.log("XXX vtxTotal: ",vtxTotal);
 		let vsLen = vtxTotal * 3;
-		console.log("XXX geoInfo.vertexPositions: ",geoInfo.vertexPositions);
+		// console.log("XXX geoInfo.vertexPositions: ",geoInfo.vertexPositions);
 		// let indices = vsLen <= 65535 ? new Uint16Array(vsLen) : new Uint32Array(vsLen);
 		// let indicesI: number = 0;
 		// let pvs: number[] = []
@@ -163,7 +188,7 @@ class GeometryBufferParser {
 			// }else {
 			// 	//return;
 			// }
-			console.log("XXXXXX vertexIndex, polygonVertexIndex: ","("+prev+")"+vertexIndex,polygonVertexIndex);
+			//console.log("XXXXXX vertexIndex, polygonVertexIndex: ","("+prev+")"+vertexIndex,polygonVertexIndex);
 			// let weightIndices: number[] = [];
 			// let weights: number[] = [];
 			// pvs.push(vertexIndex * 3, vertexIndex * 3 + 1, vertexIndex * 3 + 2);
@@ -183,7 +208,7 @@ class GeometryBufferParser {
 			// }else {
 			// 	map.set(key, 1);
 			// }
-			console.log("a, a + 1, a + 2: ",vertexIndex * 3, vertexIndex * 3 + 1, vertexIndex * 3 + 2);
+			//console.log("a, a + 1, a + 2: ",vertexIndex * 3, vertexIndex * 3 + 1, vertexIndex * 3 + 2);
 			facePositionIndexes.push( a, a + 1, a + 2 );
 
 			if ( geoInfo.color ) {
@@ -271,7 +296,7 @@ class GeometryBufferParser {
 		let faceWeightIndices: number[] = [];
 
 		const scope = this;
-		console.log("geoInfo.vertexIndices: ", geoInfo.vertexIndices);
+		// console.log("geoInfo.vertexIndices: ", geoInfo.vertexIndices);
 		console.log("geoInfo.vertexIndices.length: ", geoInfo.vertexIndices.length);
 
 		let vtxTotal: number = geoInfo.vertexIndices.length;

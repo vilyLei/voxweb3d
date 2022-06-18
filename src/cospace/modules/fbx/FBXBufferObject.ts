@@ -15,6 +15,7 @@ class FBXBufferObject {
 	toGeometryModel(): GeometryModelDataType {
 
 		let vtxTotal = this.vertex.length;
+		vtxTotal /= 3;
 		let indices = this.indices;
 		if(indices == null) {
 			indices = vtxTotal <= 65535 ? new Uint16Array(vtxTotal) : new Uint32Array(vtxTotal);
@@ -35,7 +36,7 @@ class FBXBufferObject {
 			normals: new Float32Array( this.normal ),
 			indices: indices
 		}
-
+		// console.log("indices: ",indices);
 		return model;
 	}
 };
