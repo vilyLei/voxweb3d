@@ -122,21 +122,171 @@ class GeometryBufferParser {
 		let faceWeightIndices: number[] = [];
 
 		const scope = this;
+		console.log("geoInfo.vertexIndices: ", geoInfo.vertexIndices);
 		console.log("geoInfo.vertexIndices.length: ", geoInfo.vertexIndices.length);
-		let vtxTotal: number = 0;
+
+		let vtxTotal: number = geoInfo.vertexIndices.length;
+		
+		// console.log("XXX vtxTotal: ",vtxTotal);
+		let vsLen = vtxTotal * 3;
+		console.log("XXX geoInfo.vertexPositions: ",geoInfo.vertexPositions);
+		// let indices = vsLen <= 65535 ? new Uint16Array(vsLen) : new Uint32Array(vsLen);
+		// let indicesI: number = 0;
+		// let pvs: number[] = []
+		// let fs = new Array(geoInfo.vertexIndices.length);
+		// fs.fill(0);
+		// let vics = geoInfo.vertexIndices;
+		// for(let i: number = 0; i < vics.length; ++i) {
+		// }
+		let map: Map<string, number> = new Map();
 		geoInfo.vertexIndices.forEach( function ( vertexIndex: number, polygonVertexIndex: number ): void {
-			vtxTotal ++;
-		});
+
+			let materialIndex: number;
+			let endOfFace = false;
+			//console.log("XXXXXXA vertexIndex, polygonVertexIndex: ",vertexIndex,polygonVertexIndex);
+			///*
+			const prev = vertexIndex;
+			// Face index and vertex index arrays are combined in a single array
+			// A cube with quad faces looks like this:
+			// PolygonVertexIndex: *24 {
+			//  a: 0, 1, 3, -3, 2, 3, 5, -5, 4, 5, 7, -7, 6, 7, 1, -1, 1, 7, 5, -4, 6, 0, 2, -5
+			//  }
+			// Negative numbers mark the end of a face - first face here is 0, 1, 3, -3
+			// to find index of last vertex bit shift the index: ^ - 1
+			if ( vertexIndex < 0 ) {
+
+				vertexIndex = vertexIndex ^ - 1; // equivalent to ( x * -1 ) - 1
+				endOfFace = true;
+			}
+			// if(vertexIndex == 4) {
+			// 	return;
+			// }else {
+			// 	//return;
+			// }
+			console.log("XXXXXX vertexIndex, polygonVertexIndex: ","("+prev+")"+vertexIndex,polygonVertexIndex);
+			// let weightIndices: number[] = [];
+			// let weights: number[] = [];
+			// pvs.push(vertexIndex * 3, vertexIndex * 3 + 1, vertexIndex * 3 + 2);
+			// indices[indicesI++] = vertexIndex * 3;
+			// indices[indicesI++] = vertexIndex * 3 + 1;
+			// indices[indicesI++] = vertexIndex * 3 + 2;
+			// 
+
+			const a = vertexIndex * 3;
+			// const b = vertexIndex * 3 + 1;
+			// const c = vertexIndex * 3 + 2;
+			// let key = a + ""+b+""+c;
+			// if(map.has(key)) {
+			// 	faceLength ++;
+			// 	polygonIndex ++;
+			// 	return;
+			// }else {
+			// 	map.set(key, 1);
+			// }
+			console.log("a, a + 1, a + 2: ",vertexIndex * 3, vertexIndex * 3 + 1, vertexIndex * 3 + 2);
+			facePositionIndexes.push( a, a + 1, a + 2 );
+
+			if ( geoInfo.color ) {
+
+				const data = getData( polygonVertexIndex, polygonIndex, vertexIndex, geoInfo.color );
+
+				faceColors.push( data[ 0 ], data[ 1 ], data[ 2 ] );
+
+			}
+			if ( geoInfo.normal ) {
+
+				const data = getData( polygonVertexIndex, polygonIndex, vertexIndex, geoInfo.normal );
+
+				faceNormals.push( data[ 0 ], data[ 1 ], data[ 2 ] );
+
+			}
+
+			if ( geoInfo.material && geoInfo.material.mappingType !== 'AllSame' ) {
+
+				materialIndex = getData( polygonVertexIndex, polygonIndex, vertexIndex, geoInfo.material )[ 0 ];
+
+			}
+
+			if ( geoInfo.uv ) {
+
+				geoInfo.uv.forEach( function ( uv: any, i: number ) {
+
+					const data = getData( polygonVertexIndex, polygonIndex, vertexIndex, uv );
+
+					if ( faceUVs[ i ] === undefined ) {
+
+						faceUVs[ i ] = [];
+
+					}
+
+					faceUVs[ i ].push( data[ 0 ] );
+					faceUVs[ i ].push( data[ 1 ] );
+
+				} );
+
+			}
+
+			faceLength ++;
+
+			if ( endOfFace ) {
+
+				scope.genFace( buffers, geoInfo, facePositionIndexes, materialIndex, faceNormals, faceColors, faceUVs, faceWeights, faceWeightIndices, faceLength );
+
+				polygonIndex ++;
+				faceLength = 0;
+
+				// reset arrays for the next face
+				facePositionIndexes = [];
+				faceNormals = [];
+				faceColors = [];
+				faceUVs = [];
+				faceWeights = [];
+				faceWeightIndices = [];
+
+			}
+			//*/
+		} );
+		
+		console.log("XXX buffers.vertex.length: ", buffers.vertex.length , ", vtxTotal * 3: ",vtxTotal * 3);
+		// buffers.indices = indices;
+		// //pvs
+		// buffers.indices = pvs.length <= 65535 ? new Uint16Array(pvs) : new Uint32Array(pvs);
+
+		return buffers;
+
+	}
+	private genBuffersT( geoInfo: any ): FBXBufferObject {
+
+		const buffers: FBXBufferObject = new FBXBufferObject();
+
+		let polygonIndex = 0;
+		let faceLength = 0;
+
+		// these will hold data for a single face
+		let facePositionIndexes: number[] = [];
+		let faceNormals: number[] = [];
+		let faceColors: number[] = [];
+		let faceUVs: number[][] = [];
+		let faceWeights: number[] = [];
+		let faceWeightIndices: number[] = [];
+
+		const scope = this;
+		console.log("geoInfo.vertexIndices: ", geoInfo.vertexIndices);
+		console.log("geoInfo.vertexIndices.length: ", geoInfo.vertexIndices.length);
+
+		let vtxTotal: number = geoInfo.vertexIndices.length;
+
 		console.log("XXX vtxTotal: ",vtxTotal);
 		let vsLen = vtxTotal * 3;
-		let indices = vsLen <= 65535 ? new Uint16Array(vsLen) : new Uint32Array(vsLen);
-		let indicesI: number = 0;
-		let pvs: number[] = []
+		// let indices = vsLen <= 65535 ? new Uint16Array(vsLen) : new Uint32Array(vsLen);
+		// let indicesI: number = 0;
+		// let pvs: number[] = []
 		geoInfo.vertexIndices.forEach( function ( vertexIndex: number, polygonVertexIndex: number ): void {
 
 			let materialIndex: number;
 			let endOfFace = false;
 
+			console.log("XXXXXX vertexIndex, polygonVertexIndex: ",vertexIndex,polygonVertexIndex);
 			// Face index and vertex index arrays are combined in a single array
 			// A cube with quad faces looks like this:
 			// PolygonVertexIndex: *24 {
@@ -152,10 +302,10 @@ class GeometryBufferParser {
 
 			// let weightIndices: number[] = [];
 			// let weights: number[] = [];
-			pvs.push(vertexIndex * 3, vertexIndex * 3 + 1, vertexIndex * 3 + 2);
-			indices[indicesI++] = vertexIndex * 3;
-			indices[indicesI++] = vertexIndex * 3 + 1;
-			indices[indicesI++] = vertexIndex * 3 + 2;
+			// pvs.push(vertexIndex * 3, vertexIndex * 3 + 1, vertexIndex * 3 + 2);
+			// indices[indicesI++] = vertexIndex * 3;
+			// indices[indicesI++] = vertexIndex * 3 + 1;
+			// indices[indicesI++] = vertexIndex * 3 + 2;
 			
 			facePositionIndexes.push( vertexIndex * 3, vertexIndex * 3 + 1, vertexIndex * 3 + 2 );
 
@@ -220,10 +370,10 @@ class GeometryBufferParser {
 
 		} );
 		
-		console.log("XXX buffers.vertex.length: ", buffers.vertex.length , ", vtxTotal * 3: ",vtxTotal * 3, "indices.length: ",indices.length);
-		buffers.indices = indices;
-		//pvs
-		buffers.indices = pvs.length <= 65535 ? new Uint16Array(pvs) : new Uint32Array(pvs);
+		console.log("XXX buffers.vertex.length: ", buffers.vertex.length , ", vtxTotal * 3: ",vtxTotal * 3);
+		// buffers.indices = indices;
+		// //pvs
+		// buffers.indices = pvs.length <= 65535 ? new Uint16Array(pvs) : new Uint32Array(pvs);
 
 		return buffers;
 
@@ -245,40 +395,6 @@ class GeometryBufferParser {
 			buffers.vertex.push( geoInfo.vertexPositions[ facePositionIndexes[ i * 3 ] ] );
 			buffers.vertex.push( geoInfo.vertexPositions[ facePositionIndexes[ i * 3 + 1 ] ] );
 			buffers.vertex.push( geoInfo.vertexPositions[ facePositionIndexes[ i * 3 + 2 ] ] );
-
-			if ( geoInfo.skeleton ) {
-
-				buffers.vertexWeights.push( faceWeights[ 0 ] );
-				buffers.vertexWeights.push( faceWeights[ 1 ] );
-				buffers.vertexWeights.push( faceWeights[ 2 ] );
-				buffers.vertexWeights.push( faceWeights[ 3 ] );
-
-				buffers.vertexWeights.push( faceWeights[ ( i - 1 ) * 4 ] );
-				buffers.vertexWeights.push( faceWeights[ ( i - 1 ) * 4 + 1 ] );
-				buffers.vertexWeights.push( faceWeights[ ( i - 1 ) * 4 + 2 ] );
-				buffers.vertexWeights.push( faceWeights[ ( i - 1 ) * 4 + 3 ] );
-
-				buffers.vertexWeights.push( faceWeights[ i * 4 ] );
-				buffers.vertexWeights.push( faceWeights[ i * 4 + 1 ] );
-				buffers.vertexWeights.push( faceWeights[ i * 4 + 2 ] );
-				buffers.vertexWeights.push( faceWeights[ i * 4 + 3 ] );
-
-				buffers.weightsIndices.push( faceWeightIndices[ 0 ] );
-				buffers.weightsIndices.push( faceWeightIndices[ 1 ] );
-				buffers.weightsIndices.push( faceWeightIndices[ 2 ] );
-				buffers.weightsIndices.push( faceWeightIndices[ 3 ] );
-
-				buffers.weightsIndices.push( faceWeightIndices[ ( i - 1 ) * 4 ] );
-				buffers.weightsIndices.push( faceWeightIndices[ ( i - 1 ) * 4 + 1 ] );
-				buffers.weightsIndices.push( faceWeightIndices[ ( i - 1 ) * 4 + 2 ] );
-				buffers.weightsIndices.push( faceWeightIndices[ ( i - 1 ) * 4 + 3 ] );
-
-				buffers.weightsIndices.push( faceWeightIndices[ i * 4 ] );
-				buffers.weightsIndices.push( faceWeightIndices[ i * 4 + 1 ] );
-				buffers.weightsIndices.push( faceWeightIndices[ i * 4 + 2 ] );
-				buffers.weightsIndices.push( faceWeightIndices[ i * 4 + 3 ] );
-
-			}
 
 			if ( geoInfo.color ) {
 

@@ -1,11 +1,11 @@
 import { GeometryModelDataType } from "../base/GeometryModelDataType";
 class FBXBufferObject {
 
-	uvs: number[] = [];
+	uvs: number[][] = [];
 	normal: number[] = [];
+	vertex: number[] = [];
 	indices: Uint16Array | Uint32Array = null;
 	colors: number[] = [];
-	vertex: number[] = [];
 	materialIndex: number[] = [];
 	vertexWeights: number[] = [];
 	weightsIndices: number[] = [];

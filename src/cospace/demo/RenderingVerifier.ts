@@ -145,6 +145,7 @@ export class RenderingVerifier {
 	private loadFBX(): void {
 
 		let url: string = "static/assets/fbx/test01.fbx";
+		url = "static/assets/fbx/box.fbx";
 		// url = "static/assets/fbx/model_500W.fbx";
 		// url = "static/assets/fbx/Samba_Dancing.fbx";
 
@@ -152,8 +153,9 @@ export class RenderingVerifier {
 		fbxBufLoader.load(
 			url,
 			(modelMap: Map<number, GeometryModelDataType>, url: string): void => {
-				// this.m_scaleV.setXYZ(-2.0, -2.0, 2.0);
-				this.m_scaleV.setXYZ(2.0, 2.0, 2.0);
+				this.m_scaleV.setXYZ(-2.0, -2.0, 2.0);
+				this.m_scaleV.setXYZ(56.0, 56.0, 56.0);
+				//this.m_scaleV.setXYZ(2.0, 2.0, 2.0);
 				// console.log("loadFBX(), modelMap: ",modelMap);
 					let partsTotal: number = 0;
 				for(let [key, value] of modelMap) {
@@ -208,6 +210,7 @@ export class RenderingVerifier {
 		let material = new NormalViewerMaterial();
 		material.initializeByCodeBuf();
 		let dataMesh: DataMesh = new DataMesh();
+		// dataMesh.wireframe = true;
 		dataMesh.vbWholeDataEnabled = false;
 		dataMesh.setVS(model.vertices);
 		dataMesh.setUVS(model.uvsList[0]);
@@ -220,7 +223,8 @@ export class RenderingVerifier {
 		// console.log("ctm dataMesh: ", dataMesh);
 
 		console.log("build lossTime: ", (Date.now() - time)+" ms");
-		console.log("this.m_vtxTotal: ", this.m_vtxTotal + "个顶点， tris: ",this.m_vtxTotal/3);
+		console.log("this.m_vtxTotal: ", this.m_vtxTotal + "个顶点， tris: ",dataMesh.trisNumber,",vtCount: ",dataMesh.vtCount);
+		// console.log("this.m_vtxTotal: ", this.m_vtxTotal + "个顶点， tris: ",this.m_vtxTotal/3);
 		// DivLog.ShowLog("三角面数量: " + dataMesh.trisNumber + "个");
 
 		let entity: DisplayEntity = new DisplayEntity();
@@ -230,6 +234,7 @@ export class RenderingVerifier {
 		entity.setMesh(dataMesh);
 		entity.setMaterial(material);
 		entity.setScale3( this.m_scaleV );
+		// entity.setIvsParam(0, dataMesh.vtCount / 3);
 		this.m_rscene.addEntity(entity);
 		this.m_entities.push( entity );
 
