@@ -12,7 +12,7 @@ class CTMSceneNode extends SceneNode {
 		if (urls != null) {
 
 			super.load(urls);
-
+			
 			this.m_index = 0;
 			this.m_modelsTotal = urls.length;
 			this.m_waitPartsTotal = this.m_modelsTotal;

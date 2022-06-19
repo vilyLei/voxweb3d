@@ -60,7 +60,7 @@ class VerifierScene {
 			let files: any = [];
 			let filesTotal: number = 0;
 			let filesCurrTotal: number = 0;
-			let selfT = this;
+			
 			if (dt.items !== undefined) {
 				let items = dt.items;
 				// Chrome有items属性，对Chrome的单独处理
@@ -72,26 +72,32 @@ class VerifierScene {
 							let file = item.getAsFile();
 							// console.log("drop a file: ", file);
 							files.push(file);
+							this.initFileLoad(files);
 							filesTotal = 1;
 						} else if (entity.isDirectory) {
 							// let file = item.getAsFile();
 							let dr = (entity as any).createReader();
 							// console.log("drop a dir, dr: ", dr);
-							dr.readEntries(function (entries: any) {
+							dr.readEntries((entries: any) => {
 								filesTotal = entries.length;
-								// 循环目录内容
-								entries.forEach(function (entity: any) {
-									if (entity.isFile) {
-										entity.file((file: any) => {
-											files.push(file);
-											filesCurrTotal++;
-											if (filesTotal == filesCurrTotal) {
-												selfT.initFileLoad(files);
-											}
-										});
-									}
-								});
+								if (filesTotal > 0) {
+									// 循环目录内容
+									entries.forEach((entity: any) => {
+										if (entity.isFile) {
+											entity.file((file: any) => {
+												files.push(file);
+												filesCurrTotal++;
+												if (filesTotal == filesCurrTotal) {
+													this.initFileLoad(files);
+												}
+											});
+										}
+									});
+								} else {
+									this.alertShow(31);
+								}
 							});
+							break;
 						}
 					}
 					if (filesTotal > 0) {
@@ -99,7 +105,6 @@ class VerifierScene {
 					}
 				}
 			}
-			this.initFileLoad(files);
 		}
 	}
 	private resetScene(): void {
@@ -108,26 +113,46 @@ class VerifierScene {
 		this.clear();
 	}
 	private initFileLoad(files: any[]): void {
-		console.log("initFileLoad(), files.length: ",files.length);
+		console.log("initFileLoad(), files.length: ", files.length);
+		let flag: number = 1;
 		if (files.length > 0) {
 			let name: string = "";
 			let urls: string[] = [];
 			for (let i = 0; i < files.length; i++) {
-				if(i == 0) name = files[i].name;
+				if (i == 0) name = files[i].name;
 				const urlObj = window.URL.createObjectURL(files[i]);
 				urls.push(urlObj);
 			}
 			// let keyStr = urls[0];
-			if(name != "") {
+			if (name != "") {
 				name.toLocaleLowerCase();
-				if(name.indexOf(".ctm") > 1) {
+				if (name.indexOf(".ctm") > 1) {
 					this.resetScene();
-					this.addCTM( urls );
-				}else if(name.indexOf(".fbx") > 1){
+					this.addCTM(urls);
+				} else if (name.indexOf(".fbx") > 1) {
 					this.resetScene();
-					this.addFBX( urls );
+					this.addFBX(urls);
+				} else if (name.indexOf(".obj") > 1) {
+					// this.resetScene();
+					// this.addFBX( urls );
+				} else {
+					flag = 31;
 				}
+			} else {
+				flag = 31;
 			}
+		} else {
+			flag = 31;
+		}
+		this.alertShow(flag);
+	}
+	private alertShow(flag: number): void {
+		switch (flag) {
+			case 31:
+				alert("没有找到对应的模型文件");
+				break;
+			default:
+				break;
 		}
 	}
 	initTest(): void {
