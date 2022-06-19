@@ -46,6 +46,7 @@ class SceneNode implements ISceneNode {
 	}
 	load(urls: string[]): void {
 
+		DivLog.ShowLogOnce("正在解析原数据...");
 		this.m_time = Date.now();
 	}
 	private m_entities: DisplayEntity[] = [];

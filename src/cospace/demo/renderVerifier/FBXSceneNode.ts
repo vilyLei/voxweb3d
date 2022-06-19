@@ -1,19 +1,5 @@
-import Vector3D from "../../../vox/math/Vector3D";
-import RendererScene from "../../../vox/scene/RendererScene";
-
-import DebugFlag from "../../../vox/debug/DebugFlag";
-import DisplayEntity from "../../../vox/entity/DisplayEntity";
-
-import DataMesh from "../../../vox/mesh/DataMesh";
-import DivLog from "../../../vox/utils/DivLog";
 import { GeometryModelDataType } from "../../modules/base/GeometryModelDataType";
-import { CoSpace } from "../../CoSpace";
-import { DataFormat } from "../../schedule/base/DataUnit";
-import { GeometryDataUnit } from "../../schedule/base/GeometryDataUnit";
-import { NormalViewerMaterial } from "../material/NormalViewerMaterial";
-import RendererState from "../../../vox/render/RendererState";
 import { FBXBufferLoader } from "../../modules/fbx/FBXBufferLoader";
-import AABB from "../../../vox/geom/AABB";
 import { SceneNode } from "./SceneNode";
 
 class FBXSceneNode extends SceneNode {
@@ -28,8 +14,6 @@ class FBXSceneNode extends SceneNode {
 	}
 	private loadFBXBySteps(url: string): void {
 
-
-		DivLog.ShowLogOnce("正在解析原数据...");
 		this.m_partsTotal = 0;
 		this.m_showTotal = 0;
 		let fbxBufLoader = new FBXBufferLoader();
