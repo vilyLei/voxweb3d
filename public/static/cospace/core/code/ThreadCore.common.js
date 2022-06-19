@@ -92,6 +92,17 @@ module.exports =
 
 "use strict";
 
+/***************************************************************************/
+
+/*                                                                         */
+
+/*  Copyright 2018-2022 by                                                 */
+
+/*  Vily(vily313@126.com)                                                  */
+
+/*                                                                         */
+
+/***************************************************************************/
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -105,15 +116,21 @@ const DependenceGraph_1 = __webpack_require__("9899");
 
 let TCMD = ThreadCMD_1.ThreadCMD;
 let TCST = ThreadCodeSrcType_1.ThreadCodeSrcType;
+let taskSlot = [];
+let stList = [];
 
-class TaskHost {}
+class TaskHost {
+  static Init(tot) {
+    TaskHost.slot = new Array(tot);
+    TaskHost.stList = new Array(tot);
+    TaskHost.slot.fill(null);
+    TaskHost.stList.fill(0);
+    taskSlot = TaskHost.slot;
+    stList = TaskHost.stList;
+  }
 
-TaskHost.slot = new Array(__$tstl);
-TaskHost.stList = new Array(__$tstl);
-let taskSlot = TaskHost.slot;
-let stList = TaskHost.stList;
-taskSlot.fill(null);
-stList.fill(0);
+}
+
 let dpGraph = new DependenceGraph_1.DependenceGraph();
 
 function postMessageToThread(obj, transfers) {
@@ -196,8 +213,7 @@ class Main {
   receiveData(evt) {
     let ins = null; /////////////////////////////////////////////////// receive data from Main Worker ///////////////////////////////////
 
-    let data = evt.data;
-    console.log("Sub Worker(" + data.threadIndex + ") receive main data in worker, cmd: " + data.cmd + ", data: ", evt.data);
+    let data = evt.data; // console.log("Sub Worker(" + data.threadIndex + ") receive main data in worker, cmd: " + data.cmd + ", data: ", evt.data);
 
     switch (data.cmd) {
       case TCMD.DATA_PARSE:
@@ -220,8 +236,7 @@ class Main {
         break;
 
       case TCMD.INIT_TASK:
-        let param = data.param;
-        console.log("Sub Worker(" + data.threadIndex + ") INIT_TASK param.type: ", param.type);
+        let param = data.param; // console.log("Sub Worker(" + data.threadIndex + ") INIT_TASK param.type: ", param.type);
 
         switch (param.type) {
           case TCST.JS_FILE_CODE:
@@ -285,6 +300,8 @@ class Main {
         if (this.m_inited) {
           this.m_threadIndex = data.threadIndex;
           this.m_inited = false;
+          console.log("TCMD.INIT_PARAM, data.total: ", data.total);
+          TaskHost.Init(data.total);
           dpGraph.graphData.initFromJsonString(data.graphJsonStr);
           postMessage({
             cmd: TCMD.INIT_PARAM,
@@ -520,6 +537,17 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 
 "use strict";
 
+/***************************************************************************/
+
+/*                                                                         */
+
+/*  Copyright 2018-2022 by                                                 */
+
+/*  Vily(vily313@126.com)                                                  */
+
+/*                                                                         */
+
+/***************************************************************************/
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -802,6 +830,18 @@ exports.DependenceGraph = DependenceGraph;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+/***************************************************************************/
+
+/*                                                                         */
+
+/*  Copyright 2018-2022 by                                                 */
+
+/*  Vily(vily313@126.com)                                                  */
+
+/*                                                                         */
+
+/***************************************************************************/
+
 var ThreadCodeSrcType;
 
 (function (ThreadCodeSrcType) {

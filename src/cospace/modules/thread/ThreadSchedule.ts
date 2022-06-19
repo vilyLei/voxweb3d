@@ -374,8 +374,7 @@ class ThreadSchedule {
 
         request.onload = () => {
           if (request.status <= 206) {
-            let defCode: string = "let __$tstl="+ThreadConfigure.MAX_TASKS_TOTAL+";";
-            let bolb: Blob = new Blob([defCode + baseCodeStr + request.responseText]);
+            let bolb: Blob = baseCodeStr == "" ? new Blob([request.responseText]) : new Blob([baseCodeStr + request.responseText]);
             this.initThread(maxThreadsTotal, bolb);
           } else {
             console.error(

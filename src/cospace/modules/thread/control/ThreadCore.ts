@@ -13,20 +13,26 @@ import { SubThreadModule } from "./SubThreadModule";
 let TCMD = ThreadCMD;
 let TCST = ThreadCodeSrcType;
 
-declare var __$tstl: number;
+declare var $t: number;
 declare var importScripts: (js_file_url: string) => void;
 declare var postMessage: (obj: unknown, transfers?: ArrayBuffer[]) => void;
 
+let taskSlot: SubThreadModule[] = [];
+let stList: number[] = [];
 class TaskHost {
-  static readonly slot: SubThreadModule[] = new Array(__$tstl);
-  static readonly stList: number[] = new Array(__$tstl);
+  static slot: SubThreadModule[];
+  static stList: number[];
+  static Init(tot: number): void {
+    TaskHost.slot = new Array(tot);
+    TaskHost.stList = new Array(tot);
+    TaskHost.slot.fill(null);
+    TaskHost.stList.fill(0);
+    taskSlot = TaskHost.slot;
+    stList = TaskHost.stList;
+  }
 }
 
-let taskSlot = TaskHost.slot;
-let stList = TaskHost.stList;
 
-taskSlot.fill(null);
-stList.fill(0);
 
 
 let dpGraph: DependenceGraph = new DependenceGraph();
@@ -172,6 +178,8 @@ class Main {
         if (this.m_inited) {
           this.m_threadIndex = data.threadIndex;
           this.m_inited = false;
+          console.log("TCMD.INIT_PARAM, data.total: ", data.total);
+          TaskHost.Init(data.total);
           dpGraph.graphData.initFromJsonString(data.graphJsonStr);
           postMessage({ cmd: TCMD.INIT_PARAM, threadIndex: this.m_threadIndex });
         }

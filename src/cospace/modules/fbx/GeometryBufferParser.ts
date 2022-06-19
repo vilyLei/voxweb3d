@@ -58,33 +58,14 @@ class GeometryBufferParser {
 			this.m_deformers = deformers;
 			this.m_fbxTree = fbxTree;
 			this.m_connections = connections;
-
-			// let id: number = 0;
-			// let idLst: number[] = [];
-			// let nodeIDList: string[] = [];
 			this.m_idLst = [];
 			this.m_nodeIDList = [];
-			// for ( const nodeID in geoNodes ) {
-			// 	id = parseInt( nodeID );
-			// 	const relationships = connections.get( id );
-			// 	const geoBuf = this.parseGeometryBuffer( relationships, geoNodes[ nodeID ], deformers, fbxTree );
-			// 	geometryMap.set( id, geoBuf );
-			// }
 			const geoNodes = fbxTree.Objects.Geometry;
 			for ( const nodeID in geoNodes ) {
 				this.m_idLst.push( parseInt( nodeID ) );
 				this.m_nodeIDList.push(nodeID);
 			}
 			this.m_parseTotal = this.m_idLst.length;
-			// this.m_parseIndex = 0;
-			// for(let i: number = 0; i < idLst.length; ++i) {
-			// 	id = idLst[i];
-			// 	const relationships = connections.get( id );
-			// 	const geoBuf = this.parseGeometryBuffer( relationships, geoNodes[ nodeIDList[i] ], deformers, fbxTree );
-			// 	geometryMap.set( id, geoBuf );
-			// }
-			// console.log("geoInfo.vertexIndices.length: ", geoInfo.vertexIndices.length);
-			// console.log("geometryMap: ",geometryMap);
 		}
 		
 		//return geometryMap;
@@ -328,129 +309,6 @@ class GeometryBufferParser {
 
 			}
 			//*/
-		} );
-		
-		console.log("XXX buffers.vertex.length: ", buffers.vertex.length , ", vtxTotal * 3: ",vtxTotal * 3);
-		// buffers.indices = indices;
-		// //pvs
-		// buffers.indices = pvs.length <= 65535 ? new Uint16Array(pvs) : new Uint32Array(pvs);
-
-		return buffers;
-
-	}
-	private genBuffersT( geoInfo: any ): FBXBufferObject {
-
-		const buffers: FBXBufferObject = new FBXBufferObject();
-
-		let polygonIndex = 0;
-		let faceLength = 0;
-
-		// these will hold data for a single face
-		let facePositionIndexes: number[] = [];
-		let faceNormals: number[] = [];
-		let faceColors: number[] = [];
-		let faceUVs: number[][] = [];
-		let faceWeights: number[] = [];
-		let faceWeightIndices: number[] = [];
-
-		const scope = this;
-		// console.log("geoInfo.vertexIndices: ", geoInfo.vertexIndices);
-		console.log("geoInfo.vertexIndices.length: ", geoInfo.vertexIndices.length);
-
-		let vtxTotal: number = geoInfo.vertexIndices.length;
-
-		console.log("XXX vtxTotal: ",vtxTotal);
-		let vsLen = vtxTotal * 3;
-		// let indices = vsLen <= 65535 ? new Uint16Array(vsLen) : new Uint32Array(vsLen);
-		// let indicesI: number = 0;
-		// let pvs: number[] = []
-		geoInfo.vertexIndices.forEach( function ( vertexIndex: number, polygonVertexIndex: number ): void {
-
-			let materialIndex: number;
-			let endOfFace = false;
-
-			console.log("XXXXXX vertexIndex, polygonVertexIndex: ",vertexIndex,polygonVertexIndex);
-			// Face index and vertex index arrays are combined in a single array
-			// A cube with quad faces looks like this:
-			// PolygonVertexIndex: *24 {
-			//  a: 0, 1, 3, -3, 2, 3, 5, -5, 4, 5, 7, -7, 6, 7, 1, -1, 1, 7, 5, -4, 6, 0, 2, -5
-			//  }
-			// Negative numbers mark the end of a face - first face here is 0, 1, 3, -3
-			// to find index of last vertex bit shift the index: ^ - 1
-			if ( vertexIndex < 0 ) {
-
-				vertexIndex = vertexIndex ^ - 1; // equivalent to ( x * -1 ) - 1
-				endOfFace = true;
-			}
-
-			// let weightIndices: number[] = [];
-			// let weights: number[] = [];
-			// pvs.push(vertexIndex * 3, vertexIndex * 3 + 1, vertexIndex * 3 + 2);
-			// indices[indicesI++] = vertexIndex * 3;
-			// indices[indicesI++] = vertexIndex * 3 + 1;
-			// indices[indicesI++] = vertexIndex * 3 + 2;
-			
-			facePositionIndexes.push( vertexIndex * 3, vertexIndex * 3 + 1, vertexIndex * 3 + 2 );
-
-			if ( geoInfo.color ) {
-
-				const data = getData( polygonVertexIndex, polygonIndex, vertexIndex, geoInfo.color );
-
-				faceColors.push( data[ 0 ], data[ 1 ], data[ 2 ] );
-
-			}
-			if ( geoInfo.normal ) {
-
-				const data = getData( polygonVertexIndex, polygonIndex, vertexIndex, geoInfo.normal );
-
-				faceNormals.push( data[ 0 ], data[ 1 ], data[ 2 ] );
-
-			}
-
-			if ( geoInfo.material && geoInfo.material.mappingType !== 'AllSame' ) {
-
-				materialIndex = getData( polygonVertexIndex, polygonIndex, vertexIndex, geoInfo.material )[ 0 ];
-
-			}
-
-			if ( geoInfo.uv ) {
-
-				geoInfo.uv.forEach( function ( uv: any, i: number ) {
-
-					const data = getData( polygonVertexIndex, polygonIndex, vertexIndex, uv );
-
-					if ( faceUVs[ i ] === undefined ) {
-
-						faceUVs[ i ] = [];
-
-					}
-
-					faceUVs[ i ].push( data[ 0 ] );
-					faceUVs[ i ].push( data[ 1 ] );
-
-				} );
-
-			}
-
-			faceLength ++;
-
-			if ( endOfFace ) {
-
-				scope.genFace( buffers, geoInfo, facePositionIndexes, materialIndex, faceNormals, faceColors, faceUVs, faceWeights, faceWeightIndices, faceLength );
-
-				polygonIndex ++;
-				faceLength = 0;
-
-				// reset arrays for the next face
-				facePositionIndexes = [];
-				faceNormals = [];
-				faceColors = [];
-				faceUVs = [];
-				faceWeights = [];
-				faceWeightIndices = [];
-
-			}
-
 		} );
 		
 		console.log("XXX buffers.vertex.length: ", buffers.vertex.length , ", vtxTotal * 3: ",vtxTotal * 3);

@@ -91,7 +91,7 @@ export class RenderingVerifier {
 			this.m_rscene.addEntity(axis);
 
 			// // 初始化数据协同中心
-			this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js", true);
+			this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.js", true);
 			// this.m_cospace.initialize(4, "cospace/core/code/ThreadCore.umd.js", true);
 
 			this.m_verifierScene.initialize(this.m_rscene, this.m_cospace);

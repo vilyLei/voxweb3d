@@ -216,7 +216,7 @@ class ThreadBase implements IThreadBase {
                         this.receiveData(data);
                         break;
                     case ThreadCMD.THREAD_INIT:
-                        worker.postMessage({ cmd: ThreadCMD.INIT_PARAM, threadIndex: this.getUid(), graphJsonStr: this.m_graphJsonStr });
+                        worker.postMessage({ cmd: ThreadCMD.INIT_PARAM, threadIndex: this.getUid(), graphJsonStr: this.m_graphJsonStr, total: ThreadConfigure.MAX_TASKS_TOTAL });
                         break;
                     case ThreadCMD.INIT_TASK:
                         if(this.m_taskfs[data.taskclass] < 0) {

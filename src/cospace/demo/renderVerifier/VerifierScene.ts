@@ -23,7 +23,7 @@ class VerifierScene {
 
 			this.m_rscene = rscene;
 			this.m_cospace = cospace;
-			DivLog.ShowLogOnce("请用谷歌浏览器(Google Chrome)</br>请拖入单个模型文件(ctm/obj/fbx)</br>或者拖入只包含ctm文件的文件夹");
+			DivLog.ShowLogOnce("模型法线检测</br>请用谷歌浏览器(Google Chrome)</br>请拖入单个模型文件(ctm/obj/fbx)</br>或者拖入只包含ctm文件的文件夹");
 			this.initDrop(this.m_rscene.getCanvas());
 		}
 	}
