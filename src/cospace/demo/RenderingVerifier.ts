@@ -41,6 +41,7 @@ export class RenderingVerifier {
 			
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+			RendererDevice.SetWebBodyColor("white");
 			//RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 			DivLog.SetDebugEnabled(true);
 

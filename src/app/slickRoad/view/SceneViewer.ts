@@ -50,7 +50,7 @@ class SceneViewer {
             //     console.log("canvas drop evt.", e);
             //     //dropCall
             // }, false);
-
+            
             // --------------------------------------------- 阻止必要的行为 begin
             canvas.addEventListener("dragenter", (e) => {
                 e.preventDefault();

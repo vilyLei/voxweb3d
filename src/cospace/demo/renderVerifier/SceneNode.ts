@@ -166,48 +166,51 @@ class SceneNode implements ISceneNode {
 	}
 	//*/
 	protected initEntity(model: GeometryModelDataType): void {
-		this.m_partsTotal++;
-		//console.log("lossTime: ", (Date.now() - this.m_time)+" ms");
-		let info = "initEntity lossTime: " + (Date.now() - this.m_time) + " ms";
-		info += "</br>子模型数量: " + this.m_partsTotal;
-		DivLog.ShowLogOnce(info);
-		console.log("initEntity lossTime: ", (Date.now() - this.m_time) + " ms");
+		if(this.m_rscene != null) {
 
-		this.m_vtxTotal += model.vertices.length;
-		let time = Date.now();
-
-		let material = new NormalViewerMaterial();
-		material.initializeByCodeBuf();
-		let dataMesh: DataMesh = new DataMesh();
-		// dataMesh.wireframe = true;
-		dataMesh.vbWholeDataEnabled = false;
-		dataMesh.setVS(model.vertices);
-		dataMesh.setUVS(model.uvsList[0]);
-		dataMesh.setNVS(model.normals);
-		dataMesh.setIVS(model.indices);
-		dataMesh.setVtxBufRenderData(material);
-
-		dataMesh.initialize();
-
-		// console.log("ctm dataMesh: ", dataMesh);
-
-		console.log("build lossTime: ", (Date.now() - time) + " ms");
-		console.log("this.m_vtxTotal: ", this.m_vtxTotal + "个顶点， tris: ", dataMesh.trisNumber, ",vtCount: ", dataMesh.vtCount);
-		// console.log("this.m_vtxTotal: ", this.m_vtxTotal + "个顶点， tris: ",this.m_vtxTotal/3);
-		// DivLog.ShowLog("三角面数量: " + dataMesh.trisNumber + "个");
-
-		let entity: DisplayEntity = new DisplayEntity();
-		// entity.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
-		// entity.setRenderState(RendererState.NORMAL_STATE);
-		entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-		entity.setMesh(dataMesh);
-		entity.setMaterial(material);
-		// entity.setScale3( this.m_scaleV );
-		entity.setVisible(false);
-		this.m_wait_entities.push(entity);
-		// entity.setIvsParam(0, dataMesh.vtCount / 3);
-		this.m_rscene.addEntity(entity);
-		this.m_entities.push(entity);
+			this.m_partsTotal++;
+			//console.log("lossTime: ", (Date.now() - this.m_time)+" ms");
+			let info = "initEntity lossTime: " + (Date.now() - this.m_time) + " ms";
+			info += "</br>子模型数量: " + this.m_partsTotal;
+			DivLog.ShowLogOnce(info);
+			console.log("initEntity lossTime: ", (Date.now() - this.m_time) + " ms");
+	
+			this.m_vtxTotal += model.vertices.length;
+			let time = Date.now();
+	
+			let material = new NormalViewerMaterial();
+			material.initializeByCodeBuf();
+			let dataMesh: DataMesh = new DataMesh();
+			// dataMesh.wireframe = true;
+			dataMesh.vbWholeDataEnabled = false;
+			dataMesh.setVS(model.vertices);
+			dataMesh.setUVS(model.uvsList[0]);
+			dataMesh.setNVS(model.normals);
+			dataMesh.setIVS(model.indices);
+			dataMesh.setVtxBufRenderData(material);
+	
+			dataMesh.initialize();
+	
+			// console.log("ctm dataMesh: ", dataMesh);
+	
+			console.log("build lossTime: ", (Date.now() - time) + " ms");
+			console.log("this.m_vtxTotal: ", this.m_vtxTotal + "个顶点， tris: ", dataMesh.trisNumber, ",vtCount: ", dataMesh.vtCount);
+			// console.log("this.m_vtxTotal: ", this.m_vtxTotal + "个顶点， tris: ",this.m_vtxTotal/3);
+			// DivLog.ShowLog("三角面数量: " + dataMesh.trisNumber + "个");
+	
+			let entity: DisplayEntity = new DisplayEntity();
+			// entity.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
+			// entity.setRenderState(RendererState.NORMAL_STATE);
+			entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+			entity.setMesh(dataMesh);
+			entity.setMaterial(material);
+			// entity.setScale3( this.m_scaleV );
+			entity.setVisible(false);
+			this.m_wait_entities.push(entity);
+			// entity.setIvsParam(0, dataMesh.vtCount / 3);
+			this.m_rscene.addEntity(entity);
+			this.m_entities.push(entity);
+		}
 	}
 
 	isFinish(): boolean {
