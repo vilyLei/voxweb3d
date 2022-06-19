@@ -6,6 +6,7 @@ import { ISceneNode } from "./ISceneNode";
 import { FBXSceneNode } from "./FBXSceneNode";
 import DivLog from "../../../vox/utils/DivLog";
 import { CTMSceneNode } from "./CTMSceneNode";
+import { OBJSceneNode } from "./OBJSceneNode";
 
 class VerifierScene {
 
@@ -123,7 +124,7 @@ class VerifierScene {
 				const urlObj = window.URL.createObjectURL(files[i]);
 				urls.push(urlObj);
 			}
-			// let keyStr = urls[0];
+			
 			if (name != "") {
 				name.toLocaleLowerCase();
 				if (name.indexOf(".ctm") > 1) {
@@ -133,8 +134,8 @@ class VerifierScene {
 					this.resetScene();
 					this.addFBX(urls);
 				} else if (name.indexOf(".obj") > 1) {
-					// this.resetScene();
-					// this.addFBX( urls );
+					this.resetScene();
+					this.addObj( urls );
 				} else {
 					flag = 31;
 				}
@@ -173,8 +174,10 @@ class VerifierScene {
 		this.addNewNode(new FBXSceneNode(), urls);
 	}
 	private addCTM(urls: string[]): void {
-
 		this.addNewNode(new CTMSceneNode(), urls);
+	}
+	private addObj(urls: string[]): void {
+		this.addNewNode(new OBJSceneNode(), urls);
 	}
 	private addNewNode(node: ISceneNode, urls: string[]): void {
 		DivLog.ShowLogOnce("正在解析原数据...");

@@ -11,6 +11,7 @@ enum DataClass {
 enum DataFormat {
   CTM = "ctm",
   Draco = "draco",
+  OBJ = "obj",
   Jpg = "jpg",
   Png = "png"
 }

@@ -15,12 +15,12 @@ class FBXBufferObject {
 	toGeometryModel(): GeometryModelDataType {
 
 		let vtxTotal = this.vertex.length;
-		vtxTotal /= 3;
+		let vtCount = vtxTotal / 3;
 		let indices = this.indices;
 		if(indices == null) {
-			indices = vtxTotal <= 65535 ? new Uint16Array(vtxTotal) : new Uint32Array(vtxTotal);
+			indices = vtCount <= 65535 ? new Uint16Array(vtCount) : new Uint32Array(vtCount);
 	
-			for (let i: number = 0; i < vtxTotal; ++i) {
+			for (let i: number = 0; i < vtCount; ++i) {
 				indices[i] = i;
 			}
 		}

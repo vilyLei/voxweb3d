@@ -1,18 +1,13 @@
 import Vector3D from "../../../vox/math/Vector3D";
 import RendererScene from "../../../vox/scene/RendererScene";
-
-import DebugFlag from "../../../vox/debug/DebugFlag";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 
 import DataMesh from "../../../vox/mesh/DataMesh";
 import DivLog from "../../../vox/utils/DivLog";
 import { GeometryModelDataType } from "../../modules/base/GeometryModelDataType";
 import { CoSpace } from "../../CoSpace";
-import { DataFormat } from "../../schedule/base/DataUnit";
-import { GeometryDataUnit } from "../../schedule/base/GeometryDataUnit";
 import { NormalViewerMaterial } from "../material/NormalViewerMaterial";
 import RendererState from "../../../vox/render/RendererState";
-import { FBXBufferLoader } from "../../modules/fbx/FBXBufferLoader";
 import AABB from "../../../vox/geom/AABB";
 import { ISceneNode } from "./ISceneNode";
 
@@ -35,13 +30,10 @@ class SceneNode implements ISceneNode {
 
 	initialize(rscene: RendererScene, cospace: CoSpace): void {
 
-		console.log("RenderingVerifier::initialize()......");
-
 		if (this.m_rscene == null) {
 
 			this.m_rscene = rscene;
 			this.m_cospace = cospace;
-
 		}
 	}
 	load(urls: string[]): void {
@@ -79,93 +71,7 @@ class SceneNode implements ISceneNode {
 			entities[k].update();
 		}
 	}
-	/*
-	private loadFBXBySteps(url: string): void {
-
-		// let url: string = "static/assets/fbx/test01.fbx";
-		// // url = "static/assets/fbx/box.fbx";
-		// url = "static/private/fbx/test_500W.fbx";
-		// // url = "static/private/fbx/Samba_Dancing.fbx";
-
-		DivLog.ShowLogOnce("正在解析数据...");
-		this.m_partsTotal = 0;
-		this.m_showTotal = 0;
-		let fbxBufLoader = new FBXBufferLoader();
-		fbxBufLoader.loadBySteps(
-			url,
-			(model: GeometryModelDataType, id: number, index: number, total: number, url: string): void => {
-
-				// console.log("loadFBXBySteps(), model: ", index + "/" + total);
-				this.m_modelsTotal = total;
-				// this.m_showTotal = 0
-				this.m_waitPartsTotal = total;
-				this.initEntity(model);
-				if ((index + 1) == total) {
-					this.m_waitPartsTotal = 0;
-				}
-			}
-		);
-	}
-	private loadFBX(): void {
-
-		let url: string = "static/assets/fbx/test01.fbx";
-		// url = "static/assets/fbx/box.fbx";
-		// url = "static/private/fbx/test_500W.fbx";
-		// url = "static/private/fbx/Samba_Dancing.fbx";
-
-		let fbxBufLoader = new FBXBufferLoader();
-		fbxBufLoader.load(
-			url,
-			(modelMap: Map<number, GeometryModelDataType>, url: string): void => {
-				// this.m_scaleV.setXYZ(-2.0, -2.0, 2.0);
-				// this.m_scaleV.setXYZ(56.0, 56.0, 56.0);
-				//this.m_scaleV.setXYZ(2.0, 2.0, 2.0);
-				// console.log("loadFBX(), modelMap: ",modelMap);
-				this.m_partsTotal = 0;
-				for (let [key, value] of modelMap) {
-					this.m_partsTotal++;
-					this.initEntity(value);
-				}
-				console.log("partsTotal: ", this.m_partsTotal);
-				// 
-				this.m_waitPartsTotal = 0;
-			}
-		);
-	}
-
-	private loadCTM(): void {
-
-		//this.m_scaleV.setXYZ(2.0,2.0,2.0);
-
-		let baseUrl: string = window.location.href + "static/private/ctm/";
-
-		let multi: boolean = true;
-		multi = false;
-		if (multi) {
-			for (let i: number = 26; i >= 0; --i) {
-				let url: string = baseUrl + "sh202/sh202_" + i + ".ctm";
-				this.loadCTMByUrl(url);
-			}
-		} else {
-			//this.loadCTMByUrl("static/private/ctm/errorNormal.ctm");
-			this.loadCTMByUrl("static/private/ctm/ctm_500W.ctm");
-		}
-	}
-	private loadCTMByUrl(url: string): void {
-		this.m_cospace.geometry.getCPUDataByUrlAndCallback(
-			url,
-			DataFormat.CTM,
-			(unit: GeometryDataUnit, status: number): void => {
-				let model: GeometryModelDataType = unit.data.model;
-				if (model.normals == null) {
-					console.error("model.normals == null, url: ", url);
-				}
-				this.initEntity(model);
-			},
-			true
-		);
-	}
-	//*/
+	
 	protected initEntity(model: GeometryModelDataType): void {
 		if(this.m_rscene != null) {
 
