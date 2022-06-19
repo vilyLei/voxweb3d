@@ -31,6 +31,13 @@ class Color4 {
         this.g = ((rgbUint24 >> 8) & 0x0000ff) / 255.0;
         this.b = (rgbUint24 & 0x0000ff) / 255.0;
     }
+    getRGBUint24(): number {
+
+        // this.r = ((rgbUint24 >> 16) & 0x0000ff) / 255.0;
+        // this.g = ((rgbUint24 >> 8) & 0x0000ff) / 255.0;
+        // this.b = (rgbUint24 & 0x0000ff) / 255.0;
+        return (Math.round(this.r * 255) << 16) + (Math.round(this.g * 255) << 8) + Math.round(this.b * 255);
+    }
     setRGBA4f(r: number, g: number, b: number, a: number): void {
         this.r = r;
         this.g = g;

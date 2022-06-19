@@ -14,6 +14,7 @@ import { CoSpace } from "../CoSpace";
 import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import { VerifierScene } from "./renderVerifier/VerifierScene";
+import Color4 from "../../vox/material/Color4";
 
 export class RenderingVerifier {
 	/**
@@ -44,7 +45,10 @@ export class RenderingVerifier {
 			RendererDevice.SetWebBodyColor("white");
 			//RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 			DivLog.SetDebugEnabled(true);
-
+			let color = new Color4()
+			color.setRGB3f(0.0, 0.4185, 0.6896);
+			DivLog.SetTextBgColor( color.getRGBUint24() );
+			DivLog.SetTextColor( 0xdddddd );
 			let rparam: RendererParam = new RendererParam();
 			//rparam.maxWebGLVersion = 1;
 			rparam.setCamProject(45, 50.0, 10000.0);

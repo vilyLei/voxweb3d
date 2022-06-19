@@ -4,12 +4,37 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
+
+import { RGBColorUtil } from "./ColorUtils";
+
 class DivLog {
     private static s_logStr: string = "";
     private static s_infoDiv: HTMLDivElement = null;
     private static s_debugEanbled: boolean = false;
+    private static s_textBGColor: string = "#aa0033";
+    private static s_textColor: string = "#000000";
     static SetDebugEnabled(boo: boolean): void {
         DivLog.s_debugEanbled = boo;
+    }
+    /**
+     * @param uintRGB24, uint 24bit rgb color, example: 0xff003a
+     */
+    static SetTextBgColor(uintRGB24: number): void {
+        
+        DivLog.s_textBGColor = RGBColorUtil.uint24RGBToCSSHeXRGBColor(uintRGB24);
+        if(DivLog.s_infoDiv != null) {
+            DivLog.s_infoDiv.style.backgroundColor = this.s_textBGColor;
+        }
+    }
+    /**
+     * @param uintRGB24, uint 24bit rgb color, example: 0xff003a
+     */
+    static SetTextColor(uintRGB24: number): void {
+        
+        DivLog.s_textColor = RGBColorUtil.uint24RGBToCSSHeXRGBColor(uintRGB24);
+        if(DivLog.s_infoDiv != null) {
+            DivLog.s_infoDiv.style.color = this.s_textColor;
+        }
     }
     static ShowLog(logStr: string): void {
         if (DivLog.s_debugEanbled) {
@@ -48,7 +73,8 @@ class DivLog {
                 let pdiv: any = div;
                 pdiv.width = 128;
                 pdiv.height = 64;
-                pdiv.style.backgroundColor = "#aa0033";
+                pdiv.style.backgroundColor = this.s_textBGColor;
+                pdiv.style.color = this.s_textColor;
                 pdiv.style.left = '0px';
                 pdiv.style.top = '128px';
                 pdiv.style.zIndex = "9999";
