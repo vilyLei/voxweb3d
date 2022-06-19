@@ -47,10 +47,11 @@ class CoSpace {
             this.thread.initialize(maxThreadsTotal, threadCoreCodeUrl);
 
             let taskModuleUrls: string[] = [
-                "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js"
+                "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.min.js"
             ];
             this.geometry.initialize(this.m_receiver, this.thread, taskModuleUrls);
             
+            // this.geometry.initialize(this.m_receiver, this.thread);
             // 启动循环定时调度
             this.update();
         }

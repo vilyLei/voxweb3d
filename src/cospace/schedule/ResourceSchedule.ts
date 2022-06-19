@@ -35,6 +35,7 @@ class ResourceSchedule<DataUnitType extends DataUnit> {
     private m_receiverSchedule: ReceiverSchedule;
     private m_unitPool: DataUnitPool<DataUnitType> = new DataUnitPool();
     private m_threadSchedule: ThreadSchedule;
+    private m_taskModuleUrls: string[] = null;
 
     constructor() {
     }
@@ -51,14 +52,18 @@ class ResourceSchedule<DataUnitType extends DataUnit> {
     protected initTask(unitPool: DataUnitPool<DataUnitType>, threadSchedule: ThreadSchedule, receiverSchedule: ReceiverSchedule, taskModuleUrls: string[]): void {
 
     }
-
-    initialize(receiverSchedule: ReceiverSchedule, threadSchedule: ThreadSchedule, taskModuleUrls: string[]): void {
+    setTaskModuleUrls(taskModuleUrls: string[]): void {
+        if(taskModuleUrls != null) {
+            this.m_taskModuleUrls = taskModuleUrls.slice();
+        }
+    }
+    initialize(receiverSchedule: ReceiverSchedule, threadSchedule: ThreadSchedule, taskModuleUrls: string[] = null): void {
 
         if (this.m_receiverSchedule == null && this.m_threadSchedule == null) {
 
             this.m_receiverSchedule = receiverSchedule;
             this.m_threadSchedule = threadSchedule;
-            this.initTask( this.m_unitPool, threadSchedule, receiverSchedule, taskModuleUrls);
+            this.initTask( this.m_unitPool, threadSchedule, receiverSchedule, this.m_taskModuleUrls != null ? this.m_taskModuleUrls: taskModuleUrls);
         }
     }
     hasDataUnit(url: string): boolean {
