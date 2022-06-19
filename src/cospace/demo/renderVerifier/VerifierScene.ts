@@ -5,6 +5,7 @@ import { ISceneNode } from "./ISceneNode";
 // import { SceneNode } from "./SceneNode";
 import { FBXSceneNode } from "./FBXSceneNode";
 import DivLog from "../../../vox/utils/DivLog";
+import { CTMSceneNode } from "./CTMSceneNode";
 
 class VerifierScene {
 
@@ -29,13 +30,21 @@ class VerifierScene {
 		url = "static/assets/fbx/box.fbx";
 		// url = "static/private/fbx/test_500W.fbx";
 		// url = "static/private/fbx/Samba_Dancing.fbx";
-		this.addFBX( [url] );
+		// this.addFBX( [url] );
+
+		let baseUrl: string = window.location.href + "static/private/ctm/";
+		let urls: string[] = [];
+		for(let i = 0; i <= 26; ++i) {
+			urls.push( baseUrl + "sh202/sh202_" + i + ".ctm" );
+		}
+		this.addCTM(urls);
 	}
 	private addFBX(urls: string[]): void {
 		this.addNewNode(new FBXSceneNode(), urls);
 	}
 	private addCTM(urls: string[]): void {
 
+		this.addNewNode(new CTMSceneNode(), urls);
 	}
 	private addNewNode(node: ISceneNode, urls: string[]): void {
 		DivLog.ShowLogOnce("正在解析原数据...");

@@ -32,12 +32,13 @@ export class RenderingVerifier {
 	private m_verifierScene: VerifierScene = new VerifierScene();
 
 	constructor() { }
-	
+
 	initialize(): void {
 
 		console.log("RenderingVerifier::initialize()......");
 
 		if (this.m_rscene == null) {
+			
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			//RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;

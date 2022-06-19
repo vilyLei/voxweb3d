@@ -47,8 +47,6 @@ class SceneNode implements ISceneNode {
 	load(urls: string[]): void {
 
 		this.m_time = Date.now();
-
-		// this.loadFBXBySteps(urls[0]);
 	}
 	private m_entities: DisplayEntity[] = [];
 	protected m_waitPartsTotal: number = -1;
