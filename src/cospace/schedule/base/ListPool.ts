@@ -6,60 +6,64 @@ class ListPool {
     private m_freeUUIDs: number[] = [];
     constructor() {
     }
-    
+
     hasItemByUUID(listUUID: number): boolean {
-        if(listUUID > 0 && listUUID < this.m_total) {
+        if (listUUID > 0 && listUUID < this.m_total) {
             this.m_list[listUUID] != null;
         }
         return false;
     }
     hasItem(item: ListPoolItem): boolean {
-        if(item != null && item.listUUID > 0 && item.listUUID < this.m_total) {
+        if (item != null && item.listUUID > 0 && item.listUUID < this.m_total) {
             this.m_list[item.listUUID] == item;
         }
         return false;
     }
     hasnotItem(item: ListPoolItem): boolean {
-        if(item != null && item.listUUID > 0 && item.listUUID < this.m_total) {
+        if (item != null && item.listUUID > 0 && item.listUUID < this.m_total) {
             this.m_list[item.listUUID] != item;
         }
         return true;
     }
     getItemByUUID(listUUID: number): ListPoolItem {
-        if(listUUID > 0 && listUUID < this.m_total) {
+        if (listUUID > 0 && listUUID < this.m_total) {
             this.m_list[listUUID];
         }
         return null;
     }
     addItem(item: ListPoolItem): void {
-      if(item != null) {
-        if(item.listUUID == 0) {
-            if(this.m_freeUUIDs.length > 0) {
-                item.listUUID = this.m_freeUUIDs.pop();
-                this.m_list[item.listUUID] = item;
-            }else {
-                item.listUUID = this.m_total;
-                this.m_total ++;
-                this.m_list.push(item);
+        if (item != null) {
+            if (item.listUUID == 0) {
+                if (this.m_freeUUIDs.length > 0) {
+                    item.listUUID = this.m_freeUUIDs.pop();
+                    if(this.m_list[item.listUUID] != null) {
+                        throw Error("ListPool::addItem() is the illegal operation !!!");
+                    }
+                    this.m_list[item.listUUID] = item;
+                } else {
+                    item.listUUID = this.m_total;
+                    this.m_total++;
+                    this.m_list.push(item);
+                    console.log("addItem(), B this.m_total: ",this.m_total);
+                }
+            } else {
+                throw Error("ListPool::addItem() is the illegal operation !!!");
             }
+        } else {
+            console.error("ListPool::addItem() item is null !!!");
         }
-        else {
-            throw("ListPool::addItem() is the illegal operation !!!");
-        }
-      }
     }
     removeItem(item: ListPoolItem): void {
-        if(item != null && item.listUUID > 0) {
-            if(this.m_list[item.listUUID] != item) {
-                throw("ListPool::removeItem() is the illegal operation !!!");
+        if (item != null && item.listUUID > 0  && item.listUUID < this.m_total && this.m_list[item.listUUID] != null) {
+            if (this.m_list[item.listUUID] != item) {
+                throw ("ListPool::removeItem() is the illegal operation !!!");
             }
-            this.m_freeUUIDs.push( item.listUUID );
+            this.m_freeUUIDs.push(item.listUUID);
             this.m_list[item.listUUID] = null;
             item.listUUID = 0;
-            -- this.m_total;
         }
-      }
-  
-  }
+    }
+
+}
 
 export { ListPoolItem, ListPool };

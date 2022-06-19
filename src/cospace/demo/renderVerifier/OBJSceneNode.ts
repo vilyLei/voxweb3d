@@ -18,7 +18,7 @@ class OBJSceneNode extends SceneNode {
 			// 	this.loadOBJByUrl(urls[i]);
 			// }
 			if(urls.length > 0) {
-				this.loadOBJByUrl(urls[0]);
+				this.loadOBJByUrl(urls[0 ]);
 			}
 		}
 	}
