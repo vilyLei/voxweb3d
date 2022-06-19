@@ -12,7 +12,7 @@
 // import { DemoNormalViewer as Demo } from "./cospace/demo/DemoNormalViewer";
 import { RenderingVerifier as Demo } from "./cospace/demo/RenderingVerifier";
 
-document.title = "CoSpace APP";
+document.title = "RenderingVerifier";
 let demoIns: Demo = new Demo();
 let ins: any = demoIns;
 function main(): void {

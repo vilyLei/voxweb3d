@@ -28,6 +28,7 @@ export default class ObjGeomDataParser implements IObjGeomDataParser {
     parse(objDataStr: string, dataIsZxy: boolean = false): void {
 
         if (this.baseParsering) {
+
             this.m_strDataParser = new ObjStrDataParser();
             this.m_strDataParser.parseStrData(objDataStr, this.moduleScale, dataIsZxy);
 
@@ -36,8 +37,7 @@ export default class ObjGeomDataParser implements IObjGeomDataParser {
             this.m_nvs = new Float32Array(this.m_strDataParser.getNVS());
             let ivs = this.m_strDataParser.getIVS();
             this.m_ivs = ivs.length <= 65535 ? new Uint16Array(ivs) : new Uint32Array(ivs);
-        }
-        else {
+        }else {
 
             let objParser = new ObjDataParser();
             let objMeshes = objParser.Parse(objDataStr);

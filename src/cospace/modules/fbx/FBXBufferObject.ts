@@ -1,5 +1,9 @@
 import { GeometryModelDataType } from "../base/GeometryModelDataType";
+
 class FBXBufferObject {
+
+	i3: number = 0;
+	i2: number = 0;
 
 	uvs: number[][] = [];
 	normal: number[] = [];

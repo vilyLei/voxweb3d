@@ -191,7 +191,7 @@ class GeometryBufferParser {
 
 		let vtxTotal: number = geoInfo.vertexIndices.length;
 		
-		// console.log("XXX vtxTotal: ",vtxTotal);
+		console.log("XXX vtxTotal: ",vtxTotal);
 		let vsLen = vtxTotal * 3;
 		// console.log("XXX geoInfo.vertexPositions: ",geoInfo.vertexPositions);
 		// let indices = vsLen <= 65535 ? new Uint16Array(vsLen) : new Uint32Array(vsLen);
@@ -322,22 +322,33 @@ class GeometryBufferParser {
 
 	// Generate data for a single face in a geometry. If the face is a quad then split it into 2 tris
 	private genFace( buffers: any, geoInfo: any, facePositionIndexes: number[], materialIndex: number, faceNormals: number[], faceColors: number[], faceUVs:number[][], faceWeights: number[], faceWeightIndices:number[], faceLength: number ): void {
+		
+		let vps = geoInfo.vertexPositions;
+		let vs = buffers.vertex;
+		let nvs = buffers.normal;
+		let uvs = buffers.uvs;
 
+		let i3 = buffers.i3;
+		let i2 = buffers.i2;
+		let colorBoo = geoInfo.color != null;
+		let normalBoo = geoInfo.normal != null;
+		let uvBoo = geoInfo.uv != null;
+		let miBoo = geoInfo.material && geoInfo.material.mappingType !== 'AllSame';
 		for ( let i = 2; i < faceLength; i ++ ) {
 
-			buffers.vertex.push( geoInfo.vertexPositions[ facePositionIndexes[ 0 ] ] );
-			buffers.vertex.push( geoInfo.vertexPositions[ facePositionIndexes[ 1 ] ] );
-			buffers.vertex.push( geoInfo.vertexPositions[ facePositionIndexes[ 2 ] ] );
+			vs.push( vps[ facePositionIndexes[ 0 ] ] );
+			vs.push( vps[ facePositionIndexes[ 1 ] ] );
+			vs.push( vps[ facePositionIndexes[ 2 ] ] );
 
-			buffers.vertex.push( geoInfo.vertexPositions[ facePositionIndexes[ ( i - 1 ) * 3 ] ] );
-			buffers.vertex.push( geoInfo.vertexPositions[ facePositionIndexes[ ( i - 1 ) * 3 + 1 ] ] );
-			buffers.vertex.push( geoInfo.vertexPositions[ facePositionIndexes[ ( i - 1 ) * 3 + 2 ] ] );
+			vs.push( vps[ facePositionIndexes[ ( i - 1 ) * 3 ] ] );
+			vs.push( vps[ facePositionIndexes[ ( i - 1 ) * 3 + 1 ] ] );
+			vs.push( vps[ facePositionIndexes[ ( i - 1 ) * 3 + 2 ] ] );
 
-			buffers.vertex.push( geoInfo.vertexPositions[ facePositionIndexes[ i * 3 ] ] );
-			buffers.vertex.push( geoInfo.vertexPositions[ facePositionIndexes[ i * 3 + 1 ] ] );
-			buffers.vertex.push( geoInfo.vertexPositions[ facePositionIndexes[ i * 3 + 2 ] ] );
+			vs.push( vps[ facePositionIndexes[ i * 3 ] ] );
+			vs.push( vps[ facePositionIndexes[ i * 3 + 1 ] ] );
+			vs.push( vps[ facePositionIndexes[ i * 3 + 2 ] ] );
 
-			if ( geoInfo.color ) {
+			if ( colorBoo ) {
 
 				buffers.colors.push( faceColors[ 0 ] );
 				buffers.colors.push( faceColors[ 1 ] );
@@ -353,7 +364,7 @@ class GeometryBufferParser {
 
 			}
 
-			if ( geoInfo.material && geoInfo.material.mappingType !== 'AllSame' ) {
+			if ( miBoo ) {
 
 				buffers.materialIndex.push( materialIndex );
 				buffers.materialIndex.push( materialIndex );
@@ -361,41 +372,41 @@ class GeometryBufferParser {
 
 			}
 
-			if ( geoInfo.normal ) {
+			if ( normalBoo ) {
 
-				buffers.normal.push( faceNormals[ 0 ] );
-				buffers.normal.push( faceNormals[ 1 ] );
-				buffers.normal.push( faceNormals[ 2 ] );
+				nvs.push( faceNormals[ 0 ] );
+				nvs.push( faceNormals[ 1 ] );
+				nvs.push( faceNormals[ 2 ] );
 
-				buffers.normal.push( faceNormals[ ( i - 1 ) * 3 ] );
-				buffers.normal.push( faceNormals[ ( i - 1 ) * 3 + 1 ] );
-				buffers.normal.push( faceNormals[ ( i - 1 ) * 3 + 2 ] );
+				nvs.push( faceNormals[ ( i - 1 ) * 3 ] );
+				nvs.push( faceNormals[ ( i - 1 ) * 3 + 1 ] );
+				nvs.push( faceNormals[ ( i - 1 ) * 3 + 2 ] );
 
-				buffers.normal.push( faceNormals[ i * 3 ] );
-				buffers.normal.push( faceNormals[ i * 3 + 1 ] );
-				buffers.normal.push( faceNormals[ i * 3 + 2 ] );
+				nvs.push( faceNormals[ i * 3 ] );
+				nvs.push( faceNormals[ i * 3 + 1 ] );
+				nvs.push( faceNormals[ i * 3 + 2 ] );
 
 			}
 
-			if ( geoInfo.uv ) {
+			if ( uvBoo ) {
 
 				geoInfo.uv.forEach( function ( uv: any, j: number ) {
 
-					if ( buffers.uvs[ j ] === undefined ) buffers.uvs[ j ] = [];
-
-					buffers.uvs[ j ].push( faceUVs[ j ][ 0 ] );
-					buffers.uvs[ j ].push( faceUVs[ j ][ 1 ] );
-
-					buffers.uvs[ j ].push( faceUVs[ j ][ ( i - 1 ) * 2 ] );
-					buffers.uvs[ j ].push( faceUVs[ j ][ ( i - 1 ) * 2 + 1 ] );
-
-					buffers.uvs[ j ].push( faceUVs[ j ][ i * 2 ] );
-					buffers.uvs[ j ].push( faceUVs[ j ][ i * 2 + 1 ] );
+					if ( uvs[ j ] === undefined ) uvs[ j ] = [];
+					
+					uvs[ j ].push( faceUVs[ j ][ 0 ] );
+					uvs[ j ].push( faceUVs[ j ][ 1 ] );
+					uvs[ j ].push( faceUVs[ j ][ ( i - 1 ) * 2 ] );
+					uvs[ j ].push( faceUVs[ j ][ ( i - 1 ) * 2 + 1 ] );
+					uvs[ j ].push( faceUVs[ j ][ i * 2 ] );
+					uvs[ j ].push( faceUVs[ j ][ i * 2 + 1 ] );
 
 				} );
 
 			}
 		}
+		buffers.i3 = i3;
+		buffers.i2 = i2;
 	}
 
 	// Parse normal from FBXTree.Objects.Geometry.LayerElementNormal if it exists

@@ -46,12 +46,12 @@ class CoSpace {
             // 初始化多线程调度器(多线程系统)
             this.thread.initialize(maxThreadsTotal, threadCoreCodeUrl);
 
-            let taskModuleUrls: string[] = [
-                "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.min.js"
-            ];
-            this.geometry.initialize(this.m_receiver, this.thread, taskModuleUrls);
+            // let taskModuleUrls: string[] = [
+            //     "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.min.js"
+            // ];
+            // this.geometry.initialize(this.m_receiver, this.thread, taskModuleUrls);
             
-            // this.geometry.initialize(this.m_receiver, this.thread);
+            this.geometry.initialize(this.m_receiver, this.thread);
             // 启动循环定时调度
             this.update();
         }
