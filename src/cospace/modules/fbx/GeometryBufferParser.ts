@@ -152,7 +152,6 @@ class GeometryBufferParser {
 
 			let i = 0;
 			while ( geoNode.LayerElementUV[ i ] ) {
-
 				if ( geoNode.LayerElementUV[ i ].UV ) {
 
 					geoInfo.uv.push( this.parseUVs( geoNode.LayerElementUV[ i ] ) );
@@ -162,7 +161,6 @@ class GeometryBufferParser {
 				i ++;
 
 			}
-
 		}
 
 		geoInfo.weightTable = {};
@@ -186,13 +184,14 @@ class GeometryBufferParser {
 		let faceWeightIndices: number[] = [];
 
 		const scope = this;
+		let vivs = geoInfo.vertexIndices;
 		// console.log("geoInfo.vertexIndices: ", geoInfo.vertexIndices);
 		// console.log("geoInfo.vertexIndices.length: ", geoInfo.vertexIndices.length);
 
-		let vtxTotal: number = geoInfo.vertexIndices.length;
+		let oivsLen: number = geoInfo.vertexIndices.length;
 		
-		console.log("XXX vtxTotal: ",vtxTotal);
-		let vsLen = vtxTotal * 3;
+		console.log("XXX oivsLen: ",oivsLen);
+		//if(vivs[3] < 0) oivsLen = (oivsLen * 3)/2;
 		// console.log("XXX geoInfo.vertexPositions: ",geoInfo.vertexPositions);
 		// let indices = vsLen <= 65535 ? new Uint16Array(vsLen) : new Uint32Array(vsLen);
 		// let indicesI: number = 0;
@@ -202,14 +201,43 @@ class GeometryBufferParser {
 		// let vics = geoInfo.vertexIndices;
 		// for(let i: number = 0; i < vics.length; ++i) {
 		// }
-		let map: Map<string, number> = new Map();
-		geoInfo.vertexIndices.forEach( function ( vertexIndex: number, polygonVertexIndex: number ): void {
+		
+		let time = Date.now();
+		let materialIndex: number = 0;
+		let miBoo = geoInfo.material && geoInfo.material.mappingType !== 'AllSame';
 
-			let materialIndex: number;
+		let trisTotal = 0;
+		// vivs.forEach( function ( vertexIndex: number, polygonVertexIndex: number ): void {
+
+		// 	faceLength ++;
+		// 	if ( vertexIndex < 0 ) {
+		// 		trisTotal += faceLength - 2;
+		// 		faceLength = 0;
+		// 	}
+		// });
+		for(let i = 0; i < oivsLen; ++i) {
+			faceLength ++;
+			if ( vivs[i] < 0 ) {
+				trisTotal += faceLength - 2;
+				faceLength = 0;
+			}
+		}
+		let vsLen = trisTotal * 9;
+		buffers.vertex = new Array( vsLen );
+		buffers.normal = new Array( vsLen );
+		let uvs = buffers.uvs;
+		geoInfo.uv.forEach( function ( uv: any, j: number ) {
+			if ( uvs[ j ] === undefined ) uvs[ j ] = new Array( trisTotal * 6 );
+		});
+		
+		let lossTimeA: number = Date.now() - time;
+
+		faceLength = 0;
+		// vivs.forEach( function ( vertexIndex: number, polygonVertexIndex: number ): void {
+		for(let i = 0; i < oivsLen; ++i) {
+
 			let endOfFace = false;
-			//console.log("XXXXXXA vertexIndex, polygonVertexIndex: ",vertexIndex,polygonVertexIndex);
-			///*
-			const prev = vertexIndex;
+			let vertexIndex = vivs[i];
 			// Face index and vertex index arrays are combined in a single array
 			// A cube with quad faces looks like this:
 			// PolygonVertexIndex: *24 {
@@ -222,52 +250,31 @@ class GeometryBufferParser {
 				vertexIndex = vertexIndex ^ - 1; // equivalent to ( x * -1 ) - 1
 				endOfFace = true;
 			}
-			// if(vertexIndex == 4) {
-			// 	return;
-			// }else {
-			// 	//return;
-			// }
-			//console.log("XXXXXX vertexIndex, polygonVertexIndex: ","("+prev+")"+vertexIndex,polygonVertexIndex);
-			// let weightIndices: number[] = [];
-			// let weights: number[] = [];
-			// pvs.push(vertexIndex * 3, vertexIndex * 3 + 1, vertexIndex * 3 + 2);
-			// indices[indicesI++] = vertexIndex * 3;
-			// indices[indicesI++] = vertexIndex * 3 + 1;
-			// indices[indicesI++] = vertexIndex * 3 + 2;
-			// 
 
 			const a = vertexIndex * 3;
 			// const b = vertexIndex * 3 + 1;
 			// const c = vertexIndex * 3 + 2;
-			// let key = a + ""+b+""+c;
-			// if(map.has(key)) {
-			// 	faceLength ++;
-			// 	polygonIndex ++;
-			// 	return;
-			// }else {
-			// 	map.set(key, 1);
-			// }
 			//console.log("a, a + 1, a + 2: ",vertexIndex * 3, vertexIndex * 3 + 1, vertexIndex * 3 + 2);
 			facePositionIndexes.push( a, a + 1, a + 2 );
 
-			if ( geoInfo.color ) {
+			// if ( geoInfo.color ) {
 
-				const data = getData( polygonVertexIndex, polygonIndex, vertexIndex, geoInfo.color );
+			// 	const data = getData( polygonVertexIndex, polygonIndex, vertexIndex, geoInfo.color );
 
-				faceColors.push( data[ 0 ], data[ 1 ], data[ 2 ] );
+			// 	faceColors.push( data[ 0 ], data[ 1 ], data[ 2 ] );
 
-			}
+			// }
 			if ( geoInfo.normal ) {
 
-				const data = getData( polygonVertexIndex, polygonIndex, vertexIndex, geoInfo.normal );
+				const data = getData( i, polygonIndex, vertexIndex, geoInfo.normal );
 
 				faceNormals.push( data[ 0 ], data[ 1 ], data[ 2 ] );
 
 			}
 
-			if ( geoInfo.material && geoInfo.material.mappingType !== 'AllSame' ) {
+			if ( miBoo ) {
 
-				materialIndex = getData( polygonVertexIndex, polygonIndex, vertexIndex, geoInfo.material )[ 0 ];
+				materialIndex = getData( i, polygonIndex, vertexIndex, geoInfo.material )[ 0 ];
 
 			}
 
@@ -275,7 +282,7 @@ class GeometryBufferParser {
 
 				geoInfo.uv.forEach( function ( uv: any, i: number ) {
 
-					const data = getData( polygonVertexIndex, polygonIndex, vertexIndex, uv );
+					const data = getData( i, polygonIndex, vertexIndex, uv );
 
 					if ( faceUVs[ i ] === undefined ) {
 
@@ -293,9 +300,9 @@ class GeometryBufferParser {
 			faceLength ++;
 
 			if ( endOfFace ) {
-
+				// console.log("facePositionIndexes: ",facePositionIndexes);
 				scope.genFace( buffers, geoInfo, facePositionIndexes, materialIndex, faceNormals, faceColors, faceUVs, faceWeights, faceWeightIndices, faceLength );
-
+				
 				polygonIndex ++;
 				faceLength = 0;
 
@@ -309,9 +316,17 @@ class GeometryBufferParser {
 
 			}
 			//*/
-		} );
-		
-		console.log("XXX buffers.vertex.length: ", buffers.vertex.length , ", vtxTotal * 3: ",vtxTotal * 3);
+		};
+		// } );
+
+		let lossTime: number = Date.now() - time;
+
+		console.log("XXX lossTime: ",lossTime, "lossTimeA: ",lossTimeA);
+
+		console.log("XXX vertex.length: ", buffers.vertex.length, "vsLen: ",vsLen);
+		if(oivsLen > 2000000) {
+			console.log("XXX XXXX parse geom buf.....");
+		}
 		// buffers.indices = indices;
 		// //pvs
 		// buffers.indices = pvs.length <= 65535 ? new Uint16Array(pvs) : new Uint32Array(pvs);
@@ -336,55 +351,79 @@ class GeometryBufferParser {
 		let miBoo = geoInfo.material && geoInfo.material.mappingType !== 'AllSame';
 		for ( let i = 2; i < faceLength; i ++ ) {
 
-			vs.push( vps[ facePositionIndexes[ 0 ] ] );
-			vs.push( vps[ facePositionIndexes[ 1 ] ] );
-			vs.push( vps[ facePositionIndexes[ 2 ] ] );
+			// vs.push( vps[ facePositionIndexes[ 0 ] ] );
+			// vs.push( vps[ facePositionIndexes[ 1 ] ] );
+			// vs.push( vps[ facePositionIndexes[ 2 ] ] );
 
-			vs.push( vps[ facePositionIndexes[ ( i - 1 ) * 3 ] ] );
-			vs.push( vps[ facePositionIndexes[ ( i - 1 ) * 3 + 1 ] ] );
-			vs.push( vps[ facePositionIndexes[ ( i - 1 ) * 3 + 2 ] ] );
+			// vs.push( vps[ facePositionIndexes[ ( i - 1 ) * 3 ] ] );
+			// vs.push( vps[ facePositionIndexes[ ( i - 1 ) * 3 + 1 ] ] );
+			// vs.push( vps[ facePositionIndexes[ ( i - 1 ) * 3 + 2 ] ] );
 
-			vs.push( vps[ facePositionIndexes[ i * 3 ] ] );
-			vs.push( vps[ facePositionIndexes[ i * 3 + 1 ] ] );
-			vs.push( vps[ facePositionIndexes[ i * 3 + 2 ] ] );
+			// vs.push( vps[ facePositionIndexes[ i * 3 ] ] );
+			// vs.push( vps[ facePositionIndexes[ i * 3 + 1 ] ] );
+			// vs.push( vps[ facePositionIndexes[ i * 3 + 2 ] ] );
 
-			if ( colorBoo ) {
+			
+			vs[i3] = ( vps[ facePositionIndexes[ 0 ] ] );
+			vs[i3 + 1] = ( vps[ facePositionIndexes[ 1 ] ] );
+			vs[i3 + 2] = ( vps[ facePositionIndexes[ 2 ] ] );
 
-				buffers.colors.push( faceColors[ 0 ] );
-				buffers.colors.push( faceColors[ 1 ] );
-				buffers.colors.push( faceColors[ 2 ] );
+			vs[i3 + 3] = ( vps[ facePositionIndexes[ ( i - 1 ) * 3 ] ] );
+			vs[i3 + 4] = ( vps[ facePositionIndexes[ ( i - 1 ) * 3 + 1 ] ] );
+			vs[i3 + 5] = ( vps[ facePositionIndexes[ ( i - 1 ) * 3 + 2 ] ] );
 
-				buffers.colors.push( faceColors[ ( i - 1 ) * 3 ] );
-				buffers.colors.push( faceColors[ ( i - 1 ) * 3 + 1 ] );
-				buffers.colors.push( faceColors[ ( i - 1 ) * 3 + 2 ] );
+			vs[i3 + 6] = ( vps[ facePositionIndexes[ i * 3 ] ] );
+			vs[i3 + 7] = ( vps[ facePositionIndexes[ i * 3 + 1 ] ] );
+			vs[i3 + 8] = ( vps[ facePositionIndexes[ i * 3 + 2 ] ] );
 
-				buffers.colors.push( faceColors[ i * 3 ] );
-				buffers.colors.push( faceColors[ i * 3 + 1 ] );
-				buffers.colors.push( faceColors[ i * 3 + 2 ] );
+			// if ( colorBoo ) {
 
-			}
+			// 	buffers.colors.push( faceColors[ 0 ] );
+			// 	buffers.colors.push( faceColors[ 1 ] );
+			// 	buffers.colors.push( faceColors[ 2 ] );
 
-			if ( miBoo ) {
+			// 	buffers.colors.push( faceColors[ ( i - 1 ) * 3 ] );
+			// 	buffers.colors.push( faceColors[ ( i - 1 ) * 3 + 1 ] );
+			// 	buffers.colors.push( faceColors[ ( i - 1 ) * 3 + 2 ] );
 
-				buffers.materialIndex.push( materialIndex );
-				buffers.materialIndex.push( materialIndex );
-				buffers.materialIndex.push( materialIndex );
+			// 	buffers.colors.push( faceColors[ i * 3 ] );
+			// 	buffers.colors.push( faceColors[ i * 3 + 1 ] );
+			// 	buffers.colors.push( faceColors[ i * 3 + 2 ] );
 
-			}
+			// }
+
+			// if ( miBoo ) {
+
+			// 	buffers.materialIndex.push( materialIndex );
+			// 	buffers.materialIndex.push( materialIndex );
+			// 	buffers.materialIndex.push( materialIndex );
+
+			// }
 
 			if ( normalBoo ) {
 
-				nvs.push( faceNormals[ 0 ] );
-				nvs.push( faceNormals[ 1 ] );
-				nvs.push( faceNormals[ 2 ] );
+				// nvs.push( faceNormals[ 0 ] );
+				// nvs.push( faceNormals[ 1 ] );
+				// nvs.push( faceNormals[ 2 ] );
 
-				nvs.push( faceNormals[ ( i - 1 ) * 3 ] );
-				nvs.push( faceNormals[ ( i - 1 ) * 3 + 1 ] );
-				nvs.push( faceNormals[ ( i - 1 ) * 3 + 2 ] );
+				// nvs.push( faceNormals[ ( i - 1 ) * 3 ] );
+				// nvs.push( faceNormals[ ( i - 1 ) * 3 + 1 ] );
+				// nvs.push( faceNormals[ ( i - 1 ) * 3 + 2 ] );
 
-				nvs.push( faceNormals[ i * 3 ] );
-				nvs.push( faceNormals[ i * 3 + 1 ] );
-				nvs.push( faceNormals[ i * 3 + 2 ] );
+				// nvs.push( faceNormals[ i * 3 ] );
+				// nvs.push( faceNormals[ i * 3 + 1 ] );
+				// nvs.push( faceNormals[ i * 3 + 2 ] );
+
+				
+				nvs[i3] = ( faceNormals[ 0 ] );
+				nvs[i3 + 1] = ( faceNormals[ 1 ] );
+				nvs[i3 + 2] = ( faceNormals[ 2 ] );
+				nvs[i3 + 3] = ( faceNormals[ ( i - 1 ) * 3 ] );
+				nvs[i3 + 4] = ( faceNormals[ ( i - 1 ) * 3 + 1 ] );
+				nvs[i3 + 5] = ( faceNormals[ ( i - 1 ) * 3 + 2 ] );
+				nvs[i3 + 6] = ( faceNormals[ i * 3 ] );
+				nvs[i3 + 7] = ( faceNormals[ i * 3 + 1 ] );
+				nvs[i3 + 8] = ( faceNormals[ i * 3 + 2 ] );
 
 			}
 
@@ -392,18 +431,28 @@ class GeometryBufferParser {
 
 				geoInfo.uv.forEach( function ( uv: any, j: number ) {
 
-					if ( uvs[ j ] === undefined ) uvs[ j ] = [];
+					//if ( uvs[ j ] === undefined ) uvs[ j ] = [];
 					
-					uvs[ j ].push( faceUVs[ j ][ 0 ] );
-					uvs[ j ].push( faceUVs[ j ][ 1 ] );
-					uvs[ j ].push( faceUVs[ j ][ ( i - 1 ) * 2 ] );
-					uvs[ j ].push( faceUVs[ j ][ ( i - 1 ) * 2 + 1 ] );
-					uvs[ j ].push( faceUVs[ j ][ i * 2 ] );
-					uvs[ j ].push( faceUVs[ j ][ i * 2 + 1 ] );
+					// uvs[ j ].push( faceUVs[ j ][ 0 ] );
+					// uvs[ j ].push( faceUVs[ j ][ 1 ] );
+					// uvs[ j ].push( faceUVs[ j ][ ( i - 1 ) * 2 ] );
+					// uvs[ j ].push( faceUVs[ j ][ ( i - 1 ) * 2 + 1 ] );
+					// uvs[ j ].push( faceUVs[ j ][ i * 2 ] );
+					// uvs[ j ].push( faceUVs[ j ][ i * 2 + 1 ] );
+					let puvs = uvs[j];
+					puvs[i2] = ( faceUVs[ j ][ 0 ] );
+					puvs[i2 + 1] = ( faceUVs[ j ][ 1 ] );
+					puvs[i2 + 2] = ( faceUVs[ j ][ ( i - 1 ) * 2 ] );
+					puvs[i2 + 3] = ( faceUVs[ j ][ ( i - 1 ) * 2 + 1 ] );
+					puvs[i2 + 4] = ( faceUVs[ j ][ i * 2 ] );
+					puvs[i2 + 5] = ( faceUVs[ j ][ i * 2 + 1 ] );
 
 				} );
 
 			}
+			
+			i3 += 9;
+			i2 += 6;
 		}
 		buffers.i3 = i3;
 		buffers.i2 = i2;
@@ -452,7 +501,7 @@ class GeometryBufferParser {
 			indexBuffer = UVNode.UVIndex.a;
 
 		}
-
+		// console.log("parseUVs(), buffer: ", buffer);
 		return {
 			dataSize: 2,
 			buffer: buffer,
