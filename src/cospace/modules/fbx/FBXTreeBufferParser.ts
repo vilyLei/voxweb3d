@@ -16,14 +16,11 @@ class FBXTreeBufferParser {
 
 	}
 	parseBegin(fbxTree: FBXTree): void {
-		let time: number = Date.now();
+		
 		let connections = this.parseConnections( fbxTree.map );
-		console.log("### c0 FBXTreeBufferParser::parseBegin(), loss time: ", (Date.now() - time));
 		const deformers = this.parseDeformers( fbxTree.map, connections );
-		console.log("### c1 FBXTreeBufferParser::parseBegin(), loss time: ", (Date.now() - time));
 		this.m_geometryMap = new GeometryBufferParser();
 		this.m_geometryMap.parseGeomBufBegin( deformers, fbxTree.map, connections );
-		console.log("### c2 FBXTreeBufferParser::parseBegin(), loss time: ", (Date.now() - time));
 	}
 
 	

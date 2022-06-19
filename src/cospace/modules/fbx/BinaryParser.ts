@@ -65,7 +65,9 @@ class BinaryParser {
         const reader = this.m_reader;
         this.m_parsing = !this.endOfContent( reader );
 		if ( this.m_parsing ) {
+            let time = Date.now();
 			const node = this.parseNode( reader, this.m_version );
+            console.log("### c0 BinaryParser::parseNext(), loss time: ", (Date.now() - time));
 			if ( node !== null ) allNodes.add( node.name, node );
 		}
     }
@@ -139,7 +141,6 @@ class BinaryParser {
 			if ( subNode !== null ) this.parseSubNode( name, node, subNode );
 
 		}
-
 		node.propertyList = propertyList; // raw property list used by parent
 
 		if ( typeof id === 'number' ) node.id = id;

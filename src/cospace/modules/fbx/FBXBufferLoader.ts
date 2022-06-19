@@ -129,13 +129,17 @@ class FBXBufferLoader {
 
             let id = this.m_fbxTreeBufParser.getGeomBufId();
             let model = this.m_fbxTreeBufParser.parseGeomBufNext();
-            this.m_parseOnLoad(model.toGeometryModel(), id, this.m_parseIndex, this.m_fbxTreeBufParser.getParseTotal(), this.m_url)
             this.m_parseIndex++;
+
+            let tot = this.m_fbxTreeBufParser.getParseTotal();
+            let onLoad = this.m_parseOnLoad;
             if(this.m_parseIndex < this.m_fbxTreeBufParser.getParseTotal()) {
                 this.m_tidGeom = setTimeout(this.updateGeomParse.bind(this), delay);
             } else {
                 this.m_parseOnLoad = null;
+                this.m_fbxTreeBufParser = null;
             }
+            onLoad(model.toGeometryModel(), id, this.m_parseIndex-1, tot, this.m_url);
         }
     }
     
@@ -155,6 +159,7 @@ class FBXBufferLoader {
                 if (this.m_fbxTreeBufParser != null) {
                     this.m_tidGeom = setTimeout(this.updateGeomParse.bind(this), 30);
                 }
+                this.m_binParser = null;
             }
         }
     }
