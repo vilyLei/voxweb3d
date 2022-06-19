@@ -117,12 +117,13 @@ export class RenderingVerifier {
 			// this.m_cospace.initialize(4, "cospace/core/code/ThreadCore.umd.js", true);
 			
 			this.m_time = Date.now();
-			this.loadFBX();
+			// this.loadFBX();
+			this.loadFBXBySteps();
 			// this.loadCTM();
 		}
 	}
 	private m_entities: DisplayEntity[] = [];
-	private m_waitPartsTotal: number = 0;
+	private m_waitPartsTotal: number = 1;
 	private fitToCenter(): void {
 		
 		let entities = this.m_entities;
@@ -151,11 +152,32 @@ export class RenderingVerifier {
             entities[k].update();
         }
 	}
-	private loadFBX(): void {
+	private loadFBXBySteps(): void {
 
 		let url: string = "static/assets/fbx/test01.fbx";
 		// url = "static/assets/fbx/box.fbx";
 		url = "static/private/fbx/test_500W.fbx";
+		// url = "static/private/fbx/Samba_Dancing.fbx";
+
+		let fbxBufLoader = new FBXBufferLoader();
+		fbxBufLoader.loadBySteps(
+			url,
+			(model: GeometryModelDataType, id: number, index: number, total: number, url: string): void => {
+
+				// console.log("loadFBXBySteps(), model: ", index + "/" + total);
+				this.m_waitPartsTotal = total;
+				this.initEntity(model);
+				if((index+1) == total) {
+					this.m_waitPartsTotal = 0;
+				}
+			}
+			);
+	}
+	private loadFBX(): void {
+
+		let url: string = "static/assets/fbx/test01.fbx";
+		// url = "static/assets/fbx/box.fbx";
+		// url = "static/private/fbx/test_500W.fbx";
 		// url = "static/private/fbx/Samba_Dancing.fbx";
 
 		let fbxBufLoader = new FBXBufferLoader();
@@ -169,7 +191,7 @@ export class RenderingVerifier {
 					let partsTotal: number = 0;
 				for(let [key, value] of modelMap) {
 					partsTotal++;
-					this.initCTMEntity(value);
+					this.initEntity(value);
 				}
 				console.log("partsTotal: ", partsTotal);
 				// 
@@ -177,6 +199,7 @@ export class RenderingVerifier {
 			}
 			);
 	}
+	
 	private loadCTM(): void {
 
 		//this.m_scaleV.setXYZ(2.0,2.0,2.0);
@@ -204,16 +227,17 @@ export class RenderingVerifier {
 			if (model.normals == null) {
 				console.error("model.normals == null, url: ", url);
 			}
-			this.initCTMEntity(model);
+			this.initEntity(model);
 		},
 		true
 		);
 	}
 	private m_vtxTotal: number = 0;
 	private m_wait_entities: DisplayEntity[] = [];
-	private initCTMEntity(model: GeometryModelDataType): void {
+	private initEntity(model: GeometryModelDataType): void {
 		//console.log("lossTime: ", (Date.now() - this.m_time)+" ms");
-		DivLog.ShowLogOnce( "lossTime: " + (Date.now() - this.m_time)+" ms");
+		DivLog.ShowLogOnce( "initEntity lossTime: " + (Date.now() - this.m_time)+" ms");
+		console.log( "initEntity lossTime: ",(Date.now() - this.m_time)+" ms");
 
 		this.m_vtxTotal += model.vertices.length;
 		let time = Date.now();
@@ -274,10 +298,12 @@ export class RenderingVerifier {
 	if(this.m_delay < 1) {
 		if(this.m_wait_entities.length > 0) {
 			let entity = this.m_wait_entities[this.m_wait_entities.length - 1];
-			let tot = Math.floor(entity.getMesh().vtxTotal / 5000);
+			let tot = Math.floor(entity.getMesh().vtxTotal / 12000);
+			tot = Math.min(tot, 10);
 			this.m_delay = tot + 1;
 			entity = this.m_wait_entities.pop();
 			entity.setVisible(true);
+			// console.log("$$$$$$$$$$$$$$$$$$ this.m_delay: ",this.m_delay, ", vtxTotal: "+entity.getMesh().vtxTotal);
 		}
 	}else if(this.m_delay > 0){
 		this.m_delay--;

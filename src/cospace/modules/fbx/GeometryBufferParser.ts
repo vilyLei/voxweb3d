@@ -5,9 +5,15 @@ import { FBXBufferObject } from "./FBXBufferObject";
 // parse Geometry data from FBXTree and return map of BufferGeometries
 class GeometryBufferParser {
 
+	private m_idLst: number[];
+	private m_nodeIDList: string[];
+	private m_parseTotal: number = 0;
+	private m_deformers: any;
+	private m_fbxTree: FBXTreeMap;
+	private m_connections: Map<number, any>;
 	constructor(){}
 	
-	parseGeomBuf( deformers: any, fbxTree: FBXTreeMap, connections: Map<number, any> ): Map<number, FBXBufferObject> {
+	parseGeomBuf( deformers: any, fbxTree: FBXTreeMap, connections: Map<number, any>,  immediate: boolean = true): Map<number, FBXBufferObject> {
 
 		const geometryMap: Map<number, FBXBufferObject> = new Map();
 		
@@ -16,9 +22,9 @@ class GeometryBufferParser {
 			const geoNodes = fbxTree.Objects.Geometry;
 			let id: number = 0;
 			let idLst: number[] = [];
-			let relationshsipList: any[] = [];
-			let gNodes: any[] = [];
 			let nodeIDList: string[] = [];
+			this.m_idLst = idLst;
+			this.m_nodeIDList = nodeIDList;
 			// for ( const nodeID in geoNodes ) {
 			// 	id = parseInt( nodeID );
 			// 	const relationships = connections.get( id );
@@ -35,24 +41,76 @@ class GeometryBufferParser {
 				const geoBuf = this.parseGeometryBuffer( relationships, geoNodes[ nodeIDList[i] ], deformers, fbxTree );
 				geometryMap.set( id, geoBuf );
 			}
-			// for ( const nodeID in geoNodes ) {
-			// 	id = parseInt( nodeID );
-			// 	const relationships = connections.get( id );
-			// 	idLst.push( id );
-			// 	relationshsipList.push( relationships );
-			// 	gNodes.push( geoNodes[ nodeID ] );
-
-			// }
-			// for(let i: number = 0; i < idLst.length; ++i) {
-			// 	const geoBuf = this.parseGeometryBuffer( relationshsipList[i], gNodes[i], deformers, fbxTree );
-			// 	geometryMap.set( idLst[id], geoBuf );
-			// }
 			// console.log("geoInfo.vertexIndices.length: ", geoInfo.vertexIndices.length);
 			console.log("geometryMap: ",geometryMap);
 		}
 		
 		return geometryMap;
 
+	}
+	
+	parseGeomBufBegin( deformers: any, fbxTree: FBXTreeMap, connections: Map<number, any>): void {
+
+		//const geometryMap: Map<number, FBXBufferObject> = new Map();
+		
+		if ( 'Geometry' in fbxTree.Objects ) {
+
+			this.m_deformers = deformers;
+			this.m_fbxTree = fbxTree;
+			this.m_connections = connections;
+
+			// let id: number = 0;
+			// let idLst: number[] = [];
+			// let nodeIDList: string[] = [];
+			this.m_idLst = [];
+			this.m_nodeIDList = [];
+			// for ( const nodeID in geoNodes ) {
+			// 	id = parseInt( nodeID );
+			// 	const relationships = connections.get( id );
+			// 	const geoBuf = this.parseGeometryBuffer( relationships, geoNodes[ nodeID ], deformers, fbxTree );
+			// 	geometryMap.set( id, geoBuf );
+			// }
+			const geoNodes = fbxTree.Objects.Geometry;
+			for ( const nodeID in geoNodes ) {
+				this.m_idLst.push( parseInt( nodeID ) );
+				this.m_nodeIDList.push(nodeID);
+			}
+			this.m_parseTotal = this.m_idLst.length;
+			// this.m_parseIndex = 0;
+			// for(let i: number = 0; i < idLst.length; ++i) {
+			// 	id = idLst[i];
+			// 	const relationships = connections.get( id );
+			// 	const geoBuf = this.parseGeometryBuffer( relationships, geoNodes[ nodeIDList[i] ], deformers, fbxTree );
+			// 	geometryMap.set( id, geoBuf );
+			// }
+			// console.log("geoInfo.vertexIndices.length: ", geoInfo.vertexIndices.length);
+			// console.log("geometryMap: ",geometryMap);
+		}
+		
+		//return geometryMap;
+
+	}
+	getGeomBufId(): number {
+		if(this.isParseing()) {
+			return this.m_idLst[this.m_idLst.length - 1];
+		}
+		return -1;
+	}
+	parseGeomBufNext(): FBXBufferObject {
+		if(this.isParseing()) {
+			const geoNodes = this.m_fbxTree.Objects.Geometry;
+			let id = this.m_idLst.pop();
+			const relationships = this.m_connections.get( id );
+			return this.parseGeometryBuffer( relationships, geoNodes[ this.m_nodeIDList.pop() ], this.m_deformers, this.m_fbxTree );
+
+		}
+		return null;
+	}
+	isParseing(): boolean {
+		return this.m_idLst != null && this.m_idLst.length > 0;
+	}
+	getParseTotal(): number {
+		return this.m_parseTotal;
 	}
 
 	// Parse single node in FBXTree.Objects.Geometry

@@ -5,6 +5,12 @@ import * as fflate from '../libs/fflate.module.js';
 // Parse an FBX file in Binary format
 class BinaryParser {
 
+    private m_reader: BinaryReader = null;
+    private m_allNodes: FBXTree = null;
+    private m_version: number = 0;
+    private m_parsing: boolean = false;
+    constructor(){}
+
 	parse( buffer: ArrayBuffer ): FBXTree {
 
 		const reader = new BinaryReader( buffer );
@@ -19,20 +25,58 @@ class BinaryParser {
 		}
 
 		const allNodes = new FBXTree();
-
 		while ( ! this.endOfContent( reader ) ) {
 
 			const node = this.parseNode( reader, version );
 			if ( node !== null ) allNodes.add( node.name, node );
-
 		}
 
 		return allNodes;
 
 	}
 
+    getFBXTree(): FBXTree {
+        return this.m_allNodes;
+    }
+    parseBegin( buffer: ArrayBuffer ): FBXTree {
+
+		let reader = new BinaryReader( buffer );
+		reader.skip( 23 ); // skip magic 23 bytes
+
+		const version = reader.getUint32();
+		if ( version < 6400 ) {
+
+			throw new Error( 'FBXLoader: FBX version not supported, FileVersion: ' + version );
+
+		}
+
+        this.m_reader = reader;
+        this.m_version = version;
+
+		let allNodes = new FBXTree();
+        this.m_allNodes = allNodes;
+        this.m_parsing = !this.endOfContent( reader );
+        
+		return allNodes;
+
+	}
+    parseNext(): void {
+        const allNodes = this.m_allNodes;
+        const reader = this.m_reader;
+        this.m_parsing = !this.endOfContent( reader );
+		if ( this.m_parsing ) {
+			const node = this.parseNode( reader, this.m_version );
+			if ( node !== null ) allNodes.add( node.name, node );
+		}
+    }
+    
+	isParseing(): boolean {
+        return this.m_parsing;
+    }
+
+
 	// Check if reader has reached the end of content.
-	endOfContent( reader: BinaryReader ) {
+	private endOfContent( reader: BinaryReader ) {
 
 		// footer size: 160bytes + 16-byte alignment padding
 		// - 16bytes: magic
@@ -55,7 +99,7 @@ class BinaryParser {
 	}
 
 	// recursively parse nodes until the end of the file is reached
-	parseNode( reader: BinaryReader, version: number ): any {
+	private parseNode( reader: BinaryReader, version: number ): any {
 
 		const node: any = {};
 
@@ -107,7 +151,7 @@ class BinaryParser {
 
 	}
 
-	parseSubNode( name: string, node: any, subNode: any ): void {
+	private parseSubNode( name: string, node: any, subNode: any ): void {
 
 		// special case: child node is single property
 		if ( subNode.singleProperty === true ) {
@@ -225,7 +269,7 @@ class BinaryParser {
 
 	}
 
-	parseProperty( reader: BinaryReader ) {
+	private parseProperty( reader: BinaryReader ) {
 
 		const type = reader.getString( 1 );
 		let length;

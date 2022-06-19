@@ -184,6 +184,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
                 ROVertexBuffer.AddFloat32Data(this.m_btvs, 3);
             }
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
+            this.vtxTotal = this.m_vs.length / 3;
             this.updateWireframeIvs();
             this.vtCount = this.m_ivs.length;
             if (this.m_vbuf != null) {
