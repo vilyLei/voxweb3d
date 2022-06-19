@@ -24,8 +24,6 @@ export class RenderingVerifier {
 
 	private m_rscene: RendererScene = null;
 	private m_camTrack: CameraTrack = null;
-	private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-
 	private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
 	private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 	private m_profileInstance: ProfileInstance = null;
@@ -48,7 +46,9 @@ export class RenderingVerifier {
 			let color = new Color4()
 			color.setRGB3f(0.0, 0.4185, 0.6896);
 			DivLog.SetTextBgColor( color.getRGBUint24() );
-			DivLog.SetTextColor( 0xdddddd );
+			DivLog.SetTextColor( 0xeeeeee );
+			DivLog.SetTextBgEnabled( false );
+			DivLog.SetXY(2,8);
 			let rparam: RendererParam = new RendererParam();
 			//rparam.maxWebGLVersion = 1;
 			rparam.setCamProject(45, 50.0, 10000.0);
@@ -82,7 +82,6 @@ export class RenderingVerifier {
 			this.m_camTrack = new CameraTrack();
 			this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-			this.m_statusDisp.initialize();
 			//this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
 			this.m_rscene.setClearRGBColor3f(0.5, 0.5, 0.5);
@@ -105,15 +104,10 @@ export class RenderingVerifier {
 	private mouseDown(evt: any): void {
 	}
 	private mouseUp(evt: any): void { }
-	private update(): void {
-		this.m_statusDisp.update(true);
-	}
 	private m_lookV: Vector3D = new Vector3D(0.0, 0.0, 0.0);
 	run(): void {
 
 		this.m_verifierScene.run();
-
-		this.update();
 
 		this.m_stageDragSwinger.runWithYAxis();
 		this.m_cameraZoomController.run(this.m_lookV, 30.0);

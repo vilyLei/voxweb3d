@@ -13,8 +13,15 @@ class DivLog {
     private static s_debugEanbled: boolean = false;
     private static s_textBGColor: string = "#aa0033";
     private static s_textColor: string = "#000000";
+    private static s_textBgEnabled: boolean = true;
+    private static s_leftX: number = 0;
+    private static s_topY: number = 128;
     static SetDebugEnabled(boo: boolean): void {
         DivLog.s_debugEanbled = boo;
+    }
+    static SetXY(px: number, py: number): void {
+        DivLog.s_leftX = px;
+        DivLog.s_topY = py;
     }
     /**
      * @param uintRGB24, uint 24bit rgb color, example: 0xff003a
@@ -34,6 +41,18 @@ class DivLog {
         DivLog.s_textColor = RGBColorUtil.uint24RGBToCSSHeXRGBColor(uintRGB24);
         if(DivLog.s_infoDiv != null) {
             DivLog.s_infoDiv.style.color = this.s_textColor;
+        }
+    }
+    static SetTextBgEnabled(boo: boolean): void {
+        this.s_textBgEnabled = boo
+        
+        if(DivLog.s_infoDiv != null) {
+            let pdiv = DivLog.s_infoDiv;
+            if(DivLog.s_textBgEnabled) {
+                pdiv.style.backgroundColor = this.s_textBGColor;
+            } else {
+                pdiv.style.backgroundColor = "";
+            }
         }
     }
     static ShowLog(logStr: string): void {
@@ -73,10 +92,14 @@ class DivLog {
                 let pdiv: any = div;
                 pdiv.width = 128;
                 pdiv.height = 64;
-                pdiv.style.backgroundColor = this.s_textBGColor;
+                if(DivLog.s_textBgEnabled) {
+                    pdiv.style.backgroundColor = this.s_textBGColor;
+                } else {
+                    pdiv.style.backgroundColor = "";
+                }
                 pdiv.style.color = this.s_textColor;
-                pdiv.style.left = '0px';
-                pdiv.style.top = '128px';
+                pdiv.style.left = DivLog.s_leftX + 'px';
+                pdiv.style.top = DivLog.s_topY + 'px';
                 pdiv.style.zIndex = "9999";
                 pdiv.style.position = 'absolute';
                 document.body.appendChild(pdiv);

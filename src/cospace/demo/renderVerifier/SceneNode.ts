@@ -71,17 +71,77 @@ class SceneNode implements ISceneNode {
 			entities[k].update();
 		}
 	}
+	private normalCorrectionTest(model: GeometryModelDataType): boolean {
+		let k = 3 * 5;
+		let vs = model.vertices;
+		let ivs = model.indices;
+		let nvs = model.normals;
+		
+		// for(let i: number = 0; i < nvs.length; ++i) {
+		// 	nvs[i] *= -1;
+		// }
+
+		let ia = ivs[k];
+		let ib = ivs[k + 1];
+		let ic = ivs[k + 2];
+		let va: Vector3D = new Vector3D();
+		let vb: Vector3D = new Vector3D();
+		let vc: Vector3D = new Vector3D();
+		k = ia * 3;
+		va.setXYZ(vs[k], vs[k+1], vs[k+2]);
+		k = ib * 3;
+		vb.setXYZ(vs[k], vs[k+1], vs[k+2]);
+		k = ic * 3;
+		vc.setXYZ(vs[k], vs[k+1], vs[k+2]);
+
+		// va.subtractBy(vb);
+		// va.scaleBy(-1);
+		// vc.subtractBy( vb );
+		// va.normalize();
+		// vc.normalize();
+		// Vector3D.Cross(va, vc, vb);
+
+		
+		va.subtractBy(vb);
+		vc.subtractBy( vb );
+		vc.scaleBy(-1);		
+		va.normalize();
+		vc.normalize();
+		Vector3D.Cross(vc, va, vb);
+
+		
+		let na: Vector3D = new Vector3D();
+		let nb: Vector3D = new Vector3D();
+		let nc: Vector3D = new Vector3D();
+		k = ia * 3;
+		na.setXYZ(nvs[k], nvs[k+1], nvs[k+2]);
+		k = ib * 3;
+		nb.setXYZ(nvs[k], nvs[k+1], nvs[k+2]);
+		k = ic * 3;
+		nc.setXYZ(nvs[k], nvs[k+1], nvs[k+2]);
+
+		na.normalize();
+		nb.normalize();
+		nc.normalize();
+		na.addBy(nb);
+		na.addBy(nc);
+		na.normalize();
+		
+		let correct = va.dot(na) > 0;
+		
+		console.log("XXXX correct: ",correct, vb);
+
+		return correct;
+	}
 	private m_lossTime: number = 0;
 	protected initEntity(model: GeometryModelDataType): void {
-		if (this.m_rscene != null) {
+		if (this.m_rscene != null && model != null) {
+
+			// let correct = this.normalCorrectionTest( model );
 
 			this.m_lossTime = (Date.now() - this.m_time);
 			this.m_partsTotal++;
-			//console.log("lossTime: ", (Date.now() - this.m_time)+" ms");
-			let info = "initEntity lossTime: " + this.m_lossTime + "ms";
-			info += "</br>子模型数量: " + this.m_partsTotal;
-			DivLog.ShowLogOnce(info);
-			console.log("initEntity lossTime: ", (Date.now() - this.m_time) + " ms");
+			// console.log("initEntity lossTime: ", (Date.now() - this.m_time) + " ms");
 
 			this.m_vtxTotal += model.vertices.length;
 			let time = Date.now();
@@ -101,8 +161,8 @@ class SceneNode implements ISceneNode {
 
 			// console.log("ctm dataMesh: ", dataMesh);
 
-			console.log("build lossTime: ", (Date.now() - time) + " ms");
-			console.log("this.m_vtxTotal: ", this.m_vtxTotal + "个顶点， tris: ", dataMesh.trisNumber, ",vtCount: ", dataMesh.vtCount);
+			// console.log("build lossTime: ", (Date.now() - time) + " ms");
+			// console.log("this.m_vtxTotal: ", this.m_vtxTotal + "个顶点， tris: ", dataMesh.trisNumber, ",vtCount: ", dataMesh.vtCount);
 			// console.log("this.m_vtxTotal: ", this.m_vtxTotal + "个顶点， tris: ",this.m_vtxTotal/3);
 			// DivLog.ShowLog("三角面数量: " + dataMesh.trisNumber + "个");
 
@@ -157,12 +217,13 @@ class SceneNode implements ISceneNode {
 					entity = this.m_wait_entities.pop();
 					entity.setVisible(true);
 					this.m_showTotal++;
+
+					let info = "initialize entity loss time: " + this.m_lossTime + "ms";
+					info += "</br>子模型数量: " + this.m_showTotal + "/" + this.m_modelsTotal + "个";
 					if (this.isFinish()) {
-						let info = "initEntity lossTime: " + this.m_lossTime + "ms";
-						info += "</br>子模型数量: " + this.m_partsTotal;
 						info += "</br>当前模型加载、展示完成";
-						DivLog.ShowLogOnce(info);
 					}
+					DivLog.ShowLogOnce(info);
 				}
 			} else if (this.m_delay > 0) {
 				this.m_delay--;
