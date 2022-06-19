@@ -53,7 +53,7 @@ class ThreadSchedule {
     return this.m_tdrManager.hasRouterByTaskClass(taskclass);
   }
   setTaskDataRouter(taskDataRouter: TaskDataRouter): void {
-    this.m_tdrManager.setRouter( taskDataRouter );
+    this.m_tdrManager.setRouter(taskDataRouter);
   }
   /**
    * 任务实例和当前线程系统建立关联
@@ -65,7 +65,7 @@ class ThreadSchedule {
     if (task != null) {
       let localPool: ThrDataPool = null;
       if (threadIndex >= 0 && threadIndex < this.m_maxThreadsTotal) {
-        for (;;) {
+        for (; ;) {
           if (threadIndex >= this.m_threadsTotal) {
             this.createThread();
           } else {
@@ -77,11 +77,11 @@ class ThreadSchedule {
       task.setDataPool(this.m_pool, localPool);
       let d = task.dependency;
       if (d != null) {
-        if(d.isJSFile()) {
+        if (d.isJSFile()) {
           this.initTaskByURL(d.threadCodeFileURL, task.getTaskClass());
-        }else if(d.isDependency()) {
+        } else if (d.isDependency()) {
           this.initTaskByDependency(d.dependencyUniqueName, task.getTaskClass(), d.moduleName);
-        }else if(d.isCodeString()) {
+        } else if (d.isCodeString()) {
           this.initTaskByCodeStr(d.threadCodeString, task.getTaskClass(), d.moduleName);
         }
       }
@@ -91,7 +91,7 @@ class ThreadSchedule {
   sendDataToThreadAt(i: number, sendData: IThreadSendData): void {
     if (i >= 0 && i < this.m_maxThreadsTotal) {
       if (i >= this.m_threadsTotal) {
-        for (;;) {
+        for (; ;) {
           if (i >= this.m_threadsTotal) {
             this.createThread();
           } else {
@@ -107,7 +107,7 @@ class ThreadSchedule {
           this.m_threads[i].localDataPool.addData(sendData);
         }
       }
-    }else {
+    } else {
       this.m_thrIdexSDList.push(sendData);
       this.m_thrIndexList.push(i);
     }
@@ -216,15 +216,15 @@ class ThreadSchedule {
   private createThread(): void {
     if (this.m_threadsTotal < this.m_maxThreadsTotal) {
 
-      let thread: ThreadBase = new ThreadBase( this.m_tdrManager, this.m_graphJsonStr );
+      let thread: ThreadBase = new ThreadBase(this.m_tdrManager, this.m_graphJsonStr);
       thread.autoSendData = this.m_autoSendData;
       thread.globalDataPool = this.m_pool;
       thread.initialize(this.m_codeBlob);
       this.m_threads.push(thread);
-      console.log("create Thread("+ this.m_threadsTotal +")");
+      console.log("create Thread(" + this.m_threadsTotal + ")");
 
       this.m_threadsTotal++;
-      this.m_tdrManager.setThreads( this.m_threads );
+      this.m_tdrManager.setThreads(this.m_threads);
 
       //let task: TaskDescriptor;
       for (let i: number = 0, len: number = this.m_tasks.length; i < len; ++i) {
@@ -235,7 +235,7 @@ class ThreadSchedule {
       for (let i: number = 0; i < this.m_codeStrList.length; ++i) {
         thread.initModuleByCodeString(this.m_codeStrList[i]);
       }
-      if(this.m_threadsTotal >= this.m_maxThreadsTotal) {
+      if (this.m_threadsTotal >= this.m_maxThreadsTotal) {
         this.m_commonModuleUrls = [];
         this.m_codeStrList = [];
       }
@@ -296,7 +296,7 @@ class ThreadSchedule {
 
       if (task == null) {
         task = new TaskDescriptor(taskclass, ThreadCodeSrcType.STRING_CODE, codestr, moduleName);
-        this.m_tasks[taskclass] = task;        
+        this.m_tasks[taskclass] = task;
         this.initModuleByTaskDescriptor(task);
       }
     }
@@ -304,7 +304,7 @@ class ThreadSchedule {
   private initModuleByTaskDescriptor(task: TaskDescriptor): void {
 
     for (let i: number = 0; i < this.m_threadsTotal; ++i) {
-      this.m_threads[i].initModuleByTaskDescriptor( task );
+      this.m_threads[i].initModuleByTaskDescriptor(task);
     }
   }
   /**
@@ -327,17 +327,17 @@ class ThreadSchedule {
    * @param codeStr js代码的字符串形式
    */
   initModuleByCodeString(codeStr: string): void {
-    if(codeStr.length > 8) {
-      if(this.m_threadsTotal < this.m_maxThreadsTotal) {
+    if (codeStr.length > 8) {
+      if (this.m_threadsTotal < this.m_maxThreadsTotal) {
         this.m_codeStrList.push(codeStr);
       }
       for (let i: number = 0; i < this.m_threadsTotal; ++i) {
-        this.m_threads[i].initModuleByCodeString( codeStr );
+        this.m_threads[i].initModuleByCodeString(codeStr);
       }
     }
   }
   destroy(): void {
-    if(this.m_tdrManager != null) {
+    if (this.m_tdrManager != null) {
       for (let i: number = 0; i < this.m_threadsTotal; ++i) {
         this.m_threads[i].destroy();
       }
