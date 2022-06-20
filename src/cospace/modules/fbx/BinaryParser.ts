@@ -11,6 +11,7 @@ class BinaryParser {
     private m_version: number = 0;
     private m_parsing: boolean = false;
 	private subLossTime: number = 0;
+	private nodeParsingTotal: number = 0;
     constructor(){}
 
 	parse( buffer: ArrayBuffer ): FBXTree {
@@ -67,10 +68,12 @@ class BinaryParser {
         const reader = this.m_reader;
         this.m_parsing = !this.endOfContent( reader );
 		this.subLossTime = 0;
+		this.nodeParsingTotal = 0;
 		if ( this.m_parsing ) {
             let time = Date.now();
 			const node = this.parseNode( reader, this.m_version );
-            console.log("### c0 BinaryParser::parseNext(), lossTime: ", (Date.now() - time), "sub lossTime: ",this.subLossTime);
+            //console.log("### c0 BinaryParser::parseNext(), lossTime: ", (Date.now() - time), "sub lossTime: ",this.subLossTime);
+            console.log("### c0 BinaryParser::parseNext(), lossTime: ", (Date.now() - time), "nodeParsingTotal: ",this.nodeParsingTotal);
 			if ( node !== null ) allNodes.add( node.name, node );
 		}
     }
@@ -108,6 +111,8 @@ class BinaryParser {
 	// recursively parse nodes until the end of the file is reached
 	private parseNode( reader: BinaryReader, version: number ): any {
 
+		this.nodeParsingTotal++;
+		
 		const node: any = {};
 
 		// The first three data sizes depends on version.

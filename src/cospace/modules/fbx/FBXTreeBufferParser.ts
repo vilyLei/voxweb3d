@@ -3,7 +3,7 @@ import { GeometryBufferParser } from "./GeometryBufferParser";
 import { FBXBufferObject } from "./FBXBufferObject";
 
 class FBXTreeBufferParser {
-	private m_geometryMap: GeometryBufferParser;
+	private m_geomParser: GeometryBufferParser;
 	constructor() {	}
 
 	parse(fbxTree: FBXTree): Map<number, FBXBufferObject> {
@@ -19,27 +19,27 @@ class FBXTreeBufferParser {
 		
 		let connections = this.parseConnections( fbxTree.map );
 		const deformers = this.parseDeformers( fbxTree.map, connections );
-		this.m_geometryMap = new GeometryBufferParser();
-		this.m_geometryMap.parseGeomBufBegin( deformers, fbxTree.map, connections );
+		this.m_geomParser = new GeometryBufferParser();
+		this.m_geomParser.parseGeomBufBegin( deformers, fbxTree.map, connections );
 	}
 
 	
 	getGeomBufId(): number {
-		if(this.m_geometryMap != null) {
-			return this.m_geometryMap.getGeomBufId();
+		if(this.m_geomParser != null) {
+			return this.m_geomParser.getGeomBufId();
 		}
 		return -1;
 	}
 	parseGeomBufNext(): FBXBufferObject {
-		if(this.m_geometryMap != null) return this.m_geometryMap.parseGeomBufNext();
+		if(this.m_geomParser != null) return this.m_geomParser.parseGeomBufNext();
 		return null;
 	}
 	isParsing(): boolean {
-		if(this.m_geometryMap != null) return this.m_geometryMap.isParsing();
+		if(this.m_geomParser != null) return this.m_geomParser.isParsing();
 		return false;
 	}
 	getParseTotal(): number {
-		if(this.m_geometryMap != null) return this.m_geometryMap.getParseTotal();
+		if(this.m_geomParser != null) return this.m_geomParser.getParseTotal();
 		return 0;
 	}
 

@@ -28,6 +28,7 @@ void main()
     vec2 dv = fract(gl_FragCoord.xy/vec2(5.0)) - vec2(0.5);
     vec2 f2 = sign(dv);
     FragColor = vec4(sign(f2.x * f2.y), 1.0, 1.0, 1.0) * (1.0 - flag) + flag * vec4(v_param.xyz, 1.0);
+    // FragColor = vec4(normalize(v_param.yzx), 1.0);
 
 }
 `;
@@ -47,6 +48,7 @@ void main()
 {
     vec4 viewPv = u_viewMat * u_objMat * vec4(a_vs, 1.0);
     gl_Position = u_projMat * viewPv;
+    // vec3 pnv = normalize(a_nvs * inverse(mat3(u_viewMat * u_objMat)));
     v_param = vec4(a_nvs, 1.0);
 }
 `;

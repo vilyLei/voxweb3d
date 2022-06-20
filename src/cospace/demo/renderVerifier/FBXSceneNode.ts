@@ -22,7 +22,7 @@ class FBXSceneNode extends SceneNode {
 			(model: GeometryModelDataType, id: number, index: number, total: number, url: string): void => {
 
 				// console.log("loadFBXBySteps(), model: ", index + "/" + total);
-				this.m_modelsTotal = total;				
+				this.m_modelsTotal = total;
 				this.m_waitPartsTotal = total;
 				this.initEntity(model);
 				if ((index + 1) == total) {

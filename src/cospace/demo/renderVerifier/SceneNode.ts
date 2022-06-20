@@ -216,6 +216,9 @@ class SceneNode implements ISceneNode {
 					this.m_delay = tot + 1;
 					entity = this.m_wait_entities.pop();
 					entity.setVisible(true);
+					// if(this.m_showTotal == 0) {
+					// 	console.log("############# show geom begin.");
+					// }
 					this.m_showTotal++;
 
 					let info = "initialize entity loss time: " + this.m_lossTime + "ms";
