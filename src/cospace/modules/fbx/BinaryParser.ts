@@ -10,6 +10,7 @@ class BinaryParser {
     private m_allNodes: FBXTree = null;
     private m_version: number = 0;
     private m_parsing: boolean = false;
+	private m_parsingIndex: number = 0;
 	private subLossTime: number = 0;
 	private nodeParsingTotal: number = 0;
     constructor(){}
@@ -55,6 +56,7 @@ class BinaryParser {
 
         this.m_reader = reader;
         this.m_version = version;
+		this.m_parsingIndex = 0;
 
 		let allNodes = new FBXTree();
         this.m_allNodes = allNodes;
@@ -70,10 +72,11 @@ class BinaryParser {
 		this.subLossTime = 0;
 		this.nodeParsingTotal = 0;
 		if ( this.m_parsing ) {
+			this.m_parsingIndex++
             let time = Date.now();
 			const node = this.parseNode( reader, this.m_version );
             //console.log("### c0 BinaryParser::parseNext(), lossTime: ", (Date.now() - time), "sub lossTime: ",this.subLossTime);
-            console.log("### c0 BinaryParser::parseNext(), lossTime: ", (Date.now() - time), "nodeParsingTotal: ",this.nodeParsingTotal);
+            console.log("### parse("+this.m_parsingIndex+") BinaryParser::parseNext(), lossTime: ", (Date.now() - time), "nodeParsingTotal: ",this.nodeParsingTotal);
 			if ( node !== null ) allNodes.add( node.name, node );
 		}
     }
@@ -112,7 +115,7 @@ class BinaryParser {
 	private parseNode( reader: BinaryReader, version: number ): any {
 
 		this.nodeParsingTotal++;
-		
+
 		const node: any = {};
 
 		// The first three data sizes depends on version.
@@ -123,6 +126,9 @@ class BinaryParser {
 
 		const nameLen = reader.getUint8();
 		const name = reader.getString( nameLen );
+		if(name == "Objects") {
+			console.log("node have Objects A");
+		}
 
 		// Regards this node as NULL-record if endOffset is zero
 		if ( endOffset === 0 ) return null;
@@ -158,7 +164,9 @@ class BinaryParser {
 		if ( attrName !== '' ) node.attrName = attrName;
 		if ( attrType !== '' ) node.attrType = attrType;
 		if ( name !== '' ) node.name = name;
-
+		if(node.name == "Objects") {
+			console.log("node have Objects B");
+		}
 		return node;
 
 	}

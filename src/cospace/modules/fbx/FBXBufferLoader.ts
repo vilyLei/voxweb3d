@@ -144,7 +144,7 @@ class FBXBufferLoader {
         if (this.m_tidBin > -1) {
             clearTimeout(this.m_tidBin);
         }
-        let delay: number = 18;      // 25 fps
+        let delay: number = 25;      // 50 fps
 
         if(this.m_binParser != null) {
             this.m_binParser.parseNext();

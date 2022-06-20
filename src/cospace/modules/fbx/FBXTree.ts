@@ -9,6 +9,10 @@ class FBXTree implements FBXTreeMap {
 	map: FBXTreeMap = {};
 	constructor(){}
 	add(key: string, val: any) {
+		console.log("FBXTree::add(), key: ", key);
+		if(key == "Objects") {
+			console.log("FBXTree::add(), find Objects");
+		}
 		this.map[key] = val;
 	}
 }

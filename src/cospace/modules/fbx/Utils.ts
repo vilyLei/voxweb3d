@@ -178,28 +178,29 @@ function generateTransform( transformData: any ): Matrix4 {
 
 // Returns the three.js intrinsic Euler order corresponding to FBX extrinsic Euler order
 // ref: http://help.autodesk.com/view/FBX/2017/ENU/?guid=__cpp_ref_class_fbx_euler_html
+
+const enumsEuler = [
+	'ZYX', // -> XYZ extrinsic
+	'YZX', // -> XZY extrinsic
+	'XZY', // -> YZX extrinsic
+	'ZXY', // -> YXZ extrinsic
+	'YXZ', // -> ZXY extrinsic
+	'XYZ', // -> ZYX extrinsic
+	//'SphericXYZ', // not possible to support
+];
+
 function getEulerOrder( order: number ): string {
 
 	order = order || 0;
 
-	const enums = [
-		'ZYX', // -> XYZ extrinsic
-		'YZX', // -> XZY extrinsic
-		'XZY', // -> YZX extrinsic
-		'ZXY', // -> YXZ extrinsic
-		'YXZ', // -> ZXY extrinsic
-		'XYZ', // -> ZYX extrinsic
-		//'SphericXYZ', // not possible to support
-	];
-
 	if ( order === 6 ) {
 
 		console.warn( 'FBXLoader: unsupported Euler Order: Spherical XYZ. Animations and rotations may be incorrect.' );
-		return enums[ 0 ];
+		return enumsEuler[ 0 ];
 
 	}
 
-	return enums[ order ];
+	return enumsEuler[ order ];
 
 }
 

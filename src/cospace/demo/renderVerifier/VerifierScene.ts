@@ -194,7 +194,7 @@ class VerifierScene {
 
 		let url: string = "static/assets/fbx/test01.fbx";
 		url = "static/assets/fbx/box.fbx";
-		url = "static/private/fbx/model_500W.fbx";
+		// url = "static/private/fbx/model_500W.fbx";
 		// url = "static/private/fbx/nvxie_zzb.fbx";
 		// url = "static/private/fbx/model_1000W.fbx";
 		// url = "static/private/fbx/Samba_Dancing.fbx";
