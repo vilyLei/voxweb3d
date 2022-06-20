@@ -241,6 +241,8 @@ function append( a: any[], b: any[] ): void {
 
 }
 
+const dataArray: any = new Array(1024);
+
 function slice( a: any[], b: any[], from: number, to: number ): any {
 
 	for ( let i = from, j = 0; i < to; i ++, j ++ ) {
@@ -252,7 +254,6 @@ function slice( a: any[], b: any[], from: number, to: number ): any {
 	return a;
 
 }
-const dataArray: any = [];
 
 // extracts the data from the correct position in the FBX array based on indexing type
 function getData( polygonVertexIndex: number, polygonIndex: number, vertexIndex: number, infoObject: any ): any[] {

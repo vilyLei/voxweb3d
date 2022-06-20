@@ -283,11 +283,9 @@ class GeometryBufferParser {
 				faceNormals[fi+2] = data[2];
 			}
 
-			if ( miBoo ) {
-
-				materialIndex = getData( i, polygonIndex, vertexIndex, geoInfo.material )[ 0 ];
-
-			}
+			// if ( miBoo ) {
+			// 	materialIndex = getData( i, polygonIndex, vertexIndex, geoInfo.material )[ 0 ];
+			// }
 
 			// if ( geoInfo.uv ) {
 			// 	geoInfo.uv.forEach( function ( uv: any, i: number ) {
@@ -358,10 +356,10 @@ class GeometryBufferParser {
 
 		let i3 = buffers.i3;
 		let i2 = buffers.i2;
-		let colorBoo = geoInfo.color != null;
+		// let colorBoo = geoInfo.color != null;
 		let normalBoo = geoInfo.normal != null;
 		let uvBoo = geoInfo.uv != null;
-		let miBoo = geoInfo.material && geoInfo.material.mappingType !== 'AllSame';
+		// let miBoo = geoInfo.material && geoInfo.material.mappingType !== 'AllSame';
 		for ( let i = 2; i < faceLength; i ++ ) {
 
 			// vs.push( vps[ facePositionIndexes[ 0 ] ] );
