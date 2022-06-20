@@ -34,8 +34,8 @@ class FBXTreeBufferParser {
 		if(this.m_geometryMap != null) return this.m_geometryMap.parseGeomBufNext();
 		return null;
 	}
-	isParseing(): boolean {
-		if(this.m_geometryMap != null) return this.m_geometryMap.isParseing();
+	isParsing(): boolean {
+		if(this.m_geometryMap != null) return this.m_geometryMap.isParsing();
 		return false;
 	}
 	getParseTotal(): number {

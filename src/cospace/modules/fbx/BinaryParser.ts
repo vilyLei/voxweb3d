@@ -1,6 +1,7 @@
 import { BinaryReader } from "./BinaryReader";
 import { FBXTree } from "./FBXTree";
 import * as fflate from '../libs/fflate.module.js';
+import MathConst from "../../../vox/math/MathConst";
 
 // Parse an FBX file in Binary format
 class BinaryParser {
@@ -9,6 +10,7 @@ class BinaryParser {
     private m_allNodes: FBXTree = null;
     private m_version: number = 0;
     private m_parsing: boolean = false;
+	private subLossTime: number = 0;
     constructor(){}
 
 	parse( buffer: ArrayBuffer ): FBXTree {
@@ -64,15 +66,16 @@ class BinaryParser {
         const allNodes = this.m_allNodes;
         const reader = this.m_reader;
         this.m_parsing = !this.endOfContent( reader );
+		this.subLossTime = 0;
 		if ( this.m_parsing ) {
             let time = Date.now();
 			const node = this.parseNode( reader, this.m_version );
-            console.log("### c0 BinaryParser::parseNext(), loss time: ", (Date.now() - time));
+            console.log("### c0 BinaryParser::parseNext(), lossTime: ", (Date.now() - time), "sub lossTime: ",this.subLossTime);
 			if ( node !== null ) allNodes.add( node.name, node );
 		}
     }
     
-	isParseing(): boolean {
+	isParsing(): boolean {
         return this.m_parsing;
     }
 
@@ -100,6 +103,8 @@ class BinaryParser {
 
 	}
 
+	totalBP: number = 0;
+	totalBPTime: number = 0;
 	// recursively parse nodes until the end of the file is reached
 	private parseNode( reader: BinaryReader, version: number ): any {
 
@@ -117,11 +122,12 @@ class BinaryParser {
 		// Regards this node as NULL-record if endOffset is zero
 		if ( endOffset === 0 ) return null;
 
-		const propertyList = [];
+		const propertyList = new Array(numProperties);
 
 		for ( let i = 0; i < numProperties; i ++ ) {
 
-			propertyList.push( this.parseProperty( reader ) );
+			// propertyList.push( this.parseProperty( reader ) );
+			propertyList[i] = this.parseProperty( reader );
 
 		}
 
@@ -159,28 +165,35 @@ class BinaryParser {
 
 			const value = subNode.propertyList[ 0 ];
 
-			if ( Array.isArray( value ) ) {
+			if ( value.buffer != undefined) {
+				console.log("parseSubNode(), value.buffer.byteLength: ", value.buffer.byteLength);
+			}
+			//if ( Array.isArray( value ) ) {
+			if ( value instanceof Array) {
 
 				node[ subNode.name ] = subNode;
 
 				subNode.a = value;
 
 			} else {
-
+				//console.log("value: ",value, typeof value);
 				node[ subNode.name ] = value;
 
 			}
 
 		} else if ( name === 'Connections' && subNode.name === 'C' ) {
 
-			const array:any[] = [];
-
-			subNode.propertyList.forEach( function ( property: any, i: number ) {
-
-				// first Connection is FBX type (OO, OP, etc.). We'll discard these
-				if ( i !== 0 ) array.push( property );
-
-			} );
+			// const array:any[] = [];
+			// // console.log("subNode.propertyList.length: ",subNode.propertyList.length);
+			// subNode.propertyList.forEach( function ( property: any, i: number ) {
+			// 	// first Connection is FBX type (OO, OP, etc.). We'll discard these
+			// 	if ( i !== 0 ) array.push( property );
+			// } );
+			let ls = subNode.propertyList;
+			const array:any[] = new Array(ls.length);
+			for(let i = 1, j = 0; i < ls.length; ++i) {
+				array[j] = ls[i];
+			}
 
 			if ( node.connections === undefined ) {
 
@@ -269,7 +282,6 @@ class BinaryParser {
 		}
 
 	}
-
 	private parseProperty( reader: BinaryReader ) {
 
 		const type = reader.getString( 1 );
@@ -294,6 +306,7 @@ class BinaryParser {
 
 			case 'R':
 				length = reader.getUint32();
+				console.log("parseProperty R..., length: ",length);
 				return reader.getArrayBuffer( length );
 
 			case 'S':
@@ -340,13 +353,22 @@ class BinaryParser {
 
 				if ( typeof fflate === 'undefined' ) {
 
-					console.error( 'THREE.FBXLoader: External library fflate.min.js required.' );
+					console.error( 'FBXLoader: External library fflate.min.js required.' );
 
 				}
+				// let u8Arr = new Uint8Array( reader.getArrayBuffer( compressedLength ) );
+				// // console.log("parseProperty reader2...u8Arr.length: ", u8Arr.length);
+				// const data = fflate.unzlibSync( u8Arr, null ); // eslint-disable-line no-undef
+				// const reader2 = new BinaryReader( data.buffer );
 
-				const data = fflate.unzlibSync( new Uint8Array( reader.getArrayBuffer( compressedLength ) ), null ); // eslint-disable-line no-undef
+				let u8Arr = reader.getArrayU8Buffer( compressedLength );
+				// let t = Date.now();
+				// console.log("parseProperty reader2...u8Arr.length: ", u8Arr.length);
+				const data = fflate.unzlibSync( u8Arr, null ); // eslint-disable-line no-undef
 				const reader2 = new BinaryReader( data.buffer );
-
+				// console.log(type,"parseProperty reader2...data.length: ", MathConst.CalcCeilPowerOfTwo(data.length), data.length);
+				// console.log("unzlibSync loss time: ", (Date.now() - t));
+				// this.subLossTime += (Date.now() - t);
 				switch ( type ) {
 
 					case 'b':
@@ -354,7 +376,13 @@ class BinaryParser {
 						return reader2.getBooleanArray( arrayLength );
 
 					case 'd':
-						return reader2.getFloat64Array( arrayLength );
+						// TODO(vily): 为了测试千万级三角面的的数据读取
+						try{
+							return reader2.getFloat64Array( arrayLength );
+						}catch(e) {
+							console.log("errrrro arrayLength: ",arrayLength);
+							throw Error(e);
+						}
 
 					case 'f':
 						return reader2.getFloat32Array( arrayLength );
@@ -371,7 +399,6 @@ class BinaryParser {
 				throw new Error( 'FBXLoader: Unknown property type ' + type );
 
 		}
-
 	}
 
 }

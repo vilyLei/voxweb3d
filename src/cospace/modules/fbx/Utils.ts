@@ -52,7 +52,7 @@ function getFbxVersion( text: string ): number {
 
 	}
 
-	throw new Error( 'THREE.FBXLoader: Cannot find the version number for the file given.' );
+	throw new Error( 'FBXLoader: Cannot find the version number for the file given.' );
 
 }
 
@@ -194,7 +194,7 @@ function getEulerOrder( order: number ): string {
 
 	if ( order === 6 ) {
 
-		console.warn( 'THREE.FBXLoader: unsupported Euler Order: Spherical XYZ. Animations and rotations may be incorrect.' );
+		console.warn( 'FBXLoader: unsupported Euler Order: Spherical XYZ. Animations and rotations may be incorrect.' );
 		return enums[ 0 ];
 
 	}

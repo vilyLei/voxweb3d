@@ -90,6 +90,7 @@ class FBXBufferLoader {
         onProgress: (evt: ProgressEvent, url: string) => void = null,
         onError: (status: number, url: string) => void = null
     ): void {
+
         if (this.m_fbxTreeBufParser == null) {
             this.m_loader.load(
                 url,
@@ -99,12 +100,6 @@ class FBXBufferLoader {
                     this.m_parseIndex = 0;
                     this.m_url = url;
                     this.parseGeometryBySteps(buf, url);
-                    // if (this.m_fbxTreeBufParser != null) {
-                    //     this.m_parseOnLoad = onLoad;
-                    //     this.m_parseIndex = 0;
-                    //     this.m_url = url;                        
-                    //     this.m_tidGeom = setTimeout(this.updateGeomParse.bind(this), 30);
-                    // }
                 },
                 onProgress,
                 (status: number, url: string): void => {
@@ -121,11 +116,12 @@ class FBXBufferLoader {
 
     private m_tidGeom: any = -1;
     private updateGeomParse(): void {
+
         let delay: number = 40;      // 25 fps
         if (this.m_tidGeom > -1) {
             clearTimeout(this.m_tidGeom);
         }
-        if(this.m_fbxTreeBufParser != null && this.m_fbxTreeBufParser.isParseing()) {
+        if(this.m_fbxTreeBufParser != null && this.m_fbxTreeBufParser.isParsing()) {
 
             let id = this.m_fbxTreeBufParser.getGeomBufId();
             let model = this.m_fbxTreeBufParser.parseGeomBufNext();
@@ -149,16 +145,18 @@ class FBXBufferLoader {
             clearTimeout(this.m_tidBin);
         }
         let delay: number = 18;      // 25 fps
-        if(this.m_binParser != null && this.m_binParser.isParseing()) {
+
+        if(this.m_binParser != null) {
             this.m_binParser.parseNext();
-            // console.log("##$$$ ############ parse bin...");
-            if(this.m_binParser.isParseing()) {
+            if(this.m_binParser.isParsing()) {
                 this.m_tidBin = setTimeout(this.updateBinParse.bind(this), delay);
             }else{
+                this.m_fbxTreeBufParser = new FBXTreeBufferParser();
                 this.m_fbxTreeBufParser.parseBegin(this.m_binParser.getFBXTree());
                 if (this.m_fbxTreeBufParser != null) {
                     this.m_tidGeom = setTimeout(this.updateGeomParse.bind(this), 30);
                 }
+                // console.log("##$$$ ############ parse bin end, totalBP: ", this.m_binParser.totalBP, this.m_binParser.totalBPTime);
                 this.m_binParser = null;
             }
         }
@@ -167,7 +165,7 @@ class FBXBufferLoader {
     private parseGeometryBySteps(buffer: ArrayBuffer, path: string): void {
 
         // console.log("FBXBufferLoader::parseGeomdtry(), buffer.byteLength: ", buffer.byteLength);
-        // console.log("FBXBufferLoader::parseGeomdtry(), isFbxFormatBinary( buffer ): ", isFbxFormatBinary( buffer ));
+        console.log("FBXBufferLoader::parseGeomdtry(), isFbxFormatBinary( buffer ): ", isFbxFormatBinary( buffer ));
 
         let fbxTree: FBXTree;
 
@@ -184,7 +182,6 @@ class FBXBufferLoader {
             this.m_binParser.parseBegin(buffer);
 
             this.m_tidBin = setTimeout(this.updateBinParse.bind(this), 18);
-            this.m_fbxTreeBufParser = new FBXTreeBufferParser();
 
         } else {
 

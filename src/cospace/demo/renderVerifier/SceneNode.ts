@@ -211,7 +211,7 @@ class SceneNode implements ISceneNode {
 			if (this.m_delay < 1) {
 				if (this.m_wait_entities.length > 0) {
 					let entity = this.m_wait_entities[this.m_wait_entities.length - 1];
-					let tot = Math.floor(entity.getMesh().vtxTotal / 12000);
+					let tot = Math.floor(entity.getMesh().vtxTotal / 20000);
 					tot = Math.min(tot, 10);
 					this.m_delay = tot + 1;
 					entity = this.m_wait_entities.pop();
@@ -221,7 +221,7 @@ class SceneNode implements ISceneNode {
 					let info = "initialize entity loss time: " + this.m_lossTime + "ms";
 					info += "</br>子模型数量: " + this.m_showTotal + "/" + this.m_modelsTotal + "个";
 					if (this.isFinish()) {
-						info += "</br>当前模型加载、展示完成";
+						info += "</br>当前模型加载展示完成";
 					}
 					DivLog.ShowLogOnce(info);
 				}

@@ -14,25 +14,25 @@ version 0.6.9
 // However, the vast majority of the codebase has diverged from UZIP.js to increase performance and reduce bundle size.
 // Sometimes 0 will appear where -1 would be more appropriate. This is because using a uint
 // is better for memory in most engines (I *think*).
-var ch2 = {};
-var durl = function (c) { return URL.createObjectURL(new Blob([c], { type: 'text/javascript' })); };
-var cwk = function (u) { return new Worker(u); };
-try {
-    URL.revokeObjectURL(durl(''));
-}
-catch (e) {
-    // We're in Deno or a very old browser
-    durl = function (c) { return 'data:application/javascript;charset=UTF-8,' + encodeURI(c); };
-    // If Deno, this is necessary; if not, this changes nothing
-    cwk = function (u) { return new Worker(u, { type: 'module' }); };
-}
-var wk = (function (c, id, msg, transfer, cb) {
-    var w = cwk(ch2[id] || (ch2[id] = durl(c)));
-    w.onerror = function (e) { return cb(e.error, null); };
-    w.onmessage = function (e) { return cb(null, e.data); };
-    w.postMessage(msg, transfer);
-    return w;
-});
+// var ch2 = {};
+// var durl = function (c) { return URL.createObjectURL(new Blob([c], { type: 'text/javascript' })); };
+// var cwk = function (u) { return new Worker(u); };
+// try {
+//     URL.revokeObjectURL(durl(''));
+// }
+// catch (e) {
+//     // We're in Deno or a very old browser
+//     durl = function (c) { return 'data:application/javascript;charset=UTF-8,' + encodeURI(c); };
+//     // If Deno, this is necessary; if not, this changes nothing
+//     cwk = function (u) { return new Worker(u, { type: 'module' }); };
+// }
+// var wk = (function (c, id, msg, transfer, cb) {
+//     var w = cwk(ch2[id] || (ch2[id] = durl(c)));
+//     w.onerror = function (e) { return cb(e.error, null); };
+//     w.onmessage = function (e) { return cb(null, e.data); };
+//     w.postMessage(msg, transfer);
+//     return w;
+// });
 
 // aliases for shorter compressed code (most minifers don't do this)
 var u8 = Uint8Array, u16 = Uint16Array, u32 = Uint32Array;
@@ -74,6 +74,8 @@ for (var i = 0; i < 32768; ++i) {
 // create huffman tree from u8 "map": index -> code length for code index
 // mb (max bits) must be at most 15
 // TODO: optimize/split up?
+
+var flt_u8_288 = new u8(288);
 var hMap = (function (cd, mb, r) {
     var s = cd.length;
     // index
@@ -122,7 +124,8 @@ var hMap = (function (cd, mb, r) {
     return co;
 });
 // fixed length tree
-var flt = new u8(288);
+// var flt = new u8(288);
+var flt = flt_u8_288;
 for (var i = 0; i < 144; ++i)
     flt[i] = 8;
 for (var i = 144; i < 256; ++i)
@@ -172,6 +175,26 @@ var slc = function (v, s, e) {
     n.set(v.subarray(s, e));
     return n;
 };
+var slc2 = function (v, s, e) {
+    // if (s == null || s < 0)
+    //     s = 0;
+    // if (e == null || e > v.length)
+    //     e = v.length;
+    // can't use .constructor in case user-supplied
+    //var n = new (v instanceof u16 ? u16 : v instanceof u32 ? u32 : u8)(e - s);
+    //n.set(v.subarray(s, e));
+    return v;
+};
+
+var clt_u8_19 = new u8(19);
+let ldt_u8_1024 = new u8(1024);
+
+function calcCeilPowerOfTwo(value) {
+    return Math.pow(2, Math.ceil(Math.log(value) / Math.LN2));
+}
+let bufPool = new Array(128);
+bufPool.fill(null);
+
 // expands raw DEFLATE data
 var inflt = function (dat, buf, st) {
     // source length
@@ -185,15 +208,33 @@ var inflt = function (dat, buf, st) {
     if (!st)
         st = {};
     // Assumes roughly 33% compression ratio average
-    if (!buf)
-        buf = new u8(sl * 3);
+    if (!buf) {
+        //buf = new u8(sl * 3);
+        let size = calcCeilPowerOfTwo( sl * 3 );
+        let i = Math.log2(size);
+        buf = bufPool[i];
+        if(buf == null) {
+            buf = new u8(size);
+            bufPool[i] = buf;
+        }
+    }
+        
     // ensure buffer can fit at least l elements
     var cbuf = function (l) {
         var bl = buf.length;
         // need to increase size to fit
         if (l > bl) {
             // Double or set to necessary, whichever is greater
-            var nbuf = new u8(Math.max(bl * 2, l));
+            // var nbuf = new u8(Math.max(bl * 2, l));
+
+            let size = calcCeilPowerOfTwo(Math.max(bl * 2, l));
+            let i = Math.log2(size);
+            var nbuf = bufPool[i];
+            if(nbuf == null) {
+                nbuf = new u8(size);
+                bufPool[i] = nbuf;
+            }
+            //console.log("Math.max(bl * 2, l): ", Math.max(bl * 2, l));
             nbuf.set(buf);
             buf = nbuf;
         }
@@ -201,7 +242,7 @@ var inflt = function (dat, buf, st) {
     //  last chunk         bitpos           bytes
     var final = st.f || 0, pos = st.p || 0, bt = st.b || 0, lm = st.l, dm = st.d, lbt = st.m, dbt = st.n;
     // total bits
-    var tbts = sl * 8;
+    let tbts = sl * 8;
     do {
         if (!lm) {
             // BFINAL - this is only 1 when last chunk is next
@@ -218,8 +259,9 @@ var inflt = function (dat, buf, st) {
                     break;
                 }
                 // ensure size
-                if (noBuf)
+                if (noBuf) {
                     cbuf(bt + l);
+                }
                 // Copy over uncompressed data
                 buf.set(dat.subarray(s, t), bt);
                 // Get new bitpos, update byte count
@@ -234,9 +276,14 @@ var inflt = function (dat, buf, st) {
                 var tl = hLit + bits(dat, pos + 5, 31) + 1;
                 pos += 14;
                 // length+distance tree
-                var ldt = new u8(tl);
+                // var ldt = new u8(tl);
+                let ldt = ldt_u8_1024.subarray(0,tl);//new u8(tl);
+                for(let i = 0; i < tl; ++i) ldt[i] = 0;
                 // code length tree
-                var clt = new u8(19);
+                //var clt = new u8(19);
+                let clt = clt_u8_19;//new u8(19);
+                for(let i = 0; i < 19; ++i) clt[i] = 0;
+
                 for (var i = 0; i < hcLen; ++i) {
                     // use index map to get real code
                     clt[clim[i]] = bits(dat, pos + i * 3, 7);
@@ -288,8 +335,9 @@ var inflt = function (dat, buf, st) {
         }
         // Make sure the buffer can hold this + the largest possible addition
         // Maximum chunk size (practically, theoretically infinite) is 2^17;
-        if (noBuf)
+        if (noBuf) {
             cbuf(bt + 131072);
+        }
         var lms = (1 << lbt) - 1, dms = (1 << dbt) - 1;
         var lpos = pos;
         for (;; lpos = pos) {
@@ -333,8 +381,9 @@ var inflt = function (dat, buf, st) {
                         throw 'unexpected EOF';
                     break;
                 }
-                if (noBuf)
+                if (noBuf) {
                     cbuf(bt + 131072);
+                }
                 var end = bt + add;
                 for (; bt < end; bt += 4) {
                     buf[bt] = buf[bt - dt];
@@ -349,7 +398,8 @@ var inflt = function (dat, buf, st) {
         if (lm)
             final = 1, st.m = lbt, st.d = dm, st.n = dbt;
     } while (!final);
-    return bt == buf.length ? buf : slc(buf, 0, bt);
+    
+    return bt == buf.length ? buf : slc2(buf, 0, bt);
 };
 // starting at p, write the minimum number of bits that can hold v to d
 var wbits = function (d, p, v) {
@@ -508,6 +558,8 @@ var wfblk = function (out, pos, dat) {
         out[o + i + 4] = dat[i];
     return (o + 4 + s) * 8;
 };
+let lcfreq_u16_19_init = new u16(19);
+let lcfreq_u16_19 = new u16(19);
 // writes a block
 var wblk = function (dat, out, final, syms, lf, df, eb, li, bs, bl, p) {
     wbits(out, p++, final);
@@ -516,7 +568,10 @@ var wblk = function (dat, out, final, syms, lf, df, eb, li, bs, bl, p) {
     var _b = hTree(df, 15), ddt = _b[0], mdb = _b[1];
     var _c = lc(dlt), lclt = _c[0], nlc = _c[1];
     var _d = lc(ddt), lcdt = _d[0], ndc = _d[1];
-    var lcfreq = new u16(19);
+    // var lcfreq = new u16(19);
+    let lcfreq = lcfreq_u16_19;
+    lcfreq.set(lcfreq_u16_19_init);
+
     for (var i = 0; i < lclt.length; ++i)
         lcfreq[lclt[i] & 31]++;
     for (var i = 0; i < lcdt.length; ++i)
@@ -578,8 +633,16 @@ var wblk = function (dat, out, final, syms, lf, df, eb, li, bs, bl, p) {
 var deo = /*#__PURE__*/ new u32([65540, 131080, 131088, 131104, 262176, 1048704, 1048832, 2114560, 2117632]);
 // empty
 var et = /*#__PURE__*/ new u8(0);
+let syms_u32_25000_init = new u32(25000);
+let syms_u32_25000 = new u32(25000);
+
+let lf_u16_288_init = new u16(288);
+let df_u16_32_init = new u16(32);
+let lf_u16_288 = new u16(288);
+let df_u16_32 = new u16(32);
 // compresses data into a raw DEFLATE buffer
 var dflt = function (dat, lvl, plvl, pre, post, lst) {
+    
     var s = dat.length;
     var o = new u8(pre + s + 5 * (1 + Math.ceil(s / 7000)) + post);
     // writing to this writes to the output buffer
@@ -610,11 +673,20 @@ var dflt = function (dat, lvl, plvl, pre, post, lst) {
         var hsh = function (i) { return (dat[i] ^ (dat[i + 1] << bs1_1) ^ (dat[i + 2] << bs2_1)) & msk_1; };
         // 24576 is an arbitrary number of maximum symbols per block
         // 424 buffer for last block
-        var syms = new u32(25000);
+        // var syms = new u32(25000);
+        let syms = syms_u32_25000;
+        syms.set(syms_u32_25000_init);
         // length/literal freq   distance freq
-        var lf = new u16(288), df = new u16(32);
+        // let lf = new u16(288);
+        // let df = new u16(32);
+
+        let lf = lf_u16_288;
+        lf.set( lf_u16_288_init );
+        let df = df_u16_32;
+        df.set(df_u16_32_init);
+
         //  l/lcnt  exbits  index  l/lind  waitdx  bitpos
-        var lc_1 = 0, eb = 0, i = 0, li = 0, wi = 0, bs = 0;
+        let lc_1 = 0, eb = 0, i = 0, li = 0, wi = 0, bs = 0;
         for (; i < s; ++i) {
             // hash value
             // deopt when i > s - 3 - at end, deopt acceptable
@@ -1372,7 +1444,9 @@ export function unzlib(data, opts, cb) {
  * @returns The decompressed version of the data
  */
 export function unzlibSync(data, out) {
-    return inflt((zlv(data), data.subarray(2, -4)), out);
+    let zlibValue = (zlv(data), data.subarray(2, -4));
+    // console.log("zlibValue: ", zlibValue);
+    return inflt(zlibValue, out);
 }
 // Default algorithm for compression (used because having a known output size allows faster decompression)
 export { gzip as compress, AsyncGzip as AsyncCompress };

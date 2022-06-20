@@ -30,13 +30,10 @@ class VerifierScene {
 		}
 	}
 	private test(): void {
-		let list = [236, 82, 86, -236, 82, 26, 83, -87, 86, 83, 30, -85, 254, 235, 86, -85];
-		list.forEach( function ( va: number, vb: number ): void {
-			console.log("va, vb: ", va, vb);
-		});
-		// for(let i = 0; i < list.length; ++i) {
-		// 	co
-		// }
+		// let list = [236, 82, 86, -236, 82, 26, 83, -87, 86, 83, 30, -85, 254, 235, 86, -85];
+		// list.forEach( function ( va: number, vb: number ): void {
+		// 	console.log("va, vb: ", va, vb);
+		// });
 	}
 	private initDrop(canvas: HTMLCanvasElement): void {
 
@@ -168,17 +165,45 @@ class VerifierScene {
 		}
 	}
 	initTest(): void {
+		let size = 107375616;
+		// let list = new Array(size);
+		// // for(let i: number = 0; i < size; ++i) {
+		// // 	list[i] = i +1 ;
+		// // }
+		// let floatArr: Float32Array = new Float32Array(14);
+		// console.log("XXXX list: ",Array.isArray(list), typeof list, list instanceof Array);
+		// console.log("XXXX floatArr: ",Array.isArray(floatArr), typeof floatArr, floatArr.buffer instanceof ArrayBuffer);
+		// // console.log("XXXX floatArr: ", floatArr instanceof TypedArray);
+		
+		// var zlv = function (d: Uint8Array) {
+		// 	// if ((d[0] & 15) != 8 || (d[0] >>> 4) > 7 || ((d[0] << 8 | d[1]) % 31))
+		// 	// 	throw 'invalid zlib data';
+		// 	// if (d[1] & 32)
+		// 	// 	throw 'invalid zlib data: preset dictionaries not supported';
+		// };
+		// let u8Data = new Uint8Array([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]);
+		// let zlibValue = (zlv(u8Data), u8Data.subarray(2, -4));
+		// console.log("zlibValue: ",zlibValue);
+
+		function calcCeilPowerOfTwo(value: number): number {
+			return Math.pow(2, Math.ceil(Math.log(value) / Math.LN2));
+		}
+		let n = Math.log2(1024);
+		console.log("n: ", n);
+
+
 		let url: string = "static/assets/fbx/test01.fbx";
 		url = "static/assets/fbx/box.fbx";
-		// url = "static/private/fbx/test_500W.fbx";
+		url = "static/private/fbx/model_500W.fbx";
+		// url = "static/private/fbx/model_1000W.fbx";
 		// url = "static/private/fbx/Samba_Dancing.fbx";
-		// this.addFBX( [url] );
+		this.addFBX( [url] );
 
-		let baseUrl: string = window.location.href + "static/private/ctm/";
-		let urls: string[] = [];
-		for (let i = 0; i <= 26; ++i) {
-			urls.push(baseUrl + "sh202/sh202_" + i + ".ctm");
-		}
+		// let baseUrl: string = window.location.href + "static/private/ctm/";
+		// let urls: string[] = [];
+		// for (let i = 0; i <= 26; ++i) {
+		// 	urls.push(baseUrl + "sh202/sh202_" + i + ".ctm");
+		// }
 		// this.addCTM(urls);
 	}
 	private addFBX(urls: string[]): void {

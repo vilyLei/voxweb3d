@@ -44,16 +44,17 @@ class BinaryReader {
 
 	getBooleanArray( size: number ): boolean[] {
 
-		const a = [];
+		// const a = [];
+		// for ( let i = 0; i < size; i ++ ) {
+		// 	a.push( this.getBoolean() );
+		// }
+		// return a;
 
+		const a = new Array(size);
 		for ( let i = 0; i < size; i ++ ) {
-
-			a.push( this.getBoolean() );
-
+			a[i] = this.getBoolean();
 		}
-
 		return a;
-
 	}
 
 	getUint8() {
@@ -82,14 +83,16 @@ class BinaryReader {
 
 	getInt32Array( size: number ): number[] {
 
-		const a: number[] = [];
+		// const a: number[] = [];
+		// for ( let i = 0; i < size; i ++ ) {
+		// 	a.push( this.getInt32() );
+		// }
+		// return a;
 
+		const a: number[] = new Array( size );
 		for ( let i = 0; i < size; i ++ ) {
-
-			a.push( this.getInt32() );
-
+			a[i] = this.getInt32();
 		}
-
 		return a;
 
 	}
@@ -143,14 +146,16 @@ class BinaryReader {
 
 	getInt64Array( size: number ): number[] {
 
-		const a: number[] = [];
+		// const a: number[] = [];
+		// for ( let i = 0; i < size; i ++ ) {
+		// 	a.push( this.getInt64() );
+		// }
+		// return a;
 
+		const a: number[] = new Array(size);
 		for ( let i = 0; i < size; i ++ ) {
-
-			a.push( this.getInt64() );
-
+			a[i] = this.getInt64();
 		}
-
 		return a;
 
 	}
@@ -186,36 +191,53 @@ class BinaryReader {
 
 	getFloat32Array( size: number ): number[] {
 
-		const a = [];
+		// const a = [];
+		// for ( let i = 0; i < size; i ++ ) {
+		// 	a.push( this.getFloat32() );
+		// }
+		// return a;
 
+		const a = new Array(size);
 		for ( let i = 0; i < size; i ++ ) {
-
-			a.push( this.getFloat32() );
-
+			a[i] = this.getFloat32();
 		}
-
 		return a;
 
 	}
 
 	getFloat64(): number {
-
 		const value = this.dv.getFloat64( this.offset, this.littleEndian );
 		this.offset += 8;
 		return value;
-
+		// try{
+		// const value = this.dv.getFloat64( this.offset, this.littleEndian );
+		// this.offset += 8;
+		// return value;
+		// }catch(e) {
+		// 	console.log("EEEEEerror this.offset: ",this.offset);
+		// 	throw Error(e);
+		// }
+		// return 0;
 	}
 
 	getFloat64Array( size: number ): number[] {
 
-		const a: number[] = [];
+		// const a: number[] = [];
+		// for ( let i = 0; i < size; i ++ ) {
+		// 	a.push( this.getFloat64() );
+		// }
+		// return a;
 
+		const a: number[] = new Array( size );
 		for ( let i = 0; i < size; i ++ ) {
-
-			a.push( this.getFloat64() );
-
+			a[i] = this.getFloat64();
+			// try{
+			// 	a[i] = this.getFloat64();
+			// }catch(e) {
+			// 	console.log("EEEEEerror size: ",size);
+			// 	throw Error(e);
+			// }
 		}
-
 		return a;
 
 	}
@@ -225,18 +247,33 @@ class BinaryReader {
 		const value = this.dv.buffer.slice( this.offset, this.offset + size );
 		this.offset += size;
 		return value;
-
+		// let u8Arr = new Uint8Array( this.dv.buffer );
+		// const value = u8Arr.subarray( this.offset, this.offset + size );
+		// this.offset += size;
+		// // console.log("getArrayBuffer() use size: ", size);
+		// return value.buffer;
+		// console.log("aaa",value.length);
+		// return (value.slice()).buffer;
+	}
+	
+	getArrayU8Buffer( size: number ): Uint8Array {
+		let u8Arr = new Uint8Array( this.dv.buffer );
+		const value = u8Arr.subarray( this.offset, this.offset + size );
+		this.offset += size;
+		// console.log("getArrayU8Buffer() use size: ", size);
+		return value;
 	}
 
 	getString( size: number ): string {
 
 		// note: safari 9 doesn't support Uint8Array.indexOf; create intermediate array instead
-		let a: number[] = [];
-
+		// let a: number[] = [];
+		// for ( let i = 0; i < size; i ++ ) {
+		// 	a[ i ] = this.getUint8();
+		// }
+		let a: number[] = new Array(size);
 		for ( let i = 0; i < size; i ++ ) {
-
 			a[ i ] = this.getUint8();
-
 		}
 
 		const nullByte = a.indexOf( 0 );

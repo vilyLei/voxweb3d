@@ -72,13 +72,13 @@ class GeometryBufferParser {
 
 	}
 	getGeomBufId(): number {
-		if(this.isParseing()) {
+		if(this.isParsing()) {
 			return this.m_idLst[this.m_idLst.length - 1];
 		}
 		return -1;
 	}
 	parseGeomBufNext(): FBXBufferObject {
-		if(this.isParseing()) {
+		if(this.isParsing()) {
 			const geoNodes = this.m_fbxTree.Objects.Geometry;
 			let id = this.m_idLst.pop();
 			const relationships = this.m_connections.get( id );
@@ -87,7 +87,7 @@ class GeometryBufferParser {
 		}
 		return null;
 	}
-	isParseing(): boolean {
+	isParsing(): boolean {
 		return this.m_idLst != null && this.m_idLst.length > 0;
 	}
 	getParseTotal(): number {
@@ -223,11 +223,11 @@ class GeometryBufferParser {
 			}
 		}
 		let vsLen = trisTotal * 9;
-		buffers.vertex = new Array( vsLen );
-		buffers.normal = new Array( vsLen );
+		buffers.vertex = new Float32Array(vsLen);//new Array( vsLen );
+		buffers.normal = new Float32Array(vsLen);;//new Array( vsLen );
 		let uvs = buffers.uvs;
 		geoInfo.uv.forEach( function ( uv: any, j: number ) {
-			if ( uvs[ j ] === undefined ) uvs[ j ] = new Array( trisTotal * 6 );
+			if ( uvs[ j ] === undefined ) uvs[ j ] = new Float32Array( trisTotal * 6 );//new Array( trisTotal * 6 );
 		});
 		
 		let lossTimeA: number = Date.now() - time;
@@ -582,7 +582,7 @@ class GeometryBufferParser {
 		/*
 		if ( NURBSCurve === undefined ) {
 
-			console.error( 'THREE.FBXLoader: The loader relies on NURBSCurve for any nurbs present in the model. Nurbs will show up as empty geometry.' );
+			console.error( 'FBXLoader: The loader relies on NURBSCurve for any nurbs present in the model. Nurbs will show up as empty geometry.' );
 			return new BufferGeometry();
 
 		}
@@ -591,7 +591,7 @@ class GeometryBufferParser {
 
 		if ( isNaN( order ) ) {
 
-			console.error( 'THREE.FBXLoader: Invalid Order %s given for geometry ID: %s', geoNode.Order, geoNode.id );
+			console.error( 'FBXLoader: Invalid Order %s given for geometry ID: %s', geoNode.Order, geoNode.id );
 			return new BufferGeometry();
 
 		}

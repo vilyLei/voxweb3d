@@ -396,7 +396,7 @@ class FBXTreeParser {
 				material = new MeshLambertMaterial();
 				break;
 			default:
-				console.warn( 'THREE.FBXLoader: unknown material type "%s". Defaulting to MeshPhongMaterial.', type );
+				console.warn( 'FBXLoader: unknown material type "%s". Defaulting to MeshPhongMaterial.', type );
 				material = new MeshPhongMaterial();
 				break;
 
@@ -568,7 +568,7 @@ class FBXTreeParser {
 				case 'SpecularFactor': // AKA specularLevel
 				case 'VectorDisplacementColor': // NOTE: Seems to be a copy of DisplacementColor
 				default:
-					console.warn( 'THREE.FBXLoader: %s map is not supported in three.js, skipping texture.', type );
+					console.warn( 'FBXLoader: %s map is not supported in three.js, skipping texture.', type );
 					break;
 
 			}
@@ -587,7 +587,7 @@ class FBXTreeParser {
 		// if the texture is a layered texture, just use the first layer and issue a warning
 		if ( 'LayeredTexture' in fbxTree.Objects && id in fbxTree.Objects.LayeredTexture ) {
 
-			console.warn( 'THREE.FBXLoader: layered textures are not supported in three.js. Discarding all but first layer.' );
+			console.warn( 'FBXLoader: layered textures are not supported in three.js. Discarding all but first layer.' );
 			id = connections.get( id ).children[ 0 ].ID;
 
 		}
@@ -619,7 +619,7 @@ class FBXTreeParser {
 					const skeleton = this.parseSkeleton( relationships, DeformerNodes );
 					skeleton.ID = nodeID;
 
-					if ( relationships.parents.length > 1 ) console.warn( 'THREE.FBXLoader: skeleton attached to more than one geometry is not supported.' );
+					if ( relationships.parents.length > 1 ) console.warn( 'FBXLoader: skeleton attached to more than one geometry is not supported.' );
 					skeleton.geometryID = relationships.parents[ 0 ].ID;
 
 					skeletons[ nodeID ] = skeleton;
@@ -633,7 +633,7 @@ class FBXTreeParser {
 					morphTarget.rawTargets = this.parseMorphTargets( relationships, DeformerNodes, connections );
 					morphTarget.id = nodeID;
 
-					if ( relationships.parents.length > 1 ) console.warn( 'THREE.FBXLoader: morph target attached to more than one geometry is not supported.' );
+					if ( relationships.parents.length > 1 ) console.warn( 'FBXLoader: morph target attached to more than one geometry is not supported.' );
 
 					morphTargets[ nodeID ] = morphTarget;
 
@@ -990,7 +990,7 @@ class FBXTreeParser {
 					break;
 
 				default:
-					console.warn( 'THREE.FBXLoader: Unknown camera type ' + type + '.' );
+					console.warn( 'FBXLoader: Unknown camera type ' + type + '.' );
 					model = new Object3D();
 					break;
 
@@ -1110,7 +1110,7 @@ class FBXTreeParser {
 					break;
 
 				default:
-					console.warn( 'THREE.FBXLoader: Unknown light type ' + lightAttribute.LightType.value + ', defaulting to a PointLight.' );
+					console.warn( 'FBXLoader: Unknown light type ' + lightAttribute.LightType.value + ', defaulting to a PointLight.' );
 					model = new PointLight( color, intensity );
 					break;
 

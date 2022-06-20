@@ -92,13 +92,13 @@ export class RenderingVerifier {
 			let axis: Axis3DEntity = new Axis3DEntity();
 			axis.initialize(300);
 			this.m_rscene.addEntity(axis);
-
-			this.m_cospace.geometry.setTaskModuleUrls(["static/renderingVerifier/modules/m1.js"]);
+			
+			// this.m_cospace.geometry.setTaskModuleUrls(["static/renderingVerifier/modules/m1.js"]);
 			// // 初始化数据协同中心
-			this.m_cospace.initialize(3, "static/renderingVerifier/modules/core.js", true);
-			//this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.js", true);
+			// this.m_cospace.initialize(3, "static/renderingVerifier/modules/core.js", true);
+			this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js", true);
 			// this.m_cospace.initialize(4, "cospace/core/code/ThreadCore.umd.js", true);
-
+			
 			this.m_verifierScene.initialize(this.m_rscene, this.m_cospace);
 			this.m_verifierScene.initTest();
 		}
