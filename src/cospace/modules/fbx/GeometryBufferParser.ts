@@ -201,9 +201,10 @@ class GeometryBufferParser {
 		if(geoInfo.vertexIndices.length == 3) geoInfo.vertexIndices = this.buildInt32Data(geoInfo.vertexIndices);
 		if(geoInfo.vertexPositions.length == 3) geoInfo.vertexPositions = this.buildNumberData(geoInfo.vertexPositions);
 		if(geoInfo.normal.buffer.length == 3) geoInfo.normal.buffer = this.buildNumberData(geoInfo.normal.buffer);
+		if(geoInfo.normal.indices.length == 3) geoInfo.normal.indices = this.buildInt32Data(geoInfo.normal.indices);
 		if(geoInfo.uv[0].buffer.length == 3) geoInfo.uv[0].buffer = this.buildNumberData( geoInfo.uv[0].buffer);
-
-		//console.log("B geoInfo: ", geoInfo);
+		// 
+		// console.log("B geoInfo: ", geoInfo);
 		let vivs = geoInfo.vertexIndices;
 		let vvs = geoInfo.vertexPositions;
 		// console.log("geoInfo.vertexIndices: ", geoInfo.vertexIndices);

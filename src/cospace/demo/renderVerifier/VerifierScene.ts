@@ -196,7 +196,7 @@ class VerifierScene {
 		// url = "static/private/fbx/nvxie_zzb.fbx";
 		// url = "static/private/fbx/model_1000W.fbx";
 		// url = "static/private/fbx/Samba_Dancing.fbx";
-		this.addFBX( [url] );
+		// this.addFBX( [url] );
 
 		// let baseUrl: string = window.location.href + "static/private/ctm/";
 		// let urls: string[] = [];

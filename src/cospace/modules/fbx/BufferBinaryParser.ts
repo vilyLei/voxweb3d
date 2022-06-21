@@ -81,7 +81,7 @@ class BufferBinaryParser {
             //console.log("### c0 BufferBinaryParser::parseNext(), lossTime: ", (Date.now() - time), "sub lossTime: ",this.subLossTime);
 			if(node != null) {
 				let ns = node.name != undefined ? "-"+node.name : "";
-				console.log("### parse("+this.m_parsingIndex+ns+") BufferBinaryParser::parseNext(), lossTime: ", (Date.now() - time), "nodeParsingTotal: ",this.nodeParsingTotal);
+				console.log("### parse("+this.m_parsingIndex+ns+") BufferBinaryParser::parseNext(), lossTime: ", (Date.now() - time)+"ms", "nodeParsingTotal: ",this.nodeParsingTotal);
 			}
 			if ( node !== null ) allNodes.add( node.name, node );
 		}
@@ -167,9 +167,9 @@ class BufferBinaryParser {
 			case "Normals":
 			case "PolygonVertexIndex":
 			case "UV":
+			case "NormalsIndex":
 				this.m_pptParser.ppFlag = 12;
 				break;
-			// case "NormalsIndex":
 			case "Edges":
 			case "NormalsW":
 			case "Materials":
@@ -210,6 +210,10 @@ class BufferBinaryParser {
 		// if(name == "PolygonVertexIndex"){
 		// 	console.log("parseNode name", name, " m_encoding: ", this.m_encoding, ",m_ppType: ",this.m_ppType);
 		// 	console.log("PolygonVertexIndex begin propertyList: ", propertyList);
+		// }
+		// if(name == "NormalsIndex"){
+		// 	console.log("parseNode name", name, " m_encoding: ", this.m_pptParser.encoding, ",m_ppType: ",this.m_pptParser.ppType);
+		// 	console.log("NormalsIndex begin propertyList: ", propertyList);
 		// }
 		//
 		// else if(name == "LayerElementUV"){
