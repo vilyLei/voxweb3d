@@ -1,6 +1,8 @@
 import { getData } from "./Utils";
 import { FBXTreeMap } from "./FBXTree";
 import { FBXBufferObject } from "./FBXBufferObject";
+import { BinaryReader } from "./BinaryReader";
+import * as fflate from '../libs/fflate.module.js';
 
 // parse Geometry data from FBXTree and return map of BufferGeometries
 class GeometryBufferParser {
@@ -11,8 +13,13 @@ class GeometryBufferParser {
 	private m_deformers: any;
 	private m_fbxTree: FBXTreeMap;
 	private m_connections: Map<number, any>;
-	constructor(){}
+	private m_reader: BinaryReader = null;
 	
+	constructor(){}
+
+	setReader(reader: BinaryReader): void {
+		this.m_reader = reader;
+	}
 	parseGeomBuf( deformers: any, fbxTree: FBXTreeMap, connections: Map<number, any>,  immediate: boolean = true): Map<number, FBXBufferObject> {
 
 		const geometryMap: Map<number, FBXBufferObject> = new Map();
@@ -42,7 +49,7 @@ class GeometryBufferParser {
 				geometryMap.set( id, geoBuf );
 			}
 			// console.log("geoInfo.vertexIndices.length: ", geoInfo.vertexIndices.length);
-			console.log("geometryMap: ",geometryMap);
+			// console.log("geometryMap: ",geometryMap);
 		}
 		
 		return geometryMap;
@@ -82,8 +89,11 @@ class GeometryBufferParser {
 			const geoNodes = this.m_fbxTree.Objects.Geometry;
 			let id = this.m_idLst.pop();
 			const relationships = this.m_connections.get( id );
-			return this.parseGeometryBuffer( relationships, geoNodes[ this.m_nodeIDList.pop() ], this.m_deformers, this.m_fbxTree );
-
+			let obj = this.parseGeometryBuffer( relationships, geoNodes[ this.m_nodeIDList.pop() ], this.m_deformers, this.m_fbxTree );
+			if(!this.isParsing()) {
+				this.m_reader = null;
+			}
+			return obj;
 		}
 		return null;
 	}
@@ -115,7 +125,10 @@ class GeometryBufferParser {
 	private parseMeshGeometryBuffer( relationships: any, geoNode: any, deformers: any, fbxTree: FBXTreeMap ): FBXBufferObject {
 
 		//console.log("GeometryBufferParser::genGeometryBuffers(), skeleton: ",skeleton);
+		// let time = Date.now();
 		const geoInfo = this.parseGeoNode( geoNode );
+		// let lossTime: number = Date.now() - time;
+		// console.log("XXX geoInfo lossTime: ", lossTime);
 		const buffers = this.genBuffers( geoInfo );
 		// console.log("GeometryBufferParser::genGeometryBuffers(), buffers: ",buffers);
 		return buffers;
@@ -128,46 +141,41 @@ class GeometryBufferParser {
 		geoInfo.vertexPositions = ( geoNode.Vertices !== undefined ) ? geoNode.Vertices.a : [];
 		geoInfo.vertexIndices = ( geoNode.PolygonVertexIndex !== undefined ) ? geoNode.PolygonVertexIndex.a : [];
 
-		if ( geoNode.LayerElementColor ) {
+		// if ( geoNode.LayerElementColor ) {
+		// 	geoInfo.color = this.parseVertexColors( geoNode.LayerElementColor[ 0 ] );
+		// }
 
-			geoInfo.color = this.parseVertexColors( geoNode.LayerElementColor[ 0 ] );
-
-		}
-
-		if ( geoNode.LayerElementMaterial ) {
-
-			geoInfo.material = this.parseMaterialIndices( geoNode.LayerElementMaterial[ 0 ] );
-
-		}
+		// if ( geoNode.LayerElementMaterial ) {
+		// 	geoInfo.material = this.parseMaterialIndices( geoNode.LayerElementMaterial[ 0 ] );
+		// }
 
 		if ( geoNode.LayerElementNormal ) {
-
 			geoInfo.normal = this.parseNormals( geoNode.LayerElementNormal[ 0 ] );
-
 		}
 
 		if ( geoNode.LayerElementUV ) {
-
 			geoInfo.uv = [];
 
 			let i = 0;
 			while ( geoNode.LayerElementUV[ i ] ) {
 				if ( geoNode.LayerElementUV[ i ].UV ) {
-
 					geoInfo.uv.push( this.parseUVs( geoNode.LayerElementUV[ i ] ) );
 
 				}
-
 				i ++;
-
 			}
 		}
-
 		geoInfo.weightTable = {};
 		return geoInfo;
 
 	}
+	private buildEleData(params: number[]): number[] {
 
+		let u8Arr = this.m_reader.getArrayU8BufferByOffset( params[0], params[1] );
+		const data = fflate.unzlibSync( u8Arr, null ); // eslint-disable-line no-undef
+		const r2 = new BinaryReader( data.buffer );
+		return r2.getFloat64Array( params[2] );
+	}
 	private genBuffers( geoInfo: any ): FBXBufferObject {
 
 		const buffers: FBXBufferObject = new FBXBufferObject();
@@ -175,7 +183,6 @@ class GeometryBufferParser {
 		let polygonIndex = 0;
 		let faceLength = 0;
 
-		// these will hold data for a single face
 		let facePositionIndexes: number[] = new Array(36);
 		let faceNormals: number[] = new Array(36);
 		let faceColors: number[] = new Array(36);
@@ -183,32 +190,29 @@ class GeometryBufferParser {
 		let faceWeights: number[] = [];
 		let faceWeightIndices: number[] = [];
 
-		// const scope = this;
+		// console.log("A geoInfo: ", geoInfo);
+		geoInfo.vertexPositions = this.buildEleData(geoInfo.vertexPositions);
+		geoInfo.normal.buffer = this.buildEleData(geoInfo.normal.buffer);
+		geoInfo.uv[0].buffer = this.buildEleData( geoInfo.uv[0].buffer);
+		// console.log("B geoInfo: ", geoInfo);
 		let vivs = geoInfo.vertexIndices;
+		let vvs = geoInfo.vertexPositions;
 		// console.log("geoInfo.vertexIndices: ", geoInfo.vertexIndices);
+		// console.log("geoInfo.vertexPositions: ", vvs);
+		// console.log("geoInfo normal: ", geoInfo.normal.buffer);
+		// console.log("geoInfo uv[0]: ", geoInfo.uv[0].buffer);
 		// console.log("geoInfo.vertexIndices.length: ", geoInfo.vertexIndices.length);
+		// let normalData: number[] = new Array(vvs.length);
 
 		let oivsLen: number = geoInfo.vertexIndices.length;
 		
-		console.log("XXX oivsLen: ",oivsLen);
-		//if(vivs[3] < 0) oivsLen = (oivsLen * 3)/2;
-		// console.log("XXX geoInfo.vertexPositions: ",geoInfo.vertexPositions);
-		// let indices = vsLen <= 65535 ? new Uint16Array(vsLen) : new Uint32Array(vsLen);
-		// let indicesI: number = 0;
-		// let pvs: number[] = []
-		// let fs = new Array(geoInfo.vertexIndices.length);
-		// fs.fill(0);
-		// let vics = geoInfo.vertexIndices;
-		// for(let i: number = 0; i < vics.length; ++i) {
-		// }
+		//console.log("XXX oivsLen: ",oivsLen);
 		
 		let time = Date.now();
 		let materialIndex: number = 0;
-		let miBoo = geoInfo.material && geoInfo.material.mappingType !== 'AllSame';
+		// let miBoo = geoInfo.material && geoInfo.material.mappingType !== 'AllSame';
 
 		let trisTotal = 0;
-		// vivs.forEach( function ( vertexIndex: number, polygonVertexIndex: number ): void {
-
 		for(let i = 0; i < oivsLen; ++i) {
 			faceLength ++;
 			if ( vivs[i] < 0 ) {
@@ -217,8 +221,8 @@ class GeometryBufferParser {
 			}
 		}
 		let vsLen = trisTotal * 9;
-		buffers.vertex = new Float32Array(vsLen);//new Array( vsLen );
-		buffers.normal = new Float32Array(vsLen);;//new Array( vsLen );
+		buffers.vertex = new Float32Array(vsLen);
+		buffers.normal = new Float32Array(vsLen);
 		let uvs = buffers.uvs;
 		
 		let guvLen = 0;
@@ -237,18 +241,10 @@ class GeometryBufferParser {
 		let lossTimeA: number = Date.now() - time;
 
 		faceLength = 0;
-		// vivs.forEach( function ( vertexIndex: number, polygonVertexIndex: number ): void {
 		for(let i = 0; i < oivsLen; ++i) {
 
 			let endOfFace = false;
 			let vertexIndex = vivs[i];
-			// Face index and vertex index arrays are combined in a single array
-			// A cube with quad faces looks like this:
-			// PolygonVertexIndex: *24 {
-			//  a: 0, 1, 3, -3, 2, 3, 5, -5, 4, 5, 7, -7, 6, 7, 1, -1, 1, 7, 5, -4, 6, 0, 2, -5
-			//  }
-			// Negative numbers mark the end of a face - first face here is 0, 1, 3, -3
-			// to find index of last vertex bit shift the index: ^ - 1
 			if ( vertexIndex < 0 ) {
 
 				vertexIndex = vertexIndex ^ - 1; // equivalent to ( x * -1 ) - 1
@@ -256,9 +252,6 @@ class GeometryBufferParser {
 			}
 			let fi = faceLength * 3;
 			const a = vertexIndex * 3;
-			// const b = vertexIndex * 3 + 1;
-			// const c = vertexIndex * 3 + 2;
-			//console.log("a, a + 1, a + 2: ",vertexIndex * 3, vertexIndex * 3 + 1, vertexIndex * 3 + 2);
 			// facePositionIndexes.push( a, a + 1, a + 2 );
 			facePositionIndexes[fi] = a;
 			facePositionIndexes[fi+1] = a+1;
@@ -275,28 +268,17 @@ class GeometryBufferParser {
 
 			// }
 			if ( geoInfo.normal ) {
-
+				// console.log("calc normal: ",geoInfo.normal.mappingType);
 				const data = getData( i, polygonIndex, vertexIndex, geoInfo.normal );
 				// faceNormals.push( data[ 0 ], data[ 1 ], data[ 2 ] );
 				faceNormals[fi] = data[0];
 				faceNormals[fi+1] = data[1];
 				faceNormals[fi+2] = data[2];
+
+				// normalData[a] = data[0];
+				// normalData[a+1] = data[1];
+				// normalData[a+2] = data[2];
 			}
-
-			// if ( miBoo ) {
-			// 	materialIndex = getData( i, polygonIndex, vertexIndex, geoInfo.material )[ 0 ];
-			// }
-
-			// if ( geoInfo.uv ) {
-			// 	geoInfo.uv.forEach( function ( uv: any, i: number ) {
-			// 		const data = getData( i, polygonIndex, vertexIndex, uv );
-			// 		if ( faceUVs[ i ] === undefined ) {
-			// 			faceUVs[ i ] = [];
-			// 		}
-			// 		faceUVs[ i ].push( data[ 0 ] );
-			// 		faceUVs[ i ].push( data[ 1 ] );
-			// 	} );
-			// }
 
 			if(guv != null) {
 				fi = faceLength * 2;
@@ -316,27 +298,19 @@ class GeometryBufferParser {
 				polygonIndex ++;
 				faceLength = 0;
 
-				// reset arrays for the next face
-				// facePositionIndexes = [];
-				// faceNormals = [];
-				//faceColors = [];
-				// faceUVs = [];
-
 				// faceWeights = [];
 				// faceWeightIndices = [];
 
 			}
-			//*/
 		};
-		// } );
 
 		let lossTime: number = Date.now() - time;
 
+		// console.log("XXX normalData: ",normalData);
 		console.log("XXX lossTime: ",lossTime, ",preCompute lossTime: ",lossTimeA);
-
-		console.log("XXX vertex.length: ", buffers.vertex.length, "vsLen: ",vsLen);
+		console.log("XXX vertex.length:", buffers.vertex.length, ", vsLen:",vsLen, ", oivsLen:",oivsLen);
 		if(oivsLen > 2000000) {
-			console.log("XXX XXXX larger geom vtices total.....");
+			console.log("XXX larger geom vertices total.....");
 		}
 		// buffers.indices = indices;
 		// //pvs
@@ -362,19 +336,6 @@ class GeometryBufferParser {
 		// let miBoo = geoInfo.material && geoInfo.material.mappingType !== 'AllSame';
 		for ( let i = 2; i < faceLength; i ++ ) {
 
-			// vs.push( vps[ facePositionIndexes[ 0 ] ] );
-			// vs.push( vps[ facePositionIndexes[ 1 ] ] );
-			// vs.push( vps[ facePositionIndexes[ 2 ] ] );
-
-			// vs.push( vps[ facePositionIndexes[ ( i - 1 ) * 3 ] ] );
-			// vs.push( vps[ facePositionIndexes[ ( i - 1 ) * 3 + 1 ] ] );
-			// vs.push( vps[ facePositionIndexes[ ( i - 1 ) * 3 + 2 ] ] );
-
-			// vs.push( vps[ facePositionIndexes[ i * 3 ] ] );
-			// vs.push( vps[ facePositionIndexes[ i * 3 + 1 ] ] );
-			// vs.push( vps[ facePositionIndexes[ i * 3 + 2 ] ] );
-
-			
 			vs[i3] = ( vps[ facePositionIndexes[ 0 ] ] );
 			vs[i3 + 1] = ( vps[ facePositionIndexes[ 1 ] ] );
 			vs[i3 + 2] = ( vps[ facePositionIndexes[ 2 ] ] );
@@ -403,35 +364,17 @@ class GeometryBufferParser {
 
 			// }
 
-			// if ( miBoo ) {
-
-			// 	buffers.materialIndex.push( materialIndex );
-			// 	buffers.materialIndex.push( materialIndex );
-			// 	buffers.materialIndex.push( materialIndex );
-
-			// }
 
 			if ( normalBoo ) {
 
-				// nvs.push( faceNormals[ 0 ] );
-				// nvs.push( faceNormals[ 1 ] );
-				// nvs.push( faceNormals[ 2 ] );
-
-				// nvs.push( faceNormals[ ( i - 1 ) * 3 ] );
-				// nvs.push( faceNormals[ ( i - 1 ) * 3 + 1 ] );
-				// nvs.push( faceNormals[ ( i - 1 ) * 3 + 2 ] );
-
-				// nvs.push( faceNormals[ i * 3 ] );
-				// nvs.push( faceNormals[ i * 3 + 1 ] );
-				// nvs.push( faceNormals[ i * 3 + 2 ] );
-
-				
 				nvs[i3] = ( faceNormals[ 0 ] );
 				nvs[i3 + 1] = ( faceNormals[ 1 ] );
 				nvs[i3 + 2] = ( faceNormals[ 2 ] );
+				
 				nvs[i3 + 3] = ( faceNormals[ ( i - 1 ) * 3 ] );
 				nvs[i3 + 4] = ( faceNormals[ ( i - 1 ) * 3 + 1 ] );
 				nvs[i3 + 5] = ( faceNormals[ ( i - 1 ) * 3 + 2 ] );
+
 				nvs[i3 + 6] = ( faceNormals[ i * 3 ] );
 				nvs[i3 + 7] = ( faceNormals[ i * 3 + 1 ] );
 				nvs[i3 + 8] = ( faceNormals[ i * 3 + 2 ] );
@@ -440,29 +383,6 @@ class GeometryBufferParser {
 
 			if ( uvBoo ) {
 
-				/*
-				geoInfo.uv.forEach( function ( uv: any, j: number ) {
-
-					//if ( uvs[ j ] === undefined ) uvs[ j ] = [];
-					
-					// uvs[ j ].push( faceUVs[ j ][ 0 ] );
-					// uvs[ j ].push( faceUVs[ j ][ 1 ] );
-					// uvs[ j ].push( faceUVs[ j ][ ( i - 1 ) * 2 ] );
-					// uvs[ j ].push( faceUVs[ j ][ ( i - 1 ) * 2 + 1 ] );
-					// uvs[ j ].push( faceUVs[ j ][ i * 2 ] );
-					// uvs[ j ].push( faceUVs[ j ][ i * 2 + 1 ] );
-
-					const fuvs = faceUVs[ j ];
-					const puvs = uvs[j];
-					puvs[i2] = fuvs[ 0 ];
-					puvs[i2 + 1] = fuvs[ 1 ];
-					puvs[i2 + 2] = fuvs[ ( i - 1 ) * 2 ];
-					puvs[i2 + 3] = fuvs[ ( i - 1 ) * 2 + 1 ];
-					puvs[i2 + 4] = fuvs[ i * 2 ];
-					puvs[i2 + 5] = fuvs[ i * 2 + 1 ];
-
-				} );
-				//*/
 				const guv = geoInfo.uv;
 				for ( let j = 0, jl = guv.length; j < jl; j ++ ) {
 					const fuvs = faceUVs[ j ];

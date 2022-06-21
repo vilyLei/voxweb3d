@@ -185,16 +185,14 @@ class VerifierScene {
 		// let zlibValue = (zlv(u8Data), u8Data.subarray(2, -4));
 		// console.log("zlibValue: ",zlibValue);
 
-		function calcCeilPowerOfTwo(value: number): number {
-			return Math.pow(2, Math.ceil(Math.log(value) / Math.LN2));
-		}
-		let n = Math.log2(1024);
-		console.log("n: ", n);
-
-
 		let url: string = "static/assets/fbx/test01.fbx";
-		url = "static/assets/fbx/box.fbx";
-		// url = "static/private/fbx/model_500W.fbx";
+		// url = "static/assets/fbx/box.fbx";
+
+		// url = "static/assets/fbx/face2.fbx";
+		// url = "static/assets/fbx/tri.fbx";
+		// url = "static/assets/fbx/plane.fbx";
+		// url = "static/assets/fbx/base2.fbx";
+		url = "static/private/fbx/model_500W.fbx";
 		// url = "static/private/fbx/nvxie_zzb.fbx";
 		// url = "static/private/fbx/model_1000W.fbx";
 		// url = "static/private/fbx/Samba_Dancing.fbx";

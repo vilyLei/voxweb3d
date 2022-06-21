@@ -3,7 +3,7 @@ import { FileLoader } from "../loaders/FileLoader";
 import { convertArrayBufferToString, isFbxFormatASCII, getFbxVersion } from "./Utils";
 import { GeometryModelDataType } from "../base/GeometryModelDataType";
 import { isFbxFormatBinary } from "./Utils";
-import { BinaryParser } from "./BinaryParser";
+import { BufferBinaryParser } from "./BufferBinaryParser";
 import { FBXTree } from "./FBXTree";
 import { TextParser } from "./TextParser";
 import { FBXTreeBufferParser } from "./FBXTreeBufferParser";
@@ -52,35 +52,29 @@ class FBXBufferLoader {
         // console.log("FBXBufferLoader::parseGeomdtry(), isFbxFormatBinary( buffer ): ", isFbxFormatBinary( buffer ));
 
         let fbxTree: FBXTree;
-
         if (isFbxFormatBinary(buffer)) {
-
-            fbxTree = new BinaryParser().parse(buffer);
+            this.m_binParser = new BufferBinaryParser();
+            fbxTree = this.m_binParser.parse(buffer);
 
         } else {
 
             const FBXText = convertArrayBufferToString(buffer);
-
             if (!isFbxFormatASCII(FBXText)) {
-
                 throw new Error('FBXBufferLoader: Unknown format.');
-
             }
 
             if (getFbxVersion(FBXText) < 7000) {
-
                 throw new Error('FBXBufferLoader: FBX version not supported, FileVersion: ' + getFbxVersion(FBXText));
-
             }
 
             fbxTree = new TextParser().parse(FBXText);
         }
-
-        return new FBXTreeBufferParser().parse(fbxTree);
+        this.m_fbxTreeBufParser = new FBXTreeBufferParser();
+        return this.m_fbxTreeBufParser.parse(fbxTree, this.m_binParser.getReader());
     }
 
     private m_parseOnLoad: (model: GeometryModelDataType, id: number, index: number, total: number, url: string) => void = null;
-    private m_binParser: BinaryParser;
+    private m_binParser: BufferBinaryParser;
     private m_fbxTreeBufParser: FBXTreeBufferParser;
     private m_parseIndex: number = 0;
     private m_url: string = "";
@@ -117,7 +111,7 @@ class FBXBufferLoader {
     private m_tidGeom: any = -1;
     private updateGeomParse(): void {
 
-        let delay: number = 40;      // 25 fps
+        let delay: number = 50;      // 20 fps
         if (this.m_tidGeom > -1) {
             clearTimeout(this.m_tidGeom);
         }
@@ -144,7 +138,7 @@ class FBXBufferLoader {
         if (this.m_tidBin > -1) {
             clearTimeout(this.m_tidBin);
         }
-        let delay: number = 25;      // 50 fps
+        let delay: number = 40;      // 25 fps
 
         if(this.m_binParser != null) {
             this.m_binParser.parseNext();
@@ -152,7 +146,7 @@ class FBXBufferLoader {
                 this.m_tidBin = setTimeout(this.updateBinParse.bind(this), delay);
             }else{
                 this.m_fbxTreeBufParser = new FBXTreeBufferParser();
-                this.m_fbxTreeBufParser.parseBegin(this.m_binParser.getFBXTree());
+                this.m_fbxTreeBufParser.parseBegin(this.m_binParser.getFBXTree(), this.m_binParser.getReader());
                 if (this.m_fbxTreeBufParser != null) {
                     this.m_tidGeom = setTimeout(this.updateGeomParse.bind(this), 30);
                 }
@@ -172,13 +166,13 @@ class FBXBufferLoader {
         if (isFbxFormatBinary(buffer)) {
 
             // let time: number = Date.now();
-            // this.m_binParser = new BinaryParser();
+            // this.m_binParser = new BufferBinaryParser();
             // fbxTree = this.m_binParser.parse(buffer);
             // console.log("### 0 FBXBufferLoader::parseGeometryBySteps(), loss time: ", (Date.now() - time));
             // this.m_fbxTreeBufParser = new FBXTreeBufferParser();
             // this.m_fbxTreeBufParser.parseBegin(fbxTree);
 
-            this.m_binParser = new BinaryParser();
+            this.m_binParser = new BufferBinaryParser();
             this.m_binParser.parseBegin(buffer);
 
             this.m_tidBin = setTimeout(this.updateBinParse.bind(this), 18);
@@ -201,7 +195,7 @@ class FBXBufferLoader {
 
             fbxTree = new TextParser().parse(FBXText);
             this.m_fbxTreeBufParser = new FBXTreeBufferParser();
-            this.m_fbxTreeBufParser.parseBegin(fbxTree);
+            this.m_fbxTreeBufParser.parseBegin(fbxTree, null);
         }
     }
 }

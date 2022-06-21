@@ -194,9 +194,12 @@ function calcCeilPowerOfTwo(value) {
 }
 let bufPool = new Array(128);
 bufPool.fill(null);
+let bufCurrSize = 0;
 
 // expands raw DEFLATE data
 var inflt = function (dat, buf, st) {
+    
+    // console.log("$$$$$$ create inflt src buf size: ",dat.length);
     // source length
     var sl = dat.length;
     if (!sl || (st && !st.l && sl < 5))
@@ -210,10 +213,12 @@ var inflt = function (dat, buf, st) {
     // Assumes roughly 33% compression ratio average
     if (!buf) {
         //buf = new u8(sl * 3);
-        let size = calcCeilPowerOfTwo( sl * 3 );
+        bufCurrSize = sl;//sl * 3;
+        let size = calcCeilPowerOfTwo( bufCurrSize );
         let i = Math.log2(size);
         buf = bufPool[i];
         if(buf == null) {
+            // console.log("###### create inflt buf sizeA: ",size);
             buf = new u8(size);
             bufPool[i] = buf;
         }
@@ -226,13 +231,23 @@ var inflt = function (dat, buf, st) {
         if (l > bl) {
             // Double or set to necessary, whichever is greater
             // var nbuf = new u8(Math.max(bl * 2, l));
-
-            let size = calcCeilPowerOfTwo(Math.max(bl * 2, l));
+            bufCurrSize = l;//Math.max(bl * 2, l);
+            let size = calcCeilPowerOfTwo(bufCurrSize);
             let i = Math.log2(size);
             var nbuf = bufPool[i];
             if(nbuf == null) {
-                nbuf = new u8(size);
-                bufPool[i] = nbuf;
+                // 大于五亿的长度则要重新使用新的内存规则, 如果 536870912 乘以2, 则会让内存直接崩溃
+                // 这里的内存管理机制需要深入研究
+                if(bufCurrSize <= 536870912) {
+
+                    // console.log("###### create inflt buf sizeB: ",size,"(",bufCurrSize,")", ",srcLen: ",dat.length);
+                    nbuf = new u8(size);
+                    bufPool[i] = nbuf;
+                }else {
+                    size = bufCurrSize + 131072 * 2;
+                    nbuf = new u8(size);
+                    // console.log("###### create inflt buf sizeC: ",size+"("+bufCurrSize+"), srcLen: "+dat.length);
+                }
             }
             //console.log("Math.max(bl * 2, l): ", Math.max(bl * 2, l));
             nbuf.set(buf);
@@ -243,6 +258,7 @@ var inflt = function (dat, buf, st) {
     var final = st.f || 0, pos = st.p || 0, bt = st.b || 0, lm = st.l, dm = st.d, lbt = st.m, dbt = st.n;
     // total bits
     let tbts = sl * 8;
+    // console.log("$$$$$$++ inflt tbts size, sl: ",tbts, sl);
     do {
         if (!lm) {
             // BFINAL - this is only 1 when last chunk is next
@@ -277,11 +293,11 @@ var inflt = function (dat, buf, st) {
                 pos += 14;
                 // length+distance tree
                 // var ldt = new u8(tl);
-                let ldt = ldt_u8_1024.subarray(0,tl);//new u8(tl);
+                let ldt = ldt_u8_1024.subarray(0,tl);
                 for(let i = 0; i < tl; ++i) ldt[i] = 0;
                 // code length tree
                 //var clt = new u8(19);
-                let clt = clt_u8_19;//new u8(19);
+                let clt = clt_u8_19;
                 for(let i = 0; i < 19; ++i) clt[i] = 0;
 
                 for (var i = 0; i < hcLen; ++i) {
@@ -336,6 +352,7 @@ var inflt = function (dat, buf, st) {
         // Make sure the buffer can hold this + the largest possible addition
         // Maximum chunk size (practically, theoretically infinite) is 2^17;
         if (noBuf) {
+            // console.log("bt01: ",bt, ", pos: ", pos);
             cbuf(bt + 131072);
         }
         var lms = (1 << lbt) - 1, dms = (1 << dbt) - 1;
@@ -382,6 +399,7 @@ var inflt = function (dat, buf, st) {
                     break;
                 }
                 if (noBuf) {
+                    // console.log("bt02: ",bt, ", pos: ", pos);
                     cbuf(bt + 131072);
                 }
                 var end = bt + add;

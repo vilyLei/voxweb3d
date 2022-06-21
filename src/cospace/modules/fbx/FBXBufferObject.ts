@@ -18,6 +18,9 @@ class FBXBufferObject {
 	
 	toGeometryModel(): GeometryModelDataType {
 
+		// return this.createTestModel();
+		// return this.createTestModel2();
+
 		let vtxTotal = this.vertex.length;
 		let vtCount = vtxTotal / 3;
 		let indices = this.indices;
@@ -39,7 +42,63 @@ class FBXBufferObject {
 
 		return model;
 	}
+	private getIVSStep3(pivs: number[]): number[] {
+		if(pivs[3] < 0) {
+			let s = pivs;
+			let ivs: number[] = [];
+			for(let i = 0; i < s.length; ++i) {
+				if(s[i] < 0) {
+					s[i] = -1 * s[i] - 1;
+					ivs.push(s[i - 3], s[i - 2], s[i-1]);
+					ivs.push(s[i], s[i - 3], s[i-1]);
+				}
+			}
+			return ivs;
+		}
 
+		return pivs;
+	}
+	// private getIVSStep2(pivs: number[]): number[] {
+
+	// }
+	private createTestModel(): GeometryModelDataType {
+		let srcIvs = [0, 2, 4, -2, 5, 4, 2, -4];
+
+		let vs = [1, 1, 1, 1, -1, 1, -1, 1, 1, -1, 1, -1, -1, -1, 1, -1, -1, -1];
+		let nvs = [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0];
+		let uvs = [0.875, 0.5, 0.625, 0, 0.375, 0.25, 0.375, 0, 0.875, 0.75, 0.625, 0.25, 0.625, 0.75, 0.625, 0.5];
+		let ivs = [0,2,4, 1,0,4, 5,4,2, 3,5,2];
+		// let ivs = [4,2,0, 4,0,1, 2,4,5, 2,5,3];
+		let tivs = this.getIVSStep3(srcIvs);
+		console.log("ivs: ",ivs);
+		console.log("tivs: ",tivs);
+		ivs = tivs;
+		let model: GeometryModelDataType = {
+			uvsList: [new Float32Array(uvs)],
+			vertices: new Float32Array(vs),
+			normals: new Float32Array(nvs),
+			indices: new Uint16Array(ivs)
+		}
+		return model;
+	}
+	
+	private createTestModel2(): GeometryModelDataType {
+		let srcIvs = [0, 4, 6, -3, 3, 2, 6, -8, 7, 6, 4, -6, 5, 1, 3, -8, 1, 0, 2, -4, 5, 4, 0, -2];
+
+		let vs = [1, 1, 1, 1, 1, -1, 1, -1, 1, 1, -1, -1, -1, 1, 1, -1, 1, -1, -1, -1, 1, -1, -1, -1];
+		let nvs = [0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, -1, 0, 0, 0, 0, -1];
+		let uvs = [0.625, 1, 0.625, 0.25, 0.375, 0.5, 0.875, 0.5, 0.625, 0.75, 0.375, 1, 0.375, 0.75, 0.625, 0, 0.375, 0, 0.375, 0.25, 0.125, 0.5, 0.875, 0.75, 0.125, 0.75, 0.625, 0.5];
+		
+		let ivs = this.getIVSStep3(srcIvs);
+
+		let model: GeometryModelDataType = {
+			uvsList: [new Float32Array(uvs)],
+			vertices: new Float32Array(vs),
+			normals: new Float32Array(nvs),
+			indices: new Uint16Array(ivs)
+		}
+		return model;
+	}
 	destroy(): void {
 
 		this.uvs = null;

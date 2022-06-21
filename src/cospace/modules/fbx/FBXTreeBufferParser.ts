@@ -1,4 +1,5 @@
 import { FBXTreeMap, FBXTree } from "./FBXTree";
+import { BinaryReader } from "./BinaryReader";
 import { GeometryBufferParser } from "./GeometryBufferParser";
 import { FBXBufferObject } from "./FBXBufferObject";
 
@@ -6,20 +7,23 @@ class FBXTreeBufferParser {
 	private m_geomParser: GeometryBufferParser;
 	constructor() {	}
 
-	parse(fbxTree: FBXTree): Map<number, FBXBufferObject> {
+	parse(fbxTree: FBXTree, reader: BinaryReader): Map<number, FBXBufferObject> {
 
 		let connections = this.parseConnections( fbxTree.map );
 		const deformers = this.parseDeformers( fbxTree.map, connections );
-		const geometryMap = new GeometryBufferParser().parseGeomBuf( deformers, fbxTree.map, connections);
+		let parser = new GeometryBufferParser();
+		parser.setReader(reader);
+		const geometryMap = parser.parseGeomBuf( deformers, fbxTree.map, connections);
 
 		return geometryMap;
 
 	}
-	parseBegin(fbxTree: FBXTree): void {
+	parseBegin(fbxTree: FBXTree, reader: BinaryReader): void {
 		
 		let connections = this.parseConnections( fbxTree.map );
 		const deformers = this.parseDeformers( fbxTree.map, connections );
 		this.m_geomParser = new GeometryBufferParser();
+		this.m_geomParser.setReader(reader);
 		this.m_geomParser.parseGeomBufBegin( deformers, fbxTree.map, connections );
 	}
 

@@ -264,6 +264,10 @@ class BinaryReader {
 		return value;
 	}
 
+	getArrayU8BufferByOffset( offset: number, size: number ): Uint8Array {
+		let u8Arr = new Uint8Array( this.dv.buffer );
+		return u8Arr.subarray( offset, offset + size );
+	}
 	getString( size: number ): string {
 
 		// note: safari 9 doesn't support Uint8Array.indexOf; create intermediate array instead

@@ -1,10 +1,9 @@
 import { BinaryReader } from "./BinaryReader";
 import { FBXTree } from "./FBXTree";
 import * as fflate from '../libs/fflate.module.js';
-import MathConst from "../../../vox/math/MathConst";
 
 // Parse an FBX file in Binary format
-class BinaryParser {
+class BufferBinaryParser {
 
     private m_reader: BinaryReader = null;
     private m_allNodes: FBXTree = null;
@@ -42,6 +41,9 @@ class BinaryParser {
     getFBXTree(): FBXTree {
         return this.m_allNodes;
     }
+	getReader(): BinaryReader {
+		return this.m_reader;
+	}
     parseBegin( buffer: ArrayBuffer ): FBXTree {
 
 		let reader = new BinaryReader( buffer );
@@ -75,10 +77,10 @@ class BinaryParser {
 			this.m_parsingIndex++
             let time = Date.now();
 			const node = this.parseNode( reader, this.m_version );
-            //console.log("### c0 BinaryParser::parseNext(), lossTime: ", (Date.now() - time), "sub lossTime: ",this.subLossTime);
+            //console.log("### c0 BufferBinaryParser::parseNext(), lossTime: ", (Date.now() - time), "sub lossTime: ",this.subLossTime);
 			if(node != null) {
 				let ns = node.name != undefined ? "-"+node.name : "";
-				console.log("### parse("+this.m_parsingIndex+ns+") BinaryParser::parseNext(), lossTime: ", (Date.now() - time), "nodeParsingTotal: ",this.nodeParsingTotal);
+				console.log("### parse("+this.m_parsingIndex+ns+") BufferBinaryParser::parseNext(), lossTime: ", (Date.now() - time), "nodeParsingTotal: ",this.nodeParsingTotal);
 			}
 			if ( node !== null ) allNodes.add( node.name, node );
 		}
@@ -114,6 +116,9 @@ class BinaryParser {
 
 	totalBP: number = 0;
 	totalBPTime: number = 0;
+	private m_isObjects: boolean = false;
+	private m_isGeometry: boolean = false;
+	private m_debug: boolean = false;
 	// recursively parse nodes until the end of the file is reached
 	private parseNode( reader: BinaryReader, version: number ): any {
 
@@ -129,22 +134,57 @@ class BinaryParser {
 
 		const nameLen = reader.getUint8();
 		const name = reader.getString( nameLen );
-		// if(name == "Objects") {
-		// 	console.log("node have Objects A");
-		// }
 
+		if(this.m_debug) {
+			if(name == "Objects") {
+				console.log("node have Objects A");
+				this.m_isObjects = true;
+			}
+			if(this.m_isObjects && name == "Geometry") {
+				this.m_isGeometry = true;
+				console.log("node have Geometry A");
+			}
+			if(this.m_isGeometry && name != "") {
+				console.log("parseNode(), name: ",name);
+			}
+		}
+		// if(name == "Vertices") {
+		// 	console.log("Vertices begin A.");
+		// }
 		// Regards this node as NULL-record if endOffset is zero
 		if ( endOffset === 0 ) return null;
 
 		const propertyList = new Array(numProperties);
 
 		for ( let i = 0; i < numProperties; i ++ ) {
-
-			// propertyList.push( this.parseProperty( reader ) );
 			propertyList[i] = this.parseProperty( reader );
-
 		}
+		/*
+		if(name == "Vertices") {
+			console.log("parseNode name", name, " m_encoding: ", this.m_encoding, ",m_ppType: ",this.m_ppType);
+			// console.log("Vertices begin m_encoding: ", this.m_encoding, ",m_ppType: ",this.m_ppType);
+			console.log("Vertices begin propertyList: ", propertyList);
 
+			// let u8Arr = reader.getArrayU8BufferByOffset( this.m_ppParams[0], this.m_ppParams[1] );
+			// const data = fflate.unzlibSync( u8Arr, null ); // eslint-disable-line no-undef
+			// const r2 = new BinaryReader( data.buffer );
+			// let datafs = r2.getFloat64Array( this.m_ppParams[2] );
+			// console.log("this.m_ppParams[1]: ",this.m_ppParams[1]);
+			// console.log("pptlfs: ",propertyList[0]);
+			// console.log("datafs: ",datafs);
+
+		} else if(name == "Normals"){
+			console.log("parseNode name", name, " m_encoding: ", this.m_encoding, ",m_ppType: ",this.m_ppType);
+			console.log("Normals begin propertyList: ", propertyList);
+		} else if(name == "UV"){
+			console.log("parseNode name", name, " m_encoding: ", this.m_encoding, ",m_ppType: ",this.m_ppType);
+			console.log("UV begin propertyList: ", propertyList);
+		}
+		//*/
+		// else if(name == "LayerElementUV"){
+		// 	console.log("LayerElementUV begin propertyList: ", propertyList);
+		// }
+		//
 		// Regards the first three elements in propertyList as id, attrName, and attrType
 		const id = propertyList.length > 0 ? propertyList[ 0 ] : '';
 		const attrName = propertyList.length > 1 ? propertyList[ 1 ] : '';
@@ -153,7 +193,9 @@ class BinaryParser {
 		// check if this node represents just a single property
 		// like (name, 0) set or (name2, [0, 1, 2]) set of {name: 0, name2: [0, 1, 2]}
 		node.singleProperty = ( numProperties === 1 && reader.getOffset() === endOffset ) ? true : false;
-
+		// console.log("endOffset: ",endOffset, ", reader.getOffset(): ", reader.getOffset());
+		// let ps = reader.getOffset();
+		// while ( endOffset > ps ) {
 		while ( endOffset > reader.getOffset() ) {
 
 			const subNode = this.parseNode( reader, version );
@@ -167,9 +209,19 @@ class BinaryParser {
 		if ( attrName !== '' ) node.attrName = attrName;
 		if ( attrType !== '' ) node.attrType = attrType;
 		if ( name !== '' ) node.name = name;
-		// if(node.name == "Objects") {
-		// 	console.log("node have Objects B");
-		// }
+		/*
+		if(name == "Vertices") {
+			console.log("Vertices begin B.");
+		}
+		if(this.m_debug) {
+			if(name == "Geometry") {
+				console.log("node have Geometry B");
+			}
+			if(name == "Objects") {
+				console.log("node have Objects B");
+			}
+		}
+		//*/
 		return node;
 
 	}
@@ -298,11 +350,16 @@ class BinaryParser {
 		}
 
 	}
+	private m_encoding: number = 0;
+	private m_ppType: string = "";
+	private m_ppParams: number[] = null;
 	private parseProperty( reader: BinaryReader ) {
 
 		const type = reader.getString( 1 );
 		let length;
-
+		this.m_encoding = 0;
+		this.m_ppType = type;
+		// console.log("parseProperty(), type: ",type);
 		switch ( type ) {
 
 			case 'C':
@@ -322,7 +379,6 @@ class BinaryParser {
 
 			case 'R':
 				length = reader.getUint32();
-				console.log("parseProperty R..., length: ",length);
 				return reader.getArrayBuffer( length );
 
 			case 'S':
@@ -342,7 +398,7 @@ class BinaryParser {
 				const arrayLength = reader.getUint32();
 				const encoding = reader.getUint32(); // 0: non-compressed, 1: compressed
 				const compressedLength = reader.getUint32();
-
+				this.m_encoding = encoding;
 				if ( encoding === 0 ) {
 
 					switch ( type ) {
@@ -368,23 +424,32 @@ class BinaryParser {
 				}
 
 				if ( typeof fflate === 'undefined' ) {
-
 					console.error( 'FBXLoader: External library fflate.min.js required.' );
-
 				}
 				// let u8Arr = new Uint8Array( reader.getArrayBuffer( compressedLength ) );
 				// // console.log("parseProperty reader2...u8Arr.length: ", u8Arr.length);
 				// const data = fflate.unzlibSync( u8Arr, null ); // eslint-disable-line no-undef
 				// const reader2 = new BinaryReader( data.buffer );
+				let bufOffset = reader.getOffset();
+				let bufSize = compressedLength;
+				let reader2: BinaryReader;
+				if(type != 'd') {
+					let u8Arr = reader.getArrayU8Buffer( compressedLength );
+					// let t = Date.now();
+					// console.log("parseProperty reader2...u8Arr.length: ", u8Arr.length);
+					const data = fflate.unzlibSync( u8Arr, null ); // eslint-disable-line no-undef
+					reader2 = new BinaryReader( data.buffer );
+				}
+				else {
+					reader.skip( compressedLength );
+				}
 
-				let u8Arr = reader.getArrayU8Buffer( compressedLength );
-				// let t = Date.now();
-				// console.log("parseProperty reader2...u8Arr.length: ", u8Arr.length);
-				const data = fflate.unzlibSync( u8Arr, null ); // eslint-disable-line no-undef
-				const reader2 = new BinaryReader( data.buffer );
 				// console.log(type,"parseProperty reader2...data.length: ", MathConst.CalcCeilPowerOfTwo(data.length), data.length);
 				// console.log("unzlibSync loss time: ", (Date.now() - t));
 				// this.subLossTime += (Date.now() - t);
+				//if(this.m_isGeometry) {
+				// console.log("XXXX is Geometry data.length: ",data.length,", compressedLength: ",compressedLength, data.subarray(106,112));
+				//}
 				switch ( type ) {
 
 					case 'b':
@@ -392,13 +457,15 @@ class BinaryParser {
 						return reader2.getBooleanArray( arrayLength );
 
 					case 'd':
+						return [bufOffset, bufSize, arrayLength];
+						this.m_ppParams = [bufOffset, bufSize, arrayLength];
 						// TODO(vily): 为了测试千万级三角面的的数据读取
-						try{
-							return reader2.getFloat64Array( arrayLength );
-						}catch(e) {
-							console.log("errrrro arrayLength: ",arrayLength);
-							throw Error(e);
-						}
+						// try{
+						return reader2.getFloat64Array( arrayLength );
+						// }catch(e) {
+						// 	console.log("errrrro arrayLength: ",arrayLength);
+						// 	throw Error(e);
+						// }
 
 					case 'f':
 						return reader2.getFloat32Array( arrayLength );
@@ -419,4 +486,4 @@ class BinaryParser {
 
 }
 
-export { BinaryParser }
+export { BufferBinaryParser }
