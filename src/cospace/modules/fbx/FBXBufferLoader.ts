@@ -138,7 +138,7 @@ class FBXBufferLoader {
         if (this.m_tidBin > -1) {
             clearTimeout(this.m_tidBin);
         }
-        let delay: number = 40;      // 25 fps
+        let delay: number = 20;      // 50 fps
 
         if(this.m_binParser != null) {
             this.m_binParser.parseNext();
@@ -165,13 +165,6 @@ class FBXBufferLoader {
 
         if (isFbxFormatBinary(buffer)) {
 
-            // let time: number = Date.now();
-            // this.m_binParser = new BufferBinaryParser();
-            // fbxTree = this.m_binParser.parse(buffer);
-            // console.log("### 0 FBXBufferLoader::parseGeometryBySteps(), loss time: ", (Date.now() - time));
-            // this.m_fbxTreeBufParser = new FBXTreeBufferParser();
-            // this.m_fbxTreeBufParser.parseBegin(fbxTree);
-
             this.m_binParser = new BufferBinaryParser();
             this.m_binParser.parseBegin(buffer);
 
@@ -182,15 +175,11 @@ class FBXBufferLoader {
             const FBXText = convertArrayBufferToString(buffer);
 
             if (!isFbxFormatASCII(FBXText)) {
-
                 throw new Error('FBXBufferLoader: Unknown format.');
-
             }
 
             if (getFbxVersion(FBXText) < 7000) {
-
                 throw new Error('FBXBufferLoader: FBX version not supported, FileVersion: ' + getFbxVersion(FBXText));
-
             }
 
             fbxTree = new TextParser().parse(FBXText);

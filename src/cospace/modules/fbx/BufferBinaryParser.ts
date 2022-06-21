@@ -1,6 +1,7 @@
 import { BinaryReader } from "./BinaryReader";
 import { FBXTree } from "./FBXTree";
-import * as fflate from '../libs/fflate.module.js';
+// import * as fflate from '../libs/fflate.module.js';
+import { BufPropertyParser } from "./BufPropertyParser";
 
 // Parse an FBX file in Binary format
 class BufferBinaryParser {
@@ -118,7 +119,9 @@ class BufferBinaryParser {
 	totalBPTime: number = 0;
 	private m_isObjects: boolean = false;
 	private m_isGeometry: boolean = false;
+	// private m_ppFlag: number = 0;
 	private m_debug: boolean = false;
+	private m_pptParser: BufPropertyParser = new BufPropertyParser();
 	// recursively parse nodes until the end of the file is reached
 	private parseNode( reader: BinaryReader, version: number ): any {
 
@@ -155,9 +158,28 @@ class BufferBinaryParser {
 		if ( endOffset === 0 ) return null;
 
 		const propertyList = new Array(numProperties);
-
+		this.m_pptParser.ppFlag = 0;
+		// if(name == "PolygonVertexIndex"){
+		// 	this.m_ppFlag = 12;
+		// }
+		switch(name) {
+			case "Vertices":
+			case "Normals":
+			case "PolygonVertexIndex":
+			case "UV":
+				this.m_pptParser.ppFlag = 12;
+				break;
+			// case "NormalsIndex":
+			case "Edges":
+			case "NormalsW":
+			case "Materials":
+				this.m_pptParser.ppFlag = 131;
+				break;
+			default:
+				break;
+		}
 		for ( let i = 0; i < numProperties; i ++ ) {
-			propertyList[i] = this.parseProperty( reader );
+			propertyList[i] = this.m_pptParser.parseProperty( reader );
 		}
 		/*
 		if(name == "Vertices") {
@@ -166,7 +188,7 @@ class BufferBinaryParser {
 			console.log("Vertices begin propertyList: ", propertyList);
 
 			// let u8Arr = reader.getArrayU8BufferByOffset( this.m_ppParams[0], this.m_ppParams[1] );
-			// const data = fflate.unzlibSync( u8Arr, null ); // eslint-disable-line no-undef
+			// const data = fflate.unzlibSync( u8Arr, null );
 			// const r2 = new BinaryReader( data.buffer );
 			// let datafs = r2.getFloat64Array( this.m_ppParams[2] );
 			// console.log("this.m_ppParams[1]: ",this.m_ppParams[1]);
@@ -181,6 +203,15 @@ class BufferBinaryParser {
 			console.log("UV begin propertyList: ", propertyList);
 		}
 		//*/
+		// if(name == "PolygonVertexIndex"){
+		// 	console.log("parseNode name", name, " m_encoding: ", this.m_encoding, ",m_ppType: ",this.m_ppType);
+		// 	console.log("PolygonVertexIndex begin propertyList: ", propertyList);
+		// }
+		// if(name == "PolygonVertexIndex"){
+		// 	console.log("parseNode name", name, " m_encoding: ", this.m_encoding, ",m_ppType: ",this.m_ppType);
+		// 	console.log("PolygonVertexIndex begin propertyList: ", propertyList);
+		// }
+		//
 		// else if(name == "LayerElementUV"){
 		// 	console.log("LayerElementUV begin propertyList: ", propertyList);
 		// }
@@ -225,7 +256,6 @@ class BufferBinaryParser {
 		return node;
 
 	}
-
 	private parseSubNode( name: string, node: any, subNode: any ): void {
 
 		// special case: child node is single property
@@ -251,12 +281,6 @@ class BufferBinaryParser {
 
 		} else if ( name === 'Connections' && subNode.name === 'C' ) {
 
-			// const array:any[] = [];
-			// // console.log("subNode.propertyList.length: ",subNode.propertyList.length);
-			// subNode.propertyList.forEach( function ( property: any, i: number ) {
-			// 	// first Connection is FBX type (OO, OP, etc.). We'll discard these
-			// 	if ( i !== 0 ) array.push( property );
-			// } );
 			let ls = subNode.propertyList;
 			const array:any[] = new Array(ls.length);
 			for(let i = 1, j = 0; i < ls.length; ++i) {
@@ -350,140 +374,6 @@ class BufferBinaryParser {
 		}
 
 	}
-	private m_encoding: number = 0;
-	private m_ppType: string = "";
-	private m_ppParams: number[] = null;
-	private parseProperty( reader: BinaryReader ) {
-
-		const type = reader.getString( 1 );
-		let length;
-		this.m_encoding = 0;
-		this.m_ppType = type;
-		// console.log("parseProperty(), type: ",type);
-		switch ( type ) {
-
-			case 'C':
-				return reader.getBoolean();
-
-			case 'D':
-				return reader.getFloat64();
-
-			case 'F':
-				return reader.getFloat32();
-
-			case 'I':
-				return reader.getInt32();
-
-			case 'L':
-				return reader.getInt64();
-
-			case 'R':
-				length = reader.getUint32();
-				return reader.getArrayBuffer( length );
-
-			case 'S':
-				length = reader.getUint32();
-				return reader.getString( length );
-
-			case 'Y':
-				return reader.getInt16();
-
-			case 'b':
-			case 'c':
-			case 'd':
-			case 'f':
-			case 'i':
-			case 'l':
-
-				const arrayLength = reader.getUint32();
-				const encoding = reader.getUint32(); // 0: non-compressed, 1: compressed
-				const compressedLength = reader.getUint32();
-				this.m_encoding = encoding;
-				if ( encoding === 0 ) {
-
-					switch ( type ) {
-
-						case 'b':
-						case 'c':
-							return reader.getBooleanArray( arrayLength );
-
-						case 'd':
-							return reader.getFloat64Array( arrayLength );
-
-						case 'f':
-							return reader.getFloat32Array( arrayLength );
-
-						case 'i':
-							return reader.getInt32Array( arrayLength );
-
-						case 'l':
-							return reader.getInt64Array( arrayLength );
-
-					}
-
-				}
-
-				if ( typeof fflate === 'undefined' ) {
-					console.error( 'FBXLoader: External library fflate.min.js required.' );
-				}
-				// let u8Arr = new Uint8Array( reader.getArrayBuffer( compressedLength ) );
-				// // console.log("parseProperty reader2...u8Arr.length: ", u8Arr.length);
-				// const data = fflate.unzlibSync( u8Arr, null ); // eslint-disable-line no-undef
-				// const reader2 = new BinaryReader( data.buffer );
-				let bufOffset = reader.getOffset();
-				let bufSize = compressedLength;
-				let reader2: BinaryReader;
-				if(type != 'd') {
-					let u8Arr = reader.getArrayU8Buffer( compressedLength );
-					// let t = Date.now();
-					// console.log("parseProperty reader2...u8Arr.length: ", u8Arr.length);
-					const data = fflate.unzlibSync( u8Arr, null ); // eslint-disable-line no-undef
-					reader2 = new BinaryReader( data.buffer );
-				}
-				else {
-					reader.skip( compressedLength );
-				}
-
-				// console.log(type,"parseProperty reader2...data.length: ", MathConst.CalcCeilPowerOfTwo(data.length), data.length);
-				// console.log("unzlibSync loss time: ", (Date.now() - t));
-				// this.subLossTime += (Date.now() - t);
-				//if(this.m_isGeometry) {
-				// console.log("XXXX is Geometry data.length: ",data.length,", compressedLength: ",compressedLength, data.subarray(106,112));
-				//}
-				switch ( type ) {
-
-					case 'b':
-					case 'c':
-						return reader2.getBooleanArray( arrayLength );
-
-					case 'd':
-						return [bufOffset, bufSize, arrayLength];
-						this.m_ppParams = [bufOffset, bufSize, arrayLength];
-						// TODO(vily): 为了测试千万级三角面的的数据读取
-						// try{
-						return reader2.getFloat64Array( arrayLength );
-						// }catch(e) {
-						// 	console.log("errrrro arrayLength: ",arrayLength);
-						// 	throw Error(e);
-						// }
-
-					case 'f':
-						return reader2.getFloat32Array( arrayLength );
-
-					case 'i':
-						return reader2.getInt32Array( arrayLength );
-
-					case 'l':
-						return reader2.getInt64Array( arrayLength );
-
-				}
-
-			default:
-				throw new Error( 'FBXLoader: Unknown property type ' + type );
-
-		}
-	}
-
 }
 
 export { BufferBinaryParser }

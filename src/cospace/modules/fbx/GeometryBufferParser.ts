@@ -169,12 +169,19 @@ class GeometryBufferParser {
 		return geoInfo;
 
 	}
-	private buildEleData(params: number[]): number[] {
+	private buildNumberData(params: number[]): number[] {
 
 		let u8Arr = this.m_reader.getArrayU8BufferByOffset( params[0], params[1] );
-		const data = fflate.unzlibSync( u8Arr, null ); // eslint-disable-line no-undef
+		const data = fflate.unzlibSync( u8Arr, null );
 		const r2 = new BinaryReader( data.buffer );
 		return r2.getFloat64Array( params[2] );
+	}
+	private buildInt32Data(params: number[]): number[] {
+
+		let u8Arr = this.m_reader.getArrayU8BufferByOffset( params[0], params[1] );
+		const data = fflate.unzlibSync( u8Arr, null );
+		const r2 = new BinaryReader( data.buffer );
+		return r2.getInt32Array( params[2] );
 	}
 	private genBuffers( geoInfo: any ): FBXBufferObject {
 
@@ -190,11 +197,13 @@ class GeometryBufferParser {
 		let faceWeights: number[] = [];
 		let faceWeightIndices: number[] = [];
 
-		// console.log("A geoInfo: ", geoInfo);
-		geoInfo.vertexPositions = this.buildEleData(geoInfo.vertexPositions);
-		geoInfo.normal.buffer = this.buildEleData(geoInfo.normal.buffer);
-		geoInfo.uv[0].buffer = this.buildEleData( geoInfo.uv[0].buffer);
-		// console.log("B geoInfo: ", geoInfo);
+		// 使用的时候在解码得到实际需要的数据
+		if(geoInfo.vertexIndices.length == 3) geoInfo.vertexIndices = this.buildInt32Data(geoInfo.vertexIndices);
+		if(geoInfo.vertexPositions.length == 3) geoInfo.vertexPositions = this.buildNumberData(geoInfo.vertexPositions);
+		if(geoInfo.normal.buffer.length == 3) geoInfo.normal.buffer = this.buildNumberData(geoInfo.normal.buffer);
+		if(geoInfo.uv[0].buffer.length == 3) geoInfo.uv[0].buffer = this.buildNumberData( geoInfo.uv[0].buffer);
+
+		//console.log("B geoInfo: ", geoInfo);
 		let vivs = geoInfo.vertexIndices;
 		let vvs = geoInfo.vertexPositions;
 		// console.log("geoInfo.vertexIndices: ", geoInfo.vertexIndices);
