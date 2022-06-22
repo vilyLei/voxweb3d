@@ -38,7 +38,7 @@ export class RenderingVerifier {
 
 		if (this.m_rscene == null) {
 			
-			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			RendererDevice.SetWebBodyColor("white");
 			//RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
@@ -49,12 +49,14 @@ export class RenderingVerifier {
 			DivLog.SetTextColor( 0xeeeeee );
 			DivLog.SetTextBgEnabled( false );
 			DivLog.SetXY(2,8);
+
 			let rparam: RendererParam = new RendererParam();
 			//rparam.maxWebGLVersion = 1;
 			rparam.setCamProject(45, 50.0, 10000.0);
 			rparam.setAttriStencil(true);
 			rparam.setAttriAntialias(true);
 			rparam.setCamPosition(2000.0, 2000.0, 2000.0);
+			rparam.setCamUpDirect(0.0,0.0,1.0);
 			rparam.setCamLookAtPos(this.m_lookV.x, this.m_lookV.y, this.m_lookV.z);
 			this.m_rscene = new RendererScene();
 			this.m_rscene.initialize(rparam, 5);
@@ -111,7 +113,8 @@ export class RenderingVerifier {
 
 		this.m_verifierScene.run();
 
-		this.m_stageDragSwinger.runWithYAxis();
+		//this.m_stageDragSwinger.runWithYAxis();
+		this.m_stageDragSwinger.runWithZAxis();
 		this.m_cameraZoomController.run(this.m_lookV, 30.0);
 
 		this.m_rscene.run(true);

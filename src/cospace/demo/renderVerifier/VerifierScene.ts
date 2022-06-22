@@ -7,6 +7,7 @@ import { FBXSceneNode } from "./FBXSceneNode";
 import DivLog from "../../../vox/utils/DivLog";
 import { CTMSceneNode } from "./CTMSceneNode";
 import { OBJSceneNode } from "./OBJSceneNode";
+import Box3DEntity from "../../../vox/entity/Box3DEntity";
 
 class VerifierScene {
 
@@ -165,6 +166,26 @@ class VerifierScene {
 		}
 	}
 	initTest(): void {
+
+		const MATH_PI = 3.14159265;
+		const MATH_2PI = 2.0 * MATH_PI;
+		const MATH_1PER2PI = 0.5 * MATH_PI;
+		const MATH_3PER2PI = 3.0 * MATH_PI * 0.5;
+
+		function getRadianByXY(dx: number, dy: number): number {
+			if(Math.abs(dx) < 0.00001) {
+				return (dy >= 0.0) ? MATH_1PER2PI : MATH_3PER2PI;
+			}
+			let rad = Math.atan(dy/dx);
+			console.log("rad: ",rad, MATH_PI);
+			rad = dx >= 0.0 ? rad:(MATH_PI+rad);
+			return rad >= 0.0 ? rad:(MATH_PI+rad);
+		}
+		// let xoyf = getRadianByXY(1.0,-5.0);
+		// console.log("getRadianByXY(): ",xoyf);
+		// let flag = Math.floor(xoyf/(0.25 * MATH_2PI));
+		// console.log("getRadianByXY(), flag: ",flag);
+
 		let size = 107375616;
 		// let list = new Array(size);
 		// // for(let i: number = 0; i < size; ++i) {
@@ -185,19 +206,30 @@ class VerifierScene {
 		// let zlibValue = (zlv(u8Data), u8Data.subarray(2, -4));
 		// console.log("zlibValue: ",zlibValue);
 
+		// let box = new Box3DEntity();
+		// box.initializeCube(2);
+		// console.log("########### box.mesh: ", box.getMesh());
+
 		let url: string = "static/assets/fbx/test01.fbx";
 		url = "static/assets/fbx/box.fbx";
 		// url = "static/private/fbx/sph.fbx";
 		// url = "static/private/fbx/cylinder.fbx";
+		// url = "static/private/fbx/cylinder0.fbx";
+		// url = "static/private/fbx/cylinder1.fbx";
+		// url = "static/private/fbx/cylinder2.fbx";
+		// url = "static/private/fbx/cylinder3.fbx";
+		// url = "static/private/fbx/sph01.fbx";
+		// url = "static/private/fbx/cone0.fbx";
 
-		// url = "static/assets/fbx/face2.fbx";
-		// url = "static/assets/fbx/tri.fbx";
-		// url = "static/assets/fbx/plane.fbx";
-		// url = "static/assets/fbx/base2.fbx";
-		// url = "static/private/fbx/model_500W.fbx";
-		// url = "static/private/fbx/nvxie_zzb.fbx";
+		// url = "static/private/fbx/face2.fbx";
+		// url = "static/private/fbx/tri.fbx";
+		// url = "static/private/fbx/plane.fbx";
+		// url = "static/private/fbx/base2.fbx";
+		url = "static/private/fbx/model_500W.fbx";
+		url = "static/private/fbx/nvxie_zzb.fbx";
 		// url = "static/private/fbx/model_1000W.fbx";
 		// url = "static/private/fbx/Samba_Dancing.fbx";
+		// url = "static/private/fbx/monkey.fbx";
 		this.addFBX( [url] );
 
 		// let baseUrl: string = window.location.href + "static/private/ctm/";

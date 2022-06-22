@@ -200,8 +200,16 @@ class SceneNode implements ISceneNode {
 			this.m_cospace = null;
 		}
 	}
+	private m_entity: DisplayEntity;
+	private m_rotV: Vector3D = new Vector3D();
 	run(): void {
-
+		
+		// if(this.m_entity != null) {
+		// 	this.m_entity.setRotation3(this.m_rotV);
+		// 	this.m_entity.update();
+		// 	this.m_rotV.x += 0.5;
+		// 	this.m_rotV.y += 0.5;
+		// }
 		if (!this.isFinish()) {
 			if (this.m_waitPartsTotal == 0) {
 				this.m_waitPartsTotal = -1;
@@ -216,6 +224,7 @@ class SceneNode implements ISceneNode {
 					this.m_delay = tot + 1;
 					entity = this.m_wait_entities.pop();
 					entity.setVisible(true);
+					this.m_entity = entity;
 					// if(this.m_showTotal == 0) {
 					// 	console.log("############# show geom begin.");
 					// }

@@ -2,6 +2,7 @@ import { getData } from "./Utils";
 import { FBXTreeMap } from "./FBXTree";
 import { FBXBufferObject } from "./FBXBufferObject";
 import { BinaryReader } from "./BinaryReader";
+import { ElementGeomData } from "./ElementGeomData";
 import * as fflate from '../libs/fflate.module.js';
 
 // parse Geometry data from FBXTree and return map of BufferGeometries
@@ -183,9 +184,8 @@ class GeometryBufferParser {
 		const r2 = new BinaryReader( data.buffer );
 		return r2.getInt32Array( params[2] );
 	}
+	private m_egd: ElementGeomData = new ElementGeomData();
 	private genBuffers( geoInfo: any ): FBXBufferObject {
-
-		const buffers: FBXBufferObject = new FBXBufferObject();
 
 		let polygonIndex = 0;
 		let faceLength = 0;
@@ -204,7 +204,12 @@ class GeometryBufferParser {
 		if(geoInfo.normal.indices.length == 3) geoInfo.normal.indices = this.buildInt32Data(geoInfo.normal.indices);
 		if(geoInfo.uv[0].buffer.length == 3) geoInfo.uv[0].buffer = this.buildNumberData( geoInfo.uv[0].buffer);
 		// 
-		console.log("B geoInfo: ", geoInfo);
+		// console.log("B geoInfo: ", geoInfo);
+
+		// return this.m_egd.createBufObject(geoInfo);
+
+		const buffers: FBXBufferObject = new FBXBufferObject();
+
 		let vivs = geoInfo.vertexIndices;
 		let vvs = geoInfo.vertexPositions;
 		// console.log("geoInfo.vertexIndices: ", geoInfo.vertexIndices);
@@ -534,59 +539,6 @@ class GeometryBufferParser {
 	// Generate a NurbGeometry from a node in FBXTree.Objects.Geometry
 	private parseNurbsGeometry( geoNode: any ): any {
 		return null;
-		/*
-		if ( NURBSCurve === undefined ) {
-
-			console.error( 'FBXLoader: The loader relies on NURBSCurve for any nurbs present in the model. Nurbs will show up as empty geometry.' );
-			return new BufferGeometry();
-
-		}
-
-		const order = parseInt( geoNode.Order );
-
-		if ( isNaN( order ) ) {
-
-			console.error( 'FBXLoader: Invalid Order %s given for geometry ID: %s', geoNode.Order, geoNode.id );
-			return new BufferGeometry();
-
-		}
-
-		const degree = order - 1;
-
-		const knots = geoNode.KnotVector.a;
-		const controlPoints = [];
-		const pointsValues = geoNode.Points.a;
-
-		for ( let i = 0, l = pointsValues.length; i < l; i += 4 ) {
-
-			controlPoints.push( new Vector4().fromArray( pointsValues, i ) );
-
-		}
-
-		let startKnot, endKnot;
-
-		if ( geoNode.Form === 'Closed' ) {
-
-			controlPoints.push( controlPoints[ 0 ] );
-
-		} else if ( geoNode.Form === 'Periodic' ) {
-
-			startKnot = degree;
-			endKnot = knots.length - 1 - startKnot;
-
-			for ( let i = 0; i < degree; ++ i ) {
-
-				controlPoints.push( controlPoints[ i ] );
-
-			}
-
-		}
-
-		const curve = new NURBSCurve( degree, knots, controlPoints, startKnot, endKnot );
-		const points = curve.getPoints( controlPoints.length * 12 );
-
-		return new BufferGeometry().setFromPoints( points );
-		//*/
 	}
 
 }
