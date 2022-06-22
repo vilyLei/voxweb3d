@@ -186,17 +186,19 @@ class VerifierScene {
 		// console.log("zlibValue: ",zlibValue);
 
 		let url: string = "static/assets/fbx/test01.fbx";
-		// url = "static/assets/fbx/box.fbx";
+		url = "static/assets/fbx/box.fbx";
+		// url = "static/private/fbx/sph.fbx";
+		// url = "static/private/fbx/cylinder.fbx";
 
 		// url = "static/assets/fbx/face2.fbx";
 		// url = "static/assets/fbx/tri.fbx";
 		// url = "static/assets/fbx/plane.fbx";
 		// url = "static/assets/fbx/base2.fbx";
-		url = "static/private/fbx/model_500W.fbx";
+		// url = "static/private/fbx/model_500W.fbx";
 		// url = "static/private/fbx/nvxie_zzb.fbx";
 		// url = "static/private/fbx/model_1000W.fbx";
 		// url = "static/private/fbx/Samba_Dancing.fbx";
-		// this.addFBX( [url] );
+		this.addFBX( [url] );
 
 		// let baseUrl: string = window.location.href + "static/private/ctm/";
 		// let urls: string[] = [];

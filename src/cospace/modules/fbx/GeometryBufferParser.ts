@@ -204,7 +204,7 @@ class GeometryBufferParser {
 		if(geoInfo.normal.indices.length == 3) geoInfo.normal.indices = this.buildInt32Data(geoInfo.normal.indices);
 		if(geoInfo.uv[0].buffer.length == 3) geoInfo.uv[0].buffer = this.buildNumberData( geoInfo.uv[0].buffer);
 		// 
-		// console.log("B geoInfo: ", geoInfo);
+		console.log("B geoInfo: ", geoInfo);
 		let vivs = geoInfo.vertexIndices;
 		let vvs = geoInfo.vertexPositions;
 		// console.log("geoInfo.vertexIndices: ", geoInfo.vertexIndices);
