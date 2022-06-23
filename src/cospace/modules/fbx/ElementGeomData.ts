@@ -96,6 +96,7 @@ class ElementGeomData {
 		uvs.fill(0);
 
 		let obj = new FBXBufferObject();
+		obj.isEntity = true;
 		obj.indices = ivs.length > 65535 ? new Uint16Array(ivs) : new Uint32Array(ivs);
 		obj.vertex = new Float32Array(vs);
 		obj.normal = new Float32Array(nvs);

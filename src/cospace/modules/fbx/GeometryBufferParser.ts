@@ -86,11 +86,17 @@ class GeometryBufferParser {
 		return -1;
 	}
 	parseGeomBufNext(): FBXBufferObject {
+		console.log("GeometryBufferParser::parseGeomBufNext(), this.m_nodeIDList: ",this.m_nodeIDList);
 		if(this.isParsing()) {
 			const geoNodes = this.m_fbxTree.Objects.Geometry;
 			let id = this.m_idLst.pop();
+			let ID = this.m_nodeIDList.pop();
 			const relationships = this.m_connections.get( id );
-			let obj = this.parseGeometryBuffer( relationships, geoNodes[ this.m_nodeIDList.pop() ], this.m_deformers, this.m_fbxTree );
+			let obj = this.parseGeometryBuffer( relationships, geoNodes[ ID ], this.m_deformers, this.m_fbxTree );
+			if(obj != null) {
+				obj.ID = ID;
+				obj.id = id;
+			}
 			if(!this.isParsing()) {
 				this.m_reader = null;
 			}
@@ -130,9 +136,9 @@ class GeometryBufferParser {
 		const geoInfo = this.parseGeoNode( geoNode );
 		// let lossTime: number = Date.now() - time;
 		// console.log("XXX geoInfo lossTime: ", lossTime);
-		const buffers = this.genBuffers( geoInfo );
+		const obj = this.getBufObj( geoInfo );
 		// console.log("GeometryBufferParser::genGeometryBuffers(), buffers: ",buffers);
-		return buffers;
+		return obj;
 
 	}
 	private parseGeoNode( geoNode: any ): any {
@@ -185,7 +191,7 @@ class GeometryBufferParser {
 		return r2.getInt32Array( params[2] );
 	}
 	private m_egd: ElementGeomData = new ElementGeomData();
-	private genBuffers( geoInfo: any ): FBXBufferObject {
+	private getBufObj( geoInfo: any ): FBXBufferObject {
 
 		let polygonIndex = 0;
 		let faceLength = 0;
@@ -202,13 +208,21 @@ class GeometryBufferParser {
 		if(geoInfo.vertexPositions.length == 3) geoInfo.vertexPositions = this.buildNumberData(geoInfo.vertexPositions);
 		if(geoInfo.normal.buffer.length == 3) geoInfo.normal.buffer = this.buildNumberData(geoInfo.normal.buffer);
 		if(geoInfo.normal.indices.length == 3) geoInfo.normal.indices = this.buildInt32Data(geoInfo.normal.indices);
-		if(geoInfo.uv[0].buffer.length == 3) geoInfo.uv[0].buffer = this.buildNumberData( geoInfo.uv[0].buffer);
-		// 
+		//
+		let uvList = geoInfo.uv;
+		if(uvList != null && uvList.length > 0) {
+			let uvBuf = uvList[0].buffer;
+			if(uvBuf.length == 3) {
+				uvBuf = this.buildNumberData( uvBuf );
+			}
+		}
+		
 		// console.log("B geoInfo: ", geoInfo);
 
 		// return this.m_egd.createBufObject(geoInfo);
 
-		const buffers: FBXBufferObject = new FBXBufferObject();
+		const bufObj: FBXBufferObject = new FBXBufferObject();
+		bufObj.isEntity = true;
 
 		let vivs = geoInfo.vertexIndices;
 		let vvs = geoInfo.vertexPositions;
@@ -236,9 +250,9 @@ class GeometryBufferParser {
 			}
 		}
 		let vsLen = trisTotal * 9;
-		buffers.vertex = new Float32Array(vsLen);
-		buffers.normal = new Float32Array(vsLen);
-		let uvs = buffers.uvs;
+		bufObj.vertex = new Float32Array(vsLen);
+		bufObj.normal = new Float32Array(vsLen);
+		let uvs = bufObj.uvs;
 		
 		let guvLen = 0;
 		let guv: number[][] = null;
@@ -250,7 +264,7 @@ class GeometryBufferParser {
 				faceUVs.push(new Array(36));
 				uvs[ j ] = new Float32Array( trisTotal * 6 );
 			}
-			buffers.uvs = uvs;
+			bufObj.uvs = uvs;
 		}
 
 		let lossTimeA: number = Date.now() - time;
@@ -308,7 +322,7 @@ class GeometryBufferParser {
 
 			if ( endOfFace ) {
 				// console.log("facePositionIndexes: ",facePositionIndexes);
-				this.genFace( buffers, geoInfo, facePositionIndexes, materialIndex, faceNormals, faceColors, faceUVs, faceWeights, faceWeightIndices, faceLength );
+				this.genFace( bufObj, geoInfo, facePositionIndexes, materialIndex, faceNormals, faceColors, faceUVs, faceWeights, faceWeightIndices, faceLength );
 				
 				polygonIndex ++;
 				faceLength = 0;
@@ -323,7 +337,7 @@ class GeometryBufferParser {
 
 		// console.log("XXX normalData: ",normalData);
 		console.log("XXX lossTime: ",lossTime, ",preCompute lossTime: ",lossTimeA);
-		console.log("XXX vertex.length:", buffers.vertex.length, ", vsLen:",vsLen, ", oivsLen:",oivsLen);
+		console.log("XXX vertex.length:", bufObj.vertex.length, ", vsLen:",vsLen, ", oivsLen:",oivsLen);
 		if(oivsLen > 2000000) {
 			console.log("XXX larger geom vertices total.....");
 		}
@@ -331,20 +345,20 @@ class GeometryBufferParser {
 		// //pvs
 		// buffers.indices = pvs.length <= 65535 ? new Uint16Array(pvs) : new Uint32Array(pvs);
 
-		return buffers;
+		return bufObj;
 
 	}
 
 	// Generate data for a single face in a geometry. If the face is a quad then split it into 2 tris
-	private genFace( buffers: any, geoInfo: any, facePositionIndexes: number[], materialIndex: number, faceNormals: number[], faceColors: number[], faceUVs:number[][], faceWeights: number[], faceWeightIndices:number[], faceLength: number ): void {
+	private genFace( bufObj: FBXBufferObject, geoInfo: any, facePositionIndexes: number[], materialIndex: number, faceNormals: number[], faceColors: number[], faceUVs:number[][], faceWeights: number[], faceWeightIndices:number[], faceLength: number ): void {
 		
 		let vps = geoInfo.vertexPositions;
-		let vs = buffers.vertex;
-		let nvs = buffers.normal;
-		let uvs = buffers.uvs;
+		let vs = bufObj.vertex;
+		let nvs = bufObj.normal;
+		let uvs = bufObj.uvs;
 
-		let i3 = buffers.i3;
-		let i2 = buffers.i2;
+		let i3 = bufObj.i3;
+		let i2 = bufObj.i2;
 		// let colorBoo = geoInfo.color != null;
 		let normalBoo = geoInfo.normal != null;
 		let uvBoo = geoInfo.uv != null;
@@ -365,17 +379,17 @@ class GeometryBufferParser {
 
 			// if ( colorBoo ) {
 
-			// 	buffers.colors.push( faceColors[ 0 ] );
-			// 	buffers.colors.push( faceColors[ 1 ] );
-			// 	buffers.colors.push( faceColors[ 2 ] );
+			// 	bufObj.colors.push( faceColors[ 0 ] );
+			// 	bufObj.colors.push( faceColors[ 1 ] );
+			// 	bufObj.colors.push( faceColors[ 2 ] );
 
-			// 	buffers.colors.push( faceColors[ ( i - 1 ) * 3 ] );
-			// 	buffers.colors.push( faceColors[ ( i - 1 ) * 3 + 1 ] );
-			// 	buffers.colors.push( faceColors[ ( i - 1 ) * 3 + 2 ] );
+			// 	bufObj.colors.push( faceColors[ ( i - 1 ) * 3 ] );
+			// 	bufObj.colors.push( faceColors[ ( i - 1 ) * 3 + 1 ] );
+			// 	bufObj.colors.push( faceColors[ ( i - 1 ) * 3 + 2 ] );
 
-			// 	buffers.colors.push( faceColors[ i * 3 ] );
-			// 	buffers.colors.push( faceColors[ i * 3 + 1 ] );
-			// 	buffers.colors.push( faceColors[ i * 3 + 2 ] );
+			// 	bufObj.colors.push( faceColors[ i * 3 ] );
+			// 	bufObj.colors.push( faceColors[ i * 3 + 1 ] );
+			// 	bufObj.colors.push( faceColors[ i * 3 + 2 ] );
 
 			// }
 
@@ -414,8 +428,8 @@ class GeometryBufferParser {
 			i3 += 9;
 			i2 += 6;
 		}
-		buffers.i3 = i3;
-		buffers.i2 = i2;
+		bufObj.i3 = i3;
+		bufObj.i2 = i2;
 	}
 
 	// Parse normal from FBXTree.Objects.Geometry.LayerElementNormal if it exists

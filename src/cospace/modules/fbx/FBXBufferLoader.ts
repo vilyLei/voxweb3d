@@ -73,14 +73,14 @@ class FBXBufferLoader {
         return this.m_fbxTreeBufParser.parse(fbxTree, this.m_binParser.getReader());
     }
 
-    private m_parseOnLoad: (model: GeometryModelDataType, id: number, index: number, total: number, url: string) => void = null;
+    private m_parseOnLoad: (model: GeometryModelDataType, bufObj: FBXBufferObject, index: number, total: number, url: string) => void = null;
     private m_binParser: BufferBinaryParser;
     private m_fbxTreeBufParser: FBXTreeBufferParser;
     private m_parseIndex: number = 0;
     private m_url: string = "";
     loadBySteps(
         url: string,
-        onLoad: (model: GeometryModelDataType, id: number, index: number, total: number, url: string) => void,
+        onLoad: (model: GeometryModelDataType, bufObj: FBXBufferObject, index: number, total: number, url: string) => void,
         onProgress: (evt: ProgressEvent, url: string) => void = null,
         onError: (status: number, url: string) => void = null
     ): void {
@@ -129,7 +129,7 @@ class FBXBufferLoader {
                 this.m_parseOnLoad = null;
                 this.m_fbxTreeBufParser = null;
             }
-            onLoad(model.toGeometryModel(), id, this.m_parseIndex-1, tot, this.m_url);
+            onLoad(model.toGeometryModel(), model, this.m_parseIndex-1, tot, this.m_url);
         }
     }
     

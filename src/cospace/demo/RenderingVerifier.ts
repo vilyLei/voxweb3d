@@ -29,6 +29,7 @@ export class RenderingVerifier {
 	private m_profileInstance: ProfileInstance = null;
 
 	private m_verifierScene: VerifierScene = new VerifierScene();
+	private m_cameraUPY: boolean = true;
 
 	constructor() { }
 
@@ -38,7 +39,7 @@ export class RenderingVerifier {
 
 		if (this.m_rscene == null) {
 			
-			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			RendererDevice.SetWebBodyColor("white");
 			//RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
@@ -56,7 +57,11 @@ export class RenderingVerifier {
 			rparam.setAttriStencil(true);
 			rparam.setAttriAntialias(true);
 			rparam.setCamPosition(2000.0, 2000.0, 2000.0);
-			rparam.setCamUpDirect(0.0,0.0,1.0);
+			if(this.m_cameraUPY) {
+				rparam.setCamUpDirect(0.0,1.0,0.0);
+			} else {
+				rparam.setCamUpDirect(0.0,0.0,1.0);
+			}
 			rparam.setCamLookAtPos(this.m_lookV.x, this.m_lookV.y, this.m_lookV.z);
 			this.m_rscene = new RendererScene();
 			this.m_rscene.initialize(rparam, 5);
@@ -112,9 +117,11 @@ export class RenderingVerifier {
 	run(): void {
 
 		this.m_verifierScene.run();
-
-		//this.m_stageDragSwinger.runWithYAxis();
-		this.m_stageDragSwinger.runWithZAxis();
+		if(this.m_cameraUPY) {
+			this.m_stageDragSwinger.runWithYAxis();
+		}else {
+			this.m_stageDragSwinger.runWithZAxis();
+		}
 		this.m_cameraZoomController.run(this.m_lookV, 30.0);
 
 		this.m_rscene.run(true);

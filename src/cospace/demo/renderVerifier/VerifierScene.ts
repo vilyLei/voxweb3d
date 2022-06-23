@@ -8,6 +8,8 @@ import DivLog from "../../../vox/utils/DivLog";
 import { CTMSceneNode } from "./CTMSceneNode";
 import { OBJSceneNode } from "./OBJSceneNode";
 import Box3DEntity from "../../../vox/entity/Box3DEntity";
+import Matrix4 from "../../../vox/math/Matrix4";
+import Vector3D from "../../../vox/math/Vector3D";
 
 class VerifierScene {
 
@@ -210,8 +212,10 @@ class VerifierScene {
 		// box.initializeCube(2);
 		// console.log("########### box.mesh: ", box.getMesh());
 
+		// return;
 		let url: string = "static/assets/fbx/test01.fbx";
-		url = "static/assets/fbx/box.fbx";
+		// url = "static/assets/fbx/box.fbx";
+		url = "static/private/fbx/box01.fbx";
 		// url = "static/private/fbx/sph.fbx";
 		// url = "static/private/fbx/cylinder.fbx";
 		// url = "static/private/fbx/cylinder0.fbx";
@@ -225,8 +229,10 @@ class VerifierScene {
 		// url = "static/private/fbx/tri.fbx";
 		// url = "static/private/fbx/plane.fbx";
 		// url = "static/private/fbx/base2.fbx";
-		url = "static/private/fbx/model_500W.fbx";
-		url = "static/private/fbx/nvxie_zzb.fbx";
+		// url = "static/private/fbx/model_500W.fbx";
+		// url = "static/private/fbx/nvxie_zzb.fbx";
+		// url = "static/private/fbx/3279.fbx";
+		// url = "static/private/fbx/3279_b.fbx";
 		// url = "static/private/fbx/model_1000W.fbx";
 		// url = "static/private/fbx/Samba_Dancing.fbx";
 		// url = "static/private/fbx/monkey.fbx";

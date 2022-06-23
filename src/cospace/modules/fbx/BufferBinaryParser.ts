@@ -286,9 +286,13 @@ class BufferBinaryParser {
 		} else if ( name === 'Connections' && subNode.name === 'C' ) {
 
 			let ls = subNode.propertyList;
-			const array:any[] = new Array(ls.length);
+			console.log("BinaryParser::parseSubNode(), ls: ",ls);
+			let len = (ls.length - 1);
+			if(len < 0) len = 0;
+			const array:any[] = new Array(len);
 			for(let i = 1, j = 0; i < ls.length; ++i) {
 				array[j] = ls[i];
+				j++;
 			}
 
 			if ( node.connections === undefined ) {
@@ -297,6 +301,7 @@ class BufferBinaryParser {
 
 			}
 
+			console.log("BinaryParser::parseSubNode(), node.connections.push( array ): ",array);
 			node.connections.push( array );
 
 		} else if ( subNode.name === 'Properties70' ) {

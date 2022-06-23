@@ -10,6 +10,7 @@ import { NormalViewerMaterial } from "../material/NormalViewerMaterial";
 import RendererState from "../../../vox/render/RendererState";
 import AABB from "../../../vox/geom/AABB";
 import { ISceneNode } from "./ISceneNode";
+import Matrix4 from "../../../vox/math/Matrix4";
 
 class SceneNode implements ISceneNode {
 
@@ -60,7 +61,7 @@ class SceneNode implements ISceneNode {
 
 		sx = Math.min(sx, sy, sz);
 		this.m_scaleV.setXYZ(sx, sx, sx);
-
+		console.log("sx: ",sx, ", aabb: ",aabb);
 		let cv = aabb.center;
 		let offsetV: Vector3D = new Vector3D(-cv.x, -cv.y, -cv.z);
 		offsetV.scaleBy(sx);
@@ -134,7 +135,7 @@ class SceneNode implements ISceneNode {
 		return correct;
 	}
 	private m_lossTime: number = 0;
-	protected initEntity(model: GeometryModelDataType): void {
+	protected initEntity(model: GeometryModelDataType, transform: Matrix4 = null): void {
 		if (this.m_rscene != null && model != null) {
 
 			// let correct = this.normalCorrectionTest( model );
@@ -174,9 +175,13 @@ class SceneNode implements ISceneNode {
 			entity.setMaterial(material);
 			// entity.setScale3( this.m_scaleV );
 			entity.setVisible(false);
+			if(transform != null) {
+				entity.getTransform().setParentMatrix( transform );
+			}
 			this.m_wait_entities.push(entity);
 			// entity.setIvsParam(0, dataMesh.vtCount / 3);
 			this.m_rscene.addEntity(entity);
+			entity.update();
 			this.m_entities.push(entity);
 		}
 	}
@@ -190,8 +195,6 @@ class SceneNode implements ISceneNode {
 			if (this.m_entities != null) {
 				let entities = this.m_entities;
 				for (let k: number = 0; k < entities.length; ++k) {
-
-
 					entities[k].setVisible(false);
 				}
 				this.m_entities = null;
@@ -214,7 +217,7 @@ class SceneNode implements ISceneNode {
 			if (this.m_waitPartsTotal == 0) {
 				this.m_waitPartsTotal = -1;
 				this.m_delay = 2;
-				this.fitToCenter();
+				// this.fitToCenter();
 			}
 			if (this.m_delay < 1) {
 				if (this.m_wait_entities.length > 0) {
