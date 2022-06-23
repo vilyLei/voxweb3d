@@ -53,8 +53,8 @@ void main() {
     vec3 nv = normalize(v_param.xyz);
     vec3 color = pow(nv, vec3(1.0/2.2));
 
-    float xoyf = getRadianByXY(nv.x,nv.y) / MATH_2PI;
-    color = getColor(xoyf);
+    // float xoyf = getRadianByXY(nv.x,nv.y) / MATH_2PI;
+    // color = getColor(xoyf);
 
     FragColor = vec4(color, 1.0);
 }

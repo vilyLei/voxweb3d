@@ -43,9 +43,13 @@ class SceneNode implements ISceneNode {
 		this.m_time = Date.now();
 	}
 	private m_entities: DisplayEntity[] = [];
+	// private m_transforms: DisplayEntity[] = [];
 	protected m_waitPartsTotal: number = -1;
 	private fitToCenter(): void {
 
+		let mat: Matrix4 = new Matrix4();
+		let transform: Matrix4;
+		let currMat: Matrix4 = new Matrix4();
 		let entities = this.m_entities;
 		let aabb: AABB = new AABB();
 		for (let k: number = 0; k < entities.length; ++k) {
@@ -61,14 +65,25 @@ class SceneNode implements ISceneNode {
 
 		sx = Math.min(sx, sy, sz);
 		this.m_scaleV.setXYZ(sx, sx, sx);
-		console.log("sx: ",sx, ", aabb: ",aabb);
 		let cv = aabb.center;
 		let offsetV: Vector3D = new Vector3D(-cv.x, -cv.y, -cv.z);
 		offsetV.scaleBy(sx);
 
+		console.log("sx: ",sx, ", aabb: ",aabb,", offsetV: ",offsetV);
 		for (let k: number = 0; k < entities.length; ++k) {
-			entities[k].setScale3(this.m_scaleV);
-			entities[k].offsetPosition(offsetV);
+			transform = entities[k].getTransform().getParentMatrix();
+			if(transform != null) {
+				mat.identity();
+				mat.setScale(this.m_scaleV);
+				mat.setTranslation(offsetV);
+				currMat.copyFrom(transform);
+				currMat.append(mat);
+				
+				entities[k].getTransform().setParentMatrix(currMat);
+			}else {
+				entities[k].setScale3(this.m_scaleV);
+				entities[k].offsetPosition(offsetV);
+			}
 			entities[k].update();
 		}
 	}
@@ -179,6 +194,7 @@ class SceneNode implements ISceneNode {
 				entity.getTransform().setParentMatrix( transform );
 			}
 			this.m_wait_entities.push(entity);
+			// entity.setScaleXYZ(0.5,0.5,0.5);
 			// entity.setIvsParam(0, dataMesh.vtCount / 3);
 			this.m_rscene.addEntity(entity);
 			entity.update();
@@ -217,7 +233,7 @@ class SceneNode implements ISceneNode {
 			if (this.m_waitPartsTotal == 0) {
 				this.m_waitPartsTotal = -1;
 				this.m_delay = 2;
-				// this.fitToCenter();
+				this.fitToCenter();
 			}
 			if (this.m_delay < 1) {
 				if (this.m_wait_entities.length > 0) {

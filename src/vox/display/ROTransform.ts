@@ -198,6 +198,9 @@ export default class ROTransform {
             }
         }
     }
+    getParentMatrix(): Matrix4 {
+        return this.m_parentMat;
+    }
     updateMatrixData(matrix: Matrix4): void {
         if (matrix != null) {
             this.updateStatus = ROTransform.UPDATE_NONE;

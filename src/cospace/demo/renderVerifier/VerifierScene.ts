@@ -222,13 +222,14 @@ class VerifierScene {
 		// url = "static/private/fbx/cylinder1.fbx";
 		// url = "static/private/fbx/cylinder2.fbx";
 		// url = "static/private/fbx/cylinder3.fbx";
-		url = "static/private/fbx/sph01.fbx";
+		// url = "static/private/fbx/sph01.fbx";
 		// url = "static/private/fbx/cone0.fbx";
 
 		// url = "static/private/fbx/face2.fbx";
 		// url = "static/private/fbx/tri.fbx";
 		// url = "static/private/fbx/plane.fbx";
 		// url = "static/private/fbx/base2.fbx";
+		url = "static/private/fbx/base3.fbx";
 		// url = "static/private/fbx/model_500W.fbx";
 		// url = "static/private/fbx/nvxie_zzb.fbx";
 		// url = "static/private/fbx/3279.fbx";
