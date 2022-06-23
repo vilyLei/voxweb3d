@@ -79,9 +79,10 @@ class FBXTreeBufferParser {
 	}
 	
 	private parseBufObjTransData(bufObj: FBXBufferObject, modelID: string,  connections: Map<number, any>, fbxTree: FBXTreeMap ): void {
-		
+
 		console.log("parseBufObjTransData(), modelID: ",modelID);
 		const modelNodes = fbxTree.Objects.Model;
+		console.log("parseBufObjTransData(), modelNodes: ",modelNodes);
 		const node = modelNodes[ modelID ];
 		this.getTransformData( bufObj, node );
 		if ( bufObj.parent ) {
@@ -152,6 +153,7 @@ class FBXTreeBufferParser {
 			console.log("this.m_fbxTree.map: ", this.m_fbxTree.map);
 			console.log("parseGeomBufNext(), ID, id: ", ID,obj.id);
 			const relationships = this.m_connections.get( obj.id );
+			console.log("this.m_connections: ",this.m_connections);
 			console.log("relationships: ",relationships);
 			let modelID: string = "";
 			modelID = relationships.parents[0].ID + "";

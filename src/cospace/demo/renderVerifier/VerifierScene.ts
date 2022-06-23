@@ -215,14 +215,14 @@ class VerifierScene {
 		// return;
 		let url: string = "static/assets/fbx/test01.fbx";
 		// url = "static/assets/fbx/box.fbx";
-		url = "static/private/fbx/box01.fbx";
+		// url = "static/private/fbx/box01.fbx";
 		// url = "static/private/fbx/sph.fbx";
 		// url = "static/private/fbx/cylinder.fbx";
 		// url = "static/private/fbx/cylinder0.fbx";
 		// url = "static/private/fbx/cylinder1.fbx";
 		// url = "static/private/fbx/cylinder2.fbx";
 		// url = "static/private/fbx/cylinder3.fbx";
-		// url = "static/private/fbx/sph01.fbx";
+		url = "static/private/fbx/sph01.fbx";
 		// url = "static/private/fbx/cone0.fbx";
 
 		// url = "static/private/fbx/face2.fbx";

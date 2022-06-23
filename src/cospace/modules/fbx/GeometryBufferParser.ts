@@ -88,6 +88,8 @@ class GeometryBufferParser {
 	parseGeomBufNext(): FBXBufferObject {
 		console.log("GeometryBufferParser::parseGeomBufNext(), this.m_nodeIDList: ",this.m_nodeIDList);
 		if(this.isParsing()) {
+			const modelNodes = this.m_fbxTree.Objects.Model;
+			console.log("#### modelNodes: ", modelNodes);
 			const geoNodes = this.m_fbxTree.Objects.Geometry;
 			let id = this.m_idLst.pop();
 			let ID = this.m_nodeIDList.pop();
