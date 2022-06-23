@@ -28,6 +28,12 @@ class Vector3D {
         this.z = pz;
         this.w = pw;
     }
+    fromArray(arr: number[], offset: number = 0): Vector3D {
+        this.x = arr[offset];
+        this.y = arr[offset + 1];
+        this.z = arr[offset + 2];
+        return this;
+    }
     setXYZ(px: number, py: number, pz: number): void {
         this.x = px;
         this.y = py;
@@ -254,6 +260,7 @@ class Vector3D {
         rv.y = iv.y - idotn2 * nv.y;
         rv.z = iv.z - idotn2 * nv.z;
     }
-    static ZERO: Vector3D = new Vector3D();
+    static readonly ZERO: Vector3D = new Vector3D(0,0,0);
+    static readonly ONE: Vector3D = new Vector3D(1,1,1);
 }
 export default Vector3D;

@@ -6,7 +6,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import Quaternion from "../../vox/math/Quaternion";
+import {Quaternion} from "../../vox/math/Quaternion";
 import Matrix4 from "../../vox/math/Matrix4";
 
 class Mat3DUtils

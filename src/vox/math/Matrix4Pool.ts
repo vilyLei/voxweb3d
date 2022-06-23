@@ -52,7 +52,7 @@ class Matrix4Pool
 		}
 		if(Matrix4Pool.s_mtotal < 1)
 		{
-			//console.log("Matrix4Pool::Allocate(), Matrix total: "+total);
+			console.log("Matrix4Pool::Allocate(), Matrix total: "+total);
 			Matrix4Pool.s_mtotal = total;
 			Matrix4Pool.s_mfs32Arr = new Float32Array(total * 16);
 			let i:number = 0;
