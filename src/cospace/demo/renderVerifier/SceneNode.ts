@@ -69,13 +69,14 @@ class SceneNode implements ISceneNode {
 		let offsetV: Vector3D = new Vector3D(-cv.x, -cv.y, -cv.z);
 		offsetV.scaleBy(sx);
 
-		console.log("sx: ",sx, ", aabb: ",aabb,", offsetV: ",offsetV);
+		// console.log("sx: ",sx, ", aabb: ",aabb,", offsetV: ",offsetV);
 		for (let k: number = 0; k < entities.length; ++k) {
 			transform = entities[k].getTransform().getParentMatrix();
 			if(transform != null) {
 				mat.identity();
 				mat.setScale(this.m_scaleV);
-				mat.setTranslation(offsetV);
+				mat.setRotationEulerAngle(0.5 * Math.PI, 0.0,0.0);
+				// mat.setTranslation(offsetV);
 				currMat.copyFrom(transform);
 				currMat.append(mat);
 				

@@ -79,10 +79,10 @@ class BufferBinaryParser {
             let time = Date.now();
 			const node = this.parseNode( reader, this.m_version );
             //console.log("### c0 BufferBinaryParser::parseNext(), lossTime: ", (Date.now() - time), "sub lossTime: ",this.subLossTime);
-			if(node != null) {
-				let ns = node.name != undefined ? "-"+node.name : "";
-				console.log("### parse("+this.m_parsingIndex+ns+") BufferBinaryParser::parseNext(), lossTime: ", (Date.now() - time)+"ms", "nodeParsingTotal: ",this.nodeParsingTotal);
-			}
+			// if(node != null) {
+			// 	let ns = node.name != undefined ? "-"+node.name : "";
+			// 	console.log("### parse("+this.m_parsingIndex+ns+") BufferBinaryParser::parseNext(), lossTime: ", (Date.now() - time)+"ms", "nodeParsingTotal: ",this.nodeParsingTotal);
+			// }
 			if ( node !== null ) allNodes.add( node.name, node );
 		}
     }

@@ -32,19 +32,6 @@ class ElementGeomData {
 				}
 				step = 0;
 			}
-			// else if(step == 4){
-			// 	console.log("### +++4, i,sivs[i]: ",i,sivs[i]);
-			// 	// ivs.push(i - 3, i - 2, i-1);
-			// 	// ivs.push(i - 3, i - 2, i-1);
-			// 	// ivs.push(i - 3, i - 2, i-1);
-			// 	// ivs.push(i, i - 3, i-1);
-				
-			// 	// ivs.push(i - 4, i - 3, i+1);
-			// 	// ivs.push(i, i - 3, i-1);
-
-			// 	i = i-3;
-			// 	step = 0;
-			// }
 		}
 		return ivs;
 	}
@@ -119,7 +106,7 @@ class ElementGeomData {
 		
 
 		let newVSData = this.buildIVSAndVS(src_ivs, src_vs);
-		console.log("newVSData: \n", newVSData);
+		// console.log("newVSData: \n", newVSData);
 
 		let ivs = newVSData[0];
 		let vs = newVSData[1];

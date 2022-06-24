@@ -29,7 +29,7 @@ export class RenderingVerifier {
 	private m_profileInstance: ProfileInstance = null;
 
 	private m_verifierScene: VerifierScene = new VerifierScene();
-	private m_cameraUPY: boolean = true;
+	private m_cameraUPY: boolean = false;
 
 	constructor() { }
 
