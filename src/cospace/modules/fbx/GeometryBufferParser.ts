@@ -86,10 +86,10 @@ class GeometryBufferParser {
 		return -1;
 	}
 	parseGeomBufNext(): FBXBufferObject {
-		console.log("GeometryBufferParser::parseGeomBufNext(), this.m_nodeIDList: ",this.m_nodeIDList);
+		// console.log("GeometryBufferParser::parseGeomBufNext(), this.m_nodeIDList: ",this.m_nodeIDList);
 		if(this.isParsing()) {
 			const modelNodes = this.m_fbxTree.Objects.Model;
-			console.log("#### modelNodes: ", modelNodes);
+			// console.log("#### modelNodes: ", modelNodes);
 			const geoNodes = this.m_fbxTree.Objects.Geometry;
 			let id = this.m_idLst.pop();
 			let ID = this.m_nodeIDList.pop();
@@ -221,7 +221,7 @@ class GeometryBufferParser {
 		
 		// console.log("B geoInfo: ", geoInfo);
 
-		// return this.m_egd.createBufObject(geoInfo);
+		return this.m_egd.createBufObject(geoInfo);
 
 		const bufObj: FBXBufferObject = new FBXBufferObject();
 		bufObj.isEntity = true;

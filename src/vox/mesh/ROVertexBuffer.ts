@@ -93,6 +93,9 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
     setUintIVSData(uint16Or32Arr: Uint16Array | Uint32Array, status: number = VtxBufConst.VTX_STATIC_DRAW): void {
         if ((uint16Or32Arr instanceof Uint16Array)) {
             this.m_ibufStep = 2;
+            if(uint16Or32Arr.length > 65535) {
+                throw Error("its type is not Uint32Array.");
+            }
         }
         else if ((uint16Or32Arr instanceof Uint32Array)) {
             this.m_ibufStep = 4;

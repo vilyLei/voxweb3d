@@ -152,13 +152,13 @@ export default class Sphere3DMesh extends MeshBase {
             }
             this.vtxTotal = vtxVec.length;
             if (doubleTriFaceEnabled) {
-                this.m_ivs = new Uint16Array(pivs.length * 2);
+                this.m_ivs = this.createIVSBYSize(pivs.length * 2);
                 this.m_ivs.set(pivs, 0);
                 pivs.reverse();
                 this.m_ivs.set(pivs, pivs.length);
             }
             else {
-                this.m_ivs = new Uint16Array(pivs);
+                this.m_ivs = this.createIVSByArray(pivs);
             }
             this.m_vs = new Float32Array(this.vtxTotal * 3);
             i = 0;

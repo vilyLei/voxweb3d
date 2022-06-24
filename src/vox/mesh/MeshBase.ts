@@ -66,6 +66,12 @@ export default class MeshBase implements IMeshBase {
     drawInsStride: number = 0;
     drawInsTotal: number = 0;
 
+    protected createIVSBYSize(size: number): Uint16Array | Uint32Array {
+        return size > 65535 ? new Uint32Array( size ): new Uint16Array( size );
+    }
+    protected createIVSByArray(arr: number[]): Uint16Array | Uint32Array {
+        return arr.length > 65535 ? new Uint32Array( arr ): new Uint16Array( arr );
+    }
     protected updateWireframeIvs(): void {
 
         this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;

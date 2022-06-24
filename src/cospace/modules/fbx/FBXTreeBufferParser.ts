@@ -94,10 +94,10 @@ class FBXTreeBufferParser {
 
 		const transform = generateTransform( bufObj.userData.transformData );
 		bufObj.transform = transform;
-		if(bufObj.isEntity) {
-			console.log("### ### bufObj.userData: ", bufObj.userData);
-			console.log("### ### bufObj apply transform, transform: ", transform);
-		}
+		// if(bufObj.isEntity) {
+		// 	console.log("### ### bufObj.userData: ", bufObj.userData);
+		// 	console.log("### ### bufObj apply transform, transform: ", transform);
+		// }
 	}
 	// parse the model node for transform data
 	private	getTransformData( model: FBXBufferObject | any, modelNode: any ) {
@@ -122,7 +122,7 @@ class FBXTreeBufferParser {
 
 		if ( 'RotationOffset' in modelNode ) transformData.rotationOffset = modelNode.RotationOffset.value;
 		if ( 'RotationPivot' in modelNode ) transformData.rotationPivot = modelNode.RotationPivot.value;
-		console.log("XXXXXXXXXX getTransformData(),...");
+		// console.log("XXXXXXXXXX getTransformData(),...");
 		model.userData.transformData = transformData;
 
 	}

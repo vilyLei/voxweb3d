@@ -30,7 +30,7 @@ class FBXBufferObject {
 		if(indices == null) {
 			let vtxTotal = this.vertex.length;
 			let vtCount = vtxTotal / 3;
-			indices = vtCount <= 65535 ? new Uint16Array(vtCount) : new Uint32Array(vtCount);	
+			indices = vtCount > 65535 ? new Uint32Array(vtCount) : new Uint16Array(vtCount);	
 			for (let i: number = 0; i < vtCount; ++i) {
 				indices[i] = i;
 			}
