@@ -230,13 +230,13 @@ class VerifierScene {
 		// url = "static/private/fbx/tri.fbx";
 		// url = "static/private/fbx/plane.fbx";
 		// url = "static/private/fbx/base2.fbx";
-		url = "static/private/fbx/base3.fbx";
+		// url = "static/private/fbx/base3.fbx";
 		// url = "static/private/fbx/model_500W.fbx";
 		// url = "static/private/fbx/nvxie_zzb.fbx";
 		// url = "static/private/fbx/3279.fbx";
 		// url = "static/private/fbx/3279_b.fbx";
 		// url = "static/private/fbx/model_1000W.fbx";
-		// url = "static/private/fbx/Samba_Dancing.fbx";
+		url = "static/private/fbx/Samba_Dancing.fbx";
 		// url = "static/private/fbx/monkey.fbx";
 		this.addFBX( [url] );
 

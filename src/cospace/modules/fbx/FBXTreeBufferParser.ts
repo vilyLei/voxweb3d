@@ -80,9 +80,9 @@ class FBXTreeBufferParser {
 	
 	private parseBufObjTransData(bufObj: FBXBufferObject, modelID: string,  connections: Map<number, any>, fbxTree: FBXTreeMap ): void {
 
-		console.log("parseBufObjTransData(), modelID: ",modelID);
+		// console.log("parseBufObjTransData(), modelID: ",modelID);
 		const modelNodes = fbxTree.Objects.Model;
-		console.log("parseBufObjTransData(), modelNodes: ",modelNodes);
+		// console.log("parseBufObjTransData(), modelNodes: ",modelNodes);
 		const node = modelNodes[ modelID ];
 		this.getTransformData( bufObj, node );
 		if ( bufObj.parent ) {
@@ -150,11 +150,11 @@ class FBXTreeBufferParser {
 		if(this.m_geomParser != null) {
 			obj = this.m_geomParser.parseGeomBufNext();
 			let ID = obj.ID;
-			console.log("this.m_fbxTree.map: ", this.m_fbxTree.map);
-			console.log("parseGeomBufNext(), ID, id: ", ID,obj.id);
+			// console.log("this.m_fbxTree.map: ", this.m_fbxTree.map);
+			// console.log("parseGeomBufNext(), ID, id: ", ID,obj.id);
 			const relationships = this.m_connections.get( obj.id );
-			console.log("this.m_connections: ",this.m_connections);
-			console.log("relationships: ",relationships);
+			// console.log("this.m_connections: ",this.m_connections);
+			// console.log("relationships: ",relationships);
 			let modelID: string = "";
 			modelID = relationships.parents[0].ID + "";
 			// relationships.children.forEach( function ( child: any ) {
@@ -188,20 +188,20 @@ class FBXTreeBufferParser {
 		if ( 'Connections' in fbxTree ) {
 
 			const rawConnections = fbxTree.Connections.connections;
-			console.log("parseConnections(), begin...");
+			// console.log("parseConnections(), begin...");
 			rawConnections.forEach( function ( rawConnection: any ) {
 
 				const fromID = rawConnection[ 0 ];
 				const toID = rawConnection[ 1 ];
-				console.log("parseConnections(), fromID, toID: ", fromID, toID);
+				// console.log("parseConnections(), fromID, toID: ", fromID, toID);
 				const relationship = rawConnection[ 2 ];
 
-				let boo: boolean = false;
+				// let boo: boolean = false;
 				if ( ! connectionMap.has( fromID ) ) {
-					if(fromID == 985892303) {
-						boo = true;
-						console.log("parseConnections(), ! connectionMap.has( 985892303 ), fromID: ", fromID);
-					}
+					// if(fromID == 985892303) {
+					// 	boo = true;
+					// 	console.log("parseConnections(), ! connectionMap.has( 985892303 ), fromID: ", fromID);
+					// }
 					connectionMap.set( fromID, {
 						parents: [],
 						children: []
@@ -211,13 +211,13 @@ class FBXTreeBufferParser {
 
 				const parentRelationship = { ID: toID, relationship: relationship };
 				connectionMap.get( fromID ).parents.push( parentRelationship );
-				if(fromID == 985892303) {
-					console.log("XXXXX ! connectionMap.has( toID ): ", ! connectionMap.has( toID ));
-				}
+				// if(fromID == 985892303) {
+				// 	console.log("XXXXX ! connectionMap.has( toID ): ", ! connectionMap.has( toID ));
+				// }
 				if ( ! connectionMap.has( toID ) ) {
-					if(fromID == 985892303) {
-						console.log("XXXXX parseConnections(), build toID: ", toID);
-					}
+					// if(fromID == 985892303) {
+					// 	console.log("XXXXX parseConnections(), build toID: ", toID);
+					// }
 					connectionMap.set( toID, {
 						parents: [],
 						children: []

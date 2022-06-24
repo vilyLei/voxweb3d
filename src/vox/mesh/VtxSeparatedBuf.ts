@@ -38,7 +38,6 @@ export default class VtxSeparatedBuf implements IVtxBuf {
     }
     
     getAttribsTotal(): number {
-        console.log("VtxSeparatedBuf::getAttribsTotal(), this.m_bufersTotal: ",this.m_bufersTotal);
         return this.m_bufersTotal;
     }
     getF32DataAt(index: number): Float32Array {

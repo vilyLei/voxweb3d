@@ -159,7 +159,7 @@ class FBXBufferLoader {
     private parseGeometryBySteps(buffer: ArrayBuffer, path: string): void {
 
         // console.log("FBXBufferLoader::parseGeomdtry(), buffer.byteLength: ", buffer.byteLength);
-        console.log("FBXBufferLoader::parseGeomdtry(), isFbxFormatBinary( buffer ): ", isFbxFormatBinary( buffer ));
+        // console.log("FBXBufferLoader::parseGeomdtry(), isFbxFormatBinary( buffer ): ", isFbxFormatBinary( buffer ));
 
         let fbxTree: FBXTree;
 

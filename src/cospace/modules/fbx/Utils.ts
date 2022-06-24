@@ -143,7 +143,6 @@ function generateTransform( transformData: any ): Matrix4 {
 	const lLSM = lScalingM;
 	const lGlobalRS = new Matrix4();
 
-	console.log("@@@@@ generateTransform(), inheritType: ",inheritType);
 	if ( inheritType === 0 ) {
 
 		lGlobalRS.copy( lParentGRM ).multiply( lLRM ).multiply( lParentGSM ).multiply( lLSM );
@@ -168,36 +167,7 @@ function generateTransform( transformData: any ): Matrix4 {
 	const lScalingPivotM_inv = lScalingPivotM.clone().invertThis();
 	// Calculate the local transform matrix
 	let lTransform = lTranslationM.clone().multiply( lRotationOffsetM ).multiply( lRotationPivotM ).multiply( lPreRotationM ).multiply( lRotationM ).multiply( lPostRotationM ).multiply( lRotationPivotM_inv ).multiply( lScalingOffsetM ).multiply( lScalingPivotM ).multiply( lScalingM ).multiply( lScalingPivotM_inv );
-	/*
-	// console.log("XXXX MF 6 a0, lTransform: ",lTranslationM);
-	let lTransform = lTranslationM.clone();
-	// console.log("XXXX MF 6 a1, lTransform: ",lTransform);
-	lTransform = lTransform.multiply( lRotationOffsetM );
-
-	// console.log("XXXX MF 7 a0, lTransform: ",lTransform);
-
-	lTransform = lTransform.multiply( lRotationPivotM );
-	lTransform = lTransform.multiply( lPreRotationM );
-	// console.log("XXXX MF 7 a2, lTransform: ",lTransform);
-	lTransform = lTransform.multiply( lRotationM );
-	// console.log("XXXX MF 7 a3, lTransform: ",lTransform);
-	lTransform = lTransform.multiply( lPostRotationM );
-	// console.log("XXXX MF 7 a4, lTransform: ",lTransform);
-	lTransform = lTransform.multiply( lRotationPivotM_inv );
-	// console.log("XXXX MF 7 a5, lTransform: ",lTransform);
-	lTransform = lTransform.multiply( lScalingOffsetM );
-	// console.log("XXXX MF 7 a6, lTransform: ",lTransform);
-	lTransform = lTransform.multiply( lScalingPivotM );
-	// console.log("XXXX MF 7 a7, lTransform: ",lTransform);
-	lTransform = lTransform.multiply( lScalingM );
-	// lScalingM.setData([100, 0, 0, 0, 0, 100, 0, 0, 0, 0, 100, 0, 0, 0, 0, 1]);
-	// console.log("XXXX MF 7 a8, lTransform: ",lTransform);
-	console.log("XXXX MF 7 a1 param, lScalingM: ",lScalingM);
-	console.log("XXXX MF 7 a1, lTransform: ",lTransform);
-	return lTransform;
-	lTransform = lTransform.multiply( lScalingPivotM_inv );
-	// console.log("XXXX MF 7, lTransform: ",lTransform);
-	//*/
+	
 	const lLocalTWithAllPivotAndOffsetInfo = new Matrix4().copyTranslation( lTransform );
 
 	const lGlobalTranslation = lParentGX.clone().multiply( lLocalTWithAllPivotAndOffsetInfo );
@@ -208,128 +178,7 @@ function generateTransform( transformData: any ): Matrix4 {
 	// from global to local
 	lTransform.premultiply( lParentGX.invertThis() );
 
-	return lTransform;
-	/*
-	const lTranslationM = new Matrix4();
-	const lPreRotationM = new Matrix4();
-	const lRotationM = new Matrix4();
-	const lPostRotationM = new Matrix4();
-
-	const lScalingM = new Matrix4();
-	const lScalingPivotM = new Matrix4();
-	const lScalingOffsetM = new Matrix4();
-	const lRotationOffsetM = new Matrix4();
-	const lRotationPivotM = new Matrix4();
-
-	const lParentGX = new Matrix4();
-	const lParentLX = new Matrix4();
-	const lGlobalT = new Matrix4();
-
-	const inheritType = ( transformData.inheritType ) ? transformData.inheritType : 0;
-
-	if ( transformData.translation ) lTranslationM.setTranslation(tempVec3.fromArray(transformData.translation));
-
-	if ( transformData.preRotation ) {
-
-		const array = transformData.preRotation.map( MathConst.DegreeToRadian );
-		array.push( transformData.eulerOrder );
-		lPreRotationM.makeRotationFromEuler( tempEuler.fromArray( array ) );
-
-	}
-
-	if ( transformData.rotation ) {
-
-		const array = transformData.rotation.map( MathConst.DegreeToRadian );
-		array.push( transformData.eulerOrder );
-		lRotationM.makeRotationFromEuler( tempEuler.fromArray( array ) );
-
-	}
-
-	if ( transformData.postRotation ) {
-
-		const array = transformData.postRotation.map( MathConst.DegreeToRadian );
-		array.push( transformData.eulerOrder );
-		lPostRotationM.makeRotationFromEuler( tempEuler.fromArray( array ) );
-		lPostRotationM.invert();
-
-	}
-	
-	tempVec3.fromArray(transformData.scale);
-	if ( transformData.scale ) lScalingM.setScaleXYZ( tempVec3.x, tempVec3.y, tempVec3.z );
-
-	// Pivots and offsets
-	if ( transformData.scalingOffset ) lScalingOffsetM.setTranslation( tempVec3.fromArray( transformData.scalingOffset ) );
-	if ( transformData.scalingPivot ) lScalingPivotM.setTranslation( tempVec3.fromArray( transformData.scalingPivot ) );
-	if ( transformData.rotationOffset ) lRotationOffsetM.setTranslation( tempVec3.fromArray( transformData.rotationOffset ) );
-	if ( transformData.rotationPivot ) lRotationPivotM.setTranslation( tempVec3.fromArray( transformData.rotationPivot ) );
-
-	// parent transform
-	if ( transformData.parentMatrixWorld ) {
-
-		lParentLX.copyFrom( transformData.parentMatrix );
-		lParentGX.copyFrom( transformData.parentMatrixWorld );
-
-	}
-
-	const lLRM = lPreRotationM.clone().multiply(lRotationM).multiply(lPostRotationM);
-	// Global Rotation
-	const lParentGRM = new Matrix4();
-	lParentGRM.extractRotation( lParentGX );
-
-	// Global Shear*Scaling
-	const lParentTM = new Matrix4();
-	lParentTM.copyTranslation( lParentGX );
-
-	const lParentGRSM = lParentTM.clone().invertThis().multiply(lParentGX);
-
-	const lParentGSM = lParentGRM.clone().invertThis().multiply(lParentGRSM);
-
-	const lLSM = lScalingM;
-
-	const lGlobalRS = new Matrix4();
-	console.log("@@@@@ generateTransform(), inheritType: ",inheritType);
-	if ( inheritType === 0 ) {
-
-		lGlobalRS.copy(lParentGRM).multiply(lLRM).multiply(lParentGSM).multiply(lLSM);
-
-	} else if ( inheritType === 1 ) {
-		lGlobalRS.copy(lParentGRM).multiply(lParentGSM).multiply(lLRM).multiply(lLSM);
-
-	} else {
-		lParentLX.getScale(tempVec3);
-		const lParentLSM = new Matrix4();
-		lParentLSM.setScale(tempVec3);
-		
-		const lParentLSM_inv = lParentLSM.clone().invertThis();		
-		const lParentGSM_noLocal = lParentGSM.clone().multiply(lParentLSM_inv);
-		lGlobalRS.copy( lParentGRM ).multiply(lLRM).multiply(lParentGSM_noLocal).multiply(lLSM);
-
-	}
-
-	const lRotationPivotM_inv = lRotationPivotM.clone().invertThis();
-	const lScalingPivotM_inv = lScalingPivotM.clone().invertThis();
-
-	// exec calculate the local transform matrix
-	let lTransform = lTranslationM.clone().multiply( lRotationOffsetM ).multiply( lRotationPivotM ).multiply( lPreRotationM ).multiply( lRotationM ).multiply( lPostRotationM ).multiply( lRotationPivotM_inv ).multiply( lScalingOffsetM ).multiply( lScalingPivotM ).multiply( lScalingM ).multiply( lScalingPivotM_inv );
-
-	const lLocalTWithAllPivotAndOffsetInfo = new Matrix4().copyTranslation( lTransform );
-
-	const lGlobalTranslation = new Matrix4();
-	lGlobalTranslation.copyFrom(lParentGX);
-	lGlobalTranslation.append(lLocalTWithAllPivotAndOffsetInfo);
-
-
-	lGlobalT.copyTranslation( lGlobalTranslation );
-
-	lTransform = new Matrix4();
-	lTransform.append(lGlobalRS);
-
-	// from global to local
-	lParentGX.invert();
-	lTransform.append( lParentGX );
-
-	return lTransform;
-	//*/
+	return lTransform;	
 }
 
 // Returns the three.js intrinsic Euler order corresponding to FBX extrinsic Euler order

@@ -27,7 +27,7 @@ class FBXSceneNode extends SceneNode {
 				// console.log(new Float32Array([100, 0, 0, 0, 0, -0.000016292067955264296, -99.99999999999866, 0, 0, 99.99999999999866, -0.000016292067955264296, 0, 351.5144958496094, 0, 0, 1]));
 				// // console.log(new Float32Array([100, 0, 0, 0, 0, -0.000016292067955264296, -99.99999999999866, 0, 0, 99.99999999999866, -0.000016292067955264296, 0, 0, 0, 0, 1]));
 				// bufObj.transform.setData([100, 0, 0, 0, 0, -0.000016292067812173627, -100, 0, 0, 100, -0.000016292067812173627, 0, 351.5144958496094, 0, 0, 1]);
-				console.log(bufObj.transform.getLocalFS32());
+				// console.log(bufObj.transform.getLocalFS32());
 				// bufObj.transform.setTranslationXYZ(351, 0, 0);
 				this.m_modelsTotal = total;
 				this.m_waitPartsTotal = total;
