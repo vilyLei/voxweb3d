@@ -17,10 +17,6 @@ import { VerifierScene } from "./renderVerifier/VerifierScene";
 import Color4 from "../../vox/material/Color4";
 
 export class RenderingVerifier {
-	/**
-	 * (引擎)数据协同中心实例
-	 */
-	private m_cospace: CoSpace = new CoSpace();
 
 	private m_rscene: RendererScene = null;
 	private m_camTrack: CameraTrack = null;
@@ -100,13 +96,7 @@ export class RenderingVerifier {
 			axis.initialize(300);
 			this.m_rscene.addEntity(axis);
 			
-			// this.m_cospace.geometry.setTaskModuleUrls(["static/renderingVerifier/modules/m1.js"]);
-			// // 初始化数据协同中心
-			// this.m_cospace.initialize(3, "static/renderingVerifier/modules/core.js", true);
-			this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js", true);
-			// this.m_cospace.initialize(4, "cospace/core/code/ThreadCore.umd.js", true);
-			
-			this.m_verifierScene.initialize(this.m_rscene, this.m_cospace);
+			this.m_verifierScene.initialize(this.m_rscene);
 			this.m_verifierScene.initTest();
 		}
 	}

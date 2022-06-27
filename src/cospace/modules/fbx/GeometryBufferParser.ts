@@ -4,7 +4,6 @@ import { FBXBufferObject } from "./FBXBufferObject";
 import { BinaryReader } from "./BinaryReader";
 import { ElementGeomData } from "./ElementGeomData";
 import { BufPropertyParser } from "./BufPropertyParser";
-import * as fflate from '../libs/fflate.module.js';
 
 // parse Geometry data from FBXTree and return map of BufferGeometries
 class GeometryBufferParser {

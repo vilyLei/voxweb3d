@@ -87,7 +87,7 @@ class ReceiverSchedule {
         }
         receiver.dataUnitUUID = unit.getUUID();
         let listUUID = receiver.listUUID;
-        console.log("this.m_receiverPool.addItem(receiver).................");
+        // console.log("this.m_receiverPool.addItem(receiver).................");
         this.m_receiverPool.addItem(receiver);
         if(listUUID == receiver.listUUID) {          
           throw("ReceiverSchedule::addReceiver() is the illegal operation !!!(listUUID("+listUUID+"), receiver.listUUID("+receiver.listUUID+"))");
