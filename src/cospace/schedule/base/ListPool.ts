@@ -44,7 +44,6 @@ class ListPool {
                     item.listUUID = this.m_total;
                     this.m_total++;
                     this.m_list.push(item);
-                    console.log("addItem(), B this.m_total: ",this.m_total);
                 }
             } else {
                 throw Error("ListPool::addItem() is the illegal operation !!!");

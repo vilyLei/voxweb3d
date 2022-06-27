@@ -15,7 +15,7 @@ class ResourceReceiver<DataUnitType extends DataUnit> extends DataReceiverBase {
     constructor() {
         super();
         ResourceReceiver.s_total++
-        console.log("### ResourceReceiver.s_total: ",ResourceReceiver.s_total);
+        // console.log("### ResourceReceiver.s_total: ",ResourceReceiver.s_total);
     }
     receiveDataUnit(unit: DataUnitType, status: number): void {
         // console.log("ResourceReceiver::receiveDataUnit(), unit: ", unit);

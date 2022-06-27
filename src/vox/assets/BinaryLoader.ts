@@ -13,7 +13,7 @@ export default class BinaryLoader {
     }
 
     async load(url: string, target: ILoaderListerner, headRange: string = "") {
-        console.log("loadBinBuffer, headRange != '': ", headRange != "");
+        // console.log("loadBinBuffer, headRange != '': ", headRange != "");
         const reader = new FileReader();
         reader.onload = e => {
             target.loaded(<ArrayBuffer>reader.result, this.uuid);
@@ -25,7 +25,7 @@ export default class BinaryLoader {
         }
         request.responseType = "blob";
         request.onload = (e) => {
-            console.log("loaded binary buffer request.status: ", request.status,e);
+            // console.log("loaded binary buffer request.status: ", request.status,e);
             if (request.status <= 206) {
                 reader.readAsArrayBuffer(request.response);
             }

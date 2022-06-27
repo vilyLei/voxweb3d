@@ -110,7 +110,7 @@ class ModuleCTMGeomParser extends BaseTaskInThread {
         loadErrorCall: (status: number, url: string) => void,
         headRange: string = ""
     ) {
-        console.log("loadBinBuffer, headRange != '': ", headRange != "");
+        // console.log("loadBinBuffer, headRange != '': ", headRange != "");
         const reader = new FileReader();
         reader.onload = (e) => {
             loadedCall(<ArrayBuffer>reader.result, url);
@@ -122,7 +122,7 @@ class ModuleCTMGeomParser extends BaseTaskInThread {
         }
         request.responseType = "blob";
         request.onload = (e) => {
-            console.log("loaded binary buffer request.status: ", request.status, e);
+            // console.log("loaded binary buffer request.status: ", request.status, e);
             if (request.status <= 206) {
                 reader.readAsArrayBuffer(request.response);
             } else {
