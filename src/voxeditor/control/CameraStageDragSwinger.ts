@@ -54,4 +54,7 @@ export default class CameraStageDragSwinger {
     runWithZAxis(): void {
         this.m_dragSwinger.runWithZAxis();
     }
+    runWithCameraAxis(): void {
+        this.m_dragSwinger.runWithCameraAxis();
+    }
 }

@@ -48,11 +48,15 @@ class CameraDragSwinger {
             let abs_dy: number = Math.abs(dy);
             if (abs_dx > abs_dy) {
                 this.m_rotationSpeed = dx * this.rotationSpeed;
-                if (abs_dx > 0.5) (this.m_camera as any).swingHorizontalWithAxis(this.m_rotationSpeed, Vector3D.Y_AXIS);
+                if (abs_dx > 0.5) {
+                    (this.m_camera as any).swingHorizontalWithAxis(this.m_rotationSpeed, Vector3D.Y_AXIS);
+                }
             }
             else {
                 this.m_rotationSpeed = 0.0;
-                if (abs_dy > 0.5) (this.m_camera as any).swingVertical(-dy * this.rotationSpeed);
+                if (abs_dy > 0.5) {
+                    (this.m_camera as any).swingVertical(-dy * this.rotationSpeed);
+                }
             }
             this.m_mouseX = this.m_stage3D.mouseX;
             this.m_mouseY = this.m_stage3D.mouseY;
@@ -73,10 +77,14 @@ class CameraDragSwinger {
             let abs_dx: number = Math.abs(dx);
             let abs_dy: number = Math.abs(dy);
             if (abs_dx > abs_dy) {
-                if (abs_dx > 0.5) (this.m_camera as any).swingHorizontalWithAxis(dx * 0.2, Vector3D.Z_AXIS);
+                if (abs_dx > 0.5) {
+                    (this.m_camera as any).swingHorizontalWithAxis(dx * 0.2, Vector3D.Z_AXIS);
+                }
             }
             else {
-                if (abs_dy > 0.5) (this.m_camera as any).swingVertical(dy * -0.2);
+                if (abs_dy > 0.5) {
+                    (this.m_camera as any).swingVertical(dy * -0.2);
+                }
             }
             this.m_mouseX = this.m_stage3D.mouseX;
             this.m_mouseY = this.m_stage3D.mouseY;
@@ -84,6 +92,35 @@ class CameraDragSwinger {
         else if( this.autoRotationEnabled ) {
             if(this.m_aotuRotationDelay < 0) {
                 (this.m_camera as any).swingHorizontalWithAxis(this.autoRotationSpeed, Vector3D.Z_AXIS);
+            }
+            else {
+                this.m_aotuRotationDelay --;
+            }
+        }
+    }
+    
+    runWithCameraAxis(): void {
+        if (this.m_enabled) {
+            let dx: number = this.m_mouseX - this.m_stage3D.mouseX;
+            let dy: number = this.m_mouseY - this.m_stage3D.mouseY;
+            let abs_dx: number = Math.abs(dx);
+            let abs_dy: number = Math.abs(dy);
+            if (abs_dx > abs_dy) {
+                if (abs_dx > 0.5) {
+                    (this.m_camera as any).swingHorizontal(dx * 0.2);
+                }
+            }
+            else {
+                if (abs_dy > 0.5) {
+                    (this.m_camera as any).swingVertical(dy * -0.2);
+                }
+            }
+            this.m_mouseX = this.m_stage3D.mouseX;
+            this.m_mouseY = this.m_stage3D.mouseY;
+        }
+        else if( this.autoRotationEnabled ) {
+            if(this.m_aotuRotationDelay < 0) {
+                (this.m_camera as any).swingHorizontal(this.autoRotationSpeed);
             }
             else {
                 this.m_aotuRotationDelay --;
