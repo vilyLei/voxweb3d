@@ -178,7 +178,7 @@ class GeometryParser {
 
 		const geoInfo = this.parseGeoNode( geoNode, skeleton );
 		const buffers = this.genBuffers( geoInfo );
-		console.log("GeometryParser::genGeometry(), buffers: ",buffers);
+		// console.log("GeometryParser::genGeometry(), buffers: ",buffers);
 		return buffers;
 		/*
 		const geo = new BufferGeometry();

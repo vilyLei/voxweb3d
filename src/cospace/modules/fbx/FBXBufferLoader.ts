@@ -132,7 +132,23 @@ class FBXBufferLoader {
             onLoad(model.toGeometryModel(), model, this.m_parseIndex-1, tot, this.m_url);
         }
     }
-    
+    private startupParseGeom(): void {
+        // console.log("FBXBufferLoader::startupParseGeom()...");
+        this.m_tidGeom = setTimeout(this.updateGeomParse.bind(this), 30);
+        // let model = this.m_fbxTreeBufParser.parseGeomBufAt( 7 );
+        // this.m_parseIndex++;
+        // let tot = this.m_fbxTreeBufParser.getParseTotal();
+        // let onLoad = this.m_parseOnLoad;
+        // onLoad(model.toGeometryModel(), model, this.m_parseIndex-1, tot, this.m_url);
+
+    }
+    parseModelAt(i: number): void {
+        // let model = this.m_fbxTreeBufParser.parseGeomBufAt( i );
+        // this.m_parseIndex++;
+        // let tot = this.m_fbxTreeBufParser.getParseTotal();
+        // let onLoad = this.m_parseOnLoad;
+        // onLoad(model.toGeometryModel(), model, this.m_parseIndex-1, tot, this.m_url);
+    }
     private m_tidBin: any = -1;
     private updateBinParse(): void {
         if (this.m_tidBin > -1) {
@@ -148,7 +164,7 @@ class FBXBufferLoader {
                 this.m_fbxTreeBufParser = new FBXTreeBufferParser();
                 this.m_fbxTreeBufParser.parseBegin(this.m_binParser.getFBXTree(), this.m_binParser.getReader());
                 if (this.m_fbxTreeBufParser != null) {
-                    this.m_tidGeom = setTimeout(this.updateGeomParse.bind(this), 30);
+                    this.startupParseGeom();
                 }
                 // console.log("##$$$ ############ parse bin end, totalBP: ", this.m_binParser.totalBP, this.m_binParser.totalBPTime);
                 this.m_binParser = null;

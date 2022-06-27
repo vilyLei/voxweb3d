@@ -111,6 +111,7 @@ export class RenderingVerifier {
 		}
 	}
 	private mouseDown(evt: any): void {
+		this.m_verifierScene.mouseDown( evt );
 	}
 	private mouseUp(evt: any): void { }
 	private m_lookV: Vector3D = new Vector3D(0.0, 0.0, 0.0);

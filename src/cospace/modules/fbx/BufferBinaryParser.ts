@@ -203,10 +203,10 @@ class BufferBinaryParser {
 			console.log("UV begin propertyList: ", propertyList);
 		}
 		//*/
-		// if(name == "PolygonVertexIndex"){
-		// 	console.log("parseNode name", name, " m_encoding: ", this.m_encoding, ",m_ppType: ",this.m_ppType);
-		// 	console.log("PolygonVertexIndex begin propertyList: ", propertyList);
-		// }
+		if(name == "PolygonVertexIndex"){
+			console.log("parseNode name", name, " encoding: ", this.m_pptParser.encoding, ",ppType: ",this.m_pptParser.ppType);
+			console.log("PolygonVertexIndex begin propertyList: ", propertyList);
+		}
 		// if(name == "PolygonVertexIndex"){
 		// 	console.log("parseNode name", name, " m_encoding: ", this.m_encoding, ",m_ppType: ",this.m_ppType);
 		// 	console.log("PolygonVertexIndex begin propertyList: ", propertyList);

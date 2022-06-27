@@ -4,8 +4,7 @@ import { FBXBufferObject } from "../../modules/fbx/FBXBufferObject";
 import { SceneNode } from "./SceneNode";
 
 class FBXSceneNode extends SceneNode {
-
-
+	private m_fbxBufLoader: FBXBufferLoader;
 	constructor() { super(); }
 
 	load(urls: string[]): void {
@@ -18,25 +17,25 @@ class FBXSceneNode extends SceneNode {
 		this.m_partsTotal = 0;
 		this.m_showTotal = 0;
 		let fbxBufLoader = new FBXBufferLoader();
+		this.m_fbxBufLoader = fbxBufLoader;
 		fbxBufLoader.loadBySteps(
 			url,
 			(model: GeometryModelDataType, bufObj: FBXBufferObject, index: number, total: number, url: string): void => {
 
-				// console.log("loadFBXBySteps(), model: ", index + "/" + total);
-				// console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-				// console.log(new Float32Array([100, 0, 0, 0, 0, -0.000016292067955264296, -99.99999999999866, 0, 0, 99.99999999999866, -0.000016292067955264296, 0, 351.5144958496094, 0, 0, 1]));
-				// // console.log(new Float32Array([100, 0, 0, 0, 0, -0.000016292067955264296, -99.99999999999866, 0, 0, 99.99999999999866, -0.000016292067955264296, 0, 0, 0, 0, 1]));
-				// bufObj.transform.setData([100, 0, 0, 0, 0, -0.000016292067812173627, -100, 0, 0, 100, -0.000016292067812173627, 0, 351.5144958496094, 0, 0, 1]);
-				// console.log(bufObj.transform.getLocalFS32());
-				// bufObj.transform.setTranslationXYZ(351, 0, 0);
 				this.m_modelsTotal = total;
 				this.m_waitPartsTotal = total;
-				this.initEntity(model, bufObj.transform);
+				this.initEntity(model, bufObj.transform, index);
 				if ((index + 1) == total) {
 					this.m_waitPartsTotal = 0;
 				}
 			}
 		);
+	}
+	private m_mi: number = 0;
+	mouseDown(evt: any): void {
+		// console.log("mouse down");
+		// this.m_fbxBufLoader.parseModelAt( this.m_mi );
+		// this.m_mi ++;
 	}
 	private loadFBX(): void {
 

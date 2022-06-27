@@ -26,37 +26,24 @@ const float MATH_3PI = 3.0 * MATH_PI;
 const float MATH_1PER2PI = 0.5 * MATH_PI;
 const float MATH_3PER2PI = 3.0 * MATH_PI * 0.5;
 
-const vec3 colors[4] = vec3[] (
-    vec3(1.0,1.0,1.0),
-    vec3(0.0,1.0,1.0),
-    vec3(0.0,0.0,1.0),
-    vec3(1.0,0.0,1.0)
-    );
-float getRadianByXY(float dx, float dy) {
-    float rad = atan(dy/dx);
-    return dx >= 0.0 ? rad:(MATH_3PI+rad);
-}
-vec3 getColor(float xoyf) {
-    
-    xoyf = fract(xoyf + 1.0);
-    int i = int(floor(4.0 * xoyf));
-    return colors[i];
-}
-
+const vec3 gama = vec3(1.0/2.2);
 in vec4 v_param;
 layout(location = 0) out vec4 FragColor;
 void main() {
-    float flag = gl_FrontFacing ? 1.0 : 0.0;
+
+    bool facing = gl_FrontFacing;
     vec2 dv = fract(gl_FragCoord.xy/vec2(5.0)) - vec2(0.5);
     vec2 f2 = sign(dv);
-    // FragColor = vec4(sign(f2.x * f2.y), 1.0, 1.0, 1.0) * (1.0 - flag) + flag * vec4(normalize(v_param.xyz), 1.0);
+    
     vec3 nv = normalize(v_param.xyz);
-    vec3 color = pow(nv, vec3(1.0/2.2));
+    vec3 color = pow(nv, gama);
 
-    // float xoyf = getRadianByXY(nv.x,nv.y) / MATH_2PI;
-    // color = getColor(xoyf);
+    vec3 frontColor = color.xyz;
+    vec3 backColor = vec3(sign(f2.x * f2.y), 1.0, 1.0);
+    vec3 dstColor = facing ? frontColor : backColor;
 
-    FragColor = vec4(color, 1.0);
+    FragColor = vec4(dstColor, 1.0);
+    // FragColor = vec4(color, 1.0);
 }
 `;
         return fragCode;

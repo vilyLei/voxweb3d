@@ -157,15 +157,17 @@ class FBXTreeBufferParser {
 			// console.log("relationships: ",relationships);
 			let modelID: string = "";
 			modelID = relationships.parents[0].ID + "";
-			// relationships.children.forEach( function ( child: any ) {
-			// 	console.log("XXXX child.ID: ",child.ID);
-			// 	if ( ID == child.ID ) {
-			// 		//geometry = geometryMap.get( child.ID );
-			// 		console.log("child.ID: ",child.ID);
-			// 		modelID = 
-			// 	}
-	
-			// } );
+			this.parseBufObjTransData(obj, modelID, this.m_connections, this.m_fbxTree.map);
+		}
+		return obj;
+	}
+	parseGeomBufAt(i: number): FBXBufferObject {
+		let obj: FBXBufferObject;
+		if(this.m_geomParser != null) {
+			obj = this.m_geomParser.parseGeomBufAt( i );
+			const relationships = this.m_connections.get( obj.id );
+			let modelID: string = "";
+			modelID = relationships.parents[0].ID + "";
 			this.parseBufObjTransData(obj, modelID, this.m_connections, this.m_fbxTree.map);
 		}
 		return obj;

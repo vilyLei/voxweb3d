@@ -8,9 +8,10 @@ import { GeometryModelDataType } from "../../modules/base/GeometryModelDataType"
 import { CoSpace } from "../../CoSpace";
 import { NormalViewerMaterial } from "../material/NormalViewerMaterial";
 import RendererState from "../../../vox/render/RendererState";
-import AABB from "../../../vox/geom/AABB";
 import { ISceneNode } from "./ISceneNode";
 import Matrix4 from "../../../vox/math/Matrix4";
+import { EntityLayout } from "./EntityLayout";
+import BoxFrame3D from "../../../vox/entity/BoxFrame3D";
 
 class SceneNode implements ISceneNode {
 
@@ -37,56 +38,32 @@ class SceneNode implements ISceneNode {
 			this.m_cospace = cospace;
 		}
 	}
+	mouseDown(evt: any): void {
+	}
 	load(urls: string[]): void {
 
 		DivLog.ShowLogOnce("正在解析原数据...");
 		this.m_time = Date.now();
 	}
-	private m_entities: DisplayEntity[] = [];
-	// private m_transforms: DisplayEntity[] = [];
 	protected m_waitPartsTotal: number = -1;
+	private m_entities: DisplayEntity[] = [];
+	private m_transforms: Matrix4[] = [];
+	private m_transes: DisplayEntity[] = [];
+	private m_entityLayout: EntityLayout = new EntityLayout();
+	private m_frameBox: BoxFrame3D = null;
 	private fitToCenter(): void {
+		
+		this.m_entityLayout.fixToPosition(this.m_transes, this.m_transforms, Vector3D.ZERO, 300.0);
 
-		let mat: Matrix4 = new Matrix4();
-		let transform: Matrix4;
-		let currMat: Matrix4 = new Matrix4();
-		let entities = this.m_entities;
-		let aabb: AABB = new AABB();
-		for (let k: number = 0; k < entities.length; ++k) {
-
-			entities[k].update();
-			if (k > 0) aabb.union(entities[k].getGlobalBounds());
-			else aabb.copyFrom(entities[k].getGlobalBounds());
-		}
-		aabb.update();
-		let sx = 300 / aabb.getWidth();
-		let sy = 300 / aabb.getHeight();
-		let sz = 300 / aabb.getLong();
-
-		sx = Math.min(sx, sy, sz);
-		this.m_scaleV.setXYZ(sx, sx, sx);
-		let cv = aabb.center;
-		let offsetV: Vector3D = new Vector3D(-cv.x, -cv.y, -cv.z);
-		offsetV.scaleBy(sx);
-
-		// console.log("sx: ",sx, ", aabb: ",aabb,", offsetV: ",offsetV);
-		for (let k: number = 0; k < entities.length; ++k) {
-			transform = entities[k].getTransform().getParentMatrix();
-			if(transform != null) {
-				mat.identity();
-				mat.setScale(this.m_scaleV);
-				mat.setRotationEulerAngle(0.5 * Math.PI, 0.0,0.0);
-				// mat.setTranslation(offsetV);
-				currMat.copyFrom(transform);
-				currMat.append(mat);
-				
-				entities[k].getTransform().setParentMatrix(currMat);
-			}else {
-				entities[k].setScale3(this.m_scaleV);
-				entities[k].offsetPosition(offsetV);
-			}
-			entities[k].update();
-		}
+		// //this.m_entityLayout.calcAABB(this.m_entities, this.m_transforms);
+		// if(this.m_frameBox == null) {
+		// 	this.m_frameBox = new BoxFrame3D();
+		// 	this.m_frameBox.initializeByAABB( this.m_entityLayout.getAABB() );
+		// 	this.m_rscene.addEntity( this.m_frameBox );
+		// } else {
+		// 	this.m_frameBox.updateFrameByAABB(this.m_entityLayout.getAABB());
+		// 	this.m_frameBox.updateMeshToGpu();
+		// }
 	}
 	private normalCorrectionTest(model: GeometryModelDataType): boolean {
 		let k = 3 * 5;
@@ -151,7 +128,7 @@ class SceneNode implements ISceneNode {
 		return correct;
 	}
 	private m_lossTime: number = 0;
-	protected initEntity(model: GeometryModelDataType, transform: Matrix4 = null): void {
+	protected initEntity(model: GeometryModelDataType, transform: Matrix4 = null, index: number = 0): void {
 		if (this.m_rscene != null && model != null) {
 
 			// let correct = this.normalCorrectionTest( model );
@@ -161,7 +138,6 @@ class SceneNode implements ISceneNode {
 			// console.log("initEntity lossTime: ", (Date.now() - this.m_time) + " ms");
 
 			this.m_vtxTotal += model.vertices.length;
-			let time = Date.now();
 
 			let material = new NormalViewerMaterial();
 			material.initializeByCodeBuf();
@@ -176,7 +152,7 @@ class SceneNode implements ISceneNode {
 
 			dataMesh.initialize();
 
-			// console.log("ctm dataMesh: ", dataMesh);
+			// console.log(index, ",dataMesh.bounds.radius: ", dataMesh.bounds.radius);
 
 			// console.log("build lossTime: ", (Date.now() - time) + " ms");
 			// console.log("this.m_vtxTotal: ", this.m_vtxTotal + "个顶点， tris: ", dataMesh.trisNumber, ",vtCount: ", dataMesh.vtCount);
@@ -189,17 +165,17 @@ class SceneNode implements ISceneNode {
 			entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
 			entity.setMesh(dataMesh);
 			entity.setMaterial(material);
-			// entity.setScale3( this.m_scaleV );
 			entity.setVisible(false);
-			if(transform != null) {
-				entity.getTransform().setParentMatrix( transform );
-			}
+
+			this.m_transforms.push( transform );
+			this.m_transes.push( entity );
+
+
+			this.fitToCenter();
 			this.m_wait_entities.push(entity);
-			// entity.setScaleXYZ(0.5,0.5,0.5);
-			// entity.setIvsParam(0, dataMesh.vtCount / 3);
+			this.m_entities.push(entity);
 			this.m_rscene.addEntity(entity);
 			entity.update();
-			this.m_entities.push(entity);
 		}
 	}
 
@@ -209,6 +185,8 @@ class SceneNode implements ISceneNode {
 
 	clear(): void {
 		if (this.isFinish()) {
+			this.m_transforms = [];
+			this.m_transes = [];
 			if (this.m_entities != null) {
 				let entities = this.m_entities;
 				for (let k: number = 0; k < entities.length; ++k) {
@@ -231,11 +209,11 @@ class SceneNode implements ISceneNode {
 		// 	this.m_rotV.y += 0.5;
 		// }
 		if (!this.isFinish()) {
-			if (this.m_waitPartsTotal == 0) {
-				this.m_waitPartsTotal = -1;
-				this.m_delay = 2;
-				this.fitToCenter();
-			}
+			// if (this.m_waitPartsTotal == 0) {
+			// 	this.m_waitPartsTotal = -1;
+			// 	this.m_delay = 2;
+			// 	this.fitToCenter();
+			// }
 			if (this.m_delay < 1) {
 				if (this.m_wait_entities.length > 0) {
 					let entity = this.m_wait_entities[this.m_wait_entities.length - 1];

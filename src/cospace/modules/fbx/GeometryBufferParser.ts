@@ -3,6 +3,7 @@ import { FBXTreeMap } from "./FBXTree";
 import { FBXBufferObject } from "./FBXBufferObject";
 import { BinaryReader } from "./BinaryReader";
 import { ElementGeomData } from "./ElementGeomData";
+import { BufPropertyParser } from "./BufPropertyParser";
 import * as fflate from '../libs/fflate.module.js';
 
 // parse Geometry data from FBXTree and return map of BufferGeometries
@@ -15,6 +16,7 @@ class GeometryBufferParser {
 	private m_fbxTree: FBXTreeMap;
 	private m_connections: Map<number, any>;
 	private m_reader: BinaryReader = null;
+	private m_bufPpt: BufPropertyParser = new BufPropertyParser();
 	
 	constructor(){}
 
@@ -88,8 +90,6 @@ class GeometryBufferParser {
 	parseGeomBufNext(): FBXBufferObject {
 		// console.log("GeometryBufferParser::parseGeomBufNext(), this.m_nodeIDList: ",this.m_nodeIDList);
 		if(this.isParsing()) {
-			const modelNodes = this.m_fbxTree.Objects.Model;
-			// console.log("#### modelNodes: ", modelNodes);
 			const geoNodes = this.m_fbxTree.Objects.Geometry;
 			let id = this.m_idLst.pop();
 			let ID = this.m_nodeIDList.pop();
@@ -103,6 +103,26 @@ class GeometryBufferParser {
 				this.m_reader = null;
 			}
 			return obj;
+		}
+		return null;
+	}
+	parseGeomBufAt(i: number): FBXBufferObject {
+		if(i >= 0 && i < this.m_idLst.length) {
+			if(this.isParsing()) {
+				const geoNodes = this.m_fbxTree.Objects.Geometry;
+				let id = this.m_idLst[i];
+				let ID = this.m_nodeIDList[i];
+				const relationships = this.m_connections.get( id );
+				let obj = this.parseGeometryBuffer( relationships, geoNodes[ ID ], this.m_deformers, this.m_fbxTree );
+				if(obj != null) {
+					obj.ID = ID;
+					obj.id = id;
+				}
+				if(!this.isParsing()) {
+					this.m_reader = null;
+				}
+				return obj;
+			}
 		}
 		return null;
 	}
@@ -178,19 +198,8 @@ class GeometryBufferParser {
 		return geoInfo;
 
 	}
-	private buildNumberData(params: number[]): number[] {
-
-		let u8Arr = this.m_reader.getArrayU8BufferByOffset( params[0], params[1] );
-		const data = fflate.unzlibSync( u8Arr, null );
-		const r2 = new BinaryReader( data.buffer );
-		return r2.getFloat64Array( params[2] );
-	}
-	private buildInt32Data(params: number[]): number[] {
-
-		let u8Arr = this.m_reader.getArrayU8BufferByOffset( params[0], params[1] );
-		const data = fflate.unzlibSync( u8Arr, null );
-		const r2 = new BinaryReader( data.buffer );
-		return r2.getInt32Array( params[2] );
+	private parseData(params: number[]): number[] {
+		return this.m_bufPpt.parseDirec(this.m_reader, params);
 	}
 	private m_egd: ElementGeomData = new ElementGeomData();
 	private getBufObj( geoInfo: any ): FBXBufferObject {
@@ -204,30 +213,30 @@ class GeometryBufferParser {
 		let faceUVs: number[][] = null;
 		let faceWeights: number[] = [];
 		let faceWeightIndices: number[] = [];
-
-		// 使用的时候在解码得到实际需要的数据
-		if(geoInfo.vertexIndices.length == 3) geoInfo.vertexIndices = this.buildInt32Data(geoInfo.vertexIndices);
-		if(geoInfo.vertexPositions.length == 3) geoInfo.vertexPositions = this.buildNumberData(geoInfo.vertexPositions);
-		if(geoInfo.normal.buffer.length == 3) geoInfo.normal.buffer = this.buildNumberData(geoInfo.normal.buffer);
-		if(geoInfo.normal.indices.length == 3) geoInfo.normal.indices = this.buildInt32Data(geoInfo.normal.indices);
-		//
 		let uvList = geoInfo.uv;
-		if(uvList != null && uvList.length > 0) {
-			let uvBuf = uvList[0].buffer;
-			if(uvBuf.length == 3) {
-				uvBuf = this.buildNumberData( uvBuf );
-			}
-		}
-		
-		// console.log("B geoInfo: ", geoInfo);
 
-		return this.m_egd.createBufObject(geoInfo);
+		let advancedModel = geoInfo.vertexPositions.length == 5;
+		if(advancedModel) {
+			
+			geoInfo.vertexIndices = this.parseData(geoInfo.vertexIndices);
+			geoInfo.vertexPositions = this.parseData(geoInfo.vertexPositions);
+			geoInfo.normal.buffer = this.parseData(geoInfo.normal.buffer);
+			geoInfo.normal.indices = this.parseData(geoInfo.normal.indices);
+			
+			if(uvList != null && uvList.length > 0) {
+				uvList[0].buffer = this.parseData( uvList[0].buffer );
+			}
+			// console.log("A0 geoInfo: ", geoInfo);
+			return this.m_egd.createBufObject(geoInfo);
+		}
+		// console.log("A1 geoInfo: ", geoInfo);
+		console.log("VVV-XXX advancedModel is False.");
 
 		const bufObj: FBXBufferObject = new FBXBufferObject();
 		bufObj.isEntity = true;
 
 		let vivs = geoInfo.vertexIndices;
-		let vvs = geoInfo.vertexPositions;
+		// let vvs = geoInfo.vertexPositions;
 		// console.log("geoInfo.vertexIndices: ", geoInfo.vertexIndices);
 		// console.log("geoInfo.vertexPositions: ", vvs);
 		// console.log("geoInfo normal: ", geoInfo.normal.buffer);
@@ -299,7 +308,7 @@ class GeometryBufferParser {
 
 			// }
 			if ( geoInfo.normal ) {
-				// console.log("calc normal: ",geoInfo.normal.mappingType);
+				//console.log("calc normal: ",geoInfo.normal.mappingType);
 				const data = getData( i, polygonIndex, vertexIndex, geoInfo.normal );
 				// faceNormals.push( data[ 0 ], data[ 1 ], data[ 2 ] );
 				faceNormals[fi] = data[0];

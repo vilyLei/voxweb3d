@@ -230,22 +230,37 @@ class VerifierScene {
 		// url = "static/private/fbx/tri.fbx";
 		// url = "static/private/fbx/plane.fbx";
 		// url = "static/private/fbx/base2.fbx";
-		// url = "static/private/fbx/base3.fbx";
 		// url = "static/private/fbx/model_500W.fbx";
+		// url = "static/private/fbx/base3.fbx";
 		// url = "static/private/fbx/nvxie_zzb.fbx";
-		// url = "static/private/fbx/3279.fbx";
+		url = "static/private/fbx/3279.fbx";
 		// url = "static/private/fbx/3279_b.fbx";
 		// url = "static/private/fbx/model_1000W.fbx";
-		url = "static/private/fbx/Samba_Dancing.fbx";
+		// url = "static/private/fbx/model2_1000W.fbx";
+		// url = "static/private/fbx/Samba_Dancing.fbx";
 		// url = "static/private/fbx/monkey.fbx";
-		this.addFBX( [url] );
+		// this.addFBX( [url] );
+		let hostUrl = window.location.href;
+		let i = hostUrl.indexOf("?");
+		if(i > 0) {
+			hostUrl = hostUrl.slice(0,i);
+		}
+		console.log("window.location.href: ", window.location.href);
+		console.log("hostUrl: ", hostUrl);
 
-		// let baseUrl: string = window.location.href + "static/private/ctm/";
-		// let urls: string[] = [];
-		// for (let i = 0; i <= 26; ++i) {
-		// 	urls.push(baseUrl + "sh202/sh202_" + i + ".ctm");
-		// }
-		// this.addCTM(urls);
+		let baseUrl: string = hostUrl + "static/private/ctm/";
+		let urls: string[] = [];
+		for (let i = 0; i <= 26; ++i) {
+			urls.push(baseUrl + "sh202/sh202_" + i + ".ctm");
+		}
+		// urls = [baseUrl + "errorNormal.ctm"];
+		this.addCTM(urls);
+	}
+	mouseDown(evt: any): void {
+		let nodes = this.m_sceneNodes;
+		for (let i = 0; i < nodes.length; ++i) {
+			nodes[i].mouseDown(evt);
+		}
 	}
 	private addFBX(urls: string[]): void {
 		this.addNewNode(new FBXSceneNode(), urls);
@@ -262,6 +277,9 @@ class VerifierScene {
 		node.load(urls);
 		this.m_waitSceneNodes.push(node);
 		this.m_sceneNodes.push(node);
+	}
+	showInfo(info: string): void {
+		DivLog.ShowLogOnce(info);
 	}
 	isFinish(): boolean {
 		return this.m_waitSceneNodes.length == 0;

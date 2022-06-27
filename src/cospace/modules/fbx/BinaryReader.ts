@@ -32,6 +32,11 @@ class BinaryReader {
 		this.offset += length;
 
 	}
+	setOffset( offset: number ) {
+
+		this.offset = offset;
+
+	}
 
 	// seems like true/false representation depends on exporter.
 	// true: 1 or 'Y'(=0x59), false: 0 or 'T'(=0x54)

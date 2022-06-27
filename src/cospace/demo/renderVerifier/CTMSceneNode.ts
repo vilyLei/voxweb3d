@@ -23,7 +23,6 @@ class CTMSceneNode extends SceneNode {
 		}
 	}
 
-
 	private loadCTMByUrl(url: string): void {
 
 		this.m_cospace.geometry.getCPUDataByUrlAndCallback(
@@ -35,7 +34,7 @@ class CTMSceneNode extends SceneNode {
 					console.error("model.normals == null, url: ", url);
 				}
 
-				this.initEntity(model);
+				this.initEntity(model, null, this.m_index);
 				this.m_index++;
 
 				if (this.m_index == this.m_modelsTotal) {
