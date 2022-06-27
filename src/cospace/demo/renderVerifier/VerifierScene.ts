@@ -31,7 +31,7 @@ class VerifierScene implements IDropFileListerner {
 			this.m_rscene = rscene;
 
 			this.m_vfParam.initialize();
-			if(this.m_vfParam.demoType != "" && this.m_vfParam.threadsTotal > 0) {
+			if((this.m_vfParam.hostUrl.indexOf(".artvily.") > 0 || this.m_vfParam.demoType != "") && this.m_vfParam.threadsTotal > 0) {
 				this.m_cospace.geometry.setTaskModuleUrls(["static/renderingVerifier/modules/m1.js"]);
 				this.m_cospace.initialize(this.m_vfParam.threadsTotal, "static/renderingVerifier/modules/c1.js", true);
 			}else {
@@ -115,6 +115,9 @@ class VerifierScene implements IDropFileListerner {
 			}
 			return;
 		}
+		if(this.m_vfParam.hostUrl.indexOf(".artvily.") > 0) {
+			return;
+		}
 		let size = 107375616;
 
 		// return;
@@ -135,13 +138,13 @@ class VerifierScene implements IDropFileListerner {
 		// url = "static/private/fbx/tri.fbx";
 		// url = "static/private/fbx/plane.fbx";
 		// url = "static/private/fbx/base2.fbx";
-		// url = "static/private/fbx/model_500W.fbx";
+		url = "static/private/fbx/model_500W.fbx";
 		// url = "static/private/fbx/base3.fbx";
 		// url = "static/private/fbx/nvxie_zzb.fbx";
 		// url = "static/private/fbx/3279.fbx";
 		// url = "static/private/fbx/3279_b.fbx";
 		// url = "static/private/fbx/model_1000W.fbx";
-		url = "static/private/fbx/model2_1000W.fbx";
+		// url = "static/private/fbx/model2_1000W.fbx";
 		// url = "static/private/fbx/Samba_Dancing.fbx";
 		// url = "static/private/fbx/monkey.fbx";
 		// this.addFBX( [url] );

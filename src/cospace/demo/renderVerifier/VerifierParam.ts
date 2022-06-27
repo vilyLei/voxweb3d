@@ -1,6 +1,6 @@
 class VerifierParam {
 	demoName: string = "";
-	threadsTotal: number = 0;
+	threadsTotal: number = 3;
 	demoType: string = "";
 	hostUrl: string = "";
 	private m_urls: string[] = null;
@@ -67,32 +67,7 @@ class VerifierParam {
 	}
 	private iniFBXDemo(): void {
 
-		let url: string = "static/assets/fbx/"+this.demoName+".fbx";
-		// url = "static/assets/fbx/box.fbx";
-		// url = "static/private/fbx/box01.fbx";
-		// url = "static/private/fbx/sph.fbx";
-		// url = "static/private/fbx/cylinder.fbx";
-		// url = "static/private/fbx/cylinder0.fbx";
-		// url = "static/private/fbx/cylinder1.fbx";
-		// url = "static/private/fbx/cylinder2.fbx";
-		// url = "static/private/fbx/cylinder3.fbx";
-		// url = "static/private/fbx/sph01.fbx";
-		// url = "static/private/fbx/sph02.fbx";
-		// url = "static/private/fbx/cone0.fbx";
-
-		// url = "static/private/fbx/face2.fbx";
-		// url = "static/private/fbx/tri.fbx";
-		// url = "static/private/fbx/plane.fbx";
-		// url = "static/private/fbx/base2.fbx";
-		// url = "static/private/fbx/model_500W.fbx";
-		// url = "static/private/fbx/base3.fbx";
-		// url = "static/private/fbx/nvxie_zzb.fbx";
-		// url = "static/private/fbx/3279.fbx";
-		// url = "static/private/fbx/3279_b.fbx";
-		// url = "static/private/fbx/model_1000W.fbx";
-		// url = "static/private/fbx/model2_1000W.fbx";
-		// url = "static/private/fbx/Samba_Dancing.fbx";
-		// url = "static/private/fbx/monkey.fbx";
+		let url: string = "static/private/fbx/"+this.demoName+".fbx";		
 		
 		this.m_urls = [url];
 	}
@@ -100,10 +75,7 @@ class VerifierParam {
 
 		// let size = 107375616;
 		let ns: string = this.demoName;
-
-		let hostUrl = this.hostUrl;
-
-		let baseUrl: string = hostUrl + "static/private/ctm/";
+		let baseUrl: string = "static/private/ctm/";
 		let urls: string[] = [];
 		for (let i = 0; i <= 26; ++i) {
 			urls.push(baseUrl + ns + "/"+ns+"_" + i + ".ctm");

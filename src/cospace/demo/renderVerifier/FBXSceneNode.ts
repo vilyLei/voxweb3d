@@ -28,6 +28,10 @@ class FBXSceneNode extends SceneNode {
 				if ((index + 1) == total) {
 					this.m_waitPartsTotal = 0;
 				}
+			},
+			(evt: ProgressEvent, url: string):void => {
+				let k = Math.round(100 * evt.loaded/evt.total);
+				this.showInfo("loading fbx file " + k + "%");
 			}
 		);
 	}

@@ -45,6 +45,9 @@ class SceneNode implements ISceneNode {
 		DivLog.ShowLogOnce("正在解析原数据...");
 		this.m_time = Date.now();
 	}
+	showInfo(info: string): void {
+		DivLog.ShowLogOnce( info );
+	}
 	protected m_waitPartsTotal: number = -1;
 	private m_entities: DisplayEntity[] = [];
 	private m_transforms: Matrix4[] = [];
@@ -128,9 +131,11 @@ class SceneNode implements ISceneNode {
 		return correct;
 	}
 	private m_lossTime: number = 0;
+	private m_verticesTotal: number = 0;
 	protected initEntity(model: GeometryModelDataType, transform: Matrix4 = null, index: number = 0): void {
 		if (this.m_rscene != null && model != null) {
 
+			this.m_verticesTotal += model.vertices.length/3;
 			// let correct = this.normalCorrectionTest( model );
 
 			this.m_lossTime = (Date.now() - this.m_time);
@@ -185,6 +190,7 @@ class SceneNode implements ISceneNode {
 
 	clear(): void {
 		if (this.isFinish()) {
+			this.m_verticesTotal = 0;
 			this.m_transforms = [];
 			this.m_transes = [];
 			if (this.m_entities != null) {
@@ -229,6 +235,7 @@ class SceneNode implements ISceneNode {
 					this.m_showTotal++;
 
 					let info = "initialize entity loss time: " + this.m_lossTime + "ms";
+					info += "</br>顶点数量: " + this.m_verticesTotal + "个";
 					info += "</br>子模型数量: " + this.m_showTotal + "/" + this.m_modelsTotal + "个";
 					if (this.isFinish()) {
 						info += "</br>当前模型加载展示完成";

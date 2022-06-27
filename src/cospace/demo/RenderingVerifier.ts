@@ -108,12 +108,12 @@ export class RenderingVerifier {
 	run(): void {
 
 		this.m_verifierScene.run();
-		// if(this.m_cameraUPY) {
-		// 	this.m_stageDragSwinger.runWithYAxis();
-		// }else {
-		// 	this.m_stageDragSwinger.runWithZAxis();
-		// }
-		this.m_stageDragSwinger.runWithCameraAxis();
+		if(this.m_cameraUPY) {
+			this.m_stageDragSwinger.runWithYAxis();
+		}else {
+			this.m_stageDragSwinger.runWithZAxis();
+		}
+		// this.m_stageDragSwinger.runWithCameraAxis();
 		this.m_cameraZoomController.run(this.m_lookV, 30.0);
 
 		this.m_rscene.run(true);
