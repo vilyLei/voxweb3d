@@ -350,7 +350,7 @@ class ReaderRAW {
 
     constructor() { }
 
-    readAttrMaps(stream: any, attrMaps: any): void {
+    readAttrMaps(stream: ICTMStream, attrMaps: any): void {
         var i = 0;
         for (; i < attrMaps.length; ++i) {
             stream.readInt32(); //magic "ATTR"
@@ -359,7 +359,7 @@ class ReaderRAW {
             stream.readArrayFloat32(attrMaps[i].attr);
         }
     }
-    readUVMaps(stream: any, uvMaps: any): void {
+    readUVMaps(stream: ICTMStream, uvMaps: any): void {
         var i = 0;
         for (; i < uvMaps.length; ++i) {
             stream.readInt32(); //magic "TEXC"
@@ -369,11 +369,11 @@ class ReaderRAW {
             stream.readArrayFloat32(uvMaps[i].uv);
         }
     }
-    readNormals(stream: any, normals: any): void {
+    readNormals(stream: ICTMStream, normals: Float32Array): void {
         stream.readInt32(); //magic "NORM"
         stream.readArrayFloat32(normals);
     };
-    readVertices(stream: any, vertices: any): void {
+    readVertices(stream: ICTMStream, vertices: Float32Array): void {
         stream.readInt32(); //magic "VERT"
         stream.readArrayFloat32(vertices);
     }
@@ -381,7 +381,7 @@ class ReaderRAW {
         stream.readInt32(); //magic "INDX"
         stream.readArrayInt32(indices);
     }
-    read(stream: any, body: any): void {
+    read(stream: ICTMStream, body: CTMFileBody): void {
         this.readIndices(stream, body.indices);
         this.readVertices(stream, body.vertices);
 
@@ -579,8 +579,21 @@ class ReaderMG2 {
         }
     }
 }
+interface ICTMStream {
+    /**
+     * uint8 array
+     */
+    data: Uint8Array | string;
+    offset: number;
+    readByte(): number;
+    readInt32(): number;
+    readFloat32(): number;
+    readString(): string;
+    readArrayInt32(array: Uint16Array | Uint32Array): Uint16Array | Uint32Array;
+    readArrayFloat32(array: Float32Array): Float32Array;
 
-class CTMStream {
+}
+class CTMStream implements ICTMStream {
 
     TWO_POW_MINUS23 = Math.pow(2, -23);
     TWO_POW_MINUS126 = Math.pow(2, -126);
@@ -650,7 +663,7 @@ class CTMStream {
         return this.decodeUint8Arr( bytes );
     }
 
-    readArrayInt32(array: any): void {
+    readArrayInt32(array: Uint16Array | Uint32Array): Uint16Array | Uint32Array {
         var i = 0, len = array.length;
 
         while (i < len) {
@@ -660,7 +673,7 @@ class CTMStream {
         return array;
     }
 
-    readArrayFloat32(array: number[]): number[] {
+    readArrayFloat32(array: Float32Array): Float32Array {
         var i = 0, len = array.length;
 
         while (i < len) {
@@ -672,7 +685,7 @@ class CTMStream {
 
 }
 
-class CTMStringStream {
+class CTMStringStream implements ICTMStream {
 
     TWO_POW_MINUS23 = Math.pow(2, -23);
     TWO_POW_MINUS126 = Math.pow(2, -126);
@@ -725,7 +738,7 @@ class CTMStringStream {
         return this.data.substr(this.offset - len, len);
     }
 
-    readArrayInt32(array: any): void {
+    readArrayInt32(array: Uint16Array | Uint32Array): Uint16Array | Uint32Array {
         var i = 0, len = array.length;
 
         while (i < len) {
@@ -735,7 +748,7 @@ class CTMStringStream {
         return array;
     }
 
-    readArrayFloat32(array: number[]): number[] {
+    readArrayFloat32(array: Float32Array): Float32Array {
         var i = 0, len = array.length;
 
         while (i < len) {

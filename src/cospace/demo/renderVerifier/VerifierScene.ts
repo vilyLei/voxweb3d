@@ -230,16 +230,17 @@ class VerifierScene {
 		// url = "static/private/fbx/tri.fbx";
 		// url = "static/private/fbx/plane.fbx";
 		// url = "static/private/fbx/base2.fbx";
-		// url = "static/private/fbx/model_500W.fbx";
+		url = "static/private/fbx/model_500W.fbx";
 		// url = "static/private/fbx/base3.fbx";
 		// url = "static/private/fbx/nvxie_zzb.fbx";
-		url = "static/private/fbx/3279.fbx";
+		// url = "static/private/fbx/3279.fbx";
 		// url = "static/private/fbx/3279_b.fbx";
 		// url = "static/private/fbx/model_1000W.fbx";
-		// url = "static/private/fbx/model2_1000W.fbx";
+		url = "static/private/fbx/model2_1000W.fbx";
 		// url = "static/private/fbx/Samba_Dancing.fbx";
 		// url = "static/private/fbx/monkey.fbx";
-		// this.addFBX( [url] );
+		this.addFBX( [url] );
+
 		let hostUrl = window.location.href;
 		let i = hostUrl.indexOf("?");
 		if(i > 0) {
@@ -254,7 +255,7 @@ class VerifierScene {
 			urls.push(baseUrl + "sh202/sh202_" + i + ".ctm");
 		}
 		// urls = [baseUrl + "errorNormal.ctm"];
-		this.addCTM(urls);
+		// this.addCTM(urls);
 	}
 	mouseDown(evt: any): void {
 		let nodes = this.m_sceneNodes;
