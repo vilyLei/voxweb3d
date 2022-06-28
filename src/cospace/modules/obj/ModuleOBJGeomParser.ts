@@ -6,13 +6,11 @@ import { ObjDataParser } from "../../../vox/assets/ObjDataParser";
 /**
  * 作为多线程 worker 内部执行的任务处理功能的实现类, 这个文件将会被单独打包
  */
-class ModuleCTMGeomParser extends BaseTaskInThread {
-    private m_srcuid: number = -1;
-    private m_dataIndex: number = -1;
+class ModuleOBJGeomParser extends BaseTaskInThread {
 
     constructor() {
         super();
-        console.log("ModuleCTMGeomParser::constructor()...");
+        console.log("ModuleOBJGeomParser::constructor()...");
     }
     
 	private parseFromStr(
@@ -91,8 +89,6 @@ class ModuleCTMGeomParser extends BaseTaskInThread {
         rdata: IThreadReceiveData<OBJModelDataType, OBJDescriptorType>
     ): void {
 
-        this.m_srcuid = rdata.srcuid;
-        this.m_dataIndex = rdata.dataIndex;
         let dataBuf = rdata.streams[0];
         const readerBuf = new FileReader();
 		readerBuf.onload = (e) => {
@@ -140,5 +136,5 @@ class ModuleCTMGeomParser extends BaseTaskInThread {
     }
 }
 // 这一句代码是必须有的
-let ins = new ModuleCTMGeomParser();
-export { ModuleCTMGeomParser };
+let ins = new ModuleOBJGeomParser();
+export { ModuleOBJGeomParser };

@@ -36,6 +36,7 @@
 
     
     "buildCTMParser": "vue-cli-service build --target lib --name ModuleCTMGeomParser --dest ./public/static/cospace/modules/ctm ./src/cospace/modules/ctm/ModuleCTMGeomParser.ts",
+    "buildOBJParser": "vue-cli-service build --target lib --name ModuleOBJGeomParser --dest ./public/static/cospace/modules/obj ./src/cospace/modules/obj/ModuleOBJGeomParser.ts",
     "buildDracoParser": "vue-cli-service build --target lib --name ModuleDracoGeomParser --dest ./public/static/cospace/modules/draco ./src/cospace/modules/draco/ModuleDracoGeomParser.ts",
     "buildThreadCore": "vue-cli-service build --target lib --name ThreadCore --dest ./public/static/cospace/core/code ./src/cospace/modules/thread/control/ThreadCore.ts",
 

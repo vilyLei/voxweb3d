@@ -62,8 +62,6 @@ class CTMDataParser extends BaseTaskInThread {
  * 作为多线程 worker 内部执行的任务处理功能的实现类, 这个文件将会被单独打包
  */
 class ModuleCTMGeomParser extends BaseTaskInThread {
-    private m_srcuid: number = -1;
-    private m_dataIndex: number = -1;
 
     private m_parser = new CTMDataParser();
     constructor() {
@@ -73,9 +71,6 @@ class ModuleCTMGeomParser extends BaseTaskInThread {
     receiveData(
         rdata: IThreadReceiveData<GeometryModelDataType, CTMDescriptorType>
     ): void {
-        this.m_srcuid = rdata.srcuid;
-        this.m_dataIndex = rdata.dataIndex;
-
         switch (rdata.taskCmd) {
             case CTMTaskCMD.PARSE:
                 let dataBuf = rdata.streams[0] as Uint8Array;
