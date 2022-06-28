@@ -18,7 +18,7 @@ import { TDRParam } from "./TDRParam";
 import { TaskDataRouter } from "./TaskDataRouter";
 import { TaskDescriptor } from "./TaskDescriptor";
 import { ThreadTaskPool } from "../control/ThreadTaskPool";
-
+type ArrayTypeT = Float32Array | Int32Array | Uint16Array | Uint8Array | Int16Array | Int8Array;
 class ThreadBase implements IThreadBase {
     private static s_uid: number = 0;
     private m_uid: number = -1;
@@ -97,10 +97,15 @@ class ThreadBase implements IThreadBase {
             sendData.threadIndex = this.m_uid;
 
             // this.m_time = Date.now();
-            if (sendData.streams != null) {
-                let transfers = new Array(sendData.streams.length);
-                for(let i: number = 0; i < sendData.streams.length; ++i) {
-                    transfers[i] = sendData.streams[i].buffer;
+            if (thrData.streams != null) {
+                let ls = thrData.streams;
+                let transfers = new Array(ls.length);
+                for(let i: number = 0; i < ls.length; ++i) {
+                    if(ls[i] instanceof ArrayBuffer ) {
+                        transfers[i] = ls[i];
+                    }else {
+                        transfers[i] = (ls[i] as ArrayTypeT).buffer;
+                    }
                 }
                 this.m_worker.postMessage(sendData, transfers);
             }
