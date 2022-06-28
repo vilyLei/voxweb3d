@@ -21,22 +21,29 @@ class ModuleCTMGeomParser extends BaseTaskInThread {
         ): void {
         let models: GeometryModelDataType[] = [];
 		let objParser = new ObjDataParser();
-		let objMeshes = objParser.Parse( dataStr );
+        let objMeshes = null;
         let transfers: ArrayBuffer[] = [];
-		let len: number = objMeshes.length;
-		for (let i: number = 0; i < len; ++i) {
-			const geom: any = objMeshes[i].geometry;
-			const model = this.createModel( geom );
-            if(model.vertices != null) {
-                transfers.push(model.indices);
-                transfers.push(model.vertices);
-                transfers.push(model.normals);
-                for(let j = 0, lj = model.uvsList.length; j < lj; ++j) {
-                    transfers.push( model.uvsList[j] );
+        try {
+            objMeshes = objParser.Parse( dataStr );
+        }catch(e) {
+            console.log("parse obj geom model data error.");
+        }
+        if(objMeshes != null) {
+            let len: number = objMeshes.length;
+            for (let i: number = 0; i < len; ++i) {
+                const geom: any = objMeshes[i].geometry;
+                const model = this.createModel( geom );
+                if(model.vertices != null) {
+                    transfers.push(model.indices);
+                    transfers.push(model.vertices);
+                    transfers.push(model.normals);
+                    for(let j = 0, lj = model.uvsList.length; j < lj; ++j) {
+                        transfers.push( model.uvsList[j] );
+                    }
                 }
+                models.push(model);
             }
-            models.push(model);
-		}
+        }
         let modelData: OBJModelDataType = {
             models: models
         };
