@@ -22,8 +22,10 @@ import { TDRManager } from "./base/TDRManager";
 class ThreadSchedule {
   // allow ThreadSchedule initialize yes or no
   private m_initBoo: boolean = true;
-  private m_tdBase: number = 2300;
-  private m_teDelay: number = 0;
+  // 延迟销毁子线程的毫秒数
+  private m_teDelay: number = 1000;
+  private m_teTime: number = 0;
+
   private m_maxThreadsTotal: number = 0;
   private m_thrSupportFlag: number = -1;
   private m_codeBlob: Blob = null;
@@ -52,10 +54,11 @@ class ThreadSchedule {
     this.m_descList.fill(null);
     this.m_tdrManager = new TDRManager( tot );
 
-    this.m_teDelay = this.m_tdBase;
+    this.m_teTime = Date.now();
   }
-  setParams(autoSendData: boolean): void {
+  setParams(autoSendData: boolean, terminateDelayMS: number = 1000): void {
     this.m_autoSendData = autoSendData;
+    this.m_teDelay = terminateDelayMS;
   }
   hasRouterByTaskClass(taskclass: number): boolean {
     return this.m_tdrManager.hasRouterByTaskClass(taskclass);
@@ -138,51 +141,57 @@ class ThreadSchedule {
    * 间隔一定的时间，循环执行
    */
   run(): void {
-    let terminate = true;
-    if (this.getThreadEnabled()) {
+	let terminate = false;
+	if (this.getThreadEnabled()) {
 
-      this.m_tdrManager.run();
+		this.m_tdrManager.run();
 
-      //console.log("this.m_dataPool.isEnabled(): ",this.m_dataPool.isEnabled());
-      if (this.m_dataPool.isEnabled()) {
-        terminate = false;
-        this.m_teDelay = this.m_tdBase;
-        let tot = 0;
-        for (let i: number = 0; i < this.m_threadsTotal; ++i) {
-          if (this.m_dataPool.isEnabled()) {
-            // console.log("this.m_threads["+i+"].isFree(): ",this.m_threads[i].isFree(),", enabled: ",this.m_threads[i].isEnabled());
-            if (this.m_threads[i].isFree()) {
-              this.m_dataPool.sendDataTo(this.m_threads[i]);
-            }
-            if (this.m_threads[i].isFree()) {
-              ++tot;
-            }
-          }
-        }
-        if (tot < 1 && this.m_dataPool.isEnabled()) {
-          this.createThread();
-        }
-      } else {
-        for (let i: number = 0; i < this.m_threadsTotal; ++i) {
-          this.m_threads[i].sendPoolDataToThread();
-        }
-      }
+		//console.log("this.m_dataPool.isEnabled(): ",this.m_dataPool.isEnabled());
+		let needTotal: number = 0;
+		if (this.m_dataPool.isEnabled()) {			
+			for (let i: number = 0; i < this.m_threadsTotal; ++i) {
+				// console.log("this.m_threads["+i+"].isFree(): ",this.m_threads[i].isFree(),", enabled: ",this.m_threads[i].isEnabled());
+				if (this.m_threads[i].isFree()) {
+					this.m_dataPool.sendDataTo(this.m_threads[i]);
+				}else {
+					if(this.m_dataPool.isEnabled()) needTotal++;
+				}
+			}
+		} else {
+			for (let i: number = 0; i < this.m_threadsTotal; ++i) {
+				if(!this.m_threads[i].sendPoolDataToThread()) {
+					if(this.m_threads[i].hasDataToThread()) needTotal++;
+				}
+			}
+		}
+		
+		needTotal += this.m_dataPool.isEnabled() ? 1:0;
+		if(needTotal > 0) {
+			this.createThread();
+		}else {
+			needTotal = 0;
+			for (let i: number = 0; i < this.m_threadsTotal; ++i) {
+				if (this.m_threads[i].isFree()) {
+					needTotal++;
+				}
+			}
+			terminate = needTotal >= this.m_threadsTotal;
+			if(!terminate) this.m_teTime = Date.now();
+		}
     }
     // console.log("terminate: ",terminate,this.m_threadsTotal);
     if(terminate && this.m_threadsTotal > 0) {
-      if(this.m_teDelay > 0) {
-        this.m_teDelay--;
-        if(this.m_teDelay == 0) {
-          this.m_teDelay = this.m_tdBase;
-          let thr = this.m_threads[this.m_threadsTotal-1];
-          if(thr.isFree()) {
-            this.m_threads.pop();
-            this.m_threadsTotal--;
-            thr.destroy();
-            console.log("ThreadSchedule::run(), terminate and destroy a thread instance, threadsTotal: ",this.m_threadsTotal);
-          }
-        }
-      }
+		let dt = Date.now() - this.m_teTime;
+		if(dt > this.m_teDelay) {
+			this.m_teTime = Date.now();
+			let thr = this.m_threads[this.m_threadsTotal-1];
+			if(thr.isFree()) {
+				this.m_threads.pop();
+				this.m_threadsTotal--;
+				thr.destroy();
+				console.log("ThreadSchedule::run(), terminate and destroy a thread instance, threadsTotal: ",this.m_threadsTotal);
+			}
+		}
     }
   }
 

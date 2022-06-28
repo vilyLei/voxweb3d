@@ -61,16 +61,22 @@ class ThreadBase implements IThreadBase {
     isFree(): boolean {
         return this.m_free && this.unlock;
     }
-    sendPoolDataToThread(): void {
+    hasDataToThread(): boolean {
+        return this.localDataPool.isEnabled() || this.globalDataPool.isEnabled();
+    }
+    sendPoolDataToThread(): boolean {
+
         if(this.m_free) {
             let boo = this.localDataPool.isEnabled();
             if(boo) {
                 boo = this.localDataPool.sendDataTo(this);
             }
             if(!boo) {
-                this.globalDataPool.sendDataTo(this);
+                boo = this.globalDataPool.sendDataTo(this);
             }
+            return boo;
         }
+        return false;
     }
     // send parse data to thread
     sendDataTo(thrData: IThreadSendData): void {

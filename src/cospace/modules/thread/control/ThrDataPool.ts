@@ -60,7 +60,7 @@ class ThrDataPool implements IThrDataPool{
         return this.m_dataTotal;
     }
     isEnabled(): boolean {
-        //console.log(this.m_dataHaveTotal,this.m_dataTotal,this.m_startupFlag);
+        // console.log(this.m_dataHaveTotal,this.m_dataTotal,this.m_startupFlag);
         return (this.m_dataTotal * this.m_startupFlag) > 0;
     }
     isStartup(): boolean {

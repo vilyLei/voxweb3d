@@ -1,7 +1,6 @@
 import Vector3D from "../../vox/math/Vector3D";
 import MouseEvent from "../../vox/event/MouseEvent";
 import RendererDevice from "../../vox/render/RendererDevice";
-import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import CameraTrack from "../../vox/view/CameraTrack";
 
 import RendererParam from "../../vox/scene/RendererParam";
@@ -12,7 +11,6 @@ import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 import DivLog from "../../vox/utils/DivLog";
 import { CoSpace } from "../CoSpace";
 import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
-import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import { VerifierScene } from "./renderVerifier/VerifierScene";
 import Color4 from "../../vox/material/Color4";
 
@@ -91,10 +89,6 @@ export class RenderingVerifier {
 
 			//   DivLog.ShowLog("renderer inited.");
 			//   DivLog.ShowLog(RendererDevice.GPU_RENDERER);
-
-			let axis: Axis3DEntity = new Axis3DEntity();
-			axis.initialize(300);
-			this.m_rscene.addEntity(axis);
 			
 			this.m_verifierScene.initialize(this.m_rscene);
 			this.m_verifierScene.initTest();

@@ -134,12 +134,15 @@ class SceneNode implements ISceneNode {
 	private m_verticesTotal: number = 0;
 	protected initEntity(model: GeometryModelDataType, transform: Matrix4 = null, index: number = 0): void {
 		if (this.m_rscene != null && model != null) {
-
+			if(model.vertices.length < 3) {
+				this.m_modelsTotal--;
+				return;
+			}
+			this.m_partsTotal++;
 			this.m_verticesTotal += model.vertices.length/3;
 			// let correct = this.normalCorrectionTest( model );
 
 			this.m_lossTime = (Date.now() - this.m_time);
-			this.m_partsTotal++;
 			// console.log("initEntity lossTime: ", (Date.now() - this.m_time) + " ms");
 
 			this.m_vtxTotal += model.vertices.length;
@@ -190,6 +193,10 @@ class SceneNode implements ISceneNode {
 
 	clear(): void {
 		if (this.isFinish()) {
+			if(this.m_frameBox != null) {
+				this.m_rscene.removeEntity( this.m_frameBox );
+				this.m_frameBox = null;
+			}
 			this.m_verticesTotal = 0;
 			this.m_transforms = [];
 			this.m_transes = [];

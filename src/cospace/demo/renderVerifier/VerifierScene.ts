@@ -5,6 +5,7 @@ import { ISceneNode } from "./ISceneNode";
 import { FBXSceneNode } from "./FBXSceneNode";
 import { CTMSceneNode } from "./CTMSceneNode";
 import { OBJSceneNode } from "./OBJSceneNode";
+import Axis3DEntity from "../../../vox/entity/Axis3DEntity";
 import {IDropFileListerner, DropFileController} from "./DropFileController";
 import {VerifierParam} from "./VerifierParam";
 import DivLog from "../../../vox/utils/DivLog";
@@ -30,6 +31,11 @@ class VerifierScene implements IDropFileListerner {
 		if (this.m_rscene == null) {
 
 			this.m_rscene = rscene;
+			
+			let axis: Axis3DEntity = new Axis3DEntity();
+			axis.initialize(300);
+			this.m_rscene.addEntity(axis);
+			
 
 			this.m_vfParam.initialize();
 			if((this.m_vfParam.hostUrl.indexOf(".artvily.") > 0 || this.m_vfParam.demoType != "") && this.m_vfParam.threadsTotal > 0) {

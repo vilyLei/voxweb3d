@@ -1,5 +1,3 @@
-import { DataFormat } from "../../schedule/base/DataUnit";
-import { GeometryDataUnit } from "../../schedule/base/GeometryDataUnit";
 import { SceneNode } from "./SceneNode";
 import { ObjDataParser } from "../../../vox/assets/ObjDataParser";
 import { GeometryModelDataType } from "../../modules/base/GeometryModelDataType";
@@ -33,10 +31,9 @@ class OBJSceneNode extends SceneNode {
 				let objParser = new ObjDataParser();
 				let objMeshes = objParser.Parse( request.responseText );
 				this.m_modelsTotal = objMeshes.length;
-				
-				for (let i: number = 0; i < this.m_modelsTotal; ++i) {
+				let len: number = this.m_modelsTotal;
+				for (let i: number = 0; i < len; ++i) {
 					const geom: any = objMeshes[i].geometry;
-					// console.log("geom: ",geom);
 					const model = this.createModel( geom );
 					this.initEntity(model);
 				}
