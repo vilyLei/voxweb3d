@@ -30,6 +30,10 @@ class ThreadSendData implements IThreadSendData {
      *              值为 1 表示已经发送给worker
      */
     sendStatus: number = -1;
+    /**
+     * 任务数据在执行过程中的状态(work flow status): 将32位分为4个8位, 分别表示任务执行过程中的四种类别的状态(未知 | 未知 | 未知 | 流转状态)，默认是0x0
+     */
+    wfst: number = 0;
     // 按照实际需求构建自己的数据(sendData和transfers等)
     buildThis(transferEnabled: boolean): void {
     }

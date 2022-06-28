@@ -3,11 +3,11 @@ import RendererScene from "../../../vox/scene/RendererScene";
 import { CoSpace } from "../../CoSpace";
 import { ISceneNode } from "./ISceneNode";
 import { FBXSceneNode } from "./FBXSceneNode";
-import DivLog from "../../../vox/utils/DivLog";
 import { CTMSceneNode } from "./CTMSceneNode";
 import { OBJSceneNode } from "./OBJSceneNode";
 import {IDropFileListerner, DropFileController} from "./DropFileController";
 import {VerifierParam} from "./VerifierParam";
+import DivLog from "../../../vox/utils/DivLog";
 
 class VerifierScene implements IDropFileListerner {
 
@@ -22,6 +22,7 @@ class VerifierScene implements IDropFileListerner {
 	private m_waitSceneNodes: ISceneNode[] = [];
 	private m_sceneNodes: ISceneNode[] = [];
 	private m_dropController: DropFileController = new DropFileController();
+
 	constructor() { }
 
 	initialize(rscene: RendererScene): void {
@@ -138,7 +139,7 @@ class VerifierScene implements IDropFileListerner {
 		// url = "static/private/fbx/tri.fbx";
 		// url = "static/private/fbx/plane.fbx";
 		// url = "static/private/fbx/base2.fbx";
-		url = "static/private/fbx/model_500W.fbx";
+		// url = "static/private/fbx/model_500W.fbx";
 		// url = "static/private/fbx/base3.fbx";
 		// url = "static/private/fbx/nvxie_zzb.fbx";
 		// url = "static/private/fbx/3279.fbx";
@@ -157,7 +158,7 @@ class VerifierScene implements IDropFileListerner {
 			urls.push(baseUrl + "sh202/sh202_" + i + ".ctm");
 		}
 		// urls = [baseUrl + "errorNormal.ctm"];
-		this.addCTM(urls);
+		// this.addCTM(urls);
 	}
 	mouseDown(evt: any): void {
 		let nodes = this.m_sceneNodes;

@@ -94,7 +94,7 @@ function transmitData(moduleInstance: SubThreadModule, pdata: unknown, ptaskCmd:
 /**
  * 作为多线程主程序核心代码
  */
-class Main {
+class ThreadCore {
 
     private m_inited = true;
     private m_threadIndex = 0;
@@ -213,6 +213,6 @@ class Main {
         }
     };
 }
-let ins = new Main();
+let ins = new ThreadCore();
 ins.initialize();
-export { postMessageToThread, registerDependency, useDependency, initializeExternModule, acquireData, transmitData, Main };
+export { postMessageToThread, registerDependency, useDependency, initializeExternModule, acquireData, transmitData, ThreadCore };

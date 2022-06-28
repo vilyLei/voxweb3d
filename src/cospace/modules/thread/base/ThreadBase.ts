@@ -17,6 +17,7 @@ import { ThreadConfigure } from "./ThreadConfigure";
 import { TDRParam } from "./TDRParam";
 import { TaskDataRouter } from "./TaskDataRouter";
 import { TaskDescriptor } from "./TaskDescriptor";
+import { ThreadTaskPool } from "../control/ThreadTaskPool";
 
 class ThreadBase implements IThreadBase {
     private static s_uid: number = 0;
@@ -30,6 +31,7 @@ class ThreadBase implements IThreadBase {
     private m_thrData: IThreadSendData = null;
     private m_commonModuleMap: Map<string,number> = new Map();
     private m_tdrManager: TDRManager;    
+    private m_taskPool: ThreadTaskPool;
     /**
      * 线程中子模块间依赖关系的json描述
      */
@@ -40,9 +42,10 @@ class ThreadBase implements IThreadBase {
     globalDataPool: ThrDataPool = null;
     unlock: boolean = true;
 
-    constructor(tdrManager: TDRManager, graphJsonStr: string = "") {
+    constructor(tdrManager: TDRManager, taskPool: ThreadTaskPool, graphJsonStr: string = "") {
         
         this.m_tdrManager = tdrManager;
+        this.m_taskPool = taskPool;
         this.m_graphJsonStr = graphJsonStr;
 
         this.m_uid = ThreadBase.s_uid++;
@@ -82,6 +85,7 @@ class ThreadBase implements IThreadBase {
             sendData.taskclass = thrData.taskclass;
             sendData.srcuid = thrData.srcuid;
             sendData.dataIndex = thrData.dataIndex;
+            sendData.wfst = thrData.wfst;
             sendData.streams = thrData.streams;
             sendData.cmd = ThreadCMD.DATA_PARSE;
             sendData.threadIndex = this.m_uid;
@@ -142,6 +146,7 @@ class ThreadBase implements IThreadBase {
     private updateInitTask(): void {
         if (this.m_taskItems.length > 0) {
             this.m_free = false;
+            this.m_enabled = false;
             let task = this.m_taskItems.pop();
             // type 为0 表示task js 文件是外部加载的, 如果为 1 则表示是由运行时字符串构建的任务可执行代码
             // console.log("Main worker("+this.getUid()+") updateInitTask(), task: ",task);
@@ -158,11 +163,13 @@ class ThreadBase implements IThreadBase {
             this.sendPoolDataToThread();
         }
         
-        let task: ThreadTask = ThreadTask.GetTaskByUid(data.srcuid);
-        //console.log("task != null: "+(task != null)+", data.srcuid: "+data.srcuid,", thread uid: "+this.m_uid);
+        // let task: ThreadTask = ThreadTask.GetTaskByUid(data.srcuid);
+        let task = this.m_taskPool.getTaskByUid(data.srcuid);
+        // console.log("task != null: ",(task != null),", data.srcuid: ",data.srcuid,", thread uid: ",this.m_uid);
+        // console.log("data: ",data);
         let finished: boolean = true;
         if (task != null) {
-            finished = task.parseDone(data, -1);
+            finished = task.parseDone(data, 0);
         }
         
         this.updateInitTask();
@@ -179,21 +186,24 @@ class ThreadBase implements IThreadBase {
     terminate(): void {
         if(this.m_worker != null) {            
             this.m_worker.terminate();
+            this.m_worker = null;
             this.m_free = false;
+            this.m_enabled = false;
         }
     }
     destroy(): void {
 
         if(this.m_worker != null) {
-
-            this.m_worker.terminate();
-            this.m_worker = null;
-            this.m_free = false;
+            this.terminate();
+            this.m_taskPool = null;
             this.m_tdrManager = null;
             this.m_graphJsonStr = "";
             this.localDataPool = null;
             this.globalDataPool = null;
         }
+    }
+    isDestroyed(): boolean {
+        return this.m_taskPool == null;
     }
     initialize(blob: Blob): void {
         if (this.m_initBoo && blob != null && this.m_worker == null) {
@@ -224,6 +234,7 @@ class ThreadBase implements IThreadBase {
                         }
                         this.m_taskfs[data.taskclass] = 1;
                         this.m_free = true;
+                        this.m_enabled = true;
                         // console.log("Main Worker("+this.getUid()+") INIT_TASK data.taskclass: ", data.taskclass);
                         this.updateInitTask();
                         break;

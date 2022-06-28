@@ -397,7 +397,7 @@
 
 // import {SlickRoad as Demo} from "./app/SlickRoad";
 
- import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
+//  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 
 //  import {DemoDraco as Demo} from "./demo/DemoDraco";
 
@@ -419,7 +419,7 @@
 
 //  import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
 
-//  import {DemoUITexAtlas as Demo} from "./orthoui/demos/DemoUITexAtlas";
+import {DemoUITexAtlas as Demo} from "./orthoui/demos/DemoUITexAtlas";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////     distributed runtime     ////////////s//////////////

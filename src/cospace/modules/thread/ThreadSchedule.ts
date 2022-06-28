@@ -13,19 +13,22 @@ import { ThreadBase } from "../thread/base/ThreadBase";
 import { TaskDescriptor } from "../thread/base/TaskDescriptor";
 import { ThreadCodeSrcType } from "./control/ThreadCodeSrcType";
 import { ThreadTask } from "./control/ThreadTask";
+import { ThreadTaskPool } from "./control/ThreadTaskPool";
 import { TaskDataRouter } from "./base/TaskDataRouter";
 import { TDRManager } from "./base/TDRManager";
 /**
- * 多线程任务调度器
+ * 多线程任务调度器, 之所以用实例，是因为不同的实例实际上就能对线程集合做分类管理
  */
 class ThreadSchedule {
   // allow ThreadSchedule initialize yes or no
   private m_initBoo: boolean = true;
+  private m_tdBase: number = 2300;
+  private m_teDelay: number = 0;
   private m_maxThreadsTotal: number = 0;
   private m_thrSupportFlag: number = -1;
   private m_codeBlob: Blob = null;
   private m_commonModuleUrls: string[] = [];
-  private m_tasks: TaskDescriptor[];
+  private m_descList: TaskDescriptor[];
   private m_threads: ThreadBase[] = [];
   private m_threadsTotal: number = 0;
   private m_threadEnabled: boolean = true;
@@ -33,8 +36,9 @@ class ThreadSchedule {
   private m_thrIdexSDList: IThreadSendData[] = [];
   private m_thrIndexList: number[] = [];
   private m_codeStrList: string[] = [];
-  private m_pool: ThrDataPool = new ThrDataPool();
+  private m_dataPool: ThrDataPool = new ThrDataPool();
   private m_tdrManager: TDRManager;
+  private m_taskPool: ThreadTaskPool;
   /**
    * 线程中子模块间依赖关系的json描述
    */
@@ -42,9 +46,13 @@ class ThreadSchedule {
   private m_autoSendData: boolean = false;
 
   constructor() {
-    this.m_tasks = new Array(ThreadConfigure.MAX_TASKS_TOTAL);
-    this.m_tasks.fill(null);
-    this.m_tdrManager = new TDRManager(ThreadConfigure.MAX_TASKS_TOTAL);
+    let tot = ThreadConfigure.MAX_TASKS_TOTAL;
+    this.m_taskPool = new ThreadTaskPool(tot);
+    this.m_descList = new Array( tot );
+    this.m_descList.fill(null);
+    this.m_tdrManager = new TDRManager( tot );
+
+    this.m_teDelay = this.m_tdBase;
   }
   setParams(autoSendData: boolean): void {
     this.m_autoSendData = autoSendData;
@@ -63,26 +71,29 @@ class ThreadSchedule {
    */
   bindTask(task: ThreadTask, threadIndex: number = -1): void {
     if (task != null) {
-      let localPool: ThrDataPool = null;
-      if (threadIndex >= 0 && threadIndex < this.m_maxThreadsTotal) {
-        for (; ;) {
-          if (threadIndex >= this.m_threadsTotal) {
-            this.createThread();
-          } else {
-            break;
+      let success: boolean = task.attach(this.m_taskPool);
+      if(success) {
+        let localPool: ThrDataPool = null;
+        if (threadIndex >= 0 && threadIndex < this.m_maxThreadsTotal) {
+          for (; ;) {
+            if (threadIndex >= this.m_threadsTotal) {
+              this.createThread();
+            } else {
+              break;
+            }
           }
+          localPool = this.m_threads[threadIndex].localDataPool;
         }
-        localPool = this.m_threads[threadIndex].localDataPool;
-      }
-      task.setDataPool(this.m_pool, localPool);
-      let d = task.dependency;
-      if (d != null) {
-        if (d.isJSFile()) {
-          this.initTaskByURL(d.threadCodeFileURL, task.getTaskClass());
-        } else if (d.isDependency()) {
-          this.initTaskByDependency(d.dependencyUniqueName, task.getTaskClass(), d.moduleName);
-        } else if (d.isCodeString()) {
-          this.initTaskByCodeStr(d.threadCodeString, task.getTaskClass(), d.moduleName);
+        task.setDataPool(this.m_dataPool, localPool);
+        let d = task.dependency;
+        if (d != null) {
+          if (d.isJSFile()) {
+            this.initTaskByURL(d.threadCodeFileURL, task.getTaskClass());
+          } else if (d.isDependency()) {
+            this.initTaskByDependency(d.dependencyUniqueName, task.getTaskClass(), d.moduleName);
+          } else if (d.isCodeString()) {
+            this.initTaskByCodeStr(d.threadCodeString, task.getTaskClass(), d.moduleName);
+          }
         }
       }
     }
@@ -117,33 +128,38 @@ class ThreadSchedule {
    * @returns 返回是否在队列中还有待处理的数据
    */
   hasTaskData(): boolean {
-    return this.m_pool.isEnabled();
+    return this.m_dataPool.isEnabled();
   }
   getThrDataPool(): ThrDataPool {
-    return this.m_pool;
+    return this.m_dataPool;
   }
+  private m_currNewThr: ThreadBase = null;
   /**
    * 间隔一定的时间，循环执行
    */
   run(): void {
+    let terminate = true;
     if (this.getThreadEnabled()) {
 
       this.m_tdrManager.run();
 
-      //console.log("this.m_pool.isEnabled(): ",this.m_pool.isEnabled());
-      if (this.m_pool.isEnabled()) {
+      //console.log("this.m_dataPool.isEnabled(): ",this.m_dataPool.isEnabled());
+      if (this.m_dataPool.isEnabled()) {
+        terminate = false;
+        this.m_teDelay = this.m_tdBase;
         let tot = 0;
         for (let i: number = 0; i < this.m_threadsTotal; ++i) {
-          if (this.m_pool.isEnabled()) {
+          if (this.m_dataPool.isEnabled()) {
+            // console.log("this.m_threads["+i+"].isFree(): ",this.m_threads[i].isFree(),", enabled: ",this.m_threads[i].isEnabled());
             if (this.m_threads[i].isFree()) {
-              this.m_pool.sendDataTo(this.m_threads[i]);
+              this.m_dataPool.sendDataTo(this.m_threads[i]);
             }
             if (this.m_threads[i].isFree()) {
               ++tot;
             }
           }
         }
-        if (tot < 1 && this.m_pool.isEnabled()) {
+        if (tot < 1 && this.m_dataPool.isEnabled()) {
           this.createThread();
         }
       } else {
@@ -152,8 +168,64 @@ class ThreadSchedule {
         }
       }
     }
+    // console.log("terminate: ",terminate,this.m_threadsTotal);
+    if(terminate && this.m_threadsTotal > 0) {
+      if(this.m_teDelay > 0) {
+        this.m_teDelay--;
+        if(this.m_teDelay == 0) {
+          this.m_teDelay = this.m_tdBase;
+          let thr = this.m_threads[this.m_threadsTotal-1];
+          if(thr.isFree()) {
+            this.m_threads.pop();
+            this.m_threadsTotal--;
+            thr.destroy();
+            console.log("ThreadSchedule::run(), terminate and destroy a thread instance, threadsTotal: ",this.m_threadsTotal);
+          }
+        }
+      }
+    }
   }
 
+  private createThread(): void {
+    
+    if(this.m_currNewThr != null && (this.m_currNewThr.isEnabled() || this.m_currNewThr.isDestroyed())) {
+      this.m_currNewThr = null;
+    }
+    
+    if (this.m_currNewThr == null && this.m_threadsTotal < this.m_maxThreadsTotal) {
+
+      let thread = new ThreadBase(this.m_tdrManager, this.m_taskPool, this.m_graphJsonStr);
+      this.m_currNewThr = thread;
+      thread.autoSendData = this.m_autoSendData;
+      thread.globalDataPool = this.m_dataPool;
+      thread.initialize(this.m_codeBlob);
+      this.m_threads.push(thread);
+      console.log("create Thread(" + this.m_threadsTotal + "), dataTotal: ",this.m_dataPool.getDataTotal());
+
+      this.m_threadsTotal++;
+      this.m_tdrManager.setThreads(this.m_threads);
+
+      for (let i: number = 0, len: number = this.m_descList.length; i < len; ++i) {
+        thread.initModuleByTaskDescriptor(this.m_descList[i]);
+      }
+      thread.initModules(this.m_commonModuleUrls);
+      for (let i: number = 0; i < this.m_codeStrList.length; ++i) {
+        thread.initModuleByCodeString(this.m_codeStrList[i]);
+      }
+      if (this.m_threadsTotal >= this.m_maxThreadsTotal) {
+        this.m_commonModuleUrls = [];
+        this.m_codeStrList = [];
+      }
+
+      let sdList = this.m_thrIdexSDList.slice(0);
+      let indexList = this.m_thrIndexList.slice(0);
+      this.m_thrIdexSDList = [];
+      this.m_thrIndexList = [];
+      for (let i: number = 0; i < sdList.length; ++i) {
+        this.sendDataToThreadAt(indexList[i], sdList[i]);
+      }
+    }
+  }
   /**
    * 通过参数, 添加发送给子线程的数据
    * @param taskCmd 处理当前数据的任务命令名字符串
@@ -177,7 +249,7 @@ class ThreadSchedule {
    */
   addData(thrData: IThreadSendData): void {
     if (thrData != null && thrData.srcuid >= 0) {
-      this.m_pool.addData(thrData);
+      this.m_dataPool.addData(thrData);
     }
   }
   private getAFreeThread(): ThreadBase {
@@ -213,42 +285,6 @@ class ThreadSchedule {
     this.m_threadEnabled = boo;
     return boo;
   }
-  private createThread(): void {
-    if (this.m_threadsTotal < this.m_maxThreadsTotal) {
-
-      let thread: ThreadBase = new ThreadBase(this.m_tdrManager, this.m_graphJsonStr);
-      thread.autoSendData = this.m_autoSendData;
-      thread.globalDataPool = this.m_pool;
-      thread.initialize(this.m_codeBlob);
-      this.m_threads.push(thread);
-      console.log("create Thread(" + this.m_threadsTotal + ")");
-
-      this.m_threadsTotal++;
-      this.m_tdrManager.setThreads(this.m_threads);
-
-      //let task: TaskDescriptor;
-      for (let i: number = 0, len: number = this.m_tasks.length; i < len; ++i) {
-        //task = this.m_tasks[i];
-        thread.initModuleByTaskDescriptor(this.m_tasks[i]);
-      }
-      thread.initModules(this.m_commonModuleUrls);
-      for (let i: number = 0; i < this.m_codeStrList.length; ++i) {
-        thread.initModuleByCodeString(this.m_codeStrList[i]);
-      }
-      if (this.m_threadsTotal >= this.m_maxThreadsTotal) {
-        this.m_commonModuleUrls = [];
-        this.m_codeStrList = [];
-      }
-
-      let sdList = this.m_thrIdexSDList.slice(0);
-      let indexList = this.m_thrIndexList.slice(0);
-      this.m_thrIdexSDList = [];
-      this.m_thrIndexList = [];
-      for (let i: number = 0; i < sdList.length; ++i) {
-        this.sendDataToThreadAt(indexList[i], sdList[i]);
-      }
-    }
-  }
 
   /**
    * 通过外部js文件源码初始化在线程中处理指定任务的程序代码
@@ -257,12 +293,12 @@ class ThreadSchedule {
    * @param taskclass 子线程中执行的源码中的对象类名
    */
   initTaskByURL(jsFileUrl: string, taskclass: number, moduleName: string = ""): void {
-    if (jsFileUrl != "" && taskclass >= 0 && taskclass < this.m_tasks.length) {
-      let task: TaskDescriptor = this.m_tasks[taskclass];
+    if (jsFileUrl != "" && taskclass >= 0 && taskclass < this.m_descList.length) {
+      let task: TaskDescriptor = this.m_descList[taskclass];
 
       if (task == null) {
         task = new TaskDescriptor(taskclass, ThreadCodeSrcType.JS_FILE_CODE, jsFileUrl, moduleName);
-        this.m_tasks[taskclass] = task;
+        this.m_descList[taskclass] = task;
         this.initModuleByTaskDescriptor(task);
       }
     }
@@ -274,12 +310,12 @@ class ThreadSchedule {
    * @param taskclass 子线程中执行的源码中的对象类名
    */
   initTaskByDependency(dependencyUniqueName: string, taskclass: number, moduleName: string = ""): void {
-    if (dependencyUniqueName != "" && taskclass >= 0 && taskclass < this.m_tasks.length) {
-      let task: TaskDescriptor = this.m_tasks[taskclass];
+    if (dependencyUniqueName != "" && taskclass >= 0 && taskclass < this.m_descList.length) {
+      let task: TaskDescriptor = this.m_descList[taskclass];
 
       if (task == null) {
         task = new TaskDescriptor(taskclass, ThreadCodeSrcType.DEPENDENCY, dependencyUniqueName, moduleName);
-        this.m_tasks[taskclass] = task;
+        this.m_descList[taskclass] = task;
         this.initModuleByTaskDescriptor(task);
       }
     }
@@ -291,12 +327,12 @@ class ThreadSchedule {
    * @param moduleName 子线程中执行的源码中的对象类名
    */
   initTaskByCodeStr(codestr: string, taskclass: number, moduleName: string): void {
-    if (codestr != "" && taskclass >= 0 && taskclass < this.m_tasks.length) {
-      let task: TaskDescriptor = this.m_tasks[taskclass];
+    if (codestr != "" && taskclass >= 0 && taskclass < this.m_descList.length) {
+      let task: TaskDescriptor = this.m_descList[taskclass];
 
       if (task == null) {
         task = new TaskDescriptor(taskclass, ThreadCodeSrcType.STRING_CODE, codestr, moduleName);
-        this.m_tasks[taskclass] = task;
+        this.m_descList[taskclass] = task;
         this.initModuleByTaskDescriptor(task);
       }
     }
@@ -396,7 +432,7 @@ class ThreadSchedule {
     if (maxThreadsTotal < 1) maxThreadsTotal = 1;
     this.m_codeBlob = bolb;
     this.m_maxThreadsTotal = maxThreadsTotal;
-    this.createThread();
+    // this.createThread();
   }
   private getUrl(url: string): string {
     let k = url.indexOf("http://");

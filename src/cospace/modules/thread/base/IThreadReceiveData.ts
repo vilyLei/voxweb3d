@@ -40,7 +40,10 @@ interface IThreadReceiveData<T1 extends any = unknown, T2 extends any = unknown>
      * 存放处理结果的数据, 使用者可更改
      */
     data: T1;
-
+    /**
+     * 任务数据在执行过程中的状态(work flow status): 将32位分为4个8位, 分别表示任务执行过程中的四种类别的状态(未知 | 未知 | 未知 | 流转状态)，默认是0x0
+     */
+     wfst: number;
 }
 
 export {IThreadReceiveData};

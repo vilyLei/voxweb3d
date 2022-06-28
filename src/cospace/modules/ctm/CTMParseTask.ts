@@ -1,12 +1,16 @@
 import { ITaskReceiveData } from "../thread/base/ITaskReceiveData";
 import { GeometryModelDataType, CTMDescriptorType } from "./CTMDescriptorType";
 import { ThreadTask } from "../thread/control/ThreadTask";
-import { TaskUniqueNameDependency, TaskJSFileDependency } from "../thread/control/TaskDependency";
+import {
+  TaskUniqueNameDependency,
+  TaskJSFileDependency,
+} from "../thread/control/TaskDependency";
 import { CTMTaskCMD } from "./CTMTaskCMD";
 
 interface CTMParseTaskListener {
   ctmParseFinish(model: GeometryModelDataType, url: string): void;
 }
+
 /**
  * ctm 几何模型数据加载/解析任务对象
  */
@@ -17,10 +21,10 @@ class CTMParseTask extends ThreadTask {
    */
   constructor(src: string) {
     super();
-    if(src.indexOf("/") > 0) {
+    if (src.indexOf("/") > 0) {
       this.dependency = new TaskJSFileDependency(src);
-    }else {
-        this.dependency = new TaskUniqueNameDependency(src);
+    } else {
+      this.dependency = new TaskUniqueNameDependency(src);
     }
   }
   setListener(l: CTMParseTaskListener): void {
@@ -37,13 +41,14 @@ class CTMParseTask extends ThreadTask {
     }
   }
   // return true, task finish; return false, task continue...
-  parseDone(data: ITaskReceiveData<GeometryModelDataType, CTMDescriptorType>,flag: number): boolean {
-    
+  parseDone(
+    data: ITaskReceiveData<GeometryModelDataType, CTMDescriptorType>,flag: number
+  ): boolean {
+    // console.log("CTMParseTask::parseDone(), this.m_listener != null:", this.m_listener != null, data);
     if (this.m_listener != null) {
-
       let model = data.data;
-      if(model.normals == undefined) model.normals = null;
-      if(model.uvsList == undefined) model.uvsList = null;
+      if (model.normals == undefined) model.normals = null;
+      if (model.uvsList == undefined) model.uvsList = null;
 
       this.m_listener.ctmParseFinish(model, data.descriptor.url);
     }

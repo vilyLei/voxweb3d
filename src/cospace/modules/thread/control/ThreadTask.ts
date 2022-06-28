@@ -10,16 +10,20 @@ import { StreamType, IThreadSendData } from "../base/IThreadSendData";
 import { ThreadSendData } from "../base/ThreadSendData";
 import { IThrDataPool } from "../control/IThrDataPool";
 import { TaskDependency } from "./TaskDependency";
+import { IThreadTask } from "./IThreadTask";
+import { ThreadTaskPool } from "./ThreadTaskPool";
 
-class ThreadTask {
-    // 同时处在运行时状态的最大任务数量: 1024个
-    private static s_maxTasksTotal: number = ThreadConfigure.MAX_TASKS_TOTAL;
-    private static s_taskList: ThreadTask[] = null;
-    private static s_freeList: number[] = null;
+class ThreadTask implements IThreadTask {
+    // // 同时处在运行时状态的最大任务数量
+    // private static s_maxTasksTotal: number = ThreadConfigure.MAX_TASKS_TOTAL;
+    // // 这里的静态对象是有问题的,不利于线程管理模块多实例
+    // private static s_taskList: ThreadTask[] = null;
+    // private static s_freeList: number[] = null;
 
     private m_uid: number = -1;
     private m_globalDataPool: IThrDataPool = null;
     private m_localDataPool: IThrDataPool = null;
+    private m_taskPool: ThreadTaskPool = null;
 
     protected m_parseIndex: number = 0;
     protected m_parseTotal: number = 0;
@@ -28,21 +32,22 @@ class ThreadTask {
      */
     dependency:TaskDependency = null;
     constructor() {
-        if (ThreadTask.s_freeList == null) {
-            ThreadTask.s_taskList = new Array(ThreadTask.s_maxTasksTotal);
-            ThreadTask.s_freeList = new Array(ThreadTask.s_maxTasksTotal);
-            for (let i: number = 0, len: number = ThreadTask.s_freeList.length; i < len; ++i) {
-                ThreadTask.s_freeList[i] = i;
-            }
-        }
-        if (ThreadTask.s_freeList.length > 0) {
-            this.m_uid = ThreadTask.s_freeList.pop();
-            ThreadTask.s_taskList[this.m_uid] = this;
-        }
-        else {
-            throw Error("Create ThreadTask too much !!!");
-        }
+        // if (ThreadTask.s_freeList == null) {
+        //     ThreadTask.s_taskList = new Array(ThreadTask.s_maxTasksTotal);
+        //     ThreadTask.s_freeList = new Array(ThreadTask.s_maxTasksTotal);
+        //     for (let i: number = 0, len: number = ThreadTask.s_freeList.length; i < len; ++i) {
+        //         ThreadTask.s_freeList[i] = i;
+        //     }
+        // }
+        // if (ThreadTask.s_freeList.length > 0) {
+        //     this.m_uid = ThreadTask.s_freeList.pop();
+        //     ThreadTask.s_taskList[this.m_uid] = this;
+        // }
+        // else {
+        //     throw Error("Create ThreadTask too much !!!");
+        // }
     }
+    /*
     static GetTaskByUid(uid: number): ThreadTask {
         if (uid < ThreadTask.s_maxTasksTotal && uid >= 0) {
             return ThreadTask.s_taskList[uid];
@@ -51,6 +56,7 @@ class ThreadTask {
     }
     // 重新关联一个 DetachTask 操作之后的 task
     static AttachTask(task: ThreadTask): boolean {
+        console.log("ThreadTask::AttachTask()...");
         if (task.m_uid < 0) {
             if (ThreadTask.s_freeList.length > 0) {
                 task.m_uid = ThreadTask.s_freeList.pop();
@@ -66,6 +72,26 @@ class ThreadTask {
             ThreadTask.s_taskList[task.m_uid] = null;
             ThreadTask.s_freeList.push(task.m_uid);
             task.m_uid = -1;
+        }
+    }
+    //*/
+    attach(taskPool: ThreadTaskPool): boolean {
+        if(this.m_uid < 0 &&  this.m_taskPool == null && taskPool != null) {
+            this.m_taskPool = taskPool;
+            let uid = taskPool.attachTask( this );
+            if(uid > 0) {
+                this.m_uid = uid;
+                return true;
+            }else {
+                throw Error("illegal operation!!!");
+            }
+        }
+        return false;
+    }
+    detach(): void {
+        if(this.m_uid > 0 &&  this.m_taskPool != null) {
+            this.m_taskPool.detachTask(this);
+            this.m_uid = -1;
         }
     }
     setDataPool(globalDataPool: IThrDataPool, localDataPool: IThrDataPool = null): void {
@@ -94,9 +120,14 @@ class ThreadTask {
     getUid(): number {
         return this.m_uid;
     }
-    // 必须被覆盖, return true, task finish; return false, task continue...
-    parseDone(data: any, flag: number): boolean {
-        throw Error("function parseDone(), Need Override !");
+    /**
+     * 必须被覆盖, return true, task finish; return false, task continue...
+     * @param data 存放处理结果的数据对象
+     * @param flag 表示多线程任务的处理状态, 这里的flag是一个uint型。用4个8位来表示4种标识分类, 最低8位用来表示任务的处理阶段相关的状态
+     * @returns 返回这个函数的处理状态，默认返回false
+     */
+    parseDone(data: unknown, flag: number): boolean {
+        throw Error("ThreadTask::parseDone(), Need Override it!");
         return true;
     }
     /**
@@ -165,19 +196,20 @@ class ThreadTask {
         }
     }
     getWorkerSendDataAt(i: number): IThreadSendData {
-        throw Error("function getWorkerSendDataAt(), Need Override !");
+        throw Error("ThreadTask::getWorkerSendDataAt(), Need Override !");
         return null;
     }
     // 必须被子类覆盖
     getTaskClass(): number {
-        throw Error("function getTaskClass(), Need Override !");
+        throw Error("ThreadTask::getTaskClass(), Need Override !");
         return -1;
     }
     destroy(): void {
+        this.detach();
         this.m_globalDataPool = null;
         this.m_localDataPool = null;
         this.dependency = null;
-        ThreadTask.DetachTask(this);
+        //ThreadTask.DetachTask(this);
     }
 }
 
