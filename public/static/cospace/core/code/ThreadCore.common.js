@@ -204,7 +204,7 @@ exports.transmitData = transmitData;
  * 作为多线程主程序核心代码
  */
 
-class Main {
+class ThreadCore {
   constructor() {
     this.m_inited = true;
     this.m_threadIndex = 0;
@@ -352,8 +352,8 @@ class Main {
 
 }
 
-exports.Main = Main;
-let ins = new Main();
+exports.ThreadCore = ThreadCore;
+let ins = new ThreadCore();
 ins.initialize();
 
 /***/ }),
@@ -802,8 +802,31 @@ class DependenceGraph {
   loadProgram(programUrl) {
     if (programUrl != "") {
       if (!this.m_programMap.has(programUrl)) {
-        this.m_programMap.set(programUrl, 1);
-        importJSScripts(programUrl);
+        this.m_programMap.set(programUrl, 1); // importJSScripts(programUrl);
+        //
+        // let bolb: Blob = baseCodeStr == "" ? new Blob([request.responseText]) : new Blob([baseCodeStr + request.responseText]);
+        // URL.createObjectURL(blob)
+
+        let request = new XMLHttpRequest();
+        request.open('GET', programUrl, true);
+        console.log("programUrl: ", programUrl);
+
+        request.onload = () => {
+          if (request.status <= 206) {
+            console.log("load js model file"); // eval(request.responseText);
+
+            let blob = new Blob([request.responseText]);
+            importJSScripts(URL.createObjectURL(blob));
+          } else {
+            console.error("load thread js module error, url: ", programUrl);
+          }
+        };
+
+        request.onerror = e => {
+          console.error("load thread js module error, url: ", programUrl);
+        };
+
+        request.send(null);
       }
     }
   }
