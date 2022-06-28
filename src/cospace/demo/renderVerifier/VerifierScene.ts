@@ -31,7 +31,7 @@ class VerifierScene implements IDropFileListerner {
 		if (this.m_rscene == null) {
 
 			this.m_rscene = rscene;
-			
+
 			let axis: Axis3DEntity = new Axis3DEntity();
 			axis.initialize(300);
 			this.m_rscene.addEntity(axis);
@@ -42,11 +42,11 @@ class VerifierScene implements IDropFileListerner {
 				this.m_cospace.geometry.setTaskModuleUrls(["static/renderingVerifier/modules/m1.js"]);
 				this.m_cospace.initialize(this.m_vfParam.threadsTotal, "static/renderingVerifier/modules/c1.js", true);
 			}else {
-				// this.m_cospace.geometry.setTaskModuleUrls(["static/renderingVerifier/modules/m1.js"]);
+				this.m_cospace.geometry.setTaskModuleUrls(["static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js"]);
 				// // 初始化数据协同中心
-				// this.m_cospace.initialize(3, "static/renderingVerifier/modules/core.js", true);
-				this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js", true);
-				// this.m_cospace.initialize(4, "cospace/core/code/ThreadCore.umd.js", true);
+				// this.m_cospace.initialize(3, "static/renderingVerifier/modules/c1.js", true);
+				// this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js", true);
+				this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.js", true);
 			}
 			
 			this.m_dropController.initialize(this.m_rscene.getCanvas(), this);

@@ -243,7 +243,28 @@ class DependenceGraph {
         if (programUrl != "") {
             if(!this.m_programMap.has(programUrl)) {
                 this.m_programMap.set(programUrl, 1);
-                importJSScripts(programUrl);
+                // importJSScripts(programUrl);
+                //
+                // let bolb: Blob = baseCodeStr == "" ? new Blob([request.responseText]) : new Blob([baseCodeStr + request.responseText]);
+                // URL.createObjectURL(blob)
+                let request: XMLHttpRequest = new XMLHttpRequest();
+                request.open('GET', programUrl, true);
+                console.log("programUrl: ",programUrl);
+                request.onload = () => {
+                    if (request.status <= 206) {
+                        console.log("load js model file");
+                        // eval(request.responseText);
+                        let blob = new Blob([request.responseText]);
+                        importJSScripts(URL.createObjectURL(blob));
+                    }
+                    else {
+                        console.error("load thread js module error, url: ", programUrl);
+                    }
+                };
+                request.onerror = e => {
+                    console.error("load thread js module error, url: ", programUrl);
+                };
+                request.send(null);
             }
         }
     }

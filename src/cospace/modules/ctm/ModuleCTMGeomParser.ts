@@ -68,6 +68,7 @@ class ModuleCTMGeomParser extends BaseTaskInThread {
     private m_parser = new CTMDataParser();
     constructor() {
         super();
+        console.log("ModuleCTMGeomParser::constructor()...");
     }
     receiveData(
         rdata: IThreadReceiveData<GeometryModelDataType, CTMDescriptorType>
