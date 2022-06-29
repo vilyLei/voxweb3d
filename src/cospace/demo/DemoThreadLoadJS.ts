@@ -1,4 +1,4 @@
-import{IThreadSendData} from "../modules/thread/base/IThreadSendData";
+import { IThreadSendData } from "../modules/thread/base/IThreadSendData";
 import { ThreadSchedule } from "../modules/thread/ThreadSchedule";
 import ExampleNumberAddTask from "../modules/thread/control/ExampleNumberAddTask";
 import ExampleNumberMultTask from "../modules/thread/control/ExampleNumberMultTask";
@@ -6,17 +6,15 @@ import ExampleNumberMathTask from "../modules/thread/control/ExampleNumberMathTa
 /**
  * thread(worker) 用法示例
  */
-export class DemoThreadLoadJS
-{
-    constructor(){}
+export class DemoThreadLoadJS {
+    constructor() { }
     private m_threadSchedule: ThreadSchedule = new ThreadSchedule();
     private m_numberAddTask: ExampleNumberAddTask = new ExampleNumberAddTask();
     private m_numberMultTask: ExampleNumberMultTask = new ExampleNumberMultTask();
     private m_numberMathTask: ExampleNumberMathTask = new ExampleNumberMathTask();
     private m_flag: number = 0;
-    
-    initialize():void
-    {
+
+    initialize(): void {
         console.log("DemoThreadLoadJS::initialize()...");
 
         this.m_threadSchedule.initModules(["static/cospace/thread/mathLib.js"]);
@@ -34,13 +32,12 @@ export class DemoThreadLoadJS
             this.mouseDown(evt);
         }
     }
-    private useTask():void
-    {
-        let param:Float32Array = new Float32Array([10,11,12,13]);
-        console.log("math add input :",param);
+    private useTask(): void {
+        let param: Float32Array = new Float32Array([10, 11, 12, 13]);
+        console.log("math add input :", param);
         this.m_numberAddTask.clacNumberList(param);
     }
-    
+
     private useMathTask(): void {
         let total: number = 5;
         this.m_numberMathTask.reset();
@@ -117,21 +114,18 @@ export class DemoThreadLoadJS
         console.log("mouse down evt: ", evt);
         this.testTask();
     }
-    private m_timeoutId:any = -1;
+    private m_timeoutId: any = -1;
     /**
      * 定时调度
      */
-    private update():void
-    {
+    private update(): void {
         this.m_threadSchedule.run();
-        if(this.m_timeoutId > -1)
-        {
+        if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
-        this.m_timeoutId = setTimeout(this.update.bind(this),100);// 25 fps
+        this.m_timeoutId = setTimeout(this.update.bind(this), 100);// 25 fps
     }
-    run():void
-    {
+    run(): void {
     }
 }
 

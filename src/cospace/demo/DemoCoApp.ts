@@ -9,16 +9,16 @@ declare var CoSpaceApp: ICoSpaceApp;
  * 引擎数据/资源协同空间
  */
 export class DemoCoApp {
-    
+
     private m_beginTime: number = 0;
     private m_appIns: ICoSpaceAppIns;
-    
+
     constructor() { }
 
     initialize(): void {
         console.log("DemoCoApp::initialize()...");
         let url: string = "static/cospace/core/coapp/CoSpaceApp.umd.js";
-        this.loadModule(url, (): void =>{
+        this.loadModule(url, (): void => {
         });
         // 启用鼠标点击事件
         document.onmousedown = (evt: any): void => {
@@ -27,50 +27,50 @@ export class DemoCoApp {
     }
     private initApp(): void {
         let modules: CoTaskCodeModuleParam[] = [
-            {url:"static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", name: CoModuleNS.ctmParser, type: CoModuleFileType.JS},
-            {url: "static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", name: CoModuleNS.objParser, type: CoModuleFileType.JS}
+            { url: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", name: CoModuleNS.ctmParser, type: CoModuleFileType.JS },
+            { url: "static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", name: CoModuleNS.objParser, type: CoModuleFileType.JS }
         ];
 
         this.m_appIns.initialize(3, "static/cospace/core/code/ThreadCore.umd.js", modules, true);
-        this.m_appIns.setTaskModuleUrls( modules );
+        this.m_appIns.setTaskModuleUrls(modules);
 
         this.loadCTM();
     }
     private loadCTM(): void {
 
         let baseUrl: string = "static/private/ctm/";
-		let urls: string[] = [];
-		for (let i = 0; i <= 26; ++i) {
-			urls.push(baseUrl + "sh202/sh202_" + i + ".ctm");
-		}
-		urls = [baseUrl + "errorNormal.ctm"];
-        
+        let urls: string[] = [];
+        for (let i = 0; i <= 26; ++i) {
+            urls.push(baseUrl + "sh202/sh202_" + i + ".ctm");
+        }
+        urls = [baseUrl + "errorNormal.ctm"];
+
         let url = urls[0];
-        
+
         this.m_appIns.getCPUDataByUrlAndCallback(
-			url,
-			CoDataFormat.CTM,
-			(unit: CoGeomDataUnit, status: number): void => {
-				let model: CoGeomDataType = unit.data.models[0];
-				console.log("parsing finish ctm model: ",model);
-			},
-			true
-		);
+            url,
+            CoDataFormat.CTM,
+            (unit: CoGeomDataUnit, status: number): void => {
+                let model: CoGeomDataType = unit.data.models[0];
+                console.log("parsing finish ctm model: ", model);
+            },
+            true
+        );
     }
     private loadOBJ(): void {
 
         let baseUrl: string = "static/private/obj/";
         let url = baseUrl + "base.obj";
-        
+
         this.m_appIns.getCPUDataByUrlAndCallback(
-			url,
-			CoDataFormat.OBJ,
-			(unit: CoGeomDataUnit, status: number): void => {
-				let model: CoGeomDataType = unit.data.models[0];
-				console.log("parsing finish obj model: ",model);
-			},
-			true
-		);
+            url,
+            CoDataFormat.OBJ,
+            (unit: CoGeomDataUnit, status: number): void => {
+                let model: CoGeomDataType = unit.data.models[0];
+                console.log("parsing finish obj model: ", model);
+            },
+            true
+        );
     }
     private mouseDown(evt: any): void {
 
@@ -78,7 +78,7 @@ export class DemoCoApp {
         this.loadOBJ();
     }
 
-    private loadModule(purl: string, onBuild: ()=>void = null): void {
+    private loadModule(purl: string, onBuild: () => void = null): void {
 
         let codeLoader: XMLHttpRequest = new XMLHttpRequest();
         codeLoader.open("GET", purl, true);
@@ -100,7 +100,7 @@ export class DemoCoApp {
             scriptEle.type = "text\/javascript";
             scriptEle.onload = (evt) => {
                 console.log("module script loaded.");
-                if(onBuild != null) {
+                if (onBuild != null) {
                     onBuild();
                 }
             }
@@ -116,16 +116,16 @@ export class DemoCoApp {
      */
     private update(): void {
         let delay: number = 100;      // 10 fps
-        
+
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
-        if(typeof CoSpaceApp === "undefined") {
+        if (typeof CoSpaceApp === "undefined") {
             this.m_timeoutId = setTimeout(this.update.bind(this), delay);
-        }else {
+        } else {
             console.log("代码块加载完毕");
             this.m_appIns = CoSpaceApp.createInstance();
-            console.log("this.m_appIns: ",this.m_appIns);
+            console.log("this.m_appIns: ", this.m_appIns);
             this.initApp();
         }
     }

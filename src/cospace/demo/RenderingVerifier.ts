@@ -32,7 +32,7 @@ export class RenderingVerifier {
 		console.log("RenderingVerifier::initialize()......");
 
 		if (this.m_rscene == null) {
-			
+
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			RendererDevice.SetWebBodyColor("white");
@@ -40,10 +40,10 @@ export class RenderingVerifier {
 			DivLog.SetDebugEnabled(true);
 			let color = new Color4()
 			color.setRGB3f(0.0, 0.4185, 0.6896);
-			DivLog.SetTextBgColor( color.getRGBUint24() );
-			DivLog.SetTextColor( 0xeeeeee );
-			DivLog.SetTextBgEnabled( false );
-			DivLog.SetXY(2,8);
+			DivLog.SetTextBgColor(color.getRGBUint24());
+			DivLog.SetTextColor(0xeeeeee);
+			DivLog.SetTextBgEnabled(false);
+			DivLog.SetXY(2, 8);
 
 			let rparam: RendererParam = new RendererParam();
 			//rparam.maxWebGLVersion = 1;
@@ -51,10 +51,10 @@ export class RenderingVerifier {
 			rparam.setAttriStencil(true);
 			rparam.setAttriAntialias(true);
 			rparam.setCamPosition(2000.0, 2000.0, 2000.0);
-			if(this.m_cameraUPY) {
-				rparam.setCamUpDirect(0.0,1.0,0.0);
+			if (this.m_cameraUPY) {
+				rparam.setCamUpDirect(0.0, 1.0, 0.0);
 			} else {
-				rparam.setCamUpDirect(0.0,0.0,1.0);
+				rparam.setCamUpDirect(0.0, 0.0, 1.0);
 			}
 			rparam.setCamLookAtPos(this.m_lookV.x, this.m_lookV.y, this.m_lookV.z);
 			this.m_rscene = new RendererScene();
@@ -89,22 +89,22 @@ export class RenderingVerifier {
 
 			//   DivLog.ShowLog("renderer inited.");
 			//   DivLog.ShowLog(RendererDevice.GPU_RENDERER);
-			
+
 			this.m_verifierScene.initialize(this.m_rscene);
 			this.m_verifierScene.initTest();
 		}
 	}
 	private mouseDown(evt: any): void {
-		this.m_verifierScene.mouseDown( evt );
+		this.m_verifierScene.mouseDown(evt);
 	}
 	private mouseUp(evt: any): void { }
 	private m_lookV: Vector3D = new Vector3D(0.0, 0.0, 0.0);
 	run(): void {
 
 		this.m_verifierScene.run();
-		if(this.m_cameraUPY) {
+		if (this.m_cameraUPY) {
 			this.m_stageDragSwinger.runWithYAxis();
-		}else {
+		} else {
 			this.m_stageDragSwinger.runWithZAxis();
 		}
 		// this.m_stageDragSwinger.runWithCameraAxis();

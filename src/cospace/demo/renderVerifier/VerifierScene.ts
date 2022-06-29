@@ -6,8 +6,8 @@ import { FBXSceneNode } from "./FBXSceneNode";
 import { CTMSceneNode } from "./CTMSceneNode";
 import { OBJSceneNode } from "./OBJSceneNode";
 import Axis3DEntity from "../../../vox/entity/Axis3DEntity";
-import {IDropFileListerner, DropFileController} from "./DropFileController";
-import {VerifierParam} from "./VerifierParam";
+import { IDropFileListerner, DropFileController } from "./DropFileController";
+import { VerifierParam } from "./VerifierParam";
 import { TaskCodeModuleParam } from "../../schedule/base/TaskCodeModuleParam";
 import { ModuleNS } from "../../modules/base/ModuleNS";
 import DivLog from "../../../vox/utils/DivLog";
@@ -37,17 +37,17 @@ class VerifierScene implements IDropFileListerner {
 			let axis: Axis3DEntity = new Axis3DEntity();
 			axis.initialize(300);
 			this.m_rscene.addEntity(axis);
-			
+
 
 			this.m_vfParam.initialize();
-			if((this.m_vfParam.hostUrl.indexOf(".artvily.") > 0 || this.m_vfParam.demoType != "") && this.m_vfParam.threadsTotal > 0) {
+			if ((this.m_vfParam.hostUrl.indexOf(".artvily.") > 0 || this.m_vfParam.demoType != "") && this.m_vfParam.threadsTotal > 0) {
 				let modules: TaskCodeModuleParam[] = [
 					new TaskCodeModuleParam("static/renderingVerifier/modules/m1.js", ModuleNS.ctmParser),
 					new TaskCodeModuleParam("static/renderingVerifier/modules/o1.js", ModuleNS.objParser)
 				];
 				this.m_cospace.geometry.setTaskModuleUrls(modules);
 				this.m_cospace.initialize(this.m_vfParam.threadsTotal, "static/renderingVerifier/modules/c1.js", true);
-			}else {
+			} else {
 				let modules: TaskCodeModuleParam[] = [
 					new TaskCodeModuleParam("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", ModuleNS.ctmParser),
 					new TaskCodeModuleParam("static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", ModuleNS.objParser)
@@ -59,25 +59,25 @@ class VerifierScene implements IDropFileListerner {
 				// this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js", true);
 				this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.js", true);
 			}
-			
+
 			this.m_dropController.initialize(this.m_rscene.getCanvas(), this);
 			DivLog.ShowLogOnce("模型法线检查</br>请用谷歌浏览器(Google Chrome)</br>请拖入单个模型文件(ctm/obj/fbx)</br>或者拖入只包含ctm文件的文件夹");
 
 			this.test();
 		}
 	}
-	
+
 	private test(): void {
 		// let list = [236, 82, 86, -236, 82, 26, 83, -87, 86, 83, 30, -85, 254, 235, 86, -85];
 		// list.forEach( function ( va: number, vb: number ): void {
 		// 	console.log("va, vb: ", va, vb);
 		// });
 	}
-	
+
 	isDropEnabled(): boolean {
 		return this.isFinish();
 	}
-	
+
 	private resetScene(): void {
 
 		DivLog.ShowLogOnce("正在载入模型文件...");
@@ -94,7 +94,7 @@ class VerifierScene implements IDropFileListerner {
 				const urlObj = window.URL.createObjectURL(files[i]);
 				urls.push(urlObj);
 			}
-			
+
 			if (name != "") {
 				name.toLocaleLowerCase();
 				if (name.indexOf(".ctm") > 1) {
@@ -105,7 +105,7 @@ class VerifierScene implements IDropFileListerner {
 					this.addFBX(urls);
 				} else if (name.indexOf(".obj") > 1) {
 					this.resetScene();
-					this.addOBJ( urls );
+					this.addOBJ(urls);
 				} else {
 					flag = 31;
 				}
@@ -119,21 +119,21 @@ class VerifierScene implements IDropFileListerner {
 	}
 	initTest(): void {
 
-		if(this.m_vfParam.demoType != "") {
+		if (this.m_vfParam.demoType != "") {
 			let urls = this.m_vfParam.getUrls();
-			switch(this.m_vfParam.demoType) {
+			switch (this.m_vfParam.demoType) {
 				case "fbx":
-					this.addFBX( urls );
+					this.addFBX(urls);
 					break;
 				case "ctm":
-					this.addCTM( urls );
+					this.addCTM(urls);
 					break;
 				default:
 					break;
 			}
 			return;
 		}
-		if(this.m_vfParam.hostUrl.indexOf(".artvily.") > 0) {
+		if (this.m_vfParam.hostUrl.indexOf(".artvily.") > 0) {
 			return;
 		}
 		let size = 107375616;

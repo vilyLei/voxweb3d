@@ -35,7 +35,7 @@ export class DemoCospace {
         this.m_beginTime = Date.now();
         //this.createRequest();
         // this.createRequestByCallback();
-        
+
         // for (let i: number = 0; i < 8; ++i) {
         //     this.createRequestByCallback();
         // }
@@ -51,18 +51,18 @@ export class DemoCospace {
         let baseUrl: string = window.location.href + "static/private/ctm/";
 
         // let url: string = baseUrl + "sh0/1 (" + index +").ctm";
-        let url: string = baseUrl + "sh202/sh202_" + index +".ctm";
+        let url: string = baseUrl + "sh202/sh202_" + index + ".ctm";
         this.m_cospace.geometry.getCPUDataByUrlAndCallback(
             url,
             DataFormat.CTM,
             (unit: GeometryDataUnit, status: number): void => {
-                this.m_receivedTotal ++;
+                this.m_receivedTotal++;
                 let totLossTime: number = Date.now() - this.m_beginTime;
                 // console.log("DemoCospace::createRequestByCallback(), geometry model", unit.data.model);
                 // console.log("model: ", unit.data.model);
                 // console.log("one res lossTime: ", unit.lossTime + " ms");
                 console.log("### total lossTime: ", totLossTime + " ms");
-                
+
                 let info: string = "one lossTime: " + unit.lossTime + " ms";
                 info += "</br>";
                 info += "ALL lossTime: " + totLossTime + " ms, tot: " + this.m_receivedTotal;
@@ -107,7 +107,7 @@ export class DemoCospace {
             },
             true
         );
-        
+
     }
     run(): void { }
 }
