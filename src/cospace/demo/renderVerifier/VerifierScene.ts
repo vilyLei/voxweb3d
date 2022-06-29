@@ -11,6 +11,7 @@ import { VerifierParam } from "./VerifierParam";
 import { TaskCodeModuleParam } from "../../schedule/base/TaskCodeModuleParam";
 import { ModuleNS } from "../../modules/base/ModuleNS";
 import DivLog from "../../../vox/utils/DivLog";
+import { FileLoader } from "../../modules/loaders/FileLoader";
 
 class VerifierScene implements IDropFileListerner {
 
@@ -175,11 +176,27 @@ class VerifierScene implements IDropFileListerner {
 			urls.push(baseUrl + "sh202/sh202_" + i + ".ctm");
 		}
 		urls = [baseUrl + "errorNormal.ctm"];
-		// this.addCTM(urls);
+		this.addCTM(urls);
 
 		baseUrl = hostUrl + "static/private/obj/";
 		urls = [baseUrl + "base.obj"];
 		// this.addOBJ(urls);
+	}
+	private testCTM(url: string): void {
+		// new FileLoader().load(
+		// 	url,
+		// 	(buf: ArrayBuffer, url: string): void => {
+		// 		DivLog.ShowLogOnce("正在解析CTM数据...");
+		// 		this.m_parseTask.addBinaryData(new Uint8Array(buf), url);
+		// 	},
+		// 	(evt: ProgressEvent, url: string): void => {
+		// 		let k = Math.round(100 * evt.loaded/evt.total);
+		// 		DivLog.ShowLogOnce("ctm file loading " + k + "%");
+		// 	},
+		// 	(status: number, url: string): void => {
+		// 		console.error("load ctm mesh data error, url: ", url);
+		// 	}
+		// );
 	}
 	mouseDown(evt: any): void {
 		let nodes = this.m_sceneNodes;

@@ -30,6 +30,20 @@ class InterleavedStream {
     }
 }
 
+interface ICTMStream {
+    /**
+     * uint8 array
+     */
+    data: Uint8Array | string;
+    offset: number;
+    readByte(): number;
+    readInt32(): number;
+    readFloat32(): number;
+    readString(): string;
+    readArrayInt32(array: Uint16Array | Uint32Array): Uint16Array | Uint32Array;
+    readArrayFloat32(array: Float32Array): Float32Array;
+
+}
 class FileHeader {
 
     fileFormat: number;
@@ -41,7 +55,7 @@ class FileHeader {
     flags: number;
     comment: string;
 
-    constructor(stream: any) {
+    constructor(stream: ICTMStream) {
 
         stream.readInt32(); //magic "OCTM"
         this.fileFormat = stream.readInt32();
@@ -75,7 +89,7 @@ class FileMG2Header {
     sizey: number;
     sizez: number;
 
-    constructor(stream: any) {
+    constructor(stream: ICTMStream) {
 
         stream.readInt32(); //magic "MG2H"
 
@@ -107,7 +121,7 @@ class CTMFileBody {
     getUVSAt( i: number ): Float32Array {
         return this.uvMaps[ i ].uv;
     }
-    constructor(header: any) {
+    constructor(header: FileHeader) {
         var i = header.triangleCount * 3,
             v = header.vertexCount * 3,
             n = header.hasNormals() ? header.vertexCount * 3 : 0,
@@ -169,7 +183,7 @@ class CTM {
     static InterleavedStream(data: any, count: number): InterleavedStream {
         return new InterleavedStream(data, count);
     }
-    static restoreIndices(indices: any, len: number): void {
+    static restoreIndices(indices: Uint16Array | Uint32Array, len: number): void {
         var i = 3;
         if (len > 0) {
             indices[2] += indices[0];
@@ -400,7 +414,7 @@ class ReaderRAW {
 class ReaderMG1 {
     constructor() { }
 
-    read(stream: any, body: any): void {
+    read(stream: ICTMStream, body: any): void {
         this.readIndices(stream, body.indices);
         this.readVertices(stream, body.vertices);
 
@@ -415,7 +429,7 @@ class ReaderMG1 {
         }
     }
 
-    readIndices(stream: any, indices: any): void {
+    readIndices(stream: ICTMStream, indices: any): void {
         stream.readInt32(); //magic "INDX"
         stream.readInt32(); //packed size
 
@@ -433,7 +447,7 @@ class ReaderMG1 {
         LZMA.decompress(stream, stream, interleaved, interleaved.data.length);
     }
 
-    readNormals(stream: any, normals: any): void {
+    readNormals(stream: ICTMStream, normals: any): void {
         stream.readInt32(); //magic "NORM"
         stream.readInt32(); //packed size
 
@@ -441,7 +455,7 @@ class ReaderMG1 {
         LZMA.decompress(stream, stream, interleaved, interleaved.data.length);
     }
 
-    readUVMaps(stream: any, uvMaps: any): void {
+    readUVMaps(stream: ICTMStream, uvMaps: any): void {
         var i = 0;
         for (; i < uvMaps.length; ++i) {
             stream.readInt32(); //magic "TEXC"
@@ -456,7 +470,7 @@ class ReaderMG1 {
         }
     }
 
-    readAttrMaps(stream: any, attrMaps: any): void {
+    readAttrMaps(stream: ICTMStream, attrMaps: any): void {
         var i = 0;
         for (; i < attrMaps.length; ++i) {
             stream.readInt32(); //magic "ATTR"
@@ -472,12 +486,12 @@ class ReaderMG1 {
 }
 
 class ReaderMG2 {
-    MG2Header: any;
+    MG2Header: FileMG2Header;
     constructor() {
 
     }
 
-    read(stream: any, body: any): void {
+    read(stream: ICTMStream, body: CTMFileBody): void {
         this.MG2Header = new FileMG2Header(stream);
 
         this.readVertices(stream, body.vertices);
@@ -494,7 +508,7 @@ class ReaderMG2 {
         }
     };
 
-    readVertices(stream: any, vertices: any): void {
+    readVertices(stream: ICTMStream, vertices: Float32Array): void {
         stream.readInt32(); //magic "VERT"
         stream.readInt32(); //packed size
 
@@ -506,7 +520,7 @@ class ReaderMG2 {
         CTM.restoreVertices(vertices, this.MG2Header, gridIndices, this.MG2Header.vertexPrecision);
     };
 
-    readGridIndices(stream: any, vertices: any) {
+    readGridIndices(stream: ICTMStream, vertices: Float32Array) {
         stream.readInt32(); //magic "GIDX"
         stream.readInt32(); //packed size
 
@@ -520,7 +534,7 @@ class ReaderMG2 {
         return gridIndices;
     };
 
-    readIndices(stream: any, indices: any): void {
+    readIndices(stream: ICTMStream, indices: Uint16Array | Uint32Array): void {
         stream.readInt32(); //magic "INDX"
         stream.readInt32(); //packed size
 
@@ -530,7 +544,7 @@ class ReaderMG2 {
         CTM.restoreIndices(indices, indices.length);
     };
 
-    readNormals(stream: any, body: any): void {
+    readNormals(stream: ICTMStream, body: CTMFileBody): void {
         stream.readInt32(); //magic "NORM"
         stream.readInt32(); //packed size
 
@@ -542,7 +556,7 @@ class ReaderMG2 {
         CTM.restoreNormals(body.normals, smooth, this.MG2Header.normalPrecision);
     };
 
-    readUVMaps(stream: any, uvMaps: any): void {
+    readUVMaps(stream: ICTMStream, uvMaps: any): void {
         var i = 0;
         for (; i < uvMaps.length; ++i) {
             stream.readInt32(); //magic "TEXC"
@@ -561,7 +575,7 @@ class ReaderMG2 {
         }
     };
 
-    readAttrMaps(stream: any, attrMaps: any): void {
+    readAttrMaps(stream: ICTMStream, attrMaps: any): void {
         var i = 0;
         for (; i < attrMaps.length; ++i) {
             stream.readInt32(); //magic "ATTR"
@@ -578,20 +592,6 @@ class ReaderMG2 {
             CTM.restoreMap(attrMaps[i].attr, 4, precision);
         }
     }
-}
-interface ICTMStream {
-    /**
-     * uint8 array
-     */
-    data: Uint8Array | string;
-    offset: number;
-    readByte(): number;
-    readInt32(): number;
-    readFloat32(): number;
-    readString(): string;
-    readArrayInt32(array: Uint16Array | Uint32Array): Uint16Array | Uint32Array;
-    readArrayFloat32(array: Float32Array): Float32Array;
-
 }
 class CTMStream implements ICTMStream {
 
