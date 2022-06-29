@@ -52,7 +52,7 @@ class OBJParseTask extends ThreadTask {
 	}
 	// 这个函数的返回值与子线程中的对应处理代码模块 getTaskClass() 函数返回值必须一致。不同类型的任务此返回值务必保持唯一性
 	getTaskClass(): number {
-		return 101;
+		return 103;
 	}
 	destroy(): void {
 		super.destroy();
@@ -60,4 +60,4 @@ class OBJParseTask extends ThreadTask {
 	}
 }
 
-export { OBJParseTask };
+export { OBJParseTaskListener, OBJModelDataType, OBJParseTask };

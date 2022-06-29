@@ -9,6 +9,8 @@ import { ThreadSchedule } from "./modules/thread/ThreadSchedule";
 import { GeometryResourceSchedule } from "./schedule/GeometryResourceSchedule";
 import { ReceiverSchedule } from "./schedule/ReceiverSchedule";
 import { TextureResourceSchedule } from "./schedule/TextureResourceSchedule";
+import { TaskCodeModuleParam } from "./schedule/TaskCodeModuleParam";
+import { ModuleNS } from "./modules/base/ModuleNS";
 import { CoSystem } from "./CoSystem";
 import { CoRuntime } from "./CoRuntime";
 /**
@@ -45,11 +47,8 @@ class CoSpace {
             this.thread.setParams(autoSendData);
             // 初始化多线程调度器(多线程系统)
             this.thread.initialize(maxThreadsTotal, threadCoreCodeUrl);
-
-            let taskModuleUrls: string[] = [
-                "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.min.js"
-            ];
-            this.geometry.initialize(this.m_receiver, this.thread, taskModuleUrls);
+            let modules: TaskCodeModuleParam[] = [new TaskCodeModuleParam("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.min.js", ModuleNS.ctmParser)];
+            this.geometry.initialize(this.m_receiver, this.thread, modules);
             
             // this.geometry.initialize(this.m_receiver, this.thread);
             // 启动循环定时调度

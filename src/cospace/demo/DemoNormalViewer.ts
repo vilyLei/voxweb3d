@@ -151,9 +151,9 @@ export class DemoNormalViewer {
 		url,
 		DataFormat.CTM,
 		(unit: GeometryDataUnit, status: number): void => {
-			let model: GeometryModelDataType = unit.data.model;
+			let model: GeometryModelDataType = unit.data.models[0];
 			if (model.normals == null) {
-			console.error("model.normals == null, url: ", url);
+				console.error("model.normals == null, url: ", url);
 			}
 			this.initCTMEntity(model);
 		},

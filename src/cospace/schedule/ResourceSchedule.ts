@@ -5,6 +5,7 @@ import { ReceiverSchedule } from "./ReceiverSchedule";
 import { DataFormat } from "./base/DataUnit";
 import { DataReceiverBase } from "../schedule/base/DataReceiverBase";
 import { ThreadSchedule } from "../modules/thread/ThreadSchedule";
+import { TaskCodeModuleParam } from "./TaskCodeModuleParam";
 
 /**
  * 内置的资源接收器
@@ -26,7 +27,6 @@ class ResourceReceiver<DataUnitType extends DataUnit> extends DataReceiverBase {
         }
     }
 }
-
 /**
  * 数据资源调度器基类
  */
@@ -35,7 +35,8 @@ class ResourceSchedule<DataUnitType extends DataUnit> {
     private m_receiverSchedule: ReceiverSchedule;
     private m_unitPool: DataUnitPool<DataUnitType> = new DataUnitPool();
     private m_threadSchedule: ThreadSchedule;
-    private m_taskModuleUrls: string[] = null;
+    // private m_taskModuleUrls: string[] = null;
+    private m_taskModules: TaskCodeModuleParam[] = null;
 
     constructor() {
     }
@@ -49,21 +50,23 @@ class ResourceSchedule<DataUnitType extends DataUnit> {
     /**
      * 被子类覆盖，以便实现具体功能
      */
-    protected initTask(unitPool: DataUnitPool<DataUnitType>, threadSchedule: ThreadSchedule, receiverSchedule: ReceiverSchedule, taskModuleUrls: string[]): void {
+    protected initTask(unitPool: DataUnitPool<DataUnitType>, threadSchedule: ThreadSchedule, receiverSchedule: ReceiverSchedule, taskModules: TaskCodeModuleParam[]): void {
 
     }
-    setTaskModuleUrls(taskModuleUrls: string[]): void {
-        if(taskModuleUrls != null) {
-            this.m_taskModuleUrls = taskModuleUrls.slice();
+    setTaskModuleUrls(taskModules: TaskCodeModuleParam[]): void {
+        if(taskModules != null) {
+            // this.m_taskModuleUrls = taskModuleUrls.slice(0);
+            this.m_taskModules = taskModules.slice(0);
         }
     }
-    initialize(receiverSchedule: ReceiverSchedule, threadSchedule: ThreadSchedule, taskModuleUrls: string[] = null): void {
-
+    initialize(receiverSchedule: ReceiverSchedule, threadSchedule: ThreadSchedule, taskModules: TaskCodeModuleParam[] = null): void {
+        
         if (this.m_receiverSchedule == null && this.m_threadSchedule == null) {
 
             this.m_receiverSchedule = receiverSchedule;
             this.m_threadSchedule = threadSchedule;
-            this.initTask( this.m_unitPool, threadSchedule, receiverSchedule, this.m_taskModuleUrls != null ? this.m_taskModuleUrls: taskModuleUrls);
+            // this.initTask( this.m_unitPool, threadSchedule, receiverSchedule, this.m_taskModuleUrls != null ? this.m_taskModuleUrls: taskModuleUrls);
+            this.initTask( this.m_unitPool, threadSchedule, receiverSchedule, this.m_taskModules != null ? this.m_taskModules: taskModules);
         }
     }
     hasDataUnit(url: string): boolean {

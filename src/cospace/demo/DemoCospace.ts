@@ -101,8 +101,8 @@ export class DemoCospace {
             url,
             DataFormat.CTM,
             (unit: GeometryDataUnit, status: number): void => {
-                console.log("DemoCospace::createRequestByCallback(), geometry model", unit.data.model);
-                console.log("model: ", unit.data.model);
+                console.log("DemoCospace::createRequestByCallback(), geometry model", unit.data.models[0]);
+                console.log("model: ", unit.data.models[0]);
                 console.log("lossTime: ", unit.lossTime + " ms");
             },
             true

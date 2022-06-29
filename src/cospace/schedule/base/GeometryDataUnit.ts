@@ -6,7 +6,8 @@ class GeometryDataContainer {
   dataClass: DataClass;
   dataType: string;
   dataFormat: DataFormat = DataFormat.CTM;
-  model: GeometryModelDataType = null;
+  // model: GeometryModelDataType = null;
+  models: GeometryModelDataType[] = null;
   constructor() {
   }
   setFormatBUrl(url: string): void {
@@ -28,6 +29,10 @@ class GeometryDataContainer {
           break;
       }
     }
+  }
+  destroy(): void {
+    // this.model = null;
+    this.models = null;
   }
 }
 class GeometryDataUnit extends DataUnit {
@@ -55,4 +60,4 @@ class GeometryDataUnit extends DataUnit {
   // }
 }
 
-export { GeometryDataContainer, DataUnitLock, GeometryDataUnit, DataUnit };
+export { DataFormat, GeometryDataContainer, DataUnitLock, GeometryDataUnit, DataUnit };

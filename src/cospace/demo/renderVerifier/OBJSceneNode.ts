@@ -1,8 +1,11 @@
 import { SceneNode } from "./SceneNode";
-import { ObjDataParser } from "../../../vox/assets/ObjDataParser";
-import { GeometryModelDataType } from "../../modules/base/GeometryModelDataType";
-import { FileLoader } from "../../modules/loaders/FileLoader";
 
+import { GeometryModelDataType } from "../../modules/base/GeometryModelDataType";
+import { DataFormat } from "../../schedule/base/DataUnit";
+import { GeometryDataUnit } from "../../schedule/base/GeometryDataUnit";
+
+// import { ObjDataParser } from "../../../vox/assets/ObjDataParser";
+// import { FileLoader } from "../../modules/loaders/FileLoader";
 class OBJSceneNode extends SceneNode {
 
 	constructor() { super(); }
@@ -21,21 +24,42 @@ class OBJSceneNode extends SceneNode {
 			}
 		}
 	}
-
-	private parseFromStr(dataStr: string): void {
-		let objParser = new ObjDataParser();
-		let objMeshes = objParser.Parse( dataStr );
-		this.m_modelsTotal = objMeshes.length;
-		let len: number = this.m_modelsTotal;
-		for (let i: number = 0; i < len; ++i) {
-			const geom: any = objMeshes[i].geometry;
-			const model = this.createModel( geom );
-			this.initEntity(model);
-		}
-		this.m_waitPartsTotal = 0;
-	}
 	private loadOBJByUrl(url: string): void {
+		this.showInfo("正在解析obj模型数据...");
+		this.m_cospace.geometry.getCPUDataByUrlAndCallback(
+			url,
+			DataFormat.OBJ,
+			(unit: GeometryDataUnit, status: number): void => {
+				let models: GeometryModelDataType[] = unit.data.models;
+				this.m_modelsTotal = models.length;
+				let len: number = this.m_modelsTotal;
+				for (let i: number = 0; i < len; ++i) {
+					const model = models[i];
+					if(model.vertices != null && model.normals == null) {
+						console.error("model.normals == null, url: ", url);
+					}
+					this.initEntity(model);
+				}
+				this.m_waitPartsTotal = 0;
+			},
+			true
+		);
+	}
 
+	// private parseFromStr(dataStr: string): void {
+	// 	let objParser = new ObjDataParser();
+	// 	let objMeshes = objParser.Parse( dataStr );
+	// 	this.m_modelsTotal = objMeshes.length;
+	// 	let len: number = this.m_modelsTotal;
+	// 	for (let i: number = 0; i < len; ++i) {
+	// 		const geom: any = objMeshes[i].geometry;
+	// 		const model = this.createModel( geom );
+	// 		this.initEntity(model);
+	// 	}
+	// 	this.m_waitPartsTotal = 0;
+	// }
+	private loadOBJByUrl2(url: string): void {
+		/*
 		const readerBuf = new FileReader();
 		readerBuf.onload = (e) => {
 			this.showInfo("正在解析obj模型数据...");
@@ -47,8 +71,8 @@ class OBJSceneNode extends SceneNode {
 			(buf: ArrayBuffer, url: string): void => {
 				readerBuf.readAsText( new Blob([buf]) );
 			},
-			(e: ProgressEvent, url: string): void => {
-				let k = Math.round(100 * e.loaded/e.total);
+			(evt: ProgressEvent, url: string): void => {
+				let k = Math.round(100 * evt.loaded/evt.total);
 				this.showInfo("obj file loading " + k + "%");
 			},
 			(status: number, url: string): void => {
@@ -82,6 +106,7 @@ class OBJSceneNode extends SceneNode {
 			console.error("load error, request.status: ",request.status,", url: ",url);
 		};
 		request.send(null);
+		//*/
 		/*
 		let request: XMLHttpRequest = new XMLHttpRequest();
 		request.open('GET', url, true);
@@ -110,6 +135,7 @@ class OBJSceneNode extends SceneNode {
 		request.send(null);
 		//*/
 	}
+	/*
 	private createModel(geom: any): GeometryModelDataType {
 
 		let vtxTotal = geom.vertices.length;
@@ -131,6 +157,7 @@ class OBJSceneNode extends SceneNode {
 
 		return model;
 	}
+	//*/
 }
 
 export { OBJSceneNode };

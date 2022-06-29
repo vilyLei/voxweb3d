@@ -8,6 +8,8 @@ import { OBJSceneNode } from "./OBJSceneNode";
 import Axis3DEntity from "../../../vox/entity/Axis3DEntity";
 import {IDropFileListerner, DropFileController} from "./DropFileController";
 import {VerifierParam} from "./VerifierParam";
+import { TaskCodeModuleParam } from "../../schedule/TaskCodeModuleParam";
+import { ModuleNS } from "../../modules/base/ModuleNS";
 import DivLog from "../../../vox/utils/DivLog";
 
 class VerifierScene implements IDropFileListerner {
@@ -39,10 +41,19 @@ class VerifierScene implements IDropFileListerner {
 
 			this.m_vfParam.initialize();
 			if((this.m_vfParam.hostUrl.indexOf(".artvily.") > 0 || this.m_vfParam.demoType != "") && this.m_vfParam.threadsTotal > 0) {
-				this.m_cospace.geometry.setTaskModuleUrls(["static/renderingVerifier/modules/m1.js"]);
+				let modules: TaskCodeModuleParam[] = [
+					new TaskCodeModuleParam("static/renderingVerifier/modules/m1.js", ModuleNS.ctmParser),
+					new TaskCodeModuleParam("static/renderingVerifier/modules/o1.js", ModuleNS.objParser)
+				];
+				this.m_cospace.geometry.setTaskModuleUrls(modules);
 				this.m_cospace.initialize(this.m_vfParam.threadsTotal, "static/renderingVerifier/modules/c1.js", true);
 			}else {
-				this.m_cospace.geometry.setTaskModuleUrls(["static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js"]);
+				let modules: TaskCodeModuleParam[] = [
+					new TaskCodeModuleParam("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", ModuleNS.ctmParser),
+					new TaskCodeModuleParam("static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", ModuleNS.objParser)
+				];
+				this.m_cospace.geometry.setTaskModuleUrls(modules);
+				// this.m_cospace.geometry.setTaskModuleUrls(["static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js"]);
 				// // 初始化数据协同中心
 				// this.m_cospace.initialize(3, "static/renderingVerifier/modules/c1.js", true);
 				// this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js", true);
@@ -94,7 +105,7 @@ class VerifierScene implements IDropFileListerner {
 					this.addFBX(urls);
 				} else if (name.indexOf(".obj") > 1) {
 					this.resetScene();
-					this.addObj( urls );
+					this.addOBJ( urls );
 				} else {
 					flag = 31;
 				}
@@ -163,8 +174,12 @@ class VerifierScene implements IDropFileListerner {
 		for (let i = 0; i <= 26; ++i) {
 			urls.push(baseUrl + "sh202/sh202_" + i + ".ctm");
 		}
-		// urls = [baseUrl + "errorNormal.ctm"];
+		urls = [baseUrl + "errorNormal.ctm"];
 		// this.addCTM(urls);
+
+		baseUrl = hostUrl + "static/private/obj/";
+		urls = [baseUrl + "base.obj"];
+		this.addOBJ(urls);
 	}
 	mouseDown(evt: any): void {
 		let nodes = this.m_sceneNodes;
@@ -178,7 +193,7 @@ class VerifierScene implements IDropFileListerner {
 	private addCTM(urls: string[]): void {
 		this.addNewNode(new CTMSceneNode(), urls);
 	}
-	private addObj(urls: string[]): void {
+	private addOBJ(urls: string[]): void {
 		this.addNewNode(new OBJSceneNode(), urls);
 	}
 	private addNewNode(node: ISceneNode, urls: string[]): void {

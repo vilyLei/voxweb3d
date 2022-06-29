@@ -64,4 +64,4 @@ class CTMParseTask extends ThreadTask {
 	}
 }
 
-export { CTMParseTask };
+export { CTMParseTaskListener, CTMParseTask };

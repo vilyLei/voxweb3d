@@ -24,7 +24,7 @@ class ModuleOBJGeomParser extends BaseTaskInThread {
         try {
             objMeshes = objParser.Parse( dataStr );
         }catch(e) {
-            console.log("parse obj geom model data error.");
+            console.error("parse obj geom model data error.");
         }
         if(objMeshes != null) {
             let len: number = objMeshes.length;
@@ -66,6 +66,9 @@ class ModuleOBJGeomParser extends BaseTaskInThread {
                 for (let i: number = 0; i < vtCount; ++i) {
                     indices[i] = i;
                 }
+            }
+            if(geom.normals == null || geom.normals == undefined) {
+                console.error("parse obj geom model normals data error.");
             }
             let model: GeometryModelDataType = {
                 uvsList: [ new Float32Array(geom.uvs) ],

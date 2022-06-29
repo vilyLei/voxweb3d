@@ -4,6 +4,7 @@ import { ThreadSchedule } from "../modules/thread/ThreadSchedule";
 import { ResourceSchedule } from "./ResourceSchedule";
 import { ReceiverSchedule } from "./ReceiverSchedule";
 import { DataUnitLock, TextureDataContainer, TextureDataUnit } from "./base/TextureDataUnit";
+import { TaskCodeModuleParam } from "./TaskCodeModuleParam";
 
 class TextureResourceSchedule extends ResourceSchedule<TextureDataUnit> {
 
@@ -36,7 +37,7 @@ class TextureResourceSchedule extends ResourceSchedule<TextureDataUnit> {
 	/**
 	 * 被子类覆盖，以便实现具体功能
 	 */
-	protected initTask(unitPool: DataUnitPool<TextureDataUnit>, threadSchedule: ThreadSchedule, receiverSchedule: ReceiverSchedule, taskModuleUrls: string[]): void {
+	protected initTask(unitPool: DataUnitPool<TextureDataUnit>, threadSchedule: ThreadSchedule, receiverSchedule: ReceiverSchedule, taskModules: TaskCodeModuleParam[]): void {
 
 	}
 	/**

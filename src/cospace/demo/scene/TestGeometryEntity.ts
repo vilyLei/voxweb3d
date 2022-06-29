@@ -9,7 +9,7 @@ class TestGeometryEntity extends DataReceiverBase {
         super();
     }
     receiveDataUnit(unit: GeometryDataUnit, status: number): void {
-        console.log("TestGeometryEntity::receiveDataUnit(), geometry model: ",unit.data.model);
+        console.log("TestGeometryEntity::receiveDataUnit(), geometry model: ",unit.data.models[0]);
     }
 }
 
