@@ -8,7 +8,7 @@ import { OBJSceneNode } from "./OBJSceneNode";
 import Axis3DEntity from "../../../vox/entity/Axis3DEntity";
 import {IDropFileListerner, DropFileController} from "./DropFileController";
 import {VerifierParam} from "./VerifierParam";
-import { TaskCodeModuleParam } from "../../schedule/TaskCodeModuleParam";
+import { TaskCodeModuleParam } from "../../schedule/base/TaskCodeModuleParam";
 import { ModuleNS } from "../../modules/base/ModuleNS";
 import DivLog from "../../../vox/utils/DivLog";
 
@@ -169,7 +169,7 @@ class VerifierScene implements IDropFileListerner {
 
 		let hostUrl = this.m_vfParam.hostUrl;
 
-		let baseUrl: string = hostUrl + "static/private/ctm/";
+		let baseUrl: string = "static/private/ctm/";
 		let urls: string[] = [];
 		for (let i = 0; i <= 26; ++i) {
 			urls.push(baseUrl + "sh202/sh202_" + i + ".ctm");

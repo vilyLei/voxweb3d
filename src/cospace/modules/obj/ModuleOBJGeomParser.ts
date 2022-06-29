@@ -55,7 +55,7 @@ class ModuleOBJGeomParser extends BaseTaskInThread {
 	}
     
 	private createModel(geom: any): GeometryModelDataType {
-
+        
 		let vtxTotal = geom.vertices.length;
 		let vtCount = vtxTotal / 3;
         if(vtCount >= 3) {

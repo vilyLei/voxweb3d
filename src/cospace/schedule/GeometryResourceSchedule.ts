@@ -11,7 +11,7 @@ import { DataFormat } from "./base/DataUnit";
 import { ThreadSchedule } from "../modules/thread/ThreadSchedule";
 import { ResourceSchedule } from "./ResourceSchedule";
 import { ReceiverSchedule } from "./ReceiverSchedule";
-import { TaskCodeModuleParam } from "./TaskCodeModuleParam";
+import { ITaskCodeModuleParam } from "./base/ITaskCodeModuleParam";
 import { ModuleNS } from "../modules/base/ModuleNS";
 
 import { DataUnitLock, GeometryDataContainer, GeometryDataUnit } from "./base/GeometryDataUnit";
@@ -59,7 +59,7 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 	/**
 	 * 被子类覆盖，以便实现具体功能
 	 */
-	protected initTask(unitPool: DataUnitPool<GeometryDataUnit>, threadSchedule: ThreadSchedule, receiverSchedule: ReceiverSchedule, taskModules: TaskCodeModuleParam[]): void {
+	protected initTask(unitPool: DataUnitPool<GeometryDataUnit>, threadSchedule: ThreadSchedule, receiverSchedule: ReceiverSchedule, taskModules: ITaskCodeModuleParam[]): void {
 
 		for(let i: number = 0; i < taskModules.length; ++i) {
 			const module = taskModules[i];

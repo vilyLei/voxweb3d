@@ -1,20 +1,12 @@
 import { DataPhaseFlag } from "./DataPhaseFlag";
+import { DataFormat } from "./DataFormat";
 
 enum DataClass {
   Geometry,
   Texture,
   Undefined
 }
-/**
- * 数据文件类型，例如 ctm, draco
- */
-enum DataFormat {
-  CTM = "ctm",
-  Draco = "draco",
-  OBJ = "obj",
-  Jpg = "jpg",
-  Png = "png"
-}
+
 class DataUnitLock {
   /**
    * f防止误操作故意为之

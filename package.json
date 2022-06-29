@@ -39,6 +39,7 @@
     "buildOBJParser": "vue-cli-service build --target lib --name ModuleOBJGeomParser --dest ./public/static/cospace/modules/obj ./src/cospace/modules/obj/ModuleOBJGeomParser.ts",
     "buildDracoParser": "vue-cli-service build --target lib --name ModuleDracoGeomParser --dest ./public/static/cospace/modules/draco ./src/cospace/modules/draco/ModuleDracoGeomParser.ts",
     "buildThreadCore": "vue-cli-service build --target lib --name ThreadCore --dest ./public/static/cospace/core/code ./src/cospace/modules/thread/control/ThreadCore.ts",
+    "buildCoSpaceApp": "vue-cli-service build --target lib --name CoSpaceApp --dest ./public/static/cospace/core/coapp ./src/cospace/CoSpaceApp.ts",
 
     "dev": "vue-cli-service serve --type=dev[./src/main.ts]",
     "devvox": "vue-cli-service serve --type=dev[./src/dev.ts]",

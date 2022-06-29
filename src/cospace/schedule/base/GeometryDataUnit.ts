@@ -60,4 +60,4 @@ class GeometryDataUnit extends DataUnit {
   // }
 }
 
-export { DataFormat, GeometryDataContainer, DataUnitLock, GeometryDataUnit, DataUnit };
+export { GeometryModelDataType, DataFormat, GeometryDataContainer, DataUnitLock, GeometryDataUnit, DataUnit };

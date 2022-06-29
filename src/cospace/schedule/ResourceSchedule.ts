@@ -1,11 +1,10 @@
 import { DataUnitPool } from "./base/DataUnitPool";
 import { DataUnitReceiver } from "./base/DataUnitReceiver";
-import { DataUnit } from "./base/GeometryDataUnit";
 import { ReceiverSchedule } from "./ReceiverSchedule";
-import { DataFormat } from "./base/DataUnit";
+import { DataFormat, DataUnit } from "./base/DataUnit";
 import { DataReceiverBase } from "../schedule/base/DataReceiverBase";
 import { ThreadSchedule } from "../modules/thread/ThreadSchedule";
-import { TaskCodeModuleParam } from "./TaskCodeModuleParam";
+import { ITaskCodeModuleParam } from "./base/ITaskCodeModuleParam";
 
 /**
  * 内置的资源接收器
@@ -36,7 +35,7 @@ class ResourceSchedule<DataUnitType extends DataUnit> {
     private m_unitPool: DataUnitPool<DataUnitType> = new DataUnitPool();
     private m_threadSchedule: ThreadSchedule;
     // private m_taskModuleUrls: string[] = null;
-    private m_taskModules: TaskCodeModuleParam[] = null;
+    private m_taskModules: ITaskCodeModuleParam[] = null;
 
     constructor() {
     }
@@ -50,16 +49,16 @@ class ResourceSchedule<DataUnitType extends DataUnit> {
     /**
      * 被子类覆盖，以便实现具体功能
      */
-    protected initTask(unitPool: DataUnitPool<DataUnitType>, threadSchedule: ThreadSchedule, receiverSchedule: ReceiverSchedule, taskModules: TaskCodeModuleParam[]): void {
+    protected initTask(unitPool: DataUnitPool<DataUnitType>, threadSchedule: ThreadSchedule, receiverSchedule: ReceiverSchedule, taskModules: ITaskCodeModuleParam[]): void {
 
     }
-    setTaskModuleUrls(taskModules: TaskCodeModuleParam[]): void {
+    setTaskModuleUrls(taskModules: ITaskCodeModuleParam[]): void {
         if(taskModules != null) {
             // this.m_taskModuleUrls = taskModuleUrls.slice(0);
             this.m_taskModules = taskModules.slice(0);
         }
     }
-    initialize(receiverSchedule: ReceiverSchedule, threadSchedule: ThreadSchedule, taskModules: TaskCodeModuleParam[] = null): void {
+    initialize(receiverSchedule: ReceiverSchedule, threadSchedule: ThreadSchedule, taskModules: ITaskCodeModuleParam[] = null): void {
         
         if (this.m_receiverSchedule == null && this.m_threadSchedule == null) {
 
