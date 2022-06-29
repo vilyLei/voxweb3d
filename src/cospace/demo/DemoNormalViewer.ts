@@ -36,7 +36,7 @@ class GeomNormal {
 }
 
 export class DemoNormalViewer {
-	constructor() {}
+	constructor() { }
 	/**
 	 * (引擎)数据协同中心实例
 	 */
@@ -96,15 +96,15 @@ export class DemoNormalViewer {
 			this.m_cameraZoomController.syncLookAt = true;
 
 			this.m_stageDragSwinger.initialize(
-			this.m_rscene.getStage3D(),
-			this.m_rscene.getCamera()
+				this.m_rscene.getStage3D(),
+				this.m_rscene.getCamera()
 			);
 			this.m_camTrack = new CameraTrack();
 			this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
 			this.m_statusDisp.initialize();
 			//this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-			
+
 			this.m_rscene.setClearRGBColor3f(0.5, 0.5, 0.5);
 
 			//   DivLog.ShowLog("renderer inited.");
@@ -114,18 +114,18 @@ export class DemoNormalViewer {
 			// k = this.calcTotal2(55);
 			// console.log("k2: ",k);
 			// return;
-				
+
 			// let axis: Axis3DEntity = new Axis3DEntity();
 			// axis.initialize(300);
 			// this.m_rscene.addEntity(axis);
-			
+
 			// http://localhost:9000/
 
 			// 初始化数据协同中心
 			this.m_cospace.initialize(
-			3,
-			"static/cospace/core/code/ThreadCore.umd.min.js",
-			true
+				3,
+				"static/cospace/core/code/ThreadCore.umd.min.js",
+				true
 			);
 			//   this.m_cospace.initialize(4, "cospace/core/code/ThreadCore.umd.js", true);
 
@@ -135,35 +135,35 @@ export class DemoNormalViewer {
 
 			let multi: boolean = true;
 			multi = false;
-			if(multi) {
+			if (multi) {
 				for (let i: number = 26; i >= 0; --i) {
 					let url: string = baseUrl + "sh202/sh202_" + i + ".ctm";
 					this.loadCTM(url);
 				}
-			}else {
+			} else {
 				this.loadCTM("static/private/ctm/errorNormal.ctm");
 			}
 		}
 	}
-	
+
 	private loadCTM(url: string): void {
 		this.m_cospace.geometry.getCPUDataByUrlAndCallback(
-		url,
-		DataFormat.CTM,
-		(unit: GeometryDataUnit, status: number): void => {
-			let model: GeometryModelDataType = unit.data.models[0];
-			if (model.normals == null) {
-				console.error("model.normals == null, url: ", url);
-			}
-			this.initCTMEntity(model);
-		},
-		true
+			url,
+			DataFormat.CTM,
+			(unit: GeometryDataUnit, status: number): void => {
+				let model: GeometryModelDataType = unit.data.models[0];
+				if (model.normals == null) {
+					console.error("model.normals == null, url: ", url);
+				}
+				this.initCTMEntity(model);
+			},
+			true
 		);
 	}
 
 	private initCTMEntity(model: GeometryModelDataType): void {
 		//console.log("lossTime: ", (Date.now() - this.m_time)+" ms");
-		DivLog.ShowLogOnce( "lossTime: " + (Date.now() - this.m_time)+" ms");
+		DivLog.ShowLogOnce("lossTime: " + (Date.now() - this.m_time) + " ms");
 
 		let time = Date.now();
 
@@ -180,7 +180,7 @@ export class DemoNormalViewer {
 		dataMesh.initialize();
 		// console.log("ctm dataMesh: ", dataMesh);
 
-		console.log("build lossTime: ", (Date.now() - time)+" ms");
+		console.log("build lossTime: ", (Date.now() - time) + " ms");
 		// DivLog.ShowLog("三角面数量: " + dataMesh.trisNumber + "个");
 
 		let entity: DisplayEntity = new DisplayEntity();
@@ -194,26 +194,26 @@ export class DemoNormalViewer {
 
 	}
 
-  private m_runFlag: boolean = true;
-  private mouseDown(evt: any): void {
-    this.m_runFlag = true;
-    DebugFlag.Flag_0 = 1;
-  }
-  private mouseUp(evt: any): void {}
-  private update(): void {
-    this.m_statusDisp.update(true);
-  }
-  private m_lookV: Vector3D = new Vector3D(0.0, 0.0, 0.0);
-  run(): void {
-    this.update();
+	private m_runFlag: boolean = true;
+	private mouseDown(evt: any): void {
+		this.m_runFlag = true;
+		DebugFlag.Flag_0 = 1;
+	}
+	private mouseUp(evt: any): void { }
+	private update(): void {
+		this.m_statusDisp.update(true);
+	}
+	private m_lookV: Vector3D = new Vector3D(0.0, 0.0, 0.0);
+	run(): void {
+		this.update();
 
-    this.m_stageDragSwinger.runWithYAxis();
-    this.m_cameraZoomController.run(this.m_lookV, 30.0);
+		this.m_stageDragSwinger.runWithYAxis();
+		this.m_cameraZoomController.run(this.m_lookV, 30.0);
 
-    this.m_rscene.run(true);
+		this.m_rscene.run(true);
 
-    DebugFlag.Flag_0 = 0;
-  }
+		DebugFlag.Flag_0 = 0;
+	}
 }
 
 export default DemoNormalViewer;

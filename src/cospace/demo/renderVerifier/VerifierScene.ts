@@ -42,11 +42,11 @@ class VerifierScene implements IDropFileListerner {
 			this.m_vfParam.initialize();
 			if ((this.m_vfParam.hostUrl.indexOf(".artvily.") > 0 || this.m_vfParam.demoType != "") && this.m_vfParam.threadsTotal > 0) {
 				let modules: TaskCodeModuleParam[] = [
-					new TaskCodeModuleParam("static/renderingVerifier/modules/m1.js", ModuleNS.ctmParser),
-					new TaskCodeModuleParam("static/renderingVerifier/modules/o1.js", ModuleNS.objParser)
+					new TaskCodeModuleParam("static/renderingVerifier/modules/ct1.js", ModuleNS.ctmParser),
+					new TaskCodeModuleParam("static/renderingVerifier/modules/ob1.js", ModuleNS.objParser)
 				];
 				this.m_cospace.geometry.setTaskModuleUrls(modules);
-				this.m_cospace.initialize(this.m_vfParam.threadsTotal, "static/renderingVerifier/modules/c1.js", true);
+				this.m_cospace.initialize(this.m_vfParam.threadsTotal, "static/renderingVerifier/modules/th1.js", true);
 			} else {
 				let modules: TaskCodeModuleParam[] = [
 					new TaskCodeModuleParam("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", ModuleNS.ctmParser),
@@ -179,7 +179,7 @@ class VerifierScene implements IDropFileListerner {
 
 		baseUrl = hostUrl + "static/private/obj/";
 		urls = [baseUrl + "base.obj"];
-		this.addOBJ(urls);
+		// this.addOBJ(urls);
 	}
 	mouseDown(evt: any): void {
 		let nodes = this.m_sceneNodes;
