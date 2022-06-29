@@ -81,8 +81,7 @@
 //  import * as DemoPNG from "./example/DemoPNG";
 //  import Demo = DemoPNG.example.DemoPNG;
 
-//  import * as DemoRTTCircle from "./demo/DemoRTTCircle";
-//  import Demo = DemoRTTCircle.demo.DemoRTTCircle;
+ import {DemoRTTCircle as Demo} from "./demo/DemoRTTCircle";
 
 //  import {DemoLargeVtx as Demo} from "./large/DemoLargeVtx";
 
@@ -419,7 +418,7 @@
 
 //  import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
 
-import {DemoUITexAtlas as Demo} from "./orthoui/demos/DemoUITexAtlas";
+// import {DemoUITexAtlas as Demo} from "./orthoui/demos/DemoUITexAtlas";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////     distributed runtime     ////////////s//////////////
