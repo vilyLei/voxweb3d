@@ -100,40 +100,6 @@ class ModuleOBJGeomParser extends BaseTaskInThread {
         readerBuf.readAsText(new Blob([dataBuf]));
 
     }
-    private async loadMeshDataByUrl(
-        url: string,
-        loadedCall: (buf: ArrayBuffer, url: string) => void,
-        loadErrorCall: (status: number, url: string) => void,
-        headRange: string = ""
-    ) {
-        // console.log("loadBinBuffer, headRange != '': ", headRange != "");
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            loadedCall(<ArrayBuffer>reader.result, url);
-        };
-        const request = new XMLHttpRequest();
-        request.open("GET", url, true);
-        if (headRange != "") {
-            request.setRequestHeader("Range", headRange);
-        }
-        request.responseType = "blob";
-        request.onload = (e) => {
-            // console.log("loaded binary buffer request.status: ", request.status, e);
-            if (request.status <= 206) {
-                reader.readAsArrayBuffer(request.response);
-            } else {
-                loadErrorCall(request.status, url);
-            }
-        };
-        request.onerror = (e) => {
-            console.error(
-                "load error binary buffer request.status: ",
-                request.status
-            );
-            loadErrorCall(request.status, url);
-        };
-        request.send(null);
-    }
     getTaskClass(): number {
         return 103;
     }
