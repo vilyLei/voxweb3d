@@ -39,7 +39,16 @@ class CTMDataParser extends BaseTaskInThread {
             // transfers.push(fileBody.vertices);
             // transfers.push(fileBody.normals);
             // transfers.push(fileBody.indices);
-
+            len = fileBody.indices.length;
+            if(len < 65536) {
+                // 以下操作为了节省显存
+                let ivs = new Uint16Array(fileBody.indices.buffer);
+                let ls = fileBody.indices;
+                for(let i = 0; i < len; ++i) {
+                    ivs[i] = ls[i];
+                }
+                fileBody.indices = ivs.subarray(0,len);
+            }
             rdata.data = {
                 uvsList: uvsList,
                 vertices: fileBody.vertices,

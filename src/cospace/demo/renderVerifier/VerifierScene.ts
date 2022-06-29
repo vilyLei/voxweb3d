@@ -177,26 +177,24 @@ class VerifierScene implements IDropFileListerner {
 		}
 		urls = [baseUrl + "errorNormal.ctm"];
 		this.addCTM(urls);
+		this.testCTM(urls[0]);
 
 		baseUrl = hostUrl + "static/private/obj/";
 		urls = [baseUrl + "base.obj"];
 		// this.addOBJ(urls);
+		
 	}
 	private testCTM(url: string): void {
-		// new FileLoader().load(
-		// 	url,
-		// 	(buf: ArrayBuffer, url: string): void => {
-		// 		DivLog.ShowLogOnce("正在解析CTM数据...");
-		// 		this.m_parseTask.addBinaryData(new Uint8Array(buf), url);
-		// 	},
-		// 	(evt: ProgressEvent, url: string): void => {
-		// 		let k = Math.round(100 * evt.loaded/evt.total);
-		// 		DivLog.ShowLogOnce("ctm file loading " + k + "%");
-		// 	},
-		// 	(status: number, url: string): void => {
-		// 		console.error("load ctm mesh data error, url: ", url);
-		// 	}
-		// );
+		let i = 0;
+		let len = 6
+		let s0 = url.substr(i,6);
+		let s1 = url.slice(i,i+6);
+		console.log("test s0,s1: ", s0,s1);
+		let buf = new ArrayBuffer(64);
+		let buf32 = new Uint32Array(buf,0,8);
+		buf32[6] = 16;
+		console.log("test buf,buf32: ", buf,buf32);
+		
 	}
 	mouseDown(evt: any): void {
 		let nodes = this.m_sceneNodes;
