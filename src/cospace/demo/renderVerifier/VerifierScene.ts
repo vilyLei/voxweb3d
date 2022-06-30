@@ -41,25 +41,11 @@ class VerifierScene implements IDropFileListerner {
 
 
 			this.m_vfParam.initialize();
-			if ((this.m_vfParam.hostUrl.indexOf(".artvily.") > 0 || this.m_vfParam.demoType != "") && this.m_vfParam.threadsTotal > 0) {
-				let modules: TaskCodeModuleParam[] = [
-					new TaskCodeModuleParam("static/renderingVerifier/modules/ct1.js", ModuleNS.ctmParser),
-					new TaskCodeModuleParam("static/renderingVerifier/modules/ob1.js", ModuleNS.objParser)
-				];
-				this.m_cospace.geometry.setTaskModuleUrls(modules);
-				this.m_cospace.initialize(this.m_vfParam.threadsTotal, "static/renderingVerifier/modules/th1.js", true);
-			} else {
-				let modules: TaskCodeModuleParam[] = [
-					new TaskCodeModuleParam("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", ModuleNS.ctmParser),
-					new TaskCodeModuleParam("static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", ModuleNS.objParser)
-				];
-				this.m_cospace.geometry.setTaskModuleUrls(modules);
-				// this.m_cospace.geometry.setTaskModuleUrls(["static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js"]);
-				// // 初始化数据协同中心
-				// this.m_cospace.initialize(3, "static/renderingVerifier/modules/c1.js", true);
-				// this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js", true);
-				this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.js", true);
-			}
+			
+
+			// this.initCurr();
+			this.initTestSvr();
+
 
 			this.m_dropController.initialize(this.m_rscene.getCanvas(), this);
 			DivLog.ShowLogOnce("模型法线检查</br>请用谷歌浏览器(Google Chrome)</br>请拖入单个模型文件(ctm/obj/fbx)</br>或者拖入只包含ctm文件的文件夹");
@@ -67,7 +53,51 @@ class VerifierScene implements IDropFileListerner {
 			this.test();
 		}
 	}
+	private initCurr(): void {
 
+		if ((this.m_vfParam.hostUrl.indexOf(".artvily.") > 0 || this.m_vfParam.demoType != "") && this.m_vfParam.threadsTotal > 0) {
+			let modules: TaskCodeModuleParam[] = [
+				new TaskCodeModuleParam("static/renderingVerifier/modules/ct1.js", ModuleNS.ctmParser),
+				new TaskCodeModuleParam("static/renderingVerifier/modules/ob1.js", ModuleNS.objParser)
+			];
+			this.m_cospace.geometry.setTaskModuleUrls(modules);
+			this.m_cospace.initialize(this.m_vfParam.threadsTotal, "static/renderingVerifier/modules/th1.js", true);
+		} else {
+			let modules: TaskCodeModuleParam[] = [
+				new TaskCodeModuleParam("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", ModuleNS.ctmParser),
+				new TaskCodeModuleParam("static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", ModuleNS.objParser)
+			];
+			this.m_cospace.geometry.setTaskModuleUrls(modules);
+			// this.m_cospace.geometry.setTaskModuleUrls(["static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js"]);
+			// // 初始化数据协同中心
+			// this.m_cospace.initialize(3, "static/renderingVerifier/modules/c1.js", true);
+			// this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js", true);
+			this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.js", true);
+		}
+	}
+	
+	private initTestSvr(): void {
+
+		if ((this.m_vfParam.hostUrl.indexOf(".artvily.") > 0 || this.m_vfParam.demoType != "") && this.m_vfParam.threadsTotal > 0) {
+			let modules: TaskCodeModuleParam[] = [
+				new TaskCodeModuleParam("static/renderingVerifier/modules/ct1.js", ModuleNS.ctmParser),
+				new TaskCodeModuleParam("static/renderingVerifier/modules/ob1.js", ModuleNS.objParser)
+			];
+			this.m_cospace.geometry.setTaskModuleUrls(modules);
+			this.m_cospace.initialize(this.m_vfParam.threadsTotal, "static/renderingVerifier/modules/th1.js", true);
+		} else {
+			let modules: TaskCodeModuleParam[] = [
+				new TaskCodeModuleParam("http://localhost:9090/static/renderingVerifier/modules/ct1.js", ModuleNS.ctmParser),
+				new TaskCodeModuleParam("http://localhost:9090/static/renderingVerifier/modules/ob1.js", ModuleNS.objParser)
+			];
+			this.m_cospace.geometry.setTaskModuleUrls(modules);
+			// this.m_cospace.geometry.setTaskModuleUrls(["static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js"]);
+			// // 初始化数据协同中心
+			// this.m_cospace.initialize(3, "static/renderingVerifier/modules/c1.js", true);
+			// this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js", true);
+			this.m_cospace.initialize(3, "http://localhost:9090/static/renderingVerifier/modules/th1.js", true);
+		}
+	}
 	private test(): void {
 		// let list = [236, 82, 86, -236, 82, 26, 83, -87, 86, 83, 30, -85, 254, 235, 86, -85];
 		// list.forEach( function ( va: number, vb: number ): void {

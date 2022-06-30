@@ -12,12 +12,36 @@ export class DemoCoApp {
 
     private m_beginTime: number = 0;
     private m_appIns: ICoSpaceAppIns;
-
+    private m_modules: CoTaskCodeModuleParam[];
     constructor() { }
 
+    private initCurr(): void {
+        let modules: CoTaskCodeModuleParam[] = [
+            { url: "static/cospace/core/coapp/CoSpaceApp.umd.js", name: CoModuleNS.coSpaceApp, type: CoModuleFileType.JS },
+            { url: "static/cospace/core/code/ThreadCore.umd.js", name: CoModuleNS.threadCore, type: CoModuleFileType.JS },
+            { url: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", name: CoModuleNS.ctmParser, type: CoModuleFileType.JS },
+            { url: "static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", name: CoModuleNS.objParser, type: CoModuleFileType.JS }
+        ];
+        this.m_modules = modules;
+    }
+    
+    private initTestSvr(): void {
+        let modules: CoTaskCodeModuleParam[] = [
+            { url: "http://localhost:9090/static/renderingVerifier/modules/coapp1.js", name: CoModuleNS.coSpaceApp, type: CoModuleFileType.JS },
+            { url: "http://localhost:9090/static/renderingVerifier/modules/th1.js", name: CoModuleNS.threadCore, type: CoModuleFileType.JS },
+            { url: "http://localhost:9090/static/renderingVerifier/modules/ct1.js", name: CoModuleNS.ctmParser, type: CoModuleFileType.JS },
+            { url: "http://localhost:9090/static/renderingVerifier/modules/ob1.js", name: CoModuleNS.objParser, type: CoModuleFileType.JS }
+        ];
+        this.m_modules = modules;
+    }
     initialize(): void {
+
+        // this.initCurr();
+        this.initTestSvr();
+
         console.log("DemoCoApp::initialize()...");
-        let url: string = "static/cospace/core/coapp/CoSpaceApp.umd.js";
+
+        let url: string = this.m_modules[0].url;
         this.loadModule(url, (): void => {
         });
         // 启用鼠标点击事件
@@ -26,12 +50,9 @@ export class DemoCoApp {
         }
     }
     private initApp(): void {
-        let modules: CoTaskCodeModuleParam[] = [
-            { url: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", name: CoModuleNS.ctmParser, type: CoModuleFileType.JS },
-            { url: "static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", name: CoModuleNS.objParser, type: CoModuleFileType.JS }
-        ];
 
-        this.m_appIns.initialize(3, "static/cospace/core/code/ThreadCore.umd.js", modules, true);
+        let modules = this.m_modules;
+        this.m_appIns.initialize(3, modules[1].url, modules, true);
         this.m_appIns.setTaskModuleUrls(modules);
 
         this.loadCTM();

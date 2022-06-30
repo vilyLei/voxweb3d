@@ -8,6 +8,8 @@ enum CoModuleNS {
 	ctmParser = "ctmGeomParser",
 	objParser = "objGeomParser",
 	dracoParser = "dracoGeomParser",
+	threadCore = "threadCore",
+	coSpaceApp = "coSpaceApp"
 }
 /**
  * 数据文件类型，例如 ctm, draco
