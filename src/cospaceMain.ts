@@ -6,7 +6,8 @@
 // import { DemoDracoParser as Demo } from "./cospace/demo/DemoDracoParser";
 // import { DemoDracoParser2 as Demo } from "./cospace/demo/DemoDracoParser2";
 // import { DemoFBXParser as Demo } from "./cospace/demo/DemoFBXParser";
-import { DemoGLBParser as Demo } from "./cospace/demo/DemoGLBParser";
+// import { DemoGLBParser as Demo } from "./cospace/demo/DemoGLBParser";
+import { DemoPNGParser as Demo } from "./cospace/demo/DemoPNGParser";
 // import { DemoMixParser as Demo } from "./cospace/demo/DemoMixParser";
 // import { DemoCospace as Demo } from "./cospace/demo/DemoCospace";
 // import { DemoDependenceGraph as Demo } from "./cospace/demo/DemoDependenceGraph";
