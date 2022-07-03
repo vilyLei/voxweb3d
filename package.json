@@ -38,6 +38,7 @@
     "buildCTMParser": "vue-cli-service build --target lib --name ModuleCTMGeomParser --dest ./public/static/cospace/modules/ctm ./src/cospace/modules/ctm/ModuleCTMGeomParser.ts",
     "buildOBJParser": "vue-cli-service build --target lib --name ModuleOBJGeomParser --dest ./public/static/cospace/modules/obj ./src/cospace/modules/obj/ModuleOBJGeomParser.ts",
     "buildDracoParser": "vue-cli-service build --target lib --name ModuleDracoGeomParser --dest ./public/static/cospace/modules/draco ./src/cospace/modules/draco/ModuleDracoGeomParser.ts",
+    "buildPNGParser": "vue-cli-service build --target lib --name ModulePNGParser --dest ./public/static/cospace/modules/png ./src/cospace/modules/png/ModulePNGParser.ts",
     "buildThreadCore": "vue-cli-service build --target lib --name ThreadCore --dest ./public/static/cospace/core/code ./src/cospace/modules/thread/control/ThreadCore.ts",
     "buildCoSpaceApp": "vue-cli-service build --target lib --name CoSpaceApp --dest ./public/static/cospace/core/coapp ./src/cospace/CoSpaceApp.ts",
 
@@ -53,7 +54,7 @@
     "@types/encoding-japanese": "^1.0.15",
     "@types/jquery": "^3.3.31",
     "@types/jszip": "^3.1.7",
-    "@types/pngjs": "^3.4.2",
+    "@types/pngjs": "^6.0.0",
     "@types/stats.js": "^0.17.0",
     "@types/tween.js": "^17.2.0",
     "core-js": "^3.3.2",
@@ -62,7 +63,7 @@
     "encoding-japanese": "^1.0.30",
     "flyio": "^0.6.14",
     "jszip": "^3.2.2",
-    "pngjs": "^3.4.0",
+    "pngjs": "^6.0.0",
     "stats.js": "^0.17.0",
     "ts-debounce-throttle": "^1.0.0"
   },
