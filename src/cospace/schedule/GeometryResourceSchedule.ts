@@ -39,7 +39,7 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 		unit.immediate = immediate;
 		unit.data = new GeometryDataContainer();
 		unit.data.dataFormat = dataFormat;
-		console.log("unit.data.dataFormat: ",unit.data.dataFormat);
+		console.log("GeometryResourceSchedule::createDataUnit(), unit.data.dataFormat: ",unit.data.dataFormat);
 		switch (unit.data.dataFormat) {
 			case DataFormat.CTM:
 				this.m_ctmListener.addUrlToTask(url);
@@ -63,6 +63,7 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 
 		for(let i: number = 0; i < taskModules.length; ++i) {
 			const module = taskModules[i];
+			console.log("GeometryResourceSchedule::initTask(), module.name ", module.name);
 			switch(module.name) {
 				case ModuleNS.objParser:
 					this.m_objListener = new OBJParserListerner(unitPool, threadSchedule, module, receiverSchedule);

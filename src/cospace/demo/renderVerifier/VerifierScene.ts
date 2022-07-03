@@ -43,7 +43,7 @@ class VerifierScene implements IDropFileListerner {
 			this.m_vfParam.initialize();
 			
 
-			// this.initCurr();
+			this.initCurr();
 			// this.initTestSvr();
 
 
