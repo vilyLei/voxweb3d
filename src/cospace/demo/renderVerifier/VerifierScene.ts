@@ -44,7 +44,7 @@ class VerifierScene implements IDropFileListerner {
 			
 
 			// this.initCurr();
-			this.initTestSvr();
+			// this.initTestSvr();
 
 
 			this.m_dropController.initialize(this.m_rscene.getCanvas(), this);

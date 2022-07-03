@@ -1,6 +1,8 @@
 enum ModuleNS {
 	ctmParser = "ctmGeomParser",
 	objParser = "objGeomParser",
-	dracoParser = "dracoGeomParser"
+	dracoParser = "dracoGeomParser",
+	threadCore = "threadCore",
+	spaceApp = "coSpaceApp"
 }
 export { ModuleNS };

@@ -173,23 +173,32 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 /**
- * 作为多线程 worker 内部执行的任务处理功能的基类
+ * 作为多线程 thread 内部执行的任务处理功能的基类
  */
 
 class BaseTaskInThread {
   constructor(enabled = true) {
+    this.m_sysEnabled = false;
+    this.m_sysEnabled = typeof ThreadCore !== "undefined";
+
     if (enabled) {
-      ThreadCore.initializeExternModule(this);
+      if (this.m_sysEnabled) {
+        ThreadCore.initializeExternModule(this);
+      } else {
+        throw Error("Can not find ThreadCore module !!!");
+      }
     }
   }
 
   receiveData(data) {}
 
   postMessageToThread(data, transfers = null) {
-    if (transfers != null) {
-      ThreadCore.postMessageToThread(data);
-    } else {
-      ThreadCore.postMessageToThread(data, transfers);
+    if (this.m_sysEnabled) {
+      if (transfers != null) {
+        ThreadCore.postMessageToThread(data);
+      } else {
+        ThreadCore.postMessageToThread(data, transfers);
+      }
     }
   }
 
