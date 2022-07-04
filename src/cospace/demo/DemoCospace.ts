@@ -31,7 +31,6 @@ export class DemoCospace {
 			new TaskCodeModuleParam("static/cospace/modules/png/ModulePNGParser.umd.min.js", ModuleNS.pngParser, ModuleFileType.JS)
 		];
 		// 初始化数据协同中心
-		//this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js");
 		this.m_cospace.setTaskModuleParams(modules);
 		this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.js", true);
 

@@ -8,11 +8,11 @@ interface PNGDescriptorType {
 /**
  * 作为多线程 worker 内部执行的任务处理功能的实现类, 这个文件将会被单独打包
  */
-class ModulePNGGeomParser extends BaseTaskInThread {
+class ModulePNGParser extends BaseTaskInThread {
 
     constructor() {
         super();
-        console.log("ModulePNGGeomParser::constructor()...");
+        console.log("ModulePNGParser::constructor()...");
     }
     receiveData(
         rdata: IThreadReceiveData<Uint8Array, PNGDescriptorType>
@@ -37,5 +37,5 @@ class ModulePNGGeomParser extends BaseTaskInThread {
     }
 }
 // 这一句代码是必须有的
-let ins = new ModulePNGGeomParser();
-export { ModulePNGGeomParser };
+let ins = new ModulePNGParser();
+export { ModulePNGParser };

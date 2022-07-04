@@ -6,7 +6,7 @@ class TextureDataContainer {
 
   dataClass: DataClass;
   dataType: string;
-  dataFormat: DataFormat = DataFormat.Png;
+  dataFormat: DataFormat = DataFormat.CTM;
   images: HTMLImg[] = null;
   imageDatas: Uint8Array[] = null;
   constructor() {
