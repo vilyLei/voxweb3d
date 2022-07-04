@@ -171,6 +171,8 @@ function bindExternModule(tm) {
 function initializeExternModule(tm) {
   if (tm != null && tm.getTaskClass != undefined) {
     TaskHost.slot[tm.getTaskClass()] = tm;
+    console.log("initializeExternModule apply dpGraph.currTaskClass: ", dpGraph.currTaskClass);
+    dpGraph.currTaskClass = -1;
     postMessage({
       cmd: TCMD.INIT_TASK,
       taskclass: tm.getTaskClass()
@@ -251,7 +253,7 @@ class ThreadCore {
           case TCST.JS_FILE_CODE:
             if (stList[param.taskclass] < 1) {
               stList[param.taskclass] = 1;
-              dpGraph.loadProgramByModuleUrl(param.src);
+              dpGraph.loadProgramByModuleUrl(param.src, data.info);
             }
 
             break;
@@ -259,7 +261,7 @@ class ThreadCore {
           case TCST.DEPENDENCY:
             if (stList[param.taskclass] < 1) {
               stList[param.taskclass] = 1;
-              dpGraph.loadProgramByDependency(param.src);
+              dpGraph.loadProgramByDependency(param.src, data.info);
             }
 
             break;
@@ -275,14 +277,19 @@ class ThreadCore {
             if (stList[param.taskclass] < 1) {
               stList[param.taskclass] = 1; // build code from string
               // console.log("param.srccode: ",param.srccode);
+              // console.log("param.src: ",param.src);
 
-              eval(param.src);
+              dpGraph.currTaskClass = data.info.taskClass;
 
               if (param.moduleName != undefined && param.moduleName != "") {
                 var mins = "workerIns_" + param.moduleName;
                 var tmcodeStr = "var " + mins + " = new " + param.moduleName + "();";
-                tmcodeStr += "\ninitializeExternModule(" + mins + ");";
-                eval(tmcodeStr);
+                tmcodeStr += "\ninitializeExternModule(" + mins + ");"; // console.log("tmcodeStr: ",tmcodeStr);
+
+                param.src += "\n" + tmcodeStr;
+                eval(param.src);
+              } else {
+                eval(param.src);
               }
             }
 
@@ -334,7 +341,8 @@ class ThreadCore {
 
           case TCST.STRING_CODE:
             let blob = new Blob([data.src]);
-            importScripts(URL.createObjectURL(blob));
+            dpGraph.currTaskClass = data.info.taskClass;
+            DependenceGraph_1.importJSModuleCode(URL.createObjectURL(blob), data.info.keyuns);
             break;
 
           default:
@@ -583,6 +591,7 @@ function importJSModuleCode(codeUrl, srcUrl) {
   }
 }
 
+exports.importJSModuleCode = importJSModuleCode;
 let baseUrl = scriptDir.slice(0, scriptDir.lastIndexOf("/") + 1);
 let k = baseUrl.indexOf("http://");
 if (k < 0) k = baseUrl.indexOf("https://");
@@ -731,7 +740,9 @@ function ddcUpdate() {
 class DependenceGraph {
   constructor() {
     this.m_programMap = new Map();
+    this.m_taskInfoMap = new Map();
     this.graphData = graphData;
+    this.currTaskClass = -1;
   }
 
   useDependency(tm) {
@@ -803,18 +814,23 @@ class DependenceGraph {
     }
   }
 
-  loadProgramByDependency(denpendency) {
+  loadProgramByDependency(denpendency, info = null) {
     if (denpendency != "") {
-      this.loadProgramByModuleUrl(graphData.getPathByUniqueName(denpendency));
+      this.loadProgramByModuleUrl(graphData.getPathByUniqueName(denpendency), info);
     }
   }
 
-  loadProgram(programUrl) {
+  loadProgram(programUrl, info) {
     if (programUrl != "") {
       if (!this.m_programMap.has(programUrl)) {
-        this.m_programMap.set(programUrl, 1); // importJSScripts(programUrl);
+        this.m_programMap.set(programUrl, 1);
+
+        if (info != null && info.taskClass > -1 && !this.m_taskInfoMap.has(programUrl)) {
+          this.m_taskInfoMap.set(programUrl, info);
+        } // importJSScripts(programUrl);
         // let bolb: Blob = baseCodeStr == "" ? new Blob([request.responseText]) : new Blob([baseCodeStr + request.responseText]);
         // URL.createObjectURL(blob)
+
 
         let request = new XMLHttpRequest();
         request.open('GET', programUrl, true);
@@ -825,6 +841,8 @@ class DependenceGraph {
             console.log("load js model file"); // eval(request.responseText);
 
             let blob = new Blob([request.responseText]);
+            let info = this.m_taskInfoMap.has(programUrl) ? this.m_taskInfoMap.get(programUrl) : null;
+            this.currTaskClass = info != null ? info.taskClass : -1;
             importJSModuleCode(URL.createObjectURL(blob), programUrl);
           } else {
             console.error("load thread js module error, url: ", programUrl);
@@ -840,10 +858,10 @@ class DependenceGraph {
     }
   }
 
-  loadProgramByModuleUrl(moduleUrl) {
+  loadProgramByModuleUrl(moduleUrl, info = null) {
     moduleUrl = getJSFileUrl(moduleUrl);
     console.log("XXX moduleUrl: ", moduleUrl);
-    this.loadProgram(moduleUrl);
+    this.loadProgram(moduleUrl, info);
   }
 
   destroy() {}

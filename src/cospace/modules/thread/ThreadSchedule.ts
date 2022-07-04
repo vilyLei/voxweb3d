@@ -10,7 +10,7 @@ import { ThrDataPool } from "../thread/control/ThrDataPool";
 import { StreamType, IThreadSendData } from "../thread/base/IThreadSendData";
 import { ThreadSendData } from "../thread/base/ThreadSendData";
 import { ThreadBase } from "../thread/base/ThreadBase";
-import { TaskDescriptor } from "../thread/base/TaskDescriptor";
+import { TaskInfo, TaskDescriptor } from "../thread/base/TaskDescriptor";
 import { ThreadCodeSrcType } from "./control/ThreadCodeSrcType";
 import { ThreadTask } from "./control/ThreadTask";
 import { ThreadTaskPool } from "./control/ThreadTaskPool";
@@ -90,17 +90,19 @@ class ThreadSchedule {
 					}
 					localPool = this.m_threads[threadIndex].localDataPool;
 				}
-				task.setDataPool(this.m_dataPool, localPool);
 				let d = task.dependency;
+				let info: TaskInfo = null;
 				if (d != null) {
 					if (d.isJSFile()) {
-						this.initTaskByURL(d.threadCodeFileURL, task.getTaskClass());
+						info = this.initTaskByURL(d.threadCodeFileURL, task.getTaskClass());
 					} else if (d.isDependency()) {
-						this.initTaskByDependency(d.dependencyUniqueName, task.getTaskClass(), d.moduleName);
+						info = this.initTaskByDependency(d.dependencyUniqueName, task.getTaskClass(), d.moduleName);
 					} else if (d.isCodeString()) {
-						this.initTaskByCodeStr(d.threadCodeString, task.getTaskClass(), d.moduleName);
+						info = this.initTaskByCodeStr(d.threadCodeString, task.getTaskClass(), d.moduleName);
 					}
 				}
+				task.setDataPool(this.m_dataPool, localPool);
+				task.setTaskInfo(info);
 			}
 		}
 	}
@@ -206,7 +208,7 @@ class ThreadSchedule {
 
 		if (this.m_currNewThr == null && this.m_threadsTotal < this.m_maxThreadsTotal) {
 
-			let thread = new ThreadBase(this.m_tdrManager, this.m_taskPool, this.m_taskReg, this.m_graphJsonStr);
+			let thread = new ThreadBase(this.m_tdrManager, this.m_taskPool, this.m_graphJsonStr);
 			this.m_currNewThr = thread;
 			thread.autoSendData = this.m_autoSendData;
 			thread.globalDataPool = this.m_dataPool;
@@ -304,16 +306,19 @@ class ThreadSchedule {
 	 * @param taskclass 任务类型整型表示，例如: 0, 这和子线程中执行的源码中的 getTaskClass()成员函数 返回值一致
 	 * @param taskclass 子线程中执行的源码中的对象类名
 	 */
-	initTaskByURL(jsFileUrl: string, taskclass: number, moduleName: string = ""): void {
+	initTaskByURL(jsFileUrl: string, taskclass: number, moduleName: string = ""): TaskInfo {
 		if (jsFileUrl != "" && taskclass >= 0 && taskclass < this.m_descList.length) {
 			let task: TaskDescriptor = this.m_descList[taskclass];
 
 			if (task == null) {
 				task = new TaskDescriptor(taskclass, ThreadCodeSrcType.JS_FILE_CODE, jsFileUrl, moduleName);
+				this.m_taskReg.buildTaskInfo(task);
 				this.m_descList[taskclass] = task;
 				this.initModuleByTaskDescriptor(task);
+				return task.info;
 			}
 		}
+		return null;
 	}
 	/**
 	 * 通过唯一依赖名初始化在线程中处理指定任务的程序代码
@@ -321,16 +326,19 @@ class ThreadSchedule {
 	 * @param taskclass 任务类型整型表示，例如: 0, 这和子线程中执行的源码中的 getTaskClass()成员函数 返回值一致
 	 * @param taskclass 子线程中执行的源码中的对象类名
 	 */
-	initTaskByDependency(dependencyUniqueName: string, taskclass: number, moduleName: string = ""): void {
+	initTaskByDependency(dependencyUniqueName: string, taskclass: number, moduleName: string = ""): TaskInfo {
 		if (dependencyUniqueName != "" && taskclass >= 0 && taskclass < this.m_descList.length) {
 			let task: TaskDescriptor = this.m_descList[taskclass];
 
 			if (task == null) {
 				task = new TaskDescriptor(taskclass, ThreadCodeSrcType.DEPENDENCY, dependencyUniqueName, moduleName);
+				this.m_taskReg.buildTaskInfo(task);
 				this.m_descList[taskclass] = task;
 				this.initModuleByTaskDescriptor(task);
+				return task.info;
 			}
 		}
+		return null;
 	}
 	/**
 	 * 通过字符串源码初始化在线程中处理指定任务的程序代码
@@ -338,16 +346,19 @@ class ThreadSchedule {
 	 * @param taskclass 任务类型整型表示，例如: 0, 这和子线程中执行的源码中的 getTaskClass()成员函数 返回值一致
 	 * @param moduleName 子线程中执行的源码中的对象类名
 	 */
-	initTaskByCodeStr(codestr: string, taskclass: number, moduleName: string): void {
+	initTaskByCodeStr(codestr: string, taskclass: number, moduleName: string): TaskInfo {
 		if (codestr != "" && taskclass >= 0 && taskclass < this.m_descList.length) {
 			let task: TaskDescriptor = this.m_descList[taskclass];
 
 			if (task == null) {
 				task = new TaskDescriptor(taskclass, ThreadCodeSrcType.STRING_CODE, codestr, moduleName);
+				this.m_taskReg.buildTaskInfo(task);
 				this.m_descList[taskclass] = task;
 				this.initModuleByTaskDescriptor(task);
+				return task.info;
 			}
 		}
+		return null;
 	}
 	private initModuleByTaskDescriptor(task: TaskDescriptor): void {
 

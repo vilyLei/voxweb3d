@@ -7,7 +7,7 @@
 
 import { ThreadCMD } from "../base/ThreadCMD";
 import { ThreadCodeSrcType } from "./ThreadCodeSrcType";
-import { DependenceGraph } from "./DependenceGraph";
+import { importJSModuleCode, DependenceGraph } from "./DependenceGraph";
 import { SubThreadModule } from "./SubThreadModule";
 
 let TCMD = ThreadCMD;
@@ -61,6 +61,8 @@ function bindExternModule(tm: SubThreadModule): void {
 function initializeExternModule(tm: SubThreadModule): void {
     if (tm != null && tm.getTaskClass != undefined) {
         TaskHost.slot[tm.getTaskClass()] = tm;
+        console.log("initializeExternModule apply dpGraph.currTaskClass: ", dpGraph.currTaskClass);
+        dpGraph.currTaskClass = -1;
         postMessage({ cmd: TCMD.INIT_TASK, taskclass: tm.getTaskClass() });
     }
 }
@@ -129,14 +131,14 @@ class ThreadCore {
                     case TCST.JS_FILE_CODE:
                         if (stList[param.taskclass] < 1) {
                             stList[param.taskclass] = 1;
-                            dpGraph.loadProgramByModuleUrl(param.src);
+                            dpGraph.loadProgramByModuleUrl(param.src, data.info);
                         }
                         break;
 
                     case TCST.DEPENDENCY:
                         if (stList[param.taskclass] < 1) {
                             stList[param.taskclass] = 1;
-                            dpGraph.loadProgramByDependency(param.src);
+                            dpGraph.loadProgramByDependency(param.src, data.info);
                         }
                         break;
                     case TCST.BLOB_CODE:
@@ -150,12 +152,18 @@ class ThreadCore {
                             stList[param.taskclass] = 1;
                             // build code from string
                             // console.log("param.srccode: ",param.srccode);
-                            eval(param.src);
+                            // console.log("param.src: ",param.src);
+                            dpGraph.currTaskClass = data.info.taskClass;
                             if (param.moduleName != undefined && param.moduleName != "") {
                                 var mins = "workerIns_" + param.moduleName;
                                 var tmcodeStr = "var " + mins + " = new " + param.moduleName + "();";
                                 tmcodeStr += "\ninitializeExternModule(" + mins + ");";
-                                eval(tmcodeStr);
+                                // console.log("tmcodeStr: ",tmcodeStr);
+                                param.src += "\n" + tmcodeStr;
+                                eval(param.src);
+                            }
+                            else {
+                                eval(param.src);
                             }
                         }
                         break;
@@ -195,7 +203,8 @@ class ThreadCore {
                         break;
                     case TCST.STRING_CODE:
                         let blob = new Blob([data.src]);
-                        importScripts(URL.createObjectURL(blob));
+                        dpGraph.currTaskClass = data.info.taskClass;
+                        importJSModuleCode(URL.createObjectURL(blob), data.info.keyuns);
                         break;
                     default:
                         break;

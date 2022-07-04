@@ -6,7 +6,7 @@ class TaskRegister {
     private m_map: Map<string, number> = new Map();
     constructor() {
     }
-    getTaskInfo(des: TaskDescriptor): {taskClass:number, keyuns: string} {
+    buildTaskInfo(des: TaskDescriptor): void {
         let keyuns = des.moduleName;
         switch(des.type) {
             case ThreadCodeSrcType.JS_FILE_CODE:
@@ -23,7 +23,7 @@ class TaskRegister {
             i = this.m_taskTotal++;
             this.m_map.set(keyuns, i);
         }
-        return {taskClass: i, keyuns: keyuns};
+        des.info =  {taskClass: i, keyuns: keyuns};
     }
 }
 export { TaskRegister };

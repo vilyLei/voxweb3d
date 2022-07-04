@@ -45,6 +45,10 @@ class ThreadTask implements IThreadTask {
             this.m_uid = -1;
         }
     }
+    private m_info: {taskClass:number, keyuns: string} = null;
+    setTaskInfo(info: {taskClass:number, keyuns: string}): void {
+        this.m_info = info;
+    }
     setDataPool(globalDataPool: IThrDataPool, localDataPool: IThrDataPool = null): void {
         this.m_globalDataPool = globalDataPool;
         this.m_localDataPool = localDataPool;

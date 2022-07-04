@@ -1,6 +1,6 @@
 // import {DemoThread as Demo} from "./cospace/modules/thread/example/DemoThread";
-import {DemoThread as Demo} from "./cospace/demo/DemoThread";
-// import {DemoThreadLoadJS as Demo} from "./cospace/demo/DemoThreadLoadJS";
+// import {DemoThread as Demo} from "./cospace/demo/DemoThread";
+import {DemoThreadLoadJS as Demo} from "./cospace/demo/DemoThreadLoadJS";
 // import { DemoCTMLoadAndParser as Demo } from "./cospace/demo/DemoCTMLoadAndParser";
 // import { DemoCTMParser as Demo } from "./cospace/demo/DemoCTMParser";
 // import { DemoDracoParser as Demo } from "./cospace/demo/DemoDracoParser";

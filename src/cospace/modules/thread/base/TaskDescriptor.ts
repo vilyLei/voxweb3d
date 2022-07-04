@@ -1,5 +1,5 @@
 import { ThreadCodeSrcType } from "../control/ThreadCodeSrcType";
-
+type TaskInfo = {taskClass:number, keyuns: string};
 class TaskDescriptor {
     inited: boolean;
     /**
@@ -8,6 +8,8 @@ class TaskDescriptor {
     src: string;
     taskclass: number;
     type: ThreadCodeSrcType;
+
+    info: TaskInfo = null;
     /**
      * 线程中处理代码的入口类名
      */
@@ -20,4 +22,4 @@ class TaskDescriptor {
         this.moduleName = moduleName;
     }
 }
-export { TaskDescriptor };
+export { TaskInfo, TaskDescriptor };

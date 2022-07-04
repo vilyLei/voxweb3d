@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 declare var importScripts: (js_file_url: string) => void;
+type TaskInfo = {taskClass:number, keyuns: string};
 
 import { SubThreadModule } from "./SubThreadModule";
 
@@ -170,7 +171,9 @@ function ddcUpdate(): void {
 class DependenceGraph {
 
     private m_programMap: Map<string, number> = new Map();
+    private m_taskInfoMap: Map<string, TaskInfo> = new Map();
     readonly graphData: GraphData = graphData;
+    currTaskClass: number = -1;
     constructor() {
     }
 
@@ -237,15 +240,18 @@ class DependenceGraph {
             }
         }
     }
-    loadProgramByDependency( denpendency: string ): void {
+    loadProgramByDependency( denpendency: string, info: TaskInfo = null ): void {
         if(denpendency != "") {
-            this.loadProgramByModuleUrl( graphData.getPathByUniqueName(denpendency) );
+            this.loadProgramByModuleUrl( graphData.getPathByUniqueName(denpendency), info );
         }
     }
-    private loadProgram(programUrl: string): void {
+    private loadProgram(programUrl: string, info: TaskInfo): void {
         if (programUrl != "") {
             if(!this.m_programMap.has(programUrl)) {
                 this.m_programMap.set(programUrl, 1);
+                if(info != null && info.taskClass > -1 && !this.m_taskInfoMap.has(programUrl)) {
+                    this.m_taskInfoMap.set(programUrl, info);
+                }
                 // importJSScripts(programUrl);
                 // let bolb: Blob = baseCodeStr == "" ? new Blob([request.responseText]) : new Blob([baseCodeStr + request.responseText]);
                 // URL.createObjectURL(blob)
@@ -257,6 +263,8 @@ class DependenceGraph {
                         console.log("load js model file");
                         // eval(request.responseText);
                         let blob = new Blob([request.responseText]);
+                        let info = this.m_taskInfoMap.has(programUrl) ? this.m_taskInfoMap.get(programUrl) : null;
+                        this.currTaskClass = info != null ? info.taskClass : -1;
                         importJSModuleCode(URL.createObjectURL(blob), programUrl);
                     }
                     else {
@@ -270,13 +278,13 @@ class DependenceGraph {
             }
         }
     }
-    loadProgramByModuleUrl(moduleUrl: string): void {
+    loadProgramByModuleUrl(moduleUrl: string, info: TaskInfo = null): void {
         moduleUrl = getJSFileUrl(moduleUrl);
 		console.log("XXX moduleUrl: ",moduleUrl);
-        this.loadProgram(moduleUrl);
+        this.loadProgram(moduleUrl, info);
     }
     destroy(): void {
     }
 }
 
-export { DependenceGraph };
+export { importJSModuleCode, DependenceGraph };
