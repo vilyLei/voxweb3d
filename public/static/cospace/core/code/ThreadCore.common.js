@@ -566,6 +566,14 @@ if (ENV_IS_WORKER) {
   };
 }
 
+function importJSModuleCode(codeUrl, srcUrl) {
+  try {
+    importJSScripts(codeUrl);
+  } catch (e) {
+    console.error("importJSScripts() error, url: ", srcUrl);
+  }
+}
+
 let baseUrl = scriptDir.slice(0, scriptDir.lastIndexOf("/") + 1);
 let k = baseUrl.indexOf("http://");
 if (k < 0) k = baseUrl.indexOf("https://");
@@ -578,15 +586,8 @@ function getJSFileUrl(url) {
   }
 
   let k = url.indexOf("://");
-
-  if (k > 0) {
-    if (url.indexOf(".js") < 0) url += ".js";
-    return url;
-  }
-
-  url = baseUrl + url;
-  if (url.indexOf(".js") < 0) url += ".js";
-  return url;
+  if (k > 0) return url;
+  return baseUrl + url;
 }
 
 class DependencyNode {
@@ -803,7 +804,6 @@ class DependenceGraph {
     if (programUrl != "") {
       if (!this.m_programMap.has(programUrl)) {
         this.m_programMap.set(programUrl, 1); // importJSScripts(programUrl);
-        //
         // let bolb: Blob = baseCodeStr == "" ? new Blob([request.responseText]) : new Blob([baseCodeStr + request.responseText]);
         // URL.createObjectURL(blob)
 
@@ -816,7 +816,7 @@ class DependenceGraph {
             console.log("load js model file"); // eval(request.responseText);
 
             let blob = new Blob([request.responseText]);
-            importJSScripts(URL.createObjectURL(blob));
+            importJSModuleCode(URL.createObjectURL(blob), programUrl);
           } else {
             console.error("load thread js module error, url: ", programUrl);
           }
@@ -833,6 +833,7 @@ class DependenceGraph {
 
   loadProgramByModuleUrl(moduleUrl) {
     moduleUrl = getJSFileUrl(moduleUrl);
+    console.log("XXX moduleUrl: ", moduleUrl);
     this.loadProgram(moduleUrl);
   }
 

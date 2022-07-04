@@ -16,6 +16,7 @@ import { ThreadTask } from "./control/ThreadTask";
 import { ThreadTaskPool } from "./control/ThreadTaskPool";
 import { TaskDataRouter } from "./base/TaskDataRouter";
 import { TDRManager } from "./base/TDRManager";
+import { TaskRegister } from "./base/TaskRegister";
 /**
  * 多线程任务调度器, 之所以用实例，是因为不同的实例实际上就能对线程集合做分类管理
  */
@@ -41,6 +42,7 @@ class ThreadSchedule {
 	private m_dataPool: ThrDataPool = new ThrDataPool();
 	private m_tdrManager: TDRManager;
 	private m_taskPool: ThreadTaskPool;
+	private m_taskReg: TaskRegister;
 	/**
 	 * 线程中子模块间依赖关系的json描述
 	 */
@@ -53,6 +55,7 @@ class ThreadSchedule {
 		this.m_descList = new Array(tot);
 		this.m_descList.fill(null);
 		this.m_tdrManager = new TDRManager(tot);
+		this.m_taskReg = new TaskRegister();
 
 		this.m_teTime = Date.now();
 	}
@@ -203,7 +206,7 @@ class ThreadSchedule {
 
 		if (this.m_currNewThr == null && this.m_threadsTotal < this.m_maxThreadsTotal) {
 
-			let thread = new ThreadBase(this.m_tdrManager, this.m_taskPool, this.m_graphJsonStr);
+			let thread = new ThreadBase(this.m_tdrManager, this.m_taskPool, this.m_taskReg, this.m_graphJsonStr);
 			this.m_currNewThr = thread;
 			thread.autoSendData = this.m_autoSendData;
 			thread.globalDataPool = this.m_dataPool;

@@ -10,7 +10,6 @@ import { IThreadSendData } from "../../thread/base/IThreadSendData";
 import { ThreadSendData } from "../../thread/base/ThreadSendData";
 import { IThreadBase } from "../../thread/base/IThreadBase";
 import { ThrDataPool } from "../../thread/control/ThrDataPool";
-import { ThreadTask } from "../../thread/control/ThreadTask";
 import { ThreadCodeSrcType } from "../control/ThreadCodeSrcType";
 import { TDRManager } from "./TDRManager";
 import { ThreadConfigure } from "./ThreadConfigure";
@@ -18,6 +17,7 @@ import { TDRParam } from "./TDRParam";
 import { TaskDataRouter } from "./TaskDataRouter";
 import { TaskDescriptor } from "./TaskDescriptor";
 import { ThreadTaskPool } from "../control/ThreadTaskPool";
+import { TaskRegister } from "./TaskRegister";
 type ArrayTypeT = Float32Array | Int32Array | Uint16Array | Uint8Array | Int16Array | Int8Array;
 class ThreadBase implements IThreadBase {
     private static s_uid: number = 0;
@@ -32,6 +32,7 @@ class ThreadBase implements IThreadBase {
     private m_commonModuleMap: Map<string,number> = new Map();
     private m_tdrManager: TDRManager;    
     private m_taskPool: ThreadTaskPool;
+    private m_taskReg: TaskRegister;
     /**
      * 线程中子模块间依赖关系的json描述
      */
@@ -42,10 +43,11 @@ class ThreadBase implements IThreadBase {
     globalDataPool: ThrDataPool = null;
     unlock: boolean = true;
 
-    constructor(tdrManager: TDRManager, taskPool: ThreadTaskPool, graphJsonStr: string = "") {
+    constructor(tdrManager: TDRManager, taskPool: ThreadTaskPool, taskReg: TaskRegister, graphJsonStr: string = "") {
         
         this.m_tdrManager = tdrManager;
         this.m_taskPool = taskPool;
+        this.m_taskReg = taskReg;
         this.m_graphJsonStr = graphJsonStr;
 
         this.m_uid = ThreadBase.s_uid++;
@@ -160,8 +162,10 @@ class ThreadBase implements IThreadBase {
             this.m_enabled = false;
             let task = this.m_taskItems.pop();
             // type 为0 表示task js 文件是外部加载的, 如果为 1 则表示是由运行时字符串构建的任务可执行代码
-            // console.log("Main worker("+this.getUid()+") updateInitTask(), task: ",task);
-            this.m_worker.postMessage({ cmd: ThreadCMD.INIT_TASK, threadIndex: this.getUid(), param: task });
+            console.log("Main worker("+this.getUid()+") updateInitTask(), task: ",task);
+            let info: {taskClass:number, keyuns: string} = this.m_taskReg.getTaskInfo(task);
+            console.log("task info: ", info);
+            this.m_worker.postMessage({ cmd: ThreadCMD.INIT_TASK, threadIndex: this.getUid(), param: task, info: info });
         }
     }
     private receiveData(data: any): void {
