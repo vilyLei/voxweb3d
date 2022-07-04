@@ -10,8 +10,6 @@ import { GeometryResourceSchedule } from "./schedule/GeometryResourceSchedule";
 import { ReceiverSchedule } from "./schedule/ReceiverSchedule";
 import { TextureResourceSchedule } from "./schedule/TextureResourceSchedule";
 import { ITaskCodeModuleParam } from "./schedule/base/ITaskCodeModuleParam";
-import { TaskCodeModuleParam } from "./schedule/base/TaskCodeModuleParam";
-import { ModuleNS } from "./modules/base/ModuleNS";
 import { CoSystem } from "./CoSystem";
 import { CoRuntime } from "./CoRuntime";
 /**
@@ -35,6 +33,12 @@ class CoSpace {
 
     constructor() {
     }
+	setTaskModuleParams(taskModules: ITaskCodeModuleParam[]): void {
+		if(taskModules != null) {
+			this.geometry.setTaskModuleParams(taskModules);
+			this.texture.setTaskModuleParams(taskModules);
+		}
+	}
     /**
      * 初始化引擎数据资源协同空间实例
      * @param maxThreadsTotal 最大线程数量
@@ -44,14 +48,12 @@ class CoSpace {
     initialize(maxThreadsTotal: number, threadCoreCodeUrl: string, autoSendData: boolean = false): void {
         if (this.m_inited) {
             this.m_inited = false;
-            
+
             this.thread.setParams(autoSendData);
             // 初始化多线程调度器(多线程系统)
             this.thread.initialize(maxThreadsTotal, threadCoreCodeUrl);
-            let modules: TaskCodeModuleParam[] = [new TaskCodeModuleParam("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.min.js", ModuleNS.ctmParser)];
-            this.geometry.initialize(this.m_receiver, this.thread, modules);
-            
-            // this.geometry.initialize(this.m_receiver, this.thread);
+            this.geometry.initialize(this.m_receiver, this.thread, null);
+            this.texture.initialize(this.m_receiver, this.thread, null);
             // 启动循环定时调度
             this.update();
         }

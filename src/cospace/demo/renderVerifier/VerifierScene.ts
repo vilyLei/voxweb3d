@@ -41,7 +41,7 @@ class VerifierScene implements IDropFileListerner {
 
 
 			this.m_vfParam.initialize();
-			
+
 
 			this.initCurr();
 			// this.initTestSvr();
@@ -60,14 +60,14 @@ class VerifierScene implements IDropFileListerner {
 				new TaskCodeModuleParam("static/renderingVerifier/modules/ct1.js", ModuleNS.ctmParser),
 				new TaskCodeModuleParam("static/renderingVerifier/modules/ob1.js", ModuleNS.objParser)
 			];
-			this.m_cospace.geometry.setTaskModuleUrls(modules);
+			this.m_cospace.setTaskModuleParams(modules);
 			this.m_cospace.initialize(this.m_vfParam.threadsTotal, "static/renderingVerifier/modules/th1.js", true);
 		} else {
 			let modules: TaskCodeModuleParam[] = [
 				new TaskCodeModuleParam("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", ModuleNS.ctmParser),
 				new TaskCodeModuleParam("static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", ModuleNS.objParser)
 			];
-			this.m_cospace.geometry.setTaskModuleUrls(modules);
+			this.m_cospace.setTaskModuleParams(modules);
 			// this.m_cospace.geometry.setTaskModuleUrls(["static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js"]);
 			// // 初始化数据协同中心
 			// this.m_cospace.initialize(3, "static/renderingVerifier/modules/c1.js", true);
@@ -75,7 +75,7 @@ class VerifierScene implements IDropFileListerner {
 			this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.js", true);
 		}
 	}
-	
+
 	private initTestSvr(): void {
 
 		if ((this.m_vfParam.hostUrl.indexOf(".artvily.") > 0 || this.m_vfParam.demoType != "") && this.m_vfParam.threadsTotal > 0) {
@@ -83,14 +83,16 @@ class VerifierScene implements IDropFileListerner {
 				new TaskCodeModuleParam("static/renderingVerifier/modules/ct1.js", ModuleNS.ctmParser),
 				new TaskCodeModuleParam("static/renderingVerifier/modules/ob1.js", ModuleNS.objParser)
 			];
-			this.m_cospace.geometry.setTaskModuleUrls(modules);
+			this.m_cospace.setTaskModuleParams(modules);
+			// this.m_cospace.geometry.setTaskModuleUrls(modules);
 			this.m_cospace.initialize(this.m_vfParam.threadsTotal, "static/renderingVerifier/modules/th1.js", true);
 		} else {
 			let modules: TaskCodeModuleParam[] = [
 				new TaskCodeModuleParam("http://localhost:9090/static/renderingVerifier/modules/ct1.js", ModuleNS.ctmParser),
 				new TaskCodeModuleParam("http://localhost:9090/static/renderingVerifier/modules/ob1.js", ModuleNS.objParser)
 			];
-			this.m_cospace.geometry.setTaskModuleUrls(modules);
+			this.m_cospace.setTaskModuleParams(modules);
+			// this.m_cospace.geometry.setTaskModuleUrls(modules);
 			// this.m_cospace.geometry.setTaskModuleUrls(["static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js"]);
 			// // 初始化数据协同中心
 			// this.m_cospace.initialize(3, "static/renderingVerifier/modules/c1.js", true);
@@ -212,7 +214,7 @@ class VerifierScene implements IDropFileListerner {
 		baseUrl = hostUrl + "static/private/obj/";
 		urls = [baseUrl + "base.obj"];
 		// this.addOBJ(urls);
-		
+
 	}
 	private testCTM(url: string): void {
 		let i = 0;
@@ -224,7 +226,7 @@ class VerifierScene implements IDropFileListerner {
 		let buf32 = new Uint32Array(buf,0,8);
 		buf32[6] = 16;
 		console.log("test buf,buf32: ", buf,buf32);
-		
+
 	}
 	mouseDown(evt: any): void {
 		let nodes = this.m_sceneNodes;

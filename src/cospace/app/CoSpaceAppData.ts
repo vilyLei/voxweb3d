@@ -1,3 +1,4 @@
+
 interface CoGeomDataType {
 	uvsList: Float32Array[];
 	vertices: Float32Array;
@@ -8,6 +9,7 @@ enum CoModuleNS {
 	ctmParser = "ctmGeomParser",
 	objParser = "objGeomParser",
 	dracoParser = "dracoGeomParser",
+	pngParser = "pngParser",
 	threadCore = "threadCore",
 	coSpaceApp = "coSpaceApp"
 }
@@ -18,8 +20,11 @@ enum CoDataFormat {
 	CTM = "ctm",
 	Draco = "draco",
 	OBJ = "obj",
+	FBX = "fbx",
+	GLB = "glb",
 	Jpg = "jpg",
 	Png = "png",
+	Gif = "gif"
 }
 enum CoModuleFileType {
 	JS = "js-text",
@@ -34,6 +39,18 @@ interface CoGeomDataContainer {
 interface CoGeomDataUnit {
 	url: string;
 	data: CoGeomDataContainer;
+}
+type HTMLImg = HTMLImageElement | HTMLCanvasElement;
+
+interface CoTextureDataContainer {
+	dataType: string;
+	dataFormat: CoDataFormat;
+	images: HTMLImg[];
+	imageDatas: Uint8Array[];
+}
+interface CoTextureDataUnit {
+	url: string;
+	data: CoTextureDataContainer;
 }
 interface CoTaskCodeModuleParam {
 	/**
@@ -51,6 +68,7 @@ interface CoTaskCodeModuleParam {
 }
 
 export {
+	CoTextureDataUnit,
 	CoModuleFileType,
 	CoGeomDataType,
 	CoModuleNS,

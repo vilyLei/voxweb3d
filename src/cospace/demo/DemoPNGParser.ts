@@ -5,7 +5,7 @@ import BinaryLoader from "../../vox/assets/BinaryLoader";
  * 通过加载到的 PNG 模型二进制数据，发送CTM资源解析任务给多线程数据处理系统，获取解析之后的CTM模型数据
  */
 export class DemoPNGParser {
-	
+
 	private m_threadSchedule: ThreadSchedule;
 	private m_pngParseTask: PNGParseTask;
 
@@ -18,7 +18,7 @@ export class DemoPNGParser {
 		// 创建多线程调度器(多线程系统)
 		let schedule = new ThreadSchedule();
 		// 初始化多线程调度器
-		schedule.initialize(2, "static/cospace/core/code/ThreadCore.umd.min.js");
+		schedule.initialize(2, "static/cospace/core/code/ThreadCore.umd.js");
 
 		// 创建 png 加载解析任务
 		let pngParseTask = new PNGParseTask("static/cospace/modules/png/ModulePNGParser.umd.min.js");

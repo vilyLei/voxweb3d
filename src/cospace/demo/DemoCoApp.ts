@@ -1,5 +1,5 @@
 
-import { CoModuleFileType, CoGeomDataType, CoModuleNS, CoDataFormat, CoGeomDataUnit, CoTaskCodeModuleParam } from "../app/CoSpaceAppData";
+import { CoTextureDataUnit, CoModuleFileType, CoGeomDataType, CoModuleNS, CoDataFormat, CoGeomDataUnit, CoTaskCodeModuleParam } from "../app/CoSpaceAppData";
 
 import { ICoSpaceApp } from "../app/ICoSpaceApp";
 import { ICoSpaceAppIns } from "../app/ICoSpaceAppIns";
@@ -20,11 +20,12 @@ export class DemoCoApp {
             { url: "static/cospace/core/coapp/CoSpaceApp.umd.js", name: CoModuleNS.coSpaceApp, type: CoModuleFileType.JS },
             { url: "static/cospace/core/code/ThreadCore.umd.js", name: CoModuleNS.threadCore, type: CoModuleFileType.JS },
             { url: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", name: CoModuleNS.ctmParser, type: CoModuleFileType.JS },
-            { url: "static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", name: CoModuleNS.objParser, type: CoModuleFileType.JS }
+            { url: "static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", name: CoModuleNS.objParser, type: CoModuleFileType.JS },
+            { url: "static/cospace/modules/png/ModulePNGParser.umd.min.js", name: CoModuleNS.pngParser, type: CoModuleFileType.JS }
         ];
         this.m_modules = modules;
     }
-    
+
     private initTestSvr(): void {
         let modules: CoTaskCodeModuleParam[] = [
             { url: "http://localhost:9090/static/renderingVerifier/modules/coapp1.js", name: CoModuleNS.coSpaceApp, type: CoModuleFileType.JS },
@@ -36,8 +37,8 @@ export class DemoCoApp {
     }
     initialize(): void {
 
-        // this.initCurr();
-        this.initTestSvr();
+        this.initCurr();
+        // this.initTestSvr();
 
         console.log("DemoCoApp::initialize()...");
 
@@ -52,11 +53,30 @@ export class DemoCoApp {
     private initApp(): void {
 
         let modules = this.m_modules;
-        this.m_appIns.initialize(3, modules[1].url, modules, true);
-        this.m_appIns.setTaskModuleUrls(modules);
+        this.m_appIns.setTaskModuleParams(modules);
+        this.m_appIns.initialize(3, modules[1].url, true);
 
         this.loadCTM();
     }
+	private m_pngs: string[] = [
+		"static/assets/xulie_49.png",
+		"static/assets/letterA.png"
+	];
+	private loadPNGByCallback(url: string): void {
+
+		//let url: string = "static/assets/letterA.png";
+
+
+		this.m_appIns.getCPUDataByUrlAndCallback(
+			url,
+			CoDataFormat.Png,
+			(unit: CoTextureDataUnit, status: number): void => {
+				console.log("DemoCospace::loadPNGByCallback(), texture data", unit.data.imageDatas[0]);
+				// console.log("lossTime: ", unit.lossTime + " ms");
+			},
+			true
+		);
+	}
     private loadCTM(): void {
 
         let baseUrl: string = "static/private/ctm/";
@@ -96,7 +116,9 @@ export class DemoCoApp {
     private mouseDown(evt: any): void {
 
         this.m_beginTime = Date.now();
-        this.loadOBJ();
+        // this.loadOBJ();
+        this.loadPNGByCallback(this.m_pngs[0]);
+        this.loadPNGByCallback(this.m_pngs[1]);
     }
 
     private loadModule(purl: string, onBuild: () => void = null): void {

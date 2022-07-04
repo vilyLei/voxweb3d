@@ -21,6 +21,13 @@ if (ENV_IS_WORKER) {
         console.log("importJSScripts(), js_file_url: ",js_file_url);
     }
 }
+function importJSModuleCode(codeUrl: string, srcUrl: string): void {
+	try {
+		importJSScripts(codeUrl);
+	}catch(e) {
+		console.error("importJSScripts() error, url: ", srcUrl);
+	}
+}
 let baseUrl = scriptDir.slice(0, scriptDir.lastIndexOf("/") + 1);
 let k = baseUrl.indexOf("http://");
 if (k < 0) k = baseUrl.indexOf("https://");
@@ -69,21 +76,21 @@ class GraphData {
     initFromJsonString(jsonString: string): void {
 
         if(jsonString != undefined && jsonString != "") {
-            
+
             let obj = JSON.parse(jsonString);
             console.log("GraphData(::initFromJsonString(), obj: ",obj);
-            
+
             this.m_nodes = [];
             let node: DependencyNode;
-    
+
             for(let i: number = 0; i < obj.nodes.length; ++i) {
-    
+
                 const dp = obj.nodes[i];
                 node = new DependencyNode(dp.uniqueName, i, dp.path);
                 this.m_nodes.push( node );
                 this.m_map.set(dp.uniqueName, node);
             }
-    
+
             let maps = obj.maps;
             for(let i: number = 0; i < maps.length; ++i) {
                 const item = maps[i];
@@ -165,12 +172,12 @@ function ddcUpdate(): void {
 }
 
 class DependenceGraph {
-    
+
     private m_programMap: Map<string, number> = new Map();
     readonly graphData: GraphData = graphData;
     constructor() {
     }
-    
+
     useDependency( tm: SubThreadModule ): void {
 
         if(testDependencyByIns(tm)) {
@@ -208,7 +215,7 @@ class DependenceGraph {
                         this.loadProgramByDependency( t.uniqueName );
                     }
                 }
-                if(flag) {                    
+                if(flag) {
                     // 不要更改这里的代码顺序
                     let total: number = dpnsWaitList.length;
                     dpnsWaitList.push(tm);
@@ -255,7 +262,7 @@ class DependenceGraph {
                         console.log("load js model file");
                         // eval(request.responseText);
                         let blob = new Blob([request.responseText]);
-                        importJSScripts(URL.createObjectURL(blob));
+                        importJSModuleCode(URL.createObjectURL(blob), programUrl);
                     }
                     else {
                         console.error("load thread js module error, url: ", programUrl);

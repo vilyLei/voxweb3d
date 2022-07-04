@@ -52,14 +52,14 @@ class ResourceSchedule<DataUnitType extends DataUnit> {
     protected initTask(unitPool: DataUnitPool<DataUnitType>, threadSchedule: ThreadSchedule, receiverSchedule: ReceiverSchedule, taskModules: ITaskCodeModuleParam[]): void {
 
     }
-    setTaskModuleUrls(taskModules: ITaskCodeModuleParam[]): void {
+    setTaskModuleParams(taskModules: ITaskCodeModuleParam[]): void {
         if(taskModules != null) {
             // this.m_taskModuleUrls = taskModuleUrls.slice(0);
             this.m_taskModules = taskModules.slice(0);
         }
     }
     initialize(receiverSchedule: ReceiverSchedule, threadSchedule: ThreadSchedule, taskModules: ITaskCodeModuleParam[] = null): void {
-        
+
         if (this.m_receiverSchedule == null && this.m_threadSchedule == null) {
 
             this.m_receiverSchedule = receiverSchedule;

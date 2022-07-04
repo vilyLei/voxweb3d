@@ -48,10 +48,10 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 				this.m_objListener.addUrlToTask(url);
 				break;
 			case DataFormat.Draco:
-				//this.m_ctmListener.addUrlToTask(url);
+				//this.m_dracoListener.addUrlToTask(url);
 				break;
 			default:
-				console.error("illegal url: ", url);
+				console.error("GeometryResourceSchedule::createDataUnit(), illegal data format:",unit.data.dataFormat,", its url: ", url);
 				break;
 		}
 		return unit;
@@ -81,6 +81,14 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 	 */
 	destroy(): void {
 		super.destroy();
+		if(this.m_ctmListener != null) {
+			this.m_ctmListener.destroy();
+			this.m_ctmListener = null;
+		}
+		if(this.m_objListener != null) {
+			this.m_objListener.destroy();
+			this.m_objListener = null;
+		}
 	}
 }
 
