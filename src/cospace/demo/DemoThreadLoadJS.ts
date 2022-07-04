@@ -20,7 +20,7 @@ export class DemoThreadLoadJS {
         this.m_threadSchedule.initModules(["static/cospace/thread/mathLib.js"]);
         this.m_threadSchedule.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js");
 
-        this.m_threadSchedule.bindTask(this.m_numberAddTask);
+        this.m_threadSchedule.bindTask(this.m_numberAddTask );
         this.m_threadSchedule.bindTask(this.m_numberMultTask);
         this.m_threadSchedule.bindTask(this.m_numberMathTask);
 
@@ -33,9 +33,11 @@ export class DemoThreadLoadJS {
         }
     }
     private useTask(): void {
+
         let param: Float32Array = new Float32Array([10, 11, 12, 13]);
         console.log("math add input :", param);
         this.m_numberAddTask.clacNumberList(param);
+
     }
 
     private useMathTask(): void {

@@ -14,7 +14,6 @@ export class DemoCTMParser {
 	initialize(): void {
 
 		console.log("DemoCTMParser::initialize()...");
-
 		// 创建多线程调度器(多线程系统)
 		let schedule = new ThreadSchedule();
 		// 初始化多线程调度器

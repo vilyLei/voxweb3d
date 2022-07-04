@@ -39,13 +39,9 @@ function getJSFileUrl(url: string) {
         throw Error("js file url is empty !!!");
     }
     let k = url.indexOf("://");
-    if (k > 0) {
-      if (url.indexOf(".js") < 0) url += ".js";
-      return url;
-    }
-    url = baseUrl + url;
-    if (url.indexOf(".js") < 0) url += ".js";
-    return url;
+    if (k > 0)
+		return url;
+    return baseUrl + url;
 }
 
 
@@ -251,7 +247,6 @@ class DependenceGraph {
             if(!this.m_programMap.has(programUrl)) {
                 this.m_programMap.set(programUrl, 1);
                 // importJSScripts(programUrl);
-                //
                 // let bolb: Blob = baseCodeStr == "" ? new Blob([request.responseText]) : new Blob([baseCodeStr + request.responseText]);
                 // URL.createObjectURL(blob)
                 let request: XMLHttpRequest = new XMLHttpRequest();

@@ -65,8 +65,6 @@ export class DemoCoApp {
 	private loadPNGByCallback(url: string): void {
 
 		//let url: string = "static/assets/letterA.png";
-
-
 		this.m_appIns.getCPUDataByUrlAndCallback(
 			url,
 			CoDataFormat.Png,

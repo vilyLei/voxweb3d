@@ -36,6 +36,9 @@ import { GeometryModelDataType } from "../modules/base/GeometryModelDataType";
 import { CoSpace } from "../CoSpace";
 import { DataFormat } from "../schedule/base/DataUnit";
 import { GeometryDataUnit } from "../schedule/base/GeometryDataUnit";
+import { TaskCodeModuleParam } from "../schedule/base/TaskCodeModuleParam";
+import { ModuleNS } from "../modules/base/ModuleNS";
+import { ModuleFileType } from "../modules/base/ModuleFileType";
 
 export class DemoCTMViewer {
 	constructor() { }
@@ -176,6 +179,10 @@ export class DemoCTMViewer {
 			//   axis.initialize(300);
 			//   this.m_rscene.addEntity(axis);
 
+			let modules: TaskCodeModuleParam[] = [
+				new TaskCodeModuleParam("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", ModuleNS.ctmParser, ModuleFileType.JS)
+			];
+			this.m_cospace.setTaskModuleParams(modules);
 			// 初始化数据协同中心
 			this.m_cospace.initialize(
 				3,

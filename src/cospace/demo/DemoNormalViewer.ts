@@ -22,6 +22,9 @@ import { GeometryDataUnit } from "../schedule/base/GeometryDataUnit";
 import { NormalViewerMaterial } from "./material/NormalViewerMaterial";
 import RendererState from "../../vox/render/RendererState";
 import MeshBase from "../../vox/mesh/MeshBase";
+import { TaskCodeModuleParam } from "../schedule/base/TaskCodeModuleParam";
+import { ModuleNS } from "../modules/base/ModuleNS";
+import { ModuleFileType } from "../modules/base/ModuleFileType";
 
 
 class GeomNormal {
@@ -119,8 +122,10 @@ export class DemoNormalViewer {
 			// axis.initialize(300);
 			// this.m_rscene.addEntity(axis);
 
-			// http://localhost:9000/
-
+			let modules: TaskCodeModuleParam[] = [
+				new TaskCodeModuleParam("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", ModuleNS.ctmParser, ModuleFileType.JS)
+			];
+			this.m_cospace.setTaskModuleParams(modules);
 			// 初始化数据协同中心
 			this.m_cospace.initialize(
 				3,

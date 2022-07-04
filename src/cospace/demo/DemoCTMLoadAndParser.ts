@@ -8,6 +8,7 @@ export class DemoCTMLoadAndParser {
 
 	private m_threadSchedule: ThreadSchedule = new ThreadSchedule();
 	private m_ctmParseTask: CTMParseTask;
+
 	constructor() { }
 
 	initialize(): void {
