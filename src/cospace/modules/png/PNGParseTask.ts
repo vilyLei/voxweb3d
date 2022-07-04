@@ -5,12 +5,10 @@ import {
 	TaskJSFileDependency,
 } from "../thread/control/TaskDependency";
 
-interface PNGDescriptorType {
-    url: string;
-}
+import { PNGDescriptorType } from "./PNGDescriptorType";
 
 interface PNGParseTaskListener {
-	pngParseFinish(pngBuffer: Uint8Array, url: string): void;
+	pngParseFinish(pngBuffer: Uint8Array, des: PNGDescriptorType): void;
 }
 
 /**
@@ -34,7 +32,7 @@ class PNGParseTask extends ThreadTask {
 	}
 	addBinaryData(buffer: Uint8Array, url: string): void {
 		if (buffer != null) {
-			this.addDataWithParam("", [buffer], { url: url });
+			this.addDataWithParam("", [buffer], { url: url, width:0, height:0 });
 		}
 	}
 	// return true, task finish; return false, task continue...
@@ -44,7 +42,7 @@ class PNGParseTask extends ThreadTask {
 		// console.log("CTMParseTask::parseDone(), this.m_listener != null:", this.m_listener != null, data);
 		if (this.m_listener != null) {
 
-			this.m_listener.pngParseFinish(data.data, data.descriptor.url);
+			this.m_listener.pngParseFinish(data.data, data.descriptor);
 		}
 		return true;
 	}
@@ -58,4 +56,4 @@ class PNGParseTask extends ThreadTask {
 	}
 }
 
-export { PNGParseTaskListener, PNGParseTask };
+export { PNGDescriptorType, PNGParseTaskListener, PNGParseTask };

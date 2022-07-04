@@ -16133,10 +16133,10 @@ const pngjs_1 = __webpack_require__("fcd8");
  */
 
 
-class ModulePNGGeomParser extends BaseTaskInThread_1.BaseTaskInThread {
+class ModulePNGParser extends BaseTaskInThread_1.BaseTaskInThread {
   constructor() {
     super();
-    console.log("ModulePNGGeomParser::constructor()...");
+    console.log("ModulePNGParser::constructor()...");
   }
 
   receiveData(rdata) {
@@ -16146,6 +16146,8 @@ class ModulePNGGeomParser extends BaseTaskInThread_1.BaseTaskInThread {
         filterType: 4
       }).parse(pngBuf, (err, png) => {
         rdata.data = png.data;
+        rdata.descriptor.width = png.width;
+        rdata.descriptor.height = png.height;
         let transfers = [png.data.buffer];
         console.log("a png file parsing finish, png.data: ", png.data);
         this.postMessageToThread(rdata, transfers);
@@ -16163,9 +16165,9 @@ class ModulePNGGeomParser extends BaseTaskInThread_1.BaseTaskInThread {
 
 }
 
-exports.ModulePNGGeomParser = ModulePNGGeomParser; // 这一句代码是必须有的
+exports.ModulePNGParser = ModulePNGParser; // 这一句代码是必须有的
 
-let ins = new ModulePNGGeomParser();
+let ins = new ModulePNGParser();
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__("b639").Buffer))
 
 /***/ }),

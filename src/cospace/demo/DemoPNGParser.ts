@@ -1,5 +1,5 @@
 import { ThreadSchedule } from "../modules/thread/ThreadSchedule";
-import { PNGParseTask } from "../modules/png/PNGParseTask";
+import { PNGDescriptorType, PNGParseTask } from "../modules/png/PNGParseTask";
 import BinaryLoader from "../../vox/assets/BinaryLoader";
 /**
  * 通过加载到的 PNG 模型二进制数据，发送CTM资源解析任务给多线程数据处理系统，获取解析之后的CTM模型数据
@@ -40,9 +40,9 @@ export class DemoPNGParser {
 	}
 
 	// 一份任务数据处理完成后由此侦听器回调函数接收到处理结果
-	pngParseFinish(pngBuffer: ArrayBuffer, url: string): void {
+	pngParseFinish(pngBuffer: ArrayBuffer, des: PNGDescriptorType): void {
 
-		console.log("DemoPNGParser::pngParseFinish(), pngBuffer: ", pngBuffer, ", url: ", url);
+		console.log("DemoPNGParser::pngParseFinish(), pngBuffer: ", pngBuffer, ", des: ", des);
 	}
 
 	private setBinaryDataToTask(pngDataBuffer: Uint8Array, url: string): void {

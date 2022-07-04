@@ -272,6 +272,7 @@ class DependenceGraph {
     }
     loadProgramByModuleUrl(moduleUrl: string): void {
         moduleUrl = getJSFileUrl(moduleUrl);
+		console.log("XXX moduleUrl: ",moduleUrl);
         this.loadProgram(moduleUrl);
     }
     destroy(): void {

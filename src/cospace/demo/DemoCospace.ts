@@ -61,7 +61,8 @@ export class DemoCospace {
 			url,
 			DataFormat.Png,
 			(unit: TextureDataUnit, status: number): void => {
-				console.log("DemoCospace::loadPNGByCallback(), texture data", unit.data.imageDatas[0]);
+				console.log("DemoCospace::loadPNGByCallback(), texture data:", unit.data.imageDatas[0]);
+				console.log("DemoCospace::loadPNGByCallback(), texture des:", unit.data.desList[0]);
 				console.log("lossTime: ", unit.lossTime + " ms");
 			},
 			true

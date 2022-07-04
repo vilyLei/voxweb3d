@@ -13,7 +13,7 @@ export class DemoThread {
 function ThreadAddNum()
 {
     console.log("ThreadAddNum instance init run ... from code str");
-    
+
     let m_dataIndex = 0;
     let m_srcuid = 0;
     this.threadIndex = 0;
@@ -29,7 +29,7 @@ function ThreadAddNum()
         {
             vdata += fs32[i];
         }
-        let sendData = 
+        let sendData =
         {
             cmd:data.cmd,
             taskCmd: data.taskCmd,
@@ -51,7 +51,7 @@ function ThreadAddNum()
     initialize(): void {
         console.log("DemoThread::initialize()...");
         // 建立多任务调度器
-        this.m_threadSchedule.initialize(1, "static/cospace/core/code/ThreadCore.umd.min.js");
+        this.m_threadSchedule.initialize(1, "static/cospace/core/code/ThreadCore.umd.js");
         // 初始化线程中的公用代码模块, 加载这两个代码模块只是为了测试
         this.m_threadSchedule.initModules([
             "static/cospace/thread/mathLib.js",

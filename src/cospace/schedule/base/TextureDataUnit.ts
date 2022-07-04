@@ -1,26 +1,24 @@
 import { DataFormat, DataUnitLock, DataClass, DataUnit } from "./DataUnit";
 
+import { PNGDescriptorType } from "../../modules/png/PNGDescriptorType";
 type HTMLImg = HTMLImageElement | HTMLCanvasElement;
 
 class TextureDataContainer {
-
-  dataClass: DataClass;
-  dataType: string;
-  dataFormat: DataFormat = DataFormat.CTM;
-  images: HTMLImg[] = null;
-  imageDatas: Uint8Array[] = null;
-  constructor() {
-  }
-  setFormatBUrl(url: string): void {
-  }
+	dataClass: DataClass;
+	dataType: string;
+	dataFormat: DataFormat = DataFormat.Png;
+	desList: PNGDescriptorType[] = null;
+	images: HTMLImg[] = null;
+	imageDatas: Uint8Array[] = null;
+	constructor() {}
+	setFormatBUrl(url: string): void {}
 }
 class TextureDataUnit extends DataUnit {
-
-  data: TextureDataContainer = null;
-  constructor() {
-    super();
-    this.dataClass = DataClass.Texture;
-  }
+	data: TextureDataContainer = null;
+	constructor() {
+		super();
+		this.dataClass = DataClass.Texture;
+	}
 }
 
 export { DataFormat, TextureDataContainer, DataUnitLock, TextureDataUnit, DataUnit };

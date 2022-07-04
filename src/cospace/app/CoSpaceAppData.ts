@@ -40,11 +40,17 @@ interface CoGeomDataUnit {
 	url: string;
 	data: CoGeomDataContainer;
 }
+interface CoPNGDescriptorType {
+    url: string;
+    width: number;
+    height: number;
+}
 type HTMLImg = HTMLImageElement | HTMLCanvasElement;
 
 interface CoTextureDataContainer {
 	dataType: string;
 	dataFormat: CoDataFormat;
+	desList: CoPNGDescriptorType[];
 	images: HTMLImg[];
 	imageDatas: Uint8Array[];
 }
@@ -68,6 +74,7 @@ interface CoTaskCodeModuleParam {
 }
 
 export {
+	CoPNGDescriptorType,
 	CoTextureDataUnit,
 	CoModuleFileType,
 	CoGeomDataType,

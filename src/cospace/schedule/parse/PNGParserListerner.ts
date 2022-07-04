@@ -13,7 +13,7 @@ import { ITaskCodeModuleParam } from "../base/ITaskCodeModuleParam";
 import { DataFormat, DataUnitLock, TextureDataUnit } from "../base/TextureDataUnit";
 
 import DivLog from "../../../vox/utils/DivLog";
-import { PNGParseTask } from "../../modules/png/PNGParseTask";
+import { PNGDescriptorType, PNGParseTask } from "../../modules/png/PNGParseTask";
 
 class PNGParserListerner {
 	private m_parseTask: PNGParseTask = null;
@@ -59,18 +59,20 @@ class PNGParserListerner {
 			);
 		}
 	}
+
 	// 一个任务数据处理完成后的侦听器回调函数
-	pngParseFinish(pngData: Uint8Array, url: string): void {
+	pngParseFinish(pngData: Uint8Array, des: PNGDescriptorType): void {
 
 		// console.log("ObjParserListerner::ctmParseFinish(), models: ", models, ", url: ", url);
 
-		if (this.m_unitPool.hasUnitByUrl(url)) {
+		if (this.m_unitPool.hasUnitByUrl(des.url)) {
 
-			let unit: TextureDataUnit = this.m_unitPool.getUnitByUrl(url);
+			let unit: TextureDataUnit = this.m_unitPool.getUnitByUrl(des.url);
 			if (unit != null) {
 
 				unit.lossTime = Date.now() - unit.lossTime;
 				unit.data.dataFormat = DataFormat.Png;
+				unit.data.desList = [ des ];
 				unit.data.imageDatas = [ pngData ];
 
 				DataUnitLock.lockStatus = 209;
