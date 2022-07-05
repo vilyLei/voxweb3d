@@ -1,10 +1,10 @@
 
-import RendererParam from "../../../vox/scene/RendererParam";
-import IRendererScene from "../../../vox/scene/IRendererScene";
-import IRenderEntity from "../../../vox/render/IRenderEntity";
-import { IMaterialContext } from "../../../materialLab/base/IMaterialContext";
+import RendererParam from "../../vox/scene/RendererParam";
+import IRendererScene from "../../vox/scene/IRendererScene";
+import IRenderEntity from "../../vox/render/IRenderEntity";
+import { IMaterialContext } from "../../materialLab/base/IMaterialContext";
 
-interface IAppEngine {
+interface EngineInstance {
     
     setMaterialContext(materialCtx: IMaterialContext): void
     setSyncLookEnabled(enabled: boolean): void;
@@ -16,4 +16,4 @@ interface IAppEngine {
     run(): void;
 }
 
-export { IAppEngine }
+export { EngineInstance }
