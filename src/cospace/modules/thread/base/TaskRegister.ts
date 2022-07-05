@@ -6,6 +6,15 @@ class TaskRegister {
     private m_map: Map<string, number> = new Map();
     constructor() {
     }
+	getTaskClassByKeyuns(keyuns: string): number {
+		if(this.m_map.has(keyuns)) {
+			return this.m_map.get(keyuns);
+		}
+		return -1;
+	}
+	hasKeyuns(keyuns: string): boolean {
+		return this.m_map.has(keyuns);
+	}
     buildTaskInfo(des: TaskDescriptor): void {
         let keyuns = des.moduleName;
         switch(des.type) {
@@ -29,8 +38,6 @@ class TaskRegister {
         }else {
             console.error("keyuns's value is empty!!!");
         }
-        console.log("keyuns: ", keyuns);
-        des.taskclass = i;
         des.info =  {taskClass: i, keyuns: keyuns};
     }
 }

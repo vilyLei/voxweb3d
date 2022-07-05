@@ -42,9 +42,9 @@ class ExampleNumberMathTask extends ThreadTask {
         }
         return true;
     }
-    getTaskClass(): number {
-        return 2;
-    }
+    // getTaskClass(): number {
+    //     return 2;
+    // }
 }
 
 export default ExampleNumberMathTask;

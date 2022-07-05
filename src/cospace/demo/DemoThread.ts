@@ -58,12 +58,10 @@ function ThreadAddNum()
             "static/cospace/thread/sortLib.js"
         ]);
 
-
-        // 注意: m_mathAddWorkerCode 代码中描述的 getTaskClass() 返回值 要和 ExampleNumberAddTask 中的 getTaskClass() 返回值 要相等
         // 可以明确指定直接从字符串初始化线程中的任务程序，当然也可以不这么用
-        // this.m_threadSchedule.initTaskByCodeStr(this.m_mathAddWorkerCode,   0, "ThreadAddNum");
+        // this.m_threadSchedule.initTaskByCodeStr(this.m_mathAddWorkerCode, "ThreadAddNum");
         // 可以明确指定从外部js文件初始化线程中的任务程序，当然也可以不这么用
-        // this.m_threadSchedule.initTaskByURL("static/thread/ThreadAddNum", 0);
+        // this.m_threadSchedule.initTaskByURL("static/thread/ThreadAddNum");
 
         // 绑定当前任务到多线程调度器
         this.m_threadSchedule.bindTask(this.m_numberAddTask);

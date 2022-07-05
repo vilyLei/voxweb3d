@@ -26,6 +26,7 @@ function importJSModuleCode(codeUrl: string, srcUrl: string): void {
 	try {
 		importJSScripts(codeUrl);
 	}catch(e) {
+		console.error("importJSScripts() error, e: ", e);
 		console.error("importJSScripts() error, url: ", srcUrl);
 	}
 }

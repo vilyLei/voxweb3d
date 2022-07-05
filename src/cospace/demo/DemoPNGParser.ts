@@ -21,7 +21,7 @@ export class DemoPNGParser {
 		schedule.initialize(2, "static/cospace/core/code/ThreadCore.umd.js");
 
 		// 创建 png 加载解析任务
-		let pngParseTask = new PNGParseTask("static/cospace/modules/png/ModulePNGParser.umd.min.js");
+		let pngParseTask = new PNGParseTask("static/cospace/modules/png/ModulePNGParser.umd.js");
 		// 绑定当前任务到多线程调度器
 		schedule.bindTask(pngParseTask);
 
@@ -50,8 +50,11 @@ export class DemoPNGParser {
 		this.m_pngParseTask.addBinaryData(pngDataBuffer, url);
 	}
 	private mouseDown(evt: any): void {
+
 		let pngUrl: string = "static/assets/letterA.png";
-		this.initPNGFromBin(pngUrl);
+		pngUrl = "static/private/2048.png";
+
+		this.initPNGFromBin( pngUrl );
 	}
 
 	private initPNGFromBin(pngUrl: string): void {

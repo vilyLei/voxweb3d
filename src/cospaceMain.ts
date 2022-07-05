@@ -4,7 +4,7 @@
 // import { DemoCTMLoadAndParser as Demo } from "./cospace/demo/DemoCTMLoadAndParser";
 // import { DemoCTMParser as Demo } from "./cospace/demo/DemoCTMParser";
 // import { DemoDracoParser as Demo } from "./cospace/demo/DemoDracoParser";
-// import { DemoDracoParser2 as Demo } from "./cospace/demo/DemoDracoParser2";
+import { DemoDracoParser2 as Demo } from "./cospace/demo/DemoDracoParser2";
 // import { DemoFBXParser as Demo } from "./cospace/demo/DemoFBXParser";
 // import { DemoGLBParser as Demo } from "./cospace/demo/DemoGLBParser";
 // import { DemoPNGParser as Demo } from "./cospace/demo/DemoPNGParser";
@@ -13,7 +13,7 @@
 // import { DemoDependenceGraph as Demo } from "./cospace/demo/DemoDependenceGraph";
 // import { DemoCTMViewer as Demo } from "./cospace/demo/DemoCTMViewer";
 // import { DemoNormalViewer as Demo } from "./cospace/demo/DemoNormalViewer";
-import { RenderingVerifier as Demo } from "./cospace/demo/RenderingVerifier";
+// import { RenderingVerifier as Demo } from "./cospace/demo/RenderingVerifier";
 // import { DemoCoApp as Demo } from "./cospace/demo/DemoCoApp";
 
 document.title = "RenderingVerifier";

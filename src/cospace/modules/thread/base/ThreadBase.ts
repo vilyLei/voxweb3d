@@ -30,21 +30,21 @@ class ThreadBase implements IThreadBase {
     private m_initBoo: boolean = true;
     private m_thrData: IThreadSendData = null;
     private m_commonModuleMap: Map<string,number> = new Map();
-    private m_tdrManager: TDRManager;    
+    private m_tdrManager: TDRManager;
     private m_taskPool: ThreadTaskPool;
     // private m_taskReg: TaskRegister;
     /**
      * 线程中子模块间依赖关系的json描述
      */
     private m_graphJsonStr: string;
-    
+
     autoSendData: boolean = false;
     localDataPool: ThrDataPool = new ThrDataPool();
     globalDataPool: ThrDataPool = null;
     unlock: boolean = true;
 
     constructor(tdrManager: TDRManager, taskPool: ThreadTaskPool, graphJsonStr: string = "") {
-        
+
         this.m_tdrManager = tdrManager;
         this.m_taskPool = taskPool;
         // this.m_taskReg = taskReg;
@@ -87,7 +87,7 @@ class ThreadBase implements IThreadBase {
             thrData.buildThis(true);
 
             let sendData: any = {streams: null};
-            
+
             sendData.descriptor = thrData.descriptor;
             sendData.taskCmd = thrData.taskCmd;
             sendData.taskclass = thrData.taskclass;
@@ -128,9 +128,11 @@ class ThreadBase implements IThreadBase {
         }
     }
     initModuleByTaskDescriptor(task: TaskDescriptor): void {
+		// console.log("ThreadBase::initModuleByTaskDescriptor(), A, task: ", task);
         if(task != null) {
-            let taskclass = task.taskclass;
-            // console.log("ThreadBase::initModuleByTaskDescriptor(), taskclass: ", taskclass);
+            // let taskclass = task.taskclass;
+            let taskclass = task.info.taskClass;
+            // console.log("ThreadBase::initModuleByTaskDescriptor(), task.info: ", task.info);
             if (taskclass >= 0 && taskclass < this.m_taskfs.length) {
                 if (this.m_taskfs[taskclass] < 0) {
                     this.m_taskfs[taskclass] = 0;
@@ -144,7 +146,7 @@ class ThreadBase implements IThreadBase {
         for(let i = 0; i < moduleUrls.length; ++i) {
             if(!this.m_commonModuleMap.has(moduleUrls[i])) {
                 this.m_commonModuleMap.set(moduleUrls[i], 1);
-                urls.push(moduleUrls[i]);              
+                urls.push(moduleUrls[i]);
             }
         }
         // console.log("XXXX thread initModules urls.length: ",urls.length);
@@ -152,7 +154,7 @@ class ThreadBase implements IThreadBase {
             this.m_worker.postMessage({ cmd: ThreadCMD.INIT_COMMON_MODULE, threadIndex: this.getUid(), modules: urls, type: ThreadCodeSrcType.JS_FILE_CODE });
         }
     }
-    
+
     initModuleByCodeString(codeStr: string): void {
         this.m_worker.postMessage({ cmd: ThreadCMD.INIT_COMMON_MODULE, threadIndex: this.getUid(), src: codeStr, type: ThreadCodeSrcType.STRING_CODE });
     }
@@ -162,22 +164,22 @@ class ThreadBase implements IThreadBase {
             this.m_enabled = false;
             let task = this.m_taskItems.pop();
             // type 为0 表示task js 文件是外部加载的, 如果为 1 则表示是由运行时字符串构建的任务可执行代码
-            console.log("Main worker("+this.getUid()+") updateInitTask(), task: ",task);
+            // console.log("Main worker("+this.getUid()+") updateInitTask(), task: ",task);
             // let info: {taskClass:number, keyuns: string} = this.m_taskReg.getTaskInfo(task);
             // console.log("task info: ", info);
             this.m_worker.postMessage({ cmd: ThreadCMD.INIT_TASK, threadIndex: this.getUid(), param: task, info: task.info });
         }
     }
     private receiveData(data: any): void {
-        
+
         // console.log("lost time: ",this.m_time,data.taskCmd);
         this.m_free = true;
-        
+
         // 下面这个逻辑要慎用，用了可能会对时间同步(例如帧同步)造成影响
         if (this.autoSendData) {
             this.sendPoolDataToThread();
         }
-        
+
         // let task: ThreadTask = ThreadTask.GetTaskByUid(data.srcuid);
         let task = this.m_taskPool.getTaskByUid(data.srcuid);
         // console.log("task != null: ",(task != null),", data.srcuid: ",data.srcuid,", thread uid: ",this.m_uid);
@@ -186,7 +188,7 @@ class ThreadBase implements IThreadBase {
         if (task != null) {
             finished = task.parseDone(data, 0);
         }
-        
+
         this.updateInitTask();
     }
     sendRouterDataTo(router: TaskDataRouter): void {
@@ -199,7 +201,7 @@ class ThreadBase implements IThreadBase {
         }
     }
     terminate(): void {
-        if(this.m_worker != null) {            
+        if(this.m_worker != null) {
             this.m_worker.terminate();
             this.m_worker = null;
             this.m_free = false;
@@ -227,7 +229,7 @@ class ThreadBase implements IThreadBase {
             this.m_worker = worker;
 
             this.m_worker.onmessage = (evt: any): void => {
-                
+
                 if(this.m_thrData != null) {
                     ThreadSendData.Restore( this.m_thrData );
                     this.m_thrData.sendStatus = -1;
@@ -288,7 +290,7 @@ class ThreadBase implements IThreadBase {
                         }
                         break;
                     case ThreadCMD.INIT_COMMON_MODULE:
-                        
+
                         break;
                     default:
                         break;

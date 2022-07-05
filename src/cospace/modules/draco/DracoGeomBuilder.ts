@@ -15,12 +15,12 @@ class DracoGeomBuilder {
     private m_taskModuleUrl: string;
 
     private m_segRangeList: number[] = null;
-    
+
     constructor(taskModuleUrl:string, dracoWasmVersion: number = 2) {
         this.m_taskModuleUrl = taskModuleUrl;
         this.m_dracoWasmVersion = dracoWasmVersion;
     }
-    
+
     setListener(l: DracoGeomParseTaskListener): void {
         this.m_listener = l;
         if(this.m_dracoTask != null) {
@@ -77,7 +77,7 @@ class DracoGeomBuilder {
 
         let threadSchedule = this.m_thrSchedule;
         if(threadSchedule != null) {
-            
+
             // 创建和多线程关联的任务, 通过外部js文件url的形式创建任务实例
             // this.m_dracoTask = new DracoGeomParseTask( this.m_taskModuleUrl, threadSchedule );
             // 创建和多线程关联的任务, 通过外部js文件的依赖唯一名称的形式创建任务实例
@@ -85,14 +85,14 @@ class DracoGeomBuilder {
             this.m_dracoTask.setListener( this.m_listener );
             // 初始化draco解析所需的基本库, 因为有依赖管理器，这一句代码可以不用(依赖关系机制会完成对应的功能)
             //threadSchedule.initModules([wapperUrl]);
-            
+
+            // 多线程任务调度器绑定当前的 draco task
+            threadSchedule.bindTask(this.m_dracoTask);
             if(!threadSchedule.hasRouterByTaskClass(this.m_dracoTask.getTaskClass())) {
                 // 设置draco解析任务功能所需的数据路由
                 let router = new DracoGeomParseTaskDataRouter(this.m_dracoTask.getTaskClass(), wasmUrl);
                 threadSchedule.setTaskDataRouter( router );
             }
-            // 多线程任务调度器绑定当前的 draco task
-            threadSchedule.bindTask(this.m_dracoTask);
         }
     }
     /**

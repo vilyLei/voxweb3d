@@ -18,9 +18,9 @@ class ExampleNumberMultTask extends ThreadTask {
         console.log("ExampleNumberMultTask::parseDone(), data: ", data);
         return true;
     }
-    getTaskClass(): number {
-        return 1;
-    }
+    // getTaskClass(): number {
+    //     return 1;
+    // }
 }
 
 export default ExampleNumberMultTask;

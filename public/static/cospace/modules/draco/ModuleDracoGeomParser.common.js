@@ -481,8 +481,10 @@ class DracoGeomParseTask {
     this.dracoParser = new DracoGeomParser();
     this.m_currTaskClass = ThreadCore.getCurrTaskClass();
     console.log("DracoGeomParseTask::constructor(), currTaskClass: ", this.m_currTaskClass);
+    ThreadCore.setCurrTaskClass(this.m_currTaskClass);
     ThreadCore.acquireData(this, {}, CMD.THREAD_ACQUIRE_DATA);
     ThreadCore.useDependency(this);
+    ThreadCore.resetCurrTaskClass();
   }
 
   postDataMessage(data, transfers) {
@@ -509,6 +511,7 @@ class DracoGeomParseTask {
       ThreadCore.transmitData(this, data, CMD.THREAD_TRANSMIT_DATA, [bin]);
       ThreadCore.setCurrTaskClass(this.m_currTaskClass);
       ThreadCore.initializeExternModule(this);
+      ThreadCore.resetCurrTaskClass();
     };
 
     DracoDecoderModule(this.decoder);

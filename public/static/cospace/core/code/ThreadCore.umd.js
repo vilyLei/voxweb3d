@@ -154,6 +154,12 @@ function setCurrTaskClass(taskClass) {
 
 exports.setCurrTaskClass = setCurrTaskClass;
 
+function resetCurrTaskClass() {
+  dpGraph.currTaskClass = -1;
+}
+
+exports.resetCurrTaskClass = resetCurrTaskClass;
+
 function postMessageToThread(obj, transfers) {
   postMessage(obj, transfers);
 }
@@ -175,22 +181,29 @@ function useDependency(tm) {
 exports.useDependency = useDependency;
 
 function bindExternModule(tm) {
-  if (tm != null && tm.getTaskClass != undefined) {
-    TaskHost.slot[tm.getTaskClass()] = tm;
+  if (tm != null) {
+    const id = dpGraph.currTaskClass;
+
+    if (id >= 0) {
+      TaskHost.slot[id] = tm;
+    } else {
+      throw Error("bind extern module error task class value!!!!");
+    }
   }
 }
 
 function initializeExternModule(tm) {
-  if (tm != null && tm.getTaskClass != undefined) {
+  if (tm != null) {
     console.log("initializeExternModule apply dpGraph.currTaskClass: ", dpGraph.currTaskClass);
+    const id = dpGraph.currTaskClass;
 
-    if (dpGraph.currTaskClass >= 0) {
+    if (id >= 0) {
       // TaskHost.slot[tm.getTaskClass()] = tm;
       // postMessage({ cmd: TCMD.INIT_TASK, taskclass: tm.getTaskClass() });
-      TaskHost.slot[dpGraph.currTaskClass] = tm;
+      TaskHost.slot[id] = tm;
       postMessage({
         cmd: TCMD.INIT_TASK,
-        taskclass: dpGraph.currTaskClass
+        taskclass: id
       });
     } else {
       throw Error("initialize extern module error task class value!!!!");
@@ -204,10 +217,11 @@ exports.initializeExternModule = initializeExternModule;
 
 function acquireData(moduleInstance, pdata, ptaskCmd) {
   bindExternModule(moduleInstance);
+  console.log("acquireData dpGraph.currTaskClass: ", dpGraph.currTaskClass);
   let sendData = {
     cmd: TCMD.THREAD_ACQUIRE_DATA,
     taskCmd: ptaskCmd,
-    taskclass: moduleInstance.getTaskClass(),
+    taskclass: dpGraph.currTaskClass,
     data: pdata
   };
   postMessage(sendData);
@@ -249,8 +263,7 @@ class ThreadCore {
     switch (data.cmd) {
       case TCMD.DATA_PARSE:
         data.threadIndex = this.m_threadIndex;
-        ins = taskSlot[data.taskclass];
-        console.log("Sub Thread(), data.taskclass: ", data.taskclass, ins);
+        ins = taskSlot[data.taskclass]; // console.log("Sub Thread(), data.taskclass: ",data.taskclass, ins);
 
         if (ins != null) {
           ins.receiveData(data);
@@ -268,35 +281,37 @@ class ThreadCore {
         break;
 
       case TCMD.INIT_TASK:
-        let param = data.param; // console.log("Sub Worker(" + data.threadIndex + ") INIT_TASK param.type: ", param.type);
+        let param = data.param;
+        let taskClass = data.info.taskClass; // console.log("Sub Worker(" + data.threadIndex + ") INIT_TASK param.type: ", param.type,"taskClass: ",taskClass);
+        // console.log("Sub Worker(" + data.threadIndex + ") INIT_TASK data: ", data);
 
         switch (param.type) {
           case TCST.JS_FILE_CODE:
-            if (stList[param.taskclass] < 1) {
-              stList[param.taskclass] = 1;
+            if (stList[taskClass] < 1) {
+              stList[taskClass] = 1;
               dpGraph.loadProgramByModuleUrl(param.src, data.info);
             }
 
             break;
 
           case TCST.DEPENDENCY:
-            if (stList[param.taskclass] < 1) {
-              stList[param.taskclass] = 1;
+            if (stList[taskClass] < 1) {
+              stList[taskClass] = 1;
               dpGraph.loadProgramByDependency(param.src, data.info);
             }
 
             break;
 
           case TCST.BLOB_CODE:
-            if (stList[param.taskclass] < 1) {
-              stList[param.taskclass] = 1; // build code from block
+            if (stList[taskClass] < 1) {
+              stList[taskClass] = 1; // build code from block
             }
 
             break;
 
           case TCST.STRING_CODE:
-            if (stList[param.taskclass] < 1) {
-              stList[param.taskclass] = 1; // build code from string
+            if (stList[taskClass] < 1) {
+              stList[taskClass] = 1; // build code from string
               // console.log("param.srccode: ",param.srccode);
               // console.log("param.src: ",param.src);
 
@@ -321,13 +336,13 @@ class ThreadCore {
         }
 
         if (data.type < 1) {
-          if (stList[param.taskclass] < 1) {
-            stList[param.taskclass] = 1;
+          if (stList[taskClass] < 1) {
+            stList[taskClass] = 1;
             dpGraph.loadProgramByModuleUrl(param.taskName);
           }
         } else {
-          if (stList[param.taskclass] < 1) {
-            stList[param.taskclass] = 1;
+          if (stList[taskClass] < 1) {
+            stList[taskClass] = 1;
           }
         }
 
@@ -608,6 +623,7 @@ function importJSModuleCode(codeUrl, srcUrl) {
   try {
     importJSScripts(codeUrl);
   } catch (e) {
+    console.error("importJSScripts() error, e: ", e);
     console.error("importJSScripts() error, url: ", srcUrl);
   }
 }

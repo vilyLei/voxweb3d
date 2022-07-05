@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 interface IThreadTask {
-    
+
     // 被子类覆盖后便能实现更细节的相关功能
     reset(): void;
     isFinished(): boolean;
@@ -19,7 +19,7 @@ interface IThreadTask {
      * @returns 返回这个函数的处理状态，默认返回false
      */
     parseDone(data: unknown, flag: number): boolean;
-    getTaskClass(): number;
+    // getTaskClass(): number;
     destroy(): void;
 }
 

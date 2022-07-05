@@ -18,9 +18,9 @@ class ExampleNumberAddTask extends ThreadTask {
         console.log("ExampleNumberAddTask::parseDone(), data: ", data);
         return true;
     }
-    getTaskClass(): number {
-        return 0;
-    }
+    // getTaskClass(): number {
+    //     return 0;
+    // }
 }
 
 export default ExampleNumberAddTask;

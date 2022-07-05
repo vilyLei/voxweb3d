@@ -16133,9 +16133,11 @@ class ModulePNGParser extends BaseTaskInThread_1.BaseTaskInThread {
   receiveData(rdata) {
     try {
       let pngBuf = new Buffer(rdata.streams[0]);
+      let time = Date.now();
       new pngjs_1.PNG({
         filterType: 4
       }).parse(pngBuf, (err, png) => {
+        console.log("png parsing lost time: ", Date.now() - time, "ms");
         rdata.data = png.data;
         rdata.descriptor.width = png.width;
         rdata.descriptor.height = png.height;
@@ -16145,7 +16147,7 @@ class ModulePNGParser extends BaseTaskInThread_1.BaseTaskInThread {
       });
     } catch (e) {
       rdata.streams[0] = null;
-      console.error("a png file parsing error!!!");
+      console.error("a png file parsing error!!!, e: ", e);
       this.postMessageToThread(rdata);
     }
   }

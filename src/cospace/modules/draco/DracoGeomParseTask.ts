@@ -42,15 +42,15 @@ class DracoGeomParseTask extends ThreadTask {
         this.m_segIndex = 0;
     }
     private parseData(bufData: ArrayBuffer, beginI: number, endI: number): void {
-        
+
         if (bufData != null) {
             this.m_enabled = false;
             this.addDataWithParam(DracoTaskCMD.PARSE, [new Uint8Array(bufData)], {beginI: beginI, endI: endI, status: 0});
         }
     }
-    
+
     private parseNextSeg(): void {
-        
+
         if (this.m_enabled && this.m_segs != null && this.m_segIndex < this.m_segs.length) {
             for (let i: number = 0; i < this.m_thrScheDule.getMaxThreadsTotal(); i++) {
                 if (this.m_segIndex < this.m_segs.length) {
@@ -83,7 +83,7 @@ class DracoGeomParseTask extends ThreadTask {
             case DracoTaskCMD.PARSE:
                 this.m_enabled = true;
                 this.m_parseIndex++;
-                
+
                 let model = data.data.model;
                 if(model.normals == undefined) model.normals = null;
                 if(model.uvsList == undefined) model.uvsList = null;
@@ -103,10 +103,10 @@ class DracoGeomParseTask extends ThreadTask {
         }
         return true;
     }
-    // 这个函数的返回值与子线程中的对应处理代码模块 getTaskClass() 函数返回值必须一致。不同类型的任务此返回值务必保持唯一性
-    getTaskClass(): number {
-        return 102;
-    }
+    // // 这个函数的返回值与子线程中的对应处理代码模块 getTaskClass() 函数返回值必须一致。不同类型的任务此返回值务必保持唯一性
+    // getTaskClass(): number {
+    //     return 102;
+    // }
     destroy(): void {
       super.destroy();
       this.m_listener = null;

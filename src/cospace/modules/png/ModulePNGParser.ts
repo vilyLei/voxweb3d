@@ -17,7 +17,9 @@ class ModulePNGParser extends BaseTaskInThread {
     ): void {
         try {
             let pngBuf: Buffer = new Buffer(rdata.streams[0] as Uint8Array);
+			let time = Date.now();
             new PNG({ filterType: 4 }).parse(pngBuf, (err: Error, png: PNG) => {
+				console.log("png parsing lost time: ", Date.now() - time, "ms");
                 rdata.data = png.data;
 				rdata.descriptor.width = png.width;
 				rdata.descriptor.height = png.height;
@@ -27,7 +29,7 @@ class ModulePNGParser extends BaseTaskInThread {
             });
         }catch(e) {
             rdata.streams[0] = null;
-            console.error("a png file parsing error!!!");
+            console.error("a png file parsing error!!!, e: ",e);
             this.postMessageToThread(rdata);
         }
     }

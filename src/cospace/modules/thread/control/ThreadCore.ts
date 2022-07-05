@@ -13,8 +13,6 @@ import { SubThreadModule } from "./SubThreadModule";
 let TCMD = ThreadCMD;
 let TCST = ThreadCodeSrcType;
 
-declare var $t: number;
-declare var importScripts: (js_file_url: string) => void;
 declare var postMessage: (obj: unknown, transfers?: ArrayBuffer[]) => void;
 
 let taskSlot: SubThreadModule[] = [];
@@ -42,6 +40,9 @@ function getCurrTaskClass(): number {
 function setCurrTaskClass(taskClass: number): void {
     dpGraph.currTaskClass = taskClass;
 }
+function resetCurrTaskClass(): void {
+    dpGraph.currTaskClass = -1;
+}
 function postMessageToThread(obj: unknown, transfers?: ArrayBuffer[]): void {
     postMessage(obj, transfers);
 }
@@ -59,18 +60,24 @@ function useDependency(tm: SubThreadModule): void {
 }
 
 function bindExternModule(tm: SubThreadModule): void {
-    if (tm != null && tm.getTaskClass != undefined) {
-        TaskHost.slot[tm.getTaskClass()] = tm;
+    if (tm != null) {
+		const id = dpGraph.currTaskClass;
+        if(id >= 0) {
+        	TaskHost.slot[id] = tm;
+		}else {
+            throw Error("bind extern module error task class value!!!!");
+		}
     }
 }
 function initializeExternModule(tm: SubThreadModule): void {
-    if (tm != null && tm.getTaskClass != undefined) {
+    if (tm != null) {
         console.log("initializeExternModule apply dpGraph.currTaskClass: ", dpGraph.currTaskClass);
-        if(dpGraph.currTaskClass >= 0) {
+		const id = dpGraph.currTaskClass;
+        if(id >= 0) {
             // TaskHost.slot[tm.getTaskClass()] = tm;
             // postMessage({ cmd: TCMD.INIT_TASK, taskclass: tm.getTaskClass() });
-            TaskHost.slot[dpGraph.currTaskClass] = tm;
-            postMessage({ cmd: TCMD.INIT_TASK, taskclass: dpGraph.currTaskClass });
+            TaskHost.slot[id] = tm;
+            postMessage({ cmd: TCMD.INIT_TASK, taskclass: id });
         }else {
             throw Error("initialize extern module error task class value!!!!");
         }
@@ -80,11 +87,11 @@ function initializeExternModule(tm: SubThreadModule): void {
 function acquireData(moduleInstance: SubThreadModule, pdata: unknown, ptaskCmd: string) {
 
     bindExternModule(moduleInstance);
-
+	console.log("acquireData dpGraph.currTaskClass: ", dpGraph.currTaskClass);
     let sendData: unknown = {
         cmd: TCMD.THREAD_ACQUIRE_DATA,
         taskCmd: ptaskCmd,
-        taskclass: moduleInstance.getTaskClass(),
+        taskclass: dpGraph.currTaskClass,
         data: pdata,
     };
     postMessage(sendData);
@@ -124,7 +131,7 @@ class ThreadCore {
             case TCMD.DATA_PARSE:
                 data.threadIndex = this.m_threadIndex;
                 ins = taskSlot[data.taskclass];
-                console.log("Sub Thread(), data.taskclass: ",data.taskclass, ins);
+                // console.log("Sub Thread(), data.taskclass: ",data.taskclass, ins);
                 if (ins != null) {
                     ins.receiveData(data);
                 }
@@ -138,30 +145,32 @@ class ThreadCore {
                 break;
             case TCMD.INIT_TASK:
                 let param = data.param;
-                // console.log("Sub Worker(" + data.threadIndex + ") INIT_TASK param.type: ", param.type);
+				let taskClass: number = data.info.taskClass;
+                // console.log("Sub Worker(" + data.threadIndex + ") INIT_TASK param.type: ", param.type,"taskClass: ",taskClass);
+                // console.log("Sub Worker(" + data.threadIndex + ") INIT_TASK data: ", data);
                 switch (param.type) {
                     case TCST.JS_FILE_CODE:
-                        if (stList[param.taskclass] < 1) {
-                            stList[param.taskclass] = 1;
+                        if (stList[taskClass] < 1) {
+                            stList[taskClass] = 1;
                             dpGraph.loadProgramByModuleUrl(param.src, data.info);
                         }
                         break;
 
                     case TCST.DEPENDENCY:
-                        if (stList[param.taskclass] < 1) {
-                            stList[param.taskclass] = 1;
+                        if (stList[taskClass] < 1) {
+                            stList[taskClass] = 1;
                             dpGraph.loadProgramByDependency(param.src, data.info);
                         }
                         break;
                     case TCST.BLOB_CODE:
-                        if (stList[param.taskclass] < 1) {
-                            stList[param.taskclass] = 1;
+                        if (stList[taskClass] < 1) {
+                            stList[taskClass] = 1;
                             // build code from block
                         }
                         break;
                     case TCST.STRING_CODE:
-                        if (stList[param.taskclass] < 1) {
-                            stList[param.taskclass] = 1;
+                        if (stList[taskClass] < 1) {
+                            stList[taskClass] = 1;
                             // build code from string
                             // console.log("param.srccode: ",param.srccode);
                             // console.log("param.src: ",param.src);
@@ -184,13 +193,13 @@ class ThreadCore {
                 }
 
                 if (data.type < 1) {
-                    if (stList[param.taskclass] < 1) {
-                        stList[param.taskclass] = 1;
+                    if (stList[taskClass] < 1) {
+                        stList[taskClass] = 1;
                         dpGraph.loadProgramByModuleUrl(param.taskName);
                     }
                 } else {
-                    if (stList[param.taskclass] < 1) {
-                        stList[param.taskclass] = 1;
+                    if (stList[taskClass] < 1) {
+                        stList[taskClass] = 1;
                     }
                 }
                 break;
@@ -236,4 +245,4 @@ class ThreadCore {
 }
 let ins = new ThreadCore();
 ins.initialize();
-export { getCurrTaskClass, setCurrTaskClass, postMessageToThread, registerDependency, useDependency, initializeExternModule, acquireData, transmitData, ThreadCore };
+export { getCurrTaskClass, setCurrTaskClass, resetCurrTaskClass, postMessageToThread, registerDependency, useDependency, initializeExternModule, acquireData, transmitData, ThreadCore };

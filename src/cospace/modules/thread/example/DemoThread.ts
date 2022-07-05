@@ -19,7 +19,6 @@ export class DemoThread {
 	private m_numberAddTask: ExampleNumberAddTask = new ExampleNumberAddTask();
 	private useTask(): void {
 		let param: Float32Array = new Float32Array([10, 11, 12, 13]);
-		console.log("math add input :", param);
 		this.m_numberAddTask.clacNumberList(param);
 	}
 	private m_timeoutId: any = -1;

@@ -24,7 +24,7 @@ class ThreadSchedule {
 	// allow ThreadSchedule initialize yes or no
 	private m_initBoo: boolean = true;
 	// 延迟销毁子线程的毫秒数
-	private m_teDelay: number = 1000;
+	private m_teDelay: number = 3000;
 	private m_teTime: number = 0;
 
 	private m_maxThreadsTotal: number = 0;
@@ -94,11 +94,11 @@ class ThreadSchedule {
 				let info: TaskInfo = null;
 				if (d != null) {
 					if (d.isJSFile()) {
-						info = this.initTaskByURL(d.threadCodeFileURL, task.getTaskClass());
+						info = this.initTaskByURL(d.threadCodeFileURL, -1);
 					} else if (d.isDependency()) {
-						info = this.initTaskByDependency(d.dependencyUniqueName, task.getTaskClass(), d.moduleName);
+						info = this.initTaskByDependency(d.dependencyUniqueName, d.moduleName);
 					} else if (d.isCodeString()) {
-						info = this.initTaskByCodeStr(d.threadCodeString, task.getTaskClass(), d.moduleName);
+						info = this.initTaskByCodeStr(d.threadCodeString, d.moduleName);
 					}
 				}
 				task.setDataPool(this.m_dataPool, localPool);
@@ -303,17 +303,18 @@ class ThreadSchedule {
 	/**
 	 * 通过外部js文件源码初始化在线程中处理指定任务的程序代码
 	 * @param jsFileUrl 子线程中执行的源码的js文件的相对url
-	 * @param taskclass 任务类型整型表示，例如: 0, 这和子线程中执行的源码中的 getTaskClass()成员函数 返回值一致
 	 * @param taskclass 子线程中执行的源码中的对象类名
 	 */
 	initTaskByURL(jsFileUrl: string, taskclass: number, moduleName: string = ""): TaskInfo {
-		if (jsFileUrl != "" && taskclass >= 0 && taskclass < this.m_descList.length) {
-			let task: TaskDescriptor = this.m_descList[taskclass];
+		if (jsFileUrl != "") {
 
+			let id = this.m_taskReg.getTaskClassByKeyuns(jsFileUrl);
+			let task: TaskDescriptor = id >= 0 ? this.m_descList[id] : null;
 			if (task == null) {
-				task = new TaskDescriptor(taskclass, ThreadCodeSrcType.JS_FILE_CODE, jsFileUrl, moduleName);
+				task = new TaskDescriptor(ThreadCodeSrcType.JS_FILE_CODE, jsFileUrl, moduleName);
 				this.m_taskReg.buildTaskInfo(task);
-				this.m_descList[taskclass] = task;
+				id = task.info.taskClass;
+				this.m_descList[id] = task;
 				this.initModuleByTaskDescriptor(task);
 			}
 			return task.info;
@@ -323,17 +324,17 @@ class ThreadSchedule {
 	/**
 	 * 通过唯一依赖名初始化在线程中处理指定任务的程序代码
 	 * @param jsFileUrl 子线程中执行的源码的js文件的相对url
-	 * @param taskclass 任务类型整型表示，例如: 0, 这和子线程中执行的源码中的 getTaskClass()成员函数 返回值一致
 	 * @param taskclass 子线程中执行的源码中的对象类名
 	 */
-	initTaskByDependency(dependencyUniqueName: string, taskclass: number, moduleName: string = ""): TaskInfo {
-		if (dependencyUniqueName != "" && taskclass >= 0 && taskclass < this.m_descList.length) {
-			let task: TaskDescriptor = this.m_descList[taskclass];
-
+	initTaskByDependency(dependencyUniqueName: string, moduleName: string = ""): TaskInfo {
+		if (dependencyUniqueName != "") {
+			let id = this.m_taskReg.getTaskClassByKeyuns(dependencyUniqueName);
+			let task: TaskDescriptor = id >= 0 ? this.m_descList[id] : null;
 			if (task == null) {
-				task = new TaskDescriptor(taskclass, ThreadCodeSrcType.DEPENDENCY, dependencyUniqueName, moduleName);
+				task = new TaskDescriptor(ThreadCodeSrcType.DEPENDENCY, dependencyUniqueName, moduleName);
 				this.m_taskReg.buildTaskInfo(task);
-				this.m_descList[taskclass] = task;
+				id = task.info.taskClass;
+				this.m_descList[id] = task;
 				this.initModuleByTaskDescriptor(task);
 			}
 			return task.info;
@@ -343,17 +344,18 @@ class ThreadSchedule {
 	/**
 	 * 通过字符串源码初始化在线程中处理指定任务的程序代码
 	 * @param codestr 子线程中执行的源码字符串
-	 * @param taskclass 任务类型整型表示，例如: 0, 这和子线程中执行的源码中的 getTaskClass()成员函数 返回值一致
 	 * @param moduleName 子线程中执行的源码中的对象类名
 	 */
-	initTaskByCodeStr(codestr: string, taskclass: number, moduleName: string): TaskInfo {
-		if (codestr != "" && taskclass >= 0 && taskclass < this.m_descList.length) {
-			let task: TaskDescriptor = this.m_descList[taskclass];
+	initTaskByCodeStr(codestr: string, moduleName: string): TaskInfo {
 
+		if (codestr != "") {
+			let id = this.m_taskReg.getTaskClassByKeyuns(moduleName);
+			let task: TaskDescriptor = id >= 0 ? this.m_descList[id] : null;
 			if (task == null) {
-				task = new TaskDescriptor(taskclass, ThreadCodeSrcType.STRING_CODE, codestr, moduleName);
+				task = new TaskDescriptor(ThreadCodeSrcType.STRING_CODE, codestr, moduleName);
 				this.m_taskReg.buildTaskInfo(task);
-				this.m_descList[taskclass] = task;
+				id = task.info.taskClass;
+				this.m_descList[id] = task;
 				this.initModuleByTaskDescriptor(task);
 			}
 			return task.info;

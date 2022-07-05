@@ -157,10 +157,14 @@ class ThreadTask implements IThreadTask {
         throw Error("ThreadTask::getWorkerSendDataAt(), Need Override !");
         return null;
     }
-    // 必须被子类覆盖
+    /**
+	 * 获得自身动态分配到的 task class 值，不可被子类覆盖
+	 * @returns task class value
+	 */
     getTaskClass(): number {
-        throw Error("ThreadTask::getTaskClass(), Need Override !");
-        return -1;
+        // throw Error("ThreadTask::getTaskClass(), Need Override !");
+        // return -1;
+		return this.m_info.taskClass;
     }
     destroy(): void {
         this.detach();
