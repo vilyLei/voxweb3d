@@ -19,10 +19,18 @@ class TaskRegister {
                 break;
         }
         let i: number = -1;
-        if(keyuns != "" && !this.m_map.has(keyuns)) {
-            i = this.m_taskTotal++;
-            this.m_map.set(keyuns, i);
+        if(keyuns != "") {
+            if(this.m_map.has(keyuns)) {
+                i = this.m_map.get(keyuns);
+            } else {
+                i = this.m_taskTotal++;
+                this.m_map.set(keyuns, i);
+            }
+        }else {
+            console.error("keyuns's value is empty!!!");
         }
+        console.log("keyuns: ", keyuns);
+        des.taskclass = i;
         des.info =  {taskClass: i, keyuns: keyuns};
     }
 }

@@ -133,6 +133,18 @@ class TaskHost {
 
 let dpGraph = new DependenceGraph_1.DependenceGraph();
 
+function getCurrTaskClass() {
+  return dpGraph.currTaskClass;
+}
+
+exports.getCurrTaskClass = getCurrTaskClass;
+
+function setCurrTaskClass(taskClass) {
+  dpGraph.currTaskClass = taskClass;
+}
+
+exports.setCurrTaskClass = setCurrTaskClass;
+
 function postMessageToThread(obj, transfers) {
   postMessage(obj, transfers);
 }
@@ -161,13 +173,21 @@ function bindExternModule(tm) {
 
 function initializeExternModule(tm) {
   if (tm != null && tm.getTaskClass != undefined) {
-    TaskHost.slot[tm.getTaskClass()] = tm;
     console.log("initializeExternModule apply dpGraph.currTaskClass: ", dpGraph.currTaskClass);
+
+    if (dpGraph.currTaskClass >= 0) {
+      // TaskHost.slot[tm.getTaskClass()] = tm;
+      // postMessage({ cmd: TCMD.INIT_TASK, taskclass: tm.getTaskClass() });
+      TaskHost.slot[dpGraph.currTaskClass] = tm;
+      postMessage({
+        cmd: TCMD.INIT_TASK,
+        taskclass: dpGraph.currTaskClass
+      });
+    } else {
+      throw Error("initialize extern module error task class value!!!!");
+    }
+
     dpGraph.currTaskClass = -1;
-    postMessage({
-      cmd: TCMD.INIT_TASK,
-      taskclass: tm.getTaskClass()
-    });
   }
 }
 
@@ -221,6 +241,7 @@ class ThreadCore {
       case TCMD.DATA_PARSE:
         data.threadIndex = this.m_threadIndex;
         ins = taskSlot[data.taskclass];
+        console.log("Sub Thread(), data.taskclass: ", data.taskclass, ins);
 
         if (ins != null) {
           ins.receiveData(data);

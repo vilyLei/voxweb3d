@@ -15,7 +15,7 @@ export class DemoCTMLoadAndParser {
 		console.log("DemoCTMLoadAndParser::initialize()...");
 
 		// 初始化多线程调度器
-		this.m_threadSchedule.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js");
+		this.m_threadSchedule.initialize(3, "static/cospace/core/code/ThreadCore.umd.js");
 		// 创建ctm 加载解析任务
 		this.m_ctmParseTask = new CTMParseTask(
 			"static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js"

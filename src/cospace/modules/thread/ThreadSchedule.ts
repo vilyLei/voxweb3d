@@ -59,7 +59,7 @@ class ThreadSchedule {
 
 		this.m_teTime = Date.now();
 	}
-	setParams(autoSendData: boolean, terminateDelayMS: number = 1000): void {
+	setParams(autoSendData: boolean, terminateDelayMS: number = 3000): void {
 		this.m_autoSendData = autoSendData;
 		this.m_teDelay = terminateDelayMS;
 	}
@@ -315,8 +315,8 @@ class ThreadSchedule {
 				this.m_taskReg.buildTaskInfo(task);
 				this.m_descList[taskclass] = task;
 				this.initModuleByTaskDescriptor(task);
-				return task.info;
 			}
+			return task.info;
 		}
 		return null;
 	}
@@ -335,8 +335,8 @@ class ThreadSchedule {
 				this.m_taskReg.buildTaskInfo(task);
 				this.m_descList[taskclass] = task;
 				this.initModuleByTaskDescriptor(task);
-				return task.info;
 			}
+			return task.info;
 		}
 		return null;
 	}
@@ -355,8 +355,8 @@ class ThreadSchedule {
 				this.m_taskReg.buildTaskInfo(task);
 				this.m_descList[taskclass] = task;
 				this.initModuleByTaskDescriptor(task);
-				return task.info;
 			}
+			return task.info;
 		}
 		return null;
 	}

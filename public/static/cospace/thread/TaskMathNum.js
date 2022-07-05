@@ -25,7 +25,7 @@ function TaskMathNum() {
                 }
                 break;
             case "MATH_SUB":
-                for (i = 0; i < len; ++i) {
+                for (i = 1; i < len; ++i) {
                     vdata -= fs32[i];
                 }
                 break;

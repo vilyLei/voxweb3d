@@ -9,12 +9,13 @@ class ExampleNumberAddTask extends ThreadTask {
     }
     clacNumberList(typeData: Float32Array): void {
         if (typeData != null) {
+            console.log("ExampleNumberAddTask::clacNumberList(), data: ", typeData);
             this.addDataWithParam("ADD_NUMBER", [typeData]);
         }
     }
     // return true, task finish; return false, task continue...
     parseDone(data: ITaskReceiveData<number>, flag: number): boolean {
-        console.log("ExampleNumberAddTask::parseDone(), data.data: ", data.data);
+        console.log("ExampleNumberAddTask::parseDone(), data: ", data);
         return true;
     }
     getTaskClass(): number {

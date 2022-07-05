@@ -2,6 +2,8 @@
 import { SubThreadModule } from "./SubThreadModule";
 
 interface IThreadCore {
+  getCurrTaskClass(): number;
+  setCurrTaskClass( taskClass: number ): void;
   registerDependency( dependencyNSList: string[] ): void;
   useDependency(moduleInstance: SubThreadModule): void;
   initializeExternModule(moduleInstance: SubThreadModule): void;

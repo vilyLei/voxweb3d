@@ -9,6 +9,7 @@ class ExampleNumberMultTask extends ThreadTask {
     }
     clacNumberList(typeData: Float32Array): void {
         if (typeData != null) {
+            console.log("ExampleNumberMultTask::clacNumberList(), data: ", typeData);
             this.addDataWithParam("MULT_NUMBER", [typeData]);
         }
     }

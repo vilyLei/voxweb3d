@@ -36,7 +36,12 @@ class TaskHost {
 
 
 let dpGraph: DependenceGraph = new DependenceGraph();
-
+function getCurrTaskClass(): number {
+    return dpGraph.currTaskClass;
+}
+function setCurrTaskClass(taskClass: number): void {
+    dpGraph.currTaskClass = taskClass;
+}
 function postMessageToThread(obj: unknown, transfers?: ArrayBuffer[]): void {
     postMessage(obj, transfers);
 }
@@ -60,10 +65,16 @@ function bindExternModule(tm: SubThreadModule): void {
 }
 function initializeExternModule(tm: SubThreadModule): void {
     if (tm != null && tm.getTaskClass != undefined) {
-        TaskHost.slot[tm.getTaskClass()] = tm;
         console.log("initializeExternModule apply dpGraph.currTaskClass: ", dpGraph.currTaskClass);
+        if(dpGraph.currTaskClass >= 0) {
+            // TaskHost.slot[tm.getTaskClass()] = tm;
+            // postMessage({ cmd: TCMD.INIT_TASK, taskclass: tm.getTaskClass() });
+            TaskHost.slot[dpGraph.currTaskClass] = tm;
+            postMessage({ cmd: TCMD.INIT_TASK, taskclass: dpGraph.currTaskClass });
+        }else {
+            throw Error("initialize extern module error task class value!!!!");
+        }
         dpGraph.currTaskClass = -1;
-        postMessage({ cmd: TCMD.INIT_TASK, taskclass: tm.getTaskClass() });
     }
 }
 function acquireData(moduleInstance: SubThreadModule, pdata: unknown, ptaskCmd: string) {
@@ -113,6 +124,7 @@ class ThreadCore {
             case TCMD.DATA_PARSE:
                 data.threadIndex = this.m_threadIndex;
                 ins = taskSlot[data.taskclass];
+                console.log("Sub Thread(), data.taskclass: ",data.taskclass, ins);
                 if (ins != null) {
                     ins.receiveData(data);
                 }
@@ -224,4 +236,4 @@ class ThreadCore {
 }
 let ins = new ThreadCore();
 ins.initialize();
-export { postMessageToThread, registerDependency, useDependency, initializeExternModule, acquireData, transmitData, ThreadCore };
+export { getCurrTaskClass, setCurrTaskClass, postMessageToThread, registerDependency, useDependency, initializeExternModule, acquireData, transmitData, ThreadCore };

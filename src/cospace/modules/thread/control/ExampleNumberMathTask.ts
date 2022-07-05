@@ -9,21 +9,25 @@ class ExampleNumberMathTask extends ThreadTask {
     }
     addNumberList(typeData: Float32Array): void {
         if (typeData != null) {
+            console.log("ExampleNumberMathTask::addNumberList(), data: ", typeData);
             this.addDataWithParam("MATH_ADD", [typeData]);
         }
     }
     subNumberList(typeData: Float32Array): void {
         if (typeData != null) {
+            console.log("ExampleNumberMathTask::subNumberList(), data: ", typeData);
             this.addDataWithParam("MATH_SUB", [typeData]);
         }
     }
     divNumberList(typeData: Float32Array): void {
         if (typeData != null) {
+            console.log("ExampleNumberMathTask::divNumberList(), data: ", typeData);
             this.addDataWithParam("MATH_DIV", [typeData]);
         }
     }
     mulNumberList(typeData: Float32Array): void {
         if (typeData != null) {
+            console.log("ExampleNumberMathTask::mulNumberList(), data: ", typeData);
             this.addDataWithParam("MATH_MUL", [typeData]);
         }
     }
@@ -34,7 +38,7 @@ class ExampleNumberMathTask extends ThreadTask {
         this.m_parseIndex++;
         console.log("ExampleNumberMathTask::parseDone(), data: ", data,"this.m_parseIndex: " + this.m_parseIndex + "," + this.m_parseTotal);
         if (this.m_parseIndex == this.m_parseTotal) {
-            console.log("ExampleNumberMathTask::parseDone() finish.");
+            console.log("ExampleNumberMathTask::parse done() finish.");
         }
         return true;
     }

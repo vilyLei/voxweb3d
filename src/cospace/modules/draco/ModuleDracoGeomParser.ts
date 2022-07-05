@@ -303,13 +303,15 @@ class DracoGeomParseTask implements SubThreadModule {
 	private m_srcuid: number = 0;
 	private m_dependencyFinish: boolean = false;
 	private m_wasmData: any = null;
-
+	private m_currTaskClass: number = -1;
 	threadIndex: number = 0;
 	parser: any = null;
 	decoder: any = { wasmBinary: null };
 	dracoParser = new DracoGeomParser();
 
 	constructor() {
+		this.m_currTaskClass = ThreadCore.getCurrTaskClass();
+		console.log("DracoGeomParseTask::constructor(), currTaskClass: ",this.m_currTaskClass);
 		ThreadCore.acquireData(this, {}, CMD.THREAD_ACQUIRE_DATA);
 		ThreadCore.useDependency(this);
 	}
@@ -333,6 +335,7 @@ class DracoGeomParseTask implements SubThreadModule {
 			this.parser = module;
 			this.dracoParser.parser = module;
 			ThreadCore.transmitData(this, data, CMD.THREAD_TRANSMIT_DATA, [bin]);
+			ThreadCore.setCurrTaskClass( this.m_currTaskClass );
 			ThreadCore.initializeExternModule(this);
 		};
 		DracoDecoderModule(this.decoder);

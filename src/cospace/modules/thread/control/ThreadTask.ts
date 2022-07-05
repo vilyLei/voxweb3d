@@ -17,6 +17,7 @@ class ThreadTask implements IThreadTask {
     private m_globalDataPool: IThrDataPool = null;
     private m_localDataPool: IThrDataPool = null;
     private m_taskPool: ThreadTaskPool = null;
+    private m_info: {taskClass:number, keyuns: string} = null;
 
     protected m_parseIndex: number = 0;
     protected m_parseTotal: number = 0;
@@ -45,7 +46,6 @@ class ThreadTask implements IThreadTask {
             this.m_uid = -1;
         }
     }
-    private m_info: {taskClass:number, keyuns: string} = null;
     setTaskInfo(info: {taskClass:number, keyuns: string}): void {
         this.m_info = info;
     }
@@ -92,7 +92,8 @@ class ThreadTask implements IThreadTask {
     protected createSendData(): ThreadSendData {
         let sd = ThreadSendData.Create();
         sd.srcuid = this.getUid();
-        sd.taskclass = this.getTaskClass();
+        // sd.taskclass = this.getTaskClass();
+        sd.taskclass = this.m_info.taskClass;
         return sd;
     }
     /**
@@ -105,7 +106,8 @@ class ThreadTask implements IThreadTask {
 
         let sd = ThreadSendData.Create();
         sd.srcuid = this.getUid();
-        sd.taskclass = this.getTaskClass();
+        // sd.taskclass = this.getTaskClass();
+        sd.taskclass = this.m_info.taskClass;
         sd.taskCmd = taskCmd;
         sd.streams = streams;
         sd.descriptor = null;
@@ -133,7 +135,8 @@ class ThreadTask implements IThreadTask {
     protected addData(data: IThreadSendData, threadBindingData: boolean = false): void {
         if (this.m_uid >= 0) {
             data.srcuid = this.m_uid;
-            data.taskclass = this.getTaskClass();
+            // data.taskclass = this.getTaskClass();
+            data.taskclass = this.m_info.taskClass;
             // console.log("task addData, ",threadBindingData, this.m_localDataPool != null, this.m_globalDataPool != null);
             if(threadBindingData) {
                 if (this.m_localDataPool != null) {
@@ -161,6 +164,7 @@ class ThreadTask implements IThreadTask {
     }
     destroy(): void {
         this.detach();
+        this.m_info = null;
         this.m_globalDataPool = null;
         this.m_localDataPool = null;
         this.dependency = null;

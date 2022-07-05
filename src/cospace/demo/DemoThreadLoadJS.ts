@@ -18,7 +18,7 @@ export class DemoThreadLoadJS {
         console.log("DemoThreadLoadJS::initialize()...");
 
         this.m_threadSchedule.initModules(["static/cospace/thread/mathLib.js"]);
-        this.m_threadSchedule.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js");
+        this.m_threadSchedule.initialize(3, "static/cospace/core/code/ThreadCore.umd.js");
 
         this.m_threadSchedule.bindTask(this.m_numberAddTask );
         this.m_threadSchedule.bindTask(this.m_numberMultTask);
@@ -49,15 +49,19 @@ export class DemoThreadLoadJS {
             let f: number = Math.round(Math.random() * 1000) % 4;
             switch (f) {
                 case 0:
+                    console.log("SSSSS SEND, testTask::NumberMathTask, add");
                     this.m_numberMathTask.addNumberList(new Float32Array([10, 12, 21, 22]));
                     break;
                 case 1:
+                    console.log("SSSSS SEND, testTask::NumberMathTask, sub");
                     this.m_numberMathTask.subNumberList(new Float32Array([10, 12, 21, 22]));
                     break;
                 case 2:
+                    console.log("SSSSS SEND, testTask::NumberMathTask, div");
                     this.m_numberMathTask.divNumberList(new Float32Array([10, 12, 21, 22]));
                     break;
                 case 3:
+                    console.log("SSSSS SEND, testTask::NumberMathTask, mult");
                     this.m_numberMathTask.mulNumberList(new Float32Array([10, 12, 21, 22]));
                     break;
                 default:
@@ -68,16 +72,14 @@ export class DemoThreadLoadJS {
     }
     private testTask2(): void {
         let t: number = this.m_flag % 3;
-        this.m_numberAddTask.clacNumberList(new Float32Array([10, 12, 21, 22]));
-        this.m_numberAddTask.clacNumberList(new Float32Array([-10, -12, -21, -22]));
         //t = 0;
         switch (t) {
             case 0:
-                console.log("testTask::NumberAddTask");
+                console.log("SSSSS SEND, testTask::NumberAddTask");
                 this.m_numberAddTask.clacNumberList(new Float32Array([10, 12, 21, 22]));
                 break;
             case 1:
-                console.log("testTask::NumberMultTask");
+                console.log("SSSSS SEND, testTask::NumberMultTask");
                 this.m_numberMultTask.clacNumberList(new Float32Array([10, 12, 21, 22]));
                 break;
             case 2:
@@ -91,16 +93,16 @@ export class DemoThreadLoadJS {
     private testTask(): void {
         this.m_flag = Math.round(Math.random() * 100);
         let t: number = this.m_flag % 3;
-        this.m_numberAddTask.clacNumberList(new Float32Array([10, 12, 21, 22]));
-        this.m_numberAddTask.clacNumberList(new Float32Array([-10, -12, -21, -22]));
+        // this.m_numberAddTask.clacNumberList(new Float32Array([10, 12, 21, 22]));
+        // this.m_numberAddTask.clacNumberList(new Float32Array([-10, -12, -21, -22]));
         //t = 11;
         switch (t) {
             case 0:
-                console.log("testTask::NumberAddTask");
+                console.log("SSSSS SEND, testTask::NumberAddTask");
                 this.m_numberAddTask.clacNumberList(new Float32Array([10, 12, 21, 22]));
                 break;
             case 1:
-                console.log("testTask::NumberMultTask");
+                console.log("SSSSS SEND, testTask::NumberMultTask");
                 this.m_numberMultTask.clacNumberList(new Float32Array([10, 12, 21, 22]));
                 break;
             case 2:
