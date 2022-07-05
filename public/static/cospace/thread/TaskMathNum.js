@@ -44,9 +44,6 @@ function TaskMathNum() {
         }
         return vdata;
     }
-    this.getTaskClass = function () {
-        return 2;
-    }
 
     // 对于独立的从外部加载到worker中的js代码文件，在worker中运行，则必须有如下代码
     ThreadCore.initializeExternModule(this);
