@@ -1,6 +1,6 @@
 import { IThreadReceiveData } from "../thread/base/IThreadReceiveData";
 import { BaseTaskInThread } from "../thread/control/BaseTaskInThread";
-import { PNG } from "pngjs"
+import { PNG } from "./pnglib/browser"
 import { PNGDescriptorType } from "./PNGDescriptorType";
 
 /**
@@ -16,10 +16,10 @@ class ModulePNGParser extends BaseTaskInThread {
         rdata: IThreadReceiveData<Uint8Array, PNGDescriptorType>
     ): void {
         try {
-            let pngBuf: Buffer = new Buffer(rdata.streams[0] as Uint8Array);
-			let time = Date.now();
-            new PNG({ filterType: 4 }).parse(pngBuf, (err: Error, png: PNG) => {
-				console.log("png parsing lost time: ", Date.now() - time, "ms");
+            let time = Date.now();
+            let pngBuf: Uint8Array = rdata.streams[0] as Uint8Array;
+            (new PNG({ filterType: 4 })).parse(pngBuf, (err: Error, png: {data: Uint8Array,width: number, height: number}) => {
+                console.log("png parse loss time: ", Date.now() - time );
                 rdata.data = png.data;
 				rdata.descriptor.width = png.width;
 				rdata.descriptor.height = png.height;

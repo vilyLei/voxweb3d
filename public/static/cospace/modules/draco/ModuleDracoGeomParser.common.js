@@ -492,7 +492,7 @@ class DracoGeomParseTask {
       cmd: data.cmd,
       taskCmd: data.taskCmd,
       threadIndex: this.threadIndex,
-      taskclass: this.getTaskClass(),
+      taskclass: this.m_currTaskClass,
       srcuid: this.m_srcuid,
       dataIndex: this.m_dataIndex,
       streams: data.streams,
@@ -508,8 +508,8 @@ class DracoGeomParseTask {
     this.decoder["onModuleLoaded"] = module => {
       this.parser = module;
       this.dracoParser.parser = module;
-      ThreadCore.transmitData(this, data, CMD.THREAD_TRANSMIT_DATA, [bin]);
       ThreadCore.setCurrTaskClass(this.m_currTaskClass);
+      ThreadCore.transmitData(this, data, CMD.THREAD_TRANSMIT_DATA, [bin]);
       ThreadCore.initializeExternModule(this);
       ThreadCore.resetCurrTaskClass();
     };
@@ -547,13 +547,6 @@ class DracoGeomParseTask {
     }
   }
 
-  getTaskClass() {
-    return 102;
-  }
-
-  // getDependencies(): string[] {
-  //   return ["dracoWasmWrapper"];
-  // }
   getUniqueName() {
     return "dracoGeomParser";
   }

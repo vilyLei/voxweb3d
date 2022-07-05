@@ -1,6 +1,7 @@
 import { ThreadSchedule } from "../modules/thread/ThreadSchedule";
 import { PNGDescriptorType, PNGParseTask } from "../modules/png/PNGParseTask";
 import BinaryLoader from "../../vox/assets/BinaryLoader";
+// import { PNG } from "../modules/png/pngjs/browser"
 /**
  * 通过加载到的 PNG 模型二进制数据，发送CTM资源解析任务给多线程数据处理系统，获取解析之后的CTM模型数据
  */
@@ -52,7 +53,7 @@ export class DemoPNGParser {
 	private mouseDown(evt: any): void {
 
 		let pngUrl: string = "static/assets/letterA.png";
-		pngUrl = "static/private/2048.png";
+		pngUrl = "static/private/image/bigPng.png";
 
 		this.initPNGFromBin( pngUrl );
 	}
@@ -65,6 +66,19 @@ export class DemoPNGParser {
 
 	loaded(buffer: Uint8Array, uuid: string): void {
 		this.setBinaryDataToTask(buffer, uuid);
+
+		// try {
+		// console.log("start parse png...");
+		// let time = Date.now();
+		// (new PNG({ filterType: 4 }) as any).parse(buffer, (err: Error, png: any) => {
+		// 	console.log("min thread: png parsing lost time: ", Date.now() - time, "ms");
+
+		// 	let transfers: ArrayBuffer[] = [png.data.buffer];
+		// 	console.log("min thread: a png file parsing finish, png.data: ",png.data);
+		// });
+        // }catch(e) {
+        //     console.error("a png file parsing error!!!, e: ",e);
+        // }
 	}
 	loadError(status: number, uuid: string): void { }
 

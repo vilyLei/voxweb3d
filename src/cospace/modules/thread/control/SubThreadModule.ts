@@ -4,8 +4,6 @@
  */
 interface SubThreadModule {
     dependencyFinish(): void;
-    // getDependencies(): string[];
-    getTaskClass(): number;
     getUniqueName(): string;
 }
 

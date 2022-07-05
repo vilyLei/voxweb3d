@@ -224,7 +224,7 @@ function transmitData(moduleInstance, pdata, ptaskCmd, transfers) {
   let sendData = {
     cmd: TCMD.THREAD_TRANSMIT_DATA,
     taskCmd: ptaskCmd,
-    taskclass: moduleInstance.getTaskClass(),
+    taskclass: dpGraph.currTaskClass,
     data: pdata
   };
 
