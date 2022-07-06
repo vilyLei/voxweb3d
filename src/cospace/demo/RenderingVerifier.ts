@@ -64,11 +64,7 @@ export class RenderingVerifier {
 			this.m_profileInstance = new ProfileInstance();
 			this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
-			this.m_rscene.addEventListener(
-				MouseEvent.MOUSE_DOWN,
-				this,
-				this.mouseDown
-			);
+			this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 			this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
 
 			this.m_rscene.enableMouseEvent(true);

@@ -81,7 +81,7 @@
 //  import * as DemoPNG from "./example/DemoPNG";
 //  import Demo = DemoPNG.example.DemoPNG;
 
- import {DemoRTTCircle as Demo} from "./demo/DemoRTTCircle";
+//  import {DemoRTTCircle as Demo} from "./demo/DemoRTTCircle";
 
 //  import {DemoLargeVtx as Demo} from "./large/DemoLargeVtx";
 
@@ -394,7 +394,7 @@
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 
-// import {SlickRoad as Demo} from "./app/SlickRoad";
+import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 

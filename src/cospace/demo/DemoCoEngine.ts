@@ -4,10 +4,11 @@ import { CoTextureDataUnit, CoModuleFileType, CoGeomDataType, CoModuleNS, CoData
 import { ICoSpaceApp } from "../app/ICoSpaceApp";
 import { ICoSpaceAppIns } from "../app/ICoSpaceAppIns";
 import { EngineInstance } from "../engine/EngineInstance";
-import { AppEngine } from "../engine/AppEngine";
+import { AppEngineInstance } from "../engine/AppEngineInstance";
 
 declare var CoSpaceApp: ICoSpaceApp;
 declare var AppEngine: any;
+declare var AppBase: any;
 /**
  * 引擎数据/资源协同空间
  */
@@ -15,7 +16,7 @@ export class DemoCoEngine {
 
 	private m_beginTime: number = 0;
     private m_appIns: ICoSpaceAppIns;
-    private m_engineIns: AppEngine;
+    private m_engineIns: AppEngineInstance;
     private m_modules: CoTaskCodeModuleParam[];
     constructor() { }
 

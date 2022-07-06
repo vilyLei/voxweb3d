@@ -5,7 +5,7 @@ import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { IMaterialContext } from "../../materialLab/base/IMaterialContext";
 
-interface AppEngine {
+interface AppEngineInstance {
 
     setMaterialContext(materialCtx: IMaterialContext): void
     setSyncLookEnabled(enabled: boolean): void;
@@ -17,4 +17,4 @@ interface AppEngine {
     run(): void;
 }
 
-export { AppEngine }
+export { AppEngineInstance }
