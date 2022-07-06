@@ -7,7 +7,7 @@
 // import { DemoDracoParser2 as Demo } from "./cospace/demo/DemoDracoParser2";
 // import { DemoFBXParser as Demo } from "./cospace/demo/DemoFBXParser";
 // import { DemoGLBParser as Demo } from "./cospace/demo/DemoGLBParser";
-import { DemoPNGParser as Demo } from "./cospace/demo/DemoPNGParser";
+// import { DemoPNGParser as Demo } from "./cospace/demo/DemoPNGParser";
 // import { DemoMixParser as Demo } from "./cospace/demo/DemoMixParser";
 // import { DemoCospace as Demo } from "./cospace/demo/DemoCospace";
 // import { DemoDependenceGraph as Demo } from "./cospace/demo/DemoDependenceGraph";
@@ -15,6 +15,7 @@ import { DemoPNGParser as Demo } from "./cospace/demo/DemoPNGParser";
 // import { DemoNormalViewer as Demo } from "./cospace/demo/DemoNormalViewer";
 // import { RenderingVerifier as Demo } from "./cospace/demo/RenderingVerifier";
 // import { DemoCoApp as Demo } from "./cospace/demo/DemoCoApp";
+import { DemoCoEngine as Demo } from "./cospace/demo/DemoCoEngine";
 
 document.title = "RenderingVerifier";
 let demoIns: Demo = new Demo();

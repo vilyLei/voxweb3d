@@ -18,7 +18,7 @@ class ModulePNGParser extends BaseTaskInThread {
         try {
             let time = Date.now();
             let pngBuf: Uint8Array = rdata.streams[0] as Uint8Array;
-            (new PNG({ filterType: 4 })).parse(pngBuf, (err: Error, png: {data: Uint8Array,width: number, height: number}) => {
+            (new PNG({ filterType: rdata.descriptor.filterType })).parse(pngBuf, (err: Error, png: {data: Uint8Array,width: number, height: number}) => {
                 console.log("png parse loss time: ", Date.now() - time );
                 rdata.data = png.data;
 				rdata.descriptor.width = png.width;

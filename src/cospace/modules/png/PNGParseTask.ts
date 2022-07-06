@@ -32,7 +32,7 @@ class PNGParseTask extends ThreadTask {
 	}
 	addBinaryData(buffer: Uint8Array, url: string): void {
 		if (buffer != null) {
-			this.addDataWithParam("", [buffer], { url: url, width:0, height:0 });
+			this.addDataWithParam("", [buffer], { url: url, width:0, height:0, filterType: 4 });
 		}
 	}
 	// return true, task finish; return false, task continue...

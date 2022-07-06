@@ -3,15 +3,19 @@ import { CoTextureDataUnit, CoModuleFileType, CoGeomDataType, CoModuleNS, CoData
 
 import { ICoSpaceApp } from "../app/ICoSpaceApp";
 import { ICoSpaceAppIns } from "../app/ICoSpaceAppIns";
+import { EngineInstance } from "../engine/EngineInstance";
+import { AppEngine } from "../engine/AppEngine";
 
 declare var CoSpaceApp: ICoSpaceApp;
+declare var AppEngine: any;
 /**
  * 引擎数据/资源协同空间
  */
-export class DemoCoApp {
+export class DemoCoEngine {
 
-    private m_beginTime: number = 0;
+	private m_beginTime: number = 0;
     private m_appIns: ICoSpaceAppIns;
+    private m_engineIns: AppEngine;
     private m_modules: CoTaskCodeModuleParam[];
     constructor() { }
 
@@ -40,10 +44,13 @@ export class DemoCoApp {
         this.initCurr();
         // this.initTestSvr();
 
-        console.log("DemoCoApp::initialize()...");
+        console.log("DemoCoEngine::initialize()...");
 
         let url: string = this.m_modules[0].url;
-        this.loadAppModule(url);
+        this.loadAppModule( url );
+
+        this.loadEngineModule( "static/cospace/engine/AppEngine.umd.js" );
+
         // 启用鼠标点击事件
         document.onmousedown = (evt: any): void => {
             this.mouseDown(evt);
@@ -55,8 +62,11 @@ export class DemoCoApp {
         this.m_appIns.setTaskModuleParams(modules);
         this.m_appIns.initialize(3, modules[1].url, true);
 
-        this.loadCTM();
+        // this.loadCTM();
     }
+	private initEngine(): void {
+		console.log("initEngine()...");
+	}
 	private m_pngs: string[] = [
 		"static/assets/xulie_49.png",
 		"static/private/image/bigPng.png",
@@ -119,6 +129,41 @@ export class DemoCoApp {
         this.loadPNGByCallback(this.m_pngs[1]);
     }
 
+    private loadEngineModule(purl: string): void {
+
+        let codeLoader: XMLHttpRequest = new XMLHttpRequest();
+        codeLoader.open("GET", purl, true);
+        codeLoader.onerror = function (err) {
+            console.error("load error: ", err);
+        }
+
+        codeLoader.onprogress = (e) => {
+        }
+        codeLoader.onload = (evt) => {
+
+            console.log("engine module js file loaded.");
+            let scriptEle: HTMLScriptElement = document.createElement("script");
+            scriptEle.onerror = (evt) => {
+                console.error("module script onerror, e: ", evt);
+            }
+            scriptEle.type = "text\/javascript";
+            scriptEle.innerHTML = codeLoader.response;
+            document.head.appendChild(scriptEle);
+			this.initEngineCode();
+        }
+        codeLoader.send(null);
+    }
+
+	private initEngineCode(): void {
+		console.log("typeof AppEngine: ", typeof AppEngine);
+		if (typeof AppEngine !== "undefined") {
+            console.log("engine 代码块加载完毕");
+            this.m_engineIns = new AppEngine.Instance();
+            console.log("this.m_engineIns: ", this.m_engineIns);
+            this.initEngine();
+		}
+	}
+
     private loadAppModule(purl: string): void {
 
         let codeLoader: XMLHttpRequest = new XMLHttpRequest();
@@ -146,13 +191,14 @@ export class DemoCoApp {
 	private initAppCode(): void {
 		console.log("typeof CoSpaceApp: ", typeof CoSpaceApp);
 		if (typeof CoSpaceApp !== "undefined") {
-            console.log("代码块加载完毕");
+            console.log("cospace 代码块加载完毕");
             this.m_appIns = CoSpaceApp.createInstance();
             console.log("this.m_appIns: ", this.m_appIns);
             this.initApp();
 		}
 	}
+
     run(): void { }
 }
 
-export default DemoCoApp;
+export default DemoCoEngine;

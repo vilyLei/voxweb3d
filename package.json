@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
 
-    "buildAppEngine": "vue-cli-service build --target lib --name AppEngine --dest dist ./src/app/modules/instances/AppEngine.ts",
+    "buildAppEngine": "vue-cli-service build --target lib --name AppEngine --dest ./public/static/cospace/engine ./src/app/modules/instances/AppEngine.ts",
     "buildAppBase": "vue-cli-service build --target lib --name AppBase --dest dist ./src/app/modules/instances/AppBase.ts",
     "buildAppEnvLightModule": "vue-cli-service build --target lib --name AppEnvLightModule --dest dist ./src/app/modules/instances/AppEnvLightModule.ts",
     "buildAppLightModule": "vue-cli-service build --target lib --name AppLightModule --dest dist ./src/app/modules/instances/AppLightModule.ts",
