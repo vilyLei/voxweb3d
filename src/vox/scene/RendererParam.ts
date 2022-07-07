@@ -9,7 +9,7 @@ import Vector3D from "../../vox/math/Vector3D";
 
 class RendererParam {
     private m_matrix4AllocateSize: number = 8192;
-    private m_mainDiv: HTMLElement = null;
+    private m_mainDiv: HTMLDivElement = null;
     private m_renderContextAttri: any = {
         depth: true
         , premultipliedAlpha: false
@@ -63,7 +63,7 @@ class RendererParam {
     getDitherEanbled(): boolean {
         return this.m_ditherEnabled;
     }
-    getDiv(): HTMLElement {
+    getDiv(): HTMLDivElement {
         return this.m_mainDiv;
     }
     getRenderContextAttri(): any {

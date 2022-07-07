@@ -12,6 +12,7 @@ import { ISceneNode } from "./ISceneNode";
 import Matrix4 from "../../../vox/math/Matrix4";
 import { EntityLayout } from "./EntityLayout";
 import BoxFrame3D from "../../../vox/entity/BoxFrame3D";
+import ShaderMaterial from "../../../vox/material/mcase/ShaderMaterial";
 
 class SceneNode implements ISceneNode {
 
@@ -55,7 +56,7 @@ class SceneNode implements ISceneNode {
 	private m_entityLayout: EntityLayout = new EntityLayout();
 	private m_frameBox: BoxFrame3D = null;
 	private fitToCenter(): void {
-		
+
 		this.m_entityLayout.fixToPosition(this.m_transes, this.m_transforms, Vector3D.ZERO, 300.0);
 
 		// //this.m_entityLayout.calcAABB(this.m_entities, this.m_transforms);
@@ -73,7 +74,7 @@ class SceneNode implements ISceneNode {
 		let vs = model.vertices;
 		let ivs = model.indices;
 		let nvs = model.normals;
-		
+
 		// for(let i: number = 0; i < nvs.length; ++i) {
 		// 	nvs[i] *= -1;
 		// }
@@ -98,15 +99,15 @@ class SceneNode implements ISceneNode {
 		// vc.normalize();
 		// Vector3D.Cross(va, vc, vb);
 
-		
+
 		va.subtractBy(vb);
 		vc.subtractBy( vb );
-		vc.scaleBy(-1);		
+		vc.scaleBy(-1);
 		va.normalize();
 		vc.normalize();
 		Vector3D.Cross(vc, va, vb);
 
-		
+
 		let na: Vector3D = new Vector3D();
 		let nb: Vector3D = new Vector3D();
 		let nc: Vector3D = new Vector3D();
@@ -123,9 +124,9 @@ class SceneNode implements ISceneNode {
 		na.addBy(nb);
 		na.addBy(nc);
 		na.normalize();
-		
+
 		let correct = va.dot(na) > 0;
-		
+
 		console.log("XXXX correct: ",correct, vb);
 
 		return correct;
@@ -190,6 +191,62 @@ class SceneNode implements ISceneNode {
 		}
 	}
 
+	private m_nv_vertCode = `#version 300 es
+	precision mediump float;
+	layout(location = 0) in vec3 a_vs;
+	layout(location = 1) in vec3 a_nvs;
+	uniform mat4 u_objMat;
+	uniform mat4 u_viewMat;
+	uniform mat4 u_projMat;
+	out vec4 v_param;
+	void main()
+	{
+		vec4 viewPv = u_viewMat * u_objMat * vec4(a_vs, 1.0);
+		gl_Position = u_projMat * viewPv;
+		vec3 pnv = normalize(a_nvs * inverse(mat3(u_objMat)));
+		v_param = vec4(pnv, 1.0);
+	}
+	`;
+	private m_nv_fragCode = `#version 300 es
+	precision mediump float;
+	const float MATH_PI = 3.14159265;
+	const float MATH_2PI = 2.0 * MATH_PI;
+	const float MATH_3PI = 3.0 * MATH_PI;
+	const float MATH_1PER2PI = 0.5 * MATH_PI;
+	const float MATH_3PER2PI = 3.0 * MATH_PI * 0.5;
+
+	const vec3 gama = vec3(1.0/2.2);
+	in vec4 v_param;
+	layout(location = 0) out vec4 FragColor;
+	void main() {
+
+		bool facing = gl_FrontFacing;
+		vec2 dv = fract(gl_FragCoord.xy/vec2(5.0)) - vec2(0.5);
+		vec2 f2 = sign(dv);
+
+		vec3 nv = normalize(v_param.xyz);
+		vec3 color = pow(nv, gama);
+
+		vec3 frontColor = color.xyz;
+		vec3 backColor = vec3(sign(f2.x * f2.y), 1.0, 1.0);
+		vec3 dstColor = facing ? frontColor : backColor;
+
+		FragColor = vec4(dstColor, 1.0);
+		// FragColor = vec4(color, 1.0);
+	}
+	`;
+	private m_nv_material: ShaderMaterial = null;
+	private createNormalMaterial(): ShaderMaterial {
+		if(this.m_nv_material != null) {
+			return this.m_nv_material;
+		}
+		let material = new ShaderMaterial("nv_material");
+		material.setVtxShaderCode( this.m_nv_vertCode );
+		material.setFragShaderCode( this.m_nv_fragCode );
+		material.initializeByCodeBuf();
+		this.m_nv_material = material;
+		return material;
+	}
 	isFinish(): boolean {
 		return this.m_modelsTotal > 0 && (this.m_showTotal + this.m_errModelTotal) == this.m_modelsTotal;
 	}
@@ -217,7 +274,7 @@ class SceneNode implements ISceneNode {
 	private m_entity: DisplayEntity;
 	private m_rotV: Vector3D = new Vector3D();
 	run(): void {
-		
+
 		// if(this.m_entity != null) {
 		// 	this.m_entity.setRotation3(this.m_rotV);
 		// 	this.m_entity.update();
