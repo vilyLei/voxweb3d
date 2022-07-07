@@ -5,7 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-// import MathConst from "../../vox/math/MathConst";
 const v_m_180pk = 180.0 / Math.PI;
 const v_m_minp: number = 1e-5;
 class Vector3D {
@@ -44,7 +43,7 @@ class Vector3D {
         this.y = v3.y;
         this.z = v3.z;
     }
-    dot(a: Vector3D) {
+    dot(a: Vector3D): number {
         return this.x * a.x + this.y * a.y + this.z * a.z;
     }
     multBy(a: Vector3D) {
@@ -83,7 +82,7 @@ class Vector3D {
         this.y *= s;
         this.z *= s;
     }
-    negate() {
+    negate(): void {
         this.x = -this.x;
         this.y = -this.y;
         this.z = -this.z;

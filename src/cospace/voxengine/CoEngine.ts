@@ -62,7 +62,7 @@ function createDisplayEntityFromModel(model: CoGeomDataType, pmaterial: IShaderM
 	dataMesh.setIVS(model.indices);
 	dataMesh.setVtxBufRenderData(material);
 	dataMesh.initialize();
-	console.log("dataMesh: ", dataMesh);
+	// console.log("dataMesh: ", dataMesh);
 
 	const entity: any = new DisplayEntity();
 	entity.setMesh(dataMesh);

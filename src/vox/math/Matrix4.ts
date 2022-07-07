@@ -349,7 +349,7 @@ class Matrix4 implements IMatrix4 {
 		sfs32[10] = cosY * cosXscaleZ;
 	}
 	
-	compose( position: Vector3D, quaternion: Quaternion, scale: Vector3D ): this {
+	compose( position: Vector3D, quaternion: Quaternion, scale: Vector3D ): Matrix4 {
 
 		const te = this.m_localFS32;
 
@@ -385,7 +385,7 @@ class Matrix4 implements IMatrix4 {
 		return this;
 
 	}
-	makeRotationFromQuaternion( q: Quaternion ) {
+	makeRotationFromQuaternion( q: Quaternion ): Matrix4 {
 
 		return this.compose( Vector3D.ZERO, q, Vector3D.ONE );
 
