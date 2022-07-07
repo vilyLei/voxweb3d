@@ -44,8 +44,8 @@ export class ProgressBar {
 
     private m_posZ: number = 0.0;
     private m_value: number = 0.0;
-    readonly fontColor: Color4 = new Color4(0.8,0.8,0.8,1.0);
-    readonly fontBgColor: Color4 = new Color4(1.0,1.0,1.0,0.3);
+    readonly fontColor: Color4 = new Color4(0.8, 0.8, 0.8, 1.0);
+    readonly fontBgColor: Color4 = new Color4(1.0, 1.0, 1.0, 0.3);
 
     uuid: string = "ProgressBar";
     minValue: number = 0.0;
@@ -66,7 +66,7 @@ export class ProgressBar {
     isClosed(): boolean {
         return !this.m_container.getVisible();
     }
-    initialize(ruisc: IRendererScene,name:string = "prog", btnSize: number = 64.0, barBgLength: number = 200.0): void {
+    initialize(ruisc: IRendererScene, name: string = "prog", btnSize: number = 64.0, barBgLength: number = 200.0): void {
 
         if (this.m_ruisc == null) {
 
@@ -78,20 +78,20 @@ export class ProgressBar {
             this.initBody();
         }
     }
-    
+
     addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
         this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
     }
     removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
         this.m_dispatcher.removeEventListener(type, listener, func);
     }
-    
-    getPosition(pv: Vector3D):void {
+
+    getPosition(pv: Vector3D): void {
         if (this.m_container != null) {
             this.m_container.getPosition(pv);
         }
     }
-    setPosition(pv: Vector3D):void {
+    setPosition(pv: Vector3D): void {
         if (this.m_container != null) {
             this.m_container.setPosition(pv);
         }
@@ -103,8 +103,7 @@ export class ProgressBar {
                 this.m_container.update();
         }
     }
-    getRect(): AABB2D 
-    {
+    getRect(): AABB2D {
         return this.m_rect;
     }
     private initBody(): void {
@@ -113,22 +112,22 @@ export class ProgressBar {
         let container: DisplayEntityContainer = new DisplayEntityContainer();
         this.m_container = container;
 
-        if(this.m_barName != null && this.m_barName.length > 0) {
-            let nameBtn: ColorRectImgButton = UIBarTool.CreateBtn( this.m_barName, size, this.fontColor, this.fontBgColor);
-            nameBtn.setXYZ(-1.0 * nameBtn.getWidth() - 1.0,0.0,0.0);
+        if (this.m_barName != null && this.m_barName.length > 0) {
+            let nameBtn: ColorRectImgButton = UIBarTool.CreateBtn(this.m_barName, size, this.fontColor, this.fontBgColor);
+            nameBtn.setXYZ(-1.0 * nameBtn.getWidth() - 1.0, 0.0, 0.0);
             container.addEntity(nameBtn);
 
             this.m_nameBtn = nameBtn;
             this.m_nameBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.nameBtnMouseDown);
         }
-        let subBtn: ColorRectImgButton = UIBarTool.CreateBtn("-", size, this.fontColor, this.fontBgColor );
+        let subBtn: ColorRectImgButton = UIBarTool.CreateBtn("-", size, this.fontColor, this.fontBgColor);
         container.addEntity(subBtn);
-        let addBtn: ColorRectImgButton = UIBarTool.CreateBtn("+", size, this.fontColor, this.fontBgColor );
+        let addBtn: ColorRectImgButton = UIBarTool.CreateBtn("+", size, this.fontColor, this.fontBgColor);
         addBtn.setXYZ(this.m_barInitLength + addBtn.getWidth(), 0, 0);
         container.addEntity(addBtn);
 
         this.m_rect.y = 0;
-        if(this.m_nameBtn != null) {
+        if (this.m_nameBtn != null) {
             this.m_rect.x = -1.0 * this.m_nameBtn.getWidth() - 1.0;
         }
         else {
@@ -143,14 +142,14 @@ export class ProgressBar {
         this.m_barBgX = size;
         this.initProBg(container, this.m_barBgX, 0.0, this.m_barInitLength, addBtn.getHeight());
 
-        this.m_ruisc.addContainer(container ,1);
+        this.m_ruisc.addContainer(container, 1);
 
         this.m_subBtn = subBtn;
         this.m_addBtn = addBtn;
 
         this.m_addBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.btnMouseDown);
         this.m_subBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.btnMouseDown);
-        this.setProgress( this.m_progress );
+        this.setProgress(this.m_progress);
     }
     private initProBg(container: DisplayEntityContainer, px: number, py: number, width: number, height: number): void {
 
@@ -174,14 +173,14 @@ export class ProgressBar {
 
         this.m_barBoundsBtn = new BoundsButton();
         this.m_barBoundsBtn.initializeBtn2D(width, height);
-        this.m_barBoundsBtn.setXYZ(px,py,0.1);
+        this.m_barBoundsBtn.setXYZ(px, py, 0.1);
         container.addEntity(this.m_barBoundsBtn);
         this.m_barBoundsBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.barMouseDown);
-        this.m_ruisc.addEventListener(MouseEvent.MOUSE_UP, this, this.barMouseUp, true,false);
+        this.m_ruisc.addEventListener(MouseEvent.MOUSE_UP, this, this.barMouseUp, true, false);
         this.m_barBoundsBtn.addEventListener(MouseEvent.MOUSE_OVER, this, this.barMouseOver);
         this.m_barBoundsBtn.addEventListener(MouseEvent.MOUSE_OUT, this, this.barMouseOut);
     }
-    setValue(value: number,sendEvtEnabled: boolean = true): void {
+    setValue(value: number, sendEvtEnabled: boolean = true): void {
         value = MathConst.Clamp(value, this.minValue, this.maxValue);
         this.m_progress = (value - this.minValue) / (this.maxValue - this.minValue);
         this.setProgress(this.m_progress, sendEvtEnabled);
@@ -189,15 +188,15 @@ export class ProgressBar {
     getValue(): number {
         return this.m_value;
     }
-    setProgress(barProgress: number,sendEvtEnabled: boolean = true): void {
-        
+    setProgress(barProgress: number, sendEvtEnabled: boolean = true): void {
+
         this.m_progress = MathConst.Clamp(barProgress, 0.0, 1.0);
         this.m_barLength = this.m_barInitLength * this.m_progress;
         this.m_barPlane.setScaleXYZ(this.m_barLength, 1.0, 1.0);
         this.m_barPlane.update();
 
         this.m_value = this.minValue + (this.maxValue - this.minValue) * this.m_progress;
-        if(sendEvtEnabled) {
+        if (sendEvtEnabled) {
             this.sendEvt(2);
         }
     }
@@ -215,17 +214,17 @@ export class ProgressBar {
         this.m_currEvent.progress = this.m_progress;
         this.m_currEvent.phase = 1;
         this.m_currEvent.uuid = this.uuid;
-        this.m_dispatcher.dispatchEvt( this.m_currEvent );
+        this.m_dispatcher.dispatchEvt(this.m_currEvent);
     }
     setProgressLength(length: number, sendEvtEnabled: boolean = true): void {
-        
+
         this.m_barLength = MathConst.Clamp(length, 0.0, this.m_barInitLength);
         this.m_progress = this.m_barLength / this.m_barInitLength;
         this.m_barPlane.setScaleXYZ(this.m_barLength, 1.0, 1.0);
         this.m_barPlane.update();
 
         this.m_value = this.minValue + (this.maxValue - this.minValue) * this.m_progress;
-        if(sendEvtEnabled) {
+        if (sendEvtEnabled) {
             this.sendEvt(2);
         }
     }
@@ -236,11 +235,11 @@ export class ProgressBar {
     private barMouseDown(evt: any): void {
         //console.log("barMouseDown");
         this.m_moveMin = evt.mouseX - this.m_progress * this.m_barInitLength;
-        this.setProgress( this.m_progress );
+        this.setProgress(this.m_progress);
         this.m_ruisc.addEventListener(MouseEvent.MOUSE_MOVE, this, this.barMouseMove, true, false);
     }
-    private barMouseMove(evt: any): void {        
-        this.setProgress( (evt.mouseX - this.m_moveMin) / this.m_barInitLength );
+    private barMouseMove(evt: any): void {
+        this.setProgress((evt.mouseX - this.m_moveMin) / this.m_barInitLength);
     }
     private barMouseUp(evt: any): void {
         //console.log("barMouseUp");
@@ -251,12 +250,12 @@ export class ProgressBar {
     private m_changeStep: number = 0;
     private barEnterFrame(evt: any): void {
         //console.log("barEnterFrame");
-        if(this.m_autoDelay > 20) {
-            if((this.m_autoDelay % 7) == 0) {
-                this.setProgressLength( this.m_barLength + this.m_changeStep);
+        if (this.m_autoDelay > 20) {
+            if ((this.m_autoDelay % 7) == 0) {
+                this.setProgressLength(this.m_barLength + this.m_changeStep);
             }
         }
-        this.m_autoDelay ++;
+        this.m_autoDelay++;
     }
     private barMouseOver(evt: any): void {
         (this.m_barPlane.getMaterial() as any).setAlpha(0.6);
@@ -268,15 +267,20 @@ export class ProgressBar {
         this.m_autoDelay = 0;
         if (evt.target == this.m_subBtn) {
             this.m_changeStep = -this.step;
-            this.setProgressLength( this.m_barLength - this.step);
+            this.setProgressLength(this.m_barLength - this.step);
             this.m_ruisc.addEventListener(EventBase.ENTER_FRAME, this, this.barEnterFrame, true, false);
         } else if (evt.target == this.m_addBtn) {
             this.m_changeStep = this.step;
-            this.setProgressLength( this.m_barLength + this.step);
+            this.setProgressLength(this.m_barLength + this.step);
             this.m_ruisc.addEventListener(EventBase.ENTER_FRAME, this, this.barEnterFrame, true, false);
         }
     }
 
+    update(): void {
+        if (this.m_container != null) {
+            this.m_container.update();
+        }
+    }
     destroy(): void {
 
     }

@@ -134,7 +134,7 @@ export class DefaultPBRUI implements IPBRUI {
     getParamEntity(): IPBRParamEntity {
         return this.m_paramEntity;
     }
-    private m_btnSize: number = 24;
+    private m_btnSize: number = 30;
     private m_bgLength: number = 200.0;
     private m_btnPX: number = 122.0;
     private m_btnPY: number = 10.0;
@@ -144,6 +144,7 @@ export class DefaultPBRUI implements IPBRUI {
 
     private m_btns: any[] = [];
     private m_menuBtn: SelectionBar = null;
+    private m_minBtnX: number = 10000;
     private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
 
         let selectBar: SelectionBar = new SelectionBar();
@@ -159,6 +160,11 @@ export class DefaultPBRUI implements IPBRUI {
         selectBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + this.m_btnYSpace;
         if (!visibleAlways) this.m_btns.push(selectBar);
+
+        let minX = this.m_btnPX + selectBar.getRect().x;
+        if(minX < this.m_minBtnX) {
+            this.m_minBtnX = minX;
+        }
         return selectBar;
     }
     private createProgressBtn(ns: string, uuid: string, progress: number, visibleAlways: boolean = false): ProgressBar {
@@ -171,6 +177,11 @@ export class DefaultPBRUI implements IPBRUI {
         proBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + this.m_btnYSpace;
         if (!visibleAlways) this.m_btns.push(proBar);
+
+        let minX = this.m_btnPX + proBar.getRect().x;
+        if(minX < this.m_minBtnX) {
+            this.m_minBtnX = minX;
+        }
         return proBar;
     }
 
@@ -187,6 +198,11 @@ export class DefaultPBRUI implements IPBRUI {
         proBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + this.m_btnYSpace;
         if (!visibleAlways) this.m_btns.push(proBar);
+
+        let minX = this.m_btnPX + proBar.getRect().x;
+        if(minX < this.m_minBtnX) {
+            this.m_minBtnX = minX;
+        }
         return proBar;
     }
     private moveSelectToBtn(btn: ProgressBar | SelectionBar): void {
@@ -241,6 +257,8 @@ export class DefaultPBRUI implements IPBRUI {
         this.specularBtn = this.createValueBtn("specular", "specular", 1.0, 0.01, 10.0);
         this.outlineBtn = this.createValueBtn("outline", "outline", 0.1, 0.01, 1.0);
 
+        this.alignBtns();
+        // console.log("XXXXXXXXXXXX this.m_minBtnX: ", this.m_minBtnX);
         let flag: boolean = RendererDevice.IsMobileWeb();
         this.rgbPanel = new RGBColorPanel();
         this.rgbPanel.initialize(flag ? 64 : 32, 4);
@@ -291,7 +309,16 @@ export class DefaultPBRUI implements IPBRUI {
         }
         if (this.rgbPanel != null) this.rgbPanel.close();
     }
-    
+    private alignBtns(): void {
+        let pos: Vector3D = new Vector3D();
+        let dis = 5 - this.m_minBtnX;
+        for (let i: number = 0; i < this.m_btns.length; ++i) {
+            this.m_btns[i].getPosition(pos);
+            pos.x += dis;
+            this.m_btns[i].setPosition(pos);
+            this.m_btns[i].update();
+        }
+    }
     private selectChange(evt: any): void {
 
         let selectEvt: SelectionEvent = evt as SelectionEvent;
@@ -301,14 +328,14 @@ export class DefaultPBRUI implements IPBRUI {
 
         switch (selectEvt.uuid) {
             case "absorb":
-                if(this.m_paramEntity.absorbEnabled != flag) {
+                if(this.m_paramEntity != null && this.m_paramEntity.absorbEnabled != flag) {
                     material = (this.m_paramEntity.getMaterial() as IPBRMaterial).clone();
                     material.decorator.absorbEnabled = flag;
                     this.m_paramEntity.absorbEnabled = flag;
                 }
                 break;
             case "vtxNoise":
-                if(this.m_paramEntity.vtxNoiseEnabled != flag) {
+                if(this.m_paramEntity != null && this.m_paramEntity.vtxNoiseEnabled != flag) {
                     material = (this.m_paramEntity.getMaterial() as IPBRMaterial).clone();
                     material.decorator.normalNoiseEnabled = flag;
                     this.m_paramEntity.vtxNoiseEnabled = flag;
@@ -321,7 +348,7 @@ export class DefaultPBRUI implements IPBRUI {
             default:
                 break;
         }
-        if (material != null) {
+        if (this.m_paramEntity != null && material != null) {
             this.m_rscene.removeEntity(this.m_paramEntity.entity);
             material.initializeByCodeBuf(true);
             this.m_paramEntity.setMaterial(material);

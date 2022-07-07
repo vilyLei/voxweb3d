@@ -13,11 +13,12 @@ class InputTextField {
 	private m_disabled: boolean = false;
 	private m_borderEnabled: boolean = true;
 	initializeWithText(px: number, py: number, defaultText: string = ""): void {
+
 		let input = document.createElement("input");
 		input.type = "text";
 		input.id = "inputText";
 		input.value = defaultText;
-		input.size = defaultText.length;
+		// input.size = defaultText.length;
 		console.log("input.size: ",input.size);
 		this.m_text = defaultText;
 		input.className = "InputTFClass";

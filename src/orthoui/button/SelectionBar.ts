@@ -41,28 +41,28 @@ export class SelectionBar {
     private m_enabled: boolean = true;
 
     readonly fontColor: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
-    readonly fontBgColor: Color4 = new Color4(1.0,1.0,1.0,0.3);
+    readonly fontBgColor: Color4 = new Color4(1.0, 1.0, 1.0, 0.3);
     uuid: string = "selectionBar";
 
     constructor() { }
     setOverColor(color: Color4): void {
 
-        if(this.nameButton != null) {
+        if (this.nameButton != null) {
             this.nameButton.overColor.copyFrom(color);
             this.nameButton.setColor(color);
         }
-        if(this.selectionButton != null) {
+        if (this.selectionButton != null) {
             this.selectionButton.overColor.copyFrom(color);
             this.selectionButton.setColor(color);
         }
     }
     setOutColor(color: Color4): void {
 
-        if(this.nameButton != null) {
+        if (this.nameButton != null) {
             this.nameButton.outColor.copyFrom(color);
             this.nameButton.setColor(color);
         }
-        if(this.selectionButton != null) {
+        if (this.selectionButton != null) {
             this.selectionButton.outColor.copyFrom(color);
             this.selectionButton.setColor(color);
         }
@@ -91,7 +91,7 @@ export class SelectionBar {
     initialize(ruisc: IRendererScene, barName: string = "select", select_name: string = "Yes", deselect_name: string = "No", btnSize: number = 64.0): void {
 
         if (this.m_ruisc == null) {
-            
+
             this.m_ruisc = ruisc;
             this.m_barName = barName;
             if (select_name != "") this.m_selectName = select_name;
@@ -126,7 +126,11 @@ export class SelectionBar {
             this.m_container.setPosition(pv);
         }
     }
-
+    update(): void {
+        if (this.m_container != null) {
+            this.m_container.update();
+        }
+    }
     private initBody(): void {
 
         let size: number = this.m_btnSize;
@@ -137,16 +141,16 @@ export class SelectionBar {
         let selfT: any = this;
         if (haveNameBt) {
             selfT.nameButton = new ColorRectImgButton();
-            UIBarTool.InitializeBtn(this.nameButton, this.m_barName, size, this.fontColor,this.fontBgColor);
+            UIBarTool.InitializeBtn(this.nameButton, this.m_barName, size, this.fontColor, this.fontBgColor);
             this.nameButton.setXYZ(-1.0 * this.nameButton.getWidth() - 1.0, 0.0, 0.0);
             container.addEntity(this.nameButton);
-            
+
             this.nameButton.addEventListener(MouseEvent.MOUSE_DOWN, this, this.nameBtnMouseDown);
         }
-        keyStr = this.m_selectName +"-"+size+"-"+this.fontColor.getCSSDecRGBAColor() +"-"+ this.fontBgColor.getCSSDecRGBAColor();
+        keyStr = this.m_selectName + "-" + size + "-" + this.fontColor.getCSSDecRGBAColor() + "-" + this.fontBgColor.getCSSDecRGBAColor();
         let image = CanvasTextureTool.GetInstance().createCharsImage(this.m_selectName, size, this.fontColor.getCSSDecRGBAColor(), this.fontBgColor.getCSSDecRGBAColor());
         this.m_texObj0 = CanvasTextureTool.GetInstance().addImageToAtlas(keyStr, image);
-        keyStr = this.m_deselectName +"-"+size+"-"+this.fontColor.getCSSDecRGBAColor() +"-"+ this.fontBgColor.getCSSDecRGBAColor();
+        keyStr = this.m_deselectName + "-" + size + "-" + this.fontColor.getCSSDecRGBAColor() + "-" + this.fontBgColor.getCSSDecRGBAColor();
         image = CanvasTextureTool.GetInstance().createCharsImage(this.m_deselectName, size, this.fontColor.getCSSDecRGBAColor(), this.fontBgColor.getCSSDecRGBAColor());
         this.m_texObj1 = CanvasTextureTool.GetInstance().addImageToAtlas(keyStr, image);
 

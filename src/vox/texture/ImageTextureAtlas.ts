@@ -79,13 +79,13 @@ export default class ImageTextureAtlas extends TextureAtlas {
         }
         return area;
     }
-
-    static CreateCharsTexture(chars: string, size: number, fontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(64,0,64,1.0)"): HTMLCanvasElement {
+    private static s_inputTF: HTMLInputElement = null;
+    static CreateCharsTexture(chars: string, size: number, frontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(64,0,64,1.0)"): HTMLCanvasElement {
         if (chars == null || chars == "" || size < 8) {
             return null;
         }
         //size = Math.round(size * RendererDevice.GetDevicePixelRatio());
-        let keyStr: string = chars + "_" + size + "_" + fontStyle + "_" + bgStyle;
+        let keyStr: string = chars + "_" + size + "_" + frontStyle + "_" + bgStyle;
 
         if (ImageTextureAtlas.s_imgMap.has(keyStr)) {
             return ImageTextureAtlas.s_imgMap.get(keyStr);
@@ -111,23 +111,49 @@ export default class ImageTextureAtlas extends TextureAtlas {
         ctx2D.font = (size - 4) + "px Verdana";
         //ctx2D.textBaseline = "top" || "hanging" || "middle" || "alphabetic" || "ideographic" || "bottom";
         ctx2D.textBaseline = "top";
+        
+
         var metrics: any = ctx2D.measureText(chars);
         let texWidth: number = metrics.width;
 
         if (chars.length > 1) {
             width = Math.round(texWidth + 8);
-            //preW = width;
             canvas.width = width;
             ctx2D = canvas.getContext("2d");
             ctx2D.font = (size - 4) + "px Verdana";
             ctx2D.textBaseline = "top";
         }
-
+        /*
+        let input = ImageTextureAtlas.s_inputTF;
+        if(ImageTextureAtlas.s_inputTF == null) {
+            ImageTextureAtlas.s_inputTF = document.createElement("input");
+            input = ImageTextureAtlas.s_inputTF;
+            input.type = "text";
+            input.id = "atlas_inputText";
+            input.className = "atlas_inputTFClass";
+            input.disabled = true;
+            
+			let style = input.style;
+			style.left = "10px";
+			style.top = "10px";
+			style.zIndex = "9999";
+			style.position = "absolute";
+            style.borderWidth = "0";
+            // style.visibility = visible ? "visible" : "hidden";
+            style.visibility = "hidden";
+            document.body.appendChild(input);
+        }
+        input.value = chars;
+        let rect = input.getBoundingClientRect();
+        height = Math.round(rect.height) + 8;
+        //*/
+        // console.log("rect.height: ", rect.height, "size: ",size);
         ctx2D.fillStyle = bgStyle;
         ctx2D.fillRect(0, 0, width, height);
         ctx2D.textAlign = "left";
-        ctx2D.fillStyle = fontStyle;
+        ctx2D.fillStyle = frontStyle;
         //ctx2D.fillText(chars, (size - texWidth) * 0.5, size - (size - metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent * 2.0) * 0.5);
+        ///*
         if (RendererDevice.IsMobileWeb()) {
             if (RendererDevice.IsIOS()) {
                 ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
@@ -139,6 +165,8 @@ export default class ImageTextureAtlas extends TextureAtlas {
         else {
             ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
         }
+        //*/
+        // ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
         ImageTextureAtlas.s_imgMap.set(keyStr, canvas);
         return canvas;
         /*

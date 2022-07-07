@@ -142,12 +142,12 @@ export class CanvasTextureTool {
         return null;
     }
 
-    createCharsImage(chars: string, size: number, fontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"): HTMLCanvasElement | HTMLImageElement {
+    createCharsImage(chars: string, size: number, frontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"): HTMLCanvasElement | HTMLImageElement {
 
         if (chars == null || chars == "" || size < 8) {
             return null;
         }
-        return ImageTextureAtlas.CreateCharsTexture(chars, size, fontStyle, bgStyle);
+        return ImageTextureAtlas.CreateCharsTexture(chars, size, frontStyle, bgStyle);
     }
 
     private m_whiteTex: IRenderTexture = null;
