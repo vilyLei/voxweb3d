@@ -61,8 +61,8 @@ export class RenderingVerifier {
 			this.m_rscene.initialize(rparam, 5);
 			this.m_rscene.updateCamera();
 
-			this.m_profileInstance = new ProfileInstance();
-			this.m_profileInstance.initialize(this.m_rscene.getRenderer());
+			// this.m_profileInstance = new ProfileInstance();
+			// this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
 			this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 			this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);

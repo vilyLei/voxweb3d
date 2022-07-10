@@ -14,12 +14,13 @@ import Color4 from '../material/Color4';
 import CameraBase from '../view/CameraBase';
 export default class DashedLine3DEntity extends DisplayEntity {
     private m_currMaterial: Line3DMaterial = null;
+    private m_posarr: number[] = null;
+    private m_colorarr: number[] = null;
+    private m_f32VS: Float32Array = null;
     dynColorEnabled: boolean = true;
     constructor() {
         super();
     }
-    private m_posarr: number[] = null;
-    private m_colorarr: number[] = null;
 
     setRGB3f(pr: number, pg: number, pb: number) {
         this.m_currMaterial.setRGB3f(pr, pg, pb);
@@ -35,12 +36,20 @@ export default class DashedLine3DEntity extends DisplayEntity {
             let mesh: DashedLineMesh = new DashedLineMesh();
             mesh.vbWholeDataEnabled = false;
             mesh.setBufSortFormat(material.getBufSortFormat());
+            mesh.setVS( this.m_f32VS );
             mesh.initialize(this.m_posarr, this.m_colorarr);
             this.setMesh(mesh);
         }
     }
     initializeLS(va: Vector3D, vb: Vector3D): void {
         this.m_posarr = [va.x, va.y, va.z, vb.x, vb.y, vb.z];
+
+        this.createMaterial();
+        this.activeDisplay();
+
+    }
+    initializeF32VS(f32vs: Float32Array): void {
+        this.m_f32VS = f32vs;
 
         this.createMaterial();
         this.activeDisplay();
@@ -123,19 +132,26 @@ export default class DashedLine3DEntity extends DisplayEntity {
         this.activeDisplay();
 
     }
-    initializeByPosition(pvList: Vector3D[]): void {
+    initializeByPosition(pvList: Vector3D[], origin: boolean = false): void {
         //this.m_posarr = [va.x,va.y,va.z, vb.x,vb.y,vb.z];
         this.m_posarr = [];
-        let i: number = 1;
         let len: number = pvList.length;
-        let pos0: Vector3D;
-        let pos1: Vector3D;
-        for (; i < len; i++) {
-            pos0 = pvList[i - 1];
-            this.m_posarr.push(pos0.x, pos0.y, pos0.z);
-            pos1 = pvList[i];
-            this.m_posarr.push(pos1.x, pos1.y, pos1.z);
+        if(origin) {
+            for (let i = 0; i < len; i++) {
+                const pos = pvList[i];
+                this.m_posarr.push(pos.x, pos.y, pos.z);
+            }
+        }else {
+            let pos0: Vector3D;
+            let pos1: Vector3D;
+            for (let i = 1; i < len; i++) {
+                pos0 = pvList[i - 1];
+                this.m_posarr.push(pos0.x, pos0.y, pos0.z);
+                pos1 = pvList[i];
+                this.m_posarr.push(pos1.x, pos1.y, pos1.z);
+            }
         }
+
         this.createMaterial();
         this.activeDisplay();
 

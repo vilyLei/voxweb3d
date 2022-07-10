@@ -28,15 +28,20 @@ export default class DashedLineMesh extends MeshBase {
     getVS(): Float32Array {
         return this.m_vs;
     }
+    setVS(vs: Float32Array): void {
+        this.m_vs = vs;
+    }
     getCVS(): Float32Array {
-        return this.m_vs;
+        return this.m_cvs;
     }
     initialize(posarr: number[], colors: number[]): void {
-        if (posarr.length >= 6) {
+        if (this.m_vs != null || posarr.length >= 6) {
             
-            this.vtCount = Math.floor(posarr.length / 3);
+            if(this.m_vs == null) {
+                this.m_vs = new Float32Array(posarr);
+            }
+            this.vtCount = Math.floor(this.m_vs.length / 3);
             this.m_lsTotal = Math.floor(this.vtCount / 2);
-            this.m_vs = new Float32Array(posarr);
 
             if(this.bounds == null) {
                 this.bounds = new AABB();
