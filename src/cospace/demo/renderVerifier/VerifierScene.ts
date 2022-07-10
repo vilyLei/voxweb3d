@@ -38,10 +38,9 @@ class VerifierScene implements IDropFileListerner {
 
 			this.m_rscene = rscene;
 
-			// let axis: Axis3DEntity = new Axis3DEntity();
-			// axis.initialize(300);
-			// this.m_rscene.addEntity(axis);
-
+			let axis: Axis3DEntity = new Axis3DEntity();
+			axis.initialize(300);
+			this.m_rscene.addEntity(axis);
 
 
 			this.m_vfParam.initialize();
@@ -59,16 +58,25 @@ class VerifierScene implements IDropFileListerner {
 	}
 	private initCurr(): void {
 
+		/*
 		let line: DashedLine3DEntity = new DashedLine3DEntity();
 
 		// line.initializeByPosition([
 		// 	new Vector3D(), new Vector3D(0,100, 0),
 		// 	new Vector3D(50), new Vector3D(100,100)
 		// ], true);
-		let lineF32VS = new Float32Array(
-			[0,0,0, 0, 100,0, 100,0,0, 100, 100, 0]
-		);
-		line.initializeF32VS(lineF32VS);
+
+		
+		line.initializeBySegmentLines([
+			new Vector3D(), new Vector3D(0,100, 0),
+			new Vector3D(50), new Vector3D(100,100)
+		]);
+
+		// let lineF32VS = new Float32Array(
+		// 	[0,0,0, 0, 100,0, 100,0,0, 100, 100, 0]
+		// );
+		// line.initializeF32VS(lineF32VS);
+
 		this.m_rscene.addEntity(line);
 
 		// let bline: BrokenLine3DEntity = new BrokenLine3DEntity();
@@ -76,6 +84,7 @@ class VerifierScene implements IDropFileListerner {
 		// 	new Vector3D(), new Vector3D(0,100),
 		// 	new Vector3D(50), new Vector3D(100,100)
 		// ])
+		//*/
 
 
 		if ((this.m_vfParam.hostUrl.indexOf(".artvily.") > 0 || this.m_vfParam.demoType != "") && this.m_vfParam.threadsTotal > 0) {

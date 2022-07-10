@@ -88,17 +88,17 @@ export class DemoFrustrum {
             let pvs:Vector3D[] = camera0.getWordFrustumVtxArr();
             // far plane
             let fruLine:DashedLine3DEntity = new DashedLine3DEntity();
-            fruLine.initializeBySegmentLine([pvs[0],pvs[1],pvs[1],pvs[2],pvs[2],pvs[3],pvs[3],pvs[0]]);
+            fruLine.initializeBySegmentLines([pvs[0],pvs[1],pvs[1],pvs[2],pvs[2],pvs[3],pvs[3],pvs[0]]);
             fruLine.setRGB3f(1.0,0.0,1.0);
             this.m_rscene.addEntity(fruLine);
             // near plane
             fruLine = new DashedLine3DEntity();
-            fruLine.initializeBySegmentLine([pvs[4],pvs[5],pvs[5],pvs[6],pvs[6],pvs[7],pvs[7],pvs[4]]);
+            fruLine.initializeBySegmentLines([pvs[4],pvs[5],pvs[5],pvs[6],pvs[6],pvs[7],pvs[7],pvs[4]]);
             fruLine.setRGB3f(0.0,0.5,1.0);
             this.m_rscene.addEntity(fruLine);
             // side plane
             fruLine = new DashedLine3DEntity();
-            fruLine.initializeBySegmentLine([pvs[0],pvs[4],pvs[1],pvs[5],pvs[2],pvs[6],pvs[3],pvs[7]]);
+            fruLine.initializeBySegmentLines([pvs[0],pvs[4],pvs[1],pvs[5],pvs[2],pvs[6],pvs[3],pvs[7]]);
             fruLine.setRGB3f(0.0,0.9,0.0);
             this.m_rscene.addEntity(fruLine);
             //*/

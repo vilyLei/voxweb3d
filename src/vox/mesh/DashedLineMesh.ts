@@ -34,6 +34,9 @@ export default class DashedLineMesh extends MeshBase {
     getCVS(): Float32Array {
         return this.m_cvs;
     }
+    setCVS(cvs: Float32Array): void {
+        this.m_cvs = cvs;
+    }
     initialize(posarr: number[], colors: number[]): void {
         if (this.m_vs != null || posarr.length >= 6) {
             
@@ -53,7 +56,7 @@ export default class DashedLineMesh extends MeshBase {
             ROVertexBuffer.AddFloat32Data(this.m_vs, 3);
 
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX)) {
-                this.m_cvs = new Float32Array(colors);
+                if(this.m_cvs == null) this.m_cvs = new Float32Array(colors);
                 ROVertexBuffer.AddFloat32Data(this.m_cvs, 3);
             }
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;

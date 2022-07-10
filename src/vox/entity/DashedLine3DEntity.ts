@@ -97,7 +97,7 @@ export default class DashedLine3DEntity extends DisplayEntity {
         this.createMaterial();
         this.activeDisplay();
     }
-    initializeBySegmentLine(pvList: Vector3D[], colors: Color4[] = null): void {
+    initializeBySegmentLines(pvList: Vector3D[], colors: Color4[] = null): void {
         //this.m_posarr = [va.x,va.y,va.z, vb.x,vb.y,vb.z];
         this.m_posarr = [];
         let i: number = 0;
