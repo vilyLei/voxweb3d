@@ -12,7 +12,7 @@ class EntityLayout {
 	private m_tempMat: Matrix4 = new Matrix4();
 	private m_currMat: Matrix4 = new Matrix4();
 	private m_aabb: AABB = new AABB();
-
+	private m_sizeScale: number = 1.0;
 	getAABB(): AABB {
 		return this.m_aabb;
 	}
@@ -73,6 +73,7 @@ class EntityLayout {
 		let sz = baseSize / aabb.getLong();
 
 		sx = Math.min(sx, sy, sz);
+		this.m_sizeScale = sx;
 		this.m_scaleV.setXYZ(sx, sx, sx);
 		let cv = aabb.center;
 		let offsetV: Vector3D = new Vector3D(fixV3.x - cv.x, fixV3.y - cv.y, fixV3.z - cv.z);
@@ -97,6 +98,9 @@ class EntityLayout {
 			else aabb.copyFrom(entities[k].getGlobalBounds());
 		}
 		aabb.update();
+	}
+	getSizeScale(): number {
+		return this.m_sizeScale;
 	}
 }
 

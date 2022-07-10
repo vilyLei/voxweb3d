@@ -13,6 +13,7 @@ import Matrix4 from "../../../vox/math/Matrix4";
 import { EntityLayout } from "./EntityLayout";
 import BoxFrame3D from "../../../vox/entity/BoxFrame3D";
 import ShaderMaterial from "../../../vox/material/mcase/ShaderMaterial";
+import DashedLine3DEntity from "../../../vox/entity/DashedLine3DEntity";
 
 class SceneNode implements ISceneNode {
 
@@ -53,12 +54,15 @@ class SceneNode implements ISceneNode {
 	private m_entities: DisplayEntity[] = [];
 	private m_transforms: Matrix4[] = [];
 	private m_transes: DisplayEntity[] = [];
+	private m_transles: DisplayEntity[] = [];
+	private m_models: GeometryModelDataType[] = [];
 	private m_entityLayout: EntityLayout = new EntityLayout();
 	private m_frameBox: BoxFrame3D = null;
+	private m_sizeScale: number = 1.0;
 	private fitToCenter(): void {
 
 		this.m_entityLayout.fixToPosition(this.m_transes, this.m_transforms, Vector3D.ZERO, 300.0);
-
+		this.m_sizeScale = this.m_entityLayout.getSizeScale();
 		// //this.m_entityLayout.calcAABB(this.m_entities, this.m_transforms);
 		// if(this.m_frameBox == null) {
 		// 	this.m_frameBox = new BoxFrame3D();
@@ -68,6 +72,19 @@ class SceneNode implements ISceneNode {
 		// 	this.m_frameBox.updateFrameByAABB(this.m_entityLayout.getAABB());
 		// 	this.m_frameBox.updateMeshToGpu();
 		// }
+	}
+	private initEntityFinish(): void {
+		let es = this.m_transes;
+		this.m_transles = new Array(es.length);
+		let dis = 5.0 / this.m_sizeScale;
+		/*
+		// console.log("XXXXXXXXXXXX this.m_sizeScale: ",this.m_sizeScale);
+		for (let k: number = 0; k < es.length; ++k) {
+			const entity = this.buildModelNVLine(this.m_models[k], dis);
+			entity.getTransform().setParentMatrix(es[k].getMatrix());
+			entity.update();
+		}
+		//*/
 	}
 	private normalCorrectionTest(model: GeometryModelDataType): boolean {
 		let k = 3 * 5;
@@ -131,6 +148,41 @@ class SceneNode implements ISceneNode {
 
 		return correct;
 	}
+	private buildModelNVLine(model: GeometryModelDataType, dis: number): DashedLine3DEntity {
+		let k = 0, j = 0;
+		let vs = model.vertices;
+		let nvs = model.normals;
+		let vtxTot = vs.length/3;
+		// let fsvsLen = Math.floor(vtxTot / 5) * 3;
+		let fsvsLen = vtxTot * 3 * 2;
+		let fvs = new Float32Array( fsvsLen );
+		// let dis = 0.5;
+		//for(let i = 0; i < vtxTot; i+=5) {
+		for(let i = 0; i < vtxTot; i++) {
+			k = i * 3;
+			fvs[j] = vs[k];
+			fvs[j+1] = vs[k+1];
+			fvs[j+2] = vs[k+2];
+			
+			fvs[j+3] = vs[k] + nvs[k] * dis;
+			fvs[j+4] = vs[k+1] + nvs[k+1] * dis;
+			fvs[j+5] = vs[k+2] + nvs[k+2] * dis;
+			j += 6;
+		}
+		
+		let line: DashedLine3DEntity = new DashedLine3DEntity();
+
+		// let lineF32VS = new Float32Array(
+		// 	[0,0,0, 0, 100,0, 100,0,0, 100, 100, 0]
+		// );
+		// line.initializeF32VS(lineF32VS);
+
+		line.initializeF32VS( fvs );
+		this.m_rscene.addEntity( line );
+		this.m_transles.push( line );
+		return line;
+		// this.m_entityLayout.fixToPosition([line], [transform], Vector3D.ZERO, 300.0);
+	}
 	private m_lossTime: number = 0;
 	private m_verticesTotal: number = 0;
 	private m_errModelTotal: number = 0;
@@ -143,6 +195,8 @@ class SceneNode implements ISceneNode {
 				this.m_errModelTotal++;
 				return;
 			}
+			this.m_models.push( model );
+			// this.buildModelNVLine( model );
 			this.m_verticesTotal += model.vertices.length/3;
 			// let correct = this.normalCorrectionTest( model );
 
@@ -191,62 +245,6 @@ class SceneNode implements ISceneNode {
 		}
 	}
 
-	private m_nv_vertCode = `#version 300 es
-	precision mediump float;
-	layout(location = 0) in vec3 a_vs;
-	layout(location = 1) in vec3 a_nvs;
-	uniform mat4 u_objMat;
-	uniform mat4 u_viewMat;
-	uniform mat4 u_projMat;
-	out vec4 v_param;
-	void main()
-	{
-		vec4 viewPv = u_viewMat * u_objMat * vec4(a_vs, 1.0);
-		gl_Position = u_projMat * viewPv;
-		vec3 pnv = normalize(a_nvs * inverse(mat3(u_objMat)));
-		v_param = vec4(pnv, 1.0);
-	}
-	`;
-	private m_nv_fragCode = `#version 300 es
-	precision mediump float;
-	const float MATH_PI = 3.14159265;
-	const float MATH_2PI = 2.0 * MATH_PI;
-	const float MATH_3PI = 3.0 * MATH_PI;
-	const float MATH_1PER2PI = 0.5 * MATH_PI;
-	const float MATH_3PER2PI = 3.0 * MATH_PI * 0.5;
-
-	const vec3 gama = vec3(1.0/2.2);
-	in vec4 v_param;
-	layout(location = 0) out vec4 FragColor;
-	void main() {
-
-		bool facing = gl_FrontFacing;
-		vec2 dv = fract(gl_FragCoord.xy/vec2(5.0)) - vec2(0.5);
-		vec2 f2 = sign(dv);
-
-		vec3 nv = normalize(v_param.xyz);
-		vec3 color = pow(nv, gama);
-
-		vec3 frontColor = color.xyz;
-		vec3 backColor = vec3(sign(f2.x * f2.y), 1.0, 1.0);
-		vec3 dstColor = facing ? frontColor : backColor;
-
-		FragColor = vec4(dstColor, 1.0);
-		// FragColor = vec4(color, 1.0);
-	}
-	`;
-	private m_nv_material: ShaderMaterial = null;
-	private createNormalMaterial(): ShaderMaterial {
-		if(this.m_nv_material != null) {
-			return this.m_nv_material;
-		}
-		let material = new ShaderMaterial("nv_material");
-		material.setVtxShaderCode( this.m_nv_vertCode );
-		material.setFragShaderCode( this.m_nv_fragCode );
-		material.initializeByCodeBuf();
-		this.m_nv_material = material;
-		return material;
-	}
 	isFinish(): boolean {
 		return this.m_modelsTotal > 0 && (this.m_showTotal + this.m_errModelTotal) == this.m_modelsTotal;
 	}
@@ -260,6 +258,7 @@ class SceneNode implements ISceneNode {
 			this.m_verticesTotal = 0;
 			this.m_transforms = [];
 			this.m_transes = [];
+			this.m_transles = [];
 			if (this.m_entities != null) {
 				let entities = this.m_entities;
 				for (let k: number = 0; k < entities.length; ++k) {
@@ -267,6 +266,7 @@ class SceneNode implements ISceneNode {
 				}
 				this.m_entities = null;
 			}
+			this.m_models = [];
 			this.m_rscene = null;
 			this.m_cospace = null;
 		}
@@ -309,6 +309,7 @@ class SceneNode implements ISceneNode {
 						if(this.m_errModelTotal > 0) {
 							info += "</br>注意: 有"+this.m_errModelTotal+"个子模型数据有问题";
 						}
+						this.initEntityFinish();
 					}
 					DivLog.ShowLogOnce(info);
 				}

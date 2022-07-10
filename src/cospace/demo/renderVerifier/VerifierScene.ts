@@ -201,7 +201,7 @@ class VerifierScene implements IDropFileListerner {
 		if (this.m_vfParam.hostUrl.indexOf(".artvily.") > 0) {
 			return;
 		}
-		return;
+		// return;
 		let size = 107375616;
 
 		// return;
@@ -232,7 +232,7 @@ class VerifierScene implements IDropFileListerner {
 		// url = "static/private/fbx/Samba_Dancing.fbx";
 		// url = "static/private/fbx/monkey.fbx";
 		// this.addFBX( [url] );
-
+		// return;
 		let hostUrl = this.m_vfParam.hostUrl;
 
 		let baseUrl: string = "static/private/ctm/";
