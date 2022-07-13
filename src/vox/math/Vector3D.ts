@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 const v_m_180pk = 180.0 / Math.PI;
-const v_m_minp: number = 1e-5;
+const v_m_minp: number = 1e-7;
 class Vector3D {
     x: number = 0.0;
     y: number = 0.0;
@@ -169,9 +169,9 @@ class Vector3D {
     static X_AXIS = new Vector3D(1, 0, 0);
     static Y_AXIS = new Vector3D(0, 1, 0);
     static Z_AXIS = new Vector3D(0, 0, 1);
+    static readonly ZERO: Vector3D = new Vector3D(0,0,0);
+    static readonly ONE: Vector3D = new Vector3D(1,1,1);
 
-    private static __vtor3Stv0: Vector3D = new Vector3D();
-    private static __vtor3Stv1: Vector3D = new Vector3D();
     /**
      * 右手法则(为正)
      */
@@ -182,15 +182,15 @@ class Vector3D {
     }
     // (va1 - va0) 叉乘 (vb1 - vb0), 右手法则(为正)
     static CrossSubtract(va0: Vector3D, va1: Vector3D, vb0: Vector3D, vb1: Vector3D, result: Vector3D): void {
-        Vector3D.__vtor3Stv0.x = va1.x - va0.x;
-        Vector3D.__vtor3Stv0.y = va1.y - va0.y;
-        Vector3D.__vtor3Stv0.z = va1.z - va0.z;
+        v_m_v0.x = va1.x - va0.x;
+        v_m_v0.y = va1.y - va0.y;
+        v_m_v0.z = va1.z - va0.z;
 
-        Vector3D.__vtor3Stv1.x = vb1.x - vb0.x;
-        Vector3D.__vtor3Stv1.y = vb1.y - vb0.y;
-        Vector3D.__vtor3Stv1.z = vb1.z - vb0.z;
-        va0 = Vector3D.__vtor3Stv0;
-        vb0 = Vector3D.__vtor3Stv1;
+        v_m_v1.x = vb1.x - vb0.x;
+        v_m_v1.y = vb1.y - vb0.y;
+        v_m_v1.z = vb1.z - vb0.z;
+        va0 = v_m_v0;
+        vb0 = v_m_v1;
         result.x = va0.y * vb0.z - va0.z * vb0.y;
         result.y = va0.z * vb0.x - va0.x * vb0.z;
         result.z = va0.x * vb0.y - va0.y * vb0.x;
@@ -201,22 +201,22 @@ class Vector3D {
         result.z = a.z - b.z;
     }
     static DistanceSquared(a: Vector3D, b: Vector3D): number {
-        Vector3D.__vtor3Stv0.x = a.x - b.x;
-        Vector3D.__vtor3Stv0.y = a.y - b.y;
-        Vector3D.__vtor3Stv0.z = a.z - b.z;
-        return Vector3D.__vtor3Stv0.getLengthSquared();
+        v_m_v0.x = a.x - b.x;
+        v_m_v0.y = a.y - b.y;
+        v_m_v0.z = a.z - b.z;
+        return v_m_v0.getLengthSquared();
     }
     static DistanceXYZ(x0: number, y0: number, z0: number, x1: number, y1: number, z1: number): number {
-        Vector3D.__vtor3Stv0.x = x0 - x1;
-        Vector3D.__vtor3Stv0.y = y0 - y1;
-        Vector3D.__vtor3Stv0.z = z0 - z1;
-        return Vector3D.__vtor3Stv0.getLength();
+        v_m_v0.x = x0 - x1;
+        v_m_v0.y = y0 - y1;
+        v_m_v0.z = z0 - z1;
+        return v_m_v0.getLength();
     }
     static Distance(v0: Vector3D, v1: Vector3D): number {
-        Vector3D.__vtor3Stv0.x = v0.x - v1.x;
-        Vector3D.__vtor3Stv0.y = v0.y - v1.y;
-        Vector3D.__vtor3Stv0.z = v0.z - v1.z;
-        return Vector3D.__vtor3Stv0.getLength();
+        v_m_v0.x = v0.x - v1.x;
+        v_m_v0.y = v0.y - v1.y;
+        v_m_v0.z = v0.z - v1.z;
+        return v_m_v0.getLength();
     }
 
     /**
@@ -226,9 +226,9 @@ class Vector3D {
      * @returns angle degree
      */
     static AngleBetween(v0: Vector3D, v1: Vector3D): number {
-        v0.normalizeTo(Vector3D.__vtor3Stv0);
-        v1.normalizeTo(Vector3D.__vtor3Stv1);
-        return Math.acos(Vector3D.__vtor3Stv0.dot(Vector3D.__vtor3Stv1)) * v_m_180pk;
+        v0.normalizeTo(v_m_v0);
+        v1.normalizeTo(v_m_v1);
+        return Math.acos(v_m_v0.dot(v_m_v1)) * v_m_180pk;
     }
     /**
      * get angle radian between two Vector3D objects
@@ -237,9 +237,9 @@ class Vector3D {
      * @returns angle radian
      */
     static RadianBetween(v0: Vector3D, v1: Vector3D) {
-        v0.normalizeTo(Vector3D.__vtor3Stv0);
-        v1.normalizeTo(Vector3D.__vtor3Stv1);
-        return Math.acos(Vector3D.__vtor3Stv0.dot(Vector3D.__vtor3Stv1));
+        v0.normalizeTo(v_m_v0);
+        v1.normalizeTo(v_m_v1);
+        return Math.acos(v_m_v0.dot(v_m_v1));
     }
 
     static RadianBetween2(v0: Vector3D, v1: Vector3D) {
@@ -247,10 +247,10 @@ class Vector3D {
         //  // cos(x) = (a^2 + b^2 - c^2) / 2*a*b
         let pa: number = v0.getLengthSquared();
         let pb: number = v1.getLengthSquared();
-        Vector3D.__vtor3Stv0.x = v0.x - v1.x;
-        Vector3D.__vtor3Stv0.y = v0.y - v1.y;
-        Vector3D.__vtor3Stv0.z = v0.z - v1.z;
-        return Math.acos((pa + pb - Vector3D.__vtor3Stv0.getLengthSquared()) / (2.0 * Math.sqrt(pa) * Math.sqrt(pb)));
+        v_m_v0.x = v0.x - v1.x;
+        v_m_v0.y = v0.y - v1.y;
+        v_m_v0.z = v0.z - v1.z;
+        return Math.acos((pa + pb - v_m_v0.getLengthSquared()) / (2.0 * Math.sqrt(pa) * Math.sqrt(pb)));
 
     }
     static Reflect(iv: Vector3D, nv: Vector3D, rv: Vector3D): void {
@@ -259,7 +259,8 @@ class Vector3D {
         rv.y = iv.y - idotn2 * nv.y;
         rv.z = iv.z - idotn2 * nv.z;
     }
-    static readonly ZERO: Vector3D = new Vector3D(0,0,0);
-    static readonly ONE: Vector3D = new Vector3D(1,1,1);
 }
+
+const v_m_v0: Vector3D = new Vector3D();
+const v_m_v1: Vector3D = new Vector3D();
 export default Vector3D;
