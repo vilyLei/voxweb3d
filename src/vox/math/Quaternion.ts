@@ -211,7 +211,7 @@ class Quaternion {
 
 	setFromEuler( euler: Euler, update: boolean = true ) {
 
-		if ( euler != null ) {
+		if ( euler == null ) {
 
 			throw new Error( 'Quaternion::setFromEuler() now expects an Euler rotation rather than a Vector3 and order.' );
 

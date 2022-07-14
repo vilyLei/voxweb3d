@@ -392,9 +392,9 @@ class Matrix4 implements IMatrix4 {
 	}
 	makeRotationFromEuler( euler: Euler ): Matrix4 {
 
-		if ( euler != null ) {
+		if ( euler == null ) {
 
-			console.error( 'Matrix4: .makeRotationFromEuler() now expects a Euler rotation rather than a Vector3D and order.' );
+			console.error( 'Matrix4::makeRotationFromEuler() now expects a Euler rotation rather than a Vector3D and order.' );
 
 		}
 
