@@ -14,25 +14,25 @@ import Matrix4 from "./Matrix4";
 
 class Quaternion {
 
-	private _x: number;
-	private _y: number;
-	private _z: number;
-	private _w: number;
+	x: number;
+	y: number;
+	z: number;
+	w: number;
 	isQuaternion: boolean;
 	constructor( x = 0, y = 0, z = 0, w = 1 ) {
 
 		this.isQuaternion = true;
 
-		this._x = x;
-		this._y = y;
-		this._z = z;
-		this._w = w;
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.w = w;
 
 	}
 
 	static Slerp( qa: Quaternion, qb: Quaternion, qm: Quaternion, t: number ): Quaternion {
 
-		console.warn( 'Quaternion: Static::Slerp() has been deprecated. Use qm.slerpQuaternions( qa, qb, t ) instead.' );
+		console.warn( 'Quaternion::Slerp() has been deprecated. Use qm.slerpQuaternions( qa, qb, t ) instead.' );
 		return qm.slerpQuaternions( qa, qb, t );
 
 	}
@@ -138,72 +138,28 @@ class Quaternion {
 
 	// }
 
-	get x(): number {
-
-		return this._x;
-
-	}
-
-	set x( value: number ) {
-
-		this._x = value;
-	}
-
-	get y(): number {
-
-		return this._y;
-
-	}
-
-	set y( value: number ) {
-
-		this._y = value;
-	}
-
-	get z(): number {
-
-		return this._z;
-
-	}
-
-	set z( value: number ) {
-
-		this._z = value;
-	}
-
-	get w(): number {
-
-		return this._w;
-
-	}
-
-	set w( value: number ) {
-
-		this._w = value;
-	}
-
 	set( x: number, y: number, z: number, w: number ): Quaternion {
 
-		this._x = x;
-		this._y = y;
-		this._z = z;
-		this._w = w;
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.w = w;
 		return this;
 
 	}
 
 	clone(): Quaternion {
 
-		return new Quaternion( this._x, this._y, this._z, this._w );
+		return new Quaternion( this.x, this.y, this.z, this.w );
 
 	}
 
 	copy( q: Quaternion ) {
 
-		this._x = q.x;
-		this._y = q.y;
-		this._z = q.z;
-		this._w = q.w;
+		this.x = q.x;
+		this.y = q.y;
+		this.z = q.z;
+		this.w = q.w;
 
 		return this;
 
@@ -237,45 +193,45 @@ class Quaternion {
 		switch ( order ) {
 
 			case EulerOrder.XYZ:
-				this._x = s1 * c2 * c3 + c1 * s2 * s3;
-				this._y = c1 * s2 * c3 - s1 * c2 * s3;
-				this._z = c1 * c2 * s3 + s1 * s2 * c3;
-				this._w = c1 * c2 * c3 - s1 * s2 * s3;
+				this.x = s1 * c2 * c3 + c1 * s2 * s3;
+				this.y = c1 * s2 * c3 - s1 * c2 * s3;
+				this.z = c1 * c2 * s3 + s1 * s2 * c3;
+				this.w = c1 * c2 * c3 - s1 * s2 * s3;
 				break;
 
 			case EulerOrder.YXZ:
-				this._x = s1 * c2 * c3 + c1 * s2 * s3;
-				this._y = c1 * s2 * c3 - s1 * c2 * s3;
-				this._z = c1 * c2 * s3 - s1 * s2 * c3;
-				this._w = c1 * c2 * c3 + s1 * s2 * s3;
+				this.x = s1 * c2 * c3 + c1 * s2 * s3;
+				this.y = c1 * s2 * c3 - s1 * c2 * s3;
+				this.z = c1 * c2 * s3 - s1 * s2 * c3;
+				this.w = c1 * c2 * c3 + s1 * s2 * s3;
 				break;
 
 			case EulerOrder.ZXY:
-				this._x = s1 * c2 * c3 - c1 * s2 * s3;
-				this._y = c1 * s2 * c3 + s1 * c2 * s3;
-				this._z = c1 * c2 * s3 + s1 * s2 * c3;
-				this._w = c1 * c2 * c3 - s1 * s2 * s3;
+				this.x = s1 * c2 * c3 - c1 * s2 * s3;
+				this.y = c1 * s2 * c3 + s1 * c2 * s3;
+				this.z = c1 * c2 * s3 + s1 * s2 * c3;
+				this.w = c1 * c2 * c3 - s1 * s2 * s3;
 				break;
 
 			case EulerOrder.ZYX:
-				this._x = s1 * c2 * c3 - c1 * s2 * s3;
-				this._y = c1 * s2 * c3 + s1 * c2 * s3;
-				this._z = c1 * c2 * s3 - s1 * s2 * c3;
-				this._w = c1 * c2 * c3 + s1 * s2 * s3;
+				this.x = s1 * c2 * c3 - c1 * s2 * s3;
+				this.y = c1 * s2 * c3 + s1 * c2 * s3;
+				this.z = c1 * c2 * s3 - s1 * s2 * c3;
+				this.w = c1 * c2 * c3 + s1 * s2 * s3;
 				break;
 
 			case EulerOrder.YZX:
-				this._x = s1 * c2 * c3 + c1 * s2 * s3;
-				this._y = c1 * s2 * c3 + s1 * c2 * s3;
-				this._z = c1 * c2 * s3 - s1 * s2 * c3;
-				this._w = c1 * c2 * c3 - s1 * s2 * s3;
+				this.x = s1 * c2 * c3 + c1 * s2 * s3;
+				this.y = c1 * s2 * c3 + s1 * c2 * s3;
+				this.z = c1 * c2 * s3 - s1 * s2 * c3;
+				this.w = c1 * c2 * c3 - s1 * s2 * s3;
 				break;
 
 			case EulerOrder.XZY:
-				this._x = s1 * c2 * c3 - c1 * s2 * s3;
-				this._y = c1 * s2 * c3 - s1 * c2 * s3;
-				this._z = c1 * c2 * s3 + s1 * s2 * c3;
-				this._w = c1 * c2 * c3 + s1 * s2 * s3;
+				this.x = s1 * c2 * c3 - c1 * s2 * s3;
+				this.y = c1 * s2 * c3 - s1 * c2 * s3;
+				this.z = c1 * c2 * s3 + s1 * s2 * c3;
+				this.w = c1 * c2 * c3 + s1 * s2 * s3;
 				break;
 
 			default:
@@ -295,10 +251,10 @@ class Quaternion {
 
 		const halfAngle = angle / 2, s = Math.sin( halfAngle );
 
-		this._x = axis.x * s;
-		this._y = axis.y * s;
-		this._z = axis.z * s;
-		this._w = Math.cos( halfAngle );
+		this.x = axis.x * s;
+		this.y = axis.y * s;
+		this.z = axis.z * s;
+		this.w = Math.cos( halfAngle );
 		return this;
 
 	}
@@ -321,37 +277,37 @@ class Quaternion {
 
 			const s = 0.5 / Math.sqrt( trace + 1.0 );
 
-			this._w = 0.25 / s;
-			this._x = ( m32 - m23 ) * s;
-			this._y = ( m13 - m31 ) * s;
-			this._z = ( m21 - m12 ) * s;
+			this.w = 0.25 / s;
+			this.x = ( m32 - m23 ) * s;
+			this.y = ( m13 - m31 ) * s;
+			this.z = ( m21 - m12 ) * s;
 
 		} else if ( m11 > m22 && m11 > m33 ) {
 
 			const s = 2.0 * Math.sqrt( 1.0 + m11 - m22 - m33 );
 
-			this._w = ( m32 - m23 ) / s;
-			this._x = 0.25 * s;
-			this._y = ( m12 + m21 ) / s;
-			this._z = ( m13 + m31 ) / s;
+			this.w = ( m32 - m23 ) / s;
+			this.x = 0.25 * s;
+			this.y = ( m12 + m21 ) / s;
+			this.z = ( m13 + m31 ) / s;
 
 		} else if ( m22 > m33 ) {
 
 			const s = 2.0 * Math.sqrt( 1.0 + m22 - m11 - m33 );
 
-			this._w = ( m13 - m31 ) / s;
-			this._x = ( m12 + m21 ) / s;
-			this._y = 0.25 * s;
-			this._z = ( m23 + m32 ) / s;
+			this.w = ( m13 - m31 ) / s;
+			this.x = ( m12 + m21 ) / s;
+			this.y = 0.25 * s;
+			this.z = ( m23 + m32 ) / s;
 
 		} else {
 
 			const s = 2.0 * Math.sqrt( 1.0 + m33 - m11 - m22 );
 
-			this._w = ( m21 - m12 ) / s;
-			this._x = ( m13 + m31 ) / s;
-			this._y = ( m23 + m32 ) / s;
-			this._z = 0.25 * s;
+			this.w = ( m21 - m12 ) / s;
+			this.x = ( m13 + m31 ) / s;
+			this.y = ( m23 + m32 ) / s;
+			this.z = 0.25 * s;
 
 		}
 		return this;
@@ -372,17 +328,17 @@ class Quaternion {
 
 			if ( Math.abs( vFrom.x ) > Math.abs( vFrom.z ) ) {
 
-				this._x = - vFrom.y;
-				this._y = vFrom.x;
-				this._z = 0;
-				this._w = r;
+				this.x = - vFrom.y;
+				this.y = vFrom.x;
+				this.z = 0;
+				this.w = r;
 
 			} else {
 
-				this._x = 0;
-				this._y = - vFrom.z;
-				this._z = vFrom.y;
-				this._w = r;
+				this.x = 0;
+				this.y = - vFrom.z;
+				this.z = vFrom.y;
+				this.w = r;
 
 			}
 
@@ -390,10 +346,10 @@ class Quaternion {
 
 			// crossVectors( vFrom, vTo ); // inlined to avoid cyclic dependency on Vector3
 
-			this._x = vFrom.y * vTo.z - vFrom.z * vTo.y;
-			this._y = vFrom.z * vTo.x - vFrom.x * vTo.z;
-			this._z = vFrom.x * vTo.y - vFrom.y * vTo.x;
-			this._w = r;
+			this.x = vFrom.y * vTo.z - vFrom.z * vTo.y;
+			this.y = vFrom.z * vTo.x - vFrom.x * vTo.z;
+			this.z = vFrom.x * vTo.y - vFrom.y * vTo.x;
+			this.w = r;
 
 		}
 
@@ -437,28 +393,28 @@ class Quaternion {
 
 	conjugate(): Quaternion {
 
-		this._x *= - 1;
-		this._y *= - 1;
-		this._z *= - 1;
+		this.x *= - 1;
+		this.y *= - 1;
+		this.z *= - 1;
 		return this;
 
 	}
 
 	dot( q: Quaternion ) {
 
-		return this._x * q._x + this._y * q._y + this._z * q._z + this._w * q._w;
+		return this.x * q.x + this.y * q.y + this.z * q.z + this.w * q.w;
 
 	}
 
 	lengthSq() {
 
-		return this._x * this._x + this._y * this._y + this._z * this._z + this._w * this._w;
+		return this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
 
 	}
 
 	length() {
 
-		return Math.sqrt( this._x * this._x + this._y * this._y + this._z * this._z + this._w * this._w );
+		return Math.sqrt( this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w );
 
 	}
 
@@ -468,19 +424,19 @@ class Quaternion {
 
 		if ( l === 0 ) {
 
-			this._x = 0;
-			this._y = 0;
-			this._z = 0;
-			this._w = 1;
+			this.x = 0;
+			this.y = 0;
+			this.z = 0;
+			this.w = 1;
 
 		} else {
 
 			l = 1 / l;
 
-			this._x = this._x * l;
-			this._y = this._y * l;
-			this._z = this._z * l;
-			this._w = this._w * l;
+			this.x = this.x * l;
+			this.y = this.y * l;
+			this.z = this.z * l;
+			this.w = this.w * l;
 
 		}
 		return this;
@@ -510,13 +466,13 @@ class Quaternion {
 
 		// from http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/code/index.htm
 
-		const qax = a._x, qay = a._y, qaz = a._z, qaw = a._w;
-		const qbx = b._x, qby = b._y, qbz = b._z, qbw = b._w;
+		const qax = a.x, qay = a.y, qaz = a.z, qaw = a.w;
+		const qbx = b.x, qby = b.y, qbz = b.z, qbw = b.w;
 
-		this._x = qax * qbw + qaw * qbx + qay * qbz - qaz * qby;
-		this._y = qay * qbw + qaw * qby + qaz * qbx - qax * qbz;
-		this._z = qaz * qbw + qaw * qbz + qax * qby - qay * qbx;
-		this._w = qaw * qbw - qax * qbx - qay * qby - qaz * qbz;
+		this.x = qax * qbw + qaw * qbx + qay * qbz - qaz * qby;
+		this.y = qay * qbw + qaw * qby + qaz * qbx - qax * qbz;
+		this.z = qaz * qbw + qaw * qbz + qax * qby - qay * qbx;
+		this.w = qaw * qbw - qax * qbx - qay * qby - qaz * qbz;
 
 		return this;
 
@@ -527,18 +483,18 @@ class Quaternion {
 		if ( t === 0 ) return this;
 		if ( t === 1 ) return this.copy( qb );
 
-		const x = this._x, y = this._y, z = this._z, w = this._w;
+		const x = this.x, y = this.y, z = this.z, w = this.w;
 
 		// http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/
 
-		let cosHalfTheta = w * qb._w + x * qb._x + y * qb._y + z * qb._z;
+		let cosHalfTheta = w * qb.w + x * qb.x + y * qb.y + z * qb.z;
 
 		if ( cosHalfTheta < 0 ) {
 
-			this._w = - qb._w;
-			this._x = - qb._x;
-			this._y = - qb._y;
-			this._z = - qb._z;
+			this.w = - qb.w;
+			this.x = - qb.x;
+			this.y = - qb.y;
+			this.z = - qb.z;
 
 			cosHalfTheta = - cosHalfTheta;
 
@@ -550,10 +506,10 @@ class Quaternion {
 
 		if ( cosHalfTheta >= 1.0 ) {
 
-			this._w = w;
-			this._x = x;
-			this._y = y;
-			this._z = z;
+			this.w = w;
+			this.x = x;
+			this.y = y;
+			this.z = z;
 
 			return this;
 
@@ -564,10 +520,10 @@ class Quaternion {
 		if ( sqrSinHalfTheta <= Number.EPSILON ) {
 
 			const s = 1 - t;
-			this._w = s * w + t * this._w;
-			this._x = s * x + t * this._x;
-			this._y = s * y + t * this._y;
-			this._z = s * z + t * this._z;
+			this.w = s * w + t * this.w;
+			this.x = s * x + t * this.x;
+			this.y = s * y + t * this.y;
+			this.z = s * z + t * this.z;
 
 			this.normalize();
 			return this;
@@ -579,10 +535,10 @@ class Quaternion {
 		const ratioA = Math.sin( ( 1 - t ) * halfTheta ) / sinHalfTheta,
 			ratioB = Math.sin( t * halfTheta ) / sinHalfTheta;
 
-		this._w = ( w * ratioA + this._w * ratioB );
-		this._x = ( x * ratioA + this._x * ratioB );
-		this._y = ( y * ratioA + this._y * ratioB );
-		this._z = ( z * ratioA + this._z * ratioB );
+		this.w = ( w * ratioA + this.w * ratioB );
+		this.x = ( x * ratioA + this.x * ratioB );
+		this.y = ( y * ratioA + this.y * ratioB );
+		this.z = ( z * ratioA + this.z * ratioB );
 
 		return this;
 
@@ -619,26 +575,26 @@ class Quaternion {
 
 	equals( quaternion: Quaternion ): boolean {
 
-		return ( quaternion._x === this._x ) && ( quaternion._y === this._y ) && ( quaternion._z === this._z ) && ( quaternion._w === this._w );
+		return ( quaternion.x === this.x ) && ( quaternion.y === this.y ) && ( quaternion.z === this.z ) && ( quaternion.w === this.w );
 
 	}
 
 	fromArray( array: number[], offset = 0 ): Quaternion {
 
-		this._x = array[ offset ];
-		this._y = array[ offset + 1 ];
-		this._z = array[ offset + 2 ];
-		this._w = array[ offset + 3 ];
+		this.x = array[ offset ];
+		this.y = array[ offset + 1 ];
+		this.z = array[ offset + 2 ];
+		this.w = array[ offset + 3 ];
 		return this;
 
 	}
 
 	toArray( array: number[] = [], offset = 0 ): number[] {
 
-		array[ offset ] = this._x;
-		array[ offset + 1 ] = this._y;
-		array[ offset + 2 ] = this._z;
-		array[ offset + 3 ] = this._w;
+		array[ offset ] = this.x;
+		array[ offset + 1 ] = this.y;
+		array[ offset + 2 ] = this.z;
+		array[ offset + 3 ] = this.w;
 
 		return array;
 
@@ -646,10 +602,10 @@ class Quaternion {
 
 	fromBufferAttribute( attribute: any, index: number = 0 ): Quaternion {
 
-		this._x = attribute.getX( index );
-		this._y = attribute.getY( index );
-		this._z = attribute.getZ( index );
-		this._w = attribute.getW( index );
+		this.x = attribute.getX( index );
+		this.y = attribute.getY( index );
+		this.z = attribute.getZ( index );
+		this.w = attribute.getW( index );
 
 		return this;
 
@@ -667,10 +623,10 @@ class Quaternion {
 
 	// *[ Symbol.iterator ]() {
 
-	// 	yield this._x;
-	// 	yield this._y;
-	// 	yield this._z;
-	// 	yield this._w;
+	// 	yield this.x;
+	// 	yield this.y;
+	// 	yield this.z;
+	// 	yield this.w;
 
 	// }
 
