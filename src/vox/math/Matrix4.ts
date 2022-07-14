@@ -7,7 +7,7 @@
 
 import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
-// import Float32Data from "../../vox/base/Float32Data";
+import {EulerOrder} from './EulerOrder';
 import OrientationType from "../../vox/math/OrientationType";
 import { IMatrix4 } from "../../vox/math/IMatrix4";
 import { Euler } from "./Euler";
@@ -399,13 +399,13 @@ class Matrix4 implements IMatrix4 {
 		}
 
 		const te = this.m_localFS32;
-
+		
 		const x = euler.x, y = euler.y, z = euler.z;
 		const a = Math.cos( x ), b = Math.sin( x );
 		const c = Math.cos( y ), d = Math.sin( y );
 		const e = Math.cos( z ), f = Math.sin( z );
 
-		if ( euler.order === 'XYZ' ) {
+		if ( euler.order === EulerOrder.XYZ ) {
 
 			const ae = a * e, af = a * f, be = b * e, bf = b * f;
 
@@ -421,7 +421,7 @@ class Matrix4 implements IMatrix4 {
 			te[ 6 ] = be + af * d;
 			te[ 10 ] = a * c;
 
-		} else if ( euler.order === 'YXZ' ) {
+		} else if ( euler.order === EulerOrder.YXZ ) {
 
 			const ce = c * e, cf = c * f, de = d * e, df = d * f;
 
@@ -437,7 +437,7 @@ class Matrix4 implements IMatrix4 {
 			te[ 6 ] = df + ce * b;
 			te[ 10 ] = a * c;
 
-		} else if ( euler.order === 'ZXY' ) {
+		} else if ( euler.order === EulerOrder.ZXY ) {
 
 			const ce = c * e, cf = c * f, de = d * e, df = d * f;
 
@@ -453,7 +453,7 @@ class Matrix4 implements IMatrix4 {
 			te[ 6 ] = b;
 			te[ 10 ] = a * c;
 
-		} else if ( euler.order === 'ZYX' ) {
+		} else if ( euler.order === EulerOrder.ZYX ) {
 
 			const ae = a * e, af = a * f, be = b * e, bf = b * f;
 
@@ -469,7 +469,7 @@ class Matrix4 implements IMatrix4 {
 			te[ 6 ] = b * c;
 			te[ 10 ] = a * c;
 
-		} else if ( euler.order === 'YZX' ) {
+		} else if ( euler.order === EulerOrder.YZX ) {
 
 			const ac = a * c, ad = a * d, bc = b * c, bd = b * d;
 
@@ -485,7 +485,7 @@ class Matrix4 implements IMatrix4 {
 			te[ 6 ] = ad * f + bc;
 			te[ 10 ] = ac - bd * f;
 
-		} else if ( euler.order === 'XZY' ) {
+		} else if ( euler.order === EulerOrder.XZY ) {
 
 			const ac = a * c, ad = a * d, bc = b * c, bd = b * d;
 

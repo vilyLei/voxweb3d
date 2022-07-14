@@ -1,4 +1,5 @@
 import MathConst from './MathConst';
+import {EulerOrder} from './EulerOrder';
 import Vector3D from './Vector3D';
 import Matrix4 from './Matrix4';
 import {Quaternion} from './Quaternion';
@@ -8,13 +9,13 @@ const _quaternion = new Quaternion();
 
 class Euler {
 	
-	static readonly DefaultOrder = 'XYZ';
-	static readonly RotationOrders = [ 'XYZ', 'YZX', 'ZXY', 'XZY', 'YXZ', 'ZYX' ];
+	static readonly DefaultOrder = EulerOrder.XYZ;// = 'XYZ';
+	//static readonly RotationOrders = [ 'XYZ', 'YZX', 'ZXY', 'XZY', 'YXZ', 'ZYX' ];
 	isEuler: boolean;
 	private _x: number;
 	private _y: number;
 	private _z: number;
-	private _order: string;
+	private _order: EulerOrder;
 	constructor( x = 0, y = 0, z = 0, order = Euler.DefaultOrder ) {
 
 		this.isEuler = true;
@@ -59,18 +60,18 @@ class Euler {
 		this._z = value;
 	}
 
-	get order(): string {
+	get order(): EulerOrder {
 
 		return this._order;
 
 	}
 
-	set order( value: string ) {
+	set order( value: EulerOrder ) {
 
 		this._order = value;
 	}
 
-	set( x: number, y: number, z: number, order: string = this._order ) {
+	set( x: number, y: number, z: number, order: EulerOrder = this._order ) {
 
 		this._x = x;
 		this._y = y;
@@ -98,7 +99,7 @@ class Euler {
 
 	}
 
-	setFromRotationMatrix( m: Matrix4, order: string = this._order, update: boolean = true ): Euler {
+	setFromRotationMatrix( m: Matrix4, order: EulerOrder = this._order, update: boolean = true ): Euler {
 
 		// assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
 
@@ -109,9 +110,9 @@ class Euler {
 		let clamp = MathConst.Clamp;
 		switch ( order ) {
 
-			case 'XYZ':
+			case EulerOrder.XYZ:
 
-				this._y = Math.asin( MathConst.Clamp( m13, - 1, 1 ) );
+				this._y = Math.asin( clamp( m13, - 1, 1 ) );
 
 				if ( Math.abs( m13 ) < 0.9999999 ) {
 
@@ -127,7 +128,7 @@ class Euler {
 
 				break;
 
-			case 'YXZ':
+			case EulerOrder.YXZ:
 
 				this._x = Math.asin( - clamp( m23, - 1, 1 ) );
 
@@ -145,7 +146,7 @@ class Euler {
 
 				break;
 
-			case 'ZXY':
+			case EulerOrder.ZXY:
 
 				this._x = Math.asin( clamp( m32, - 1, 1 ) );
 
@@ -163,7 +164,7 @@ class Euler {
 
 				break;
 
-			case 'ZYX':
+			case EulerOrder.ZYX:
 
 				this._y = Math.asin( - clamp( m31, - 1, 1 ) );
 
@@ -181,7 +182,7 @@ class Euler {
 
 				break;
 
-			case 'YZX':
+			case EulerOrder.YZX:
 
 				this._z = Math.asin( clamp( m21, - 1, 1 ) );
 
@@ -199,7 +200,7 @@ class Euler {
 
 				break;
 
-			case 'XZY':
+			case EulerOrder.XZY:
 
 				this._z = Math.asin( - clamp( m12, - 1, 1 ) );
 
@@ -229,7 +230,7 @@ class Euler {
 
 	}
 	
-	setFromQuaternion( q: Quaternion, order: string, update: boolean = true ): Euler {
+	setFromQuaternion( q: Quaternion, order: EulerOrder, update: boolean = true ): Euler {
 
 		_matrix.makeRotationFromQuaternion( q );
 
@@ -237,13 +238,13 @@ class Euler {
 
 	}
 
-	setFromVector3( v: Vector3D, order: string = this._order ) {
+	setFromVector3( v: Vector3D, order: EulerOrder = this._order ) {
 
 		return this.set( v.x, v.y, v.z, order );
 
 	}
 
-	reorder( newOrder: string ): Euler {
+	reorder( newOrder: EulerOrder ): Euler {
 
 		// WARNING: this discards revolution information -bhouston
 

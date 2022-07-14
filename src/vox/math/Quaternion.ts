@@ -6,6 +6,7 @@
 /*                                                                         */
 /***************************************************************************/
 
+import {EulerOrder} from './EulerOrder';
 import { Euler } from "./Euler";
 import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
@@ -235,42 +236,42 @@ class Quaternion {
 
 		switch ( order ) {
 
-			case 'XYZ':
+			case EulerOrder.XYZ:
 				this._x = s1 * c2 * c3 + c1 * s2 * s3;
 				this._y = c1 * s2 * c3 - s1 * c2 * s3;
 				this._z = c1 * c2 * s3 + s1 * s2 * c3;
 				this._w = c1 * c2 * c3 - s1 * s2 * s3;
 				break;
 
-			case 'YXZ':
+			case EulerOrder.YXZ:
 				this._x = s1 * c2 * c3 + c1 * s2 * s3;
 				this._y = c1 * s2 * c3 - s1 * c2 * s3;
 				this._z = c1 * c2 * s3 - s1 * s2 * c3;
 				this._w = c1 * c2 * c3 + s1 * s2 * s3;
 				break;
 
-			case 'ZXY':
+			case EulerOrder.ZXY:
 				this._x = s1 * c2 * c3 - c1 * s2 * s3;
 				this._y = c1 * s2 * c3 + s1 * c2 * s3;
 				this._z = c1 * c2 * s3 + s1 * s2 * c3;
 				this._w = c1 * c2 * c3 - s1 * s2 * s3;
 				break;
 
-			case 'ZYX':
+			case EulerOrder.ZYX:
 				this._x = s1 * c2 * c3 - c1 * s2 * s3;
 				this._y = c1 * s2 * c3 + s1 * c2 * s3;
 				this._z = c1 * c2 * s3 - s1 * s2 * c3;
 				this._w = c1 * c2 * c3 + s1 * s2 * s3;
 				break;
 
-			case 'YZX':
+			case EulerOrder.YZX:
 				this._x = s1 * c2 * c3 + c1 * s2 * s3;
 				this._y = c1 * s2 * c3 + s1 * c2 * s3;
 				this._z = c1 * c2 * s3 - s1 * s2 * c3;
 				this._w = c1 * c2 * c3 - s1 * s2 * s3;
 				break;
 
-			case 'XZY':
+			case EulerOrder.XZY:
 				this._x = s1 * c2 * c3 - c1 * s2 * s3;
 				this._y = c1 * s2 * c3 - s1 * c2 * s3;
 				this._z = c1 * c2 * s3 + s1 * s2 * c3;
