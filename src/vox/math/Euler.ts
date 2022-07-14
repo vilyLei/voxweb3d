@@ -9,74 +9,26 @@ const _quaternion = new Quaternion();
 
 class Euler {
 	
-	static readonly DefaultOrder = EulerOrder.XYZ;// = 'XYZ';
-	//static readonly RotationOrders = [ 'XYZ', 'YZX', 'ZXY', 'XZY', 'YXZ', 'ZYX' ];
-	isEuler: boolean;
-	private _x: number;
-	private _y: number;
-	private _z: number;
-	private _order: EulerOrder;
+	static readonly DefaultOrder = EulerOrder.XYZ;
+
+	x: number;
+	y: number;
+	z: number;
+	order: EulerOrder;
 	constructor( x = 0, y = 0, z = 0, order = Euler.DefaultOrder ) {
 
-		this.isEuler = true;
-
-		this._x = x;
-		this._y = y;
-		this._z = z;
-		this._order = order;
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.order = order;
 
 	}
+	set( x: number, y: number, z: number, order: EulerOrder = this.order ) {
 
-	get x(): number {
-
-		return this._x;
-
-	}
-
-	set x( value: number ) {
-
-		this._x = value;
-	}
-
-	get y(): number {
-
-		return this._y;
-
-	}
-
-	set y( value: number ) {
-
-		this._y = value;
-	}
-
-	get z() {
-
-		return this._z;
-
-	}
-
-	set z( value: number ) {
-
-		this._z = value;
-	}
-
-	get order(): EulerOrder {
-
-		return this._order;
-
-	}
-
-	set order( value: EulerOrder ) {
-
-		this._order = value;
-	}
-
-	set( x: number, y: number, z: number, order: EulerOrder = this._order ) {
-
-		this._x = x;
-		this._y = y;
-		this._z = z;
-		this._order = order;
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.order = order;
 
 		return this;
 
@@ -84,22 +36,22 @@ class Euler {
 
 	clone() {
 
-		return new Euler( this._x, this._y, this._z, this._order );
+		return new Euler( this.x, this.y, this.z, this.order );
 
 	}
 
 	copy( euler: Euler ) {
 
-		this._x = euler._x;
-		this._y = euler._y;
-		this._z = euler._z;
-		this._order = euler._order;
+		this.x = euler.x;
+		this.y = euler.y;
+		this.z = euler.z;
+		this.order = euler.order;
 		
 		return this;
 
 	}
 
-	setFromRotationMatrix( m: Matrix4, order: EulerOrder = this._order, update: boolean = true ): Euler {
+	setFromRotationMatrix( m: Matrix4, order: EulerOrder = this.order, update: boolean = true ): Euler {
 
 		// assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
 
@@ -112,17 +64,17 @@ class Euler {
 
 			case EulerOrder.XYZ:
 
-				this._y = Math.asin( clamp( m13, - 1, 1 ) );
+				this.y = Math.asin( clamp( m13, - 1, 1 ) );
 
 				if ( Math.abs( m13 ) < 0.9999999 ) {
 
-					this._x = Math.atan2( - m23, m33 );
-					this._z = Math.atan2( - m12, m11 );
+					this.x = Math.atan2( - m23, m33 );
+					this.z = Math.atan2( - m12, m11 );
 
 				} else {
 
-					this._x = Math.atan2( m32, m22 );
-					this._z = 0;
+					this.x = Math.atan2( m32, m22 );
+					this.z = 0;
 
 				}
 
@@ -130,17 +82,17 @@ class Euler {
 
 			case EulerOrder.YXZ:
 
-				this._x = Math.asin( - clamp( m23, - 1, 1 ) );
+				this.x = Math.asin( - clamp( m23, - 1, 1 ) );
 
 				if ( Math.abs( m23 ) < 0.9999999 ) {
 
-					this._y = Math.atan2( m13, m33 );
-					this._z = Math.atan2( m21, m22 );
+					this.y = Math.atan2( m13, m33 );
+					this.z = Math.atan2( m21, m22 );
 
 				} else {
 
-					this._y = Math.atan2( - m31, m11 );
-					this._z = 0;
+					this.y = Math.atan2( - m31, m11 );
+					this.z = 0;
 
 				}
 
@@ -148,17 +100,17 @@ class Euler {
 
 			case EulerOrder.ZXY:
 
-				this._x = Math.asin( clamp( m32, - 1, 1 ) );
+				this.x = Math.asin( clamp( m32, - 1, 1 ) );
 
 				if ( Math.abs( m32 ) < 0.9999999 ) {
 
-					this._y = Math.atan2( - m31, m33 );
-					this._z = Math.atan2( - m12, m22 );
+					this.y = Math.atan2( - m31, m33 );
+					this.z = Math.atan2( - m12, m22 );
 
 				} else {
 
-					this._y = 0;
-					this._z = Math.atan2( m21, m11 );
+					this.y = 0;
+					this.z = Math.atan2( m21, m11 );
 
 				}
 
@@ -166,17 +118,17 @@ class Euler {
 
 			case EulerOrder.ZYX:
 
-				this._y = Math.asin( - clamp( m31, - 1, 1 ) );
+				this.y = Math.asin( - clamp( m31, - 1, 1 ) );
 
 				if ( Math.abs( m31 ) < 0.9999999 ) {
 
-					this._x = Math.atan2( m32, m33 );
-					this._z = Math.atan2( m21, m11 );
+					this.x = Math.atan2( m32, m33 );
+					this.z = Math.atan2( m21, m11 );
 
 				} else {
 
-					this._x = 0;
-					this._z = Math.atan2( - m12, m22 );
+					this.x = 0;
+					this.z = Math.atan2( - m12, m22 );
 
 				}
 
@@ -184,17 +136,17 @@ class Euler {
 
 			case EulerOrder.YZX:
 
-				this._z = Math.asin( clamp( m21, - 1, 1 ) );
+				this.z = Math.asin( clamp( m21, - 1, 1 ) );
 
 				if ( Math.abs( m21 ) < 0.9999999 ) {
 
-					this._x = Math.atan2( - m23, m22 );
-					this._y = Math.atan2( - m31, m11 );
+					this.x = Math.atan2( - m23, m22 );
+					this.y = Math.atan2( - m31, m11 );
 
 				} else {
 
-					this._x = 0;
-					this._y = Math.atan2( m13, m33 );
+					this.x = 0;
+					this.y = Math.atan2( m13, m33 );
 
 				}
 
@@ -202,17 +154,17 @@ class Euler {
 
 			case EulerOrder.XZY:
 
-				this._z = Math.asin( - clamp( m12, - 1, 1 ) );
+				this.z = Math.asin( - clamp( m12, - 1, 1 ) );
 
 				if ( Math.abs( m12 ) < 0.9999999 ) {
 
-					this._x = Math.atan2( m32, m22 );
-					this._y = Math.atan2( m13, m11 );
+					this.x = Math.atan2( m32, m22 );
+					this.y = Math.atan2( m13, m11 );
 
 				} else {
 
-					this._x = Math.atan2( - m23, m33 );
-					this._y = 0;
+					this.x = Math.atan2( - m23, m33 );
+					this.y = 0;
 
 				}
 
@@ -220,11 +172,11 @@ class Euler {
 
 			default:
 
-				console.warn( 'Euler: .setFromRotationMatrix() encountered an unknown order: ' + order );
+				console.warn( 'Euler::setFromRotationMatrix() encountered an unknown order: ' + order );
 
 		}
 
-		this._order = order;
+		this.order = order;
 
 		return this;
 
@@ -238,7 +190,7 @@ class Euler {
 
 	}
 
-	setFromVector3( v: Vector3D, order: EulerOrder = this._order ) {
+	setFromVector3( v: Vector3D, order: EulerOrder = this.order ) {
 
 		return this.set( v.x, v.y, v.z, order );
 
@@ -256,16 +208,16 @@ class Euler {
 
 	equals( euler: Euler ): boolean {
 
-		return ( euler._x === this._x ) && ( euler._y === this._y ) && ( euler._z === this._z ) && ( euler._order === this._order );
+		return ( euler.x === this.x ) && ( euler.y === this.y ) && ( euler.z === this.z ) && ( euler.order === this.order );
 
 	}
 
 	fromArray( array: any[] ): Euler {
 
-		this._x = array[ 0 ];
-		this._y = array[ 1 ];
-		this._z = array[ 2 ];
-		if ( array[ 3 ] !== undefined ) this._order = array[ 3 ];
+		this.x = array[ 0 ];
+		this.y = array[ 1 ];
+		this.z = array[ 2 ];
+		if ( array[ 3 ] !== undefined ) this.order = array[ 3 ];
 
 		return this;
 
@@ -273,21 +225,12 @@ class Euler {
 
 	toArray( array: any = [], offset = 0 ): any[] {
 
-		array[ offset ] = this._x;
-		array[ offset + 1 ] = this._y;
-		array[ offset + 2 ] = this._z;
-		array[ offset + 3 ] = this._order;
+		array[ offset ] = this.x;
+		array[ offset + 1 ] = this.y;
+		array[ offset + 2 ] = this.z;
+		array[ offset + 3 ] = this.order;
 
 		return array;
-
-	}
-
-
-	// @deprecated since r138, 02cf0df1cb4575d5842fef9c85bb5a89fe020d53
-
-	toVector3() {
-
-		console.error( 'THREE.Euler: .toVector3() has been removed. Use Vector3.setFromEuler() instead' );
 
 	}
 
