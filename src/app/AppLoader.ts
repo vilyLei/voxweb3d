@@ -5,6 +5,10 @@ import LightViewer from "./publish/lightViewer/LightViewer";
 
 let host = "static/publish/build/";
 
+let url: string = location.href + "";
+if(url.indexOf("artvily.") > 0) {
+    host = "http://www.artvily.com:9090/static/publish/apple/";
+}
 class AppShell {
     viewer: LightViewer = new LightViewer();
     constructor() { }
@@ -24,6 +28,9 @@ export class AppLoader {
         console.log("AppLoader::initialize()......");
         let url: string = location.href + "";
         url = this.parseUrl(url);
+        
+        console.log("AppLoader::initialize(), url: ",url);
+
         this.initUI();
 
         ModuleFlag.Initialize();
@@ -33,7 +40,6 @@ export class AppLoader {
     private loadEngine(): void {
         
         let loader: ModuleLoader;
-        
         let engine_url = host + "AppEngine.package.js";
         let base_url = host + "AppBase.package.js";
         loader = new ModuleLoader(ModuleFlag.AppEngine, engine_url, this);
