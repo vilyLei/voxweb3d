@@ -38,7 +38,7 @@ export class DemoLoader {
     private parseUrl(url: string): string {
 
         console.log("url: ",url);
-        //http://192.168.0.102:9000/renderCase?sample=demoLoader&demo=cameraFollow2
+        
         let params: string[] = url.split("?");
         if(params.length < 2 || params[0].indexOf("renderCase") < 1) {
             return "";
@@ -53,7 +53,12 @@ export class DemoLoader {
         if(params.length < 2 || params[0] != "demo") {
             return "";
         }
-        return "static/voxweb3d/demos/"+params[1]+".js";
+        let hurl: string = location.href + "";
+        let host = "";
+        if(hurl.indexOf("artvily.") > 0) {
+            host = "http://www.artvily.com:9090/";
+        }
+        return host + "static/voxweb3d/demos/"+params[1]+".js";
         /*
         let params: string[] = url.split("?");
         if(params.length < 2 || params[0].indexOf("renderCase") < 1) {
@@ -95,7 +100,9 @@ export class DemoLoader {
         this.m_infoDiv.innerHTML = str;
     }
     showLoadProgressInfo(e: any): void {
-        let str: string = "loading " + Math.round(100.0 * e.loaded / e.total) + "% ";
+        console.log("loading e: ",e);
+        let pro = e.total > 0 ? Math.round(100.0 * e.loaded / e.total) + "% " : e.loaded + " bytes ";
+        let str: string = "loading " + pro;
         this.showInfo(str);
     }
     

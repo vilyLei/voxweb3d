@@ -9,11 +9,16 @@ interface DemoData {
 export class Home {
 
     private m_htmlText: string = "";
+    private m_host = "";
     constructor() { }
 
     initialize(): void {
         console.log("Home::initialize()......");
         let url: string = location.href + "";
+        
+        if(url.indexOf("artvily.") > 0) {
+            this.m_host = "http://www.artvily.com:9090/";
+        }
         url = this.parseUrl(url);
         console.log("url: ", url);
 
@@ -21,8 +26,7 @@ export class Home {
         if (this.m_demoBodyDiv == null) {
             this.initUI();
         }
-
-        this.loadData("static/home/demos.json?ver=" + Math.random() + Date.now());
+        this.loadData(this.m_host + "static/home/demos.json?ver=" + Math.random() + Date.now());
     }
     private parseData(data: DemoData): void {
         console.log("data: ", data);

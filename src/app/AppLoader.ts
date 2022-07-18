@@ -3,14 +3,15 @@ import DivLog from "../vox/utils/DivLog";
 import ModuleFlag from "./publish/base/ModuleFlag";
 import LightViewer from "./publish/lightViewer/LightViewer";
 
-let host = "static/publish/build/";
-
+let host = "";
+let codeHost = "static/publish/build/";
 let url: string = location.href + "";
 if(url.indexOf("artvily.") > 0) {
-    host = "http://www.artvily.com:9090/static/publish/apple/";
+    host = "http://www.artvily.com:9090/";
+    codeHost = host + "static/publish/apple/";
 }
 class AppShell {
-    viewer: LightViewer = new LightViewer();
+    readonly viewer: LightViewer = new LightViewer();
     constructor() { }
 
     loadedWithIndex(index: number): void {
@@ -28,7 +29,8 @@ export class AppLoader {
         console.log("AppLoader::initialize()......");
         let url: string = location.href + "";
         url = this.parseUrl(url);
-        
+        let objDataUrl = host + "static/assets/obj/apple_01.obj";
+        this.m_appShell.viewer.setObjDataUrl(objDataUrl);
         console.log("AppLoader::initialize(), url: ",url);
 
         this.initUI();
@@ -40,15 +42,15 @@ export class AppLoader {
     private loadEngine(): void {
         
         let loader: ModuleLoader;
-        let engine_url = host + "AppEngine.package.js";
-        let base_url = host + "AppBase.package.js";
+        let engine_url = codeHost + "AppEngine.package.js";
+        let base_url = codeHost + "AppBase.package.js";
         loader = new ModuleLoader(ModuleFlag.AppEngine, engine_url, this);
         loader = new ModuleLoader(ModuleFlag.AppBase, base_url, this);
 
-        let objData_url = host + "AppObjData.package.js";
+        let objData_url = codeHost + "AppObjData.package.js";
         loader = new ModuleLoader(ModuleFlag.AppObjData, objData_url, this);
         
-        // let envLightModule_url = host + "AppEnvLightModule.package.js";
+        // let envLightModule_url = codeHost + "AppEnvLightModule.package.js";
         // loader = new ModuleLoader(ModuleFlag.AppEnvLight, envLightModule_url, this);
         // DivLog.SetDebugEnabled(true);
         // // DivLog.ShowLog("init load engine...");
@@ -57,24 +59,24 @@ export class AppLoader {
     private loadAppFunctions(): void {
 
         let loader: ModuleLoader;
-        let envLightModule_url = host + "AppEnvLightModule.package.js";
-        let LightModule_url = host + "AppLightModule.package.js";
+        let envLightModule_url = codeHost + "AppEnvLightModule.package.js";
+        let LightModule_url = codeHost + "AppLightModule.package.js";
         loader = new ModuleLoader(ModuleFlag.AppEnvLight, envLightModule_url, this);
         loader = new ModuleLoader(ModuleFlag.AppLight, LightModule_url, this);
 
-        let shadow_url = host + "AppShadow.package.js";
+        let shadow_url = codeHost + "AppShadow.package.js";
         loader = new ModuleLoader(ModuleFlag.AppShadow, shadow_url, this);
 
         let viewer = this.m_appShell.viewer;
         let pbrEnabled: boolean = true;
         if(pbrEnabled) {
-            let pbr_url = host + "AppPBR.package.js";
+            let pbr_url = codeHost + "AppPBR.package.js";
             loader = new ModuleLoader(ModuleFlag.AppPBR, pbr_url, this);
             viewer.lambertMaterialEnabled = false;
             viewer.pbrMaterialEnabled = true;
         }
         else {
-            let lambert_url = host + "AppLambert.package.js";
+            let lambert_url = codeHost + "AppLambert.package.js";
             loader = new ModuleLoader(ModuleFlag.AppLambert, lambert_url, this);
             viewer.lambertMaterialEnabled = true;
             viewer.pbrMaterialEnabled = false;
@@ -88,7 +90,7 @@ export class AppLoader {
     private parseUrl(url: string): string {
 
         console.log("url: ", url);
-        //http://192.168.0.102:9000/renderCase?sample=demoLoader&demo=cameraFollow2
+        
         let params: string[] = url.split("?");
         if (params.length < 2 || params[0].indexOf("renderCase") < 1) {
             return "";
