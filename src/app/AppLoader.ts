@@ -6,7 +6,7 @@ import LightViewer from "./publish/lightViewer/LightViewer";
 let host = "";
 let codeHost = "static/publish/build/";
 let url: string = location.href + "";
-if(url.indexOf("artvily.") > 0) {
+if (url.indexOf("artvily.") > 0) {
     host = "http://www.artvily.com:9090/";
     codeHost = host + "static/publish/apple/";
 }
@@ -31,7 +31,7 @@ export class AppLoader {
         url = this.parseUrl(url);
         let objDataUrl = host + "static/assets/obj/apple_01.obj";
         this.m_appShell.viewer.setObjDataUrl(objDataUrl);
-        console.log("AppLoader::initialize(), url: ",url);
+        console.log("AppLoader::initialize(), url: ", url);
 
         this.initUI();
 
@@ -40,7 +40,7 @@ export class AppLoader {
         this.loadEngine();
     }
     private loadEngine(): void {
-        
+
         let loader: ModuleLoader;
         let engine_url = codeHost + "AppEngine.package.js";
         let base_url = codeHost + "AppBase.package.js";
@@ -49,13 +49,13 @@ export class AppLoader {
 
         let objData_url = codeHost + "AppObjData.package.js";
         loader = new ModuleLoader(ModuleFlag.AppObjData, objData_url, this);
-        
+
         // let envLightModule_url = codeHost + "AppEnvLightModule.package.js";
         // loader = new ModuleLoader(ModuleFlag.AppEnvLight, envLightModule_url, this);
         // DivLog.SetDebugEnabled(true);
         // // DivLog.ShowLog("init load engine...");
     }
-    
+
     private loadAppFunctions(): void {
 
         let loader: ModuleLoader;
@@ -69,7 +69,7 @@ export class AppLoader {
 
         let viewer = this.m_appShell.viewer;
         let pbrEnabled: boolean = true;
-        if(pbrEnabled) {
+        if (pbrEnabled) {
             let pbr_url = codeHost + "AppPBR.package.js";
             loader = new ModuleLoader(ModuleFlag.AppPBR, pbr_url, this);
             viewer.lambertMaterialEnabled = false;
@@ -90,7 +90,7 @@ export class AppLoader {
     private parseUrl(url: string): string {
 
         console.log("url: ", url);
-        
+
         let params: string[] = url.split("?");
         if (params.length < 2 || params[0].indexOf("renderCase") < 1) {
             return "";
@@ -133,9 +133,8 @@ export class AppLoader {
         }
         this.m_infoDiv.innerHTML = str;
     }
-    showLoadProgressInfo(e: any): void {
-        let total: number = e.total > 0.0 ? e.total : 1.0;
-        let str: string = "loading " + Math.round(100.0 * e.loaded / total) + "% ";
+    showLoadProgressInfo(progress: number): void {
+        let str: string = "loading " + Math.round(100.0 * progress) + "% ";
         this.showInfo(str);
     }
 
@@ -155,13 +154,13 @@ export class AppLoader {
         console.log("loadFinish(), index: ", index);
         this.m_appShell.loadedWithIndex(index);
         this.m_mf.addFlag(index);
-        if(this.m_initOther && this.m_mf.hasEngineModule()) {
+        if (this.m_initOther && this.m_mf.hasEngineModule()) {
             this.m_initOther = false;
             this.loadAppFunctions();
         }
     }
     private elementCenter(ele: HTMLElement, top: string = "50%", left: string = "50%", position: string = "absolute"): void {
-        
+
         ele.style.textAlign = "center";
         ele.style.display = "flex";
         ele.style.flexDirection = "column";
@@ -189,8 +188,23 @@ class ModuleLoader {
             console.error("load error: ", err);
         }
 
-        codeLoader.onprogress = (e) => {
-            if (listener != null) listener.showLoadInfo(e, this.index);
+        codeLoader.onprogress = (evt: ProgressEvent) => {
+            let k = 0.0;
+            if (evt.total > 0 || evt.lengthComputable) {
+                k = Math.min(1.0, (evt.loaded / evt.total));
+            } else {
+                let content_length: number = parseInt(codeLoader.getResponseHeader("content-length"));
+                // var encoding = req.getResponseHeader("content-encoding");
+                // if (total && encoding && encoding.indexOf("gzip") > -1) {
+                if (content_length > 0) {
+                    // assuming average gzip compression ratio to be 25%
+                    content_length *= 4; // original size / compressed size
+                    k = Math.min(1.0, (evt.loaded / content_length));
+                } else {
+                    console.warn("lengthComputable failed");
+                }
+            }
+            if (listener != null) listener.showLoadInfo(k, this.index);
         };
         codeLoader.onload = () => {
             let scriptEle: HTMLScriptElement = document.createElement("script");
