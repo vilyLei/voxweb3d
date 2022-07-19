@@ -238,10 +238,11 @@ class VerifierScene implements IDropFileListerner {
 		}
 		urls = [baseUrl + "errorNormal.ctm"];
 		this.addCTM(urls);
-		this.testCTM(urls[0]);
+		// this.testCTM(urls[0]);
 
 		baseUrl = hostUrl + "static/private/obj/";
 		urls = [baseUrl + "base.obj"];
+		// urls = ["http://localhost:9090/static/assets/obj/apple_01.obj"];
 		// this.addOBJ(urls);
 
 	}

@@ -29,8 +29,8 @@ class FBXSceneNode extends SceneNode {
 					this.m_waitPartsTotal = 0;
 				}
 			},
-			(evt: ProgressEvent, url: string):void => {
-				let k = Math.round(100 * evt.loaded/evt.total);
+			(progress: number, url: string):void => {
+				let k = Math.round(100 * progress);
 				this.showInfo("fbx file loading " + k + "%");
 			}
 		);
