@@ -105,7 +105,7 @@ export class DemoLoader {
                 console.warn("lengthComputable failed");
             }
         }
-        let str: string = "loading " + k +"% ";
+        let str: string = "loading " + Math.round(k * 100) +"% ";
         this.showInfo(str);
     }
     

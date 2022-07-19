@@ -27,6 +27,30 @@ export class Home {
             this.initUI();
         }
         this.loadData(this.m_host + "static/home/demos.json?ver=" + Math.random() + Date.now());
+        this.initHeadApp();
+    }
+    private initHeadApp(): void {
+
+        let appUrl = this.m_host + "static/voxweb3d/demos/camRoaming.js";
+
+        let codeLoader: XMLHttpRequest = new XMLHttpRequest();
+		codeLoader.open("GET", appUrl, true);
+		codeLoader.onerror = function(err) {
+			console.error("load error: ", err);
+		}
+
+		// codeLoader.onprogress = e => {};
+		codeLoader.onload = evt => {
+			console.log("module js file loaded.");
+			let scriptEle: HTMLScriptElement = document.createElement("script");
+			scriptEle.onerror = evt => {
+				console.error("module script onerror, e: ", evt);
+			};
+			scriptEle.type = "text/javascript";
+			scriptEle.innerHTML = codeLoader.response;
+			document.head.appendChild(scriptEle);
+		};
+		codeLoader.send(null);
     }
     private parseData(data: DemoData): void {
         console.log("data: ", data);
