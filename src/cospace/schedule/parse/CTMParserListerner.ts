@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { FileLoader } from "../../modules/loaders/FileLoader";
+import { HttpFileLoader } from "../../modules/loaders/HttpFileLoader";
 import { DataUnitPool } from "../base/DataUnitPool";
 import { ReceiverSchedule } from "../ReceiverSchedule";
 import { GeometryModelDataType } from "../../modules/base/GeometryModelDataType";
@@ -42,14 +42,14 @@ class CTMParserListerner {
 				parseTask.setListener(this);
 				this.m_parseTask = parseTask;
 			}
-			new FileLoader().load(
+			new HttpFileLoader().load(
 				url,
 				(buf: ArrayBuffer, url: string): void => {
 					DivLog.ShowLogOnce("正在解析CTM数据...");
 					this.m_parseTask.addBinaryData(new Uint8Array(buf), url);
 				},
-				(evt: ProgressEvent, url: string): void => {
-					let k = Math.round(100 * evt.loaded/evt.total);
+				(progress: number, url: string): void => {
+					let k = Math.round(100 * progress);
 					DivLog.ShowLogOnce("ctm file loading " + k + "%");
 				},
 				(status: number, url: string): void => {

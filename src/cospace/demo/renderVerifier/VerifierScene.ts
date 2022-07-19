@@ -11,10 +11,6 @@ import { VerifierParam } from "./VerifierParam";
 import { TaskCodeModuleParam } from "../../schedule/base/TaskCodeModuleParam";
 import { ModuleNS } from "../../modules/base/ModuleNS";
 import DivLog from "../../../vox/utils/DivLog";
-import { FileLoader } from "../../modules/loaders/FileLoader";
-import DashedLine3DEntity from "../../../vox/entity/DashedLine3DEntity";
-import { Vector3D } from "../../voxengine/CoEngine";
-import BrokenLine3DEntity from "../../../vox/entity/BrokenLine3DEntity";
 
 class VerifierScene implements IDropFileListerner {
 

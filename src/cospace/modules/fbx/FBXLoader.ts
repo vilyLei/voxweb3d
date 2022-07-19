@@ -1,5 +1,5 @@
 
-import { FileLoader } from "../loaders/FileLoader";
+import { HttpFileLoader } from "../loaders/HttpFileLoader";
 import { convertArrayBufferToString, isFbxFormatASCII, getFbxVersion } from "./Utils";
 import { GeometryModelDataType } from "../base/GeometryModelDataType";
 import { isFbxFormatBinary } from "./Utils";
@@ -12,7 +12,7 @@ import { FBXBufferObject } from "./FBXBufferObject";
 
 class FBXLoader {
 
-	private m_loader: FileLoader = new FileLoader();
+	private m_loader: HttpFileLoader = new HttpFileLoader();
     constructor() {
     }
     load(

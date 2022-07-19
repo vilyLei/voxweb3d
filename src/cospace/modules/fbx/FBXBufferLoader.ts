@@ -1,5 +1,5 @@
 
-import { FileLoader } from "../loaders/FileLoader";
+import { HttpFileLoader } from "../loaders/HttpFileLoader";
 import { convertArrayBufferToString, isFbxFormatASCII, getFbxVersion } from "./Utils";
 import { GeometryModelDataType } from "../base/GeometryModelDataType";
 import { isFbxFormatBinary } from "./Utils";
@@ -11,13 +11,13 @@ import { FBXBufferObject } from "./FBXBufferObject";
 
 class FBXBufferLoader {
 
-    private m_loader: FileLoader = new FileLoader();
+    private m_loader: HttpFileLoader = new HttpFileLoader();
     constructor() {
     }
     load(
         url: string,
         onLoad: (model: Map<number, GeometryModelDataType>, url: string) => void,
-        onProgress: (evt: ProgressEvent, url: string) => void = null,
+        onProgress: (progress: number, url: string) => void = null,
         onError: (status: number, url: string) => void = null
     ): void {
 
@@ -81,7 +81,7 @@ class FBXBufferLoader {
     loadBySteps(
         url: string,
         onLoad: (model: GeometryModelDataType, bufObj: FBXBufferObject, index: number, total: number, url: string) => void,
-        onProgress: (evt: ProgressEvent, url: string) => void = null,
+        onProgress: (progress: number, url: string) => void = null,
         onError: (status: number, url: string) => void = null
     ): void {
 

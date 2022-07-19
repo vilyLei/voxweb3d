@@ -1,6 +1,5 @@
 
 import Matrix4 from "../../../vox/math/Matrix4";
-import { FileLoader } from "../loaders/FileLoader";
 import { LoaderUtils } from "../loaders/LoaderUtils";
 import { BinaryReader } from "./BinaryReader";
 import { generateTransform } from "./Utils";

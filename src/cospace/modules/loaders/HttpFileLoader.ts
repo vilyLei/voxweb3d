@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-class FileLoader {
+class HttpFileLoader {
 	crossOrigin = 'anonymous';
 	constructor() {
 	}
@@ -15,7 +15,10 @@ class FileLoader {
 	}
 	async load(url: string,
 		onLoad: (buf: ArrayBuffer, url: string) => void,
-		onProgress: (evt: ProgressEvent, url: string) => void = null,
+		/**
+		 * @param progress its value is 0.0 -> 1.0
+		 */
+		onProgress: (progress: number, url: string) => void = null,
 		onError: (status: number, url: string) => void = null,
 		responseType: XMLHttpRequestResponseType = "blob",
 		headRange: string = ""
@@ -44,8 +47,27 @@ class FileLoader {
 			}
 		};
 		if(onProgress != null) {
-			request.onprogress = (e: ProgressEvent) => {				
-				onProgress(e, url);
+			request.onprogress = (evt: ProgressEvent) => {	
+				// console.log("progress evt: ", evt);
+				// console.log("progress total: ", evt.total, ", loaded: ", evt.loaded);
+				let k = 0.0;
+				if (evt.total > 0 || evt.lengthComputable) {
+					k = Math.min(1.0, (evt.loaded / evt.total));
+				} else {
+					var content_length: number = parseInt(request.getResponseHeader("content-length"));
+					// var encoding = req.getResponseHeader("content-encoding");
+					// if (total && encoding && encoding.indexOf("gzip") > -1) {
+					if (content_length > 0) {
+						// assuming average gzip compression ratio to be 25%
+						content_length *= 4; // original size / compressed size
+						k = Math.min(1.0, (evt.loaded / content_length));
+					} else {
+						console.log("lengthComputable failed");
+					}
+				}
+				//let progressInfo = k + "%";
+				//console.log("progress progressInfo: ", progressInfo);			
+				onProgress(k, url);
 			}
 		}
 		if(onError != null) {
@@ -61,4 +83,4 @@ class FileLoader {
 	}
 }
 
-export { FileLoader };
+export { HttpFileLoader };

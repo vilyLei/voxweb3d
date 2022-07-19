@@ -1,8 +1,8 @@
 import { FileIO } from "../../app/slickRoad/io/FileIO";
 import MathConst from "../../vox/math/MathConst";
 import DivLog from "../../vox/utils/DivLog";
-import { FileLoader } from "../modules/loaders/FileLoader";
-
+import { HttpFileLoader } from "../modules/loaders/HttpFileLoader";
+/*
 class NetFileLoader {
 	crossOrigin = "anonymous";
 	constructor() {}
@@ -57,6 +57,7 @@ class NetFileLoader {
 		request.send(null);
 	}
 }
+//*/
 /**
  * a demo
  */
@@ -82,13 +83,13 @@ export class DemoCORS {
 		// return;
 		url = "http://localhost:9090/static/assets/bin/u16_8192.bin";
 		// url = "http://localhost:9090/static/assets/box.jpg";
-		// url = "http://localhost:9090/static/assets/obj/apple_01.obj";
+		url = "http://localhost:9090/static/assets/obj/apple_01.obj";
 		// url = "http://localhost:9090/static/assets/obj/base.obj";
-		// this.loadFile(url);
-		this.loadFile(url,256,256 + 128);
+		this.loadFile(url);
+		// this.loadFile(url,256,256 + 128);
 	}
 	private loadFile(url: string, rangeBegin: number = 0, rangeEnd: number = 0): void {
-		let loader = new NetFileLoader();
+		let loader = new HttpFileLoader();
 		let headInfo = rangeEnd > rangeBegin ? "bytes=" + rangeBegin + "-" + rangeEnd : "";
 
 		loader.load(
@@ -105,7 +106,10 @@ export class DemoCORS {
 					}
 				}
 			},
-			(evt: ProgressEvent<EventTarget>, url: string, req: XMLHttpRequest) => {
+			(progress: number, url: string) => {
+				let progressInfo = Math.round(progress * 100) + "%";
+				console.log("progress progressInfo: ", progressInfo);
+				/*
 				console.log("progress evt: ", evt);
 				console.log("progress total: ", evt.total, ", loaded: ", evt.loaded);
 				let pro_value = 0;
@@ -125,6 +129,7 @@ export class DemoCORS {
 				}
 				let progressInfo = pro_value + "%";
 				console.log("progress progressInfo: ", progressInfo);
+				*/
 			},
 			(status: number, url: string) => {},
 			"blob",
