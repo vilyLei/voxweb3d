@@ -54,27 +54,6 @@ export class DemoCORS {
 			(progress: number, url: string) => {
 				let progressInfo = Math.round(progress * 100) + "%";
 				console.log("progress progressInfo: ", progressInfo);
-				/*
-				console.log("progress evt: ", evt);
-				console.log("progress total: ", evt.total, ", loaded: ", evt.loaded);
-				let pro_value = 0;
-				if (evt.total > 0 || evt.lengthComputable) {
-					pro_value = Math.round((evt.loaded / evt.total) * 100);
-				} else {
-					var content_length: number = parseInt(req.getResponseHeader("content-length"));
-					// var encoding = req.getResponseHeader("content-encoding");
-					// if (total && encoding && encoding.indexOf("gzip") > -1) {
-					if (content_length > 0) {
-						// assuming average gzip compression ratio to be 25%
-						content_length *= 4; // original size / compressed size
-						pro_value = Math.round(Math.min(100, (evt.loaded / content_length) * 100));
-					} else {
-						console.log("lengthComputable failed");
-					}
-				}
-				let progressInfo = pro_value + "%";
-				console.log("progress progressInfo: ", progressInfo);
-				*/
 			},
 			(status: number, url: string) => {},
 			"blob",

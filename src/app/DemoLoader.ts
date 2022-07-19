@@ -13,13 +13,12 @@ export class DemoLoader {
     private load(purl: string): void {
         let codeLoader: XMLHttpRequest = new XMLHttpRequest();
         codeLoader.open("GET", purl, true);
-        //xhr.responseType = "arraybuffer";
         codeLoader.onerror = function (err) {
             console.error("load error: ", err);
         }
 
         codeLoader.onprogress = (e) => {
-            this.showLoadInfo(e);
+            this.showLoadInfo(e, codeLoader);
         };
         codeLoader.onload = () => {
             let scriptEle: HTMLScriptElement = document.createElement("script");
@@ -32,8 +31,8 @@ export class DemoLoader {
         }
         codeLoader.send(null);
     }
-    private showLoadInfo(e: any): void {
-        this.showLoadProgressInfo(e);
+    private showLoadInfo(e: ProgressEvent, req: XMLHttpRequest): void {
+        this.showLoadProgressInfo(e, req);
     }
     private parseUrl(url: string): string {
 
@@ -59,19 +58,6 @@ export class DemoLoader {
             host = "http://www.artvily.com:9090/";
         }
         return host + "static/voxweb3d/demos/"+params[1]+".js";
-        /*
-        let params: string[] = url.split("?");
-        if(params.length < 2 || params[0].indexOf("renderCase") < 1) {
-            return "";
-        }
-        //renderCase?sample=cameraFollow2
-        let moduleName: string = params[1];
-        params = moduleName.split("=");
-        if(params.length < 2 || params[0] != "sample") {
-            return "";
-        }
-        return "static/voxweb3d/demos/"+params[1]+".js";
-        //*/
     }
 
     private m_bodyDiv: HTMLDivElement = null;
@@ -99,18 +85,35 @@ export class DemoLoader {
         }
         this.m_infoDiv.innerHTML = str;
     }
-    showLoadProgressInfo(e: any): void {
-        console.log("loading e: ",e);
-        let pro = e.total > 0 ? Math.round(100.0 * e.loaded / e.total) + "% " : e.loaded + " bytes ";
-        let str: string = "loading " + pro;
+    showLoadProgressInfo(evt: ProgressEvent, req: XMLHttpRequest): void {
+        console.log("loading evt: ",evt);
+        // let pro = e.total > 0 ? Math.round(100.0 * e.loaded / e.total) + "% " : e.loaded + " bytes ";
+        // console.log("progress evt: ", evt);
+        // console.log("progress total: ", evt.total, ", loaded: ", evt.loaded);
+        let k = 0.0;
+        if (evt.total > 0 || evt.lengthComputable) {
+            k = Math.min(1.0, (evt.loaded / evt.total));
+        } else {
+            let content_length: number = parseInt(req.getResponseHeader("content-length"));
+            // var encoding = req.getResponseHeader("content-encoding");
+            // if (total && encoding && encoding.indexOf("gzip") > -1) {
+            if (content_length > 0) {
+                // assuming average gzip compression ratio to be 25%
+                content_length *= 4; // original size / compressed size
+                k = Math.min(1.0, (evt.loaded / content_length));
+            } else {
+                console.warn("lengthComputable failed");
+            }
+        }
+        let str: string = "loading " + k +"% ";
         this.showInfo(str);
     }
     
     showLoadStart(): void {
-        this.showInfo("loading 0%");
+        this.showInfo("loading 0% ");
     }
     showLoaded(): void {
-        this.showInfo("100%");
+        this.showInfo("100% ");
     }
     loadFinish(): void {
         if (this.m_bodyDiv != null){

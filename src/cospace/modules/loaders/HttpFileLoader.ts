@@ -54,7 +54,7 @@ class HttpFileLoader {
 				if (evt.total > 0 || evt.lengthComputable) {
 					k = Math.min(1.0, (evt.loaded / evt.total));
 				} else {
-					var content_length: number = parseInt(request.getResponseHeader("content-length"));
+					let content_length: number = parseInt(request.getResponseHeader("content-length"));
 					// var encoding = req.getResponseHeader("content-encoding");
 					// if (total && encoding && encoding.indexOf("gzip") > -1) {
 					if (content_length > 0) {
@@ -62,7 +62,7 @@ class HttpFileLoader {
 						content_length *= 4; // original size / compressed size
 						k = Math.min(1.0, (evt.loaded / content_length));
 					} else {
-						console.log("lengthComputable failed");
+						console.warn("lengthComputable failed");
 					}
 				}
 				//let progressInfo = k + "%";
