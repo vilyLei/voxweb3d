@@ -10,6 +10,7 @@ export class DemoCORS {
 	constructor() {}
 
 	initialize(): void {
+		
 		console.log("DemoCORS::initialize()...");
 
 		// 启用鼠标点击事件

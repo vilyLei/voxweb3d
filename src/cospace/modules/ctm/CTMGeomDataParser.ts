@@ -16,6 +16,7 @@ class CTMGeomDataParser {
         }
         return null;
     }
+    
     parserBinaryData(buffer: ArrayBuffer): CTMFileBody {
 
         let stream = new CTMStream(new Uint8Array(buffer));

@@ -236,7 +236,8 @@ class VerifierScene implements IDropFileListerner {
 		for (let i = 0; i <= 26; ++i) {
 			urls.push(baseUrl + "sh202/sh202_" + i + ".ctm");
 		}
-		urls = [baseUrl + "errorNormal.ctm"];
+		// urls = [baseUrl + "errorNormal.ctm"];
+		urls = [baseUrl + "errorIndex.ctm"];
 		this.addCTM(urls);
 		// this.testCTM(urls[0]);
 

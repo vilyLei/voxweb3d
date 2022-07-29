@@ -117,9 +117,9 @@ class CTMFileBody {
     normals: Float32Array;
     uvMaps: any[];
     attrMaps: any[];
-    
-    getUVSAt( i: number ): Float32Array {
-        return this.uvMaps[ i ].uv;
+
+    getUVSAt(i: number): Float32Array {
+        return this.uvMaps[i].uv;
     }
     constructor(header: FileHeader) {
         let i = header.triangleCount * 3,
@@ -129,7 +129,7 @@ class CTMFileBody {
             a = header.vertexCount * 4,
             j = 0;
 
-        let data = new ArrayBuffer( (i + v + n + (u * header.uvMapCount) + (a * header.attrMapCount)) * 4 );
+        let data = new ArrayBuffer((i + v + n + (u * header.uvMapCount) + (a * header.attrMapCount)) * 4);
         this.indices = new Uint32Array(data, 0, i);
 
         // let data: ArrayBuffer;
@@ -368,8 +368,10 @@ class CTM {
     }
 
 }
-
-class ReaderRAW {
+interface IReaderHeader {
+    read(stream: ICTMStream, body: CTMFileBody): void;
+}
+class ReaderRAW implements IReaderHeader {
 
     constructor() { }
 
@@ -395,7 +397,7 @@ class ReaderRAW {
     readNormals(stream: ICTMStream, normals: Float32Array): void {
         stream.readInt32(); //magic "NORM"
         stream.readArrayFloat32(normals);
-    };
+    }
     readVertices(stream: ICTMStream, vertices: Float32Array): void {
         stream.readInt32(); //magic "VERT"
         stream.readArrayFloat32(vertices);
@@ -420,7 +422,7 @@ class ReaderRAW {
     }
 }
 
-class ReaderMG1 {
+class ReaderMG1 implements IReaderHeader {
     constructor() { }
 
     read(stream: ICTMStream, body: any): void {
@@ -494,7 +496,7 @@ class ReaderMG1 {
     }
 }
 
-class ReaderMG2 {
+class ReaderMG2 implements IReaderHeader {
     MG2Header: FileMG2Header;
     constructor() {
 
@@ -616,7 +618,7 @@ class CTMStream implements ICTMStream {
         this.offset = 0;
     }
 
-    private decodeUint8Arr(u8array: Uint8Array): string{
+    private decodeUint8Arr(u8array: Uint8Array): string {
         return new TextDecoder("utf-8").decode(u8array);
     }
     readByte(): number {
@@ -669,7 +671,7 @@ class CTMStream implements ICTMStream {
         this.offset += len;
 
         let bytes = this.data.subarray(this.offset - len, this.offset);
-        return this.decodeUint8Arr( bytes );
+        return this.decodeUint8Arr(bytes);
     }
 
     readArrayInt32(array: Uint16Array | Uint32Array): Uint16Array | Uint32Array {
@@ -773,11 +775,11 @@ class CTMStringStream implements ICTMStream {
 class CTMFile {
     header: FileHeader;
     body: CTMFileBody;
-    constructor(stream: any) {
+    constructor(stream: ICTMStream) {
         this.load(stream);
     }
 
-    load(stream: any) {
+    load(stream: ICTMStream): void {
         this.header = new FileHeader(stream);
 
         this.body = new CTMFileBody(this.header);
@@ -785,7 +787,7 @@ class CTMFile {
         this.getReader().read(stream, this.body);
     }
 
-    getReader = function () {
+    getReader(): IReaderHeader {
         let reader;
 
         switch (this.header.compressionMethod) {
