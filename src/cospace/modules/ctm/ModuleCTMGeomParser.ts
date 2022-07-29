@@ -21,15 +21,22 @@ class CTMDataParser extends BaseTaskInThread {
         try {
 
             fileBody = parser.parserBinaryData(dataBuf);
-        }catch(e) {
-            console.error("CTM parse error, url: ",rdata.descriptor.url, rdata);
+
+            // const readerBuf = new FileReader();
+            // readerBuf.onload = (e) => {
+            //     //this.parseFromStr(rdata, <string>readerBuf.result);
+            //     parser.parserStringData(<string>readerBuf.result)
+            // };
+            // readerBuf.readAsText(new Blob([dataBuf]));
+        } catch (e) {
+            console.error("CTM parse error, url: ", rdata.descriptor.url, rdata);
         }
         //console.log("ModuleCTMGeomParser::receiveData(),rdata: ", rdata);
         let transfers: ArrayBuffer[] = [dataBuf.buffer];
         if (fileBody != null) {
 
             let len: number = fileBody.uvMaps.length;
-            
+
             let uvsList: Float32Array[] = [];
             for (let i: number = 0; i < len; ++i) {
                 uvsList.push(fileBody.uvMaps[i].uv);
@@ -40,14 +47,14 @@ class CTMDataParser extends BaseTaskInThread {
             // transfers.push(fileBody.normals);
             // transfers.push(fileBody.indices);
             len = fileBody.indices.length;
-            if(len < 65536) {
+            if (len < 65536) {
                 // 以下操作为了节省显存
                 let ivs = new Uint16Array(fileBody.indices.buffer);
                 let ls = fileBody.indices;
-                for(let i = 0; i < len; ++i) {
+                for (let i = 0; i < len; ++i) {
                     ivs[i] = ls[i];
                 }
-                fileBody.indices = ivs.subarray(0,len);
+                fileBody.indices = ivs.subarray(0, len);
             }
             rdata.data = {
                 uvsList: uvsList,

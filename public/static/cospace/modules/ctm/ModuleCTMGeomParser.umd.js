@@ -995,7 +995,12 @@ class CTMDataParser extends BaseTaskInThread_1.BaseTaskInThread {
     let fileBody = null;
 
     try {
-      fileBody = parser.parserBinaryData(dataBuf);
+      fileBody = parser.parserBinaryData(dataBuf); // const readerBuf = new FileReader();
+      // readerBuf.onload = (e) => {
+      //     //this.parseFromStr(rdata, <string>readerBuf.result);
+      //     parser.parserStringData(<string>readerBuf.result)
+      // };
+      // readerBuf.readAsText(new Blob([dataBuf]));
     } catch (e) {
       console.error("CTM parse error, url: ", rdata.descriptor.url, rdata);
     } //console.log("ModuleCTMGeomParser::receiveData(),rdata: ", rdata);
@@ -1284,6 +1289,7 @@ class CTM {
 
     if (len > 0) {
       indices[2] += indices[0];
+      indices[1] += indices[0];
     }
 
     for (; i < len; i += 3) {
@@ -1897,26 +1903,6 @@ exports.CTMStringStream = CTMStringStream;
 
 class CTMFile {
   constructor(stream) {
-    this.getReader = function () {
-      let reader;
-
-      switch (this.header.compressionMethod) {
-        case CTM.CompressionMethod.RAW:
-          reader = new ReaderRAW();
-          break;
-
-        case CTM.CompressionMethod.MG1:
-          reader = new ReaderMG1();
-          break;
-
-        case CTM.CompressionMethod.MG2:
-          reader = new ReaderMG2();
-          break;
-      }
-
-      return reader;
-    };
-
     this.load(stream);
   }
 
@@ -1924,6 +1910,26 @@ class CTMFile {
     this.header = new FileHeader(stream);
     this.body = new CTMFileBody(this.header);
     this.getReader().read(stream, this.body);
+  }
+
+  getReader() {
+    let reader;
+
+    switch (this.header.compressionMethod) {
+      case CTM.CompressionMethod.RAW:
+        reader = new ReaderRAW();
+        break;
+
+      case CTM.CompressionMethod.MG1:
+        reader = new ReaderMG1();
+        break;
+
+      case CTM.CompressionMethod.MG2:
+        reader = new ReaderMG2();
+        break;
+    }
+
+    return reader;
   }
 
 }
