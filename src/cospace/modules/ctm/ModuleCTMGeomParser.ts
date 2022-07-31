@@ -24,7 +24,6 @@ class CTMDataParser extends BaseTaskInThread {
 
             // const readerBuf = new FileReader();
             // readerBuf.onload = (e) => {
-            //     //this.parseFromStr(rdata, <string>readerBuf.result);
             //     parser.parserStringData(<string>readerBuf.result)
             // };
             // readerBuf.readAsText(new Blob([dataBuf]));
