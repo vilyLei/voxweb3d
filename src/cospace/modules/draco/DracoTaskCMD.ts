@@ -3,6 +3,7 @@ class DracoTaskCMD {
      * 处理数据
      */
     static readonly PARSE: string = "DRACO_PARSE";
+    static readonly ENCODE: string = "DRACO_ENCODE";
     /**
      * 从其他线程获取数据
      */

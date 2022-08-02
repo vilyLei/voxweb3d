@@ -18,7 +18,7 @@ export class DemoDracoParser {
 			nodes:
 				[
 					{ uniqueName: "dracoGeomParser", path: "static/cospace/modules/draco/ModuleDracoGeomParser.umd.js" },
-					{ uniqueName: "dracoWasmWrapper", path: "static/cospace/modules/dracoLib/w2.js" },
+					{ uniqueName: "dracoWasmWrapper", path: "static/cospace/modules/dracoLib/w3.js" },
 					{ uniqueName: "ctmGeomParser", path: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js" }
 				],
 			maps:
@@ -34,7 +34,7 @@ export class DemoDracoParser {
 		this.m_threadSchedule.initialize(1, "static/cospace/core/code/ThreadCore.umd.js");
 
 		// 建立 draco 模型数据builder(包含加载和解析)
-		this.m_dracoGeomBuilder = new DracoGeomBuilder("static/cospace/modules/draco/ModuleDracoGeomParser.js");
+		this.m_dracoGeomBuilder = new DracoGeomBuilder("static/cospace/modules/draco/ModuleDracoGeomParser.js",3);
 
 		this.m_dracoGeomBuilder.initialize(this.m_threadSchedule);
 		this.m_dracoGeomBuilder.setListener(this);
@@ -51,9 +51,10 @@ export class DemoDracoParser {
 	private loadDraco01(): void {
 
 		// draco 模型数据url
-		let url = "static/private/draco/geom.draco";
+		let url = "static/private/draco/geom.drc";
 		// draco模型数据字节分段信息
-		let segRangeList: number[] = [0,2068];
+		let segRangeList: number[] = [0, 1470];
+
 		this.m_dracoGeomBuilder.load(url, segRangeList);
 	}
 	private loadDraco(): void {
@@ -61,7 +62,8 @@ export class DemoDracoParser {
 		// draco 模型数据url
 		let url = "static/assets/modules/clothRoll.rawmd";
 		// draco模型数据字节分段信息
-		let segRangeList: number[] = [950486, 1900738, 0, 950486, 1900738, 1907181, 1907181, 1912537, 1912537, 1920151, 1920151, 1924126];
+		//let segRangeList: number[] = [950486, 1900738, 0, 950486, 1900738, 1907181, 1907181, 1912537, 1912537, 1920151, 1920151, 1924126];
+		let segRangeList: number[] = [0, 950486];
 		this.m_dracoGeomBuilder.load(url, segRangeList);
 	}
 

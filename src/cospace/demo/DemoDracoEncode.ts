@@ -62,9 +62,7 @@ export class DemoDracoEncode {
 			this.mouseDown(evt);
 		};
 		this.update();
-
 		this.initScene();
-
 	}
 	// draco 编码结束后回调
 	dracoEncodeFinish(buf: ArrayBuffer, url: string, index: number): void {
@@ -72,7 +70,7 @@ export class DemoDracoEncode {
 		console.log("dracoEncodeFinish buf: ", buf);
 
 		let f = new FileIO();
-		f.downloadBinFile(buf,url,"draco");
+		f.downloadBinFile(buf,url,"drc");
 	}
 	private mouseDown(evt: any): void {
 

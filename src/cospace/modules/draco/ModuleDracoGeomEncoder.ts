@@ -50,23 +50,24 @@ class ModuleDracoGeomEncoder {
 		if (mesh.texcoords != null) {
 			meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.TEX_COORD, numPoints, 2, mesh.texcoords);
 		}
-		// let method = "edgebreaker";//encodeSpeed = 5
-		let method = "sequential";
-		if (method === "edgebreaker") {
-			encoder.SetEncodingMethod(encoderModule.MESH_EDGEBREAKER_ENCODING);
-		} else if (method === "sequential") {
-			encoder.SetEncodingMethod(encoderModule.MESH_SEQUENTIAL_ENCODING);
-		}
+		let method = "edgebreaker";//encodeSpeed = 5
+		// method = "sequential";
+		// if (method === "edgebreaker") {
+		// 	encoder.SetEncodingMethod(encoderModule.MESH_EDGEBREAKER_ENCODING);
+		// } else if (method === "sequential") {
+		// 	encoder.SetEncodingMethod(encoderModule.MESH_SEQUENTIAL_ENCODING);
+		// }
 
+		
+		encoder.SetSpeedOptions(5, 5);
+		encoder.SetAttributeQuantization(encoderModule.POSITION, 10);
+		encoder.SetEncodingMethod(encoderModule.MESH_SEQUENTIAL_ENCODING);
 
 		const encodedData = new encoderModule.DracoInt8Array();
 		// Use default encoding setting.
 		const encodedLen = encoder.EncodeMeshToDracoBuffer(dracoMesh, encodedData);
 
-		console.log("ModuleDracoGeomEncoder::receiveCall()..., encodedData: ", encodedData);
 		console.log("ModuleDracoGeomEncoder::receiveCall()..., encodedLen: ", encodedLen);
-		console.log("ModuleDracoGeomEncoder::receiveCall()..., encodedData.data: ", encodedData.data);
-		console.log("ModuleDracoGeomEncoder::receiveCall()..., encodedData.GetValue: ", encodedData.GetValue());
 
 		// draco file buf
         const fileBuffer = new ArrayBuffer(encodedLen);
@@ -109,7 +110,7 @@ class DracoGeomEncodeTask implements SubThreadModule {
 	postDataMessage(data: any, transfers?: ArrayBuffer[]): void {
 		ThreadCore.postMessageToThread(data, transfers);
 	}
-	initDecoder(data: any): void {
+	initEncoder(data: any): void {
 		let bin: ArrayBuffer = data.streams[0];
 		this.encoder["wasmBinary"] = bin;
 		this.encoder["onModuleLoaded"] = (module: any): void => {
@@ -136,7 +137,7 @@ class DracoGeomEncodeTask implements SubThreadModule {
 				this.m_wasmData = data.data;
 				//console.log("#####$$$ Sub Worker mesh parser task DRACO_THREAD_ACQUIRE_DATA, data: ", data);
 				if (this.m_dependencyFinish && this.m_wasmData != null) {
-					this.initDecoder(this.m_wasmData);
+					this.initEncoder(this.m_wasmData);
 				}
 				break;
 			default:
@@ -150,7 +151,7 @@ class DracoGeomEncodeTask implements SubThreadModule {
 	dependencyFinish(): void {
 		this.m_dependencyFinish = true;
 		if (this.m_dependencyFinish && this.m_wasmData != null) {
-			this.initDecoder(this.m_wasmData);
+			this.initEncoder(this.m_wasmData);
 		}
 	}
 }

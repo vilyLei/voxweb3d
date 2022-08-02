@@ -38,7 +38,7 @@ class DracoGeomEncodeTask extends ThreadTask {
 				,geomObject.normals
 				,geomObject.indices
 			]
-            this.addDataWithParam(DracoTaskCMD.PARSE, streams, {url: url, index: index});
+            this.addDataWithParam(DracoTaskCMD.ENCODE, streams, {url: url, index: index});
         }
     }
 
