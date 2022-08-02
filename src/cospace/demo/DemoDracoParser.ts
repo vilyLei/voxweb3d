@@ -53,7 +53,7 @@ export class DemoDracoParser {
 		// draco 模型数据url
 		let url = "static/private/draco/geom.drc";
 		// draco模型数据字节分段信息
-		let segRangeList: number[] = [0, 1470];
+		let segRangeList: number[] = [0, 1306];
 
 		this.m_dracoGeomBuilder.load(url, segRangeList);
 	}

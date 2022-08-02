@@ -23,13 +23,13 @@ class ModuleDracoGeomEncoder {
 		// {vertices: ArrayBuffer, uv: ArrayBuffer, normals: ArrayBuffer, indices: ArrayBuffer};
 
 		const mesh: {
-			indices: Uint32Array;
+			indices: Uint16Array;
 			vertices: Float32Array;
 			normals: Float32Array;
 			colors: Float32Array;
 			texcoords: Float32Array;
 		} = {
-			indices: new Uint32Array(streams[3]),
+			indices: new Uint16Array(streams[3]),
 			vertices: new Float32Array(streams[0]),
 			texcoords: new Float32Array(streams[1]),
 			normals: new Float32Array(streams[2]),
@@ -39,7 +39,9 @@ class ModuleDracoGeomEncoder {
 		const numFaces = mesh.indices.length / 3;
 		const numPoints = mesh.vertices.length;
 		meshBuilder.AddFacesToMesh(dracoMesh, numFaces, mesh.indices);
-
+		console.log("numFaces: ",numFaces);
+		console.log("numPoints: ",numPoints);
+		console.log("mesh: ",mesh);
 		meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.POSITION, numPoints, 3, mesh.vertices);
 		if (mesh.normals != null) {
 			meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.NORMAL, numPoints, 3, mesh.normals);
@@ -127,7 +129,7 @@ class DracoGeomEncodeTask implements SubThreadModule {
 
 		// console.log("data.taskCmd: ", data.taskCmd);
 		switch (data.taskCmd) {
-			case CMD.PARSE:
+			case CMD.ENCODE:
 				let parseData = this.dracoParser.receiveCall(data);
 				data.data = { buf: parseData.data, errorFlag: parseData.errorFlag };
 				this.postDataMessage(data, parseData.transfers);
