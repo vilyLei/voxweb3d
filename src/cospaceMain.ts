@@ -4,6 +4,7 @@
 // import { DemoCTMLoadAndParser as Demo } from "./cospace/demo/DemoCTMLoadAndParser";
 // import { DemoCTMParser as Demo } from "./cospace/demo/DemoCTMParser";
 import { DemoDracoParser as Demo } from "./cospace/demo/DemoDracoParser";
+// import { DemoDracoEncode as Demo } from "./cospace/demo/DemoDracoEncode";
 // import { DemoDracoParser2 as Demo } from "./cospace/demo/DemoDracoParser2";
 // import { DemoFBXParser as Demo } from "./cospace/demo/DemoFBXParser";
 // import { DemoGLBParser as Demo } from "./cospace/demo/DemoGLBParser";

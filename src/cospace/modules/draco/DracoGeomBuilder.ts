@@ -37,6 +37,7 @@ class DracoGeomBuilder {
             let wasmUrl: string = "d2.md";
             let wapperUrl: string = "w2.js";
             if(this.m_dracoWasmVersion != 2) {
+                console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx");
                 wasmUrl = "d1.md";
                 wapperUrl = "w1.js";
             }

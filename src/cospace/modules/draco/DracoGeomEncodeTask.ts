@@ -3,7 +3,7 @@ import { TaskUniqueNameDependency, TaskJSFileDependency } from "../thread/contro
 import { ThreadTask } from "../thread/control/ThreadTask";
 import { DracoTaskCMD } from "./DracoTaskCMD";
 
-type DracoSrcGeomObject = {vertices: ArrayBuffer, uv: ArrayBuffer, normals: ArrayBuffer, indices: ArrayBuffer};
+type DracoSrcGeomObject = {vertices: ArrayBuffer, texcoords: ArrayBuffer, normals: ArrayBuffer, indices: ArrayBuffer};
 interface DracoGeomEncodeTaskListener {
     dracoEncodeFinish(buf: ArrayBuffer, url: string, index: number): void;
 }
@@ -34,7 +34,7 @@ class DracoGeomEncodeTask extends ThreadTask {
         if (geomObject != null) {
 			let streams = [
 				geomObject.vertices
-				,geomObject.uv
+				,geomObject.texcoords
 				,geomObject.normals
 				,geomObject.indices
 			]
@@ -47,12 +47,8 @@ class DracoGeomEncodeTask extends ThreadTask {
 
         console.log("XXXX DracoGeomEncodeTask::parseDone(), data: ", data);
 
-        switch (data.taskCmd) {
-            case DracoTaskCMD.PARSE:
-
-                break;
-            default:
-                break;
+        if(this.m_listener != null) {
+            this.m_listener.dracoEncodeFinish(data.data.buf, data.descriptor.url, data.descriptor.index);
         }
         return true;
     }

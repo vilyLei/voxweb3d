@@ -36,20 +36,35 @@ export class DemoDracoParser {
 		// 建立 draco 模型数据builder(包含加载和解析)
 		this.m_dracoGeomBuilder = new DracoGeomBuilder("static/cospace/modules/draco/ModuleDracoGeomParser.js");
 
-		// draco 模型数据url
-		let url = "static/assets/modules/clothRoll.rawmd";
 		this.m_dracoGeomBuilder.initialize(this.m_threadSchedule);
 		this.m_dracoGeomBuilder.setListener(this);
 
-		// draco模型数据字节分段信息
-		let segRangeList: number[] = [950486, 1900738, 0, 950486, 1900738, 1907181, 1907181, 1912537, 1912537, 1920151, 1920151, 1924126];
-		this.m_dracoGeomBuilder.load(url, segRangeList);
+		this.loadDraco01();
+		// this.loadDraco();
 
 		document.onmousedown = (evt: any): void => {
 			this.mouseDown(evt);
 		};
+		//static/private/draco/geom.draco
 		this.update();
 	}
+	private loadDraco01(): void {
+
+		// draco 模型数据url
+		let url = "static/private/draco/geom.draco";
+		// draco模型数据字节分段信息
+		let segRangeList: number[] = [0,2068];
+		this.m_dracoGeomBuilder.load(url, segRangeList);
+	}
+	private loadDraco(): void {
+
+		// draco 模型数据url
+		let url = "static/assets/modules/clothRoll.rawmd";
+		// draco模型数据字节分段信息
+		let segRangeList: number[] = [950486, 1900738, 0, 950486, 1900738, 1907181, 1907181, 1912537, 1912537, 1920151, 1920151, 1924126];
+		this.m_dracoGeomBuilder.load(url, segRangeList);
+	}
+
 	// 单个draco segment 几何数据解析结束之后的回调
 	dracoParse(model: GeometryModelDataType, index: number, total: number): void {
 	}

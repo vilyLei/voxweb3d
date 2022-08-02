@@ -41,14 +41,14 @@ class ModuleDracoGeomEncoder {
 		meshBuilder.AddFacesToMesh(dracoMesh, numFaces, mesh.indices);
 
 		meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.POSITION, numPoints, 3, mesh.vertices);
-		if (mesh.hasOwnProperty("normals")) {
+		if (mesh.normals != null) {
 			meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.NORMAL, numPoints, 3, mesh.normals);
 		}
 		if (mesh.colors != null) {
 			meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.COLOR, numPoints, 3, mesh.colors);
 		}
 		if (mesh.texcoords != null) {
-			meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.TEX_COORD, numPoints, 3, mesh.texcoords);
+			meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.TEX_COORD, numPoints, 2, mesh.texcoords);
 		}
 		// let method = "edgebreaker";//encodeSpeed = 5
 		let method = "sequential";
@@ -68,11 +68,21 @@ class ModuleDracoGeomEncoder {
 		console.log("ModuleDracoGeomEncoder::receiveCall()..., encodedData.data: ", encodedData.data);
 		console.log("ModuleDracoGeomEncoder::receiveCall()..., encodedData.GetValue: ", encodedData.GetValue());
 
+		// draco file buf
+        const fileBuffer = new ArrayBuffer(encodedLen);
+        const fileData = new Int8Array(fileBuffer);
+		
+        for (let i = 0; i < encodedLen; i++) {
+			fileData[i] = encodedData.GetValue(i);
+        }
+
 		encoderModule.destroy(dracoMesh);
 		encoderModule.destroy(encoder);
 		encoderModule.destroy(meshBuilder);
 
-		let dataObj: any = { data: null, errorFlag: 0 };
+		let transfers = streams.slice(0);
+		transfers.push(fileBuffer);
+		let dataObj: any = { data: fileData, transfers: transfers, errorFlag: 0 };
 		return dataObj;
 	}
 }
@@ -118,7 +128,7 @@ class DracoGeomEncodeTask implements SubThreadModule {
 		switch (data.taskCmd) {
 			case CMD.PARSE:
 				let parseData = this.dracoParser.receiveCall(data);
-				data.data = { model: parseData.data, errorFlag: parseData.errorFlag };
+				data.data = { buf: parseData.data, errorFlag: parseData.errorFlag };
 				this.postDataMessage(data, parseData.transfers);
 				break;
 			case CMD.THREAD_ACQUIRE_DATA:

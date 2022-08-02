@@ -8,9 +8,10 @@ import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 import Box3DEntity from "../../vox/entity/Box3DEntity";
 import MeshBase from "../../vox/mesh/MeshBase";
 import { NormalUVViewerMaterial } from "./material/NormalUVViewerMaterial";
+import { FileIO } from "../../app/slickRoad/io/FileIO";
 
 /**
- * draco 加载解析多线程示例
+ * draco 编码多线程示例
  */
 export class DemoDracoEncode {
 	constructor() { }
@@ -68,7 +69,10 @@ export class DemoDracoEncode {
 	// draco 编码结束后回调
 	dracoEncodeFinish(buf: ArrayBuffer, url: string, index: number): void {
 
-		console.log("dracoParseFinish buf: ", buf);
+		console.log("dracoEncodeFinish buf: ", buf);
+
+		let f = new FileIO();
+		f.downloadBinFile(buf,url,"draco");
 	}
 	private mouseDown(evt: any): void {
 
@@ -77,10 +81,10 @@ export class DemoDracoEncode {
 		console.log("mesh: ",mesh);
 
 		let geomData: DracoSrcGeomObject = {
-			vertices: mesh.getVS().buffer,
-			uv: mesh.getUVS().buffer,
-			normals: mesh.getNVS().buffer,
-			indices: mesh.getIVS().buffer
+			vertices: mesh.getVS().buffer.slice(0),
+			texcoords: mesh.getUVS().buffer.slice(0),
+			normals: mesh.getNVS().buffer.slice(0),
+			indices: mesh.getIVS().buffer.slice(0)
 		};
 
 		this.m_dracoGeomEncoder.setParseData(geomData, "geom", 0);
