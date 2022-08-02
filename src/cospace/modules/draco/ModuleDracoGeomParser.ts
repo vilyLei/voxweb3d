@@ -311,8 +311,8 @@ class DracoGeomParseTask implements SubThreadModule {
 
 	constructor() {
 		this.m_currTaskClass = ThreadCore.getCurrTaskClass();
-		console.log("DracoGeomParseTask::constructor(), currTaskClass: ",this.m_currTaskClass);
-		ThreadCore.setCurrTaskClass( this.m_currTaskClass );
+		console.log("DracoGeomParseTask::constructor(), currTaskClass: ", this.m_currTaskClass);
+		ThreadCore.setCurrTaskClass(this.m_currTaskClass);
 		ThreadCore.acquireData(this, {}, CMD.THREAD_ACQUIRE_DATA);
 		ThreadCore.useDependency(this);
 		ThreadCore.resetCurrTaskClass();
@@ -336,7 +336,7 @@ class DracoGeomParseTask implements SubThreadModule {
 		this.decoder["onModuleLoaded"] = (module: any): void => {
 			this.parser = module;
 			this.dracoParser.parser = module;
-			ThreadCore.setCurrTaskClass( this.m_currTaskClass );
+			ThreadCore.setCurrTaskClass(this.m_currTaskClass);
 			ThreadCore.transmitData(this, data, CMD.THREAD_TRANSMIT_DATA, [bin]);
 			ThreadCore.initializeExternModule(this);
 			ThreadCore.resetCurrTaskClass();

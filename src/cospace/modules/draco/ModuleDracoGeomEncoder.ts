@@ -97,8 +97,8 @@ class DracoGeomEncodeTask implements SubThreadModule {
 	private m_wasmData: any = null;
 	private m_currTaskClass: number = -1;
 	threadIndex: number = 0;
-	parser: any = null;
-	encoder: any = { wasmBinary: null };
+	encoder: any = null;
+	encoderObj: any = { wasmBinary: null };
 	dracoParser = new ModuleDracoGeomEncoder();
 
 	constructor() {
@@ -113,17 +113,18 @@ class DracoGeomEncodeTask implements SubThreadModule {
 		ThreadCore.postMessageToThread(data, transfers);
 	}
 	initEncoder(data: any): void {
+
 		let bin: ArrayBuffer = data.streams[0];
-		this.encoder["wasmBinary"] = bin;
-		this.encoder["onModuleLoaded"] = (module: any): void => {
-			this.parser = module;
+		this.encoderObj["wasmBinary"] = bin;
+		this.encoderObj["onModuleLoaded"] = (module: any): void => {
+			this.encoder = module;
 			this.dracoParser.encoder = module;
 			ThreadCore.setCurrTaskClass(this.m_currTaskClass);
 			ThreadCore.transmitData(this, data, CMD.THREAD_TRANSMIT_DATA, [bin]);
 			ThreadCore.initializeExternModule(this);
 			ThreadCore.resetCurrTaskClass();
-		};
-		DracoEncoderModule(this.encoder);
+		}
+		DracoEncoderModule( this.encoderObj );
 	}
 	receiveData(data: any): void {
 

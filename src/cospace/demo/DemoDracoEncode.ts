@@ -10,6 +10,9 @@ import MeshBase from "../../vox/mesh/MeshBase";
 import { NormalUVViewerMaterial } from "./material/NormalUVViewerMaterial";
 import { FileIO } from "../../app/slickRoad/io/FileIO";
 
+declare var draco3d: any;
+declare var createEncoderModule: any;
+declare var DracoEncoderModule: any;
 /**
  * draco 编码多线程示例
  */
@@ -73,7 +76,6 @@ export class DemoDracoEncode {
 		f.downloadBinFile(buf,url,"drc");
 	}
 	private mouseDown(evt: any): void {
-
 	}
 	private encodeGeom(mesh: MeshBase): void {
 		console.log("mesh: ",mesh);
@@ -84,9 +86,97 @@ export class DemoDracoEncode {
 			normals: mesh.getNVS().buffer.slice(0),
 			indices: mesh.getIVS().buffer.slice(0)
 		};
-
-		this.m_dracoGeomEncoder.setParseData(geomData, "geom", 0);
+		// static/cospace/modules/dracoLib/w3.js
+		// this.m_dracoGeomEncoder.setParseData(geomData, "geom", 0);
+		this.loadAppModule("static/cospace/modules/dracoLib/dEncoder.js",geomData);
 	}
+	private encoder: any = null;
+	private encoderObj: any = { wasmBinary: null };
+	private encode(encoderModule: any, geomData: DracoSrcGeomObject): void {
+
+		const geomMesh: {
+			indices: Uint16Array;
+			vertices: Float32Array;
+			normals: Float32Array;
+			colors: Float32Array;
+			texcoords: Float32Array;
+		} = {
+			indices: new Uint16Array(geomData.indices),
+			vertices: new Float32Array(geomData.vertices),
+			texcoords: new Float32Array(geomData.texcoords),
+			normals: new Float32Array(geomData.normals),
+			colors: null
+		};
+		const encoder = new encoderModule.Encoder();
+		const meshBuilder = new encoderModule.MeshBuilder();
+
+        const dracoMesh = new encoderModule.Mesh();
+        const numFaces = geomMesh.indices.length / 3;
+        const numPoints = geomMesh.vertices.length / 3;
+		meshBuilder.AddFacesToMesh(dracoMesh, numFaces, geomMesh.indices);
+
+        meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.POSITION, numPoints, 3, geomMesh.vertices);
+        meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.NORMAL, numPoints, 3, geomMesh.normals);
+        meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.TEX_COORD, numPoints, 2, geomMesh.texcoords);
+		// draco encode
+        const encodedData = new encoderModule.DracoInt8Array();
+        const encodedLen = encoder.EncodeMeshToDracoBuffer(dracoMesh, encodedData);
+        encoderModule.destroy(dracoMesh);
+        if (encodedLen === 0) {
+          throw Error("illgel operations");
+        }
+        // use encoded data
+        const fsData = new Int8Array( new ArrayBuffer(encodedLen) );
+        for (let i = 0; i < encodedLen; i++) {
+			fsData[i] = encodedData.GetValue(i);
+        }
+        encoderModule.destroy(encodedData);
+
+		this.dracoEncodeFinish(fsData, "geom", 0);
+	}
+	private initAppCode(geomData: DracoSrcGeomObject): void {
+
+		// const encoderModule = createEncoderModule({});
+		// const encoder = new encoderModule.Encoder();
+		// const meshBuilder = new encoderModule.MeshBuilder();
+		// this.encoderObj["wasmBinary"] = null;
+		
+		this.encoderObj["onModuleLoaded"] = (module: any): void => {
+			this.encoder = module;
+			// console.log("build ok");
+			this.encode(module, geomData);
+			// this.dracoParser.encoder = module;
+			// ThreadCore.setCurrTaskClass(this.m_currTaskClass);
+			// ThreadCore.transmitData(this, data, CMD.THREAD_TRANSMIT_DATA, [bin]);
+			// ThreadCore.initializeExternModule(this);
+			// ThreadCore.resetCurrTaskClass();
+		}
+		DracoEncoderModule(this.encoderObj);
+	}
+    private loadAppModule(purl: string, geomData: DracoSrcGeomObject): void {
+
+        let codeLoader: XMLHttpRequest = new XMLHttpRequest();
+        codeLoader.open("GET", purl, true);
+        codeLoader.onerror = function (err) {
+            console.error("load error: ", err);
+        }
+
+        codeLoader.onprogress = (e) => {
+        }
+        codeLoader.onload = (evt) => {
+
+            console.log("module js file loaded.");
+            let scriptEle: HTMLScriptElement = document.createElement("script");
+            scriptEle.onerror = (evt) => {
+                console.error("module script onerror, e: ", evt);
+            }
+            scriptEle.type = "text\/javascript";
+            scriptEle.innerHTML = codeLoader.response;
+            document.head.appendChild(scriptEle);
+			this.initAppCode(geomData);
+        }
+        codeLoader.send(null);
+    }
 	private initScene(): void {
 
 		if (this.m_rscene == null) {
@@ -110,10 +200,7 @@ export class DemoDracoEncode {
 			this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
 			this.m_cameraZoomController.syncLookAt = true;
 
-			this.m_stageDragSwinger.initialize(
-				this.m_rscene.getStage3D(),
-				this.m_rscene.getCamera()
-			);
+			this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
 			this.m_statusDisp.initialize();
 			//this.m_profileInstance.initialize(this.m_rscene.getRenderer());
