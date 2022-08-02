@@ -2,7 +2,6 @@ import Vector3D from "../../vox/math/Vector3D";
 import MouseEvent from "../../vox/event/MouseEvent";
 import RendererDevice from "../../vox/render/RendererDevice";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
-import CameraTrack from "../../vox/view/CameraTrack";
 
 import RendererParam from "../../vox/scene/RendererParam";
 import RendererScene from "../../vox/scene/RendererScene";
@@ -46,7 +45,6 @@ export class DemoNormalViewer {
 	private m_cospace: CoSpace = new CoSpace();
 
 	private m_rscene: RendererScene = null;
-	private m_camTrack: CameraTrack = null;
 	private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
 	private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
@@ -102,8 +100,6 @@ export class DemoNormalViewer {
 				this.m_rscene.getStage3D(),
 				this.m_rscene.getCamera()
 			);
-			this.m_camTrack = new CameraTrack();
-			this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
 			this.m_statusDisp.initialize();
 			//this.m_profileInstance.initialize(this.m_rscene.getRenderer());
