@@ -1,5 +1,6 @@
 import { ThreadSchedule } from "../modules/thread/ThreadSchedule";
 import { DracoSrcGeomObject, DracoGeomEncoder } from "../modules/draco/DracoGeomEncoder";
+import { CTMParseTask } from "../modules/ctm/CTMParseTask";
 import { GeometryModelDataType } from "../modules/base/GeometryModelDataType";
 import { Axis3DEntity, DataMesh, DisplayEntity, RendererDevice, RendererParam, RendererScene } from "../voxengine/CoEngine";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
@@ -10,17 +11,21 @@ import MeshBase from "../../vox/mesh/MeshBase";
 import { NormalUVViewerMaterial } from "./material/NormalUVViewerMaterial";
 import { FileIO } from "../../app/slickRoad/io/FileIO";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
+import BinaryLoader from "../../vox/assets/BinaryLoader";
 
 declare var draco3d: any;
 declare var createEncoderModule: any;
 declare var DracoEncoderModule: any;
 /**
- * draco 编码多线程示例
+ * ctm to draco 多线程示例
  */
-export class DemoDracoEncode {
+export class DemoCTMToDraco {
 	constructor() {}
 
 	private m_threadSchedule: ThreadSchedule = new ThreadSchedule();
+
+	private m_ctmParseTask: CTMParseTask;
+
 	private m_dracoGeomEncoder: DracoGeomEncoder;
 
 	private m_rscene: RendererScene = null;
@@ -30,7 +35,7 @@ export class DemoDracoEncode {
 	private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
 	initialize(): void {
-		console.log("DemoDracoEncode::initialize()...");
+		console.log("DemoCTMToDraco::initialize()...");
 
 		let dependencyGraphObj: object = {
 			nodes: [
@@ -55,8 +60,15 @@ export class DemoDracoEncode {
 		// 建立 draco 模型数据builder(包含加载和解析)
 		this.m_dracoGeomEncoder = new DracoGeomEncoder("static/cospace/modules/draco/ModuleDracoGeomEncoder.js");
 
-		// draco 模型数据url
-		let url = "static/assets/modules/clothRoll.rawmd";
+
+		// 创建 ctm 加载解析任务
+		let ctmParseTask = new CTMParseTask("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js");
+		// 绑定当前任务到多线程调度器
+		this.m_threadSchedule.bindTask(ctmParseTask);
+		// 设置一个任务完成的侦听器
+		ctmParseTask.setListener(this);
+		this.m_ctmParseTask = ctmParseTask;
+
 		this.m_dracoGeomEncoder.initialize(this.m_threadSchedule);
 		this.m_dracoGeomEncoder.setListener(this);
 
@@ -65,6 +77,66 @@ export class DemoDracoEncode {
 		};
 		this.update();
 		this.initScene();
+
+		// let baseUrl: string = this.m_baseUrl;
+		// let urls: string[] = [];
+		// for (let i = 0; i <= 26; ++i) {
+		// 	this.m_ctmName = "sh202_" + i;
+		// 	urls.push(baseUrl + "sh202/" + this.m_ctmName + ".ctm");
+		// }
+		// urls = [baseUrl + "errorNormal.ctm"];
+
+		// this.parseCTMData( urls[0] );
+
+		this.parseNext();
+	}
+
+	private m_baseUrl: string = "static/private/ctm/";
+	private m_ctmName: string = "";
+	private m_index: number = 0;
+	private m_total: number = 27;
+
+	private parseNext(): void {
+
+		if(this.m_index < this.m_total) {
+
+			this.m_ctmName = "sh202_" + this.m_index;
+			this.m_ctmName = "errorNormal";
+			this.m_index++;
+
+			//let url = this.m_baseUrl + "sh202/" + this.m_ctmName + ".ctm";
+			let url = this.m_baseUrl + this.m_ctmName + ".ctm";
+			this.parseCTMData( url );
+		}
+	}
+	private setBinaryDataToTask(ctmDataBuffer: ArrayBuffer, url: string): void {
+
+		let data = new Uint8Array( ctmDataBuffer );
+		// 发送一份任务处理数据，一份数据一个子线程处理一次
+		this.m_ctmParseTask.addBinaryData(data, url);
+	}
+
+	private parseCTMData(ctmUrl: string): void {
+		let ctmLoader: BinaryLoader = new BinaryLoader();
+		ctmLoader.uuid = ctmUrl;
+		ctmLoader.load(ctmUrl, this);
+	}
+
+	loaded(buffer: ArrayBuffer, uuid: string): void {
+		this.setBinaryDataToTask(buffer, uuid);
+	}
+	loadError(status: number, uuid: string): void {}
+	// 一份任务数据处理完成后由此侦听器回调函数接收到处理结果
+	ctmParseFinish(model: GeometryModelDataType, url: string): void {
+		console.log("DemoCTMToDraco::ctmParseFinish(), model: ", model, ", url: ", url);
+
+		let geomData: DracoSrcGeomObject = {
+			vertices: model.vertices.buffer.slice(0),
+			texcoords: model.uvsList[0].buffer.slice(0),
+			normals: model.normals.buffer.slice(0),
+			indices: model.indices.buffer.slice(0)
+		};
+		this.m_dracoGeomEncoder.setParseData(geomData, "ctm_geom", 0);
 	}
 	// draco 编码结束后回调
 	dracoEncodeFinish(buf: ArrayBuffer, url: string, index: number): void {
@@ -80,7 +152,7 @@ export class DemoDracoEncode {
 		// this.m_rscene.addEntity(boxEntity);
 
 		let f = new FileIO();
-		f.downloadBinFile(buf, url, "drc");
+		f.downloadBinFile(buf, this.m_ctmName, "drc");
 	}
 	private mouseDown(evt: any): void {}
 	private encodeGeom(mesh: MeshBase): void {
@@ -92,97 +164,11 @@ export class DemoDracoEncode {
 			normals: mesh.getNVS().buffer.slice(0),
 			indices: mesh.getIVS().buffer.slice(0)
 		};
-		let multi_thread_encode = true;
-		if (multi_thread_encode) {
-			this.m_dracoGeomEncoder.setParseData(geomData, "box_geom", 0);
-		} else {
-			this.loadAppModule("static/cospace/modules/dracoLib/dEncoder.js", geomData);
-		}
-	}
-	private encoder: any = null;
-	private encoderObj: any = { wasmBinary: null };
-	private encode(encoderModule: any, geomData: DracoSrcGeomObject): void {
-		const geomMesh: {
-			indices: Uint16Array;
-			vertices: Float32Array;
-			normals: Float32Array;
-			colors: Float32Array;
-			texcoords: Float32Array;
-		} = {
-			indices: new Uint16Array(geomData.indices),
-			vertices: new Float32Array(geomData.vertices),
-			texcoords: new Float32Array(geomData.texcoords),
-			normals: new Float32Array(geomData.normals),
-			colors: null
-		};
-		const encoder = new encoderModule.Encoder();
-		const meshBuilder = new encoderModule.MeshBuilder();
-
-		const dracoMesh = new encoderModule.Mesh();
-		const numFaces = geomMesh.indices.length / 3;
-		const numPoints = geomMesh.vertices.length / 3;
-		meshBuilder.AddFacesToMesh(dracoMesh, numFaces, geomMesh.indices);
-
-		meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.POSITION, numPoints, 3, geomMesh.vertices);
-		meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.NORMAL, numPoints, 3, geomMesh.normals);
-		meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.TEX_COORD, numPoints, 2, geomMesh.texcoords);
-		// draco encode
-		const encodedData = new encoderModule.DracoInt8Array();
-		const encodedLen = encoder.EncodeMeshToDracoBuffer(dracoMesh, encodedData);
-		encoderModule.destroy(dracoMesh);
-		if (encodedLen === 0) {
-			throw Error("illgel operations");
-		}
-		// use encoded data
-		const fsData = new Int8Array(new ArrayBuffer(encodedLen));
-		for (let i = 0; i < encodedLen; i++) {
-			fsData[i] = encodedData.GetValue(i);
-		}
-		encoderModule.destroy(encodedData);
-
-		this.dracoEncodeFinish(fsData, "geom", 0);
-	}
-	private initAppCode(geomData: DracoSrcGeomObject): void {
-		// const encoderModule = createEncoderModule({});
-		// const encoder = new encoderModule.Encoder();
-		// const meshBuilder = new encoderModule.MeshBuilder();
-		// this.encoderObj["wasmBinary"] = null;
-
-		this.encoderObj["onModuleLoaded"] = (module: any): void => {
-			this.encoder = module;
-			// console.log("build ok");
-			this.encode(module, geomData);
-			// this.dracoParser.encoder = module;
-			// ThreadCore.setCurrTaskClass(this.m_currTaskClass);
-			// ThreadCore.transmitData(this, data, CMD.THREAD_TRANSMIT_DATA, [bin]);
-			// ThreadCore.initializeExternModule(this);
-			// ThreadCore.resetCurrTaskClass();
-		};
-		DracoEncoderModule(this.encoderObj);
-	}
-	private loadAppModule(purl: string, geomData: DracoSrcGeomObject): void {
-		let codeLoader: XMLHttpRequest = new XMLHttpRequest();
-		codeLoader.open("GET", purl, true);
-		codeLoader.onerror = function(err) {
-			console.error("load error: ", err);
-		};
-
-		codeLoader.onprogress = e => {};
-		codeLoader.onload = evt => {
-			console.log("module js file loaded.");
-			let scriptEle: HTMLScriptElement = document.createElement("script");
-			scriptEle.onerror = evt => {
-				console.error("module script onerror, e: ", evt);
-			};
-			scriptEle.type = "text/javascript";
-			scriptEle.innerHTML = codeLoader.response;
-			document.head.appendChild(scriptEle);
-			this.initAppCode(geomData);
-		};
-		codeLoader.send(null);
+		//this.m_dracoGeomEncoder.setParseData(geomData, "box_geom", 0);
 	}
 	private initScene(): void {
 		if (this.m_rscene == null) {
+
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 			//RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
@@ -209,14 +195,6 @@ export class DemoDracoEncode {
 
 			this.m_rscene.setClearRGBColor3f(0.5, 0.5, 0.5);
 
-			//   DivLog.ShowLog("renderer inited.");
-			//   DivLog.ShowLog(RendererDevice.GPU_RENDERER);
-			// let k = this.calcTotal(9);
-			// console.log("k: ",k);
-			// k = this.calcTotal2(55);
-			// console.log("k2: ",k);
-			// return;
-
 			let axis: Axis3DEntity = new Axis3DEntity();
 			axis.initialize(300);
 			this.m_rscene.addEntity(axis);
@@ -232,12 +210,15 @@ export class DemoDracoEncode {
 
 			this.encodeGeom(boxEntity.getMesh());
 			//*/
+
+			/*
 			let sphEntity = new Sphere3DEntity();
 			sphEntity.setMaterial(material);
 			sphEntity.initialize(100,20,20)
 			this.m_rscene.addEntity(sphEntity);
 
 			this.encodeGeom(sphEntity.getMesh());
+			//*/
 		}
 	}
 	private m_timeoutId: any = -1;
@@ -259,4 +240,4 @@ export class DemoDracoEncode {
 	}
 }
 
-export default DemoDracoEncode;
+export default DemoCTMToDraco;

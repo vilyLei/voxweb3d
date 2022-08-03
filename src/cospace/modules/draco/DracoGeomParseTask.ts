@@ -54,7 +54,17 @@ class DracoGeomParseTask extends ThreadTask {
         if (this.m_enabled && this.m_segs != null && this.m_segIndex < this.m_segs.length) {
             for (let i: number = 0; i < this.m_thrScheDule.getMaxThreadsTotal(); i++) {
                 if (this.m_segIndex < this.m_segs.length) {
-                    let buf: ArrayBuffer = this.m_srcBuf.slice(this.m_segs[this.m_segIndex], this.m_segs[this.m_segIndex + 1]);
+
+					let begin = this.m_segs[this.m_segIndex];
+					let end = this.m_segs[this.m_segIndex + 1];
+
+					if(begin < 0) {
+						begin = 0;
+					}
+					if(end < 8 || end > this.m_srcBuf.byteLength) {
+						end = this.m_srcBuf.byteLength;
+					}
+                    let buf: ArrayBuffer = this.m_srcBuf.slice(begin, end);
                     this.parseData(buf, 0, buf.byteLength);
                     this.m_segIndex += 2;
                 }

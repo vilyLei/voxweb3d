@@ -43,7 +43,7 @@ void main() {
     vec3 backColor = vec3(sign(f2.x * f2.y), 1.0, 1.0);
     vec3 dstColor = facing ? frontColor : backColor;
 
-    FragColor = vec4(dstColor, 1.0);
+    FragColor = vec4(color, 1.0);
     // FragColor = vec4(color, 1.0);
 }
 `;

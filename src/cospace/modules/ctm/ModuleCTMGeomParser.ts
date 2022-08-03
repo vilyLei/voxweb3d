@@ -20,7 +20,9 @@ class CTMDataParser extends BaseTaskInThread {
         let fileBody: CTMFileBody = null;
         try {
 
+			let losstime = Date.now();
             fileBody = parser.parserBinaryData(dataBuf);
+			console.log("ctm decode lossTime: ", (Date.now() - losstime));
 
             // const readerBuf = new FileReader();
             // readerBuf.onload = (e) => {

@@ -275,12 +275,15 @@ class DracoGeomParser {
 			if (descriptor.endI > descriptor.beginI) {
 				let u8arr = streams[0];
 				try {
+					let losstime = Date.now();
+
 					dataObj = this.parseData(
 						u8arr,
 						descriptor.beginI,
 						descriptor.endI,
 						descriptor.status
 					);
+					console.log("draco decode lossTime: ", (Date.now() - losstime));
 				} catch (err) {
 					errorFlag = -1;
 					dataObj = null;

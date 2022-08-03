@@ -52,18 +52,18 @@ class ModuleDracoGeomEncoder {
 		if (mesh.texcoords != null) {
 			meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.TEX_COORD, numPoints, 2, mesh.texcoords);
 		}
-		let method = "edgebreaker";//encodeSpeed = 5
+
+		// let method = "edgebreaker";//encodeSpeed = 5
 		// method = "sequential";
 		// if (method === "edgebreaker") {
 		// 	encoder.SetEncodingMethod(encoderModule.MESH_EDGEBREAKER_ENCODING);
 		// } else if (method === "sequential") {
 		// 	encoder.SetEncodingMethod(encoderModule.MESH_SEQUENTIAL_ENCODING);
 		// }
-
-		
-		encoder.SetSpeedOptions(5, 5);
-		encoder.SetAttributeQuantization(encoderModule.POSITION, 10);
-		encoder.SetEncodingMethod(encoderModule.MESH_SEQUENTIAL_ENCODING);
+		let speed = 10;
+		encoder.SetSpeedOptions(speed, speed);
+		// encoder.SetAttributeQuantization(encoderModule.POSITION, 10);
+		// encoder.SetEncodingMethod(encoderModule.MESH_SEQUENTIAL_ENCODING);
 
 		const encodedData = new encoderModule.DracoInt8Array();
 		// Use default encoding setting.
@@ -74,7 +74,7 @@ class ModuleDracoGeomEncoder {
 		// draco file buf
         const fileBuffer = new ArrayBuffer(encodedLen);
         const fileData = new Int8Array(fileBuffer);
-		
+
         for (let i = 0; i < encodedLen; i++) {
 			fileData[i] = encodedData.GetValue(i);
         }

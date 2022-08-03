@@ -19,7 +19,9 @@ import MaterialBase from "../../vox/material/MaterialBase";
  */
 export class DemoCTMParser {
 	private m_threadSchedule: ThreadSchedule;
+
 	private m_ctmParseTask: CTMParseTask;
+
 	private m_userInterac: UserInteraction = new UserInteraction();
 	private m_rscene: RendererScene = new RendererScene();
 	constructor() {}
@@ -32,15 +34,14 @@ export class DemoCTMParser {
 		schedule.initialize(2, "static/cospace/core/code/ThreadCore.umd.min.js");
 
 		// 创建 ctm 加载解析任务
-		let ctmParseTask = new CTMParseTask("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.min.js");
+		let ctmParseTask = new CTMParseTask("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js");
 		// 绑定当前任务到多线程调度器
 		schedule.bindTask(ctmParseTask);
-
 		// 设置一个任务完成的侦听器
 		ctmParseTask.setListener(this);
+		this.m_ctmParseTask = ctmParseTask;
 
 		this.m_threadSchedule = schedule;
-		this.m_ctmParseTask = ctmParseTask;
 
 		// 启动循环调度
 		this.update();
@@ -57,6 +58,7 @@ export class DemoCTMParser {
 			urls.push(baseUrl + "sh202/sh202_" + i + ".ctm");
 		}
 		urls = [baseUrl + "errorNormal.ctm"];
+		urls = [baseUrl + "sh202/sh202_5.ctm"];
 		//let ctmUrl: string = "static/assets/ctm/hand.ctm";
 		this.initCTMFromBin(urls[0]);
 	}
@@ -79,6 +81,7 @@ export class DemoCTMParser {
 	}
 	// 一份任务数据处理完成后由此侦听器回调函数接收到处理结果
 	ctmParseFinish(model: GeometryModelDataType, url: string): void {
+		console.log("this.m_lossTime: ", (Date.now() - this.m_lossTime));
 		let material = this.createNormalMaterial();
 		material.initializeByCodeBuf();
 
@@ -167,7 +170,9 @@ void main() {
 	}
 	private mouseDown(evt: any): void {}
 
+	private m_lossTime = 0;
 	private initCTMFromBin(ctmUrl: string): void {
+		this.m_lossTime = Date.now();
 		let ctmLoader: BinaryLoader = new BinaryLoader();
 		ctmLoader.uuid = ctmUrl;
 		ctmLoader.load(ctmUrl, this);
