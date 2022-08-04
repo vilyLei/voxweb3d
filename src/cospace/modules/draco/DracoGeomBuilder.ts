@@ -66,8 +66,13 @@ class DracoGeomBuilder {
 					console.error("the draco mesh parseing do not finish, can not load other draco data.");
 				}
 				this.m_dracoTask.reset();
+                this.m_dracoTask.setParseSrcData(this.m_meshBuf, this.m_segRangeList);
 			}
-			this.m_dracoTask.setParseSrcData(this.m_meshBuf, this.m_segRangeList);
+		}
+	}
+    parseSingleSegData(bufData: ArrayBuffer, url: string, index: number = 0): void {
+		if(bufData != null) {
+			this.m_dracoTask.setSingleSegData(bufData, url, index);
 		}
 	}
     /**

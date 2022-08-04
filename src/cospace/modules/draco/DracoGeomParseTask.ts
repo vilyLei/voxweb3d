@@ -6,6 +6,7 @@ import { GeometryModelDataType, DracoDataType } from "./DracoDataType";
 import { DracoTaskCMD } from "./DracoTaskCMD";
 
 interface DracoGeomParseTaskListener {
+    dracoParseSingle?(model: GeometryModelDataType, url: string, index: number): void;
     dracoParse(model: GeometryModelDataType, index: number, total: number): void;
     dracoParseFinish(models: GeometryModelDataType[], total: number): void;
 }
@@ -20,6 +21,7 @@ class DracoGeomParseTask extends ThreadTask {
     private m_srcBuf: ArrayBuffer = null;
     private m_segs: number[] = null;
     private m_segIndex: number = 0;
+    private m_single: boolean = false;
     /**
      * @param src 子线程中代码模块的js文件url 或者 依赖的唯一名称
      * @param thrScheDule 多线程调度器
@@ -42,6 +44,14 @@ class DracoGeomParseTask extends ThreadTask {
         this.m_segIndex = 0;
 		this.m_segs = null;
 		this.m_enabled = true;
+    }
+    
+    setSingleSegData(bufData: ArrayBuffer, url: string, index: number = 0): void {
+
+        if (bufData != null) {
+            this.m_single = true;
+            this.addDataWithParam(DracoTaskCMD.PARSE, [new Uint8Array(bufData)], {beginI: 0, endI: bufData.byteLength, status: 0, url: url, index: index});
+        }
     }
     private parseData(bufData: ArrayBuffer, beginI: number, endI: number): void {
 
@@ -80,6 +90,7 @@ class DracoGeomParseTask extends ThreadTask {
     setParseSrcData(bufData: ArrayBuffer, segs: number[]): void {
 
         if (bufData != null && segs != null && this.m_segs == null) {
+            this.m_single = false;
             this.m_segIndex = 0;
             this.m_srcBuf = bufData;
             this.m_segs = segs;
@@ -95,19 +106,24 @@ class DracoGeomParseTask extends ThreadTask {
         switch (data.taskCmd) {
             case DracoTaskCMD.PARSE:
                 this.m_enabled = true;
-                this.m_parseIndex++;
 
                 let model = data.data.model;
                 if(model.normals == undefined) model.normals = null;
                 if(model.uvsList == undefined) model.uvsList = null;
-                this.m_models.push(model);
-                if (this.m_listener != null) {
-                    if (this.isFinished()) {
-                        this.m_listener.dracoParseFinish(this.m_models, this.getParseTotal());
-                    }
-                    else {
-                        this.parseNextSeg();
-                        this.m_listener.dracoParse(model, this.getParsedIndex(), this.getParseTotal());
+                if(this.m_single) {
+                    let desc: any = data.descriptor as any;
+                    this.m_listener.dracoParseSingle(model, desc.url, desc.index);
+                }else {
+                    this.m_parseIndex++;
+                    this.m_models.push(model);
+                    if (this.m_listener != null) {
+                        if (this.isFinished()) {
+                            this.m_listener.dracoParseFinish(this.m_models, this.getParseTotal());
+                        }
+                        else {
+                            this.parseNextSeg();
+                            this.m_listener.dracoParse(model, this.getParsedIndex(), this.getParseTotal());
+                        }
                     }
                 }
                 break;

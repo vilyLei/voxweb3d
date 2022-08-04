@@ -40,7 +40,7 @@ export class DemoDracoParser {
 		// 初始化多线程调度器
 		// this.m_threadSchedule.initialize(1, "cospace/core/code/ThreadCore.umd.min.js");
 		this.m_threadSchedule.setDependencyGraphJsonString(jsonStr);
-		this.m_threadSchedule.initialize(1, "static/cospace/core/code/ThreadCore.umd.js");
+		this.m_threadSchedule.initialize(3, "static/cospace/core/code/ThreadCore.umd.js");
 
 		// 建立 draco 模型数据builder(包含加载和解析)
 		this.m_dracoGeomBuilder = new DracoGeomBuilder("static/cospace/modules/draco/ModuleDracoGeomParser.js");
@@ -48,7 +48,9 @@ export class DemoDracoParser {
 		this.m_dracoGeomBuilder.initialize(this.m_threadSchedule);
 		this.m_dracoGeomBuilder.setListener(this);
 
-		this.loadDraco01();
+		this.m_lossTime = Date.now();
+		// this.loadDraco01();
+		this.loadDraco02();
 		// this.loadDraco();
 
 		document.onmousedown = (evt: any): void => {
@@ -77,6 +79,14 @@ export class DemoDracoParser {
 
 		this.m_dracoGeomBuilder.load(url, segRangeList);
 	}
+	private m_lossTime: number = 0;
+	private loadDraco02(): void {
+		for(let i: number = 0; i < 27; ++i) {
+			let url = "static/private/draco/sh202/sh202_"+i+".drc";
+			this.loadDracoAndParseOnePartFile( url );
+		}
+	}
+	
 	private loadDraco(): void {
 		// draco 模型数据url
 		let url = "static/assets/modules/clothRoll.rawmd";
@@ -89,7 +99,8 @@ export class DemoDracoParser {
         reader.onload = e => {
             //this.m_meshBuf = <ArrayBuffer>reader.result;
             // this.m_dracoTask.setParseSrcData(this.m_meshBuf, this.m_segRangeList);
-			this.m_dracoGeomBuilder.parseBinaryData(<ArrayBuffer>reader.result)
+			// this.m_dracoGeomBuilder.parseBinaryData(<ArrayBuffer>reader.result)
+			this.m_dracoGeomBuilder.parseSingleSegData(<ArrayBuffer>reader.result, dracoDataUrl);
         };
         const request = new XMLHttpRequest();
         request.open("GET", dracoDataUrl, true);
@@ -99,6 +110,9 @@ export class DemoDracoParser {
         };
         request.send(null);
     }
+	dracoParseSingle(model: GeometryModelDataType, url: string, index: number): void {
+		this.dracoParse(model, index, 1)
+	}
 
 	// 单个draco segment 几何数据解析结束之后的回调
 	dracoParse(model: GeometryModelDataType, index: number, total: number): void {
@@ -118,8 +132,9 @@ export class DemoDracoParser {
 		entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
 		entity.setMaterial(material);
 		entity.setMesh(mesh);
-		console.log("mesh vtx total: ",mesh.getVS().length/3);
-		console.log("mesh.trisNumber: ",mesh.trisNumber);
+		// console.log("mesh vtx total: ",mesh.getVS().length/3);
+		// console.log("mesh.trisNumber: ",mesh.trisNumber);
+		console.log("loss time: ", (Date.now() - this.m_lossTime));
 		this.m_rscene.addEntity(entity);
 	}
 	// 所有 draco segment 几何数据解析结束之后的回调，表示本次加载解析任务结束

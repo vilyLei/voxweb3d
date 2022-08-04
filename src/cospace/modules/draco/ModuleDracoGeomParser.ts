@@ -321,17 +321,17 @@ class DracoGeomParseTask implements SubThreadModule {
 		ThreadCore.resetCurrTaskClass();
 	}
 	postDataMessage(data: any, transfers?: ArrayBuffer[]): void {
-		let sendData = {
-			cmd: data.cmd,
-			taskCmd: data.taskCmd,
-			threadIndex: this.threadIndex,
-			taskclass: this.m_currTaskClass,
-			srcuid: this.m_srcuid,
-			dataIndex: this.m_dataIndex,
-			streams: data.streams,
-			data: data.data
-		};
-		ThreadCore.postMessageToThread(sendData, transfers);
+		// let sendData = {
+		// 	cmd: data.cmd,
+		// 	taskCmd: data.taskCmd,
+		// 	threadIndex: this.threadIndex,
+		// 	taskclass: this.m_currTaskClass,
+		// 	srcuid: this.m_srcuid,
+		// 	dataIndex: this.m_dataIndex,
+		// 	streams: data.streams,
+		// 	data: data.data
+		// };
+		ThreadCore.postMessageToThread(data, transfers);
 	}
 	initDecoder(data: any): void {
 		let bin: ArrayBuffer = data.streams[0];
