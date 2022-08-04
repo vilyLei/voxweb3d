@@ -44,6 +44,7 @@ void main() {
     vec3 dstColor = facing ? frontColor : backColor;
 
     FragColor = vec4(color, 1.0);
+    // FragColor = vec4(v_param.xy, 1.0, 1.0);
     // FragColor = vec4(color, 1.0);
 }
 `;
@@ -65,7 +66,8 @@ void main()
 {
     vec4 viewPv = u_viewMat * u_objMat * vec4(a_vs, 1.0);
     gl_Position = u_projMat * viewPv;
-    vec3 pnv = normalize(a_nvs * inverse(mat3(u_objMat)));
+    // vec3 pnv = normalize(a_nvs * inverse(mat3(u_objMat)));
+    vec3 pnv = a_nvs;
     v_param = vec4(pnv, 1.0);
     v_uvParam = vec4(a_uvs.xy, 1.0, 1.0);
 }

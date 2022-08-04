@@ -87,37 +87,43 @@ export class DemoDracoEncode {
 		console.log("mesh: ", mesh);
 
 		let geomData: DracoSrcGeomObject = {
-			vertices: mesh.getVS().buffer.slice(0),
-			texcoords: mesh.getUVS().buffer.slice(0),
-			normals: mesh.getNVS().buffer.slice(0),
-			indices: mesh.getIVS().buffer.slice(0)
+			vertices: mesh.getVS().slice(0),
+			texcoords: mesh.getUVS().slice(0),
+			normals: mesh.getNVS().slice(0),
+			indices: mesh.getIVS().slice(0)
 		};
-		let multi_thread_encode = true;
+
+		let multi_thread_encode = false;
 		if (multi_thread_encode) {
 			this.m_dracoGeomEncoder.setParseData(geomData, "box_geom", 0);
 		} else {
 			this.loadAppModule("static/cospace/modules/dracoLib/dEncoder.js", geomData);
 		}
 	}
+
 	private encoder: any = null;
 	private encoderObj: any = { wasmBinary: null };
 	private encode(encoderModule: any, geomData: DracoSrcGeomObject): void {
 		const geomMesh: {
-			indices: Uint16Array;
+			indices: Uint16Array | Uint32Array;
 			vertices: Float32Array;
 			normals: Float32Array;
 			colors: Float32Array;
 			texcoords: Float32Array;
 		} = {
-			indices: new Uint16Array(geomData.indices),
-			vertices: new Float32Array(geomData.vertices),
-			texcoords: new Float32Array(geomData.texcoords),
-			normals: new Float32Array(geomData.normals),
+			indices: (geomData.indices),
+			vertices: (geomData.vertices),
+			texcoords: (geomData.texcoords),
+			normals: (geomData.normals),
 			colors: null
 		};
 		const encoder = new encoderModule.Encoder();
 		const meshBuilder = new encoderModule.MeshBuilder();
 
+		let speed: number = 10.0;
+		console.log("speed: ",speed);
+
+		encoder.SetSpeedOptions(speed, speed);
 		const dracoMesh = new encoderModule.Mesh();
 		const numFaces = geomMesh.indices.length / 3;
 		const numPoints = geomMesh.vertices.length / 3;
@@ -161,6 +167,7 @@ export class DemoDracoEncode {
 		DracoEncoderModule(this.encoderObj);
 	}
 	private loadAppModule(purl: string, geomData: DracoSrcGeomObject): void {
+
 		let codeLoader: XMLHttpRequest = new XMLHttpRequest();
 		codeLoader.open("GET", purl, true);
 		codeLoader.onerror = function(err) {

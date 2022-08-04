@@ -6,42 +6,73 @@ import { DracoTaskCMD } from "./DracoTaskCMD";
 let CMD = DracoTaskCMD;
 declare var ThreadCore: IThreadCore;
 declare var DracoEncoderModule: (ins: unknown) => void;
-
+type DiscriptorType = {
+	url: string,
+	index: number,
+	compressionLevel: number,
+	posQuantization: number,
+	uvQuantization: number,
+	nvQuantization: number,
+	genericQuantization: number,
+};
 class ModuleDracoGeomEncoder {
 	encoder: any;
 	receiveCall(data: any): any {
 		console.log("ModuleDracoGeomEncoder::receiveCall()..., data: ", data);
+
+		let losstime = Date.now();
+
 		let streams = data.streams;
 
 		const encoderModule = this.encoder;
 		const encoder = new encoderModule.Encoder();
-		console.log("ModuleDracoGeomEncoder::receiveCall()..., encoder: ", encoder);
+		// console.log("ModuleDracoGeomEncoder::receiveCall()..., encoder: ", encoder);
+
+		let descriptor: DiscriptorType = data.descriptor;
+		let speed: number = Math.round(10 - descriptor.compressionLevel);
+		if(speed < 0) {
+			speed = 0;
+		} else if(speed > 10) {
+			speed = 10
+		}
+		// console.log("encode to draco speed: ", speed);
+
+		encoder.SetSpeedOptions(speed, speed);
+		encoder.SetAttributeQuantization(encoderModule.POSITION, descriptor.posQuantization);
+		encoder.SetAttributeQuantization(encoderModule.TEX_COORD, descriptor.uvQuantization);
+		encoder.SetAttributeQuantization(encoderModule.NORMAL, descriptor.nvQuantization);
+		encoder.SetAttributeQuantization(encoderModule.GENERIC, descriptor.genericQuantization);
+
 		const meshBuilder = new encoderModule.MeshBuilder();
 		const dracoMesh = new encoderModule.Mesh();
-		console.log("ModuleDracoGeomEncoder::receiveCall()..., dracoMesh: ", dracoMesh);
+		// console.log("ModuleDracoGeomEncoder::receiveCall()..., dracoMesh: ", dracoMesh);
 
 		// {vertices: ArrayBuffer, uv: ArrayBuffer, normals: ArrayBuffer, indices: ArrayBuffer};
 
 		const mesh: {
-			indices: Uint16Array;
+			indices: Uint16Array | Uint32Array;
 			vertices: Float32Array;
 			normals: Float32Array;
 			colors: Float32Array;
 			texcoords: Float32Array;
 		} = {
-			indices: new Uint16Array(streams[3]),
-			vertices: new Float32Array(streams[0]),
-			texcoords: new Float32Array(streams[1]),
-			normals: new Float32Array(streams[2]),
+			indices: streams[3],
+			vertices: streams[0],
+			texcoords: streams[1],
+			normals: streams[2],
 			colors: null
 		};
 
+		// let speed = 10;
+		// encoder.SetSpeedOptions(speed, speed);
+		// encoder.SetAttributeQuantization(encoderModule.POSITION, 10);
+		// encoder.SetEncodingMethod(encoderModule.MESH_SEQUENTIAL_ENCODING);
 		const numFaces = mesh.indices.length / 3;
 		const numPoints = mesh.vertices.length;
 		meshBuilder.AddFacesToMesh(dracoMesh, numFaces, mesh.indices);
-		console.log("numFaces: ",numFaces);
-		console.log("numPoints: ",numPoints);
-		console.log("mesh: ",mesh);
+		// console.log("numFaces: ",numFaces);
+		// console.log("numPoints: ",numPoints);
+		// console.log("mesh: ",mesh);
 		meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.POSITION, numPoints, 3, mesh.vertices);
 		if (mesh.normals != null) {
 			meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.NORMAL, numPoints, 3, mesh.normals);
@@ -53,38 +84,40 @@ class ModuleDracoGeomEncoder {
 			meshBuilder.AddFloatAttributeToMesh(dracoMesh, encoderModule.TEX_COORD, numPoints, 2, mesh.texcoords);
 		}
 
-		// let method = "edgebreaker";//encodeSpeed = 5
+		// let method = "edgebreaker";
 		// method = "sequential";
 		// if (method === "edgebreaker") {
 		// 	encoder.SetEncodingMethod(encoderModule.MESH_EDGEBREAKER_ENCODING);
 		// } else if (method === "sequential") {
 		// 	encoder.SetEncodingMethod(encoderModule.MESH_SEQUENTIAL_ENCODING);
 		// }
-		let speed = 10;
-		encoder.SetSpeedOptions(speed, speed);
-		// encoder.SetAttributeQuantization(encoderModule.POSITION, 10);
-		// encoder.SetEncodingMethod(encoderModule.MESH_SEQUENTIAL_ENCODING);
 
 		const encodedData = new encoderModule.DracoInt8Array();
 		// Use default encoding setting.
 		const encodedLen = encoder.EncodeMeshToDracoBuffer(dracoMesh, encodedData);
 
-		console.log("ModuleDracoGeomEncoder::receiveCall()..., encodedLen: ", encodedLen);
 
 		// draco file buf
-        const fileBuffer = new ArrayBuffer(encodedLen);
-        const fileData = new Int8Array(fileBuffer);
+        const fileData = new Int8Array(encodedLen);
 
         for (let i = 0; i < encodedLen; i++) {
 			fileData[i] = encodedData.GetValue(i);
         }
 
 		encoderModule.destroy(dracoMesh);
-		encoderModule.destroy(encoder);
 		encoderModule.destroy(meshBuilder);
+		encoderModule.destroy(encoder);
+		encoderModule.destroy(encodedData);
 
-		let transfers = streams.slice(0);
-		transfers.push(fileBuffer);
+		console.log("draco encode lossTime: ", (Date.now() - losstime));
+		console.log("ModuleDracoGeomEncoder::receiveCall()..., encodedLen: ", encodedLen);
+
+		let transfers = new Array(streams.length + 1);
+		for(let i = 0; i < streams.length; ++i) {
+			transfers[i] = streams[i].buffer;
+		}
+		transfers[streams.length] = fileData.buffer;
+
 		let dataObj: any = { data: fileData, transfers: transfers, errorFlag: 0 };
 		return dataObj;
 	}

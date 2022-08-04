@@ -16,7 +16,7 @@ class DracoGeomParseTask extends ThreadTask {
     private m_enabled: boolean = true;
     private m_thrScheDule: ThreadSchedule;
     private m_listener: DracoGeomParseTaskListener = null;
-    private m_models: any[] = [];
+    private m_models: GeometryModelDataType[] = [];
     private m_srcBuf: ArrayBuffer = null;
     private m_segs: number[] = null;
     private m_segIndex: number = 0;
@@ -40,6 +40,8 @@ class DracoGeomParseTask extends ThreadTask {
         super.reset();
         this.m_models = [];
         this.m_segIndex = 0;
+		this.m_segs = null;
+		this.m_enabled = true;
     }
     private parseData(bufData: ArrayBuffer, beginI: number, endI: number): void {
 
@@ -52,7 +54,8 @@ class DracoGeomParseTask extends ThreadTask {
     private parseNextSeg(): void {
 
         if (this.m_enabled && this.m_segs != null && this.m_segIndex < this.m_segs.length) {
-            for (let i: number = 0; i < this.m_thrScheDule.getMaxThreadsTotal(); i++) {
+			let tot = this.m_thrScheDule.getMaxThreadsTotal() > 0 ? this.m_thrScheDule.getMaxThreadsTotal() : 1;
+            for (let i: number = 0; i < tot; i++) {
                 if (this.m_segIndex < this.m_segs.length) {
 
 					let begin = this.m_segs[this.m_segIndex];
@@ -113,16 +116,13 @@ class DracoGeomParseTask extends ThreadTask {
         }
         return true;
     }
-    // // 这个函数的返回值与子线程中的对应处理代码模块 getTaskClass() 函数返回值必须一致。不同类型的任务此返回值务必保持唯一性
-    // getTaskClass(): number {
-    //     return 102;
-    // }
     destroy(): void {
       super.destroy();
       this.m_listener = null;
       this.m_srcBuf = null;
       this.m_models = [];
       this.m_segIndex = 0;
+	  this.m_segs = null;
     }
 }
 

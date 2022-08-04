@@ -48,6 +48,7 @@ class ThreadSchedule {
 	 */
 	private m_graphJsonStr: string = "";
 	private m_autoSendData: boolean = false;
+	// private m_autoTerminate: boolean = true;
 
 	constructor() {
 		let tot = ThreadConfigure.MAX_TASKS_TOTAL;
@@ -180,8 +181,10 @@ class ThreadSchedule {
 						needTotal++;
 					}
 				}
-				terminate = needTotal >= this.m_threadsTotal;
-				if (!terminate) this.m_teTime = Date.now();
+				if(this.m_teDelay > 0) {
+					terminate = needTotal >= this.m_threadsTotal;
+					if (!terminate) this.m_teTime = Date.now();
+				}
 			}
 		}
 		// console.log("terminate: ",terminate,this.m_threadsTotal);

@@ -38,6 +38,14 @@ class DracoGeomEncoder {
 	setParseData(geomObject: DracoSrcGeomObject, url: string, index: number): void {
 		this.m_dracoTask.setParseData(geomObject, url, index);
 	}
+	setCompressParams(lv: number, pos: number = 11, uv: number = 10, normal: number = 8, eneric: number = 8): void {
+		let task = this.m_dracoTask;
+		task.setCompressLevel(lv);
+		task.setPosQuantization(pos);
+		task.setUVQuantization(uv);
+		task.setNVQuantization(normal);
+		task.setGenericQuantization(eneric);
+	}
     private buildTask(wapperUrl: string, wasmUrl: string): void {
 
         let threadSchedule = this.m_thrSchedule;

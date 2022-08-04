@@ -50,11 +50,11 @@ class DracoGeomParser {
 		);
 		let numPoints = dracoGeometry.num_points();
 		let numValues = numPoints * numComponents;
-		let fs32 = new Float32Array(numValues + 1);
-		fs32[0] = numComponents;
+		let fs32 = new Float32Array(numValues);
+		// fs32[0] = numComponents;
 
 		for (let i = 0; i < numValues; i++) {
-			fs32[i + 1] = attributeData.GetValue(i);
+			fs32[i] = attributeData.GetValue(i);
 		}
 		geometryBuffer[ns] = fs32;
 		dracoDecoder.destroy(attributeData);

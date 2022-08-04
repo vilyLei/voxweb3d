@@ -36,7 +36,7 @@ class DracoGeomBuilder {
 
             let wasmUrl: string = "d2.md";
             let wapperUrl: string = "w2.js";
-            
+
             switch(this.m_dracoWasmVersion) {
                 case 1:
                     wasmUrl = "d1.md";
@@ -52,19 +52,41 @@ class DracoGeomBuilder {
             this.buildTask( urlDir + wapperUrl, urlDir + wasmUrl );
         }
     }
+	parseBinaryData(bufData: ArrayBuffer, segRangeList: number[] = null): void {
+		if(bufData != null) {
+			if(segRangeList == null || segRangeList.length < 2) {
+				this.m_segRangeList = [-1,-1];
+			}else {
+				this.m_segRangeList = segRangeList.slice(0);
+			}
+			this.m_meshBuf = bufData;
+
+			if(this.m_dracoTask != null) {
+				if(!this.m_dracoTask.isFinished()) {
+					console.error("the draco mesh parseing do not finish, can not load other draco data.");
+				}
+				this.m_dracoTask.reset();
+			}
+			this.m_dracoTask.setParseSrcData(this.m_meshBuf, this.m_segRangeList);
+		}
+	}
     /**
      * 加载未加密的draco模型文件
      * @param dracoDataUrl draco模型文件url
      * @param segRangeList draco模型文件字节分段信息
      */
-    load(dracoDataUrl: string, segRangeList: number[]): void {
+    load(dracoDataUrl: string, segRangeList: number[] = null): void {
+		if(segRangeList == null || segRangeList.length < 2) {
+			this.m_segRangeList = [-1,-1];
+		}else {
+			this.m_segRangeList = segRangeList.slice(0);
+		}
         if(this.m_dracoTask != null) {
             if(!this.m_dracoTask.isFinished()) {
                 console.error("the draco mesh parseing do not finish, can not load other draco data.");
             }
             this.m_dracoTask.reset();
         }
-        this.m_segRangeList = segRangeList.slice(0);
         this.loadDracoFile( dracoDataUrl );
     }
     private loadDracoFile(dracoDataUrl: string): void {

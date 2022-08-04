@@ -58,7 +58,9 @@ export class DemoCTMParser {
 			urls.push(baseUrl + "sh202/sh202_" + i + ".ctm");
 		}
 		urls = [baseUrl + "errorNormal.ctm"];
-		urls = [baseUrl + "sh202/sh202_5.ctm"];
+		urls = [baseUrl + "sh202/sh202_4.ctm"];
+		urls = [baseUrl + "sh202/sh202_26.ctm"];
+		// urls = [baseUrl + "sh202/sh202_5.ctm"];
 		//let ctmUrl: string = "static/assets/ctm/hand.ctm";
 		this.initCTMFromBin(urls[0]);
 	}
@@ -81,7 +83,7 @@ export class DemoCTMParser {
 	}
 	// 一份任务数据处理完成后由此侦听器回调函数接收到处理结果
 	ctmParseFinish(model: GeometryModelDataType, url: string): void {
-		console.log("this.m_lossTime: ", (Date.now() - this.m_lossTime));
+		
 		let material = this.createNormalMaterial();
 		material.initializeByCodeBuf();
 
@@ -170,9 +172,7 @@ void main() {
 	}
 	private mouseDown(evt: any): void {}
 
-	private m_lossTime = 0;
 	private initCTMFromBin(ctmUrl: string): void {
-		this.m_lossTime = Date.now();
 		let ctmLoader: BinaryLoader = new BinaryLoader();
 		ctmLoader.uuid = ctmUrl;
 		ctmLoader.load(ctmUrl, this);
