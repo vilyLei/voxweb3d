@@ -6,6 +6,7 @@ import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 import { NormalUVViewerMaterial } from "./material/NormalUVViewerMaterial";
+import DivLog from "../../vox/utils/DivLog";
 
 /**
  * draco 加载解析多线程示例
@@ -60,33 +61,27 @@ export class DemoDracoParser {
 		this.update();
 		this.initScene();
 	}
-	
+
 	private loadDraco01(): void {
 
 		// draco 模型数据url
-		let url = "static/private/draco/box_geom.drc";
-		url = "static/private/draco/box01.obj.drc";
-		url = "static/private/draco/building_001.obj.drc";
-		url = "static/private/draco/ghz.obj.drc";
-		url = "static/private/draco/sph_geom.drc";
-		url = "static/private/draco/errorNormal.drc";
-		url = "static/private/draco/sh202_4_ok.drc";
-		url = "static/private/draco/sh202_4_ok2.drc";
+		let url = "";
 		url = "static/private/draco/sh202/sh202_22.drc";
-		// url = "static/private/draco/sh202_5.obj.drc";
 		// draco模型数据字节分段信息
 		let segRangeList: number[] = [0, 111111111580];
 
 		this.m_dracoGeomBuilder.load(url, segRangeList);
 	}
 	private m_lossTime: number = 0;
+	private m_vtxTotal: number = 0;
+	private m_trisNumber: number = 0;
 	private loadDraco02(): void {
 		for(let i: number = 0; i < 27; ++i) {
 			let url = "static/private/draco/sh202/sh202_"+i+".drc";
 			this.loadDracoAndParseOnePartFile( url );
 		}
 	}
-	
+
 	private loadDraco(): void {
 		// draco 模型数据url
 		let url = "static/assets/modules/clothRoll.rawmd";
@@ -116,6 +111,18 @@ export class DemoDracoParser {
 
 	// 单个draco segment 几何数据解析结束之后的回调
 	dracoParse(model: GeometryModelDataType, index: number, total: number): void {
+		// console.log("loss time: ", (Date.now() - this.m_lossTime));let info: string = "ctm lossTime: "+((Date.now() - this.m_lossTime));
+
+		let info: string = "draco lossTime: "+((Date.now() - this.m_lossTime));
+		let vtxTotal: number = model.vertices.length / 3;
+		let trisNumber: number = model.indices.length / 3;
+		this.m_vtxTotal += vtxTotal;
+		this.m_trisNumber += trisNumber;
+		info += "</br>vtx: " + this.m_vtxTotal;
+		info += "</br>tri: " + this.m_trisNumber;
+
+		DivLog.ShowLogOnce(info);
+		return;
 
 		let material = new NormalUVViewerMaterial();
 		material.initializeByCodeBuf();
@@ -134,7 +141,6 @@ export class DemoDracoParser {
 		entity.setMesh(mesh);
 		// console.log("mesh vtx total: ",mesh.getVS().length/3);
 		// console.log("mesh.trisNumber: ",mesh.trisNumber);
-		console.log("loss time: ", (Date.now() - this.m_lossTime));
 		this.m_rscene.addEntity(entity);
 	}
 	// 所有 draco segment 几何数据解析结束之后的回调，表示本次加载解析任务结束
@@ -153,7 +159,7 @@ export class DemoDracoParser {
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 			//RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
-
+			DivLog.SetDebugEnabled( true );
 			let rparam: RendererParam = new RendererParam();
 			//rparam.maxWebGLVersion = 1;
 			rparam.setCamProject(45, 50.0, 10000.0);

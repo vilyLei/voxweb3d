@@ -14,6 +14,7 @@ import {
 	UserInteraction
 } from "../voxengine/CoEngine";
 import MaterialBase from "../../vox/material/MaterialBase";
+import DivLog from "../../vox/utils/DivLog";
 /**
  * 通过加载到的CTM模型二进制数据，发送CTM资源解析任务给多线程数据处理系统，获取解析之后的CTM模型数据
  */
@@ -31,7 +32,7 @@ export class DemoCTMParser {
 		// 创建多线程调度器(多线程系统)
 		let schedule = new ThreadSchedule();
 		// 初始化多线程调度器
-		schedule.initialize(2, "static/cospace/core/code/ThreadCore.umd.min.js");
+		schedule.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js");
 
 		// 创建 ctm 加载解析任务
 		let ctmParseTask = new CTMParseTask("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js");
@@ -52,6 +53,21 @@ export class DemoCTMParser {
 
 		this.initRenderer();
 
+		this.m_lossTime = Date.now();
+		this.loadCTM02();
+		// this.loadCTM();
+	}
+
+	private m_lossTime: number = 0;
+	private m_vtxTotal: number = 0;
+	private m_trisNumber: number = 0;
+	private loadCTM02(): void {
+		for(let i: number = 0; i < 27; ++i) {
+			let url = "static/private/ctm/sh202/sh202_"+i+".ctm";
+			this.initCTMFromBin(url);
+		}
+	}
+	private loadCTM(): void {
 		let baseUrl: string = "static/private/ctm/";
 		let urls: string[] = [];
 		for (let i = 0; i <= 26; ++i) {
@@ -76,14 +92,27 @@ export class DemoCTMParser {
 		this.m_rscene.initialize(rparam, 3);
 		this.m_userInterac.initialize(this.m_rscene);
 		this.m_userInterac.cameraZoomController.syncLookAt = true;
-
+		DivLog.SetDebugEnabled( true );
 		// let axis = new Axis3DEntity();
 		// axis.initialize(500);
 		// this.m_rscene.addEntity( axis );
 	}
+
 	// 一份任务数据处理完成后由此侦听器回调函数接收到处理结果
 	ctmParseFinish(model: GeometryModelDataType, url: string): void {
-		
+		// console.log("loss time: ", (Date.now() - this.m_lossTime));
+		let info: string = "ctm lossTime: "+((Date.now() - this.m_lossTime));
+
+		let vtxTotal: number = model.vertices.length / 3;
+		let trisNumber: number = model.indices.length / 3;
+		this.m_vtxTotal += vtxTotal;
+		this.m_trisNumber += trisNumber;
+		info += "</br>vtx: " + this.m_vtxTotal;
+		info += "</br>tri: " + this.m_trisNumber;
+
+		DivLog.ShowLogOnce(info);
+		return;
+
 		let material = this.createNormalMaterial();
 		material.initializeByCodeBuf();
 

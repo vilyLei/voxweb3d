@@ -2,8 +2,8 @@
 // import {DemoThread as Demo} from "./cospace/demo/DemoThread";
 // import {DemoThreadLoadJS as Demo} from "./cospace/demo/DemoThreadLoadJS";
 // import { DemoCTMLoadAndParser as Demo } from "./cospace/demo/DemoCTMLoadAndParser";
-// import { DemoCTMParser as Demo } from "./cospace/demo/DemoCTMParser";
-import { DemoDracoParser as Demo } from "./cospace/demo/DemoDracoParser";
+import { DemoCTMParser as Demo } from "./cospace/demo/DemoCTMParser";
+// import { DemoDracoParser as Demo } from "./cospace/demo/DemoDracoParser";
 // import { DemoCTMToDraco as Demo } from "./cospace/demo/DemoCTMToDraco";
 // import { DemoDracoEncode as Demo } from "./cospace/demo/DemoDracoEncode";
 // import { DemoDracoEncode as Demo } from "./cospace/demo/DemoDracoEncode";
