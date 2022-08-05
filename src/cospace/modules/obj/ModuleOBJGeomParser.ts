@@ -86,11 +86,8 @@ class ModuleOBJGeomParser extends BaseTaskInThread {
             };
             return model;
         }
-
     }
-    receiveData(
-        rdata: IThreadReceiveData<OBJModelDataType, OBJDescriptorType>
-    ): void {
+    receiveData(rdata: IThreadReceiveData<OBJModelDataType, OBJDescriptorType>): void {
 
         let dataBuf = rdata.streams[0];
         const readerBuf = new FileReader();
@@ -99,9 +96,6 @@ class ModuleOBJGeomParser extends BaseTaskInThread {
         };
         readerBuf.readAsText(new Blob([dataBuf]));
 
-    }
-    getTaskClass(): number {
-        return 103;
     }
 }
 // 这一句代码是必须有的

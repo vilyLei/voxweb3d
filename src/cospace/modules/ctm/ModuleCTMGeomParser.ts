@@ -151,9 +151,6 @@ class ModuleCTMGeomParser extends BaseTaskInThread {
         };
         request.send(null);
     }
-    getTaskClass(): number {
-        return 101;
-    }
 }
 // 这一句代码是必须有的
 let ins = new ModuleCTMGeomParser();
