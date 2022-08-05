@@ -54,7 +54,7 @@ class FBXSceneNode extends SceneNode {
 			(modelMap: Map<number, GeometryModelDataType>, url: string): void => {
 				// this.m_scaleV.setXYZ(-2.0, -2.0, 2.0);
 				// this.m_scaleV.setXYZ(56.0, 56.0, 56.0);
-				//this.m_scaleV.setXYZ(2.0, 2.0, 2.0);
+				// this.m_scaleV.setXYZ(2.0, 2.0, 2.0);
 				// console.log("loadFBX(), modelMap: ",modelMap);
 				this.m_partsTotal = 0;
 				for (let [key, value] of modelMap) {

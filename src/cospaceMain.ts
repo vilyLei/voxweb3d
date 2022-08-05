@@ -2,7 +2,7 @@
 // import {DemoThread as Demo} from "./cospace/demo/DemoThread";
 // import {DemoThreadLoadJS as Demo} from "./cospace/demo/DemoThreadLoadJS";
 // import { DemoCTMLoadAndParser as Demo } from "./cospace/demo/DemoCTMLoadAndParser";
-import { DemoCTMParser as Demo } from "./cospace/demo/DemoCTMParser";
+// import { DemoCTMParser as Demo } from "./cospace/demo/DemoCTMParser";
 // import { DemoDracoParser as Demo } from "./cospace/demo/DemoDracoParser";
 // import { DemoCTMToDraco as Demo } from "./cospace/demo/DemoCTMToDraco";
 // import { DemoDracoEncode as Demo } from "./cospace/demo/DemoDracoEncode";
@@ -16,7 +16,7 @@ import { DemoCTMParser as Demo } from "./cospace/demo/DemoCTMParser";
 // import { DemoDependenceGraph as Demo } from "./cospace/demo/DemoDependenceGraph";
 // import { DemoCTMViewer as Demo } from "./cospace/demo/DemoCTMViewer";
 // import { DemoNormalViewer as Demo } from "./cospace/demo/DemoNormalViewer";
-// import { RenderingVerifier as Demo } from "./cospace/demo/RenderingVerifier";
+import { RenderingVerifier as Demo } from "./cospace/demo/RenderingVerifier";
 // import { DemoCoApp as Demo } from "./cospace/demo/DemoCoApp";
 // import { DemoCoEngine as Demo } from "./cospace/demo/DemoCoEngine";
 // import { DemoInputText as Demo } from "./cospace/demo/DemoInputText";

@@ -9,7 +9,6 @@ import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwing
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 
 import DivLog from "../../vox/utils/DivLog";
-import { CoSpace } from "../CoSpace";
 import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
 import { VerifierScene } from "./renderVerifier/VerifierScene";
 import Color4 from "../../vox/material/Color4";
@@ -17,7 +16,6 @@ import Color4 from "../../vox/material/Color4";
 export class RenderingVerifier {
 
 	private m_rscene: RendererScene = null;
-	private m_camTrack: CameraTrack = null;
 	private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
 	private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 	private m_profileInstance: ProfileInstance = null;
@@ -76,8 +74,6 @@ export class RenderingVerifier {
 				this.m_rscene.getStage3D(),
 				this.m_rscene.getCamera()
 			);
-			this.m_camTrack = new CameraTrack();
-			this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
 			//this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 

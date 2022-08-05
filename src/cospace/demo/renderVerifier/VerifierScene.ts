@@ -82,14 +82,16 @@ class VerifierScene implements IDropFileListerner {
 		// ])
 		//*/
 
-
+		console.log("this.m_vfParam: ",this.m_vfParam);
 		if ((this.m_vfParam.hostUrl.indexOf(".artvily.") > 0 || this.m_vfParam.demoType != "") && this.m_vfParam.threadsTotal > 0) {
+			
+			let preUrl: string = "http://www.artvily.com:9090/static/publish/";
 			let modules: TaskCodeModuleParam[] = [
-				new TaskCodeModuleParam("static/renderingVerifier/modules/ct1.js", ModuleNS.ctmParser),
-				new TaskCodeModuleParam("static/renderingVerifier/modules/ob1.js", ModuleNS.objParser)
+				new TaskCodeModuleParam(preUrl + "renderingVerifier/modules/ct1.js", ModuleNS.ctmParser),
+				new TaskCodeModuleParam(preUrl + "renderingVerifier/modules/ob1.js", ModuleNS.objParser)
 			];
 			this.m_cospace.setTaskModuleParams(modules);
-			this.m_cospace.initialize(this.m_vfParam.threadsTotal, "static/renderingVerifier/modules/th1.js", true);
+			this.m_cospace.initialize(this.m_vfParam.threadsTotal, preUrl + "renderingVerifier/modules/th1.js", true);
 		} else {
 			let modules: TaskCodeModuleParam[] = [
 				new TaskCodeModuleParam("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", ModuleNS.ctmParser),
@@ -106,18 +108,21 @@ class VerifierScene implements IDropFileListerner {
 
 	private initTestSvr(): void {
 
+		let dir = "static/renderingVerifier/";
 		if ((this.m_vfParam.hostUrl.indexOf(".artvily.") > 0 || this.m_vfParam.demoType != "") && this.m_vfParam.threadsTotal > 0) {
 			let modules: TaskCodeModuleParam[] = [
-				new TaskCodeModuleParam("static/renderingVerifier/modules/ct1.js", ModuleNS.ctmParser),
-				new TaskCodeModuleParam("static/renderingVerifier/modules/ob1.js", ModuleNS.objParser)
+				new TaskCodeModuleParam(dir + "modules/ct1.js", ModuleNS.ctmParser),
+				new TaskCodeModuleParam(dir + "modules/ob1.js", ModuleNS.objParser)
 			];
 			this.m_cospace.setTaskModuleParams(modules);
 			// this.m_cospace.geometry.setTaskModuleUrls(modules);
-			this.m_cospace.initialize(this.m_vfParam.threadsTotal, "static/renderingVerifier/modules/th1.js", true);
+			this.m_cospace.initialize(this.m_vfParam.threadsTotal, dir + "modules/th1.js", true);
 		} else {
+			dir = "http://localhost:9090/static/publish/renderingVerifier/";
+
 			let modules: TaskCodeModuleParam[] = [
-				new TaskCodeModuleParam("http://localhost:9090/static/renderingVerifier/modules/ct1.js", ModuleNS.ctmParser),
-				new TaskCodeModuleParam("http://localhost:9090/static/renderingVerifier/modules/ob1.js", ModuleNS.objParser)
+				new TaskCodeModuleParam(dir + "modules/ct1.js", ModuleNS.ctmParser),
+				new TaskCodeModuleParam(dir + "modules/ob1.js", ModuleNS.objParser)
 			];
 			this.m_cospace.setTaskModuleParams(modules);
 			// this.m_cospace.geometry.setTaskModuleUrls(modules);
@@ -125,7 +130,7 @@ class VerifierScene implements IDropFileListerner {
 			// // 初始化数据协同中心
 			// this.m_cospace.initialize(3, "static/renderingVerifier/modules/c1.js", true);
 			// this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js", true);
-			this.m_cospace.initialize(3, "http://localhost:9090/static/renderingVerifier/modules/th1.js", true);
+			this.m_cospace.initialize(3, dir + "modules/th1.js", true);
 		}
 	}
 	private test(): void {
