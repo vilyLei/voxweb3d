@@ -47,6 +47,8 @@ export class DemoFBXFastParser {
 
 		this.m_threadSchedule = schedule;
 
+		DivLog.SetDebugEnabled( true );
+
 		let wsft = ThreadWFST.Build(0,0,0, 9);
 		console.log("step0 wsft: ", wsft);
 		wsft = ThreadWFST.ModifyTransStatus(wsft, TransST.Finish);
@@ -66,7 +68,7 @@ export class DemoFBXFastParser {
 
 		this.m_lossTime = Date.now();
 		// this.loadCTM02();
-		// this.loadCTM();
+		this.loadCTM();
 	}
 
 	private m_lossTime: number = 0;
@@ -86,7 +88,7 @@ export class DemoFBXFastParser {
 		}
 		urls = [baseUrl + "errorNormal.ctm"];
 		urls = [baseUrl + "sh202/sh202_4.ctm"];
-		urls = [baseUrl + "sh202/sh202_26.ctm"];
+		urls = [baseUrl + "sh202/sh202_22.ctm"];
 		// urls = [baseUrl + "sh202/sh202_5.ctm"];
 		//let ctmUrl: string = "static/assets/ctm/hand.ctm";
 		this.initCTMFromBin(urls[0]);
@@ -104,7 +106,6 @@ export class DemoFBXFastParser {
 		this.m_rscene.initialize(rparam, 3);
 		this.m_userInterac.initialize(this.m_rscene);
 		this.m_userInterac.cameraZoomController.syncLookAt = true;
-		DivLog.SetDebugEnabled( true );
 		// let axis = new Axis3DEntity();
 		// axis.initialize(500);
 		// this.m_rscene.addEntity( axis );

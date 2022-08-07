@@ -92,8 +92,8 @@ class ThreadTask implements IThreadTask {
     protected createSendData(): ThreadSendData {
         let sd = ThreadSendData.Create();
         sd.srcuid = this.getUid();
-        // sd.taskclass = this.getTaskClass();
         sd.taskclass = this.m_info.taskClass;
+        sd.wfst = 0;
         return sd;
     }
     /**
@@ -106,7 +106,6 @@ class ThreadTask implements IThreadTask {
 
         let sd = ThreadSendData.Create();
         sd.srcuid = this.getUid();
-        // sd.taskclass = this.getTaskClass();
         sd.taskclass = this.m_info.taskClass;
         sd.taskCmd = taskCmd;
         sd.streams = streams;
@@ -135,7 +134,6 @@ class ThreadTask implements IThreadTask {
     protected addData(data: IThreadSendData, threadBindingData: boolean = false): void {
         if (this.m_uid >= 0) {
             data.srcuid = this.m_uid;
-            // data.taskclass = this.getTaskClass();
             data.taskclass = this.m_info.taskClass;
             // console.log("task addData, ",threadBindingData, this.m_localDataPool != null, this.m_globalDataPool != null);
             if(threadBindingData) {
@@ -162,8 +160,6 @@ class ThreadTask implements IThreadTask {
 	 * @returns task class value
 	 */
     getTaskClass(): number {
-        // throw Error("ThreadTask::getTaskClass(), Need Override !");
-        // return -1;
 		return this.m_info.taskClass;
     }
     destroy(): void {
@@ -172,7 +168,7 @@ class ThreadTask implements IThreadTask {
         this.m_globalDataPool = null;
         this.m_localDataPool = null;
         this.dependency = null;
-        //ThreadTask.DetachTask(this);
+        // ThreadTask.DetachTask(this);
     }
 }
 

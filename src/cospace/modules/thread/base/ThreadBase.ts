@@ -17,6 +17,7 @@ import { TDRParam } from "./TDRParam";
 import { TaskDataRouter } from "./TaskDataRouter";
 import { TaskDescriptor } from "./TaskDescriptor";
 import { ThreadTaskPool } from "../control/ThreadTaskPool";
+import { ThreadWFST, TransST } from "./ThreadWFST";
 // import { TaskRegister } from "./TaskRegister";
 type ArrayTypeT = Float32Array | Int32Array | Uint16Array | Uint8Array | Int16Array | Int8Array;
 class ThreadBase implements IThreadBase {
@@ -172,8 +173,11 @@ class ThreadBase implements IThreadBase {
     }
     private receiveData(data: any): void {
 
-        // console.log("lost time: ",this.m_time,data.taskCmd);
-        this.m_free = true;
+        let wfst = data.wfst;
+        let transST = ThreadWFST.GetTransStatus(wfst);        
+        this.m_free = transST == TransST.None || transST == TransST.Finish;
+
+        console.log("Main worker("+this.getUid()+") recieve data, transST: ", transST, ", free: ",this.m_free);
 
         // 下面这个逻辑要慎用，用了可能会对时间同步(例如帧同步)造成影响
         if (this.autoSendData) {
