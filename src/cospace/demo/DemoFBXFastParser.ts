@@ -1,5 +1,6 @@
 import { ThreadSchedule } from "../modules/thread/ThreadSchedule";
 import { CTMParseTask } from "../modules/ctm/CTMParseTask";
+import { FBXParseTaskListener, FBXParseTask } from "../modules/fbx/FBXParseTask";
 import BinaryLoader from "../../vox/assets/BinaryLoader";
 import { GeometryModelDataType } from "../modules/base/GeometryModelDataType";
 import {
@@ -7,6 +8,7 @@ import {
 	DataMesh,
 	Default3DMaterial,
 	DisplayEntity,
+	Matrix4,
 	RendererDevice,
 	RendererParam,
 	RendererScene,
@@ -28,10 +30,11 @@ export class DemoFBXFastParser {
 	private m_threadSchedule: ThreadSchedule;
 
 	private m_ctmParseTask: CTMParseTask;
+	private m_fbxParseTask: FBXParseTask;
 
 	private m_userInterac: UserInteraction = new UserInteraction();
 	private m_rscene: RendererScene = null;
-	constructor() {}
+	constructor() { }
 
 	initialize(): void {
 		console.log("DemoFBXFastParser::initialize()...");
@@ -41,18 +44,28 @@ export class DemoFBXFastParser {
 		schedule.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js");
 
 		// 创建 ctm 加载解析任务
-		let ctmParseTask = new CTMParseTask("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js");
+		// let ctmParseTask = new CTMParseTask("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js");
+		// // 绑定当前任务到多线程调度器
+		// schedule.bindTask(ctmParseTask);
+		// // 设置一个任务完成的侦听器
+		// ctmParseTask.setListener(this);
+		// this.m_ctmParseTask = ctmParseTask;
+
+		// 创建 ctm 加载解析任务
+		let fbxParseTask = new FBXParseTask("static/cospace/modules/fbxFast/ModuleFBXGeomFastParser.umd.js");
 		// 绑定当前任务到多线程调度器
-		schedule.bindTask(ctmParseTask);
+		schedule.bindTask(fbxParseTask);
 		// 设置一个任务完成的侦听器
-		ctmParseTask.setListener(this);
-		this.m_ctmParseTask = ctmParseTask;
+		fbxParseTask.setListener(this);
+		this.m_fbxParseTask = fbxParseTask;
+		
+			//ModuleFBXGeomFastParser
 
-		this.m_threadSchedule = schedule;
+			this.m_threadSchedule = schedule;
 
-		DivLog.SetDebugEnabled( true );
+		DivLog.SetDebugEnabled(true);
 
-		let wsft = ThreadWFST.Build(0,0,0, 9);
+		let wsft = ThreadWFST.Build(0, 0, 0, 9);
 		console.log("step0 wsft: ", wsft);
 		wsft = ThreadWFST.ModifyTransStatus(wsft, TransST.Finish);
 		console.log("step1 wsft: ", wsft);
@@ -67,41 +80,80 @@ export class DemoFBXFastParser {
 		};
 		//console.log("getBaseUrl(): ", this.getBaseUrl());
 
-		// this.initRenderer();
+		this.initRenderer();
 
 		this.m_lossTime = Date.now();
 		// this.loadCTM02();
 		// this.loadCTM();
 
 		let url: string = "static/private/fbx/box.fbx";
-		this.loadFBX( url );
+		url = "static/private/fbx/base3.fbx";
+		this.loadFBX(url);
 	}
 
 	private m_lossTime: number = 0;
 	private m_vtxTotal: number = 0;
 	private m_trisNumber: number = 0;
+	fbxParseFinish(models: GeometryModelDataType[], transform: Float32Array, url: string, index: number, total: number): void {
+		// console.log("loss time: ", (Date.now() - this.m_lossTime));
+		let info: string = "fbx lossTime: " + ((Date.now() - this.m_lossTime));
+		let model = models[0];
+		let vtxTotal: number = model.vertices.length / 3;
+		let trisNumber: number = model.indices.length / 3;
+		this.m_vtxTotal += vtxTotal;
+		this.m_trisNumber += trisNumber;
+		info += "</br>vtx: " + this.m_vtxTotal;
+		info += "</br>tri: " + this.m_trisNumber;
 
+		DivLog.ShowLogOnce(info);
+		// return;
+
+		// let mat4 = new Matrix4(transform);
+		let material = this.createNormalMaterial();
+		material.initializeByCodeBuf();
+
+		let dataMesh: DataMesh = new DataMesh();
+		// dataMesh.wireframe = true;
+		dataMesh.vbWholeDataEnabled = false;
+		dataMesh.setVS(model.vertices);
+		dataMesh.setUVS(model.uvsList[0]);
+		dataMesh.setNVS(model.normals);
+		dataMesh.setIVS(model.indices);
+		dataMesh.setVtxBufRenderData(material);
+
+		dataMesh.initialize();
+
+		let entity: DisplayEntity = new DisplayEntity();
+		// entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+		entity.getTransform().setParentMatrix( new Matrix4(transform) );
+		entity.setMesh(dataMesh);
+		entity.setMaterial(material);
+		this.m_rscene.addEntity(entity);
+	}
 	private loadFBX(url: string): void {
-		
+
 
 		let httpFileLoader = new HttpFileLoader();
 		httpFileLoader.load(
-            url,
-            (buf: ArrayBuffer, url: string): void => {
-				
+			url,
+			(buf: ArrayBuffer, url: string): void => {
+
+				this.m_fbxParseTask.addBinaryData(buf, url);
+				/*
 				let fbxLoader = new FBXBufferLoader();
-				fbxLoader.parseBufBySteps(buf, url, 
+				fbxLoader.parseBufBySteps(buf, url,
 					(model: GeometryModelDataType, bufObj: FBXBufferObject, index: number, total: number, url: string): void => {
 						console.log("fbx parse finish, model: ", model);
 					}
-					);
-            },
-            null,
-            (status: number, url: string): void => {
-                console.error("load fbx data error, url: ", url);
+				);
+				//*/
+			},
+			null,
+			(status: number, url: string): void => {
+				console.error("load fbx data error, url: ", url);
 
-            }
-        );
+			}
+		);
 	}
 	private loadCTM(): void {
 		let baseUrl: string = "static/private/ctm/";
@@ -137,7 +189,7 @@ export class DemoFBXFastParser {
 	// 一份任务数据处理完成后由此侦听器回调函数接收到处理结果
 	ctmParseFinish(model: GeometryModelDataType, url: string): void {
 		// console.log("loss time: ", (Date.now() - this.m_lossTime));
-		let info: string = "ctm lossTime: "+((Date.now() - this.m_lossTime));
+		let info: string = "ctm lossTime: " + ((Date.now() - this.m_lossTime));
 
 		let vtxTotal: number = model.vertices.length / 3;
 		let trisNumber: number = model.indices.length / 3;
@@ -148,7 +200,7 @@ export class DemoFBXFastParser {
 
 		DivLog.ShowLogOnce(info);
 		return;
-		if(this.m_rscene == null) return;
+		if (this.m_rscene == null) return;
 
 		let material = this.createNormalMaterial();
 		material.initializeByCodeBuf();
@@ -236,7 +288,7 @@ void main() {
 		// 发送一份任务处理数据，一份数据一个子线程处理一次
 		this.m_ctmParseTask.addBinaryData(data, url);
 	}
-	private mouseDown(evt: any): void {}
+	private mouseDown(evt: any): void { }
 
 	private initCTMFromBin(ctmUrl: string): void {
 		let ctmLoader: BinaryLoader = new BinaryLoader();
@@ -247,14 +299,14 @@ void main() {
 	loaded(buffer: ArrayBuffer, uuid: string): void {
 		this.setBinaryDataToTask(buffer, uuid);
 	}
-	loadError(status: number, uuid: string): void {}
+	loadError(status: number, uuid: string): void { }
 
 	private m_timeoutId: any = -1;
 	/**
 	 * 定时调度
 	 */
 	private update(): void {
-		if(this.m_threadSchedule != null) {
+		if (this.m_threadSchedule != null) {
 			this.m_threadSchedule.run();
 			if (this.m_timeoutId > -1) {
 				clearTimeout(this.m_timeoutId);
@@ -263,7 +315,7 @@ void main() {
 		}
 	}
 	run(): void {
-		if(this.m_rscene != null) {
+		if (this.m_rscene != null) {
 			this.m_userInterac.run();
 			this.m_rscene.run();
 		}

@@ -5,9 +5,12 @@ import { GeometryModelDataType } from "../base/GeometryModelDataType";
 
 import { FBXBufferLoader } from "../../modules/fbx/FBXBufferLoader";
 import { FBXBufferObject } from "../../modules/fbx/FBXBufferObject";
+import { TransST, ThreadWFST } from "../thread/base/ThreadWFST";
 interface FBXModelDataType {
     models: GeometryModelDataType[];
     transform: Float32Array;
+    index: number;
+    total: number;
 }
 interface FBXDescriptorType {
     url: string;
@@ -30,23 +33,28 @@ class ModuleFBXGeomFastParser extends BaseTaskInThread {
             rdata.descriptor.url,
             (model: GeometryModelDataType, bufObj: FBXBufferObject, index: number, total: number, url: string): void => {
 
+                let wfst = (index + 1) < total ? TransST.Running : TransST.Finish;
+
+                rdata.wfst = ThreadWFST.ModifyTransStatus(rdata.wfst, wfst)
                 let transfers: ArrayBuffer[] = [];
-                if(model.indices != null) {
-                    transfers.push( model.indices.buffer );
+                if (model.indices != null) {
+                    transfers.push(model.indices.buffer);
                 }
-                if(model.vertices != null) {
-                    transfers.push( model.vertices.buffer );
+                if (model.vertices != null) {
+                    transfers.push(model.vertices.buffer);
                 }
-                if(model.uvsList != null) {
-                    transfers.push( model.uvsList[0].buffer );
+                if (model.uvsList != null) {
+                    transfers.push(model.uvsList[0].buffer);
                 }
-                if(model.normals != null) {
-                    transfers.push( model.normals.buffer );
+                if (model.normals != null) {
+                    transfers.push(model.normals.buffer);
                 }
 
                 let modelData: FBXModelDataType = {
                     models: [model],
-                    transform: bufObj.transform.getLocalFS32()
+                    transform: bufObj.transform.getLocalFS32(),
+                    index: index,
+                    total: total
                 };
                 transfers.push(modelData.transform.buffer);
                 rdata.data = modelData;
