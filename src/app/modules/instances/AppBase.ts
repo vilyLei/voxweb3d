@@ -11,16 +11,14 @@ import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import Box3DMesh from "../../../vox/mesh/Box3DMesh";
 import RectPlaneMesh from "../../../vox/mesh/RectPlaneMesh";
 import { IAppBase } from "../interfaces/IAppBase";
-import MouseEventEntity from "../../../vox/entity/MouseEventEntity";
 import DisplayEntityContainer from "../../../vox/entity/DisplayEntityContainer";
 
 class Instance implements IAppBase {
-    private m_rscene: IRendererScene = null;
     constructor() {
 
     }
     initialize(rsecne: IRendererScene): void {
-        this.m_rscene = rsecne;
+        
         let rscene = rsecne;
         let materialBlock = new RenderableMaterialBlock();
         materialBlock.initialize();
@@ -38,7 +36,5 @@ class Instance implements IAppBase {
         return new MaterialContext();
     }
 }
-// new DisplayEntityContainer
-// new MouseEventEntity
 export { DisplayEntity, DisplayEntityContainer, RectPlaneMesh, Box3DMesh, Box3DEntity, Instance }
-// export { DisplayEntity, Instance }
+

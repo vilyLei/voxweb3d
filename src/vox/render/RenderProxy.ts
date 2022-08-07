@@ -13,7 +13,7 @@ import Color4 from "../../vox/material/Color4";
 import RenderFilter from "../../vox/render/RenderFilter";
 import RenderMaskBitfield from "../../vox/render/RenderMaskBitfield";
 import {IRenderCamera} from "./IRenderCamera";
-import RendererParam from "../../vox/scene/RendererParam";
+import IRendererParam from "../../vox/scene/IRendererParam";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 
 import { RODrawState } from "../../vox/render/RODrawState";
@@ -355,7 +355,7 @@ class RenderProxy implements IRenderProxy{
             1);
         }        
     }
-    initialize(param: RendererParam, camera: IRenderCamera, stage: IRenderStage3D, proxyParam: RenderProxyParam): void {
+    initialize(param: IRendererParam, camera: IRenderCamera, stage: IRenderStage3D, proxyParam: RenderProxyParam): void {
         if (this.m_rc != null) {
             return;
         }

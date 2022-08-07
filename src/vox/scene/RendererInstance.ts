@@ -16,7 +16,7 @@ import { ShaderUniformContext } from "../../vox/material/ShaderUniformContext";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import RODataBuilder from "../../vox/render/RODataBuilder";
-import RendererParam from "../../vox/scene/RendererParam";
+import IRendererParam from "../../vox/scene/IRendererParam";
 import IRenderProcess from "../../vox/render/IRenderProcess";
 import RenderProcess from "../../vox/render/RenderProcess";
 import RenderProcessBuider from "../../vox/render/RenderProcessBuider";
@@ -111,11 +111,9 @@ export class RendererInstance implements IRenderer {
             this.m_renderProxy.updateCamera();
         }
     }
-    initialize(param: RendererParam = null, camera: IRenderCamera = null, shdProgramBuider: IShaderProgramBuilder = null): void {
+    initialize(param: IRendererParam = null, camera: IRenderCamera = null, shdProgramBuider: IShaderProgramBuilder = null): void {
 
         if (this.m_dataBuilder == null && camera != null) {
-
-            if (param == null) param = new RendererParam();
 
             this.m_batchEnabled = param.batchEnabled;
             this.m_processFixedState = param.processFixedState;

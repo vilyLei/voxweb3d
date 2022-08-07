@@ -45,6 +45,7 @@
     "buildThreadCore": "vue-cli-service build --target lib --name ThreadCore --dest ./public/static/cospace/core/code ./src/cospace/modules/thread/control/ThreadCore.ts",
     "buildCoSpaceApp": "vue-cli-service build --target lib --name CoSpaceApp --dest ./public/static/cospace/core/coapp ./src/cospace/CoSpaceApp.ts",
     "buildCoEngine": "vue-cli-service build --target lib --name CoEngine --dest ./public/static/cospace/engine ./src/cospace/voxengine/CoEngine.ts",
+    "buildCoRenderer": "vue-cli-service build --target lib --name CoRenderer --dest ./public/static/cospace/renderer ./src/cospace/voxengine/CoRenderer.ts",
 
     "dev": "vue-cli-service serve --type=dev[./src/main.ts]",
     "devvox": "vue-cli-service serve --type=dev[./src/dev.ts]",

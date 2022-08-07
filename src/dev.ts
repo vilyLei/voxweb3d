@@ -279,7 +279,7 @@
 ////////////////////////////   renderer    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoEmptyRenderer as Demo} from "./demo/DemoEmptyRenderer";
+ import {DemoEmptyRenderer as Demo} from "./demo/DemoEmptyRenderer";
 
 //  import {DemoEmptyRendererScene as Demo} from "./demo/DemoEmptyRendererScene";
 
@@ -394,7 +394,7 @@
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 
-import {SlickRoad as Demo} from "./app/SlickRoad";
+// import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 

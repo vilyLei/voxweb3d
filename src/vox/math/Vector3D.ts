@@ -4,10 +4,11 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
+import IVector3D from "../../vox/math/IVector3D";
 
 const v_m_180pk = 180.0 / Math.PI;
 const v_m_minp: number = 1e-7;
-class Vector3D {
+class Vector3D implements IVector3D {
     x: number = 0.0;
     y: number = 0.0;
     z: number = 0.0;
@@ -46,7 +47,7 @@ class Vector3D {
     dot(a: Vector3D): number {
         return this.x * a.x + this.y * a.y + this.z * a.z;
     }
-    multBy(a: Vector3D) {
+    multBy(a: Vector3D): void {
         this.x *= a.x;
         this.y *= a.y;
         this.z *= a.z;

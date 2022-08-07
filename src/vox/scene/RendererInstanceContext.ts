@@ -21,7 +21,7 @@ import RenderMaterialProxy from "../../vox/render/RenderMaterialProxy";
 import {RenderProxyParam, RenderProxy} from "../../vox/render/RenderProxy";
 
 import RODataBuilder from "../../vox/render/RODataBuilder";
-import RendererParam from "../../vox/scene/RendererParam";
+import IRendererParam from "../../vox/scene/IRendererParam";
 import ROVtxBuilder from "../../vox/render/ROVtxBuilder";
 import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import Color4 from "../material/Color4";
@@ -281,7 +281,7 @@ class RendererInstanceContext implements IRendererInstanceContext {
         }
     }
     
-    initialize(param: RendererParam, camera: IRenderCamera, contextParam: RendererInstanceContextParam): void {
+    initialize(param: IRendererParam, camera: IRenderCamera, contextParam: RendererInstanceContextParam): void {
 
         if (this.m_adapter == null) {
 

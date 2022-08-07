@@ -24,7 +24,7 @@ import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject"
 
 import RendererState from "../../vox/render/RendererState";
 import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
-import RendererParam from "../../vox/scene/RendererParam";
+import IRendererParam from "../../vox/scene/IRendererParam";
 import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
 import AABB2D from "../geom/AABB2D";
 
@@ -68,7 +68,7 @@ class RenderAdapter implements IRenderAdapter {
 		this.m_rcuid = rcuid;
 	}
 
-	initialize(context: RAdapterContext, param: RendererParam, rState: RODrawState, uViewProbe: IShaderUniformProbe): void {
+	initialize(context: RAdapterContext, param: IRendererParam, rState: RODrawState, uViewProbe: IShaderUniformProbe): void {
 		if (this.m_rcontext == null) {
 			this.m_webglVer = context.getWebGLVersion();
 			this.m_rState = rState;

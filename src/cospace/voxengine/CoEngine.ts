@@ -5,9 +5,6 @@ import RendererState from "../../vox/render/RendererState";
 import Matrix4 from "../../vox/math/Matrix4";
 import DataMesh from "../../vox/mesh/DataMesh";
 
-import IRenderEntity from "../../vox/render/IRenderEntity";
-import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
-
 import MaterialBase from "../../vox/material/MaterialBase";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";

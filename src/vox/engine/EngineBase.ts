@@ -8,8 +8,6 @@ import RendererSubScene from "../../vox/scene/RendererSubScene";
 
 // import Stage3D from "../../vox/display/Stage3D";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
-import Vector3D from "../../vox/math/Vector3D";
-import CameraViewRay from "../../vox/view/CameraViewRay";
 import { OrthoUIScene } from "../../vox/ui/OrthoUIScene";
 import { UserInteraction } from "./UserInteraction";
 
