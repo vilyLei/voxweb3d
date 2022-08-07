@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import MathConst from "../../vox/math/MathConst";
-import Vector3D from "../../vox/math/Vector3D";
+import IVector3D from "../../vox/math/IVector3D";
 import AABB2D from "../geom/AABB2D";
 import Color4 from "../../vox/material/Color4";
 
@@ -248,7 +248,7 @@ class RenderProxy implements IRenderProxy{
         this.m_cameraNear = near;
         this.m_cameraFar = far;
     }
-    getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void {
+    getMouseXYWorldRay(rl_position: IVector3D, rl_tv: IVector3D): void {
         let stage: IRenderStage3D = this.m_adapterContext.getStage();
         this.m_camera.getWorldPickingRayByScreenXY(stage.mouseX, stage.mouseY, rl_position, rl_tv);
     }
@@ -361,12 +361,9 @@ class RenderProxy implements IRenderProxy{
         }
         this.m_camera = camera;
         
-        let posV3: Vector3D = param.camPosition;
-        let lookAtPosV3: Vector3D = param.camLookAtPos;
-        let upV3: Vector3D = param.camUpDirect;
-        if (posV3 == null) posV3 = new Vector3D(800.0, 800.0, 800.0);
-        if (lookAtPosV3 == null) lookAtPosV3 = new Vector3D(0.0, 0.0, 0.0);
-        if (upV3 == null) upV3 = new Vector3D(0.0, 1.0, 0.0);
+        let posV3: IVector3D = param.camPosition;
+        let lookAtPosV3: IVector3D = param.camLookAtPos;
+        let upV3: IVector3D = param.camUpDirect;
         
         if(stage != null) stage.uProbe = proxyParam.uniformContext.createUniformVec4Probe(1);
 

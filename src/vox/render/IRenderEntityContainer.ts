@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import Vector3D from "../../vox/math/Vector3D";
+import IVector3D from "../../vox/math/IVector3D";
 import AABB from "../../vox/geom/AABB";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import IRenderer from "../../vox/scene/IRenderer";
@@ -30,13 +30,13 @@ export default interface IRenderEntityContainer {
     getVisible(): boolean;
     getUid(): number;
     setXYZ(px: number, py: number, pz: number): void;
-    setPosition(pv: Vector3D): void;
-    getPosition(pv: Vector3D): void;
+    setPosition(pv: IVector3D): void;
+    getPosition(pv: IVector3D): void;
     setRotationXYZ(rx: number, ry: number, rz: number): void;
     setScaleXYZ(sx: number, sy: number, sz: number): void;
 
-    localToGlobal(pv: Vector3D): void;
-    globalToLocal(pv: Vector3D): void;
-    sphereIntersect(centerV: Vector3D, radius: number): boolean;
+    localToGlobal(pv: IVector3D): void;
+    globalToLocal(pv: IVector3D): void;
+    sphereIntersect(centerV: IVector3D, radius: number): boolean;
     update(): void;
 }

@@ -1,6 +1,7 @@
 import {Camera} from "../vox/view/Camera";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RendererInstance from "../vox/scene/RendererInstance";
+import RendererParam from "../vox/scene/RendererParam";
 
 /**
  * A empty Renderer instance example
@@ -13,8 +14,9 @@ export class DemoEmptyRenderer {
 
     initialize(): void {
         this.m_renderer = new RendererInstance();
-        // this.m_renderer.initialize(null, new Camera(this.m_renderer.getRCUid()));
-        // this.m_rcontext = this.m_renderer.getRendererContext();
+        
+        this.m_renderer.initialize(new RendererParam(), new Camera(this.m_renderer.getRCUid()));
+        this.m_rcontext = this.m_renderer.getRendererContext();
     }
     private m_time: number = 0.0;
 

@@ -180,7 +180,7 @@ export default class OcclusionPostOutline {
                     for (let i: number = 0; i < this.m_targets.length; ++i) {
                         if (this.m_targets[i].isRenderEnabled()) {
                             colorFBO.drawEntity(this.m_targets[i], false, true);
-                            bounds.union(this.m_targets[i].getGlobalBounds());
+                            bounds.union(this.m_targets[i].getGlobalBounds() as AABB);
                         }
                     }
 

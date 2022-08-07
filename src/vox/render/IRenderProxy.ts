@@ -5,12 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-import Vector3D from "../../vox/math/Vector3D";
+import IVector3D from "../../vox/math/IVector3D";
 import Color4 from "../../vox/material/Color4";
-import {IRenderCamera} from "./IRenderCamera";
+import { IRenderCamera } from "./IRenderCamera";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
-import {IRAdapterContext} from "../../vox/render/IRAdapterContext";
-import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
+import { IRAdapterContext } from "../../vox/render/IRAdapterContext";
+import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 
 import IRenderResource from '../../vox/render/IRenderResource';
 import IRenderTexResource from '../../vox/render/IRenderTexResource';
@@ -23,7 +23,7 @@ import { IRenderingColorMask } from "./rendering/IRenderingColorMask";
 import { IRenderingState } from "./rendering/IRenderingState";
 
 interface IRenderProxy {
-    
+
     RGBA: number;
     UNSIGNED_BYTE: number;
     TRIANGLE_STRIP: number;
@@ -88,10 +88,10 @@ interface IRenderProxy {
     //getContext(): RAdapterContext;
     getStage3D(): IRenderStage3D;
     getRenderAdapter(): IRenderAdapter;
-    
-	getRenderContext(): IRAdapterContext;
+
+    getRenderContext(): IRAdapterContext;
     setCameraParam(fov: number, near: number, far: number): void;
-    getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void;
+    getMouseXYWorldRay(rl_position: IVector3D, rl_tv: IVector3D): void;
     testViewPortChanged(px: number, py: number, pw: number, ph: number): boolean;
     testRCViewPortChanged(px: number, py: number, pw: number, ph: number): boolean;
     getViewX(): number;
@@ -99,9 +99,9 @@ interface IRenderProxy {
     getViewWidth(): number;
     getViewHeight(): number;
     setViewPort(px: number, py: number, pw: number, ph: number): void;
-    setRCViewPort(px: number, py: number, pw: number, ph: number,autoSynViewAndStage: boolean): void;
+    setRCViewPort(px: number, py: number, pw: number, ph: number, autoSynViewAndStage: boolean): void;
     reseizeRCViewPort(): void;
-    
+
     readPixels(px: number, py: number, width: number, height: number, format: number, dataType: number, pixels: Uint8Array): void;
     getGLVersion(): number;
     flush(): void;
@@ -161,4 +161,4 @@ interface IRenderProxy {
     isContextLost(): boolean;
     setViewProbeValue(x: number, y: number, width: number, height: number): void;
 }
-export {IRenderProxy};
+export { IRenderProxy };

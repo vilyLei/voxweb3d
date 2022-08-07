@@ -5,8 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import Vector3D from "../../vox/math/Vector3D";
-import AABB from "../../vox/geom/AABB";
+import IVector3D from "../../vox/math/IVector3D";
+import { IAABB } from "../../vox/geom/IAABB";
 import { RenderDrawMode } from "../../vox/render/RenderConst";
 import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
 
@@ -39,8 +39,8 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     __$rprouid: number = -1;
     shader: RenderShader = null;
     // 这个posotion和bounds的center会是同一个实例
-    pos: Vector3D = null;
-    bounds: AABB = null;
+    pos: IVector3D = null;
+    bounds: IAABB = null;
     // 记录对应的RODisplay的渲染所需的状态数据
     ibufType: number = 0;                // UNSIGNED_SHORT or UNSIGNED_INT
     ibufStep: number = 2;                // 2 or 4

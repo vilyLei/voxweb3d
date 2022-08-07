@@ -5,9 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-import Vector3D from "../../vox/math/Vector3D";
+import IVector3D from "../../vox/math/IVector3D";
 import Matrix4 from "../../vox/math/Matrix4";
-import AABB from "../../vox/geom/AABB";
+import {IAABB} from "../../vox/geom/IAABB";
 import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import {IRenderProxy} from "../../vox/render/IRenderProxy";
@@ -48,9 +48,9 @@ export default interface IRenderEntity {
     isFree(): boolean;
     dispatchEvt(evt: any): number;
     getEvtDispatcher(evtClassType: number): IEvtDispatcher;
-    getPosition(resultPos: Vector3D): void;
-    getGlobalBounds(): AABB;
-    getLocalBounds(): AABB;
+    getPosition(resultPos: IVector3D): void;
+    getGlobalBounds(): IAABB;
+    getLocalBounds(): IAABB;
 
     /**
      * @return 返回true表示当前DisplayEntity能被绘制
@@ -67,7 +67,7 @@ export default interface IRenderEntity {
      * @outV            如果检测相交存放物体坐标空间的交点
      * @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
      */
-    testRay(rlpv: Vector3D, rltv: Vector3D, outV: Vector3D, boundsHit: boolean): number;
+    testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number;
     /**
      * @return 返回true表示包含有mesh对象,反之则没有
      */
@@ -88,8 +88,8 @@ export default interface IRenderEntity {
    updateMaterialToGpu(rc?: IRenderProxy, deferred?: boolean): void;
 
     setXYZ(px: number, py: number, pz: number): void;
-    setPosition(pos: Vector3D): void;
-    getPosition(resultPos: Vector3D): void;
+    setPosition(pos: IVector3D): void;
+    getPosition(resultPos: IVector3D): void;
     setRotationXYZ(rx: number, ry: number, rz: number): void;
     setScaleXYZ(sx: number, sy: number, sz: number): void;
 

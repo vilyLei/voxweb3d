@@ -86,7 +86,7 @@ export default class RendererSpace implements IRendererSpace {
                 ++this.m_entitysTotal;
 
                 let node: Entity3DNode = this.m_nodeQueue.addEntity(entity);
-                node.bounds = entity.getGlobalBounds();
+                node.bounds = entity.getGlobalBounds() as AABB;
                 node.pcoEnabled = (entity.spaceCullMask & SpaceCullingMask.POV) == SpaceCullingMask.POV;
 
                 let boo: Boolean = entity.isInRendererProcess() || entity.getMaterial() == null;
