@@ -103,11 +103,23 @@ class FBXBufferLoader {
                     }
                 }
             );
-        }else {
+        } else {
             console.error("正在解析中，请稍后");
         }
     }
 
+    parseBufBySteps(
+        buf: ArrayBuffer,
+        url: string,
+        onLoad: (model: GeometryModelDataType, bufObj: FBXBufferObject, index: number, total: number, url: string) => void
+    ): void {
+
+        this.m_parseOnLoad = onLoad;
+        this.m_parseIndex = 0;
+        this.m_url = url;
+        this.parseGeometryBySteps(buf, url);
+
+    }
     private m_tidGeom: any = -1;
     private updateGeomParse(): void {
 
@@ -115,7 +127,7 @@ class FBXBufferLoader {
         if (this.m_tidGeom > -1) {
             clearTimeout(this.m_tidGeom);
         }
-        if(this.m_fbxTreeBufParser != null && this.m_fbxTreeBufParser.isParsing()) {
+        if (this.m_fbxTreeBufParser != null && this.m_fbxTreeBufParser.isParsing()) {
 
             let id = this.m_fbxTreeBufParser.getGeomBufId();
             let model = this.m_fbxTreeBufParser.parseGeomBufNext();
@@ -123,13 +135,13 @@ class FBXBufferLoader {
 
             let tot = this.m_fbxTreeBufParser.getParseTotal();
             let onLoad = this.m_parseOnLoad;
-            if(this.m_parseIndex < this.m_fbxTreeBufParser.getParseTotal()) {
+            if (this.m_parseIndex < this.m_fbxTreeBufParser.getParseTotal()) {
                 this.m_tidGeom = setTimeout(this.updateGeomParse.bind(this), delay);
             } else {
                 this.m_parseOnLoad = null;
                 this.m_fbxTreeBufParser = null;
             }
-            onLoad(model.toGeometryModel(), model, this.m_parseIndex-1, tot, this.m_url);
+            onLoad(model.toGeometryModel(), model, this.m_parseIndex - 1, tot, this.m_url);
         }
     }
     private startupParseGeom(): void {
@@ -156,11 +168,11 @@ class FBXBufferLoader {
         }
         let delay: number = 20;      // 50 fps
 
-        if(this.m_binParser != null) {
+        if (this.m_binParser != null) {
             this.m_binParser.parseNext();
-            if(this.m_binParser.isParsing()) {
+            if (this.m_binParser.isParsing()) {
                 this.m_tidBin = setTimeout(this.updateBinParse.bind(this), delay);
-            }else{
+            } else {
                 this.m_fbxTreeBufParser = new FBXTreeBufferParser();
                 this.m_fbxTreeBufParser.parseBegin(this.m_binParser.getFBXTree(), this.m_binParser.getReader());
                 if (this.m_fbxTreeBufParser != null) {

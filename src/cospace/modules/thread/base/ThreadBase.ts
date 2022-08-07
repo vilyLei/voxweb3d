@@ -177,7 +177,7 @@ class ThreadBase implements IThreadBase {
         let transST = ThreadWFST.GetTransStatus(wfst);        
         this.m_free = transST == TransST.None || transST == TransST.Finish;
 
-        console.log("Main worker("+this.getUid()+") recieve data, transST: ", transST, ", free: ",this.m_free);
+        console.log("Main worker("+this.getUid()+") recieve data, transST: ", transST, ", free: ",this.m_free, ", autoSendData: ",this.autoSendData);
 
         // 下面这个逻辑要慎用，用了可能会对时间同步(例如帧同步)造成影响
         if (this.autoSendData) {

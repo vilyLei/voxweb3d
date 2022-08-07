@@ -37,8 +37,10 @@
     
     "buildCTMParser": "vue-cli-service build --target lib --name ModuleCTMGeomParser --dest ./public/static/cospace/modules/ctm ./src/cospace/modules/ctm/ModuleCTMGeomParser.ts",
     "buildOBJParser": "vue-cli-service build --target lib --name ModuleOBJGeomParser --dest ./public/static/cospace/modules/obj ./src/cospace/modules/obj/ModuleOBJGeomParser.ts",
+    "buildFBXFastParser": "vue-cli-service build --target lib --name ModuleFBXGeomFastParser --dest ./public/static/cospace/modules/fbxFast ./src/cospace/modules/fbx/ModuleFBXGeomFastParser.ts",
     "buildDracoParser": "vue-cli-service build --target lib --name ModuleDracoGeomParser --dest ./public/static/cospace/modules/draco ./src/cospace/modules/draco/ModuleDracoGeomParser.ts",
     "buildDracoEncoder": "vue-cli-service build --target lib --name ModuleDracoGeomEncoder --dest ./public/static/cospace/modules/dracoEncode ./src/cospace/modules/draco/ModuleDracoGeomEncoder.ts",
+    
     "buildPNGParser": "vue-cli-service build --target lib --name ModulePNGParser --dest ./public/static/cospace/modules/png ./src/cospace/modules/png/ModulePNGParser.ts",
     "buildThreadCore": "vue-cli-service build --target lib --name ThreadCore --dest ./public/static/cospace/core/code ./src/cospace/modules/thread/control/ThreadCore.ts",
     "buildCoSpaceApp": "vue-cli-service build --target lib --name CoSpaceApp --dest ./public/static/cospace/core/coapp ./src/cospace/CoSpaceApp.ts",

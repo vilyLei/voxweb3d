@@ -17,6 +17,9 @@ import MaterialBase from "../../vox/material/MaterialBase";
 import DivLog from "../../vox/utils/DivLog";
 
 import { TransST, ThreadWFST } from "../modules/thread/base/ThreadWFST";
+import { FBXBufferLoader } from "../modules/fbx/FBXBufferLoader";
+import { HttpFileLoader } from "../modules/loaders/HttpFileLoader";
+import { FBXBufferObject } from "../modules/fbx/FBXBufferObject";
 
 /**
  * 通过加载到的fbx模型二进制数据，发送CTM资源解析任务给多线程数据处理系统，获取解析之后的CTM模型数据
@@ -68,17 +71,37 @@ export class DemoFBXFastParser {
 
 		this.m_lossTime = Date.now();
 		// this.loadCTM02();
-		this.loadCTM();
+		// this.loadCTM();
+
+		let url: string = "static/private/fbx/box.fbx";
+		this.loadFBX( url );
 	}
 
 	private m_lossTime: number = 0;
 	private m_vtxTotal: number = 0;
 	private m_trisNumber: number = 0;
-	private loadCTM02(): void {
-		for(let i: number = 0; i < 27; ++i) {
-			let url = "static/private/ctm/sh202/sh202_"+i+".ctm";
-			this.initCTMFromBin(url);
-		}
+
+	private loadFBX(url: string): void {
+		
+
+		let httpFileLoader = new HttpFileLoader();
+		httpFileLoader.load(
+            url,
+            (buf: ArrayBuffer, url: string): void => {
+				
+				let fbxLoader = new FBXBufferLoader();
+				fbxLoader.parseBufBySteps(buf, url, 
+					(model: GeometryModelDataType, bufObj: FBXBufferObject, index: number, total: number, url: string): void => {
+						console.log("fbx parse finish, model: ", model);
+					}
+					);
+            },
+            null,
+            (status: number, url: string): void => {
+                console.error("load fbx data error, url: ", url);
+
+            }
+        );
 	}
 	private loadCTM(): void {
 		let baseUrl: string = "static/private/ctm/";
