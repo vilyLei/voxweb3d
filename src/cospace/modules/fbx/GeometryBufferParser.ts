@@ -71,8 +71,12 @@ class GeometryBufferParser {
 			this.m_nodeIDList = [];
 			const geoNodes = fbxTree.Objects.Geometry;
 			for ( const nodeID in geoNodes ) {
-				this.m_idLst.push( parseInt( nodeID ) );
-				this.m_nodeIDList.push(nodeID);
+				let geoNode = geoNodes[nodeID];
+				// if(geoNode.attrType != "NurbsCurve") {
+				if(geoNode.attrType == "Mesh") {
+					this.m_idLst.push( parseInt( nodeID ) );
+					this.m_nodeIDList.push(nodeID);
+				}
 			}
 			this.m_parseTotal = this.m_idLst.length;
 		}
@@ -87,13 +91,18 @@ class GeometryBufferParser {
 		return -1;
 	}
 	parseGeomBufNext(): FBXBufferObject {
-		// console.log("GeometryBufferParser::parseGeomBufNext(), this.m_nodeIDList: ",this.m_nodeIDList);
+		// console.log("GeometryBufferParser::parseGeomBufNext(), this.isParsing(): ",this.isParsing());
 		if(this.isParsing()) {
 			const geoNodes = this.m_fbxTree.Objects.Geometry;
 			let id = this.m_idLst.pop();
 			let ID = this.m_nodeIDList.pop();
+			// let geoNode = geoNodes[ ID ];
+			// console.log("GeometryBufferParser::parseGeomBufNext(), ID: ",ID, geoNodes[ ID ]);
 			const relationships = this.m_connections.get( id );
 			let obj = this.parseGeometryBuffer( relationships, geoNodes[ ID ], this.m_deformers, this.m_fbxTree );
+			// if(geoNode.attrType == "NurbsCurve") {
+			// 	//console.log();
+			// }
 			if(obj != null) {
 				obj.ID = ID;
 				obj.id = id;

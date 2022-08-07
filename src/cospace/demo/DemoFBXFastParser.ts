@@ -131,6 +131,7 @@ export class DemoFBXFastParser {
 				fbxLoader.parseBufBySteps(buf, url,
 					(model: GeometryModelDataType, bufObj: FBXBufferObject, index: number, total: number, url: string): void => {
 						console.log("main thread fbx parsing finish, model: ", model);
+						this.fbxParseFinish([model], bufObj.transform.getLocalFS32(), url, 0, 1);
 					}
 				);
 				//*/
@@ -143,6 +144,7 @@ export class DemoFBXFastParser {
 		);
 	}
 	private initRenderer(): void {
+
 		RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 		RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 		RendererDevice.SetWebBodyColor("black");
