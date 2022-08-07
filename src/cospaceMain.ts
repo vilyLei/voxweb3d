@@ -23,7 +23,6 @@ import { DemoFBXFastParser as Demo } from "./cospace/demo/DemoFBXFastParser";
 // import { DemoInputText as Demo } from "./cospace/demo/DemoInputText";
 // import { DemoCORS as Demo } from "./cospace/demo/DemoCORS";
 
-document.title = "RenderingVerifier";
 let demoIns: Demo = new Demo();
 let ins: any = demoIns;
 function main(): void {

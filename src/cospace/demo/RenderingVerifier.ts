@@ -29,6 +29,7 @@ export class RenderingVerifier {
 
 		console.log("RenderingVerifier::initialize()......");
 
+		document.title = "RenderingVerifier";
 		if (this.m_rscene == null) {
 
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;

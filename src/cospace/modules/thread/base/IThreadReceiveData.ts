@@ -1,3 +1,10 @@
+/***************************************************************************/
+/*                                                                         */
+/*  Copyright 2018-2022 by                                                 */
+/*  Vily(vily313@126.com)                                                  */
+/*                                                                         */
+/***************************************************************************/
+
 type StreamType = ArrayBuffer | Float32Array | Int32Array | Uint16Array | Uint8Array | Int16Array | Int8Array;
 interface IThreadReceiveData<T1 extends any = unknown, T2 extends any = unknown> {
     /**

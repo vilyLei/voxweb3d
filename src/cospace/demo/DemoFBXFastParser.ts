@@ -15,6 +15,9 @@ import {
 } from "../voxengine/CoEngine";
 import MaterialBase from "../../vox/material/MaterialBase";
 import DivLog from "../../vox/utils/DivLog";
+
+import { TransST, ThreadWFST } from "../modules/thread/base/ThreadWFST";
+
 /**
  * 通过加载到的fbx模型二进制数据，发送CTM资源解析任务给多线程数据处理系统，获取解析之后的CTM模型数据
  */
@@ -24,7 +27,7 @@ export class DemoFBXFastParser {
 	private m_ctmParseTask: CTMParseTask;
 
 	private m_userInterac: UserInteraction = new UserInteraction();
-	private m_rscene: RendererScene = new RendererScene();
+	private m_rscene: RendererScene = null;
 	constructor() {}
 
 	initialize(): void {
@@ -44,6 +47,14 @@ export class DemoFBXFastParser {
 
 		this.m_threadSchedule = schedule;
 
+		let wsft = ThreadWFST.Build(0,0,0, 9);
+		console.log("step0 wsft: ", wsft);
+		wsft = ThreadWFST.ModifyTransStatus(wsft, TransST.Finish);
+		console.log("step1 wsft: ", wsft);
+		let transST = ThreadWFST.GetTransStatus(wsft);
+		console.log("step2 transST: ", transST);
+
+
 		// 启动循环调度
 		this.update();
 		document.onmousedown = (evt: any): void => {
@@ -51,10 +62,10 @@ export class DemoFBXFastParser {
 		};
 		//console.log("getBaseUrl(): ", this.getBaseUrl());
 
-		this.initRenderer();
+		// this.initRenderer();
 
 		this.m_lossTime = Date.now();
-		this.loadCTM02();
+		// this.loadCTM02();
 		// this.loadCTM();
 	}
 
@@ -89,6 +100,7 @@ export class DemoFBXFastParser {
 		rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
 		rparam.setCamPosition(1800.0, 1800.0, 1800.0);
 		rparam.setCamProject(45, 20.0, 9000.0);
+		this.m_rscene = new RendererScene();
 		this.m_rscene.initialize(rparam, 3);
 		this.m_userInterac.initialize(this.m_rscene);
 		this.m_userInterac.cameraZoomController.syncLookAt = true;
@@ -112,6 +124,7 @@ export class DemoFBXFastParser {
 
 		DivLog.ShowLogOnce(info);
 		return;
+		if(this.m_rscene == null) return;
 
 		let material = this.createNormalMaterial();
 		material.initializeByCodeBuf();
@@ -217,15 +230,19 @@ void main() {
 	 * 定时调度
 	 */
 	private update(): void {
-		this.m_threadSchedule.run();
-		if (this.m_timeoutId > -1) {
-			clearTimeout(this.m_timeoutId);
+		if(this.m_threadSchedule != null) {
+			this.m_threadSchedule.run();
+			if (this.m_timeoutId > -1) {
+				clearTimeout(this.m_timeoutId);
+			}
+			this.m_timeoutId = setTimeout(this.update.bind(this), 40); // 25 fps
 		}
-		this.m_timeoutId = setTimeout(this.update.bind(this), 40); // 25 fps
 	}
 	run(): void {
-		this.m_userInterac.run();
-		this.m_rscene.run();
+		if(this.m_rscene != null) {
+			this.m_userInterac.run();
+			this.m_rscene.run();
+		}
 	}
 }
 

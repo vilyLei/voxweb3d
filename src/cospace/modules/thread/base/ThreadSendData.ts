@@ -1,3 +1,9 @@
+/***************************************************************************/
+/*                                                                         */
+/*  Copyright 2018-2022 by                                                 */
+/*  Vily(vily313@126.com)                                                  */
+/*                                                                         */
+/***************************************************************************/
 
 import {StreamType, IThreadSendData} from "./IThreadSendData";
 
@@ -31,6 +37,7 @@ class ThreadSendData implements IThreadSendData {
      */
     sendStatus: number = -1;
     /**
+     * build vaule from ThreadWFST.ts
      * 任务数据在执行过程中的状态(work flow status): 将32位分为4个8位, 分别表示任务执行过程中的四种类别的状态(未知 | 未知 | 未知 | 流转状态)，默认是0x0
      */
     wfst: number = 0;
