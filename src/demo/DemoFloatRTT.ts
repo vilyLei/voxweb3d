@@ -47,7 +47,7 @@ export class DemoFloatRTT {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext();
+            this.m_rcontext = this.m_rscene.getRendererContext() as any;
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
@@ -79,7 +79,7 @@ export class DemoFloatRTT {
             let box: Box3DEntity = new Box3DEntity();
             box.initializeCube(200.0, [tex1]);
             this.m_rscene.addEntity(box);
-            
+
             // add rtt texture 3d display entity
             let boxRtt: Box3DEntity = new Box3DEntity();
             //boxRtt.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[this.m_rscene.textureBlock.getRTTTextureAt(0)]);
@@ -89,7 +89,7 @@ export class DemoFloatRTT {
         }
     }
     run(): void {
-        
+
         let pcontext: RendererInstanceContext = this.m_rcontext;
         // show fps status
         this.m_statusDisp.update();

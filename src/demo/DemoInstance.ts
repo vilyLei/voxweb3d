@@ -38,7 +38,7 @@ class DemoInstance {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(this.m_rparam, this.m_processTotal);
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext();
+            this.m_rcontext = this.m_rscene.getRendererContext() as any;
             this.m_stage3D = this.m_rscene.getStage3D() as Stage3D;
             this.m_camera = this.m_rscene.getCamera();
 

@@ -42,12 +42,12 @@ export class DemoFlexPipe implements IShaderLibListener {
     private m_rscene: RendererScene = null;
     private m_rcontext: RendererInstanceContext = null;
     private m_texLoader: ImageTextureLoader = null;
-    
+
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     // private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
-    
+
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
     private m_specularEnvMap: IRenderTexture;
     fogEnabled: boolean = false;
@@ -60,7 +60,7 @@ export class DemoFlexPipe implements IShaderLibListener {
     initialize(): void {
         console.log("DemoFlexPipe::initialize()......");
         if (this.m_rscene == null) {
-            
+
             // let bez2 = new Bezier2Curve();
             // let bez2VS: number[] = new Array(11);
             // bez2.calcCurveChangeYData(bez2VS.length - 1,1.0,0.02,0.5,1.0, bez2VS);
@@ -83,7 +83,7 @@ export class DemoFlexPipe implements IShaderLibListener {
             this.m_rscene.entityBlock = entityBlock;
 
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext();
+            this.m_rcontext = this.m_rscene.getRendererContext() as any;
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             // this.m_profileInstance.initialize(this.m_rscene.getRenderer());
@@ -101,12 +101,12 @@ export class DemoFlexPipe implements IShaderLibListener {
             // let axis: Axis3DEntity = new Axis3DEntity();
             // axis.initialize(300.0);
             // this.m_rscene.addEntity(axis);
-            
+
             //  this.initScene();
             this.initMaterialCtx();
         }
     }
-    
+
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ",loadingTotal, loadedTotal);
         this.initScene();
@@ -117,7 +117,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         if (this.hdrBrnEnabled) {
             envMapUrl = "static/bytes/spe.hdrBrn";
         }
-        
+
         let loader: SpecularTextureLoader = new SpecularTextureLoader();
         loader.hdrBrnEnabled = this.hdrBrnEnabled;
         loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
@@ -178,7 +178,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         //  this.m_materialCtx.lightModule.showInfo();
     }
     private useMaps(material: PBRMaterial, ns: string = "lava_03"): void {
-        
+
         let diffuseMap: IRenderTexture = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
         let normalMap: IRenderTexture = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_NRM.png");
         let aoMap: IRenderTexture = null;
@@ -200,7 +200,7 @@ export class DemoFlexPipe implements IShaderLibListener {
     makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
 
         let material: PBRMaterial = this.m_materialCtx.createPBRLightMaterial(true, true);
-        
+
         let decorator: PBRShaderDecorator = material.decorator;
         decorator.scatterEnabled = false;
         decorator.woolEnabled = true;
@@ -236,7 +236,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         return material;
     }
     private createPipeMaterial(scaleU: number, scaleV: number, mapNS: string = "lava_03"): PBRMaterial {
-        
+
         let material: PBRMaterial;
         ///*
         material = this.createMaterial();
@@ -265,7 +265,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         this.fogEnabled = true;
         this.aoMapEnabled = true;
         let material: PBRMaterial;
-        
+
         material = this.createPipeMaterial(1, 1, "metal_01");
         ///*
         // let srcSph = new Sphere3DEntity();
@@ -335,9 +335,9 @@ export class DemoFlexPipe implements IShaderLibListener {
         this.initEnvBox();
         this.update();
     }
-    
+
     private initEnvBox(): void {
-        
+
         let envBox: Box3DEntity = new Box3DEntity();
         envBox.pipeTypes = [MaterialPipeType.FOG_EXP2];
         envBox.setMaterialPipeline( this.m_materialCtx.pipeline );
@@ -347,7 +347,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         this.m_rscene.addEntity(envBox, 2);
     }
     private createSquareTeam(rn: number, cn: number, disV: Vector3D, scaleFactor: number): void {
-        
+
         let material0: PBRMaterial = this.createPipeMaterial(1, 1, "metal_01");
         let material1: PBRMaterial = this.createPipeMaterial(1, 1, "lava_03");
         // let rn: number = 40;
@@ -383,7 +383,7 @@ export class DemoFlexPipe implements IShaderLibListener {
     private m_pos0: Vector3D = new Vector3D();
 
     private m_rotV: Vector3D = new Vector3D();
-    private m_scaleV: Vector3D = new Vector3D(1.0, 1.0, 1.0);    
+    private m_scaleV: Vector3D = new Vector3D(1.0, 1.0, 1.0);
     private m_mat4: Matrix4 = new Matrix4();
 
     private transformPipe(i: number): void {
@@ -410,7 +410,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         this.morphGeometryAnimate();
 
     }
-    
+
     morphGeometryAnimate(): void {
 
         let list = this.m_morphPipes;

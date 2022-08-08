@@ -6,7 +6,7 @@ import RendererDevice from "../vox/render/RendererDevice";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
-import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../vox/scene/IRendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import MouseEvent from "../vox/event/MouseEvent";
 import Stage3D from "../vox/display/Stage3D";
@@ -31,12 +31,12 @@ export class DemoLockDrawEntity
     {
     }
     private m_rscene: RendererScene = null;
-    private m_rcontext:RendererInstanceContext = null;
+    private m_rcontext: IRendererInstanceContext = null;
     private m_texLoader:ImageTextureLoader;
     private m_camTrack:CameraTrack = null;
     private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
     private m_entitys:DisplayEntity[] = [];
-    
+
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
@@ -60,10 +60,10 @@ export class DemoLockDrawEntity
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
-            
+
             RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.BLEND);
             RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
-            
+
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             this.initTest0();
@@ -79,7 +79,7 @@ export class DemoLockDrawEntity
         let tex3:TextureProxy = this.getImageTexByUrl("static/assets/flare_core_02.jpg");
 
         let i:number = 0;
-        
+
         let axis:Axis3DEntity = new Axis3DEntity();
         axis.initialize(300.0);
         this.m_rscene.addEntity(axis);
@@ -133,7 +133,7 @@ export class DemoLockDrawEntity
     private m_lockMaterial:PSColorMaterial = new PSColorMaterial();
     run():void
     {
-        this.m_statusDisp.update();        
+        this.m_statusDisp.update();
         if(this.m_testType == 0) {
             this.run0()
         }
@@ -153,7 +153,7 @@ export class DemoLockDrawEntity
         this.m_rcontext.useGlobalMaterial(this.m_entitys[0].getMaterial());
         //this.m_rscene.drawEntityByLockMaterial(this.m_entitys[0]);
         this.m_rscene.drawEntity(this.m_entitys[0]);
-        
+
         this.m_rcontext.useGlobalMaterial(this.m_lockMaterial);
         for(i = 1; i < len; ++i)
         {
@@ -161,10 +161,10 @@ export class DemoLockDrawEntity
             this.m_rscene.drawEntity(this.m_entitys[i]);
         }
 
-        this.m_rcontext.runEnd();            
+        this.m_rcontext.runEnd();
         this.m_camTrack.rotationOffsetAngleWorldY(-0.2);;
         this.m_rcontext.updateCamera();
-        
+
         //  //console.log("#---  end");
     }
 }

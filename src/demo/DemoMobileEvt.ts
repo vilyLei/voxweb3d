@@ -81,7 +81,7 @@ class DispCtrObj {
                 //DivLog.ShowLog("list "+i);
             }
         }
-        
+
         let axis: Axis3DEntity = new Axis3DEntity();
         if (DispCtrObj.s_axis != null) {
             axis.setMesh(DispCtrObj.s_axis.getMesh());
@@ -169,7 +169,7 @@ export class DemoMobileEvt {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext();
+            this.m_rcontext = this.m_rscene.getRendererContext() as any;
             this.m_profileInstance = new ProfileInstance();
             if (this.m_profileInstance != null) this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 

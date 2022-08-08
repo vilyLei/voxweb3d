@@ -44,7 +44,7 @@ export class DemoFrustrum {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext();
+            this.m_rcontext = this.m_rscene.getRendererContext() as any;
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
             this.m_interaction.initialize( this.m_rscene );
             // this.m_rscene.enableMouseEvent(true);
@@ -77,7 +77,7 @@ export class DemoFrustrum {
             let camPos: Vector3D = new Vector3D(1, 700, 1);
             let near: number = 100.0;
             let far: number = 500.0;
-            camera0 = new CameraBase();            
+            camera0 = new CameraBase();
             camera0.lookAtRH(camPos, Vector3D.ZERO, Vector3D.Z_AXIS);
             camera0.orthoRH(near, far, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
             camera0.setViewXY(0, 0);
@@ -125,7 +125,7 @@ export class DemoFrustrum {
         this.m_renderer.update();
         this.m_renderer.run();
 
-        this.m_rcontext.runEnd();            
+        this.m_rcontext.runEnd();
         this.m_camTrack.rotationOffsetAngleWorldY(0.2);
         this.m_rcontext.updateCamera();
         */

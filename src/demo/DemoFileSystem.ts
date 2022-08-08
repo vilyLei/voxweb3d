@@ -51,9 +51,9 @@ export class DemoFileSystem {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext();
+            this.m_rcontext = this.m_rscene.getRendererContext() as any;
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-            
+
             this.m_rscene.enableMouseEvent(true);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
@@ -87,7 +87,7 @@ export class DemoFileSystem {
             this.initExampleLoad();
         }
     }
-    
+
     private initExampleLoad(): void {
 
         let loader: BinaryLoader = new BinaryLoader();
@@ -152,17 +152,17 @@ export class DemoFileSystem {
                 window.URL.revokeObjectURL(url);
             };
         }());
-        
+
         saveByteArray([samplerData], 'example.bytes');
     }
     loaded(buffer: ArrayBuffer, uuid: string): void {
         console.log("loaded... uuid: ", uuid,buffer.byteLength);
-        console.log("loaded buffer: ", buffer);           
+        console.log("loaded buffer: ", buffer);
     }
     loadError(status: number, uuid: string): void {
     }
 
-    
+
     private m_timeoutId: any = -1;
     private update(): void {
         if (this.m_timeoutId > -1) {
@@ -176,7 +176,7 @@ export class DemoFileSystem {
     run(): void {
 
         this.m_statusDisp.update(false);
-        
+
         //  this.m_stageDragSwinger.runWithYAxis();
         //  this.m_cameraZoomController.run(null, 30.0);
 

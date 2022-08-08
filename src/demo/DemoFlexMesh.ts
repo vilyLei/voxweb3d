@@ -57,11 +57,11 @@ export class DemoFlexMesh {
 
             let rparam: RendererParam = new RendererParam();
             rparam.setCamPosition(800.0, 800.0, 800.0);
-            
+
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext();
+            this.m_rcontext = this.m_rscene.getRendererContext() as any;
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             this.m_rscene.enableMouseEvent(true);
@@ -128,7 +128,7 @@ export class DemoFlexMesh {
     }
     private m_box: Box3DEntity = null;
     private m_boxMesh: Box3DMesh = null;
-    
+
     private reshapeMeshByAABBPos(minV: Vector3D, maxV: Vector3D): void {
         let mesh: Box3DMesh = this.m_currBox.getMesh() as Box3DMesh;
         mesh.initialize(minV, maxV);

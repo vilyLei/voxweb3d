@@ -27,7 +27,7 @@ export class DemoMRT
     private m_texBlock:TextureBlock;
     private m_camTrack:CameraTrack = null;
     private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-    
+
     initialize():void
     {
         console.log("DemoMRT::initialize()......");
@@ -43,15 +43,15 @@ export class DemoMRT
             this.m_renderer = new RendererInstance();
             this.m_renderer.initialize(rparam, new CameraBase());
             this.m_renderer.appendProcess();
-            this.m_rcontext = this.m_renderer.getRendererContext();
+            this.m_rcontext = this.m_renderer.getRendererContext() as any;
 
             this.m_texBlock = new TextureBlock();
             this.m_texBlock.setRenderer( this.m_renderer.getRenderProxy() );
             this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
-            
+
             let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/fruit_01.jpg");
             let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
-            
+
             tex0.mipmapEnabled = true;
             tex0.setWrap(TextureConst.WRAP_REPEAT);
             tex1.mipmapEnabled = true;
@@ -89,7 +89,7 @@ export class DemoMRT
     }
     run():void
     {
-        
+
         this.m_texLoader.run();
         this.m_texBlock.run();
 
@@ -114,7 +114,7 @@ export class DemoMRT
         radapter.setRenderToBackBuffer(FrameBufferType.FRAMEBUFFER);
         rinstance.runAt(1);
 
-        pcontext.runEnd();            
+        pcontext.runEnd();
         this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         pcontext.updateCamera();
     }

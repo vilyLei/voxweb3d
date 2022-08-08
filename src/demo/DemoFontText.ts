@@ -59,7 +59,7 @@ export class DemoFontText {
             this.m_renderer.appendProcess();
             this.m_renderer.appendProcess();
             this.m_renderer.appendProcess();
-            this.m_rcontext = this.m_renderer.getRendererContext();
+            this.m_rcontext = this.m_renderer.getRendererContext() as any;
 
             H5FontSystem.GetInstance().setRenderProxy(this.m_renderer.getRenderProxy());
             H5FontSystem.GetInstance().initialize("fontTex", 18, 512, 512, true, true);

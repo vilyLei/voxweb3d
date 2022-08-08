@@ -32,7 +32,7 @@ export class DemoGpuTexMana {
             let stage3D: Stage3D = new Stage3D(this.m_renderer.getRCUid(), document);
             this.m_renderer.__$setStage3D(stage3D);
             this.m_renderer.initialize(rparam, new CameraBase());
-            this.m_rcontext = this.m_renderer.getRendererContext();
+            this.m_rcontext = this.m_renderer.getRendererContext() as any;
 
             stage3D.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
             this.m_camTrack = new CameraTrack();

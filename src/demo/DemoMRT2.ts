@@ -36,7 +36,7 @@ export namespace demo
         private m_texLoader:ImageTextureLoader;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-        
+
         initialize():void
         {
             console.log("DemoMRT2::initialize()......");
@@ -56,7 +56,7 @@ export namespace demo
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();
-                this.m_rcontext = this.m_renderer.getRendererContext();
+                this.m_rcontext = this.m_renderer.getRendererContext() as any;
 
                 this.m_texBlock = new TextureBlock();
                 this.m_texBlock.setRenderer( this.m_renderer.getRenderProxy() );
@@ -107,7 +107,7 @@ export namespace demo
                 box.initialize(new Vector3D(-boxSize,-boxSize - 80.0,-boxSize),new Vector3D(boxSize,boxSize + 80.0,boxSize),[tex1]);
                 //this.m_renderer.addEntity(box);
 
-                
+
                 //  let axis:Axis3DEntity = new Axis3DEntity();
                 //  axis.initialize(500.0);
                 //  this.m_renderer.addEntity(axis, 4);
@@ -184,7 +184,7 @@ export namespace demo
             rinstance.runAt(2);
 
 
-            pcontext.runEnd();            
+            pcontext.runEnd();
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);;
             pcontext.updateCamera();
         }

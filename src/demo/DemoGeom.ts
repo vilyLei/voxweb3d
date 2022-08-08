@@ -47,14 +47,14 @@ export namespace demo
             if(this.m_rcontext == null)
             {
                 RendererDevice.SHADERCODE_TRACE_ENABLED = false;
-                
+
                 this.m_statusDisp.initialize();
                 let rparam:RendererParam = new RendererParam();
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam, new CameraBase());
-                this.m_rcontext = this.m_renderer.getRendererContext();
+                this.m_rcontext = this.m_renderer.getRendererContext() as any;
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
@@ -62,7 +62,7 @@ export namespace demo
                 this.m_texBlock.setRenderer(this.m_renderer.getRenderProxy());
                 this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
 
-                
+
                 let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
                 let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/guangyun_H_0007.png");
@@ -75,7 +75,7 @@ export namespace demo
 
                 RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.BLEND);
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
-                
+
                 //  this.testReflect();
 
                 //  let plane:Plane3DEntity = new Plane3DEntity();
@@ -121,7 +121,7 @@ export namespace demo
                 StraightLine.CalcTwoSLDualCloseV2(ls0_pa, ls0_tv, ls1_pa, ls1_tv, outv0,outv1);
                 //  StraightLine.CalcTwoSLCloseV2(ls0_pa, ls0_tv, ls1_pa, ls1_tv, outv0);
                 //  StraightLine.CalcTwoSLCloseV2(ls1_pa, ls1_tv, ls0_pa, ls0_tv, outv1);
-                
+
                 let inter_ls:Line3DEntity = new Line3DEntity();
                 inter_ls.setRGB3f(1.0,0.0,1.0);
                 inter_ls.initialize(outv0, outv1);
@@ -161,7 +161,7 @@ export namespace demo
 
                 let boo0:boolean = pcone.containsPos(outPv);
                 console.log("boo0: "+boo0);
-                
+
                 //  let pa:Vector3D = new Vector3D(450.0,60.0,-200.0);
                 //  let pb:Vector3D = new Vector3D(-300.0,-30.0,-40.0);
                 let pa:Vector3D = new Vector3D(450.0,60.0,200.0);
@@ -183,7 +183,7 @@ export namespace demo
                 tv.subtractBy(pa);
                 tv.normalize();
                 //tv.copyFrom(pcone.tv);
-                
+
                 pb.x = pa.x + tv.x * 700.0;
                 pb.y = pa.y + tv.y * 700.0;
                 pb.z = pa.z + tv.z * 700.0;
@@ -254,17 +254,17 @@ export namespace demo
                 axis.initialize(300.0);
                 axis.setXYZ(0.0,-200.0,0.0);
                 this.m_renderer.addEntity(axis);
-                
+
                 let axisA:Axis3DEntity = new Axis3DEntity();
                 axisA.initialize(180.0);
                 axisA.setXYZ(0.0, 0.0, 0.0);
                 this.m_renderer.addEntity(axisA);
-                
+
                 let axisB:Axis3DEntity = new Axis3DEntity();
                 axisB.initializeCross(80.0);
                 axisB.setXYZ(0.0, 0.0, 0.0);
                 this.m_renderer.addEntity(axisB);
-                
+
                 Sphere.IntersectionTwoRLByV2(pa,tv,shpCV,radius,outv,outv2);
                 axisA.setPosition(outv);
                 axisA.update();
@@ -286,7 +286,7 @@ export namespace demo
                 axisB.update();
                 console.log("outv: "+outv.toString());
                 //*/
-                
+
 
             }
         }
@@ -334,7 +334,7 @@ export namespace demo
             this.m_renderer.update();
             this.m_renderer.run();
 
-            this.m_rcontext.runEnd();            
+            this.m_rcontext.runEnd();
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);;
             this.m_rcontext.updateCamera();
 

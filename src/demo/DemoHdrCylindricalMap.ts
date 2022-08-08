@@ -36,7 +36,7 @@ export class DemoHdrCylindricalMap {
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
-    
+
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true,powerOf2Fix:boolean = false): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl,0,false, powerOf2Fix);
         ptex.mipmapEnabled = mipmapEnabled;
@@ -61,11 +61,11 @@ export class DemoHdrCylindricalMap {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext();
+            this.m_rcontext = this.m_rscene.getRendererContext() as any;
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-            
+
             this.m_rscene.enableMouseEvent(true);
-            
+
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
 
@@ -88,7 +88,7 @@ export class DemoHdrCylindricalMap {
             this.initHdrTest();
         }
     }
-    
+
     private initCommonTest(): void {
         let posTex: TextureProxy = this.getImageTexByUrl("static/assets/hdr/night_free_Bg.jpg");
         //let posTex: TextureProxy = this.getImageTexByUrl("static/assets/hdr/orangeRoom.jpg");
@@ -112,10 +112,10 @@ export class DemoHdrCylindricalMap {
         }
         sph.initialize(800.0, 50, 50, [posTex]);
         this.m_rscene.addEntity(sph);
-        
+
     }
     private initHdrTest(): void {
-        
+
         let loader: BinaryLoader = new BinaryLoader();
         //loader.load("static/assets/hdr/night_free_Env_512x256.hdr", this);
         //loader.load("static/assets/hdr/cool_white.hdr", this);
@@ -134,7 +134,7 @@ export class DemoHdrCylindricalMap {
     }
 
     private createByteTexByBytes(bytes: Uint8Array, pw: number, ph: number): IRenderTexture {
-        
+
         let posTex = this.m_rscene.textureBlock.createBytesTex(pw, ph);
         posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         //posTex.mipmapEnabled = false;
@@ -160,7 +160,7 @@ export class DemoHdrCylindricalMap {
         sph.initialize(400.0, 20, 20, [ftex]);
         //sph.setXYZ(Math.random() * 700.0 - 350.0, Math.random() * 700.0 - 350.0, Math.random() * 700.0 - 350.0);
         this.m_rscene.addEntity(sph);
-        this.update();            
+        this.update();
     }
     loadError(status: number, uuid: string): void {
 
@@ -182,7 +182,7 @@ export class DemoHdrCylindricalMap {
 
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(this.m_lookAt, 30.0);
-        
+
         this.m_rscene.run(true);
 
         //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);

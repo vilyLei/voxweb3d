@@ -151,7 +151,7 @@ export class DemoFloatTex implements ILoaderListerner {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext();
+            this.m_rcontext = this.m_rscene.getRendererContext() as any;
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
@@ -270,7 +270,7 @@ export class DemoFloatTex implements ILoaderListerner {
                 subArr = bytes.slice(begin, begin + size);
                 //console.log("width: ",width, "subArr.length: ",subArr.length);
                 bytesTex.setDataFromBytes(subArr, j, width, width, 0,0,false);
-                
+
                 begin += size;
             }
             width >>= 1;
@@ -308,7 +308,7 @@ export class DemoFloatTex implements ILoaderListerner {
             width >>= 1;
             height >>= 1;
         }
-        
+
         width = src_size;
         height = src_size;
         let currBytes: Uint8Array = new Uint8Array(size + 32);
@@ -346,11 +346,11 @@ export class DemoFloatTex implements ILoaderListerner {
         let height: number = 128;
         let size: number = width * height * 3;
         let fs32: Float32Array = new Float32Array(buffer);
-        
+
         this.saveHdrBrnData(width, fs32, 3, maxLV);
         return;
         let subArr: Float32Array = null;
-        
+
         let bytesTex = this.m_rscene.textureBlock.createBytesTex(width, height);
         bytesTex.mipmapEnabled = false;
 
@@ -363,7 +363,7 @@ export class DemoFloatTex implements ILoaderListerner {
                     continue;
                 }
                 subArr = fs32.slice(begin, begin + size);
-                
+
                 let dstArr = new Uint8Array(width * height * 4);
                 let total: number = width * height;
 
@@ -386,7 +386,7 @@ export class DemoFloatTex implements ILoaderListerner {
         ufmaterial.setTextureList([bytesTex]);
 
         let plane: Plane3DEntity = new Plane3DEntity();
-        //plane.setMaterial(material); 
+        //plane.setMaterial(material);
         plane.setMaterial(ufmaterial);
         plane.initializeXOZ(0.0, 0.0, 200.0, 150.0, [bytesTex]);
         this.m_rscene.addEntity(plane);
