@@ -21,7 +21,7 @@ import { EngineBase as Engine } from "../../vox/engine/EngineBase";
 
 import { ICoVec3 } from "./math/ICoVec3";
 import { ICoMat4 } from "./math/ICoMat4";
-import { ICoDisplayEntity } from "./engine/ICoDisplayEntity";
+import { ICoDisplayEntity } from "./entity/ICoDisplayEntity";
 import { IShaderMaterial } from "./material/IShaderMaterial";
 import { IEngineBase } from "./engine/IEngineBase";
 

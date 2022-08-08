@@ -2,7 +2,7 @@ import { ICoVec3 } from "./math/ICoVec3";
 import { ICoMat4 } from "./math/ICoMat4";
 import { ICoRendererParam } from "./engine/ICoRendererParam";
 import { IShaderMaterial } from "./material/IShaderMaterial";
-import { ICoDisplayEntity } from "./engine/ICoDisplayEntity";
+import { ICoDisplayEntity } from "./entity/ICoDisplayEntity";
 import { IEngineBase } from "./engine/IEngineBase";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";

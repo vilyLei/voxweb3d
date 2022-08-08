@@ -5,7 +5,7 @@ import { IMatrix4 } from "../../vox/math/IMatrix4";
 import IRendererParam from "../../vox/scene/IRendererParam";
 import { ICoRendererScene } from "./scene/ICoRendererScene";
 
-import { ICoDisplayEntity } from "./engine/ICoDisplayEntity";
+import { ICoDisplayEntity } from "./entity/ICoDisplayEntity";
 import { IShaderMaterial } from "./material/IShaderMaterial";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";

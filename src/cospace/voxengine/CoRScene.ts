@@ -16,10 +16,10 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import ShaderMaterial from "../../vox/material/mcase/ShaderMaterial";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
-import BoxFrame3D from "../../vox/entity/BoxFrame3D";
-import Line3DEntity from "../../vox/entity/Line3DEntity";
+// import BoxFrame3D from "../../vox/entity/BoxFrame3D";
+// import Line3DEntity from "../../vox/entity/Line3DEntity";
 
-import { ICoDisplayEntity } from "./engine/ICoDisplayEntity";
+import { ICoDisplayEntity } from "./entity/ICoDisplayEntity";
 import { IShaderMaterial } from "./material/IShaderMaterial";
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 

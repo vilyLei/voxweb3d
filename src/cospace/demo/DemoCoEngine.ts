@@ -14,7 +14,7 @@ import { ICoRendererParam } from "../voxengine/engine/ICoRendererParam";
 import { IEngineBase } from "../voxengine/engine/IEngineBase";
 import { ICoEngine } from "../voxengine/ICoEngine";
 import { IShaderMaterial } from "../voxengine/material/IShaderMaterial";
-import { ICoDisplayEntity } from "../voxengine/engine/ICoDisplayEntity";
+import { ICoDisplayEntity } from "../voxengine/entity/ICoDisplayEntity";
 
 declare var CoSpaceApp: ICoSpaceApp;
 declare var CoEngine: ICoEngine;
