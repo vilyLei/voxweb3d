@@ -14,7 +14,7 @@ import SubStage3D from "../../vox/display/SubStage3D";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import CameraBase from "../../vox/view/CameraBase";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
-import RenderProxy from "../../vox/render/RenderProxy";
+import { IRenderProxy } from "../../vox/render/IRenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
@@ -26,7 +26,7 @@ import EntityNodeQueue from "../../vox/scene/EntityNodeQueue";
 import Entity3DNodeLinker from "../../vox/scene/Entity3DNodeLinker";
 
 import RPONodeBuilder from "../../vox/render/RPONodeBuilder";
-import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import IRenderer from "../../vox/scene/IRenderer";
 import IRenderProcess from "../../vox/render/IRenderProcess";
@@ -54,8 +54,8 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     private static s_uid: number = 0;
     private m_uid: number = -1;
     private m_adapter: IRenderAdapter = null;
-    private m_renderProxy: RenderProxy = null;
-    private m_rcontext: RendererInstanceContext = null;
+    private m_renderProxy: IRenderProxy = null;
+    private m_rcontext: IRendererInstanceContext = null;
     private m_renderer: RendererInstance = null;
     private m_parent: IRenderer = null;
     private m_processids: Uint8Array = new Uint8Array(128);
@@ -112,7 +112,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     getRPONodeBuilder(): RPONodeBuilder {
         return null;
     }
-    getRenderProxy(): RenderProxy {
+    getRenderProxy(): IRenderProxy {
         return this.m_renderProxy;
     }
     // set new view port rectangle area
@@ -135,7 +135,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     getRenderer(): RendererInstance {
         return this.m_renderer;
     }
-    getRendererContext(): RendererInstanceContext {
+    getRendererContext(): IRendererInstanceContext {
         return this.m_rcontext;
     }
     getStage3D(): IRenderStage3D {
@@ -561,7 +561,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
                 }
             }
         }
-        //  this.m_renderer.update();          
+        //  this.m_renderer.update();
 
         let i: number = 0;
         for (; i < this.m_containersTotal; ++i) {

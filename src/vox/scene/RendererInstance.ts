@@ -21,17 +21,19 @@ import IRenderProcess from "../../vox/render/IRenderProcess";
 import RenderProcess from "../../vox/render/RenderProcess";
 import RenderProcessBuider from "../../vox/render/RenderProcessBuider";
 import ROVtxBuilder from "../../vox/render/ROVtxBuilder";
+import {IRendererInstanceContext} from "../../vox/scene/IRendererInstanceContext";
 import {RendererInstanceContextParam, RendererInstanceContext} from "../../vox/scene/RendererInstanceContext";
-import IRenderer from "../../vox/scene/IRenderer";
+import { IRendererInstance } from "../../vox/scene/IRendererInstance";
 
 import { RPOUnitBuilder } from "../../vox/render/RPOUnitBuilder";
+import IRPONodeBuilder from "../../vox/render/IRPONodeBuilder";
 import RPONodeBuilder from "../../vox/render/RPONodeBuilder";
 import DispEntity3DManager from "../../vox/scene/DispEntity3DManager";
 
 /**
  * kernal system instance, it is the renderer instance for the renderer runtime, it is very very very important class.
  */
-export class RendererInstance implements IRenderer {
+export class RendererInstance implements IRendererInstance {
     private ___$$$$$$$Author:string = "VilyLei(vily313@126.com)";
     private m_uid: number = -1;
     private static s_uid: number = 0;
@@ -70,13 +72,13 @@ export class RendererInstance implements IRenderer {
     getRCUid(): number {
         return this.m_uid;
     }
-    getRPONodeBuilder(): RPONodeBuilder {
+    getRPONodeBuilder(): IRPONodeBuilder {
         return this.m_rpoNodeBuilder;
     }
     getDataBuilder(): RODataBuilder {
         return this.m_dataBuilder;
     }
-    getRendererContext(): RendererInstanceContext {
+    getRendererContext(): IRendererInstanceContext {
         return this.m_renderInsContext;
     }
     getRenderProxy(): RenderProxy {
@@ -286,7 +288,7 @@ export class RendererInstance implements IRenderer {
      * append a new renderer process instance
      * @param batchEnabled batch renderer runtime resource data
      * @param processFixedState the process is fix renderer state
-     * @returns 
+     * @returns
      */
     appendProcess(batchEnabled: boolean = true, processFixedState: boolean = false): IRenderProcess {
         this.m_processBuider.setCreateParams(
@@ -360,8 +362,8 @@ export class RendererInstance implements IRenderer {
      * 在任意阶段绘制一个指定的 entity,只要其资源数据准备完整
      */
     drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
-        
-        if (entity != null && entity.getVisible() && !this.m_renderProxy.isContextLost()) {            
+
+        if (entity != null && entity.getVisible() && !this.m_renderProxy.isContextLost()) {
             // console.log("***8** rendewrer ins drawEntity(), entity: ",entity, entity.getRendererUid() == this.m_uid);
             if (entity.getRendererUid() == this.m_uid) {
                 this.m_fixProcess.drawDisp(entity.getDisplay(), useGlobalUniform, forceUpdateUniform);

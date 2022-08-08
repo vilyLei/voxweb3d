@@ -8,8 +8,7 @@
 
 import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
-import Matrix4 from "../../vox/math/Matrix4";
-import AABB from "../../vox/geom/AABB";
+import { IMatrix4 } from "../../vox/math/IMatrix4";
 import CameraBase from "../../vox/view/CameraBase";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import Entity3DNode from "../../vox/scene/Entity3DNode";
@@ -38,11 +37,6 @@ export default class RaySelector implements IRaySelector {
     private m_outv: Vector3D = new Vector3D();
     private m_vecs: Vector3D[] = [null, null];
     private m_gpuTestEnabled: boolean = false;
-
-    //  setGPUTestEnabled(enabled:boolean):void
-    //  {
-    //      this.m_gpuTestEnabled = enabled;
-    //  }
 
     setRenderer(renderer: IRenderer): void {
         this.m_renderer = renderer;
@@ -114,7 +108,7 @@ export default class RaySelector implements IRaySelector {
             this.snsort(pos + 1, high);
         }
     }
-    
+
     run(): void {
         let nextNode: Entity3DNode = this.m_headNode;
         //console.log("RaySelect run() nextNode != null: "+(nextNode != null));
@@ -194,7 +188,7 @@ export default class RaySelector implements IRaySelector {
                 let entity: IRenderEntity = null;
                 let flag: number = 0;
                 let hitTotal: number = 0;
-                let mat4: Matrix4 = null;
+                let mat4: IMatrix4 = null;
                 let rayNode: RaySelectedNode = null;
                 //let pvdis: number = rtv.dot(rpv);
                 //let preDis: number = 0.0;
@@ -269,14 +263,14 @@ export default class RaySelector implements IRaySelector {
                             break;
                         }
                     }
-                    
+
                     //console.log("### B total: ",total);
                 }
                 else {
                     rayNode = this.m_rsnList[0];
                     rayNode.dis = MathConst.MATH_MAX_POSITIVE;
                     entity = this.m_rsnList[0].entity;
-                    mat4 = entity.getInvMatrix();                   
+                    mat4 = entity.getInvMatrix();
                     mat4.transformOutVector3(rpv, invpv);
                     mat4.deltaTransformOutVector(rtv, invtv);
                     invtv.normalize();

@@ -10,14 +10,14 @@ import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import { IRenderProxy } from "../../vox/render/IRenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
-import RPONodeBuilder from "../../vox/render/RPONodeBuilder";
+import IRPONodeBuilder from "../../vox/render/IRPONodeBuilder";
 import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 /**
  * define the renderer instance behaviours;
  */
 interface IRenderer {
   getUid(): number;
-  getRPONodeBuilder(): RPONodeBuilder;
+  getRPONodeBuilder(): IRPONodeBuilder;
   getRenderProxy(): IRenderProxy;
   getRendererContext(): IRendererInstanceContext;
   getStage3D(): IRenderStage3D;

@@ -6,8 +6,9 @@
 /***************************************************************************/
 
 import Vector3D from "../../vox/math/Vector3D";
+import IRendererParam from "./IRendererParam";
 
-class RendererParam {
+class RendererParam implements IRendererParam {
     private m_matrix4AllocateSize: number = 8192;
     private m_mainDiv: HTMLDivElement = null;
     private m_renderContextAttri: any = {

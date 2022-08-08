@@ -14,7 +14,7 @@ import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 import { IShaderProgramBuilder } from "../../vox/material/IShaderProgramBuilder";
-import { ShaderUniformContext } from "../../vox/material/ShaderUniformContext";
+import { IShaderUniformContext } from "../../vox/material/IShaderUniformContext";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import RenderMaterialProxy from "../../vox/render/RenderMaterialProxy";
 
@@ -32,7 +32,7 @@ class RendererInstanceContextParam {
     stage: IRenderStage3D = null;
     builder: RODataBuilder = null;
     vtxBuilder: ROVtxBuilder = null;
-    uniformContext: ShaderUniformContext = null;
+    uniformContext: IShaderUniformContext = null;
     shaderProgramBuilder: IShaderProgramBuilder = null;
 
     constructor(){}
@@ -193,7 +193,7 @@ class RendererInstanceContext implements IRendererInstanceContext {
             this.m_materialProxy.lockMaterial();
         }
     }
-    
+
     updateMaterialUniform(material: IRenderMaterial): void {
         this.m_materialProxy.updateMaterialUniform( material );
     }
@@ -280,14 +280,14 @@ class RendererInstanceContext implements IRendererInstanceContext {
             this.m_renderProxy.setCameraParam(fov, near, far);
         }
     }
-    
+
     initialize(param: IRendererParam, camera: IRenderCamera, contextParam: RendererInstanceContextParam): void {
 
         if (this.m_adapter == null) {
 
             this.m_renderProxy.setCameraParam(this.m_cameraFov, this.m_cameraNear, this.m_cameraFar);
             this.m_renderProxy.setWebGLMaxVersion(param.maxWebGLVersion);
-            
+
             let proxyParam = new RenderProxyParam();
             proxyParam.uniformContext = contextParam.uniformContext;
             proxyParam.vtxBufUpdater = contextParam.builder;
@@ -303,9 +303,8 @@ class RendererInstanceContext implements IRendererInstanceContext {
             this.m_adapter = this.m_renderProxy.getRenderAdapter();
             this.m_adapter.bgColor.setRGBA4f(0.0, 0.0, 0.0, 1.0);
 
-            let context: RAdapterContext = this.m_renderProxy.getContext();
+            let context = this.m_renderProxy.getContext();
             context.setViewport(0, 0, context.getRCanvasWidth(), context.getRCanvasHeight());
-
         }
     }
     initManager(builder: RODataBuilder): void {

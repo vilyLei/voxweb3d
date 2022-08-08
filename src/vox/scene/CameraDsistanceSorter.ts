@@ -8,15 +8,15 @@
 import Vector3D from "../../vox/math/Vector3D";
 import IRPODisplay from "../../vox/render/IRPODisplay";
 import IRODisplaySorter from "../../vox/render/IRODisplaySorter";
-import RenderProxy from "../../vox/render/RenderProxy";
+import { IRenderProxy } from "../../vox/render/IRenderProxy";
 
 /**
  * 在 renderer process 中 通过和摄像机之间的距离, 对可渲染对象渲染先后顺序的排序
  */
 export default class CameraDsistanceSorter implements IRODisplaySorter
 {
-    private m_rc:RenderProxy = null;
-    constructor(rc:RenderProxy)
+    private m_rc:IRenderProxy = null;
+    constructor(rc:IRenderProxy)
     {
         this.m_rc = rc;
     }

@@ -13,7 +13,7 @@ import Color4 from "../../vox/material/Color4";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import CameraBase from "../../vox/view/CameraBase";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
-import RenderProxy from "../../vox/render/RenderProxy";
+import { IRenderProxy } from "../../vox/render/IRenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
@@ -25,8 +25,8 @@ import EntityNodeQueue from "../../vox/scene/EntityNodeQueue";
 import Entity3DNodeLinker from "../../vox/scene/Entity3DNodeLinker";
 import RunnableQueue from "../../vox/base/RunnableQueue";
 
-import RPONodeBuilder from "../../vox/render/RPONodeBuilder";
-import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import IRPONodeBuilder from "../../vox/render/IRPONodeBuilder";
+import {IRendererInstanceContext} from "../../vox/scene/IRendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import { TextureBlock } from "../../vox/texture/TextureBlock";
@@ -55,13 +55,13 @@ import Matrix4 from "../math/Matrix4";
 import { IMatrix4 } from "../math/IMatrix4";
 
 export default class RendererScene implements IRenderer, IRendererScene {
-    
+
     private static s_uid: number = 0;
     private m_uid: number = -1;
     private m_adapter: IRenderAdapter = null;
-    private m_renderProxy: RenderProxy = null;
+    private m_renderProxy: IRenderProxy = null;
     private m_shader: RenderShader = null;
-    private m_rcontext: RendererInstanceContext = null;
+    private m_rcontext: IRendererInstanceContext = null;
     private m_renderer: RendererInstance = null;
     private m_processids: Uint8Array = new Uint8Array(128);
     private m_processidsLen: number = 0;
@@ -97,7 +97,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
 
     materialBlock: IRenderableMaterialBlock = null;
     entityBlock: IRenderableEntityBlock = null;
-    
+
     constructor() {
         this.m_uid = RendererScene.s_uid++;
     }
@@ -128,10 +128,10 @@ export default class RendererScene implements IRenderer, IRendererScene {
         return this.m_renderProxy.getCanvas();
     }
 
-    getRPONodeBuilder(): RPONodeBuilder {
+    getRPONodeBuilder(): IRPONodeBuilder {
         return null;
     }
-    getRenderProxy(): RenderProxy {
+    getRenderProxy(): IRenderProxy {
         return this.m_renderProxy;
     }
 
@@ -170,7 +170,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
     getRenderer(): RendererInstance {
         return this.m_renderer;
     }
-    getRendererContext(): RendererInstanceContext {
+    getRendererContext(): IRendererInstanceContext {
         return this.m_rcontext;
     }
     getStage3D(): IRenderStage3D {
@@ -213,7 +213,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
     createFBOInstance(): FBOInstance {
         return new FBOInstance(this, this.textureBlock.getRTTStrore());
     }
-    
+
     createMatrix4(): IMatrix4 {
         return new Matrix4();
     }
@@ -354,7 +354,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
         this.m_processids[this.m_processidsLen] = process.getRPIndex();
         this.m_processidsLen++;
     }
-    
+
     /**
      * get the renderer process by process index
      * @param processIndex IRenderProcess instance index in renderer scene instance

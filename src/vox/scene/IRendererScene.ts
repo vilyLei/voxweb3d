@@ -14,7 +14,8 @@ import IRenderStage3D from "../render/IRenderStage3D";
 import { IRenderProxy } from "../../vox/render/IRenderProxy";
 
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
-import Vector3D from "../math/Vector3D";
+// import IRendererParam from "../../vox/scene/IRendererParam";
+import IVector3D from "../math/IVector3D";
 
 import { IRenderableMaterialBlock } from "./block/IRenderableMaterialBlock";
 import { IRenderableEntityBlock } from "./block/IRenderableEntityBlock";
@@ -26,7 +27,6 @@ interface IRendererScene {
     textureBlock: ITextureBlock;
     materialBlock: IRenderableMaterialBlock;
     entityBlock: IRenderableEntityBlock;
-
     enable(): void;
     disable(): void;
     isEnabled(): boolean;
@@ -38,7 +38,7 @@ interface IRendererScene {
      * @param gpuTestEnabled the default value is true.
      */
     enableMouseEvent(gpuTestEnabled?: boolean): void;
-    getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void;
+    getMouseXYWorldRay(rl_position: IVector3D, rl_tv: IVector3D): void;
     isRayPickSelected(): boolean;
     /**
      * @param contextBeginEnabled the default value is default
@@ -130,5 +130,9 @@ interface IRendererScene {
      * 获取渲染器可渲染对象管理器状态(版本号)
      */
     getRendererStatus(): number;
+	/**
+     * run all renderer processes in the renderer instance
+     */
+	 run(autoCycle?: boolean): void;
 }
 export default IRendererScene;

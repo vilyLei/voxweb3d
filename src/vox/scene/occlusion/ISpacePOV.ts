@@ -7,7 +7,7 @@
 // Project Occlusion Volume
 
 import Vector3D from "../../../vox/math/Vector3D";
-import AABB from "../../../vox/geom/AABB";
+import { IAABB } from "../../../vox/geom/IAABB";
 import CameraBase from "../../../vox/view/CameraBase";
 
 export default interface ISpacePOV
@@ -20,5 +20,5 @@ export default interface ISpacePOV
     addSubPov(pov:ISpacePOV):void
     cameraTest(camera:CameraBase):void;
     begin():void;
-    test(bounds:AABB,cullMask:number):void;
+    test(bounds:IAABB,cullMask:number):void;
 }

@@ -15,7 +15,7 @@ import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import Color4 from "../material/Color4";
 
 interface IRendererInstanceContext {
-    
+
     /**
      * @returns return renderer context unique id
      */
@@ -52,7 +52,7 @@ interface IRendererInstanceContext {
     isUnlockMaterial(): boolean;
     /**
      * use global material
-     * @param material current material 
+     * @param material current material
      * @param texUnlock the default value is false
      */
     useGlobalMaterial(material: IRenderMaterial, texUnlock: boolean, materialUniformUpdate: boolean): void;
@@ -89,6 +89,10 @@ interface IRendererInstanceContext {
     getViewportY(): number;
     getViewportWidth(): number;
     getViewportHeight(): number;
+
+	useGlobalMaterial(material: IRenderMaterial, texUnlock?: boolean, materialUniformUpdate?: boolean): void;
+    updateMaterialUniform(material: IRenderMaterial): void;
+
     /**
      * 设置用于3D绘制的canvas的宽高尺寸,如果调用了此函数，则不会自动匹配窗口尺寸改变，默认是自动匹配窗口尺寸改变的
      * @param       pw 像素宽度
@@ -105,7 +109,7 @@ interface IRendererInstanceContext {
      * the function resets the renderer instance rendering status.
      * you should use it on the frame starting time.
      */
-    renderBegin(cameraDataUpdate: boolean): void;
+    renderBegin(cameraDataUpdate?: boolean): void;
     resetState(): void;
     resetmaterial(): void;
     resetUniform(): void;
