@@ -5,9 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RenderProxy from "../../vox/render/RenderProxy";
+import {IRenderProxy} from "../../vox/render/IRenderProxy";
+import IShaderUBO from "./IShaderUBO";
 
-export default class ShaderUBO {
+export default class ShaderUBO implements IShaderUBO{
     private static s_uid: number = 0;
     private m_uid: number = -1;
     private m_uboNS: string = "";
@@ -31,7 +32,7 @@ export default class ShaderUBO {
     getUBOBuffer(): any {
         return this.m_uboBuf;
     }
-    initializeWithDataFloatsCount(rc: RenderProxy, uniform_block_ns: string, bindingIndex: number, dataFloatsCount: number): void {
+    initializeWithDataFloatsCount(rc: IRenderProxy, uniform_block_ns: string, bindingIndex: number, dataFloatsCount: number): void {
         if (this.m_dataArray == null && this.m_uboBuf == null) {
             this.m_uboNS = uniform_block_ns;
             this.m_bindingIndex = bindingIndex;
@@ -89,7 +90,7 @@ export default class ShaderUBO {
     getDataArray(): Float32Array {
         return this.m_dataArray;
     }
-    updateData(rc: RenderProxy): void {
+    updateData(rc: IRenderProxy): void {
         if (this.m_changed) {
             if (this.m_externalArrList != null) {
                 let len: number = this.m_externalArrList.length - 1;
@@ -110,10 +111,10 @@ export default class ShaderUBO {
             this.m_changed = false;
         }
     }
-    bindUBOBuffer(rc: RenderProxy): void {
+    bindUBOBuffer(rc: IRenderProxy): void {
         rc.bindBufferBaseUBOBuffer(this.m_bindingIndex, this.m_uboBuf);
     }
-    run(rc: RenderProxy): void {
+    run(rc: IRenderProxy): void {
         if (this.m_changed) {
             if (this.m_externalArrList != null) {
                 let len: number = this.m_externalArrList.length - 1;
@@ -133,7 +134,7 @@ export default class ShaderUBO {
         }
         rc.bindBufferBaseUBOBuffer(this.m_bindingIndex, this.m_uboBuf);
     }
-    destroy(rc: RenderProxy): void {
+    destroy(rc: IRenderProxy): void {
         this.m_bindingIndex = -1;
         this.m_dataArray = null;
         this.m_externalArrIndexList = null;

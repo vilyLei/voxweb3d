@@ -4,12 +4,13 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import MathConst from "../../vox/math/MathConst";
+
+const MATH_MIN_POSITIVE: number = 1e-5;
 class Color4 {
-    r: number = 1.0;
-    g: number = 1.0;
-    b: number = 1.0;
-    a: number = 1.0;
+    r: number;
+    g: number;
+    b: number;
+    a: number;
     constructor(pr: number = 1.0, pg: number = 1.0, pb: number = 1.0, pa: number = 1.0) {
         this.r = pr;
         this.g = pg;
@@ -32,10 +33,6 @@ class Color4 {
         this.b = (rgbUint24 & 0x0000ff) / 255.0;
     }
     getRGBUint24(): number {
-
-        // this.r = ((rgbUint24 >> 16) & 0x0000ff) / 255.0;
-        // this.g = ((rgbUint24 >> 8) & 0x0000ff) / 255.0;
-        // this.b = (rgbUint24 & 0x0000ff) / 255.0;
         return (Math.round(this.r * 255) << 16) + (Math.round(this.g * 255) << 8) + Math.round(this.b * 255);
     }
     setRGBA4f(r: number, g: number, b: number, a: number): void {
@@ -78,7 +75,7 @@ class Color4 {
         this.g = Math.random();
         this.b = Math.random();
         let d = Math.sqrt(this.r * this.r + this.g * this.g + this.b * this.b);
-        if (d > MathConst.MATH_MIN_POSITIVE) {
+        if (d > MATH_MIN_POSITIVE) {
             this.r = density * this.r / d;
             this.g = density * this.g / d;
             this.b = density * this.b / d;
@@ -90,7 +87,7 @@ class Color4 {
     normalize(density: number): void {
         if (density == undefined) density = 1.0;
         let d = Math.sqrt(this.r * this.r + this.g * this.g + this.b * this.b);
-        if (d > MathConst.MATH_MIN_POSITIVE) {
+        if (d > MATH_MIN_POSITIVE) {
             this.r = density * this.r / d;
             this.g = density * this.g / d;
             this.b = density * this.b / d;
@@ -105,10 +102,6 @@ class Color4 {
         let pg: number = Math.floor(this.g * 255.0);
         let pb: number = Math.floor(this.b * 255.0);
         let pa = this.a;
-        // pr = MathConst.Clamp(pr, 0, 255);
-        // pg = MathConst.Clamp(pg, 0, 255);
-        // pb = MathConst.Clamp(pb, 0, 255);
-        // let pa = MathConst.Clamp(this.a, 0.0, 1.0);
         return "rgba(" + pr + "," + pg + "," + pb + "," + pa + ")";
     }
     /**
