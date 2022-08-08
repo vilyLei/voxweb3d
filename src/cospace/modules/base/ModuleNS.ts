@@ -3,6 +3,7 @@ enum ModuleNS {
 	objParser = "objGeomParser",
 	dracoParser = "dracoGeomParser",
 	pngParser = "pngParser",
+	fbxFastParser = "fbxFastParser",
 
 	threadCore = "threadCore",
 	coSpaceApp = "coSpaceApp"

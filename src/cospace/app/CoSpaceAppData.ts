@@ -10,6 +10,8 @@ enum CoModuleNS {
 	objParser = "objGeomParser",
 	dracoParser = "dracoGeomParser",
 	pngParser = "pngParser",
+	fbxFastParser = "fbxFastParser",
+
 	threadCore = "threadCore",
 	coSpaceApp = "coSpaceApp"
 }
@@ -35,6 +37,7 @@ interface CoGeomDataContainer {
 	dataType: string;
 	dataFormat: CoDataFormat;
 	models: CoGeomDataType[];
+	transforms: Float32Array[];
 }
 interface CoGeomDataUnit {
 	url: string;

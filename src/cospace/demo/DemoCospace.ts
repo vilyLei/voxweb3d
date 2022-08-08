@@ -28,7 +28,8 @@ export class DemoCospace {
 			new TaskCodeModuleParam("static/cospace/core/code/ThreadCore.umd.js", ModuleNS.threadCore, ModuleFileType.JS),
 			new TaskCodeModuleParam("static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", ModuleNS.ctmParser, ModuleFileType.JS),
 			new TaskCodeModuleParam("static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", ModuleNS.objParser, ModuleFileType.JS),
-			new TaskCodeModuleParam("static/cospace/modules/png/ModulePNGParser.umd.min.js", ModuleNS.pngParser, ModuleFileType.JS)
+			new TaskCodeModuleParam("static/cospace/modules/png/ModulePNGParser.umd.min.js", ModuleNS.pngParser, ModuleFileType.JS),
+			new TaskCodeModuleParam("static/cospace/modules/fbxFast/ModuleFBXGeomFastParser.umd.min.js", ModuleNS.fbxFastParser, ModuleFileType.JS),
 		];
 		// 初始化数据协同中心
 		this.m_cospace.setTaskModuleParams(modules);

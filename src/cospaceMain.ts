@@ -13,7 +13,7 @@
 // import { DemoGLBParser as Demo } from "./cospace/demo/DemoGLBParser";
 // import { DemoPNGParser as Demo } from "./cospace/demo/DemoPNGParser";
 // import { DemoMixParser as Demo } from "./cospace/demo/DemoMixParser";
-// import { DemoCospace as Demo } from "./cospace/demo/DemoCospace";
+import { DemoCospace as Demo } from "./cospace/demo/DemoCospace";
 // import { DemoDependenceGraph as Demo } from "./cospace/demo/DemoDependenceGraph";
 // import { DemoCTMViewer as Demo } from "./cospace/demo/DemoCTMViewer";
 // import { DemoNormalViewer as Demo } from "./cospace/demo/DemoNormalViewer";
@@ -22,7 +22,7 @@
 
 // import { DemoCoApp as Demo } from "./cospace/demo/DemoCoApp";
 // import { DemoCoRenderer as Demo } from "./cospace/demo/DemoCoRenderer";
-import { DemoCoRendererScene as Demo } from "./cospace/demo/DemoCoRendererScene";
+// import { DemoCoRendererScene as Demo } from "./cospace/demo/DemoCoRendererScene";
 
 // import { DemoCoEngine as Demo } from "./cospace/demo/DemoCoEngine";
 // import { DemoInputText as Demo } from "./cospace/demo/DemoInputText";

@@ -17,6 +17,7 @@ import { ModuleNS } from "../modules/base/ModuleNS";
 import { DataUnitLock, GeometryDataContainer, GeometryDataUnit } from "./base/GeometryDataUnit";
 import { CTMParserListerner } from "./parse/CTMParserListerner";
 import { OBJParserListerner } from "./parse/OBJParserListerner";
+import { FBXParserListerner } from "./parse/FBXParserListerner";
 
 /**
  * 数据资源调度器基类
@@ -25,6 +26,7 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 
 	private m_ctmListener: CTMParserListerner;
 	private m_objListener: OBJParserListerner;
+	private m_fbxListener: FBXParserListerner;
 	constructor() {
 		super();
 	}
@@ -46,6 +48,9 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 				break;
 			case DataFormat.OBJ:
 				this.m_objListener.addUrlToTask(url);
+				break;
+			case DataFormat.FBX:
+				this.m_fbxListener.addUrlToTask(url);
 				break;
 			case DataFormat.Draco:
 				//this.m_dracoListener.addUrlToTask(url);
@@ -71,6 +76,9 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 				case ModuleNS.ctmParser:
 					this.m_ctmListener = new CTMParserListerner(unitPool, threadSchedule, module, receiverSchedule);
 					break;
+				case ModuleNS.fbxFastParser:
+					this.m_fbxListener = new FBXParserListerner(unitPool, threadSchedule, module, receiverSchedule);
+					break;
 				default:
 					break;
 			}
@@ -88,6 +96,10 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 		if(this.m_objListener != null) {
 			this.m_objListener.destroy();
 			this.m_objListener = null;
+		}
+		if(this.m_fbxListener != null) {
+			this.m_fbxListener.destroy();
+			this.m_fbxListener = null;
 		}
 	}
 }
