@@ -7,7 +7,7 @@
 
 import TextureConst from "../../vox/texture/TextureConst";
 import BytesTextureProxy from "../../vox/texture/BytesTextureProxy";
-import RenderProxy from "../../vox/render/RenderProxy";
+import { IRenderProxy } from "../../vox/render/IRenderProxy";
 import RendererDevice from "../render/RendererDevice";
 
 class FontTexCharGrid {
@@ -234,8 +234,8 @@ private m_texBase: BytesTextureProxy = null;
 private m_fontSize: number = 18;
 private m_fontCharTable: FontTexCharTable = new FontTexCharTable();
 private m_fontTexDataBuilder: FontTexDataBuilder = new FontTexDataBuilder();
-private m_renderProxy: RenderProxy = null;
-setRenderProxy(renderProxy: RenderProxy): void {
+private m_renderProxy: IRenderProxy = null;
+setRenderProxy(renderProxy: IRenderProxy): void {
     if (renderProxy != null) {
         this.m_renderProxy = renderProxy;
         if (this.m_texBase != null) {

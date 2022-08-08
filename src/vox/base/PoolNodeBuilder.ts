@@ -6,8 +6,9 @@
 /***************************************************************************/
 
 import IPoolNode from "../../vox/base/IPoolNode";
+import IPoolNodeBuilder from "../../vox/base/IPoolNodeBuilder";
 
-export default class PoolNodeBuilder {
+export default class PoolNodeBuilder implements IPoolNodeBuilder {
     private static S_BUSY: number = 1;
     private static S_FREE: number = 0;
 
@@ -27,7 +28,7 @@ export default class PoolNodeBuilder {
      */
     protected restoreUid(uid: number): void {
     }
-    getFreeId() {
+    getFreeId(): number {
         if (this.m_freeIdList.length > 0) {
             return this.m_freeIdList.pop();
         }

@@ -22,51 +22,52 @@ export default class TextureFormat {
     static readonly DEPTH_COMPONENT: number = 351;
     static readonly DEPTH_STENCIL: number = 352;
     static ToGL(gl: any, format: number): number {
+		const tf = TextureFormat
         switch (format) {
-            case TextureFormat.RGBA:
+            case tf.RGBA:
                 break;
-            case TextureFormat.R8:
+            case tf.R8:
                 return gl.R8;
                 break;
-            case TextureFormat.RGB:
+            case tf.RGB:
                 return gl.RGB;
                 break;
-            case TextureFormat.RGB8:
+            case tf.RGB8:
                 return gl.RGB8;
                 break;
-            case TextureFormat.RGBA8:
+            case tf.RGBA8:
                 return gl.RGBA8;
                 break;
-            case TextureFormat.ALPHA:
+            case tf.ALPHA:
                 return gl.ALPHA;
                 break;
-            case TextureFormat.RGB16F:
+            case tf.RGB16F:
                 if (RendererDevice.IsWebGL2()) {
                     return gl.RGB16F;
                 }
                 return gl.RGB;
                 break;
-            case TextureFormat.RGBA16F:
+            case tf.RGBA16F:
                 if (RendererDevice.IsWebGL2()) {
                     return gl.RGBA16F;
                 }
                 return gl.RGBA;
                 break;
-            case TextureFormat.RGB32F:
+            case tf.RGB32F:
                 if (RendererDevice.IsWebGL2()) gl.RGB32F;
                 return gl.RGB;
                 break;
-            case TextureFormat.RGBA32F:
+            case tf.RGBA32F:
                 if (RendererDevice.IsWebGL2()) gl.RGBA32F;
                 return gl.RGBA;
                 break;
             case TextureFormat.RED:
                 return gl.RED;
                 break;
-            case TextureFormat.DEPTH_COMPONENT:
+            case tf.DEPTH_COMPONENT:
                 return gl.DEPTH_COMPONENT;
                 break;
-            case TextureFormat.DEPTH_STENCIL:
+            case tf.DEPTH_STENCIL:
                 return gl.DEPTH_STENCIL;
                 break;
             default:
