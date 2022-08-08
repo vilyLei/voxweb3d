@@ -60,11 +60,11 @@ export class DemoStencil {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext();
+            this.m_rcontext = this.m_rscene.getRendererContext() as any;
             this.m_renderProxy = this.m_rcontext.getRenderProxy();
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-            
+
             this.m_rscene.enableMouseEvent(true);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
@@ -128,14 +128,14 @@ export class DemoStencil {
 
         let stencil = this.m_rscene.getRenderProxy().stencil;
         this.m_statusDisp.update(false);
-        
+
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
         if(DebugFlag.Flag_0 > 0) {
             DebugFlag.Flag_0++;
         }
         this.m_rscene.runBegin();
-        
+
         stencil.setStencilMask(0x0);
         //this.m_entity.setVisible(false);
 
@@ -143,10 +143,10 @@ export class DemoStencil {
         this.m_rscene.update();
         //this.m_rscene.runAt(0);
         //this.m_rscene.runAt(1);
-        
+
 
         stencil.setStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
-        stencil.setStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF); 
+        stencil.setStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF);
         stencil.setStencilMask(0xFF);
 
         this.m_entity.setVisible( true );
@@ -154,7 +154,7 @@ export class DemoStencil {
 
         stencil.setStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF);
         stencil.setStencilMask(0x0);
-        
+
 
         let scale:number = 1.1;
         this.m_material.setRGB3f(20.0,0.0,0.0);
@@ -175,12 +175,12 @@ export class DemoStencil {
         //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         //this.m_profileInstance.run();
     }
-    
+
     run02(): void {
 
         let stencil = this.m_rscene.getRenderProxy().stencil;
         this.m_statusDisp.update(false);
-        
+
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(null, 30.0);
 
@@ -190,11 +190,11 @@ export class DemoStencil {
         stencil.setStencilMask(0x00);
         this.m_rscene.runAt(0);
         this.m_rscene.runAt(1);
-        
+
         let scale:number = 1.0;
         stencil.setStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
-        
-        stencil.setStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF); 
+
+        stencil.setStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF);
         stencil.setStencilMask(0xFF);
 
         this.m_material.setRGB3f(1.0,1.0,1.0);
@@ -203,9 +203,9 @@ export class DemoStencil {
 
         this.m_rscene.runAt(2);
 
-        stencil.setStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF); 
+        stencil.setStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF);
         stencil.setStencilMask(0x00);
-        
+
         //stencil.setDepthTestEnable( false );
 
         scale = 1.02;

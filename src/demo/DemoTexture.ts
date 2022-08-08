@@ -59,7 +59,7 @@ export class DemoTexture {
             rparam.setCamPosition(1500.0, 1500.0, 1500.0);
             this.m_renderer = new RendererInstance();
             this.m_renderer.initialize(rparam, new CameraBase());
-            this.m_rcontext = this.m_renderer.getRendererContext();
+            this.m_rcontext = this.m_renderer.getRendererContext() as any;
             let stage3D: Stage3D = this.m_rcontext.getStage3D() as Stage3D;
             stage3D.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseUpListener);
             this.m_camTrack = new CameraTrack();

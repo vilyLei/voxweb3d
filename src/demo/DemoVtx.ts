@@ -60,36 +60,36 @@ export class DemoVtx
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
-            
+
             let rparam:RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
             rparam.setCamPosition(800.0,800.0,800.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam,3);
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext();
-            
+            this.m_rcontext = this.m_rscene.getRendererContext() as any;
+
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
             this.m_statusDisp.initialize();
 
             this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
-            
+
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
 
             let tex0 = this.getImageTexByUrl("static/assets/default.jpg");
             let tex1 = this.getImageTexByUrl("static/assets/broken_iron.jpg");
             let tex4 = this.getImageTexByUrl("static/assets/yanj.jpg");
             let tex5 = this.m_rscene.textureBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
-            
+
             let boxFrame:BoxFrame3D;
 
             boxFrame = new BoxFrame3D();
             boxFrame.initialize(new Vector3D(-100,-100,-100),new Vector3D(100,100,100));
             this.m_srcBoxFrame = boxFrame;
 
-            
+
             boxFrame = new BoxFrame3D();
             if(this.m_srcBoxFrame != null)boxFrame.setMesh(this.m_srcBoxFrame.getMesh());
             boxFrame.initialize(new Vector3D(-100,-100,-100),new Vector3D(100,100,100));
@@ -172,11 +172,11 @@ export class DemoVtx
     run():void
     {
         let pcontext:RendererInstanceContext = this.m_rcontext;
-        
+
         // show fps status
         this.m_statusDisp.statusInfo = "/"+pcontext.getTextureResTotal()+"/"+pcontext.getTextureAttachTotal();
         this.m_statusDisp.update();
-        
+
         this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
         // render begin
         this.m_rscene.runBegin();
