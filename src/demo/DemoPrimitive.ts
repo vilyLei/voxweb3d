@@ -56,7 +56,7 @@ export class DemoPrimitive {
         if (this.m_renderer == null) {
 
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
-            
+
             let rparam: RendererParam = new RendererParam();
             rparam.setTickUpdateTime(20);
             rparam.setCamProject(45.0, 1.0, 3000.0);
@@ -66,10 +66,10 @@ export class DemoPrimitive {
             this.m_renderer.appendProcess();
             this.m_renderer.appendProcess();
 
-            this.m_rcontext = this.m_renderer.getRendererContext();
+            this.m_rcontext = this.m_renderer.getRendererContext() as any;
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
-            
+
             this.m_texBlock = new TextureBlock();
             this.m_texBlock.setRenderer(this.m_renderer.getRenderProxy());
             this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
@@ -94,7 +94,7 @@ export class DemoPrimitive {
             img.onload = (evt: any): void => {
                 console.log("PlayerOne::initialize() image loaded",img.src);
                 //tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
-                tex.setDataFromImage(img);                
+                tex.setDataFromImage(img);
                 pl.initializeXOZSquare(500.0, [tex]);
                 this.m_renderer.addEntity(pl);
             }

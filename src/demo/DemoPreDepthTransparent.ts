@@ -55,10 +55,10 @@ export class DemoPreDepthTransparent {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext();
+            this.m_rcontext = this.m_rscene.getRendererContext() as any;
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-            
+
             this.m_rscene.enableMouseEvent(true);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
@@ -72,7 +72,7 @@ export class DemoPreDepthTransparent {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
-            
+
             RendererState.CreateRenderState("depthSt",CullFaceMode.NONE,RenderBlendMode.TRANSPARENT,DepthTestMode.FALSE_LEQUAL);
             //RendererState.CreateRenderState("depthSt",CullFaceMode.NONE,RenderBlendMode.TRANSPARENT,DepthTestMode.TRUE_EQUAL);
             //RendererState.CreateRenderState("depthSt", CullFaceMode.BACK, RenderBlendMode.NORMAL, DepthTestMode.TRUE_EQUAL);
@@ -116,7 +116,7 @@ export class DemoPreDepthTransparent {
 
         this.m_statusDisp.render();
     }
-    
+
     run(): void {
         this.m_statusDisp.update(false);
 
@@ -125,10 +125,10 @@ export class DemoPreDepthTransparent {
 
         this.m_rscene.setClearRGBAColor4f(0.0,0.0,0.0,1.0);
         //  this.m_rscene.run(true);
-        
+
         this.m_rscene.update();
         this.m_rscene.runBegin();
-        
+
         //this.m_rcontext.useGlobalRenderState(RendererState.BACK_TRANSPARENT_STATE);
         //  RendererState.SetBlendEnable(false);
         //  this.m_rcontext.useGlobalColorMask(RendererState.COLOR_MASK_ALL_FALSE);
@@ -137,7 +137,7 @@ export class DemoPreDepthTransparent {
         //  RendererState.SetBlendEnable(true);
         //  this.m_rcontext.useGlobalColorMask(RendererState.COLOR_MASK_ALL_TRUE);
         //  //this.m_rcontext.useGlobalRenderState(RendererState.NONE_TRANSPARENT_STATE);
-        
+
         this.m_rcontext.useGlobalRenderState(RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
         //this.m_rcontext.useGlobalRenderStateByName("depthSt");
         this.m_rscene.runAt(0);

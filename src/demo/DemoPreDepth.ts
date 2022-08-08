@@ -49,7 +49,7 @@ export namespace demo {
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);
                 this.m_renderer.appendProcess();
-                this.m_rcontext = this.m_renderer.getRendererContext();
+                this.m_rcontext = this.m_renderer.getRendererContext() as any;
 
                 this.m_statusDisp.initialize();
 
@@ -102,7 +102,7 @@ export namespace demo {
             pcontext.setClearRGBColor3f(0.0, 0.0, 0.0);
             pcontext.renderBegin();
             rinstance.update();
-            
+
             // --------------------------------------------- rtt begin
             pcontext.setClearRGBColor3f(0.0, 0.0, 0.0);
             pcontext.synFBOSizeWithViewport();
@@ -110,7 +110,7 @@ export namespace demo {
             pcontext.setRenderToTexture(this.m_texBlock.getRTTTextureAt(0), true, false, 0);
             pcontext.useFBO(true, true, false);
             rinstance.runAt(0);
-            
+
             pcontext.unlockMaterial();
             pcontext.useGlobalRenderStateByName("depthSt");
             pcontext.setRenderToTexture(this.m_texBlock.getRTTTextureAt(1), true, false, 0);
@@ -123,7 +123,7 @@ export namespace demo {
             rinstance.runAt(1);
 
             pcontext.runEnd();
-            
+
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
             pcontext.updateCamera();
         }

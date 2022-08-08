@@ -57,7 +57,7 @@ export namespace demo
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();
-                this.m_rcontext = this.m_renderer.getRendererContext();
+                this.m_rcontext = this.m_renderer.getRendererContext() as any;
                 this.m_camera = this.m_rcontext.getCamera();
 
                 this.m_texBlock = new TextureBlock();
@@ -91,7 +91,7 @@ export namespace demo
                 let box:Box3DEntity = new Box3DEntity();
                 box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
                 this.m_renderer.addEntity(box);
-                
+
                 let material:ScreenFixedPlaneMaterial = new ScreenFixedPlaneMaterial();
                 let rttPlane:Plane3DEntity = new Plane3DEntity();
                 rttPlane.setMaterial(material);
@@ -109,7 +109,7 @@ export namespace demo
 
                 this.m_rcontext.createFBOAt(0,FrameBufferType.FRAMEBUFFER,this.m_viewSize.x,this.m_viewSize.y,true,false);
                 this.m_rcontext.createFBOAt(1,FrameBufferType.FRAMEBUFFER,this.m_viewSize.z,this.m_viewSize.w,true,false);
-                
+
                 this.m_statusDisp.initialize();
 
             }
@@ -155,7 +155,7 @@ export namespace demo
                 pcontext.unlockViewport();
             }
             // --------------------------------------------- rtt end
-            
+
             //pcontext.cameraUnlock();
             pcontext.setClearRGBColor3f(0.0, 3.0, 2.0);
             pcontext.setRenderToBackBuffer();

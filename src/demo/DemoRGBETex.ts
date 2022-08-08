@@ -37,7 +37,7 @@ export class DemoRGBETex implements ILoaderListerner {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private createByteTexByBytes(bytes: Uint8Array, pw: number, ph: number): IRenderTexture {
-        
+
         let posTex = this.m_rscene.textureBlock.createBytesTex(pw, ph);
         posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         //posTex.mipmapEnabled = false;
@@ -60,7 +60,7 @@ export class DemoRGBETex implements ILoaderListerner {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext();
+            this.m_rcontext = this.m_rscene.getRendererContext() as any;
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
@@ -83,7 +83,7 @@ export class DemoRGBETex implements ILoaderListerner {
         }
     }
     private initHdrRGBEFloatTexEntity(): void {
-        
+
         let loader: BinaryLoader = new BinaryLoader();
         loader.load("static/assets/hdr/night_free_Env_512x256.hdr", this);
     }
@@ -124,7 +124,7 @@ export class DemoRGBETex implements ILoaderListerner {
 
         this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
         this.m_rscene.run( true);
-        
+
         //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
     }
 }
