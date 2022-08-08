@@ -17,7 +17,9 @@
 // import { DemoDependenceGraph as Demo } from "./cospace/demo/DemoDependenceGraph";
 // import { DemoCTMViewer as Demo } from "./cospace/demo/DemoCTMViewer";
 // import { DemoNormalViewer as Demo } from "./cospace/demo/DemoNormalViewer";
+
 // import { RenderingVerifier as Demo } from "./cospace/demo/RenderingVerifier";
+
 // import { DemoCoApp as Demo } from "./cospace/demo/DemoCoApp";
 // import { DemoCoRenderer as Demo } from "./cospace/demo/DemoCoRenderer";
 import { DemoCoRendererScene as Demo } from "./cospace/demo/DemoCoRendererScene";

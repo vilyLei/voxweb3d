@@ -33,11 +33,11 @@ export class DemoCoRendererScene {
 			this.mouseDown(evt);
 		};
 
-		let url: string = "static/cospace/engine/renderer/CoRenderer.umd.js";
+		let url: string = "static/cospace/engine/renderer/CoRenderer.umd.min.js";
 		this.loadRendererModule(url);
-		url = "static/cospace/engine/rscene/CoRScene.umd.js";
+		url = "static/cospace/engine/rscene/CoRScene.umd.min.js";
 		this.loadRendererModule(url);
-		url = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.js";
+		url = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.min.js";
 		this.loadRendererModule(url);
 		//public\static\cospace\engine\mouseInteract\CoMouseInteraction.common.js
 	}
@@ -48,6 +48,8 @@ export class DemoCoRendererScene {
 		if(this.m_rscene != null && this.m_interact == null && (typeof CoMouseInteraction !== "undefined")) {
 			this.m_interact = CoMouseInteraction.createMouseInteraction();
 			this.m_interact.initialize( this.m_rscene );
+			// this.m_interact.zoomer.syncLookAt = true;
+			this.m_interact.setSyncLookAtEnabled( true );
 		}
 	}
 	private loadedModule(): void {

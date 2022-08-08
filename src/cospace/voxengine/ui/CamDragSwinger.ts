@@ -43,10 +43,10 @@ class CamDragSwinger {
         this.m_enabled = false;
     }
     runWithYAxis(): void {
-        this.runWithAxis(CoRScene.Vector3D.X_AXIS);
+        this.runWithAxis(CoRScene.Vector3D.Y_AXIS);
     }
     runWithZAxis(): void {
-        this.runWithAxis(CoRScene.Vector3D.Y_AXIS);
+        this.runWithAxis(CoRScene.Vector3D.Z_AXIS);
     }
     /*
             if (this.m_enabled) {

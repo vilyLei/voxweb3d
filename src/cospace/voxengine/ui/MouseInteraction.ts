@@ -1,11 +1,12 @@
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import MouseCamDrager from "./MouseCamDrager";
 import MouseCamZoomer from "./MouseCamZoomer";
+import { IMouseInteraction } from "./IMouseInteraction";
 
 import IVector3D from "../../../vox/math/IVector3D";
 // import CameraViewRay from "../../../vox/view/CameraViewRay";
 
-class MouseInteraction {
+class MouseInteraction implements IMouseInteraction {
 
     private m_rscene: IRendererScene = null;
 
@@ -38,7 +39,9 @@ class MouseInteraction {
             this.zoomer.setLookAtCtrlEnabled(false);
         }
     }
-
+    setSyncLookAtEnabled(ennabled: boolean): void {
+        this.zoomer.syncLookAt = ennabled;
+    }
     run(): void {
 
         if (this.cameraCtrlEnabled) {

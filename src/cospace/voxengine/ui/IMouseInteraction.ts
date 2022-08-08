@@ -16,7 +16,7 @@ interface IMouseInteraction {
     cameraCtrlEnabled: boolean;
 
     initialize(rscene: IRendererScene): void;
-
+    setSyncLookAtEnabled(ennabled: boolean): void;
     run(): void;
 }
 
