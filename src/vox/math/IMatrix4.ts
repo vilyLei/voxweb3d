@@ -9,7 +9,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import Float32Data from "../../vox/base/Float32Data";
 
 interface IMatrix4 extends Float32Data {
-	
+
 	setData(data: number[]): void;
 	getCapacity(): number;
 	getUid(): number;
@@ -21,7 +21,7 @@ interface IMatrix4 extends Float32Data {
 	append(lhs: IMatrix4): void;
 	append3x3(lhs: IMatrix4): void;
 	/**
-	 * 
+	 *
 	 * @param radian rotation angle radian
 	 * @param axis rotation axis, it is a normalized Vector3D instance
 	 * @param pivotPoint the default value is null
@@ -57,13 +57,13 @@ interface IMatrix4 extends Float32Data {
 	setF32ArrIndex(index: number): void;
 	setF32Arr(fs32Arr: Float32Array): void;
 	/**
-	 * 
+	 *
 	 * @param fs32Arr src data
 	 * @param index the default value is 0
 	 */
 	copyFromF32Arr(fs32Arr: Float32Array, index?: number): void;
 	/**
-	 * 
+	 *
 	 * @param fs32Arr dst data
 	 * @param index the default value is 0
 	 */
@@ -71,7 +71,7 @@ interface IMatrix4 extends Float32Data {
 	copyFrom(smat: IMatrix4): void;
 	copyTo(dmat: IMatrix4): void;
 	/**
-	 * 
+	 *
 	 * @param float_rawDataArr src data
 	 * @param rawDataLength the default value is 16
 	 * @param index  the default value is 0
@@ -79,7 +79,7 @@ interface IMatrix4 extends Float32Data {
 	 */
 	copyRawDataFrom(float_rawDataArr: Float32Array, rawDataLength?: number, index?: number, transpose?: Boolean): void;
 	/**
-	 * 
+	 *
 	 * @param float_rawDataArr dst data
 	 * @param rawDataLength the default value is 16
 	 * @param index  the default value is 0
@@ -123,11 +123,9 @@ interface IMatrix4 extends Float32Data {
 	rotationX(radian: number): void;
 	rotationY(radian: number): void;
 	rotationZ(radian: number): void;
-	
+
 
 	transformPerspV4Self(v4: Vector3D): void;
-	///////
-	
 	destroy(): void;
 }
 

@@ -279,11 +279,11 @@
 ////////////////////////////   renderer    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoEmptyRenderer as Demo} from "./demo/DemoEmptyRenderer";
+ import {DemoEmptyRenderer as Demo} from "./demo/DemoEmptyRenderer";
 
 //  import {DemoEmptyRendererScene as Demo} from "./demo/DemoEmptyRendererScene";
 
- import {DemoAPlane as Demo} from "./demo/DemoAPlane";
+//  import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
 //  import {DemoScene as Demo} from "./demo/DemoScene";
 
