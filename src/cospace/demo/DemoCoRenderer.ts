@@ -23,7 +23,7 @@ export class DemoCoRenderer {
 			this.mouseDown(evt);
 		};
 
-		let url: string = "static/cospace/engine/renderer/CoRenderer.umd.min.js";
+		let url: string = "static/cospace/core/renderer/CoRenderer.umd.min.js";
 		this.loadRendererModule( url );
 	}
 

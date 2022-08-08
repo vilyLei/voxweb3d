@@ -6,7 +6,7 @@ import { ICoRendererScene } from "../voxengine/scene/ICoRendererScene";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { ICoRScene } from "../voxengine/ICoRScene";
 
-// import Plane3DEntity from "../../vox/entity/Plane3DEntity";
+import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 // import CoRendererScene from "../voxengine/scene/CoRendererScene";
 
 declare var CoRenderer: ICoRenderer;
@@ -30,7 +30,7 @@ export class DemoCoRendererScene {
 
 		let url: string = "static/cospace/engine/renderer/CoRenderer.umd.js";
 		this.loadRendererModule( url );
-		url = "static/cospace/engine/rscene/CoRScene.umd.js";
+		url = "static/cospace/engine/corscene/CoRScene.umd.js";
 		this.loadRendererModule( url );
 
 	}
