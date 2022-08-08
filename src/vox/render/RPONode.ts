@@ -11,10 +11,11 @@ import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
 import ITextureRenderObj from "../../vox/render/ITextureRenderObj";
 import RPOUnit from "../../vox/render/RPOUnit";
 import IPoolNode from "../../vox/base/IPoolNode";
+import IRPONode from "./IRPONode";
 import DebugFlag from "../debug/DebugFlag";
 
 // 为了渲染循环执行中持有RPOUnit和对应的Disp
-export default class RPONode implements IPoolNode {
+export default class RPONode implements IPoolNode, IRPONode {
     constructor() {
     }
     __$ruid: number = -1;

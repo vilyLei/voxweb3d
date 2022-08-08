@@ -20,7 +20,7 @@ import DebugFlag from "../debug/DebugFlag";
  * renderer runtime material shader resource manager
  */
 export default class RenderShader implements IRenderShader, IRenderResource {
-    
+
     private m_sharedUniformList: IShaderUniform[] = [];
     private m_unlocked: boolean = true;
     private m_texUnlocked: boolean = false;
@@ -80,7 +80,7 @@ export default class RenderShader implements IRenderShader, IRenderResource {
             uniform.use(this);
         }
     }
-    
+
     updateUniform(uniform: IShaderUniform): void {
         if (uniform != null) {
             uniform.use(this);
@@ -239,56 +239,60 @@ export default class RenderShader implements IRenderShader, IRenderResource {
         this.m_rc.uniformMatrix4fv(ult, false, mat4f32Arr);
     }
     useUniformV2(ult: any, type: number, f32Arr: Float32Array, dataSize: number, offset: number): void {
+		const mc = MaterialConst;
+		const rc = this.m_rc;
         switch (type) {
-            case MaterialConst.SHADER_MAT4:
-                this.m_rc.uniformMatrix4fv(ult, false, f32Arr, offset, dataSize * 16);
+            case mc.SHADER_MAT4:
+                rc.uniformMatrix4fv(ult, false, f32Arr, offset, dataSize * 16);
                 break;
-            case MaterialConst.SHADER_MAT3:
-                this.m_rc.uniformMatrix3fv(ult, false, f32Arr, 0, dataSize * 9);
+            case mc.SHADER_MAT3:
+                rc.uniformMatrix3fv(ult, false, f32Arr, 0, dataSize * 9);
                 break;
-            case MaterialConst.SHADER_VEC4FV:
+            case mc.SHADER_VEC4FV:
                 //console.log("MaterialConst.SHADER_VEC4FV dataSize: ",dataSize);
                 //console.log(f32Arr);
-                this.m_rc.uniform4fv(ult, f32Arr, offset, dataSize * 4);
+                rc.uniform4fv(ult, f32Arr, offset, dataSize * 4);
                 break;
-            case MaterialConst.SHADER_VEC3FV:
-                this.m_rc.uniform3fv(ult, f32Arr, offset, dataSize * 3);
+            case mc.SHADER_VEC3FV:
+                rc.uniform3fv(ult, f32Arr, offset, dataSize * 3);
                 break;
-            case MaterialConst.SHADER_VEC4:
-                this.m_rc.uniform4f(ult, f32Arr[0], f32Arr[1], f32Arr[2], f32Arr[3]);
+            case mc.SHADER_VEC4:
+                rc.uniform4f(ult, f32Arr[0], f32Arr[1], f32Arr[2], f32Arr[3]);
                 break;
-            case MaterialConst.SHADER_VEC3:
-                this.m_rc.uniform3f(ult, f32Arr[0], f32Arr[1], f32Arr[2]);
+            case mc.SHADER_VEC3:
+                rc.uniform3f(ult, f32Arr[0], f32Arr[1], f32Arr[2]);
                 break;
-            case MaterialConst.SHADER_VEC2:
-                this.m_rc.uniform2f(ult, f32Arr[0], f32Arr[1]);
+            case mc.SHADER_VEC2:
+                rc.uniform2f(ult, f32Arr[0], f32Arr[1]);
                 break;
             default:
                 break;
         }
     }
     useUniformV1(ult: any, type: number, f32Arr: Float32Array, dataSize: number): void {
+		const mc = MaterialConst;
+		const rc = this.m_rc;
         switch (type) {
-            case MaterialConst.SHADER_MAT4:
-                this.m_rc.uniformMatrix4fv(ult, false, f32Arr);
+            case mc.SHADER_MAT4:
+                rc.uniformMatrix4fv(ult, false, f32Arr);
                 break;
-            case MaterialConst.SHADER_MAT3:
-                this.m_rc.uniformMatrix3fv(ult, false, f32Arr);
+            case mc.SHADER_MAT3:
+                rc.uniformMatrix3fv(ult, false, f32Arr);
                 break;
-            case MaterialConst.SHADER_VEC4FV:
-                this.m_rc.uniform4fv(ult, f32Arr, dataSize * 4);
+            case mc.SHADER_VEC4FV:
+                rc.uniform4fv(ult, f32Arr, dataSize * 4);
                 break;
-            case MaterialConst.SHADER_VEC3FV:
-                this.m_rc.uniform3fv(ult, f32Arr, dataSize * 3);
+            case mc.SHADER_VEC3FV:
+                rc.uniform3fv(ult, f32Arr, dataSize * 3);
                 break;
-            case MaterialConst.SHADER_VEC4:
-                this.m_rc.uniform4f(ult, f32Arr[0], f32Arr[1], f32Arr[2], f32Arr[3]);
+            case mc.SHADER_VEC4:
+                rc.uniform4f(ult, f32Arr[0], f32Arr[1], f32Arr[2], f32Arr[3]);
                 break;
-            case MaterialConst.SHADER_VEC3:
-                this.m_rc.uniform3f(ult, f32Arr[0], f32Arr[1], f32Arr[2]);
+            case mc.SHADER_VEC3:
+                rc.uniform3f(ult, f32Arr[0], f32Arr[1], f32Arr[2]);
                 break;
-            case MaterialConst.SHADER_VEC2:
-                this.m_rc.uniform2f(ult, f32Arr[0], f32Arr[1]);
+            case mc.SHADER_VEC2:
+                rc.uniform2f(ult, f32Arr[0], f32Arr[1]);
                 break;
             default:
                 break;

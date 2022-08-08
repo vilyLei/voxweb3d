@@ -12,7 +12,7 @@ interface IRenderAdapter {
 	bgColor: Color4;
 	//initialize(context: RAdapterContext, param: RendererParam, rState: RODrawState): void;
 	/**
-	 * @param faceFlipped the value is true, frontFace is CW. the value is false, frontFace is CCW. 
+	 * @param faceFlipped the value is true, frontFace is CW. the value is false, frontFace is CCW.
 	 */
 	setFrontFaceFlipped(faceFlipped: boolean): void;
 	/*
@@ -25,8 +25,8 @@ interface IRenderAdapter {
 	 * reset the scale factors and units value is default value(0.0).
 	 */
 	resetPolygonOffset(): void;
-	getDiv(): any;
-	getCanvas(): any;
+	getDiv(): HTMLDivElement;
+	getCanvas(): HTMLCanvasElement;
 	setClearDepth(depth: number): void;
 	getClearDepth(): number;
 	setContextViewSize(pw: number, ph: number): void;
@@ -75,10 +75,10 @@ interface IRenderAdapter {
 	resizeFBOAt(index: number, pw: number, ph: number): void;
 	getFBOWidthAt(index: number): number;
 	getFBOHeightAt(index: number): number;
-	
+
 	synFBOSizeWithViewport(): void;
 	asynFBOSizeWithViewport(): void;
-	// 
+	//
 	/**
 	 * if synFBOSizeWithViewport is true, fbo size = factor * view port size;
 	 * @param factor exmple: the value of factor is 0.5

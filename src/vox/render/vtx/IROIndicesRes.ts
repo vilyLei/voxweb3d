@@ -5,25 +5,20 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IVtxBufData from "../../vox/mesh/IVtxBufData";
+import IROVtxBuilder from "../../../vox/render/IROVtxBuilder";
+import IROVtxBuf from "../../../vox/render/IROVtxBuf";
 
-interface IROVtxBuf {
-    layoutBit: number;
-    vertexVer: number;
-    indicesVer: number;
+interface IROIndicesRes {
     version: number;
-    bufData: IVtxBufData;
+    ibufStep: number;
 
-    getIvsData(): Uint16Array | Uint32Array;
     getUid(): number;
-    getType(): number;
-    getBufDataUsage(): number;
-    getBuffersTotal(): number;
-    getAttribsTotal(): number;
-    getF32DataAt(index: number): Float32Array;
-    getIBufStep(): number;
+    getVtxUid(): number;
+    getGpuBuf(): any;
+    getVTCount(): number;
+    updateToGpu(rc: IROVtxBuilder): void;
+    initialize(rc: IROVtxBuilder, vtx: IROVtxBuf): void;
 
-    getBufTypeList(): number[];
-    getBufSizeList(): number[];
+    destroy(rc: IROVtxBuilder): void;
 }
-export default IROVtxBuf;
+export { IROIndicesRes };

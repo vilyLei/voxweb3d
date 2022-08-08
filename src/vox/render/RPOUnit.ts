@@ -25,7 +25,7 @@ import IPoolNode from "../../vox/base/IPoolNode";
 import { ROIndicesRes } from "./vtx/ROIndicesRes";
 import DebugFlag from "../debug/DebugFlag";
 
-
+const RST = RendererState;
 /**
  * 渲染器渲染运行时核心关键执行显示单元,一个unit代表着一个draw call所渲染的所有数据
  * renderer rendering runtime core executable display unit.
@@ -117,8 +117,8 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     }
     drawThis(rc: RenderProxy): void {
 
-        ++RendererState.DrawCallTimes;
-        RendererState.DrawTrisNumber += this.trisNumber;
+        ++RST.DrawCallTimes;
+        RST.DrawTrisNumber += this.trisNumber;
         // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
         let ivsCount = this.indicesRes.getVTCount();
         if (this.ivsCount <= ivsCount) ivsCount = this.ivsCount;
@@ -129,40 +129,41 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         else {
             rc.resetPolygonOffset();
         }
-        
+        const rdm = RenderDrawMode;
+        let gl: any = rc.RContext;
         switch (this.drawMode) {
-            case RenderDrawMode.ELEMENTS_TRIANGLES:
+            case rdm.ELEMENTS_TRIANGLES:
                 // if(DebugFlag.Flag_0 > 0)console.log("RPOUnit::run(), TRIANGLES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
                 //rc.RContext.drawElements(rc.TRIANGLES, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
-                rc.RContext.drawElements(rc.TRIANGLES, ivsCount, this.ibufType, this.drawOffset);
+                gl.drawElements(rc.TRIANGLES, ivsCount, this.ibufType, this.drawOffset);
                 break;
-            case RenderDrawMode.ELEMENTS_LINES:
+            case rdm.ELEMENTS_LINES:
                 //console.log("RPOUnit::run(), ELEMENTS_LINES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
                 //rc.RContext.drawElements(rc.ELEMENTS_LINES, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
-                rc.RContext.drawElements(rc.LINES, ivsCount, this.ibufType, this.drawOffset);
+                gl.drawElements(rc.LINES, ivsCount, this.ibufType, this.drawOffset);
                 break;
-            case RenderDrawMode.ELEMENTS_TRIANGLE_STRIP:
+            case rdm.ELEMENTS_TRIANGLE_STRIP:
                 //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
                 //rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
-                rc.RContext.drawElements(rc.TRIANGLE_STRIP, ivsCount, this.ibufType, this.drawOffset);
+                gl.drawElements(rc.TRIANGLE_STRIP, ivsCount, this.ibufType, this.drawOffset);
                 break;
-            case RenderDrawMode.ELEMENTS_INSTANCED_TRIANGLES:
+            case rdm.ELEMENTS_INSTANCED_TRIANGLES:
                 //console.log("RPOUnit::run(), drawElementsInstanced(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+", insCount: "+this.insCount+")");
                 //rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.ivsIndex * this.ibufStep, this.insCount);
-                rc.RContext.drawElementsInstanced(rc.TRIANGLES, ivsCount, this.ibufType, this.drawOffset, this.insCount);
+                gl.drawElementsInstanced(rc.TRIANGLES, ivsCount, this.ibufType, this.drawOffset, this.insCount);
                 break;
-            case RenderDrawMode.ELEMENTS_TRIANGLE_FAN:
+            case rdm.ELEMENTS_TRIANGLE_FAN:
                 //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
                 //rc.RContext.drawElements(rc.TRIANGLE_FAN, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
-                rc.RContext.drawElements(rc.TRIANGLE_FAN, ivsCount, this.ibufType, this.drawOffset);
+                gl.drawElements(rc.TRIANGLE_FAN, ivsCount, this.ibufType, this.drawOffset);
                 break;
-            case RenderDrawMode.ARRAYS_LINES:
+            case rdm.ARRAYS_LINES:
                 //console.log("RPOUnit::run(), ARRAYS_LINES drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                rc.RContext.drawArrays(rc.LINES, this.ivsIndex, this.ivsCount);
+                gl.drawArrays(rc.LINES, this.ivsIndex, this.ivsCount);
                 break;
-            case RenderDrawMode.ARRAYS_LINE_STRIP:
+            case rdm.ARRAYS_LINE_STRIP:
                 //console.log("RPOUnit::run(), ARRAYS_LINE_STRIP drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                rc.RContext.drawArrays(rc.LINE_STRIP, this.ivsIndex, this.ivsCount);
+                gl.drawArrays(rc.LINE_STRIP, this.ivsIndex, this.ivsCount);
                 break;
             default:
                 break;
@@ -171,8 +172,8 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
 
     drawPart(rc: RenderProxy): void {
 
-        ++RendererState.DrawCallTimes;
-        RendererState.DrawTrisNumber += this.trisNumber;
+        ++RST.DrawCallTimes;
+        RST.DrawTrisNumber += this.trisNumber;
 
         // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
         let ivsCount = this.indicesRes.getVTCount();
@@ -185,10 +186,11 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
             rc.resetPolygonOffset();
         }
 
+        const rdm = RenderDrawMode;
         let i: number = 0;
         let gl: any = rc.RContext;
         switch (this.drawMode) {
-            case RenderDrawMode.ELEMENTS_TRIANGLES:
+            case rdm.ELEMENTS_TRIANGLES:
                 for (; i < this.partTotal;) {
                     // 这里面可以增加一个回调函数,这个回调函数可以对uniform(或者transformUniform)做一些数据改变，进而来控制相应的状态
                     // 因此可以通过改变uniform实现大量的显示绘制
@@ -198,7 +200,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
                     gl.drawElements(rc.TRIANGLES, this.partGroup[i++], this.ibufType, this.partGroup[i++]);
                 }
                 break;
-            case RenderDrawMode.ELEMENTS_LINES:
+            case rdm.ELEMENTS_LINES:
                 for (; i < this.partTotal;) {
                     // 这里面可以增加一个回调函数,这个回调函数可以对uniform(或者transformUniform)做一些数据改变，进而来控制相应的状态
                     // 因此可以通过改变uniform实现大量的显示绘制
@@ -208,26 +210,26 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
                     gl.drawElements(rc.LINES, this.partGroup[i++], this.ibufType, this.partGroup[i++]);
                 }
                 break;
-            case RenderDrawMode.ELEMENTS_TRIANGLE_STRIP:
+            case rdm.ELEMENTS_TRIANGLE_STRIP:
                 //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
                 //rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
                 gl.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, this.ibufType, this.drawOffset);
                 break;
-            case RenderDrawMode.ELEMENTS_INSTANCED_TRIANGLES:
+            case rdm.ELEMENTS_INSTANCED_TRIANGLES:
                 //console.log("RPOUnit::run(), drawElementsInstanced(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+", insCount: "+this.insCount+")");
                 //rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.ivsIndex * this.ibufStep, this.insCount);
                 gl.drawElementsInstanced(rc.TRIANGLES, this.ivsCount, this.ibufType, this.drawOffset, this.insCount);
                 break;
-            case RenderDrawMode.ELEMENTS_TRIANGLE_FAN:
+            case rdm.ELEMENTS_TRIANGLE_FAN:
                 //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
                 //rc.RContext.drawElements(rc.TRIANGLE_FAN, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
                 gl.drawElements(rc.TRIANGLE_FAN, this.ivsCount, this.ibufType, this.drawOffset);
                 break;
-            case RenderDrawMode.ARRAYS_LINES:
+            case rdm.ARRAYS_LINES:
                 //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
                 gl.drawArrays(rc.LINES, this.ivsIndex, this.ivsCount);
                 break;
-            case RenderDrawMode.ARRAYS_LINE_STRIP:
+            case rdm.ARRAYS_LINE_STRIP:
                 //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
                 gl.drawArrays(rc.LINE_STRIP, this.ivsIndex, this.ivsCount);
                 break;
@@ -273,7 +275,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         //  console.log("RPOUnit::reset(), uid: ",this.getUid());
         this.indicesRes = null;
         this.polygonOffset = null;
-        
+
         this.vro.__$detachThis();
         this.vro = null;
         this.tro.__$detachThis();

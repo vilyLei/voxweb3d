@@ -5,36 +5,34 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererState from "../RendererState";
 import { IRenderingColorMask } from "./IRenderingColorMask";
 
 class RenderingColorMask implements IRenderingColorMask {
 
-    readonly ALL_TRUE: number = 0;
-    readonly ALL_FALSE: number = 1;
-    readonly RED_TRUE: number = 2;
-    readonly GREEN_TRUE: number = 3;
-    readonly BLUE_TRUE: number = 4;
-    readonly ALPHA_TRUE: number = 5;
-    readonly RED_FALSE: number = 6;
-    readonly GREEN_FALSE: number = 7;
-    readonly BLUE_FALSE: number = 8;
-    readonly ALPHA_FALSE: number = 9;
-    
-    constructor() {
-        
-        let state = RendererState;
-        let selfT: any = this;
-        selfT.ALL_TRUE = state.COLOR_MASK_ALL_TRUE;
-        selfT.ALL_FALSE = state.COLOR_MASK_ALL_FALSE;
-        selfT.RED_TRUE = state.COLOR_MASK_RED_TRUE;
-        selfT.GREEN_TRUE = state.COLOR_MASK_GREEN_TRUE;
-        selfT.BLUE_TRUE = state.COLOR_MASK_BLUE_TRUE;
-        selfT.ALPHA_TRUE = state.COLOR_MASK_ALPHA_TRUE;
-        selfT.RED_FALSE = state.COLOR_MASK_RED_FALSE;
-        selfT.GREEN_FALSE = state.COLOR_MASK_GREEN_FALSE;
-        selfT.BLUE_FALSE = state.COLOR_MASK_BLUE_FALSE;
-        selfT.ALPHA_FALSE = state.COLOR_MASK_ALPHA_FALSE;
+    readonly ALL_TRUE: number;
+    readonly ALL_FALSE: number;
+    readonly RED_TRUE: number;
+    readonly GREEN_TRUE: number;
+    readonly BLUE_TRUE: number;
+    readonly ALPHA_TRUE: number;
+    readonly RED_FALSE: number;
+    readonly GREEN_FALSE: number;
+    readonly BLUE_FALSE: number;
+    readonly ALPHA_FALSE: number;
+
+    constructor(st: any) {
+
+        let t: any = this;
+        t.ALL_TRUE = st.COLOR_MASK_ALL_TRUE;
+        t.ALL_FALSE = st.COLOR_MASK_ALL_FALSE;
+        t.RED_TRUE = st.COLOR_MASK_RED_TRUE;
+        t.GREEN_TRUE = st.COLOR_MASK_GREEN_TRUE;
+        t.BLUE_TRUE = st.COLOR_MASK_BLUE_TRUE;
+        t.ALPHA_TRUE = st.COLOR_MASK_ALPHA_TRUE;
+        t.RED_FALSE = st.COLOR_MASK_RED_FALSE;
+        t.GREEN_FALSE = st.COLOR_MASK_GREEN_FALSE;
+        t.BLUE_FALSE = st.COLOR_MASK_BLUE_FALSE;
+        t.ALPHA_FALSE = st.COLOR_MASK_ALPHA_FALSE;
     }
 }
 export { RenderingColorMask }

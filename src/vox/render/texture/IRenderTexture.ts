@@ -11,7 +11,7 @@ import IRenderBuffer from "../../../vox/render/IRenderBuffer";
 import { IRenderProxy } from "../../../vox/render/IRenderProxy";
 
 interface IRenderTexture extends IRenderBuffer {
-    
+
     name: string;
     mipmapEnabled: boolean;
     srcFormat: number;
@@ -19,11 +19,11 @@ interface IRenderTexture extends IRenderBuffer {
     minFilter: number;
     magFilter: number;
     internalFormat: number;
-    
+
     unpackAlignment: number;
     flipY: boolean;
     premultiplyAlpha: boolean;
-    
+
     setWrap(wrap: number): void;
     isGpuEnabled(): boolean;
     isDataEnough(): boolean;
@@ -46,7 +46,7 @@ interface IRenderTexture extends IRenderBuffer {
     disableMipmap(): void;
     generateMipmap(texRes: IRenderResource): void;
     /**
-     * 
+     *
      * @param rc the default value is null
      * @param deferred the default value is true
      */

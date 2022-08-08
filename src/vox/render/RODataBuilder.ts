@@ -11,7 +11,6 @@ import IRODisplay from "../../vox/display/IRODisplay";
 import RenderProxy from "../../vox/render/RenderProxy";
 import ROVtxBuilder from "../../vox/render/ROVtxBuilder";
 import UniformConst from "../../vox/material/UniformConst";
-import IShaderUniformData from "../../vox/material/IShaderUniformData";
 import ShaderUniform from "../../vox/material/ShaderUniform";
 import IShdProgram from "../../vox/material/IShdProgram";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
@@ -201,7 +200,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                     }
                 }
                 if (this.m_shader.getSharedUniformByShd(shdp) == null) {
-                    
+
                     let sharedMList: ShaderUniform[] = this.createsharedMList(material, shdp);
                     if (sharedMList != null) {
                         for (let i: number = 0; i < sharedMList.length; ++i) {
@@ -275,19 +274,19 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
     private buildVtxRes(disp: IRODisplay, runit: RPOUnit, shdp: IShdProgram): void {
 
         if (disp.vbuf != null) {
-            
-            let vtxRes: ROVertexResource = this.m_vtxRes;
+
+            let vtxRes = this.m_vtxRes;
             runit.ivsIndex = disp.ivsIndex;
             runit.ivsCount = disp.ivsCount;
             runit.insCount = disp.insCount;
             runit.visible = disp.visible;
-            
+
             runit.setVisible(disp.visible);
             runit.drawMode = disp.drawMode;
             runit.renderState = disp.renderState;
             runit.rcolorMask = disp.rcolorMask;
             runit.trisNumber = disp.trisNumber;
-            // build vertex gpu resoure 
+            // build vertex gpu resoure
             let resUid: number = disp.vbuf.getUid();
             let vtx: GpuVtxObject;
             let needBuild: boolean = true;
@@ -434,7 +433,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
             if (this.m_shader.getSharedUniformByShd(shdp) == null) {
 
                 let sharedMList: ShaderUniform[] = this.createsharedMList(material, shdp);
-                
+
                 if (sharedMList != null) {
                     for (let i: number = 0; i < sharedMList.length; ++i) {
                         sharedMList[i].program = shdp.getGPUProgram();

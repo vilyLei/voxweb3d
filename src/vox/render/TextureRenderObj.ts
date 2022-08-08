@@ -5,12 +5,17 @@
 /*                                                                         */
 /***************************************************************************/
 
-import MathConst from '../../vox/math/MathConst';
 import ROTextureResource from '../../vox/render/ROTextureResource';
 import ITextureRenderObj from "../../vox/render/ITextureRenderObj";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
-
+function getNearestCeilPow2(int_n: number): number {
+	let x = 1;
+	while (x < int_n) {
+		x <<= 1;
+	}
+	return x;
+}
 /**
  * renderer runtime texture resource object
  */
@@ -60,7 +65,7 @@ class TextureRenderObj implements ITextureRenderObj {
         let i: number = 0;
         if (this.direct) {
             if (this.m_texTotal < 1 && ptexList.length > 0) {
-                let len: number = MathConst.GetNearestCeilPow2(ptexList.length);
+                let len: number = getNearestCeilPow2(ptexList.length);
                 this.m_samplers = new Uint16Array(len);
                 this.m_gtexList = new Array(len);
                 this.m_texList = ptexList;
@@ -144,7 +149,7 @@ class TextureRenderObj implements ITextureRenderObj {
     toString(): string {
         return "TextureRenderObj(uid = " + this.m_uid + ", mid=" + this.m_mid + ")";
     }
-    
+
     static Create(texRes: ROTextureResource, texList: IRenderTexture[], shdTexTotal: number): TextureRenderObj {
 
         let texTotal: number = texList.length;

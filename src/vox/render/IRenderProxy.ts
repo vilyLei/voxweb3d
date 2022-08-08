@@ -122,7 +122,7 @@ interface IRenderProxy {
     setRenderToBackBuffer(): void;
     clearBackBuffer(): void;
     /**
-     * 
+     *
      * @param depth the derault value is 1.0
      */
     clearDepth(depth?: number): void;
@@ -139,7 +139,7 @@ interface IRenderProxy {
     unlockRenderState(): void;
     lockRenderState(): void;
     /**
-     * @param faceFlipped the value is true, frontFace is CW. the value is false, frontFace is CCW. 
+     * @param faceFlipped the value is true, frontFace is CW. the value is false, frontFace is CCW.
      */
     setFrontFaceFlipped(faceFlipped: boolean): void;
 
@@ -160,5 +160,6 @@ interface IRenderProxy {
      */
     isContextLost(): boolean;
     setViewProbeValue(x: number, y: number, width: number, height: number): void;
+	setVtxUpdateTimesTotal(timesTotal: number): void;
 }
 export { IRenderProxy };

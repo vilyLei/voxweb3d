@@ -5,12 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-// import {UniformDataSlot} from "../../vox/material/UniformDataSlot";
+// import IShaderUniform from "../../vox/material/IShaderUniform";
 /**
  * renderer rendering runtime uniform data operations
  */
 export default interface IRenderShader {
-    // udSlot: UniformDataSlot;
     /**
      * @returns return system gpu context
      */
@@ -27,4 +26,11 @@ export default interface IRenderShader {
     useUniformMat4(ult: any, mat4f32Arr: Float32Array): void;
     useUniformV1(ult: any, type: number, f32Arr: Float32Array, dataSize: number): void;
     useUniformV2(ult: any, type: number, f32Arr: Float32Array, dataSize: number, offset: number): void;
+	renderBegin():void;
+	unlock(): void;
+	lock(): void;
+	textureUnlock(): void;
+	textureLock(): void;
+	resetUniform(): void;
+	// updateUniform(uniform: IShaderUniform): void;
 }

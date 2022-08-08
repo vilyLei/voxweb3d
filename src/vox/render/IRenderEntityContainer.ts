@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import IVector3D from "../../vox/math/IVector3D";
-import AABB from "../../vox/geom/AABB";
+import { IAABB } from "../../vox/geom/IAABB";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import IRenderer from "../../vox/scene/IRenderer";
 
@@ -24,7 +24,7 @@ export default interface IRenderEntityContainer {
 
     dispatchEvt(evt: any): number;
     getEvtDispatcher(evtClassType: number): IEvtDispatcher;
-    getGlobalBounds(): AABB;
+    getGlobalBounds(): IAABB;
     getChildrenTotal(): number;
     getEntitysTotal(): number;
     getVisible(): boolean;

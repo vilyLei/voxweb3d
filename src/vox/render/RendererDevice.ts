@@ -199,6 +199,4 @@ class RendererDevice {
         return RendererDevice.s_mobileFlag == 2;
     }
 }
-//import RendererDevice from
-//import RendererDevice from
 export default RendererDevice;

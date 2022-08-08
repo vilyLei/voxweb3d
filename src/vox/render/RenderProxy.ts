@@ -5,7 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-import MathConst from "../../vox/math/MathConst";
 import IVector3D from "../../vox/math/IVector3D";
 import AABB2D from "../geom/AABB2D";
 import Color4 from "../../vox/material/Color4";
@@ -177,7 +176,7 @@ class RenderProxy implements IRenderProxy{
                 camera.updateCamMatToUProbe(this.m_camera.matUProbe);
                 if (this.m_camUBO != null) {
                     this.m_camUBO.setSubDataArrAt(0, camera.matUProbe.getFS32At(0));
-                    this.m_camUBO.setSubDataArrAt(16, camera.matUProbe.getFS32At(1));                    
+                    this.m_camUBO.setSubDataArrAt(16, camera.matUProbe.getFS32At(1));
                     //this.m_camUBO.setSubDataArrAt(0, camera.getViewMatrix().getLocalFS32());
                     //this.m_camUBO.setSubDataArrAt(16, camera.getProjectMatrix().getLocalFS32());
                 }
@@ -239,7 +238,7 @@ class RenderProxy implements IRenderProxy{
     getRenderAdapter(): IRenderAdapter {
         return this.m_adapter;
     }
-    
+
 	getRenderContext(): IRAdapterContext {
 		return this.m_adapter.getRenderContext();
 	}
@@ -265,7 +264,7 @@ class RenderProxy implements IRenderProxy{
     setViewPort(px: number, py: number, pw: number, ph: number): void {
 
         this.m_autoSynViewAndStage = false;
-        
+
         this.m_viewPortRect.setTo(px, py, pw, ph);
         let stage: IRenderStage3D = this.m_adapterContext.getStage();
         if (stage != null) {
@@ -282,7 +281,7 @@ class RenderProxy implements IRenderProxy{
         this.m_adapter.unlockViewport();
         this.m_adapter.reseizeViewPort();
     }
-    private updateCameraView(): void {        
+    private updateCameraView(): void {
         if (this.m_camera != null) {
             let rect = this.m_viewPortRect;
             this.m_camera.setViewXY(rect.x, rect.y);
@@ -305,16 +304,16 @@ class RenderProxy implements IRenderProxy{
     }
     private m_initMainCamera: boolean = true;
     private createMainCamera(): void {
-        
+
         if(this.m_initMainCamera) {
 
             this.m_initMainCamera = false;
             this.m_camera.uniformEnabled = true;
-            
+
             let rect = this.m_viewPortRect;
-            
+
             if (this.m_perspectiveEnabled) {
-                this.m_camera.perspectiveRH(MathConst.DegreeToRadian(this.m_cameraFov), rect.width / rect.height, this.m_cameraNear, this.m_cameraFar);
+                this.m_camera.perspectiveRH((Math.PI * this.m_cameraFov) / 180.0, rect.width / rect.height, this.m_cameraNear, this.m_cameraFar);
             }
             else {
                 this.m_camera.orthoRH(this.m_cameraNear, this.m_cameraFar, -0.5 * rect.height, 0.5 * rect.height, -0.5 * rect.width, 0.5 * rect.width);
@@ -353,18 +352,18 @@ class RenderProxy implements IRenderProxy{
             camera.ucameraPosProbe.addVec4Data(
                 new Float32Array([500.0,500.0,500.0,1.0]),
             1);
-        }        
+        }
     }
     initialize(param: IRendererParam, camera: IRenderCamera, stage: IRenderStage3D, proxyParam: RenderProxyParam): void {
         if (this.m_rc != null) {
             return;
         }
         this.m_camera = camera;
-        
+
         let posV3: IVector3D = param.camPosition;
         let lookAtPosV3: IVector3D = param.camLookAtPos;
         let upV3: IVector3D = param.camUpDirect;
-        
+
         if(stage != null) stage.uProbe = proxyParam.uniformContext.createUniformVec4Probe(1);
 
         this.m_perspectiveEnabled = param.cameraPerspectiveEnabled;
@@ -373,9 +372,9 @@ class RenderProxy implements IRenderProxy{
         this.m_adapterContext.setWebGLMaxVersion(this.m_maxWebGLVersion);
         this.m_adapterContext.initialize(this.m_uid, stage, param.getDiv(), param.getRenderContextAttri());
         this.m_WEBGL_VER = this.m_adapterContext.getWebGLVersion();
-        
+
         this.m_rc = this.m_adapterContext.getRC();
-        
+
         let selfT: any = this;
         let gl: any = this.m_rc;
         let vtxRes: ROVertexResource = new ROVertexResource(this.m_uid, gl, proxyParam.vtxBuilder);
@@ -393,24 +392,24 @@ class RenderProxy implements IRenderProxy{
         selfT.RState = rstate;
         selfT.RContext = this.m_rc;
         selfT.stencil = new Stencil( rstate );
-        selfT.renderingState = new RenderingState();
-        selfT.colorMask = new RenderingColorMask();
+        selfT.renderingState = new RenderingState( RendererState );
+        selfT.colorMask = new RenderingColorMask( RendererState );
 
         this.buildCameraParam();
-        
+
         let rect = this.m_viewPortRect;
         rect.setSize(this.m_adapterContext.getRCanvasWidth(), this.m_adapterContext.getRCanvasHeight());
 
         this.m_adapter = new RenderAdapter(this.m_uid, texRes);
         this.m_adapter.initialize(this.m_adapterContext, param, rstate, this.uniformContext.createUniformVec4Probe(1));
-        selfT.adapter = this.m_adapter; 
+        selfT.adapter = this.m_adapter;
         if (this.m_autoSynViewAndStage) {
             let stage: IRenderStage3D = this.m_adapterContext.getStage();
             if (stage != null) {
                 rect.setSize(rect.width, rect.height);
             }
         }
-        
+
         this.createMainCamera();
 
         this.m_adapterContext.setViewport(rect.x, rect.y, rect.width, rect.height);
@@ -532,7 +531,7 @@ class RenderProxy implements IRenderProxy{
     }
 
     /**
-     * @param faceFlipped the value is true, frontFace is CW. the value is false, frontFace is CCW. 
+     * @param faceFlipped the value is true, frontFace is CW. the value is false, frontFace is CCW.
      */
     setFrontFaceFlipped(faceFlipped: boolean): void {
         this.m_adapter.setFrontFaceFlipped(faceFlipped);

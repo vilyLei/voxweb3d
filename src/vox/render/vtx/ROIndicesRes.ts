@@ -7,8 +7,9 @@
 
 import IROVtxBuilder from "../../../vox/render/IROVtxBuilder";
 import IROVtxBuf from "../../../vox/render/IROVtxBuf";
+import { IROIndicesRes } from "./IROIndicesRes";
 
-class ROIndicesRes {
+class ROIndicesRes implements IROIndicesRes {
     private m_uid: number = 0;
     private static s_uid: number = 0;
     private m_vtx: IROVtxBuf = null;
@@ -59,7 +60,7 @@ class ROIndicesRes {
             this.m_vtx = vtx;
             this.m_vtxUid = vtx.getUid();
             this.m_ivs = vtx.getIvsData();
-            
+
             this.m_gpuBuf = rc.createBuf();
             rc.bindEleBuf(this.m_gpuBuf);
 

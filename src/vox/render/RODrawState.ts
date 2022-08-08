@@ -80,14 +80,14 @@ export class RODrawState implements IRODrawState {
         }
     }
     setCullFaceMode(mode: number): void {
-        
+
         if (this.m_cullMode != mode) {
             this.m_cullMode = mode;
             if(mode != CullFaceMode.NONE) {
                 if (this.m_cullDisabled) { this.m_cullDisabled = false; this.m_gl.enable(this.m_gl.CULL_FACE); }
                 this.m_gl.cullFace(mode);
             }
-            else if (!this.m_cullDisabled) {                
+            else if (!this.m_cullDisabled) {
                 this.m_cullDisabled = true;
                 this.m_gl.disable(this.m_gl.CULL_FACE);
             }
@@ -116,49 +116,51 @@ export class RODrawState implements IRODrawState {
             }
         }
     }
-    setDepthTestMode(type: number): void {
+	setDepthTestMode(type: number): void {
 
         if (this.m_depthTestType != type) {
+            const gl = this.m_gl;
+            const DTM = DepthTestMode;
             this.m_depthTestType = type;
             //trace("RendererBase::setDepthTest(),type：",std::to_string(static_cast<int>(type)));
 
             switch (type) {
-                case DepthTestMode.ALWAYS:
-                    //console.log("ALWAYS type: ", type,this.m_gl.ALWAYS);
-                    this.m_gl.depthMask(false); this.m_gl.depthFunc(this.m_gl.ALWAYS);
+                case DTM.ALWAYS:
+                    //console.log("ALWAYS type: ", type,gl.ALWAYS);
+                    gl.depthMask(false); gl.depthFunc(gl.ALWAYS);
                     break;
-                case DepthTestMode.SKY:
-                    this.m_gl.depthMask(true); this.m_gl.depthFunc(this.m_gl.LEQUAL);
+                case DTM.SKY:
+                    gl.depthMask(true); gl.depthFunc(gl.LEQUAL);
                     break;
-                case DepthTestMode.OPAQUE:
-                    //console.log("OPAQUE type: ", type,this.m_gl.LESS);
-                    this.m_gl.depthMask(true); this.m_gl.depthFunc(this.m_gl.LESS);
+                case DTM.OPAQUE:
+                    //console.log("OPAQUE type: ", type,gl.LESS);
+                    gl.depthMask(true); gl.depthFunc(gl.LESS);
                     break;
-                case DepthTestMode.OPAQUE_OVERHEAD:
-                    this.m_gl.depthMask(false); this.m_gl.depthFunc(this.m_gl.EQUAL);
+                case DTM.OPAQUE_OVERHEAD:
+                    gl.depthMask(false); gl.depthFunc(gl.EQUAL);
                     break;
-                case DepthTestMode.DECALS:
-                    this.m_gl.depthMask(false); this.m_gl.depthFunc(this.m_gl.LEQUAL);
+                case DTM.DECALS:
+                    gl.depthMask(false); gl.depthFunc(gl.LEQUAL);
                     break;
-                case DepthTestMode.BLEND:
-                    this.m_gl.depthMask(false); this.m_gl.depthFunc(this.m_gl.LESS);
+                case DTM.BLEND:
+                    gl.depthMask(false); gl.depthFunc(gl.LESS);
                     break;
-                case DepthTestMode.WIRE_FRAME:
-                    this.m_gl.depthMask(true); this.m_gl.depthFunc(this.m_gl.LEQUAL);
+                case DTM.WIRE_FRAME:
+                    gl.depthMask(true); gl.depthFunc(gl.LEQUAL);
                     break;
-                case DepthTestMode.NEXT_LAYER:
-                    this.m_gl.depthMask(false); this.m_gl.depthFunc(this.m_gl.ALWAYS);
+                case DTM.NEXT_LAYER:
+                    gl.depthMask(false); gl.depthFunc(gl.ALWAYS);
                     break;
-                case DepthTestMode.TRUE_EQUAL:
-                    this.m_gl.depthMask(true); this.m_gl.depthFunc(this.m_gl.EQUAL);
+                case DTM.TRUE_EQUAL:
+                    gl.depthMask(true); gl.depthFunc(gl.EQUAL);
                     break;
-                case DepthTestMode.TRUE_GREATER:
-                    this.m_gl.depthMask(true); this.m_gl.depthFunc(this.m_gl.GREATER);
+                case DTM.TRUE_GREATER:
+                    gl.depthMask(true); gl.depthFunc(gl.GREATER);
                     break;
-                case DepthTestMode.TRUE_GEQUAL:
-                    this.m_gl.depthMask(true); this.m_gl.depthFunc(this.m_gl.GEQUAL);
+                case DTM.TRUE_GEQUAL:
+                    gl.depthMask(true); gl.depthFunc(gl.GEQUAL);
                     break;
-                case DepthTestMode.WIRE_FRAME_NEXT:
+                case DTM.WIRE_FRAME_NEXT:
                     break;
                 default:
                     break;
