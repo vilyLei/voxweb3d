@@ -34,11 +34,11 @@ export class DemoCoRendererScene {
 		};
 
 		let url: string = "static/cospace/engine/renderer/CoRenderer.umd.min.js";
-		this.loadRendererModule(url);
+		this.loadModule(url);
 		url = "static/cospace/engine/rscene/CoRScene.umd.min.js";
-		this.loadRendererModule(url);
+		this.loadModule(url);
 		url = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.min.js";
-		this.loadRendererModule(url, "CoMouseInteraction");
+		this.loadModule(url, "CoMouseInteraction");
 	}
 	isEngineEnabled(): boolean {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";
@@ -116,7 +116,7 @@ export class DemoCoRendererScene {
 		//     }
 		//     img.src = "static/assets/yanj.jpg";
 	}
-	private loadRendererModule(purl: string, module: string = ""): void {
+	private loadModule(purl: string, module: string = ""): void {
 
 		let codeLoader: XMLHttpRequest = new XMLHttpRequest();
 		codeLoader.open("GET", purl, true);
