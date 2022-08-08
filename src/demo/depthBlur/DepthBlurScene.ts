@@ -1,6 +1,6 @@
 import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../../vox/render/RenderConst";
 import RendererState from "../../vox/render/RendererState";
-import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import { TextureBlock } from "../../vox/texture/TextureBlock";
 import CameraTrack from "../../vox/view/CameraTrack";
@@ -11,7 +11,7 @@ import IRendererScene from "../../vox/scene/IRendererScene";
 
 class DepthBlurScene {
     private m_renderer: RendererInstance = null;
-    private m_rcontext: RendererInstanceContext = null;
+    private m_rcontext: IRendererInstanceContext = null;
     private m_camTrack: CameraTrack = null;
     private m_entityMana: EntityManager = new EntityManager();
 

@@ -7,7 +7,7 @@ import RendererState from "../../vox/render/RendererState";
 import RendererParam from "../../vox/scene/RendererParam";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
-import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import RendererScene from "../../vox/scene/RendererScene";
 import MouseEvent from "../../vox/event/MouseEvent";
 import H5FontSystem from "../../vox/text/H5FontSys";
@@ -29,7 +29,7 @@ export namespace advancedDemo {
             private m_rc: RendererScene = null;
             private m_texLoader: ImageTextureLoader;
             private m_camTrack: CameraTrack = null;
-            private m_rct: RendererInstanceContext = null;
+            private m_rct: IRendererInstanceContext = null;
             private m_profileInstance: ProfileInstance = null;
             private m_bill0: Billboard3DEntity = null;
             private m_bill1: Billboard3DEntity = null;

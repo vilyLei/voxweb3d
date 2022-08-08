@@ -2,7 +2,7 @@
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
-import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../vox/scene/IRendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
@@ -20,7 +20,7 @@ import Line3DEntity from "../vox/entity/Line3DEntity";
 //import Vector3D = Vector3DT.vox.math.Vector3D;
 //import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
 //import RendererParam = RendererParamT.vox.scene.RendererParam;
-//import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
+//import IRendererInstanceContext = RendererInstanceContextT.vox.scene.IRendererInstanceContext;
 //import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 
 //import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
@@ -42,7 +42,7 @@ export namespace example
         {
         }
         private m_rscene:RendererScene = null;
-        private m_rcontext:RendererInstanceContext = null;
+        private m_rcontext:IRendererInstanceContext = null;
         private m_texLoader:ImageTextureLoader;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();

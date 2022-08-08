@@ -2,7 +2,7 @@
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
-import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../vox/scene/IRendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import Color4 from "../vox/material/Color4";
@@ -22,7 +22,7 @@ import * as TwoPngTexMaterialT from "./material/base/TwoPngTexMaterial";
 //import Vector3D = Vector3DT.vox.math.Vector3D;
 //import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
 //import RendererParam = RendererParamT.vox.scene.RendererParam;
-//import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
+//import IRendererInstanceContext = RendererInstanceContextT.vox.scene.IRendererInstanceContext;
 //import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 
 //import Color4 = Color4T.vox.material.Color4;
@@ -47,7 +47,7 @@ export namespace example
         {
         }
         private m_rscene:RendererScene = null;
-        private m_rcontext:RendererInstanceContext = null;
+        private m_rcontext:IRendererInstanceContext = null;
         private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
         private m_bgColor:Color4 = new Color4();
@@ -213,7 +213,7 @@ export namespace example
         }
         run():void
         {
-            let pcontext:RendererInstanceContext = this.m_rcontext;
+            let pcontext:IRendererInstanceContext = this.m_rcontext;
             // show fps status
             //this.m_statusDisp.update();
 

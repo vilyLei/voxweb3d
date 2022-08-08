@@ -4,7 +4,7 @@ import RendererDevice from "../vox/render/RendererDevice";
 import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
-import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../vox/scene/IRendererInstanceContext";
 import RendererInstance from "../vox/scene/RendererInstance";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import MouseEvent from "../vox/event/MouseEvent";
@@ -86,7 +86,7 @@ export namespace voxnav {
         constructor() {
         }
         private m_renderer: RendererInstance = null;
-        private m_rcontext: RendererInstanceContext = null;
+        private m_rcontext: IRendererInstanceContext = null;
         private m_texLoader: ImageTextureLoader;
         private m_camTrack: CameraTrack = null;
         private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();

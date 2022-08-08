@@ -7,7 +7,7 @@
 
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 
-import RendererInstanceContext from "../../../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../../../vox/scene/IRendererInstanceContext";
 import RendererScene from "../../../vox/scene/RendererScene";
 
 // import RendererState from "../../../vox/render/RendererState";
@@ -22,7 +22,7 @@ export default class StencilOutline {
     constructor() { }
 
     private m_rscene: RendererScene = null;
-    private m_rctx: RendererInstanceContext = null;
+    private m_rctx: IRendererInstanceContext = null;
 
     private m_target: DisplayEntity = null;
     private m_material: Default3DMaterial = null;
@@ -33,7 +33,7 @@ export default class StencilOutline {
     initialize(rscene: RendererScene): void {
 
         if (this.m_rscene == null) {
-            
+
             this.m_rscene = rscene;
             this.m_rctx = rscene.getRendererContext();
             this.m_material = new Default3DMaterial();
@@ -86,12 +86,12 @@ export default class StencilOutline {
             this.m_stencil.setStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF);
             this.m_stencil.setStencilMask(0x0);
 
-            entity.getScaleXYZ( this.m_scaleV );
-            
+            entity.getScaleXYZ(this.m_scaleV);
+
             this.m_rctx.unlockMaterial();
             this.m_rctx.useGlobalMaterial(this.m_material);
 
-            let ds: number = 1.0 + this.m_thickness/Math.max(entity.getGlobalBounds().getLong(), entity.getGlobalBounds().getWidth(),entity.getGlobalBounds().getHeight());
+            let ds: number = 1.0 + this.m_thickness / Math.max(entity.getGlobalBounds().getLong(), entity.getGlobalBounds().getWidth(), entity.getGlobalBounds().getHeight());
             entity.setScaleXYZ(this.m_scaleV.x * ds, this.m_scaleV.y * ds, this.m_scaleV.z * ds);
             //entity.setScaleXYZ(2.1, 2.1, 2.1);
             entity.update();
@@ -100,7 +100,7 @@ export default class StencilOutline {
 
             entity.setScaleXYZ(this.m_scaleV.x, this.m_scaleV.y, this.m_scaleV.z);
             entity.update();
-            
+
             this.m_stencil.setStencilFunc(GLStencilFunc.ALWAYS, 1, 0x0);
             this.m_stencil.setStencilMask(0xFF);
 

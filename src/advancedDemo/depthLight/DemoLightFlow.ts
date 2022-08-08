@@ -6,7 +6,7 @@
 /***************************************************************************/
 import RendererDevice from "../../vox/render/RendererDevice";
 import RendererParam from "../../vox/scene/RendererParam";
-import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import RendererScene from "../../vox/scene/RendererScene";
 import H5FontSystem from "../../vox/text/H5FontSys";
 
@@ -15,7 +15,7 @@ import * as SceneFogFlow2T from "../../advancedDemo/depthLight/scene/SceneFogFlo
 
 //import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
 //import RendererParam = RendererParamT.vox.scene.RendererParam;
-//import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
+//import IRendererInstanceContext = RendererInstanceContextT.vox.scene.IRendererInstanceContext;
 //import RendererScene = RendererSceneT.vox.scene.RendererScene;
 //import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
 
@@ -32,7 +32,7 @@ export namespace advancedDemo
             {
             }
             private m_rc:RendererScene = null;
-            private m_rct:RendererInstanceContext = null;
+            private m_rct:IRendererInstanceContext = null;
             private m_camTrack:CameraTrack = null;
 
             private m_esc:SceneFogFlow = new SceneFogFlow();

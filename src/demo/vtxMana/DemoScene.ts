@@ -7,7 +7,7 @@ import RendererState from "../../vox/render/RendererState";
 import Color4 from "../../vox/material/Color4";
 import RendererParam from "../../vox/scene/RendererParam";
 import MeshBase from "../../vox/mesh/MeshBase";
-import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import MouseEvent from "../../vox/event/MouseEvent";
@@ -34,7 +34,7 @@ class DemoScene {
     constructor() {
     }
     private m_renderer: RendererInstance = null;
-    private m_rcontext: RendererInstanceContext = null;
+    private m_rcontext: IRendererInstanceContext = null;
     private m_texLoader: ImageTextureLoader = null;
     private m_texBlock: TextureBlock;
     //private m_camTrack:CameraTrack = null;

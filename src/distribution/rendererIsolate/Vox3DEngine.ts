@@ -47,7 +47,7 @@ import BoxFrame3D from "../../vox/entity/BoxFrame3D";
 import FrustrumFrame3DEntity from "../../vox/entity/FrustrumFrame3DEntity";
 
 import RendererParam from "../../vox/scene/RendererParam";
-import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import EngineBase from "../../vox/engine/EngineBase";
 
@@ -131,7 +131,7 @@ export class Vox3DEngine {
     getRenderer(): RendererInstance {
         return this.m_engine.rscene.getRenderer();
     }
-    getRendererContext(): RendererInstanceContext {
+    getRendererContext(): IRendererInstanceContext {
         return this.m_engine.rscene.getRendererContext();
     }
     getEngine(): EngineBase {

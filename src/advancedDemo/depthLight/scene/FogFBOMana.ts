@@ -4,7 +4,7 @@ import TextureFormat from "../../../vox/texture/TextureFormat";
 import TextureProxy from "../../../vox/texture/TextureProxy";
 import RTTTextureProxy from "../../../vox/texture/RTTTextureProxy";
 import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
-import RendererInstanceContext from "../../../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../../../vox/scene/IRendererInstanceContext";
 import FBOInstance from "../../../vox/scene/FBOInstance";
 import RendererScene from "../../../vox/scene/RendererScene";
 
@@ -22,7 +22,7 @@ export namespace advancedDemo
             }
 
             private m_rc:RendererScene = null;
-            private m_rct:RendererInstanceContext = null;
+            private m_rct:IRendererInstanceContext = null;
             private m_texLoader:ImageTextureLoader;
             getImageTexByUrl(pns:string):TextureProxy
             {

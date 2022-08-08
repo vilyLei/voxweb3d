@@ -16,7 +16,7 @@ import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
 
 import CameraBase from "../../../vox/view/CameraBase";
 import RendererState from "../../../vox/render/RendererState";
-import RendererInstanceContext from "../../../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../../../vox/scene/IRendererInstanceContext";
 import FBOInstance from "../../../vox/scene/FBOInstance";
 import RendererScene from "../../../vox/scene/RendererScene";
 
@@ -41,7 +41,7 @@ export namespace advancedDemo
                 }
 
                 private m_rc:RendererScene = null;
-                private m_rct:RendererInstanceContext = null;
+                private m_rct:IRendererInstanceContext = null;
 
                 private m_middleFBO:FBOInstance = null;
                 private m_factorFBO:FBOInstance = null;

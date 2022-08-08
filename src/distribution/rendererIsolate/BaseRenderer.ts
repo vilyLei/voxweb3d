@@ -5,7 +5,7 @@ import Color4 from "../../vox/material/Color4";
 import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
 
 import RendererParam from "../../vox/scene/RendererParam";
-import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import RendererState from "../../vox/render/RendererState";
 import RendererDevice from "../../vox/render/RendererDevice";
@@ -39,7 +39,7 @@ export class BaseRenderer {
 
     private m_param: RendererParam = null;
     private m_renderer: RendererInstance = null;
-    private m_rcontext: RendererInstanceContext = null;
+    private m_rcontext: IRendererInstanceContext = null;
     //private m_axis: Axis3DEntity = null;
 
     setParam(param: RendererParam): void {
@@ -48,7 +48,7 @@ export class BaseRenderer {
     getRenderer(): RendererInstance {
         return this.m_renderer;
     }
-    getRendererContext(): RendererInstanceContext {
+    getRendererContext(): IRendererInstanceContext {
         return this.m_rcontext;
     }
     initialize(pmodule: any): void {

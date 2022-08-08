@@ -2,7 +2,7 @@
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
-import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../vox/scene/IRendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import Color4 from "../vox/material/Color4";
 
@@ -28,7 +28,7 @@ export namespace demo {
         constructor() {
         }
         private m_rscene: RendererScene = null;
-        private m_rcontext: RendererInstanceContext = null;
+        private m_rcontext: IRendererInstanceContext = null;
         private m_texLoader: ImageTextureLoader;
 
         private m_texResLoader: ImageTextureLoader;
@@ -187,7 +187,7 @@ export namespace demo {
             }
         }
         run(): void {
-            let pcontext: RendererInstanceContext = this.m_rcontext;
+            let pcontext: IRendererInstanceContext = this.m_rcontext;
             // show fps status
             //this.m_statusDisp.update();
 

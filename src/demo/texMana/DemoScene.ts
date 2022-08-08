@@ -4,7 +4,7 @@ import RendererState from "../../vox/render/RendererState";
 import Color4 from "../../vox/material/Color4";
 import BillboardRGBMaskMaterial from "../../vox/material/mcase/BillboardRGBMaskMaterial";
 import ClipsBillboardMaskMaterial from "../../vox/material/mcase/ClipsBillboardMaskMaterial";
-import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 
 import DisplayEntity from "../../vox/entity/DisplayEntity";
@@ -21,7 +21,7 @@ class DemoScene {
     constructor() {
     }
     private m_renderer: RendererInstance = null;
-    private m_rcontext: RendererInstanceContext = null;
+    private m_rcontext: IRendererInstanceContext = null;
 
     private m_texLoader: ImageTextureLoader;
     private m_texBlock: TextureBlock;

@@ -1,7 +1,7 @@
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../../vox/render/RenderConst";
 import RendererState from "../../vox/render/RendererState";
-import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
@@ -22,7 +22,7 @@ class DispScene {
     private m_blurModule: PingpongBlur = null;
     private m_scrDepMaterial: ScrDepBaseMaterial = new ScrDepBaseMaterial();
     private m_renderer: RendererInstance = null;
-    private m_rcontext: RendererInstanceContext = null;
+    private m_rcontext: IRendererInstanceContext = null;
     private m_renderAdapter: IRenderAdapter = null;
     private m_camTrack: CameraTrack = null;
     private m_entityMana: EntityManager = new EntityManager();

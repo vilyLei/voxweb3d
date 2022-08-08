@@ -87,7 +87,7 @@ export default class CubeRttBuilder {
             }
             this.m_camList.create(centerV, this.m_texW, this.m_texH, 1);
 
-            let rctx: RendererInstanceContext = this.m_rscene.getRendererContext();
+            let rctx = this.m_rscene.getRendererContext();
             rctx.createFBOAt(fboIndex, FrameBufferType.FRAMEBUFFER, this.m_texW, this.m_texH, true, false, 0);
 
             this.m_fboIns = this.m_rscene.createFBOInstance();
@@ -144,7 +144,7 @@ export default class CubeRttBuilder {
     private runAttachment(i: number, j: number, rpcI: number = 0): void {
 
         let renderer = this.m_rscene;
-        let rctx: RendererInstanceContext = renderer.getRendererContext();
+        let rctx = renderer.getRendererContext();
         rctx.resetUniform();
         renderer.updateCameraDataFromCamera(this.m_camList.getAt(j));
         rctx.setFBOAttachmentMaskAt(i, false);
@@ -167,7 +167,7 @@ export default class CubeRttBuilder {
             let j: number = 0;
             //this.m_fboIns.runBegin();
             //console.log("draw cube face 0.");
-            let rctx: RendererInstanceContext = this.m_rscene.getRendererContext();
+            let rctx = this.m_rscene.getRendererContext();
             if (fboInsEnabled) {
                 let fboIns: FBOInstance = this.m_fboIns;
                 fboIns.runBegin();
