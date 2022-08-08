@@ -43,7 +43,7 @@ export class DemoCubeMapMRT {
             this.m_renderer = new RendererInstance();
             this.m_renderer.initialize(rparam, new CameraBase());
             this.m_renderer.appendProcess();
-            this.m_rcontext = this.m_renderer.getRendererContext();
+            this.m_rcontext = this.m_renderer.getRendererContext() as any;
 
             this.m_texBlock = new TextureBlock();
             this.m_texBlock.setRenderer(this.m_renderer.getRenderProxy());

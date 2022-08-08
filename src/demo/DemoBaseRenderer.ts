@@ -62,15 +62,15 @@ export class DemoBaseRenderer {
         if(this.m_renderer == null) {
 
             console.log("DemoBaseRenderer::initialize...");
-    
+
             this.m_renderer = new RendererInstance();
             this.m_renderer.initialize();
             this.m_renderer.appendProcess();
             this.m_renderer.appendProcess();
             this.m_renderer.appendProcess();
-            
-            this.m_rcontext = this.m_renderer.getRendererContext();
-    
+
+            this.m_rcontext = this.m_renderer.getRendererContext() as any;
+
             VoxCore["renderer"] = this.m_renderer;
             VoxCore["rendererContext"] = this.m_rcontext;
             /*
@@ -78,9 +78,9 @@ export class DemoBaseRenderer {
             axis.initialize(300.0);
             this.m_renderer.addEntity(axis);
             this.m_axis = axis;
-            
+
             let tex = new ImageTextureProxy(64, 64);
-            
+
             let pl = new Plane3DEntity();
             //plane.initializeXOZSquare(400.0);
             //this.m_renderer.addEntity(plane);
@@ -88,14 +88,14 @@ export class DemoBaseRenderer {
             img.onload = (evt: any): void => {
                 console.log("PlayerOne::initialize() image loaded",img.src);
                 tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
-                tex.setDataFromImage(img);                
+                tex.setDataFromImage(img);
                 pl.initializeXOZSquare(500.0, [tex]);
                 this.m_renderer.addEntity(pl);
             }
             img.src = "static/assets/yanj.jpg";
             //*/
         }
-        
+
     }
     //private m_yAngle: number = 0;
     run(): void {

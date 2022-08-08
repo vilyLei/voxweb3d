@@ -57,8 +57,8 @@ export class DemoContainer {
             this.m_renderer = new RendererInstance();
             this.m_renderer.initialize(rparam, new CameraBase());
             this.m_renderer.appendProcess();
-            this.m_rcontext = this.m_renderer.getRendererContext();
-            
+            this.m_rcontext = this.m_renderer.getRendererContext() as any;
+
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 

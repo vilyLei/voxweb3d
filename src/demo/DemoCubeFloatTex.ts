@@ -104,7 +104,7 @@ export class DemoCubeFloatTex implements ILoaderListerner {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext();
+            this.m_rcontext = this.m_rscene.getRendererContext() as any;
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
@@ -166,7 +166,7 @@ export class DemoCubeFloatTex implements ILoaderListerner {
     loadError(status: number, uuid: string): void {
 
     }
-    
+
     private parseDCubeMap(buffer: ArrayBuffer): void {
         let begin: number = 0;
         let width: number = 128;
@@ -188,12 +188,12 @@ export class DemoCubeFloatTex implements ILoaderListerner {
         let material: FloatCubeMapMaterial = new FloatCubeMapMaterial();
         this.m_targetMaterial = material;
         let box: Box3DEntity = new Box3DEntity();
-        
+
         //  box.useGourandNormal();
         //  box.setMaterial(material);
         //  box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex]);
         //  this.m_rscene.addEntity(box);
-        
+
         let sph: Sphere3DEntity = new Sphere3DEntity();
         sph.setMaterial(material);
         sph.initialize(100.0,30,30, [tex]);
@@ -232,13 +232,13 @@ export class DemoCubeFloatTex implements ILoaderListerner {
 
         let material: HdrBrnCubeMapMapMaterial = new HdrBrnCubeMapMapMaterial();
         this.m_targetMaterial = material;
-        //  let box: Box3DEntity = new Box3DEntity();        
+        //  let box: Box3DEntity = new Box3DEntity();
         //  box.useGourandNormal();
         //  box.setMaterial(material);
         //  box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex]);
         //  this.m_rscene.addEntity(box);
 
-        
+
         let sph: Sphere3DEntity = new Sphere3DEntity();
         sph.setMaterial(material);
         sph.initialize(100.0,30,30, [tex]);
@@ -271,13 +271,13 @@ export class DemoCubeFloatTex implements ILoaderListerner {
         let material: FloatCubeMapMaterial = new FloatCubeMapMaterial();
         this.m_targetMaterial = material;
 
-        //  let box: Box3DEntity = new Box3DEntity();        
+        //  let box: Box3DEntity = new Box3DEntity();
         //  box.useGourandNormal();
         //  box.setMaterial(material);
         //  box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex]);
         //  this.m_rscene.addEntity(box);
 
-        
+
         let sph: Sphere3DEntity = new Sphere3DEntity();
         sph.setMaterial(material);
         sph.initialize(100.0,30,30, [tex]);

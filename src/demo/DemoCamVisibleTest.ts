@@ -61,7 +61,7 @@ export class DemoCamVisibleTest {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.setRendererProcessParam(1, true, true);
-            this.m_rcontext = this.m_rscene.getRendererContext();
+            this.m_rcontext = this.m_rscene.getRendererContext() as any;
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             BillParticle.renderer = this.m_rscene.getRenderer();
