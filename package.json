@@ -47,6 +47,7 @@
     "buildCoEngine": "vue-cli-service build --target lib --name CoEngine --dest ./public/static/cospace/engine/coengine ./src/cospace/voxengine/CoEngine.ts",
     
     "buildCoRenderer": "vue-cli-service build --target lib --name CoRenderer --dest ./public/static/cospace/engine/renderer ./src/cospace/voxengine/CoRenderer.ts",
+    "buildCoRScene": "vue-cli-service build --target lib --name CoRScene --dest ./public/static/cospace/engine/rscene ./src/cospace/voxengine/CoRScene.ts",
 
     "dev": "vue-cli-service serve --type=dev[./src/main.ts]",
     "devvox": "vue-cli-service serve --type=dev[./src/dev.ts]",

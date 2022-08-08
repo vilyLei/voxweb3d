@@ -19,7 +19,8 @@
 // import { DemoNormalViewer as Demo } from "./cospace/demo/DemoNormalViewer";
 // import { RenderingVerifier as Demo } from "./cospace/demo/RenderingVerifier";
 // import { DemoCoApp as Demo } from "./cospace/demo/DemoCoApp";
-import { DemoCoRenderer as Demo } from "./cospace/demo/DemoCoRenderer";
+// import { DemoCoRenderer as Demo } from "./cospace/demo/DemoCoRenderer";
+import { DemoCoRendererScene as Demo } from "./cospace/demo/DemoCoRendererScene";
 
 // import { DemoCoEngine as Demo } from "./cospace/demo/DemoCoEngine";
 // import { DemoInputText as Demo } from "./cospace/demo/DemoInputText";
