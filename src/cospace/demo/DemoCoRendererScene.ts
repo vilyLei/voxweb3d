@@ -38,21 +38,20 @@ export class DemoCoRendererScene {
 		url = "static/cospace/engine/rscene/CoRScene.umd.min.js";
 		this.loadRendererModule(url);
 		url = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.min.js";
-		this.loadRendererModule(url);
-		//public\static\cospace\engine\mouseInteract\CoMouseInteraction.common.js
+		this.loadRendererModule(url, "CoMouseInteraction");
 	}
 	isEngineEnabled(): boolean {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";
 	}
 	private initInteract(): void {
 		if(this.m_rscene != null && this.m_interact == null && (typeof CoMouseInteraction !== "undefined")) {
+			
 			this.m_interact = CoMouseInteraction.createMouseInteraction();
 			this.m_interact.initialize( this.m_rscene );
-			// this.m_interact.zoomer.syncLookAt = true;
 			this.m_interact.setSyncLookAtEnabled( true );
 		}
 	}
-	private loadedModule(): void {
+	private loadedModule(module: string): void {
 		if (this.m_rscene == null) {
 			console.log("typeof CoRenderer: ", typeof CoRenderer);
 			console.log("typeof CoRScene: ", typeof CoRScene);
@@ -61,10 +60,16 @@ export class DemoCoRendererScene {
 				this.initRenderer();
 			}
 		} else {
-			this.initInteract();
+			switch(module) {
+				case "CoMouseInteraction":
+					this.initInteract();
+					break;
+				default:
+					break;
+			}
 		}
 	}
-	//	this.interaction.initialize(rscene);
+	
 	private initRenderer(): void {
 
 		// this.m_rscene = new CoRendererScene();
@@ -111,7 +116,7 @@ export class DemoCoRendererScene {
 		//     }
 		//     img.src = "static/assets/yanj.jpg";
 	}
-	private loadRendererModule(purl: string): void {
+	private loadRendererModule(purl: string, module: string = ""): void {
 
 		let codeLoader: XMLHttpRequest = new XMLHttpRequest();
 		codeLoader.open("GET", purl, true);
@@ -129,7 +134,7 @@ export class DemoCoRendererScene {
 			scriptEle.type = "text/javascript";
 			scriptEle.innerHTML = codeLoader.response;
 			document.head.appendChild(scriptEle);
-			this.loadedModule();
+			this.loadedModule(module);
 		};
 		codeLoader.send(null);
 	}
