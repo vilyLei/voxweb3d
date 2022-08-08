@@ -59,6 +59,7 @@ interface CoRendererState {
 	readonly NONE_CULLFACE_NORMAL_ALWAYS_STATE: number;
 	readonly BACK_ALPHA_ADD_BLENDSORT_STATE: number;
 }
+
 interface ICoRenderer {
 
 	RendererDevice: CoRendererDevice;

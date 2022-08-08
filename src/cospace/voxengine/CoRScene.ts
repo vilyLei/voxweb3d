@@ -5,6 +5,9 @@ import { IMatrix4 } from "../../vox/math/IMatrix4";
 import Matrix4 from "../../vox/math/Matrix4";
 import RendererParam from "../../vox/scene/RendererParam";
 import { ICoRendererScene } from "./scene/ICoRendererScene";
+
+import MouseEvent from "../../vox/event/MouseEvent";
+
 import CoRendererScene from "./scene/CoRendererScene";
 
 import DataMesh from "../../vox/mesh/DataMesh";
@@ -20,7 +23,7 @@ import { ICoDisplayEntity } from "./engine/ICoDisplayEntity";
 import { IShaderMaterial } from "./material/IShaderMaterial";
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 
-function createVec3(px: number, py: number, pz: number, pw: number = 1.0): IVector3D {
+function createVec3(px: number = 0.0, py: number = 0.0, pz: number = 0.0, pw: number = 1.0): IVector3D {
 	return new Vector3D(px, py, pz, pw);
 }
 function createMat4(pfs32: Float32Array = null, index: number = 0): IMatrix4 {
@@ -70,6 +73,11 @@ function createAxis3DEntity(size: number = 100): ICoDisplayEntity {
 
 
 export {
+
+	Vector3D,
+	Matrix4,
+
+	MouseEvent,
 
 	RendererParam,
 	CoRendererScene,

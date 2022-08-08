@@ -1,6 +1,6 @@
 import IRendererScene from "../../../vox/scene/IRendererScene";
-import CameraDragController from "../../../voxeditor/control/CameraDragController";
-import CameraZoomController from "../../../voxeditor/control/CameraZoomController";
+import MouseCamDrager from "./MouseCamDrager";
+import MouseCamZoomer from "./MouseCamZoomer";
 
 import IVector3D from "../../../vox/math/IVector3D";
 // import CameraViewRay from "../../../vox/view/CameraViewRay";
@@ -9,8 +9,8 @@ class MouseInteraction {
 
     private m_rscene: IRendererScene = null;
 
-    readonly stageDragCtrl: CameraDragController = new CameraDragController();
-    readonly cameraZoomController: CameraZoomController = new CameraZoomController();
+    readonly drager: MouseCamDrager = new MouseCamDrager();
+    readonly zoomer: MouseCamZoomer = new MouseCamZoomer();
     zoomLookAtPosition: IVector3D = null;
     zoomMinDistance: number = 30;
     // readonly viewRay: CameraViewRay = new CameraViewRay();
@@ -32,18 +32,18 @@ class MouseInteraction {
             // this.viewRay.setPlaneParam(new Vector3D(0.0, 1.0, 0.0), 0.0);
 
             rscene.enableMouseEvent(true);
-            this.stageDragCtrl.initialize(rscene.getStage3D(), rscene.getCamera());
-            this.cameraZoomController.bindCamera(rscene.getCamera());
-            this.cameraZoomController.initialize(rscene.getStage3D());
-            this.cameraZoomController.setLookAtCtrlEnabled(false);
+            this.drager.initialize(rscene.getStage3D(), rscene.getCamera());
+            this.zoomer.bindCamera(rscene.getCamera());
+            this.zoomer.initialize(rscene.getStage3D());
+            this.zoomer.setLookAtCtrlEnabled(false);
         }
     }
 
     run(): void {
 
         if (this.cameraCtrlEnabled) {
-            this.cameraZoomController.run( this.zoomLookAtPosition, this.zoomMinDistance );
-            this.stageDragCtrl.runWithYAxis();
+            this.zoomer.run( this.zoomLookAtPosition, this.zoomMinDistance );
+            this.drager.runWithYAxis();
         }
     }
 }

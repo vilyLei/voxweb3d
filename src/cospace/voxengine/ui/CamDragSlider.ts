@@ -5,10 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { IRenderCamera } from "../../vox/render/IRenderCamera";
-import IRenderStage3D from "../../vox/render/IRenderStage3D";
+import { IRenderCamera } from "../../../vox/render/IRenderCamera";
+import IRenderStage3D from "../../../vox/render/IRenderStage3D";
 
-class CameraDragSlide {
+class CamDragSlider {
     constructor() { }
 
     private m_stage3D: IRenderStage3D = null;
@@ -44,4 +44,4 @@ class CameraDragSlide {
     }
 }
 
-export { CameraDragSlide };
+export { CamDragSlider };
