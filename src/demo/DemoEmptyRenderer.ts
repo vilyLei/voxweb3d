@@ -1,5 +1,5 @@
 import {Camera} from "../vox/view/Camera";
-import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../vox/scene/IRendererInstanceContext";
 import RendererInstance from "../vox/scene/RendererInstance";
 import RendererParam from "../vox/scene/RendererParam";
 
@@ -10,7 +10,7 @@ export class DemoEmptyRenderer {
     constructor() { }
 
     private m_renderer: RendererInstance = null;
-    private m_rcontext: RendererInstanceContext = null;
+    private m_rcontext: IRendererInstanceContext = null;
 
     initialize(): void {
         this.m_renderer = new RendererInstance();
