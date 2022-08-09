@@ -2,6 +2,7 @@
 import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
 import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoLightModule } from "../../renderEffect/light/ICoLightModule";
+import { ICoEnvLightModule } from "../../renderEffect/light/ICoEnvLightModule";
 import { IMaterialContext } from "../../../materialLab/base/IMaterialContext";
 import { ILightModule } from "../../../light/base/ILightModule";
 import PBRModule from "../../renderEffect/pbr/PBRModule";
@@ -9,6 +10,7 @@ import { ModuleLoader } from "../../modules/base/ModuleLoader";
 
 declare var CoRScene: ICoRScene;
 declare var CoLightModule: ICoLightModule;
+declare var CoEnvLightModule: ICoEnvLightModule;
 
 export class ViewerMaterialCtx {
 
@@ -20,10 +22,10 @@ export class ViewerMaterialCtx {
 
 	private m_callback: () => void = null;
 
-	constructor() {}
+	constructor() { }
 
 	getMaterialCtx(): IMaterialContext {
-		return this. m_materialCtx;
+		return this.m_materialCtx;
 	}
 	initialize(rscene: ICoRendererScene, callback: () => void): void {
 
@@ -42,11 +44,16 @@ export class ViewerMaterialCtx {
 		//public\static\cospace\renderEffect\envLight\CoEnvLightModule.umd.js
 
 		let url0 = "static/cospace/renderEffect/pbr/PBREffect.umd.js";
-		let url1 = "static/cospace/renderEffect/lightModule/CoLightModule.umd.js";
+		let url1 = "static/cospace/renderEffect/lightModule/CoLightModule.umd.js";		
 		let url2 = "static/cospace/renderEffect/envLight/CoEnvLightModule.umd.js";
-		new ModuleLoader(2).setCallback((): void => {
+
+		new ModuleLoader(3).setCallback((): void => {
 			this.updateMCTXInit();
-		}).loadModule(url0).loadModule(url1);
+		}).loadModule(url0).loadModule(url1).loadModule(url2);
+
+		// new ModuleLoader(1).setCallback((): void => {			
+		// 	this.updateMCTXInit();
+		// }).loadModule(url2)
 	}
 	private updateMCTXInit(): void {
 		this.m_mctxFlag++;
@@ -55,11 +62,18 @@ export class ViewerMaterialCtx {
 		}
 	}
 	isMCTXEnabled(): boolean {
-		return this.m_mctxFlag > 1;
-		// return this.m_mctxFlag > 2;
+		return this.m_mctxFlag == 2;
 	}
 
-	protected buildLightModule(param: CoMaterialContextParam): ILightModule {
+	private buildEnvLight(): void {
+
+		let module = CoEnvLightModule.create(this.m_rscene);
+		module.initialize();
+		module.setFogColorRGB3f(0.0, 0.8, 0.1);
+
+		this.m_materialCtx.envLightModule = module;
+	}
+	private buildLightModule(param: CoMaterialContextParam): ILightModule {
 
 		let lightModule = CoLightModule.createLightModule(this.m_rscene);
 
@@ -131,13 +145,13 @@ export class ViewerMaterialCtx {
 		// mcParam.vsmEnabled = true;
 		mcParam.vsmEnabled = false;
 		// mcParam.buildBinaryFile = true;
-
+		this.buildEnvLight();
 		this.buildLightModule(mcParam);
 		mctx.initialize(this.m_rscene, mcParam);
 
 		this.pbrModule.active(this.m_rscene, mctx);
 
-		if(this.m_callback != null) {
+		if (this.m_callback != null) {
 			this.m_callback();
 			this.m_callback = null;
 		}
