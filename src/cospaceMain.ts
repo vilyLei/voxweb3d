@@ -24,9 +24,9 @@
 // import { DemoCoApp as Demo } from "./cospace/demo/DemoCoApp";
 
 // import { DemoCoRenderer as Demo } from "./cospace/demo/DemoCoRenderer";
-import { DemoCoRendererScene as Demo } from "./cospace/demo/DemoCoRendererScene";
+// import { DemoCoRendererScene as Demo } from "./cospace/demo/DemoCoRendererScene";
 
-// import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
+import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
 
 // import { DemoCoEngine as Demo } from "./cospace/demo/DemoCoEngine";
 // import { DemoInputText as Demo } from "./cospace/demo/DemoInputText";
