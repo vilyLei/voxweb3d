@@ -22,8 +22,9 @@
 // import { RenderingVerifier as Demo } from "./cospace/demo/RenderingVerifier";
 
 // import { DemoCoApp as Demo } from "./cospace/demo/DemoCoApp";
-// import { DemoCoRenderer as Demo } from "./cospace/demo/DemoCoRenderer";
-import { DemoCoRendererScene as Demo } from "./cospace/demo/DemoCoRendererScene";
+
+import { DemoCoRenderer as Demo } from "./cospace/demo/DemoCoRenderer";
+// import { DemoCoRendererScene as Demo } from "./cospace/demo/DemoCoRendererScene";
 
 // import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
 

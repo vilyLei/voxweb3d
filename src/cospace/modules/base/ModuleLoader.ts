@@ -26,16 +26,16 @@ class ModuleLoader {
 			}
 		}
 	}
-	loadModule(purl: string, module: string = ""): ModuleLoader {
+	loadModule(url: string, module: string = ""): ModuleLoader {
 		let codeLoader: XMLHttpRequest = new XMLHttpRequest();
-		codeLoader.open("GET", purl, true);
+		codeLoader.open("GET", url, true);
 		codeLoader.onerror = function(err) {
 			console.error("load error: ", err);
 		};
 
 		codeLoader.onprogress = e => {};
 		codeLoader.onload = evt => {
-			console.log("engine module js file loaded.");
+			console.log("module js file loaded, url: ", url);
 			let scriptEle: HTMLScriptElement = document.createElement("script");
 			scriptEle.onerror = evt => {
 				console.error("module script onerror, e: ", evt);
