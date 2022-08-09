@@ -36,6 +36,8 @@ class SceneNode {
 				let unit = this.m_objUnits.pop();
 				this.createEntityFromUnit(unit, 0);
 			}
+
+			this.buildEnvBox();
 		}
 		return this;
 	}
@@ -88,6 +90,27 @@ class SceneNode {
 		// entity.setRenderState(rst.NONE_CULLFACE_NORMAL_STATE);
 		this.m_rscene.addEntity(entity);
 		return entity;
+	}
+	
+    buildEnvBox(): void {
+
+		const MaterialPipeType = CoRScene.MaterialPipeType;
+		const mctx = this.m_vmctx.getMaterialCtx();
+        let renderingState = this.m_rscene.getRenderProxy().renderingState;
+        let rscene = this.m_rscene;
+        let material = CoRScene.createDefaultMaterial();
+        material.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        material.setMaterialPipeline(mctx.pipeline);
+        material.setTextureList([mctx.getTextureByUrl("static/assets/box.jpg")]);
+        material.initializeByCodeBuf(false);
+
+        let scale: number = 3000.0;
+        let entity = rscene.entityBlock.createEntity();
+        entity.setRenderState(renderingState.FRONT_CULLFACE_NORMAL_STATE);
+        entity.setMaterial(material);
+        entity.copyMeshFrom(rscene.entityBlock.unitBox);
+        entity.setScaleXYZ(scale, scale, scale);
+        rscene.addEntity(entity, 1);
 	}
 }
 

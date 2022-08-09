@@ -82,12 +82,22 @@ interface CoMaterialContextParam {
 
 }
 
+interface CoMaterialPipeType {
+	ENV_LIGHT_PARAM: number;
+    ENV_AMBIENT_LIGHT: number;
+    FOG: number;
+    FOG_EXP2: number;
+    VSM_SHADOW: number;
+    GLOBAL_LIGHT: number;
+}
+
 interface ICoRScene {
 
 	Vector3D: CoVec3;
 	MouseEvent: CoMouseEvent;
 	ShaderCodeUUID: CoShaderCodeUUID;
 	MaterialContextParam: CoMaterialContextParam;
+	MaterialPipeType: CoMaterialPipeType;
 
 	createVec3(px?: number, py?: number, pz?: number, pw?: number): IVector3D;
 	createMat4(pfs32?: Float32Array, index?: number): IMatrix4;

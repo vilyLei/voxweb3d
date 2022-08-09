@@ -27,6 +27,7 @@ import { IMaterialContext } from "../../materialLab/base/IMaterialContext";
 import { MaterialContextParam } from "../../materialLab/base/MaterialContextParam";
 import { MaterialContext } from "../../materialLab/base/MaterialContext";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
+import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 
 import { ICoDisplayEntity } from "./entity/ICoDisplayEntity";
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
@@ -115,6 +116,7 @@ export {
 	MouseEvent,
 
 	ShaderCodeUUID,
+	MaterialPipeType,
 
 	MaterialContextParam,
 	RendererParam,
