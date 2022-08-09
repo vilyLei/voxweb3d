@@ -45,7 +45,7 @@ export class DemoCoRendererScene {
 	}
 	private initInteract(): void {
 		if(this.m_rscene != null && this.m_interact == null && (typeof CoMouseInteraction !== "undefined")) {
-			
+
 			this.m_interact = CoMouseInteraction.createMouseInteraction();
 			this.m_interact.initialize( this.m_rscene );
 			this.m_interact.setSyncLookAtEnabled( true );
@@ -69,7 +69,7 @@ export class DemoCoRendererScene {
 			}
 		}
 	}
-	
+
 	private initRenderer(): void {
 
 		// this.m_rscene = new CoRendererScene();
@@ -84,12 +84,12 @@ export class DemoCoRendererScene {
 
 			let rparam = CoRScene.createRendererSceneParam();
 			rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
-			rparam.setCamPosition(1800.0, 1800.0, 1800.0);
+			rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 			rparam.setCamProject(45, 20.0, 9000.0);
 			this.m_rscene = CoRScene.createRendererScene();
 			this.m_rscene.initialize(rparam, 3);
 
-			
+
 			this.initInteract();
 
 			let axis = CoRScene.createAxis3DEntity();

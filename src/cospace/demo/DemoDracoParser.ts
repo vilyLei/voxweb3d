@@ -1,12 +1,22 @@
 import { ThreadSchedule } from "../modules/thread/ThreadSchedule";
 import { DracoGeomBuilder } from "../modules/draco/DracoGeomBuilder";
 import { GeometryModelDataType } from "../modules/base/GeometryModelDataType";
-import { Axis3DEntity, DataMesh, DisplayEntity, RendererDevice, RendererParam, RendererScene, RendererState } from "../voxengine/CoEngine";
+import {
+	Axis3DEntity,
+	DataMesh,
+	DisplayEntity,
+	RendererDevice,
+	RendererParam,
+	RendererScene,
+	RendererState,
+	ShaderMaterial
+} from "../voxengine/CoEngine";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 import { NormalUVViewerMaterial } from "./material/NormalUVViewerMaterial";
 import DivLog from "../../vox/utils/DivLog";
+import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 
 /**
  * draco 加载解析多线程示例
@@ -50,8 +60,8 @@ export class DemoDracoParser {
 		this.m_dracoGeomBuilder.setListener(this);
 
 		this.m_lossTime = Date.now();
-		// this.loadDraco01();
-		this.loadDraco02();
+		this.loadDraco01();
+		// this.loadDraco02();
 		// this.loadDraco();
 
 		document.onmousedown = (evt: any): void => {
@@ -63,7 +73,6 @@ export class DemoDracoParser {
 	}
 
 	private loadDraco01(): void {
-
 		// draco 模型数据url
 		let url = "";
 		url = "static/private/draco/sh202/sh202_22.drc";
@@ -76,9 +85,9 @@ export class DemoDracoParser {
 	private m_vtxTotal: number = 0;
 	private m_trisNumber: number = 0;
 	private loadDraco02(): void {
-		for(let i: number = 0; i < 27; ++i) {
-			let url = "static/private/draco/sh202/sh202_"+i+".drc";
-			this.loadDracoAndParseOnePartFile( url );
+		for (let i: number = 0; i < 27; ++i) {
+			let url = "static/private/draco/sh202/sh202_" + i + ".drc";
+			this.loadDracoAndParseOnePartFile(url);
 		}
 	}
 
@@ -86,34 +95,33 @@ export class DemoDracoParser {
 		// draco 模型数据url
 		let url = "static/assets/modules/clothRoll.rawmd";
 		// this.m_dracoGeomBuilder.load(url);
-		this.loadDracoAndParseOnePartFile( url );
+		this.loadDracoAndParseOnePartFile(url);
 	}
 	private loadDracoAndParseOnePartFile(dracoDataUrl: string): void {
-
-        const reader = new FileReader();
-        reader.onload = e => {
-            //this.m_meshBuf = <ArrayBuffer>reader.result;
-            // this.m_dracoTask.setParseSrcData(this.m_meshBuf, this.m_segRangeList);
+		const reader = new FileReader();
+		reader.onload = e => {
+			//this.m_meshBuf = <ArrayBuffer>reader.result;
+			// this.m_dracoTask.setParseSrcData(this.m_meshBuf, this.m_segRangeList);
 			// this.m_dracoGeomBuilder.parseBinaryData(<ArrayBuffer>reader.result)
 			this.m_dracoGeomBuilder.parseSingleSegData(<ArrayBuffer>reader.result, dracoDataUrl);
-        };
-        const request = new XMLHttpRequest();
-        request.open("GET", dracoDataUrl, true);
-        request.responseType = "blob";
-        request.onload = () => {
-            reader.readAsArrayBuffer(request.response);
-        };
-        request.send(null);
-    }
+		};
+		const request = new XMLHttpRequest();
+		request.open("GET", dracoDataUrl, true);
+		request.responseType = "blob";
+		request.onload = () => {
+			reader.readAsArrayBuffer(request.response);
+		};
+		request.send(null);
+	}
 	dracoParseSingle(model: GeometryModelDataType, url: string, index: number): void {
-		this.dracoParse(model, index, 1)
+		this.dracoParse(model, index, 1);
 	}
 
 	// 单个draco segment 几何数据解析结束之后的回调
 	dracoParse(model: GeometryModelDataType, index: number, total: number): void {
 		// console.log("loss time: ", (Date.now() - this.m_lossTime));let info: string = "ctm lossTime: "+((Date.now() - this.m_lossTime));
 
-		let info: string = "draco lossTime: "+((Date.now() - this.m_lossTime));
+		let info: string = "draco lossTime: " + (Date.now() - this.m_lossTime);
 		let vtxTotal: number = model.vertices.length / 3;
 		let trisNumber: number = model.indices.length / 3;
 		this.m_vtxTotal += vtxTotal;
@@ -122,9 +130,10 @@ export class DemoDracoParser {
 		info += "</br>tri: " + this.m_trisNumber;
 
 		DivLog.ShowLogOnce(info);
-		return;
+		// return;
 
-		let material = new NormalUVViewerMaterial();
+		let material = this.buildShdMaterial();
+		//let material = new NormalUVViewerMaterial();
 		material.initializeByCodeBuf();
 
 		let mesh: DataMesh = new DataMesh();
@@ -145,21 +154,47 @@ export class DemoDracoParser {
 	}
 	// 所有 draco segment 几何数据解析结束之后的回调，表示本次加载解析任务结束
 	dracoParseFinish(models: GeometryModelDataType[], total: number): void {
-
 		console.log("dracoParseFinish models: ", models);
 
-		if(total == 1) {
+		if (total == 1) {
 			this.dracoParse(models[0], 0, 1);
 		}
+	}
+	buildShdMaterial(textureEnabled: boolean = false): ShaderMaterial {
+		let material = new ShaderMaterial("shd_nv_material");
+		material.setShaderBuilder((coder: IShaderCodeBuilder): void => {
+			coder.addVertLayout("vec3", "a_nvs");
+			coder.addVarying("vec3", "v_worldNormal");
+			coder.vertMatrixInverseEnabled = true;
+			coder.addVertMainCode(
+				`
+			localPosition = vec4(a_vs.xyz,1.0);
+			worldPosition = u_objMat * localPosition;
+			oWorldPosition = worldPosition;
+			viewPosition = u_viewMat * worldPosition;
+			gl_Position = u_projMat * viewPosition;
+			v_worldNormal = normalize( a_nvs.xyz * inverse(mat3(u_objMat)) );
+
+		`
+			);
+			coder.addFragMainCode(
+				`
+			FragColor0 = vec4(v_worldNormal.xyz, 1.0);
+		`
+			);
+		});
+		// material.initializeByCodeBuf(textureEnabled);
+
+		return material;
 	}
 	private mouseDown(evt: any): void {}
 
 	private initScene(): void {
 		if (this.m_rscene == null) {
-			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 			//RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
-			DivLog.SetDebugEnabled( true );
+			DivLog.SetDebugEnabled(true);
 			let rparam: RendererParam = new RendererParam();
 			//rparam.maxWebGLVersion = 1;
 			rparam.setCamProject(45, 50.0, 10000.0);
@@ -190,9 +225,9 @@ export class DemoDracoParser {
 			// console.log("k2: ",k);
 			// return;
 
-			let axis: Axis3DEntity = new Axis3DEntity();
-			axis.initialize(300);
-			this.m_rscene.addEntity(axis);
+			// let axis: Axis3DEntity = new Axis3DEntity();
+			// axis.initialize(300);
+			// this.m_rscene.addEntity(axis);
 		}
 	}
 	private m_timeoutId: any = -1;

@@ -13,7 +13,7 @@ import { ICoSpaceAppIns } from "../app/ICoSpaceAppIns";
 import { ICoRendererParam } from "../voxengine/engine/ICoRendererParam";
 import { IEngineBase } from "../voxengine/engine/IEngineBase";
 import { ICoEngine } from "../voxengine/ICoEngine";
-import { IShaderMaterial } from "../voxengine/material/IShaderMaterial";
+import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";
 import { ICoDisplayEntity } from "../voxengine/entity/ICoDisplayEntity";
 
 declare var CoSpaceApp: ICoSpaceApp;
@@ -22,7 +22,6 @@ declare var CoEngine: ICoEngine;
  * 引擎数据/资源协同空间
  */
 export class DemoCoEngine {
-
 	private m_appIns: ICoSpaceAppIns;
 	private m_engine: IEngineBase;
 	private m_modules: CoTaskCodeModuleParam[];
@@ -106,12 +105,10 @@ export class DemoCoEngine {
 		let axis = CoEngine.createAxis3DEntity(500);
 		rscene.addEntity(axis);
 
-		let pos = CoEngine.createVec3(100.0,0.0,1.0,);
+		let pos = CoEngine.createVec3(100.0, 0.0, 1.0);
 		axis = CoEngine.createAxis3DEntity(50);
-		axis.setPosition( pos );
+		axis.setPosition(pos);
 		rscene.addEntity(axis);
-
-
 
 		this.initApp();
 	}
@@ -161,8 +158,7 @@ export class DemoCoEngine {
 		this.m_engine.rscene.addEntity(entity);
 		return entity;
 	}
-	private m_nv_vertCode =
-	`#version 300 es
+	private m_nv_vertCode = `#version 300 es
 precision mediump float;
 layout(location = 0) in vec3 a_vs;
 layout(location = 1) in vec3 a_nvs;
@@ -178,8 +174,7 @@ void main()
 	v_param = vec4(pnv, 1.0);
 }
 	`;
-	private m_nv_fragCode =
-	`#version 300 es
+	private m_nv_fragCode = `#version 300 es
 precision mediump float;
 const float MATH_PI = 3.14159265;
 const float MATH_2PI = 2.0 * MATH_PI;
@@ -209,12 +204,12 @@ void main() {
 	`;
 	private m_nv_material: IShaderMaterial = null;
 	private createNormalMaterial(): IShaderMaterial {
-		if(this.m_nv_material != null) {
+		if (this.m_nv_material != null) {
 			return this.m_nv_material;
 		}
 		let material = CoEngine.createShaderMaterial("nv_material");
-		material.setVtxShaderCode( this.m_nv_vertCode );
-		material.setFragShaderCode( this.m_nv_fragCode );
+		material.setVtxShaderCode(this.m_nv_vertCode);
+		material.setFragShaderCode(this.m_nv_fragCode);
 		material.initializeByCodeBuf();
 		this.m_nv_material = material;
 		return material;
@@ -229,8 +224,8 @@ void main() {
 			CoDataFormat.OBJ,
 			(unit: CoGeomDataUnit, status: number): void => {
 				console.log("parsing finish obj model, data: ", unit.data);
-				for(let i: number = 0; i < unit.data.models.length; ++i) {
-					let entity = this.createEntity( unit.data.models[i] );
+				for (let i: number = 0; i < unit.data.models.length; ++i) {
+					let entity = this.createEntity(unit.data.models[i]);
 					entity.setScaleXYZ(23.0, 23.0, 23.0);
 				}
 			},
@@ -238,7 +233,6 @@ void main() {
 		);
 	}
 	private mouseDown(evt: any): void {
-
 		// this.loadOBJ();
 		// this.loadPNGByCallback(this.m_pngs[0]);
 		// this.loadPNGByCallback(this.m_pngs[1]);
