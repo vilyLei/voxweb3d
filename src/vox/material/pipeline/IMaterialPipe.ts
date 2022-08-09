@@ -6,8 +6,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDevice from "../../../vox/render/RendererDevice";
-import IUniformParam from "../../../vox/material/IUniformParam";
 import { MaterialPipeType } from "./MaterialPipeType";
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import IShaderUniform from "../../../vox/material/IShaderUniform";

@@ -5,7 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-// import IRenderer from "../../../vox/scene/IRenderer";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import IRendererParam from "../../../vox/scene/IRendererParam";
 

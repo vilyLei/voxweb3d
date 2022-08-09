@@ -53,6 +53,7 @@
     "buildPBREffect": "vue-cli-service build --target lib --name PBREffect --dest ./public/static/cospace/renderEffect/pbr ./src/cospace/renderEffect/pbr/PBREffect.ts",
     "buildCoLightModule": "vue-cli-service build --target lib --name CoLightModule --dest ./public/static/cospace/renderEffect/lightModule ./src/cospace/renderEffect/light/CoLightModule.ts",
     "buildCoEnvLightModule": "vue-cli-service build --target lib --name CoEnvLightModule --dest ./public/static/cospace/renderEffect/envLight ./src/cospace/renderEffect/light/CoEnvLightModule.ts",
+    "buildVSMShadowModule": "vue-cli-service build --target lib --name VSMShadowModule --dest ./public/static/cospace/renderEffect/vsmShadow ./src/cospace/renderEffect/shadow/VSMShadowModule.ts",
 
     "dev": "vue-cli-service serve --type=dev[./src/main.ts]",
     "devvox": "vue-cli-service serve --type=dev[./src/dev.ts]",

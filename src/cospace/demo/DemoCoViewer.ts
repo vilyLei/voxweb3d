@@ -117,6 +117,7 @@ export class DemoCoViewer {
 	private mouseDown(evt: any): void {}
 	run(): void {
 		if (this.m_rscene != null) {
+			this.m_vmctx.run();
 			if (this.m_interact != null) {
 				this.m_interact.run();
 			}

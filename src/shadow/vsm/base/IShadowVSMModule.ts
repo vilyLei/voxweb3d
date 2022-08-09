@@ -1,11 +1,13 @@
-import Vector3D from "../../../vox/math/Vector3D";
+import IVector3D from "../../../vox/math/IVector3D";
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { IMaterialPipe } from "../../../vox/material/pipeline/IMaterialPipe";
+import IRendererScene from "../../../vox/scene/IRendererScene";
 
-interface IShadowVSMModule extends IMaterialPipe{
+interface IShadowVSMModule extends IMaterialPipe {
 
     force: boolean;
+    initialize(rscene: IRendererScene, processIDList: number[], buildShadowDelay?: number, blurEnabled?: boolean): void;
     /**
      * set shawow rtt texture size
      * @param mapW shadow rtt texture width
@@ -16,7 +18,7 @@ interface IShadowVSMModule extends IMaterialPipe{
      * set shadow camera world position 
      * @param pos shadow camera position in world.
      */
-    setCameraPosition(pos: Vector3D): void
+    setCameraPosition(pos: IVector3D): void
     /**
      * set shadow camera near plane distance 
      * @param near shadow camera near plane distance 
@@ -34,10 +36,10 @@ interface IShadowVSMModule extends IMaterialPipe{
     setColorIntensity(intensity: number): void
 
     getShadowMap(): IRenderTexture;
-    
+
     getCamera(): IRenderCamera;
     setRendererProcessIDList(processIDList: number[]): void;
-    
+
     upate(): void;
     run(): void;
 }

@@ -78,7 +78,7 @@ class SceneNode {
 		let flag: boolean = this.m_vmctx.isMCTXEnabled();
 		let entity: ICoDisplayEntity;
 		if (flag) {
-			let m = this.m_vmctx.pbrModule.createMaterial(false);
+			let m = this.m_vmctx.pbrModule.createMaterial(true);
 			m.initializeByCodeBuf(true);
 			entity = CoRScene.createDisplayEntityFromModel(model, m);
 		} else {
