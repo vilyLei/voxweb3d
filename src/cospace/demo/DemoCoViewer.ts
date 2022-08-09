@@ -23,7 +23,6 @@ export class DemoCoViewer {
 	private m_interact: IMouseInteraction = null;
 
 	private m_vcoapp: ViewerCoSApp;
-
 	private m_vmctx: ViewerMaterialCtx;
 
 	constructor() {}

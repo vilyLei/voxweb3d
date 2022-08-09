@@ -39,8 +39,11 @@ export class ViewerMaterialCtx {
 			this.updateMCTXInit();
 		});
 
+		//public\static\cospace\renderEffect\envLight\CoEnvLightModule.umd.js
+
 		let url0 = "static/cospace/renderEffect/pbr/PBREffect.umd.js";
 		let url1 = "static/cospace/renderEffect/lightModule/CoLightModule.umd.js";
+		let url2 = "static/cospace/renderEffect/envLight/CoEnvLightModule.umd.js";
 		new ModuleLoader(2).setCallback((): void => {
 			this.updateMCTXInit();
 		}).loadModule(url0).loadModule(url1);
