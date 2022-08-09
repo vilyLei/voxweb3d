@@ -102,7 +102,7 @@ class SceneNode {
         material.pipeTypes = [MaterialPipeType.FOG_EXP2];
         material.setMaterialPipeline(mctx.pipeline);
         material.setTextureList([mctx.getTextureByUrl("static/assets/box.jpg")]);
-        material.initializeByCodeBuf(false);
+        material.initializeByCodeBuf(true);
 
         let scale: number = 3000.0;
         let entity = rscene.entityBlock.createEntity();
