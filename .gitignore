@@ -35,5 +35,5 @@ public/static/cospace/modules/fbxFast/
 public/static/cospace/modules/png/
 public/static/cospace/core/
 public/static/cospace/engine/
+public/static/cospace/renderEffect/
 public/static/cospace/engineBase/
-public/static/cospace/renderer/

@@ -21,34 +21,37 @@
     "buildvox": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/dev.ts",
     "buildvoxweb": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/devWeb.ts",
     "buildCoSpace": "vue-cli-service build --target lib --name CoSpace --dest dist ./src/cospaceMain.ts",
-    
+
     "build_baseRenderer": "vue-cli-service build --target lib --name VoxApp --dest dist/baseRenderer ./src/distribution/rendererIsolate/devBaseRenderer.ts",
     "build_engine": "vue-cli-service build --target lib --name VoxApp --dest dist/engine ./src/distribution/rendererIsolate/devEngine.ts",
-    
+
     "build_roFunctions": "vue-cli-service build --target lib --name VoxApp --dest dist/roFunctions ./src/distribution/rendererIsolate/devROFunctions.ts",
-    
+
     "build_minROFunctions": "vue-cli-service build --target lib --name VoxApp --dest dist/minROFunctions ./src/distribution/rendererIsolate/devMinROFunctions.ts",
-    
+
     "build_threadFuncs": "vue-cli-service build --target lib --name VoxApp --dest dist/threadFuncs ./src/distribution/rendererIsolate/devThreadFuncs.ts",
     "build_jszip": "vue-cli-service build --target lib --name VoxApp --dest dist/jsZipModule ./src/distribution/rendererIsolate/devJSZipModule.ts",
-    
+
     "buildrplayer": "vue-cli-service build --target lib --name VoxApp --dest dist/player ./src/distribution/rendererIsolate/devPlayerOne.ts",
 
-    
+
     "buildCTMParser": "vue-cli-service build --target lib --name ModuleCTMGeomParser --dest ./public/static/cospace/modules/ctm ./src/cospace/modules/ctm/ModuleCTMGeomParser.ts",
     "buildOBJParser": "vue-cli-service build --target lib --name ModuleOBJGeomParser --dest ./public/static/cospace/modules/obj ./src/cospace/modules/obj/ModuleOBJGeomParser.ts",
     "buildFBXFastParser": "vue-cli-service build --target lib --name ModuleFBXGeomFastParser --dest ./public/static/cospace/modules/fbxFast ./src/cospace/modules/fbx/ModuleFBXGeomFastParser.ts",
     "buildDracoParser": "vue-cli-service build --target lib --name ModuleDracoGeomParser --dest ./public/static/cospace/modules/draco ./src/cospace/modules/draco/ModuleDracoGeomParser.ts",
     "buildDracoEncoder": "vue-cli-service build --target lib --name ModuleDracoGeomEncoder --dest ./public/static/cospace/modules/dracoEncode ./src/cospace/modules/draco/ModuleDracoGeomEncoder.ts",
-    
+
     "buildPNGParser": "vue-cli-service build --target lib --name ModulePNGParser --dest ./public/static/cospace/modules/png ./src/cospace/modules/png/ModulePNGParser.ts",
     "buildThreadCore": "vue-cli-service build --target lib --name ThreadCore --dest ./public/static/cospace/core/code ./src/cospace/modules/thread/control/ThreadCore.ts",
     "buildCoSpaceApp": "vue-cli-service build --target lib --name CoSpaceApp --dest ./public/static/cospace/core/coapp ./src/cospace/CoSpaceApp.ts",
     "buildCoEngine": "vue-cli-service build --target lib --name CoEngine --dest ./public/static/cospace/engine/coengine ./src/cospace/voxengine/CoEngine.ts",
-    
+
     "buildCoRenderer": "vue-cli-service build --target lib --name CoRenderer --dest ./public/static/cospace/engine/renderer ./src/cospace/voxengine/CoRenderer.ts",
     "buildCoRScene": "vue-cli-service build --target lib --name CoRScene --dest ./public/static/cospace/engine/rscene ./src/cospace/voxengine/CoRScene.ts",
     "buildCoMouseInteraction": "vue-cli-service build --target lib --name CoMouseInteraction --dest ./public/static/cospace/engine/mouseInteract ./src/cospace/voxengine/ui/CoMouseInteraction.ts",
+
+    "buildPBREffect": "vue-cli-service build --target lib --name PBREffect --dest ./public/static/cospace/renderEffect/pbr ./src/cospace/renderEffect/pbr/PBREffect.ts",
+    "buildCoLightModule": "vue-cli-service build --target lib --name CoLightModule --dest ./public/static/cospace/renderEffect/lightModule ./src/cospace/renderEffect/light/CoLightModule.ts",
 
     "dev": "vue-cli-service serve --type=dev[./src/main.ts]",
     "devvox": "vue-cli-service serve --type=dev[./src/dev.ts]",

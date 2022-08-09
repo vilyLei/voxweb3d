@@ -1,6 +1,4 @@
-import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../app/CoSpaceAppData";
-
-import { ICoDisplayEntity } from "../voxengine/entity/ICoDisplayEntity";
+import { CoDataFormat } from "../app/CoSpaceAppData";
 
 import { ICoRendererScene } from "../voxengine/scene/ICoRendererScene";
 import { IMouseInteraction } from "../voxengine/ui/IMouseInteraction";
@@ -8,7 +6,6 @@ import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { CoMaterialContextParam, ICoRScene } from "../voxengine/ICoRScene";
 
 import { ICoMouseInteraction } from "../voxengine/ui/ICoMouseInteraction";
-import { CoNormalMaterial } from "../voxengine/material/CoNormalMaterial";
 import ViewerMaterialCtx from "./coViewer/ViewerMaterialCtx";
 import { ModuleLoader } from "../modules/base/ModuleLoader";
 import { ViewerCoSApp } from "./coViewer/ViewerCoSApp";
@@ -69,16 +66,10 @@ export class DemoCoViewer {
 
 		mouseInteractML.loadModule(url);
 	}
-	private m_objUnits: CoGeomDataUnit[] = [];
+	
 	private initMaterialModule(): void {
 		this.m_vmctx = new ViewerMaterialCtx();
 		this.m_vmctx.initialize(this.m_rscene, (): void => {
-			// if (this.m_objUnits.length > 0) {
-			// 	for (let i: number = 0; i < this.m_objUnits.length; ++i) {
-			// 		let unit = this.m_objUnits.pop();
-			// 		this.createEntityFromUnit(unit, 0);
-			// 	}
-			// }
 			this.m_node.applyMaterial();
 		});
 	}
@@ -120,58 +111,9 @@ export class DemoCoViewer {
 		let url = baseUrl + "base.obj";
 		url = baseUrl + "base4.obj";
 
-		// this.loadGeomModel(url, CoDataFormat.OBJ);
-
 		let node: SceneNode = new SceneNode(this.m_rscene, this.m_vmctx, this.m_vcoapp);
 		node.setScale(23.0).loadGeomModel(url, CoDataFormat.OBJ);
 		this.m_node = node;
-	}
-
-	private loadGeomModel(url: string, format: CoDataFormat): void {
-		let ins = this.m_vcoapp.coappIns;
-		if (ins != null) {
-
-			ins.getCPUDataByUrlAndCallback(
-				url,
-				format,
-				(unit: CoGeomDataUnit, status: number): void => {
-					console.log("parsing finish obj model, data: ", unit.data);
-
-					let flag: boolean = this.m_vmctx.isMCTXEnabled();
-					if (flag) {
-						this.createEntityFromUnit(unit, status);
-					} else {
-						this.m_objUnits.push(unit);
-					}
-				},
-				true
-			);
-		}
-	}
-	private createEntityFromUnit(unit: CoGeomDataUnit, status: number): void {
-		let len = unit.data.models.length;
-		for (let i: number = 0; i < len; ++i) {
-			let entity = this.createEntity(unit.data.models[i]);
-			entity.setScaleXYZ(23.0, 23.0, 23.0);
-		}
-	}
-	private createEntity(model: CoGeomDataType): ICoDisplayEntity {
-		// let rst = CoRenderer.RendererState;
-
-		let flag: boolean = this.m_vmctx.isMCTXEnabled();
-		let entity: ICoDisplayEntity;
-		if (flag) {
-			// let m = this.m_pbrModule.createMaterial(false);
-			let m = this.m_vmctx.pbrModule.createMaterial(false);
-			m.initializeByCodeBuf(true);
-			entity = CoRScene.createDisplayEntityFromModel(model, m);
-		} else {
-			entity = CoRScene.createDisplayEntityFromModel(model, new CoNormalMaterial().build().material);
-		}
-
-		// entity.setRenderState(rst.NONE_CULLFACE_NORMAL_STATE);
-		this.m_rscene.addEntity(entity);
-		return entity;
 	}
 	private mouseDown(evt: any): void {}
 	run(): void {
