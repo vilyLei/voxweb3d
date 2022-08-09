@@ -9,32 +9,26 @@ declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
 declare var CoRScene: ICoRScene;
 declare var CoMouseInteraction: ICoMouseInteraction;
+
 /**
- * cospace renderer
+ * cospace renderer scene
  */
 export class DemoCoRendererScene {
 
-
 	private m_rscene: ICoRendererScene = null;
-	private m_interact: IMouseInteraction = null;
+	private m_mouseInteraction: IMouseInteraction = null;
 
 	constructor() { }
 
 	initialize(): void {
 
-		// 启用鼠标点击事件
-		document.onmousedown = (evt: any): void => {
-			this.mouseDown(evt);
-		};
-
 		let url0 = "static/cospace/engine/renderer/CoRenderer.umd.min.js";
 		let url1 = "static/cospace/engine/rscene/CoRScene.umd.min.js";
 		let url2 = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.min.js";
 
-
 		let mouseInteractML = new ModuleLoader(2);
 		mouseInteractML.setCallback((): void => {
-			this.initInteract();
+			this.initMouseInteraction();
 		});
 
 		new ModuleLoader(2)
@@ -53,12 +47,12 @@ export class DemoCoRendererScene {
 	isEngineEnabled(): boolean {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";
 	}
-	private initInteract(): void {
-		if(this.m_rscene != null && this.m_interact == null && (typeof CoMouseInteraction !== "undefined")) {
+	private initMouseInteraction(): void {
+		if(this.m_rscene != null && this.m_mouseInteraction == null && (typeof CoMouseInteraction !== "undefined")) {
 
-			this.m_interact = CoMouseInteraction.createMouseInteraction();
-			this.m_interact.initialize( this.m_rscene );
-			this.m_interact.setSyncLookAtEnabled( true );
+			this.m_mouseInteraction = CoMouseInteraction.createMouseInteraction();
+			this.m_mouseInteraction.initialize( this.m_rscene );
+			this.m_mouseInteraction.setSyncLookAtEnabled( true );
 		}
 	}
 
@@ -78,21 +72,16 @@ export class DemoCoRendererScene {
 			this.m_rscene = CoRScene.createRendererScene();
 			this.m_rscene.initialize(rparam, 3);
 
-
-			this.initInteract();
+			this.initMouseInteraction();
 
 			let axis = CoRScene.createAxis3DEntity();
 			this.m_rscene.addEntity(axis);
 		}
 	}
-	private mouseDown(evt: any): void {
-
-	}
-
 	run(): void {
 		if (this.m_rscene != null) {
-			if(this.m_interact != null) {
-				this.m_interact.run();
+			if(this.m_mouseInteraction != null) {
+				this.m_mouseInteraction.run();
 			}
 			this.m_rscene.run();
 		}
