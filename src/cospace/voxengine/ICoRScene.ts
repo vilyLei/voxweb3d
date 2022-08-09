@@ -107,7 +107,10 @@ interface ICoRScene {
 	createRendererSceneParam(div?: HTMLDivElement): IRendererParam;
 	createRendererScene(): ICoRendererScene;
 	applySceneBlock(rsecne: ICoRendererScene): void;
-
+	/**
+	 * build default 3d entity rendering material
+	 * @param normalEnabled the default value is false
+	 */
 	createDefaultMaterial(normalEnabled?: boolean): IRenderMaterial;
 	createShaderMaterial(shd_uniqueName: string): IShaderMaterial;
 	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial): ICoDisplayEntity;
