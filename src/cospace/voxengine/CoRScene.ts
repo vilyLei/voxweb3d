@@ -15,12 +15,17 @@ import MaterialBase from "../../vox/material/MaterialBase";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import ShaderMaterial from "../../vox/material/mcase/ShaderMaterial";
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
+import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
-// import BoxFrame3D from "../../vox/entity/BoxFrame3D";
-// import Line3DEntity from "../../vox/entity/Line3DEntity";
+import { RenderableMaterialBlock } from "../../vox/scene/block/RenderableMaterialBlock";
+import { RenderableEntityBlock } from "../../vox/scene/block/RenderableEntityBlock";
+import { IMaterialContext } from "../../materialLab/base/IMaterialContext";
+import { MaterialContextParam } from "../../materialLab/base/MaterialContextParam";
+import { MaterialContext } from "../../materialLab/base/MaterialContext";
+import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 
 import { ICoDisplayEntity } from "./entity/ICoDisplayEntity";
-import { IShaderMaterial } from "./material/IShaderMaterial";
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 
 function createVec3(px: number = 0.0, py: number = 0.0, pz: number = 0.0, pw: number = 1.0): IVector3D {
@@ -36,13 +41,28 @@ function createRendererSceneParam(div: HTMLDivElement = null): RendererParam {
 function createRendererScene(): ICoRendererScene {
 	return new CoRendererScene();
 }
+function applySceneBlock(rsecne: ICoRendererScene): void {
+
+	let rscene = rsecne;
+	let materialBlock = new RenderableMaterialBlock();
+	materialBlock.initialize();
+	rscene.materialBlock = materialBlock;
+	let entityBlock = new RenderableEntityBlock();
+	entityBlock.initialize();
+	rscene.entityBlock = entityBlock;
+}
 
 
+function createDefaultMaterial(normalEnabled: boolean = false): IRenderMaterial {
+	let m = new Default3DMaterial();
+	m.normalEnabled = normalEnabled;
+	return m;
+}
 function createShaderMaterial(shd_uniqueName: string): IShaderMaterial {
 	return new ShaderMaterial(shd_uniqueName);
 }
-function createDisplayEntityFromModel(model: CoGeomDataType, pmaterial: IShaderMaterial = null): ICoDisplayEntity {
-	let material: MaterialBase = pmaterial as MaterialBase;
+function createDisplayEntityFromModel(model: CoGeomDataType, material: MaterialBase = null): ICoDisplayEntity {
+
 	if (material == null) {
 		material = new Default3DMaterial();
 		material.initializeByCodeBuf();
@@ -50,7 +70,7 @@ function createDisplayEntityFromModel(model: CoGeomDataType, pmaterial: IShaderM
 	if (material.getCodeBuf() == null || material.getBufSortFormat() < 0x1) {
 		throw Error("the material does not call initializeByCodeBuf() function. !!!");
 	}
-	const dataMesh: any = new DataMesh();
+	const dataMesh = new DataMesh();
 	dataMesh.vbWholeDataEnabled = false;
 	dataMesh.setVS(model.vertices);
 	dataMesh.setUVS(model.uvsList[0]);
@@ -60,7 +80,7 @@ function createDisplayEntityFromModel(model: CoGeomDataType, pmaterial: IShaderM
 	dataMesh.initialize();
 	// console.log("dataMesh: ", dataMesh);
 
-	const entity: any = new DisplayEntity();
+	const entity = new DisplayEntity();
 	entity.setMesh(dataMesh);
 	entity.setMaterial(material);
 	return entity;
@@ -72,6 +92,13 @@ function createAxis3DEntity(size: number = 100): ICoDisplayEntity {
 }
 
 
+function createMaterialContext(): IMaterialContext {
+	return new MaterialContext();
+}
+function creatMaterialContextParam(): MaterialContextParam {
+	return new MaterialContextParam();
+}
+
 export {
 
 	Vector3D,
@@ -79,6 +106,9 @@ export {
 
 	MouseEvent,
 
+	ShaderCodeUUID,
+
+	MaterialContextParam,
 	RendererParam,
 	CoRendererScene,
 
@@ -87,8 +117,13 @@ export {
 
 	createRendererSceneParam,
 	createRendererScene,
+	applySceneBlock,
 
+	createDefaultMaterial,
 	createShaderMaterial,
 	createDisplayEntityFromModel,
-	createAxis3DEntity
+	createAxis3DEntity,
+
+	createMaterialContext,
+	creatMaterialContextParam
 }

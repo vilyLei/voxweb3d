@@ -8,6 +8,7 @@ import DataMesh from "../../vox/mesh/DataMesh";
 import MaterialBase from "../../vox/material/MaterialBase";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
+import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";
 import ShaderMaterial from "../../vox/material/mcase/ShaderMaterial";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import BoxFrame3D from "../../vox/entity/BoxFrame3D";
@@ -22,7 +23,6 @@ import { EngineBase as Engine } from "../../vox/engine/EngineBase";
 import { ICoVec3 } from "./math/ICoVec3";
 import { ICoMat4 } from "./math/ICoMat4";
 import { ICoDisplayEntity } from "./entity/ICoDisplayEntity";
-import { IShaderMaterial } from "./material/IShaderMaterial";
 import { IEngineBase } from "./engine/IEngineBase";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
@@ -43,7 +43,7 @@ function createEngine(): IEngineBase {
 function createShaderMaterial(shd_uniqueName: string): IShaderMaterial {
 	return new ShaderMaterial(shd_uniqueName);
 }
-function createDisplayEntityFromModel(model: CoGeomDataType, pmaterial: IShaderMaterial = null): ICoDisplayEntity {
+function createDisplayEntityFromModel(model: CoGeomDataType, pmaterial: ShaderMaterial = null): ICoDisplayEntity {
 	let material: MaterialBase = pmaterial as MaterialBase;
 	if (material == null) {
 		material = new Default3DMaterial();
