@@ -13,6 +13,7 @@ import MouseEvent from "../../vox/event/MouseEvent";
 
 import CoRendererScene from "./scene/CoRendererScene";
 
+import { IDataMesh } from "../../vox/mesh/IDataMesh";
 import DataMesh from "../../vox/mesh/DataMesh";
 import MaterialBase from "../../vox/material/MaterialBase";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
@@ -92,6 +93,14 @@ function createDisplayEntityFromModel(model: CoGeomDataType, material: MaterialB
 	entity.setMaterial(material);
 	return entity;
 }
+
+function createDisplayEntity(): ICoDisplayEntity {
+	return new DisplayEntity();
+}
+function createDataMesh(): IDataMesh {
+	return new DataMesh();
+}
+
 function createAxis3DEntity(size: number = 100): ICoDisplayEntity {
 	let axis = new Axis3DEntity();
 	axis.initialize(size);
@@ -134,6 +143,8 @@ export {
 	createShaderMaterial,
 	createDisplayEntityFromModel,
 	createAxis3DEntity,
+	createDisplayEntity,
+	createDataMesh,
 
 	createMaterialContext,
 	creatMaterialContextParam

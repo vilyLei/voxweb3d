@@ -5,8 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-import AABB from "../geom/AABB";
-import { IVtxBufRenderData } from "../../vox/render/IVtxBufRenderData";
 import { IMeshBase } from "../../vox/mesh/IMeshBase";
 
 interface IDataMesh extends IMeshBase {
@@ -14,15 +12,7 @@ interface IDataMesh extends IMeshBase {
       * 强制更新 vertex indices buffer 数据, 默认值为false
       */
     forceUpdateIVS: boolean;
-    /**
-     * 是否启用线框模式数据, 默认值为false
-     */
-    wireframe: boolean;
-    /**
-     * vtx positons bounds AABB in the local space, the default value is null
-     */
-    bounds: AABB;
-
+    
     /**
      * the default value is 3
      */
@@ -44,22 +34,22 @@ interface IDataMesh extends IMeshBase {
      * set vertex position data
      * @param vs vertex position buffer Float32Array
      */
-    setVS(vs: Float32Array): void;
+    setVS(vs: Float32Array): IDataMesh;
     /**
      * set vertex uv data
      * @param vs vertex uv buffer Float32Array
      */
-    setUVS(uvs: Float32Array): void;
+    setUVS(uvs: Float32Array): IDataMesh;
     /**
      * set vertex normal data
      * @param vs vertex normal buffer Float32Array
      */
-    setNVS(nvs: Float32Array): void;
+    setNVS(nvs: Float32Array): IDataMesh;
     /**
      * set vertex tangent data
      * @param vs vertex tangent buffer Float32Array
      */
-    setTVS(tvs: Float32Array): void;
+    setTVS(tvs: Float32Array): IDataMesh;
     /**
      * @returns vertex tangent buffer Float32Array
      */
@@ -69,12 +59,12 @@ interface IDataMesh extends IMeshBase {
      * set vertex bitangent data
      * @param vs vertex bitangent buffer Float32Array
      */
-    setBTVS(btvs: Float32Array): void
+    setBTVS(btvs: Float32Array): IDataMesh
     /**
      * set vertex color(r,g,b) data
      * @param vs vertex color(r,g,b) buffer Float32Array
      */
-    setCVS(cvs: Float32Array): void
+    setCVS(cvs: Float32Array): IDataMesh
     /**
      * @returns vertex bitangent buffer Float32Array
      */
@@ -83,7 +73,7 @@ interface IDataMesh extends IMeshBase {
     /**
      * @param ivs indices buffer data
      */
-    setIVS(ivs: Uint16Array | Uint32Array): void;
+    setIVS(ivs: Uint16Array | Uint32Array): IDataMesh;
         
     /**
      * initialization vertex buffer data

@@ -5,9 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-import AABB from "../geom/AABB";
+import { IAABB } from "../geom/IAABB";
 import { IVtxBufRenderData } from "../../vox/render/IVtxBufRenderData";
-import Vector3D from "../math/Vector3D";
+import IVector3D from "../math/IVector3D";
 import { IROVertexBuffer } from "../../vox/mesh/IROVertexBuffer";
 
 interface IMeshBase {
@@ -22,7 +22,7 @@ interface IMeshBase {
   /**
    * vtx positons bounds AABB in the local space, the default value is null
    */
-  bounds: AABB;
+  bounds: IAABB;
   /**
    * @param layoutBit vertex shader vertex attributes layout bit status.
    *                  the value of layoutBit comes from the material shdder program.
@@ -69,7 +69,7 @@ interface IMeshBase {
    * @outV            如果检测相交存放物体坐标空间的交点
    * @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
    */
-  testRay(rlpv: Vector3D, rltv: Vector3D, outV: Vector3D, boundsHit: boolean): number;
+  testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number;
   isEnabled(): boolean;
   isResFree(): boolean;
   isPolyhedral(): boolean;

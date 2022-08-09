@@ -31,12 +31,13 @@ class SceneNode {
 	applyMaterial(): SceneNode {
 
 		let flag: boolean = this.m_vmctx.isMCTXEnabled();
-		if(flag) {
+		if (flag) {
+			console.log("XXXXXXXXXXXX this.m_objUnits.length: ",this.m_objUnits.length);
 			for (let i: number = 0; i < this.m_objUnits.length; ++i) {
 				let unit = this.m_objUnits.pop();
 				this.createEntityFromUnit(unit, 0);
 			}
-
+			this.buildBGBox();
 			this.buildEnvBox();
 		}
 		return this;
@@ -50,9 +51,9 @@ class SceneNode {
 				url,
 				format,
 				(unit: CoGeomDataUnit, status: number): void => {
-					console.log("parsing finish obj model, data: ", unit.data);
-
 					let flag: boolean = this.m_vmctx.isMCTXEnabled();
+					console.log("parsing finish obj model, data: ", unit.data, ", XXXBBB flag: ",flag);
+
 					if (flag) {
 						this.createEntityFromUnit(unit, status);
 					} else {
@@ -91,26 +92,39 @@ class SceneNode {
 		this.m_rscene.addEntity(entity);
 		return entity;
 	}
-	
-    buildEnvBox(): void {
+	private buildBGBox(): void {
+
+		let rscene = this.m_rscene;
+		// return;
+		let material = this.m_vmctx.pbrModule.createMaterial(true);
+
+		let scale = 700.0;
+		let boxEntity = rscene.entityBlock.createEntity();
+		boxEntity.setMaterial(material);
+		boxEntity.copyMeshFrom(rscene.entityBlock.unitBox);
+		boxEntity.setScaleXYZ(scale, scale * 0.05, scale);
+		boxEntity.setXYZ(0, -200, 0);
+		rscene.addEntity(boxEntity);
+	}
+	private buildEnvBox(): void {
 
 		const MaterialPipeType = CoRScene.MaterialPipeType;
 		const mctx = this.m_vmctx.getMaterialCtx();
-        let renderingState = this.m_rscene.getRenderProxy().renderingState;
-        let rscene = this.m_rscene;
-        let material = CoRScene.createDefaultMaterial();
-        material.pipeTypes = [MaterialPipeType.FOG_EXP2];
-        material.setMaterialPipeline(mctx.pipeline);
-        material.setTextureList([mctx.getTextureByUrl("static/assets/box.jpg")]);
-        material.initializeByCodeBuf(true);
+		let renderingState = this.m_rscene.getRenderProxy().renderingState;
+		let rscene = this.m_rscene;
+		let material = CoRScene.createDefaultMaterial();
+		material.pipeTypes = [MaterialPipeType.FOG_EXP2];
+		material.setMaterialPipeline(mctx.pipeline);
+		material.setTextureList([mctx.getTextureByUrl("static/assets/box.jpg")]);
+		material.initializeByCodeBuf(true);
 
-        let scale: number = 3000.0;
-        let entity = rscene.entityBlock.createEntity();
-        entity.setRenderState(renderingState.FRONT_CULLFACE_NORMAL_STATE);
-        entity.setMaterial(material);
-        entity.copyMeshFrom(rscene.entityBlock.unitBox);
-        entity.setScaleXYZ(scale, scale, scale);
-        rscene.addEntity(entity, 1);
+		let scale: number = 3000.0;
+		let entity = rscene.entityBlock.createEntity();
+		entity.setRenderState(renderingState.FRONT_CULLFACE_NORMAL_STATE);
+		entity.setMaterial(material);
+		entity.copyMeshFrom(rscene.entityBlock.unitBox);
+		entity.setScaleXYZ(scale, scale, scale);
+		rscene.addEntity(entity, 1);
 	}
 }
 

@@ -11,6 +11,7 @@ import IRenderMaterial from "../../vox/render/IRenderMaterial";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 import { IMaterialContext } from "../../materialLab/base/IMaterialContext";
+import { IDataMesh } from "../../vox/mesh/IDataMesh";
 
 interface CoVec3 {
 	ONE: IVector3D;
@@ -115,6 +116,9 @@ interface ICoRScene {
 	createShaderMaterial(shd_uniqueName: string): IShaderMaterial;
 	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial): ICoDisplayEntity;
 	createAxis3DEntity(size?: number): ICoDisplayEntity;
+
+	createDisplayEntity(): ICoDisplayEntity;
+	createDataMesh(): IDataMesh;
 
 	createMaterialContext(): IMaterialContext;
 	creatMaterialContextParam(): CoMaterialContextParam;
