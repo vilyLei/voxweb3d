@@ -38,9 +38,10 @@ export default class DataMesh extends MeshBase implements IDataMesh {
      * set vertex position data
      * @param vs vertex position buffer Float32Array
      */
-    setVS(vs: Float32Array): void {
+    setVS(vs: Float32Array): DataMesh {
         this.m_vs = vs;
         this.m_boundsChanged = true;
+        return this;
     }
     /**
      * @returns vertex position buffer Float32Array
@@ -52,8 +53,9 @@ export default class DataMesh extends MeshBase implements IDataMesh {
      * set vertex uv data
      * @param vs vertex uv buffer Float32Array
      */
-    setUVS(uvs: Float32Array): void {
+    setUVS(uvs: Float32Array): DataMesh {
         this.m_uvs = uvs;
+        return this;
     }
     /**
      * @returns vertex uv buffer Float32Array
@@ -65,8 +67,9 @@ export default class DataMesh extends MeshBase implements IDataMesh {
      * set vertex normal data
      * @param vs vertex normal buffer Float32Array
      */
-    setNVS(nvs: Float32Array): void {
+    setNVS(nvs: Float32Array): DataMesh {
         this.m_nvs = nvs;
+        return this;
     }
     /**
      * @returns vertex normal buffer Float32Array
@@ -78,8 +81,9 @@ export default class DataMesh extends MeshBase implements IDataMesh {
      * set vertex tangent data
      * @param vs vertex tangent buffer Float32Array
      */
-    setTVS(tvs: Float32Array): void {
+    setTVS(tvs: Float32Array): DataMesh {
         this.m_tvs = tvs;
+        return this;
     }
     /**
      * @returns vertex tangent buffer Float32Array
@@ -92,15 +96,17 @@ export default class DataMesh extends MeshBase implements IDataMesh {
      * set vertex bitangent data
      * @param vs vertex bitangent buffer Float32Array
      */
-    setBTVS(btvs: Float32Array): void {
+    setBTVS(btvs: Float32Array): DataMesh {
         this.m_btvs = btvs;
+        return this;
     }
     /**
      * set vertex color(r,g,b) data
      * @param vs vertex color(r,g,b) buffer Float32Array
      */
-    setCVS(cvs: Float32Array): void {
+    setCVS(cvs: Float32Array): DataMesh {
         this.m_cvs = cvs;
+        return this;
     }
     /**
      * @returns vertex bitangent buffer Float32Array
@@ -110,11 +116,12 @@ export default class DataMesh extends MeshBase implements IDataMesh {
     }
     
     
-    setIVS(ivs: Uint16Array | Uint32Array): void {
+    setIVS(ivs: Uint16Array | Uint32Array): DataMesh {
 
         this.m_initIVS = ivs;
         this.m_ivs = ivs;
         this.m_boundsChanged = true;
+        return this;
     }
 
     initializeFromGeometry(geom: GeometryBase): void {
@@ -216,7 +223,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
         return -1;
     }
     toString(): string {
-        return "[DataMesh()]";
+        return "DataMesh()";
     }
     __$destroy(): void {
         if (this.isResFree()) {
