@@ -3,6 +3,9 @@ import IVector3D from "../../vox/math/IVector3D";
 import Vector3D from "../../vox/math/Vector3D";
 import { IMatrix4 } from "../../vox/math/IMatrix4";
 import Matrix4 from "../../vox/math/Matrix4";
+import IColor4 from "../../vox/material/IColor4";
+import Color4 from "../../vox/material/Color4";
+
 import RendererParam from "../../vox/scene/RendererParam";
 import { ICoRendererScene } from "./scene/ICoRendererScene";
 
@@ -33,6 +36,9 @@ function createVec3(px: number = 0.0, py: number = 0.0, pz: number = 0.0, pw: nu
 }
 function createMat4(pfs32: Float32Array = null, index: number = 0): IMatrix4 {
 	return new Matrix4(pfs32, index);
+}
+function createColor4(pr: number = 1.0, pg: number = 1.0, pb: number = 1.0, pa: number = 1.0): IColor4 {
+	return new Color4(pr, pg, pb, pa);
 }
 
 function createRendererSceneParam(div: HTMLDivElement = null): RendererParam {
@@ -103,6 +109,8 @@ export {
 
 	Vector3D,
 	Matrix4,
+	
+	Color4,
 
 	MouseEvent,
 
@@ -114,6 +122,7 @@ export {
 
 	createVec3,
 	createMat4,
+	createColor4,
 
 	createRendererSceneParam,
 	createRendererScene,

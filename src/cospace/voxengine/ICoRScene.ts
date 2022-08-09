@@ -1,5 +1,6 @@
 import IVector3D from "../../vox/math/IVector3D";
 import { IMatrix4 } from "../../vox/math/IMatrix4";
+import IColor4 from "../../vox/material/IColor4";
 
 import IRendererParam from "../../vox/scene/IRendererParam";
 import { ICoRendererScene } from "./scene/ICoRendererScene";
@@ -90,6 +91,9 @@ interface ICoRScene {
 
 	createVec3(px?: number, py?: number, pz?: number, pw?: number): IVector3D;
 	createMat4(pfs32?: Float32Array, index?: number): IMatrix4;
+	
+	createColor4(pr?: number, pg?: number, pb?: number, pa?: number): IColor4;
+
 	createRendererSceneParam(div?: HTMLDivElement): IRendererParam;
 	createRendererScene(): ICoRendererScene;
 	applySceneBlock(rsecne: ICoRendererScene): void;

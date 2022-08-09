@@ -5,8 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
+import IColor4 from "./IColor4";
+
 const MATH_MIN_POSITIVE: number = 1e-5;
-class Color4 {
+
+class Color4 implements IColor4{
     r: number;
     g: number;
     b: number;
