@@ -7,7 +7,6 @@ import { ModuleLoader } from "../modules/base/ModuleLoader";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
-declare var CoRScene: ICoRScene;
 declare var CoMouseInteraction: ICoMouseInteraction;
 
 /**

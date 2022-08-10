@@ -23,6 +23,7 @@ import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBl
 import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
 
 export class DemoEntityBounds {
+    
     constructor() {
     }
 

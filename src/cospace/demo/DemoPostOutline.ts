@@ -10,7 +10,6 @@ import { CoDataFormat } from "../app/CoSpaceAppData";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
-declare var CoRScene: ICoRScene;
 declare var CoMouseInteraction: ICoMouseInteraction;
 
 /**

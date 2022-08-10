@@ -7,9 +7,8 @@
 // gpu射线检测拾取代理对象
 import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
-import Matrix4 from "../../vox/math/Matrix4";
-import AABB from "../../vox/geom/AABB";
-import CameraBase from "../../vox/view/CameraBase";
+import { IMatrix4 } from "../../vox/math/IMatrix4";
+import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import Entity3DNode from "../../vox/scene/Entity3DNode";
 import IRaySelector from '../../vox/scene/IRaySelector';
@@ -29,7 +28,7 @@ export default class RayGpuSelector implements IRaySelector {
     private m_initColor: Color4 = new Color4();
     private m_indexMaterial: PixelPickIndexMaterial = new PixelPickIndexMaterial();
     private m_renderer: IRenderer = null;
-    private m_camera: CameraBase = null;
+    private m_camera: IRenderCamera = null;
     private m_headNode: Entity3DNode = null;
     private m_rsn: RaySelectedNode = null;
     // 最多检测256个对象
@@ -68,7 +67,7 @@ export default class RayGpuSelector implements IRaySelector {
         out_rlpv.copyFrom(this.m_rlpv);
         out_rltv.copyFrom(this.m_rltv);
     }
-    setCamera(cam: CameraBase): void {
+    setCamera(cam: IRenderCamera): void {
         this.m_camera = cam;
     }
     setCullingNodeHead(headNode: Entity3DNode): void {
@@ -200,7 +199,7 @@ export default class RayGpuSelector implements IRaySelector {
                 let entity: IRenderEntity = null;
                 let flag: number = 0;
                 let hitTotal: number = 0;
-                let mat4: Matrix4 = null;
+                let mat4: IMatrix4 = null;
                 let rayNode: RaySelectedNode = null;
                 let pvdis: number = rtv.dot(rpv);
                 let preDis: number = 0.0;

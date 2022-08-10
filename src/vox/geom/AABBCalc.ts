@@ -5,12 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-import MathConst from "../../vox/math/MathConst";
-import Vector3D from "../../vox/math/Vector3D";
+import IVector3D from "../../vox/math/IVector3D";
 import { IAABB } from "../../vox/geom/IAABB";
 class AABBCalc {
 	
-	IntersectRL(ltv: Vector3D, lpv: Vector3D, ab: IAABB): boolean {
+	IntersectRL(ltv: IVector3D, lpv: IVector3D, ab: IAABB): boolean {
 		let f: number = 0;
 		let tmin: number = (ab.min.x - lpv.x) / ltv.x;
 		let tmax: number = (ab.max.x - lpv.x) / ltv.x;
@@ -63,7 +62,7 @@ class AABBCalc {
 		return true;
 	}
 	/*
-	static IntersectionRL3(vecs:Vector3D[],rsigns:Uint8Array,ltInvtv:Vector3D, ltv:Vector3D, lpv:Vector3D,outV:Vector3D):boolean
+	static IntersectionRL3(vecs:IVector3D[],rsigns:Uint8Array,ltInvtv:IVector3D, ltv:IVector3D, lpv:IVector3D,outV:IVector3D):boolean
 	{ 
 		let tmin:number, tmax:number, tymin:number, tymax:number;//, tzmin:number, tzmax:number; 
 		
@@ -94,7 +93,7 @@ class AABBCalc {
 		return true; 
 	}
 	//*/
-	static IntersectionRL3(vecs: Vector3D[], rsigns: Uint8Array, ltInvtv: Vector3D, ltv: Vector3D, lpv: Vector3D, outV: Vector3D): boolean {
+	static IntersectionRL3(vecs: IVector3D[], rsigns: Uint8Array, ltInvtv: IVector3D, ltv: IVector3D, lpv: IVector3D, outV: IVector3D): boolean {
 		ltInvtv.w = (vecs[rsigns[0]].x - lpv.x) * ltInvtv.x;
 		ltv.w = (vecs[1 - rsigns[0]].x - lpv.x) * ltInvtv.x;
 		outV.x = (vecs[rsigns[1]].y - lpv.y) * ltInvtv.y;
@@ -123,7 +122,7 @@ class AABBCalc {
 		return true;
 	}
 
-	static IntersectionRL1(ltv: Vector3D, lpv: Vector3D, ab: IAABB, outV: Vector3D): boolean {
+	static IntersectionRL1(ltv: IVector3D, lpv: IVector3D, ab: IAABB, outV: IVector3D): boolean {
 		let f: number = 0;
 		let tmin: number = (ab.min.x - lpv.x) / ltv.x;
 		let tmax: number = (ab.max.x - lpv.x) / ltv.x;
@@ -192,7 +191,7 @@ class AABBCalc {
 	// @param				ab		updateFast() 过的 AABB 实例
 	// @param				outV	存放交点的 Vector3D实例
 	//
-	static IntersectionRL2(ltv: Vector3D, lpv: Vector3D, ab: IAABB, outV: Vector3D): boolean {
+	static IntersectionRL2(ltv: IVector3D, lpv: IVector3D, ab: IAABB, outV: IVector3D): boolean {
 		// 计算包围球
 		//let dis:number = StraightLine.CalcPVSquaredDis2(ltv, lpv, ab.center);
 		outV.x = ab.center.x - lpv.x;
