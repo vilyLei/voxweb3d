@@ -5,7 +5,7 @@
 // import { DemoFBXFastParser as Demo } from "./cospace/demo/DemoFBXFastParser";
 // import { DemoOBJParser as Demo } from "./cospace/demo/DemoOBJParser";
 
-import { DemoCTMLoad as Demo } from "./cospace/demo/DemoCTMLoad";
+// import { DemoCTMLoad as Demo } from "./cospace/demo/DemoCTMLoad";
 // import { DemoCTMParser as Demo } from "./cospace/demo/DemoCTMParser";
 // import { DemoDracoParser as Demo } from "./cospace/demo/DemoDracoParser";
 // import { DemoCTMToDraco as Demo } from "./cospace/demo/DemoCTMToDraco";
@@ -28,7 +28,7 @@ import { DemoCTMLoad as Demo } from "./cospace/demo/DemoCTMLoad";
 // import { DemoCoRenderer as Demo } from "./cospace/demo/DemoCoRenderer";
 // import { DemoCoRendererScene as Demo } from "./cospace/demo/DemoCoRendererScene";
 
-// import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
+import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
 
 // import { DemoCoEngine as Demo } from "./cospace/demo/DemoCoEngine";
 // import { DemoInputText as Demo } from "./cospace/demo/DemoInputText";

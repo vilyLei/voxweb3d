@@ -21,7 +21,7 @@ class Color4 implements IColor4{
         this.a = pa;
     }
     
-    fromArray(arr: number[], offset?: number): IColor4 {
+    fromArray(arr: number[], offset: number = 0): Color4 {
         this.r = arr[offset];
         this.g = arr[offset + 1];
         this.b = arr[offset + 2];
