@@ -13,15 +13,61 @@ import { OutlinePreDecorator } from "../material/OutlinePreDecorator";
 import IVector3D from "../../../vox/math/IVector3D";
 import { IFBOInstance } from "../../../vox/scene/IFBOInstance";
 import { IAABB } from "../../../vox/geom/IAABB";
-import Plane from "../../../vox/geom/Plane";
+// import Plane from "../../../vox/geom/Plane";
 import { IRTTTexture } from "../../../vox/render/texture/IRTTTexture";
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 
+const minPV: number = 1e-5;
+const maxNV: number = -1e-5;
+class OCCPlane {
+    nv: IVector3D;
+	distance: number = 0.0;
+    intersectBoo: boolean = false;
+    __tV0: IVector3D;
+	containsPoint(pos: IVector3D): number {
+		let f: number = this.nv.dot(pos) - this.distance;
+		if (f > minPV) {
+			return 1;
+		} else if (f < maxNV) {
+			return -1;
+		}
+		return 0;
+	}
+    intersectAABB(minV: IVector3D, maxV: IVector3D): number {
+
+		this.intersectBoo = false;
+
+		let pv = this.__tV0;
+		
+		pv.setXYZ(maxV.x, minV.y, maxV.z);
+		let flag: number = this.containsPoint( pv );
+		pv.setXYZ(maxV.x, minV.y, minV.z);
+		flag += this.containsPoint( pv );
+        pv.setXYZ(minV.x, minV.y, minV.z);
+		flag += this.containsPoint( pv );
+        pv.setXYZ(minV.x, minV.y, maxV.z);
+		flag += this.containsPoint( pv );
+
+        pv.setXYZ(maxV.x, maxV.y, maxV.z);
+		flag += this.containsPoint( pv );
+        pv.setXYZ(maxV.x, maxV.y, minV.z);
+		flag += this.containsPoint( pv );
+        pv.setXYZ(minV.x, maxV.y, minV.z);
+		flag += this.containsPoint( pv );
+        pv.setXYZ(minV.x, maxV.y, maxV.z);
+		flag += this.containsPoint( pv );
+
+		this.intersectBoo = flag < 8;
+		if(flag < -7) return -1;
+		if(flag > 7) return 1;		
+		return 0;
+	}
+}
 export default class OcclusionPostOutline {
     constructor() { }
 
     private m_rscene: IRendererScene = null;
-    private m_testPlane: Plane = new Plane();
+    private m_testPlane: OCCPlane = new OCCPlane();
 
     private m_targets: IRenderEntity[] = null;
     private m_preDecor: OutlinePreDecorator = null;
@@ -49,6 +95,8 @@ export default class OcclusionPostOutline {
             this.m_rscene = rscene;
             this.m_bounds = rscene.entityBlock.createAABB();
             this.m_expandBias = rscene.entityBlock.createVector3D(10.0, 10.0, 10.0);
+            this.m_testPlane.__tV0 = rscene.entityBlock.createVector3D();
+            this.m_testPlane.nv = rscene.entityBlock.createVector3D(0.0, 1.0, 0.0);
 
             let materialBlock = this.m_rscene.materialBlock;
 
@@ -179,7 +227,7 @@ export default class OcclusionPostOutline {
 
                     bounds.reset();
 
-                    for (let i: number = 0; i < this.m_targets.length; ++i) {
+                    for (let i = 0; i < this.m_targets.length; ++i) {
                         if (this.m_targets[i].isRenderEnabled()) {
                             colorFBO.drawEntity(this.m_targets[i], false, true);
                             bounds.union(this.m_targets[i].getGlobalBounds());
