@@ -7,9 +7,10 @@
 
 import ROTransform from "../../vox/display/ROTransform";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
+import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 
-export default class MouseEventEntity extends DisplayEntity {
+export default class MouseEventEntity extends DisplayEntity implements IMouseEventEntity {
 
     protected m_dispatcher: MouseEvt3DDispatcher = null;
     uuid: string = "";

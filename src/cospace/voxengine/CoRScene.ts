@@ -16,7 +16,15 @@ import CoRendererScene from "./scene/CoRendererScene";
 import { IDataMesh } from "../../vox/mesh/IDataMesh";
 import DataMesh from "../../vox/mesh/DataMesh";
 import MaterialBase from "../../vox/material/MaterialBase";
+
+
+import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
+import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
+import ITransformEntity from "../../vox/entity/ITransformEntity";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
+import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
+import MouseEventEntity from "../../vox/entity/MouseEventEntity";
+
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import ShaderMaterial from "../../vox/material/mcase/ShaderMaterial";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
@@ -30,7 +38,6 @@ import { MaterialContext } from "../../materialLab/base/MaterialContext";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 
-import ITransformEntity from "../../vox/entity/ITransformEntity";
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 
 function createVec3(px: number = 0.0, py: number = 0.0, pz: number = 0.0, pw: number = 1.0): IVector3D {
@@ -60,6 +67,12 @@ function applySceneBlock(rsecne: ICoRendererScene): void {
 	rscene.entityBlock = entityBlock;
 }
 
+function createMouseEvt3DDispatcher(): IEvtDispatcher {
+	return new MouseEvt3DDispatcher();
+}
+function createDataMesh(): IDataMesh {
+	return new DataMesh();
+}
 
 function createDefaultMaterial(normalEnabled: boolean = false): IRenderMaterial {
 	let m = new Default3DMaterial();
@@ -76,7 +89,7 @@ function createDisplayEntityFromModel(model: CoGeomDataType, material: MaterialB
 		material.initializeByCodeBuf();
 	}
 	if (material.getCodeBuf() == null || material.getBufSortFormat() < 0x1) {
-		throw Error("the material does not call initializeByCodeBuf() function. !!!");
+		throw Error("the material does not call the initializeByCodeBuf() function. !!!");
 	}
 	const dataMesh = new DataMesh();
 	dataMesh.vbWholeDataEnabled = false;
@@ -86,7 +99,6 @@ function createDisplayEntityFromModel(model: CoGeomDataType, material: MaterialB
 	dataMesh.setIVS(model.indices);
 	dataMesh.setVtxBufRenderData(material);
 	dataMesh.initialize();
-	// console.log("dataMesh: ", dataMesh);
 
 	const entity = new DisplayEntity();
 	entity.setMesh(dataMesh);
@@ -97,9 +109,10 @@ function createDisplayEntityFromModel(model: CoGeomDataType, material: MaterialB
 function createDisplayEntity(): ITransformEntity {
 	return new DisplayEntity();
 }
-function createDataMesh(): IDataMesh {
-	return new DataMesh();
+function createMouseEventEntity(): IMouseEventEntity {
+	return new MouseEventEntity();
 }
+
 
 function createAxis3DEntity(size: number = 100): ITransformEntity {
 	let axis = new Axis3DEntity();
@@ -138,13 +151,16 @@ export {
 	createRendererSceneParam,
 	createRendererScene,
 	applySceneBlock,
+	createMouseEvt3DDispatcher,
+	
+	createDataMesh,
 
 	createDefaultMaterial,
 	createShaderMaterial,
 	createDisplayEntityFromModel,
 	createAxis3DEntity,
 	createDisplayEntity,
-	createDataMesh,
+	createMouseEventEntity,
 
 	createMaterialContext,
 	creatMaterialContextParam

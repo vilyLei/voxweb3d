@@ -5,7 +5,9 @@ import IColor4 from "../../vox/material/IColor4";
 import IRendererParam from "../../vox/scene/IRendererParam";
 import { ICoRendererScene } from "./scene/ICoRendererScene";
 
+import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import ITransformEntity from "../../vox/entity/ITransformEntity";
+import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
 import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 
@@ -23,6 +25,7 @@ interface CoVec3 {
 }
 
 interface CoMouseEvent {
+
 	readonly MOUSE_DOWN: number;
 	readonly MOUSE_UP: number;
 	readonly MOUSE_RIGHT_UP: number;
@@ -108,17 +111,24 @@ interface ICoRScene {
 	createRendererSceneParam(div?: HTMLDivElement): IRendererParam;
 	createRendererScene(): ICoRendererScene;
 	applySceneBlock(rsecne: ICoRendererScene): void;
+
+	createMouseEvt3DDispatcher(): IEvtDispatcher;
+
 	/**
 	 * build default 3d entity rendering material
 	 * @param normalEnabled the default value is false
 	 */
 	createDefaultMaterial(normalEnabled?: boolean): IRenderMaterial;
 	createShaderMaterial(shd_uniqueName: string): IShaderMaterial;
+
+	
+	createDataMesh(): IDataMesh;
+
 	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial): ITransformEntity;
 	createAxis3DEntity(size?: number): ITransformEntity;
 
 	createDisplayEntity(): ITransformEntity;
-	createDataMesh(): IDataMesh;
+	createMouseEventEntity(): IMouseEventEntity;
 
 	createMaterialContext(): IMaterialContext;
 	creatMaterialContextParam(): CoMaterialContextParam;
