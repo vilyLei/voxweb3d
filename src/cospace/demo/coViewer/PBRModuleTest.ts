@@ -19,6 +19,7 @@ export default class PBRModuleTest implements IMaterialModule {
     private m_loadSpecularData: boolean = true;
     private m_specEnvMapbuffer: ArrayBuffer = null;
     private m_specEnvMap: IRenderTexture = null;
+	private m_shadowEnabled: boolean = false;
 	private m_loadSpecCallback: () => void = null;
     constructor() { }
 
@@ -26,9 +27,10 @@ export default class PBRModuleTest implements IMaterialModule {
         this.loadSpecularData(true);
 		this.m_loadSpecCallback = callback;
     }
-    active(rscene: IRendererScene, materialCtx: IMaterialContext): void {
+    active(rscene: IRendererScene, materialCtx: IMaterialContext, shadowEnabled: boolean): void {
 
         this.m_materialCtx = materialCtx;
+		this.m_shadowEnabled = shadowEnabled;
         if (this.m_effect == null) {
             this.m_rscene = rscene;
             this.m_effect = new PBREffectInstance();
@@ -144,7 +146,7 @@ export default class PBRModuleTest implements IMaterialModule {
         param.roughness = 0.4;
         param.ao = 1.0;
         param.specularEnvMap = this.m_specEnvMap;
-        param.shadowReceiveEnabled = shadowReceiveEnabled;
+        param.shadowReceiveEnabled = shadowReceiveEnabled && this.m_shadowEnabled;
 
         param.fogEnabled = fogEnabled;
 

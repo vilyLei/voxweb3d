@@ -6,7 +6,7 @@ import { IMaterial } from "../../../vox/material/IMaterial";
 export default interface IMaterialModule {
 
     preload(callback?: () => void): void;
-    active(rscene: IRendererScene, materialCtx: IMaterialContext): void;
+    active(rscene: IRendererScene, materialCtx: IMaterialContext, shadowEnabled: boolean): void;
     /**
      *
      * @param materialCtx
@@ -16,8 +16,7 @@ export default interface IMaterialModule {
      * @param shadowReceiveEnabled  the default value is false
      * @param aoMapEnabled  the default value is true
      */
-    // preload(materialCtx: IMaterialContext, ns: string, normalMapEnabled?: boolean, displacementMap?: boolean, shadowReceiveEnabled?: boolean, aoMapEnabled?: boolean): void;
-    createMaterial(shadowReceiveEnabled?:boolean): IMaterial;
+    createMaterial(shadowReceiveEnabled?:boolean, materialParam?: any): IMaterial;
     getUUID(): string;
     isEnabled(): boolean;
 }

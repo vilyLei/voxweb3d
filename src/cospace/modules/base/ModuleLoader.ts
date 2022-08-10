@@ -1,9 +1,14 @@
 
 class ModuleLoader {
+	private static s_uid: number = 0;
+	private m_uid: number = ModuleLoader.s_uid ++;
 
-	private m_callback: () => void = null;
 	private m_times: number;
 	private m_oneTimes: boolean = true;
+	private static loadedMap: Map<string, number> = new Map();
+	private static loadingMap: Map<string, ModuleLoader[]> = new Map();
+	private m_callback: () => void = null;
+
 	constructor(times: number){
 		this.m_times = times;
 	}
@@ -26,7 +31,31 @@ class ModuleLoader {
 			}
 		}
 	}
+	hasModuleByUrl(url: string): boolean {
+		return ModuleLoader.loadedMap.has(url);
+	}
 	loadModule(url: string, module: string = ""): ModuleLoader {
+		if(url == "") {
+			return this;
+		}
+		let loadedMap = ModuleLoader.loadedMap;
+		if(loadedMap.has(url)) {
+			this.use();
+			return;
+		}
+		let loadingMap = ModuleLoader.loadingMap;
+		if(loadingMap.has(url)) {
+			let list = loadingMap.get(url);
+			for(let i = 0; i < list.length; ++i) {
+				if(list[i] == this) {
+					return;
+				}
+			}
+			list.push( this);
+			return;
+		}
+		loadingMap.set(url, [ this ]);
+
 		let codeLoader: XMLHttpRequest = new XMLHttpRequest();
 		codeLoader.open("GET", url, true);
 		codeLoader.onerror = function(err) {
@@ -44,7 +73,13 @@ class ModuleLoader {
 			scriptEle.innerHTML = codeLoader.response;
 			document.head.appendChild(scriptEle);
 
-			this.use();
+			loadedMap.set(url, 1);
+
+			let list = loadingMap.get(url);
+			for(let i = 0; i < list.length; ++i) {
+				list[i].use();
+			}
+			loadingMap.delete(url);
 		};
 		codeLoader.send(null);
 		return this;

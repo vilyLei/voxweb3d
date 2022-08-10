@@ -10,6 +10,7 @@ import ViewerMaterialCtx from "./coViewer/ViewerMaterialCtx";
 import { ModuleLoader } from "../modules/base/ModuleLoader";
 import { ViewerCoSApp } from "./coViewer/ViewerCoSApp";
 import { SceneNode } from "./coViewer/SceneNode";
+import { ViewerSCData } from "./coViewer/ViewerSCData";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -25,6 +26,7 @@ export class DemoCoViewer {
 	private m_vcoapp: ViewerCoSApp;
 	private m_vmctx: ViewerMaterialCtx;
 
+	private m_scData: any;
 	constructor() {}
 
 	initialize(): void {
@@ -32,11 +34,20 @@ export class DemoCoViewer {
 		document.onmousedown = (evt: any): void => {
 			this.mouseDown(evt);
 		};
+		let scDataJsonUrl = "static/assets/scene/sc01.json";
+		let scData = new ViewerSCData();
+		// scData.build();
 
-		this.initEngineModule();
+		scData.loadSCData(scDataJsonUrl, (scData: any): void => {
+			console.log("scData.loadSCData(), scData: ",scData);
+			this.m_scData = scData;
+			this.initEngineModule();
+		})
+
 	}
 
 	private initEngineModule(): void {
+
 		let url = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.js";
 		let mouseInteractML = new ModuleLoader(2);
 		mouseInteractML.setCallback((): void => {
@@ -45,6 +56,7 @@ export class DemoCoViewer {
 
 		let url0 = "static/cospace/engine/renderer/CoRenderer.umd.js";
 		let url1 = "static/cospace/engine/rscene/CoRScene.umd.js";
+
 		new ModuleLoader(2)
 			.setCallback((): void => {
 				if (this.isEngineEnabled()) {
@@ -65,10 +77,9 @@ export class DemoCoViewer {
 
 		mouseInteractML.loadModule(url);
 	}
-	
 	private initMaterialModule(): void {
 		this.m_vmctx = new ViewerMaterialCtx();
-		this.m_vmctx.initialize(this.m_rscene, (): void => {
+		this.m_vmctx.initialize(this.m_rscene, this.m_scData.material, (): void => {
 			this.m_node.applyMaterial();
 
 		});

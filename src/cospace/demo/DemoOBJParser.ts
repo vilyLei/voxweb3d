@@ -13,7 +13,8 @@ import {
 	RendererParam,
 	RendererScene,
 	ShaderMaterial,
-	UserInteraction
+	UserInteraction,
+	Vector3D
 } from "../voxengine/CoEngine";
 import MaterialBase from "../../vox/material/MaterialBase";
 import DivLog from "../../vox/utils/DivLog";
@@ -24,6 +25,9 @@ import { ILightModule } from "../../light/base/ILightModule";
 import { LightModule } from "../../light/base/LightModule";
 import PBRModuleTest from "./coViewer/PBRModuleTest";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
+import { MaterialPipeType } from "../voxengine/CoRScene";
+import EnvLightModule from "../../light/base/EnvLightModule";
+import { ShadowVSMModule } from "../../shadow/vsm/base/ShadowVSMModule";
 
 /**
  * 通过加载到的CTM模型二进制数据，发送CTM资源解析任务给多线程数据处理系统，获取解析之后的CTM模型数据
@@ -47,7 +51,7 @@ export class DemoOBJParser {
 		schedule.initialize(3, "static/cospace/core/code/ThreadCore.umd.min.js");
 
 		// 创建 ctm 加载解析任务
-		let ctmParseTask = new OBJParseTask("static/cospace/modules/obj/ModuleOBJGeomParser.umd.js");
+		let ctmParseTask = new OBJParseTask("static/cospace/modules/obj/ModuleOBJGeomParser.umd.min.js");
 		// 绑定当前任务到多线程调度器
 		schedule.bindTask(ctmParseTask);
 		// 设置一个任务完成的侦听器
@@ -126,22 +130,92 @@ export class DemoOBJParser {
 		mcParam.vsmFboIndex = 0;
 		//nickname
 		// mcParam.vsmEnabled = true;
-		mcParam.vsmEnabled = false;
+		mcParam.vsmEnabled = true;
 		// mcParam.buildBinaryFile = true;
 		this.m_mctx = new MaterialContext();
 		this.m_mctx.addShaderLibListener(this);
+
+		this.buildEnvLight();
+		this.buildShadowModule(mcParam);
 		this.buildLightModule(mcParam);
 
 		this.m_mctx.initialize( this.m_rscene, mcParam);
 
-		this.m_pbrModule.active(this.m_rscene, this.m_mctx);
+		this.m_pbrModule.active(this.m_rscene, this.m_mctx, mcParam.vsmEnabled);
+
+
+		console.log("############## initRenderer() ... 2");
+
+	}
+
+	private buildEnvLight(): void {
+
+		let rproxy = this.m_rscene.getRenderProxy();
+		let module = new EnvLightModule(rproxy.uniformContext);
+		module.initialize();
+		module.setFogColorRGB3f(0.0, 0.8, 0.1);
+
+		this.m_mctx.envLightModule = module;
+	}
+	private buildBGBox(): void {
+
+		let rscene = this.m_rscene;
+		// return;
+		let material = this.m_pbrModule.createMaterial(true);
+
+		let scale = 700.0;
+		let boxEntity = rscene.entityBlock.createEntity();
+		boxEntity.setMaterial(material);
+		boxEntity.copyMeshFrom(rscene.entityBlock.unitBox);
+		boxEntity.setScaleXYZ(scale, scale * 0.05, scale);
+		boxEntity.setXYZ(0, -200, 0);
+		rscene.addEntity(boxEntity);
+	}
+
+	private buildShadowModule(param: MaterialContextParam): void {
+
+		let vsmModule = new ShadowVSMModule(param.vsmFboIndex);//VSMShadowModule.create(param.vsmFboIndex);
+		vsmModule.setCameraPosition( new Vector3D(1, 800, 1));
+		vsmModule.setCameraNear(10.0);
+		vsmModule.setCameraFar(3000.0);
+		vsmModule.setMapSize(512.0, 512.0);
+		vsmModule.setCameraViewSize(4000, 4000);
+		vsmModule.setShadowRadius(2);
+		vsmModule.setShadowBias(-0.0005);
+		vsmModule.initialize(this.m_rscene, [0], 3000);
+		vsmModule.setShadowIntensity(0.8);
+		vsmModule.setColorIntensity(0.3);
+		this.m_mctx.vsmModule = vsmModule;
+		console.log("buildShadowModule(), vsmModule: ", vsmModule);
+
+	}
+	private buildEnvBox(): void {
+
+		const mctx = this.m_mctx;
+
+		let renderingState = this.m_rscene.getRenderProxy().renderingState;
+		let rscene = this.m_rscene;
+		let material = new Default3DMaterial();
+		material.pipeTypes = [MaterialPipeType.FOG_EXP2];
+		material.setMaterialPipeline(mctx.pipeline);
+		material.setTextureList([mctx.getTextureByUrl("static/assets/box.jpg")]);
+		material.initializeByCodeBuf(true);
+
+		let scale: number = 3000.0;
+		let entity = rscene.entityBlock.createEntity();
+		entity.setRenderState(renderingState.FRONT_CULLFACE_NORMAL_STATE);
+		entity.setMaterial(material);
+		entity.copyMeshFrom(rscene.entityBlock.unitBox);
+		entity.setScaleXYZ(scale, scale, scale);
+		rscene.addEntity(entity, 1);
 	}
 	private createLightModule(rsecne: RendererScene): ILightModule {
 		let ctx = rsecne.getRenderProxy().uniformContext;
 		return new LightModule(ctx);
 	}
 	shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
-		console.log("shaderLibLoadComplete().................");
+		console.log("############## shaderLibLoadComplete().................");
+		this.buildBGBox();
 
 		this.m_lossTime = Date.now();
 
@@ -181,7 +255,7 @@ export class DemoOBJParser {
 		// let material = this.createNormalMaterial();
 		// material.initializeByCodeBuf();
 
-		let material = this.m_pbrModule.createMaterial( false );
+		let material = this.m_pbrModule.createMaterial( true );
 		material.initializeByCodeBuf( true );
 
 		let dataMesh: DataMesh = new DataMesh();
@@ -351,6 +425,7 @@ void main() {
 	run(): void {
 		if(this.m_rscene != null) {
 			this.m_userInterac.run();
+			this.m_mctx.run();
 			this.m_rscene.run();
 		}
 	}
