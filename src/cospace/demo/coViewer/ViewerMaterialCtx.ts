@@ -148,35 +148,6 @@ export class ViewerMaterialCtx {
 			light.attenuationFactor2 = lo.factor2;
 		}
 		lightModule.update();
-		return;
-		let pointLight = lightModule.getPointLightAt(0);
-		if (pointLight != null) {
-			// pointLight.position.setXYZ(200.0, 180.0, 200.0);
-			pointLight.position.setXYZ(0.0, 190.0, 0.0);
-			pointLight.color.setRGB3f(0.0, 2.2, 0.0);
-			pointLight.attenuationFactor1 = 0.00001;
-			pointLight.attenuationFactor2 = 0.00005;
-		}
-		let spotLight = lightModule.getSpotLightAt(0);
-		if (spotLight != null) {
-			spotLight.position.setXYZ(0.0, 30.0, 0.0);
-			spotLight.direction.setXYZ(0.0, -1.0, 0.0);
-			spotLight.color.setRGB3f(0.0, 40.2, 0.0);
-			spotLight.attenuationFactor1 = 0.000001;
-			spotLight.attenuationFactor2 = 0.000001;
-			spotLight.angleDegree = 30.0;
-		}
-		let directLight = lightModule.getDirectionLightAt(0);
-		if (directLight != null) {
-			directLight.color.setRGB3f(2.0, 0.0, 0.0);
-			directLight.direction.setXYZ(-1.0, -1.0, 0.0);
-			directLight = lightModule.getDirectionLightAt(1);
-			if (directLight != null) {
-				directLight.color.setRGB3f(0.0, 0.0, 2.0);
-				directLight.direction.setXYZ(1.0, 1.0, 0.0);
-			}
-		}
-		lightModule.update();
 	}
 	private initMaterialCtx(): void {
 		console.log("initMaterialCtx() ....");
@@ -189,9 +160,6 @@ export class ViewerMaterialCtx {
 
 		let mcParam = CoRScene.creatMaterialContextParam();
 		mcParam.shaderLibVersion = mc.shaderLibVersion;
-		// mcParam.pointLightsTotal = 1;
-		// mcParam.directionLightsTotal = 2;
-		// mcParam.spotLightsTotal = 0;
 		mcParam.loadAllShaderCode = true;
 		mcParam.shaderCodeBinary = true;
 		mcParam.pbrMaterialEnabled = true;
@@ -240,20 +208,6 @@ export class ViewerMaterialCtx {
 		vsmModule.setShadowIntensity(data.shadowIntensity);
 		vsmModule.setColorIntensity(data.colorIntensity);
 		mctx.vsmModule = vsmModule;
-		return;
-		// let vsmModule = VSMShadowModule.create(param.vsmFboIndex);
-		// vsmModule.setCameraPosition(CoRScene.createVec3(1, 800, 1));
-		// vsmModule.setCameraNear(10.0);
-		// vsmModule.setCameraFar(3000.0);
-		// vsmModule.setMapSize(512.0, 512.0);
-		// vsmModule.setCameraViewSize(4000, 4000);
-		// vsmModule.setShadowRadius(2);
-		// vsmModule.setShadowBias(-0.0005);
-		// vsmModule.initialize(this.m_rscene, [0], 3000);
-		// vsmModule.setShadowIntensity(0.8);
-		// vsmModule.setColorIntensity(0.3);
-		// mctx.vsmModule = vsmModule;
-		// console.log("buildShadowModule(), vsmModule: ", vsmModule);
 	}
 	run(): void {
 		if (this.m_mctx != null) {
