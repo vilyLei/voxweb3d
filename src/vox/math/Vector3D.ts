@@ -34,6 +34,16 @@ class Vector3D implements IVector3D {
         this.z = arr[offset + 2];
         return this;
     }
+    toArray(arr: number[], offset: number = 0): number[] {
+        if(arr === undefined || arr == null) {
+            arr = new Array(3);
+            offset = 0;
+        }
+        this.x = arr[offset];
+        this.y = arr[offset + 1];
+        this.z = arr[offset + 2];
+        return arr;
+    }
     setXYZ(px: number, py: number, pz: number): void {
         this.x = px;
         this.y = py;

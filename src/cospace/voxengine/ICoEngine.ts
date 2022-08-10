@@ -1,5 +1,6 @@
-import { ICoVec3 } from "./math/ICoVec3";
-import { ICoMat4 } from "./math/ICoMat4";
+import IVector3D from "../../vox/math/IVector3D";
+import { IMatrix4 } from "../../vox/math/IMatrix4";
+
 import { ICoRendererParam } from "./engine/ICoRendererParam";
 import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";
 import { ICoDisplayEntity } from "./entity/ICoDisplayEntity";
@@ -72,8 +73,8 @@ interface ICoEngine {
 	RendererDevice: CoRendererDevice;
 	RendererState: CoRendererState;
 	// RendererParam: ICoRendererParam;
-	createVec3(px: number, py: number, pz: number, pw?: number): ICoVec3;
-	createMat4(pfs32?: Float32Array, index?: number): ICoMat4;
+	createVec3(px: number, py: number, pz: number, pw?: number): IVector3D;
+	createMat4(pfs32?: Float32Array, index?: number): IMatrix4;
 	createRendererParam(div?: HTMLDivElement): ICoRendererParam;
 	createEngine(): IEngineBase;
 	createShaderMaterial(shd_uniqueName: string): IShaderMaterial;

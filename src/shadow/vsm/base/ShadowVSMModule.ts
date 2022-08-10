@@ -28,8 +28,8 @@ export class ShadowVSMModule implements IMaterialPipe, IShadowVSMModule {
     private m_verOccBlurPlane: IRenderEntity = null;
     private m_horOccBlurPlane: IRenderEntity = null;
     // private m_blurModule: PingpongBlur = null;
-
-    private m_camPos: IVector3D;//new Vector3D(1.0, 800.0, 1.0);
+    private m_camPosArr: number[] = [1.0, 800.0, 1.0];
+    private m_camPos: IVector3D;
     private m_zero: IVector3D;
     private m_axisZ: IVector3D;
     private m_shadowBias: number = -0.0005;
@@ -79,7 +79,8 @@ export class ShadowVSMModule implements IMaterialPipe, IShadowVSMModule {
     initialize(rscene: IRendererScene, processIDList: number[], buildShadowDelay: number = 120, blurEnabled: boolean = false): void {
         if (this.m_rscene == null) {
             this.m_rscene = rscene;
-            this.m_camPos = rscene.createVector3D(1.0, 800.0, 1.0);
+            this.m_camPos = rscene.createVector3D();
+            this.m_camPos.fromArray( this.m_camPosArr );
             this.m_zero = rscene.createVector3D();
             this.m_axisZ = rscene.createVector3D(0.0, 0.0, 1.0);
             this.m_buildShadowDelay = buildShadowDelay;
@@ -101,7 +102,11 @@ export class ShadowVSMModule implements IMaterialPipe, IShadowVSMModule {
      * @param pos shadow camera position in world.
      */
     setCameraPosition(pos: IVector3D): void {
-        this.m_camPos.copyFrom(pos);
+        if(this.m_camPos != null) {
+            this.m_camPos.copyFrom(pos);
+        }else {
+            pos.toArray(this.m_camPosArr);
+        }
     }
     /**
      * set shadow camera near plane distance 
