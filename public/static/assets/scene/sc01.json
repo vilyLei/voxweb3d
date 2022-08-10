@@ -1,0 +1,144 @@
+{
+    "engine": {
+        "renderer": {
+            "url": "static/cospace/engine/renderer/CoRenderer.umd.js"
+        },
+        "rendererScene": {
+            "url": "static/cospace/engine/rscene/CoRScene.umd.js"
+        },
+        "mouseInteraction": {
+            "url": "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.js"
+        }
+    },
+    "material": {
+        "context": {
+            "shaderLibVersion": "v101",
+            "loadAllShaderCode": true,
+            "shaderCodeBinary": true
+        },
+        "fog": {
+            "density": 0.0005,
+            "rgb": [
+                0,
+                0.8,
+                0.1
+            ],
+            "module": {
+                "url": "static/cospace/renderEffect/envLight/CoEnvLightModule.umd.js"
+            }
+        },
+        "pbr": {
+            "map": {
+                "envMap": "static/bytes/spe.mdf",
+                "envBrnMap": "static/bytes/spb.bin",
+                "diffuseMap": "static/assets/pbrtex/rough_plaster_broken_diff_1k.jpg",
+                "normalMap": "static/assets/pbrtex/rough_plaster_broken_nor_1k.jpg",
+                "armMap": "static/assets/pbrtex/rough_plaster_broken_arm_1k.jpg",
+                "parallaxMap": "static/assets/pbrtex/rough_plaster_broken_disp_1k.jpg",
+                "displacementMap": "static/assets/pbrtex/rough_plaster_broken_disp_1k.jpg"
+            },
+            "defaultParam": {
+                "metallic": 1,
+                "roughness": 0.4,
+                "ao": 1,
+                "scatterIntensity": 8,
+                "sideIntensity": 8,
+                "shadowReceiveEnabled": true,
+                "fogEnabled": true,
+                "scatterEnabled": false,
+                "woolEnabled": true,
+                "absorbEnabled": false,
+                "normalNoiseEnabled": false,
+                "displacementParams": [
+                    0.02,
+                    -0.01
+                ],
+                "albedoColor": [
+                    1,
+                    1,
+                    1
+                ],
+                "parallaxParams": [
+                    1,
+                    10,
+                    5,
+                    0.02
+                ]
+            },
+            "module": {
+                "url": "static/cospace/renderEffect/pbr/PBREffect.umd.js"
+            }
+        },
+        "light": {
+            "pointLights": [
+                {
+                    "position": [
+                        0,
+                        190,
+                        0
+                    ],
+                    "rgb": [
+                        0,
+                        2.2,
+                        0
+                    ],
+                    "factor1": 0.00001,
+                    "factor2": 0.00005
+                }
+            ],
+            "directionLights": [
+                {
+                    "direction": [
+                        -1,
+                        -1,
+                        0
+                    ],
+                    "rgb": [
+                        2,
+                        0,
+                        0
+                    ]
+                },
+                {
+                    "direction": [
+                        1,
+                        1,
+                        0
+                    ],
+                    "rgb": [
+                        0,
+                        0,
+                        2
+                    ]
+                }
+            ],
+            "module": {
+                "url": "static/cospace/renderEffect/lightModule/CoLightModule.umd.js"
+            }
+        },
+        "shadow": {
+            "cameraPosition": [
+                1,
+                800,
+                1
+            ],
+            "cameraNear": 10,
+            "cameraFar": 3000,
+            "mapSize": [
+                512,
+                512
+            ],
+            "cameraViewSize": [
+                4000,
+                4000
+            ],
+            "radius": 2,
+            "bias": -0.0005,
+            "shadowIntensity": 0.8,
+            "colorIntensity": 0.3,
+            "module": {
+                "url": "static/cospace/renderEffect/vsmShadow/VSMShadowModule.umd.js"
+            }
+        }
+    }
+}
