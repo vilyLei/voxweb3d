@@ -59,8 +59,6 @@ export class SpecularTextureBuilder {
     }
     createHdrBrn(rscene: IRendererScene, buffer: ArrayBuffer, texture: IRenderTexture): IRenderTexture {
 
-        // this.createTexture(true, rscene);
-
         let data16: Uint16Array = new Uint16Array(buffer);
         let currBytes: Uint8Array = new Uint8Array(buffer);
         let begin: number = 0;
@@ -89,7 +87,7 @@ export class SpecularTextureBuilder {
 
 class PBREffectInstance implements IPBREffectInstance {
     private m_rscene: IRendererScene = null;
-    private m_specularBuilder: SpecularTextureBuilder;// = new SpecularTextureBuilder();
+    private m_specularBuilder: SpecularTextureBuilder;
     constructor() {
 
     }
@@ -130,6 +128,10 @@ class PBREffectInstance implements IPBREffectInstance {
             return texture;
         }
         return null;
+    }
+    destroy(): void {
+        this.m_rscene = null;
+        this.m_specularBuilder = null;
     }
 }
 function create(): IPBREffectInstance {

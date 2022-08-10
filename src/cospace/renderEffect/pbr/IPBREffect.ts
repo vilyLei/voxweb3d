@@ -13,6 +13,7 @@ interface IPBREffectInstance {
      * @param texture the default value is null
      */
     createSpecularTex( buffer: ArrayBuffer, hdrBrnEnabled?: boolean, texture?: IRenderTexture ): IRenderTexture;
+    destroy(): void;
 
 }
 
