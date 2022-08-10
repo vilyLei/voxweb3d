@@ -5,6 +5,8 @@ import { ICoRScene } from "../voxengine/ICoRScene";
 import { ICoMouseInteraction } from "../voxengine/ui/ICoMouseInteraction";
 import { ModuleLoader } from "../modules/base/ModuleLoader";
 import { ViewerCoSApp } from "./coViewer/ViewerCoSApp";
+import { SceneNode } from "./coViewer/SceneNode";
+import { CoDataFormat } from "../app/CoSpaceAppData";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -40,10 +42,10 @@ export class DemoPostOutline {
 					this.initRenderer();
 					mouseInteractML.use();
 
-					// this.m_vcoapp = new ViewerCoSApp();
-					// this.m_vcoapp.initialize((): void => {
-					// 	this.loadOBJ();
-					// });
+					this.m_vcoapp = new ViewerCoSApp();
+					this.m_vcoapp.initialize((): void => {
+						this.loadOBJ();
+					});
 				}
 			})
 			.loadModule(url0)
@@ -84,6 +86,17 @@ export class DemoPostOutline {
 			let axis = CoRScene.createAxis3DEntity();
 			this.m_rscene.addEntity(axis);
 		}
+	}
+	
+	private m_node: SceneNode = null;
+	private loadOBJ(): void {
+		let baseUrl: string = "static/private/obj/";
+		let url = baseUrl + "base.obj";
+		url = baseUrl + "base4.obj";
+
+		let node: SceneNode = new SceneNode(this.m_rscene, this.m_vcoapp);
+		node.setScale(23.0).loadGeomModel(url, CoDataFormat.OBJ);
+		this.m_node = node;
 	}
 	run(): void {
 		if (this.m_rscene != null) {
