@@ -9,7 +9,7 @@ import { ICoMouseInteraction } from "../voxengine/ui/ICoMouseInteraction";
 import ViewerMaterialCtx from "./coViewer/ViewerMaterialCtx";
 import { ModuleLoader } from "../modules/base/ModuleLoader";
 import { ViewerCoSApp } from "./coViewer/ViewerCoSApp";
-import { SceneNode } from "./coViewer/SceneNode";
+import { ViewerSceneNode } from "./coViewer/ViewerSceneNode";
 import { ViewerSCData } from "./coViewer/ViewerSCData";
 
 declare var CoRenderer: ICoRenderer;
@@ -116,13 +116,13 @@ export class DemoCoViewer {
 			// this.m_rscene.addEntity(axis);
 		}
 	}
-	private m_node: SceneNode = null;
+	private m_node: ViewerSceneNode = null;
 	private loadOBJ(): void {
 		let baseUrl: string = "static/private/obj/";
 		let url = baseUrl + "base.obj";
 		url = baseUrl + "base4.obj";
 
-		let node: SceneNode = new SceneNode(this.m_rscene, this.m_vmctx, this.m_vcoapp);
+		let node: ViewerSceneNode = new ViewerSceneNode(this.m_rscene, this.m_vmctx, this.m_vcoapp);
 		node.setScale(23.0).loadGeomModel(url, CoDataFormat.OBJ);
 		this.m_node = node;
 	}
