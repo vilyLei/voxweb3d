@@ -20,6 +20,14 @@ class Color4 implements IColor4{
         this.b = pb;
         this.a = pa;
     }
+    
+    fromArray(arr: number[], offset?: number): IColor4 {
+        this.r = arr[offset];
+        this.g = arr[offset + 1];
+        this.b = arr[offset + 2];
+        return this;
+
+    }
     setRGB3Bytes(r: number, g: number, b: number): void {
         this.r = r / 255.0;
         this.g = g / 255.0;
