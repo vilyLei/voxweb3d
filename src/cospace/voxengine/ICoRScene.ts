@@ -5,7 +5,7 @@ import IColor4 from "../../vox/material/IColor4";
 import IRendererParam from "../../vox/scene/IRendererParam";
 import { ICoRendererScene } from "./scene/ICoRendererScene";
 
-import { ICoDisplayEntity } from "./entity/ICoDisplayEntity";
+import ITransformEntity from "../../vox/entity/ITransformEntity";
 import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 
@@ -114,10 +114,10 @@ interface ICoRScene {
 	 */
 	createDefaultMaterial(normalEnabled?: boolean): IRenderMaterial;
 	createShaderMaterial(shd_uniqueName: string): IShaderMaterial;
-	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial): ICoDisplayEntity;
-	createAxis3DEntity(size?: number): ICoDisplayEntity;
+	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial): ITransformEntity;
+	createAxis3DEntity(size?: number): ITransformEntity;
 
-	createDisplayEntity(): ICoDisplayEntity;
+	createDisplayEntity(): ITransformEntity;
 	createDataMesh(): IDataMesh;
 
 	createMaterialContext(): IMaterialContext;

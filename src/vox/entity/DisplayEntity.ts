@@ -20,9 +20,9 @@ import ROTransform from "../../vox/display/ROTransform";
 import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import IRODisplay from "../../vox/display/IRODisplay";
 import RODisplay from "../../vox/display/RODisplay";
-import IRenderEntity from "../../vox/render/IRenderEntity";
 import IEntityTransform from "../../vox/entity/IEntityTransform";
 import IDisplayEntity from "../../vox/entity/IDisplayEntity";
+import ITransformEntity from "../../vox/entity/ITransformEntity";
 
 import { IRenderProxy } from "../../vox/render/IRenderProxy";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
@@ -31,7 +31,7 @@ import DebugFlag from '../debug/DebugFlag';
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 
-export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEntityTransform {
+export default class DisplayEntity implements IDisplayEntity, IEntityTransform, ITransformEntity {
     private static s_uid: number = 0;
     private m_uid: number = 0;
     protected m_transfrom: ROTransform = null;

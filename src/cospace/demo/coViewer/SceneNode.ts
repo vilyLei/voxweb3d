@@ -1,5 +1,5 @@
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../app/CoSpaceAppData";
-import { ICoDisplayEntity } from "../../voxengine/entity/ICoDisplayEntity";
+import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
 import { CoNormalMaterial } from "../../voxengine/material/CoNormalMaterial";
 import { ViewerCoSApp } from "./ViewerCoSApp";
@@ -62,10 +62,10 @@ class SceneNode {
 			entity.setScaleXYZ(m_scale, m_scale, m_scale);
 		}
 	}
-	private createEntity(model: CoGeomDataType): ICoDisplayEntity {
+	private createEntity(model: CoGeomDataType): ITransformEntity {
 		// let rst = CoRenderer.RendererState;
 
-		let entity: ICoDisplayEntity;
+		let entity: ITransformEntity;
 		entity = CoRScene.createDisplayEntityFromModel(model, new CoNormalMaterial().build().material);
 
 		// entity.setRenderState(rst.NONE_CULLFACE_NORMAL_STATE);

@@ -13,7 +13,6 @@ import IROVtxBuf from "../../vox/render/IROVtxBuf";
 import VtxCombinedBuf from "../../vox/mesh/VtxCombinedBuf";
 import VtxSeparatedBuf from "../../vox/mesh/VtxSeparatedBuf";
 import { RenderDrawMode } from "../../vox/render/RenderConst";
-import { IROVertexBuffer } from "../../vox/mesh/IROVertexBuffer";
 
 export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
     private static s_uid: number = 0;

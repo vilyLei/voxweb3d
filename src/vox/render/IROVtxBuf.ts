@@ -7,6 +7,10 @@
 
 import IVtxBufData from "../../vox/mesh/IVtxBufData";
 
+
+// getUid(): number;
+// getType(): number;
+
 interface IROVtxBuf {
     layoutBit: number;
     vertexVer: number;

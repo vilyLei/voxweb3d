@@ -3,7 +3,7 @@ import { IMatrix4 } from "../../vox/math/IMatrix4";
 
 import { ICoRendererParam } from "./engine/ICoRendererParam";
 import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";
-import { ICoDisplayEntity } from "./entity/ICoDisplayEntity";
+import ITransformEntity from "../../vox/entity/ITransformEntity";
 import { IEngineBase } from "./engine/IEngineBase";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
@@ -78,7 +78,7 @@ interface ICoEngine {
 	createRendererParam(div?: HTMLDivElement): ICoRendererParam;
 	createEngine(): IEngineBase;
 	createShaderMaterial(shd_uniqueName: string): IShaderMaterial;
-	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IShaderMaterial): ICoDisplayEntity;
-	createAxis3DEntity(size?: number): ICoDisplayEntity;
+	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IShaderMaterial): ITransformEntity;
+	createAxis3DEntity(size?: number): ITransformEntity;
 }
 export { ICoEngine };

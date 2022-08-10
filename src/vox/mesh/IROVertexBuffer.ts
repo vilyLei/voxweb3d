@@ -7,7 +7,6 @@
 
 interface IROVertexBuffer {
     
-    
     getUid(): number;
     getType(): number;
     

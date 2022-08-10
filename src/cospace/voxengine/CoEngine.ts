@@ -23,7 +23,7 @@ import { ICoRendererParam } from "./engine/ICoRendererParam";
 import RendererScene from "../../vox/scene/RendererScene";
 import { EngineBase as Engine } from "../../vox/engine/EngineBase";
 
-import { ICoDisplayEntity } from "./entity/ICoDisplayEntity";
+import ITransformEntity from "../../vox/entity/ITransformEntity";
 import { IEngineBase } from "./engine/IEngineBase";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
@@ -44,7 +44,7 @@ function createEngine(): IEngineBase {
 function createShaderMaterial(shd_uniqueName: string): IShaderMaterial {
 	return new ShaderMaterial(shd_uniqueName);
 }
-function createDisplayEntityFromModel(model: CoGeomDataType, pmaterial: ShaderMaterial = null): ICoDisplayEntity {
+function createDisplayEntityFromModel(model: CoGeomDataType, pmaterial: ShaderMaterial = null): ITransformEntity {
 	let material: MaterialBase = pmaterial as MaterialBase;
 	if (material == null) {
 		material = new Default3DMaterial();
@@ -68,7 +68,7 @@ function createDisplayEntityFromModel(model: CoGeomDataType, pmaterial: ShaderMa
 	entity.setMaterial(material);
 	return entity;
 }
-function createAxis3DEntity(size: number = 100): ICoDisplayEntity {
+function createAxis3DEntity(size: number = 100): ITransformEntity {
 	let axis = new Axis3DEntity();
 	axis.initialize(size);
 	return axis;

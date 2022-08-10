@@ -1,5 +1,5 @@
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../app/CoSpaceAppData";
-import { ICoDisplayEntity } from "../../voxengine/entity/ICoDisplayEntity";
+import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
 import { CoNormalMaterial } from "../../voxengine/material/CoNormalMaterial";
 import ViewerMaterialCtx from "../coViewer/ViewerMaterialCtx";
@@ -73,11 +73,11 @@ class ViewerSceneNode {
 			entity.setScaleXYZ(m_scale, m_scale, m_scale);
 		}
 	}
-	private createEntity(model: CoGeomDataType): ICoDisplayEntity {
+	private createEntity(model: CoGeomDataType): ITransformEntity {
 		// let rst = CoRenderer.RendererState;
 
 		let flag: boolean = this.m_vmctx.isMCTXEnabled();
-		let entity: ICoDisplayEntity;
+		let entity: ITransformEntity;
 		if (flag) {
 			let m = this.m_vmctx.pbrModule.createMaterial(true);
 			m.initializeByCodeBuf(true);

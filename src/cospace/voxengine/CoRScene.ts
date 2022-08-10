@@ -30,7 +30,7 @@ import { MaterialContext } from "../../materialLab/base/MaterialContext";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 
-import { ICoDisplayEntity } from "./entity/ICoDisplayEntity";
+import ITransformEntity from "../../vox/entity/ITransformEntity";
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 
 function createVec3(px: number = 0.0, py: number = 0.0, pz: number = 0.0, pw: number = 1.0): IVector3D {
@@ -69,7 +69,7 @@ function createDefaultMaterial(normalEnabled: boolean = false): IRenderMaterial 
 function createShaderMaterial(shd_uniqueName: string): IShaderMaterial {
 	return new ShaderMaterial(shd_uniqueName);
 }
-function createDisplayEntityFromModel(model: CoGeomDataType, material: MaterialBase = null): ICoDisplayEntity {
+function createDisplayEntityFromModel(model: CoGeomDataType, material: MaterialBase = null): ITransformEntity {
 
 	if (material == null) {
 		material = new Default3DMaterial();
@@ -94,14 +94,14 @@ function createDisplayEntityFromModel(model: CoGeomDataType, material: MaterialB
 	return entity;
 }
 
-function createDisplayEntity(): ICoDisplayEntity {
+function createDisplayEntity(): ITransformEntity {
 	return new DisplayEntity();
 }
 function createDataMesh(): IDataMesh {
 	return new DataMesh();
 }
 
-function createAxis3DEntity(size: number = 100): ICoDisplayEntity {
+function createAxis3DEntity(size: number = 100): ITransformEntity {
 	let axis = new Axis3DEntity();
 	axis.initialize(size);
 	return axis;

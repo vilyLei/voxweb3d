@@ -14,7 +14,7 @@ import { ICoRendererParam } from "../voxengine/engine/ICoRendererParam";
 import { IEngineBase } from "../voxengine/engine/IEngineBase";
 import { ICoEngine } from "../voxengine/ICoEngine";
 import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";
-import { ICoDisplayEntity } from "../voxengine/entity/ICoDisplayEntity";
+import ITransformEntity from "../../vox/entity/ITransformEntity";
 
 declare var CoSpaceApp: ICoSpaceApp;
 declare var CoEngine: ICoEngine;
@@ -145,7 +145,7 @@ export class DemoCoEngine {
 			);
 		}
 	}
-	private createEntity(model: CoGeomDataType): ICoDisplayEntity {
+	private createEntity(model: CoGeomDataType): ITransformEntity {
 		console.log("createEntity(), model: ", model);
 
 		// const material: any = new (CoEngine as any).Default3DMaterial();

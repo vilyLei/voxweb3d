@@ -23,7 +23,6 @@ import { IMeshBase } from "../../vox/mesh/IMeshBase";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRODisplay from "../../vox/display/IRODisplay";
 import RODisplay from "../../vox/display/RODisplay";
-import IRenderEntity from "../../vox/render/IRenderEntity";
 import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 
 import { IRenderProxy } from "../../vox/render/IRenderProxy";
@@ -33,7 +32,7 @@ import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 
 
 // for multi threads
-export default class PureEntity implements IRenderEntity, IDisplayEntity {
+export default class PureEntity implements IDisplayEntity {
     private static s_uid: number = 0;
     private m_uid: number = 0;
     protected m_mouseEvtDispatcher: IEvtDispatcher = null;
