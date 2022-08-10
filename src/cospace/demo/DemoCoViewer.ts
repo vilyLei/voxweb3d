@@ -70,7 +70,7 @@ export class DemoCoViewer {
 		this.m_vmctx = new ViewerMaterialCtx();
 		this.m_vmctx.initialize(this.m_rscene, (): void => {
 			this.m_node.applyMaterial();
-			
+
 		});
 	}
 	isEngineEnabled(): boolean {
@@ -101,8 +101,8 @@ export class DemoCoViewer {
 			this.m_rscene.setClearUint24Color(0x888888);
 			CoRScene.applySceneBlock(this.m_rscene);
 
-			let axis = CoRScene.createAxis3DEntity();
-			this.m_rscene.addEntity(axis);
+			// let axis = CoRScene.createAxis3DEntity();
+			// this.m_rscene.addEntity(axis);
 		}
 	}
 	private m_node: SceneNode = null;

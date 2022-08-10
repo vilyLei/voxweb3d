@@ -28,6 +28,7 @@ export default class PBRModule implements IMaterialModule {
     }
     active(rscene: IRendererScene, materialCtx: IMaterialContext): void {
 
+        console.log("XXXXXXXXXXXX A pbr active()...");
         this.m_materialCtx = materialCtx;
         if (this.m_effect == null) {
             this.m_rscene = rscene;
@@ -40,6 +41,7 @@ export default class PBRModule implements IMaterialModule {
         this.m_specEnvMapbuffer = buffer;
         if(this.m_effect != null) {
             this.m_specEnvMap = this.m_effect.createSpecularTex(this.m_specEnvMapbuffer, true, this.m_specEnvMap);
+            this.m_specEnvMap.__$attachThis();
         }
 		if(this.m_loadSpecCallback != null) {
 			this.m_loadSpecCallback();
@@ -105,13 +107,15 @@ export default class PBRModule implements IMaterialModule {
         return boo;// && this.m_specEnvMapbuffer != null;
     }
     createMaterial(shadowReceiveEnabled:boolean): IMaterial {
-        // console.log("### pbr createMaterial().");
+        console.log("XXXXXXXXXXXX A pbr createMaterial(), this.m_specEnvMap == null: ", this.m_specEnvMap == null);
         if (this.m_specEnvMap == null) {
 			if(this.m_specEnvMapbuffer == null) {
 				throw Error("this.m_specEnvMapbuffer is null !!!");
 			}
             this.m_specEnvMap = this.m_effect.createSpecularTex(this.m_specEnvMapbuffer, true, this.m_specEnvMap);
+            this.m_specEnvMap.__$attachThis();
         }
+        console.log("XXXXXXXXXXXX B pbr createMaterial(), this.m_specEnvMap == null: ", this.m_specEnvMap == null);
         // DivLog.ShowLog("pbr createMaterial, uid: "+this.m_specEnvMap.getUid());
         let diffuseMap: IRenderTexture = null;
         let normalMap: IRenderTexture = null;

@@ -41,7 +41,7 @@ export class ViewerMaterialCtx {
 	private initMaterialModule(): void {
 
 		this.pbrModule.preload((): void => {
-			console.log("pbrModule.preload()....");
+			console.log("XXXXXXXXXXXX pbrModule.preload()....");
 			this.updateMCTXInit();
 		});
 

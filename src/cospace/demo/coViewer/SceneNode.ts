@@ -32,13 +32,13 @@ class SceneNode {
 
 		let flag: boolean = this.m_vmctx.isMCTXEnabled();
 		if (flag) {
-			console.log("XXXXXXXXXXXX this.m_objUnits.length: ",this.m_objUnits.length);
+			console.log("XXXXXXXXXXXX applyMaterial(), this.m_objUnits.length: ",this.m_objUnits.length);
 			for (let i: number = 0; i < this.m_objUnits.length; ++i) {
 				let unit = this.m_objUnits.pop();
 				this.createEntityFromUnit(unit, 0);
 			}
 			this.buildBGBox();
-			this.buildEnvBox();
+			// this.buildEnvBox();
 		}
 		return this;
 	}
@@ -52,7 +52,7 @@ class SceneNode {
 				format,
 				(unit: CoGeomDataUnit, status: number): void => {
 					let flag: boolean = this.m_vmctx.isMCTXEnabled();
-					console.log("parsing finish obj model, data: ", unit.data, ", XXXBBB flag: ",flag);
+					console.log("XXXXXXXXXXXX parsing finish obj model, data: ", unit.data, ", XXXBBB flag: ",flag);
 
 					if (flag) {
 						this.createEntityFromUnit(unit, status);
@@ -69,7 +69,7 @@ class SceneNode {
 
 		let len = unit.data.models.length;
 		let m_scale = this.m_scale;
-
+		len = 1;
 		for (let i: number = 0; i < len; ++i) {
 			let entity = this.createEntity(unit.data.models[i]);
 			entity.setScaleXYZ(m_scale, m_scale, m_scale);
