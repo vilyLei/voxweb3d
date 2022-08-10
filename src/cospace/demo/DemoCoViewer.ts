@@ -36,7 +36,7 @@ export class DemoCoViewer {
 		};
 		let scDataJsonUrl = "static/assets/scene/sc01.json";
 		let scData = new ViewerSCData();
-		scData.build();
+		// scData.build();
 
 		scData.loadSCData(scDataJsonUrl, (scData: any): void => {
 			console.log("scData.loadSCData(), scData: ",scData);

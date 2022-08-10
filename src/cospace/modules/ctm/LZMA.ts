@@ -1,10 +1,15 @@
 // thanks for threejs lamz module
+
+import { ICTMRStream } from "./ICTMRStream";
+import { ICTMWStream } from "./ICTMWStream";
+import { IDecoder } from "./IDecoder";
+
 class OutWindow {
     _pos: number = 0;
     _streamPos: number = 0;
     _windowSize: number = 0;
-    _stream: any;// = 0;
-    _buffer: any;// = 0;
+    _stream: ICTMWStream;
+    _buffer: number[];
     constructor() {
     }
 
@@ -35,7 +40,7 @@ class OutWindow {
         this._stream = null;
     }
 
-    setStream(stream: any): void {
+    setStream(stream: ICTMWStream): void {
         this.releaseStream();
         this._stream = stream;
     }
@@ -80,15 +85,15 @@ class OutWindow {
 
 }
 
-class RangeDecoder {
-    _stream: any;
-    _code = 0;
-    _range = -1;
+class RangeDecoder implements IDecoder {
+    _stream: ICTMRStream;
+    _code: number = 0;
+    _range: number = -1;
     constructor() {
 
     }
 
-    setStream(stream: any): void {
+    setStream(stream: ICTMRStream): void {
         this._stream = stream;
     }
 
@@ -111,6 +116,7 @@ class RangeDecoder {
         var result = 0, i = numTotalBits, t;
 
         while (i--) {
+			// >>> 零填充右位移
             this._range >>>= 1;
             t = (this._code - this._range) >>> 31;
             this._code -= this._range & (t - 1);
@@ -125,7 +131,7 @@ class RangeDecoder {
         return result;
     };
 
-    decodeBit(probs: any, index: number): number {
+    decodeBit(probs: number[], index: number): number {
         var prob = probs[index],
             newBound = (this._range >>> 11) * prob;
 
@@ -150,9 +156,9 @@ class RangeDecoder {
     }
 }
 
-class BitTreeDecoder {
+class BitTreeDecoder implements IDecoder {
 
-    _models: any[] = [];
+    _models: number[] = [];
     _numBitLevels: number = 0;
     constructor(numBitLevels: number) {
         this._models = [];
@@ -163,7 +169,7 @@ class BitTreeDecoder {
         LZMA.initBitModels(this._models, 1 << this._numBitLevels);
     };
 
-    decode(rangeDecoder: any): number {
+    decode(rangeDecoder: RangeDecoder): number {
         var m = 1, i = this._numBitLevels;
 
         while (i--) {
@@ -172,7 +178,7 @@ class BitTreeDecoder {
         return m - (1 << this._numBitLevels);
     };
 
-    reverseDecode(rangeDecoder: any): number {
+    reverseDecode(rangeDecoder: RangeDecoder): number {
         var m = 1, symbol = 0, i = 0, bit;
 
         for (; i < this._numBitLevels; ++i) {
@@ -183,12 +189,12 @@ class BitTreeDecoder {
         return symbol;
     }
 }
-class LenDecoder {
+class LenDecoder implements IDecoder {
 
-    _choice: any[] = [];
-    _lowCoder: any[] = [];
-    _midCoder: any[] = [];
-    _highCoder: any = new BitTreeDecoder(8);
+    _choice: number[] = [];
+    _lowCoder: BitTreeDecoder[] = [];
+    _midCoder: BitTreeDecoder[] = [];
+    _highCoder: BitTreeDecoder = new BitTreeDecoder(8);
     _numPosStates: number = 0;
     constructor() {
     }
@@ -201,7 +207,7 @@ class LenDecoder {
     };
 
     init(): void {
-        var i = this._numPosStates;
+        let i = this._numPosStates;
         LZMA.initBitModels(this._choice, 2);
         while (i--) {
             this._lowCoder[i].init();
@@ -210,7 +216,8 @@ class LenDecoder {
         this._highCoder.init();
     };
 
-    decode(rangeDecoder: any, posState: number): number {
+    decode(rangeDecoder: RangeDecoder, posState: number): number {
+
         if (rangeDecoder.decodeBit(this._choice, 0) === 0) {
             return this._lowCoder[posState].decode(rangeDecoder);
         }
@@ -220,17 +227,17 @@ class LenDecoder {
         return 16 + this._highCoder.decode(rangeDecoder);
     }
 }
-class Decoder2 {
+class Decoder2 implements IDecoder {
 
-    _decoders: any = [];
+    _decoders: number[] = [];
     constructor() { }
 
     init() {
         LZMA.initBitModels(this._decoders, 0x300);
     };
 
-    decodeNormal(rangeDecoder: any): number {
-        var symbol = 1;
+    decodeNormal(rangeDecoder: RangeDecoder): number {
+        let symbol = 1;
 
         do {
             symbol = (symbol << 1) | rangeDecoder.decodeBit(this._decoders, symbol);
@@ -239,8 +246,8 @@ class Decoder2 {
         return symbol & 0xff;
     };
 
-    decodeWithMatchByte(rangeDecoder: any, matchByte: number): number {
-        var symbol = 1, matchBit, bit;
+    decodeWithMatchByte(rangeDecoder: RangeDecoder, matchByte: number): number {
+        let symbol = 1, matchBit, bit;
 
         do {
             matchBit = (matchByte >> 7) & 1;
@@ -260,10 +267,10 @@ class Decoder2 {
 
 }
 class LiteralDecoder {
-    _coders: any[] = null;
-    _numPosBits: number;// = numPosBits;
-    _posMask: number;// = (1 << numPosBits) - 1;
-    _numPrevBits: number;// = numPrevBits;
+    _coders: Decoder2[] = null;
+    _numPosBits: number;
+    _posMask: number;
+    _numPrevBits: number;
     create(numPosBits: number, numPrevBits: number): void {
         var i;
 
@@ -291,31 +298,31 @@ class LiteralDecoder {
         }
     };
 
-    getDecoder(pos: number, prevByte: number): any {
+    getDecoder(pos: number, prevByte: number): Decoder2 {
         return this._coders[((pos & this._posMask) << this._numPrevBits)
             + ((prevByte & 0xff) >>> (8 - this._numPrevBits))];
     };
 }
 
-class Decoder {
+class Decoder implements IDecoder {
 
     _outWindow = new OutWindow();
     _rangeDecoder = new RangeDecoder();
-    _isMatchDecoders: any[] = [];
-    _isRepDecoders: any[] = [];
-    _isRepG0Decoders: any[] = [];
-    _isRepG1Decoders: any[] = [];
-    _isRepG2Decoders: any[] = [];
-    _isRep0LongDecoders: any[] = [];
-    _posSlotDecoder: any[] = [];
-    _posDecoders: any[] = [];
+    _isMatchDecoders: number[] = [];
+    _isRepDecoders: number[] = [];
+    _isRepG0Decoders: number[] = [];
+    _isRepG1Decoders: number[] = [];
+    _isRepG2Decoders: number[] = [];
+    _isRep0LongDecoders: number[] = [];
+    _posSlotDecoder: BitTreeDecoder[] = [];
+    _posDecoders: number[] = [];
     _posAlignDecoder = new BitTreeDecoder(4);
     _lenDecoder = new LenDecoder();
     _repLenDecoder = new LenDecoder();
     _literalDecoder = new LiteralDecoder();
     _dictionarySize = -1;
     _dictionarySizeCheck = -1;
-    _posStateMask: number = 0;
+    _posStateMask = 0;
 
     constructor() {
 
@@ -378,7 +385,7 @@ class Decoder {
         this._rangeDecoder.init();
     }
 
-    decode(inStream: any, outStream: any, outSize: number): boolean {
+    decode(inStream: ICTMRStream, outStream: ICTMWStream, outSize: number): boolean {
         var state = 0, rep0 = 0, rep1 = 0, rep2 = 0, rep3 = 0, nowPos64 = 0, prevByte = 0,
             posState, decoder2, len, distance, posSlot, numDirectBits;
 
@@ -479,12 +486,16 @@ class Decoder {
         return true;
     }
 
-    setDecoderProperties(properties: any): boolean {
+    setDecoderProperties(properties: ICTMRStream): boolean {
+
+		// console.log("XXXXXXXX setDecoderProperties() properties: ",properties);
+		// console.log("XXXXXXXX setDecoderProperties() properties.size: ",properties.size, " properties.size < 5: ", properties.size < 5);
+
         var value, lc, lp, pb, dictionarySize;
 
-        if (properties.size < 5) {
-            return false;
-        }
+        // if (properties.size < 5) {
+        //     return false;
+        // }
 
         value = properties.readByte();
         lc = value % 9;
@@ -508,12 +519,12 @@ class LZMA {
     uuid: string = "LZMA";
     constructor() {
     }
-    static initBitModels(probs: any, len: number) {
+    static initBitModels(probs: number[], len: number) {
         while (len--) {
             probs[len] = 1024;
         }
     }
-    static reverseDecode2(models: any[], startIndex: number, rangeDecoder: any, numBitLevels: number): number {
+    static reverseDecode2(models: number[], startIndex: number, rangeDecoder: RangeDecoder, numBitLevels: number): number {
         var m = 1, symbol = 0, i = 0, bit;
 
         for (; i < numBitLevels; ++i) {
@@ -522,8 +533,8 @@ class LZMA {
             symbol |= bit << i;
         }
         return symbol;
-    } 
-    static decompress(properties: any, inStream: any, outStream: any, outSize: number): boolean{
+    }
+    static decompress(properties: ICTMRStream, inStream: ICTMRStream, outStream: ICTMWStream, outSize: number): boolean{
         var decoder = new Decoder();
         if ( !decoder.setDecoderProperties(properties) ){
           throw "Incorrect stream properties";

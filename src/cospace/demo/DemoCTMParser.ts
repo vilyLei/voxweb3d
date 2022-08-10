@@ -111,7 +111,7 @@ export class DemoCTMParser {
 		info += "</br>tri: " + this.m_trisNumber;
 
 		DivLog.ShowLogOnce(info);
-		return;
+		// return;
 
 		let material = this.createNormalMaterial();
 		material.initializeByCodeBuf();
