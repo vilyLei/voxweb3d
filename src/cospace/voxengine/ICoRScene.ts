@@ -123,8 +123,18 @@ interface ICoRScene {
 
 	
 	createDataMesh(): IDataMesh;
-
-	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial): ITransformEntity;
+	/**
+	 * @param model geometry model
+	 * @param pmaterial IRenderMaterial instance, the default is null.
+	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
+	 */
+	createDataMeshFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, vbWhole?: boolean): IDataMesh;
+	/**
+	 * @param model geometry model
+	 * @param pmaterial IRenderMaterial instance, the default is null.
+	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
+	 */
+	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, vbWhole?: boolean): ITransformEntity;
 	createAxis3DEntity(size?: number): ITransformEntity;
 
 	createDisplayEntity(): ITransformEntity;

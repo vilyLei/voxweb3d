@@ -74,6 +74,22 @@ function createDataMesh(): IDataMesh {
 	return new DataMesh();
 }
 
+function createDataMeshFromModel(model: CoGeomDataType, material: MaterialBase = null, vbWhole: boolean = false): IDataMesh {
+
+	const dataMesh = new DataMesh();
+	dataMesh.vbWholeDataEnabled = vbWhole;
+	dataMesh.setVS(model.vertices);
+	dataMesh.setUVS(model.uvsList[0]);
+	dataMesh.setNVS(model.normals);
+	dataMesh.setIVS(model.indices);
+
+	if(material != null) {
+		dataMesh.setVtxBufRenderData(material);
+		dataMesh.initialize();
+	}
+	return dataMesh;
+}
+
 function createDefaultMaterial(normalEnabled: boolean = false): IRenderMaterial {
 	let m = new Default3DMaterial();
 	m.normalEnabled = normalEnabled;
@@ -82,7 +98,7 @@ function createDefaultMaterial(normalEnabled: boolean = false): IRenderMaterial 
 function createShaderMaterial(shd_uniqueName: string): IShaderMaterial {
 	return new ShaderMaterial(shd_uniqueName);
 }
-function createDisplayEntityFromModel(model: CoGeomDataType, material: MaterialBase = null): ITransformEntity {
+function createDisplayEntityFromModel(model: CoGeomDataType, material: MaterialBase = null, vbWhole: boolean = false): ITransformEntity {
 
 	if (material == null) {
 		material = new Default3DMaterial();
@@ -92,7 +108,7 @@ function createDisplayEntityFromModel(model: CoGeomDataType, material: MaterialB
 		throw Error("the material does not call the initializeByCodeBuf() function. !!!");
 	}
 	const dataMesh = new DataMesh();
-	dataMesh.vbWholeDataEnabled = false;
+	dataMesh.vbWholeDataEnabled = vbWhole;
 	dataMesh.setVS(model.vertices);
 	dataMesh.setUVS(model.uvsList[0]);
 	dataMesh.setNVS(model.normals);
@@ -152,8 +168,9 @@ export {
 	createRendererScene,
 	applySceneBlock,
 	createMouseEvt3DDispatcher,
-	
+
 	createDataMesh,
+	createDataMeshFromModel,
 
 	createDefaultMaterial,
 	createShaderMaterial,
