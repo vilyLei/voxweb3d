@@ -7,8 +7,9 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import Color4 from "../../vox/material/Color4";
+import { IPointLight } from "./IPointLight";
 
-export class PointLight {
+export class PointLight implements IPointLight {
 
     readonly position: Vector3D = new Vector3D(0.0, 100.0, 0.0);
     readonly color: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);

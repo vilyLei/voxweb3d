@@ -5,9 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { PointLight } from "./PointLight";
-import { DirectionLight } from "./DirectionLight";
-import { SpotLight } from "./SpotLight";
+import { IPointLight } from "./IPointLight";
+import { IDirectionLight } from "./IDirectionLight";
+import { ISpotLight } from "./ISpotLight";
 import { IMaterialPipe } from "../../vox/material/pipeline/IMaterialPipe";
 
 interface ILightModule extends IMaterialPipe {
@@ -15,12 +15,12 @@ interface ILightModule extends IMaterialPipe {
     getPointLightsTotal(): number;
     getDirecLightsTotal(): number;
     getSpotLightsTotal(): number;
-    getPointLightAt(i: number): PointLight;
-    getDirectionLightAt(i: number): DirectionLight;
-    getSpotLightAt(i: number): SpotLight;
-    appendPointLight(): PointLight;
-    appendDirectionLight(): DirectionLight;
-    appendSpotLight(): SpotLight;
+    getPointLightAt(i: number): IPointLight;
+    getDirectionLightAt(i: number): IDirectionLight;
+    getSpotLightAt(i: number): ISpotLight;
+    appendPointLight(): IPointLight;
+    appendDirectionLight(): IDirectionLight;
+    appendSpotLight(): ISpotLight;
     showInfo(): void;
 
     update(): void
