@@ -5,11 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ShaderUniformData from "../../../vox/material/ShaderUniformData";
+import IShaderUniformData from "../../../vox/material/IShaderUniformData";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { ISimpleMaterialDecorator } from "../../../vox/material/ISimpleMaterialDecorator";
-import { ShaderTextureBuilder } from "../../../vox/material/ShaderTextureBuilder";
+import { IShaderTextureBuilder } from "../../../vox/material/IShaderTextureBuilder";
 
 class OccPostOutLineScreen implements ISimpleMaterialDecorator {
 
@@ -40,7 +40,7 @@ class OccPostOutLineScreen implements ISimpleMaterialDecorator {
 
     buildBufParams(): void {
     }
-    buildTextureList(builder: ShaderTextureBuilder): void {
+    buildTextureList(builder: IShaderTextureBuilder): void {
         builder.addDiffuseMap(this.m_currMap);
     }
     buildShader(coder: IShaderCodeBuilder): void {
@@ -58,7 +58,7 @@ class OccPostOutLineScreen implements ISimpleMaterialDecorator {
 `
         );
     }
-    createUniformData(): ShaderUniformData {        
+    createUniformData(): IShaderUniformData {        
         return null;
     }
     getUniqueName(): string {

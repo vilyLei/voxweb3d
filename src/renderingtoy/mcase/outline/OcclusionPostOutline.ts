@@ -13,22 +13,21 @@ import { OutlinePreDecorator } from "../material/OutlinePreDecorator";
 import IVector3D from "../../../vox/math/IVector3D";
 import { IFBOInstance } from "../../../vox/scene/IFBOInstance";
 import { IAABB } from "../../../vox/geom/IAABB";
-// import Plane from "../../../vox/geom/Plane";
 import { IRTTTexture } from "../../../vox/render/texture/IRTTTexture";
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 
-const minPV: number = 1e-5;
-const maxNV: number = -1e-5;
+const __minPV: number = 1e-6;
+const __maxNV: number = -1e-6;
 class OCCPlane {
     nv: IVector3D;
 	distance: number = 0.0;
     intersectBoo: boolean = false;
     __tV0: IVector3D;
 	containsPoint(pos: IVector3D): number {
-		let f: number = this.nv.dot(pos) - this.distance;
-		if (f > minPV) {
+		let f = this.nv.dot(pos) - this.distance;
+		if (f > __minPV) {
 			return 1;
-		} else if (f < maxNV) {
+		} else if (f < __maxNV) {
 			return -1;
 		}
 		return 0;
