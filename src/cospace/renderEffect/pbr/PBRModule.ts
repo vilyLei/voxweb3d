@@ -191,6 +191,10 @@ export default class PBRModule implements IMaterialModule {
 	}
 	destroy(): void {
 		this.m_rscene = null;
+		if(this.m_effect != null) {
+			this.m_effect.destroy();
+			this.m_effect = null;
+		}
 		this.m_effect = null;
 		this.m_materialCtx = null;
 		this.m_materialData = null;
