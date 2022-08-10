@@ -6,7 +6,7 @@ import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../../vox/render/R
 import RendererState from "../../vox/render/RendererState";
 import Color4 from "../../vox/material/Color4";
 import RendererParam from "../../vox/scene/RendererParam";
-import MeshBase from "../../vox/mesh/MeshBase";
+import { IMeshBase } from "../../vox/mesh/IMeshBase";
 import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
@@ -43,7 +43,7 @@ class DemoScene {
     private m_boxEntity: Box3DEntity = null;
     private m_billMeshSrc0Entity: Billboard3DEntity = null;
     //
-    private m_mesh: MeshBase = null;
+    private m_mesh: IMeshBase = null;
     initialize(renderer: RendererInstance): void {
         console.log("DemoScene::initialize()......");
         if (this.m_rcontext == null) {

@@ -169,8 +169,8 @@ export default class MeshBase implements IMeshBase {
         }
         ROVertexBuffer.__$$DetachAt(this.m_vbuf.getUid());
     }
-    isGeomDynamic(): number {
-        return this.m_bufDataUsage;
+    isGeomDynamic(): boolean {
+        return true;
     }
     getBufDataUsage(): number {
         return this.m_bufDataUsage;

@@ -8,11 +8,12 @@
 import RSEntityFlag from '../../vox/scene/RSEntityFlag';
 import Vector3D from "../../vox/math/Vector3D";
 import Matrix4 from "../../vox/math/Matrix4";
+import { IAABB } from "../../vox/geom/IAABB";
 import AABB from "../../vox/geom/AABB";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import IDisplayEntityContainer from "../../vox/entity/IDisplayEntityContainer";
 import RendererState from "../../vox/render/RendererState";
-import MeshBase from "../../vox/mesh/MeshBase";
+import { IMeshBase } from "../../vox/mesh/IMeshBase";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 
 import ROTransform from "../../vox/display/ROTransform";
@@ -50,10 +51,10 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     private m_rcolorMask: number = RendererState.COLOR_MASK_ALL_TRUE;
     private m_renderState: number = RendererState.BACK_CULLFACE_NORMAL_STATE;
     private m_display: RODisplay = null;
-    protected m_mesh: MeshBase = null;
+    protected m_mesh: IMeshBase = null;
     // 如果一个entity如果包含了多个mesh,则这个bounds就是多个mesh aabb 合并的aabb
-    protected m_localBounds: AABB = null;
-    protected m_globalBounds: AABB = null;
+    protected m_localBounds: IAABB = null;
+    protected m_globalBounds: IAABB = null;
     protected m_localBuondsVer: number = -1;
     protected m_parent: IDisplayEntityContainer = null;
     protected m_renderProxy: IRenderProxy = null;
@@ -148,10 +149,10 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     setEvtDispatcher(evtDisptacher: IEvtDispatcher): void {
         this.m_eventDispatcher = evtDisptacher;
     }
-    getGlobalBounds(): AABB {
+    getGlobalBounds(): IAABB {
         return this.m_globalBounds;
     }
-    getLocalBounds(): AABB {
+    getLocalBounds(): IAABB {
         return this.m_mesh.bounds;
     }
 
@@ -278,8 +279,8 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
             this.m_transfrom.copyFrom(pe.m_transfrom);
         }
     }
-    private initDisplay(m: MeshBase): void {
-        this.m_display.vbuf = m.__$attachVBuf();
+    private initDisplay(m: IMeshBase): void {
+        this.m_display.vbuf = m.__$attachVBuf() as any;
         this.m_display.ivsIndex = 0;
         this.m_display.ivsCount = m.vtCount;
         this.m_display.drawMode = m.drawMode;
@@ -290,7 +291,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
      * 设置几何相关的数据,必须是构建完备的mesh才能被设置进来
      * 这个设置函数也可以动态运行时更新几何相关的顶点数据
      */
-    setMesh(m: MeshBase): void {
+    setMesh(m: IMeshBase): void {
         // let m = pm as MeshBase;
         if (this.m_mesh == null) {
             if (m != null) {
@@ -363,7 +364,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
             }
         }
     }
-    getMesh(): MeshBase {
+    getMesh(): IMeshBase {
         return this.m_mesh;
     }
 
@@ -588,7 +589,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     }
     private m_lBoundsVS: Float32Array = null;
     private m_transStatus: number = ROTransform.UPDATE_TRANSFORM;
-    private updateLocalBoundsVS(bounds: AABB): void {
+    private updateLocalBoundsVS(bounds: IAABB): void {
         let pminV: Vector3D = bounds.min;
         let pmaxV: Vector3D = bounds.max;
         if (this.m_lBoundsVS == null) {
@@ -609,7 +610,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
         // 这里的逻辑也有问题,需要再处理，为了支持摄像机等的拾取以及支持遮挡计算等空间管理计算
 
         let DE = DisplayEntity;
-        let bounds: AABB = this.m_localBounds;
+        let bounds = this.m_localBounds;
         if (this.m_transStatus > ROTransform.UPDATE_POSITION || this.m_localBuondsVer != bounds.version) {
 
             let st: number = this.m_transfrom.updateStatus;
@@ -620,8 +621,8 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
                 this.m_localBuondsVer = bounds.version;
                 this.updateLocalBoundsVS(bounds);
 
-                let in_vs: Float32Array = this.m_lBoundsVS;
-                let out_vs: Float32Array = DE.s_boundsOutVS;
+                let in_vs = this.m_lBoundsVS;
+                let out_vs = DE.s_boundsOutVS;
                 this.m_transfrom.getMatrix().transformVectors(in_vs, 24, out_vs);
                 this.m_globalBounds.reset();
                 this.m_globalBounds.addXYZFloat32Arr(out_vs);

@@ -62,7 +62,7 @@ class GeometryMerger extends GeometryBase {
 
         if (entity != null) {
 
-            let mesh: MeshBase = entity.getMesh();
+            let mesh = entity.getMesh();
             let node: GeomDataNode = new GeomDataNode();
             node.ivs = mesh.getIVS();
             node.vs = mesh.getVS();

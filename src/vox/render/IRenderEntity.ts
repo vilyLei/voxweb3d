@@ -129,4 +129,5 @@ export default interface IRenderEntity {
 
   updateBounds(): void;
   update(): void;
+  destroy(): void;
 }

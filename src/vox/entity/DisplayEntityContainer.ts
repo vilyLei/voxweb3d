@@ -9,6 +9,7 @@
 import MathConst from "../../vox/math/MathConst";
 import RSEntityFlag from '../../vox/scene/RSEntityFlag';
 import Vector3D from "../../vox/math/Vector3D";
+import { IAABB } from "../../vox/geom/IAABB";
 import AABB from "../../vox/geom/AABB";
 import Matrix4 from "../../vox/math/Matrix4";
 import Matrix4Pool from "../../vox/math/Matrix4Pool";
@@ -39,7 +40,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     private m_visible: boolean = true;
     private m_parentVisible: boolean = true;
 
-    protected m_globalBounds: AABB = null;
+    protected m_globalBounds: IAABB = null;
     protected m_gboundsStatus: number = -1;
     /**
      * entity global bounds version list
@@ -142,7 +143,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
             this.m_cbvers = [];
         }
     }
-    getGlobalBounds(): AABB {
+    getGlobalBounds(): IAABB {
         return this.m_globalBounds;
     }
     getGlobalBoundsVer(): number {
@@ -520,7 +521,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
             this.m_$updateBounds = false;
             if (this.m_globalBounds != null) {
                 this.m_globalBounds.reset();
-                let bounds: AABB = null;
+                let bounds: IAABB = null;
                 for (; i < this.m_entitiesTotal; ++i) {
                     bounds = this.m_entities[i].getGlobalBounds();
                     if (bounds != null) {
@@ -561,7 +562,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
             }
             this.m_globalBounds.reset();
             i = 0;
-            let bounds: AABB = null;
+            let bounds: IAABB = null;
             for (; i < this.m_entitiesTotal; ++i) {
                 bounds = this.m_entities[i].getGlobalBounds();
                 if (bounds != null) {

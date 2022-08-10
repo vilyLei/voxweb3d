@@ -8,7 +8,7 @@
 // 一个 RODisplay 和一个 IRPODisplay一一对应
 
 import { DisplayRenderSign } from "../../vox/render/RenderConst";
-import Matrix4 from "../../vox/math/Matrix4";
+import {IMatrix4} from "../../vox/math/IMatrix4";
 import IROVtxBuf from "../../vox/render/IROVtxBuf";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRPODisplay from "../../vox/render/IRPODisplay";
@@ -47,8 +47,8 @@ interface IRODisplay {
     setDrawPartAt(index: number, ivsIndex: number, ivsCount: number): void;
 
     getUid(): number;
-    setTransform(trans: Matrix4): void;
-    getTransform(): Matrix4;
+    setTransform(trans: IMatrix4): void;
+    getTransform(): IMatrix4;
     getMatrixFS32(): Float32Array;
     enableDrawInstanced(offset: number, instanceCount: number): void;
     disableDrawInstanced(): void;

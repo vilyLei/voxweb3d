@@ -41,7 +41,7 @@ class AABB implements IAABB {
 		v = this.max;
 		v.x = v.y = v.z = MathConst.MATH_MIN_NEGATIVE;
 	}
-	equals(ab: AABB): boolean {
+	equals(ab: IAABB): boolean {
 		return this.min.equalsXYZ(ab.min) && this.max.equalsXYZ(ab.max);
 	}
 	setVolume(width: number, height: number, long: number): void {
@@ -63,7 +63,7 @@ class AABB implements IAABB {
 		this.radius2 = this.m_halfWidth * this.m_halfWidth + this.m_halfHeight * this.m_halfHeight + this.m_halfLong * this.m_halfLong;
 		this.radius = Math.sqrt(this.radius2);
 	}
-	union(ab: AABB): AABB {
+	union(ab: IAABB): AABB {
 		this.addPosition(ab.min);
 		this.addPosition(ab.max);
 		return this;
@@ -172,7 +172,7 @@ class AABB implements IAABB {
 		return true;
 	}
 
-	copyFrom(ab: AABB): AABB {
+	copyFrom(ab: IAABB): AABB {
 		//this.setRadius(ab.getRadius());
 		this.radius = ab.radius;
 		this.radius2 = ab.radius2;

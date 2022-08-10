@@ -5,9 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-import AABB from "../../vox/geom/AABB";
+import { IAABB } from "../../vox/geom/IAABB";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
-import MeshBase from "../../vox/mesh/MeshBase";
+import { IMeshBase } from "../../vox/mesh/IMeshBase";
 import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRODisplay from "../../vox/display/IRODisplay";
@@ -26,8 +26,8 @@ export default interface IDisplayEntity extends IRenderEntity {
     getEvtDispatcher(evtClassType: number): IEvtDispatcher;
     setEvtDispatcher(evtDisptacher: IEvtDispatcher): void;
 
-    getGlobalBounds(): AABB;
-    getLocalBounds(): AABB;
+    getGlobalBounds(): IAABB;
+    getLocalBounds(): IAABB;
 
 
     __$setDrawEnabled(boo: boolean): void;
@@ -36,8 +36,8 @@ export default interface IDisplayEntity extends IRenderEntity {
     setVisible(boo: boolean): void;
     getVisible(): boolean;
 
-    setMesh(m: MeshBase): void;
-    getMesh(): MeshBase;
+    setMesh(m: IMeshBase): void;
+    getMesh(): IMeshBase;
     setIvsParam(ivsIndex: number, ivsCount: number): void;
 
     /**

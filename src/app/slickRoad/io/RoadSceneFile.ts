@@ -3,7 +3,6 @@ import { FileIO } from "./FileIO";
 import Vector3D from "../../../vox/math/Vector3D";
 import { PathSegmentObject } from "../road/PathSegmentObject";
 import { PathSegmentEntity } from "../entity/PathSegmentEntity";
-import MeshBase from "../../../vox/mesh/MeshBase";
 
 class RoadSegmentMesh {
     
@@ -39,7 +38,7 @@ class RoadSegmentMesh {
     }
     setPathSegmentEntity(segEntity: PathSegmentEntity): void {
 
-        let mesh: MeshBase = segEntity.getMesh();
+        let mesh = segEntity.getMesh();
         this.bounds.min.copyFrom(mesh.bounds.min);
         this.bounds.max.copyFrom(mesh.bounds.max);
 

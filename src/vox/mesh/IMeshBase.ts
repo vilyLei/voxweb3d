@@ -11,6 +11,11 @@ import IVector3D from "../math/IVector3D";
 import { IROVertexBuffer } from "../../vox/mesh/IROVertexBuffer";
 
 interface IMeshBase {
+  
+  vtCount: number;
+  drawMode: number;
+  trisNumber: number;
+  vtxTotal: number;
   /**
     * 强制更新 vertex indices buffer 数据, 默认值为false
     */
@@ -23,6 +28,7 @@ interface IMeshBase {
    * vtx positons bounds AABB in the local space, the default value is null
    */
   bounds: IAABB;
+
   /**
    * @param layoutBit vertex shader vertex attributes layout bit status.
    *                  the value of layoutBit comes from the material shdder program.
@@ -61,6 +67,7 @@ interface IMeshBase {
   setVtxBufRenderData(vtxData: IVtxBufRenderData): void;
   // initializeFromGeometry(geom: GeometryBase): void;
 
+  setPolyhedral(boo: boolean): void;
   /**
    * 射线和自身的相交检测(多面体或几何函数(例如球体))
    * @boundsHit       表示是否包围盒体已经和射线相交了
@@ -73,5 +80,7 @@ interface IMeshBase {
   isEnabled(): boolean;
   isResFree(): boolean;
   isPolyhedral(): boolean;
+  isGeomDynamic(): boolean;
+  rebuild(): void;
 }
 export { IMeshBase }

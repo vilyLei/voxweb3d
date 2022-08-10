@@ -14,7 +14,7 @@ interface IAABB {
 	radius: number;
 	radius2: number;
 	center: IVector3D;
-	
+
 	containsV(v: IVector3D): boolean;
 	// 是否包含某一点(同一坐标空间的点)
 	containsXY(vx: number, vy: number): boolean;
@@ -22,6 +22,9 @@ interface IAABB {
 	containsXZ(vx: number, vz: number): boolean;
 	// 是否包含某一点(同一坐标空间的点)
 	containsYZ(vy: number, vz: number): boolean;
+
+	addXYZFloat32AndIndicesArr(vs: Float32Array, indices: Uint16Array | Uint32Array): void;
+	addXYZFloat32Arr(vs: Float32Array, step?: number): void;
 
 	getLong(): number;
 	getWidth(): number;
@@ -34,7 +37,7 @@ interface IAABB {
 	update(): void;
 	updateFast(): void;
 	updateVolume(): IAABB;
-	
+
 }
 
 export { IAABB }

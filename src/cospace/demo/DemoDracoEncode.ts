@@ -6,7 +6,7 @@ import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 import Box3DEntity from "../../vox/entity/Box3DEntity";
-import MeshBase from "../../vox/mesh/MeshBase";
+import { IMeshBase } from "../../vox/mesh/IMeshBase";
 import { NormalUVViewerMaterial } from "./material/NormalUVViewerMaterial";
 import { FileIO } from "../../app/slickRoad/io/FileIO";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
@@ -18,7 +18,7 @@ declare var DracoEncoderModule: any;
  * draco 编码多线程示例
  */
 export class DemoDracoEncode {
-	constructor() {}
+	constructor() { }
 
 	private m_threadSchedule: ThreadSchedule = new ThreadSchedule();
 	private m_dracoGeomEncoder: DracoGeomEncoder;
@@ -82,8 +82,8 @@ export class DemoDracoEncode {
 		let f = new FileIO();
 		f.downloadBinFile(buf, url, "drc");
 	}
-	private mouseDown(evt: any): void {}
-	private encodeGeom(mesh: MeshBase): void {
+	private mouseDown(evt: any): void { }
+	private encodeGeom(mesh: IMeshBase): void {
 		console.log("mesh: ", mesh);
 
 		let geomData: DracoSrcGeomObject = {
@@ -121,7 +121,7 @@ export class DemoDracoEncode {
 		const meshBuilder = new encoderModule.MeshBuilder();
 
 		let speed: number = 10.0;
-		console.log("speed: ",speed);
+		console.log("speed: ", speed);
 
 		encoder.SetSpeedOptions(speed, speed);
 		const dracoMesh = new encoderModule.Mesh();
@@ -170,11 +170,11 @@ export class DemoDracoEncode {
 
 		let codeLoader: XMLHttpRequest = new XMLHttpRequest();
 		codeLoader.open("GET", purl, true);
-		codeLoader.onerror = function(err) {
+		codeLoader.onerror = function (err) {
 			console.error("load error: ", err);
 		};
 
-		codeLoader.onprogress = e => {};
+		codeLoader.onprogress = e => { };
 		codeLoader.onload = evt => {
 			console.log("module js file loaded.");
 			let scriptEle: HTMLScriptElement = document.createElement("script");
@@ -241,7 +241,7 @@ export class DemoDracoEncode {
 			//*/
 			let sphEntity = new Sphere3DEntity();
 			sphEntity.setMaterial(material);
-			sphEntity.initialize(100,20,20)
+			sphEntity.initialize(100, 20, 20)
 			this.m_rscene.addEntity(sphEntity);
 
 			this.encodeGeom(sphEntity.getMesh());
