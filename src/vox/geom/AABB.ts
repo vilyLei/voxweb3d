@@ -63,9 +63,10 @@ class AABB implements IAABB {
 		this.radius2 = this.m_halfWidth * this.m_halfWidth + this.m_halfHeight * this.m_halfHeight + this.m_halfLong * this.m_halfLong;
 		this.radius = Math.sqrt(this.radius2);
 	}
-	union(ab: AABB): void {
+	union(ab: AABB): AABB {
 		this.addPosition(ab.min);
 		this.addPosition(ab.max);
+		return this;
 	}
 	addPosition(pv: Vector3D): void {
 		if (this.min.x > pv.x) this.min.x = pv.x;
@@ -171,7 +172,7 @@ class AABB implements IAABB {
 		return true;
 	}
 
-	copyFrom(ab: AABB): void {
+	copyFrom(ab: AABB): AABB {
 		//this.setRadius(ab.getRadius());
 		this.radius = ab.radius;
 		this.radius2 = ab.radius2;
@@ -181,12 +182,14 @@ class AABB implements IAABB {
 		//this.getOCenter().copyFrom(ab.getOCenter());
 		this.center.copyFrom(ab.center);
 		this.updateVolume();
+		return this;
 	}
-	expand(bias: Vector3D): void {
+	expand(bias: Vector3D): AABB {
 		this.min.subtractBy(bias);
 		this.max.addBy(bias);
+		return this;
 	}
-	updateVolume(): void {
+	updateVolume(): AABB {
 
 		this.m_width = this.max.x - this.min.x;
 		this.m_height = this.max.y - this.min.y;
@@ -197,6 +200,7 @@ class AABB implements IAABB {
 		this.m_halfHeight = 0.5 * this.m_height;
 
 		++this.version;
+		return this;
 	}
 
 	private updateThis(): void {
@@ -243,23 +247,6 @@ class AABB implements IAABB {
 		this.m_long = this.max.z - this.min.z;
 
 		this.updateThis();
-
-		// this.center.x = 0.5 * this.m_width;
-		// this.center.y = 0.5 * this.m_height;
-		// this.center.z = 0.5 * this.m_long;
-
-		// this.m_halfLong = this.center.z;
-		// this.m_halfWidth = this.center.x;
-		// this.m_halfHeight = this.center.y;
-
-		// this.radius2 = this.m_halfWidth * this.m_halfWidth + this.m_halfHeight * this.m_halfHeight + this.m_halfLong * this.m_halfLong;
-		// this.radius = Math.sqrt(this.radius2);
-
-		// this.center.x += this.min.x;
-		// this.center.y += this.min.y;
-		// this.center.z += this.min.z;
-
-		// ++this.version;
 	}
 	updateFast(): void {
 
@@ -268,23 +255,6 @@ class AABB implements IAABB {
 		this.m_long = this.max.z - this.min.z;
 
 		this.updateThis();
-
-		// this.center.x = 0.5 * this.m_width;
-		// this.center.y = 0.5 * this.m_height;
-		// this.center.z = 0.5 * this.m_long;
-
-		// this.m_halfLong = this.center.z;
-		// this.m_halfWidth = this.center.x;
-		// this.m_halfHeight = this.center.y;
-
-		// this.radius2 = this.m_halfWidth * this.m_halfWidth + this.m_halfHeight * this.m_halfHeight + this.m_halfLong * this.m_halfLong;
-		// this.radius = Math.sqrt(this.radius2);
-
-		// this.center.x += this.min.x;
-		// this.center.y += this.min.y;
-		// this.center.z += this.min.z;
-
-		// ++this.version;
 	}
 	toString(): string {
 		return "[AABB(min->" + this.min + ",size(" + this.m_width + "," + this.m_height + "," + this.m_long + "))]";

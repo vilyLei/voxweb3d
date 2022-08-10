@@ -22,6 +22,18 @@ interface IAABB {
 	containsXZ(vx: number, vz: number): boolean;
 	// 是否包含某一点(同一坐标空间的点)
 	containsYZ(vy: number, vz: number): boolean;
+
+	getLong(): number;
+	getWidth(): number;
+	getHeight(): number;
+
+	copyFrom(ab: IAABB): IAABB;
+	expand(bias: IVector3D): IAABB;
+	union(ab: IAABB): IAABB;
+	reset(): void;
+	update(): void;
+	updateFast(): void;
+	updateVolume(): IAABB;
 	
 }
 

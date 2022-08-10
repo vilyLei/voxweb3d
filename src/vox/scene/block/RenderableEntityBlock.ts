@@ -5,16 +5,18 @@
 /*                                                                         */
 /***************************************************************************/
 
-// import VtxBufConst from "../../../vox/mesh/VtxBufConst";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
-// import Vector3D from "../../../vox/math/Vector3D";
-// import Box3DMesh from "../../../vox/mesh/Box3DMesh";
-// import RectPlaneMesh from "../../../vox/mesh/RectPlaneMesh";
 import { VtxBufRenderData } from "../../../vox/mesh/VtxBufRenderData";
 import { IRenderableEntityBlock } from "./IRenderableEntityBlock";
 import { IDataMesh } from "../../mesh/IDataMesh";
 import DataMesh from "../../mesh/DataMesh";
+import IVector3D from "../../math/IVector3D";
+import {IMatrix4} from "../../math/IMatrix4";
+import {IAABB} from "../../geom/IAABB";
+import AABB from "../../geom/AABB";
+import Vector3D from "../../math/Vector3D";
+import Matrix4 from "../../math/Matrix4";
 
 class RenderableEntityBlock implements IRenderableEntityBlock {
     
@@ -43,21 +45,9 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
             
             let dm = new DataMesh();
             dm.setVS( vs ).setUVS( uvs ).setNVS( nvs ).setIVS( ivs ).setVtxBufRenderData( vtxData );
-            // dm.setUVS( uvs );
-            // dm.setNVS( nvs );
-            // dm.setIVS( ivs );
-            // dm.setVtxBufRenderData( vtxData );
             dm.vbWholeDataEnabled = true;
             dm.initialize();
             this.unitBox.setMesh( dm );
-            
-            // let planeMesh: RectPlaneMesh;
-
-            // planeMesh = new RectPlaneMesh();
-            // planeMesh.axisFlag = 0;
-            // planeMesh.setVtxBufRenderData( vtxData );
-            // planeMesh.initialize(-1, -1, 2.0, 2.0);
-            // this.screenPlane.setMesh( planeMesh );
             
             vs = new Float32Array([-1, -1, 0, 1, -1, 0, 1, 1, 0, -1, 1, 0]);
             uvs = new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]);
@@ -70,21 +60,6 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
             dm.initialize();
             this.screenPlane.setMesh( dm );
             
-            
-
-
-            // planeMesh = new RectPlaneMesh();
-            // planeMesh.axisFlag = 0;
-            // planeMesh.setVtxBufRenderData( vtxData );
-            // planeMesh.initialize(-0.5, -0.5, 1.0, 1.0);
-            // this.unitXOYPlane.setMesh( planeMesh );
-            
-
-            // vs = new Float32Array([-0.5, -0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0, -0.5, 0.5, 0]);
-            // uvs = new Float32Array([]);
-            // nvs = new Float32Array([]);
-            // ivs = new Uint16Array([]);
-
             for(let i = 0; i < vs.length; ++i){vs[i] *= 0.5;}
             dm = new DataMesh();
             dm.setVS( vs ).setUVS( uvs ).setNVS( nvs ).setIVS( ivs ).setVtxBufRenderData( vtxData );
@@ -92,30 +67,24 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
             dm.initialize();
             this.unitXOYPlane.setMesh( dm );
 
-
-            // planeMesh = new RectPlaneMesh();
-            // planeMesh.axisFlag = 1;
-            // planeMesh.setVtxBufRenderData( vtxData );
-            // planeMesh.initialize(-0.5, -0.5, 1.0, 1.0);
-            // this.unitXOZPlane.setMesh( planeMesh );
-
-            
-            // console.log("----------------------------------");
-            // console.log(planeMesh.getVS());
-            // console.log(planeMesh.getUVS());
-            // console.log(planeMesh.getNVS());
-            // console.log(planeMesh.getIVS());
-
             vs = new Float32Array([0.5, 0, -0.5, -0.5, 0, -0.5, -0.5, 0, 0.5, 0.5, 0, 0.5]);
-            // uvs = new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]);
             nvs = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
-            // ivs = new Uint16Array([0, 1, 2, 0, 2, 3]);
             dm = new DataMesh();
             dm.setVS( vs ).setUVS( uvs ).setNVS( nvs ).setIVS( ivs ).setVtxBufRenderData( vtxData );
             dm.vbWholeDataEnabled = true;
             dm.initialize();
             this.unitXOZPlane.setMesh( dm );
         }
+    }
+    
+    createVector3D(x: number = 0.0, y: number = 0.0, z: number = 0.0, w: number = 1.0): IVector3D {
+        return new Vector3D(x, y, z, w);
+    }
+    createMatrix4(): IMatrix4 {
+        return new Matrix4();
+    }
+    createAABB(): IAABB {
+        return new AABB();
     }
     createEntity(): IRenderEntity {
         return new DisplayEntity();

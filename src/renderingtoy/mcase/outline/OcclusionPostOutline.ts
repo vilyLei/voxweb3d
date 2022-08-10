@@ -10,9 +10,9 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 import { OccPostOutLineDecorator } from "../material/OccPostOutLineDecorator";
 import { OccPostOutLineScreen } from "../material/OccPostOutLineScreen";
 import { OutlinePreDecorator } from "../material/OutlinePreDecorator";
-import Vector3D from "../../../vox/math/Vector3D";
+import IVector3D from "../../../vox/math/IVector3D";
 import { IFBOInstance } from "../../../vox/scene/IFBOInstance";
-import AABB from "../../../vox/geom/AABB";
+import { IAABB } from "../../../vox/geom/IAABB";
 import Plane from "../../../vox/geom/Plane";
 import { IRTTTexture } from "../../../vox/render/texture/IRTTTexture";
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
@@ -38,8 +38,8 @@ export default class OcclusionPostOutline {
     private m_colorFBO: IFBOInstance = null;
     private m_outlineFBO: IFBOInstance = null;
 
-    private m_bounds: AABB = new AABB();
-    private m_expandBias: Vector3D = new Vector3D(10.0, 10.0, 10.0);
+    private m_bounds: IAABB;
+    private m_expandBias: IVector3D;// = new Vector3D(10.0, 10.0, 10.0);
     private m_boundsEntity: IRenderEntity;
 
     initialize(rscene: IRendererScene, fboIndex: number = 0, occlusionRProcessIDList: number[] = null): void {
@@ -47,6 +47,8 @@ export default class OcclusionPostOutline {
         if (this.m_rscene == null) {
 
             this.m_rscene = rscene;
+            this.m_bounds = rscene.entityBlock.createAABB();
+            this.m_expandBias = rscene.entityBlock.createVector3D(10.0, 10.0, 10.0);
 
             let materialBlock = this.m_rscene.materialBlock;
 
@@ -180,7 +182,7 @@ export default class OcclusionPostOutline {
                     for (let i: number = 0; i < this.m_targets.length; ++i) {
                         if (this.m_targets[i].isRenderEnabled()) {
                             colorFBO.drawEntity(this.m_targets[i], false, true);
-                            bounds.union(this.m_targets[i].getGlobalBounds() as AABB);
+                            bounds.union(this.m_targets[i].getGlobalBounds());
                         }
                     }
 
@@ -223,7 +225,7 @@ export default class OcclusionPostOutline {
 
                 // 计算场景摄像机近平面世界坐标空间位置
                 let camera = this.m_rscene.getCamera();
-                let pv: Vector3D = camera.getNV();
+                let pv = camera.getNV();
                 pv.scaleBy(camera.getZNear() + 1.0);
                 pv.addBy(camera.getPosition());
                 this.m_testPlane.distance = this.m_testPlane.nv.dot(pv);
