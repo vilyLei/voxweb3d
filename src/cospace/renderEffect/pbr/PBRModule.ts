@@ -190,12 +190,12 @@ export default class PBRModule implements IMaterialModule {
 		return m;
 	}
 	destroy(): void {
+		
 		this.m_rscene = null;
 		if(this.m_effect != null) {
 			this.m_effect.destroy();
 			this.m_effect = null;
 		}
-		this.m_effect = null;
 		this.m_materialCtx = null;
 		this.m_materialData = null;
 		this.m_pbrMapUrl = null;

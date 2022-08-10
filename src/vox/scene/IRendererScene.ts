@@ -33,6 +33,7 @@ interface IRendererScene {
     getUid(): number;
     createFBOInstance(): IFBOInstance;
     createMatrix4(): IMatrix4;
+    createVector3D(x?: number, y?: number, z?: number, w?: number): IVector3D;
     /**
      * 是否启用鼠标或者touch交互功能
      * @param gpuTestEnabled the default value is true.

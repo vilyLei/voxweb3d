@@ -1,4 +1,4 @@
-import Vector3D from "../../../vox/math/Vector3D";
+import IVector3D from "../../../vox/math/IVector3D";
 import { IFBOInstance } from "../../../vox/scene/IFBOInstance";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";
@@ -29,7 +29,9 @@ export class ShadowVSMModule implements IMaterialPipe, IShadowVSMModule {
     private m_horOccBlurPlane: IRenderEntity = null;
     // private m_blurModule: PingpongBlur = null;
 
-    private m_camPos: Vector3D = new Vector3D(1.0, 800.0, 1.0);
+    private m_camPos: IVector3D;//new Vector3D(1.0, 800.0, 1.0);
+    private m_zero: IVector3D;
+    private m_axisZ: IVector3D;
     private m_shadowBias: number = -0.0005;
     private m_shadowRadius: number = 2.0;
     private m_shadowIntensity: number = 0.8;
@@ -77,6 +79,9 @@ export class ShadowVSMModule implements IMaterialPipe, IShadowVSMModule {
     initialize(rscene: IRendererScene, processIDList: number[], buildShadowDelay: number = 120, blurEnabled: boolean = false): void {
         if (this.m_rscene == null) {
             this.m_rscene = rscene;
+            this.m_camPos = rscene.createVector3D(1.0, 800.0, 1.0);
+            this.m_zero = rscene.createVector3D();
+            this.m_axisZ = rscene.createVector3D(0.0, 0.0, 1.0);
             this.m_buildShadowDelay = buildShadowDelay;
             this.m_processIDList = processIDList.slice(0);
             this.initConfig(processIDList, false);
@@ -95,7 +100,7 @@ export class ShadowVSMModule implements IMaterialPipe, IShadowVSMModule {
      * set shadow camera world position 
      * @param pos shadow camera position in world.
      */
-    setCameraPosition(pos: Vector3D): void {
+    setCameraPosition(pos: IVector3D): void {
         this.m_camPos.copyFrom(pos);
     }
     /**
@@ -162,7 +167,7 @@ export class ShadowVSMModule implements IMaterialPipe, IShadowVSMModule {
         this.m_vsmData.setShadowIntensity(this.m_shadowIntensity);
 
         let depthMaterial = this.m_rscene.materialBlock.createSimpleMaterial(new DepthWriteDecorator());
-        
+
         this.m_fboDepth = this.m_rscene.createFBOInstance();
         this.m_fboDepth.asynFBOSizeWithViewport();
         this.m_fboDepth.setClearRGBAColor4f(1.0, 1.0, 1.0, 1.0);
@@ -219,7 +224,8 @@ export class ShadowVSMModule implements IMaterialPipe, IShadowVSMModule {
 
             let viewWidth: number = this.m_viewWidth;
             let viewHeight: number = this.m_viewHeight;
-            this.m_direcCamera.lookAtRH(this.m_camPos, Vector3D.ZERO, Vector3D.Z_AXIS);
+
+            this.m_direcCamera.lookAtRH(this.m_camPos, this.m_zero, this.m_axisZ);
             this.m_direcCamera.orthoRH(this.m_near, this.m_far, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
             this.m_direcCamera.setViewXY(0, 0);
             this.m_direcCamera.setViewSize(viewWidth, viewHeight);
@@ -313,6 +319,16 @@ export class ShadowVSMModule implements IMaterialPipe, IShadowVSMModule {
         //     this.m_blurModule.run();
         // }
         this.m_fboOccBlur.setRenderToBackBuffer();
+    }
+    destroy(): void {
+
+        this.m_rscene = null;
+        this.m_vsmData = null;
+        this.m_direcCamera = null;
+        this.m_fboDepth = null;
+        this.m_fboOccBlur = null;
+        this.m_verOccBlurPlane = null;
+        this.m_horOccBlurPlane = null;        
     }
 }
 export default ShadowVSMModule;

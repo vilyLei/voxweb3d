@@ -42,5 +42,6 @@ interface IShadowVSMModule extends IMaterialPipe {
 
     upate(): void;
     run(): void;
+    destroy(): void;
 }
 export { IShadowVSMModule }

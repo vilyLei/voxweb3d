@@ -6,6 +6,7 @@
 /***************************************************************************/
 // 整个渲染场景的入口类
 
+import IVector3D from "../../vox/math/IVector3D";
 import Vector3D from "../../vox/math/Vector3D";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import Stage3D from "../../vox/display/Stage3D";
@@ -51,8 +52,8 @@ import { ShaderProgramBuilder } from "../../vox/material/ShaderProgramBuilder";
 
 import { IRenderableMaterialBlock } from "./block/IRenderableMaterialBlock";
 import { IRenderableEntityBlock } from "./block/IRenderableEntityBlock";
-import Matrix4 from "../math/Matrix4";
 import { IMatrix4 } from "../math/IMatrix4";
+import Matrix4 from "../math/Matrix4";
 
 export default class RendererScene implements IRenderer, IRendererScene {
 
@@ -213,9 +214,12 @@ export default class RendererScene implements IRenderer, IRendererScene {
     createFBOInstance(): FBOInstance {
         return new FBOInstance(this, this.textureBlock.getRTTStrore());
     }
-
+    
     createMatrix4(): IMatrix4 {
         return new Matrix4();
+    }
+    createVector3D(x: number = 0.0, y: number = 0.0, z: number = 0.0, w: number = 1.0): IVector3D {
+        return new Vector3D(x, y, z, w);
     }
     setClearUint24Color(colorUint24: number, alpha: number = 1.0): void {
         this.m_renderProxy.setClearUint24Color(colorUint24, alpha);

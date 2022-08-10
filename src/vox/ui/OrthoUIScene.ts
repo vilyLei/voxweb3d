@@ -25,6 +25,7 @@ import IRenderStage3D from "../render/IRenderStage3D";
 import Vector3D from "../math/Vector3D";
 import { IRenderProxy } from "../render/IRenderProxy";
 import { IMatrix4 } from "../math/IMatrix4";
+import IVector3D from "../math/IVector3D";
 
 
 class OrthoUIScene implements IRendererScene {
@@ -227,6 +228,10 @@ class OrthoUIScene implements IRendererScene {
     }
     createMatrix4(): IMatrix4 {
         return this.m_rscene.createMatrix4();
+    }
+    
+    createVector3D(x: number = 0.0, y: number = 0.0, z: number = 0.0, w: number = 1.0): IVector3D {
+        return this.m_rscene.createVector3D(x,y,z,w);
     }
 }
 export { OrthoUIScene };

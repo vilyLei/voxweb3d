@@ -8,6 +8,7 @@
 // 不同的子场景，甚至可以拥有独立的matrix3D这样的数据池子
 
 import MathConst from "../../vox/math/MathConst";
+import IVector3D from "../../vox/math/IVector3D";
 import Vector3D from "../../vox/math/Vector3D";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import SubStage3D from "../../vox/display/SubStage3D";
@@ -173,6 +174,9 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
 
     createMatrix4(): IMatrix4 {
         return new Matrix4();
+    }
+    createVector3D(x: number = 0.0, y: number = 0.0, z: number = 0.0, w: number = 1.0): IVector3D {
+        return new Vector3D(x, y, z, w);
     }
 
     setEvt3DController(evt3DCtr: IEvt3DController): void {

@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import Vector3D from "../../../vox/math/Vector3D";
+import IVector3D from "../../../vox/math/IVector3D";
 
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
@@ -68,8 +68,8 @@ export default class ShadowVSMData extends MaterialPipeBase implements IMaterial
 
         if (this.m_uniformParam == null) {
 
-            this.m_direcMatrix = direcMatrix;//new Matrix4();
-            this.m_offetMatrix = offetMatrix;//new Matrix4();
+            this.m_direcMatrix = direcMatrix;
+            this.m_offetMatrix = offetMatrix;
 
             this.m_offetMatrix.identity();
             this.m_offetMatrix.setScaleXYZ(0.5, 0.5, 0.5);
@@ -123,7 +123,7 @@ export default class ShadowVSMData extends MaterialPipeBase implements IMaterial
         this.m_params[5] = height;
         this.m_dirty = true;
     }
-    setDirec(v3: Vector3D): void {
+    setDirec(v3: IVector3D): void {
 
         this.m_params[8] = -v3.x;
         this.m_params[9] = -v3.y;
