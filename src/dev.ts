@@ -267,11 +267,11 @@
 ////////////////////////////   transform    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
- import {DemoContainer as Demo} from "./demo/DemoContainer";
+//  import {DemoContainer as Demo} from "./demo/DemoContainer";
 
 //  import {DemoContainerTransform as Demo}  from "./demo/DemoContainerTransform";
 
-// import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
+import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
 
 //  import {DemoTransFromTex as Demo} from "./demo/DemoTransFromTex";
 

@@ -5,13 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
-import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
+import IShaderUniformData from "../../../vox/material/IShaderUniformData";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { ISimpleMaterialDecorator } from "../../../vox/material/ISimpleMaterialDecorator";
-import { ShaderTextureBuilder } from "../../../vox/material/ShaderTextureBuilder";
+import { IShaderTextureBuilder } from "../../../vox/material/IShaderTextureBuilder";
 import MathConst from "../../../vox/math/MathConst";
 
 class OccPostOutLineDecorator implements ISimpleMaterialDecorator {
@@ -51,7 +50,7 @@ class OccPostOutLineDecorator implements ISimpleMaterialDecorator {
 
     buildBufParams(): void {
     }
-    buildTextureList(builder: ShaderTextureBuilder): void {
+    buildTextureList(builder: IShaderTextureBuilder): void {
         builder.addDiffuseMap(this.m_currMap);
     }
     buildShader(coder: IShaderCodeBuilder): void {
@@ -144,7 +143,7 @@ void main() {
         this.m_params[0] = width;
         this.m_params[1] = height;
     }
-    createUniformData(): ShaderUniformData {
+    createUniformData(): IShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_params"];
         oum.dataList = [this.m_params];

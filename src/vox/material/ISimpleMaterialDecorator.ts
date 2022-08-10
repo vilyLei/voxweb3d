@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ShaderUniformData from "../../vox/material/ShaderUniformData";
+import IShaderUniformData from "../../vox/material/IShaderUniformData";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import { ShaderTextureBuilder } from "../../vox/material/ShaderTextureBuilder";
 
@@ -32,7 +32,7 @@ interface ISimpleMaterialDecorator {
     /**
      * @returns local uniform data
      */
-    createUniformData(): ShaderUniformData;
+    createUniformData(): IShaderUniformData;
     /**
      * @returns unique name string
      */

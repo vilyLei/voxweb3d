@@ -7,10 +7,11 @@
 
 import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
 import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
+import IShaderUniformData from "../../../vox/material/IShaderUniformData";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 import { ISimpleMaterialDecorator } from "../../../vox/material/ISimpleMaterialDecorator";
-import { ShaderTextureBuilder } from "../../../vox/material/ShaderTextureBuilder";
+import { IShaderTextureBuilder } from "../../../vox/material/IShaderTextureBuilder";
 
 class OutlinePreDecorator implements ISimpleMaterialDecorator {
 
@@ -42,7 +43,7 @@ class OutlinePreDecorator implements ISimpleMaterialDecorator {
     }
     buildBufParams(): void {        
     }
-    buildTextureList(builder: ShaderTextureBuilder): void {        
+    buildTextureList(builder: IShaderTextureBuilder): void {        
     }
     buildShader(coder: IShaderCodeBuilder): void {
         
@@ -59,7 +60,7 @@ class OutlinePreDecorator implements ISimpleMaterialDecorator {
 `
         );
     }
-    createUniformData(): ShaderUniformData {
+    createUniformData(): IShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_colorFill"];
         oum.dataList = [this.m_colorData];
