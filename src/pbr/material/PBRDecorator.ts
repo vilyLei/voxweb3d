@@ -8,8 +8,8 @@
 import IShaderCodeObject from "../../vox/material/IShaderCodeObject";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import IShaderUniformData from "../../vox/material/IShaderUniformData";
-import Vector3D from "../../vox/math/Vector3D";
-import Color4 from "../../vox/material/Color4";
+import IVector3D from "../../vox/math/IVector3D";
+import IColor4 from "../../vox/material/IColor4";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
@@ -154,12 +154,12 @@ class PBRDecorator implements IMaterialDecorator {
     getPixelNormalNoiseIntensity(): number {
         return this.m_pbrParams[3];
     }
-    setMirrorViewNV(nv: Vector3D): void {
+    setMirrorViewNV(nv: IVector3D): void {
         this.m_mirrorParam[0] = nv.x;
         this.m_mirrorParam[1] = nv.y;
         this.m_mirrorParam[2] = nv.z;
     }
-    setMirrorPlaneNV(nv: Vector3D): void {
+    setMirrorPlaneNV(nv: IVector3D): void {
         //  //console.log("nv: ",nv);
         //  this.m_mirrorParam[0] = nv.x;
         //  this.m_mirrorParam[1] = nv.y;
@@ -241,7 +241,7 @@ class PBRDecorator implements IMaterialDecorator {
         this.m_pbrParams[13] = fy;
         this.m_pbrParams[14] = fz;
     }
-    getEnvSpecularColorFactor(colorFactor: Color4): void {
+    getEnvSpecularColorFactor(colorFactor: IColor4): void {
         colorFactor.r = this.m_pbrParams[12];
         colorFactor.g = this.m_pbrParams[13];
         colorFactor.b = this.m_pbrParams[14];
@@ -252,7 +252,7 @@ class PBRDecorator implements IMaterialDecorator {
         this.m_pbrParams[9] = fg;
         this.m_pbrParams[10] = fb;
     }
-    getAmbientFactor(colorFactor: Color4): void {
+    getAmbientFactor(colorFactor: IColor4): void {
         colorFactor.r = this.m_pbrParams[8];
         colorFactor.g = this.m_pbrParams[9];
         colorFactor.b = this.m_pbrParams[10];
@@ -283,7 +283,7 @@ class PBRDecorator implements IMaterialDecorator {
         this.m_fragLocalParams[1] = f0y;
         this.m_fragLocalParams[2] = f0z;
     }
-    getF0(colorFactor: Color4): void {
+    getF0(colorFactor: IColor4): void {
 
         colorFactor.r = this.m_fragLocalParams[0];
         colorFactor.g = this.m_fragLocalParams[1];
@@ -294,7 +294,7 @@ class PBRDecorator implements IMaterialDecorator {
         this.m_fragLocalParams[5] = pg;
         this.m_fragLocalParams[6] = pb;
     }
-    getAlbedoColor(colorFactor: Color4): void {
+    getAlbedoColor(colorFactor: IColor4): void {
 
         colorFactor.r = this.m_fragLocalParams[4];
         colorFactor.g = this.m_fragLocalParams[5];
