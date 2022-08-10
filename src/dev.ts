@@ -267,11 +267,11 @@
 ////////////////////////////   transform    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoContainer as Demo} from "./demo/DemoContainer";
+ import {DemoContainer as Demo} from "./demo/DemoContainer";
 
 //  import {DemoContainerTransform as Demo}  from "./demo/DemoContainerTransform";
 
-//  import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
+// import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
 
 //  import {DemoTransFromTex as Demo} from "./demo/DemoTransFromTex";
 
@@ -283,7 +283,7 @@
 
 //  import {DemoEmptyRendererScene as Demo} from "./demo/DemoEmptyRendererScene";
 
- import {DemoAPlane as Demo} from "./demo/DemoAPlane";
+//  import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
 //  import {DemoScene as Demo} from "./demo/DemoScene";
 
