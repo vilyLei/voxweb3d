@@ -84,7 +84,7 @@ export default class OcclusionPostOutline {
     private m_outlineFBO: IFBOInstance = null;
 
     private m_bounds: IAABB;
-    private m_expandBias: IVector3D;// = new Vector3D(10.0, 10.0, 10.0);
+    private m_expandBias: IVector3D;
     private m_boundsEntity: IRenderEntity;
 
     initialize(rscene: IRendererScene, fboIndex: number = 0, occlusionRProcessIDList: number[] = null): void {
