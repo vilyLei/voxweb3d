@@ -78,31 +78,15 @@ export default class PBRModule implements IMaterialModule {
 			this.m_effect = PBREffect.create();
 			this.m_effect.initialize(this.m_rscene);
 		}
-		// this.preloadMap(this.m_materialCtx, "box", true, false, true);
 		this.preloadMap();
 	}
-	// loaded(buffer: ArrayBuffer, uuid: string): void {
-	// 	this.m_specEnvMapBuf = buffer;
-	// 	if (this.m_effect != null) {
-	// 		this.m_specEnvMap = this.m_effect.createSpecularTex(this.m_specEnvMapBuf, true, this.m_specEnvMap);
-	// 	}
-	// 	if (this.m_loadSpecCallback != null) {
-	// 		this.m_loadSpecCallback();
-	// 		this.m_loadSpecCallback = null;
-	// 	}
-	// }
-	// loadError(status: number, uuid: string): void {}
 	private loadSpecularData(hdrBrnEnabled: boolean): void {
 		if (this.m_loadSpecularData) {
-			// let envMapUrl: string = "static/bytes/spe.mdf";
 			let url: string = this.m_pbrMapUrl.envBrnMap;
 			if (hdrBrnEnabled) {
-				// envMapUrl = "static/bytes/spb.bin";
 				url = this.m_pbrMapUrl.envBrnMap;
 			}
 			console.log("start load spec map ata.");
-			// let load = new BinaryLoader();
-			// load.load(envMapUrl, this);
 
 			new HttpFileLoader().load(url, (buf: ArrayBuffer, url: string): void => {
 				this.m_specEnvMapBuf = buf;
@@ -117,29 +101,9 @@ export default class PBRModule implements IMaterialModule {
 			this.m_loadSpecularData = false;
 		}
 	}
-	// private preloadMap(
-	// 	materialCtx: IMaterialContext,
-	// 	ns: string,
-	// 	normalMapEnabled: boolean = true,
-	// 	displacementMap: boolean = true,
-	// 	shadowReceiveEnabled: boolean = false,
-	// 	aoMapEnabled: boolean = false
-	// ): void {
 	private preloadMap(): void {
 		if (this.m_preLoadMaps) {
-			/*
-			ns = "rust_coarse_01";
-			ns = "medieval_blocks_02";
-			ns = "rough_plaster_broken";
-			//ns = "metal_plate";
 
-			this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/" + ns + "_diff_1k.jpg");
-			this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/" + ns + "_nor_1k.jpg");
-			this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/" + ns + "_arm_1k.jpg");
-
-			this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/" + ns + "_disp_1k.jpg");
-
-			//*/
 			let tmUrl = this.m_pbrMapUrl;
 			if (tmUrl.diffuseMap != undefined) this.m_materialCtx.getTextureByUrl(tmUrl.diffuseMap);
 			if (tmUrl.normalMap != undefined) this.m_materialCtx.getTextureByUrl(tmUrl.normalMap);
@@ -166,13 +130,6 @@ export default class PBRModule implements IMaterialModule {
 			this.m_specEnvMap = this.m_effect.createSpecularTex(this.m_specEnvMapBuf, true, this.m_specEnvMap);
 			this.m_specEnvMap.__$attachThis();
 		}
-		// DivLog.ShowLog("pbr createMaterial, uid: "+this.m_specEnvMap.getUid());
-		// let diffuseMap: IRenderTexture = null;
-		// let normalMap: IRenderTexture = null;
-		// let armMap: IRenderTexture = null;
-		// let displacementMap: IRenderTexture = null;
-		// let parallaxMap: IRenderTexture = null;
-		// let fogEnabled: boolean = this.m_materialData.fog !== undefined;
 
 		let tmUrl = this.m_pbrMapUrl;
 		let mapData: PBRMap = {
@@ -185,59 +142,6 @@ export default class PBRModule implements IMaterialModule {
 			aoMap: null
 		};
 
-		/*
-		let ns: string = "rust_coarse_01";
-		ns = "medieval_blocks_02";
-		ns = "rough_plaster_broken";
-		//ns = "metal_plate";
-		diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/" + ns + "_diff_1k.jpg");
-		//diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
-		normalMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/" + ns + "_nor_1k.jpg");
-		armMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/" + ns + "_arm_1k.jpg");
-
-		let aoMap: IRenderTexture = null;
-		let aoMapEnabled: boolean = true;
-		if (aoMapEnabled) {
-			//aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_OCC.png");
-			//aoMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
-		}
-		displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/pbrtex/" + ns + "_disp_1k.jpg");
-
-		//parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/brick_bumpy01.jpg");
-		parallaxMap = displacementMap;
-		//*/
-		// let tmUrl = this.m_pbrMapUrl;
-		// if (tmUrl.diffuseMap != undefined) diffuseMap = this.m_materialCtx.getTextureByUrl(tmUrl.diffuseMap);
-		// if (tmUrl.normalMap != undefined) normalMap = this.m_materialCtx.getTextureByUrl(tmUrl.normalMap);
-		// if (tmUrl.armMap != undefined) armMap = this.m_materialCtx.getTextureByUrl(tmUrl.armMap);
-		// if (tmUrl.displacementMap != undefined) displacementMap = this.m_materialCtx.getTextureByUrl(tmUrl.displacementMap);
-		// if (tmUrl.parallaxMap != undefined) parallaxMap = this.m_materialCtx.getTextureByUrl(tmUrl.parallaxMap);
-
-		// let param: PBRParam = {
-		// 	metallic: 1.0,
-		// 	roughness: 0.4,
-		// 	ao: 1.0,
-		// 	scatterIntensity: 8.0,
-		// 	sideIntensity: 8.0,
-
-		// 	shadowReceiveEnabled: shadowReceiveEnabled && this.m_shadowEnabled,
-		// 	fogEnabled: this.m_materialData.fog !== undefined,
-
-		// 	scatterEnabled: false,
-		// 	woolEnabled: true,
-		// 	absorbEnabled: false,
-		// 	normalNoiseEnabled: false,
-
-		// 	displacementParams: [0.02, -0.01],
-		// 	albedoColor: [1.0, 1.0, 1.0],
-		// 	parallaxParams: [1, 10, 5.0, 0.02]
-		// };
-
-		// param.metallic = 1.0;
-		// param.roughness = 0.4;
-		// param.ao = 1.0;
-		// param.shadowReceiveEnabled = shadowReceiveEnabled && this.m_shadowEnabled;
-		// param.fogEnabled = fogEnabled;
 		let param: PBRParam;
 		if (materialParam !== undefined && materialParam !== null) {
 			param = materialParam;
@@ -282,15 +186,7 @@ export default class PBRModule implements IMaterialModule {
 		vs = param.parallaxParams;
 		decor.setParallaxParams(vs[0], vs[1], vs[2], vs[3]);
 		decor.setSideIntensity(param.sideIntensity);
-		/*
-		//vertUniform.setDisplacementParams(10.0, -5.0);
-		vertUniform.setDisplacementParams(0.02, -0.01);
-		decor.setAlbedoColor(1.0, 1.0, 1.0);
-		decor.setScatterIntensity(8.0);
-		decor.setParallaxParams(1, 10, 5.0, 0.02);
-		decor.setSideIntensity(8.0);
-		//*/
-		//m.initializeByCodeBuf( true );
+		
 		return m;
 	}
 	destroy(): void {
