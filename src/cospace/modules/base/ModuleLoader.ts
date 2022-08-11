@@ -88,7 +88,8 @@ class ModuleLoader {
 			return;
 		}
 		loadingMap.set(url, [this]);
-
+		this.load(url);
+		/*
 		let codeLoader: XMLHttpRequest = new XMLHttpRequest();
 		codeLoader.open("GET", url, true);
 		codeLoader.onerror = function (err) {
@@ -115,7 +116,54 @@ class ModuleLoader {
 			loadingMap.delete(url);
 		};
 		codeLoader.send(null);
+		//*/
 		return this;
+	}
+	protected load(url: string): void {
+
+		let codeLoader: XMLHttpRequest = new XMLHttpRequest();
+		codeLoader.open("GET", url, true);
+		codeLoader.onerror = function (err) {
+			console.error("load error: ", err);
+		};
+
+		// codeLoader.onprogress = e => { };
+		codeLoader.onload = evt => {
+			this.loadedData(codeLoader.response, url);
+			this.loadedUrl(url);
+		}
+		codeLoader.send(null);
+	}
+
+	protected loadedData(data: any, url: string): void {
+		console.log("module js file loaded, url: ", url);
+		let scriptEle: HTMLScriptElement = document.createElement("script");
+		scriptEle.onerror = evt => {
+			console.error("module script onerror, e: ", evt);
+		};
+		scriptEle.type = "text/javascript";
+		scriptEle.innerHTML = data;
+		document.head.appendChild(scriptEle);
+	}
+	/**
+	 * does not override this function
+	 * @param url http req url
+	 */
+	protected loadedUrl(url: string): void {
+
+		let loadedMap = ModuleLoader.loadedMap;
+		let loadingMap = ModuleLoader.loadingMap;
+
+		loadedMap.set(url, 1);
+
+		let list = loadingMap.get(url);
+		for (let i = 0; i < list.length; ++i) {
+			list[i].use();
+		}
+		loadingMap.delete(url);
+	}
+	getDataByUrl(): string | ArrayBuffer {
+		return null;
 	}
 	destroy(): void {
 
