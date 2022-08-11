@@ -25,19 +25,16 @@ export class DemoCoRendererScene {
 		let url1 = "static/cospace/engine/rscene/CoRScene.umd.min.js";
 		let url2 = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.min.js";
 
-		let mouseInteractML = new ModuleLoader(2);
-		mouseInteractML.setCallback((): void => {
+		let mouseInteractML = new ModuleLoader(2, (): void => {
 			this.initMouseInteraction();
 		});
 
-		new ModuleLoader(2)
-			.setCallback((): void => {
-				if (this.isEngineEnabled()) {
-					console.log("engine modules loaded ...");
-					this.initRenderer();
-					// mouseInteractML.use();
-				}
-			})
+		new ModuleLoader(2, (): void => {
+			if (this.isEngineEnabled()) {
+				console.log("engine modules loaded ...");
+				this.initRenderer();
+			}
+		})
 			.addModuleLoader(mouseInteractML)
 			.loadModule(url0)
 			.loadModule(url1);
@@ -48,11 +45,11 @@ export class DemoCoRendererScene {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";
 	}
 	private initMouseInteraction(): void {
-		if(this.m_rscene != null && this.m_mouseInteraction == null && (typeof CoMouseInteraction !== "undefined")) {
+		if (this.m_rscene != null && this.m_mouseInteraction == null && (typeof CoMouseInteraction !== "undefined")) {
 
 			this.m_mouseInteraction = CoMouseInteraction.createMouseInteraction();
-			this.m_mouseInteraction.initialize( this.m_rscene );
-			this.m_mouseInteraction.setSyncLookAtEnabled( true );
+			this.m_mouseInteraction.initialize(this.m_rscene);
+			this.m_mouseInteraction.setSyncLookAtEnabled(true);
 		}
 	}
 
@@ -77,7 +74,7 @@ export class DemoCoRendererScene {
 	}
 	run(): void {
 		if (this.m_rscene != null) {
-			if(this.m_mouseInteraction != null) {
+			if (this.m_mouseInteraction != null) {
 				this.m_mouseInteraction.run();
 			}
 			this.m_rscene.run();

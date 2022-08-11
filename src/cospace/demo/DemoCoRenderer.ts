@@ -15,19 +15,16 @@ export class DemoCoRenderer {
 	private m_renderer: IRendererInstance;
 	private m_rcontext: IRendererInstanceContext;
 	private m_time: number = 0.0;
-	
+
 	constructor() { }
 
 	initialize(): void {
 
 		let url: string = "static/cospace/engine/renderer/CoRenderer.umd.min.js";
 
-		new ModuleLoader(1)
-			.setCallback((): void => {
-				if (typeof CoRenderer !== "undefined") {
-					this.initRenderer();
-				}
-			})
+		new ModuleLoader(1, (): void => {
+			this.initRenderer();
+		})
 			.loadModule(url)
 	}
 

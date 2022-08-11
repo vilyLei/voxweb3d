@@ -8,9 +8,10 @@ class ModuleLoader {
 	private m_moduleMap: Map<number, ModuleLoader> = null;
 	private static loadedMap: Map<string, number> = new Map();
 	private static loadingMap: Map<string, ModuleLoader[]> = new Map();
-	private m_callback: () => void = null;
+	private m_callback: () => void;
 
-	constructor(times: number){
+	constructor(times: number, callback: () => void = null){
+		this.m_callback = callback;
 		this.m_times = times;
 	}
 	getUid(): number {
