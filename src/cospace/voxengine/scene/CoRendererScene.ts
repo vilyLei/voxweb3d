@@ -21,8 +21,8 @@ import IRODisplaySorter from "../../../vox/render/IRODisplaySorter";
 import { IMatrix4 } from "../../../vox/math/IMatrix4";
 import IRPONodeBuilder from "../../../vox/render/IRPONodeBuilder";
 import IRenderShader from "../../../vox/render/IRenderShader";
+import RendererState from "../../../vox/render/RendererState";
 
-import { ICoRenderer } from "../ICoRenderer";
 
 import Vector3D from "../../../vox/math/Vector3D";
 import Stage3D from "../../../vox/display/Stage3D";
@@ -51,6 +51,7 @@ import MouseEvt3DController from "../../../vox/scene/MouseEvt3DController";
 import IEvt3DController from "../../../vox/scene/IEvt3DController";
 import FBOInstance from "../../../vox/scene/FBOInstance";
 import CameraDsistanceSorter from "../../../vox/scene/CameraDsistanceSorter";
+import ICoRenderNode from "./ICoRenderNode";
 
 // import RendererSubScene from "../../../vox/scene/RendererSubScene";
 
@@ -63,6 +64,8 @@ import { IRenderableMaterialBlock } from "../../../vox/scene/block/IRenderableMa
 import { IRenderableEntityBlock } from "../../../vox/scene/block/IRenderableEntityBlock";
 import Matrix4 from "../../../vox/math/Matrix4";
 import IVector3D from "../../../vox/math/IVector3D";
+
+import { ICoRenderer } from "../ICoRenderer";
 
 declare var CoRenderer: ICoRenderer;
 
@@ -336,6 +339,10 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
             let camera: CameraBase = new CameraBase();
 
             this.m_renderer.initialize(rparam, camera, new ShaderProgramBuilder( this.m_renderer.getRCUid() ));
+
+			let srcSt: any = CoRenderer.RendererState;
+			RendererState.Initialize(srcSt.Rstate, srcSt.VRO);
+
             this.m_processids[0] = 0;
             this.m_processidsLen++;
             let process: IRenderProcess = null;
@@ -747,7 +754,57 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
             this.m_rspace.rayTest(this.m_mouse_rlpv, this.m_mouse_rltv);
         }
     }
+	private m_prependNodes: ICoRenderNode[] = null;
+	private m_appendNodes: ICoRenderNode[] = null;
 
+	private runRenderNodes(nodes: ICoRenderNode[]): void {
+		if(nodes != null) {
+			for(let i = 0; i < nodes.length; ++i) {
+				nodes[i].render();
+			}
+		}
+	}
+
+	private addRenderNodes(node: ICoRenderNode, nodes: ICoRenderNode[]): void {
+		for(let i = 0; i < nodes.length; ++i) {
+			if(node == nodes[i]) {
+				return;
+			}
+		}
+		nodes.push(node);
+	}
+	prependRenderNode(node: ICoRenderNode): void {
+		if(node != null) {
+			if(this.m_prependNodes == null) this.m_prependNodes = [];
+			this.addRenderNodes(node, this.m_prependNodes);
+		}
+	}
+	appendRenderNode(node: ICoRenderNode): void {
+		if(node != null) {
+			if(this.m_appendNodes == null) this.m_appendNodes = [];
+			let ls = this.m_appendNodes;
+			for(let i = 0; i < ls.length; ++i) {
+				if(node == ls[i]) {
+					return;
+				}
+			}
+			ls.push(node);
+		}
+	}
+
+	removeRenderNode(node: ICoRenderNode): void {
+		if(node != null) {
+			let ls = this.m_prependNodes;
+			if(ls != null) {
+				for(let i = 0; i < ls.length; ++i) {
+					if(node == ls[i]) {
+						ls.splice(i, 1);
+						break;
+					}
+				}
+			}
+		}
+	}
     /**
      * run all renderer processes in the renderer instance
      */
@@ -760,6 +817,7 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
             }
 
             this.runnableQueue.run();
+			this.runRenderNodes(this.m_prependNodes);
             if (this.m_subscListLen > 0) {
                 for (let i: number = 0; i < this.m_processidsLen; ++i) {
                     this.m_renderer.runAt(this.m_processids[i]);
@@ -768,12 +826,14 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
             else {
                 this.m_renderer.run();
             }
+			this.runRenderNodes(this.m_appendNodes);
             if (autoCycle) {
                 this.runEnd();
             }
 
         }
     }
+
     /**
      * run the specific renderer process by its index in the renderer instance
      * @param index the renderer process index in the renderer instance

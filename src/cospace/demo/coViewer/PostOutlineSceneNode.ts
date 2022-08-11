@@ -5,7 +5,7 @@ import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
 import { CoNormalMaterial } from "../../voxengine/material/CoNormalMaterial";
 import { ViewerCoSApp } from "./ViewerCoSApp";
 import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
-// import ICoRenderNode from "../../voxengine/scene/ICoRenderNode";
+import ICoRenderNode from "../../voxengine/scene/ICoRenderNode";
 import IOcclusionPostOutline from "../../../renderingtoy/mcase/outline/IOcclusionPostOutline";
 import { IOccPostOutlineModule } from "../../renderEffect/outline/IOccPostOutlineModule";
 
@@ -15,7 +15,7 @@ import { ModuleLoader } from "../../modules/base/ModuleLoader";
 declare var CoRScene: ICoRScene;
 declare var OccPostOutlineModule: IOccPostOutlineModule;
 
-class PostOutlineSceneNode {
+class PostOutlineSceneNode implements ICoRenderNode {
 	private m_rscene: ICoRendererScene;
 	private m_vcoapp: ViewerCoSApp;
 	private m_postOutline: IOcclusionPostOutline;
