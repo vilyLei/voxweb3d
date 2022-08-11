@@ -68,10 +68,7 @@ export class DemoCoRendererScene {
 			rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 			rparam.setCamProject(45, 20.0, 9000.0);
-			this.m_rscene = CoRScene.createRendererScene();
-			this.m_rscene.initialize(rparam, 3);
-
-			this.initMouseInteraction();
+			this.m_rscene = CoRScene.createRendererScene(rparam, 3);
 
 			let axis = CoRScene.createAxis3DEntity();
 			this.m_rscene.addEntity(axis);
