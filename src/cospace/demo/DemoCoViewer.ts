@@ -107,10 +107,10 @@ export class DemoCoViewer {
 			rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 			rparam.setCamProject(45, 20.0, 9000.0);
-			this.m_rscene = CoRScene.createRendererScene();
-			this.m_rscene.initialize(rparam, 3);
+			this.m_rscene = CoRScene.createRendererScene(rparam, 3);
+			// this.m_rscene.initialize(rparam, 3);
 			this.m_rscene.setClearUint24Color(0x888888);
-			CoRScene.applySceneBlock(this.m_rscene);
+			// CoRScene.applySceneBlock(this.m_rscene);
 
 			// let axis = CoRScene.createAxis3DEntity();
 			// this.m_rscene.addEntity(axis);
@@ -125,6 +125,7 @@ export class DemoCoViewer {
 		let node: ViewerSceneNode = new ViewerSceneNode(this.m_rscene, this.m_vmctx, this.m_vcoapp);
 		node.setScale(23.0).loadGeomModel(url, CoDataFormat.OBJ);
 		this.m_node = node;
+		this.m_rscene.appendRenderNode( node );
 	}
 	private mouseDown(evt: any): void {}
 	run(): void {

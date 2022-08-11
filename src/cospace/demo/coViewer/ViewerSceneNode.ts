@@ -1,4 +1,6 @@
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../app/CoSpaceAppData";
+import IRenderMaterial from "../../../vox/render/IRenderMaterial";
+import IRenderEntity from "../../../vox/render/IRenderEntity";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
 import { CoNormalMaterial } from "../../voxengine/material/CoNormalMaterial";
@@ -6,14 +8,22 @@ import ViewerMaterialCtx from "../coViewer/ViewerMaterialCtx";
 import { ViewerCoSApp } from "./ViewerCoSApp";
 import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
 
-declare var CoRScene: ICoRScene;
+import ICoRenderNode from "../../voxengine/scene/ICoRenderNode";
+import IOcclusionPostOutline from "../../../renderingtoy/mcase/outline/IOcclusionPostOutline";
+import { IOccPostOutlineModule } from "../../renderEffect/outline/IOccPostOutlineModule";
 
-class ViewerSceneNode {
+import { ModuleLoader } from "../../modules/base/ModuleLoader";
+
+declare var CoRScene: ICoRScene;
+declare var OccPostOutlineModule: IOccPostOutlineModule;
+
+class ViewerSceneNode implements ICoRenderNode {
 
 	private m_rscene: ICoRendererScene;
 	private m_vcoapp: ViewerCoSApp;
 	private m_vmctx: ViewerMaterialCtx;
 	private m_objUnits: CoGeomDataUnit[] = [];
+	private m_postOutline: IOcclusionPostOutline;
 
 	private m_scale: number = 1.0;
 
@@ -21,6 +31,24 @@ class ViewerSceneNode {
 		this.m_rscene = rscene;
 		this.m_vmctx = vmctx;
 		this.m_vcoapp = vcoapp;
+
+		
+		let url = "static/cospace/renderEffect/occPostOutline/OccPostOutlineModule.umd.js";
+
+		new ModuleLoader(1)
+			.setCallback((): void => {
+				this.m_postOutline = OccPostOutlineModule.create();
+				this.initOutline();
+			})
+			.loadModule(url);
+	}
+	
+	private initOutline(): void {
+		this.m_postOutline.initialize(this.m_rscene, 1, [0]);
+		this.m_postOutline.setFBOSizeScaleRatio(0.5);
+		this.m_postOutline.setRGB3f(0.0, 2.0, 0.0);
+		this.m_postOutline.setOutlineDensity(2.5);
+		this.m_postOutline.setOcclusionDensity(0.2);
 	}
 	setScale(scale: number): ViewerSceneNode {
 		this.m_scale = scale;
@@ -73,11 +101,11 @@ class ViewerSceneNode {
 			entity.setScaleXYZ(m_scale, m_scale, m_scale);
 		}
 	}
-	private createEntity(model: CoGeomDataType): ITransformEntity {
+	private createEntity2(model: CoGeomDataType): ITransformEntity {
 		// let rst = CoRenderer.RendererState;
 
-		let flag: boolean = this.m_vmctx.isMCTXEnabled();
 		let entity: ITransformEntity;
+		let flag: boolean = this.m_vmctx.isMCTXEnabled();
 		if (flag) {
 			let m = this.m_vmctx.pbrModule.createMaterial(true);
 			m.initializeByCodeBuf(true);
@@ -88,12 +116,45 @@ class ViewerSceneNode {
 
 		// entity.setRenderState(rst.NONE_CULLFACE_NORMAL_STATE);
 		this.m_rscene.addEntity(entity);
+
+		// const MouseEvent = CoRScene.MouseEvent;
+
+		return entity;
+	}
+	
+	private createEntity(model: CoGeomDataType): ITransformEntity {
+		// let rst = CoRenderer.RendererState;
+		const MouseEvent = CoRScene.MouseEvent;
+		// let entity: ITransformEntity;
+		// entity = CoRScene.createDisplayEntityFromModel(model, new CoNormalMaterial().build().material);
+		let material: IRenderMaterial;// = new CoNormalMaterial().build().material;
+
+		let flag: boolean = this.m_vmctx.isMCTXEnabled();
+		if (flag) {
+			material = this.m_vmctx.pbrModule.createMaterial(true);
+			material.initializeByCodeBuf(true);
+			// entity = CoRScene.createDisplayEntityFromModel(model, m);
+		} else {
+			material = new CoNormalMaterial().build().material;
+			// entity = CoRScene.createDisplayEntityFromModel(model, new CoNormalMaterial().build().material);
+		}
+
+		let mesh = CoRScene.createDataMeshFromModel(model, material);
+		let entity = CoRScene.createMouseEventEntity();
+		entity.setMaterial(material);
+		entity.setMesh(mesh);
+		// entity.setRenderState(rst.NONE_CULLFACE_NORMAL_STATE);
+		this.m_rscene.addEntity(entity);
+
+		entity.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverTargetListener);
+		entity.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutTargetListener);
+
 		return entity;
 	}
 	private buildBGBox(): void {
 
 		let rscene = this.m_rscene;
-		// return;
+		
 		let material = this.m_vmctx.pbrModule.createMaterial(true);
 
 		let scale = 700.0;
@@ -123,6 +184,31 @@ class ViewerSceneNode {
 		entity.copyMeshFrom(rscene.entityBlock.unitBox);
 		entity.setScaleXYZ(scale, scale, scale);
 		rscene.addEntity(entity, 1);
+	}
+	private mouseOverTargetListener(evt: any): void {
+		console.log("mouseOverTargetListener() mouse out...");
+		if (this.m_postOutline != null) {
+			if (evt.target != null) {
+				this.m_postOutline.setRGB3f(0.0, 1.0, 0.0);
+				let targets: IRenderEntity[] = [evt.target];
+				this.m_postOutline.setTargetList(targets);
+			}
+		}
+	}
+	private mouseOutTargetListener(evt: any): void {
+		console.log("mouseOutTargetListener() mouse out...");
+		if (this.m_postOutline != null) {
+			this.m_postOutline.setTargetList(null);
+		}
+	}
+
+	render(): void {
+		if (this.m_postOutline != null) {
+			// console.log("post outline renderNode render() ...");
+			this.m_postOutline.drawBegin();
+			this.m_postOutline.draw();
+			this.m_postOutline.drawEnd();
+		}
 	}
 }
 
