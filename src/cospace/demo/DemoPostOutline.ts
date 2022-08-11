@@ -4,7 +4,7 @@ import { IMouseInteraction } from "../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { ICoRScene } from "../voxengine/ICoRScene";
 import { ICoMouseInteraction } from "../voxengine/ui/ICoMouseInteraction";
-import { ModuleLoader } from "../modules/base/ModuleLoader";
+import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 import { ViewerCoSApp } from "./coViewer/ViewerCoSApp";
 import { CoDataFormat } from "../app/CoSpaceAppData";
 import { PostOutlineSceneNode } from "./coViewer/PostOutlineSceneNode";

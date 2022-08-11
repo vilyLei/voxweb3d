@@ -12,7 +12,7 @@ import ICoRenderNode from "../../voxengine/scene/ICoRenderNode";
 import IOcclusionPostOutline from "../../../renderingtoy/mcase/outline/IOcclusionPostOutline";
 import { IOccPostOutlineModule } from "../../renderEffect/outline/IOccPostOutlineModule";
 
-import { ModuleLoader } from "../../modules/base/ModuleLoader";
+import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
 
 declare var CoRScene: ICoRScene;
 declare var OccPostOutlineModule: IOccPostOutlineModule;

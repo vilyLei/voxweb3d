@@ -4,7 +4,7 @@ import RendererParam from "../../vox/scene/RendererParam";
 import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import { IRendererInstance } from "../../vox/scene/IRendererInstance";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
-import { ModuleLoader } from "../modules/base/ModuleLoader";
+import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 
 declare var CoRenderer: ICoRenderer;
 /**

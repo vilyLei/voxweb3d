@@ -7,7 +7,7 @@ import { CoMaterialContextParam, ICoRScene } from "../voxengine/ICoRScene";
 
 import { ICoMouseInteraction } from "../voxengine/ui/ICoMouseInteraction";
 import ViewerMaterialCtx from "./coViewer/ViewerMaterialCtx";
-import { ModuleLoader } from "../modules/base/ModuleLoader";
+import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 import { ViewerCoSApp } from "./coViewer/ViewerCoSApp";
 import { ViewerSceneNode } from "./coViewer/ViewerSceneNode";
 import { ViewerSCData } from "./coViewer/ViewerSCData";

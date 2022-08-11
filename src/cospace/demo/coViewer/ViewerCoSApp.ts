@@ -7,7 +7,7 @@ import {
 import { ICoSpaceApp } from "../../app/ICoSpaceApp";
 import { ICoSpaceAppIns } from "../../app/ICoSpaceAppIns";
 
-import { ModuleLoader } from "../../modules/base/ModuleLoader";
+import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
 
 
 declare var CoSpaceApp: ICoSpaceApp;

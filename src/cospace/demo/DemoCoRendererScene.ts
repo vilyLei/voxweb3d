@@ -3,7 +3,7 @@ import { IMouseInteraction } from "../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { ICoRScene } from "../voxengine/ICoRScene";
 import { ICoMouseInteraction } from "../voxengine/ui/ICoMouseInteraction";
-import { ModuleLoader } from "../modules/base/ModuleLoader";
+import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;

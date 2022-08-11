@@ -7,7 +7,7 @@ import { IVSMShadowModule } from "../../renderEffect/shadow/IVSMShadowModule";
 import { IMaterialContext } from "../../../materialLab/base/IMaterialContext";
 import { ILightModule } from "../../../light/base/ILightModule";
 import PBRModule from "../../renderEffect/pbr/PBRModule";
-import { ModuleLoader } from "../../modules/base/ModuleLoader";
+import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
 
 declare var CoRScene: ICoRScene;
 declare var CoLightModule: ICoLightModule;

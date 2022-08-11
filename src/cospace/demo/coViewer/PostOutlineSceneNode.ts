@@ -10,7 +10,7 @@ import IOcclusionPostOutline from "../../../renderingtoy/mcase/outline/IOcclusio
 import { IOccPostOutlineModule } from "../../renderEffect/outline/IOccPostOutlineModule";
 
 // import OcclusionPostOutline from "../../../renderingtoy/mcase/outline/OcclusionPostOutline";
-import { ModuleLoader } from "../../modules/base/ModuleLoader";
+import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
 
 declare var CoRScene: ICoRScene;
 declare var OccPostOutlineModule: IOccPostOutlineModule;
