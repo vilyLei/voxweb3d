@@ -7,6 +7,7 @@ import { CoMaterialContextParam, ICoRScene } from "../voxengine/ICoRScene";
 
 import { ICoMouseInteraction } from "../voxengine/ui/ICoMouseInteraction";
 import ViewerMaterialCtx from "./coViewer/ViewerMaterialCtx";
+import { TextPackedLoader } from "../modules/loaders/TextPackedLoader";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 import { ViewerCoSApp } from "./coViewer/ViewerCoSApp";
 import { ViewerSceneNode } from "./coViewer/ViewerSceneNode";
@@ -37,12 +38,10 @@ export class DemoCoViewer {
 		let scDataJsonUrl = "static/assets/scene/sc01.json";
 		let scData = new ViewerSCData();
 		// scData.build();
-
-		scData.loadSCData(scDataJsonUrl, (scData: any): void => {
-			console.log("scData.loadSCData(), scData: ", scData);
-			this.m_scData = scData;
+		let textLoader = new TextPackedLoader(1, (): void => {
+			this.m_scData = JSON.parse( textLoader.getDataByUrl(scDataJsonUrl) as string );
 			this.initEngineModule();
-		})
+		}).load(scDataJsonUrl);
 
 	}
 
