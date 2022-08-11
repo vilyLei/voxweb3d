@@ -27,7 +27,7 @@ export class DemoCoViewer {
 	private m_vmctx: ViewerMaterialCtx;
 
 	private m_scData: any;
-	constructor() {}
+	constructor() { }
 
 	initialize(): void {
 
@@ -39,7 +39,7 @@ export class DemoCoViewer {
 		// scData.build();
 
 		scData.loadSCData(scDataJsonUrl, (scData: any): void => {
-			console.log("scData.loadSCData(), scData: ",scData);
+			console.log("scData.loadSCData(), scData: ", scData);
 			this.m_scData = scData;
 			this.initEngineModule();
 		})
@@ -49,29 +49,26 @@ export class DemoCoViewer {
 	private initEngineModule(): void {
 
 		let url = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.js";
-		let mouseInteractML = new ModuleLoader(2);
-		mouseInteractML.setCallback((): void => {
+		let mouseInteractML = new ModuleLoader(2, (): void => {
 			this.initInteract();
 		});
 
 		let url0 = "static/cospace/engine/renderer/CoRenderer.umd.js";
 		let url1 = "static/cospace/engine/rscene/CoRScene.umd.js";
 
-		new ModuleLoader(2)
-			.setCallback((): void => {
-				if (this.isEngineEnabled()) {
-					console.log("engine modules loaded ...");
-					this.initRenderer();
-					mouseInteractML.use();
+		new ModuleLoader(2, (): void => {
+			if (this.isEngineEnabled()) {
+				console.log("engine modules loaded ...");
+				this.initRenderer();
 
-					this.m_vcoapp = new ViewerCoSApp();
-					this.m_vcoapp.initialize((): void => {
-						this.loadOBJ();
-					});
+				this.m_vcoapp = new ViewerCoSApp();
+				this.m_vcoapp.initialize((): void => {
+					this.loadOBJ();
+				});
 
-					this.initMaterialModule();
-				}
-			})
+				this.initMaterialModule();
+			}
+		}).addModuleLoader(mouseInteractML)
 			.loadModule(url0)
 			.loadModule(url1);
 
@@ -125,9 +122,9 @@ export class DemoCoViewer {
 		let node: ViewerSceneNode = new ViewerSceneNode(this.m_rscene, this.m_vmctx, this.m_vcoapp);
 		node.setScale(23.0).loadGeomModel(url, CoDataFormat.OBJ);
 		this.m_node = node;
-		this.m_rscene.appendRenderNode( node );
+		this.m_rscene.appendRenderNode(node);
 	}
-	private mouseDown(evt: any): void {}
+	private mouseDown(evt: any): void { }
 	run(): void {
 		if (this.m_rscene != null) {
 			this.m_vmctx.run();

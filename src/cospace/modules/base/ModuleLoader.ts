@@ -1,7 +1,7 @@
 
 class ModuleLoader {
 	private static s_uid: number = 0;
-	private m_uid: number = ModuleLoader.s_uid ++;
+	private m_uid: number = ModuleLoader.s_uid++;
 
 	private m_times: number;
 	private m_oneTimes: boolean = true;
@@ -10,7 +10,7 @@ class ModuleLoader {
 	private static loadingMap: Map<string, ModuleLoader[]> = new Map();
 	private m_callback: () => void;
 
-	constructor(times: number, callback: () => void = null){
+	constructor(times: number, callback: () => void = null) {
 		this.m_callback = callback;
 		this.m_times = times;
 	}
@@ -22,15 +22,15 @@ class ModuleLoader {
 		return this;
 	}
 	addModuleLoader(m: ModuleLoader): ModuleLoader {
-		if(m != null && m != this) {
-			if(this.isFinished()) {
+		if (m != null && m != this) {
+			if (this.isFinished()) {
 				m.use();
-			}else {
-				if(this.m_moduleMap == null) {
+			} else {
+				if (this.m_moduleMap == null) {
 					this.m_moduleMap = new Map();
 				}
 				let map = this.m_moduleMap;
-				if(!map.has(m.getUid())) {
+				if (!map.has(m.getUid())) {
 					map.set(m.getUid(), m);
 				}
 			}
@@ -41,18 +41,25 @@ class ModuleLoader {
 		return this.m_times == 0;
 	}
 	useOnce(): void {
-		if(this.m_oneTimes) {
+		if (this.m_oneTimes) {
 			this.m_oneTimes = false;
 			this.use();
 		}
 	}
 	use(): void {
-		if(this.m_times > 0) {
-			this.m_times --;
-			if(this.isFinished()) {
-				if(this.m_callback != null) {
+		if (this.m_times > 0) {
+			this.m_times--;
+			if (this.isFinished()) {
+				if (this.m_callback != null) {
 					this.m_callback();
 					this.m_callback = null;
+
+					if (this.m_moduleMap != null) {
+						for (let [key, value] of this.m_moduleMap) {
+							value.use();
+						}
+						this.m_moduleMap = null;
+					}
 				}
 			}
 		}
@@ -61,34 +68,34 @@ class ModuleLoader {
 		return ModuleLoader.loadedMap.has(url);
 	}
 	loadModule(url: string, module: string = ""): ModuleLoader {
-		if(url == "") {
+		if (url == "") {
 			return this;
 		}
 		let loadedMap = ModuleLoader.loadedMap;
-		if(loadedMap.has(url)) {
+		if (loadedMap.has(url)) {
 			this.use();
 			return;
 		}
 		let loadingMap = ModuleLoader.loadingMap;
-		if(loadingMap.has(url)) {
+		if (loadingMap.has(url)) {
 			let list = loadingMap.get(url);
-			for(let i = 0; i < list.length; ++i) {
-				if(list[i] == this) {
+			for (let i = 0; i < list.length; ++i) {
+				if (list[i] == this) {
 					return;
 				}
 			}
-			list.push( this);
+			list.push(this);
 			return;
 		}
-		loadingMap.set(url, [ this ]);
+		loadingMap.set(url, [this]);
 
 		let codeLoader: XMLHttpRequest = new XMLHttpRequest();
 		codeLoader.open("GET", url, true);
-		codeLoader.onerror = function(err) {
+		codeLoader.onerror = function (err) {
 			console.error("load error: ", err);
 		};
 
-		codeLoader.onprogress = e => {};
+		codeLoader.onprogress = e => { };
 		codeLoader.onload = evt => {
 			console.log("module js file loaded, url: ", url);
 			let scriptEle: HTMLScriptElement = document.createElement("script");
@@ -101,15 +108,8 @@ class ModuleLoader {
 
 			loadedMap.set(url, 1);
 
-			if(this.m_moduleMap != null) {
-				for(let [key, value] of this.m_moduleMap) {
-					value.use();
-				}
-				this.m_moduleMap = null;
-			}
-
 			let list = loadingMap.get(url);
-			for(let i = 0; i < list.length; ++i) {
+			for (let i = 0; i < list.length; ++i) {
 				list[i].use();
 			}
 			loadingMap.delete(url);
