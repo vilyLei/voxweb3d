@@ -5,6 +5,7 @@ class ModuleLoader {
 
 	private m_times: number;
 	private m_oneTimes: boolean = true;
+	private m_moduleMap: Map<number, ModuleLoader> = null;
 	private static loadedMap: Map<string, number> = new Map();
 	private static loadingMap: Map<string, ModuleLoader[]> = new Map();
 	private m_callback: () => void = null;
@@ -12,9 +13,31 @@ class ModuleLoader {
 	constructor(times: number){
 		this.m_times = times;
 	}
+	getUid(): number {
+		return this.m_uid;
+	}
 	setCallback(callback: () => void): ModuleLoader {
 		this.m_callback = callback;
 		return this;
+	}
+	addModuleLoader(m: ModuleLoader): ModuleLoader {
+		if(m != null && m != this) {
+			if(this.isFinished()) {
+				m.use();
+			}else {
+				if(this.m_moduleMap == null) {
+					this.m_moduleMap = new Map();
+				}
+				let map = this.m_moduleMap;
+				if(!map.has(m.getUid())) {
+					map.set(m.getUid(), m);
+				}
+			}
+		}
+		return this;
+	}
+	isFinished(): boolean {
+		return this.m_times == 0;
 	}
 	useOnce(): void {
 		if(this.m_oneTimes) {
@@ -23,11 +46,13 @@ class ModuleLoader {
 		}
 	}
 	use(): void {
-		this.m_times --;
-		if(this.m_times == 0) {
-			if(this.m_callback != null) {
-				this.m_callback();
-				this.m_callback = null;
+		if(this.m_times > 0) {
+			this.m_times --;
+			if(this.isFinished()) {
+				if(this.m_callback != null) {
+					this.m_callback();
+					this.m_callback = null;
+				}
 			}
 		}
 	}
@@ -74,6 +99,13 @@ class ModuleLoader {
 			document.head.appendChild(scriptEle);
 
 			loadedMap.set(url, 1);
+
+			if(this.m_moduleMap != null) {
+				for(let [key, value] of this.m_moduleMap) {
+					value.use();
+				}
+				this.m_moduleMap = null;
+			}
 
 			let list = loadingMap.get(url);
 			for(let i = 0; i < list.length; ++i) {

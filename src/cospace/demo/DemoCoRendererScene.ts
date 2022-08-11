@@ -35,9 +35,10 @@ export class DemoCoRendererScene {
 				if (this.isEngineEnabled()) {
 					console.log("engine modules loaded ...");
 					this.initRenderer();
-					mouseInteractML.use();
+					// mouseInteractML.use();
 				}
 			})
+			.addModuleLoader(mouseInteractML)
 			.loadModule(url0)
 			.loadModule(url1);
 
