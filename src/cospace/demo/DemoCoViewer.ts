@@ -69,16 +69,15 @@ export class DemoCoViewer {
 				this.initMaterialModule();
 			}
 		}).addModuleLoader(mouseInteractML)
-			.loadModule(url0)
-			.loadModule(url1);
+			.load(url0)
+			.load(url1);
 
-		mouseInteractML.loadModule(url);
+		mouseInteractML.load(url);
 	}
 	private initMaterialModule(): void {
 		this.m_vmctx = new ViewerMaterialCtx();
 		this.m_vmctx.initialize(this.m_rscene, this.m_scData.material, (): void => {
 			this.m_node.applyMaterial();
-
 		});
 	}
 	isEngineEnabled(): boolean {

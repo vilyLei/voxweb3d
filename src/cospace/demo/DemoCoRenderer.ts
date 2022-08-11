@@ -25,7 +25,7 @@ export class DemoCoRenderer {
 		new ModuleLoader(1, (): void => {
 			this.initRenderer();
 		})
-			.loadModule(url)
+			.load(url)
 	}
 
 	private initRenderer(): void {

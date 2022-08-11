@@ -52,10 +52,10 @@ export class ViewerMaterialCtx {
 		new ModuleLoader(4, (): void => {
 			this.updateMCTXInit();
 		})
-			.loadModule(url0)
-			.loadModule(url1)
-			.loadModule(url2)
-			.loadModule(url3);
+			.load(url0)
+			.load(url1)
+			.load(url2)
+			.load(url3);
 	}
 	private updateMCTXInit(): void {
 		this.m_mctxFlag++;

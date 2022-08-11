@@ -48,10 +48,10 @@ export class DemoPostOutline {
 					});
 				}
 			})
-			.loadModule(url0)
-			.loadModule(url1);
+			.load(url0)
+			.load(url1);
 
-		mouseInteractML.loadModule(url2);
+		mouseInteractML.load(url2);
 	}
 	isEngineEnabled(): boolean {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";

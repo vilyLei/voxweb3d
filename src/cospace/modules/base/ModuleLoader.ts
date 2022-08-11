@@ -67,7 +67,7 @@ class ModuleLoader {
 	hasModuleByUrl(url: string): boolean {
 		return ModuleLoader.loadedMap.has(url);
 	}
-	loadModule(url: string, module: string = ""): ModuleLoader {
+	load(url: string, module: string = ""): ModuleLoader {
 		if (url == "") {
 			return this;
 		}
@@ -88,38 +88,11 @@ class ModuleLoader {
 			return;
 		}
 		loadingMap.set(url, [this]);
-		this.load(url);
-		/*
-		let codeLoader: XMLHttpRequest = new XMLHttpRequest();
-		codeLoader.open("GET", url, true);
-		codeLoader.onerror = function (err) {
-			console.error("load error: ", err);
-		};
-
-		codeLoader.onprogress = e => { };
-		codeLoader.onload = evt => {
-			console.log("module js file loaded, url: ", url);
-			let scriptEle: HTMLScriptElement = document.createElement("script");
-			scriptEle.onerror = evt => {
-				console.error("module script onerror, e: ", evt);
-			};
-			scriptEle.type = "text/javascript";
-			scriptEle.innerHTML = codeLoader.response;
-			document.head.appendChild(scriptEle);
-
-			loadedMap.set(url, 1);
-
-			let list = loadingMap.get(url);
-			for (let i = 0; i < list.length; ++i) {
-				list[i].use();
-			}
-			loadingMap.delete(url);
-		};
-		codeLoader.send(null);
-		//*/
+		this.loadData(url);
+		
 		return this;
 	}
-	protected load(url: string): void {
+	protected loadData(url: string): void {
 
 		let codeLoader: XMLHttpRequest = new XMLHttpRequest();
 		codeLoader.open("GET", url, true);

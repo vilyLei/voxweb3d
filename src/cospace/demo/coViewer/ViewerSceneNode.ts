@@ -40,7 +40,7 @@ class ViewerSceneNode implements ICoRenderNode {
 				this.m_postOutline = OccPostOutlineModule.create();
 				this.initOutline();
 			})
-			.loadModule(url);
+			.load(url);
 	}
 	
 	private initOutline(): void {

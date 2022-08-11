@@ -37,7 +37,7 @@ export class ViewerCoSApp {
 					callback();
 				}
 			})
-			.loadModule(this.m_modules[0].url);
+			.load(this.m_modules[0].url);
 	}
 	private initCoSpaceApp(): void {
 		if (this.coappIns == null && typeof CoSpaceApp !== "undefined") {
