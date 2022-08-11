@@ -6,9 +6,7 @@ import { ViewerCoSApp } from "./ViewerCoSApp";
 import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
 
 declare var CoRScene: ICoRScene;
-/**
- * cospace renderer
- */
+
 class SceneNode {
 
 	private m_rscene: ICoRendererScene;
