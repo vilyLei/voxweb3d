@@ -35,7 +35,7 @@ export class DemoCoRendererScene {
 				this.initRenderer();
 			}
 		})
-			.addModuleLoader(mouseInteractML)
+			.addLoader(mouseInteractML)
 			.load(url0)
 			.load(url1);
 

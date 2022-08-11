@@ -1,35 +1,37 @@
-
-class ModuleLoader {
+/**
+ * 将加载逻辑打包的loader
+ */
+class PackedLoader {
 	private static s_uid: number = 0;
-	private m_uid: number = ModuleLoader.s_uid++;
+	private m_uid: number = PackedLoader.s_uid++;
 
 	private m_times: number;
 	private m_oneTimes: boolean = true;
-	private m_moduleMap: Map<number, ModuleLoader> = null;
-	private static loadedMap: Map<string, number> = new Map();
-	private static loadingMap: Map<string, ModuleLoader[]> = new Map();
+	private m_loaderMap: Map<number, PackedLoader> = null;
+	protected static loadedMap: Map<string, number> = new Map();
+	protected static loadingMap: Map<string, PackedLoader[]> = new Map();
 	private m_callback: () => void;
 
-	constructor(times: number, callback: (m?: ModuleLoader) => void = null) {
+	constructor(times: number, callback: (m?: PackedLoader) => void = null) {
 		this.m_callback = callback;
 		this.m_times = times;
 	}
 	getUid(): number {
 		return this.m_uid;
 	}
-	setCallback(callback: (m?: ModuleLoader) => void): ModuleLoader {
+	setCallback(callback: (m?: PackedLoader) => void): PackedLoader {
 		this.m_callback = callback;
 		return this;
 	}
-	addLoader(m: ModuleLoader): ModuleLoader {
+	addLoader(m: PackedLoader): PackedLoader {
 		if (m != null && m != this) {
 			if (this.isFinished()) {
 				m.use();
 			} else {
-				if (this.m_moduleMap == null) {
-					this.m_moduleMap = new Map();
+				if (this.m_loaderMap == null) {
+					this.m_loaderMap = new Map();
 				}
-				let map = this.m_moduleMap;
+				let map = this.m_loaderMap;
 				if (!map.has(m.getUid())) {
 					map.set(m.getUid(), m);
 				}
@@ -54,29 +56,29 @@ class ModuleLoader {
 					this.m_callback();
 					this.m_callback = null;
 
-					if (this.m_moduleMap != null) {
-						for (let [key, value] of this.m_moduleMap) {
+					if (this.m_loaderMap != null) {
+						for (let [key, value] of this.m_loaderMap) {
 							value.use();
 						}
-						this.m_moduleMap = null;
+						this.m_loaderMap = null;
 					}
 				}
 			}
 		}
 	}
 	hasModuleByUrl(url: string): boolean {
-		return ModuleLoader.loadedMap.has(url);
+		return PackedLoader.loadedMap.has(url);
 	}
-	load(url: string, module: string = ""): ModuleLoader {
+	load(url: string): PackedLoader {
 		if (url == "") {
 			return this;
 		}
-		let loadedMap = ModuleLoader.loadedMap;
+		let loadedMap = PackedLoader.loadedMap;
 		if (loadedMap.has(url)) {
 			this.use();
 			return;
 		}
-		let loadingMap = ModuleLoader.loadingMap;
+		let loadingMap = PackedLoader.loadingMap;
 		if (loadingMap.has(url)) {
 			let list = loadingMap.get(url);
 			for (let i = 0; i < list.length; ++i) {
@@ -124,8 +126,8 @@ class ModuleLoader {
 	 */
 	protected loadedUrl(url: string): void {
 
-		let loadedMap = ModuleLoader.loadedMap;
-		let loadingMap = ModuleLoader.loadingMap;
+		let loadedMap = PackedLoader.loadedMap;
+		let loadingMap = PackedLoader.loadingMap;
 
 		loadedMap.set(url, 1);
 
@@ -143,4 +145,4 @@ class ModuleLoader {
 	}
 }
 
-export { ModuleLoader };
+export { PackedLoader };

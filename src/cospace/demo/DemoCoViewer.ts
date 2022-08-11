@@ -68,7 +68,7 @@ export class DemoCoViewer {
 
 				this.initMaterialModule();
 			}
-		}).addModuleLoader(mouseInteractML)
+		}).addLoader(mouseInteractML)
 			.load(url0)
 			.load(url1);
 
