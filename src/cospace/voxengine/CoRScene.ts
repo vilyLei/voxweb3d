@@ -6,6 +6,9 @@ import Matrix4 from "../../vox/math/Matrix4";
 import IColor4 from "../../vox/material/IColor4";
 import Color4 from "../../vox/material/Color4";
 
+import RendererDevice from "../../vox/render/RendererDevice";
+import RendererState from "../../vox/render/RendererState";
+
 import RendererParam from "../../vox/scene/RendererParam";
 import { ICoRendererScene } from "./scene/ICoRendererScene";
 
@@ -16,6 +19,7 @@ import CoRendererScene from "./scene/CoRendererScene";
 import { IDataMesh } from "../../vox/mesh/IDataMesh";
 import DataMesh from "../../vox/mesh/DataMesh";
 import MaterialBase from "../../vox/material/MaterialBase";
+
 
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
@@ -52,9 +56,6 @@ function createColor4(pr: number = 1.0, pg: number = 1.0, pb: number = 1.0, pa: 
 function createRendererSceneParam(div: HTMLDivElement = null): RendererParam {
 	return new RendererParam(div);
 }
-function createRendererScene(): ICoRendererScene {
-	return new CoRendererScene();
-}
 function applySceneBlock(rsecne: ICoRendererScene): void {
 
 	let rscene = rsecne;
@@ -64,6 +65,16 @@ function applySceneBlock(rsecne: ICoRendererScene): void {
 	let entityBlock = new RenderableEntityBlock();
 	entityBlock.initialize();
 	rscene.entityBlock = entityBlock;
+}
+function createRendererScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, sceneBlockEnabled: boolean = true): ICoRendererScene {
+	let sc = new CoRendererScene();
+	if(rparam != null) {
+		sc.initialize(rparam, 3);
+		if(sceneBlockEnabled) {
+			applySceneBlock( sc );
+		}
+	}
+	return sc;
 }
 
 function createMouseEvt3DDispatcher(): IEvtDispatcher {
@@ -144,10 +155,12 @@ function creatMaterialContextParam(): MaterialContextParam {
 }
 
 export {
+	RendererDevice,
+	RendererState,
 
 	Vector3D,
 	Matrix4,
-	
+
 	Color4,
 
 	MouseEvent,
