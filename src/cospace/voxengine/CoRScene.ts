@@ -17,7 +17,6 @@ import { IDataMesh } from "../../vox/mesh/IDataMesh";
 import DataMesh from "../../vox/mesh/DataMesh";
 import MaterialBase from "../../vox/material/MaterialBase";
 
-
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 import ITransformEntity from "../../vox/entity/ITransformEntity";

@@ -15,6 +15,7 @@ import { IFBOInstance } from "../../../vox/scene/IFBOInstance";
 import { IAABB } from "../../../vox/geom/IAABB";
 import { IRTTTexture } from "../../../vox/render/texture/IRTTTexture";
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
+import IOcclusionPostOutline from "./IOcclusionPostOutline";
 
 const __minPV: number = 1e-6;
 const __maxNV: number = -1e-6;
@@ -62,7 +63,7 @@ class OCCPlane {
 		return 0;
 	}
 }
-export default class OcclusionPostOutline {
+export default class OcclusionPostOutline implements IOcclusionPostOutline{
     constructor() { }
 
     private m_rscene: IRendererScene = null;
