@@ -3,17 +3,17 @@ import { PackedLoader } from "./PackedLoader";
 class ModuleLoader extends PackedLoader{
 
 	protected loadData(url: string): void {
-		let codeLoader: XMLHttpRequest = new XMLHttpRequest();
-		codeLoader.open("GET", url, true);
-		codeLoader.onerror = function (err) {
+		let req: XMLHttpRequest = new XMLHttpRequest();
+		req.open("GET", url, true);
+		req.onerror = function (err) {
 			console.error("load error: ", err);
 		}
-		// codeLoader.onprogress = e => { };
-		codeLoader.onload = evt => {
-			this.loadedData(codeLoader.response, url);
+		// req.onprogress = e => { };
+		req.onload = evt => {
+			this.loadedData(req.response, url);
 			this.loadedUrl(url);
 		}
-		codeLoader.send(null);
+		req.send(null);
 	}
 
 	protected loadedData(data: string | ArrayBuffer, url: string): void {

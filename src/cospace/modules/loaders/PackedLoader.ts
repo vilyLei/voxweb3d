@@ -145,8 +145,10 @@ class PackedLoader {
 		}
 		loadingMap.delete(url);
 	}
-	getDataByUrl(): string | ArrayBuffer {
+	getDataByUrl(url: string): string | ArrayBuffer {
 		return null;
+	}
+	clearAllData(): void {
 	}
 	destroy(): void {
 
