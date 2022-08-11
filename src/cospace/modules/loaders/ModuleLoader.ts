@@ -16,14 +16,14 @@ class ModuleLoader extends PackedLoader{
 		codeLoader.send(null);
 	}
 
-	protected loadedData(data: any, url: string): void {
+	protected loadedData(data: string | ArrayBuffer, url: string): void {
 		console.log("module js file loaded, url: ", url);
 		let scriptEle = document.createElement("script");
 		scriptEle.onerror = evt => {
 			console.error("module script onerror, e: ", evt);
 		};
 		scriptEle.type = "text/javascript";
-		scriptEle.innerHTML = data;
+		scriptEle.innerHTML = data as string;
 		document.head.appendChild(scriptEle);
 	}
 }

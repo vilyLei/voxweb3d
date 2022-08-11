@@ -94,6 +94,10 @@ class PackedLoader {
 		
 		return this;
 	}
+	/**
+	 * subclass need override this function
+	 * @param url data url
+	 */
 	protected loadData(url: string): void {
 
 		let codeLoader: XMLHttpRequest = new XMLHttpRequest();
@@ -104,21 +108,25 @@ class PackedLoader {
 
 		// codeLoader.onprogress = e => { };
 		codeLoader.onload = evt => {
-			this.loadedData(codeLoader.response, url);
+			// this.loadedData(codeLoader.response, url);
 			this.loadedUrl(url);
 		}
 		codeLoader.send(null);
 	}
-
-	protected loadedData(data: any, url: string): void {
+	/**
+	 * subclass need override this function
+	 * @param data loaded data
+	 * @param url data url
+	 */
+	protected loadedData(data: string | ArrayBuffer, url: string): void {
 		console.log("module js file loaded, url: ", url);
-		let scriptEle: HTMLScriptElement = document.createElement("script");
-		scriptEle.onerror = evt => {
-			console.error("module script onerror, e: ", evt);
-		};
-		scriptEle.type = "text/javascript";
-		scriptEle.innerHTML = data;
-		document.head.appendChild(scriptEle);
+		// let scriptEle: HTMLScriptElement = document.createElement("script");
+		// scriptEle.onerror = evt => {
+		// 	console.error("module script onerror, e: ", evt);
+		// };
+		// scriptEle.type = "text/javascript";
+		// scriptEle.innerHTML = data;
+		// document.head.appendChild(scriptEle);
 	}
 	/**
 	 * does not override this function
