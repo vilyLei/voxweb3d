@@ -10,14 +10,14 @@ class ModuleLoader {
 	private static loadingMap: Map<string, ModuleLoader[]> = new Map();
 	private m_callback: () => void;
 
-	constructor(times: number, callback: () => void = null) {
+	constructor(times: number, callback: (m?: ModuleLoader) => void = null) {
 		this.m_callback = callback;
 		this.m_times = times;
 	}
 	getUid(): number {
 		return this.m_uid;
 	}
-	setCallback(callback: () => void): ModuleLoader {
+	setCallback(callback: (m?: ModuleLoader) => void): ModuleLoader {
 		this.m_callback = callback;
 		return this;
 	}
@@ -116,6 +116,9 @@ class ModuleLoader {
 		};
 		codeLoader.send(null);
 		return this;
+	}
+	destroy(): void {
+
 	}
 }
 

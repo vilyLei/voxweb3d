@@ -105,9 +105,7 @@ export class DemoCoViewer {
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 			rparam.setCamProject(45, 20.0, 9000.0);
 			this.m_rscene = CoRScene.createRendererScene(rparam, 3);
-			// this.m_rscene.initialize(rparam, 3);
 			this.m_rscene.setClearUint24Color(0x888888);
-			// CoRScene.applySceneBlock(this.m_rscene);
 
 			// let axis = CoRScene.createAxis3DEntity();
 			// this.m_rscene.addEntity(axis);

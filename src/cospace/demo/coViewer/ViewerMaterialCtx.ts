@@ -24,7 +24,7 @@ export class ViewerMaterialCtx {
 	private m_materialData: any;
 
 	readonly pbrModule: PBRModule = new PBRModule();
-	constructor() {}
+	constructor() { }
 
 	getMaterialCtx(): IMaterialContext {
 		return this.m_mctx;
@@ -34,7 +34,7 @@ export class ViewerMaterialCtx {
 		this.m_rscene = rscene;
 		this.m_materialData = materialData;
 		this.m_callback = callback;
-		this.pbrModule.initialize( materialData );
+		this.pbrModule.initialize(materialData);
 
 		this.initMaterialModule();
 	}
@@ -49,10 +49,9 @@ export class ViewerMaterialCtx {
 		let url2 = "static/cospace/renderEffect/envLight/CoEnvLightModule.umd.js";
 		let url3 = "static/cospace/renderEffect/vsmShadow/VSMShadowModule.umd.js";
 
-		new ModuleLoader(4)
-			.setCallback((): void => {
-				this.updateMCTXInit();
-			})
+		new ModuleLoader(4, (): void => {
+			this.updateMCTXInit();
+		})
 			.loadModule(url0)
 			.loadModule(url1)
 			.loadModule(url2)
@@ -74,8 +73,7 @@ export class ViewerMaterialCtx {
 		if (data != undefined && data != null) {
 			module.setFogDensity(data.density);
 			let rgb = data.rgb;
-			console.log("XXXXXXXXXXXXXXX TTTTTTTTTT rgb: ",rgb);
-			module.setFogColorRGB3f( rgb[0], rgb[1], rgb[2] );
+			module.setFogColorRGB3f(rgb[0], rgb[1], rgb[2]);
 		} else {
 			module.setFogDensity(0.0005);
 			module.setFogColorRGB3f(0.0, 0.8, 0.1);
@@ -88,13 +86,13 @@ export class ViewerMaterialCtx {
 		param.spotLightsTotal = 0;
 		param.directionLightsTotal = 0;
 
-		if(data.pointLights != undefined && data.pointLights != null) {
+		if (data.pointLights != undefined && data.pointLights != null) {
 			param.pointLightsTotal = data.pointLights.length;
 		}
-		if(data.spotLights != undefined && data.spotLights != null) {
+		if (data.spotLights != undefined && data.spotLights != null) {
 			param.spotLightsTotal = data.spotLights.length;
 		}
-		if(data.directionLights != undefined && data.directionLights != null) {
+		if (data.directionLights != undefined && data.directionLights != null) {
 			param.directionLightsTotal = data.directionLights.length;
 		}
 
@@ -203,7 +201,7 @@ export class ViewerMaterialCtx {
 		vsmModule.setCameraViewSize(cameraViewSize[0], cameraViewSize[1]);
 
 		vsmModule.setShadowRadius(data.radius);
-		vsmModule.setShadowBias( data.bias );
+		vsmModule.setShadowBias(data.bias);
 		vsmModule.initialize(this.m_rscene, [0], 3000);
 		vsmModule.setShadowIntensity(data.shadowIntensity);
 		vsmModule.setColorIntensity(data.colorIntensity);
