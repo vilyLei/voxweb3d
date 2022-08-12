@@ -390,7 +390,8 @@ class RenderProxy implements IRenderProxy{
         let rstate = new RODrawState();
         rstate.setRenderContext( this.m_adapterContext );
         // RendererState.Initialize(rstate, new VROBase());
-        new RSTBuilder().initialize(RendererState, rstate, new VROBase());
+        let obj: any = RendererState;
+        new RSTBuilder().initialize(obj, rstate, new VROBase());
 
         selfT.RState = rstate;
         selfT.RContext = this.m_rc;

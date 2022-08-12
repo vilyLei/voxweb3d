@@ -32,7 +32,7 @@ class Color4 implements IColor4{
         arr[offset] = this.r;
         arr[offset + 1] = this.g;
         arr[offset + 2] = this.b;
-        arr[offset + 2] = this.a;
+        arr[offset + 3] = this.a;
         return this;
     }
     setRGB3Bytes(r: number, g: number, b: number): void {
