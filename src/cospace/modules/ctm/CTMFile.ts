@@ -20,7 +20,6 @@ class InterleavedStream implements ICTMWStream {
 	count: number;
 	len: number;
 	constructor(data: StreamDataType, count: number) {
-		console.log("###### InterleavedStream::constructor(), data: ", data);
 		this.data = new Uint8Array(data.buffer, data.byteOffset, data.byteLength);
 		this.offset = CTM.isLittleEndian ? 3 : 0;
 		this.count = count * 4;

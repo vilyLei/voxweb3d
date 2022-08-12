@@ -488,10 +488,7 @@ class Decoder implements IDecoder {
 
     setDecoderProperties(properties: ICTMRStream): boolean {
 
-		// console.log("XXXXXXXX setDecoderProperties() properties: ",properties);
-		// console.log("XXXXXXXX setDecoderProperties() properties.size: ",properties.size, " properties.size < 5: ", properties.size < 5);
-
-        var value, lc, lp, pb, dictionarySize;
+        let value, lc, lp, pb, dictionarySize;
 
         // if (properties.size < 5) {
         //     return false;

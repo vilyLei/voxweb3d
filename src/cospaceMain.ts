@@ -5,7 +5,7 @@
 // import { DemoFBXFastParser as Demo } from "./cospace/demo/DemoFBXFastParser";
 // import { DemoOBJParser as Demo } from "./cospace/demo/DemoOBJParser";
 
-// import { DemoCTMLoad as Demo } from "./cospace/demo/DemoCTMLoad";
+import { DemoCTMLoad as Demo } from "./cospace/demo/DemoCTMLoad";
 // import { DemoCTMParser as Demo } from "./cospace/demo/DemoCTMParser";
 // import { DemoDracoParser as Demo } from "./cospace/demo/DemoDracoParser";
 // import { DemoCTMToDraco as Demo } from "./cospace/demo/DemoCTMToDraco";
@@ -32,7 +32,7 @@
 
 // import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
 
-import { DemoOutline as Demo } from "./cospace/demo/DemoOutline";
+// import { DemoOutline as Demo } from "./cospace/demo/DemoOutline";
 // import { DemoPostOutline as Demo } from "./cospace/demo/DemoPostOutline";
 
 // import { DemoCoEngine as Demo } from "./cospace/demo/DemoCoEngine";

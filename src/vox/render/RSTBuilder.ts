@@ -28,7 +28,6 @@ class RSTBuilder implements IRSTBuilder {
     initialize(state: any, rstate: IRODrawState, vro: IVRO): void {
 
         if (this.m_inited && state.rstb == null) {
-            console.log("RSTBuilder::initialize() XXXXXXXXXX ");
 
             state.rstb = this;
 
