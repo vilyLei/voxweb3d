@@ -25,6 +25,8 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
 import { UserInteraction } from "../vox/engine/UserInteraction";
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
+import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
+import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
 
 export class DemoParticleEruption {
     constructor() { }
@@ -103,6 +105,14 @@ export class DemoParticleEruption {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 5);
             this.m_rscene.setRendererProcessParam(1, true, true);
+
+            let rscene = this.m_rscene;
+            let materialBlock = new RenderableMaterialBlock();
+            materialBlock.initialize();
+            rscene.materialBlock = materialBlock;
+            let entityBlock = new RenderableEntityBlock();
+            entityBlock.initialize();
+            rscene.entityBlock = entityBlock;
 
             this.m_interaction.initialize( this.m_rscene );
             // this.m_viewRay.bindCameraAndStage(this.m_rscene.getCamera(), this.m_rscene.getStage3D());
