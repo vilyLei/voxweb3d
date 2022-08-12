@@ -7,7 +7,7 @@
 
 import IShaderUniformData from "../../vox/material/IShaderUniformData";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
-import { ShaderTextureBuilder } from "../../vox/material/ShaderTextureBuilder";
+import { IShaderTextureBuilder } from "../../vox/material/IShaderTextureBuilder";
 
 interface ISimpleMaterialDecorator {
     /**
@@ -27,7 +27,7 @@ interface ISimpleMaterialDecorator {
     /**
      * user build textures list
      */
-    buildTextureList(builder: ShaderTextureBuilder): void;
+    buildTextureList(builder: IShaderTextureBuilder): void;
     buildShader(coder: IShaderCodeBuilder): void;
     /**
      * @returns local uniform data

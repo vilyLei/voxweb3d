@@ -130,12 +130,6 @@ export class DepthTestMode {
     static TRUE_GEQUAL: number = 15;
     static DISABLE: number = 0;
 }
-export class RenderConst {
-    // 32bit psign: 8bit->pageIndex,8bit->block uid,16bit->RenderDispRenderID
-    static readonly SCENE_RO_FILTER_BEGIN: number = (1 << 19);
-    static readonly SCENE_RO_FILTER_FINISH: number = (2 << 19);
-    static readonly SCENE_RO_ERASE: number = 0;
-}
 export enum DisplayRenderSign {
     // 还没有加入 renderer
     NOT_IN_RENDERER = -1,

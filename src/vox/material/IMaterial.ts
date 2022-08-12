@@ -6,7 +6,6 @@
 /***************************************************************************/
 
 import { IMaterialDecorator } from "./IMaterialDecorator";
-import { UniformComp } from "../../vox/material/component/UniformComp";
 import IRenderMaterial from "../render/IRenderMaterial";
 
 interface IMaterial extends IRenderMaterial {
