@@ -28,21 +28,17 @@ class Vector3D implements IVector3D {
         this.z = pz;
         this.w = pw;
     }
-    fromArray(arr: number[], offset: number = 0): Vector3D {
+    fromArray(arr: number[] | Float32Array, offset: number = 0): Vector3D {
         this.x = arr[offset];
         this.y = arr[offset + 1];
         this.z = arr[offset + 2];
         return this;
     }
-    toArray(arr: number[], offset: number = 0): number[] {
-        if(arr === undefined || arr == null) {
-            arr = new Array(3);
-            offset = 0;
-        }
+    toArray(arr: number[] | Float32Array, offset: number = 0): this {        
         this.x = arr[offset];
         this.y = arr[offset + 1];
         this.z = arr[offset + 2];
-        return arr;
+        return this;
     }
     setXYZ(px: number, py: number, pz: number): void {
         this.x = px;

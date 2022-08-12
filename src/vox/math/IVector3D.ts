@@ -12,8 +12,8 @@ interface IVector3D {
     w: number;
     clone(): IVector3D;
     setTo(px: number, py: number, pz: number, pw?: number): void;
-    fromArray(arr: number[], offset?: number): IVector3D;
-    toArray(arr?: number[], offset?: number): number[];
+    fromArray(arr: number[] | Float32Array, offset?: number): IVector3D;
+    toArray(arr?: number[] | Float32Array, offset?: number): IVector3D;
     setXYZ(px: number, py: number, pz: number): void;
     copyFrom(v3: IVector3D): void;
     dot(a: IVector3D): number;
