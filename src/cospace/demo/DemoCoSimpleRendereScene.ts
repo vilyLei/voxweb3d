@@ -11,7 +11,7 @@ declare var CoSimpleRScene: ICoSimpleRScene;
 /**
  * cospace renderer scene
  */
-export class DemoSimpleCoRendereScene {
+export class DemoCoSimpleRendereScene {
 
 	private m_rscene: ICoRendererScene = null;
 	private m_entity: ITransformEntity = null;
@@ -70,4 +70,4 @@ export class DemoSimpleCoRendereScene {
 	}
 }
 
-export default DemoSimpleCoRendereScene;
+export default DemoCoSimpleRendereScene;

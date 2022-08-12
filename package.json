@@ -48,6 +48,7 @@
 
     "buildCoRenderer": "vue-cli-service build --target lib --name CoRenderer --dest ./public/static/cospace/engine/renderer ./src/cospace/voxengine/CoRenderer.ts",
     "buildCoRScene": "vue-cli-service build --target lib --name CoRScene --dest ./public/static/cospace/engine/rscene ./src/cospace/voxengine/CoRScene.ts",
+    "buildCoSimpleRScene": "vue-cli-service build --target lib --name CoSimpleRScene --dest ./public/static/cospace/engine/simpleRScene ./src/cospace/voxengine/CoSimpleRScene.ts",
     
     "buildCoMouseInteraction": "vue-cli-service build --target lib --name CoMouseInteraction --dest ./public/static/cospace/engine/mouseInteract ./src/cospace/voxengine/ui/CoMouseInteraction.ts",
 

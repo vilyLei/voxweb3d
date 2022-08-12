@@ -27,7 +27,8 @@
 
 // import { DemoCoRenderer as Demo } from "./cospace/demo/DemoCoRenderer";
 // import { DemoCoRendererScene as Demo } from "./cospace/demo/DemoCoRendererScene";
-import { DemoCoRendererSubScene as Demo } from "./cospace/demo/DemoCoRendererSubScene";
+// import { DemoCoRendererSubScene as Demo } from "./cospace/demo/DemoCoRendererSubScene";
+import { DemoCoSimpleRendereScene as Demo } from "./cospace/demo/DemoCoSimpleRendereScene";
 
 // import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
 
