@@ -9,7 +9,7 @@ import { IRTTTexture } from "../../vox/render/texture/IRTTTexture";
 import { IDepthTexture } from "../../vox/render/texture/IDepthTexture";
 import { IWrapperTexture } from "../../vox/render/texture/IWrapperTexture";
 
-import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 
 /**
  * 本类作为所有RTT纹理对象的管理类

@@ -25,7 +25,7 @@ import IRODisplay from "../../vox/display/IRODisplay";
 import RODisplay from "../../vox/display/RODisplay";
 import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 
-import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import ROTransPool from '../../vox/render/ROTransPool';
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";

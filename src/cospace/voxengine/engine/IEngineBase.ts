@@ -1,6 +1,6 @@
 import { ICoRendererParam } from "./ICoRendererParam";
 import {IRendererSceneAccessor} from "../../../vox/scene/IRendererSceneAccessor";
-import { IRenderProxy } from "../../../vox/render/IRenderProxy";
+import IRenderProxy from "../../../vox/render/IRenderProxy";
 import IRenderStage3D from "../../../vox/render/IRenderStage3D";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 

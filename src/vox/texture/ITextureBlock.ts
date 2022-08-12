@@ -21,7 +21,7 @@ import { IBytesTexture } from "../../vox/render/texture/IBytesTexture";
 import { IFloatTexture } from "../../vox/render/texture/IFloatTexture";
 import { IUint16Texture } from "../../vox/render/texture/IUint16Texture";
 
-import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 import { IRTTTextureStore } from "../../vox/texture/IRTTTextureStore";
 
 /**

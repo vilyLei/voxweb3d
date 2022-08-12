@@ -10,7 +10,7 @@
 import IRenderStage3D from "../../../vox/render/IRenderStage3D";
 import SubStage3D from "../../../vox/display/SubStage3D";
 
-import { IRenderProxy } from "../../../vox/render/IRenderProxy";
+import IRenderProxy from "../../../vox/render/IRenderProxy";
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 import { IRenderAdapter } from "../../../vox/render/IRenderAdapter";
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";

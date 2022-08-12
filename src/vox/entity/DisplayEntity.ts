@@ -24,7 +24,7 @@ import IEntityTransform from "../../vox/entity/IEntityTransform";
 import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 import ITransformEntity from "../../vox/entity/ITransformEntity";
 
-import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import DebugFlag from '../debug/DebugFlag';
 

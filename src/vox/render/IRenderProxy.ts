@@ -22,7 +22,7 @@ import { IStencil } from "../../vox/render/rendering/IStencil";
 import { IRenderingColorMask } from "./rendering/IRenderingColorMask";
 import { IRenderingState } from "./rendering/IRenderingState";
 
-interface IRenderProxy {
+export default interface IRenderProxy {
 
     RGBA: number;
     UNSIGNED_BYTE: number;
@@ -162,4 +162,3 @@ interface IRenderProxy {
     setViewProbeValue(x: number, y: number, width: number, height: number): void;
 	setVtxUpdateTimesTotal(timesTotal: number): void;
 }
-export { IRenderProxy };

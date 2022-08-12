@@ -16,7 +16,7 @@ import RaySelectedNode from '../../vox/scene/RaySelectedNode';
 
 import { RenderBlendMode, DepthTestMode } from "../../vox/render/RenderConst";
 import RendererState from "../../vox/render/RendererState";
-import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import IRenderer from "../../vox/scene/IRenderer";
 import Color4 from "../../vox/material/Color4";

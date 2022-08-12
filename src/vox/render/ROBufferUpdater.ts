@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { IRenderProxy } from "../../vox/render/IRenderProxy"
+import IRenderProxy from "../../vox/render/IRenderProxy"
 import IRenderBuffer from "../../vox/render/IRenderBuffer";
 class ROBufferUpdater {
     private m_bufs: IRenderBuffer[] = [];

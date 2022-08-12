@@ -10,7 +10,7 @@ import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
-import {IRenderProxy} from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import Color4 from "../material/Color4";
 

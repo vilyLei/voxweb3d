@@ -65,7 +65,6 @@ export default interface IMeshBase {
   getIVS(): Uint16Array | Uint32Array;
 
   setVtxBufRenderData(vtxData: IVtxBufRenderData): void;
-  // initializeFromGeometry(geom: GeometryBase): void;
 
   setPolyhedral(boo: boolean): void;
   /**

@@ -14,7 +14,7 @@ import Color4 from "../../vox/material/Color4";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import CameraBase from "../../vox/view/CameraBase";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
-import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";

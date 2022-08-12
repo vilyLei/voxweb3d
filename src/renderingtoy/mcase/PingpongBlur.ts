@@ -10,7 +10,7 @@ import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import PingpongBlurMaterial from "../../renderingtoy/mcase/material/PingpongBlurMaterial";
 import RendererState from "../../vox/render/RendererState";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
-import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderProcess from "../../vox/render/IRenderProcess";
 // import IRenderer from "../../vox/scene/IRenderer";

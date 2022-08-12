@@ -14,7 +14,7 @@ import { UserInteraction } from "./UserInteraction";
 import {IRendererSceneAccessor} from "../../vox/scene/IRendererSceneAccessor";
 import { RenderableMaterialBlock } from "../scene/block/RenderableMaterialBlock";
 import { RenderableEntityBlock } from "../scene/block/RenderableEntityBlock";
-import { IRenderProxy } from "../render/IRenderProxy";
+import IRenderProxy from "../render/IRenderProxy";
 
 class RendererSceneNode {
     private m_rscene: IRendererScene = null;

@@ -37,7 +37,7 @@ import ImageCubeTextureProxy from "../../vox/texture/ImageCubeTextureProxy";
 import Texture3DProxy from "../../vox/texture/Texture3DProxy";
 
 // import WrapperTextureProxy from "../../vox/texture/WrapperTextureProxy";
-import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 import TextureResSlot from "../../vox/texture/TextureResSlot";
 import { RTTTextureStore } from "../../vox/texture/RTTTextureStore";
 import { ITextureBlock } from "./ITextureBlock";

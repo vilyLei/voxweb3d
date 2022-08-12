@@ -18,7 +18,7 @@ import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import FrameBufferType from "../../vox/render/FrameBufferType";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
-import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";

@@ -7,7 +7,7 @@
 
 import TextureConst from "../../vox/texture/TextureConst";
 import BytesTextureProxy from "../../vox/texture/BytesTextureProxy";
-import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 import RendererDevice from "../render/RendererDevice";
 
 class FontTexCharGrid {

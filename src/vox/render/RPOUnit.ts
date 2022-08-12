@@ -17,7 +17,7 @@ import { RenderColorMask } from "../../vox/render/rendering/RenderColorMask";
 import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject";
 
 import RendererState from "../../vox/render/RendererState";
-import RenderProxy from "../../vox/render/RenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 import ShaderUBO from "../../vox/material/ShaderUBO";
 import IShaderUniform from "../../vox/material/IShaderUniform";
 import IRPODisplay from "../../vox/render/IRPODisplay";
@@ -115,7 +115,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         this.rcolorMask = rcolorMask;
         this.drawFlag = (rcolorMask << 10) + renderState;
     }
-    drawThis(rc: RenderProxy): void {
+    drawThis(rc: IRenderProxy): void {
 
         ++RST.DrawCallTimes;
         RST.DrawTrisNumber += this.trisNumber;
@@ -170,7 +170,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         }
     }
 
-    drawPart(rc: RenderProxy): void {
+    drawPart(rc: IRenderProxy): void {
 
         ++RST.DrawCallTimes;
         RST.DrawTrisNumber += this.trisNumber;
@@ -237,7 +237,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
                 break;
         }
     }
-    run2(rc: RenderProxy): void {
+    run2(rc: IRenderProxy): void {
         //console.log("RPOUnit::run2(), this.tro: "+this.tro+", this.drawMode: "+this.drawMode);
         if (this.ubo != null) {
             this.ubo.run(rc);
@@ -250,7 +250,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         this.shader.useUniform(this.uniform);
         this.testDrawFlag();
     }
-    run(rc: RenderProxy): void {
+    run(rc: IRenderProxy): void {
         //console.log("RPOUnit::run(), this.tro: "+this.tro+", this.drawMode: "+this.drawMode);
         if (this.ubo != null) {
             this.ubo.run(rc);

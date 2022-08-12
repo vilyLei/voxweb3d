@@ -12,7 +12,7 @@ import Matrix4 from "../../../vox/math/Matrix4";
 import Matrix4Pool from "../../../vox/math/Matrix4Pool";
 
 import IRenderStage3D from "../../../vox/render/IRenderStage3D";
-import { IRenderProxy } from "../../../vox/render/IRenderProxy";
+import IRenderProxy from "../../../vox/render/IRenderProxy";
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 import { IRenderAdapter } from "../../../vox/render/IRenderAdapter";
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";

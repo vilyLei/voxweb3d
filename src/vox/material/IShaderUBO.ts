@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import {IRenderProxy} from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 
 export default interface IShaderUBO {
 

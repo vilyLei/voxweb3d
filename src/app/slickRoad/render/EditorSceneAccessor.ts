@@ -7,7 +7,7 @@
 
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import {IRendererSceneAccessor} from "../../../vox/scene/IRendererSceneAccessor";
-import { IRenderProxy } from "../../../vox/render/IRenderProxy";
+import IRenderProxy from "../../../vox/render/IRenderProxy";
 
 class EditorSceneAccessor implements IRendererSceneAccessor{
     constructor(){}

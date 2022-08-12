@@ -15,7 +15,7 @@ import SubStage3D from "../../vox/display/SubStage3D";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import CameraBase from "../../vox/view/CameraBase";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
-import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";

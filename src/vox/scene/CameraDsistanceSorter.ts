@@ -8,7 +8,7 @@
 import Vector3D from "../../vox/math/Vector3D";
 import IRPODisplay from "../../vox/render/IRPODisplay";
 import IRODisplaySorter from "../../vox/render/IRODisplaySorter";
-import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 
 /**
  * 在 renderer process 中 通过和摄像机之间的距离, 对可渲染对象渲染先后顺序的排序

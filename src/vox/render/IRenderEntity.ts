@@ -10,7 +10,7 @@ import IMatrix4 from "../../vox/math/IMatrix4";
 import IAABB from "../../vox/geom/IAABB";
 import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
-import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import IRODisplay from "../../vox/display/IRODisplay";
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";

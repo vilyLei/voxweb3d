@@ -16,7 +16,7 @@ import { IWrapperTexture } from "../../vox/render/texture/IWrapperTexture";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 import DepthTextureProxy from "../../vox/texture/DepthTextureProxy";
 import WrapperTextureProxy from "../../vox/texture/WrapperTextureProxy";
-import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 import RendererDevice from "../render/RendererDevice";
 import { IRTTTextureStore } from "./IRTTTextureStore";
 

@@ -7,7 +7,7 @@
 
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
-import { IRenderProxy } from "../../vox/render/IRenderProxy";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRPONodeBuilder from "../../vox/render/IRPONodeBuilder";

@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import IRenderResource from '../../vox/render/IRenderResource';
-import { IRenderProxy } from "../../vox/render/IRenderProxy"
+import IRenderProxy from "../../vox/render/IRenderProxy"
 import IRenderTexture from "../../vox/render/texture/IRenderTexture"
 import IRenderBuffer from "../../vox/render/IRenderBuffer";
 import ROBufferUpdater from "../../vox/render/ROBufferUpdater";

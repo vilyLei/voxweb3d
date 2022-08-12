@@ -11,7 +11,7 @@ import IColor4 from "../../vox/material/IColor4";
 
 import RenderFilter from "../../vox/render/RenderFilter";
 import RenderMaskBitfield from "../../vox/render/RenderMaskBitfield";
-import {IRenderCamera} from "./IRenderCamera";
+import { IRenderCamera } from "./IRenderCamera";
 import IRendererParam from "../../vox/scene/IRendererParam";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 
@@ -21,7 +21,7 @@ import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject"
 
 import { IRAdapterContext } from "./IRAdapterContext";
 import RAdapterContext from "../../vox/render/RAdapterContext";
-import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
+import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import RenderAdapter from "../../vox/render/RenderAdapter";
 import RenderFBOProxy from "../../vox/render/RenderFBOProxy";
 import RCExtension from "../../vox/render/RCExtension";
@@ -36,7 +36,7 @@ import IROMaterialUpdater from '../../vox/render/IROMaterialUpdater';
 import DivLog from "../../vox/utils/DivLog";
 import RSTBuilder from "./RSTBuilder";
 import RendererState from "./RendererState";
-import {IRenderProxy} from "./IRenderProxy";
+import IRenderProxy from "./IRenderProxy";
 import { IShaderUniformContext } from "../../vox/material/IShaderUniformContext";
 import { IStencil } from "../../vox/render/rendering/IStencil";
 import { Stencil } from "./rendering/Stencil";
@@ -54,12 +54,12 @@ class RenderProxyParam {
     vtxBuilder: IROVtxBuilder = null;
     uniformContext: IShaderUniformContext = null;
 
-    constructor(){}
+    constructor() { }
 }
 /**
  * 真正位于高频运行的渲染管线中的被使用的渲染关键代理对象
  */
-class RenderProxy implements IRenderProxy{
+class RenderProxy implements IRenderProxy {
 
     readonly RGBA: number = 0;
     readonly UNSIGNED_BYTE: number = 0;
@@ -240,9 +240,9 @@ class RenderProxy implements IRenderProxy{
         return this.m_adapter;
     }
 
-	getRenderContext(): IRAdapterContext {
-		return this.m_adapter.getRenderContext();
-	}
+    getRenderContext(): IRAdapterContext {
+        return this.m_adapter.getRenderContext();
+    }
     setCameraParam(fov: number, near: number, far: number): void {
         this.m_cameraFov = fov;
         this.m_cameraNear = near;
@@ -256,12 +256,12 @@ class RenderProxy implements IRenderProxy{
         return this.m_viewPortRect.testEqualWithParams(px, py, pw, ph);
     }
     testRCViewPortChanged(px: number, py: number, pw: number, ph: number): boolean {
-        return this.m_adapterContext.testViewPortChanged(px,py,pw,ph);
+        return this.m_adapterContext.testViewPortChanged(px, py, pw, ph);
     }
-    getViewX(): number {return this.m_viewPortRect.x;}
-    getViewY(): number {return this.m_viewPortRect.y;}
-    getViewWidth(): number {return this.m_viewPortRect.width;}
-    getViewHeight(): number {return this.m_viewPortRect.height;}
+    getViewX(): number { return this.m_viewPortRect.x; }
+    getViewY(): number { return this.m_viewPortRect.y; }
+    getViewWidth(): number { return this.m_viewPortRect.width; }
+    getViewHeight(): number { return this.m_viewPortRect.height; }
     setViewPort(px: number, py: number, pw: number, ph: number): void {
 
         this.m_autoSynViewAndStage = false;
@@ -274,7 +274,7 @@ class RenderProxy implements IRenderProxy{
         }
         this.m_adapterContext.setViewport(px, py, pw, ph);
     }
-    setRCViewPort(px: number, py: number, pw: number, ph: number,autoSynViewAndStage: boolean = false): void {
+    setRCViewPort(px: number, py: number, pw: number, ph: number, autoSynViewAndStage: boolean = false): void {
         this.m_autoSynViewAndStage = autoSynViewAndStage;
         this.m_adapterContext.setViewport(px, py, pw, ph);
     }
@@ -306,7 +306,7 @@ class RenderProxy implements IRenderProxy{
     private m_initMainCamera: boolean = true;
     private createMainCamera(): void {
 
-        if(this.m_initMainCamera) {
+        if (this.m_initMainCamera) {
 
             this.m_initMainCamera = false;
             this.m_camera.uniformEnabled = true;
@@ -341,18 +341,18 @@ class RenderProxy implements IRenderProxy{
             camera.ufrustumProbe = this.uniformContext.createShaderUniformProbe();
             camera.ufrustumProbe.addVec4Data(
                 new Float32Array([
-                camera.getZNear(),
-                camera.getZFar(),
-                camera.getNearPlaneWidth() * 0.5,
-                camera.getNearPlaneHeight() * 0.5
+                    camera.getZNear(),
+                    camera.getZFar(),
+                    camera.getNearPlaneWidth() * 0.5,
+                    camera.getNearPlaneHeight() * 0.5
                 ]),
-            1);
+                1);
         }
         if (camera.ucameraPosProbe == null) {
             camera.ucameraPosProbe = this.uniformContext.createShaderUniformProbe();
             camera.ucameraPosProbe.addVec4Data(
-                new Float32Array([500.0,500.0,500.0,1.0]),
-            1);
+                new Float32Array([500.0, 500.0, 500.0, 1.0]),
+                1);
         }
     }
     initialize(param: IRendererParam, camera: IRenderCamera, stage: IRenderStage3D, proxyParam: RenderProxyParam): void {
@@ -365,7 +365,7 @@ class RenderProxy implements IRenderProxy{
         let lookAtPosV3: IVector3D = param.camLookAtPos;
         let upV3: IVector3D = param.camUpDirect;
 
-        if(stage != null) stage.uProbe = proxyParam.uniformContext.createUniformVec4Probe(1);
+        if (stage != null) stage.uProbe = proxyParam.uniformContext.createUniformVec4Probe(1);
 
         this.m_perspectiveEnabled = param.cameraPerspectiveEnabled;
         this.m_adapterContext.autoSyncRenderBufferAndWindowSize = param.autoSyncRenderBufferAndWindowSize;
@@ -388,16 +388,16 @@ class RenderProxy implements IRenderProxy{
         selfT.uniformContext = proxyParam.uniformContext;
 
         let rstate = new RODrawState();
-        rstate.setRenderContext( this.m_adapterContext );
+        rstate.setRenderContext(this.m_adapterContext);
         // RendererState.Initialize(rstate, new VROBase());
         let obj: any = RendererState;
         new RSTBuilder().initialize(obj, rstate, new VROBase());
 
         selfT.RState = rstate;
         selfT.RContext = this.m_rc;
-        selfT.stencil = new Stencil( rstate );
-        selfT.renderingState = new RenderingState( RendererState );
-        selfT.colorMask = new RenderingColorMask( RendererState );
+        selfT.stencil = new Stencil(rstate);
+        selfT.renderingState = new RenderingState(RendererState);
+        selfT.colorMask = new RenderingColorMask(RendererState);
 
         this.buildCameraParam();
 
@@ -459,7 +459,7 @@ class RenderProxy implements IRenderProxy{
     }
     setClearRGBColor3f(pr: number, pg: number, pb: number): void {
         let cvs = this.m_adapter.bgColor;
-        cvs[0] = pr;cvs[1] = pg;cvs[2] = pb;
+        cvs[0] = pr; cvs[1] = pg; cvs[2] = pb;
     }
     setClearColor(color: IColor4): void {
         color.toArray(this.m_adapter.bgColor);
@@ -477,7 +477,7 @@ class RenderProxy implements IRenderProxy{
     }
     setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void {
         let cvs = this.m_adapter.bgColor;
-        cvs[0] = pr;cvs[1] = pg;cvs[2] = pb;cvs[3] = pa;
+        cvs[0] = pr; cvs[1] = pg; cvs[2] = pb; cvs[3] = pa;
     }
     getClearRGBAColor4f(color4: IColor4): void {
         color4.fromArray(this.m_adapter.bgColor);
@@ -497,7 +497,7 @@ class RenderProxy implements IRenderProxy{
     clearDepth(depth: number = 1.0): void {
         this.m_adapter.clearDepth(depth);
     }
-    renderBegin():void {
+    renderBegin(): void {
         this.m_camera.update();
         this.m_adapter.renderBegin();
     }
@@ -582,5 +582,5 @@ class RenderProxy implements IRenderProxy{
         return "[Object RenderProxy()]";
     }
 }
-export {RenderProxyParam, RenderProxy}
+export { RenderProxyParam, RenderProxy }
 export default RenderProxy;
