@@ -14,7 +14,7 @@ import ITextureRenderObj from "../../vox/render/ITextureRenderObj";
 
 import IRenderProxy from "../../vox/render/IRenderProxy";
 import IShaderUBO from "../../vox/material/IShaderUBO";
-import IShaderUniform from "../../vox/material/IShaderUniform";
+import IRenderShaderUniform from "../../vox/render/uniform/IRenderShaderUniform";
 import IRPODisplay from "../../vox/render/IRPODisplay";
 import IPoolNode from "../../vox/base/IPoolNode";
 import { ROIndicesRes } from "./vtx/ROIndicesRes";
@@ -57,9 +57,9 @@ export default interface IRPOUnit extends IPoolNode, IRPODisplay {
     vro: IVertexRenderObj;
 
     // transform uniform
-    transUniform: IShaderUniform;
+    transUniform: IRenderShaderUniform;
     // materiall uniform
-    uniform: IShaderUniform;
+    uniform: IRenderShaderUniform;
     // 记录 material 对应的 shader program uid
     shdUid: number;
     vtxUid: number;
@@ -84,7 +84,7 @@ export default interface IRPOUnit extends IPoolNode, IRPODisplay {
     run2(rc: IRenderProxy): void;
     run(rc: IRenderProxy): void;
 
-    runLockMaterial2(puniform: IShaderUniform): void;
+    runLockMaterial2(puniform: IRenderShaderUniform): void;
     runLockMaterial(): void;
     reset(): void;
     destroy(): void;

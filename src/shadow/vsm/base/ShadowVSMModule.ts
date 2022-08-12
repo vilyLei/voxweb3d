@@ -12,7 +12,7 @@ import IRenderEntity from "../../../vox/render/IRenderEntity";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipe } from "../../../vox/material/pipeline/IMaterialPipe";
-import IShaderUniform from "../../../vox/material/IShaderUniform";
+import IRenderShaderUniform from "../../../vox/render/uniform/IRenderShaderUniform";
 
 // import PingpongBlur from "../../../renderingtoy/mcase/PingpongBlur";
 import { IShadowVSMModule } from "./IShadowVSMModule";
@@ -72,7 +72,7 @@ export class ShadowVSMModule implements IMaterialPipe, IShadowVSMModule {
         return this.m_vsmData.getPipeKey(pipeType);
     }
 
-    getGlobalUinform(): IShaderUniform {
+    getGlobalUinform(): IRenderShaderUniform {
         return this.m_vsmData.getGlobalUinform();
     }
 

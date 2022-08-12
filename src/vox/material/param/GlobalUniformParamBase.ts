@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IShaderUniform from "../../../vox/material/IShaderUniform";
+import IRenderShaderUniform from "../../../vox/render/uniform/IRenderShaderUniform";
 import { IShaderUniformProbe } from "../../../vox/material/IShaderUniformProbe";
 import { IShaderUniformContext } from "../../../vox/material/IShaderUniformContext";
 
@@ -14,7 +14,7 @@ class GlobalUniformParamBase {
     protected m_shdCtx: IShaderUniformContext = null;
 
     uProbe: IShaderUniformProbe = null;
-    uniform: IShaderUniform = null;
+    uniform: IRenderShaderUniform = null;
 
     constructor(shdCtx: IShaderUniformContext, autoBuild: boolean = true) {
         this.m_shdCtx = shdCtx;
@@ -26,7 +26,7 @@ class GlobalUniformParamBase {
     getNames(): string[] {
         return [];
     }
-    cloneUniform(): IShaderUniform {
+    cloneUniform(): IRenderShaderUniform {
         return this.m_shdCtx.cloneShaderGlobalUniform(this.uniform);
     }
     buildData(): void {

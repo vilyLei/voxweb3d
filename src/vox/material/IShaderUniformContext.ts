@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
-import IShaderUniform from "../../vox/material/IShaderUniform";
+import IRenderShaderUniform from "../../vox/render/uniform/IRenderShaderUniform";
 
 interface IShaderUniformContext {
     
@@ -16,12 +16,12 @@ interface IShaderUniformContext {
     getRCUid(): number;
     createShaderUniformProbe(): IShaderUniformProbe;
     createUniformVec4Probe(vec4Total:number): IShaderUniformProbe;
-    createGlobalUinformFromProbe(uProbe: IShaderUniformProbe, uniformNames: string[]): IShaderUniform;
-    updateGlobalUinformDataFromProbe(suo: IShaderUniform, uProbe: IShaderUniformProbe, uniformNames: string[]): void;
-    createShaderGlobalUniformFromProbe(uProbe: IShaderUniformProbe,uns: string, uniformNames: string[]): IShaderUniform;
-    createShaderGlobalUniformFromProbeAt(uProbe: IShaderUniformProbe,uns: string, uniformNames: string[], index: number): IShaderUniform;
-    createShaderGlobalUniform(): IShaderUniform;
-    cloneShaderGlobalUniform(psuo: IShaderUniform): IShaderUniform;
+    createGlobalUinformFromProbe(uProbe: IShaderUniformProbe, uniformNames: string[]): IRenderShaderUniform;
+    updateGlobalUinformDataFromProbe(suo: IRenderShaderUniform, uProbe: IShaderUniformProbe, uniformNames: string[]): void;
+    createShaderGlobalUniformFromProbe(uProbe: IShaderUniformProbe,uns: string, uniformNames: string[]): IRenderShaderUniform;
+    createShaderGlobalUniformFromProbeAt(uProbe: IShaderUniformProbe,uns: string, uniformNames: string[], index: number): IRenderShaderUniform;
+    createShaderGlobalUniform(): IRenderShaderUniform;
+    cloneShaderGlobalUniform(psuo: IRenderShaderUniform): IRenderShaderUniform;
 }
 
 export { IShaderUniformContext };

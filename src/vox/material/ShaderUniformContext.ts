@@ -7,7 +7,7 @@
 
 import { UniformDataSlot } from "../../vox/material/UniformDataSlot";
 import { IShaderUniformProbe } from "../../vox/material/IShaderUniformProbe";
-import IShaderUniform from "../../vox/material/IShaderUniform";
+import IRenderShaderUniform from "../../vox/render/uniform/IRenderShaderUniform";
 
 import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
 import UniformVec4Probe from "../../vox/material/UniformVec4Probe";
@@ -36,23 +36,23 @@ class ShaderUniformContext implements IShaderUniformContext {
         let probe = new UniformVec4Probe(this.m_udSlot, vec4Total);
         return probe;
     }
-    createGlobalUinformFromProbe(uProbe: IShaderUniformProbe, uniformNames: string[] = null): IShaderUniform {
+    createGlobalUinformFromProbe(uProbe: IShaderUniformProbe, uniformNames: string[] = null): IRenderShaderUniform {
 
         let suo: ShaderGlobalUniform = this.createShaderGlobalUniform() as ShaderGlobalUniform;
         this.updateGlobalUinformDataFromProbe(suo, uProbe, uniformNames);
         return suo;
     }
-    updateGlobalUinformDataFromProbe(psuo: IShaderUniform, uProbe: IShaderUniformProbe, uniformNames: string[] = null): void {
+    updateGlobalUinformDataFromProbe(psuo: IRenderShaderUniform, uProbe: IShaderUniformProbe, uniformNames: string[] = null): void {
         let suo = psuo as ShaderGlobalUniform;
         suo.uniformNameList = uniformNames != null ? uniformNames : uProbe.uniformNames;
         suo.copyDataFromProbe(uProbe);
         uProbe.update();
     }
-    createShaderGlobalUniform(): IShaderUniform {
+    createShaderGlobalUniform(): IRenderShaderUniform {
         let suo = new ShaderGlobalUniform(this.m_udSlot);
         return suo;
     }
-    createShaderGlobalUniformFromProbe(uProbe: IShaderUniformProbe, puns: string, uniformNames: string[] = null): IShaderUniform {
+    createShaderGlobalUniformFromProbe(uProbe: IShaderUniformProbe, puns: string, uniformNames: string[] = null): IRenderShaderUniform {
         let suo = new ShaderGlobalUniform(this.m_udSlot);
         suo.uns = puns;
         suo.uniformNameList = uniformNames != null ? uniformNames : uProbe.uniformNames;
@@ -60,7 +60,7 @@ class ShaderUniformContext implements IShaderUniformContext {
         uProbe.update();
         return suo;
     }
-    createShaderGlobalUniformFromProbeAt(uProbe: IShaderUniformProbe, puns: string, uniformNames: string[] = null, index: number): IShaderUniform {
+    createShaderGlobalUniformFromProbeAt(uProbe: IShaderUniformProbe, puns: string, uniformNames: string[] = null, index: number): IRenderShaderUniform {
         let suo = new ShaderGlobalUniform(this.m_udSlot);
         suo.uns = puns;
         suo.uniformNameList = uniformNames != null ? uniformNames : uProbe.uniformNames;
@@ -73,7 +73,7 @@ class ShaderUniformContext implements IShaderUniformContext {
         uProbe.update();
         return suo;
     }
-    cloneShaderGlobalUniform(psuo: IShaderUniform): IShaderUniform {
+    cloneShaderGlobalUniform(psuo: IRenderShaderUniform): IRenderShaderUniform {
         let suo = psuo as ShaderGlobalUniform;
         return suo.clone();
     }

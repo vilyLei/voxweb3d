@@ -8,7 +8,7 @@
 import IShaderData from "../../vox/material/IShaderData";
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import IShaderUniformData from "../../vox/material/IShaderUniformData";
-import IShaderUniform from "../../vox/material/IShaderUniform";
+import IRenderShaderUniform from "../../vox/render/uniform/IRenderShaderUniform";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 import { MaterialPipeType } from "../material/pipeline/MaterialPipeType";
@@ -16,7 +16,7 @@ import { MaterialPipeType } from "../material/pipeline/MaterialPipeType";
 interface IRenderMaterial {
 
     __$troMid: number;
-    __$uniform: IShaderUniform;
+    __$uniform: IRenderShaderUniform;
     /**
      * pipes type list for material pipeline
      */
@@ -26,7 +26,7 @@ interface IRenderMaterial {
     initializeByCodeBuf(texEnabled: boolean): void;
     
     getPolygonOffset(): number[];
-    createSharedUniforms(): IShaderUniform[];
+    createSharedUniforms(): IRenderShaderUniform[];
     createSelfUniformData(): IShaderUniformData;
     createSharedUniformsData(): IShaderUniformData[];
     hasShaderData(): boolean;

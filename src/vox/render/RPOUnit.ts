@@ -19,7 +19,7 @@ import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject"
 import RendererState from "../../vox/render/RendererState";
 import IRenderProxy from "../../vox/render/IRenderProxy";
 import ShaderUBO from "../../vox/material/ShaderUBO";
-import IShaderUniform from "../../vox/material/IShaderUniform";
+import IRenderShaderUniform from "./uniform/IRenderShaderUniform";
 import IRPODisplay from "../../vox/render/IRPODisplay";
 import IPoolNode from "../../vox/base/IPoolNode";
 import { ROIndicesRes } from "./vtx/ROIndicesRes";
@@ -64,9 +64,9 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     vro: IVertexRenderObj = null;
 
     // transform uniform
-    transUniform: IShaderUniform = null;
+    transUniform: IRenderShaderUniform = null;
     // materiall uniform
-    uniform: IShaderUniform = null;
+    uniform: IRenderShaderUniform = null;
     // 记录 material 对应的 shader program uid
     shdUid: number = -1;
     vtxUid: number = -1;
@@ -262,7 +262,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         this.testDrawFlag();
     }
 
-    runLockMaterial2(puniform: IShaderUniform): void {
+    runLockMaterial2(puniform: IRenderShaderUniform): void {
         this.testDrawFlag();
         this.shader.useUniform2ToCurrentShd(puniform == null ? this.uniform : puniform, this.transUniform);
     }

@@ -6,11 +6,11 @@
 /***************************************************************************/
 
 import IShdProgram from "../../../vox/material/IShdProgram";
-import IShaderUniform from "../../../vox/material/IShaderUniform";
+import IRenderShaderUniform from "../../../vox/render/uniform/IRenderShaderUniform";
 import RenderProxy from "../../../vox/render/RenderProxy";
 
 export default interface IUniformBuilder
 {
-    create( rc:RenderProxy,shdp:IShdProgram):IShaderUniform;
+    create( rc:RenderProxy,shdp:IShdProgram):IRenderShaderUniform;
     getIDNS():string;
 }

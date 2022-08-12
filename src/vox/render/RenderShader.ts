@@ -11,7 +11,7 @@ import IShdProgram from "../../vox/material/IShdProgram";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import IRenderShader from "../../vox/render/IRenderShader";
 import IRenderResource from "../../vox/render/IRenderResource";
-import IShaderUniform from "../../vox/material/IShaderUniform";
+import IRenderShaderUniform from "../../vox/render/uniform/IRenderShaderUniform";
 import { IShaderProgramBuilder } from "../../vox/material/IShaderProgramBuilder";
 import DebugFlag from "../debug/DebugFlag";
 
@@ -21,7 +21,7 @@ import DebugFlag from "../debug/DebugFlag";
  */
 export default class RenderShader implements IRenderShader, IRenderResource {
 
-    private m_sharedUniformList: IShaderUniform[] = [];
+    private m_sharedUniformList: IRenderShaderUniform[] = [];
     private m_unlocked: boolean = true;
     private m_texUnlocked: boolean = false;
     private m_preuid: number = -1;
@@ -31,11 +31,11 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     private m_rc: any = null;
     private m_gpuProgram: any = null;
     private m_adapter: IRenderAdapter = null;
-    private m_guniform: IShaderUniform = null;
+    private m_guniform: IRenderShaderUniform = null;
     // material相关的uniform,默认不包括transform相关的信息
-    private m_uniform: IShaderUniform = null;
+    private m_uniform: IRenderShaderUniform = null;
     // 只有transform相关的信息uniform
-    private m_transformUniform: IShaderUniform = null;
+    private m_transformUniform: IRenderShaderUniform = null;
     private m_shdProgramBuilder: IShaderProgramBuilder = null;
     // 用于记录 renderState(低10位)和ColorMask(高10位) 的状态组合
     drawFlag: number = -1;
@@ -68,20 +68,20 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     getRCUid(): number {
         return this.m_rcuid;
     }
-    useTransUniform(transUniform: IShaderUniform): void {
+    useTransUniform(transUniform: IRenderShaderUniform): void {
         if (this.m_transformUniform != transUniform) {
             this.m_transformUniform = transUniform;
             transUniform.use(this);
         }
     }
-    useUniform(uniform: IShaderUniform): void {
+    useUniform(uniform: IRenderShaderUniform): void {
         if (this.m_uniform != uniform) {
             this.m_uniform = uniform;
             uniform.use(this);
         }
     }
 
-    updateUniform(uniform: IShaderUniform): void {
+    updateUniform(uniform: IRenderShaderUniform): void {
         if (uniform != null) {
             uniform.use(this);
         }
@@ -107,10 +107,10 @@ export default class RenderShader implements IRenderShader, IRenderResource {
         this.m_texUnlocked = false;
     }
 
-    setSharedUniformByShd(shd: IShdProgram, uniform: IShaderUniform): void {
+    setSharedUniformByShd(shd: IShdProgram, uniform: IRenderShaderUniform): void {
         this.m_sharedUniformList[shd.getUid()] = uniform;
     }
-    getSharedUniformByShd(shd: IShdProgram): IShaderUniform {
+    getSharedUniformByShd(shd: IShdProgram): IRenderShaderUniform {
         return this.m_sharedUniformList[shd.getUid()];
     }
     getCurrFragOutputTotal(): number {
@@ -150,7 +150,7 @@ export default class RenderShader implements IRenderShader, IRenderResource {
                 shd.useTexLocation();
                 //console.log("use a new shader uid: ",shd.getUid(),",uns: ",shd.getUniqueShaderName());
                 // use global shared uniform
-                let uniform: IShaderUniform = this.m_sharedUniformList[shd.getUid()];
+                let uniform: IRenderShaderUniform = this.m_sharedUniformList[shd.getUid()];
                 //  let boo: boolean = false;
                 //  if((uniform as any).uns == "u_projMat") {
                 //      console.log("only use projMat begin");
@@ -167,7 +167,7 @@ export default class RenderShader implements IRenderShader, IRenderResource {
                 //  }
             }
             else if (this.m_guniform == null && this.m_currShd != null) {
-                let uniform: IShaderUniform = this.m_sharedUniformList[this.m_currShd.getUid()];
+                let uniform: IRenderShaderUniform = this.m_sharedUniformList[this.m_currShd.getUid()];
                 this.m_guniform = uniform;
                 while (uniform != null) {
                     uniform.use(this);
@@ -215,14 +215,14 @@ export default class RenderShader implements IRenderShader, IRenderResource {
         this.m_rc = null;
         this.m_adapter = null;
     }
-    useUniformToCurrentShd(uniform: IShaderUniform): void {
+    useUniformToCurrentShd(uniform: IRenderShaderUniform): void {
         if (this.m_uniform != uniform) {
             this.m_uniform != uniform;
             uniform.useByShd(this, this.m_currShd);
         }
     }
-    __$globalUniform: IShaderUniform = null;
-    useUniform2ToCurrentShd(uniform: IShaderUniform, transUniform: IShaderUniform): void {
+    __$globalUniform: IRenderShaderUniform = null;
+    useUniform2ToCurrentShd(uniform: IRenderShaderUniform, transUniform: IRenderShaderUniform): void {
         if (this.m_uniform != uniform) {
             this.m_uniform != uniform;
             uniform.useByShd(this, this.m_currShd);

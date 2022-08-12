@@ -10,7 +10,7 @@ import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
 import { IShaderCodeWrapper } from "./IShaderCodeWrapper";
 
-import IShaderUniform from "../../vox/material/IShaderUniform";
+import IRenderShaderUniform from "../../vox/render/uniform/IRenderShaderUniform";
 
 class ShaderCodeShaderBuffer extends ShaderCodeBuffer {
 
@@ -70,7 +70,7 @@ export default class ShaderCodeMaterial extends MaterialBase {
     setSelfUniformData(data: ShaderUniformData): void {
         this.m_uniformData = data;
     }
-    createSharedUniforms(): IShaderUniform[] {
+    createSharedUniforms(): IRenderShaderUniform[] {
         return this.m_codeWrapper.createSharedUniforms();
     }
     setSharedUniformsData(dataList: ShaderUniformData[]): void {

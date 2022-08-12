@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IShaderUniform from "../../../vox/material/IShaderUniform";
+import IRenderShaderUniform from "../../../vox/render/uniform/IRenderShaderUniform";
 import { GlobalUniformParamBase } from "../../../vox/material/param/GlobalUniformParamBase";
 import { IShaderUniformContext } from "../../../vox/material/IShaderUniformContext";
 
@@ -31,7 +31,7 @@ class MaterialPipeBase {
             this.m_uniformParam.uProbe.update();
         }
     }
-    getGlobalUinform(): IShaderUniform {
+    getGlobalUinform(): IRenderShaderUniform {
         return this.m_uniformParam != null ? this.m_uniformParam.cloneUniform() : null;
     }
     destroy(): void {

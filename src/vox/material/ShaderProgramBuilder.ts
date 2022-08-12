@@ -10,14 +10,14 @@ import RendererDevice from "../../vox/render/RendererDevice";
 import IShaderData from "../../vox/material/IShaderData";
 import IShdProgram from "../../vox/material/IShdProgram";
 import ShdProgram from "../../vox/material/ShdProgram";
-import IShaderUniform from "../../vox/material/IShaderUniform";
+import IRenderShaderUniform from "../../vox/render/uniform/IRenderShaderUniform";
 
 class ShaderProgramBuilder {
 
     private m_shdDict: Map<string, ShdProgram> = new Map();
     private m_shdList: ShdProgram[] = [];
     private m_shdListLen: number = 0;
-    private m_sharedUniformList: IShaderUniform[] = [];
+    private m_sharedUniformList: IRenderShaderUniform[] = [];
     private m_rcuid: number = -1;
     constructor(rcuid: number) {
         this.m_rcuid = rcuid;

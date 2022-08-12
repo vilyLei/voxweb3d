@@ -8,7 +8,7 @@
 
 import { MaterialPipeType } from "./MaterialPipeType";
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
-import IShaderUniform from "../../../vox/material/IShaderUniform";
+import IRenderShaderUniform from "../../../vox/render/uniform/IRenderShaderUniform";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
 /**
@@ -19,7 +19,7 @@ interface IMaterialPipe {
     getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[], pipeType: MaterialPipeType): IRenderTexture[];
     useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void;
     getPipeTypes(): MaterialPipeType[];
-    getGlobalUinform(): IShaderUniform;
+    getGlobalUinform(): IRenderShaderUniform;
     getPipeKey(pipeType: MaterialPipeType): string;
 }
 export { IMaterialPipe }
