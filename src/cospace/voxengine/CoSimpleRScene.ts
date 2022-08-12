@@ -46,9 +46,6 @@ function createColor4(pr: number = 1.0, pg: number = 1.0, pb: number = 1.0, pa: 
 	return new Color4(pr, pg, pb, pa);
 }
 
-function createRendererSceneParam(div: HTMLDivElement = null): RendererParam {
-	return new RendererParam(div);
-}
 function applySceneBlock(rsecne: ICoRendererScene): void {
 
 	let rscene = rsecne;
@@ -59,6 +56,10 @@ function applySceneBlock(rsecne: ICoRendererScene): void {
 	entityBlock.initialize();
 	rscene.entityBlock = entityBlock;
 }
+function createRendererSceneParam(div: HTMLDivElement = null): RendererParam {
+	return new RendererParam(div);
+}
+let __$$$RenderScene: ICoRendererScene = null;
 function createRendererScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, sceneBlockEnabled: boolean = true): ICoRendererScene {
 	let sc = new CoSimpleRendererScene();
 	if(rparam != null) {
@@ -67,7 +68,15 @@ function createRendererScene(rparam: RendererParam = null, renderProcessesTotal:
 			applySceneBlock( sc );
 		}
 	}
+	__$$$RenderScene = sc;
 	return sc;
+}
+
+function setRendererScene(rs: ICoRendererScene): void {
+	__$$$RenderScene = rs;
+}
+function getRendererScene(): ICoRendererScene {
+	return __$$$RenderScene;
 }
 
 function createDataMesh(): IDataMesh {
@@ -160,9 +169,11 @@ export {
 	createMat4,
 	createColor4,
 
+	applySceneBlock,
 	createRendererSceneParam,
 	createRendererScene,
-	applySceneBlock,
+	setRendererScene,
+	getRendererScene,
 
 	createDataMesh,
 	createDataMeshFromModel,

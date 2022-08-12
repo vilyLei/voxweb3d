@@ -110,6 +110,7 @@ interface ICoRScene {
 
 	createColor4(pr?: number, pg?: number, pb?: number, pa?: number): IColor4;
 
+	applySceneBlock(rsecne: ICoRendererScene): void;
 	/**
 	 * @param div HTMLDivElement instance, the default value is null.
 	 */
@@ -120,7 +121,8 @@ interface ICoRScene {
 	 * @param sceneBlockEnabled the default value is true.
 	 */
 	createRendererScene(rparam?: IRendererParam, renderProcessesTotal?: number, sceneBlockEnabled?: boolean): ICoRendererScene;
-	applySceneBlock(rsecne: ICoRendererScene): void;
+	setRendererScene(rs: ICoRendererScene): void;
+	getRendererScene(): ICoRendererScene;
 
 	createMouseEvt3DDispatcher(): IEvtDispatcher;
 
@@ -145,6 +147,9 @@ interface ICoRScene {
 	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
 	 */
 	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, vbWhole?: boolean): ITransformEntity;
+	/**
+	 * @param size th default value is 100.0
+	 */
 	createAxis3DEntity(size?: number): ITransformEntity;
 
 	createDisplayEntity(): ITransformEntity;

@@ -53,9 +53,6 @@ function createColor4(pr: number = 1.0, pg: number = 1.0, pb: number = 1.0, pa: 
 	return new Color4(pr, pg, pb, pa);
 }
 
-function createRendererSceneParam(div: HTMLDivElement = null): RendererParam {
-	return new RendererParam(div);
-}
 function applySceneBlock(rsecne: ICoRendererScene): void {
 
 	let rscene = rsecne;
@@ -66,16 +63,28 @@ function applySceneBlock(rsecne: ICoRendererScene): void {
 	entityBlock.initialize();
 	rscene.entityBlock = entityBlock;
 }
+function createRendererSceneParam(div: HTMLDivElement = null): RendererParam {
+	return new RendererParam(div);
+}
+let __$$$RenderScene: ICoRendererScene = null;
 function createRendererScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, sceneBlockEnabled: boolean = true): ICoRendererScene {
-	let sc = new CoRendererScene();
+	let rs = new CoRendererScene();
 	if(rparam != null) {
-		sc.initialize(rparam, 3);
+		rs.initialize(rparam, 3);
 		if(sceneBlockEnabled) {
-			applySceneBlock( sc );
+			applySceneBlock( rs );
 		}
 	}
-	return sc;
+	__$$$RenderScene = rs;
+	return rs;
 }
+function setRendererScene(rs: ICoRendererScene): void {
+	__$$$RenderScene = rs;
+}
+function getRendererScene(): ICoRendererScene {
+	return __$$$RenderScene;
+}
+
 
 function createMouseEvt3DDispatcher(): IEvtDispatcher {
 	return new MouseEvt3DDispatcher();
@@ -140,7 +149,7 @@ function createMouseEventEntity(): IMouseEventEntity {
 }
 
 
-function createAxis3DEntity(size: number = 100): ITransformEntity {
+function createAxis3DEntity(size: number = 100.0): ITransformEntity {
 	let axis = new Axis3DEntity();
 	axis.initialize(size);
 	return axis;
@@ -176,9 +185,11 @@ export {
 	createMat4,
 	createColor4,
 
+	applySceneBlock,
 	createRendererSceneParam,
 	createRendererScene,
-	applySceneBlock,
+	setRendererScene,
+	getRendererScene,
 	createMouseEvt3DDispatcher,
 
 	createDataMesh,

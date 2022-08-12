@@ -85,6 +85,7 @@ interface ICoSimpleRScene {
 
 	createColor4(pr?: number, pg?: number, pb?: number, pa?: number): IColor4;
 
+	applySceneBlock(rsecne: ICoRendererScene): void;
 	/**
 	 * @param div HTMLDivElement instance, the default value is null.
 	 */
@@ -95,7 +96,8 @@ interface ICoSimpleRScene {
 	 * @param sceneBlockEnabled the default value is true.
 	 */
 	createRendererScene(rparam?: IRendererParam, renderProcessesTotal?: number, sceneBlockEnabled?: boolean): ICoRendererScene;
-	applySceneBlock(rsecne: ICoRendererScene): void;
+	setRendererScene(rs: ICoRendererScene): void;
+	getRendererScene(): ICoRendererScene;
 
 	/**
 	 * build default 3d entity rendering material
