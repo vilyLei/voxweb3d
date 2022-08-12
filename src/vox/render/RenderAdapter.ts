@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import DivLog from "../../vox/utils/DivLog";
-import Color4 from "../../vox/material/Color4";
+import IColor4 from "../../vox/material/IColor4";
 import FrameBufferType from "../../vox/render/FrameBufferType";
 import RenderFilter from "../../vox/render/RenderFilter";
 import RenderMaskBitfield from "../../vox/render/RenderMaskBitfield";
@@ -59,7 +59,7 @@ class RenderAdapter implements IRenderAdapter {
 	private m_scissorEnabled: boolean = false;
 	private m_rState: RODrawState = null;
 	private m_webglVer: number = 2;
-	readonly bgColor: Color4 = new Color4();
+	readonly bgColor: Float32Array = new Float32Array([0,0,0,1]);
 
 	readonly uViewProbe: IShaderUniformProbe = null;
 
@@ -231,7 +231,7 @@ class RenderAdapter implements IRenderAdapter {
 	 * only clear up color buffer
 	 * @param color color data
 	 */
-	clearColor(color: Color4): void {
+	clearColor(color: IColor4): void {
 		this.m_gl.clearColor(color.r, color.g, color.b, color.a);
 		this.m_gl.clear(this.m_gl.COLOR_BUFFER_BIT);
 	}
@@ -244,7 +244,8 @@ class RenderAdapter implements IRenderAdapter {
 		if (this.m_rcontext.isStencilTestEnabled()) {
 			this.m_gl.clearStencil(this.m_clearStencil);
 		}
-		this.m_gl.clearColor(this.bgColor.r, this.bgColor.g, this.bgColor.b, this.bgColor.a);
+		let cvs = this.bgColor;
+		this.m_gl.clearColor(cvs[0], cvs[1], cvs[2], cvs[3]);
 		this.m_gl.clear(this.m_clearMask);
 		//	if (this.m_rcontext.isStencilTestEnabled()) {
 		//		this.m_gl.stencilMask(0x0);

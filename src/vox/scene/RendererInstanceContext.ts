@@ -24,7 +24,7 @@ import RODataBuilder from "../../vox/render/RODataBuilder";
 import IRendererParam from "../../vox/scene/IRendererParam";
 import ROVtxBuilder from "../../vox/render/ROVtxBuilder";
 import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
-import Color4 from "../material/Color4";
+import IColor4 from "../material/IColor4";
 
 class RendererInstanceContextParam {
 
@@ -301,7 +301,6 @@ class RendererInstanceContext implements IRendererInstanceContext {
             contextParam.vtxBuilder.initialize(this.m_rcuid, this.m_renderProxy.getRC(), this.m_renderProxy.getGLVersion());
 
             this.m_adapter = this.m_renderProxy.getRenderAdapter();
-            this.m_adapter.bgColor.setRGBA4f(0.0, 0.0, 0.0, 1.0);
 
             let context = this.m_renderProxy.getContext();
             context.setViewport(0, 0, context.getRCanvasWidth(), context.getRCanvasHeight());
@@ -319,8 +318,8 @@ class RendererInstanceContext implements IRendererInstanceContext {
     setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void {
         this.m_renderProxy.setClearRGBAColor4f(pr, pg, pb, pa);
     }
-    getClearRGBAColor4f(color4: Color4): void {
-        color4.copyFrom(this.m_adapter.bgColor);
+    getClearRGBAColor4f(color4: IColor4): void {
+        color4.fromArray(this.m_adapter.bgColor);
     }
     updateRenderBufferSize(): void {
         this.m_adapter.updateRenderBufferSize();

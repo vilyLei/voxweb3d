@@ -6,10 +6,9 @@
 /***************************************************************************/
 
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
-import Color4 from "../../vox/material/Color4";
 
 interface IRenderAdapter {
-	bgColor: Color4;
+	bgColor: Float32Array;
 	//initialize(context: RAdapterContext, param: RendererParam, rState: RODrawState): void;
 	/**
 	 * @param faceFlipped the value is true, frontFace is CW. the value is false, frontFace is CCW.

@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import IVector3D from "../../vox/math/IVector3D";
-import Color4 from "../../vox/material/Color4";
+import IColor4 from "../../vox/material/IColor4";
 import { IRenderCamera } from "./IRenderCamera";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import { IRAdapterContext } from "../../vox/render/IRAdapterContext";
@@ -109,14 +109,14 @@ interface IRenderProxy {
     //    return new IRenderCamera(this.m_uid);
     //}
     setClearRGBColor3f(pr: number, pg: number, pb: number): void;
-    setClearColor(color: Color4): void;
+    setClearColor(color: IColor4): void;
     /**
      * @param colorUint24 uint24 number rgb color value, example: 0xff0000, it is red rolor
      * @param alpha the default value is 1.0
      */
     setClearUint24Color(colorUint24: number, alpha?: number): void;
     setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void;
-    getClearRGBAColor4f(color4: Color4): void;
+    getClearRGBAColor4f(color4: IColor4): void;
     getViewportWidth(): number;
     getViewportHeight(): number;
     setRenderToBackBuffer(): void;

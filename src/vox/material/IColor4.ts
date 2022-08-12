@@ -11,7 +11,8 @@ interface IColor4 {
     b: number;
     a: number;
     
-    fromArray(arr: number[], offset?: number): IColor4;
+    fromArray(arr: number[] | Float32Array, offset?: number): IColor4;
+    toArray(arr: number[] | Float32Array, offset?: number): IColor4;
     setRGB3Bytes(r: number, g: number, b: number): void
     setRGB3f(r: number, g: number, b: number): void
     setRGBUint24(rgbUint24: number): void

@@ -12,7 +12,6 @@ import TextureTarget from "../../vox/texture/TextureTarget";
 import IRenderResource from '../../vox/render/IRenderResource';
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import RenderFBOProxy from "../../vox/render/RenderFBOProxy";
-import Color4 from "../../vox/material/Color4";
 
 class FrameBufferObject {
 	private m_uid: number = -1;
@@ -308,13 +307,13 @@ class FrameBufferObject {
 			this.m_preAttachTotal = this.m_activeAttachmentTotal;
 		}
 	}
-	clearOnlyColor(color: Color4) {
+	clearOnlyColor(color4: Float32Array) {
 		if (this.m_fbo != null) {
 			if (RendererDevice.IsWebGL2()) {
-				this.m_clearColorArr[0] = color.r;
-				this.m_clearColorArr[1] = color.g;
-				this.m_clearColorArr[2] = color.b;
-				this.m_clearColorArr[3] = color.a;
+				this.m_clearColorArr[0] = color4[0];
+				this.m_clearColorArr[1] = color4[1];
+				this.m_clearColorArr[2] = color4[2];
+				this.m_clearColorArr[3] = color4[3];
 				if (this.m_preAttachTotal > 1) {
 					for (let i = 0; i < this.m_preAttachTotal; ++i) {
 						this.m_gl.clearBufferfv(this.m_gl.COLOR, i, this.m_clearColorArr);
@@ -325,7 +324,7 @@ class FrameBufferObject {
 				}
 			}
 			else {
-				this.m_gl.clearColor(color.r, color.g, color.b, color.a);
+				this.m_gl.clearColor(color4[0], color4[1], color4[2], color4[3]);
 			}
 		}
 		//trace("XXXXXXXXXXXXXXXXXXXX FrameBufferObject::clearOnlyColor(), m_fbo: ", m_fbo);

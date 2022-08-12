@@ -7,7 +7,7 @@
 
 import IVector3D from "../../vox/math/IVector3D";
 import AABB2D from "../geom/AABB2D";
-import Color4 from "../../vox/material/Color4";
+import IColor4 from "../../vox/material/IColor4";
 
 import RenderFilter from "../../vox/render/RenderFilter";
 import RenderMaskBitfield from "../../vox/render/RenderMaskBitfield";
@@ -415,7 +415,7 @@ class RenderProxy implements IRenderProxy{
         this.m_adapterContext.setViewport(rect.x, rect.y, rect.width, rect.height);
         this.m_camera.lookAtRH(posV3, lookAtPosV3, upV3);
         this.m_camera.update();
-        this.m_adapter.bgColor.setRGB3f(0.0, 0.0, 0.0);
+        
         selfT.RGBA = gl.RGBA;
         selfT.UNSIGNED_BYTE = gl.UNSIGNED_BYTE;
         selfT.TRIANGLE_STRIP = gl.TRIANGLE_STRIP;
@@ -454,24 +454,29 @@ class RenderProxy implements IRenderProxy{
         this.m_rc.flush();
     }
     setClearRGBColor3f(pr: number, pg: number, pb: number): void {
-        this.m_adapter.bgColor.setRGB3f(pr, pg, pb);
+        let cvs = this.m_adapter.bgColor;
+        cvs[0] = pr;cvs[1] = pg;cvs[2] = pb;
     }
-    setClearColor(color: Color4): void {
-        this.m_adapter.bgColor.copyFrom(color);
+    setClearColor(color: IColor4): void {
+        color.toArray(this.m_adapter.bgColor);
     }
     /**
      * @param colorUint24 uint24 number rgb color value, example: 0xff0000, it is red rolor
      * @param alpha the default value is 1.0
      */
     setClearUint24Color(colorUint24: number, alpha: number = 1.0): void {
-        this.m_adapter.bgColor.setRGBUint24(colorUint24);
-        this.m_adapter.bgColor.a = alpha;
+        let cvs = this.m_adapter.bgColor;
+        cvs[0] = ((colorUint24 >> 16) & 0x0000ff) / 255.0;
+        cvs[1] = ((colorUint24 >> 8) & 0x0000ff) / 255.0;
+        cvs[2] = (colorUint24 & 0x0000ff) / 255.0;
+        cvs[3] = alpha;
     }
     setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void {
-        this.m_adapter.bgColor.setRGBA4f(pr, pg, pb, pa);
+        let cvs = this.m_adapter.bgColor;
+        cvs[0] = pr;cvs[1] = pg;cvs[2] = pb;cvs[3] = pa;
     }
-    getClearRGBAColor4f(color4: Color4): void {
-        color4.copyFrom(this.m_adapter.bgColor);
+    getClearRGBAColor4f(color4: IColor4): void {
+        color4.fromArray(this.m_adapter.bgColor);
     }
     getViewportWidth(): number {
         return this.m_adapter.getViewportWidth();
