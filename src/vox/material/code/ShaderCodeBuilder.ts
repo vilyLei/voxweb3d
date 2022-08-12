@@ -11,7 +11,6 @@ import IUniformParam from "../../../vox/material/IUniformParam";
 import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 
 import { IShaderCodeUniform } from "../../../vox/material/code/IShaderCodeUniform";
-import { ShaderCodeUniform } from "../../../vox/material/code/ShaderCodeUniform";
 import IShaderCodeBuilder from "./IShaderCodeBuilder";
 import GLSLConverter from "./GLSLConverter";
 import ShaderCompileInfo from "./ShaderCompileInfo";

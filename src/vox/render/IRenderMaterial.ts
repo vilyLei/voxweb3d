@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import IShaderData from "../../vox/material/IShaderData";
-import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
+import IShaderCodeBuffer from "../../vox/material/IShaderCodeBuffer";
 import IShaderUniformData from "../../vox/material/IShaderUniformData";
 import IRenderShaderUniform from "../../vox/render/uniform/IRenderShaderUniform";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
@@ -31,7 +31,7 @@ interface IRenderMaterial {
     createSharedUniformsData(): IShaderUniformData[];
     hasShaderData(): boolean;
     getShaderData(): IShaderData;
-    getCodeBuf(): ShaderCodeBuffer;
+    getCodeBuf(): IShaderCodeBuffer;
     getShdUniqueName(): string;
 
     setDepthOffset(offset: number): void;

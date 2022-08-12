@@ -14,10 +14,10 @@ import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline
 import { MaterialPipeType } from "./pipeline/MaterialPipeType";
 import { ShaderCodeUniform } from "../../vox/material/code/ShaderCodeUniform";
 import { ShaderTextureBuilder } from "../../vox/material/ShaderTextureBuilder";
+import IShaderCodeBuffer from "../../vox/material/IShaderCodeBuffer";
 
-class ShaderCodeBuffer {
+class ShaderCodeBuffer implements IShaderCodeBuffer {
     
-    // private static __$s_csBuf: ShaderCodeBuffer = null;
     protected static s_coder: ShaderCodeBuilder;
     protected static s_uniform: ShaderCodeUniform;
     private static s_texBulder: ShaderTextureBuilder;// = new ShaderTextureBuilder();
