@@ -5,32 +5,24 @@
 /*                                                                         */
 /***************************************************************************/
 
-// import IShaderUniform from "../../vox/material/IShaderUniform";
+import IRShaderUniform from "../../vox/render/uniform/IRShaderUniform";
+import IRUniformUser from "./uniform/IRUniformUser";
 /**
  * renderer rendering runtime uniform data operations
  */
-export default interface IRenderShader {
-    /**
-     * @returns return system gpu context
-     */
-    getRC(): any;
-    /**
-     * @returns return current gpu shader  program
-     */
-     getGPUProgram(): any;
-    /**
-     * @returns return renderer context unique id
-     */
-    getRCUid(): number;
-    getActiveAttachmentTotal(): number;
-    useUniformMat4(ult: any, mat4f32Arr: Float32Array): void;
-    useUniformV1(ult: any, type: number, f32Arr: Float32Array, dataSize: number): void;
-    useUniformV2(ult: any, type: number, f32Arr: Float32Array, dataSize: number, offset: number): void;
+export default interface IRenderShader extends IRUniformUser {
+    drawFlag: number;
+    
 	renderBegin():void;
 	unlock(): void;
 	lock(): void;
 	textureUnlock(): void;
 	textureLock(): void;
 	resetUniform(): void;
-	// updateUniform(uniform: IShaderUniform): void;
+
+    useTransUniform(runiform: IRShaderUniform): void;
+    useUniform(runiform: IRShaderUniform): void;
+	updateUniform(uniform: IRShaderUniform): void;
+    useUniformToCurrentShd(uniform: IRShaderUniform): void;
+    useUniform2ToCurrentShd(uniform: IRShaderUniform, transUniform: IRShaderUniform): void;
 }

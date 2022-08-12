@@ -5,15 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IRShaderUniform from "../../vox/render/uniform/IRShaderUniform";
-import IRenderShader from "../../vox/render/IRenderShader";
+import IShdProgram from "../../../vox/material/IShdProgram";
+import IRUniformUser from "./IRUniformUser";
 
-export default interface IShaderUniform extends IRShaderUniform {
+export default interface IRShaderUniform {
     
     uns: string;
-    next: IShaderUniform;
-    use(rc: IRenderShader): void;
-    useByLocation(rc: IRenderShader, type: number, location: any, i: number): void;
-    updateData(): void;
-    destroy(): void;
+    use(rc: IRUniformUser): void;
+    useByShd(rc: IRUniformUser, shd: IShdProgram): void;
 }

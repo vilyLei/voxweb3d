@@ -10,7 +10,7 @@ import IAABB from "../../vox/geom/IAABB";
 import { RenderDrawMode } from "../../vox/render/RenderConst";
 import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
 
-import RenderShader from "../../vox/render/RenderShader";
+import IRenderShader from "../../vox/render/IRenderShader";
 import ITextureRenderObj from "../../vox/render/ITextureRenderObj";
 
 import { RenderColorMask } from "../../vox/render/rendering/RenderColorMask";
@@ -37,7 +37,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     __$rpuid: number = -1;
     // renderProcess uid
     __$rprouid: number = -1;
-    shader: RenderShader = null;
+    shader: IRenderShader = null;
     // 这个posotion和bounds的center会是同一个实例
     pos: IVector3D = null;
     bounds: IAABB = null;
