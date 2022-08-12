@@ -9,9 +9,9 @@ import Vector3D from "../../vox/math/Vector3D";
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import MeshBase from "../../vox/mesh/MeshBase";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
-import { IDataMesh } from "../../vox/mesh/IDataMesh";
+import IDataMesh from "../../vox/mesh/IDataMesh";
 import AABB from "../geom/AABB";
-import GeometryBase from "../../vox/mesh/GeometryBase"
+import IGeometry from "../../vox/mesh/IGeometry"
 import SurfaceNormalCalc from "../geom/SurfaceNormalCalc";
 
 export default class DataMesh extends MeshBase implements IDataMesh {
@@ -124,7 +124,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
         return this;
     }
 
-    initializeFromGeometry(geom: GeometryBase): void {
+    initializeFromGeometry(geom: IGeometry): void {
         
         this.m_vs = geom.getVS();
         this.m_uvs = geom.getUVS();

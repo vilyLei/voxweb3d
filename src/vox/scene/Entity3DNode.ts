@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import RendererConst from "../../vox/scene/RendererConst";
-import { IAABB } from "../../vox/geom/IAABB";
+import IAABB from "../../vox/geom/IAABB";
 import IRPONode from "../../vox/render/IRPONode";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 

@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import IVector3D from "../../vox/math/IVector3D";
-import { IAABB } from "../../vox/geom/IAABB";
+import IAABB from "../../vox/geom/IAABB";
 class AABBCalc {
 	
 	IntersectRL(ltv: IVector3D, lpv: IVector3D, ab: IAABB): boolean {

@@ -8,12 +8,12 @@
 import RSEntityFlag from '../../vox/scene/RSEntityFlag';
 import Vector3D from "../../vox/math/Vector3D";
 import Matrix4 from "../../vox/math/Matrix4";
-import { IAABB } from "../../vox/geom/IAABB";
+import IAABB from "../../vox/geom/IAABB";
 import AABB from "../../vox/geom/AABB";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import IDisplayEntityContainer from "../../vox/entity/IDisplayEntityContainer";
 import RendererState from "../../vox/render/RendererState";
-import { IMeshBase } from "../../vox/mesh/IMeshBase";
+import IMeshBase from "../../vox/mesh/IMeshBase";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 
 import ROTransform from "../../vox/display/ROTransform";

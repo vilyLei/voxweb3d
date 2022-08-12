@@ -9,7 +9,7 @@
 import MathConst from "../../vox/math/MathConst";
 import RSEntityFlag from '../../vox/scene/RSEntityFlag';
 import Vector3D from "../../vox/math/Vector3D";
-import { IAABB } from "../../vox/geom/IAABB";
+import IAABB from "../../vox/geom/IAABB";
 import AABB from "../../vox/geom/AABB";
 import Matrix4 from "../../vox/math/Matrix4";
 import Matrix4Pool from "../../vox/math/Matrix4Pool";

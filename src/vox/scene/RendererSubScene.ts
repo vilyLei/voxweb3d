@@ -48,7 +48,7 @@ import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import { IRenderableMaterialBlock } from "../scene/block/IRenderableMaterialBlock";
 import { IRenderableEntityBlock } from "../scene/block/IRenderableEntityBlock";
 import Matrix4 from "../math/Matrix4";
-import { IMatrix4 } from "../math/IMatrix4";
+import IMatrix4 from "../math/IMatrix4";
 
 export default class RendererSubScene implements IRenderer, IRendererScene {
     private static s_uid: number = 0;

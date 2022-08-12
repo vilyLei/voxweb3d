@@ -5,12 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { IAABB } from "../geom/IAABB";
+import IAABB from "../geom/IAABB";
 import { IVtxBufRenderData } from "../../vox/render/IVtxBufRenderData";
 import IVector3D from "../math/IVector3D";
 import { IROVertexBuffer } from "../../vox/mesh/IROVertexBuffer";
 
-interface IMeshBase {
+export default interface IMeshBase {
   
   vtCount: number;
   drawMode: number;
@@ -83,4 +83,3 @@ interface IMeshBase {
   isGeomDynamic(): boolean;
   rebuild(): void;
 }
-export { IMeshBase }

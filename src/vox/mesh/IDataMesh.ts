@@ -5,9 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { IMeshBase } from "../../vox/mesh/IMeshBase";
+import IMeshBase from "../../vox/mesh/IMeshBase";
 
-interface IDataMesh extends IMeshBase {
+export default interface IDataMesh extends IMeshBase {
     /**
       * 强制更新 vertex indices buffer 数据, 默认值为false
       */
@@ -81,4 +81,3 @@ interface IDataMesh extends IMeshBase {
     initialize(): void;
 
 }
-export { IDataMesh }

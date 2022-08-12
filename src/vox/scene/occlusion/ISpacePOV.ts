@@ -7,7 +7,7 @@
 // Project Occlusion Volume
 
 import Vector3D from "../../../vox/math/Vector3D";
-import { IAABB } from "../../../vox/geom/IAABB";
+import IAABB from "../../../vox/geom/IAABB";
 import CameraBase from "../../../vox/view/CameraBase";
 
 export default interface ISpacePOV

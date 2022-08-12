@@ -52,7 +52,7 @@ import { ShaderProgramBuilder } from "../../vox/material/ShaderProgramBuilder";
 
 import { IRenderableMaterialBlock } from "./block/IRenderableMaterialBlock";
 import { IRenderableEntityBlock } from "./block/IRenderableEntityBlock";
-import { IMatrix4 } from "../math/IMatrix4";
+import IMatrix4 from "../math/IMatrix4";
 import Matrix4 from "../math/Matrix4";
 
 export default class RendererScene implements IRenderer, IRendererScene {

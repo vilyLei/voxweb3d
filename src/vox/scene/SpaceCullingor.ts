@@ -7,7 +7,7 @@
 // 整个渲染器的空间管理类接口规范
 
 import Vector3D from "../../vox/math/Vector3D";
-import { IAABB } from "../../vox/geom/IAABB";
+import IAABB from "../../vox/geom/IAABB";
 import CameraBase from "../../vox/view/CameraBase";
 import RendererState from "../../vox/render/RendererState";
 import Entity3DNode from "../../vox/scene/Entity3DNode";

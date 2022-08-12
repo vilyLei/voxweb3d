@@ -1,5 +1,5 @@
 import IVector3D from "../../vox/math/IVector3D";
-import { IMatrix4 } from "../../vox/math/IMatrix4";
+import IMatrix4 from "../../vox/math/IMatrix4";
 
 import { ICoRendererParam } from "./engine/ICoRendererParam";
 import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";

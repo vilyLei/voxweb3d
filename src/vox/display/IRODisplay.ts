@@ -8,7 +8,7 @@
 // 一个 RODisplay 和一个 IRPODisplay一一对应
 
 import { DisplayRenderSign } from "../../vox/render/RenderConst";
-import {IMatrix4} from "../../vox/math/IMatrix4";
+import IMatrix4 from "../../vox/math/IMatrix4";
 import IROVtxBuf from "../../vox/render/IROVtxBuf";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRPODisplay from "../../vox/render/IRPODisplay";

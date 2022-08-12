@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import IVector3D from "../../vox/math/IVector3D";
-import { IAABB } from "../../vox/geom/IAABB";
+import IAABB from "../../vox/geom/IAABB";
 import { RenderDrawMode } from "../../vox/render/RenderConst";
 import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
 

@@ -7,7 +7,7 @@
 // gpu射线检测拾取代理对象
 import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
-import { IMatrix4 } from "../../vox/math/IMatrix4";
+import IMatrix4 from "../../vox/math/IMatrix4";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import Entity3DNode from "../../vox/scene/Entity3DNode";

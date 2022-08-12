@@ -7,7 +7,7 @@
 
 import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
-import { IAABB } from "../../vox/geom/IAABB";
+import IAABB from "../../vox/geom/IAABB";
 
 class AABB implements IAABB {
 	min: Vector3D = new Vector3D();

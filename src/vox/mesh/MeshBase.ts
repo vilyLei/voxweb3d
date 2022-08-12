@@ -14,7 +14,7 @@ import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import { RenderDrawMode } from "../../vox/render/RenderConst";
 import { IVtxBufRenderData } from "../../vox/render/IVtxBufRenderData";
 import { IROVertexBuffer } from "../../vox/mesh/IROVertexBuffer";
-import { IMeshBase } from "../../vox/mesh/IMeshBase";
+import IMeshBase from "../../vox/mesh/IMeshBase";
 
 /**
  * mesh(Polygon face convex mesh or Parametric geometry Objecct:):

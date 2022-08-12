@@ -20,7 +20,7 @@ import IVector3D from "../math/IVector3D";
 import { IRenderableMaterialBlock } from "./block/IRenderableMaterialBlock";
 import { IRenderableEntityBlock } from "./block/IRenderableEntityBlock";
 import { IFBOInstance } from "./IFBOInstance";
-import { IMatrix4 } from "../math/IMatrix4";
+import IMatrix4 from "../math/IMatrix4";
 
 interface IRendererScene {
 

@@ -9,7 +9,7 @@ import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
 import {EulerOrder} from './EulerOrder';
 import OrientationType from "../../vox/math/OrientationType";
-import { IMatrix4 } from "../../vox/math/IMatrix4";
+import IMatrix4 from "../../vox/math/IMatrix4";
 import { Euler } from "./Euler";
 import { Quaternion } from "./Quaternion";
 

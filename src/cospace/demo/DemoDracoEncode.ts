@@ -6,7 +6,7 @@ import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 import Box3DEntity from "../../vox/entity/Box3DEntity";
-import { IMeshBase } from "../../vox/mesh/IMeshBase";
+import IMeshBase from "../../vox/mesh/IMeshBase";
 import { NormalUVViewerMaterial } from "./material/NormalUVViewerMaterial";
 import { FileIO } from "../../app/slickRoad/io/FileIO";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";

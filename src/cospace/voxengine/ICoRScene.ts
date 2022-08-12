@@ -1,5 +1,5 @@
 import IVector3D from "../../vox/math/IVector3D";
-import { IMatrix4 } from "../../vox/math/IMatrix4";
+import IMatrix4 from "../../vox/math/IMatrix4";
 import IColor4 from "../../vox/material/IColor4";
 
 import IRendererParam from "../../vox/scene/IRendererParam";
@@ -13,7 +13,7 @@ import IRenderMaterial from "../../vox/render/IRenderMaterial";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 import { IMaterialContext } from "../../materialLab/base/IMaterialContext";
-import { IDataMesh } from "../../vox/mesh/IDataMesh";
+import IDataMesh from "../../vox/mesh/IDataMesh";
 import { CoRendererDevice } from "./render/CoRendererDevice";
 import { CoRendererState } from "./render/CoRendererState";
 

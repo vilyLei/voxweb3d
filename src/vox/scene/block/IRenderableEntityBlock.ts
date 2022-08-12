@@ -6,10 +6,10 @@
 /***************************************************************************/
 
 import IRenderEntity from "../../../vox/render/IRenderEntity";
-import { IDataMesh } from "../../mesh/IDataMesh";
+import IDataMesh from "../../mesh/IDataMesh";
 import IVector3D from "../../math/IVector3D";
-import {IMatrix4} from "../../math/IMatrix4";
-import {IAABB} from "../../geom/IAABB";
+import IMatrix4 from "../../math/IMatrix4";
+import IAABB from "../../geom/IAABB";
 
 interface IRenderableEntityBlock {
     

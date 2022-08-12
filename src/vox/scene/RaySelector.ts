@@ -8,7 +8,7 @@
 
 import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
-import { IMatrix4 } from "../../vox/math/IMatrix4";
+import IMatrix4 from "../../vox/math/IMatrix4";
 import CameraBase from "../../vox/view/CameraBase";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import Entity3DNode from "../../vox/scene/Entity3DNode";

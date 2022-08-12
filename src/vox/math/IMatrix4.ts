@@ -129,4 +129,4 @@ interface IMatrix4 extends Float32Data {
 	destroy(): void;
 }
 
-export { IMatrix4 }
+export default IMatrix4;

@@ -4,7 +4,7 @@ import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeTyp
 import { IAppBase } from "../../modules/interfaces/IAppBase";
 import { IMaterialContext } from "../../../materialLab/base/IMaterialContext";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
-import { IDataMesh } from "../../../vox/mesh/IDataMesh";
+import IDataMesh from "../../../vox/mesh/IDataMesh";
 import { IAppLambert } from "../../modules/interfaces/IAppLambert";
 import BinaryLoader from "../../../vox/assets/BinaryLoader"
 import MaterialBuilder from "./material/MaterialBuilder";

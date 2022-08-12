@@ -40,4 +40,4 @@ interface IAABB {
 
 }
 
-export { IAABB }
+export default IAABB;

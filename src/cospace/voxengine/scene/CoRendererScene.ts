@@ -22,7 +22,7 @@ import IRenderProcess from "../../../vox/render/IRenderProcess";
 import { IRendererInstanceContext } from "../../../vox/scene/IRendererInstanceContext";
 import IRendererInstance from "../../../vox/scene/IRendererInstance";
 import IRODisplaySorter from "../../../vox/render/IRODisplaySorter";
-import { IMatrix4 } from "../../../vox/math/IMatrix4";
+import IMatrix4 from "../../../vox/math/IMatrix4";
 import IRPONodeBuilder from "../../../vox/render/IRPONodeBuilder";
 import IRenderShader from "../../../vox/render/IRenderShader";
 import RendererState from "../../../vox/render/RendererState";

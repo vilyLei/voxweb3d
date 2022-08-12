@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import Vector3D from "../../vox/math/Vector3D";
-import { IAABB } from "../../vox/geom/IAABB";
+import IAABB from "../../vox/geom/IAABB";
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import DashedLineMesh from '../../vox/mesh/DashedLineMesh';
 import DisplayEntity from "../../vox/entity/DisplayEntity";

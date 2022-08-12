@@ -18,7 +18,7 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { GlobalVSMShadowUniformParam } from "../../../vox/material/param/GlobalVSMShadowUniformParam";
 import { ShadowMode } from "../../../vox/material/pipeline/ShadowMode";
 import { VSMShaderCode } from "./VSMShaderCode";
-import { IMatrix4 } from "../../../vox/math/IMatrix4";
+import IMatrix4 from "../../../vox/math/IMatrix4";
 
 export default class ShadowVSMData extends MaterialPipeBase implements IMaterialPipe {
 

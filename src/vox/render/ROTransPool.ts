@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { IMatrix4 } from "../../vox/math/IMatrix4";
+import IMatrix4 from "../../vox/math/IMatrix4";
 import IShaderUniform from "../../vox/material/IShaderUniform";
 
 export default class ROTransPool {

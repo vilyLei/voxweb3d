@@ -18,7 +18,7 @@ import { IShaderTextureBuilder } from "../../../vox/material/IShaderTextureBuild
 
 import { SpecularMode } from "../pipeline/SpecularMode";
 import { UniformComp } from "../component/UniformComp";
-import { IMatrix4 } from "../../math/IMatrix4";
+import IMatrix4 from "../../math/IMatrix4";
 
 export default class LambertLightDecorator implements IMaterialDecorator {
 

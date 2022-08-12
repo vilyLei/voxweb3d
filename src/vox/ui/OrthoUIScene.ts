@@ -24,7 +24,7 @@ import IRenderProcess from "../render/IRenderProcess";
 import IRenderStage3D from "../render/IRenderStage3D";
 import Vector3D from "../math/Vector3D";
 import { IRenderProxy } from "../render/IRenderProxy";
-import { IMatrix4 } from "../math/IMatrix4";
+import IMatrix4 from "../math/IMatrix4";
 import IVector3D from "../math/IVector3D";
 
 

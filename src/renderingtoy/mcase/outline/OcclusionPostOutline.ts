@@ -12,7 +12,7 @@ import { OccPostOutLineScreen } from "../material/OccPostOutLineScreen";
 import { OutlinePreDecorator } from "../material/OutlinePreDecorator";
 import IVector3D from "../../../vox/math/IVector3D";
 import { IFBOInstance } from "../../../vox/scene/IFBOInstance";
-import { IAABB } from "../../../vox/geom/IAABB";
+import IAABB from "../../../vox/geom/IAABB";
 import { IRTTTexture } from "../../../vox/render/texture/IRTTTexture";
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 import IOcclusionPostOutline from "./IOcclusionPostOutline";

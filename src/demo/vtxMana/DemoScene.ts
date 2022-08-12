@@ -6,7 +6,7 @@ import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../../vox/render/R
 import RendererState from "../../vox/render/RendererState";
 import Color4 from "../../vox/material/Color4";
 import RendererParam from "../../vox/scene/RendererParam";
-import { IMeshBase } from "../../vox/mesh/IMeshBase";
+import IMeshBase from "../../vox/mesh/IMeshBase";
 import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";

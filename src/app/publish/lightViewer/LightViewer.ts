@@ -15,7 +15,7 @@ import ModuleFlag from "../base/ModuleFlag";
 import ViewerScene from "./ViewerScene";
 import { IAppObjData } from "../../modules/interfaces/IAppObjData";
 import IObjGeomDataParser from "../../../vox/mesh/obj/IObjGeomDataParser";
-import { IDataMesh } from "../../../vox/mesh/IDataMesh";import DivLog from "../../../vox/utils/DivLog";
+import IDataMesh from "../../../vox/mesh/IDataMesh";import DivLog from "../../../vox/utils/DivLog";
 import { IShadowVSMModule } from "../../../shadow/vsm/base/IShadowVSMModule";
 import { IAppShadow } from "../../modules/interfaces/IAppShadow";
 ;

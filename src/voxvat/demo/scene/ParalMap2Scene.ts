@@ -6,7 +6,7 @@ import RendererSubScene from "../../../vox/scene/RendererSubScene";
 
 import Color4 from "../../../vox/material/Color4";
 import MaterialBase from "../../../vox/material/MaterialBase";
-import { IMeshBase } from "../../../vox/mesh/IMeshBase";
+import IMeshBase from "../../../vox/mesh/IMeshBase";
 import MeshBase from "../../../vox/mesh/MeshBase";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import Axis3DEntity from "../../../vox/entity/Axis3DEntity";

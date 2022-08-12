@@ -8,7 +8,7 @@
 
 import RSEntityFlag from "../../vox/scene/RSEntityFlag";
 import Vector3D from "../../vox/math/Vector3D";
-import { IAABB } from "../../vox/geom/IAABB";
+import IAABB from "../../vox/geom/IAABB";
 
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";

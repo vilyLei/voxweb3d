@@ -11,7 +11,7 @@ import { IMaterial } from "../../../../vox/material/IMaterial";
 import Color4 from "../../../../vox/material/Color4";
 import IRenderEntity from "../../../../vox/render/IRenderEntity";
 import IObjGeomDataParser from "../../../../vox/mesh/obj/IObjGeomDataParser";
-import { IDataMesh } from "../../../../vox/mesh/IDataMesh";
+import IDataMesh from "../../../../vox/mesh/IDataMesh";
 import { IAppLambert } from "../../../modules/interfaces/IAppLambert";
 import BinaryLoader from "../../../../vox/assets/BinaryLoader"
 import { ShaderCodeUUID } from "../../../../vox/material/ShaderCodeUUID";

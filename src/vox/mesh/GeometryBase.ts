@@ -6,8 +6,9 @@
 /***************************************************************************/
 
 import AABB from "../../vox/geom/AABB";
+import IGeometry from "./IGeometry";
 
-export default class GeometryBase {
+export default class GeometryBase implements IGeometry {
     
     protected m_vs: Float32Array = null;
     protected m_uvs: Float32Array = null;
