@@ -40,7 +40,6 @@ import RaySelector from "../../vox/scene/RaySelector";
 import RayGpuSelector from "../../vox/scene/RayGpuSelector";
 import MouseEvt3DController from "../../vox/scene/MouseEvt3DController";
 import IEvt3DController from "../../vox/scene/IEvt3DController";
-import { TextureBlock } from "../texture/TextureBlock";
 import FBOInstance from "./FBOInstance";
 import Color4 from "../material/Color4";
 import { IRendererSceneAccessor } from "./IRendererSceneAccessor";
@@ -123,7 +122,6 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
             this.m_viewY = py;
             this.m_viewW = pw;
             this.m_viewH = ph;
-
         }
     }
     // apply new view port rectangle area

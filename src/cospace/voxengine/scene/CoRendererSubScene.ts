@@ -4,9 +4,55 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// 整个渲染场景的入口类
+// 独立的渲染场景子集,也就是子渲染场景类,字渲染场景拥有子集独立的Camera3D对象和view port 区域
+// 不同的子场景，甚至可以拥有独立的matrix3D这样的数据池子
+/*
+import IVector3D from "../../../vox/math/IVector3D";
+import Vector3D from "../../../vox/math/Vector3D";
+import IRenderStage3D from "../../../vox/render/IRenderStage3D";
+import SubStage3D from "../../../vox/display/SubStage3D";
+import { IRenderCamera } from "../../../vox/render/IRenderCamera";
+import CameraBase from "../../../vox/view/CameraBase";
+import { IRenderAdapter } from "../../../vox/render/IRenderAdapter";
+import { IRenderProxy } from "../../../vox/render/IRenderProxy";
+import IRenderMaterial from "../../../vox/render/IRenderMaterial";
+import IRenderEntity from "../../../vox/render/IRenderEntity";
+import IRenderEntityContainer from "../../../vox/render/IRenderEntityContainer";
+import RendererParam from "../../../vox/scene/RendererParam";
+import RenderProcess from "../../../vox/render/RenderProcess";
+import IRenderShader from "../../../vox/render/IRenderShader";
+import Entity3DNode from "../../../vox/scene/Entity3DNode";
+import EntityNodeQueue from "../../../vox/scene/EntityNodeQueue";
+import Entity3DNodeLinker from "../../../vox/scene/Entity3DNodeLinker";
+
+import RPONodeBuilder from "../../../vox/render/RPONodeBuilder";
+import { IRendererInstanceContext } from "../../../vox/scene/IRendererInstanceContext";
+import IRendererInstance from "../../../vox/scene/IRendererInstance";
+import IRenderer from "../../../vox/scene/IRenderer";
+import IRenderProcess from "../../../vox/render/IRenderProcess";
+import IRendererScene from "../../../vox/scene/IRendererScene";
+import RaySelectedNode from "../../../vox/scene/RaySelectedNode";
+import IRendererSpace from "../../../vox/scene/IRendererSpace";
+import RendererSpace from "../../../vox/scene/RendererSpace";
+import IRaySelector from "../../../vox/scene/IRaySelector";
+import RaySelector from "../../../vox/scene/RaySelector";
+import RayGpuSelector from "../../../vox/scene/RayGpuSelector";
+import MouseEvt3DController from "../../../vox/scene/MouseEvt3DController";
+import IEvt3DController from "../../../vox/scene/IEvt3DController";
+import FBOInstance from "./FBOInstance";
+import Color4 from "../material/Color4";
+import { IRendererSceneAccessor } from "./IRendererSceneAccessor";
+
+import { ITextureBlock } from "../../../vox/texture/ITextureBlock";
+import { IRenderableMaterialBlock } from "../scene/block/IRenderableMaterialBlock";
+import { IRenderableEntityBlock } from "../scene/block/IRenderableEntityBlock";
+import Matrix4 from "../math/Matrix4";
+import { IMatrix4 } from "../math/IMatrix4";
+//*/
 
 import IRenderStage3D from "../../../vox/render/IRenderStage3D";
+import SubStage3D from "../../../vox/display/SubStage3D";
+
 import { IRenderProxy } from "../../../vox/render/IRenderProxy";
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 import { IRenderAdapter } from "../../../vox/render/IRenderAdapter";
@@ -16,15 +62,12 @@ import IRenderEntityContainer from "../../../vox/render/IRenderEntityContainer";
 import IRenderProcess from "../../../vox/render/IRenderProcess";
 import {IRendererInstanceContext} from "../../../vox/scene/IRendererInstanceContext";
 import IRendererInstance from "../../../vox/scene/IRendererInstance";
-import IRODisplaySorter from "../../../vox/render/IRODisplaySorter";
 import { IMatrix4 } from "../../../vox/math/IMatrix4";
 import IRPONodeBuilder from "../../../vox/render/IRPONodeBuilder";
 import IRenderShader from "../../../vox/render/IRenderShader";
-import RendererState from "../../../vox/render/RendererState";
 
-
+import MathConst from "../../../vox/math/MathConst";
 import Vector3D from "../../../vox/math/Vector3D";
-import Stage3D from "../../../vox/display/Stage3D";
 import Color4 from "../../../vox/material/Color4";
 import CameraBase from "../../../vox/view/CameraBase";
 import RendererParam from "../../../vox/scene/RendererParam";
@@ -34,7 +77,7 @@ import EntityNodeQueue from "../../../vox/scene/EntityNodeQueue";
 import Entity3DNodeLinker from "../../../vox/scene/Entity3DNodeLinker";
 import RunnableQueue from "../../../vox/base/RunnableQueue";
 
-// import RendererInstance from "../../../vox/scene/RendererInstance";
+// import IRendererInstance from "../../../vox/scene/IRendererInstance";
 
 import { ITextureBlock } from "../../../vox/texture/ITextureBlock";
 import { TextureBlock } from "../../../vox/texture/TextureBlock";
@@ -54,7 +97,7 @@ import ICoRenderNode from "./ICoRenderNode";
 
 // import RendererSubScene from "../../../vox/scene/RendererSubScene";
 
-// import RenderShader from "../../../vox/render/RenderShader";
+// import IRenderShader from "../../../vox/render/IRenderShader";
 import Matrix4Pool from "../../../vox/math/Matrix4Pool";
 import { IRendererSceneAccessor } from "../../../vox/scene/IRendererSceneAccessor";
 import { ShaderProgramBuilder } from "../../../vox/material/ShaderProgramBuilder";
@@ -64,22 +107,17 @@ import { IRenderableEntityBlock } from "../../../vox/scene/block/IRenderableEnti
 import Matrix4 from "../../../vox/math/Matrix4";
 import IVector3D from "../../../vox/math/IVector3D";
 
-import { ICoRenderer } from "../ICoRenderer";
-
-declare var CoRenderer: ICoRenderer;
-
-export default class CoRendererScene implements IRenderer, ICoRendererScene {
-
+export default class RendererSubScene implements IRenderer, ICoRendererScene {
     private static s_uid: number = 0;
     private m_uid: number = -1;
     private m_adapter: IRenderAdapter = null;
     private m_renderProxy: IRenderProxy = null;
-    private m_shader: IRenderShader = null;
     private m_rcontext: IRendererInstanceContext = null;
     private m_renderer: IRendererInstance = null;
+    private m_parent: IRenderer = null;
     private m_processids: Uint8Array = new Uint8Array(128);
     private m_processidsLen: number = 0;
-    private m_rspace: IRendererSpace = null;
+    private m_rspace: RendererSpace = null;
     private m_mouse_rltv: Vector3D = new Vector3D();
     private m_mouse_rlpv: Vector3D = new Vector3D();
     private m_accessor: IRendererSceneAccessor = null;
@@ -87,6 +125,7 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
     private m_evtFlowEnabled: boolean = false;
     private m_evt3DCtr: IEvt3DController = null;
     private m_mouseEvtEnabled: boolean = true;
+    private m_camera: IRenderCamera = null;
     private m_viewX: number = 0.0;
     private m_viewY: number = 0.0;
     private m_viewW: number = 800.0
@@ -94,33 +133,25 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
 
     private m_nodeWaitLinker: Entity3DNodeLinker = null;
     private m_nodeWaitQueue: EntityNodeQueue = null;
-    private m_camDisSorter: CameraDsistanceSorter = null;
-    // recorde renderer sub scenes
-    // private m_subscList: RendererSubScene[] = [];
-    private m_subscListLen: number = 0;
+    private m_perspectiveEnabled = true;
+    private m_rparam: RendererParam = null;
+    private m_stage3D: IRenderStage3D = null;
+    private m_shader: IRenderShader = null;
     private m_runFlag: number = -1;
     private m_autoRunning: boolean = true;
-    private m_processUpdate: boolean = false;
-    private m_tickId: any = -1;
-    private m_rparam: RendererParam = null;
+    private m_currStage3D: SubStage3D = null;
     private m_enabled: boolean = true;
 
-    readonly runnableQueue: RunnableQueue = new RunnableQueue();
-    readonly textureBlock: ITextureBlock = new TextureBlock();
-    readonly stage3D: Stage3D = null;
-
+    readonly textureBlock: ITextureBlock = null;
     materialBlock: IRenderableMaterialBlock = null;
     entityBlock: IRenderableEntityBlock = null;
 
-    constructor() {
-        this.m_uid = CoRendererScene.s_uid++;
-    }
-    private tickUpdate(): void {
-        if (this.m_tickId > -1) {
-            clearTimeout(this.m_tickId);
-        }
-        this.m_tickId = setTimeout(this.tickUpdate.bind(this), this.m_rparam.getTickUpdateTime());
-        this.textureBlock.run();
+    constructor(parent: IRenderer, renderer: IRendererInstance, evtFlowEnabled: boolean) {
+        this.m_evtFlowEnabled = evtFlowEnabled;
+        this.m_parent = parent;
+        this.m_renderer = renderer;
+        this.m_shader = (this.m_renderer as any).getDataBuilder().getRenderShader();
+        this.m_uid = 1024 + RendererSubScene.s_uid++;
     }
     enable(): void {
         this.m_enabled = true;
@@ -135,20 +166,12 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
         return this.m_uid;
     }
 
-    getDiv(): HTMLDivElement {
-        return this.m_renderProxy.getDiv();
-    }
-    getCanvas(): HTMLCanvasElement {
-        return this.m_renderProxy.getCanvas();
-    }
-
     getRPONodeBuilder(): IRPONodeBuilder {
         return null;
     }
     getRenderProxy(): IRenderProxy {
         return this.m_renderProxy;
     }
-
     // set new view port rectangle area
     setViewPort(px: number, py: number, pw: number, ph: number): void {
         if (this.m_renderProxy != null) {
@@ -156,27 +179,11 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
             this.m_viewY = py;
             this.m_viewW = pw;
             this.m_viewH = ph;
-            this.m_renderProxy.setViewPort(px, py, pw, ph);
-        }
-    }
-    setViewPortFromCamera(camera: CameraBase): void {
-        if (this.m_renderProxy != null && camera != null) {
-            this.m_viewX = camera.getViewX();
-            this.m_viewY = camera.getViewY();
-            this.m_viewW = camera.getViewWidth();
-            this.m_viewH = camera.getViewHeight();
-            this.m_renderProxy.setViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
         }
     }
     // apply new view port rectangle area
     reseizeViewPort(): void {
         this.m_renderProxy.reseizeRCViewPort();
-    }
-    lockViewport(): void {
-        this.m_adapter.lockViewport();
-    }
-    unlockViewport(): void {
-        this.m_adapter.unlockViewport();
     }
     getRendererAdapter(): IRenderAdapter {
         return this.m_adapter;
@@ -190,12 +197,10 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
     getStage3D(): IRenderStage3D {
         return this.m_renderProxy.getStage3D();
     }
-    /**
-     * 获取渲染器可渲染对象管理器状态(版本号)
-     */
-    getRendererStatus(): number {
-        return this.m_renderer.getRendererStatus();
+    getCurrentStage3D(): IRenderStage3D {
+        return this.m_currStage3D;
     }
+
     getViewWidth(): number {
         return this.m_renderProxy.getStage3D().viewWidth;
     }
@@ -203,23 +208,17 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
         return this.m_renderProxy.getStage3D().viewHeight;
     }
     getCamera(): CameraBase {
-        return this.m_renderProxy.getCamera() as CameraBase;
-    }
-    asynFBOSizeWithViewport(): void {
-        this.m_rcontext.asynFBOSizeWithViewport();
-    }
-    synFBOSizeWithViewport(): void {
-        this.m_rcontext.synFBOSizeWithViewport();
+        return this.m_camera as CameraBase;
     }
 
-    cameraLock(): void {
-        this.m_renderProxy.cameraLock();
-    }
-    cameraUnlock(): void {
-        this.m_renderProxy.cameraUnlock();
+    /**
+     * 获取渲染器可渲染对象管理器状态(版本号)
+     */
+    getRendererStatus(): number {
+        return this.m_renderer.getRendererStatus();
     }
     getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void {
-        this.m_renderProxy.getMouseXYWorldRay(rl_position, rl_tv);
+        this.m_camera.getWorldPickingRayByScreenXY(this.m_stage3D.mouseX, this.m_stage3D.mouseY, rl_position, rl_tv);
     }
     createCamera(): IRenderCamera {
         return new CameraBase();
@@ -234,33 +233,14 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
     createVector3D(x: number = 0.0, y: number = 0.0, z: number = 0.0, w: number = 1.0): IVector3D {
         return new Vector3D(x, y, z, w);
     }
-    setClearUint24Color(colorUint24: number, alpha: number = 1.0): void {
-        this.m_renderProxy.setClearUint24Color(colorUint24, alpha);
-    }
-    setClearRGBColor3f(pr: number, pg: number, pb: number): void {
-        this.m_renderProxy.setClearRGBColor3f(pr, pg, pb);
-    }
-    setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void {
-        this.m_renderProxy.setClearRGBAColor4f(pr, pg, pb, pa);
-    }
-    setClearColor(color: Color4): void {
-        this.m_renderProxy.setClearRGBAColor4f(color.r, color.g, color.b, color.a);
-    }
-    setRenderToBackBuffer(): void {
-        this.m_rcontext.setRenderToBackBuffer();
-    }
 
-    drawBackBufferToCanvas(dstCanvas: HTMLCanvasElement): void {
-        let srcCanvas = this.getCanvas();
-        var ctx = dstCanvas.getContext("2d");
-        ctx.drawImage(srcCanvas, 0, 0, dstCanvas.width, dstCanvas.height);
-    }
-    updateRenderBufferSize(): void {
-        this.m_adapter.updateRenderBufferSize();
-    }
     setEvt3DController(evt3DCtr: IEvt3DController): void {
         if (evt3DCtr != null) {
-            evt3DCtr.initialize(this.getStage3D(), this.getStage3D());
+            if (this.m_currStage3D == null) {
+                this.m_currStage3D = new SubStage3D(this.m_renderProxy.getRCUid(), null);
+                this.m_currStage3D.uProbe = this.m_renderProxy.uniformContext.createUniformVec4Probe(1);
+            }
+            evt3DCtr.initialize(this.getStage3D(), this.m_currStage3D);
             evt3DCtr.setRaySelector(this.m_rspace.getRaySelector());
         }
         this.m_evt3DCtr = evt3DCtr;
@@ -292,58 +272,26 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
     getDevicePixelRatio(): number {
         return this.m_adapter.getDevicePixelRatio();
     }
-    // /**
-    //  * very important renderer scene system function
-    //  */
-    // createSubScene(): RendererSubScene {
-    //     if (this.m_renderer != null) {
-    //         let subsc: RendererSubScene = new RendererSubScene(this, this.m_renderer, this.m_evtFlowEnabled);
-    //         this.m_subscList.push(subsc);
-    //         this.m_subscListLen++;
-
-    //         let sc: any = subsc;
-    //         sc.textureBlock = this.textureBlock;
-    //         return subsc;
-    //     }
-    //     return null;
-    // }
     addEventListener(type: number, target: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
-        this.stage3D.addEventListener(type, target, func, captureEnabled, bubbleEnabled);
+        this.m_currStage3D.addEventListener(type, target, func, captureEnabled, bubbleEnabled);
     }
     removeEventListener(type: number, target: any, func: (evt: any) => void): void {
-        this.stage3D.removeEventListener(type, target, func);
+        this.m_currStage3D.removeEventListener(type, target, func);
     }
+
     setAccessor(accessor: IRendererSceneAccessor): void {
         this.m_accessor = accessor;
     }
-    initialize(rparam: RendererParam = null, renderProcessesTotal: number = 3): void {
-
-        if (this.m_renderer == null) {
-            if (rparam == null) rparam = new RendererParam();
-            this.m_rparam = rparam;
-            let selfT: any = this;
-            selfT.stage3D = new Stage3D(this.getUid(), document);
+    initialize(rparam: RendererParam, renderProcessesTotal: number = 3, createNewCamera: boolean = true): void {
+        if (this.m_renderProxy == null) {
             if (renderProcessesTotal < 1) {
                 renderProcessesTotal = 1;
             }
             if (renderProcessesTotal > 8) {
                 renderProcessesTotal = 8;
             }
-            this.m_evtFlowEnabled = rparam.evtFlowEnabled;
-            // this.m_renderer = new RendererInstance();
-            this.m_renderer = CoRenderer.createRendererInstance();
-
-            (this.m_renderer as any).__$setStage3D(this.stage3D);
-            Matrix4Pool.Allocate(rparam.getMatrix4AllocateSize());
-            let camera: CameraBase = new CameraBase();
-
-            this.m_renderer.initialize(rparam, camera, new ShaderProgramBuilder( this.m_renderer.getRCUid() ));
-
-			let srcSt: any = CoRenderer.RendererState;
-			RendererState.Initialize(srcSt.Rstate, srcSt.VRO);
-
-            this.m_processids[0] = 0;
-            this.m_processidsLen++;
+            this.m_rparam = rparam;
+            this.m_perspectiveEnabled = rparam.cameraPerspectiveEnabled;
             let process: IRenderProcess = null;
             for (; renderProcessesTotal >= 0;) {
                 process = this.m_renderer.appendProcess(rparam.batchEnabled, rparam.processFixedState);
@@ -354,20 +302,46 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
             this.m_rcontext = this.m_renderer.getRendererContext();
             this.m_renderProxy = this.m_rcontext.getRenderProxy();
             this.m_adapter = this.m_renderProxy.getRenderAdapter();
-
-            let stage3D: IRenderStage3D = this.m_renderProxy.getStage3D();
-            this.m_viewW = stage3D.stageWidth;
-            this.m_viewH = stage3D.stageHeight;
-            this.m_shader = (this.m_renderer as any).getDataBuilder().getRenderShader();
-            this.textureBlock.setRenderer(this.m_renderProxy);
-            this.m_camDisSorter = new CameraDsistanceSorter(this.m_renderProxy);
-            if (this.m_rspace == null) {
-                let space: RendererSpace = new RendererSpace();
-                space.initialize(this.m_renderer, this.m_renderProxy.getCamera());
-                this.m_rspace = space;
+            this.m_stage3D = this.m_renderProxy.getStage3D();
+            this.m_viewX = this.m_stage3D.getViewX();
+            this.m_viewY = this.m_stage3D.getViewY();
+            this.m_viewW = this.m_stage3D.getViewWidth();
+            this.m_viewH = this.m_stage3D.getViewHeight();
+            if (createNewCamera) {
+                this.createMainCamera();
             }
-            this.tickUpdate();
+            else {
+                this.m_camera = this.m_renderProxy.getCamera();
+            }
+            if (this.m_rspace == null) {
+                this.m_rspace = new RendererSpace();
+                this.m_rspace.initialize(this.m_renderer, this.m_camera);
+            }
         }
+    }
+
+    private createMainCamera(): void {
+        this.m_camera = new CameraBase();
+        this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
+        this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
+        let vec3: Vector3D = this.m_rparam.camProjParam;
+        if (this.m_perspectiveEnabled) {
+            this.m_camera.perspectiveRH(MathConst.DegreeToRadian(vec3.x), this.m_viewW / this.m_viewH, vec3.y, vec3.z);
+        }
+        else {
+            this.m_camera.orthoRH(vec3.y, vec3.z, -0.5 * this.m_viewH, 0.5 * this.m_viewH, -0.5 * this.m_viewW, 0.5 * this.m_viewW);
+        }
+        this.m_camera.lookAtRH(this.m_rparam.camPosition, this.m_rparam.camLookAtPos, this.m_rparam.camUpDirect);
+        this.m_camera.update();
+    }
+    cameraLock(): void {
+        this.m_camera.lock();
+    }
+    cameraUnlock(): void {
+        this.m_camera.unlock();
+    }
+    updateRenderBufferSize(): void {
+        this.m_adapter.updateRenderBufferSize();
     }
     setRendererProcessParam(index: number, batchEnabled: boolean, processFixedState: boolean): void {
         this.m_renderer.setRendererProcessParam(this.m_processids[index], batchEnabled, processFixedState);
@@ -377,7 +351,6 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
         this.m_processids[this.m_processidsLen] = process.getRPIndex();
         this.m_processidsLen++;
     }
-
     /**
      * get the renderer process by process index
      * @param processIndex IRenderProcess instance index in renderer scene instance
@@ -422,35 +395,16 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
             }
         }
     }
+
     setAutoRunningEnabled(autoRunning: boolean): void {
         this.m_autoRunning = autoRunning;
-    }
-    setAutoRenderingSort(sortEnabled: boolean): void {
-        this.m_processUpdate = sortEnabled;
-    }
-    setProcessSortEnabledAt(processIndex: number, sortEnabled: boolean, sorter: IRODisplaySorter = null): void {
-        this.m_renderer.setProcessSortEnabledAt(processIndex, sortEnabled);
-        if (sortEnabled) {
-            let process: IRenderProcess = this.m_renderer.getProcessAt(processIndex);
-            sorter = sorter != null ? sorter : this.m_camDisSorter;
-            if (process != null) {
-                process.setSorter(sorter);
-            }
-        }
-    }
-    setProcessSortEnabled(process: IRenderProcess, sortEnabled: boolean, sorter: IRODisplaySorter = null): void {
-        this.m_renderer.setProcessSortEnabled(process, sortEnabled);
-        if (sortEnabled && process != null && !process.hasSorter()) {
-            sorter = sorter != null ? sorter : this.m_camDisSorter;
-            process.setSorter(sorter);
-        }
     }
     /**
      * 将已经在渲染运行时中的entity移动到指定 process uid 的 render process 中去
      * move rendering runtime displayEntity to different renderer process
      */
-    moveEntityTo(entity: IRenderEntity, processindex: number): void {
-        this.m_renderer.moveEntityToProcessAt(entity, this.m_processids[processindex]);
+    moveEntityTo(entity: IRenderEntity, processIndex: number): void {
+        this.m_renderer.moveEntityToProcessAt(entity, this.m_processids[processIndex]);
     }
     /**
      * 单独绘制可渲染对象, 可能是使用了 global material也可能没有。这种方式比较耗性能,只能用在特殊的地方。
@@ -467,41 +421,37 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
      * @param processid this destination renderer process id
      * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
      */
-    addEntity(entity: IRenderEntity, processid: number = 0, deferred: boolean = true): void {
+    addEntity(entity: IRenderEntity, processIndex: number = 0, deferred: boolean = true): void {
         if (entity != null && entity.__$testSpaceEnabled()) {
             if (entity.isPolyhedral()) {
                 if (entity.hasMesh()) {
-                    this.m_renderer.addEntity(entity, this.m_processids[processid], deferred);
+                    this.m_renderer.addEntity(entity, this.m_processids[processIndex], deferred);
                     if (this.m_rspace != null) {
                         this.m_rspace.addEntity(entity);
                     }
                 }
                 else {
-                    // 这里的等待队列可能会和加入容器的操作冲突
                     // wait queue
                     if (this.m_nodeWaitLinker == null) {
                         this.m_nodeWaitLinker = new Entity3DNodeLinker();
                         this.m_nodeWaitQueue = new EntityNodeQueue();
                     }
                     let node: Entity3DNode = this.m_nodeWaitQueue.addEntity(entity);
-                    node.rstatus = processid;
+                    node.rstatus = processIndex;
                     this.m_nodeWaitLinker.addNode(node);
                 }
             }
             else {
-                this.m_renderer.addEntity(entity, this.m_processids[processid], deferred);
+                this.m_renderer.addEntity(entity, this.m_processids[processIndex], deferred);
                 if (this.m_rspace != null) {
                     this.m_rspace.addEntity(entity);
                 }
             }
         }
     }
-    /**
-     * remove an entity from the rendererinstance
-     * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
-     */
+    // 这是真正的完全将entity从world中清除
     removeEntity(entity: IRenderEntity): void {
-        if(entity != null) {
+        if (entity != null) {
             let node: Entity3DNode = null;
             if (this.m_nodeWaitLinker != null) {
                 let node: Entity3DNode = this.m_nodeWaitQueue.getNodeByEntity(entity);
@@ -522,84 +472,44 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
     updateMaterialUniformToCurrentShd(material: IRenderMaterial): void {
         this.m_renderer.updateMaterialUniformToCurrentShd(material);
     }
+    // 首先要锁定Material才能用这种绘制方式,再者这个entity已经完全加入渲染器了渲染资源已经准备完毕,这种方式比较耗性能，只能用在特殊的地方
+    // drawEntityByLockMaterial(entity: IRenderEntity): void {
+    //     this.m_renderer.drawEntityByLockMaterial(entity);
+    // }
     showInfoAt(index: number): void {
         this.m_renderer.showInfoAt(index);
     }
 
-    getRenderUnitsTotal(): number {
-        return this.m_renderer.getRenderUnitsTotal();
-    }
-    private m_currCamera: CameraBase = null;
-    useCamera(camera: CameraBase, syncCamView: boolean = false): void {
+    updateCameraData(camera: IRenderCamera): void {
 
-        this.m_currCamera = camera;
-        if (syncCamView) {
-            this.m_renderProxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight(), true);
-            this.m_renderProxy.reseizeRCViewPort();
-        }
-        camera.update();
-
-        this.m_rcontext.resetUniform();
-        this.m_renderProxy.updateCameraDataFromCamera(camera);
-    }
-    useMainCamera(): void {
-        this.m_currCamera = null;
-        let camera: IRenderCamera = this.m_renderProxy.getCamera();
-        this.m_renderProxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight(), true);
-        this.m_renderProxy.reseizeRCViewPort();
-        this.m_renderProxy.updateCamera();
-        this.m_rcontext.resetUniform();
-        this.m_renderProxy.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
-    }
-    updateCameraDataFromCamera(camera: CameraBase): void {
-
-        this.m_renderProxy.updateCameraDataFromCamera(camera);
-    }
-    /**
-     * reset renderer rendering state
-     */
-    resetState(): void {
-        this.m_rcontext.resetState();
-    }
-    /**
-     * reset render shader uniform location
-     */
-    resetUniform(): void {
-        this.m_rcontext.resetUniform();
-    }
-    enableSynViewAndStage(): void {
-        this.m_renderProxy.enableSynViewAndStage();
+        this.m_rcontext.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
     }
     /**
      * the function only resets the renderer instance rendering status.
      * you should use it before the run or runAt function is called.
      */
-    renderBegin(contextBeginEnabled: boolean = true): void {
+    renderBegin(contextBeginEnabled: boolean = false): void {
 
-        if (this.m_currCamera == null) {
-            this.m_adapter.unlockViewport();
+        if (contextBeginEnabled) {
+            this.m_rcontext.renderBegin();
+        }
+        if (this.m_renderProxy.getCamera() != this.m_camera) {
+            //let boo: boolean = this.m_renderProxy.testViewPortChanged(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
             if (this.m_renderProxy.isAutoSynViewAndStage()) {
-                let boo: boolean = this.m_renderProxy.testViewPortChanged(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
                 this.m_viewX = this.m_renderProxy.getViewX();
                 this.m_viewY = this.m_renderProxy.getViewY();
                 this.m_viewW = this.m_renderProxy.getViewWidth();
                 this.m_viewH = this.m_renderProxy.getViewHeight();
-                if (boo) {
-                    this.m_renderProxy.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH, true);
-                    this.m_renderProxy.reseizeRCViewPort();
-                }
-            } else {
-                this.m_renderProxy.setViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
             }
-            this.m_renderProxy.updateCamera();
-            this.m_renderProxy.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
+            this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
+            this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
+            this.m_renderProxy.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH, this.m_renderProxy.isAutoSynViewAndStage());
+            this.m_renderProxy.reseizeRCViewPort();
         }
+        this.m_camera.update();
+        this.m_rcontext.updateCameraDataFromCamera(this.m_camera);
         this.m_shader.renderBegin();
-        if (contextBeginEnabled) {
-            this.m_rcontext.renderBegin(this.m_currCamera == null);
-        }
-        this.m_currCamera = null;
-        if(this.m_accessor != null) {
+        if (this.m_accessor != null) {
             this.m_accessor.renderBegin(this);
         }
     }
@@ -607,23 +517,20 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
      * the function resets the renderer scene status.
      * you should use it on the frame starting time.
      */
-    runBegin(autoCycle: boolean = true, contextBeginEnabled: boolean = true): void {
+    runBegin(autoCycle: boolean = true, contextBeginEnabled: boolean = false): void {
 
         if (autoCycle && this.m_autoRunning) {
             if (this.m_runFlag >= 0) this.runEnd();
             this.m_runFlag = 0;
         }
-        let cam = this.m_currCamera;
-        let camFlag: boolean = cam == null;
         this.renderBegin(contextBeginEnabled);
         if (this.m_rspace != null) {
-            this.m_rspace.setCamera(camFlag ? this.m_renderProxy.getCamera() : cam);
+            //this.m_rspace.setCamera(camFlag ? this.m_renderProxy.getCamera() : this.m_currCamera);
+            this.m_rspace.setCamera(this.m_camera);
             this.m_rspace.runBegin();
         }
     }
-    renderContextBegin(): void {
-        this.m_rcontext.renderBegin();
-    }
+
     private m_mouseTestBoo: boolean = true;
     private m_cullingTestBoo: boolean = true;
     private m_rayTestFlag: boolean = true;
@@ -632,14 +539,15 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
     setRayTestEanbled(enabled: boolean): void {
         this.m_rayTestEnabled = enabled;
     }
-    // @param       evtFlowPhase: 0(none phase),1(capture phase),2(bubble phase)
-    // @param       status: 1(default process),1(deselect ray pick target)
-    // @return      1 is send evt yes,0 is send evt no,-1 is event nothing
+    /**
+     * @param evtFlowPhase  0(none phase),1(capture phase),2(bubble phase)
+     * @param status: 1(default process),1(deselect ray pick target)
+     * @requires 1 is send evt yes,0 is send evt no,-1 is event nothing
+     */
     runMouseTest(evtFlowPhase: number, status: number): number {
         let flag: number = -1;
         if (this.m_evt3DCtr != null && this.m_mouseEvtEnabled) {
             if (this.m_rayTestFlag && this.m_evt3DCtr.getEvtType() > 0) {
-
                 // 是否对已经获得的拾取列表做进一步的gpu拾取
                 let selector: IRaySelector = this.m_rspace.getRaySelector();
                 if (selector != null) {
@@ -676,13 +584,13 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
      * should call this function per frame
      */
     update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
-        this.stage3D.enterFrame();
+
+        if (this.m_currStage3D != null) this.m_currStage3D.enterFrame();
+
         if (autoCycle && this.m_autoRunning) {
             if (this.m_runFlag != 0) this.runBegin();
             this.m_runFlag = 1;
         }
-
-        // camera visible test, ray cast test, Occlusion Culling test
 
         this.m_mouseTestBoo = true;
         this.m_cullingTestBoo = true;
@@ -712,23 +620,21 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
                 }
             }
         }
+        //  this.m_renderer.update();
 
         let i: number = 0;
         for (; i < this.m_containersTotal; ++i) {
             this.m_containers[i].update();
         }
-        this.m_renderer.update();
         // space update
         if (this.m_rspace != null) {
             this.m_rspace.update();
-            if (this.m_cullingTestBoo) {
-                if (this.m_evt3DCtr != null || this.m_processUpdate || this.m_rspace.getRaySelector() != null) {
-                    this.m_rspace.run();
-                }
-            }
         }
-        if (this.m_processUpdate) {
-            this.m_renderer.updateAllProcess();
+
+        if (this.m_rspace != null && this.m_cullingTestBoo) {
+            if (this.m_evt3DCtr != null || this.m_rspace.getRaySelector() != null) {
+                this.m_rspace.run();
+            }
         }
         if (this.m_mouseTestBoo && !this.m_evtFlowEnabled) {
             if (mouseEventEnabled) {
@@ -739,7 +645,7 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
             }
         }
     }
-    // 运行渲染可见性裁剪测试，射线检测等空间管理机制
+    // 渲染可见性裁剪测试
     cullingTest(): void {
         if (this.m_rspace != null) {
             this.m_rspace.run();
@@ -749,10 +655,11 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
     // 鼠标位置的射线拾取测试
     mouseRayTest(): void {
         if (this.m_rspace != null) {
-            this.m_renderProxy.getMouseXYWorldRay(this.m_mouse_rlpv, this.m_mouse_rltv);
+            this.getMouseXYWorldRay(this.m_mouse_rlpv, this.m_mouse_rltv);
             this.m_rspace.rayTest(this.m_mouse_rlpv, this.m_mouse_rltv);
         }
     }
+    
     
 	private m_prependNodes: ICoRenderNode[] = null;
 	private m_appendNodes: ICoRenderNode[] = null;
@@ -805,71 +712,76 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene {
 			}
 		}
 	}
-    /**
-     * run all renderer processes in the renderer instance
-     */
-    run(autoCycle: boolean = true): void {
+    // rendering running
+    run(autoCycle: boolean = false): void {
 
         if (this.m_enabled) {
+
+            //console.log("rendererSubScene::run...");
             if (autoCycle && this.m_autoRunning) {
                 if (this.m_runFlag != 1) this.update();
                 this.m_runFlag = 2;
             }
 
-            this.runnableQueue.run();
 			this.runRenderNodes(this.m_prependNodes);
-            if (this.m_subscListLen > 0) {
-                for (let i: number = 0; i < this.m_processidsLen; ++i) {
-                    this.m_renderer.runAt(this.m_processids[i]);
-                }
+
+            for (let i: number = 0; i < this.m_processidsLen; ++i) {
+                this.m_renderer.runAt(this.m_processids[i]);
             }
-            else {
-                this.m_renderer.run();
-            }
+
 			this.runRenderNodes(this.m_appendNodes);
+
             if (autoCycle) {
                 this.runEnd();
             }
-
         }
     }
-
-    /**
-     * run the specific renderer process by its index in the renderer instance
-     * @param index the renderer process index in the renderer instance
-     */
     runAt(index: number): void {
-        if (this.m_enabled) {
-            this.m_renderer.runAt(this.m_processids[index]);
-        }
+        this.m_renderer.runAt(this.m_processids[index]);
     }
     runEnd(): void {
         if (this.m_evt3DCtr != null) {
             this.m_evt3DCtr.runEnd();
         }
-        this.m_rcontext.runEnd();
-
         if (this.m_rspace != null) {
             this.m_rspace.runEnd();
         }
+
         if (this.m_autoRunning) {
             this.m_runFlag = -1;
         }
-        if(this.m_accessor != null) {
+        if (this.m_accessor != null) {
             this.m_accessor.renderEnd(this);
         }
     }
-    renderFlush(): void {
-        if (this.m_renderProxy != null) {
-            this.m_renderProxy.flush();
-        }
+    useCamera(camera: IRenderCamera, syncCamView: boolean = false): void {
+        this.m_parent.useCamera(camera, syncCamView);
+    }
+    useMainCamera(): void {
+        this.m_parent.useMainCamera();
     }
     updateCamera(): void {
-        if (this.m_renderProxy != null) {
-            this.m_renderProxy.updateCamera();
+        if (this.m_camera != null) {
+            this.m_camera.update();
         }
     }
-    toString(): string {
-        return "[CoRendererScene(uid = " + this.m_uid + ")]";
+    setClearUint24Color(colorUint24: number, alpha: number = 1.0): void {
+        this.m_renderProxy.setClearUint24Color(colorUint24, alpha);
     }
+    setClearRGBColor3f(pr: number, pg: number, pb: number): void {
+        this.m_renderProxy.setClearRGBColor3f(pr, pg, pb);
+    }
+    setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void {
+        this.m_renderProxy.setClearRGBAColor4f(pr, pg, pb, pa);
+    }
+    setClearColor(color: Color4): void {
+        this.m_renderProxy.setClearRGBAColor4f(color.r, color.g, color.b, color.a);
+    }
+    setRenderToBackBuffer(): void {
+        this.m_renderProxy.setRenderToBackBuffer();
+    }
+    toString(): string {
+        return "[RendererSubScene(uid = " + this.m_uid + ")]";
+    }
+
 }
