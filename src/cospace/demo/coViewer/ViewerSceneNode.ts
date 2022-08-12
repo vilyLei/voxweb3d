@@ -32,7 +32,7 @@ class ViewerSceneNode implements ICoRenderNode {
 		this.m_vmctx = vmctx;
 		this.m_vcoapp = vcoapp;
 
-		
+
 		let url = "static/cospace/renderEffect/occPostOutline/OccPostOutlineModule.umd.js";
 
 		new ModuleLoader(1)
@@ -42,7 +42,7 @@ class ViewerSceneNode implements ICoRenderNode {
 			})
 			.load(url);
 	}
-	
+
 	private initOutline(): void {
 		this.m_postOutline.initialize(this.m_rscene, 1, [0]);
 		this.m_postOutline.setFBOSizeScaleRatio(0.5);
@@ -121,7 +121,7 @@ class ViewerSceneNode implements ICoRenderNode {
 
 		return entity;
 	}
-	
+
 	private createEntity(model: CoGeomDataType): ITransformEntity {
 		// let rst = CoRenderer.RendererState;
 		const MouseEvent = CoRScene.MouseEvent;
@@ -154,7 +154,7 @@ class ViewerSceneNode implements ICoRenderNode {
 	private buildBGBox(): void {
 
 		let rscene = this.m_rscene;
-		
+
 		let material = this.m_vmctx.pbrModule.createMaterial(true);
 
 		let scale = 700.0;
