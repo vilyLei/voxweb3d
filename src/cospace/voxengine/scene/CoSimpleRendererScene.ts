@@ -299,7 +299,8 @@ export default class CoSimpleRendererScene implements IRenderer, ICoRendererScen
 			this.m_renderer.initialize(rparam, camera, new ShaderProgramBuilder(this.m_renderer.getRCUid()));
 
 			let srcSt: any = CoRenderer.RendererState;
-			RendererState.Initialize(srcSt.Rstate, srcSt.VRO);
+			srcSt.rstb.buildToRST(RendererState);
+			// RendererState.Initialize(srcSt.Rstate, srcSt.VRO);
 
 			this.m_processids[0] = 0;
 			this.m_processidsLen++;

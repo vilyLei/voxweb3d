@@ -34,6 +34,7 @@ import ROTextureResource from '../../vox/render/ROTextureResource';
 import IROVertexBufUpdater from '../../vox/render/IROVertexBufUpdater';
 import IROMaterialUpdater from '../../vox/render/IROMaterialUpdater';
 import DivLog from "../../vox/utils/DivLog";
+import RSTBuilder from "./RSTBuilder";
 import RendererState from "./RendererState";
 import {IRenderProxy} from "./IRenderProxy";
 import { IShaderUniformContext } from "../../vox/material/IShaderUniformContext";
@@ -388,7 +389,9 @@ class RenderProxy implements IRenderProxy{
 
         let rstate = new RODrawState();
         rstate.setRenderContext( this.m_adapterContext );
-        RendererState.Initialize(rstate, new VROBase());
+        // RendererState.Initialize(rstate, new VROBase());
+        new RSTBuilder().initialize(RendererState, rstate, new VROBase());
+
         selfT.RState = rstate;
         selfT.RContext = this.m_rc;
         selfT.stencil = new Stencil( rstate );
@@ -415,7 +418,7 @@ class RenderProxy implements IRenderProxy{
         this.m_adapterContext.setViewport(rect.x, rect.y, rect.width, rect.height);
         this.m_camera.lookAtRH(posV3, lookAtPosV3, upV3);
         this.m_camera.update();
-        
+
         selfT.RGBA = gl.RGBA;
         selfT.UNSIGNED_BYTE = gl.UNSIGNED_BYTE;
         selfT.TRIANGLE_STRIP = gl.TRIANGLE_STRIP;

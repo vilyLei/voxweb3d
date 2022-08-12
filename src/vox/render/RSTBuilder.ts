@@ -5,63 +5,35 @@
 /*                                                                         */
 /***************************************************************************/
 import { IRAdapterContext } from "../../vox/render/IRAdapterContext";
-// import { IRODrawState } from "../../vox/render/rendering/IRODrawState";
+import { IRODrawState } from "../../vox/render/rendering/IRODrawState";
 
-// import { RenderColorMask } from "../../vox/render/rendering/RenderColorMask";
-// import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject";
-// import { CullFaceMode, RenderBlendMode, DepthTestMode, GLBlendMode, GLBlendEquation } from "../../vox/render/RenderConst";
-// import { IVRO } from "../../vox/render/vtx/IVRO";
+import { RenderColorMask } from "../../vox/render/rendering/RenderColorMask";
+import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject";
 
+import { CullFaceMode, RenderBlendMode, DepthTestMode, GLBlendMode, GLBlendEquation } from "../../vox/render/RenderConst";
+import { IVRO } from "../../vox/render/vtx/IVRO";
 import IRSTBuilder from "./IRSTBuilder";
-class RendererState {
 
-    // private static s_initBoo: boolean = true;
+class RSTBuilder implements IRSTBuilder {
 
-    private static readonly rstb: IRSTBuilder;
-    // private static readonly VRO: IVRO;
-    // private static readonly Rstate: IRODrawState;
+    private m_inited: boolean = true;
+    private m_VRO: IVRO;
+    private m_Rstate: IRODrawState;
 
-    static DrawCallTimes: number = 0;
-    static DrawTrisNumber: number = 0;
-    static POVNumber: number = 0;
+    buildToRST(state: any): void {
+        let b = new RSTBuilder();
+        b.initialize(state, this.m_Rstate, this.m_VRO);
+    }
+	initialize(state: any, rstate: IRODrawState, vro: IVRO): void {
 
-    static readonly COLOR_MASK_ALL_TRUE: number;
-    static readonly COLOR_MASK_ALL_FALSE: number;
-    static readonly COLOR_MASK_RED_TRUE: number;
-    static readonly COLOR_MASK_GREEN_TRUE: number;
-    static readonly COLOR_MASK_BLUE_TRUE: number;
-    static readonly COLOR_MASK_ALPHA_TRUE: number;
-    static readonly COLOR_MASK_RED_FALSE: number;
-    static readonly COLOR_MASK_GREEN_FALSE: number;
-    static readonly COLOR_MASK_BLUE_FALSE: number;
-    static readonly COLOR_MASK_ALPHA_FALSE: number;
+		if (this.m_inited && state.rstb == null) {
+            console.log("RSTBuilder::initialize() XXXXXXXXXX ");
 
-    static readonly NORMAL_STATE: number;
-    static readonly BACK_CULLFACE_NORMAL_STATE: number;
-    static readonly FRONT_CULLFACE_NORMAL_STATE: number;
-    static readonly NONE_CULLFACE_NORMAL_STATE: number;
-    static readonly ALL_CULLFACE_NORMAL_STATE: number;
-    static readonly BACK_NORMAL_ALWAYS_STATE: number;
-    static readonly BACK_TRANSPARENT_STATE: number;
-    static readonly BACK_TRANSPARENT_ALWAYS_STATE: number;
-    static readonly NONE_TRANSPARENT_STATE: number;
-    static readonly NONE_TRANSPARENT_ALWAYS_STATE: number;
-    static readonly FRONT_CULLFACE_GREATER_STATE: number;
-    static readonly BACK_ADD_BLENDSORT_STATE: number;
-    static readonly BACK_ADD_ALWAYS_STATE: number;
-    static readonly BACK_ALPHA_ADD_ALWAYS_STATE: number;
-    static readonly NONE_ADD_ALWAYS_STATE: number;
-    static readonly NONE_ADD_BLENDSORT_STATE: number;
-    static readonly NONE_ALPHA_ADD_ALWAYS_STATE: number;
-    static readonly FRONT_ADD_ALWAYS_STATE: number;
-    static readonly FRONT_TRANSPARENT_STATE: number;
-    static readonly FRONT_TRANSPARENT_ALWAYS_STATE: number;
-    static readonly NONE_CULLFACE_NORMAL_ALWAYS_STATE: number;
-    static readonly BACK_ALPHA_ADD_BLENDSORT_STATE: number;
-    /*
-	static Initialize(rstate: IRODrawState, vro: IVRO): void {
-        
-		if (RendererState.s_initBoo) {
+            state.rstb = this;
+
+			this.m_inited = false;
+            this.m_Rstate = rstate;
+            this.m_VRO = vro;
 
 			const rso: any = RenderStateObject;
 			const rcm: any = RenderColorMask;
@@ -72,8 +44,6 @@ class RendererState {
 			const dtm = DepthTestMode;
 			const rbm: any = RenderBlendMode;
 
-			let state: any = RendererState;
-			state.s_initBoo = false;
 			state.Rstate = rstate;
 			state.VRO = vro;
 
@@ -128,56 +98,58 @@ class RendererState {
 			state.BACK_ALPHA_ADD_BLENDSORT_STATE = rso.Create("back_alpha_add_blendSort", cfm.BACK, rbm.ALPHA_ADD, dtm.TRANSPARENT_SORT);
 		}
 	}
-    //*/
-    static CreateBlendMode(name: string, srcColor: number, dstColor: number, blendEquation: number = 0): number {
-        return RendererState.rstb.createBlendMode(name, srcColor, dstColor, blendEquation);
+    createBlendMode(name: string, srcColor: number, dstColor: number, blendEquation: number = 0): number {
+        return RenderStateObject.CreateBlendMode(name, srcColor, dstColor, blendEquation);
     }
-    static CreateBlendModeSeparate(name: string, srcColor: number, dstColor: number, srcAlpha: number = 0, dstAlpha: number = 0, blendEquation: number = 0): number {
-        return RendererState.rstb.createBlendModeSeparate(name, srcColor, dstColor, srcAlpha, dstAlpha, blendEquation);
+    createBlendModeSeparate(name: string, srcColor: number, dstColor: number, srcAlpha: number = 0, dstAlpha: number = 0, blendEquation: number = 0): number {
+        return RenderStateObject.CreateBlendModeSeparate(name, srcColor, dstColor, srcAlpha, dstAlpha, blendEquation);
     }
-    static CreateRenderState(objName: string, cullFaceMode: number, blendMode: number, depthTestMode: number): number {
-        return RendererState.rstb.createRenderState(objName, cullFaceMode, blendMode, depthTestMode);
+    createRenderState(objName: string, cullFaceMode: number, blendMode: number, depthTestMode: number): number {
+        return RenderStateObject.Create(objName, cullFaceMode, blendMode, depthTestMode);
     }
-    static CreateRenderColorMask(objName: string, rBoo: boolean, gBoo: boolean, bBoo: boolean, aBoo: boolean): number {
-        return RendererState.rstb.createRenderColorMask(objName, rBoo, gBoo, bBoo, aBoo);
+    createRenderColorMask(objName: string, rBoo: boolean, gBoo: boolean, bBoo: boolean, aBoo: boolean): number {
+        return RenderColorMask.Create(objName, rBoo, gBoo, bBoo, aBoo);
     }
-    static GetRenderStateByName(objName: string): number {
-        return RendererState.rstb.getRenderStateByName(objName);
+    getRenderStateByName(objName: string): number {
+        return RenderStateObject.GetRenderStateByName(objName);
     }
-    static GetRenderColorMaskByName(objName: string): number {
-        return RendererState.rstb.getRenderColorMaskByName(objName);
-    }
-
-    static UnlockBlendMode(): void {
-        RendererState.rstb.unlockBlendMode();
-    }
-    static LockBlendMode(cullFaceMode: number): void {
-        RendererState.rstb.lockBlendMode(cullFaceMode);
-    }
-    static UnlockDepthTestMode(): void {
-        RendererState.rstb.unlockDepthTestMode();
-    }
-    static LockDepthTestMode(depthTestMode: number): void {
-        RendererState.rstb.lockDepthTestMode(depthTestMode);
-    }
-    static ResetState(): void {
-        RendererState.rstb.resetState();
-    }
-    static Reset(context: IRAdapterContext): void {
-        RendererState.rstb.reset(context);
-    }
-    static ResetInfo(): void {
-        RendererState.DrawCallTimes = 0;
-        RendererState.DrawTrisNumber = 0;
-        RendererState.POVNumber = 0;
+    getRenderColorMaskByName(objName: string): number {
+        return RenderColorMask.GetColorMaskByName(objName);
     }
 
-    static SetDepthTestEnable(enable: boolean): void {
-        RendererState.rstb.setDepthTestEnable(enable);
+    unlockBlendMode(): void {
+        RenderStateObject.UnlockBlendMode();
     }
-    static SetBlendEnable(enable: boolean): void {
-        RendererState.rstb.setBlendEnable(enable);
+    lockBlendMode(cullFaceMode: number): void {
+        RenderStateObject.LockBlendMode(cullFaceMode);
+    }
+    unlockDepthTestMode(): void {
+        RenderStateObject.UnlockDepthTestMode();
+    }
+    lockDepthTestMode(depthTestMode: number): void {
+        RenderStateObject.LockDepthTestMode(depthTestMode);
+    }
+    resetState(): void {
+        RenderColorMask.Reset();
+        RenderStateObject.Reset();
+        this.m_Rstate.reset();
+        this.m_VRO.__$resetVRO();
+    }
+    reset(context: IRAdapterContext): void {
+        RenderColorMask.Reset();
+        RenderStateObject.Reset();
+        this.m_Rstate.setRenderContext(context);
+        this.m_Rstate.reset();
+    }
+    resetInfo(): void {
+    }
+
+    setDepthTestEnable(enable: boolean): void {
+        this.m_Rstate.setDepthTestEnable(enable);
+    }
+    setBlendEnable(enable: boolean): void {
+        this.m_Rstate.setBlendEnable(enable);
     }
 }
 
-export default RendererState;
+export default RSTBuilder;

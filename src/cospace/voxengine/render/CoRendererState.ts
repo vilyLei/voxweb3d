@@ -1,4 +1,5 @@
 interface CoRendererState {
+	
 	readonly COLOR_MASK_ALL_TRUE: number;
 	readonly COLOR_MASK_ALL_FALSE: number;
 	readonly COLOR_MASK_RED_TRUE: number;
