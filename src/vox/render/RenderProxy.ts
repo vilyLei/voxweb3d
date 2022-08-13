@@ -47,6 +47,9 @@ import { RenderingColorMask } from "./rendering/RenderingColorMask";
 import { IRenderingState } from "./rendering/IRenderingState";
 import { RenderingState } from "./rendering/RenderingState";
 
+import {IRPStatus} from "./status/IRPStatus";
+import {RPStatus} from "./status/RPStatus";
+
 class RenderProxyParam {
 
     materialUpdater: IROMaterialUpdater = null;
@@ -112,6 +115,9 @@ class RenderProxy implements IRenderProxy {
     private m_camSwitched: boolean = false;
     // 是否舞台尺寸和view自动同步一致
     private m_autoSynViewAndStage: boolean = true;
+
+    readonly status: IRPStatus = new RPStatus();
+
     constructor(rcuid: number) {
         this.m_uid = rcuid;
     }
