@@ -34,7 +34,7 @@ class Vector3D implements IVector3D {
         this.z = arr[offset + 2];
         return this;
     }
-    toArray(arr: number[] | Float32Array, offset: number = 0): this {        
+    toArray(arr: number[] | Float32Array, offset: number = 0): this {
         this.x = arr[offset];
         this.y = arr[offset + 1];
         this.z = arr[offset + 2];
@@ -249,7 +249,7 @@ class Vector3D implements IVector3D {
         return Math.acos(v_m_v0.dot(v_m_v1));
     }
 
-    static RadianBetween2(v0: Vector3D, v1: Vector3D) {
+    static RadianBetween2(v0: Vector3D, v1: Vector3D): number {
         //  // c^2 = a^2 + b^2 - 2*a*b * cos(x)
         //  // cos(x) = (a^2 + b^2 - c^2) / 2*a*b
         let pa: number = v0.getLengthSquared();
