@@ -5,15 +5,25 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
+import IShaderCodeBuffer from "../../../vox/material/IShaderCodeBuffer";
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 
 export default interface IShaderMaterial extends IRenderMaterial {
+
+	vertColorEnabled: boolean;
+	premultiplyAlpha: boolean;
+	shadowReceiveEnabled: boolean;
+	lightEnabled: boolean;
+	fogEnabled: boolean;
+	envAmbientLightEnabled: boolean;
+	brightnessOverlayEnabeld: boolean;
+	glossinessEnabeld: boolean;
+
 	/**
 	 * @param textureEnabled the default value is false
 	 */
 	initializeByCodeBuf(textureEnabled?: boolean): void;
-	setShaderBuilder(shaderBuilder: (coder: IShaderCodeBuilder) => void): void;
+	setShaderBuilder(shaderBuilder: (cshdCodeBuf: IShaderCodeBuffer) => void): void;
 	setFragShaderCode(codeStr: string): void;
 	setVtxShaderCode(codeStr: string): void;
 	/**

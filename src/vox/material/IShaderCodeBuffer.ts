@@ -12,8 +12,11 @@ import IShaderCodeObject from "./IShaderCodeObject";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 import { MaterialPipeType } from "./pipeline/MaterialPipeType";
 
+import { IShaderTextureBuilder } from "../../vox/material/IShaderTextureBuilder";
+import { IShaderCodeUniform } from "./code/IShaderCodeUniform";
+
 interface IShaderCodeBuffer {
-    
+
     pipeline: IMaterialPipeline;
 
     vertColorEnabled: boolean;
@@ -32,9 +35,15 @@ interface IShaderCodeBuffer {
      * 是否自适应转换shader版本
      */
     adaptationShaderVersion: boolean;
-    
+
     reset(): void;
     clear(): void;
+
+
+	getUniform(): IShaderCodeUniform;
+	getTexture(): IShaderCodeUniform;
+	getTexBuilder(): IShaderTextureBuilder;
+
     setShaderCodeObject(obj: IShaderCodeObject): void;
     getShaderCodeObject(): IShaderCodeObject;
     getShaderCodeObjectUUID(): ShaderCodeUUID;
@@ -43,15 +52,15 @@ interface IShaderCodeBuffer {
     initialize(texEnabled: boolean): void
     buildDefine(): void;
     buildPipelineParams(): void;
-    
+
     getTexturesFromPipeline(outList: IRenderTexture[]): void;
-    
+
     isTexEanbled(): boolean;
     setIRenderTextureList(texList: IRenderTexture[]): void;
     getIRenderTextureList(): IRenderTexture[];
     buildShader(): void;
     getFragShaderCode(): string;
     getVertShaderCode(): string;
-    getUniqueShaderName(): string;    
+    getUniqueShaderName(): string;
 }
 export default IShaderCodeBuffer;

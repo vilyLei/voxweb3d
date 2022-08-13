@@ -29,9 +29,9 @@ class MaterialShaderBuffer extends ShaderCodeBuffer {
         if (texEnabled) this.m_uniqueName += "Tex";
     }
     createTextureList(): IRenderTexture[] {
-        this.m_texBulder.reset();
-        this.decorator.buildTextureList( this.m_texBulder );
-        return this.m_texBulder.getTextures();
+        this.m_texBuilder.reset();
+        this.decorator.buildTextureList( this.m_texBuilder );
+        return this.m_texBuilder.getTextures();
     }
     buildShader(): void {
         if(this.vertUniform != null) {
@@ -81,7 +81,7 @@ class SimpleMaterial extends MaterialBase implements ISimpleMaterial {
     }
     getCodeBuf(): ShaderCodeBuffer {
         return SimpleMaterial.s_shdBufins;
-    }    
+    }
     setTextureList(texList: IRenderTexture[]): void {
         // throw Error("Illegal operations !!!");
         console.error("Illegal operations !!!");
