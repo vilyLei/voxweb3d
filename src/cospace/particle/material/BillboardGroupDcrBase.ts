@@ -16,8 +16,8 @@ import BillboardFragShaderBase from "../shader/BillboardFragShaderBase";
 import { BillboardGroupShaderCode } from "../../../vox/material/mcase/glsl/BillboardGroupShaderCode";
 
 class BillboardGroupDcrBase implements IMaterialDecorator {
-	private m_uniqueName: string;
-    private static s_billFS = new BillboardFragShaderBase();
+	protected m_uniqueName: string;
+    protected static s_billFS = new BillboardFragShaderBase();
     protected m_clipEnabled: boolean = false;
     protected m_hasOffsetColorTex: boolean = false;
     protected m_useRawUVEnabled: boolean = false
@@ -87,20 +87,12 @@ class BillboardGroupDcrBase implements IMaterialDecorator {
         coder.autoBuildHeadCodeEnabled = false;
         this.buildFragShd(coder);
         this.buildVertShd(coder);
-        // if (this.pipeline == null) {
-        //     coder.addShaderObject(BillboardGroupShaderCode);
-        // }
     }
 
     buildFragShd(coder: IShaderCodeBuilder): void {
 
         if (this.brightnessEnabled) {
-            let f = this.fogEnabled;
-            // if (this.pipeline != null) {
-            //     f = f || this.pipeline.hasPipeByType(MaterialPipeType.FOG_EXP2);
-            //     f = f || this.pipeline.hasPipeByType(MaterialPipeType.FOG);
-            // }
-            this.brightnessOverlayEnabeld = f;
+            this.brightnessOverlayEnabeld = this.fogEnabled;
         }
 
         // let coder = this.m_coder;
@@ -128,30 +120,23 @@ class BillboardGroupDcrBase implements IMaterialDecorator {
 
     }
 
-    getUniqueShaderName(): string {
-        let ns: string = this.m_uniqueName + "_" + BillboardGroupDcrBase.s_billFS.getBrnAlphaStatus();
-        if (this.m_hasOffsetColorTex && this.m_clipEnabled) {
-            ns += "ClipColorTex";
-        }
-        if (this.premultiplyAlpha) ns += "PreMAlpha";
-        return ns;
-    }
-
 	buildBufParams(): void {}
 	buildTextureList(builder: IShaderTextureBuilder): void {}
 
 	createUniformData(): IShaderUniformData {
-		let oum: ShaderUniformData = new ShaderUniformData();
-		// oum.uniformNameList = ["u_colorFill"];
-		// oum.dataList = [this.m_colorData];
-		return oum;
+		return null;
 	}
 	getShaderCodeObjectUUID(): ShaderCodeUUID {
 		return ShaderCodeUUID.None;
 	}
 
 	getUniqueName(): string {
-		return this.m_uniqueName;
+		let ns: string = this.m_uniqueName + "_" + BillboardGroupDcrBase.s_billFS.getBrnAlphaStatus();
+        if (this.m_hasOffsetColorTex && this.m_clipEnabled) {
+            ns += "ClipColorTex";
+        }
+        if (this.premultiplyAlpha) ns += "PreMAlpha";
+        return ns;
 	}
 }
 export { BillboardGroupDcrBase };
