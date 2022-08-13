@@ -8,11 +8,16 @@
 import IMeshBase from "../../vox/mesh/IMeshBase";
 
 export default interface IDataMesh extends IMeshBase {
+
+	/**
+	 * the defualt value is true
+	 */
+	autoBuilding: boolean;
     /**
       * 强制更新 vertex indices buffer 数据, 默认值为false
       */
     forceUpdateIVS: boolean;
-    
+
     /**
      * the default value is 3
      */
@@ -74,7 +79,7 @@ export default interface IDataMesh extends IMeshBase {
      * @param ivs indices buffer data
      */
     setIVS(ivs: Uint16Array | Uint32Array): IDataMesh;
-        
+
     /**
      * initialization vertex buffer data
      */

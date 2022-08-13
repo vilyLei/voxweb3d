@@ -22,7 +22,7 @@ import IMeshBase from "../../vox/mesh/IMeshBase";
  *      2.基于空间几何方程描述的空间几何体(Parametric geometry Objecct,for example: Sphere(px,py,pz,radius))
 */
 export default class MeshBase implements IMeshBase {
-    
+
     private m_bufDataUsage: number = 0;
     private m_bufDataList: Float32Array[] = null;
     private m_bufDataStepList: number[] = null;
@@ -60,7 +60,7 @@ export default class MeshBase implements IMeshBase {
     drawMode: number = RenderDrawMode.ELEMENTS_TRIANGLES;
     //  vtx postion in data stream used count
     vtCount: number = 0;
-    
+
     vbWholeDataEnabled: boolean = true;
     drawInsBeginIndex: number = 0;
     drawInsStride: number = 0;
@@ -80,7 +80,7 @@ export default class MeshBase implements IMeshBase {
             let ivs: Uint16Array | Uint32Array = this.m_ivs;
             let len: number = ivs.length * 2;
             let wIvs: Uint16Array | Uint32Array;
-            
+
             if (len < 65535) wIvs = new Uint16Array(len);
             else wIvs = new Uint32Array(len);
 
@@ -178,7 +178,7 @@ export default class MeshBase implements IMeshBase {
     /**
      * @returns vertex position buffer Float32Array
      */
-    getVS(): Float32Array { return null; }    
+    getVS(): Float32Array { return null; }
     /**
      * @returns vertex uv buffer Float32Array
      */
@@ -195,7 +195,7 @@ export default class MeshBase implements IMeshBase {
      * @returns vertex indices buffer Uint16Array or Uint32Array
      */
     getIVS(): Uint16Array | Uint32Array { return this.m_ivs; }
-    
+
     setVtxBufRenderData(vtxData: IVtxBufRenderData): void {
         if(vtxData != null) {
             this.m_bufTypeList = vtxData.getBufTypeList();
@@ -216,7 +216,7 @@ export default class MeshBase implements IMeshBase {
     getBufSortFormat(): number {
         return this.m_layoutBit;
     }
-    
+
     setBufTypeList(list: number[]): void {
         this.m_bufTypeList = list;
     }
@@ -283,7 +283,7 @@ export default class MeshBase implements IMeshBase {
             this.m_bufStatusList = null;
             this.trisNumber = 0;
             this.m_transMatrix = null;
-            
+
             this.m_bufTypeList = null;
             this.m_bufSizeList = null;
         }
