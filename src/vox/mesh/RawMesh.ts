@@ -5,9 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ROVertexBuffer from "../../../vox/mesh/ROVertexBuffer";
-import VtxBufConst from "../../../vox/mesh/VtxBufConst";
-import MeshBase from "../../../vox/mesh/MeshBase";
+import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
+import VtxBufConst from "../../vox/mesh/VtxBufConst";
+import MeshBase from "../../vox/mesh/MeshBase";
 import IRawMesh from "./IRawMesh";
 
 /**

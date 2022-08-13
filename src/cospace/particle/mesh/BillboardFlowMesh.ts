@@ -4,11 +4,8 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-
-import ROVertexBuffer from "../../../vox/mesh/ROVertexBuffer";
-import VtxBufConst from "../../../vox/mesh/VtxBufConst";
 import AABB from "../../../vox/geom/AABB";
-import RawMesh from "../../voxengine/mesh/RawMesh";
+import RawMesh from "../../../vox/mesh/RawMesh";
 
 /**
  * static billboard plane group
