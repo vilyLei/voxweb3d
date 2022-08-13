@@ -10,7 +10,8 @@ import IVector3D from "../../../vox/math/IVector3D";
 declare var CoRScene: ICoRScene;
 
 class BillboardMaterial {
-	billFS: BillboardFragShaderBase = new BillboardFragShaderBase();
+
+	private static s_billFS: BillboardFragShaderBase = new BillboardFragShaderBase();
 
 	material: IShaderMaterial = null;
 
@@ -50,7 +51,7 @@ class BillboardMaterial {
     vec3 offsetColor = v_colorOffset.rgb;
     vec4 fv4 = v_colorMult.wwww;
 `;
-		let fadeCode: string = this.billFS.getBrnAndAlphaCode();
+		let fadeCode: string = BillboardMaterial.s_billFS.getBrnAndAlphaCode();
 		let fragCode2: string = `
     FragColor0 = color;
 `;

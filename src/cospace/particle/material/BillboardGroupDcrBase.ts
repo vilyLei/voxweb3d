@@ -15,7 +15,7 @@ import { IShaderTextureBuilder } from "../../../vox/material/IShaderTextureBuild
 import BillboardFragShaderBase from "../shader/BillboardFragShaderBase";
 import { BillboardGroupShaderCode } from "../../../vox/material/mcase/glsl/BillboardGroupShaderCode";
 
-class BillboardFlowDcrBase implements IMaterialDecorator {
+class BillboardGroupDcrBase implements IMaterialDecorator {
 	private m_uniqueName: string;
     private static s_billFS = new BillboardFragShaderBase();
     protected m_clipEnabled: boolean = false;
@@ -73,7 +73,7 @@ class BillboardFlowDcrBase implements IMaterialDecorator {
 
     setParam(brightnessEnabled: boolean, alphaEnabled: boolean, clipEnabled: boolean, hasOffsetColorTex: boolean): void {
         this.m_brightnessEnabled = brightnessEnabled;
-        BillboardFlowDcrBase.s_billFS.setBrightnessAndAlpha(brightnessEnabled, alphaEnabled);
+        BillboardGroupDcrBase.s_billFS.setBrightnessAndAlpha(brightnessEnabled, alphaEnabled);
         this.m_clipEnabled = clipEnabled;
         this.m_hasOffsetColorTex = hasOffsetColorTex;
     }
@@ -124,21 +124,18 @@ class BillboardFlowDcrBase implements IMaterialDecorator {
             }
         }
         coder.addDefine("FADE_VAR", "v_factor");
-        coder.addDefine("FADE_STATUS", "" + BillboardFlowDcrBase.s_billFS.getBrnAlphaStatus());
+        coder.addDefine("FADE_STATUS", "" + BillboardGroupDcrBase.s_billFS.getBrnAlphaStatus());
 
     }
 
     getUniqueShaderName(): string {
-        let ns: string = this.m_uniqueName + "_" + BillboardFlowDcrBase.s_billFS.getBrnAlphaStatus();
+        let ns: string = this.m_uniqueName + "_" + BillboardGroupDcrBase.s_billFS.getBrnAlphaStatus();
         if (this.m_hasOffsetColorTex && this.m_clipEnabled) {
             ns += "ClipColorTex";
         }
         if (this.premultiplyAlpha) ns += "PreMAlpha";
         return ns;
     }
-
-
-
 
 	buildBufParams(): void {}
 	buildTextureList(builder: IShaderTextureBuilder): void {}
@@ -157,4 +154,4 @@ class BillboardFlowDcrBase implements IMaterialDecorator {
 		return this.m_uniqueName;
 	}
 }
-export { BillboardFlowDcrBase };
+export { BillboardGroupDcrBase };
