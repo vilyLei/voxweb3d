@@ -17,6 +17,7 @@ import { IMaterialContext } from "../../materialLab/base/IMaterialContext";
 import IDataMesh from "../../vox/mesh/IDataMesh";
 import { CoRendererDevice } from "./render/CoRendererDevice";
 import { CoRendererState } from "./render/CoRendererState";
+import CoVtxBufConst from "./mesh/CoVtxBufConst";
 
 interface CoVec3 {
 
@@ -141,6 +142,7 @@ interface ICoRScene {
 	RendererDevice: CoRendererDevice;
 	RendererState: CoRendererState;
 	RenderDrawMode: CoRenderDrawMode;
+	VtxBufConst: CoVtxBufConst;
 
 	Vector3D: CoVec3;
 	MouseEvent: CoMouseEvent;

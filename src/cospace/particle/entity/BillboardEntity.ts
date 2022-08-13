@@ -1,13 +1,9 @@
 import { ICoRScene } from "../../voxengine/ICoRScene";
 
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
-import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 import IShaderMaterial from "../../../vox/material/mcase/IShaderMaterial";
-// import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 import BillboardFragShaderBase from "../shader/BillboardFragShaderBase";
 import IShaderCodeBuffer from "../../../vox/material/IShaderCodeBuffer";
-// import IGeometry from "../../../vox/mesh/IGeometry";
-import IDataMesh from "../../../vox/mesh/IDataMesh";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IVector3D from "../../../vox/math/IVector3D";
 
@@ -30,13 +26,13 @@ class BillboardMaterial {
 		if (this.rotationEnabled) coder.addDefine("VOX_ROTATION");
 		if (this.brightnessEnabled) {
 			const MaterialPipeType = CoRScene.MaterialPipeType;
-			let fogEnabled: boolean = shdCodeBuf.fogEnabled;
+			let f: boolean = shdCodeBuf.fogEnabled;
 			let pipeline = shdCodeBuf.pipeline;
 			if (pipeline != null) {
-				fogEnabled = fogEnabled || pipeline.hasPipeByType(MaterialPipeType.FOG_EXP2);
-				fogEnabled = fogEnabled || pipeline.hasPipeByType(MaterialPipeType.FOG);
+				f = f || pipeline.hasPipeByType(MaterialPipeType.FOG_EXP2);
+				f = f || pipeline.hasPipeByType(MaterialPipeType.FOG);
 			}
-			shdCodeBuf.brightnessOverlayEnabeld = fogEnabled;
+			shdCodeBuf.brightnessOverlayEnabeld = f;
 		}
 		let uniform = shdCodeBuf.getUniform();
 		uniform.addDiffuseMap();
@@ -92,6 +88,12 @@ class BillboardMaterial {
 			this.material = material;
 		}
 	}
+	destroy(): void {
+		if(this.material != null) {
+			this.material.destroy();
+			this.material = null;
+		}
+	}
 }
 class BillboardMesh {
 	private m_vs: Float32Array = null;
@@ -139,7 +141,11 @@ class BillboardMesh {
 		mh.setUVS(this.m_uvs);
 		mh.setIVS(this.m_ivs);
 	}
-	destroy(): void {}
+	destroy(): void {
+		this.m_vs = null;
+		this.m_uvs = null;
+		this.m_ivs = null;
+	}
 }
 class BillboardEntity {
 	private m_material: BillboardMaterial = null;
@@ -295,8 +301,14 @@ class BillboardEntity {
 			this.entity.destroy();
 			this.entity = null;
 		}
-		this.m_material = null;
-		this.m_mesh = null;
+		if(this.m_material != null) {
+			this.m_material.destroy();
+			this.m_material = null;
+		}
+		if(this.m_mesh != null) {
+			this.m_mesh.destroy();
+			this.m_mesh = null;
+		}
 		this.m_uniformData = null;
 	}
 }

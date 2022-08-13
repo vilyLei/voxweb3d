@@ -41,6 +41,7 @@ import { MaterialContext } from "../../materialLab/base/MaterialContext";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 import { RenderDrawMode } from "../../vox/render/RenderConst";
+import VtxBufConst from "../../vox/mesh/VtxBufConst";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 
@@ -184,6 +185,7 @@ export {
 	RendererState,
 
 	RenderDrawMode,
+	VtxBufConst,
 
 	Vector3D,
 	Matrix4,

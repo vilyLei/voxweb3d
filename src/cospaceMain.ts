@@ -30,10 +30,11 @@
 // import { DemoCoRendererSubScene as Demo } from "./cospace/demo/DemoCoRendererSubScene";
 // import { DemoCoSimpleRendereScene as Demo } from "./cospace/demo/DemoCoSimpleRendereScene";
 
-import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
+// import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
 
 // import { DemoOutline as Demo } from "./cospace/demo/DemoOutline";
 // import { DemoPostOutline as Demo } from "./cospace/demo/DemoPostOutline";
+import { DemoCoParticle as Demo } from "./cospace/demo/DemoCoParticle";
 
 // import { DemoCoEngine as Demo } from "./cospace/demo/DemoCoEngine";
 // import { DemoInputText as Demo } from "./cospace/demo/DemoInputText";
