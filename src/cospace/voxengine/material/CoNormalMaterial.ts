@@ -1,5 +1,5 @@
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
-import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
+import IShaderCodeBuffer from "../../../vox/material/IShaderCodeBuffer";
 import IShaderMaterial from "../../../vox/material/mcase/IShaderMaterial";
 import { ICoRScene } from "../ICoRScene";
 
@@ -16,7 +16,8 @@ class CoNormalMaterial {
 	build(textureEnabled: boolean = false): CoNormalMaterial {
 		if (this.material == null) {
 			let material = CoRScene.createShaderMaterial("coApp_nv_material");
-			material.setShaderBuilder((coder: IShaderCodeBuilder): void => {
+			material.setShaderBuilder((coderBuilder: IShaderCodeBuffer): void => {
+				let coder = coderBuilder.getShaderCodeBuilder();
 				coder.addVertLayout("vec3", "a_nvs");
 				coder.addVarying("vec3", "v_worldNormal");
 				coder.vertMatrixInverseEnabled = true;

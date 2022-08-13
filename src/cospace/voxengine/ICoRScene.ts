@@ -1,6 +1,7 @@
 import IVector3D from "../../vox/math/IVector3D";
 import IMatrix4 from "../../vox/math/IMatrix4";
 import IColor4 from "../../vox/material/IColor4";
+import IAABB from "../../vox/geom/IAABB";
 
 import IRendererParam from "../../vox/scene/IRendererParam";
 import { ICoRendererScene } from "./scene/ICoRendererScene";
@@ -18,12 +19,39 @@ import { CoRendererDevice } from "./render/CoRendererDevice";
 import { CoRendererState } from "./render/CoRendererState";
 
 interface CoVec3 {
+
 	ONE: IVector3D;
 	ZERO: IVector3D;
 	X_AXIS: IVector3D;
 	Y_AXIS: IVector3D;
 	Z_AXIS: IVector3D;
-	Distance(va: IVector3D, vb: IVector3D): number;
+
+	/**
+     * 右手法则(为正)
+     */
+	Cross(a: IVector3D, b: IVector3D, result: IVector3D): void;
+    // (va1 - va0) 叉乘 (vb1 - vb0), 右手法则(为正)
+    CrossSubtract(va0: IVector3D, va1: IVector3D, vb0: IVector3D, vb1: IVector3D, result: IVector3D): void;
+    Subtract(a: IVector3D, b: IVector3D, result: IVector3D): void;
+    DistanceSquared(a: IVector3D, b: IVector3D): number;
+    DistanceXYZ(x0: number, y0: number, z0: number, x1: number, y1: number, z1: number): number;
+	Distance(v0: IVector3D, v1: IVector3D): number;
+    /**
+     * get angle degree between two IVector3D objects
+     * @param v0 src IVector3D object
+     * @param v1 dst IVector3D object
+     * @returns angle degree
+     */
+    AngleBetween(v0: IVector3D, v1: IVector3D): number;
+    /**
+     * get angle radian between two IVector3D objects
+     * @param v0 src IVector3D object
+     * @param v1 dst IVector3D object
+     * @returns angle radian
+     */
+    RadianBetween(v0: IVector3D, v1: IVector3D): number;
+    RadianBetween2(v0: IVector3D, v1: IVector3D): number;
+    Reflect(iv: IVector3D, nv: IVector3D, rv: IVector3D): void;
 }
 
 interface CoMouseEvent {
@@ -96,19 +124,34 @@ interface CoMaterialPipeType {
     VSM_SHADOW: number;
     GLOBAL_LIGHT: number;
 }
+interface CoRenderDrawMode {
+    ELEMENTS_TRIANGLES: number;
+    ELEMENTS_TRIANGLE_STRIP: number;
+    ELEMENTS_TRIANGLE_FAN: number;
+    ELEMENTS_INSTANCED_TRIANGLES: number;
+    ARRAYS_LINES: number;
+    ARRAYS_LINE_STRIP: number;
+    ARRAYS_POINTS: number;
+    ELEMENTS_LINES: number;
+    DISABLE: number;
+}
+
 interface ICoRScene {
+
+	RendererDevice: CoRendererDevice;
+	RendererState: CoRendererState;
+	RenderDrawMode: CoRenderDrawMode;
 
 	Vector3D: CoVec3;
 	MouseEvent: CoMouseEvent;
 	ShaderCodeUUID: CoShaderCodeUUID;
 	MaterialContextParam: CoMaterialContextParam;
 	MaterialPipeType: CoMaterialPipeType;
-	RendererState: CoRendererState;
-	RendererDevice: CoRendererDevice;
+
 	createVec3(px?: number, py?: number, pz?: number, pw?: number): IVector3D;
 	createMat4(pfs32?: Float32Array, index?: number): IMatrix4;
-
 	createColor4(pr?: number, pg?: number, pb?: number, pa?: number): IColor4;
+	createAABB(): IAABB;
 
 	applySceneBlock(rsecne: ICoRendererScene): void;
 	/**
@@ -144,14 +187,21 @@ interface ICoRScene {
 	/**
 	 * @param model geometry model
 	 * @param pmaterial IRenderMaterial instance, the default is null.
-	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
+	 * @param texEnabled texture enabled in the material, the default is true.
+	 * @param vbWhole vtx buffer is whole data or not, the default is false.
 	 */
-	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, vbWhole?: boolean): ITransformEntity;
+	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, texEnabled?: boolean, vbWhole?: boolean): ITransformEntity;
 	/**
 	 * @param size th default value is 100.0
 	 */
 	createAxis3DEntity(size?: number): ITransformEntity;
 
+	/**
+	 * @param model IDataMesh instance
+	 * @param pmaterial IRenderMaterial instance.
+	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
+	 */
+	createDisplayEntityWithDataMesh(mesh: IDataMesh, pmaterial: IRenderMaterial, vbWhole?: boolean): ITransformEntity;
 	createDisplayEntity(): ITransformEntity;
 	createMouseEventEntity(): IMouseEventEntity;
 

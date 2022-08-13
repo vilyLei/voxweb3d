@@ -40,12 +40,14 @@ export default class MouseCamDrager {
         this.m_swing = false;
     }
     private mouseDownListener(evt: any): void {
-        this.m_dragSwinger.attach();
-        this.m_dragSlider.attach();
+        this.attach();
     }
     private mouseUpListener(evt: any): void {
-        this.m_dragSwinger.detach();
-        this.m_dragSlider.detach();
+        this.detach();
+    }
+    attach(): void {
+        this.m_dragSwinger.attach();
+        this.m_dragSlider.attach()
     }
     detach(): void {
         this.m_dragSwinger.detach();

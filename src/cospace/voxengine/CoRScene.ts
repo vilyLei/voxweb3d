@@ -1,10 +1,11 @@
-
 import IVector3D from "../../vox/math/IVector3D";
 import Vector3D from "../../vox/math/Vector3D";
 import IMatrix4 from "../../vox/math/IMatrix4";
 import Matrix4 from "../../vox/math/Matrix4";
 import IColor4 from "../../vox/material/IColor4";
 import Color4 from "../../vox/material/Color4";
+import IAABB from "../../vox/geom/IAABB";
+import AABB from "../../vox/geom/AABB";
 
 import RendererDevice from "../../vox/render/RendererDevice";
 import RendererState from "../../vox/render/RendererState";
@@ -19,7 +20,6 @@ import CoRendererScene from "./scene/CoRendererScene";
 import IDataMesh from "../../vox/mesh/IDataMesh";
 import DataMesh from "../../vox/mesh/DataMesh";
 import MaterialBase from "../../vox/material/MaterialBase";
-
 
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
@@ -40,6 +40,7 @@ import { MaterialContextParam } from "../../materialLab/base/MaterialContextPara
 import { MaterialContext } from "../../materialLab/base/MaterialContext";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
+import { RenderDrawMode } from "../../vox/render/RenderConst";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 
@@ -52,9 +53,11 @@ function createMat4(pfs32: Float32Array = null, index: number = 0): IMatrix4 {
 function createColor4(pr: number = 1.0, pg: number = 1.0, pb: number = 1.0, pa: number = 1.0): IColor4 {
 	return new Color4(pr, pg, pb, pa);
 }
+function createAABB(): IAABB {
+	return new AABB();
+}
 
 function applySceneBlock(rsecne: ICoRendererScene): void {
-
 	let rscene = rsecne;
 	let materialBlock = new RenderableMaterialBlock();
 	materialBlock.initialize();
@@ -69,10 +72,10 @@ function createRendererSceneParam(div: HTMLDivElement = null): RendererParam {
 let __$$$RenderScene: ICoRendererScene = null;
 function createRendererScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, sceneBlockEnabled: boolean = true): ICoRendererScene {
 	let rs = new CoRendererScene();
-	if(rparam != null) {
+	if (rparam != null) {
 		rs.initialize(rparam, 3);
-		if(sceneBlockEnabled) {
-			applySceneBlock( rs );
+		if (sceneBlockEnabled) {
+			applySceneBlock(rs);
 		}
 	}
 	__$$$RenderScene = rs;
@@ -85,7 +88,6 @@ function getRendererScene(): ICoRendererScene {
 	return __$$$RenderScene;
 }
 
-
 function createMouseEvt3DDispatcher(): IEvtDispatcher {
 	return new MouseEvt3DDispatcher();
 }
@@ -94,7 +96,6 @@ function createDataMesh(): IDataMesh {
 }
 
 function createDataMeshFromModel(model: CoGeomDataType, material: MaterialBase = null, vbWhole: boolean = false): IDataMesh {
-
 	const dataMesh = new DataMesh();
 	dataMesh.vbWholeDataEnabled = vbWhole;
 	dataMesh.setVS(model.vertices);
@@ -102,7 +103,7 @@ function createDataMeshFromModel(model: CoGeomDataType, material: MaterialBase =
 	dataMesh.setNVS(model.normals);
 	dataMesh.setIVS(model.indices);
 
-	if(material != null) {
+	if (material != null) {
 		dataMesh.setVtxBufRenderData(material);
 		dataMesh.initialize();
 	}
@@ -118,7 +119,6 @@ function createShaderMaterial(shd_uniqueName: string): IShaderMaterial {
 	return new ShaderMaterial(shd_uniqueName);
 }
 function createDisplayEntityFromModel(model: CoGeomDataType, material: MaterialBase = null, vbWhole: boolean = false): ITransformEntity {
-
 	if (material == null) {
 		material = new Default3DMaterial();
 		material.initializeByCodeBuf();
@@ -140,7 +140,24 @@ function createDisplayEntityFromModel(model: CoGeomDataType, material: MaterialB
 	entity.setMaterial(material);
 	return entity;
 }
-
+function createDisplayEntityWithDataMesh(
+	mesh: IDataMesh,
+	pmaterial: IRenderMaterial,
+	texEnabled: boolean = true,
+	vbWhole: boolean = false
+): ITransformEntity {
+	console.log("CoRScene::createDisplayEntityWithDataMesh(), pmaterial: ", pmaterial, "texEnabled: ", texEnabled, "vbWhole: ", vbWhole);
+	if (pmaterial != null) {
+		pmaterial.initializeByCodeBuf(texEnabled);
+		mesh.setBufSortFormat(pmaterial.getBufSortFormat());
+		mesh.vbWholeDataEnabled = vbWhole;
+		mesh.initialize();
+	}
+	let entity = new DisplayEntity();
+	entity.setMaterial(pmaterial);
+	entity.setMesh(mesh);
+	return entity;
+}
 function createDisplayEntity(): ITransformEntity {
 	return new DisplayEntity();
 }
@@ -148,13 +165,11 @@ function createMouseEventEntity(): IMouseEventEntity {
 	return new MouseEventEntity();
 }
 
-
 function createAxis3DEntity(size: number = 100.0): ITransformEntity {
 	let axis = new Axis3DEntity();
 	axis.initialize(size);
 	return axis;
 }
-
 
 function createMaterialContext(): IMaterialContext {
 	return new MaterialContext();
@@ -164,19 +179,18 @@ function creatMaterialContextParam(): MaterialContextParam {
 }
 
 export {
+
 	RendererDevice,
 	RendererState,
 
+	RenderDrawMode,
+
 	Vector3D,
 	Matrix4,
-
 	Color4,
-
 	MouseEvent,
-
 	ShaderCodeUUID,
 	MaterialPipeType,
-
 	MaterialContextParam,
 	RendererParam,
 	CoRendererScene,
@@ -184,6 +198,7 @@ export {
 	createVec3,
 	createMat4,
 	createColor4,
+	createAABB,
 
 	applySceneBlock,
 	createRendererSceneParam,
@@ -191,17 +206,15 @@ export {
 	setRendererScene,
 	getRendererScene,
 	createMouseEvt3DDispatcher,
-
 	createDataMesh,
 	createDataMeshFromModel,
-
 	createDefaultMaterial,
 	createShaderMaterial,
 	createDisplayEntityFromModel,
 	createAxis3DEntity,
+	createDisplayEntityWithDataMesh,
 	createDisplayEntity,
 	createMouseEventEntity,
-
 	createMaterialContext,
 	creatMaterialContextParam
-}
+};

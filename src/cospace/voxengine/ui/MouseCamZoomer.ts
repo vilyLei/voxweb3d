@@ -41,7 +41,7 @@ export default class MouseCamZoomer {
     syncLookAt:boolean = false;
     /**
      * 取值为2, 表示相机的拉近拉远
-     * 取值为1, 表示相机的拖动 
+     * 取值为1, 表示相机的拖动
      */
     private m_flagType: number = 2;
     constructor() {
@@ -77,7 +77,7 @@ export default class MouseCamZoomer {
         this.m_lookAtCtrlEnabled = enabled;
     }
     private mouseWheelListener(evt: any): void {
-        
+
         if(evt.wheelDeltaY > 0) {
             this.m_fowardDis += this.m_mouseWheelZoomSpd;
         }

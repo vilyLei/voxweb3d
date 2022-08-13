@@ -64,8 +64,10 @@ import { IRenderableEntityBlock } from "../../../vox/scene/block/IRenderableEnti
 import CoRendererSubScene from "./CoRendererSubScene";
 
 import { ICoRenderer } from "../ICoRenderer";
+// import { ICoRScene } from "../ICoRScene";
 
 declare var CoRenderer: ICoRenderer;
+// declare var CoRScene: ICoRScene;
 
 export default class CoRendererScene implements IRenderer, ICoRendererScene, ICoRenderNode {
 	private static s_uid: number = 0;
@@ -340,7 +342,10 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 
 			let srcSt: any = CoRenderer.RendererState;
 			srcSt.rstb.buildToRST(RendererState);
-			// RendererState.Initialize(srcSt.Rstate, srcSt.VRO);
+			// let src: any = CoRenderer.RendererDevice;
+			// let dst: any = CoRScene.RendererDevice;
+			// dst.SHADERCODE_TRACE_ENABLED = src.SHADERCODE_TRACE_ENABLED;
+			// dst.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = src.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED;
 
 			this.m_processids[0] = 0;
 			this.m_processidsLen++;

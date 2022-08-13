@@ -16,7 +16,7 @@ import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwing
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 import { NormalUVViewerMaterial } from "./material/NormalUVViewerMaterial";
 import DivLog from "../../vox/utils/DivLog";
-import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
+import IShaderCodeBuffer from "../../vox/material/IShaderCodeBuffer";
 
 /**
  * draco 加载解析多线程示例
@@ -162,7 +162,8 @@ export class DemoDracoParser {
 	}
 	buildShdMaterial(textureEnabled: boolean = false): ShaderMaterial {
 		let material = new ShaderMaterial("shd_nv_material");
-		material.setShaderBuilder((coder: IShaderCodeBuilder): void => {
+		material.setShaderBuilder((coderBuilder: IShaderCodeBuffer): void => {
+			let coder = coderBuilder.getShaderCodeBuilder();
 			coder.addVertLayout("vec3", "a_nvs");
 			coder.addVarying("vec3", "v_worldNormal");
 			coder.vertMatrixInverseEnabled = true;
