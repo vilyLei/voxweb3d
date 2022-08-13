@@ -150,8 +150,8 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
                         }
                         buf.pipeline.build(buf.getShaderCodeBuilder());
                     }
-                    let fshdCode: string = buf.getFragShaderCode();
-                    let vshdCode: string = buf.getVertShaderCode();
+                    let fshdCode = buf.getFragShaderCode();
+                    let vshdCode = buf.getVertShaderCode();
                     shdData = MaterialResource.CreateShdData(
                         shdCode_uniqueName
                         , vshdCode

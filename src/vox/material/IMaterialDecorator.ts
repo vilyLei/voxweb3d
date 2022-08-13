@@ -13,6 +13,7 @@ import { ShaderTextureBuilder } from "../../vox/material/ShaderTextureBuilder";
 import { UniformComp } from "../../vox/material/component/UniformComp";
 
 interface IMaterialDecorator {
+
     /**
      * the  default  value is false
      */

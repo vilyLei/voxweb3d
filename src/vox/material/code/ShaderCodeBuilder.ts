@@ -84,7 +84,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
     fragMainCodeUnlock: boolean = true;
     vertHeadCodeUnlock: boolean = true;
     vertMainCodeUnlock: boolean = true;
-    autoBuildHeadCodeEnabled = true;
+    autoBuildHeadCodeEnabled: boolean = true;
 
     readonly uniform: IShaderCodeUniform;
     mathDefineEanbled: boolean = true;

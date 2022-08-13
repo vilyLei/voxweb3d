@@ -19,6 +19,7 @@ export default interface IShaderCodeBuilder {
     vertMatrixInverseEnabled: boolean;
     fragMatrixInverseEnabled: boolean;
     uniform: IShaderCodeUniform;
+    autoBuildHeadCodeEnabled: boolean;
     reset(): void;
     useHighPrecious(): void;
     useMediumPrecious(): void;
