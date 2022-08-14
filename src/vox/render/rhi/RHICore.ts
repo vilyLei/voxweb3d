@@ -5,20 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import {IRPStatus} from "./IRPStatus";
-class RPStatus implements IRPStatus {
-    
-    sdkVer: number = 0;
-    version: number = 0;
-    drawCallTimes: number = 0;
-    drawTrisNumber: number = 0;
-    povNumber: number = 0;
-
-    reset(): void {
-        this.drawCallTimes = 0;
-        this.drawTrisNumber = 0;
-        this.povNumber = 0;
-    }
+class RHICore {
+    constructor(){}
 }
 
-export { RPStatus };
+export { RHICore };
