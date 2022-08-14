@@ -24,6 +24,7 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
     private m_clipEnabled: boolean = false;
     private m_clipMixEnabled: boolean = false;
     private m_spdScaleEnabled: boolean = false;
+    
     flipVerticalUV: boolean = false;
     premultiplyAlpha: boolean = false;
     

@@ -93,15 +93,16 @@ export default class OcclusionPostOutline implements IOcclusionPostOutline{
         if (this.m_rscene == null) {
 
             this.m_rscene = rscene;
-            this.m_bounds = rscene.entityBlock.createAABB();
-            this.m_expandBias = rscene.entityBlock.createVector3D(10.0, 10.0, 10.0);
-            this.m_testPlane.__tV0 = rscene.entityBlock.createVector3D();
-            this.m_testPlane.nv = rscene.entityBlock.createVector3D(0.0, 1.0, 0.0);
+            let eb = this.m_rscene.entityBlock;
+            this.m_bounds = eb.createAABB();
+            this.m_expandBias = eb.createVector3D(10.0, 10.0, 10.0);
+            this.m_testPlane.__tV0 = eb.createVector3D();
+            this.m_testPlane.nv = eb.createVector3D(0.0, 1.0, 0.0);
 
-            let materialBlock = this.m_rscene.materialBlock;
+            let mb = this.m_rscene.materialBlock;
 
             this.m_preDecor = new OutlinePreDecorator();
-            this.m_preMaterial = materialBlock.createSimpleMaterial(this.m_preDecor);
+            this.m_preMaterial = mb.createSimpleMaterial(this.m_preDecor);
             this.m_preMaterial.initializeByCodeBuf(false);
 
             this.m_preColorRTT = this.m_rscene.textureBlock.createRTTTex2D(32, 32, false);
@@ -134,18 +135,18 @@ export default class OcclusionPostOutline implements IOcclusionPostOutline{
             this.m_boundsDecor.setThickness(1.0);
             this.m_boundsDecor.setDensity(1.5);
 
-            this.m_outlinePlane = this.m_rscene.entityBlock.createEntity();
-            this.m_outlinePlane.copyMeshFrom(this.m_rscene.entityBlock.screenPlane);
-            this.m_outlinePlane.setMaterial(materialBlock.createSimpleMaterial(this.m_screenDecor));
+            this.m_outlinePlane = eb.createEntity();
+            this.m_outlinePlane.copyMeshFrom(eb.screenPlane);
+            this.m_outlinePlane.setMaterial(mb.createSimpleMaterial(this.m_screenDecor));
 
-            this.m_boundsEntity = this.m_rscene.entityBlock.createEntity();
-            this.m_boundsEntity.copyMeshFrom(this.m_rscene.entityBlock.unitBox);
-            this.m_boundsEntity.setMaterial(materialBlock.createSimpleMaterial(this.m_boundsDecor));
+            this.m_boundsEntity = eb.createEntity();
+            this.m_boundsEntity.copyMeshFrom(eb.unitBox);
+            this.m_boundsEntity.setMaterial(mb.createSimpleMaterial(this.m_boundsDecor));
 
             let renderingState = this.m_rscene.getRenderProxy().renderingState;
 
-            let plMaterial = materialBlock.createSimpleMaterial(new OccPostOutLineScreen(this.m_outLineRTT));
-            this.m_displayPlane = this.m_rscene.entityBlock.createEntity();
+            let plMaterial = mb.createSimpleMaterial(new OccPostOutLineScreen(this.m_outLineRTT));
+            this.m_displayPlane = eb.createEntity();
             this.m_displayPlane.setMaterial(plMaterial);
             this.m_displayPlane.copyMeshFrom(this.m_outlinePlane);
             this.m_displayPlane.setRenderState(renderingState.BACK_TRANSPARENT_ALWAYS_STATE);
