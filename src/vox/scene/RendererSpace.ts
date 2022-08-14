@@ -142,8 +142,8 @@ export default class RendererSpace implements IRendererSpace {
 		//      //  }
 		//  }
 	}
-	update(): void {}
-	runBegin(): void {}
+	update(): void { }
+	runBegin(): void { }
 	run(): void {
 		let nextNode: Entity3DNode = this.m_nodeWLinker.getBegin();
 		if (nextNode != null) {
@@ -203,7 +203,7 @@ export default class RendererSpace implements IRendererSpace {
 			this.m_raySelector.run();
 		}
 	}
-	runEnd(): void {}
+	runEnd(): void { }
 	getCullingNodeHead(): Entity3DNode {
 		return this.m_nodeSLinker.getBegin();
 	}

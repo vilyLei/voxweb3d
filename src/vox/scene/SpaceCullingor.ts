@@ -6,17 +6,15 @@
 /***************************************************************************/
 // 整个渲染器的空间管理类接口规范
 
-import Vector3D from "../../vox/math/Vector3D";
 import IAABB from "../../vox/geom/IAABB";
-import CameraBase from "../../vox/view/CameraBase";
-import RendererState from "../../vox/render/RendererState";
-import Entity3DNode from "../../vox/scene/Entity3DNode";
+import { IRenderCamera } from "../../vox/render/IRenderCamera";
+import IEntity3DNode from "../../vox/scene/IEntity3DNode";
 import ISpacePOV from "../../vox/scene/occlusion/ISpacePOV";
 import ISpaceCullingor from "../../vox/scene/ISpaceCullingor";
 
 export default class SpaceCullingor implements ISpaceCullingor {
-	private m_camera: CameraBase = null;
-	private m_headNode: Entity3DNode = null;
+	private m_camera: IRenderCamera = null;
+	private m_headNode: IEntity3DNode = null;
 	private m_pocRawList: ISpacePOV[] = [];
 	private m_pocList: ISpacePOV[] = [];
 	private m_povNumber = 0;
@@ -26,10 +24,10 @@ export default class SpaceCullingor implements ISpaceCullingor {
 			this.m_pocList.push(null);
 		}
 	}
-	setCamera(cam: CameraBase): void {
+	setCamera(cam: IRenderCamera): void {
 		this.m_camera = cam;
 	}
-	setCullingNodeHead(headNode: Entity3DNode): void {
+	setCullingNodeHead(headNode: IEntity3DNode): void {
 		this.m_headNode = headNode;
 	}
 	getPOVNumber(): number {
@@ -40,7 +38,7 @@ export default class SpaceCullingor implements ISpaceCullingor {
 		let nextNode = this.m_headNode;
 		if (nextNode != null) {
 			let ab: IAABB = null;
-			let cam: CameraBase = this.m_camera;;
+			let cam = this.m_camera;;
 			let poc: ISpacePOV = null;
 			let pocList: ISpacePOV[] = this.m_pocList;
 			let i: number = 0;

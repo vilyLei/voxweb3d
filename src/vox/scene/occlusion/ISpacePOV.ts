@@ -6,19 +6,18 @@
 /***************************************************************************/
 // Project Occlusion Volume
 
-import Vector3D from "../../../vox/math/Vector3D";
+import IVector3D from "../../../vox/math/IVector3D";
 import IAABB from "../../../vox/geom/IAABB";
-import CameraBase from "../../../vox/view/CameraBase";
+import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 
-export default interface ISpacePOV
-{
-    status:number;
-    enabled:boolean;
-    updateOccData():void;
-    getOccRadius():number;
-    getOccCenter():Vector3D;
-    addSubPov(pov:ISpacePOV):void
-    cameraTest(camera:CameraBase):void;
-    begin():void;
-    test(bounds:IAABB,cullMask:number):void;
+export default interface ISpacePOV {
+    status: number;
+    enabled: boolean;
+    updateOccData(): void;
+    getOccRadius(): number;
+    getOccCenter(): IVector3D;
+    addSubPov(pov: ISpacePOV): void
+    cameraTest(camera: IRenderCamera): void;
+    begin(): void;
+    test(bounds: IAABB, cullMask: number): void;
 }

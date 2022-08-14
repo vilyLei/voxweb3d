@@ -9,8 +9,9 @@ import RendererConst from "../../vox/scene/RendererConst";
 import IAABB from "../../vox/geom/IAABB";
 import IRPONode from "../../vox/render/IRPONode";
 import IRenderEntity from "../../vox/render/IRenderEntity";
+import IEntity3DNode from "./IEntity3DNode";
 
-export default class Entity3DNode {
+export default class Entity3DNode implements IEntity3DNode {
 	uid: number = -1;
 	rstatus: number = 0;
 	//distanceFlag:boolean = false;
@@ -42,56 +43,56 @@ export default class Entity3DNode {
 		this.spaceId = -1;
 		this.camVisi = 0;
 	}
+	// busy
+	private static s_b: number = 1;
+	// free
+	private static s_f: number = 0;
 
-	private static s_FLAG_BUSY: number = 1;
-	private static s_FLAG_FREE: number = 0;
-
-	private static m_nodeListLen: number = 0;
-	private static m_nodeList: Entity3DNode[] = [];
-	private static m_nodeFlagList: number[] = [];
-	private static m_freeIdList: number[] = [];
-	//private static m_camVisiList:number[] = [];
+	private static m_nodesLen: number = 0;
+	private static m_nodes: Entity3DNode[] = [];
+	private static m_flags: number[] = [];
+	private static m_freeIds: number[] = [];
 
 	static GetFreeId(): number {
-		if (Entity3DNode.m_freeIdList.length > 0) {
-			return Entity3DNode.m_freeIdList.pop();
+		if (Entity3DNode.m_freeIds.length > 0) {
+			return Entity3DNode.m_freeIds.pop();
 		}
 		return -1;
 	}
 
 	static GetByUid(uid: number): Entity3DNode {
-		if (uid > -1 && uid < Entity3DNode.m_nodeListLen) {
-			return Entity3DNode.m_nodeList[uid];
+		if (uid > -1 && uid < Entity3DNode.m_nodesLen) {
+			return Entity3DNode.m_nodes[uid];
 		}
 		return null;
 	}
 	static SetCamVisiByUid(uid: number, status: number): void {
-		Entity3DNode.m_nodeList[uid].camVisi = status;
+		Entity3DNode.m_nodes[uid].camVisi = status;
 	}
 	static GetCamVisiByUid(uid: number): number {
-		return Entity3DNode.m_nodeList[uid].camVisi;
+		return Entity3DNode.m_nodes[uid].camVisi;
 	}
 	static Create(): Entity3DNode {
 		let node: Entity3DNode = null;
 		let index: number = Entity3DNode.GetFreeId();
 		if (index >= 0) {
-			node = Entity3DNode.m_nodeList[index];
+			node = Entity3DNode.m_nodes[index];
 			node.uid = index;
-			Entity3DNode.m_nodeFlagList[index] = Entity3DNode.s_FLAG_BUSY;
+			Entity3DNode.m_flags[index] = Entity3DNode.s_b;
 		} else {
 			// create a new nodeIndex
 			node = new Entity3DNode();
-			Entity3DNode.m_nodeList.push(node);
-			Entity3DNode.m_nodeFlagList.push(Entity3DNode.s_FLAG_BUSY);
-			node.uid = Entity3DNode.m_nodeListLen;
-			Entity3DNode.m_nodeListLen++;
+			Entity3DNode.m_nodes.push(node);
+			Entity3DNode.m_flags.push(Entity3DNode.s_b);
+			node.uid = Entity3DNode.m_nodesLen;
+			Entity3DNode.m_nodesLen++;
 		}
 		return node;
 	}
 	static Restore(pnode: Entity3DNode): void {
-		if (pnode != null && pnode.uid >= 0 && Entity3DNode.m_nodeFlagList[pnode.uid] == Entity3DNode.s_FLAG_BUSY) {
-			Entity3DNode.m_freeIdList.push(pnode.uid);
-			Entity3DNode.m_nodeFlagList[pnode.uid] = Entity3DNode.s_FLAG_FREE;
+		if (pnode != null && pnode.uid >= 0 && Entity3DNode.m_flags[pnode.uid] == Entity3DNode.s_b) {
+			Entity3DNode.m_freeIds.push(pnode.uid);
+			Entity3DNode.m_flags[pnode.uid] = Entity3DNode.s_f;
 			pnode.reset();
 		}
 	}

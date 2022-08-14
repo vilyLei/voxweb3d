@@ -27,7 +27,7 @@ import Entity3DNodeLinker from "../../vox/scene/Entity3DNodeLinker";
 import RunnableQueue from "../../vox/base/RunnableQueue";
 
 import IRPONodeBuilder from "../../vox/render/IRPONodeBuilder";
-import {IRendererInstanceContext} from "../../vox/scene/IRendererInstanceContext";
+import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import { TextureBlock } from "../../vox/texture/TextureBlock";
@@ -214,7 +214,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
     createFBOInstance(): FBOInstance {
         return new FBOInstance(this, this.textureBlock.getRTTStrore());
     }
-    
+
     createMatrix4(): IMatrix4 {
         return new Matrix4();
     }
@@ -323,7 +323,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
             Matrix4Pool.Allocate(rparam.getMatrix4AllocateSize());
             let camera: CameraBase = new CameraBase();
 
-            this.m_renderer.initialize(rparam, camera, new ShaderProgramBuilder( this.m_renderer.getRCUid() ));
+            this.m_renderer.initialize(rparam, camera, new ShaderProgramBuilder(this.m_renderer.getRCUid()));
             this.m_processids[0] = 0;
             this.m_processidsLen++;
             let process: RenderProcess = null;
@@ -482,7 +482,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
      * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
      */
     removeEntity(entity: IRenderEntity): void {
-        if(entity != null) {
+        if (entity != null) {
             let node: Entity3DNode = null;
             if (this.m_nodeWaitLinker != null) {
                 let node: Entity3DNode = this.m_nodeWaitQueue.getNodeByEntity(entity);
@@ -580,7 +580,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
             this.m_rcontext.renderBegin(this.m_currCamera == null);
         }
         this.m_currCamera = null;
-        if(this.m_accessor != null) {
+        if (this.m_accessor != null) {
             this.m_accessor.renderBegin(this);
         }
     }
@@ -705,6 +705,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
             if (this.m_cullingTestBoo) {
                 if (this.m_evt3DCtr != null || this.m_processUpdate || this.m_rspace.getRaySelector() != null) {
                     this.m_rspace.run();
+                    this.m_renderProxy.status.povNumber = this.m_rspace.getPOVNumber();
                 }
             }
         }
@@ -724,6 +725,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
     cullingTest(): void {
         if (this.m_rspace != null) {
             this.m_rspace.run();
+            this.m_renderProxy.status.povNumber = this.m_rspace.getPOVNumber();
         }
         this.m_cullingTestBoo = false;
     }
@@ -782,7 +784,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
         if (this.m_autoRunning) {
             this.m_runFlag = -1;
         }
-        if(this.m_accessor != null) {
+        if (this.m_accessor != null) {
             this.m_accessor.renderEnd(this);
         }
     }
