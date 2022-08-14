@@ -17,7 +17,7 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////// pov demos ////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 //  import {DemoQuadLine as Demo} from "./demo/DemoQuadLine";
@@ -26,8 +26,7 @@
 
 //  import {DemoCamVisibleTest as Demo} from "./demo/DemoCamVisibleTest";
 
-//  import * as DemoSphereOcclusion from "./voxocc/demo/DemoSphereOcclusion";
-//  import Demo = DemoSphereOcclusion.voxocc.demo.DemoSphereOcclusion;
+import {DemoSphereOcclusion as Demo} from "./voxocc/demo/DemoSphereOcclusion";
 
 //  import * as DemoQuadOcclusion from "./voxocc/demo/DemoQuadOcclusion";
 //  import Demo = DemoQuadOcclusion.voxocc.demo.DemoQuadOcclusion;
@@ -43,6 +42,10 @@
 
 //  import * as DemoOccBoxWall2 from "./voxocc/demo/DemoOccBoxWall2";
 //  import Demo = DemoOccBoxWall2.voxocc.demo.DemoOccBoxWall2;
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 //  import * as DemoRayTest from "./demo/DemoRayTest";
 //  import Demo = DemoRayTest.demo.DemoRayTest;
@@ -137,7 +140,7 @@
 
 //  import {DemoParticleGroup as Demo} from "./demo/DemoParticleGroup";
 
- import {DemoParticleEruption as Demo} from "./demo/DemoParticleEruption";
+//  import {DemoParticleEruption as Demo} from "./demo/DemoParticleEruption";
 
 //  import {DemoParticleClips as Demo} from "./demo/DemoParticleClips";
 
