@@ -80,6 +80,9 @@ export default class RendererSpace implements IRendererSpace {
 	getRaySelector(): IRaySelector {
 		return this.m_raySelector;
 	}
+	getPOVNumber(): number {
+		return this.m_cullingor.getPOVNumber();
+	}
 	// 可以添加真正被渲染的实体也可以添加只是为了做检测的实体(不允许有material)
 	addEntity(entity: IRenderEntity): void {
 		if (entity.getGlobalBounds() != null && entity.spaceCullMask > SpaceCullingMask.NONE) {

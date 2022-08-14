@@ -16,5 +16,6 @@ export default interface ISpaceCullingor
     addPOVObject(pov:ISpacePOV):void;
     setCamera(cam:IRenderCamera):void;
     setCullingNodeHead(headNode:Entity3DNode):void;
+    getPOVNumber(): number;
     run():void;        
 }

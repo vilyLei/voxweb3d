@@ -22,6 +22,8 @@ import { IStencil } from "../../vox/render/rendering/IStencil";
 import { IRenderingColorMask } from "./rendering/IRenderingColorMask";
 import { IRenderingState } from "./rendering/IRenderingState";
 
+import { IRPStatus } from "./status/IRPStatus";
+
 export default interface IRenderProxy {
 
     RGBA: number;
@@ -52,7 +54,7 @@ export default interface IRenderProxy {
     readonly stencil: IStencil;
     readonly renderingState: IRenderingState;
     readonly colorMask: IRenderingColorMask;
-
+    readonly status: IRPStatus;
     /**
      * @returns return system gpu context
      */

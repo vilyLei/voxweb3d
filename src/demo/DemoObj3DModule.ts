@@ -120,7 +120,8 @@ export class DemoObj3DModule {
 
         this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         if (this.m_profileInstance != null) this.m_profileInstance.run();
-        this.m_statusDisp.statusInfo = "/" + RendererState.DrawCallTimes;
+		const st = this.m_rscene.getRenderProxy().status;
+        this.m_statusDisp.statusInfo = "/" + st.drawCallTimes;
     }
 }
 export default DemoObj3DModule;

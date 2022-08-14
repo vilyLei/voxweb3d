@@ -11,6 +11,7 @@ interface IRPStatus {
     drawCallTimes: number;
     drawTrisNumber: number;
     povNumber: number;
+    reset(): void;
 }
 
 export {IRPStatus};

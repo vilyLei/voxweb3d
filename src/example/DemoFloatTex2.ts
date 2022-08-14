@@ -417,7 +417,8 @@ export namespace demo {
         }
         run(): void {
             // show fps status
-            this.m_statusDisp.statusInfo = "/" + RendererState.DrawCallTimes;
+            const st = this.m_rscene.getRenderProxy().status;
+            this.m_statusDisp.statusInfo = "/" + st.drawCallTimes;
             this.m_statusDisp.update();
 
             this.updateLoaders();

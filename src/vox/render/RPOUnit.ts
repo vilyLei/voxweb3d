@@ -16,7 +16,6 @@ import ITextureRenderObj from "../../vox/render/ITextureRenderObj";
 import { RenderColorMask } from "../../vox/render/rendering/RenderColorMask";
 import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject";
 
-import RendererState from "../../vox/render/RendererState";
 import IRenderProxy from "../../vox/render/IRenderProxy";
 import ShaderUBO from "../../vox/material/ShaderUBO";
 import IRenderShaderUniform from "./uniform/IRenderShaderUniform";
@@ -25,12 +24,12 @@ import IPoolNode from "../../vox/base/IPoolNode";
 import { ROIndicesRes } from "./vtx/ROIndicesRes";
 import DebugFlag from "../debug/DebugFlag";
 
-const RST = RendererState;
 /**
  * 渲染器渲染运行时核心关键执行显示单元,一个unit代表着一个draw call所渲染的所有数据
  * renderer rendering runtime core executable display unit.
  */
 export default class RPOUnit implements IPoolNode, IRPODisplay {
+
     uid: number = -1;
     value: number = -1;
     // 记录自身和RPONode的对应关系
@@ -117,8 +116,9 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     }
     drawThis(rc: IRenderProxy): void {
 
-        ++RST.DrawCallTimes;
-        RST.DrawTrisNumber += this.trisNumber;
+        const st = rc.status;
+        st.drawCallTimes ++;
+        st.drawTrisNumber += this.trisNumber;
         // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
         let ivsCount = this.indicesRes.getVTCount();
         if (this.ivsCount <= ivsCount) ivsCount = this.ivsCount;
@@ -130,7 +130,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
             rc.resetPolygonOffset();
         }
         const rdm = RenderDrawMode;
-        let gl: any = rc.RContext;
+        let gl = rc.RContext;
         switch (this.drawMode) {
             case rdm.ELEMENTS_TRIANGLES:
                 // if(DebugFlag.Flag_0 > 0)console.log("RPOUnit::run(), TRIANGLES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
@@ -172,8 +172,9 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
 
     drawPart(rc: IRenderProxy): void {
 
-        ++RST.DrawCallTimes;
-        RST.DrawTrisNumber += this.trisNumber;
+        const st = rc.status;
+        st.drawCallTimes ++;
+        st.drawTrisNumber += this.trisNumber;
 
         // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
         let ivsCount = this.indicesRes.getVTCount();
@@ -187,8 +188,8 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         }
 
         const rdm = RenderDrawMode;
-        let i: number = 0;
-        let gl: any = rc.RContext;
+        let i = 0;
+        let gl = rc.RContext;
         switch (this.drawMode) {
             case rdm.ELEMENTS_TRIANGLES:
                 for (; i < this.partTotal;) {

@@ -262,7 +262,8 @@ export class DemoCookTorrance {
             clearTimeout(this.m_timeoutId);
         }
         this.m_timeoutId = setTimeout(this.update.bind(this), 17);// 20 fps
-        this.m_statusDisp.statusInfo = "/" + RendererState.DrawCallTimes;
+		const st = this.m_rscene.getRenderProxy().status;
+        this.m_statusDisp.statusInfo = "/" + st.drawCallTimes;
         this.m_statusDisp.render();
         
         this.m_time += 0.01;

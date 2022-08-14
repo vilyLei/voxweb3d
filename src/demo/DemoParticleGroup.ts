@@ -396,7 +396,8 @@ export class DemoParticleGroup {
 
         this.m_rscene.run();
 
-        this.m_statusDisp.statusInfo = "/" + RendererState.DrawCallTimes;
+		const st = this.m_rscene.getRenderProxy().status;
+        this.m_statusDisp.statusInfo = "/" + st.drawCallTimes;
         this.m_statusDisp.update();
     }
 

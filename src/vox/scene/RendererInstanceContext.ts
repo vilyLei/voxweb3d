@@ -341,7 +341,8 @@ class RendererInstanceContext implements IRendererInstanceContext {
             this.m_adapter.update();
             this.m_adapter.setClearMaskClearAll();
             this.m_adapter.renderBegin();
-            RendererState.ResetInfo();
+            
+            this.m_renderProxy.status.reset();
             RendererState.Reset(this.m_renderProxy.getRenderContext());
             if (cameraDataUpdate) {
                 this.m_renderProxy.useCameraData();

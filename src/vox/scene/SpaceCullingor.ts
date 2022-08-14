@@ -19,6 +19,7 @@ export default class SpaceCullingor implements ISpaceCullingor {
 	private m_headNode: Entity3DNode = null;
 	private m_pocRawList: ISpacePOV[] = [];
 	private m_pocList: ISpacePOV[] = [];
+	private m_povNumber = 0;
 	addPOVObject(poc: ISpacePOV): void {
 		if (poc != null) {
 			this.m_pocRawList.push(poc);
@@ -31,7 +32,11 @@ export default class SpaceCullingor implements ISpaceCullingor {
 	setCullingNodeHead(headNode: Entity3DNode): void {
 		this.m_headNode = headNode;
 	}
+	getPOVNumber(): number {
+		return this.m_povNumber;
+	}
 	run(): void {
+		this.m_povNumber = 0;
 		let nextNode = this.m_headNode;
 		if (nextNode != null) {
 			let ab: IAABB = null;
@@ -56,7 +61,7 @@ export default class SpaceCullingor implements ISpaceCullingor {
 			}
 
 			len = j;
-			RendererState.POVNumber = j;
+			this.m_povNumber = j;
 			while (nextNode != null) {
 				nextNode.drawEnabled = false;
 				if (nextNode.rstatus > 0) {

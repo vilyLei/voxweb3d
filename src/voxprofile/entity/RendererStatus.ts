@@ -10,6 +10,7 @@ import IRenderProcess from "../../vox/render/IRenderProcess";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import H5FontSystem from "../../vox/text/H5FontSys";
 import Text2DEntity from "../../vox2d/text/Text2DEntity";
+import IRenderProxy from "../../vox/render/IRenderProxy";
 import RendererDevice from "../../vox/render/RendererDevice";
 class FPSInfo {
     private m_fps: number = 60;
@@ -45,9 +46,9 @@ class FPSInfo {
     }
 }
 export default class RendererStatus {
-    private m_rprocess: IRenderProcess = null;
-    private m_renderer: RendererInstance = null;
-
+    private m_rprocess: IRenderProcess;
+    private m_renderer: RendererInstance;
+    private m_renderProxy: IRenderProxy;
     private m_fpsInfo: FPSInfo = new FPSInfo();
     private m_textFPSNS: Text2DEntity = null;
     private m_textFPS: Text2DEntity = null;
@@ -74,6 +75,7 @@ export default class RendererStatus {
                 H5FontSystem.GetInstance().setRenderProxy(renderer.getRenderProxy());
                 H5FontSystem.GetInstance().initialize("fontTex", fontSize, 512, 512, false, false);
             }
+            this.m_renderProxy = renderer.getRenderProxy();
             this.m_renderer = renderer;
             this.m_rprocess = rprocess;
             
@@ -150,29 +152,30 @@ export default class RendererStatus {
     }
     run(syncStageSize: boolean): void {
         this.m_fpsInfo.updateFPS();
+        const st = this.m_renderProxy.status;
         if (this.m_fps != this.m_fpsInfo.getFPS()) {
             this.m_fps = this.m_fpsInfo.getFPS();
             this.m_textFPS.setText(this.m_fpsInfo.getFPSStr());
             this.m_textFPS.updateMeshToGpu();
             this.m_textFPS.update();
         }
-        if (this.m_drawCalls != RendererState.DrawCallTimes) {
-            let drawCallStr: string = (RendererState.DrawCallTimes) + "";
-            this.m_drawCalls = RendererState.DrawCallTimes;
+        if (this.m_drawCalls != st.drawCallTimes) {
+            let drawCallStr: string = (st.drawCallTimes) + "";
+            this.m_drawCalls = st.drawCallTimes;
             this.m_drawCall.setText(drawCallStr);
             this.m_drawCall.updateMeshToGpu();
             this.m_drawCall.update();
         }
-        if (this.m_drawTris != RendererState.DrawTrisNumber) {
-            let drawTriStr: string = (RendererState.DrawTrisNumber) + "";
-            this.m_drawTris = RendererState.DrawTrisNumber;
+        if (this.m_drawTris != st.drawTrisNumber) {
+            let drawTriStr: string = (st.drawTrisNumber) + "";
+            this.m_drawTris = st.drawTrisNumber;
             this.m_drawTri.setText(drawTriStr);
             this.m_drawTri.updateMeshToGpu();
             this.m_drawTri.update();
         }
-        if (this.m_povNumber != RendererState.POVNumber) {
-            let povNumber: string = (RendererState.POVNumber) + "";
-            this.m_povNumber = RendererState.POVNumber;
+        if (this.m_povNumber != st.povNumber) {
+            let povNumber: string = (st.povNumber) + "";
+            this.m_povNumber = st.povNumber;
             this.m_pov.setText(povNumber);
             this.m_pov.updateMeshToGpu();
             this.m_pov.update();

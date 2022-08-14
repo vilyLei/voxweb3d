@@ -309,7 +309,8 @@ export class DemoCTMToDraco {
 		if (this.m_profileInstance != null) {
 			this.m_profileInstance.run();
 		}
-		this.m_statusDisp.statusInfo = "/" + RendererState.DrawCallTimes;
+		const st = this.m_rscene.getRenderProxy().status;
+        this.m_statusDisp.statusInfo = "/" + st.drawCallTimes;
 	}
 	// 一份任务数据处理完成后由此侦听器回调函数接收到处理结果
 	private showGeom(model: any): void {

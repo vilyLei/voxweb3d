@@ -11,10 +11,6 @@ class RendererState {
 
     private static readonly rstb: IRSTBuilder;
 
-    static DrawCallTimes: number = 0;
-    static DrawTrisNumber: number = 0;
-    static POVNumber: number = 0;
-
     static readonly COLOR_MASK_ALL_TRUE: number;
     static readonly COLOR_MASK_ALL_FALSE: number;
     static readonly COLOR_MASK_RED_TRUE: number;
@@ -87,9 +83,6 @@ class RendererState {
         RendererState.rstb.reset(context);
     }
     static ResetInfo(): void {
-        RendererState.DrawCallTimes = 0;
-        RendererState.DrawTrisNumber = 0;
-        RendererState.POVNumber = 0;
     }
 
     static SetDepthTestEnable(enable: boolean): void {

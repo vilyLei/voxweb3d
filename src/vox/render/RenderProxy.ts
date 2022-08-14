@@ -47,8 +47,8 @@ import { RenderingColorMask } from "./rendering/RenderingColorMask";
 import { IRenderingState } from "./rendering/IRenderingState";
 import { RenderingState } from "./rendering/RenderingState";
 
-import {IRPStatus} from "./status/IRPStatus";
-import {RPStatus} from "./status/RPStatus";
+import { IRPStatus } from "./status/IRPStatus";
+import { RPStatus } from "./status/RPStatus";
 
 class RenderProxyParam {
 
