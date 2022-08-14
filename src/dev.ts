@@ -26,7 +26,7 @@
 
 //  import {DemoCamVisibleTest as Demo} from "./demo/DemoCamVisibleTest";
 
-import {DemoSphereOcclusion as Demo} from "./voxocc/demo/DemoSphereOcclusion";
+// import {DemoSphereOcclusion as Demo} from "./voxocc/demo/DemoSphereOcclusion";
 
 //  import * as DemoQuadOcclusion from "./voxocc/demo/DemoQuadOcclusion";
 //  import Demo = DemoQuadOcclusion.voxocc.demo.DemoQuadOcclusion;
@@ -140,7 +140,7 @@ import {DemoSphereOcclusion as Demo} from "./voxocc/demo/DemoSphereOcclusion";
 
 //  import {DemoParticleGroup as Demo} from "./demo/DemoParticleGroup";
 
-//  import {DemoParticleEruption as Demo} from "./demo/DemoParticleEruption";
+ import {DemoParticleEruption as Demo} from "./demo/DemoParticleEruption";
 
 //  import {DemoParticleClips as Demo} from "./demo/DemoParticleClips";
 

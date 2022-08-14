@@ -12,10 +12,12 @@ import IRenderEntity from "../../vox/render/IRenderEntity";
 import IEntity3DNode from "./IEntity3DNode";
 
 export default class Entity3DNode implements IEntity3DNode {
+	
 	uid: number = -1;
 	rstatus: number = 0;
-	//distanceFlag:boolean = false;
-	// project occlusion culling test enabled
+	/**
+	 * project occlusion culling test enabled
+	 */
 	pcoEnabled: boolean = false;
 	drawEnabled: boolean = true;
 	prev: Entity3DNode = null;
