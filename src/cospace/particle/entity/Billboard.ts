@@ -147,7 +147,7 @@ class BillboardMesh {
 		this.m_ivs = null;
 	}
 }
-class BillboardEntity {
+class Billboard {
 	private m_material: BillboardMaterial = null;
 	private m_mesh: BillboardMesh = null;
 
@@ -313,4 +313,4 @@ class BillboardEntity {
 	}
 }
 
-export { BillboardEntity };
+export { Billboard };

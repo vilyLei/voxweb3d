@@ -10,8 +10,8 @@ import ViewerMaterialCtx from "./coViewer/ViewerMaterialCtx";
 import { TextPackedLoader } from "../modules/loaders/TextPackedLoader";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 import { ViewerCoSApp } from "./coViewer/ViewerCoSApp";
-import { BillboardEntity } from "../particle/entity/BillboardEntity";
-import BillboardFlowEntity from "../particle/entity/BillboardFlowEntity";
+import { Billboard } from "../particle/entity/Billboard";
+import BillboardFlowEntity from "../particle/entity/BillboardFlowGroup";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 declare var CoRenderer: ICoRenderer;
@@ -57,7 +57,7 @@ export class DemoCoParticleFlow {
 
 		//RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 		// DivLog.SetDebugEnabled(true);
-		
+
 		let rparam = new RendererParam();
 		//rparam.maxWebGLVersion = 1;
 		rparam.setCamProject(45, 50.0, 10000.0);
@@ -109,7 +109,7 @@ export class DemoCoParticleFlow {
 		textures.push(loader.getTextureByUrl("static/assets/testEFT4.jpg"));
 		textures.push(loader.getTextureByUrl("static/assets/testFT4.jpg"));
 
-		//this.initFlowBillOneByOne(textures);
+		this.initFlowBillOneByOne(textures);
 		// this.initFlowBill(textures[textures.length - 1], textures[2], true);
 		this.initFlowBill(textures[textures.length - 1], null, false, true);
 		// this.initFlowBill(textures[textures.length - 1], null, true, true);
@@ -119,7 +119,7 @@ export class DemoCoParticleFlow {
 
 	private m_flowBill: Billboard3DFlowEntity = null;
 	private m_flowBill2: BillboardFlowEntity = null;
-	/*
+	///*
 	private initFlowBillOneByOne(textures: IRenderTexture[]): void {
 		let size: number = 100;
 		let params: number[][] = [
@@ -130,7 +130,8 @@ export class DemoCoParticleFlow {
 		];
 		let tex = textures[textures.length - 1];
 		let total: number = 15;
-		let billGroup: Billboard3DFlowEntity = new Billboard3DFlowEntity();
+		
+		let billGroup = new BillboardFlowEntity();
 		billGroup.createGroup(total);
 		let pv: Vector3D = new Vector3D();
 		for (let i: number = 0; i < total; ++i) {
@@ -152,12 +153,13 @@ export class DemoCoParticleFlow {
 			//billGroup.setVelocityAt(i,pv.x,pv.y,pv.z);
 		}
 		billGroup.initialize(true, false, false, [tex]);
-		this.m_rscene.addEntity(billGroup);
+		this.m_rscene.addEntity(billGroup.entity);
 
 		billGroup.setTime(5.0);
-		this.m_flowBill = billGroup;
+		this.m_flowBill2 = billGroup;
 	}
 	//*/
+	/*
 	private initFlowBill2(
 		tex: IRenderTexture,
 		colorTex: IRenderTexture,
@@ -213,7 +215,7 @@ export class DemoCoParticleFlow {
 		billGroup.setTime(5.0);
 		this.m_flowBill = billGroup;
 	}
-
+	//*/
 
 	private initFlowBill(
 		tex: IRenderTexture,
@@ -329,7 +331,7 @@ export class DemoCoParticleFlow {
 
 		let texList = [this.createTexByUrl("static/assets/a_02_c.jpg")];
 		console.log("create billboard entity...");
-		let entity = new BillboardEntity();
+		let entity = new Billboard();
 		entity.toBrightnessBlend();
 		entity.initialize(130, 130, texList);
 		entity.setXYZ(50, 100, 100);

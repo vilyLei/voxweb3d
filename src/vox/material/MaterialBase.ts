@@ -194,7 +194,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
             else {
                 this.m_texListLen = 0;
             }
-            let i: number = 0;
+            let i = 0;
             if (this.m_texList != null) {
                 for (; i < this.m_texList.length; ++i) {
                     this.m_texList[i].__$detachThis();
@@ -203,7 +203,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
             this.m_texDataEnabled = true;
             this.m_texList = texList;
             if (this.m_texList != null) {
-                let key: number = 31;
+                let key = 31;
                 for (i = 0; i < this.m_texList.length; ++i) {
                     key = key * 131 + this.m_texList[i].getUid();
                     this.m_texList[i].__$attachThis();
@@ -217,8 +217,8 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
     }
     setTextureAt(index: number, tex: IRenderTexture): void {
         if (index >= 0 && tex != null) {
-            let texList: IRenderTexture[] = this.m_texList;
-            let len: number = texList.length;
+            let texList = this.m_texList;
+            let len = texList.length;
             if (texList != null && texList[index] != tex && index < len && len > 0) {
                 texList = texList.slice(0);
                 texList[index].__$detachThis();
@@ -226,7 +226,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
                 this.m_texDataEnabled = tex.isDataEnough();
                 tex.__$attachThis();
                 let key = 31;
-                for (let i: number = 0; i < len; ++i) {
+                for (let i = 0; i < len; ++i) {
                     key = key * 131 + texList[i].getUid();
                 }
                 this.__$troMid = key;
@@ -248,8 +248,8 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
             if (this.m_texDataEnabled) {
                 return true;
             }
-            let boo: boolean = true;
-            let texList: IRenderTexture[] = this.m_texList;
+            let boo = true;
+            let texList = this.m_texList;
             for (let i: number = 0; i < this.m_texListLen; ++i) {
                 if (!texList[i].isDataEnough()) {
                     boo = false;
@@ -314,7 +314,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
         this.pipeTypes = null;
         if (this.getAttachCount() < 1) {
             if (this.m_texList != null) {
-                for (let i: number = 0; i < this.m_texList.length; ++i) {
+                for (let i = 0; i < this.m_texList.length; ++i) {
                     this.m_texList[i].__$detachThis();
                 }
             }

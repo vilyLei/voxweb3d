@@ -14,7 +14,7 @@ import BillboardFlowMesh from "../mesh/BillboardFlowMesh";
 import { BillboardFlowMaterial } from "../material/BillboardFlowMaterial";
 
 
-export default class BillboardFlowEntity {
+export default class BillboardFlowGroup {
 
     private m_billMaterial: BillboardFlowMaterial = null;
     private m_billMesh: BillboardFlowMesh = null;
