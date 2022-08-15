@@ -231,28 +231,6 @@ export default class BillboardFlowMesh {
 		m.initialize();
 		m.vtxTotal = 4 * this.m_total;
 		m.trisNumber = 2 * this.m_total;
-
-		// ROVertexBuffer.Reset();
-		// ROVertexBuffer.AddFloat32Data(this.m_vs, 4);
-		// ROVertexBuffer.AddFloat32Data(this.m_uvs, 2);
-		// ROVertexBuffer.AddFloat32Data(this.m_nvs, 4);
-		// ROVertexBuffer.AddFloat32Data(this.m_vs2, 4);
-		// ROVertexBuffer.AddFloat32Data(this.m_uvs2, 4);
-		// ROVertexBuffer.AddFloat32Data(this.m_nvs2, 4);
-
-		// ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
-		// this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-		// this.m_vbuf.setUintIVSData(this.m_ivs);
-		// this.vtCount = this.m_ivs.length;
-		// this.vtxTotal = 4 * this.m_total;
-		// this.trisNumber = 2 * this.m_total;
-		// //  console.log("vs: "+this.m_vs);
-		// //  console.log("nvs: "+this.m_nvs);
-		// //  console.log("uvs: "+this.m_uvs);
-		// //  console.log("ivs: "+this.m_ivs);
-		// //  console.log("this.m_ivs.length: "+this.m_ivs.length);
-		// //  console.log("vtCount: "+this.vtCount);
-		// this.buildEnd();
 	}
 
 	setUV(pu: number, pv: number, du: number, dv: number): void {
@@ -265,6 +243,7 @@ export default class BillboardFlowMesh {
 		}
 	}
 	destroy(): void {
+		
 		this.m_vs = null;
 		this.m_vs2 = null;
 		this.m_uvs = null;
