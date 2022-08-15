@@ -101,7 +101,12 @@ export default class BillboardFlowMaterial extends MaterialBase {
             ]);
         }
         else {
-            this.m_uniformData = new Float32Array([1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0]);
+            this.m_uniformData = new Float32Array([
+                1.0, 1.0, 0.0, 0.0,        // // sx,sy,time, depth offset
+                1.0, 1.0, 1.0, 0.0,
+                0.0, 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, 2.0
+            ]);
         }
     }
 

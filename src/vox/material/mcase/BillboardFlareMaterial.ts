@@ -57,10 +57,10 @@ export default class BillboardFlareMaterial extends MaterialBase {
         this.m_clipEnabled = clipEnabled;
         this.m_clipMixEnabled = clipMixEnabled;
         if (this.m_clipEnabled) {
-            this.m_uniformData = new Float32Array([1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 4.0, 0.5, 0.5]);
+            this.m_uniformData = new Float32Array([1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.0, 4.0, 0.5, 0.5]);
         }
         else {
-            this.m_uniformData = new Float32Array([1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
+            this.m_uniformData = new Float32Array([1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
         }
     }
     private m_time: number = 0;

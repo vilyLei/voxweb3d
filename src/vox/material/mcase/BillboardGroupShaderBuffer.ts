@@ -51,9 +51,6 @@ export default class BillboardGroupShaderBuffer extends ShaderCodeBuffer {
         this.m_coder.autoBuildHeadCodeEnabled = false;
         this.buildFragShd();
         this.buildVertShd();
-        // if (this.pipeline == null) {
-        //     this.m_coder.addShaderObject(BillboardGroupShaderCode);
-        // }
     }
 
     buildFragShd(): void {
