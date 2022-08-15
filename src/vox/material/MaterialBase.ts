@@ -20,7 +20,6 @@ import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline
 
 export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData {
 
-    //private static s_codeBuffer: ShaderCodeBuffer = null;
     private m_shduns: string = "";
     private m_shdData: ShaderData = null;
     private m_polygonOffset: number[] = null;
@@ -72,31 +71,20 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
     getShdUniqueName(): string {
         return this.m_shduns;
     }
-    // initializeByUniqueName(shdCode_uniqueName: string) {
-    //     if (this.getShaderData() == null) {
-    //         let shdData: ShaderData = MaterialResource.FindData(shdCode_uniqueName);
-    //         if (shdData != null) this.m_shdData = shdData;
-    //     }
-    //     return this.getShaderData() != null;
-    // }
     // get a shader code buf instance, for sub class override
     getCodeBuf(): ShaderCodeBuffer {
-        // if (MaterialBase.s_codeBuffer != null) {
-        //     return MaterialBase.s_codeBuffer;
-        // }
-        // MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
-        // return MaterialBase.s_codeBuffer;
         throw Error("Illgel operation !!!");
         return null;
     }
     hasShaderData(): boolean {
         if (this.m_shdData != null) {
-            if (this.m_shdData.haveTexture()) {
-                return this.texDataEnabled();
-            }
-            else {
-                return true;
-            }
+            return this.m_shdData.haveTexture() ? this.texDataEnabled() : true;
+            // if (this.m_shdData.haveTexture()) {
+            //     return this.texDataEnabled();
+            // }
+            // else {
+            //     return true;
+            // }
         }
         return false;
     }
@@ -283,7 +271,6 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
         return this.m_shdData.haveTexture();
     }
     getBufSortFormat(): number {
-        //trace("null != m_shdData: "+(null != m_shdData));
         return this.m_shdData != null ? this.m_shdData.getLayoutBit() : 0x0;
     }
     getBufTypeList(): number[] {
@@ -295,11 +282,11 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
     private m_attachCount: number = 0;
     __$attachThis(): void {
         ++this.m_attachCount;
-        //console.log("MaterialBase::__$attachThis() this.m_attachCount: "+this.m_attachCount);
+        // console.log("MaterialBase::__$attachThis() this.m_attachCount: "+this.m_attachCount);
     }
     __$detachThis(): void {
         --this.m_attachCount;
-        //console.log("MaterialBase::__$detachThis() this.m_attachCount: "+this.m_attachCount);
+        // console.log("MaterialBase::__$detachThis() this.m_attachCount: "+this.m_attachCount);
         if (this.m_attachCount < 1) {
             this.m_attachCount = 0;
         }

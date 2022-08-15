@@ -34,8 +34,8 @@
 
 // import { DemoOutline as Demo } from "./cospace/demo/DemoOutline";
 // import { DemoPostOutline as Demo } from "./cospace/demo/DemoPostOutline";
-import { DemoCoParticle as Demo } from "./cospace/demo/DemoCoParticle";
-// import { DemoCoParticleFlow as Demo } from "./cospace/demo/DemoCoParticleFlow";
+// import { DemoCoParticle as Demo } from "./cospace/demo/DemoCoParticle";
+import { DemoCoParticleFlow as Demo } from "./cospace/demo/DemoCoParticleFlow";
 
 // import { DemoCoEngine as Demo } from "./cospace/demo/DemoCoEngine";
 // import { DemoInputText as Demo } from "./cospace/demo/DemoInputText";

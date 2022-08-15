@@ -66,8 +66,6 @@ export class DemoParticleGroup {
             this.m_interaction.initialize( this.m_rscene );
 
             this.m_statusDisp.initialize();
-            RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
-            RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
             /*
             let axis:Axis3DEntity = new Axis3DEntity();
             axis.name = "axis";
@@ -124,14 +122,14 @@ export class DemoParticleGroup {
             //this.initFlowBillOneByOne(this.m_textures);
             //this.initFlowDirecBill(this.m_textures[7], null, false, true,true,true);
             //  this.initFlowDirecBill(this.m_textures[4], null, false, true, true, true);
-            //this.initFlowBill(this.m_textures[this.m_textures.length - 1],this.m_textures[2], true);
+            this.initFlowBill(this.m_textures[this.m_textures.length - 1],this.m_textures[2], true);
             //this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, false, true);
             //this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, true, true);
             //this.initFlowBill(this.m_textures[this.m_textures.length - 2],null, true, true,false,true);
-            //this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, false, false);
-            this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], true);
-            //this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], false);
-            //this.initFlareBill(this.m_textures[this.m_textures.length - 1], null, true);
+            // this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, false, false);
+            // this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], true);
+            // this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], false);
+            // this.initFlareBill(this.m_textures[this.m_textures.length - 1], null, true);
             //this.initFlareBill(this.m_textures[this.m_textures.length - 2], null, true, true);
             //this.initFlareBill(this.m_textures[this.m_textures.length - 1], null, false);
             //this.initBillGroup(this.m_textures);
@@ -287,7 +285,7 @@ export class DemoParticleGroup {
             [0.0, 0.5, 0.5, 0.5],
             [0.5, 0.5, 0.5, 0.5]
         ];
-        let total: number = 15;
+        let total: number = 1;
         let billGroup: Billboard3DFlareEntity = new Billboard3DFlareEntity();
         billGroup.createGroup(total);
         for (let i: number = 0; i < total; ++i) {

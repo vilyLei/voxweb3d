@@ -29,13 +29,13 @@ class BillboardFlareShaderBuffer extends BillboardGroupShaderBuffer {
         coder.addVertLayout("vec4", "a_vs2");
         coder.addVertLayout("vec4", "a_uvs2");
 
-        let paramTotal: number = this.m_clipEnabled ? 4 : 3;
+        let paramTotal = this.m_clipEnabled ? 4 : 3;
         coder.addVertUniform("vec4", "u_billParam", paramTotal);
 
         if (this.m_clipEnabled) coder.addDefine("BILL_PARAM_INDEX", "3");
 
     }
-    private static s_instance: BillboardFlareShaderBuffer = new BillboardFlareShaderBuffer();
+    private static s_instance = new BillboardFlareShaderBuffer();
     static GetInstance(): BillboardFlareShaderBuffer {
         if (BillboardFlareShaderBuffer.s_instance != null) {
             return BillboardFlareShaderBuffer.s_instance;
@@ -70,7 +70,7 @@ export default class BillboardFlareMaterial extends MaterialBase {
 
     protected buildBuf(): void {
 
-        let buf: BillboardFlareShaderBuffer = BillboardFlareShaderBuffer.GetInstance();
+        let buf = BillboardFlareShaderBuffer.GetInstance();
         buf.clipMixEnabled = this.m_clipMixEnabled;
         buf.brightnessEnabled = this.m_brightnessEnabled;
         buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled, this.m_clipEnabled, this.getTextureTotal() > 1);
@@ -79,7 +79,7 @@ export default class BillboardFlareMaterial extends MaterialBase {
         return BillboardFlareShaderBuffer.GetInstance();
     }
     createSelfUniformData(): ShaderUniformData {
-        let oum: ShaderUniformData = new ShaderUniformData();
+        let oum = new ShaderUniformData();
         oum.uniformNameList = ["u_billParam"];
         oum.dataList = [this.m_uniformData];
         return oum;
