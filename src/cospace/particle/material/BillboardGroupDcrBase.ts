@@ -88,10 +88,6 @@ class BillboardGroupDcrBase implements IMaterialDecorator {
         coder.autoBuildHeadCodeEnabled = false;
         this.buildFragShd(coder);
         this.buildVertShd(coder);
-        console.log("XXXXXXXXXX XXXXXXXXX $$$$$$$ %%%%%%%%%%%");
-        // if (this.pipeline == null) {
-            // coder.addShaderObject(BillboardGroupShaderCode);
-        // }
     }
 
     buildFragShd(coder: IShaderCodeBuilder): void {
@@ -99,8 +95,6 @@ class BillboardGroupDcrBase implements IMaterialDecorator {
         if (this.brightnessEnabled) {
             this.brightnessOverlayEnabeld = this.fogEnabled;
         }
-
-		let uniform = coder.uniform;
         if (this.m_hasOffsetColorTex) {
             if (this.m_useRawUVEnabled) {
                 coder.addDefine("VOX_USE_RAW_UV");

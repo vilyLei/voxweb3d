@@ -8,11 +8,7 @@
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 import { BillboardGroupDcrBase } from "./BillboardGroupDcrBase";
 
-import ShaderUniformData from "../../../vox/material/ShaderUniformData";
-import IShaderUniformData from "../../../vox/material/IShaderUniformData";
-
 class BillboardFlowDcr extends BillboardGroupDcrBase {
-
 
     playOnce: boolean = false;
     direcEnabled: boolean = false;
