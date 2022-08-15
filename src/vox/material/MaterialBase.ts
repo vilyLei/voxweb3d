@@ -121,10 +121,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
                     this.m_shduns = shdCode_uniqueName;
                 }
                 if (shdData == null) {
-                    // if (MaterialBase.s_codeBuffer == null) {
-                    //     MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
-                    // }
-                    // ShaderCodeBuffer.UseShaderBuffer(buf);
+                    
                     texEnabled = texEnabled || this.getTextureTotal() > 0;
                     buf.initialize(texEnabled);
                     shdCode_uniqueName = buf.getUniqueShaderName() + buf.keysString + buf.getShaderCodeBuilder().getUniqueNSKeyString();
@@ -134,11 +131,15 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
                     this.m_uniqueShaderName = this.m_shduns;
                 }
                 else {
-                    // ShaderCodeBuffer.UseShaderBuffer(buf);
                     texEnabled = texEnabled || this.getTextureTotal() > 0;
                     buf.initialize(texEnabled);
                 }
                 if (shdData == null) {
+                    if (buf.pipeline == null) {
+                        if (buf.getShaderCodeObject() != null) {
+                            buf.getShaderCodeBuilder().addShaderObject(buf.getShaderCodeObject());
+                        }
+                    }
                     buf.buildShader();
                     buf.buildDefine();
                     if (buf.pipeline != null) {
@@ -150,21 +151,21 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
                         }
                         buf.pipeline.build(buf.getShaderCodeBuilder());
                     }
-                    let fshdCode = buf.getFragShaderCode();
-                    let vshdCode = buf.getVertShaderCode();
+                    let fshd = buf.getFragShaderCode();
+                    let vshd = buf.getVertShaderCode();
                     shdData = MaterialResource.CreateShdData(
                         shdCode_uniqueName
-                        , vshdCode
-                        , fshdCode
+                        , vshd
+                        , fshd
                         , buf.adaptationShaderVersion
                         , ShaderCodeBuffer.GetPreCompileInfo()
                     );
                 }
+                
                 if (this.m_pipeLine != null) {
                     this.m_sharedUniforms = this.m_pipeLine.getSharedUniforms();
                 }
 
-                // ShaderCodeBuffer.UseShaderBuffer(null);
                 this.m_shdData = shdData;
             }
         }

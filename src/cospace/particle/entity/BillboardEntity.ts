@@ -25,12 +25,12 @@ class BillboardMaterial {
 		let coder = shdCodeBuf.getShaderCodeBuilder();
 		if (this.rotationEnabled) coder.addDefine("VOX_ROTATION");
 		if (this.brightnessEnabled) {
-			const MaterialPipeType = CoRScene.MaterialPipeType;
+			const MT = CoRScene.MaterialPipeType;
 			let f: boolean = shdCodeBuf.fogEnabled;
 			let pipeline = shdCodeBuf.pipeline;
 			if (pipeline != null) {
-				f = f || pipeline.hasPipeByType(MaterialPipeType.FOG_EXP2);
-				f = f || pipeline.hasPipeByType(MaterialPipeType.FOG);
+				f = f || pipeline.hasPipeByType(MT.FOG_EXP2);
+				f = f || pipeline.hasPipeByType(MT.FOG);
 			}
 			shdCodeBuf.brightnessOverlayEnabeld = f;
 		}

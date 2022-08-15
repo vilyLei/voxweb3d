@@ -8,12 +8,12 @@
 import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
 import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 import IShaderUniformData from "../../../vox/material/IShaderUniformData";
-import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 import { IMaterialDecorator } from "../../../vox/material/IMaterialDecorator";
 import { IShaderTextureBuilder } from "../../../vox/material/IShaderTextureBuilder";
 import BillboardFragShaderBase from "../shader/BillboardFragShaderBase";
 import { BillboardGroupShaderCode } from "../../../vox/material/mcase/glsl/BillboardGroupShaderCode";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
 class BillboardGroupDcrBase implements IMaterialDecorator {
 	protected m_uniqueName: string;
@@ -23,6 +23,7 @@ class BillboardGroupDcrBase implements IMaterialDecorator {
     protected m_useRawUVEnabled: boolean = false
     protected m_brightnessEnabled: boolean = false;
 
+	private m_udata: IShaderUniformData = null;
 	/**
 	 * the  default  value is false
 	 */
@@ -87,6 +88,10 @@ class BillboardGroupDcrBase implements IMaterialDecorator {
         coder.autoBuildHeadCodeEnabled = false;
         this.buildFragShd(coder);
         this.buildVertShd(coder);
+        console.log("XXXXXXXXXX XXXXXXXXX $$$$$$$ %%%%%%%%%%%");
+        // if (this.pipeline == null) {
+            // coder.addShaderObject(BillboardGroupShaderCode);
+        // }
     }
 
     buildFragShd(coder: IShaderCodeBuilder): void {
@@ -95,11 +100,8 @@ class BillboardGroupDcrBase implements IMaterialDecorator {
             this.brightnessOverlayEnabeld = this.fogEnabled;
         }
 
-        // let coder = this.m_coder;
 		let uniform = coder.uniform;
-        uniform.addDiffuseMap();
         if (this.m_hasOffsetColorTex) {
-            uniform.add2DMap("VOX_OFFSET_COLOR_MAP");
             if (this.m_useRawUVEnabled) {
                 coder.addDefine("VOX_USE_RAW_UV");
                 coder.addVarying("vec4", "v_uv");
@@ -121,10 +123,19 @@ class BillboardGroupDcrBase implements IMaterialDecorator {
     }
 
 	buildBufParams(): void {}
-	buildTextureList(builder: IShaderTextureBuilder): void {}
-
+	diffuseMap: IRenderTexture;
+	offsetColorMap: IRenderTexture;
+	buildTextureList(builder: IShaderTextureBuilder): void {
+		builder.addDiffuseMap(this.diffuseMap);
+		if (this.m_hasOffsetColorTex) {
+			builder.add2DMap(this.offsetColorMap, "VOX_OFFSET_COLOR_MAP");
+		}
+	}
+	setUniformData(udata: IShaderUniformData): void {
+		this.m_udata = udata;
+	}
 	createUniformData(): IShaderUniformData {
-		return null;
+		return this.m_udata;
 	}
 	getShaderCodeObjectUUID(): ShaderCodeUUID {
 		return ShaderCodeUUID.None;
