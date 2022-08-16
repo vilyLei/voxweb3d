@@ -12,6 +12,7 @@ import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 import { ViewerCoSApp } from "./coViewer/ViewerCoSApp";
 import Billboard from "../particle/entity/Billboard";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
+import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -96,6 +97,18 @@ export class DemoCoParticle {
 		entity.setXYZ(50,100,100);
 		entity.setRotationZ(50);
 		this.m_rscene.addEntity(entity.entity, 1);
+
+		// new Plane3DEntity
+
+		let plane = new Plane3DEntity()
+		plane.normalEnabled = true;
+		plane.initializeYOZ(-0.5,-0.5,1,1,[this.createTexByUrl()]);
+		
+		let pmh = plane.getMesh();
+		console.log("###: ", pmh.getIVS());
+		console.log("###: ", pmh.getVS());
+		console.log("###: ", pmh.getUVS());
+		console.log("###: ", pmh.getNVS());
 	}
 	isEngineEnabled(): boolean {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";

@@ -36,8 +36,7 @@ export class DemoCoEdit {
 		document.onmousedown = (evt: any): void => {
 			this.mouseDown(evt);
 		};
-
-
+		
 		this.initEngineModule();
 
 	}

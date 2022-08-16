@@ -22,10 +22,11 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
     
     private m_initFlag: boolean = true;
 
-    readonly screenPlane: DisplayEntity = new DisplayEntity();
-    readonly unitXOYPlane: DisplayEntity = new DisplayEntity();
-    readonly unitXOZPlane: DisplayEntity = new DisplayEntity();
-    readonly unitBox: DisplayEntity = new DisplayEntity();
+    readonly screenPlane = new DisplayEntity();
+    readonly unitXOYPlane = new DisplayEntity();
+    readonly unitXOZPlane = new DisplayEntity();
+    readonly unitYOZPlane = new DisplayEntity();
+    readonly unitBox = new DisplayEntity();
 
     constructor() {}
 
@@ -74,6 +75,14 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
             dm.vbWholeDataEnabled = true;
             dm.initialize();
             this.unitXOZPlane.setMesh( dm );
+
+            vs = new Float32Array([0, -0.5, -0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0, -0.5, 0.5]);
+            nvs = new Float32Array([1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]);
+            dm = new DataMesh();
+            dm.setVS( vs ).setUVS( uvs ).setNVS( nvs ).setIVS( ivs ).setVtxBufRenderData( vtxData );
+            dm.vbWholeDataEnabled = true;
+            dm.initialize();
+            this.unitYOZPlane.setMesh( dm );
         }
     }
     
