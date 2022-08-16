@@ -23,7 +23,13 @@ interface IAABB {
 	// 是否包含某一点(同一坐标空间的点)
 	containsYZ(vy: number, vz: number): boolean;
 
+	addPosition(pv: IVector3D): void;
+	addXYZ(pvx: number, pvy: number, pvz: number): void;
 	addXYZFloat32AndIndicesArr(vs: Float32Array, indices: Uint16Array | Uint32Array): void;
+	/**
+	 * @param vs Float32Array instance
+	 * @param step the default is 3
+	 */
 	addXYZFloat32Arr(vs: Float32Array, step?: number): void;
 
 	getLong(): number;
