@@ -138,7 +138,7 @@
 
 //  import {DemoParticleMixTex as Demo} from "./demo/DemoParticleMixTex";
 
- import {DemoParticleGroup as Demo} from "./demo/DemoParticleGroup";
+//  import {DemoParticleGroup as Demo} from "./demo/DemoParticleGroup";
 
 //  import {DemoParticleEruption as Demo} from "./demo/DemoParticleEruption";
 
@@ -397,7 +397,7 @@
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 
-// import {SlickRoad as Demo} from "./app/SlickRoad";
+import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 

@@ -12,9 +12,12 @@ import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 import { ViewerCoSApp } from "./coViewer/ViewerCoSApp";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
+import { DragMoveController } from "../../voxeditor/entity/DragMoveController";
+
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
 declare var CoMouseInteraction: ICoMouseInteraction;
+
 
 /**
  * cospace renderer

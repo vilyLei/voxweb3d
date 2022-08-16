@@ -7,6 +7,7 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import AABB from "../../vox/geom/AABB";
+import IMatrix4 from "../../vox/math/IMatrix4";
 import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
 import {IRenderCamera} from "../../vox/render/IRenderCamera";
 
@@ -466,6 +467,13 @@ class Camera implements IRenderCamera{
     }
     lookLHEnabled(): boolean {
         return !this.m_lookRHEnabled;
+    }
+    
+    getViewMatrix(): IMatrix4 {
+        return null;
+    }
+    getProjectMatrix(): IMatrix4 {
+        return null;
     }
 }
 export{Camera};

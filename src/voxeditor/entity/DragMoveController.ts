@@ -7,11 +7,11 @@ import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import IEntityTransform from "../../vox/entity/IEntityTransform";
 import RendererState from "../../vox/render/RendererState";
 import { IRayControl } from "../../voxeditor/base/IRayControl";
-import CameraBase from "../../vox/view/CameraBase";
-import MathConst from "../../vox/math/MathConst";
+// import CameraBase from "../../vox/view/CameraBase";
+
+import {IRenderCamera} from "../../vox/render/IRenderCamera";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 
-import { EditableEntity } from "../../voxeditor/entity/EditableEntity";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 
 class DragMoveTarget implements IEntityTransform {
@@ -111,7 +111,7 @@ class DragMoveController implements IRayControl {
     private m_editRendererScene: IRendererScene = null;
     private m_editRendererSceneProcessid: number = 0;
     private m_dragMoveTarget: DragMoveTarget = new DragMoveTarget();
-    private m_camera: CameraBase = null;
+    private m_camera: IRenderCamera = null;
 
     uuid: string = "DragMoveController";
     constructor() { }
@@ -263,7 +263,7 @@ class DragMoveController implements IRayControl {
 
             this.m_tempPos.copyFrom(this.m_dragMoveTarget.position);
 
-            this.m_camera = this.m_editRendererScene.getCamera() as CameraBase;
+            this.m_camera = this.m_editRendererScene.getCamera();
             this.m_camera.getViewMatrix().transformVector3Self(this.m_tempPos);
 
             this.m_pos0.setXYZ(0.0, 0.0, this.m_tempPos.z);

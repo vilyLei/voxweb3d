@@ -9,6 +9,7 @@ import IVector3D from "../../vox/math/IVector3D";
 import IAABB from "../../vox/geom/IAABB";
 
 import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
+import IMatrix4 from "../math/IMatrix4";
 
 interface IRenderCamera {
     
@@ -87,6 +88,9 @@ interface IRenderCamera {
     getPosition(): IVector3D;
     getNV(): IVector3D;
     
+    getViewMatrix(): IMatrix4;
+    getProjectMatrix(): IMatrix4;
+
     getLookAtPosition(): IVector3D;
 }
 
