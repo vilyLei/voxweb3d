@@ -10,6 +10,8 @@ import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import ITransformEntity from "../../vox/entity/ITransformEntity";
 import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
 import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";
+import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
+import { IMaterial } from "../../vox/material/IMaterial";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
@@ -178,6 +180,7 @@ interface ICoRScene {
 	 */
 	createDefaultMaterial(normalEnabled?: boolean): IRenderMaterial;
 	createShaderMaterial(shd_uniqueName: string): IShaderMaterial;
+	createMaterial(dcr: IMaterialDecorator): IMaterial;
 
 
 	createDataMesh(): IDataMesh;

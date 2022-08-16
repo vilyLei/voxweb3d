@@ -14,30 +14,32 @@ import Billboard from "../particle/entity/Billboard";
 import BillboardFlowEntity from "../particle/entity/BillboardFlowGroup";
 import BillboardFlareGroup from "../particle/entity/BillboardFlareGroup";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
+import { IMaterialContext } from "../../materialLab/base/IMaterialContext";
+import IVector3D from "../../vox/math/IVector3D";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
 declare var CoMouseInteraction: ICoMouseInteraction;
 
-import { RenderableMaterialBlock } from "../../vox/scene/block/RenderableMaterialBlock";
-import { MaterialContext } from "../../materialLab/base/MaterialContext";
-import RendererDevice from "../../vox/render/RendererDevice";
-import RendererParam from "../../vox/scene/RendererParam";
-import RendererScene from "../../vox/scene/RendererScene";
-import Axis3DEntity from "../../vox/entity/Axis3DEntity";
-import Billboard3DFlowEntity from "../../vox/entity/Billboard3DFlowEntity";
-import { UserInteraction } from "../../vox/engine/UserInteraction";
-import Vector3D from "../../vox/math/Vector3D";
+// import { RenderableMaterialBlock } from "../../vox/scene/block/RenderableMaterialBlock";
+// import { MaterialContext } from "../../materialLab/base/MaterialContext";
+// import RendererDevice from "../../vox/render/RendererDevice";
+// import RendererParam from "../../vox/scene/RendererParam";
+// import RendererScene from "../../vox/scene/RendererScene";
+// import Axis3DEntity from "../../vox/entity/Axis3DEntity";
+// import Billboard3DFlowEntity from "../../vox/entity/Billboard3DFlowEntity";
+// import { UserInteraction } from "../../vox/engine/UserInteraction";
+// import Vector3D from "../../vox/math/Vector3D";
 
 /**
  * cospace renderer
  */
 export class DemoCoParticleFlow {
-	private m_rscene: RendererScene = null;
-	private m_mctx: MaterialContext = null;
-	readonly interaction: UserInteraction = new UserInteraction();
+	// private m_rscene: RendererScene = null;
+	private m_mctx: IMaterialContext = null;
+	// readonly interaction: UserInteraction = new UserInteraction();
 
-	// private m_rscene: ICoRendererScene = null;
+	private m_rscene: ICoRendererScene = null;
 	private m_interact: IMouseInteraction = null;
 
 	constructor() {}
@@ -47,10 +49,10 @@ export class DemoCoParticleFlow {
 			this.mouseDown(evt);
 		};
 
-		// this.initEngineModule();
-		this.initDirecEngine();
+		this.initEngineModule();
+		// this.initDirecEngine();
 	}
-
+	/*
 	private initDirecEngine(): void {
 		RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 		RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -87,7 +89,7 @@ export class DemoCoParticleFlow {
 		// 	this.initInteract();
 		// }).load(url);
 	}
-
+	//*/
 	private initDirecScene(): void {
 		// let axis = new Axis3DEntity();
 		// axis.initialize(100);
@@ -123,10 +125,10 @@ export class DemoCoParticleFlow {
 		this.update();
 	}
 
-	private m_flowBill: Billboard3DFlowEntity = null;
+	// private m_flowBill: Billboard3DFlowEntity = null;
 	private m_flowBill2: BillboardFlowEntity = null;
 	private m_flareBill2: BillboardFlareGroup = null;
-	///*
+
 	private initFlowBillOneByOne(textures: IRenderTexture[]): void {
 		let size: number = 100;
 		let params: number[][] = [
@@ -140,7 +142,7 @@ export class DemoCoParticleFlow {
 
 		let billGroup = new BillboardFlowEntity();
 		billGroup.createGroup(total);
-		let pv: Vector3D = new Vector3D();
+		let pv: IVector3D;// = new Vector3D();
 		for (let i: number = 0; i < total; ++i) {
 			size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
 			billGroup.setSizeAndScaleAt(i, size, size, 0.5, 1.0);
@@ -205,64 +207,6 @@ export class DemoCoParticleFlow {
 		billGroup.setTime(0.0);
 		this.m_flareBill2 = billGroup;
 	}
-	/*
-	private initFlowBill2(
-		tex: IRenderTexture,
-		colorTex: IRenderTexture,
-		clipEnabled: boolean = false,
-		playOnce: boolean = false,
-		direcEnabled: boolean = false,
-		clipMixEnabled: boolean = false
-	): void {
-		let size: number = 100;
-		let params: number[][] = [
-			[0.0, 0.0, 0.5, 0.5],
-			[0.5, 0.0, 0.5, 0.5],
-			[0.0, 0.5, 0.5, 0.5],
-			[0.5, 0.5, 0.5, 0.5]
-		];
-		let total: number = 15;
-		let billGroup: Billboard3DFlowEntity = new Billboard3DFlowEntity();
-		billGroup.createGroup(total);
-		let pv: Vector3D = new Vector3D();
-		for (let i: number = 0; i < total; ++i) {
-			size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
-			billGroup.setSizeAndScaleAt(i, size, size, 0.5, 1.0);
-			if (!clipEnabled) {
-				let uvparam: number[] = params[Math.floor((params.length - 1) * Math.random() + 0.5)];
-				billGroup.setUVRectAt(i, uvparam[0], uvparam[1], uvparam[2], uvparam[3]);
-			}
-			billGroup.setTimeAt(i, 200.0 * Math.random() + 300, 0.2, 0.8, 0.0);
-			//billGroup.setTimeAt(i, 500.0, 0.4,0.6, 0.0);
-			billGroup.setBrightnessAt(i, Math.random() * 0.8 + 0.8);
-			//billGroup.setPositionAt(i,100.0,0.0,100.0);
-			//billGroup.setPositionAt(i, Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0);
-			pv.setTo(Math.random() * 500.0 - 250.0, Math.random() * 50.0 + 50.0, Math.random() * 500.0 - 250.0);
-			billGroup.setPositionAt(i, pv.x, pv.y, pv.z);
-
-			//billGroup.setVelocityAt(i,0.0,Math.random() * 2.0 + 0.2,0.0);
-			billGroup.setAccelerationAt(i, 0.003, -0.003, 0.0);
-			billGroup.setVelocityAt(i, 0.0, 0.8 + Math.random() * 0.8, 0.0);
-			pv.normalize();
-			pv.scaleBy((Math.random() * 2.0 + 0.2) * -1.0);
-			//billGroup.setVelocityAt(i,pv.x,pv.y,pv.z);
-		}
-		billGroup.setPlayParam(playOnce, direcEnabled, clipMixEnabled);
-		if (colorTex != null) {
-			billGroup.initialize(true, false, clipEnabled, [tex, colorTex]);
-			billGroup.setRGB3f(0.1, 0.1, 0.1);
-		} else {
-			billGroup.initialize(true, false, clipEnabled, [tex]);
-		}
-		//billGroup.setClipUVParam(4,16,0.25,0.25);
-		billGroup.setClipUVParam(2, 4, 0.5, 0.5);
-		this.m_rscene.addEntity(billGroup);
-
-		billGroup.setTime(5.0);
-		this.m_flowBill = billGroup;
-	}
-	//*/
-
 	private initFlowBill(
 		tex: IRenderTexture,
 		colorTex: IRenderTexture,
@@ -281,7 +225,8 @@ export class DemoCoParticleFlow {
 		let total: number = 15;
 		let billGroup = new BillboardFlowEntity();
 		billGroup.createGroup(total);
-		let pv: Vector3D = new Vector3D();
+		// let pv: Vector3D = new Vector3D();
+		let pv: IVector3D;
 		for (let i: number = 0; i < total; ++i) {
 			size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
 			billGroup.setSizeAndScaleAt(i, size, size, 0.5, 1.0);
@@ -332,19 +277,19 @@ export class DemoCoParticleFlow {
 			if (this.m_flareBill2 != null) this.m_flareBill2.updateTime(1.0);
 		}
 	}
-	run(): void {
-		if (this.m_rscene != null) {
-			// if (this.m_flowBill != null) this.m_flowBill.updateTime(1.0);
-			// if (this.m_flowBill2 != null) this.m_flowBill2.updateTime(1.0);
-			// if (this.m_flareBill2 != null) this.m_flareBill2.updateTime(1.0);
+	// run(): void {
+	// 	if (this.m_rscene != null) {
+	// 		// if (this.m_flowBill != null) this.m_flowBill.updateTime(1.0);
+	// 		// if (this.m_flowBill2 != null) this.m_flowBill2.updateTime(1.0);
+	// 		// if (this.m_flareBill2 != null) this.m_flareBill2.updateTime(1.0);
 
-			this.interaction.run();
-			// if (this.m_interact != null) {
-			// 	this.m_interact.run();
-			// }
-			this.m_rscene.run();
-		}
-	}
+	// 		this.interaction.run();
+	// 		// if (this.m_interact != null) {
+	// 		// 	this.m_interact.run();
+	// 		// }
+	// 		this.m_rscene.run();
+	// 	}
+	// }
 
 	private initEngineModule(): void {
 		let url = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.js";
@@ -434,8 +379,12 @@ export class DemoCoParticleFlow {
 			rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 			rparam.setCamProject(45, 20.0, 9000.0);
-			// this.m_rscene = CoRScene.createRendererScene(rparam, 3);
-			// this.m_rscene.setClearUint24Color(0x888888);
+
+			this.m_rscene = CoRScene.createRendererScene(rparam, 3);
+			this.m_rscene.setClearUint24Color(0x888888);
+
+			this.m_mctx = CoRScene.createMaterialContext();
+			this.m_mctx.initialize(this.m_rscene);
 		}
 	}
 	private loadOBJ(): void {
@@ -444,7 +393,7 @@ export class DemoCoParticleFlow {
 		url = baseUrl + "base4.obj";
 	}
 	private mouseDown(evt: any): void {}
-	run1(): void {
+	run(): void {
 		this.m_rscene;
 		if (this.m_rscene != null) {
 			if (this.m_interact != null) {

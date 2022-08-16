@@ -4,9 +4,11 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import AABB from "../../../vox/geom/AABB";
-import RawMesh from "../../../vox/mesh/RawMesh";
+import IAABB from "../../../vox/geom/IAABB";
+import IRawMesh from "../../../vox/mesh/IRawMesh";
 
+import { ICoRScene } from "../../voxengine/ICoRScene";
+declare var CoRScene: ICoRScene;
 /**
  * static billboard plane group
  */
@@ -23,8 +25,8 @@ export default class BillboardFlowMesh {
 	private m_endTime: number = 0;
 
 	flipVerticalUV: boolean = false;
-	mesh: RawMesh = new RawMesh();
-	bounds: AABB;
+	mesh: IRawMesh = CoRScene.createRawMesh();
+	bounds: IAABB;
 
 	setUVSFloatArr(uvsFloatArr8: Float32Array): void {
 		if (this.m_uvs == null) {
@@ -77,7 +79,7 @@ export default class BillboardFlowMesh {
 			for (i = 0; i < total; ++i) {
 				this.m_uvs.set(pduvs, i * 8);
 			}
-			this.bounds = new AABB();
+			this.bounds = CoRScene.createAABB();
 		}
 	}
 	setSizeAndScaleAt(i: number, width: number, height: number, minScale: number, maxScale: number): void {
@@ -243,7 +245,7 @@ export default class BillboardFlowMesh {
 		}
 	}
 	destroy(): void {
-		
+
 		this.m_vs = null;
 		this.m_vs2 = null;
 		this.m_uvs = null;

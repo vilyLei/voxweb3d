@@ -6,14 +6,16 @@
 /***************************************************************************/
 
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
-import { Color4 } from "../../voxengine/CoRScene";
 import { BillboardFlareDcr } from "./BillboardFlareDcr";
 import IShaderUniformData from "../../../vox/material/IShaderUniformData";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
-import { Material } from "../../../vox/material/Material";
+import IColor4 from "../../../vox/material/IColor4";
+import { IMaterial } from "../../../vox/material/IMaterial";
 
-// import { ICoRScene } from "../../voxengine/ICoRScene";
-// declare var CoRScene: ICoRScene;
+// import { Material } from "../../../vox/material/Material";
+
+import { ICoRScene } from "../../voxengine/ICoRScene";
+declare var CoRScene: ICoRScene;
 
 
 class BillboardFlareMaterial {
@@ -24,13 +26,14 @@ class BillboardFlareMaterial {
     private m_clipMixEnabled: boolean = false;
     private m_uniformData: Float32Array = null;
     private m_time: number = 0;
-    private m_color: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
+    private m_color: IColor4 = CoRScene.createColor4(1.0, 1.0, 1.0, 1.0);
     private m_brightness: number = 1.0;
 
 	private m_dcr = new BillboardFlareDcr();
+
 	diffuseMap: IRenderTexture = null;
     premultiplyAlpha: boolean = false;
-	material: Material = null;
+	material: IMaterial = null;
 
 	constructor(brightnessEnabled: boolean = true, alphaEnabled: boolean = false, clipEnabled: boolean = false, clipMixEnabled: boolean = false) {
 
@@ -64,7 +67,8 @@ class BillboardFlareMaterial {
         dcr.setParam(this.m_brightnessEnabled, this.m_alphaEnabled, this.m_clipEnabled, dcr.diffuseMap != null);
 		dcr.setUniformData( this.createSelfUniformData() );
 
-		this.material = new Material();
+		// this.material = new Material();
+		this.material = CoRScene.createMaterial(dcr);
 		this.material.setDecorator( dcr );
     }
 

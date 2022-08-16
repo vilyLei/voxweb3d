@@ -6,14 +6,14 @@
 /***************************************************************************/
 
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
-import { Color4 } from "../../voxengine/CoRScene";
 import { BillboardFlowDcr } from "./BillboardFlowDcr";
 import IShaderUniformData from "../../../vox/material/IShaderUniformData";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
-import { Material } from "../../../vox/material/Material";
+import { IMaterial } from "../../../vox/material/IMaterial";
+import IColor4 from "../../../vox/material/IColor4";
 
-// import { ICoRScene } from "../../voxengine/ICoRScene";
-// declare var CoRScene: ICoRScene;
+import { ICoRScene } from "../../voxengine/ICoRScene";
+declare var CoRScene: ICoRScene;
 
 
 
@@ -27,14 +27,14 @@ class BillboardFlowMaterial {
     private m_spdScaleEnabled: boolean = false;
     private m_time: number = 0;
     private m_uniformData: Float32Array = null;
-    private m_color: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
+    private m_color: IColor4 = CoRScene.createColor4(1.0, 1.0, 1.0, 1.0);
     private m_brightness: number = 1.0;
 
 	private m_dcr = new BillboardFlowDcr();
-	// private m_textures: IRenderTexture[] = null;
+
 	diffuseMap: IRenderTexture = null;
     premultiplyAlpha: boolean = false;
-	material: Material = null;
+	material: IMaterial = null;
     constructor(brightnessEnabled: boolean = true, alphaEnabled: boolean = false, clipEnabled: boolean = false) {
 
 		this.m_brightnessEnabled = brightnessEnabled;
@@ -43,10 +43,6 @@ class BillboardFlowMaterial {
 
     }
 	initialize(): void {
-
-        // let mb = CoRScene.getRendererScene().materialBlock;
-        // let drc = new BillboardFlowDcr();
-        // let material = mb.createMaterial(drc);
 
         if (this.m_clipEnabled) {
             this.m_uniformData = new Float32Array([
@@ -62,10 +58,6 @@ class BillboardFlowMaterial {
         }
 		this.buildDcr();
     }
-
-	// setTextureList(textures: IRenderTexture[]): void {
-	// 	this.m_textures = textures;
-	// }
     setPlayParam(playOnce: boolean, direcEnabled: boolean, clipMixEnabled: boolean = false, spdScaleEnabled: boolean = false): void {
         this.m_playOnce = playOnce;
         this.m_direcEnabled = direcEnabled;
@@ -85,8 +77,8 @@ class BillboardFlowMaterial {
         dcr.setParam(this.m_brightnessEnabled, this.m_alphaEnabled, this.m_clipEnabled, dcr.diffuseMap != null);
 		dcr.setUniformData( this.createSelfUniformData() );
 
-		this.material = new Material();
-		this.material.setDecorator( dcr );
+		// this.material = new Material();
+		this.material = CoRScene.createMaterial( dcr );
     }
 
     private createSelfUniformData(): IShaderUniformData {

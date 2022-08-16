@@ -31,6 +31,9 @@ import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
 import MouseEventEntity from "../../vox/entity/MouseEventEntity";
 
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
+import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
+import { IMaterial } from "../../vox/material/IMaterial";
+import { Material } from "../../vox/material/Material";
 import ShaderMaterial from "../../vox/material/mcase/ShaderMaterial";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";
@@ -124,6 +127,12 @@ function createDefaultMaterial(normalEnabled: boolean = false): IRenderMaterial 
 function createShaderMaterial(shd_uniqueName: string): IShaderMaterial {
 	return new ShaderMaterial(shd_uniqueName);
 }
+function createMaterial(dcr: IMaterialDecorator): IMaterial {
+	let m = new Material();
+	m.setDecorator( dcr );
+	return m;
+}
+
 function createDisplayEntityFromModel(model: CoGeomDataType, material: MaterialBase = null, vbWhole: boolean = false): ITransformEntity {
 	if (material == null) {
 		material = new Default3DMaterial();

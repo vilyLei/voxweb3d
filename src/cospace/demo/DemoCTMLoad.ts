@@ -162,11 +162,11 @@ export class DemoCTMLoad implements ILoaderListerner {
             // this.m_rscene.addEntity( axis );
 
 
-            let ctmUrl: string = "static/assets/ctm/hand.ctm";
+            let ctmUrl: string = "static/private/ctm/sh202/sh202_21.ctm";
             ctmUrl = "static/assets/ctm/WaltHead.ctm";
+            ctmUrl = "static/private/ctm/tri01.ctm";
 
             this.m_time = Date.now();
-            // this.initCTMFromStr( ctmUrl );
             this.initCTMFromBin( ctmUrl );
         }
     }
@@ -181,7 +181,34 @@ export class DemoCTMLoad implements ILoaderListerner {
         var stream = new CTMStream(new Uint8Array(buffer));
         // var stream = new CTMStream( dataStr );
         stream.offset = 0;//offsets[ i ];
+		/*
+		console.log(">>>>>>>>>>>>> >>>>>>>>>>> AAA >>>>>>> >>>>>>>>");
+		for(let i = 0; i < 30; i++) {
+			stream.readByte();
+		}
+		// let a = stream.readInt32();
+		// let b = stream.readInt32();
+		// let c = stream.readFloat32();
+		// stream.readString();
+		// let d = stream.readFloat32();
 
+		// console.log("	>>>>>>>> a: ", a);
+		// console.log("	>>>>>>>> b: ", b);
+		// console.log("	>>>>>>>> c: ", c);
+		// console.log("	>>>>>>>> d: ", d);
+
+		let i32Arr = new Int32Array(10);
+		stream.readArrayInt32(i32Arr as any);
+		console.log("i32Arr: ", i32Arr);
+		for(let i = 0; i < 20; i++) {
+			stream.readByte();
+		}
+		let f32Arr = new Float32Array(6);
+		stream.readArrayFloat32(f32Arr as any);
+		console.log("f32Arr: ", f32Arr);
+		console.log(">>>>>>>>>>>>> >>>>>>>>>>> BBB >>>>>>> >>>>>>>>");
+		return;
+		//*/
         var ctmFile = new CTMFile(stream);
         t = Date.now() - t;
 
@@ -201,50 +228,6 @@ export class DemoCTMLoad implements ILoaderListerner {
 
         let ctmLoader: BinaryLoader = new BinaryLoader();
         ctmLoader.load(ctmUrl, this);
-    }
-    private initCTMFromStr(ctmUrl: string): void {
-
-        // let ctmLoader: BinaryLoader = new BinaryLoader();
-        // ctmLoader.load(ctmUrl, this);
-        let request: XMLHttpRequest = new XMLHttpRequest();
-        // request.open('GET', ctmUrl, true);
-
-        request.onload = () => {
-            if (request.status <= 206) {
-                console.log("strine ctm loaded.");
-                DivLog.ShowLog("字符串 ctm 加载耗时: "+(Date.now() - this.m_time) + "ms");
-                DivLog.ShowLog("字符串 ctm 加载完毕.");
-                let dataStr: string = request.responseText;
-                console.log("loaded ctm string data !", dataStr.length);
-
-                let t = Date.now();
-                //this.initialize(request.responseText, texList);
-                var stream = new CTMStringStream(dataStr);
-                // var stream = new CTMStream( dataStr );
-                stream.offset = 0;//offsets[ i ];
-
-                var ctmFile = new CTMFile(stream);
-                t = Date.now() - t;
-
-                DivLog.ShowLog("字符串 ctm 解析耗时: " + t + "ms");
-                // let ctmFile = new CTMFile(dataStr);
-                console.log("ctmFile: ", ctmFile);
-                if (ctmFile != null) {
-                    let ctmbody: CTMFileBody = ctmFile.body;
-                    console.log("ctmbody: ", ctmbody);
-                    this.initCTMEntity(ctmbody);
-                }
-            }
-            else {
-                console.error("load ctm format module url error: ", ctmUrl);
-            }
-        };
-        request.onerror = e => {
-            console.error("load obj ctm module url error: ", ctmUrl);
-        };
-        request.overrideMimeType("text/plain; charset=x-user-defined");
-        request.open("GET", ctmUrl, true);
-        request.send(null);
     }
     private initCTMEntity(ctmbody: CTMFileBody): void {
 
