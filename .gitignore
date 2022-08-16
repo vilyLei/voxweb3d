@@ -36,4 +36,5 @@ public/static/cospace/modules/png/
 public/static/cospace/core/
 public/static/cospace/engine/
 public/static/cospace/renderEffect/
+public/static/cospace/particle/
 public/static/cospace/engineBase/

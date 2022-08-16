@@ -57,7 +57,7 @@ export default interface IBillboardGroup {
     setScaleXY(sx: number, sy: number): void;
     toTransparentBlend(always?: boolean): void;
     toBrightnessBlend(always?: boolean): void;
-    setPlayParam(playOnce: boolean, direcEnabled: boolean, clipMixEnabled: boolean, spdScaleEnabled: boolean): void;
+    setPlayParam(playOnce: boolean, direcEnabled?: boolean, clipMixEnabled?: boolean, spdScaleEnabled?: boolean): void;
     initialize(brightnessEnabled: boolean, alphaEnabled: boolean, clipEnabled: boolean, texList: IRenderTexture[]): void;
 
     setUV(pu: number, pv: number, du: number, dv: number): void;

@@ -1,8 +1,11 @@
-import IVector3D from "../../vox/math/IVector3D";
-import IMatrix4 from "../../vox/math/IMatrix4";
-import IColor4 from "../../vox/material/IColor4";
+
+import IBillboard from "../particle/entity/IBillboard";
+import IBillboardFlareGroup from "../particle/entity/IBillboardFlareGroup";
+import IBillboardFlowGroup from "../particle/entity/IBillboardFlowGroup";
 
 interface ICoParticle {
-	test(): void;
+	createBillboard(): IBillboard;
+	createBillboardFlareGroup(): IBillboardFlareGroup;
+	createBillboardFlowGroup(): IBillboardFlowGroup;
 }
-export {  ICoParticle };
+export { ICoParticle };

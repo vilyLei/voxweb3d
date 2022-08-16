@@ -57,6 +57,8 @@
     "buildCoEnvLightModule": "vue-cli-service build --target lib --name CoEnvLightModule --dest ./public/static/cospace/renderEffect/envLight ./src/cospace/renderEffect/light/CoEnvLightModule.ts",
     "buildVSMShadowModule": "vue-cli-service build --target lib --name VSMShadowModule --dest ./public/static/cospace/renderEffect/vsmShadow ./src/cospace/renderEffect/shadow/VSMShadowModule.ts",
     "buildOccPostOutlineModule": "vue-cli-service build --target lib --name OccPostOutlineModule --dest ./public/static/cospace/renderEffect/occPostOutline ./src/cospace/renderEffect/outline/OccPostOutlineModule.ts",
+    
+    "buildCoParticle": "vue-cli-service build --target lib --name CoParticle --dest ./public/static/cospace/particle/ ./src/cospace/particle/CoParticle.ts",
 
     "dev": "vue-cli-service serve --type=dev[./src/main.ts]",
     "devvox": "vue-cli-service serve --type=dev[./src/dev.ts]",
