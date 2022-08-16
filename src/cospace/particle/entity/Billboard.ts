@@ -4,6 +4,7 @@ import BillboardFragShaderBase from "../shader/BillboardFragShaderBase";
 import IShaderCodeBuffer from "../../../vox/material/IShaderCodeBuffer";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IVector3D from "../../../vox/math/IVector3D";
+import IBillboard from "./IBillboard";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
@@ -147,7 +148,8 @@ class BillboardMesh {
 		this.m_ivs = null;
 	}
 }
-class Billboard {
+export default class Billboard implements IBillboard {
+
 	private m_material: BillboardMaterial = null;
 	private m_mesh: BillboardMesh = null;
 
@@ -231,7 +233,7 @@ class Billboard {
 		this.m_uniformData[6] = pb;
 		this.m_uniformData[7] = pa;
 	}
-	setRGB3f(pr: number, pg: number, pb: number) {
+	setRGB3f(pr: number, pg: number, pb: number):void {
 		this.m_uniformData[4] = pr;
 		this.m_uniformData[5] = pg;
 		this.m_uniformData[6] = pb;
@@ -296,7 +298,7 @@ class Billboard {
 	update(): void {
 		this.entity.update();
 	}
-	destroy() {
+	destroy(): void {
 		if (this.entity != null) {
 			this.entity.destroy();
 			this.entity = null;
@@ -312,5 +314,3 @@ class Billboard {
 		this.m_uniformData = null;
 	}
 }
-
-export { Billboard };

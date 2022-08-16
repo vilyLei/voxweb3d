@@ -12,9 +12,9 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import BillboardFlowMesh from "../mesh/BillboardFlowMesh";
 import { BillboardFlowMaterial } from "../material/BillboardFlowMaterial";
+import IBillboardFlowGroup from "./IBillboardFlowGroup";
 
-
-export default class BillboardFlowGroup {
+export default class BillboardFlowGroup implements IBillboardFlowGroup {
 
     private m_billMaterial: BillboardFlowMaterial = null;
     private m_billMesh: BillboardFlowMesh = null;
@@ -35,7 +35,7 @@ export default class BillboardFlowGroup {
         this.entity.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
     }
     createGroup(billboardTotal: number): void {
-        // this.m_billMesh = this.getMesh();
+
         if (billboardTotal > 0 && this.m_billMesh == null) {
             this.m_billMesh = new BillboardFlowMesh();
             this.m_billMesh.createData(billboardTotal);

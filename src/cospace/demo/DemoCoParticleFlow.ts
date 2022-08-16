@@ -10,8 +10,9 @@ import ViewerMaterialCtx from "./coViewer/ViewerMaterialCtx";
 import { TextPackedLoader } from "../modules/loaders/TextPackedLoader";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 import { ViewerCoSApp } from "./coViewer/ViewerCoSApp";
-import { Billboard } from "../particle/entity/Billboard";
+import Billboard from "../particle/entity/Billboard";
 import BillboardFlowEntity from "../particle/entity/BillboardFlowGroup";
+import BillboardFlareGroup from "../particle/entity/BillboardFlareGroup";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 declare var CoRenderer: ICoRenderer;
@@ -51,7 +52,6 @@ export class DemoCoParticleFlow {
 	}
 
 	private initDirecEngine(): void {
-
 		RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 		RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
@@ -89,7 +89,6 @@ export class DemoCoParticleFlow {
 	}
 
 	private initDirecScene(): void {
-
 		// let axis = new Axis3DEntity();
 		// axis.initialize(100);
 		// this.m_rscene.addEntity(axis);
@@ -109,16 +108,24 @@ export class DemoCoParticleFlow {
 		textures.push(loader.getTextureByUrl("static/assets/testEFT4.jpg"));
 		textures.push(loader.getTextureByUrl("static/assets/testFT4.jpg"));
 
-		this.initFlowBillOneByOne(textures);
+		// this.initFlowBillOneByOne(textures);
 		// this.initFlowBill(textures[textures.length - 1], textures[2], true);
-		this.initFlowBill(textures[textures.length - 1], null, false, true);
+		// this.initFlowBill(textures[textures.length - 1], null, false, true);
 		// this.initFlowBill(textures[textures.length - 1], null, true, true);
 		// this.initFlowBill(textures[textures.length - 2], null, true, true, false, true);
 		// this.initFlowBill(textures[textures.length - 1], null, false, false);
+		// this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], true);
+		// this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], false);
+		this.initFlareBill(textures[textures.length - 1], null, true);
+		//this.initFlareBill(this.m_textures[this.m_textures.length - 2], null, true, true);
+		//this.initFlareBill(this.m_textures[this.m_textures.length - 1], null, false);
+
+		this.update();
 	}
 
 	private m_flowBill: Billboard3DFlowEntity = null;
 	private m_flowBill2: BillboardFlowEntity = null;
+	private m_flareBill2: BillboardFlareGroup = null;
 	///*
 	private initFlowBillOneByOne(textures: IRenderTexture[]): void {
 		let size: number = 100;
@@ -130,7 +137,7 @@ export class DemoCoParticleFlow {
 		];
 		let tex = textures[textures.length - 1];
 		let total: number = 15;
-		
+
 		let billGroup = new BillboardFlowEntity();
 		billGroup.createGroup(total);
 		let pv: Vector3D = new Vector3D();
@@ -159,6 +166,45 @@ export class DemoCoParticleFlow {
 		this.m_flowBill2 = billGroup;
 	}
 	//*/
+
+	private initFlareBill(tex: IRenderTexture, colorTex: IRenderTexture, clipEnabled: boolean = false, clipMixEnabled: boolean = false): void {
+		let size: number = 100;
+		let params: number[][] = [
+			[0.0, 0.0, 0.5, 0.5],
+			[0.5, 0.0, 0.5, 0.5],
+			[0.0, 0.5, 0.5, 0.5],
+			[0.5, 0.5, 0.5, 0.5]
+		];
+		let total: number = 15;
+		let billGroup = new BillboardFlareGroup();
+		billGroup.createGroup(total);
+		for (let i: number = 0; i < total; ++i) {
+			if (total > 1) size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
+			billGroup.setSizeAndScaleAt(i, size, size, 0.5, 1.0);
+			if (!clipEnabled) {
+				let uvparam: number[] = params[Math.floor((params.length - 1) * Math.random() + 0.5)];
+				billGroup.setUVRectAt(i, uvparam[0], uvparam[1], uvparam[2], uvparam[3]);
+			}
+			billGroup.setTimeAt(i, 200.0 * Math.random() + 100, 0.4, 0.6, Math.random() * 6.0 + 0.2);
+			billGroup.setBrightnessAt(i, Math.random() * 0.8 + 0.8);
+			//billGroup.setPositionAt(i,100.0,0.0,100.0);
+			billGroup.setPositionAt(i, Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0);
+			//billGroup.setPositionAt(i, Math.random() * 500.0 - 250.0,Math.random() * 100.0 - 50.0, Math.random() * 500.0 - 250.0);
+		}
+		billGroup.setPlayParam(clipMixEnabled);
+		if (colorTex != null) {
+			billGroup.initialize(true, false, clipEnabled, [tex, colorTex]);
+			billGroup.setRGB3f(0.1, 0.1, 0.1);
+		} else {
+			billGroup.initialize(true, false, clipEnabled, [tex]);
+		}
+		//billGroup.setClipUVParam(4,16,0.25,0.25);
+		billGroup.setClipUVParam(2, 4, 0.5, 0.5);
+
+		this.m_rscene.addEntity(billGroup.entity);
+		billGroup.setTime(0.0);
+		this.m_flareBill2 = billGroup;
+	}
 	/*
 	private initFlowBill2(
 		tex: IRenderTexture,
@@ -272,11 +318,25 @@ export class DemoCoParticleFlow {
 		billGroup.setTime(5.0);
 		this.m_flowBill2 = billGroup;
 	}
+	private m_timeoutId: any = -1;
+	private update(): void {
+		if (this.m_timeoutId > -1) {
+			clearTimeout(this.m_timeoutId);
+		}
+		//this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
+		this.m_timeoutId = setTimeout(this.update.bind(this), 20); // 50 fps
 
+		if (this.m_rscene != null) {
+			// if (this.m_flowBill != null) this.m_flowBill.updateTime(1.0);
+			// if (this.m_flowBill2 != null) this.m_flowBill2.updateTime(1.0);
+			if (this.m_flareBill2 != null) this.m_flareBill2.updateTime(1.0);
+		}
+	}
 	run(): void {
 		if (this.m_rscene != null) {
 			// if (this.m_flowBill != null) this.m_flowBill.updateTime(1.0);
-			if (this.m_flowBill2 != null) this.m_flowBill2.updateTime(1.0);
+			// if (this.m_flowBill2 != null) this.m_flowBill2.updateTime(1.0);
+			// if (this.m_flareBill2 != null) this.m_flareBill2.updateTime(1.0);
 
 			this.interaction.run();
 			// if (this.m_interact != null) {

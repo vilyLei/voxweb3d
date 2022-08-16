@@ -89,7 +89,7 @@ class BillboardFlowMaterial {
 		this.material.setDecorator( dcr );
     }
 
-    private createSelfUniformData(): ShaderUniformData {
+    private createSelfUniformData(): IShaderUniformData {
 
         let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_billParam"];

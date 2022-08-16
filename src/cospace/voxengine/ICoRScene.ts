@@ -15,6 +15,7 @@ import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 import { IMaterialContext } from "../../materialLab/base/IMaterialContext";
 import IDataMesh from "../../vox/mesh/IDataMesh";
+import IRawMesh from "../../vox/mesh/IRawMesh";
 import { CoRendererDevice } from "./render/CoRendererDevice";
 import { CoRendererState } from "./render/CoRendererState";
 import CoVtxBufConst from "./mesh/CoVtxBufConst";
@@ -180,6 +181,7 @@ interface ICoRScene {
 
 
 	createDataMesh(): IDataMesh;
+	createRawMesh(): IRawMesh;
 	/**
 	 * @param model geometry model
 	 * @param pmaterial IRenderMaterial instance, the default is null.
