@@ -5,14 +5,18 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererState from "../../../vox/render/RendererState";
-import DisplayEntity from "../../../vox/entity/DisplayEntity";
+// import RendererState from "../../../vox/render/RendererState";
+import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import BillboardFlowMesh from "../mesh/BillboardFlowMesh";
 import { BillboardFlowMaterial } from "../material/BillboardFlowMaterial";
 import IBillboardFlowGroup from "./IBillboardFlowGroup";
+
+
+import { ICoRScene } from "../../voxengine/ICoRScene";
+declare var CoRScene: ICoRScene;
 
 export default class BillboardFlowGroup implements IBillboardFlowGroup {
 
@@ -26,13 +30,13 @@ export default class BillboardFlowGroup implements IBillboardFlowGroup {
     private m_clipMixEnabled: boolean = false;
     private m_spdScaleEnabled: boolean = false;
 
-	entity: DisplayEntity = new DisplayEntity();
+	entity: ITransformEntity = CoRScene.createDisplayEntity();
 	vbWholeDataEnabled: boolean = false;
     flipVerticalUV: boolean = false;
     premultiplyAlpha: boolean = false;
 
     constructor() {
-        this.entity.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
+        this.entity.setRenderState(CoRScene.RendererState.BACK_ADD_BLENDSORT_STATE);
     }
     createGroup(billboardTotal: number): void {
 
@@ -179,18 +183,18 @@ export default class BillboardFlowGroup implements IBillboardFlowGroup {
     }
     toTransparentBlend(always: boolean = false): void {
         if (always) {
-            this.entity.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+            this.entity.setRenderState(CoRScene.RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
         }
         else {
-            this.entity.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+            this.entity.setRenderState(CoRScene.RendererState.BACK_TRANSPARENT_STATE);
         }
     }
     toBrightnessBlend(always: boolean = false): void {
         if (always) {
-            this.entity.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
+            this.entity.setRenderState(CoRScene.RendererState.BACK_ADD_ALWAYS_STATE);
         }
         else {
-            this.entity.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
+            this.entity.setRenderState(CoRScene.RendererState.BACK_ADD_BLENDSORT_STATE);
         }
     }
     setPlayParam(playOnce: boolean, direcEnabled: boolean, clipMixEnabled: boolean = false, spdScaleEnabled: boolean = false): void {
