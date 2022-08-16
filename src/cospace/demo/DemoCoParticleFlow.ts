@@ -114,18 +114,29 @@ export class DemoCoParticleFlow {
 		// this.initFlowBill(textures[textures.length - 1], textures[2], true);
 		// this.initFlowBill(textures[textures.length - 1], null, false, true);
 		// this.initFlowBill(textures[textures.length - 1], null, true, true);
-		// this.initFlowBill(textures[textures.length - 2], null, true, true, false, true);
+		this.initFlowBill(textures[textures.length - 2], null, true, true, false, true);
 		// this.initFlowBill(textures[textures.length - 1], null, false, false);
 		// this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], true);
 		// this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], false);
-		this.initFlareBill(textures[textures.length - 1], null, true);
+		// this.initFlareBill(textures[textures.length - 1], null, true);
 		//this.initFlareBill(this.m_textures[this.m_textures.length - 2], null, true, true);
 		//this.initFlareBill(this.m_textures[this.m_textures.length - 1], null, false);
 
+		/*
+		// let texList = [this.createTexByUrl("static/assets/a_02_c.jpg")];
+		let texList = [ textures[0] ];
+		console.log("create billboard entity...");
+		let billboard = new Billboard();
+		billboard.toBrightnessBlend();
+		billboard.initialize(130, 130, texList);
+		billboard.setXYZ(50, 100, 100);
+		billboard.setRotationZ(50);
+		this.m_rscene.addEntity(billboard.entity, 1);
+		//*/
 		this.update();
 	}
 
-	// private m_flowBill: Billboard3DFlowEntity = null;
+	// private m_flowBill: BillboardFlowEntity = null;
 	private m_flowBill2: BillboardFlowEntity = null;
 	private m_flareBill2: BillboardFlareGroup = null;
 
@@ -142,7 +153,7 @@ export class DemoCoParticleFlow {
 
 		let billGroup = new BillboardFlowEntity();
 		billGroup.createGroup(total);
-		let pv: IVector3D;// = new Vector3D();
+		let pv: IVector3D = CoRScene.createVec3();
 		for (let i: number = 0; i < total; ++i) {
 			size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
 			billGroup.setSizeAndScaleAt(i, size, size, 0.5, 1.0);
@@ -225,8 +236,7 @@ export class DemoCoParticleFlow {
 		let total: number = 15;
 		let billGroup = new BillboardFlowEntity();
 		billGroup.createGroup(total);
-		// let pv: Vector3D = new Vector3D();
-		let pv: IVector3D;
+		let pv: IVector3D = CoRScene.createVec3();
 		for (let i: number = 0; i < total; ++i) {
 			size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
 			billGroup.setSizeAndScaleAt(i, size, size, 0.5, 1.0);
@@ -272,8 +282,7 @@ export class DemoCoParticleFlow {
 		this.m_timeoutId = setTimeout(this.update.bind(this), 20); // 50 fps
 
 		if (this.m_rscene != null) {
-			// if (this.m_flowBill != null) this.m_flowBill.updateTime(1.0);
-			// if (this.m_flowBill2 != null) this.m_flowBill2.updateTime(1.0);
+			if (this.m_flowBill2 != null) this.m_flowBill2.updateTime(1.0);
 			if (this.m_flareBill2 != null) this.m_flareBill2.updateTime(1.0);
 		}
 	}
@@ -334,6 +343,8 @@ export class DemoCoParticleFlow {
 	private initScene(): void {
 		// this.createDefaultEntity();
 
+		this.initDirecScene();
+		/*
 		let texList = [this.createTexByUrl("static/assets/a_02_c.jpg")];
 		console.log("create billboard entity...");
 		let entity = new Billboard();
@@ -342,6 +353,7 @@ export class DemoCoParticleFlow {
 		entity.setXYZ(50, 100, 100);
 		entity.setRotationZ(50);
 		this.m_rscene.addEntity(entity.entity, 1);
+		//*/
 	}
 	isEngineEnabled(): boolean {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";

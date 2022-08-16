@@ -228,6 +228,8 @@ export {
 	createDataMeshFromModel,
 	createDefaultMaterial,
 	createShaderMaterial,
+	createMaterial,
+	
 	createDisplayEntityFromModel,
 	createAxis3DEntity,
 	createDisplayEntityWithDataMesh,
