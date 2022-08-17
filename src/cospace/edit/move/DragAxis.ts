@@ -203,8 +203,8 @@ export default class DragAxis {
         }
         //console.log("AxisCtrlObj::mouseDownListener(). this.m_flag: "+this.m_flag);
 
-        // this.m_mat4.copyFrom(this.m_entity.getTransform().getMatrix());
-        // this.m_invMat4.copyFrom(this.m_entity.getTransform().getInvMatrix());
+        this.m_mat4.copyFrom(this.m_entity.getTransform().getMatrix());
+        this.m_invMat4.copyFrom(this.m_entity.getTransform().getInvMatrix());
 
         this.m_rpv.copyFrom(evt.raypv);
         this.m_rtv.copyFrom(evt.raytv);

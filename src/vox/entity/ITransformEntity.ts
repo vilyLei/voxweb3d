@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import IVector3D from "../../vox/math/IVector3D";
+import IROTransform from "../../vox/display/IROTransform";
 import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 
 interface ITransformEntity extends IDisplayEntity{
@@ -18,6 +19,7 @@ interface ITransformEntity extends IDisplayEntity{
     getScaleXYZ(pv: IVector3D): void;
     localToGlobal(pv: IVector3D): void;
     globalToLocal(pv: IVector3D): void;
+    getTransform(): IROTransform;
     update(): void;
 }
 
