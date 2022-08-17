@@ -111,7 +111,7 @@ export default class CoreFrameAxis
             this.m_direc.initialize();
 
             this.m_engityCore.update();
-            this.m_coreMatrix4 = this.m_engityCore.getToParentMatrix();
+            this.m_coreMatrix4 = this.m_engityCore.getToParentMatrix() as Matrix4;
         }
     }
     

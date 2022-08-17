@@ -12,7 +12,7 @@ import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import BillboardLine3DMaterial from "../../vox/material/mcase/BillboardLine3DMaterial";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import LightLine3DMesh from "../../vox/mesh/LightLine3DMesh";
-import ROTransform from "../../vox/display/ROTransform";
+import IROTransform from "../../vox/display/IROTransform";
 
 export default class BillboardLine3DEntity extends DisplayEntity {
     private m_brightnessEnabled: boolean = true;
@@ -20,7 +20,7 @@ export default class BillboardLine3DEntity extends DisplayEntity {
     private m_currMaterial: BillboardLine3DMaterial = null;
     flipVerticalUV: boolean = false;
     flip90UV: boolean = false;
-    constructor(transform: ROTransform = null) {
+    constructor(transform: IROTransform = null) {
         super(transform);
         this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
     }

@@ -11,8 +11,9 @@ import Vector3D from "../../vox/math/Vector3D";
 import Matrix4 from "../../vox/math/Matrix4";
 import Matrix4Pool from "../../vox/math/Matrix4Pool";
 import ROTransPool from '../../vox/render/ROTransPool';
+import IROTransform from './IROTransform';
 
-export default class ROTransform {
+export default class ROTransform implements IROTransform {
     private static s_uid: number = 0;
     private static s_initData: Float32Array = new Float32Array([
         1.0, 0.0, 0.0, 0.0,

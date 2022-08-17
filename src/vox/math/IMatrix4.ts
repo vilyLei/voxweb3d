@@ -124,8 +124,15 @@ interface IMatrix4 extends Float32Data {
 	rotationY(radian: number): void;
 	rotationZ(radian: number): void;
 
+	copyTranslation( m: IMatrix4 ): IMatrix4;
 
 	transformPerspV4Self(v4: Vector3D): void;
+
+	premultiply(m: IMatrix4): IMatrix4;
+	multiply(m: IMatrix4): IMatrix4;
+	invertThis(): IMatrix4;
+
+	clone(): IMatrix4;
 	destroy(): void;
 }
 

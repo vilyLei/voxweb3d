@@ -106,7 +106,7 @@ export class DemoMatComputer extends DemoInstance
             box.copyMeshFrom(this.m_srcBox);
             box.copyMaterialFrom(materialBox);
             this.m_rscene.addEntity(box);
-            matTask.setMatAt(box.getTransform().getMatrix(),i);
+            matTask.setMatAt(box.getTransform().getMatrix(), i);
         }
     }
     private updateTask():void

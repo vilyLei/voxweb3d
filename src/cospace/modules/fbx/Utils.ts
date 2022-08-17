@@ -178,7 +178,7 @@ function generateTransform( transformData: any ): Matrix4 {
 	// from global to local
 	lTransform.premultiply( lParentGX.invertThis() );
 
-	return lTransform;	
+	return lTransform as Matrix4;	
 }
 
 // Returns the three.js intrinsic Euler order corresponding to FBX extrinsic Euler order

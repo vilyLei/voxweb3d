@@ -95,11 +95,11 @@ class Matrix4 implements IMatrix4 {
 			(lfs[2] * lfs[7] - lfs[6] * lfs[3]);
 	}
 	
-	multiplyMatrices( a: Matrix4, b: Matrix4 ): Matrix4 {
+	multiplyMatrices( a: IMatrix4, b: IMatrix4 ): IMatrix4 {
 
-		const ae = a.m_localFS32;
-		const be = b.m_localFS32;
-		const te = this.m_localFS32;
+		const ae = a.getLocalFS32();
+		const be = b.getLocalFS32();
+		const te = this.getLocalFS32();
 
 		const a11 = ae[ 0 ], a12 = ae[ 4 ], a13 = ae[ 8 ], a14 = ae[ 12 ];
 		const a21 = ae[ 1 ], a22 = ae[ 5 ], a23 = ae[ 9 ], a24 = ae[ 13 ];
@@ -134,7 +134,7 @@ class Matrix4 implements IMatrix4 {
 		return this;
 
 	}
-	multiply(ma: Matrix4, mb: Matrix4 = null): Matrix4 {
+	multiply(ma: IMatrix4, mb: IMatrix4 = null): IMatrix4 {
 		if(ma != null && mb != null) {
 			return this.multiplyMatrices(ma, mb);
 		} else if(ma != null) {
@@ -143,14 +143,14 @@ class Matrix4 implements IMatrix4 {
 		return this;
 	}
 	
-	premultiply(m: Matrix4): Matrix4 {
+	premultiply(m: IMatrix4): IMatrix4 {
 		if(m != this && m != null) {
 			return this.multiplyMatrices(m, this);
 		}
 		return this;
 	}
 
-	append(lhs: Matrix4): void {
+	append(lhs: IMatrix4): void {
 		let lfs32: Float32Array = lhs.getLocalFS32();
 		let sfs32: Float32Array = this.m_localFS32;
 
@@ -556,7 +556,7 @@ class Matrix4 implements IMatrix4 {
 
 	}
 
-	copyTranslation( m: Matrix4 ): Matrix4 {
+	copyTranslation( m: IMatrix4 ): IMatrix4 {
 
 		const te = this.m_localFS32, me = m.getLocalFS32();
 
@@ -673,16 +673,16 @@ class Matrix4 implements IMatrix4 {
 	copyToF32Arr(fs32Arr: Float32Array, index: number = 0): void {
 		fs32Arr.set(this.m_localFS32, index);
 	}
-	copy(smat: Matrix4): Matrix4 {
-		this.m_localFS32.set(smat.m_localFS32, 0);
+	copy(smat: IMatrix4): IMatrix4 {
+		this.m_localFS32.set(smat.getLocalFS32(), 0);
 		return this;
 	}
-	copyFrom(smat: Matrix4): void {
-		this.m_localFS32.set(smat.m_localFS32, 0);
+	copyFrom(smat: IMatrix4): void {
+		this.m_localFS32.set(smat.getLocalFS32(), 0);
 	}
-	copyTo(dmat: Matrix4): void {
+	copyTo(dmat: IMatrix4): void {
 		//dmat.copyFrom(this);
-		dmat.m_localFS32.set(this.m_localFS32, 0);
+		dmat.getLocalFS32().set(this.getLocalFS32(), 0);
 	}
 	copyRawDataFrom(float_rawDataArr: Float32Array, rawDataLength: number = 16, index: number = 0, bool_tp: Boolean = false): void {
 		if (bool_tp) this.transpose();
@@ -917,7 +917,7 @@ class Matrix4 implements IMatrix4 {
 		sfs32[11] = pos.z;
 		sfs32[15] = 1.0;
 	}
-	prepend(rhs: Matrix4): void {
+	prepend(rhs: IMatrix4): void {
 		let rfs32: Float32Array = rhs.getLocalFS32();
 		let sfs32: Float32Array = this.m_localFS32;
 		let m111 = rfs32[0];
@@ -969,7 +969,7 @@ class Matrix4 implements IMatrix4 {
 		sfs32[14] = m141 * m213 + m142 * m223 + m143 * m233 + m144 * m243;
 		sfs32[15] = m141 * m214 + m142 * m224 + m143 * m234 + m144 * m244;
 	}
-	prepend3x3(rhs: Matrix4): void {
+	prepend3x3(rhs: IMatrix4): void {
 		let rfs32: Float32Array = rhs.getLocalFS32();
 		let sfs32: Float32Array = this.m_localFS32;
 		let m111 = rfs32[0];
@@ -1280,7 +1280,7 @@ class Matrix4 implements IMatrix4 {
 		sfs32[13] = fs32[7];
 		sfs32[14] = fs32[11];
 	}
-	interpolateTo(toMat: Matrix4, float_percent: number): void {
+	interpolateTo(toMat: IMatrix4, float_percent: number): void {
 		let fs32: Float32Array = toMat.getFS32();
 		let fsI: number = toMat.getFSIndex();
 		let _g: number = 0;
@@ -1348,7 +1348,7 @@ class Matrix4 implements IMatrix4 {
 		v4.w *= this.m_localFS32[11];
 		v4.w += this.m_localFS32[15];
 	}
-	clone(): Matrix4 {
+	clone(): IMatrix4 {
 		let m = new Matrix4();
 		m.copyFrom(this);
 		return m;

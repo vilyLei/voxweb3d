@@ -8,14 +8,14 @@
 // 内部的transform机制是完整的，但是不会构建实际的display对象，不会进入渲染运行时
 
 import Vector3D from "../../vox/math/Vector3D";
-import ROTransform from "../../vox/display/ROTransform";
+import IROTransform from "../../vox/display/IROTransform";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import BoundsMesh from "../../vox/mesh/BoundsMesh";
 import AABB from "../../vox/geom/AABB";
 export default class BoundsEntity extends DisplayEntity {
     private m_boundsMesh: BoundsMesh = null;
-    constructor(transform: ROTransform = null) {
+    constructor(transform: IROTransform = null) {
         super(transform);
     }
     setMaterial(m: IRenderMaterial): void {

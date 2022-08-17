@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import Matrix4 from "../../vox/math/Matrix4";
-import ROTransform from "../../vox/display/ROTransform";
+import IROTransform from "../../vox/display/IROTransform";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
@@ -24,7 +24,7 @@ export default class Cylinder3DEntity extends DisplayEntity {
     wireframe: boolean = false;
     private m_radius: number = 50.0;
     private m_height: number = 100.0;
-    constructor(transform: ROTransform = null) {
+    constructor(transform: IROTransform = null) {
         super(transform);
     }
     setVtxTransformMatrix(matrix: Matrix4): void {

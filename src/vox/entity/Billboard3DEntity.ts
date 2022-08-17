@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ROTransform from "../../vox/display/ROTransform";
+import IROTransform from "../../vox/display/IROTransform";
 import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
@@ -16,7 +16,7 @@ import BillboardPlaneMesh from "../../vox/mesh/BillboardPlaneMesh";
 export default class Billboard3DEntity extends DisplayEntity {
     private m_brightnessEnabled: boolean = true;
     private m_alphaEnabled: boolean = false;
-    constructor(transform: ROTransform = null) {
+    constructor(transform: IROTransform = null) {
         super(transform);
         this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
     }

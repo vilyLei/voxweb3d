@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ROTransform from "../../vox/display/ROTransform";
+import IROTransform from "../../vox/display/IROTransform";
 import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
@@ -28,7 +28,7 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
     flipVerticalUV: boolean = false;
     premultiplyAlpha: boolean = false;
     
-    constructor(transform: ROTransform = null) {
+    constructor(transform: IROTransform = null) {
         super(transform);
         this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
     }

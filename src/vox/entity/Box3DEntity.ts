@@ -7,7 +7,7 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import Matrix4 from "../../vox/math/Matrix4";
-import ROTransform from "../../vox/display/ROTransform";
+import IROTransform from "../../vox/display/IROTransform";
 import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
@@ -33,7 +33,7 @@ export default class Box3DEntity extends DisplayEntity {
     // uvPartsNumber value is 4 or 6
     uvPartsNumber: number = 0;
     wireframe: boolean = false;
-    constructor(transform: ROTransform = null) {
+    constructor(transform: IROTransform = null) {
         super(transform);
     }
     setVtxTransformMatrix(matrix: Matrix4): void {

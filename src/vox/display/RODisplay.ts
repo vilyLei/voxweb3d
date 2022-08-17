@@ -11,6 +11,7 @@ import { DisplayRenderSign, RenderDrawMode } from "../../vox/render/RenderConst"
 import RendererState from "../../vox/render/RendererState";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
+import IMatrix4 from "../../vox/math/IMatrix4";
 import Matrix4 from "../../vox/math/Matrix4";
 import IRODisplay from "../../vox/display/IRODisplay";
 import IRPODisplay from "../../vox/render/IRPODisplay";
@@ -40,7 +41,7 @@ export default class RODisplay implements IRODisplay {
     // mouse interaction enabled flag
     mouseEnabled: boolean = false;
     private m_partGroup: Uint16Array = null;
-    private m_trans: Matrix4 = null;
+    private m_trans: IMatrix4 = null;
     private constructor() {
         this.m_uid = RODisplay.s_uid++;
     }
@@ -63,11 +64,11 @@ export default class RODisplay implements IRODisplay {
     getUid(): number {
         return this.m_uid;
     }
-    setTransform(trans: Matrix4): void {
+    setTransform(trans: IMatrix4): void {
         this.m_trans = trans;
         this.m_matFS32 = trans.getLocalFS32();
     }
-    getTransform(): Matrix4 {
+    getTransform(): IMatrix4 {
         return this.m_trans;
     }
 

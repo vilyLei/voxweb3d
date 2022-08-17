@@ -7,7 +7,7 @@
 
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
-import ROTransform from '../../vox/display/ROTransform';
+import IROTransform from '../../vox/display/IROTransform';
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import ObjData3DMesh from "../../vox/mesh/obj/ObjData3DMesh";
@@ -23,7 +23,7 @@ export default class ObjData3DEntity extends DisplayEntity {
     baseParsering: boolean = false;
     private m_str: string = "";
 
-    constructor(transform: ROTransform = null) {
+    constructor(transform: IROTransform = null) {
         super(transform);
     }
     private createMaterial(texList: IRenderTexture[]): void {

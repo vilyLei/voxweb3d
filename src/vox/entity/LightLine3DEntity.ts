@@ -12,7 +12,7 @@ import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import LightLine3DMaterial from "../../vox/material/mcase/LightLine3DMaterial";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import LightLine3DMesh from "../../vox/mesh/LightLine3DMesh";
-import ROTransform from "../../vox/display/ROTransform";
+import IROTransform from "../../vox/display/IROTransform";
 
 export default class LightLine3DEntity extends DisplayEntity {
     private m_brightnessEnabled: boolean = true;
@@ -23,7 +23,7 @@ export default class LightLine3DEntity extends DisplayEntity {
     private m_lineW: number = 10.0;
     flipVerticalUV: boolean = false;
     flip90UV: boolean = false;
-    constructor(transform: ROTransform = null) {
+    constructor(transform: IROTransform = null) {
         super(transform);
         this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
     }

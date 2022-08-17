@@ -8,7 +8,7 @@
 
 import {StreamType, IThreadSendData} from "../../thread/base/IThreadSendData";
 import ThreadTask from "../../thread/control/ThreadTask";
-import Matrix4 from "../../vox/math/Matrix4";
+import IMatrix4 from "../../vox/math/IMatrix4";
 import ThreadSystem from "../../thread/ThreadSystem";
 
 class MatCalcSendData implements IThreadSendData {
@@ -168,7 +168,7 @@ class MatComputerTask extends ThreadTask {
     private m_matTotal: number = 0;
     private m_currMatTotal: number = 1;
     private m_fs32Arr: Float32Array = null;
-    private m_dstMFSList: Matrix4[] = null;
+    private m_dstMFSList: IMatrix4[] = null;
     private m_dstMFSTotal: number = 0;
     private m_enabled: boolean = true;
 
@@ -190,7 +190,7 @@ class MatComputerTask extends ThreadTask {
     getTotal(): number {
         return this.m_matTotal;
     }
-    setMatAt(mat: Matrix4, index: number): void {
+    setMatAt(mat: IMatrix4, index: number): void {
         let pdata: TransData = new TransData();
         pdata.matTask = this;
         pdata.initialize();
@@ -268,7 +268,7 @@ class MatComputerTask extends ThreadTask {
         //console.log("parseDone(), srcuid: "+data.srcuid+","+this.getUid());
         this.m_fs32Arr = (data.streams[0]);
         //this.m_dstMFSList[0].copyFromF32Arr(this.m_fs32Arr,0);
-        let list: Matrix4[] = this.m_dstMFSList;
+        let list: IMatrix4[] = this.m_dstMFSList;
         //console.log("data.matTotal: "+data.matTotal);
         for (let i: number = 0, len: number = data.matTotal; i < len; ++i) {
             list[i].copyFromF32Arr(this.m_fs32Arr, i * 16);

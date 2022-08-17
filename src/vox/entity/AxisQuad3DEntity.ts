@@ -10,10 +10,10 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Color4 from '../../vox/material/Color4';
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import QuadLine3DMaterial from '../../vox/material/mcase/QuadLine3DMaterial';
-import ROTransform from "../../vox/display/ROTransform";
+import IROTransform from "../../vox/display/IROTransform";
 
 export default class AxisQuad3DEntity extends DisplayEntity {
-    constructor(transform: ROTransform = null) {
+    constructor(transform: IROTransform = null) {
         super(transform);
     }
     // 用于射线检测

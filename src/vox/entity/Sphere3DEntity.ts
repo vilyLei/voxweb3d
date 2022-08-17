@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ROTransform from "../../vox/display/ROTransform";
+import IROTransform from "../../vox/display/IROTransform";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
@@ -15,7 +15,7 @@ import RendererState from "../render/RendererState";
 import Color4 from "../material/Color4";
 
 export default class Sphere3DEntity extends DisplayEntity {
-    constructor(transform: ROTransform = null) {
+    constructor(transform: IROTransform = null) {
         super(transform);
     }
     normalEnabled: boolean = false;

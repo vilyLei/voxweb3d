@@ -12,7 +12,7 @@ import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import ScreenPlaneMaterial from "../../vox/material/mcase/ScreenPlaneMaterial";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
-import ROTransform from "../../vox/display/ROTransform";
+import IROTransform from "../../vox/display/IROTransform";
 import Color4 from "../material/Color4";
 
 export default class Plane3DEntity extends DisplayEntity {
@@ -42,7 +42,7 @@ export default class Plane3DEntity extends DisplayEntity {
     vertColorEnabled: boolean = false;
     premultiplyAlpha: boolean = false;
 
-    constructor(transform: ROTransform = null) {
+    constructor(transform: IROTransform = null) {
         super(transform);
     }
     /**

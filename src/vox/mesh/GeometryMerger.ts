@@ -8,7 +8,7 @@
 import Vector3D from "../../vox/math/Vector3D";
 import MeshBase from "../../vox/mesh/MeshBase";
 import DisplayEntity from "../entity/DisplayEntity";
-import Matrix4 from "../math/Matrix4";
+import IMatrix4 from "../math/IMatrix4";
 import GeometryBase from "./GeometryBase";
 
 class GeomDataNode {
@@ -18,7 +18,7 @@ class GeomDataNode {
     nvs: Float32Array = null;
     cvs: Float32Array = null;
     vsBufStep: number = 3;
-    mat4: Matrix4 = null;
+    mat4: IMatrix4 = null;
     offset: Vector3D = null;
     
     constructor() { }
@@ -71,13 +71,13 @@ class GeometryMerger extends GeometryBase {
             node.cvs = mesh.getCVS();
             if (toWorld) {
                 node.vs = node.vs.slice(0);
-                let mat4: Matrix4 = entity.getMatrix();
+                let mat4 = entity.getMatrix();
                 mat4.transformVectorsSelf(node.vs, node.vs.length);
             }
             this.m_nodes.push(node);
         }
     }
-    addGeometry(geom: GeometryBase, mat4: Matrix4 = null): void {
+    addGeometry(geom: GeometryBase, mat4: IMatrix4 = null): void {
         if (geom != null && geom != this) {
             let node: GeomDataNode = new GeomDataNode();
             node.ivs = geom.getIVS();

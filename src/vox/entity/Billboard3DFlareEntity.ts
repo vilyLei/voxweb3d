@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ROTransform from "../../vox/display/ROTransform";
+import IROTransform from "../../vox/display/IROTransform";
 import RendererState from "../../vox/render/RendererState";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
@@ -21,7 +21,7 @@ export default class Billboard3DFlareEntity extends DisplayEntity {
     private m_clipEnabled: boolean = false;
     private m_clipMixEnabled: boolean = false;
     flipVerticalUV: boolean = false;
-    constructor(transform: ROTransform = null) {
+    constructor(transform: IROTransform = null) {
         super(transform);
         this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
     }

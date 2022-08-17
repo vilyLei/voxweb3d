@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ROTransform from "../../vox/display/ROTransform";
+import IROTransform from "../../vox/display/IROTransform";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
@@ -24,7 +24,7 @@ export default class Cone3DEntity extends DisplayEntity {
     vScale: number = 1.0;
     wireframe: boolean = false;
 
-    constructor(transform: ROTransform = null) {
+    constructor(transform: IROTransform = null) {
         super(transform);
     }
     setVtxTransformMatrix(matrix: Matrix4): void {

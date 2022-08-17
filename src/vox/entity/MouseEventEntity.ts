@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ROTransform from "../../vox/display/ROTransform";
+import IROTransform from "../../vox/display/IROTransform";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
@@ -14,7 +14,7 @@ export default class MouseEventEntity extends DisplayEntity implements IMouseEve
 
     protected m_dispatcher: MouseEvt3DDispatcher = null;
     uuid: string = "";
-    constructor(transform: ROTransform = null) {
+    constructor(transform: IROTransform = null) {
         super(transform);
         this.initializeEvent();
     }

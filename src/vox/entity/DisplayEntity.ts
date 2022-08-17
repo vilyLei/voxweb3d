@@ -7,6 +7,7 @@
 
 import RSEntityFlag from '../../vox/scene/RSEntityFlag';
 import Vector3D from "../../vox/math/Vector3D";
+import IMatrix4 from "../../vox/math/IMatrix4";
 import Matrix4 from "../../vox/math/Matrix4";
 import IAABB from "../../vox/geom/IAABB";
 import AABB from "../../vox/geom/AABB";
@@ -16,6 +17,7 @@ import RendererState from "../../vox/render/RendererState";
 import IMeshBase from "../../vox/mesh/IMeshBase";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 
+import IROTransform from "../../vox/display/IROTransform";
 import ROTransform from "../../vox/display/ROTransform";
 import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import IRODisplay from "../../vox/display/IRODisplay";
@@ -34,9 +36,9 @@ import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline
 export default class DisplayEntity implements IDisplayEntity, IEntityTransform, ITransformEntity {
     private static s_uid: number = 0;
     private m_uid: number = 0;
-    protected m_transfrom: ROTransform = null;
+    protected m_transfrom: IROTransform = null;
     protected m_eventDispatcher: IEvtDispatcher = null;
-    constructor(transform: ROTransform = null) {
+    constructor(transform: IROTransform = null) {
         this.m_uid = DisplayEntity.s_uid++;
         if (transform == null) {
             this.m_transfrom = ROTransform.Create();
@@ -255,7 +257,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     getVisible(): boolean {
         return this.m_visible;
     }
-    getTransform(): ROTransform {
+    getTransform(): IROTransform {
         return this.m_transfrom;
     }
     copyPositionFrom(entity: DisplayEntity): void {
@@ -422,7 +424,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     getDisplay(): IRODisplay {
         return this.m_display;
     }
-    getInvMatrix(): Matrix4 {
+    getInvMatrix(): IMatrix4 {
         return this.m_transfrom.getInvMatrix();
     }
     /**
@@ -430,10 +432,10 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
      * @param flag 是否将当前matrix更新到最新, 默认值是true
      * @returns local space to world space matrix
      */
-    getMatrix(flag: boolean = true): Matrix4 {
+    getMatrix(flag: boolean = true): IMatrix4 {
         return this.m_transfrom.getMatrix(flag);
     }
-    getToParentMatrix(): Matrix4 {
+    getToParentMatrix(): IMatrix4 {
         return this.m_transfrom.getToParentMatrix();
     }
     setRenderColorMask(rt: number): void {
@@ -673,7 +675,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
                 RODisplay.Restore(this.m_display);
                 this.m_display = null;
             }
-            ROTransform.Restore(this.m_transfrom);
+            ROTransform.Restore(this.m_transfrom as ROTransform);
             this.m_transfrom = null;
             if (this.m_mesh != null) {
                 this.m_mesh.__$detachThis();
