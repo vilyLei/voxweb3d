@@ -21,6 +21,7 @@
     "buildvox": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/dev.ts",
     "buildvoxweb": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/devWeb.ts",
     "buildCoSpace": "vue-cli-service build --target lib --name CoSpace --dest dist ./src/cospaceMain.ts",
+    "buildCoEdit": "vue-cli-service build --target lib --name CoSpace --dest dist ./src/cospace/edit/coEditMain.ts",
 
     "build_baseRenderer": "vue-cli-service build --target lib --name VoxApp --dest dist/baseRenderer ./src/distribution/rendererIsolate/devBaseRenderer.ts",
     "build_engine": "vue-cli-service build --target lib --name VoxApp --dest dist/engine ./src/distribution/rendererIsolate/devEngine.ts",
@@ -63,7 +64,8 @@
     "dev": "vue-cli-service serve --type=dev[./src/main.ts]",
     "devvox": "vue-cli-service serve --type=dev[./src/dev.ts]",
     "devvoxweb": "vue-cli-service serve --type=dev[./src/devWeb.ts]",
-    "devcospace": "vue-cli-service serve --type=dev[./src/cospaceMain.ts]"
+    "devcospace": "vue-cli-service serve --type=dev[./src/cospaceMain.ts]",
+    "devcoedit": "vue-cli-service serve --type=dev[./src/cospace/edit/coEditMain.ts]"
   },
   "dependencies": {
     "@tweenjs/tween.js": "^18.4.2",
