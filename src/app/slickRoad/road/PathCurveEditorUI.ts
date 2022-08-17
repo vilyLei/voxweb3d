@@ -5,7 +5,7 @@ import Vector3D from "../../../vox/math/Vector3D";
 class PathCurveEditorUI {
 
     private m_engine: EngineBase = null;
-    readonly dragMoveController: DragMoveController = new DragMoveController();
+    readonly dragMoveController = new DragMoveController();
 
     constructor() { }
 
