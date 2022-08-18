@@ -16,29 +16,26 @@ import MouseEvt3DDispatcher from "../../../vox/event/MouseEvt3DDispatcher";
 
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import Color4 from "../../../vox/material/Color4";
-import {IRayControl} from "../../../voxeditor/base/IRayControl";
+import { IRayControl } from "../../../voxeditor/base/IRayControl";
 /**
  * 在三个坐标轴上拖动
  */
 // export default class DragAxis implements IRayControl {
 export default class DragAxis {
-    
+
     private m_targetEntity: IEntityTransform = null;
     private m_dispatcher: MouseEvt3DDispatcher;
     private m_targetPosOffset: Vector3D = new Vector3D();
     private m_entity: ITransformEntity = null;
     uuid: string = "DragAxis";
     moveSelfEnabled: boolean = true;
-    outColor: Color4 = new Color4(0.9,0.9,0.9,1.0);
-    overColor: Color4 = new Color4(1.0,1.0,1.0,1.0);
+    outColor: Color4 = new Color4(0.9, 0.9, 0.9, 1.0);
+    overColor: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
 
-    constructor() {        
+    constructor() {
     }
-    // isSelected(): boolean;
-    // select(): void;
-    // deselect(): void;
     setVisible(visible: boolean): void {
-        this.m_entity.setVisible( visible );
+        this.m_entity.setVisible(visible);
     }
     getVisible(): boolean {
         return this.m_entity.getVisible();
@@ -54,18 +51,18 @@ export default class DragAxis {
         this.m_dispatcher.removeEventListener(type, listener, func);
     }
     setTargetPosOffset(offset: Vector3D): void {
-        this.m_targetPosOffset.copyFrom( offset );
+        this.m_targetPosOffset.copyFrom(offset);
     }
     setTarget(target: IEntityTransform): void {
         this.m_targetEntity = target;
     }
     initializeEvent(): void {
-        
-        if(this.m_dispatcher == null) {
+
+        if (this.m_dispatcher == null) {
             let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
             dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-            dispatcher.addEventListener(MouseEvent.MOUSE_OVER,this,this.mouseOverListener);
-            dispatcher.addEventListener(MouseEvent.MOUSE_OUT,this,this.mouseOutListener);
+            dispatcher.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverListener);
+            dispatcher.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutListener);
             this.m_entity.setEvtDispatcher(dispatcher);
             this.m_dispatcher = dispatcher;
         }
@@ -94,7 +91,7 @@ export default class DragAxis {
     destroy(): void {
         this.m_targetEntity = null;
         this.m_entity.destroy();
-        if(this.m_dispatcher != null) {
+        if (this.m_dispatcher != null) {
             this.m_dispatcher.destroy();
             this.m_dispatcher = null;
         }
@@ -144,7 +141,7 @@ export default class DragAxis {
             this.m_dv.subtractBy(this.m_initV);
             this.m_pos.copyFrom(this.m_initPos);
             this.m_pos.addBy(this.m_dv);
-            if(this.moveSelfEnabled) {
+            if (this.moveSelfEnabled) {
                 this.setPosition(this.m_pos);
                 this.update();
             }

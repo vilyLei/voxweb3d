@@ -17,6 +17,7 @@ import { MaterialContext } from "../../../materialLab/base/MaterialContext";
 import { RenderableMaterialBlock } from "../../../vox/scene/block/RenderableMaterialBlock";
 
 import DivLog from "../../../vox/utils/DivLog";
+import DragAxis from "../move/DragAxis";
 
 export class DemoBase {
 
@@ -83,6 +84,7 @@ export class DemoBase {
         axis.initialize(300.0);
         this.m_rscene.addEntity(axis);
 
+        let dragAxis = new DragAxis();
     }
     private mouseDown(evt: any): void {
         DebugFlag.Flag_0 = 1;

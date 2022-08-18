@@ -3,6 +3,7 @@ import { CoDataFormat } from "../../app/CoSpaceAppData";
 import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
 import { IMouseInteraction } from "../../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../../voxengine/ICoRenderer";
+import { ICoMath } from "../../math/ICoMath";
 import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
 
 import { ICoMouseInteraction } from "../../voxengine/ui/ICoMouseInteraction";
@@ -17,6 +18,7 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
 declare var CoMouseInteraction: ICoMouseInteraction;
+declare var CoMath: ICoMath;
 
 
 /**
@@ -36,7 +38,7 @@ export class DemoCoBase {
 		document.onmousedown = (evt: any): void => {
 			this.mouseDown(evt);
 		};
-		
+
 		this.initEngineModule();
 
 	}
@@ -47,9 +49,10 @@ export class DemoCoBase {
 		let mouseInteractML = new ModuleLoader(2, (): void => {
 			this.initInteract();
 		});
-
+		//  public\static\cospace\math\CoMath.umd.js
 		let url0 = "static/cospace/engine/renderer/CoRenderer.umd.js";
 		let url1 = "static/cospace/engine/rscene/CoRScene.umd.js";
+		let url2 = "static/cospace/math/CoMath.umd.js";
 
 		new ModuleLoader(2, (): void => {
 			if (this.isEngineEnabled()) {
@@ -57,7 +60,13 @@ export class DemoCoBase {
 				this.initRenderer();
 
 				this.initScene();
+				new ModuleLoader(1, (): void => {
 
+					console.log("math module loaded ...");
+
+					let v3 = CoMath.createVec3(10,4,0.5);
+					console.log("math v3: ", v3);
+				}).load(url2)
 				// this.m_vcoapp = new ViewerCoSApp();
 				// this.m_vcoapp.initialize((): void => {
 				// 	this.loadOBJ();
@@ -94,21 +103,21 @@ export class DemoCoBase {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";
 	}
 
-    private createTexByUrl(url: string = ""): IRenderTexture {
+	private createTexByUrl(url: string = ""): IRenderTexture {
 
-        let tex = this.m_rscene.textureBlock.createImageTex2D(64, 64, false);
+		let tex = this.m_rscene.textureBlock.createImageTex2D(64, 64, false);
 
-        // this.m_plane = new Plane3DEntity();
-        // this.m_plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex]);
-        // this.m_rscene.addEntity(this.m_plane);
+		// this.m_plane = new Plane3DEntity();
+		// this.m_plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex]);
+		// this.m_rscene.addEntity(this.m_plane);
 
-        let img: HTMLImageElement = new Image();
-        img.onload = (evt: any): void => {
-            tex.setDataFromImage(img, 0, 0, 0, false);
-        }
-        img.src = url != "" ? url: "static/assets/box.jpg";
+		let img: HTMLImageElement = new Image();
+		img.onload = (evt: any): void => {
+			tex.setDataFromImage(img, 0, 0, 0, false);
+		}
+		img.src = url != "" ? url : "static/assets/box.jpg";
 		return tex;
-    }
+	}
 	private initInteract(): void {
 		if (this.m_rscene != null && this.m_interact == null && typeof CoMouseInteraction !== "undefined") {
 			this.m_interact = CoMouseInteraction.createMouseInteraction();

@@ -37,4 +37,5 @@ public/static/cospace/core/
 public/static/cospace/engine/
 public/static/cospace/renderEffect/
 public/static/cospace/particle/
+public/static/cospace/math/
 public/static/cospace/engineBase/
