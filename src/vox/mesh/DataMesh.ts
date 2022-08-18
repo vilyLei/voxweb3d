@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import Vector3D from "../../vox/math/Vector3D";
+import IVector3D from "../../vox/math/IVector3D";
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import MeshBase from "../../vox/mesh/MeshBase";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
@@ -13,6 +13,7 @@ import IDataMesh from "../../vox/mesh/IDataMesh";
 import AABB from "../geom/AABB";
 import IGeometry from "../../vox/mesh/IGeometry";
 import SurfaceNormalCalc from "../geom/SurfaceNormalCalc";
+import ITestRay from "./ITestRay";
 
 export default class DataMesh extends MeshBase implements IDataMesh {
 	private m_initIVS: Uint16Array | Uint32Array = null;
@@ -24,6 +25,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	private m_tvs: Float32Array = null;
 	private m_btvs: Float32Array = null;
 
+	private m_rayTester: ITestRay = null;
 	private m_boundsVersion: number = -2;
 
 	autoBuilding: boolean = true;
@@ -36,7 +38,9 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
 		super(bufDataUsage);
 	}
-
+	setRayTester(rayTester: ITestRay): void {
+		this.m_rayTester = rayTester;
+	}
 	/**
 	 * set vertex position data
 	 * @param vs vertex position buffer Float32Array
@@ -215,22 +219,24 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	}
 
 	/**
-	 * 射线和自身的相交检测(多面体或几何函数(例如球体))
-	 * @boundsHit       表示是否包围盒体已经和射线相交了
-	 * @rlpv            表示物体坐标空间的射线起点
-	 * @rltv            表示物体坐标空间的射线朝向
-	 * @outV            如果检测相交存放物体坐标空间的交点
-	 * @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
-	 */
-	testRay(rlpv: Vector3D, rltv: Vector3D, outV: Vector3D, boundsHit: boolean): number {
-		return -1;
-	}
-	toString(): string {
-		return "DataMesh()";
-	}
+     * 射线和自身的相交检测(多面体或几何函数(例如球体))
+     * @rlpv            表示物体坐标空间的射线起点
+     * @rltv            表示物体坐标空间的射线朝向
+     * @outV            如果检测相交存放物体坐标空间的交点
+     * @boundsHit       表示是否包围盒体已经和射线相交了
+     * @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
+     */
+	 testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number {
+		if(this.m_rayTester != null) {
+			return this.m_rayTester.testRay(rlpv, rltv, outV, boundsHit);
+		}
+        return -1;
+    }
+	
 	__$destroy(): void {
 		if (this.isResFree()) {
 			this.bounds = null;
+			this.m_rayTester = null;
 
 			this.m_vs = null;
 			this.m_uvs = null;
