@@ -90,7 +90,10 @@ export default class DragAxis {
     }
     destroy(): void {
         this.m_targetEntity = null;
-        this.m_entity.destroy();
+        if(this.m_entity != null) {
+            this.m_entity.destroy();
+            this.m_entity = null;
+        }
         if (this.m_dispatcher != null) {
             this.m_dispatcher.destroy();
             this.m_dispatcher = null;

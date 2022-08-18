@@ -90,10 +90,12 @@ export default class DashedLineMesh extends MeshBase {
         let vs: Float32Array = this.m_vs;
         let flag: number = 0;
         let radius: number = this.rayTestRadius;
+        let pv0 = DashedLineMesh.s_pv0;
+        let pv1 = DashedLineMesh.s_pv1;
         for (let i: number = 0; i < this.m_lsTotal; ++i) {
-            DashedLineMesh.s_pv0.setXYZ(vs[j], vs[j + 1], vs[j + 2]);
-            DashedLineMesh.s_pv1.setXYZ(vs[j + 3], vs[j + 4], vs[j + 5]);
-            flag = RadialLine.IntersectionLS(rlpv, rltv, DashedLineMesh.s_pv0, DashedLineMesh.s_pv1, outV, radius);
+            pv0.setXYZ(vs[j], vs[j + 1], vs[j + 2]);
+            pv1.setXYZ(vs[j + 3], vs[j + 4], vs[j + 5]);
+            flag = RadialLine.IntersectionLS(rlpv, rltv, pv0, pv1, outV, radius);
             if (flag > 0) {
                 return 1;
             }

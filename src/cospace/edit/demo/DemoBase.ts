@@ -19,6 +19,8 @@ import { RenderableMaterialBlock } from "../../../vox/scene/block/RenderableMate
 import DivLog from "../../../vox/utils/DivLog";
 import DragAxis from "../move/DragAxis";
 
+//import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
+
 export class DemoBase {
 
     constructor() { }
