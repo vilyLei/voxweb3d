@@ -181,6 +181,8 @@ function createMouseEventEntity(): IMouseEventEntity {
 }
 
 function createAxis3DEntity(size: number = 100.0): ITransformEntity {
+	// vs: 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
+	// colors: 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1
 	let axis = new Axis3DEntity();
 	axis.initialize(size);
 	return axis;

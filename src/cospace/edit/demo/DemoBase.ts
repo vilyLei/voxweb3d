@@ -18,6 +18,8 @@ import { RenderableMaterialBlock } from "../../../vox/scene/block/RenderableMate
 
 import DivLog from "../../../vox/utils/DivLog";
 import DragAxis from "../move/DragAxis";
+import RawMesh from "../../../vox/mesh/RawMesh";
+import { RenderDrawMode } from "../../../vox/render/RenderConst";
 
 //import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
 
@@ -31,9 +33,9 @@ export class DemoBase {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private m_materialCtx: MaterialContext = new MaterialContext();
-    
+
     initialize(): void {
-		
+
         console.log("DemoBase::initialize()......");
         if (this.m_rscene == null) {
 
@@ -68,22 +70,36 @@ export class DemoBase {
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
-            this.m_materialCtx.initialize( this.m_rscene );
+            this.m_materialCtx.initialize(this.m_rscene);
 
             this.m_statusDisp.initialize();
-            
+
             this.m_rscene.setClearRGBColor3f(0.2, 0.5, 0.5);
 
             // DivLog.ShowLog("renderer inited.");
             // DivLog.ShowLog(RendererDevice.GPU_RENDERER);
-           this.initScene();
+            this.initScene();
         }
     }
 
     private initScene(): void {
 
+
+        // vs: 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
+        // colors: 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1
+        let size = 100;
+        let vs = new Float32Array( [ 0, 0, 0, size, 0, 0, 0, 0, 0, 0, size, 0, 0, 0, 0, 0, 0, size ]);
+        let colors = new Float32Array( [ 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1 ]);
+        let mesh: RawMesh = new RawMesh();
+        mesh.ivsEnabled = false;
+        mesh.reset();
+        mesh.addFloat32Data(vs, 3);
+        mesh.addFloat32Data(colors, 3);
+        mesh.initialize();
+        mesh.drawMode = RenderDrawMode.ARRAYS_LINES;
+
         let axis: Axis3DEntity = new Axis3DEntity();
-        axis.initialize(300.0);
+        axis.initialize(1.0);
         this.m_rscene.addEntity(axis);
 
         let dragAxis = new DragAxis();
@@ -101,11 +117,11 @@ export class DemoBase {
 
         this.update();
 
-        if(this.m_rscene != null) {
+        if (this.m_rscene != null) {
 
             this.m_stageDragSwinger.runWithYAxis();
             this.m_cameraZoomController.run(null, 30.0);
-    
+
             this.m_rscene.run(true);
         }
 

@@ -30,7 +30,7 @@ export default class Axis3DEntity extends DisplayEntity {
     }
     createMaterial(): void {
         if (this.getMaterial() == null) {
-            let cm: Line3DMaterial = new Line3DMaterial();
+            let cm = new Line3DMaterial();
             this.setMaterial(cm);
         }
     }
@@ -54,8 +54,8 @@ export default class Axis3DEntity extends DisplayEntity {
      * @param axisSize the X/Y/Z axis length
      */
     initialize(axisSize: number = 100.0): void {
-        if (axisSize < 2) {
-            axisSize = 2;
+        if (axisSize < 1) {
+            axisSize = 1;
         }
         this.m_posarr[3] = axisSize;
         this.m_posarr[10] = axisSize;

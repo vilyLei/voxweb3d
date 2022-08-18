@@ -1,6 +1,6 @@
 
 function test(): void {
-	console.log("CoEdit Module");
+	console.log("CoAgeom Module");
 }
 
 

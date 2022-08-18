@@ -55,6 +55,9 @@ export default class DashedLineMesh extends MeshBase {
             ROVertexBuffer.Reset();
             ROVertexBuffer.AddFloat32Data(this.m_vs, 3);
 
+            // console.log("this.m_vs: ",this.m_vs);
+            // console.log("colors: ",colors);
+
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX)) {
                 if(this.m_cvs == null) this.m_cvs = new Float32Array(colors);
                 ROVertexBuffer.AddFloat32Data(this.m_cvs, 3);

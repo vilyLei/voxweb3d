@@ -19,6 +19,7 @@ export default class RawMesh extends MeshBase implements IRawMesh {
 	private m_dataList: Float32Array[] = [];
 	private m_rayTester: ITestRay = null;
 	autoBuilding: boolean = true;
+	ivsEnabled: boolean = true;
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         super(bufDataUsage);
     }
@@ -38,27 +39,34 @@ export default class RawMesh extends MeshBase implements IRawMesh {
 	}
     initialize(): void {
 
-        ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
+		let rvb = ROVertexBuffer;
+        rvb.vbWholeDataEnabled = this.vbWholeDataEnabled;
 
-        this.vtCount = this.m_ivs.length;
-		if(this.autoBuilding) {
-			this.updateWireframeIvs();
+		if(this.ivsEnabled) {
 			this.vtCount = this.m_ivs.length;
+			if(this.autoBuilding) {
+				this.updateWireframeIvs();
+				this.vtCount = this.m_ivs.length;
+			}
+		}else {
+			this.vtCount = 0;
 		}
 
 		if (this.m_vbuf != null) {
-			ROVertexBuffer.UpdateBufData(this.m_vbuf);
+			rvb.UpdateBufData(this.m_vbuf);
 		} else {
 			let u = this.getBufDataUsage();
 			let f = this.getBufSortFormat();
-			this.m_vbuf = ROVertexBuffer.CreateBySaveData(u, f);
+			this.m_vbuf = rvb.CreateBySaveData(u, f);
 			if (this.vbWholeDataEnabled) {
-				this.m_vbuf = ROVertexBuffer.CreateBySaveData(u, f);
+				this.m_vbuf = rvb.CreateBySaveData(u, f);
 			} else {
-				this.m_vbuf = ROVertexBuffer.CreateBySaveDataSeparate( u );
+				this.m_vbuf = rvb.CreateBySaveDataSeparate( u );
 			}
 		}
-		this.m_vbuf.setUintIVSData(this.m_ivs);
+		if(this.ivsEnabled) {
+			this.m_vbuf.setUintIVSData(this.m_ivs);
+		}
 
         this.buildEnd();
     }
