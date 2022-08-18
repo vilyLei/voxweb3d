@@ -49,6 +49,7 @@ import { RenderDrawMode } from "../../vox/render/RenderConst";
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
+import Line3DMaterial from "../../vox/material/mcase/Line3DMaterial";
 
 function createVec3(px: number = 0.0, py: number = 0.0, pz: number = 0.0, pw: number = 1.0): IVector3D {
 	return new Vector3D(px, py, pz, pw);
@@ -129,7 +130,7 @@ function createShaderMaterial(shd_uniqueName: string): IShaderMaterial {
 }
 function createMaterial(dcr: IMaterialDecorator): IMaterial {
 	let m = new Material();
-	m.setDecorator( dcr );
+	m.setDecorator(dcr);
 	return m;
 }
 
@@ -185,6 +186,24 @@ function createAxis3DEntity(size: number = 100.0): ITransformEntity {
 	// colors: 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1
 	let axis = new Axis3DEntity();
 	axis.initialize(size);
+	/*
+	let vs = new Float32Array([0, 0, 0, size, 0, 0, 0, 0, 0, 0, size, 0, 0, 0, 0, 0, 0, size]);
+	let colors = new Float32Array([1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1]);
+	let mesh: RawMesh = new RawMesh();
+	mesh.ivsEnabled = false;
+	mesh.aabbEnabled = true;
+	mesh.reset();
+	mesh.addFloat32Data(vs, 3);
+	mesh.addFloat32Data(colors, 3);
+	mesh.initialize();
+	mesh.drawMode = RenderDrawMode.ARRAYS_LINES;
+	mesh.vtCount = Math.floor(vs.length / 3);
+
+	let material = new Line3DMaterial(false);
+	let axis = new DisplayEntity();
+	axis.setMaterial(material);
+	axis.setMesh(mesh);
+	//*/
 	return axis;
 }
 
@@ -231,7 +250,7 @@ export {
 	createDefaultMaterial,
 	createShaderMaterial,
 	createMaterial,
-	
+
 	createDisplayEntityFromModel,
 	createAxis3DEntity,
 	createDisplayEntityWithDataMesh,

@@ -20,6 +20,8 @@ import DivLog from "../../../vox/utils/DivLog";
 import DragAxis from "../move/DragAxis";
 import RawMesh from "../../../vox/mesh/RawMesh";
 import { RenderDrawMode } from "../../../vox/render/RenderConst";
+import Line3DMaterial from '../../../vox/material/mcase/Line3DMaterial';
+import { DisplayEntity } from "../../voxengine/CoEngine";
 
 //import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
 
@@ -92,11 +94,20 @@ export class DemoBase {
         let colors = new Float32Array( [ 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1 ]);
         let mesh: RawMesh = new RawMesh();
         mesh.ivsEnabled = false;
+        mesh.aabbEnabled = true;
         mesh.reset();
         mesh.addFloat32Data(vs, 3);
         mesh.addFloat32Data(colors, 3);
         mesh.initialize();
         mesh.drawMode = RenderDrawMode.ARRAYS_LINES;
+        mesh.vtCount = Math.floor(vs.length / 3);
+
+        let material = new Line3DMaterial(false);
+        let entity = new DisplayEntity();
+        entity.setMaterial(material);
+        entity.setMesh(mesh);
+        this.m_rscene.addEntity(entity);
+        return;
 
         let axis: Axis3DEntity = new Axis3DEntity();
         axis.initialize(1.0);

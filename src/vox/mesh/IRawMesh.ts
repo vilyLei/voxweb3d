@@ -22,6 +22,10 @@ export default interface IRawMesh extends IMeshBase {
 	 * the default value is true
 	 */
 	ivsEnabled: boolean;
+	/**
+	 * the default value is true
+	 */
+	aabbEnabled: boolean;
 
 	setRayTester(rayTester: ITestRay): void;
 

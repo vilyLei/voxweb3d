@@ -11,6 +11,7 @@ import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import MeshBase from "../../vox/mesh/MeshBase";
 import IRawMesh from "./IRawMesh";
 import ITestRay from "./ITestRay";
+import AABB from "../geom/AABB";
 
 /**
  * rawMesh
@@ -20,6 +21,7 @@ export default class RawMesh extends MeshBase implements IRawMesh {
 	private m_rayTester: ITestRay = null;
 	autoBuilding: boolean = true;
 	ivsEnabled: boolean = true;
+	aabbEnabled: boolean = true;
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         super(bufDataUsage);
     }
@@ -35,13 +37,19 @@ export default class RawMesh extends MeshBase implements IRawMesh {
         ROVertexBuffer.AddFloat32Data(fs32, step, status);
 	}
 	setIVS(ivs: Uint16Array | Uint32Array): void {
-		this.m_ivs = ivs
+		this.m_ivs = ivs;
 	}
     initialize(): void {
 
 		let rvb = ROVertexBuffer;
         rvb.vbWholeDataEnabled = this.vbWholeDataEnabled;
-
+		if(this.aabbEnabled && this.autoBuilding && this.m_dataList.length > 0) {
+            if(this.bounds == null) {
+                this.bounds = new AABB();
+            }
+            this.bounds.addXYZFloat32Arr(this.m_dataList[0]);
+            this.bounds.updateFast();
+		}
 		if(this.ivsEnabled) {
 			this.vtCount = this.m_ivs.length;
 			if(this.autoBuilding) {
