@@ -162,7 +162,7 @@ function createDisplayEntityWithDataMesh(
 	texEnabled: boolean = true,
 	vbWhole: boolean = false
 ): ITransformEntity {
-	console.log("CoRScene::createDisplayEntityWithDataMesh(), pmaterial: ", pmaterial, "texEnabled: ", texEnabled, "vbWhole: ", vbWhole);
+	
 	if (pmaterial != null) {
 		pmaterial.initializeByCodeBuf(texEnabled);
 		mesh.setBufSortFormat(pmaterial.getBufSortFormat());
@@ -182,7 +182,7 @@ function createMouseEventEntity(): IMouseEventEntity {
 }
 
 function createAxis3DEntity(size: number = 100.0): ITransformEntity {
-	
+
 	if(size < 0.0001)size = 0.0001;
 
 	let vs = new Float32Array([0, 0, 0, size, 0, 0, 0, 0, 0, 0, size, 0, 0, 0, 0, 0, 0, size]);

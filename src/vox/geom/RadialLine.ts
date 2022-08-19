@@ -8,9 +8,6 @@
 import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
 import AbsGeomBase from "../../vox/geom/AbsGeomBase";
-import PlaneCalc from "../../vox/geom/PlaneCalc";
-
-//import PlaneCalc = PlaneCalcT.vox.geom.PlaneCalc;
 
 class RadialLine extends AbsGeomBase {
 	static __tAv: Vector3D = new Vector3D();
