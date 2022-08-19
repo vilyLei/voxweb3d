@@ -37,7 +37,7 @@ import { Material } from "../../vox/material/Material";
 import ShaderMaterial from "../../vox/material/mcase/ShaderMaterial";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";
-// import Axis3DEntity from "../../vox/entity/Axis3DEntity";
+
 import { RenderableMaterialBlock } from "../../vox/scene/block/RenderableMaterialBlock";
 import { RenderableEntityBlock } from "../../vox/scene/block/RenderableEntityBlock";
 import { IMaterialContext } from "../../materialLab/base/IMaterialContext";
@@ -182,11 +182,9 @@ function createMouseEventEntity(): IMouseEventEntity {
 }
 
 function createAxis3DEntity(size: number = 100.0): ITransformEntity {
-	// vs: 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
-	// colors: 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1
-	// let axis = new Axis3DEntity();
-	// axis.initialize(size);
-	///*
+	
+	if(size < 0.0001)size = 0.0001;
+
 	let vs = new Float32Array([0, 0, 0, size, 0, 0, 0, 0, 0, 0, size, 0, 0, 0, 0, 0, 0, size]);
 	let colors = new Float32Array([1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1]);
 	let mesh: RawMesh = new RawMesh();
@@ -203,7 +201,7 @@ function createAxis3DEntity(size: number = 100.0): ITransformEntity {
 	let axis = new DisplayEntity();
 	axis.setMaterial(material);
 	axis.setMesh(mesh);
-	//*/
+	
 	return axis;
 }
 
