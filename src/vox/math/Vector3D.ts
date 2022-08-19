@@ -8,7 +8,7 @@ import IVector3D from "../../vox/math/IVector3D";
 
 const v_m_180pk = 180.0 / Math.PI;
 const v_m_minp: number = 1e-7;
-class Vector3D implements IVector3D {
+export default class Vector3D implements IVector3D {
     x: number = 0.0;
     y: number = 0.0;
     z: number = 0.0;
@@ -22,11 +22,12 @@ class Vector3D implements IVector3D {
     clone(): Vector3D {
         return new Vector3D(this.x, this.y, this.z, this.w);
     }
-    setTo(px: number, py: number, pz: number, pw: number = 1.0): void {
+    setTo(px: number, py: number, pz: number, pw: number = 1.0): Vector3D {
         this.x = px;
         this.y = py;
         this.z = pz;
         this.w = pw;
+        return this;
     }
     fromArray(arr: number[] | Float32Array, offset: number = 0): Vector3D {
         this.x = arr[offset];
@@ -34,37 +35,41 @@ class Vector3D implements IVector3D {
         this.z = arr[offset + 2];
         return this;
     }
-    toArray(arr: number[] | Float32Array, offset: number = 0): this {
+    toArray(arr: number[] | Float32Array, offset: number = 0): Vector3D {
         this.x = arr[offset];
         this.y = arr[offset + 1];
         this.z = arr[offset + 2];
         return this;
     }
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): Vector3D {
         this.x = px;
         this.y = py;
         this.z = pz;
+        return;
     }
-    copyFrom(v3: Vector3D): void {
+    copyFrom(v3: Vector3D): Vector3D {
         this.x = v3.x;
         this.y = v3.y;
         this.z = v3.z;
+        return this;
     }
     dot(a: Vector3D): number {
         return this.x * a.x + this.y * a.y + this.z * a.z;
     }
-    multBy(a: Vector3D): void {
+    multBy(a: Vector3D): Vector3D {
         this.x *= a.x;
         this.y *= a.y;
         this.z *= a.z;
+        return this;
     }
-    normalize(): void {
+    normalize(): Vector3D {
         let d: number = Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
         if (d > v_m_minp) {
             this.x /= d;
             this.y /= d;
             this.z /= d;
         }
+        return this;
     }
     normalizeTo(a: Vector3D): void {
         let d: number = Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
@@ -79,20 +84,23 @@ class Vector3D implements IVector3D {
             a.z = this.z;
         }
     }
-    scaleVector(s: Vector3D): void {
+    scaleVector(s: Vector3D): Vector3D {
         this.x *= s.x;
         this.y *= s.y;
         this.z *= s.z;
+        return this;
     }
-    scaleBy(s: number): void {
+    scaleBy(s: number): Vector3D {
         this.x *= s;
         this.y *= s;
         this.z *= s;
+        return this;
     }
-    negate(): void {
+    negate(): Vector3D {
         this.x = -this.x;
         this.y = -this.y;
         this.z = -this.z;
+        return this;
     }
     equalsXYZ(a: Vector3D): boolean {
         return Math.abs(this.x - a.x) < v_m_minp && Math.abs(this.y - a.y) < v_m_minp && Math.abs(this.z - a.z) < v_m_minp;
@@ -112,15 +120,17 @@ class Vector3D implements IVector3D {
     getLengthSquared(): number {
         return this.x * this.x + this.y * this.y + this.z * this.z;
     }
-    addBy(a: Vector3D): void {
+    addBy(a: Vector3D): Vector3D {
         this.x += a.x;
         this.y += a.y;
         this.z += a.z;
+        return this;
     }
-    subtractBy(a: Vector3D): void {
+    subtractBy(a: Vector3D): Vector3D {
         this.x -= a.x;
         this.y -= a.y;
         this.z -= a.z;
+        return this;
     }
     subtract(a: Vector3D): Vector3D {
         return new Vector3D(this.x - a.x, this.y - a.y, this.z - a.z);
@@ -135,49 +145,55 @@ class Vector3D implements IVector3D {
             , this.x * a.y - this.y * a.x
         );
     }
-    crossBy(a: Vector3D): void {
+    crossBy(a: Vector3D): Vector3D {
         let px: number = this.y * a.z - this.z * a.y;
         let py: number = this.z * a.x - this.x * a.z;
         let pz: number = this.x * a.y - this.y * a.x;
         this.x = px;
         this.y = py;
         this.z = pz;
+        return this;
     }
-    reflectBy(nv: Vector3D): void {
+    reflectBy(nv: Vector3D): Vector3D {
         let idotn2: number = (this.x * nv.x + this.y * nv.y + this.z * nv.z) * 2.0;
         this.x = this.x - idotn2 * nv.x;
         this.y = this.y - idotn2 * nv.y;
         this.z = this.z - idotn2 * nv.z;
+        return this;
     }
 
-    scaleVecTo(va: Vector3D, scale: number): void {
+    scaleVecTo(va: Vector3D, scale: number): Vector3D {
         this.x = va.x * scale;
         this.y = va.y * scale;
         this.z = va.z * scale;
+        return this;
     }
-    subVecsTo(va: Vector3D, vb: Vector3D): void {
+    subVecsTo(va: Vector3D, vb: Vector3D): Vector3D {
         this.x = va.x - vb.x;
         this.y = va.y - vb.y;
         this.z = va.z - vb.z;
+        return this;
     }
-    addVecsTo(va: Vector3D, vb: Vector3D): void {
+    addVecsTo(va: Vector3D, vb: Vector3D): Vector3D {
         this.x = va.x + vb.x;
         this.y = va.y + vb.y;
         this.z = va.z + vb.z;
+        return this;
     }
-    crossVecsTo(va: Vector3D, vb: Vector3D): void {
+    crossVecsTo(va: Vector3D, vb: Vector3D): Vector3D {
         this.x = va.y * vb.z - va.z * vb.y;
         this.y = va.z * vb.x - va.x * vb.z;
         this.z = va.x * vb.y - va.y * vb.x;
+        return this;
     }
     toString(): string {
         return "Vector3D("+this.x+""+this.y+""+this.z+")"
     }
-    static X_AXIS = new Vector3D(1, 0, 0);
-    static Y_AXIS = new Vector3D(0, 1, 0);
-    static Z_AXIS = new Vector3D(0, 0, 1);
-    static readonly ZERO: Vector3D = new Vector3D(0,0,0);
-    static readonly ONE: Vector3D = new Vector3D(1,1,1);
+    static readonly X_AXIS = new Vector3D(1, 0, 0);
+    static readonly Y_AXIS = new Vector3D(0, 1, 0);
+    static readonly Z_AXIS = new Vector3D(0, 0, 1);
+    static readonly ZERO = new Vector3D(0,0,0);
+    static readonly ONE = new Vector3D(1,1,1);
 
     /**
      * 右手法则(为正)
@@ -268,6 +284,5 @@ class Vector3D implements IVector3D {
     }
 }
 
-const v_m_v0: Vector3D = new Vector3D();
-const v_m_v1: Vector3D = new Vector3D();
-export default Vector3D;
+const v_m_v0 = new Vector3D();
+const v_m_v1 = new Vector3D();
