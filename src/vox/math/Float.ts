@@ -26,24 +26,24 @@ function isNotZero(v: number) : boolean {
 }
 /**
  * example:
- *     isPositiveGreaterZero(0.1) is true
- *     isPositiveGreaterZero(0.000000001) is false
- *     isPositiveGreaterZero(-0.1) is false
+ *     isGreaterPositiveZero(0.1) is true
+ *     isGreaterPositiveZero(0.000000001) is false
+ *     isGreaterPositiveZero(-0.1) is false
  * @param v number value
  * @returns a positive number value and its value is greater zero, return true, otherwize false
  */
-function isPositiveGreaterZero(v: number) : boolean {
+function isGreaterPositiveZero(v: number) : boolean {
 	return v >= MATH_MIN_POSITIVE;
 }
 /**
  * example:
- *      isNegativeLessZero(-0.1) is true
- *      isNegativeLessZero(-000000001) is false
- *      isNegativeLessZero(0.1) is false
+ *      isLessNegativeZero(-0.1) is true
+ *      isLessNegativeZero(-000000001) is false
+ *      isLessNegativeZero(0.1) is false
  * @param v number value
  * @returns a negative number value and its value is less zero, return true, otherwise false
  */
-function isNegativeLessZero(v: number) : boolean {
+function isLessNegativeZero(v: number) : boolean {
 	return v <= MATH_MAX_NEGATIVE;
 }
 /**
@@ -85,8 +85,8 @@ function isLessRealZero(v: number) : boolean {
 export {
 	isZero,
 	isNotZero,
-	isPositiveGreaterZero,
-	isNegativeLessZero,
+	isGreaterPositiveZero,
+	isLessNegativeZero,
 	isLessPositiveZero,
 	isGreaterNegativeZero,
 	isPostiveZero,

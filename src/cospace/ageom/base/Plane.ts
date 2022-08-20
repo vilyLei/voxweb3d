@@ -9,7 +9,8 @@ import IVector3D from "../../../vox/math/IVector3D";
 import IPlane from "./IPlane";
 import ILine from "./ILine";
 import IRayLine from "./IRayLine";
-import { isZero, isNotZero, isPositiveGreaterZero, isNegativeLessZero, isPostiveZero } from "./Float";
+import { isZero, isNotZero, isGreaterPositiveZero, isLessNegativeZero, isPostiveZero } from "../../../vox/math/Float";
+
 import PlaneUtils from "./PlaneUtils";
 
 import { Intersection } from "./Intersection";
@@ -146,7 +147,7 @@ export default class Plane implements IPlane {
 		this.intersection = Intersection.None;
 		let td = this.nv.dot(rl.pos) - this.m_dis;
 
-		if (isPositiveGreaterZero(td)) {
+		if (isGreaterPositiveZero(td)) {
 			// rl position in plane positive space
 			td = this.nv.dot(rl.tv);
 			if (td < 0.0) {
@@ -154,7 +155,7 @@ export default class Plane implements IPlane {
 				return this.intersectLinePos2(rl.pos, rl.tv, outV);
 			}
 		}
-		else if (isNegativeLessZero(td)) {
+		else if (isLessNegativeZero(td)) {
 			// rl position in plane negative space
 			td = this.nv.dot(rl.tv);
 			if (td > 0.0) {
@@ -184,7 +185,7 @@ export default class Plane implements IPlane {
 		this.intersection = Intersection.None;
 		let td: number;
 		let dis = this.nv.dot(rl_pos) - this.m_dis;
-		if (isPositiveGreaterZero(dis)) {
+		if (isGreaterPositiveZero(dis)) {
 			// rl position in plane positive space
 			td = this.nv.dot(rl_tv);
 			if (td < 0.0) {
@@ -192,7 +193,7 @@ export default class Plane implements IPlane {
 				return this.intersectLinePos2(rl_pos, rl_tv, outV);
 			}
 		}
-		else if (isNegativeLessZero(dis)) {
+		else if (isLessNegativeZero(dis)) {
 			// rl position in plane negative space
 			td = this.nv.dot(rl_tv);
 			if (td > 0.0) {
@@ -222,9 +223,9 @@ export default class Plane implements IPlane {
 	containsPoint(pos: IVector3D): Intersection {
 
 		let f = this.nv.dot(pos) - this.m_dis;
-		if (isPositiveGreaterZero(f)) {
+		if (isGreaterPositiveZero(f)) {
 			return Intersection.Positive;
-		} else if (isNegativeLessZero(f)) {
+		} else if (isLessNegativeZero(f)) {
 			return Intersection.Negative;
 		}
 		return Intersection.Hit;
@@ -234,10 +235,10 @@ export default class Plane implements IPlane {
 		this.intersection = Intersection.None;
 		let boo = false;
 		let f = this.nv.dot(cv) - this.m_dis;
-		if (isPositiveGreaterZero(f)) {
+		if (isGreaterPositiveZero(f)) {
 			boo = f <= radius;
 			this.intersection = Intersection.Positive;
-		} else if (isNegativeLessZero(f)) {
+		} else if (isLessNegativeZero(f)) {
 			boo = -f <= radius;
 			this.intersection = Intersection.Negative;
 		}else {

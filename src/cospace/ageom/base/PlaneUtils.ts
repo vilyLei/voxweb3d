@@ -8,7 +8,7 @@
 import IVector3D from "../../../vox/math/IVector3D";
 import { Intersection } from "./Intersection";
 
-import { isZero, isNotZero } from "./Float";
+import { isZero, isNotZero } from "../../../vox/math/Float";
 
 class PlaneUtils
 {

@@ -7,7 +7,8 @@
 
 import IVector3D from "../../../vox/math/IVector3D";
 import IRayLine from "./IRayLine";
-import { isPositiveGreaterZero, isLessPositiveZero } from "./Float";
+import { isGreaterPositiveZero, isLessPositiveZero } from "../../../vox/math/Float";
+
 
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
@@ -98,7 +99,7 @@ export default class RayLine implements IRayLine {
 
 		pv.w = pv.dot(rltv);
 		radius *= radius;
-		if (isPositiveGreaterZero(pv.w)) {
+		if (isGreaterPositiveZero(pv.w)) {
 			outV.copyFrom(rltv);
 			outV.scaleBy(pv.w);
 			outV.subtractBy(pv);
