@@ -142,19 +142,19 @@ export class DemoCoAGeom {
 
 		let rl1 = new RayLine();
 		rl1.pos.setTo(100.0, 11.0, 100.0);
-		rl1.tv.setTo(1.0, 0.0, 1.0);
+		rl1.tv.setTo(1.0, 0.1, 1.0);
 		rl1.update();
 
 		interBoo = plane.intersectRayLinePos2(rl1.pos, rl1.tv, outV);
 		console.log("plane.intersectRayLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection, ", outV: ", outV);
 
-		// rl1 = new RayLine();
-		// rl1.pos.setTo(100.0, 0.90, 100.0);
-		// rl1.tv.setTo(1.0, 1.0, 0.0);
-		// rl1.update();
+		rl1 = new RayLine();
+		rl1.pos.setTo(100.0, 0.90, 100.0);
+		rl1.tv.setTo(1.0, 0.0, 1.0);
+		rl1.update();
 
-		// interBoo = plane.intersectRayLinePos2(rl1.pos, rl1.tv, outV);
-		// console.log("plane.intersectRayLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection, ", outV: ", outV);
+		interBoo = plane.intersectRayLinePos2(rl1.pos, rl1.tv, outV);
+		console.log("plane.intersectRayLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection, ", outV: ", outV);
 
 		console.log(" ------------------ ------------------ ------------------");
 	}

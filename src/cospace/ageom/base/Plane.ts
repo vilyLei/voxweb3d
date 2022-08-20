@@ -104,10 +104,10 @@ export default class Plane implements IPlane {
 	 */
 	intersectLinePos2(sl_pos: IVector3D, sl_tv: IVector3D, outV: IVector3D): boolean {
 
-		// let flag = PlaneUtils.IntersectLinePos2(this.nv, this.m_dis, sl_pos, sl_tv, outV);
-		// this.intersection = PlaneUtils.Intersection;
-		// return flag;
-		///*
+		let flag = PlaneUtils.IntersectLinePos2(this.nv, this.m_dis, sl_pos, sl_tv, outV);
+		this.intersection = PlaneUtils.Intersection;
+		return flag;
+		/*
 		this.intersection = Intersection.None;
 		// intersection or parallel
 		let td = this.nv.dot(sl_tv);
