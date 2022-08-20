@@ -10,6 +10,7 @@ import IPlane from "./IPlane";
 import ILine from "./ILine";
 import IRayLine from "./IRayLine";
 import { isZero, isNotZero, isPositiveGreaterZero, isNegativeLessZero, isPostiveZero } from "./Float";
+import PlaneUtils from "./PlaneUtils";
 
 import { Intersection } from "./Intersection";
 
@@ -102,6 +103,10 @@ export default class Plane implements IPlane {
 	 */
 	intersectLinePos2(sl_pos: IVector3D, sl_tv: IVector3D, outV: IVector3D): boolean {
 
+		// let flag = PlaneUtils.IntersectLinePos2(this.nv, this.m_dis, sl_pos, sl_tv, outV);
+		// this.intersection = PlaneUtils.Intersection;
+		// return flag;
+		///*
 		this.intersection = Intersection.None;
 		// intersection or parallel
 		let td = this.nv.dot(sl_tv);
@@ -133,6 +138,7 @@ export default class Plane implements IPlane {
 		}
 		this.intersection = Intersection.parallel;
 		return false;
+		//*/
 	}
 
 	intersectRayLinePos(rl: IRayLine, outV: IVector3D): boolean {

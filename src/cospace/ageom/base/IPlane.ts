@@ -22,4 +22,8 @@ export default interface IPlane extends IGeomEntity {
 	 * get plane distance
 	 */
 	getDistance(): number;
+	// /**
+	//  * set plane distance
+	//  */
+	// setDistanceAndNv(dis: number, nv: IVector3D): IPlane;
 }

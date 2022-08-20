@@ -99,7 +99,7 @@ export class DemoCoAGeom {
 		let interBoo: boolean;
 		let plane: Plane;
 
-		/*
+		///*
 		hit = RayLine.IntersectSegmentLine(rl0.pos, rl0.tv, sl0.begin, sl0.end, outV);
 		console.log("RayLine.IntersectSegmentLine, hit: ", hit, ", outV: ", outV);
 
@@ -111,7 +111,7 @@ export class DemoCoAGeom {
 		plane.nv.setXYZ(0.0, 1.0, 0.0);
 		plane.update();
 
-		let interBoo = plane.intersectSphNegSpace(sph.pos, sph.radius);
+		interBoo = plane.intersectSphNegSpace(sph.pos, sph.radius);
 		console.log("plane.intersectSphNegSpace(), interBoo: ", interBoo);
 
 		sph = new Sphere();
