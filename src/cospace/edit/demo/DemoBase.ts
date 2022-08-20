@@ -21,7 +21,9 @@ import DragAxis from "../move/DragAxis";
 import RawMesh from "../../../vox/mesh/RawMesh";
 import { RenderDrawMode } from "../../../vox/render/RenderConst";
 import Line3DMaterial from '../../../vox/material/mcase/Line3DMaterial';
-import { DisplayEntity } from "../../voxengine/CoEngine";
+import DisplayEntity from "../../../vox/entity/DisplayEntity";
+import RadialLine from "../../../vox/geom/RadialLine";
+import Plane from "../../../vox/geom/Plane";
 
 //import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
 
@@ -36,9 +38,29 @@ export class DemoBase {
 
     private m_materialCtx: MaterialContext = new MaterialContext();
 
+    private testGeom(): void {
+
+		let outV = new Vector3D();
+
+		let plane = new Plane();
+		plane.position.setXYZ(0.0, 10.0, 0.0);
+		plane.nv.setXYZ(0.0, 1.0, 0.0);
+		plane.update();
+
+		let rl1 = new RadialLine();
+		rl1.position.setTo(100.0, 0.0, 100.0);
+		rl1.tv.setTo(1.0, -1.0, 0.0);
+		rl1.update();
+
+		let intersection = plane.intersectRadialLinePos2(rl1.position, rl1.tv, outV);
+		let interBoo = plane.intersectBoo;
+		console.log("plane.intersectRayLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", intersection, ", outV: ", outV);
+	}
     initialize(): void {
 
         console.log("DemoBase::initialize()......");
+		this.testGeom();
+		return;
         if (this.m_rscene == null) {
 
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;

@@ -6,12 +6,19 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
+import IGeomEntity from "./IGeomEntity";
 
-export default interface IGeomEntity {
-	// unique id
-	uid: number;
-	position: IVector3D;
+export default interface IAABBBox extends IGeomEntity {
 
-	update(): void;
-	updateFast(): void;
+	min: IVector3D;
+	max: IVector3D;
+
+	radius: number;
+
+	long: number;
+	width: number;
+	height: number;
+	// getLong(): number;
+	// getWdith(): number;
+	// getHeight(): number;
 }

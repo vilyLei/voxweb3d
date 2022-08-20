@@ -6,12 +6,8 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
+import IGeomEntity from "./IGeomEntity";
 
-export default interface IGeomEntity {
-	// unique id
-	uid: number;
-	position: IVector3D;
-
-	update(): void;
-	updateFast(): void;
+export default interface IRayLine extends IGeomEntity {
+	tv: IVector3D;
 }

@@ -8,10 +8,12 @@
 import IVector3D from "../../../vox/math/IVector3D";
 
 export default interface IGeomEntity {
-	// unique id
-	uid: number;
-	position: IVector3D;
 
+	uid: number;
+	/**
+	 * a center position or a position
+	 */
+	pos: IVector3D;
+	reset(): void;
 	update(): void;
-	updateFast(): void;
 }

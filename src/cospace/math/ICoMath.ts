@@ -45,6 +45,5 @@ interface ICoMath {
 	createVec3(px?: number, py?: number, pz?: number, pw?: number): IVector3D;
 	createMat4(pfs32?: Float32Array, index?: number): IMatrix4;
 	createAABB(): IAABB;
-
 }
-export { ICoMath };
+export { CoMathVec3, ICoMath };
