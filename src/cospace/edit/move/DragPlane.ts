@@ -32,6 +32,7 @@ export default class DragPlane implements IRayControl {
     private m_dispatcher: IEvtDispatcher;
     private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
+    private m_offsetPos = CoMath.createVec3();
 
     uuid: string = "DragPlane";
 
@@ -39,7 +40,6 @@ export default class DragPlane implements IRayControl {
     planeCrossRayEnabled = false;
     outColor = CoRScene.createColor4(0.9, 0.9, 0.9, 1.0);
     overColor = CoRScene.createColor4(1.0, 1.0, 1.0, 1.0);
-    offsetPos = CoMath.createVec3();
 
     constructor() { }
     initialize(planeAxisType: number, size: number, alpha: number): void {
@@ -60,6 +60,7 @@ export default class DragPlane implements IRayControl {
             switch (planeAxisType) {
                 // xoz
                 case 0:
+                    this.m_offsetPos.setXYZ(size, 0, size);
                     et.copyMeshFrom(eb.unitXOZPlane);
                     // plane.initializeXOZ(dis, dis, axisPlaneSize, axisPlaneSize);
                     this.setPlaneNormal(V3.Y_AXIS);
@@ -68,6 +69,7 @@ export default class DragPlane implements IRayControl {
                     break;
                 // xoy
                 case 1:
+                    this.m_offsetPos.setXYZ(size, size, 0);
                     et.copyMeshFrom(eb.unitXOYPlane);
                     // plane.initializeXOY(dis, dis, axisPlaneSize, axisPlaneSize);
                     this.setPlaneNormal(V3.Z_AXIS);
@@ -76,6 +78,7 @@ export default class DragPlane implements IRayControl {
                     break;
                 // yoz
                 case 2:
+                    this.m_offsetPos.setXYZ(0, size, size);
                     // plane.initializeYOZ(dis, dis, axisPlaneSize, axisPlaneSize);
                     et.copyMeshFrom(eb.unitYOZPlane);
                     this.setPlaneNormal(CoMath.Vector3D.X_AXIS);
@@ -94,7 +97,7 @@ export default class DragPlane implements IRayControl {
             }
 
             et.setRenderState(CoRScene.RendererState.NONE_TRANSPARENT_STATE);
-            et.setPosition( this.offsetPos );
+            et.setPosition( this.m_offsetPos );
             this.showOutColor();
             this.initializeEvent();
         }
@@ -155,7 +158,7 @@ export default class DragPlane implements IRayControl {
         return this.m_entity.getVisible();
     }
     setXYZ(px: number, py: number, pz: number): void {
-        // const v = this.offsetPos;
+        // const v = this.m_offsetPos;
         // this.m_entity.setXYZ(px + v.x, py + v.y, pz + v.z);
         this.m_entity.setXYZ(px, py, pz);
     }
@@ -234,9 +237,9 @@ export default class DragPlane implements IRayControl {
             pv.copyFrom(this.m_outV);
             pv.addBy(this.m_dv);
             if (this.moveSelfEnabled) {
-                pv.addBy(this.offsetPos);
+                pv.addBy(this.m_offsetPos);
                 this.setPosition(pv);
-                pv.subtractBy(this.offsetPos);
+                pv.subtractBy(this.m_offsetPos);
                 this.update();
             }
 

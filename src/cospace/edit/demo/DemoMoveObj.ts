@@ -109,29 +109,40 @@ export class DemoMoveObj {
 		console.log("ageom plane: ", plane);
 
 	}
-	
+	private m_dragCtr: DragMoveController;
 	private createEditEntity(): void {
 
+		/*
 		let moveAxis = new DragAxis();
 		moveAxis.initialize(80.0);
 		moveAxis.setXYZ(50,30,-200);
 		this.m_rscene.addEntity(moveAxis.getEntity());
 
-
 		let movePlane = new DragPlane();
-		movePlane.offsetPos.setXYZ(50.0,0.0,50.0);
+		// movePlane.offsetPos.setXYZ(50.0,0.0,50.0);
 		movePlane.initialize(0, 100, 0.5);
 		this.m_rscene.addEntity(movePlane.getEntity());
 		movePlane = new DragPlane();
-		movePlane.offsetPos.setXYZ(50.0,50.0,0.0);
+		// movePlane.offsetPos.setXYZ(50.0,50.0,0.0);
 		movePlane.initialize(1, 100, 0.5);
 		this.m_rscene.addEntity(movePlane.getEntity());
 		movePlane = new DragPlane();
-		movePlane.offsetPos.setXYZ(0.0,50.0,50.0);
+		// movePlane.offsetPos.setXYZ(0.0,50.0,50.0);
 		movePlane.initialize(2, 100, 0.5);
 		this.m_rscene.addEntity(movePlane.getEntity());
+		//*/
+		this.m_dragCtr = new DragMoveController();
+		this.m_dragCtr.initialize(this.m_rscene);
+	}
+	private mouseUpListener(evt: any): void {
+        console.log("DemoMoveObj::mouseUpListener() ...");
 
-		let dragCtr = new DragMoveController();
+	}
+	private mouseBgDownListener(evt: any): void {
+        console.log("DemoMoveObj::mouseBgDownListener() ...");
+		if(this.m_dragCtr != null) {
+			this.m_dragCtr.deselect();
+		}
 	}
 	private createDefaultEntity(): void {
 
@@ -194,9 +205,12 @@ export class DemoMoveObj {
 			rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 			rparam.setCamProject(45, 20.0, 9000.0);
-			this.m_rscene = CoRScene.createRendererScene(rparam, 3);
-			this.m_rscene.setClearUint24Color(0x888888);
+			let rscene = CoRScene.createRendererScene(rparam, 3);
+			rscene.setClearUint24Color(0x888888);
 
+			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
+        	rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDownListener);
+			this.m_rscene = rscene;
 		}
 	}
 	private loadOBJ(): void {
@@ -208,6 +222,9 @@ export class DemoMoveObj {
 	private mouseDown(evt: any): void { }
 	run(): void {
 		if (this.m_rscene != null) {
+			if(this.m_dragCtr != null) {
+				this.m_dragCtr.run();
+			}
 			if (this.m_interact != null) {
 				this.m_interact.run();
 			}
