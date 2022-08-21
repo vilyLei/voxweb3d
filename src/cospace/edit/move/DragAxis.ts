@@ -5,18 +5,26 @@
 /*                                                                         */
 /***************************************************************************/
 
-import Vector3D from "../../../vox/math/Vector3D";
-import StraightLine from "../../../vox/geom/StraightLine";
-import Matrix4 from "../../../vox/math/Matrix4";
-import MouseEvent from "../../../vox/event/MouseEvent";
+import IVector3D from "../../../vox/math/IVector3D";
+// import ILine from "../../ageom/base/ILine";
+import IMatrix4 from "../../../vox/math/IMatrix4";
 
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
-import AxisQuad3DEntity from "../../../vox/entity/AxisQuad3DEntity";
-import MouseEvt3DDispatcher from "../../../vox/event/MouseEvt3DDispatcher";
+
+import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
-import Color4 from "../../../vox/material/Color4";
-import { IRayControl } from "../../../voxeditor/base/IRayControl";
+import IColor4 from "../../../vox/material/IColor4";
+// import { IRayControl } from "../../../voxeditor/base/IRayControl";
+import IRawMesh from "../../../vox/mesh/IRawMesh";
+
+import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
+import { ICoMath } from "../../math/ICoMath";
+import { ICoAGeom } from "../../ageom/ICoAGeom";
+
+declare var CoRScene: ICoRScene;
+declare var CoMath: ICoMath;
+declare var CoAGeom: ICoAGeom;
 /**
  * 在三个坐标轴上拖动
  */
@@ -24,13 +32,13 @@ import { IRayControl } from "../../../voxeditor/base/IRayControl";
 export default class DragAxis {
 
     private m_targetEntity: IEntityTransform = null;
-    private m_dispatcher: MouseEvt3DDispatcher;
-    private m_targetPosOffset: Vector3D = new Vector3D();
+    private m_dispatcher: IEvtDispatcher;
+    private m_targetPosOffset: IVector3D = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
     uuid: string = "DragAxis";
-    moveSelfEnabled: boolean = true;
-    outColor: Color4 = new Color4(0.9, 0.9, 0.9, 1.0);
-    overColor: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
+    moveSelfEnabled = true;
+    outColor = CoRScene.createColor4(0.9, 0.9, 0.9, 1.0);
+    overColor = CoRScene.createColor4(1.0, 1.0, 1.0, 1.0);
 
     constructor() {
     }
@@ -50,7 +58,7 @@ export default class DragAxis {
     removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
         this.m_dispatcher.removeEventListener(type, listener, func);
     }
-    setTargetPosOffset(offset: Vector3D): void {
+    setTargetPosOffset(offset: IVector3D): void {
         this.m_targetPosOffset.copyFrom(offset);
     }
     setTarget(target: IEntityTransform): void {
@@ -59,19 +67,22 @@ export default class DragAxis {
     initializeEvent(): void {
 
         if (this.m_dispatcher == null) {
-            let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
-            dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-            dispatcher.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverListener);
-            dispatcher.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutListener);
+            const me = CoRScene.MouseEvent;
+            let dispatcher = CoRScene.createMouseEvt3DDispatcher();
+            dispatcher.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
+            dispatcher.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
+            dispatcher.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
             this.m_entity.setEvtDispatcher(dispatcher);
             this.m_dispatcher = dispatcher;
         }
         this.m_entity.mouseEnabled = true;
     }
     protected mouseOverListener(evt: any): void {
+        console.log("DragAxis::mouseOverListener() ...");
         this.showOverColor();
     }
     protected mouseOutListener(evt: any): void {
+        console.log("DragAxis::mouseOutListener() ...");
         this.showOutColor();
     }
     showOverColor(): void {
@@ -90,7 +101,7 @@ export default class DragAxis {
     }
     destroy(): void {
         this.m_targetEntity = null;
-        if(this.m_entity != null) {
+        if (this.m_entity != null) {
             this.m_entity.destroy();
             this.m_entity = null;
         }
@@ -99,10 +110,10 @@ export default class DragAxis {
             this.m_dispatcher = null;
         }
     }
-    setPosition(pos: Vector3D): void {
+    setPosition(pos: IVector3D): void {
         this.m_entity.setPosition(pos);
     }
-    getPosition(outPos: Vector3D): void {
+    getPosition(outPos: IVector3D): void {
         this.m_entity.getPosition(outPos);
     }
     update(): void {
@@ -110,32 +121,34 @@ export default class DragAxis {
     }
 
     private m_flag: number = -1;
-    private m_axis_pv: Vector3D = new Vector3D();
-    private m_axis_tv: Vector3D = new Vector3D();
-    private m_initPos: Vector3D = new Vector3D();
-    private m_pos: Vector3D = new Vector3D();
-    private m_dv: Vector3D = new Vector3D();
-    private m_outV: Vector3D = new Vector3D();
-    private m_initV: Vector3D = new Vector3D();
+    private m_axis_pv: IVector3D = CoMath.createVec3();
+    private m_axis_tv: IVector3D = CoMath.createVec3();
+    private m_initPos: IVector3D = CoMath.createVec3();
+    private m_pos: IVector3D = CoMath.createVec3();
+    private m_dv: IVector3D = CoMath.createVec3();
+    private m_outV: IVector3D = CoMath.createVec3();
+    private m_initV: IVector3D = CoMath.createVec3();
 
-    private m_mat4: Matrix4 = new Matrix4();
-    private m_invMat4: Matrix4 = new Matrix4();
-    private calcClosePos(rpv: Vector3D, rtv: Vector3D): void {
+    private m_mat4: IMatrix4 = CoMath.createMat4();
+    private m_invMat4: IMatrix4 = CoMath.createMat4();
+    private calcClosePos(rpv: IVector3D, rtv: IVector3D): void {
+
         if (this.m_flag > -1) {
-            let mat4: Matrix4 = this.m_invMat4;
+            let mat4 = this.m_invMat4;
             mat4.transformVector3Self(rpv);
             mat4.deltaTransformVectorSelf(rtv);
-            let outV: Vector3D = this.m_outV;
-            StraightLine.CalcTwoSLCloseV2(rpv, rtv, this.m_axis_pv, this.m_axis_tv, outV);
-
+            let outV = this.m_outV;
+            CoAGeom.Line.CalcTwoSLCloseV2(rpv, rtv, this.m_axis_pv, this.m_axis_tv, outV);
             mat4 = this.m_mat4;
             mat4.transformVector3Self(outV);
         }
     }
-    private m_rpv: Vector3D = new Vector3D();
-    private m_rtv: Vector3D = new Vector3D();
-    public moveByRay(rpv: Vector3D, rtv: Vector3D): void {
+    private m_rpv = CoMath.createVec3();
+    private m_rtv = CoMath.createVec3();
+    public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
+
         if (this.m_flag > -1) {
+
             this.m_rpv.copyFrom(rpv);
             this.m_rtv.copyFrom(rtv);
 

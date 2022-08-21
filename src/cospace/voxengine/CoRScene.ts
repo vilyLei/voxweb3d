@@ -180,7 +180,6 @@ function createDisplayEntity(): ITransformEntity {
 function createMouseEventEntity(): IMouseEventEntity {
 	return new MouseEventEntity();
 }
-
 function createAxis3DEntity(size: number = 100.0): ITransformEntity {
 
 	if(size < 0.0001)size = 0.0001;

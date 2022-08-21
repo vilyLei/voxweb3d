@@ -37,7 +37,7 @@ export class DemoMoveObj {
 	constructor() { }
 
 	initialize(): void {
-		
+
 		console.log("DemoMoveObj::initialize() ...");
 		document.onmousedown = (evt: any): void => {
 			this.mouseDown(evt);
@@ -104,94 +104,14 @@ export class DemoMoveObj {
 		console.log("ageom line: ", line);
 		console.log("ageom plane: ", plane);
 
-		this.testAGeomBase();
 	}
 	
-	private testAGeomBase(): void {
-		let v3 = CoMath.createVec3(10, 4, 0.5);
-		console.log("math v3: ", v3);
-
-		let sl0 = CoAGeom.createSegmentLine();
-		sl0.begin.setXYZ(-50, 0, 0);
-		sl0.end.setXYZ(100, 0, 0);
-		sl0.update();
-		let rl0 = CoAGeom.createRayLine();
-		rl0.pos.setXYZ(0, 100, 0);
-		rl0.tv.setXYZ(0.1, -1, 0);
-		rl0.update();
-
-		let outV = CoMath.createVec3();
-
-		console.log(" ------------------ ------------------ ------------------");
-		let hit: boolean;
-		let interBoo: boolean;
-		let plane: IPlane;
-		let RayLine = CoAGeom.RayLine;
-		///*
-		hit = RayLine.IntersectSegmentLine(rl0.pos, rl0.tv, sl0.begin, sl0.end, outV);
-		console.log("RayLine.IntersectSegmentLine, hit: ", hit, ", outV: ", outV);
-
-		let sph = CoAGeom.createSphere();
-		sph.radius = 20.0;
-		sph.setXYZ(0, 19.0, 0.0);
-
-		plane = CoAGeom.createPlane();
-
-		plane.nv.setXYZ(0.0, 1.0, 0.0);
-		plane.update();
-
-		interBoo = plane.intersectSphNegSpace(sph.pos, sph.radius);
-		console.log("plane.intersectSphNegSpace(), interBoo: ", interBoo);
-
-		sph = CoAGeom.createSphere();
-		sph.radius = 20.0;
-		sph.setXYZ(0, 21.0, 0.0);
-		interBoo = plane.intersectSphere(sph.pos, sph.radius);
-		console.log("plane.intersectSphere(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection);
-
-		let line = CoAGeom.createLine();
-		line.pos.setTo(100.0, 100.0, 100.0);
-		line.tv.setTo(1.0, -1.0, 0.0);
-		line.update();
-
-		interBoo = plane.intersectLinePos2(line.pos, line.tv, outV);
-		console.log("plane.intersectLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection, ", outV: ", outV);
-
-		line.pos.setTo(100.0, 0.0, 100.0);
-		line.tv.setTo(1.0, 0.0, 0.0);
-		line.update();
-
-		interBoo = plane.intersectLinePos2(line.pos, line.tv, outV);
-		console.log("plane.intersectLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection, ", outV: ", outV);
-		//*/
-		plane = CoAGeom.createPlane();
-		plane.pos.setXYZ(0.0, 10.0, 0.0);
-		plane.nv.setXYZ(0.0, 1.0, 0.0);
-		plane.update();
-
-		let rl1 = CoAGeom.createRayLine()
-		rl1.pos.setTo(100.0, 11.0, 100.0);
-		rl1.tv.setTo(1.0, 0.1, 1.0);
-		rl1.update();
-
-		interBoo = plane.intersectRayLinePos2(rl1.pos, rl1.tv, outV);
-		console.log("plane.intersectRayLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection, ", outV: ", outV);
-
-		rl1 = CoAGeom.createRayLine();
-		rl1.pos.setTo(100.0, 0.90, 100.0);
-		rl1.tv.setTo(1.0, 0.0, 1.0);
-		rl1.update();
-
-		interBoo = plane.intersectRayLinePos2(rl1.pos, rl1.tv, outV);
-		console.log("plane.intersectRayLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection, ", outV: ", outV);
-
-		console.log(" ------------------ ------------------ ------------------");
-	}
 	private createDefaultEntity(): void {
 
 		let axis = CoRScene.createAxis3DEntity();
 		this.m_rscene.addEntity(axis);
 
+		/*
 		let texList = [this.createTexByUrl()];
 		let material = CoRScene.createDefaultMaterial();
 		material.setTextureList(texList);
@@ -200,7 +120,7 @@ export class DemoMoveObj {
 		entity.copyMeshFrom(this.m_rscene.entityBlock.unitXOZPlane);
 		entity.setScaleXYZ(700.0, 0.0, 700.0);
 		this.m_rscene.addEntity(entity);
-
+		//*/
 	}
 	private initScene(): void {
 
