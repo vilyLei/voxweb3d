@@ -80,10 +80,23 @@ interface CoRayLine {
 	IntersectSphere(rlpv: IVector3D, rltv: IVector3D, cv: IVector3D, radius: number): boolean;
 }
 
+interface CoPlaneUtils {
+	/**
+	 * 记录相交的状态
+	 */
+	readonly Intersection: number;
+	CalcPVCloseV(planeNV: IVector3D, planeDis: number, posV: IVector3D, outV: IVector3D): void;
+	/**
+	 * 直线和平面的关系: 平行(parallel)，包含(contain, 也属于hit)，相交(hit)
+	 */
+	IntersectLinePos2(pnv: IVector3D, pdis: number, sl_pos: IVector3D, sl_tv: IVector3D, outV: IVector3D): boolean;
+}
+
 interface ICoAGeom {
 
 	Line: CoLine;
 	RayLine: CoRayLine;
+	PlaneUtils: CoPlaneUtils;
 	/**
 	 * create a algorithm geometry 3D Space Line Instance
 	 */

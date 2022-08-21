@@ -11,7 +11,7 @@ import ITransformEntity from "../../../vox/entity/ITransformEntity";
 // import MouseEvent from "../../../vox/event/MouseEvent";
 import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 // import MouseEvt3DDispatcher from "../../../vox/event/MouseEvt3DDispatcher";
-import Plane from "../../../vox/geom/Plane";
+// import Plane from "../../../vox/geom/Plane";
 import { IRayControl } from "../base/IRayControl";
 
 
@@ -216,7 +216,8 @@ export default class DragPlane implements IRayControl {
     private m_outV = CoMath.createVec3();
 
     private calcClosePos(rpv: IVector3D, rtv: IVector3D): void {
-        Plane.IntersectionSLV2(this.m_planeNV, this.m_planeDis, rpv, rtv, this.m_outV);
+        // Plane.IntersectionSLV2(this.m_planeNV, this.m_planeDis, rpv, rtv, this.m_outV);
+        CoAGeom.PlaneUtils.IntersectLinePos2(this.m_planeNV, this.m_planeDis, rpv, rtv, this.m_outV);
     }
     private m_rpv = CoMath.createVec3();
     private m_rtv = CoMath.createVec3();

@@ -10,15 +10,13 @@ import { Intersection } from "./Intersection";
 
 import { isZero, isNotZero } from "../../../vox/math/Float";
 
-class PlaneUtils
-{
+class PlaneUtils {
 	/**
 	 * 记录相交的状态
 	 */
 	static Intersection: Intersection = Intersection.None;
-	static CalcPVCloseV(planeNV:IVector3D, planeDis:number, posV:IVector3D, outV:IVector3D):void
-	{
-		let value = planeDis - posV.dot( planeNV );
+	static CalcPVCloseV(planeNV: IVector3D, planeDis: number, posV: IVector3D, outV: IVector3D): void {
+		let value = planeDis - posV.dot(planeNV);
 		outV.setTo(value * planeNV.x, value * planeNV.y, value * planeNV.z);
 		outV.addBy(posV);
 	}

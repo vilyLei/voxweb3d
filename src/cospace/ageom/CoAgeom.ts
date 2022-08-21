@@ -6,6 +6,7 @@ import ISegmentLine from "./base/ISegmentLine";
 import SegmentLine from "./base/SegmentLine";
 import IPlane from "./base/IPlane";
 import Plane from "./base/Plane";
+import PlaneUtils from "./base/PlaneUtils";
 import ISphere from "./base/ISphere";
 import Sphere from "./base/Sphere";
 
@@ -32,6 +33,7 @@ export {
 	RayLine,
 	SegmentLine,
 	Plane,
+	PlaneUtils,
 	Sphere,
 
 	createLine,
