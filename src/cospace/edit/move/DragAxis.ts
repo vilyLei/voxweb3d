@@ -18,6 +18,7 @@ import IColor4 from "../../../vox/material/IColor4";
 // import { IRayControl } from "../../../voxeditor/base/IRayControl";
 import ITestRay from "../../../vox/mesh/ITestRay";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
+import { IRayControl } from "../base/IRayControl";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
@@ -69,8 +70,7 @@ class AxisRayTester implements ITestRay {
 /**
  * 在三个坐标轴上拖动
  */
-// export default class DragAxis implements IRayControl {
-export default class DragAxis {
+export default class DragAxis implements IRayControl {
 
     private m_targetEntity: IEntityTransform = null;
     private m_dispatcher: IEvtDispatcher;
@@ -104,6 +104,28 @@ export default class DragAxis {
     }
     getVisible(): boolean {
         return this.m_entity.getVisible();
+    }
+    setXYZ(px: number, py: number, pz: number): void {
+        this.m_entity.setXYZ(px,py,pz);
+    }
+    setRotationXYZ(rx: number, ry: number, rz: number): void {
+        this.m_entity.setRotationXYZ(rx,ry,rz);
+    }
+    setScaleXYZ(sx: number, sy: number, sz: number): void {
+        this.m_entity.setScaleXYZ(sx,sy,sz);
+    }
+    
+    getScaleXYZ(pv: IVector3D): void {
+        this.m_entity.getScaleXYZ( pv );
+    }
+    getRotationXYZ(pv: IVector3D): void {
+        this.m_entity.getRotationXYZ( pv );
+    }
+    localToGlobal(pv: IVector3D): void {
+        this.m_entity.localToGlobal( pv );
+    }
+    globalToLocal(pv: IVector3D): void {
+        this.m_entity.globalToLocal( pv );
     }
 
     addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {

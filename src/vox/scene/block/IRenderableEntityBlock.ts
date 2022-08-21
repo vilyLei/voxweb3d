@@ -16,6 +16,7 @@ interface IRenderableEntityBlock {
     readonly screenPlane: IRenderEntity;
     readonly unitXOYPlane: IRenderEntity;
     readonly unitXOZPlane: IRenderEntity;
+    readonly unitYOZPlane: IRenderEntity;
     readonly unitBox: IRenderEntity;
 
     initialize(): void;

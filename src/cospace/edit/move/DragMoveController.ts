@@ -5,7 +5,7 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
 import RendererState from "../../../vox/render/RendererState";
-import { IRayControl } from "../../../voxeditor/base/IRayControl";
+import { IRayControl } from "../base/IRayControl";
 // import CameraBase from "../../../vox/view/CameraBase";
 
 import {IRenderCamera} from "../../../vox/render/IRenderCamera";
@@ -160,18 +160,20 @@ class DragMoveController implements IRayControl {
     }
     private createPlaneDrag(type: number, alpha: number, srcEntity: ITransformEntity = null): DragPlane {
 
-        let dis: number = 50;
-        let axisPlaneSize: number = 130;
+        let size: number = 50;
+        // let axisPlaneSize: number = 130;
         let movePlane = new DragPlane();
+
+        // let plane: Plane3DEntity;
+        // if (srcEntity == null) {
+        //     plane = new Plane3DEntity();
+        //     plane.setPolyhedral(false);
+        //     srcEntity = plane;
+        // }
+        movePlane.moveSelfEnabled = false;
+        movePlane.initialize(type, size, alpha);
         movePlane.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
-
-        let plane: Plane3DEntity;
-        if (srcEntity == null) {
-            plane = new Plane3DEntity();
-            plane.setPolyhedral(false);
-            srcEntity = plane;
-        }
-
+        /*
         switch (type) {
             // xoz
             case 0:
@@ -204,8 +206,7 @@ class DragMoveController implements IRayControl {
                 throw Error("Error type !!!");
                 break;
         }
-
-        movePlane.moveSelfEnabled = false;
+        //*/
         // movePlane.copyMeshFrom(srcEntity);
         // movePlane.copyMaterialFrom(srcEntity);
         movePlane.showOutColor();
@@ -236,7 +237,7 @@ class DragMoveController implements IRayControl {
         moveAxis.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
         this.m_dragMoveTarget.addEntity(moveAxis.getEntity());
         this.m_controllers.push(moveAxis);
-        this.m_editRendererScene.addEntity(moveAxis, this.m_editRendererSceneProcessid, true);
+        this.m_editRendererScene.addEntity(moveAxis.getEntity(), this.m_editRendererSceneProcessid, true);
 
         let planeCtrFlag: boolean = true;
         if (planeCtrFlag) {
