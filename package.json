@@ -54,6 +54,7 @@
     "buildCoMath": "vue-cli-service build --target lib --name CoMath --dest ./public/static/cospace/math ./src/cospace/math/CoMath.ts",
     "buildCoAGeom": "vue-cli-service build --target lib --name CoAGeom --dest ./public/static/cospace/ageom ./src/cospace/ageom/CoAGeom.ts",
     "buildCoMaterial": "vue-cli-service build --target lib --name CoMaterial --dest ./public/static/cospace/coMaterial ./src/cospace/voxmaterial/CoMaterial.ts",
+    "buildCoUI": "vue-cli-service build --target lib --name CoUI --dest ./public/static/cospace/coUI ./src/cospace/voxui/CoUI.ts",
     
     "buildCoMouseInteraction": "vue-cli-service build --target lib --name CoMouseInteraction --dest ./public/static/cospace/engine/mouseInteract ./src/cospace/voxengine/ui/CoMouseInteraction.ts",
 
