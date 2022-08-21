@@ -1,7 +1,9 @@
 import IVector3D from "../../vox/math/IVector3D";
 import ILine from "./base/ILine";
 import IRayLine from "./base/IRayLine";
+import ISegmentLine from "./base/ISegmentLine";
 import IPlane from "./base/IPlane";
+import ISphere from "./base/ISphere";
 
 interface CoLine {
 	
@@ -83,16 +85,24 @@ interface ICoAGeom {
 	Line: CoLine;
 	RayLine: CoRayLine;
 	/**
-	 * create a algorithm geometry 3D Space Line
+	 * create a algorithm geometry 3D Space Line Instance
 	 */
 	createLine(): ILine;
 	/**
-	 * create a algorithm geometry 3D Space Line
+	 * create a algorithm geometry 3D Space Line Instance
 	 */
 	createRayLine(): IRayLine;
 	/**
-	 * create a algorithm geometry 3D Space Plane
+	 * create a algorithm geometry 3D Space Segment RayLine Instance
+	 */
+	createSegmentLine(): ISegmentLine;
+	/**
+	 * create a algorithm geometry 3D Space Plane Instance
 	 */
 	createPlane(): IPlane;
+	/**
+	 * create a algorithm geometry 3D Space Sphere Instance
+	 */
+	createSphere(): ISphere;
 }
 export { ICoAGeom };
