@@ -8,20 +8,17 @@ import { IRayControl } from "../base/IRayControl";
 import {IRenderCamera} from "../../../vox/render/IRenderCamera";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 
-import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
-
-
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
-import { ICoAGeom } from "../../ageom/ICoAGeom";
+// import { ICoAGeom } from "../../ageom/ICoAGeom";
 
 declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;
-declare var CoAGeom: ICoAGeom;
+// declare var CoAGeom: ICoAGeom;
 
 class DragMoveTarget implements IEntityTransform {
 
-    private m_engitys: IEntityTransform[] = [null];
+    private m_entitys: IEntityTransform[] = [null];
     private m_changFlags: boolean[] = [true];
     private m_targetPosOffset = CoMath.createVec3();
     position = CoMath.createVec3();
@@ -33,29 +30,29 @@ class DragMoveTarget implements IEntityTransform {
     }
     addEntity(engity: IEntityTransform): void {
         if (engity != null) {
-            this.m_engitys.push(engity);
+            this.m_entitys.push(engity);
             this.m_changFlags.push(true);
         }
     }
     setTarget(target: IEntityTransform): void {
-        this.m_engitys[0] = target;
+        this.m_entitys[0] = target;
         this.m_changFlags[0] = true;
     }
     getTarget(): IEntityTransform {
-        return this.m_engitys[0];
+        return this.m_entitys[0];
     }
 
     setXYZ(px: number, py: number, pz: number): void {
     }
     setPosition(pv: IVector3D): void {
         let i: number = 0;
-        if (this.m_engitys[i] != null) {
+        if (this.m_entitys[i] != null) {
             this.position.addVecsTo(pv, this.m_targetPosOffset);
-            this.m_engitys[i].setPosition(this.position);
+            this.m_entitys[i].setPosition(this.position);
             this.m_changFlags[i] = true;
         }
-        for (i = 1; i < this.m_engitys.length; ++i) {
-            this.m_engitys[i].setPosition(pv);
+        for (i = 1; i < this.m_entitys.length; ++i) {
+            this.m_entitys[i].setPosition(pv);
             this.m_changFlags[i] = true;
         }
         this.position.copyFrom(pv);
@@ -66,14 +63,14 @@ class DragMoveTarget implements IEntityTransform {
     setRotationXYZ(rx: number, ry: number, rz: number): void {
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
-        // for (let i: number = 1; i < this.m_engitys.length; ++i) {
-        //     this.m_engitys[i].setScaleXYZ(sx, sy, sz);
+        // for (let i: number = 1; i < this.m_entitys.length; ++i) {
+        //     this.m_entitys[i].setScaleXYZ(sx, sy, sz);
         // }
     }
     setCtrlScaleXYZ(sx: number, sy: number, sz: number): void {
-        for (let i: number = 1; i < this.m_engitys.length; ++i) {
+        for (let i: number = 1; i < this.m_entitys.length; ++i) {
             this.m_changFlags
-            this.m_engitys[i].setScaleXYZ(sx, sy, sz);
+            this.m_entitys[i].setScaleXYZ(sx, sy, sz);
             this.m_changFlags[i] = true;
         }
     }
@@ -88,19 +85,19 @@ class DragMoveTarget implements IEntityTransform {
     }
     update(): void {
         let i: number = 0;
-        if (this.m_engitys[i] != null && this.m_changFlags[i]) {
+        if (this.m_entitys[i] != null && this.m_changFlags[i]) {
             this.m_changFlags[i] = false;
-            this.m_engitys[i].update();
+            this.m_entitys[i].update();
         }
-        for (i = 1; i < this.m_engitys.length; ++i) {
+        for (i = 1; i < this.m_entitys.length; ++i) {
             if (this.m_changFlags[i]) {
                 this.m_changFlags[i] = false;
-                this.m_engitys[i].update();
+                this.m_entitys[i].update();
             }
         }
     }
     destroy(): void {
-        this.m_engitys = [null];
+        this.m_entitys = [null];
     }
 }
 class DragMoveController implements IRayControl {
@@ -173,7 +170,7 @@ class DragMoveController implements IRayControl {
     }
     private init(): void {
 
-        let sphRadius: number = 50;
+        // let sphRadius: number = 50;
         let alpha: number = 0.6;
 
         let moveAxis = new DragAxis();
@@ -200,10 +197,11 @@ class DragMoveController implements IRayControl {
             // yoz
             this.createPlaneDrag(2, alpha);
         }
-        let sph: Sphere3DEntity = new Sphere3DEntity();
-        sph.initialize(sphRadius, 10, 10);
-        // ray cross plane
-        this.m_crossPlaneDrag = this.createPlaneDrag(3, alpha, sph);
+
+        // let sph: Sphere3DEntity = new Sphere3DEntity();
+        // sph.initialize(sphRadius, 10, 10);
+        // // ray cross plane
+        // this.m_crossPlaneDrag = this.createPlaneDrag(3, alpha, sph);
     }
     private dragMouseDownListener(evt: any): void {
         this.m_editRendererScene.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener, true, true);

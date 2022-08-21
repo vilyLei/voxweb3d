@@ -12,8 +12,6 @@ import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 // import MouseEvt3DDispatcher from "../../../vox/event/MouseEvt3DDispatcher";
 import Plane from "../../../vox/geom/Plane";
-import ROTransform from "../../../vox/display/ROTransform";
-import Color4 from "../../../vox/material/Color4";
 import { IRayControl } from "../base/IRayControl";
 
 
@@ -32,16 +30,18 @@ export default class DragPlane implements IRayControl {
 
     private m_targetEntity: IEntityTransform = null;
     private m_dispatcher: IEvtDispatcher;
-    private m_targetPosOffset: IVector3D = CoMath.createVec3();
+    private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
-    uuid: string = "DragPlane";
-    moveSelfEnabled: boolean = true;
-    planeCrossRayEnabled: boolean = false;
-    outColor: Color4 = new Color4(0.9, 0.9, 0.9, 1.0);
-    overColor: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
-    constructor() {
 
-    }
+    uuid: string = "DragPlane";
+
+    moveSelfEnabled = true;
+    planeCrossRayEnabled = false;
+    outColor = CoRScene.createColor4(0.9, 0.9, 0.9, 1.0);
+    overColor = CoRScene.createColor4(1.0, 1.0, 1.0, 1.0);
+    offsetPos = CoMath.createVec3();
+
+    constructor() { }
     initialize(planeAxisType: number, size: number, alpha: number): void {
 
         if (this.m_entity == null) {
@@ -56,7 +56,7 @@ export default class DragPlane implements IRayControl {
             let et = this.m_entity;
 
             et.setMaterial(material);
-            et.setScaleXYZ(size,size,size);
+            et.setScaleXYZ(size, size, size);
             switch (planeAxisType) {
                 // xoz
                 case 0:
@@ -92,8 +92,9 @@ export default class DragPlane implements IRayControl {
                     throw Error("Error type !!!");
                     break;
             }
-            
+
             et.setRenderState(CoRScene.RendererState.NONE_TRANSPARENT_STATE);
+            et.setPosition( this.offsetPos );
             this.showOutColor();
             this.initializeEvent();
         }
@@ -154,6 +155,8 @@ export default class DragPlane implements IRayControl {
         return this.m_entity.getVisible();
     }
     setXYZ(px: number, py: number, pz: number): void {
+        // const v = this.offsetPos;
+        // this.m_entity.setXYZ(px + v.x, py + v.y, pz + v.z);
         this.m_entity.setXYZ(px, py, pz);
     }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
@@ -215,26 +218,31 @@ export default class DragPlane implements IRayControl {
     private calcClosePos(rpv: IVector3D, rtv: IVector3D): void {
         Plane.IntersectionSLV2(this.m_planeNV, this.m_planeDis, rpv, rtv, this.m_outV);
     }
-    private m_rpv: IVector3D = CoMath.createVec3();
-    private m_rtv: IVector3D = CoMath.createVec3();
+    private m_rpv = CoMath.createVec3();
+    private m_rtv = CoMath.createVec3();
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
 
         if (this.m_flag) {
+
             this.m_rpv.copyFrom(rpv);
             this.m_rtv.copyFrom(rtv);
 
+            const pv = this.m_pos;
+
             this.calcClosePos(this.m_rpv, this.m_rtv);
-            this.m_pos.copyFrom(this.m_outV);
-            this.m_pos.addBy(this.m_dv);
+            pv.copyFrom(this.m_outV);
+            pv.addBy(this.m_dv);
             if (this.moveSelfEnabled) {
-                this.setPosition(this.m_pos);
+                pv.addBy(this.offsetPos);
+                this.setPosition(pv);
+                pv.subtractBy(this.offsetPos);
                 this.update();
             }
 
             if (this.m_targetEntity != null) {
 
-                this.m_pos.addBy(this.m_targetPosOffset);
-                this.m_targetEntity.setPosition(this.m_pos);
+                pv.addBy(this.m_targetPosOffset);
+                this.m_targetEntity.setPosition(pv);
                 this.m_targetEntity.update();
             }
         }

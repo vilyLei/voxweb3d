@@ -118,12 +118,15 @@ export class DemoMoveObj {
 
 
 		let movePlane = new DragPlane();
+		movePlane.offsetPos.setXYZ(50.0,0.0,50.0);
 		movePlane.initialize(0, 100, 0.5);
 		this.m_rscene.addEntity(movePlane.getEntity());
 		movePlane = new DragPlane();
+		movePlane.offsetPos.setXYZ(50.0,50.0,0.0);
 		movePlane.initialize(1, 100, 0.5);
 		this.m_rscene.addEntity(movePlane.getEntity());
 		movePlane = new DragPlane();
+		movePlane.offsetPos.setXYZ(0.0,50.0,50.0);
 		movePlane.initialize(2, 100, 0.5);
 		this.m_rscene.addEntity(movePlane.getEntity());
 
