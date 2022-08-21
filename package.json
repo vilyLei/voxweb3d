@@ -52,6 +52,7 @@
     "buildCoSimpleRScene": "vue-cli-service build --target lib --name CoSimpleRScene --dest ./public/static/cospace/engine/simpleRScene ./src/cospace/voxengine/CoSimpleRScene.ts",
     
     "buildCoMath": "vue-cli-service build --target lib --name CoMath --dest ./public/static/cospace/math ./src/cospace/math/CoMath.ts",
+    "buildCoAGeom": "vue-cli-service build --target lib --name CoAGeom --dest ./public/static/cospace/ageom ./src/cospace/ageom/CoAGeom.ts",
     
     "buildCoMouseInteraction": "vue-cli-service build --target lib --name CoMouseInteraction --dest ./public/static/cospace/engine/mouseInteract ./src/cospace/voxengine/ui/CoMouseInteraction.ts",
 

@@ -5,8 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IGeomEntity from "./IGeomEntity";
+import IAGeomEntity from "./IAGeomEntity";
 
-export default interface ISphere extends IGeomEntity {
+export default interface ISphere extends IAGeomEntity {
 	radius: number;
 }

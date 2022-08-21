@@ -6,9 +6,9 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
-import IGeomEntity from "./IGeomEntity";
+import IAGeomEntity from "./IAGeomEntity";
 
-export default interface IPlane extends IGeomEntity {
+export default interface IPlane extends IAGeomEntity {
 
 	/**
 	 * plane normal

@@ -1,9 +1,13 @@
+import Line from "./base/Line";
 
-function test(): void {
-	console.log("CoAgeom Module");
+
+
+
+function createLine(): void {
+	new Line();
 }
 
-
 export {
-	test
+	Line,
+	createLine
 }

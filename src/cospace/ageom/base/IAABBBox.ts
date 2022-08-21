@@ -6,9 +6,9 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
-import IGeomEntity from "./IGeomEntity";
+import IAGeomEntity from "./IAGeomEntity";
 
-export default interface IAABBBox extends IGeomEntity {
+export default interface IAABBBox extends IAGeomEntity {
 
 	min: IVector3D;
 	max: IVector3D;

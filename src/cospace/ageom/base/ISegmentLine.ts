@@ -6,9 +6,9 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
-import IGeomEntity from "./IGeomEntity";
+import IAGeomEntity from "./IAGeomEntity";
 
-export default interface ISegmentLine extends IGeomEntity {
+export default interface ISegmentLine extends IAGeomEntity {
 
 	begin: IVector3D;
 	end: IVector3D;

@@ -6,8 +6,8 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
-import IGeomEntity from "./IGeomEntity";
+import IAGeomEntity from "./IAGeomEntity";
 
-export default interface ILine extends IGeomEntity {
+export default interface ILine extends IAGeomEntity {
 	tv: IVector3D;
 }

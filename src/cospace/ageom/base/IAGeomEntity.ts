@@ -7,7 +7,7 @@
 
 import IVector3D from "../../../vox/math/IVector3D";
 
-export default interface IGeomEntity {
+export default interface IAGeomEntity {
 
 	uid: number;
 	/**

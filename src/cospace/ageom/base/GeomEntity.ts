@@ -6,12 +6,12 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
-import IGeomEntity from "./IGeomEntity";
+import IAGeomEntity from "./IAGeomEntity";
 
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
 
-export default class GeomEntity implements IGeomEntity {
+export default class AGeomEntity implements IAGeomEntity {
 
 	uid: number = -1;
 	pos: IVector3D = CoMath.createVec3();

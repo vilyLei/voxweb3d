@@ -38,4 +38,5 @@ public/static/cospace/engine/
 public/static/cospace/renderEffect/
 public/static/cospace/particle/
 public/static/cospace/math/
+public/static/cospace/ageom/
 public/static/cospace/engineBase/
