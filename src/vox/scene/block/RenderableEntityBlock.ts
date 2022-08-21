@@ -41,7 +41,7 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
     readonly unitBox = new DisplayEntity();
 
     /**
-    * axis origin align in the XOY Plane, its size is 1
+     * axis origin align in the XOY Plane, its size is 1
      */
     readonly unitOXOYPlane = new DisplayEntity();
     /**
@@ -78,6 +78,14 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
             dm.vbWholeDataEnabled = true;
             dm.initialize();
             this.unitBox.setMesh(dm);
+            vs = new Float32Array(vs);
+            for (let i = 0; i < vs.length; ++i) { vs[i] += 0.5; }
+            console.log("obox vs: ",vs);
+            dm = new DataMesh();
+            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
+            dm.vbWholeDataEnabled = true;
+            dm.initialize();
+            this.unitOBox.setMesh(dm);
 
             vs = new Float32Array([-1, -1, 0, 1, -1, 0, 1, 1, 0, -1, 1, 0]);
             uvs = new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]);
@@ -96,6 +104,15 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
             dm.vbWholeDataEnabled = true;
             dm.initialize();
             this.unitXOYPlane.setMesh(dm);
+            vs = new Float32Array(vs);
+            for (let i = 0; i < vs.length;) { vs[i++] += 0.5; vs[i++] += 0.5; i++;}
+            console.log("unitOXOYPlane vs: ",vs);
+            dm = new DataMesh();
+            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
+            dm.vbWholeDataEnabled = true;
+            dm.initialize();
+            this.unitOXOYPlane.setMesh(dm);
+
 
             vs = new Float32Array([0.5, 0, -0.5, -0.5, 0, -0.5, -0.5, 0, 0.5, 0.5, 0, 0.5]);
             nvs = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
@@ -104,6 +121,14 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
             dm.vbWholeDataEnabled = true;
             dm.initialize();
             this.unitXOZPlane.setMesh(dm);
+            vs = new Float32Array(vs);
+            for (let i = 0; i < vs.length;) { vs[i++] += 0.5; i++; vs[i++] += 0.5;}
+            console.log("unitOXOZPlane vs: ",vs);
+            dm = new DataMesh();
+            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
+            dm.vbWholeDataEnabled = true;
+            dm.initialize();
+            this.unitOXOZPlane.setMesh(dm);
 
             vs = new Float32Array([0, -0.5, -0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0, -0.5, 0.5]);
             nvs = new Float32Array([1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]);
@@ -112,6 +137,13 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
             dm.vbWholeDataEnabled = true;
             dm.initialize();
             this.unitYOZPlane.setMesh(dm);
+            for (let i = 0; i < vs.length;) { i++; vs[i++] += 0.5; vs[i++] += 0.5;}
+            console.log("unitOYOZPlane vs: ",vs);
+            dm = new DataMesh();
+            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
+            dm.vbWholeDataEnabled = true;
+            dm.initialize();
+            this.unitOYOZPlane.setMesh(dm);
         }
     }
 

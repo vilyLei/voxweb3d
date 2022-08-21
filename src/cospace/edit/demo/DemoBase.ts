@@ -16,6 +16,7 @@ import Axis3DEntity from "../../../vox/entity/Axis3DEntity";
 
 import { MaterialContext } from "../../../materialLab/base/MaterialContext";
 import { RenderableMaterialBlock } from "../../../vox/scene/block/RenderableMaterialBlock";
+import { RenderableEntityBlock } from "../../../vox/scene/block/RenderableEntityBlock";
 
 import DivLog from "../../../vox/utils/DivLog";
 import RawMesh from "../../../vox/mesh/RawMesh";
@@ -64,9 +65,9 @@ export class DemoBase {
             let materialBlock = new RenderableMaterialBlock();
             materialBlock.initialize();
             rscene.materialBlock = materialBlock;
-            // let entityBlock = new RenderableEntityBlock();
-            // entityBlock.initialize();
-            // rscene.entityBlock = entityBlock;
+            let entityBlock = new RenderableEntityBlock();
+            entityBlock.initialize();
+            rscene.entityBlock = entityBlock;
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
