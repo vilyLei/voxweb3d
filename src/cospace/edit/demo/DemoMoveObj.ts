@@ -27,7 +27,7 @@ declare var CoAGeom: ICoAGeom;
 /**
  * cospace renderer
  */
-export class DemoCoBase {
+export class DemoMoveObj {
 	private m_rscene: ICoRendererScene = null;
 	private m_interact: IMouseInteraction = null;
 
@@ -37,8 +37,8 @@ export class DemoCoBase {
 	constructor() { }
 
 	initialize(): void {
-		console.log("DemoCoBase::initialize() ...");
-
+		
+		console.log("DemoMoveObj::initialize() ...");
 		document.onmousedown = (evt: any): void => {
 			this.mouseDown(evt);
 		};
@@ -268,4 +268,4 @@ export class DemoCoBase {
 	}
 }
 
-export default DemoCoBase;
+export default DemoMoveObj;
