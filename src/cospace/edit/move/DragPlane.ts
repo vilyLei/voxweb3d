@@ -14,7 +14,7 @@ import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import Plane from "../../../vox/geom/Plane";
 import ROTransform from "../../../vox/display/ROTransform";
 import Color4 from "../../../vox/material/Color4";
-import {IRayControl} from "../../../voxeditor/base/IRayControl";
+import {IRayControl} from "../base/IRayControl";
 
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
@@ -46,6 +46,9 @@ export default class DragPlane implements IRayControl {
         if(this.m_entity == null) {
             this.m_entity = CoRScene.createDisplayEntity();
         }
+    }
+    getEntity(): ITransformEntity {
+        return this.m_entity;
     }
     addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
         this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
@@ -86,6 +89,38 @@ export default class DragPlane implements IRayControl {
     }
     showOutColor(): void {
         (this.m_entity.getMaterial() as any).setRGBA4f(this.outColor.r, this.outColor.g, this.outColor.b, this.outColor.a);
+    }
+
+    setRenderState(state: number): void {
+        this.m_entity.setRenderState(state);
+    }
+    setVisible(visible: boolean): void {
+        this.m_entity.setVisible(visible);
+    }
+    getVisible(): boolean {
+        return this.m_entity.getVisible();
+    }
+    setXYZ(px: number, py: number, pz: number): void {
+        this.m_entity.setXYZ(px,py,pz);
+    }
+    setRotationXYZ(rx: number, ry: number, rz: number): void {
+        this.m_entity.setRotationXYZ(rx,ry,rz);
+    }
+    setScaleXYZ(sx: number, sy: number, sz: number): void {
+        this.m_entity.setScaleXYZ(sx,sy,sz);
+    }
+    
+    getScaleXYZ(pv: IVector3D): void {
+        this.m_entity.getScaleXYZ( pv );
+    }
+    getRotationXYZ(pv: IVector3D): void {
+        this.m_entity.getRotationXYZ( pv );
+    }
+    localToGlobal(pv: IVector3D): void {
+        this.m_entity.localToGlobal( pv );
+    }
+    globalToLocal(pv: IVector3D): void {
+        this.m_entity.globalToLocal( pv );
     }
     isSelected(): boolean {
         return this.m_flag;

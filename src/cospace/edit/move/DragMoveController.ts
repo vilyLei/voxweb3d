@@ -1,5 +1,5 @@
 import IVector3D from "../../../vox/math/IVector3D";
-import DragPlaneEntity3D from "../../../voxeditor/entity/DragPlaneEntity3D";
+import DragPlane from "./DragPlane";
 import DragAxis from "./DragAxis";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
@@ -109,7 +109,7 @@ class DragMoveTarget implements IEntityTransform {
 class DragMoveController implements IRayControl {
 
     private m_controllers: IRayControl[] = [];
-    private m_crossPlaneDrag: any;//DragPlaneEntity3D = null;
+    private m_crossPlaneDrag: any;//DragPlane = null;
     private m_rpv: IVector3D = CoMath.createVec3();
     private m_rtv: IVector3D = CoMath.createVec3();
     private m_tempPos: IVector3D = CoMath.createVec3();
@@ -158,11 +158,11 @@ class DragMoveController implements IRayControl {
     private activeRayController(controller: IRayControl): void {
 
     }
-    private createPlaneDrag(type: number, alpha: number, srcEntity: ITransformEntity = null): DragPlaneEntity3D {
+    private createPlaneDrag(type: number, alpha: number, srcEntity: ITransformEntity = null): DragPlane {
 
         let dis: number = 50;
         let axisPlaneSize: number = 130;
-        let movePlane = new DragPlaneEntity3D();
+        let movePlane = new DragPlane();
         movePlane.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
 
         let plane: Plane3DEntity;
@@ -206,16 +206,16 @@ class DragMoveController implements IRayControl {
         }
 
         movePlane.moveSelfEnabled = false;
-        movePlane.copyMeshFrom(srcEntity);
-        movePlane.copyMaterialFrom(srcEntity);
+        // movePlane.copyMeshFrom(srcEntity);
+        // movePlane.copyMaterialFrom(srcEntity);
         movePlane.showOutColor();
 
-        movePlane.initializeEvent();
+        // movePlane.initializeEvent();
         movePlane.setTarget(this.m_dragMoveTarget);
         movePlane.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
         this.m_dragMoveTarget.addEntity(movePlane);
         this.m_controllers.push(movePlane);
-        this.m_editRendererScene.addEntity(movePlane, this.m_editRendererSceneProcessid, true);
+        this.m_editRendererScene.addEntity(movePlane.getEntity(), this.m_editRendererSceneProcessid, true);
         return movePlane;
     }
     private init(): void {
