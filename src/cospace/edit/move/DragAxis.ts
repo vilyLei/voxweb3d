@@ -106,9 +106,6 @@ export default class DragAxis {
         return this.m_entity.getVisible();
     }
 
-    // setEntity(entity: ITransformEntity): void {
-    //     this.m_entity = entity;
-    // }
     addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
         this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
     }
@@ -143,10 +140,10 @@ export default class DragAxis {
         this.showOutColor();
     }
     showOverColor(): void {
-        // (this.getMaterial() as any).setRGBA4f(this.overColor.r, this.overColor.g, this.overColor.b, this.overColor.a);
+        (this.m_entity.getMaterial() as any).setRGB3f(this.overColor.r, this.overColor.g, this.overColor.b);
     }
     showOutColor(): void {
-        // (this.getMaterial() as any).setRGBA4f(this.outColor.r, this.outColor.g, this.outColor.b, this.outColor.a);
+        (this.m_entity.getMaterial() as any).setRGB3f(this.outColor.r, this.outColor.g, this.outColor.b);
     }
     isSelected(): boolean {
         return this.m_flag > -1;

@@ -27,9 +27,9 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
 
         this.m_coder.addVertLayout("vec3", "a_vs");
 
+        this.m_coder.addFragUniform("vec4", "u_color");
         if (this.dynColorEnabled) {
             this.m_coder.addDefine("DYNAMIC_COLOR");
-            this.m_coder.addFragUniform("vec4", "u_color");
         }
         else {
             this.m_coder.addVertLayout("vec3", "a_cvs");
@@ -41,7 +41,7 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
         this.m_coder.addFragMainCode(
             `
     #ifndef DYNAMIC_COLOR
-        FragColor0 = vec4(v_color, 1.0);
+        FragColor0 = vec4(v_color * u_color.xyz, 1.0);
     #else
         FragColor0 = u_color;
     #endif
@@ -84,15 +84,15 @@ export default class Line3DMaterial extends MaterialBase {
     constructor(dynColorEnabled: boolean = false) {
         super();
         this.m_dynColorEnabled = dynColorEnabled;
-        if (dynColorEnabled) {
-            this.m_colorArray = new Float32Array([1.0, 1.0, 1.0, 1.0]);
-            if (this.m_dynColorEnabled) {
-                let oum: ShaderUniformData = new ShaderUniformData();
-                oum.uniformNameList = ["u_color"];
-                oum.dataList = [this.m_colorArray];
-                this.m_shaderUniformData = oum;
-            }
-        }
+        // if (dynColorEnabled) {
+        //     if (this.m_dynColorEnabled) {
+        //     }
+        // }
+        this.m_colorArray = new Float32Array([1.0, 1.0, 1.0, 1.0]);
+        let oum: ShaderUniformData = new ShaderUniformData();
+        oum.uniformNameList = ["u_color"];
+        oum.dataList = [this.m_colorArray];
+        this.m_shaderUniformData = oum;
     }
 
     getCodeBuf(): ShaderCodeBuffer {
