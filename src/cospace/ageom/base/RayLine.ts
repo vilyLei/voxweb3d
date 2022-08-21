@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
+import Line from "./Line";
 import IRayLine from "./IRayLine";
 import { isGreaterPositiveZero, isLessPositiveZero } from "../../../vox/math/Float";
 
@@ -15,12 +16,15 @@ declare var CoMath: ICoMath;
 
 let __rlv0: IVector3D = null;
 let __rlv1: IVector3D = null;
+function __buildRLBase(): void {
+	if (__rlv0 == null) {
+		__rlv0 = CoMath.createVec3();
+		__rlv1 = CoMath.createVec3();
+	}
+}
 
-export default class RayLine implements IRayLine {
-	uid: number = -1;
-	pos: IVector3D = CoMath.createVec3();
-	tv: IVector3D = CoMath.createVec3(1);
-
+export default class RayLine extends Line implements IRayLine {
+	
 	/**
 	 * 检测由(rlpv,rltv)构成的射线和两个点(spva, lspvb)表示的线段是否相交
 	 * @param rlpv 射线的起点
@@ -39,11 +43,8 @@ export default class RayLine implements IRayLine {
 		outV: IVector3D,
 		radius: number = 1.0
 	): boolean {
-		if (__rlv0 == null) {
-			__rlv0 = CoMath.createVec3();
-			__rlv1 = CoMath.createVec3();
-		}
-
+		
+		__buildRLBase();
 		let pv = __rlv0;
 
 		pv.copyFrom(lspvb)
@@ -87,10 +88,7 @@ export default class RayLine implements IRayLine {
 	 * @returns true表示相交, false表示不相交
 	 */
 	static IntersectSphereNearPos(rlpv: IVector3D, rltv: IVector3D, cv: IVector3D, radius: number, outV: IVector3D): boolean {
-		if (__rlv0 == null) {
-			__rlv0 = CoMath.createVec3();
-			__rlv1 = CoMath.createVec3();
-		}
+		__buildRLBase();
 
 		let pv = __rlv0;
 		pv.x = cv.x - rlpv.x;
@@ -135,10 +133,7 @@ export default class RayLine implements IRayLine {
 		return false;
 	}
 	static IntersectSphere(rlpv: IVector3D, rltv: IVector3D, cv: IVector3D, radius: number): boolean {
-		if (__rlv0 == null) {
-			__rlv0 = CoMath.createVec3();
-			__rlv1 = CoMath.createVec3();
-		}
+		__buildRLBase();
 
 		let pv = __rlv0;
 
@@ -155,11 +150,4 @@ export default class RayLine implements IRayLine {
 		return pv.getLengthSquared() <= radius * radius;
 	}
 
-	reset(): void {
-		this.pos.setXYZ(0, 0, 0);
-		this.tv.setXYZ(1, 0, 0);
-	}
-	update(): void {
-		this.tv.normalize();
-	}
 }

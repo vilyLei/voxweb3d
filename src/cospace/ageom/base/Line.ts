@@ -136,5 +136,7 @@ export default class Line implements ILine {
 		this.pos.setXYZ(0, 0, 0);
 		this.tv.setXYZ(1, 0, 0);
 	}
-	update(): void {}
+	update(): void {
+		this.tv.normalize();
+	}
 }

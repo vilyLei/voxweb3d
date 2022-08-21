@@ -1,5 +1,6 @@
 import IVector3D from "../../vox/math/IVector3D";
 import ILine from "./base/ILine";
+import IRayLine from "./base/IRayLine";
 import IPlane from "./base/IPlane";
 
 interface CoLine {

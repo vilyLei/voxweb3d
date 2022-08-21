@@ -6,8 +6,8 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
-import IAGeomEntity from "./IAGeomEntity";
+import ILine from "./ILine";
 
-export default interface IRayLine extends IAGeomEntity {
-	tv: IVector3D;
+export default interface IRayLine extends ILine {
+	// tv: IVector3D;
 }
