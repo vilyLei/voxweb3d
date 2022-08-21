@@ -2,11 +2,8 @@ import IVector3D from "../../../vox/math/IVector3D";
 import DragPlane from "./DragPlane";
 import DragAxis from "./DragAxis";
 import IRendererScene from "../../../vox/scene/IRendererScene";
-import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
-import RendererState from "../../../vox/render/RendererState";
 import { IRayControl } from "../base/IRayControl";
-// import CameraBase from "../../../vox/view/CameraBase";
 
 import {IRenderCamera} from "../../../vox/render/IRenderCamera";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
@@ -109,12 +106,12 @@ class DragMoveTarget implements IEntityTransform {
 class DragMoveController implements IRayControl {
 
     private m_controllers: IRayControl[] = [];
-    private m_crossPlaneDrag: any;//DragPlane = null;
-    private m_rpv: IVector3D = CoMath.createVec3();
-    private m_rtv: IVector3D = CoMath.createVec3();
-    private m_tempPos: IVector3D = CoMath.createVec3();
-    private m_visible: boolean = true;
-    private m_enabled: boolean = true;
+    private m_crossPlaneDrag: DragPlane = null;
+    private m_rpv = CoMath.createVec3();
+    private m_rtv = CoMath.createVec3();
+    private m_tempPos = CoMath.createVec3();
+    private m_visible = true;
+    private m_enabled = true;
 
     private m_editRendererScene: IRendererScene = null;
     private m_editRendererSceneProcessid: number = 0;
@@ -161,57 +158,12 @@ class DragMoveController implements IRayControl {
     private createPlaneDrag(type: number, alpha: number, srcEntity: ITransformEntity = null): DragPlane {
 
         let size: number = 50;
-        // let axisPlaneSize: number = 130;
+        
         let movePlane = new DragPlane();
 
-        // let plane: Plane3DEntity;
-        // if (srcEntity == null) {
-        //     plane = new Plane3DEntity();
-        //     plane.setPolyhedral(false);
-        //     srcEntity = plane;
-        // }
         movePlane.moveSelfEnabled = false;
         movePlane.initialize(type, size, alpha);
-        movePlane.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
-        /*
-        switch (type) {
-            // xoz
-            case 0:
-                plane.initializeXOZ(dis, dis, axisPlaneSize, axisPlaneSize);
-                movePlane.setPlaneNormal(CoMath.Vector3D.Y_AXIS);
-                movePlane.outColor.setRGBA4f(1.0, 0.3, 0.3, alpha);
-                movePlane.overColor.setRGBA4f(1.0, 0.1, 0.1, alpha * 1.1);
-                break;
-            // xoy
-            case 1:
-                plane.initializeXOY(dis, dis, axisPlaneSize, axisPlaneSize);
-                movePlane.setPlaneNormal(CoMath.Vector3D.Z_AXIS);
-                movePlane.outColor.setRGBA4f(0.3, 0.3, 1.0, alpha);
-                movePlane.overColor.setRGBA4f(0.1, 0.1, 1.0, alpha * 1.1);
-                break;
-            // yoz
-            case 2:
-                plane.initializeYOZ(dis, dis, axisPlaneSize, axisPlaneSize);
-                movePlane.setPlaneNormal(CoMath.Vector3D.X_AXIS);
-                movePlane.outColor.setRGBA4f(0.3, 1.0, 0.3, alpha);
-                movePlane.overColor.setRGBA4f(0.1, 1.0, 0.1, alpha * 1.1);
-                break;
-            // ray cross plane
-            case 3:
-                movePlane.planeCrossRayEnabled = true;
-                movePlane.outColor.setRGBA4f(1.0, 0.3, 1.0, alpha);
-                movePlane.overColor.setRGBA4f(1.0, 0.1, 1.0, alpha * 1.1);
-                break;
-            default:
-                throw Error("Error type !!!");
-                break;
-        }
-        //*/
-        // movePlane.copyMeshFrom(srcEntity);
-        // movePlane.copyMaterialFrom(srcEntity);
-        movePlane.showOutColor();
-
-        // movePlane.initializeEvent();
+        
         movePlane.setTarget(this.m_dragMoveTarget);
         movePlane.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
         this.m_dragMoveTarget.addEntity(movePlane);

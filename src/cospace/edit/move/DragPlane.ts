@@ -92,6 +92,9 @@ export default class DragPlane implements IRayControl {
                     throw Error("Error type !!!");
                     break;
             }
+            
+            et.setRenderState(CoRScene.RendererState.NONE_TRANSPARENT_STATE);
+            this.showOutColor();
             this.initializeEvent();
         }
     }

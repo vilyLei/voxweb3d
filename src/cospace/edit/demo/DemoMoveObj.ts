@@ -15,8 +15,9 @@ import { ViewerCoSApp } from "../../demo/coViewer/ViewerCoSApp";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
 import DragAxis from "../../edit/move/DragAxis";
+import DragPlane from "../../edit/move/DragPlane";
 
-import { DragMoveController } from "../../../voxeditor/entity/DragMoveController";
+// import { DragMoveController } from "../../../voxeditor/entity/DragMoveController";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -112,7 +113,19 @@ export class DemoMoveObj {
 
 		let moveAxis = new DragAxis();
 		moveAxis.initialize(80.0);
+		moveAxis.setXYZ(50,30,-200);
 		this.m_rscene.addEntity(moveAxis.getEntity());
+
+
+		let movePlane = new DragPlane();
+		movePlane.initialize(0, 100, 0.5);
+		this.m_rscene.addEntity(movePlane.getEntity());
+		movePlane = new DragPlane();
+		movePlane.initialize(1, 100, 0.5);
+		this.m_rscene.addEntity(movePlane.getEntity());
+		movePlane = new DragPlane();
+		movePlane.initialize(2, 100, 0.5);
+		this.m_rscene.addEntity(movePlane.getEntity());
 
 	}
 	private createDefaultEntity(): void {
