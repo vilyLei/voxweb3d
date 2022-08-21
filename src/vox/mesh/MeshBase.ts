@@ -29,6 +29,7 @@ export default class MeshBase implements IMeshBase {
     private m_bufStatusList: number[] = null;
     private m_bufTypeList: number[] = null;
     private m_bufSizeList: number[] = null;
+	private m_polyhedral: boolean = true;
     //private m_isDyn:boolean = false;
     // very important!!!
     private m_layoutBit: number = 0x0;
@@ -123,9 +124,9 @@ export default class MeshBase implements IMeshBase {
      * @return 返回true是则表示这是基于三角面的可渲染多面体, 返回false则是一个数学方程描述的几何体(例如球体).
      *         如果是多面体实体,则可以进行三角面的相关计算等操作, 如果不是则需要进行相关的几何算法计算.
      */
-    isPolyhedral(): boolean { return true; }
+    isPolyhedral(): boolean { return this.m_polyhedral; }
     // 设置自身是否是多面体实体，根据实际需要改变相关的状态值
-    setPolyhedral(boo: boolean): void { }
+    setPolyhedral(polyhedral: boolean): void { this.m_polyhedral = polyhedral;}
     /**
      * 射线和自身的相交检测(多面体或几何函数(例如球体))
      * @rlpv            表示物体坐标空间的射线起点

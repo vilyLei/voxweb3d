@@ -195,6 +195,7 @@ function createAxis3DEntity(size: number = 100.0): ITransformEntity {
 	mesh.initialize();
 	mesh.drawMode = RenderDrawMode.ARRAYS_LINES;
 	mesh.vtCount = Math.floor(vs.length / 3);
+	mesh.setPolyhedral( false );
 
 	let material = new Line3DMaterial(false);
 	let axis = new DisplayEntity();

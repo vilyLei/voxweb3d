@@ -47,6 +47,9 @@ class AxisRayTester implements ITestRay {
         let pv0 = this.m_pv0;
         let pv1 = this.m_pv1;
         const RL = CoAGeom.RayLine;
+
+        // console.log("A this.m_lsTotal: ",this.m_lsTotal);
+
         for (let i = 0; i < this.m_lsTotal; ++i) {
             pv0.setXYZ(vs[j], vs[j + 1], vs[j + 2]);
             pv1.setXYZ(vs[j + 3], vs[j + 4], vs[j + 5]);
@@ -56,6 +59,7 @@ class AxisRayTester implements ITestRay {
             }
             j += 6;
         }
+        return 0;
     }
     destroy(): void {
         this.m_vs = null;
@@ -82,10 +86,14 @@ export default class DragAxis {
     initialize(size: number = 100.0): void {
         if (this.m_entity == null) {
             this.m_entity = CoRScene.createAxis3DEntity(size);
+            this.m_entity.update();
             let mesh = this.m_entity.getMesh() as IRawMesh;
             if (mesh != null) {
-                mesh.setRayTester(new AxisRayTester(mesh.getVS(), 3, 5));
+                console.log("mesh.isPolyhedral():", mesh.isPolyhedral());
+                mesh.setRayTester(new AxisRayTester(mesh.getVS(), 3, 10));
+                console.log("entity.getGlobalBounds():", this.m_entity.getGlobalBounds());
             }
+            this.initializeEvent();
         }
     }
     getEntity(): ITransformEntity {

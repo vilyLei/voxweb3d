@@ -14,6 +14,7 @@ import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
 import { ViewerCoSApp } from "../../demo/coViewer/ViewerCoSApp";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
+import DragAxis from "../../edit/move/DragAxis";
 
 //import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
 
@@ -72,7 +73,8 @@ export class DemoMoveObj {
 
 					new ModuleLoader(1, (): void => {
 						console.log("ageom module loaded ...");
-						this.testAGeom();
+						// this.testAGeom();
+						this.createEditEntity();
 					}).load(url3);
 
 				}).load(url2)
@@ -106,10 +108,18 @@ export class DemoMoveObj {
 
 	}
 	
+	private createEditEntity(): void {
+
+		let moveAxis = new DragAxis();
+		moveAxis.initialize(80.0);
+		this.m_rscene.addEntity(moveAxis.getEntity());
+
+	}
 	private createDefaultEntity(): void {
 
-		let axis = CoRScene.createAxis3DEntity();
-		this.m_rscene.addEntity(axis);
+		// let axis = CoRScene.createAxis3DEntity();
+		// this.m_rscene.addEntity(axis);
+
 
 		/*
 		let texList = [this.createTexByUrl()];

@@ -25,6 +25,7 @@ export default class RawMesh extends MeshBase implements IRawMesh {
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         super(bufDataUsage);
     }
+	
 	setRayTester(rayTester: ITestRay): void {
 		this.m_rayTester = rayTester;
 	}
@@ -39,8 +40,18 @@ export default class RawMesh extends MeshBase implements IRawMesh {
 	setIVS(ivs: Uint16Array | Uint32Array): void {
 		this.m_ivs = ivs;
 	}
+	getVS(): Float32Array {
+		return this.m_dataList[0];
+	}
+	getUVS(): Float32Array {
+		return this.m_dataList.length > 1 ? this.m_dataList[1] : null;
+	}
+	getNVS(): Float32Array {
+		return this.m_dataList.length > 2 ? this.m_dataList[2] : null;
+	}
     initialize(): void {
 
+		this.m_ivs = this.m_ivs;
 		let rvb = ROVertexBuffer;
         rvb.vbWholeDataEnabled = this.vbWholeDataEnabled;
 		if(this.aabbEnabled && this.autoBuilding && this.m_dataList.length > 0) {

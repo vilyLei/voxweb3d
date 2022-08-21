@@ -1,5 +1,6 @@
 import Vector3D from "../../../vox/math/Vector3D";
 import MouseEvent from "../../../vox/event/MouseEvent";
+import MouseEvt3DDispatcher from "../../../vox/event/MouseEvt3DDispatcher";
 import RendererDevice from "../../../vox/render/RendererDevice";
 import RenderStatusDisplay from "../../../vox/scene/RenderStatusDisplay";
 
@@ -17,7 +18,6 @@ import { MaterialContext } from "../../../materialLab/base/MaterialContext";
 import { RenderableMaterialBlock } from "../../../vox/scene/block/RenderableMaterialBlock";
 
 import DivLog from "../../../vox/utils/DivLog";
-import DragAxis from "../move/DragAxis";
 import RawMesh from "../../../vox/mesh/RawMesh";
 import { RenderDrawMode } from "../../../vox/render/RenderConst";
 import Line3DMaterial from '../../../vox/material/mcase/Line3DMaterial';
@@ -38,29 +38,10 @@ export class DemoBase {
 
     private m_materialCtx: MaterialContext = new MaterialContext();
 
-    private testGeom(): void {
-
-		let outV = new Vector3D();
-
-		let plane = new Plane();
-		plane.position.setXYZ(0.0, 10.0, 0.0);
-		plane.nv.setXYZ(0.0, 1.0, 0.0);
-		plane.update();
-
-		let rl1 = new RadialLine();
-		rl1.position.setTo(100.0, 0.0, 100.0);
-		rl1.tv.setTo(1.0, -1.0, 0.0);
-		rl1.update();
-
-		let intersection = plane.intersectRadialLinePos2(rl1.position, rl1.tv, outV);
-		let interBoo = plane.intersectBoo;
-		console.log("plane.intersectRayLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", intersection, ", outV: ", outV);
-	}
     initialize(): void {
 
         console.log("DemoBase::initialize()......");
-		this.testGeom();
-		return;
+
         if (this.m_rscene == null) {
 
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
@@ -108,7 +89,7 @@ export class DemoBase {
 
     private initScene(): void {
 
-
+        /*
         // vs: 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
         // colors: 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1
         let size = 100;
@@ -130,12 +111,29 @@ export class DemoBase {
         entity.setMesh(mesh);
         this.m_rscene.addEntity(entity);
         return;
-
+        //*/
         let axis: Axis3DEntity = new Axis3DEntity();
-        axis.initialize(1.0);
+        axis.initialize(80.0);
+        axis.update();
+        console.log("axis.getGlobalBounds(): ", axis.getGlobalBounds());
         this.m_rscene.addEntity(axis);
 
-        let dragAxis = new DragAxis();
+        let dispatcher = new MouseEvt3DDispatcher()
+        // dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
+        dispatcher.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverListener);
+        dispatcher.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutListener);
+        axis.setEvtDispatcher(dispatcher);
+        axis.mouseEnabled = true;
+
+    }
+
+    protected mouseOverListener(evt: any): void {
+        console.log("DemoBase::mouseOverListener() ...");
+        // this.showOverColor();
+    }
+    protected mouseOutListener(evt: any): void {
+        console.log("DemoBase::mouseOutListener() ...");
+        // this.showOutColor();
     }
     private mouseDown(evt: any): void {
         DebugFlag.Flag_0 = 1;

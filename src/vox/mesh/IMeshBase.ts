@@ -69,7 +69,7 @@ export default interface IMeshBase {
 
 	setVtxBufRenderData(vtxData: IVtxBufRenderData): void;
 
-	setPolyhedral(boo: boolean): void;
+	setPolyhedral(polyhedral: boolean): void;
 	/**
 	 * 射线和自身的相交检测(多面体或几何函数(例如球体))
 	 * @boundsHit       表示是否包围盒体已经和射线相交了
