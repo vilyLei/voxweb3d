@@ -137,8 +137,6 @@ class DragMoveController implements IRayControl {
         }
     }
 
-    // initializeEvent(): void {
-    // }
     selectByParam(raypv: IVector3D, raytv: IVector3D, wpos: IVector3D): void {
         if (this.m_crossPlaneDrag != null) {
             this.m_crossPlaneDrag.selectByParam(raypv, raytv, wpos);
@@ -168,7 +166,7 @@ class DragMoveController implements IRayControl {
         movePlane.setTarget(this.m_dragMoveTarget);
         movePlane.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
         this.m_dragMoveTarget.addEntity(movePlane);
-        this.m_controllers.push(movePlane);
+        // this.m_controllers.push(movePlane);
         this.m_editRS.addEntity(movePlane.getEntity(), this.m_editRSP, true);
         return movePlane;
     }

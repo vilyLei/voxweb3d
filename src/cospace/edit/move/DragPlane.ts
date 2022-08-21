@@ -33,6 +33,9 @@ export default class DragPlane implements IRayControl {
     private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
     private m_offsetPos = CoMath.createVec3();
+    private m_entityPos = CoMath.createVec3();
+    private m_entityScale = CoMath.createVec3(1.0, 1.0, 1.0);
+    private m_scale = 1.0;
 
     uuid: string = "DragPlane";
 
@@ -54,6 +57,8 @@ export default class DragPlane implements IRayControl {
             this.m_entity = CoRScene.createDisplayEntity();
 
             let et = this.m_entity;
+
+            this.m_scale = size;
 
             et.setMaterial(material);
             et.setScaleXYZ(size, size, size);
@@ -95,9 +100,9 @@ export default class DragPlane implements IRayControl {
                     throw Error("Error type !!!");
                     break;
             }
-
+            
             et.setRenderState(CoRScene.RendererState.NONE_TRANSPARENT_STATE);
-            et.setPosition( this.m_offsetPos );
+            et.setPosition(this.m_offsetPos);
             this.showOutColor();
             this.initializeEvent();
         }
@@ -158,19 +163,31 @@ export default class DragPlane implements IRayControl {
         return this.m_entity.getVisible();
     }
     setXYZ(px: number, py: number, pz: number): void {
-        // const v = this.m_offsetPos;
-        // this.m_entity.setXYZ(px + v.x, py + v.y, pz + v.z);
-        this.m_entity.setXYZ(px, py, pz);
+        this.m_entityPos.setXYZ(px, py, pz);
+        const v = this.m_offsetPos;
+        this.m_entity.setXYZ(px + v.x, py + v.y, pz + v.z);
     }
-    setRotationXYZ(rx: number, ry: number, rz: number): void {
-        this.m_entity.setRotationXYZ(rx, ry, rz);
+    setPosition(pv: IVector3D): void {
+        this.m_entityPos.copyFrom(pv);
+        const v = this.m_offsetPos;
+        pv.addBy(v);
+        this.m_entity.setPosition(pv);
+        pv.subtractBy(v);
+    }
+    getPosition(pv: IVector3D): void {
+        pv.copyFrom(this.m_entityPos);
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
-        this.m_entity.setScaleXYZ(sx, sy, sz);
+        const s = this.m_scale;
+        this.m_entityScale.setXYZ(sx, sy, sz);
+        this.m_entity.setScaleXYZ(sx * s, sy * s, sz * s);
     }
 
     getScaleXYZ(pv: IVector3D): void {
-        this.m_entity.getScaleXYZ(pv);
+        pv.copyFrom( this.m_entityScale );
+    }
+    setRotationXYZ(rx: number, ry: number, rz: number): void {
+        this.m_entity.setRotationXYZ(rx, ry, rz);
     }
     getRotationXYZ(pv: IVector3D): void {
         this.m_entity.getRotationXYZ(pv);
@@ -189,12 +206,6 @@ export default class DragPlane implements IRayControl {
     }
     deselect(): void {
         this.m_flag = false;
-    }
-    setPosition(pv: IVector3D): void {
-        this.m_entity.setPosition(pv);
-    }
-    getPosition(pv: IVector3D): void {
-        this.m_entity.getPosition(pv);
     }
     update(): void {
         this.m_entity.update();
@@ -237,9 +248,7 @@ export default class DragPlane implements IRayControl {
             pv.copyFrom(this.m_outV);
             pv.addBy(this.m_dv);
             if (this.moveSelfEnabled) {
-                pv.addBy(this.m_offsetPos);
                 this.setPosition(pv);
-                pv.subtractBy(this.m_offsetPos);
                 this.update();
             }
 

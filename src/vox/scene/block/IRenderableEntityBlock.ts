@@ -14,10 +14,39 @@ import IAABB from "../../geom/IAABB";
 interface IRenderableEntityBlock {
     
     readonly screenPlane: IRenderEntity;
+    /**
+     * center align in the XOY Plane, its size is 1
+     */
     readonly unitXOYPlane: IRenderEntity;
+    /**
+     * center align in the XOZ Plane, its size is 1
+     */
     readonly unitXOZPlane: IRenderEntity;
+    /**
+     * center align in the YOZ Plane, its size is 1
+     */
     readonly unitYOZPlane: IRenderEntity;
+    /**
+     * center align, its size is 1
+     */
     readonly unitBox: IRenderEntity;
+
+    /**
+     * axis origin align in the XOY Plane, its size is 1
+     */
+     readonly unitOXOYPlane: IRenderEntity;
+     /**
+      * axis origin align in the XOZ Plane, its size is 1
+      */
+     readonly unitOXOZPlane: IRenderEntity;
+     /**
+      * axis origin align in the YOZ Plane, its size is 1
+      */
+     readonly unitOYOZPlane: IRenderEntity;
+     /**
+      * axis origin align, its size is 1
+      */
+     readonly unitOBox: IRenderEntity;
 
     initialize(): void;
 
