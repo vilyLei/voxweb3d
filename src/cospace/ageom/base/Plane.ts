@@ -36,7 +36,7 @@ export default class Plane implements IPlane {
 	 */
 	nv: IVector3D = CoMath.createVec3(1);
 	/**
-	 * 记录相交的状态
+	 * 相交的状态
 	 */
 	intersection: Intersection = Intersection.None;
 

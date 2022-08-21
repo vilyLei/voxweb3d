@@ -1,5 +1,6 @@
 import IVector3D from "../../vox/math/IVector3D";
 import ILine from "./base/ILine";
+import IPlane from "./base/IPlane";
 
 interface CoLine {
 	
@@ -52,7 +53,13 @@ interface CoLine {
 interface ICoAGeom {
 
 	Line: CoLine;
-
+	/**
+	 * create a algorithm geometry 3D Space Line
+	 */
 	createLine(): ILine;
+	/**
+	 * create a algorithm geometry 3D Space Plane
+	 */
+	createPlane(): IPlane;
 }
 export { ICoAGeom };
