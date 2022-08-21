@@ -16,15 +16,52 @@ import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IColor4 from "../../../vox/material/IColor4";
 // import { IRayControl } from "../../../voxeditor/base/IRayControl";
+import ITestRay from "../../../vox/mesh/ITestRay";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 
-import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
+import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
 
 declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;
 declare var CoAGeom: ICoAGeom;
+
+class AxisRayTester implements ITestRay {
+
+    private m_vs: Float32Array;
+    private m_rayTestRadius: number;
+    private m_lsTotal: number;
+    private m_pv0 = CoMath.createVec3();
+    private m_pv1 = CoMath.createVec3();
+    constructor(vs: Float32Array, rayTestRadius: number, lsTotal: number) {
+        this.m_vs = vs;
+        this.m_rayTestRadius = rayTestRadius;
+        this.m_lsTotal = lsTotal;
+    }
+    testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number {
+        let j: number = 0;
+        let vs: Float32Array = this.m_vs;
+        let flag = false;
+        let radius = this.m_rayTestRadius;
+        let pv0 = this.m_pv0;
+        let pv1 = this.m_pv1;
+        const RL = CoAGeom.RayLine;
+        for (let i = 0; i < this.m_lsTotal; ++i) {
+            pv0.setXYZ(vs[j], vs[j + 1], vs[j + 2]);
+            pv1.setXYZ(vs[j + 3], vs[j + 4], vs[j + 5]);
+            flag = RL.IntersectSegmentLine(rlpv, rltv, pv0, pv1, outV, radius);
+            if (flag) {
+                return 1;
+            }
+            j += 6;
+        }
+    }
+    destroy(): void {
+        this.m_vs = null;
+    }
+}
+
 /**
  * 在三个坐标轴上拖动
  */
@@ -42,6 +79,18 @@ export default class DragAxis {
 
     constructor() {
     }
+    initialize(size: number = 100.0): void {
+        if (this.m_entity == null) {
+            this.m_entity = CoRScene.createAxis3DEntity(size);
+            let mesh = this.m_entity.getMesh() as IRawMesh;
+            if (mesh != null) {
+                mesh.setRayTester(new AxisRayTester(mesh.getVS(), 3, 5));
+            }
+        }
+    }
+    getEntity(): ITransformEntity {
+        return this.m_entity;
+    }
     setVisible(visible: boolean): void {
         this.m_entity.setVisible(visible);
     }
@@ -49,9 +98,9 @@ export default class DragAxis {
         return this.m_entity.getVisible();
     }
 
-    setEntity(entity: ITransformEntity): void {
-        this.m_entity = entity;
-    }
+    // setEntity(entity: ITransformEntity): void {
+    //     this.m_entity = entity;
+    // }
     addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
         this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
     }
@@ -64,7 +113,7 @@ export default class DragAxis {
     setTarget(target: IEntityTransform): void {
         this.m_targetEntity = target;
     }
-    initializeEvent(): void {
+    private initializeEvent(): void {
 
         if (this.m_dispatcher == null) {
             const me = CoRScene.MouseEvent;

@@ -19,5 +19,6 @@ export default interface ITestRay {
      * @boundsHit       表示是否包围盒体已经和射线相交了
      * @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
      */
-	 testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number
+	testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number;
+    destroy(): void;
 }

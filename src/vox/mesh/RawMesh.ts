@@ -111,7 +111,10 @@ export default class RawMesh extends MeshBase implements IRawMesh {
 		if(this.m_dataList != null) {
 			this.m_dataList = [];
 		}
-		this.m_rayTester = null;
+		if(this.m_rayTester != null) {
+			this.m_rayTester.destroy();
+			this.m_rayTester = null;
+		}
         super.__$destroy();
     }
 }
