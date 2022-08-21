@@ -1,6 +1,5 @@
 import IVector3D from "../../../vox/math/IVector3D";
-// import DragAxisQuad3D from "../../../voxeditor/entity/DragAxisQuad3D";
-// import DragPlaneEntity3D from "../../../voxeditor/entity/DragPlaneEntity3D";
+import DragPlaneEntity3D from "../../../voxeditor/entity/DragPlaneEntity3D";
 import DragAxis from "./DragAxis";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
