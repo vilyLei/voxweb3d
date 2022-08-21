@@ -35,12 +35,13 @@ class AxisRayTester implements ITestRay {
     private m_lsTotal: number;
     private m_pv0 = CoMath.createVec3();
     private m_pv1 = CoMath.createVec3();
-    constructor(vs: Float32Array, rayTestRadius: number, lsTotal: number) {
+    constructor(vs: Float32Array, lsTotal: number, rayTestRadius: number) {
         this.m_vs = vs;
         this.m_rayTestRadius = rayTestRadius;
         this.m_lsTotal = lsTotal;
     }
     testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number {
+
         let j: number = 0;
         let vs: Float32Array = this.m_vs;
         let flag = false;
@@ -48,8 +49,6 @@ class AxisRayTester implements ITestRay {
         let pv0 = this.m_pv0;
         let pv1 = this.m_pv1;
         const RL = CoAGeom.RayLine;
-
-        // console.log("A this.m_lsTotal: ",this.m_lsTotal);
 
         for (let i = 0; i < this.m_lsTotal; ++i) {
             pv0.setXYZ(vs[j], vs[j + 1], vs[j + 2]);
@@ -173,6 +172,7 @@ export default class DragAxis implements IRayControl {
     select(): void {
     }
     deselect(): void {
+        console.log("DragAxis::deselect() ...");
         this.m_flag = -1;
     }
     destroy(): void {
@@ -187,6 +187,9 @@ export default class DragAxis implements IRayControl {
         }
     }
     setPosition(pos: IVector3D): void {
+        if(this.m_flag < 0) {
+            console.log(">>>>>>>>>>>");
+        }
         this.m_entity.setPosition(pos);
     }
     getPosition(outPos: IVector3D): void {
@@ -222,7 +225,6 @@ export default class DragAxis implements IRayControl {
     private m_rpv = CoMath.createVec3();
     private m_rtv = CoMath.createVec3();
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
-
         if (this.m_flag > -1) {
 
             this.m_rpv.copyFrom(rpv);

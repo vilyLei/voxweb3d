@@ -121,6 +121,7 @@ class DragMoveController implements IRayControl {
     private m_mousePrePos = CoMath.createVec3(-100000, -100000, 0);
     private m_mousePos = CoMath.createVec3();
 
+    pickTestAxisRadius: number = 20;
     uuid: string = "DragMoveController";
     constructor() { }
     /**
@@ -178,7 +179,7 @@ class DragMoveController implements IRayControl {
 
         let moveAxis = new DragAxis();
         moveAxis.moveSelfEnabled = true;
-        moveAxis.pickTestRadius = 15;
+        moveAxis.pickTestRadius = this.pickTestAxisRadius;
         moveAxis.initialize(500.0);
         moveAxis.outColor.setRGBA4f(0.9, 0.8, 0.9, 1.0);
         moveAxis.overColor.setRGBA4f(1.0, 1.0, 1.0, 1.0);
@@ -254,8 +255,8 @@ class DragMoveController implements IRayControl {
         }
     }
     isSelected(): boolean {
-        let flag: boolean = false;
-        for (let i: number = 0; i < this.m_controllers.length; ++i) {
+        let flag = false;
+        for (let i = 0; i < this.m_controllers.length; ++i) {
             flag = flag || this.m_controllers[i].isSelected();
         }
         return flag;
@@ -264,14 +265,15 @@ class DragMoveController implements IRayControl {
     }
     deselect(): void {
 
-        for (let i: number = 0; i < this.m_controllers.length; ++i) {
+        console.log("DragMoveController::deselect() ..., this.m_controllers.length: ", this.m_controllers.length);
+        for (let i = 0; i < this.m_controllers.length; ++i) {
             this.m_controllers[i].deselect();
         }
     }
     setVisible(visible: boolean): void {
 
         this.m_visible = visible;
-        for (let i: number = 0; i < this.m_controllers.length; ++i) {
+        for (let i = 0; i < this.m_controllers.length; ++i) {
             this.m_controllers[i].setVisible(visible);
         }
     }

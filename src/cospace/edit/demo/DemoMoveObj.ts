@@ -132,17 +132,18 @@ export class DemoMoveObj {
 		this.m_rscene.addEntity(movePlane.getEntity());
 		//*/
 		this.m_dragCtr = new DragMoveController();
+		this.m_dragCtr.pickTestAxisRadius = 30;
 		this.m_dragCtr.initialize(this.m_rscene);
+		this.m_dragCtr.setVisible( true );
 	}
 	private mouseUpListener(evt: any): void {
         console.log("DemoMoveObj::mouseUpListener() ...");
-
-	}
-	private mouseBgDownListener(evt: any): void {
-        console.log("DemoMoveObj::mouseBgDownListener() ...");
 		if(this.m_dragCtr != null) {
 			this.m_dragCtr.deselect();
 		}
+	}
+	private mouseBgDownListener(evt: any): void {
+        console.log("DemoMoveObj::mouseBgDownListener() ...");
 	}
 	private createDefaultEntity(): void {
 
