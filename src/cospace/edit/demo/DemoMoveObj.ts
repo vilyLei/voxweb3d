@@ -132,7 +132,9 @@ export class DemoMoveObj {
 		this.m_rscene.addEntity(movePlane.getEntity());
 		//*/
 		this.m_dragCtr = new DragMoveController();
-		this.m_dragCtr.pickTestAxisRadius = 30;
+		this.m_dragCtr.axisSize = 200;
+		this.m_dragCtr.planeSize = 100;
+		this.m_dragCtr.pickTestAxisRadius = 10;
 		this.m_dragCtr.initialize(this.m_rscene);
 		this.m_dragCtr.setVisible( true );
 	}

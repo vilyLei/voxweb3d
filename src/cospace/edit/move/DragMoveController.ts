@@ -120,8 +120,10 @@ class DragMoveController implements IRayControl {
     private m_posX = -1;
     private m_mousePrePos = CoMath.createVec3(-100000, -100000, 0);
     private m_mousePos = CoMath.createVec3();
-
-    pickTestAxisRadius: number = 20;
+    axisSize = 100.0;
+    planeSize = 50.0;
+    planeAlpha = 0.6;
+    pickTestAxisRadius = 20;
     uuid: string = "DragMoveController";
     constructor() { }
     /**
@@ -157,11 +159,11 @@ class DragMoveController implements IRayControl {
     }
     private createPlaneDrag(type: number, alpha: number, srcEntity: ITransformEntity = null): DragPlane {
 
-        let size: number = 50;
+        //let size: number = 50;
         
         let movePlane = new DragPlane();
         movePlane.moveSelfEnabled = false;
-        movePlane.initialize(type, size, alpha);
+        movePlane.initialize(type, this.planeSize, alpha);
         
         movePlane.setTarget(this.m_dragMoveTarget);
         movePlane.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
@@ -173,12 +175,12 @@ class DragMoveController implements IRayControl {
     private init(): void {
 
         // let sphRadius: number = 50;
-        let alpha = 0.6;
+        let alpha = this.planeAlpha;
 
         let moveAxis = new DragAxis();
         moveAxis.moveSelfEnabled = true;
         moveAxis.pickTestRadius = this.pickTestAxisRadius;
-        moveAxis.initialize(500.0);
+        moveAxis.initialize(this.axisSize);
         moveAxis.outColor.setRGBA4f(0.9, 0.8, 0.9, 1.0);
         moveAxis.overColor.setRGBA4f(1.0, 1.0, 1.0, 1.0);
         moveAxis.showOutColor();
