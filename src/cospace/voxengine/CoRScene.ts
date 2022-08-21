@@ -205,11 +205,11 @@ function createAxis3DEntity(size: number = 100.0): ITransformEntity {
 	return axis;
 }
 
-function createMaterialContext(): IMaterialContext {
-	return new MaterialContext();
-}
 function creatMaterialContextParam(): MaterialContextParam {
 	return new MaterialContextParam();
+}
+function createMaterialContext(): IMaterialContext {
+	return new MaterialContext();
 }
 
 export {
@@ -254,6 +254,7 @@ export {
 	createDisplayEntityWithDataMesh,
 	createDisplayEntity,
 	createMouseEventEntity,
-	createMaterialContext,
-	creatMaterialContextParam
+
+	creatMaterialContextParam,
+	createMaterialContext
 };

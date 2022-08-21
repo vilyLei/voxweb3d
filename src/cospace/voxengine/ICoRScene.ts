@@ -213,7 +213,7 @@ interface ICoRScene {
 	createDisplayEntity(): ITransformEntity;
 	createMouseEventEntity(): IMouseEventEntity;
 
-	createMaterialContext(): IMaterialContext;
 	creatMaterialContextParam(): CoMaterialContextParam;
+	createMaterialContext(): IMaterialContext;
 }
 export { CoMaterialContextParam, ICoRScene };
