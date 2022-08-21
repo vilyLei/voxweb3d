@@ -32,8 +32,6 @@ export default class DragPlane implements IRayControl {
     private m_dispatcher: IEvtDispatcher;
     private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
-    // private m_offsetPos = CoMath.createVec3();
-    // private m_entityPos = CoMath.createVec3();
     private m_entityScale = CoMath.createVec3(1.0, 1.0, 1.0);
     private m_scale = 1.0;
 
@@ -63,28 +61,20 @@ export default class DragPlane implements IRayControl {
             et.setMaterial(material);
             et.setScaleXYZ(size, size, size);
             switch (planeAxisType) {
-                // xoz
                 case 0:
-                    // this.m_offsetPos.setXYZ(size, 0, size);
                     et.copyMeshFrom(eb.unitOXOZPlane);
-                    // plane.initializeXOZ(dis, dis, axisPlaneSize, axisPlaneSize);
                     this.setPlaneNormal(V3.Y_AXIS);
                     this.outColor.setRGBA4f(1.0, 0.3, 0.3, alpha);
                     this.overColor.setRGBA4f(1.0, 0.1, 0.1, alpha * 1.1);
                     break;
-                // xoy
                 case 1:
-                    // this.m_offsetPos.setXYZ(size, size, 0);
                     et.copyMeshFrom(eb.unitOXOYPlane);
-                    // plane.initializeXOY(dis, dis, axisPlaneSize, axisPlaneSize);
                     this.setPlaneNormal(V3.Z_AXIS);
                     this.outColor.setRGBA4f(0.3, 0.3, 1.0, alpha);
                     this.overColor.setRGBA4f(0.1, 0.1, 1.0, alpha * 1.1);
                     break;
                 // yoz
                 case 2:
-                    // this.m_offsetPos.setXYZ(0, size, size);
-                    // plane.initializeYOZ(dis, dis, axisPlaneSize, axisPlaneSize);
                     et.copyMeshFrom(eb.unitOYOZPlane);
                     this.setPlaneNormal(CoMath.Vector3D.X_AXIS);
                     this.outColor.setRGBA4f(0.3, 1.0, 0.3, alpha);
@@ -102,7 +92,6 @@ export default class DragPlane implements IRayControl {
             }
             
             et.setRenderState(CoRScene.RendererState.NONE_TRANSPARENT_STATE);
-            // et.setPosition(this.m_offsetPos);
             this.showOutColor();
             this.initializeEvent();
         }
@@ -163,21 +152,12 @@ export default class DragPlane implements IRayControl {
         return this.m_entity.getVisible();
     }
     setXYZ(px: number, py: number, pz: number): void {
-        // this.m_entityPos.setXYZ(px, py, pz);
-        // const v = this.m_offsetPos;
-        // this.m_entity.setXYZ(px + v.x, py + v.y, pz + v.z);
         this.m_entity.setXYZ(px, py, pz);
     }
     setPosition(pv: IVector3D): void {
-        // this.m_entityPos.copyFrom(pv);
-        // const v = this.m_offsetPos;
-        // pv.addBy(v);
-        // this.m_entity.setPosition(pv);
-        // pv.subtractBy(v);
         this.m_entity.setPosition(pv);
     }
     getPosition(pv: IVector3D): void {
-        // pv.copyFrom(this.m_entityPos);
         this.m_entity.getPosition(pv);
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
@@ -235,7 +215,6 @@ export default class DragPlane implements IRayControl {
     private m_outV = CoMath.createVec3();
 
     private calcClosePos(rpv: IVector3D, rtv: IVector3D): void {
-        // Plane.IntersectionSLV2(this.m_planeNV, this.m_planeDis, rpv, rtv, this.m_outV);
         CoAGeom.PlaneUtils.IntersectLinePos2(this.m_planeNV, this.m_planeDis, rpv, rtv, this.m_outV);
     }
     private m_rpv = CoMath.createVec3();

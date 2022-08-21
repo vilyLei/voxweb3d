@@ -174,7 +174,6 @@ class DragMoveController implements IRayControl {
     }
     private init(): void {
 
-        // let sphRadius: number = 50;
         let alpha = this.planeAlpha;
 
         let moveAxis = new DragAxis();
@@ -185,7 +184,6 @@ class DragMoveController implements IRayControl {
         moveAxis.overColor.setRGBA4f(1.0, 1.0, 1.0, 1.0);
         moveAxis.showOutColor();
 
-        // moveAxis.initializeEvent();
         moveAxis.setTarget(this.m_dragMoveTarget);
         moveAxis.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
         this.m_dragMoveTarget.addEntity(moveAxis.getEntity());
