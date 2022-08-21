@@ -16,6 +16,7 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
 import DragAxis from "../../edit/move/DragAxis";
 import DragPlane from "../../edit/move/DragPlane";
+import { DragMoveController } from "../../edit/move/DragMoveController";
 
 // import { DragMoveController } from "../../../voxeditor/entity/DragMoveController";
 
@@ -130,6 +131,7 @@ export class DemoMoveObj {
 		movePlane.initialize(2, 100, 0.5);
 		this.m_rscene.addEntity(movePlane.getEntity());
 
+		let dragCtr = new DragMoveController();
 	}
 	private createDefaultEntity(): void {
 
