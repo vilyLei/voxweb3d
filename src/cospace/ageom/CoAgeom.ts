@@ -1,18 +1,26 @@
 import Line from "./base/Line";
+import ILine from "./base/ILine";
+import IRayLine from "./base/IRayLine";
+import RayLine from "./base/RayLine";
+import IPlane from "./base/IPlane";
 import Plane from "./base/Plane";
 
 
-
-
-function createLine(): void {
-	new Line();
+function createLine(): ILine {
+	return new Line();
 }
-function createPlane(): void {
-	new Plane();
+function createRayLine(): IRayLine {
+	return new RayLine();
+}
+function createPlane(): IPlane {
+	return new Plane();
 }
 
 export {
 	Line,
+	RayLine,
 	Plane,
-	createLine
+	createLine,
+	createRayLine,
+	createPlane
 }

@@ -51,13 +51,45 @@ interface CoLine {
 	CalcTwoSLDualCloseV2(lapv: IVector3D, latv: IVector3D, lbpv: IVector3D, lbtv: IVector3D, outVa: IVector3D, outVb: IVector3D): void
 }
 
+interface CoRayLine {
+	
+	/**
+	 * 检测由(rlpv,rltv)构成的射线和两个点(spva, lspvb)表示的线段是否相交
+	 * @param rlpv 射线的起点
+	 * @param rltv 射线的朝向单位化矢量
+	 * @param lspva 线段的起点
+	 * @param lspvb 线段的终点
+	 * @param outV 如果相交存放交点
+	 * @param radius 相交半径, 小于这个半径的距离表示相交
+	 * @returns 返回true表示相交
+	 */
+	IntersectSegmentLine(rlpv: IVector3D,rltv: IVector3D,lspva: IVector3D,lspvb: IVector3D,outV: IVector3D,radius?: number): boolean;
+
+	/**
+	 * 检测射线是否和球体相交，如果相交，得到距离起点最近的交点
+	 * @param rlpv 射线起点
+	 * @param rltv 标准化后射线朝向矢量
+	 * @param cv 球心坐标
+	 * @param radius 球体半径
+	 * @param outV 存放距离起点最近的交点
+	 * @returns true表示相交, false表示不相交
+	 */
+	IntersectSphereNearPos(rlpv: IVector3D, rltv: IVector3D, cv: IVector3D, radius: number, outV: IVector3D): boolean;
+	IntersectSphere(rlpv: IVector3D, rltv: IVector3D, cv: IVector3D, radius: number): boolean;
+}
+
 interface ICoAGeom {
 
 	Line: CoLine;
+	RayLine: CoRayLine;
 	/**
 	 * create a algorithm geometry 3D Space Line
 	 */
 	createLine(): ILine;
+	/**
+	 * create a algorithm geometry 3D Space Line
+	 */
+	createRayLine(): IRayLine;
 	/**
 	 * create a algorithm geometry 3D Space Plane
 	 */
