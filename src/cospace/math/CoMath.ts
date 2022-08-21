@@ -3,6 +3,19 @@ import IMatrix4 from "../../vox/math/IMatrix4";
 import IAABB from "../../vox/geom/IAABB";
 import { CoMathVec3 } from "./ICoMath";
 
+import {
+	isZero,
+	isNotZero,
+	isGreaterPositiveZero,
+	isLessNegativeZero,
+	isLessPositiveZero,
+	isGreaterNegativeZero,
+	isPostiveZero,
+	isNegativeZero,
+	isGreaterRealZero,
+	isLessRealZero
+} from "../../vox/math/Float";
+
 import { ICoRScene } from "../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 
@@ -21,4 +34,15 @@ export {
 	createVec3,
 	createMat4,
 	createAABB,
+
+	isZero,
+	isNotZero,
+	isGreaterPositiveZero,
+	isLessNegativeZero,
+	isLessPositiveZero,
+	isGreaterNegativeZero,
+	isPostiveZero,
+	isNegativeZero,
+	isGreaterRealZero,
+	isLessRealZero
 };

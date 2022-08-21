@@ -45,5 +45,48 @@ interface ICoMath {
 	createVec3(px?: number, py?: number, pz?: number, pw?: number): IVector3D;
 	createMat4(pfs32?: Float32Array, index?: number): IMatrix4;
 	createAABB(): IAABB;
+    
+    isZero(v: number) : boolean;
+    isNotZero(v: number) : boolean;
+    /**
+     * example:
+     *     isGreaterPositiveZero(0.1) is true
+     *     isGreaterPositiveZero(0.000000001) is false
+     *     isGreaterPositiveZero(-0.1) is false
+     * @param v number value
+     * @returns a positive number value and its value is greater zero, return true, otherwize false
+     */
+    isGreaterPositiveZero(v: number) : boolean;
+    /**
+     * example:
+     *      isLessNegativeZero(-0.1) is true
+     *      isLessNegativeZero(-000000001) is false
+     *      isLessNegativeZero(0.1) is false
+     * @param v number value
+     * @returns a negative number value and its value is less zero, return true, otherwise false
+     */
+    isLessNegativeZero(v: number) : boolean;
+    /**
+     * example:
+     * 	isLessPositiveZero(+0.00000001) is true
+     *  isLessPositiveZero(-1.3) is true
+     *  isLessPositiveZero(1.3) is false
+     * @param v number value
+     * @returns true or false
+     */
+    isLessPositiveZero(v: number) : boolean;
+    /**
+     * example:
+     * 	isGreaterNegativeZero(-0.00000001) is true
+     *  isGreaterNegativeZero(+1.3) is true
+     *  isGreaterNegativeZero(-1.3) is false
+     * @param v number value
+     * @returns true or false
+     */
+    isGreaterNegativeZero(v: number) : boolean;
+    isPostiveZero(v: number) : boolean;
+    isNegativeZero(v: number) : boolean;
+    isGreaterRealZero(v: number) : boolean;
+    isLessRealZero(v: number) : boolean;
 }
 export { CoMathVec3, ICoMath };

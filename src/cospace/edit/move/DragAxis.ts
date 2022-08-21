@@ -99,6 +99,7 @@ export default class DragAxis implements IRayControl {
         return this.m_entity;
     }
     setVisible(visible: boolean): void {
+        console.log("DragAxis::setVisible() ..., visible: ", visible);
         this.m_entity.setVisible(visible);
     }
     getVisible(): boolean {
