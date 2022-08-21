@@ -80,7 +80,7 @@ export default class DragAxis {
     moveSelfEnabled = true;
     outColor = CoRScene.createColor4(0.9, 0.9, 0.9, 1.0);
     overColor = CoRScene.createColor4(1.0, 1.0, 1.0, 1.0);
-
+    pickTestRadius: number = 10;
     constructor() {
     }
     initialize(size: number = 100.0): void {
@@ -90,7 +90,7 @@ export default class DragAxis {
             let mesh = this.m_entity.getMesh() as IRawMesh;
             if (mesh != null) {
                 console.log("mesh.isPolyhedral():", mesh.isPolyhedral());
-                mesh.setRayTester(new AxisRayTester(mesh.getVS(), 3, 10));
+                mesh.setRayTester(new AxisRayTester(mesh.getVS(), 3, this.pickTestRadius));
                 console.log("entity.getGlobalBounds():", this.m_entity.getGlobalBounds());
             }
             this.initializeEvent();
@@ -225,6 +225,7 @@ export default class DragAxis {
     }
 
     mouseDownListener(evt: any): void {
+        console.log("DragAxis::mouseDownListener() ...");
         let px = Math.abs(evt.lpos.x);
         let py = Math.abs(evt.lpos.y);
         let pz = Math.abs(evt.lpos.z);

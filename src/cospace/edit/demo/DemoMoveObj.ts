@@ -16,7 +16,7 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
 import DragAxis from "../../edit/move/DragAxis";
 
-//import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
+import { DragMoveController } from "../../../voxeditor/entity/DragMoveController";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
