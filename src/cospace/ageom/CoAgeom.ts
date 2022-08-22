@@ -28,7 +28,7 @@ function createSphere(): ISphere {
 }
 
 export {
-	
+
 	Line,
 	RayLine,
 	SegmentLine,

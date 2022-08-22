@@ -25,6 +25,8 @@ import Line3DMaterial from '../../../vox/material/mcase/Line3DMaterial';
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import RadialLine from "../../../vox/geom/RadialLine";
 import Plane from "../../../vox/geom/Plane";
+import H5Text from "../../voxtext/base/H5Text";
+import TextEntity from "../../voxtext/base/TextEntity";
 
 //import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
 
@@ -90,29 +92,15 @@ export class DemoBase {
 
     private initScene(): void {
 
-        /*
-        // vs: 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
-        // colors: 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1
-        let size = 100;
-        let vs = new Float32Array( [ 0, 0, 0, size, 0, 0, 0, 0, 0, 0, size, 0, 0, 0, 0, 0, 0, size ]);
-        let colors = new Float32Array( [ 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1 ]);
-        let mesh: RawMesh = new RawMesh();
-        mesh.ivsEnabled = false;
-        mesh.aabbEnabled = true;
-        mesh.reset();
-        mesh.addFloat32Data(vs, 3);
-        mesh.addFloat32Data(colors, 3);
-        mesh.initialize();
-        mesh.drawMode = RenderDrawMode.ARRAYS_LINES;
-        mesh.vtCount = Math.floor(vs.length / 3);
+		let h5Text = new H5Text();
+		h5Text.initialize(this.m_rscene, "text_cv_01", 18, 512,512);
+		let textObject = new TextEntity();
+		textObject.initialize("Hello", h5Text);
+        this.m_rscene.addEntity(textObject);
+		textObject.setRGB3f(1.5, 0.0, 1.0);
+	}
+    private initAxisEvt(): void {
 
-        let material = new Line3DMaterial(false);
-        let entity = new DisplayEntity();
-        entity.setMaterial(material);
-        entity.setMesh(mesh);
-        this.m_rscene.addEntity(entity);
-        return;
-        //*/
         let axis: Axis3DEntity = new Axis3DEntity();
         axis.initialize(80.0);
         axis.update();
