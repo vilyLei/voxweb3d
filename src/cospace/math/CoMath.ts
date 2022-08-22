@@ -1,6 +1,8 @@
 import IVector3D from "../../vox/math/IVector3D";
 import IMatrix4 from "../../vox/math/IMatrix4";
 import IAABB from "../../vox/geom/IAABB";
+import IAABB2D from "../../vox/geom/IAABB2D";
+import AABB2D from "../../vox/geom/AABB2D";
 import { CoMathVec3 } from "./ICoMath";
 
 import {
@@ -28,12 +30,16 @@ function createMat4(pfs32: Float32Array = null, index: number = 0): IMatrix4 {
 function createAABB(): IAABB {
 	return CoRScene.createAABB();
 }
+function createAABB2D(): IAABB2D {
+	return new AABB2D();
+}
 const Vector3D: CoMathVec3 = CoRScene.Vector3D;
 export {
 	Vector3D,
 	createVec3,
 	createMat4,
 	createAABB,
+	createAABB2D,
 
 	isZero,
 	isNotZero,

@@ -1,6 +1,7 @@
 import IVector3D from "../../vox/math/IVector3D";
 import IMatrix4 from "../../vox/math/IMatrix4";
 import IAABB from "../../vox/geom/IAABB";
+import IAABB2D from "../../vox/geom/IAABB2D";
 
 interface CoMathVec3 {
 
@@ -45,6 +46,7 @@ interface ICoMath {
 	createVec3(px?: number, py?: number, pz?: number, pw?: number): IVector3D;
 	createMat4(pfs32?: Float32Array, index?: number): IMatrix4;
 	createAABB(): IAABB;
+    createAABB2D(): IAABB2D;
     
     isZero(v: number) : boolean;
     isNotZero(v: number) : boolean;
