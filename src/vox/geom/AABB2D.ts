@@ -4,8 +4,10 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
+import IAABB2D from "./IAABB2D";
 
-export default class AABB2D {
+export default class AABB2D implements IAABB2D {
+	
 	private m_right: number = 100;
 	private m_top: number = 100;
 

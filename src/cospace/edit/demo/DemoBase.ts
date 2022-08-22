@@ -97,7 +97,7 @@ export class DemoBase {
 		let textObject = new TextEntity();
 		textObject.initialize("Hello", h5Text);
         this.m_rscene.addEntity(textObject);
-		textObject.setRGB3f(1.5, 0.0, 1.0);
+		textObject.setRGB3f(10.5, 0.0, 1.0);
 	}
     private initAxisEvt(): void {
 
