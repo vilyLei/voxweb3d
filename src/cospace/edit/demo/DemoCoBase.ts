@@ -5,6 +5,7 @@ import { IMouseInteraction } from "../../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../../voxengine/ICoRenderer";
 import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
+import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
 
 import { ICoMouseInteraction } from "../../voxengine/ui/ICoMouseInteraction";
@@ -22,6 +23,7 @@ declare var CoRScene: ICoRScene;
 declare var CoMouseInteraction: ICoMouseInteraction;
 declare var CoMath: ICoMath;
 declare var CoAGeom: ICoAGeom;
+declare var CoMaterial: ICoMaterial;
 
 
 /**
@@ -58,6 +60,7 @@ export class DemoCoBase {
 		let url1 = "static/cospace/engine/rscene/CoRScene.umd.js";
 		let url2 = "static/cospace/math/CoMath.umd.js";
 		let url3 = "static/cospace/ageom/CoAGeom.umd.js";
+		let url4 = "static/cospace/coMaterial/CoMaterial.umd.js";
 
 		new ModuleLoader(2, (): void => {
 			if (this.isEngineEnabled()) {
@@ -73,6 +76,11 @@ export class DemoCoBase {
 					new ModuleLoader(1, (): void => {
 						console.log("ageom module loaded ...");
 						this.testAGeom();
+						new ModuleLoader(1, (): void => {
+							console.log("CoMaterial module loaded ...");
+							this.testVoxMaterial();
+							
+						}).load(url4);
 					}).load(url3);
 
 				}).load(url2)
@@ -92,6 +100,11 @@ export class DemoCoBase {
 
 		let v3 = CoMath.createVec3(10,4,0.5);
 		console.log("math v3: ", v3);
+	}
+	
+	private testVoxMaterial(): void {
+		let color4 = CoMaterial.createColor4();
+		console.log("color4: ",color4);
 	}
 	private testAGeom(): void {
 

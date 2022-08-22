@@ -1,6 +1,9 @@
 
 import IAABB2D from "../../../vox/geom/IAABB2D";
-import AABB2D from "../../../vox/geom/AABB2D";
+
+import { ICoMath } from "../../math/ICoMath";
+
+declare var CoMath: ICoMath;
 
 export enum TexAreaFillType {
     NONE,
@@ -23,10 +26,10 @@ export class TexArea {
     texRect: IAABB2D = null;
     offset: number = 2;
     minSize: number = 32;
-    readonly uvs: Float32Array = new Float32Array(8);
+    readonly uvs = new Float32Array(8);
     constructor(px: number = 0.0, py: number = 0.0, pwidth: number = 100.0, pheight: number = 100.0) {
-        this.rect = new AABB2D(px, py, pwidth, pheight);
-        this.texRect = new AABB2D(px, py, pwidth, pheight);
+        this.rect = CoMath.createAABB2D(px, py, pwidth, pheight);
+        this.texRect = CoMath.createAABB2D(px, py, pwidth, pheight);
     }
     copyFrom(dst: TexArea): void {
         this.uniqueNS = dst.uniqueNS;
@@ -40,7 +43,7 @@ export class TexArea {
 }
 
 export class TexAreaNode {
-    rect: AABB2D = null;
+    rect: IAABB2D = null;
     subNodes: TexAreaNode[] = null;
 
     uniqueNS: string = "TexAreaNode";
@@ -50,7 +53,7 @@ export class TexAreaNode {
     protected m_fillType: TexAreaFillType = TexAreaFillType.NONE;
 
     constructor(px: number = 0.0, py: number = 0.0, pwidth: number = 100.0, pheight: number = 100.0) {
-        this.rect = new AABB2D(px, py, pwidth, pheight);
+        this.rect = CoMath.createAABB2D(px, py, pwidth, pheight);
     }
     protected isFull(): boolean {
 
@@ -130,8 +133,8 @@ export class TexAreaNode {
 
         let boo: boolean = false;
         if (this.subNodes == null) {
-            let rect: AABB2D = this.rect;
-            let srcR: IAABB2D = texArea.rect;
+            let rect = this.rect;
+            let srcR = texArea.rect;
 
             // // 三区域不均分，尽量保留最大可用空间
             let areaNode0: TexAreaNode = new TexAreaNode(rect.x, rect.y, srcR.width, srcR.height);
@@ -194,7 +197,7 @@ export class TexAreaNode {
             let width1: number = this.rect.width - texArea.rect.width;
             let height: number = this.rect.height;
 
-            let rect: AABB2D = this.rect;
+            let rect = this.rect;
             let leftArea: TexAreaNode = new TexAreaNode(rect.x, rect.y, width0, height);
             let rightArea: TexAreaNode = new TexAreaNode(rect.x + width0, rect.y, width1, height);
             this.subNodes = [
@@ -220,7 +223,7 @@ export class TexAreaNode {
             let height0: number = texArea.rect.height;
             let height1: number = this.rect.height - texArea.rect.height;
 
-            let rect: AABB2D = this.rect;
+            let rect = this.rect;
             let bottomArea: TexAreaNode = new TexAreaNode(rect.x, rect.y, width, height0);
             let topArea: TexAreaNode = new TexAreaNode(rect.x, rect.y + height0, width, height1);
             this.subNodes = [

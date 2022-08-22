@@ -1,13 +1,17 @@
 import IRendererScene from "../../../vox/scene/IRendererScene";
-import ImageTextureAtlas from "../../../vox/texture/ImageTextureAtlas";
+import ImageTexAtlas from "./ImageTexAtlas";
 
 import IColor4 from "../../../vox/material/IColor4";
 import IAABB2D from "../../../vox/geom/IAABB2D";
 
-import AABB2D from "../../../vox/geom/AABB2D";
-import Color4 from "../../../vox/material/Color4";
-import { TexArea } from "../../../vox/texture/TexAreaNode";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
+
+
+import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
+import { ICoMath } from "../../math/ICoMath";
+
+declare var CoMath: ICoMath;
+declare var CoMaterial: ICoMaterial;
 
 export class CanvasTexObject {
 
@@ -34,7 +38,7 @@ export class CanvasTexObject {
 }
 export class CanvasTexAtlas {
     private m_sc: IRendererScene = null;
-    private m_atlasList: ImageTextureAtlas[] = [null, null, null, null];
+    private m_atlasList: ImageTexAtlas[] = [null, null, null, null];
     constructor() {
     }
     initialize(sc: IRendererScene): void {
@@ -45,13 +49,13 @@ export class CanvasTexAtlas {
 
     initializeAtlas(canvasWidth: number, canvasHeight: number, fillColor: IColor4 = null, transparent: boolean = false): void {
 
-        let atlas: ImageTextureAtlas = null;
+        let atlas: ImageTexAtlas = null;
 		if(fillColor == null) {
-			fillColor = transparent ? new Color4(1.0, 1.0, 1.0, 0.0) : new Color4(1.0, 1.0, 1.0, 1.0);
+			fillColor = transparent ? CoMaterial.createColor4(1.0, 1.0, 1.0, 0.0) : CoMaterial.createColor4(1.0, 1.0, 1.0, 1.0);
 		}
         if (this.m_atlasList[0] == null) {
 
-            atlas = new ImageTextureAtlas(this.m_sc, canvasWidth, canvasHeight, fillColor, transparent);
+            atlas = new ImageTexAtlas(this.m_sc, canvasWidth, canvasHeight, fillColor, transparent);
             //  atlas.getTexture().minFilter = TextureConst.NEAREST;
             //  atlas.getTexture().magFilter = TextureConst.NEAREST;
             //  atlas.getTexture().mipmapEnabled = false;
@@ -72,25 +76,25 @@ export class CanvasTexAtlas {
             //*/
         }
     }
-    getAtlasAt(i: number): ImageTextureAtlas {
+    getAtlasAt(i: number): ImageTexAtlas {
         return this.m_atlasList[i];
     }
     addcharsToAtlas(chars: string, size: number, fontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"): CanvasTexObject {
 
         if (chars != "") {
-            let atlas: ImageTextureAtlas = this.m_atlasList[0];
-            let image: HTMLImageElement | HTMLCanvasElement = ImageTextureAtlas.CreateCharsTexture(chars, size, fontStyle, bgStyle);
+            let atlas: ImageTexAtlas = this.m_atlasList[0];
+            let image: HTMLImageElement | HTMLCanvasElement = ImageTexAtlas.CreateCharsTexture(chars, size, fontStyle, bgStyle);
             return this.addImageToAtlas(chars, image);
         }
         return null;
     }
     getTextureObject(uniqueName: string): CanvasTexObject {
 
-        let atlas: ImageTextureAtlas = this.m_atlasList[0];
-        let texArea: TexArea = atlas.getAreaByName(uniqueName);
+        let atlas: ImageTexAtlas = this.m_atlasList[0];
+        let texArea = atlas.getAreaByName(uniqueName);
         if (texArea != null) {
 
-            let texNode: CanvasTexObject = new CanvasTexObject();
+            let texNode = new CanvasTexObject();
             texNode.texture = atlas.getTexture();
             texNode.uvs = texArea.uvs.slice(0);
             texNode.rect = texArea.texRect.clone();
@@ -107,12 +111,12 @@ export class CanvasTexAtlas {
     }
     addImageToAtlas(uniqueName: string, img: HTMLCanvasElement | HTMLImageElement): CanvasTexObject {
 
-        let atlas: ImageTextureAtlas = this.m_atlasList[0];
-        let texArea: TexArea = atlas.addSubImage(uniqueName, img);
+        let atlas = this.m_atlasList[0];
+        let texArea = atlas.addSubImage(uniqueName, img);
 
         if (texArea != null) {
 
-            let texNode: CanvasTexObject = new CanvasTexObject();
+            let texNode = new CanvasTexObject();
             texNode.texture = atlas.getTexture();
             texNode.uvs = texArea.uvs;
             texNode.rect = texArea.texRect;
@@ -139,7 +143,7 @@ export class CanvasTexAtlas {
         if (chars == null || chars == "" || size < 8) {
             return null;
         }
-        return ImageTextureAtlas.CreateCharsTexture(chars, size, frontStyle, bgStyle);
+        return ImageTexAtlas.CreateCharsTexture(chars, size, frontStyle, bgStyle);
     }
 
     private m_whiteTex: IRenderTexture = null;
@@ -147,7 +151,7 @@ export class CanvasTexAtlas {
         if (this.m_whiteTex != null) {
             return this.m_whiteTex;
         }
-        let size: number = 16;
+        let size = 16;
         let canvas = document.createElement('canvas');
         canvas.width = size;
         canvas.height = size;

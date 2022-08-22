@@ -1,6 +1,6 @@
 
-import { DemoBase as Demo } from "./demo/DemoBase";
-// import { DemoCoBase as Demo } from "./demo/DemoCoBase";
+// import { DemoBase as Demo } from "./demo/DemoBase";
+import { DemoCoBase as Demo } from "./demo/DemoCoBase";
 // import { DemoCoAGeom as Demo } from "./demo/DemoCoAGeom";
 // import { DemoMoveObj as Demo } from "./demo/DemoMoveObj";
 

@@ -30,8 +30,8 @@ function createMat4(pfs32: Float32Array = null, index: number = 0): IMatrix4 {
 function createAABB(): IAABB {
 	return CoRScene.createAABB();
 }
-function createAABB2D(): IAABB2D {
-	return new AABB2D();
+function createAABB2D(px: number = 0.0, py: number = 0.0, pwidth: number = 100.0, pheight: number = 100.0): IAABB2D {
+	return new AABB2D(px,py,pwidth, pheight);
 }
 const Vector3D: CoMathVec3 = CoRScene.Vector3D;
 export {

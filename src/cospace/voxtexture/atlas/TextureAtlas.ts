@@ -1,6 +1,5 @@
 
 import IAABB2D from "../../../vox/geom/IAABB2D";
-import AABB2D from "../../../vox/geom/AABB2D";
 import { TexArea, TexAreaNode } from "./TexAreaNode";
 
 export default class TextureAtlas {
