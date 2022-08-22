@@ -3,12 +3,9 @@ import { TexArea } from "./TexAreaNode";
 import TextureAtlas from "./TextureAtlas";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 
-// import IColor4 from "../../../vox/material/IColor4";
-// import IAABB2D from "../../../vox/geom/IAABB2D";
-
-import RendererDevice from "../../../vox/render/RendererDevice";
-import AABB2D from "../../../vox/geom/AABB2D";
-import Color4 from "../../../vox/material/Color4";
+import IColor4 from "../../../vox/material/IColor4";
+import { ICoRScene } from "../../voxengine/ICoRScene";
+declare var CoRScene: ICoRScene;
 
 export default class ImageTexAtlas extends TextureAtlas {
 
@@ -18,8 +15,8 @@ export default class ImageTexAtlas extends TextureAtlas {
     private m_rscene: IRendererScene = null;
     private m_texture: IImageTexture = null;
     private m_transparent: boolean = false;
-    private m_fillColor: Color4 = null;
-    constructor(rscene: IRendererScene, canvasWidth: number, canvasHeight: number, fillColor: Color4, transparent: boolean = false, debugEnabled: boolean = false) {
+    private m_fillColor: IColor4 = null;
+    constructor(rscene: IRendererScene, canvasWidth: number, canvasHeight: number, fillColor: IColor4, transparent: boolean = false, debugEnabled: boolean = false) {
 
         super(canvasWidth, canvasHeight);
         let canvas = document.createElement('canvas');
@@ -153,8 +150,9 @@ export default class ImageTexAtlas extends TextureAtlas {
         ctx2D.fillStyle = frontStyle;
         //ctx2D.fillText(chars, (size - texWidth) * 0.5, size - (size - metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent * 2.0) * 0.5);
         ///*
-        if (RendererDevice.IsMobileWeb()) {
-            if (RendererDevice.IsIOS()) {
+        const RD = CoRScene.RendererDevice;
+        if (RD.IsMobileWeb()) {
+            if (RD.IsIOS()) {
                 ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
             }
             else {

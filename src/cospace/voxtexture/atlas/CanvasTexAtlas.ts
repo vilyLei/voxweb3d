@@ -8,9 +8,8 @@ import IAABB2D from "../../../vox/geom/IAABB2D";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
-import { ICoMath } from "../../math/ICoMath";
-
-declare var CoMath: ICoMath;
+// import { ICoMath } from "../../math/ICoMath";
+// declare var CoMath: ICoMath;
 declare var CoMaterial: ICoMaterial;
 
 export class CanvasTexObject {
