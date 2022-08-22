@@ -11,7 +11,7 @@ import AABB from "../../vox/geom/AABB";
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
-import { RenderDrawMode } from "../../vox/render/RenderConst";
+import { RenderDrawMode as RDM } from "../../vox/render/RenderConst";
 import { IVtxBufRenderData } from "../../vox/render/IVtxBufRenderData";
 import { IROVertexBuffer } from "../../vox/mesh/IROVertexBuffer";
 import IMeshBase from "../../vox/mesh/IMeshBase";
@@ -58,7 +58,7 @@ export default class MeshBase implements IMeshBase {
     vtxTotal: number = 0;
     trisNumber: number = 0;
     //RenderDrawMode
-    drawMode: number = RenderDrawMode.ELEMENTS_TRIANGLES;
+    drawMode: number = RDM.ELEMENTS_TRIANGLES;
     //  vtx postion in data stream used count
     vtCount: number = 0;
 
@@ -66,6 +66,34 @@ export default class MeshBase implements IMeshBase {
     drawInsBeginIndex: number = 0;
     drawInsStride: number = 0;
     drawInsTotal: number = 0;
+
+    toElementsTriangles(): void {
+        this.drawMode = RDM.ELEMENTS_TRIANGLES;
+    }
+    toElementsTriangleStrip(): void {
+        this.drawMode = RDM.ELEMENTS_TRIANGLE_STRIP;
+    }
+    toElementsTriangleFan(): void {
+        this.drawMode = RDM.ELEMENTS_TRIANGLE_FAN;
+    }
+    toElementsInstancedTriangles(): void {
+        this.drawMode = RDM.ELEMENTS_INSTANCED_TRIANGLES;
+    }
+    toArraysLines(): void {
+        this.drawMode = RDM.ARRAYS_LINES;
+    }
+    toArraysLineStrip(): void {
+        this.drawMode = RDM.ARRAYS_LINE_STRIP;
+    }
+    toArraysPoints(): void {
+        this.drawMode = RDM.ARRAYS_POINTS;
+    }
+    toElementsLines(): void {
+        this.drawMode = RDM.ELEMENTS_LINES;
+    }
+    toDisable(): void {
+        this.drawMode = RDM.DISABLE;
+    }
 
     protected createIVSBYSize(size: number): Uint16Array | Uint32Array {
         return size > 65535 ? new Uint32Array( size ): new Uint16Array( size );
@@ -75,7 +103,7 @@ export default class MeshBase implements IMeshBase {
     }
     protected updateWireframeIvs(): void {
 
-        this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
+        this.drawMode = RDM.ELEMENTS_TRIANGLES;
         if (this.wireframe && this.m_ivs !== null) {
 
             let ivs: Uint16Array | Uint32Array = this.m_ivs;
@@ -102,7 +130,7 @@ export default class MeshBase implements IMeshBase {
                 wIvs[k+5] = a;
                 k += 6;
             }
-            this.drawMode = RenderDrawMode.ELEMENTS_LINES;
+            this.drawMode = RDM.ELEMENTS_LINES;
         }
     }
     protected buildEnd(): void {

@@ -32,6 +32,16 @@ export default interface IMeshBase {
 	 */
 	bounds: IAABB;
 
+	toElementsTriangles(): void;
+    toElementsTriangleStrip(): void;
+    toElementsTriangleFan(): void;
+    toElementsInstancedTriangles(): void;
+    toArraysLines(): void;
+    toArraysLineStrip(): void;
+    toArraysPoints(): void;
+    toElementsLines(): void;
+    toDisable(): void;
+
 	/**
 	 * @param layoutBit vertex shader vertex attributes layout bit status.
 	 *                  the value of layoutBit comes from the material shdder program.

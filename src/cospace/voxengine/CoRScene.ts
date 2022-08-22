@@ -193,7 +193,7 @@ function createAxis3DEntity(size: number = 100.0): ITransformEntity {
 	mesh.addFloat32Data(vs, 3);
 	mesh.addFloat32Data(colors, 3);
 	mesh.initialize();
-	mesh.drawMode = RenderDrawMode.ARRAYS_LINES;
+	mesh.toArraysLines();
 	mesh.vtCount = Math.floor(vs.length / 3);
 	mesh.setPolyhedral( false );
 
