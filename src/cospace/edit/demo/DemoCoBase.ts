@@ -109,9 +109,43 @@ export class DemoCoBase {
 		let color4 = CoMaterial.createColor4();
 		console.log("color4: ", color4);
 		let texAtlas = new CanvasTexAtlas();
-		texAtlas.initialize(this.m_rscene, 512, 512);
+		texAtlas.initialize(this.m_rscene, 512, 512, null, true);
+		let texObj = texAtlas.createTexObjWithStr("Vily", 58, CoMaterial.createColor4(0,0,0,1), CoMaterial.createColor4(1,1,1,0));
 
-		let textMeshBuilder = new TextGeometryBuilder();
+		// let textMeshBuilder = new TextGeometryBuilder();
+
+		let vs = new Float32Array([-1, -1, 0, 1, -1, 0, 1, 1, 0, -1, 1, 0]);
+        let uvs = new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]);
+        let nvs = new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]);
+        let ivs = new Uint16Array([0, 1, 2, 0, 2, 3]);
+		for (let i = 0; i < vs.length; ++i) { vs[i] *= 0.5; }
+        for (let i = 0; i < vs.length;) { vs[i++] += 0.5; vs[i++] += 0.5; i++;}
+
+		uvs = texObj.uvs;
+
+		let mesh = CoRScene.createRawMesh();
+		mesh.reset();
+		mesh.setIVS(ivs);
+		mesh.addFloat32Data(vs, 3);
+		mesh.addFloat32Data(uvs, 2);
+		// mesh.vbWholeDataEnabled = true;
+		mesh.initialize();
+		mesh.vtCount = 6;
+		mesh.vtxTotal = 4;
+		mesh.trisNumber = 2;
+
+		let texList = [texObj.texture];
+		// let texList = [this.createTexByUrl()];
+		let material = CoRScene.createDefaultMaterial(false);
+		material.setTextureList( texList );
+		material.initializeByCodeBuf(true);
+		let entity = CoRScene.createDisplayEntity();
+		entity.setMaterial(material);
+		entity.setMesh(mesh);
+		entity.setScaleXYZ(texObj.getWidth(),texObj.getHeight(),100);
+		entity.setRenderState(CoRScene.RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
+
+		this.m_rscene.addEntity( entity );
 	}
 	private testAGeom(): void {
 
@@ -212,14 +246,14 @@ export class DemoCoBase {
 		let axis = CoRScene.createAxis3DEntity();
 		this.m_rscene.addEntity(axis);
 
-		let texList = [this.createTexByUrl()];
-		let material = CoRScene.createDefaultMaterial();
-		material.setTextureList(texList);
-		let entity = CoRScene.createDisplayEntity();
-		entity.setMaterial(material);
-		entity.copyMeshFrom(this.m_rscene.entityBlock.unitXOZPlane);
-		entity.setScaleXYZ(700.0, 0.0, 700.0);
-		this.m_rscene.addEntity(entity);
+		// let texList = [this.createTexByUrl()];
+		// let material = CoRScene.createDefaultMaterial();
+		// material.setTextureList(texList);
+		// let entity = CoRScene.createDisplayEntity();
+		// entity.setMaterial(material);
+		// entity.copyMeshFrom(this.m_rscene.entityBlock.unitXOZPlane);
+		// entity.setScaleXYZ(700.0, 0.0, 700.0);
+		// this.m_rscene.addEntity(entity);
 
 	}
 	private initScene(): void {

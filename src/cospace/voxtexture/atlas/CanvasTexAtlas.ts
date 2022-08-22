@@ -1,3 +1,4 @@
+import { IImageTexture } from "../../../vox/render/texture/IImageTexture";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import ImageTexAtlas from "./ImageTexAtlas";
 
@@ -71,7 +72,11 @@ export class CanvasTexAtlas {
             //*/
         }
     }
-    getAtlasAt(i: number): ImageTexAtlas {
+    
+    getTexture(i: number = 0): IImageTexture {
+        return this.m_atlasList[i].getTexture();
+    }
+    getAtlasAt(i: number = 0): ImageTexAtlas {
         return this.m_atlasList[i];
     }
     addcharsToAtlas(chars: string, size: number, fontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"): CanvasTexObject {
@@ -129,10 +134,21 @@ export class CanvasTexAtlas {
         }
         return null;
     }
-    getTextureObjectFromAtlas(uniqueName: string): CanvasTexObject {
+    getTexObjFromAtlas(uniqueName: string): CanvasTexObject {
         return null;
     }
-
+    createTexObjWithStr(chars: string, size: number, fontColor: IColor4 = null, bgColor: IColor4 = null): CanvasTexObject {
+        if(fontColor == null) fontColor = CoMaterial.createColor4(0,0,0,1);
+        if(bgColor == null) bgColor = CoMaterial.createColor4();
+        let fs = fontColor.getCSSDecRGBAColor();
+        let bs = bgColor.getCSSDecRGBAColor();
+        let keyStr = chars + "-" + size + "-" + fs + "-" + bs;
+        if (chars == null || chars == "" || size < 8) {
+            return null;
+        }
+        let img = ImageTexAtlas.CreateCharsTexture(chars, size, fs, bs);
+        return this.addImageToAtlas(keyStr, img);
+    }
     createCharsImage(chars: string, size: number, frontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"): HTMLCanvasElement | HTMLImageElement {
 
         if (chars == null || chars == "" || size < 8) {

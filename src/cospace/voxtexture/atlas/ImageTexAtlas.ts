@@ -1,4 +1,3 @@
-
 import { IImageTexture } from "../../../vox/render/texture/IImageTexture";
 import { TexArea } from "./TexAreaNode";
 import TextureAtlas from "./TextureAtlas";

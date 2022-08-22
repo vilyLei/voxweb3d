@@ -397,7 +397,7 @@
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 
-import {SlickRoad as Demo} from "./app/SlickRoad";
+// import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 
@@ -417,7 +417,7 @@ import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {DemoFontText as Demo} from "./demo/DemoFontText";
 
-//  import {DemoOrthoBtn as Demo} from "./orthoui/demos/DemoOrthoBtn";
+ import {DemoOrthoBtn as Demo} from "./orthoui/demos/DemoOrthoBtn";
 
 //  import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
 
