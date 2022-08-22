@@ -1,17 +1,17 @@
 
-import { IImageTexture } from "../../vox/render/texture/IImageTexture";
-import { TexArea, TexAreaNode } from "./TexAreaNode";
+import { IImageTexture } from "../../../vox/render/texture/IImageTexture";
+import { TexArea } from "./TexAreaNode";
 import TextureAtlas from "./TextureAtlas";
-import IRendererScene from "../../vox/scene/IRendererScene";
+import IRendererScene from "../../../vox/scene/IRendererScene";
 
-// import IColor4 from "../../vox/material/IColor4";
-// import IAABB2D from "../../vox/geom/IAABB2D";
+// import IColor4 from "../../../vox/material/IColor4";
+// import IAABB2D from "../../../vox/geom/IAABB2D";
 
-import RendererDevice from "../render/RendererDevice";
-import AABB2D from "../geom/AABB2D";
-import Color4 from "../material/Color4";
+import RendererDevice from "../../../vox/render/RendererDevice";
+import AABB2D from "../../../vox/geom/AABB2D";
+import Color4 from "../../../vox/material/Color4";
 
-export default class ImageTextureAtlas extends TextureAtlas {
+export default class ImageTexAtlas extends TextureAtlas {
 
     private static s_imgMap: Map<string, HTMLCanvasElement> = new Map();
     private m_canvas: HTMLCanvasElement = null;
@@ -54,8 +54,8 @@ export default class ImageTextureAtlas extends TextureAtlas {
         this.m_texture.premultiplyAlpha = true;
         this.m_texture.__$attachThis();
     }
-    clone(): ImageTextureAtlas {
-        let atlas: ImageTextureAtlas = new ImageTextureAtlas(this.m_rscene, this.m_width, this.m_height, this.m_fillColor, this.m_transparent);
+    clone(): ImageTexAtlas {
+        let atlas: ImageTexAtlas = new ImageTexAtlas(this.m_rscene, this.m_width, this.m_height, this.m_fillColor, this.m_transparent);
         return atlas;
     }
     getTexture(): IImageTexture {
@@ -72,7 +72,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
         }
         area = this.addSubTexArea(uniqueNS, image.width, image.height);
         if (area != null) {
-            let rect: AABB2D = area.texRect;
+            let rect = area.texRect;
             this.m_canvas2D.drawImage(image, rect.x, rect.y, rect.width, rect.height);
             this.m_texture.setDataFromImage(this.m_canvas, 0,0,0,false);
             this.m_texture.updateDataToGpu(null, true);
@@ -87,8 +87,8 @@ export default class ImageTextureAtlas extends TextureAtlas {
         //size = Math.round(size * RendererDevice.GetDevicePixelRatio());
         let keyStr: string = chars + "_" + size + "_" + frontStyle + "_" + bgStyle;
 
-        if (ImageTextureAtlas.s_imgMap.has(keyStr)) {
-            return ImageTextureAtlas.s_imgMap.get(keyStr);
+        if (ImageTexAtlas.s_imgMap.has(keyStr)) {
+            return ImageTexAtlas.s_imgMap.get(keyStr);
         }
 
         let width: number = size;
@@ -124,10 +124,10 @@ export default class ImageTextureAtlas extends TextureAtlas {
             ctx2D.textBaseline = "top";
         }
         /*
-        let input = ImageTextureAtlas.s_inputTF;
-        if(ImageTextureAtlas.s_inputTF == null) {
-            ImageTextureAtlas.s_inputTF = document.createElement("input");
-            input = ImageTextureAtlas.s_inputTF;
+        let input = ImageTexAtlas.s_inputTF;
+        if(ImageTexAtlas.s_inputTF == null) {
+            ImageTexAtlas.s_inputTF = document.createElement("input");
+            input = ImageTexAtlas.s_inputTF;
             input.type = "text";
             input.id = "atlas_inputText";
             input.className = "atlas_inputTFClass";
@@ -167,7 +167,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
         }
         //*/
         // ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
-        ImageTextureAtlas.s_imgMap.set(keyStr, canvas);
+        ImageTexAtlas.s_imgMap.set(keyStr, canvas);
         return canvas;
         /*
         actualBoundingBoxAscent: 22

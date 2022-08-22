@@ -1,18 +1,22 @@
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import ImageTextureAtlas from "../../../vox/texture/ImageTextureAtlas";
-import Color4 from "../../../vox/material/Color4";
+
+import IColor4 from "../../../vox/material/IColor4";
+import IAABB2D from "../../../vox/geom/IAABB2D";
+
 import AABB2D from "../../../vox/geom/AABB2D";
+import Color4 from "../../../vox/material/Color4";
 import { TexArea } from "../../../vox/texture/TexAreaNode";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
-export class CanvasTextureObject {
+export class CanvasTexObject {
 
     constructor() { }
 
     uvs: Float32Array = null;
     texture: IRenderTexture = null;
-    rect: AABB2D = null;
-    clampUVRect: AABB2D = null;
+    rect: IAABB2D = null;
+    clampUVRect: IAABB2D = null;
     uniqueName: string = "";
     getWidth(): number {
         if (this.rect != null) return this.rect.width;
@@ -28,10 +32,8 @@ export class CanvasTextureObject {
         this.rect = null;
     }
 }
-export class CanvasTextureAtlas {
+export class CanvasTexAtlas {
     private m_sc: IRendererScene = null;
-    // private m_imgMap: Map<string, HTMLImageElement | HTMLCanvasElement> = new Map();
-    // private m_texMap: Map<string, IRenderTexture> = new Map();
     private m_atlasList: ImageTextureAtlas[] = [null, null, null, null];
     constructor() {
     }
@@ -41,7 +43,7 @@ export class CanvasTextureAtlas {
         }
     }
 
-    initializeAtlas(canvasWidth: number, canvasHeight: number, fillColor: Color4 = null, transparent: boolean = false): void {
+    initializeAtlas(canvasWidth: number, canvasHeight: number, fillColor: IColor4 = null, transparent: boolean = false): void {
 
         let atlas: ImageTextureAtlas = null;
 		if(fillColor == null) {
@@ -73,7 +75,7 @@ export class CanvasTextureAtlas {
     getAtlasAt(i: number): ImageTextureAtlas {
         return this.m_atlasList[i];
     }
-    addcharsToAtlas(chars: string, size: number, fontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"): CanvasTextureObject {
+    addcharsToAtlas(chars: string, size: number, fontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"): CanvasTexObject {
 
         if (chars != "") {
             let atlas: ImageTextureAtlas = this.m_atlasList[0];
@@ -82,13 +84,13 @@ export class CanvasTextureAtlas {
         }
         return null;
     }
-    getTextureObject(uniqueName: string): CanvasTextureObject {
+    getTextureObject(uniqueName: string): CanvasTexObject {
 
         let atlas: ImageTextureAtlas = this.m_atlasList[0];
         let texArea: TexArea = atlas.getAreaByName(uniqueName);
         if (texArea != null) {
 
-            let texNode: CanvasTextureObject = new CanvasTextureObject();
+            let texNode: CanvasTexObject = new CanvasTexObject();
             texNode.texture = atlas.getTexture();
             texNode.uvs = texArea.uvs.slice(0);
             texNode.rect = texArea.texRect.clone();
@@ -103,14 +105,14 @@ export class CanvasTextureAtlas {
         }
         return null;
     }
-    addImageToAtlas(uniqueName: string, img: HTMLCanvasElement | HTMLImageElement): CanvasTextureObject {
+    addImageToAtlas(uniqueName: string, img: HTMLCanvasElement | HTMLImageElement): CanvasTexObject {
 
         let atlas: ImageTextureAtlas = this.m_atlasList[0];
         let texArea: TexArea = atlas.addSubImage(uniqueName, img);
 
         if (texArea != null) {
 
-            let texNode: CanvasTextureObject = new CanvasTextureObject();
+            let texNode: CanvasTexObject = new CanvasTexObject();
             texNode.texture = atlas.getTexture();
             texNode.uvs = texArea.uvs;
             texNode.rect = texArea.texRect;
@@ -128,7 +130,7 @@ export class CanvasTextureAtlas {
         }
         return null;
     }
-    getTextureObjectFromAtlas(uniqueName: string): CanvasTextureObject {
+    getTextureObjectFromAtlas(uniqueName: string): CanvasTexObject {
         return null;
     }
 
@@ -161,4 +163,4 @@ export class CanvasTextureAtlas {
         return tex;
     }
 }
-export default CanvasTextureAtlas;
+export default CanvasTexAtlas;
