@@ -16,6 +16,6 @@ interface IImageTexture extends IRenderTexture {
      * @param offsety the default value is 0
      * @param rebuild the default value is false
      */
-    setDataFromImage(img: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap, miplevel: number, offsetx: number, offsety: number, rebuild: boolean): void
+    setDataFromImage(img: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap, miplevel?: number, offsetx?: number, offsety?: number, rebuild?: boolean): void
 }
 export { IImageTexture }

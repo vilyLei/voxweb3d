@@ -22,7 +22,7 @@ interface IBytesTexture extends IRenderTexture {
      * @param offsety the default value is 0
      * @param rebuild the default value is false
      */
-    setDataFromBytes(bytes: Uint8Array, miplevel: number, imgWidth: number, imgHeight: number, offsetx: number, offsety: number, rebuild: boolean): void;
+    setDataFromBytes(bytes: Uint8Array, miplevel?: number, imgWidth?: number, imgHeight?: number, offsetx?: number, offsety?: number, rebuild?: boolean): void;
     /**
      * 
      * @param bytes uint8 format data bytes texture data
@@ -32,7 +32,7 @@ interface IBytesTexture extends IRenderTexture {
      * @param theight texture height of the mipmap level texture
      * @param miplevel mipmap level, the default value is 0
      */
-    setPartDataFromeBytes(bytes: Uint8Array, px: number, py: number, twidth: number, theight: number, miplevel: number): void;
+    setPartDataFromeBytes(bytes: Uint8Array, px: number, py: number, twidth: number, theight: number, miplevel?: number): void;
     getPixels(px: number, py: number, pw: number, ph: number, outBytes: Uint8Array): void;
     
 }

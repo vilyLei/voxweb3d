@@ -15,7 +15,7 @@ interface ITexture3D extends IRenderTexture {
      * @param bytesData 3d texture uint8 format data bytes
      * @param miplevel mipmap level, the default value is 0
      */
-    uploadFromTypedArray(bytesData: Uint8Array, miplevel: number): void;
+    uploadFromTypedArray(bytesData: Uint8Array, miplevel?: number): void;
     
 }
 export { ITexture3D }
