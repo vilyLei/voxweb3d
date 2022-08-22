@@ -15,7 +15,8 @@ import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
 import { ViewerCoSApp } from "../../demo/coViewer/ViewerCoSApp";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
-
+import CanvasTexAtlas from "../../voxtexture/atlas/CanvasTexAtlas";
+//CanvasTexAtlas
 //import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
 
 declare var CoRenderer: ICoRenderer;
@@ -66,8 +67,8 @@ export class DemoCoBase {
 			if (this.isEngineEnabled()) {
 				console.log("engine modules loaded ...");
 				this.initRenderer();
-
 				this.initScene();
+				
 				new ModuleLoader(1, (): void => {
 
 					console.log("math module loaded ...");
@@ -76,10 +77,11 @@ export class DemoCoBase {
 					new ModuleLoader(1, (): void => {
 						console.log("ageom module loaded ...");
 						this.testAGeom();
+
 						new ModuleLoader(1, (): void => {
 							console.log("CoMaterial module loaded ...");
 							this.testVoxMaterial();
-							
+
 						}).load(url4);
 					}).load(url3);
 
@@ -98,13 +100,15 @@ export class DemoCoBase {
 	}
 	private testMath(): void {
 
-		let v3 = CoMath.createVec3(10,4,0.5);
+		let v3 = CoMath.createVec3(10, 4, 0.5);
 		console.log("math v3: ", v3);
 	}
-	
+
 	private testVoxMaterial(): void {
 		let color4 = CoMaterial.createColor4();
-		console.log("color4: ",color4);
+		console.log("color4: ", color4);
+		let texAtlas = new CanvasTexAtlas();
+		texAtlas.initialize(this.m_rscene, 512, 512);
 	}
 	private testAGeom(): void {
 
@@ -119,7 +123,7 @@ export class DemoCoBase {
 
 		this.testAGeomBase();
 	}
-	
+
 	private testAGeomBase(): void {
 		let v3 = CoMath.createVec3(10, 4, 0.5);
 		console.log("math v3: ", v3);

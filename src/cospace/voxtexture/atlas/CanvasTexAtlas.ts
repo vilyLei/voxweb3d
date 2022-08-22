@@ -41,14 +41,14 @@ export class CanvasTexAtlas {
     private m_atlasList: ImageTexAtlas[] = [null, null, null, null];
     constructor() {
     }
-    initialize(sc: IRendererScene): void {
-        if (this.m_sc == null) {
-            this.m_sc = sc;
-        }
-    }
+    // initialize(sc: IRendererScene): void {
+    //     if (this.m_sc == null) {
+    //         this.m_sc = sc;
+    //     }
+    // }
 
-    initializeAtlas(canvasWidth: number, canvasHeight: number, fillColor: IColor4 = null, transparent: boolean = false): void {
-
+    initialize(sc: IRendererScene, canvasWidth: number, canvasHeight: number, fillColor: IColor4 = null, transparent: boolean = false): void {
+        this.m_sc = sc;
         let atlas: ImageTexAtlas = null;
 		if(fillColor == null) {
 			fillColor = transparent ? CoMaterial.createColor4(1.0, 1.0, 1.0, 0.0) : CoMaterial.createColor4(1.0, 1.0, 1.0, 1.0);
