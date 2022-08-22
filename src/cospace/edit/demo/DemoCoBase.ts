@@ -16,6 +16,7 @@ import { ViewerCoSApp } from "../../demo/coViewer/ViewerCoSApp";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
 import CanvasTexAtlas from "../../voxtexture/atlas/CanvasTexAtlas";
+import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 //CanvasTexAtlas
 //import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
 
@@ -68,7 +69,7 @@ export class DemoCoBase {
 				console.log("engine modules loaded ...");
 				this.initRenderer();
 				this.initScene();
-				
+
 				new ModuleLoader(1, (): void => {
 
 					console.log("math module loaded ...");
@@ -109,6 +110,8 @@ export class DemoCoBase {
 		console.log("color4: ", color4);
 		let texAtlas = new CanvasTexAtlas();
 		texAtlas.initialize(this.m_rscene, 512, 512);
+
+		let textMeshBuilder = new TextGeometryBuilder();
 	}
 	private testAGeom(): void {
 

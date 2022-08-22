@@ -10,7 +10,7 @@ import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import IRenderMaterial from '../../../vox/render/IRenderMaterial';
 import BillboardAlphaTexMaterial from "../../../vox/material/mcase/BillboardAlphaTexMaterial";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
-import TextMeshBuilder from "./TextMeshBuilder";
+import TextMeshBuilder from "./TextGeometryBuilder";
 import H5Text from "./H5Text";
 
 export default class TextEntity extends DisplayEntity {

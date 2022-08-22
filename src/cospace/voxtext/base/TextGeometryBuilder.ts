@@ -14,7 +14,7 @@ import RawMesh from "../../../vox/mesh/RawMesh";
 // import { ICoRScene } from "../../voxengine/ICoRScene";
 // declare var CoRScene: ICoRScene;
 
-export default class TextMeshBuilder {
+export default class TextGeometryBuilder {
 	constructor() {}
 	private m_ivs: Uint16Array = null;
 	private m_vs: Float32Array = null;
@@ -48,7 +48,7 @@ export default class TextMeshBuilder {
 		this.m_charsTotal = charsTot;
 
 		if (charsTot > 0) {
-			let tmb = TextMeshBuilder;
+			let tmb = TextGeometryBuilder;
 
 			let ivs: Uint8Array = tmb.s_currIvs;
 			ivs.set(tmb.s_initIvs, 0);
@@ -162,8 +162,8 @@ export default class TextMeshBuilder {
         //console.log("RectPlaneMesh::initialize()...");
 		this.m_h5Text = h5Text;
         let charsTot = text.length;
-        let ivs = TextMeshBuilder.s_currIvs;
-        ivs.set(TextMeshBuilder.s_initIvs, 0);
+        let ivs = TextGeometryBuilder.s_currIvs;
+        ivs.set(TextGeometryBuilder.s_initIvs, 0);
         if (this.m_ivs == null) {
             this.m_ivs = new Uint16Array(charsTot * 6);
         }

@@ -6,7 +6,6 @@ import IAABB2D from "../../../vox/geom/IAABB2D";
 
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
-
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import { ICoMath } from "../../math/ICoMath";
 
@@ -37,16 +36,12 @@ export class CanvasTexObject {
     }
 }
 export class CanvasTexAtlas {
+
     private m_sc: IRendererScene = null;
     private m_atlasList: ImageTexAtlas[] = [null, null, null, null];
+
     constructor() {
     }
-    // initialize(sc: IRendererScene): void {
-    //     if (this.m_sc == null) {
-    //         this.m_sc = sc;
-    //     }
-    // }
-
     initialize(sc: IRendererScene, canvasWidth: number, canvasHeight: number, fillColor: IColor4 = null, transparent: boolean = false): void {
         this.m_sc = sc;
         let atlas: ImageTexAtlas = null;
