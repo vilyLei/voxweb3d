@@ -183,9 +183,6 @@ function createMouseEventEntity(): IMouseEventEntity {
 
 function createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D): ITransformEntity {
 
-	//if(size < 0.0001)size = 0.0001;
-
-	// let vs = new Float32Array([0, 0, 0, size, 0, 0, 0, 0, 0, 0, size, 0, 0, 0, 0, 0, 0, size]);
 	let vs = new Float32Array([minV.x, 0, 0, maxV.x, 0, 0, 0, minV.y, 0, 0, maxV.y, 0, 0, 0, minV.z, 0, 0, maxV.z]);
 	let colors = new Float32Array([1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1]);
 	let mesh: RawMesh = new RawMesh();
@@ -210,26 +207,6 @@ function createAxis3DEntity(size: number = 100.0): ITransformEntity {
 
 	if(size < 0.0001)size = 0.0001;
 	return createFreeAxis3DEntity(new Vector3D(), new Vector3D(size, size, size));
-	/*
-	let vs = new Float32Array([0, 0, 0, size, 0, 0, 0, 0, 0, 0, size, 0, 0, 0, 0, 0, 0, size]);
-	let colors = new Float32Array([1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1]);
-	let mesh: RawMesh = new RawMesh();
-	mesh.ivsEnabled = false;
-	mesh.aabbEnabled = true;
-	mesh.reset();
-	mesh.addFloat32Data(vs, 3);
-	mesh.addFloat32Data(colors, 3);
-	mesh.initialize();
-	mesh.toArraysLines();
-	mesh.vtCount = Math.floor(vs.length / 3);
-	mesh.setPolyhedral( false );
-
-	let material = new Line3DMaterial(false);
-	let axis = new DisplayEntity();
-	axis.setMaterial(material);
-	axis.setMesh(mesh);
-	return axis;
-	//*/
 }
 
 function creatMaterialContextParam(): MaterialContextParam {
@@ -277,6 +254,7 @@ export {
 	createMaterial,
 
 	createDisplayEntityFromModel,
+	createFreeAxis3DEntity,
 	createAxis3DEntity,
 	createDisplayEntityWithDataMesh,
 	createDisplayEntity,

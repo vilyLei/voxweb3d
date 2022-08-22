@@ -199,6 +199,8 @@ interface ICoRScene {
 	 * @param vbWhole vtx buffer is whole data or not, the default is false.
 	 */
 	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, texEnabled?: boolean, vbWhole?: boolean): ITransformEntity;
+	
+	createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D): ITransformEntity;
 	/**
 	 * @param size th default value is 100.0
 	 */
