@@ -375,7 +375,9 @@ class RenderProxy implements IRenderProxy {
 
         this.m_perspectiveEnabled = param.cameraPerspectiveEnabled;
         this.m_adapterContext.autoSyncRenderBufferAndWindowSize = param.autoSyncRenderBufferAndWindowSize;
-        this.m_adapterContext.setResizeCallback(this, this.resizeCallback);
+        this.m_adapterContext.setResizeCallback(():void=>{
+            this.resizeCallback();
+        });
         this.m_adapterContext.setWebGLMaxVersion(this.m_maxWebGLVersion);
         this.m_adapterContext.initialize(this.m_uid, stage, param.getDiv(), param.getRenderContextAttri());
         this.m_WEBGL_VER = this.m_adapterContext.getWebGLVersion();
@@ -414,7 +416,7 @@ class RenderProxy implements IRenderProxy {
 
         selfT.adapter = this.m_adapter;
         if (this.m_autoSynViewAndStage) {
-            let stage: IRenderStage3D = this.m_adapterContext.getStage();
+            let stage = this.m_adapterContext.getStage();
             if (stage != null) {
                 rect.setSize(rect.width, rect.height);
             }

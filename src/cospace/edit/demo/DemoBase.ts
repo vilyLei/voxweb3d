@@ -50,7 +50,7 @@ export class DemoBase {
             RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
-
+            RendererDevice.SetWebBodyColor("#333333");
             DivLog.SetDebugEnabled(true);
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
@@ -127,9 +127,9 @@ export class DemoBase {
     }
     private mouseDown(evt: any): void {
         // DebugFlag.Flag_0 = 1;
-        // let div = this.m_rscene.getDiv();
-        // let rect = div.getBoundingClientRect();
-        // console.log("mouseDown(), rect.width, rect.height: ",rect.width, rect.height);
+        let div = this.m_rscene.getDiv();
+        let rect = div.getBoundingClientRect();
+        console.log("mouseDown(), rect.width, rect.height: ",rect.width, rect.height);
     }
     private mouseUp(evt: any): void {
     }

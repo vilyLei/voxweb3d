@@ -236,25 +236,21 @@ class RAdapterContext implements IRAdapterContext {
                 // DivLog.ShowLog("webgl_vendor: " + webgl_vendor);
                 // DivLog.ShowLog("webgl_renderer: " + webgl_renderer);
             }
-            var selfT: RAdapterContext = this;
-            pwindow.onresize = function (evt: any): void {
-                if (selfT.autoSyncRenderBufferAndWindowSize) {
-                    selfT.updateRenderBufferSize();
+            pwindow.onresize = (evt: any): void => {
+                if (this.autoSyncRenderBufferAndWindowSize) {
+                    this.m_resizeFlag = true;
+                    this.updateRenderBufferSize();
                 }
             }
-
             canvas.addEventListener('webglcontextrestored', this.contextrestoredHandler, false);
             canvas.addEventListener('webglcontextlost', this.contextlostHandler, false);
-            //if(this.autoSyncRenderBufferAndWindowSize)
-            //{
             this.updateRenderBufferSize();
-            this.updateRenderBufferSize();
-            //}
         }
         else {
             console.log("initialize WebGL failure!");
         }
     }
+    private m_resizeFlag = true;
     private m_WEBGL_lose_context: any = null;
 
     loseContext(): void {
@@ -276,7 +272,6 @@ class RAdapterContext implements IRAdapterContext {
      * @returns return system gpu context
      */
     getRC(): any { return this.m_gl; }
-    //getRenderState(): RODrawState { return this.m_rState; }
     setScissorEnabled(boo: boolean): void {
         if (boo) {
             if (!this.m_scissorEnabled) {
@@ -300,9 +295,7 @@ class RAdapterContext implements IRAdapterContext {
     private m_rcanvasWidth: number = 0;
     private m_rcanvasHeight: number = 0;
     private m_resizeCallback: () => void = null;
-    private m_resizeCallbackTarget: any = null;
-    setResizeCallback(resizeCallbackTarget: any, resizeCallback: () => void): void {
-        this.m_resizeCallbackTarget = resizeCallbackTarget;
+    setResizeCallback(resizeCallback: () => void): void {
         this.m_resizeCallback = resizeCallback;
     }
     getDevicePixelRatio(): number {
@@ -312,12 +305,12 @@ class RAdapterContext implements IRAdapterContext {
         pw = Math.floor(pw);
         ph = Math.floor(ph);
         let k = window.devicePixelRatio;
-        let dprChanged = Math.abs(k - this.m_devicePixelRatio) > 0.02;
+        let dprChanged = Math.abs(k - this.m_devicePixelRatio) > 0.01 || this.m_resizeFlag;
         this.m_devicePixelRatio = k;
         this.m_mouseEvtDisplather.dpr = k;
         RendererDevice.SetDevicePixelRatio(this.m_devicePixelRatio);
         // console.log("this.m_devicePixelRatio: "+this.m_devicePixelRatio);
-
+        this.m_resizeFlag = false;
         if (this.m_displayWidth != pw || this.m_displayHeight != ph || dprChanged) {
 
             this.m_displayWidth = pw;
@@ -335,7 +328,7 @@ class RAdapterContext implements IRAdapterContext {
             }
             this.m_canvas.style.width = this.m_displayWidth + 'px';
             this.m_canvas.style.height = this.m_displayHeight + 'px';
-
+            
             if (this.m_stage != null) {
                 this.m_stage.stageWidth = this.m_rcanvasWidth;
                 this.m_stage.stageHeight = this.m_rcanvasHeight;
@@ -357,7 +350,7 @@ class RAdapterContext implements IRAdapterContext {
                 this.m_stage.update();
             }
             if (this.m_resizeCallback != null) {
-                this.m_resizeCallback.call(this.m_resizeCallbackTarget);
+                this.m_resizeCallback();
             }
         }
     }
@@ -415,6 +408,10 @@ class RAdapterContext implements IRAdapterContext {
     }
     updateRenderBufferSize(): void {
         let rect = this.m_div.getBoundingClientRect();
+        console.log("updateRenderBufferSize() rect.width, rect.height: ", rect.width, rect.height);
+        this.m_canvas.style.width = Math.floor(rect.width) + 'px';
+        this.m_canvas.style.height = Math.floor(rect.height) + 'px';
+        rect = this.m_div.getBoundingClientRect();
         this.resizeBufferSize(rect.width, rect.height);
     }
 }
