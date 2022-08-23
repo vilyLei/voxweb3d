@@ -2,9 +2,13 @@ import IDataMesh from "../../vox/mesh/IDataMesh";
 import IRawMesh from "../../vox/mesh/IRawMesh";
 import ITransformEntity from "../../vox/entity/ITransformEntity";
 
+import { IPlaneMeshBuilder } from "./build/IPlaneMeshBuilder";
+import { PlaneMeshBuilder } from "./build/PlaneMeshBuilder";
+
 import { ICoRScene } from "../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 
+const planeMeshBuilder: IPlaneMeshBuilder = new PlaneMeshBuilder();
 
 function createDataMesh(): IDataMesh {
 	return CoRScene.createDataMesh();
@@ -18,8 +22,8 @@ function createCrossAxis3DEntity(size: number = 100): ITransformEntity {
 	let max = 0.5 * size;
 	return CoRScene.createFreeAxis3DEntity(CoRScene.createVec3(min,min,min), CoRScene.createVec3(max,max,max));
 }
-
 export {
+	planeMeshBuilder,
 	createDataMesh,
 	createRawMesh,
 	createCrossAxis3DEntity,

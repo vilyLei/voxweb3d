@@ -92,7 +92,7 @@ export class DemoCTMToDraco {
 
 	private m_baseUrl: string = "static/private/ctm/";
 	private m_ctmName: string = "";
-	private m_index: number = 19;
+	private m_index: number = 25;
 	private m_total: number = this.m_index + 1;
 	private m_dracoFileBuf: ArrayBuffer = null;
 

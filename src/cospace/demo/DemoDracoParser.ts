@@ -60,8 +60,8 @@ export class DemoDracoParser {
 		this.m_dracoGeomBuilder.setListener(this);
 
 		this.m_lossTime = Date.now();
-		this.loadDraco01();
-		// this.loadDraco02();
+		// this.loadDraco01();
+		this.loadDraco02();
 		// this.loadDraco();
 
 		document.onmousedown = (evt: any): void => {
@@ -75,11 +75,10 @@ export class DemoDracoParser {
 	private loadDraco01(): void {
 		// draco 模型数据url
 		let url = "";
-		url = "static/private/draco/sh202/sh202_22.drc";
+		url = "static/private/draco/sh202_25.ctm.drc";
+		// url = "static/private/draco/sh202_25.drc";
 		// draco模型数据字节分段信息
-		let segRangeList: number[] = [0, 111111111580];
-
-		this.m_dracoGeomBuilder.load(url, segRangeList);
+		this.m_dracoGeomBuilder.load(url);
 	}
 	private m_lossTime: number = 0;
 	private m_vtxTotal: number = 0;
@@ -133,7 +132,6 @@ export class DemoDracoParser {
 		// return;
 
 		let material = this.buildShdMaterial();
-		//let material = new NormalUVViewerMaterial();
 		material.initializeByCodeBuf();
 
 		let mesh: DataMesh = new DataMesh();

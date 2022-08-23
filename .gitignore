@@ -40,5 +40,6 @@ public/static/cospace/particle/
 public/static/cospace/math/
 public/static/cospace/ageom/
 public/static/cospace/coMaterial/
-public/static/cospace/coUI/
+public/static/cospace/coui/
+public/static/cospace/comesh/
 public/static/cospace/engineBase/

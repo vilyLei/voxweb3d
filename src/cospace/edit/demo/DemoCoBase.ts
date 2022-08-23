@@ -5,6 +5,7 @@ import { IMouseInteraction } from "../../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../../voxengine/ICoRenderer";
 import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
+import { ICoMesh } from "../../voxmesh/ICoMesh";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
 
@@ -16,7 +17,8 @@ import { ViewerCoSApp } from "../../demo/coViewer/ViewerCoSApp";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
 import CanvasTexAtlas from "../../voxtexture/atlas/CanvasTexAtlas";
-import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
+// import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
+// import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 //CanvasTexAtlas
 //import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
 
@@ -25,8 +27,8 @@ declare var CoRScene: ICoRScene;
 declare var CoMouseInteraction: ICoMouseInteraction;
 declare var CoMath: ICoMath;
 declare var CoAGeom: ICoAGeom;
+declare var CoMesh: ICoMesh;
 declare var CoMaterial: ICoMaterial;
-
 
 /**
  * cospace renderer
@@ -38,7 +40,7 @@ export class DemoCoBase {
 	private m_vcoapp: ViewerCoSApp;
 	private m_vmctx: ViewerMaterialCtx;
 
-	constructor() { }
+	constructor() {}
 
 	initialize(): void {
 		console.log("DemoCoBase::initialize() ...");
@@ -48,21 +50,20 @@ export class DemoCoBase {
 		};
 
 		this.initEngineModule();
-
 	}
 
 	private initEngineModule(): void {
-
 		let url = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.js";
 		let mouseInteractML = new ModuleLoader(2, (): void => {
 			this.initInteract();
 		});
-		//  public\static\cospace\math\CoMath.umd.js
+
 		let url0 = "static/cospace/engine/renderer/CoRenderer.umd.js";
 		let url1 = "static/cospace/engine/rscene/CoRScene.umd.js";
 		let url2 = "static/cospace/math/CoMath.umd.js";
 		let url3 = "static/cospace/ageom/CoAGeom.umd.js";
 		let url4 = "static/cospace/coMaterial/CoMaterial.umd.js";
+		let url5 = "static/cospace/comesh/CoMesh.umd.js";
 
 		new ModuleLoader(2, (): void => {
 			if (this.isEngineEnabled()) {
@@ -71,7 +72,6 @@ export class DemoCoBase {
 				this.initScene();
 
 				new ModuleLoader(1, (): void => {
-
 					console.log("math module loaded ...");
 					this.testMath();
 
@@ -81,74 +81,58 @@ export class DemoCoBase {
 
 						new ModuleLoader(1, (): void => {
 							console.log("CoMaterial module loaded ...");
-							this.testVoxMaterial();
+							// this.testVoxMaterial();
+
+							new ModuleLoader(1, (): void => {
+								console.log("CoMesh module loaded ...");
+								this.testVoxMaterial();
+							}).load(url5);
 
 						}).load(url4);
 					}).load(url3);
-
-				}).load(url2)
+				}).load(url2);
 				// this.m_vcoapp = new ViewerCoSApp();
 				// this.m_vcoapp.initialize((): void => {
 				// 	this.loadOBJ();
 				// });
-
 			}
-		}).addLoader(mouseInteractML)
+		})
+			.addLoader(mouseInteractML)
 			.load(url0)
 			.load(url1);
 
 		mouseInteractML.load(url);
 	}
 	private testMath(): void {
-
 		let v3 = CoMath.createVec3(10, 4, 0.5);
 		console.log("math v3: ", v3);
 	}
 
 	private testVoxMaterial(): void {
+
+
 		let color4 = CoMaterial.createColor4();
 		console.log("color4: ", color4);
 		let texAtlas = new CanvasTexAtlas();
 		texAtlas.initialize(this.m_rscene, 512, 512, null, true);
-		let texObj = texAtlas.createTexObjWithStr("Vily", 58, CoMaterial.createColor4(0,0,0,1), CoMaterial.createColor4(1,1,1,0));
+		let texObj = texAtlas.createTexObjWithStr("Vily", 58, CoMaterial.createColor4(0, 0, 0, 1), CoMaterial.createColor4(1, 1, 1, 0));
 
-		// let textMeshBuilder = new TextGeometryBuilder();
-
-		let vs = new Float32Array([-1, -1, 0, 1, -1, 0, 1, 1, 0, -1, 1, 0]);
-        let uvs = new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]);
-        let nvs = new Float32Array([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1]);
-        let ivs = new Uint16Array([0, 1, 2, 0, 2, 3]);
-		for (let i = 0; i < vs.length; ++i) { vs[i] *= 0.5; }
-        for (let i = 0; i < vs.length;) { vs[i++] += 0.5; vs[i++] += 0.5; i++;}
-
-		uvs = texObj.uvs;
-
-		let mesh = CoRScene.createRawMesh();
-		mesh.reset();
-		mesh.setIVS(ivs);
-		mesh.addFloat32Data(vs, 3);
-		mesh.addFloat32Data(uvs, 2);
-		// mesh.vbWholeDataEnabled = true;
-		mesh.initialize();
-		mesh.vtCount = 6;
-		mesh.vtxTotal = 4;
-		mesh.trisNumber = 2;
+		CoMesh.planeMeshBuilder.uvs = texObj.uvs;
+		let mesh = CoMesh.planeMeshBuilder.createXOY(0, 0, texObj.getWidth(), texObj.getHeight());
 
 		let texList = [texObj.texture];
 		// let texList = [this.createTexByUrl()];
 		let material = CoRScene.createDefaultMaterial(false);
-		material.setTextureList( texList );
+		material.setTextureList(texList);
 		material.initializeByCodeBuf(true);
 		let entity = CoRScene.createDisplayEntity();
 		entity.setMaterial(material);
 		entity.setMesh(mesh);
-		entity.setScaleXYZ(texObj.getWidth(),texObj.getHeight(),100);
 		entity.setRenderState(CoRScene.RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
 
-		this.m_rscene.addEntity( entity );
+		this.m_rscene.addEntity(entity);
 	}
 	private testAGeom(): void {
-
 		let line = CoAGeom.createLine();
 		let rayLine = CoAGeom.createRayLine();
 		let segmentLine = CoAGeom.createSegmentLine();
@@ -223,7 +207,7 @@ export class DemoCoBase {
 		plane.nv.setXYZ(0.0, 1.0, 0.0);
 		plane.update();
 
-		let rl1 = CoAGeom.createRayLine()
+		let rl1 = CoAGeom.createRayLine();
 		rl1.pos.setTo(100.0, 11.0, 100.0);
 		rl1.tv.setTo(1.0, 0.1, 1.0);
 		rl1.update();
@@ -232,7 +216,7 @@ export class DemoCoBase {
 		console.log("plane.intersectRayLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection, ", outV: ", outV);
 
 		rl1 = CoAGeom.createRayLine();
-		rl1.pos.setTo(100.0, 0.90, 100.0);
+		rl1.pos.setTo(100.0, 0.9, 100.0);
 		rl1.tv.setTo(1.0, 0.0, 1.0);
 		rl1.update();
 
@@ -242,7 +226,6 @@ export class DemoCoBase {
 		console.log(" ------------------ ------------------ ------------------");
 	}
 	private createDefaultEntity(): void {
-
 		let axis = CoRScene.createAxis3DEntity();
 		this.m_rscene.addEntity(axis);
 
@@ -254,19 +237,15 @@ export class DemoCoBase {
 		// entity.copyMeshFrom(this.m_rscene.entityBlock.unitXOZPlane);
 		// entity.setScaleXYZ(700.0, 0.0, 700.0);
 		// this.m_rscene.addEntity(entity);
-
 	}
 	private initScene(): void {
-
 		this.createDefaultEntity();
-
 	}
 	isEngineEnabled(): boolean {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";
 	}
 
 	private createTexByUrl(url: string = ""): IRenderTexture {
-
 		let tex = this.m_rscene.textureBlock.createImageTex2D(64, 64, false);
 
 		// this.m_plane = new Plane3DEntity();
@@ -276,7 +255,7 @@ export class DemoCoBase {
 		let img: HTMLImageElement = new Image();
 		img.onload = (evt: any): void => {
 			tex.setDataFromImage(img, 0, 0, 0, false);
-		}
+		};
 		img.src = url != "" ? url : "static/assets/box.jpg";
 		return tex;
 	}
@@ -288,9 +267,7 @@ export class DemoCoBase {
 		}
 	}
 	private initRenderer(): void {
-
 		if (this.m_rscene == null) {
-
 			let RendererDevice = CoRScene.RendererDevice;
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -302,16 +279,14 @@ export class DemoCoBase {
 			rparam.setCamProject(45, 20.0, 9000.0);
 			this.m_rscene = CoRScene.createRendererScene(rparam, 3);
 			this.m_rscene.setClearUint24Color(0x888888);
-
 		}
 	}
 	private loadOBJ(): void {
 		let baseUrl: string = "static/private/obj/";
 		let url = baseUrl + "base.obj";
 		url = baseUrl + "base4.obj";
-
 	}
-	private mouseDown(evt: any): void { }
+	private mouseDown(evt: any): void {}
 	run(): void {
 		if (this.m_rscene != null) {
 			if (this.m_interact != null) {
