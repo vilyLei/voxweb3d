@@ -47,7 +47,7 @@ export class DemoBase {
 
         if (this.m_rscene == null) {
 
-            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
@@ -98,6 +98,7 @@ export class DemoBase {
 		textObject.initialize("Hello", h5Text);
         this.m_rscene.addEntity(textObject);
 		textObject.setRGB3f(10.5, 0.0, 1.0);
+
 	}
     private initAxisEvt(): void {
 
@@ -125,7 +126,10 @@ export class DemoBase {
         // this.showOutColor();
     }
     private mouseDown(evt: any): void {
-        DebugFlag.Flag_0 = 1;
+        // DebugFlag.Flag_0 = 1;
+        // let div = this.m_rscene.getDiv();
+        // let rect = div.getBoundingClientRect();
+        // console.log("mouseDown(), rect.width, rect.height: ",rect.width, rect.height);
     }
     private mouseUp(evt: any): void {
     }

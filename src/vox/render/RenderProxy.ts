@@ -303,7 +303,7 @@ class RenderProxy implements IRenderProxy {
 
             this.createMainCamera();
 
-            //console.log("resizeCallback(), viewW,viewH: ", rect.width+","+rect.height);
+            console.log("resizeCallback(), viewW,viewH: ", rect.width+","+rect.height);
             this.m_adapterContext.setViewport(rect.x, rect.y, rect.width, rect.height);
 
             this.updateCameraView();
@@ -379,13 +379,12 @@ class RenderProxy implements IRenderProxy {
         this.m_adapterContext.setWebGLMaxVersion(this.m_maxWebGLVersion);
         this.m_adapterContext.initialize(this.m_uid, stage, param.getDiv(), param.getRenderContextAttri());
         this.m_WEBGL_VER = this.m_adapterContext.getWebGLVersion();
-
         this.m_rc = this.m_adapterContext.getRC();
 
         let selfT: any = this;
         let gl: any = this.m_rc;
-        let vtxRes: ROVertexResource = new ROVertexResource(this.m_uid, gl, proxyParam.vtxBuilder);
-        let texRes: ROTextureResource = new ROTextureResource(this.m_uid, gl);
+        let vtxRes = new ROVertexResource(this.m_uid, gl, proxyParam.vtxBuilder);
+        let texRes = new ROTextureResource(this.m_uid, gl);
         this.m_vtxRes = vtxRes;
         selfT.Vertex = vtxRes;
         selfT.Texture = texRes;
@@ -412,6 +411,7 @@ class RenderProxy implements IRenderProxy {
 
         this.m_adapter = new RenderAdapter(this.m_uid, texRes);
         this.m_adapter.initialize(this.m_adapterContext, param, rstate, this.uniformContext.createUniformVec4Probe(1));
+
         selfT.adapter = this.m_adapter;
         if (this.m_autoSynViewAndStage) {
             let stage: IRenderStage3D = this.m_adapterContext.getStage();

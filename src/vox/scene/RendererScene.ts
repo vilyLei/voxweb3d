@@ -336,7 +336,8 @@ export default class RendererScene implements IRenderer, IRendererScene {
             this.m_rcontext = this.m_renderer.getRendererContext();
             this.m_renderProxy = this.m_rcontext.getRenderProxy();
             this.m_adapter = this.m_renderProxy.getRenderAdapter();
-            let stage3D: IRenderStage3D = this.m_renderProxy.getStage3D();
+    
+            let stage3D = this.m_renderProxy.getStage3D();
             this.m_viewW = stage3D.stageWidth;
             this.m_viewH = stage3D.stageHeight;
             this.m_shader = this.m_renderer.getDataBuilder().getRenderShader();

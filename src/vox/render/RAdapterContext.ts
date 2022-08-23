@@ -22,7 +22,7 @@ class RAdapterContext implements IRAdapterContext {
     private m_canvas: HTMLCanvasElement = null;
     private m_scissorEnabled: boolean = false;
     private m_depthTestEnabled: boolean = true;
-    
+
     private m_stencilTestEnabled: boolean = true;
     private m_offcanvas: HTMLCanvasElement = null;
     private m_gl: WebGLRenderingContext = null;
@@ -88,6 +88,8 @@ class RAdapterContext implements IRAdapterContext {
         }
         if (pdocument != null) {
 
+            this.m_devicePixelRatio = window.devicePixelRatio;
+            RendererDevice.SetDevicePixelRatio(this.m_devicePixelRatio);
             this.m_viewEle.setDiv(div);
             this.m_viewEle.createViewEle(pdocument, this.autoSyncRenderBufferAndWindowSize);
             this.m_div = div = this.m_viewEle.getDiv();
@@ -246,6 +248,7 @@ class RAdapterContext implements IRAdapterContext {
             //if(this.autoSyncRenderBufferAndWindowSize)
             //{
             this.updateRenderBufferSize();
+            this.updateRenderBufferSize();
             //}
         }
         else {
@@ -308,8 +311,8 @@ class RAdapterContext implements IRAdapterContext {
     resizeBufferSize(pw: number, ph: number): void {
         pw = Math.floor(pw);
         ph = Math.floor(ph);
-        let k: number = window.devicePixelRatio;
-        let dprChanged: boolean = Math.abs(k - this.m_devicePixelRatio) > 0.02;
+        let k = window.devicePixelRatio;
+        let dprChanged = Math.abs(k - this.m_devicePixelRatio) > 0.02;
         this.m_devicePixelRatio = k;
         this.m_mouseEvtDisplather.dpr = k;
         RendererDevice.SetDevicePixelRatio(this.m_devicePixelRatio);
@@ -411,7 +414,7 @@ class RAdapterContext implements IRAdapterContext {
         return this.m_rcanvasHeight;
     }
     updateRenderBufferSize(): void {
-        let rect: any = this.m_div.getBoundingClientRect();
+        let rect = this.m_div.getBoundingClientRect();
         this.resizeBufferSize(rect.width, rect.height);
     }
 }
