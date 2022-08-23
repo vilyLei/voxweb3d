@@ -35,6 +35,7 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
 import MouseEventEntity from "../../vox/entity/MouseEventEntity";
 
+import IDefault3DMaterial from "../../vox/material/mcase/IDefault3DMaterial";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
 import { IMaterial } from "../../vox/material/IMaterial";
@@ -129,7 +130,7 @@ function createDataMeshFromModel(model: CoGeomDataType, material: MaterialBase =
 	return dataMesh;
 }
 
-function createDefaultMaterial(normalEnabled: boolean = false): IRenderMaterial {
+function createDefaultMaterial(normalEnabled: boolean = false): IDefault3DMaterial {
 	let m = new Default3DMaterial();
 	m.normalEnabled = normalEnabled;
 	return m;
