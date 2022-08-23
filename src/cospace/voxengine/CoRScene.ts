@@ -22,6 +22,10 @@ import IDataMesh from "../../vox/mesh/IDataMesh";
 import DataMesh from "../../vox/mesh/DataMesh";
 import IRawMesh from "../../vox/mesh/IRawMesh";
 import RawMesh from "../../vox/mesh/RawMesh";
+
+import IBoundsMesh from "../../vox/mesh/IBoundsMesh";
+import BoundsMesh from "../../vox/mesh/BoundsMesh";
+
 import MaterialBase from "../../vox/material/MaterialBase";
 
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
@@ -106,6 +110,10 @@ function createDataMesh(): IDataMesh {
 function createRawMesh(): IRawMesh {
 	return new RawMesh();
 }
+function createBoundsMesh(): IBoundsMesh {
+	return new BoundsMesh();
+}
+
 function createDataMeshFromModel(model: CoGeomDataType, material: MaterialBase = null, vbWhole: boolean = false): IDataMesh {
 	const dataMesh = new DataMesh();
 	dataMesh.vbWholeDataEnabled = vbWhole;
@@ -250,6 +258,7 @@ export {
 	createMouseEvt3DDispatcher,
 	createDataMesh,
 	createRawMesh,
+	createBoundsMesh,
 
 	createDataMeshFromModel,
 	createDefaultMaterial,

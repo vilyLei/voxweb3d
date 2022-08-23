@@ -19,6 +19,7 @@ import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpac
 import { IMaterialContext } from "../../materialLab/base/IMaterialContext";
 import IDataMesh from "../../vox/mesh/IDataMesh";
 import IRawMesh from "../../vox/mesh/IRawMesh";
+import IBoundsMesh from "../../vox/mesh/IBoundsMesh";
 import { CoRendererDevice } from "./render/CoRendererDevice";
 import { CoRendererState } from "./render/CoRendererState";
 import CoVtxBufConst from "./mesh/CoVtxBufConst";
@@ -190,9 +191,9 @@ interface ICoRScene {
 	createShaderMaterial(shd_uniqueName: string): IShaderMaterial;
 	createMaterial(dcr: IMaterialDecorator): IMaterial;
 
-
 	createDataMesh(): IDataMesh;
 	createRawMesh(): IRawMesh;
+	createBoundsMesh(): IBoundsMesh;
 	/**
 	 * @param model geometry model
 	 * @param pmaterial IRenderMaterial instance, the default is null.
@@ -224,5 +225,6 @@ interface ICoRScene {
 
 	creatMaterialContextParam(): CoMaterialContextParam;
 	createMaterialContext(): IMaterialContext;
+
 }
 export { CoMaterialContextParam, ICoRScene };

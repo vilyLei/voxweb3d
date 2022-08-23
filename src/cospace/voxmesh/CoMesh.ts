@@ -4,6 +4,7 @@ import ITransformEntity from "../../vox/entity/ITransformEntity";
 
 import { IPlaneMeshBuilder } from "./build/IPlaneMeshBuilder";
 import { PlaneMeshBuilder } from "./build/PlaneMeshBuilder";
+import IBoundsMesh from "../../vox/mesh/IBoundsMesh";
 
 import { ICoRScene } from "../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
@@ -17,6 +18,10 @@ function createDataMesh(): IDataMesh {
 function createRawMesh(): IRawMesh {
 	return CoRScene.createRawMesh();
 }
+function createBoundsMesh(): IBoundsMesh {
+	return CoRScene.createBoundsMesh();
+}
+
 function createCrossAxis3DEntity(size: number = 100): ITransformEntity {
 	let min = -0.5 * size;
 	let max = 0.5 * size;
@@ -26,5 +31,6 @@ export {
 	planeMeshBuilder,
 	createDataMesh,
 	createRawMesh,
+	createBoundsMesh,
 	createCrossAxis3DEntity,
 };

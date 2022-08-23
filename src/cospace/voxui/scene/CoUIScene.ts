@@ -4,7 +4,6 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
-// import EventBase from "../../../vox/event/EventBase";
 declare var CoRScene: ICoRScene;
 
 class CoUIScene {

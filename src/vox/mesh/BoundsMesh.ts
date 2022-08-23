@@ -9,7 +9,6 @@ import MeshBase from "../../vox/mesh/MeshBase";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import ITestRay from "./ITestRay";
 import IVector3D from "../../vox/math/IVector3D";
-import Vector3D from "../../vox/math/Vector3D";
 import AABB from "../../vox/geom/AABB";
 
 export default class BoundsMesh extends MeshBase {
