@@ -56,6 +56,7 @@
     "buildCoMaterial": "vue-cli-service build --target lib --name CoMaterial --dest ./public/static/cospace/coMaterial ./src/cospace/voxmaterial/CoMaterial.ts",
     "buildCoUI": "vue-cli-service build --target lib --name CoUI --dest ./public/static/cospace/coui ./src/cospace/voxui/CoUI.ts",
     "buildCoMesh": "vue-cli-service build --target lib --name CoMesh --dest ./public/static/cospace/comesh ./src/cospace/voxmesh/CoMesh.ts",
+    "buildCoEntity": "vue-cli-service build --target lib --name CoEntity --dest ./public/static/cospace/coentity ./src/cospace/voxentity/CoEntity.ts",
     
     "buildCoMouseInteraction": "vue-cli-service build --target lib --name CoMouseInteraction --dest ./public/static/cospace/engine/mouseInteract ./src/cospace/voxengine/ui/CoMouseInteraction.ts",
 

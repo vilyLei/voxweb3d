@@ -216,10 +216,11 @@ interface ICoRScene {
 
 	/**
 	 * @param model IDataMesh instance
-	 * @param pmaterial IRenderMaterial instance.
+	 * @param material IRenderMaterial instance.
+	 * @param texEnabled use texture yes or no.
 	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
 	 */
-	createDisplayEntityWithDataMesh(mesh: IDataMesh, pmaterial: IRenderMaterial, vbWhole?: boolean): ITransformEntity;
+	createDisplayEntityWithDataMesh(mesh: IDataMesh, material: IRenderMaterial, texEnabled?: boolean, vbWhole?: boolean): ITransformEntity;
 	createDisplayEntity(): ITransformEntity;
 	createMouseEventEntity(): IMouseEventEntity;
 
