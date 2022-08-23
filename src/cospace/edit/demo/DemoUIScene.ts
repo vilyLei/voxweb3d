@@ -17,6 +17,7 @@ import { ViewerCoSApp } from "../../demo/coViewer/ViewerCoSApp";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
 import CanvasTexAtlas from "../../voxtexture/atlas/CanvasTexAtlas";
+import { CoUIScene } from "../../voxui/scene/CoUIScene";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 //CanvasTexAtlas
@@ -66,18 +67,23 @@ export class DemoUIScene {
 		let url5 = "static/cospace/comesh/CoMesh.umd.js";
 
 		new ModuleLoader(2, (): void => {
+
 			if (this.isEngineEnabled()) {
+
 				console.log("engine modules loaded ...");
+
 				this.initRenderer();
 				this.initScene();
 
+				this.initUIScene();
+
 				new ModuleLoader(1, (): void => {
 					console.log("math module loaded ...");
-					this.testMath();
+					// this.testMath();
 
 					new ModuleLoader(1, (): void => {
 						console.log("ageom module loaded ...");
-						this.testAGeom();
+						// this.testAGeom();
 
 						new ModuleLoader(1, (): void => {
 							console.log("CoMaterial module loaded ...");
@@ -91,6 +97,7 @@ export class DemoUIScene {
 						}).load(url4);
 					}).load(url3);
 				}).load(url2);
+
 				// this.m_vcoapp = new ViewerCoSApp();
 				// this.m_vcoapp.initialize((): void => {
 				// 	this.loadOBJ();
@@ -103,14 +110,21 @@ export class DemoUIScene {
 
 		mouseInteractML.load(url);
 	}
-	private testMath(): void {
-		let v3 = CoMath.createVec3(10, 4, 0.5);
-		console.log("math v3: ", v3);
+	private m_uisc: CoUIScene = null;
+	private initUIScene(): void {
+		let uisc: CoUIScene = new CoUIScene();
+		this.m_uisc = uisc;
+		uisc.initialize();
+		console.log("uisc: ", uisc);
+		console.log("uisc.rscene: ", uisc.rscene);
+
+		//this.testUIEntity(uisc);
 	}
 
 	private testVoxMaterial(): void {
 
-
+		let uisc: CoUIScene = this.m_uisc;
+		
 		let color4 = CoMaterial.createColor4();
 		console.log("color4: ", color4);
 		let texAtlas = new CanvasTexAtlas();
@@ -130,100 +144,10 @@ export class DemoUIScene {
 		entity.setMesh(mesh);
 		entity.setRenderState(CoRScene.RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
 
-		this.m_rscene.addEntity(entity);
-	}
-	private testAGeom(): void {
-		let line = CoAGeom.createLine();
-		let rayLine = CoAGeom.createRayLine();
-		let segmentLine = CoAGeom.createSegmentLine();
-		let plane = CoAGeom.createPlane();
-		let outV = CoMath.createVec3();
+		// this.m_rscene.addEntity(entity);
 
-		console.log("ageom line: ", line);
-		console.log("ageom plane: ", plane);
+		this.m_uisc.rscene.addEntity(entity);
 
-		this.testAGeomBase();
-	}
-
-	private testAGeomBase(): void {
-		let v3 = CoMath.createVec3(10, 4, 0.5);
-		console.log("math v3: ", v3);
-
-		let sl0 = CoAGeom.createSegmentLine();
-		sl0.begin.setXYZ(-50, 0, 0);
-		sl0.end.setXYZ(100, 0, 0);
-		sl0.update();
-		let rl0 = CoAGeom.createRayLine();
-		rl0.pos.setXYZ(0, 100, 0);
-		rl0.tv.setXYZ(0.1, -1, 0);
-		rl0.update();
-
-		let outV = CoMath.createVec3();
-
-		console.log(" ------------------ ------------------ ------------------");
-		let hit: boolean;
-		let interBoo: boolean;
-		let plane: IPlane;
-		let RayLine = CoAGeom.RayLine;
-		///*
-		hit = RayLine.IntersectSegmentLine(rl0.pos, rl0.tv, sl0.begin, sl0.end, outV);
-		console.log("RayLine.IntersectSegmentLine, hit: ", hit, ", outV: ", outV);
-
-		let sph = CoAGeom.createSphere();
-		sph.radius = 20.0;
-		sph.setXYZ(0, 19.0, 0.0);
-
-		plane = CoAGeom.createPlane();
-
-		plane.nv.setXYZ(0.0, 1.0, 0.0);
-		plane.update();
-
-		interBoo = plane.intersectSphNegSpace(sph.pos, sph.radius);
-		console.log("plane.intersectSphNegSpace(), interBoo: ", interBoo);
-
-		sph = CoAGeom.createSphere();
-		sph.radius = 20.0;
-		sph.setXYZ(0, 21.0, 0.0);
-		interBoo = plane.intersectSphere(sph.pos, sph.radius);
-		console.log("plane.intersectSphere(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection);
-
-		let line = CoAGeom.createLine();
-		line.pos.setTo(100.0, 100.0, 100.0);
-		line.tv.setTo(1.0, -1.0, 0.0);
-		line.update();
-
-		interBoo = plane.intersectLinePos2(line.pos, line.tv, outV);
-		console.log("plane.intersectLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection, ", outV: ", outV);
-
-		line.pos.setTo(100.0, 0.0, 100.0);
-		line.tv.setTo(1.0, 0.0, 0.0);
-		line.update();
-
-		interBoo = plane.intersectLinePos2(line.pos, line.tv, outV);
-		console.log("plane.intersectLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection, ", outV: ", outV);
-		//*/
-		plane = CoAGeom.createPlane();
-		plane.pos.setXYZ(0.0, 10.0, 0.0);
-		plane.nv.setXYZ(0.0, 1.0, 0.0);
-		plane.update();
-
-		let rl1 = CoAGeom.createRayLine();
-		rl1.pos.setTo(100.0, 11.0, 100.0);
-		rl1.tv.setTo(1.0, 0.1, 1.0);
-		rl1.update();
-
-		interBoo = plane.intersectRayLinePos2(rl1.pos, rl1.tv, outV);
-		console.log("plane.intersectRayLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection, ", outV: ", outV);
-
-		rl1 = CoAGeom.createRayLine();
-		rl1.pos.setTo(100.0, 0.9, 100.0);
-		rl1.tv.setTo(1.0, 0.0, 1.0);
-		rl1.update();
-
-		interBoo = plane.intersectRayLinePos2(rl1.pos, rl1.tv, outV);
-		console.log("plane.intersectRayLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection, ", outV: ", outV);
-
-		console.log(" ------------------ ------------------ ------------------");
 	}
 	private createDefaultEntity(): void {
 		let axis = CoRScene.createAxis3DEntity();
@@ -293,6 +217,9 @@ export class DemoUIScene {
 				this.m_interact.run();
 			}
 			this.m_rscene.run();
+			if(this.m_uisc != null) {
+				this.m_uisc.run();
+			}
 		}
 	}
 }

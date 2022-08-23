@@ -4,6 +4,7 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
+import EventBase from "../../../vox/event/EventBase";
 declare var CoRScene: ICoRScene;
 
 class CoUIScene {
@@ -18,6 +19,7 @@ class CoUIScene {
 			crscene = this.m_crscene;
 			let stage = this.m_crscene.getStage3D();
 
+			crscene.addEventListener(EventBase.RESIZE, this, this.resize);
 			let rparam = CoRScene.createRendererSceneParam();
 			rparam.cameraPerspectiveEnabled = false;
 			rparam.setAttriAlpha(false);
@@ -30,11 +32,19 @@ class CoUIScene {
 			subScene.enableMouseEvent(true);
 			let t: any = this;
 			t.rscene = subScene;
-
-			stage = this.m_rstage;
-			this.rscene.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
-			this.rscene.getCamera().update();
+			
+			this.m_rstage = stage;
+			let uicamera = this.rscene.getCamera();
+			uicamera.translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
+			uicamera.update();
 		}
+	}
+	private resize(evt: any): void {
+		console.log("CoUIScene::resize()...");
+		let stage = this.m_rstage;
+		let uicamera = this.rscene.getCamera();
+		uicamera.translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
+		uicamera.update();
 	}
 	run(): void {
 		if(this.rscene != null) {

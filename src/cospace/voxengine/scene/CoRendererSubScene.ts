@@ -54,7 +54,7 @@ import { IRenderableEntityBlock } from "../../../vox/scene/block/IRenderableEnti
 import Matrix4 from "../../../vox/math/Matrix4";
 import IVector3D from "../../../vox/math/IVector3D";
 
-export default class RendererSubScene implements IRenderer, ICoRendererScene, ICoRenderNode {
+export default class CoRendererSubScene implements IRenderer, ICoRendererScene, ICoRenderNode {
 	private static s_uid: number = 0;
 	private m_uid: number = -1;
 	private m_adapter: IRenderAdapter = null;
@@ -98,7 +98,7 @@ export default class RendererSubScene implements IRenderer, ICoRendererScene, IC
 		this.m_parent = parent;
 		this.m_renderer = renderer;
 		this.m_shader = (this.m_renderer as any).getDataBuilder().getRenderShader();
-		this.m_uid = 1024 + RendererSubScene.s_uid++;
+		this.m_uid = 1024 + CoRendererSubScene.s_uid++;
 	}
 	isEvtFlowEnabled(): boolean {
 		return this.m_evtFlowEnabled;
