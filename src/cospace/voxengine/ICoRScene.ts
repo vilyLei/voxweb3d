@@ -141,6 +141,11 @@ interface CoRenderDrawMode {
     DISABLE: number;
 }
 
+interface COEventBase {
+	readonly RESIZE: number;
+    readonly ENTER_FRAME: number;
+}
+
 interface ICoRScene {
 
 	RendererDevice: CoRendererDevice;
@@ -150,6 +155,8 @@ interface ICoRScene {
 
 	Vector3D: CoVec3;
 	MouseEvent: CoMouseEvent;
+	EventBase: COEventBase;
+
 	ShaderCodeUUID: CoShaderCodeUUID;
 	MaterialContextParam: CoMaterialContextParam;
 	MaterialPipeType: CoMaterialPipeType;

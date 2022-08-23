@@ -13,6 +13,7 @@ import RendererState from "../../vox/render/RendererState";
 import RendererParam from "../../vox/scene/RendererParam";
 import { ICoRendererScene } from "./scene/ICoRendererScene";
 
+import EventBase from "../../vox/event/EventBase";
 import MouseEvent from "../../vox/event/MouseEvent";
 
 import CoRendererScene from "./scene/CoRendererScene";
@@ -228,6 +229,8 @@ export {
 	Matrix4,
 	Color4,
 	MouseEvent,
+	EventBase,
+	
 	ShaderCodeUUID,
 	MaterialPipeType,
 	MaterialContextParam,

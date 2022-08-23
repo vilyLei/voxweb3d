@@ -5,8 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 // 基本事件类
-
-class EventBase {
+import IEventBase from "./IEventBase";
+class EventBase implements IEventBase {
     static EventClassType: number = 1001;
     uuid: string = "";
     constructor() {
