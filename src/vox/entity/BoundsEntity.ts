@@ -12,9 +12,8 @@ import IROTransform from "../../vox/display/IROTransform";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import BoundsMesh from "../../vox/mesh/BoundsMesh";
-import AABB from "../../vox/geom/AABB";
 export default class BoundsEntity extends DisplayEntity {
-    private m_boundsMesh: BoundsMesh = null;
+    private m_bm: BoundsMesh = null;
     constructor(transform: IROTransform = null) {
         super(transform);
     }
@@ -25,27 +24,23 @@ export default class BoundsEntity extends DisplayEntity {
     initialize(minV: Vector3D, maxV: Vector3D): void {
         this.mouseEnabled = true;
         if (this.getMesh() == null) {
-            this.m_boundsMesh = new BoundsMesh();
-            this.m_boundsMesh.bounds = new AABB();
-            this.m_boundsMesh.bounds.min.copyFrom(minV);
-            this.m_boundsMesh.bounds.max.copyFrom(maxV);
-            this.m_boundsMesh.bounds.updateFast();
-            this.setMesh(this.m_boundsMesh);
+            this.m_bm = new BoundsMesh();
+            this.m_bm.setBounds(minV, maxV);
+            this.setMesh(this.m_bm);
+        } else if (this.m_bm != null) {
+            this.m_bm.setBounds(minV, maxV);
         }
     }
     setBounds(minV: Vector3D, maxV: Vector3D): void {
-        this.m_boundsMesh.bounds.min.copyFrom(minV);
-        this.m_boundsMesh.bounds.max.copyFrom(maxV);
-        this.m_boundsMesh.bounds.updateFast();
-    }
-    toString(): string {
-        return "BoundsEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";
+        this.m_bm.bounds.min.copyFrom(minV);
+        this.m_bm.bounds.max.copyFrom(maxV);
+        this.m_bm.bounds.updateFast();
     }
     isPolyhedral(): boolean {
         return false;
     }
     destroy(): void {
         super.destroy();
-        this.m_boundsMesh = null;
+        this.m_bm = null;
     }
 }
