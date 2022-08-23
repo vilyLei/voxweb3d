@@ -92,6 +92,9 @@ interface IRenderCamera {
     getProjectMatrix(): IMatrix4;
 
     getLookAtPosition(): IVector3D;
+
+    translation(v3: IVector3D): void;
+    translationXYZ(px: number, py: number, pz: number): void;
 }
 
 export {IRenderCamera};
