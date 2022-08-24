@@ -4,6 +4,7 @@ import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import { IUIEntity } from "./IUIEntity";
 import IVector3D from "../../../vox/math/IVector3D";
 import { ClipLable } from "./ClipLable";
+import { IClipLable } from "./IClipLable";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
@@ -19,8 +20,8 @@ declare var CoEntity: ICoEntity;
 class Button implements IUIEntity {
 
 	private m_dp: IEvtDispatcher;
-	private m_lb: ClipLable = null;
-
+	private m_lb: IClipLable = null;
+	
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void {
 
 		if (this.m_lb == null && atlas != null && idnsList != null) {

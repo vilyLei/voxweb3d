@@ -1,7 +1,7 @@
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import ICanvasTexObject from "../../voxtexture/atlas/ICanvasTexObject";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
-import { IUIEntity } from "./IUIEntity";
+import { IClipLable } from "./IClipLable";
 import IVector3D from "../../../vox/math/IVector3D";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 
@@ -14,7 +14,7 @@ declare var CoMath: ICoMath;
 import { ICoEntity } from "../../voxentity/ICoEntity";
 declare var CoEntity: ICoEntity;
 
-class ClipLable implements IUIEntity {
+class ClipLable implements IClipLable {
 	private m_width = 0;
 	private m_height = 0;
 	private m_sizes: number[] = null;
@@ -40,38 +40,38 @@ class ClipLable implements IUIEntity {
 	private createMesh(atlas: ICanvasTexAtlas, idnsList: string[]): IRawMesh {
 
 		let obj = atlas.getTexObjFromAtlas(idnsList[0]);
-			let partVtxTotal = 4;
-			let pivs = [0, 1, 2, 0, 2, 3];
+		let partVtxTotal = 4;
+		let pivs = [0, 1, 2, 0, 2, 3];
 
-			const n = this.m_total;
-			let ivs = new Uint16Array(n * 6);
-			let vs = new Float32Array(n * 12);
-			let uvs = new Float32Array(n * 8);
-			this.m_sizes = new Array(n * 2);
+		const n = this.m_total;
+		let ivs = new Uint16Array(n * 6);
+		let vs = new Float32Array(n * 12);
+		let uvs = new Float32Array(n * 8);
+		this.m_sizes = new Array(n * 2);
 
-			this.m_step = 6;
+		this.m_step = 6;
 
-			let k = 0;
-			for (let i = 0; i < n; ++i) {
+		let k = 0;
+		for (let i = 0; i < n; ++i) {
 
-				obj = atlas.getTexObjFromAtlas(idnsList[i]);
-				ivs.set(pivs, i * pivs.length);
-				vs.set(this.createVS(0, 0, obj.getWidth(), obj.getHeight()), i * 12);
-				uvs.set(obj.uvs, i * 8);
+			obj = atlas.getTexObjFromAtlas(idnsList[i]);
+			ivs.set(pivs, i * pivs.length);
+			vs.set(this.createVS(0, 0, obj.getWidth(), obj.getHeight()), i * 12);
+			uvs.set(obj.uvs, i * 8);
 
-				for (let j = 0; j < pivs.length; ++j) {
-					pivs[j] += partVtxTotal;
-				}
-				this.m_sizes[k++] = obj.getWidth();
-				this.m_sizes[k++] = obj.getHeight();
+			for (let j = 0; j < pivs.length; ++j) {
+				pivs[j] += partVtxTotal;
 			}
-			let mesh = CoMesh.createRawMesh();
-			mesh.reset();
-			mesh.setIVS(ivs);
-			mesh.addFloat32Data(vs, 3);
-			mesh.addFloat32Data(uvs, 2);
-			mesh.initialize();
-			return mesh;
+			this.m_sizes[k++] = obj.getWidth();
+			this.m_sizes[k++] = obj.getHeight();
+		}
+		let mesh = CoMesh.createRawMesh();
+		mesh.reset();
+		mesh.setIVS(ivs);
+		mesh.addFloat32Data(vs, 3);
+		mesh.addFloat32Data(uvs, 2);
+		mesh.initialize();
+		return mesh;
 	}
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void {
 
@@ -101,6 +101,12 @@ class ClipLable implements IUIEntity {
 			this.m_width = this.m_sizes[i << 1];
 			this.m_height = this.m_sizes[(i << 1) + 1];
 		}
+	}
+	setCircleClipIndex(i: number): void {
+		i %= this.m_total;
+		i += this.m_total;
+		i %= this.m_total;
+		this.setClipIndex(i);
 	}
 	getClipIndex(): number {
 		return this.m_index;

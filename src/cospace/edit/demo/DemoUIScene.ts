@@ -183,10 +183,11 @@ export class DemoUIScene {
 			this.m_urls.push(url);
 			if(this.m_urls.length == 3) {
 				let urls = this.m_urls;
-				// let lable = new ClipLable();
-				// lable.initialize(texAtlas, this.m_urls);
-				// lable.setClipIndex(2);
-				// this.m_uisc.addEntity(lable);
+				let lable = new ClipLable();
+				lable.initialize(texAtlas, this.m_urls);
+				lable.setClipIndex(2);
+				lable.setXY(300,200);
+				this.m_uisc.addEntity(lable);
 				//
 				let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
 				let btn = new Button();
