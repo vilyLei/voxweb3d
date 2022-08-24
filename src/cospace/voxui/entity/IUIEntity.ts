@@ -10,11 +10,16 @@ interface IUIEntity {
 	getX(): number;
 	getY(): number;
 	getZ(): number;
-	setRotation(r: number): void;
-	setScaleXY(sx: number, sy: number): void;
 	setXY(px: number, py: number): void;
 	setPosition(pv: IVector3D): void;
 	getPosition(pv: IVector3D): void;
+	setRotation(r: number): void;
+	getRotation(): number;
+	setScaleXY(sx: number, sy: number): void;
+	setScaleX(sx: number): void;
+	setScaleY(sy: number): void;
+	getScaleX(): number;
+	getScaleY(): number;
 	/**
 	 * get renderable entity for renderer scene
 	 * @returns ITransformEntity instance
