@@ -20,7 +20,7 @@ class ClipLable implements IClipLable {
 	private m_sizes: number[] = null;
 	private m_index = 0;
 	private m_total = 0;
-	private m_step = 0;
+	private m_step = 6;
 	private m_vtCount = 0;
 	private m_pos: IVector3D;
 	private m_entity: ITransformEntity = null;
@@ -48,8 +48,6 @@ class ClipLable implements IClipLable {
 		let vs = new Float32Array(n * 12);
 		let uvs = new Float32Array(n * 8);
 		this.m_sizes = new Array(n * 2);
-
-		this.m_step = 6;
 
 		let k = 0;
 		for (let i = 0; i < n; ++i) {
@@ -93,7 +91,34 @@ class ClipLable implements IClipLable {
 			this.setClipIndex(0);
 		}
 	}
+	initializeWithLable(srcLable: IClipLable): void {
+		if (this.m_entity == null && srcLable != null && srcLable != this) {
 
+			this.m_pos = CoMath.createVec3();
+
+			let entity = srcLable.getREntity();
+			let mesh = entity.getMesh();
+			let tex = entity.getMaterial().getTextureAt(0);
+			let n = this.m_total = srcLable.getClipsTotal();
+			this.m_sizes = new Array(n * 2);
+			let k = 0;
+
+			for (let i = 0; i < n; ++i) {
+				srcLable.setClipIndex(i);
+				this.m_sizes[k++] = srcLable.getWidth();
+				this.m_sizes[k++] = srcLable.getHeight();
+			}
+
+			this.m_vtCount = mesh.vtCount;
+			let material = CoMaterial.createDefaultMaterial();
+			material.setTextureList([tex]);
+			let et = this.m_entity = CoEntity.createDisplayEntity();
+			et.setMaterial(material);
+			et.setMesh(mesh);
+			et.setIvsParam(0, this.m_step);
+			this.setClipIndex(0);
+		}
+	}
 	setClipIndex(i: number): void {
 		if (i >= 0 && i < this.m_total) {
 			this.m_index = i;

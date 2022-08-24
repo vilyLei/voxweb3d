@@ -21,15 +21,16 @@ class Button implements IUIEntity {
 
 	private m_dp: IEvtDispatcher;
 	private m_lb: IClipLable = null;
-	
+
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void {
 
 		if (this.m_lb == null && atlas != null && idnsList != null) {
 			if (idnsList.length != 4) {
 				throw Error("Error: idnsList.length != 4");
 			}
-			this.m_lb = new ClipLable();
-			this.m_lb.initialize(atlas, idnsList);
+			let lb = new ClipLable();
+			lb.initialize(atlas, idnsList);
+			this.m_lb = lb;
 			this.initializeEvent();
 		}
 	}

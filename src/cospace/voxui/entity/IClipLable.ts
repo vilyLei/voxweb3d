@@ -6,7 +6,7 @@ import { IUIEntity } from "./IUIEntity";
 interface IClipLable extends IUIEntity {
 	
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void;
-
+	initializeWithLable(srcLable: IClipLable): void;
 	setClipIndex(i: number): void;
 	setCircleClipIndex(i: number): void;
 	getClipIndex(): number;

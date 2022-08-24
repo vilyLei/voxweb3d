@@ -188,6 +188,12 @@ export class DemoUIScene {
 				lable.setClipIndex(2);
 				lable.setXY(300,200);
 				this.m_uisc.addEntity(lable);
+
+				let lable01 = new ClipLable();
+				lable01.initializeWithLable(lable);
+				lable01.setClipIndex(1);
+				lable01.setXY(200,300);
+				this.m_uisc.addEntity(lable01);
 				//
 				let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
 				let btn = new Button();
