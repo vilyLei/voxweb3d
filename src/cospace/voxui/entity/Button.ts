@@ -1,7 +1,7 @@
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
-import { IUIEntity } from "./IUIEntity";
+import { IButton } from "./IButton";
 import IVector3D from "../../../vox/math/IVector3D";
 import { ClipLable } from "./ClipLable";
 import { IClipLable } from "./IClipLable";
@@ -17,7 +17,7 @@ declare var CoMath: ICoMath;
 import { ICoEntity } from "../../voxentity/ICoEntity";
 declare var CoEntity: ICoEntity;
 
-class Button implements IUIEntity {
+class Button implements IButton {
 
 	private m_dp: IEvtDispatcher;
 	private m_lb: IClipLable = null;
@@ -34,7 +34,20 @@ class Button implements IUIEntity {
 			this.initializeEvent();
 		}
 	}
+	
+	initializeWithLable(lable: IClipLable): void {
 
+		if (this.m_lb == null) {
+			if (lable.getClipsTotal() < 1) {
+				throw Error("Error: lable.getClipsTotal() < 1");
+			}
+			this.m_lb = lable;
+			this.initializeEvent();
+		}
+	}
+	getLable(): IClipLable {
+		return this.m_lb;
+	}
 	private initializeEvent(): void {
 
 		if (this.m_dp == null) {

@@ -194,10 +194,11 @@ export class DemoUIScene {
 				lable01.setClipIndex(1);
 				lable01.setXY(200,300);
 				this.m_uisc.addEntity(lable01);
-				//
+				
 				let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
 				let btn = new Button();
 				btn.initialize(texAtlas, btnUrls);
+				// btn.initializeWithLable(lable01);
 				this.m_uisc.addEntity(btn);
 			}
 		}
