@@ -3,6 +3,7 @@ import ICanvasTexObject from "../../voxtexture/atlas/ICanvasTexObject";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import { IUIEntity } from "../entity/IUIEntity";
 import IVector3D from "../../../vox/math/IVector3D";
+import IRawMesh from "../../../vox/mesh/IRawMesh";
 
 import { ICoMesh } from "../../voxmesh/ICoMesh";
 declare var CoMesh: ICoMesh;
@@ -36,16 +37,9 @@ class ButtonLable implements IUIEntity {
 		let pz: number = 0.0;
 		return [minX, minY, pz, maxX, minY, pz, maxX, maxY, pz, minX, maxY, pz];
 	}
-	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void {
+	private createMesh(atlas: ICanvasTexAtlas, idnsList: string[]): IRawMesh {
 
-		if (this.m_entity == null && atlas != null && idnsList != null && idnsList.length > 0) {
-
-			this.m_pos = CoMath.createVec3();
-
-			this.m_total = idnsList.length;
-			let obj = atlas.getTexObjFromAtlas(idnsList[0]);
-			CoMesh.planeMeshBuilder.uvs = obj.uvs;
-
+		let obj = atlas.getTexObjFromAtlas(idnsList[0]);
 			let partVtxTotal = 4;
 			let pivs = [0, 1, 2, 0, 2, 3];
 
@@ -60,26 +54,34 @@ class ButtonLable implements IUIEntity {
 			let k = 0;
 			for (let i = 0; i < n; ++i) {
 
+				obj = atlas.getTexObjFromAtlas(idnsList[i]);
 				ivs.set(pivs, i * pivs.length);
+				vs.set(this.createVS(0, 0, obj.getWidth(), obj.getHeight()), i * 12);
+				uvs.set(obj.uvs, i * 8);
+
 				for (let j = 0; j < pivs.length; ++j) {
 					pivs[j] += partVtxTotal;
 				}
-				obj = atlas.getTexObjFromAtlas(idnsList[i]);
 				this.m_sizes[k++] = obj.getWidth();
 				this.m_sizes[k++] = obj.getHeight();
-
-				vs.set(this.createVS(0, 0, obj.getWidth(), obj.getHeight()), i * 12);
-				uvs.set(obj.uvs, i * 8);
 			}
-
 			let mesh = CoMesh.createRawMesh();
 			mesh.reset();
 			mesh.setIVS(ivs);
 			mesh.addFloat32Data(vs, 3);
 			mesh.addFloat32Data(uvs, 2);
 			mesh.initialize();
-			console.log("ButtonLable::initialize(), mesh: ", mesh, mesh.vtCount);
+			return mesh;
+	}
+	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void {
 
+		if (this.m_entity == null && atlas != null && idnsList != null && idnsList.length > 0) {
+
+			this.m_pos = CoMath.createVec3();
+
+			this.m_total = idnsList.length;
+			let obj = atlas.getTexObjFromAtlas(idnsList[0]);
+			let mesh = this.createMesh(atlas, idnsList);
 			this.m_vtCount = mesh.vtCount;
 			let material = CoMaterial.createDefaultMaterial();
 			material.setTextureList([obj.texture]);
@@ -183,6 +185,7 @@ class ButtonLable implements IUIEntity {
 		this.m_entity.update();
 	}
 	destroy(): void {
+		this.m_sizes = null;
 		if (this.m_entity != null) {
 			this.m_entity.destroy();
 			this.m_entity = null;
