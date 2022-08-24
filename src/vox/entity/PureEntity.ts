@@ -502,6 +502,12 @@ export default class PureEntity implements IDisplayEntity {
             this.m_renderProxy = null;
             this.__$rseFlag = RSEntityFlag.DEFAULT;
         }
+    }    
+    /**
+     * 表示没有加入任何渲染场景或者渲染器
+     */
+     isRFree(): boolean {
+        return this.__$rseFlag == RSEntityFlag.DEFAULT;
     }
     /**
      * @returns 是否已经加入渲染器中(但是可能还没有进入真正的渲染运行时)

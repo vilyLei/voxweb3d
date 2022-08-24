@@ -93,11 +93,14 @@ class ClipLable implements IClipLable {
 	}
 	initializeWithLable(srcLable: IClipLable): void {
 		if (this.m_entity == null && srcLable != null && srcLable != this) {
+			if (srcLable.getClipsTotal() < 1) {
+				throw Error("Error: srcLable.getClipsTotal() < 1");
+			}
+			let entity = srcLable.getREntity();
+			let mesh = entity.getMesh();
 
 			this.m_pos = CoMath.createVec3();
 
-			let entity = srcLable.getREntity();
-			let mesh = entity.getMesh();
 			let tex = entity.getMaterial().getTextureAt(0);
 			let n = this.m_total = srcLable.getClipsTotal();
 			this.m_sizes = new Array(n * 2);
@@ -119,12 +122,25 @@ class ClipLable implements IClipLable {
 			this.setClipIndex(0);
 		}
 	}
+	displaceFromLable(srcLable: IClipLable): void {
+		if (srcLable != null && srcLable != this) {
+			if (srcLable.getClipsTotal() < 1) {
+				throw Error("Error: srcLable.getClipsTotal() < 1");
+			}
+			if (this.m_entity == null) {
+				this.initializeWithLable(srcLable);
+			} else if(this.m_entity.isRFree()){
+				
+			}
+		}
+	}
 	setClipIndex(i: number): void {
 		if (i >= 0 && i < this.m_total) {
 			this.m_index = i;
 			this.m_entity.setIvsParam(i * this.m_step, this.m_step);
-			this.m_width = this.m_sizes[i << 1];
-			this.m_height = this.m_sizes[(i << 1) + 1];
+			i = i << 1;
+			this.m_width = this.m_sizes[i];
+			this.m_height = this.m_sizes[i + 1];
 		}
 	}
 	setCircleClipIndex(i: number): void {
@@ -217,6 +233,7 @@ class ClipLable implements IClipLable {
 	}
 	destroy(): void {
 		this.m_sizes = null;
+		this.m_total = 0;
 		if (this.m_entity != null) {
 			this.m_entity.destroy();
 			this.m_entity = null;

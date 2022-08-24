@@ -8,7 +8,6 @@
 import RSEntityFlag from '../../vox/scene/RSEntityFlag';
 import Vector3D from "../../vox/math/Vector3D";
 import IMatrix4 from "../../vox/math/IMatrix4";
-import Matrix4 from "../../vox/math/Matrix4";
 import IAABB from "../../vox/geom/IAABB";
 import AABB from "../../vox/geom/AABB";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
@@ -557,6 +556,13 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     private static s_boundsOutVS: Float32Array = new Float32Array(24);
     private static s_pos: Vector3D = new Vector3D();
     private static s_prePos: Vector3D = new Vector3D();
+    
+    /**
+     * 表示没有加入任何渲染场景或者渲染器
+     */
+    isRFree(): boolean {
+        return this.__$rseFlag == RSEntityFlag.DEFAULT;
+    }
     /**
      * @returns 是否已经加入渲染器中(但是可能还没有进入真正的渲染运行时)
      */

@@ -56,7 +56,10 @@ export default interface IDisplayEntity extends IRenderEntity {
     getDisplay(): IRODisplay;
 
     getUid(): number;
-
+    /**
+     * 表示没有加入任何渲染场景或者渲染器
+     */
+    isRFree(): boolean;
     isInRenderer(): boolean;
     isRenderEnabled(): boolean;
     updateBounds(): void;
