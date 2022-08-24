@@ -14,7 +14,7 @@ declare var CoMath: ICoMath;
 import { ICoEntity } from "../../voxentity/ICoEntity";
 declare var CoEntity: ICoEntity;
 
-class ButtonLable implements IUIEntity {
+class ClipLable implements IUIEntity {
 	private m_width = 0;
 	private m_height = 0;
 	private m_sizes: number[] = null;
@@ -90,11 +90,11 @@ class ButtonLable implements IUIEntity {
 			et.setMesh(mesh);
 			et.setIvsParam(0, this.m_step);
 
-			this.setPartIndex(0);
+			this.setClipIndex(0);
 		}
 	}
 
-	setPartIndex(i: number): void {
+	setClipIndex(i: number): void {
 		if (i >= 0 && i < this.m_total) {
 			this.m_index = i;
 			this.m_entity.setIvsParam(i * this.m_step, this.m_step);
@@ -102,10 +102,10 @@ class ButtonLable implements IUIEntity {
 			this.m_height = this.m_sizes[(i << 1) + 1];
 		}
 	}
-	getPartIndex(): number {
+	getClipIndex(): number {
 		return this.m_index;
 	}
-	getPartsTotal(): number {
+	getClipsTotal(): number {
 		return this.m_total;
 	}
 
@@ -192,4 +192,4 @@ class ButtonLable implements IUIEntity {
 		}
 	}
 }
-export { ButtonLable };
+export { ClipLable };

@@ -3,7 +3,7 @@ import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import { IUIEntity } from "../entity/IUIEntity";
 import IVector3D from "../../../vox/math/IVector3D";
-import { ButtonLable } from "./ButtonLable";
+import { ClipLable } from "./ClipLable";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
@@ -19,7 +19,7 @@ declare var CoEntity: ICoEntity;
 class Button implements IUIEntity {
 
 	private m_dp: IEvtDispatcher;
-	private m_lb: ButtonLable = null;
+	private m_lb: ClipLable = null;
 
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void {
 
@@ -27,7 +27,7 @@ class Button implements IUIEntity {
 			if (idnsList.length != 4) {
 				throw Error("Error: idnsList.length != 4");
 			}
-			this.m_lb = new ButtonLable();
+			this.m_lb = new ClipLable();
 			this.m_lb.initialize(atlas, idnsList);
 			this.initializeEvent();
 		}
@@ -56,20 +56,20 @@ class Button implements IUIEntity {
 	}
 	protected mouseOverListener(evt: any): void {
 		console.log("Button::mouseOverListener() ...");
-		this.m_lb.setPartIndex(1);
+		this.m_lb.setClipIndex(1);
 	}
 	protected mouseOutListener(evt: any): void {
 		console.log("Button::mouseOutListener() ...");
-		this.m_lb.setPartIndex(0);
+		this.m_lb.setClipIndex(0);
 	}
 
 	protected mouseDownListener(evt: any): void {
 		console.log("Button::mouseDownListener() ...");
-		this.m_lb.setPartIndex(2);
+		this.m_lb.setClipIndex(2);
 	}
 	protected mouseUpListener(evt: any): void {
 		console.log("Button::mouseUpListener() ...");
-		this.m_lb.setPartIndex(3);
+		this.m_lb.setClipIndex(3);
 	}
 
 	getWidth(): number {
