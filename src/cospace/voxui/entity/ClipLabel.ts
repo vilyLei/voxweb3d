@@ -1,7 +1,7 @@
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import ICanvasTexObject from "../../voxtexture/atlas/ICanvasTexObject";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
-import { IClipLable } from "./IClipLable";
+import { IClipLabel } from "./IClipLabel";
 import IVector3D from "../../../vox/math/IVector3D";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 
@@ -14,7 +14,7 @@ declare var CoMath: ICoMath;
 import { ICoEntity } from "../../voxentity/ICoEntity";
 declare var CoEntity: ICoEntity;
 
-class ClipLable implements IClipLable {
+class ClipLabel implements IClipLabel {
 	private m_width = 0;
 	private m_height = 0;
 	private m_sizes: number[] = null;
@@ -91,7 +91,7 @@ class ClipLable implements IClipLable {
 			this.setClipIndex(0);
 		}
 	}
-	initializeWithLable(srcLable: IClipLable): void {
+	initializeWithLable(srcLable: IClipLabel): void {
 		if (this.m_entity == null && srcLable != null && srcLable != this) {
 			if (srcLable.getClipsTotal() < 1) {
 				throw Error("Error: srcLable.getClipsTotal() < 1");
@@ -122,7 +122,7 @@ class ClipLable implements IClipLable {
 			this.setClipIndex(0);
 		}
 	}
-	displaceFromLable(srcLable: IClipLable): void {
+	displaceFromLable(srcLable: IClipLabel): void {
 		if (srcLable != null && srcLable != this) {
 			if (srcLable.getClipsTotal() < 1) {
 				throw Error("Error: srcLable.getClipsTotal() < 1");
@@ -130,7 +130,7 @@ class ClipLable implements IClipLable {
 			if (this.m_entity == null) {
 				this.initializeWithLable(srcLable);
 			} else if(this.m_entity.isRFree()){
-				
+
 			}
 		}
 	}
@@ -240,4 +240,4 @@ class ClipLable implements IClipLable {
 		}
 	}
 }
-export { ClipLable };
+export { ClipLabel };

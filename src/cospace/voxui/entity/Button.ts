@@ -3,8 +3,8 @@ import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import { IButton } from "./IButton";
 import IVector3D from "../../../vox/math/IVector3D";
-import { ClipLable } from "./ClipLable";
-import { IClipLable } from "./IClipLable";
+import { ClipLabel } from "./ClipLabel";
+import { IClipLabel } from "./IClipLabel";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
@@ -20,7 +20,7 @@ declare var CoEntity: ICoEntity;
 class Button implements IButton {
 
 	private m_dp: IEvtDispatcher;
-	private m_lb: IClipLable = null;
+	private m_lb: IClipLabel = null;
 
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void {
 
@@ -28,14 +28,14 @@ class Button implements IButton {
 			if (idnsList.length != 4) {
 				throw Error("Error: idnsList.length != 4");
 			}
-			let lb = new ClipLable();
+			let lb = new ClipLabel();
 			lb.initialize(atlas, idnsList);
 			this.m_lb = lb;
 			this.initializeEvent();
 		}
 	}
 	
-	initializeWithLable(lable: IClipLable): void {
+	initializeWithLable(lable: IClipLabel): void {
 
 		if (this.m_lb == null) {
 			if (lable.getClipsTotal() < 1) {
@@ -45,7 +45,7 @@ class Button implements IButton {
 			this.initializeEvent();
 		}
 	}
-	getLable(): IClipLable {
+	getLable(): IClipLabel {
 		return this.m_lb;
 	}
 	private initializeEvent(): void {

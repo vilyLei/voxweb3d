@@ -1,13 +1,13 @@
 
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import { IUIEntity } from "./IUIEntity";
-import { IClipLable } from "./IClipLable";
+import { IClipLabel } from "./IClipLabel";
 
 interface IButton extends IUIEntity {
 
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void;
-	initializeWithLable(lable: IClipLable): void;
-	getLable(): IClipLable;
+	initializeWithLable(lable: IClipLabel): void;
+	getLable(): IClipLabel;
 
 	addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled?: boolean, bubbleEnabled?: boolean): void;
 	removeEventListener(type: number, listener: any, func: (evt: any) => void): void;

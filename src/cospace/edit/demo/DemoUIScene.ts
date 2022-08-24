@@ -19,7 +19,7 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import { CoUIScene } from "../../voxui/scene/CoUIScene";
-import { ClipLable } from "../../voxui/entity/ClipLable";
+import { ClipLabel } from "../../voxui/entity/ClipLabel";
 import { Button } from "../../voxui/entity/Button";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
@@ -183,13 +183,13 @@ export class DemoUIScene {
 			this.m_urls.push(url);
 			if(this.m_urls.length == 3) {
 				let urls = this.m_urls;
-				let lable = new ClipLable();
+				let lable = new ClipLabel();
 				lable.initialize(texAtlas, this.m_urls);
 				lable.setClipIndex(2);
 				lable.setXY(300,200);
 				this.m_uisc.addEntity(lable);
 
-				let lable01 = new ClipLable();
+				let lable01 = new ClipLabel();
 				lable01.initializeWithLable(lable);
 				lable01.setClipIndex(1);
 				lable01.setXY(200,300);
