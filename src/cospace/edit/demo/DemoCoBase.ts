@@ -110,7 +110,6 @@ export class DemoCoBase {
 
 	private testVoxMaterial(): void {
 
-
 		let color4 = CoMaterial.createColor4();
 		console.log("color4: ", color4);
 		let texAtlas = new CanvasTexAtlas();

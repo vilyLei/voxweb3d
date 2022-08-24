@@ -39,7 +39,7 @@ export class CanvasTexAtlas {
 
     private m_sc: IRendererScene = null;
     private m_atlasList: ImageTexAtlas[] = [null, null, null, null];
-
+	private m_objMap: Map<string, CanvasTexObject> = new Map();
     constructor() {
     }
     initialize(sc: IRendererScene, canvasWidth: number, canvasHeight: number, fillColor: IColor4 = null, transparent: boolean = false): void {
@@ -71,7 +71,7 @@ export class CanvasTexAtlas {
             //*/
         }
     }
-    
+
     getTexture(i: number = 0): IImageTexture {
         return this.m_atlasList[i].getTexture();
     }
@@ -125,7 +125,7 @@ export class CanvasTexAtlas {
             texNode.clampUVRect.width /= atlas.getWidth();
             texNode.clampUVRect.height /= atlas.getHeight();
             texNode.uniqueName = texArea.uniqueNS;
-
+			this.m_objMap.set(uniqueName, texNode);
             return texNode;
         }
         else {
@@ -134,7 +134,7 @@ export class CanvasTexAtlas {
         return null;
     }
     getTexObjFromAtlas(uniqueName: string): CanvasTexObject {
-        return null;
+        return this.m_objMap.get(uniqueName);
     }
     createTexObjWithStr(chars: string, size: number, fontColor: IColor4 = null, bgColor: IColor4 = null): CanvasTexObject {
         if(fontColor == null) fontColor = CoMaterial.createColor4(0,0,0,1);

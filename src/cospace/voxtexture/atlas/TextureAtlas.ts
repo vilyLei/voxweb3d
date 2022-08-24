@@ -1,8 +1,10 @@
 
 import IAABB2D from "../../../vox/geom/IAABB2D";
-import { TexArea, TexAreaNode } from "./TexAreaNode";
+import TexArea from "./TexArea";
+import TexAreaNode from "./TexAreaNode";
+import ITextureAtlas from "./ITextureAtlas";
 
-export default class TextureAtlas {
+export default class TextureAtlas implements ITextureAtlas {
 
     private static s_uid: number = 0;
     private m_uid: number = 0;

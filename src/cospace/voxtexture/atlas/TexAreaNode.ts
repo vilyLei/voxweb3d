@@ -1,48 +1,13 @@
 
 import IAABB2D from "../../../vox/geom/IAABB2D";
+import {TexAreaFillType} from "./TexAreaFillType";
+import TexArea from "./TexArea";
 
 import { ICoMath } from "../../math/ICoMath";
-
 declare var CoMath: ICoMath;
 
-export enum TexAreaFillType {
-    NONE,
-    ONE,
-    TWO_H,
-    TWO_V,
-    THREE,
-    FOUR,
-}
-export class TexArea {
-    uniqueNS: string = "TexArea";
-    // 自身在列表数组中的序号
-    listIndex: number = -1;
-    atlasUid: number = 0;
-    /**
-     * 占据的区域
-     */
-    rect: IAABB2D = null;
-    // 纹理覆盖实际区域
-    texRect: IAABB2D = null;
-    offset: number = 2;
-    minSize: number = 32;
-    readonly uvs = new Float32Array(8);
-    constructor(px: number = 0.0, py: number = 0.0, pwidth: number = 100.0, pheight: number = 100.0) {
-        this.rect = CoMath.createAABB2D(px, py, pwidth, pheight);
-        this.texRect = CoMath.createAABB2D(px, py, pwidth, pheight);
-    }
-    copyFrom(dst: TexArea): void {
-        this.uniqueNS = dst.uniqueNS;
-        this.rect.copyFrom(dst.rect);
-        this.offset = dst.offset;
-        this.uvs.set(dst.uvs, 0);
-    }
-    update(): void {
-        this.rect.update();
-    }
-}
 
-export class TexAreaNode {
+export default class TexAreaNode {
     rect: IAABB2D = null;
     subNodes: TexAreaNode[] = null;
 
@@ -275,7 +240,7 @@ export class TexAreaNode {
     /**
      * 添加 texture area 到当前空间管理节点,  默认用四分法均分这个区域无法分的情况再不平衡的2分法(横向或者纵向),叶子节点则不会划分而直接使用当前节点区域
      * @param texArea 填入的纹理区域
-     * @param map 
+     * @param map
      */
     addTexArea(texArea: TexArea): boolean {
 

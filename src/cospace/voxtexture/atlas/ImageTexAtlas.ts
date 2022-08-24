@@ -1,13 +1,15 @@
 import { IImageTexture } from "../../../vox/render/texture/IImageTexture";
-import { TexArea } from "./TexAreaNode";
+import TexArea from "./TexArea";
 import TextureAtlas from "./TextureAtlas";
+import IImageTexAtlas from "./IImageTexAtlas";
 import IRendererScene from "../../../vox/scene/IRendererScene";
+import ITexArea from "./ITexArea";
 
 import IColor4 from "../../../vox/material/IColor4";
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 
-export default class ImageTexAtlas extends TextureAtlas {
+export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtlas {
 
     private static s_imgMap: Map<string, HTMLCanvasElement> = new Map();
     private m_canvas: HTMLCanvasElement = null;
@@ -107,7 +109,7 @@ export default class ImageTexAtlas extends TextureAtlas {
         ctx2D.font = (size - 4) + "px Verdana";
         //ctx2D.textBaseline = "top" || "hanging" || "middle" || "alphabetic" || "ideographic" || "bottom";
         ctx2D.textBaseline = "top";
-        
+
 
         var metrics: any = ctx2D.measureText(chars);
         let texWidth: number = metrics.width;
@@ -128,7 +130,7 @@ export default class ImageTexAtlas extends TextureAtlas {
             input.id = "atlas_inputText";
             input.className = "atlas_inputTFClass";
             input.disabled = true;
-            
+
 			let style = input.style;
 			style.left = "10px";
 			style.top = "10px";

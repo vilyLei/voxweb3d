@@ -7,6 +7,7 @@ import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
 import { ICoMesh } from "../../voxmesh/ICoMesh";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
+import { ICoTexture } from "../../voxtexture/ICoTexture";
 import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
 
 import { ICoMouseInteraction } from "../../voxengine/ui/ICoMouseInteraction";
@@ -16,8 +17,9 @@ import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
 import { ViewerCoSApp } from "../../demo/coViewer/ViewerCoSApp";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
-import CanvasTexAtlas from "../../voxtexture/atlas/CanvasTexAtlas";
+import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import { CoUIScene } from "../../voxui/scene/CoUIScene";
+import { ButtonLable } from "../../voxui/base/ButtonLable";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 //CanvasTexAtlas
@@ -30,6 +32,7 @@ declare var CoMath: ICoMath;
 declare var CoAGeom: ICoAGeom;
 declare var CoMesh: ICoMesh;
 declare var CoMaterial: ICoMaterial;
+declare var CoTexture: ICoTexture;
 
 /**
  * cospace renderer
@@ -65,35 +68,38 @@ export class DemoUIScene {
 		let url3 = "static/cospace/ageom/CoAGeom.umd.js";
 		let url4 = "static/cospace/coMaterial/CoMaterial.umd.js";
 		let url5 = "static/cospace/comesh/CoMesh.umd.js";
+		let url6 = " static/cospace/cotexture/CoTexture.umd.js";
+		let url7 = "static/cospace/coentity/CoEntity.umd.js";
 
 		new ModuleLoader(2, (): void => {
-
 			if (this.isEngineEnabled()) {
-
 				console.log("engine modules loaded ...");
 
 				this.initRenderer();
 				this.initScene();
 
-				this.initUIScene();
-
 				new ModuleLoader(1, (): void => {
 					console.log("math module loaded ...");
-					// this.testMath();
-
 					new ModuleLoader(1, (): void => {
 						console.log("ageom module loaded ...");
-						// this.testAGeom();
 
 						new ModuleLoader(1, (): void => {
 							console.log("CoMaterial module loaded ...");
-							// this.testVoxMaterial();
 
 							new ModuleLoader(1, (): void => {
 								console.log("CoMesh module loaded ...");
-								this.testVoxMaterial();
-							}).load(url5);
 
+								new ModuleLoader(1, (): void => {
+									console.log("CoTexture module loaded ...");
+									new ModuleLoader(1, (): void => {
+										console.log("CoEntity module loaded ...");
+
+										this.initUIScene();
+										this.initUISC();
+
+									}).load(url7);
+								}).load(url6);
+							}).load(url5);
 						}).load(url4);
 					}).load(url3);
 				}).load(url2);
@@ -121,22 +127,21 @@ export class DemoUIScene {
 		//this.testUIEntity(uisc);
 	}
 
-	private testVoxMaterial(): void {
+	private initUISC(): void {
+		let uisc = this.m_uisc;
 
-		let uisc: CoUIScene = this.m_uisc;
-		
+		/*
 		let color4 = CoMaterial.createColor4();
 		console.log("color4: ", color4);
-		let texAtlas = new CanvasTexAtlas();
-		texAtlas.initialize(this.m_rscene, 512, 512, null, true);
-		let texObj = texAtlas.createTexObjWithStr("Vily", 58, CoMaterial.createColor4(0, 0, 0, 1), CoMaterial.createColor4(1, 1, 1, 0));
+		let texAtlas = uisc.texAtlas;
+		let texObj = texAtlas.createTexObjWithStr("Start", 58, CoMaterial.createColor4(0, 0, 0, 1), CoMaterial.createColor4(1, 1, 1, 0));
 
 		CoMesh.planeMeshBuilder.uvs = texObj.uvs;
 		let mesh = CoMesh.planeMeshBuilder.createXOY(0, 0, texObj.getWidth(), texObj.getHeight());
 
 		let texList = [texObj.texture];
 		// let texList = [this.createTexByUrl()];
-		let material = CoRScene.createDefaultMaterial(false);
+		let material = CoMaterial.createDefaultMaterial(false);
 		material.setTextureList(texList);
 		material.initializeByCodeBuf(true);
 		let entity = CoRScene.createDisplayEntity();
@@ -144,10 +149,9 @@ export class DemoUIScene {
 		entity.setMesh(mesh);
 		entity.setRenderState(CoRScene.RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
 
-		// this.m_rscene.addEntity(entity);
-
-		this.m_uisc.rscene.addEntity(entity);
-
+		uisc.rscene.addEntity(entity);
+		//*/
+		this.loadImgs();
 	}
 	private createDefaultEntity(): void {
 		let axis = CoRScene.createAxis3DEntity();
@@ -162,13 +166,36 @@ export class DemoUIScene {
 		// entity.setScaleXYZ(700.0, 0.0, 700.0);
 		// this.m_rscene.addEntity(entity);
 	}
+	private m_urls: string[] = [];
 	private initScene(): void {
 		this.createDefaultEntity();
 	}
 	isEngineEnabled(): boolean {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";
 	}
-
+	private loadedImg(img: HTMLImageElement, url: string): void {
+		if(url != "") {
+			console.log("XXX loadedImg(), url: ",url);
+			let uisc = this.m_uisc;
+			let texAtlas = uisc.texAtlas;
+			texAtlas.addImageToAtlas(url, img);
+			this.m_urls.push(url);
+			if(this.m_urls.length == 3) {
+				let lable = new ButtonLable();
+				lable.initialize(texAtlas, this.m_urls);
+				lable.setPartIndex(2);
+				this.m_uisc.addEntity(lable);
+			}
+		}
+	}
+	private loadImgs(): void {
+		let  url0 = "static/assets/flare_core_01.jpg";
+		let  url1 = "static/assets/flare_core_02.jpg";
+		let  url2 = "static/assets/flare_core_03.jpg";
+		this.loadImgByUrl(url0, (img: HTMLImageElement, url: string): void => {this.loadedImg(img, url);});
+		this.loadImgByUrl(url1, (img: HTMLImageElement, url: string): void => {this.loadedImg(img, url);});
+		this.loadImgByUrl(url2, (img: HTMLImageElement, url: string): void => {this.loadedImg(img, url);});
+	}
 	private createTexByUrl(url: string = ""): IRenderTexture {
 		let tex = this.m_rscene.textureBlock.createImageTex2D(64, 64, false);
 
@@ -182,6 +209,14 @@ export class DemoUIScene {
 		};
 		img.src = url != "" ? url : "static/assets/box.jpg";
 		return tex;
+	}
+	private loadImgByUrl(url: string , loaded: (img: HTMLImageElement ,url: string) => void): void {
+
+		let img: HTMLImageElement = new Image();
+		img.onload = (evt: any): void => {
+			loaded(img, url);
+		};
+		img.src = url != "" ? url : "static/assets/box.jpg";
 	}
 	private initInteract(): void {
 		if (this.m_rscene != null && this.m_interact == null && typeof CoMouseInteraction !== "undefined") {
@@ -217,7 +252,7 @@ export class DemoUIScene {
 				this.m_interact.run();
 			}
 			this.m_rscene.run();
-			if(this.m_uisc != null) {
+			if (this.m_uisc != null) {
 				this.m_uisc.run();
 			}
 		}

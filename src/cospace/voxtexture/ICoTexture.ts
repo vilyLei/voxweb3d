@@ -1,6 +1,7 @@
+import ICanvasTexAtlas from "./atlas/ICanvasTexAtlas";
 
 interface ICoTexture {
 
-	test(): void;
+	createCanvasTexAtlas(): ICanvasTexAtlas;
 }
 export { ICoTexture };
