@@ -19,8 +19,8 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import { CoUIScene } from "../../voxui/scene/CoUIScene";
-import { ClipLable } from "../../voxui/base/ClipLable";
-import { Button } from "../../voxui/base/Button";
+import { ClipLable } from "../../voxui/entity/ClipLable";
+import { Button } from "../../voxui/entity/Button";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 //CanvasTexAtlas

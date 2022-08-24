@@ -1,7 +1,7 @@
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import ICanvasTexObject from "../../voxtexture/atlas/ICanvasTexObject";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
-import { IUIEntity } from "../entity/IUIEntity";
+import { IUIEntity } from "./IUIEntity";
 import IVector3D from "../../../vox/math/IVector3D";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 

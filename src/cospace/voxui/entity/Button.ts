@@ -1,7 +1,7 @@
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
-import { IUIEntity } from "../entity/IUIEntity";
+import { IUIEntity } from "./IUIEntity";
 import IVector3D from "../../../vox/math/IVector3D";
 import { ClipLable } from "./ClipLable";
 
