@@ -22,54 +22,49 @@ class ButtonLable implements IUIEntity {
 	private m_vtCount = 0;
 	private m_pos: IVector3D;
 	private m_entity: ITransformEntity = null;
-
+	private createVS(startX: number, startY: number, pwidth: number, pheight: number): number[] {
+		let minX: number = startX;
+		let minY: number = startY;
+		let maxX: number = startX + pwidth;
+		let maxY: number = startY + pheight;
+		let pz: number = 0.0;
+		return [minX, minY, pz, maxX, minY, pz, maxX, maxY, pz, minX, maxY, pz];
+	}
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void {
-		//flare_core_01
+
 		if (this.m_entity == null && atlas != null && idnsList != null && idnsList.length > 0) {
 
 			this.m_pos = CoMath.createVec3();
 
 			this.m_total = idnsList.length;
 			let obj = atlas.getTexObjFromAtlas(idnsList[0]);
-			// let startX = 0;
-			// let minX: number = startX;
-			// let minY: number = startY;
-			// let maxX: number = startX + pwidth;
-			// let maxY: number = startY + pheight;
-			// let pz: number = 0.0;
 			CoMesh.planeMeshBuilder.uvs = obj.uvs;
 			this.m_width = obj.getWidth();
 			this.m_height = obj.getHeight();
 
-			let mesh = CoMesh.planeMeshBuilder.createXOY(0,0, obj.getWidth(), obj.getHeight());
-			let pivs = mesh.getIVS();
-			let pvs = mesh.getVS();
-			let puvs = obj.uvs;
+			let partVtxTotal = 4;
+			let pivs = [0, 1, 2, 0, 2, 3];
 
 			const n = this.m_total;
-			let ivs = new Uint16Array(n * pivs.length);
-			let vs = new Float32Array(n * pvs.length);
-			let uvs = new Float32Array(n * puvs.length);
-			this.m_step = pivs.length;
+			let ivs = new Uint16Array(n * 6);
+			let vs = new Float32Array(n * 12);
+			let uvs = new Float32Array(n * 8);
+			this.m_step = 6;
 
-			let istep = 0;
 			let k = 0;
 			for(let i = 0; i < n; ++i) {
 
 				ivs.set(pivs, i * pivs.length);
 				for(let j = 0; j < pivs.length; ++j) {
-					ivs[k++] += istep;
+					pivs[j] += partVtxTotal;
 				}
-				istep += 4;
-				vs.set(pvs, i * pvs.length);
 				obj = atlas.getTexObjFromAtlas(idnsList[i]);
-				uvs.set(obj.uvs, i * puvs.length);
+				vs.set(this.createVS(0, 0, obj.getWidth(), obj.getHeight()), i * 12);
+				uvs.set(obj.uvs, i * 8);
 			}
-			mesh = CoMesh.createRawMesh();
+
+			let mesh = CoMesh.createRawMesh();
 			mesh.reset();
-			// mesh.setIVS(pivs);
-			// mesh.addFloat32Data(pvs, 3);
-			// mesh.addFloat32Data(puvs, 2);
 			mesh.setIVS(ivs);
 			mesh.addFloat32Data(vs, 3);
 			mesh.addFloat32Data(uvs, 2);
@@ -98,10 +93,7 @@ class ButtonLable implements IUIEntity {
 	getPartsTotal(): number {
 		return this.m_total;
 	}
-	// toOver(): void {}
-	// toOut(): void {}
-	// toDown(): void {}
-	// toUp(): void {}
+	
 	getWidth(): number {
 		return this.m_width;
 	}
