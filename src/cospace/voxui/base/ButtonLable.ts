@@ -25,7 +25,7 @@ class ButtonLable implements IUIEntity {
 
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void {
 		//flare_core_01
-		if (atlas != null && idnsList != null && idnsList.length > 0) {
+		if (this.m_entity == null && atlas != null && idnsList != null && idnsList.length > 0) {
 
 			this.m_pos = CoMath.createVec3();
 
