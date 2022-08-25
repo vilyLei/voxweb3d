@@ -8,6 +8,7 @@ import { ICoAGeom } from "../../ageom/ICoAGeom";
 import { ICoMesh } from "../../voxmesh/ICoMesh";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import { ICoTexture } from "../../voxtexture/ICoTexture";
+import { ICoUI } from "../../voxui/ICoUI";
 import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
 
 import { ICoMouseInteraction } from "../../voxengine/ui/ICoMouseInteraction";
@@ -19,9 +20,9 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import ImageTexAtlas from "../../voxtexture/atlas/ImageTexAtlas";
-import { CoUIScene } from "../../voxui/scene/CoUIScene";
-import { ClipLabel } from "../../voxui/entity/ClipLabel";
-import { Button } from "../../voxui/entity/Button";
+import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
+// import { ClipLabel } from "../../voxui/entity/ClipLabel";
+// import { Button } from "../../voxui/entity/Button";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 //CanvasTexAtlas
@@ -35,6 +36,7 @@ declare var CoAGeom: ICoAGeom;
 declare var CoMesh: ICoMesh;
 declare var CoMaterial: ICoMaterial;
 declare var CoTexture: ICoTexture;
+declare var CoUI: ICoUI;
 
 /**
  * cospace renderer
@@ -72,6 +74,7 @@ export class DemoUIScene {
 		let url5 = "static/cospace/comesh/CoMesh.umd.js";
 		let url6 = " static/cospace/cotexture/CoTexture.umd.js";
 		let url7 = "static/cospace/coentity/CoEntity.umd.js";
+		let url8 = "static/cospace/coui/CoUI.umd.js";
 
 		new ModuleLoader(2, (): void => {
 			if (this.isEngineEnabled()) {
@@ -95,9 +98,13 @@ export class DemoUIScene {
 									console.log("CoTexture module loaded ...");
 									new ModuleLoader(1, (): void => {
 										console.log("CoEntity module loaded ...");
+										new ModuleLoader(1, (): void => {
 
-										this.initUIScene();
-										this.initUISC();
+											this.initUIScene();
+											this.initUISC();
+
+										}).load(url8);
+
 									}).load(url7);
 								}).load(url6);
 							}).load(url5);
@@ -117,9 +124,10 @@ export class DemoUIScene {
 
 		mouseInteractML.load(url);
 	}
-	private m_uisc: CoUIScene = null;
+	private m_uisc: ICoUIScene = null;
 	private initUIScene(): void {
-		let uisc: CoUIScene = new CoUIScene();
+
+		let uisc: ICoUIScene = CoUI.createUIScene();//new CoUIScene();
 		this.m_uisc = uisc;
 		uisc.initialize();
 		console.log("uisc: ", uisc);
@@ -183,13 +191,13 @@ export class DemoUIScene {
 		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[3], 30);
 		texAtlas.addImageToAtlas(urls[3], img);
 
-		let lable = new ClipLabel();
+		let lable = CoUI.createClipLabel();//new ClipLabel();
 		lable.initialize(texAtlas, urls);
 		lable.setClipIndex(2);
 		lable.setXY(300, 200);
 		this.m_uisc.addEntity(lable);
 
-		let lable01 = new ClipLabel();
+		let lable01 = CoUI.createClipLabel();//new ClipLabel();
 		lable01.initializeWithLable(lable);
 		lable01.setClipIndex(1);
 		lable01.setXY(200, 300);
@@ -197,7 +205,7 @@ export class DemoUIScene {
 
 		let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
 		btnUrls = urls;
-		let btn = new Button();
+		let btn = CoUI.createButton();//new Button();
 		btn.initialize(texAtlas, btnUrls);
 		// btn.initializeWithLable(lable01);
 		this.m_uisc.addEntity(btn);
@@ -231,20 +239,20 @@ export class DemoUIScene {
 			this.m_urls.push(url);
 			if (this.m_urls.length == 31) {
 				let urls = this.m_urls;
-				let lable = new ClipLabel();
+				let lable = CoUI.createClipLabel();//new ClipLabel();
 				lable.initialize(texAtlas, this.m_urls);
 				lable.setClipIndex(2);
 				lable.setXY(300, 200);
 				this.m_uisc.addEntity(lable);
 
-				let lable01 = new ClipLabel();
+				let lable01 = CoUI.createClipLabel();//new ClipLabel();
 				lable01.initializeWithLable(lable);
 				lable01.setClipIndex(1);
 				lable01.setXY(200, 300);
 				this.m_uisc.addEntity(lable01);
 
 				let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
-				let btn = new Button();
+				let btn = CoUI.createButton();//new Button();
 				btn.initialize(texAtlas, btnUrls);
 				// btn.initializeWithLable(lable01);
 				this.m_uisc.addEntity(btn);
