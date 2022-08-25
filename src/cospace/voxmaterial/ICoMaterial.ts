@@ -29,7 +29,13 @@ interface CoMaterialContextParam {
 }
 
 interface ICoMaterial {
-
+    /**
+     * create a Color4 instance
+     * @param pr the default vaue is 1.0
+     * @param pg the default vaue is 1.0
+     * @param pb the default vaue is 1.0
+     * @param pa the default vaue is 1.0
+     */
 	createColor4(pr?: number, pg?: number, pb?: number, pa?: number): IColor4;
 	/**
 	 * build default 3d entity rendering material

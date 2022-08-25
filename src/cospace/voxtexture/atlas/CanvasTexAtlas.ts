@@ -44,7 +44,7 @@ export class CanvasTexAtlas implements ICanvasTexAtlas {
 		this.m_sc = sc;
 		let atlas: ImageTexAtlas = null;
 		if (fillColor == null) {
-			fillColor = transparent ? CoMaterial.createColor4(1.0, 1.0, 1.0, 0.0) : CoMaterial.createColor4(1.0, 1.0, 1.0, 1.0);
+			fillColor = transparent ? CoMaterial.createColor4(1.0, 1.0, 1.0, 0.0) : CoMaterial.createColor4();
 		}
 		if (this.m_atlasList[0] == null) {
 			atlas = new ImageTexAtlas(this.m_sc, canvasWidth, canvasHeight, fillColor, transparent);

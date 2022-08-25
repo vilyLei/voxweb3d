@@ -302,7 +302,9 @@ export class DemoUIScene {
 		}
 	}
 	private initRenderer(): void {
+		
 		if (this.m_rscene == null) {
+
 			let RendererDevice = CoRScene.RendererDevice;
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
