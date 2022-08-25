@@ -56,6 +56,7 @@ import VtxBufConst from "../../vox/mesh/VtxBufConst";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 import Line3DMaterial from "../../vox/material/mcase/Line3DMaterial";
+import { DisplayEntityContainer } from "./CoEngine";
 
 function createVec3(px: number = 0.0, py: number = 0.0, pz: number = 0.0, pw: number = 1.0): IVector3D {
 	return new Vector3D(px, py, pz, pw);
@@ -190,7 +191,9 @@ function createDisplayEntity(): ITransformEntity {
 function createMouseEventEntity(): IMouseEventEntity {
 	return new MouseEventEntity();
 }
-
+function createDisplayEntityContainer(): DisplayEntityContainer {
+	return new DisplayEntityContainer();
+}
 function createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D): ITransformEntity {
 
 	let vs = new Float32Array([minV.x, 0, 0, maxV.x, 0, 0, 0, minV.y, 0, 0, maxV.y, 0, 0, 0, minV.z, 0, 0, maxV.z]);
@@ -272,6 +275,7 @@ export {
 	createDisplayEntityWithDataMesh,
 	createDisplayEntity,
 	createMouseEventEntity,
+	createDisplayEntityContainer,
 
 	creatMaterialContextParam,
 	createMaterialContext
