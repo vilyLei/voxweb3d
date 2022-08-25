@@ -18,6 +18,7 @@ import { ViewerCoSApp } from "../../demo/coViewer/ViewerCoSApp";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
+import ImageTexAtlas from "../../voxtexture/atlas/ImageTexAtlas";
 import { CoUIScene } from "../../voxui/scene/CoUIScene";
 import { ClipLabel } from "../../voxui/entity/ClipLabel";
 import { Button } from "../../voxui/entity/Button";
@@ -97,7 +98,6 @@ export class DemoUIScene {
 
 										this.initUIScene();
 										this.initUISC();
-
 									}).load(url7);
 								}).load(url6);
 							}).load(url5);
@@ -152,7 +152,55 @@ export class DemoUIScene {
 
 		uisc.rscene.addEntity(entity);
 		//*/
+		// let canvas = ImageTexAtlas.CreateCharsCanvas("ABC",30);
+		// let canvas = ImageTexAtlas.CreateCharsCanvasFixSize(100,40,"ABC",30);
+		// document.body.appendChild(canvas);
+		// canvas = ImageTexAtlas.CreateCharsCanvasFixSize(100,40,"ABCD",30);
+		// canvas.style.top = '40px';
+		// document.body.appendChild(canvas);
+
 		this.loadImgs();
+		this.createCanvasClips();
+	}
+	private createCanvasClips(): void {
+		console.log("createCanvasClips()................");
+
+		let uisc = this.m_uisc;
+		let texAtlas = uisc.texAtlas;
+		let canvas = texAtlas.createCharsCanvasFixSize(100, 40, "ABC", 30);
+		document.body.appendChild(canvas);
+		canvas = texAtlas.createCharsCanvasFixSize(100, 40, "ABCD", 30);
+		canvas.style.top = "40px";
+		document.body.appendChild(canvas);
+
+		let urls: string[] = ["AAA-0", "AAA-1", "AAA-2", "AAA-3"];
+		let img = texAtlas.createCharsCanvasFixSize(90, 40, urls[0], 30);
+		texAtlas.addImageToAtlas(urls[0], img);
+		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[1], 30);
+		texAtlas.addImageToAtlas(urls[1], img);
+		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[2], 30);
+		texAtlas.addImageToAtlas(urls[2], img);
+		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[3], 30);
+		texAtlas.addImageToAtlas(urls[3], img);
+
+		let lable = new ClipLabel();
+		lable.initialize(texAtlas, urls);
+		lable.setClipIndex(2);
+		lable.setXY(300, 200);
+		this.m_uisc.addEntity(lable);
+
+		let lable01 = new ClipLabel();
+		lable01.initializeWithLable(lable);
+		lable01.setClipIndex(1);
+		lable01.setXY(200, 300);
+		this.m_uisc.addEntity(lable01);
+
+		let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
+		btnUrls = urls;
+		let btn = new Button();
+		btn.initialize(texAtlas, btnUrls);
+		// btn.initializeWithLable(lable01);
+		this.m_uisc.addEntity(btn);
 	}
 	private createDefaultEntity(): void {
 		let axis = CoRScene.createAxis3DEntity();
@@ -175,26 +223,26 @@ export class DemoUIScene {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";
 	}
 	private loadedImg(img: HTMLImageElement, url: string): void {
-		if(url != "") {
-			console.log("XXX loadedImg(), url: ",url);
+		if (url != "") {
+			console.log("XXX loadedImg(), url: ", url);
 			let uisc = this.m_uisc;
 			let texAtlas = uisc.texAtlas;
 			texAtlas.addImageToAtlas(url, img);
 			this.m_urls.push(url);
-			if(this.m_urls.length == 3) {
+			if (this.m_urls.length == 31) {
 				let urls = this.m_urls;
 				let lable = new ClipLabel();
 				lable.initialize(texAtlas, this.m_urls);
 				lable.setClipIndex(2);
-				lable.setXY(300,200);
+				lable.setXY(300, 200);
 				this.m_uisc.addEntity(lable);
 
 				let lable01 = new ClipLabel();
 				lable01.initializeWithLable(lable);
 				lable01.setClipIndex(1);
-				lable01.setXY(200,300);
+				lable01.setXY(200, 300);
 				this.m_uisc.addEntity(lable01);
-				
+
 				let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
 				let btn = new Button();
 				btn.initialize(texAtlas, btnUrls);
@@ -204,12 +252,18 @@ export class DemoUIScene {
 		}
 	}
 	private loadImgs(): void {
-		let  url0 = "static/assets/flare_core_01.jpg";
-		let  url1 = "static/assets/flare_core_02.jpg";
-		let  url2 = "static/assets/flare_core_03.jpg";
-		this.loadImgByUrl(url0, (img: HTMLImageElement, url: string): void => {this.loadedImg(img, url);});
-		this.loadImgByUrl(url1, (img: HTMLImageElement, url: string): void => {this.loadedImg(img, url);});
-		this.loadImgByUrl(url2, (img: HTMLImageElement, url: string): void => {this.loadedImg(img, url);});
+		let url0 = "static/assets/flare_core_01.jpg";
+		let url1 = "static/assets/flare_core_02.jpg";
+		let url2 = "static/assets/flare_core_03.jpg";
+		this.loadImgByUrl(url0, (img: HTMLImageElement, url: string): void => {
+			this.loadedImg(img, url);
+		});
+		this.loadImgByUrl(url1, (img: HTMLImageElement, url: string): void => {
+			this.loadedImg(img, url);
+		});
+		this.loadImgByUrl(url2, (img: HTMLImageElement, url: string): void => {
+			this.loadedImg(img, url);
+		});
 	}
 	private createTexByUrl(url: string = ""): IRenderTexture {
 		let tex = this.m_rscene.textureBlock.createImageTex2D(64, 64, false);
@@ -225,8 +279,7 @@ export class DemoUIScene {
 		img.src = url != "" ? url : "static/assets/box.jpg";
 		return tex;
 	}
-	private loadImgByUrl(url: string , loaded: (img: HTMLImageElement ,url: string) => void): void {
-
+	private loadImgByUrl(url: string, loaded: (img: HTMLImageElement, url: string) => void): void {
 		let img: HTMLImageElement = new Image();
 		img.onload = (evt: any): void => {
 			loaded(img, url);
