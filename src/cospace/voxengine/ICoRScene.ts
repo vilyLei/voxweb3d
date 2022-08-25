@@ -9,7 +9,7 @@ import { ICoRendererScene } from "./scene/ICoRendererScene";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import ITransformEntity from "../../vox/entity/ITransformEntity";
 import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
-import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
+import IDisplayEntityContainer from "../../vox/entity/IDisplayEntityContainer";
 
 import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";
 import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
@@ -225,7 +225,7 @@ interface ICoRScene {
 	createDisplayEntityWithDataMesh(mesh: IDataMesh, material: IRenderMaterial, texEnabled?: boolean, vbWhole?: boolean): ITransformEntity;
 	createDisplayEntity(): ITransformEntity;
 	createMouseEventEntity(): IMouseEventEntity;
-	createDisplayEntityContainer(): DisplayEntityContainer;
+	createIDisplayEntityContainer(): IDisplayEntityContainer;
 
 	creatMaterialContextParam(): CoMaterialContextParam;
 	createMaterialContext(): IMaterialContext;

@@ -34,6 +34,7 @@ import ITransformEntity from "../../vox/entity/ITransformEntity";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
 import MouseEventEntity from "../../vox/entity/MouseEventEntity";
+import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 
 import IDefault3DMaterial from "../../vox/material/mcase/IDefault3DMaterial";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
@@ -56,7 +57,7 @@ import VtxBufConst from "../../vox/mesh/VtxBufConst";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 import Line3DMaterial from "../../vox/material/mcase/Line3DMaterial";
-import { DisplayEntityContainer } from "./CoEngine";
+
 
 function createVec3(px: number = 0.0, py: number = 0.0, pz: number = 0.0, pw: number = 1.0): IVector3D {
 	return new Vector3D(px, py, pz, pw);
