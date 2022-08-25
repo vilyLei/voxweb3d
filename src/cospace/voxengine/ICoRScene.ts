@@ -165,9 +165,9 @@ interface ICoRScene {
 	MaterialPipeType: CoMaterialPipeType;
 	/**
 	 * create a Vector3D instance
-	 * @param px the default vaue is 1.0
-	 * @param py the default vaue is 1.0
-	 * @param pz the default vaue is 1.0
+	 * @param px the default vaue is 0.0
+	 * @param py the default vaue is 0.0
+	 * @param pz the default vaue is 0.0
 	 * @param pw the default vaue is 1.0
 	 */
 	createVec3(px?: number, py?: number, pz?: number, pw?: number): IVector3D;

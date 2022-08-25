@@ -42,7 +42,13 @@ interface CoMathVec3 {
 interface ICoMath {
 
 	Vector3D: CoMathVec3;
-
+	/**
+	 * create a Vector3D instance
+	 * @param px the default vaue is 0.0
+	 * @param py the default vaue is 0.0
+	 * @param pz the default vaue is 0.0
+	 * @param pw the default vaue is 1.0
+	 */
 	createVec3(px?: number, py?: number, pz?: number, pw?: number): IVector3D;
 	createMat4(pfs32?: Float32Array, index?: number): IMatrix4;
 	createAABB(): IAABB;
