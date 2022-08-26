@@ -1,5 +1,7 @@
 import { IClipLabel } from "./entity/IClipLabel";
 import { ClipLabel } from "./entity/ClipLabel";
+import { IClipColorLabel } from "./entity/IClipColorLabel";
+import { ClipColorLabel } from "./entity/ClipColorLabel";
 
 import { IButton } from "./entity/IButton";
 import { Button } from "./entity/Button";
@@ -13,6 +15,9 @@ import { CoUIScene } from "./scene/CoUIScene";
 function createClipLabel(): IClipLabel {
 	return new ClipLabel();
 }
+function createClipColorLabel(): IClipColorLabel {
+	return new ClipColorLabel();
+}
 function createButton(): IButton {
 	return new Button();
 }
@@ -21,6 +26,7 @@ function createUIScene(): ICoUIScene {
 }
 export {
 	createClipLabel,
+	createClipColorLabel,
 	createButton,
 	createUIScene
 };

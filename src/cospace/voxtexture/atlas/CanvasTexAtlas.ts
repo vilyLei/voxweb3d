@@ -58,12 +58,7 @@ export class CanvasTexAtlas implements ICanvasTexAtlas {
 	getAtlasAt(i: number = 0): ImageTexAtlas {
 		return this.m_atlasList[i];
 	}
-	addcharsToAtlas(
-		chars: string,
-		size: number,
-		fontColor: IColor4,
-		bgColor: IColor4
-	): CanvasTexObject {
+	addcharsToAtlas(chars: string, size: number, fontColor: IColor4, bgColor: IColor4): CanvasTexObject {
 		if (chars != "") {
 			let image = ImageTexAtlas.CreateCharsCanvas(chars, size, fontColor, bgColor);
 			return this.addImageToAtlas(chars, image);
@@ -117,9 +112,6 @@ export class CanvasTexAtlas implements ICanvasTexAtlas {
 	createTexObjWithStr(chars: string, size: number, fontColor: IColor4 = null, bgColor: IColor4 = null): CanvasTexObject {
 		if (fontColor == null) fontColor = CoMaterial.createColor4(0, 0, 0, 1);
 		if (bgColor == null) bgColor = CoMaterial.createColor4();
-		// let fs = fontColor.getCSSDecRGBAColor();
-		// let bs = bgColor.getCSSDecRGBAColor();
-		// let keyStr = chars + "-" + size + "-" + fs + "-" + bs;
 		if (chars == null || chars == "" || size < 8) {
 			return null;
 		}
@@ -140,12 +132,7 @@ export class CanvasTexAtlas implements ICanvasTexAtlas {
 	): HTMLCanvasElement {
 		return ImageTexAtlas.CreateCharsCanvasFixSize(width, height, chars, fontSize, fontColor, bgColor);
 	}
-	createCharsImage(
-		chars: string,
-		size: number,
-		fontColor: IColor4 = null,
-		bgColor: IColor4 = null
-	): HTMLCanvasElement | HTMLImageElement {
+	createCharsImage(chars: string, size: number, fontColor: IColor4 = null, bgColor: IColor4 = null): HTMLCanvasElement | HTMLImageElement {
 		if (chars == null || chars == "" || size < 8) {
 			return null;
 		}
@@ -153,6 +140,7 @@ export class CanvasTexAtlas implements ICanvasTexAtlas {
 	}
 
 	private m_whiteTex: IRenderTexture = null;
+	private m_whiteImg: HTMLCanvasElement = null;
 	createWhiteTex(): IRenderTexture {
 		if (this.m_whiteTex != null) {
 			return this.m_whiteTex;
@@ -161,6 +149,7 @@ export class CanvasTexAtlas implements ICanvasTexAtlas {
 		let canvas = document.createElement("canvas");
 		canvas.width = size;
 		canvas.height = size;
+		this.m_whiteImg = canvas;
 
 		let ctx2D = canvas.getContext("2d");
 		ctx2D.fillStyle = "white";

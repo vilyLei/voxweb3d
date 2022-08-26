@@ -1,9 +1,11 @@
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
+import IDefault3DMaterial from "../../../vox/material/mcase/IDefault3DMaterial";
 import ICanvasTexObject from "../../voxtexture/atlas/ICanvasTexObject";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
-import { IClipLabel } from "./IClipLabel";
+import { IClipColorLabel } from "./IClipColorLabel";
 import IVector3D from "../../../vox/math/IVector3D";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
+import IColor4 from "../../../vox/material/IColor4";
 
 import { ICoMesh } from "../../voxmesh/ICoMesh";
 declare var CoMesh: ICoMesh;
@@ -14,17 +16,16 @@ declare var CoMath: ICoMath;
 import { ICoEntity } from "../../voxentity/ICoEntity";
 declare var CoEntity: ICoEntity;
 
-class ClipLabel implements IClipLabel {
+class ClipColorLabel implements IClipColorLabel {
 	private m_width = 0;
 	private m_height = 0;
-	private m_sizes: number[] = null;
+	private m_fixSize: boolean = true;
+	private m_colors: IColor4[] = null;
 	private m_index = 0;
 	private m_total = 0;
-	private m_step = 6;
-	private m_vtCount = 0;
 	private m_pos: IVector3D;
 	private m_entity: ITransformEntity = null;
-
+	private m_material: IDefault3DMaterial = null;
 	private m_rotation: number = 0;
 	private m_sx: number = 1;
 	private m_sy: number = 1;
@@ -37,60 +38,67 @@ class ClipLabel implements IClipLabel {
 		let pz: number = 0.0;
 		return [minX, minY, pz, maxX, minY, pz, maxX, maxY, pz, minX, maxY, pz];
 	}
-	private createMesh(atlas: ICanvasTexAtlas, idnsList: string[]): IRawMesh {
+	private createMesh(atlas: ICanvasTexAtlas, idns: string): IRawMesh {
 
-		let partVtxTotal = 4;
-		let pivs = [0, 1, 2, 0, 2, 3];
+		let ivs = new Uint16Array([0, 1, 2, 0, 2, 3]);
+		let vs = new Float32Array(this.createVS(0, 0, this.m_width, this.m_height));
 
-		const n = this.m_total;
-		let ivs = new Uint16Array(n * 6);
-		let vs = new Float32Array(n * 12);
-		let uvs = new Float32Array(n * 8);
-		this.m_sizes = new Array(n * 2);
-
-		let k = 0;
-		for (let i = 0; i < n; ++i) {
-
-			const obj = atlas.getTexObjFromAtlas(idnsList[i]);
-			ivs.set(pivs, i * pivs.length);
-			vs.set(this.createVS(0, 0, obj.getWidth(), obj.getHeight()), i * 12);
-			uvs.set(obj.uvs, i * 8);
-
-			for (let j = 0; j < pivs.length; ++j) {
-				pivs[j] += partVtxTotal;
-			}
-			this.m_sizes[k++] = obj.getWidth();
-			this.m_sizes[k++] = obj.getHeight();
-		}
 		let mesh = CoMesh.createRawMesh();
 		mesh.reset();
 		mesh.setIVS(ivs);
 		mesh.addFloat32Data(vs, 3);
-		mesh.addFloat32Data(uvs, 2);
+
+		if(idns != "" && atlas != null) {
+			let obj = atlas.getTexObjFromAtlas(idns);
+			let uvs = new Float32Array(obj.uvs);
+			mesh.addFloat32Data(uvs, 2);
+		}
 		mesh.initialize();
 		return mesh;
 	}
-	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void {
+	initialize(atlas: ICanvasTexAtlas, idns: string, colorsTotal: number): void {
 
-		if (this.m_entity == null && atlas != null && idnsList != null && idnsList.length > 0) {
+		if (this.m_entity == null && colorsTotal > 0) {
 
-			this.m_pos = CoMath.createVec3();
-
-			this.m_total = idnsList.length;
-			let obj = atlas.getTexObjFromAtlas(idnsList[0]);
-			let mesh = this.createMesh(atlas, idnsList);
-			this.m_vtCount = mesh.vtCount;
 			let material = CoMaterial.createDefaultMaterial();
-			material.setTextureList([obj.texture]);
-			let et = this.m_entity = CoEntity.createDisplayEntity();
+			if(idns != "" && atlas != null) {
+				let obj = atlas.getTexObjFromAtlas(idns);
+				if(this.m_fixSize) {
+					this.m_width = obj.getWidth();
+					this.m_height = obj.getHeight();
+				}
+				material.setTextureList([obj.texture]);
+			}
+			let mesh = this.createMesh(atlas, idns);
+			let et = (this.m_entity = CoEntity.createDisplayEntity());
 			et.setMaterial(material);
 			et.setMesh(mesh);
-			et.setIvsParam(0, this.m_step);
-
+			this.m_material = material;
+			this.m_pos = CoMath.createVec3();
+			let colors = new Array(colorsTotal);
+			for (let i = 0; i < colorsTotal; ++i) {
+				colors[i] = CoMaterial.createColor4();
+			}
+			this.m_colors = colors;
+			this.m_total = colorsTotal;
 			this.setClipIndex(0);
 		}
 	}
-	initializeWithLable(srcLable: IClipLabel): void {
+	initializeWithoutTex(width: number, height: number, colorsTotal: number): void {
+		this.m_width = width;
+		this.m_height = height;
+		this.m_fixSize = false;
+		this.initialize(null, "", colorsTotal);
+	}
+	initializeWithSize(width: number, height: number, atlas: ICanvasTexAtlas, idns: string, colorsTotal: number): void {
+		if(width > 0 && height > 0) {
+			this.m_width = width;
+			this.m_height = height;
+			this.m_fixSize = false;
+			this.initialize(atlas, idns, colorsTotal);
+		}
+	}
+	initializeWithLable(srcLable: IClipColorLabel): void {
 		if (this.m_entity == null && srcLable != null && srcLable != this) {
 			if (srcLable.getClipsTotal() < 1) {
 				throw Error("Error: srcLable.getClipsTotal() < 1");
@@ -101,45 +109,47 @@ class ClipLabel implements IClipLabel {
 			this.m_pos = CoMath.createVec3();
 
 			let tex = entity.getMaterial().getTextureAt(0);
-			let n = this.m_total = srcLable.getClipsTotal();
-			this.m_sizes = new Array(n * 2);
-			let k = 0;
+			let n = (this.m_total = srcLable.getClipsTotal());
+			let src = srcLable.getColors();
 
+			let colors: IColor4[] = new Array(n);
 			for (let i = 0; i < n; ++i) {
-				srcLable.setClipIndex(i);
-				this.m_sizes[k++] = srcLable.getWidth();
-				this.m_sizes[k++] = srcLable.getHeight();
+				colors[i] = CoMaterial.createColor4();
+				colors[i].copyFrom(src[i]);
 			}
-
-			this.m_vtCount = mesh.vtCount;
+			this.m_colors = colors;
+			this.m_width = srcLable.getWidth();
+			this.m_height = srcLable.getHeight();
 			let material = CoMaterial.createDefaultMaterial();
 			material.setTextureList([tex]);
-			let et = this.m_entity = CoEntity.createDisplayEntity();
+			let et = (this.m_entity = CoEntity.createDisplayEntity());
 			et.setMaterial(material);
 			et.setMesh(mesh);
-			et.setIvsParam(0, this.m_step);
+			this.m_material = material;
 			this.setClipIndex(0);
 		}
 	}
-	displaceFromLable(srcLable: IClipLabel): void {
+	displaceFromLable(srcLable: IClipColorLabel): void {
 		if (srcLable != null && srcLable != this) {
 			if (srcLable.getClipsTotal() < 1) {
 				throw Error("Error: srcLable.getClipsTotal() < 1");
 			}
 			if (this.m_entity == null) {
 				this.initializeWithLable(srcLable);
-			} else if(this.m_entity.isRFree()){
-
+			} else if (this.m_entity.isRFree()) {
 			}
+		}
+	}
+
+	getColorAt(i: number): IColor4 {
+		if (i >= 0 && i < this.m_total) {
+			return this.m_colors[i];
 		}
 	}
 	setClipIndex(i: number): void {
 		if (i >= 0 && i < this.m_total) {
 			this.m_index = i;
-			this.m_entity.setIvsParam(i * this.m_step, this.m_step);
-			i = i << 1;
-			this.m_width = this.m_sizes[i];
-			this.m_height = this.m_sizes[i + 1];
+			this.m_material.setColor(this.m_colors[i]);
 		}
 	}
 	setCircleClipIndex(i: number): void {
@@ -153,6 +163,10 @@ class ClipLabel implements IClipLabel {
 	}
 	getClipsTotal(): number {
 		return this.m_total;
+	}
+
+	getColors(): IColor4[] {
+		return this.m_colors;
 	}
 
 	getWidth(): number {
@@ -231,7 +245,7 @@ class ClipLabel implements IClipLabel {
 		this.m_entity.update();
 	}
 	destroy(): void {
-		this.m_sizes = null;
+		this.m_colors = null;
 		this.m_total = 0;
 		if (this.m_entity != null) {
 			this.m_entity.destroy();
@@ -239,4 +253,4 @@ class ClipLabel implements IClipLabel {
 		}
 	}
 }
-export { ClipLabel };
+export { ClipColorLabel };

@@ -18,11 +18,12 @@ import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
 import { ViewerCoSApp } from "../../demo/coViewer/ViewerCoSApp";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
-import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
-import ImageTexAtlas from "../../voxtexture/atlas/ImageTexAtlas";
+// import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
+// import ImageTexAtlas from "../../voxtexture/atlas/ImageTexAtlas";
 import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
 // import { ClipLabel } from "../../voxui/entity/ClipLabel";
 // import { Button } from "../../voxui/entity/Button";
+import { ClipColorLabel } from "../../voxui/entity/ClipColorLabel";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 //CanvasTexAtlas
@@ -85,6 +86,7 @@ export class DemoUIScene {
 
 				new ModuleLoader(1, (): void => {
 					console.log("math module loaded ...");
+
 					new ModuleLoader(1, (): void => {
 						console.log("ageom module loaded ...");
 
@@ -96,15 +98,13 @@ export class DemoUIScene {
 
 								new ModuleLoader(1, (): void => {
 									console.log("CoTexture module loaded ...");
+
 									new ModuleLoader(1, (): void => {
 										console.log("CoEntity module loaded ...");
 										new ModuleLoader(1, (): void => {
-
 											this.initUIScene();
 											this.initUISC();
-
 										}).load(url8);
-
 									}).load(url7);
 								}).load(url6);
 							}).load(url5);
@@ -126,8 +126,7 @@ export class DemoUIScene {
 	}
 	private m_uisc: ICoUIScene = null;
 	private initUIScene(): void {
-
-		let uisc: ICoUIScene = CoUI.createUIScene();//new CoUIScene();
+		let uisc: ICoUIScene = CoUI.createUIScene(); //new CoUIScene();
 		this.m_uisc = uisc;
 		uisc.initialize();
 		console.log("uisc: ", uisc);
@@ -161,6 +160,7 @@ export class DemoUIScene {
 		uisc.rscene.addEntity(entity);
 		//*/
 		// let canvas = ImageTexAtlas.CreateCharsCanvas("ABC",30);
+
 		// let canvas = ImageTexAtlas.CreateCharsCanvasFixSize(100,40,"ABC",30);
 		// document.body.appendChild(canvas);
 		// canvas = ImageTexAtlas.CreateCharsCanvasFixSize(100,40,"ABCD",30);
@@ -177,9 +177,24 @@ export class DemoUIScene {
 		let texAtlas = uisc.texAtlas;
 		let canvas = texAtlas.createCharsCanvasFixSize(100, 40, "ABC", 30);
 		document.body.appendChild(canvas);
-		canvas = texAtlas.createCharsCanvasFixSize(100, 40, "ABCD", 30);
-		canvas.style.top = "40px";
-		document.body.appendChild(canvas);
+		// canvas = texAtlas.createCharsCanvasFixSize(100, 40, "ABCD", 30);
+		// canvas.style.top = "40px";
+		// document.body.appendChild(canvas);
+
+		texAtlas.addImageToAtlas("ABC", canvas);
+		let clipColorLabel = new ClipColorLabel();
+		// let clipColorLabel = CoUI.createClipColorLabel();
+		// clipColorLabel.initialize(texAtlas, "ABC", 4);
+		clipColorLabel.initializeWithoutTex(50, 32, 4);
+		clipColorLabel.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
+		clipColorLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
+		clipColorLabel.getColorAt(2).setRGB3f(1.0, 0.2, 1.0);
+		// this.m_uisc.addEntity(clipColorLabel);
+		// clipColorLabel.setClipIndex(0);
+		let btn01 = CoUI.createButton();
+		btn01.initializeWithLable(clipColorLabel);
+		this.m_uisc.addEntity(btn01);
+		return;
 
 		let urls: string[] = ["AAA-0", "AAA-1", "AAA-2", "AAA-3"];
 		let img = texAtlas.createCharsCanvasFixSize(90, 40, urls[0], 30);
@@ -191,13 +206,13 @@ export class DemoUIScene {
 		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[3], 30);
 		texAtlas.addImageToAtlas(urls[3], img);
 
-		let lable = CoUI.createClipLabel();//new ClipLabel();
+		let lable = CoUI.createClipLabel();
 		lable.initialize(texAtlas, urls);
 		lable.setClipIndex(2);
 		lable.setXY(300, 200);
 		this.m_uisc.addEntity(lable);
 
-		let lable01 = CoUI.createClipLabel();//new ClipLabel();
+		let lable01 = CoUI.createClipLabel();
 		lable01.initializeWithLable(lable);
 		lable01.setClipIndex(1);
 		lable01.setXY(200, 300);
@@ -205,7 +220,7 @@ export class DemoUIScene {
 
 		let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
 		btnUrls = urls;
-		let btn = CoUI.createButton();//new Button();
+		let btn = CoUI.createButton(); //new Button();
 		btn.initialize(texAtlas, btnUrls);
 		// btn.initializeWithLable(lable01);
 		this.m_uisc.addEntity(btn);
@@ -239,20 +254,20 @@ export class DemoUIScene {
 			this.m_urls.push(url);
 			if (this.m_urls.length == 31) {
 				let urls = this.m_urls;
-				let lable = CoUI.createClipLabel();//new ClipLabel();
+				let lable = CoUI.createClipLabel(); //new ClipLabel();
 				lable.initialize(texAtlas, this.m_urls);
 				lable.setClipIndex(2);
 				lable.setXY(300, 200);
 				this.m_uisc.addEntity(lable);
 
-				let lable01 = CoUI.createClipLabel();//new ClipLabel();
+				let lable01 = CoUI.createClipLabel(); //new ClipLabel();
 				lable01.initializeWithLable(lable);
 				lable01.setClipIndex(1);
 				lable01.setXY(200, 300);
 				this.m_uisc.addEntity(lable01);
 
 				let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
-				let btn = CoUI.createButton();//new Button();
+				let btn = CoUI.createButton(); //new Button();
 				btn.initialize(texAtlas, btnUrls);
 				// btn.initializeWithLable(lable01);
 				this.m_uisc.addEntity(btn);
@@ -302,9 +317,7 @@ export class DemoUIScene {
 		}
 	}
 	private initRenderer(): void {
-		
 		if (this.m_rscene == null) {
-
 			let RendererDevice = CoRScene.RendererDevice;
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;

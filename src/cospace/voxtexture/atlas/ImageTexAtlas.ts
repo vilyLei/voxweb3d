@@ -121,7 +121,7 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 			fontColor = CoMaterial.createColor4(0, 0, 0, 1.0);
 		}
 		if (bgColor == null) {
-			bgColor = CoMaterial.createColor4(1, 1, 1, 1.0);
+			bgColor = CoMaterial.createColor4();
 		}
 		width = 0 | width;
 		height = 0 | height;
@@ -144,11 +144,18 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 		ctx2D.drawImage(texImg, sx, sy, texImg.width, texImg.height);
 		return canvas;
 	}
-	static CreateCharsCanvas(chars: string, fontSize: number, fontColor: IColor4, bgColor: IColor4): HTMLCanvasElement {
+	static CreateCharsCanvas(chars: string, fontSize: number, fontColor: IColor4 = null, bgColor: IColor4 = null): HTMLCanvasElement {
 
 		if (chars == null || chars == "" || fontSize < 8) {
 			return null;
 		}
+		if (fontColor == null) {
+			fontColor = CoMaterial.createColor4(0, 0, 0, 1.0);
+		}
+		if (bgColor == null) {
+			bgColor = CoMaterial.createColor4();
+		}
+		console.log("bgColor: ",bgColor);
 		let ftCStr = fontColor.getCSSDecRGBAColor();
 		let bgCStr = bgColor.getCSSDecRGBAColor();
 		let keyStr = chars + "_" + fontSize + "_" + ftCStr + "_" + bgCStr;
@@ -205,10 +212,10 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 		height = Math.round(rect.height) + 8;
 		//*/
 		// console.log("rect.height: ", rect.height, "fontSize: ",fontSize);
-		ctx2D.fillStyle = ftCStr;
+		ctx2D.fillStyle = bgCStr;
 		ctx2D.fillRect(0, 0, width, height);
 		ctx2D.textAlign = "left";
-		ctx2D.fillStyle = bgCStr;
+		ctx2D.fillStyle = ftCStr;
 		//ctx2D.fillText(chars, (fontSize - texWidth) * 0.5, fontSize - (fontSize - metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent * 2.0) * 0.5);
 		///*
 		const RD = CoRScene.RendererDevice;

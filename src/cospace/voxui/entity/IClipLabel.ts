@@ -1,16 +1,12 @@
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import ICanvasTexObject from "../../voxtexture/atlas/ICanvasTexObject";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
-import { IUIEntity } from "./IUIEntity";
+import { IClipEntity } from "./IClipEntity";
 
-interface IClipLabel extends IUIEntity {
-	
+interface IClipLabel extends IClipEntity {
+
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void;
 	initializeWithLable(srcLable: IClipLabel): void;
-	setClipIndex(i: number): void;
-	setCircleClipIndex(i: number): void;
-	getClipIndex(): number;
-	getClipsTotal(): number;
 
 }
 export { IClipLabel };

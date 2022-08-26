@@ -20,5 +20,7 @@ export default interface IDefault3DMaterial extends IRenderMaterial {
     getRGB3f(color: IColor4): void;
     setRGBA4f(pr: number, pg: number, pb: number, pa: number): void;
     getRGBA4f(color: IColor4): void;
+    setColor(color: IColor4): void;
+    getColor(color: IColor4): void;
     setAlpha(pa: number): void;
 }
