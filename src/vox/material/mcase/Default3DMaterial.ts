@@ -118,12 +118,12 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
 export default class Default3DMaterial extends MaterialBase implements IDefault3DMaterial {
 
     private static s_shdCodeBuffer: Default3DShaderCodeBuffer = null;
-    private m_data: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
-    vertColorEnabled: boolean = false;
-    premultiplyAlpha: boolean = false;
-    normalEnabled: boolean = false;
-    shadowReceiveEnabled: boolean = false;
-    vtxMatrixTransform: boolean = true;
+    private m_data = new Float32Array([1.0, 1.0, 1.0, 1.0]);
+    vertColorEnabled = false;
+    premultiplyAlpha = false;
+    normalEnabled = false;
+    shadowReceiveEnabled = false;
+    vtxMatrixTransform = true;
     constructor() {
         super();
         if (Default3DMaterial.s_shdCodeBuffer == null) {

@@ -59,7 +59,14 @@ interface CoVec3 {
 	 */
 	RadianBetween(v0: IVector3D, v1: IVector3D): number;
 	RadianBetween2(v0: IVector3D, v1: IVector3D): number;
-	Reflect(iv: IVector3D, nv: IVector3D, rv: IVector3D): void;
+	Reflect(iv: IVector3D, nv: IVector3D, rv: IVector3D): void;/**
+	* 逆时针转到垂直
+	*/
+	VerticalCCWOnXOY(v: IVector3D): void;
+	/**
+	 * 顺时针转到垂直
+	 */
+	VerticalCWOnXOY(v: IVector3D): void;
 }
 
 interface CoMouseEvent {
@@ -242,6 +249,14 @@ interface ICoRScene {
 
 	creatMaterialContextParam(): CoMaterialContextParam;
 	createMaterialContext(): IMaterialContext;
+	/**
+	 * 逆时针转到垂直
+	 */
+	VerticalCCWOnXOY(v: IVector3D): void;
+	/**
+	 * 顺时针转到垂直
+	 */
+	VerticalCWOnXOY(v: IVector3D): void;
 
 }
-export { CoMaterialContextParam, ICoRScene };
+export { CoVec3, CoMaterialContextParam, ICoRScene };

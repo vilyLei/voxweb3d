@@ -13,6 +13,7 @@ import DebugFlag from "../../../vox/debug/DebugFlag";
 
 import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
 import Axis3DEntity from "../../../vox/entity/Axis3DEntity";
+import Line3DEntity from "../../../vox/entity/Line3DEntity";
 
 import { MaterialContext } from "../../../materialLab/base/MaterialContext";
 import { RenderableMaterialBlock } from "../../../vox/scene/block/RenderableMaterialBlock";
@@ -99,24 +100,32 @@ export class DemoBase {
         this.m_rscene.addEntity(textObject);
 		textObject.setRGB3f(10.5, 0.0, 1.0);
 
+        this.testVec();
+
 	}
-    private initAxisEvt(): void {
+    private testVec(): void {
 
-        let axis: Axis3DEntity = new Axis3DEntity();
-        axis.initialize(80.0);
-        axis.update();
-        console.log("axis.getGlobalBounds(): ", axis.getGlobalBounds());
-        this.m_rscene.addEntity(axis);
+        let vec01 = new Vector3D();
+        let vec02 = new Vector3D(70.5, 50.0, 0.0);
 
-        let dispatcher = new MouseEvt3DDispatcher()
-        // dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-        dispatcher.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverListener);
-        dispatcher.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutListener);
-        axis.setEvtDispatcher(dispatcher);
-        axis.mouseEnabled = true;
+        let direc01 = new Vector3D().subVecsTo(vec02, vec01);
 
-    }
+        let direc01_vertLeft = direc01.clone();
+        let direc01_vertRight = direc01.clone();
+        
+        Vector3D.VerticalCCWOnXOY(direc01_vertLeft);
+        Vector3D.VerticalCWOnXOY(direc01_vertRight);
 
+        console.log("direc01: ", direc01);
+        console.log("direc01_vertLeft  : ", direc01_vertLeft);
+        console.log("direc01_vertRight : ", direc01_vertRight);
+
+        let line01 = new Line3DEntity();
+        line01.initialize(vec02, vec01);
+
+        this.m_rscene.addEntity( line01 );
+    }    
+    
     protected mouseOverListener(evt: any): void {
         console.log("DemoBase::mouseOverListener() ...");
         // this.showOverColor();

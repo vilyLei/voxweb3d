@@ -126,7 +126,7 @@ export class DemoUIScene {
 	}
 	private m_uisc: ICoUIScene = null;
 	private initUIScene(): void {
-		let uisc: ICoUIScene = CoUI.createUIScene(); //new CoUIScene();
+		let uisc = CoUI.createUIScene(); //new CoUIScene();
 		this.m_uisc = uisc;
 		uisc.initialize();
 		console.log("uisc: ", uisc);

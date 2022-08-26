@@ -187,13 +187,13 @@ export default class Vector3D implements IVector3D {
         return this;
     }
     toString(): string {
-        return "Vector3D("+this.x+""+this.y+""+this.z+")"
+        return "Vector3D(" + this.x + "" + this.y + "" + this.z + ")"
     }
     static readonly X_AXIS = new Vector3D(1, 0, 0);
     static readonly Y_AXIS = new Vector3D(0, 1, 0);
     static readonly Z_AXIS = new Vector3D(0, 0, 1);
-    static readonly ZERO = new Vector3D(0,0,0);
-    static readonly ONE = new Vector3D(1,1,1);
+    static readonly ZERO = new Vector3D(0, 0, 0);
+    static readonly ONE = new Vector3D(1, 1, 1);
 
     /**
      * 右手法则(为正)
@@ -281,6 +281,23 @@ export default class Vector3D implements IVector3D {
         rv.x = iv.x - idotn2 * nv.x;
         rv.y = iv.y - idotn2 * nv.y;
         rv.z = iv.z - idotn2 * nv.z;
+    }
+
+    /**
+     * 逆时针转到垂直
+     */
+    static VerticalCCWOnXOY(v: Vector3D): void {
+        const x = v.x;
+        v.x = -v.y;
+        v.y = x;
+    }
+    /**
+     * 顺时针转到垂直
+     */
+    static VerticalCWOnXOY(v: Vector3D): void {
+        const y = v.y;
+        v.y = -v.x;
+        v.x = y;
     }
 }
 
