@@ -11,7 +11,7 @@ export interface ICanvasTexAtlas {
     initialize(sc: IRendererScene, canvasWidth: number, canvasHeight: number, fillColor?: IColor4, transparent?: boolean): void;
     getTexture(i?: number): IImageTexture;
     getAtlasAt(i?: number): IImageTexAtlas;
-    addcharsToAtlas(chars: string, size: number, fontStyle?: string, bgStyle?: string ): ICanvasTexObject;
+    addcharsToAtlas(chars: string, size: number, fontColor: IColor4, bgColor: IColor4 ): ICanvasTexObject;
     getTextureObject(uniqueName: string): ICanvasTexObject;
     addImageToAtlas(uniqueName: string, img: HTMLCanvasElement | HTMLImageElement): ICanvasTexObject;
     getTexObjFromAtlas(uniqueName: string): ICanvasTexObject;
@@ -27,7 +27,7 @@ export interface ICanvasTexAtlas {
 		bgColor?: IColor4
 	): HTMLCanvasElement
 
-    createCharsImage(chars: string, size: number, frontStyle?: string, bgStyle?: string): HTMLCanvasElement | HTMLImageElement;
+    createCharsImage(chars: string, size: number, fontColor?: IColor4, bgColor?: IColor4): HTMLCanvasElement | HTMLImageElement;
     createWhiteTex(): IRenderTexture;
 }
 export default ICanvasTexAtlas;

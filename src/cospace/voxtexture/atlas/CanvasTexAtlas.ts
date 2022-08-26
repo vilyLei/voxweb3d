@@ -48,24 +48,7 @@ export class CanvasTexAtlas implements ICanvasTexAtlas {
 		}
 		if (this.m_atlasList[0] == null) {
 			atlas = new ImageTexAtlas(this.m_sc, canvasWidth, canvasHeight, fillColor, transparent);
-			//  atlas.getTexture().minFilter = TextureConst.NEAREST;
-			//  atlas.getTexture().magFilter = TextureConst.NEAREST;
-			//  atlas.getTexture().mipmapEnabled = false;
 			this.m_atlasList[0] = atlas;
-			/*
-            // for test
-            let canvas0 = atlas.getCanvas();
-            canvas0.width = 3000;
-            canvas0.height = 4000;
-            canvas0.style.width = 256 + 'px';
-            canvas0.style.height = 256 + 'px';
-            canvas0.style.left = 0 + 'px';
-            canvas0.style.top = 0 + 'px';
-            let debugEnabled: boolean = true;
-            if (debugEnabled) {
-                document.body.appendChild(canvas0);
-            }
-            //*/
 		}
 	}
 
@@ -78,12 +61,11 @@ export class CanvasTexAtlas implements ICanvasTexAtlas {
 	addcharsToAtlas(
 		chars: string,
 		size: number,
-		fontStyle: string = "rgba(255,255,255,1.0)",
-		bgStyle: string = "rgba(255,255,255,0.3)"
+		fontColor: IColor4,
+		bgColor: IColor4
 	): CanvasTexObject {
 		if (chars != "") {
-			let atlas: ImageTexAtlas = this.m_atlasList[0];
-			let image: HTMLImageElement | HTMLCanvasElement = ImageTexAtlas.CreateCharsCanvas(chars, size, fontStyle, bgStyle);
+			let image = ImageTexAtlas.CreateCharsCanvas(chars, size, fontColor, bgColor);
 			return this.addImageToAtlas(chars, image);
 		}
 		return null;
@@ -135,13 +117,14 @@ export class CanvasTexAtlas implements ICanvasTexAtlas {
 	createTexObjWithStr(chars: string, size: number, fontColor: IColor4 = null, bgColor: IColor4 = null): CanvasTexObject {
 		if (fontColor == null) fontColor = CoMaterial.createColor4(0, 0, 0, 1);
 		if (bgColor == null) bgColor = CoMaterial.createColor4();
-		let fs = fontColor.getCSSDecRGBAColor();
-		let bs = bgColor.getCSSDecRGBAColor();
-		let keyStr = chars + "-" + size + "-" + fs + "-" + bs;
+		// let fs = fontColor.getCSSDecRGBAColor();
+		// let bs = bgColor.getCSSDecRGBAColor();
+		// let keyStr = chars + "-" + size + "-" + fs + "-" + bs;
 		if (chars == null || chars == "" || size < 8) {
 			return null;
 		}
-		let img = ImageTexAtlas.CreateCharsCanvas(chars, size, fs, bs);
+		let img = ImageTexAtlas.CreateCharsCanvas(chars, size, fontColor, bgColor);
+		let keyStr = chars + "-" + size + "-" + fontColor.getCSSDecRGBAColor() + "-" + bgColor.getCSSDecRGBAColor();
 		return this.addImageToAtlas(keyStr, img);
 	}
 	createCanvas(width: number, height: number, bgColor: IColor4 = null, transparent: boolean = true): HTMLCanvasElement {
@@ -152,21 +135,21 @@ export class CanvasTexAtlas implements ICanvasTexAtlas {
 		height: number,
 		chars: string,
 		fontSize: number,
-		frontColor: IColor4 = null,
+		fontColor: IColor4 = null,
 		bgColor: IColor4 = null
 	): HTMLCanvasElement {
-		return ImageTexAtlas.CreateCharsCanvasFixSize(width, height, chars, fontSize, frontColor, bgColor);
+		return ImageTexAtlas.CreateCharsCanvasFixSize(width, height, chars, fontSize, fontColor, bgColor);
 	}
 	createCharsImage(
 		chars: string,
 		size: number,
-		frontStyle: string = "rgba(255,255,255,1.0)",
-		bgStyle: string = "rgba(255,255,255,0.3)"
+		fontColor: IColor4 = null,
+		bgColor: IColor4 = null
 	): HTMLCanvasElement | HTMLImageElement {
 		if (chars == null || chars == "" || size < 8) {
 			return null;
 		}
-		return ImageTexAtlas.CreateCharsCanvas(chars, size, frontStyle, bgStyle);
+		return ImageTexAtlas.CreateCharsCanvas(chars, size, fontColor, bgColor);
 	}
 
 	private m_whiteTex: IRenderTexture = null;
