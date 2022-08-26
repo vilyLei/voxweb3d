@@ -135,6 +135,7 @@ export class DemoMoveObj {
 		this.m_dragCtr.axisSize = 200;
 		this.m_dragCtr.planeSize = 100;
 		this.m_dragCtr.pickTestAxisRadius = 10;
+		this.m_dragCtr.runningVisible = true;
 		this.m_dragCtr.initialize(this.m_rscene);
 		this.m_dragCtr.setVisible( true );
 	}
@@ -151,7 +152,6 @@ export class DemoMoveObj {
 
 		// let axis = CoRScene.createAxis3DEntity();
 		// this.m_rscene.addEntity(axis);
-
 
 		/*
 		let texList = [this.createTexByUrl()];

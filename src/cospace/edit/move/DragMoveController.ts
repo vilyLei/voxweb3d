@@ -124,6 +124,7 @@ class DragMoveController implements IRayControl {
     planeSize = 50.0;
     planeAlpha = 0.6;
     pickTestAxisRadius = 20;
+    runningVisible: boolean = true;
     uuid: string = "DragMoveController";
     constructor() { }
     /**
@@ -207,7 +208,7 @@ class DragMoveController implements IRayControl {
     }
     private dragMouseDownListener(evt: any): void {
         this.m_editRS.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener, true, true);
-        this.setVisible(false);
+        this.setVisible(this.runningVisible);
     }
     private dragMouseUpListener(evt: any): void {
         this.m_editRS.removeEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener);
