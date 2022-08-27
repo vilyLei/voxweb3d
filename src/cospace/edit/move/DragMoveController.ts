@@ -8,6 +8,7 @@ import { IRayControl } from "../base/IRayControl";
 import {IRenderCamera} from "../../../vox/render/IRenderCamera";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 
+import { IDragMoveController } from "./IDragMoveController";
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
 // import { ICoAGeom } from "../../ageom/ICoAGeom";
@@ -100,7 +101,7 @@ class DragMoveTarget implements IEntityTransform {
         this.m_entitys = [null];
     }
 }
-class DragMoveController implements IRayControl {
+class DragMoveController implements IDragMoveController {
 
     private m_controllers: IRayControl[] = [];
     private m_crossPlaneDrag: DragPlane = null;

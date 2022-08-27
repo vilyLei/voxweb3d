@@ -18,6 +18,7 @@ interface IEntityTransform {
     localToGlobal(pv: IVector3D): void;
     globalToLocal(pv: IVector3D): void;
     update(): void;
+    destroy(): void;
 }
 
 export default IEntityTransform;
