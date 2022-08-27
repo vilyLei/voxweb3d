@@ -1,9 +1,12 @@
 
-function test(): void {
-	console.log("CoEdit Module");
+import { IDragMoveController } from "./move/IDragMoveController";
+import { DragMoveController } from "./move/DragMoveController";
+
+function createDragMoveController(): IDragMoveController {
+	return new DragMoveController();
 }
 
 
 export {
-	test
+	createDragMoveController
 }

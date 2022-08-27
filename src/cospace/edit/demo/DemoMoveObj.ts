@@ -61,6 +61,7 @@ export class DemoMoveObj {
 		let url1 = "static/cospace/engine/rscene/CoRScene.umd.js";
 		let url2 = "static/cospace/math/CoMath.umd.js";
 		let url3 = "static/cospace/ageom/CoAGeom.umd.js";
+		let url4 = "static/cospace/coedit/CoEdit.umd.js";
 
 		new ModuleLoader(2, (): void => {
 			if (this.isEngineEnabled()) {

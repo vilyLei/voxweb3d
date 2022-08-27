@@ -1,5 +1,6 @@
+import { IDragMoveController } from "./move/IDragMoveController";
 
 interface ICoEdit {
-	test(): void;
+	createDragMoveController(): IDragMoveController;
 }
 export { ICoEdit };
