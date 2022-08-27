@@ -78,7 +78,7 @@ export class DemoMoveObj {
 						console.log("ageom module loaded ...");
 						// this.testAGeom();
 						this.createEditEntity();
-					}).load(url3);
+					}).load(url3).load(url4);
 
 				}).load(url2)
 				// this.m_vcoapp = new ViewerCoSApp();

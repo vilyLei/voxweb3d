@@ -1,7 +1,7 @@
 
 import { PackedLoader } from "./PackedLoader";
 class ModuleLoader extends PackedLoader{
-
+	constructor(times: number, callback: (m?: PackedLoader) => void = null){super(times, callback)}
 	protected loadData(url: string): void {
 		let req: XMLHttpRequest = new XMLHttpRequest();
 		req.open("GET", url, true);
