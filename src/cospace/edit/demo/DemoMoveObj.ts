@@ -5,6 +5,7 @@ import { IMouseInteraction } from "../../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../../voxengine/ICoRenderer";
 import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
+import { ICoEdit } from "../../edit/ICoEdit";
 import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
 
 import { ICoMouseInteraction } from "../../voxengine/ui/ICoMouseInteraction";
@@ -16,15 +17,15 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
 import DragAxis from "../../edit/move/DragAxis";
 import DragPlane from "../../edit/move/DragPlane";
-import { DragMoveController } from "../../edit/move/DragMoveController";
-
-// import { DragMoveController } from "../../../voxeditor/entity/DragMoveController";
+import { IDragMoveController } from "../../edit/move/IDragMoveController";
+// import { DragMoveController } from "../../edit/move/DragMoveController";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
 declare var CoMouseInteraction: ICoMouseInteraction;
 declare var CoMath: ICoMath;
 declare var CoAGeom: ICoAGeom;
+declare var CoEdit: ICoEdit;
 
 
 /**
@@ -56,7 +57,7 @@ export class DemoMoveObj {
 		let mouseInteractML = new ModuleLoader(2, (): void => {
 			this.initInteract();
 		});
-		//  public\static\cospace\math\CoMath.umd.js
+		
 		let url0 = "static/cospace/engine/renderer/CoRenderer.umd.js";
 		let url1 = "static/cospace/engine/rscene/CoRScene.umd.js";
 		let url2 = "static/cospace/math/CoMath.umd.js";
@@ -74,13 +75,14 @@ export class DemoMoveObj {
 					console.log("math module loaded ...");
 					this.testMath();
 
-					new ModuleLoader(1, (): void => {
+					new ModuleLoader(2, (): void => {
 						console.log("ageom module loaded ...");
 						// this.testAGeom();
 						this.createEditEntity();
 					}).load(url3).load(url4);
 
-				}).load(url2)
+				}).load(url2);
+
 				// this.m_vcoapp = new ViewerCoSApp();
 				// this.m_vcoapp.initialize((): void => {
 				// 	this.loadOBJ();
@@ -110,7 +112,7 @@ export class DemoMoveObj {
 		console.log("ageom plane: ", plane);
 
 	}
-	private m_dragCtr: DragMoveController;
+	private m_dragCtr: IDragMoveController;
 	private createEditEntity(): void {
 
 		/*
@@ -132,7 +134,8 @@ export class DemoMoveObj {
 		movePlane.initialize(2, 100, 0.5);
 		this.m_rscene.addEntity(movePlane.getEntity());
 		//*/
-		this.m_dragCtr = new DragMoveController();
+		// this.m_dragCtr = new DragMoveController();
+		this.m_dragCtr = CoEdit.createDragMoveController();
 		this.m_dragCtr.axisSize = 200;
 		this.m_dragCtr.planeSize = 100;
 		this.m_dragCtr.pickTestAxisRadius = 10;
