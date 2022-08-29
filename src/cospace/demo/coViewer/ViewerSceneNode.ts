@@ -186,7 +186,7 @@ class ViewerSceneNode implements ICoRenderNode {
 		rscene.addEntity(entity, 1);
 	}
 	private mouseOverTargetListener(evt: any): void {
-		console.log("mouseOverTargetListener() mouse out...");
+		console.log("mouseOverTargetListener() mouse over...");
 		if (this.m_postOutline != null) {
 			if (evt.target != null) {
 				this.m_postOutline.setRGB3f(0.0, 1.0, 0.0);

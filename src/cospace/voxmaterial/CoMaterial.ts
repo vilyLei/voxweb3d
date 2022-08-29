@@ -2,6 +2,7 @@ import IColor4 from "../../vox/material/IColor4";
 import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
 import { IMaterial } from "../../vox/material/IMaterial";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
+import IColorMaterial from "../../vox/material/mcase/IColorMaterial";
 import IDefault3DMaterial from "../../vox/material/mcase/IDefault3DMaterial";
 import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";
 import { IMaterialContext } from "../../materialLab/base/IMaterialContext";
@@ -16,6 +17,9 @@ function createColor4(pr: number = 1.0, pg: number = 1.0, pb: number = 1.0, pa: 
 
 function createDefaultMaterial(normalEnabled: boolean = false): IDefault3DMaterial {
 	return CoRScene.createDefaultMaterial(normalEnabled);
+}
+function createLineMaterial(dynColorEnabled: boolean = false): IColorMaterial {
+	return CoRScene.createLineMaterial(dynColorEnabled);
 }
 function createShaderMaterial(shd_uniqueName: string): IShaderMaterial {
 	return CoRScene.createShaderMaterial(shd_uniqueName);
@@ -35,6 +39,7 @@ function createMaterialContext(): IMaterialContext {
 export {
 	createColor4,
 	createDefaultMaterial,
+	createLineMaterial,
 	createShaderMaterial,
 	createMaterial,
 	creatMaterialContextParam,

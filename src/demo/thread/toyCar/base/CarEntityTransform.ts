@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import Vector3D from "../../../../vox/math/Vector3D";
+import IAABB from "../../../../vox/geom/IAABB";
 import IEntityTransform from "../../../../vox/entity/IEntityTransform";
 import { NavigationStatus } from "../../../../voxnav/tileTerrain/NavigationStatus";
 import { StatusDetector } from "./StatusDetector";
@@ -139,6 +140,13 @@ class CarEntityTransform implements IEntityTransform {
     }
     getScaleXYZ(pv: Vector3D): void {
 
+    }
+    
+    getGlobalBounds(): IAABB {
+        return null;
+    }
+    getLocalBounds(): IAABB {
+        return null;
     }
     localToGlobal(pv: Vector3D): void {
 
