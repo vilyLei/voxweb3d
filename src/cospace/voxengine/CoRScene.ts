@@ -36,6 +36,7 @@ import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
 import MouseEventEntity from "../../vox/entity/MouseEventEntity";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 
+import IColorMaterial from "../../vox/material/mcase/IColorMaterial";
 import IDefault3DMaterial from "../../vox/material/mcase/IDefault3DMaterial";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
@@ -136,6 +137,9 @@ function createDefaultMaterial(normalEnabled: boolean = false): IDefault3DMateri
 	let m = new Default3DMaterial();
 	m.normalEnabled = normalEnabled;
 	return m;
+}
+function createLineMaterial(dynColorEnabled: boolean = false): IColorMaterial {
+	return new Line3DMaterial(dynColorEnabled);
 }
 function createShaderMaterial(shd_uniqueName: string): IShaderMaterial {
 	return new ShaderMaterial(shd_uniqueName);
@@ -267,6 +271,7 @@ export {
 
 	createDataMeshFromModel,
 	createDefaultMaterial,
+	createLineMaterial,
 	createShaderMaterial,
 	createMaterial,
 

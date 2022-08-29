@@ -15,6 +15,7 @@ import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";
 import { IMaterialDecorator } from "../../vox/material/IMaterialDecorator";
 import { IMaterial } from "../../vox/material/IMaterial";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
+import IColorMaterial from "../../vox/material/mcase/IColorMaterial";
 import IDefault3DMaterial from "../../vox/material/mcase/IDefault3DMaterial";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
@@ -210,6 +211,11 @@ interface ICoRScene {
 	 * @param normalEnabled the default value is false
 	 */
 	createDefaultMaterial(normalEnabled?: boolean): IDefault3DMaterial;
+	/**
+	 * build 3d line entity rendering material
+	 * @param dynColorEnabled the default value is false
+	 */
+	createLineMaterial(dynColorEnabled?: boolean): IColorMaterial;
 	createShaderMaterial(shd_uniqueName: string): IShaderMaterial;
 	createMaterial(dcr: IMaterialDecorator): IMaterial;
 
