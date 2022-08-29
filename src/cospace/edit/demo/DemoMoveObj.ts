@@ -1,5 +1,3 @@
-import { CoDataFormat } from "../../app/CoSpaceAppData";
-
 import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
 import { IMouseInteraction } from "../../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../../voxengine/ICoRenderer";
@@ -17,8 +15,13 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
 import DragAxis from "../../edit/move/DragAxis";
 import DragPlane from "../../edit/move/DragPlane";
+import IRenderMaterial from "../../../vox/render/IRenderMaterial";
+import IRenderEntity from "../../../vox/render/IRenderEntity";
+import ITransformEntity from "../../../vox/entity/ITransformEntity";
+import { CoNormalMaterial } from "../../voxengine/material/CoNormalMaterial";
+import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../app/CoSpaceAppData";
 import { IDragMoveController } from "../../edit/move/IDragMoveController";
-// import { DragMoveController } from "../../edit/move/DragMoveController";
+import { DragMoveController } from "../../edit/move/DragMoveController";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -37,6 +40,7 @@ export class DemoMoveObj {
 
 	private m_vcoapp: ViewerCoSApp;
 	private m_vmctx: ViewerMaterialCtx;
+	private m_scale = 20.0;
 
 	constructor() { }
 
@@ -77,16 +81,15 @@ export class DemoMoveObj {
 
 					new ModuleLoader(2, (): void => {
 						console.log("ageom module loaded ...");
-						// this.testAGeom();
 						this.createEditEntity();
 					}).load(url3).load(url4);
 
 				}).load(url2);
 
-				// this.m_vcoapp = new ViewerCoSApp();
-				// this.m_vcoapp.initialize((): void => {
-				// 	this.loadOBJ();
-				// });
+				this.m_vcoapp = new ViewerCoSApp();
+				this.m_vcoapp.initialize((): void => {
+					this.loadOBJ();
+				});
 
 			}
 		}).addLoader(mouseInteractML)
@@ -134,13 +137,13 @@ export class DemoMoveObj {
 		movePlane.initialize(2, 100, 0.5);
 		this.m_rscene.addEntity(movePlane.getEntity());
 		//*/
-		// this.m_dragCtr = new DragMoveController();
-		this.m_dragCtr = CoEdit.createDragMoveController();
+		this.m_dragCtr = new DragMoveController();
+		// this.m_dragCtr = CoEdit.createDragMoveController();
 		this.m_dragCtr.axisSize = 200;
 		this.m_dragCtr.planeSize = 100;
 		this.m_dragCtr.pickTestAxisRadius = 10;
 		this.m_dragCtr.runningVisible = true;
-		this.m_dragCtr.initialize(this.m_rscene);
+		this.m_dragCtr.initialize( this.m_rscene );
 		this.m_dragCtr.setVisible( true );
 	}
 	private mouseUpListener(evt: any): void {
@@ -185,7 +188,7 @@ export class DemoMoveObj {
 		// this.m_plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex]);
 		// this.m_rscene.addEntity(this.m_plane);
 
-		let img: HTMLImageElement = new Image();
+		let img = new Image();
 		img.onload = (evt: any): void => {
 			tex.setDataFromImage(img, 0, 0, 0, false);
 		}
@@ -224,8 +227,75 @@ export class DemoMoveObj {
 		let baseUrl: string = "static/private/obj/";
 		let url = baseUrl + "base.obj";
 		url = baseUrl + "base4.obj";
-
+		console.log("loadOBJ() init...");
+		this.loadGeomModel(url, CoDataFormat.OBJ);
 	}
+	
+	loadGeomModel(url: string, format: CoDataFormat): void {
+		let ins = this.m_vcoapp.coappIns;
+		if (ins != null) {
+
+			ins.getCPUDataByUrlAndCallback(
+				url,
+				format,
+				(unit: CoGeomDataUnit, status: number): void => {
+					this.createEntityFromUnit(unit, status);
+				},
+				true
+			);
+		}
+	}
+	private createEntityFromUnit(unit: CoGeomDataUnit, status: number = 0): void {
+
+		let len = unit.data.models.length;
+		let m_scale = this.m_scale;
+
+		for (let i = 0; i < len; ++i) {
+			let entity = this.createEntity(unit.data.models[i]);
+			entity.setScaleXYZ(m_scale, m_scale, m_scale);
+		}
+	}
+	private createEntity(model: CoGeomDataType): ITransformEntity {
+		// let rst = CoRenderer.RendererState;
+
+		const MouseEvent = CoRScene.MouseEvent;
+		let material = new CoNormalMaterial().build().material;
+
+		let mesh = CoRScene.createDataMeshFromModel(model, material);
+		let entity = CoRScene.createMouseEventEntity();
+		entity.setMaterial(material);
+		entity.setMesh(mesh);
+		// entity.setRenderState(rst.NONE_CULLFACE_NORMAL_STATE);
+		this.m_rscene.addEntity(entity);
+
+		entity.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverTargetListener);
+		entity.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutTargetListener);
+		entity.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownTargetListener);
+
+		return entity;
+	}
+	
+	private mouseOverTargetListener(evt: any): void {
+		// console.log("mouseOverTargetListener() mouse over...");
+	}
+	private mouseOutTargetListener(evt: any): void {
+		// console.log("mouseOutTargetListener() mouse out...");
+	}
+	private mouseDownTargetListener(evt: any): void {
+		console.log("mouseDownTargetListener() mouse down...");
+		if(this.m_dragCtr != null) {
+			let pos = CoMath.createVec3();
+			let entity = evt.target as ITransformEntity;
+			entity.getPosition(pos);
+			let bounds = entity.getGlobalBounds();
+			pos.subtractBy(bounds.center);
+			this.m_dragCtr.setTarget(evt.target);
+			this.m_dragCtr.setTargetPosOffset(pos);
+			this.m_dragCtr.setPosition( bounds.center );
+			this.m_dragCtr.update();
+		}
+	}
+
 	private mouseDown(evt: any): void { }
 	run(): void {
 		if (this.m_rscene != null) {

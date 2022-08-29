@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
+import IAABB from "../../../vox/geom/IAABB";
 // import ILine from "../../ageom/base/ILine";
 import IMatrix4 from "../../../vox/math/IMatrix4";
 
@@ -77,6 +78,13 @@ export default class ScaleEntity implements IRayControl {
     }
     getRotationXYZ(pv: IVector3D): void {
         this.m_entity.getRotationXYZ( pv );
+    }
+    
+    getGlobalBounds(): IAABB {
+        return null;
+    }
+    getLocalBounds(): IAABB {
+        return null;
     }
     localToGlobal(pv: IVector3D): void {
         this.m_entity.localToGlobal( pv );

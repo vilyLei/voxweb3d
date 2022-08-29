@@ -100,6 +100,9 @@ export class DemoBase {
         this.m_rscene.addEntity(textObject);
 		textObject.setRGB3f(10.5, 0.0, 1.0);
 
+        let axis = new Axis3DEntity();
+        axis.initialize(300);
+        this.m_rscene.addEntity(axis);
         this.testVec();
 
 	}

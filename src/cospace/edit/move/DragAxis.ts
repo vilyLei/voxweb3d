@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
+import IAABB from "../../../vox/geom/IAABB";
 // import ILine from "../../ageom/base/ILine";
 import IMatrix4 from "../../../vox/math/IMatrix4";
 
@@ -75,11 +76,11 @@ export default class DragAxis implements IRayControl {
     private m_dispatcher: IEvtDispatcher;
     private m_targetPosOffset: IVector3D = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
-    uuid: string = "DragAxis";
+    uuid = "DragAxis";
     moveSelfEnabled = true;
     outColor = CoRScene.createColor4(0.9, 0.9, 0.9, 1.0);
     overColor = CoRScene.createColor4(1.0, 1.0, 1.0, 1.0);
-    pickTestRadius: number = 10;
+    pickTestRadius = 10;
     constructor() {
     }
     initialize(size: number = 100.0): void {
@@ -120,6 +121,12 @@ export default class DragAxis implements IRayControl {
     }
     getRotationXYZ(pv: IVector3D): void {
         this.m_entity.getRotationXYZ( pv );
+    }
+    getGlobalBounds(): IAABB {
+        return null;
+    }
+    getLocalBounds(): IAABB {
+        return null;
     }
     localToGlobal(pv: IVector3D): void {
         this.m_entity.localToGlobal( pv );
@@ -188,9 +195,6 @@ export default class DragAxis implements IRayControl {
         }
     }
     setPosition(pos: IVector3D): void {
-        if(this.m_flag < 0) {
-            console.log(">>>>>>>>>>>");
-        }
         this.m_entity.setPosition(pos);
     }
     getPosition(outPos: IVector3D): void {
@@ -295,9 +299,10 @@ export default class DragAxis implements IRayControl {
             }
         }
         //console.log("AxisCtrlObj::mouseDownListener(). this.m_flag: "+this.m_flag);
+        let trans = this.m_entity.getTransform();
 
-        this.m_mat4.copyFrom(this.m_entity.getTransform().getMatrix());
-        this.m_invMat4.copyFrom(this.m_entity.getTransform().getInvMatrix());
+        this.m_mat4.copyFrom(trans.getMatrix());
+        this.m_invMat4.copyFrom(trans.getInvMatrix());
 
         this.m_rpv.copyFrom(evt.raypv);
         this.m_rtv.copyFrom(evt.raytv);

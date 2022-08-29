@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
+import IAABB from "../../../vox/geom/IAABB";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 // import MouseEvent from "../../../vox/event/MouseEvent";
@@ -176,6 +177,13 @@ export default class DragPlane implements IRayControl {
     }
     getRotationXYZ(pv: IVector3D): void {
         this.m_entity.getRotationXYZ(pv);
+    }
+    
+    getGlobalBounds(): IAABB {
+        return this.m_entity.getGlobalBounds();
+    }
+    getLocalBounds(): IAABB {
+        return this.m_entity.getGlobalBounds();
     }
     localToGlobal(pv: IVector3D): void {
         this.m_entity.localToGlobal(pv);
