@@ -1,4 +1,5 @@
 import Vector3D from "../../vox/math/Vector3D";
+import IAABB from "../../vox/geom/IAABB";
 import MouseEvent from "../../vox/event/MouseEvent";
 import DragAxisQuad3D from "../../voxeditor/entity/DragAxisQuad3D";
 import DragPlaneEntity3D from "../../voxeditor/entity/DragPlaneEntity3D";
@@ -76,7 +77,12 @@ class DragMoveTarget implements IEntityTransform {
     }
     getScaleXYZ(pv: Vector3D): void {
     }
-    
+    getGlobalBounds(): IAABB {
+        return null;
+    }
+    getLocalBounds(): IAABB {
+        return null;
+    }
     localToGlobal(pv: Vector3D): void {
     }
     globalToLocal(pv: Vector3D): void {
@@ -340,6 +346,12 @@ class DragMoveController implements IRayControl {
     getScaleXYZ(pv: Vector3D): void {
     }
     
+    getGlobalBounds(): IAABB {
+        return null;
+    }
+    getLocalBounds(): IAABB {
+        return null;
+    }
     localToGlobal(pv: Vector3D): void {
     }
     globalToLocal(pv: Vector3D): void {
