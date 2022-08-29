@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import IVector3D from "../../vox/math/IVector3D";
+import IAABB from "../../vox/geom/IAABB";
 
 interface IEntityTransform {
     setXYZ(px: number, py: number, pz: number): void;
@@ -17,6 +18,9 @@ interface IEntityTransform {
     getScaleXYZ(pv: IVector3D): void;
     localToGlobal(pv: IVector3D): void;
     globalToLocal(pv: IVector3D): void;
+    
+    getGlobalBounds(): IAABB;
+    getLocalBounds(): IAABB;
     update(): void;
     destroy(): void;
 }

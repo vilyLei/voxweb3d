@@ -85,11 +85,12 @@ export default class Line3DEntity extends DisplayEntity {
         pw += px;
         ph += py;
         if (!this.dynColorEnabled) {
+            let c = this.color;
             this.m_colorarr = [
-                this.color.r, this.color.g, this.color.b, this.color.r, this.color.g, this.color.b,
-                this.color.r, this.color.g, this.color.b, this.color.r, this.color.g, this.color.b,
-                this.color.r, this.color.g, this.color.b, this.color.r, this.color.g, this.color.b,
-                this.color.r, this.color.g, this.color.b, this.color.r, this.color.g, this.color.b
+                c.r, c.g, c.b, c.r, c.g, c.b,
+                c.r, c.g, c.b, c.r, c.g, c.b,
+                c.r, c.g, c.b, c.r, c.g, c.b,
+                c.r, c.g, c.b, c.r, c.g, c.b
             ];
         }
         this.m_posarr = [px, py, 0.0, pw, py, 0.0, pw, py, 0.0, pw, ph, 0.0, pw, ph, 0.0, px, ph, 0.0, px, ph, 0.0, px, py, 0.0];
@@ -102,11 +103,12 @@ export default class Line3DEntity extends DisplayEntity {
         pw += px;
         pl += pz;
         if (!this.dynColorEnabled) {
+            let c = this.color;
             this.m_colorarr = [
-                this.color.r, this.color.g, this.color.b, this.color.r, this.color.g, this.color.b,
-                this.color.r, this.color.g, this.color.b, this.color.r, this.color.g, this.color.b,
-                this.color.r, this.color.g, this.color.b, this.color.r, this.color.g, this.color.b,
-                this.color.r, this.color.g, this.color.b, this.color.r, this.color.g, this.color.b
+                c.r, c.g, c.b, c.r, c.g, c.b,
+                c.r, c.g, c.b, c.r, c.g, c.b,
+                c.r, c.g, c.b, c.r, c.g, c.b,
+                c.r, c.g, c.b, c.r, c.g, c.b
             ];
         }
         this.m_posarr = [px, 0.0, pz, pw, 0.0, pz, pw, 0.0, pz, pw, 0.0, pl, pw, 0.0, pl, px, 0.0, pl, px, 0.0, pl, px, 0.0, pz];
@@ -132,7 +134,6 @@ export default class Line3DEntity extends DisplayEntity {
                     this.m_colorarr.push(color.r, color.g, color.b);
                 }
             }
-
         }
 
         for(let i: number = 1; i < posList.length; ++i) {

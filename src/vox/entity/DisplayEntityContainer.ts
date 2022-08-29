@@ -146,6 +146,9 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     getGlobalBounds(): IAABB {
         return this.m_globalBounds;
     }
+    getLocalBounds(): IAABB {
+        return null;
+    }
     getGlobalBoundsVer(): number {
         if (this.m_globalBounds != null) {
             return this.m_globalBounds.version;
