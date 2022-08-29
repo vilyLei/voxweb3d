@@ -15,8 +15,8 @@ import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import { RenderDrawMode } from "../../vox/render/RenderConst";
 
 export default class DashedLineMesh extends MeshBase {
-    private static s_pv0: Vector3D = new Vector3D();
-    private static s_pv1: Vector3D = new Vector3D();
+    private static s_pv0 = new Vector3D();
+    private static s_pv1 = new Vector3D();
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         super(bufDataUsage);
     }
