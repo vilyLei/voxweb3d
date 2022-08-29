@@ -5,6 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
+import IColorMaterial from "./IColorMaterial";
+import Color4 from "../Color4";
+
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import MaterialBase from "../../../vox/material/MaterialBase";
@@ -41,7 +44,7 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
         this.m_coder.addFragMainCode(
             `
     #ifndef DYNAMIC_COLOR
-        FragColor0 = vec4(v_color * u_color.xyz, 1.0);
+        FragColor0 = vec4(v_color, 1.0) * u_color;
     #else
         FragColor0 = u_color;
     #endif
@@ -51,8 +54,6 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
             `
     viewPosition = u_viewMat * u_objMat * vec4(a_vs,1.0);
     vec4 pv = u_projMat * viewPosition;
-    // pixels move offset, and no perspective error.
-    //  pv.xy = (pv.xy/pv.w - vec2(0.5)) * pv.w;
     #ifndef DYNAMIC_COLOR
         v_color = a_cvs;
     #endif
@@ -62,7 +63,6 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
     }
 
     getUniqueShaderName(): string {
-        //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
     toString(): string {
@@ -70,42 +70,62 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
     }
 
     static GetInstance(): Line3DShaderBuffer {
-        if (Line3DShaderBuffer.s_instance != null) {
-            return Line3DShaderBuffer.s_instance;
+        let lsb = Line3DShaderBuffer;
+        if (lsb.s_instance != null) {
+            return lsb.s_instance;
         }
-        Line3DShaderBuffer.s_instance = new Line3DShaderBuffer();
-        return Line3DShaderBuffer.s_instance;
+        lsb.s_instance = new Line3DShaderBuffer();
+        return lsb.s_instance;
     }
 }
 
-export default class Line3DMaterial extends MaterialBase {
+export default class Line3DMaterial extends MaterialBase implements IColorMaterial {
     private m_dynColorEnabled: boolean = false;
-    private m_colorArray: Float32Array = null;
+    private m_data: Float32Array = null;
     constructor(dynColorEnabled: boolean = false) {
         super();
         this.m_dynColorEnabled = dynColorEnabled;
-        // if (dynColorEnabled) {
-        //     if (this.m_dynColorEnabled) {
-        //     }
-        // }
-        this.m_colorArray = new Float32Array([1.0, 1.0, 1.0, 1.0]);
-        let oum: ShaderUniformData = new ShaderUniformData();
+        this.m_data = new Float32Array([1.0, 1.0, 1.0, 1.0]);
+        let oum = new ShaderUniformData();
         oum.uniformNameList = ["u_color"];
-        oum.dataList = [this.m_colorArray];
+        oum.dataList = [this.m_data];
         this.m_shaderUniformData = oum;
     }
-
-    getCodeBuf(): ShaderCodeBuffer {
+    protected buildBuf(): void {
         Line3DShaderBuffer.GetInstance().dynColorEnabled = this.m_dynColorEnabled;
+    }
+    getCodeBuf(): ShaderCodeBuffer {
         return Line3DShaderBuffer.GetInstance();
     }
-
-
-    setRGB3f(pr: number, pg: number, pb: number) {
-        if (this.m_colorArray != null) {
-            this.m_colorArray[0] = pr;
-            this.m_colorArray[1] = pg;
-            this.m_colorArray[2] = pb;
-        }
+    
+    setRGB3f(pr: number, pg: number, pb: number): void {
+        this.m_data[0] = pr;
+        this.m_data[1] = pg;
+        this.m_data[2] = pb;
+    }
+    getRGB3f(color: Color4): void {
+        let ds = this.m_data;
+        color.setRGB3f(ds[0], ds[1], ds[2]);
+    }
+    setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
+        this.m_data[0] = pr;
+        this.m_data[1] = pg;
+        this.m_data[2] = pb;
+        this.m_data[3] = pa;
+    }
+    getRGBA4f(color: Color4): void {
+        color.fromArray(this.m_data);
+    }
+    setAlpha(pa: number): void {
+        this.m_data[3] = pa;
+    }
+    getAlpha(): number {
+        return this.m_data[3];
+    }
+    setColor(color: Color4): void {
+        color.toArray(this.m_data);
+    }
+    getColor(color: Color4): void {
+        color.fromArray(this.m_data);
     }
 }

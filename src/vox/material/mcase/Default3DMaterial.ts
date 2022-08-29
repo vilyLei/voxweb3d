@@ -168,6 +168,9 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
     setAlpha(pa: number): void {
         this.m_data[3] = pa;
     }
+    getAlpha(): number {
+        return this.m_data[3];
+    }
     setColor(color: Color4): void {
         color.toArray(this.m_data);
     }
