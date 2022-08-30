@@ -81,18 +81,23 @@ export default class MeshBase implements IMeshBase {
     }
     toArraysLines(): void {
         this.drawMode = RDM.ARRAYS_LINES;
+        this.setPolyhedral( false );
     }
     toArraysLineStrip(): void {
         this.drawMode = RDM.ARRAYS_LINE_STRIP;
+        this.setPolyhedral( false );
     }
     toArraysPoints(): void {
         this.drawMode = RDM.ARRAYS_POINTS;
+        this.setPolyhedral( false );
     }
     toElementsLines(): void {
         this.drawMode = RDM.ELEMENTS_LINES;
+        this.setPolyhedral( false );
     }
     toDisable(): void {
         this.drawMode = RDM.DISABLE;
+        this.setPolyhedral( false );
     }
 
     protected createIVSBYSize(size: number): Uint16Array | Uint32Array {

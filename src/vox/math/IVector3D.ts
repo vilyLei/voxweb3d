@@ -6,14 +6,42 @@
 /***************************************************************************/
 
 interface IVector3D {
+    /**
+     * the default value is 0.0
+     */
     x: number;
+    /**
+     * the default value is 0.0
+     */
     y: number;
+    /**
+     * the default value is 0.0
+     */
     z: number;
+    /**
+     * the default value is 1.0
+     */
     w: number;
     clone(): IVector3D;
     setTo(px: number, py: number, pz: number, pw?: number): IVector3D;
+    
+    /**
+     * example: [0],[1],[2],[3] => x,y,z,w
+     */
+    fromArray4(arr: number[] | Float32Array, offset?: number): IVector3D;
+    /**
+     * example: x,y,z,w => [0],[1],[2],[3]
+     */
+    toArray4(arr?: number[] | Float32Array, offset?: number): IVector3D;
+    /**
+     * example: [0],[1],[2] => x,y,z
+     */
     fromArray(arr: number[] | Float32Array, offset?: number): IVector3D;
+     /**
+      * example: x,y,z => [0],[1],[2]
+      */
     toArray(arr?: number[] | Float32Array, offset?: number): IVector3D;
+
     setXYZ(px: number, py: number, pz: number): IVector3D;
     copyFrom(v3: IVector3D): IVector3D;
     dot(a: IVector3D): number;

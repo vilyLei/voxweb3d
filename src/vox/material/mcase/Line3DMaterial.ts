@@ -82,6 +82,9 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
 export default class Line3DMaterial extends MaterialBase implements IColorMaterial {
     private m_dynColorEnabled: boolean = false;
     private m_data: Float32Array = null;
+    /**
+     * @param dynColorEnabled the default value is false
+     */
     constructor(dynColorEnabled: boolean = false) {
         super();
         this.m_dynColorEnabled = dynColorEnabled;

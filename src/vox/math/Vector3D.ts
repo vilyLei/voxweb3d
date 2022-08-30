@@ -36,16 +36,30 @@ export default class Vector3D implements IVector3D {
         return this;
     }
     toArray(arr: number[] | Float32Array, offset: number = 0): Vector3D {
+        arr[offset] = this.x;
+        arr[offset + 1] = this.y;
+        arr[offset + 2] = this.z;
+        return this;
+    }
+    fromArray4(arr: number[] | Float32Array, offset: number = 0): Vector3D {
         this.x = arr[offset];
         this.y = arr[offset + 1];
         this.z = arr[offset + 2];
+        this.w = arr[offset + 3];
+        return this;
+    }
+    toArray4(arr: number[] | Float32Array, offset: number = 0): Vector3D {
+        arr[offset] = this.x;
+        arr[offset + 1] = this.y;
+        arr[offset + 2] = this.z;
+        arr[offset + 3] = this.w;
         return this;
     }
     setXYZ(px: number, py: number, pz: number): Vector3D {
         this.x = px;
         this.y = py;
         this.z = pz;
-        return;
+        return this;
     }
     copyFrom(v3: Vector3D): Vector3D {
         this.x = v3.x;

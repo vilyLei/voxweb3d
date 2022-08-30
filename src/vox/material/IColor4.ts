@@ -6,13 +6,39 @@
 /***************************************************************************/
 
 interface IColor4 {
+    /**
+     * the default value is 1.0
+     */
     r: number;
+    /**
+     * the default value is 1.0
+     */
     g: number;
+    /**
+     * the default value is 1.0
+     */
     b: number;
+    /**
+     * the default value is 1.0
+     */
     a: number;
-    
+
+    /**
+     * example: r,g,b,a => [0],[1],[2],[3]
+     */
     fromArray(arr: number[] | Float32Array, offset?: number): IColor4;
+    /**
+     * example: [0],[1],[2],[3] => r,g,b,a
+     */
     toArray(arr: number[] | Float32Array, offset?: number): IColor4;
+    /**
+     * example: r,g,b => [0],[1],[2]
+     */
+    fromArray3(arr: number[] | Float32Array, offset?: number): IColor4;
+    /**
+     * example: [0],[1],[2] => r,g,b
+     */
+    toArray3(arr: number[] | Float32Array, offset?: number): IColor4;
     setRGB3Bytes(r: number, g: number, b: number): void
     setRGB3f(r: number, g: number, b: number): void
     setRGBUint24(rgbUint24: number): void
