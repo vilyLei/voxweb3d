@@ -45,7 +45,7 @@ interface ICoMaterial {
     createDefaultMaterial(normalEnabled?: boolean): IDefault3DMaterial;
     /**
      * build 3d line entity rendering material
-     * @param dynColorEnabled the default value is false
+     * @param dynColorEnabled the default value is true
      */
     createLineMaterial(dynColorEnabled?: boolean): IColorMaterial;
     createShaderMaterial(shd_uniqueName: string): IShaderMaterial;

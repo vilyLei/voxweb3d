@@ -18,7 +18,7 @@ function createColor4(pr: number = 1.0, pg: number = 1.0, pb: number = 1.0, pa: 
 function createDefaultMaterial(normalEnabled: boolean = false): IDefault3DMaterial {
 	return CoRScene.createDefaultMaterial(normalEnabled);
 }
-function createLineMaterial(dynColorEnabled: boolean = false): IColorMaterial {
+function createLineMaterial(dynColorEnabled: boolean = true): IColorMaterial {
 	return CoRScene.createLineMaterial(dynColorEnabled);
 }
 function createShaderMaterial(shd_uniqueName: string): IShaderMaterial {
