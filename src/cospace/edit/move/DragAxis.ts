@@ -7,19 +7,14 @@
 
 import IVector3D from "../../../vox/math/IVector3D";
 import IAABB from "../../../vox/geom/IAABB";
-// import ILine from "../../ageom/base/ILine";
 import IMatrix4 from "../../../vox/math/IMatrix4";
-
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
-
 import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
-import IColor4 from "../../../vox/material/IColor4";
-// import { IRayControl } from "../../../voxeditor/base/IRayControl";
-import ITestRay from "../../../vox/mesh/ITestRay";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import { IRayControl } from "../base/IRayControl";
+import { DashedLineRayTester } from "../base/DashedLineRayTester";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
@@ -28,44 +23,6 @@ import { ICoAGeom } from "../../ageom/ICoAGeom";
 declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;
 declare var CoAGeom: ICoAGeom;
-
-class AxisRayTester implements ITestRay {
-
-    private m_vs: Float32Array;
-    private m_rayTestRadius: number;
-    private m_lsTotal: number;
-    private m_pv0 = CoMath.createVec3();
-    private m_pv1 = CoMath.createVec3();
-    constructor(vs: Float32Array, lsTotal: number, rayTestRadius: number) {
-        this.m_vs = vs;
-        this.m_rayTestRadius = rayTestRadius;
-        this.m_lsTotal = lsTotal;
-    }
-    testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number {
-
-        let j: number = 0;
-        let vs: Float32Array = this.m_vs;
-        let flag = false;
-        let radius = this.m_rayTestRadius;
-        let pv0 = this.m_pv0;
-        let pv1 = this.m_pv1;
-        const RL = CoAGeom.RayLine;
-
-        for (let i = 0; i < this.m_lsTotal; ++i) {
-            pv0.setXYZ(vs[j], vs[j + 1], vs[j + 2]);
-            pv1.setXYZ(vs[j + 3], vs[j + 4], vs[j + 5]);
-            flag = RL.IntersectSegmentLine(rlpv, rltv, pv0, pv1, outV, radius);
-            if (flag) {
-                return 1;
-            }
-            j += 6;
-        }
-        return 0;
-    }
-    destroy(): void {
-        this.m_vs = null;
-    }
-}
 
 /**
  * 在三个坐标轴上拖动
@@ -76,11 +33,13 @@ export default class DragAxis implements IRayControl {
     private m_dispatcher: IEvtDispatcher;
     private m_targetPosOffset: IVector3D = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
+
     uuid = "DragAxis";
     moveSelfEnabled = true;
     outColor = CoRScene.createColor4(0.9, 0.9, 0.9, 1.0);
     overColor = CoRScene.createColor4(1.0, 1.0, 1.0, 1.0);
     pickTestRadius = 10;
+
     constructor() {
     }
     initialize(size: number = 100.0): void {
@@ -89,9 +48,7 @@ export default class DragAxis implements IRayControl {
             this.m_entity.update();
             let mesh = this.m_entity.getMesh() as IRawMesh;
             if (mesh != null) {
-                console.log("mesh.isPolyhedral():", mesh.isPolyhedral());
-                mesh.setRayTester(new AxisRayTester(mesh.getVS(), 3, this.pickTestRadius));
-                console.log("entity.getGlobalBounds():", this.m_entity.getGlobalBounds());
+                mesh.setRayTester(new DashedLineRayTester(mesh.getVS(), 3, this.pickTestRadius));
             }
             this.initializeEvent();
         }

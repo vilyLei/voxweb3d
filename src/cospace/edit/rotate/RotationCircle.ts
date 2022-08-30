@@ -7,30 +7,32 @@
 
 import IVector3D from "../../../vox/math/IVector3D";
 import IAABB from "../../../vox/geom/IAABB";
-// import ILine from "../../ageom/base/ILine";
-import IMatrix4 from "../../../vox/math/IMatrix4";
 
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
-
 import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
-
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IColor4 from "../../../vox/material/IColor4";
-// import { IRayControl } from "../../../voxeditor/base/IRayControl";
-import ITestRay from "../../../vox/mesh/ITestRay";
+import { CircleRayTester } from "../base/CircleRayTester";
+
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import { IRayControl } from "../base/IRayControl";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
+import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
+import { ICoEntity } from "../../voxentity/ICoEntity";
 import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
+import { ICoMesh } from "../../voxmesh/ICoMesh";
 
 declare var CoRScene: ICoRScene;
+declare var CoMaterial: ICoMaterial;
 declare var CoMath: ICoMath;
+declare var CoEntity: ICoEntity;
 declare var CoAGeom: ICoAGeom;
+declare var CoMesh: ICoMesh;
 
 /**
- * 在三个坐标轴上拖动
+ * 在三个坐标轴上旋转
  */
 export default class RotationCircle implements IRayControl {
 
@@ -38,18 +40,49 @@ export default class RotationCircle implements IRayControl {
     private m_dispatcher: IEvtDispatcher;
     private m_targetPosOffset: IVector3D = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
+    private m_planeNV: IVector3D = CoMath.createVec3();
     uuid: string = "RotationCircle";
     moveSelfEnabled = true;
-    outColor = CoRScene.createColor4(0.9, 0.9, 0.9, 1.0);
-    overColor = CoRScene.createColor4(1.0, 1.0, 1.0, 1.0);
+    outColor = CoMaterial.createColor4(0.9, 0.9, 0.9, 1.0);
+    overColor = CoMaterial.createColor4(1.0, 1.0, 1.0, 1.0);
     pickTestRadius: number = 10;
     constructor() {
     }
-    initialize(size: number = 100.0): void {
+    /**
+     * init the circle mouse event display entity
+     * @param radius circle radius
+     * @param segsTotal segments total
+     * @param type 0 is xoy, 1 is xoz, 2 is yoz
+     * @param color IColor4 instance
+     */
+    initialize(radius: number, segsTotal: number, type: number, color: IColor4): void {
         if (this.m_entity == null) {
-            this.m_entity = CoRScene.createAxis3DEntity(size);
+
+            this.m_entity = CoEntity.createDisplayEntity();
+
+            let builder = CoMesh.lineMeshBuilder;
+            let mesh: IRawMesh;
+            builder.color.copyFrom(color);
+            switch(type) {
+                case 1:
+                    mesh = builder.createCircleXOZ(radius, segsTotal);
+                    this.m_planeNV.setXYZ(0, 1, 0);
+                    break;
+                case 2:
+                    mesh = builder.createCircleYOZ(radius, segsTotal);
+                    this.m_planeNV.setXYZ(1, 0, 0);
+                    break;
+                default:
+                    mesh = builder.createCircleXOY(radius, segsTotal);
+                    this.m_planeNV.setXYZ(0, 0, 1);
+                    break;
+            }
+            mesh.setRayTester(new CircleRayTester(radius, CoMath.createVec3(), this.m_planeNV, 0, this.pickTestRadius));
+            this.m_entity.setMesh(mesh);
+            let material = CoMaterial.createLineMaterial();
+            this.m_entity.setMaterial( material );
             this.m_entity.update();
-            let mesh = this.m_entity.getMesh() as IRawMesh;
+
             this.initializeEvent();
         }
     }
@@ -153,9 +186,6 @@ export default class RotationCircle implements IRayControl {
         }
     }
     setPosition(pos: IVector3D): void {
-        if(this.m_flag < 0) {
-            console.log(">>>>>>>>>>>");
-        }
         this.m_entity.setPosition(pos);
     }
     getPosition(outPos: IVector3D): void {

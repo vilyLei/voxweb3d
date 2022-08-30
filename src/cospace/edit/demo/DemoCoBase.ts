@@ -6,6 +6,7 @@ import { ICoRenderer } from "../../voxengine/ICoRenderer";
 import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
 import { ICoMesh } from "../../voxmesh/ICoMesh";
+import { ICoEntity } from "../../voxentity/ICoEntity";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
 
@@ -17,6 +18,9 @@ import { ViewerCoSApp } from "../../demo/coViewer/ViewerCoSApp";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
 import CanvasTexAtlas from "../../voxtexture/atlas/CanvasTexAtlas";
+import { LineMeshBuilder } from "../../voxmesh/build/LineMeshBuilder";
+import Line3DMaterial from "../../../vox/material/mcase/Line3DMaterial";
+import RotationCircle from "../rotate/RotationCircle";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 //CanvasTexAtlas
@@ -28,6 +32,7 @@ declare var CoMouseInteraction: ICoMouseInteraction;
 declare var CoMath: ICoMath;
 declare var CoAGeom: ICoAGeom;
 declare var CoMesh: ICoMesh;
+declare var CoEntity: ICoEntity;
 declare var CoMaterial: ICoMaterial;
 
 /**
@@ -40,7 +45,7 @@ export class DemoCoBase {
 	private m_vcoapp: ViewerCoSApp;
 	private m_vmctx: ViewerMaterialCtx;
 
-	constructor() {}
+	constructor() { }
 
 	initialize(): void {
 		console.log("DemoCoBase::initialize() ...");
@@ -64,6 +69,7 @@ export class DemoCoBase {
 		let url3 = "static/cospace/ageom/CoAGeom.umd.js";
 		let url4 = "static/cospace/coMaterial/CoMaterial.umd.js";
 		let url5 = "static/cospace/comesh/CoMesh.umd.js";
+		let url7 = "static/cospace/coentity/CoEntity.umd.js";
 
 		new ModuleLoader(2, (): void => {
 			if (this.isEngineEnabled()) {
@@ -75,9 +81,9 @@ export class DemoCoBase {
 					console.log("math module loaded ...");
 					this.testMath();
 
-					new ModuleLoader(1, (): void => {
+					new ModuleLoader(2, (): void => {
 						console.log("ageom module loaded ...");
-						this.testAGeom();
+						// this.testAGeom();
 
 						new ModuleLoader(1, (): void => {
 							console.log("CoMaterial module loaded ...");
@@ -89,7 +95,7 @@ export class DemoCoBase {
 							}).load(url5);
 
 						}).load(url4);
-					}).load(url3);
+					}).load(url3).load(url7);
 				}).load(url2);
 				// this.m_vcoapp = new ViewerCoSApp();
 				// this.m_vcoapp.initialize((): void => {
@@ -110,6 +116,7 @@ export class DemoCoBase {
 
 	private testVoxMaterial(): void {
 
+		/*
 		let color4 = CoMaterial.createColor4();
 		console.log("color4: ", color4);
 		let texAtlas = new CanvasTexAtlas();
@@ -130,6 +137,36 @@ export class DemoCoBase {
 		entity.setRenderState(CoRScene.RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
 
 		this.m_rscene.addEntity(entity);
+		//*/
+		this.test01();
+	}
+	private test01(): void {
+
+		/*
+		let lBuilder = new LineMeshBuilder();
+		lBuilder.color.setRGB3f(0.1, 0.2, 0.3);
+		lBuilder.dynColorEnabled = true;
+		// let mesh = lBuilder.createRectXOY(-100, -100, 200, 200);
+		// let mesh = lBuilder.createRectXOZ(-100, -100, 200, 200);
+		// let mesh = lBuilder.createRectYOZ(-100, -100, 200, 200);
+		// let mesh = lBuilder.createCircleXOY(100,100);
+		// let mesh = lBuilder.createCircleXOZ(100,100);
+		let mesh = lBuilder.createCircleYOZ(100,100);
+		// let mesh = lBuilder.createLine(CoMath.createVec3());
+		console.log("test01(), mesh: ", mesh);
+
+		let material = CoMaterial.createLineMaterial(lBuilder.dynColorEnabled);
+		material.setRGB3f(1.0,0.0,0.0);
+		// let material = new Line3DMaterial(lBuilder.dynColorEnabled);
+		let rectLine = CoEntity.createDisplayEntity();
+		rectLine.setMaterial(material);
+		rectLine.setMesh(mesh);
+		this.m_rscene.addEntity(rectLine);
+		*/
+
+		let circle = new RotationCircle();
+		circle.initialize(100,20,0, CoMaterial.createColor4(1.0,0.0,0.0));
+		this.m_rscene.addEntity(circle.getEntity());
 	}
 	private testAGeom(): void {
 		let line = CoAGeom.createLine();
@@ -285,7 +322,7 @@ export class DemoCoBase {
 		let url = baseUrl + "base.obj";
 		url = baseUrl + "base4.obj";
 	}
-	private mouseDown(evt: any): void {}
+	private mouseDown(evt: any): void { }
 	run(): void {
 		if (this.m_rscene != null) {
 			if (this.m_interact != null) {

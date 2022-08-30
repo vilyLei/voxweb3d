@@ -93,17 +93,19 @@ export class DemoBase {
 
     private initScene(): void {
 
+        /*
 		let h5Text = new H5Text();
 		h5Text.initialize(this.m_rscene, "text_cv_01", 18, 512,512);
 		let textObject = new TextEntity();
 		textObject.initialize("Hello", h5Text);
         this.m_rscene.addEntity(textObject);
 		textObject.setRGB3f(10.5, 0.0, 1.0);
+        //*/
 
         let axis = new Axis3DEntity();
         axis.initialize(300);
         this.m_rscene.addEntity(axis);
-        this.testVec();
+        // this.testVec();
 
 	}
     private testVec(): void {
