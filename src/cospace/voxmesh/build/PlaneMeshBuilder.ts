@@ -168,9 +168,8 @@ class PlaneMeshBuilder implements IPlaneMeshBuilder {
 
 	constructor() {}
 
-	// create
 	/**
-	 * initialize a rectangle fix screen size plane ,and it parallel the 3d space XOY plane
+	 * create a rectangle fix screen size plane ,and it parallel the 3d space XOY plane
 	 * @param texList textures list, default value is null.
 	 */
 	createFixScreen(): IRawMesh {

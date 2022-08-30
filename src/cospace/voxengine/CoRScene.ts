@@ -212,7 +212,7 @@ function createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D): ITransformEnt
 	mesh.initialize();
 	mesh.toArraysLines();
 	mesh.vtCount = Math.floor(vs.length / 3);
-	mesh.setPolyhedral( false );
+	// mesh.setPolyhedral( false );
 
 	let material = new Line3DMaterial(false);
 	let axis = new DisplayEntity();
