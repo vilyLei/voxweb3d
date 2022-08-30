@@ -8,7 +8,6 @@ import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import IEntityTransform from "../../vox/entity/IEntityTransform";
 import RendererState from "../../vox/render/RendererState";
 import { IRayControl } from "../../voxeditor/base/IRayControl";
-// import CameraBase from "../../vox/view/CameraBase";
 
 import {IRenderCamera} from "../../vox/render/IRenderCamera";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
