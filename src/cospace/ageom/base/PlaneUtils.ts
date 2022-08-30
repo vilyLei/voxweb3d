@@ -8,7 +8,7 @@
 import IVector3D from "../../../vox/math/IVector3D";
 import { Intersection } from "./Intersection";
 
-import { isZero, isNotZero } from "../../../vox/math/Float";
+import { isZero, isNotZero, isGreaterPositiveZero, isLessNegativeZero, isPostiveZero } from "../../../vox/math/Float";
 
 class PlaneUtils {
 	/**
@@ -55,6 +55,46 @@ class PlaneUtils {
 			return true;
 		}
 		PlaneUtils.Intersection = Intersection.parallel;
+		return false;
+	}
+	
+	static IntersectRayLinePos2(pnv: IVector3D, pdis: number, rl_pos: IVector3D, rl_tv: IVector3D, outV: IVector3D): boolean {
+
+		PlaneUtils.Intersection = Intersection.None;
+		let td: number;
+		let dis = pnv.dot(rl_pos) - pdis;
+		if (isGreaterPositiveZero(dis)) {
+			// rl position in plane positive space
+			td = pnv.dot(rl_tv);
+			if (td < 0.0) {
+				// calc intersection position
+				return PlaneUtils.IntersectLinePos2(pnv, pdis, rl_pos, rl_tv, outV);
+			}
+		}
+		else if (isLessNegativeZero(dis)) {
+			// rl position in plane negative space
+			td = pnv.dot(rl_tv);
+			if (td > 0.0) {
+				// calc intersection position
+				return PlaneUtils.IntersectLinePos2(pnv, pdis, rl_pos, rl_tv, outV);
+			}
+		}
+		else {
+			td = pnv.dot(rl_tv);
+			if (isNotZero(td)) {
+				outV.copyFrom(rl_pos);
+				PlaneUtils.Intersection = Intersection.Hit;
+				return true;
+			}
+			outV.copyFrom(rl_pos);
+			// 平行且包含
+			PlaneUtils.Intersection = Intersection.Contain;
+			return true;
+		}
+
+		if(isPostiveZero( td )) {
+			PlaneUtils.Intersection = Intersection.parallel;
+		}
 		return false;
 	}
 }
