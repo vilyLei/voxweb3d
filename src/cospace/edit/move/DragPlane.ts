@@ -172,6 +172,9 @@ export default class DragPlane implements IRayControl {
         pv.copyFrom( this.m_entityScale );
         // this.m_entity.getScaleXYZ( pv );
     }
+    setRotation3(r: IVector3D): void {
+        this.m_entity.setRotation3(r);
+    }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
         this.m_entity.setRotationXYZ(rx, ry, rz);
     }

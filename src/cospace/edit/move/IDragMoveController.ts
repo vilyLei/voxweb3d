@@ -4,7 +4,10 @@ import IEntityTransform from "../../../vox/entity/IEntityTransform";
 import { IRayControl } from "../base/IRayControl";
 
 interface IDragMoveController extends IRayControl {
-
+    /**
+     * example: the value is 0.05
+     */
+    fixSize: number;
     axisSize: number;
     planeSize: number;
     planeAlpha: number;
@@ -31,22 +34,6 @@ interface IDragMoveController extends IRayControl {
     setVisible(visible: boolean): void;
     moveByRay(rpv: IVector3D, rtv: IVector3D): void;
     getVisible(): boolean;
-
-    /*
-    setXYZ(px: number, py: number, pz: number): void;
-
-    setPosition(pv: IVector3D): void;
-    getPosition(pv: IVector3D): void;
-    setRotationXYZ(rx: number, ry: number, rz: number): void;
-    setScaleXYZ(sx: number, sy: number, sz: number): void;
-    getRotationXYZ(pv: IVector3D): void;
-    getScaleXYZ(pv: IVector3D): void;
-    
-    localToGlobal(pv: IVector3D): void;
-    globalToLocal(pv: IVector3D): void;
-    update(): void;
-    destroy(): void;
-    //*/
 
 }
 

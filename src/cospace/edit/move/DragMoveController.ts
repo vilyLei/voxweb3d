@@ -6,8 +6,9 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
 import { IRayControl } from "../base/IRayControl";
 
-import {IRenderCamera} from "../../../vox/render/IRenderCamera";
+import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
+import { DragMoveTarget } from "./DragMoveTarget";
 
 import { IDragMoveController } from "./IDragMoveController";
 import { ICoRScene } from "../../voxengine/ICoRScene";
@@ -18,96 +19,6 @@ declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;
 // declare var CoAGeom: ICoAGeom;
 
-class DragMoveTarget implements IEntityTransform {
-
-    private m_entitys: IEntityTransform[] = [null];
-    private m_changFlags: boolean[] = [true];
-    private m_targetPosOffset = CoMath.createVec3();
-    position = CoMath.createVec3();
-
-    constructor() {
-    }
-    setTargetPosOffset(offset: IVector3D): void {
-        this.m_targetPosOffset.copyFrom(offset);
-    }
-    addEntity(engity: IEntityTransform): void {
-        if (engity != null) {
-            this.m_entitys.push(engity);
-            this.m_changFlags.push(true);
-        }
-    }
-    setTarget(target: IEntityTransform): void {
-        this.m_entitys[0] = target;
-        this.m_changFlags[0] = true;
-    }
-    getTarget(): IEntityTransform {
-        return this.m_entitys[0];
-    }
-
-    setXYZ(px: number, py: number, pz: number): void {
-    }
-    setPosition(pv: IVector3D): void {
-        let i: number = 0;
-        if (this.m_entitys[i] != null) {
-            this.position.addVecsTo(pv, this.m_targetPosOffset);
-            this.m_entitys[i].setPosition(this.position);
-            this.m_changFlags[i] = true;
-        }
-        for (i = 1; i < this.m_entitys.length; ++i) {
-            this.m_entitys[i].setPosition(pv);
-            this.m_changFlags[i] = true;
-        }
-        this.position.copyFrom(pv);
-    }
-    getPosition(pv: IVector3D): void {
-        pv.copyFrom(this.position);
-    }
-    setRotationXYZ(rx: number, ry: number, rz: number): void {
-    }
-    setScaleXYZ(sx: number, sy: number, sz: number): void {
-        // for (let i: number = 1; i < this.m_entitys.length; ++i) {
-        //     this.m_entitys[i].setScaleXYZ(sx, sy, sz);
-        // }
-    }
-    setCtrlScaleXYZ(sx: number, sy: number, sz: number): void {
-        for (let i: number = 1; i < this.m_entitys.length; ++i) {
-            this.m_changFlags
-            this.m_entitys[i].setScaleXYZ(sx, sy, sz);
-            this.m_changFlags[i] = true;
-        }
-    }
-    getRotationXYZ(pv: IVector3D): void {
-    }
-    getScaleXYZ(pv: IVector3D): void {
-    }
-    
-    getGlobalBounds(): IAABB {
-        return null;
-    }
-    getLocalBounds(): IAABB {
-        return null;
-    }
-    localToGlobal(pv: IVector3D): void {
-    }
-    globalToLocal(pv: IVector3D): void {
-    }
-    update(): void {
-        let i: number = 0;
-        if (this.m_entitys[i] != null && this.m_changFlags[i]) {
-            this.m_changFlags[i] = false;
-            this.m_entitys[i].update();
-        }
-        for (i = 1; i < this.m_entitys.length; ++i) {
-            if (this.m_changFlags[i]) {
-                this.m_changFlags[i] = false;
-                this.m_entitys[i].update();
-            }
-        }
-    }
-    destroy(): void {
-        this.m_entitys = [null];
-    }
-}
 class DragMoveController implements IDragMoveController {
 
     private m_controllers: IRayControl[] = [];
@@ -128,12 +39,18 @@ class DragMoveController implements IDragMoveController {
     private m_posX = -1;
     private m_mousePrePos = CoMath.createVec3(-100000, -100000, 0);
     private m_mousePos = CoMath.createVec3();
+    /**
+     * example: the value is 0.05
+     */
+    fixSize = 0.0;
+
     axisSize = 100.0;
     planeSize = 50.0;
     planeAlpha = 0.6;
     pickTestAxisRadius = 20;
-    runningVisible: boolean = true;
-    uuid: string = "DragMoveController";
+    runningVisible = true;
+    uuid = "DragMoveController";
+    
     constructor() { }
     /**
      * initialize the DragMoveController instance.
@@ -154,7 +71,7 @@ class DragMoveController implements IDragMoveController {
         }
     }
     setTargetPosOffset(offset: IVector3D): void {
-        this.m_target.setTargetPosOffset( offset );
+        this.m_target.setTargetPosOffset(offset);
     }
     setTarget(target: IEntityTransform): void {
 
@@ -169,11 +86,11 @@ class DragMoveController implements IDragMoveController {
     private createPlaneDrag(type: number, alpha: number, srcEntity: ITransformEntity = null): DragPlane {
 
         //let size: number = 50;
-        
+
         let movePlane = new DragPlane();
         movePlane.moveSelfEnabled = false;
         movePlane.initialize(type, this.planeSize, alpha);
-        
+
         movePlane.setTarget(this.m_target);
         movePlane.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
         this.m_target.addEntity(movePlane);
@@ -227,26 +144,26 @@ class DragMoveController implements IDragMoveController {
         if (this.m_enabled) {
 
             this.m_tempPos.copyFrom(this.m_target.position);
-
             this.m_camera = this.m_editRS.getCamera();
-
-            let vmat = this.m_camera.getViewMatrix();
-            let pmat = this.m_camera.getProjectMatrix();
             let stage = this.m_editRS.getStage3D();
 
-            vmat.transformVector3Self(this.m_tempPos);
+            if (this.fixSize > 0.01) {
+                let vmat = this.m_camera.getViewMatrix();
+                let pmat = this.m_camera.getProjectMatrix();
+                vmat.transformVector3Self(this.m_tempPos);
 
-            this.m_pos0.setXYZ(0.0, 0.0, this.m_tempPos.z);
-            this.m_pos1.setXYZ(100.0, 0.0, this.m_tempPos.z);
-            pmat.transformVectorSelf(this.m_pos0);
-            pmat.transformVectorSelf(this.m_pos1);
-            this.m_pos1.x = this.m_pos1.x / this.m_pos1.w - this.m_pos0.x / this.m_pos0.w;
+                this.m_pos0.setXYZ(0.0, 0.0, this.m_tempPos.z);
+                this.m_pos1.setXYZ(100.0, 0.0, this.m_tempPos.z);
+                pmat.transformVectorSelf(this.m_pos0);
+                pmat.transformVectorSelf(this.m_pos1);
+                this.m_pos1.x = this.m_pos1.x / this.m_pos1.w - this.m_pos0.x / this.m_pos0.w;
 
-            if (Math.abs(this.m_posX - this.m_pos1.x) > 0.0001) {
-                this.m_posX = this.m_pos1.x;
-                let scale = 0.05 / this.m_pos1.x;
-                this.m_target.setCtrlScaleXYZ(scale, scale, scale);
-                this.m_target.update();
+                if (Math.abs(this.m_posX - this.m_pos1.x) > 0.0001) {
+                    this.m_posX = this.m_pos1.x;
+                    let scale = this.fixSize / this.m_pos1.x;
+                    this.m_target.setCtrlScaleXYZ(scale, scale, scale);
+                    this.m_target.update();
+                }
             }
             this.m_mousePos.setXYZ(stage.mouseX, stage.mouseY, 0);
             if (CoMath.Vector3D.DistanceSquared(this.m_mousePrePos, this.m_mousePos) > 0.001) {
@@ -301,6 +218,8 @@ class DragMoveController implements IDragMoveController {
     getPosition(pv: IVector3D): void {
         this.m_target.getPosition(pv);
     }
+    setRotation3(r: IVector3D): void {
+    }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
@@ -310,7 +229,7 @@ class DragMoveController implements IDragMoveController {
     }
     getScaleXYZ(pv: IVector3D): void {
     }
-    
+
     getGlobalBounds(): IAABB {
         return null;
     }
