@@ -10,12 +10,14 @@ import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import ITestRay from "./ITestRay";
 import IVector3D from "../../vox/math/IVector3D";
 import AABB from "../../vox/geom/AABB";
+import IBoundsMesh from "./IBoundsMesh";
 
-export default class BoundsMesh extends MeshBase {
+export default class BoundsMesh extends MeshBase implements IBoundsMesh {
 	private m_rayTester: ITestRay = null;
     constructor() {
         super();
     }
+    
     setBounds(minV: IVector3D, maxV: IVector3D): void {
         if(this.bounds == null) {
             this.bounds = new AABB();
