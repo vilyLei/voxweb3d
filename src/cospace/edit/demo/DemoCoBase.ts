@@ -8,6 +8,7 @@ import { ICoAGeom } from "../../ageom/ICoAGeom";
 import { ICoMesh } from "../../voxmesh/ICoMesh";
 import { ICoEntity } from "../../voxentity/ICoEntity";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
+import { ICoParticle } from "../../particle/ICoParticle";
 import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
 
 import { ICoMouseInteraction } from "../../voxengine/ui/ICoMouseInteraction";
@@ -23,6 +24,7 @@ import Line3DMaterial from "../../../vox/material/mcase/Line3DMaterial";
 import { RotationCircle } from "../rotate/RotationCircle";
 import { DragRotationController } from "../rotate/DragRotationController";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
+import { SphereRayTester } from "../base/SphereRayTester";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 //CanvasTexAtlas
@@ -36,6 +38,7 @@ declare var CoAGeom: ICoAGeom;
 declare var CoMesh: ICoMesh;
 declare var CoEntity: ICoEntity;
 declare var CoMaterial: ICoMaterial;
+declare var CoParticle: ICoParticle;
 
 /**
  * cospace renderer
@@ -72,6 +75,7 @@ export class DemoCoBase {
 		let url4 = "static/cospace/coMaterial/CoMaterial.umd.js";
 		let url5 = "static/cospace/comesh/CoMesh.umd.js";
 		let url7 = "static/cospace/coentity/CoEntity.umd.js";
+		let url8 = "static/cospace/particle/CoParticle.umd.js";
 
 		new ModuleLoader(2, (): void => {
 			if (this.isEngineEnabled()) {
@@ -83,7 +87,7 @@ export class DemoCoBase {
 					console.log("math module loaded ...");
 					this.testMath();
 
-					new ModuleLoader(2, (): void => {
+					new ModuleLoader(3, (): void => {
 						console.log("ageom module loaded ...");
 						// this.testAGeom();
 
@@ -97,7 +101,7 @@ export class DemoCoBase {
 							}).load(url5);
 
 						}).load(url4);
-					}).load(url3).load(url7);
+					}).load(url3).load(url7).load(url8);
 				}).load(url2);
 				// this.m_vcoapp = new ViewerCoSApp();
 				// this.m_vcoapp.initialize((): void => {
@@ -180,12 +184,18 @@ export class DemoCoBase {
 
 		let bounds = CoEntity.createBoundsEntity();
 
-		let radius: number = 100.0;
+		let radius = 30.0;
 		let minV = CoMath.createVec3(radius,radius,radius).scaleBy(-1.0);
 		let maxV = CoMath.createVec3(radius,radius,radius);
 		bounds.setBounds(minV, maxV);
+		bounds.setRayTester( new SphereRayTester(radius) );
 		this.initializeEvent(bounds);
 		this.m_rscene.addEntity( bounds );
+
+
+		let par = CoParticle.createBillboard();
+		par.initializeSquare(radius * 2, [this.createTexByUrl("static/assets/circle01.png")]);
+		this.m_rscene.addEntity( par.entity, 1 );
 	}
 	
     private initializeEvent(entity: ITransformEntity): void {
@@ -216,6 +226,7 @@ export class DemoCoBase {
 	private mouseBgDownListener(evt: any): void {
 		console.log("DemoCoBase::mouseBgDownListener() ...");
 	}
+	
 	private testAGeom(): void {
 		let line = CoAGeom.createLine();
 		let rayLine = CoAGeom.createRayLine();

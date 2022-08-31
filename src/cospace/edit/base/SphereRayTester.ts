@@ -17,18 +17,19 @@ class SphereRayTester implements ITestRay {
 
     private m_radius: number;
     private m_center: IVector3D;
-    isHit: boolean = false;
-    private m_outV0 = CoMath.createVec3();
-    constructor(radius: number, center: IVector3D) {
+    isHit: boolean = false;    
+    constructor(radius: number, center: IVector3D = null) {
+        if(center == null) {
+            center = CoMath.createVec3();
+        }
         this.m_radius = radius;
         this.m_center = center;
     }
     testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number {
 
         let Ray = CoAGeom.RayLine;
-        this.isHit = Ray.IntersectSphereNearPos(rlpv, rltv, this.m_center, this.m_radius, this.m_outV0);
+        this.isHit = Ray.IntersectSphereNearPos(rlpv, rltv, this.m_center, this.m_radius, outV);
         if(this.isHit) {
-            outV.copyFrom(this.m_outV0);
             return 1;
         }
         this.isHit = false;
