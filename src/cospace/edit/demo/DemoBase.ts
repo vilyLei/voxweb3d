@@ -106,8 +106,43 @@ export class DemoBase {
         let axis = new Axis3DEntity();
         axis.initialize(300);
         this.m_rscene.addEntity(axis);
+
         // this.testVec();
 
+        let bounds = new BoundsEntity();
+		let radius: number = 100.0;
+		let minV = new Vector3D(radius,radius,radius).scaleBy(-1.0);
+		let maxV = new Vector3D(radius,radius,radius);
+		bounds.setBounds(minV, maxV);
+
+        this.initializeEvent(bounds);
+
+        this.m_rscene.addEntity( bounds );
+
+        let sph = new Sphere3DEntity();
+        sph.normalEnabled = true;
+        sph.initialize(radius, 20,20);
+        this.m_rscene.addEntity( sph );
+	}
+    
+    private initializeEvent(entity: DisplayEntity): void {
+        const me = MouseEvent;
+        let dispatcher = new MouseEvt3DDispatcher();
+        dispatcher.addEventListener(me.MOUSE_OVER, this, this.mOverListener);
+        dispatcher.addEventListener(me.MOUSE_OUT, this, this.mOutListener);
+        dispatcher.addEventListener(me.MOUSE_DOWN, this, this.mDownListener);
+        entity.setEvtDispatcher(dispatcher);
+        entity.mouseEnabled = true;
+    }
+
+	private mOverListener(evt: any): void {
+		console.log("DemoBase::mOverListener() ...");
+	}
+	private mOutListener(evt: any): void {
+		console.log("DemoBase::mOutListener() ...");
+	}
+	private mDownListener(evt: any): void {
+		console.log("DemoBase::mDownListener() ...");
 	}
     private testVec(): void {
 

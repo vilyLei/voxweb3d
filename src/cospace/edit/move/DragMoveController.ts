@@ -19,6 +19,9 @@ declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;
 // declare var CoAGeom: ICoAGeom;
 
+/**
+ * 在三个坐标轴上拖动移动
+ */
 class DragMoveController implements IDragMoveController {
 
     private m_controllers: IRayControl[] = [];
@@ -34,9 +37,9 @@ class DragMoveController implements IDragMoveController {
     private m_target = new DragMoveTarget();
     private m_camera: IRenderCamera = null;
 
+    private m_posX = -1;
     private m_pos0 = CoMath.createVec3();
     private m_pos1 = CoMath.createVec3(100.0, 0.0, 0.0);
-    private m_posX = -1;
     private m_mousePrePos = CoMath.createVec3(-100000, -100000, 0);
     private m_mousePos = CoMath.createVec3();
     /**

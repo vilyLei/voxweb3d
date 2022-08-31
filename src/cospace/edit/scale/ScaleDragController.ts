@@ -30,7 +30,7 @@ declare var CoMath: ICoMath;
 declare var CoAGeom: ICoAGeom;
 
 /**
- * 在三个坐标轴上拖动
+ * 在三个坐标轴上拖动缩放
  */
 export default class ScaleDragController implements IRayControl {
 

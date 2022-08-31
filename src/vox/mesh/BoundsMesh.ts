@@ -51,7 +51,7 @@ export default class BoundsMesh extends MeshBase implements IBoundsMesh {
 		if(this.m_rayTester != null) {
 			return this.m_rayTester.testRay(rlpv, rltv, outV, boundsHit);
 		}
-        return -1;
+        return 1;
     }
     __$destroy(): void {
         this.bounds = null;

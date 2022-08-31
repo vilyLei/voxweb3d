@@ -36,6 +36,9 @@ export default class BoundsEntity extends DisplayEntity implements IBoundsEntity
         }
     }
     setBounds(minV: Vector3D, maxV: Vector3D): void {
+        if(this.m_bm == null) {
+            this.initialize(minV, maxV);
+        }
         let b = this.m_bm.bounds;
         b.min.copyFrom(minV);
         b.max.copyFrom(maxV);

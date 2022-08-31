@@ -171,13 +171,42 @@ export class DemoCoBase {
 		// let circle = new RotationCircle();
 		// circle.initialize(100,20,0, CoMaterial.createColor4(1.0,0.0,0.0));
 		// this.m_rscene.addEntity(circle.getEntity());
-
+		/*
 		let dragRCtr = new DragRotationController();
 		dragRCtr.initialize(this.m_rscene, 0);
 		dragRCtr.setTarget(this.m_axis);
 		this.m_dragRCtr = dragRCtr;
+		//*/
+
+		let bounds = CoEntity.createBoundsEntity();
+
+		let radius: number = 100.0;
+		let minV = CoMath.createVec3(radius,radius,radius).scaleBy(-1.0);
+		let maxV = CoMath.createVec3(radius,radius,radius);
+		bounds.setBounds(minV, maxV);
+		this.initializeEvent(bounds);
+		this.m_rscene.addEntity( bounds );
 	}
 	
+    private initializeEvent(entity: ITransformEntity): void {
+
+        const me = CoRScene.MouseEvent;
+        let dispatcher = CoRScene.createMouseEvt3DDispatcher();
+        dispatcher.addEventListener(me.MOUSE_OVER, this, this.mOverListener);
+        dispatcher.addEventListener(me.MOUSE_OUT, this, this.mOutListener);
+        dispatcher.addEventListener(me.MOUSE_DOWN, this, this.mDownListener);
+        entity.setEvtDispatcher(dispatcher);
+        entity.mouseEnabled = true;
+    }
+	private mOverListener(evt: any): void {
+		console.log("DemoCoBase::mOverListener() ...");
+	}
+	private mOutListener(evt: any): void {
+		console.log("DemoCoBase::mOutListener() ...");
+	}
+	private mDownListener(evt: any): void {
+		console.log("DemoCoBase::mDownListener() ...");
+	}
 	private mouseUpListener(evt: any): void {
 		console.log("DemoCoBase::mouseUpListener() ...");
 		if (this.m_dragRCtr != null) {
