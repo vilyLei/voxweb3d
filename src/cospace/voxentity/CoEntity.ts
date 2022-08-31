@@ -4,6 +4,7 @@ import ITransformEntity from "../../vox/entity/ITransformEntity";
 import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
 import IDataMesh from "../../vox/mesh/IDataMesh";
 import IRawMesh from "../../vox/mesh/IRawMesh";
+import IBoundsEntity from "../../vox/entity/IBoundsEntity";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 
@@ -23,6 +24,9 @@ function createDisplayEntity(): ITransformEntity {
 }
 function createMouseEventEntity(): IMouseEventEntity {
 	return CoRScene.createMouseEventEntity();
+}
+function createBoundsEntity(): IBoundsEntity {
+	return CoRScene.createBoundsEntity();
 }
 
 function createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D): ITransformEntity {
@@ -49,5 +53,6 @@ export {
 	createDisplayEntityWithDataMesh,
 	createDisplayEntity,
 	createMouseEventEntity,
+	createBoundsEntity,
 	createCrossAxis3DEntity
 };

@@ -2,6 +2,7 @@ import IVector3D from "../../vox/math/IVector3D";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import ITransformEntity from "../../vox/entity/ITransformEntity";
 import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
+import IBoundsEntity from "../../vox/entity/IBoundsEntity";
 import IDataMesh from "../../vox/mesh/IDataMesh";
 import IRawMesh from "../../vox/mesh/IRawMesh";
 
@@ -38,6 +39,8 @@ interface ICoEntity {
 	createDisplayEntityWithDataMesh(mesh: IDataMesh, material: IRenderMaterial, texEnabled?: boolean, vbWhole?: boolean): ITransformEntity;
 	createDisplayEntity(): ITransformEntity;
 	createMouseEventEntity(): IMouseEventEntity;
+	createBoundsEntity(): IBoundsEntity;
+
 	/**
 	 * create a cross axis randerable entity
 	 * @param size the default value is 100
