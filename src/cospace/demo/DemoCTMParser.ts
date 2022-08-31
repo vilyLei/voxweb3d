@@ -78,6 +78,8 @@ export class DemoCTMParser {
 		urls = [baseUrl + "sh202/sh202_4.ctm"];
 		urls = [baseUrl + "sh202/sh202_25.ctm"];
 		urls = [baseUrl + "sh202/sh202_26.ctm"];
+		urls = ["static/private/test/tst.ctm"];
+		
 		// urls = [baseUrl + "sh202/sh202_5.ctm"];
 		//let ctmUrl: string = "static/assets/ctm/hand.ctm";
 		this.initCTMFromBin(urls[0]);

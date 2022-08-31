@@ -77,6 +77,7 @@ export class DemoDracoParser {
 		let url = "";
 		url = "static/private/draco/sh202_25.ctm.drc";
 		url = "static/private/draco/sh202_26.ctm.drc";
+		url = "static/private/test/tst.drc";
 		// url = "static/private/draco/sh202_25.drc";
 		// draco模型数据字节分段信息
 		this.m_dracoGeomBuilder.load(url);

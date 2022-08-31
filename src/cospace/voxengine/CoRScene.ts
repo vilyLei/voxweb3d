@@ -34,6 +34,8 @@ import ITransformEntity from "../../vox/entity/ITransformEntity";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
 import MouseEventEntity from "../../vox/entity/MouseEventEntity";
+import IBoundsEntity from "../../vox/entity/IBoundsEntity";
+import BoundsEntity from "../../vox/entity/BoundsEntity";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 
 import IColorMaterial from "../../vox/material/mcase/IColorMaterial";
@@ -196,6 +198,10 @@ function createDisplayEntity(): ITransformEntity {
 function createMouseEventEntity(): IMouseEventEntity {
 	return new MouseEventEntity();
 }
+function createBoundsEntity(): IBoundsEntity {
+	return new BoundsEntity();
+}
+//BoundsEntity
 function createDisplayEntityContainer(): DisplayEntityContainer {
 	return new DisplayEntityContainer();
 }
@@ -281,6 +287,7 @@ export {
 	createDisplayEntityWithDataMesh,
 	createDisplayEntity,
 	createMouseEventEntity,
+	createBoundsEntity,
 	createDisplayEntityContainer,
 
 	creatMaterialContextParam,

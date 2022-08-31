@@ -68,6 +68,16 @@ class CarEntityTransform implements IEntityTransform {
             this.detector.version++;
         }
     }
+    
+    setRotation3(r: Vector3D): void {
+        if (this.m_entityIndex >= 0) {
+            this.m_fs32Data[3] = r.x;
+            this.m_fs32Data[4] = r.y;
+            this.m_fs32Data[5] = r.z;
+            this.status = NavigationStatus.Init;
+            this.detector.version++;
+        }
+    }
     setRotationXYZ(prx: number, pry: number, prz: number): void {
         if (this.m_entityIndex >= 0) {
             this.m_fs32Data[3] = prx;

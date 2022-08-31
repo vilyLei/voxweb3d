@@ -58,6 +58,8 @@ class DragMoveTarget implements IEntityTransform {
     getPosition(pv: Vector3D): void {
         pv.copyFrom(this.position);
     }
+    setRotation3(r: Vector3D): void {
+    }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
@@ -334,6 +336,8 @@ class DragMoveController implements IRayControl {
     }
     getPosition(pv: Vector3D): void {
         this.m_dragMoveTarget.getPosition(pv);
+    }
+    setRotation3(r: Vector3D): void {
     }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
     }

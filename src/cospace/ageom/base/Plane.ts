@@ -107,39 +107,6 @@ export default class Plane implements IPlane {
 		let flag = PlaneUtils.IntersectLinePos2(this.nv, this.m_dis, sl_pos, sl_tv, outV);
 		this.intersection = PlaneUtils.Intersection;
 		return flag;
-		/*
-		this.intersection = Intersection.None;
-		// intersection or parallel
-		let td = this.nv.dot(sl_tv);
-		if (isNotZero(td)) {
-			// intersection
-			let m_dis = this.nv.dot(sl_pos) - this.m_dis;
-
-			outV.x = sl_tv.x * 100000.0 + sl_pos.x;
-			outV.y = sl_tv.y * 100000.0 + sl_pos.y;
-			outV.z = sl_tv.z * 100000.0 + sl_pos.z;
-			//
-			td = this.nv.dot(outV) - this.m_dis;
-
-			td = m_dis / (m_dis - td);
-
-			outV.subtractBy(sl_pos);
-			outV.scaleBy(td);
-			outV.addBy(sl_pos);
-			this.intersection = Intersection.Hit;
-			return true;
-		}
-		td = this.nv.dot(sl_pos) - this.m_dis;
-		if (isZero(td)) {
-			// plane contains line
-			outV.copyFrom(sl_pos);
-			// 平行且包含
-			this.intersection = Intersection.Contain;
-			return true;
-		}
-		this.intersection = Intersection.parallel;
-		return false;
-		//*/
 	}
 
 	intersectRayLinePos(rl: IRayLine, outV: IVector3D): boolean {
