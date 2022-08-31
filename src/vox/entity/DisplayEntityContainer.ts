@@ -400,6 +400,12 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     setRotationX(degrees: number): void { this.m_rx = degrees; this.m_transformStatus |= 2; this.m_rotateBoo = true; }
     setRotationY(degrees: number): void { this.m_ry = degrees; this.m_transformStatus |= 2; this.m_rotateBoo = true; }
     setRotationZ(degrees: number): void { this.m_rz = degrees; this.m_transformStatus |= 2; this.m_rotateBoo = true; }
+    
+    setRotation3(r: Vector3D): void {
+        this.m_rx = r.x; this.m_transformStatus |= 2; this.m_rotateBoo = true;
+        this.m_ry = r.y;
+        this.m_rz = r.z;
+    }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
         this.m_rx = rx;
         this.m_ry = ry;

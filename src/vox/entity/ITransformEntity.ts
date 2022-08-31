@@ -13,6 +13,7 @@ interface ITransformEntity extends IDisplayEntity{
     setXYZ(px: number, py: number, pz: number): void;
     setPosition(pv: IVector3D): void;
     getPosition(pv: IVector3D): void;
+    setRotation3(r: IVector3D): void;
     setRotationXYZ(rx: number, ry: number, rz: number): void;
     setScaleXYZ(sx: number, sy: number, sz: number): void;
     getRotationXYZ(pv: IVector3D): void;

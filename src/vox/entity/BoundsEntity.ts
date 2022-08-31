@@ -10,10 +10,14 @@
 import Vector3D from "../../vox/math/Vector3D";
 import IROTransform from "../../vox/display/IROTransform";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
+import IBoundsEntity from "../../vox/entity/IBoundsEntity";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import BoundsMesh from "../../vox/mesh/BoundsMesh";
-export default class BoundsEntity extends DisplayEntity {
-    private m_bm: BoundsMesh = null;
+import IBoundsMesh from "../mesh/IBoundsMesh";
+import ITestRay from "../mesh/ITestRay";
+
+export default class BoundsEntity extends DisplayEntity implements IBoundsEntity {
+    private m_bm: IBoundsMesh = null;
     constructor(transform: IROTransform = null) {
         super(transform);
     }
@@ -32,10 +36,15 @@ export default class BoundsEntity extends DisplayEntity {
         }
     }
     setBounds(minV: Vector3D, maxV: Vector3D): void {
-        this.m_bm.bounds.min.copyFrom(minV);
-        this.m_bm.bounds.max.copyFrom(maxV);
-        this.m_bm.bounds.updateFast();
+        let b = this.m_bm.bounds;
+        b.min.copyFrom(minV);
+        b.max.copyFrom(maxV);
+        b.updateFast();
     }
+    
+	setRayTester(rayTester: ITestRay): void {
+		this.m_bm.setRayTester(rayTester);
+	}
     isPolyhedral(): boolean {
         return false;
     }
