@@ -12,6 +12,7 @@ import IEntityTransform from "../../../vox/entity/IEntityTransform";
 import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IColor4 from "../../../vox/material/IColor4";
+import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
 import { CircleRayTester } from "../base/CircleRayTester";
 
 import IRawMesh from "../../../vox/mesh/IRawMesh";
@@ -34,18 +35,28 @@ declare var CoMesh: ICoMesh;
 /**
  * 在三个坐标轴上旋转
  */
-export default class RotationCircle implements IRayControl {
+class RotationCircle implements IRayControl {
 
     private m_targetEntity: IEntityTransform = null;
     private m_dispatcher: IEvtDispatcher;
-    private m_targetPosOffset: IVector3D = CoMath.createVec3();
+    private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
-    private m_planeNV: IVector3D = CoMath.createVec3();
-    uuid: string = "RotationCircle";
+    private m_center = CoMath.createVec3();
+    private m_planeNV = CoMath.createVec3();
+    private m_outV = CoMath.createVec3();
+    private m_preRotV = CoMath.createVec3();
+    private m_rotV = CoMath.createVec3();
+    private m_initDegree = 0;
+    private m_planeDis = 0;
+    private m_type = 0;
+    private m_material: IColorMaterial = null;
+    private m_flag = -1;
+
+    uuid = "RotationCircle";
     moveSelfEnabled = true;
     outColor = CoMaterial.createColor4(0.9, 0.9, 0.9, 1.0);
     overColor = CoMaterial.createColor4(1.0, 1.0, 1.0, 1.0);
-    pickTestRadius: number = 10;
+    pickTestRadius = 20;
     constructor() {
     }
     /**
@@ -62,8 +73,10 @@ export default class RotationCircle implements IRayControl {
 
             let builder = CoMesh.lineMeshBuilder;
             let mesh: IRawMesh;
+            builder.dynColorEnabled = false;
             builder.color.copyFrom(color);
-            switch(type) {
+            this.m_type = type;
+            switch (type) {
                 case 1:
                     mesh = builder.createCircleXOZ(radius, segsTotal);
                     this.m_planeNV.setXYZ(0, 1, 0);
@@ -77,10 +90,11 @@ export default class RotationCircle implements IRayControl {
                     this.m_planeNV.setXYZ(0, 0, 1);
                     break;
             }
-            mesh.setRayTester(new CircleRayTester(radius, CoMath.createVec3(), this.m_planeNV, 0, this.pickTestRadius));
+
+            mesh.setRayTester(new CircleRayTester(radius, this.m_center, this.m_planeNV, this.m_planeDis, this.pickTestRadius));
             this.m_entity.setMesh(mesh);
-            let material = CoMaterial.createLineMaterial();
-            this.m_entity.setMaterial( material );
+            this.m_material = CoMaterial.createLineMaterial(builder.dynColorEnabled);
+            this.m_entity.setMaterial(this.m_material);
             this.m_entity.update();
 
             this.initializeEvent();
@@ -97,22 +111,25 @@ export default class RotationCircle implements IRayControl {
         return this.m_entity.getVisible();
     }
     setXYZ(px: number, py: number, pz: number): void {
-        this.m_entity.setXYZ(px,py,pz);
+        this.m_entity.setXYZ(px, py, pz);
+    }
+    setRotation3(r: IVector3D): void {
+        this.m_entity.setRotation3(r);
     }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
-        this.m_entity.setRotationXYZ(rx,ry,rz);
+        this.m_entity.setRotationXYZ(rx, ry, rz);
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
-        this.m_entity.setScaleXYZ(sx,sy,sz);
+        this.m_entity.setScaleXYZ(sx, sy, sz);
     }
-    
+
     getScaleXYZ(pv: IVector3D): void {
-        this.m_entity.getScaleXYZ( pv );
+        this.m_entity.getScaleXYZ(pv);
     }
     getRotationXYZ(pv: IVector3D): void {
-        this.m_entity.getRotationXYZ( pv );
+        this.m_entity.getRotationXYZ(pv);
     }
-    
+
     getGlobalBounds(): IAABB {
         return null;
     }
@@ -120,10 +137,10 @@ export default class RotationCircle implements IRayControl {
         return null;
     }
     localToGlobal(pv: IVector3D): void {
-        this.m_entity.localToGlobal( pv );
+        this.m_entity.localToGlobal(pv);
     }
     globalToLocal(pv: IVector3D): void {
-        this.m_entity.globalToLocal( pv );
+        this.m_entity.globalToLocal(pv);
     }
 
     addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
@@ -169,6 +186,7 @@ export default class RotationCircle implements IRayControl {
         return this.m_flag > -1;
     }
     select(): void {
+        console.log("RotationCircle::select() ...");
     }
     deselect(): void {
         console.log("RotationCircle::deselect() ...");
@@ -184,6 +202,8 @@ export default class RotationCircle implements IRayControl {
             this.m_dispatcher.destroy();
             this.m_dispatcher = null;
         }
+        this.m_center = null;
+        this.m_planeNV = null;
     }
     setPosition(pos: IVector3D): void {
         this.m_entity.setPosition(pos);
@@ -195,15 +215,92 @@ export default class RotationCircle implements IRayControl {
         this.m_entity.update();
     }
 
-    private m_flag: number = -1;
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
         if (this.m_flag > -1) {
+            // console.log("RotationCircle::moveByRay() ...");
+            // console.log("           this.m_initDegree: ", this.m_initDegree);
+            let degree = this.getDegree(rpv, rtv);            
+            // console.log("           degree: ", degree);
+            degree -= this.m_initDegree;
+            
+            let et = this.m_targetEntity;
+            if (et != null) {
+                let rv = this.m_rotV;
+                let prv = this.m_preRotV;
+                et.getRotationXYZ(rv);
 
+                switch (this.m_type) {
+                    case 1:
+                        // XOZ, Y-Axis
+                        rv.y = prv.y + degree;
+                        break;
+                    case 2:
+                        // YOZ, X-Axis
+                        rv.x = prv.x + degree;
+                        break;
+                    default:
+                        // XOY, Z-Axis
+                        rv.z = prv.z + degree;
+                        break;
+                }
+                et.setRotation3(rv);
+                et.update();
+            }
+        }
+    }
+    mouseDownListener(evt: any): void {
+        console.log("RotationCircle::mouseDownListener() ..., evt: ", evt);
+
+        this.m_flag = 1;
+
+        this.m_initDegree = this.getDegree(evt.raypv, evt.raytv);
+        this.m_preRotV.setXYZ(0, 0, 0);
+        if (this.m_targetEntity != null) {
+            this.m_targetEntity.getRotationXYZ(this.m_preRotV);
         }
     }
 
-    mouseDownListener(evt: any): void {
-        console.log("RotationCircle::mouseDownListener() ...");
-        
+    public getDegree(rpv: IVector3D, rtv: IVector3D): number {
+        let degree = 0;
+        if (this.m_flag > -1) {
+            let u = CoAGeom.PlaneUtils;
+            let hitFlag = u.IntersectRayLinePos2(this.m_planeNV, this.m_planeDis, rpv, rtv, this.m_outV);
+            if (hitFlag) {
+                hitFlag = u.Intersection == CoAGeom.Intersection.Hit;
+                let V3 = CoMath.Vector3D;
+                if (hitFlag && V3.Distance(this.m_outV, this.m_center) > 2.0) {
+                    this.m_outV.subtractBy(this.m_center);
+
+                    let et = this.m_targetEntity;
+                    if (et != null) {
+                        let v = this.m_outV;
+
+                        switch (this.m_type) {
+                            case 1:
+                                // XOZ, Y-Axis
+                                degree = -CoMath.MathConst.GetDegreeByXY(v.x, v.z);
+                                //rv.y = pv.y - degree;
+                                break;
+                            case 2:
+                                // YOZ, X-Axis
+                                degree = CoMath.MathConst.GetDegreeByXY(v.y, v.z);
+                                //rv.x = pv.x + degree;
+                                break;
+                            default:
+                                // XOY, Z-Axis
+                                degree = CoMath.MathConst.GetDegreeByXY(v.x, v.y);
+                                //rv.z = pv.z + degree;
+                                break;
+                        }
+                        degree += 360.0;
+                        if (degree > 360) degree = degree - 360.0;
+                        // console.log("RotationCircle::getDegree() ..., degree: ", degree);
+                    }
+                }
+            }
+        }
+        return degree;
     }
 }
+
+export { RotationCircle }
