@@ -5,54 +5,56 @@ import IAABB2D from "../../vox/geom/IAABB2D";
 
 import { CoVec3 } from "../voxengine/ICoRScene";
 
-/*
-interface CoMathVec3 {
+interface CoMathConst {
 
-    // ONE: IVector3D;
-    // ZERO: IVector3D;
-    // X_AXIS: IVector3D;
-    // Y_AXIS: IVector3D;
-    // Z_AXIS: IVector3D;
+    readonly MATH_MIN_POSITIVE: number;
+    readonly MATH_MAX_NEGATIVE: number;
+    readonly MATH_MAX_POSITIVE: number;
+    readonly MATH_MIN_NEGATIVE: number;
+    readonly MATH_1_OVER_255: number;
+    readonly MATH_PI: number;
+    readonly MATH_2PI: number;
+    readonly MATH_3PER2PI: number;
+    readonly MATH_1PER2PI: number;
+    readonly MATH_1_OVER_PI: number;
+    readonly MATH_1_OVER_360: number;
+    readonly MATH_1_OVER_180: number;
+    readonly MATH_180_OVER_PI: number;
+    readonly MATH_PI_OVER_180: number;
+    readonly MATH_LN2: number;
+    
+    Clamp(value: number, min: number, max: number): number;
+    IsPowerOf2(value: number): boolean;
+    CalcCeilPowerOfTwo(value: number): number;
+    CalcNearestCeilPow2(int_n: number): number;
+    CalcFloorCeilPow2(int_n: number): number;
+    DegreeToRadian(degree: number): number;
+    Log2(f: number): number;
+    GetMaxMipMapLevel(width: number, height: number): number;
+    SafeACos(x: number): number;
+    GetNearestCeilPow2(int_n: number): number;
+    /**
+	 * ccw is positive
+	 * @param r0 radian 0
+	 * @param r1 radian 1
+	 */
+    GetMinRadian(r0: number, r1: number): number;
+    /**
+     * get the directional angle offset degree value: dst_angle_degree = src_angle_degree + directional_angle_offset_degree_value
+     * @param a0 src angle degree
+     * @param a1 dst angle degree
+     * @returns directional angle offset degree value 
+     */
+    GetMinDegree(a0: number, a1: number): number;
+    GetDegreeByXY(dx: number, dy: number): number;
+    GetRadianByXY(dx: number, dy: number): number;
+    GetRadianByCos(cosv: number, dx: number, dy: number): number;
+}
 
-    // /**
-    //  * 右手法则(为正)
-    //  */
-    // Cross(a: IVector3D, b: IVector3D, result: IVector3D): void;
-    // // (va1 - va0) 叉乘 (vb1 - vb0), 右手法则(为正)
-    // CrossSubtract(va0: IVector3D, va1: IVector3D, vb0: IVector3D, vb1: IVector3D, result: IVector3D): void;
-    // Subtract(a: IVector3D, b: IVector3D, result: IVector3D): void;
-    // DistanceSquared(a: IVector3D, b: IVector3D): number;
-    // DistanceXYZ(x0: number, y0: number, z0: number, x1: number, y1: number, z1: number): number;
-    // Distance(v0: IVector3D, v1: IVector3D): number;
-    // // /**
-    //  * get angle degree between two IVector3D objects
-    //  * @param v0 src IVector3D object
-    //  * @param v1 dst IVector3D object
-    //  * @returns angle degree
-    //  */
-    // AngleBetween(v0: IVector3D, v1: IVector3D): number;
-    // /**
-    //  * get angle radian between two IVector3D objects
-    //  * @param v0 src IVector3D object
-    //  * @param v1 dst IVector3D object
-    //  * @returns angle radian
-    //  */
-    // RadianBetween(v0: IVector3D, v1: IVector3D): number;
-    // RadianBetween2(v0: IVector3D, v1: IVector3D): number;
-    // Reflect(iv: IVector3D, nv: IVector3D, rv: IVector3D): void;
-    // /**
-    //  * 逆时针转到垂直
-    //  */
-    // VerticalCCWOnXOY(v: IVector3D): void;
-    // /**
-    //  * 顺时针转到垂直
-    //  */
-    // VerticalCWOnXOY(v: IVector3D): void;
-// }
-//*/
 interface ICoMath {
 
     Vector3D: CoVec3;
+    MathConst: CoMathConst;
     /**
      * create a Vector3D instance
      * @param px the default vaue is 0.0

@@ -3,6 +3,7 @@ import IMatrix4 from "../../vox/math/IMatrix4";
 import IAABB from "../../vox/geom/IAABB";
 import IAABB2D from "../../vox/geom/IAABB2D";
 import AABB2D from "../../vox/geom/AABB2D";
+import MathConst from "../../vox/math/MathConst";
 
 import {
 	isZero,
@@ -32,6 +33,7 @@ function createAABB(): IAABB {
 function createAABB2D(px: number = 0.0, py: number = 0.0, pwidth: number = 100.0, pheight: number = 100.0): IAABB2D {
 	return new AABB2D(px,py,pwidth, pheight);
 }
+
 const Vector3D = CoRScene.Vector3D;
 export {
 	Vector3D,
@@ -39,6 +41,7 @@ export {
 	createMat4,
 	createAABB,
 	createAABB2D,
+	MathConst,
 
 	isZero,
 	isNotZero,
