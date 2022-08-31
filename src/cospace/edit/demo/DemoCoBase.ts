@@ -20,7 +20,9 @@ import IPlane from "../../ageom/base/IPlane";
 import CanvasTexAtlas from "../../voxtexture/atlas/CanvasTexAtlas";
 import { LineMeshBuilder } from "../../voxmesh/build/LineMeshBuilder";
 import Line3DMaterial from "../../../vox/material/mcase/Line3DMaterial";
-import RotationCircle from "../rotate/RotationCircle";
+import { RotationCircle } from "../rotate/RotationCircle";
+import { DragRotationController } from "../rotate/DragRotationController";
+import ITransformEntity from "../../../vox/entity/ITransformEntity";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 //CanvasTexAtlas
@@ -140,6 +142,8 @@ export class DemoCoBase {
 		//*/
 		this.test01();
 	}
+	private m_dragRCtr: DragRotationController = null;
+	private m_axis: ITransformEntity = null;
 	private test01(): void {
 
 		/*
@@ -164,9 +168,24 @@ export class DemoCoBase {
 		this.m_rscene.addEntity(rectLine);
 		*/
 
-		let circle = new RotationCircle();
-		circle.initialize(100,20,0, CoMaterial.createColor4(1.0,0.0,0.0));
-		this.m_rscene.addEntity(circle.getEntity());
+		// let circle = new RotationCircle();
+		// circle.initialize(100,20,0, CoMaterial.createColor4(1.0,0.0,0.0));
+		// this.m_rscene.addEntity(circle.getEntity());
+
+		let dragRCtr = new DragRotationController();
+		dragRCtr.initialize(this.m_rscene, 0);
+		dragRCtr.setTarget(this.m_axis);
+		this.m_dragRCtr = dragRCtr;
+	}
+	
+	private mouseUpListener(evt: any): void {
+		console.log("DemoCoBase::mouseUpListener() ...");
+		if (this.m_dragRCtr != null) {
+			this.m_dragRCtr.deselect();
+		}
+	}
+	private mouseBgDownListener(evt: any): void {
+		console.log("DemoCoBase::mouseBgDownListener() ...");
 	}
 	private testAGeom(): void {
 		let line = CoAGeom.createLine();
@@ -264,6 +283,7 @@ export class DemoCoBase {
 	private createDefaultEntity(): void {
 		let axis = CoRScene.createAxis3DEntity();
 		this.m_rscene.addEntity(axis);
+		this.m_axis = axis;
 
 		// let texList = [this.createTexByUrl()];
 		// let material = CoRScene.createDefaultMaterial();
@@ -315,6 +335,9 @@ export class DemoCoBase {
 			rparam.setCamProject(45, 20.0, 9000.0);
 			this.m_rscene = CoRScene.createRendererScene(rparam, 3);
 			this.m_rscene.setClearUint24Color(0x888888);
+			let rscene = this.m_rscene;
+			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
+			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDownListener);
 		}
 	}
 	private loadOBJ(): void {
@@ -325,6 +348,9 @@ export class DemoCoBase {
 	private mouseDown(evt: any): void { }
 	run(): void {
 		if (this.m_rscene != null) {
+			if(this.m_dragRCtr != null) {
+				this.m_dragRCtr.run();
+			}
 			if (this.m_interact != null) {
 				this.m_interact.run();
 			}

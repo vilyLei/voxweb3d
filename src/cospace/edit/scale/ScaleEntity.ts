@@ -66,6 +66,8 @@ export default class ScaleEntity implements IRayControl {
     setXYZ(px: number, py: number, pz: number): void {
         this.m_entity.setXYZ(px,py,pz);
     }
+    setRotation3(r: IVector3D): void {
+    }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
         this.m_entity.setRotationXYZ(rx,ry,rz);
     }

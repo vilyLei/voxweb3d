@@ -28,6 +28,7 @@ import RadialLine from "../../../vox/geom/RadialLine";
 import Plane from "../../../vox/geom/Plane";
 import H5Text from "../../voxtext/base/H5Text";
 import TextEntity from "../../voxtext/base/TextEntity";
+import BoundsEntity from "../../../vox/entity/BoundsEntity";
 
 //import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
 
@@ -82,7 +83,6 @@ export class DemoBase {
             this.m_materialCtx.initialize(this.m_rscene);
 
             this.m_statusDisp.initialize();
-
             this.m_rscene.setClearRGBColor3f(0.2, 0.5, 0.5);
 
             // DivLog.ShowLog("renderer inited.");
@@ -93,6 +93,7 @@ export class DemoBase {
 
     private initScene(): void {
 
+        // let bounds: BoundsEntity = null;
         /*
 		let h5Text = new H5Text();
 		h5Text.initialize(this.m_rscene, "text_cv_01", 18, 512,512);

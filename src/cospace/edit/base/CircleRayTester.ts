@@ -41,12 +41,12 @@ class CircleRayTester implements ITestRay {
                 let dis = CoMath.Vector3D.Distance(this.m_outV0, this.m_center);
                 this.isHit = Math.abs(dis - this.m_radius) < this.m_rayTestRadius;
                 if( this.isHit ) {
+                    outV.copyFrom(this.m_outV0);
                     return 1;
                     // console.log("hit the plane circle, its nv: ", this.m_planeNV, ", this.m_radius: ", this.m_radius);
                 }
             }
         }
-        outV.copyFrom(this.m_outV0);
         this.isHit = false;
         return 0;
     }

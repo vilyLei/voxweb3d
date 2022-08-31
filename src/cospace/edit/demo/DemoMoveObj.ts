@@ -265,9 +265,23 @@ export class DemoMoveObj {
 		let material = new CoNormalMaterial().build().material;
 
 		let mesh = CoRScene.createDataMeshFromModel(model, material);
+		let cv = mesh.bounds.center.clone();
+		let vs = model.vertices;
+		let tot = vs.length;
+		for(let i = 0; i < tot;) {
+			vs[i++] -= cv.x;
+			vs[i++] -= cv.y;
+			vs[i++] -= cv.z;
+		}
+
+		
+		cv.scaleBy(this.m_scale);
+		mesh = CoRScene.createDataMeshFromModel(model, material);
 		let entity = CoRScene.createMouseEventEntity();
 		entity.setMaterial(material);
 		entity.setMesh(mesh);
+		entity.setPosition(cv);
+		console.log("XXXXXXXXXXXXx cv: ",cv);
 		// entity.setRenderState(rst.NONE_CULLFACE_NORMAL_STATE);
 		this.m_rscene.addEntity(entity);
 
@@ -287,13 +301,14 @@ export class DemoMoveObj {
 	private mouseDownTargetListener(evt: any): void {
 		console.log("mouseDownTargetListener() mouse down...");
 		if (this.m_dragCtr != null) {
+
 			let pos = CoMath.createVec3();
 			let entity = evt.target as ITransformEntity;
 			entity.getPosition(pos);
-			// let bounds = entity.getGlobalBounds();
-			// pos.subtractBy(bounds.center);
+			
 			let wpos = evt.wpos as IVector3D;
 			pos.subtractBy(wpos);
+			
 			this.m_dragCtr.setTarget(evt.target);
 			this.m_dragCtr.setTargetPosOffset(pos);
 			this.m_dragCtr.setPosition(wpos);
