@@ -175,13 +175,15 @@ export class DemoCoBase {
 		// let circle = new RotationCircle();
 		// circle.initialize(100,20,0, CoMaterial.createColor4(1.0,0.0,0.0));
 		// this.m_rscene.addEntity(circle.getEntity());
-		/*
+
+		///*
+		
 		let dragRCtr = new DragRotationController();
 		dragRCtr.initialize(this.m_rscene, 0);
 		dragRCtr.setTarget(this.m_axis);
 		this.m_dragRCtr = dragRCtr;
 		//*/
-
+		/*
 		let bounds = CoEntity.createBoundsEntity();
 
 		let radius = 30.0;
@@ -196,16 +198,17 @@ export class DemoCoBase {
 		let par = CoParticle.createBillboard();
 		par.initializeSquare(radius * 2, [this.createTexByUrl("static/assets/circle01.png")]);
 		this.m_rscene.addEntity( par.entity, 1 );
+		//*/
 	}
 	
     private initializeEvent(entity: ITransformEntity): void {
 
         const me = CoRScene.MouseEvent;
-        let dispatcher = CoRScene.createMouseEvt3DDispatcher();
-        dispatcher.addEventListener(me.MOUSE_OVER, this, this.mOverListener);
-        dispatcher.addEventListener(me.MOUSE_OUT, this, this.mOutListener);
-        dispatcher.addEventListener(me.MOUSE_DOWN, this, this.mDownListener);
-        entity.setEvtDispatcher(dispatcher);
+        let p = CoRScene.createMouseEvt3DDispatcher();
+        p.addEventListener(me.MOUSE_OVER, this, this.mOverListener);
+        p.addEventListener(me.MOUSE_OUT, this, this.mOutListener);
+        p.addEventListener(me.MOUSE_DOWN, this, this.mDownListener);
+        entity.setEvtDispatcher(p);
         entity.mouseEnabled = true;
     }
 	private mOverListener(evt: any): void {

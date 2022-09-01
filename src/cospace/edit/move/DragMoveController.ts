@@ -1,6 +1,7 @@
 import IVector3D from "../../../vox/math/IVector3D";
 import IAABB from "../../../vox/geom/IAABB";
 import DragPlane from "./DragPlane";
+import DragRayCrossPlane from "./DragRayCrossPlane";
 import DragAxis from "./DragAxis";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
@@ -20,12 +21,11 @@ declare var CoMath: ICoMath;
 // declare var CoAGeom: ICoAGeom;
 
 /**
- * 在三个坐标轴上拖动移动
+ * 在三个坐标轴上拖拽移动
  */
 class DragMoveController implements IDragMoveController {
 
     private m_controllers: IRayControl[] = [];
-    private m_crossPlaneDrag: DragPlane = null;
     private m_rpv = CoMath.createVec3();
     private m_rtv = CoMath.createVec3();
     private m_tempPos = CoMath.createVec3();
@@ -47,6 +47,7 @@ class DragMoveController implements IDragMoveController {
      */
     fixSize = 0.0;
 
+    circleSize = 60.0;
     axisSize = 100.0;
     planeSize = 50.0;
     planeAlpha = 0.6;
@@ -69,9 +70,9 @@ class DragMoveController implements IDragMoveController {
     }
 
     selectByParam(raypv: IVector3D, raytv: IVector3D, wpos: IVector3D): void {
-        if (this.m_crossPlaneDrag != null) {
-            this.m_crossPlaneDrag.selectByParam(raypv, raytv, wpos);
-        }
+        // if (this.m_crossPlaneDrag != null) {
+        //     this.m_crossPlaneDrag.selectByParam(raypv, raytv, wpos);
+        // }
     }
     setTargetPosOffset(offset: IVector3D): void {
         this.m_target.setTargetPosOffset(offset);
@@ -84,11 +85,7 @@ class DragMoveController implements IDragMoveController {
     getTarget(): IEntityTransform {
         return this.m_target.getTarget();
     }
-    private activeRayController(controller: IRayControl): void {
-    }
-    private createPlaneDrag(type: number, alpha: number, srcEntity: ITransformEntity = null): DragPlane {
-
-        //let size: number = 50;
+    private createPlaneDrag(type: number, alpha: number): DragPlane {
 
         let movePlane = new DragPlane();
         movePlane.moveSelfEnabled = false;
@@ -129,10 +126,14 @@ class DragMoveController implements IDragMoveController {
             this.createPlaneDrag(2, alpha);
         }
 
-        // let sph: Sphere3DEntity = new Sphere3DEntity();
-        // sph.initialize(sphRadius, 10, 10);
-        // // ray cross plane
-        // this.m_crossPlaneDrag = this.createPlaneDrag(3, alpha, sph);
+        let crossPlane = new DragRayCrossPlane();
+        console.log("XXXXXXXX crossPlane: ", crossPlane);
+        crossPlane.moveSelfEnabled = false;
+        crossPlane.initialize(this.m_editRS, 0, this.circleSize)
+        crossPlane.setTarget(this.m_target);
+        crossPlane.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
+        this.m_target.addEntity(crossPlane);
+        this.m_controllers.push(crossPlane);
     }
     private dragMouseDownListener(evt: any): void {
         this.m_editRS.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener, true, true);

@@ -10,89 +10,78 @@ import IAABB from "../../../vox/geom/IAABB";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
+import IRendererScene from "../../../vox/scene/IRendererScene";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { IRayControl } from "../base/IRayControl";
+import { SphereRayTester } from "../base/SphereRayTester";
+import { IBillboard } from "../../particle/entity/IBillboard";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
+import { ICoEntity } from "../../voxentity/ICoEntity";
+import { ICoParticle } from "../../particle/ICoParticle";
 
 declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;
 declare var CoAGeom: ICoAGeom;
+declare var CoEntity: ICoEntity;
+declare var CoParticle: ICoParticle;
 
 /**
- * 支持在一个平面上拖动
+ * 支持在一个和鼠标射线垂直的平面上拖动
  */
-export default class DragPlane implements IRayControl {
+export default class DragRayCrossPlane implements IRayControl {
 
     private m_targetEntity: IEntityTransform = null;
     private m_dispatcher: IEvtDispatcher;
     private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
-    private m_entityScale = CoMath.createVec3(1.0, 1.0, 1.0);
-    private m_scale = 1.0;
+    private m_rscene: IRendererScene = null;
 
-    uuid: string = "DragPlane";
+    private m_circle: IBillboard = null;
+
+    uuid: string = "DragRayCrossPlane";
 
     moveSelfEnabled = true;
-    crossRay = false;
     outColor = CoRScene.createColor4(0.9, 0.9, 0.9, 1.0);
     overColor = CoRScene.createColor4(1.0, 1.0, 1.0, 1.0);
 
     constructor() { }
-    initialize(planeAxisType: number, size: number, alpha: number): void {
+    initialize(rscene: IRendererScene, processidIndex: number, size: number = 30): void {
 
         if (this.m_entity == null) {
 
-            const V3 = CoMath.Vector3D;
-            let rscene = CoRScene.getRendererScene();
-            let eb = rscene.entityBlock;
-            let material = CoRScene.createDefaultMaterial();
+            this.m_rscene = rscene;
 
-            this.m_entity = CoRScene.createDisplayEntity();
+            let bounds = CoEntity.createBoundsEntity();
 
-            let et = this.m_entity;
+            let radius = size * 0.5;
+            let minV = CoMath.createVec3(radius, radius, radius).scaleBy(-1.0);
+            let maxV = CoMath.createVec3(radius, radius, radius);
+            bounds.setBounds(minV, maxV);
+            bounds.setRayTester(new SphereRayTester(radius));
+            this.initializeEvent(bounds);
+            this.m_rscene.addEntity(bounds, processidIndex);
+            this.m_entity = bounds;
 
-            this.m_scale = size;
+            let par = CoParticle.createBillboard();
+            par.initializeSquare(radius * 2, [this.createTexByUrl("static/assets/circle01.png")]);
+            this.m_rscene.addEntity(par.entity, processidIndex + 1);
+            this.m_circle = par;
 
-            et.setMaterial(material);
-            et.setScaleXYZ(size, size, size);
-            switch (planeAxisType) {
-                case 0:
-                    et.copyMeshFrom(eb.unitOXOZPlane);
-                    this.setPlaneNormal(V3.Y_AXIS);
-                    this.outColor.setRGBA4f(1.0, 0.3, 0.3, alpha);
-                    this.overColor.setRGBA4f(1.0, 0.1, 0.1, alpha * 1.1);
-                    break;
-                case 1:
-                    et.copyMeshFrom(eb.unitOXOYPlane);
-                    this.setPlaneNormal(V3.Z_AXIS);
-                    this.outColor.setRGBA4f(0.3, 0.3, 1.0, alpha);
-                    this.overColor.setRGBA4f(0.1, 0.1, 1.0, alpha * 1.1);
-                    break;
-                // yoz
-                case 2:
-                    et.copyMeshFrom(eb.unitOYOZPlane);
-                    this.setPlaneNormal(CoMath.Vector3D.X_AXIS);
-                    this.outColor.setRGBA4f(0.3, 1.0, 0.3, alpha);
-                    this.overColor.setRGBA4f(0.1, 1.0, 0.1, alpha * 1.1);
-                    break;
-                // ray cross plane
-                case 3:
-                    this.crossRay = true;
-                    this.outColor.setRGBA4f(1.0, 0.3, 1.0, alpha);
-                    this.overColor.setRGBA4f(1.0, 0.1, 1.0, alpha * 1.1);
-                    break;
-                default:
-                    throw Error("Error type !!!");
-                    break;
-            }
-            
-            et.setRenderState(CoRScene.RendererState.NONE_TRANSPARENT_STATE);
             this.showOutColor();
-            this.initializeEvent();
         }
     }
+	private createTexByUrl(url: string = ""): IRenderTexture {
+		let tex = this.m_rscene.textureBlock.createImageTex2D(64, 64, false);
+		let img = new Image();
+		img.onload = (evt: any): void => {
+			tex.setDataFromImage(img, 0, 0, 0, false);
+		};
+		img.src = url != "" ? url : "static/assets/box.jpg";
+		return tex;
+	}
     getEntity(): ITransformEntity {
         return this.m_entity;
     }
@@ -110,33 +99,34 @@ export default class DragPlane implements IRayControl {
         this.m_targetEntity = target;
     }
 
-    private initializeEvent(): void {
+    private initializeEvent(entity: ITransformEntity): void {
 
         if (this.m_dispatcher == null) {
-            let MouseEvent = CoRScene.MouseEvent;
+            let me = CoRScene.MouseEvent;
             let dispatcher = CoRScene.createMouseEvt3DDispatcher();
-            dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-            dispatcher.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverListener);
-            dispatcher.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutListener);
-            this.m_entity.setEvtDispatcher(dispatcher);
+            dispatcher.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
+            dispatcher.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
+            dispatcher.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
+            entity.setEvtDispatcher(dispatcher);
             this.m_dispatcher = dispatcher;
         }
-
-        this.m_entity.mouseEnabled = true;
+        entity.mouseEnabled = true;
     }
     protected mouseOverListener(evt: any): void {
-        console.log("DragPlane::mouseOverListener() ...");
+        console.log("DragRayCrossPlane::mouseOverListener() ...");
         this.showOverColor();
     }
     protected mouseOutListener(evt: any): void {
-        console.log("DragPlane::mouseOutListener() ...");
+        console.log("DragRayCrossPlane::mouseOutListener() ...");
         this.showOutColor();
     }
     showOverColor(): void {
-        (this.m_entity.getMaterial() as any).setRGBA4f(this.overColor.r, this.overColor.g, this.overColor.b, this.overColor.a);
+        let c = this.overColor;
+        this.m_circle.setRGB3f(c.r, c.g, c.b);
     }
     showOutColor(): void {
-        (this.m_entity.getMaterial() as any).setRGBA4f(this.outColor.r, this.outColor.g, this.outColor.b, this.outColor.a);
+        let c = this.outColor;
+        this.m_circle.setRGB3f(c.r, c.g, c.b);
     }
 
     setRenderState(state: number): void {
@@ -144,29 +134,30 @@ export default class DragPlane implements IRayControl {
     }
     setVisible(visible: boolean): void {
         this.m_entity.setVisible(visible);
+        this.m_circle.entity.setVisible(visible);
     }
     getVisible(): boolean {
         return this.m_entity.getVisible();
     }
     setXYZ(px: number, py: number, pz: number): void {
         this.m_entity.setXYZ(px, py, pz);
+        this.m_circle.setXYZ(px, py, pz);
     }
     setPosition(pv: IVector3D): void {
         this.m_entity.setPosition(pv);
+        this.m_circle.setPosition(pv);
     }
     getPosition(pv: IVector3D): void {
         this.m_entity.getPosition(pv);
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
-        const s = this.m_scale;
-        this.m_entityScale.setXYZ(sx, sy, sz);
-        this.m_entity.setScaleXYZ(sx * s, sy * s, sz * s);
-        // this.m_entity.setXYZ(sx, sy, sz);
+
+        this.m_entity.setScaleXYZ(sx, sy, sz);
+        this.m_circle.setScaleXY(sx, sy);
     }
 
     getScaleXYZ(pv: IVector3D): void {
-        pv.copyFrom( this.m_entityScale );
-        // this.m_entity.getScaleXYZ( pv );
+        this.m_entity.getScaleXYZ(pv);
     }
     setRotation3(r: IVector3D): void {
         this.m_entity.setRotation3(r);
@@ -177,7 +168,7 @@ export default class DragPlane implements IRayControl {
     getRotationXYZ(pv: IVector3D): void {
         this.m_entity.getRotationXYZ(pv);
     }
-    
+
     getGlobalBounds(): IAABB {
         return this.m_entity.getGlobalBounds();
     }
@@ -205,12 +196,18 @@ export default class DragPlane implements IRayControl {
     destroy(): void {
         this.m_targetEntity = null;
         if (this.m_entity != null) {
+            this.m_rscene.removeEntity( this.m_entity );
             this.m_entity.destroy();
+        }
+        if (this.m_circle != null) {
+            this.m_rscene.removeEntity( this.m_circle.entity );
+            this.m_circle.destroy();
         }
         if (this.m_dispatcher != null) {
             this.m_dispatcher.destroy();
             this.m_dispatcher = null;
         }
+        this.m_rscene = null;
     }
     private m_planeNV = CoMath.createVec3(0.0, 1.0, 0.0);
     private m_planePos = CoMath.createVec3();
@@ -266,9 +263,7 @@ export default class DragPlane implements IRayControl {
         this.m_rpv.copyFrom(raypv);
         this.m_rtv.copyFrom(raytv);
         this.m_planePos.copyFrom(wpos);
-        if (this.crossRay) {
-            this.m_planeNV.copyFrom(this.m_rtv);
-        }
+        this.m_planeNV.copyFrom(this.m_rtv);
         this.m_planeNV.normalize();
 
         this.m_planeDis = this.m_planePos.dot(this.m_planeNV);

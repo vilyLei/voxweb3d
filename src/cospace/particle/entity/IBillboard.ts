@@ -2,10 +2,7 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IVector3D from "../../../vox/math/IVector3D";
 
-import { ICoRScene } from "../../voxengine/ICoRScene";
-declare var CoRScene: ICoRScene;
-
-export default interface IBillboard {
+interface IBillboard {
 
 	brightnessEnabled: boolean;
 	alphaEnabled: boolean;
@@ -13,13 +10,13 @@ export default interface IBillboard {
 	fogEnabled: boolean;
 	entity: ITransformEntity;
 
-    toTransparentBlend(always?: boolean): void;
-    toBrightnessBlend(always?: boolean): void;
+	toTransparentBlend(always?: boolean): void;
+	toBrightnessBlend(always?: boolean): void;
 
 	initializeSquare(size: number, texList: IRenderTexture[]): void;
 	initialize(bw: number, bh: number, texList: IRenderTexture[]): void;
 	setRGBA4f(pr: number, pg: number, pb: number, pa: number): void;
-	setRGB3f(pr: number, pg: number, pb: number):void;
+	setRGB3f(pr: number, pg: number, pb: number): void;
 	setFadeFactor(pa: number): void;
 	getFadeFactor(): number;
 
@@ -41,5 +38,6 @@ export default interface IBillboard {
 	setDepthOffset(offset: number): void;
 	getUniformData(): Float32Array;
 	update(): void;
-	destroy():void;
+	destroy(): void;
 }
+export { IBillboard }

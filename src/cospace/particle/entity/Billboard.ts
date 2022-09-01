@@ -4,7 +4,7 @@ import BillboardFragShaderBase from "../shader/BillboardFragShaderBase";
 import IShaderCodeBuffer from "../../../vox/material/IShaderCodeBuffer";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IVector3D from "../../../vox/math/IVector3D";
-import IBillboard from "./IBillboard";
+import { IBillboard } from "./IBillboard";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;

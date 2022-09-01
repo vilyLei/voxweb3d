@@ -69,6 +69,8 @@ export class DemoMoveObj {
 		let url3 = "static/cospace/ageom/CoAGeom.umd.js";
 		let url4 = "static/cospace/coedit/CoEdit.umd.js";
 		let url5 = "static/cospace/comesh/CoMesh.umd.js";
+		let url6 = "static/cospace/coentity/CoEntity.umd.js";
+		let url7 = "static/cospace/particle/CoParticle.umd.js";
 
 		new ModuleLoader(2, (): void => {
 			if (this.isEngineEnabled()) {
@@ -81,10 +83,10 @@ export class DemoMoveObj {
 					console.log("math module loaded ...");
 					this.testMath();
 
-					new ModuleLoader(2, (): void => {
+					new ModuleLoader(4, (): void => {
 						console.log("ageom module loaded ...");
 						this.createEditEntity();
-					}).load(url3).load(url4);
+					}).load(url3).load(url4).load(url6).load(url7);
 
 				}).load(url2).load(url5);
 
@@ -281,7 +283,6 @@ export class DemoMoveObj {
 		entity.setMaterial(material);
 		entity.setMesh(mesh);
 		entity.setPosition(cv);
-		console.log("XXXXXXXXXXXXx cv: ",cv);
 		// entity.setRenderState(rst.NONE_CULLFACE_NORMAL_STATE);
 		this.m_rscene.addEntity(entity);
 
