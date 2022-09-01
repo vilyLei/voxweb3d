@@ -192,6 +192,7 @@ export default class DragRayCrossPlane implements IRayControl {
     }
     update(): void {
         this.m_entity.update();
+        this.m_circle.update();
     }
     destroy(): void {
         this.m_targetEntity = null;
@@ -272,6 +273,7 @@ export default class DragRayCrossPlane implements IRayControl {
         this.m_dv.subtractBy(this.m_outV);
     }
     private mouseDownListener(evt: any): void {
+        console.log("DragRayCrossPlane::mouseDownListener() ...");
         this.selectByParam(evt.raypv, evt.raytv, evt.wpos);
     }
 }
