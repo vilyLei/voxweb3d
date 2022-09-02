@@ -128,7 +128,6 @@ class DragMoveController implements IDragMoveController {
         }
 
         let crossPlane = new DragRayCrossPlane();
-        console.log("XXXXXXXX crossPlane: ", crossPlane);
         crossPlane.moveSelfEnabled = false;
         crossPlane.initialize(this.m_editRS, 0, this.circleSize);
         crossPlane.setTarget(this.m_target);
