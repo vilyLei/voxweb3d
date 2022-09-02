@@ -19,16 +19,23 @@ class DashedLineRayTester implements ITestRay {
     private m_lsTotal: number;
     private m_pv0 = CoMath.createVec3();
     private m_pv1 = CoMath.createVec3();
+    private m_tester: ITestRay = null;
     constructor(vs: Float32Array, lsTotal: number, rayTestRadius: number) {
         this.m_vs = vs;
         this.m_rayTestRadius = rayTestRadius;
         this.m_lsTotal = lsTotal;
     }
-	setPrevTester(tester: ITestRay): number {
-        return null;
+	setPrevTester(tester: ITestRay): void {
+        if(tester != this) {
+            this.m_tester = tester;
+        }
     }
     testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number {
-
+        if(this.m_tester != null) {
+            if(this.m_tester.testRay(rlpv, rltv, outV, boundsHit) > 0) {
+                return 0;
+            }
+        }
         let j: number = 0;
         let vs: Float32Array = this.m_vs;
         let flag = false;

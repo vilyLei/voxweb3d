@@ -14,6 +14,7 @@ import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import { IRayControl } from "../base/IRayControl";
+import { SphereRayTester } from "../base/SphereRayTester";
 import { DashedLineRayTester } from "../base/DashedLineRayTester";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
@@ -35,6 +36,7 @@ export default class DragAxis implements IRayControl {
     private m_entity: ITransformEntity = null;
 
     uuid = "DragAxis";
+    innerSphereRadius = 30.0;
     moveSelfEnabled = true;
     outColor = CoRScene.createColor4(0.9, 0.9, 0.9, 1.0);
     overColor = CoRScene.createColor4(1.0, 1.0, 1.0, 1.0);
@@ -48,7 +50,9 @@ export default class DragAxis implements IRayControl {
             this.m_entity.update();
             let mesh = this.m_entity.getMesh() as IRawMesh;
             if (mesh != null) {
-                mesh.setRayTester(new DashedLineRayTester(mesh.getVS(), 3, this.pickTestRadius));
+                let lineTester = new DashedLineRayTester(mesh.getVS(), 3, this.pickTestRadius);
+                lineTester.setPrevTester(new SphereRayTester(this.innerSphereRadius));
+                mesh.setRayTester( lineTester );
             }
             this.initializeEvent();
         }

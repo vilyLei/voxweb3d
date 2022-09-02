@@ -31,8 +31,7 @@ class CircleRayTester implements ITestRay {
         this.m_rayTestRadius = rayTestRadius;
     }
     
-	setPrevTester(tester: ITestRay): number {
-        return null;
+	setPrevTester(tester: ITestRay): void {
     }
     testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number {
 

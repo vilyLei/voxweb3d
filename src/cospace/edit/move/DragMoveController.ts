@@ -103,6 +103,7 @@ class DragMoveController implements IDragMoveController {
         let alpha = this.planeAlpha;
 
         let moveAxis = new DragAxis();
+        moveAxis.innerSphereRadius = this.circleSize * 0.5;
         moveAxis.moveSelfEnabled = true;
         moveAxis.pickTestRadius = this.pickTestAxisRadius;
         moveAxis.initialize(this.axisSize);
@@ -129,7 +130,7 @@ class DragMoveController implements IDragMoveController {
         let crossPlane = new DragRayCrossPlane();
         console.log("XXXXXXXX crossPlane: ", crossPlane);
         crossPlane.moveSelfEnabled = false;
-        crossPlane.initialize(this.m_editRS, 0, this.circleSize)
+        crossPlane.initialize(this.m_editRS, 0, this.circleSize);
         crossPlane.setTarget(this.m_target);
         crossPlane.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
         this.m_target.addEntity(crossPlane);

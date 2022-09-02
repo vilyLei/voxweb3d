@@ -25,8 +25,7 @@ class SphereRayTester implements ITestRay {
         this.m_radius = radius;
         this.m_center = center;
     }
-	setPrevTester(tester: ITestRay): number {
-        return null;
+	setPrevTester(tester: ITestRay): void {
     }
     testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number {
 

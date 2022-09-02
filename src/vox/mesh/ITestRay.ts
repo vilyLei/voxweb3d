@@ -11,7 +11,7 @@ import IVector3D from "../../vox/math/IVector3D";
  * test ray interface
  */
 export default interface ITestRay {
-	setPrevTester(tester: ITestRay): number;
+	setPrevTester(tester: ITestRay): void;
     /**
      * 射线和自身的相交检测(多面体或几何函数(例如球体))
      * @rlpv            表示物体坐标空间的射线起点
@@ -21,6 +21,5 @@ export default interface ITestRay {
      * @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
      */
 	testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number;
-	setPrevTester(tester: ITestRay): number;
     destroy(): void;
 }
