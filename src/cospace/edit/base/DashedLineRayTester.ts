@@ -24,6 +24,9 @@ class DashedLineRayTester implements ITestRay {
         this.m_rayTestRadius = rayTestRadius;
         this.m_lsTotal = lsTotal;
     }
+	setPrevTester(tester: ITestRay): number {
+        return null;
+    }
     testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number {
 
         let j: number = 0;

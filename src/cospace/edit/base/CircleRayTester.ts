@@ -30,6 +30,10 @@ class CircleRayTester implements ITestRay {
         this.m_planeDis = pdis;
         this.m_rayTestRadius = rayTestRadius;
     }
+    
+	setPrevTester(tester: ITestRay): number {
+        return null;
+    }
     testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number {
 
         let u = CoAGeom.PlaneUtils;

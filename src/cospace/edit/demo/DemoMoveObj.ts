@@ -146,7 +146,7 @@ export class DemoMoveObj {
 		// this.m_dragCtr = CoEdit.createDragMoveController();
 		this.m_dragCtr.axisSize = 200;
 		this.m_dragCtr.planeSize = 100;
-		this.m_dragCtr.pickTestAxisRadius = 10;
+		this.m_dragCtr.pickTestAxisRadius = 5;
 		this.m_dragCtr.runningVisible = true;
 		this.m_dragCtr.initialize(this.m_rscene, 1);
 		// this.m_dragCtr.setVisible(true);

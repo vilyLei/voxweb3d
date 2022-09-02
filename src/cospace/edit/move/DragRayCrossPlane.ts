@@ -68,6 +68,8 @@ export default class DragRayCrossPlane implements IRayControl {
             let par = CoParticle.createBillboard();
             par.initializeSquare(radius * 2, [this.createTexByUrl("static/assets/circle01.png")]);
             this.m_rscene.addEntity(par.entity, processidIndex + 1);
+            let RST = CoRScene.RendererState;
+            par.entity.setRenderState(RST.NONE_TRANSPARENT_ALWAYS_STATE);
             this.m_circle = par;
 
             this.showOutColor();

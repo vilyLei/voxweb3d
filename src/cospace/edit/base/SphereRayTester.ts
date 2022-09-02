@@ -25,6 +25,9 @@ class SphereRayTester implements ITestRay {
         this.m_radius = radius;
         this.m_center = center;
     }
+	setPrevTester(tester: ITestRay): number {
+        return null;
+    }
     testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number {
 
         this.isHit = CoAGeom.RayLine.IntersectSphereNearPos(rlpv, rltv, this.m_center, this.m_radius, outV);
