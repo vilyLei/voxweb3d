@@ -106,7 +106,7 @@ class DragMoveController implements IDragMoveController {
         moveAxis.innerSphereRadius = this.circleSize * 0.5;
         moveAxis.moveSelfEnabled = true;
         moveAxis.pickTestRadius = this.pickTestAxisRadius;
-        moveAxis.initialize(this.axisSize);
+        moveAxis.initialize(this.axisSize, moveAxis.innerSphereRadius);
         moveAxis.outColor.setRGBA4f(0.9, 0.8, 0.9, 1.0);
         moveAxis.overColor.setRGBA4f(1.0, 1.0, 1.0, 1.0);
         moveAxis.showOutColor();

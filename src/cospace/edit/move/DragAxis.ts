@@ -44,9 +44,13 @@ export default class DragAxis implements IRayControl {
 
     constructor() {
     }
-    initialize(size: number = 100.0): void {
+    initialize(size: number = 100.0, innerSize: number = 0): void {
         if (this.m_entity == null) {
-            this.m_entity = CoRScene.createAxis3DEntity(size);
+            // this.m_entity = CoRScene.createAxis3DEntity(size);
+            let minV = CoMath.createVec3(innerSize, innerSize, innerSize);
+            let maxV = CoMath.createVec3(size, size, size);
+
+            this.m_entity = CoRScene.createFreeAxis3DEntity(minV, maxV);
             this.m_entity.update();
             let mesh = this.m_entity.getMesh() as IRawMesh;
             if (mesh != null) {
