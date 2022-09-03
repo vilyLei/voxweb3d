@@ -1,4 +1,4 @@
-import Billboard from "../particle/entity/Billboard";
+import { Billboard } from "../particle/entity/Billboard";
 import BillboardFlareGroup from "../particle/entity/BillboardFlareGroup";
 import BillboardFlowGroup from "../particle/entity/BillboardFlowGroup";
 

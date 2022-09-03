@@ -11,7 +11,7 @@ import { BillboardMesh } from "./BillboardMesh";
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 
-export default class Billboard implements IBillboard {
+class Billboard implements IBillboard {
 
 	private m_material: BillboardMaterial = null;
 	private m_mesh: BillboardMesh = null;
@@ -177,3 +177,4 @@ export default class Billboard implements IBillboard {
 		this.m_uniformData = null;
 	}
 }
+export { Billboard }
