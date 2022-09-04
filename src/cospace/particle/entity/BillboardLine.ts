@@ -6,7 +6,7 @@ import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IVector3D from "../../../vox/math/IVector3D";
 import { BillboardLineMaterial } from "./BillboardLineMaterial";
 import { IBillboard } from "./IBillboard";
-import { BillboardMesh } from "./BillboardMesh";
+import { BillboardLineMesh } from "./BillboardLineMesh";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
@@ -14,7 +14,7 @@ declare var CoRScene: ICoRScene;
 class BillboardLine implements IBillboard {
 
 	private m_material: BillboardLineMaterial = null;
-	private m_mesh: BillboardMesh = null;
+	private m_mesh: BillboardLineMesh = null;
 
 	private m_uniformData: Float32Array;
 	private m_blendType: number = 0;
@@ -40,7 +40,7 @@ class BillboardLine implements IBillboard {
 			let ml = billml.material;
 			ml.setTextureList(texList);
 			ml.addUniformDataAt("u_billParam", this.m_uniformData);
-			let billmh = (this.m_mesh = new BillboardMesh());
+			let billmh = (this.m_mesh = new BillboardLineMesh());
 			billmh.initialize(this.m_bw, this.m_bh);
 			let mh = billmh.mesh;
 
