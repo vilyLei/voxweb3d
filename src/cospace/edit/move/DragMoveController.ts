@@ -49,7 +49,7 @@ class DragMoveController implements IDragMoveController {
 
     circleSize = 60.0;
     axisSize = 100.0;
-    planeSize = 50.0;
+    planeSize = 30.0;
     planeAlpha = 0.6;
     pickTestAxisRadius = 20;
     runningVisible = true;

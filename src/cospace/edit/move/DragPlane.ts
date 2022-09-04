@@ -31,6 +31,7 @@ export default class DragPlane implements IRayControl {
     private m_dispatcher: IEvtDispatcher;
     private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
+    private offsetV = CoMath.createVec3(30,30,30);
     // private m_entityScale = CoMath.createVec3(1.0, 1.0, 1.0);
     // private m_scale = 1.0;
 
@@ -60,17 +61,18 @@ export default class DragPlane implements IRayControl {
             et.setMaterial(material);
             // et.setScaleXYZ(size, size, size);
             let builder = CoMesh.planeMeshBuilder;
+            let ov = this.offsetV;
             switch (planeAxisType) {
                 case 0:
                     // et.copyMeshFrom(eb.unitOXOZPlane);
-                    et.setMesh(builder.createXOZ(0,0, size,size));
+                    et.setMesh(builder.createXOZ(ov.x,ov.z, size,size));
                     this.setPlaneNormal(V3.Y_AXIS);
                     this.outColor.setRGBA4f(1.0, 0.3, 0.3, alpha);
                     this.overColor.setRGBA4f(1.0, 0.1, 0.1, alpha * 1.1);
                     break;
                 case 1:
                     // et.copyMeshFrom(eb.unitOXOYPlane);
-                    et.setMesh(builder.createXOY(0,0, size,size));
+                    et.setMesh(builder.createXOY(ov.x,ov.y, size,size));
                     this.setPlaneNormal(V3.Z_AXIS);
                     this.outColor.setRGBA4f(0.3, 0.3, 1.0, alpha);
                     this.overColor.setRGBA4f(0.1, 0.1, 1.0, alpha * 1.1);
@@ -78,7 +80,7 @@ export default class DragPlane implements IRayControl {
                 // yoz
                 case 2:
                     // et.copyMeshFrom(eb.unitOYOZPlane);
-                    et.setMesh(builder.createYOZ(0,0, size,size));
+                    et.setMesh(builder.createYOZ(ov.y,ov.z, size,size));
                     this.setPlaneNormal(CoMath.Vector3D.X_AXIS);
                     this.outColor.setRGBA4f(0.3, 1.0, 0.3, alpha);
                     this.overColor.setRGBA4f(0.1, 1.0, 0.1, alpha * 1.1);
