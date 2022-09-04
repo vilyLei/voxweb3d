@@ -15,10 +15,12 @@ import { IRayControl } from "../base/IRayControl";
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
+import { ICoMesh } from "../../voxmesh/ICoMesh";
 
 declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;
 declare var CoAGeom: ICoAGeom;
+declare var CoMesh: ICoMesh;
 
 /**
  * 支持在一个平面上拖动
@@ -29,8 +31,8 @@ export default class DragPlane implements IRayControl {
     private m_dispatcher: IEvtDispatcher;
     private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
-    private m_entityScale = CoMath.createVec3(1.0, 1.0, 1.0);
-    private m_scale = 1.0;
+    // private m_entityScale = CoMath.createVec3(1.0, 1.0, 1.0);
+    // private m_scale = 1.0;
 
     uuid: string = "DragPlane";
 
@@ -53,36 +55,40 @@ export default class DragPlane implements IRayControl {
 
             let et = this.m_entity;
 
-            this.m_scale = size;
+            // this.m_scale = size;
 
             et.setMaterial(material);
-            et.setScaleXYZ(size, size, size);
+            // et.setScaleXYZ(size, size, size);
+            let builder = CoMesh.planeMeshBuilder;
             switch (planeAxisType) {
                 case 0:
-                    et.copyMeshFrom(eb.unitOXOZPlane);
+                    // et.copyMeshFrom(eb.unitOXOZPlane);
+                    et.setMesh(builder.createXOZ(0,0, size,size));
                     this.setPlaneNormal(V3.Y_AXIS);
                     this.outColor.setRGBA4f(1.0, 0.3, 0.3, alpha);
                     this.overColor.setRGBA4f(1.0, 0.1, 0.1, alpha * 1.1);
                     break;
                 case 1:
-                    et.copyMeshFrom(eb.unitOXOYPlane);
+                    // et.copyMeshFrom(eb.unitOXOYPlane);
+                    et.setMesh(builder.createXOY(0,0, size,size));
                     this.setPlaneNormal(V3.Z_AXIS);
                     this.outColor.setRGBA4f(0.3, 0.3, 1.0, alpha);
                     this.overColor.setRGBA4f(0.1, 0.1, 1.0, alpha * 1.1);
                     break;
                 // yoz
                 case 2:
-                    et.copyMeshFrom(eb.unitOYOZPlane);
+                    // et.copyMeshFrom(eb.unitOYOZPlane);
+                    et.setMesh(builder.createYOZ(0,0, size,size));
                     this.setPlaneNormal(CoMath.Vector3D.X_AXIS);
                     this.outColor.setRGBA4f(0.3, 1.0, 0.3, alpha);
                     this.overColor.setRGBA4f(0.1, 1.0, 0.1, alpha * 1.1);
                     break;
                 // ray cross plane
-                case 3:
-                    this.crossRay = true;
-                    this.outColor.setRGBA4f(1.0, 0.3, 1.0, alpha);
-                    this.overColor.setRGBA4f(1.0, 0.1, 1.0, alpha * 1.1);
-                    break;
+                // case 3:
+                //     this.crossRay = true;
+                //     this.outColor.setRGBA4f(1.0, 0.3, 1.0, alpha);
+                //     this.overColor.setRGBA4f(1.0, 0.1, 1.0, alpha * 1.1);
+                //     break;
                 default:
                     throw Error("Error type !!!");
                     break;
@@ -158,15 +164,15 @@ export default class DragPlane implements IRayControl {
         this.m_entity.getPosition(pv);
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
-        const s = this.m_scale;
-        this.m_entityScale.setXYZ(sx, sy, sz);
-        this.m_entity.setScaleXYZ(sx * s, sy * s, sz * s);
-        // this.m_entity.setXYZ(sx, sy, sz);
+        // const s = this.m_scale;
+        // this.m_entityScale.setXYZ(sx, sy, sz);
+        // this.m_entity.setScaleXYZ(sx * s, sy * s, sz * s);
+        this.m_entity.setXYZ(sx, sy, sz);
     }
 
     getScaleXYZ(pv: IVector3D): void {
-        pv.copyFrom( this.m_entityScale );
-        // this.m_entity.getScaleXYZ( pv );
+        // pv.copyFrom( this.m_entityScale );
+        this.m_entity.getScaleXYZ( pv );
     }
     setRotation3(r: IVector3D): void {
         this.m_entity.setRotation3(r);

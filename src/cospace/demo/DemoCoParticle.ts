@@ -10,7 +10,7 @@ import ViewerMaterialCtx from "./coViewer/ViewerMaterialCtx";
 import { TextPackedLoader } from "../modules/loaders/TextPackedLoader";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 import { ViewerCoSApp } from "./coViewer/ViewerCoSApp";
-import Billboard from "../particle/entity/Billboard";
+import { Billboard } from "../particle/entity/Billboard";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 
