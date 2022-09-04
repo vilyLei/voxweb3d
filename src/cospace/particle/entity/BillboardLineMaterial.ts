@@ -11,14 +11,14 @@ declare var CoRScene: ICoRScene;
 
 class BillboardLineMaterial {
 
-	private static s_billFS: BillboardFragShaderBase = new BillboardFragShaderBase();
+	private static s_billFS = new BillboardFragShaderBase();
 
 	material: IShaderMaterial = null;
 
-	fogEnabled: boolean = false;
-	brightnessEnabled: boolean = true;
-	alphaEnabled: boolean = false;
-	rotationEnabled: boolean = false;
+	fogEnabled = false;
+	brightnessEnabled = true;
+	alphaEnabled = false;
+	rotationEnabled = false;
 
 	constructor() {}
 
@@ -64,7 +64,6 @@ class BillboardLineMaterial {
     viewPosition.xy += vtx_pos.xy;
     gl_Position =  u_projMat * viewPosition;
     gl_Position.z = ((gl_Position.z / gl_Position.w) + temp.w) * gl_Position.w;
-    v_uv = a_uvs;
     v_colorMult = u_billParam[1];
     v_colorOffset = u_billParam[2];
 `

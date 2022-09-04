@@ -18,6 +18,7 @@ import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
 import { ViewerCoSApp } from "../../demo/coViewer/ViewerCoSApp";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
+import { BillboardLineMaterial } from "../../particle/entity/BillboardLineMaterial";
 import CanvasTexAtlas from "../../voxtexture/atlas/CanvasTexAtlas";
 import { LineMeshBuilder } from "../../voxmesh/build/LineMeshBuilder";
 import Line3DMaterial from "../../../vox/material/mcase/Line3DMaterial";
@@ -150,39 +151,51 @@ export class DemoCoBase {
 	private m_axis: ITransformEntity = null;
 	private test01(): void {
 
-		/*
+		///*
 		let lBuilder = new LineMeshBuilder();
 		lBuilder.color.setRGB3f(0.1, 0.2, 0.3);
 		lBuilder.dynColorEnabled = true;
 		// let mesh = lBuilder.createRectXOY(-100, -100, 200, 200);
 		// let mesh = lBuilder.createRectXOZ(-100, -100, 200, 200);
 		// let mesh = lBuilder.createRectYOZ(-100, -100, 200, 200);
-		// let mesh = lBuilder.createCircleXOY(100,100);
+		let mesh = lBuilder.createCircleXOY(100,100);
 		// let mesh = lBuilder.createCircleXOZ(100,100);
-		let mesh = lBuilder.createCircleYOZ(100,100);
+		//let mesh = lBuilder.createCircleYOZ(100,100);
 		// let mesh = lBuilder.createLine(CoMath.createVec3());
 		console.log("test01(), mesh: ", mesh);
 
-		let material = CoMaterial.createLineMaterial(lBuilder.dynColorEnabled);
-		material.setRGB3f(1.0,0.0,0.0);
+		// let material = CoMaterial.createLineMaterial(lBuilder.dynColorEnabled);
+		// material.setRGB3f(1.0,0.0,0.0);
+
+		let billml = new BillboardLineMaterial();
+		let uniformData = new Float32Array([1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0]);
+		billml.brightnessEnabled  = true;
+		billml.alphaEnabled = true;
+		billml.rotationEnabled  = true;
+		// billml.fogEnabled = true;
+		billml.initialize();
+		let ml = billml.material;
+		ml.addUniformDataAt("u_billParam", uniformData);
+
 		// let material = new Line3DMaterial(lBuilder.dynColorEnabled);
 		let rectLine = CoEntity.createDisplayEntity();
-		rectLine.setMaterial(material);
+		rectLine.setMaterial( ml );
 		rectLine.setMesh(mesh);
 		this.m_rscene.addEntity(rectLine);
-		*/
+		//*/
 
 		// let circle = new RotationCircle();
 		// circle.initialize(100,20,0, CoMaterial.createColor4(1.0,0.0,0.0));
 		// this.m_rscene.addEntity(circle.getEntity());
 
-		///*
+		/*
 		
 		let dragRCtr = new DragRotationController();
 		dragRCtr.initialize(this.m_rscene, 0);
 		dragRCtr.setTarget(this.m_axis);
 		this.m_dragRCtr = dragRCtr;
 		//*/
+
 		/*
 		let bounds = CoEntity.createBoundsEntity();
 

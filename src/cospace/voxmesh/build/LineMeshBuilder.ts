@@ -23,7 +23,7 @@ class LineMeshBuilder implements ILineMeshBuilder {
     private m_colorvs: number[] = null;
 
     color = CoRScene.createColor4(1.0, 0.0, 0.0, 1.0);
-    dynColorEnabled: boolean = true;
+    dynColorEnabled = true;
 
     constructor() { }
 
