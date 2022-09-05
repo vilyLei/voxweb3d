@@ -6,11 +6,7 @@ import { Axis3DEntity, DataMesh, DisplayEntity, RendererDevice, RendererParam, R
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
-import Box3DEntity from "../../vox/entity/Box3DEntity";
-import MeshBase from "../../vox/mesh/MeshBase";
 import { NormalUVViewerMaterial } from "./material/NormalUVViewerMaterial";
-import { FileIO } from "../../app/slickRoad/io/FileIO";
-import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import BinaryLoader from "../../vox/assets/BinaryLoader";
 import { DracoGeomBuilder } from "../modules/draco/DracoGeomBuilder";
 import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
@@ -123,16 +119,13 @@ export class DemoCTMToDraco {
 		ctmLoader.uuid = ctmUrl;
 		ctmLoader.load(ctmUrl, this);
 	}
-	private showModel(model: GeometryModelDataType, offset: number = 0): DisplayEntity {
+	private showModel(model: GeometryModelDataType): DisplayEntity {
 
 		let material = new NormalUVViewerMaterial();
 		material.initializeByCodeBuf();
 
 		let mesh: DataMesh = new DataMesh();
 		mesh.setIVS(model.indices);
-		// mesh.setVS(model.vertices.subarray(offset));
-		// mesh.setUVS(model.uvsList[0].subarray(offset));
-		// mesh.setNVS(model.normals.subarray(offset));
 		mesh.setVS(model.vertices);
 		mesh.setUVS(model.uvsList[0]);
 		mesh.setNVS(model.normals);
@@ -153,7 +146,7 @@ export class DemoCTMToDraco {
 		let vtxTotal: number = (model.vertices.length - 0) / 3;
 		let trisNumber: number = model.indices.length / 3;
 		// if(vtxTotal == 803937) {
-			let entity = this.showModel( model, 0 );
+			let entity = this.showModel( model);
 			entity.setScaleXYZ(1.0, 1.0, -1.0);
 			entity.setXYZ(0, 0, 100.0);
 			entity.update();
@@ -190,7 +183,7 @@ export class DemoCTMToDraco {
 		console.log("ctmParseFinish mesh trisNumber: ", trisNumber);
 
 
-		let entity = this.showModel( model, 0 );
+		let entity = this.showModel( model);
 		entity.setXYZ(0, 0, -100.0);
 
 		let geomData: DracoSrcGeomObject = {
@@ -217,14 +210,6 @@ export class DemoCTMToDraco {
 		console.log("	>>> dracoEncodeFinish buf bytes total: ", buf.byteLength);
 		this.m_dracoFileBuf = buf;
 		this.m_dracoGeomBuilder.parseBinaryData(buf.slice(0));
-
-		// let gBuilder = new DracoGeomBuilder("static/cospace/modules/draco/ModuleDracoGeomParser.js");
-		// gBuilder.initialize(this.m_threadSchedule);
-		// gBuilder.setListener(this);
-		// gBuilder.parseBinaryData(buf.slice(0));
-
-		// let f = new FileIO();
-		// f.downloadBinFile(buf, this.m_ctmName, "drc");
 	}
 	private mouseDown(evt: any): void {}
 
