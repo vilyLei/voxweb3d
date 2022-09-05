@@ -77,10 +77,11 @@ export class DemoDracoParser {
 		let url = "";
 		url = "static/private/draco/sh202_25.ctm.drc";
 		url = "static/private/draco/sh202_26.ctm.drc";
-		url = "static/private/test/tst.drc";
+		url = "static/private/draco/errorNormal.drc";
 		// url = "static/private/draco/sh202_25.drc";
 		// draco模型数据字节分段信息
-		this.m_dracoGeomBuilder.load(url);
+		// this.m_dracoGeomBuilder.load(url);
+		this.loadDracoAndParseOnePartFile(url);
 	}
 	private m_lossTime: number = 0;
 	private m_vtxTotal: number = 0;

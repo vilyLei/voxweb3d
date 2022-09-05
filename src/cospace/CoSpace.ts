@@ -49,6 +49,22 @@ class CoSpace {
         if (this.m_inited) {
             this.m_inited = false;
 
+            let dependencyGraphObj: object = {
+                nodes: [
+                    { uniqueName: "dracoGeomParser", path: "static/cospace/modules/draco/ModuleDracoGeomParser.umd.js" },
+                    { uniqueName: "dracoWasmWrapper", path: "static/cospace/modules/dracoLib/w2.js" },
+                    { uniqueName: "ctmGeomParser", path: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js" }
+                ],
+                maps: [
+                    { uniqueName: "dracoGeomParser", includes: [1] } // 这里[1]表示 dracoGeomParser 依赖数组中的第一个元素也就是 dracoWasmWrapper 这个代码模块
+                ]
+            };
+            let jsonStr: string = JSON.stringify(dependencyGraphObj);
+    
+            // 初始化多线程调度器
+            // this.m_threadSchedule.initialize(1, "cospace/core/code/ThreadCore.umd.min.js");
+            this.thread.setDependencyGraphJsonString(jsonStr);
+
             this.thread.setParams(autoSendData);
             // 初始化多线程调度器(多线程系统)
             this.thread.initialize(maxThreadsTotal, threadCoreCodeUrl);

@@ -30,6 +30,7 @@ export class DemoCospace {
 			new TaskCodeModuleParam("static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", ModuleNS.objParser, ModuleFileType.JS),
 			new TaskCodeModuleParam("static/cospace/modules/png/ModulePNGParser.umd.min.js", ModuleNS.pngParser, ModuleFileType.JS),
 			new TaskCodeModuleParam("static/cospace/modules/fbxFast/ModuleFBXGeomFastParser.umd.min.js", ModuleNS.fbxFastParser, ModuleFileType.JS),
+			new TaskCodeModuleParam("static/cospace/modules/draco/ModuleDracoGeomParser.umd.js", ModuleNS.dracoParser, ModuleFileType.JS),
 		];
 		// 初始化数据协同中心
 		this.m_cospace.setTaskModuleParams(modules);
@@ -49,8 +50,13 @@ export class DemoCospace {
 	private mouseDown(evt: any): void {
 		this.m_beginTime = Date.now();
 		// this.initCTMLoad();
-		this.loadPNGByCallback( this.m_pngs[0] );
-		this.loadPNGByCallback( this.m_pngs[1] );
+
+		// this.loadPNGByCallback( this.m_pngs[0] );
+		// this.loadPNGByCallback( this.m_pngs[1] );
+
+		// let url = "static/private/draco/errorNormal.drc";
+		let url = "static/private/draco/t01.drc";
+		this.loadDracoCallback(url);
 
 	}
 	private loadPNGByCallback(url: string): void {
@@ -64,6 +70,22 @@ export class DemoCospace {
 			(unit: TextureDataUnit, status: number): void => {
 				console.log("DemoCospace::loadPNGByCallback(), texture data:", unit.data.imageDatas[0]);
 				console.log("DemoCospace::loadPNGByCallback(), texture des:", unit.data.desList[0]);
+				console.log("lossTime: ", unit.lossTime + " ms");
+			},
+			true
+		);
+	}
+	
+	private loadDracoCallback(url: string): void {
+
+		// let url: string = "static/assets/letterA.png";
+		let texture = this.m_cospace.geometry;
+
+		texture.getCPUDataByUrlAndCallback(
+			url,
+			DataFormat.Draco,
+			(unit: GeometryDataUnit, status: number): void => {
+				console.log("DemoCospace::loadDracoCallback(), texture data:", unit.data.models[0]);
 				console.log("lossTime: ", unit.lossTime + " ms");
 			},
 			true

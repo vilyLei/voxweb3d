@@ -13,12 +13,12 @@ import { ThreadSchedule } from "../../modules/thread/ThreadSchedule";
 import { ITaskCodeModuleParam } from "../base/ITaskCodeModuleParam";
 
 import { DataUnitLock, GeometryDataUnit } from "../base/GeometryDataUnit";
-import { CTMParseTask } from "../../modules/ctm/CTMParseTask";
 import DivLog from "../../../vox/utils/DivLog";
+import { DracoGeomBuilder } from "../../modules/draco/DracoGeomBuilder";
 
-class CTMParserListerner {
+class DracoParserListerner {
 
-	private m_parseTask: CTMParseTask = null;
+	private m_parseTask: DracoGeomBuilder = null;
 	private m_unitPool: DataUnitPool<GeometryDataUnit>;
 	private m_receiverSchedule: ReceiverSchedule;
 	private m_threadSchedule: ThreadSchedule;
@@ -30,44 +30,45 @@ class CTMParserListerner {
 		this.m_threadSchedule = threadSchedule;
 		this.m_receiverSchedule = receiverSchedule;
 	}
-	
+
 	addUrlToTask(url: string): void {
 
 		if (!this.m_unitPool.hasUnitByUrl(url)) {
-			if(this.m_parseTask == null) {
-				
-				let parseTask = new CTMParseTask( this.m_moduleUrl );
-				// 绑定当前任务到多线程调度器
-				this.m_threadSchedule.bindTask(parseTask);
-				parseTask.setListener(this);
-				this.m_parseTask = parseTask;
+			if (this.m_parseTask == null) {
+
+				// 建立 draco 模型数据builder(包含加载和解析)
+				console.log("XXXXXXXXXXXX this.m_moduleUrl: ",this.m_moduleUrl);
+				let task = new DracoGeomBuilder(this.m_moduleUrl);
+
+				task.initialize(this.m_threadSchedule);
+				task.setListener(this);
+
+				this.m_parseTask = task;
 			}
 			new HttpFileLoader().load(
 				url,
 				(buf: ArrayBuffer, url: string): void => {
-					DivLog.ShowLogOnce("正在解析CTM数据...");
-					this.m_parseTask.addBinaryData(new Uint8Array(buf), url);
+					DivLog.ShowLogOnce("正在解析Draco数据...");
+					this.m_parseTask.parseSingleSegData(buf, url);
 				},
 				(progress: number, url: string): void => {
 					let k = Math.round(100 * progress);
-					DivLog.ShowLogOnce("ctm file loading " + k + "%");
+					DivLog.ShowLogOnce("draco file loading " + k + "%");
 				},
 				(status: number, url: string): void => {
-					console.error("load ctm mesh data error, url: ", url);
+					console.error("load draco mesh data error, url: ", url);
 				}
 			);
 		}
 	}
-	// 一个任务数据处理完成后的侦听器回调函数
-	ctmParseFinish(model: GeometryModelDataType, url: string): void {
 
-		// console.log("CTMParserListerner::ctmParseFinish(), model: ", model, ", url: ", url);
+	dracoParseSingle(model: GeometryModelDataType, url: string, index: number): void {
 
 		if (this.m_unitPool.hasUnitByUrl(url)) {
 
 			let unit: GeometryDataUnit = this.m_unitPool.getUnitByUrl(url);
 			if (unit != null) {
-				
+
 				unit.lossTime = Date.now() - unit.lossTime;
 				unit.data.models = [model];
 
@@ -80,8 +81,15 @@ class CTMParserListerner {
 			}
 		}
 	}
+
+	// 单个draco segment 几何数据解析结束之后的回调
+	dracoParse(model: GeometryModelDataType, index: number, total: number): void {
+	}
+	// 所有 draco segment 几何数据解析结束之后的回调，表示本次加载解析任务结束
+	dracoParseFinish(models: GeometryModelDataType[], total: number): void {
+	}
 	destroy(): void {
-		if(this.m_parseTask != null) {
+		if (this.m_parseTask != null) {
 			this.m_parseTask.destroy();
 			this.m_parseTask = null;
 		}
@@ -90,4 +98,4 @@ class CTMParserListerner {
 		this.m_receiverSchedule = null;
 	}
 }
-export { CTMParserListerner };
+export { DracoParserListerner };

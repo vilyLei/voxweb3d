@@ -16,6 +16,7 @@ import { ModuleNS } from "../modules/base/ModuleNS";
 
 import { DataUnitLock, GeometryDataContainer, GeometryDataUnit } from "./base/GeometryDataUnit";
 import { CTMParserListerner } from "./parse/CTMParserListerner";
+import { DracoParserListerner } from "./parse/DracoParserListerner";
 import { OBJParserListerner } from "./parse/OBJParserListerner";
 import { FBXParserListerner } from "./parse/FBXParserListerner";
 
@@ -25,6 +26,7 @@ import { FBXParserListerner } from "./parse/FBXParserListerner";
 class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 
 	private m_ctmListener: CTMParserListerner;
+	private m_dracoListener: DracoParserListerner;
 	private m_objListener: OBJParserListerner;
 	private m_fbxListener: FBXParserListerner;
 	constructor() {
@@ -46,14 +48,14 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 			case DataFormat.CTM:
 				this.m_ctmListener.addUrlToTask(url);
 				break;
+			case DataFormat.Draco:
+				this.m_dracoListener.addUrlToTask(url);
+				break;
 			case DataFormat.OBJ:
 				this.m_objListener.addUrlToTask(url);
 				break;
 			case DataFormat.FBX:
 				this.m_fbxListener.addUrlToTask(url);
-				break;
-			case DataFormat.Draco:
-				//this.m_dracoListener.addUrlToTask(url);
 				break;
 			default:
 				console.error("GeometryResourceSchedule::createDataUnit(), illegal data format:",unit.data.dataFormat,", its url: ", url);
@@ -70,11 +72,14 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 			const module = taskModules[i];
 			console.log("GeometryResourceSchedule::initTask(), module.name ", module.name);
 			switch(module.name) {
-				case ModuleNS.objParser:
-					this.m_objListener = new OBJParserListerner(unitPool, threadSchedule, module, receiverSchedule);
-					break;
 				case ModuleNS.ctmParser:
 					this.m_ctmListener = new CTMParserListerner(unitPool, threadSchedule, module, receiverSchedule);
+					break;
+				case ModuleNS.dracoParser:
+					this.m_dracoListener = new DracoParserListerner(unitPool, threadSchedule, module, receiverSchedule);
+					break;
+				case ModuleNS.objParser:
+					this.m_objListener = new OBJParserListerner(unitPool, threadSchedule, module, receiverSchedule);
 					break;
 				case ModuleNS.fbxFastParser:
 					this.m_fbxListener = new FBXParserListerner(unitPool, threadSchedule, module, receiverSchedule);
