@@ -26,6 +26,7 @@ import { RotationCircle } from "../rotate/RotationCircle";
 import { DragRotationController } from "../rotate/DragRotationController";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import { SphereRayTester } from "../base/SphereRayTester";
+import { BillboardLine } from "../../particle/entity/BillboardLine";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 //CanvasTexAtlas
@@ -151,14 +152,14 @@ export class DemoCoBase {
 	private m_axis: ITransformEntity = null;
 	private test01(): void {
 
-		///*
+		/*
 		let lBuilder = new LineMeshBuilder();
 		lBuilder.color.setRGB3f(0.1, 0.2, 0.3);
 		lBuilder.dynColorEnabled = true;
 		// let mesh = lBuilder.createRectXOY(-100, -100, 200, 200);
 		// let mesh = lBuilder.createRectXOZ(-100, -100, 200, 200);
 		// let mesh = lBuilder.createRectYOZ(-100, -100, 200, 200);
-		let mesh = lBuilder.createCircleXOY(100,100);
+		let mesh = lBuilder.createCircleXOY(30,4);
 		// let mesh = lBuilder.createCircleXOZ(100,100);
 		//let mesh = lBuilder.createCircleYOZ(100,100);
 		// let mesh = lBuilder.createLine(CoMath.createVec3());
@@ -171,9 +172,9 @@ export class DemoCoBase {
 		let uniformData = new Float32Array([1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0]);
 		billml.brightnessEnabled  = true;
 		billml.alphaEnabled = true;
-		billml.rotationEnabled  = true;
+		billml.rotationEnabled = true;
 		// billml.fogEnabled = true;
-		billml.initialize();
+		billml.initialize(false);
 		let ml = billml.material;
 		ml.addUniformDataAt("u_billParam", uniformData);
 
@@ -182,7 +183,13 @@ export class DemoCoBase {
 		rectLine.setMaterial( ml );
 		rectLine.setMesh(mesh);
 		this.m_rscene.addEntity(rectLine);
+		return;
 		//*/
+		let radius = 30.0;
+		let segsTotal = Math.floor(radius * 0.5);
+		let billLine = new BillboardLine();
+		billLine.initializeCircleXOY(radius, segsTotal < 50 ? 50 : segsTotal);
+		this.m_rscene.addEntity(billLine.entity);
 
 		// let circle = new RotationCircle();
 		// circle.initialize(100,20,0, CoMaterial.createColor4(1.0,0.0,0.0));
@@ -337,6 +344,7 @@ export class DemoCoBase {
 		console.log(" ------------------ ------------------ ------------------");
 	}
 	private createDefaultEntity(): void {
+
 		let axis = CoRScene.createAxis3DEntity();
 		this.m_rscene.addEntity(axis);
 		this.m_axis = axis;
@@ -381,7 +389,7 @@ export class DemoCoBase {
 	private initRenderer(): void {
 		if (this.m_rscene == null) {
 			let RendererDevice = CoRScene.RendererDevice;
-			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			RendererDevice.SetWebBodyColor("#888888");
 

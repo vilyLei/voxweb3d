@@ -17,14 +17,22 @@ class ModuleLoader extends PackedLoader{
 	}
 
 	protected loadedData(data: string | ArrayBuffer, url: string): void {
-		console.log("module js file loaded, url: ", url);
+		console.log("ModuleLoader::loadedData(), module js file loaded, url: ", url);
 		let scriptEle = document.createElement("script");
 		scriptEle.onerror = evt => {
 			console.error("module script onerror, e: ", evt);
 		};
 		scriptEle.type = "text/javascript";
-		scriptEle.innerHTML = data as string;
-		document.head.appendChild(scriptEle);
+		try
+		{
+			console.log("ModuleLoader::loadedData(), module compile A, url: ", url);
+			scriptEle.innerHTML = data as string;
+			document.head.appendChild(scriptEle);
+			console.log("ModuleLoader::loadedData(), module compile B, url: ", url);
+		}catch(e) {
+			console.error("ModuleLoader::loadedData() apply script ele error.");
+			throw e;
+		}
 	}
 }
 

@@ -14,7 +14,7 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { IRayControl } from "../base/IRayControl";
 import { SphereRayTester } from "../base/SphereRayTester";
-import { IBillboard } from "../../particle/entity/IBillboard";
+import { IBillboardBase } from "../../particle/entity/IBillboardBase";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
@@ -39,7 +39,7 @@ export default class DragRayCrossPlane implements IRayControl {
     private m_entity: ITransformEntity = null;
     private m_rscene: IRendererScene = null;
 
-    private m_circle: IBillboard = null;
+    private m_circle: IBillboardBase = null;
 
     uuid: string = "DragRayCrossPlane";
 
@@ -65,12 +65,17 @@ export default class DragRayCrossPlane implements IRayControl {
             this.m_rscene.addEntity(bounds, processidIndex);
             this.m_entity = bounds;
 
-            let par = CoParticle.createBillboard();
-            par.initializeSquare(radius * 2, [this.createTexByUrl("static/assets/circle01.png")]);
-            this.m_rscene.addEntity(par.entity, processidIndex + 1);
-            let RST = CoRScene.RendererState;
-            par.entity.setRenderState(RST.NONE_TRANSPARENT_ALWAYS_STATE);
-            this.m_circle = par;
+            // let par = CoParticle.createBillboard();
+            // par.initializeSquare(radius * 2, [this.createTexByUrl("static/assets/circle01.png")]);
+            // this.m_rscene.addEntity(par.entity, processidIndex + 1);
+            // let RST = CoRScene.RendererState;
+            // par.entity.setRenderState(RST.NONE_TRANSPARENT_ALWAYS_STATE);
+            // this.m_circle = par;
+            let segsTotal = Math.floor(radius * 0.5);
+            let bl = CoParticle.createBillboardLine();
+            bl.initializeCircleXOY(radius, segsTotal < 50 ? 50 : segsTotal);
+            this.m_rscene.addEntity(bl.entity, processidIndex + 1);
+            this.m_circle = bl;
 
             this.showOutColor();
         }

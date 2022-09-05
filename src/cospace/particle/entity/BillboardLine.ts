@@ -1,3 +1,4 @@
+import IRawMesh from "../../../vox/mesh/IRawMesh";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IShaderMaterial from "../../../vox/material/mcase/IShaderMaterial";
 import BillboardFragShaderBase from "../shader/BillboardFragShaderBase";
@@ -5,58 +6,66 @@ import IShaderCodeBuffer from "../../../vox/material/IShaderCodeBuffer";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IVector3D from "../../../vox/math/IVector3D";
 import { BillboardLineMaterial } from "./BillboardLineMaterial";
-import { IBillboard } from "./IBillboard";
+import { IBillboardLine } from "./IBillboardLine";
 import { BillboardLineMesh } from "./BillboardLineMesh";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
+import { ICoMesh } from "../../voxmesh/ICoMesh";
+declare var CoMesh: ICoMesh;
+import { ICoEntity } from "../../voxentity/ICoEntity";
+declare var CoEntity: ICoEntity;
 
-class BillboardLine implements IBillboard {
+class BillboardLine implements IBillboardLine {
 
 	private m_material: BillboardLineMaterial = null;
-	private m_mesh: BillboardLineMesh = null;
+	private m_mesh: IRawMesh = null;
 
 	private m_uniformData: Float32Array;
 	private m_blendType: number = 0;
 	private m_blendAlways: boolean = false;
-	private m_rz: number = 0;
-	private m_bw: number = 0;
-	private m_bh: number = 0;
+	private m_rz = 0;
+	private m_bw = 0;
+	private m_bh = 0;
 	brightnessEnabled: boolean = true;
 	alphaEnabled: boolean = false;
 	rotationEnabled: boolean = false;
 	fogEnabled: boolean = false;
 	entity: ITransformEntity = null;
-	constructor() {}
-	private initEntity(texList: IRenderTexture[]): void {
+	constructor() { }
+	private initEntity(): void {
+
 		if (this.m_material == null) {
+
 			this.m_uniformData = new Float32Array([1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0]);
-			let billml = (this.m_material = new BillboardLineMaterial());
-			billml.brightnessEnabled = this.brightnessEnabled = true;
-			billml.alphaEnabled = this.alphaEnabled = true;
-			billml.rotationEnabled = this.rotationEnabled = true;
-			billml.fogEnabled = this.fogEnabled = true;
-			billml.initialize();
+
+			let billml = this.m_material = new BillboardLineMaterial();
+			billml.brightnessEnabled = this.brightnessEnabled;
+			billml.alphaEnabled = this.alphaEnabled;
+			billml.rotationEnabled = this.rotationEnabled;
+			billml.fogEnabled = this.fogEnabled;
+
+			billml.initialize(false);
 			let ml = billml.material;
-			ml.setTextureList(texList);
 			ml.addUniformDataAt("u_billParam", this.m_uniformData);
-			let billmh = (this.m_mesh = new BillboardLineMesh());
-			billmh.initialize(this.m_bw, this.m_bh);
-			let mh = billmh.mesh;
 
-			let entity = (this.entity = CoRScene.createDisplayEntityWithDataMesh(mh, ml, true));
-
+			let entity = CoEntity.createDisplayEntity();
+			entity.setMaterial(ml);
+			entity.setMesh(this.m_mesh);
+			this.entity = entity;
+			
+			///*
 			const RendererState = CoRScene.RendererState;
 			entity.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
 
-			if(this.m_blendType == 1) {
+			if (this.m_blendType == 1) {
 				if (this.m_blendAlways) {
 					this.entity.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
 				}
 				else {
 					this.entity.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
 				}
-			}else if(this.m_blendType == 2){
+			} else if (this.m_blendType == 2) {
 				if (this.m_blendAlways) {
 					this.entity.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
 				}
@@ -64,31 +73,51 @@ class BillboardLine implements IBillboard {
 					this.entity.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
 				}
 			}
+			//*/
 		}
 	}
 
-
-    toTransparentBlend(always: boolean = false): void {
-        this.brightnessEnabled = false;
-        this.alphaEnabled = true;
+	toTransparentBlend(always: boolean = false): void {
+		this.brightnessEnabled = false;
+		this.alphaEnabled = true;
 		this.m_blendType = 1;
 		this.m_blendAlways = always;
-    }
-    toBrightnessBlend(always: boolean = false): void {
-        this.brightnessEnabled = true;
-        this.alphaEnabled = false;
+	}
+	toBrightnessBlend(always: boolean = false): void {
+		this.brightnessEnabled = true;
+		this.alphaEnabled = false;
 		this.m_blendType = 2;
-    }
+	}
 
-	initializeSquare(size: number, texList: IRenderTexture[]): void {
+	initializeSquareXOY(size: number): void {
+
 		this.m_bw = size;
 		this.m_bh = size;
-		this.initEntity(texList);
+		let lBuilder = CoMesh.lineMeshBuilder;
+		lBuilder.dynColorEnabled = true;
+		this.m_mesh = lBuilder.createRectXOY(-0.5 * size, -0.5 * size, size, size);
+
+		this.initEntity();
 	}
-	initialize(bw: number, bh: number, texList: IRenderTexture[]): void {
+	initializeRectXOY(bw: number, bh: number): void {
+
 		this.m_bw = bw;
 		this.m_bh = bh;
-		this.initEntity(texList);
+		let lBuilder = CoMesh.lineMeshBuilder;
+		lBuilder.dynColorEnabled = true;
+		this.m_mesh = lBuilder.createRectXOY(-0.5 * bw, -0.5 * bh, bw, bh);
+
+		this.initEntity();
+	}
+
+	initializeCircleXOY(radius: number, segsTotal: number, center: IVector3D = null): void {
+
+		this.m_bw = radius;
+		this.m_bh = radius;
+		let lBuilder = CoMesh.lineMeshBuilder;
+		lBuilder.dynColorEnabled = true;
+		this.m_mesh = lBuilder.createCircleXOY( radius, segsTotal, center );
+		this.initEntity();
 	}
 	setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
 		this.m_uniformData[4] = pr;
@@ -96,7 +125,7 @@ class BillboardLine implements IBillboard {
 		this.m_uniformData[6] = pb;
 		this.m_uniformData[7] = pa;
 	}
-	setRGB3f(pr: number, pg: number, pb: number):void {
+	setRGB3f(pr: number, pg: number, pb: number): void {
 		this.m_uniformData[4] = pr;
 		this.m_uniformData[5] = pg;
 		this.m_uniformData[6] = pb;
@@ -143,7 +172,7 @@ class BillboardLine implements IBillboard {
 		this.m_uniformData[1] = sy;
 	}
 	setXYZ(px: number, py: number, pz: number): void {
-		this.entity.setXYZ(px,py,pz);
+		this.entity.setXYZ(px, py, pz);
 	}
 	setPosition(pos: IVector3D): void {
 		this.entity.setPosition(pos);
@@ -166,14 +195,11 @@ class BillboardLine implements IBillboard {
 			this.entity.destroy();
 			this.entity = null;
 		}
-		if(this.m_material != null) {
+		if (this.m_material != null) {
 			this.m_material.destroy();
 			this.m_material = null;
 		}
-		if(this.m_mesh != null) {
-			this.m_mesh.destroy();
-			this.m_mesh = null;
-		}
+		this.m_mesh = null;
 		this.m_uniformData = null;
 	}
 }

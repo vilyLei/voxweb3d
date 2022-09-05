@@ -69,7 +69,7 @@ class BillboardLineMaterial {
 `
 		);
 	}
-	initialize(): void {
+	initialize(texEnabled: boolean): void {
 		if (this.material == null) {
 			let uns = "co_billboard_line_entity_material";
 
@@ -80,7 +80,7 @@ class BillboardLineMaterial {
 			material.setShaderBuilder((shdCodeBuf: IShaderCodeBuffer): void => {
 				this.buildShader(shdCodeBuf);
 			});
-			material.initializeByCodeBuf(true);
+			material.initializeByCodeBuf(texEnabled);
 			this.material = material;
 		}
 	}

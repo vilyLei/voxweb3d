@@ -32,10 +32,10 @@ class Billboard implements IBillboard {
 		if (this.m_material == null) {
 			this.m_uniformData = new Float32Array([1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0]);
 			let billml = (this.m_material = new BillboardMaterial());
-			billml.brightnessEnabled = this.brightnessEnabled = true;
-			billml.alphaEnabled = this.alphaEnabled = true;
-			billml.rotationEnabled = this.rotationEnabled = true;
-			billml.fogEnabled = this.fogEnabled = true;
+			billml.brightnessEnabled = this.brightnessEnabled;
+			billml.alphaEnabled = this.alphaEnabled;
+			billml.rotationEnabled = this.rotationEnabled;
+			billml.fogEnabled = this.fogEnabled;
 			billml.initialize();
 			let ml = billml.material;
 			ml.setTextureList(texList);
