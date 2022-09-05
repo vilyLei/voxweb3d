@@ -92,13 +92,13 @@ export class DemoCTMToDraco {
 
 	private m_baseUrl: string = "static/private/ctm/";
 	private m_ctmName: string = "";
-	private m_index: number = 25;
-	private m_total: number = this.m_index + 1;
+	private m_index: number = 0;
+	private m_total: number = 27;//this.m_index + 1;
 	private m_dracoFileBuf: ArrayBuffer = null;
 
 	private parseCTMNext(): void {
 
-		console.log("#####@@@@ A parseCTMNext(), index: ", this.m_index);
+		// console.log("#####@@@@ A parseCTMNext(), index: ", this.m_index);
 		if (this.m_index < this.m_total) {
 			this.m_ctmName = "sh202_" + this.m_index;
 			let url = this.m_baseUrl + "sh202/" + this.m_ctmName + ".ctm";

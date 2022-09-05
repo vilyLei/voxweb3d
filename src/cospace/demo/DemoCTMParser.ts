@@ -55,8 +55,8 @@ export class DemoCTMParser {
 		this.initRenderer();
 
 		this.m_lossTime = Date.now();
-		// this.loadCTM02();
-		this.loadCTM();
+		// this.loadCTM01();
+		this.loadCTM02();
 	}
 
 	private m_lossTime: number = 0;
@@ -68,7 +68,7 @@ export class DemoCTMParser {
 			this.initCTMFromBin(url);
 		}
 	}
-	private loadCTM(): void {
+	private loadCTM01(): void {
 		let baseUrl: string = "static/private/ctm/";
 		let urls: string[] = [];
 		for (let i = 0; i <= 26; ++i) {
