@@ -17,7 +17,7 @@ export class DemoCospace {
 	 */
 	private m_cospace: CoSpace = new CoSpace();
 	private m_beginTime: number = 0;
-	constructor() {}
+	constructor() { }
 
 	initialize(): void {
 		console.log("DemoCospace::initialize()...");
@@ -33,13 +33,27 @@ export class DemoCospace {
 			new TaskCodeModuleParam("static/cospace/modules/draco/ModuleDracoGeomParser.umd.js", ModuleNS.dracoParser, ModuleFileType.JS),
 		];
 		// 初始化数据协同中心
+		let dependencyGraphObj: object = {
+			nodes: [
+				{ uniqueName: "dracoGeomParser", path: "static/cospace/modules/draco/ModuleDracoGeomParser.umd.js" },
+				{ uniqueName: "dracoWasmWrapper", path: "static/cospace/modules/dracoLib/w2.js" },
+				{ uniqueName: "ctmGeomParser", path: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js" }
+			],
+			maps: [
+				{ uniqueName: "dracoGeomParser", includes: [1] } // 这里[1]表示 dracoGeomParser 依赖数组中的第一个元素也就是 dracoWasmWrapper 这个代码模块
+			]
+		};
+		let jsonStr: string = JSON.stringify(dependencyGraphObj);
+		this.m_cospace.setThreadDependencyGraphJsonString(jsonStr);
+
 		this.m_cospace.setTaskModuleParams(modules);
-		this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.js", true);
+		this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.js", true, 500);
 
 		// 启用鼠标点击事件
 		document.onmousedown = (evt: any): void => {
 			this.mouseDown(evt);
 		};
+		this.initCTMLoad();
 	}
 	private m_files: string[] = ["hand.ctm", "f2.ctm", "h1.ctm", "s3.ctm"];
 
@@ -47,6 +61,7 @@ export class DemoCospace {
 		"static/assets/xulie_49.png",
 		"static/assets/letterA.png"
 	];
+	private m_downIndex = 0;
 	private mouseDown(evt: any): void {
 		this.m_beginTime = Date.now();
 		// this.initCTMLoad();
@@ -55,8 +70,10 @@ export class DemoCospace {
 		// this.loadPNGByCallback( this.m_pngs[1] );
 
 		// let url = "static/private/draco/errorNormal.drc";
-		let url = "static/private/draco/t01.drc";
+		let url = "static/private/draco/sh202/sh202_" + this.m_downIndex + ".drc";
+		// let url = "static/private/draco/t01.drc";
 		this.loadDracoCallback(url);
+		this.m_downIndex++;
 
 	}
 	private loadPNGByCallback(url: string): void {
@@ -75,13 +92,11 @@ export class DemoCospace {
 			true
 		);
 	}
-	
+
 	private loadDracoCallback(url: string): void {
 
-		// let url: string = "static/assets/letterA.png";
-		let texture = this.m_cospace.geometry;
-
-		texture.getCPUDataByUrlAndCallback(
+		let geom = this.m_cospace.geometry;
+		geom.getCPUDataByUrlAndCallback(
 			url,
 			DataFormat.Draco,
 			(unit: GeometryDataUnit, status: number): void => {
@@ -100,7 +115,8 @@ export class DemoCospace {
 		// }
 		//for (let i: number = 1; i <= 39; ++i) {
 		//for (let i: number = 0; i <= 26; ++i) {
-		for (let i: number = 26; i >= 0; --i) {
+		// for (let i: number = 26; i >= 0; --i) {
+		for (let i: number = 2; i >= 0; --i) {
 			this.loadCtMAt(i);
 		}
 	}
@@ -119,7 +135,7 @@ export class DemoCospace {
 				// console.log("DemoCospace::loadCTMByCallback(), geometry model", unit.data.model);
 				// console.log("model: ", unit.data.model);
 				// console.log("one res lossTime: ", unit.lossTime + " ms");
-				console.log("### total lossTime: ", totLossTime + " ms");
+				console.log("### loaded a ctm model total lossTime: ", totLossTime + " ms");
 
 				let info: string = "one lossTime: " + unit.lossTime + " ms";
 				info += "</br>";
@@ -164,7 +180,7 @@ export class DemoCospace {
 			true
 		);
 	}
-	run(): void {}
+	run(): void { }
 }
 
 export default DemoCospace;

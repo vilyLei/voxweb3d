@@ -12,24 +12,25 @@ class DracoGeomBuilder {
     private m_listener: DracoGeomParseTaskListener = null;
     private m_dracoTask: DracoGeomParseTask = null;
     private m_dracoWasmVersion: number;
+    private m_wasmUrl: string = "";
     private m_taskModuleUrl: string;
 
     private m_segRangeList: number[] = null;
 
-    constructor(taskModuleUrl:string, dracoWasmVersion: number = 2) {
+    constructor(taskModuleUrl: string, dracoWasmVersion: number = 2) {
         this.m_taskModuleUrl = taskModuleUrl;
         this.m_dracoWasmVersion = dracoWasmVersion;
     }
 
     setListener(l: DracoGeomParseTaskListener): void {
         this.m_listener = l;
-        if(this.m_dracoTask != null) {
+        if (this.m_dracoTask != null) {
             this.m_dracoTask.setListener(l);
         }
     }
     initialize(threadSchedule: ThreadSchedule, urlDir: string = "static/cospace/modules/dracoLib/"): void {
 
-        if(this.m_inited) {
+        if (this.m_inited) {
 
             this.m_inited = false;
             this.m_thrSchedule = threadSchedule;
@@ -37,7 +38,7 @@ class DracoGeomBuilder {
             let wasmUrl: string = "d2.md";
             let wapperUrl: string = "w2.js";
 
-            switch(this.m_dracoWasmVersion) {
+            switch (this.m_dracoWasmVersion) {
                 case 1:
                     wasmUrl = "d1.md";
                     wapperUrl = "w1.js";
@@ -49,50 +50,52 @@ class DracoGeomBuilder {
                 default:
                     break;
             }
-            this.buildTask( urlDir + wapperUrl, urlDir + wasmUrl );
+            this.buildTask(urlDir + wapperUrl, urlDir + wasmUrl);
         }
     }
-	parseBinaryData(bufData: ArrayBuffer, segRangeList: number[] = null): void {
-		if(bufData != null) {
-			if(segRangeList == null || segRangeList.length < 2) {
-				this.m_segRangeList = [-1,-1];
-			}else {
-				this.m_segRangeList = segRangeList.slice(0);
-			}
-			this.m_meshBuf = bufData;
+    parseBinaryData(bufData: ArrayBuffer, segRangeList: number[] = null): void {
+        if (bufData != null) {
+            if (segRangeList == null || segRangeList.length < 2) {
+                this.m_segRangeList = [-1, -1];
+            } else {
+                this.m_segRangeList = segRangeList.slice(0);
+            }
+            this.m_meshBuf = bufData;
 
-			if(this.m_dracoTask != null) {
-				if(!this.m_dracoTask.isFinished()) {
-					console.error("the draco mesh parseing do not finish, can not load other draco data.");
-				}
-				this.m_dracoTask.reset();
+            if (this.m_dracoTask != null) {
+                if (!this.m_dracoTask.isFinished()) {
+                    console.error("the draco mesh parseing do not finish, can not load other draco data.");
+                }
+                this.m_dracoTask.reset();
                 this.m_dracoTask.setParseSrcData(this.m_meshBuf, this.m_segRangeList);
-			}
-		}
-	}
+            }
+        }
+    }
+    
     parseSingleSegData(bufData: ArrayBuffer, url: string, index: number = 0): void {
-		if(bufData != null) {
-			this.m_dracoTask.setSingleSegData(bufData, url, index);
-		}
-	}
+        if (bufData != null) {
+            console.log("parseSingleSegData() A, this.m_dracoTask.getTaskClass(): ", this.m_dracoTask.getTaskClass());
+            this.m_dracoTask.setSingleSegData(bufData, url, index);
+        }
+    }
     /**
      * 加载未加密的draco模型文件
      * @param dracoDataUrl draco模型文件url
      * @param segRangeList draco模型文件字节分段信息
      */
     load(dracoDataUrl: string, segRangeList: number[] = null): void {
-		if(segRangeList == null || segRangeList.length < 2) {
-			this.m_segRangeList = [-1,-1];
-		}else {
-			this.m_segRangeList = segRangeList.slice(0);
-		}
-        if(this.m_dracoTask != null) {
-            if(!this.m_dracoTask.isFinished()) {
+        if (segRangeList == null || segRangeList.length < 2) {
+            this.m_segRangeList = [-1, -1];
+        } else {
+            this.m_segRangeList = segRangeList.slice(0);
+        }
+        if (this.m_dracoTask != null) {
+            if (!this.m_dracoTask.isFinished()) {
                 console.error("the draco mesh parseing do not finish, can not load other draco data.");
             }
             this.m_dracoTask.reset();
         }
-        this.loadDracoFile( dracoDataUrl );
+        this.loadDracoFile(dracoDataUrl);
     }
     private loadDracoFile(dracoDataUrl: string): void {
 
@@ -111,23 +114,24 @@ class DracoGeomBuilder {
     }
     private buildTask(wapperUrl: string, wasmUrl: string): void {
 
+        this.m_wasmUrl = wasmUrl;
         let threadSchedule = this.m_thrSchedule;
-        if(threadSchedule != null) {
+        if (threadSchedule != null) {
 
             // 创建和多线程关联的任务, 通过外部js文件url的形式创建任务实例
             // this.m_dracoTask = new DracoGeomParseTask( this.m_taskModuleUrl, threadSchedule );
             // 创建和多线程关联的任务, 通过外部js文件的依赖唯一名称的形式创建任务实例
-            this.m_dracoTask = new DracoGeomParseTask( "dracoGeomParser", threadSchedule );
-            this.m_dracoTask.setListener( this.m_listener );
+            this.m_dracoTask = new DracoGeomParseTask("dracoGeomParser", threadSchedule);
+            this.m_dracoTask.setListener(this.m_listener);
             // 初始化draco解析所需的基本库, 因为有依赖管理器，这一句代码可以不用(依赖关系机制会完成对应的功能)
             //threadSchedule.initModules([wapperUrl]);
 
             // 多线程任务调度器绑定当前的 draco task
             threadSchedule.bindTask(this.m_dracoTask);
-            if(!threadSchedule.hasRouterByTaskClass(this.m_dracoTask.getTaskClass())) {
+            if (!threadSchedule.hasRouterByTaskClass(this.m_dracoTask.getTaskClass())) {
                 // 设置draco解析任务功能所需的数据路由
                 let router = new DracoGeomParseTaskDataRouter(this.m_dracoTask.getTaskClass(), wasmUrl);
-                threadSchedule.setTaskDataRouter( router );
+                threadSchedule.setTaskDataRouter(router);
             }
         }
     }
@@ -135,7 +139,7 @@ class DracoGeomBuilder {
      * 销毁当前实例
      */
     destroy(): void {
-        if(this.m_dracoTask != null) {
+        if (this.m_dracoTask != null) {
             this.m_dracoTask.destroy();
             this.m_dracoTask = null;
         }

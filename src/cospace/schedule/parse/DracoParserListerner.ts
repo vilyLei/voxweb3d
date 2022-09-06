@@ -33,11 +33,12 @@ class DracoParserListerner {
 
 	addUrlToTask(url: string): void {
 
+		console.log("### DracoParserListerner()::addUrlToTask(), url: ", url);
 		if (!this.m_unitPool.hasUnitByUrl(url)) {
 			if (this.m_parseTask == null) {
 
+				console.log("### DracoParserListerner()::addUrlToTask(), build task...");
 				// 建立 draco 模型数据builder(包含加载和解析)
-				console.log("XXXXXXXXXXXX this.m_moduleUrl: ",this.m_moduleUrl);
 				let task = new DracoGeomBuilder(this.m_moduleUrl);
 
 				task.initialize(this.m_threadSchedule);
@@ -45,6 +46,7 @@ class DracoParserListerner {
 
 				this.m_parseTask = task;
 			}
+			console.log("### DracoParserListerner()::addUrlToTask(), start load url: ", url);
 			new HttpFileLoader().load(
 				url,
 				(buf: ArrayBuffer, url: string): void => {

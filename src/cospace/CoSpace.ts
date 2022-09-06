@@ -33,6 +33,9 @@ class CoSpace {
 
     constructor() {
     }
+    setThreadDependencyGraphJsonString(jsonStr: string): void {
+        this.thread.setDependencyGraphJsonString(jsonStr);
+    }
 	setTaskModuleParams(taskModules: ITaskCodeModuleParam[]): void {
 		if(taskModules != null) {
 			this.geometry.setTaskModuleParams(taskModules);
@@ -45,27 +48,26 @@ class CoSpace {
      * @param threadCoreCodeUrl 线程源码字符串url
      * @param autoSendData 是否自动从任务池里取出并发送任务数据到子线程, 默认值是false
      */
-    initialize(maxThreadsTotal: number, threadCoreCodeUrl: string, autoSendData: boolean = false): void {
+    initialize(maxThreadsTotal: number, threadCoreCodeUrl: string, autoSendData: boolean = false, terminateDelayMS: number = 3000): void {
         if (this.m_inited) {
             this.m_inited = false;
 
-            let dependencyGraphObj: object = {
-                nodes: [
-                    { uniqueName: "dracoGeomParser", path: "static/cospace/modules/draco/ModuleDracoGeomParser.umd.js" },
-                    { uniqueName: "dracoWasmWrapper", path: "static/cospace/modules/dracoLib/w2.js" },
-                    { uniqueName: "ctmGeomParser", path: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js" }
-                ],
-                maps: [
-                    { uniqueName: "dracoGeomParser", includes: [1] } // 这里[1]表示 dracoGeomParser 依赖数组中的第一个元素也就是 dracoWasmWrapper 这个代码模块
-                ]
-            };
-            let jsonStr: string = JSON.stringify(dependencyGraphObj);
+            // let dependencyGraphObj: object = {
+            //     nodes: [
+            //         { uniqueName: "dracoGeomParser", path: "static/cospace/modules/draco/ModuleDracoGeomParser.umd.js" },
+            //         { uniqueName: "dracoWasmWrapper", path: "static/cospace/modules/dracoLib/w2.js" },
+            //         { uniqueName: "ctmGeomParser", path: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js" }
+            //     ],
+            //     maps: [
+            //         { uniqueName: "dracoGeomParser", includes: [1] } // 这里[1]表示 dracoGeomParser 依赖数组中的第一个元素也就是 dracoWasmWrapper 这个代码模块
+            //     ]
+            // };
+            // let jsonStr: string = JSON.stringify(dependencyGraphObj);
+            // this.thread.setDependencyGraphJsonString(jsonStr);
     
             // 初始化多线程调度器
-            // this.m_threadSchedule.initialize(1, "cospace/core/code/ThreadCore.umd.min.js");
-            this.thread.setDependencyGraphJsonString(jsonStr);
 
-            this.thread.setParams(autoSendData);
+            this.thread.setParams(autoSendData, terminateDelayMS);
             // 初始化多线程调度器(多线程系统)
             this.thread.initialize(maxThreadsTotal, threadCoreCodeUrl);
             this.geometry.initialize(this.m_receiver, this.thread, null);

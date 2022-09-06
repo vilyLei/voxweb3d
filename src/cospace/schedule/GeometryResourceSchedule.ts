@@ -43,7 +43,7 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 		unit.immediate = immediate;
 		unit.data = new GeometryDataContainer();
 		unit.data.dataFormat = dataFormat;
-		console.log("GeometryResourceSchedule::createDataUnit(), unit.data.dataFormat: ",unit.data.dataFormat);
+		console.log("GeometryResourceSchedule::createDataUnit(), unit.data.dataFormat: ", unit.data.dataFormat);
 		switch (unit.data.dataFormat) {
 			case DataFormat.CTM:
 				this.m_ctmListener.addUrlToTask(url);
@@ -58,7 +58,7 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 				this.m_fbxListener.addUrlToTask(url);
 				break;
 			default:
-				console.error("GeometryResourceSchedule::createDataUnit(), illegal data format:",unit.data.dataFormat,", its url: ", url);
+				console.error("GeometryResourceSchedule::createDataUnit(), illegal data format:", unit.data.dataFormat, ", its url: ", url);
 				break;
 		}
 		return unit;
@@ -68,10 +68,10 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 	 */
 	protected initTask(unitPool: DataUnitPool<GeometryDataUnit>, threadSchedule: ThreadSchedule, receiverSchedule: ReceiverSchedule, taskModules: ITaskCodeModuleParam[]): void {
 
-		for(let i: number = 0; i < taskModules.length; ++i) {
+		for (let i: number = 0; i < taskModules.length; ++i) {
 			const module = taskModules[i];
 			console.log("GeometryResourceSchedule::initTask(), module.name ", module.name);
-			switch(module.name) {
+			switch (module.name) {
 				case ModuleNS.ctmParser:
 					this.m_ctmListener = new CTMParserListerner(unitPool, threadSchedule, module, receiverSchedule);
 					break;
@@ -94,15 +94,15 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 	 */
 	destroy(): void {
 		super.destroy();
-		if(this.m_ctmListener != null) {
+		if (this.m_ctmListener != null) {
 			this.m_ctmListener.destroy();
 			this.m_ctmListener = null;
 		}
-		if(this.m_objListener != null) {
+		if (this.m_objListener != null) {
 			this.m_objListener.destroy();
 			this.m_objListener = null;
 		}
-		if(this.m_fbxListener != null) {
+		if (this.m_fbxListener != null) {
 			this.m_fbxListener.destroy();
 			this.m_fbxListener = null;
 		}

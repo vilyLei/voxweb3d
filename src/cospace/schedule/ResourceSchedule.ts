@@ -115,7 +115,7 @@ class ResourceSchedule<DataUnitType extends DataUnit> {
      */
     getCPUDataByUrl(url: string, dataFormat: DataFormat, receiver: DataUnitReceiver = null, immediate: boolean = false): DataUnitType {
 
-        let unit: DataUnitType = this.m_unitPool.getUnitByUrl(url) as DataUnitType;
+        let unit = this.m_unitPool.getUnitByUrl(url) as DataUnitType;
         if (unit != null) {
             if (receiver != null) {
                 if (unit.isCpuPhase()) {
