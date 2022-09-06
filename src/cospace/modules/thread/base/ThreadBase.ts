@@ -18,7 +18,7 @@ import { TaskDataRouter } from "./TaskDataRouter";
 import { TaskDescriptor } from "./TaskDescriptor";
 import { ThreadTaskPool } from "../control/ThreadTaskPool";
 import { ThreadWFST, TransST } from "./ThreadWFST";
-// import { TaskRegister } from "./TaskRegister";
+
 type ArrayTypeT = Float32Array | Int32Array | Uint16Array | Uint8Array | Int16Array | Int8Array;
 class ThreadBase implements IThreadBase {
     private static s_uid: number = 0;
@@ -26,9 +26,9 @@ class ThreadBase implements IThreadBase {
     private m_worker: Worker = null;
     private m_taskItems: TaskDescriptor[] = [];
     private m_taskfs: number[];
-    private m_free: boolean = false;
-    private m_enabled: boolean = false;
-    private m_initBoo: boolean = true;
+    private m_free = false;
+    private m_enabled = false;
+    private m_initBoo = true;
     private m_thrData: IThreadSendData = null;
     private m_commonModuleMap: Map<string,number> = new Map();
     private m_tdrManager: TDRManager;
@@ -38,8 +38,8 @@ class ThreadBase implements IThreadBase {
      */
     private m_graphJsonStr: string;
 
-    autoSendData: boolean = false;
-    localDataPool: ThrDataPool = new ThrDataPool();
+    autoSendData = false;
+    localDataPool = new ThrDataPool();
     globalDataPool: ThrDataPool = null;
     unlock: boolean = true;
 
@@ -124,7 +124,7 @@ class ThreadBase implements IThreadBase {
             this.m_free = false;
         }
         else if(this.m_taskfs[thrData.taskclass] < 1) {
-            console.error("task class("+thrData.taskclass+") module is undeifned in the Thread("+this.m_uid+")");
+            //console.error("task class("+thrData.taskclass+") module is undeifned in the Thread("+this.m_uid+")");
         }
     }
     initModuleByTaskDescriptor(task: TaskDescriptor): void {
@@ -163,7 +163,7 @@ class ThreadBase implements IThreadBase {
             this.m_enabled = false;
             let task = this.m_taskItems.pop();
             // type 为0 表示task js 文件是外部加载的, 如果为 1 则表示是由运行时字符串构建的任务可执行代码
-            // console.log("Main worker("+this.getUid()+") updateInitTask(), task: ",task);
+            console.log("Main worker("+this.getUid()+") updateInitTask(), task: ",task);
             // let info: {taskClass:number, keyuns: string} = this.m_taskReg.getTaskInfo(task);
             // console.log("task info: ", info);
             this.m_worker.postMessage({ cmd: ThreadCMD.INIT_TASK, threadIndex: this.getUid(), param: task, info: task.info });
@@ -178,6 +178,9 @@ class ThreadBase implements IThreadBase {
         console.log("Main worker("+this.getUid()+") recieve data, transST: ", transST, ", free: ",this.m_free, ", autoSendData: ",this.autoSendData);
 
         // 下面这个逻辑要慎用，用了可能会对时间同步(例如帧同步)造成影响
+        // if (this.m_taskItems.length > 0) {
+        //     this.updateInitTask();
+        // }else 
         if (this.autoSendData) {
             this.sendPoolDataToThread();
         }
@@ -264,7 +267,7 @@ class ThreadBase implements IThreadBase {
                         this.updateInitTask();
                         break;
                     case ThreadCMD.THREAD_ACQUIRE_DATA:
-                        // console.log("ThreadCMD.THREAD_ACQUIRE_DATA, data.taskclass: ", data.taskclass);
+                        console.log("ThreadCMD.THREAD_ACQUIRE_DATA, data.taskclass: ", data.taskclass);
                         let tdrParam = new TDRParam(data.taskclass, data.cmd, data.taskCmd,this.getUid());
                         let router1 = this.m_tdrManager.getRouterByTaskClass(data.taskclass);
                         if(router1 != null) {

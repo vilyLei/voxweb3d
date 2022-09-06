@@ -416,6 +416,17 @@ ins.initialize();
 
 "use strict";
 
+/***************************************************************************/
+
+/*                                                                         */
+
+/*  Copyright 2018-2022 by                                                 */
+
+/*  Vily(vily313@126.com)                                                  */
+
+/*                                                                         */
+
+/***************************************************************************/
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -877,7 +888,9 @@ class DependenceGraph {
           if (request.status <= 206) {
             console.log("load js model file"); // eval(request.responseText);
 
-            let blob = new Blob([request.responseText]);
+            let blob = new Blob([request.responseText], {
+              type: "text/javascript"
+            });
             let info = this.m_taskInfoMap.has(programUrl) ? this.m_taskInfoMap.get(programUrl) : null;
             this.currTaskClass = info != null ? info.taskClass : -1;
             importJSModuleCode(URL.createObjectURL(blob), programUrl);
