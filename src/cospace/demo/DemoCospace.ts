@@ -61,20 +61,22 @@ export class DemoCospace {
 		"static/assets/xulie_49.png",
 		"static/assets/letterA.png"
 	];
-	private m_downIndex = 0;
+	private m_dracoResIndex = 0;
+	private loadDraco(): void {
+
+		// let url = "static/private/draco/errorNormal.drc";
+		let url = "static/private/draco/sh202/sh202_" + this.m_dracoResIndex + ".drc";
+		// let url = "static/private/draco/t01.drc";
+		this.loadDracoCallback(url);
+		this.m_dracoResIndex++;
+	}
 	private mouseDown(evt: any): void {
 		this.m_beginTime = Date.now();
 		// this.initCTMLoad();
 
 		// this.loadPNGByCallback( this.m_pngs[0] );
 		// this.loadPNGByCallback( this.m_pngs[1] );
-
-		// let url = "static/private/draco/errorNormal.drc";
-		let url = "static/private/draco/sh202/sh202_" + this.m_downIndex + ".drc";
-		// let url = "static/private/draco/t01.drc";
-		this.loadDracoCallback(url);
-		this.m_downIndex++;
-
+		this.loadDraco();
 	}
 	private loadPNGByCallback(url: string): void {
 

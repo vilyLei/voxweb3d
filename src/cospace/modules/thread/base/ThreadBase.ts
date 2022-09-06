@@ -124,7 +124,7 @@ class ThreadBase implements IThreadBase {
             this.m_free = false;
         }
         else if(this.m_taskfs[thrData.taskclass] < 1) {
-            //console.error("task class("+thrData.taskclass+") module is undeifned in the Thread("+this.m_uid+")");
+            console.error("task class("+thrData.taskclass+") module is undeifned in the Thread("+this.m_uid+")");
         }
     }
     initModuleByTaskDescriptor(task: TaskDescriptor): void {
@@ -158,6 +158,7 @@ class ThreadBase implements IThreadBase {
         this.m_worker.postMessage({ cmd: ThreadCMD.INIT_COMMON_MODULE, threadIndex: this.getUid(), src: codeStr, type: ThreadCodeSrcType.STRING_CODE });
     }
     private updateInitTask(): void {
+        console.log("Main worker("+this.getUid()+") updateInitTask() ...");
         if (this.m_taskItems.length > 0) {
             this.m_free = false;
             this.m_enabled = false;

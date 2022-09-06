@@ -146,8 +146,8 @@ class ThreadCore {
             case TCMD.INIT_TASK:
                 let param = data.param;
 				let taskClass: number = data.info.taskClass;
-                // console.log("Sub Worker(" + data.threadIndex + ") INIT_TASK param.type: ", param.type,"taskClass: ",taskClass);
-                // console.log("Sub Worker(" + data.threadIndex + ") INIT_TASK data: ", data);
+                console.log("Sub Worker(" + data.threadIndex + ") INIT_TASK param.type: ", param.type,"taskClass: ",taskClass);
+                console.log("Sub Worker(" + data.threadIndex + ") INIT_TASK data: ", data);
                 switch (param.type) {
                     case TCST.JS_FILE_CODE:
                         if (stList[taskClass] < 1) {
