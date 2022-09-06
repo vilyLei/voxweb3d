@@ -43,7 +43,7 @@ export class DemoMixParser {
 		// this.initDraco();
 
 		this.loadCTM();
-		// this.loadDraco();
+		this.loadDraco();
 	}
 
 	private initCtm(): void {
@@ -96,7 +96,7 @@ export class DemoMixParser {
 
 	private loadCTM(): void {
 		this.initCtm();
-		for (let i: number = 0; i < 3; ++i) {
+		for (let i: number = 21; i < 24; ++i) {
 			let url = "static/private/ctm/sh202/sh202_" + i + ".ctm";
 			this.loadACtmFileFile(url);
 		}
@@ -133,7 +133,7 @@ export class DemoMixParser {
 	ctmParseFinish(model: GeometryModelDataType, url: string): void {
 		console.log("DemoMixParser::ctmParseFinish(), parsed ctm model: ", model, ", url: ", url);
 		if(this.m_dracoResIndex == 0) {
-			this.loadDraco();
+			// this.loadDraco();
 		}
 	}
 	dracoParseSingle(model: GeometryModelDataType, url: string, index: number): void {
