@@ -17,36 +17,38 @@ class ThreadTask implements IThreadTask {
     private m_globalDataPool: IThrDataPool = null;
     private m_localDataPool: IThrDataPool = null;
     private m_taskPool: ThreadTaskPool = null;
-    private m_info: {taskClass:number, keyuns: string} = null;
+    private m_info: { taskClass: number, keyuns: string } = null;
 
     protected m_parseIndex: number = 0;
     protected m_parseTotal: number = 0;
     /**
      * 当前任务对于线程中相关代码模块的依赖关系
      */
-    dependency:TaskDependency = null;
+    dependency: TaskDependency = null;
     constructor() {
+        console.log("XXXX ThreadTask::constructor() ...");
     }
     attach(taskPool: ThreadTaskPool): boolean {
-        if(this.m_uid < 0 &&  this.m_taskPool == null && taskPool != null) {
+        if (this.m_uid < 0 && this.m_taskPool == null && taskPool != null) {
             this.m_taskPool = taskPool;
-            let uid = taskPool.attachTask( this );
-            if(uid > 0) {
+            let uid = taskPool.attachTask(this);
+            if (uid > 0) {
                 this.m_uid = uid;
                 return true;
-            }else {
+            } else {
                 throw Error("illegal operation!!!");
             }
         }
         return false;
     }
     detach(): void {
-        if(this.m_uid > 0 &&  this.m_taskPool != null) {
+        if (this.m_uid > 0 && this.m_taskPool != null) {
             this.m_taskPool.detachTask(this);
             this.m_uid = -1;
         }
     }
-    setTaskInfo(info: {taskClass:number, keyuns: string}): void {
+    setTaskInfo(info: { taskClass: number, keyuns: string }): void {
+        console.log("XXXX ThreadTask::setTaskInfo() info: ", info);
         this.m_info = info;
     }
     setDataPool(globalDataPool: IThrDataPool, localDataPool: IThrDataPool = null): void {
@@ -136,7 +138,7 @@ class ThreadTask implements IThreadTask {
             data.srcuid = this.m_uid;
             data.taskclass = this.m_info.taskClass;
             // console.log("task addData, ",threadBindingData, this.m_localDataPool != null, this.m_globalDataPool != null);
-            if(threadBindingData) {
+            if (threadBindingData) {
                 if (this.m_localDataPool != null) {
                     this.m_localDataPool.addData(data);
                 }
@@ -156,11 +158,11 @@ class ThreadTask implements IThreadTask {
         return null;
     }
     /**
-	 * 获得自身动态分配到的 task class 值，不可被子类覆盖
-	 * @returns task class value
-	 */
+     * 获得自身动态分配到的 task class 值，不可被子类覆盖
+     * @returns task class value
+     */
     getTaskClass(): number {
-		return this.m_info.taskClass;
+        return this.m_info.taskClass;
     }
     destroy(): void {
         this.detach();

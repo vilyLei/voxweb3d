@@ -33,7 +33,6 @@ class ThreadBase implements IThreadBase {
     private m_commonModuleMap: Map<string,number> = new Map();
     private m_tdrManager: TDRManager;
     private m_taskPool: ThreadTaskPool;
-    // private m_taskReg: TaskRegister;
     /**
      * 线程中子模块间依赖关系的json描述
      */
@@ -125,15 +124,14 @@ class ThreadBase implements IThreadBase {
             this.m_free = false;
         }
         else if(this.m_taskfs[thrData.taskclass] < 1) {
-            console.error("task class("+thrData.taskclass+") module is undeifned");
+            console.error("task class("+thrData.taskclass+") module is undeifned in the Thread("+this.m_uid+")");
         }
     }
     initModuleByTaskDescriptor(task: TaskDescriptor): void {
 		// console.log("ThreadBase::initModuleByTaskDescriptor(), A, task: ", task);
         if(task != null) {
-            // let taskclass = task.taskclass;
             let taskclass = task.info.taskClass;
-            // console.log("ThreadBase::initModuleByTaskDescriptor(), task.info: ", task.info);
+            console.log("ThreadBase::initModuleByTaskDescriptor(), task.info: ", task.info, "in the Thread("+this.m_uid+")");
             if (taskclass >= 0 && taskclass < this.m_taskfs.length) {
                 if (this.m_taskfs[taskclass] < 0) {
                     this.m_taskfs[taskclass] = 0;
