@@ -33,6 +33,11 @@ class CoSpace {
 
     constructor() {
     }
+    
+	/**
+	 * 设置线程中子模块间依赖关系的json描述字符串
+	 * @param graphJsonStr json描述字符串
+	 */
     setThreadDependencyGraphJsonString(jsonStr: string): void {
         this.thread.setDependencyGraphJsonString(jsonStr);
     }

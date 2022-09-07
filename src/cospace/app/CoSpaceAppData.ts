@@ -74,6 +74,8 @@ interface CoTaskCodeModuleParam {
 	 * file data type(js text, binary data)
 	 */
 	type: CoModuleFileType;
+	
+    params?: (string | number)[];
 }
 
 export {

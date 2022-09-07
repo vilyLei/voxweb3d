@@ -7,7 +7,12 @@
 
 import { CoTextureDataUnit, CoGeomDataUnit, CoDataFormat, CoTaskCodeModuleParam } from "./CoSpaceAppData";
 interface ICoSpaceAppIns {
-    // readonly cospace: any;
+	
+	/**
+	 * 设置线程中子模块间依赖关系的json描述字符串
+	 * @param graphJsonStr json描述字符串
+	 */
+	setThreadDependencyGraphJsonString(jsonStr: string): void;
 	setTaskModuleParams(params: CoTaskCodeModuleParam[], type?: string): void;
 	initialize(threadsTotal: number, coreCodeUrl: string, autoSendData: boolean): void;
 	/**

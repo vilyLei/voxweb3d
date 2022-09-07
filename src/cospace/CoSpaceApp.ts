@@ -18,6 +18,13 @@ class Instance {
 	readonly cospace: CoSpace = new CoSpace();
     constructor(){}
 
+	/**
+	 * 设置线程中子模块间依赖关系的json描述字符串
+	 * @param graphJsonStr json描述字符串
+	 */
+     setThreadDependencyGraphJsonString(jsonStr: string): void {
+        this.cospace.setThreadDependencyGraphJsonString( jsonStr );
+     }
 	setTaskModuleParams(params: ITaskCodeModuleParam[]): void {
         this.cospace.setTaskModuleParams( params );
     }
