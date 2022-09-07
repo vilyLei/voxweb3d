@@ -82,14 +82,15 @@ export class DemoShowCTMAndDraco {
 	private loadDraco(): void {
 		for (let i: number = 0; i < 27; ++i) {
 			// let url = "static/private/draco/sh202/sh202_" + i + ".drc";
-			let url = "static/private/draco/sh202_a1/sh202_" + i + ".drc";
+			let url = "static/private/ctm2draco/sh202_" + i + ".ctm.drc";
 			this.loadDracoAndParseOnePartFile(url);
 		}
 	}
 
 	private loadCTM(): void {
 		for (let i: number = 0; i < 27; ++i) {
-			let url = "static/private/ctm/sh202/sh202_" + i + ".ctm";
+			// let url = "static/private/ctm/sh202/sh202_" + i + ".ctm";
+			let url = "static/private/ctm2draco/sh202_" + i + ".ctm";
 			this.loadACtmFileFile(url);
 		}
 	}

@@ -43,7 +43,7 @@ export class DemoMixParser {
 		// this.initDraco();
 
 		this.loadCTM();
-		this.loadDraco();
+		// this.loadDraco();
 	}
 
 	private initCtm(): void {
@@ -76,7 +76,7 @@ export class DemoMixParser {
 				1912537,
 				1920151,
 				1920151,
-				1924126,
+				1924126
 			];
 			this.m_dracoGeomBuilder.load(url, segRangeList);
 			//*/
@@ -144,6 +144,7 @@ export class DemoMixParser {
 		console.log("DemoMixParser::dracoParseFinish(), parsed draco model s: ", models);
 	}
 	private mouseDown(evt: any): void {
+		console.log("XXXXXXXXXXXX $$$$$$$ mouseDown() ...");
 		// let ctmUrl: string = "static/assets/ctm/hand.ctm";
 		// // 通过url,发送一份加载和解析资源的任务数据给多线程数据处理系统，一份数据一个子线程处理一次
 		// this.m_ctmParseTask.addURL(window.location.href + ctmUrl);

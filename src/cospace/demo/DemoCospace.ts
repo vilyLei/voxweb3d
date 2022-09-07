@@ -23,6 +23,8 @@ export class DemoCospace {
 		console.log("DemoCospace::initialize()...");
 		DivLog.SetDebugEnabled(true);
 
+		let dracoModuleParam = new TaskCodeModuleParam("static/cospace/modules/draco/ModuleDracoGeomParser.umd.js", ModuleNS.dracoParser, ModuleFileType.JS);
+		dracoModuleParam.params = ["static/cospace/modules/dracoLib/"];
 		let modules: TaskCodeModuleParam[] = [
 			new TaskCodeModuleParam("static/cospace/core/coapp/CoSpaceApp.umd.js", ModuleNS.coSpaceApp, ModuleFileType.JS),
 			new TaskCodeModuleParam("static/cospace/core/code/ThreadCore.umd.js", ModuleNS.threadCore, ModuleFileType.JS),
@@ -30,7 +32,7 @@ export class DemoCospace {
 			new TaskCodeModuleParam("static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", ModuleNS.objParser, ModuleFileType.JS),
 			new TaskCodeModuleParam("static/cospace/modules/png/ModulePNGParser.umd.min.js", ModuleNS.pngParser, ModuleFileType.JS),
 			new TaskCodeModuleParam("static/cospace/modules/fbxFast/ModuleFBXGeomFastParser.umd.min.js", ModuleNS.fbxFastParser, ModuleFileType.JS),
-			new TaskCodeModuleParam("static/cospace/modules/draco/ModuleDracoGeomParser.umd.js", ModuleNS.dracoParser, ModuleFileType.JS),
+			dracoModuleParam,
 		];
 		// 初始化数据协同中心
 		let dependencyGraphObj: object = {
@@ -102,7 +104,7 @@ export class DemoCospace {
 			url,
 			DataFormat.Draco,
 			(unit: GeometryDataUnit, status: number): void => {
-				console.log("DemoCospace::loadDracoCallback(), texture data:", unit.data.models[0]);
+				console.log("DemoCospace::loadDracoCallback(), draco model data:", unit.data.models[0]);
 				console.log("lossTime: ", unit.lossTime + " ms");
 			},
 			true
