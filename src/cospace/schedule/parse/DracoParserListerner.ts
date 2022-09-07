@@ -23,9 +23,11 @@ class DracoParserListerner {
 	private m_receiverSchedule: ReceiverSchedule;
 	private m_threadSchedule: ThreadSchedule;
 	private m_moduleUrl: string;
+	private m_dirUrl: string;
 	constructor(unitPool: DataUnitPool<GeometryDataUnit>, threadSchedule: ThreadSchedule, module: ITaskCodeModuleParam, receiverSchedule: ReceiverSchedule) {
 
 		this.m_moduleUrl = module.url;
+		this.m_dirUrl = module.params[0] as string;
 		this.m_unitPool = unitPool;
 		this.m_threadSchedule = threadSchedule;
 		this.m_receiverSchedule = receiverSchedule;
@@ -37,11 +39,11 @@ class DracoParserListerner {
 		if (!this.m_unitPool.hasUnitByUrl(url)) {
 			if (this.m_parseTask == null) {
 
-				console.log("### DracoParserListerner()::addUrlToTask(), build task...");
+				console.log("### DracoParserListerner()::addUrlToTask(), build task..., this.m_dirUrl: ", this.m_dirUrl);
 				// 建立 draco 模型数据builder(包含加载和解析)
 				let task = new DracoGeomBuilder(this.m_moduleUrl);
 
-				task.initialize(this.m_threadSchedule);
+				task.initialize(this.m_threadSchedule, this.m_dirUrl);
 				task.setListener(this);
 
 				this.m_parseTask = task;

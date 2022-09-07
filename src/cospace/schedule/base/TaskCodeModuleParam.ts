@@ -14,6 +14,7 @@ class TaskCodeModuleParam implements ITaskCodeModuleParam {
      * file data type(js text, binary data)
      */
     type: ModuleFileType;
+    params?: (string | number)[];
     constructor(url: string, name: string, type: ModuleFileType = ModuleFileType.JS){
         this.url = url;
         this.name = name;

@@ -12,6 +12,8 @@ interface ITaskCodeModuleParam {
      * file data type(js text, binary data)
      */
     type: string;
+    
+    params?: (string | number)[];
 }
 
 export { ITaskCodeModuleParam };
