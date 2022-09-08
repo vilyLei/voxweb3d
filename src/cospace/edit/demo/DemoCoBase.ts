@@ -28,7 +28,8 @@ import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import { SphereRayTester } from "../base/SphereRayTester";
 import { BillboardLine } from "../../particle/entity/BillboardLine";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
-// import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
+import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
+import ConeMeshBuilder from "../../voxmesh/build/ConeMeshBuilder";
 //CanvasTexAtlas
 //import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
 
@@ -152,6 +153,36 @@ export class DemoCoBase {
 	private m_axis: ITransformEntity = null;
 	private test01(): void {
 
+		///*
+		let material = CoMaterial.createDefaultMaterial(true);
+		material.initializeByCodeBuf(false);
+		let lBuilder = new ConeMeshBuilder();
+		lBuilder.setBufSortFormat(material.getBufSortFormat());
+		// lBuilder.vbWholeDataEnabled = true;
+		let mesh = lBuilder.create(30,100,20,-0.5);
+		console.log("test01(), mesh: ", mesh);
+
+		let entity = CoEntity.createDisplayEntity();
+		entity.setMaterial( material );
+		entity.setMesh(mesh);
+		this.m_rscene.addEntity(entity);
+		return;
+		//*/
+		/*
+		let material = CoMaterial.createDefaultMaterial(true);
+		material.initializeByCodeBuf(false);
+		let lBuilder = new PlaneMeshBuilder();
+		lBuilder.setBufSortFormat(material.getBufSortFormat());
+		lBuilder.vbWholeDataEnabled = true;
+		let mesh = lBuilder.createXOY(-100, -100, 200, 200);
+		console.log("test01(), mesh: ", mesh);
+
+		let entity = CoEntity.createDisplayEntity();
+		entity.setMaterial( material );
+		entity.setMesh(mesh);
+		this.m_rscene.addEntity(entity);
+		return;
+		//*/
 		/*
 		let lBuilder = new LineMeshBuilder();
 		lBuilder.color.setRGB3f(0.1, 0.2, 0.3);
@@ -185,6 +216,7 @@ export class DemoCoBase {
 		this.m_rscene.addEntity(rectLine);
 		return;
 		//*/
+
 		let radius = 30.0;
 		let segsTotal = Math.floor(radius * 0.5);
 		let billLine = new BillboardLine();

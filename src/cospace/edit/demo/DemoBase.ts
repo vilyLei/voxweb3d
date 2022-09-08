@@ -29,6 +29,7 @@ import Plane from "../../../vox/geom/Plane";
 import H5Text from "../../voxtext/base/H5Text";
 import TextEntity from "../../voxtext/base/TextEntity";
 import BoundsEntity from "../../../vox/entity/BoundsEntity";
+import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 
 //import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
 
@@ -94,6 +95,41 @@ export class DemoBase {
     private initScene(): void {
 
         // let bounds: BoundsEntity = null;
+
+        let plane = new Plane3DEntity();
+        plane.normalEnabled = true;
+        plane.initializeXOYSquare(200);
+        // this.m_rscene.addEntity(plane);
+
+
+        let plm = plane.getMesh();
+        let ivs = plm.getIVS();
+        let vs = plm.getVS();
+        let uvs = new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]);//plm.getUVS();
+        let nvs = plm.getNVS();
+
+        let mesh = new RawMesh();
+        // mesh.setTransformMatrix(this.transMatrix);
+        mesh.reset();
+        
+		mesh.addFloat32Data(vs, 3);
+		mesh.addFloat32Data(uvs, 2);
+		mesh.addFloat32Data(nvs, 3);
+		mesh.setIVS(ivs);
+        console.log("YYYYYYYYYYYYYYYYY YYY YYY");
+        mesh.vbWholeDataEnabled = false;
+        mesh.wireframe = false;
+        mesh.setPolyhedral(true);
+        mesh.initialize();
+        mesh.toElementsTriangles();
+
+        let entity = new DisplayEntity();
+        entity.setMaterial(plane.getMaterial());
+        entity.setMesh( mesh );
+        this.m_rscene.addEntity(entity);
+
+
+        return;
         /*
 		let h5Text = new H5Text();
 		h5Text.initialize(this.m_rscene, "text_cv_01", 18, 512,512);

@@ -39,6 +39,7 @@ export default class DragRayCrossPlane implements IRayControl {
     private m_entity: ITransformEntity = null;
     private m_rscene: IRendererScene = null;
 
+    private m_billPos: IBillboardBase = null;
     private m_circle: IBillboardBase = null;
 
     uuid: string = "DragRayCrossPlane";
@@ -65,12 +66,13 @@ export default class DragRayCrossPlane implements IRayControl {
             this.m_rscene.addEntity(bounds, processidIndex);
             this.m_entity = bounds;
 
-            // let par = CoParticle.createBillboard();
-            // par.initializeSquare(radius * 2, [this.createTexByUrl("static/assets/circle01.png")]);
-            // this.m_rscene.addEntity(par.entity, processidIndex + 1);
-            // let RST = CoRScene.RendererState;
-            // par.entity.setRenderState(RST.NONE_TRANSPARENT_ALWAYS_STATE);
-            // this.m_circle = par;
+            let par = CoParticle.createBillboard();
+            par.initializeSquare(radius * 0.2, [this.createTexByUrl("static/assets/circle01.png")]);
+            this.m_rscene.addEntity(par.entity, processidIndex + 1);
+            let RST = CoRScene.RendererState;
+            par.entity.setRenderState(RST.NONE_TRANSPARENT_ALWAYS_STATE);
+            this.m_billPos = par;
+
             let segsTotal = Math.floor(radius * 0.5);
             let bl = CoParticle.createBillboardLine();
             bl.initializeCircleXOY(radius, segsTotal < 50 ? 50 : segsTotal);
@@ -142,6 +144,7 @@ export default class DragRayCrossPlane implements IRayControl {
     setVisible(visible: boolean): void {
         this.m_entity.setVisible(visible);
         this.m_circle.entity.setVisible(visible);
+        this.m_billPos.entity.setVisible(visible);
     }
     getVisible(): boolean {
         return this.m_entity.getVisible();
@@ -153,6 +156,7 @@ export default class DragRayCrossPlane implements IRayControl {
     setPosition(pv: IVector3D): void {
         this.m_entity.setPosition(pv);
         this.m_circle.setPosition(pv);
+        this.m_billPos.setPosition(pv);
     }
     getPosition(pv: IVector3D): void {
         this.m_entity.getPosition(pv);
@@ -161,6 +165,7 @@ export default class DragRayCrossPlane implements IRayControl {
 
         this.m_entity.setScaleXYZ(sx, sy, sz);
         this.m_circle.setScaleXY(sx, sy);
+        this.m_billPos.setScaleXY(sx, sy);
     }
 
     getScaleXYZ(pv: IVector3D): void {
@@ -200,6 +205,7 @@ export default class DragRayCrossPlane implements IRayControl {
     update(): void {
         this.m_entity.update();
         this.m_circle.update();
+        this.m_billPos.update();
     }
     destroy(): void {
         this.m_targetEntity = null;
@@ -210,6 +216,10 @@ export default class DragRayCrossPlane implements IRayControl {
         if (this.m_circle != null) {
             this.m_rscene.removeEntity( this.m_circle.entity );
             this.m_circle.destroy();
+        }
+        if (this.m_billPos != null) {
+            this.m_rscene.removeEntity( this.m_billPos.entity );
+            this.m_billPos.destroy();
         }
         if (this.m_dispatcher != null) {
             this.m_dispatcher.destroy();

@@ -51,27 +51,24 @@ export default class DragPlane implements IRayControl {
             let rscene = CoRScene.getRendererScene();
             let eb = rscene.entityBlock;
             let material = CoRScene.createDefaultMaterial();
-
+            material.initializeByCodeBuf(false);
             this.m_entity = CoRScene.createDisplayEntity();
 
             let et = this.m_entity;
-
-            // this.m_scale = size;
-
             et.setMaterial(material);
-            // et.setScaleXYZ(size, size, size);
+
             let builder = CoMesh.planeMeshBuilder;
+            builder.setBufSortFormat( material.getBufSortFormat() );
+
             let ov = this.offsetV;
             switch (planeAxisType) {
                 case 0:
-                    // et.copyMeshFrom(eb.unitOXOZPlane);
                     et.setMesh(builder.createXOZ(ov.x,ov.z, size,size));
                     this.setPlaneNormal(V3.Y_AXIS);
                     this.outColor.setRGBA4f(1.0, 0.3, 0.3, alpha);
                     this.overColor.setRGBA4f(1.0, 0.1, 0.1, alpha * 1.1);
                     break;
                 case 1:
-                    // et.copyMeshFrom(eb.unitOXOYPlane);
                     et.setMesh(builder.createXOY(ov.x,ov.y, size,size));
                     this.setPlaneNormal(V3.Z_AXIS);
                     this.outColor.setRGBA4f(0.3, 0.3, 1.0, alpha);
@@ -79,18 +76,11 @@ export default class DragPlane implements IRayControl {
                     break;
                 // yoz
                 case 2:
-                    // et.copyMeshFrom(eb.unitOYOZPlane);
                     et.setMesh(builder.createYOZ(ov.y,ov.z, size,size));
                     this.setPlaneNormal(CoMath.Vector3D.X_AXIS);
                     this.outColor.setRGBA4f(0.3, 1.0, 0.3, alpha);
                     this.overColor.setRGBA4f(0.1, 1.0, 0.1, alpha * 1.1);
                     break;
-                // ray cross plane
-                // case 3:
-                //     this.crossRay = true;
-                //     this.outColor.setRGBA4f(1.0, 0.3, 1.0, alpha);
-                //     this.overColor.setRGBA4f(1.0, 0.1, 1.0, alpha * 1.1);
-                //     break;
                 default:
                     throw Error("Error type !!!");
                     break;
