@@ -5,9 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
+import IVector3D from "../math/IVector3D";
+import IMatrix4 from "../math/IMatrix4";
 import IAABB from "../geom/IAABB";
 import { IVtxBufRenderData } from "../../vox/render/IVtxBufRenderData";
-import IVector3D from "../math/IVector3D";
 import { IROVertexBuffer } from "../../vox/mesh/IROVertexBuffer";
 
 export default interface IMeshBase {
@@ -31,6 +32,10 @@ export default interface IMeshBase {
 	 * vtx positons bounds AABB in the local space, the default value is null
 	 */
 	bounds: IAABB;
+	
+	isUVSEnabled(): boolean;
+    isNVSEnabled(): boolean;
+    isCVSEnabled(): boolean;
 
 	toElementsTriangles(): void;
     toElementsTriangleStrip(): void;
@@ -41,6 +46,9 @@ export default interface IMeshBase {
     toArraysPoints(): void;
     toElementsLines(): void;
     toDisable(): void;
+
+	setTransformMatrix(matrix: IMatrix4): void;
+    getTransformMatrix(): IMatrix4;
 
 	/**
 	 * @param layoutBit vertex shader vertex attributes layout bit status.

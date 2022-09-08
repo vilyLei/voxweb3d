@@ -51,6 +51,11 @@ export default class RawMesh extends MeshBase implements IRawMesh {
 	}
     initialize(): void {
 
+		if(this.getBufSortFormat() < 1) {
+			console.warn("bufSortFormat is zero!");
+		}
+		const vs = this.m_dataList[0];
+
 		this.m_ivs = this.m_ivs;
 		let rvb = ROVertexBuffer;
         rvb.vbWholeDataEnabled = this.vbWholeDataEnabled;
@@ -58,7 +63,10 @@ export default class RawMesh extends MeshBase implements IRawMesh {
             if(this.bounds == null) {
                 this.bounds = new AABB();
             }
-            this.bounds.addXYZFloat32Arr(this.m_dataList[0]);
+			if (this.m_transMatrix != null) {
+				this.m_transMatrix.transformVectorsSelf(vs, vs.length);
+			}
+            this.bounds.addXYZFloat32Arr(vs);
             this.bounds.updateFast();
 		}
 		if(this.ivsEnabled) {
@@ -70,13 +78,12 @@ export default class RawMesh extends MeshBase implements IRawMesh {
 		}else {
 			this.vtCount = 0;
 		}
-
+		ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
 		if (this.m_vbuf != null) {
 			rvb.UpdateBufData(this.m_vbuf);
 		} else {
 			let u = this.getBufDataUsage();
 			let f = this.getBufSortFormat();
-			this.m_vbuf = rvb.CreateBySaveData(u, f);
 			if (this.vbWholeDataEnabled) {
 				this.m_vbuf = rvb.CreateBySaveData(u, f);
 			} else {

@@ -29,7 +29,7 @@ export default class MeshBase implements IMeshBase {
     private m_bufStatusList: number[] = null;
     private m_bufTypeList: number[] = null;
     private m_bufSizeList: number[] = null;
-	private m_polyhedral: boolean = true;
+    private m_polyhedral: boolean = true;
     //private m_isDyn:boolean = false;
     // very important!!!
     private m_layoutBit: number = 0x0;
@@ -67,6 +67,15 @@ export default class MeshBase implements IMeshBase {
     drawInsStride: number = 0;
     drawInsTotal: number = 0;
 
+    isUVSEnabled(): boolean {
+        return this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX);
+    }
+    isNVSEnabled(): boolean {
+        return this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX);
+    }
+    isCVSEnabled(): boolean {
+        return this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX);
+    }
     toElementsTriangles(): void {
         this.drawMode = RDM.ELEMENTS_TRIANGLES;
     }
@@ -81,30 +90,30 @@ export default class MeshBase implements IMeshBase {
     }
     toArraysLines(): void {
         this.drawMode = RDM.ARRAYS_LINES;
-        this.setPolyhedral( false );
+        this.setPolyhedral(false);
     }
     toArraysLineStrip(): void {
         this.drawMode = RDM.ARRAYS_LINE_STRIP;
-        this.setPolyhedral( false );
+        this.setPolyhedral(false);
     }
     toArraysPoints(): void {
         this.drawMode = RDM.ARRAYS_POINTS;
-        this.setPolyhedral( false );
+        this.setPolyhedral(false);
     }
     toElementsLines(): void {
         this.drawMode = RDM.ELEMENTS_LINES;
-        this.setPolyhedral( false );
+        this.setPolyhedral(false);
     }
     toDisable(): void {
         this.drawMode = RDM.DISABLE;
-        this.setPolyhedral( false );
+        this.setPolyhedral(false);
     }
 
     protected createIVSBYSize(size: number): Uint16Array | Uint32Array {
-        return size > 65535 ? new Uint32Array( size ): new Uint16Array( size );
+        return size > 65535 ? new Uint32Array(size) : new Uint16Array(size);
     }
     protected createIVSByArray(arr: number[]): Uint16Array | Uint32Array {
-        return arr.length > 65535 ? new Uint32Array( arr ): new Uint16Array( arr );
+        return arr.length > 65535 ? new Uint32Array(arr) : new Uint16Array(arr);
     }
     protected updateWireframeIvs(): void {
 
@@ -128,11 +137,11 @@ export default class MeshBase implements IMeshBase {
                 b = ivs[i + 1];
                 c = ivs[i + 2];
                 wIvs[k] = a;
-                wIvs[k+1] = b;
-                wIvs[k+2] = b;
-                wIvs[k+3] = c;
-                wIvs[k+4] = c;
-                wIvs[k+5] = a;
+                wIvs[k + 1] = b;
+                wIvs[k + 2] = b;
+                wIvs[k + 3] = c;
+                wIvs[k + 4] = c;
+                wIvs[k + 5] = a;
                 k += 6;
             }
             this.drawMode = RDM.ELEMENTS_LINES;
@@ -140,8 +149,8 @@ export default class MeshBase implements IMeshBase {
     }
     protected buildEnd(): void {
 
-        this.m_vbuf.setBufTypeList( this.m_bufTypeList );
-        this.m_vbuf.setBufSizeList( this.m_bufSizeList );
+        this.m_vbuf.setBufTypeList(this.m_bufTypeList);
+        this.m_vbuf.setBufSizeList(this.m_bufSizeList);
 
         this.m_bufDataList = ROVertexBuffer.BufDataList;
         this.m_bufDataStepList = ROVertexBuffer.BufDataStepList;
@@ -159,7 +168,7 @@ export default class MeshBase implements IMeshBase {
      */
     isPolyhedral(): boolean { return this.m_polyhedral; }
     // 设置自身是否是多面体实体，根据实际需要改变相关的状态值
-    setPolyhedral(polyhedral: boolean): void { this.m_polyhedral = polyhedral;}
+    setPolyhedral(polyhedral: boolean): void { this.m_polyhedral = polyhedral; }
     /**
      * 射线和自身的相交检测(多面体或几何函数(例如球体))
      * @rlpv            表示物体坐标空间的射线起点
@@ -231,10 +240,10 @@ export default class MeshBase implements IMeshBase {
     getIVS(): Uint16Array | Uint32Array { return this.m_ivs; }
 
     setVtxBufRenderData(vtxData: IVtxBufRenderData): void {
-        if(vtxData != null) {
+        if (vtxData != null) {
             this.m_bufTypeList = vtxData.getBufTypeList();
             this.m_bufSizeList = vtxData.getBufSizeList();
-            this.setBufSortFormat( vtxData.getBufSortFormat() );
+            this.setBufSortFormat(vtxData.getBufSortFormat());
         }
     }
     /**
