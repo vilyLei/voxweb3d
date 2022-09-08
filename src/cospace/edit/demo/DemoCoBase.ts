@@ -156,7 +156,8 @@ export class DemoCoBase {
 		///*
 		let material = CoMaterial.createDefaultMaterial(true);
 		material.initializeByCodeBuf(false);
-		let lBuilder = new ConeMeshBuilder();
+		// let lBuilder = new ConeMeshBuilder();
+		let lBuilder = CoMesh.coneMeshBuilder;
 		lBuilder.setBufSortFormat(material.getBufSortFormat());
 		// lBuilder.vbWholeDataEnabled = true;
 		let mesh = lBuilder.create(30,100,20,-0.5);

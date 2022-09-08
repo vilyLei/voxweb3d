@@ -4,15 +4,11 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import IDataMesh from "../../../vox/mesh/IDataMesh";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
-import { IPlaneMeshBuilder } from "./IPlaneMeshBuilder";
 import MeshVertex from "../../../vox/mesh/MeshVertex";
-import SurfaceNormalCalc from "../../../vox/geom/SurfaceNormalCalc";
 
-import { ICoRScene } from "../../voxengine/ICoRScene";
-import IMatrix4 from "../../../vox/math/IMatrix4";
-declare var CoRScene: ICoRScene;
+import { ICoAGeom } from "../../ageom/ICoAGeom";
+declare var CoAGeom: ICoAGeom;
 
 import { MeshBuilder } from "./MeshBuilder";
 import { IConeMeshBuilder } from "./IConeMeshBuilder";
@@ -22,11 +18,6 @@ class ConeMeshBuilder extends MeshBuilder implements IConeMeshBuilder {
     constructor() {
         super();
     }
-
-    // private m_ivs: Uint16Array;
-    // private m_vs: Float32Array;
-    // private m_uvs: Float32Array;
-    // private m_nvs: Float32Array;
 
     private radius = 30.0;
     private height = 100.0;
@@ -47,7 +38,6 @@ class ConeMeshBuilder extends MeshBuilder implements IConeMeshBuilder {
     }
     protected setMeshData(mesh: IRawMesh): void {
         
-        ///*
         let radius = this.radius;
         let height = this.height;
         let longitudeNumSegments = this.longitudeNumSegments;
@@ -169,7 +159,6 @@ class ConeMeshBuilder extends MeshBuilder implements IConeMeshBuilder {
         for (j = 0; j < vtxTotal; ++j) {
             pvtx = vtxVec[j];
             vs[i] = pvtx.x; vs[i + 1] = pvtx.y; vs[i + 2] = pvtx.z;
-            //trace(pvtx.x+","+pvtx.y+","+pvtx.z);
             i += 3;
         }
 
@@ -182,14 +171,8 @@ class ConeMeshBuilder extends MeshBuilder implements IConeMeshBuilder {
             i += 2;
         }
         let trisNumber = ivs.length / 3;
-        SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
-        // i = 0;
-        // for (j = 0; j < vtxTotal; ++j) {
-        //     pvtx = vtxVec[j];
-        //     nvs[i] = pvtx.nx; nvs[i + 1] = pvtx.ny; nvs[i + 2] = pvtx.nz;
-        //     i += 3;
-        // }
-
+        CoAGeom.SurfaceNormal.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
+        
         mesh.addFloat32Data(vs, 3);
         if(mesh.isUVSEnabled()) {
             mesh.addFloat32Data(uvs, 2);
@@ -198,22 +181,6 @@ class ConeMeshBuilder extends MeshBuilder implements IConeMeshBuilder {
             mesh.addFloat32Data(nvs, 3);
         }
         mesh.setIVS(ivs);
-
-        // this.m_ivs = ivs;
-        // this.m_vs = vs;
-        // this.m_uvs = uvs;
-        // this.m_nvs = nvs;
-        //*/
-
-        // mesh.addFloat32Data(this.m_vs, 3);
-        // mesh.addFloat32Data(this.m_uvs, 2);
-        // mesh.addFloat32Data(this.m_nvs, 3);
-        // mesh.setIVS(this.m_ivs);
-
-        // this.m_ivs = null;
-        // this.m_vs = null;
-        // this.m_uvs = null;
-        // this.m_nvs = null;
     }
 }
 export { ConeMeshBuilder };

@@ -4,14 +4,10 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import IDataMesh from "../../../vox/mesh/IDataMesh";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
-import { IPlaneMeshBuilder } from "./IPlaneMeshBuilder";
-import MeshVertex from "../../../vox/mesh/MeshVertex";
-import { IMeshBuilder } from "./IMeshBuilder";
+import IMatrix4 from "../../../vox/math/IMatrix4";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
-import IMatrix4 from "../../../vox/math/IMatrix4";
 declare var CoRScene: ICoRScene;
 
 class MeshBuilder {
