@@ -15,8 +15,9 @@ import IMatrix4 from "../../../vox/math/IMatrix4";
 declare var CoRScene: ICoRScene;
 
 import { MeshBuilder } from "./MeshBuilder";
+import { IConeMeshBuilder } from "./IConeMeshBuilder";
 
-export default class ConeMeshBuilder extends MeshBuilder {
+class ConeMeshBuilder extends MeshBuilder implements IConeMeshBuilder {
 
     constructor() {
         super();
@@ -215,3 +216,4 @@ export default class ConeMeshBuilder extends MeshBuilder {
         // this.m_nvs = null;
     }
 }
+export { ConeMeshBuilder };

@@ -29,7 +29,7 @@ import { SphereRayTester } from "../base/SphereRayTester";
 import { BillboardLine } from "../../particle/entity/BillboardLine";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
-import ConeMeshBuilder from "../../voxmesh/build/ConeMeshBuilder";
+import { ConeMeshBuilder } from "../../voxmesh/build/ConeMeshBuilder";
 //CanvasTexAtlas
 //import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
 
