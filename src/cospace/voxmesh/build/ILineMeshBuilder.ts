@@ -8,8 +8,9 @@
 import IVector3D from "../../../vox/math/IVector3D";
 import IColor4 from '../../../vox/material/IColor4';
 import IRawMesh from '../../../vox/mesh/IRawMesh';
+import { IMeshBuilder } from "./IMeshBuilder";
 
-interface ILineMeshBuilder {
+interface ILineMeshBuilder extends IMeshBuilder {
 
     color: IColor4;
     /**

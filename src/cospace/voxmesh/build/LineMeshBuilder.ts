@@ -9,6 +9,7 @@ import IVector3D from "../../../vox/math/IVector3D";
 import IColor4 from '../../../vox/material/IColor4';
 import IRawMesh from '../../../vox/mesh/IRawMesh';
 import { ILineMeshBuilder } from './ILineMeshBuilder';
+import { MeshBuilder } from "./MeshBuilder";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMesh } from "../../voxmesh/ICoMesh";
@@ -17,7 +18,7 @@ declare var CoRScene: ICoRScene;
 declare var CoMesh: ICoMesh;
 declare var CoMath: ICoMath;
 
-class LineMeshBuilder implements ILineMeshBuilder {
+class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
 
     private m_posvs: number[] = null;
     private m_colorvs: number[] = null;
@@ -25,12 +26,12 @@ class LineMeshBuilder implements ILineMeshBuilder {
     color = CoRScene.createColor4(1.0, 0.0, 0.0, 1.0);
     dynColorEnabled = true;
 
-    constructor() { }
+    constructor() { super() }
 
     setRGB3f(pr: number, pg: number, pb: number): void {
         this.color.setRGB3f(pr, pg, pb);
     }
-    private createMesh(): IRawMesh {
+    private createLineMesh(): IRawMesh {
 
         let vs = new Float32Array(this.m_posvs);
 
@@ -64,21 +65,21 @@ class LineMeshBuilder implements ILineMeshBuilder {
         if (begin != null) begin.toArray(this.m_posvs);
         if (end != null) end.toArray(this.m_posvs, 3);
         this.useColor(2);
-        return this.createMesh();
+        return this.createLineMesh();
     }
     createRectXOY(px: number, py: number, pw: number, ph: number): IRawMesh {
         pw += px;
         ph += py;
         this.useColor(8);
         this.m_posvs = [px, py, 0.0, pw, py, 0.0, pw, py, 0.0, pw, ph, 0.0, pw, ph, 0.0, px, ph, 0.0, px, ph, 0.0, px, py, 0.0];
-        return this.createMesh();
+        return this.createLineMesh();
     }
     createRectXOZ(px: number, pz: number, pw: number, pl: number): IRawMesh {
         pw += px;
         pl += pz;
         this.useColor(8);
         this.m_posvs = [px, 0.0, pz, pw, 0.0, pz, pw, 0.0, pz, pw, 0.0, pl, pw, 0.0, pl, px, 0.0, pl, px, 0.0, pl, px, 0.0, pz];
-        return this.createMesh();
+        return this.createLineMesh();
     }
 
     createRectYOZ(py: number, pz: number, pw: number, pl: number): IRawMesh {
@@ -86,7 +87,7 @@ class LineMeshBuilder implements ILineMeshBuilder {
         pl += pz;
         this.useColor(8);
         this.m_posvs = [0.0, py, pz, 0.0, pw, pz, 0.0, pw, pz, 0.0, pw, pl, 0.0, pw, pl, 0.0, py, pl, 0.0, py, pl, 0.0, py, pz];
-        return this.createMesh();
+        return this.createLineMesh();
     }
     private createCircle(vs: number[], segsTotal: number): void {
 
@@ -124,7 +125,7 @@ class LineMeshBuilder implements ILineMeshBuilder {
         }
 
         this.createCircle(vs, segsTotal);
-        return this.createMesh();
+        return this.createLineMesh();
     }
     createCircleXOZ(radius: number, segsTotal: number, center: IVector3D = null): IRawMesh {
 
@@ -144,7 +145,7 @@ class LineMeshBuilder implements ILineMeshBuilder {
         }
 
         this.createCircle(vs, segsTotal);
-        return this.createMesh();
+        return this.createLineMesh();
     }
     createCircleYOZ(radius: number, segsTotal: number, center: IVector3D = null): IRawMesh {
 
@@ -164,7 +165,7 @@ class LineMeshBuilder implements ILineMeshBuilder {
         }
 
         this.createCircle(vs, segsTotal);
-        return this.createMesh();
+        return this.createLineMesh();
     }
     createCurveByPositions(posList: IVector3D[], colorList: IColor4[] = null): IRawMesh {
 
@@ -187,7 +188,7 @@ class LineMeshBuilder implements ILineMeshBuilder {
             this.m_posvs.push(posList[i - 1].x, posList[i - 1].y, posList[i - 1].z);
             this.m_posvs.push(posList[i].x, posList[i].y, posList[i].z);
         }
-        return this.createMesh();
+        return this.createLineMesh();
     }
     createPolygon(posList: IVector3D[], colorList: IColor4[] = null): IRawMesh {
         return this.createCurveByPositions(posList, colorList);

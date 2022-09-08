@@ -2,6 +2,7 @@ import IDataMesh from "../../../vox/mesh/IDataMesh";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import IColor4 from "../../../vox/material/IColor4";
 import { IPlaneMeshBuilder } from "./IPlaneMeshBuilder";
+import { MeshBuilder } from "./MeshBuilder";
 // import ITransformEntity from "../../../vox/entity/ITransformEntity";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
@@ -22,7 +23,7 @@ class PlaneGeometry {
 
 	flipVerticalUV: boolean = false;
 
-	vtxColorEnabled = false;
+	// vtxColorEnabled = false;
 
 	/**
 	 * axisFlag = 0 is XOY plane,
@@ -142,7 +143,7 @@ class PlaneGeometry {
 	}
 }
 
-class PlaneMeshBuilder implements IPlaneMeshBuilder {
+class PlaneMeshBuilder extends MeshBuilder implements IPlaneMeshBuilder {
 
 	private m_startX = 0;
 	private m_startZ = 0;
@@ -152,21 +153,19 @@ class PlaneMeshBuilder implements IPlaneMeshBuilder {
 
 	uvs: Float32Array = null;
 
-	polyhedral = false;
-
 	offsetU: number = 0.0;
 	offsetV: number = 0.0;
 	uScale: number = 1.0;
 	vScale: number = 1.0;
+	flipVerticalUV: boolean = false;
+	normalEnabled: boolean = false;
 
 	vbWholeDataEnabled: boolean = false;
-	normalEnabled: boolean = false;
 	wireframe: boolean = false;
-	flipVerticalUV: boolean = false;
-	vertColorEnabled: boolean = false;
-	premultiplyAlpha: boolean = false;
+	polyhedral = true;
 
-	constructor() {}
+
+	constructor() { super(); }
 
 	/**
 	 * create a rectangle fix screen size plane ,and it parallel the 3d space XOY plane
@@ -189,7 +188,7 @@ class PlaneMeshBuilder implements IPlaneMeshBuilder {
 		this.m_pwidth = pwidth;
 		this.m_plong = pheight;
 		this.m_flag = 0;
-		return this.createMesh();
+		return this.createPlaneMesh();
 	}
 	/**
 	 * create a square plane ,and it parallel the 3d space XOY plane
@@ -202,7 +201,7 @@ class PlaneMeshBuilder implements IPlaneMeshBuilder {
 		this.m_pwidth = size;
 		this.m_plong = size;
 		this.m_flag = 0;
-		return this.createMesh();
+		return this.createPlaneMesh();
 	}
 	/**
 	 * create a rectangle plane ,and it parallel the 3d space XOZ plane
@@ -218,7 +217,7 @@ class PlaneMeshBuilder implements IPlaneMeshBuilder {
 		this.m_startZ = minZ;
 		this.m_pwidth = pwidth;
 		this.m_plong = plong;
-		return this.createMesh();
+		return this.createPlaneMesh();
 	}
 	/**
 	 * create a rectangle plane ,and it parallel the 3d space YOZ plane
@@ -234,7 +233,7 @@ class PlaneMeshBuilder implements IPlaneMeshBuilder {
 		this.m_startZ = minZ;
 		this.m_pwidth = pwidth;
 		this.m_plong = plong;
-		return this.createMesh();
+		return this.createPlaneMesh();
 	}
 	/**
 	 * create a square plane ,and it parallel the 3d space XOZ plane
@@ -247,9 +246,10 @@ class PlaneMeshBuilder implements IPlaneMeshBuilder {
 		this.m_startZ = -0.5 * size;
 		this.m_pwidth = size;
 		this.m_plong = size;
-		return this.createMesh();
+		return this.createPlaneMesh();
 	}
-	private createMesh(): IRawMesh {
+	private createPlaneMesh(): IRawMesh {
+		/*
 		let geom = new PlaneGeometry();
 
 		// mesh.color0.copyFrom(this.color0);
@@ -267,9 +267,8 @@ class PlaneMeshBuilder implements IPlaneMeshBuilder {
 		// geom.wireframe = this.wireframe;
 
 		geom.flipVerticalUV = this.flipVerticalUV;
-		// geom.vbWholeDataEnabled = this.vbWholeDataEnabled;
 		geom.axisFlag = this.m_flag;
-		geom.setUVS( this.uvs );
+		geom.setUVS(this.uvs);
 		geom.initialize(this.m_startX, this.m_startZ, this.m_pwidth, this.m_plong);
 
 		let mesh = CoRScene.createRawMesh();
@@ -280,11 +279,36 @@ class PlaneMeshBuilder implements IPlaneMeshBuilder {
 		mesh.setIVS(geom.getIVS());
 		mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
 		mesh.wireframe = this.wireframe;
-		mesh.setPolyhedral( this.polyhedral );
+		mesh.setPolyhedral(this.polyhedral);
 		mesh.initialize();
 		mesh.toElementsTriangles();
-
 		return mesh;
+		//*/
+		return this.createMesh();
+	}
+
+	protected setMeshData(mesh: IRawMesh): void {
+
+		let geom = new PlaneGeometry();
+
+
+		geom.uScale = this.uScale;
+		geom.vScale = this.vScale;
+		geom.offsetU = this.offsetU;
+		geom.offsetV = this.offsetV;
+		geom.flipVerticalUV = this.flipVerticalUV;		
+		geom.axisFlag = this.m_flag;
+		geom.setUVS(this.uvs);
+		geom.initialize(this.m_startX, this.m_startZ, this.m_pwidth, this.m_plong);
+
+		mesh.addFloat32Data(geom.getVS(), 3);
+		if(mesh.isUVSEnabled()) {
+			mesh.addFloat32Data(geom.getUVS(), 2);
+		}
+		if(mesh.isNVSEnabled()) {
+			mesh.addFloat32Data(geom.getNVS(), 3);
+		}
+		mesh.setIVS(geom.getIVS());
 	}
 	destroy(): void {
 		this.uvs = null;

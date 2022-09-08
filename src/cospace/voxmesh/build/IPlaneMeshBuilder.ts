@@ -1,7 +1,7 @@
-
 import IRawMesh from "../../../vox/mesh/IRawMesh";
+import { IMeshBuilder } from "./IMeshBuilder";
 
-interface IPlaneMeshBuilder {
+interface IPlaneMeshBuilder extends IMeshBuilder {
 
 	uvs: Float32Array;
 
@@ -12,12 +12,8 @@ interface IPlaneMeshBuilder {
 	uScale: number;
 	vScale: number;
 
-	vbWholeDataEnabled: boolean;
 	normalEnabled: boolean;
-	wireframe: boolean;
 	flipVerticalUV: boolean;
-	vertColorEnabled: boolean;
-	premultiplyAlpha: boolean;
 
 	// create
 	/**
