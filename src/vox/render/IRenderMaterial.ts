@@ -22,7 +22,13 @@ interface IRenderMaterial {
      */
     pipeTypes: MaterialPipeType[];
 
+    /**
+     * @param texEnabled the default value is false
+     */
     initializeByRenderer(texEnabled: boolean): void;
+    /**
+     * @param texEnabled the default value is false
+     */
     initializeByCodeBuf(texEnabled: boolean): void;
     
     getPolygonOffset(): number[];
