@@ -10,6 +10,7 @@ import PlaneUtils from "./base/PlaneUtils";
 import ISphere from "./base/ISphere";
 import Sphere from "./base/Sphere";
 import { Intersection } from "./base/Intersection";
+import { SurfaceNormal } from "./utils/SurfaceNormal";
 
 
 function createLine(): ILine {
@@ -37,6 +38,7 @@ export {
 	Plane,
 	PlaneUtils,
 	Sphere,
+	SurfaceNormal,
 
 	createLine,
 	createRayLine,

@@ -106,12 +106,32 @@ interface CoPlaneUtils {
 	 */
 	IntersectRayLinePos2(pnv: IVector3D, pdis: number, rl_pos: IVector3D, rl_tv: IVector3D, outV: IVector3D): boolean;
 }
+
+interface CoSurfaceNormal {
+	/**
+	 * calc a triangle's normal,cw is positive, right hand rule. there is calc result is positive.
+	 */
+	ClacTriNormal(va: IVector3D, vb: IVector3D, vc: IVector3D, resultNormal: IVector3D): void;
+	/**
+	 * calc a triangle's normal,cw is positive, right hand rule. there is calc result is positive.
+	 * @param verteies			verteies's length is N multiple 9
+	 * @param triangleIndex		triangle index of triangles
+	 * @param resultNormal		result normalize IVector3D normal
+	 */
+	ClacTriNormalByVS(verteies: Float32Array, triangleIndex: number, resultNormal: IVector3D): void;
+	ClacTriNormalByIVS(verteies: Float32Array, triangleIndex: number, indices: Uint16Array | Uint32Array, resultNormal: IVector3D): void;
+	ClacTrisNormal(verteies: Float32Array, verteiesLength: number, numTriangles: number, indices: Uint16Array | Uint32Array, normals: Float32Array): void;
+	ClacTriTangent(verteies: Float32Array, uvs: Float32Array, nvs: Float32Array, triangleIndex: number, indices: Uint16Array | Uint32Array, tangent: IVector3D, biTangent: IVector3D): void;
+	ClacTrisTangent(verteies: Float32Array, verteiesLength: number, uvs: Float32Array, nvs: Float32Array, numTriangles: number, indices: Uint16Array | Uint32Array, tangent: Float32Array, biTangent: Float32Array): void;
+}
+
 interface ICoAGeom {
 
 	Intersection: CoIntersection;
 	Line: CoLine;
 	RayLine: CoRayLine;
 	PlaneUtils: CoPlaneUtils;
+	SurfaceNormal: CoSurfaceNormal;
 	/**
 	 * create a algorithm geometry 3D Space Line Instance
 	 */
