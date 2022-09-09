@@ -9,6 +9,7 @@ interface IClipEntity extends IUIEntity {
 	getClipIndex(): number;
 	getClipsTotal(): number;
 	hasTexture(): boolean;
-
+	getClipWidth(): number;
+	getClipHeight(): number;
 }
 export { IClipEntity };

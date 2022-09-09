@@ -174,6 +174,12 @@ class ClipColorLabel implements IClipColorLabel {
 		return this.m_colors;
 	}
 
+	getClipWidth(): number {
+		return this.m_width;
+	}
+	getClipHeight(): number {
+		return this.m_height;
+	}
 	getWidth(): number {
 		return this.m_width * this.m_sx;
 	}
