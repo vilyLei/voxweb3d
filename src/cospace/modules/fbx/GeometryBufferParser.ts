@@ -228,8 +228,12 @@ class GeometryBufferParser {
 			
 			geoInfo.vertexIndices = this.parseData(geoInfo.vertexIndices);
 			geoInfo.vertexPositions = this.parseData(geoInfo.vertexPositions);
-			geoInfo.normal.buffer = this.parseData(geoInfo.normal.buffer);
-			geoInfo.normal.indices = this.parseData(geoInfo.normal.indices);
+			if(geoInfo.normal != null || geoInfo.normal != undefined) {
+				geoInfo.normal.buffer = this.parseData(geoInfo.normal.buffer);
+				geoInfo.normal.indices = this.parseData(geoInfo.normal.indices);
+			}else {
+				geoInfo.normal = null;
+			}
 			
 			if(uvList != null && uvList.length > 0) {
 				uvList[0].buffer = this.parseData( uvList[0].buffer );

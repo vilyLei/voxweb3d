@@ -186,6 +186,7 @@ class SceneNode implements ISceneNode {
 	private m_lossTime: number = 0;
 	private m_verticesTotal: number = 0;
 	private m_errModelTotal: number = 0;
+	private m_normalErrInfo: string = "";
 	protected initEntity(model: GeometryModelDataType, transform: Matrix4 = null, index: number = 0): void {
 		if (model != null) {
 			this.m_partsTotal++;
@@ -194,6 +195,10 @@ class SceneNode implements ISceneNode {
 				// this.m_errInfo = "注意: 子模型数据有错误"
 				this.m_errModelTotal++;
 				return;
+			}
+			if(model.normals == null) {
+				this.m_normalErrInfo = "当前模型法线数据丢失!!!";
+				console.error( this.m_normalErrInfo );
 			}
 			this.m_models.push( model );
 			// this.buildModelNVLine( model );
@@ -255,6 +260,7 @@ class SceneNode implements ISceneNode {
 				this.m_rscene.removeEntity( this.m_frameBox );
 				this.m_frameBox = null;
 			}
+			this.m_normalErrInfo = "";
 			this.m_verticesTotal = 0;
 			this.m_transforms = [];
 			this.m_transes = [];
@@ -308,6 +314,9 @@ class SceneNode implements ISceneNode {
 						info += "</br>当前模型加载展示完成";
 						if(this.m_errModelTotal > 0) {
 							info += "</br>注意: 有"+this.m_errModelTotal+"个子模型数据有问题";
+						}
+						if(this.m_normalErrInfo != "") {
+							info += "</br><font color='#ee00aa'>注意: "+this.m_normalErrInfo+",当前所见的法线由此程序生成</font>";
 						}
 						this.initEntityFinish();
 					}
