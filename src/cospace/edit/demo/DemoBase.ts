@@ -30,6 +30,7 @@ import H5Text from "../../voxtext/base/H5Text";
 import TextEntity from "../../voxtext/base/TextEntity";
 import BoundsEntity from "../../../vox/entity/BoundsEntity";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
+import { Box3DEntity } from "../../voxengine/CoRendererBase";
 
 //import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
 
@@ -95,7 +96,12 @@ export class DemoBase {
     private initScene(): void {
 
         // let bounds: BoundsEntity = null;
+        let box = new Box3DEntity();
+        box.normalEnabled = true;
+        box.initializeCube(100.0);
+        this.m_rscene.addEntity(box);
 
+        return;
         let plane = new Plane3DEntity();
         plane.normalEnabled = true;
         plane.initializeXOYSquare(200);

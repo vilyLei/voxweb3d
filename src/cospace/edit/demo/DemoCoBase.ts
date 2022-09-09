@@ -24,14 +24,15 @@ import { LineMeshBuilder } from "../../voxmesh/build/LineMeshBuilder";
 import Line3DMaterial from "../../../vox/material/mcase/Line3DMaterial";
 import { RotationCircle } from "../rotate/RotationCircle";
 import { DragRotationController } from "../rotate/DragRotationController";
+import { DragMoveController } from "../move/DragMoveController";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import { SphereRayTester } from "../base/SphereRayTester";
 import { BillboardLine } from "../../particle/entity/BillboardLine";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 import { ConeMeshBuilder } from "../../voxmesh/build/ConeMeshBuilder";
-//CanvasTexAtlas
-//import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
+import { BoxMeshBuilder } from "../../voxmesh/build/BoxMeshBuilder";
+import { DragScaleController } from "../scale/DragScaleController";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -150,17 +151,60 @@ export class DemoCoBase {
 		this.test01();
 	}
 	private m_dragRCtr: DragRotationController = null;
+	private m_dragMCtr: DragMoveController = null;
+	private m_dragSCtr: DragScaleController = null;
 	private m_axis: ITransformEntity = null;
 	private test01(): void {
 
+		//BoxMeshBuilder
+		
 		///*
+		// let mat = CoMath.createMat4();
+		// mat.rotationZ(-0.5 * Math.PI);
 		let material = CoMaterial.createDefaultMaterial(true);
 		material.initializeByCodeBuf(false);
-		// let lBuilder = new ConeMeshBuilder();
-		let lBuilder = CoMesh.coneMeshBuilder;
-		lBuilder.setBufSortFormat(material.getBufSortFormat());
-		// lBuilder.vbWholeDataEnabled = true;
-		let mesh = lBuilder.create(30,100,20,-0.5);
+		// let mBuilder = new BoxMeshBuilder();
+		let mBuilder = CoMesh.box;
+		// mBuilder.transMatrix = mat;
+		mBuilder.setBufSortFormat(material.getBufSortFormat());
+		// mBuilder.vbWholeDataEnabled = true;
+		let mesh = mBuilder.createCube(30.0);
+		// let mesh = mBuilder.create(30,100,20,-0.5);
+		console.log("test01(), mesh: ", mesh);
+
+		let box = CoEntity.createDisplayEntity();
+		box.setMaterial(material);
+		box.setMesh(mesh);
+		this.m_rscene.addEntity(box);
+		//return;
+		//*/
+		/*
+		let mat = CoMath.createMat4();
+		mat.rotationZ(-0.5 * Math.PI);
+		let material = CoMaterial.createDefaultMaterial(true);
+		material.initializeByCodeBuf(false);
+		// let mBuilder = new ConeMeshBuilder();
+		let mBuilder = CoMesh.cone;
+		mBuilder.transMatrix = mat;
+		mBuilder.setBufSortFormat(material.getBufSortFormat());
+		// mBuilder.vbWholeDataEnabled = true;
+		let mesh = mBuilder.create(30, 100, 20, 0.0);
+		// let mesh = mBuilder.create(30,100,20,-0.5);
+		console.log("test01(), mesh: ", mesh);
+
+		let entity = CoEntity.createDisplayEntity();
+		entity.setMaterial(material);
+		entity.setMesh(mesh);
+		this.m_rscene.addEntity(entity);
+		return;
+		//*/
+		/*
+		let material = CoMaterial.createDefaultMaterial(true);
+		material.initializeByCodeBuf(false);
+		let mBuilder = new PlaneMeshBuilder();
+		mBuilder.setBufSortFormat(material.getBufSortFormat());
+		mBuilder.vbWholeDataEnabled = true;
+		let mesh = mBuilder.createXOY(-100, -100, 200, 200);
 		console.log("test01(), mesh: ", mesh);
 
 		let entity = CoEntity.createDisplayEntity();
@@ -170,34 +214,19 @@ export class DemoCoBase {
 		return;
 		//*/
 		/*
-		let material = CoMaterial.createDefaultMaterial(true);
-		material.initializeByCodeBuf(false);
-		let lBuilder = new PlaneMeshBuilder();
-		lBuilder.setBufSortFormat(material.getBufSortFormat());
-		lBuilder.vbWholeDataEnabled = true;
-		let mesh = lBuilder.createXOY(-100, -100, 200, 200);
+		let mBuilder = new LineMeshBuilder();
+		mBuilder.color.setRGB3f(0.1, 0.2, 0.3);
+		mBuilder.dynColorEnabled = true;
+		// let mesh = mBuilder.createRectXOY(-100, -100, 200, 200);
+		// let mesh = mBuilder.createRectXOZ(-100, -100, 200, 200);
+		// let mesh = mBuilder.createRectYOZ(-100, -100, 200, 200);
+		let mesh = mBuilder.createCircleXOY(30,4);
+		// let mesh = mBuilder.createCircleXOZ(100,100);
+		//let mesh = mBuilder.createCircleYOZ(100,100);
+		// let mesh = mBuilder.createLine(CoMath.createVec3());
 		console.log("test01(), mesh: ", mesh);
 
-		let entity = CoEntity.createDisplayEntity();
-		entity.setMaterial( material );
-		entity.setMesh(mesh);
-		this.m_rscene.addEntity(entity);
-		return;
-		//*/
-		/*
-		let lBuilder = new LineMeshBuilder();
-		lBuilder.color.setRGB3f(0.1, 0.2, 0.3);
-		lBuilder.dynColorEnabled = true;
-		// let mesh = lBuilder.createRectXOY(-100, -100, 200, 200);
-		// let mesh = lBuilder.createRectXOZ(-100, -100, 200, 200);
-		// let mesh = lBuilder.createRectYOZ(-100, -100, 200, 200);
-		let mesh = lBuilder.createCircleXOY(30,4);
-		// let mesh = lBuilder.createCircleXOZ(100,100);
-		//let mesh = lBuilder.createCircleYOZ(100,100);
-		// let mesh = lBuilder.createLine(CoMath.createVec3());
-		console.log("test01(), mesh: ", mesh);
-
-		// let material = CoMaterial.createLineMaterial(lBuilder.dynColorEnabled);
+		// let material = CoMaterial.createLineMaterial(mBuilder.dynColorEnabled);
 		// material.setRGB3f(1.0,0.0,0.0);
 
 		let billml = new BillboardLineMaterial();
@@ -210,30 +239,43 @@ export class DemoCoBase {
 		let ml = billml.material;
 		ml.addUniformDataAt("u_billParam", uniformData);
 
-		// let material = new Line3DMaterial(lBuilder.dynColorEnabled);
+		// let material = new Line3DMaterial(mBuilder.dynColorEnabled);
 		let rectLine = CoEntity.createDisplayEntity();
 		rectLine.setMaterial( ml );
 		rectLine.setMesh(mesh);
 		this.m_rscene.addEntity(rectLine);
 		return;
 		//*/
-
+		/*
 		let radius = 30.0;
 		let segsTotal = Math.floor(radius * 0.5);
 		let billLine = new BillboardLine();
 		billLine.initializeCircleXOY(radius, segsTotal < 50 ? 50 : segsTotal);
 		this.m_rscene.addEntity(billLine.entity);
-
+		//*/
 		// let circle = new RotationCircle();
 		// circle.initialize(100,20,0, CoMaterial.createColor4(1.0,0.0,0.0));
 		// this.m_rscene.addEntity(circle.getEntity());
 
 		/*
-		
 		let dragRCtr = new DragRotationController();
 		dragRCtr.initialize(this.m_rscene, 0);
-		dragRCtr.setTarget(this.m_axis);
+		dragRCtr.setTarget(box);
 		this.m_dragRCtr = dragRCtr;
+		//*/
+		
+		///*
+		let dragSCtr = new DragScaleController();
+		dragSCtr.initialize(this.m_rscene, 0);
+		dragSCtr.setTarget(box);
+		this.m_dragSCtr = dragSCtr;
+		//*/
+
+		/*
+		let dragMCtr = new DragMoveController();
+		dragMCtr.initialize(this.m_rscene, 0);
+		dragMCtr.setTarget(box);
+		this.m_dragMCtr = dragMCtr;
 		//*/
 
 		/*
@@ -253,17 +295,17 @@ export class DemoCoBase {
 		this.m_rscene.addEntity( par.entity, 1 );
 		//*/
 	}
-	
-    private initializeEvent(entity: ITransformEntity): void {
 
-        const me = CoRScene.MouseEvent;
-        let p = CoRScene.createMouseEvt3DDispatcher();
-        p.addEventListener(me.MOUSE_OVER, this, this.mOverListener);
-        p.addEventListener(me.MOUSE_OUT, this, this.mOutListener);
-        p.addEventListener(me.MOUSE_DOWN, this, this.mDownListener);
-        entity.setEvtDispatcher(p);
-        entity.mouseEnabled = true;
-    }
+	private initializeEvent(entity: ITransformEntity): void {
+
+		const me = CoRScene.MouseEvent;
+		let p = CoRScene.createMouseEvt3DDispatcher();
+		p.addEventListener(me.MOUSE_OVER, this, this.mOverListener);
+		p.addEventListener(me.MOUSE_OUT, this, this.mOutListener);
+		p.addEventListener(me.MOUSE_DOWN, this, this.mDownListener);
+		entity.setEvtDispatcher(p);
+		entity.mouseEnabled = true;
+	}
 	private mOverListener(evt: any): void {
 		console.log("DemoCoBase::mOverListener() ...");
 	}
@@ -278,11 +320,17 @@ export class DemoCoBase {
 		if (this.m_dragRCtr != null) {
 			this.m_dragRCtr.deselect();
 		}
+		if(this.m_dragMCtr != null) {
+			this.m_dragMCtr.deselect();
+		}
+		if(this.m_dragSCtr != null) {
+			this.m_dragSCtr.deselect();
+		}
 	}
 	private mouseBgDownListener(evt: any): void {
 		console.log("DemoCoBase::mouseBgDownListener() ...");
 	}
-	
+
 	private testAGeom(): void {
 		let line = CoAGeom.createLine();
 		let rayLine = CoAGeom.createRayLine();
@@ -445,8 +493,14 @@ export class DemoCoBase {
 	private mouseDown(evt: any): void { }
 	run(): void {
 		if (this.m_rscene != null) {
-			if(this.m_dragRCtr != null) {
+			if (this.m_dragRCtr != null) {
 				this.m_dragRCtr.run();
+			}
+			if (this.m_dragMCtr != null) {
+				this.m_dragMCtr.run();
+			}
+			if (this.m_dragSCtr != null) {
+				this.m_dragSCtr.run();
 			}
 			if (this.m_interact != null) {
 				this.m_interact.run();
