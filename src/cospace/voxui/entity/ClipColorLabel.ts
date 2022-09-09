@@ -29,6 +29,7 @@ class ClipColorLabel implements IClipColorLabel {
 	private m_rotation: number = 0;
 	private m_sx: number = 1;
 	private m_sy: number = 1;
+	private m_hasTex: boolean = false;
 
 	private createVS(startX: number, startY: number, pwidth: number, pheight: number): number[] {
 		let minX: number = startX;
@@ -56,10 +57,13 @@ class ClipColorLabel implements IClipColorLabel {
 		mesh.initialize();
 		return mesh;
 	}
+	hasTexture(): boolean {
+		return this.m_hasTex;
+	}
 	initialize(atlas: ICanvasTexAtlas, idns: string, colorsTotal: number): void {
 
 		if (this.m_entity == null && colorsTotal > 0) {
-
+			this.m_hasTex = false;
 			let material = CoMaterial.createDefaultMaterial();
 			if(idns != "" && atlas != null) {
 				let obj = atlas.getTexObjFromAtlas(idns);
@@ -67,6 +71,7 @@ class ClipColorLabel implements IClipColorLabel {
 					this.m_width = obj.getWidth();
 					this.m_height = obj.getHeight();
 				}
+				this.m_hasTex = true;
 				material.setTextureList([obj.texture]);
 			}
 			let mesh = this.createMesh(atlas, idns);

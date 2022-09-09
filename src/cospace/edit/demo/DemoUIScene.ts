@@ -175,6 +175,7 @@ export class DemoUIScene {
 
 		let uisc = this.m_uisc;
 		let texAtlas = uisc.texAtlas;
+		/*
 		let canvas = texAtlas.createCharsCanvasFixSize(100, 40, "ABC", 30);
 		document.body.appendChild(canvas);
 		// canvas = texAtlas.createCharsCanvasFixSize(100, 40, "ABCD", 30);
@@ -185,7 +186,7 @@ export class DemoUIScene {
 		let clipColorLabel = new ClipColorLabel();
 		// let clipColorLabel = CoUI.createClipColorLabel();
 		// clipColorLabel.initialize(texAtlas, "ABC", 4);
-		clipColorLabel.initializeWithoutTex(50, 32, 4);
+		// clipColorLabel.initializeWithoutTex(50, 32, 4);
 		clipColorLabel.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
 		clipColorLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
 		clipColorLabel.getColorAt(2).setRGB3f(1.0, 0.2, 1.0);
@@ -195,6 +196,7 @@ export class DemoUIScene {
 		btn01.initializeWithLable(clipColorLabel);
 		this.m_uisc.addEntity(btn01);
 		return;
+		//*/
 
 		let urls: string[] = ["AAA-0", "AAA-1", "AAA-2", "AAA-3"];
 		let img = texAtlas.createCharsCanvasFixSize(90, 40, urls[0], 30);

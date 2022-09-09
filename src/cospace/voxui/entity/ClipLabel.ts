@@ -70,12 +70,15 @@ class ClipLabel implements IClipLabel {
 		mesh.initialize();
 		return mesh;
 	}
+	hasTexture(): boolean {
+		return true;
+	}
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void {
 
 		if (this.m_entity == null && atlas != null && idnsList != null && idnsList.length > 0) {
 
 			this.m_pos = CoMath.createVec3();
-
+			
 			this.m_total = idnsList.length;
 			let obj = atlas.getTexObjFromAtlas(idnsList[0]);
 			let mesh = this.createMesh(atlas, idnsList);

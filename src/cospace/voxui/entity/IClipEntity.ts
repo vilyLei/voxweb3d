@@ -8,6 +8,7 @@ interface IClipEntity extends IUIEntity {
 	setCircleClipIndex(i: number): void;
 	getClipIndex(): number;
 	getClipsTotal(): number;
+	hasTexture(): boolean;
 
 }
 export { IClipEntity };
