@@ -9,5 +9,7 @@ interface IClipLabel extends IClipEntity {
 	initializeWithLable(srcLable: IClipLabel): void;
 	setColor(color: IColor4): void;
 	getColor(color: IColor4): void;
+	getClipWidthAt(i: number): number;
+	getClipHeightAt(i: number): number;
 }
 export { IClipLabel };

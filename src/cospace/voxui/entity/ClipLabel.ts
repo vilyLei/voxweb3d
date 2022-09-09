@@ -109,13 +109,19 @@ class ClipLabel implements IClipLabel {
 			let n = this.m_total = srcLable.getClipsTotal();
 			this.m_sizes = new Array(n * 2);
 			let k = 0;
-			let si = srcLable.getClipIndex();
+			// let si = srcLable.getClipIndex();
 			for (let i = 0; i < n; ++i) {
-				srcLable.setClipIndex(i);
-				this.m_sizes[k++] = srcLable.getWidth();
-				this.m_sizes[k++] = srcLable.getHeight();
+				// srcLable.setClipIndex(i);
+				// this.m_sizes[k++] = srcLable.getWidth();
+				// this.m_sizes[k++] = srcLable.getHeight();
+
+				// this.m_sizes[k++] = srcLable.getWidth();
+				// this.m_sizes[k++] = srcLable.getHeight();
+				this.m_sizes[k++] = srcLable.getClipWidthAt(i);
+				this.m_sizes[k++] = srcLable.getClipHeightAt(i);
+				
 			}
-			srcLable.setClipIndex(si);
+			// srcLable.setClipIndex(si);
 
 			this.m_vtCount = mesh.vtCount;
 			let material = CoMaterial.createDefaultMaterial();
@@ -155,8 +161,8 @@ class ClipLabel implements IClipLabel {
 			this.m_index = i;
 			this.m_entity.setIvsParam(i * this.m_step, this.m_step);
 			i = i << 1;
-			this.m_width = this.m_sizes[i];
-			this.m_height = this.m_sizes[i + 1];
+			this.m_width = this.m_sizes[i] * this.m_sx;
+			this.m_height = this.m_sizes[i + 1] * this.m_sy;
 		}
 	}
 	setCircleClipIndex(i: number): void {
@@ -172,6 +178,18 @@ class ClipLabel implements IClipLabel {
 		return this.m_total;
 	}
 
+	getClipWidthAt(i: number): number {
+		if (i >= 0 && i < this.m_total) {
+			i = i << 1;
+			return this.m_sizes[i];
+		}
+	}
+	getClipHeightAt(i: number): number {
+		if (i >= 0 && i < this.m_total) {
+			i = i << 1;
+			return this.m_sizes[i + 1];
+		}
+	}
 	getWidth(): number {
 		return this.m_width * this.m_sx;
 	}
