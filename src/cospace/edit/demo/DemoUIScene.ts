@@ -210,13 +210,14 @@ export class DemoUIScene {
 
 		let lable = CoUI.createClipLabel();
 		lable.initialize(texAtlas, urls);
-		lable.setClipIndex(2);
-		lable.setXY(300, 200);
+		lable.setClipIndex(3);
+		lable.setXY(500, 200);
 		this.m_uisc.addEntity(lable);
+		// lable.setColor(CoMaterial.createColor4(1.0,.03,0.4));
 
 		let lable01 = CoUI.createClipLabel();
 		lable01.initializeWithLable(lable);
-		lable01.setClipIndex(1);
+		lable01.setClipIndex(0);
 		lable01.setXY(200, 300);
 		this.m_uisc.addEntity(lable01);
 
@@ -226,6 +227,7 @@ export class DemoUIScene {
 		btn.initialize(texAtlas, btnUrls);
 		// btn.initializeWithLable(lable01);
 		this.m_uisc.addEntity(btn);
+		//*/
 	}
 	private createDefaultEntity(): void {
 		let axis = CoRScene.createAxis3DEntity();

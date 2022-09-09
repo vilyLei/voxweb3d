@@ -12,6 +12,8 @@ declare var CoMaterial: ICoMaterial;
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
 import { ICoEntity } from "../../voxentity/ICoEntity";
+import IDefault3DMaterial from "../../../vox/material/mcase/IDefault3DMaterial";
+import IColor4 from "../../../vox/material/IColor4";
 declare var CoEntity: ICoEntity;
 
 class ClipLabel implements IClipLabel {
@@ -24,7 +26,7 @@ class ClipLabel implements IClipLabel {
 	private m_vtCount = 0;
 	private m_pos: IVector3D;
 	private m_entity: ITransformEntity = null;
-
+	private m_material: IDefault3DMaterial = null;
 	private m_rotation: number = 0;
 	private m_sx: number = 1;
 	private m_sy: number = 1;
@@ -78,7 +80,7 @@ class ClipLabel implements IClipLabel {
 		if (this.m_entity == null && atlas != null && idnsList != null && idnsList.length > 0) {
 
 			this.m_pos = CoMath.createVec3();
-			
+
 			this.m_total = idnsList.length;
 			let obj = atlas.getTexObjFromAtlas(idnsList[0]);
 			let mesh = this.createMesh(atlas, idnsList);
@@ -117,6 +119,7 @@ class ClipLabel implements IClipLabel {
 			this.m_vtCount = mesh.vtCount;
 			let material = CoMaterial.createDefaultMaterial();
 			material.setTextureList([tex]);
+			this.m_material = material;
 			let et = this.m_entity = CoEntity.createDisplayEntity();
 			et.setMaterial(material);
 			et.setMesh(mesh);
@@ -134,6 +137,16 @@ class ClipLabel implements IClipLabel {
 			} else if(this.m_entity.isRFree()){
 
 			}
+		}
+	}
+	setColor(color: IColor4): void {
+		if(this.m_material != null) {
+			this.m_material.setColor(color);
+		}
+	}
+	getColor(color: IColor4): void {
+		if(this.m_material != null) {
+			this.m_material.getColor(color);
 		}
 	}
 	setClipIndex(i: number): void {
