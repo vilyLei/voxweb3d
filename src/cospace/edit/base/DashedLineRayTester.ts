@@ -31,11 +31,13 @@ class DashedLineRayTester implements ITestRay {
         }
     }
     testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number {
+        
         if(this.m_tester != null) {
             if(this.m_tester.testRay(rlpv, rltv, outV, boundsHit) > 0) {
                 return 0;
             }
         }
+        
         let j: number = 0;
         let vs: Float32Array = this.m_vs;
         let flag = false;
