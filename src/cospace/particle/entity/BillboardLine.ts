@@ -93,9 +93,9 @@ class BillboardLine implements IBillboardLine {
 
 		this.m_bw = size;
 		this.m_bh = size;
-		let lBuilder = CoMesh.lineMeshBuilder;
-		lBuilder.dynColorEnabled = true;
-		this.m_mesh = lBuilder.createRectXOY(-0.5 * size, -0.5 * size, size, size);
+		let ml = CoMesh.line;
+		ml.dynColorEnabled = true;
+		this.m_mesh = ml.createRectXOY(-0.5 * size, -0.5 * size, size, size);
 
 		this.initEntity();
 	}
@@ -103,9 +103,9 @@ class BillboardLine implements IBillboardLine {
 
 		this.m_bw = bw;
 		this.m_bh = bh;
-		let lBuilder = CoMesh.lineMeshBuilder;
-		lBuilder.dynColorEnabled = true;
-		this.m_mesh = lBuilder.createRectXOY(-0.5 * bw, -0.5 * bh, bw, bh);
+		let ml = CoMesh.line;
+		ml.dynColorEnabled = true;
+		this.m_mesh = ml.createRectXOY(-0.5 * bw, -0.5 * bh, bw, bh);
 
 		this.initEntity();
 	}
@@ -114,9 +114,9 @@ class BillboardLine implements IBillboardLine {
 
 		this.m_bw = radius;
 		this.m_bh = radius;
-		let lBuilder = CoMesh.lineMeshBuilder;
-		lBuilder.dynColorEnabled = true;
-		this.m_mesh = lBuilder.createCircleXOY( radius, segsTotal, center );
+		let ml = CoMesh.line;
+		ml.dynColorEnabled = true;
+		this.m_mesh = ml.createCircleXOY( radius, segsTotal, center );
 		this.initEntity();
 	}
 	setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
