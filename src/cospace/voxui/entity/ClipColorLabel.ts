@@ -151,6 +151,11 @@ class ClipColorLabel implements IClipColorLabel {
 			return this.m_colors[i];
 		}
 	}
+	setColorAt(i: number, color4: IColor4): void {
+		if (i >= 0 && i < this.m_total && color4 != null) {
+			this.m_colors[i].copyFrom(color4);
+		}
+	}
 	setClipIndex(i: number): void {
 		if (i >= 0 && i < this.m_total) {
 			this.m_index = i;

@@ -10,6 +10,7 @@ interface IClipColorLabel extends IClipEntity {
 	initializeWithSize(width: number, height: number, atlas: ICanvasTexAtlas, idns: string, colorsTotal: number): void;
 	getColors(): IColor4[];
 	getColorAt(i: number): IColor4;
+	setColorAt(i: number, color4: IColor4): void;
 
 }
 export { IClipColorLabel };
