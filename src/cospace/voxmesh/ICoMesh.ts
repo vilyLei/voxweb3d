@@ -4,21 +4,26 @@ import IBoundsMesh from "../../vox/mesh/IBoundsMesh";
 import { IPlaneMeshBuilder } from "./build/IPlaneMeshBuilder";
 import { ILineMeshBuilder } from "./build/ILineMeshBuilder";
 import { IConeMeshBuilder } from "./build/IConeMeshBuilder";
+import { IBoxMeshBuilder } from "./build/IBoxMeshBuilder";
 
 interface ICoMesh {
 
 	/**
 	 * plane mesh builder
 	 */
-	readonly planeMeshBuilder: IPlaneMeshBuilder;
+	readonly plane: IPlaneMeshBuilder;
 	/**
 	 * line mesh builder
 	 */
-	readonly lineMeshBuilder: ILineMeshBuilder;
+	readonly line: ILineMeshBuilder;
 	/**
 	 * cone mesh builder
 	 */
-	readonly coneMeshBuilder: IConeMeshBuilder;
+	readonly cone: IConeMeshBuilder;
+	/**
+	 * box mesh builder
+	 */
+	readonly box: IBoxMeshBuilder;
 
 	createDataMesh(): IDataMesh;
 	createRawMesh(): IRawMesh;	

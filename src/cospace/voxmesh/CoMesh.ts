@@ -9,14 +9,18 @@ import { LineMeshBuilder } from "./build/LineMeshBuilder";
 import { IConeMeshBuilder } from "./build/IConeMeshBuilder";
 import { ConeMeshBuilder } from "./build/ConeMeshBuilder";
 
+import { IBoxMeshBuilder } from "./build/IBoxMeshBuilder";
+import { BoxMeshBuilder } from "./build/BoxMeshBuilder";
+
 import IBoundsMesh from "../../vox/mesh/IBoundsMesh";
 
 import { ICoRScene } from "../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 
-const planeMeshBuilder: IPlaneMeshBuilder = new PlaneMeshBuilder();
-const lineMeshBuilder: ILineMeshBuilder = new LineMeshBuilder();
-const coneMeshBuilder: IConeMeshBuilder = new ConeMeshBuilder();
+const plane: IPlaneMeshBuilder = new PlaneMeshBuilder();
+const line: ILineMeshBuilder = new LineMeshBuilder();
+const cone: IConeMeshBuilder = new ConeMeshBuilder();
+const box: IBoxMeshBuilder = new BoxMeshBuilder();
 
 function createDataMesh(): IDataMesh {
 	return CoRScene.createDataMesh();
@@ -31,9 +35,10 @@ function createBoundsMesh(): IBoundsMesh {
 
 export {
 	
-	planeMeshBuilder,
-	lineMeshBuilder,
-	coneMeshBuilder,
+	plane,
+	line,
+	cone,
+	box,
 
 	createDataMesh,
 	createRawMesh,

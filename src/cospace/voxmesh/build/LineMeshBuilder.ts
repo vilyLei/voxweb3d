@@ -58,14 +58,31 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
             for (let i = 0; i < posTotal; ++i) this.color.toArray3(this.m_colorvs, i * 3);
         }
     }
-    createLine(begin: IVector3D, end: IVector3D = null): IRawMesh {
+    createLine(begin: IVector3D, end: IVector3D = null, axialRadius: number = 0.0): IRawMesh {
         if (this.m_posvs == null) {
             this.m_posvs = [0.0, 0.0, 0.0, 100.0, 0, 0];
         }
         if (begin != null) begin.toArray(this.m_posvs);
         if (end != null) end.toArray(this.m_posvs, 3);
         this.useColor(2);
-        return this.createLineMesh();
+        let mesh = this.createLineMesh();
+        if(axialRadius > 0.00001) {
+            let r = axialRadius;
+
+            let ab0 = CoMath.createAABB();
+            ab0.min.setXYZ(begin.x - r, begin.y - r, begin.z - r);
+            ab0.max.setXYZ(begin.x + r, begin.y + r, begin.z + r);
+
+            let ab1 = CoMath.createAABB();
+            ab1.min.setXYZ(end.x - r, end.y - r, end.z - r);
+            ab1.max.setXYZ(end.x + r, end.y + r, end.z + r);
+            ab0.union(ab1);
+            
+            mesh.bounds.copyFrom(ab0);
+            mesh.bounds.update();
+        }
+
+        return mesh;
     }
     createRectXOY(px: number, py: number, pw: number, ph: number): IRawMesh {
         pw += px;

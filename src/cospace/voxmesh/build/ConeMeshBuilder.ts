@@ -37,7 +37,7 @@ class ConeMeshBuilder extends MeshBuilder implements IConeMeshBuilder {
         return this.createMesh();
     }
     protected setMeshData(mesh: IRawMesh): void {
-        
+
         let radius = this.radius;
         let height = this.height;
         let longitudeNumSegments = this.longitudeNumSegments;
@@ -152,8 +152,6 @@ class ConeMeshBuilder extends MeshBuilder implements IConeMeshBuilder {
         let vtxTotal = vtxVec.length;
 
         let vs = new Float32Array(vtxTotal * 3);
-        let uvs = new Float32Array(vtxTotal * 2);
-        let nvs = new Float32Array(vtxTotal * 3);
 
         i = 0;
         for (j = 0; j < vtxTotal; ++j) {
@@ -163,21 +161,24 @@ class ConeMeshBuilder extends MeshBuilder implements IConeMeshBuilder {
         }
 
         let ivs = new Uint16Array(pivs);
-
-        i = 0;
-        for (j = 0; j < vtxTotal; ++j) {
-            pvtx = vtxVec[j];
-            uvs[i] = pvtx.u; uvs[i + 1] = pvtx.v;
-            i += 2;
-        }
-        let trisNumber = ivs.length / 3;
-        CoAGeom.SurfaceNormal.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
-        
         mesh.addFloat32Data(vs, 3);
-        if(mesh.isUVSEnabled()) {
+
+        if (mesh.isUVSEnabled()) {
+            let uvs = new Float32Array(vtxTotal * 2);
+            i = 0;
+            for (j = 0; j < vtxTotal; ++j) {
+                pvtx = vtxVec[j];
+                uvs[i] = pvtx.u; uvs[i + 1] = pvtx.v;
+                i += 2;
+            }
+
             mesh.addFloat32Data(uvs, 2);
         }
-        if(mesh.isNVSEnabled()) {
+        if (mesh.isNVSEnabled()) {
+            let nvs = new Float32Array(vtxTotal * 3);
+            let trisNumber = ivs.length / 3;
+            CoAGeom.SurfaceNormal.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
+
             mesh.addFloat32Data(nvs, 3);
         }
         mesh.setIVS(ivs);

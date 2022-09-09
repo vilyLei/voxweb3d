@@ -19,7 +19,7 @@ interface ILineMeshBuilder extends IMeshBuilder {
     dynColorEnabled: boolean;
     
     setRGB3f(pr: number, pg: number, pb: number): void;
-    createLine(begin: IVector3D, end?: IVector3D): IRawMesh;
+    createLine(begin: IVector3D, end?: IVector3D, axialRadius?: number): IRawMesh;
     createRectXOY(px: number, py: number, pw: number, ph: number): IRawMesh;
     createRectXOZ(px: number, pz: number, pw: number, pl: number): IRawMesh;
     createRectYOZ(px: number, pz: number, pw: number, pl: number): IRawMesh;
