@@ -21,7 +21,7 @@ import IPlane from "../../ageom/base/IPlane";
 // import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 // import ImageTexAtlas from "../../voxtexture/atlas/ImageTexAtlas";
 import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
-// import { ClipLabel } from "../../voxui/entity/ClipLabel";
+import { ClipLabel } from "../../voxui/entity/ClipLabel";
 // import { Button } from "../../voxui/entity/Button";
 import { ClipColorLabel } from "../../voxui/entity/ClipColorLabel";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
@@ -207,20 +207,23 @@ export class DemoUIScene {
 		texAtlas.addImageToAtlas(urls[2], img);
 		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[3], 30);
 		texAtlas.addImageToAtlas(urls[3], img);
-
-		let lable = CoUI.createClipLabel();
+		console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 0");
+		// let lable = CoUI.createClipLabel();
+		let lable = new ClipLabel();
 		lable.initialize(texAtlas, urls);
-		lable.setClipIndex(3);
-		lable.setXY(500, 200);
+		lable.setClipIndex(1);
+		lable.setXY(500, 300);
 		this.m_uisc.addEntity(lable);
 		// lable.setColor(CoMaterial.createColor4(1.0,.03,0.4));
-
-		let lable01 = CoUI.createClipLabel();
+		
+		console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 1");
+		// let lable01 = CoUI.createClipLabel();
+		let lable01 = new ClipLabel();
 		lable01.initializeWithLable(lable);
-		lable01.setClipIndex(0);
-		lable01.setXY(200, 300);
+		lable01.setClipIndex(1);
+		lable01.setXY(200, 200);
 		this.m_uisc.addEntity(lable01);
-
+		/*
 		let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
 		btnUrls = urls;
 		let btn = CoUI.createButton(); //new Button();

@@ -109,12 +109,13 @@ class ClipLabel implements IClipLabel {
 			let n = this.m_total = srcLable.getClipsTotal();
 			this.m_sizes = new Array(n * 2);
 			let k = 0;
-
+			let si = srcLable.getClipIndex();
 			for (let i = 0; i < n; ++i) {
 				srcLable.setClipIndex(i);
 				this.m_sizes[k++] = srcLable.getWidth();
 				this.m_sizes[k++] = srcLable.getHeight();
 			}
+			srcLable.setClipIndex(si);
 
 			this.m_vtCount = mesh.vtCount;
 			let material = CoMaterial.createDefaultMaterial();
