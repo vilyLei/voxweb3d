@@ -71,29 +71,29 @@ class RotationCircle implements IRayControl {
 
             this.m_entity = CoEntity.createDisplayEntity();
 
-            let builder = CoMesh.lineMeshBuilder;
+            let ml = CoMesh.line;
             let mesh: IRawMesh;
-            builder.dynColorEnabled = false;
-            builder.color.copyFrom(color);
+            ml.dynColorEnabled = false;
+            ml.color.copyFrom(color);
             this.m_type = type;
             switch (type) {
                 case 1:
-                    mesh = builder.createCircleXOZ(radius, segsTotal);
+                    mesh = ml.createCircleXOZ(radius, segsTotal);
                     this.m_planeNV.setXYZ(0, 1, 0);
                     break;
                 case 2:
-                    mesh = builder.createCircleYOZ(radius, segsTotal);
+                    mesh = ml.createCircleYOZ(radius, segsTotal);
                     this.m_planeNV.setXYZ(1, 0, 0);
                     break;
                 default:
-                    mesh = builder.createCircleXOY(radius, segsTotal);
+                    mesh = ml.createCircleXOY(radius, segsTotal);
                     this.m_planeNV.setXYZ(0, 0, 1);
                     break;
             }
 
             mesh.setRayTester(new CircleRayTester(radius, this.m_center, this.m_planeNV, this.m_planeDis, this.pickTestRadius));
             this.m_entity.setMesh(mesh);
-            this.m_material = CoMaterial.createLineMaterial(builder.dynColorEnabled);
+            this.m_material = CoMaterial.createLineMaterial(ml.dynColorEnabled);
             this.m_entity.setMaterial(this.m_material);
             this.m_entity.update();
 
@@ -228,7 +228,7 @@ class RotationCircle implements IRayControl {
                 let rv = this.m_rotV;
                 let prv = this.m_preRotV;
                 et.getRotationXYZ(rv);
-
+                // console.log("this.m_type: ", this.m_type);
                 switch (this.m_type) {
                     case 1:
                         // XOZ, Y-Axis
