@@ -214,7 +214,7 @@ export class DemoUIScene {
 		lable.setClipIndex(1);
 		lable.setXY(500, 300);
 		this.m_uisc.addEntity(lable);
-		// lable.setColor(CoMaterial.createColor4(1.0,.03,0.4));
+		lable.setColor(CoMaterial.createColor4(1.0,.03,0.4));
 		
 		console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 1");
 		// let lable01 = CoUI.createClipLabel();
@@ -223,7 +223,7 @@ export class DemoUIScene {
 		lable01.setClipIndex(1);
 		lable01.setXY(200, 200);
 		this.m_uisc.addEntity(lable01);
-		/*
+		///*
 		let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
 		btnUrls = urls;
 		let btn = CoUI.createButton(); //new Button();

@@ -87,6 +87,7 @@ class ClipLabel implements IClipLabel {
 			this.m_vtCount = mesh.vtCount;
 			let material = CoMaterial.createDefaultMaterial();
 			material.setTextureList([obj.texture]);
+			this.m_material = material;
 			let et = this.m_entity = CoEntity.createDisplayEntity();
 			et.setMaterial(material);
 			et.setMesh(mesh);
