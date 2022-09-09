@@ -72,15 +72,16 @@ class DragMoveTarget implements IEntityTransform {
     setRotationXYZ(rx: number, ry: number, rz: number): void {
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
-        // for (let i: number = 1; i < this.m_entitys.length; ++i) {
-        //     this.m_entitys[i].setScaleXYZ(sx, sy, sz);
-        // }
+        let i: number = 0;
+        if (this.m_entitys[i] != null) {
+            this.m_entitys[i].setScaleXYZ(sx, sy, sz);
+            this.m_changFlags[i] = true;
+        }
     }
     setCtrlScaleXYZ(sx: number, sy: number, sz: number): void {
         for (let i: number = 1; i < this.m_entitys.length; ++i) {
             this.m_changFlags
             this.m_entitys[i].setScaleXYZ(sx, sy, sz);
-            this.m_changFlags[i] = true;
         }
     }
     getRotationXYZ(pv: IVector3D): void {
@@ -89,7 +90,11 @@ class DragMoveTarget implements IEntityTransform {
             this.m_entitys[i].getRotationXYZ(pv);
         }
     }
-    getScaleXYZ(pv: IVector3D): void {
+    getScaleXYZ(sv: IVector3D): void {
+        let i: number = 0;
+        if (this.m_entitys[i] != null) {
+            this.m_entitys[i].getScaleXYZ(sv);
+        }
     }
     
     getGlobalBounds(): IAABB {

@@ -57,29 +57,29 @@ export default class DragPlane implements IRayControl {
             let et = this.m_entity;
             et.setMaterial(material);
 
-            let builder = CoMesh.planeMeshBuilder;
-            builder.setBufSortFormat( material.getBufSortFormat() );
-
+            let mp = CoMesh.plane;
+            mp.setBufSortFormat( material.getBufSortFormat() );
+            let overAlpha = alpha * 1.3;
             let ov = this.offsetV;
             switch (planeAxisType) {
                 case 0:
-                    et.setMesh(builder.createXOZ(ov.x,ov.z, size,size));
+                    et.setMesh(mp.createXOZ(ov.x,ov.z, size,size));
                     this.setPlaneNormal(V3.Y_AXIS);
                     this.outColor.setRGBA4f(1.0, 0.3, 0.3, alpha);
-                    this.overColor.setRGBA4f(1.0, 0.1, 0.1, alpha * 1.1);
+                    this.overColor.setRGBA4f(1.0, 0.1, 0.1, overAlpha);
                     break;
                 case 1:
-                    et.setMesh(builder.createXOY(ov.x,ov.y, size,size));
+                    et.setMesh(mp.createXOY(ov.x,ov.y, size,size));
                     this.setPlaneNormal(V3.Z_AXIS);
                     this.outColor.setRGBA4f(0.3, 0.3, 1.0, alpha);
-                    this.overColor.setRGBA4f(0.1, 0.1, 1.0, alpha * 1.1);
+                    this.overColor.setRGBA4f(0.1, 0.1, 1.0, overAlpha);
                     break;
                 // yoz
                 case 2:
-                    et.setMesh(builder.createYOZ(ov.y,ov.z, size,size));
+                    et.setMesh(mp.createYOZ(ov.y,ov.z, size,size));
                     this.setPlaneNormal(CoMath.Vector3D.X_AXIS);
                     this.outColor.setRGBA4f(0.3, 1.0, 0.3, alpha);
-                    this.overColor.setRGBA4f(0.1, 1.0, 0.1, alpha * 1.1);
+                    this.overColor.setRGBA4f(0.1, 1.0, 0.1, overAlpha);
                     break;
                 default:
                     throw Error("Error type !!!");

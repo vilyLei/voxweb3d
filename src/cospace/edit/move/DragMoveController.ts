@@ -10,14 +10,19 @@ import { IRayControl } from "../base/IRayControl";
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import { DragMoveTarget } from "./DragMoveTarget";
+import { DragLine } from "./DragLine";
 
 import { IDragMoveController } from "./IDragMoveController";
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
+import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
+import IColor4 from "../../../vox/material/IColor4";
+import IMatrix4 from "../../../vox/math/IMatrix4";
 // import { ICoAGeom } from "../../ageom/ICoAGeom";
 
 declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;
+declare var CoMaterial: ICoMaterial;
 // declare var CoAGeom: ICoAGeom;
 
 /**
@@ -54,7 +59,7 @@ class DragMoveController implements IDragMoveController {
     pickTestAxisRadius = 20;
     runningVisible = true;
     uuid = "DragMoveController";
-    
+
     constructor() { }
     /**
      * initialize the DragMoveController instance.
@@ -85,7 +90,7 @@ class DragMoveController implements IDragMoveController {
     getTarget(): IEntityTransform {
         return this.m_target.getTarget();
     }
-    private createPlaneDrag(type: number, alpha: number): DragPlane {
+    private createDragPlane(type: number, alpha: number): DragPlane {
 
         let movePlane = new DragPlane();
         movePlane.moveSelfEnabled = false;
@@ -98,10 +103,52 @@ class DragMoveController implements IDragMoveController {
         this.m_editRS.addEntity(movePlane.getEntity(), this.m_editRSP, true);
         return movePlane;
     }
+    private createDragLine(tv: IVector3D, outColor: IColor4, overColor: IColor4, mat4: IMatrix4): void {
+
+        let trans = tv.clone().scaleBy(this.axisSize);
+        mat4.setTranslation(trans);
+
+        let line = new DragLine();
+        line.coneScale = 0.8;
+        line.coneTransMat4 = mat4;
+        line.tv.copyFrom(tv);
+        line.innerSphereRadius = this.circleSize * 0.5;
+        line.moveSelfEnabled = true;
+        line.pickTestRadius = this.pickTestAxisRadius;
+        line.initialize(this.axisSize, line.innerSphereRadius);
+        line.outColor.copyFrom(outColor);
+        line.overColor.copyFrom(overColor);
+        line.showOutColor();
+
+        line.setTarget(this.m_target);
+        line.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
+        this.m_editRS.addEntity(line.getEntity(), this.m_editRSP, true);
+        this.m_editRS.addEntity(line.getCone(), this.m_editRSP, true);
+        this.m_target.addEntity(line.getEntity());
+        this.m_target.addEntity(line.getCone());
+        this.m_controllers.push(line);
+    }
     private init(): void {
 
         let alpha = this.planeAlpha;
 
+        let color4 = CoMaterial.createColor4;
+
+        const V3 = CoMath.Vector3D;
+        let mat4 = CoMath.createMat4();
+        mat4.identity();
+        mat4.rotationZ(-0.5 * Math.PI);
+        this.createDragLine(V3.X_AXIS, color4(1.0, 0.0, 0.0), color4(1.0, 0.0, 1.0), mat4);
+        mat4.identity();
+        mat4.rotationX(0.5 * Math.PI);
+        mat4.rotationY(0.5 * Math.PI);
+        this.createDragLine(V3.Y_AXIS, color4(0.0, 1.0, 0.0), color4(1.0, 1.0, 0.0), mat4);
+        mat4.identity();
+        mat4.rotationY(0.5 * Math.PI);
+        mat4.rotationX(0.5 * Math.PI);
+        this.createDragLine(V3.Z_AXIS, color4(0.0, 0.0, 1.0), color4(0.0, 1.0, 1.0), mat4);
+
+        /*
         let moveAxis = new DragAxis();
         moveAxis.innerSphereRadius = this.circleSize * 0.5;
         moveAxis.moveSelfEnabled = true;
@@ -116,16 +163,13 @@ class DragMoveController implements IDragMoveController {
         this.m_target.addEntity(moveAxis.getEntity());
         this.m_controllers.push(moveAxis);
         this.m_editRS.addEntity(moveAxis.getEntity(), this.m_editRSP, true);
-
-        let planeCtrFlag = true;
-        if (planeCtrFlag) {
-            // xoz
-            this.createPlaneDrag(0, alpha);
-            // xoy
-            this.createPlaneDrag(1, alpha);
-            // yoz
-            this.createPlaneDrag(2, alpha);
-        }
+        //*/
+        // xoz
+        this.createDragPlane(0, alpha);
+        // xoy
+        this.createDragPlane(1, alpha);
+        // yoz
+        this.createDragPlane(2, alpha);
 
         let crossPlane = new DragRayCrossPlane();
         crossPlane.moveSelfEnabled = false;
