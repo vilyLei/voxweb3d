@@ -123,6 +123,8 @@ class ClipLabel implements IClipLabel {
 			}
 			// srcLable.setClipIndex(si);
 
+			console.log("this.m_sizes: ",this.m_sizes);
+
 			this.m_vtCount = mesh.vtCount;
 			let material = CoMaterial.createDefaultMaterial();
 			material.setTextureList([tex]);
@@ -161,8 +163,8 @@ class ClipLabel implements IClipLabel {
 			this.m_index = i;
 			this.m_entity.setIvsParam(i * this.m_step, this.m_step);
 			i = i << 1;
-			this.m_width = this.m_sizes[i] * this.m_sx;
-			this.m_height = this.m_sizes[i + 1] * this.m_sy;
+			this.m_width = this.m_sizes[i];
+			this.m_height = this.m_sizes[i + 1];
 		}
 	}
 	setCircleClipIndex(i: number): void {
