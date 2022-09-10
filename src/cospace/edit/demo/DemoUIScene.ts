@@ -24,6 +24,7 @@ import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
 import { ClipLabel } from "../../voxui/entity/ClipLabel";
 // import { Button } from "../../voxui/entity/Button";
 import { ClipColorLabel } from "../../voxui/entity/ClipColorLabel";
+import { ColorClipLabel } from "../../voxui/entity/ColorClipLabel";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 //CanvasTexAtlas
@@ -49,7 +50,7 @@ export class DemoUIScene {
 	private m_vcoapp: ViewerCoSApp;
 	private m_vmctx: ViewerMaterialCtx;
 
-	constructor() {}
+	constructor() { }
 
 	initialize(): void {
 		console.log("DemoUIScene::initialize() ...");
@@ -214,8 +215,8 @@ export class DemoUIScene {
 		lable.setClipIndex(1);
 		lable.setXY(500, 300);
 		this.m_uisc.addEntity(lable);
-		lable.setColor(CoMaterial.createColor4(1.0,.03,0.4));
-		
+		lable.setColor(CoMaterial.createColor4(0.1, 1.0, 0.4));
+
 		console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 1");
 		// let lable01 = CoUI.createClipLabel();
 		let lable01 = new ClipLabel();
@@ -231,6 +232,21 @@ export class DemoUIScene {
 		// btn.initializeWithLable(lable01);
 		this.m_uisc.addEntity(btn);
 		//*/
+		let csLable = new ClipLabel();
+		csLable.initialize(texAtlas, urls);
+		// lable.setClipIndex(1);
+		// lable.setXY(500, 300);
+		// this.m_uisc.addEntity(lable);
+		// lable.setColor(CoMaterial.createColor4(0.1, 1.0, 0.4));
+
+		let colorClipLabel = new ColorClipLabel();
+		colorClipLabel.initialize(csLable, 4);
+		colorClipLabel.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
+		colorClipLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
+		colorClipLabel.getColorAt(2).setRGB3f(1.0, 0.2, 1.0);
+		colorClipLabel.setXY(200,0);
+		colorClipLabel.setClipIndex(2);
+		this.m_uisc.addEntity(colorClipLabel);
 	}
 	private createDefaultEntity(): void {
 		let axis = CoRScene.createAxis3DEntity();
@@ -343,7 +359,7 @@ export class DemoUIScene {
 		let url = baseUrl + "base.obj";
 		url = baseUrl + "base4.obj";
 	}
-	private mouseDown(evt: any): void {}
+	private mouseDown(evt: any): void { }
 	run(): void {
 		if (this.m_rscene != null) {
 			if (this.m_interact != null) {
