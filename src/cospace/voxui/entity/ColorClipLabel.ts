@@ -21,24 +21,6 @@ class ColorClipLabel implements IColorClipLabel {
 
 		if (this.m_label == null && colorsTotal > 0) {
 			this.m_label = label;
-			// this.m_hasTex = false;
-			// let material = CoMaterial.createDefaultMaterial();
-			// if(idns != "" && atlas != null) {
-			// 	let obj = atlas.getTexObjFromAtlas(idns);
-			// 	if(this.m_fixSize) {
-			// 		this.m_width = obj.getWidth();
-			// 		this.m_height = obj.getHeight();
-			// 	}
-			// 	this.m_hasTex = true;
-			// 	material.setTextureList([obj.texture]);
-			// }
-			// let mesh = this.createMesh(atlas, idns);
-			// let et = (this.m_entity = CoEntity.createDisplayEntity());
-			// et.setMaterial(material);
-			// et.setMesh(mesh);
-			// this.m_material = material;
-			// this.m_pos = CoMath.createVec3();
-
 			let colors = new Array(colorsTotal);
 			for (let i = 0; i < colorsTotal; ++i) {
 				colors[i] = CoMaterial.createColor4();
@@ -75,6 +57,19 @@ class ColorClipLabel implements IColorClipLabel {
 	}
 	getClipsTotal(): number {
 		return this.m_total;
+	}
+	
+	setLabelClipIndex(i: number): void {
+		this.m_label.setClipIndex(i);
+	}
+	getLabelClipIndex(): number {
+		return this.m_label.getClipIndex();
+	}	
+	setLabelCircleClipIndex(i: number): void {
+		this.m_label.setCircleClipIndex( i );
+	}
+	getLabelClipsTotal(): number {
+		return this.m_label.getClipsTotal();
 	}
 
 	getColors(): IColor4[] {

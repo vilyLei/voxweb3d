@@ -234,19 +234,20 @@ export class DemoUIScene {
 		//*/
 		let csLable = new ClipLabel();
 		csLable.initialize(texAtlas, urls);
-		// lable.setClipIndex(1);
-		// lable.setXY(500, 300);
-		// this.m_uisc.addEntity(lable);
-		// lable.setColor(CoMaterial.createColor4(0.1, 1.0, 0.4));
 
 		let colorClipLabel = new ColorClipLabel();
 		colorClipLabel.initialize(csLable, 4);
 		colorClipLabel.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
 		colorClipLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
 		colorClipLabel.getColorAt(2).setRGB3f(1.0, 0.2, 1.0);
+		colorClipLabel.setLabelClipIndex( 1 );
+		// colorClipLabel.setXY(200,0);
+		// colorClipLabel.setClipIndex(2);
+		// this.m_uisc.addEntity(colorClipLabel);
+		let colorBtn = CoUI.createButton(); //new Button();
+		colorBtn.initializeWithLable(colorClipLabel);
 		colorClipLabel.setXY(200,0);
-		colorClipLabel.setClipIndex(2);
-		this.m_uisc.addEntity(colorClipLabel);
+		this.m_uisc.addEntity(colorBtn);
 	}
 	private createDefaultEntity(): void {
 		let axis = CoRScene.createAxis3DEntity();
