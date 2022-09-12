@@ -1,16 +1,19 @@
 import { ThreadSchedule } from "../modules/thread/ThreadSchedule";
 import { FBXParseTaskListener, FBXParseTask } from "../modules/fbx/FBXParseTask";
 import { GeometryModelDataType } from "../modules/base/GeometryModelDataType";
-import {
-	Axis3DEntity,
-	DataMesh,
-	DisplayEntity,
-	Matrix4,
-	RendererDevice,
-	RendererParam,
-	RendererScene,
-	UserInteraction
-} from "../voxengine/CoEngine";
+
+import Vector3D from "../../vox/math/Vector3D";
+import Matrix4 from "../../vox/math/Matrix4";
+import RendererDevice from "../../vox/render/RendererDevice";
+import RendererParam from "../../vox/scene/RendererParam";
+import RendererScene from "../../vox/scene/RendererScene";
+import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
+import ShaderMaterial from "../../vox/material/mcase/ShaderMaterial";
+import DataMesh from "../../vox/mesh/DataMesh";
+import Axis3DEntity from "../../vox/entity/Axis3DEntity";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+import { UserInteraction } from "../../vox/engine/UserInteraction";
+
 import MaterialBase from "../../vox/material/MaterialBase";
 import DivLog from "../../vox/utils/DivLog";
 

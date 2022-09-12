@@ -40,7 +40,6 @@ import { RenderingVerifier as Demo } from "./cospace/demo/RenderingVerifier";
 
 // import { DemoCoEdit as Demo } from "./cospace/demo/DemoCoEdit";
 
-// import { DemoCoEngine as Demo } from "./cospace/demo/DemoCoEngine";
 // import { DemoInputText as Demo } from "./cospace/demo/DemoInputText";
 // import { DemoCORS as Demo } from "./cospace/demo/DemoCORS";
 

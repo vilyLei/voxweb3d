@@ -13,6 +13,7 @@ import BoxFrame3D from "../../vox/entity/BoxFrame3D";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import TextureConst from "../../vox/texture/TextureConst";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
+import DataMesh from "../../vox/mesh/DataMesh";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 
 import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwinger";
@@ -23,7 +24,7 @@ import { RenderableMaterialBlock } from "../../vox/scene/block/RenderableMateria
 import { RenderableEntityBlock } from "../../vox/scene/block/RenderableEntityBlock";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../app/CoSpaceAppData";
 import { ViewerCoSApp } from "./coViewer/ViewerCoSApp";
-import { DataMesh, Default3DMaterial } from "../voxengine/CoEngine";
+
 import { CoNormalMaterial } from "../voxengine/material/CoNormalMaterial";
 import { NormalUVViewerMaterial } from "./material/NormalUVViewerMaterial";
 

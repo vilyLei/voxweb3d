@@ -1,16 +1,19 @@
 import { ThreadSchedule } from "../modules/thread/ThreadSchedule";
 import { DracoGeomBuilder } from "../modules/draco/DracoGeomBuilder";
 import { GeometryModelDataType } from "../modules/base/GeometryModelDataType";
-import {
-	Axis3DEntity,
-	DataMesh,
-	DisplayEntity,
-	RendererDevice,
-	RendererParam,
-	RendererScene,
-	RendererState,
-	ShaderMaterial
-} from "../voxengine/CoEngine";
+
+import Vector3D from "../../vox/math/Vector3D";
+import RendererDevice from "../../vox/render/RendererDevice";
+import RendererState from "../../vox/render/RendererState";
+import RendererParam from "../../vox/scene/RendererParam";
+import RendererScene from "../../vox/scene/RendererScene";
+import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
+import ShaderMaterial from "../../vox/material/mcase/ShaderMaterial";
+import DataMesh from "../../vox/mesh/DataMesh";
+import Axis3DEntity from "../../vox/entity/Axis3DEntity";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+import { UserInteraction } from "../../vox/engine/UserInteraction";
+
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
