@@ -31,6 +31,7 @@ class ShaderCodeBuffer implements IShaderCodeBuffer {
 
 	pipeline: IMaterialPipeline = null;
 
+	gamma: boolean = false;
 	vertColorEnabled: boolean = false;
 	premultiplyAlpha: boolean = false;
 	shadowReceiveEnabled: boolean = false;
@@ -66,6 +67,7 @@ class ShaderCodeBuffer implements IShaderCodeBuffer {
 		this.m_texList = null;
 		this.pipeTypes = null;
 
+		this.gamma = false;
 		this.vertColorEnabled = false;
 		this.premultiplyAlpha = false;
 		this.shadowReceiveEnabled = false;
