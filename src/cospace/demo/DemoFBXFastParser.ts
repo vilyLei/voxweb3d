@@ -78,7 +78,8 @@ export class DemoFBXFastParser {
 		let url: string = "static/private/fbx/box.fbx";
 		url = "static/private/fbx/base3.fbx";
 		// url = "static/private/fbx/model_500W.fbx";
-		url = "static/private/fbx/m0001.fbx";
+		url = "static/private/fbx/hat_hasNormal.fbx";
+		url = "static/private/fbx/hat_hasNotNormal.fbx";
 		this.loadFBX(url);
 	}
 
@@ -98,7 +99,9 @@ export class DemoFBXFastParser {
 
 		DivLog.ShowLogOnce(info);
 		// return;
-		
+		if(model.normals == null) {
+			console.error("has not normal in the model");
+		}
 		let material = new NormalUVViewerMaterial();
 		material.initializeByCodeBuf();
 
