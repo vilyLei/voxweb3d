@@ -257,17 +257,17 @@ export class DemoCoBase {
 		// circle.initialize(100,20,0, CoMaterial.createColor4(1.0,0.0,0.0));
 		// this.m_rscene.addEntity(circle.getEntity());
 
-		/*
+		///*
 		let dragRCtr = new DragRotationController();
 		dragRCtr.initialize(this.m_rscene, 0);
 		dragRCtr.setTarget(box);
 		this.m_dragRCtr = dragRCtr;
 		//*/
 		
-		///*
+		/*
 		let dragSCtr = new DragScaleController();
 		dragSCtr.initialize(this.m_rscene, 0);
-		dragSCtr.setTarget(box);
+		dragSCtr.select( [box] );
 		this.m_dragSCtr = dragSCtr;
 		//*/
 
@@ -318,13 +318,13 @@ export class DemoCoBase {
 	private mouseUpListener(evt: any): void {
 		console.log("DemoCoBase::mouseUpListener() ...");
 		if (this.m_dragRCtr != null) {
-			this.m_dragRCtr.deselect();
+			this.m_dragRCtr.decontrol();
 		}
 		if(this.m_dragMCtr != null) {
-			this.m_dragMCtr.deselect();
+			this.m_dragMCtr.decontrol();
 		}
 		if(this.m_dragSCtr != null) {
-			this.m_dragSCtr.deselect();
+			this.m_dragSCtr.decontrol();
 		}
 	}
 	private mouseBgDownListener(evt: any): void {

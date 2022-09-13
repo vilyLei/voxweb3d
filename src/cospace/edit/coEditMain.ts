@@ -1,9 +1,9 @@
 
 // import { DemoBase as Demo } from "./demo/DemoBase";
-// import { DemoCoBase as Demo } from "./demo/DemoCoBase";
+import { DemoCoBase as Demo } from "./demo/DemoCoBase";
 // import { DemoCoAGeom as Demo } from "./demo/DemoCoAGeom";
 // import { DemoMoveObj as Demo } from "./demo/DemoMoveObj";
-import { DemoUIScene as Demo } from "./demo/DemoUIScene";
+// import { DemoUIScene as Demo } from "./demo/DemoUIScene";
 
 let demoIns: Demo = new Demo();
 let ins: any = demoIns;

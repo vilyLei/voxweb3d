@@ -24,6 +24,8 @@ import { IDragMoveController } from "../../edit/move/IDragMoveController";
 import { DragMoveController } from "../../edit/move/DragMoveController";
 import IVector3D from "../../../vox/math/IVector3D";
 import { LineMeshBuilder } from "../../voxmesh/build/LineMeshBuilder";
+import { IDragScaleController } from "../scale/IDragScaleController";
+import { DragScaleController } from "../scale/DragScaleController";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -71,6 +73,7 @@ export class DemoMoveObj {
 		let url5 = "static/cospace/comesh/CoMesh.umd.js";
 		let url6 = "static/cospace/coentity/CoEntity.umd.js";
 		let url7 = "static/cospace/particle/CoParticle.umd.js";
+		let url8 = "static/cospace/coMaterial/CoMaterial.umd.js";
 
 		new ModuleLoader(2, (): void => {
 			if (this.isEngineEnabled()) {
@@ -78,7 +81,7 @@ export class DemoMoveObj {
 				this.initRenderer();
 
 				this.initScene();
-				new ModuleLoader(2, (): void => {
+				new ModuleLoader(3, (): void => {
 
 					console.log("math module loaded ...");
 					this.testMath();
@@ -88,7 +91,7 @@ export class DemoMoveObj {
 						this.createEditEntity();
 					}).load(url3).load(url4).load(url6).load(url7);
 
-				}).load(url2).load(url5);
+				}).load(url2).load(url5).load(url8);
 
 				this.m_vcoapp = new ViewerCoSApp();
 				this.m_vcoapp.initialize((): void => {
@@ -119,7 +122,8 @@ export class DemoMoveObj {
 		console.log("ageom plane: ", plane);
 
 	}
-	private m_dragCtr: IDragMoveController;
+	private m_movedCtr: IDragMoveController;
+	private m_scaleCtr: IDragScaleController;
 	private createEditEntity(): void {
 
 		/*
@@ -141,20 +145,31 @@ export class DemoMoveObj {
 		movePlane.initialize(2, 100, 0.5);
 		this.m_rscene.addEntity(movePlane.getEntity());
 		//*/
+		/*
+		this.m_movedCtr = new DragMoveController();
+		// this.m_movedCtr = CoEdit.createDragMoveController();
+		this.m_movedCtr.axisSize = 100;
+		this.m_movedCtr.planeSize = 30;
+		this.m_movedCtr.pickTestAxisRadius = 10;
+		this.m_movedCtr.runningVisible = true;
+		this.m_movedCtr.initialize(this.m_rscene, 1);
+		// this.m_movedCtr.setVisible(true);
+		//*/
+		this.m_scaleCtr = new DragScaleController();
+		this.m_scaleCtr.axisSize = 100;
+		this.m_scaleCtr.planeSize = 30;
+		this.m_scaleCtr.pickTestAxisRadius = 10;
+		this.m_scaleCtr.runningVisible = true;
+		this.m_scaleCtr.initialize(this.m_rscene, 1);
 
-		this.m_dragCtr = new DragMoveController();
-		// this.m_dragCtr = CoEdit.createDragMoveController();
-		this.m_dragCtr.axisSize = 200;
-		this.m_dragCtr.planeSize = 50;
-		this.m_dragCtr.pickTestAxisRadius = 5;
-		this.m_dragCtr.runningVisible = true;
-		this.m_dragCtr.initialize(this.m_rscene, 1);
-		// this.m_dragCtr.setVisible(true);
 	}
 	private mouseUpListener(evt: any): void {
 		console.log("DemoMoveObj::mouseUpListener() ...");
-		if (this.m_dragCtr != null) {
-			this.m_dragCtr.deselect();
+		if (this.m_movedCtr != null) {
+			this.m_movedCtr.decontrol();
+		}
+		if (this.m_scaleCtr != null) {
+			this.m_scaleCtr.decontrol();
 		}
 	}
 	private mouseBgDownListener(evt: any): void {
@@ -260,6 +275,7 @@ export class DemoMoveObj {
 			entity.setScaleXYZ(m_scale, m_scale, m_scale);
 		}
 	}
+	private m_entities: ITransformEntity[] = [];
 	private createEntity(model: CoGeomDataType): ITransformEntity {
 		// let rst = CoRenderer.RendererState;
 
@@ -270,13 +286,13 @@ export class DemoMoveObj {
 		let cv = mesh.bounds.center.clone();
 		let vs = model.vertices;
 		let tot = vs.length;
-		for(let i = 0; i < tot;) {
+		for (let i = 0; i < tot;) {
 			vs[i++] -= cv.x;
 			vs[i++] -= cv.y;
 			vs[i++] -= cv.z;
 		}
 
-		
+
 		cv.scaleBy(this.m_scale);
 		mesh = CoRScene.createDataMeshFromModel(model, material);
 		let entity = CoRScene.createMouseEventEntity();
@@ -290,6 +306,7 @@ export class DemoMoveObj {
 		entity.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutTargetListener);
 		entity.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownTargetListener);
 
+		this.m_entities.push(entity);
 		return entity;
 	}
 
@@ -300,28 +317,48 @@ export class DemoMoveObj {
 		// console.log("mouseOutTargetListener() mouse out...");
 	}
 	private mouseDownTargetListener(evt: any): void {
-		console.log("mouseDownTargetListener() mouse down...");
-		if (this.m_dragCtr != null) {
 
-			let pos = CoMath.createVec3();
-			let entity = evt.target as ITransformEntity;
-			entity.getPosition(pos);
-			
-			let wpos = evt.wpos as IVector3D;
-			pos.subtractBy(wpos);
-			
-			this.m_dragCtr.setTarget(evt.target);
-			this.m_dragCtr.setTargetPosOffset(pos);
-			this.m_dragCtr.setPosition(wpos);
-			this.m_dragCtr.update();
+		console.log("mouseDownTargetListener() mouse down...");
+
+		let pos = CoMath.createVec3();
+		let entity = evt.target as ITransformEntity;
+		entity.getPosition(pos);
+		let wpos = evt.wpos as IVector3D;
+		pos.subtractBy(wpos);
+		
+		// this.applyMoveCtr(wpos, entity);
+		this.applyScaleCtr(wpos, entity);
+	}
+	private applyMoveCtr(wpos: IVector3D, target: ITransformEntity): void {
+		if (this.m_movedCtr != null) {
+			this.m_movedCtr.deselect();
+			this.m_movedCtr.setPosition(wpos);
+			this.m_movedCtr.update();
+			// this.m_movedCtr.select( [evt.target] );
+			let ls = this.m_entities;
+			this.m_movedCtr.select([ls[0], ls[1], target]);
 		}
 	}
-
+	
+	private applyScaleCtr(wpos: IVector3D, target: ITransformEntity): void {
+		if (this.m_scaleCtr != null) {
+			console.log("applyScaleCtr() ....");
+			this.m_scaleCtr.deselect();
+			this.m_scaleCtr.setPosition(wpos);
+			this.m_scaleCtr.update();
+			// this.m_scaleCtr.select( [evt.target] );
+			let ls = this.m_entities;
+			this.m_scaleCtr.select([ls[0], ls[1], target]);
+		}
+	}
 	private mouseDown(evt: any): void { }
 	run(): void {
 		if (this.m_rscene != null) {
-			if (this.m_dragCtr != null) {
-				this.m_dragCtr.run();
+			if (this.m_movedCtr != null) {
+				this.m_movedCtr.run();
+			}
+			if (this.m_scaleCtr != null) {
+				this.m_scaleCtr.run();
 			}
 			if (this.m_interact != null) {
 				this.m_interact.run();
