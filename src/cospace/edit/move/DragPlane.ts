@@ -11,6 +11,7 @@ import IEntityTransform from "../../../vox/entity/IEntityTransform";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import { IRayControl } from "../base/IRayControl";
+import { IMovedTarget } from "./IMovedTarget";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
@@ -27,9 +28,9 @@ declare var CoMesh: ICoMesh;
  */
 export default class DragPlane implements IRayControl {
 
-    private m_targetEntity: IEntityTransform = null;
+    private m_target: IMovedTarget = null;
     private m_dispatcher: IEvtDispatcher;
-    private m_targetPosOffset = CoMath.createVec3();
+    // private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
     private offsetV = CoMath.createVec3(30,30,30);
     // private m_entityScale = CoMath.createVec3(1.0, 1.0, 1.0);
@@ -102,10 +103,10 @@ export default class DragPlane implements IRayControl {
     }
 
     setTargetPosOffset(offset: IVector3D): void {
-        this.m_targetPosOffset.copyFrom(offset);
+        // this.m_targetPosOffset.copyFrom(offset);
     }
-    setTarget(target: IEntityTransform): void {
-        this.m_targetEntity = target;
+    setTarget(target: IMovedTarget): void {
+        this.m_target = target;
     }
 
     private initializeEvent(): void {
@@ -201,7 +202,7 @@ export default class DragPlane implements IRayControl {
         this.m_entity.update();
     }
     destroy(): void {
-        this.m_targetEntity = null;
+        this.m_target = null;
         if (this.m_entity != null) {
             this.m_entity.destroy();
         }
@@ -241,11 +242,11 @@ export default class DragPlane implements IRayControl {
                 this.update();
             }
 
-            if (this.m_targetEntity != null) {
+            if (this.m_target != null) {
 
-                pv.addBy(this.m_targetPosOffset);
-                this.m_targetEntity.setPosition(pv);
-                this.m_targetEntity.update();
+                // pv.addBy(this.m_targetPosOffset);
+                this.m_target.setPosition(pv);
+                this.m_target.update();
             }
         }
     }
@@ -275,6 +276,7 @@ export default class DragPlane implements IRayControl {
         this.m_dv.subtractBy(this.m_outV);
     }
     private mouseDownListener(evt: any): void {
+        this.m_target.select( this );
         this.selectByParam(evt.raypv, evt.raytv, evt.wpos);
     }
 }

@@ -16,6 +16,7 @@ import IRawMesh from "../../../vox/mesh/IRawMesh";
 import { IRayControl } from "../base/IRayControl";
 import { SphereRayTester } from "../base/SphereRayTester";
 import { DashedLineRayTester } from "../base/DashedLineRayTester";
+import { IMovedTarget } from "./IMovedTarget";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
@@ -37,9 +38,9 @@ declare var CoEntity: ICoEntity;
  */
 class DragLine implements IRayControl {
 
-    private m_targetEntity: IEntityTransform = null;
+    private m_target: IMovedTarget = null;
     private m_dispatcher: IEvtDispatcher;
-    private m_targetPosOffset: IVector3D = CoMath.createVec3();
+    // private m_targetPosOffset: IVector3D = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
     private m_cone: ITransformEntity = null;
 
@@ -143,10 +144,10 @@ class DragLine implements IRayControl {
         this.m_dispatcher.removeEventListener(type, listener, func);
     }
     setTargetPosOffset(offset: IVector3D): void {
-        this.m_targetPosOffset.copyFrom(offset);
+        // this.m_targetPosOffset.copyFrom(offset);
     }
-    setTarget(target: IEntityTransform): void {
-        this.m_targetEntity = target;
+    setTarget(target: IMovedTarget): void {
+        this.m_target = target;
     }
 
     private initializeEvent(entity: ITransformEntity): void {
@@ -192,7 +193,7 @@ class DragLine implements IRayControl {
         this.m_flag = -1;
     }
     destroy(): void {
-        this.m_targetEntity = null;
+        this.m_target = null;
         if (this.m_entity != null) {
             this.m_entity.destroy();
             this.m_entity = null;
@@ -256,16 +257,17 @@ class DragLine implements IRayControl {
                 this.update();
             }
 
-            if (this.m_targetEntity != null) {
-                this.m_pos.addBy(this.m_targetPosOffset);
-                this.m_targetEntity.setPosition(this.m_pos);
-                this.m_targetEntity.update();
+            if (this.m_target != null) {
+                // this.m_pos.addBy(this.m_targetPosOffset);
+                this.m_target.setPosition(this.m_pos);
+                this.m_target.update();
             }
         }
     }
 
     mouseDownListener(evt: any): void {
         console.log("DragLine::mouseDownListener() ...");
+        this.m_target.select( this );
         this.m_flag = 1;
         //console.log("AxisCtrlObj::mouseDownListener(). this.m_flag: "+this.m_flag);
         let trans = this.m_entity.getTransform();

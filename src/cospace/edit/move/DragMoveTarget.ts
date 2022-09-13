@@ -1,22 +1,9 @@
 import IVector3D from "../../../vox/math/IVector3D";
 import IAABB from "../../../vox/geom/IAABB";
-import DragPlane from "./DragPlane";
-import DragAxis from "./DragAxis";
-import IRendererScene from "../../../vox/scene/IRendererScene";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
-import { IRayControl } from "../base/IRayControl";
 
-import {IRenderCamera} from "../../../vox/render/IRenderCamera";
-import ITransformEntity from "../../../vox/entity/ITransformEntity";
-
-import { IDragMoveController } from "./IDragMoveController";
-import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
-// import { ICoAGeom } from "../../ageom/ICoAGeom";
-
-declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;
-// declare var CoAGeom: ICoAGeom;
 
 class DragMoveTarget implements IEntityTransform {
 
@@ -44,6 +31,13 @@ class DragMoveTarget implements IEntityTransform {
         return this.m_entitys[0];
     }
 
+    setCtrlScaleXYZ(sx: number, sy: number, sz: number): void {
+        for (let i: number = 1; i < this.m_entitys.length; ++i) {
+            this.m_changFlags[i] = true;
+            this.m_entitys[i].setScaleXYZ(sx, sy, sz);
+        }
+    }
+
     setXYZ(px: number, py: number, pz: number): void {
     }
     setPosition(pv: IVector3D): void {
@@ -53,6 +47,7 @@ class DragMoveTarget implements IEntityTransform {
             this.m_entitys[i].setPosition(this.position);
             this.m_changFlags[i] = true;
         }
+
         for (i = 1; i < this.m_entitys.length; ++i) {
             this.m_entitys[i].setPosition(pv);
             this.m_changFlags[i] = true;
@@ -76,12 +71,6 @@ class DragMoveTarget implements IEntityTransform {
         if (this.m_entitys[i] != null) {
             this.m_entitys[i].setScaleXYZ(sx, sy, sz);
             this.m_changFlags[i] = true;
-        }
-    }
-    setCtrlScaleXYZ(sx: number, sy: number, sz: number): void {
-        for (let i: number = 1; i < this.m_entitys.length; ++i) {
-            this.m_changFlags
-            this.m_entitys[i].setScaleXYZ(sx, sy, sz);
         }
     }
     getRotationXYZ(pv: IVector3D): void {

@@ -15,6 +15,7 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { IRayControl } from "../base/IRayControl";
 import { SphereRayTester } from "../base/SphereRayTester";
 import { IBillboardBase } from "../../particle/entity/IBillboardBase";
+import { IMovedTarget } from "./IMovedTarget";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
@@ -33,9 +34,9 @@ declare var CoParticle: ICoParticle;
  */
 export default class DragRayCrossPlane implements IRayControl {
 
-    private m_targetEntity: IEntityTransform = null;
+    private m_target: IMovedTarget = null;
     private m_dispatcher: IEvtDispatcher;
-    private m_targetPosOffset = CoMath.createVec3();
+    // private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
     private m_rscene: IRendererScene = null;
 
@@ -103,10 +104,10 @@ export default class DragRayCrossPlane implements IRayControl {
     }
 
     setTargetPosOffset(offset: IVector3D): void {
-        this.m_targetPosOffset.copyFrom(offset);
+        // this.m_targetPosOffset.copyFrom(offset);
     }
-    setTarget(target: IEntityTransform): void {
-        this.m_targetEntity = target;
+    setTarget(target: IMovedTarget): void {
+        this.m_target = target;
     }
 
     private initializeEvent(entity: ITransformEntity): void {
@@ -209,7 +210,7 @@ export default class DragRayCrossPlane implements IRayControl {
         this.m_billPos.update();
     }
     destroy(): void {
-        this.m_targetEntity = null;
+        this.m_target = null;
         if (this.m_entity != null) {
             this.m_rscene.removeEntity( this.m_entity );
             this.m_entity.destroy();
@@ -259,11 +260,11 @@ export default class DragRayCrossPlane implements IRayControl {
                 this.update();
             }
 
-            if (this.m_targetEntity != null) {
+            if (this.m_target != null) {
 
-                pv.addBy(this.m_targetPosOffset);
-                this.m_targetEntity.setPosition(pv);
-                this.m_targetEntity.update();
+                // pv.addBy(this.m_targetPosOffset);
+                this.m_target.setPosition(pv);
+                this.m_target.update();
             }
         }
     }
@@ -292,6 +293,7 @@ export default class DragRayCrossPlane implements IRayControl {
     }
     private mouseDownListener(evt: any): void {
         console.log("DragRayCrossPlane::mouseDownListener() ...");
+        this.m_target.select( this );
         this.selectByParam(evt.raypv, evt.raytv, evt.wpos);
     }
 }

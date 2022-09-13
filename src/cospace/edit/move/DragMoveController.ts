@@ -9,7 +9,7 @@ import { IRayControl } from "../base/IRayControl";
 
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
-import { DragMoveTarget } from "./DragMoveTarget";
+import { MovedTarget } from "./MovedTarget";
 import { DragLine } from "./DragLine";
 
 import { IDragMoveController } from "./IDragMoveController";
@@ -39,7 +39,8 @@ class DragMoveController implements IDragMoveController {
 
     private m_editRS: IRendererScene = null;
     private m_editRSP: number = 0;
-    private m_target = new DragMoveTarget();
+    // private m_target = new DragMoveTarget();
+    private m_target = new MovedTarget();
     private m_camera: IRenderCamera = null;
 
     private m_posX = -1;
@@ -74,22 +75,6 @@ class DragMoveController implements IDragMoveController {
         }
     }
 
-    selectByParam(raypv: IVector3D, raytv: IVector3D, wpos: IVector3D): void {
-        // if (this.m_crossPlaneDrag != null) {
-        //     this.m_crossPlaneDrag.selectByParam(raypv, raytv, wpos);
-        // }
-    }
-    setTargetPosOffset(offset: IVector3D): void {
-        this.m_target.setTargetPosOffset(offset);
-    }
-    setTarget(target: IEntityTransform): void {
-
-        this.m_target.setTarget(target);
-        this.setVisible(target != null);
-    }
-    getTarget(): IEntityTransform {
-        return this.m_target.getTarget();
-    }
     private createDragPlane(type: number, alpha: number): DragPlane {
 
         let movePlane = new DragPlane();
@@ -98,7 +83,7 @@ class DragMoveController implements IDragMoveController {
 
         movePlane.setTarget(this.m_target);
         movePlane.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
-        this.m_target.addEntity(movePlane);
+        this.m_target.addCtrlEntity(movePlane);
         this.m_controllers.push(movePlane);
         this.m_editRS.addEntity(movePlane.getEntity(), this.m_editRSP, true);
         return movePlane;
@@ -124,8 +109,8 @@ class DragMoveController implements IDragMoveController {
         line.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
         this.m_editRS.addEntity(line.getEntity(), this.m_editRSP, true);
         this.m_editRS.addEntity(line.getCone(), this.m_editRSP, true);
-        this.m_target.addEntity(line.getEntity());
-        this.m_target.addEntity(line.getCone());
+        this.m_target.addCtrlEntity(line.getEntity());
+        this.m_target.addCtrlEntity(line.getCone());
         this.m_controllers.push(line);
     }
     private init(): void {
@@ -148,22 +133,6 @@ class DragMoveController implements IDragMoveController {
         mat4.rotationX(0.5 * Math.PI);
         this.createDragLine(V3.Z_AXIS, color4(0.0, 0.0, 1.0), color4(0.0, 1.0, 1.0), mat4);
 
-        /*
-        let moveAxis = new DragAxis();
-        moveAxis.innerSphereRadius = this.circleSize * 0.5;
-        moveAxis.moveSelfEnabled = true;
-        moveAxis.pickTestRadius = this.pickTestAxisRadius;
-        moveAxis.initialize(this.axisSize, moveAxis.innerSphereRadius);
-        moveAxis.outColor.setRGBA4f(0.9, 0.8, 0.9, 1.0);
-        moveAxis.overColor.setRGBA4f(1.0, 1.0, 1.0, 1.0);
-        moveAxis.showOutColor();
-
-        moveAxis.setTarget(this.m_target);
-        moveAxis.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
-        this.m_target.addEntity(moveAxis.getEntity());
-        this.m_controllers.push(moveAxis);
-        this.m_editRS.addEntity(moveAxis.getEntity(), this.m_editRSP, true);
-        //*/
         // xoz
         this.createDragPlane(0, alpha);
         // xoy
@@ -176,7 +145,7 @@ class DragMoveController implements IDragMoveController {
         crossPlane.initialize(this.m_editRS, 0, this.circleSize);
         crossPlane.setTarget(this.m_target);
         crossPlane.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
-        this.m_target.addEntity(crossPlane);
+        this.m_target.addCtrlEntity(crossPlane);
         this.m_controllers.push(crossPlane);
     }
     private dragMouseDownListener(evt: any): void {
@@ -233,11 +202,21 @@ class DragMoveController implements IDragMoveController {
         }
         return flag;
     }
-    select(): void {
+    select(targets: IEntityTransform[]): void {
+
+        this.m_target.setTargets(targets);
+        this.m_target.select(null);
+        this.setVisible(targets != null);
     }
     deselect(): void {
 
         console.log("DragMoveController::deselect() ..., this.m_controllers.length: ", this.m_controllers.length);
+        this.m_target.deselect();
+        for (let i = 0; i < this.m_controllers.length; ++i) {
+            this.m_controllers[i].deselect();
+        }
+    }
+    decontrol(): void {
         for (let i = 0; i < this.m_controllers.length; ++i) {
             this.m_controllers[i].deselect();
         }
