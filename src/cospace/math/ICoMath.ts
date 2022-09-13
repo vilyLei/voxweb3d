@@ -22,7 +22,7 @@ interface CoMathConst {
     readonly MATH_180_OVER_PI: number;
     readonly MATH_PI_OVER_180: number;
     readonly MATH_LN2: number;
-    
+
     Clamp(value: number, min: number, max: number): number;
     IsPowerOf2(value: number): boolean;
     CalcCeilPowerOfTwo(value: number): number;
@@ -34,10 +34,10 @@ interface CoMathConst {
     SafeACos(x: number): number;
     GetNearestCeilPow2(int_n: number): number;
     /**
-	 * ccw is positive
-	 * @param r0 radian 0
-	 * @param r1 radian 1
-	 */
+     * ccw is positive
+     * @param r0 radian 0
+     * @param r1 radian 1
+     */
     GetMinRadian(r0: number, r1: number): number;
     /**
      * get the directional angle offset degree value: dst_angle_degree = src_angle_degree + directional_angle_offset_degree_value
@@ -51,10 +51,26 @@ interface CoMathConst {
     GetRadianByCos(cosv: number, dx: number, dy: number): number;
 }
 
+interface CoOrientationType {
+    /**
+     * the value is 0
+     */
+    readonly AXIS_ANGLE: number;
+    /**
+     * the value is 1
+     */
+    readonly QUATERNION: number;
+    /**
+     * the value is 2
+     */
+    readonly EULER_ANGLES: number;
+}
+
 interface ICoMath {
 
     Vector3D: CoVec3;
     MathConst: CoMathConst;
+    OrientationType: CoOrientationType;
     /**
      * create a Vector3D instance
      * @param px the default vaue is 0.0
@@ -110,4 +126,5 @@ interface ICoMath {
     isGreaterRealZero(v: number): boolean;
     isLessRealZero(v: number): boolean;
 }
+
 export { CoVec3, ICoMath };

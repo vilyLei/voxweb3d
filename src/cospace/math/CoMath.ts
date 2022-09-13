@@ -4,6 +4,7 @@ import IAABB from "../../vox/geom/IAABB";
 import IAABB2D from "../../vox/geom/IAABB2D";
 import AABB2D from "../../vox/geom/AABB2D";
 import MathConst from "../../vox/math/MathConst";
+import OrientationType from "../../vox/math/OrientationType";
 
 import {
 	isZero,
@@ -42,6 +43,7 @@ export {
 	createAABB,
 	createAABB2D,
 	MathConst,
+	OrientationType,
 
 	isZero,
 	isNotZero,
