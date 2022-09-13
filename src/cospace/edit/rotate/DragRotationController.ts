@@ -175,6 +175,9 @@ class DragRotationController implements IDragRotationController {
             this.m_controllers[i].deselect();
         }
     }
+    decontrol(): void {
+        
+    }
     setVisible(visible: boolean): void {
 
         this.m_visible = visible;
