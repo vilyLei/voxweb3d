@@ -17,6 +17,7 @@ import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
 import { ICoMesh } from "../../voxmesh/ICoMesh";
 import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
+import { IScaleTarget } from "./IScaleTarget";
 
 declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;
@@ -28,7 +29,7 @@ declare var CoMesh: ICoMesh;
  */
 export default class ScaleDragPlane implements IRayControl {
 
-    private m_targetEntity: IEntityTransform = null;
+    private m_target: IScaleTarget = null;
     private m_dispatcher: IEvtDispatcher;
     private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
@@ -104,11 +105,8 @@ export default class ScaleDragPlane implements IRayControl {
         this.m_dispatcher.removeEventListener(type, listener, func);
     }
 
-    setTargetPosOffset(offset: IVector3D): void {
-        this.m_targetPosOffset.copyFrom(offset);
-    }
-    setTarget(target: IEntityTransform): void {
-        this.m_targetEntity = target;
+    setTarget(target: IScaleTarget): void {
+        this.m_target = target;
     }
 
     private initializeEvent(): void {
@@ -205,7 +203,7 @@ export default class ScaleDragPlane implements IRayControl {
         this.m_entity.update();
     }
     destroy(): void {
-        this.m_targetEntity = null;
+        this.m_target = null;
         if (this.m_entity != null) {
             this.m_entity.destroy();
         }
@@ -266,9 +264,9 @@ export default class ScaleDragPlane implements IRayControl {
                 sz = scale;
             }
             
-            if (this.m_targetEntity != null) {
-                this.m_targetEntity.setScaleXYZ(sv.x * sx, sv.y * sy, sv.z * sz);
-                this.m_targetEntity.update();
+            if (this.m_target != null) {
+                this.m_target.setScaleXYZ(sv.x * sx, sv.y * sy, sv.z * sz);
+                this.m_target.update();
             }
         }
     }
@@ -298,9 +296,9 @@ export default class ScaleDragPlane implements IRayControl {
         this.m_dv.subtractBy(this.m_outV);
     }
     private mouseDownListener(evt: any): void {
-        
+        this.m_target.select();
         this.selectByParam(evt.raypv, evt.raytv, evt.wpos);
-        this.m_targetEntity.getScaleXYZ(this.m_sv);
+        this.m_target.getScaleXYZ(this.m_sv);
         this.getPosition(this.m_pos);
 
         let V3 = CoMath.Vector3D;

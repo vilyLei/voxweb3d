@@ -21,6 +21,7 @@ import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
 import { ICoEntity } from "../../voxentity/ICoEntity";
 import { ICoParticle } from "../../particle/ICoParticle";
+import { IScaleTarget } from "./IScaleTarget";
 
 declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;
@@ -33,7 +34,7 @@ declare var CoParticle: ICoParticle;
  */
 export default class DragScaleRayCrossPlane implements IRayControl {
 
-    private m_targetEntity: IEntityTransform = null;
+    private m_target: IScaleTarget = null;
     private m_dispatcher: IEvtDispatcher;
     private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
@@ -105,8 +106,8 @@ export default class DragScaleRayCrossPlane implements IRayControl {
     setTargetPosOffset(offset: IVector3D): void {
         this.m_targetPosOffset.copyFrom(offset);
     }
-    setTarget(target: IEntityTransform): void {
-        this.m_targetEntity = target;
+    setTarget(target: IScaleTarget): void {
+        this.m_target = target;
     }
 
     private initializeEvent(entity: ITransformEntity): void {
@@ -209,7 +210,7 @@ export default class DragScaleRayCrossPlane implements IRayControl {
         this.m_billPos.update();
     }
     destroy(): void {
-        this.m_targetEntity = null;
+        this.m_target = null;
         if (this.m_entity != null) {
             this.m_rscene.removeEntity( this.m_entity );
             this.m_entity.destroy();
@@ -260,9 +261,9 @@ export default class DragScaleRayCrossPlane implements IRayControl {
             const sv = this.m_sv;
             let s = dis/this.m_dis;
             
-            if (this.m_targetEntity != null) {
-                this.m_targetEntity.setScaleXYZ(sv.x * s, sv.y * s, sv.z * s);
-                this.m_targetEntity.update();
+            if (this.m_target != null) {
+                this.m_target.setScaleXYZ(sv.x * s, sv.y * s, sv.z * s);
+                this.m_target.update();
             }
         }
     }
@@ -291,8 +292,9 @@ export default class DragScaleRayCrossPlane implements IRayControl {
     }
     private mouseDownListener(evt: any): void {
         console.log("DragScaleRayCrossPlane::mouseDownListener() ...");
+        this.m_target.select();
         this.selectByParam(evt.raypv, evt.raytv, evt.wpos);
-        this.m_targetEntity.getScaleXYZ(this.m_sv);
+        this.m_target.getScaleXYZ(this.m_sv);
         this.getPosition(this.m_pos);
         let V3 = CoMath.Vector3D;
         this.m_dis = V3.Distance(this.m_pos, this.m_outV);

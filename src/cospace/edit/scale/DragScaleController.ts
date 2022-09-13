@@ -10,6 +10,7 @@ import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import { DragMoveTarget } from "../move/DragMoveTarget";
 import { ScaleDragLine } from "./ScaleDragLine";
+import { ScaleTarget } from "./ScaleTarget";
 
 import { IDragScaleController } from "./IDragScaleController";
 import { ICoRScene } from "../../voxengine/ICoRScene";
@@ -38,7 +39,7 @@ class DragScaleController implements IDragScaleController {
 
     private m_editRS: IRendererScene = null;
     private m_editRSP: number = 0;
-    private m_target = new DragMoveTarget();
+    private m_target = new ScaleTarget();
     private m_camera: IRenderCamera = null;
 
     private m_posX = -1;
@@ -73,22 +74,6 @@ class DragScaleController implements IDragScaleController {
         }
     }
 
-    selectByParam(raypv: IVector3D, raytv: IVector3D, wpos: IVector3D): void {
-        // if (this.m_crossPlaneDrag != null) {
-        //     this.m_crossPlaneDrag.selectByParam(raypv, raytv, wpos);
-        // }
-    }
-    setTargetPosOffset(offset: IVector3D): void {
-        this.m_target.setTargetPosOffset(offset);
-    }
-    setTarget(target: IEntityTransform): void {
-
-        this.m_target.setTarget(target);
-        this.setVisible(target != null);
-    }
-    getTarget(): IEntityTransform {
-        return this.m_target.getTarget();
-    }
     private createDragPlane(type: number, alpha: number): ScaleDragPlane {
 
         let movePlane = new ScaleDragPlane();
@@ -97,7 +82,7 @@ class DragScaleController implements IDragScaleController {
 
         movePlane.setTarget(this.m_target);
         movePlane.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
-        this.m_target.addEntity(movePlane);
+        this.m_target.addCtrlEntity(movePlane);
         this.m_controllers.push(movePlane);
         this.m_editRS.addEntity(movePlane.getEntity(), this.m_editRSP, true);
         return movePlane;
@@ -123,8 +108,8 @@ class DragScaleController implements IDragScaleController {
         line.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
         this.m_editRS.addEntity(line.getEntity(), this.m_editRSP, true);
         this.m_editRS.addEntity(line.getBox(), this.m_editRSP, true);
-        this.m_target.addEntity(line.getEntity());
-        this.m_target.addEntity(line.getBox());
+        this.m_target.addCtrlEntity(line.getEntity());
+        this.m_target.addCtrlEntity(line.getBox());
         this.m_controllers.push(line);
     }
     private init(): void {
@@ -154,7 +139,7 @@ class DragScaleController implements IDragScaleController {
         crossPlane.initialize(this.m_editRS, 0, this.circleSize);
         crossPlane.setTarget(this.m_target);
         crossPlane.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
-        this.m_target.addEntity(crossPlane);
+        this.m_target.addCtrlEntity(crossPlane);
         this.m_controllers.push(crossPlane);
     }
     private dragMouseDownListener(evt: any): void {
@@ -211,11 +196,20 @@ class DragScaleController implements IDragScaleController {
         }
         return flag;
     }
-    select(): void {
+    select(targets: IEntityTransform[]): void {        
+        this.m_target.setTargets(targets);
+        this.m_target.select(null);
+        this.setVisible(targets != null);
     }
     deselect(): void {
 
         console.log("DragScaleController::deselect() ..., this.m_controllers.length: ", this.m_controllers.length);
+        this.m_target.deselect();
+        for (let i = 0; i < this.m_controllers.length; ++i) {
+            this.m_controllers[i].deselect();
+        }
+    }
+    decontrol(): void {
         for (let i = 0; i < this.m_controllers.length; ++i) {
             this.m_controllers[i].deselect();
         }

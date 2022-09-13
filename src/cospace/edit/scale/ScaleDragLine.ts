@@ -8,7 +8,6 @@
 import IVector3D from "../../../vox/math/IVector3D";
 import IAABB from "../../../vox/geom/IAABB";
 import IMatrix4 from "../../../vox/math/IMatrix4";
-import IEntityTransform from "../../../vox/entity/IEntityTransform";
 import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
@@ -24,6 +23,7 @@ import { ICoMesh } from "../../voxmesh/ICoMesh";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import { ICoEntity } from "../../voxentity/ICoEntity";
 import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
+import { IScaleTarget } from "./IScaleTarget";
 
 declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;
@@ -37,7 +37,7 @@ declare var CoEntity: ICoEntity;
  */
 class ScaleDragLine implements IRayControl {
 
-    private m_targetEntity: IEntityTransform = null;
+    private m_target: IScaleTarget = null;
     private m_dispatcher: IEvtDispatcher;
     private m_targetPosOffset: IVector3D = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
@@ -144,8 +144,8 @@ class ScaleDragLine implements IRayControl {
     setTargetPosOffset(offset: IVector3D): void {
         this.m_targetPosOffset.copyFrom(offset);
     }
-    setTarget(target: IEntityTransform): void {
-        this.m_targetEntity = target;
+    setTarget(target: IScaleTarget): void {
+        this.m_target = target;
     }
 
     private initializeEvent(entity: ITransformEntity): void {
@@ -191,7 +191,7 @@ class ScaleDragLine implements IRayControl {
         this.m_flag = -1;
     }
     destroy(): void {
-        this.m_targetEntity = null;
+        this.m_target = null;
         if (this.m_entity != null) {
             this.m_entity.destroy();
             this.m_entity = null;
@@ -218,7 +218,6 @@ class ScaleDragLine implements IRayControl {
     private m_flag: number = -1;
     private m_line_pv: IVector3D = CoMath.createVec3();
     private m_initPos: IVector3D = CoMath.createVec3();
-    private m_pos: IVector3D = CoMath.createVec3();
     private m_dv: IVector3D = CoMath.createVec3();
     private m_outV: IVector3D = CoMath.createVec3();
     private m_initV: IVector3D = CoMath.createVec3();
@@ -279,15 +278,16 @@ class ScaleDragLine implements IRayControl {
             }
             // console.log("scale: ",scale, sv);
             
-            if (this.m_targetEntity != null) {
-                this.m_targetEntity.setScaleXYZ(sv.x * sx, sv.y * sy, sv.z * sz);
-                this.m_targetEntity.update();
+            if (this.m_target != null) {
+                this.m_target.setScaleXYZ(sv.x * sx, sv.y * sy, sv.z * sz);
+                this.m_target.update();
             }
         }
     }
 
     mouseDownListener(evt: any): void {
         console.log("ScaleDragLine::mouseDownListener() ...");
+        this.m_target.select();
         this.m_flag = 1;
         //console.log("AxisCtrlObj::mouseDownListener(). this.m_flag: "+this.m_flag);
         let trans = this.m_entity.getTransform();
@@ -301,7 +301,7 @@ class ScaleDragLine implements IRayControl {
         this.calcClosePos(this.m_rpv, this.m_rtv);
         this.m_initV.copyFrom(this.m_outV);
         this.getPosition(this.m_initPos);
-        this.m_targetEntity.getScaleXYZ(this.m_sv);
+        this.m_target.getScaleXYZ(this.m_sv);
     }
 }
 export { ScaleDragLine }
