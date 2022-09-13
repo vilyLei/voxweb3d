@@ -260,7 +260,7 @@ export class DemoCoBase {
 		///*
 		let dragRCtr = new DragRotationController();
 		dragRCtr.initialize(this.m_rscene, 0);
-		dragRCtr.setTarget(box);
+		dragRCtr.select([box]);
 		this.m_dragRCtr = dragRCtr;
 		//*/
 		

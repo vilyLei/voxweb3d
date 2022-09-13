@@ -17,6 +17,7 @@ import { CircleRayTester } from "../base/CircleRayTester";
 
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import { IRayControl } from "../base/IRayControl";
+import { IRotatedTarget } from "./IRotatedTarget";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
@@ -37,7 +38,7 @@ declare var CoMesh: ICoMesh;
  */
 class RotationCircle implements IRayControl {
 
-    private m_targetEntity: IEntityTransform = null;
+    private m_target: IRotatedTarget = null;
     private m_dispatcher: IEvtDispatcher;
     private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
@@ -152,8 +153,8 @@ class RotationCircle implements IRayControl {
     setTargetPosOffset(offset: IVector3D): void {
         this.m_targetPosOffset.copyFrom(offset);
     }
-    setTarget(target: IEntityTransform): void {
-        this.m_targetEntity = target;
+    setTarget(target: IRotatedTarget): void {
+        this.m_target = target;
     }
     private initializeEvent(): void {
 
@@ -193,7 +194,7 @@ class RotationCircle implements IRayControl {
         this.m_flag = -1;
     }
     destroy(): void {
-        this.m_targetEntity = null;
+        this.m_target = null;
         if (this.m_entity != null) {
             this.m_entity.destroy();
             this.m_entity = null;
@@ -223,12 +224,12 @@ class RotationCircle implements IRayControl {
             // console.log("           degree: ", degree);
             degree -= this.m_initDegree;
             
-            let et = this.m_targetEntity;
+            let et = this.m_target;
             if (et != null) {
                 let rv = this.m_rotV;
                 let prv = this.m_preRotV;
                 et.getRotationXYZ(rv);
-                // console.log("this.m_type: ", this.m_type);
+                console.log("this.m_type: ", this.m_type);
                 switch (this.m_type) {
                     case 1:
                         // XOZ, Y-Axis
@@ -251,12 +252,13 @@ class RotationCircle implements IRayControl {
     mouseDownListener(evt: any): void {
         console.log("RotationCircle::mouseDownListener() ..., evt: ", evt);
 
+        this.m_target.select();
         this.m_flag = 1;
 
         this.m_initDegree = this.getDegree(evt.raypv, evt.raytv);
         this.m_preRotV.setXYZ(0, 0, 0);
-        if (this.m_targetEntity != null) {
-            this.m_targetEntity.getRotationXYZ(this.m_preRotV);
+        if (this.m_target != null) {
+            this.m_target.getRotationXYZ(this.m_preRotV);
         }
     }
 
@@ -271,7 +273,7 @@ class RotationCircle implements IRayControl {
                 if (hitFlag && V3.Distance(this.m_outV, this.m_center) > 2.0) {
                     this.m_outV.subtractBy(this.m_center);
 
-                    let et = this.m_targetEntity;
+                    let et = this.m_target;
                     if (et != null) {
                         let v = this.m_outV;
 

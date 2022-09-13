@@ -15,11 +15,6 @@ interface IDragScaleController extends IUserEditController {
     
     moveByRay(rpv: IVector3D, rtv: IVector3D): void;
     decontrol(): void;
-    // selectByParam(raypv: IVector3D, raytv: IVector3D, wpos: IVector3D): void;
-    // setTargetPosOffset(offset: IVector3D): void;
-    
-    // moveByRay(rpv: IVector3D, rtv: IVector3D): void;
-    // getVisible(): boolean;
 
 }
 

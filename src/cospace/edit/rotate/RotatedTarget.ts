@@ -94,16 +94,21 @@ class RotatedTarget implements IEntityTransform {
     getPosition(pv: IVector3D): void {
         pv.copyFrom(this.position);
     }
-    setRotation3(r: IVector3D): void {
-    }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
+    }
+    setRotation3(pr: IVector3D): void {
 
+        // console.log("setRotationXYZ(), rx, ry, rz: ", rx, ry, rz);
         if (this.m_tars != null) {
-
-            let r = this.m_rv;
-            r.setXYZ(rx, ry, rz);
-
             let tars = this.m_tars;
+            if (tars.length == 1) {
+                tars[0].setRotation3(pr);
+                this.m_changed = true;
+                return;
+            }
+            let r = this.m_rv;
+            r.copyFrom(pr);
+            console.log("setRotation3(), r: ", r);
             let mt0 = this.m_mat0;
             const vs = this.m_vs;
             const rvs = this.m_rvs;
@@ -112,29 +117,40 @@ class RotatedTarget implements IEntityTransform {
             if (tars.length > 1) {
                 for (let i = 0; i < tars.length; ++i) {
                     mt0.identity();
-                    mt0.setRotationEulerAngle(rx, ry, rz);
+                    mt0.setRotationEulerAngle(r.x, r.y, r.z);
                     pv.copyFrom(vs[i]);
                     mt0.transformVector3Self(pv);
                     pv.addBy(cv);
                     tars[i].setPosition(pv);
                 }
             }
+            let k180overPI = 180.0 / Math.PI;
             let eulerAngle = CoMath.OrientationType.EULER_ANGLES;
             for (let i = 0; i < tars.length; ++i) {
                 const rv = rvs[i];
                 mt0.identity();
-                mt0.setRotationEulerAngle(rv.x, rv.y, rv.z);
-                mt0.appendRotationEulerAngle(r.x, r.y, r.z);
-                let prv = mt0.decompose( eulerAngle )[1];
+                // mt0.setRotationEulerAngle(rv.x, rv.y, rv.z);
+                // mt0.appendRotationEulerAngle(r.x, r.y, r.z);
+                mt0.setRotationEulerAngle(r.x, r.y, r.z);
+                let ls = mt0.decompose(eulerAngle);
+                let prv = ls[1];
+                prv.scaleBy(k180overPI);
                 tars[i].setRotation3(prv);
+                // tars[i].setRotation3(pr);
             }
+            this.m_changed = true;
         }
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
 
     }
     getRotationXYZ(rv: IVector3D): void {
-        rv.setXYZ(0.0, 0.0, 0.0);
+        let tars = this.m_tars;
+        if (tars.length == 1) {
+            tars[0].getRotationXYZ(rv);
+        } else {
+            rv.setXYZ(0.0, 0.0, 0.0);
+        }
     }
     getScaleXYZ(sv: IVector3D): void {
 

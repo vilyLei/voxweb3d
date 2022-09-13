@@ -15,6 +15,7 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 import { DragMoveTarget } from "../move/DragMoveTarget";
 import { RotationCircle } from "./RotationCircle";
 import { IDragRotationController } from "./IDragRotationController";
+import { RotatedTarget } from "./RotatedTarget";
 
 import IColor4 from "../../../vox/material/IColor4";
 import { IRayControl } from "../base/IRayControl";
@@ -45,7 +46,7 @@ class DragRotationController implements IDragRotationController {
 
     private m_editRS: IRendererScene = null;
     private m_editRSP: number = 0;
-    private m_target = new DragMoveTarget();
+    private m_target = new RotatedTarget();
     private m_camera: IRenderCamera = null;
 
     private m_mousePrePos = CoMath.createVec3(-100000, -100000, 0);
@@ -72,22 +73,6 @@ class DragRotationController implements IDragRotationController {
         }
     }
 
-    selectByParam(raypv: IVector3D, raytv: IVector3D, wpos: IVector3D): void {
-        // if (this.m_crossPlaneDrag != null) {
-        //     this.m_crossPlaneDrag.selectByParam(raypv, raytv, wpos);
-        // }
-    }
-    setTargetPosOffset(offset: IVector3D): void {
-        this.m_target.setTargetPosOffset(offset);
-    }
-    setTarget(target: IEntityTransform): void {
-
-        this.m_target.setTarget(target);
-        this.setVisible(target != null);
-    }
-    getTarget(): IEntityTransform {
-        return this.m_target.getTarget();
-    }
     private createCircle(type: number, color: IColor4, radius: number = 100.0, segsTotal: number = 20): RotationCircle {
         let circle = new RotationCircle();
         circle.initialize(radius, segsTotal, type, color);
@@ -95,7 +80,7 @@ class DragRotationController implements IDragRotationController {
         circle.setTarget(this.m_target);
         circle.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
 
-        this.m_target.addEntity(circle);
+        this.m_target.addCtrlEntity(circle);
         this.m_controllers.push(circle);
         this.m_editRS.addEntity(circle.getEntity(), this.m_editRSP, true);
         return circle;
@@ -166,17 +151,23 @@ class DragRotationController implements IDragRotationController {
         }
         return flag;
     }
-    select(): void {
+    select(targets: IEntityTransform[]): void {        
+        this.m_target.setTargets(targets);
+        this.m_target.select(null);
+        this.setVisible(targets != null);
     }
     deselect(): void {
 
         console.log("DragRotationController::deselect() ..., this.m_controllers.length: ", this.m_controllers.length);
+        this.m_target.deselect();
         for (let i = 0; i < this.m_controllers.length; ++i) {
             this.m_controllers[i].deselect();
         }
     }
     decontrol(): void {
-        
+        for (let i = 0; i < this.m_controllers.length; ++i) {
+            this.m_controllers[i].deselect();
+        }
     }
     setVisible(visible: boolean): void {
 

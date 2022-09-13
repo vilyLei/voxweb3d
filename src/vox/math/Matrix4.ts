@@ -751,7 +751,7 @@ class Matrix4 implements IMatrix4 {
 		// TODO: optimize after 4 lines
 		let vec = [];
 		let mr = Matrix4.s_tMat4;
-		let mrfs32 = mr.getFS32();
+		let mrfs32 = mr.getLocalFS32();
 		//let mrfsI = mr.getFSIndex();
 		//std::memcpy(&mr, m_rawData, m_rawDataSize);
 		mr.copyFrom(this);
