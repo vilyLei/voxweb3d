@@ -74,20 +74,27 @@ class DragScaleController implements IDragScaleController {
         }
     }
 
-    private createDragPlane(type: number, alpha: number): ScaleDragPlane {
+    private createDragPlane(type: number, alpha: number, outColor: IColor4): ScaleDragPlane {
 
         let movePlane = new ScaleDragPlane();
         movePlane.moveSelfEnabled = false;
-        movePlane.initialize(type, this.planeSize, alpha);
+        movePlane.initialize(type, this.planeSize);
+        outColor.a = alpha;
+        movePlane.outColor.copyFrom(outColor);
+        outColor.scaleBy(1.5);
+        outColor.a = 1.3 * alpha;
+        movePlane.overColor.copyFrom(outColor);
 
         movePlane.setTarget(this.m_target);
         movePlane.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
         this.m_target.addCtrlEntity(movePlane);
         this.m_controllers.push(movePlane);
         this.m_editRS.addEntity(movePlane.getEntity(), this.m_editRSP, true);
+        movePlane.showOutColor();
+        
         return movePlane;
     }
-    private createDragLine(tv: IVector3D, outColor: IColor4, overColor: IColor4, mat4: IMatrix4): void {
+    private createDragLine(tv: IVector3D, outColor: IColor4, mat4: IMatrix4): void {
 
         let trans = tv.clone().scaleBy(this.axisSize);
         mat4.setTranslation(trans);
@@ -101,7 +108,8 @@ class DragScaleController implements IDragScaleController {
         line.pickTestRadius = this.pickTestAxisRadius;
         line.initialize(this.axisSize, line.innerSphereRadius);
         line.outColor.copyFrom(outColor);
-        line.overColor.copyFrom(overColor);
+        outColor.scaleBy(1.5);
+        line.overColor.copyFrom(outColor);
         line.showOutColor();
 
         line.setTarget(this.m_target);
@@ -118,21 +126,47 @@ class DragScaleController implements IDragScaleController {
 
         let color4 = CoMaterial.createColor4;
 
+
+
+        // this.createCircle(0, color.setRGBUint8(240,55,80), this.radius, n);
+        // // xoy
+        // this.createCircle(1, color.setRGBUint8(135,205,55), this.radius, n);
+        // // yoz
+        // this.createCircle(2, color.setRGBUint8(80,145,240), this.radius, n);
+
+        let outColor = color4();
+
         const V3 = CoMath.Vector3D;
         let mat4 = CoMath.createMat4();
+
+        outColor.setRGBUint8(240, 55, 80);
+        mat4.identity();
+        this.createDragLine(V3.X_AXIS, outColor, mat4);
+        outColor.setRGBUint8(135, 205, 55);
+        mat4.identity();
+        this.createDragLine(V3.Y_AXIS, outColor, mat4);
+        outColor.setRGBUint8(80, 145, 240);
+        mat4.identity();
+        this.createDragLine(V3.Z_AXIS, outColor, mat4);
+
+        /*
         mat4.identity();
         this.createDragLine(V3.X_AXIS, color4(1.0, 0.0, 0.0), color4(1.0, 0.0, 1.0), mat4);
         mat4.identity();
         this.createDragLine(V3.Y_AXIS, color4(0.0, 1.0, 0.0), color4(1.0, 1.0, 0.0), mat4);
         mat4.identity();
         this.createDragLine(V3.Z_AXIS, color4(0.0, 0.0, 1.0), color4(0.0, 1.0, 1.0), mat4);
+        //*/
 
         // xoz
-        this.createDragPlane(0, alpha);
+        outColor.setRGBUint8(240, 55, 80);
+        this.createDragPlane(0, alpha, outColor);
         // xoy
-        this.createDragPlane(1, alpha);
+        outColor.setRGBUint8(135, 205, 55);
+        this.createDragPlane(1, alpha, outColor);
         // yoz
-        this.createDragPlane(2, alpha);
+        outColor.setRGBUint8(80, 145, 240);
+        this.createDragPlane(2, alpha, outColor);
 
         let crossPlane = new DragScaleRayCrossPlane();
         crossPlane.moveSelfEnabled = false;
@@ -196,7 +230,7 @@ class DragScaleController implements IDragScaleController {
         }
         return flag;
     }
-    select(targets: IEntityTransform[]): void {        
+    select(targets: IEntityTransform[]): void {
         this.m_target.setTargets(targets);
         this.m_target.select(null);
         this.setVisible(targets != null);
