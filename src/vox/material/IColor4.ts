@@ -39,18 +39,24 @@ interface IColor4 {
      * example: [0],[1],[2] => r,g,b
      */
     toArray3(arr: number[] | Float32Array, offset?: number): IColor4;
-    setRGB3Bytes(r: number, g: number, b: number): void
-    setRGB3f(r: number, g: number, b: number): void
-    setRGBUint24(rgbUint24: number): void
-    getRGBUint24(): number
-    setRGBA4f(r: number, g: number, b: number, a: number): void
-    copyFrom(c: IColor4): void
-    copyFromRGB(c: IColor4): void
-    scaleBy(s: number): void
-    inverseRGB(): void
-    randomRGB(density: number, bias?: number): void
-    normalizeRandom(density?: number, bias?: number): void
-    normalize(density: number): void
+    setRGB3Bytes(r: number, g: number, b: number): IColor4
+    setRGB3f(r: number, g: number, b: number): IColor4;
+    setRGBUint24(rgbUint24: number): IColor4;
+    /**
+     * @param uint8R example: 80
+     * @param uint8G example: 100
+     * @param uint8B example: 200
+     */
+    setRGBUint8(uint8R: number, uint8G: number, uint8B: number): IColor4;
+    getRGBUint24(): number;
+    setRGBA4f(r: number, g: number, b: number, a: number): IColor4;
+    copyFrom(c: IColor4): IColor4;
+    copyFromRGB(c: IColor4): IColor4;
+    scaleBy(s: number): IColor4;
+    inverseRGB(): IColor4;
+    randomRGB(density: number, bias?: number): IColor4;
+    normalizeRandom(density?: number, bias?: number): IColor4;
+    normalize(density: number): IColor4;
 
     /**
      * @returns for example: rgba(255,255,255,1.0)

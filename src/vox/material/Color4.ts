@@ -7,7 +7,7 @@
 
 import IColor4 from "./IColor4";
 
-const MATH_MIN_POSITIVE: number = 1e-5;
+const __$mcv: number = 1e-5;
 
 class Color4 implements IColor4{
     r: number;
@@ -47,65 +47,82 @@ class Color4 implements IColor4{
         arr[offset + 2] = this.b;
         return this;
     }
-    setRGB3Bytes(r: number, g: number, b: number): void {
+    setRGB3Bytes(r: number, g: number, b: number): Color4 {
         this.r = r / 255.0;
         this.g = g / 255.0;
         this.b = b / 255.0;
+        return this;
     }
-    setRGB3f(r: number, g: number, b: number): void {
+    setRGB3f(r: number, g: number, b: number): Color4 {
         this.r = r;
         this.g = g;
         this.b = b;
+        return this;
     }
-    setRGBUint24(rgbUint24: number): void {
+    
+    setRGBUint8(uint8R: number, uint8G: number, uint8B: number): Color4 {
+        let k = 1.0 / 255.0;
+        this.r = uint8R * k;
+        this.g = uint8G * k;
+        this.b = uint8B * k;
+        return this;
+    }
+    setRGBUint24(rgbUint24: number): Color4 {
         this.r = ((rgbUint24 >> 16) & 0x0000ff) / 255.0;
         this.g = ((rgbUint24 >> 8) & 0x0000ff) / 255.0;
         this.b = (rgbUint24 & 0x0000ff) / 255.0;
+        return this;
     }
     getRGBUint24(): number {
         return (Math.round(this.r * 255) << 16) + (Math.round(this.g * 255) << 8) + Math.round(this.b * 255);
     }
-    setRGBA4f(r: number, g: number, b: number, a: number): void {
+    setRGBA4f(r: number, g: number, b: number, a: number): Color4 {
         this.r = r;
         this.g = g;
         this.b = b;
         this.a = a;
+        return this;
     }
-    copyFrom(c: Color4): void {
+    copyFrom(c: Color4): Color4 {
         this.r = c.r;
         this.g = c.g;
         this.b = c.b;
         this.a = c.a;
+        return this;
     }
-    copyFromRGB(c: Color4): void {
+    copyFromRGB(c: Color4): Color4 {
         this.r = c.r;
         this.g = c.g;
         this.b = c.b;
+        return this;
     }
-    scaleBy(s: number): void {
+    scaleBy(s: number): Color4 {
         this.r *= s;
         this.g *= s;
         this.b *= s;
+        return this;
     }
-    inverseRGB(): void {
+    inverseRGB(): Color4 {
         this.r = 1.0 - this.r;
         this.g = 1.0 - this.g;
         this.b = 1.0 - this.b;
+        return this;
     }
-    randomRGB(density: number = 1.0, bias: number = 0.0): void {
+    randomRGB(density: number = 1.0, bias: number = 0.0): Color4 {
         this.r = Math.random() * density;
         this.g = Math.random() * density;
         this.b = Math.random() * density;
         this.r += bias;
         this.g += bias;
         this.b += bias;
+        return this;
     }
-    normalizeRandom(density: number = 1.0, bias: number = 0.0): void {
+    normalizeRandom(density: number = 1.0, bias: number = 0.0): Color4 {
         this.r = Math.random();
         this.g = Math.random();
         this.b = Math.random();
         let d = Math.sqrt(this.r * this.r + this.g * this.g + this.b * this.b);
-        if (d > MATH_MIN_POSITIVE) {
+        if (d > __$mcv) {
             this.r = density * this.r / d;
             this.g = density * this.g / d;
             this.b = density * this.b / d;
@@ -113,15 +130,17 @@ class Color4 implements IColor4{
         this.r += bias;
         this.g += bias;
         this.b += bias;
+        return this;
     }
-    normalize(density: number): void {
+    normalize(density: number): Color4 {
         if (density == undefined) density = 1.0;
         let d = Math.sqrt(this.r * this.r + this.g * this.g + this.b * this.b);
-        if (d > MATH_MIN_POSITIVE) {
+        if (d > __$mcv) {
             this.r = density * this.r / d;
             this.g = density * this.g / d;
             this.b = density * this.b / d;
         }
+        return this;
     }
 
     /**
