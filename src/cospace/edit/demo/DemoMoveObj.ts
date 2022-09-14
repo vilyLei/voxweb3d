@@ -26,6 +26,8 @@ import IVector3D from "../../../vox/math/IVector3D";
 import { LineMeshBuilder } from "../../voxmesh/build/LineMeshBuilder";
 import { IDragScaleController } from "../scale/IDragScaleController";
 import { DragScaleController } from "../scale/DragScaleController";
+import { IDragRotationController } from "../rotate/IDragRotationController";
+import { DragRotationController } from "../rotate/DragRotationController";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -124,6 +126,7 @@ export class DemoMoveObj {
 	}
 	private m_movedCtr: IDragMoveController;
 	private m_scaleCtr: IDragScaleController;
+	private m_rotatedCtr: IDragRotationController;
 	private createEditEntity(): void {
 
 		/*
@@ -155,13 +158,21 @@ export class DemoMoveObj {
 		this.m_movedCtr.initialize(this.m_rscene, 1);
 		// this.m_movedCtr.setVisible(true);
 		//*/
+		/*
 		this.m_scaleCtr = new DragScaleController();
 		this.m_scaleCtr.axisSize = 100;
 		this.m_scaleCtr.planeSize = 30;
 		this.m_scaleCtr.pickTestAxisRadius = 10;
 		this.m_scaleCtr.runningVisible = true;
 		this.m_scaleCtr.initialize(this.m_rscene, 1);
+		//*/
 
+		this.m_rotatedCtr = new DragRotationController();
+		// this.m_rotatedCtr.axisSize = 100;
+		// this.m_rotatedCtr.planeSize = 30;
+		this.m_rotatedCtr.pickTestAxisRadius = 10;
+		this.m_rotatedCtr.runningVisible = true;
+		this.m_rotatedCtr.initialize(this.m_rscene, 1);
 	}
 	private mouseUpListener(evt: any): void {
 		console.log("DemoMoveObj::mouseUpListener() ...");
@@ -170,6 +181,9 @@ export class DemoMoveObj {
 		}
 		if (this.m_scaleCtr != null) {
 			this.m_scaleCtr.decontrol();
+		}
+		if (this.m_rotatedCtr != null) {
+			this.m_rotatedCtr.decontrol();
 		}
 	}
 	private mouseBgDownListener(evt: any): void {
@@ -236,7 +250,9 @@ export class DemoMoveObj {
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 			rparam.setCamProject(45, 20.0, 9000.0);
 			let rscene = CoRScene.createRendererScene(rparam, 3);
-			rscene.setClearUint24Color(0x888888);
+			rscene.setClearRGBColor3f(0.23,0.23,0.23);
+			// console.log("60/255: ", 60/255);
+			// rscene.setClearUint24Color((60 << 16) + (60 << 8) + 60);
 
 			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
 			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDownListener);
@@ -327,7 +343,8 @@ export class DemoMoveObj {
 		pos.subtractBy(wpos);
 		
 		// this.applyMoveCtr(wpos, entity);
-		this.applyScaleCtr(wpos, entity);
+		// this.applyScaleCtr(wpos, entity);
+		this.applyRotatedCtr(wpos, entity);
 	}
 	private applyMoveCtr(wpos: IVector3D, target: ITransformEntity): void {
 		if (this.m_movedCtr != null) {
@@ -351,6 +368,17 @@ export class DemoMoveObj {
 			this.m_scaleCtr.select([ls[0], ls[1], target]);
 		}
 	}
+	private applyRotatedCtr(wpos: IVector3D, target: ITransformEntity): void {
+		if (this.m_rotatedCtr != null) {
+			console.log("applyRotatedCtr() ....");
+			this.m_rotatedCtr.deselect();
+			this.m_rotatedCtr.setPosition(wpos);
+			this.m_rotatedCtr.update();
+			// this.m_scaleCtr.select( [evt.target] );
+			let ls = this.m_entities;
+			this.m_rotatedCtr.select([ls[0], ls[1], target]);
+		}
+	}
 	private mouseDown(evt: any): void { }
 	run(): void {
 		if (this.m_rscene != null) {
@@ -360,6 +388,10 @@ export class DemoMoveObj {
 			if (this.m_scaleCtr != null) {
 				this.m_scaleCtr.run();
 			}
+			if (this.m_rotatedCtr != null) {
+				this.m_rotatedCtr.run();
+			}
+			
 			if (this.m_interact != null) {
 				this.m_interact.run();
 			}

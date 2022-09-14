@@ -157,7 +157,7 @@ export class DemoCoBase {
 	private test01(): void {
 
 		//BoxMeshBuilder
-		
+
 		///*
 		// let mat = CoMath.createMat4();
 		// mat.rotationZ(-0.5 * Math.PI);
@@ -257,13 +257,13 @@ export class DemoCoBase {
 		// circle.initialize(100,20,0, CoMaterial.createColor4(1.0,0.0,0.0));
 		// this.m_rscene.addEntity(circle.getEntity());
 
-		///*
+		/*
 		let dragRCtr = new DragRotationController();
 		dragRCtr.initialize(this.m_rscene, 0);
 		dragRCtr.select([box]);
 		this.m_dragRCtr = dragRCtr;
 		//*/
-		
+
 		/*
 		let dragSCtr = new DragScaleController();
 		dragSCtr.initialize(this.m_rscene, 0);
@@ -271,10 +271,10 @@ export class DemoCoBase {
 		this.m_dragSCtr = dragSCtr;
 		//*/
 
-		/*
+		///*
 		let dragMCtr = new DragMoveController();
 		dragMCtr.initialize(this.m_rscene, 0);
-		dragMCtr.setTarget(box);
+		dragMCtr.select( [box] );
 		this.m_dragMCtr = dragMCtr;
 		//*/
 
@@ -320,10 +320,10 @@ export class DemoCoBase {
 		if (this.m_dragRCtr != null) {
 			this.m_dragRCtr.decontrol();
 		}
-		if(this.m_dragMCtr != null) {
+		if (this.m_dragMCtr != null) {
 			this.m_dragMCtr.decontrol();
 		}
-		if(this.m_dragSCtr != null) {
+		if (this.m_dragSCtr != null) {
 			this.m_dragSCtr.decontrol();
 		}
 	}
@@ -426,9 +426,9 @@ export class DemoCoBase {
 	}
 	private createDefaultEntity(): void {
 
-		let axis = CoRScene.createAxis3DEntity();
-		this.m_rscene.addEntity(axis);
-		this.m_axis = axis;
+		// let axis = CoRScene.createAxis3DEntity();
+		// this.m_rscene.addEntity(axis);
+		// this.m_axis = axis;
 
 		// let texList = [this.createTexByUrl()];
 		// let material = CoRScene.createDefaultMaterial();
@@ -479,7 +479,9 @@ export class DemoCoBase {
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 			rparam.setCamProject(45, 20.0, 9000.0);
 			this.m_rscene = CoRScene.createRendererScene(rparam, 3);
-			this.m_rscene.setClearUint24Color(0x888888);
+			// this.m_rscene.setClearUint24Color(0x888888);
+			this.m_rscene.setClearUint24Color((60 << 16) + (60 << 8) + 60);
+			// this.m_rscene.setClearRGBColor3f(60/255.0, 60/255.0, 60/255.0);
 			let rscene = this.m_rscene;
 			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
 			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDownListener);
