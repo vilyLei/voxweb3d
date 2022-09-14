@@ -37,12 +37,12 @@ class DragRotationController implements IDragRotationController {
     private m_controllers: IRayControl[] = [];
     private m_pos0 = CoMath.createVec3();
     private m_pos1 = CoMath.createVec3();
-    private m_posX = 0;
     private m_rpv = CoMath.createVec3();
     private m_rtv = CoMath.createVec3();
     private m_tempPos = CoMath.createVec3();
     private m_visible = true;
     private m_enabled = true;
+    private m_posX = 0;
 
     private m_editRS: IRendererScene = null;
     private m_editRSP: number = 0;
@@ -75,7 +75,10 @@ class DragRotationController implements IDragRotationController {
 
     private createCircle(type: number, color: IColor4, radius: number = 100.0, segsTotal: number = 20): RotationCircle {
         let circle = new RotationCircle();
-        circle.initialize(radius, segsTotal, type, color);
+        circle.outColor.copyFrom(color);
+        circle.overColor.copyFrom(color);
+        circle.overColor.scaleBy(1.5);
+        circle.initialize(radius, segsTotal, type);
 
         circle.setTarget(this.m_target);
         circle.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
@@ -89,22 +92,24 @@ class DragRotationController implements IDragRotationController {
 
         let planeCtrFlag = true;
         if (planeCtrFlag) {
+            // 粉色 240,55,80, 绿色 135 205 55,  蓝色:  80, 145, 240
             let n = Math.floor(this.radius / 2.0);
             // xoz
-            this.createCircle(0, CoMaterial.createColor4(1.0, 0.0, 0.0), this.radius, n);
+            let color = CoMaterial.createColor4();
+            this.createCircle(0, color.setRGBUint8(240,55,80), this.radius, n);
             // xoy
-            this.createCircle(1, CoMaterial.createColor4(0.0, 1.0, 0.0), this.radius, n);
+            this.createCircle(1, color.setRGBUint8(135,205,55), this.radius, n);
             // yoz
-            this.createCircle(2, CoMaterial.createColor4(0.0, 0.0, 1.0), this.radius, n);
+            this.createCircle(2, color.setRGBUint8(80,145,240), this.radius, n);
         }
     }
     private dragMouseDownListener(evt: any): void {
         this.m_editRS.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener, true, true);
-        this.setVisible(this.runningVisible);
+        // this.setVisible(this.runningVisible);
     }
     private dragMouseUpListener(evt: any): void {
         this.m_editRS.removeEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener);
-        this.setVisible(true);
+        // this.setVisible(true);
     }
     run(): void {
 
@@ -168,6 +173,7 @@ class DragRotationController implements IDragRotationController {
         for (let i = 0; i < this.m_controllers.length; ++i) {
             this.m_controllers[i].deselect();
         }
+        this.setVisible(true);
     }
     setVisible(visible: boolean): void {
 

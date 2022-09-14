@@ -38,6 +38,7 @@ declare var CoMesh: ICoMesh;
  */
 class RotationCircle implements IRayControl {
 
+    private static s_list: RotationCircle[] = [];
     private m_target: IRotatedTarget = null;
     private m_dispatcher: IEvtDispatcher;
     private m_targetPosOffset = CoMath.createVec3();
@@ -59,6 +60,7 @@ class RotationCircle implements IRayControl {
     overColor = CoMaterial.createColor4(1.0, 1.0, 1.0, 1.0);
     pickTestRadius = 20;
     constructor() {
+        RotationCircle.s_list.push(this);
     }
     /**
      * init the circle mouse event display entity
@@ -67,15 +69,14 @@ class RotationCircle implements IRayControl {
      * @param type 0 is xoy, 1 is xoz, 2 is yoz
      * @param color IColor4 instance
      */
-    initialize(radius: number, segsTotal: number, type: number, color: IColor4): void {
+    initialize(radius: number, segsTotal: number, type: number): void {
         if (this.m_entity == null) {
 
             this.m_entity = CoEntity.createDisplayEntity();
 
             let ml = CoMesh.line;
             let mesh: IRawMesh;
-            ml.dynColorEnabled = false;
-            ml.color.copyFrom(color);
+            ml.dynColorEnabled = true;
             this.m_type = type;
             switch (type) {
                 case 1:
@@ -95,7 +96,8 @@ class RotationCircle implements IRayControl {
             mesh.setRayTester(new CircleRayTester(radius, this.m_center, this.m_planeNV, this.m_planeDis, this.pickTestRadius));
             this.m_entity.setMesh(mesh);
             this.m_material = CoMaterial.createLineMaterial(ml.dynColorEnabled);
-            this.m_entity.setMaterial(this.m_material);
+            this.m_material.setColor( this.outColor );
+            this.m_entity.setMaterial( this.m_material );
             this.m_entity.update();
 
             this.initializeEvent();
@@ -191,6 +193,12 @@ class RotationCircle implements IRayControl {
     }
     deselect(): void {
         console.log("RotationCircle::deselect() ...");
+        if (this.m_flag > 0) {
+            let ls = RotationCircle.s_list;
+            for (let i = 0; i < ls.length; ++i) {
+                ls[i].setVisible(true);
+            }
+        }
         this.m_flag = -1;
     }
     destroy(): void {
@@ -220,16 +228,15 @@ class RotationCircle implements IRayControl {
         if (this.m_flag > -1) {
             // console.log("RotationCircle::moveByRay() ...");
             // console.log("           this.m_initDegree: ", this.m_initDegree);
-            let degree = this.getDegree(rpv, rtv);            
+            let degree = this.getDegree(rpv, rtv);
             // console.log("           degree: ", degree);
             degree -= this.m_initDegree;
-            
+
             let et = this.m_target;
             if (et != null) {
                 let rv = this.m_rotV;
                 let prv = this.m_preRotV;
                 et.getRotationXYZ(rv);
-                console.log("this.m_type: ", this.m_type);
                 switch (this.m_type) {
                     case 1:
                         // XOZ, Y-Axis
@@ -254,6 +261,10 @@ class RotationCircle implements IRayControl {
 
         this.m_target.select();
         this.m_flag = 1;
+        let ls = RotationCircle.s_list;
+        for (let i = 0; i < ls.length; ++i) {
+            ls[i].setVisible( ls[i] == this );
+        }
 
         this.m_initDegree = this.getDegree(evt.raypv, evt.raytv);
         this.m_preRotV.setXYZ(0, 0, 0);

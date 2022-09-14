@@ -101,14 +101,14 @@ class RotatedTarget implements IEntityTransform {
         // console.log("setRotationXYZ(), rx, ry, rz: ", rx, ry, rz);
         if (this.m_tars != null) {
             let tars = this.m_tars;
-            if (tars.length == 1) {
-                tars[0].setRotation3(pr);
-                this.m_changed = true;
-                return;
-            }
-            let r = this.m_rv;
-            r.copyFrom(pr);
-            console.log("setRotation3(), r: ", r);
+            // console.log("setRotation3(), pr: ", pr);
+
+            let piOver180 = Math.PI / 180.0;
+            let k180overPI = 180.0 / Math.PI;
+            let ir = this.m_rv;
+            ir.copyFrom(pr);
+            ir.scaleBy( piOver180 );
+
             let mt0 = this.m_mat0;
             const vs = this.m_vs;
             const rvs = this.m_rvs;
@@ -117,26 +117,23 @@ class RotatedTarget implements IEntityTransform {
             if (tars.length > 1) {
                 for (let i = 0; i < tars.length; ++i) {
                     mt0.identity();
-                    mt0.setRotationEulerAngle(r.x, r.y, r.z);
+                    mt0.setRotationEulerAngle(ir.x, ir.y, ir.z);
                     pv.copyFrom(vs[i]);
                     mt0.transformVector3Self(pv);
                     pv.addBy(cv);
                     tars[i].setPosition(pv);
                 }
             }
-            let k180overPI = 180.0 / Math.PI;
             let eulerAngle = CoMath.OrientationType.EULER_ANGLES;
             for (let i = 0; i < tars.length; ++i) {
                 const rv = rvs[i];
                 mt0.identity();
-                // mt0.setRotationEulerAngle(rv.x, rv.y, rv.z);
-                // mt0.appendRotationEulerAngle(r.x, r.y, r.z);
-                mt0.setRotationEulerAngle(r.x, r.y, r.z);
+                mt0.setRotationEulerAngle(rv.x, rv.y, rv.z);
+                mt0.appendRotationEulerAngle(ir.x, ir.y, ir.z);
                 let ls = mt0.decompose(eulerAngle);
                 let prv = ls[1];
                 prv.scaleBy(k180overPI);
                 tars[i].setRotation3(prv);
-                // tars[i].setRotation3(pr);
             }
             this.m_changed = true;
         }
@@ -145,12 +142,7 @@ class RotatedTarget implements IEntityTransform {
 
     }
     getRotationXYZ(rv: IVector3D): void {
-        let tars = this.m_tars;
-        if (tars.length == 1) {
-            tars[0].getRotationXYZ(rv);
-        } else {
-            rv.setXYZ(0.0, 0.0, 0.0);
-        }
+        rv.setXYZ(0.0, 0.0, 0.0);
     }
     getScaleXYZ(sv: IVector3D): void {
 
