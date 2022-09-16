@@ -18,7 +18,7 @@ import { IDragRotationController } from "./IDragRotationController";
 import { RotatedTarget } from "./RotatedTarget";
 
 import IColor4 from "../../../vox/material/IColor4";
-import { IRayControl } from "../base/IRayControl";
+import { IRotationCtr } from "./IRotationCtr";
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import { ICoMath } from "../../math/ICoMath";
@@ -34,7 +34,7 @@ declare var CoAGeom: ICoAGeom;
  */
 class DragRotationController implements IDragRotationController {
 
-    private m_controllers: IRayControl[] = [];
+    private m_controllers: IRotationCtr[] = [];
     private m_pos0 = CoMath.createVec3();
     private m_pos1 = CoMath.createVec3();
     private m_rpv = CoMath.createVec3();
@@ -74,6 +74,7 @@ class DragRotationController implements IDragRotationController {
     }
 
     private createCircle(type: number, color: IColor4, radius: number = 100.0, segsTotal: number = 20): RotationCircle {
+
         let circle = new RotationCircle();
         circle.outColor.copyFrom(color);
         circle.overColor.copyFrom(color);
@@ -86,6 +87,7 @@ class DragRotationController implements IDragRotationController {
         this.m_target.addCtrlEntity(circle);
         this.m_controllers.push(circle);
         this.m_editRS.addEntity(circle.getEntity(), this.m_editRSP, true);
+        this.m_editRS.addEntity(circle.getEntity2(), this.m_editRSP, true);
         return circle;
     }
     private init(): void {
@@ -115,13 +117,15 @@ class DragRotationController implements IDragRotationController {
 
         if (this.m_enabled) {
 
+            let ls = this.m_controllers;
+
             this.m_tempPos.copyFrom(this.m_target.position);
-            this.m_camera = this.m_editRS.getCamera();
+            let cam = this.m_editRS.getCamera();
             let stage = this.m_editRS.getStage3D();
 
             if (this.fixSize > 0.01) {
-                let vmat = this.m_camera.getViewMatrix();
-                let pmat = this.m_camera.getProjectMatrix();
+                let vmat = cam.getViewMatrix();
+                let pmat = cam.getProjectMatrix();
                 vmat.transformVector3Self(this.m_tempPos);
                 this.m_pos0.setXYZ(0.0, 0.0, this.m_tempPos.z);
                 this.m_pos1.setXYZ(100.0, 0.0, this.m_tempPos.z);
@@ -141,18 +145,25 @@ class DragRotationController implements IDragRotationController {
                 this.m_mousePrePos.copyFrom(this.m_mousePos);
                 this.m_editRS.getMouseXYWorldRay(this.m_rpv, this.m_rtv);
 
-                for (let i = 0; i < this.m_controllers.length; ++i) {
-                    if (this.m_controllers[i].isSelected()) {
-                        this.m_controllers[i].moveByRay(this.m_rpv, this.m_rtv);
+                for (let i = 0; i < ls.length; ++i) {
+                    if (ls[i].isSelected()) {
+                        ls[i].moveByRay(this.m_rpv, this.m_rtv);
                     }
+                }
+            }
+
+            for (let i = 0; i < ls.length; ++i) {
+                if (ls[i].getVisible()) {
+                    ls[i].run(cam);
                 }
             }
         }
     }
     isSelected(): boolean {
         let flag = false;
-        for (let i = 0; i < this.m_controllers.length; ++i) {
-            flag = flag || this.m_controllers[i].isSelected();
+        let ls = this.m_controllers;
+        for (let i = 0; i < ls.length; ++i) {
+            flag = flag || ls[i].isSelected();
         }
         return flag;
     }
@@ -222,7 +233,7 @@ class DragRotationController implements IDragRotationController {
     }
     globalToLocal(pv: IVector3D): void {
     }
-    update(): void {
+    update(): void {        
     }
     destroy(): void {
         this.m_controllers = [];
