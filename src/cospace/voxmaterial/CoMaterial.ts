@@ -21,6 +21,9 @@ function createDefaultMaterial(normalEnabled: boolean = false): IDefault3DMateri
 function createLineMaterial(dynColorEnabled: boolean = true): IColorMaterial {
 	return CoRScene.createLineMaterial(dynColorEnabled);
 }
+function createQuadLineMaterial(dynColorEnabled: boolean = true): IColorMaterial {
+	return CoRScene.createQuadLineMaterial(dynColorEnabled);
+}
 function createShaderMaterial(shd_uniqueName: string): IShaderMaterial {
 	return CoRScene.createShaderMaterial(shd_uniqueName);
 }
@@ -40,6 +43,7 @@ export {
 	createColor4,
 	createDefaultMaterial,
 	createLineMaterial,
+	createQuadLineMaterial,
 	createShaderMaterial,
 	createMaterial,
 	creatMaterialContextParam,

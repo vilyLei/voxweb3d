@@ -217,6 +217,11 @@ interface ICoRScene {
 	 * @param dynColorEnabled the default value is false
 	 */
 	createLineMaterial(dynColorEnabled?: boolean): IColorMaterial;
+	/**
+	 * build 3d quad line entity rendering material
+	 * @param dynColorEnabled the default value is false
+	 */
+	createQuadLineMaterial(dynColorEnabled?: boolean): IColorMaterial;
 	createShaderMaterial(shd_uniqueName: string): IShaderMaterial;
 	createMaterial(dcr: IMaterialDecorator): IMaterial;
 

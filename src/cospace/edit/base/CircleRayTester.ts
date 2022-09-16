@@ -22,10 +22,11 @@ class CircleRayTester implements ITestRay {
     private m_center: IVector3D;
     isHit: boolean = false;
     private m_outV0 = CoMath.createVec3();
-    // private m_pv1 = CoMath.createVec3();
-    constructor(radius: number, center: IVector3D, pnv: IVector3D, pdis: number, rayTestRadius: number) {
+    private m_direcV: IVector3D;
+    constructor(radius: number, center: IVector3D, direcV: IVector3D, pnv: IVector3D, pdis: number, rayTestRadius: number) {
         this.m_radius = radius;
         this.m_center = center;
+        this.m_direcV = direcV;
         this.m_planeNV = pnv;
         this.m_planeDis = pdis;
         this.m_rayTestRadius = rayTestRadius;
@@ -44,8 +45,10 @@ class CircleRayTester implements ITestRay {
                 let dis = CoMath.Vector3D.Distance(this.m_outV0, this.m_center);
                 this.isHit = Math.abs(dis - this.m_radius) < this.m_rayTestRadius;
                 if( this.isHit ) {
-                    outV.copyFrom(this.m_outV0);
-                    return 1;
+                    if(this.m_direcV == null || this.m_direcV.dot(this.m_outV0) > 0) {
+                        outV.copyFrom(this.m_outV0);
+                        return 1;
+                    }
                     // console.log("hit the plane circle, its nv: ", this.m_planeNV, ", this.m_radius: ", this.m_radius);
                 }
             }

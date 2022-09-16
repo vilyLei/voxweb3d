@@ -64,8 +64,8 @@ export class DemoDracoParser {
 		this.m_dracoGeomBuilder.setListener(this);
 
 		this.m_lossTime = Date.now();
-		// this.loadDraco01();
-		this.loadDraco02();
+		this.loadDraco01();
+		// this.loadDraco02();
 		// this.loadDraco();
 
 		document.onmousedown = (evt: any): void => {
@@ -82,6 +82,7 @@ export class DemoDracoParser {
 		url = "static/private/draco/sh202_25.ctm.drc";
 		url = "static/private/draco/sh202_26.ctm.drc";
 		url = "static/private/draco/errorNormal.drc";
+		// url = "static/private/draco/model.fbs";
 		// url = "static/private/draco/sh202_25.drc";
 		// draco模型数据字节分段信息
 		// this.m_dracoGeomBuilder.load(url);

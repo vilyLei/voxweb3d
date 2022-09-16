@@ -60,6 +60,7 @@ import VtxBufConst from "../../vox/mesh/VtxBufConst";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 import Line3DMaterial from "../../vox/material/mcase/Line3DMaterial";
+import BrokenQuadLine3DMaterial from "../../vox/material/mcase/BrokenQuadLine3DMaterial";
 
 
 function createVec3(px: number = 0.0, py: number = 0.0, pz: number = 0.0, pw: number = 1.0): IVector3D {
@@ -143,6 +144,13 @@ function createDefaultMaterial(normalEnabled: boolean = false): IDefault3DMateri
 function createLineMaterial(dynColorEnabled: boolean = false): IColorMaterial {
 	return new Line3DMaterial(dynColorEnabled);
 }
+/**
+ * build 3d quad line entity rendering material
+ * @param dynColorEnabled the default value is false
+ */
+function createQuadLineMaterial(dynColorEnabled ?: boolean): IColorMaterial {
+	return new BrokenQuadLine3DMaterial(dynColorEnabled);
+}
 function createShaderMaterial(shd_uniqueName: string): IShaderMaterial {
 	return new ShaderMaterial(shd_uniqueName);
 }
@@ -180,7 +188,7 @@ function createDisplayEntityWithDataMesh(
 	texEnabled: boolean = true,
 	vbWhole: boolean = false
 ): ITransformEntity {
-	
+
 	if (pmaterial != null) {
 		pmaterial.initializeByCodeBuf(texEnabled);
 		mesh.setBufSortFormat(pmaterial.getBufSortFormat());
@@ -224,12 +232,12 @@ function createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D): ITransformEnt
 	let axis = new DisplayEntity();
 	axis.setMaterial(material);
 	axis.setMesh(mesh);
-	
+
 	return axis;
 }
 function createAxis3DEntity(size: number = 100.0): ITransformEntity {
 
-	if(size < 0.0001)size = 0.0001;
+	if (size < 0.0001) size = 0.0001;
 	return createFreeAxis3DEntity(new Vector3D(), new Vector3D(size, size, size));
 }
 
@@ -253,7 +261,7 @@ export {
 	Color4,
 	MouseEvent,
 	EventBase,
-	
+
 	ShaderCodeUUID,
 	MaterialPipeType,
 	MaterialContextParam,
@@ -278,6 +286,7 @@ export {
 	createDataMeshFromModel,
 	createDefaultMaterial,
 	createLineMaterial,
+	createQuadLineMaterial,
 	createShaderMaterial,
 	createMaterial,
 
