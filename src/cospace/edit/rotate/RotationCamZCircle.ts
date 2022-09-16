@@ -106,7 +106,7 @@ class RotationCamZCircle implements IRotationCtr {
         const sv = this.m_scaleV;
         let et = this.m_entity;
         et.getPosition(this.m_posV);
-        et.getScaleXYZ(sv);
+        // et.getScaleXYZ(sv);
         // et.update();
 
         this.m_srcDV.setXYZ(1, 0, 0);

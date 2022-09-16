@@ -99,7 +99,8 @@ class DragRotationController implements IDragRotationController {
         let n = Math.floor(this.radius / 2.0);
         // xoz
         let color = CoMaterial.createColor4();
-        /*
+        
+        ///*
         this.createCircle(0, color.setRGBUint8(240,55,80), this.radius, n);
         // xoy
         this.createCircle(1, color.setRGBUint8(135,205,55), this.radius, n);
