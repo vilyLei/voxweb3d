@@ -17,8 +17,9 @@ export default class StageParamUniformBuilder implements IUniformBuilder {
     create(rc: RenderProxy, shdp: IShdProgram): IRenderShaderUniform {
 
         let param: IUniformParam = UniformConst.StageParam;
-        if (shdp.hasUniformByName(param.name))
+        if (shdp.hasUniformByName(param.name)) {
             return rc.uniformContext.createShaderGlobalUniformFromProbe(rc.getStage3D().uProbe, param.name, [param.name]);
+        }
         return null;
     }
     getIDNS(): string {

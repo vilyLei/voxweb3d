@@ -87,6 +87,8 @@ interface IRenderCamera {
     setPosition(pos: IVector3D): void;
     getPosition(): IVector3D;
     getNV(): IVector3D;
+    getUV(): IVector3D;
+    getRV(): IVector3D;
     
     getViewMatrix(): IMatrix4;
     getProjectMatrix(): IMatrix4;

@@ -59,6 +59,11 @@ export default class QuadLineMesh extends MeshBase {
             console.log("posarr.length: " + posarr.length);
             console.log("beginNextZ: " + beginNextZ);
             console.log("endNextZ: " + endNextZ);
+            
+            // cvs2 is prev pos
+            // vs is curr pos
+            // vs2 is next pos
+
             let tot: number = this.vtxTotal - 1;
             i = 0;
 
@@ -76,7 +81,7 @@ export default class QuadLineMesh extends MeshBase {
                 this.m_vs2[k] = posarr[j + 3];
                 this.m_vs2[k + 1] = posarr[j + 4];
                 this.m_vs2[k + 2] = posarr[j + 5];
-                this.m_vs2[k + 3] = -thickness;
+                this.m_vs2[k + 3] = 0.0;
 
                 this.m_cvs2[p] = posarr[j];
                 this.m_cvs2[p + 1] = posarr[j + 1];
@@ -95,7 +100,7 @@ export default class QuadLineMesh extends MeshBase {
             this.m_vs2[k] = endNextX;
             this.m_vs2[k + 1] = endNextY;
             this.m_vs2[k + 2] = endNextZ;
-            this.m_vs2[k + 3] = -thickness;
+            this.m_vs2[k + 3] = 0.0;
             j += 3;
             k += 4;
             this.bounds.updateFast();
@@ -117,7 +122,6 @@ export default class QuadLineMesh extends MeshBase {
                 this.m_cvs2[k] = this.m_cvs2[j];
                 this.m_cvs2[k + 1] = this.m_cvs2[j + 1];
                 this.m_cvs2[k + 2] = this.m_cvs2[j + 2];
-                this.m_cvs2[k + 3] = thickness;
                 k += 4;
                 j += 4;
             }
