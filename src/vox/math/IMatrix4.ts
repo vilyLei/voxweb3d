@@ -21,7 +21,6 @@ interface IMatrix4 extends Float32Data {
 	append(lhs: IMatrix4): void;
 	append3x3(lhs: IMatrix4): void;
 	/**
-	 *
 	 * @param radian rotation angle radian
 	 * @param axis rotation axis, it is a normalized IVector3D instance
 	 * @param pivotPoint the default value is null
@@ -131,6 +130,10 @@ interface IMatrix4 extends Float32Data {
 	premultiply(m: IMatrix4): IMatrix4;
 	multiply(m: IMatrix4): IMatrix4;
 	invertThis(): IMatrix4;
+
+	
+	lookAtRH(eyePos: IVector3D, atPos: IVector3D, up: IVector3D): void;
+	lookAtLH(eyePos: IVector3D, atPos: IVector3D, up: IVector3D): void;
 
 	clone(): IMatrix4;
 	destroy(): void;

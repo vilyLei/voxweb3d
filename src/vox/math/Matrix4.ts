@@ -12,7 +12,9 @@ import OrientationType from "../../vox/math/OrientationType";
 import IMatrix4 from "../../vox/math/IMatrix4";
 import { Euler } from "./Euler";
 import { Quaternion } from "./Quaternion";
-
+const _mx = new Vector3D();
+const _my = new Vector3D();
+const _mz = new Vector3D();
 class Matrix4 implements IMatrix4 {
 	private static s_InitData: Float32Array = new Float32Array([
 		1.0, 0.0, 0.0, 0.0,
@@ -99,7 +101,7 @@ class Matrix4 implements IMatrix4 {
 
 		const ae = a.getLocalFS32();
 		const be = b.getLocalFS32();
-		const te = this.getLocalFS32();
+		const fs = this.getLocalFS32();
 
 		const a11 = ae[ 0 ], a12 = ae[ 4 ], a13 = ae[ 8 ], a14 = ae[ 12 ];
 		const a21 = ae[ 1 ], a22 = ae[ 5 ], a23 = ae[ 9 ], a24 = ae[ 13 ];
@@ -111,25 +113,25 @@ class Matrix4 implements IMatrix4 {
 		const b31 = be[ 2 ], b32 = be[ 6 ], b33 = be[ 10 ], b34 = be[ 14 ];
 		const b41 = be[ 3 ], b42 = be[ 7 ], b43 = be[ 11 ], b44 = be[ 15 ];
 
-		te[ 0 ] = a11 * b11 + a12 * b21 + a13 * b31 + a14 * b41;
-		te[ 4 ] = a11 * b12 + a12 * b22 + a13 * b32 + a14 * b42;
-		te[ 8 ] = a11 * b13 + a12 * b23 + a13 * b33 + a14 * b43;
-		te[ 12 ] = a11 * b14 + a12 * b24 + a13 * b34 + a14 * b44;
+		fs[ 0 ] = a11 * b11 + a12 * b21 + a13 * b31 + a14 * b41;
+		fs[ 4 ] = a11 * b12 + a12 * b22 + a13 * b32 + a14 * b42;
+		fs[ 8 ] = a11 * b13 + a12 * b23 + a13 * b33 + a14 * b43;
+		fs[ 12 ] = a11 * b14 + a12 * b24 + a13 * b34 + a14 * b44;
 
-		te[ 1 ] = a21 * b11 + a22 * b21 + a23 * b31 + a24 * b41;
-		te[ 5 ] = a21 * b12 + a22 * b22 + a23 * b32 + a24 * b42;
-		te[ 9 ] = a21 * b13 + a22 * b23 + a23 * b33 + a24 * b43;
-		te[ 13 ] = a21 * b14 + a22 * b24 + a23 * b34 + a24 * b44;
+		fs[ 1 ] = a21 * b11 + a22 * b21 + a23 * b31 + a24 * b41;
+		fs[ 5 ] = a21 * b12 + a22 * b22 + a23 * b32 + a24 * b42;
+		fs[ 9 ] = a21 * b13 + a22 * b23 + a23 * b33 + a24 * b43;
+		fs[ 13 ] = a21 * b14 + a22 * b24 + a23 * b34 + a24 * b44;
 
-		te[ 2 ] = a31 * b11 + a32 * b21 + a33 * b31 + a34 * b41;
-		te[ 6 ] = a31 * b12 + a32 * b22 + a33 * b32 + a34 * b42;
-		te[ 10 ] = a31 * b13 + a32 * b23 + a33 * b33 + a34 * b43;
-		te[ 14 ] = a31 * b14 + a32 * b24 + a33 * b34 + a34 * b44;
+		fs[ 2 ] = a31 * b11 + a32 * b21 + a33 * b31 + a34 * b41;
+		fs[ 6 ] = a31 * b12 + a32 * b22 + a33 * b32 + a34 * b42;
+		fs[ 10 ] = a31 * b13 + a32 * b23 + a33 * b33 + a34 * b43;
+		fs[ 14 ] = a31 * b14 + a32 * b24 + a33 * b34 + a34 * b44;
 
-		te[ 3 ] = a41 * b11 + a42 * b21 + a43 * b31 + a44 * b41;
-		te[ 7 ] = a41 * b12 + a42 * b22 + a43 * b32 + a44 * b42;
-		te[ 11 ] = a41 * b13 + a42 * b23 + a43 * b33 + a44 * b43;
-		te[ 15 ] = a41 * b14 + a42 * b24 + a43 * b34 + a44 * b44;
+		fs[ 3 ] = a41 * b11 + a42 * b21 + a43 * b31 + a44 * b41;
+		fs[ 7 ] = a41 * b12 + a42 * b22 + a43 * b32 + a44 * b42;
+		fs[ 11 ] = a41 * b13 + a42 * b23 + a43 * b33 + a44 * b43;
+		fs[ 15 ] = a41 * b14 + a42 * b24 + a43 * b34 + a44 * b44;
 
 		return this;
 
@@ -152,24 +154,24 @@ class Matrix4 implements IMatrix4 {
 
 	append(lhs: IMatrix4): void {
 		let lfs32: Float32Array = lhs.getLocalFS32();
-		let sfs32: Float32Array = this.m_localFS32;
+		let fs: Float32Array = this.m_localFS32;
 
-		let m111: number = sfs32[0];
-		let m121: number = sfs32[4];
-		let m131: number = sfs32[8];
-		let m141: number = sfs32[12];
-		let m112: number = sfs32[1];
-		let m122: number = sfs32[5];
-		let m132: number = sfs32[9];
-		let m142: number = sfs32[13];
-		let m113: number = sfs32[2];
-		let m123: number = sfs32[6];
-		let m133: number = sfs32[10];
-		let m143: number = sfs32[14];
-		let m114: number = sfs32[3];
-		let m124: number = sfs32[7];
-		let m134: number = sfs32[11];
-		let m144: number = sfs32[15];
+		let m111: number = fs[0];
+		let m121: number = fs[4];
+		let m131: number = fs[8];
+		let m141: number = fs[12];
+		let m112: number = fs[1];
+		let m122: number = fs[5];
+		let m132: number = fs[9];
+		let m142: number = fs[13];
+		let m113: number = fs[2];
+		let m123: number = fs[6];
+		let m133: number = fs[10];
+		let m143: number = fs[14];
+		let m114: number = fs[3];
+		let m124: number = fs[7];
+		let m134: number = fs[11];
+		let m144: number = fs[15];
 		let m211: number = lfs32[0];
 		let m221: number = lfs32[4];
 		let m231: number = lfs32[8];
@@ -187,36 +189,36 @@ class Matrix4 implements IMatrix4 {
 		let m234: number = lfs32[11];
 		let m244: number = lfs32[15];
 
-		sfs32[0] = m111 * m211 + m112 * m221 + m113 * m231 + m114 * m241;
-		sfs32[1] = m111 * m212 + m112 * m222 + m113 * m232 + m114 * m242;
-		sfs32[2] = m111 * m213 + m112 * m223 + m113 * m233 + m114 * m243;
-		sfs32[3] = m111 * m214 + m112 * m224 + m113 * m234 + m114 * m244;
-		sfs32[4] = m121 * m211 + m122 * m221 + m123 * m231 + m124 * m241;
-		sfs32[5] = m121 * m212 + m122 * m222 + m123 * m232 + m124 * m242;
-		sfs32[6] = m121 * m213 + m122 * m223 + m123 * m233 + m124 * m243;
-		sfs32[7] = m121 * m214 + m122 * m224 + m123 * m234 + m124 * m244;
-		sfs32[8] = m131 * m211 + m132 * m221 + m133 * m231 + m134 * m241;
-		sfs32[9] = m131 * m212 + m132 * m222 + m133 * m232 + m134 * m242;
-		sfs32[10] = m131 * m213 + m132 * m223 + m133 * m233 + m134 * m243;
-		sfs32[11] = m131 * m214 + m132 * m224 + m133 * m234 + m134 * m244;
-		sfs32[12] = m141 * m211 + m142 * m221 + m143 * m231 + m144 * m241;
-		sfs32[13] = m141 * m212 + m142 * m222 + m143 * m232 + m144 * m242;
-		sfs32[14] = m141 * m213 + m142 * m223 + m143 * m233 + m144 * m243;
-		sfs32[15] = m141 * m214 + m142 * m224 + m143 * m234 + m144 * m244;
+		fs[0] = m111 * m211 + m112 * m221 + m113 * m231 + m114 * m241;
+		fs[1] = m111 * m212 + m112 * m222 + m113 * m232 + m114 * m242;
+		fs[2] = m111 * m213 + m112 * m223 + m113 * m233 + m114 * m243;
+		fs[3] = m111 * m214 + m112 * m224 + m113 * m234 + m114 * m244;
+		fs[4] = m121 * m211 + m122 * m221 + m123 * m231 + m124 * m241;
+		fs[5] = m121 * m212 + m122 * m222 + m123 * m232 + m124 * m242;
+		fs[6] = m121 * m213 + m122 * m223 + m123 * m233 + m124 * m243;
+		fs[7] = m121 * m214 + m122 * m224 + m123 * m234 + m124 * m244;
+		fs[8] = m131 * m211 + m132 * m221 + m133 * m231 + m134 * m241;
+		fs[9] = m131 * m212 + m132 * m222 + m133 * m232 + m134 * m242;
+		fs[10] = m131 * m213 + m132 * m223 + m133 * m233 + m134 * m243;
+		fs[11] = m131 * m214 + m132 * m224 + m133 * m234 + m134 * m244;
+		fs[12] = m141 * m211 + m142 * m221 + m143 * m231 + m144 * m241;
+		fs[13] = m141 * m212 + m142 * m222 + m143 * m232 + m144 * m242;
+		fs[14] = m141 * m213 + m142 * m223 + m143 * m233 + m144 * m243;
+		fs[15] = m141 * m214 + m142 * m224 + m143 * m234 + m144 * m244;
 	}
 	append3x3(lhs: Matrix4): void {
 		let lfs32: Float32Array = lhs.getLocalFS32();
-		let sfs32: Float32Array = this.m_localFS32;
+		let fs: Float32Array = this.m_localFS32;
 
-		let m111: number = sfs32[0];
-		let m121: number = sfs32[4];
-		let m131: number = sfs32[8];
-		let m112: number = sfs32[1];
-		let m122: number = sfs32[5];
-		let m132: number = sfs32[9];
-		let m113: number = sfs32[2];
-		let m123: number = sfs32[6];
-		let m133: number = sfs32[10];
+		let m111: number = fs[0];
+		let m121: number = fs[4];
+		let m131: number = fs[8];
+		let m112: number = fs[1];
+		let m122: number = fs[5];
+		let m132: number = fs[9];
+		let m113: number = fs[2];
+		let m123: number = fs[6];
+		let m133: number = fs[10];
 		let m211: number = lfs32[0];
 		let m221: number = lfs32[4];
 		let m231: number = lfs32[8];
@@ -226,15 +228,15 @@ class Matrix4 implements IMatrix4 {
 		let m213: number = lfs32[2];
 		let m223: number = lfs32[6];
 		let m233: number = lfs32[10];
-		sfs32[0] = m111 * m211 + m112 * m221 + m113 * m231;
-		sfs32[1] = m111 * m212 + m112 * m222 + m113 * m232;
-		sfs32[2] = m111 * m213 + m112 * m223 + m113 * m233;
-		sfs32[4] = m121 * m211 + m122 * m221 + m123 * m231;
-		sfs32[5] = m121 * m212 + m122 * m222 + m123 * m232;
-		sfs32[6] = m121 * m213 + m122 * m223 + m123 * m233;
-		sfs32[8] = m131 * m211 + m132 * m221 + m133 * m231;
-		sfs32[9] = m131 * m212 + m132 * m222 + m133 * m232;
-		sfs32[10] = m131 * m213 + m132 * m223 + m133 * m233;
+		fs[0] = m111 * m211 + m112 * m221 + m113 * m231;
+		fs[1] = m111 * m212 + m112 * m222 + m113 * m232;
+		fs[2] = m111 * m213 + m112 * m223 + m113 * m233;
+		fs[4] = m121 * m211 + m122 * m221 + m123 * m231;
+		fs[5] = m121 * m212 + m122 * m222 + m123 * m232;
+		fs[6] = m121 * m213 + m122 * m223 + m123 * m233;
+		fs[8] = m131 * m211 + m132 * m221 + m133 * m231;
+		fs[9] = m131 * m212 + m132 * m222 + m133 * m232;
+		fs[10] = m131 * m213 + m132 * m223 + m133 * m233;
 	}
 	appendRotationPivot(radian: number, axis: Vector3D, pivotPoint: Vector3D = null): void {
 		if (pivotPoint == null) {
@@ -273,25 +275,25 @@ class Matrix4 implements IMatrix4 {
 	}
 
 	setScale(v3: Vector3D): Matrix4 {
-		let sfs32: Float32Array = this.m_localFS32;
-		sfs32[0] = v3.x; sfs32[5] = v3.y; sfs32[10] = v3.z;
+		let fs: Float32Array = this.m_localFS32;
+		fs[0] = v3.x; fs[5] = v3.y; fs[10] = v3.z;
 		return this;
 	}
 	setScaleXYZ(xScale: number, yScale: number, zScale: number): void {
-		let sfs32: Float32Array = this.m_localFS32;
-		sfs32[0] = xScale; sfs32[5] = yScale; sfs32[10] = zScale;
+		let fs: Float32Array = this.m_localFS32;
+		fs[0] = xScale; fs[5] = yScale; fs[10] = zScale;
 	}
 	getScale(outV3: Vector3D): void {
-		let sfs32: Float32Array = this.m_localFS32;
-		outV3.x = sfs32[0]
-		outV3.y = sfs32[5];
-		outV3.z = sfs32[10];
+		let fs: Float32Array = this.m_localFS32;
+		outV3.x = fs[0]
+		outV3.y = fs[5];
+		outV3.z = fs[10];
 	}
 	setRotationEulerAngle(radianX: number, radianY: number, radianZ: number): void {
-		let sfs32: Float32Array = this.m_localFS32;
-		//let sx:number = sfs32[0];
-		//let sy:number = sfs32[5];
-		//let sz:number = sfs32[10];
+		let fs: Float32Array = this.m_localFS32;
+		//let sx:number = fs[0];
+		//let sy:number = fs[5];
+		//let sz:number = fs[10];
 
 		let cosX: number = Math.cos(radianX);
 		let sinX: number = Math.sin(radianX);
@@ -301,28 +303,28 @@ class Matrix4 implements IMatrix4 {
 		let sinZ: number = Math.sin(radianZ);
 		let cosZsinY: number = cosZ * sinY;
 		let sinZsinY: number = sinZ * sinY;
-		let cosYscaleX: number = cosY * sfs32[0];
-		let sinXscaleY: number = sinX * sfs32[5];
-		let cosXscaleY: number = cosX * sfs32[5];
-		let cosXscaleZ: number = cosX * sfs32[10];
-		let sinXscaleZ: number = sinX * sfs32[10];
+		let cosYscaleX: number = cosY * fs[0];
+		let sinXscaleY: number = sinX * fs[5];
+		let cosXscaleY: number = cosX * fs[5];
+		let cosXscaleZ: number = cosX * fs[10];
+		let sinXscaleZ: number = sinX * fs[10];
 
-		sfs32[1] = sinZ * cosYscaleX;
-		sfs32[2] = -sinY * sfs32[0];
-		sfs32[0] = cosZ * cosYscaleX;
-		sfs32[4] = cosZsinY * sinXscaleY - sinZ * cosXscaleY;
-		sfs32[8] = cosZsinY * cosXscaleZ + sinZ * sinXscaleZ;
-		sfs32[5] = sinZsinY * sinXscaleY + cosZ * cosXscaleY;
-		sfs32[9] = sinZsinY * cosXscaleZ - cosZ * sinXscaleZ;
-		sfs32[6] = cosY * sinXscaleY;
-		sfs32[10] = cosY * cosXscaleZ;
+		fs[1] = sinZ * cosYscaleX;
+		fs[2] = -sinY * fs[0];
+		fs[0] = cosZ * cosYscaleX;
+		fs[4] = cosZsinY * sinXscaleY - sinZ * cosXscaleY;
+		fs[8] = cosZsinY * cosXscaleZ + sinZ * sinXscaleZ;
+		fs[5] = sinZsinY * sinXscaleY + cosZ * cosXscaleY;
+		fs[9] = sinZsinY * cosXscaleZ - cosZ * sinXscaleZ;
+		fs[6] = cosY * sinXscaleY;
+		fs[10] = cosY * cosXscaleZ;
 	}
 
 	setRotationEulerAngle2(cosX: number, sinX: number, cosY: number, sinY: number, cosZ: number, sinZ: number): void {
-		let sfs32: Float32Array = this.m_localFS32;
-		//let sx:number = sfs32[0];
-		//let sy:number = sfs32[5];
-		//let sz:number = sfs32[10];
+		let fs: Float32Array = this.m_localFS32;
+		//let sx:number = fs[0];
+		//let sy:number = fs[5];
+		//let sz:number = fs[10];
 
 		//	let cosX: number = Math.cos(radianX);
 		//	let sinX:number = Math.sin(radianX);
@@ -332,26 +334,26 @@ class Matrix4 implements IMatrix4 {
 		//	let sinZ:number = Math.sin(radianZ);
 		let cosZsinY: number = cosZ * sinY;
 		let sinZsinY: number = sinZ * sinY;
-		let cosYscaleX: number = cosY * sfs32[0];
-		let sinXscaleY: number = sinX * sfs32[5];
-		let cosXscaleY: number = cosX * sfs32[5];
-		let cosXscaleZ: number = cosX * sfs32[10];
-		let sinXscaleZ: number = sinX * sfs32[10];
+		let cosYscaleX: number = cosY * fs[0];
+		let sinXscaleY: number = sinX * fs[5];
+		let cosXscaleY: number = cosX * fs[5];
+		let cosXscaleZ: number = cosX * fs[10];
+		let sinXscaleZ: number = sinX * fs[10];
 
-		sfs32[1] = sinZ * cosYscaleX;
-		sfs32[2] = -sinY * sfs32[0];
-		sfs32[0] = cosZ * cosYscaleX;
-		sfs32[4] = cosZsinY * sinXscaleY - sinZ * cosXscaleY;
-		sfs32[8] = cosZsinY * cosXscaleZ + sinZ * sinXscaleZ;
-		sfs32[5] = sinZsinY * sinXscaleY + cosZ * cosXscaleY;
-		sfs32[9] = sinZsinY * cosXscaleZ - cosZ * sinXscaleZ;
-		sfs32[6] = cosY * sinXscaleY;
-		sfs32[10] = cosY * cosXscaleZ;
+		fs[1] = sinZ * cosYscaleX;
+		fs[2] = -sinY * fs[0];
+		fs[0] = cosZ * cosYscaleX;
+		fs[4] = cosZsinY * sinXscaleY - sinZ * cosXscaleY;
+		fs[8] = cosZsinY * cosXscaleZ + sinZ * sinXscaleZ;
+		fs[5] = sinZsinY * sinXscaleY + cosZ * cosXscaleY;
+		fs[9] = sinZsinY * cosXscaleZ - cosZ * sinXscaleZ;
+		fs[6] = cosY * sinXscaleY;
+		fs[10] = cosY * cosXscaleZ;
 	}
 	
 	compose( position: Vector3D, quaternion: Quaternion, scale: Vector3D ): Matrix4 {
 
-		const te = this.m_localFS32;
+		const fs = this.m_localFS32;
 
 		const x = quaternion.x, y = quaternion.y, z = quaternion.z, w = quaternion.w;
 
@@ -362,25 +364,25 @@ class Matrix4 implements IMatrix4 {
 
 		const sx = scale.x, sy = scale.y, sz = scale.z;
 
-		te[ 0 ] = ( 1 - ( yy + zz ) ) * sx;
-		te[ 1 ] = ( xy + wz ) * sx;
-		te[ 2 ] = ( xz - wy ) * sx;
-		te[ 3 ] = 0;
+		fs[ 0 ] = ( 1 - ( yy + zz ) ) * sx;
+		fs[ 1 ] = ( xy + wz ) * sx;
+		fs[ 2 ] = ( xz - wy ) * sx;
+		fs[ 3 ] = 0;
 
-		te[ 4 ] = ( xy - wz ) * sy;
-		te[ 5 ] = ( 1 - ( xx + zz ) ) * sy;
-		te[ 6 ] = ( yz + wx ) * sy;
-		te[ 7 ] = 0;
+		fs[ 4 ] = ( xy - wz ) * sy;
+		fs[ 5 ] = ( 1 - ( xx + zz ) ) * sy;
+		fs[ 6 ] = ( yz + wx ) * sy;
+		fs[ 7 ] = 0;
 
-		te[ 8 ] = ( xz + wy ) * sz;
-		te[ 9 ] = ( yz - wx ) * sz;
-		te[ 10 ] = ( 1 - ( xx + yy ) ) * sz;
-		te[ 11 ] = 0;
+		fs[ 8 ] = ( xz + wy ) * sz;
+		fs[ 9 ] = ( yz - wx ) * sz;
+		fs[ 10 ] = ( 1 - ( xx + yy ) ) * sz;
+		fs[ 11 ] = 0;
 
-		te[ 12 ] = position.x;
-		te[ 13 ] = position.y;
-		te[ 14 ] = position.z;
-		te[ 15 ] = 1;
+		fs[ 12 ] = position.x;
+		fs[ 13 ] = position.y;
+		fs[ 14 ] = position.z;
+		fs[ 15 ] = 1;
 
 		return this;
 
@@ -398,7 +400,7 @@ class Matrix4 implements IMatrix4 {
 
 		}
 
-		const te = this.m_localFS32;
+		const fs = this.m_localFS32;
 		
 		const x = euler.x, y = euler.y, z = euler.z;
 		const a = Math.cos( x ), b = Math.sin( x );
@@ -409,110 +411,110 @@ class Matrix4 implements IMatrix4 {
 
 			const ae = a * e, af = a * f, be = b * e, bf = b * f;
 
-			te[ 0 ] = c * e;
-			te[ 4 ] = - c * f;
-			te[ 8 ] = d;
+			fs[ 0 ] = c * e;
+			fs[ 4 ] = - c * f;
+			fs[ 8 ] = d;
 
-			te[ 1 ] = af + be * d;
-			te[ 5 ] = ae - bf * d;
-			te[ 9 ] = - b * c;
+			fs[ 1 ] = af + be * d;
+			fs[ 5 ] = ae - bf * d;
+			fs[ 9 ] = - b * c;
 
-			te[ 2 ] = bf - ae * d;
-			te[ 6 ] = be + af * d;
-			te[ 10 ] = a * c;
+			fs[ 2 ] = bf - ae * d;
+			fs[ 6 ] = be + af * d;
+			fs[ 10 ] = a * c;
 
 		} else if ( euler.order === EulerOrder.YXZ ) {
 
 			const ce = c * e, cf = c * f, de = d * e, df = d * f;
 
-			te[ 0 ] = ce + df * b;
-			te[ 4 ] = de * b - cf;
-			te[ 8 ] = a * d;
+			fs[ 0 ] = ce + df * b;
+			fs[ 4 ] = de * b - cf;
+			fs[ 8 ] = a * d;
 
-			te[ 1 ] = a * f;
-			te[ 5 ] = a * e;
-			te[ 9 ] = - b;
+			fs[ 1 ] = a * f;
+			fs[ 5 ] = a * e;
+			fs[ 9 ] = - b;
 
-			te[ 2 ] = cf * b - de;
-			te[ 6 ] = df + ce * b;
-			te[ 10 ] = a * c;
+			fs[ 2 ] = cf * b - de;
+			fs[ 6 ] = df + ce * b;
+			fs[ 10 ] = a * c;
 
 		} else if ( euler.order === EulerOrder.ZXY ) {
 
 			const ce = c * e, cf = c * f, de = d * e, df = d * f;
 
-			te[ 0 ] = ce - df * b;
-			te[ 4 ] = - a * f;
-			te[ 8 ] = de + cf * b;
+			fs[ 0 ] = ce - df * b;
+			fs[ 4 ] = - a * f;
+			fs[ 8 ] = de + cf * b;
 
-			te[ 1 ] = cf + de * b;
-			te[ 5 ] = a * e;
-			te[ 9 ] = df - ce * b;
+			fs[ 1 ] = cf + de * b;
+			fs[ 5 ] = a * e;
+			fs[ 9 ] = df - ce * b;
 
-			te[ 2 ] = - a * d;
-			te[ 6 ] = b;
-			te[ 10 ] = a * c;
+			fs[ 2 ] = - a * d;
+			fs[ 6 ] = b;
+			fs[ 10 ] = a * c;
 
 		} else if ( euler.order === EulerOrder.ZYX ) {
 
 			const ae = a * e, af = a * f, be = b * e, bf = b * f;
 
-			te[ 0 ] = c * e;
-			te[ 4 ] = be * d - af;
-			te[ 8 ] = ae * d + bf;
+			fs[ 0 ] = c * e;
+			fs[ 4 ] = be * d - af;
+			fs[ 8 ] = ae * d + bf;
 
-			te[ 1 ] = c * f;
-			te[ 5 ] = bf * d + ae;
-			te[ 9 ] = af * d - be;
+			fs[ 1 ] = c * f;
+			fs[ 5 ] = bf * d + ae;
+			fs[ 9 ] = af * d - be;
 
-			te[ 2 ] = - d;
-			te[ 6 ] = b * c;
-			te[ 10 ] = a * c;
+			fs[ 2 ] = - d;
+			fs[ 6 ] = b * c;
+			fs[ 10 ] = a * c;
 
 		} else if ( euler.order === EulerOrder.YZX ) {
 
 			const ac = a * c, ad = a * d, bc = b * c, bd = b * d;
 
-			te[ 0 ] = c * e;
-			te[ 4 ] = bd - ac * f;
-			te[ 8 ] = bc * f + ad;
+			fs[ 0 ] = c * e;
+			fs[ 4 ] = bd - ac * f;
+			fs[ 8 ] = bc * f + ad;
 
-			te[ 1 ] = f;
-			te[ 5 ] = a * e;
-			te[ 9 ] = - b * e;
+			fs[ 1 ] = f;
+			fs[ 5 ] = a * e;
+			fs[ 9 ] = - b * e;
 
-			te[ 2 ] = - d * e;
-			te[ 6 ] = ad * f + bc;
-			te[ 10 ] = ac - bd * f;
+			fs[ 2 ] = - d * e;
+			fs[ 6 ] = ad * f + bc;
+			fs[ 10 ] = ac - bd * f;
 
 		} else if ( euler.order === EulerOrder.XZY ) {
 
 			const ac = a * c, ad = a * d, bc = b * c, bd = b * d;
 
-			te[ 0 ] = c * e;
-			te[ 4 ] = - f;
-			te[ 8 ] = d * e;
+			fs[ 0 ] = c * e;
+			fs[ 4 ] = - f;
+			fs[ 8 ] = d * e;
 
-			te[ 1 ] = ac * f + bd;
-			te[ 5 ] = a * e;
-			te[ 9 ] = ad * f - bc;
+			fs[ 1 ] = ac * f + bd;
+			fs[ 5 ] = a * e;
+			fs[ 9 ] = ad * f - bc;
 
-			te[ 2 ] = bc * f - ad;
-			te[ 6 ] = b * e;
-			te[ 10 ] = bd * f + ac;
+			fs[ 2 ] = bc * f - ad;
+			fs[ 6 ] = b * e;
+			fs[ 10 ] = bd * f + ac;
 
 		}
 
 		// reset bottom row
-		te[ 3 ] = 0;
-		te[ 7 ] = 0;
-		te[ 11 ] = 0;
+		fs[ 3 ] = 0;
+		fs[ 7 ] = 0;
+		fs[ 11 ] = 0;
 
 		// reset last column
-		te[ 12 ] = 0;
-		te[ 13 ] = 0;
-		te[ 14 ] = 0;
-		te[ 15 ] = 1;
+		fs[ 12 ] = 0;
+		fs[ 13 ] = 0;
+		fs[ 14 ] = 0;
+		fs[ 15 ] = 1;
 
 		return this;
 
@@ -522,7 +524,7 @@ class Matrix4 implements IMatrix4 {
 
 		// this method does not support reflection matrices
 
-		const te = this.m_localFS32;
+		const fs = this.m_localFS32;
 		const me = m.getLocalFS32();
 		const v3 = Matrix4.m_v3;
 		m.copyColumnTo(0, v3);
@@ -532,25 +534,25 @@ class Matrix4 implements IMatrix4 {
 		m.copyColumnTo(2, v3);
 		const scaleZ = 1.0 / v3.getLength();
 
-		te[ 0 ] = me[ 0 ] * scaleX;
-		te[ 1 ] = me[ 1 ] * scaleX;
-		te[ 2 ] = me[ 2 ] * scaleX;
-		te[ 3 ] = 0;
+		fs[ 0 ] = me[ 0 ] * scaleX;
+		fs[ 1 ] = me[ 1 ] * scaleX;
+		fs[ 2 ] = me[ 2 ] * scaleX;
+		fs[ 3 ] = 0;
 
-		te[ 4 ] = me[ 4 ] * scaleY;
-		te[ 5 ] = me[ 5 ] * scaleY;
-		te[ 6 ] = me[ 6 ] * scaleY;
-		te[ 7 ] = 0;
+		fs[ 4 ] = me[ 4 ] * scaleY;
+		fs[ 5 ] = me[ 5 ] * scaleY;
+		fs[ 6 ] = me[ 6 ] * scaleY;
+		fs[ 7 ] = 0;
 
-		te[ 8 ] = me[ 8 ] * scaleZ;
-		te[ 9 ] = me[ 9 ] * scaleZ;
-		te[ 10 ] = me[ 10 ] * scaleZ;
-		te[ 11 ] = 0;
+		fs[ 8 ] = me[ 8 ] * scaleZ;
+		fs[ 9 ] = me[ 9 ] * scaleZ;
+		fs[ 10 ] = me[ 10 ] * scaleZ;
+		fs[ 11 ] = 0;
 
-		te[ 12 ] = 0;
-		te[ 13 ] = 0;
-		te[ 14 ] = 0;
-		te[ 15 ] = 1;
+		fs[ 12 ] = 0;
+		fs[ 13 ] = 0;
+		fs[ 14 ] = 0;
+		fs[ 15 ] = 1;
 
 		return this;
 
@@ -558,11 +560,11 @@ class Matrix4 implements IMatrix4 {
 
 	copyTranslation( m: IMatrix4 ): IMatrix4 {
 
-		const te = this.m_localFS32, me = m.getLocalFS32();
+		const fs = this.m_localFS32, me = m.getLocalFS32();
 
-		te[ 12 ] = me[ 12 ];
-		te[ 13 ] = me[ 13 ];
-		te[ 14 ] = me[ 14 ];
+		fs[ 12 ] = me[ 12 ];
+		fs[ 13 ] = me[ 13 ];
+		fs[ 14 ] = me[ 14 ];
 
 		return this;
 
@@ -578,15 +580,16 @@ class Matrix4 implements IMatrix4 {
 		this.m_localFS32[14] = v3.z;
 	}
 	appendScaleXYZ(xScale: number, yScale: number, zScale: number): void {
-		let sfs32: Float32Array = this.m_localFS32;
-		sfs32[0] *= xScale; sfs32[1] *= xScale; sfs32[2] *= xScale; sfs32[3] *= xScale;
-		sfs32[4] *= yScale; sfs32[5] *= yScale; sfs32[6] *= yScale; sfs32[7] *= yScale;
-		sfs32[8] *= zScale; sfs32[9] *= zScale; sfs32[10] *= zScale; sfs32[11] *= zScale;
+		const fs = this.m_localFS32;
+		fs[0] *= xScale; fs[1] *= xScale; fs[2] *= xScale; fs[3] *= xScale;
+		fs[4] *= yScale; fs[5] *= yScale; fs[6] *= yScale; fs[7] *= yScale;
+		fs[8] *= zScale; fs[9] *= zScale; fs[10] *= zScale; fs[11] *= zScale;
 	}
 
 	appendScaleXY(xScale: number, yScale: number): void {
-		this.m_localFS32[0] *= xScale; this.m_localFS32[1] *= xScale; this.m_localFS32[2] *= xScale; this.m_localFS32[3] *= xScale;
-		this.m_localFS32[4] *= yScale; this.m_localFS32[5] *= yScale; this.m_localFS32[6] *= yScale; this.m_localFS32[7] *= yScale;
+		const fs = this.m_localFS32;
+		fs[0] *= xScale; fs[1] *= xScale; fs[2] *= xScale; fs[3] *= xScale;
+		fs[4] *= yScale; fs[5] *= yScale; fs[6] *= yScale; fs[7] *= yScale;
 	}
 	appendTranslationXYZ(px: number, py: number, pz: number): void {
 		this.m_localFS32[12] += px;
@@ -599,37 +602,38 @@ class Matrix4 implements IMatrix4 {
 		this.m_localFS32[14] += v3.z;
 	}
 	copyColumnFrom(column_index: number, v3: Vector3D): void {
+		const fs = this.m_localFS32;
 		switch (column_index) {
 			case 0:
 				{
-					this.m_localFS32[0] = v3.x;
-					this.m_localFS32[1] = v3.y;
-					this.m_localFS32[2] = v3.z;
-					this.m_localFS32[3] = v3.w;
+					fs[0] = v3.x;
+					fs[1] = v3.y;
+					fs[2] = v3.z;
+					fs[3] = v3.w;
 				}
 				break;
 			case 1:
 				{
-					this.m_localFS32[4] = v3.x;
-					this.m_localFS32[5] = v3.y;
-					this.m_localFS32[6] = v3.z;
-					this.m_localFS32[7] = v3.w;
+					fs[4] = v3.x;
+					fs[5] = v3.y;
+					fs[6] = v3.z;
+					fs[7] = v3.w;
 				}
 				break;
 			case 2:
 				{
-					this.m_localFS32[8] = v3.x;
-					this.m_localFS32[9] = v3.y;
-					this.m_localFS32[10] = v3.z;
-					this.m_localFS32[11] = v3.w;
+					fs[8] = v3.x;
+					fs[9] = v3.y;
+					fs[10] = v3.z;
+					fs[11] = v3.w;
 				}
 				break;
 			case 3:
 				{
-					this.m_localFS32[12] = v3.x;
-					this.m_localFS32[13] = v3.y;
-					this.m_localFS32[14] = v3.z;
-					this.m_localFS32[15] = v3.w;
+					fs[12] = v3.x;
+					fs[13] = v3.y;
+					fs[14] = v3.z;
+					fs[15] = v3.w;
 				}
 				break;
 			default:
@@ -637,11 +641,12 @@ class Matrix4 implements IMatrix4 {
 		}
 	}
 	copyColumnTo(column_index: number, outV3: Vector3D): void {
+		const fs = this.m_localFS32;
 		column_index <<= 2;
-		outV3.x = this.m_localFS32[column_index];
-		outV3.y = this.m_localFS32[1 + column_index];
-		outV3.z = this.m_localFS32[2 + column_index];
-		outV3.w = this.m_localFS32[3 + column_index];
+		outV3.x = fs[column_index];
+		outV3.y = fs[1 + column_index];
+		outV3.z = fs[2 + column_index];
+		outV3.w = fs[3 + column_index];
 	}
 	setF32ArrAndIndex(fs32Arr: Float32Array, index: number = 0): void {
 		if (fs32Arr != null && index >= 0) {
@@ -704,37 +709,38 @@ class Matrix4 implements IMatrix4 {
 		if (bool_tp) this.transpose();
 	}
 	copyRowFrom(row_index: number, v3: Vector3D): void {
+		const fs = this.m_localFS32;
 		switch (row_index) {
 			case 0:
 				{
-					this.m_localFS32[0] = v3.x;
-					this.m_localFS32[4] = v3.y;
-					this.m_localFS32[8] = v3.z;
-					this.m_localFS32[12] = v3.w;
+					fs[0] = v3.x;
+					fs[4] = v3.y;
+					fs[8] = v3.z;
+					fs[12] = v3.w;
 				}
 				break;
 			case 1:
 				{
-					this.m_localFS32[1] = v3.x;
-					this.m_localFS32[5] = v3.y;
-					this.m_localFS32[9] = v3.z;
-					this.m_localFS32[13] = v3.w;
+					fs[1] = v3.x;
+					fs[5] = v3.y;
+					fs[9] = v3.z;
+					fs[13] = v3.w;
 				}
 				break;
 			case 2:
 				{
-					this.m_localFS32[2] = v3.x;
-					this.m_localFS32[6] = v3.y;
-					this.m_localFS32[10] = v3.z;
-					this.m_localFS32[14] = v3.w;
+					fs[2] = v3.x;
+					fs[6] = v3.y;
+					fs[10] = v3.z;
+					fs[14] = v3.w;
 				}
 				break;
 			case 3:
 				{
-					this.m_localFS32[3] = v3.x;
-					this.m_localFS32[7] = v3.y;
-					this.m_localFS32[11] = v3.z;
-					this.m_localFS32[15] = v3.w;
+					fs[3] = v3.x;
+					fs[7] = v3.y;
+					fs[11] = v3.z;
+					fs[15] = v3.w;
 				}
 				break;
 			default:
@@ -742,88 +748,89 @@ class Matrix4 implements IMatrix4 {
 		}
 	}
 	copyRowTo(row_index: number, v3: Vector3D): void {
-		v3.x = this.m_localFS32[row_index];
-		v3.y = this.m_localFS32[4 + row_index];
-		v3.z = this.m_localFS32[8 + row_index];
-		v3.w = this.m_localFS32[12 + row_index];
+		const fs = this.m_localFS32;
+		v3.x = fs[row_index];
+		v3.y = fs[4 + row_index];
+		v3.z = fs[8 + row_index];
+		v3.w = fs[12 + row_index];
 	}
 	decompose(orientationStyle: number): Vector3D[] {
 		// TODO: optimize after 4 lines
 		let vec = [];
 		let mr = Matrix4.s_tMat4;
-		let mrfs32 = mr.getLocalFS32();
+		let rfs = mr.getLocalFS32();
 		//let mrfsI = mr.getFSIndex();
 		//std::memcpy(&mr, m_rawData, m_rawDataSize);
 		mr.copyFrom(this);
 		///*
-		let pos = new Vector3D(mrfs32[12], mrfs32[13], mrfs32[14]);
+		let pos = new Vector3D(rfs[12], rfs[13], rfs[14]);
 		let scale = new Vector3D();
-		scale.x = Math.sqrt(mrfs32[0] * mrfs32[0] + mrfs32[1] * mrfs32[1] + mrfs32[2] * mrfs32[2]);
-		scale.y = Math.sqrt(mrfs32[4] * mrfs32[4] + mrfs32[5] * mrfs32[5] + mrfs32[6] * mrfs32[6]);
-		scale.z = Math.sqrt(mrfs32[8] * mrfs32[8] + mrfs32[9] * mrfs32[9] + mrfs32[10] * mrfs32[10]);
-		if (mrfs32[0] * (mrfs32[5] * mrfs32[10] - mrfs32[6] * mrfs32[9]) - mrfs32[1] * (mrfs32[4] * mrfs32[10] - mrfs32[6] * mrfs32[8]) + mrfs32[2] * (mrfs32[4] * mrfs32[9] - mrfs32[5] * mrfs32[8]) < 0) scale.z = -scale.z;
-		mrfs32[0] /= scale.x;
-		mrfs32[1] /= scale.x;
-		mrfs32[2] /= scale.x;
-		mrfs32[4] /= scale.y;
-		mrfs32[5] /= scale.y;
-		mrfs32[6] /= scale.y;
-		mrfs32[8] /= scale.z;
-		mrfs32[9] /= scale.z;
-		mrfs32[10] /= scale.z;
+		scale.x = Math.sqrt(rfs[0] * rfs[0] + rfs[1] * rfs[1] + rfs[2] * rfs[2]);
+		scale.y = Math.sqrt(rfs[4] * rfs[4] + rfs[5] * rfs[5] + rfs[6] * rfs[6]);
+		scale.z = Math.sqrt(rfs[8] * rfs[8] + rfs[9] * rfs[9] + rfs[10] * rfs[10]);
+		if (rfs[0] * (rfs[5] * rfs[10] - rfs[6] * rfs[9]) - rfs[1] * (rfs[4] * rfs[10] - rfs[6] * rfs[8]) + rfs[2] * (rfs[4] * rfs[9] - rfs[5] * rfs[8]) < 0) scale.z = -scale.z;
+		rfs[0] /= scale.x;
+		rfs[1] /= scale.x;
+		rfs[2] /= scale.x;
+		rfs[4] /= scale.y;
+		rfs[5] /= scale.y;
+		rfs[6] /= scale.y;
+		rfs[8] /= scale.z;
+		rfs[9] /= scale.z;
+		rfs[10] /= scale.z;
 		let rot = new Vector3D();
 		switch (orientationStyle) {
 			case OrientationType.AXIS_ANGLE:
 				{
-					rot.w = MathConst.SafeACos((mrfs32[0] + mrfs32[5] + mrfs32[10] - 1) / 2);
-					let len = Math.sqrt((mrfs32[6] - mrfs32[9]) * (mrfs32[6] - mrfs32[9]) + (mrfs32[8] - mrfs32[2]) * (mrfs32[8] - mrfs32[2]) + (mrfs32[1] - mrfs32[4]) * (mrfs32[1] - mrfs32[4]));
+					rot.w = MathConst.SafeACos((rfs[0] + rfs[5] + rfs[10] - 1) / 2);
+					let len = Math.sqrt((rfs[6] - rfs[9]) * (rfs[6] - rfs[9]) + (rfs[8] - rfs[2]) * (rfs[8] - rfs[2]) + (rfs[1] - rfs[4]) * (rfs[1] - rfs[4]));
 					if (len > MathConst.MATH_MIN_POSITIVE) {
-						rot.x = (mrfs32[6] - mrfs32[9]) / len;
-						rot.y = (mrfs32[8] - mrfs32[2]) / len;
-						rot.z = (mrfs32[1] - mrfs32[4]) / len;
+						rot.x = (rfs[6] - rfs[9]) / len;
+						rot.y = (rfs[8] - rfs[2]) / len;
+						rot.z = (rfs[1] - rfs[4]) / len;
 					}
 					else rot.x = rot.y = rot.z = 0;
 				}
 				break;
 			case OrientationType.QUATERNION:
 				{
-					let tr = (mrfs32[0] + mrfs32[5] + mrfs32[10]);
+					let tr = (rfs[0] + rfs[5] + rfs[10]);
 					if (tr > 0) {
 						rot.w = Math.sqrt(1 + tr) / 2;
-						rot.x = (mrfs32[6] - mrfs32[9]) / (4 * rot.w);
-						rot.y = (mrfs32[8] - mrfs32[2]) / (4 * rot.w);
-						rot.z = (mrfs32[1] - mrfs32[4]) / (4 * rot.w);
+						rot.x = (rfs[6] - rfs[9]) / (4 * rot.w);
+						rot.y = (rfs[8] - rfs[2]) / (4 * rot.w);
+						rot.z = (rfs[1] - rfs[4]) / (4 * rot.w);
 					}
-					else if (mrfs32[0] > mrfs32[5] && mrfs32[0] > mrfs32[10]) {
-						rot.x = Math.sqrt(1 + mrfs32[0] - mrfs32[5] - mrfs32[10]) / 2;
-						rot.w = (mrfs32[6] - mrfs32[9]) / (4 * rot.x);
-						rot.y = (mrfs32[1] + mrfs32[4]) / (4 * rot.x);
-						rot.z = (mrfs32[8] + mrfs32[2]) / (4 * rot.x);
+					else if (rfs[0] > rfs[5] && rfs[0] > rfs[10]) {
+						rot.x = Math.sqrt(1 + rfs[0] - rfs[5] - rfs[10]) / 2;
+						rot.w = (rfs[6] - rfs[9]) / (4 * rot.x);
+						rot.y = (rfs[1] + rfs[4]) / (4 * rot.x);
+						rot.z = (rfs[8] + rfs[2]) / (4 * rot.x);
 					}
-					else if (mrfs32[5] > mrfs32[10]) {
-						rot.y = Math.sqrt(1 + mrfs32[5] - mrfs32[0] - mrfs32[10]) / 2;
-						rot.x = (mrfs32[1] + mrfs32[4]) / (4 * rot.y);
-						rot.w = (mrfs32[8] - mrfs32[2]) / (4 * rot.y);
-						rot.z = (mrfs32[6] + mrfs32[9]) / (4 * rot.y);
+					else if (rfs[5] > rfs[10]) {
+						rot.y = Math.sqrt(1 + rfs[5] - rfs[0] - rfs[10]) / 2;
+						rot.x = (rfs[1] + rfs[4]) / (4 * rot.y);
+						rot.w = (rfs[8] - rfs[2]) / (4 * rot.y);
+						rot.z = (rfs[6] + rfs[9]) / (4 * rot.y);
 					}
 					else {
-						rot.z = Math.sqrt(1 + mrfs32[10] - mrfs32[0] - mrfs32[5]) / 2;
-						rot.x = (mrfs32[8] + mrfs32[2]) / (4 * rot.z);
-						rot.y = (mrfs32[6] + mrfs32[9]) / (4 * rot.z);
-						rot.w = (mrfs32[1] - mrfs32[4]) / (4 * rot.z);
+						rot.z = Math.sqrt(1 + rfs[10] - rfs[0] - rfs[5]) / 2;
+						rot.x = (rfs[8] + rfs[2]) / (4 * rot.z);
+						rot.y = (rfs[6] + rfs[9]) / (4 * rot.z);
+						rot.w = (rfs[1] - rfs[4]) / (4 * rot.z);
 					}
 				}
 				break;
 			case OrientationType.EULER_ANGLES:
 				{
-					rot.y = Math.asin(-mrfs32[2]);
-					if (mrfs32[2] != 1 && mrfs32[2] != -1) {
-						rot.x = Math.atan2(mrfs32[6], mrfs32[10]);
-						rot.z = Math.atan2(mrfs32[1], mrfs32[0]);
+					rot.y = Math.asin(-rfs[2]);
+					if (rfs[2] != 1 && rfs[2] != -1) {
+						rot.x = Math.atan2(rfs[6], rfs[10]);
+						rot.z = Math.atan2(rfs[1], rfs[0]);
 					}
 					else {
 						rot.z = 0;
-						rot.x = Math.atan2(mrfs32[4], mrfs32[5]);
+						rot.x = Math.atan2(rfs[4], rfs[5]);
 					}
 				}
 				break;
@@ -840,40 +847,40 @@ class Matrix4 implements IMatrix4 {
 		let d: number = this.determinant();
 		let invertable = Math.abs(d) > MathConst.MATH_MIN_POSITIVE;
 		if (invertable) {
-			let sfs32: Float32Array = this.m_localFS32;
+			let fs: Float32Array = this.m_localFS32;
 			d = 1.0 / d;
-			let m11: number = sfs32[0];
-			let m21: number = sfs32[4];
-			let m31: number = sfs32[8];
-			let m41: number = sfs32[12];
-			let m12: number = sfs32[1];
-			let m22: number = sfs32[5];
-			let m32: number = sfs32[9];
-			let m42: number = sfs32[13];
-			let m13: number = sfs32[2];
-			let m23: number = sfs32[6];
-			let m33: number = sfs32[10];
-			let m43: number = sfs32[14];
-			let m14: number = sfs32[3];
-			let m24: number = sfs32[7];
-			let m34: number = sfs32[11];
-			let m44: number = sfs32[15];
-			sfs32[0] = d * (m22 * (m33 * m44 - m43 * m34) - m32 * (m23 * m44 - m43 * m24) + m42 * (m23 * m34 - m33 * m24));
-			sfs32[1] = -d * (m12 * (m33 * m44 - m43 * m34) - m32 * (m13 * m44 - m43 * m14) + m42 * (m13 * m34 - m33 * m14));
-			sfs32[2] = d * (m12 * (m23 * m44 - m43 * m24) - m22 * (m13 * m44 - m43 * m14) + m42 * (m13 * m24 - m23 * m14));
-			sfs32[3] = -d * (m12 * (m23 * m34 - m33 * m24) - m22 * (m13 * m34 - m33 * m14) + m32 * (m13 * m24 - m23 * m14));
-			sfs32[4] = -d * (m21 * (m33 * m44 - m43 * m34) - m31 * (m23 * m44 - m43 * m24) + m41 * (m23 * m34 - m33 * m24));
-			sfs32[5] = d * (m11 * (m33 * m44 - m43 * m34) - m31 * (m13 * m44 - m43 * m14) + m41 * (m13 * m34 - m33 * m14));
-			sfs32[6] = -d * (m11 * (m23 * m44 - m43 * m24) - m21 * (m13 * m44 - m43 * m14) + m41 * (m13 * m24 - m23 * m14));
-			sfs32[7] = d * (m11 * (m23 * m34 - m33 * m24) - m21 * (m13 * m34 - m33 * m14) + m31 * (m13 * m24 - m23 * m14));
-			sfs32[8] = d * (m21 * (m32 * m44 - m42 * m34) - m31 * (m22 * m44 - m42 * m24) + m41 * (m22 * m34 - m32 * m24));
-			sfs32[9] = -d * (m11 * (m32 * m44 - m42 * m34) - m31 * (m12 * m44 - m42 * m14) + m41 * (m12 * m34 - m32 * m14));
-			sfs32[10] = d * (m11 * (m22 * m44 - m42 * m24) - m21 * (m12 * m44 - m42 * m14) + m41 * (m12 * m24 - m22 * m14));
-			sfs32[11] = -d * (m11 * (m22 * m34 - m32 * m24) - m21 * (m12 * m34 - m32 * m14) + m31 * (m12 * m24 - m22 * m14));
-			sfs32[12] = -d * (m21 * (m32 * m43 - m42 * m33) - m31 * (m22 * m43 - m42 * m23) + m41 * (m22 * m33 - m32 * m23));
-			sfs32[13] = d * (m11 * (m32 * m43 - m42 * m33) - m31 * (m12 * m43 - m42 * m13) + m41 * (m12 * m33 - m32 * m13));
-			sfs32[14] = -d * (m11 * (m22 * m43 - m42 * m23) - m21 * (m12 * m43 - m42 * m13) + m41 * (m12 * m23 - m22 * m13));
-			sfs32[15] = d * (m11 * (m22 * m33 - m32 * m23) - m21 * (m12 * m33 - m32 * m13) + m31 * (m12 * m23 - m22 * m13));
+			let m11: number = fs[0];
+			let m21: number = fs[4];
+			let m31: number = fs[8];
+			let m41: number = fs[12];
+			let m12: number = fs[1];
+			let m22: number = fs[5];
+			let m32: number = fs[9];
+			let m42: number = fs[13];
+			let m13: number = fs[2];
+			let m23: number = fs[6];
+			let m33: number = fs[10];
+			let m43: number = fs[14];
+			let m14: number = fs[3];
+			let m24: number = fs[7];
+			let m34: number = fs[11];
+			let m44: number = fs[15];
+			fs[0] = d * (m22 * (m33 * m44 - m43 * m34) - m32 * (m23 * m44 - m43 * m24) + m42 * (m23 * m34 - m33 * m24));
+			fs[1] = -d * (m12 * (m33 * m44 - m43 * m34) - m32 * (m13 * m44 - m43 * m14) + m42 * (m13 * m34 - m33 * m14));
+			fs[2] = d * (m12 * (m23 * m44 - m43 * m24) - m22 * (m13 * m44 - m43 * m14) + m42 * (m13 * m24 - m23 * m14));
+			fs[3] = -d * (m12 * (m23 * m34 - m33 * m24) - m22 * (m13 * m34 - m33 * m14) + m32 * (m13 * m24 - m23 * m14));
+			fs[4] = -d * (m21 * (m33 * m44 - m43 * m34) - m31 * (m23 * m44 - m43 * m24) + m41 * (m23 * m34 - m33 * m24));
+			fs[5] = d * (m11 * (m33 * m44 - m43 * m34) - m31 * (m13 * m44 - m43 * m14) + m41 * (m13 * m34 - m33 * m14));
+			fs[6] = -d * (m11 * (m23 * m44 - m43 * m24) - m21 * (m13 * m44 - m43 * m14) + m41 * (m13 * m24 - m23 * m14));
+			fs[7] = d * (m11 * (m23 * m34 - m33 * m24) - m21 * (m13 * m34 - m33 * m14) + m31 * (m13 * m24 - m23 * m14));
+			fs[8] = d * (m21 * (m32 * m44 - m42 * m34) - m31 * (m22 * m44 - m42 * m24) + m41 * (m22 * m34 - m32 * m24));
+			fs[9] = -d * (m11 * (m32 * m44 - m42 * m34) - m31 * (m12 * m44 - m42 * m14) + m41 * (m12 * m34 - m32 * m14));
+			fs[10] = d * (m11 * (m22 * m44 - m42 * m24) - m21 * (m12 * m44 - m42 * m14) + m41 * (m12 * m24 - m22 * m14));
+			fs[11] = -d * (m11 * (m22 * m34 - m32 * m24) - m21 * (m12 * m34 - m32 * m14) + m31 * (m12 * m24 - m22 * m14));
+			fs[12] = -d * (m21 * (m32 * m43 - m42 * m33) - m31 * (m22 * m43 - m42 * m23) + m41 * (m22 * m33 - m32 * m23));
+			fs[13] = d * (m11 * (m32 * m43 - m42 * m33) - m31 * (m12 * m43 - m42 * m13) + m41 * (m12 * m33 - m32 * m13));
+			fs[14] = -d * (m11 * (m22 * m43 - m42 * m23) - m21 * (m12 * m43 - m42 * m13) + m41 * (m12 * m23 - m22 * m13));
+			fs[15] = d * (m11 * (m22 * m33 - m32 * m23) - m21 * (m12 * m33 - m32 * m13) + m31 * (m12 * m23 - m22 * m13));
 		};
 		return invertable;
 	}
@@ -882,44 +889,44 @@ class Matrix4 implements IMatrix4 {
 		return this;
 	}
 	pointAt(pos: Vector3D, at: Vector3D, up: Vector3D): void {
+
 		//TODO: need optimize
-		if (at == null || at == undefined) at = new Vector3D(0.0, 0.0, -1.0);
-		if (up == null || up == undefined) up = new Vector3D(0.0, -1.0, 0.0);
+		if (at == null) at = new Vector3D(0.0, 0.0, -1.0);
+		if (up == null) up = new Vector3D(0.0, -1.0, 0.0);
 		let dir = at.subtract(pos);
-		let vup = new Vector3D(up.x, up.y, up.z);//up->clone();
+		let vup = up.clone();
 		//Vector3D right;
 		dir.normalize();
 		vup.normalize();
-		let dir2 = new Vector3D(dir.x, dir.y, dir.z);
-		dir2.scaleBy(vup.dot(dir));
-		//
+		let dir2 = dir.clone().scaleBy(vup.dot(dir));
+		
 		vup.subtractBy(dir2);
 		if (vup.getLength() > MathConst.MATH_MIN_POSITIVE) vup.normalize();
-		else if (dir.x != 0) vup.setTo(-dir.y, dir.x, 0);// vup = Vector3D(-dir.y, dir.x, 0);
-		else vup.setTo(1, 0, 0);// vup = Vector3D(1, 0, 0);
+		else if (dir.x != 0) vup.setTo(-dir.y, dir.x, 0);
+		else vup.setTo(1, 0, 0);
 		let right = vup.crossProduct(dir);
 		right.normalize();
-		let sfs32: Float32Array = this.m_localFS32;
-		sfs32[0] = right.x;
-		sfs32[4] = right.y;
-		sfs32[8] = right.z;
-		sfs32[12] = 0.0;
-		sfs32[1] = vup.x;
-		sfs32[5] = vup.y;
-		sfs32[9] = vup.z;
-		sfs32[13] = 0.0;
-		sfs32[2] = dir.x;
-		sfs32[6] = dir.y;
-		sfs32[10] = dir.z;
-		sfs32[14] = 0.0;
-		sfs32[3] = pos.x;
-		sfs32[7] = pos.y;
-		sfs32[11] = pos.z;
-		sfs32[15] = 1.0;
+		let fs = this.m_localFS32;
+		fs[0] = right.x;
+		fs[4] = right.y;
+		fs[8] = right.z;
+		fs[12] = 0.0;
+		fs[1] = vup.x;
+		fs[5] = vup.y;
+		fs[9] = vup.z;
+		fs[13] = 0.0;
+		fs[2] = dir.x;
+		fs[6] = dir.y;
+		fs[10] = dir.z;
+		fs[14] = 0.0;
+		fs[3] = pos.x;
+		fs[7] = pos.y;
+		fs[11] = pos.z;
+		fs[15] = 1.0;
 	}
 	prepend(rhs: IMatrix4): void {
 		let rfs32: Float32Array = rhs.getLocalFS32();
-		let sfs32: Float32Array = this.m_localFS32;
+		let fs: Float32Array = this.m_localFS32;
 		let m111 = rfs32[0];
 		let m121 = rfs32[4];
 		let m131 = rfs32[8];
@@ -936,42 +943,42 @@ class Matrix4 implements IMatrix4 {
 		let m124 = rfs32[7];
 		let m134 = rfs32[11];
 		let m144 = rfs32[15];
-		let m211 = sfs32[0];
-		let m221 = sfs32[4];
-		let m231 = sfs32[8];
-		let m241 = sfs32[12];
-		let m212 = sfs32[1];
-		let m222 = sfs32[5];
-		let m232 = sfs32[9];
-		let m242 = sfs32[13];
-		let m213 = sfs32[2];
-		let m223 = sfs32[6];
-		let m233 = sfs32[10];
-		let m243 = sfs32[14];
-		let m214 = sfs32[3];
-		let m224 = sfs32[7];
-		let m234 = sfs32[11];
-		let m244 = sfs32[15];
-		sfs32[0] = m111 * m211 + m112 * m221 + m113 * m231 + m114 * m241;
-		sfs32[1] = m111 * m212 + m112 * m222 + m113 * m232 + m114 * m242;
-		sfs32[2] = m111 * m213 + m112 * m223 + m113 * m233 + m114 * m243;
-		sfs32[3] = m111 * m214 + m112 * m224 + m113 * m234 + m114 * m244;
-		sfs32[4] = m121 * m211 + m122 * m221 + m123 * m231 + m124 * m241;
-		sfs32[5] = m121 * m212 + m122 * m222 + m123 * m232 + m124 * m242;
-		sfs32[6] = m121 * m213 + m122 * m223 + m123 * m233 + m124 * m243;
-		sfs32[7] = m121 * m214 + m122 * m224 + m123 * m234 + m124 * m244;
-		sfs32[8] = m131 * m211 + m132 * m221 + m133 * m231 + m134 * m241;
-		sfs32[9] = m131 * m212 + m132 * m222 + m133 * m232 + m134 * m242;
-		sfs32[10] = m131 * m213 + m132 * m223 + m133 * m233 + m134 * m243;
-		sfs32[11] = m131 * m214 + m132 * m224 + m133 * m234 + m134 * m244;
-		sfs32[12] = m141 * m211 + m142 * m221 + m143 * m231 + m144 * m241;
-		sfs32[13] = m141 * m212 + m142 * m222 + m143 * m232 + m144 * m242;
-		sfs32[14] = m141 * m213 + m142 * m223 + m143 * m233 + m144 * m243;
-		sfs32[15] = m141 * m214 + m142 * m224 + m143 * m234 + m144 * m244;
+		let m211 = fs[0];
+		let m221 = fs[4];
+		let m231 = fs[8];
+		let m241 = fs[12];
+		let m212 = fs[1];
+		let m222 = fs[5];
+		let m232 = fs[9];
+		let m242 = fs[13];
+		let m213 = fs[2];
+		let m223 = fs[6];
+		let m233 = fs[10];
+		let m243 = fs[14];
+		let m214 = fs[3];
+		let m224 = fs[7];
+		let m234 = fs[11];
+		let m244 = fs[15];
+		fs[0] = m111 * m211 + m112 * m221 + m113 * m231 + m114 * m241;
+		fs[1] = m111 * m212 + m112 * m222 + m113 * m232 + m114 * m242;
+		fs[2] = m111 * m213 + m112 * m223 + m113 * m233 + m114 * m243;
+		fs[3] = m111 * m214 + m112 * m224 + m113 * m234 + m114 * m244;
+		fs[4] = m121 * m211 + m122 * m221 + m123 * m231 + m124 * m241;
+		fs[5] = m121 * m212 + m122 * m222 + m123 * m232 + m124 * m242;
+		fs[6] = m121 * m213 + m122 * m223 + m123 * m233 + m124 * m243;
+		fs[7] = m121 * m214 + m122 * m224 + m123 * m234 + m124 * m244;
+		fs[8] = m131 * m211 + m132 * m221 + m133 * m231 + m134 * m241;
+		fs[9] = m131 * m212 + m132 * m222 + m133 * m232 + m134 * m242;
+		fs[10] = m131 * m213 + m132 * m223 + m133 * m233 + m134 * m243;
+		fs[11] = m131 * m214 + m132 * m224 + m133 * m234 + m134 * m244;
+		fs[12] = m141 * m211 + m142 * m221 + m143 * m231 + m144 * m241;
+		fs[13] = m141 * m212 + m142 * m222 + m143 * m232 + m144 * m242;
+		fs[14] = m141 * m213 + m142 * m223 + m143 * m233 + m144 * m243;
+		fs[15] = m141 * m214 + m142 * m224 + m143 * m234 + m144 * m244;
 	}
 	prepend3x3(rhs: IMatrix4): void {
 		let rfs32: Float32Array = rhs.getLocalFS32();
-		let sfs32: Float32Array = this.m_localFS32;
+		let fs: Float32Array = this.m_localFS32;
 		let m111 = rfs32[0];
 		let m121 = rfs32[4];
 		let m131 = rfs32[8];
@@ -981,24 +988,24 @@ class Matrix4 implements IMatrix4 {
 		let m113 = rfs32[2];
 		let m123 = rfs32[6];
 		let m133 = rfs32[10];
-		let m211 = sfs32[0];
-		let m221 = sfs32[4];
-		let m231 = sfs32[8];
-		let m212 = sfs32[1];
-		let m222 = sfs32[5];
-		let m232 = sfs32[9];
-		let m213 = sfs32[2];
-		let m223 = sfs32[6];
-		let m233 = sfs32[10];
-		sfs32[0] = m111 * m211 + m112 * m221 + m113 * m231;
-		sfs32[1] = m111 * m212 + m112 * m222 + m113 * m232;
-		sfs32[2] = m111 * m213 + m112 * m223 + m113 * m233;
-		sfs32[4] = m121 * m211 + m122 * m221 + m123 * m231;
-		sfs32[5] = m121 * m212 + m122 * m222 + m123 * m232;
-		sfs32[6] = m121 * m213 + m122 * m223 + m123 * m233;
-		sfs32[8] = m131 * m211 + m132 * m221 + m133 * m231;
-		sfs32[9] = m131 * m212 + m132 * m222 + m133 * m232;
-		sfs32[10] = m131 * m213 + m132 * m223 + m133 * m233;
+		let m211 = fs[0];
+		let m221 = fs[4];
+		let m231 = fs[8];
+		let m212 = fs[1];
+		let m222 = fs[5];
+		let m232 = fs[9];
+		let m213 = fs[2];
+		let m223 = fs[6];
+		let m233 = fs[10];
+		fs[0] = m111 * m211 + m112 * m221 + m113 * m231;
+		fs[1] = m111 * m212 + m112 * m222 + m113 * m232;
+		fs[2] = m111 * m213 + m112 * m223 + m113 * m233;
+		fs[4] = m121 * m211 + m122 * m221 + m123 * m231;
+		fs[5] = m121 * m212 + m122 * m222 + m123 * m232;
+		fs[6] = m121 * m213 + m122 * m223 + m123 * m233;
+		fs[8] = m131 * m211 + m132 * m221 + m133 * m231;
+		fs[9] = m131 * m212 + m132 * m222 + m133 * m232;
+		fs[10] = m131 * m213 + m132 * m223 + m133 * m233;
 	}
 	prependRotationPivot(radian: number, axis: Vector3D, pivotPoint: Vector3D): void {
 		Matrix4.s_tMat4.identity();
@@ -1039,17 +1046,18 @@ class Matrix4 implements IMatrix4 {
 		this.prepend3x3(Matrix4.s_tMat4);
 	}
 	prependScale(xScale: number, yScale: number, zScale: number): void {
-		let sfs32: Float32Array = this.m_localFS32;
-		sfs32[0] *= xScale; sfs32[1] *= yScale; sfs32[2] *= zScale;
-		sfs32[4] *= xScale; sfs32[5] *= yScale; sfs32[6] *= zScale;
-		sfs32[8] *= xScale; sfs32[9] *= yScale; sfs32[10] *= zScale;
-		sfs32[12] *= xScale; sfs32[13] *= yScale; sfs32[14] *= zScale;
+		const fs = this.m_localFS32;
+		fs[0] *= xScale; fs[1] *= yScale; fs[2] *= zScale;
+		fs[4] *= xScale; fs[5] *= yScale; fs[6] *= zScale;
+		fs[8] *= xScale; fs[9] *= yScale; fs[10] *= zScale;
+		fs[12] *= xScale; fs[13] *= yScale; fs[14] *= zScale;
 	}
 	prependScaleXY(xScale: number, yScale: number): void {
-		this.m_localFS32[0] *= xScale; this.m_localFS32[1] *= yScale;
-		this.m_localFS32[4] *= xScale; this.m_localFS32[5] *= yScale;
-		this.m_localFS32[8] *= xScale; this.m_localFS32[9] *= yScale;
-		this.m_localFS32[12] *= xScale; this.m_localFS32[13] *= yScale;
+		const fs = this.m_localFS32;
+		fs[0] *= xScale; fs[1] *= yScale;
+		fs[4] *= xScale; fs[5] *= yScale;
+		fs[8] *= xScale; fs[9] *= yScale;
+		fs[12] *= xScale; fs[13] *= yScale;
 	}
 	prependTranslationXYZ(px: number, py: number, pz: number): void {
 		Matrix4.s_tMat4.identity();
@@ -1068,7 +1076,7 @@ class Matrix4 implements IMatrix4 {
 		scale[0] = scale[1] = scale[2] = components[2].x;
 		scale[4] = scale[5] = scale[6] = components[2].y;
 		scale[8] = scale[9] = scale[10] = components[2].z;
-		let sfs32: Float32Array = this.m_localFS32;
+		let fs: Float32Array = this.m_localFS32;
 		switch (orientationStyle) {
 			case OrientationType.EULER_ANGLES:
 				{
@@ -1078,22 +1086,22 @@ class Matrix4 implements IMatrix4 {
 					let sx: number = Math.sin(components[1].x);
 					let sy: number = Math.sin(components[1].y);
 					let sz: number = Math.sin(components[1].z);
-					sfs32[0] = cy * cz * scale[0];
-					sfs32[1] = cy * sz * scale[1];
-					sfs32[2] = -sy * scale[2];
-					sfs32[3] = 0;
-					sfs32[4] = (sx * sy * cz - cx * sz) * scale[4];
-					sfs32[5] = (sx * sy * sz + cx * cz) * scale[5];
-					sfs32[6] = sx * cy * scale[6];
-					sfs32[7] = 0;
-					sfs32[8] = (cx * sy * cz + sx * sz) * scale[8];
-					sfs32[9] = (cx * sy * sz - sx * cz) * scale[9];
-					sfs32[10] = cx * cy * scale[10];
-					sfs32[11] = 0;
-					sfs32[12] = components[0].x;
-					sfs32[13] = components[0].y;
-					sfs32[14] = components[0].z;
-					sfs32[15] = 1;
+					fs[0] = cy * cz * scale[0];
+					fs[1] = cy * sz * scale[1];
+					fs[2] = -sy * scale[2];
+					fs[3] = 0;
+					fs[4] = (sx * sy * cz - cx * sz) * scale[4];
+					fs[5] = (sx * sy * sz + cx * cz) * scale[5];
+					fs[6] = sx * cy * scale[6];
+					fs[7] = 0;
+					fs[8] = (cx * sy * cz + sx * sz) * scale[8];
+					fs[9] = (cx * sy * sz - sx * cz) * scale[9];
+					fs[10] = cx * cy * scale[10];
+					fs[11] = 0;
+					fs[12] = components[0].x;
+					fs[13] = components[0].y;
+					fs[14] = components[0].z;
+					fs[15] = 1;
 				}
 				break;
 			default:
@@ -1109,22 +1117,22 @@ class Matrix4 implements IMatrix4 {
 						z *= Math.sin(halfW);
 						w = Math.cos(halfW);
 					};
-					sfs32[0] = (1 - 2 * y * y - 2 * z * z) * scale[0];
-					sfs32[1] = (2 * x * y + 2 * w * z) * scale[1];
-					sfs32[2] = (2 * x * z - 2 * w * y) * scale[2];
-					sfs32[3] = 0;
-					sfs32[4] = (2 * x * y - 2 * w * z) * scale[4];
-					sfs32[5] = (1 - 2 * x * x - 2 * z * z) * scale[5];
-					sfs32[6] = (2 * y * z + 2 * w * x) * scale[6];
-					sfs32[7] = 0;
-					sfs32[8] = (2 * x * z + 2 * w * y) * scale[8];
-					sfs32[9] = (2 * y * z - 2 * w * x) * scale[9];
-					sfs32[10] = (1 - 2 * x * x - 2 * y * y) * scale[10];
-					sfs32[11] = 0;
-					sfs32[12] = components[0].x;
-					sfs32[13] = components[0].y;
-					sfs32[14] = components[0].z;
-					sfs32[15] = 1;
+					fs[0] = (1 - 2 * y * y - 2 * z * z) * scale[0];
+					fs[1] = (2 * x * y + 2 * w * z) * scale[1];
+					fs[2] = (2 * x * z - 2 * w * y) * scale[2];
+					fs[3] = 0;
+					fs[4] = (2 * x * y - 2 * w * z) * scale[4];
+					fs[5] = (1 - 2 * x * x - 2 * z * z) * scale[5];
+					fs[6] = (2 * y * z + 2 * w * x) * scale[6];
+					fs[7] = 0;
+					fs[8] = (2 * x * z + 2 * w * y) * scale[8];
+					fs[9] = (2 * y * z - 2 * w * x) * scale[9];
+					fs[10] = (1 - 2 * x * x - 2 * y * y) * scale[10];
+					fs[11] = 0;
+					fs[12] = components[0].x;
+					fs[13] = components[0].y;
+					fs[14] = components[0].z;
+					fs[15] = 1;
 				}
 				break;
 		};
@@ -1153,69 +1161,69 @@ class Matrix4 implements IMatrix4 {
 	}
 
 	deltaTransformVectorSelf(v3: Vector3D): void {
-		let sfs32: Float32Array = this.m_localFS32;
+		let fs: Float32Array = this.m_localFS32;
 		let x: number = v3.x;
 		let y: number = v3.y;
 		let z: number = v3.z;
-		v3.x = x * sfs32[0] + y * sfs32[4] + z * sfs32[8];
-		v3.y = x * sfs32[1] + y * sfs32[5] + z * sfs32[9];
-		v3.z = x * sfs32[2] + y * sfs32[6] + z * sfs32[10];
+		v3.x = x * fs[0] + y * fs[4] + z * fs[8];
+		v3.y = x * fs[1] + y * fs[5] + z * fs[9];
+		v3.z = x * fs[2] + y * fs[6] + z * fs[10];
 	}
 	deltaTransformOutVector(v3: Vector3D, out_v3: Vector3D): void {
-		let sfs32: Float32Array = this.m_localFS32;
-		out_v3.x = v3.x * sfs32[0] + v3.y * sfs32[4] + v3.z * sfs32[8];
-		out_v3.y = v3.x * sfs32[1] + v3.y * sfs32[5] + v3.z * sfs32[9];
-		out_v3.z = v3.x * sfs32[2] + v3.y * sfs32[6] + v3.z * sfs32[10];
+		let fs: Float32Array = this.m_localFS32;
+		out_v3.x = v3.x * fs[0] + v3.y * fs[4] + v3.z * fs[8];
+		out_v3.y = v3.x * fs[1] + v3.y * fs[5] + v3.z * fs[9];
+		out_v3.z = v3.x * fs[2] + v3.y * fs[6] + v3.z * fs[10];
 	}
 	transformVector(v3: Vector3D): Vector3D {
-		let sfs32: Float32Array = this.m_localFS32;
+		let fs: Float32Array = this.m_localFS32;
 		let x: number = v3.x;
 		let y: number = v3.y;
 		let z: number = v3.z;
 		return new Vector3D(
-			x * sfs32[0] + y * sfs32[4] + z * sfs32[8] + sfs32[12]
-			, x * sfs32[1] + y * sfs32[5] + z * sfs32[9] + sfs32[13]
-			, x * sfs32[2] + y * sfs32[6] + z * sfs32[10] + sfs32[14]
-			, x * sfs32[3] + y * sfs32[7] + z * sfs32[11] + sfs32[15]
+			x * fs[0] + y * fs[4] + z * fs[8] + fs[12]
+			, x * fs[1] + y * fs[5] + z * fs[9] + fs[13]
+			, x * fs[2] + y * fs[6] + z * fs[10] + fs[14]
+			, x * fs[3] + y * fs[7] + z * fs[11] + fs[15]
 		);
 	}
 	transformOutVector(v3: Vector3D, out_v3: Vector3D): void {
 		let x: number = v3.x;
 		let y: number = v3.y;
 		let z: number = v3.z;
-		let sfs32: Float32Array = this.m_localFS32;
+		let fs: Float32Array = this.m_localFS32;
 		out_v3.setTo(
-			x * sfs32[0] + y * sfs32[4] + z * sfs32[8] + sfs32[12]
-			, x * sfs32[1] + y * sfs32[5] + z * sfs32[9] + sfs32[13]
-			, x * sfs32[2] + y * sfs32[6] + z * sfs32[10] + sfs32[14]
-			, x * sfs32[3] + y * sfs32[7] + z * sfs32[11] + sfs32[15]
+			x * fs[0] + y * fs[4] + z * fs[8] + fs[12]
+			, x * fs[1] + y * fs[5] + z * fs[9] + fs[13]
+			, x * fs[2] + y * fs[6] + z * fs[10] + fs[14]
+			, x * fs[3] + y * fs[7] + z * fs[11] + fs[15]
 		);
 	}
 	transformOutVector3(v3: Vector3D, out_v3: Vector3D): void {
-		let sfs32: Float32Array = this.m_localFS32;
-		out_v3.x = v3.x * sfs32[0] + v3.y * sfs32[4] + v3.z * sfs32[8] + sfs32[12];
-		out_v3.y = v3.x * sfs32[1] + v3.y * sfs32[5] + v3.z * sfs32[9] + sfs32[13];
-		out_v3.z = v3.x * sfs32[2] + v3.y * sfs32[6] + v3.z * sfs32[10] + sfs32[14];
+		let fs: Float32Array = this.m_localFS32;
+		out_v3.x = v3.x * fs[0] + v3.y * fs[4] + v3.z * fs[8] + fs[12];
+		out_v3.y = v3.x * fs[1] + v3.y * fs[5] + v3.z * fs[9] + fs[13];
+		out_v3.z = v3.x * fs[2] + v3.y * fs[6] + v3.z * fs[10] + fs[14];
 	}
 	transformVector3Self(v3: Vector3D): void {
 		let x: number = v3.x;
 		let y: number = v3.y;
 		let z: number = v3.z;
-		let sfs32: Float32Array = this.m_localFS32;
-		v3.x = x * sfs32[0] + y * sfs32[4] + z * sfs32[8] + sfs32[12];
-		v3.y = x * sfs32[1] + y * sfs32[5] + z * sfs32[9] + sfs32[13];
-		v3.z = x * sfs32[2] + y * sfs32[6] + z * sfs32[10] + sfs32[14];
+		let fs: Float32Array = this.m_localFS32;
+		v3.x = x * fs[0] + y * fs[4] + z * fs[8] + fs[12];
+		v3.y = x * fs[1] + y * fs[5] + z * fs[9] + fs[13];
+		v3.z = x * fs[2] + y * fs[6] + z * fs[10] + fs[14];
 	}
 	transformVectorSelf(v3: Vector3D): void {
 		let x: number = v3.x;
 		let y: number = v3.y;
 		let z: number = v3.z;
-		let sfs32: Float32Array = this.m_localFS32;
+		let fs: Float32Array = this.m_localFS32;
 		v3.setTo(
-			x * sfs32[0] + y * sfs32[4] + z * sfs32[8] + sfs32[12],
-			x * sfs32[1] + y * sfs32[5] + z * sfs32[9] + sfs32[13],
-			x * sfs32[2] + y * sfs32[6] + z * sfs32[10] + sfs32[14],
-			x * sfs32[3] + y * sfs32[7] + z * sfs32[11] + sfs32[15]
+			x * fs[0] + y * fs[4] + z * fs[8] + fs[12],
+			x * fs[1] + y * fs[5] + z * fs[9] + fs[13],
+			x * fs[2] + y * fs[6] + z * fs[10] + fs[14],
+			x * fs[3] + y * fs[7] + z * fs[11] + fs[15]
 		);
 	}
 	transformVectors(float_vinArr: Float32Array | number[], vinLength: number, float_voutArr: Float32Array): void {
@@ -1266,19 +1274,19 @@ class Matrix4 implements IMatrix4 {
 	transpose(): void {
 		Matrix4.s_tMat4.copyFrom(this);
 		let fs32 = Matrix4.s_tMat4.getFS32();
-		let sfs32: Float32Array = this.m_localFS32;
-		sfs32[1] = fs32[4];
-		sfs32[2] = fs32[8];
-		sfs32[3] = fs32[12];
-		sfs32[4] = fs32[1];
-		sfs32[6] = fs32[9];
-		sfs32[7] = fs32[13];
-		sfs32[8] = fs32[2];
-		sfs32[9] = fs32[6];
-		sfs32[11] = fs32[14];
-		sfs32[12] = fs32[3];
-		sfs32[13] = fs32[7];
-		sfs32[14] = fs32[11];
+		let fs = this.m_localFS32;
+		fs[1] = fs32[4];
+		fs[2] = fs32[8];
+		fs[3] = fs32[12];
+		fs[4] = fs32[1];
+		fs[6] = fs32[9];
+		fs[7] = fs32[13];
+		fs[8] = fs32[2];
+		fs[9] = fs32[6];
+		fs[11] = fs32[14];
+		fs[12] = fs32[3];
+		fs[13] = fs32[7];
+		fs[14] = fs32[11];
 	}
 	interpolateTo(toMat: IMatrix4, float_percent: number): void {
 		let fs32: Float32Array = toMat.getFS32();
@@ -1293,24 +1301,24 @@ class Matrix4 implements IMatrix4 {
 	}
 	private getAxisRotation(x: number, y: number, z: number, radian: number): void {
 		radian = -radian;
-		let sfs32: Float32Array = this.m_localFS32;
+		let fs: Float32Array = this.m_localFS32;
 		let s: number = Math.sin(radian), c = Math.cos(radian);
 		let t: number = 1.0 - c;
-		sfs32[0] = c + x * x * t;
-		sfs32[5] = c + y * y * t;
-		sfs32[10] = c + z * z * t;
+		fs[0] = c + x * x * t;
+		fs[5] = c + y * y * t;
+		fs[10] = c + z * z * t;
 		let tmp1: number = x * y * t;
 		let tmp2: number = z * s;
-		sfs32[4] = tmp1 + tmp2;
-		sfs32[1] = tmp1 - tmp2;
+		fs[4] = tmp1 + tmp2;
+		fs[1] = tmp1 - tmp2;
 		tmp1 = x * z * t;
 		tmp2 = y * s;
-		sfs32[8] = tmp1 - tmp2;
-		sfs32[2] = tmp1 + tmp2;
+		fs[8] = tmp1 - tmp2;
+		fs[2] = tmp1 + tmp2;
 		tmp1 = y * z * t;
 		tmp2 = x * s;
-		sfs32[9] = tmp1 + tmp2;
-		sfs32[6] = tmp1 - tmp2;
+		fs[9] = tmp1 + tmp2;
+		fs[6] = tmp1 - tmp2;
 	}
 	rotationX(radian: number): void {
 		let s: number = Math.sin(radian), c: number = Math.cos(radian);
@@ -1340,13 +1348,14 @@ class Matrix4 implements IMatrix4 {
 	}
 
 	transformPerspV4Self(v4: Vector3D): void {
+		const fs = this.m_localFS32;
 		v4.w = v4.z;
-		v4.x *= this.m_localFS32[0];
-		v4.y *= this.m_localFS32[5];
-		v4.z *= this.m_localFS32[10];
-		v4.z += this.m_localFS32[14];
-		v4.w *= this.m_localFS32[11];
-		v4.w += this.m_localFS32[15];
+		v4.x *= fs[0];
+		v4.y *= fs[5];
+		v4.z *= fs[10];
+		v4.z += fs[14];
+		v4.w *= fs[11];
+		v4.w += fs[15];
 	}
 	clone(): IMatrix4 {
 		let m = new Matrix4();
@@ -1358,13 +1367,14 @@ class Matrix4 implements IMatrix4 {
 	///////////////////////////////////////////
 	perspectiveRH(fovy: number, aspect: number, zNear: number, zFar: number): void {
 		//assert(abs(aspect - std::numeric_limits<float>::epsilon()) > minFloatValue)
+		const fs = this.m_localFS32;
 		let tanHalfFovy = Math.tan(fovy * 0.5);
 		this.identity();
-		this.m_localFS32[0] = 1.0 / (aspect * tanHalfFovy);
-		this.m_localFS32[5] = 1.0 / tanHalfFovy;
-		this.m_localFS32[10] = -(zFar + zNear) / (zFar - zNear);
-		this.m_localFS32[11] = -1.0;
-		this.m_localFS32[14] = -(2.0 * zFar * zNear) / (zFar - zNear);
+		fs[0] = 1.0 / (aspect * tanHalfFovy);
+		fs[5] = 1.0 / tanHalfFovy;
+		fs[10] = -(zFar + zNear) / (zFar - zNear);
+		fs[11] = -1.0;
+		fs[14] = -(2.0 * zFar * zNear) / (zFar - zNear);
 	}
 	perspectiveRH2(fovy: number, pw: number, ph: number, zNear: number, zFar: number): void {
 		let focalLength: number = pw / Math.tan(fovy * 0.5);
@@ -1373,68 +1383,73 @@ class Matrix4 implements IMatrix4 {
 		let m10: number = -zFar / (zFar - zNear);
 		let m14: number = -zNear * m10;
 		this.identity();
-		this.m_localFS32[0] = m0;
-		this.m_localFS32[5] = m5;
-		this.m_localFS32[10] = m10;
-		this.m_localFS32[11] = -1.0;
-		this.m_localFS32[14] = m14;
+		const fs = this.m_localFS32;
+		fs[0] = m0;
+		fs[5] = m5;
+		fs[10] = m10;
+		fs[11] = -1.0;
+		fs[14] = m14;
 	}
 	orthoRH(b: number, t: number, l: number, r: number, zNear: number, zFar: number): void {
+		
 		this.identity();
-		this.m_localFS32[0] = 2.0 / (r - l);
-		this.m_localFS32[5] = 2.0 / (t - b);
-		this.m_localFS32[10] = -2.0 / (zFar - zNear);
-		this.m_localFS32[12] = -(r + l) / (r - l);
-		this.m_localFS32[13] = -(t + b) / (t - b);
-		this.m_localFS32[14] = -(zFar + zNear) / (zFar - zNear);
-		this.m_localFS32[15] = 1.0;
+		const fs = this.m_localFS32;
+		fs[0] = 2.0 / (r - l);
+		fs[5] = 2.0 / (t - b);
+		fs[10] = -2.0 / (zFar - zNear);
+		fs[12] = -(r + l) / (r - l);
+		fs[13] = -(t + b) / (t - b);
+		fs[14] = -(zFar + zNear) / (zFar - zNear);
+		fs[15] = 1.0;
 	}
 	perspectiveLH(fovy: number, aspect: number, zNear: number, zFar: number): void {
 		//assert(abs(aspect - std::numeric_limits<float>::epsilon()) > minFloatValue)
 
 		let tanHalfFovy: number = Math.tan(fovy * 0.5);
 		this.identity();
-		this.m_localFS32[0] = 1.0 / (aspect * tanHalfFovy);
-		this.m_localFS32[5] = 1.0 / tanHalfFovy;
-		this.m_localFS32[10] = (zFar + zNear) / (zFar - zNear);
-		this.m_localFS32[11] = 1.0;
-		this.m_localFS32[14] = (2.0 * zFar * zNear) / (zFar - zNear);
+		const fs = this.m_localFS32;
+		fs[0] = 1.0 / (aspect * tanHalfFovy);
+		fs[5] = 1.0 / tanHalfFovy;
+		fs[10] = (zFar + zNear) / (zFar - zNear);
+		fs[11] = 1.0;
+		fs[14] = (2.0 * zFar * zNear) / (zFar - zNear);
 	}
 	orthoLH(b: number, t: number, l: number, r: number, zNear: number, zFar: number): void {
 		this.identity();
-		this.m_localFS32[0] = 2.0 / (r - l);// / (aspect * tanHalfFovy);
-		this.m_localFS32[5] = 2.0 / (t - b);// / tanHalfFovy;
-		this.m_localFS32[10] = 2.0 / (zFar - zNear);
-		this.m_localFS32[12] = -(r + l) / (r - l);
-		this.m_localFS32[13] = -(t + b) / (t - b);
-		this.m_localFS32[14] = -(zFar + zNear) / (zFar - zNear);
-		this.m_localFS32[15] = 1.0;
+		const fs = this.m_localFS32;
+		fs[0] = 2.0 / (r - l);// / (aspect * tanHalfFovy);
+		fs[5] = 2.0 / (t - b);// / tanHalfFovy;
+		fs[10] = 2.0 / (zFar - zNear);
+		fs[12] = -(r + l) / (r - l);
+		fs[13] = -(t + b) / (t - b);
+		fs[14] = -(zFar + zNear) / (zFar - zNear);
+		fs[15] = 1.0;
 	}
-	lookAtRH(eye: Vector3D, center: Vector3D, up: Vector3D): void {
+	lookAtRH(eyePos: Vector3D, atPos: Vector3D, up: Vector3D): void {
 		this.identity();
-		let f: Vector3D = center.subtract(eye);
+		let f: Vector3D = atPos.subtract(eyePos);
 		f.normalize();
 		let s: Vector3D = f.crossProduct(up);
 		s.normalize();
 		let u: Vector3D = s.crossProduct(f);
-		s.w = -s.dot(eye);
-		u.w = -u.dot(eye);
-		f.w = f.dot(eye);
+		s.w = -s.dot(eyePos);
+		u.w = -u.dot(eyePos);
+		f.w = f.dot(eyePos);
 		f.negate();
 		this.copyRowFrom(0, s);
 		this.copyRowFrom(1, u);
 		this.copyRowFrom(2, f);
 	}
-	lookAtLH(eye: Vector3D, center: Vector3D, up: Vector3D): void {
+	lookAtLH(eyePos: Vector3D, atPos: Vector3D, up: Vector3D): void {
 		this.identity();
-		let f: Vector3D = center.subtract(eye);
+		let f: Vector3D = atPos.subtract(eyePos);
 		f.normalize();
 		let s: Vector3D = f.crossProduct(up);
 		s.normalize();
 		let u: Vector3D = s.crossProduct(f);
-		s.w = -s.dot(eye);
-		u.w = -u.dot(eye);
-		f.w = -f.dot(eye);
+		s.w = -s.dot(eyePos);
+		u.w = -u.dot(eyePos);
+		f.w = -f.dot(eyePos);
 		this.copyRowFrom(0, s);
 		this.copyRowFrom(1, u);
 		this.copyRowFrom(2, f);
