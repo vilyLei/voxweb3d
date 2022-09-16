@@ -41,9 +41,9 @@ class CircleRayTester implements ITestRay {
         if(this.isHit) {
             this.isHit = u.Intersection == CoAGeom.Intersection.Hit;
             if(this.isHit) {
-                // console.log("hit the plane, its nv: ", this.m_planeNV);
                 let dis = CoMath.Vector3D.Distance(this.m_outV0, this.m_center);
                 this.isHit = Math.abs(dis - this.m_radius) < this.m_rayTestRadius;
+                // console.log("hit the plane, its nv: ", this.m_planeNV, this.isHit);
                 if( this.isHit ) {
                     if(this.m_direcV == null || this.m_direcV.dot(this.m_outV0) > 0) {
                         outV.copyFrom(this.m_outV0);

@@ -95,7 +95,7 @@ class RotationCamZCircle implements IRotationCtr {
             this.m_material = CoMaterial.createLineMaterial(ml.dynColorEnabled);
             this.m_material.setColor(this.outColor);
             this.m_entity.setMaterial(this.m_material);
-            this.m_entity.update();
+            // this.m_entity.update();
 
             this.initializeEvent();
         }
@@ -107,6 +107,7 @@ class RotationCamZCircle implements IRotationCtr {
         let et = this.m_entity;
         et.getPosition(this.m_posV);
         et.getScaleXYZ(sv);
+        // et.update();
 
         this.m_srcDV.setXYZ(1, 0, 0);
         this.m_dstDV.subVecsTo(camera.getPosition(), this.m_posV);
@@ -118,19 +119,21 @@ class RotationCamZCircle implements IRotationCtr {
 
         let mat = et.getTransform().getMatrix();
         mat.identity();
-        mat.setScaleXYZ(sv.x, sv.y, sv.z);
+        // mat.setScaleXYZ(sv.x, sv.y, sv.z);
         mat.appendRotation(rad, axis);
         mat.appendTranslation(this.m_posV);
 
-        const r = this.m_radius;
-        let bounds = et.getGlobalBounds();
-        bounds.min.setXYZ(-r,-r,-r);
-        bounds.min.addBy(this.m_posV);
-        bounds.max.setXYZ(r,r,r);
-        bounds.max.addBy(this.m_posV);
-        bounds.updateFast();
+        let rv = mat.decompose(CoMath.OrientationType.EULER_ANGLES)[1];
+        et.setRotation3(rv.scaleBy(CoMath.MathConst.MATH_180_OVER_PI));
 
-        // this.m_entity.update();
+        // const r = this.m_radius;
+        // let bounds = et.getGlobalBounds();
+        // bounds.min.setXYZ(-r,-r,-r);
+        // bounds.min.addBy(this.m_posV);
+        // bounds.max.setXYZ(r,r,r);
+        // bounds.max.addBy(this.m_posV);
+        // bounds.updateFast();
+        et.update();
     }
     getEntity(): ITransformEntity {
         return this.m_entity;
@@ -146,20 +149,20 @@ class RotationCamZCircle implements IRotationCtr {
         this.m_entity.setXYZ(px, py, pz);
     }
     setRotation3(r: IVector3D): void {
-        this.m_entity.setRotation3(r);
+        // this.m_entity.setRotation3(r);
     }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
-        this.m_entity.setRotationXYZ(rx, ry, rz);
+        // this.m_entity.setRotationXYZ(rx, ry, rz);
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
         this.m_entity.setScaleXYZ(sx, sy, sz);
     }
 
     getScaleXYZ(pv: IVector3D): void {
-        this.m_entity.getScaleXYZ(pv);
+        // this.m_entity.getScaleXYZ(pv);
     }
     getRotationXYZ(pv: IVector3D): void {
-        this.m_entity.getRotationXYZ(pv);
+        // this.m_entity.getRotationXYZ(pv);
     }
 
     getGlobalBounds(): IAABB {
