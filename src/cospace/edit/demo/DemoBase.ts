@@ -31,6 +31,7 @@ import TextEntity from "../../voxtext/base/TextEntity";
 import BoundsEntity from "../../../vox/entity/BoundsEntity";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import { Box3DEntity } from "../../voxengine/CoRendererBase";
+import { QuadBrokenLine3DEntity } from "../../../vox/entity/QuadLine3DEntity";
 
 //import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
 
@@ -51,7 +52,7 @@ export class DemoBase {
 
         if (this.m_rscene == null) {
 
-            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             RendererDevice.SetWebBodyColor("#333333");
@@ -96,12 +97,19 @@ export class DemoBase {
     private initScene(): void {
 
         // let bounds: BoundsEntity = null;
-        let box = new Box3DEntity();
-        box.normalEnabled = true;
-        box.initializeCube(100.0);
-        this.m_rscene.addEntity(box);
+        // let box = new Box3DEntity();
+        // box.normalEnabled = true;
+        // box.initializeCube(100.0);
+        // this.m_rscene.addEntity(box);
+
+        // return;
+
+        let quadL = new QuadBrokenLine3DEntity();
+        quadL.initialize([0.0,0.0,0.0, 300.0,0.0,0.0, 300.0,300.0,0.0, 600.0,300.0,0.0], 56.0);
+        this.m_rscene.addEntity(quadL);
 
         return;
+
         let plane = new Plane3DEntity();
         plane.normalEnabled = true;
         plane.initializeXOYSquare(200);

@@ -191,8 +191,8 @@ export class DemoMoveObj {
 	}
 	private createDefaultEntity(): void {
 
-		// let axis = CoRScene.createAxis3DEntity();
-		// this.m_rscene.addEntity(axis);
+		let axis = CoRScene.createAxis3DEntity();
+		this.m_rscene.addEntity(axis);
 
 		/*
 		let texList = [this.createTexByUrl()];

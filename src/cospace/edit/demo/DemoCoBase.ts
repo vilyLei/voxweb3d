@@ -33,6 +33,10 @@ import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 import { ConeMeshBuilder } from "../../voxmesh/build/ConeMeshBuilder";
 import { BoxMeshBuilder } from "../../voxmesh/build/BoxMeshBuilder";
 import { DragScaleController } from "../scale/DragScaleController";
+import { QuadLineMeshBuilder } from "../../voxmesh/build/QuadLineMeshBuilder";
+import IVector3D from "../../../vox/math/IVector3D";
+import IRawMesh from "../../../vox/mesh/IRawMesh";
+import IMatrix4 from "../../../vox/math/IMatrix4";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -154,30 +158,88 @@ export class DemoCoBase {
 	private m_dragMCtr: DragMoveController = null;
 	private m_dragSCtr: DragScaleController = null;
 	private m_axis: ITransformEntity = null;
-	private test01(): void {
+	private m_currEntity: ITransformEntity = null;
+	private m_plnv: IVector3D;
 
-		//BoxMeshBuilder
+	private createLineEntity(mesh: IRawMesh, mBuilder: LineMeshBuilder): ITransformEntity {
 
-		///*
-		// let mat = CoMath.createMat4();
-		// mat.rotationZ(-0.5 * Math.PI);
-		let material = CoMaterial.createDefaultMaterial(true);
-		material.initializeByCodeBuf(false);
-		// let mBuilder = new BoxMeshBuilder();
-		let mBuilder = CoMesh.box;
-		// mBuilder.transMatrix = mat;
-		mBuilder.setBufSortFormat(material.getBufSortFormat());
-		// mBuilder.vbWholeDataEnabled = true;
-		let mesh = mBuilder.createCube(30.0);
-		// let mesh = mBuilder.create(30,100,20,-0.5);
+		// let mBuilder = new LineMeshBuilder();
+		// mBuilder.color.setRGB3f(0.1, 0.2, 0.3);
+		// mBuilder.dynColorEnabled = true;
+		// let mesh = mBuilder.createRectXOY(-100, -100, 200, 200);
+		// let mesh = mBuilder.createRectXOZ(-100, -100, 200, 200);
+		// let mesh = mBuilder.createRectYOZ(-100, -100, 200, 200);
+		// let mesh = mBuilder.createCircleXOY(70, 10);
+		// let mesh = mBuilder.createCircleXOZ(70, 10);
+
+		// let mesh = mBuilder.createCircleXOY(70, 10, null, 0.1 * Math.PI, 0.8 * Math.PI);
+		// this.m_plnv.setXYZ(0.0, 0.0, 1.0);
+		// let mesh = mBuilder.createCircleXOZ(70, 10, null, 0.1 * Math.PI, 0.8 * Math.PI);
+		// this.m_plnv.setXYZ(0.0, 1.0, 0.0);
+		// let mesh = mBuilder.createCircleYOZ(70, 10, null, 0.1 * Math.PI, 0.8 * Math.PI);
+		// this.m_plnv.setXYZ(1.0, 0.0, 0.0);
+
+		// let mesh = mBuilder.createCircleXOZ(100,100);
+		//let mesh = mBuilder.createCircleYOZ(100,100);
+		// let mesh = mBuilder.createLine(CoMath.createVec3());
 		console.log("test01(), mesh: ", mesh);
 
-		let box = CoEntity.createDisplayEntity();
-		box.setMaterial(material);
-		box.setMesh(mesh);
-		this.m_rscene.addEntity(box);
-		//return;
+		// let material = CoMaterial.createLineMaterial(mBuilder.dynColorEnabled);
+		// material.setRGB3f(1.0,0.0,0.0);
+
+		// let billml = new BillboardLineMaterial();
+		// let uniformData = new Float32Array([1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0]);
+		// billml.brightnessEnabled = true;
+		// billml.alphaEnabled = true;
+		// billml.rotationEnabled = true;
+		// // billml.fogEnabled = true;
+		// billml.initialize(false);
+		// let ml = billml.material;
+		// ml.addUniformDataAt("u_billParam", uniformData);
+
+		let material = new Line3DMaterial(mBuilder.dynColorEnabled);
+		let rectLine = CoEntity.createDisplayEntity();
+		rectLine.setMaterial(material);
+		rectLine.setMesh(mesh);
+		// rectLine.setRotationXYZ(30, 0.0, 0.0);
+		// this.m_currEntity = rectLine;
+		this.m_rscene.addEntity(rectLine);
+		return rectLine;
+	}
+	private m_entities: ITransformEntity[] = null;
+	private test01(): void {
+
+		this.m_plnv = CoMath.createVec3();
+
+		//BoxMeshBuilder
+		/*
+		// let mat = CoMath.createMat4();
+		// mat.rotationZ(-0.5 * Math.PI);
+		//let pmaterial = CoMaterial.createQuadLineMaterial(true);
+		let dynColorEnabled = true;
+		let pmaterial = CoMaterial.createQuadLineMaterial(dynColorEnabled);
+		pmaterial.initializeByCodeBuf(false);
+		pmaterial.setColor(CoMaterial.createColor4(1.0,0.1,0.2));
+
+		let build = new QuadLineMeshBuilder();
+		build.thickness = 6.0;
+		build.dynColorEnabled = dynColorEnabled;
+		//let pmesh = build.createLine(CoMath.createVec3(), CoMath.createVec3(100,0,0));
+		let V3F = CoMath.createVec3;
+		// let pmesh = build.createCurveByPositions([
+		// 	V3F(), V3F(100,0,0), V3F(100,100,0)
+		// ]);
+		let pmesh = build.createCircleXOY(80,10);
+		// let mesh = mBuilder.create(30,100,20,-0.5);
+		console.log("test01(), quad line pmesh: ", pmesh);
+
+		let entity = CoEntity.createDisplayEntity();		
+		entity.setMaterial(pmaterial);
+		entity.setMesh(pmesh);
+		this.m_rscene.addEntity(entity);
+		return;
 		//*/
+
 		/*
 		let mat = CoMath.createMat4();
 		mat.rotationZ(-0.5 * Math.PI);
@@ -214,37 +276,97 @@ export class DemoCoBase {
 		return;
 		//*/
 		/*
+		let rad = 0.0;//0.1 * Math.PI;
+		let radRange = Math.PI;//0.8 * Math.PI;
+		let mBuilder = new LineMeshBuilder();
+		mBuilder.color.setRGB3f(0.1, 0.2, 0.3);
+		mBuilder.dynColorEnabled = true;
+		let mesh = mBuilder.createCircleXOY(70, 20, null, rad, radRange);
+		let la = this.createLineEntity(mesh, mBuilder);
+		mesh = mBuilder.createCircleXOZ(70, 20, null, rad, radRange);
+		let lb = this.createLineEntity(mesh, mBuilder);
+		mesh = mBuilder.createCircleYOZ(70, 20, null, rad, radRange);
+		let lc = this.createLineEntity(mesh, mBuilder);
+		this.m_entities = [la, lb, lc];
+		return;
+		//*/
+		///*
 		let mBuilder = new LineMeshBuilder();
 		mBuilder.color.setRGB3f(0.1, 0.2, 0.3);
 		mBuilder.dynColorEnabled = true;
 		// let mesh = mBuilder.createRectXOY(-100, -100, 200, 200);
 		// let mesh = mBuilder.createRectXOZ(-100, -100, 200, 200);
 		// let mesh = mBuilder.createRectYOZ(-100, -100, 200, 200);
-		let mesh = mBuilder.createCircleXOY(30,4);
+		// let mesh = mBuilder.createCircleXOY(70, 30);
+		let mesh = mBuilder.createCircleYOZ(70, 30);
+		// let mesh = mBuilder.createCircleXOZ(70, 10);
+
+		// let mesh = mBuilder.createCircleXOY(70, 10, null, 0.1 * Math.PI, 0.8 * Math.PI);
+		// this.m_plnv.setXYZ(0.0, 0.0, 1.0);
+		// let mesh = mBuilder.createCircleXOZ(70, 10, null, 0.1 * Math.PI, 0.8 * Math.PI);
+		// this.m_plnv.setXYZ(0.0, 1.0, 0.0);
+		// let mesh = mBuilder.createCircleYOZ(70, 10, null, 0.1 * Math.PI, 0.8 * Math.PI);
+		// this.m_plnv.setXYZ(1.0, 0.0, 0.0);
+
 		// let mesh = mBuilder.createCircleXOZ(100,100);
 		//let mesh = mBuilder.createCircleYOZ(100,100);
 		// let mesh = mBuilder.createLine(CoMath.createVec3());
 		console.log("test01(), mesh: ", mesh);
 
+
 		// let material = CoMaterial.createLineMaterial(mBuilder.dynColorEnabled);
 		// material.setRGB3f(1.0,0.0,0.0);
 
-		let billml = new BillboardLineMaterial();
-		let uniformData = new Float32Array([1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0]);
-		billml.brightnessEnabled  = true;
-		billml.alphaEnabled = true;
-		billml.rotationEnabled = true;
-		// billml.fogEnabled = true;
-		billml.initialize(false);
-		let ml = billml.material;
-		ml.addUniformDataAt("u_billParam", uniformData);
+		// let billml = new BillboardLineMaterial();
+		// let uniformData = new Float32Array([1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0]);
+		// billml.brightnessEnabled = true;
+		// billml.alphaEnabled = true;
+		// billml.rotationEnabled = true;
+		// // billml.fogEnabled = true;
+		// billml.initialize(false);
+		// let ml = billml.material;
+		// ml.addUniformDataAt("u_billParam", uniformData);
 
-		// let material = new Line3DMaterial(mBuilder.dynColorEnabled);
+		let material = new Line3DMaterial(mBuilder.dynColorEnabled);
 		let rectLine = CoEntity.createDisplayEntity();
-		rectLine.setMaterial( ml );
+		rectLine.setMaterial(material);
 		rectLine.setMesh(mesh);
+		// rectLine.setRotationXYZ(30, 0.0, 0.0);
+		this.m_currEntity = rectLine;
+
+		// let cam = this.m_rscene.getCamera();
+		// let mat4 = CoMath.createMat4();
+		// let beginPos = CoMath.createVec3();
+		// let atV = CoMath.createVec3().subVecsTo(beginPos, cam.getPosition());
+		// let upV = CoMath.createVec3().copyFrom(cam.getUV());
+		// mat4.pointAt(beginPos, atV, upV );
+		// let trans = rectLine.getTransform();
+		// trans.setParentMatrix(mat4);
+		// rectLine.update();
+
 		this.m_rscene.addEntity(rectLine);
+		//*/
+		/*
+		let pv = CoMath.createVec3();
+		let camPV = this.m_rscene.getCamera().getPosition();
+		pv.copyFrom( camPV );
+		let dis = pv.dot( this.m_plnv );
+		pv.copyFrom(this.m_plnv);
+		pv.scaleBy(-dis);
+		pv.addBy(camPV);
+		pv.scaleBy(0.3);
+
+		let mc = CoMath.MathConst;
+		let ang = mc.GetDegreeByXY(pv.y, pv.z);
+
+		let axis0 = CoRScene.createAxis3DEntity(30);
+		axis0.setPosition( pv );
+		this.m_rscene.addEntity( axis0 );
+
+		this.m_currEntity.setRotationXYZ(-ang, 0, 0);
+		this.m_currEntity.update();
 		return;
+		//*/
 		//*/
 		/*
 		let radius = 30.0;
@@ -256,7 +378,27 @@ export class DemoCoBase {
 		// let circle = new RotationCircle();
 		// circle.initialize(100,20,0, CoMaterial.createColor4(1.0,0.0,0.0));
 		// this.m_rscene.addEntity(circle.getEntity());
+		/*
+		// let mat = CoMath.createMat4();
+		// mat.rotationZ(-0.5 * Math.PI);
+		let material = CoMaterial.createDefaultMaterial(true);
+		material.initializeByCodeBuf(false);
+		// let mBuilder = new BoxMeshBuilder();
+		let mBuilder = CoMesh.box;
+		// mBuilder.transMatrix = mat;
+		mBuilder.setBufSortFormat(material.getBufSortFormat());
+		// mBuilder.vbWholeDataEnabled = true;
+		let mesh = mBuilder.createCube(30.0);
+		// let mesh = mBuilder.create(30,100,20,-0.5);
+		console.log("test01(), mesh: ", mesh);
 
+		let box = CoEntity.createDisplayEntity();
+		box.setMaterial(material);
+		box.setMesh(mesh);
+		this.m_currEntity = box;
+		this.m_rscene.addEntity(box);
+		//return;
+		//*/
 		/*
 		let dragRCtr = new DragRotationController();
 		dragRCtr.initialize(this.m_rscene, 0);
@@ -271,7 +413,7 @@ export class DemoCoBase {
 		this.m_dragSCtr = dragSCtr;
 		//*/
 
-		///*
+		/*
 		let dragMCtr = new DragMoveController();
 		dragMCtr.initialize(this.m_rscene, 0);
 		dragMCtr.select( [box] );
@@ -426,9 +568,9 @@ export class DemoCoBase {
 	}
 	private createDefaultEntity(): void {
 
-		// let axis = CoRScene.createAxis3DEntity();
-		// this.m_rscene.addEntity(axis);
-		// this.m_axis = axis;
+		let axis = CoRScene.createAxis3DEntity();
+		this.m_rscene.addEntity(axis);
+		this.m_axis = axis;
 
 		// let texList = [this.createTexByUrl()];
 		// let material = CoRScene.createDefaultMaterial();
@@ -477,10 +619,11 @@ export class DemoCoBase {
 			let rparam = CoRScene.createRendererSceneParam();
 			rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);
+			// rparam.setCamPosition(893, 1009, -1087);
 			rparam.setCamProject(45, 20.0, 9000.0);
 			this.m_rscene = CoRScene.createRendererScene(rparam, 3);
-			// this.m_rscene.setClearUint24Color(0x888888);
-			this.m_rscene.setClearUint24Color((60 << 16) + (60 << 8) + 60);
+			this.m_rscene.setClearRGBColor3f(0.23, 0.23, 0.23);
+			this.m_rscene.updateCamera();
 			// this.m_rscene.setClearRGBColor3f(60/255.0, 60/255.0, 60/255.0);
 			let rscene = this.m_rscene;
 			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
@@ -493,6 +636,214 @@ export class DemoCoBase {
 		url = baseUrl + "base4.obj";
 	}
 	private mouseDown(evt: any): void { }
+	private m_tempPv0: IVector3D = null;
+	private m_tempPv1: IVector3D = null;
+	private m_tempPv2: IVector3D = null;
+	private m_tempPv3: IVector3D = null;
+	private m_tempPv4: IVector3D = null;
+	private m_tempPv5: IVector3D = null;
+	private m_mat4: IMatrix4 = null;
+	private m_tarPos: IVector3D = null;
+	private rotateTest(): void {
+
+		/*
+		if (this.m_currEntity != null) {
+			
+
+			let pv = this.m_tempPv0;
+			let camPV = this.m_rscene.getCamera().getPosition();
+			pv.copyFrom(camPV);
+			let dis = pv.dot(this.m_plnv);
+			pv.copyFrom(this.m_plnv);
+			pv.scaleBy(-dis);
+			pv.addBy(camPV);
+			let mc = CoMath.MathConst;
+
+			// console.log("this.m_plnv: ",this.m_plnv);
+
+			// xoy
+			let ang = -mc.GetDegreeByXY(pv.x, pv.y);
+			this.m_currEntity.setRotationXYZ(0, 0, 270-ang);
+			// xoz
+			// let ang = -mc.GetDegreeByXY(pv.x, pv.z);
+			// this.m_currEntity.setRotationXYZ(0, 90 + ang, 0);
+			// console.log(ang);
+			// yoz
+			// let ang = -mc.GetDegreeByXY(pv.z, pv.y);
+			// this.m_currEntity.setRotationXYZ(ang, 0, 0);
+
+			// this.m_currEntity.update();
+		}
+		//*/
+		if (this.m_currEntity != null) {
+
+			if (this.m_tempPv0 == null) {
+				this.m_tempPv0 = CoMath.createVec3();
+				this.m_tempPv1 = CoMath.createVec3();
+				this.m_tempPv2 = CoMath.createVec3();
+				this.m_tempPv3 = CoMath.createVec3(1.0, 0.0, 0.0);
+				this.m_tempPv4 = CoMath.createVec3();
+				this.m_tempPv5 = CoMath.createVec3();
+				this.m_tarPos = CoMath.createVec3();
+			}
+			if (this.m_mat4 == null) {
+				this.m_mat4 = CoMath.createMat4();
+			}
+
+			let cam = this.m_rscene.getCamera();
+			let mat4 = this.m_mat4;
+			let beginPos = this.m_tempPv0;
+
+			beginPos.copyFrom(this.m_tarPos);
+			//let atV = this.m_tempPv1.subVecsTo(beginPos, cam.getPosition());
+			let atV = this.m_tempPv1.copyFrom(cam.getPosition());
+			// let atV = this.m_tempPv1.copyFrom(this.m_tarPos);
+			// console.log("atV: ",atV);
+			let upV = this.m_tempPv2.copyFrom(cam.getUV());
+			mat4.identity();
+			// mat4.lookAtRH( beginPos, atV, upV );
+			//mat4.pointAt(beginPos, atV.scaleBy(-1.0), upV);
+			// mat4.pointAt(atV, beginPos, upV.setXYZ(0.0,1.0,0.0) );
+			// mat4.appendScaleXYZ(1.0, 1.0, -1.0);
+			// mat4.transpose();
+
+			let dv = this.m_tempPv3;
+
+			// let newDV = this.m_tempPv4.subVecsTo(this.m_tarPos, beginPos);
+			let newDV = this.m_tempPv4.subVecsTo(cam.getPosition(), beginPos);
+
+			let rad = CoMath.Vector3D.RadianBetween(dv, newDV);
+			let axis = this.m_tempPv5;
+			CoMath.Vector3D.Cross(dv, newDV, axis);
+			axis.normalize();
+			mat4.appendRotation(rad, axis);
+			mat4.setTranslation(this.m_tarPos);
+			// dv.copyFrom(newDV);
+
+			let trans = this.m_currEntity.getTransform();
+			//trans.getMatrix().copyFrom(mat4);
+
+			trans.setParentMatrix(mat4);
+			this.m_currEntity.update();
+		}
+		// this.rotLSDo(0);
+		// this.rotLSDo(1);
+		// this.rotLSDo(2);
+	}
+
+	private _dAng: number = 0;
+	private m_outV: IVector3D = null;
+	private m_direcV: IVector3D = null;
+	private m_direcM: IMatrix4 = null;
+	/**
+	 * 使显示对象朝向某个方向
+	 * @param				directV		将要变化到的朝向的方向矢量
+	 * @param				maxAng		本次向目标朝向变化的最大变化角度,如果当前转向所需的角度大于这个值，则使用maxAng的值
+	 * 									此参数用于实现朝向变化的平滑差值
+	 * @param				bv			源朝向
+	 * @param				enabled		是否启用朝向更改操作,默认true是启用的
+	 * @return				返回本次直接计算出来的转向角度值,用户可以依据此值和maxAng值来判定后续的操作
+	 * */
+	directAt(directV: IVector3D, maxAng: number = 1000, bv: IVector3D = null, enabled: Boolean = true): number {
+		if (this.m_direcV == null) {
+			this.m_direcV = CoMath.createVec3();
+			this.m_outV = CoMath.createVec3();
+		}
+		if (this.m_direcM == null) {
+			this.m_direcM = CoMath.createMat4();
+		}
+		let direcV = this.m_direcV;
+		if (enabled) {
+			if (bv == null) {
+				if (direcV == null) {
+					direcV = CoMath.createVec3(1, 0, 0);
+				} else {
+					direcV.setTo(1, 0, 0);
+				}
+			} else {
+				if (direcV == null) direcV = CoMath.createVec3();// bv;
+				direcV.setTo(bv.x, bv.y, bv.z);
+			}
+			//
+			const V3 = CoMath.Vector3D;
+			var ang: number = V3.AngleBetween(direcV, directV);
+			let _dAng = Math.abs(ang);
+			let _direcM = this.m_direcM;
+			if (_dAng > 0.01) {
+				_direcM.identity();
+				V3.Cross(direcV, directV, this.m_outV);
+				if (_dAng > maxAng) {
+					if (ang * maxAng < 0) {
+						maxAng *= -1;
+					}
+				} else {
+					maxAng = ang;
+				}
+				_direcM.appendRotation(CoMath.MathConst.DegreeToRadian(maxAng), this.m_outV);
+				direcV.copyFrom(directV);
+				// // direcV.changed = true;
+				// _isChange = true;
+			}
+			return ang;
+		} else {
+			if (direcV) {
+				direcV.setTo(1, 0, 0);
+			}
+			// if (_direcM != null) {
+			// 	_isChange = true;
+			// 	Mat3DCell.addMat(_direcM);
+			// 	_direcM = null;
+			// }
+		}
+		return 0;
+	}
+	private rotLSDo(type: number) {
+
+		if (this.m_entities != null) {
+			let entity = this.m_entities[type];
+			switch (type) {
+				case 0:
+					this.m_plnv.setXYZ(0, 0, 1);
+					break;
+				case 1:
+					this.m_plnv.setXYZ(0, 1, 0);
+					break;
+				case 2:
+					this.m_plnv.setXYZ(1, 0, 0);
+					break;
+			}
+
+			let pv = this.m_tempPv0;
+			let camPV = this.m_rscene.getCamera().getPosition();
+			pv.copyFrom(camPV);
+			let dis = pv.dot(this.m_plnv);
+			pv.copyFrom(this.m_plnv);
+			pv.scaleBy(-dis);
+			pv.addBy(camPV);
+			let mc = CoMath.MathConst;
+
+			let ang = 0;
+			switch (type) {
+				case 0:
+					// xoy
+					ang = -mc.GetDegreeByXY(pv.x, pv.y);
+					entity.setRotationXYZ(0, 0, 270 - ang);
+					break;
+				case 1:
+					// xoz
+					ang = -mc.GetDegreeByXY(pv.x, pv.z);
+					entity.setRotationXYZ(0, 90 + ang, 0);
+					break;
+				case 2:
+					// yoz
+					ang = -mc.GetDegreeByXY(pv.z, pv.y);
+					entity.setRotationXYZ(ang, 0, 0);
+					break;
+			}
+			entity.update();
+		}
+	}
+	private m_rad: number = 0.0;
 	run(): void {
 		if (this.m_rscene != null) {
 			if (this.m_dragRCtr != null) {
@@ -507,6 +858,15 @@ export class DemoCoBase {
 			if (this.m_interact != null) {
 				this.m_interact.run();
 			}
+			this.rotateTest();
+			if (this.m_tarPos != null) {
+				this.m_tarPos.y = 200;
+				this.m_tarPos.x = 300.0 * Math.cos(this.m_rad);
+				this.m_tarPos.z = 300.0 * Math.sin(this.m_rad);
+
+				this.m_rad += 0.01;
+			}
+
 			this.m_rscene.run();
 		}
 	}
