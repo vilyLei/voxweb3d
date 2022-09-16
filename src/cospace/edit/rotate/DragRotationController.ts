@@ -14,6 +14,7 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 
 import { DragMoveTarget } from "../move/DragMoveTarget";
 import { RotationCircle } from "./RotationCircle";
+import { RotationCamZCircle } from "./RotationCamZCircle";
 import { IDragRotationController } from "./IDragRotationController";
 import { RotatedTarget } from "./RotatedTarget";
 
@@ -57,6 +58,7 @@ class DragRotationController implements IDragRotationController {
     fixSize = 0.0;
     radius = 100.0;
     pickTestAxisRadius = 20;
+    camZCircleRadius = 120;
     runningVisible = true;
     uuid = "DragRotationController";
     constructor() { }
@@ -76,6 +78,7 @@ class DragRotationController implements IDragRotationController {
     private createCircle(type: number, color: IColor4, radius: number = 100.0, segsTotal: number = 20): RotationCircle {
 
         let circle = new RotationCircle();
+        circle.pickTestRadius = this.pickTestAxisRadius;
         circle.outColor.copyFrom(color);
         circle.overColor.copyFrom(color);
         circle.overColor.scaleBy(1.5);
@@ -92,18 +95,27 @@ class DragRotationController implements IDragRotationController {
     }
     private init(): void {
 
-        let planeCtrFlag = true;
-        if (planeCtrFlag) {
-            // 粉色 240,55,80, 绿色 135 205 55,  蓝色:  80, 145, 240
-            let n = Math.floor(this.radius / 2.0);
-            // xoz
-            let color = CoMaterial.createColor4();
-            this.createCircle(0, color.setRGBUint8(240,55,80), this.radius, n);
-            // xoy
-            this.createCircle(1, color.setRGBUint8(135,205,55), this.radius, n);
-            // yoz
-            this.createCircle(2, color.setRGBUint8(80,145,240), this.radius, n);
-        }
+        // 粉色 240,55,80, 绿色 135 205 55,  蓝色:  80, 145, 240
+        let n = Math.floor(this.radius / 2.0);
+        // xoz
+        let color = CoMaterial.createColor4();
+        this.createCircle(0, color.setRGBUint8(240,55,80), this.radius, n);
+        // xoy
+        this.createCircle(1, color.setRGBUint8(135,205,55), this.radius, n);
+        // yoz
+        this.createCircle(2, color.setRGBUint8(80,145,240), this.radius, n);
+
+        n = Math.floor(this.camZCircleRadius / 2.0);
+        let camZCtrl = new RotationCamZCircle();
+        camZCtrl.pickTestRadius = this.pickTestAxisRadius;
+        camZCtrl.initialize(this.camZCircleRadius, n);
+        camZCtrl.setTarget(this.m_target);
+        camZCtrl.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
+
+        this.m_target.addCtrlEntity(camZCtrl);
+        this.m_controllers.push(camZCtrl);
+        this.m_editRS.addEntity(camZCtrl.getEntity(), this.m_editRSP, true);
+        //RotationCamZCircle
     }
     private dragMouseDownListener(evt: any): void {
         this.m_editRS.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener, true, true);
@@ -154,7 +166,7 @@ class DragRotationController implements IDragRotationController {
 
             for (let i = 0; i < ls.length; ++i) {
                 if (ls[i].getVisible()) {
-                    ls[i].run(cam);
+                    ls[i].run(cam, this.m_rtv);
                 }
             }
         }

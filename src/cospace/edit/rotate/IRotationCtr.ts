@@ -7,6 +7,7 @@
 
 import { IRayControl } from "../base/IRayControl";
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";
+import IVector3D from "../../../vox/math/IVector3D";
 
 
 /**
@@ -14,7 +15,7 @@ import { IRenderCamera } from "../../../vox/render/IRenderCamera";
  */
 interface IRotationCtr extends IRayControl {
     
-    run(camera: IRenderCamera): void;
+    run(camera: IRenderCamera, rtv: IVector3D): void;
 }
 
 export { IRotationCtr }

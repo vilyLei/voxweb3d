@@ -290,7 +290,7 @@ export class DemoCoBase {
 		this.m_entities = [la, lb, lc];
 		return;
 		//*/
-		///*
+		/*
 		let mBuilder = new LineMeshBuilder();
 		mBuilder.color.setRGB3f(0.1, 0.2, 0.3);
 		mBuilder.dynColorEnabled = true;
@@ -378,7 +378,7 @@ export class DemoCoBase {
 		// let circle = new RotationCircle();
 		// circle.initialize(100,20,0, CoMaterial.createColor4(1.0,0.0,0.0));
 		// this.m_rscene.addEntity(circle.getEntity());
-		/*
+		///*
 		// let mat = CoMath.createMat4();
 		// mat.rotationZ(-0.5 * Math.PI);
 		let material = CoMaterial.createDefaultMaterial(true);
@@ -395,12 +395,13 @@ export class DemoCoBase {
 		let box = CoEntity.createDisplayEntity();
 		box.setMaterial(material);
 		box.setMesh(mesh);
-		this.m_currEntity = box;
+		// this.m_currEntity = box;
 		this.m_rscene.addEntity(box);
 		//return;
 		//*/
-		/*
+		///*
 		let dragRCtr = new DragRotationController();
+		dragRCtr.pickTestAxisRadius = 10.0;
 		dragRCtr.initialize(this.m_rscene, 0);
 		dragRCtr.select([box]);
 		this.m_dragRCtr = dragRCtr;

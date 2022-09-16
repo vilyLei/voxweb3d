@@ -122,7 +122,7 @@ class RotationCircle implements IRotationCtr {
             this.initializeEvent();
         }
     }
-    run(camera: IRenderCamera): void {
+    run(camera: IRenderCamera, rtv: IVector3D): void {
         // return;
         // 朝向摄像机
         let pv = this.m_outV;

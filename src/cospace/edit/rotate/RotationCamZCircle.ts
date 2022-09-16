@@ -49,6 +49,13 @@ class RotationCamZCircle implements IRotationCtr {
     private m_outV = CoMath.createVec3();
     private m_preRotV = CoMath.createVec3();
     private m_rotV = CoMath.createVec3();
+
+    private m_scaleV = CoMath.createVec3();
+    private m_posV = CoMath.createVec3();
+    private m_srcDV = CoMath.createVec3();
+    private m_dstDV = CoMath.createVec3();
+
+    private m_radius = 0;
     private m_initDegree = 0;
     private m_planeDis = 0;
     private m_type = 0;
@@ -57,7 +64,7 @@ class RotationCamZCircle implements IRotationCtr {
 
     uuid = "RotationCamZCircle";
     moveSelfEnabled = true;
-    outColor = CoMaterial.createColor4(0.9, 0.9, 0.9, 1.0);
+    outColor = CoMaterial.createColor4(0.8, 0.8, 0.8, 1.0);
     overColor = CoMaterial.createColor4(1.0, 1.0, 1.0, 1.0);
     pickTestRadius = 20;
     constructor() {
@@ -69,15 +76,15 @@ class RotationCamZCircle implements IRotationCtr {
      * @param type 0 is xoy, 1 is xoz, 2 is yoz
      * @param color IColor4 instance
      */
-    initialize(radius: number, segsTotal: number, type: number): void {
+    initialize(radius: number, segsTotal: number): void {
         if (this.m_entity == null) {
 
+            this.m_radius = radius;
             this.m_entity = CoEntity.createDisplayEntity();
 
             let ml = CoMesh.line;
             let mesh: IRawMesh;
             ml.dynColorEnabled = true;
-            this.m_type = type;
             let pnv = this.m_planeNV;
             // yoz
             mesh = ml.createCircleYOZ(radius, segsTotal);
@@ -93,10 +100,37 @@ class RotationCamZCircle implements IRotationCtr {
             this.initializeEvent();
         }
     }
-    run(camera: IRenderCamera): void {
-        // return;
-        // 朝向摄像机
+    run(camera: IRenderCamera, rtv: IVector3D): void {
         
+        // 朝向摄像机
+        const sv = this.m_scaleV;
+        let et = this.m_entity;
+        et.getPosition(this.m_posV);
+        et.getScaleXYZ(sv);
+
+        this.m_srcDV.setXYZ(1, 0, 0);
+        this.m_dstDV.subVecsTo(camera.getPosition(), this.m_posV);
+
+        let rad = CoMath.Vector3D.RadianBetween(this.m_srcDV, this.m_dstDV);
+        let axis = this.m_rotV;
+        CoMath.Vector3D.Cross(this.m_srcDV, this.m_dstDV, axis);
+        axis.normalize();
+
+        let mat = et.getTransform().getMatrix();
+        mat.identity();
+        mat.setScaleXYZ(sv.x, sv.y, sv.z);
+        mat.appendRotation(rad, axis);
+        mat.appendTranslation(this.m_posV);
+
+        const r = this.m_radius;
+        let bounds = et.getGlobalBounds();
+        bounds.min.setXYZ(-r,-r,-r);
+        bounds.min.addBy(this.m_posV);
+        bounds.max.setXYZ(r,r,r);
+        bounds.max.addBy(this.m_posV);
+        bounds.updateFast();
+
+        // this.m_entity.update();
     }
     getEntity(): ITransformEntity {
         return this.m_entity;
@@ -256,7 +290,7 @@ class RotationCamZCircle implements IRotationCtr {
 
         this.m_target.select();
 
-        this.m_entity.setVisible(false);
+        // this.m_entity.setVisible(false);
 
         this.m_flag = 1;
         // let ls = RotationCamZCircle.s_list;
