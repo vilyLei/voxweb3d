@@ -24,9 +24,9 @@ interface ILineMeshBuilder extends IMeshBuilder {
     createRectXOZ(px: number, pz: number, pw: number, pl: number): IRawMesh;
     createRectYOZ(px: number, pz: number, pw: number, pl: number): IRawMesh;
 
-    createCircleXOY(radius: number, segsTotal: number, center?: IVector3D): IRawMesh;
-    createCircleXOZ(radius: number, segsTotal: number, center?: IVector3D): IRawMesh;
-    createCircleYOZ(radius: number, segsTotal: number, center?: IVector3D): IRawMesh;
+    createCircleXOY(radius: number, segsTotal: number, center?: IVector3D, beginRad?: number, rangeRad?: number): IRawMesh;
+    createCircleXOZ(radius: number, segsTotal: number, center?: IVector3D, beginRad?: number, rangeRad?: number): IRawMesh;
+    createCircleYOZ(radius: number, segsTotal: number, center?: IVector3D, beginRad?: number, rangeRad?: number): IRawMesh;
 
     createCurveByPositions(posList: IVector3D[], colorList: IColor4[]): IRawMesh;
     createPolygon(posList: IVector3D[], colorList: IColor4[]): IRawMesh;

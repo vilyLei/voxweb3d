@@ -22,6 +22,8 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
 
     private m_posvs: number[] = null;
     private m_colorvs: number[] = null;
+    private m_beginRad: number = 0.0;
+    private m_rangeRad: number = 0.0;
 
     color = CoRScene.createColor4(1.0, 0.0, 0.0, 1.0);
     dynColorEnabled = true;
@@ -59,9 +61,11 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
         }
     }
     createLine(begin: IVector3D, end: IVector3D = null, axialRadius: number = 0.0): IRawMesh {
+
         if (this.m_posvs == null) {
             this.m_posvs = [0.0, 0.0, 0.0, 100.0, 0, 0];
         }
+
         if (begin != null) begin.toArray(this.m_posvs);
         if (end != null) end.toArray(this.m_posvs, 3);
         this.useColor(2);
@@ -124,7 +128,7 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
         }
         this.useColor(segsTotal * 2);
     }
-    createCircleXOY(radius: number, segsTotal: number, center: IVector3D = null): IRawMesh {
+    private createCircleData(ix: number, iy: number, iz: number, radius: number, segsTotal: number, center: IVector3D): number[] {
 
         if (radius < 0.001) radius = 0.001;
         if (segsTotal < 3) segsTotal = 3;
@@ -132,55 +136,86 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
 
         let vs = new Array((segsTotal + 1) * 3);
         let j = 0;
-        let rad = 0.0;
-        let pi2 = Math.PI * 2;
+        let rad = this.m_rangeRad;
+        let range = rad > 0.0 ? rad : Math.PI * 2;
+        let cvs = [center.x, center.y, center.z];
         for (let i = 0; i <= segsTotal; ++i) {
-            rad = pi2 * i / segsTotal;
-            vs[j++] = center.x + radius * Math.cos(rad);
-            vs[j++] = center.y + radius * Math.sin(rad);
-            vs[j++] = center.z;
+            rad = this.m_beginRad + range * i / segsTotal;
+            vs[j + ix] = cvs[ix] + radius * Math.cos(rad);
+            vs[j + iy] = cvs[iy] + radius * Math.sin(rad);
+            vs[j + iz] = cvs[iz];
+            j += 3;
         }
+        console.log("createCircleData() XXXXXXXXXXXXXXXXXXXX");
+        return vs;
+    }
+    createCircleXOY(radius: number, segsTotal: number, center: IVector3D = null, beginRad: number = 0.0, rangeRad: number = 0.0): IRawMesh {
 
+        this.m_beginRad = beginRad;
+        this.m_rangeRad = rangeRad;
+
+        // if (radius < 0.001) radius = 0.001;
+        // if (segsTotal < 3) segsTotal = 3;
+        // if (center == null) center = CoMath.createVec3();
+
+        // let vs = new Array((segsTotal + 1) * 3);
+        // let j = 0;
+        // let rad = 0.0;
+        // let pi2 = Math.PI * 2;
+        // for (let i = 0; i <= segsTotal; ++i) {
+        //     rad = pi2 * i / segsTotal;
+        //     vs[j++] = center.x + radius * Math.cos(rad);
+        //     vs[j++] = center.y + radius * Math.sin(rad);
+        //     vs[j++] = center.z;
+        // }
+        let vs = this.createCircleData(0,1,2, radius, segsTotal, center);
         this.createCircle(vs, segsTotal);
         return this.createLineMesh();
     }
-    createCircleXOZ(radius: number, segsTotal: number, center: IVector3D = null): IRawMesh {
+    createCircleXOZ(radius: number, segsTotal: number, center: IVector3D = null, beginRad: number = 0.0, rangeRad: number = 0.0): IRawMesh {
 
-        if (radius < 0.001) radius = 0.001;
-        if (segsTotal < 3) segsTotal = 3;
-        if (center == null) center = CoMath.createVec3();
+        this.m_beginRad = beginRad;
+        this.m_rangeRad = rangeRad;
 
-        let vs = new Array((segsTotal + 1) * 3);
-        let j = 0;
-        let rad = 0.0;
-        let pi2 = Math.PI * 2;
-        for (let i = 0; i <= segsTotal; ++i) {
-            rad = pi2 * i / segsTotal;
-            vs[j++] = center.x + radius * Math.cos(rad);
-            vs[j++] = center.y;
-            vs[j++] = center.z + radius * Math.sin(rad);
-        }
+        // if (radius < 0.001) radius = 0.001;
+        // if (segsTotal < 3) segsTotal = 3;
+        // if (center == null) center = CoMath.createVec3();
 
+        // let vs = new Array((segsTotal + 1) * 3);
+        // let j = 0;
+        // let rad = 0.0;
+        // let pi2 = Math.PI * 2;
+        // for (let i = 0; i <= segsTotal; ++i) {
+        //     rad = pi2 * i / segsTotal;
+        //     vs[j++] = center.x + radius * Math.cos(rad);
+        //     vs[j++] = center.y;
+        //     vs[j++] = center.z + radius * Math.sin(rad);
+        // }
+        let vs = this.createCircleData(0,2,1, radius, segsTotal, center);
         this.createCircle(vs, segsTotal);
         return this.createLineMesh();
     }
-    createCircleYOZ(radius: number, segsTotal: number, center: IVector3D = null): IRawMesh {
+    createCircleYOZ(radius: number, segsTotal: number, center: IVector3D = null, beginRad: number = 0.0, rangeRad: number = 0.0): IRawMesh {
 
-        if (radius < 0.001) radius = 0.001;
-        if (segsTotal < 3) segsTotal = 3;
-        if (center == null) center = CoMath.createVec3();
+        this.m_beginRad = beginRad;
+        this.m_rangeRad = rangeRad;
 
-        let vs = new Array((segsTotal + 1) * 3);
-        let j = 0;
-        let rad = 0.0;
-        let pi2 = Math.PI * 2;
-        for (let i = 0; i <= segsTotal; ++i) {
-            rad = pi2 * i / segsTotal;
-            vs[j++] = center.x;
-            vs[j++] = center.y + radius * Math.cos(rad);
-            vs[j++] = center.z + radius * Math.sin(rad);
-        }
+        // if (radius < 0.001) radius = 0.001;
+        // if (segsTotal < 3) segsTotal = 3;
+        // if (center == null) center = CoMath.createVec3();
 
+        // let vs = new Array((segsTotal + 1) * 3);
+        // let j = 0;
+        // let rad = 0.0;
+        // let pi2 = Math.PI * 2;
+        // for (let i = 0; i <= segsTotal; ++i) {
+        //     rad = pi2 * i / segsTotal;
+        //     vs[j++] = center.x;
+        //     vs[j++] = center.y + radius * Math.cos(rad);
+        //     vs[j++] = center.z + radius * Math.sin(rad);
+        // }
+
+        let vs = this.createCircleData(1,2,0, radius, segsTotal, center);
         this.createCircle(vs, segsTotal);
         return this.createLineMesh();
     }
