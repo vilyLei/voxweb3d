@@ -9,6 +9,9 @@ interface IBillboardBase {
 	rotationEnabled: boolean;
 	fogEnabled: boolean;
 	entity: ITransformEntity;
+	
+	setVisible(v: boolean): void;
+	getVisible(): boolean;
 
 	toTransparentBlend(always?: boolean): void;
 	toBrightnessBlend(always?: boolean): void;

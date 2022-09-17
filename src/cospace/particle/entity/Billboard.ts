@@ -1,7 +1,4 @@
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
-import IShaderMaterial from "../../../vox/material/mcase/IShaderMaterial";
-import BillboardFragShaderBase from "../shader/BillboardFragShaderBase";
-import IShaderCodeBuffer from "../../../vox/material/IShaderCodeBuffer";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IVector3D from "../../../vox/math/IVector3D";
 import { BillboardMaterial } from "./BillboardMaterial";
@@ -147,6 +144,13 @@ class Billboard implements IBillboard {
 	}
 	setPosition(pos: IVector3D): void {
 		this.entity.setPosition(pos);
+	}
+	
+	setVisible(v: boolean): void {
+		this.entity.setVisible(v);
+	}
+	getVisible(): boolean {
+		return this.entity.getVisible();
 	}
 	/**
 	 * 设置深度偏移量

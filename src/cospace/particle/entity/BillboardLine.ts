@@ -177,6 +177,13 @@ class BillboardLine implements IBillboardLine {
 	setPosition(pos: IVector3D): void {
 		this.entity.setPosition(pos);
 	}
+	
+	setVisible(v: boolean): void {
+		this.entity.setVisible(v);
+	}
+	getVisible(): boolean {
+		return this.entity.getVisible();
+	}
 	/**
 	 * 设置深度偏移量
 	 * @param offset the value range: [-2.0 -> 2.0]
