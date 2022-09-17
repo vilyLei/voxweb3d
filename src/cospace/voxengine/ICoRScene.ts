@@ -258,7 +258,7 @@ interface ICoRScene {
 	createDisplayEntity(): ITransformEntity;
 	createMouseEventEntity(): IMouseEventEntity;
 	createBoundsEntity(): IBoundsEntity;
-	createIDisplayEntityContainer(): IDisplayEntityContainer;
+	createDisplayEntityContainer(): IDisplayEntityContainer;
 
 	creatMaterialContextParam(): CoMaterialContextParam;
 	createMaterialContext(): IMaterialContext;
