@@ -16,6 +16,7 @@ import IRenderProxy from "../../vox/render/IRenderProxy";
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 // import IRendererParam from "../../vox/scene/IRendererParam";
 import IVector3D from "../math/IVector3D";
+import { IRendererSceneAccessor } from "../scene/IRendererSceneAccessor";
 
 import { IRenderableMaterialBlock } from "./block/IRenderableMaterialBlock";
 import { IRenderableEntityBlock } from "./block/IRenderableEntityBlock";
@@ -27,6 +28,8 @@ interface IRendererScene {
     textureBlock: ITextureBlock;
     materialBlock: IRenderableMaterialBlock;
     entityBlock: IRenderableEntityBlock;
+
+    setAccessor(accessor: IRendererSceneAccessor): void;
     enable(): void;
     disable(): void;
     isEnabled(): boolean;

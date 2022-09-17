@@ -22,6 +22,9 @@ export default interface IRenderEntityContainer {
     __$setRenderer(renderer: IRenderer): void;
     getRenderer(): IRenderer;
 
+    setVisible(boo: boolean): void;
+    getVisible(): boolean;
+
     dispatchEvt(evt: any): number;
     getEvtDispatcher(evtClassType: number): IEvtDispatcher;
     getGlobalBounds(): IAABB;
@@ -32,11 +35,15 @@ export default interface IRenderEntityContainer {
     setXYZ(px: number, py: number, pz: number): void;
     setPosition(pv: IVector3D): void;
     getPosition(pv: IVector3D): void;
+    setRotation3(rv: IVector3D): void;
     setRotationXYZ(rx: number, ry: number, rz: number): void;
+    getRotationXYZ(rv: IVector3D): void;
     setScaleXYZ(sx: number, sy: number, sz: number): void;
+    getScaleXYZ(sv: IVector3D): void;
 
     localToGlobal(pv: IVector3D): void;
     globalToLocal(pv: IVector3D): void;
     sphereIntersect(centerV: IVector3D, radius: number): boolean;
     update(): void;
+    destroy(): void;
 }
