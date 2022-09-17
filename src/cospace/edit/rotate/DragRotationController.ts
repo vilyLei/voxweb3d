@@ -24,6 +24,7 @@ import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
+import { RotationCamYXCircle } from "./RotationCamYXCircle";
 
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
@@ -46,9 +47,8 @@ class DragRotationController implements IDragRotationController {
     private m_posX = 0;
 
     private m_editRS: IRendererScene = null;
-    private m_editRSP: number = 0;
+    private m_editRSPI: number = 0;
     private m_target = new RotatedTarget();
-    private m_camera: IRenderCamera = null;
 
     private m_mousePrePos = CoMath.createVec3(-100000, -100000, 0);
     private m_mousePos = CoMath.createVec3();
@@ -59,6 +59,7 @@ class DragRotationController implements IDragRotationController {
     radius = 100.0;
     pickTestAxisRadius = 20;
     camZCircleRadius = 120;
+    camYXCircleRadius = 80;
     runningVisible = true;
     uuid = "DragRotationController";
     constructor() { }
@@ -70,7 +71,7 @@ class DragRotationController implements IDragRotationController {
     initialize(rc: IRendererScene, processid: number = 0): void {
         if (this.m_editRS == null) {
             this.m_editRS = rc;
-            this.m_editRSP = processid;
+            this.m_editRSPI = processid;
             this.init();
         }
     }
@@ -82,15 +83,15 @@ class DragRotationController implements IDragRotationController {
         circle.outColor.copyFrom(color);
         circle.overColor.copyFrom(color);
         circle.overColor.scaleBy(1.5);
-        circle.initialize(radius, segsTotal, type);
+        circle.initialize(this.m_editRS, this.m_editRSPI, radius, segsTotal, type);
+        circle.showOutColor();
 
         circle.setTarget(this.m_target);
         circle.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
 
         this.m_target.addCtrlEntity(circle);
         this.m_controllers.push(circle);
-        this.m_editRS.addEntity(circle.getEntity(), this.m_editRSP, true);
-        this.m_editRS.addEntity(circle.getEntity2(), this.m_editRSP, true);
+        
         return circle;
     }
     private init(): void {
@@ -111,14 +112,21 @@ class DragRotationController implements IDragRotationController {
         n = Math.floor(this.camZCircleRadius / 2.0);
         let camZCtrl = new RotationCamZCircle();
         camZCtrl.pickTestRadius = this.pickTestAxisRadius;
-        camZCtrl.initialize(this.camZCircleRadius, n);
+        camZCtrl.initialize(this.m_editRS, this.m_editRSPI, this.camZCircleRadius, n);
         camZCtrl.setTarget(this.m_target);
         camZCtrl.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
-
         this.m_target.addCtrlEntity(camZCtrl);
         this.m_controllers.push(camZCtrl);
-        this.m_editRS.addEntity(camZCtrl.getEntity(), this.m_editRSP, true);
-        //RotationCamZCircle
+
+        let camYXCtrl = new RotationCamYXCircle();
+        camYXCtrl.pickTestRadius = this.pickTestAxisRadius;
+        camYXCtrl.initialize(this.m_editRS, this.m_editRSPI, this.camZCircleRadius);
+        camYXCtrl.showOutColor();
+        camYXCtrl.setTarget(this.m_target);
+        camYXCtrl.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
+        this.m_target.addCtrlEntity(camYXCtrl);
+        this.m_controllers.push(camYXCtrl);
+
     }
     private dragMouseDownListener(evt: any): void {
         this.m_editRS.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener, true, true);

@@ -29,6 +29,10 @@ import { DragScaleController } from "../scale/DragScaleController";
 import { IDragRotationController } from "../rotate/IDragRotationController";
 import { DragRotationController } from "../rotate/DragRotationController";
 
+import IRendererScene from "../../../vox/scene/IRendererScene";
+import { IRendererSceneAccessor } from "../../../vox/scene/IRendererSceneAccessor";
+import RendererSceneGraph from "../../../vox/scene/RendererSceneGraph";
+
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
 declare var CoMouseInteraction: ICoMouseInteraction;
@@ -37,11 +41,22 @@ declare var CoAGeom: ICoAGeom;
 declare var CoEdit: ICoEdit;
 
 
+class SceneAccessor implements IRendererSceneAccessor {
+	constructor() { }
+
+	renderBegin(rendererScene: IRendererScene): void {
+		let rproxyy = rendererScene.getRenderProxy();
+		rproxyy.clearDepth(1.0);
+	}
+	renderEnd(rendererScene: IRendererScene): void {
+	}
+}
 /**
  * cospace renderer
  */
 export class DemoMoveObj {
 	private m_rscene: ICoRendererScene = null;
+	private m_rEditScene: ICoRendererScene = null;
 	private m_interact: IMouseInteraction = null;
 
 	private m_vcoapp: ViewerCoSApp;
@@ -129,6 +144,7 @@ export class DemoMoveObj {
 	private m_rotatedCtr: IDragRotationController;
 	private createEditEntity(): void {
 
+		let rsc = this.m_rEditScene;
 		/*
 		let moveAxis = new DragAxis();
 		moveAxis.initialize(80.0);
@@ -155,7 +171,8 @@ export class DemoMoveObj {
 		this.m_movedCtr.planeSize = 30;
 		this.m_movedCtr.pickTestAxisRadius = 10;
 		this.m_movedCtr.runningVisible = true;
-		this.m_movedCtr.initialize(this.m_rscene, 1);
+		// this.m_movedCtr.initialize(this.m_rscene, 0);
+		this.m_movedCtr.initialize(rsc, 0);
 		// this.m_movedCtr.setVisible(true);
 		//*/
 		/*
@@ -164,15 +181,14 @@ export class DemoMoveObj {
 		this.m_scaleCtr.planeSize = 30;
 		this.m_scaleCtr.pickTestAxisRadius = 10;
 		this.m_scaleCtr.runningVisible = true;
-		this.m_scaleCtr.initialize(this.m_rscene, 1);
+		this.m_scaleCtr.initialize(rsc, 1);
 		//*/
-
+		///*
 		this.m_rotatedCtr = new DragRotationController();
-		// this.m_rotatedCtr.axisSize = 100;
-		// this.m_rotatedCtr.planeSize = 30;
 		this.m_rotatedCtr.pickTestAxisRadius = 10;
 		this.m_rotatedCtr.runningVisible = true;
-		this.m_rotatedCtr.initialize(this.m_rscene, 1);
+		this.m_rotatedCtr.initialize(rsc, 1);
+		//*/
 	}
 	private mouseUpListener(evt: any): void {
 		console.log("DemoMoveObj::mouseUpListener() ...");
@@ -236,6 +252,8 @@ export class DemoMoveObj {
 			this.m_interact.setSyncLookAtEnabled(true);
 		}
 	}
+	//RendererSceneGraph
+	private m_graph: RendererSceneGraph = new RendererSceneGraph();
 	private initRenderer(): void {
 
 		if (this.m_rscene == null) {
@@ -250,13 +268,23 @@ export class DemoMoveObj {
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 			rparam.setCamProject(45, 20.0, 9000.0);
 			let rscene = CoRScene.createRendererScene(rparam, 3);
-			rscene.setClearRGBColor3f(0.23,0.23,0.23);
+			rscene.setClearRGBColor3f(0.23, 0.23, 0.23);
 			// console.log("60/255: ", 60/255);
 			// rscene.setClearUint24Color((60 << 16) + (60 << 8) + 60);
 
 			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
 			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDownListener);
 			this.m_rscene = rscene;
+
+			let subScene = this.m_rscene.createSubScene(rparam, 3, false);
+			subScene.enableMouseEvent(true);
+			subScene.setAccessor(new SceneAccessor());
+			// let rnode = subScene;
+			// this.m_rscene.appendRenderNode(rnode);
+			this.m_rEditScene = subScene;
+
+			this.m_graph.addScene(this.m_rscene);
+			this.m_graph.addScene(this.m_rEditScene);
 		}
 	}
 	private loadOBJ(): void {
@@ -296,7 +324,9 @@ export class DemoMoveObj {
 		// let rst = CoRenderer.RendererState;
 
 		const MouseEvent = CoRScene.MouseEvent;
-		let material = new CoNormalMaterial().build().material;
+		// let material = new CoNormalMaterial().build().material;
+		let material = CoRScene.createDefaultMaterial(true);
+		material.initializeByCodeBuf(false);
 
 		let mesh = CoRScene.createDataMeshFromModel(model, material);
 		let cv = mesh.bounds.center.clone();
@@ -341,9 +371,9 @@ export class DemoMoveObj {
 		entity.getPosition(pos);
 		let wpos = evt.wpos as IVector3D;
 		pos.subtractBy(wpos);
-		
-		// this.applyMoveCtr(wpos, entity);
-		// this.applyScaleCtr(wpos, entity);
+
+		this.applyMoveCtr(wpos, entity);
+		this.applyScaleCtr(wpos, entity);
 		this.applyRotatedCtr(wpos, entity);
 	}
 	private applyMoveCtr(wpos: IVector3D, target: ITransformEntity): void {
@@ -356,7 +386,7 @@ export class DemoMoveObj {
 			this.m_movedCtr.select([ls[0], ls[1], target]);
 		}
 	}
-	
+
 	private applyScaleCtr(wpos: IVector3D, target: ITransformEntity): void {
 		if (this.m_scaleCtr != null) {
 			console.log("applyScaleCtr() ....");
@@ -391,11 +421,38 @@ export class DemoMoveObj {
 			if (this.m_rotatedCtr != null) {
 				this.m_rotatedCtr.run();
 			}
-			
+
 			if (this.m_interact != null) {
 				this.m_interact.run();
 			}
-			this.m_rscene.run();
+			// this.m_rscene.run();
+
+			this.m_graph.run();
+			/*
+			let pickFlag: boolean = true;
+
+			let scene = this.m_rEditScene;
+			scene.runBegin(true, true);
+			scene.update(false, true);
+			pickFlag = scene.isRayPickSelected();
+
+			scene = this.m_rscene;
+			scene.runBegin(false, true);
+			scene.update(false, !pickFlag);
+			pickFlag = pickFlag || scene.isRayPickSelected();
+
+			//console.log("------------  ---------------------  -------------------");
+
+			scene = this.m_rscene;
+			scene.renderBegin(false);
+			scene.run(false);
+			scene.runEnd();
+
+			scene = this.m_rEditScene;
+			scene.renderBegin(false);
+			scene.run(false);
+			scene.runEnd();
+			//*/
 		}
 	}
 }

@@ -16,6 +16,7 @@ class RotatedTarget implements IEntityTransform {
     private m_rv: IVector3D = CoMath.createVec3();
     private m_pv: IVector3D = CoMath.createVec3();
     private m_mat0 = CoMath.createMat4();
+    private m_mat1 = CoMath.createMat4();
 
     /**
      * center
@@ -110,6 +111,7 @@ class RotatedTarget implements IEntityTransform {
             ir.scaleBy( piOver180 );
 
             let mt0 = this.m_mat0;
+            let mt1 = this.m_mat1;
             const vs = this.m_vs;
             const rvs = this.m_rvs;
             const cv = this.position;
@@ -124,13 +126,15 @@ class RotatedTarget implements IEntityTransform {
                     tars[i].setPosition(pv);
                 }
             }
-            let eulerAngle = CoMath.OrientationType.EULER_ANGLES;
+            let eulerType = CoMath.OrientationType.EULER_ANGLES;
             for (let i = 0; i < tars.length; ++i) {
                 const rv = rvs[i];
                 mt0.identity();
                 mt0.setRotationEulerAngle(rv.x, rv.y, rv.z);
-                mt0.appendRotationEulerAngle(ir.x, ir.y, ir.z);
-                let ls = mt0.decompose(eulerAngle);
+                mt1.identity();
+                mt1.setRotationEulerAngle(ir.x, ir.y, ir.z);
+                mt0.append(mt1);
+                let ls = mt0.decompose(eulerType);
                 let prv = ls[1];
                 prv.scaleBy(k180overPI);
                 tars[i].setRotation3(prv);

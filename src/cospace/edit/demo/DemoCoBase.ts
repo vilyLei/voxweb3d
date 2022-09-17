@@ -37,6 +37,7 @@ import { QuadLineMeshBuilder } from "../../voxmesh/build/QuadLineMeshBuilder";
 import IVector3D from "../../../vox/math/IVector3D";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import IMatrix4 from "../../../vox/math/IMatrix4";
+import { RotationRing } from "../rotate/RotationRing";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -291,30 +292,37 @@ export class DemoCoBase {
 		return;
 		//*/
 		/*
-		let mBuilder = new LineMeshBuilder();
-		mBuilder.color.setRGB3f(0.1, 0.2, 0.3);
-		mBuilder.dynColorEnabled = true;
-		// let mesh = mBuilder.createRectXOY(-100, -100, 200, 200);
-		// let mesh = mBuilder.createRectXOZ(-100, -100, 200, 200);
-		// let mesh = mBuilder.createRectYOZ(-100, -100, 200, 200);
-		// let mesh = mBuilder.createCircleXOY(70, 30);
-		let mesh = mBuilder.createCircleYOZ(70, 30);
-		// let mesh = mBuilder.createCircleXOZ(70, 10);
+		let lmBuilder = new LineMeshBuilder();
+		lmBuilder.color.setRGB3f(0.1, 0.2, 0.3);
+		lmBuilder.dynColorEnabled = true;
+		// let lmesh = lmBuilder.createRectXOY(-100, -100, 200, 200);
+		// let lmesh = lmBuilder.createRectXOZ(-100, -100, 200, 200);
+		// let lmesh = lmBuilder.createRectYOZ(-100, -100, 200, 200);
+		// let lmesh = lmBuilder.createCircleXOY(70, 30);
+		// let lmesh = lmBuilder.createCircleYOZ(70, 30);
+		let posList = [
+			CoMath.createVec3(),
+			CoMath.createVec3(50,50,0),
+			CoMath.createVec3(80,80,0),
+			CoMath.createVec3(120,120,0)
+		];
+		let lmesh = lmBuilder.createLines(posList);
+		// let lmesh = lmBuilder.createCircleXOZ(70, 10);
 
-		// let mesh = mBuilder.createCircleXOY(70, 10, null, 0.1 * Math.PI, 0.8 * Math.PI);
+		// let lmesh = lmBuilder.createCircleXOY(70, 10, null, 0.1 * Math.PI, 0.8 * Math.PI);
 		// this.m_plnv.setXYZ(0.0, 0.0, 1.0);
-		// let mesh = mBuilder.createCircleXOZ(70, 10, null, 0.1 * Math.PI, 0.8 * Math.PI);
+		// let lmesh = lmBuilder.createCircleXOZ(70, 10, null, 0.1 * Math.PI, 0.8 * Math.PI);
 		// this.m_plnv.setXYZ(0.0, 1.0, 0.0);
-		// let mesh = mBuilder.createCircleYOZ(70, 10, null, 0.1 * Math.PI, 0.8 * Math.PI);
+		// let lmesh = lmBuilder.createCircleYOZ(70, 10, null, 0.1 * Math.PI, 0.8 * Math.PI);
 		// this.m_plnv.setXYZ(1.0, 0.0, 0.0);
 
-		// let mesh = mBuilder.createCircleXOZ(100,100);
-		//let mesh = mBuilder.createCircleYOZ(100,100);
-		// let mesh = mBuilder.createLine(CoMath.createVec3());
-		console.log("test01(), mesh: ", mesh);
+		// let lmesh = lmBuilder.createCircleXOZ(100,100);
+		// let lmesh = lmBuilder.createCircleYOZ(100,100);
+		// let lmesh = lmBuilder.createLine(CoMath.createVec3());
+		console.log("test01(), lmesh: ", lmesh);
 
 
-		// let material = CoMaterial.createLineMaterial(mBuilder.dynColorEnabled);
+		// let material = CoMaterial.createLineMaterial(lmBuilder.dynColorEnabled);
 		// material.setRGB3f(1.0,0.0,0.0);
 
 		// let billml = new BillboardLineMaterial();
@@ -327,12 +335,12 @@ export class DemoCoBase {
 		// let ml = billml.material;
 		// ml.addUniformDataAt("u_billParam", uniformData);
 
-		let material = new Line3DMaterial(mBuilder.dynColorEnabled);
+		let lmaterial = new Line3DMaterial(lmBuilder.dynColorEnabled);
 		let rectLine = CoEntity.createDisplayEntity();
-		rectLine.setMaterial(material);
-		rectLine.setMesh(mesh);
+		rectLine.setMaterial(lmaterial);
+		rectLine.setMesh(lmesh);
 		// rectLine.setRotationXYZ(30, 0.0, 0.0);
-		this.m_currEntity = rectLine;
+		// this.m_currEntity = rectLine;
 
 		// let cam = this.m_rscene.getCamera();
 		// let mat4 = CoMath.createMat4();
@@ -345,6 +353,13 @@ export class DemoCoBase {
 		// rectLine.update();
 
 		this.m_rscene.addEntity(rectLine);
+		return;
+		//*/
+		/*
+		let ring = new RotationRing();
+		ring.initialize(this.m_rscene,1, 80, 30, 2);
+		ring.setProgress(0.995);
+		return;
 		//*/
 		/*
 		let pv = CoMath.createVec3();
@@ -395,7 +410,7 @@ export class DemoCoBase {
 		let box = CoEntity.createDisplayEntity();
 		box.setMaterial(material);
 		box.setMesh(mesh);
-		// this.m_currEntity = box;
+		this.m_currEntity = box;
 		this.m_rscene.addEntity(box);
 		//return;
 		//*/
@@ -472,100 +487,6 @@ export class DemoCoBase {
 	}
 	private mouseBgDownListener(evt: any): void {
 		console.log("DemoCoBase::mouseBgDownListener() ...");
-	}
-
-	private testAGeom(): void {
-		let line = CoAGeom.createLine();
-		let rayLine = CoAGeom.createRayLine();
-		let segmentLine = CoAGeom.createSegmentLine();
-		let plane = CoAGeom.createPlane();
-		let outV = CoMath.createVec3();
-
-		console.log("ageom line: ", line);
-		console.log("ageom plane: ", plane);
-
-		this.testAGeomBase();
-	}
-
-	private testAGeomBase(): void {
-		let v3 = CoMath.createVec3(10, 4, 0.5);
-		console.log("math v3: ", v3);
-
-		let sl0 = CoAGeom.createSegmentLine();
-		sl0.begin.setXYZ(-50, 0, 0);
-		sl0.end.setXYZ(100, 0, 0);
-		sl0.update();
-		let rl0 = CoAGeom.createRayLine();
-		rl0.pos.setXYZ(0, 100, 0);
-		rl0.tv.setXYZ(0.1, -1, 0);
-		rl0.update();
-
-		let outV = CoMath.createVec3();
-
-		console.log(" ------------------ ------------------ ------------------");
-		let hit: boolean;
-		let interBoo: boolean;
-		let plane: IPlane;
-		let RayLine = CoAGeom.RayLine;
-		///*
-		hit = RayLine.IntersectSegmentLine(rl0.pos, rl0.tv, sl0.begin, sl0.end, outV);
-		console.log("RayLine.IntersectSegmentLine, hit: ", hit, ", outV: ", outV);
-
-		let sph = CoAGeom.createSphere();
-		sph.radius = 20.0;
-		sph.setXYZ(0, 19.0, 0.0);
-
-		plane = CoAGeom.createPlane();
-
-		plane.nv.setXYZ(0.0, 1.0, 0.0);
-		plane.update();
-
-		interBoo = plane.intersectSphNegSpace(sph.pos, sph.radius);
-		console.log("plane.intersectSphNegSpace(), interBoo: ", interBoo);
-
-		sph = CoAGeom.createSphere();
-		sph.radius = 20.0;
-		sph.setXYZ(0, 21.0, 0.0);
-		interBoo = plane.intersectSphere(sph.pos, sph.radius);
-		console.log("plane.intersectSphere(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection);
-
-		let line = CoAGeom.createLine();
-		line.pos.setTo(100.0, 100.0, 100.0);
-		line.tv.setTo(1.0, -1.0, 0.0);
-		line.update();
-
-		interBoo = plane.intersectLinePos2(line.pos, line.tv, outV);
-		console.log("plane.intersectLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection, ", outV: ", outV);
-
-		line.pos.setTo(100.0, 0.0, 100.0);
-		line.tv.setTo(1.0, 0.0, 0.0);
-		line.update();
-
-		interBoo = plane.intersectLinePos2(line.pos, line.tv, outV);
-		console.log("plane.intersectLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection, ", outV: ", outV);
-		//*/
-		plane = CoAGeom.createPlane();
-		plane.pos.setXYZ(0.0, 10.0, 0.0);
-		plane.nv.setXYZ(0.0, 1.0, 0.0);
-		plane.update();
-
-		let rl1 = CoAGeom.createRayLine();
-		rl1.pos.setTo(100.0, 11.0, 100.0);
-		rl1.tv.setTo(1.0, 0.1, 1.0);
-		rl1.update();
-
-		interBoo = plane.intersectRayLinePos2(rl1.pos, rl1.tv, outV);
-		console.log("plane.intersectRayLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection, ", outV: ", outV);
-
-		rl1 = CoAGeom.createRayLine();
-		rl1.pos.setTo(100.0, 0.9, 100.0);
-		rl1.tv.setTo(1.0, 0.0, 1.0);
-		rl1.update();
-
-		interBoo = plane.intersectRayLinePos2(rl1.pos, rl1.tv, outV);
-		console.log("plane.intersectRayLinePos2(), interBoo: ", interBoo, ", plane.intersection: ", plane.intersection, ", outV: ", outV);
-
-		console.log(" ------------------ ------------------ ------------------");
 	}
 	private createDefaultEntity(): void {
 
@@ -644,38 +565,10 @@ export class DemoCoBase {
 	private m_tempPv4: IVector3D = null;
 	private m_tempPv5: IVector3D = null;
 	private m_mat4: IMatrix4 = null;
+	private m_mat4A: IMatrix4 = null;
 	private m_tarPos: IVector3D = null;
 	private rotateTest(): void {
-
 		/*
-		if (this.m_currEntity != null) {
-			
-
-			let pv = this.m_tempPv0;
-			let camPV = this.m_rscene.getCamera().getPosition();
-			pv.copyFrom(camPV);
-			let dis = pv.dot(this.m_plnv);
-			pv.copyFrom(this.m_plnv);
-			pv.scaleBy(-dis);
-			pv.addBy(camPV);
-			let mc = CoMath.MathConst;
-
-			// console.log("this.m_plnv: ",this.m_plnv);
-
-			// xoy
-			let ang = -mc.GetDegreeByXY(pv.x, pv.y);
-			this.m_currEntity.setRotationXYZ(0, 0, 270-ang);
-			// xoz
-			// let ang = -mc.GetDegreeByXY(pv.x, pv.z);
-			// this.m_currEntity.setRotationXYZ(0, 90 + ang, 0);
-			// console.log(ang);
-			// yoz
-			// let ang = -mc.GetDegreeByXY(pv.z, pv.y);
-			// this.m_currEntity.setRotationXYZ(ang, 0, 0);
-
-			// this.m_currEntity.update();
-		}
-		//*/
 		if (this.m_currEntity != null) {
 
 			if (this.m_tempPv0 == null) {
@@ -689,44 +582,37 @@ export class DemoCoBase {
 			}
 			if (this.m_mat4 == null) {
 				this.m_mat4 = CoMath.createMat4();
+				this.m_mat4A = CoMath.createMat4();
 			}
 
+			let et = this.m_currEntity;
+			let trans = et.getTransform();
+
+			et.getPosition( this.m_tarPos );
 			let cam = this.m_rscene.getCamera();
-			let mat4 = this.m_mat4;
-			let beginPos = this.m_tempPv0;
 
-			beginPos.copyFrom(this.m_tarPos);
-			//let atV = this.m_tempPv1.subVecsTo(beginPos, cam.getPosition());
-			let atV = this.m_tempPv1.copyFrom(cam.getPosition());
-			// let atV = this.m_tempPv1.copyFrom(this.m_tarPos);
-			// console.log("atV: ",atV);
-			let upV = this.m_tempPv2.copyFrom(cam.getUV());
-			mat4.identity();
-			// mat4.lookAtRH( beginPos, atV, upV );
-			//mat4.pointAt(beginPos, atV.scaleBy(-1.0), upV);
-			// mat4.pointAt(atV, beginPos, upV.setXYZ(0.0,1.0,0.0) );
-			// mat4.appendScaleXYZ(1.0, 1.0, -1.0);
-			// mat4.transpose();
-
-			let dv = this.m_tempPv3;
-
-			// let newDV = this.m_tempPv4.subVecsTo(this.m_tarPos, beginPos);
-			let newDV = this.m_tempPv4.subVecsTo(cam.getPosition(), beginPos);
-
-			let rad = CoMath.Vector3D.RadianBetween(dv, newDV);
-			let axis = this.m_tempPv5;
-			CoMath.Vector3D.Cross(dv, newDV, axis);
+			let axis = this.m_tempPv0.subVecsTo( cam.getPosition(), this.m_tarPos );
 			axis.normalize();
-			mat4.appendRotation(rad, axis);
-			mat4.setTranslation(this.m_tarPos);
-			// dv.copyFrom(newDV);
+			
+			let mat4 = this.m_mat4;
+			mat4.identity();
+			mat4.appendRotation(this.m_rad, axis);
+			let ir = mat4.decompose(CoMath.OrientationType.EULER_ANGLES)[1];
+			let mat4A = this.m_mat4A;
+			mat4A.identity();
+			// mat4A.appendRotationEulerAngle(ir.x, ir.y, ir.z);
+			mat4A.append(mat4);
 
-			let trans = this.m_currEntity.getTransform();
-			//trans.getMatrix().copyFrom(mat4);
+			// trans.setParentMatrix(mat4);
 
-			trans.setParentMatrix(mat4);
-			this.m_currEntity.update();
+			this.m_rad += 0.01;
+
+			let rv = mat4A.decompose(CoMath.OrientationType.EULER_ANGLES)[1];
+			et.setRotation3(rv.scaleBy(CoMath.MathConst.MATH_180_OVER_PI));
+
+			et.update();
 		}
+		//*/
 		// this.rotLSDo(0);
 		// this.rotLSDo(1);
 		// this.rotLSDo(2);
@@ -798,52 +684,6 @@ export class DemoCoBase {
 		}
 		return 0;
 	}
-	private rotLSDo(type: number) {
-
-		if (this.m_entities != null) {
-			let entity = this.m_entities[type];
-			switch (type) {
-				case 0:
-					this.m_plnv.setXYZ(0, 0, 1);
-					break;
-				case 1:
-					this.m_plnv.setXYZ(0, 1, 0);
-					break;
-				case 2:
-					this.m_plnv.setXYZ(1, 0, 0);
-					break;
-			}
-
-			let pv = this.m_tempPv0;
-			let camPV = this.m_rscene.getCamera().getPosition();
-			pv.copyFrom(camPV);
-			let dis = pv.dot(this.m_plnv);
-			pv.copyFrom(this.m_plnv);
-			pv.scaleBy(-dis);
-			pv.addBy(camPV);
-			let mc = CoMath.MathConst;
-
-			let ang = 0;
-			switch (type) {
-				case 0:
-					// xoy
-					ang = -mc.GetDegreeByXY(pv.x, pv.y);
-					entity.setRotationXYZ(0, 0, 270 - ang);
-					break;
-				case 1:
-					// xoz
-					ang = -mc.GetDegreeByXY(pv.x, pv.z);
-					entity.setRotationXYZ(0, 90 + ang, 0);
-					break;
-				case 2:
-					// yoz
-					ang = -mc.GetDegreeByXY(pv.z, pv.y);
-					entity.setRotationXYZ(ang, 0, 0);
-					break;
-			}
-			entity.update();
-		}
-	}
 	private m_rad: number = 0.0;
 	run(): void {
 		if (this.m_rscene != null) {
@@ -860,13 +700,13 @@ export class DemoCoBase {
 				this.m_interact.run();
 			}
 			this.rotateTest();
-			if (this.m_tarPos != null) {
-				this.m_tarPos.y = 200;
-				this.m_tarPos.x = 300.0 * Math.cos(this.m_rad);
-				this.m_tarPos.z = 300.0 * Math.sin(this.m_rad);
+			// if (this.m_tarPos != null) {
+			// 	this.m_tarPos.y = 200;
+			// 	this.m_tarPos.x = 300.0 * Math.cos(this.m_rad);
+			// 	this.m_tarPos.z = 300.0 * Math.sin(this.m_rad);
 
-				this.m_rad += 0.01;
-			}
+			// 	this.m_rad += 0.01;
+			// }
 
 			this.m_rscene.run();
 		}
