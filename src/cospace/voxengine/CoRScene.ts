@@ -61,6 +61,8 @@ import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 import Line3DMaterial from "../../vox/material/mcase/Line3DMaterial";
 import BrokenQuadLine3DMaterial from "../../vox/material/mcase/BrokenQuadLine3DMaterial";
+import IRendererSceneGraph from "../../vox/scene/IRendererSceneGraph";
+import RendererSceneGraph from "../../vox/scene/RendererSceneGraph";
 
 
 function createVec3(px: number = 0.0, py: number = 0.0, pz: number = 0.0, pw: number = 1.0): IVector3D {
@@ -248,6 +250,10 @@ function createMaterialContext(): IMaterialContext {
 	return new MaterialContext();
 }
 
+function createRendererSceneGraph(): IRendererSceneGraph {
+	return new RendererSceneGraph();
+}
+
 export {
 
 	RendererDevice,
@@ -300,5 +306,6 @@ export {
 	createDisplayEntityContainer,
 
 	creatMaterialContextParam,
-	createMaterialContext
+	createMaterialContext,
+	createRendererSceneGraph
 };

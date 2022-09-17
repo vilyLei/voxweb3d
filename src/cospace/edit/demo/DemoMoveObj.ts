@@ -164,7 +164,7 @@ export class DemoMoveObj {
 		movePlane.initialize(2, 100, 0.5);
 		this.m_rscene.addEntity(movePlane.getEntity());
 		//*/
-		/*
+		///*
 		this.m_movedCtr = new DragMoveController();
 		// this.m_movedCtr = CoEdit.createDragMoveController();
 		this.m_movedCtr.axisSize = 100;
@@ -183,7 +183,7 @@ export class DemoMoveObj {
 		this.m_scaleCtr.runningVisible = true;
 		this.m_scaleCtr.initialize(rsc, 1);
 		//*/
-		///*
+		/*
 		this.m_rotatedCtr = new DragRotationController();
 		this.m_rotatedCtr.pickTestAxisRadius = 10;
 		this.m_rotatedCtr.runningVisible = true;

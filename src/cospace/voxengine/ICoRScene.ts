@@ -27,6 +27,7 @@ import IBoundsMesh from "../../vox/mesh/IBoundsMesh";
 import { CoRendererDevice } from "./render/CoRendererDevice";
 import { CoRendererState } from "./render/CoRendererState";
 import CoVtxBufConst from "./mesh/CoVtxBufConst";
+import IRendererSceneGraph from "../../vox/scene/IRendererSceneGraph";
 
 interface CoVec3 {
 
@@ -271,5 +272,6 @@ interface ICoRScene {
 	 */
 	VerticalCWOnXOY(v: IVector3D): void;
 
+	createRendererSceneGraph(): IRendererSceneGraph;
 }
 export { CoVec3, CoMaterialContextParam, ICoRScene };
