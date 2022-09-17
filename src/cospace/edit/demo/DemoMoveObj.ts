@@ -192,18 +192,45 @@ export class DemoMoveObj {
 	}
 	private mouseUpListener(evt: any): void {
 		console.log("DemoMoveObj::mouseUpListener() ...");
-		if (this.m_movedCtr != null) {
-			this.m_movedCtr.decontrol();
-		}
-		if (this.m_scaleCtr != null) {
-			this.m_scaleCtr.decontrol();
-		}
-		if (this.m_rotatedCtr != null) {
-			this.m_rotatedCtr.decontrol();
+		if(this.getCtlVisible()) {
+			if (this.m_movedCtr != null) {
+				this.m_movedCtr.decontrol();
+			}
+			if (this.m_scaleCtr != null) {
+				this.m_scaleCtr.decontrol();
+			}
+			if (this.m_rotatedCtr != null) {
+				this.m_rotatedCtr.decontrol();
+			}
 		}
 	}
 	private mouseBgDownListener(evt: any): void {
 		console.log("DemoMoveObj::mouseBgDownListener() ...");
+		this.setCtlVisible(false);
+	}
+	private setCtlVisible(v: boolean): void {
+		if (this.m_movedCtr != null) {
+			this.m_movedCtr.setVisible(v);
+		}
+		if (this.m_scaleCtr != null) {
+			this.m_scaleCtr.setVisible(v);
+		}
+		if (this.m_rotatedCtr != null) {
+			this.m_rotatedCtr.setVisible(v);
+		}
+	}
+	
+	private getCtlVisible(): boolean {
+		if (this.m_movedCtr != null) {
+			return this.m_movedCtr.getVisible();
+		}
+		if (this.m_scaleCtr != null) {
+			return this.m_scaleCtr.getVisible();
+		}
+		if (this.m_rotatedCtr != null) {
+			return this.m_rotatedCtr.getVisible();
+		}
+		return false;
 	}
 	private createDefaultEntity(): void {
 
@@ -372,7 +399,7 @@ export class DemoMoveObj {
 		entity.getPosition(pos);
 		let wpos = evt.wpos as IVector3D;
 		pos.subtractBy(wpos);
-
+		this.setCtlVisible(true);
 		this.applyMoveCtr(wpos, entity);
 		this.applyScaleCtr(wpos, entity);
 		this.applyRotatedCtr(wpos, entity);
