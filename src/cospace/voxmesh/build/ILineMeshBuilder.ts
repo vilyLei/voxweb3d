@@ -20,6 +20,7 @@ interface ILineMeshBuilder extends IMeshBuilder {
     
     setRGB3f(pr: number, pg: number, pb: number): void;
     createLine(begin: IVector3D, end?: IVector3D, axialRadius?: number): IRawMesh;
+
     createRectXOY(px: number, py: number, pw: number, ph: number): IRawMesh;
     createRectXOZ(px: number, pz: number, pw: number, pl: number): IRawMesh;
     createRectYOZ(px: number, pz: number, pw: number, pl: number): IRawMesh;
@@ -30,6 +31,7 @@ interface ILineMeshBuilder extends IMeshBuilder {
 
     createCurveByPositions(posList: IVector3D[], colorList: IColor4[]): IRawMesh;
     createPolygon(posList: IVector3D[], colorList: IColor4[]): IRawMesh;
+    createLines(linePosList: IVector3D[], colorList?: IColor4[]): IRawMesh;
     destroy(): void;
 }
 export {ILineMeshBuilder}

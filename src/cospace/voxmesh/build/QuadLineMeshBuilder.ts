@@ -312,6 +312,9 @@ class QuadLineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
     createPolygon(posList: IVector3D[], colorList: IColor4[] = null): IRawMesh {
         return this.createCurveByPositions(posList, colorList);
     }
+    createLines(linePosList: IVector3D[], colorList?: IColor4[]): IRawMesh {
+        return null;
+    }
     destroy(): void {
         this.m_colorvs = null;
         this.m_posvs = null;

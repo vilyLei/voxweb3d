@@ -154,20 +154,6 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
         this.m_beginRad = beginRad;
         this.m_rangeRad = rangeRad;
 
-        // if (radius < 0.001) radius = 0.001;
-        // if (segsTotal < 3) segsTotal = 3;
-        // if (center == null) center = CoMath.createVec3();
-
-        // let vs = new Array((segsTotal + 1) * 3);
-        // let j = 0;
-        // let rad = 0.0;
-        // let pi2 = Math.PI * 2;
-        // for (let i = 0; i <= segsTotal; ++i) {
-        //     rad = pi2 * i / segsTotal;
-        //     vs[j++] = center.x + radius * Math.cos(rad);
-        //     vs[j++] = center.y + radius * Math.sin(rad);
-        //     vs[j++] = center.z;
-        // }
         let vs = this.createCircleData(0,1,2, radius, segsTotal, center);
         this.createCircle(vs, segsTotal);
         return this.createLineMesh();
@@ -177,20 +163,6 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
         this.m_beginRad = beginRad;
         this.m_rangeRad = rangeRad;
 
-        // if (radius < 0.001) radius = 0.001;
-        // if (segsTotal < 3) segsTotal = 3;
-        // if (center == null) center = CoMath.createVec3();
-
-        // let vs = new Array((segsTotal + 1) * 3);
-        // let j = 0;
-        // let rad = 0.0;
-        // let pi2 = Math.PI * 2;
-        // for (let i = 0; i <= segsTotal; ++i) {
-        //     rad = pi2 * i / segsTotal;
-        //     vs[j++] = center.x + radius * Math.cos(rad);
-        //     vs[j++] = center.y;
-        //     vs[j++] = center.z + radius * Math.sin(rad);
-        // }
         let vs = this.createCircleData(0,2,1, radius, segsTotal, center);
         this.createCircle(vs, segsTotal);
         return this.createLineMesh();
@@ -199,21 +171,6 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
 
         this.m_beginRad = beginRad;
         this.m_rangeRad = rangeRad;
-
-        // if (radius < 0.001) radius = 0.001;
-        // if (segsTotal < 3) segsTotal = 3;
-        // if (center == null) center = CoMath.createVec3();
-
-        // let vs = new Array((segsTotal + 1) * 3);
-        // let j = 0;
-        // let rad = 0.0;
-        // let pi2 = Math.PI * 2;
-        // for (let i = 0; i <= segsTotal; ++i) {
-        //     rad = pi2 * i / segsTotal;
-        //     vs[j++] = center.x;
-        //     vs[j++] = center.y + radius * Math.cos(rad);
-        //     vs[j++] = center.z + radius * Math.sin(rad);
-        // }
 
         let vs = this.createCircleData(1,2,0, radius, segsTotal, center);
         this.createCircle(vs, segsTotal);
@@ -244,6 +201,29 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
     }
     createPolygon(posList: IVector3D[], colorList: IColor4[] = null): IRawMesh {
         return this.createCurveByPositions(posList, colorList);
+    }
+    createLines(linePosList: IVector3D[], colorList: IColor4[] = null): IRawMesh {
+        if(linePosList.length < 1 || linePosList.length % 2 != 0) {
+            throw Error("illegal positions data for creating lines.");
+        }
+        this.m_posvs = [];
+        if (!this.dynColorEnabled) {
+            this.m_colorvs = [];
+            if (colorList == null) {
+                this.useColor(linePosList.length);
+            }
+            else {
+                let c: IColor4;
+                for (let i = 0; i < linePosList.length; ++i) {
+                    c = colorList[i];
+                    this.m_colorvs.push(c.r, c.g, c.b);
+                }
+            }
+        }
+        for (let i = 0; i < linePosList.length; ++i) {
+            this.m_posvs.push(linePosList[i].x, linePosList[i].y, linePosList[i].z);
+        }
+        return this.createLineMesh();
     }
     destroy(): void {
         this.m_colorvs = null;
