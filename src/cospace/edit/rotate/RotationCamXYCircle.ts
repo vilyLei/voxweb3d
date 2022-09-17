@@ -43,9 +43,9 @@ declare var CoMesh: ICoMesh;
 declare var CoParticle: ICoParticle;
 
 /**
- * 在camera view y/x axis 上 拖动旋转
+ * 在camera view x/y axis 上 拖动旋转
  */
-class RotationCamYXCircle extends RotationCtr implements IRotationCtr {
+class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
 
     private m_target: IRotatedTarget = null;
     private m_dispatcher: IEvtDispatcher;
@@ -154,7 +154,7 @@ class RotationCamYXCircle extends RotationCtr implements IRotationCtr {
     }
     setVisible(visible: boolean): void {
 
-        console.log("RotationCamYXCircle::setVisible() ..., visible: ", visible);
+        console.log("RotationCamXYCircle::setVisible() ..., visible: ", visible);
 
         this.m_entity.setVisible(visible);
         this.m_circle.setVisible(visible);
@@ -223,11 +223,11 @@ class RotationCamYXCircle extends RotationCtr implements IRotationCtr {
         entity.mouseEnabled = true;
     }
     protected mouseOverListener(evt: any): void {
-        console.log("RotationCamYXCircle::mouseOverListener() ...");
+        console.log("RotationCamXYCircle::mouseOverListener() ...");
         this.showOverColor();
     }
     protected mouseOutListener(evt: any): void {
-        console.log("RotationCamYXCircle::mouseOutListener() ...");
+        console.log("RotationCamXYCircle::mouseOutListener() ...");
         this.showOutColor();
     }
     showOverColor(): void {
@@ -245,10 +245,10 @@ class RotationCamYXCircle extends RotationCtr implements IRotationCtr {
         return this.m_flag > -1;
     }
     select(): void {
-        console.log("RotationCamYXCircle::select() ...");
+        console.log("RotationCamXYCircle::select() ...");
     }
     deselect(): void {
-        console.log("RotationCamYXCircle::deselect() ...");
+        console.log("RotationCamXYCircle::deselect() ...");
         if (this.m_flag > 0) {
             this.setAllVisible(true);
         }
@@ -284,7 +284,7 @@ class RotationCamYXCircle extends RotationCtr implements IRotationCtr {
 
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
         if (this.m_flag > -1) {
-            // console.log("RotationCamYXCircle::moveByRay() ...");
+            // console.log("RotationCamXYCircle::moveByRay() ...");
             // console.log("           this.m_initDegree: ", this.m_initDegree);
             let degree = this.getDegree(rpv, rtv);
             // console.log("           moveByRay degree: ", degree);
@@ -313,7 +313,7 @@ class RotationCamYXCircle extends RotationCtr implements IRotationCtr {
     }
     private m_axisEntity: ITransformEntity = null;
     mouseDownListener(evt: any): void {
-        console.log("RotationCamYXCircle::mouseDownListener() ..., evt: ", evt);
+        console.log("RotationCamXYCircle::mouseDownListener() ..., evt: ", evt);
 
         this.m_target.select();
 
@@ -363,12 +363,12 @@ class RotationCamYXCircle extends RotationCtr implements IRotationCtr {
                         if (degree > 360) degree -= 360.0;
                         else if (degree < 0) degree += 360.0;
 
-                        // console.log("RotationCamYXCircle::getDegree() ..., ###   A degree: ", degree);
+                        // console.log("RotationCamXYCircle::getDegree() ..., ###   A degree: ", degree);
                         // degree += 360.0;
-                        // console.log("RotationCamYXCircle::getDegree() ...,       B degree: ", degree);
+                        // console.log("RotationCamXYCircle::getDegree() ...,       B degree: ", degree);
                         // if (degree > 360) degree -= 360.0;
-                        // console.log("RotationCamYXCircle::getDegree() ...,       C degree: ", degree);
-                        // console.log("RotationCamYXCircle::getDegree() ..., degree: ", degree);
+                        // console.log("RotationCamXYCircle::getDegree() ...,       C degree: ", degree);
+                        // console.log("RotationCamXYCircle::getDegree() ..., degree: ", degree);
                     }
                 }
             }
@@ -377,4 +377,4 @@ class RotationCamYXCircle extends RotationCtr implements IRotationCtr {
     }
 }
 
-export { RotationCamYXCircle }
+export { RotationCamXYCircle }

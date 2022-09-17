@@ -24,7 +24,7 @@ import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
-import { RotationCamYXCircle } from "./RotationCamYXCircle";
+import { RotationCamXYCircle } from "./RotationCamXYCircle";
 
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
@@ -118,9 +118,9 @@ class DragRotationController implements IDragRotationController {
         this.m_target.addCtrlEntity(camZCtrl);
         this.m_controllers.push(camZCtrl);
 
-        let camYXCtrl = new RotationCamYXCircle();
+        let camYXCtrl = new RotationCamXYCircle();
         camYXCtrl.pickTestRadius = this.pickTestAxisRadius;
-        camYXCtrl.initialize(this.m_editRS, this.m_editRSPI, this.camZCircleRadius);
+        camYXCtrl.initialize(this.m_editRS, this.m_editRSPI, this.camYXCircleRadius);
         camYXCtrl.showOutColor();
         camYXCtrl.setTarget(this.m_target);
         camYXCtrl.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
