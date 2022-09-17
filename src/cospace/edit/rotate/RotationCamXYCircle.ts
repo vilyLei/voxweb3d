@@ -274,12 +274,14 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
     }
     setPosition(pos: IVector3D): void {
         this.m_entity.setPosition(pos);
+        this.m_circle.setPosition(pos);
     }
     getPosition(outPos: IVector3D): void {
         this.m_entity.getPosition(outPos);
     }
     update(): void {
-        // this.m_entity.update();
+        this.m_entity.update();
+        this.m_circle.update();
     }
 
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
@@ -292,23 +294,6 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
             if (degree > 360) degree -= 360.0;
             else if (degree < 0) degree += 360.0;
 
-            // let et = this.m_target;
-            // if (et != null) {
-
-            //     let rv = this.m_rotV;
-            //     let mat = this.m_mat0;
-            //     let axis = this.m_dstDV;
-
-            //     axis.subVecsTo(this.m_camPos, this.m_posV);
-            //     axis.normalize();
-            //     mat.identity();
-            //     mat.appendRotation(CoMath.MathConst.DegreeToRadian(degree), axis);
-
-            //     et.getRotationXYZ(rv);
-            //     rv = mat.decompose(CoMath.OrientationType.EULER_ANGLES)[1];
-            //     et.setRotation3(rv.scaleBy(CoMath.MathConst.MATH_180_OVER_PI));
-            //     et.update();
-            // }
         }
     }
     private m_axisEntity: ITransformEntity = null;
@@ -324,10 +309,6 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
         this.setThisVisible(true);
         this.m_initDegree = this.getDegree(evt.raypv, evt.raytv);
 
-        // this.m_preRotV.setXYZ(0, 0, 0);
-        // if (this.m_target != null) {
-        //     this.m_target.getRotationXYZ(this.m_preRotV);
-        // }
     }
 
     public getDegree(rpv: IVector3D, rtv: IVector3D): number {
