@@ -1,6 +1,7 @@
 import IVector3D from "../../vox/math/IVector3D";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import ITransformEntity from "../../vox/entity/ITransformEntity";
+import IDisplayEntityContainer from "../../vox/entity/IDisplayEntityContainer";
 import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
 import IDataMesh from "../../vox/mesh/IDataMesh";
 import IRawMesh from "../../vox/mesh/IRawMesh";
@@ -45,6 +46,10 @@ function createCrossAxis3DEntity(size: number = 100): ITransformEntity {
 	let cf = CoRScene.createVec3;
 	return CoRScene.createFreeAxis3DEntity(cf(min,min,min), cf(max,max,max));
 }
+
+function createDisplayEntityContainer(): IDisplayEntityContainer {
+	return CoRScene.createDisplayEntityContainer();
+}
 export {
 	
 	createDisplayEntityFromModel,
@@ -54,5 +59,6 @@ export {
 	createDisplayEntity,
 	createMouseEventEntity,
 	createBoundsEntity,
-	createCrossAxis3DEntity
+	createCrossAxis3DEntity,
+	createDisplayEntityContainer
 };

@@ -1,6 +1,7 @@
 import IVector3D from "../../vox/math/IVector3D";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import ITransformEntity from "../../vox/entity/ITransformEntity";
+import IDisplayEntityContainer from "../../vox/entity/IDisplayEntityContainer";
 import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
 import IBoundsEntity from "../../vox/entity/IBoundsEntity";
 import IDataMesh from "../../vox/mesh/IDataMesh";
@@ -46,5 +47,7 @@ interface ICoEntity {
 	 * @param size the default value is 100
 	 */
 	createCrossAxis3DEntity(size: number): ITransformEntity;
+	
+	createDisplayEntityContainer(): IDisplayEntityContainer;
 }
 export { ICoEntity };

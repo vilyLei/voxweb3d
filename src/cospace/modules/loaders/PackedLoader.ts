@@ -11,7 +11,10 @@ class PackedLoader {
 	protected static loadedMap: Map<string, number> = new Map();
 	protected static loadingMap: Map<string, PackedLoader[]> = new Map();
 	private m_callback: () => void;
-
+	/**
+	 * @param times 记录总共需要的完成操作的响应次数。这个次数可能是由load直接产生，也可能是由于别的地方驱动。
+	 * @param callback 完成所有响应的之后的回调
+	 */
 	constructor(times: number, callback: (m?: PackedLoader) => void = null) {
 		this.m_callback = callback;
 		this.m_times = times;
