@@ -12,9 +12,7 @@ import OrientationType from "../../vox/math/OrientationType";
 import IMatrix4 from "../../vox/math/IMatrix4";
 import { Euler } from "./Euler";
 import { Quaternion } from "./Quaternion";
-const _mvx = new Vector3D();
-const _mvy = new Vector3D();
-const _mvz = new Vector3D();
+
 class Matrix4 implements IMatrix4 {
 	private static s_InitData: Float32Array = new Float32Array([
 		1.0, 0.0, 0.0, 0.0,
@@ -27,6 +25,9 @@ class Matrix4 implements IMatrix4 {
 	private static s_isolatedUid: number = 0x4ffff;
 	private m_uid: number = -1;
 	private static s_tMat4: Matrix4 = new Matrix4();
+	private _mvx = new Vector3D();
+	private _mvy = new Vector3D();
+	private _mvz = new Vector3D();
 	private m_index: number = 0;
 	private m_fs32: Float32Array = null;
 	private m_localFS32: Float32Array = null;
@@ -763,8 +764,8 @@ class Matrix4 implements IMatrix4 {
 		//std::memcpy(&mr, m_rawData, m_rawDataSize);
 		mr.copyFrom(this);
 		///*
-		let pos = _mvx;//new Vector3D(rfs[12], rfs[13], rfs[14]);
-		let scale = _mvy;//new Vector3D();
+		let pos = this._mvx;//new Vector3D(rfs[12], rfs[13], rfs[14]);
+		let scale = this._mvy;//new Vector3D();
 		scale.x = Math.sqrt(rfs[0] * rfs[0] + rfs[1] * rfs[1] + rfs[2] * rfs[2]);
 		scale.y = Math.sqrt(rfs[4] * rfs[4] + rfs[5] * rfs[5] + rfs[6] * rfs[6]);
 		scale.z = Math.sqrt(rfs[8] * rfs[8] + rfs[9] * rfs[9] + rfs[10] * rfs[10]);
@@ -778,7 +779,7 @@ class Matrix4 implements IMatrix4 {
 		rfs[8] /= scale.z;
 		rfs[9] /= scale.z;
 		rfs[10] /= scale.z;
-		let rot = _mvz;//new Vector3D();
+		let rot = this._mvz;//new Vector3D();
 		switch (orientationStyle) {
 			case OrientationType.AXIS_ANGLE:
 				{

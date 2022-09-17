@@ -15,25 +15,8 @@ import {IRendererSceneAccessor} from "../../vox/scene/IRendererSceneAccessor";
 import { RenderableMaterialBlock } from "../scene/block/RenderableMaterialBlock";
 import { RenderableEntityBlock } from "../scene/block/RenderableEntityBlock";
 import IRenderProxy from "../render/IRenderProxy";
+import RendererSceneNode from "../scene/RendererSceneNode";
 
-class RendererSceneNode {
-    private m_rscene: IRendererScene = null;
-    priority: number = 0;
-    processIdList: number[] = null;
-    contextResetEnabled: boolean = false;
-    constructor(rscene: IRendererScene) {
-        if (rscene == null) {
-            throw Error("rscene is null !!!");
-        }
-        this.m_rscene = rscene;
-    }
-    enableMouseEvent(gpuTestEnabled: boolean = true): void {
-        this.m_rscene.enableMouseEvent(gpuTestEnabled);
-    }
-    getRScene(): IRendererScene {
-        return this.m_rscene;
-    }
-}
 export class EngineBase {
 
     constructor() { }
@@ -45,6 +28,7 @@ export class EngineBase {
     readonly rscene: RendererScene = null;
     readonly uiScene: OrthoUIScene = null;
     readonly interaction: UserInteraction = new UserInteraction();
+    
     getRenderProxy(): IRenderProxy {
         return this.rscene.getRenderProxy();
     }

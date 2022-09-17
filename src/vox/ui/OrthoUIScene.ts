@@ -26,6 +26,7 @@ import Vector3D from "../math/Vector3D";
 import IRenderProxy from "../render/IRenderProxy";
 import IMatrix4 from "../math/IMatrix4";
 import IVector3D from "../math/IVector3D";
+import { IRendererSceneAccessor } from "../scene/IRendererSceneAccessor";
 
 
 class OrthoUIScene implements IRendererScene {
@@ -40,6 +41,11 @@ class OrthoUIScene implements IRendererScene {
 
     constructor() { }
 
+    setAccessor(accessor: IRendererSceneAccessor): void {
+        if(this.m_ruisc != null) {
+            this.m_ruisc.setAccessor( accessor );
+        }
+    }
     initialize(rscene: RendererScene): void {
         if (rscene != null) {
             this.m_rscene = rscene;
