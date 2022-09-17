@@ -15,7 +15,8 @@ import Matrix4 from "../../vox/math/Matrix4";
 import Matrix4Pool from "../../vox/math/Matrix4Pool";
 import IEntityTransform from "../../vox/entity/IEntityTransform";
 import IDisplayEntityContainer from "../../vox/entity/IDisplayEntityContainer";
-import DisplayEntity from "../../vox/entity/DisplayEntity";
+// import ITransformEntity from "../../vox/entity/ITransformEntity";
+import ITransformEntity from "../../vox/entity/ITransformEntity";
 import IRenderer from "../../vox/scene/IRenderer";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 
@@ -65,7 +66,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     name: string = "DisplayEntityContainer";
     // mouse interaction enabled
     mouseEnabled: boolean = false;
-    private m_entities: DisplayEntity[] = [];
+    private m_entities: ITransformEntity[] = [];
     private m_entitiesTotal: number = 0;
     private m_children: DisplayEntityContainer[] = [];
     private m_childrenTotal: number = 0;
@@ -215,7 +216,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
         }
         return null;
     }
-    getChildByUid(uid: number): DisplayEntity {
+    getChildByUid(uid: number): ITransformEntity {
         if (uid > -1) {
             let i: number = 0;
             for (; i < this.m_entitiesTotal; ++i) {
@@ -229,7 +230,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     getChildrenTotal(): number {
         return this.m_childrenTotal;
     }
-    addEntity(entity: DisplayEntity): void {
+    addEntity(entity: ITransformEntity): void {
         if (entity.getMesh() == null) {
             throw Error("Error: entity.getMesh() == null.");
         }
@@ -260,7 +261,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
             }
         }
     }
-    removeEntity(entity: DisplayEntity): void {
+    removeEntity(entity: ITransformEntity): void {
         if (entity != null && entity.__$getParent() == this) {
             let i: number = 0;
             for (; i < this.m_entitiesTotal; ++i) {
@@ -300,15 +301,15 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
             }
         }
     }
-    getEntityAt(i: number): DisplayEntity {
+    getEntityAt(i: number): ITransformEntity {
         if (i >= 0 && i < this.m_entitiesTotal) {
             return this.m_entities[i];
         }
         return null;
     }
-    getEntities(): DisplayEntity[] {
+    getEntities(): ITransformEntity[] {
         
-        let entities: DisplayEntity[] = null;
+        let entities: ITransformEntity[] = null;
         if (this.m_entities != null) {
             entities = this.m_entities.slice(0);
         }
@@ -320,7 +321,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
         }
         return entities;
     }
-    getEntityByUid(uid: number): DisplayEntity {
+    getEntityByUid(uid: number): ITransformEntity {
         if (uid > -1) {
             let i: number = 0;
             for (; i < this.m_entitiesTotal; ++i) {
