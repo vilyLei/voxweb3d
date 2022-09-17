@@ -113,7 +113,7 @@ export class DemoEntityBounds {
             let container: DisplayEntityContainer;
             if(evt.target != evt.currentTarget) {
                 container = evt.target as DisplayEntityContainer;
-                targets = container.getEntities();
+                targets = container.getEntities() as DisplayEntity[];
                 this.m_postOutline.setRGB3f(0.0, 1.0, 0.0);
             }
             else {
@@ -121,7 +121,7 @@ export class DemoEntityBounds {
                 
                 if(entity.__$getParent() != null) {
                     container = entity.__$getParent() as DisplayEntityContainer;
-                    targets = container.getEntities();
+                    targets = container.getEntities() as DisplayEntity[];
                     this.m_postOutline.setRGB3f(1.5, 0.0, 0.0);
                 }
                 else {
