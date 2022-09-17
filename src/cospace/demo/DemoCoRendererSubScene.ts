@@ -6,9 +6,24 @@ import ICoRenderNode from "../voxengine/scene/ICoRenderNode";
 import { ICoMouseInteraction } from "../voxengine/ui/ICoMouseInteraction";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 
+import IRendererScene from "../../vox/scene/IRendererScene";
+import { IRendererSceneAccessor } from "../../vox/scene/IRendererSceneAccessor";
+
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
 declare var CoMouseInteraction: ICoMouseInteraction;
+
+
+class SceneAccessor implements IRendererSceneAccessor{
+    constructor(){}
+
+    renderBegin(rendererScene: IRendererScene): void {
+        let rproxyy = rendererScene.getRenderProxy();
+        rproxyy.clearDepth(1.0);
+    }
+    renderEnd(rendererScene: IRendererScene): void {
+    }
+}
 
 /**
  * cospace renderer scene
@@ -70,17 +85,28 @@ export class DemoCoRendererSubScene {
 			rparam.setCamProject(45, 20.0, 9000.0);
 			this.m_rscene = CoRScene.createRendererScene(rparam, 3);
 
-			let axis = CoRScene.createAxis3DEntity();
+			let axis = CoRScene.createAxis3DEntity(200);
 			this.m_rscene.addEntity(axis);
 
-			this.m_rsubscene = this.m_rscene.createSubScene(rparam, 3, true);
+			// this.m_rsubscene = this.m_rscene.createSubScene(rparam, 3, true);
+			this.m_rsubscene = this.m_rscene.createSubScene(rparam, 3, false);
+			this.m_rsubscene.setAccessor(new SceneAccessor());
 
 			let rnode = this.m_rsubscene as ICoRenderNode;
-			this.m_rscene.appendRenderNode( rnode );
+			this.m_rscene.appendRenderNode(rnode);
+
+			let scale = 190.0;
+			// let boxMesh = this.m_rscene.entityBlock.unitBox.getMesh();
+			let material = CoRScene.createDefaultMaterial(true);
+			let entityBox = CoRScene.createDisplayEntity();
+			entityBox.setMaterial(material);
+			entityBox.copyMeshFrom(this.m_rscene.entityBlock.unitBox);
+			entityBox.setScaleXYZ(scale, scale, scale);
+			this.m_rscene.addEntity(entityBox);
 
 
-			axis = CoRScene.createAxis3DEntity(50);
-			axis.setXYZ(50,70,90);
+			axis = CoRScene.createAxis3DEntity(80);
+			axis.setXYZ(50, 70, 90);
 			this.m_rsubscene.addEntity(axis);
 		}
 	}
