@@ -49,7 +49,6 @@ class RotationCamZCircle extends RotationCtr implements IRotationCtr {
     private m_cv = CoMath.createVec3();
     private m_planeNV = CoMath.createVec3();
     private m_outV = CoMath.createVec3();
-    // private m_preRotV = CoMath.createVec3();
     private m_rotV = CoMath.createVec3();
 
     private m_scaleV = CoMath.createVec3();
@@ -138,7 +137,6 @@ class RotationCamZCircle extends RotationCtr implements IRotationCtr {
 
         this.m_ring.setPosition(this.m_posV);
         this.m_ring.setRotation3(rv);
-        this.m_ring.update();
     }
     getEntity(): ITransformEntity {
         return this.m_entity;
@@ -196,6 +194,14 @@ class RotationCamZCircle extends RotationCtr implements IRotationCtr {
     setTarget(target: IRotatedTarget): void {
         this.m_target = target;
     }
+    enable(): void {
+        super.enable();
+        this.m_entity.mouseEnabled = true;
+    }
+    disable(): void {
+        super.disable();
+        this.m_entity.mouseEnabled = false;
+    }
     private initializeEvent(): void {
 
         if (this.m_dispatcher == null) {
@@ -250,6 +256,7 @@ class RotationCamZCircle extends RotationCtr implements IRotationCtr {
             this.m_ring = null;
         }
         this.m_editRS = null;
+        this.m_mat0 = null;
         if (this.m_dispatcher != null) {
             this.m_dispatcher.destroy();
             this.m_dispatcher = null;
@@ -264,58 +271,60 @@ class RotationCamZCircle extends RotationCtr implements IRotationCtr {
         this.m_entity.getPosition(outPos);
     }
     update(): void {
-        // this.m_entity.update();
+        this.m_entity.update();
+        this.m_ring.update();
     }
 
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
-        if (this.m_flag > -1) {
-            // console.log("RotationCamZCircle::moveByRay() ...");
-            // console.log("           this.m_initDegree: ", this.m_initDegree);
-            let degree = this.getDegree(rpv, rtv);
-            // console.log("           moveByRay degree: ", degree);
-            degree -= this.m_initDegree;
-            if (degree > 360) degree -= 360.0;
-            else if (degree < 0) degree += 360.0;
 
-            this.m_ring.setProgress(degree / 360.0);
+        if (this.isEnabled()) {
+            if (this.m_flag > -1) {
+                // console.log("RotationCamZCircle::moveByRay() ...");
+                // console.log("           this.m_initDegree: ", this.m_initDegree);
+                let degree = this.getDegree(rpv, rtv);
+                // console.log("           moveByRay degree: ", degree);
+                degree -= this.m_initDegree;
+                if (degree > 360) degree -= 360.0;
+                else if (degree < 0) degree += 360.0;
 
-            let et = this.m_target;
-            if (et != null) {
+                this.m_ring.setProgress(degree / 360.0);
 
-                let rv = this.m_rotV;
-                let mat = this.m_mat0;
-                let axis = this.m_dstDV;
+                let et = this.m_target;
+                if (et != null) {
 
-                axis.subVecsTo(this.m_camPos, this.m_posV);
-                axis.normalize();
-                mat.identity();
-                mat.appendRotation(CoMath.MathConst.DegreeToRadian(degree), axis);
+                    // let rv = this.m_rotV;
+                    let mat = this.m_mat0;
+                    let axis = this.m_dstDV;
 
-                et.getRotationXYZ(rv);
-                rv = mat.decompose(CoMath.OrientationType.EULER_ANGLES)[1];
-                et.setRotation3(rv.scaleBy(CoMath.MathConst.MATH_180_OVER_PI));
-                et.update();
+                    axis.subVecsTo(this.m_camPos, this.m_posV);
+                    axis.normalize();
+                    mat.identity();
+                    mat.appendRotation(CoMath.MathConst.DegreeToRadian(degree), axis);
+
+                    // et.getRotationXYZ(rv);
+                    let rv = mat.decompose(CoMath.OrientationType.EULER_ANGLES)[1];
+                    et.setRotation3(rv.scaleBy(CoMath.MathConst.MATH_180_OVER_PI));
+                    et.update();
+                }
             }
         }
     }
     private m_axisEntity: ITransformEntity = null;
     mouseDownListener(evt: any): void {
+
         console.log("RotationCamZCircle::mouseDownListener() ..., evt: ", evt);
+        if (this.isEnabled()) {
 
-        this.m_target.select();
+            this.m_target.select();
 
-        this.m_flag = 1;
+            this.m_flag = 1;
 
-        this.setThisVisible(true);
-        this.m_initDegree = this.getDegree(evt.raypv, evt.raytv);
-        this.m_ring.setVisible(true);
-        this.m_ring.setRingRotation(this.m_initDegree);
-        this.m_ring.setProgress(0.0);
-
-        // this.m_preRotV.setXYZ(0, 0, 0);
-        // if (this.m_target != null) {
-        //     this.m_target.getRotationXYZ(this.m_preRotV);
-        // }
+            this.setThisVisible(true);
+            this.m_initDegree = this.getDegree(evt.raypv, evt.raytv);
+            this.m_ring.setVisible(true);
+            this.m_ring.setRingRotation(this.m_initDegree);
+            this.m_ring.setProgress(0.0);
+        }
     }
 
     public getDegree(rpv: IVector3D, rtv: IVector3D): number {
@@ -326,7 +335,7 @@ class RotationCamZCircle extends RotationCtr implements IRotationCtr {
             let pos = this.m_posV;
             this.m_entity.getPosition(pos);
             let hitFlag = u.IntersectRayLinePos2(pnv, pos.dot(pnv), rpv, rtv, this.m_outV);
-            
+
             // if(this.m_axisEntity == null) {
             //     this.m_axisEntity = CoEntity.createCrossAxis3DEntity(20);
             //     this.m_editRS.addEntity(this.m_axisEntity, 1);

@@ -235,16 +235,24 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
     setTarget(target: IRotatedTarget): void {
         this.m_target = target;
     }
+    enable(): void {
+        super.enable();
+        this.m_entity.mouseEnabled = true;
+    }
+    disable(): void {
+        super.disable();
+        this.m_entity.mouseEnabled = false;
+    }
     private initializeEvent(): void {
 
         if (this.m_dispatcher == null) {
             const me = CoRScene.MouseEvent;
-            let dispatcher = CoRScene.createMouseEvt3DDispatcher();
-            dispatcher.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
-            dispatcher.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
-            dispatcher.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
-            this.m_entity.setEvtDispatcher(dispatcher);
-            this.m_dispatcher = dispatcher;
+            let d = CoRScene.createMouseEvt3DDispatcher();
+            d.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
+            d.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
+            d.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
+            this.m_entity.setEvtDispatcher(d);
+            this.m_dispatcher = d;
         }
         this.m_entity.mouseEnabled = true;
     }
@@ -292,7 +300,7 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
             this.m_editRS.removeEntity(this.m_circle);
             this.m_circle.destroy();
             this.m_circle = null;
-        }        
+        }
         if (this.m_ring != null) {
             this.m_ring.destroy();
             this.m_ring = null;
@@ -320,64 +328,69 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
     }
 
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
-        if (this.m_flag > -1) {
-            // console.log("RotationCircle::moveByRay() ...");
-            // console.log("           this.m_initDegree: ", this.m_initDegree);
-            let degree = this.getDegree(rpv, rtv);
-            // console.log("           degree: ", degree);
-            degree -= this.m_initDegree;
 
-            this.m_ring.setProgress(degree / 360.0);
+        if (this.isEnabled()) {
+            if (this.m_flag > -1) {
+                // console.log("RotationCircle::moveByRay() ...");
+                // console.log("           this.m_initDegree: ", this.m_initDegree);
+                let degree = this.getDegree(rpv, rtv);
+                // console.log("           degree: ", degree);
+                degree -= this.m_initDegree;
 
-            let et = this.m_target;
-            if (et != null) {
+                this.m_ring.setProgress(degree / 360.0);
 
-                let rv = this.m_rotV;
-                let prv = this.m_preRotV;
-                et.getRotationXYZ(rv);
-                switch (this.m_type) {
-                    case 1:
-                        // XOZ, Y-Axis
-                        rv.y = prv.y + degree;
-                        break;
-                    case 2:
-                        // YOZ, X-Axis
-                        rv.x = prv.x + degree;
-                        break;
-                    default:
-                        // XOY, Z-Axis
-                        rv.z = prv.z + degree;
-                        break;
+                let et = this.m_target;
+                if (et != null) {
+
+                    let rv = this.m_rotV;
+                    let prv = this.m_preRotV;
+                    et.getRotationXYZ(rv);
+                    switch (this.m_type) {
+                        case 1:
+                            // XOZ, Y-Axis
+                            rv.y = prv.y + degree;
+                            break;
+                        case 2:
+                            // YOZ, X-Axis
+                            rv.x = prv.x + degree;
+                            break;
+                        default:
+                            // XOY, Z-Axis
+                            rv.z = prv.z + degree;
+                            break;
+                    }
+                    et.setRotation3(rv);
+                    et.update();
                 }
-                et.setRotation3(rv);
-                et.update();
             }
         }
     }
     mouseDownListener(evt: any): void {
         console.log("RotationCircle::mouseDownListener() ..., evt: ", evt);
+        if (this.isEnabled()) {
 
-        this.m_target.select();
+            this.m_target.select();
 
-        this.m_entity.setVisible(false);
-        this.m_circle.setVisible(true);
+            this.m_entity.setVisible(false);
+            this.m_circle.setVisible(true);
 
-        this.m_flag = 1;
+            this.m_flag = 1;
 
 
-        this.setThisVisible(true);
+            this.setThisVisible(true);
 
-        this.m_initDegree = this.getDegree(evt.raypv, evt.raytv);
+            this.m_initDegree = this.getDegree(evt.raypv, evt.raytv);
 
-        console.log("this.m_initDegree: ",this.m_initDegree);
+            console.log("this.m_initDegree: ", this.m_initDegree);
 
-        this.m_ring.setVisible(true);
-        this.m_ring.setRingRotation(this.m_initDegree);
-        this.m_ring.setProgress(0.0);
+            this.m_ring.setVisible(true);
+            this.m_ring.setRingRotation(this.m_initDegree);
+            this.m_ring.setProgress(0.0);
 
-        this.m_preRotV.setXYZ(0, 0, 0);
-        if (this.m_target != null) {
-            this.m_target.getRotationXYZ(this.m_preRotV);
+            this.m_preRotV.setXYZ(0, 0, 0);
+            if (this.m_target != null) {
+                this.m_target.getRotationXYZ(this.m_preRotV);
+            }
         }
     }
     private m_axisEntity: ITransformEntity = null;
@@ -385,7 +398,7 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
         let degree = 0;
         if (this.m_flag > -1) {
             let u = CoAGeom.PlaneUtils;
-            this.getPosition( this.m_outV );
+            this.getPosition(this.m_outV);
             let pids = this.m_planeNV.dot(this.m_outV);
             let hitFlag = u.IntersectRayLinePos2(this.m_planeNV, pids, rpv, rtv, this.m_outV);
 

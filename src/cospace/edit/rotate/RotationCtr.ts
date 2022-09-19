@@ -5,9 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { IRayControl } from "../base/IRayControl";
-import { IRenderCamera } from "../../../vox/render/IRenderCamera";
-import IVector3D from "../../../vox/math/IVector3D";
+import {UserEditCtr} from "../base/UserEditCtr";
+
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 declare var CoMaterial: ICoMaterial;
 
@@ -15,33 +14,19 @@ declare var CoMaterial: ICoMaterial;
 /**
  * 旋转编辑控制
  */
-class RotationCtr {
+class RotationCtr extends UserEditCtr {
     private static s_list: RotationCtr[] = [];
 
-    uuid = "RotationCircle";
-    moveSelfEnabled = true;
+    // uuid = "RotationCircle";
+    // moveSelfEnabled = true;
     outColor = CoMaterial.createColor4(0.9, 0.9, 0.9, 1.0);
     overColor = CoMaterial.createColor4(1.0, 1.0, 1.0, 1.0);
     pickTestRadius = 20;
-    constructor(){        
+    constructor(){
+        super();
         RotationCtr.s_list.push(this);
     }
-    // run(camera: IRenderCamera, rtv: IVector3D): void;
-    isSelected(): boolean {
-        return false;
-    }
-    select(): void {
-
-    }
-    deselect(): void {
-
-    }
-    setVisible(visible: boolean): void {
-
-    }
-    getVisible(): boolean {
-        return false;
-    }
+    
     /**
      * 设置所有旋转控制器对象可见性
      * @param v true 表示可见, false表示隐藏

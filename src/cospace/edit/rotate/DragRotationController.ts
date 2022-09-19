@@ -39,9 +39,12 @@ class DragRotationController implements IDragRotationController {
     private m_controllers: IRotationCtr[] = [];
     private m_pos0 = CoMath.createVec3();
     private m_pos1 = CoMath.createVec3();
+
     private m_rpv = CoMath.createVec3();
     private m_rtv = CoMath.createVec3();
+
     private m_tempPos = CoMath.createVec3();
+
     private m_visible = true;
     private m_enabled = true;
     private m_posX = 0;
@@ -83,7 +86,7 @@ class DragRotationController implements IDragRotationController {
         circle.outColor.copyFrom(color);
         circle.overColor.copyFrom(color);
         circle.overColor.scaleBy(1.5);
-        circle.initialize(this.m_editRS, this.m_editRSPI, radius, segsTotal, type);
+        circle.initialize(this.m_editRS, this.m_editRSPI + 1, radius, segsTotal, type);
         circle.showOutColor();
 
         circle.setTarget(this.m_target);
@@ -94,10 +97,14 @@ class DragRotationController implements IDragRotationController {
         
         return circle;
     }
+
     private init(): void {
 
         // 粉色 240,55,80, 绿色 135 205 55,  蓝色:  80, 145, 240
         let n = Math.floor(this.radius / 2.0);
+        if(n < 30) {
+            n = 30;
+        }
         // xoz
         let color = CoMaterial.createColor4();
         
@@ -130,11 +137,24 @@ class DragRotationController implements IDragRotationController {
     }
     private dragMouseDownListener(evt: any): void {
         this.m_editRS.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener, true, true);
-        // this.setVisible(this.runningVisible);
     }
     private dragMouseUpListener(evt: any): void {
         this.m_editRS.removeEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener);
-        // this.setVisible(true);
+    }
+    enable(): void {
+        this.m_enabled = true;
+        for (let i = 0; i < this.m_controllers.length; ++i) {
+            this.m_controllers[i].enable();
+        }
+    }
+    disable(): void {
+        this.m_enabled = false;
+        for (let i = 0; i < this.m_controllers.length; ++i) {
+            this.m_controllers[i].disable();
+        }
+    }
+    isEnabled(): boolean {
+        return this.m_enabled;
     }
     run(): void {
 
@@ -209,6 +229,11 @@ class DragRotationController implements IDragRotationController {
         }
         this.setVisible(true);
     }
+    
+    getTargets(): IEntityTransform[] {
+        return this.m_target.getTargets();
+    }
+
     setVisible(visible: boolean): void {
 
         this.m_visible = visible;
@@ -231,7 +256,7 @@ class DragRotationController implements IDragRotationController {
         this.m_target.update();
     }
     getPosition(pv: IVector3D): void {
-        this.m_target.getPosition(pv);
+        this.m_controllers[0].getPosition(pv);
     }
     setRotation3(r: IVector3D): void {
         this.m_target.setRotation3(r);

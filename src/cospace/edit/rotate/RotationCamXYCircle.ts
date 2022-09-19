@@ -33,6 +33,7 @@ import { RotationRing } from "./RotationRing";
 import { SphereRayTester } from "../base/SphereRayTester";
 import { IBillboardBase } from "../../particle/entity/IBillboardBase";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
+import IRenderStage3D from "../../../vox/render/IRenderStage3D";
 
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
@@ -51,10 +52,6 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
     private m_dispatcher: IEvtDispatcher;
     private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
-    private m_cv = CoMath.createVec3();
-    private m_planeNV = CoMath.createVec3();
-    private m_outV = CoMath.createVec3();
-    // private m_preRotV = CoMath.createVec3();
     private m_rotV = CoMath.createVec3();
 
     private m_scaleV = CoMath.createVec3();
@@ -63,15 +60,14 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
     private m_dstDV = CoMath.createVec3();
     private m_camPos = CoMath.createVec3();
     private m_mat0 = CoMath.createMat4();
+    private m_stage: IRenderStage3D = null;
+    private m_stagePos = CoMath.createVec3();
 
-    private m_circle: IBillboardBase = null;
-    private m_initDegree = 0;
-    private m_planeDis = 0;
-    private m_material: IColorMaterial = null;
+    // private m_circle: IBillboardBase = null;
+    private m_circle: ITransformEntity = null;
     private m_flag = -1;
     private m_editRS: IRendererScene = null;
     private m_editRSPI: number = 0;
-
 
     constructor() {
         super();
@@ -89,9 +85,10 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
 
             this.m_editRS = rs;
             this.m_editRSPI = rspi;
+            this.m_stage = rs.getStage3D();
 
             let bounds = CoEntity.createBoundsEntity();
-            
+
             let minV = CoMath.createVec3(radius, radius, radius).scaleBy(-1.0);
             let maxV = CoMath.createVec3(radius, radius, radius);
             bounds.setBounds(minV, maxV);
@@ -99,53 +96,86 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
             this.initializeEvent(bounds);
             this.m_entity = bounds;
 
+            /*
             let par = CoParticle.createBillboard();
             par.initializeSquare(radius, [this.createTexByUrl("static/assets/circle01.png")]);
             rs.addEntity(par.entity, rspi + 1);
             let RST = CoRScene.RendererState;
             par.entity.setRenderState(RST.NONE_TRANSPARENT_ALWAYS_STATE);
             this.m_circle = par;
+            //*/
+            ///*
+            let n = Math.floor(radius / 2.0);
+            if (n < 30) {
+                n = 30;
+            }
+            let RST = CoRScene.RendererState;
+            let cirMat = CoMath.createMat4();
+            cirMat.setRotationEulerAngle(Math.PI * 0.5, 0.0, Math.PI * 0.5);
+            let plb = CoMesh.plane;;
+            plb.transMatrix = cirMat;
+            let cirPlMaterial = CoMaterial.createDefaultMaterial(false);
+            cirPlMaterial.initializeByCodeBuf(false);
+
+            plb.setBufSortFormat(cirPlMaterial.getBufSortFormat());
+            let cirPlaneMesh = plb.createCircle(radius, n);
+
+            let cirEntity = CoEntity.createDisplayEntity();
+            cirEntity.setMaterial(cirPlMaterial);
+            cirEntity.setMesh(cirPlaneMesh);
+            // cirEntity.setRenderState(RST.NONE_CULLFACE_NORMAL_STATE);
+            cirEntity.setRenderState(RST.NONE_TRANSPARENT_ALWAYS_STATE);
+            rs.addEntity(cirEntity, rspi);
+            this.m_circle = cirEntity;
+            //*/
 
             this.initializeEvent(bounds);
-
             rs.addEntity(this.m_entity, rspi);
         }
     }
-    
-	private createTexByUrl(url: string = ""): IRenderTexture {
-		let tex = this.m_editRS.textureBlock.createImageTex2D(64, 64, false);
-		let img = new Image();
-		img.onload = (evt: any): void => {
-			tex.setDataFromImage(img, 0, 0, 0, false);
-		};
-		img.src = url != "" ? url : "static/assets/box.jpg";
-		return tex;
-	}
+
+    // private createTexByUrl(url: string = ""): IRenderTexture {
+    //     let tex = this.m_editRS.textureBlock.createImageTex2D(64, 64, false);
+    //     let img = new Image();
+    //     img.onload = (evt: any): void => {
+    //         tex.setDataFromImage(img, 0, 0, 0, false);
+    //     };
+    //     img.src = url != "" ? url : "static/assets/box.jpg";
+    //     return tex;
+    // }
+    enable(): void {
+        super.enable();
+        this.m_entity.mouseEnabled = true;
+    }
+    disable(): void {
+        super.disable();
+        this.m_entity.mouseEnabled = false;
+    }
     run(camera: IRenderCamera, rtv: IVector3D): void {
 
         // // 圆面朝向摄像机
-        // const sv = this.m_scaleV;
-        // let et = this.m_entity;
-        // et.getPosition(this.m_posV);
-        // // et.getScaleXYZ(sv);
-        // // et.update();
-        // this.m_camPos.copyFrom(camera.getPosition());
-        // this.m_srcDV.setXYZ(1, 0, 0);
-        // this.m_dstDV.subVecsTo(this.m_camPos, this.m_posV);
+        const sv = this.m_scaleV;
+        let et = this.m_circle;
+        et.getPosition(this.m_posV);
+        // et.getScaleXYZ(sv);
+        // et.update();
+        this.m_camPos.copyFrom(camera.getPosition());
+        this.m_srcDV.setXYZ(1, 0, 0);
+        this.m_dstDV.subVecsTo(this.m_camPos, this.m_posV);
 
-        // let rad = CoMath.Vector3D.RadianBetween(this.m_srcDV, this.m_dstDV);
-        // let axis = this.m_rotV;
-        // CoMath.Vector3D.Cross(this.m_srcDV, this.m_dstDV, axis);
-        // axis.normalize();
+        let rad = CoMath.Vector3D.RadianBetween(this.m_srcDV, this.m_dstDV);
+        let axis = this.m_rotV;
+        CoMath.Vector3D.Cross(this.m_srcDV, this.m_dstDV, axis);
+        axis.normalize();
 
-        // let mat = et.getTransform().getMatrix();
-        // mat.identity();
-        // // mat.setScaleXYZ(sv.x, sv.y, sv.z);
-        // mat.appendRotation(rad, axis);
-        // mat.appendTranslation(this.m_posV);
+        let mat = et.getTransform().getMatrix();
+        mat.identity();
+        // mat.setScaleXYZ(sv.x, sv.y, sv.z);
+        mat.appendRotation(rad, axis);
+        mat.appendTranslation(this.m_posV);
 
-        // let rv = mat.decompose(CoMath.OrientationType.EULER_ANGLES)[1];
-        // et.setRotation3(rv.scaleBy(CoMath.MathConst.MATH_180_OVER_PI));
+        let rv = mat.decompose(CoMath.OrientationType.EULER_ANGLES)[1];
+        et.setRotation3(rv.scaleBy(CoMath.MathConst.MATH_180_OVER_PI));
 
         // et.update();
     }
@@ -174,7 +204,7 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
         this.m_entity.setScaleXYZ(sx, sy, sz);
-        this.m_circle.setScaleXY(sx, sy);
+        this.m_circle.setScaleXYZ(sx, sy, sz);
     }
 
     getScaleXYZ(pv: IVector3D): void {
@@ -219,7 +249,7 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
             dispatcher.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
             this.m_dispatcher = dispatcher;
         }
-        entity.setEvtDispatcher( this.m_dispatcher );
+        entity.setEvtDispatcher(this.m_dispatcher);
         entity.mouseEnabled = true;
     }
     protected mouseOverListener(evt: any): void {
@@ -231,15 +261,16 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
         this.showOutColor();
     }
     showOverColor(): void {
-        const c = this.overColor;
-        this.m_circle.setRGBA4f(c.r,c.g,c.b, 0.2);
-        // (this.m_circle.entity.getMaterial() as IColorMaterial).setColor(this.overColor);
+        // const c = this.overColor;
+        // this.m_circle.setRGBA4f(c.r, c.g, c.b, 0.2);
+        this.overColor.a = 0.1;
+        (this.m_circle.getMaterial() as IColorMaterial).setColor(this.overColor);
     }
     showOutColor(): void {
-        
-        const c = this.outColor;
-        this.m_circle.setRGBA4f(c.r,c.g,c.b, 0.4);
-        // (this.m_circle.entity.getMaterial() as IColorMaterial).setColor(this.outColor);
+        // const c = this.outColor;
+        // this.m_circle.setRGBA4f(c.r, c.g, c.b, 0.1);
+        this.outColor.a = 0.05;
+        (this.m_circle.getMaterial() as IColorMaterial).setColor(this.outColor);
     }
     isSelected(): boolean {
         return this.m_flag > -1;
@@ -264,13 +295,12 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
             this.m_entity = null;
         }
         this.m_editRS = null;
+        this.m_stage = null;
+        this.m_mat0 = null;
         if (this.m_dispatcher != null) {
             this.m_dispatcher.destroy();
             this.m_dispatcher = null;
         }
-
-        this.m_cv = null;
-        this.m_planeNV = null;
     }
     setPosition(pos: IVector3D): void {
         this.m_entity.setPosition(pos);
@@ -285,76 +315,52 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
     }
 
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
-        if (this.m_flag > -1) {
-            // console.log("RotationCamXYCircle::moveByRay() ...");
-            // console.log("           this.m_initDegree: ", this.m_initDegree);
-            let degree = this.getDegree(rpv, rtv);
-            // console.log("           moveByRay degree: ", degree);
-            degree -= this.m_initDegree;
-            if (degree > 360) degree -= 360.0;
-            else if (degree < 0) degree += 360.0;
+        if (this.isEnabled()) {
+            if (this.m_flag > -1) {
+                let et = this.m_target;
+                if (et != null) {
 
+                    const f = 0.02;
+                    let cam = this.m_editRS.getCamera();
+                    let uv = cam.getUV();
+                    let rv = cam.getRV();
+    
+                    let pv = this.m_stagePos;
+                    let st = this.m_stage;
+                    let mat = this.m_mat0;
+    
+                    let dx = st.mouseX - pv.x;
+                    let dy = pv.y - st.mouseY;
+                    let rotv = this.m_rotV;
+    
+                    mat.identity();
+                    mat.appendRotation(dx * f, uv);
+                    mat.appendRotation(dy * f, rv);
+
+                    // et.getRotationXYZ(rotv);
+                    rotv = mat.decompose(CoMath.OrientationType.EULER_ANGLES)[1];
+                    et.setRotation3(rotv.scaleBy(CoMath.MathConst.MATH_180_OVER_PI));
+                    et.update();
+                }
+
+            }
         }
     }
     private m_axisEntity: ITransformEntity = null;
     mouseDownListener(evt: any): void {
+
         console.log("RotationCamXYCircle::mouseDownListener() ..., evt: ", evt);
+        if (this.isEnabled()) {
 
-        this.m_target.select();
+            this.m_target.select();
+            this.m_flag = 1;
 
-        // this.m_entity.setVisible(false);
-
-        this.m_flag = 1;
-
-        this.setThisVisible(true);
-        this.m_initDegree = this.getDegree(evt.raypv, evt.raytv);
-
-    }
-
-    public getDegree(rpv: IVector3D, rtv: IVector3D): number {
-        let degree = 0;
-        if (this.m_flag > -1) {
-            let u = CoAGeom.PlaneUtils;
-            let pnv = this.m_srcDV.copyFrom(rtv).scaleBy(-1.0);
-            let pos = this.m_posV;
-            this.m_entity.getPosition(pos);
-            let hitFlag = u.IntersectRayLinePos2(pnv, pos.dot(pnv), rpv, rtv, this.m_outV);
-
+            this.setThisVisible(true);
             
-            // if(this.m_axisEntity == null) {
-            //     this.m_axisEntity = CoEntity.createCrossAxis3DEntity(20);
-            //     this.m_editRS.addEntity(this.m_axisEntity, 1);
-            // }
-            // this.m_axisEntity.setPosition(this.m_outV);
-            // this.m_axisEntity.update();
-
-            let v = this.m_outV;
-            this.m_entity.globalToLocal(v);
-            if (hitFlag) {
-
-                hitFlag = u.Intersection == CoAGeom.Intersection.Hit;
-                let V3 = CoMath.Vector3D;
-                if (hitFlag && V3.Distance(v, this.m_cv) > 2.0) {
-                    v.subtractBy(this.m_cv);
-
-                    let et = this.m_target;
-                    if (et != null) {
-                        // YOZ, X-Axis
-                        degree = CoMath.MathConst.GetDegreeByXY(v.y, v.z);
-                        if (degree > 360) degree -= 360.0;
-                        else if (degree < 0) degree += 360.0;
-
-                        // console.log("RotationCamXYCircle::getDegree() ..., ###   A degree: ", degree);
-                        // degree += 360.0;
-                        // console.log("RotationCamXYCircle::getDegree() ...,       B degree: ", degree);
-                        // if (degree > 360) degree -= 360.0;
-                        // console.log("RotationCamXYCircle::getDegree() ...,       C degree: ", degree);
-                        // console.log("RotationCamXYCircle::getDegree() ..., degree: ", degree);
-                    }
-                }
-            }
+            let st = this.m_stage;
+            this.m_stagePos.setXYZ(st.mouseX, st.mouseY, 0.0);
         }
-        return degree;
+
     }
 }
 
