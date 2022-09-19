@@ -36,17 +36,20 @@ class CircleRayTester implements ITestRay {
     }
     testRay(rlpv: IVector3D, rltv: IVector3D, outV: IVector3D, boundsHit: boolean): number {
 
-        let u = CoAGeom.PlaneUtils;
-        this.isHit = u.IntersectRayLinePos2(this.m_planeNV, this.m_planeDis, rlpv, rltv, this.m_outV0);
+        const rv = this.m_outV0;
+        const u = CoAGeom.PlaneUtils;
+        this.isHit = u.IntersectRayLinePos2(this.m_planeNV, this.m_planeDis, rlpv, rltv, rv);
         if(this.isHit) {
             this.isHit = u.Intersection == CoAGeom.Intersection.Hit;
             if(this.isHit) {
-                let dis = CoMath.Vector3D.Distance(this.m_outV0, this.m_center);
+                let dis = CoMath.Vector3D.Distance(rv, this.m_center);
                 this.isHit = Math.abs(dis - this.m_radius) < this.m_rayTestRadius;
+                // console.log("value: ", dis - this.m_radius, this.m_rayTestRadius, this.isHit);
                 // console.log("hit the plane, its nv: ", this.m_planeNV, this.isHit);
+                // 应该是计算 和 圆弧 形状的 管道 体 相交测试，上面的计算是错误的不准确的
                 if( this.isHit ) {
-                    if(this.m_direcV == null || this.m_direcV.dot(this.m_outV0) > 0) {
-                        outV.copyFrom(this.m_outV0);
+                    if(this.m_direcV == null || this.m_direcV.dot(rv) > 0) {
+                        outV.copyFrom(rv);
                         return 1;
                     }
                     // console.log("hit the plane circle, its nv: ", this.m_planeNV, ", this.m_radius: ", this.m_radius);

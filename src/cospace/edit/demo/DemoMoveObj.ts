@@ -206,6 +206,15 @@ export class DemoMoveObj {
 	}
 	private mouseBgDownListener(evt: any): void {
 		console.log("DemoMoveObj::mouseBgDownListener() ...");
+		if (this.m_movedCtr != null) {
+			this.m_movedCtr.decontrol();
+		}
+		if (this.m_scaleCtr != null) {
+			this.m_scaleCtr.decontrol();
+		}
+		if (this.m_rotatedCtr != null) {
+			this.m_rotatedCtr.decontrol();
+		}
 		this.setCtlVisible(false);
 	}
 	private setCtlVisible(v: boolean): void {

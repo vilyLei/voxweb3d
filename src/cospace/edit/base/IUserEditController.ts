@@ -1,6 +1,5 @@
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
-import { IRayControl } from "./IRayControl";
 
 interface IUserEditController extends IEntityTransform {
 
@@ -13,13 +12,19 @@ interface IUserEditController extends IEntityTransform {
      * @param processid this destination renderer process id in the editRendererScene, its default value is 0
      */
     initialize(rc: IRendererScene, processid?: number): void;
-   
+    
+    enable(): void;
+    disable(): void;
+    isEnabled(): boolean;
     run(): void;
     isSelected(): boolean;
     select(targets: IEntityTransform[]): void;
+    getTargets(): IEntityTransform[];
     deselect(): void;
     setVisible(visible: boolean): void;
     getVisible(): boolean;
+    
+    decontrol(): void;
 
 }
 
