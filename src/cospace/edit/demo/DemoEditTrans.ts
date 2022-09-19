@@ -21,6 +21,8 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 import { IRendererSceneAccessor } from "../../../vox/scene/IRendererSceneAccessor";
 import RendererSceneGraph from "../../../vox/scene/RendererSceneGraph";
 import { TransformController } from "../transform/TransformController";
+import { IButton } from "../../voxui/entity/IButton";
+import { IClipLabel } from "../../voxui/entity/IClipLabel";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -99,6 +101,7 @@ export class DemoEditTrans {
 					new ModuleLoader(6, (): void => {
 						console.log("ageom module loaded ...");
 						this.createEditEntity();
+						this.initUI();
 					}).load(url3).load(url4).load(url6).load(url7).load(url9).load(url10);
 
 				}).load(url2).load(url5).load(url8);
@@ -119,24 +122,107 @@ export class DemoEditTrans {
 
 	private createEditEntity(): void {
 
-		let rsc = this.m_editRScene;
+		let editsc = this.m_editRScene;
 
+		this.m_transCtr = new TransformController();
+		this.m_transCtr.initialize(editsc);
+	}
+	private initUI(): void {
 
 		this.m_coUIScene = CoUI.createUIScene();
 		this.m_coUIScene.initialize();
 		this.m_uiRScene = this.m_coUIScene.rscene;
 		this.m_graph.addScene(this.m_uiRScene);
 
-
+		let uiScene = this.m_coUIScene;
+		/*
 		let clipColorLabel = CoUI.createClipColorLabel();
 		clipColorLabel.initializeWithoutTex(50, 32, 4);
 		clipColorLabel.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
 		clipColorLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
 		clipColorLabel.getColorAt(2).setRGB3f(1.0, 0.2, 1.0);
-		this.m_coUIScene.addEntity(clipColorLabel);
+		// this.m_coUIScene.addEntity(clipColorLabel);
+		let btn01 = CoUI.createButton();
+		btn01.initializeWithLable(clipColorLabel);
+		uiScene.addEntity(btn01);
+		//*/
 
-		this.m_transCtr = new TransformController();
-		this.m_transCtr.initialize(rsc);
+		///*
+
+		let texAtlas = uiScene.texAtlas;
+
+		let urls: string[] = ["框选", "移动", "缩放", "旋转"];
+		let img = texAtlas.createCharsCanvasFixSize(90, 40, urls[0], 30);
+		texAtlas.addImageToAtlas(urls[0], img);
+		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[1], 30);
+		texAtlas.addImageToAtlas(urls[1], img);
+		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[2], 30);
+		texAtlas.addImageToAtlas(urls[2], img);
+		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[3], 30);
+		texAtlas.addImageToAtlas(urls[3], img);
+		console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 0");
+
+		///*
+		let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
+		btnUrls = urls;
+		// let btn = CoUI.createButton(); //new Button();
+		// btn.initialize(texAtlas, btnUrls);
+		// // btn.initializeWithLable(lable01);
+		// this.m_uisc.addEntity(btn);
+
+		let csLable = CoUI.createClipLabel();
+		csLable.initialize(texAtlas, urls);
+
+		let px: number = 10;
+		let py: number = 300;
+		let selectBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 0, 0, "select");
+
+		let moveBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 1, 1, "move");
+		let scaleBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 2, 2, "scale");
+		let rotateBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 3, 3, "rotate");
+		//*/
+
+	}
+	private crateBtn(urls: string[], px: number, py: number, labelIndex: number, idns: string): IButton {
+
+
+		let texAtlas = this.m_coUIScene.texAtlas;
+		let label = CoUI.createClipLabel();
+		label.initialize(texAtlas, urls);
+		let colorClipLabel = CoUI.createColorClipLabel();
+		colorClipLabel.initialize(label, 4);
+		colorClipLabel.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
+		colorClipLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
+		colorClipLabel.getColorAt(2).setRGB3f(1.0, 0.2, 1.0);
+		colorClipLabel.setLabelClipIndex(labelIndex);
+		// colorClipLabel.setXY(200,0);
+		// colorClipLabel.setClipIndex(2);
+		// this.m_uisc.addEntity(colorClipLabel);
+
+		let btn = CoUI.createButton();
+		btn.uuid = idns;
+		btn.initializeWithLable(colorClipLabel);
+		btn.setXY(px, py);
+		this.m_coUIScene.addEntity(btn);
+		btn.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.btnMouseUpListener);
+		return btn;
+	}
+	private btnMouseUpListener(evt: any): void {
+		console.log("btnMouseUpListener(), evt: ", evt);
+		let uuid = evt.uuid;
+		switch (uuid) {
+			case "move":
+				break;
+
+			case "scale":
+				break;
+
+			case "rotate":
+				break;
+
+			default:
+				break;
+		}
 	}
 	private m_selectFlag: boolean = false;
 	private mouseUpListener(evt: any): void {

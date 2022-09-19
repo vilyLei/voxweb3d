@@ -21,7 +21,7 @@ class Button implements IButton {
 
 	private m_dp: IEvtDispatcher;
 	private m_lb: IClipEntity = null;
-
+	uuid = "btn";
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void {
 
 		if (this.m_lb == null && atlas != null && idnsList != null) {
@@ -53,6 +53,8 @@ class Button implements IButton {
 		if (this.m_dp == null) {
 			const me = CoRScene.MouseEvent;
 			let dpc = CoRScene.createMouseEvt3DDispatcher();
+			// dpc.data = this.uuid;
+			dpc.uuid = this.uuid;
 			dpc.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
 			dpc.addEventListener(me.MOUSE_UP, this, this.mouseUpListener);
 			dpc.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
