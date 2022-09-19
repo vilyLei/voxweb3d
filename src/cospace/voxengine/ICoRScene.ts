@@ -113,6 +113,20 @@ interface CoShaderCodeUUID {
 	PBR: string;
 }
 
+
+interface CoTextureConst {
+    readonly WRAP_REPEAT: number;// = 3001;
+    readonly WRAP_CLAMP_TO_EDGE: number;// = 3002;
+    readonly WRAP_MIRRORED_REPEAT: number;// = 3003;
+    readonly NEAREST: number;// = 4001;
+    readonly LINEAR: number;// = 4002;
+    readonly LINEAR_MIPMAP_LINEAR: number;// = 4003;
+    readonly NEAREST_MIPMAP_NEAREST: number;// = 4004;
+    readonly LINEAR_MIPMAP_NEAREST: number;// = 4005;
+    readonly NEAREST_MIPMAP_LINEAR: number;// = 4006;
+    GetConst(gl: any, param: number): number;
+}
+
 interface CoMaterialContextParam {
 
 	pointLightsTotal: number;
@@ -165,6 +179,7 @@ interface ICoRScene {
 	RendererState: CoRendererState;
 	RenderDrawMode: CoRenderDrawMode;
 	VtxBufConst: CoVtxBufConst;
+	TextureConst: CoTextureConst;
 
 	Vector3D: CoVec3;
 	MouseEvent: CoMouseEvent;

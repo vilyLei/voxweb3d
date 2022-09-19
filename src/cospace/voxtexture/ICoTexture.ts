@@ -41,7 +41,7 @@ interface ICoTexture {
 		canvasHeight: number,
 		fillColor: IColor4,
 		transparent?: boolean,
-		debugEnabled?: boolean
+		nearestFilter?: boolean
 	): IImageTexAtlas;
 }
 export { ICoTexture };

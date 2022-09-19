@@ -9,6 +9,9 @@ import TextureConst from "../../../vox/texture/TextureConst";
 import { IBytesTexture } from "../../../vox/render/texture/IBytesTexture";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 
+import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
+declare var CoRScene: ICoRScene;
+
 class FontTexCharGrid {
 	constructor() {}
 	width: number = 4;
@@ -306,8 +309,8 @@ export default class H5Text {
 
 			this.m_tex.toAlphaFormat();
 			this.m_tex.mipmapEnabled = mipmapEnabled;
-			this.m_tex.minFilter = TextureConst.LINEAR;
-			this.m_tex.magFilter = TextureConst.NEAREST;
+			this.m_tex.minFilter = CoRScene.TextureConst.LINEAR;
+			this.m_tex.magFilter = CoRScene.TextureConst.NEAREST;
 
 			this.createInitTexAndChars();
 		}

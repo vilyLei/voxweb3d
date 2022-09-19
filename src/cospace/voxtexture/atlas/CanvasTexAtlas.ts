@@ -40,14 +40,14 @@ export class CanvasTexAtlas implements ICanvasTexAtlas {
 	private m_atlasList: ImageTexAtlas[] = [null, null, null, null];
 	private m_objMap: Map<string, CanvasTexObject> = new Map();
 	constructor() {}
-	initialize(sc: IRendererScene, canvasWidth: number, canvasHeight: number, fillColor: IColor4 = null, transparent: boolean = false): void {
+	initialize(sc: IRendererScene, canvasWidth: number, canvasHeight: number, fillColor: IColor4 = null, transparent: boolean = false, nearestFilter: boolean = false): void {
 		this.m_sc = sc;
 		let atlas: ImageTexAtlas = null;
 		if (fillColor == null) {
 			fillColor = transparent ? CoMaterial.createColor4(1.0, 1.0, 1.0, 0.0) : CoMaterial.createColor4();
 		}
 		if (this.m_atlasList[0] == null) {
-			atlas = new ImageTexAtlas(this.m_sc, canvasWidth, canvasHeight, fillColor, transparent);
+			atlas = new ImageTexAtlas(this.m_sc, canvasWidth, canvasHeight, fillColor, transparent, nearestFilter);
 			this.m_atlasList[0] = atlas;
 		}
 	}

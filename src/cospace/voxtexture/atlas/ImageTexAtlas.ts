@@ -26,7 +26,7 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 		canvasHeight: number,
 		fillColor: IColor4,
 		transparent: boolean = false,
-		debugEnabled: boolean = false
+		nearestFilter: boolean = false
 	) {
 		super(canvasWidth, canvasHeight);
 		let canvas = document.createElement("canvas");
@@ -57,6 +57,10 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 		this.m_texture.__$setRenderProxy(this.m_rscene.getRenderProxy());
 		this.m_texture.setDataFromImage(this.m_canvas, 0, 0, 0, false);
 		this.m_texture.premultiplyAlpha = true;
+		if(nearestFilter) {
+			this.m_texture.minFilter = CoRScene.TextureConst.LINEAR;
+			this.m_texture.magFilter = CoRScene.TextureConst.NEAREST;
+		}
 		this.m_texture.__$attachThis();
 	}
 	clone(): ImageTexAtlas {

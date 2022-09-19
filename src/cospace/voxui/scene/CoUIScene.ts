@@ -18,6 +18,7 @@ class CoUIScene implements ICoUIScene {
 	private m_crscene: ICoRendererScene;
 	private m_rstage: IRenderStage3D;
 	readonly rscene: IRendererScene;
+	texAtlasNearestFilter: boolean = false;
 	readonly texAtlas: ICanvasTexAtlas = null;
 	constructor() {
 	}
@@ -42,7 +43,7 @@ class CoUIScene implements ICoUIScene {
 			let t: any = this;
 			t.rscene = subScene;
 			t.texAtlas = CoTexture.createCanvasTexAtlas();
-			this.texAtlas.initialize(crscene, 1024, 1024, CoMaterial.createColor4(1.0,1.0,1.0,0.0), true);
+			this.texAtlas.initialize(crscene, 1024, 1024, CoMaterial.createColor4(1.0,1.0,1.0,0.0), true, this.texAtlasNearestFilter);
 
 			this.m_rstage = stage;
 			let uicamera = this.rscene.getCamera();

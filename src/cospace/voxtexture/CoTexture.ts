@@ -12,8 +12,8 @@ declare var CoRScene: ICoRScene;
 function createCanvasTexAtlas(): ICanvasTexAtlas {
 	return new CanvasTexAtlas();
 }
-function createImageTexAtlas(rscene: IRendererScene, canvasWidth: number, canvasHeight: number, fillColor: IColor4, transparent: boolean = false, debugEnabled: boolean = false): IImageTexAtlas {
-	return new ImageTexAtlas(rscene, canvasWidth, canvasHeight, fillColor, transparent, debugEnabled);
+function createImageTexAtlas(rscene: IRendererScene, canvasWidth: number, canvasHeight: number, fillColor: IColor4, transparent: boolean = false, nearestFilter: boolean = false): IImageTexAtlas {
+	return new ImageTexAtlas(rscene, canvasWidth, canvasHeight, fillColor, transparent, nearestFilter);
 }
 export {
 	ImageTexAtlas,
