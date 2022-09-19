@@ -14,8 +14,8 @@ interface IPlaneMeshBuilder extends IMeshBuilder {
 
 	normalEnabled: boolean;
 	flipVerticalUV: boolean;
-
-	// create
+	
+	createCircle(radius: number, segsTotal: number, beginRad?: number, rangeRad?: number): IRawMesh;
 	/**
 	 * initialize a rectangle fix screen size plane ,and it parallel the 3d space XOY plane
 	 * @param texList textures list, default value is null.

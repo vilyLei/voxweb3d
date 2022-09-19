@@ -6,6 +6,7 @@ import { MeshBuilder } from "./MeshBuilder";
 // import ITransformEntity from "../../../vox/entity/ITransformEntity";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
+import IMatrix4 from "../../../vox/math/IMatrix4";
 declare var CoRScene: ICoRScene;
 
 class PlaneGeometry {
@@ -153,19 +154,85 @@ class PlaneMeshBuilder extends MeshBuilder implements IPlaneMeshBuilder {
 
 	uvs: Float32Array = null;
 
-	offsetU: number = 0.0;
-	offsetV: number = 0.0;
-	uScale: number = 1.0;
-	vScale: number = 1.0;
-	flipVerticalUV: boolean = false;
-	normalEnabled: boolean = false;
+	offsetU = 0.0;
+	offsetV = 0.0;
+	uScale = 1.0;
+	vScale = 1.0;
+	flipVerticalUV = false;
+	normalEnabled = false;
 
-	vbWholeDataEnabled: boolean = false;
-	wireframe: boolean = false;
+	vbWholeDataEnabled = false;
+	wireframe = false;
 	polyhedral = true;
 
 
 	constructor() { super(); }
+
+	createCircle(radius: number, segsTotal: number, beginRad: number = 0.0, rangeRad: number = 0.0): IRawMesh {
+		
+		if (radius < 0.001) radius = 0.001;
+        if (segsTotal < 1) segsTotal = 1;
+
+        let vs = new Float32Array((segsTotal + 1) * 3);
+		let ivs = new Uint16Array(segsTotal * 3);
+		vs[0] = 0.0;
+		vs[1] = 0.0;
+		vs[2] = 0.0;
+
+        let j = 3;
+        let rad = 0.0;
+        rangeRad = rad > 0.0 ? rangeRad : Math.PI * 2.0;
+        for (let i = 0; i < segsTotal; ++i) {
+            rad = beginRad + rangeRad * i / segsTotal;
+            vs[j] = radius * Math.cos(rad);
+            vs[j + 1] = radius * Math.sin(rad);
+            vs[j + 2] = 0.0;
+            j += 3;
+        }
+		j = 0;
+		for (let i = 2; i <= segsTotal; ++i) {
+			ivs[j++] = 0;
+			ivs[j++] = i - 1;
+			ivs[j++] = i;
+		}
+		ivs[j++] = 0;
+		ivs[j++] = segsTotal;
+		ivs[j++] = 1;
+		
+		let mesh = CoRScene.createRawMesh();
+		mesh.reset();
+        mesh.setTransformMatrix(this.transMatrix);
+        mesh.setBufSortFormat(this.m_bufSortFormat);
+		
+		mesh.addFloat32Data(vs, 3);
+		// console.log("XXXX BBBB mesh.isUVSEnabled(): ", mesh.isUVSEnabled());
+		if(mesh.isUVSEnabled()) {
+			let uvs = new Float32Array((segsTotal + 1) * 2);
+			uvs[0] = 0.5;
+			uvs[1] = 0.5;
+			j = 2;
+			for (let i = 0; i < segsTotal; ++i) {
+				rad = beginRad + rangeRad * i / segsTotal;
+				uvs[j++] = Math.cos(rad) * 0.5 + 0.5;
+				uvs[j++] = Math.sin(rad) * 0.5 + 0.5;
+			}
+			mesh.addFloat32Data(uvs, 2);
+		}
+		if(mesh.isNVSEnabled()) {
+			let nvs = new Float32Array((segsTotal + 1) * 3);
+			j = 0
+			for (let i = 0; i <= segsTotal; ++i) {
+				nvs[j++] = 0.0;
+				nvs[j++] = 0.0;
+				nvs[j++] = 1.0;
+			}
+			mesh.addFloat32Data(nvs, 3);
+		}
+		mesh.setIVS(ivs);
+		mesh.initialize();
+
+		return mesh;
+	}
 
 	/**
 	 * create a rectangle fix screen size plane ,and it parallel the 3d space XOY plane
@@ -174,6 +241,7 @@ class PlaneMeshBuilder extends MeshBuilder implements IPlaneMeshBuilder {
 	createFixScreen(): IRawMesh {
 		return this.createXOY(-1.0, -1.0, 2.0, 2.0);
 	}
+
 	/**
 	 * create a rectangle plane ,and it parallel the 3d space XOY plane
 	 * @param minX the min x axis position of the rectangle plane.
@@ -190,6 +258,7 @@ class PlaneMeshBuilder extends MeshBuilder implements IPlaneMeshBuilder {
 		this.m_flag = 0;
 		return this.createPlaneMesh();
 	}
+
 	/**
 	 * create a square plane ,and it parallel the 3d space XOY plane
 	 * @param size the width and height of the rectangle plane.

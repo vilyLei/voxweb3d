@@ -55,6 +55,7 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
         return mesh;
     }
     private useColor(posTotal: number): void {
+        this.m_colorvs = null;
         if (!this.dynColorEnabled) {
             this.m_colorvs = new Array(posTotal * 3);
             for (let i = 0; i < posTotal; ++i) this.color.toArray3(this.m_colorvs, i * 3);
@@ -62,9 +63,7 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
     }
     createLine(begin: IVector3D, end: IVector3D = null, axialRadius: number = 0.0): IRawMesh {
 
-        if (this.m_posvs == null) {
-            this.m_posvs = [0.0, 0.0, 0.0, 100.0, 0, 0];
-        }
+        this.m_posvs = [0.0, 0.0, 0.0, 100.0, 0, 0];
 
         if (begin != null) begin.toArray(this.m_posvs);
         if (end != null) end.toArray(this.m_posvs, 3);
