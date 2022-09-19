@@ -28,7 +28,7 @@ declare var CoMaterial: ICoMaterial;
 /**
  * 在三个坐标轴上拖拽移动
  */
-class DragMoveController implements IDragMoveController {
+class DragMoveController  implements IDragMoveController {
 
     private m_controllers: IRayControl[] = [];
     private m_rpv = CoMath.createVec3();
@@ -61,7 +61,7 @@ class DragMoveController implements IDragMoveController {
     runningVisible = true;
     uuid = "DragMoveController";
 
-    constructor() { }
+    constructor() {}
     /**
      * initialize the DragMoveController instance.
      * @param editRendererScene a IRendererScene instance.
@@ -101,7 +101,7 @@ class DragMoveController implements IDragMoveController {
 
         let line = new DragLine();
         line.coneScale = 0.8;
-        line.coneTransMat4 = mat4;
+        line.coneTransMat4.copyFrom(mat4);
         line.tv.copyFrom(tv);
         line.innerSphereRadius = this.circleSize * 0.5;
         line.moveSelfEnabled = true;
@@ -181,11 +181,25 @@ class DragMoveController implements IDragMoveController {
     }
     private dragMouseDownListener(evt: any): void {
         this.m_editRS.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener, true, true);
-        this.setVisible(this.runningVisible);
     }
     private dragMouseUpListener(evt: any): void {
         this.m_editRS.removeEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener);
-        this.setVisible(true);
+    }
+    
+    enable(): void {
+        this.m_enabled = true;
+        for (let i = 0; i < this.m_controllers.length; ++i) {
+            this.m_controllers[i].enable();
+        }
+    }
+    disable(): void {
+        this.m_enabled = false;
+        for (let i = 0; i < this.m_controllers.length; ++i) {
+            this.m_controllers[i].disable();
+        }
+    }
+    isEnabled(): boolean {
+        return this.m_enabled;
     }
     run(): void {
 
@@ -252,6 +266,11 @@ class DragMoveController implements IDragMoveController {
             this.m_controllers[i].deselect();
         }
     }
+
+    getTargets(): IEntityTransform[] {
+        return this.m_target.getTargets();
+    }
+
     setVisible(visible: boolean): void {
 
         this.m_visible = visible;
@@ -274,7 +293,7 @@ class DragMoveController implements IDragMoveController {
         this.m_target.update();
     }
     getPosition(pv: IVector3D): void {
-        this.m_target.getPosition(pv);
+        this.m_controllers[0].getPosition(pv);
     }
     setRotation3(r: IVector3D): void {
     }

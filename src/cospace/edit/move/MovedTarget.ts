@@ -29,13 +29,11 @@ class MovedTarget implements IMovedTarget {
             for (let i = 0; i < tars.length; ++i) {
                 tars[i].getPosition(vs[i]);
                 vs[i].subtractBy(this.m_v3);
-                console.log("select XXXXXXXXXXX this.m_v3: ", this.m_v3);
             }
         }
     }
     deselect(): void {
         this.m_tars = null;
-        console.log("deselect XXXXXXXXXXX this.m_v3: ", this.m_v3);
     }
     addCtrlEntity(engity: IEntityTransform): void {
         if (engity != null) {

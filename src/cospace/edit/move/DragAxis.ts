@@ -16,6 +16,7 @@ import IRawMesh from "../../../vox/mesh/IRawMesh";
 import { IRayControl } from "../base/IRayControl";
 import { SphereRayTester } from "../base/SphereRayTester";
 import { DashedLineRayTester } from "../base/DashedLineRayTester";
+import {UserEditCtr} from "../base/UserEditCtr";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
@@ -28,23 +29,23 @@ declare var CoAGeom: ICoAGeom;
 /**
  * 在三个坐标轴上拖动
  */
-export default class DragAxis implements IRayControl {
+export default class DragAxis extends UserEditCtr implements IRayControl {
 
     private m_targetEntity: IEntityTransform = null;
     private m_dispatcher: IEvtDispatcher;
     private m_targetPosOffset: IVector3D = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
 
-    uuid = "DragAxis";
     innerSphereRadius = 30.0;
-    moveSelfEnabled = true;
     outColor = CoRScene.createColor4(0.9, 0.9, 0.9, 1.0);
     overColor = CoRScene.createColor4(1.0, 1.0, 1.0, 1.0);
     pickTestRadius = 10;
 
     constructor() {
+        super();
     }
     initialize(size: number = 100.0, innerSize: number = 0): void {
+        
         if (this.m_entity == null) {
             // this.m_entity = CoRScene.createAxis3DEntity(size);
             let minV = CoMath.createVec3(innerSize, innerSize, innerSize);

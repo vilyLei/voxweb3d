@@ -17,6 +17,7 @@ import { IRayControl } from "../base/IRayControl";
 import { SphereRayTester } from "../base/SphereRayTester";
 import { DashedLineRayTester } from "../base/DashedLineRayTester";
 import { IMovedTarget } from "./IMovedTarget";
+import { MoveCtr } from "./MoveCtr";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
@@ -36,7 +37,7 @@ declare var CoEntity: ICoEntity;
 /**
  * 在直线上拖动
  */
-class DragLine implements IRayControl {
+class DragLine extends MoveCtr implements IRayControl {
 
     private m_target: IMovedTarget = null;
     private m_dispatcher: IEvtDispatcher;
@@ -44,18 +45,14 @@ class DragLine implements IRayControl {
     private m_entity: ITransformEntity = null;
     private m_cone: ITransformEntity = null;
 
-    uuid = "DragLine";
     innerSphereRadius = 30.0;
-    moveSelfEnabled = true;
-    pickTestRadius = 10;
 
-    outColor = CoRScene.createColor4(0.9, 0.9, 0.9, 1.0);
-    overColor = CoRScene.createColor4(1.0, 1.0, 1.0, 1.0);
-    
-    tv = CoMath.createVec3(1.0, 0.0, 0.0);
-    coneTransMat4 = CoMath.createMat4();
+    readonly tv = CoMath.createVec3(1.0, 0.0, 0.0);
+    readonly coneTransMat4 = CoMath.createMat4();
+
     coneScale = 1.0;
     constructor() {
+        super();
     }
 
     initialize(size: number = 100.0, innerSize: number = 0): void {
@@ -71,25 +68,25 @@ class DragLine implements IRayControl {
             // console.log("DragLine::initialize(), mesh.bounds: ", mesh.bounds);
             let material = CoMaterial.createLineMaterial(true);
             this.m_entity = CoEntity.createDisplayEntity();
-            this.m_entity.setMaterial( material );
-            this.m_entity.setMesh( mesh );
+            this.m_entity.setMaterial(material);
+            this.m_entity.setMesh(mesh);
 
             if (mesh != null) {
                 let lineTester = new DashedLineRayTester(mesh.getVS(), 1, r);
                 lineTester.setPrevTester(new SphereRayTester(this.innerSphereRadius));
-                mesh.setRayTester( lineTester );
+                mesh.setRayTester(lineTester);
             }
-            this.initializeEvent( this.m_entity );
+            this.initializeEvent(this.m_entity);
 
             material = CoMaterial.createDefaultMaterial();
             material.initializeByCodeBuf(false);
-            CoMesh.cone.setBufSortFormat( material.getBufSortFormat() );
+            CoMesh.cone.setBufSortFormat(material.getBufSortFormat());
             CoMesh.cone.transMatrix = this.coneTransMat4;
             mesh = CoMesh.cone.create(this.coneScale * 0.5 * r, this.coneScale * 1.5 * r, 10, 0.0);
             this.m_cone = CoEntity.createDisplayEntity();
-            this.m_cone.setMaterial( material );
-            this.m_cone.setMesh( mesh );
-            this.initializeEvent( this.m_cone );
+            this.m_cone.setMaterial(material);
+            this.m_cone.setMesh(mesh);
+            this.initializeEvent(this.m_cone);
         }
     }
     getCone(): ITransformEntity {
@@ -101,28 +98,29 @@ class DragLine implements IRayControl {
     setVisible(visible: boolean): void {
         console.log("DragLine::setVisible() ..., visible: ", visible);
         this.m_entity.setVisible(visible);
+        this.m_cone.setVisible(visible);
     }
     getVisible(): boolean {
         return this.m_entity.getVisible();
     }
     setXYZ(px: number, py: number, pz: number): void {
-        this.m_entity.setXYZ(px,py,pz);
+        this.m_entity.setXYZ(px, py, pz);
     }
     setRotation3(r: IVector3D): void {
         this.m_entity.setRotation3(r);
     }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
-        this.m_entity.setRotationXYZ(rx,ry,rz);
+        this.m_entity.setRotationXYZ(rx, ry, rz);
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
-        this.m_entity.setScaleXYZ(sx,sy,sz);
+        this.m_entity.setScaleXYZ(sx, sy, sz);
     }
-    
+
     getScaleXYZ(pv: IVector3D): void {
-        this.m_entity.getScaleXYZ( pv );
+        this.m_entity.getScaleXYZ(pv);
     }
     getRotationXYZ(pv: IVector3D): void {
-        this.m_entity.getRotationXYZ( pv );
+        this.m_entity.getRotationXYZ(pv);
     }
     getGlobalBounds(): IAABB {
         return null;
@@ -131,10 +129,10 @@ class DragLine implements IRayControl {
         return null;
     }
     localToGlobal(pv: IVector3D): void {
-        this.m_entity.localToGlobal( pv );
+        this.m_entity.localToGlobal(pv);
     }
     globalToLocal(pv: IVector3D): void {
-        this.m_entity.globalToLocal( pv );
+        this.m_entity.globalToLocal(pv);
     }
 
     addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
@@ -183,13 +181,26 @@ class DragLine implements IRayControl {
         m = this.m_cone.getMaterial() as IColorMaterial;
         m.setColor(this.outColor);
     }
+
+    enable(): void {
+        super.enable();
+        this.m_entity.mouseEnabled = true;
+        this.m_cone.mouseEnabled = true;
+    }
+    disable(): void {
+        super.disable();
+        this.m_entity.mouseEnabled = false;
+        this.m_cone.mouseEnabled = false;
+    }
     isSelected(): boolean {
         return this.m_flag > -1;
     }
     select(): void {
     }
     deselect(): void {
-        console.log("DragLine::deselect() ...");
+        if (this.m_flag > 0) {
+            this.setAllVisible(true);
+        }
         this.m_flag = -1;
     }
     destroy(): void {
@@ -242,45 +253,57 @@ class DragLine implements IRayControl {
     private m_rpv = CoMath.createVec3();
     private m_rtv = CoMath.createVec3();
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
-        if (this.m_flag > -1) {
 
-            this.m_rpv.copyFrom(rpv);
-            this.m_rtv.copyFrom(rtv);
+        if (this.isEnabled()) {
 
-            this.calcClosePos(this.m_rpv, this.m_rtv);
-            this.m_dv.copyFrom(this.m_outV);
-            this.m_dv.subtractBy(this.m_initV);
-            this.m_pos.copyFrom(this.m_initPos);
-            this.m_pos.addBy(this.m_dv);
-            if (this.moveSelfEnabled) {
-                this.setPosition(this.m_pos);
-                this.update();
+            if (this.m_flag > -1) {
+
+                this.m_rpv.copyFrom(rpv);
+                this.m_rtv.copyFrom(rtv);
+
+                this.calcClosePos(this.m_rpv, this.m_rtv);
+                this.m_dv.copyFrom(this.m_outV);
+                this.m_dv.subtractBy(this.m_initV);
+                this.m_pos.copyFrom(this.m_initPos);
+                this.m_pos.addBy(this.m_dv);
+                if (this.moveSelfEnabled) {
+                    this.setPosition(this.m_pos);
+                    this.update();
+                }
+
+                if (this.m_target != null) {
+                    // this.m_pos.addBy(this.m_targetPosOffset);
+                    this.m_target.setPosition(this.m_pos);
+                    this.m_target.update();
+                }
             }
 
-            if (this.m_target != null) {
-                // this.m_pos.addBy(this.m_targetPosOffset);
-                this.m_target.setPosition(this.m_pos);
-                this.m_target.update();
-            }
         }
     }
 
     mouseDownListener(evt: any): void {
+
         console.log("DragLine::mouseDownListener() ...");
-        this.m_target.select( this );
-        this.m_flag = 1;
-        //console.log("AxisCtrlObj::mouseDownListener(). this.m_flag: "+this.m_flag);
-        let trans = this.m_entity.getTransform();
+        if (this.isEnabled()) {
 
-        this.m_mat4.copyFrom(trans.getMatrix());
-        this.m_invMat4.copyFrom(trans.getInvMatrix());
+            this.setThisVisible(true);
+            
+            this.m_target.select(this);
 
-        this.m_rpv.copyFrom(evt.raypv);
-        this.m_rtv.copyFrom(evt.raytv);
+            this.m_flag = 1;
+            //console.log("AxisCtrlObj::mouseDownListener(). this.m_flag: "+this.m_flag);
+            let trans = this.m_entity.getTransform();
 
-        this.calcClosePos(this.m_rpv, this.m_rtv);
-        this.m_initV.copyFrom(this.m_outV);
-        this.getPosition(this.m_initPos);
+            this.m_mat4.copyFrom(trans.getMatrix());
+            this.m_invMat4.copyFrom(trans.getInvMatrix());
+
+            this.m_rpv.copyFrom(evt.raypv);
+            this.m_rtv.copyFrom(evt.raytv);
+
+            this.calcClosePos(this.m_rpv, this.m_rtv);
+            this.m_initV.copyFrom(this.m_outV);
+            this.getPosition(this.m_initPos);
+        }
 
     }
 }
