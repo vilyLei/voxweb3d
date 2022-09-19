@@ -43,7 +43,6 @@ declare var CoEdit: ICoEdit;
 
 class SceneAccessor implements IRendererSceneAccessor {
 	constructor() { }
-
 	renderBegin(rendererScene: IRendererScene): void {
 		let rproxyy = rendererScene.getRenderProxy();
 		rproxyy.clearDepth(1.0);
@@ -188,8 +187,11 @@ export class DemoMoveObj {
 		this.m_rotatedCtr.pickTestAxisRadius = 10;
 		this.m_rotatedCtr.runningVisible = true;
 		this.m_rotatedCtr.initialize(rsc, 1);
+		this.m_rotatedCtr.disable();
+		this.m_rotatedCtr.setVisible(false);
 		//*/
 	}
+	private m_selectFlag: boolean = false;
 	private mouseUpListener(evt: any): void {
 		console.log("DemoMoveObj::mouseUpListener() ...");
 		if(this.getCtlVisible()) {
@@ -206,16 +208,8 @@ export class DemoMoveObj {
 	}
 	private mouseBgDownListener(evt: any): void {
 		console.log("DemoMoveObj::mouseBgDownListener() ...");
-		if (this.m_movedCtr != null) {
-			this.m_movedCtr.decontrol();
-		}
-		if (this.m_scaleCtr != null) {
-			this.m_scaleCtr.decontrol();
-		}
-		if (this.m_rotatedCtr != null) {
-			this.m_rotatedCtr.decontrol();
-		}
 		this.setCtlVisible(false);
+		this.setCtlEnabled(false);
 	}
 	private setCtlVisible(v: boolean): void {
 		if (this.m_movedCtr != null) {
@@ -226,6 +220,21 @@ export class DemoMoveObj {
 		}
 		if (this.m_rotatedCtr != null) {
 			this.m_rotatedCtr.setVisible(v);
+		}
+	}
+	
+	private setCtlEnabled(v: boolean): void {
+		if (this.m_movedCtr != null) {
+			if(v) this.m_movedCtr.enable();
+			else this.m_movedCtr.disable();
+		}
+		if (this.m_scaleCtr != null) {
+			if(v) this.m_scaleCtr.enable();
+			else this.m_scaleCtr.disable();
+		}
+		if (this.m_rotatedCtr != null) {
+			if(v) this.m_rotatedCtr.enable();
+			else this.m_rotatedCtr.disable();
 		}
 	}
 	
@@ -388,6 +397,7 @@ export class DemoMoveObj {
 		entity.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverTargetListener);
 		entity.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutTargetListener);
 		entity.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownTargetListener);
+		entity.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpTargetListener);
 
 		this.m_entities.push(entity);
 		return entity;
@@ -400,7 +410,6 @@ export class DemoMoveObj {
 		// console.log("mouseOutTargetListener() mouse out...");
 	}
 	private mouseDownTargetListener(evt: any): void {
-
 		console.log("mouseDownTargetListener() mouse down...");
 
 		let pos = CoMath.createVec3();
@@ -408,10 +417,14 @@ export class DemoMoveObj {
 		entity.getPosition(pos);
 		let wpos = evt.wpos as IVector3D;
 		pos.subtractBy(wpos);
-		this.setCtlVisible(true);
 		this.applyMoveCtr(wpos, entity);
 		this.applyScaleCtr(wpos, entity);
 		this.applyRotatedCtr(wpos, entity);
+	}
+	private mouseUpTargetListener(evt: any): void {
+		console.log("mouseUpTargetListener() mouse up...");
+		this.setCtlVisible(true);
+		this.setCtlEnabled(true);
 	}
 	private applyMoveCtr(wpos: IVector3D, target: ITransformEntity): void {
 		if (this.m_movedCtr != null) {

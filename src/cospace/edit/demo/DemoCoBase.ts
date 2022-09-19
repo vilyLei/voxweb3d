@@ -210,8 +210,27 @@ export class DemoCoBase {
 	private m_entities: ITransformEntity[] = null;
 	private test01(): void {
 
+		let RST = CoRScene.RendererState;
 		this.m_plnv = CoMath.createVec3();
+		/*
+		let cirMat = CoMath.createMat4();
+		cirMat.setRotationEulerAngle(Math.PI * 0.5, 0.0, Math.PI * 0.5);
+		let plb = new PlaneMeshBuilder();
+		plb.transMatrix = cirMat;
+		let cirPlMaterial = CoMaterial.createDefaultMaterial(true);
+		// cirPlMaterial.setTextureList([this.createTexByUrl()]);
+		cirPlMaterial.initializeByCodeBuf(false);
+		
+		plb.setBufSortFormat( cirPlMaterial.getBufSortFormat() );
+		let cirPlaneMesh = plb.createCircle(50, 25);
 
+		let cirEntity = CoEntity.createDisplayEntity();		
+		cirEntity.setMaterial(cirPlMaterial);
+		cirEntity.setMesh(cirPlaneMesh);
+		cirEntity.setRenderState( RST.NONE_CULLFACE_NORMAL_STATE );
+		this.m_rscene.addEntity(cirEntity);
+		// return;
+		//*/
 		//BoxMeshBuilder
 		/*
 		// let mat = CoMath.createMat4();
@@ -419,6 +438,8 @@ export class DemoCoBase {
 		dragRCtr.pickTestAxisRadius = 10.0;
 		dragRCtr.initialize(this.m_rscene, 0);
 		dragRCtr.select([box]);
+		dragRCtr.enable();
+		// dragRCtr.select([cirEntity]);
 		this.m_dragRCtr = dragRCtr;
 		//*/
 
