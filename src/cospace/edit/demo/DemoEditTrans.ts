@@ -176,7 +176,8 @@ export class DemoEditTrans {
 		let px: number = 10;
 		let py: number = 300;
 		let selectBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 0, 0, "select");
-
+		selectBtn.disable();
+		selectBtn.setClipIndex(4);
 		let moveBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 1, 1, "move");
 		let scaleBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 2, 2, "scale");
 		let rotateBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 3, 3, "rotate");
@@ -190,10 +191,11 @@ export class DemoEditTrans {
 		let label = CoUI.createClipLabel();
 		label.initialize(texAtlas, urls);
 		let colorClipLabel = CoUI.createColorClipLabel();
-		colorClipLabel.initialize(label, 4);
+		colorClipLabel.initialize(label, 5);
 		colorClipLabel.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
 		colorClipLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
 		colorClipLabel.getColorAt(2).setRGB3f(1.0, 0.2, 1.0);
+		colorClipLabel.getColorAt(4).setRGB3f(0.5, 0.5, 0.5);
 		colorClipLabel.setLabelClipIndex(labelIndex);
 		// colorClipLabel.setXY(200,0);
 		// colorClipLabel.setClipIndex(2);

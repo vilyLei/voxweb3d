@@ -18,11 +18,26 @@ import { ICoEntity } from "../../voxentity/ICoEntity";
 declare var CoEntity: ICoEntity;
 
 class Button implements IButton {
-
 	private m_dp: IEvtDispatcher;
 	private m_lb: IClipEntity = null;
+	private m_entity: ITransformEntity = null;
 	uuid = "btn";
-	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void {
+	
+	enable(): void {
+		if(this.m_entity != null) {
+			this.m_entity.mouseEnabled = true;
+		}
+	}
+	disable(): void {
+
+		if(this.m_entity != null) {
+			this.m_entity.mouseEnabled = false;
+		}
+	}
+	isEnable(): boolean {
+		return this.m_entity != null && this.m_entity.mouseEnabled;
+	}
+	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): IButton {
 
 		if (this.m_lb == null && atlas != null && idnsList != null) {
 			if (idnsList.length != 4) {
@@ -32,10 +47,12 @@ class Button implements IButton {
 			lb.initialize(atlas, idnsList);
 			this.m_lb = lb;
 			this.initializeEvent();
+			this.m_lb.setClipIndex(0);
 		}
+		return this;
 	}
 
-	initializeWithLable(lable: IClipEntity): void {
+	initializeWithLable(lable: IClipEntity): IButton {
 
 		if (this.m_lb == null) {
 			if (lable.getClipsTotal() < 1) {
@@ -43,7 +60,9 @@ class Button implements IButton {
 			}
 			this.m_lb = lable;
 			this.initializeEvent();
+			this.m_lb.setClipIndex(0);
 		}
+		return this;
 	}
 	getLable(): IClipEntity {
 		return this.m_lb;
@@ -53,7 +72,6 @@ class Button implements IButton {
 		if (this.m_dp == null) {
 			const me = CoRScene.MouseEvent;
 			let dpc = CoRScene.createMouseEvt3DDispatcher();
-			// dpc.data = this.uuid;
 			dpc.uuid = this.uuid;
 			dpc.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
 			dpc.addEventListener(me.MOUSE_UP, this, this.mouseUpListener);
@@ -62,14 +80,17 @@ class Button implements IButton {
 			this.m_lb.getREntity().setEvtDispatcher(dpc);
 			this.m_dp = dpc;
 		}
-		this.m_lb.getREntity().mouseEnabled = true;
+		this.m_entity = this.m_lb.getREntity();
+		this.m_entity.mouseEnabled = true;
 	}
 
-	addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
+	addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): IButton {
 		this.m_dp.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+		return this;
 	}
-	removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
+	removeEventListener(type: number, listener: any, func: (evt: any) => void): IButton {
 		this.m_dp.removeEventListener(type, listener, func);
+		return this;
 	}
 	protected mouseOverListener(evt: any): void {
 		console.log("Button::mouseOverListener() ...");
@@ -88,7 +109,9 @@ class Button implements IButton {
 		console.log("Button::mouseUpListener() ...");
 		this.m_lb.setClipIndex(3);
 	}
-
+	setClipIndex(i: number): void {
+		this.m_lb.setClipIndex(i);
+	}
 	getWidth(): number {
 		return this.m_lb.getWidth();
 	}
@@ -162,6 +185,7 @@ class Button implements IButton {
 			this.m_dp.destroy();
 			this.m_dp = null;
 		}
+		this.m_entity = null;
 	}
 }
 export { Button };

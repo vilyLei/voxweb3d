@@ -6,11 +6,17 @@ import { IClipEntity } from "./IClipEntity";
 interface IButton extends IUIEntity {
 
 	uuid: string;
-	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void;
-	initializeWithLable(lable: IClipEntity): void;
+
+	enable(): void;
+	disable(): void;
+	isEnable(): boolean;
+
+	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): IButton;
+	initializeWithLable(lable: IClipEntity): IButton;
 	getLable(): IClipEntity;
 
-	addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled?: boolean, bubbleEnabled?: boolean): void;
-	removeEventListener(type: number, listener: any, func: (evt: any) => void): void;
+	addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled?: boolean, bubbleEnabled?: boolean): IButton;
+	removeEventListener(type: number, listener: any, func: (evt: any) => void): IButton;
+	setClipIndex(i: number): void;
 }
 export { IButton };
