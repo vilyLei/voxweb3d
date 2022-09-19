@@ -15,6 +15,7 @@ import IRawMesh from "../../../vox/mesh/IRawMesh";
 import { IRayControl } from "../base/IRayControl";
 import { SphereRayTester } from "../base/SphereRayTester";
 import { DashedLineRayTester } from "../base/DashedLineRayTester";
+import { ScaleCtr } from "./ScaleCtr";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
@@ -35,26 +36,23 @@ declare var CoEntity: ICoEntity;
 /**
  * 在直线上拖动缩放
  */
-class ScaleDragLine implements IRayControl {
+class ScaleDragLine extends ScaleCtr implements IRayControl {
 
     private m_target: IScaleTarget = null;
     private m_dispatcher: IEvtDispatcher;
-    private m_targetPosOffset: IVector3D = CoMath.createVec3();
+    private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
     private m_box: ITransformEntity = null;
 
-    uuid = "ScaleDragLine";
     innerSphereRadius = 30.0;
-    moveSelfEnabled = true;
-    pickTestRadius = 10;
 
-    outColor = CoRScene.createColor4(0.9, 0.9, 0.9, 1.0);
-    overColor = CoRScene.createColor4(1.0, 1.0, 1.0, 1.0);
     type = 0;
     tv = CoMath.createVec3(1.0, 0.0, 0.0);
     coneTransMat4 = CoMath.createMat4();
     boxScale = 1.0;
+
     constructor() {
+        super();
     }
 
     initialize(size: number = 100.0, innerSize: number = 0): void {
@@ -69,25 +67,25 @@ class ScaleDragLine implements IRayControl {
 
             let material = CoMaterial.createLineMaterial(true);
             this.m_entity = CoEntity.createDisplayEntity();
-            this.m_entity.setMaterial( material );
-            this.m_entity.setMesh( mesh );
+            this.m_entity.setMaterial(material);
+            this.m_entity.setMesh(mesh);
 
             if (mesh != null) {
                 let lineTester = new DashedLineRayTester(mesh.getVS(), 1, r);
                 lineTester.setPrevTester(new SphereRayTester(this.innerSphereRadius));
-                mesh.setRayTester( lineTester );
+                mesh.setRayTester(lineTester);
             }
-            this.initializeEvent( this.m_entity );
+            this.initializeEvent(this.m_entity);
 
             material = CoMaterial.createDefaultMaterial();
             material.initializeByCodeBuf(false);
-            CoMesh.box.setBufSortFormat( material.getBufSortFormat() );
+            CoMesh.box.setBufSortFormat(material.getBufSortFormat());
             CoMesh.box.transMatrix = this.coneTransMat4;
             mesh = CoMesh.box.createCube(this.boxScale * r * 2.0);
             this.m_box = CoEntity.createDisplayEntity();
-            this.m_box.setMaterial( material );
-            this.m_box.setMesh( mesh );
-            this.initializeEvent( this.m_box );
+            this.m_box.setMaterial(material);
+            this.m_box.setMesh(mesh);
+            this.initializeEvent(this.m_box);
         }
     }
     getBox(): ITransformEntity {
@@ -99,28 +97,29 @@ class ScaleDragLine implements IRayControl {
     setVisible(visible: boolean): void {
         console.log("ScaleDragLine::setVisible() ..., visible: ", visible);
         this.m_entity.setVisible(visible);
+        this.m_box.setVisible(visible);
     }
     getVisible(): boolean {
         return this.m_entity.getVisible();
     }
     setXYZ(px: number, py: number, pz: number): void {
-        this.m_entity.setXYZ(px,py,pz);
+        this.m_entity.setXYZ(px, py, pz);
     }
     setRotation3(r: IVector3D): void {
         this.m_entity.setRotation3(r);
     }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
-        this.m_entity.setRotationXYZ(rx,ry,rz);
+        this.m_entity.setRotationXYZ(rx, ry, rz);
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
-        this.m_entity.setScaleXYZ(sx,sy,sz);
+        this.m_entity.setScaleXYZ(sx, sy, sz);
     }
-    
+
     getScaleXYZ(pv: IVector3D): void {
-        this.m_entity.getScaleXYZ( pv );
+        this.m_entity.getScaleXYZ(pv);
     }
     getRotationXYZ(pv: IVector3D): void {
-        this.m_entity.getRotationXYZ( pv );
+        this.m_entity.getRotationXYZ(pv);
     }
     getGlobalBounds(): IAABB {
         return null;
@@ -129,10 +128,10 @@ class ScaleDragLine implements IRayControl {
         return null;
     }
     localToGlobal(pv: IVector3D): void {
-        this.m_entity.localToGlobal( pv );
+        this.m_entity.localToGlobal(pv);
     }
     globalToLocal(pv: IVector3D): void {
-        this.m_entity.globalToLocal( pv );
+        this.m_entity.globalToLocal(pv);
     }
 
     addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
@@ -181,6 +180,17 @@ class ScaleDragLine implements IRayControl {
         m = this.m_box.getMaterial() as IColorMaterial;
         m.setColor(this.outColor);
     }
+
+    enable(): void {
+        super.enable();
+        this.m_entity.mouseEnabled = true;
+        this.m_box.mouseEnabled = true;
+    }
+    disable(): void {
+        super.disable();
+        this.m_entity.mouseEnabled = false;
+        this.m_box.mouseEnabled = false;
+    }
     isSelected(): boolean {
         return this.m_flag > -1;
     }
@@ -188,6 +198,9 @@ class ScaleDragLine implements IRayControl {
     }
     deselect(): void {
         console.log("ScaleDragLine::deselect() ...");
+        if (this.m_flag > 0) {
+            this.setAllVisible(true);
+        }
         this.m_flag = -1;
     }
     destroy(): void {
@@ -240,68 +253,75 @@ class ScaleDragLine implements IRayControl {
     private m_rtv = CoMath.createVec3();
     private m_sv = CoMath.createVec3();
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
-        if (this.m_flag > -1) {
 
-            this.m_rpv.copyFrom(rpv);
-            this.m_rtv.copyFrom(rtv);
+        if (this.isEnabled()) {
+            if (this.m_flag > -1) {
 
-            this.calcClosePos(this.m_rpv, this.m_rtv);
-            this.m_dv.copyFrom(this.m_outV);
-            this.m_dv.subtractBy(this.m_initV);
-            
-            // console.log("this.m_dv: ", this.m_dv);
-            const dv =  this.m_dv;
-            const sv = this.m_sv;
-            let scale = 1.0;
-            let sx = 1.0;
-            let sy = 1.0;
-            let sz = 1.0;
-            
-            let tv = this.tv;
-            let dis = 100.0;
-            if(tv.x > 0.1) {
-                dis += dv.x;
-                if(dis < 1) dis = 1.0;
-                scale = dis/100.0;
-                sx = scale;
-            }else if(tv.y > 0.1) {
-                dis += dv.y;
-                if(dis < 1) dis = 1.0;
-                scale = dis/100.0;
-                sy = scale;
-                
-            }else if(tv.z > 0.1) {
-                dis += dv.z;
-                if(dis < 1) dis = 1.0;
-                scale = dis/100.0;
-                sz = scale;                
-            }
-            // console.log("scale: ",scale, sv);
-            
-            if (this.m_target != null) {
-                this.m_target.setScaleXYZ(sv.x * sx, sv.y * sy, sv.z * sz);
-                this.m_target.update();
+                this.m_rpv.copyFrom(rpv);
+                this.m_rtv.copyFrom(rtv);
+
+                this.calcClosePos(this.m_rpv, this.m_rtv);
+                this.m_dv.copyFrom(this.m_outV);
+                this.m_dv.subtractBy(this.m_initV);
+
+                // console.log("this.m_dv: ", this.m_dv);
+                const dv = this.m_dv;
+                const sv = this.m_sv;
+                let scale = 1.0;
+                let sx = 1.0;
+                let sy = 1.0;
+                let sz = 1.0;
+
+                let tv = this.tv;
+                let dis = 100.0;
+                if (tv.x > 0.1) {
+                    dis += dv.x;
+                    if (dis < 1) dis = 1.0;
+                    scale = dis / 100.0;
+                    sx = scale;
+                } else if (tv.y > 0.1) {
+                    dis += dv.y;
+                    if (dis < 1) dis = 1.0;
+                    scale = dis / 100.0;
+                    sy = scale;
+
+                } else if (tv.z > 0.1) {
+                    dis += dv.z;
+                    if (dis < 1) dis = 1.0;
+                    scale = dis / 100.0;
+                    sz = scale;
+                }
+                // console.log("scale: ",scale, sv);
+
+                if (this.m_target != null) {
+                    this.m_target.setScaleXYZ(sv.x * sx, sv.y * sy, sv.z * sz);
+                    this.m_target.update();
+                }
             }
         }
     }
 
     mouseDownListener(evt: any): void {
         console.log("ScaleDragLine::mouseDownListener() ...");
-        this.m_target.select();
-        this.m_flag = 1;
-        //console.log("AxisCtrlObj::mouseDownListener(). this.m_flag: "+this.m_flag);
-        let trans = this.m_entity.getTransform();
+        if (this.isEnabled()) {
 
-        this.m_mat4.copyFrom(trans.getMatrix());
-        this.m_invMat4.copyFrom(trans.getInvMatrix());
+            this.setThisVisible(true);
+            this.m_target.select();
+            this.m_flag = 1;
+            //console.log("AxisCtrlObj::mouseDownListener(). this.m_flag: "+this.m_flag);
+            let trans = this.m_entity.getTransform();
 
-        this.m_rpv.copyFrom(evt.raypv);
-        this.m_rtv.copyFrom(evt.raytv);
+            this.m_mat4.copyFrom(trans.getMatrix());
+            this.m_invMat4.copyFrom(trans.getInvMatrix());
 
-        this.calcClosePos(this.m_rpv, this.m_rtv);
-        this.m_initV.copyFrom(this.m_outV);
-        this.getPosition(this.m_initPos);
-        this.m_target.getScaleXYZ(this.m_sv);
+            this.m_rpv.copyFrom(evt.raypv);
+            this.m_rtv.copyFrom(evt.raytv);
+
+            this.calcClosePos(this.m_rpv, this.m_rtv);
+            this.m_initV.copyFrom(this.m_outV);
+            this.getPosition(this.m_initPos);
+            this.m_target.getScaleXYZ(this.m_sv);
+        }
     }
 }
 export { ScaleDragLine }

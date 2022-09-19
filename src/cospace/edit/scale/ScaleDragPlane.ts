@@ -18,6 +18,7 @@ import { ICoAGeom } from "../../ageom/ICoAGeom";
 import { ICoMesh } from "../../voxmesh/ICoMesh";
 import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
 import { IScaleTarget } from "./IScaleTarget";
+import { ScaleCtr } from "./ScaleCtr";
 
 declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;
@@ -27,7 +28,7 @@ declare var CoMesh: ICoMesh;
 /**
  * 支持在一个平面上拖动缩放
  */
-export default class ScaleDragPlane implements IRayControl {
+export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
 
     private m_target: IScaleTarget = null;
     private m_dispatcher: IEvtDispatcher;
@@ -36,14 +37,9 @@ export default class ScaleDragPlane implements IRayControl {
     private offsetV = CoMath.createVec3(30, 30, 30);
     private m_planeAxisType: number = 0;
 
-    uuid: string = "ScaleDragPlane";
+    // crossRay = false;
 
-    moveSelfEnabled = true;
-    crossRay = false;
-    outColor = CoRScene.createColor4(0.9, 0.9, 0.9, 1.0);
-    overColor = CoRScene.createColor4(1.0, 1.0, 1.0, 1.0);
-
-    constructor() { }
+    constructor() { super() }
     initialize(planeAxisType: number, size: number): void {
 
         if (this.m_entity == null) {
@@ -58,7 +54,6 @@ export default class ScaleDragPlane implements IRayControl {
 
             let mp = CoMesh.plane;
             mp.setBufSortFormat(material.getBufSortFormat());
-            // let overAlpha = alpha * 1.3;
             let ov = this.offsetV;
 
             this.m_planeAxisType = planeAxisType;
@@ -68,22 +63,16 @@ export default class ScaleDragPlane implements IRayControl {
                     // xoz
                     et.setMesh(mp.createXOZ(ov.x, ov.z, size, size));
                     this.setPlaneNormal(V3.Y_AXIS);
-                    // this.outColor.setRGBA4f(1.0, 0.3, 0.3, alpha);
-                    // this.overColor.setRGBA4f(1.0, 0.1, 0.1, overAlpha);
                     break;
                 case 1:
                     // xoy
                     et.setMesh(mp.createXOY(ov.x, ov.y, size, size));
                     this.setPlaneNormal(V3.Z_AXIS);
-                    // this.outColor.setRGBA4f(0.3, 0.3, 1.0, alpha);
-                    // this.overColor.setRGBA4f(0.1, 0.1, 1.0, overAlpha);
                     break;
                 case 2:
                     // yoz
                     et.setMesh(mp.createYOZ(ov.y, ov.z, size, size));
                     this.setPlaneNormal(CoMath.Vector3D.X_AXIS);
-                    // this.outColor.setRGBA4f(0.3, 1.0, 0.3, alpha);
-                    // this.overColor.setRGBA4f(0.1, 1.0, 0.1, overAlpha);
                     break;
                 default:
                     throw Error("Error type !!!");
@@ -143,10 +132,19 @@ export default class ScaleDragPlane implements IRayControl {
         // (this.m_entity.getMaterial() as any).setRGBA4f(this.outColor.r, this.outColor.g, this.outColor.b, this.outColor.a);
     }
 
+    enable(): void {
+        super.enable();
+        this.m_entity.mouseEnabled = true;
+    }
+    disable(): void {
+        super.disable();
+        this.m_entity.mouseEnabled = false;
+    }
     setRenderState(state: number): void {
         this.m_entity.setRenderState(state);
     }
     setVisible(visible: boolean): void {
+        console.log("ScaleDragPlane::setVisible() ..., visible: ", visible);
         this.m_entity.setVisible(visible);
     }
     getVisible(): boolean {
@@ -194,9 +192,12 @@ export default class ScaleDragPlane implements IRayControl {
         return this.m_flag;
     }
     select(): void {
-        this.m_flag = true;
+        // this.m_flag = true;
     }
     deselect(): void {
+        if (this.m_flag) {
+            this.setAllVisible(true);
+        }
         this.m_flag = false;
     }
     update(): void {
@@ -230,43 +231,45 @@ export default class ScaleDragPlane implements IRayControl {
     private m_dis = 1.0;
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
 
-        if (this.m_flag) {
+        if (this.isEnabled()) {
+            if (this.m_flag) {
 
-            this.m_rpv.copyFrom(rpv);
-            this.m_rtv.copyFrom(rtv);
+                this.m_rpv.copyFrom(rpv);
+                this.m_rtv.copyFrom(rtv);
 
-            this.calcClosePos(this.m_rpv, this.m_rtv);
+                this.calcClosePos(this.m_rpv, this.m_rtv);
 
-            let V3 = CoMath.Vector3D;
-            let dis = V3.Distance(this.m_pos, this.m_outV);
-            if(dis < 1.0) dis = 1.0;
+                let V3 = CoMath.Vector3D;
+                let dis = V3.Distance(this.m_pos, this.m_outV);
+                if (dis < 1.0) dis = 1.0;
 
-            const sv = this.m_sv;
-            let sx = 1.0;
-            let sy = 1.0;
-            let sz = 1.0;
-            
-            let scale = dis/this.m_dis;
-            let type = this.m_planeAxisType;
-            
-            if(type == 0) {
-                // xoz
-                sx = scale;
-                sz = scale;
-            }else if(type == 1) {
-                // xoy
-                sx = scale;
-                sy = scale;
-                
-            }else {
-                // yoz
-                sy = scale;
-                sz = scale;
-            }
-            
-            if (this.m_target != null) {
-                this.m_target.setScaleXYZ(sv.x * sx, sv.y * sy, sv.z * sz);
-                this.m_target.update();
+                const sv = this.m_sv;
+                let sx = 1.0;
+                let sy = 1.0;
+                let sz = 1.0;
+
+                let scale = dis / this.m_dis;
+                let type = this.m_planeAxisType;
+
+                if (type == 0) {
+                    // xoz
+                    sx = scale;
+                    sz = scale;
+                } else if (type == 1) {
+                    // xoy
+                    sx = scale;
+                    sy = scale;
+
+                } else {
+                    // yoz
+                    sy = scale;
+                    sz = scale;
+                }
+
+                if (this.m_target != null) {
+                    this.m_target.setScaleXYZ(sv.x * sx, sv.y * sy, sv.z * sz);
+                    this.m_target.update();
+                }
             }
         }
     }
@@ -285,9 +288,7 @@ export default class ScaleDragPlane implements IRayControl {
         this.m_rpv.copyFrom(raypv);
         this.m_rtv.copyFrom(raytv);
         this.m_planePos.copyFrom(wpos);
-        if (this.crossRay) {
-            this.m_planeNV.copyFrom(this.m_rtv);
-        }
+
         this.m_planeNV.normalize();
 
         this.m_planeDis = this.m_planePos.dot(this.m_planeNV);
@@ -296,13 +297,20 @@ export default class ScaleDragPlane implements IRayControl {
         this.m_dv.subtractBy(this.m_outV);
     }
     private mouseDownListener(evt: any): void {
-        this.m_target.select();
-        this.selectByParam(evt.raypv, evt.raytv, evt.wpos);
-        this.m_target.getScaleXYZ(this.m_sv);
-        this.getPosition(this.m_pos);
 
-        let V3 = CoMath.Vector3D;
-        this.m_dis = V3.Distance(this.m_pos, this.m_outV);
-        if(this.m_dis < 1.0) this.m_dis = 1.0;
+        if (this.isEnabled()) {
+            
+            this.setThisVisible(true);
+            
+            console.log("ScaleDragPlane::mouseDownListener() ...");
+            this.m_target.select();
+            this.selectByParam(evt.raypv, evt.raytv, evt.wpos);
+            this.m_target.getScaleXYZ(this.m_sv);
+            this.getPosition(this.m_pos);
+
+            let V3 = CoMath.Vector3D;
+            this.m_dis = V3.Distance(this.m_pos, this.m_outV);
+            if (this.m_dis < 1.0) this.m_dis = 1.0;
+        }
     }
 }

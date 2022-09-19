@@ -15,6 +15,7 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { IRayControl } from "../base/IRayControl";
 import { SphereRayTester } from "../base/SphereRayTester";
 import { IBillboardBase } from "../../particle/entity/IBillboardBase";
+import { ScaleCtr } from "./ScaleCtr";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
@@ -32,7 +33,7 @@ declare var CoParticle: ICoParticle;
 /**
  * 支持在一个和鼠标射线垂直的平面上拖动
  */
-export default class DragScaleRayCrossPlane implements IRayControl {
+export default class DragScaleRayCrossPlane extends ScaleCtr implements IRayControl {
 
     private m_target: IScaleTarget = null;
     private m_dispatcher: IEvtDispatcher;
@@ -43,13 +44,7 @@ export default class DragScaleRayCrossPlane implements IRayControl {
     private m_billPos: IBillboardBase = null;
     private m_circle: IBillboardBase = null;
 
-    uuid: string = "DragScaleRayCrossPlane";
-
-    moveSelfEnabled = true;
-    outColor = CoRScene.createColor4(0.9, 0.9, 0.9, 1.0);
-    overColor = CoRScene.createColor4(1.0, 1.0, 1.0, 1.0);
-
-    constructor() { }
+    constructor() { super(); }
     initialize(rscene: IRendererScene, processidIndex: number, size: number = 30): void {
 
         if (this.m_entity == null) {
@@ -84,15 +79,15 @@ export default class DragScaleRayCrossPlane implements IRayControl {
             this.showOutColor();
         }
     }
-	private createTexByUrl(url: string = ""): IRenderTexture {
-		let tex = this.m_rscene.textureBlock.createImageTex2D(64, 64, false);
-		let img = new Image();
-		img.onload = (evt: any): void => {
-			tex.setDataFromImage(img, 0, 0, 0, false);
-		};
-		img.src = url != "" ? url : "static/assets/box.jpg";
-		return tex;
-	}
+    private createTexByUrl(url: string = ""): IRenderTexture {
+        let tex = this.m_rscene.textureBlock.createImageTex2D(64, 64, false);
+        let img = new Image();
+        img.onload = (evt: any): void => {
+            tex.setDataFromImage(img, 0, 0, 0, false);
+        };
+        img.src = url != "" ? url : "static/assets/box.jpg";
+        return tex;
+    }
     getEntity(): ITransformEntity {
         return this.m_entity;
     }
@@ -140,6 +135,14 @@ export default class DragScaleRayCrossPlane implements IRayControl {
         this.m_circle.setRGB3f(c.r, c.g, c.b);
     }
 
+    enable(): void {
+        super.enable();
+        this.m_entity.mouseEnabled = true;
+    }
+    disable(): void {
+        super.disable();
+        this.m_entity.mouseEnabled = false;
+    }
     setRenderState(state: number): void {
         this.m_entity.setRenderState(state);
     }
@@ -199,9 +202,11 @@ export default class DragScaleRayCrossPlane implements IRayControl {
         return this.m_flag;
     }
     select(): void {
-        this.m_flag = true;
     }
     deselect(): void {
+        if (this.m_flag) {
+            this.setAllVisible(true);
+        }
         this.m_flag = false;
     }
     update(): void {
@@ -212,15 +217,15 @@ export default class DragScaleRayCrossPlane implements IRayControl {
     destroy(): void {
         this.m_target = null;
         if (this.m_entity != null) {
-            this.m_rscene.removeEntity( this.m_entity );
+            this.m_rscene.removeEntity(this.m_entity);
             this.m_entity.destroy();
         }
         if (this.m_circle != null) {
-            this.m_rscene.removeEntity( this.m_circle.entity );
+            this.m_rscene.removeEntity(this.m_circle.entity);
             this.m_circle.destroy();
         }
         if (this.m_billPos != null) {
-            this.m_rscene.removeEntity( this.m_billPos.entity );
+            this.m_rscene.removeEntity(this.m_billPos.entity);
             this.m_billPos.destroy();
         }
         if (this.m_dispatcher != null) {
@@ -247,23 +252,25 @@ export default class DragScaleRayCrossPlane implements IRayControl {
     private m_dis = 1.0;
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
 
-        if (this.m_flag) {
+        if (this.isEnabled()) {
+            if (this.m_flag) {
 
-            this.m_rpv.copyFrom(rpv);
-            this.m_rtv.copyFrom(rtv);
+                this.m_rpv.copyFrom(rpv);
+                this.m_rtv.copyFrom(rtv);
 
-            this.calcClosePos(this.m_rpv, this.m_rtv);
+                this.calcClosePos(this.m_rpv, this.m_rtv);
 
-            let V3 = CoMath.Vector3D;
-            let dis = V3.Distance(this.m_pos, this.m_outV);
-            if(dis < 1.0) dis = 1.0;
+                let V3 = CoMath.Vector3D;
+                let dis = V3.Distance(this.m_pos, this.m_outV);
+                if (dis < 1.0) dis = 1.0;
 
-            const sv = this.m_sv;
-            let s = dis/this.m_dis;
-            
-            if (this.m_target != null) {
-                this.m_target.setScaleXYZ(sv.x * s, sv.y * s, sv.z * s);
-                this.m_target.update();
+                const sv = this.m_sv;
+                let s = dis / this.m_dis;
+
+                if (this.m_target != null) {
+                    this.m_target.setScaleXYZ(sv.x * s, sv.y * s, sv.z * s);
+                    this.m_target.update();
+                }
             }
         }
     }
@@ -291,13 +298,19 @@ export default class DragScaleRayCrossPlane implements IRayControl {
         this.m_dv.subtractBy(this.m_outV);
     }
     private mouseDownListener(evt: any): void {
-        console.log("DragScaleRayCrossPlane::mouseDownListener() ...");
-        this.m_target.select();
-        this.selectByParam(evt.raypv, evt.raytv, evt.wpos);
-        this.m_target.getScaleXYZ(this.m_sv);
-        this.getPosition(this.m_pos);
-        let V3 = CoMath.Vector3D;
-        this.m_dis = V3.Distance(this.m_pos, this.m_outV);
-        if(this.m_dis < 1.0) this.m_dis = 1.0;
+
+        if (this.isEnabled()) {
+            
+            console.log("DragScaleRayCrossPlane::mouseDownListener() ...");
+            
+            this.setThisVisible(true);
+            this.m_target.select();
+            this.selectByParam(evt.raypv, evt.raytv, evt.wpos);
+            this.m_target.getScaleXYZ(this.m_sv);
+            this.getPosition(this.m_pos);
+            let V3 = CoMath.Vector3D;
+            this.m_dis = V3.Distance(this.m_pos, this.m_outV);
+            if (this.m_dis < 1.0) this.m_dis = 1.0;
+        }
     }
 }

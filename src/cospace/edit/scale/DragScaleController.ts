@@ -126,14 +126,6 @@ class DragScaleController implements IDragScaleController {
 
         let color4 = CoMaterial.createColor4;
 
-
-
-        // this.createCircle(0, color.setRGBUint8(240,55,80), this.radius, n);
-        // // xoy
-        // this.createCircle(1, color.setRGBUint8(135,205,55), this.radius, n);
-        // // yoz
-        // this.createCircle(2, color.setRGBUint8(80,145,240), this.radius, n);
-
         let outColor = color4();
 
         const V3 = CoMath.Vector3D;
@@ -178,11 +170,25 @@ class DragScaleController implements IDragScaleController {
     }
     private dragMouseDownListener(evt: any): void {
         this.m_editRS.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener, true, true);
-        this.setVisible(this.runningVisible);
     }
     private dragMouseUpListener(evt: any): void {
         this.m_editRS.removeEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener);
-        this.setVisible(true);
+    }
+    
+    enable(): void {
+        this.m_enabled = true;
+        for (let i = 0; i < this.m_controllers.length; ++i) {
+            this.m_controllers[i].enable();
+        }
+    }
+    disable(): void {
+        this.m_enabled = false;
+        for (let i = 0; i < this.m_controllers.length; ++i) {
+            this.m_controllers[i].disable();
+        }
+    }
+    isEnabled(): boolean {
+        return this.m_enabled;
     }
     run(): void {
 
@@ -233,7 +239,7 @@ class DragScaleController implements IDragScaleController {
     select(targets: IEntityTransform[]): void {
         this.m_target.setTargets(targets);
         this.m_target.select(null);
-        this.setVisible(targets != null);
+        // this.setVisible(targets != null);
     }
     deselect(): void {
 
@@ -248,6 +254,11 @@ class DragScaleController implements IDragScaleController {
             this.m_controllers[i].deselect();
         }
     }
+    
+    getTargets(): IEntityTransform[] {
+        return this.m_target.getTargets();
+    }
+
     setVisible(visible: boolean): void {
 
         this.m_visible = visible;
@@ -270,7 +281,7 @@ class DragScaleController implements IDragScaleController {
         this.m_target.update();
     }
     getPosition(pv: IVector3D): void {
-        this.m_target.getPosition(pv);
+        this.m_controllers[0].getPosition(pv);
     }
     setRotation3(r: IVector3D): void {
     }

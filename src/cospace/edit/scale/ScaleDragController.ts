@@ -20,6 +20,7 @@ import IColor4 from "../../../vox/material/IColor4";
 import ITestRay from "../../../vox/mesh/ITestRay";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import { IRayControl } from "../base/IRayControl";
+import {UserEditCtr} from "../base/UserEditCtr";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
@@ -32,14 +33,15 @@ declare var CoAGeom: ICoAGeom;
 /**
  * 在三个坐标轴上拖动缩放
  */
-export default class ScaleDragController implements IRayControl {
+export default class ScaleDragController extends UserEditCtr implements IRayControl {
 
     private m_targetEntity: IEntityTransform = null;
     private m_dispatcher: IEvtDispatcher;
     private m_targetPosOffset: IVector3D = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
-    uuid: string = "ScaleDragController";
+    
     constructor() {
+        super();
     }
     initialize(radius: number = 100.0): void {
         
