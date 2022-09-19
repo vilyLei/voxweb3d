@@ -104,8 +104,10 @@ class TransformController {
 
             let targets: IEntityTransform[] = this.m_targets;
 
-            if(this.m_type >= 0 && targets == null) {
-                targets = ls[ this.m_type ].getTargets();
+            if(this.m_type >= 0) {
+                if(targets == null) {
+                    targets = ls[ this.m_type ].getTargets();
+                }
                 ls[ this.m_type ].getPosition(this.m_wpos);
                 ls[ this.m_type ].decontrol();
                 ls[ this.m_type ].disable();

@@ -209,17 +209,26 @@ export class DemoEditTrans {
 		btn.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.btnMouseUpListener);
 		return btn;
 	}
+	private m_ctrlType: number = 0;
 	private btnMouseUpListener(evt: any): void {
 		console.log("btnMouseUpListener(), evt: ", evt);
 		let uuid = evt.uuid;
 		switch (uuid) {
 			case "move":
+				this.m_ctrlType = this.m_transCtr.TRANSLATION;
+				this.m_transCtr.enable(this.m_ctrlType);
 				break;
 
 			case "scale":
+
+				this.m_ctrlType = this.m_transCtr.SCALE;
+				this.m_transCtr.enable(this.m_ctrlType);
 				break;
 
 			case "rotate":
+
+				this.m_ctrlType = this.m_transCtr.ROTATION;
+				this.m_transCtr.enable(this.m_ctrlType);
 				break;
 
 			default:
@@ -420,7 +429,8 @@ export class DemoEditTrans {
 	private mouseUpTargetListener(evt: any): void {
 		console.log("mouseUpTargetListener() mouse up...");
 		if (this.m_transCtr != null) {
-			this.m_transCtr.enable(this.m_transCtr.TRANSLATION);
+			this.m_transCtr.enable(this.m_ctrlType);
+			// this.m_transCtr.enable(this.m_transCtr.TRANSLATION);
 			// this.m_transCtr.enable(this.m_transCtr.SCALE);
 			// this.m_transCtr.enable(this.m_transCtr.ROTATION);
 		}
