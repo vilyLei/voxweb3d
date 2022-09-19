@@ -23,6 +23,7 @@ class CoUIScene implements ICoUIScene {
 	}
 	initialize(crscene: ICoRendererScene = null): void {
 		if (this.m_crscene == null) {
+			
 			this.m_crscene = crscene != null ? crscene : CoRScene.getRendererScene();
 			crscene = this.m_crscene;
 			let stage = this.m_crscene.getStage3D();
