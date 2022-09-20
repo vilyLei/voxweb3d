@@ -298,7 +298,7 @@ export class DemoEditTrans {
 	private initInteract(): void {
 		if (this.m_rscene != null && this.m_interact == null && typeof CoMouseInteraction !== "undefined") {
 			this.m_interact = CoMouseInteraction.createMouseInteraction();
-			this.m_interact.setEventParams(1, true);
+			this.m_interact.setEventParams(1, false);
 			this.m_interact.initialize(this.m_rscene);
 			this.m_interact.setSyncLookAtEnabled(true);
 		}
@@ -312,7 +312,7 @@ export class DemoEditTrans {
 			let RendererDevice = CoRScene.RendererDevice;
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-			RendererDevice.SetWebBodyColor("#888888");
+			RendererDevice.SetWebBodyColor("#606060");
 
 			let rparam = CoRScene.createRendererSceneParam();
 			rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
@@ -445,7 +445,9 @@ export class DemoEditTrans {
 	private mouseDown(evt: any): void { }
 	run(): void {
 		if (this.m_graph != null) {
-			this.m_interact.run();
+			if(this.m_interact != null) {
+				this.m_interact.run();
+			}
 			if (this.m_transCtr != null) {
 				this.m_transCtr.run();
 			}

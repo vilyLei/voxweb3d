@@ -91,7 +91,8 @@ export class DemoMouseEvent {
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
 
             // this.m_stageDragSwinger.buttonType = 1;
-            this.m_stageDragSwinger.buttonType = 1;
+            this.m_stageDragSwinger.buttonType = 2;
+            this.m_stageDragSwinger.bgEventEnabled = true;
 
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
             this.m_materialCtx.initialize(this.m_rscene);

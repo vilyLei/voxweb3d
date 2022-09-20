@@ -37,12 +37,6 @@ export default class EvtNode {
         let len: number = this.m_hosts.length;
         for (let i: number = 0; i < len; ++i) {
             if (this.m_phases[i] < 1 || evt.phase == this.m_phases[i]) {
-                // if(evt.type == 5020) {
-                //     console.log("XXXX len: ",len);
-                //     console.log("XXXX evt: ",evt);
-                //     console.log("XXXX this.m_hosts[i]: ",this.m_hosts[i]);
-                //     // console.log("XXXX this.m_evtNodes[t] != null: ",this.m_evtNodes[t] != null);
-                // }
                 this.m_listeners[i].call(this.m_hosts[i], evt);
                 flag = 1;
             }

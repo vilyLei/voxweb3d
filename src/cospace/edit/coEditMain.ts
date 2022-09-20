@@ -1,10 +1,10 @@
 
 // import { DemoBase as Demo } from "./demo/DemoBase";
-import { DemoMouseEvent as Demo } from "./demo/DemoMouseEvent";
+// import { DemoMouseEvent as Demo } from "./demo/DemoMouseEvent";
 // import { DemoCoBase as Demo } from "./demo/DemoCoBase";
 // import { DemoCoAGeom as Demo } from "./demo/DemoCoAGeom";
 // import { DemoMoveObj as Demo } from "./demo/DemoMoveObj";
-// import { DemoEditTrans as Demo } from "./demo/DemoEditTrans";
+import { DemoEditTrans as Demo } from "./demo/DemoEditTrans";
 // import { DemoUIScene as Demo } from "./demo/DemoUIScene";
 
 let demoIns: Demo = new Demo();

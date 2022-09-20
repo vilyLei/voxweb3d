@@ -47,13 +47,10 @@ export default class CameraStageDragSwinger {
             if (this.buttonType == 1) {
                 if (this.bgEventEnabled) {
                     downType = ME.MOUSE_BG_MIDDLE_DOWN;
-                    console.log("middle bg down");
                 } else {
                     downType = ME.MOUSE_MIDDLE_DOWN;
-                    console.log("middle down");
                 }
                 upType = ME.MOUSE_MIDDLE_UP;
-                console.log("middle ME.MOUSE_MIDDLE_UP: ", ME.MOUSE_MIDDLE_UP);
             } else if (this.buttonType == 2) {
                 if (this.bgEventEnabled) {
                     downType = ME.MOUSE_BG_RIGHT_DOWN;
@@ -62,20 +59,17 @@ export default class CameraStageDragSwinger {
                 }
                 upType = ME.MOUSE_RIGHT_UP;
             }
-            console.log("middle upType: ", upType);
             stage3D.addEventListener(downType, this, this.mouseDownListener, true, false);
             stage3D.addEventListener(upType, this, this.mouseUpListener, false, true);
         }
     }
 
     private mouseDownListener(evt: any): void {
-        console.log("XXXXXXXXXXXX mouse interact down...");
         if (this.m_enabled) {
             this.m_dragSwinger.attach();
         }
     }
     private mouseUpListener(evt: any): void {
-        console.log("XXXXXXXXXXXX mouse interact up...");
         this.m_dragSwinger.detach();
     }
     setEnabled(enabled: boolean): void {

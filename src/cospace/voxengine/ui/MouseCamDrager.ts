@@ -43,10 +43,8 @@ export default class MouseCamDrager {
             if (this.buttonType == 1) {
                 if(this.bgEventEnabled) {
                     downType = ME.MOUSE_BG_MIDDLE_DOWN;
-                    console.log("middle bg down");
                 }else {
                     downType = ME.MOUSE_MIDDLE_DOWN;
-                    console.log("middle down");
                 }
                 upType = ME.MOUSE_MIDDLE_UP;
             } else if (this.buttonType == 2) {

@@ -69,9 +69,6 @@ export default class MouseEvt3DDispatcher implements IEvtDispatcher {
     }
     addEventListener(type: number, target: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
         if (func != null && target != null) {
-            if(type == 5020) {
-                console.log("XXXXXXXXXXXXXXX 5020 type: ", type);
-            }
             let t: number = type - MouseEvent.GetMouseEvtTypeValueBase();
             if (t >= 0 && t < MouseEvent.GetMouseEvtTypeValuesTotal()) {
                 //(capture phase),2(bubble phase)
