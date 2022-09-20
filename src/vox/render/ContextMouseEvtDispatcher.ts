@@ -75,9 +75,9 @@ class ContextMouseEvtDispatcher {
                 let px = 0;
                 let py = 0;
                 if (list.length < 1) {
-                    stage.mouseUp(1);                    
+                    stage.mouseUp(1);
                     this.m_mouseClickTime = Date.now() - this.m_mouseClickTime;
-                    if(Math.abs(this.m_mouseX - stage.mouseX) < 3 && Math.abs(this.m_mouseY - stage.mouseY) < 3 && this.m_mouseClickTime < 900) {
+                    if (Math.abs(this.m_mouseX - stage.mouseX) < 3 && Math.abs(this.m_mouseY - stage.mouseY) < 3 && this.m_mouseClickTime < 900) {
                         this.m_mouseX = stage.mouseX;
                         this.m_mouseY = stage.mouseY;
                         stage.mouseClick();
@@ -182,14 +182,18 @@ class ContextMouseEvtDispatcher {
                 this.m_mouseX = stage.mouseX;
                 this.m_mouseY = stage.mouseY;
                 this.m_mouseClickTime = Date.now();
-                
+
+                // console.log("ContextMouseEvtDispatcher::onmousedown(),evt.button: ", evt.button);
+
                 if (evt.button == 0) {
                     stage.mouseDown(1);
+                } else if (evt.button == 1) {
+                    stage.mouseMiddleDown();
                 } else if (evt.button == 2) {
                     stage.mouseRightDown(1);
                 }
             }
-            
+
             canvas.onmouseup = (evt: any): void => {
                 let rect = div.getBoundingClientRect();
                 let px = 0 | (this.dpr * (evt.clientX - rect.left));
@@ -197,24 +201,28 @@ class ContextMouseEvtDispatcher {
                 stage.mouseX = px;
                 stage.mouseY = stage.stageHeight - py;
 
-                // console.log("ContextMouseEvtDispatcher::onmouseup(),"+stage.mouseViewX+","+stage.mouseViewY);
+                // console.log("ContextMouseEvtDispatcher::onmouseup(),evt.button: ", evt.button);
+
                 if (evt.button == 0) {
                     stage.mouseUp(1);
-                }
-                else if (evt.button == 2) {
+                } else if (evt.button == 1) {
+                    stage.mouseMiddleUp();
+                } else if (evt.button == 2) {
                     stage.mouseRightUp(1);
                 }
             }
-            
             document.onmouseup = (evt: any): void => {
                 if (evt.button == 0) {
                     stage.mouseWindowUp(1);
+                }
+                else if (evt.button == 1) {
+                    // stage.mouseMiddleUp();
                 }
                 else if (evt.button == 2) {
                     stage.mouseWindowRightUp(1);
                 }
             }
-            
+
             canvas.onmousemove = (evt: any): void => {
                 // console.log("ContextMouseEvtDispatcher::onmouseMove"+evt.pageX+","+evt.pageY);
                 let rect: any = div.getBoundingClientRect();
@@ -237,7 +245,7 @@ class ContextMouseEvtDispatcher {
                 stage.mouseViewY = py;
 
                 this.m_mouseClickTime = Date.now() - this.m_mouseClickTime;
-                if(Math.abs(this.m_mouseX - stage.mouseX) < 3 && Math.abs(this.m_mouseY - stage.mouseY) < 3 && this.m_mouseClickTime < 900) {
+                if (Math.abs(this.m_mouseX - stage.mouseX) < 3 && Math.abs(this.m_mouseY - stage.mouseY) < 3 && this.m_mouseClickTime < 900) {
                     this.m_mouseX = stage.mouseX;
                     this.m_mouseY = stage.mouseY;
                     //console.log("ContextMouseEvtDispatcher::onclick()," + stage.mouseViewX + "," + stage.mouseViewY + ",evt.button: " + evt.button);

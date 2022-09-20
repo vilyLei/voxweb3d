@@ -56,18 +56,26 @@ interface IRenderStage3D {
 
     update(): void;
 
-    mouseWindowUp(phase: number): void;
-    mouseWindowRightUp(phase: number): void;
+    mouseWindowUp(phase?: number): void;
+    mouseWindowRightUp(phase?: number): void;
 
-    mouseDown(phase: number): void;
-    mouseUp(phase: number): void;
+    mouseDown(phase?: number): void;
+    mouseUp(phase?: number): void;
+    mouseClick(): void;
+
     mouseBgDown(): void;
     mouseBgUp(): void;
-    mouseClick(): void;
     mouseBgClick(): void;
+    mouseBgRightDown(): void;
+    mouseBgRightUp(): void;
+    mouseBgMiddleDown(): void;
+    mouseBgMiddleUp(): void;
+
     mouseDoubleClick(): void;
-    mouseRightDown(phase: number): void;
-    mouseRightUp(phase: number): void;
+    mouseRightDown(phase?: number): void;
+    mouseRightUp(phase?: number): void;
+    mouseMiddleDown(phase?: number): void;
+    mouseMiddleUp(phase?: number): void;
 
     mouseRightClick(): void;
     mouseMove(): void;
