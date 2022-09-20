@@ -17,7 +17,7 @@ interface IMouseInteraction {
 
     initialize(rscene: IRendererScene): void;
     /**
-	 * @param buttonType the value contains 0(mouse down), 1(mouse middle), 2(mouse right)
+	 * @param buttonType the value contains 0(mouse left button), 1(mouse middle button), 2(mouse right button)
 	 * @param bgEventEnabled apply background mouse event true or false
 	 */
 	setEventParams(buttonType: number, bgEventEnabled?: boolean): void

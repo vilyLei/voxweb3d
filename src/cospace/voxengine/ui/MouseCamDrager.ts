@@ -35,13 +35,18 @@ export default class MouseCamDrager {
 
             const ME = CoRScene.MouseEvent;
             let downType = ME.MOUSE_DOWN;
+            if(this.bgEventEnabled) {
+                downType = ME.MOUSE_BG_DOWN;
+            }
             let upType = ME.MOUSE_UP;
 
             if (this.buttonType == 1) {
                 if(this.bgEventEnabled) {
                     downType = ME.MOUSE_BG_MIDDLE_DOWN;
+                    console.log("middle bg down");
                 }else {
                     downType = ME.MOUSE_MIDDLE_DOWN;
+                    console.log("middle down");
                 }
                 upType = ME.MOUSE_MIDDLE_UP;
             } else if (this.buttonType == 2) {

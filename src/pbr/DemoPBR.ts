@@ -91,7 +91,7 @@ export class DemoPBR implements IShaderLibListener {
             this.m_rscene.enableMouseEvent(true);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
-            this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera(), false);
+            this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
             
             this.m_statusDisp.initialize();
 

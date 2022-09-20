@@ -48,7 +48,7 @@ export class DemoMouseEvent {
                 e.preventDefault();
             }
 
-            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             RendererDevice.SetWebBodyColor("#333333");
@@ -72,7 +72,7 @@ export class DemoMouseEvent {
             let entityBlock = new RenderableEntityBlock();
             entityBlock.initialize();
             rscene.entityBlock = entityBlock;
-
+            /*
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_RIGHT_DOWN, this, this.mouseRightDown);
@@ -85,10 +85,14 @@ export class DemoMouseEvent {
             this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_MIDDLE_UP, this, this.mouseMiddleBGUp);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_RIGHT_DOWN, this, this.mouseRightBGDown);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_RIGHT_UP, this, this.mouseRightBGUp);
-
+            //*/
             this.m_rscene.enableMouseEvent(true);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
+
+            // this.m_stageDragSwinger.buttonType = 1;
+            this.m_stageDragSwinger.buttonType = 1;
+
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
             this.m_materialCtx.initialize(this.m_rscene);
 

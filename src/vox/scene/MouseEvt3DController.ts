@@ -55,9 +55,9 @@ export default class MouseEvt3DController implements IEvt3DController {
             mainStage.addEventListener(ME.MOUSE_WHEEL, this, this.mouseWheeelListener, true, false);
 
             mainStage.addEventListener(ME.MOUSE_RIGHT_DOWN, this, this.mouseDownListener, true, false);
-            mainStage.addEventListener(ME.MOUSE_RIGHT_UP, this, this.mouseDownListener, true, false);
+            mainStage.addEventListener(ME.MOUSE_RIGHT_UP, this, this.mouseUpListener, true, false);
             mainStage.addEventListener(ME.MOUSE_MIDDLE_DOWN, this, this.mouseDownListener, true, false);
-            mainStage.addEventListener(ME.MOUSE_MIDDLE_UP, this, this.mouseDownListener, true, false);
+            mainStage.addEventListener(ME.MOUSE_MIDDLE_UP, this, this.mouseUpListener, true, false);
         }
     }
     setRaySelector(raySelector: IRaySelector): void {
@@ -130,7 +130,7 @@ export default class MouseEvt3DController implements IEvt3DController {
             this.m_evtTotal++;
         }
     }
-    
+
     mouseOutEventTarget(): number {
         if (this.m_currStage != null) {
             this.m_currStage.mouseX = this.m_mainStage.mouseX;
@@ -184,6 +184,12 @@ export default class MouseEvt3DController implements IEvt3DController {
                                 break;
                             case MouseEvent.MOUSE_RIGHT_UP:
                                 this.m_currStage.mouseRightUp(1);
+                                break;
+                            case MouseEvent.MOUSE_MIDDLE_DOWN:
+                                this.m_currStage.mouseMiddleDown(1);
+                                break;
+                            case MouseEvent.MOUSE_MIDDLE_UP:
+                                this.m_currStage.mouseMiddleUp(1);
                                 break;
                             case MouseEvent.MOUSE_MOVE:
                                 this.m_currStage.mouseMove();
@@ -342,6 +348,12 @@ export default class MouseEvt3DController implements IEvt3DController {
                                 break;
                             case MouseEvent.MOUSE_RIGHT_UP:
                                 this.m_currStage.mouseRightUp(2);
+                                break;
+                            case MouseEvent.MOUSE_MIDDLE_DOWN:
+                                this.m_currStage.mouseMiddleDown(2);
+                                break;
+                            case MouseEvent.MOUSE_MIDDLE_UP:
+                                this.m_currStage.mouseMiddleUp(2);
                                 break;
                             default:
                                 break;

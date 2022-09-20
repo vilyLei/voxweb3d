@@ -175,71 +175,33 @@ export default class Stage3D implements IRenderStage3D {
     mouseDown(phase: number = 1): void {
         this.m_mouseEvt.type = MouseEvent.MOUSE_DOWN;
         this.dispatchMouseEvt(phase);
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = phase;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
     }
     mouseUp(phase: number = 1): void {
         this.m_mouseEvt.type = MouseEvent.MOUSE_UP;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = phase;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
         this.dispatchMouseEvt(phase);
     }
     mouseClick(): void {
         this.m_mouseEvt.type = MouseEvent.MOUSE_CLICK;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
         this.dispatchMouseEvt(1);
     }
     mouseDoubleClick(): void {
         this.m_mouseEvt.type = MouseEvent.MOUSE_DOUBLE_CLICK;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
         this.dispatchMouseEvt(1);
     }
     mouseRightDown(phase: number = 1): void {
         this.m_mouseEvt.type = MouseEvent.MOUSE_RIGHT_DOWN;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
         this.dispatchMouseEvt(phase);
     }
     mouseRightUp(phase: number = 1): void {
         this.m_mouseEvt.type = MouseEvent.MOUSE_RIGHT_UP;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
         this.dispatchMouseEvt(phase);
     }
     mouseMiddleDown(phase: number = 1): void {
         this.m_mouseEvt.type = MouseEvent.MOUSE_MIDDLE_DOWN;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
         this.dispatchMouseEvt(phase);
     }
     mouseMiddleUp(phase: number = 1): void {
         this.m_mouseEvt.type = MouseEvent.MOUSE_MIDDLE_UP;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
         this.dispatchMouseEvt(phase);
     }
 
@@ -275,42 +237,20 @@ export default class Stage3D implements IRenderStage3D {
 
     mouseRightClick(): void {
         this.m_mouseEvt.type = MouseEvent.MOUSE_RIGHT_CLICK;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
         this.dispatchMouseEvt(1);
     }
     mouseMove(): void {
         this.m_mouseEvt.type = MouseEvent.MOUSE_MOVE;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
         this.dispatchMouseEvt(1);
     }
     mouseWheel(evt: any): void {
         this.m_mouseEvt.type = MouseEvent.MOUSE_WHEEL;
         this.m_mouseEvt.wheelDeltaY = evt.wheelDeltaY;
         this.dispatchMouseEvt(1);
-
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.wheelDeltaY = evt.wheelDeltaY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
     }
     // 等同于 touchCancle
     mouseCancel(): void {
         this.m_mouseEvt.type = MouseEvent.MOUSE_CANCEL;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
         this.dispatchMouseEvt(1);
     }
     //param [{x,y},{x,y},...]
@@ -319,13 +259,6 @@ export default class Stage3D implements IRenderStage3D {
         this.m_mouseEvt.type = MouseEvent.MOUSE_MULTI_DOWN;
         this.m_mouseEvt.posArray = posArray;
         this.dispatchMouseEvt(1);
-
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_mouseEvt.posArray = posArray;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
     }
     //param [{x,y},{x,y},...]
     mouseMultiUp(posArray: any[]): void {
@@ -333,13 +266,6 @@ export default class Stage3D implements IRenderStage3D {
         this.m_mouseEvt.type = MouseEvent.MOUSE_MULTI_UP;
         this.m_mouseEvt.posArray = posArray;
         this.dispatchMouseEvt(1);
-
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_mouseEvt.posArray = posArray;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
     }
     //param [{x,y},{x,y},...]
     mouseMultiMove(posArray: any[]): void {
@@ -347,13 +273,6 @@ export default class Stage3D implements IRenderStage3D {
         this.m_mouseEvt.type = MouseEvent.MOUSE_MULTI_MOVE;
         this.m_mouseEvt.posArray = posArray;
         this.dispatchMouseEvt(1);
-
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_mouseEvt.posArray = posArray;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
     }
 
     mouseWindowUp(phase: number = 1): void {

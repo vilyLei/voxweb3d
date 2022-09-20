@@ -34,14 +34,11 @@ export default class MouseEvent extends EventBase {
     static readonly MOUSE_MULTI_DOWN: number = 5013;
     static readonly MOUSE_MULTI_UP: number = 5014;
     static readonly MOUSE_MULTI_MOVE: number = 5015;
-
     static readonly MOUSE_BG_DOWN: number = 5016;            //  mouse down do not hit any 3d object, only in stage
     static readonly MOUSE_BG_UP: number = 5017;              //  mouse up do not hit any 3d object, only in stage
     static readonly MOUSE_BG_CLICK: number = 5018;          //  mouse up do not hit any 3d object, only in stage
-
-    static readonly MOUSE_MIDDLE_UP: number = 5019;
-    static readonly MOUSE_MIDDLE_DOWN: number = 5020;
-    
+    static readonly MOUSE_MIDDLE_DOWN: number = 5019;  
+    static readonly MOUSE_MIDDLE_UP: number = 5020;  
     static readonly MOUSE_BG_RIGHT_DOWN: number = 5021;            //  mouse down do not hit any 3d object, only in stage
     static readonly MOUSE_BG_RIGHT_UP: number = 5022;              //  mouse up do not hit any 3d object, only in stage
     static readonly MOUSE_BG_MIDDLE_DOWN: number = 5023;            //  mouse down do not hit any 3d object, only in stage
