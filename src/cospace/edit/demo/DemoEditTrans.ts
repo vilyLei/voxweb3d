@@ -298,7 +298,7 @@ export class DemoEditTrans {
 	private initInteract(): void {
 		if (this.m_rscene != null && this.m_interact == null && typeof CoMouseInteraction !== "undefined") {
 			this.m_interact = CoMouseInteraction.createMouseInteraction();
-			this.m_interact.setEventParams(1, false);
+			this.m_interact.setEventParams(1, true);
 			this.m_interact.initialize(this.m_rscene);
 			this.m_interact.setSyncLookAtEnabled(true);
 		}
