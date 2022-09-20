@@ -7,6 +7,7 @@
 interface IEvtDispatcher {
     uuid: string;
     data: any;
+    enabled: boolean;
     destroy(): void;
     getClassType(): number;
     // @return      1 is send evt yes,0 is send evt no

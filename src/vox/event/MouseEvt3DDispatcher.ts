@@ -9,11 +9,12 @@ import MouseEvent from "../../vox/event/MouseEvent";
 import EvtNode from "../../vox/event/EvtNode";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 
-class MouseEvt3DDispatcher implements IEvtDispatcher {
+export default class MouseEvt3DDispatcher implements IEvtDispatcher {
     private m_evtNodes: EvtNode[] = null;
-    private m_evtNodesLen: number = 18;
+    private m_evtNodesLen: number = 24;
     uuid: string = "";
     data: any = null;
+    enabled: boolean = true;
     constructor() {
         this.m_evtNodesLen = MouseEvent.GetMouseEvtTypeValuesTotal();
         this.m_evtNodes = new Array(this.m_evtNodesLen);
@@ -22,6 +23,7 @@ class MouseEvt3DDispatcher implements IEvtDispatcher {
         return MouseEvent.EventClassType;
     }
     destroy(): void {
+        console.log("VVVVVVVVVV this.m_evtNodesLen: ",this.m_evtNodesLen);
         for (let i: number = 0; i < this.m_evtNodesLen; ++i) {
             if(this.m_evtNodes[i] != null) {
                 this.m_evtNodes[i].destroy();
@@ -30,10 +32,10 @@ class MouseEvt3DDispatcher implements IEvtDispatcher {
     }
     // @return      1 is send evt yes,0 is send evt no
     dispatchEvt(evt: any): number {
-        if (evt != null) {
+        if (this.enabled && evt != null) {
             if(this.uuid != "") evt.uuid = this.uuid;
             if(this.data != null) evt.data = this.data;
-            let t: number = evt.type - MouseEvent.GetMouseEvtTypeValueBase();
+            let t = evt.type - MouseEvent.GetMouseEvtTypeValueBase();
             if (t >= 0 && t < MouseEvent.GetMouseEvtTypeValuesTotal()) {
                 if (this.m_evtNodes[t] != null) return this.m_evtNodes[t].dispatch(evt);
             }
@@ -107,4 +109,3 @@ class MouseEvt3DDispatcher implements IEvtDispatcher {
         }
     }
 }
-export default MouseEvt3DDispatcher;

@@ -14,6 +14,7 @@ export default class EventBaseDispatcher implements IEvtDispatcher {
     private m_evtNodeMap: Map<number, EvtNode> = new Map();
     uuid: string = "";
     data: any = null;
+    enabled: boolean = true;
     constructor() {
     }
     getClassType(): number {
@@ -26,10 +27,10 @@ export default class EventBaseDispatcher implements IEvtDispatcher {
     }
     // @return      1 is send evt yes,0 is send evt no
     dispatchEvt(evt: any): number {
-        if (evt != null) {
+        if (this.enabled && evt != null) {
             if(this.uuid != "") evt.uuid = this.uuid;
             if(this.data != null) evt.data = this.data;
-            let t: number = evt.type;
+            let t = evt.type;
             if (t > 1 && this.m_evtNodeMap.has(t)) {
                 return this.m_evtNodeMap.get(t).dispatch(evt);
             }
