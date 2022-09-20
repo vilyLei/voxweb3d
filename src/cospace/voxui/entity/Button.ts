@@ -18,25 +18,41 @@ import { ICoEntity } from "../../voxentity/ICoEntity";
 declare var CoEntity: ICoEntity;
 
 class Button implements IButton {
+	private m_enabled: boolean = true;
 	private m_dp: IEvtDispatcher;
 	private m_lb: IClipEntity = null;
 	private m_entity: ITransformEntity = null;
 	uuid = "btn";
-	
-	enable(): void {
-		if(this.m_entity != null) {
-			this.m_entity.mouseEnabled = true;
-		}
-	}
-	disable(): void {
 
-		if(this.m_entity != null) {
-			this.m_entity.mouseEnabled = false;
+	enable(): IButton {
+
+		if (this.m_dp != null) {
+			this.m_dp.enabled = true;
+		}
+		this.m_enabled = true;
+		return this;
+	}
+	disable(): IButton {
+
+		if (this.m_dp != null) {
+			this.m_dp.enabled = false;
+		}
+		this.m_enabled = false;
+		return this;
+	}
+	isEnabled(): boolean {
+		return this.m_enabled;
+	}
+
+	setMouseEnabled(enabled: boolean): void {
+		if (this.m_entity != null) {
+			this.m_entity.mouseEnabled = enabled;
 		}
 	}
-	isEnable(): boolean {
+	isMouseEnabled(): boolean {
 		return this.m_entity != null && this.m_entity.mouseEnabled;
 	}
+
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): IButton {
 
 		if (this.m_lb == null && atlas != null && idnsList != null) {
@@ -73,6 +89,7 @@ class Button implements IButton {
 			const me = CoRScene.MouseEvent;
 			let dpc = CoRScene.createMouseEvt3DDispatcher();
 			dpc.uuid = this.uuid;
+			dpc.enabled = this.m_enabled;
 			dpc.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
 			dpc.addEventListener(me.MOUSE_UP, this, this.mouseUpListener);
 			dpc.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
@@ -85,6 +102,7 @@ class Button implements IButton {
 	}
 
 	addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): IButton {
+
 		this.m_dp.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
 		return this;
 	}
@@ -94,20 +112,28 @@ class Button implements IButton {
 	}
 	protected mouseOverListener(evt: any): void {
 		console.log("Button::mouseOverListener() ...");
-		this.m_lb.setClipIndex(1);
+		if (this.m_enabled) {
+			this.m_lb.setClipIndex(1);
+		}
 	}
 	protected mouseOutListener(evt: any): void {
 		console.log("Button::mouseOutListener() ...");
-		this.m_lb.setClipIndex(0);
+		if (this.m_enabled) {
+			this.m_lb.setClipIndex(0);
+		}
 	}
 
 	protected mouseDownListener(evt: any): void {
 		console.log("Button::mouseDownListener() ...");
-		this.m_lb.setClipIndex(2);
+		if (this.m_enabled) {
+			this.m_lb.setClipIndex(2);
+		}
 	}
 	protected mouseUpListener(evt: any): void {
 		console.log("Button::mouseUpListener() ...");
-		this.m_lb.setClipIndex(3);
+		if (this.m_enabled) {
+			this.m_lb.setClipIndex(3);
+		}
 	}
 	setClipIndex(i: number): void {
 		this.m_lb.setClipIndex(i);

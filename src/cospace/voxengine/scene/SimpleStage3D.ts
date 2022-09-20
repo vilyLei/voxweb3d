@@ -103,6 +103,10 @@ class SimpleStage3D implements IRenderStage3D {
     }
     mouseRightUp(phase: number = 1): void {
     }
+    mouseMiddleDown(phase: number = 1): void {
+    }
+    mouseMiddleUp(phase: number = 1): void {
+    }
 
 
     mouseBgDown(): void {
@@ -110,6 +114,15 @@ class SimpleStage3D implements IRenderStage3D {
     mouseBgUp(): void {
     }
     mouseBgClick(): void {
+    }
+    
+    mouseBgRightDown(): void {
+    }
+    mouseBgRightUp(): void {
+    }
+    mouseBgMiddleDown(): void {
+    }
+    mouseBgMiddleUp(): void {
     }
 
     mouseRightClick(): void {

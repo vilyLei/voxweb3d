@@ -13,7 +13,6 @@ class MouseInteraction implements IMouseInteraction {
 	readonly zoomer: MouseCamZoomer = new MouseCamZoomer();
 	zoomLookAtPosition: IVector3D = null;
 	zoomMinDistance: number = 30;
-	// readonly viewRay: CameraViewRay = new CameraViewRay();
 
 	constructor() {}
 
@@ -35,6 +34,14 @@ class MouseInteraction implements IMouseInteraction {
 			this.zoomer.initialize(rscene.getStage3D());
 			this.zoomer.setLookAtCtrlEnabled(false);
 		}
+	}
+	/**
+	 * @param buttonType the value contains 0(mouse down), 1(mouse middle), 2(mouse right)
+	 * @param bgEventEnabled apply background mouse event true or false
+	 */
+	setEventParams(buttonType: number, bgEventEnabled: boolean = true): void {
+		this.drager.buttonType = buttonType;
+		this.drager.bgEventEnabled = bgEventEnabled;
 	}
 	setSyncLookAtEnabled(ennabled: boolean): void {
 		this.zoomer.syncLookAt = ennabled;

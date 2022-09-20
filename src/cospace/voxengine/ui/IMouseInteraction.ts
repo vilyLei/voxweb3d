@@ -16,6 +16,11 @@ interface IMouseInteraction {
     cameraCtrlEnabled: boolean;
 
     initialize(rscene: IRendererScene): void;
+    /**
+	 * @param buttonType the value contains 0(mouse down), 1(mouse middle), 2(mouse right)
+	 * @param bgEventEnabled apply background mouse event true or false
+	 */
+	setEventParams(buttonType: number, bgEventEnabled?: boolean): void
     setSyncLookAtEnabled(ennabled: boolean): void;
     run(): void;
 }

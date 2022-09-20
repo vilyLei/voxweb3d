@@ -20,14 +20,40 @@ export default class MouseCamDrager {
     private m_dragSwinger: CamDragSwinger = new CamDragSwinger();
     private m_dragSlider: CamDragSlider = new CamDragSlider();
     private m_swing: boolean = true;
+    /**
+     * the value contains 0(mouse down), 1(mouse middle), 2(mouse right)
+     */
+    buttonType: number = 0;
+    bgEventEnabled: boolean = true;
     initialize(stage3D: IRenderStage3D, camera: IRenderCamera): void {
+
         if (this.m_stage3D == null) {
+
             this.m_stage3D = stage3D;
             this.m_dragSwinger.initialize(stage3D, camera);
             this.m_dragSlider.initialize(stage3D, camera);
-            const MouseEvent = CoRScene.MouseEvent;
-            stage3D.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseDownListener, true, false);
-            stage3D.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener, false, true);
+
+            const ME = CoRScene.MouseEvent;
+            let downType = ME.MOUSE_DOWN;
+            let upType = ME.MOUSE_UP;
+
+            if (this.buttonType == 1) {
+                if(this.bgEventEnabled) {
+                    downType = ME.MOUSE_BG_MIDDLE_DOWN;
+                }else {
+                    downType = ME.MOUSE_MIDDLE_DOWN;
+                }
+                upType = ME.MOUSE_MIDDLE_UP;
+            } else if (this.buttonType == 2) {
+                if(this.bgEventEnabled) {
+                    downType = ME.MOUSE_BG_RIGHT_DOWN;
+                }else {
+                    downType = ME.MOUSE_RIGHT_DOWN;
+                }
+                upType = ME.MOUSE_RIGHT_UP;
+            }
+            stage3D.addEventListener(downType, this, this.mouseDownListener, true, false);
+            stage3D.addEventListener(upType, this, this.mouseUpListener, false, true);
         }
     }
     setSlideSpeed(slideSpeed: number): void {

@@ -92,6 +92,13 @@ interface CoMouseEvent {
 	readonly MOUSE_BG_DOWN: number; //  mouse down do not hit any 3d object, only in stage
 	readonly MOUSE_BG_UP: number; //  mouse up do not hit any 3d object, only in stage
 	readonly MOUSE_BG_CLICK: number; //  mouse up do not hit any 3d object, only in stage
+
+    readonly MOUSE_MIDDLE_UP: number;// = 5019;
+    readonly MOUSE_MIDDLE_DOWN: number;// = 5020;
+    readonly MOUSE_BG_RIGHT_DOWN: number;// = 5021;
+    readonly MOUSE_BG_RIGHT_UP: number;// = 5022;
+    readonly MOUSE_BG_MIDDLE_DOWN: number;// = 5023;
+    readonly MOUSE_BG_MIDDLE_UP: number;// = 5024;
 }
 
 interface CoShaderCodeUUID {

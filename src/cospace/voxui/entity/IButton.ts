@@ -7,9 +7,11 @@ interface IButton extends IUIEntity {
 
 	uuid: string;
 
-	enable(): void;
-	disable(): void;
-	isEnable(): boolean;
+	enable(): IButton;
+	disable(): IButton;
+	isEnabled(): boolean;
+	setMouseEnabled(enabled: boolean): void;
+	isMouseEnabled(): boolean;
 
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): IButton;
 	initializeWithLable(lable: IClipEntity): IButton;
