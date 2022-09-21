@@ -6,14 +6,14 @@
 /***************************************************************************/
 // 整个渲染器的空间管理类接口规范
 
-import Vector3D from "../../vox/math/Vector3D";
+import IVector3D from "../../vox/math/IVector3D";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import IRenderEntity from "../../vox/render/IRenderEntity";
-import Entity3DNode from "../../vox/scene/Entity3DNode";
 import ISpaceCullingor from "../../vox/scene/ISpaceCullingor";
 import IRaySelector from "../../vox/scene/IRaySelector";
 import IRenderingEntitySet from "../../vox/scene/IRenderingEntitySet";
+import IEntity3DNode from "./IEntity3DNode";
 
 export default interface IRendererSpace {
 
@@ -33,10 +33,10 @@ export default interface IRendererSpace {
     setRaySelector(raySelector: IRaySelector): void;
     getPOVNumber(): number;
     getRaySelector(): IRaySelector;
-    rayTest(rltv: Vector3D, rlpv: Vector3D): void;
+    rayTest(rltv: IVector3D, rlpv: IVector3D): void;
     runBegin(): void;
     run(): void;
     runEnd(): void;
     update(): void;
-    getCullingNodeHead(): Entity3DNode;
+    getCullingNodeHead(): IEntity3DNode;
 }

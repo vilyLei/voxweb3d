@@ -157,7 +157,9 @@ export class DemoMouseEvent {
     //     // this.showOutColor();
     // }
     private mouseDown(evt: any): void {
-        console.log("DemoMouseEvent::mouseDown() ...");
+        let etset = this.m_rscene.getSpace().renderingEntitySet;
+
+        console.log("DemoMouseEvent::mouseDown() ... etset.getTotal(): ", etset.getTotal());
     }
     private mouseUp(evt: any): void {
         console.log("DemoMouseEvent::mouseUp() ...");

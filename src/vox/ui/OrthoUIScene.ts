@@ -7,8 +7,8 @@
 /***************************************************************************/
 
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
-import {IRenderableMaterialBlock} from "../scene/block/IRenderableMaterialBlock";
-import {IRenderableEntityBlock} from "../scene/block/IRenderableEntityBlock";
+import { IRenderableMaterialBlock } from "../scene/block/IRenderableMaterialBlock";
+import { IRenderableEntityBlock } from "../scene/block/IRenderableEntityBlock";
 import RendererScene from "../scene/RendererScene";
 import RendererSubScene from "../scene/RendererSubScene";
 import EventBase from "../event/EventBase";
@@ -19,6 +19,7 @@ import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 import { IFBOInstance } from "../../vox/scene/IFBOInstance";
 import IRendererScene from "../../vox/scene/IRendererScene";
+import IRendererSpace from "../../vox/scene/IRendererSpace";
 import { IRenderCamera } from "../render/IRenderCamera";
 import IRenderProcess from "../render/IRenderProcess";
 import IRenderStage3D from "../render/IRenderStage3D";
@@ -33,17 +34,20 @@ class OrthoUIScene implements IRendererScene {
 
     private m_rscene: RendererScene = null;
     private m_ruisc: RendererSubScene = null;
-    
+
     readonly textureBlock: ITextureBlock;
 
     entityBlock: IRenderableEntityBlock = null;
     materialBlock: IRenderableMaterialBlock = null;
 
     constructor() { }
-
+    
+    getSpace(): IRendererSpace {
+        return null;
+    }
     setAccessor(accessor: IRendererSceneAccessor): void {
-        if(this.m_ruisc != null) {
-            this.m_ruisc.setAccessor( accessor );
+        if (this.m_ruisc != null) {
+            this.m_ruisc.setAccessor(accessor);
         }
     }
     initialize(rscene: RendererScene): void {
@@ -84,7 +88,7 @@ class OrthoUIScene implements IRendererScene {
     getRendererScene(): RendererSubScene {
         return this.m_ruisc;
     }
-    
+
     /**
      * 获取渲染器可渲染对象管理器状态(版本号)
      */
@@ -201,7 +205,7 @@ class OrthoUIScene implements IRendererScene {
     updateCamera(): void {
         this.m_rscene.updateCamera();
     }
-    
+
     createCamera(): IRenderCamera {
         return null;
     }
@@ -211,7 +215,7 @@ class OrthoUIScene implements IRendererScene {
     getStage3D(): IRenderStage3D {
         return this.m_ruisc.getStage3D();
     }
-    
+
     getViewWidth(): number {
         return this.m_ruisc.getViewWidth();
     }
@@ -228,16 +232,16 @@ class OrthoUIScene implements IRendererScene {
     getRenderProcessAt(processIndex: number): IRenderProcess {
         return this.m_ruisc.getRenderProcessAt(processIndex);
     }
-    
+
     createFBOInstance(): IFBOInstance {
         return null;
     }
     createMatrix4(): IMatrix4 {
         return this.m_rscene.createMatrix4();
     }
-    
+
     createVector3D(x: number = 0.0, y: number = 0.0, z: number = 0.0, w: number = 1.0): IVector3D {
-        return this.m_rscene.createVector3D(x,y,z,w);
+        return this.m_rscene.createVector3D(x, y, z, w);
     }
 }
 export { OrthoUIScene };
