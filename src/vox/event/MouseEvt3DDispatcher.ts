@@ -14,6 +14,7 @@ export default class MouseEvt3DDispatcher implements IEvtDispatcher {
     private m_evtNodesLen: number = 24;
     uuid: string = "";
     data: any = null;
+    currentTarget: any = null;
     enabled: boolean = true;
     constructor() {
         this.m_evtNodesLen = MouseEvent.GetMouseEvtTypeValuesTotal();
@@ -29,12 +30,15 @@ export default class MouseEvt3DDispatcher implements IEvtDispatcher {
                 this.m_evtNodes[i].destroy();
             }
         }
+        this.data = null;
+        this.currentTarget = null;
     }
     // @return      1 is send evt yes,0 is send evt no
     dispatchEvt(evt: any): number {
         if (this.enabled && evt != null) {
             if(this.uuid != "") evt.uuid = this.uuid;
             if(this.data != null) evt.data = this.data;
+            if(this.currentTarget != null) evt.currentTarget = this.currentTarget;
             let t = evt.type - MouseEvent.GetMouseEvtTypeValueBase();
             if (t >= 0 && t < MouseEvent.GetMouseEvtTypeValuesTotal()) {
                 

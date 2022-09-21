@@ -7,6 +7,7 @@
 interface IEvtDispatcher {
     uuid: string;
     data: any;
+    currentTarget: any;
     enabled: boolean;
     destroy(): void;
     getClassType(): number;

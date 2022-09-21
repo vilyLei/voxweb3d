@@ -22,9 +22,9 @@ class EventBase implements IEventBase {
     phase: number = 0;
     // 事件类型
     type: number = EventBase.RESIZE;
-    // 事件发送者
+    // 元事件发送者
     target: any = null;
-    // 事件产生者, 例如容器发送了一个mouse down事件, 则容器是target而ray pick到的这个 entity就是currentTarget
+    // 逻辑事件产生者, 例如容器发送了一个mouse down事件, 则容器是target而ray pick到的这个 entity就是currentTarget
     currentTarget: any = null;
     data: any = null;
     __$preventBoo: boolean = false;
