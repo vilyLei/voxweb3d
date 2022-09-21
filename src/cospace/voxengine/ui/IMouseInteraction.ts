@@ -14,13 +14,13 @@ interface IMouseInteraction {
      * 是否启用摄像机用户控制
      */
     cameraCtrlEnabled: boolean;
-
-    initialize(rscene: IRendererScene): void;
-    /**
-	 * @param buttonType the value contains 0(mouse left button), 1(mouse middle button), 2(mouse right button)
-	 * @param bgEventEnabled apply background mouse event true or false
+    
+	/**
+	 * @param rscene renderer scene instance
+	 * @param buttonType the default value is 0, the value contains 0(mouse left button), 1(mouse middle button), 2(mouse right button)
+	 * @param bgEventEnabled apply background mouse event true or false, the default value is true
 	 */
-	setEventParams(buttonType: number, bgEventEnabled?: boolean): void
+    initialize(rscene: IRendererScene, buttonType?: number, bgEventEnabled?: boolean): void;
     setSyncLookAtEnabled(ennabled: boolean): void;
     run(): void;
 }

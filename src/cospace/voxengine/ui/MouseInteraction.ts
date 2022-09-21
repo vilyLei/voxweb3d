@@ -4,7 +4,6 @@ import MouseCamZoomer from "./MouseCamZoomer";
 import { IMouseInteraction } from "./IMouseInteraction";
 
 import IVector3D from "../../../vox/math/IVector3D";
-// import CameraViewRay from "../../../vox/view/CameraViewRay";
 
 class MouseInteraction implements IMouseInteraction {
 	private m_rscene: IRendererScene = null;
@@ -20,28 +19,29 @@ class MouseInteraction implements IMouseInteraction {
 	 * 是否启用摄像机用户控制
 	 */
 	cameraCtrlEnabled: boolean = true;
-
-	initialize(rscene: IRendererScene): void {
-		if (this.m_rscene == null) {
-			this.m_rscene = rscene;
-
-			// this.viewRay.bindCameraAndStage(rscene.getCamera(), rscene.getStage3D());
-			// this.viewRay.setPlaneParam(new Vector3D(0.0, 1.0, 0.0), 0.0);
-
-			rscene.enableMouseEvent(true);
-			this.drager.initialize(rscene.getStage3D(), rscene.getCamera());
-			this.zoomer.bindCamera(rscene.getCamera());
-			this.zoomer.initialize(rscene.getStage3D());
-			this.zoomer.setLookAtCtrlEnabled(false);
-		}
-	}
+	
 	/**
-	 * @param buttonType the value contains 0(mouse left button), 1(mouse middle button), 2(mouse right button)
-	 * @param bgEventEnabled apply background mouse event true or false
+	 * @param rscene renderer scene instance
+	 * @param buttonType the default value is 0, the value contains 0(mouse left button), 1(mouse middle button), 2(mouse right button)
+	 * @param bgEventEnabled apply background mouse event true or false, the default value is true
 	 */
-	setEventParams(buttonType: number, bgEventEnabled: boolean = true): void {
-		this.drager.buttonType = buttonType;
-		this.drager.bgEventEnabled = bgEventEnabled;
+	initialize(rscene: IRendererScene, buttonType: number = 0, bgEventEnabled: boolean = true): void {
+		if (this.m_rscene == null) {
+
+			this.m_rscene = rscene;
+			rscene.enableMouseEvent(true);
+
+			const d = this.drager;
+			const z = this.zoomer;
+
+			d.buttonType = buttonType;
+			d.bgEventEnabled = bgEventEnabled;
+			d.initialize(rscene.getStage3D(), rscene.getCamera());
+
+			z.bindCamera(rscene.getCamera());
+			z.initialize(rscene.getStage3D());
+			z.setLookAtCtrlEnabled(false);
+		}
 	}
 	setSyncLookAtEnabled(ennabled: boolean): void {
 		this.zoomer.syncLookAt = ennabled;
