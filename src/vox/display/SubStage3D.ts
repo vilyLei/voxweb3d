@@ -6,74 +6,27 @@
 /***************************************************************************/
 
 import EventBase from "../../vox/event/EventBase";
-import MouseEvent from "../../vox/event/MouseEvent";
 import KeyboardEvent from "../../vox/event/KeyboardEvent";
-
-import { IShaderUniformProbe } from "../../vox/material/IShaderUniformProbe";
-import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
+import StageBase from "./StageBase";
 
-class SubStage3D implements IRenderStage3D {
+class SubStage3D extends StageBase implements IRenderStage3D {
 
-    private m_rcuid: number = 0;
-    constructor(rcuid: number, pdocument: any) {
-        this.m_rcuid = rcuid;
-    }
-    /**
-     * @returns return renderer context unique id
-     */
-    getRCUid(): number {
-        return this.m_rcuid;
-    }
-    pixelRatio: number = 1.0;
-    stageWidth: number = 800;
-    stageHeight: number = 600;
-    // 实际宽高, 和gpu端对齐
-    stageHalfWidth: number = 400;
-    stageHalfHeight: number = 300;
-    mouseX: number = 0;
-    mouseY: number = 0;
-    // sdiv页面实际占据的像素宽高
-    viewWidth: number = 800;
-    viewHeight: number = 600;
-    mouseViewX: number = 0;
-    mouseViewY: number = 0;
-    private m_viewX: number = 0.0;
-    private m_viewY: number = 0.0;
-    private m_viewW: number = 1.0
-    private m_viewH: number = 1.0;
-    // mouse event dispatcher
-    private m_dp: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
-    private m_resize_listener: ((evt: any) => void)[] = [];
-    private m_resize_ers: any[] = [];
     private m_enterFrame_listener: ((evt: any) => void)[] = [];
     private m_enterFrame_ers: any[] = [];
-    private m_keyDown_listener: ((evt: any) => void)[] = [];
-    private m_keyDown_ers: any[] = [];
-    private m_keyUp_listener: ((evt: any) => void)[] = [];
-    private m_keyUp_ers: any[] = [];
-    private m_preStageWidth: number = 0;
-    private m_preStageHeight: number = 0;
-    private m_mouseEvt: MouseEvent = new MouseEvent();
-    // 是否舞台尺寸和view自动同步一致
-    private m_autoSynViewAndStageSize: boolean = true;
+    private m_enterFrameEvt: EventBase = new EventBase();
+    
+    constructor(rcuid: number, pdocument: any) {
+        super(rcuid);
+    }
+    enterFrame(): void {
+        this.m_enterFrameEvt.type = EventBase.ENTER_FRAME;
+        let len: number = this.m_enterFrame_listener.length;
+        for (var i: number = 0; i < len; ++i) {
+            this.m_enterFrame_listener[i].call(this.m_enterFrame_ers[i], this.m_enterFrameEvt);
+        }
+    }
 
-    uProbe: IShaderUniformProbe = null;
-    getDevicePixelRatio(): number {
-        return window.devicePixelRatio;
-    }
-    getViewX(): number {
-        return this.m_viewX;
-    }
-    getViewY(): number {
-        return this.m_viewY;
-    }
-    getViewWidth(): number {
-        return this.m_viewW;
-    }
-    getViewHeight(): number {
-        return this.m_viewH;
-    }
     setViewPort(px: number, py: number, pw: number, ph: number): void {
         this.m_autoSynViewAndStageSize = false;
         this.m_viewX = px;
@@ -107,248 +60,13 @@ class SubStage3D implements IRenderStage3D {
             this.stageHalfHeight = 0.5 * this.stageHeight;
         }
     }
-    
-    private dispatchMouseEvt(phase: number, tar: any = null): void {
-        const evt = this.m_mouseEvt;
-        evt.mouseX = this.mouseX;
-        evt.mouseY = this.mouseY;
-        evt.target = tar == null ? this : tar;
-        evt.phase = phase;
-        this.m_dp.dispatchEvt(this.m_mouseEvt);
-    }
-    mouseDown(phase: number = 1): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_DOWN;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = phase;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
-        this.dispatchMouseEvt(phase);
-    }
-    mouseUp(phase: number = 1): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_UP;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = phase;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
-        this.dispatchMouseEvt(phase);
-    }
-    mouseClick(): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_CLICK;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
-        this.dispatchMouseEvt(1);
-    }
-    mouseDoubleClick(): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_DOUBLE_CLICK;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
-        this.dispatchMouseEvt(1);
-    }
-    mouseRightDown(phase: number = 1): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_RIGHT_DOWN;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
-        this.dispatchMouseEvt(phase);
-    }
-    mouseRightUp(phase: number = 1): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_RIGHT_UP;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
-        this.dispatchMouseEvt(phase);
-    }
-    mouseMiddleDown(phase: number = 1): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_MIDDLE_DOWN;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
-        this.dispatchMouseEvt(phase);
-    }
-    mouseMiddleUp(phase: number = 1): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_MIDDLE_UP;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
-        this.dispatchMouseEvt(phase);
-    }
-
-    mouseBgDown(): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_BG_DOWN;   
-        this.dispatchMouseEvt(1);
-    }
-    mouseBgUp(): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_BG_UP;
-        this.dispatchMouseEvt(1);
-    }
-    mouseBgClick(): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_BG_CLICK;
-        this.dispatchMouseEvt(1);
-    }    
-    mouseBgRightDown(): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_BG_RIGHT_DOWN;     
-        this.dispatchMouseEvt(1);
-    }
-    mouseBgRightUp(): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_BG_RIGHT_UP;
-        this.dispatchMouseEvt(1);
-    }    
-    mouseBgMiddleDown(): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_BG_MIDDLE_DOWN;     
-        this.dispatchMouseEvt(1);
-    }
-    mouseBgMiddleUp(): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_BG_MIDDLE_UP;
-        this.dispatchMouseEvt(1);
-    }
-
-    mouseRightClick(): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_RIGHT_CLICK;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
-        this.dispatchMouseEvt(1);
-    }
-    mouseMove(): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_MOVE;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
-        this.dispatchMouseEvt(1);
-    }
-    mouseWheel(evt: any): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_WHEEL;
-        this.m_mouseEvt.wheelDeltaY = evt.wheelDeltaY;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.wheelDeltaY = evt.wheelDeltaY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
-        this.dispatchMouseEvt(1);
-    }
-    // 等同于 touchCancle
-    mouseCancel(): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_CANCEL;
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
-        this.dispatchMouseEvt(1);
-    }
-    //param [{x,y},{x,y},...]
-    mouseMultiDown(posArray: any[]): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_MULTI_DOWN;
-        this.m_mouseEvt.posArray = posArray;
-
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_mouseEvt.posArray = posArray;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
-
-        this.dispatchMouseEvt(1);
-    }
-    //param [{x,y},{x,y},...]
-    mouseMultiUp(posArray: any[]): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_MULTI_UP;
-        this.m_mouseEvt.posArray = posArray;
-
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_mouseEvt.posArray = posArray;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
-
-        this.dispatchMouseEvt(1);
-    }
-    //param [{x,y},{x,y},...]
-    mouseMultiMove(posArray: any[]): void {
-        this.m_mouseEvt.type = MouseEvent.MOUSE_MULTI_MOVE;
-        this.m_mouseEvt.posArray = posArray;
-
-        // this.m_mouseEvt.mouseX = this.mouseX;
-        // this.m_mouseEvt.mouseY = this.mouseY;
-        // this.m_mouseEvt.target = this;
-        // this.m_mouseEvt.phase = 1;
-        // this.m_mouseEvt.posArray = posArray;
-        // this.m_dp.dispatchEvt(this.m_mouseEvt);
-        this.dispatchMouseEvt(1);
-    }
-
-    mouseWindowUp(phase: number = 1): void {
-    }
-    mouseWindowRightUp(phase: number = 1): void {
-    }
-    private m_enterFrameEvt: EventBase = new EventBase();
-    enterFrame(): void {
-        this.m_enterFrameEvt.type = EventBase.ENTER_FRAME;
-        let len: number = this.m_enterFrame_listener.length;
-        for (var i: number = 0; i < len; ++i) {
-            this.m_enterFrame_listener[i].call(this.m_enterFrame_ers[i], this.m_enterFrameEvt);
-        }
-    }
-    
-    private addTarget(funcs: ((evt: any) => void)[], listeners: any[], target: any, func: (evt: any) => void): void {
-        let i = 0;
-        for (i = funcs.length - 1; i >= 0; --i) {
-            if (target === listeners[i]) {
-                break;
-            }
-        }
-        if (i < 0) {
-            listeners.push(target);
-            funcs.push(func);
-        }
-    }
-    
-    private removeTarget(funcs: ((evt: any) => void)[], listeners: any[], target: any): void {
-        for (let i = funcs.length - 1; i >= 0; --i) {
-            if (target === listeners[i]) {
-                listeners.splice(i, 1);
-                funcs.splice(i, 1);
-                break;
-            }
-        }
-    }
     addEventListener(type: number, target: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = true): void {
         if (func != null && target != null) {
-            let i: number = 0;
             switch (type) {
                 case EventBase.RESIZE:
                     console.warn("addEventListener EventBase.RESIZE invalid operation.");
                     break;
                 case EventBase.ENTER_FRAME:
-                    // for (i = this.m_enterFrame_listener.length - 1; i >= 0; --i) {
-                    //     if (target === this.m_enterFrame_ers[i]) {
-                    //         break;
-                    //     }
-                    // }
-                    // if (i < 0) {
-                    //     this.m_enterFrame_ers.push(target);
-                    //     this.m_enterFrame_listener.push(func);
-                    // }
                     this.addTarget(this.m_enterFrame_listener, this.m_enterFrame_ers, target, func);
                     break;
                 case KeyboardEvent.KEY_DOWN:
@@ -365,47 +83,18 @@ class SubStage3D implements IRenderStage3D {
     }
     removeEventListener(type: number, target: any, func: (evt: any) => void): void {
         if (func != null && target != null) {
-            let i: number = 0;
             switch (type) {
                 case EventBase.RESIZE:
-                    // for (i = this.m_resize_listener.length - 1; i >= 0; --i) {
-                    //     if (target === this.m_resize_ers[i]) {
-                    //         this.m_resize_ers.splice(i, 1);
-                    //         this.m_resize_listener.splice(i, 1);
-                    //         break;
-                    //     }
-                    // }
-                    this.removeTarget(this.m_resize_listener, this.m_resize_ers, target);
+                    // this.removeTarget(this.m_resize_listener, this.m_resize_ers, target);
                     break;
                 case EventBase.ENTER_FRAME:
-                    // for (i = this.m_enterFrame_listener.length - 1; i >= 0; --i) {
-                    //     if (target === this.m_enterFrame_ers[i]) {
-                    //         this.m_enterFrame_ers.splice(i, 1);
-                    //         this.m_enterFrame_listener.splice(i, 1);
-                    //         break;
-                    //     }
-                    // }
                     this.removeTarget(this.m_enterFrame_listener, this.m_enterFrame_ers, target);
                     break;
                 case KeyboardEvent.KEY_DOWN:
-                    // for (i = this.m_keyDown_listener.length - 1; i >= 0; --i) {
-                    //     if (target === this.m_keyDown_ers[i]) {
-                    //         this.m_keyDown_ers.splice(i, 1);
-                    //         this.m_keyDown_listener.splice(i, 1);
-                    //         break;
-                    //     }
-                    // }
-                    this.removeTarget(this.m_keyDown_listener, this.m_keyDown_ers, target);
+                    // this.removeTarget(this.m_keyDown_listener, this.m_keyDown_ers, target);
                     break;
                 case KeyboardEvent.KEY_UP:
-                    // for (i = this.m_keyUp_listener.length - 1; i >= 0; --i) {
-                    //     if (target === this.m_keyUp_ers[i]) {
-                    //         this.m_keyUp_ers.splice(i, 1);
-                    //         this.m_keyUp_listener.splice(i, 1);
-                    //         break;
-                    //     }
-                    // }
-                    this.removeTarget(this.m_keyUp_listener, this.m_keyUp_ers, target);
+                    // this.removeTarget(this.m_keyUp_listener, this.m_keyUp_ers, target);
                     break;
                 default:
                     this.m_dp.removeEventListener(type, target, func);

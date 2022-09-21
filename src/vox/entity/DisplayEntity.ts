@@ -166,10 +166,11 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     __$setDrawEnabled(boo: boolean): void {
         if (this.m_drawEnabled != boo) {
             this.m_drawEnabled = boo;
-            if (this.m_display != null) {
-                this.m_display.visible = this.m_visible && boo;
-                if (this.m_display.__$$runit != null) {
-                    this.m_display.__$$runit.setVisible(this.m_display.visible);
+            const  d = this.m_display;
+            if (d != null) {
+                d.visible = this.m_visible && boo;
+                if (d.__$$runit != null) {
+                    d.__$$runit.setVisible(d.visible);
                 }
             }
         }
