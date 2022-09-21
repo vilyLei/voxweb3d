@@ -23,6 +23,10 @@ import RendererSceneGraph from "../../../vox/scene/RendererSceneGraph";
 import { TransformController } from "../transform/TransformController";
 import { IButton } from "../../voxui/entity/IButton";
 import { IClipLabel } from "../../voxui/entity/IClipLabel";
+import { PostOutline } from "./effect/PostOutline";
+import { UIRectLine } from "./edit/UIRectLine";
+import { IClipEntity } from "../../voxui/entity/IClipEntity";
+import { IColorClipLabel } from "../../voxui/entity/IColorClipLabel";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -47,30 +51,27 @@ class SceneAccessor implements IRendererSceneAccessor {
  * cospace renderer
  */
 export class DemoEditTrans {
-	private m_rscene: ICoRendererScene = null;
-	private m_editRScene: ICoRendererScene = null;
-	private m_uiRScene: IRendererScene = null;
+	private m_renderer: ICoRendererScene = null;
+	private m_editUIRenderer: ICoRendererScene = null;
+	private m_uiRenderer: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
 	private m_interact: IMouseInteraction = null;
 
 	private m_vcoapp: ViewerCoSApp;
 	private m_vmctx: ViewerMaterialCtx;
+	private m_outline: PostOutline;
 	private m_scale = 20.0;
 
 	constructor() { }
 
 	initialize(): void {
 
-		
+
 		document.oncontextmenu = function (e) {
 			e.preventDefault();
 		}
 
 		console.log("DemoEditTrans::initialize() ...");
-		document.onmousedown = (evt: any): void => {
-			this.mouseDown(evt);
-		};
-
 
 		this.initEngineModule();
 	}
@@ -124,22 +125,33 @@ export class DemoEditTrans {
 		mouseInteractML.load(url);
 	}
 	private m_transCtr: TransformController = null;
-
+	private m_selectFrame: UIRectLine = null;
 	private createEditEntity(): void {
 
-		let editsc = this.m_editRScene;
+		let editsc = this.m_editUIRenderer;
 
 		this.m_transCtr = new TransformController();
 		this.m_transCtr.initialize(editsc);
+
 	}
 	private initUI(): void {
 
 		this.m_coUIScene = CoUI.createUIScene();
 		this.m_coUIScene.initialize();
-		this.m_uiRScene = this.m_coUIScene.rscene;
-		this.m_graph.addScene(this.m_uiRScene);
+		this.m_uiRenderer = this.m_coUIScene.rscene;
+		this.m_graph.addScene(this.m_uiRenderer);
+
+		let rsc = this.m_uiRenderer;
+		rsc.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.uiMouseDownListener);
+		rsc.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.uiMouseUpListener);
+		rsc.addEventListener(CoRScene.MouseEvent.MOUSE_MOVE, this, this.uiMouseMoveListener);
 
 		let uiScene = this.m_coUIScene;
+
+		if (this.m_selectFrame == null) {
+			this.m_selectFrame = new UIRectLine();
+			this.m_selectFrame.initialize(this.m_uiRenderer);
+		}
 		/*
 		let clipColorLabel = CoUI.createClipColorLabel();
 		clipColorLabel.initializeWithoutTex(50, 32, 4);
@@ -165,7 +177,6 @@ export class DemoEditTrans {
 		texAtlas.addImageToAtlas(urls[2], img);
 		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[3], 30);
 		texAtlas.addImageToAtlas(urls[3], img);
-		console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 0");
 
 		///*
 		let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
@@ -181,14 +192,36 @@ export class DemoEditTrans {
 		let px: number = 10;
 		let py: number = 300;
 		let selectBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 0, 0, "select");
-		selectBtn.disable();
-		selectBtn.setClipIndex(4);
+		// selectBtn.disable();
+		// selectBtn.setClipIndex(4);
 		let moveBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 1, 1, "move");
 		let scaleBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 2, 2, "scale");
 		let rotateBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 3, 3, "rotate");
 		//*/
 
 	}
+	private uiMouseDownListener(evt: any): void {
+
+		this.m_selectFrame.begin(evt.mouseX, evt.mouseY);
+		// console.log("DemoEditTrans::uiMouseDownListener(), evt: ", evt);
+		// console.log("ui down (x, y): ", evt.mouseX, evt.mouseY);
+	}
+	private uiMouseUpListener(evt: any): void {
+		// console.log("DemoEditTrans::uiMouseUpListener(), evt: ", evt);
+
+		// console.log("ui up (x, y): ", evt.mouseX, evt.mouseY);
+		this.m_selectFrame.end(evt.mouseX, evt.mouseY);
+
+	}
+	private uiMouseMoveListener(evt: any): void {
+		// console.log("DemoEditTrans::uiMouseMoveListener(), evt: ", evt);
+
+		// console.log("ui move (x, y): ", evt.mouseX, evt.mouseY);
+		this.m_selectFrame.move(evt.mouseX, evt.mouseY);
+
+	}
+	private m_currBtn: IButton = null;
+	
 	private crateBtn(urls: string[], px: number, py: number, labelIndex: number, idns: string): IButton {
 
 
@@ -210,16 +243,24 @@ export class DemoEditTrans {
 		btn.uuid = idns;
 		btn.initializeWithLable(colorClipLabel);
 		btn.setXY(px, py);
-		this.m_coUIScene.addEntity(btn);
+		this.m_coUIScene.addEntity(btn, 1);
 		btn.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.btnMouseUpListener);
+		
 		return btn;
 	}
 	private m_ctrlType: number = 0;
 	private btnMouseUpListener(evt: any): void {
-		console.log("btnMouseUpListener(), evt: ", evt);
+		console.log("btnMouseUpListener(), evt.currentTarget: ", evt.currentTarget);
+		//colorClipLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
 		let uuid = evt.uuid;
+		let label: IColorClipLabel = null;
+		
+
+		this.m_selectFrame.disable();
 		switch (uuid) {
+
 			case "move":
+
 				this.m_ctrlType = this.m_transCtr.TRANSLATION;
 				this.m_transCtr.enable(this.m_ctrlType);
 				break;
@@ -236,29 +277,32 @@ export class DemoEditTrans {
 				this.m_transCtr.enable(this.m_ctrlType);
 				break;
 
+			case "select":
+
+				this.m_selectFrame.enable();
+				break;
 			default:
 				break;
 		}
-	}
-	private m_selectFlag: boolean = false;
-	private mouseUpListener(evt: any): void {
+		let btn = evt.currentTarget as IButton;
+		if(this.m_currBtn != btn) {
+			label = btn.getLable() as IColorClipLabel;
+			label.getColorAt(0).setRGB3f(0.5, 0.8, 0.6);
+			label.setClipIndex(0);
 
-		console.log("DemoEditTrans::mouseUpListener() ...");
-		if (this.m_transCtr != null) {
-			this.m_transCtr.decontrol();
+			if(this.m_currBtn != null) {
+				label = this.m_currBtn.getLable() as IColorClipLabel;
+				label.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
+				label.setClipIndex(0);
+			}
+			this.m_currBtn = btn;
 		}
-	}
-	private mouseBgDownListener(evt: any): void {
-
-		console.log("DemoEditTrans::mouseBgDownListener() ...");
-		if (this.m_transCtr != null) {
-			this.m_transCtr.disable();
-		}
+		
 	}
 	private createDefaultEntity(): void {
 
 		let axis = CoRScene.createAxis3DEntity();
-		this.m_rscene.addEntity(axis);
+		this.m_renderer.addEntity(axis);
 
 		/*
 		let texList = [this.createTexByUrl()];
@@ -266,9 +310,9 @@ export class DemoEditTrans {
 		material.setTextureList(texList);
 		let entity = CoRScene.createDisplayEntity();
 		entity.setMaterial(material);
-		entity.copyMeshFrom(this.m_rscene.entityBlock.unitXOZPlane);
+		entity.copyMeshFrom(this.m_renderer.entityBlock.unitXOZPlane);
 		entity.setScaleXYZ(700.0, 0.0, 700.0);
-		this.m_rscene.addEntity(entity);
+		this.m_renderer.addEntity(entity);
 		//*/
 	}
 	private initScene(): void {
@@ -282,11 +326,11 @@ export class DemoEditTrans {
 
 	private createTexByUrl(url: string = ""): IRenderTexture {
 
-		let tex = this.m_rscene.textureBlock.createImageTex2D(64, 64, false);
+		let tex = this.m_renderer.textureBlock.createImageTex2D(64, 64, false);
 
 		// this.m_plane = new Plane3DEntity();
 		// this.m_plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex]);
-		// this.m_rscene.addEntity(this.m_plane);
+		// this.m_renderer.addEntity(this.m_plane);
 
 		let img = new Image();
 		img.onload = (evt: any): void => {
@@ -296,10 +340,9 @@ export class DemoEditTrans {
 		return tex;
 	}
 	private initInteract(): void {
-		if (this.m_rscene != null && this.m_interact == null && typeof CoMouseInteraction !== "undefined") {
+		if (this.m_renderer != null && this.m_interact == null && typeof CoMouseInteraction !== "undefined") {
 			this.m_interact = CoMouseInteraction.createMouseInteraction();
-			this.m_interact.setEventParams(1, true);
-			this.m_interact.initialize(this.m_rscene);
+			this.m_interact.initialize(this.m_renderer, 2, true);
 			this.m_interact.setSyncLookAtEnabled(true);
 		}
 	}
@@ -307,7 +350,7 @@ export class DemoEditTrans {
 	private m_graph: RendererSceneGraph = null;
 	private initRenderer(): void {
 
-		if (this.m_rscene == null) {
+		if (this.m_renderer == null) {
 
 			let RendererDevice = CoRScene.RendererDevice;
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
@@ -325,18 +368,22 @@ export class DemoEditTrans {
 
 			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
 			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDownListener);
-			this.m_rscene = rscene;
+			this.m_renderer = rscene;
 
-			let subScene = this.m_rscene.createSubScene(rparam, 3, false);
+			let subScene = this.m_renderer.createSubScene(rparam, 3, false);
 			subScene.enableMouseEvent(true);
 			subScene.setAccessor(new SceneAccessor());
 
 			// let rnode = subScene;
-			// this.m_rscene.appendRenderNode(rnode);
-			this.m_editRScene = subScene;
+			// this.m_renderer.appendRenderNode(rnode);
+
+			this.m_editUIRenderer = subScene;
 			this.m_graph = new RendererSceneGraph();
-			this.m_graph.addScene(this.m_rscene);
-			this.m_graph.addScene(this.m_editRScene);
+			this.m_graph.addScene(this.m_renderer);
+			this.m_graph.addScene(this.m_editUIRenderer);
+
+			this.m_outline = new PostOutline(rscene);
+
 
 		}
 	}
@@ -391,8 +438,6 @@ export class DemoEditTrans {
 			vs[i++] -= cv.y;
 			vs[i++] -= cv.z;
 		}
-
-
 		cv.scaleBy(this.m_scale);
 		mesh = CoRScene.createDataMeshFromModel(model, material);
 		let entity = CoRScene.createMouseEventEntity();
@@ -400,7 +445,7 @@ export class DemoEditTrans {
 		entity.setMesh(mesh);
 		entity.setPosition(cv);
 		// entity.setRenderState(rst.NONE_CULLFACE_NORMAL_STATE);
-		this.m_rscene.addEntity(entity);
+		this.m_renderer.addEntity(entity);
 
 		entity.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverTargetListener);
 		entity.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutTargetListener);
@@ -412,10 +457,10 @@ export class DemoEditTrans {
 	}
 
 	private mouseOverTargetListener(evt: any): void {
-		// console.log("mouseOverTargetListener() mouse over...");
+		console.log("mouseOverTargetListener() mouse over..., evt.target: ", evt.target);
 	}
 	private mouseOutTargetListener(evt: any): void {
-		// console.log("mouseOutTargetListener() mouse out...");
+		console.log("mouseOutTargetListener() mouse out..., evt.target: ", evt.target);
 	}
 	private mouseDownTargetListener(evt: any): void {
 		console.log("mouseDownTargetListener() mouse down...");
@@ -426,10 +471,11 @@ export class DemoEditTrans {
 		let wpos = evt.wpos as IVector3D;
 		pos.subtractBy(wpos);
 
-
 		if (this.m_transCtr != null) {
 			let ls = this.m_entities;
-			this.m_transCtr.select([ls[0], ls[1], entity], wpos);
+			ls = [ls[0], ls[1], entity];
+			this.m_transCtr.select(ls, wpos);
+			this.m_outline.select(ls);
 		}
 	}
 	private mouseUpTargetListener(evt: any): void {
@@ -441,11 +487,26 @@ export class DemoEditTrans {
 			// this.m_transCtr.enable(this.m_transCtr.ROTATION);
 		}
 	}
+	private m_selectFlag: boolean = false;
+	private mouseUpListener(evt: any): void {
 
-	private mouseDown(evt: any): void { }
+		console.log("DemoEditTrans::mouseUpListener() ...");
+		if (this.m_transCtr != null) {
+			this.m_transCtr.decontrol();
+		}
+	}
+	private mouseBgDownListener(evt: any): void {
+
+		console.log("DemoEditTrans::mouseBgDownListener() ...");
+		if (this.m_transCtr != null) {
+			this.m_transCtr.disable();
+		}
+		this.m_outline.deselect();
+	}
+
 	run(): void {
 		if (this.m_graph != null) {
-			if(this.m_interact != null) {
+			if (this.m_interact != null) {
 				this.m_interact.run();
 			}
 			if (this.m_transCtr != null) {

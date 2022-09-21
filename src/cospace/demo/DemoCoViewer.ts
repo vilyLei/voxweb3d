@@ -21,6 +21,7 @@ declare var CoMouseInteraction: ICoMouseInteraction;
  * cospace renderer
  */
 export class DemoCoViewer {
+	
 	private m_rscene: ICoRendererScene = null;
 	private m_interact: IMouseInteraction = null;
 

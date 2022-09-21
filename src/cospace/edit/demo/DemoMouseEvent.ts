@@ -72,7 +72,7 @@ export class DemoMouseEvent {
             let entityBlock = new RenderableEntityBlock();
             entityBlock.initialize();
             rscene.entityBlock = entityBlock;
-            /*
+            ///*
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_RIGHT_DOWN, this, this.mouseRightDown);

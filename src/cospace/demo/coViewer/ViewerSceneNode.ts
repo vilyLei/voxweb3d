@@ -28,6 +28,7 @@ class ViewerSceneNode implements ICoRenderNode {
 	private m_scale: number = 1.0;
 
 	constructor(rscene: ICoRendererScene, vmctx: ViewerMaterialCtx, vcoapp: ViewerCoSApp) {
+		
 		this.m_rscene = rscene;
 		this.m_vmctx = vmctx;
 		this.m_vcoapp = vcoapp;
