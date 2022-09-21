@@ -24,6 +24,7 @@ import IRenderer from "../../vox/scene/IRenderer";
 import IRaySelector from "../../vox/scene/IRaySelector";
 import ISpaceCullingor from "../../vox/scene/ISpaceCullingor";
 import DebugFlag from "../debug/DebugFlag";
+import RenderingEntitySet from "./RenderingEntitySet";
 
 export default class RendererSpace implements IRendererSpace {
 	private static s_uid: number = 0;
@@ -41,6 +42,8 @@ export default class RendererSpace implements IRendererSpace {
 	private m_cullingor: ISpaceCullingor = null;
 	private m_raySelector: IRaySelector = null;
 	private m_entitysTotal: number = 0;
+	readonly renderingEntitySet = new RenderingEntitySet();
+
 	constructor() {
 		this.m_uid = RendererSpace.s_uid++;
 		this.m_nodeQueue.initialize(1);
@@ -120,7 +123,7 @@ export default class RendererSpace implements IRendererSpace {
 	}
 	removeEntity(entity: IRenderEntity): void {
 		if (entity != null && RSEntityFlag.TestSpaceContains(entity.__$rseFlag)) {
-			let node: Entity3DNode = this.m_nodeQueue.getNodeByEntity(entity);
+			let node = this.m_nodeQueue.getNodeByEntity(entity);
 			if (node != null) {
 				if (node.rstatus > 0) {
 					this.m_nodeSLinker.removeNode(node);
@@ -145,7 +148,7 @@ export default class RendererSpace implements IRendererSpace {
 	update(): void { }
 	runBegin(): void { }
 	run(): void {
-		let nextNode: Entity3DNode = this.m_nodeWLinker.getBegin();
+		let nextNode = this.m_nodeWLinker.getBegin();
 		if (nextNode != null) {
 			let pnode: Entity3DNode = null;
 			while (nextNode != null) {
@@ -165,20 +168,24 @@ export default class RendererSpace implements IRendererSpace {
 		}
 		nextNode = this.m_nodeSLinker.getBegin();
 		if (nextNode != null) {
+			let total = 0;
 			if (this.m_cullingor != null) {
 				this.m_cullingor.setCamera(this.m_camera);
 				this.m_cullingor.setCullingNodeHead(nextNode);
 				this.m_cullingor.run();
+				total = this.m_cullingor.total;
 			} else {
 				let ab: IAABB = null;
-				let cam: IRenderCamera = this.m_camera;
+				let cam = this.m_camera;
 				//let camPos:Vector3D = cam.getPosition();
 				while (nextNode != null) {
 					if (nextNode.rpoNode.isVsible() && nextNode.entity.isDrawEnabled()) {
 						ab = nextNode.bounds;
-						nextNode.drawEnabled = cam.visiTestSphere2(ab.center, ab.radius);
-						nextNode.entity.drawEnabled = nextNode.drawEnabled;
-						nextNode.rpoNode.drawEnabled = nextNode.drawEnabled;
+						const boo = cam.visiTestSphere2(ab.center, ab.radius);
+						nextNode.drawEnabled = boo;
+						nextNode.entity.drawEnabled = boo;
+						nextNode.rpoNode.drawEnabled = boo;
+						total += boo ? 1 : 0;
 						//  if(nextNode.drawEnabled && nextNode.distanceFlag)
 						//  {
 						//      nextNode.rpoNode.setValue(-Vector3D.DistanceSquared(camPos,ab.center));
@@ -192,6 +199,19 @@ export default class RendererSpace implements IRendererSpace {
 					// if(DebugFlag.Flag_0 > 0) console.log("nextNode.rpoNode.isVsible(): ",nextNode.rpoNode.isVsible(), nextNode.entity.isDrawEnabled(), nextNode.drawEnabled);
 					nextNode = nextNode.next;
 				}
+			}
+			const etset = this.renderingEntitySet;
+			if (total > 0) {
+				etset.reset(total);
+				nextNode = this.m_nodeSLinker.getBegin();
+				while (nextNode != null) {
+					if (nextNode.drawEnabled) {
+						etset.addEntity(nextNode.entity);
+					}
+					nextNode = nextNode.next;
+				}
+			} else {
+				etset.clear();
 			}
 		}
 	}

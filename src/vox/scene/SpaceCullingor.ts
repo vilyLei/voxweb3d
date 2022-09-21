@@ -18,6 +18,10 @@ export default class SpaceCullingor implements ISpaceCullingor {
 	private m_pocRawList: ISpacePOV[] = [];
 	private m_pocList: ISpacePOV[] = [];
 	private m_povNumber = 0;
+	/**
+ 	 * 可以被渲染的entity数量
+ 	 */
+	total: number = 0;
 	addPOVObject(poc: ISpacePOV): void {
 		if (poc != null) {
 			this.m_pocRawList.push(poc);
@@ -34,17 +38,18 @@ export default class SpaceCullingor implements ISpaceCullingor {
 		return this.m_povNumber;
 	}
 	run(): void {
+		this.total = 0;
 		this.m_povNumber = 0;
 		let nextNode = this.m_headNode;
 		if (nextNode != null) {
 			let ab: IAABB = null;
 			let cam = this.m_camera;;
 			let poc: ISpacePOV = null;
-			let pocList: ISpacePOV[] = this.m_pocList;
-			let i: number = 0;
-			let j: number = 0;
-			let len: number = this.m_pocRawList.length;
-			let boo: boolean = false;
+			let pocList  = this.m_pocList;
+			let i = 0;
+			let j = 0;
+			let len = this.m_pocRawList.length;
+			let boo = false;
 
 			for (i = 0; i < len; i++) {
 				poc = this.m_pocRawList[i];
@@ -81,6 +86,7 @@ export default class SpaceCullingor implements ISpaceCullingor {
 							boo = false;
 						}
 					}
+					this.total += boo ? 1 : 0;
 					nextNode.drawEnabled = boo;
 					nextNode.entity.drawEnabled = boo;
 					nextNode.rpoNode.drawEnabled = boo;

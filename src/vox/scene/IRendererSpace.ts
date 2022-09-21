@@ -13,9 +13,15 @@ import IRenderEntity from "../../vox/render/IRenderEntity";
 import Entity3DNode from "../../vox/scene/Entity3DNode";
 import ISpaceCullingor from "../../vox/scene/ISpaceCullingor";
 import IRaySelector from "../../vox/scene/IRaySelector";
-
+import IRenderingEntitySet from "../../vox/scene/IRenderingEntitySet";
 
 export default interface IRendererSpace {
+
+    /**
+     * 正在被渲染的可渲染实体的集合
+     */
+    readonly renderingEntitySet: IRenderingEntitySet;
+
     // 可以添加真正被渲染的实体也可以添加只是为了做几何/空间检测的实体(不允许有material)
     getStage3D(): IRenderStage3D;
     setCamera(camera: IRenderCamera): void;

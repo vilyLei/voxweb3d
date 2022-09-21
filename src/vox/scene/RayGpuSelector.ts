@@ -80,17 +80,9 @@ export default class RayGpuSelector implements IRaySelector {
             }
         }
     }
-    //  setSelectedNode(node:RaySelectedNode):void
-    //  {
-    //      this.m_selectedNode = node;
-    //  }
     getSelectedNode(): RaySelectedNode {
         return this.m_selectedNode;
     }
-    //  setSelectedNodes(nodes:RaySelectedNode[], total:number):void
-    //  {
-    //      //this.m_rsnList = nodes;
-    //  }
     getSelectedNodes(): RaySelectedNode[] {
         return this.m_rsnList;
     }
@@ -160,9 +152,11 @@ export default class RayGpuSelector implements IRaySelector {
 
             while (nextNode != null) {
                 if (nextNode.drawEnabled && nextNode.entity.mouseEnabled) {
-                    outv.x = nextNode.bounds.center.x - rpv.x;
-                    outv.y = nextNode.bounds.center.y - rpv.y;
-                    outv.z = nextNode.bounds.center.z - rpv.z;
+                    // outv.x = nextNode.bounds.center.x - rpv.x;
+                    // outv.y = nextNode.bounds.center.y - rpv.y;
+                    // outv.z = nextNode.bounds.center.z - rpv.z;
+                    
+                    outv.subVecsTo(nextNode.bounds.center, rpv);
                     dis = outv.dot(rtv);
                     outv.x -= dis * rtv.x;
                     outv.y -= dis * rtv.y;

@@ -148,10 +148,10 @@ export default class RaySelector implements IRaySelector {
             while (nextNode != null) {
                 if (nextNode.drawEnabled && nextNode.entity.mouseEnabled) {
                     //if(AABB.IntersectionRL2(rtv,rpv, nextNode.bounds, outv))
-
-                    outv.x = nextNode.bounds.center.x - rpv.x;
-                    outv.y = nextNode.bounds.center.y - rpv.y;
-                    outv.z = nextNode.bounds.center.z - rpv.z;
+                    outv.subVecsTo(nextNode.bounds.center, rpv);
+                    // outv.x = nextNode.bounds.center.x - rpv.x;
+                    // outv.y = nextNode.bounds.center.y - rpv.y;
+                    // outv.z = nextNode.bounds.center.z - rpv.z;
                     dis = outv.dot(rtv);
                     outv.x -= dis * rtv.x;
                     outv.y -= dis * rtv.y;
