@@ -366,8 +366,9 @@ export class DemoEditTrans {
 			// console.log("60/255: ", 60/255);
 			// rscene.setClearUint24Color((60 << 16) + (60 << 8) + 60);
 
-			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
 			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDownListener);
+			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
+
 			this.m_renderer = rscene;
 
 			let subScene = this.m_renderer.createSubScene(rparam, 3, false);
@@ -497,7 +498,8 @@ export class DemoEditTrans {
 	}
 	private mouseBgDownListener(evt: any): void {
 
-		console.log("DemoEditTrans::mouseBgDownListener() ...");
+		let etset = this.m_renderer.getSpace().renderingEntitySet;
+		console.log("DemoEditTrans::mouseBgDownListener() ..., etset.getTotal(): ", etset.getTotal());
 		if (this.m_transCtr != null) {
 			this.m_transCtr.disable();
 		}
