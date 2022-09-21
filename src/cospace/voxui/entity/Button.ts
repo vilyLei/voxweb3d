@@ -88,6 +88,7 @@ class Button implements IButton {
 		if (this.m_dp == null) {
 			const me = CoRScene.MouseEvent;
 			let dpc = CoRScene.createMouseEvt3DDispatcher();
+			dpc.currentTarget = this;
 			dpc.uuid = this.uuid;
 			dpc.enabled = this.m_enabled;
 			dpc.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);

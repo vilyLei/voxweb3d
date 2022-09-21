@@ -51,8 +51,8 @@ class CoUIScene implements ICoUIScene {
 			uicamera.update();
 		}
 	}
-	addEntity(entity: IUIEntity): void {
-		this.rscene.addEntity(entity.getREntity());
+	addEntity(entity: IUIEntity, processid: number = 0): void {
+		this.rscene.addEntity(entity.getREntity(), processid);
 	}
 	removeEntity(entity: IUIEntity): void {
 		this.rscene.removeEntity(entity.getREntity());

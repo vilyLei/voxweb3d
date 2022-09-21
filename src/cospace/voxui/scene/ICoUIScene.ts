@@ -8,7 +8,7 @@ interface ICoUIScene {
 	readonly rscene: IRendererScene;
 	readonly texAtlas: ICanvasTexAtlas;
 	initialize(crscene?: ICoRendererScene): void;
-	addEntity(entity: IUIEntity): void;
+	addEntity(entity: IUIEntity, processid?: number): void;
 	removeEntity(entity: IUIEntity): void;
 	run(): void;
 }
