@@ -19,6 +19,7 @@ class UIRectLine {
 	private m_rscene: IRendererScene;
 	private m_entity: ITransformEntity = null;
 
+	private m_flag = false;
 	private m_prePos: IVector3D = CoMath.createVec3();
 	private m_currPos: IVector3D = CoMath.createVec3();
 
@@ -55,6 +56,10 @@ class UIRectLine {
 	isEnabled(): boolean {
 		return this.m_enabled;
 	}
+
+	isSelectEnabled(): boolean {
+		return this.m_flag && this.m_enabled && CoMath.Vector3D.Distance(this.m_prePos, this.m_currPos) > 0.98;
+	}
 	private setVisible(v: boolean): void {
 		if (this.m_entity != null) {
 			this.m_entity.setVisible(v);
@@ -67,10 +72,10 @@ class UIRectLine {
 		return false;
 	}
 	begin(px: number, py: number): void {
-		
+		this.m_flag = true;
 		if (this.m_enabled) {
 			this.m_prePos.setXYZ(px, py, 0);
-			this.setVisible(true);
+			// this.m_currPos.copyFrom( this.m_prePos );
 			this.move(px, py);
 		}
 	}
@@ -78,12 +83,16 @@ class UIRectLine {
 		if (this.m_enabled) {
 			this.setVisible(false);
 		}
+		this.m_flag = false;
 	}
 	move(px: number, py: number): void {
-		if (this.m_enabled) {
-			if (this.m_entity != null && this.isVisible()) {
+		const v = this.m_prePos;
+		if (this.m_enabled && this.m_flag && CoMath.Vector3D.DistanceXYZ(v.x, v.y, 0, px, py, 0) > 1.0) {
+			if (this.m_entity != null) {
 
 				this.m_currPos.setXYZ(px, py, 0);
+
+				this.setVisible(true);
 
 				let b = this.bounds;
 				b.reset();

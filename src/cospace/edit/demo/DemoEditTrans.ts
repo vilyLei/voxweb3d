@@ -27,6 +27,8 @@ import { PostOutline } from "./effect/PostOutline";
 import { UIRectLine } from "./edit/UIRectLine";
 import { IClipEntity } from "../../voxui/entity/IClipEntity";
 import { IColorClipLabel } from "../../voxui/entity/IColorClipLabel";
+import { RectFrameQuery } from "./edit/RectFrameQuery";
+import IRenderEntity from "../../../vox/render/IRenderEntity";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -141,8 +143,11 @@ export class DemoEditTrans {
 		this.m_uiRenderer = this.m_coUIScene.rscene;
 		this.m_graph.addScene(this.m_uiRenderer);
 
+		this.m_entityQuery = new RectFrameQuery();
+		this.m_entityQuery.initialize(this.m_renderer);
+
 		let rsc = this.m_uiRenderer;
-		rsc.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.uiMouseDownListener);
+		this.m_renderer.addEventListener(CoRScene.MouseEvent.MOUSE_BG_DOWN, this, this.uiMouseDownListener);
 		rsc.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.uiMouseUpListener);
 		rsc.addEventListener(CoRScene.MouseEvent.MOUSE_MOVE, this, this.uiMouseMoveListener);
 
@@ -151,7 +156,9 @@ export class DemoEditTrans {
 		if (this.m_selectFrame == null) {
 			this.m_selectFrame = new UIRectLine();
 			this.m_selectFrame.initialize(this.m_uiRenderer);
+			this.m_selectFrame.enable();
 		}
+
 		/*
 		let clipColorLabel = CoUI.createClipColorLabel();
 		clipColorLabel.initializeWithoutTex(50, 32, 4);
@@ -199,19 +206,26 @@ export class DemoEditTrans {
 		let rotateBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 3, 3, "rotate");
 		//*/
 
+		this.selectBtn(moveBtn);
 	}
 	private uiMouseDownListener(evt: any): void {
 
 		this.m_selectFrame.begin(evt.mouseX, evt.mouseY);
-		// console.log("DemoEditTrans::uiMouseDownListener(), evt: ", evt);
+		console.log("DemoEditTrans::uiMouseDownListener(), evt: ", evt);
 		// console.log("ui down (x, y): ", evt.mouseX, evt.mouseY);
 	}
 	private uiMouseUpListener(evt: any): void {
 		// console.log("DemoEditTrans::uiMouseUpListener(), evt: ", evt);
 
 		// console.log("ui up (x, y): ", evt.mouseX, evt.mouseY);
+		if (this.m_selectFrame.isSelectEnabled()) {
+			let b = this.m_selectFrame.bounds;
+			let list = this.m_entityQuery.getEntities(b.min, b.max);
+			if(list != null && list.length > 0) {
+				this.selectEntities(list);
+			}
+		}
 		this.m_selectFrame.end(evt.mouseX, evt.mouseY);
-
 	}
 	private uiMouseMoveListener(evt: any): void {
 		// console.log("DemoEditTrans::uiMouseMoveListener(), evt: ", evt);
@@ -221,7 +235,7 @@ export class DemoEditTrans {
 
 	}
 	private m_currBtn: IButton = null;
-	
+
 	private crateBtn(urls: string[], px: number, py: number, labelIndex: number, idns: string): IButton {
 
 
@@ -245,18 +259,30 @@ export class DemoEditTrans {
 		btn.setXY(px, py);
 		this.m_coUIScene.addEntity(btn, 1);
 		btn.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.btnMouseUpListener);
-		
+
 		return btn;
 	}
 	private m_ctrlType: number = 0;
+	private selectBtn(btn: IButton): void {
+		//let btn = evt.currentTarget as IButton;
+		let label: IColorClipLabel;
+		if (this.m_currBtn != btn) {
+			label = btn.getLable() as IColorClipLabel;
+			label.getColorAt(0).setRGB3f(0.5, 0.8, 0.6);
+			label.setClipIndex(0);
+
+			if (this.m_currBtn != null) {
+				label = this.m_currBtn.getLable() as IColorClipLabel;
+				label.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
+				label.setClipIndex(0);
+			}
+			this.m_currBtn = btn;
+		}
+	}
 	private btnMouseUpListener(evt: any): void {
 		console.log("btnMouseUpListener(), evt.currentTarget: ", evt.currentTarget);
 		//colorClipLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
 		let uuid = evt.uuid;
-		let label: IColorClipLabel = null;
-		
-
-		this.m_selectFrame.disable();
 		switch (uuid) {
 
 			case "move":
@@ -279,30 +305,18 @@ export class DemoEditTrans {
 
 			case "select":
 
-				this.m_selectFrame.enable();
+				// this.m_selectFrame.enable();
 				break;
 			default:
 				break;
 		}
-		let btn = evt.currentTarget as IButton;
-		if(this.m_currBtn != btn) {
-			label = btn.getLable() as IColorClipLabel;
-			label.getColorAt(0).setRGB3f(0.5, 0.8, 0.6);
-			label.setClipIndex(0);
-
-			if(this.m_currBtn != null) {
-				label = this.m_currBtn.getLable() as IColorClipLabel;
-				label.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
-				label.setClipIndex(0);
-			}
-			this.m_currBtn = btn;
-		}
 		
+		this.selectBtn( evt.currentTarget as IButton );
 	}
 	private createDefaultEntity(): void {
 
-		let axis = CoRScene.createAxis3DEntity();
-		this.m_renderer.addEntity(axis);
+		// let axis = CoRScene.createAxis3DEntity();
+		// this.m_renderer.addEntity(axis);
 
 		/*
 		let texList = [this.createTexByUrl()];
@@ -366,7 +380,8 @@ export class DemoEditTrans {
 			// console.log("60/255: ", 60/255);
 			// rscene.setClearUint24Color((60 << 16) + (60 << 8) + 60);
 
-			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDownListener);
+			// rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDownListener);
+			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_CLICK, this, this.mouseClickListener);
 			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
 
 			this.m_renderer = rscene;
@@ -414,12 +429,12 @@ export class DemoEditTrans {
 
 		let len = unit.data.models.length;
 		let m_scale = this.m_scale;
-
 		for (let i = 0; i < len; ++i) {
 			let entity = this.createEntity(unit.data.models[i]);
 			entity.setScaleXYZ(m_scale, m_scale, m_scale);
 		}
 	}
+	private m_entityQuery: RectFrameQuery = null;
 	private m_entities: ITransformEntity[] = [];
 	private createEntity(model: CoGeomDataType): ITransformEntity {
 		// let rst = CoRenderer.RendererState;
@@ -458,45 +473,49 @@ export class DemoEditTrans {
 	}
 
 	private mouseOverTargetListener(evt: any): void {
-		console.log("mouseOverTargetListener() mouse over..., evt.target: ", evt.target);
+		console.log("mouseOverTargetListener()..., evt.target: ", evt.target);
 	}
 	private mouseOutTargetListener(evt: any): void {
-		console.log("mouseOutTargetListener() mouse out..., evt.target: ", evt.target);
+		console.log("mouseOutTargetListener()..., evt.target: ", evt.target);
 	}
 	private mouseDownTargetListener(evt: any): void {
-		console.log("mouseDownTargetListener() mouse down...");
+
+		console.log("mouseDownTargetListener()..., evt.target: ", evt.target);
+		let entity = evt.target as ITransformEntity;
+		this.selectEntities([entity]);
+	}
+	private selectEntities(list: IRenderEntity[]): void {
+
+		this.m_transCtr.enable(this.m_ctrlType);
 
 		let pos = CoMath.createVec3();
-		let entity = evt.target as ITransformEntity;
-		entity.getPosition(pos);
-		let wpos = evt.wpos as IVector3D;
-		pos.subtractBy(wpos);
+		let pv = CoMath.createVec3();
+		for (let i = 0; i < list.length; ++i) {
+			list[i].getPosition(pv);
+			pos.addBy(pv);
+		}
+		pos.scaleBy(1.0 / list.length);
 
 		if (this.m_transCtr != null) {
-			let ls = this.m_entities;
-			ls = [ls[0], ls[1], entity];
-			this.m_transCtr.select(ls, wpos);
-			this.m_outline.select(ls);
+			this.m_transCtr.select(list as ITransformEntity[], pos);
+			this.m_outline.select(list);
 		}
 	}
 	private mouseUpTargetListener(evt: any): void {
 		console.log("mouseUpTargetListener() mouse up...");
-		if (this.m_transCtr != null) {
-			this.m_transCtr.enable(this.m_ctrlType);
-			// this.m_transCtr.enable(this.m_transCtr.TRANSLATION);
-			// this.m_transCtr.enable(this.m_transCtr.SCALE);
-			// this.m_transCtr.enable(this.m_transCtr.ROTATION);
-		}
+		// if (this.m_transCtr != null) {
+		// 	this.m_transCtr.enable(this.m_ctrlType);
+		// }
 	}
 	private m_selectFlag: boolean = false;
 	private mouseUpListener(evt: any): void {
 
-		console.log("DemoEditTrans::mouseUpListener() ...");
+		// console.log("DemoEditTrans::mouseUpListener() ...");
 		if (this.m_transCtr != null) {
 			this.m_transCtr.decontrol();
 		}
 	}
-	private mouseBgDownListener(evt: any): void {
+	private mouseClickListener(evt: any): void {
 
 		let etset = this.m_renderer.getSpace().renderingEntitySet;
 		console.log("DemoEditTrans::mouseBgDownListener() ..., etset.getTotal(): ", etset.getTotal());

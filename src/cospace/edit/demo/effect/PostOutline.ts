@@ -30,11 +30,11 @@ class PostOutline implements ICoRenderNode {
 	}
 
 	private initOutline(): void {
-
+		
 		this.m_postOutline.initialize(this.m_rscene, 1, [0]);
 		this.m_postOutline.setFBOSizeScaleRatio(0.5);
-		this.m_postOutline.setRGB3f(0.0, 2.0, 0.0);
-		this.m_postOutline.setOutlineDensity(2.5);
+		this.m_postOutline.setRGB3f(0.0, 1.0, 0.0);
+		this.m_postOutline.setOutlineDensity(2.0);
 		this.m_postOutline.setOcclusionDensity(0.2);
 	}
 	select(targets: IRenderEntity[]): void {
