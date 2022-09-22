@@ -13,6 +13,7 @@ import MouseEvent from "../vox/event/MouseEvent";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
+import RendererSubScene from "../vox/scene/RendererSubScene";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
@@ -28,12 +29,26 @@ import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
 import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
 
+import IRendererScene from "../vox/scene/IRendererScene";
+import { IRendererSceneAccessor } from "../vox/scene/IRendererSceneAccessor";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+
+class SceneAccessor implements IRendererSceneAccessor {
+    constructor() { }
+    renderBegin(rendererScene: IRendererScene): void {
+        let p = rendererScene.getRenderProxy();        
+        p.clearDepth(1.0);
+    }
+    renderEnd(rendererScene: IRendererScene): void {
+    }
+}
 export class DemoOutline {
     constructor() { }
 
     private m_stencilOutline: StencilOutline = new StencilOutline();
     private m_postOutline: OcclusionPostOutline = new OcclusionPostOutline();
     private m_rscene: RendererScene = null;
+    private m_editScene: RendererSubScene = null;
     private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
@@ -51,19 +66,28 @@ export class DemoOutline {
     initialize(): void {
         console.log("DemoOutline::initialize()......");
         if (this.m_rscene == null) {
-            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
-            rparam.setCamProject(45,10,4000.0);
+            rparam.setCamProject(45, 10, 4000.0);
             rparam.setAttriStencil(true);
             rparam.setCamPosition(800.0, 800.0, 800.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();
-            
+
+            this.m_editScene = this.m_rscene.createSubScene();
+            this.m_editScene.initialize(rparam, 3, false);
+            this.m_editScene.setAccessor(new SceneAccessor());
+            this.m_editScene.enableMouseEvent(true);
+
+            let axis0 = new Axis3DEntity();
+            axis0.initialize(500);
+            this.m_editScene.addEntity(axis0);
+
             let rscene = this.m_rscene;
             let materialBlock = new RenderableMaterialBlock();
             materialBlock.initialize();
@@ -85,24 +109,27 @@ export class DemoOutline {
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
             this.m_statusDisp.initialize();
 
-            this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
-            this.m_stencilOutline.initialize( this.m_rscene );
+            // this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+            // this.m_editScene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.editMouseDown);            
+            this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDown, true, true);
+            this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.editMouseBgDown, true, true);
+
+            this.m_stencilOutline.initialize(this.m_rscene);
 
             this.m_postOutline.initialize(this.m_rscene, 1, [0, 1]);
             this.m_postOutline.setFBOSizeScaleRatio(0.5);
-            this.m_postOutline.setRGB3f(0.0,2.0,0.0);
+            this.m_postOutline.setRGB3f(0.0, 2.0, 0.0);
             this.m_postOutline.setOutlineDensity(2.5);
             this.m_postOutline.setOcclusionDensity(0.2);
-            
+
             this.initScene();
 
             this.update();
-            
+
             this.m_dracoMeshLoader.initialize(2);
             this.m_dracoMeshLoader.setListener(this);
         }
     }
-
     private m_posList: Vector3D[] = [
         new Vector3D(0, 200, 0)
         //new Vector3D(0,0,0)
@@ -157,13 +184,13 @@ export class DemoOutline {
         entity.update();
 
         let box: Box3DEntity = new Box3DEntity();
-        box.initializeCube(100,[this.getImageTexByUrl("static/assets/default.jpg")]);
+        box.initializeCube(100, [this.getImageTexByUrl("static/assets/default.jpg")]);
         box.setXYZ(Math.random() * 1060 - 530, 100, Math.random() * 1060 - 530);
         box.setRotationXYZ(Math.random() * 360, Math.random() * 360, Math.random() * 360);
         box.setScaleXYZ(Math.random() + 0.5, Math.random() + 0.5, Math.random() + 0.5);
         this.m_rscene.addEntity(box, 1);
 
-        this.m_postOutline.setTargetList( [entity, box] );
+        this.m_postOutline.setTargetList([entity, box]);
         //  this.m_postOutline.setFBOSizeScaleRatio(2.0);
         //  this.m_postOutline.setOutlineThickness(4.0);
         //this.m_postOutline.setRGB3f(2.0,0.0,2.0);
@@ -176,20 +203,31 @@ export class DemoOutline {
 
         box.uvPartsNumber = 6;
         box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixparts.jpg")]);
-        box.setScaleXYZ(scale,scale,scale);
+        box.setScaleXYZ(scale, scale, scale);
         box.setRotationXYZ(Math.random() * 300.0, Math.random() * 300.0, Math.random() * 300.0);
         box.setXYZ(0.0, 60.0, 0.0);
         this.m_rscene.addEntity(box);
-        (box.getMaterial() as any).setRGB3f(2.0,0.0,0.0);
+        (box.getMaterial() as any).setRGB3f(0.9, 0.3, 0.2);
         this.loadNext();
 
-        let plane:Plane3DEntity = new Plane3DEntity();
+        let plane: Plane3DEntity = new Plane3DEntity();
         plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
-        plane.setXYZ(0,-170, 0);
+        plane.setXYZ(0, -170, 0);
         this.m_rscene.addEntity(plane, 2);
 
     }
     private m_flag: boolean = true;
+    private editMouseBgDown(evt: any): void {
+        console.log("edit mouse bg down...");
+    }
+    private mouseBgDown(evt: any): void {
+
+        console.log("mouse bg down...");
+    }
+    private editMouseDown(evt: any): void {
+        console.log("edit mouse down...");
+
+    }
     private mouseDown(evt: any): void {
 
         this.m_flag = true;
@@ -243,6 +281,8 @@ export class DemoOutline {
             // this.m_rscene.runAt(4);
 
             this.m_rscene.runEnd();
+            this.m_editScene.run(true);
+
         }
 
         DebugFlag.Flag_0 = 0;
