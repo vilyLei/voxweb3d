@@ -17,6 +17,8 @@ export default class EvtNode {
             this.m_hosts.push(target);
             this.m_listeners.push(func);
             this.m_phases.push(phase);
+        }else {
+            console.warn("event target(",target,") has existed.");
         }
     }
     removeListener(target: any, func: (evt: any) => void): void {

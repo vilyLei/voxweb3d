@@ -71,6 +71,7 @@ export default class MouseEvt3DDispatcher implements IEvtDispatcher {
         }
         return 0;
     }
+    // 注意: 一个 target 只能有一个回调函授对应一个类型的事件
     addEventListener(type: number, target: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
         if (func != null && target != null) {
             let t: number = type - MouseEvent.GetMouseEvtTypeValueBase();

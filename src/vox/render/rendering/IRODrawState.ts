@@ -22,6 +22,8 @@ interface IRODrawState {
     setBlendEnable(enable:boolean): void;
     setCullFaceMode(mode: number): void;
     setBlendMode(mode: number, params: number[]): void;
+
+    getDepthTestMode(): number;
     setDepthTestMode(type: number): void;
 }
 export { IRODrawState }

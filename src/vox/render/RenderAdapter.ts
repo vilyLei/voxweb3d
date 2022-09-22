@@ -220,12 +220,15 @@ class RenderAdapter implements IRenderAdapter {
 	 */
 	clearDepth(depth: number = 1.0): void {
 		
+		let mode = this.m_rState.getDepthTestMode();
+		this.m_rState.setDepthTestMode(DepthTestMode.OPAQUE);
 		this.m_clearDepth = depth;
 		if (this.m_preDepth !== this.m_clearDepth) {
 			this.m_preDepth = this.m_clearDepth;
 			this.m_gl.clearDepth(this.m_clearDepth);
 		}
 		this.m_gl.clear(this.m_gl.DEPTH_BUFFER_BIT);
+		this.m_rState.setDepthTestMode(mode);
 	}
 	/**
 	 * only clear up color buffer
@@ -237,6 +240,8 @@ class RenderAdapter implements IRenderAdapter {
 	}
 	clear(): void {
 		// console.log("clear back buffer.");
+		// let mode = this.m_rState.getDepthTestMode();
+		// this.m_rState.setDepthTestMode(DepthTestMode.OPAQUE);
 		if (this.m_preDepth !== this.m_clearDepth) {
 			this.m_preDepth = this.m_clearDepth;
 			this.m_gl.clearDepth(this.m_clearDepth);
@@ -247,6 +252,7 @@ class RenderAdapter implements IRenderAdapter {
 		let cvs = this.bgColor;
 		this.m_gl.clearColor(cvs[0], cvs[1], cvs[2], cvs[3]);
 		this.m_gl.clear(this.m_clearMask);
+		// this.m_rState.setDepthTestMode(mode);
 		//	if (this.m_rcontext.isStencilTestEnabled()) {
 		//		this.m_gl.stencilMask(0x0);
 		//	}
@@ -255,7 +261,7 @@ class RenderAdapter implements IRenderAdapter {
 	reset(): void {
 		this.m_rState.setCullFaceMode(CullFaceMode.BACK);
 		this.m_rState.setDepthTestMode(DepthTestMode.OPAQUE);
-		RendererState.Reset(this.m_gl);
+		RendererState.Reset(this.m_rcontext);
 	}
 	getRenderContext(): RAdapterContext {
 		return this.m_rcontext;

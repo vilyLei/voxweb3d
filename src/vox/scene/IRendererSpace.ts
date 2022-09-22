@@ -16,7 +16,7 @@ import IRenderingEntitySet from "../../vox/scene/IRenderingEntitySet";
 import IEntity3DNode from "./IEntity3DNode";
 
 export default interface IRendererSpace {
-
+    
     /**
      * 正在被渲染的可渲染实体的集合
      */

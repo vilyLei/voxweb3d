@@ -116,6 +116,9 @@ export class RODrawState implements IRODrawState {
             }
         }
     }
+    getDepthTestMode(): number {
+        return this.m_depthTestType;
+    }
 	setDepthTestMode(type: number): void {
 
         if (this.m_depthTestType != type) {

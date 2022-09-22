@@ -5,11 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
+import IEntityQuery from "./IEntityQuery";
+
 /**
  * 正在被渲染的可渲染实体的集合
  */
 export default interface IRenderingEntitySet {
-
-	query(): void;
+	
+	query(q: IEntityQuery): void;
 	getTotal(): number;
 }
