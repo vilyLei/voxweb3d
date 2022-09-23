@@ -32,7 +32,6 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
 
     private m_target: IScaleTarget = null;
     private m_dispatcher: IEvtDispatcher;
-    private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
     private offsetV = CoMath.createVec3(30, 30, 30);
     private m_planeAxisType: number = 0;
@@ -189,16 +188,17 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
         this.m_entity.globalToLocal(pv);
     }
     isSelected(): boolean {
-        return this.m_flag;
+        return this.m_flag > -1;
     }
     select(): void {
-        // this.m_flag = true;
     }
     deselect(): void {
-        if (this.m_flag) {
+        if (this.m_flag > -1) {
+
+            this.editEnd();
             this.setAllVisible(true);
         }
-        this.m_flag = false;
+        this.m_flag = -1;
     }
     update(): void {
         this.m_entity.update();
@@ -217,7 +217,7 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
     private m_planePos = CoMath.createVec3();
     private m_planeDis = 0.0;
 
-    private m_flag = false;
+    private m_flag = -1;
     private m_pos = CoMath.createVec3();
     private m_dv = CoMath.createVec3();
     private m_outV = CoMath.createVec3();
@@ -232,7 +232,7 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
 
         if (this.isEnabled()) {
-            if (this.m_flag) {
+            if (this.m_flag > -1) {
 
                 this.m_rpv.copyFrom(rpv);
                 this.m_rtv.copyFrom(rtv);
@@ -283,7 +283,6 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
     }
     selectByParam(raypv: IVector3D, raytv: IVector3D, wpos: IVector3D): void {
 
-        this.m_flag = true;
 
         this.m_rpv.copyFrom(raypv);
         this.m_rtv.copyFrom(raytv);
@@ -299,9 +298,11 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
     private mouseDownListener(evt: any): void {
 
         if (this.isEnabled()) {
-            
+
+            this.editBegin();
             this.setThisVisible(true);
-            
+
+            this.m_flag = 1;
             console.log("ScaleDragPlane::mouseDownListener() ...");
             this.m_target.select();
             this.selectByParam(evt.raypv, evt.raytv, evt.wpos);

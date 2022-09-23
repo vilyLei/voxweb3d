@@ -199,6 +199,7 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
     deselect(): void {
         console.log("ScaleDragLine::deselect() ...");
         if (this.m_flag > 0) {
+            this.editEnd();
             this.setAllVisible(true);
         }
         this.m_flag = -1;
@@ -305,6 +306,7 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
         console.log("ScaleDragLine::mouseDownListener() ...");
         if (this.isEnabled()) {
 
+            this.editBegin();
             this.setThisVisible(true);
             this.m_target.select();
             this.m_flag = 1;
