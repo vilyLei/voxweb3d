@@ -30,7 +30,7 @@ declare var CoMesh: ICoMesh;
 export default class DragPlane extends MoveCtr implements IRayControl {
 
     private m_target: IMovedTarget = null;
-    private m_dispatcher: IEvtDispatcher;    
+    private m_dispatcher: IEvtDispatcher;
     private m_entity: ITransformEntity = null;
     private offsetV = CoMath.createVec3(30, 30, 30);
 
@@ -184,16 +184,17 @@ export default class DragPlane extends MoveCtr implements IRayControl {
         this.m_entity.globalToLocal(pv);
     }
     isSelected(): boolean {
-        return this.m_flag;
+        return this.m_flag > -1;
     }
     select(): void {
-        this.m_flag = true;
+        this.m_flag > -1;
     }
     deselect(): void {
-        if (this.m_flag) {
+        if (this.m_flag > -1) {
+            this.editEnd();
             this.setAllVisible(true);
         }
-        this.m_flag = false;
+        this.m_flag = -1;
     }
     update(): void {
         this.m_entity.update();
@@ -212,7 +213,7 @@ export default class DragPlane extends MoveCtr implements IRayControl {
     private m_planePos = CoMath.createVec3();
     private m_planeDis = 0.0;
 
-    private m_flag = false;
+    private m_flag = -1;
     private m_pos = CoMath.createVec3();
     private m_dv = CoMath.createVec3();
     private m_outV = CoMath.createVec3();
@@ -223,9 +224,9 @@ export default class DragPlane extends MoveCtr implements IRayControl {
     private m_rpv = CoMath.createVec3();
     private m_rtv = CoMath.createVec3();
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
-        
+
         if (this.isEnabled()) {
-            if (this.m_flag) {
+            if (this.m_flag > -1) {
 
                 this.m_rpv.copyFrom(rpv);
                 this.m_rtv.copyFrom(rtv);
@@ -252,9 +253,14 @@ export default class DragPlane extends MoveCtr implements IRayControl {
     private mouseDownListener(evt: any): void {
         console.log("DragPlane::mouseDownListener() ..., this.isEnabled(): ", this.isEnabled());
         if (this.isEnabled()) {
+
+            this.editBegin();
             
             this.setThisVisible(true);
             this.m_target.select(this);
+
+            this.m_flag = 1;
+
             this.selectByParam(evt.raypv, evt.raytv, evt.wpos);
         }
     }
@@ -266,9 +272,7 @@ export default class DragPlane extends MoveCtr implements IRayControl {
         this.m_planeNV.copyFrom(nv);
         this.m_planeNV.normalize();
     }
-    selectByParam(raypv: IVector3D, raytv: IVector3D, wpos: IVector3D): void {
-
-        this.m_flag = true;
+    private selectByParam(raypv: IVector3D, raytv: IVector3D, wpos: IVector3D): void {
 
         this.m_rpv.copyFrom(raypv);
         this.m_rtv.copyFrom(raytv);

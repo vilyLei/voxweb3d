@@ -38,7 +38,6 @@ declare var CoEntity: ICoEntity;
  * 在直线上拖动
  */
 class DragLine extends MoveCtr implements IRayControl {
-
     private m_target: IMovedTarget = null;
     private m_dispatcher: IEvtDispatcher;
     // private m_targetPosOffset: IVector3D = CoMath.createVec3();
@@ -198,7 +197,8 @@ class DragLine extends MoveCtr implements IRayControl {
     select(): void {
     }
     deselect(): void {
-        if (this.m_flag > 0) {
+        if (this.m_flag > 0) {            
+            this.editEnd();
             this.setAllVisible(true);
         }
         this.m_flag = -1;
@@ -285,6 +285,8 @@ class DragLine extends MoveCtr implements IRayControl {
 
         console.log("DragLine::mouseDownListener() ...");
         if (this.isEnabled()) {
+
+            this.editBegin();
 
             this.setThisVisible(true);
             

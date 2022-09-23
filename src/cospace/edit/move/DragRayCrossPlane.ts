@@ -199,15 +199,16 @@ export default class DragRayCrossPlane extends MoveCtr implements IRayControl {
         this.m_entity.globalToLocal(pv);
     }
     isSelected(): boolean {
-        return this.m_flag;
+        return this.m_flag > -1;
     }
     select(): void {
     }
     deselect(): void {
-        if (this.m_flag) {
+        if (this.m_flag > -1) {
+            this.editEnd();
             this.setAllVisible(true);
         }
-        this.m_flag = false;
+        this.m_flag = -1;
     }
     update(): void {
         this.m_entity.update();
@@ -238,7 +239,7 @@ export default class DragRayCrossPlane extends MoveCtr implements IRayControl {
     private m_planePos = CoMath.createVec3();
     private m_planeDis = 0.0;
 
-    private m_flag = false;
+    private m_flag = -1;
     private m_pos = CoMath.createVec3();
     private m_dv = CoMath.createVec3();
     private m_outV = CoMath.createVec3();
@@ -251,7 +252,7 @@ export default class DragRayCrossPlane extends MoveCtr implements IRayControl {
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
 
         if (this.isEnabled()) {
-            if (this.m_flag) {
+            if (this.m_flag > -1) {
 
                 this.m_rpv.copyFrom(rpv);
                 this.m_rtv.copyFrom(rtv);
@@ -283,9 +284,8 @@ export default class DragRayCrossPlane extends MoveCtr implements IRayControl {
         this.m_planeNV.copyFrom(nv);
         this.m_planeNV.normalize();
     }
-    selectByParam(raypv: IVector3D, raytv: IVector3D, wpos: IVector3D): void {
+    private selectByParam(raypv: IVector3D, raytv: IVector3D, wpos: IVector3D): void {
 
-        this.m_flag = true;
 
         this.m_rpv.copyFrom(raypv);
         this.m_rtv.copyFrom(raytv);
@@ -304,7 +304,9 @@ export default class DragRayCrossPlane extends MoveCtr implements IRayControl {
 
             console.log("DragRayCrossPlane::mouseDownListener() ...");
 
+            this.editBegin();
             this.setThisVisible(true);
+            this.m_flag = 1;
 
             this.m_target.select(this);
             this.selectByParam(evt.raypv, evt.raytv, evt.wpos);
