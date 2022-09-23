@@ -21,7 +21,6 @@
     "buildvox": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/dev.ts",
     "buildvoxweb": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/devWeb.ts",
     "buildCoSpace": "vue-cli-service build --target lib --name CoSpace --dest dist ./src/cospaceMain.ts",
-    "buildCoEdit": "vue-cli-service build --target lib --name CoSpace --dest dist ./src/cospace/edit/coEditMain.ts",
 
     "build_baseRenderer": "vue-cli-service build --target lib --name VoxApp --dest dist/baseRenderer ./src/distribution/rendererIsolate/devBaseRenderer.ts",
     "build_engine": "vue-cli-service build --target lib --name VoxApp --dest dist/engine ./src/distribution/rendererIsolate/devEngine.ts",
@@ -34,7 +33,6 @@
     "build_jszip": "vue-cli-service build --target lib --name VoxApp --dest dist/jsZipModule ./src/distribution/rendererIsolate/devJSZipModule.ts",
 
     "buildrplayer": "vue-cli-service build --target lib --name VoxApp --dest dist/player ./src/distribution/rendererIsolate/devPlayerOne.ts",
-
 
     "buildCTMParser": "vue-cli-service build --target lib --name ModuleCTMGeomParser --dest ./public/static/cospace/modules/ctm ./src/cospace/modules/ctm/ModuleCTMGeomParser.ts",
     "buildOBJParser": "vue-cli-service build --target lib --name ModuleOBJGeomParser --dest ./public/static/cospace/modules/obj ./src/cospace/modules/obj/ModuleOBJGeomParser.ts",
@@ -61,6 +59,7 @@
     "buildCoEdit": "vue-cli-service build --target lib --name CoEdit --dest ./public/static/cospace/coedit ./src/cospace/edit/CoEdit.ts",
     
     "buildCoMouseInteraction": "vue-cli-service build --target lib --name CoMouseInteraction --dest ./public/static/cospace/engine/mouseInteract ./src/cospace/voxengine/ui/CoMouseInteraction.ts",
+    "buildCoUIInteraction": "vue-cli-service build --target lib --name CoUIInteraction --dest ./public/static/cospace/engine/uiInteract ./src/cospace/voxengine/ui/CoUIInteraction.ts",
 
     "buildPBREffect": "vue-cli-service build --target lib --name PBREffect --dest ./public/static/cospace/renderEffect/pbr ./src/cospace/renderEffect/pbr/PBREffect.ts",
     "buildCoLightModule": "vue-cli-service build --target lib --name CoLightModule --dest ./public/static/cospace/renderEffect/lightModule ./src/cospace/renderEffect/light/CoLightModule.ts",
