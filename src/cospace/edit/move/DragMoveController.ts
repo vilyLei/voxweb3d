@@ -2,7 +2,6 @@ import IVector3D from "../../../vox/math/IVector3D";
 import IAABB from "../../../vox/geom/IAABB";
 import DragPlane from "./DragPlane";
 import DragRayCrossPlane from "./DragRayCrossPlane";
-import DragAxis from "./DragAxis";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
 import { IRayControl } from "../base/IRayControl";
@@ -127,22 +126,6 @@ class DragMoveController  implements IDragMoveController {
         let color4 = CoMaterial.createColor4;
 
         let outColor = color4();
-
-        /*
-
-        const V3 = CoMath.Vector3D;
-        let mat4 = CoMath.createMat4();
-
-        outColor.setRGBUint8(240, 55, 80);
-        mat4.identity();
-        this.createDragLine(V3.X_AXIS, outColor, mat4);
-        outColor.setRGBUint8(135, 205, 55);
-        mat4.identity();
-        this.createDragLine(V3.Y_AXIS, outColor, mat4);
-        outColor.setRGBUint8(80, 145, 240);
-        mat4.identity();
-        this.createDragLine(V3.Z_AXIS, outColor, mat4);
-        */
 
         const V3 = CoMath.Vector3D;
         let mat4 = CoMath.createMat4();

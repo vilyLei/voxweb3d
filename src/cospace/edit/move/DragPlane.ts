@@ -151,9 +151,6 @@ export default class DragPlane extends MoveCtr implements IRayControl {
         this.m_entity.getPosition(pv);
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
-        // const s = this.m_scale;
-        // this.m_entityScale.setXYZ(sx, sy, sz);
-        // this.m_entity.setScaleXYZ(sx * s, sy * s, sz * s);
         this.m_entity.setXYZ(sx, sy, sz);
     }
 

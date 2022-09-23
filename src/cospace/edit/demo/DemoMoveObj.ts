@@ -13,7 +13,6 @@ import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
 import { ViewerCoSApp } from "../../demo/coViewer/ViewerCoSApp";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import IPlane from "../../ageom/base/IPlane";
-import DragAxis from "../../edit/move/DragAxis";
 import DragPlane from "../../edit/move/DragPlane";
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
