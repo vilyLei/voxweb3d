@@ -6,7 +6,7 @@ interface IMovedTarget extends IEntityTransform {
     position: IVector3D;
     select(controller?: IEntityTransform): void;
     deselect(): void;
-    addCtrlEntity(engity: IEntityTransform): void;
+    addCtrlEntity(entity: IEntityTransform): void;
     setTargets(targets: IEntityTransform[]): void;
     getTargets(): IEntityTransform[];
     setCtrlScaleXYZ(sx: number, sy: number, sz: number): void;

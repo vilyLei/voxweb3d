@@ -121,7 +121,7 @@ export namespace advancedDemo
                     let tn:number = 8.0;
                     let pv:Vector3D = new Vector3D();
                     let tv:Vector3D = new Vector3D(-tn * size,-3.0 * size,-tn * size);
-                    let engity:DisplayEntity = null;
+                    let entity:DisplayEntity = null;
                     let rn:number = tn * 2.0;
                     let cn:number = tn * 2.0;
                     let f:number;
@@ -143,7 +143,7 @@ export namespace advancedDemo
                             pv.y = 0.0;
                             pv.z += i * size;
                             color.setRGB3f(0.8 + Math.random() * 0.2,0.8 + Math.random() * 0.2,0.8 + Math.random() * 0.2);
-                            engity = this.createRole(0,pv,color,[tex2]);
+                            entity = this.createRole(0,pv,color,[tex2]);
                             f = dvs[i * cn + j];
                             if(f < 0.1)
                             {
@@ -161,15 +161,15 @@ export namespace advancedDemo
                                     color.setRGB3f(0.6 + Math.random() * 0.5,0.6 + Math.random() * 0.5,0.6 + Math.random() * 0.5);
                                     if(k < hn * 0.4)
                                     {
-                                        engity = this.createRole(0,pv,color,[tex3]);
+                                        entity = this.createRole(0,pv,color,[tex3]);
                                     }
                                     else if(k < hn * 0.7)
                                     {
-                                        engity = this.createRole(1,pv,color,[tex3]);
+                                        entity = this.createRole(1,pv,color,[tex3]);
                                     }
                                     else
                                     {
-                                        engity = this.createRole(2,pv,color,[tex3]);
+                                        entity = this.createRole(2,pv,color,[tex3]);
                                     }
                                 }
                             }

@@ -87,10 +87,6 @@ export default class DragPlane extends MoveCtr implements IRayControl {
     removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
         this.m_dispatcher.removeEventListener(type, listener, func);
     }
-
-    setTargetPosOffset(offset: IVector3D): void {
-        // this.m_targetPosOffset.copyFrom(offset);
-    }
     setTarget(target: IMovedTarget): void {
         this.m_target = target;
     }

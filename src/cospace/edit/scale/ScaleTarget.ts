@@ -52,9 +52,9 @@ class ScaleTarget implements IEntityTransform {
         this.m_tars = null;
     }
 
-    addCtrlEntity(engity: IEntityTransform): void {
-        if (engity != null) {
-            this.m_controllers.push(engity);
+    addCtrlEntity(entity: IEntityTransform): void {
+        if (entity != null) {
+            this.m_controllers.push(entity);
             this.m_flags.push(true);
         }
     }

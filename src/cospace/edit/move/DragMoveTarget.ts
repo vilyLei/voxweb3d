@@ -17,9 +17,9 @@ class DragMoveTarget implements IEntityTransform {
     setTargetPosOffset(offset: IVector3D): void {
         this.m_targetPosOffset.copyFrom(offset);
     }
-    addEntity(engity: IEntityTransform): void {
-        if (engity != null) {
-            this.m_entitys.push(engity);
+    addEntity(entity: IEntityTransform): void {
+        if (entity != null) {
+            this.m_entitys.push(entity);
             this.m_changFlags.push(true);
         }
     }
