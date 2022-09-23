@@ -18,6 +18,9 @@ import { IMaterial } from "../../vox/material/IMaterial";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IColorMaterial from "../../vox/material/mcase/IColorMaterial";
 import IDefault3DMaterial from "../../vox/material/mcase/IDefault3DMaterial";
+import { ICoMouseEvent } from "./event/ICoMouseEvent";
+import { ICoKeyboardEvent } from "./event/ICoKeyboardEvent";
+import { ICoKeyboard } from "./ui/ICoKeyboard";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 import { IMaterialContext } from "../../materialLab/base/IMaterialContext";
@@ -72,34 +75,6 @@ interface CoVec3 {
 	VerticalCWOnXOY(v: IVector3D): void;
 }
 
-interface CoMouseEvent {
-
-	readonly MOUSE_DOWN: number;
-	readonly MOUSE_UP: number;
-	readonly MOUSE_RIGHT_UP: number;
-	readonly MOUSE_RIGHT_DOWN: number;
-	readonly MOUSE_MOVE: number;
-	readonly MOUSE_WHEEL: number;
-	readonly MOUSE_OVER: number;
-	readonly MOUSE_OUT: number;
-	readonly MOUSE_CLICK: number;
-	readonly MOUSE_RIGHT_CLICK: number;
-	readonly MOUSE_DOUBLE_CLICK: number;
-	readonly MOUSE_CANCEL: number;
-	readonly MOUSE_MULTI_DOWN: number;
-	readonly MOUSE_MULTI_UP: number;
-	readonly MOUSE_MULTI_MOVE: number;
-	readonly MOUSE_BG_DOWN: number; //  mouse down do not hit any 3d object, only in stage
-	readonly MOUSE_BG_UP: number; //  mouse up do not hit any 3d object, only in stage
-	readonly MOUSE_BG_CLICK: number; //  mouse up do not hit any 3d object, only in stage
-
-    readonly MOUSE_MIDDLE_UP: number;// = 5019;
-    readonly MOUSE_MIDDLE_DOWN: number;// = 5020;
-    readonly MOUSE_BG_RIGHT_DOWN: number;// = 5021;
-    readonly MOUSE_BG_RIGHT_UP: number;// = 5022;
-    readonly MOUSE_BG_MIDDLE_DOWN: number;// = 5023;
-    readonly MOUSE_BG_MIDDLE_UP: number;// = 5024;
-}
 
 interface CoShaderCodeUUID {
 	/**
@@ -122,16 +97,16 @@ interface CoShaderCodeUUID {
 
 
 interface CoTextureConst {
-    readonly WRAP_REPEAT: number;// = 3001;
-    readonly WRAP_CLAMP_TO_EDGE: number;// = 3002;
-    readonly WRAP_MIRRORED_REPEAT: number;// = 3003;
-    readonly NEAREST: number;// = 4001;
-    readonly LINEAR: number;// = 4002;
-    readonly LINEAR_MIPMAP_LINEAR: number;// = 4003;
-    readonly NEAREST_MIPMAP_NEAREST: number;// = 4004;
-    readonly LINEAR_MIPMAP_NEAREST: number;// = 4005;
-    readonly NEAREST_MIPMAP_LINEAR: number;// = 4006;
-    GetConst(gl: any, param: number): number;
+	readonly WRAP_REPEAT: number;// = 3001;
+	readonly WRAP_CLAMP_TO_EDGE: number;// = 3002;
+	readonly WRAP_MIRRORED_REPEAT: number;// = 3003;
+	readonly NEAREST: number;// = 4001;
+	readonly LINEAR: number;// = 4002;
+	readonly LINEAR_MIPMAP_LINEAR: number;// = 4003;
+	readonly NEAREST_MIPMAP_NEAREST: number;// = 4004;
+	readonly LINEAR_MIPMAP_NEAREST: number;// = 4005;
+	readonly NEAREST_MIPMAP_LINEAR: number;// = 4006;
+	GetConst(gl: any, param: number): number;
 }
 
 interface CoMaterialContextParam {
@@ -189,8 +164,10 @@ interface ICoRScene {
 	TextureConst: CoTextureConst;
 
 	Vector3D: CoVec3;
-	MouseEvent: CoMouseEvent;
+	MouseEvent: ICoMouseEvent;
 	EventBase: COEventBase;
+	KeyboardEvent: ICoKeyboardEvent;
+	Keyboard: ICoKeyboard;
 
 	ShaderCodeUUID: CoShaderCodeUUID;
 	MaterialContextParam: CoMaterialContextParam;

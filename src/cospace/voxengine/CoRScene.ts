@@ -15,6 +15,7 @@ import { ICoRendererScene } from "./scene/ICoRendererScene";
 
 import EventBase from "../../vox/event/EventBase";
 import MouseEvent from "../../vox/event/MouseEvent";
+import KeyboardEvent from "../../vox/event/KeyboardEvent";
 
 import CoRendererScene from "./scene/CoRendererScene";
 
@@ -64,6 +65,7 @@ import Line3DMaterial from "../../vox/material/mcase/Line3DMaterial";
 import BrokenQuadLine3DMaterial from "../../vox/material/mcase/BrokenQuadLine3DMaterial";
 import IRendererSceneGraph from "../../vox/scene/IRendererSceneGraph";
 import RendererSceneGraph from "../../vox/scene/RendererSceneGraph";
+import Keyboard from "../../vox/ui/Keyboard";
 
 
 function createVec3(px: number = 0.0, py: number = 0.0, pz: number = 0.0, pw: number = 1.0): IVector3D {
@@ -270,6 +272,8 @@ export {
 	Color4,
 	MouseEvent,
 	EventBase,
+	KeyboardEvent,
+	Keyboard,
 
 	ShaderCodeUUID,
 	MaterialPipeType,
