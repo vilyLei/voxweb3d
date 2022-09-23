@@ -9,7 +9,8 @@ import { ICoTexture } from "../../voxtexture/ICoTexture";
 import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
 import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
 
-import { ICoMouseInteraction } from "../../voxengine/ui/ICoMouseInteraction";
+// import { ICoMouseInteraction } from "../../voxengine/ui/ICoMouseInteraction";
+import { ICoUIInteraction } from "../../voxengine/ui/ICoUIInteraction";
 import ViewerMaterialCtx from "../../demo/coViewer/ViewerMaterialCtx";
 import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
 import { ViewerCoSApp } from "../../demo/coViewer/ViewerCoSApp";
@@ -32,7 +33,8 @@ import IRenderEntity from "../../../vox/render/IRenderEntity";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
-declare var CoMouseInteraction: ICoMouseInteraction;
+// declare var CoMouseInteraction: ICoMouseInteraction;
+declare var CoUIInteraction: ICoUIInteraction;
 declare var CoMath: ICoMath;
 declare var CoAGeom: ICoAGeom;
 declare var CoEdit: ICoEdit;
@@ -79,8 +81,9 @@ export class DemoEditTrans {
 	}
 	private initEngineModule(): void {
 
-		let url = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.js";
-		let mouseInteractML = new ModuleLoader(2, (): void => {
+		// let url = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.js";
+		let url = "static/cospace/engine/uiInteract/CoUIInteraction.umd.js";
+		let uiInteractML = new ModuleLoader(2, (): void => {
 			this.initInteract();
 		});
 
@@ -120,11 +123,11 @@ export class DemoEditTrans {
 				});
 
 			}
-		}).addLoader(mouseInteractML)
+		}).addLoader(uiInteractML)
 			.load(url0)
 			.load(url1);
 
-		mouseInteractML.load(url);
+		uiInteractML.load(url);
 	}
 	private m_transCtr: TransformController = null;
 	private m_selectFrame: UIRectLine = null;
@@ -232,7 +235,6 @@ export class DemoEditTrans {
 
 		// console.log("ui move (x, y): ", evt.mouseX, evt.mouseY);
 		this.m_selectFrame.move(evt.mouseX, evt.mouseY);
-
 	}
 	private m_currBtn: IButton = null;
 
@@ -262,11 +264,14 @@ export class DemoEditTrans {
 
 		return btn;
 	}
+
 	private m_ctrlType: number = 0;
 	private selectBtn(btn: IButton): void {
-		//let btn = evt.currentTarget as IButton;
+		
 		let label: IColorClipLabel;
+
 		if (this.m_currBtn != btn) {
+
 			label = btn.getLable() as IColorClipLabel;
 			label.getColorAt(0).setRGB3f(0.5, 0.8, 0.6);
 			label.setClipIndex(0);
@@ -276,31 +281,29 @@ export class DemoEditTrans {
 				label.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
 				label.setClipIndex(0);
 			}
+
 			this.m_currBtn = btn;
 		}
 	}
 	private btnMouseUpListener(evt: any): void {
+
 		console.log("btnMouseUpListener(), evt.currentTarget: ", evt.currentTarget);
+
 		//colorClipLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
+
 		let uuid = evt.uuid;
 		switch (uuid) {
 
 			case "move":
-
-				this.m_ctrlType = this.m_transCtr.TRANSLATION;
-				this.m_transCtr.enable(this.m_ctrlType);
+				this.m_transCtr.toTranslation();
 				break;
 
 			case "scale":
-
-				this.m_ctrlType = this.m_transCtr.SCALE;
-				this.m_transCtr.enable(this.m_ctrlType);
+				this.m_transCtr.toScale();
 				break;
 
 			case "rotate":
-
-				this.m_ctrlType = this.m_transCtr.ROTATION;
-				this.m_transCtr.enable(this.m_ctrlType);
+				this.m_transCtr.toRotation();
 				break;
 
 			case "select":
@@ -330,7 +333,6 @@ export class DemoEditTrans {
 		//*/
 	}
 	private initScene(): void {
-
 		this.createDefaultEntity();
 
 	}
@@ -353,9 +355,12 @@ export class DemoEditTrans {
 		img.src = url != "" ? url : "static/assets/box.jpg";
 		return tex;
 	}
+
 	private initInteract(): void {
-		if (this.m_renderer != null && this.m_interact == null && typeof CoMouseInteraction !== "undefined") {
-			this.m_interact = CoMouseInteraction.createMouseInteraction();
+		let r = this.m_renderer;
+		if (r != null && this.m_interact == null && typeof CoUIInteraction !== "undefined") {
+
+			this.m_interact = CoUIInteraction.createMouseInteraction();
 			this.m_interact.initialize(this.m_renderer, 2, true);
 			this.m_interact.setSyncLookAtEnabled(true);
 		}
