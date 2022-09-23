@@ -280,6 +280,7 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
     deselect(): void {
         console.log("RotationCircle::deselect() ...");
         if (this.m_flag > 0) {
+            this.editEnd();
             this.setAllVisible(true);
             if (this.m_circle.getVisible()) {
                 this.m_entity.setVisible(true);
@@ -369,6 +370,7 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
         console.log("RotationCircle::mouseDownListener() ..., evt: ", evt);
         if (this.isEnabled()) {
 
+            this.editBegin();
             this.m_target.select();
 
             this.m_entity.setVisible(false);

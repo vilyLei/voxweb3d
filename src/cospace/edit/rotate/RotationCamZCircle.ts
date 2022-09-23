@@ -239,6 +239,8 @@ class RotationCamZCircle extends RotationCtr implements IRotationCtr {
     deselect(): void {
         console.log("RotationCamZCircle::deselect() ...");
         if (this.m_flag > 0) {
+            
+            this.editEnd();
             this.setAllVisible(true);
             this.m_ring.setVisible(false);
         }
@@ -315,6 +317,7 @@ class RotationCamZCircle extends RotationCtr implements IRotationCtr {
         console.log("RotationCamZCircle::mouseDownListener() ..., evt: ", evt);
         if (this.isEnabled()) {
 
+            this.editBegin();
             this.m_target.select();
 
             this.m_flag = 1;

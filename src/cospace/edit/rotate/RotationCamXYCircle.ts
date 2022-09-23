@@ -281,6 +281,7 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
     deselect(): void {
         console.log("RotationCamXYCircle::deselect() ...");
         if (this.m_flag > 0) {
+            this.editEnd();
             this.setAllVisible(true);
         }
         this.m_flag = -1;
@@ -352,6 +353,7 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
         console.log("RotationCamXYCircle::mouseDownListener() ..., evt: ", evt);
         if (this.isEnabled()) {
 
+            this.editBegin();
             this.m_target.select();
             this.m_flag = 1;
 
