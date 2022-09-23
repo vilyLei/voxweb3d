@@ -98,7 +98,11 @@ export default interface IRenderEntity {
   setPosition(pos: IVector3D): void;
   getPosition(resultPos: IVector3D): void;
   setRotationXYZ(rx: number, ry: number, rz: number): void;
+  setRotation3(rv: IVector3D): void;
   setScaleXYZ(sx: number, sy: number, sz: number): void;
+  setScale3(sv: IVector3D): void;
+  getScaleXYZ(pv: IVector3D): void;
+  getRotationXYZ(pv: IVector3D): void;
 
   copyPositionFrom(entity: IRenderEntity): void;
   copyMeshFrom(entity: IRenderEntity): void;

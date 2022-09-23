@@ -116,9 +116,9 @@ export default class PureEntity implements IDisplayEntity {
     setEvtDispatcher(evtDisptacher: IEvtDispatcher): void {
         this.m_mouseEvtDispatcher = evtDisptacher;
     }
-    getPosition(resultPos: Vector3D):void {
+    getPosition(resultPos: Vector3D): void {
         if (this.m_globalBounds != null) {
-            resultPos.copyFrom( this.m_globalBounds.center );
+            resultPos.copyFrom(this.m_globalBounds.center);
         }
     }
     getGlobalBounds(): IAABB {
@@ -134,7 +134,7 @@ export default class PureEntity implements IDisplayEntity {
         }
         return -1;
     }
-    
+
     __$setDrawEnabled(boo: boolean): void {
         if (this.m_drawEnabled != boo) {
             //  console.log("PureEntity::__$setDrawEnabled: "+boo);
@@ -222,17 +222,17 @@ export default class PureEntity implements IDisplayEntity {
     getVisible(): boolean {
         return this.m_visible;
     }
-    
-    setXYZ(px: number, py: number, pz: number): void {        
-    }
-    setPosition(pos: Vector3D): void {
-    }
-    setRotationXYZ(rx: number, ry: number, rz: number): void {
-        
-    }
-    setScaleXYZ(sx: number, sy: number, sz: number): void {
 
-    }
+    setXYZ(px: number, py: number, pz: number): void {}
+    setPosition(pos: Vector3D): void {}
+    setRotationXYZ(rx: number, ry: number, rz: number): void {}
+    setScaleXYZ(sx: number, sy: number, sz: number): void {}
+
+    setRotation3(rv: Vector3D): void {}
+    setScale3(sv: Vector3D): void {}
+    getScaleXYZ(pv: Vector3D): void {}
+    getRotationXYZ(pv: Vector3D): void {}
+    
     copyMeshFrom(entity: IDisplayEntity): void {
         if (entity != null) {
             this.setMesh(entity.getMesh());
@@ -278,7 +278,7 @@ export default class PureEntity implements IDisplayEntity {
                         this.initDisplay(m);
                     }
                     //console.log("DisplayEntity::setMesh(), "+this.m_display.toString()+",m.drawMode: "+m.drawMode);
-                    if(this.m_localBounds == null) {
+                    if (this.m_localBounds == null) {
                         this.m_localBounds = m.bounds;
                     }
                     else {
@@ -314,7 +314,7 @@ export default class PureEntity implements IDisplayEntity {
     //         }
     //     }
     // }
-    
+
     setIvsParam(ivsIndex: number, ivsCount: number, updateBounds: boolean = false): void {
 
         if (this.m_display != null) {
@@ -326,11 +326,11 @@ export default class PureEntity implements IDisplayEntity {
                 this.m_display.__$$runit.setIvsParam(ivsIndex, ivsCount);
                 this.m_display.__$$runit.drawMode = this.m_mesh.drawMode;
 
-                if(updateBounds && this.isPolyhedral()) {
+                if (updateBounds && this.isPolyhedral()) {
 
-                    if(this.m_localBounds == this.m_mesh.bounds) {
+                    if (this.m_localBounds == this.m_mesh.bounds) {
                         this.m_localBounds = new AABB();
-                        this.m_localBounds.copyFrom( this.m_mesh.bounds );
+                        this.m_localBounds.copyFrom(this.m_mesh.bounds);
                     }
                     this.m_localBounds.reset();
                     let ivs: Uint16Array | Uint32Array = this.m_mesh.getIVS();
@@ -502,11 +502,11 @@ export default class PureEntity implements IDisplayEntity {
             this.m_renderProxy = null;
             this.__$rseFlag = RSEntityFlag.DEFAULT;
         }
-    }    
+    }
     /**
      * 表示没有加入任何渲染场景或者渲染器
      */
-     isRFree(): boolean {
+    isRFree(): boolean {
         return this.__$rseFlag == RSEntityFlag.DEFAULT;
     }
     /**
@@ -527,16 +527,16 @@ export default class PureEntity implements IDisplayEntity {
     isRenderEnabled(): boolean {
         return this.drawEnabled && this.m_visible && this.m_display != null && this.m_display.__$ruid > -1;
     }
-    
+
     private static s_pos: Vector3D = new Vector3D();
     private static s_prePos: Vector3D = new Vector3D();
     private static s_boundsOutVS: Float32Array = new Float32Array(24);
     private m_lBoundsVS: Float32Array = null;
-    
+
     private updateLocalBoundsVS(bounds: IAABB): void {
         let pminV: Vector3D = bounds.min;
         let pmaxV: Vector3D = bounds.max;
-        if(this.m_lBoundsVS == null) {
+        if (this.m_lBoundsVS == null) {
             this.m_lBoundsVS = new Float32Array(24);
         }
         let pvs: Float32Array = this.m_lBoundsVS;
@@ -552,13 +552,13 @@ export default class PureEntity implements IDisplayEntity {
     protected updateGlobalBounds(): void {
 
         // 这里的逻辑也有问题,需要再处理，为了支持摄像机等的拾取以及支持遮挡计算等空间管理计算
-        
+
         let bounds = this.m_localBounds;
         if (this.m_matChanged || this.m_localBuondsVer != bounds.version) {
-            
+
             this.m_localBuondsVer = bounds.version;
-            this.updateLocalBoundsVS(bounds);                
-            
+            this.updateLocalBoundsVS(bounds);
+
             let in_vs: Float32Array = this.m_lBoundsVS;
             let out_vs: Float32Array = PureEntity.s_boundsOutVS;
             this.m_omat.transformVectors(in_vs, 24, out_vs);
@@ -568,7 +568,7 @@ export default class PureEntity implements IDisplayEntity {
         }
     }
     updateBounds(): void {
-        if(this.m_mesh != null && this.m_localBounds != this.m_mesh.bounds) {
+        if (this.m_mesh != null && this.m_localBounds != this.m_mesh.bounds) {
 
             this.m_localBounds.reset();
             let ivs: Uint16Array | Uint32Array = this.m_mesh.getIVS();
