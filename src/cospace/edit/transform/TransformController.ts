@@ -16,15 +16,14 @@ import { DragScaleController } from "../scale/DragScaleController";
 import { IDragRotationController } from "../rotate/IDragRotationController";
 import { DragRotationController } from "../rotate/DragRotationController";
 import IVector3D from "../../../vox/math/IVector3D";
+import { ITransformController } from "./ITransformController";
 
-import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import { ICoMath } from "../../math/ICoMath";
-declare var CoMaterial: ICoMaterial;
 declare var CoMath: ICoMath;
 
 
 /**
- * 旋转编辑控制
+ * renderable entity transform 编辑控制器
  */
 class TransformController {
     private m_rsc: IRendererScene = null;
@@ -88,6 +87,24 @@ class TransformController {
         }
     }
     /**
+     * to translation controller
+     */
+    toTranslation(): void {
+        this.enable(this.TRANSLATION);
+    }
+    /**
+     * to scale controller
+     */
+    toScale(): void {
+        this.enable(this.SCALE);
+    }
+    /**
+     * to rotation controller
+     */
+    toRotation(): void {
+        this.enable(this.ROTATION);
+    }
+    /**
      * get the current controller type
      * @returns the legal value is 0, 1, or 2, -1 or other value is illegal.
      */
@@ -98,24 +115,25 @@ class TransformController {
      * @param type the value is 0, 1, or 2.
      */
     enable(type: number): void {
-        if(type >= 0 && type <= 2 && this.m_type != type) {
+        let t = this.m_type;
+        if(type >= 0 && type <= 2 && t != type) {
 
             let ls = this.m_controllers;
 
-            let targets: IEntityTransform[] = this.m_targets;
+            let targets = this.m_targets;
 
-            if(this.m_type >= 0) {
+            if(t >= 0) {
                 if(targets == null) {
-                    targets = ls[ this.m_type ].getTargets();
+                    targets = ls[ t ].getTargets();
                 }
-                ls[ this.m_type ].getPosition(this.m_wpos);
-                ls[ this.m_type ].decontrol();
-                ls[ this.m_type ].disable();
-                ls[ this.m_type ].setVisible(false);
+                ls[ t ].getPosition(this.m_wpos);
+                ls[ t ].decontrol();
+                ls[ t ].disable();
+                ls[ t ].setVisible(false);
             }
             
             this.m_type = type;
-
+            
             ls[ type ].enable();
             if(targets != null) {
                 this.select(targets, this.m_wpos);
