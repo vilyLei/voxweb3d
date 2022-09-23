@@ -1,17 +1,32 @@
 
-import { IDragMoveController } from "./move/IDragMoveController";
-import { DragMoveController } from "./move/DragMoveController";
-import { IDragRotationController } from "./rotate/IDragRotationController";
-import { DragRotationController } from "./rotate/DragRotationController";
+// import { IDragMoveController } from "./move/IDragMoveController";
+// import { DragMoveController } from "./move/DragMoveController";
+// import { IDragRotationController } from "./rotate/IDragRotationController";
+// import { DragRotationController } from "./rotate/DragRotationController";
 
-function createDragMoveController(): IDragMoveController {
-	return new DragMoveController();
+import { TransformController } from "./transform/TransformController";
+import { CoTransformRecorder } from "./recorde/CoTransformRecorder";
+
+function createTransformRecorder(): CoTransformRecorder {
+	return new CoTransformRecorder();
 }
-function createRotationController(): IDragRotationController {
-	return new DragRotationController();
+
+function createTransformController(): TransformController {
+	return new TransformController();
 }
+
+// function createDragMoveController(): IDragMoveController {
+// 	return new DragMoveController();
+// }
+// function createRotationController(): IDragRotationController {
+// 	return new DragRotationController();
+// }
 
 export {
-	createDragMoveController,
-	createRotationController
+
+	createTransformRecorder,
+	createTransformController
+
+	// createDragMoveController,
+	// createRotationController
 }

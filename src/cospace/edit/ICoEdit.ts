@@ -1,8 +1,13 @@
-import { IDragMoveController } from "./move/IDragMoveController";
-import { IDragRotationController } from "./rotate/IDragRotationController";
+// import { IDragMoveController } from "./move/IDragMoveController";
+// import { IDragRotationController } from "./rotate/IDragRotationController";
+import { ICoTransformRecorder } from "./recorde/ICoTransformRecorder";
+import { ITransformController } from "./transform/ITransformController";
 
 interface ICoEdit {
-	createDragMoveController(): IDragMoveController;
-	createRotationController(): IDragRotationController;
+	createTransformRecorder(): ICoTransformRecorder;
+	createTransformController(): ITransformController;
+
+	// createDragMoveController(): IDragMoveController;
+	// createRotationController(): IDragRotationController;
 }
 export { ICoEdit };
