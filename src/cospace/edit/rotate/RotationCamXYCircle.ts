@@ -48,9 +48,9 @@ declare var CoParticle: ICoParticle;
  */
 class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
 
-    private m_target: IRotatedTarget = null;
-    private m_dispatcher: IEvtDispatcher;
-    private m_targetPosOffset = CoMath.createVec3();
+    // private m_target: IRotatedTarget = null;
+    // private m_dispatcher: IEvtDispatcher;
+    // private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
     private m_rotV = CoMath.createVec3();
 
@@ -65,7 +65,7 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
 
     // private m_circle: IBillboardBase = null;
     private m_circle: ITransformEntity = null;
-    private m_flag = -1;
+    // private m_flag = -1;
     private m_editRS: IRendererScene = null;
     private m_editRSPI: number = 0;
 
@@ -93,7 +93,7 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
             let maxV = CoMath.createVec3(radius, radius, radius);
             bounds.setBounds(minV, maxV);
             bounds.setRayTester(new SphereRayTester(radius));
-            this.initializeEvent(bounds);
+            this.applyEvent(bounds);
             this.m_entity = bounds;
 
             /*
@@ -129,7 +129,7 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
             this.m_circle = cirEntity;
             //*/
 
-            this.initializeEvent(bounds);
+            this.applyEvent(bounds);
             rs.addEntity(this.m_entity, rspi);
         }
     }
@@ -214,12 +214,12 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
         // this.m_entity.getRotationXYZ(pv);
     }
 
-    getGlobalBounds(): IAABB {
-        return null;
-    }
-    getLocalBounds(): IAABB {
-        return null;
-    }
+    // getGlobalBounds(): IAABB {
+    //     return null;
+    // }
+    // getLocalBounds(): IAABB {
+    //     return null;
+    // }
     localToGlobal(pv: IVector3D): void {
         this.m_entity.localToGlobal(pv);
     }
@@ -227,39 +227,39 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
         this.m_entity.globalToLocal(pv);
     }
 
-    addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
-        this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
-    }
-    removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
-        this.m_dispatcher.removeEventListener(type, listener, func);
-    }
-    setTargetPosOffset(offset: IVector3D): void {
-        this.m_targetPosOffset.copyFrom(offset);
-    }
-    setTarget(target: IRotatedTarget): void {
-        this.m_target = target;
-    }
-    private initializeEvent(entity: ITransformEntity): void {
+    // addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
+    //     this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+    // }
+    // removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
+    //     this.m_dispatcher.removeEventListener(type, listener, func);
+    // }
+    // setTargetPosOffset(offset: IVector3D): void {
+    //     this.m_targetPosOffset.copyFrom(offset);
+    // }
+    // setTarget(target: IRotatedTarget): void {
+    //     this.m_target = target;
+    // }
+    // private initializeEvent(entity: ITransformEntity): void {
 
-        if (this.m_dispatcher == null) {
-            const me = CoRScene.MouseEvent;
-            let dispatcher = CoRScene.createMouseEvt3DDispatcher();
-            dispatcher.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
-            dispatcher.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
-            dispatcher.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
-            this.m_dispatcher = dispatcher;
-        }
-        entity.setEvtDispatcher(this.m_dispatcher);
-        entity.mouseEnabled = true;
-    }
-    protected mouseOverListener(evt: any): void {
-        console.log("RotationCamXYCircle::mouseOverListener() ...");
-        this.showOverColor();
-    }
-    protected mouseOutListener(evt: any): void {
-        console.log("RotationCamXYCircle::mouseOutListener() ...");
-        this.showOutColor();
-    }
+    //     if (this.m_dispatcher == null) {
+    //         const me = CoRScene.MouseEvent;
+    //         let dispatcher = CoRScene.createMouseEvt3DDispatcher();
+    //         dispatcher.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
+    //         dispatcher.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
+    //         dispatcher.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
+    //         this.m_dispatcher = dispatcher;
+    //     }
+    //     entity.setEvtDispatcher(this.m_dispatcher);
+    //     entity.mouseEnabled = true;
+    // }
+    // protected mouseOverListener(evt: any): void {
+    //     console.log("RotationCamXYCircle::mouseOverListener() ...");
+    //     this.showOverColor();
+    // }
+    // protected mouseOutListener(evt: any): void {
+    //     console.log("RotationCamXYCircle::mouseOutListener() ...");
+    //     this.showOutColor();
+    // }
     showOverColor(): void {
         // const c = this.overColor;
         // this.m_circle.setRGBA4f(c.r, c.g, c.b, 0.2);
@@ -272,23 +272,22 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
         this.outColor.a = 0.05;
         (this.m_circle.getMaterial() as IColorMaterial).setColor(this.outColor);
     }
-    isSelected(): boolean {
-        return this.m_flag > -1;
-    }
-    select(): void {
-        console.log("RotationCamXYCircle::select() ...");
-    }
+    // isSelected(): boolean {
+    //     return this.m_flag > -1;
+    // }
+    // select(): void {
+    //     console.log("RotationCamXYCircle::select() ...");
+    // }
     deselect(): void {
         console.log("RotationCamXYCircle::deselect() ...");
-        if (this.m_flag > 0) {
+        if (this.isSelected()) {
             this.editEnd();
             this.setAllVisible(true);
         }
-        this.m_flag = -1;
     }
     destroy(): void {
 
-        this.m_target = null;
+        super.destroy();
 
         if (this.m_entity != null) {
             this.m_editRS.removeEntity(this.m_entity);
@@ -298,10 +297,10 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
         this.m_editRS = null;
         this.m_stage = null;
         this.m_mat0 = null;
-        if (this.m_dispatcher != null) {
-            this.m_dispatcher.destroy();
-            this.m_dispatcher = null;
-        }
+        // if (this.m_dispatcher != null) {
+        //     this.m_dispatcher.destroy();
+        //     this.m_dispatcher = null;
+        // }
     }
     setPosition(pos: IVector3D): void {
         this.m_entity.setPosition(pos);
@@ -317,7 +316,7 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
 
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
         if (this.isEnabled()) {
-            if (this.m_flag > -1) {
+            if (this.isSelected()) {
                 let et = this.m_target;
                 if (et != null) {
 
@@ -325,15 +324,15 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
                     let cam = this.m_editRS.getCamera();
                     let uv = cam.getUV();
                     let rv = cam.getRV();
-    
+
                     let pv = this.m_stagePos;
                     let st = this.m_stage;
                     let mat = this.m_mat0;
-    
+
                     let dx = st.mouseX - pv.x;
                     let dy = pv.y - st.mouseY;
                     let rotv = this.m_rotV;
-    
+
                     mat.identity();
                     mat.appendRotation(dx * f, uv);
                     mat.appendRotation(dy * f, rv);
@@ -347,18 +346,16 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
             }
         }
     }
-    private m_axisEntity: ITransformEntity = null;
-    mouseDownListener(evt: any): void {
+    protected mouseDownListener(evt: any): void {
 
         console.log("RotationCamXYCircle::mouseDownListener() ..., evt: ", evt);
         if (this.isEnabled()) {
 
             this.editBegin();
             this.m_target.select();
-            this.m_flag = 1;
 
             this.setThisVisible(true);
-            
+
             let st = this.m_stage;
             this.m_stagePos.setXYZ(st.mouseX, st.mouseY, 0.0);
         }

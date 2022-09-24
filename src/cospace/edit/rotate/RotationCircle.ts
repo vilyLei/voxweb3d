@@ -42,9 +42,9 @@ declare var CoMesh: ICoMesh;
  */
 class RotationCircle extends RotationCtr implements IRotationCtr {
 
-    private m_target: IRotatedTarget = null;
-    private m_dispatcher: IEvtDispatcher;
-    private m_targetPosOffset = CoMath.createVec3();
+    // private m_target: IRotatedTarget = null;
+    // private m_dispatcher: IEvtDispatcher;
+    // private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
     private m_circle: ITransformEntity = null;
     private m_cv = CoMath.createVec3();
@@ -56,7 +56,7 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
     private m_planeDis = 0;
     private m_type = 0;
     private m_material: IColorMaterial = null;
-    private m_flag = -1;
+    // private m_flag = -1;
     private m_ring: RotationRing = null;
 
     private m_editRS: IRendererScene = null;
@@ -128,7 +128,7 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
             this.m_circle.update();
             this.m_circle.setVisible(false);
 
-            this.initializeEvent();
+            this.applyEvent(this.m_entity);
 
             rs.addEntity(this.m_entity, rspi);
             rs.addEntity(this.m_circle, rspi);
@@ -210,12 +210,12 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
         // this.m_entity.getRotationXYZ(pv);
     }
 
-    getGlobalBounds(): IAABB {
-        return null;
-    }
-    getLocalBounds(): IAABB {
-        return null;
-    }
+    // getGlobalBounds(): IAABB {
+    //     return null;
+    // }
+    // getLocalBounds(): IAABB {
+    //     return null;
+    // }
     localToGlobal(pv: IVector3D): void {
         this.m_entity.localToGlobal(pv);
     }
@@ -223,18 +223,18 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
         this.m_entity.globalToLocal(pv);
     }
 
-    addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
-        this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
-    }
-    removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
-        this.m_dispatcher.removeEventListener(type, listener, func);
-    }
-    setTargetPosOffset(offset: IVector3D): void {
-        this.m_targetPosOffset.copyFrom(offset);
-    }
-    setTarget(target: IRotatedTarget): void {
-        this.m_target = target;
-    }
+    // addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
+    //     this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+    // }
+    // removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
+    //     this.m_dispatcher.removeEventListener(type, listener, func);
+    // }
+    // setTargetPosOffset(offset: IVector3D): void {
+    //     this.m_targetPosOffset.copyFrom(offset);
+    // }
+    // setTarget(target: IRotatedTarget): void {
+    //     this.m_target = target;
+    // }
     enable(): void {
         super.enable();
         this.m_entity.mouseEnabled = true;
@@ -243,27 +243,27 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
         super.disable();
         this.m_entity.mouseEnabled = false;
     }
-    private initializeEvent(): void {
+    // private initializeEvent(): void {
 
-        if (this.m_dispatcher == null) {
-            const me = CoRScene.MouseEvent;
-            let d = CoRScene.createMouseEvt3DDispatcher();
-            d.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
-            d.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
-            d.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
-            this.m_entity.setEvtDispatcher(d);
-            this.m_dispatcher = d;
-        }
-        this.m_entity.mouseEnabled = true;
-    }
-    protected mouseOverListener(evt: any): void {
-        console.log("RotationCircle::mouseOverListener() ...");
-        this.showOverColor();
-    }
-    protected mouseOutListener(evt: any): void {
-        console.log("RotationCircle::mouseOutListener() ...");
-        this.showOutColor();
-    }
+    //     if (this.m_dispatcher == null) {
+    //         const me = CoRScene.MouseEvent;
+    //         let d = CoRScene.createMouseEvt3DDispatcher();
+    //         d.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
+    //         d.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
+    //         d.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
+    //         this.m_entity.setEvtDispatcher(d);
+    //         this.m_dispatcher = d;
+    //     }
+    //     this.m_entity.mouseEnabled = true;
+    // }
+    // protected mouseOverListener(evt: any): void {
+    //     console.log("RotationCircle::mouseOverListener() ...");
+    //     this.showOverColor();
+    // }
+    // protected mouseOutListener(evt: any): void {
+    //     console.log("RotationCircle::mouseOutListener() ...");
+    //     this.showOutColor();
+    // }
     showOverColor(): void {
         (this.m_entity.getMaterial() as IColorMaterial).setColor(this.overColor);
     }
@@ -271,27 +271,28 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
         (this.m_entity.getMaterial() as IColorMaterial).setColor(this.outColor);
         this.m_ring.setColor(this.outColor);
     }
-    isSelected(): boolean {
-        return this.m_flag > -1;
-    }
-    select(): void {
-        console.log("RotationCircle::select() ...");
-    }
+    // isSelected(): boolean {
+    //     return this.m_flag > -1;
+    // }
+    // select(): void {
+    //     console.log("RotationCircle::select() ...");
+    // }
     deselect(): void {
         console.log("RotationCircle::deselect() ...");
-        if (this.m_flag > 0) {
+        if (this.isSelected()) {
             this.editEnd();
             this.setAllVisible(true);
+            
             if (this.m_circle.getVisible()) {
                 this.m_entity.setVisible(true);
                 this.m_circle.setVisible(false);
             }
             this.m_ring.setVisible(false);
         }
-        this.m_flag = -1;
+        // this.m_flag = -1;
     }
     destroy(): void {
-        this.m_target = null;
+        super.destroy();
         if (this.m_entity != null) {
             this.m_editRS.removeEntity(this.m_entity);
             this.m_entity.destroy();
@@ -307,10 +308,10 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
             this.m_ring = null;
         }
         this.m_editRS = null;
-        if (this.m_dispatcher != null) {
-            this.m_dispatcher.destroy();
-            this.m_dispatcher = null;
-        }
+        // if (this.m_dispatcher != null) {
+        //     this.m_dispatcher.destroy();
+        //     this.m_dispatcher = null;
+        // }
         this.m_cv = null;
         this.m_planeNV = null;
     }
@@ -331,7 +332,7 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
 
         if (this.isEnabled()) {
-            if (this.m_flag > -1) {
+            if (this.isSelected()) {
                 // console.log("RotationCircle::moveByRay() ...");
                 // console.log("           this.m_initDegree: ", this.m_initDegree);
                 let degree = this.getDegree(rpv, rtv);
@@ -376,7 +377,7 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
             this.m_entity.setVisible(false);
             this.m_circle.setVisible(true);
 
-            this.m_flag = 1;
+            // this.m_flag = 1;
 
 
             this.setThisVisible(true);
@@ -395,10 +396,10 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
             }
         }
     }
-    private m_axisEntity: ITransformEntity = null;
+    // private m_axisEntity: ITransformEntity = null;
     public getDegree(rpv: IVector3D, rtv: IVector3D): number {
         let degree = 0;
-        if (this.m_flag > -1) {
+        if (this.isSelected()) {
             let u = CoAGeom.PlaneUtils;
             this.getPosition(this.m_outV);
             let pids = this.m_planeNV.dot(this.m_outV);

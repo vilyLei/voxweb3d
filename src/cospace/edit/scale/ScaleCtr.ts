@@ -26,6 +26,12 @@ class ScaleCtr extends UserEditCtr {
         ScaleCtr.s_list.push(this);
     }
     
+    deselect(): void {
+        if (this.isSelected()) {
+            this.editEnd();
+            this.setAllVisible(true);
+        }
+    }
     /**
      * 设置所有旋转控制器对象可见性
      * @param v true 表示可见, false表示隐藏
