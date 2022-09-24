@@ -22,6 +22,7 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 import { IRendererSceneAccessor } from "../../../vox/scene/IRendererSceneAccessor";
 import RendererSceneGraph from "../../../vox/scene/RendererSceneGraph";
 import { TransformController } from "../transform/TransformController";
+import { UserEditEvent } from "../event/UserEditEvent";
 import { IButton } from "../../voxui/entity/IButton";
 import { IClipLabel } from "../../voxui/entity/IClipLabel";
 import { PostOutline } from "./effect/PostOutline";
@@ -137,7 +138,27 @@ export class DemoEditTrans {
 
 		this.m_transCtr = new TransformController();
 		this.m_transCtr.initialize(editsc);
+		this.m_transCtr.addEventListener(UserEditEvent.EDIT_BEGIN, this, this.editBegin);
+		this.m_transCtr.addEventListener(UserEditEvent.EDIT_END, this, this.editEnd);
+		this.m_prevPos = CoMath.createVec3();
+		this.m_currPos = CoMath.createVec3();
+	}
+	private m_prevPos: IVector3D;
+	private m_currPos: IVector3D;
+	private editBegin(evt: any): void {
+		// this.m_transCtr
+		console.log("XXXXXXXX Edit begin...");
+		let st = this.m_renderer.getStage3D();
+		this.m_prevPos.setXYZ(st.mouseX, st.mouseY, 0);
+	}
+	private editEnd(evt: any): void {
+		console.log("XXXXXXXX Edit end...");
+		let st = this.m_renderer.getStage3D();
+		this.m_currPos.setXYZ(st.mouseX, st.mouseY, 0);
+		if (CoMath.Vector3D.Distance(this.m_prevPos, this.m_currPos) > 0.5) {
 
+			console.log("XXXXXXXX Edit transforming success ...");
+		}
 	}
 	private initUI(): void {
 
@@ -224,7 +245,7 @@ export class DemoEditTrans {
 		if (this.m_selectFrame.isSelectEnabled()) {
 			let b = this.m_selectFrame.bounds;
 			let list = this.m_entityQuery.getEntities(b.min, b.max);
-			if(list != null && list.length > 0) {
+			if (list != null && list.length > 0) {
 				this.selectEntities(list);
 			}
 		}
@@ -267,7 +288,7 @@ export class DemoEditTrans {
 
 	private m_ctrlType: number = 0;
 	private selectBtn(btn: IButton): void {
-		
+
 		let label: IColorClipLabel;
 
 		if (this.m_currBtn != btn) {
@@ -313,8 +334,8 @@ export class DemoEditTrans {
 			default:
 				break;
 		}
-		
-		this.selectBtn( evt.currentTarget as IButton );
+
+		this.selectBtn(evt.currentTarget as IButton);
 	}
 	private createDefaultEntity(): void {
 

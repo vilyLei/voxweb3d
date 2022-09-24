@@ -19,6 +19,7 @@ class UserEditCtr {
     protected m_target: ICtrTarget = null;
     protected m_ctrList: UserEditCtr[] = null;
 
+    editType = "";
     runningVisible = true;
     uuid = "editCtrl";
     moveSelfEnabled = true;
@@ -41,10 +42,20 @@ class UserEditCtr {
     protected editBegin(): void {
         console.log("UserEditCtr::editBegin()");
         this.m_flag = 1;
+        let node = this.m_evtMap.get(UserEditEvent.EDIT_BEGIN);
+        let evt = node.createEvent(this, this);
+        node.dispatch(evt);
+        evt.target = null;
+        evt.currentTarget = null;
     }
     protected editEnd(): void {
         console.log("UserEditCtr::editEnd()");
         this.m_flag = -1;
+        let node = this.m_evtMap.get(UserEditEvent.EDIT_END);
+        let evt = node.createEvent(this, this);
+        node.dispatch(evt);
+        evt.target = null;
+        evt.currentTarget = null;
     }
 
     enable(): void {
@@ -91,7 +102,7 @@ class UserEditCtr {
         // }else {
         //     this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
         // }
-        
+
         if (this.m_evtMap.has(type)) {
             let node = this.m_evtMap.get(type);
             node.addListener(listener, func);
