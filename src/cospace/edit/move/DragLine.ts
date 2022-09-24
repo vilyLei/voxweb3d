@@ -191,6 +191,7 @@ class DragLine extends MoveCtr implements IRayControl {
         this.m_cone.mouseEnabled = false;
     }
     destroy(): void {
+        super.destroy();
         if (this.m_entity != null) {
             this.m_entity.destroy();
             this.m_entity = null;

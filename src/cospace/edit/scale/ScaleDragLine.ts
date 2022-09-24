@@ -38,9 +38,9 @@ declare var CoEntity: ICoEntity;
  */
 class ScaleDragLine extends ScaleCtr implements IRayControl {
 
-    private m_target: IScaleTarget = null;
-    private m_dispatcher: IEvtDispatcher;
-    private m_targetPosOffset = CoMath.createVec3();
+    // private m_target: IScaleTarget = null;
+    // private m_dispatcher: IEvtDispatcher;
+    // private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
     private m_box: ITransformEntity = null;
 
@@ -75,7 +75,7 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
                 lineTester.setPrevTester(new SphereRayTester(this.innerSphereRadius));
                 mesh.setRayTester(lineTester);
             }
-            this.initializeEvent(this.m_entity);
+            this.applyEvent(this.m_entity);
 
             material = CoMaterial.createDefaultMaterial();
             material.initializeByCodeBuf(false);
@@ -85,7 +85,7 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
             this.m_box = CoEntity.createDisplayEntity();
             this.m_box.setMaterial(material);
             this.m_box.setMesh(mesh);
-            this.initializeEvent(this.m_box);
+            this.applyEvent(this.m_box);
         }
     }
     getBox(): ITransformEntity {
@@ -121,12 +121,12 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
     getRotationXYZ(pv: IVector3D): void {
         this.m_entity.getRotationXYZ(pv);
     }
-    getGlobalBounds(): IAABB {
-        return null;
-    }
-    getLocalBounds(): IAABB {
-        return null;
-    }
+    // getGlobalBounds(): IAABB {
+    //     return null;
+    // }
+    // getLocalBounds(): IAABB {
+    //     return null;
+    // }
     localToGlobal(pv: IVector3D): void {
         this.m_entity.localToGlobal(pv);
     }
@@ -134,40 +134,40 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
         this.m_entity.globalToLocal(pv);
     }
 
-    addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
-        this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
-    }
-    removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
-        this.m_dispatcher.removeEventListener(type, listener, func);
-    }
-    setTargetPosOffset(offset: IVector3D): void {
-        this.m_targetPosOffset.copyFrom(offset);
-    }
-    setTarget(target: IScaleTarget): void {
-        this.m_target = target;
-    }
+    // addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
+    //     this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+    // }
+    // removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
+    //     this.m_dispatcher.removeEventListener(type, listener, func);
+    // }
+    // setTargetPosOffset(offset: IVector3D): void {
+    //     this.m_targetPosOffset.copyFrom(offset);
+    // }
+    // setTarget(target: IScaleTarget): void {
+    //     this.m_target = target;
+    // }
 
-    private initializeEvent(entity: ITransformEntity): void {
+    // private initializeEvent(entity: ITransformEntity): void {
 
-        if (this.m_dispatcher == null) {
-            const me = CoRScene.MouseEvent;
-            let dispatcher = CoRScene.createMouseEvt3DDispatcher();
-            dispatcher.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
-            dispatcher.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
-            dispatcher.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
-            this.m_dispatcher = dispatcher;
-        }
-        entity.setEvtDispatcher(this.m_dispatcher);
-        entity.mouseEnabled = true;
-    }
-    protected mouseOverListener(evt: any): void {
-        console.log("ScaleDragLine::mouseOverListener() ...");
-        this.showOverColor();
-    }
-    protected mouseOutListener(evt: any): void {
-        console.log("ScaleDragLine::mouseOutListener() ...");
-        this.showOutColor();
-    }
+    //     if (this.m_dispatcher == null) {
+    //         const me = CoRScene.MouseEvent;
+    //         let dispatcher = CoRScene.createMouseEvt3DDispatcher();
+    //         dispatcher.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
+    //         dispatcher.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
+    //         dispatcher.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
+    //         this.m_dispatcher = dispatcher;
+    //     }
+    //     entity.setEvtDispatcher(this.m_dispatcher);
+    //     entity.mouseEnabled = true;
+    // }
+    // protected mouseOverListener(evt: any): void {
+    //     console.log("ScaleDragLine::mouseOverListener() ...");
+    //     this.showOverColor();
+    // }
+    // protected mouseOutListener(evt: any): void {
+    //     console.log("ScaleDragLine::mouseOutListener() ...");
+    //     this.showOutColor();
+    // }
     showOverColor(): void {
         let m = this.m_entity.getMaterial() as IColorMaterial;
         m.setColor(this.overColor);
@@ -191,21 +191,21 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
         this.m_entity.mouseEnabled = false;
         this.m_box.mouseEnabled = false;
     }
-    isSelected(): boolean {
-        return this.m_flag > -1;
-    }
-    select(): void {
-    }
-    deselect(): void {
-        console.log("ScaleDragLine::deselect() ...");
-        if (this.m_flag > 0) {
-            this.editEnd();
-            this.setAllVisible(true);
-        }
-        this.m_flag = -1;
-    }
+    // isSelected(): boolean {
+    //     return this.m_flag > -1;
+    // }
+    // select(): void {
+    // }
+    // deselect(): void {
+    //     console.log("ScaleDragLine::deselect() ...");
+    //     if (this.m_flag > 0) {
+    //         this.editEnd();
+    //         this.setAllVisible(true);
+    //     }
+    //     this.m_flag = -1;
+    // }
     destroy(): void {
-        this.m_target = null;
+        super.destroy();
         if (this.m_entity != null) {
             this.m_entity.destroy();
             this.m_entity = null;
@@ -214,10 +214,10 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
             this.m_box.destroy();
             this.m_box = null;
         }
-        if (this.m_dispatcher != null) {
-            this.m_dispatcher.destroy();
-            this.m_dispatcher = null;
-        }
+        // if (this.m_dispatcher != null) {
+        //     this.m_dispatcher.destroy();
+        //     this.m_dispatcher = null;
+        // }
     }
     setPosition(pos: IVector3D): void {
         this.m_entity.setPosition(pos);
@@ -227,9 +227,10 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
     }
     update(): void {
         this.m_entity.update();
+        this.m_box.update();
     }
 
-    private m_flag: number = -1;
+    // private m_flag: number = -1;
     private m_line_pv: IVector3D = CoMath.createVec3();
     private m_initPos: IVector3D = CoMath.createVec3();
     private m_dv: IVector3D = CoMath.createVec3();
@@ -240,7 +241,7 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
     private m_invMat4: IMatrix4 = CoMath.createMat4();
     private calcClosePos(rpv: IVector3D, rtv: IVector3D): void {
 
-        if (this.m_flag > -1) {
+        if (this.isSelected()) {
             let mat4 = this.m_invMat4;
             mat4.transformVector3Self(rpv);
             mat4.deltaTransformVectorSelf(rtv);
@@ -256,7 +257,7 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
 
         if (this.isEnabled()) {
-            if (this.m_flag > -1) {
+            if (this.isSelected()) {
 
                 this.m_rpv.copyFrom(rpv);
                 this.m_rtv.copyFrom(rtv);
@@ -309,7 +310,7 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
             this.editBegin();
             this.setThisVisible(true);
             this.m_target.select();
-            this.m_flag = 1;
+            // this.m_flag = 1;
             //console.log("AxisCtrlObj::mouseDownListener(). this.m_flag: "+this.m_flag);
             let trans = this.m_entity.getTransform();
 

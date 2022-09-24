@@ -185,7 +185,7 @@ export default class DragPlane extends MoveCtr implements IRayControl {
         this.m_entity.update();
     }
     destroy(): void {
-        this.m_target = null;
+        super.destroy();
         if (this.m_entity != null) {
             this.m_entity.destroy();
         }

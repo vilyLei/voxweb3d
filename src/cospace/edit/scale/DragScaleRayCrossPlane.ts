@@ -35,9 +35,9 @@ declare var CoParticle: ICoParticle;
  */
 export default class DragScaleRayCrossPlane extends ScaleCtr implements IRayControl {
 
-    private m_target: IScaleTarget = null;
-    private m_dispatcher: IEvtDispatcher;
-    private m_targetPosOffset = CoMath.createVec3();
+    // private m_target: IScaleTarget = null;
+    // private m_dispatcher: IEvtDispatcher;
+    // private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
     private m_rscene: IRendererScene = null;
 
@@ -58,7 +58,7 @@ export default class DragScaleRayCrossPlane extends ScaleCtr implements IRayCont
             let maxV = CoMath.createVec3(radius, radius, radius);
             bounds.setBounds(minV, maxV);
             bounds.setRayTester(new SphereRayTester(radius));
-            this.initializeEvent(bounds);
+            this.applyEvent(bounds);
             this.m_rscene.addEntity(bounds, processidIndex);
             this.m_entity = bounds;
 
@@ -91,41 +91,41 @@ export default class DragScaleRayCrossPlane extends ScaleCtr implements IRayCont
     getEntity(): ITransformEntity {
         return this.m_entity;
     }
-    addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
-        this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
-    }
-    removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
-        this.m_dispatcher.removeEventListener(type, listener, func);
-    }
+    // addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
+    //     this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+    // }
+    // removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
+    //     this.m_dispatcher.removeEventListener(type, listener, func);
+    // }
 
-    setTargetPosOffset(offset: IVector3D): void {
-        this.m_targetPosOffset.copyFrom(offset);
-    }
-    setTarget(target: IScaleTarget): void {
-        this.m_target = target;
-    }
+    // setTargetPosOffset(offset: IVector3D): void {
+    //     this.m_targetPosOffset.copyFrom(offset);
+    // }
+    // setTarget(target: IScaleTarget): void {
+    //     this.m_target = target;
+    // }
 
-    private initializeEvent(entity: ITransformEntity): void {
+    // private initializeEvent(entity: ITransformEntity): void {
 
-        if (this.m_dispatcher == null) {
-            let me = CoRScene.MouseEvent;
-            let dispatcher = CoRScene.createMouseEvt3DDispatcher();
-            dispatcher.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
-            dispatcher.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
-            dispatcher.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
-            entity.setEvtDispatcher(dispatcher);
-            this.m_dispatcher = dispatcher;
-        }
-        entity.mouseEnabled = true;
-    }
-    protected mouseOverListener(evt: any): void {
-        console.log("DragScaleRayCrossPlane::mouseOverListener() ...");
-        this.showOverColor();
-    }
-    protected mouseOutListener(evt: any): void {
-        console.log("DragScaleRayCrossPlane::mouseOutListener() ...");
-        this.showOutColor();
-    }
+    //     if (this.m_dispatcher == null) {
+    //         let me = CoRScene.MouseEvent;
+    //         let dispatcher = CoRScene.createMouseEvt3DDispatcher();
+    //         dispatcher.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
+    //         dispatcher.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
+    //         dispatcher.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
+    //         entity.setEvtDispatcher(dispatcher);
+    //         this.m_dispatcher = dispatcher;
+    //     }
+    //     entity.mouseEnabled = true;
+    // }
+    // protected mouseOverListener(evt: any): void {
+    //     console.log("DragScaleRayCrossPlane::mouseOverListener() ...");
+    //     this.showOverColor();
+    // }
+    // protected mouseOutListener(evt: any): void {
+    //     console.log("DragScaleRayCrossPlane::mouseOutListener() ...");
+    //     this.showOutColor();
+    // }
     showOverColor(): void {
         let c = this.overColor;
         this.m_circle.setRGB3f(c.r, c.g, c.b);
@@ -198,25 +198,26 @@ export default class DragScaleRayCrossPlane extends ScaleCtr implements IRayCont
     globalToLocal(pv: IVector3D): void {
         this.m_entity.globalToLocal(pv);
     }
-    isSelected(): boolean {
-        return this.m_flag > -1;
-    }
-    select(): void {
-    }
-    deselect(): void {
-        if (this.m_flag > -1) {
-            this.editEnd();
-            this.setAllVisible(true);
-        }
-        this.m_flag = -1;
-    }
+    // isSelected(): boolean {
+    //     return this.m_flag > -1;
+    // }
+    // select(): void {
+    // }
+    // deselect(): void {
+    //     if (this.m_flag > -1) {
+    //         this.editEnd();
+    //         this.setAllVisible(true);
+    //     }
+    //     this.m_flag = -1;
+    // }
     update(): void {
         this.m_entity.update();
         this.m_circle.update();
         this.m_billPos.update();
     }
     destroy(): void {
-        this.m_target = null;
+        super.destroy();
+        // this.m_target = null;
         if (this.m_entity != null) {
             this.m_rscene.removeEntity(this.m_entity);
             this.m_entity.destroy();
@@ -229,17 +230,17 @@ export default class DragScaleRayCrossPlane extends ScaleCtr implements IRayCont
             this.m_rscene.removeEntity(this.m_billPos.entity);
             this.m_billPos.destroy();
         }
-        if (this.m_dispatcher != null) {
-            this.m_dispatcher.destroy();
-            this.m_dispatcher = null;
-        }
+        // if (this.m_dispatcher != null) {
+        //     this.m_dispatcher.destroy();
+        //     this.m_dispatcher = null;
+        // }
         this.m_rscene = null;
     }
     private m_planeNV = CoMath.createVec3(0.0, 1.0, 0.0);
     private m_planePos = CoMath.createVec3();
     private m_planeDis = 0.0;
 
-    private m_flag = -1;
+    // private m_flag = -1;
     private m_pos = CoMath.createVec3();
     private m_dv = CoMath.createVec3();
     private m_outV = CoMath.createVec3();
@@ -254,7 +255,7 @@ export default class DragScaleRayCrossPlane extends ScaleCtr implements IRayCont
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
 
         if (this.isEnabled()) {
-            if (this.m_flag > -1) {
+            if (this.isSelected()) {
 
                 this.m_rpv.copyFrom(rpv);
                 this.m_rtv.copyFrom(rtv);
@@ -296,7 +297,7 @@ export default class DragScaleRayCrossPlane extends ScaleCtr implements IRayCont
         this.getPosition(this.m_dv);
         this.m_dv.subtractBy(this.m_outV);
     }
-    private mouseDownListener(evt: any): void {
+    protected mouseDownListener(evt: any): void {
 
         if (this.isEnabled()) {
 
@@ -305,7 +306,7 @@ export default class DragScaleRayCrossPlane extends ScaleCtr implements IRayCont
             this.setThisVisible(true);
             this.m_target.select();
 
-            this.m_flag = 1;
+            // this.m_flag = 1;
 
             this.selectByParam(evt.raypv, evt.raytv, evt.wpos);
             this.m_target.getScaleXYZ(this.m_sv);

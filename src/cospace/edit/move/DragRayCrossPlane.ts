@@ -58,7 +58,7 @@ export default class DragRayCrossPlane extends MoveCtr implements IRayControl {
             let maxV = CoMath.createVec3(radius, radius, radius);
             bounds.setBounds(minV, maxV);
             bounds.setRayTester(new SphereRayTester(radius));
-            this.initializeEvent(bounds);
+            this.applyEvent(bounds);
             this.m_rscene.addEntity(bounds, processidIndex);
             this.m_entity = bounds;
 
@@ -212,7 +212,7 @@ export default class DragRayCrossPlane extends MoveCtr implements IRayControl {
         this.m_billPos.update();
     }
     destroy(): void {
-        this.m_target = null;
+        super.destroy();
         if (this.m_entity != null) {
             this.m_rscene.removeEntity(this.m_entity);
             this.m_entity.destroy();
