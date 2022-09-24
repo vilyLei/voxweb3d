@@ -35,8 +35,8 @@ declare var CoParticle: ICoParticle;
  */
 export default class DragRayCrossPlane extends MoveCtr implements IRayControl {
 
-    private m_target: IMovedTarget = null;
-    private m_dispatcher: IEvtDispatcher;
+    // private m_target: IMovedTarget = null;
+    // private m_dispatcher: IEvtDispatcher;
     // private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
     private m_rscene: IRendererScene = null;
@@ -91,38 +91,37 @@ export default class DragRayCrossPlane extends MoveCtr implements IRayControl {
     getEntity(): ITransformEntity {
         return this.m_entity;
     }
-    addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
-        this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
-    }
-    removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
-        this.m_dispatcher.removeEventListener(type, listener, func);
-    }
+    // addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
+    //     this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+    // }
+    // removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
+    //     this.m_dispatcher.removeEventListener(type, listener, func);
+    // }
+    // setTarget(target: IMovedTarget): void {
+    //     this.m_target = target;
+    // }
 
-    setTarget(target: IMovedTarget): void {
-        this.m_target = target;
-    }
+    // private initializeEvent(entity: ITransformEntity): void {
 
-    private initializeEvent(entity: ITransformEntity): void {
-
-        if (this.m_dispatcher == null) {
-            let me = CoRScene.MouseEvent;
-            let dispatcher = CoRScene.createMouseEvt3DDispatcher();
-            dispatcher.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
-            dispatcher.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
-            dispatcher.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
-            entity.setEvtDispatcher(dispatcher);
-            this.m_dispatcher = dispatcher;
-        }
-        entity.mouseEnabled = true;
-    }
-    protected mouseOverListener(evt: any): void {
-        console.log("DragRayCrossPlane::mouseOverListener() ...");
-        this.showOverColor();
-    }
-    protected mouseOutListener(evt: any): void {
-        console.log("DragRayCrossPlane::mouseOutListener() ...");
-        this.showOutColor();
-    }
+    //     if (this.m_dispatcher == null) {
+    //         let me = CoRScene.MouseEvent;
+    //         let dispatcher = CoRScene.createMouseEvt3DDispatcher();
+    //         dispatcher.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
+    //         dispatcher.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
+    //         dispatcher.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
+    //         entity.setEvtDispatcher(dispatcher);
+    //         this.m_dispatcher = dispatcher;
+    //     }
+    //     entity.mouseEnabled = true;
+    // }
+    // protected mouseOverListener(evt: any): void {
+    //     console.log("DragRayCrossPlane::mouseOverListener() ...");
+    //     this.showOverColor();
+    // }
+    // protected mouseOutListener(evt: any): void {
+    //     console.log("DragRayCrossPlane::mouseOutListener() ...");
+    //     this.showOutColor();
+    // }
     showOverColor(): void {
         let c = this.overColor;
         this.m_circle.setRGB3f(c.r, c.g, c.b);
@@ -183,30 +182,30 @@ export default class DragRayCrossPlane extends MoveCtr implements IRayControl {
         this.m_entity.getRotationXYZ(pv);
     }
 
-    getGlobalBounds(): IAABB {
-        return this.m_entity.getGlobalBounds();
-    }
-    getLocalBounds(): IAABB {
-        return this.m_entity.getGlobalBounds();
-    }
+    // getGlobalBounds(): IAABB {
+    //     return this.m_entity.getGlobalBounds();
+    // }
+    // getLocalBounds(): IAABB {
+    //     return this.m_entity.getGlobalBounds();
+    // }
     localToGlobal(pv: IVector3D): void {
         this.m_entity.localToGlobal(pv);
     }
     globalToLocal(pv: IVector3D): void {
         this.m_entity.globalToLocal(pv);
     }
-    isSelected(): boolean {
-        return this.m_flag > -1;
-    }
-    select(): void {
-    }
-    deselect(): void {
-        if (this.m_flag > -1) {
-            this.editEnd();
-            this.setAllVisible(true);
-        }
-        this.m_flag = -1;
-    }
+    // isSelected(): boolean {
+    //     return this.m_flag > -1;
+    // }
+    // select(): void {
+    // }
+    // deselect(): void {
+    //     if (this.m_flag > -1) {
+    //         this.editEnd();
+    //         this.setAllVisible(true);
+    //     }
+    //     this.m_flag = -1;
+    // }
     update(): void {
         this.m_entity.update();
         this.m_circle.update();
@@ -226,17 +225,17 @@ export default class DragRayCrossPlane extends MoveCtr implements IRayControl {
             this.m_rscene.removeEntity(this.m_billPos.entity);
             this.m_billPos.destroy();
         }
-        if (this.m_dispatcher != null) {
-            this.m_dispatcher.destroy();
-            this.m_dispatcher = null;
-        }
+        // if (this.m_dispatcher != null) {
+        //     this.m_dispatcher.destroy();
+        //     this.m_dispatcher = null;
+        // }
         this.m_rscene = null;
     }
     private m_planeNV = CoMath.createVec3(0.0, 1.0, 0.0);
     private m_planePos = CoMath.createVec3();
     private m_planeDis = 0.0;
 
-    private m_flag = -1;
+    // private m_flag = -1;
     private m_pos = CoMath.createVec3();
     private m_dv = CoMath.createVec3();
     private m_outV = CoMath.createVec3();
@@ -249,7 +248,7 @@ export default class DragRayCrossPlane extends MoveCtr implements IRayControl {
     public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
 
         if (this.isEnabled()) {
-            if (this.m_flag > -1) {
+            if (this.isSelected()) {
 
                 this.m_rpv.copyFrom(rpv);
                 this.m_rtv.copyFrom(rtv);
@@ -295,7 +294,7 @@ export default class DragRayCrossPlane extends MoveCtr implements IRayControl {
         this.getPosition(this.m_dv);
         this.m_dv.subtractBy(this.m_outV);
     }
-    private mouseDownListener(evt: any): void {
+    protected mouseDownListener(evt: any): void {
 
         if (this.isEnabled()) {
 
@@ -303,7 +302,6 @@ export default class DragRayCrossPlane extends MoveCtr implements IRayControl {
 
             this.editBegin();
             this.setThisVisible(true);
-            this.m_flag = 1;
 
             this.m_target.select(this);
             this.selectByParam(evt.raypv, evt.raytv, evt.wpos);

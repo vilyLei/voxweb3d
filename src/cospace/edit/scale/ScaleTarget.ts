@@ -129,13 +129,6 @@ class ScaleTarget implements IEntityTransform {
     getScaleXYZ(sv: IVector3D): void {
 
         sv.setXYZ(1.0, 1.0, 1.0);
-        // let tars = this.m_tars;
-        // if (tars.length == 1) {
-        //     tars[0].getRotationXYZ(sv);
-        // }
-        // else {
-        //     sv.setXYZ(1.0, 1.0, 1.0);
-        // }
     }
 
     getGlobalBounds(): IAABB {
