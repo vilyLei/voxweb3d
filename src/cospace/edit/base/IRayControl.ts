@@ -16,6 +16,7 @@ interface IRayControl extends ISelectable {
     moveByRay(rpv: IVector3D, rtv: IVector3D): void;
     run(camera: IRenderCamera, rtv: IVector3D): void;
     addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled?: boolean, bubbleEnabled?: boolean): void;
+    removeEventListener(type: number, listener: any, func: (evt: any) => void): void;
     enable(): void;
     disable(): void;
     isEnabled(): boolean;

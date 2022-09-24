@@ -13,6 +13,8 @@ interface IUserEditController extends IEntityTransform {
      */
     initialize(rc: IRendererScene, processid?: number): void;
     
+    addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled?: boolean, bubbleEnabled?: boolean): void;
+    removeEventListener(type: number, listener: any, func: (evt: any) => void): void;
     enable(): void;
     disable(): void;
     isEnabled(): boolean;

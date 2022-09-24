@@ -7,10 +7,12 @@ import IVector3D from "../../../vox/math/IVector3D";
 import { UserEditEvent } from "../event/UserEditEvent";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
+import IEvtNode from "../../../vox/event/IEvtNode";
 declare var CoRScene: ICoRScene;
 
 class UserEditCtr {
 
+    private m_evtMap: Map<number, IEvtNode>;
     protected m_enabled = false;
     private m_flag = -1;
     private m_dispatcher: IEvtDispatcher = null;
@@ -20,7 +22,22 @@ class UserEditCtr {
     runningVisible = true;
     uuid = "editCtrl";
     moveSelfEnabled = true;
+    constructor() {
 
+        let m = new Map();
+
+        const UE = UserEditEvent;
+
+        let node = CoRScene.createEvtNode();
+        node.type = UE.EDIT_BEGIN;
+        m.set(node.type, node);
+
+        node = CoRScene.createEvtNode();
+        node.type = UE.EDIT_END;
+        m.set(node.type, node);
+
+        this.m_evtMap = m;
+    }
     protected editBegin(): void {
         console.log("UserEditCtr::editBegin()");
         this.m_flag = 1;
@@ -66,17 +83,30 @@ class UserEditCtr {
         return null;
     }
     addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
-        const UE = UserEditEvent;
-        if(type == UE.EDIT_BEGIN) {
 
-        }else if(type == UE.EDIT_END) {
-            
-        }else {
+        // let node = this.m_evtMap.get();
+        // const UE = UserEditEvent;
+        // if(type == UE.EDIT_BEGIN) {
+        // }else if(type == UE.EDIT_END) {
+        // }else {
+        //     this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+        // }
+        
+        if (this.m_evtMap.has(type)) {
+            let node = this.m_evtMap.get(type);
+            node.addListener(listener, func);
+        } else {
             this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
         }
     }
     removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
-        this.m_dispatcher.removeEventListener(type, listener, func);
+
+        if (this.m_evtMap.has(type)) {
+            let node = this.m_evtMap.get(type);
+            node.removeListener(listener, func);
+        } else {
+            this.m_dispatcher.removeEventListener(type, listener, func);
+        }
     }
     setTarget(target: ICtrTarget): void {
         this.m_target = target;
@@ -124,9 +154,13 @@ class UserEditCtr {
 
     }
     destroy(): void {
+
         this.m_target = null;
         this.m_ctrList = null;
         if (this.m_dispatcher != null) {
+            for(var [k,v] of this.m_evtMap.entries()) {
+                v.destroy();
+            }
             this.m_dispatcher.destroy();
             this.m_dispatcher = null;
         }
@@ -136,7 +170,7 @@ class UserEditCtr {
      * 设置所有旋转控制器对象可见性
      * @param v true 表示可见, false表示隐藏
      */
-     protected setAllVisible(v: boolean): void {
+    protected setAllVisible(v: boolean): void {
         let ls = this.m_ctrList;
         for (let i = 0; i < ls.length; ++i) {
             ls[i].setVisible(v);
@@ -148,11 +182,11 @@ class UserEditCtr {
      */
     protected setThisVisible(v: boolean): void {
         let ls = this.m_ctrList;
-        if(v) {
+        if (v) {
             for (let i = 0; i < ls.length; ++i) {
                 ls[i].setVisible(ls[i] == this);
             }
-        }else {
+        } else {
             for (let i = 0; i < ls.length; ++i) {
                 ls[i].setVisible(ls[i] != this);
             }

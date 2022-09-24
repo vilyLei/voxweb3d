@@ -21,7 +21,6 @@ import { ITransformController } from "./ITransformController";
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
 
-
 /**
  * renderable entity transform 编辑控制器
  */
@@ -84,6 +83,19 @@ class TransformController {
             ctr2.disable();
             ctr2.setVisible(false);
             ls[2] = ctr2;
+        }
+    }
+    
+    addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
+        let ls = this.m_controllers;
+        for (let i = 0; i < ls.length; ++i) {
+            ls[i].addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+        }
+    }
+    removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
+        let ls = this.m_controllers;
+        for (let i = 0; i < ls.length; ++i) {
+            ls[i].removeEventListener(type, listener, func);
         }
     }
     /**

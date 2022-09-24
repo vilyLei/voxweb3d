@@ -82,6 +82,16 @@ class DragTransController{
     private dragMouseUpListener(evt: any): void {
         this.m_editRS.removeEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener);
     }
+    addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
+        for (let i = 0; i < this.m_controllers.length; ++i) {
+            this.m_controllers[i].addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+        }
+    }
+    removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
+        for (let i = 0; i < this.m_controllers.length; ++i) {
+            this.m_controllers[i].removeEventListener(type, listener, func);
+        }
+    }
     enable(): void {
         this.m_enabled = true;
         for (let i = 0; i < this.m_controllers.length; ++i) {
