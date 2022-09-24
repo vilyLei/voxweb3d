@@ -5,79 +5,79 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IVector3D from "../../../vox/math/IVector3D";
-import IAABB from "../../../vox/geom/IAABB";
+// import IVector3D from "../../../vox/math/IVector3D";
+// import IAABB from "../../../vox/geom/IAABB";
+// import IEntityTransform from "../../../vox/entity/IEntityTransform";
+// import { IRenderCamera } from "../../../vox/render/IRenderCamera";
+// import IRendererScene from "../../../vox/scene/IRendererScene";
 
-import IEntityTransform from "../../../vox/entity/IEntityTransform";
-import { IRenderCamera } from "../../../vox/render/IRenderCamera";
-import IRendererScene from "../../../vox/scene/IRendererScene";
-
-import { DragMoveTarget } from "../move/DragMoveTarget";
+import { DragTransController } from "../transform/DragTransController";
 import { RotationCircle } from "./RotationCircle";
 import { RotationCamZCircle } from "./RotationCamZCircle";
 import { IDragRotationController } from "./IDragRotationController";
 import { RotatedTarget } from "./RotatedTarget";
 
 import IColor4 from "../../../vox/material/IColor4";
-import { IRayControl } from "../base/IRayControl";
-import { ICoRScene } from "../../voxengine/ICoRScene";
+// import { IRayControl } from "../base/IRayControl";
+// import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
-import { ICoMath } from "../../math/ICoMath";
-import { ICoAGeom } from "../../ageom/ICoAGeom";
+// import { ICoMath } from "../../math/ICoMath";
+// import { ICoAGeom } from "../../ageom/ICoAGeom";
 import { RotationCamXYCircle } from "./RotationCamXYCircle";
 
-declare var CoRScene: ICoRScene;
+// declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
-declare var CoMath: ICoMath;
-declare var CoAGeom: ICoAGeom;
+// declare var CoMath: ICoMath;
+// declare var CoAGeom: ICoAGeom;
 
 /**
  * 在三个坐标轴上拖动旋转
  */
-class DragRotationController implements IDragRotationController {
+class DragRotationController extends DragTransController implements IDragRotationController {
 
-    private m_controllers: IRayControl[] = [];
-    private m_pos0 = CoMath.createVec3();
-    private m_pos1 = CoMath.createVec3();
+    // private m_controllers: IRayControl[] = [];
+    // private m_pos0 = CoMath.createVec3();
+    // private m_pos1 = CoMath.createVec3();
 
-    private m_rpv = CoMath.createVec3();
-    private m_rtv = CoMath.createVec3();
+    // private m_rpv = CoMath.createVec3();
+    // private m_rtv = CoMath.createVec3();
 
-    private m_tempPos = CoMath.createVec3();
+    // private m_tempPos = CoMath.createVec3();
 
-    private m_visible = true;
-    private m_enabled = true;
-    private m_posX = 0;
+    // private m_visible = true;
+    // private m_enabled = true;    
+    // private m_posX = 0;
 
-    private m_editRS: IRendererScene = null;
-    private m_editRSPI: number = 0;
-    private m_target = new RotatedTarget();
+    // private m_editRS: IRendererScene = null;
+    // private m_editRSPI: number = 0;
+    // private m_target = new RotatedTarget();
 
-    private m_mousePrePos = CoMath.createVec3(-100000, -100000, 0);
-    private m_mousePos = CoMath.createVec3();
-    /**
-     * example: the value is 0.05
-     */
-    fixSize = 0.0;
+    // private m_mousePrePos = CoMath.createVec3(-100000, -100000, 0);
+    // private m_mousePos = CoMath.createVec3();
+    // /**
+    //  * example: the value is 0.05
+    //  */
+    // fixSize = 0.0;
+    // runningVisible = true;
+    // uuid = "DragRotationController";
+
     radius = 100.0;
     pickTestAxisRadius = 20;
     camZCircleRadius = 120;
     camYXCircleRadius = 80;
-    runningVisible = true;
-    uuid = "DragRotationController";
-    constructor() { }
-    /**
-     * initialize the DragRotationController instance.
-     * @param editRendererScene a IRendererScene instance.
-     * @param processid this destination renderer process id in the editRendererScene.
-     */
-    initialize(rc: IRendererScene, processid: number = 0): void {
-        if (this.m_editRS == null) {
-            this.m_editRS = rc;
-            this.m_editRSPI = processid;
-            this.init();
-        }
-    }
+    constructor() { super(); }
+    // /**
+    //  * initialize the DragRotationController instance.
+    //  * @param editRendererScene a IRendererScene instance.
+    //  * @param processid this destination renderer process id in the editRendererScene.
+    //  */
+    // initialize(rc: IRendererScene, processid: number = 0): void {
+    //     if (this.m_editRS == null) {
+    //         this.m_editRS = rc;
+    //         this.m_editRSPI = processid;
+    //         this.init();
+    //     }
+    // }
 
     private createCircle(type: number, color: IColor4, radius: number = 100.0, segsTotal: number = 20): RotationCircle {
 
@@ -90,7 +90,7 @@ class DragRotationController implements IDragRotationController {
         circle.showOutColor();
 
         circle.setTarget(this.m_target);
-        circle.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
+        // circle.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
 
         this.m_target.addCtrlEntity(circle);
         this.m_controllers.push(circle);
@@ -98,8 +98,9 @@ class DragRotationController implements IDragRotationController {
         return circle;
     }
 
-    private init(): void {
+    protected init(): void {
 
+        this.m_target = new RotatedTarget();
         // 粉色 240,55,80, 绿色 135 205 55,  蓝色:  80, 145, 240
         let n = Math.floor(this.radius / 2.0);
         if(n < 30) {
@@ -122,7 +123,7 @@ class DragRotationController implements IDragRotationController {
         camZCtrl.pickTestRadius = this.pickTestAxisRadius;
         camZCtrl.initialize(this.m_editRS, this.m_editRSPI, this.camZCircleRadius, n);
         camZCtrl.setTarget(this.m_target);
-        camZCtrl.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
+        // camZCtrl.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
         this.m_target.addCtrlEntity(camZCtrl);
         this.m_controllers.push(camZCtrl);
 
@@ -131,17 +132,18 @@ class DragRotationController implements IDragRotationController {
         camYXCtrl.initialize(this.m_editRS, this.m_editRSPI, this.camYXCircleRadius);
         camYXCtrl.showOutColor();
         camYXCtrl.setTarget(this.m_target);
-        camYXCtrl.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
+        // camYXCtrl.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
         this.m_target.addCtrlEntity(camYXCtrl);
         this.m_controllers.push(camYXCtrl);
 
     }
-    private dragMouseDownListener(evt: any): void {
-        this.m_editRS.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener, true, true);
-    }
-    private dragMouseUpListener(evt: any): void {
-        this.m_editRS.removeEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener);
-    }
+    // private dragMouseDownListener(evt: any): void {
+    //     this.m_editRS.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener, true, true);
+    // }
+    // private dragMouseUpListener(evt: any): void {
+    //     this.m_editRS.removeEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener);
+    // }
+    /*
     enable(): void {
         this.m_enabled = true;
         for (let i = 0; i < this.m_controllers.length; ++i) {
@@ -287,5 +289,6 @@ class DragRotationController implements IDragRotationController {
         this.m_controllers = [];
         this.m_editRS = null;
     }
+    //*/
 }
 export { DragRotationController }

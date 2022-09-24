@@ -28,6 +28,21 @@ import Keyboard from "../../../vox/ui/Keyboard";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
 import { TransformRecorder } from "./edit/TransformRecorder";
 
+// class TestA {
+//     constructor(){}
+
+//     test(value: number): void {
+//         let value_a = value * 4;
+//         let value_b = value_a - 2;
+//         if(value_b > 10) {
+//             console.log("正常输出: ", value_b);
+//         }else {
+//             console.log("不能输出, 因为这个结果是: ", value_b, ", 它不是大于10。");
+//             this.test(value_b);
+//         }
+//     }
+// }
+
 export class DemoTransRecoder {
 
     constructor() { }
@@ -43,7 +58,9 @@ export class DemoTransRecoder {
     initialize(): void {
 
         console.log("DemoTransRecoder::initialize()......");
-
+        // let p = new TestA();
+        // p.test(1);
+        // return;
         if (this.m_rscene == null) {
 
             // window.oncontextmenu = function (e) {

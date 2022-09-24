@@ -15,6 +15,7 @@ import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 interface IRayControl extends ISelectable {
     moveByRay(rpv: IVector3D, rtv: IVector3D): void;
     run(camera: IRenderCamera, rtv: IVector3D): void;
+    addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled?: boolean, bubbleEnabled?: boolean): void;
     enable(): void;
     disable(): void;
     isEnabled(): boolean;
