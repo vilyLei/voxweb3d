@@ -15,6 +15,8 @@ export default class EvtNode {
     createEvent(target: any = null, currentTarget: any = null): EventBase {
         let evt = new EventBase();
         evt.type = this.type;
+        evt.target = target;
+        evt.currentTarget = currentTarget;
         return evt;
     }
     addListener(target: any, func: (evt: any) => void, phase: number = 0): void {

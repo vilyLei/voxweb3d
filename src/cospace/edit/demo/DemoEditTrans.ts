@@ -173,17 +173,21 @@ export class DemoEditTrans {
 	private m_currPos: IVector3D;
 	private editBegin(evt: any): void {
 		// this.m_transCtr
-		console.log("XXXXXXXX Edit begin...");
+		// console.log("XXXXXXXX Edit begin...");
 		let st = this.m_renderer.getStage3D();
 		this.m_prevPos.setXYZ(st.mouseX, st.mouseY, 0);
 	}
 	private editEnd(evt: any): void {
-		console.log("XXXXXXXX Edit end...");
+		// console.log("XXXXXXXX Edit end...");
 		let st = this.m_renderer.getStage3D();
 		this.m_currPos.setXYZ(st.mouseX, st.mouseY, 0);
 		if (CoMath.Vector3D.Distance(this.m_prevPos, this.m_currPos) > 0.5) {
 
 			console.log("XXXXXXXX Edit transforming success ...");
+			let list = evt.currentTarget.getTargetEntities();
+			// let list = tar.getTargets();
+			console.log("XXXXXXXX Edit transforming entity list: ", list);
+
 		}
 	}
 	private initUI(): void {

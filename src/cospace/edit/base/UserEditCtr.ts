@@ -5,6 +5,7 @@ import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import IVector3D from "../../../vox/math/IVector3D";
 import { UserEditEvent } from "../event/UserEditEvent";
+import IEntityTransform from "../../../vox/entity/IEntityTransform";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import IEvtNode from "../../../vox/event/IEvtNode";
@@ -121,6 +122,11 @@ class UserEditCtr {
     }
     setTarget(target: ICtrTarget): void {
         this.m_target = target;
+    }
+    getTargetEntities(): IEntityTransform[] {
+        if(this.m_target != null) {
+            return this.m_target.getTargets();
+        }
     }
 
     protected applyEvent(entity: ITransformEntity): void {
