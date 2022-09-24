@@ -5,6 +5,7 @@ import IAABB from "../../vox/geom/IAABB";
 
 import IRendererParam from "../../vox/scene/IRendererParam";
 import { ICoRendererScene } from "./scene/ICoRendererScene";
+import IEvtNode from "../../vox/event/IEvtNode";
 
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import ITransformEntity from "../../vox/entity/ITransformEntity";
@@ -272,5 +273,7 @@ interface ICoRScene {
 	VerticalCWOnXOY(v: IVector3D): void;
 
 	createRendererSceneGraph(): IRendererSceneGraph;
+	
+	createEvtNode(): IEvtNode;
 }
 export { CoVec3, CoMaterialContextParam, ICoRScene };

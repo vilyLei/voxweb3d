@@ -16,6 +16,7 @@ import { ICoRendererScene } from "./scene/ICoRendererScene";
 import EventBase from "../../vox/event/EventBase";
 import MouseEvent from "../../vox/event/MouseEvent";
 import KeyboardEvent from "../../vox/event/KeyboardEvent";
+import EvtNode from "../../vox/event/EvtNode";
 
 import CoRendererScene from "./scene/CoRendererScene";
 
@@ -256,7 +257,9 @@ function createMaterialContext(): IMaterialContext {
 function createRendererSceneGraph(): IRendererSceneGraph {
 	return new RendererSceneGraph();
 }
-
+function createEvtNode(): EvtNode {
+	return new EvtNode();
+}
 export {
 
 	RendererDevice,
@@ -314,5 +317,6 @@ export {
 
 	creatMaterialContextParam,
 	createMaterialContext,
-	createRendererSceneGraph
+	createRendererSceneGraph,
+	createEvtNode
 };
