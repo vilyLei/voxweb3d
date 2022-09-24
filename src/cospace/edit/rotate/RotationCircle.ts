@@ -15,7 +15,6 @@ import { IRayControl } from "../base/IRayControl";
 import { RotationCtr } from "./RotationCtr";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 
-import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import { ICoEntity } from "../../voxentity/ICoEntity";
 import { ICoMath } from "../../math/ICoMath";
@@ -24,7 +23,6 @@ import { ICoMesh } from "../../voxmesh/ICoMesh";
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import { RotationRing } from "./RotationRing";
 
-declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
 declare var CoMath: ICoMath;
 declare var CoEntity: ICoEntity;
@@ -36,9 +34,6 @@ declare var CoMesh: ICoMesh;
  */
 class RotationCircle extends RotationCtr implements IRayControl {
 
-    // private m_target: IRotatedTarget = null;
-    // private m_dispatcher: IEvtDispatcher;
-    // private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
     private m_circle: ITransformEntity = null;
     private m_cv = CoMath.createVec3();
@@ -132,8 +127,7 @@ class RotationCircle extends RotationCtr implements IRayControl {
         }
     }
     run(camera: IRenderCamera, rtv: IVector3D): void {
-        // return;
-        // 圆弧朝向摄像机
+
         let pv = this.m_outV;
         let camPV = camera.getPosition();
         pv.copyFrom(camPV);
@@ -169,9 +163,6 @@ class RotationCircle extends RotationCtr implements IRayControl {
         }
     }
 
-    getEntity(): ITransformEntity {
-        return this.m_entity;
-    }
     setVisible(visible: boolean): void {
         console.log("RotationCircle::setVisible() ..., visible: ", visible);
         this.m_entity.setVisible(visible);
@@ -186,10 +177,8 @@ class RotationCircle extends RotationCtr implements IRayControl {
         this.m_ring.setXYZ(px, py, pz);
     }
     setRotation3(r: IVector3D): void {
-        // this.m_entity.setRotation3(r);
     }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
-        // this.m_entity.setRotationXYZ(rx, ry, rz);
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
         this.m_entity.setScaleXYZ(sx, sy, sz);
@@ -201,15 +190,8 @@ class RotationCircle extends RotationCtr implements IRayControl {
         this.m_entity.getScaleXYZ(pv);
     }
     getRotationXYZ(pv: IVector3D): void {
-        // this.m_entity.getRotationXYZ(pv);
     }
 
-    // getGlobalBounds(): IAABB {
-    //     return null;
-    // }
-    // getLocalBounds(): IAABB {
-    //     return null;
-    // }
     localToGlobal(pv: IVector3D): void {
         this.m_entity.localToGlobal(pv);
     }
@@ -217,18 +199,6 @@ class RotationCircle extends RotationCtr implements IRayControl {
         this.m_entity.globalToLocal(pv);
     }
 
-    // addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
-    //     this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
-    // }
-    // removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
-    //     this.m_dispatcher.removeEventListener(type, listener, func);
-    // }
-    // setTargetPosOffset(offset: IVector3D): void {
-    //     this.m_targetPosOffset.copyFrom(offset);
-    // }
-    // setTarget(target: IRotatedTarget): void {
-    //     this.m_target = target;
-    // }
     enable(): void {
         super.enable();
         this.m_entity.mouseEnabled = true;
@@ -237,27 +207,7 @@ class RotationCircle extends RotationCtr implements IRayControl {
         super.disable();
         this.m_entity.mouseEnabled = false;
     }
-    // private initializeEvent(): void {
 
-    //     if (this.m_dispatcher == null) {
-    //         const me = CoRScene.MouseEvent;
-    //         let d = CoRScene.createMouseEvt3DDispatcher();
-    //         d.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
-    //         d.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
-    //         d.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
-    //         this.m_entity.setEvtDispatcher(d);
-    //         this.m_dispatcher = d;
-    //     }
-    //     this.m_entity.mouseEnabled = true;
-    // }
-    // protected mouseOverListener(evt: any): void {
-    //     console.log("RotationCircle::mouseOverListener() ...");
-    //     this.showOverColor();
-    // }
-    // protected mouseOutListener(evt: any): void {
-    //     console.log("RotationCircle::mouseOutListener() ...");
-    //     this.showOutColor();
-    // }
     showOverColor(): void {
         (this.m_entity.getMaterial() as IColorMaterial).setColor(this.overColor);
     }
@@ -265,12 +215,6 @@ class RotationCircle extends RotationCtr implements IRayControl {
         (this.m_entity.getMaterial() as IColorMaterial).setColor(this.outColor);
         this.m_ring.setColor(this.outColor);
     }
-    // isSelected(): boolean {
-    //     return this.m_flag > -1;
-    // }
-    // select(): void {
-    //     console.log("RotationCircle::select() ...");
-    // }
     deselect(): void {
         console.log("RotationCircle::deselect() ...");
         // if (this.isSelected()) {
@@ -311,10 +255,6 @@ class RotationCircle extends RotationCtr implements IRayControl {
             this.m_ring = null;
         }
         this.m_editRS = null;
-        // if (this.m_dispatcher != null) {
-        //     this.m_dispatcher.destroy();
-        //     this.m_dispatcher = null;
-        // }
         this.m_cv = null;
         this.m_planeNV = null;
     }
@@ -336,10 +276,7 @@ class RotationCircle extends RotationCtr implements IRayControl {
 
         if (this.isEnabled()) {
             if (this.isSelected()) {
-                // console.log("RotationCircle::moveByRay() ...");
-                // console.log("           this.m_initDegree: ", this.m_initDegree);
                 let degree = this.getDegree(rpv, rtv);
-                // console.log("           degree: ", degree);
                 degree -= this.m_initDegree;
 
                 this.m_ring.setProgress(degree / 360.0);
@@ -379,9 +316,6 @@ class RotationCircle extends RotationCtr implements IRayControl {
 
             this.m_entity.setVisible(false);
             this.m_circle.setVisible(true);
-
-            // this.m_flag = 1;
-
 
             this.setThisVisible(true);
 

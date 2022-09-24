@@ -52,6 +52,7 @@ class DragTransController{
     constructor() { }
     /**
      * initialize the DragTransController instance.
+     * Don't overide this function
      * @param editRendererScene a IRendererScene instance.
      * @param processid this destination renderer process id in the editRendererScene.
      */

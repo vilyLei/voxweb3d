@@ -36,9 +36,6 @@ declare var CoMesh: ICoMesh;
  */
 class RotationCamZCircle extends RotationCtr implements IRayControl {
 
-    // private m_target: IRotatedTarget = null;
-    // private m_dispatcher: IEvtDispatcher;
-    // private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
     private m_cv = CoMath.createVec3();
     private m_planeNV = CoMath.createVec3();
@@ -55,7 +52,6 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
     private m_initDegree = 0;
     private m_planeDis = 0;
     private m_material: IColorMaterial = null;
-    // private m_flag = -1;
     private m_editRS: IRendererScene = null;
     private m_editRSPI: number = 0;
 
@@ -109,8 +105,7 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
         const sv = this.m_scaleV;
         let et = this.m_entity;
         et.getPosition(this.m_posV);
-        // et.getScaleXYZ(sv);
-        // et.update();
+        
         this.m_camPos.copyFrom(camera.getPosition());
         this.m_srcDV.setXYZ(1, 0, 0);
         this.m_dstDV.subVecsTo(this.m_camPos, this.m_posV);
@@ -132,9 +127,6 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
         this.m_ring.setPosition(this.m_posV);
         this.m_ring.setRotation3(rv);
     }
-    getEntity(): ITransformEntity {
-        return this.m_entity;
-    }
     setVisible(visible: boolean): void {
         console.log("RotationCamZCircle::setVisible() ..., visible: ", visible);
         this.m_entity.setVisible(visible);
@@ -147,28 +139,18 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
         this.m_entity.setXYZ(px, py, pz);
     }
     setRotation3(r: IVector3D): void {
-        // this.m_entity.setRotation3(r);
     }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
-        // this.m_entity.setRotationXYZ(rx, ry, rz);
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
         this.m_entity.setScaleXYZ(sx, sy, sz);
     }
 
     getScaleXYZ(pv: IVector3D): void {
-        // this.m_entity.getScaleXYZ(pv);
     }
     getRotationXYZ(pv: IVector3D): void {
-        // this.m_entity.getRotationXYZ(pv);
     }
 
-    // getGlobalBounds(): IAABB {
-    //     return null;
-    // }
-    // getLocalBounds(): IAABB {
-    //     return null;
-    // }
     localToGlobal(pv: IVector3D): void {
         this.m_entity.localToGlobal(pv);
     }
@@ -176,18 +158,6 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
         this.m_entity.globalToLocal(pv);
     }
 
-    // addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
-    //     this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
-    // }
-    // removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
-    //     this.m_dispatcher.removeEventListener(type, listener, func);
-    // }
-    // setTargetPosOffset(offset: IVector3D): void {
-    //     this.m_targetPosOffset.copyFrom(offset);
-    // }
-    // setTarget(target: IRotatedTarget): void {
-    //     this.m_target = target;
-    // }
     enable(): void {
         super.enable();
         this.m_entity.mouseEnabled = true;
@@ -196,27 +166,6 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
         super.disable();
         this.m_entity.mouseEnabled = false;
     }
-    // private initializeEvent(): void {
-
-    //     if (this.m_dispatcher == null) {
-    //         const me = CoRScene.MouseEvent;
-    //         let dispatcher = CoRScene.createMouseEvt3DDispatcher();
-    //         dispatcher.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
-    //         dispatcher.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
-    //         dispatcher.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
-    //         this.m_entity.setEvtDispatcher(dispatcher);
-    //         this.m_dispatcher = dispatcher;
-    //     }
-    //     this.m_entity.mouseEnabled = true;
-    // }
-    // protected mouseOverListener(evt: any): void {
-    //     console.log("RotationCamZCircle::mouseOverListener() ...");
-    //     this.showOverColor();
-    // }
-    // protected mouseOutListener(evt: any): void {
-    //     console.log("RotationCamZCircle::mouseOutListener() ...");
-    //     this.showOutColor();
-    // }
     showOverColor(): void {
         (this.m_entity.getMaterial() as IColorMaterial).setColor(this.overColor);
     }
@@ -224,12 +173,6 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
         (this.m_entity.getMaterial() as IColorMaterial).setColor(this.outColor);
         this.m_ring.setColor(this.outColor);
     }
-    // isSelected(): boolean {
-    //     return this.m_flag > -1;
-    // }
-    // select(): void {
-    //     console.log("RotationCamZCircle::select() ...");
-    // }
     deselect(): void {
         console.log("RotationCamZCircle::deselect() ...");
         if (this.isSelected()) {
@@ -238,7 +181,6 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
             this.setAllVisible(true);
             this.m_ring.setVisible(false);
         }
-        // this.m_flag = -1;
     }
     destroy(): void {
         super.destroy();
@@ -253,10 +195,6 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
         }
         this.m_editRS = null;
         this.m_mat0 = null;
-        // if (this.m_dispatcher != null) {
-        //     this.m_dispatcher.destroy();
-        //     this.m_dispatcher = null;
-        // }
         this.m_cv = null;
         this.m_planeNV = null;
     }
@@ -275,10 +213,7 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
 
         if (this.isEnabled()) {
             if (this.isSelected()) {
-                // console.log("RotationCamZCircle::moveByRay() ...");
-                // console.log("           this.m_initDegree: ", this.m_initDegree);
                 let degree = this.getDegree(rpv, rtv);
-                // console.log("           moveByRay degree: ", degree);
                 degree -= this.m_initDegree;
                 if (degree > 360) degree -= 360.0;
                 else if (degree < 0) degree += 360.0;
@@ -288,7 +223,6 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
                 let et = this.m_target;
                 if (et != null) {
 
-                    // let rv = this.m_rotV;
                     let mat = this.m_mat0;
                     let axis = this.m_dstDV;
 
@@ -297,7 +231,6 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
                     mat.identity();
                     mat.appendRotation(CoMath.MathConst.DegreeToRadian(degree), axis);
 
-                    // et.getRotationXYZ(rv);
                     let rv = mat.decompose(CoMath.OrientationType.EULER_ANGLES)[1];
                     et.setRotation3(rv.scaleBy(CoMath.MathConst.MATH_180_OVER_PI));
                     et.update();
@@ -313,9 +246,6 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
 
             this.editBegin();
             this.m_target.select();
-
-            // this.m_flag = 1;
-
             this.setThisVisible(true);
 
             this.m_initDegree = this.getDegree(evt.raypv, evt.raytv);
@@ -357,12 +287,6 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
                         if (degree > 360) degree -= 360.0;
                         else if (degree < 0) degree += 360.0;
 
-                        // console.log("RotationCamZCircle::getDegree() ..., ###   A degree: ", degree);
-                        // degree += 360.0;
-                        // console.log("RotationCamZCircle::getDegree() ...,       B degree: ", degree);
-                        // if (degree > 360) degree -= 360.0;
-                        // console.log("RotationCamZCircle::getDegree() ...,       C degree: ", degree);
-                        // console.log("RotationCamZCircle::getDegree() ..., degree: ", degree);
                     }
                 }
             }
