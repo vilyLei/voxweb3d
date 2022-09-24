@@ -75,10 +75,10 @@ class DragTransController{
             this.m_controllers[i].addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
         }
     }
-    protected dragMouseDownListener(evt: any): void {
+    private dragMouseDownListener(evt: any): void {
         this.m_editRS.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener, true, true);
     }
-    protected dragMouseUpListener(evt: any): void {
+    private dragMouseUpListener(evt: any): void {
         this.m_editRS.removeEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener);
     }
     enable(): void {
