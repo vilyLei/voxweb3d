@@ -45,12 +45,10 @@ class RotationCircle extends RotationCtr implements IRayControl {
     private m_planeDis = 0;
     private m_type = 0;
     private m_material: IColorMaterial = null;
-    // private m_flag = -1;
     private m_ring: RotationRing = null;
 
     private m_editRS: IRendererScene = null;
     private m_editRSPI: number = 0;
-
 
     constructor() {
         super();

@@ -6,7 +6,7 @@ export default class EvtNode {
     private m_hosts: any[] = [];
     private m_phases: number[] = [];
 
-    addListener(target: any, func: (evt: any) => void, phase: number): void {
+    addListener(target: any, func: (evt: any) => void, phase: number = 0): void {
         let i: number = this.m_hosts.length - 1;
         for (; i >= 0; --i) {
             if (target === this.m_hosts[i]) {

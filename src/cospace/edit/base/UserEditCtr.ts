@@ -4,6 +4,7 @@ import { ICtrTarget } from "../base/ICtrTarget";
 import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import IVector3D from "../../../vox/math/IVector3D";
+import { UserEditEvent } from "../event/UserEditEvent";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
@@ -65,7 +66,14 @@ class UserEditCtr {
         return null;
     }
     addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
-        this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+        const UE = UserEditEvent;
+        if(type == UE.EDIT_BEGIN) {
+
+        }else if(type == UE.EDIT_END) {
+            
+        }else {
+            this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+        }
     }
     removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
         this.m_dispatcher.removeEventListener(type, listener, func);
