@@ -6,12 +6,9 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
-import IAABB from "../../../vox/geom/IAABB";
 import IMatrix4 from "../../../vox/math/IMatrix4";
-import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
-import IRawMesh from "../../../vox/mesh/IRawMesh";
 import { IRayControl } from "../base/IRayControl";
 import { SphereRayTester } from "../base/SphereRayTester";
 import { DashedLineRayTester } from "../base/DashedLineRayTester";
@@ -24,7 +21,6 @@ import { ICoMesh } from "../../voxmesh/ICoMesh";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import { ICoEntity } from "../../voxentity/ICoEntity";
 import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
-import { IScaleTarget } from "./IScaleTarget";
 
 declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;

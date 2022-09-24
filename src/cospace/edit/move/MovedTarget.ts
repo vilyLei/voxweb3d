@@ -1,12 +1,12 @@
 import IVector3D from "../../../vox/math/IVector3D";
 import IAABB from "../../../vox/geom/IAABB";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
-import { IMovedTarget } from "./IMovedTarget";
+import {ICtrTarget} from "../base/ICtrTarget";
 
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
 
-class MovedTarget implements IMovedTarget {
+class MovedTarget implements ICtrTarget {
 
     private m_controllers: IEntityTransform[] = [];
     private m_tars: IEntityTransform[] = null;

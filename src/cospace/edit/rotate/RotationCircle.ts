@@ -6,18 +6,12 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
-import IAABB from "../../../vox/geom/IAABB";
-
-import IEntityTransform from "../../../vox/entity/IEntityTransform";
-import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
-import IColor4 from "../../../vox/material/IColor4";
 import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
 import { CircleRayTester } from "../base/CircleRayTester";
 
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import { IRotationCtr } from "./IRotationCtr";
-import { IRotatedTarget } from "./IRotatedTarget";
 import { RotationCtr } from "./RotationCtr";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 
@@ -282,7 +276,7 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
         if (this.isSelected()) {
             this.editEnd();
             this.setAllVisible(true);
-            
+
             if (this.m_circle.getVisible()) {
                 this.m_entity.setVisible(true);
                 this.m_circle.setVisible(false);

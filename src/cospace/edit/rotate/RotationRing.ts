@@ -6,20 +6,12 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
-import IAABB from "../../../vox/geom/IAABB";
-
-import IEntityTransform from "../../../vox/entity/IEntityTransform";
-import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IColor4 from "../../../vox/material/IColor4";
 import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
-import { CircleRayTester } from "../base/CircleRayTester";
 import IDisplayEntityContainer from "../../../vox/entity/IDisplayEntityContainer";
 
 import IRawMesh from "../../../vox/mesh/IRawMesh";
-import { IRotationCtr } from "./IRotationCtr";
-import { IRotatedTarget } from "./IRotatedTarget";
-import { RotationCtr } from "./RotationCtr";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
@@ -28,8 +20,6 @@ import { ICoEntity } from "../../voxentity/ICoEntity";
 import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
 import { ICoMesh } from "../../voxmesh/ICoMesh";
-import { IRenderCamera } from "../../../vox/render/IRenderCamera";
-import { Vector3D } from "../../voxengine/CoRScene";
 
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;

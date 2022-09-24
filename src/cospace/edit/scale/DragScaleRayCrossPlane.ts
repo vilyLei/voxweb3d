@@ -7,9 +7,7 @@
 
 import IVector3D from "../../../vox/math/IVector3D";
 import IAABB from "../../../vox/geom/IAABB";
-import IEntityTransform from "../../../vox/entity/IEntityTransform";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
-import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { IRayControl } from "../base/IRayControl";
@@ -22,7 +20,6 @@ import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
 import { ICoEntity } from "../../voxentity/ICoEntity";
 import { ICoParticle } from "../../particle/ICoParticle";
-import { IScaleTarget } from "./IScaleTarget";
 
 declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;

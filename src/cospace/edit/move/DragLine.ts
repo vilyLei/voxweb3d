@@ -6,17 +6,12 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
-import IAABB from "../../../vox/geom/IAABB";
 import IMatrix4 from "../../../vox/math/IMatrix4";
-import IEntityTransform from "../../../vox/entity/IEntityTransform";
-import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
-import IRawMesh from "../../../vox/mesh/IRawMesh";
 import { IRayControl } from "../base/IRayControl";
 import { SphereRayTester } from "../base/SphereRayTester";
 import { DashedLineRayTester } from "../base/DashedLineRayTester";
-import { IMovedTarget } from "./IMovedTarget";
 import { MoveCtr } from "./MoveCtr";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";

@@ -6,18 +6,12 @@
 /***************************************************************************/
 
 import IVector3D from "../../../vox/math/IVector3D";
-import IAABB from "../../../vox/geom/IAABB";
-
-import IEntityTransform from "../../../vox/entity/IEntityTransform";
-import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
-import IColor4 from "../../../vox/material/IColor4";
 import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
 import { CircleRayTester } from "../base/CircleRayTester";
 
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import { IRotationCtr } from "./IRotationCtr";
-import { IRotatedTarget } from "./IRotatedTarget";
 import { RotationCtr } from "./RotationCtr";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 
@@ -323,7 +317,7 @@ class RotationCamZCircle extends RotationCtr implements IRotationCtr {
             // this.m_flag = 1;
 
             this.setThisVisible(true);
-            
+
             this.m_initDegree = this.getDegree(evt.raypv, evt.raytv);
             this.m_ring.setVisible(true);
             this.m_ring.setRingRotation(this.m_initDegree);
