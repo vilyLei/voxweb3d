@@ -11,7 +11,7 @@ import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
 import { CircleRayTester } from "../base/CircleRayTester";
 
 import IRawMesh from "../../../vox/mesh/IRawMesh";
-import { IRotationCtr } from "./IRotationCtr";
+import { IRayControl } from "../base/IRayControl";
 import { RotationCtr } from "./RotationCtr";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 
@@ -34,7 +34,7 @@ declare var CoMesh: ICoMesh;
 /**
  * 在三个坐标轴上旋转
  */
-class RotationCircle extends RotationCtr implements IRotationCtr {
+class RotationCircle extends RotationCtr implements IRayControl {
 
     // private m_target: IRotatedTarget = null;
     // private m_dispatcher: IEvtDispatcher;
@@ -284,7 +284,7 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
         //     this.m_ring.setVisible(false);
         // }
         // // this.m_flag = -1;
-        
+
         if (this.isSelected()) {
             super.deselect();
             if (this.m_circle.getVisible()) {

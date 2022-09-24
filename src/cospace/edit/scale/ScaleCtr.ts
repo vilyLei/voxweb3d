@@ -23,8 +23,8 @@ class ScaleCtr extends UserEditCtr {
     
     constructor(){
         super();
-        // ScaleCtr.s_list.push(this);
         this.m_ctrList = ScaleCtr.s_list;
+        this.m_ctrList.push(this);
     }
     
     // deselect(): void {

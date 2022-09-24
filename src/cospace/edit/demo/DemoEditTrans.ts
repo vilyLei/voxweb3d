@@ -539,7 +539,6 @@ export class DemoEditTrans {
 				this.m_transCtr.run();
 			}
 			this.m_graph.run();
-
 		}
 	}
 }

@@ -16,7 +16,7 @@ declare var CoMaterial: ICoMaterial;
  */
 class RotationCtr extends UserEditCtr {
     private static s_list: RotationCtr[] = [];
-    
+
     // uuid = "RotationCircle";
     // moveSelfEnabled = true;
     outColor = CoMaterial.createColor4(0.9, 0.9, 0.9, 1.0);
@@ -25,7 +25,7 @@ class RotationCtr extends UserEditCtr {
     constructor(){
         super();
         this.m_ctrList = RotationCtr.s_list;
-        // RotationCtr.s_list.push(this);
+        this.m_ctrList.push(this);
     }
     
     // /**

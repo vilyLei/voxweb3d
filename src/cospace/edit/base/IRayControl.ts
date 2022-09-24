@@ -7,13 +7,14 @@
 
 import IVector3D from "../../../vox/math/IVector3D";
 import {ISelectable} from "./ISelectable";
-import IEntityTransform from "../../../vox/entity/IEntityTransform";
+import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 
 /**
  * the behavior normalization of an entity that controlled by ray
  */
 interface IRayControl extends ISelectable {
     moveByRay(rpv: IVector3D, rtv: IVector3D): void;
+    run(camera: IRenderCamera, rtv: IVector3D): void;
     enable(): void;
     disable(): void;
     isEnabled(): boolean;

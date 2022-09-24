@@ -11,7 +11,7 @@ import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
 import { CircleRayTester } from "../base/CircleRayTester";
 
 import IRawMesh from "../../../vox/mesh/IRawMesh";
-import { IRotationCtr } from "./IRotationCtr";
+import { IRayControl } from "../base/IRayControl";
 import { RotationCtr } from "./RotationCtr";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 
@@ -34,7 +34,7 @@ declare var CoMesh: ICoMesh;
 /**
  * 在camera view z axis 上 拖动旋转
  */
-class RotationCamZCircle extends RotationCtr implements IRotationCtr {
+class RotationCamZCircle extends RotationCtr implements IRayControl {
 
     // private m_target: IRotatedTarget = null;
     // private m_dispatcher: IEvtDispatcher;

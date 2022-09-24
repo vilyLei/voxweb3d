@@ -22,8 +22,8 @@ class MoveCtr extends UserEditCtr {
     pickTestRadius = 10;
     constructor(){
         super();
-        // MoveCtr.s_list.push(this);
         this.m_ctrList = MoveCtr.s_list;
+        this.m_ctrList.push(this);
     }
     
     // deselect(): void {

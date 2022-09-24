@@ -2,6 +2,8 @@ import IAABB from "../../../vox/geom/IAABB";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import { ICtrTarget } from "../base/ICtrTarget";
 import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
+import { IRenderCamera } from "../../../vox/render/IRenderCamera";
+import IVector3D from "../../../vox/math/IVector3D";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
@@ -110,6 +112,9 @@ class UserEditCtr {
     }
 
 
+    run(camera: IRenderCamera, rtv: IVector3D): void {
+
+    }
     destroy(): void {
         this.m_target = null;
         this.m_ctrList = null;

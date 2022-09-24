@@ -9,7 +9,7 @@ import IVector3D from "../../../vox/math/IVector3D";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
 
-import { IRotationCtr } from "./IRotationCtr";
+import { IRayControl } from "../base/IRayControl";
 import { RotationCtr } from "./RotationCtr";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 
@@ -35,7 +35,7 @@ declare var CoParticle: ICoParticle;
 /**
  * 在camera view x/y axis 上 拖动旋转
  */
-class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
+class RotationCamXYCircle extends RotationCtr implements IRayControl {
 
     // private m_target: IRotatedTarget = null;
     // private m_dispatcher: IEvtDispatcher;

@@ -19,7 +19,7 @@ import { IDragRotationController } from "./IDragRotationController";
 import { RotatedTarget } from "./RotatedTarget";
 
 import IColor4 from "../../../vox/material/IColor4";
-import { IRotationCtr } from "./IRotationCtr";
+import { IRayControl } from "../base/IRayControl";
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import { ICoMath } from "../../math/ICoMath";
@@ -36,7 +36,7 @@ declare var CoAGeom: ICoAGeom;
  */
 class DragRotationController implements IDragRotationController {
 
-    private m_controllers: IRotationCtr[] = [];
+    private m_controllers: IRayControl[] = [];
     private m_pos0 = CoMath.createVec3();
     private m_pos1 = CoMath.createVec3();
 
@@ -85,7 +85,7 @@ class DragRotationController implements IDragRotationController {
         circle.pickTestRadius = this.pickTestAxisRadius;
         circle.outColor.copyFrom(color);
         circle.overColor.copyFrom(color);
-        circle.overColor.scaleBy(1.5);
+        circle.overColor.scaleBy(2.0);
         circle.initialize(this.m_editRS, this.m_editRSPI + 1, radius, segsTotal, type);
         circle.showOutColor();
 
@@ -109,8 +109,9 @@ class DragRotationController implements IDragRotationController {
         let color = CoMaterial.createColor4();
         
         ///*
-        this.createCircle(0, color.setRGBUint8(240,55,80), this.radius, n);
         // xoy
+        this.createCircle(0, color.setRGBUint8(240,55,80), this.radius, n);
+        // xoz
         this.createCircle(1, color.setRGBUint8(135,205,55), this.radius, n);
         // yoz
         this.createCircle(2, color.setRGBUint8(80,145,240), this.radius, n);
@@ -183,6 +184,11 @@ class DragRotationController implements IDragRotationController {
                 }
             }
 
+            for (let i = 0; i < ls.length; ++i) {
+                if (ls[i].getVisible()) {
+                    ls[i].run(cam, this.m_rtv);
+                }
+            }
             this.m_mousePos.setXYZ(stage.mouseX, stage.mouseY, 0);
             if (CoMath.Vector3D.DistanceSquared(this.m_mousePrePos, this.m_mousePos) > 0.001) {
                 this.m_mousePrePos.copyFrom(this.m_mousePos);
@@ -192,12 +198,6 @@ class DragRotationController implements IDragRotationController {
                     if (ls[i].isSelected()) {
                         ls[i].moveByRay(this.m_rpv, this.m_rtv);
                     }
-                }
-            }
-
-            for (let i = 0; i < ls.length; ++i) {
-                if (ls[i].getVisible()) {
-                    ls[i].run(cam, this.m_rtv);
                 }
             }
         }
