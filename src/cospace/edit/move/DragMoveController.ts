@@ -11,6 +11,7 @@ import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import { MovedTarget } from "./MovedTarget";
 import { DragLine } from "./DragLine";
 
+import { DragTransController } from "../transform/DragTransController";
 import { IDragMoveController } from "./IDragMoveController";
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
@@ -27,52 +28,52 @@ declare var CoMaterial: ICoMaterial;
 /**
  * 在三个坐标轴上拖拽移动
  */
-class DragMoveController  implements IDragMoveController {
+class DragMoveController extends DragTransController implements IDragMoveController {
 
-    private m_controllers: IRayControl[] = [];
-    private m_rpv = CoMath.createVec3();
-    private m_rtv = CoMath.createVec3();
-    private m_tempPos = CoMath.createVec3();
-    private m_visible = true;
-    private m_enabled = true;
+    // private m_controllers: IRayControl[] = [];
+    // private m_rpv = CoMath.createVec3();
+    // private m_rtv = CoMath.createVec3();
+    // private m_tempPos = CoMath.createVec3();
+    // private m_visible = true;
+    // private m_enabled = true;
 
-    private m_editRS: IRendererScene = null;
-    private m_editRSP: number = 0;
-    // private m_target = new DragMoveTarget();
-    private m_target = new MovedTarget();
-    private m_camera: IRenderCamera = null;
+    // private m_editRS: IRendererScene = null;
+    // private m_editRSP: number = 0;
+    // // private m_target = new DragMoveTarget();
+    // private m_target = new MovedTarget();
+    // private m_camera: IRenderCamera = null;
 
-    private m_posX = -1;
-    private m_pos0 = CoMath.createVec3();
-    private m_pos1 = CoMath.createVec3(100.0, 0.0, 0.0);
-    private m_mousePrePos = CoMath.createVec3(-100000, -100000, 0);
-    private m_mousePos = CoMath.createVec3();
-    /**
-     * example: the value is 0.05
-     */
-    fixSize = 0.0;
+    // private m_posX = -1;
+    // private m_pos0 = CoMath.createVec3();
+    // private m_pos1 = CoMath.createVec3(100.0, 0.0, 0.0);
+    // private m_mousePrePos = CoMath.createVec3(-100000, -100000, 0);
+    // private m_mousePos = CoMath.createVec3();
+    // /**
+    //  * example: the value is 0.05
+    //  */
+    // fixSize = 0.0;
+    // runningVisible = true;
+    // uuid = "DragMoveController";
 
     circleSize = 60.0;
     axisSize = 100.0;
     planeSize = 30.0;
     planeAlpha = 0.6;
     pickTestAxisRadius = 20;
-    runningVisible = true;
-    uuid = "DragMoveController";
 
-    constructor() {}
-    /**
-     * initialize the DragMoveController instance.
-     * @param editRendererScene a IRendererScene instance.
-     * @param processid this destination renderer process id in the editRendererScene.
-     */
-    initialize(rc: IRendererScene, processid: number = 0): void {
-        if (this.m_editRS == null) {
-            this.m_editRS = rc;
-            this.m_editRSP = processid;
-            this.init();
-        }
-    }
+    constructor() {super();}
+    // /**
+    //  * initialize the DragMoveController instance.
+    //  * @param editRendererScene a IRendererScene instance.
+    //  * @param processid this destination renderer process id in the editRendererScene.
+    //  */
+    // initialize(rc: IRendererScene, processid: number = 0): void {
+    //     if (this.m_editRS == null) {
+    //         this.m_editRS = rc;
+    //         this.m_editRSP = processid;
+    //         this.init();
+    //     }
+    // }
 
     private createDragPlane(type: number, alpha: number, outColor: IColor4): DragPlane {
 
@@ -90,7 +91,7 @@ class DragMoveController  implements IDragMoveController {
         movePlane.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
         this.m_target.addCtrlEntity(movePlane);
         this.m_controllers.push(movePlane);
-        this.m_editRS.addEntity(movePlane.getEntity(), this.m_editRSP, true);
+        this.m_editRS.addEntity(movePlane.getEntity(), this.m_editRSPI, true);
         return movePlane;
     }
     private createDragLine(tv: IVector3D, outColor: IColor4, mat4: IMatrix4): void {
@@ -113,13 +114,15 @@ class DragMoveController  implements IDragMoveController {
 
         line.setTarget(this.m_target);
         line.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.dragMouseDownListener);
-        this.m_editRS.addEntity(line.getEntity(), this.m_editRSP, true);
-        this.m_editRS.addEntity(line.getCone(), this.m_editRSP, true);
+        this.m_editRS.addEntity(line.getEntity(), this.m_editRSPI, true);
+        this.m_editRS.addEntity(line.getCone(), this.m_editRSPI, true);
         this.m_target.addCtrlEntity(line.getEntity());
         this.m_target.addCtrlEntity(line.getCone());
         this.m_controllers.push(line);
     }
-    private init(): void {
+    protected init(): void {
+
+        this.m_target = new MovedTarget();
 
         let alpha = this.planeAlpha;
 
@@ -162,6 +165,7 @@ class DragMoveController  implements IDragMoveController {
         this.m_target.addCtrlEntity(crossPlane);
         this.m_controllers.push(crossPlane);
     }
+    /*
     private dragMouseDownListener(evt: any): void {
         this.m_editRS.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.dragMouseUpListener, true, true);
     }
@@ -305,7 +309,7 @@ class DragMoveController  implements IDragMoveController {
     destroy(): void {
         this.m_controllers = [];
     }
-
+    //*/
 }
 
 export { DragMoveController };
