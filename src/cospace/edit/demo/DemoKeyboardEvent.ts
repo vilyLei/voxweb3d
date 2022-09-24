@@ -99,9 +99,9 @@ export class DemoKeyboardEvent {
 
             let Key = Keyboard;
             let type = this.m_keyInterac.createKeysEventType([Key.CTRL, Key.X]);
-            this.m_keyInterac.addKeyDownListener(type, this, this.keyCtrlXDown);
+            this.m_keyInterac.addKeysDownListener(type, this, this.keyCtrlXDown);
             type = this.m_keyInterac.createKeysEventType([Key.CTRL, Key.Z]);
-            this.m_keyInterac.addKeyDownListener(type, this, this.keyCtrlZDown);
+            this.m_keyInterac.addKeysDownListener(type, this, this.keyCtrlZDown);
 
             this.initScene();
         }

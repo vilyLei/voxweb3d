@@ -216,7 +216,7 @@ class KeyboardInteraction {
 	 * @param captureEnabled the default value is true
 	 * @param bubbleEnabled the default value is false
 	 */
-	addKeyDownListener(keysEventType: number, target: any, func: (evt: any) => void): void {
+	addKeysDownListener(keysEventType: number, target: any, func: (evt: any) => void): void {
 
 		this.m_downMana.addEventListener(keysEventType, target, func);
 		// if (keyboardEvtType == KeyboardEvent.KEY_DOWN) {
@@ -231,7 +231,7 @@ class KeyboardInteraction {
 	 * @param target event listerner
 	 * @param func event listerner callback function
 	 */
-	removeKeyDownListener(keysEventType: number, target: any, func: (evt: any) => void): void {
+	removeKeysDownListener(keysEventType: number, target: any, func: (evt: any) => void): void {
 		this.m_downMana.removeEventListener(keysEventType, target, func);
 		// if (keyboardEvtType == KeyboardEvent.KEY_DOWN) {
 		// 	this.m_downMana.removeEventListener(keysEventType, target, func);

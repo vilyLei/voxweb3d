@@ -31,6 +31,10 @@ import { IClipEntity } from "../../voxui/entity/IClipEntity";
 import { IColorClipLabel } from "../../voxui/entity/IColorClipLabel";
 import { RectFrameQuery } from "./edit/RectFrameQuery";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
+import { ICoKeyboardInteraction } from "../../voxengine/ui/ICoKeyboardInteraction";
+import { CoKeyboardInteraction } from "../../voxengine/ui/CoKeyboardInteraction";
+import { ICoTransformRecorder } from "../recorde/ICoTransformRecorder";
+import { CoTransformRecorder } from "../recorde/CoTransformRecorder";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -132,6 +136,8 @@ export class DemoEditTrans {
 	}
 	private m_transCtr: TransformController = null;
 	private m_selectFrame: UIRectLine = null;
+	private m_keyInterac: ICoKeyboardInteraction;	
+    private m_recoder: ICoTransformRecorder;
 	private createEditEntity(): void {
 
 		let editsc = this.m_editUIRenderer;
@@ -142,7 +148,27 @@ export class DemoEditTrans {
 		this.m_transCtr.addEventListener(UserEditEvent.EDIT_END, this, this.editEnd);
 		this.m_prevPos = CoMath.createVec3();
 		this.m_currPos = CoMath.createVec3();
+
+		this.m_keyInterac = new CoKeyboardInteraction();
+		this.m_keyInterac.initialize( this.m_renderer );
+		
+		let Key = CoRScene.Keyboard;
+		let type = this.m_keyInterac.createKeysEventType([Key.CTRL, Key.Y]);
+		this.m_keyInterac.addKeysDownListener(type, this, this.keyCtrlYDown);
+		type = this.m_keyInterac.createKeysEventType([Key.CTRL, Key.Z]);
+		this.m_keyInterac.addKeysDownListener(type, this, this.keyCtrlZDown);
+
+		this.m_recoder = new CoTransformRecorder();
 	}
+	
+    private keyCtrlZDown(evt: any): void {
+        console.log("DemoEditTrans::keyCtrlZDown() ..., evt.keyCode: ", evt.keyCode);
+        // this.m_recoder.undo();
+    }
+    private keyCtrlYDown(evt: any): void {
+        console.log("DemoEditTrans::keyCtrlYDown() ..., evt.keyCode: ", evt.keyCode);
+        // this.m_recoder.redo();
+    }
 	private m_prevPos: IVector3D;
 	private m_currPos: IVector3D;
 	private editBegin(evt: any): void {
@@ -459,6 +485,8 @@ export class DemoEditTrans {
 			let entity = this.createEntity(unit.data.models[i]);
 			entity.setScaleXYZ(m_scale, m_scale, m_scale);
 		}
+		
+        this.m_recoder.save( this.m_entities );
 	}
 	private m_entityQuery: RectFrameQuery = null;
 	private m_entities: ITransformEntity[] = [];

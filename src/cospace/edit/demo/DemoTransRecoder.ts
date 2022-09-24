@@ -120,9 +120,9 @@ export class DemoTransRecoder {
 
             let Key = Keyboard;
             let type = this.m_keyInterac.createKeysEventType([Key.CTRL, Key.Y]);
-            this.m_keyInterac.addKeyDownListener(type, this, this.keyCtrlYDown);
+            this.m_keyInterac.addKeysDownListener(type, this, this.keyCtrlYDown);
             type = this.m_keyInterac.createKeysEventType([Key.CTRL, Key.Z]);
-            this.m_keyInterac.addKeyDownListener(type, this, this.keyCtrlZDown);
+            this.m_keyInterac.addKeysDownListener(type, this, this.keyCtrlZDown);
 
             this.initScene();
         }
