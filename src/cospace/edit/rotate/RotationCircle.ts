@@ -273,17 +273,26 @@ class RotationCircle extends RotationCtr implements IRotationCtr {
     // }
     deselect(): void {
         console.log("RotationCircle::deselect() ...");
-        if (this.isSelected()) {
-            this.editEnd();
-            this.setAllVisible(true);
+        // if (this.isSelected()) {
+        //     this.editEnd();
+        //     this.setAllVisible(true);
 
+        //     if (this.m_circle.getVisible()) {
+        //         this.m_entity.setVisible(true);
+        //         this.m_circle.setVisible(false);
+        //     }
+        //     this.m_ring.setVisible(false);
+        // }
+        // // this.m_flag = -1;
+        
+        if (this.isSelected()) {
+            super.deselect();
             if (this.m_circle.getVisible()) {
                 this.m_entity.setVisible(true);
                 this.m_circle.setVisible(false);
             }
             this.m_ring.setVisible(false);
         }
-        // this.m_flag = -1;
     }
     destroy(): void {
         super.destroy();

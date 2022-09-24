@@ -267,13 +267,13 @@ class RotationCamXYCircle extends RotationCtr implements IRotationCtr {
     // select(): void {
     //     console.log("RotationCamXYCircle::select() ...");
     // }
-    deselect(): void {
-        console.log("RotationCamXYCircle::deselect() ...");
-        if (this.isSelected()) {
-            this.editEnd();
-            this.setAllVisible(true);
-        }
-    }
+    // deselect(): void {
+    //     console.log("RotationCamXYCircle::deselect() ...");
+    //     if (this.isSelected()) {
+    //         this.editEnd();
+    //         this.setAllVisible(true);
+    //     }
+    // }
     destroy(): void {
 
         super.destroy();

@@ -23,41 +23,42 @@ class ScaleCtr extends UserEditCtr {
     
     constructor(){
         super();
-        ScaleCtr.s_list.push(this);
+        // ScaleCtr.s_list.push(this);
+        this.m_ctrList = ScaleCtr.s_list;
     }
     
-    deselect(): void {
-        if (this.isSelected()) {
-            this.editEnd();
-            this.setAllVisible(true);
-        }
-    }
-    /**
-     * 设置所有旋转控制器对象可见性
-     * @param v true 表示可见, false表示隐藏
-     */
-    protected setAllVisible(v: boolean): void {
-        let ls = ScaleCtr.s_list;
-        for (let i = 0; i < ls.length; ++i) {
-            ls[i].setVisible(v);
-        }
-    }
-    /**
-     * 仅仅隐藏自身， 或者仅仅显示自身
-     * @param v true 表示仅自身可见其他不可见, false表示仅自身隐藏其他可见
-     */
-    protected setThisVisible(v: boolean): void {
-        let ls = ScaleCtr.s_list;
-        if(v) {
-            for (let i = 0; i < ls.length; ++i) {
-                ls[i].setVisible(ls[i] == this);
-            }
-        }else {
-            for (let i = 0; i < ls.length; ++i) {
-                ls[i].setVisible(ls[i] != this);
-            }
-        }
-    }
+    // deselect(): void {
+    //     if (this.isSelected()) {
+    //         this.editEnd();
+    //         this.setAllVisible(true);
+    //     }
+    // }
+    // /**
+    //  * 设置所有旋转控制器对象可见性
+    //  * @param v true 表示可见, false表示隐藏
+    //  */
+    // protected setAllVisible(v: boolean): void {
+    //     let ls = ScaleCtr.s_list;
+    //     for (let i = 0; i < ls.length; ++i) {
+    //         ls[i].setVisible(v);
+    //     }
+    // }
+    // /**
+    //  * 仅仅隐藏自身， 或者仅仅显示自身
+    //  * @param v true 表示仅自身可见其他不可见, false表示仅自身隐藏其他可见
+    //  */
+    // protected setThisVisible(v: boolean): void {
+    //     let ls = ScaleCtr.s_list;
+    //     if(v) {
+    //         for (let i = 0; i < ls.length; ++i) {
+    //             ls[i].setVisible(ls[i] == this);
+    //         }
+    //     }else {
+    //         for (let i = 0; i < ls.length; ++i) {
+    //             ls[i].setVisible(ls[i] != this);
+    //         }
+    //     }
+    // }
 }
 
 export { ScaleCtr }

@@ -11,8 +11,8 @@ class UserEditCtr {
     protected m_enabled = false;
     private m_flag = -1;
     private m_dispatcher: IEvtDispatcher = null;
-
     protected m_target: ICtrTarget = null;
+    protected m_ctrList: UserEditCtr[] = null;
 
     runningVisible = true;
     uuid = "editCtrl";
@@ -44,6 +44,10 @@ class UserEditCtr {
 
     }
     deselect(): void {
+        if (this.isSelected()) {
+            this.editEnd();
+            this.setAllVisible(true);
+        }
     }
     setVisible(visible: boolean): void {
     }
@@ -108,12 +112,39 @@ class UserEditCtr {
 
     destroy(): void {
         this.m_target = null;
+        this.m_ctrList = null;
         if (this.m_dispatcher != null) {
             this.m_dispatcher.destroy();
             this.m_dispatcher = null;
         }
     }
 
+    /**
+     * 设置所有旋转控制器对象可见性
+     * @param v true 表示可见, false表示隐藏
+     */
+     protected setAllVisible(v: boolean): void {
+        let ls = this.m_ctrList;
+        for (let i = 0; i < ls.length; ++i) {
+            ls[i].setVisible(v);
+        }
+    }
+    /**
+     * 仅仅隐藏自身， 或者仅仅显示自身
+     * @param v v true 表示仅自身可见其他不可见, false表示仅自身隐藏其他可见
+     */
+    protected setThisVisible(v: boolean): void {
+        let ls = this.m_ctrList;
+        if(v) {
+            for (let i = 0; i < ls.length; ++i) {
+                ls[i].setVisible(ls[i] == this);
+            }
+        }else {
+            for (let i = 0; i < ls.length; ++i) {
+                ls[i].setVisible(ls[i] != this);
+            }
+        }
+    }
 }
 
 export { UserEditCtr };
