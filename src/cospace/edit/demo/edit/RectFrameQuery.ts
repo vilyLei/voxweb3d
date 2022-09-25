@@ -27,6 +27,7 @@ class RectFrameQuery implements IEntityQuery {
 	query(entities: IRenderEntity[], total: number): void {
 
 		this.m_entities = [];
+		console.log("XXXXXXXXXXXXX RectFrameQuery::query(), total: ", total);
 		if(total > 0) {
 			let list = this.m_entities;
 			const rect = this.m_rect;
@@ -54,8 +55,8 @@ class RectFrameQuery implements IEntityQuery {
 	getEntities(min: IVector3D, max: IVector3D): IRenderEntity[] {
 
 		const rect = this.m_rect;
+		rect.setTo(min.x, min.y, max.x - min.x, max.y - min.y);
 		if((rect.width * rect.height) > 0) {
-			rect.setTo(min.x, min.y, max.x - min.x, max.y - min.y)
 			let rscene = this.m_rscene;
 			rscene.getSpace().renderingEntitySet.query(this);
 			return this.m_entities;

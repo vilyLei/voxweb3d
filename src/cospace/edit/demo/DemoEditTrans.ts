@@ -260,7 +260,7 @@ export class DemoEditTrans {
 
 		this.selectBtn(moveBtn);
 		// this.m_transCtr.enable(this.m_ctrlType);
-		this.m_transCtr.toTranslation();
+		// this.m_transCtr.toTranslation();
 	}
 	private uiMouseDownListener(evt: any): void {
 
@@ -270,8 +270,7 @@ export class DemoEditTrans {
 	}
 	private uiMouseUpListener(evt: any): void {
 		// console.log("DemoEditTrans::uiMouseUpListener(), evt: ", evt);
-
-		// console.log("ui up (x, y): ", evt.mouseX, evt.mouseY);
+		console.log("ui up (x, y): ", evt.mouseX, evt.mouseY);
 		if (this.m_selectFrame.isSelectEnabled()) {
 			let b = this.m_selectFrame.bounds;
 			let list = this.m_entityQuery.getEntities(b.min, b.max);
@@ -337,22 +336,22 @@ export class DemoEditTrans {
 	private btnMouseUpListener(evt: any): void {
 
 		console.log("btnMouseUpListener(), evt.currentTarget: ", evt.currentTarget);
-
-		//colorClipLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
-
 		let uuid = evt.uuid;
 		switch (uuid) {
 
 			case "move":
 				this.m_transCtr.toTranslation();
+				this.m_ctrlType = this.m_transCtr.getCurrType();
 				break;
 
 			case "scale":
 				this.m_transCtr.toScale();
+				this.m_ctrlType = this.m_transCtr.getCurrType();
 				break;
 
 			case "rotate":
 				this.m_transCtr.toRotation();
+				this.m_ctrlType = this.m_transCtr.getCurrType();
 				this
 				break;
 
@@ -544,19 +543,21 @@ export class DemoEditTrans {
 	private selectEntities(list: IRenderEntity[]): void {
 
 		if(list != null && list.length > 0) {
+			let transCtr = this.m_transCtr;
 
-			// this.m_transCtr.enable(this.m_ctrlType);
+			transCtr.enable(this.m_ctrlType);
 	
 			let pos = CoMath.createVec3();
 			let pv = CoMath.createVec3();
+
 			for (let i = 0; i < list.length; ++i) {
 				list[i].getPosition(pv);
 				pos.addBy(pv);
 			}
 			pos.scaleBy(1.0 / list.length);
-	
-			if (this.m_transCtr != null) {
-				this.m_transCtr.select(list as ITransformEntity[], pos);
+			
+			if (transCtr != null) {
+				transCtr.select(list as ITransformEntity[], pos);
 				this.m_outline.select(list);
 			}
 		}
