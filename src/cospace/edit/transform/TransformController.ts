@@ -129,14 +129,13 @@ class TransformController implements ITransformController {
      * @param type the value is 0, 1, or 2.
      */
     enable(type: number): void {
+
+        let ls = this.m_controllers;
         let t = this.m_type;
         this.m_enabled = true;
         if (type >= 0 && type <= 2 && t != type) {
 
-            let ls = this.m_controllers;
-
             let targets = this.m_targets;
-
             if (t >= 0) {
                 if (targets == null) {
                     targets = ls[t].getTargets();
@@ -148,10 +147,13 @@ class TransformController implements ITransformController {
             }
 
             this.m_type = type;
-
             ls[type].enable();
             if (targets != null) {
                 this.select(targets, this.m_wpos);
+            }
+        }else {
+            if (t >= 0) {
+                ls[t].enable();
             }
         }
     }
