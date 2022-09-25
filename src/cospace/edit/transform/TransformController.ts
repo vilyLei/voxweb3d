@@ -24,17 +24,19 @@ declare var CoMath: ICoMath;
 /**
  * renderable entity transform 编辑控制器
  */
-class TransformController {
+class TransformController implements ITransformController {
+
     private m_rsc: IRendererScene = null;
+    private m_enabled: boolean = false;
     private m_controllers: IUserEditController[] = [null, null, null];
     private m_wpos: IVector3D = CoMath.createVec3();
     private m_targets: IEntityTransform[] = null;
 
-	private m_movedCtr: IDragMoveController = null;
-	private m_scaleCtr: IDragScaleController = null;
-	private m_rotatedCtr: IDragRotationController = null;
+    private m_movedCtr: IDragMoveController = null;
+    private m_scaleCtr: IDragScaleController = null;
+    private m_rotatedCtr: IDragRotationController = null;
     private m_type = -1;
-    
+
     /**
      * the type vaule is 0
      */
@@ -51,7 +53,7 @@ class TransformController {
     }
     initialize(rsc: IRendererScene, processid: number = 0): void {
 
-        if(this.m_rsc == null) {
+        if (this.m_rsc == null) {
 
             this.m_rsc = rsc;
 
@@ -66,7 +68,7 @@ class TransformController {
             ctr0.disable();
             ctr0.setVisible(false);
             ls[0] = ctr0;
-    
+
             let ctr1 = this.m_scaleCtr = new DragScaleController();
             ctr1.axisSize = 100;
             ctr1.planeSize = 30;
@@ -75,7 +77,7 @@ class TransformController {
             ctr1.disable();
             ctr1.setVisible(false);
             ls[1] = ctr1;
-    
+
             let ctr2 = this.m_rotatedCtr = new DragRotationController();
             ctr2.pickTestAxisRadius = 10;
             ctr2.runningVisible = true;
@@ -85,7 +87,7 @@ class TransformController {
             ls[2] = ctr2;
         }
     }
-    
+
     addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
         let ls = this.m_controllers;
         for (let i = 0; i < ls.length; ++i) {
@@ -128,62 +130,67 @@ class TransformController {
      */
     enable(type: number): void {
         let t = this.m_type;
-        if(type >= 0 && type <= 2 && t != type) {
+        this.m_enabled = true;
+        if (type >= 0 && type <= 2 && t != type) {
 
             let ls = this.m_controllers;
 
             let targets = this.m_targets;
 
-            if(t >= 0) {
-                if(targets == null) {
-                    targets = ls[ t ].getTargets();
+            if (t >= 0) {
+                if (targets == null) {
+                    targets = ls[t].getTargets();
                 }
-                ls[ t ].getPosition(this.m_wpos);
-                ls[ t ].decontrol();
-                ls[ t ].disable();
-                ls[ t ].setVisible(false);
+                ls[t].getPosition(this.m_wpos);
+                ls[t].decontrol();
+                ls[t].disable();
+                ls[t].setVisible(false);
             }
-            
+
             this.m_type = type;
-            
-            ls[ type ].enable();
-            if(targets != null) {
+
+            ls[type].enable();
+            if (targets != null) {
                 this.select(targets, this.m_wpos);
             }
         }
     }
-    disable(): void {
+    disable(force: boolean = true): void {
+        this.m_enabled = false;
         this.m_targets = null;
         let ls = this.m_controllers;
-        if(this.m_type >= 0) {
-            ls[ this.m_type ].decontrol();
-            ls[ this.m_type ].disable();
-            ls[ this.m_type ].setVisible(false);
+        let t = this.m_type;
+        if (t >= 0) {
+            ls[t].decontrol();
+            ls[t].disable();
+            ls[t].setVisible(false);
         }
-        this.m_type = -1;
+        if (force) {
+            this.m_type = -1;
+        }
     }
     decontrol(): void {
-        if(this.m_type >= 0) {
-            this.m_controllers[ this.m_type ].decontrol();
+        if (this.m_enabled && this.m_type >= 0) {
+            this.m_controllers[this.m_type].decontrol();
         }
     }
     select(targets: IEntityTransform[], wpos: IVector3D): void {
-        if(this.m_type >= 0) {
-            this.m_wpos.copyFrom( wpos );
-            let ctr = this.m_controllers[ this.m_type ];
+        if (this.m_type >= 0) {
+            this.m_wpos.copyFrom(wpos);
+            let ctr = this.m_controllers[this.m_type];
             ctr.deselect();
-			ctr.setPosition(this.m_wpos);
-			ctr.update();
-            ctr.select(targets);            
+            ctr.setPosition(this.m_wpos);
+            ctr.update();
+            ctr.select(targets);
             ctr.setVisible(true);
-        }else {
+        } else {
             this.m_targets = targets;
-            this.m_wpos.copyFrom( wpos );
+            this.m_wpos.copyFrom(wpos);
         }
     }
     run(): void {
-        if(this.m_type >= 0) {
-            this.m_controllers[ this.m_type ].run();
+        if (this.m_enabled && this.m_type >= 0) {
+            this.m_controllers[this.m_type].run();
         }
     }
 }

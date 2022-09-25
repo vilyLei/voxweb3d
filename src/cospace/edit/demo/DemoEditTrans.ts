@@ -260,17 +260,17 @@ export class DemoEditTrans {
 
 		this.selectBtn(moveBtn);
 		// this.m_transCtr.enable(this.m_ctrlType);
-		// this.m_transCtr.toTranslation();
+		this.m_transCtr.toTranslation();
 	}
 	private uiMouseDownListener(evt: any): void {
 
 		this.m_selectFrame.begin(evt.mouseX, evt.mouseY);
-		console.log("DemoEditTrans::uiMouseDownListener(), evt: ", evt);
+		// console.log("DemoEditTrans::uiMouseDownListener(), evt: ", evt);
 		// console.log("ui down (x, y): ", evt.mouseX, evt.mouseY);
 	}
 	private uiMouseUpListener(evt: any): void {
 		// console.log("DemoEditTrans::uiMouseUpListener(), evt: ", evt);
-		console.log("ui up (x, y): ", evt.mouseX, evt.mouseY);
+		// console.log("ui up (x, y): ", evt.mouseX, evt.mouseY);
 		if (this.m_selectFrame.isSelectEnabled()) {
 			let b = this.m_selectFrame.bounds;
 			let list = this.m_entityQuery.getEntities(b.min, b.max);
@@ -280,7 +280,6 @@ export class DemoEditTrans {
 	}
 	private uiMouseMoveListener(evt: any): void {
 		// console.log("DemoEditTrans::uiMouseMoveListener(), evt: ", evt);
-
 		// console.log("ui move (x, y): ", evt.mouseX, evt.mouseY);
 		this.m_selectFrame.move(evt.mouseX, evt.mouseY);
 	}
@@ -545,8 +544,8 @@ export class DemoEditTrans {
 		if(list != null && list.length > 0) {
 			let transCtr = this.m_transCtr;
 
-			transCtr.enable(this.m_ctrlType);
-	
+			// transCtr.enable(this.m_ctrlType);
+			transCtr.enable( -1 );
 			let pos = CoMath.createVec3();
 			let pv = CoMath.createVec3();
 
@@ -581,7 +580,7 @@ export class DemoEditTrans {
 		let etset = this.m_renderer.getSpace().renderingEntitySet;
 		console.log("DemoEditTrans::mouseBgDownListener() ..., etset.getTotal(): ", etset.getTotal());
 		if (this.m_transCtr != null) {
-			this.m_transCtr.disable();
+			this.m_transCtr.disable(true);
 		}
 		this.m_outline.deselect();
 	}

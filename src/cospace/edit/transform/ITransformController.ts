@@ -52,7 +52,10 @@ interface ITransformController {
      * @param type the value is 0, 1, or 2.
      */
     enable(type: number): void;
-    disable(): void;
+    /**
+     * @param force the default value is true
+     */
+    disable(force?: boolean): void;
     decontrol(): void;
     select(targets: IEntityTransform[], wpos: IVector3D): void;
     run(): void;

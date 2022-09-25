@@ -27,7 +27,6 @@ class RectFrameQuery implements IEntityQuery {
 	query(entities: IRenderEntity[], total: number): void {
 
 		this.m_entities = [];
-		console.log("XXXXXXXXXXXXX RectFrameQuery::query(), total: ", total);
 		if(total > 0) {
 			let list = this.m_entities;
 			const rect = this.m_rect;
