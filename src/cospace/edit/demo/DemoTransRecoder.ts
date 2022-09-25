@@ -142,7 +142,6 @@ export class DemoTransRecoder {
         this.m_recoder.save( [ sph ] );
 
         // this.m_rscene.getCanvas().tabIndex = 1;
-        // document.foc
         // window.focus();
         // document.body.focus();
     }

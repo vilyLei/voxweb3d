@@ -47,8 +47,9 @@ class TransNodeGroup {
 		node.target = tar;
 		this.list.push(node);
 	}
-	use(): void {
+	use(): IRenderEntity[] {
 		let ls = this.list;
+		let list: IRenderEntity[] = [];
 		for (let i = 0; i < ls.length; ++i) {
 			let d = ls[i];
 			const tar = d.target;
@@ -56,7 +57,9 @@ class TransNodeGroup {
 			tar.setRotation3(d.rotation);
 			tar.setPosition(d.position);
 			tar.update();
+			list.push( tar );
 		}
+		return list;
 	}
 	destroy(): void {
 		this.list = [];
@@ -88,26 +91,29 @@ class TransformRecorder {
 	}
 
 	// Ctrl + Z
-	undo(): void {
+	undo(): IRenderEntity[] {
 		let ls = this.m_undoList;
 		let len = ls.length;
 		if (len > 1) {
 			// console.log("XXX undo().");
 			let node = ls.pop();
 			this.m_redoList.push(node);
-			ls[ls.length - 1].use();
+			return ls[ls.length - 1].use();
 		}
+		return null;
 	}
 	// Ctrl + Y
-	redo(): void {
+	redo(): IRenderEntity[] {
 		let ls = this.m_redoList;
 		let len = ls.length;
 		if (len > 0) {
 			// console.log("XXX redo().");
 			let node = ls.pop();
-			node.use();
+			let list = node.use();
 			this.m_undoList.push(node);
+			return list;
 		}
+		return null;
 	}
 }
 
