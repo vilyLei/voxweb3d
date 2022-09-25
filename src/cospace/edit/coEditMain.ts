@@ -5,11 +5,11 @@
 // import { DemoCoAGeom as Demo } from "./demo/DemoCoAGeom";
 // import { DemoMoveObj as Demo } from "./demo/DemoMoveObj";
 
-// import { DemoEditTrans as Demo } from "./demo/DemoEditTrans";
+import { DemoEditTrans as Demo } from "./demo/DemoEditTrans";
 
 // import { DemoUIScene as Demo } from "./demo/DemoUIScene";
 // import { DemoKeyboardEvent as Demo } from "./demo/DemoKeyboardEvent";
-import { DemoTransRecoder as Demo } from "./demo/DemoTransRecoder";
+// import { DemoTransRecoder as Demo } from "./demo/DemoTransRecoder";
 
 let demoIns: Demo = new Demo();
 let ins: any = demoIns;

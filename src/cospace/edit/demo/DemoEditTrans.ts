@@ -164,10 +164,14 @@ export class DemoEditTrans {
     private keyCtrlZDown(evt: any): void {
         console.log("DemoEditTrans::keyCtrlZDown() ..., evt.keyCode: ", evt.keyCode);
         this.m_recoder.undo();
+        let list = this.m_recoder.getCurrList();
+		this.selectEntities( list );
     }
     private keyCtrlYDown(evt: any): void {
         console.log("DemoEditTrans::keyCtrlYDown() ..., evt.keyCode: ", evt.keyCode);
         this.m_recoder.redo();
+        let list = this.m_recoder.getCurrList();
+		this.selectEntities( list );
     }
 	private m_prevPos: IVector3D;
 	private m_currPos: IVector3D;
@@ -276,9 +280,7 @@ export class DemoEditTrans {
 		if (this.m_selectFrame.isSelectEnabled()) {
 			let b = this.m_selectFrame.bounds;
 			let list = this.m_entityQuery.getEntities(b.min, b.max);
-			if (list != null && list.length > 0) {
-				this.selectEntities(list);
-			}
+			this.selectEntities(list);
 		}
 		this.m_selectFrame.end(evt.mouseX, evt.mouseY);
 	}
@@ -545,19 +547,22 @@ export class DemoEditTrans {
 	}
 	private selectEntities(list: IRenderEntity[]): void {
 
-		this.m_transCtr.enable(this.m_ctrlType);
+		if(list != null && list.length > 0) {
 
-		let pos = CoMath.createVec3();
-		let pv = CoMath.createVec3();
-		for (let i = 0; i < list.length; ++i) {
-			list[i].getPosition(pv);
-			pos.addBy(pv);
-		}
-		pos.scaleBy(1.0 / list.length);
-
-		if (this.m_transCtr != null) {
-			this.m_transCtr.select(list as ITransformEntity[], pos);
-			this.m_outline.select(list);
+			this.m_transCtr.enable(this.m_ctrlType);
+	
+			let pos = CoMath.createVec3();
+			let pv = CoMath.createVec3();
+			for (let i = 0; i < list.length; ++i) {
+				list[i].getPosition(pv);
+				pos.addBy(pv);
+			}
+			pos.scaleBy(1.0 / list.length);
+	
+			if (this.m_transCtr != null) {
+				this.m_transCtr.select(list as ITransformEntity[], pos);
+				this.m_outline.select(list);
+			}
 		}
 	}
 	private mouseUpTargetListener(evt: any): void {

@@ -12,6 +12,7 @@ interface ICoTransformRecorder extends IDataRecorde {
 	 * @param tars IRenderEntity instance list
 	 */
 	save(tars: IRenderEntity[]): void;
+	getCurrList(): IRenderEntity[];
 }
 
 export { ICoTransformRecorder }

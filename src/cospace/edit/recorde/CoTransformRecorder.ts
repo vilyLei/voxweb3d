@@ -58,6 +58,8 @@ class CoTransformRecorder implements ICoTransformRecorder {
 
 	private m_undoList: TransNodeGroup[] = [];
 	private m_redoList: TransNodeGroup[] = [];
+	private m_currList: IRenderEntity[] = null;
+	
 	constructor() { }
 
 	/**
@@ -65,7 +67,7 @@ class CoTransformRecorder implements ICoTransformRecorder {
 	 * @param tars IRenderEntity instance list
 	 */
 	save(tars: IRenderEntity[]): void {
-
+		this.m_currList = null;
 		if (this.m_redoList.length > 0) this.m_redoList = [];
 
 		let group = new TransNodeGroup();
@@ -77,29 +79,36 @@ class CoTransformRecorder implements ICoTransformRecorder {
 	}
 
 	// Ctrl + Z
-	undo(): IRenderEntity[] {
+	undo(): void {
+
+		this.m_currList = null;
+
 		let ls = this.m_undoList;
 		let len = ls.length;
 		if (len > 1) {
 			// console.log("XXX undo().");
 			let node = ls.pop();
 			this.m_redoList.push(node);
-			return ls[ls.length - 1].use();
+			this.m_currList = ls[ls.length - 1].use();
 		}
-		return null;
 	}
 	// Ctrl + Y
-	redo(): IRenderEntity[] {
+	redo(): void {
+
+		this.m_currList = null;
 		let ls = this.m_redoList;
 		let len = ls.length;
 		if (len > 0) {
 			// console.log("XXX redo().");
 			let node = ls.pop();
-			let list = node.use();
+			this.m_currList = node.use();
 			this.m_undoList.push(node);
-			return list;
 		}
-		return null;
+	}
+	getCurrList(): IRenderEntity[] {
+		let list = this.m_currList;
+		this.m_currList = null;
+		return list;
 	}
 }
 
