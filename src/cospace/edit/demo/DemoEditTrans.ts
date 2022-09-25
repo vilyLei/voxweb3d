@@ -580,7 +580,7 @@ export class DemoEditTrans {
 		let etset = this.m_renderer.getSpace().renderingEntitySet;
 		console.log("DemoEditTrans::mouseBgDownListener() ..., etset.getTotal(): ", etset.getTotal());
 		if (this.m_transCtr != null) {
-			this.m_transCtr.disable(true);
+			this.m_transCtr.disable(false);
 		}
 		this.m_outline.deselect();
 	}

@@ -177,6 +177,7 @@ class TransformController implements ITransformController {
         }
     }
     select(targets: IEntityTransform[], wpos: IVector3D): void {
+        
         if (this.m_type >= 0) {
             this.m_wpos.copyFrom(wpos);
             let ctr = this.m_controllers[this.m_type];
