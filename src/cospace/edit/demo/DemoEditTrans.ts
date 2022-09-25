@@ -163,11 +163,11 @@ export class DemoEditTrans {
 	
     private keyCtrlZDown(evt: any): void {
         console.log("DemoEditTrans::keyCtrlZDown() ..., evt.keyCode: ", evt.keyCode);
-        // this.m_recoder.undo();
+        this.m_recoder.undo();
     }
     private keyCtrlYDown(evt: any): void {
         console.log("DemoEditTrans::keyCtrlYDown() ..., evt.keyCode: ", evt.keyCode);
-        // this.m_recoder.redo();
+        this.m_recoder.redo();
     }
 	private m_prevPos: IVector3D;
 	private m_currPos: IVector3D;
@@ -187,6 +187,7 @@ export class DemoEditTrans {
 			let list = evt.currentTarget.getTargetEntities();
 			// let list = tar.getTargets();
 			console.log("XXXXXXXX Edit transforming entity list: ", list);
+			this.m_recoder.save( list );
 
 		}
 	}
