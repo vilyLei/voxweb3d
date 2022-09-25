@@ -244,28 +244,23 @@ export class DemoEditTrans {
 		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[3], 30);
 		texAtlas.addImageToAtlas(urls[3], img);
 
-		///*
+		///*		
 		let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
 		btnUrls = urls;
-		// let btn = CoUI.createButton(); //new Button();
-		// btn.initialize(texAtlas, btnUrls);
-		// // btn.initializeWithLable(lable01);
-		// this.m_uisc.addEntity(btn);
-
 		let csLable = CoUI.createClipLabel();
 		csLable.initialize(texAtlas, urls);
 
-		let px: number = 10;
-		let py: number = 300;
+		let px = 10;
+		let py = 300;
 		let selectBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 0, 0, "select");
-		// selectBtn.disable();
-		// selectBtn.setClipIndex(4);
 		let moveBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 1, 1, "move");
 		let scaleBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 2, 2, "scale");
 		let rotateBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 3, 3, "rotate");
 		//*/
 
 		this.selectBtn(moveBtn);
+		// this.m_transCtr.enable(this.m_ctrlType);
+		this.m_transCtr.toTranslation();
 	}
 	private uiMouseDownListener(evt: any): void {
 
@@ -358,6 +353,7 @@ export class DemoEditTrans {
 
 			case "rotate":
 				this.m_transCtr.toRotation();
+				this
 				break;
 
 			case "select":
@@ -549,7 +545,7 @@ export class DemoEditTrans {
 
 		if(list != null && list.length > 0) {
 
-			this.m_transCtr.enable(this.m_ctrlType);
+			// this.m_transCtr.enable(this.m_ctrlType);
 	
 			let pos = CoMath.createVec3();
 			let pv = CoMath.createVec3();
