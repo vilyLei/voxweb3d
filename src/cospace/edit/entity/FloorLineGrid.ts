@@ -21,12 +21,24 @@ class FloorLineGrid {
 	constructor() {
 	}
 
-	initialize(rscene: IRendererScene, rpi: number, minV: IVector3D, maxV: IVector3D, rn: number, cn: number) {
+	initialize(rscene: IRendererScene, rpi: number, minV: IVector3D, maxV: IVector3D, stepsTotal: number = 10) {
+
 		if (this.m_entity == null) {
+
 			if(rpi < 0) rpi = 0;
+			if(stepsTotal < 1) stepsTotal = 1;
 			
 			this.m_rscene = rscene;
 			this.m_entity = CoEntity.createDisplayEntity();
+
+			let dv = CoMath.createVec3().subVecsTo(maxV, minV);
+
+			dv.scaleBy(1.0 / stepsTotal);
+			let rn = stepsTotal + 1;
+			let cn = stepsTotal + 1;
+
+			let pv0 = minV.clone();
+			let pv1 = maxV.clone();
 
 			// CoMesh.line.dynColorEnabled = true;
 			// let material = CoMaterial.createLineMaterial(CoMesh.line.dynColorEnabled);
@@ -35,8 +47,7 @@ class FloorLineGrid {
 			// this.m_entity.setMaterial(material);
 			// this.m_entity.setMesh(mesh);
 			// this.m_entity.setXYZ(80, 80, 0);
-			// rscene.addEntity(this.m_entity);
-			
+			// rscene.addEntity(this.m_entity);			
 		}
 	}
 	setVisible(v: boolean): void {
