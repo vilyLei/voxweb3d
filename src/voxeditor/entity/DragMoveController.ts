@@ -55,8 +55,9 @@ class DragMoveTarget implements IEntityTransform {
         }
         this.position.copyFrom(pv);
     }
-    getPosition(pv: Vector3D): void {
+    getPosition(pv: Vector3D): Vector3D {
         pv.copyFrom(this.position);
+        return pv;
     }
     setRotation3(r: Vector3D): void {
     }
@@ -117,7 +118,7 @@ class DragMoveController implements IRayControl {
 
     private m_editRendererScene: IRendererScene = null;
     private m_editRendererSceneProcessid: number = 0;
-    private m_dragMoveTarget: DragMoveTarget = new DragMoveTarget();
+    private m_dragMoveTarget = new DragMoveTarget();
     private m_camera: IRenderCamera = null;
 
     uuid: string = "DragMoveController";
@@ -334,8 +335,9 @@ class DragMoveController implements IRayControl {
         this.m_dragMoveTarget.setPosition(pv);
         this.m_dragMoveTarget.update();
     }
-    getPosition(pv: Vector3D): void {
+    getPosition(pv: Vector3D): Vector3D {
         this.m_dragMoveTarget.getPosition(pv);
+        return pv;
     }
     setRotation3(r: Vector3D): void {
     }
