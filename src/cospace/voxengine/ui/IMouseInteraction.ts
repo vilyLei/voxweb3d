@@ -21,6 +21,10 @@ interface IMouseInteraction {
 	 * @param bgEventEnabled apply background mouse event true or false, the default value is true
 	 */
     initialize(rscene: IRendererScene, buttonType?: number, bgEventEnabled?: boolean): void;
+    
+    enableSwing(): void;
+    isEnabledSwing(): boolean;
+    enableSlide(): void;
     setSyncLookAtEnabled(ennabled: boolean): void;
     run(): void;
 }

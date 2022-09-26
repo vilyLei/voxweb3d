@@ -65,6 +65,9 @@ export default class MouseCamDrager {
     enableSwing(): void {
         this.m_swing = true;
     }
+    isEnabledSwing(): boolean {
+        return this.m_swing;
+    }
     enableSlide(): void {
         this.m_swing = false;
     }

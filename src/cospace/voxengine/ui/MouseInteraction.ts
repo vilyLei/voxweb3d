@@ -2,16 +2,15 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 import MouseCamDrager from "./MouseCamDrager";
 import MouseCamZoomer from "./MouseCamZoomer";
 import { IMouseInteraction } from "./IMouseInteraction";
-
 import IVector3D from "../../../vox/math/IVector3D";
 
 class MouseInteraction implements IMouseInteraction {
 	private m_rscene: IRendererScene = null;
 
-	readonly drager: MouseCamDrager = new MouseCamDrager();
-	readonly zoomer: MouseCamZoomer = new MouseCamZoomer();
+	readonly drager = new MouseCamDrager();
+	readonly zoomer = new MouseCamZoomer();
 	zoomLookAtPosition: IVector3D = null;
-	zoomMinDistance: number = 30;
+	zoomMinDistance = 30;
 
 	constructor() {}
 
@@ -43,6 +42,16 @@ class MouseInteraction implements IMouseInteraction {
 			z.setLookAtCtrlEnabled(false);
 		}
 	}
+	
+    enableSwing(): void {
+        this.drager.enableSwing();
+    }
+    isEnabledSwing(): boolean {
+        return this.isEnabledSwing();
+    }
+    enableSlide(): void {
+        this.drager.enableSlide();
+    }
 	setSyncLookAtEnabled(ennabled: boolean): void {
 		this.zoomer.syncLookAt = ennabled;
 	}

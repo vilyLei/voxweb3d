@@ -550,6 +550,8 @@ export class DemoCoBase {
 			this.m_interact = CoMouseInteraction.createMouseInteraction();
 			this.m_interact.initialize(this.m_rscene);
 			this.m_interact.setSyncLookAtEnabled(true);
+			// this.m_interact.setSyncLookAtEnabled(false);
+			// this.m_interact.enableSlide();
 		}
 	}
 	private initRenderer(): void {
