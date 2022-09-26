@@ -42,8 +42,9 @@ class CarEntityTransform implements IEntityTransform {
     isChanged(): boolean {
         return this.status != NavigationStatus.Stop;
     }
-    getPosition(outV: Vector3D): void {
+    getPosition(outV: Vector3D): Vector3D {
         outV.copyFrom(this.m_position);
+        return outV;
     }
     setPosition(pos: Vector3D): void {
         this.m_position.copyFrom(pos);
