@@ -387,10 +387,9 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
         this.m_pos.z = pv.z;
         this.m_transformStatus |= 1;
     }
-    getPosition(pv: Vector3D): void {
-        pv.x = this.m_pos.x;
-        pv.y = this.m_pos.y;
-        pv.z = this.m_pos.z;
+    getPosition(pv: Vector3D): Vector3D {
+        pv.copyFrom( this.m_pos );
+        return pv;
     }
     private m_rx: number = 0;
     private m_ry: number = 0;

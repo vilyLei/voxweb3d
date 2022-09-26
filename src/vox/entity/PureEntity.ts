@@ -116,10 +116,12 @@ export default class PureEntity implements IDisplayEntity {
     setEvtDispatcher(evtDisptacher: IEvtDispatcher): void {
         this.m_mouseEvtDispatcher = evtDisptacher;
     }
-    getPosition(resultPos: Vector3D): void {
+    getPosition(resultPos: Vector3D): Vector3D {
         if (this.m_globalBounds != null) {
             resultPos.copyFrom(this.m_globalBounds.center);
+            return resultPos;
         }
+        return null;
     }
     getGlobalBounds(): IAABB {
         return this.m_globalBounds;

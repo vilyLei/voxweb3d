@@ -521,8 +521,9 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     setPosition(pv: Vector3D): void {
         this.m_transfrom.setPosition(pv);
     }
-    getPosition(pv: Vector3D): void {
+    getPosition(pv: Vector3D): Vector3D {
         this.m_transfrom.getPosition(pv);
+        return pv;
     }
     setRotation3(rotV: Vector3D): void {
         this.m_transfrom.setRotationXYZ(rotV.x, rotV.y, rotV.z);

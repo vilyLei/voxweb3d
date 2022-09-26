@@ -55,7 +55,7 @@ export default interface IRenderEntity {
   isFree(): boolean;
   dispatchEvt(evt: any): number;
   getEvtDispatcher(evtClassType: number): IEvtDispatcher;
-  getPosition(resultPos: IVector3D): void;
+  getPosition(resultPos: IVector3D): IVector3D;
   getGlobalBounds(): IAABB;
   getLocalBounds(): IAABB;
 
