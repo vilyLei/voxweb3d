@@ -143,7 +143,6 @@ export class DemoTransEditor {
 
 		let editsc = this.m_editUIRenderer;
 
-		// this.m_transCtr = new TransformController();
 		this.m_transCtr = CoEdit.createTransformController();
 		this.m_transCtr.initialize(editsc);
 		this.m_transCtr.addEventListener(UserEditEvent.EDIT_BEGIN, this, this.editBegin);
@@ -151,7 +150,6 @@ export class DemoTransEditor {
 		this.m_prevPos = CoMath.createVec3();
 		this.m_currPos = CoMath.createVec3();
 
-		// this.m_keyInterac = new CoKeyboardInteraction();
 		this.m_keyInterac = CoUIInteraction.createKeyboardInteraction();
 		this.m_keyInterac.initialize( this.m_renderer );
 		
@@ -161,18 +159,15 @@ export class DemoTransEditor {
 		type = this.m_keyInterac.createKeysEventType([Key.CTRL, Key.Z]);
 		this.m_keyInterac.addKeysDownListener(type, this, this.keyCtrlZDown);
 
-		// this.m_recoder = new CoTransformRecorder();
 		this.m_recoder = CoEdit.createTransformRecorder();
 	}
 	
     private keyCtrlZDown(evt: any): void {
-        console.log("DemoTransEditor::keyCtrlZDown() ..., evt.keyCode: ", evt.keyCode);
         this.m_recoder.undo();
         let list = this.m_recoder.getCurrList();
 		this.selectEntities( list );
     }
     private keyCtrlYDown(evt: any): void {
-        console.log("DemoTransEditor::keyCtrlYDown() ..., evt.keyCode: ", evt.keyCode);
         this.m_recoder.redo();
         let list = this.m_recoder.getCurrList();
 		this.selectEntities( list );
@@ -191,10 +186,7 @@ export class DemoTransEditor {
 		this.m_currPos.setXYZ(st.mouseX, st.mouseY, 0);
 		if (CoMath.Vector3D.Distance(this.m_prevPos, this.m_currPos) > 0.5) {
 
-			console.log("XXXXXXXX Edit transforming success ...");
 			let list = evt.currentTarget.getTargetEntities();
-			// let list = tar.getTargets();
-			console.log("XXXXXXXX Edit transforming entity list: ", list);
 			this.m_recoder.save( list );
 
 		}
