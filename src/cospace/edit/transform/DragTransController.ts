@@ -103,6 +103,7 @@ class DragTransController{
         for (let i = 0; i < this.m_controllers.length; ++i) {
             this.m_controllers[i].disable();
         }
+        this.m_target.setTargets(null);
     }
     isEnabled(): boolean {
         return this.m_enabled;
@@ -205,8 +206,9 @@ class DragTransController{
         this.m_target.setPosition(pv);
         this.m_target.update();
     }
-    getPosition(pv: IVector3D): void {
+    getPosition(pv: IVector3D): IVector3D {
         this.m_controllers[0].getPosition(pv);
+        return pv;
     }
     setRotation3(r: IVector3D): void {
         this.m_target.setRotation3(r);

@@ -49,15 +49,15 @@ interface ITransformController {
      */
     getCurrType(): number;
     /**
-     * @param type the value is 0, 1, or 2.
+     * @param type the correct value is 0, 1, or 2, the default value is -1.
      */
-    enable(type: number): void;
+    enable(type?: number): void;
     /**
-     * @param force the default value is true
+     * @param force the default value is false
      */
     disable(force?: boolean): void;
     decontrol(): void;
-    select(targets: IEntityTransform[], wpos: IVector3D): void;
+    select(targets: IEntityTransform[], wpos?: IVector3D, autoEnabled?: boolean): void;
     run(): void;
 }
 

@@ -126,38 +126,42 @@ class TransformController implements ITransformController {
         return this.m_type;
     }
     /**
-     * @param type the value is 0, 1, or 2.
+     * @param type the correct value is 0, 1, or 2, the default value is -1.
      */
-    enable(type: number): void {
+    enable(type: number = -1): void {
 
         let ls = this.m_controllers;
         let t = this.m_type;
         this.m_enabled = true;
-        if (type >= 0 && type <= 2 && t != type) {
-
-            let targets = this.m_targets;
-            if (t >= 0) {
-                if (targets == null) {
-                    targets = ls[t].getTargets();
+        if (type >= 0 && type <= 2) {
+            if (t != type) {
+                let targets = this.m_targets;
+                if (t >= 0) {
+                    if (targets == null) {
+                        targets = ls[t].getTargets();
+                    }
+                    ls[t].getPosition(this.m_wpos);
+                    ls[t].decontrol();
+                    ls[t].disable();
+                    ls[t].setVisible(false);
                 }
-                ls[t].getPosition(this.m_wpos);
-                ls[t].decontrol();
-                ls[t].disable();
-                ls[t].setVisible(false);
-            }
 
-            this.m_type = type;
-            ls[type].enable();
-            if (targets != null) {
-                this.select(targets, this.m_wpos);
+                this.m_type = type;
+                ls[type].enable();
+                if (targets != null) {
+                    this.select(targets, this.m_wpos, false);
+                }
+                // else {
+                //     ls[type].enable();
+                // }
             }
-        }else {
+        } else {
             if (t >= 0) {
                 ls[t].enable();
             }
         }
     }
-    disable(force: boolean = true): void {
+    disable(force: boolean = false): void {
         this.m_enabled = false;
         this.m_targets = null;
         let ls = this.m_controllers;
@@ -176,19 +180,37 @@ class TransformController implements ITransformController {
             this.m_controllers[this.m_type].decontrol();
         }
     }
-    select(targets: IEntityTransform[], wpos: IVector3D): void {
-        
-        if (this.m_type >= 0) {
-            this.m_wpos.copyFrom(wpos);
-            let ctr = this.m_controllers[this.m_type];
-            ctr.deselect();
-            ctr.setPosition(this.m_wpos);
-            ctr.update();
-            ctr.select(targets);
-            ctr.setVisible(true);
+    select(targets: IEntityTransform[], wpos: IVector3D = null, autoEnabled: boolean = true): void {
+        if (targets != null) {
+            
+            if (this.m_type >= 0) {
+                if (wpos == null) {
+                    let pos = this.m_wpos;
+                    let pv = CoMath.createVec3();
+                    pos.setXYZ(0, 0, 0);
+                    for (let i = 0; i < targets.length; ++i) {
+                        pos.addBy(targets[i].getPosition(pv));
+                    }
+                    pos.scaleBy(1.0 / targets.length);
+                } else {
+                    this.m_wpos.copyFrom(wpos);
+                }
+                let ctr = this.m_controllers[this.m_type];
+                if (autoEnabled && !ctr.isEnabled()) {
+                    this.m_enabled = true;
+                    ctr.enable();
+                }
+                ctr.deselect();
+                ctr.setPosition(this.m_wpos);
+                ctr.update();
+                ctr.select(targets);
+                ctr.setVisible(true);
+            } else {
+                this.m_targets = targets;
+                this.m_wpos.copyFrom(wpos);
+            }
         } else {
-            this.m_targets = targets;
-            this.m_wpos.copyFrom(wpos);
+            console.error("targets == null");
         }
     }
     run(): void {
