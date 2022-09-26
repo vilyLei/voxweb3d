@@ -123,45 +123,6 @@ class DragLine extends MoveCtr implements IRayControl {
     globalToLocal(pv: IVector3D): void {
         this.m_entity.globalToLocal(pv);
     }
-    /*
-    getGlobalBounds(): IAABB {
-        return null;
-    }
-    getLocalBounds(): IAABB {
-        return null;
-    }
-    addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
-        this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
-    }
-    removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
-        this.m_dispatcher.removeEventListener(type, listener, func);
-    }
-    setTarget(target: IMovedTarget): void {
-        this.m_target = target;
-    }
-
-    private initializeEvent(entity: ITransformEntity): void {
-
-        if (this.m_dispatcher == null) {
-            const me = CoRScene.MouseEvent;
-            let dispatcher = CoRScene.createMouseEvt3DDispatcher();
-            dispatcher.addEventListener(me.MOUSE_DOWN, this, this.mouseDownListener);
-            dispatcher.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
-            dispatcher.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
-            this.m_dispatcher = dispatcher;
-        }
-        entity.setEvtDispatcher(this.m_dispatcher);
-        entity.mouseEnabled = true;
-    }
-    protected mouseOverListener(evt: any): void {
-        console.log("DragLine::mouseOverListener() ...");
-        this.showOverColor();
-    }
-    protected mouseOutListener(evt: any): void {
-        console.log("DragLine::mouseOutListener() ...");
-        this.showOutColor();
-    }
-    //*/
     showOverColor(): void {
         let m = this.m_entity.getMaterial() as IColorMaterial;
         m.setColor(this.overColor);
@@ -200,8 +161,9 @@ class DragLine extends MoveCtr implements IRayControl {
     setPosition(pos: IVector3D): void {
         this.m_entity.setPosition(pos);
     }
-    getPosition(outPos: IVector3D): void {
+    getPosition(outPos: IVector3D): IVector3D {
         this.m_entity.getPosition(outPos);
+        return outPos;
     }
     update(): void {
         this.m_entity.update();

@@ -42,12 +42,17 @@ class MovedTarget implements ICtrTarget {
         }
     }
     setTargets(targets: IEntityTransform[]): void {
+
         this.m_tars = targets;
-        if (this.m_vs == null || this.m_vs.length < targets.length) {
-            this.m_vs = new Array(targets.length);
-            for (let i = 0; i < targets.length; ++i) {
-                this.m_vs[i] = CoMath.createVec3();
+        if(targets != null) {
+            if (this.m_vs == null || this.m_vs.length < targets.length) {
+                this.m_vs = new Array(targets.length);
+                for (let i = 0; i < targets.length; ++i) {
+                    this.m_vs[i] = CoMath.createVec3();
+                }
             }
+        }else {
+            this.m_vs = [];
         }
     }
     getTargets(): IEntityTransform[] {
@@ -82,8 +87,9 @@ class MovedTarget implements ICtrTarget {
         this.position.copyFrom(pv);
         this.m_changed = true;
     }
-    getPosition(pv: IVector3D): void {
+    getPosition(pv: IVector3D): IVector3D {
         pv.copyFrom(this.position);
+        return pv;
     }
     setRotation3(r: IVector3D): void {
     }

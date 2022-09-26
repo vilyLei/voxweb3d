@@ -54,8 +54,9 @@ class DragMoveTarget implements IEntityTransform {
         }
         this.position.copyFrom(pv);
     }
-    getPosition(pv: IVector3D): void {
+    getPosition(pv: IVector3D): IVector3D {
         pv.copyFrom(this.position);
+        return pv
     }
     setRotation3(r: IVector3D): void {
         let i: number = 0;
