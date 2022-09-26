@@ -143,15 +143,16 @@ export class DemoTransEditor {
 
 		let editsc = this.m_editUIRenderer;
 
-		this.m_transCtr = new TransformController();
-		// this.m_transCtr = CoEdit.createTransformController();
+		// this.m_transCtr = new TransformController();
+		this.m_transCtr = CoEdit.createTransformController();
 		this.m_transCtr.initialize(editsc);
 		this.m_transCtr.addEventListener(UserEditEvent.EDIT_BEGIN, this, this.editBegin);
 		this.m_transCtr.addEventListener(UserEditEvent.EDIT_END, this, this.editEnd);
 		this.m_prevPos = CoMath.createVec3();
 		this.m_currPos = CoMath.createVec3();
 
-		this.m_keyInterac = new CoKeyboardInteraction();
+		// this.m_keyInterac = new CoKeyboardInteraction();
+		this.m_keyInterac = CoUIInteraction.createKeyboardInteraction();
 		this.m_keyInterac.initialize( this.m_renderer );
 		
 		let Key = CoRScene.Keyboard;
@@ -160,7 +161,8 @@ export class DemoTransEditor {
 		type = this.m_keyInterac.createKeysEventType([Key.CTRL, Key.Z]);
 		this.m_keyInterac.addKeysDownListener(type, this, this.keyCtrlZDown);
 
-		this.m_recoder = new CoTransformRecorder();
+		// this.m_recoder = new CoTransformRecorder();
+		this.m_recoder = CoEdit.createTransformRecorder();
 	}
 	
     private keyCtrlZDown(evt: any): void {
