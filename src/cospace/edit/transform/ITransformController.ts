@@ -59,6 +59,20 @@ interface ITransformController {
     decontrol(): void;
     select(targets: IEntityTransform[], wpos?: IVector3D, autoEnabled?: boolean): void;
     run(): void;
+    /**
+     * @param type event type
+     * @param listener listener host
+     * @param func istener function
+     * @param captureEnabled the default value is true
+     * @param bubbleEnabled the default value is false
+     */
+    addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled?: boolean, bubbleEnabled?: boolean): void;
+    /**
+     * @param type event type
+     * @param listener listener host
+     * @param func istener function
+     */
+    removeEventListener(type: number, listener: any, func: (evt: any) => void): void;
 }
 
 export { ITransformController }
