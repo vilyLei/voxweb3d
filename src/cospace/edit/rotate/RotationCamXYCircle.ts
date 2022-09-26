@@ -198,8 +198,9 @@ class RotationCamXYCircle extends RotationCtr implements IRayControl {
         this.m_entity.setPosition(pos);
         this.m_circle.setPosition(pos);
     }
-    getPosition(outPos: IVector3D): void {
-        this.m_entity.getPosition(outPos);
+    getPosition(pv: IVector3D): IVector3D {
+        this.m_entity.getPosition(pv);
+        return pv;
     }
     update(): void {
         this.m_entity.update();

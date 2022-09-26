@@ -1,7 +1,7 @@
 import IVector3D from "../../../vox/math/IVector3D";
 import IAABB from "../../../vox/geom/IAABB";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
-import {ICtrTarget} from "../base/ICtrTarget";
+import { ICtrTarget } from "../base/ICtrTarget";
 
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
@@ -63,14 +63,18 @@ class RotatedTarget implements ICtrTarget {
     }
     setTargets(targets: IEntityTransform[]): void {
         this.m_tars = targets;
-
-        if (this.m_vs == null || this.m_vs.length < targets.length) {
-            this.m_vs = new Array(targets.length);
-            this.m_rvs = new Array(targets.length);
-            for (let i = 0; i < targets.length; ++i) {
-                this.m_vs[i] = CoMath.createVec3();
-                this.m_rvs[i] = CoMath.createVec3();
+        if (targets != null) {
+            if (this.m_vs == null || this.m_vs.length < targets.length) {
+                this.m_vs = new Array(targets.length);
+                this.m_rvs = new Array(targets.length);
+                for (let i = 0; i < targets.length; ++i) {
+                    this.m_vs[i] = CoMath.createVec3();
+                    this.m_rvs[i] = CoMath.createVec3();
+                }
             }
+        } else {
+            this.m_vs = [];
+            this.m_rvs = [];
         }
     }
     getTargets(): IEntityTransform[] {
@@ -93,8 +97,9 @@ class RotatedTarget implements ICtrTarget {
             this.m_flags[i] = true;
         }
     }
-    getPosition(pv: IVector3D): void {
+    getPosition(pv: IVector3D): IVector3D {
         pv.copyFrom(this.position);
+        return pv;
     }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
     }
@@ -109,7 +114,7 @@ class RotatedTarget implements ICtrTarget {
             let k180overPI = 180.0 / Math.PI;
             let ir = this.m_rv;
             ir.copyFrom(pr);
-            ir.scaleBy( piOver180 );
+            ir.scaleBy(piOver180);
 
             let mt0 = this.m_mat0;
             let mt1 = this.m_mat1;
