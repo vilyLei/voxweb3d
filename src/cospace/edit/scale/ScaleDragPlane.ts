@@ -152,8 +152,9 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
     setPosition(pv: IVector3D): void {
         this.m_entity.setPosition(pv);
     }
-    getPosition(pv: IVector3D): void {
+    getPosition(pv: IVector3D): IVector3D {
         this.m_entity.getPosition(pv);
+        return pv;
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
         this.m_entity.setXYZ(sx, sy, sz);

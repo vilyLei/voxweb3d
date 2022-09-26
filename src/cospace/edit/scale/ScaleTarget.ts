@@ -1,7 +1,7 @@
 import IVector3D from "../../../vox/math/IVector3D";
 import IAABB from "../../../vox/geom/IAABB";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
-import {ICtrTarget} from "../base/ICtrTarget";
+import { ICtrTarget } from "../base/ICtrTarget";
 
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
@@ -30,11 +30,11 @@ class ScaleTarget implements ICtrTarget {
 
         let tars = this.m_tars;
 
-        if(tars != null) {
+        if (tars != null) {
 
             const vs = this.m_vs;
             const svs = this.m_svs;
-    
+
             let cv = this.position;
             cv.setXYZ(0.0, 0.0, 0.0);
             for (let i = 0; i < tars.length; ++i) {
@@ -60,15 +60,20 @@ class ScaleTarget implements ICtrTarget {
         }
     }
     setTargets(targets: IEntityTransform[]): void {
-        this.m_tars = targets;
 
-        if (this.m_vs == null || this.m_vs.length < targets.length) {
-            this.m_vs = new Array(targets.length);
-            this.m_svs = new Array(targets.length);
-            for (let i = 0; i < targets.length; ++i) {
-                this.m_vs[i] = CoMath.createVec3();
-                this.m_svs[i] = CoMath.createVec3();
+        this.m_tars = targets;
+        if (targets != null) {
+            if (this.m_vs == null || this.m_vs.length < targets.length) {
+                this.m_vs = new Array(targets.length);
+                this.m_svs = new Array(targets.length);
+                for (let i = 0; i < targets.length; ++i) {
+                    this.m_vs[i] = CoMath.createVec3();
+                    this.m_svs[i] = CoMath.createVec3();
+                }
             }
+        } else {
+            this.m_vs = [];
+            this.m_svs = [];
         }
     }
     getTargets(): IEntityTransform[] {
@@ -85,14 +90,15 @@ class ScaleTarget implements ICtrTarget {
     setXYZ(px: number, py: number, pz: number): void {
     }
     setPosition(pv: IVector3D): void {
-        
+
         for (let i = 0; i < this.m_controllers.length; ++i) {
             this.m_controllers[i].setPosition(pv);
             this.m_flags[i] = true;
         }
     }
-    getPosition(pv: IVector3D): void {
+    getPosition(pv: IVector3D): IVector3D {
         pv.copyFrom(this.position);
+        return pv;
     }
     setRotation3(r: IVector3D): void {
     }

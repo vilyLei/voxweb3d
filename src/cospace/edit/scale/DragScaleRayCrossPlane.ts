@@ -160,8 +160,9 @@ export default class DragScaleRayCrossPlane extends ScaleCtr implements IRayCont
         this.m_circle.setPosition(pv);
         this.m_billPos.setPosition(pv);
     }
-    getPosition(pv: IVector3D): void {
+    getPosition(pv: IVector3D): IVector3D {
         this.m_entity.getPosition(pv);
+        return pv;
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
 
