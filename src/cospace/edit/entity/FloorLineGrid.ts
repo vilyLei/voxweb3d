@@ -21,9 +21,10 @@ class FloorLineGrid {
 	constructor() {
 	}
 
-	initialize(rscene: IRendererScene, minV: IVector3D, maxV: IVector3D, rn: number, cn: number) {
+	initialize(rscene: IRendererScene, rpi: number, minV: IVector3D, maxV: IVector3D, rn: number, cn: number) {
 		if (this.m_entity == null) {
-
+			if(rpi < 0) rpi = 0;
+			
 			this.m_rscene = rscene;
 			this.m_entity = CoEntity.createDisplayEntity();
 
