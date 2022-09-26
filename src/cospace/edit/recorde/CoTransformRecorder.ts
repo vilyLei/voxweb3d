@@ -69,12 +69,13 @@ class CoTransformRecorder implements ICoTransformRecorder {
 	save(tars: IRenderEntity[]): void {
 		this.m_currList = null;
 		if (this.m_redoList.length > 0) this.m_redoList = [];
-
-		let group = new TransNodeGroup();
-		for (let i = 0; i < tars.length; ++i) {
-			group.add(tars[i]);
+		if(tars != null) {
+			let group = new TransNodeGroup();
+			for (let i = 0; i < tars.length; ++i) {
+				group.add(tars[i]);
+			}
+			this.m_undoList.push(group);
 		}
-		this.m_undoList.push(group);
 
 	}
 
