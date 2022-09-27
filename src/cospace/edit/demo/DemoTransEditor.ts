@@ -2,14 +2,12 @@ import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
 import { IMouseInteraction } from "../../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../../voxengine/ICoRenderer";
 import { ICoMath } from "../../math/ICoMath";
-import { ICoAGeom } from "../../ageom/ICoAGeom";
 import { ICoEdit } from "../../edit/ICoEdit";
 import { ICoUI } from "../../voxui/ICoUI";
 import { ICoTexture } from "../../voxtexture/ICoTexture";
 import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
-import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
+import { ICoRScene } from "../../voxengine/ICoRScene";
 
-// import { ICoMouseInteraction } from "../../voxengine/ui/ICoMouseInteraction";
 import { ICoUIInteraction } from "../../voxengine/ui/ICoUIInteraction";
 import ViewerMaterialCtx from "../../demo/coViewer/ViewerMaterialCtx";
 import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
@@ -21,32 +19,17 @@ import IVector3D from "../../../vox/math/IVector3D";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import { IRendererSceneAccessor } from "../../../vox/scene/IRendererSceneAccessor";
 import RendererSceneGraph from "../../../vox/scene/RendererSceneGraph";
-import { ITransformController } from "../transform/ITransformController";
-import { TransformController } from "../transform/TransformController";
-import { UserEditEvent } from "../event/UserEditEvent";
-import { IButton } from "../../voxui/entity/IButton";
-import { IClipLabel } from "../../voxui/entity/IClipLabel";
 import { PostOutline } from "./effect/PostOutline";
-import { UIRectLine } from "./edit/UIRectLine";
-import { IClipEntity } from "../../voxui/entity/IClipEntity";
-import { IColorClipLabel } from "../../voxui/entity/IColorClipLabel";
-import { RectFrameQuery } from "./edit/RectFrameQuery";
-import IRenderEntity from "../../../vox/render/IRenderEntity";
-import { ICoKeyboardInteraction } from "../../voxengine/ui/ICoKeyboardInteraction";
-import { CoKeyboardInteraction } from "../../voxengine/ui/CoKeyboardInteraction";
-import { ICoTransformRecorder } from "../recorde/ICoTransformRecorder";
-import { CoTransformRecorder } from "../recorde/CoTransformRecorder";
+import { TransUI } from "./edit/ui/TransUI";
+import { NavigationUI } from "./edit/ui/NavigationUI";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
-// declare var CoMouseInteraction: ICoMouseInteraction;
 declare var CoUIInteraction: ICoUIInteraction;
 declare var CoMath: ICoMath;
-declare var CoAGeom: ICoAGeom;
 declare var CoEdit: ICoEdit;
 declare var CoUI: ICoUI;
 declare var CoTexture: ICoTexture;
-
 
 class SceneAccessor implements IRendererSceneAccessor {
 	constructor() { }
@@ -61,11 +44,13 @@ class SceneAccessor implements IRendererSceneAccessor {
  * cospace renderer
  */
 export class DemoTransEditor {
-	private m_renderer: ICoRendererScene = null;
+	private m_rsc: ICoRendererScene = null;
 	private m_editUIRenderer: ICoRendererScene = null;
-	private m_uiRenderer: IRendererScene = null;
+	private m_uirsc: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
 	private m_interact: IMouseInteraction = null;
+	private m_transUI = new TransUI();
+	private m_nvaUI = new NavigationUI();
 
 	private m_vcoapp: ViewerCoSApp;
 	private m_vmctx: ViewerMaterialCtx;
@@ -117,8 +102,11 @@ export class DemoTransEditor {
 
 					new ModuleLoader(6, (): void => {
 						console.log("ageom module loaded ...");
-						this.createEditEntity();
-						this.initUI();
+
+						this.initEditUI();
+
+						// this.createEditEntity();
+						// this.initUI();
 					}).load(url3).load(url4).load(url6).load(url7).load(url9).load(url10);
 
 				}).load(url2).load(url5).load(url8);
@@ -127,7 +115,6 @@ export class DemoTransEditor {
 				this.m_vcoapp.initialize((): void => {
 					this.loadOBJ();
 				});
-
 			}
 		}).addLoader(uiInteractML)
 			.load(url0)
@@ -135,233 +122,29 @@ export class DemoTransEditor {
 
 		uiInteractML.load(url);
 	}
-	private m_transCtr: ITransformController = null;
-	private m_selectFrame: UIRectLine = null;
-	private m_keyInterac: ICoKeyboardInteraction;	
-    private m_recoder: ICoTransformRecorder;
-	private createEditEntity(): void {
-
-		let editsc = this.m_editUIRenderer;
-
-		this.m_transCtr = CoEdit.createTransformController();
-		this.m_transCtr.initialize(editsc);
-		this.m_transCtr.addEventListener(UserEditEvent.EDIT_BEGIN, this, this.editBegin);
-		this.m_transCtr.addEventListener(UserEditEvent.EDIT_END, this, this.editEnd);
-		this.m_prevPos = CoMath.createVec3();
-		this.m_currPos = CoMath.createVec3();
-
-		this.m_keyInterac = CoUIInteraction.createKeyboardInteraction();
-		this.m_keyInterac.initialize( this.m_renderer );
-		
-		let Key = CoRScene.Keyboard;
-		let type = this.m_keyInterac.createKeysEventType([Key.CTRL, Key.Y]);
-		this.m_keyInterac.addKeysDownListener(type, this, this.keyCtrlYDown);
-		type = this.m_keyInterac.createKeysEventType([Key.CTRL, Key.Z]);
-		this.m_keyInterac.addKeysDownListener(type, this, this.keyCtrlZDown);
-
-		this.m_recoder = CoEdit.createTransformRecorder();
-	}
-	
-    private keyCtrlZDown(evt: any): void {
-        this.m_recoder.undo();
-        let list = this.m_recoder.getCurrList();
-		this.selectEntities( list );
-    }
-    private keyCtrlYDown(evt: any): void {
-        this.m_recoder.redo();
-        let list = this.m_recoder.getCurrList();
-		this.selectEntities( list );
-    }
-	private m_prevPos: IVector3D;
-	private m_currPos: IVector3D;
-	private editBegin(evt: any): void {
-		// this.m_transCtr
-		// console.log("XXXXXXXX Edit begin...");
-		let st = this.m_renderer.getStage3D();
-		this.m_prevPos.setXYZ(st.mouseX, st.mouseY, 0);
-	}
-	private editEnd(evt: any): void {
-		// console.log("XXXXXXXX Edit end...");
-		let st = this.m_renderer.getStage3D();
-		this.m_currPos.setXYZ(st.mouseX, st.mouseY, 0);
-		if (CoMath.Vector3D.Distance(this.m_prevPos, this.m_currPos) > 0.5) {
-
-			let list = evt.currentTarget.getTargetEntities();
-			this.m_recoder.save( list );
-
-		}
-	}
-	private m_transBtns: IButton[] = [];
-	private initUI(): void {
+	private initEditUI(): void {
 
 		this.m_coUIScene = CoUI.createUIScene();
 		this.m_coUIScene.initialize();
-		this.m_uiRenderer = this.m_coUIScene.rscene;
-		this.m_graph.addScene(this.m_uiRenderer);
+		this.m_uirsc = this.m_coUIScene.rscene;
+		this.m_graph.addScene(this.m_uirsc);
+		this.m_transUI.setOutline( this.m_outline );
+		this.m_transUI.initialize(this.m_rsc, this.m_editUIRenderer, this.m_coUIScene);
 
-		this.m_entityQuery = new RectFrameQuery();
-		this.m_entityQuery.initialize(this.m_renderer);
+		this.m_nvaUI.initialize(this.m_rsc, this.m_editUIRenderer, this.m_coUIScene);
 
-		let rsc = this.m_uiRenderer;
-		this.m_renderer.addEventListener(CoRScene.MouseEvent.MOUSE_BG_DOWN, this, this.uiMouseDownListener);
-		rsc.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.uiMouseUpListener);
-		rsc.addEventListener(CoRScene.MouseEvent.MOUSE_MOVE, this, this.uiMouseMoveListener);
-
-		let uiScene = this.m_coUIScene;
-
-		if (this.m_selectFrame == null) {
-			this.m_selectFrame = new UIRectLine();
-			this.m_selectFrame.initialize(this.m_uiRenderer);
-			this.m_selectFrame.enable();
-		}
-
-		/*
-		let clipColorLabel = CoUI.createClipColorLabel();
-		clipColorLabel.initializeWithoutTex(50, 32, 4);
-		clipColorLabel.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
-		clipColorLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
-		clipColorLabel.getColorAt(2).setRGB3f(1.0, 0.2, 1.0);
-		// this.m_coUIScene.addEntity(clipColorLabel);
-		let btn01 = CoUI.createButton();
-		btn01.initializeWithLable(clipColorLabel);
-		uiScene.addEntity(btn01);
-		//*/
-
-		///*
-
-		let texAtlas = uiScene.texAtlas;
-
-		let urls: string[] = ["框选", "移动", "缩放", "旋转"];
-		let img = texAtlas.createCharsCanvasFixSize(90, 40, urls[0], 30);
-		texAtlas.addImageToAtlas(urls[0], img);
-		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[1], 30);
-		texAtlas.addImageToAtlas(urls[1], img);
-		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[2], 30);
-		texAtlas.addImageToAtlas(urls[2], img);
-		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[3], 30);
-		texAtlas.addImageToAtlas(urls[3], img);
-
-		///*		
-		let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
-		btnUrls = urls;
-		let csLable = CoUI.createClipLabel();
-		csLable.initialize(texAtlas, urls);
-
-		let px = 10;
-		let py = 300;
-		let selectBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 0, 0, "select");
-		let moveBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 1, 1, "move");
-		let scaleBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 2, 2, "scale");
-		let rotateBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 3, 3, "rotate");
-		this.m_transBtns = [moveBtn, scaleBtn, rotateBtn];
-		//*/
-
-		this.selectBtn(moveBtn);
-		// this.m_transCtr.enable(this.m_ctrlType);
-		this.m_transCtr.toTranslation();
-	}
-	private uiMouseDownListener(evt: any): void {
-
-		this.m_selectFrame.begin(evt.mouseX, evt.mouseY);
-		// console.log("DemoTransEditor::uiMouseDownListener(), evt: ", evt);
-		// console.log("ui down (x, y): ", evt.mouseX, evt.mouseY);
-	}
-	private uiMouseUpListener(evt: any): void {
-		// console.log("DemoTransEditor::uiMouseUpListener(), evt: ", evt);
-		// console.log("ui up (x, y): ", evt.mouseX, evt.mouseY);
-		if (this.m_selectFrame.isSelectEnabled()) {
-			let b = this.m_selectFrame.bounds;
-			let list = this.m_entityQuery.getEntities(b.min, b.max);
-			this.selectEntities(list);
-		}
-		this.m_selectFrame.end(evt.mouseX, evt.mouseY);
-	}
-	private uiMouseMoveListener(evt: any): void {
-		// console.log("DemoTransEditor::uiMouseMoveListener(), evt: ", evt);
-		// console.log("ui move (x, y): ", evt.mouseX, evt.mouseY);
-		this.m_selectFrame.move(evt.mouseX, evt.mouseY);
-	}
-	private m_currBtn: IButton = null;
-
-	private crateBtn(urls: string[], px: number, py: number, labelIndex: number, idns: string): IButton {
-
-
-		let texAtlas = this.m_coUIScene.texAtlas;
-		let label = CoUI.createClipLabel();
-		label.initialize(texAtlas, urls);
-		let colorClipLabel = CoUI.createColorClipLabel();
-		colorClipLabel.initialize(label, 5);
-		colorClipLabel.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
-		colorClipLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
-		colorClipLabel.getColorAt(2).setRGB3f(1.0, 0.2, 1.0);
-		colorClipLabel.getColorAt(4).setRGB3f(0.5, 0.5, 0.5);
-		colorClipLabel.setLabelClipIndex(labelIndex);
-		// colorClipLabel.setXY(200,0);
-		// colorClipLabel.setClipIndex(2);
-		// this.m_uisc.addEntity(colorClipLabel);
-
-		let btn = CoUI.createButton();
-		btn.uuid = idns;
-		btn.initializeWithLable(colorClipLabel);
-		btn.setXY(px, py);
-		this.m_coUIScene.addEntity(btn, 1);
-		btn.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.btnMouseUpListener);
-
-		return btn;
+		let minV = CoMath.createVec3(-100, 0, -100);
+		let maxV = minV.clone().scaleBy(-1);
+		let scale = 10.0
+		let grid = CoEdit.createFloorLineGrid();
+		grid.initialize(this.m_rsc, 0, minV.scaleBy(scale), maxV.scaleBy(scale), 30);
+		
 	}
 
-	private selectBtn(btn: IButton): void {
-
-		let label: IColorClipLabel;
-
-		if (this.m_currBtn != btn) {
-
-			label = btn.getLable() as IColorClipLabel;
-			label.getColorAt(0).setRGB3f(0.5, 0.8, 0.6);
-			label.setClipIndex(0);
-
-			if (this.m_currBtn != null) {
-				label = this.m_currBtn.getLable() as IColorClipLabel;
-				label.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
-				label.setClipIndex(0);
-			}
-
-			this.m_currBtn = btn;
-		}
-	}
-	private btnMouseUpListener(evt: any): void {
-
-		console.log("btnMouseUpListener(), evt.currentTarget: ", evt.currentTarget);
-		let uuid = evt.uuid;
-		switch (uuid) {
-
-			case "move":
-				this.m_transCtr.toTranslation();
-				break;
-
-			case "scale":
-				this.m_transCtr.toScale();
-				break;
-
-			case "rotate":
-				this.m_transCtr.toRotation();
-				this
-				break;
-
-			case "select":
-
-				// this.m_selectFrame.enable();
-				break;
-			default:
-				break;
-		}
-
-		this.selectBtn(evt.currentTarget as IButton);
-	}
 	private createDefaultEntity(): void {
 
 		// let axis = CoRScene.createAxis3DEntity();
-		// this.m_renderer.addEntity(axis);
+		// this.m_rsc.addEntity(axis);
 
 		/*
 		let texList = [this.createTexByUrl()];
@@ -369,9 +152,9 @@ export class DemoTransEditor {
 		material.setTextureList(texList);
 		let entity = CoRScene.createDisplayEntity();
 		entity.setMaterial(material);
-		entity.copyMeshFrom(this.m_renderer.entityBlock.unitXOZPlane);
+		entity.copyMeshFrom(this.m_rsc.entityBlock.unitXOZPlane);
 		entity.setScaleXYZ(700.0, 0.0, 700.0);
-		this.m_renderer.addEntity(entity);
+		this.m_rsc.addEntity(entity);
 		//*/
 	}
 	private initScene(): void {
@@ -384,11 +167,11 @@ export class DemoTransEditor {
 
 	private createTexByUrl(url: string = ""): IRenderTexture {
 
-		let tex = this.m_renderer.textureBlock.createImageTex2D(64, 64, false);
+		let tex = this.m_rsc.textureBlock.createImageTex2D(64, 64, false);
 
 		// this.m_plane = new Plane3DEntity();
 		// this.m_plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex]);
-		// this.m_renderer.addEntity(this.m_plane);
+		// this.m_rsc.addEntity(this.m_plane);
 
 		let img = new Image();
 		img.onload = (evt: any): void => {
@@ -399,11 +182,11 @@ export class DemoTransEditor {
 	}
 
 	private initInteract(): void {
-		let r = this.m_renderer;
+		let r = this.m_rsc;
 		if (r != null && this.m_interact == null && typeof CoUIInteraction !== "undefined") {
 
 			this.m_interact = CoUIInteraction.createMouseInteraction();
-			this.m_interact.initialize(this.m_renderer, 2, true);
+			this.m_interact.initialize(this.m_rsc, 2, true);
 			this.m_interact.setSyncLookAtEnabled(true);
 		}
 	}
@@ -411,7 +194,7 @@ export class DemoTransEditor {
 	private m_graph: RendererSceneGraph = null;
 	private initRenderer(): void {
 
-		if (this.m_renderer == null) {
+		if (this.m_rsc == null) {
 
 			let RendererDevice = CoRScene.RendererDevice;
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
@@ -424,52 +207,45 @@ export class DemoTransEditor {
 			rparam.setCamProject(45, 20.0, 9000.0);
 			let rscene = CoRScene.createRendererScene(rparam, 3);
 			rscene.setClearRGBColor3f(0.23, 0.23, 0.23);
+
 			// console.log("60/255: ", 60/255);
 			// rscene.setClearUint24Color((60 << 16) + (60 << 8) + 60);
 
 			// rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDownListener);
-			rscene.addEventListener(CoRScene.KeyboardEvent.KEY_DOWN, this, this.keyDown);
-			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_CLICK, this, this.mouseClickListener);
-			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
 
-			this.m_renderer = rscene;
+			// rscene.addEventListener(CoRScene.KeyboardEvent.KEY_DOWN, this, this.keyDown);
+			// rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_CLICK, this, this.mouseClickListener);
+			// rscene.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
 
-			let subScene = this.m_renderer.createSubScene(rparam, 3, false);
+			this.m_rsc = rscene;
+
+			let subScene = this.m_rsc.createSubScene(rparam, 3, false);
 			subScene.enableMouseEvent(true);
 			subScene.setAccessor(new SceneAccessor());
 
 			this.m_editUIRenderer = subScene;
 			this.m_graph = new RendererSceneGraph();
-			this.m_graph.addScene(this.m_renderer);
+			this.m_graph.addScene(this.m_rsc);
 			this.m_graph.addScene(this.m_editUIRenderer);
 			this.m_outline = new PostOutline(rscene);
 
 		}
 	}
-	
-    private keyDown(evt: any): void {
 
-        console.log("DemoTransEditor::keyDown() ..., evt.keyCode: ", evt.keyCode);
+	private keyDown(evt: any): void {
+
+		console.log("DemoTransEditor::keyDown() ..., evt.keyCode: ", evt.keyCode);
 
 		let KEY = CoRScene.Keyboard;
-		switch(evt.keyCode) {
-			case KEY.W:
-				this.selectBtn(	this.m_transBtns[0] );
-				this.m_transCtr.toTranslation();
-				break;
-			case KEY.E:
-				this.selectBtn(	this.m_transBtns[1] );
-				this.m_transCtr.toScale();
-				break;				
-			case KEY.R:
-				this.selectBtn(	this.m_transBtns[2] );
-				this.m_transCtr.toRotation();
+		switch (evt.keyCode) {
+			case KEY.S:
 				break;
 			default:
 				break;
 		}
-    }
+	}
 	private loadOBJ(): void {
+
 		let baseUrl: string = "static/private/obj/";
 		let url = baseUrl + "base.obj";
 		url = baseUrl + "base4.obj";
@@ -499,10 +275,10 @@ export class DemoTransEditor {
 			let entity = this.createEntity(unit.data.models[i]);
 			entity.setScaleXYZ(m_scale, m_scale, m_scale);
 		}
-		
-        this.m_recoder.save( this.m_entities );
+
+		// this.m_recoder.save(this.m_entities);
+		this.m_transUI.getRecoder().save(this.m_entities);
 	}
-	private m_entityQuery: RectFrameQuery = null;
 	private m_entities: ITransformEntity[] = [];
 	private createEntity(model: CoGeomDataType): ITransformEntity {
 		// let rst = CoRenderer.RendererState;
@@ -529,7 +305,7 @@ export class DemoTransEditor {
 		entity.setMesh(mesh);
 		entity.setPosition(cv);
 		// entity.setRenderState(rst.NONE_CULLFACE_NORMAL_STATE);
-		this.m_renderer.addEntity(entity);
+		this.m_rsc.addEntity(entity);
 
 		entity.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverTargetListener);
 		entity.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutTargetListener);
@@ -549,26 +325,8 @@ export class DemoTransEditor {
 	private mouseDownTargetListener(evt: any): void {
 		console.log("mouseDownTargetListener()..., evt.target: ", evt.target);
 		let entity = evt.target as ITransformEntity;
-		this.selectEntities([entity]);
-	}
-	private selectEntities(list: IRenderEntity[]): void {
-
-		if(list != null && list.length > 0) {
-			let transCtr = this.m_transCtr;
-
-			let pos = CoMath.createVec3();
-			let pv = CoMath.createVec3();
-
-			for (let i = 0; i < list.length; ++i) {
-				pos.addBy( list[i].getPosition(pv) );
-			}
-			pos.scaleBy(1.0 / list.length);
-			
-			if (transCtr != null) {
-				transCtr.select(list as ITransformEntity[], pos);
-				this.m_outline.select(list);
-			}
-		}
+		// this.selectEntities([entity]);
+		this.m_transUI.selectEntities([entity]);
 	}
 	private mouseUpTargetListener(evt: any): void {
 		console.log("mouseUpTargetListener() mouse up...");
@@ -576,29 +334,14 @@ export class DemoTransEditor {
 		// 	this.m_transCtr.enable(this.m_ctrlType);
 		// }
 	}
-	private m_selectFlag: boolean = false;
-	private mouseUpListener(evt: any): void {
-
-		// console.log("DemoTransEditor::mouseUpListener() ...");
-		if (this.m_transCtr != null) {
-			this.m_transCtr.decontrol();
-		}
-	}
-	private mouseClickListener(evt: any): void {
-
-		if (this.m_transCtr != null) {
-			this.m_transCtr.disable();
-		}
-		this.m_outline.deselect();
-	}
 
 	run(): void {
 		if (this.m_graph != null) {
 			if (this.m_interact != null) {
 				this.m_interact.run();
 			}
-			if (this.m_transCtr != null) {
-				this.m_transCtr.run();
+			if (this.m_transUI != null) {
+				this.m_transUI.run();
 			}
 			this.m_graph.run();
 		}

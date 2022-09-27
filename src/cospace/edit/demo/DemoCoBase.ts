@@ -38,6 +38,7 @@ import IVector3D from "../../../vox/math/IVector3D";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import IMatrix4 from "../../../vox/math/IMatrix4";
 import { RotationRing } from "../rotate/RotationRing";
+import { FloorLineGrid } from "../entity/FloorLineGrid";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -152,6 +153,20 @@ export class DemoCoBase {
 		entity.setRenderState(CoRScene.RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
 
 		this.m_rscene.addEntity(entity);
+		//*/
+
+		///*
+		let v0 = CoMath.createVec3(-300,0,-300);
+		let v1 = CoMath.createVec3(300,0,300);
+		// let v0 = CoMath.createVec3(-300,-300,0);
+		// let v1 = CoMath.createVec3(300,300,0);
+		// let v0 = CoMath.createVec3(0,-300,-300);
+		// let v1 = CoMath.createVec3(0,300,300);
+		let grids = new FloorLineGrid();
+		grids.initialize(this.m_rscene, 0, v0, v1, 20);
+		let axis = CoEntity.createAxis3DEntity();
+		axis.setPosition(v0);
+		this.m_rscene.addEntity( axis );
 		//*/
 		this.test01();
 	}
