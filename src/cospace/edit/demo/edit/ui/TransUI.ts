@@ -206,6 +206,7 @@ class TransUI {
 		}
 		this.selectBtn(this.m_transBtns[0]);
 		this.m_transCtr.toTranslation();
+		this.m_transCtr.disable();
 	}
 	private uiMouseDownListener(evt: any): void {
 

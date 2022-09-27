@@ -164,24 +164,8 @@ export class DemoTransEditor {
 	isEngineEnabled(): boolean {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";
 	}
-
-	private createTexByUrl(url: string = ""): IRenderTexture {
-
-		let tex = this.m_rsc.textureBlock.createImageTex2D(64, 64, false);
-
-		// this.m_plane = new Plane3DEntity();
-		// this.m_plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex]);
-		// this.m_rsc.addEntity(this.m_plane);
-
-		let img = new Image();
-		img.onload = (evt: any): void => {
-			tex.setDataFromImage(img, 0, 0, 0, false);
-		}
-		img.src = url != "" ? url : "static/assets/box.jpg";
-		return tex;
-	}
-
 	private initInteract(): void {
+
 		let r = this.m_rsc;
 		if (r != null && this.m_interact == null && typeof CoUIInteraction !== "undefined") {
 
@@ -253,7 +237,7 @@ export class DemoTransEditor {
 		this.loadGeomModel(url, CoDataFormat.OBJ);
 	}
 
-	loadGeomModel(url: string, format: CoDataFormat): void {
+	private loadGeomModel(url: string, format: CoDataFormat): void {
 		let ins = this.m_vcoapp.coappIns;
 		if (ins != null) {
 

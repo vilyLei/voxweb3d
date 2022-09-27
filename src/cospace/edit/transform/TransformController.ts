@@ -151,9 +151,6 @@ class TransformController implements ITransformController {
                 if (targets != null) {
                     this.select(targets, this.m_wpos, false);
                 }
-                // else {
-                //     ls[type].enable();
-                // }
             }
         } else {
             if (t >= 0) {
@@ -162,6 +159,7 @@ class TransformController implements ITransformController {
         }
     }
     disable(force: boolean = false): void {
+        
         this.m_enabled = false;
         this.m_targets = null;
         let ls = this.m_controllers;
@@ -176,11 +174,13 @@ class TransformController implements ITransformController {
         }
     }
     decontrol(): void {
+        
         if (this.m_enabled && this.m_type >= 0) {
             this.m_controllers[this.m_type].decontrol();
         }
     }
     select(targets: IEntityTransform[], wpos: IVector3D = null, autoEnabled: boolean = true): void {
+        
         if (targets != null) {
             
             if (this.m_type >= 0) {
