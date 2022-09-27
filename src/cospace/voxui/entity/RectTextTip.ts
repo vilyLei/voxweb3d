@@ -18,10 +18,11 @@ class RectTextTip {
 
 	private m_rscene: IRendererScene;
 	private m_entity: ITransformEntity = null;
+	private m_text = "";
 	constructor() {
 	}
 
-	initialize(rscene: IRendererScene, rpi: number, minV: IVector3D, maxV: IVector3D, rn: number, cn: number) {
+	initialize(rscene: IRendererScene, rpi: number) {
 		if (this.m_entity == null) {
 			if(rpi < 0) rpi = 0;
 			
@@ -38,6 +39,14 @@ class RectTextTip {
 			// rscene.addEntity(this.m_entity);
 			
 		}
+	}
+	setText(text: string): void {
+		if( text != "" && this.m_text != text ) {
+			this.m_text = text;
+		}
+	}
+	getText(): string {
+		return this.m_text;
 	}
 	setVisible(v: boolean): void {
 		if (this.m_entity != null) {
