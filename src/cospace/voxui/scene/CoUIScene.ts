@@ -12,6 +12,7 @@ declare var CoRScene: ICoRScene;
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 declare var CoMaterial: ICoMaterial;
 import { ICoTexture } from "../../voxtexture/ICoTexture";
+import { UILayout } from "../layout/UILayout";
 declare var CoTexture: ICoTexture;
 
 class CoUIScene implements ICoUIScene {
@@ -20,6 +21,7 @@ class CoUIScene implements ICoUIScene {
 	readonly rscene: IRendererScene;
 	texAtlasNearestFilter: boolean = false;
 	readonly texAtlas: ICanvasTexAtlas = null;
+	readonly layout = new UILayout();
 	constructor() {
 	}
 	initialize(crscene: ICoRendererScene = null): void {
@@ -49,7 +51,12 @@ class CoUIScene implements ICoUIScene {
 			let uicamera = this.rscene.getCamera();
 			uicamera.translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
 			uicamera.update();
+
+			this.layout.initialize( subScene );
 		}
+	}
+	getStage(): IRenderStage3D {
+		return this.rscene.getStage3D();
 	}
 	addEntity(entity: IUIEntity, processid: number = 0): void {
 		this.rscene.addEntity(entity.getREntity(), processid);
@@ -63,6 +70,7 @@ class CoUIScene implements ICoUIScene {
 		let uicamera = this.rscene.getCamera();
 		uicamera.translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
 		uicamera.update();
+		this.layout.update();
 	}
 	run(): void {
 		if(this.rscene != null) {
