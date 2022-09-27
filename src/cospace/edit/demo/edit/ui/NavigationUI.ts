@@ -1,19 +1,13 @@
 import { ICoRendererScene } from "../../../../voxengine/scene/ICoRendererScene";
 import { ICoRenderer } from "../../../../voxengine/ICoRenderer";
-import { ICoMath } from "../../../../math/ICoMath";
-import { ICoEdit } from "../../../../edit/ICoEdit";
 import { ICoUI } from "../../../../voxui/ICoUI";
 import { ICoUIScene } from "../../../../voxui/scene/ICoUIScene";
-import { CoMaterialContextParam, ICoRScene } from "../../../../voxengine/ICoRScene";
-import { ICoUIInteraction } from "../../../../voxengine/ui/ICoUIInteraction";
+import { ICoRScene } from "../../../../voxengine/ICoRScene";
 import IRendererScene from "../../../../../vox/scene/IRendererScene";
 import { IButton } from "../../../../voxui/entity/IButton";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
-declare var CoUIInteraction: ICoUIInteraction;
-declare var CoMath: ICoMath;
-declare var CoEdit: ICoEdit;
 declare var CoUI: ICoUI;
 
 /**
@@ -66,7 +60,7 @@ class NavigationUI {
 		
 		let csLable = CoUI.createClipLabel();
 		csLable.initialize(texAtlas, [urls[0], urls[1]]);
-		console.log("XXXXXXXXXXXXXXXXXXXXXX initNavigationUI()...");
+		
 		let px = 0;
 		let py = this.m_coUIScene.getStage().stageHeight - csLable.getClipHeight();
 		pw = csLable.getClipWidth();
@@ -78,7 +72,6 @@ class NavigationUI {
 		}
 	}
 	private crateBtn(urls: string[], px: number, py: number, labelIndex: number, idns: string): IButton {
-
 
 		let texAtlas = this.m_coUIScene.texAtlas;
 		let label = CoUI.createClipLabel();

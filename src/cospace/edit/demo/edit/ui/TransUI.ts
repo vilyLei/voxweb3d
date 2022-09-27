@@ -1,45 +1,28 @@
 import { ICoRendererScene } from "../../../../voxengine/scene/ICoRendererScene";
-import { IMouseInteraction } from "../../../../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../../../../voxengine/ICoRenderer";
 import { ICoMath } from "../../../../math/ICoMath";
-import { ICoAGeom } from "../../../../ageom/ICoAGeom";
 import { ICoEdit } from "../../../../edit/ICoEdit";
 import { ICoUI } from "../../../../voxui/ICoUI";
-import { ICoTexture } from "../../../../voxtexture/ICoTexture";
 import { ICoUIScene } from "../../../../voxui/scene/ICoUIScene";
-import { CoMaterialContextParam, ICoRScene } from "../../../../voxengine/ICoRScene";
+import { ICoRScene } from "../../../../voxengine/ICoRScene";
 
-// import { ICoMouseInteraction } from "../../voxengine/ui/ICoMouseInteraction";
 import { ICoUIInteraction } from "../../../../voxengine/ui/ICoUIInteraction";
-import ViewerMaterialCtx from "../../../../demo/coViewer/ViewerMaterialCtx";
-import { ModuleLoader } from "../../../../modules/loaders/ModuleLoader";
-import { ViewerCoSApp } from "../../../../demo/coViewer/ViewerCoSApp";
-import IRenderTexture from "../../../../../vox/render/texture/IRenderTexture";
 import ITransformEntity from "../../../../../vox/entity/ITransformEntity";
-import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../../app/CoSpaceAppData";
 import IVector3D from "../../../../../vox/math/IVector3D";
 import IRendererScene from "../../../../../vox/scene/IRendererScene";
-import { IRendererSceneAccessor } from "../../../../../vox/scene/IRendererSceneAccessor";
-import RendererSceneGraph from "../../../../../vox/scene/RendererSceneGraph";
 import { ITransformController } from "../../../transform/ITransformController";
-import { TransformController } from "../../../transform/TransformController";
 import { UserEditEvent } from "../../../event/UserEditEvent";
 import { IButton } from "../../../../voxui/entity/IButton";
-import { IClipLabel } from "../../../../voxui/entity/IClipLabel";
 import { PostOutline } from "../../effect/PostOutline";
 import { UIRectLine } from "../../edit/UIRectLine";
-import { IClipEntity } from "../../../../voxui/entity/IClipEntity";
 import { IColorClipLabel } from "../../../../voxui/entity/IColorClipLabel";
 import { RectFrameQuery } from "../../edit/RectFrameQuery";
 import IRenderEntity from "../../../../../vox/render/IRenderEntity";
 import { ICoKeyboardInteraction } from "../../../../voxengine/ui/ICoKeyboardInteraction";
-import { CoKeyboardInteraction } from "../../../../voxengine/ui/CoKeyboardInteraction";
 import { ICoTransformRecorder } from "../../../recorde/ICoTransformRecorder";
-import { CoTransformRecorder } from "../../../recorde/CoTransformRecorder";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
-// declare var CoMouseInteraction: ICoMouseInteraction;
 declare var CoUIInteraction: ICoUIInteraction;
 declare var CoMath: ICoMath;
 declare var CoEdit: ICoEdit;
@@ -54,7 +37,7 @@ class TransUI {
 	private m_editUIRenderer: ICoRendererScene = null;
 	private m_uirsc: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
-	private m_outline: PostOutline;
+	private m_outline: PostOutline = null;
 
 	constructor() { }
 
@@ -120,13 +103,10 @@ class TransUI {
 	private m_prevPos: IVector3D;
 	private m_currPos: IVector3D;
 	private editBegin(evt: any): void {
-		// this.m_transCtr
-		// console.log("XXXXXXXX Edit begin...");
 		let st = this.m_rsc.getStage3D();
 		this.m_prevPos.setXYZ(st.mouseX, st.mouseY, 0);
 	}
 	private editEnd(evt: any): void {
-		// console.log("XXXXXXXX Edit end...");
 		let st = this.m_rsc.getStage3D();
 		this.m_currPos.setXYZ(st.mouseX, st.mouseY, 0);
 		if (CoMath.Vector3D.Distance(this.m_prevPos, this.m_currPos) > 0.5) {
@@ -156,28 +136,8 @@ class TransUI {
 		}
 
 		this.initTransUI();
-
-		// let minV = CoMath.createVec3(-100, 0, -100);
-		// let maxV = minV.clone().scaleBy(-1);
-		// let scale = 10.0
-		// let grid = CoEdit.createFloorLineGrid();
-		// grid.initialize(this.m_rsc, 0, minV.scaleBy(scale), maxV.scaleBy(scale), 30);
 	}
-	// private initNavigationUI(): void {
-	// 	let uiScene = this.m_coUIScene;
-	// 	let texAtlas = uiScene.texAtlas;
-	// 	let pw = 90;
-	// 	let ph = 40;
-	// 	let keys = ["file", "edit", "model", "normal", "texture", "material", "animation", "particle"];
-	// 	let urls = ["文件", "编辑", "模型", "法线", "纹理", "材质", "动画", "粒子","帮助"];
-	// 	for (let i = 0; i < urls.length; ++i) {
-	// 		let img = texAtlas.createCharsCanvasFixSize(pw, ph, urls[i], 30);
-	// 		texAtlas.addImageToAtlas(urls[i], img);
-	// 	}
-		
-	// 	let csLable = CoUI.createClipLabel();
-	// 	csLable.initialize(texAtlas, [urls[0], urls[1]]);
-	// }
+
 	private initTransUI(): void {
 
 		let uiScene = this.m_coUIScene;
@@ -244,9 +204,6 @@ class TransUI {
 		colorClipLabel.getColorAt(2).setRGB3f(1.0, 0.2, 1.0);
 		colorClipLabel.getColorAt(4).setRGB3f(0.5, 0.5, 0.5);
 		colorClipLabel.setLabelClipIndex(labelIndex);
-		// colorClipLabel.setXY(200,0);
-		// colorClipLabel.setClipIndex(2);
-		// this.m_uisc.addEntity(colorClipLabel);
 
 		let btn = CoUI.createButton();
 		btn.uuid = idns;
@@ -331,23 +288,6 @@ class TransUI {
 	}
 	private m_entityQuery: RectFrameQuery = null;
 
-	// public mouseOverTargetListener(evt: any): void {
-	// 	console.log("mouseOverTargetListener()..., evt.target: ", evt.target);
-	// }
-	// public mouseOutTargetListener(evt: any): void {
-	// 	console.log("mouseOutTargetListener()..., evt.target: ", evt.target);
-	// }
-	// public mouseDownTargetListener(evt: any): void {
-	// 	console.log("mouseDownTargetListener()..., evt.target: ", evt.target);
-	// 	let entity = evt.target as ITransformEntity;
-	// 	this.selectEntities([entity]);
-	// }
-	// public mouseUpTargetListener(evt: any): void {
-	// 	console.log("mouseUpTargetListener() mouse up...");
-	// 	// if (this.m_transCtr != null) {
-	// 	// 	this.m_transCtr.enable(this.m_ctrlType);
-	// 	// }
-	// }
 	selectEntities(list: IRenderEntity[]): void {
 
 		if (list != null && list.length > 0) {
