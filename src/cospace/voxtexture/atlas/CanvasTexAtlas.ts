@@ -132,11 +132,11 @@ export class CanvasTexAtlas implements ICanvasTexAtlas {
 	): HTMLCanvasElement {
 		return ImageTexAtlas.CreateCharsCanvasFixSize(width, height, chars, fontSize, fontColor, bgColor);
 	}
-	createCharsImage(chars: string, size: number, fontColor: IColor4 = null, bgColor: IColor4 = null): HTMLCanvasElement | HTMLImageElement {
-		if (chars == null || chars == "" || size < 8) {
+	createCharsImage(chars: string, fontSize: number, fontColor: IColor4 = null, bgColor: IColor4 = null): HTMLCanvasElement | HTMLImageElement {
+		if (chars == null || chars == "" || fontSize < 8) {
 			return null;
 		}
-		return ImageTexAtlas.CreateCharsCanvas(chars, size, fontColor, bgColor);
+		return ImageTexAtlas.CreateCharsCanvas(chars, fontSize, fontColor, bgColor);
 	}
 
 	private m_whiteTex: IRenderTexture = null;

@@ -22,6 +22,7 @@ import RendererSceneGraph from "../../../vox/scene/RendererSceneGraph";
 import { PostOutline } from "./effect/PostOutline";
 import { TransUI } from "./edit/ui/TransUI";
 import { NavigationUI } from "./edit/ui/NavigationUI";
+import { RectTextTip } from "../../voxui/entity/RectTextTip";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -122,12 +123,19 @@ export class DemoTransEditor {
 
 		uiInteractML.load(url);
 	}
+	private m_tip: RectTextTip = null;
 	private initEditUI(): void {
 
 		this.m_coUIScene = CoUI.createUIScene();
 		this.m_coUIScene.initialize();
 		this.m_uirsc = this.m_coUIScene.rscene;
 		this.m_graph.addScene(this.m_uirsc);
+
+		let tip = new RectTextTip();
+		tip.initialize(this.m_coUIScene, 1);
+		this.m_tip = tip;
+
+
 		this.m_transUI.setOutline( this.m_outline );
 		this.m_transUI.initialize(this.m_rsc, this.m_editUIRenderer, this.m_coUIScene);
 
@@ -195,7 +203,7 @@ export class DemoTransEditor {
 			// console.log("60/255: ", 60/255);
 			// rscene.setClearUint24Color((60 << 16) + (60 << 8) + 60);
 
-			// rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDownListener);
+			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_DOWN, this, this.mouseDownListener);
 
 			// rscene.addEventListener(CoRScene.KeyboardEvent.KEY_DOWN, this, this.keyDown);
 			// rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_CLICK, this, this.mouseClickListener);
@@ -216,6 +224,11 @@ export class DemoTransEditor {
 		}
 	}
 
+	private mouseDownListener(evt: any): void {
+		console.log("DemoTransEditor::mouseDownListener() ...");
+		this.m_tip.setText("hello-boy");
+		this.m_tip.setVisible(true);
+	}
 	private keyDown(evt: any): void {
 
 		console.log("DemoTransEditor::keyDown() ..., evt.keyCode: ", evt.keyCode);
