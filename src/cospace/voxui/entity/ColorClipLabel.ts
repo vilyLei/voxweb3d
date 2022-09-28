@@ -111,11 +111,9 @@ class ColorClipLabel implements IColorClipLabel {
 	}
 	setX(x: number): void {
 		this.m_lb.setX(x);
-		// if(this.m_ilb != null) this.m_ilb.setX( x );
 	}
 	setY(y: number): void {
 		this.m_lb.setX(y);
-		// if(this.m_ilb != null) this.m_ilb.setY( y );
 	}
 	setZ(z: number): void {
 		this.m_lb.setZ(z);
@@ -131,33 +129,27 @@ class ColorClipLabel implements IColorClipLabel {
 	}
 	setXY(px: number, py: number): void {
 		this.m_lb.setXY(px, py);
-		// if(this.m_ilb != null) this.m_ilb.setXY( px, py );
 	}
 	setPosition(pv: IVector3D): void {
 		this.m_lb.setPosition(pv);
-		// if(this.m_ilb != null) this.m_ilb.setPosition(pv);
 	}
 	getPosition(pv: IVector3D): void {
 		this.m_lb.getPosition(pv);
 	}
 	setRotation(r: number): void {
 		this.m_lb.setRotation(r);
-		// if(this.m_ilb != null) this.m_ilb.setRotation(r);
 	}
 	getRotation(): number {
 		return this.m_lb.getRotation();
 	}
 	setScaleXY(sx: number, sy: number): void {
 		this.m_lb.setScaleXY(sx, sy);
-		// if(this.m_ilb != null) this.m_ilb.setScaleXY(sx, sy);
 	}
 	setScaleX(sx: number): void {
 		this.m_lb.setScaleX(sx);
-		// if(this.m_ilb != null) this.m_ilb.setScaleX(sx);
 	}
 	setScaleY(sy: number): void {
 		this.m_lb.setScaleY(sy);
-		// if(this.m_ilb != null) this.m_ilb.setScaleY(sy);
 	}
 	getScaleX(): number {
 		return this.m_lb.getScaleX();

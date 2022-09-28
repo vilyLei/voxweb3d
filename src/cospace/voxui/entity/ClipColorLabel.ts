@@ -19,29 +19,12 @@ declare var CoEntity: ICoEntity;
 
 class ClipColorLabel extends ClipLabelBase implements IClipColorLabel {
 
-	// private m_width = 0;
-	// private m_height = 0;
-	// private m_index = 0;
-	// private m_total = 0;
-	// private m_pos: IVector3D;
-	// private m_entities: ITransformEntity[] = null;
-	// private m_rotation: number = 0;
-	// private m_sx: number = 1;
-	// private m_sy: number = 1;
 
 	private m_colors: IColor4[] = null;
 	private m_material: IDefault3DMaterial = null;
 	private m_fixSize: boolean = true;
 	private m_hasTex: boolean = false;
 
-	// private createVS(startX: number, startY: number, pwidth: number, pheight: number): number[] {
-	// 	let minX: number = startX;
-	// 	let minY: number = startY;
-	// 	let maxX: number = startX + pwidth;
-	// 	let maxY: number = startY + pheight;
-	// 	let pz: number = 0.0;
-	// 	return [minX, minY, pz, maxX, minY, pz, maxX, maxY, pz, minX, maxY, pz];
-	// }
 	private createMesh(atlas: ICanvasTexAtlas, idns: string): IRawMesh {
 
 		let ivs = new Uint16Array([0, 1, 2, 0, 2, 3]);
@@ -176,105 +159,5 @@ class ClipColorLabel extends ClipLabelBase implements IClipColorLabel {
 	getColors(): IColor4[] {
 		return this.m_colors;
 	}
-
-	/*
-	setCircleClipIndex(i: number): void {
-		i %= this.m_total;
-		i += this.m_total;
-		i %= this.m_total;
-		this.setClipIndex(i);
-	}
-	getClipIndex(): number {
-		return this.m_index;
-	}
-	getClipsTotal(): number {
-		return this.m_total;
-	}
-	getClipWidth(): number {
-		return this.m_width;
-	}
-	getClipHeight(): number {
-		return this.m_height;
-	}
-	getWidth(): number {
-		return this.m_width * this.m_sx;
-	}
-	getHeight(): number {
-		return this.m_height * this.m_sy;
-	}
-	setX(x: number): void {
-		this.m_pos.x = x;
-		this.m_entities.setPosition(this.m_pos);
-	}
-	setY(y: number): void {
-		this.m_pos.y = y;
-		this.m_entities.setPosition(this.m_pos);
-	}
-	setZ(z: number): void {
-		this.m_pos.z = z;
-		this.m_entities.setPosition(this.m_pos);
-	}
-	getX(): number {
-		return this.m_pos.x;
-	}
-	getY(): number {
-		return this.m_pos.y;
-	}
-	getZ(): number {
-		return this.m_pos.z;
-	}
-	setXY(px: number, py: number): void {
-		this.m_pos.x = px;
-		this.m_pos.y = py;
-		this.m_entities.setPosition(this.m_pos);
-	}
-	setPosition(pv: IVector3D): void {
-		this.m_pos.copyFrom(pv);
-		this.m_entities.setPosition(this.m_pos);
-	}
-	getPosition(pv: IVector3D): void {
-		pv.copyFrom(this.m_pos);
-	}
-	setRotation(r: number): void {
-		this.m_rotation = r;
-		this.m_entities.setRotationXYZ(0, 0, r);
-	}
-	getRotation(): number {
-		return this.m_rotation;
-	}
-	setScaleXY(sx: number, sy: number): void {
-		this.m_sx = sx;
-		this.m_sy = sy;
-		this.m_entities.setScaleXYZ(sx, sy, 1.0);
-	}
-	setScaleX(sx: number): void {
-		this.m_sx = sx;
-		this.m_entities.setScaleXYZ(this.m_sx, this.m_sy, 1.0);
-	}
-	setScaleY(sy: number): void {
-		this.m_sy = sy;
-		this.m_entities.setScaleXYZ(this.m_sx, this.m_sy, 1.0);
-	}
-	getScaleX(): number {
-		return this.m_sx;
-	}
-	getScaleY(): number {
-		return this.m_sy;
-	}
-	getREntity(): ITransformEntity {
-		return this.m_entities;
-	}
-	update(): void {
-		this.m_entities.update();
-	}
-	destroy(): void {
-		this.m_colors = null;
-		this.m_total = 0;
-		if (this.m_entities != null) {
-			this.m_entities.destroy();
-			this.m_entities = null;
-		}
-	}
-	//*/
 }
 export { ClipColorLabel };
