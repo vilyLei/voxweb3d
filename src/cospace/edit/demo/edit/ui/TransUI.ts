@@ -1,10 +1,10 @@
 import { ICoRendererScene } from "../../../../voxengine/scene/ICoRendererScene";
-import { ICoRenderer } from "../../../../voxengine/ICoRenderer";
+import { ICoRScene } from "../../../../voxengine/ICoRScene";
 import { ICoMath } from "../../../../math/ICoMath";
+import { ICoMaterial } from "../../../../voxmaterial/ICoMaterial";
 import { ICoEdit } from "../../../../edit/ICoEdit";
 import { ICoUI } from "../../../../voxui/ICoUI";
 import { ICoUIScene } from "../../../../voxui/scene/ICoUIScene";
-import { ICoRScene } from "../../../../voxengine/ICoRScene";
 
 import { ICoUIInteraction } from "../../../../voxengine/ui/ICoUIInteraction";
 import ITransformEntity from "../../../../../vox/entity/ITransformEntity";
@@ -20,11 +20,13 @@ import { RectFrameQuery } from "../../edit/RectFrameQuery";
 import IRenderEntity from "../../../../../vox/render/IRenderEntity";
 import { ICoKeyboardInteraction } from "../../../../voxengine/ui/ICoKeyboardInteraction";
 import { ICoTransformRecorder } from "../../../recorde/ICoTransformRecorder";
+import { IRectTextTip } from "../../../../voxui/entity/IRectTextTip";
+import { SelectButtonGroup } from "../../../../voxui/button/SelectButtonGroup";
 
-declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
 declare var CoUIInteraction: ICoUIInteraction;
 declare var CoMath: ICoMath;
+declare var CoMaterial: ICoMaterial;
 declare var CoEdit: ICoEdit;
 declare var CoUI: ICoUI;
 
@@ -38,7 +40,7 @@ class TransUI {
 	private m_uirsc: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
 	private m_outline: PostOutline = null;
-
+	tip: IRectTextTip = null;
 	constructor() { }
 
 	setOutline(outline: PostOutline): void {
@@ -46,7 +48,7 @@ class TransUI {
 	}
 
 	initialize(rsc: ICoRendererScene, editUIRenderer: ICoRendererScene, coUIScene: ICoUIScene): void {
-		if(this.m_coUIScene == null) {
+		if (this.m_coUIScene == null) {
 			this.m_rsc = rsc;
 			this.m_editUIRenderer = editUIRenderer;
 			this.m_coUIScene = coUIScene;
@@ -59,7 +61,7 @@ class TransUI {
 	private m_keyInterac: ICoKeyboardInteraction;
 	private m_recoder: ICoTransformRecorder;
 	private init(): void {
-		
+
 		this.m_rsc.addEventListener(CoRScene.KeyboardEvent.KEY_DOWN, this, this.keyDown);
 		this.m_rsc.addEventListener(CoRScene.MouseEvent.MOUSE_BG_CLICK, this, this.mouseClickListener);
 		this.m_rsc.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
@@ -138,35 +140,59 @@ class TransUI {
 		this.initTransUI();
 	}
 
+	private m_btnGroup = new SelectButtonGroup();
 	private initTransUI(): void {
 
 		let uiScene = this.m_coUIScene;
-		let texAtlas = uiScene.texAtlas;
+		let tta = uiScene.transparentTexAtlas;
 		let pw = 90;
 		let ph = 70;
-		let urls = ["框选", "移动", "缩放", "旋转"];
-		let keys = ["select", "move", "scale", "rotate"];
+		let urls = ["框选", "移动", "旋转", "缩放"];
+		let keys = ["select", "move", "rotate", "scale"];
+		let infos = [
+			"Select items using box selection.",
+			"Move selected items.",
+			"Rotate selected items.",
+			"Scale(resize) selected items."
+		];
 
+		let fontColor = CoMaterial.createColor4().setRGB3Bytes(170, 170, 170);;
+		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
 		for (let i = 0; i < urls.length; ++i) {
-			let img = texAtlas.createCharsCanvasFixSize(pw, ph, urls[i], 30);
-			texAtlas.addImageToAtlas(urls[i], img);
+			let img = tta.createCharsCanvasFixSize(pw, ph, urls[i], 30, fontColor, bgColor);
+			tta.addImageToAtlas(urls[i], img);
 		}
-		
-		let csLable = CoUI.createClipLabel();
-		csLable.initialize(texAtlas, [urls[0], urls[1]]);
 
 		let px = 5;
-		let py = (5 + csLable.getClipHeight()) * 4;
-		ph = 5 + csLable.getClipHeight();
+		let py = (5 + ph) * 4;
+		ph = 5 + ph;
 		for (let i = 0; i < urls.length; ++i) {
-			let btn = this.crateBtn(urls, px, py - ph * i, i, keys[i]);
-			if(i > 0) {
+			let btn = this.crateBtn(urls, pw, ph, px, py - ph * i, i, keys[i], infos[i]);
+			if (i > 0) {
 				this.m_transBtns.push(btn);
+				this.m_btnGroup.addButton(btn);
 			}
 		}
-		this.selectBtn(this.m_transBtns[0]);
-		this.m_transCtr.toTranslation();
-		this.m_transCtr.disable();
+
+		this.m_btnGroup.setSelectedFunction(
+			(btn: IButton): void => {
+				let label: IColorClipLabel;
+		
+				label = btn.getLable() as IColorClipLabel;
+				label.getColorAt(0).setRGB3Bytes(71, 114, 179);
+				label.setClipIndex(0);
+		
+				this.selectTrans(btn.uuid);
+		},
+		(btn: IButton): void => {
+			let label: IColorClipLabel;
+	
+			label = btn.getLable() as IColorClipLabel;
+			label.getColorAt(0).setRGB3Bytes(40, 40, 40);
+			label.setClipIndex(0);
+		}
+		);
+		this.m_btnGroup.select( keys[1] );
 	}
 	private uiMouseDownListener(evt: any): void {
 
@@ -175,9 +201,12 @@ class TransUI {
 		// console.log("ui down (x, y): ", evt.mouseX, evt.mouseY);
 	}
 	private uiMouseUpListener(evt: any): void {
+
 		// console.log("TransUI::uiMouseUpListener(), evt: ", evt);
 		// console.log("ui up (x, y): ", evt.mouseX, evt.mouseY);
+
 		if (this.m_selectFrame.isSelectEnabled()) {
+
 			let b = this.m_selectFrame.bounds;
 			let list = this.m_entityQuery.getEntities(b.min, b.max);
 			this.selectEntities(list);
@@ -189,55 +218,38 @@ class TransUI {
 		// console.log("ui move (x, y): ", evt.mouseX, evt.mouseY);
 		this.m_selectFrame.move(evt.mouseX, evt.mouseY);
 	}
-	private m_currBtn: IButton = null;
+	private crateBtn(urls: string[], pw: number, ph: number, px: number, py: number, labelIndex: number, idns: string, info: string): IButton {
 
-	private crateBtn(urls: string[], px: number, py: number, labelIndex: number, idns: string): IButton {
+		let colorClipLabel = CoUI.createClipColorLabel();
+		colorClipLabel.initializeWithoutTex(pw, ph, 4);
+		colorClipLabel.getColorAt(0).setRGB3Bytes(40, 40, 40);
+		colorClipLabel.getColorAt(1).setRGB3Bytes(50, 50, 50);
+		colorClipLabel.getColorAt(2).setRGB3Bytes(40, 40, 60);
 
-
-		let texAtlas = this.m_coUIScene.texAtlas;
-		let label = CoUI.createClipLabel();
-		label.initialize(texAtlas, urls);
-		let colorClipLabel = CoUI.createColorClipLabel();
-		colorClipLabel.initialize(label, 5);
-		colorClipLabel.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
-		colorClipLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
-		colorClipLabel.getColorAt(2).setRGB3f(1.0, 0.2, 1.0);
-		colorClipLabel.getColorAt(4).setRGB3f(0.5, 0.5, 0.5);
-		colorClipLabel.setLabelClipIndex(labelIndex);
+		let tta = this.m_coUIScene.transparentTexAtlas;
+		let iconLable = CoUI.createClipLabel();
+		iconLable.transparent = true;
+		iconLable.premultiplyAlpha = true;
+		iconLable.initialize(tta, [urls[labelIndex]]);
 
 		let btn = CoUI.createButton();
 		btn.uuid = idns;
+		btn.info = info;
+		btn.addLabel(iconLable);
 		btn.initializeWithLable(colorClipLabel);
 		btn.setXY(px, py);
 		this.m_coUIScene.addEntity(btn, 1);
-		btn.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.btnMouseUpListener);
+		const ME = CoRScene.MouseEvent;
+		// btn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
+		btn.addEventListener(ME.MOUSE_OUT, this.tip, this.tip.targetMouseOut);
+		btn.addEventListener(ME.MOUSE_OVER, this.tip, this.tip.targetMouseOver);
+		btn.addEventListener(ME.MOUSE_MOVE, this.tip, this.tip.targetMouseMove);
 
 		return btn;
 	}
 
-	private selectBtn(btn: IButton): void {
 
-		let label: IColorClipLabel;
-
-		if (this.m_currBtn != btn) {
-
-			label = btn.getLable() as IColorClipLabel;
-			label.getColorAt(0).setRGB3f(0.5, 0.8, 0.6);
-			label.setClipIndex(0);
-
-			if (this.m_currBtn != null) {
-				label = this.m_currBtn.getLable() as IColorClipLabel;
-				label.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
-				label.setClipIndex(0);
-			}
-
-			this.m_currBtn = btn;
-		}
-	}
-	private btnMouseUpListener(evt: any): void {
-
-		console.log("btnMouseUpListener(), evt.currentTarget: ", evt.currentTarget);
-		let uuid = evt.uuid;
+	private selectTrans(uuid: string): void {
 		switch (uuid) {
 
 			case "move":
@@ -250,20 +262,14 @@ class TransUI {
 
 			case "rotate":
 				this.m_transCtr.toRotation();
-				this
-				break;
-
-			case "select":
-
-				// this.m_selectFrame.enable();
 				break;
 			default:
 				break;
 		}
-
-		this.selectBtn(evt.currentTarget as IButton);
+		if(this.m_selectList == null) {
+			this.m_transCtr.disable();
+		}
 	}
-
 	private keyDown(evt: any): void {
 
 		console.log("TransUI::keyDown() ..., evt.keyCode: ", evt.keyCode);
@@ -271,25 +277,28 @@ class TransUI {
 		let KEY = CoRScene.Keyboard;
 		switch (evt.keyCode) {
 			case KEY.W:
-				this.selectBtn(this.m_transBtns[0]);
-				this.m_transCtr.toTranslation();
+				// this.selectBtn(this.m_transBtns[0]);
+				this.m_btnGroup.select(this.m_transBtns[0].uuid);
+				// this.m_transCtr.toTranslation();
 				break;
 			case KEY.E:
-				this.selectBtn(this.m_transBtns[1]);
-				this.m_transCtr.toScale();
+				// this.selectBtn(this.m_transBtns[1]);
+				this.m_btnGroup.select(this.m_transBtns[1].uuid);
+				// this.m_transCtr.toScale();
 				break;
 			case KEY.R:
-				this.selectBtn(this.m_transBtns[2]);
-				this.m_transCtr.toRotation();
+				// this.selectBtn(this.m_transBtns[2]);
+				this.m_btnGroup.select(this.m_transBtns[2].uuid);
+				// this.m_transCtr.toRotation();
 				break;
 			default:
 				break;
 		}
 	}
 	private m_entityQuery: RectFrameQuery = null;
-
+	private m_selectList: IRenderEntity[] = null;
 	selectEntities(list: IRenderEntity[]): void {
-
+		this.m_selectList = list;
 		if (list != null && list.length > 0) {
 			let transCtr = this.m_transCtr;
 
@@ -315,14 +324,14 @@ class TransUI {
 		}
 	}
 	private mouseClickListener(evt: any): void {
-
+		this.m_selectList = null;
 		if (this.m_transCtr != null) {
 			this.m_transCtr.disable();
 		}
 		this.m_outline.deselect();
 	}
 	run(): void {
-		
+
 		if (this.m_transCtr != null) {
 			this.m_transCtr.run();
 		}

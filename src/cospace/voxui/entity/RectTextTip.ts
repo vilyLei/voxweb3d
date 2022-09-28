@@ -12,15 +12,25 @@ import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { IImageTexture } from "../../../vox/render/texture/IImageTexture";
 import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
+import IColor4 from "../../../vox/material/IColor4";
+import { ICoRScene } from "../../voxengine/ICoRScene";
+import { IUIEntity } from "./IUIEntity";
+import { IRectTextTip } from "./IRectTextTip";
 
+declare var CoRScene: ICoRScene;
 declare var CoMesh: ICoMesh;
 declare var CoMaterial: ICoMaterial;
 declare var CoEntity: ICoEntity;
 declare var CoMath: ICoMath;
 
-class RectTextTip {
+class RectTextTip implements IRectTextTip {
 
+	private m_pw = 10;
+	private m_ph = 10;
 	private m_uiScene: ICoUIScene;
+	private m_pos: IVector3D;
+	private m_fontColor: IColor4;
+	private m_bgColor: IColor4;
 	private m_entity: ITransformEntity = null;
 	private m_texAtlas: ICanvasTexAtlas = null;
 	private m_tex: IImageTexture = null;
@@ -33,51 +43,117 @@ class RectTextTip {
 
 		if (this.m_entity == null) {
 
-			if(rpi < 0) rpi = 0;
-			if(fontSize < 12) fontSize = 12;
+			if (rpi < 0) rpi = 0;
+			if (fontSize < 12) fontSize = 12;
 			this.m_texAtlas = uiScene.texAtlas;
 
 			this.m_uiScene = uiScene;
 			this.m_entity = CoEntity.createDisplayEntity();
 
-			let img = this.m_texAtlas.createCharsImage(this.m_text, this.m_fontSize);
+			this.m_pos = CoMath.createVec3();
+
+			this.m_fontColor = CoMaterial.createColor4().setRGB3Bytes(170, 170, 170);
+			this.m_bgColor = CoMaterial.createColor4(0.1, 0.1, 0.1, 0.5);
+
+			let img = this.m_texAtlas.createCharsImage(this.m_text, this.m_fontSize, this.m_fontColor, this.m_bgColor);
 			this.m_tex = uiScene.rscene.textureBlock.createImageTex2D(img.width, img.height);
-			this.m_tex.setDataFromImage( img );
+			this.m_tex.setDataFromImage(img);
 			this.m_tex.flipY = true;
-			
+			this.m_tex.premultiplyAlpha = true;			
+			this.m_tex.minFilter = CoRScene.TextureConst.LINEAR;
+			this.m_tex.magFilter = CoRScene.TextureConst.NEAREST;
+
 			let material = CoMaterial.createDefaultMaterial();
-			material.setTextureList([ this.m_tex ]);
-			material.initializeByCodeBuf( true );
+			material.setTextureList([this.m_tex]);
+			material.premultiplyAlpha = true;
+			material.initializeByCodeBuf(true);
 			CoMesh.plane.setBufSortFormat(material.getBufSortFormat());
-			let mesh = CoMesh.plane.createXOY(0,0, 1.0,1.0);
-			
+			let mesh = CoMesh.plane.createXOY(0, 0, 1.0, 1.0);
+			this.m_pw = img.width;
+			this.m_ph = img.height;
 			this.m_entity.setMaterial(material);
 			this.m_entity.setMesh(mesh);
 			this.m_entity.setScaleXYZ(img.width, img.height, 1.0);
-			this.m_entity.setXYZ(280, 180, 0);
-			uiScene.rscene.addEntity(this.m_entity);
+			// this.m_entity.setXYZ(280, 180, 0);
+			uiScene.rscene.addEntity(this.m_entity, rpi);
 
-			// this.setVisible(false);
-			
+			this.m_entity.setRenderState(CoRScene.RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+			this.setVisible(false);
+
 		}
 	}
+	private moveTar(tar: IUIEntity, mx: number, my: number): void {
+
+		let bounds = tar.getREntities()[0].getGlobalBounds();
+		let maxV = bounds.max;
+		let px = maxV.x + 2;
+		let py = my + 2 - this.m_ph;
+		this.setXY(px, py);
+		this.update();
+	}
+	targetMouseOver(evt: any): void {
+
+		this.setVisible(true);
+		let tar = evt.currentTarget as IUIEntity;
+		this.setText(tar.info);
+		this.moveTar(tar, evt.mouseX, evt.mouseY);
+	}
+	targetMouseMove(evt: any): void {
+		let tar = evt.currentTarget as IUIEntity;
+		this.moveTar(tar, evt.mouseX, evt.mouseY);
+	}
+	targetMouseOut(evt: any): void {
+		this.setVisible(false);
+	}
 	setText(text: string): void {
-		if( text != "" && this.m_text != text ) {
+		if (text != "" && this.m_text != text) {
 			this.m_text = text;
-			console.log("setText, text: ",text);
-			let img = this.m_texAtlas.createCharsImage(this.m_text, this.m_fontSize);
-			this.m_tex = this.m_uiScene.rscene.textureBlock.createImageTex2D(img.width, img.height);
-			this.m_tex.setDataFromImage( img );
+			let img = this.m_texAtlas.createCharsImage(text, this.m_fontSize, this.m_fontColor, this.m_bgColor);
+
+			this.m_tex.setDataFromImage(img,0,0,0,true);
 			this.m_tex.updateDataToGpu();
-			// this.m_entity.updateMaterialToGpu();
+			this.m_entity.setScaleXYZ(img.width, img.height, 1.0);
+			this.m_pw = img.width;
+			this.m_ph = img.height;
 		}
+	}
+	getWidth(): number {
+		return this.m_pw;
+	}
+	getHeight(): number {
+		return this.m_ph;
+	}
+	setXY(px: number, py: number): void {
+
+		this.m_pos.x = px;
+		this.m_pos.y = py;
+		this.m_entity.setPosition( this.m_pos );
+
+	}
+	setPosition(pv: IVector3D): void {
+		this.m_pos.copyFrom(pv);
+		this.m_entity.setPosition(pv);
+	}
+	getPosition(pv: IVector3D): IVector3D {
+		return this.m_entity.getPosition(pv);
 	}
 	getText(): string {
 		return this.m_text;
 	}
 	setVisible(v: boolean): void {
-		if (this.m_entity != null) {
-			this.m_entity.setVisible(v);
+		this.m_entity.setVisible(v);
+	}
+	update(): void {
+		this.m_entity.update();
+	}
+	destroy(): void {
+		if(this.m_entity != null) {
+			this.m_entity.destroy();
+			this.m_entity = null;
+
+			this.m_uiScene = null;
+			this.m_tex = null;
+
 		}
 	}
 }

@@ -1,29 +1,36 @@
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
+import IDisplayEntityContainer from "../../../vox/entity/IDisplayEntityContainer";
 import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import { IButton } from "./IButton";
 import IVector3D from "../../../vox/math/IVector3D";
 import { ClipLabel } from "./ClipLabel";
 import { IClipEntity } from "./IClipEntity";
+import { IUIEntity } from "./IUIEntity";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
-import { ICoMesh } from "../../voxmesh/ICoMesh";
-declare var CoMesh: ICoMesh;
-import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
-declare var CoMaterial: ICoMaterial;
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
-import { ICoEntity } from "../../voxentity/ICoEntity";
-declare var CoEntity: ICoEntity;
 
 class Button implements IButton {
-	private m_enabled: boolean = true;
+
+	private m_enabled = true;
 	private m_dp: IEvtDispatcher;
 	private m_lb: IClipEntity = null;
-	private m_entity: ITransformEntity = null;
-	uuid = "btn";
+	private m_lbs: IClipEntity[] = [];
+	private m_entities: ITransformEntity[] = null;
+	protected m_v0: IVector3D = null;
 
+	premultiplyAlpha = false;
+	transparent = false;
+	uuid = "btn";
+	info = "button";
+	
+	constructor() { }
+	addLabel(label: IClipEntity): void {
+		this.m_lbs.push(label);
+	}
 	enable(): IButton {
 
 		if (this.m_dp != null) {
@@ -45,12 +52,12 @@ class Button implements IButton {
 	}
 
 	setMouseEnabled(enabled: boolean): void {
-		if (this.m_entity != null) {
-			this.m_entity.mouseEnabled = enabled;
+		if (this.m_entities != null) {
+			this.m_entities[0].mouseEnabled = enabled;
 		}
 	}
 	isMouseEnabled(): boolean {
-		return this.m_entity != null && this.m_entity.mouseEnabled;
+		return this.m_entities != null && this.m_entities[0].mouseEnabled;
 	}
 
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): IButton {
@@ -95,11 +102,11 @@ class Button implements IButton {
 			dpc.addEventListener(me.MOUSE_UP, this, this.mouseUpListener);
 			dpc.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
 			dpc.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
-			this.m_lb.getREntity().setEvtDispatcher(dpc);
+			this.m_lb.getREntities()[0].setEvtDispatcher(dpc);
 			this.m_dp = dpc;
 		}
-		this.m_entity = this.m_lb.getREntity();
-		this.m_entity.mouseEnabled = true;
+		this.m_entities = this.m_lb.getREntities().slice(0);
+		this.m_entities[0].mouseEnabled = true;
 	}
 
 	addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): IButton {
@@ -108,32 +115,57 @@ class Button implements IButton {
 		return this;
 	}
 	removeEventListener(type: number, listener: any, func: (evt: any) => void): IButton {
+
 		this.m_dp.removeEventListener(type, listener, func);
 		return this;
 	}
 	protected mouseOverListener(evt: any): void {
-		console.log("Button::mouseOverListener() ...");
+		// console.log("Button::mouseOverListener() ...");
 		if (this.m_enabled) {
 			this.m_lb.setClipIndex(1);
+			let ls = this.m_lbs;
+			if (ls.length > 0) {
+				for (let i = 0; i < ls.length; ++i) {
+					ls[i].setClipIndex(1);
+				}
+			}
 		}
 	}
 	protected mouseOutListener(evt: any): void {
-		console.log("Button::mouseOutListener() ...");
+		// console.log("Button::mouseOutListener() ...");
 		if (this.m_enabled) {
 			this.m_lb.setClipIndex(0);
+			let ls = this.m_lbs;
+			if (ls.length > 0) {
+				for (let i = 0; i < ls.length; ++i) {
+					ls[i].setClipIndex(0);
+				}
+			}
 		}
 	}
 
 	protected mouseDownListener(evt: any): void {
-		console.log("Button::mouseDownListener() ...");
+		// console.log("Button::mouseDownListener() ...");
 		if (this.m_enabled) {
 			this.m_lb.setClipIndex(2);
+			let ls = this.m_lbs;
+			if (ls.length > 0) {
+				for (let i = 0; i < ls.length; ++i) {
+					ls[i].setClipIndex(2);
+				}
+			}
 		}
 	}
 	protected mouseUpListener(evt: any): void {
-		console.log("Button::mouseUpListener() ...");
+		// console.log("Button::mouseUpListener() ...");
 		if (this.m_enabled) {
 			this.m_lb.setClipIndex(3);
+			let ls = this.m_lbs;
+			if (ls.length > 0) {
+				for (let i = 0; i < ls.length; ++i) {
+					ls[i].setClipIndex(3);
+				}
+			}
 		}
 	}
 	setClipIndex(i: number): void {
@@ -193,26 +225,68 @@ class Button implements IButton {
 	getScaleY(): number {
 		return this.m_lb.getScaleY();
 	}
+
+	copyTransformFrom(src: IUIEntity): void {
+		if (src != null) {
+			if (this.m_v0 == null) {
+				this.m_v0 = CoMath.createVec3();
+			}
+			let sx = src.getScaleX();
+			let sy = src.getScaleY();
+			let r = src.getRotation();
+			this.setScaleXY(sx, sy);
+			this.setRotation(r);
+			src.getPosition(this.m_v0);
+			this.setPosition(this.m_v0);
+		}
+	}
 	/**
 	 * get renderable entity for renderer scene
 	 * @returns ITransformEntity instance
 	 */
-	getREntity(): ITransformEntity {
-		return this.m_lb.getREntity();
+	getREntities(): ITransformEntity[] {
+		let es = this.m_lb.getREntities();
+		let ls = this.m_lbs;
+		if (ls.length > 0) {
+			for (let i = 0; i < ls.length; ++i) {
+				es = es.concat(ls[i].getREntities());
+			}
+			return es;
+		}
+		return es;
+	}
+	getRContainer(): IDisplayEntityContainer {
+		return null;
 	}
 	update(): void {
 		this.m_lb.update();
+		let ls = this.m_lbs;
+		if (ls.length > 0) {
+			for (let i = 0; i < ls.length; ++i) {
+				ls[i].copyTransformFrom(this.m_lb);
+				ls[i].update();
+			}
+		}
 	}
 	destroy(): void {
-		if (this.m_lb != null) {
-			this.m_lb.destroy();
-			this.m_lb = null;
+
+		let b = this.m_lb;
+		if (b != null) {
+			b.destroy();
+			b = null;
+		}
+		let ls = this.m_lbs;
+		if (ls.length > 0) {
+			for (let i = 0; i < ls.length; ++i) {
+				ls[i].destroy();
+			}
+			this.m_lbs = [];
 		}
 		if (this.m_dp != null) {
 			this.m_dp.destroy();
 			this.m_dp = null;
 		}
-		this.m_entity = null;
+		this.m_entities = null;
 	}
 }
 export { Button };

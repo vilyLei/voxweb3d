@@ -18,15 +18,22 @@ declare var CoTexture: ICoTexture;
 class CoUIScene implements ICoUIScene {
 	private m_crscene: ICoRendererScene;
 	private m_rstage: IRenderStage3D;
+
 	readonly rscene: IRendererScene;
-	texAtlasNearestFilter: boolean = false;
 	readonly texAtlas: ICanvasTexAtlas = null;
+	readonly transparentTexAtlas: ICanvasTexAtlas = null;
 	readonly layout = new UILayout();
+	texAtlasNearestFilter = true;
 	constructor() {
 	}
-	initialize(crscene: ICoRendererScene = null): void {
+	/**
+	 * @param crscene the default value is null
+	 * @param atlasSize the default value is 1024
+	 * @param renderProcessesTotal the default value is 3
+	 */
+	initialize(crscene: ICoRendererScene = null, atlasSize: number = 1024, renderProcessesTotal: number = 3): void {
 		if (this.m_crscene == null) {
-			
+
 			this.m_crscene = crscene != null ? crscene : CoRScene.getRendererScene();
 			crscene = this.m_crscene;
 			let stage = this.m_crscene.getStage3D();
@@ -37,32 +44,50 @@ class CoUIScene implements ICoUIScene {
 			rparam.setAttriAlpha(false);
 			rparam.setCamProject(45.0, 0.1, 3000.0);
 			rparam.setCamPosition(0.0, 0.0, 1500.0);
-
-			// let subScene: RendererSubScene = null;
-			let subScene = crscene.createSubScene(rparam, 3, true);
-			// subScene.initialize(rparam);
+			
+			let subScene = crscene.createSubScene(rparam, renderProcessesTotal, true);
 			subScene.enableMouseEvent(true);
 			let t: any = this;
 			t.rscene = subScene;
-			t.texAtlas = CoTexture.createCanvasTexAtlas();
-			this.texAtlas.initialize(crscene, 1024, 1024, CoMaterial.createColor4(1.0,1.0,1.0,0.0), true, this.texAtlasNearestFilter);
+			let t0 = t.texAtlas = CoTexture.createCanvasTexAtlas();
+			let t1 = t.transparentTexAtlas = CoTexture.createCanvasTexAtlas();
+
+			t0.initialize(crscene, atlasSize, atlasSize, CoMaterial.createColor4(1.0, 1.0, 1.0, 1.0), false, this.texAtlasNearestFilter);
+			t0.getTexture().premultiplyAlpha = false;
+			t1.initialize(crscene, atlasSize, atlasSize, CoMaterial.createColor4(1.0, 1.0, 1.0, 0.0), true, this.texAtlasNearestFilter);
+			t1.getTexture().premultiplyAlpha = true;
 
 			this.m_rstage = stage;
 			let uicamera = this.rscene.getCamera();
 			uicamera.translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
 			uicamera.update();
 
-			this.layout.initialize( subScene );
+			this.layout.initialize(subScene);
 		}
 	}
 	getStage(): IRenderStage3D {
 		return this.rscene.getStage3D();
 	}
 	addEntity(entity: IUIEntity, processid: number = 0): void {
-		this.rscene.addEntity(entity.getREntity(), processid);
+		if (entity != null) {
+			entity.update();
+			let container = entity.getRContainer();
+			if(container != null) {
+				this.rscene.addContainer(container, processid);
+			}
+			let ls = entity.getREntities();
+			for (let i = 0; i < ls.length; ++i) {
+				this.rscene.addEntity(ls[i], processid, true);
+			}
+		}
 	}
 	removeEntity(entity: IUIEntity): void {
-		this.rscene.removeEntity(entity.getREntity());
+		if (entity != null) {
+			let ls = entity.getREntities();
+			for (let i = 0; i < ls.length; ++i) {
+				this.rscene.removeEntity(ls[i]);
+			}
+		}
 	}
 	private resize(evt: any): void {
 		console.log("CoUIScene::resize()...");
@@ -73,7 +98,7 @@ class CoUIScene implements ICoUIScene {
 		this.layout.update();
 	}
 	run(): void {
-		if(this.rscene != null) {
+		if (this.rscene != null) {
 			this.rscene.run();
 		}
 	}

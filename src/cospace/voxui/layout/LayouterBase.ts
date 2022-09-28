@@ -20,6 +20,7 @@ class LayouterBase {
 				if (this.m_entities[i] == entity) break;
 			}
 			if (i >= this.m_entities.length) {
+				
 				let pv = CoMath.createVec3();
 				entity.getPosition(pv);
 				this.m_opvs.push(pv);

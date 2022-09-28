@@ -5,9 +5,12 @@ import { ICoUIScene } from "../../../../voxui/scene/ICoUIScene";
 import { ICoRScene } from "../../../../voxengine/ICoRScene";
 import IRendererScene from "../../../../../vox/scene/IRendererScene";
 import { IButton } from "../../../../voxui/entity/IButton";
+import { ICoMaterial } from "../../../../voxmaterial/ICoMaterial";
+// import { LeftTopLayouter } from "../../../../voxui/layout/LeftTopLayouter";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
+declare var CoMaterial: ICoMaterial;
 declare var CoUI: ICoUI;
 
 /**
@@ -47,44 +50,48 @@ class NavigationUI {
 	private initNavigationUI(): void {
 
 		let uiScene = this.m_coUIScene;
-		let texAtlas = uiScene.texAtlas;
+		let tta = uiScene.transparentTexAtlas;
 		
 		let pw = 90;
 		let ph = 40;
-		let keys = ["file", "edit", "model", "normal", "texture", "material", "animation", "particle"];
-		let urls = ["文件", "编辑", "模型", "法线", "纹理", "材质", "动画", "粒子","帮助"];
-		for (let i = 0; i < urls.length; ++i) {
-			let img = texAtlas.createCharsCanvasFixSize(pw, ph, urls[i], 30);
-			texAtlas.addImageToAtlas(urls[i], img);
-		}
-		
-		let csLable = CoUI.createClipLabel();
-		csLable.initialize(texAtlas, [urls[0], urls[1]]);
-		
-		let px = 0;
-		let py = this.m_coUIScene.getStage().stageHeight - csLable.getClipHeight();
-		pw = csLable.getClipWidth();
-		for (let i = 0; i < urls.length; ++i) {
-			let btn = this.crateBtn(urls, px + pw * i, py, i, keys[i]);
-			if(i > 0) {
-				this.m_navBtns.push(btn);
-			}
-		}
-	}
-	private crateBtn(urls: string[], px: number, py: number, labelIndex: number, idns: string): IButton {
+		let keys = ["file", "edit", "model", "normal", "texture", "material", "light", "animation", "particle"];
+		let urls = ["文件", "编辑", "模型", "法线", "纹理", "材质", "灯光", "动画", "粒子" ,"帮助"];
 
-		let texAtlas = this.m_coUIScene.texAtlas;
-		let label = CoUI.createClipLabel();
-		label.initialize(texAtlas, urls);
-		let colorClipLabel = CoUI.createColorClipLabel();
-		colorClipLabel.initialize(label, 5);
-		colorClipLabel.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
-		colorClipLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
-		colorClipLabel.getColorAt(2).setRGB3f(1.0, 0.2, 1.0);
-		colorClipLabel.getColorAt(4).setRGB3f(0.5, 0.5, 0.5);
-		colorClipLabel.setLabelClipIndex(labelIndex);
+		let layouter = uiScene.layout.createLeftTopLayouter();
+		let fontColor = CoMaterial.createColor4().setRGB3Bytes(170,170,170);
+		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
+		
+		for (let i = 0; i < urls.length; ++i) {
+			let img = tta.createCharsCanvasFixSize(pw, ph, urls[i], 30, fontColor, bgColor);
+			tta.addImageToAtlas(urls[i], img);
+		}
+		let px = 0;
+		let py = this.m_coUIScene.getStage().stageHeight - ph;
+		for (let i = 0; i < urls.length; ++i) {
+			let btn = this.crateBtn(urls, pw, ph, px + pw * i, py, i, keys[i]);
+			this.m_navBtns.push(btn);
+			layouter.addUIEntity(btn);
+		}
+
+	}
+	
+	private crateBtn(urls: string[], pw: number, ph: number, px: number, py: number, labelIndex: number, idns: string): IButton {
+
+		let colorClipLabel = CoUI.createClipColorLabel();
+		colorClipLabel.initializeWithoutTex(pw, ph, 4);
+		colorClipLabel.getColorAt(0).setRGB3Bytes(40, 40, 40);
+		colorClipLabel.getColorAt(1).setRGB3Bytes(50, 50, 50);
+		colorClipLabel.getColorAt(2).setRGB3Bytes(40, 40, 60);
+
+		let tta = this.m_coUIScene.transparentTexAtlas;
+		let iconLable = CoUI.createClipLabel();
+		iconLable.transparent = true;
+		iconLable.premultiplyAlpha = true;
+		iconLable.initialize(tta, [urls[labelIndex]]);
+
 		let btn = CoUI.createButton();
 		btn.uuid = idns;
+		btn.addLabel(iconLable);
 		btn.initializeWithLable(colorClipLabel);
 		btn.setXY(px, py);
 		this.m_coUIScene.addEntity(btn, 1);
@@ -92,7 +99,6 @@ class NavigationUI {
 
 		return btn;
 	}
-
 	private btnMouseUpListener(evt: any): void {
 
 		console.log("btnMouseUpListener(), evt.currentTarget: ", evt.currentTarget);

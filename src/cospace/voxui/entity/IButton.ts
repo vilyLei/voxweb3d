@@ -6,7 +6,8 @@ import { IClipEntity } from "./IClipEntity";
 interface IButton extends IUIEntity {
 
 	uuid: string;
-
+	
+	addLabel(label: IClipEntity): void;
 	enable(): IButton;
 	disable(): IButton;
 	isEnabled(): boolean;

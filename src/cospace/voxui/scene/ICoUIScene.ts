@@ -9,8 +9,15 @@ import { IUILayout } from "../layout/IUILayout";
 interface ICoUIScene {
 	readonly rscene: IRendererScene;
 	readonly texAtlas: ICanvasTexAtlas;
+	readonly transparentTexAtlas: ICanvasTexAtlas;
 	readonly layout: IUILayout;
-	initialize(crscene?: ICoRendererScene): void;
+	
+	/**
+	 * @param crscene the default value is null
+	 * @param atlasSize the default value is 1024
+	 * @param renderProcessesTotal the default value is 3
+	 */
+	initialize(crscene?: ICoRendererScene, atlasSize?: number, renderProcessesTotal?: number): void;
 	getStage(): IRenderStage3D;
 	addEntity(entity: IUIEntity, processid?: number): void;
 	removeEntity(entity: IUIEntity): void;

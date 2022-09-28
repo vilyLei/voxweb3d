@@ -4,6 +4,7 @@ import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import { IClipLabel } from "./IClipLabel";
 import IVector3D from "../../../vox/math/IVector3D";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
+import { ClipLabelBase } from "./ClipLabelBase";
 
 import { ICoMesh } from "../../voxmesh/ICoMesh";
 declare var CoMesh: ICoMesh;
@@ -16,29 +17,32 @@ import IDefault3DMaterial from "../../../vox/material/mcase/IDefault3DMaterial";
 import IColor4 from "../../../vox/material/IColor4";
 declare var CoEntity: ICoEntity;
 
-class ClipLabel implements IClipLabel {
-	private m_width = 0;
-	private m_height = 0;
-	private m_sizes: number[] = null;
-	private m_index = 0;
-	private m_total = 0;
-	private m_step = 6;
-	private m_vtCount = 0;
-	private m_pos: IVector3D;
-	private m_entity: ITransformEntity = null;
-	private m_material: IDefault3DMaterial = null;
-	private m_rotation: number = 0;
-	private m_sx: number = 1;
-	private m_sy: number = 1;
+class ClipLabel extends ClipLabelBase implements IClipLabel {
 
-	private createVS(startX: number, startY: number, pwidth: number, pheight: number): number[] {
-		let minX: number = startX;
-		let minY: number = startY;
-		let maxX: number = startX + pwidth;
-		let maxY: number = startY + pheight;
-		let pz: number = 0.0;
-		return [minX, minY, pz, maxX, minY, pz, maxX, maxY, pz, minX, maxY, pz];
-	}
+	// private m_width = 0;
+	// private m_height = 0;
+	// private m_index = 0;
+	// private m_total = 0;
+	// private m_step = 6;
+	// private m_pos: IVector3D;
+
+	// private m_entities: ITransformEntity[] = null;
+	// private m_rotation: number = 0;
+	// private m_sx: number = 1;
+	// private m_sy: number = 1;
+
+	private m_material: IDefault3DMaterial = null;
+
+	constructor(){super();}
+
+	// private createVS(startX: number, startY: number, pwidth: number, pheight: number): number[] {
+	// 	let minX: number = startX;
+	// 	let minY: number = startY;
+	// 	let maxX: number = startX + pwidth;
+	// 	let maxY: number = startY + pheight;
+	// 	let pz: number = 0.0;
+	// 	return [minX, minY, pz, maxX, minY, pz, maxX, maxY, pz, minX, maxY, pz];
+	// }
 	private createMesh(atlas: ICanvasTexAtlas, idnsList: string[]): IRawMesh {
 
 		let partVtxTotal = 4;
@@ -77,7 +81,9 @@ class ClipLabel implements IClipLabel {
 	}
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void {
 
-		if (this.m_entity == null && atlas != null && idnsList != null && idnsList.length > 0) {
+		if (this.m_entities == null && atlas != null && idnsList != null && idnsList.length > 0) {
+
+			this.m_entities = [];
 
 			this.m_pos = CoMath.createVec3();
 
@@ -88,42 +94,53 @@ class ClipLabel implements IClipLabel {
 			let material = CoMaterial.createDefaultMaterial();
 			material.setTextureList([obj.texture]);
 			this.m_material = material;
-			let et = this.m_entity = CoEntity.createDisplayEntity();
+			let et = CoEntity.createDisplayEntity();
 			et.setMaterial(material);
 			et.setMesh(mesh);
 			et.setIvsParam(0, this.m_step);
+			this.m_entities.push(et);
+			this.applyRST( et );
 
 			this.setClipIndex(0);
 		}
 	}
 	initializeWithLable(srcLable: IClipLabel): void {
-		if (this.m_entity == null && srcLable != null && srcLable != this) {
+		if (this.m_entities == null && srcLable != null && srcLable != this) {
 			if (srcLable.getClipsTotal() < 1) {
 				throw Error("Error: srcLable.getClipsTotal() < 1");
 			}
-			let entity = srcLable.getREntity();
-			let mesh = entity.getMesh();
+			this.m_entities = [];
+			let ls = srcLable.getREntities();
+			for (let i = 0; i < ls.length; ++i) {
 
-			this.m_pos = CoMath.createVec3();
+				let entity = ls[i];//srcLable.getREntity();
+				let mesh = entity.getMesh();
 
-			let tex = entity.getMaterial().getTextureAt(0);
-			let n = this.m_total = srcLable.getClipsTotal();
-			this.m_sizes = new Array(n * 2);
-			let k = 0;
-			for (let i = 0; i < n; ++i) {
-				this.m_sizes[k++] = srcLable.getClipWidthAt(i);
-				this.m_sizes[k++] = srcLable.getClipHeightAt(i);
-				
+				this.m_pos = CoMath.createVec3();
+
+				let tex = entity.getMaterial().getTextureAt(0);
+				let n = this.m_total = srcLable.getClipsTotal();
+				this.m_sizes = new Array(n * 2);
+				let k = 0;
+				for (let i = 0; i < n; ++i) {
+					this.m_sizes[k++] = srcLable.getClipWidthAt(i);
+					this.m_sizes[k++] = srcLable.getClipHeightAt(i);
+
+				}
+
+				this.m_vtCount = mesh.vtCount;
+				let material = CoMaterial.createDefaultMaterial();
+				material.setTextureList([tex]);
+				this.m_material = material;
+
+				let et = CoEntity.createDisplayEntity();
+				et.setMaterial(material);
+				et.setMesh(mesh);
+				et.setIvsParam(0, this.m_step);
+				this.m_entities.push(et);
+
+				this.applyRST( et );
 			}
-
-			this.m_vtCount = mesh.vtCount;
-			let material = CoMaterial.createDefaultMaterial();
-			material.setTextureList([tex]);
-			this.m_material = material;
-			let et = this.m_entity = CoEntity.createDisplayEntity();
-			et.setMaterial(material);
-			et.setMesh(mesh);
-			et.setIvsParam(0, this.m_step);
 			this.setClipIndex(0);
 		}
 	}
@@ -132,32 +149,38 @@ class ClipLabel implements IClipLabel {
 			if (srcLable.getClipsTotal() < 1) {
 				throw Error("Error: srcLable.getClipsTotal() < 1");
 			}
-			if (this.m_entity == null) {
-				this.initializeWithLable(srcLable);
-			} else if(this.m_entity.isRFree()){
+			// if (this.m_entities == null) {
+			// 	this.initializeWithLable(srcLable);
+			// } else if (this.m_entities[0].isRFree()) {
 
-			}
+			// }
 		}
 	}
 	setColor(color: IColor4): void {
-		if(this.m_material != null) {
+		if (this.m_material != null) {
 			this.m_material.setColor(color);
 		}
 	}
 	getColor(color: IColor4): void {
-		if(this.m_material != null) {
+		if (this.m_material != null) {
 			this.m_material.getColor(color);
 		}
 	}
 	setClipIndex(i: number): void {
 		if (i >= 0 && i < this.m_total) {
 			this.m_index = i;
-			this.m_entity.setIvsParam(i * this.m_step, this.m_step);
+
+			let ls = this.m_entities;
+			for (let k = 0; k < ls.length; ++k) {
+				ls[k].setIvsParam(i * this.m_step, this.m_step);
+			}
+
 			i = i << 1;
 			this.m_width = this.m_sizes[i];
 			this.m_height = this.m_sizes[i + 1];
 		}
 	}
+	/*
 	setCircleClipIndex(i: number): void {
 		i %= this.m_total;
 		i += this.m_total;
@@ -195,17 +218,24 @@ class ClipLabel implements IClipLabel {
 	getHeight(): number {
 		return this.m_height * this.m_sy;
 	}
+	setPosition(pv: IVector3D): void {
+
+		let ls = this.m_entities;
+		for (let i = 0; i < ls.length; ++i) {
+			ls[i].setPosition(this.m_pos);
+		}
+	}
 	setX(x: number): void {
 		this.m_pos.x = x;
-		this.m_entity.setPosition(this.m_pos);
+		this.setPosition(this.m_pos);
 	}
 	setY(y: number): void {
 		this.m_pos.y = y;
-		this.m_entity.setPosition(this.m_pos);
+		this.setPosition(this.m_pos);
 	}
 	setZ(z: number): void {
 		this.m_pos.z = z;
-		this.m_entity.setPosition(this.m_pos);
+		this.setPosition(this.m_pos);
 	}
 	getX(): number {
 		return this.m_pos.x;
@@ -219,34 +249,39 @@ class ClipLabel implements IClipLabel {
 	setXY(px: number, py: number): void {
 		this.m_pos.x = px;
 		this.m_pos.y = py;
-		this.m_entity.setPosition(this.m_pos);
-	}
-	setPosition(pv: IVector3D): void {
-		this.m_pos.copyFrom(pv);
-		this.m_entity.setPosition(this.m_pos);
+		this.setPosition(this.m_pos);
 	}
 	getPosition(pv: IVector3D): void {
 		pv.copyFrom(this.m_pos);
 	}
 	setRotation(r: number): void {
 		this.m_rotation = r;
-		this.m_entity.setRotationXYZ(0, 0, r);
+		let ls = this.m_entities;
+		for (let i = 0; i < ls.length; ++i) {
+			ls[i].setRotationXYZ(0, 0, r);
+		}
 	}
 	getRotation(): number {
 		return this.m_rotation;
 	}
+	setScaleXYZ(sx: number, sy: number, sz: number): void {
+		let ls = this.m_entities;
+		for (let i = 0; i < ls.length; ++i) {
+			ls[i].setRotationXYZ(sx, sy, sz);
+		}
+	}
 	setScaleXY(sx: number, sy: number): void {
 		this.m_sx = sx;
 		this.m_sy = sy;
-		this.m_entity.setScaleXYZ(sx, sy, 1.0);
+		this.setScaleXYZ(sx, sy, 1.0);
 	}
 	setScaleX(sx: number): void {
 		this.m_sx = sx;
-		this.m_entity.setScaleXYZ(this.m_sx, this.m_sy, 1.0);
+		this.setScaleXYZ(this.m_sx, this.m_sy, 1.0);
 	}
 	setScaleY(sy: number): void {
 		this.m_sy = sy;
-		this.m_entity.setScaleXYZ(this.m_sx, this.m_sy, 1.0);
+		this.setScaleXYZ(this.m_sx, this.m_sy, 1.0);
 	}
 	getScaleX(): number {
 		return this.m_sx;
@@ -254,23 +289,25 @@ class ClipLabel implements IClipLabel {
 	getScaleY(): number {
 		return this.m_sy;
 	}
-	/**
-	 * get renderable entity for renderer scene
-	 * @returns ITransformEntity instance
-	 */
-	getREntity(): ITransformEntity {
-		return this.m_entity;
+	getREntities(): ITransformEntity[] {
+		return this.m_entities;
 	}
 	update(): void {
-		this.m_entity.update();
+		let ls = this.m_entities;
+		for (let i = 0; i < ls.length; ++i) {
+			ls[i].update();
+		}
 	}
 	destroy(): void {
 		this.m_sizes = null;
 		this.m_total = 0;
-		if (this.m_entity != null) {
-			this.m_entity.destroy();
-			this.m_entity = null;
+		let ls = this.m_entities;
+		if (ls != null) {
+			for (let i = 0; i < ls.length; ++i) {
+				ls[i].update();
+			}
 		}
 	}
+	//*/
 }
 export { ClipLabel };

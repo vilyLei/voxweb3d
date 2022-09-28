@@ -1,7 +1,10 @@
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IVector3D from "../../../vox/math/IVector3D";
+import IDisplayEntityContainer from "../../../vox/entity/IDisplayEntityContainer";
 interface IUIEntity {
-
+	premultiplyAlpha: boolean;
+	transparent: boolean;
+	info: string;
 	getWidth(): number;
 	getHeight(): number;
 	setX(x: number): void;
@@ -20,11 +23,17 @@ interface IUIEntity {
 	setScaleY(sy: number): void;
 	getScaleX(): number;
 	getScaleY(): number;
+	copyTransformFrom(src: IUIEntity): void;
 	/**
 	 * get renderable entity for renderer scene
 	 * @returns ITransformEntity instance
 	 */
-	getREntity(): ITransformEntity;
+	getREntities(): ITransformEntity[];
+	/**
+	 * get renderable entity container for renderer scene
+	 * @returns IDisplayEntityContainer instance
+	 */
+	getRContainer(): IDisplayEntityContainer;
 	update(): void;
 	destroy(): void;
 }

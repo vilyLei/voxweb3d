@@ -37,7 +37,7 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 		canvas.style.top = "0px";
 		canvas.style.position = "absolute";
 		canvas.style.pointerEvents = "none";
-		this.m_transparent = transparent;
+		this.m_transparent = transparent;		
 		if (transparent) {
 			canvas.style.backgroundColor = "transparent";
 		}
@@ -87,13 +87,6 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 		}
 		return area;
 	}
-	// static CreateColorImage(width: number, height: number, fillStyle: string = "rgba(255,255,255,1.0)"): HTMLCanvasElement {
-	// 	let canvas = ImageTexAtlas.CreateCanvas(width, height);
-	// 	let ctx2D = canvas.getContext("2d");
-	// 	ctx2D.fillStyle = fillStyle;
-	// 	ctx2D.fillRect(0, 0, width, height);
-	// 	return canvas;
-	// }
 	static CreateCanvas(width: number, height: number, bgColor: IColor4 = null, transparent: boolean = true): HTMLCanvasElement {
 		let canvas = document.createElement("canvas");
 		canvas.width = width;

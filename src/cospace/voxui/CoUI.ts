@@ -9,10 +9,11 @@ import { Button } from "./entity/Button";
 
 import { ICoUIScene } from "./scene/ICoUIScene";
 import { CoUIScene } from "./scene/CoUIScene";
+import { RectTextTip } from "./entity/RectTextTip";
 
-// import { ICoRScene } from "../voxengine/ICoRScene";
-// declare var CoRScene: ICoRScene;
-
+function createRectTextTip(): RectTextTip {
+	return new RectTextTip();
+}
 function createClipLabel(): IClipLabel {
 	return new ClipLabel();
 }
@@ -30,6 +31,7 @@ function createUIScene(): ICoUIScene {
 	return new CoUIScene();
 }
 export {
+	createRectTextTip,
 	createClipLabel,
 	createClipColorLabel,
 	createColorClipLabel,
