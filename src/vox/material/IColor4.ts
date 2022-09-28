@@ -39,6 +39,11 @@ interface IColor4 {
      * example: [0],[1],[2] => r,g,b
      */
     toArray3(arr: number[] | Float32Array, offset?: number): IColor4;
+    /**
+     * @param r example: 40
+     * @param g example: 50 
+     * @param b example: 60 
+     */
     setRGB3Bytes(r: number, g: number, b: number): IColor4
     setRGB3f(r: number, g: number, b: number): IColor4;
     setRGBUint24(rgbUint24: number): IColor4;
