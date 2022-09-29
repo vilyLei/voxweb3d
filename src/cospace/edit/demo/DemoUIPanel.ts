@@ -318,6 +318,15 @@ export class DemoUIPanel {
 		let bgLabel = panel.getBGLabel();
 		bgLabel.setColor(CoMaterial.createColor4(0.2,0.2,0.2));
 
+		panel.setListener(
+			():void=>{
+				console.log("panel confirm...");
+			},
+			():void=>{
+				console.log("panel cancel...");
+			}
+		);
+
 		return;
 		let colorLabel = new ColorLabel();
 		colorLabel.initialize(200, 130);

@@ -25,6 +25,8 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 	private m_confirmationNS = "confirm";
 	private m_cancelNS = "cancel";
 	private m_isOpen = true;
+	private m_confirmFunc: () => void = null;
+	private m_cancelFunc: () => void = null;
 
 	factor: number = 0.3;
 	constructor() { super(); }
@@ -57,7 +59,15 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 		this.m_isOpen = false;
 		this.setVisible(false);
 	}
-
+	setListener(confirmFunc: () => void, cancelFunc: () => void): void {
+		this.m_confirmFunc = confirmFunc;
+		this.m_cancelFunc = cancelFunc;
+	}
+	destroy(): void {
+		super.destroy();
+		this.m_confirmFunc = null;
+		this.m_cancelFunc = null;
+	}
 	protected updateScene(): void {
 		let sc = this.getScene();
 		if (sc != null) {
@@ -141,12 +151,18 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 		console.log("PromptPanel::btnMouseUpListener(), evt.currentTarget: ", evt.currentTarget);
 		let uuid = evt.uuid;
 		switch (uuid) {
-			
+
 			case "confirm":
 				this.close();
+				if (this.m_confirmFunc != null) {
+					this.m_confirmFunc();
+				}
 				break;
 			case "cancel":
 				this.close();
+				if (this.m_cancelFunc != null) {
+					this.m_cancelFunc();
+				}
 				break;
 			default:
 				break;
