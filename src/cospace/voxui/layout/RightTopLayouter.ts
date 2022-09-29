@@ -8,7 +8,7 @@ import { LayouterBase } from "./LayouterBase";
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
 
-class RightTopLayouter extends LayouterBase {
+class RightTopLayouter extends LayouterBase implements IUILayouter {
 
 	protected m_offsetvs: IVector3D[] = [];
 	constructor() { super(); }
@@ -38,6 +38,8 @@ class RightTopLayouter extends LayouterBase {
 
 	}
 	destroy(): void {
+		this.m_offsetvs = null;
+		super.destroy();
 	}
 }
 export { RightTopLayouter };

@@ -10,6 +10,7 @@ import { ICoMath } from "../../math/ICoMath";
 import { LeftTopLayouter } from "./LeftTopLayouter";
 import { RightTopLayouter } from "./RightTopLayouter";
 import { RightBottomLayouter } from "./RightBottomLayouter";
+import { FreeLayouter } from "./FreeLayouter";
 
 declare var CoMath: ICoMath;
 class UILayout implements IUILayout {
@@ -21,6 +22,11 @@ class UILayout implements IUILayout {
 
 	constructor() { }
 
+	createFreeLayouter(): FreeLayouter {
+		let l = new FreeLayouter();
+		this.addLayouter(l);
+		return l;
+	}
 	createLeftTopLayouter(): LeftTopLayouter {
 		let l = new LeftTopLayouter();
 		this.addLayouter(l);
@@ -36,14 +42,23 @@ class UILayout implements IUILayout {
 		this.addLayouter(l);
 		return l;
 	}
-	initialize(uirsc: IRendererScene): void {
-		if (this.m_uirsc == null && uirsc != null) {
-			this.m_uirsc = uirsc;
-			this.m_stage = uirsc.getStage3D();
+	// initialize(uirsc: IRendererScene): void {
+	// 	if (this.m_uirsc == null && uirsc != null) {
+	// 		this.m_uirsc = uirsc;
+	// 		this.m_stage = uirsc.getStage3D();
 
-			let st = this.m_stage;
-			this.m_rect = CoMath.createAABB2D(0, 0, st.stageWidth, st.stageHeight);
+	// 		let st = this.m_stage;
+	// 		this.m_rect = CoMath.createAABB2D(0, 0, st.stageWidth, st.stageHeight);
+	// 	}
+	// }
+	initialize(rect: IAABB2D): void {
+		if (rect != null && this.m_rect == null) {
+			rect.update();
+			this.m_rect = CoMath.createAABB2D(rect.x, rect.y, rect.width, rect.height);
 		}
+	}
+	getAreaRect():IAABB2D {
+		return this.m_rect;
 	}
 	addLayouter(layouter: IUILayouter): void {
 		if (layouter != null) {
@@ -73,12 +88,11 @@ class UILayout implements IUILayout {
 	/**
 	 * 每次更新都将重新计算
 	 */
-	update(): void {
-		let st = this.m_stage;
-		this.m_rect.setTo(0, 0, st.stageWidth, st.stageHeight);
+	update(rect: IAABB2D): void {
+		this.m_rect.copyFrom(rect);
 
 		for (let i = 0; i < this.m_layouters.length; ++i) {
-			this.m_layouters[i].update(this.m_rect);
+			this.m_layouters[i].update(rect);
 		}
 	}
 	destroy(): void {

@@ -8,7 +8,7 @@ import { LayouterBase } from "./LayouterBase";
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
 
-class RightBottomLayouter extends LayouterBase implements IUILayouter {
+class FreeLayouter extends LayouterBase implements IUILayouter {
 
 	protected m_offsetvs: IVector3D[] = [];
 	constructor() { super(); }
@@ -17,13 +17,7 @@ class RightBottomLayouter extends LayouterBase implements IUILayouter {
 
 		const ls = this.m_entities;
 		const len = ls.length;
-		
-		let pv = CoMath.createVec3();
 		for (let i = 0; i < len; ++i) {
-			pv.copyFrom(this.m_offsetvs[i]);
-			pv.x = rect.width - pv.x;
-			// pv.y = rect.height - pv.y;
-			ls[i].setPosition(pv);
 			ls[i].update();
 		}
 	}
@@ -32,8 +26,7 @@ class RightBottomLayouter extends LayouterBase implements IUILayouter {
 
 		let pv = CoMath.createVec3();
 		entity.getPosition(pv);
-		pv.x = initRect.width - pv.x;
-		// pv.y = initRect.height - pv.y;
+		pv.y = initRect.height - pv.y;
 		this.m_offsetvs.push( pv );
 
 	}
@@ -42,4 +35,4 @@ class RightBottomLayouter extends LayouterBase implements IUILayouter {
 		super.destroy();
 	}
 }
-export { RightBottomLayouter };
+export { FreeLayouter };

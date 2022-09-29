@@ -61,6 +61,8 @@ class LayouterBase {
 	protected initEntityLayout(entity: IUIEntity, initRect: IAABB2D): void {
 
 	}
+	applyLayout(entity: IUIEntity): void {
+	}
 	update(rect: IAABB2D): void {
 	}
 	destroy(): void {
