@@ -1,9 +1,10 @@
+import IAABB2D from "../../../vox/geom/IAABB2D";
 import IRenderStage3D from "../../../vox/render/IRenderStage3D";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 
-import { IUIEntity } from "../entity/IUIEntity";
+import { IUISceneEntity } from "./IUISceneEntity";
 import { IUILayout } from "../layout/IUILayout";
 
 interface ICoUIScene {
@@ -19,8 +20,9 @@ interface ICoUIScene {
 	 */
 	initialize(crscene?: ICoRendererScene, atlasSize?: number, renderProcessesTotal?: number): void;
 	getStage(): IRenderStage3D;
-	addEntity(entity: IUIEntity, processid?: number): void;
-	removeEntity(entity: IUIEntity): void;
+	getRect(): IAABB2D;
+	addEntity(entity: IUISceneEntity, processid?: number): void;
+	removeEntity(entity: IUISceneEntity): void;
 	run(): void;
 }
 

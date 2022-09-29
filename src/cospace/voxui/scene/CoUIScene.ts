@@ -9,15 +9,20 @@ import { ICoUIScene } from "./ICoUIScene";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
+import { ICoMath } from "../../math/ICoMath";
+declare var CoMath: ICoMath;
+
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 declare var CoMaterial: ICoMaterial;
 import { ICoTexture } from "../../voxtexture/ICoTexture";
 import { UILayout } from "../layout/UILayout";
+import IAABB2D from "../../../vox/geom/IAABB2D";
 declare var CoTexture: ICoTexture;
 
 class CoUIScene implements ICoUIScene {
 	private m_crscene: ICoRendererScene;
 	private m_rstage: IRenderStage3D;
+	private m_stageRect: IAABB2D;
 
 	readonly rscene: IRendererScene;
 	readonly texAtlas: ICanvasTexAtlas = null;
@@ -44,7 +49,7 @@ class CoUIScene implements ICoUIScene {
 			rparam.setAttriAlpha(false);
 			rparam.setCamProject(45.0, 0.1, 3000.0);
 			rparam.setCamPosition(0.0, 0.0, 1500.0);
-			
+
 			let subScene = crscene.createSubScene(rparam, renderProcessesTotal, true);
 			subScene.enableMouseEvent(true);
 			let t: any = this;
@@ -61,8 +66,9 @@ class CoUIScene implements ICoUIScene {
 			let uicamera = this.rscene.getCamera();
 			uicamera.translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
 			uicamera.update();
-
-			this.layout.initialize(subScene);
+			let st = this.getStage();
+			this.m_stageRect = CoMath.createAABB2D(0, 0, st.stageWidth, st.stageHeight);
+			this.layout.initialize(this.m_stageRect);
 		}
 	}
 	getStage(): IRenderStage3D {
@@ -70,9 +76,10 @@ class CoUIScene implements ICoUIScene {
 	}
 	addEntity(entity: IUIEntity, processid: number = 0): void {
 		if (entity != null) {
+			entity.__$setScene( this );
 			entity.update();
 			let container = entity.getRContainer();
-			if(container != null) {
+			if (container != null) {
 				this.rscene.addContainer(container, processid);
 			}
 			let ls = entity.getREntities();
@@ -83,19 +90,30 @@ class CoUIScene implements ICoUIScene {
 	}
 	removeEntity(entity: IUIEntity): void {
 		if (entity != null) {
+			let sc = this.rscene;
+			let container = entity.getRContainer();
+			if (container != null) {
+				sc.removeContainer(container);
+			}
 			let ls = entity.getREntities();
 			for (let i = 0; i < ls.length; ++i) {
-				this.rscene.removeEntity(ls[i]);
+				sc.removeEntity(ls[i]);
 			}
+			entity.__$setScene( null );
 		}
 	}
+	getRect(): IAABB2D {
+		return this.m_stageRect;
+	}
 	private resize(evt: any): void {
-		console.log("CoUIScene::resize()...");
-		let stage = this.m_rstage;
+		
+		let st = this.m_rstage;
 		let uicamera = this.rscene.getCamera();
-		uicamera.translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
+		uicamera.translationXYZ(st.stageHalfWidth, st.stageHalfHeight, 1500.0);
 		uicamera.update();
-		this.layout.update();
+
+		this.m_stageRect.setTo(0, 0, st.stageWidth, st.stageHeight);
+		this.layout.update( this.m_stageRect );
 	}
 	run(): void {
 		if (this.rscene != null) {
