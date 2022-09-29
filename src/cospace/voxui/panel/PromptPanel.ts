@@ -15,8 +15,9 @@ declare var CoMaterial: ICoMaterial;
 declare var CoUI: ICoUI;
 class PromptPanel extends UIEntityContainer implements IUIEntity {
 
-	// private m_confirmBtn: IButton;
-	// private m_cancelBtn: IButton;
+	private m_confirmBtn: IButton;
+	private m_cancelBtn: IButton;
+	private m_bgLabel: ColorLabel;
 	private m_panelW: number = 17;
 	private m_panelH: number = 130;
 	private m_btnW: number = 90;
@@ -25,8 +26,12 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 	private m_cancelNS = "cancel";
 	private m_isOpen = true;
 
+	factor: number = 0.3;
 	constructor() { super(); }
 
+	getBGLabel(): ColorLabel {
+		return this.m_bgLabel;
+	}
 	initialize(panelW: number, panelH: number, btnW: number, btnH: number, confirmationNS: string = "confirm", cancelNS: string = "cancel"): void {
 		if (this.isIniting()) {
 			this.init();
@@ -57,9 +62,26 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 		let sc = this.getScene();
 		if (sc != null) {
 
-			let confirmBtn = this.createBtn(this.m_confirmationNS, 10, 10, "confirm");
-			let cancelBtn = this.createBtn(this.m_cancelNS, 100, 10, "cancel");
+			let pw = this.m_panelW;
+			let ph = this.m_panelH;
 
+			let btnW = this.m_btnW;
+			let btnH = this.m_btnH;
+
+			let px = 0;
+			let py = (ph - btnH) * 0.5;
+
+			let dis = btnW * 2.0;
+			let gapW = pw - dis;
+
+
+			px = this.factor * gapW;
+			let confirmBtn = this.createBtn(this.m_confirmationNS, px, py, "confirm");
+			px = pw - px - btnW;
+			let cancelBtn = this.createBtn(this.m_cancelNS, px, py, "cancel");
+			(cancelBtn.getREntities()[0] as any).name = "cancelBtn";
+			(confirmBtn.getREntities()[0] as any).name = "confirmBtn";
+			this.createBG(pw, ph);
 			this.addEntity(cancelBtn);
 			this.addEntity(confirmBtn);
 		}
@@ -67,16 +89,18 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 	private createBG(pw: number, ph: number): void {
 		let sc = this.getScene();
 		let colorLabel = new ColorLabel();
-		colorLabel.initialize(200, 130);
-		colorLabel.setXY(330, 500);
+		colorLabel.depthTest = true;
+		colorLabel.initialize(pw, ph);
+		(colorLabel.getREntities()[0] as any).name = "planeBG";
+		this.m_bgLabel = colorLabel;
 		this.addEntity(colorLabel);
 	}
 	private createBtn(ns: string, px: number, py: number, idns: string): IButton {
 		let sc = this.getScene();
 		let tta = sc.transparentTexAtlas;
 
-		let pw = 90;
-		let ph = 40;
+		let pw = this.m_btnW;
+		let ph = this.m_btnH;
 
 		let fontColor = CoMaterial.createColor4().setRGB3Bytes(170, 170, 170);
 		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
@@ -92,12 +116,13 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 
 		let colorClipLabel = new ClipColorLabel();
 		colorClipLabel.initializeWithoutTex(pw, ph, 4);
-		colorClipLabel.getColorAt(0).setRGB3Bytes(40, 40, 40);
-		colorClipLabel.getColorAt(1).setRGB3Bytes(50, 50, 50);
-		colorClipLabel.getColorAt(2).setRGB3Bytes(40, 40, 60);
+		colorClipLabel.getColorAt(0).setRGB3Bytes(80, 80, 80);
+		colorClipLabel.getColorAt(1).setRGB3Bytes(110, 110, 110);
+		colorClipLabel.getColorAt(2).setRGB3Bytes(90, 90, 90);
 
 		let tta = sc.transparentTexAtlas;
 		let iconLable = new ClipLabel();
+		iconLable.depthTest = true;
 		iconLable.transparent = true;
 		iconLable.premultiplyAlpha = true;
 		iconLable.initialize(tta, [ns]);

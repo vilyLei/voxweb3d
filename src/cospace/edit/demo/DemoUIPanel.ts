@@ -311,8 +311,14 @@ export class DemoUIPanel {
 
 
 		let panel = new PromptPanel();
-		
+		panel.initialize(300, 200, 110, 50);
+		panel.setXY(200,300);
+		this.m_uiScene.addEntity(panel);
 
+		let bgLabel = panel.getBGLabel();
+		bgLabel.setColor(CoMaterial.createColor4(0.2,0.2,0.2));
+
+		return;
 		let colorLabel = new ColorLabel();
 		colorLabel.initialize(200, 130);
 		colorLabel.setXY(330, 500);

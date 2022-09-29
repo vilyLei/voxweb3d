@@ -4,9 +4,24 @@ import { IUISceneEntity } from "../scene/IUISceneEntity";
 import IAABB from "../../../vox/geom/IAABB";
 
 interface IUIEntity extends IUISceneEntity {
+	/**
+	 * the default valule is false
+	 */
 	premultiplyAlpha: boolean;
+	/**
+	 * the default valule is false
+	 */
 	transparent: boolean;
+	/**
+	 * the default valule is false
+	 */
+	depthTest: boolean;
+	
+	/**
+	 * the default valule is null
+	 */
 	info: ITipInfo;
+
 	setParent(parent: IUIEntity): IUIEntity;
 	getParent(): IUIEntity;
 	

@@ -35,6 +35,7 @@ class UIEntityBase {
 	transparent: boolean = false;
 	info: ITipInfo = null;
 
+	depthTest: boolean = false;
 	constructor() { }
 
 	protected init(): void {
@@ -64,12 +65,18 @@ class UIEntityBase {
 				// entity.setRenderState(RST.BACK_ALPHA_ADD_BLENDSORT_STATE);
 				entity.setRenderState(RST.BACK_ALPHA_ADD_ALWAYS_STATE);
 			} else {
-				// entity.setRenderState(RST.BACK_TRANSPARENT_STATE);
-				entity.setRenderState(RST.BACK_TRANSPARENT_ALWAYS_STATE);
+				if(this.depthTest) {
+					entity.setRenderState(RST.BACK_TRANSPARENT_STATE);
+				}else {
+					entity.setRenderState(RST.BACK_TRANSPARENT_ALWAYS_STATE);
+				}
 			}
 		} else {
-			// entity.setRenderState(RST.NORMAL_STATE);
-			entity.setRenderState(RST.BACK_NORMAL_ALWAYS_STATE);
+			if(this.depthTest) {
+				entity.setRenderState(RST.NORMAL_STATE);
+			}else {
+				entity.setRenderState(RST.BACK_NORMAL_ALWAYS_STATE);
+			}
 		}
 	}
 	protected createVS(startX: number, startY: number, pwidth: number, pheight: number): number[] {
@@ -207,17 +214,29 @@ class UIEntityBase {
 	getRContainer(): IDisplayEntityContainer {
 		return this.m_rcontainer;
 	}
+	private updateEneity(e: any): void {
+		
+		e.setPosition(this.m_pos);
+		e.setScale3(this.m_scaleV);
+		e.setRotationXYZ(0.0, 0.0, this.m_rotation);
+		e.update();
+		this.m_bounds.union(e.getGlobalBounds());
+	}
 	update(): void {
 		let ls = this.m_entities;
 		let bs = this.m_bounds;
 		this.m_bounds.reset();
 		for (let i = 0; i < ls.length; ++i) {
-			let e = ls[i];
-			e.setPosition(this.m_pos);
-			e.setScale3(this.m_scaleV);
-			e.setRotationXYZ(0.0, 0.0, this.m_rotation);
-			e.update();
-			bs.union(e.getGlobalBounds());
+			// let e = ls[i];
+			// e.setPosition(this.m_pos);
+			// e.setScale3(this.m_scaleV);
+			// e.setRotationXYZ(0.0, 0.0, this.m_rotation);
+			// e.update();
+			// bs.union(e.getGlobalBounds());
+			this.updateEneity(ls[i]);
+		}
+		if(this.m_rcontainer != null) {
+			this.updateEneity(this.m_rcontainer);
 		}
 		bs.updateFast();
 	}
@@ -226,12 +245,13 @@ class UIEntityBase {
 		if(sc != null) {
 			sc.removeEntity(this);
 		}
+		this.m_rcontainer = null;
 		this.m_sc = null;
 		this.m_parent = null;
 		this.m_bounds = null;
 		let ls = this.m_entities;
 		for (let i = 0; i < ls.length; ++i) {
-			ls[i].update();
+			ls[i].destroy();
 		}
 		ls = [];
 	}
