@@ -5,6 +5,10 @@ import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { IButton } from "../button/IButton";
 import { ICoUI } from "../ICoUI";
+import { ClipColorLabel } from "../entity/ClipColorLabel";
+import { ColorLabel } from "../entity/ColorLabel";
+import { ClipLabel } from "../entity/ClipLabel";
+import { Button } from "../button/Button";
 
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
@@ -13,15 +17,28 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 
 	// private m_confirmBtn: IButton;
 	// private m_cancelBtn: IButton;
+	private m_panelW: number = 17;
+	private m_panelH: number = 130;
+	private m_btnW: number = 90;
+	private m_btnH: number = 50;
 	private m_confirmationNS = "confirm";
 	private m_cancelNS = "cancel";
 	private m_isOpen = true;
+
 	constructor() { super(); }
 
 	initialize(panelW: number, panelH: number, btnW: number, btnH: number, confirmationNS: string = "confirm", cancelNS: string = "cancel"): void {
 		if (this.isIniting()) {
 			this.init();
 
+			this.m_panelW = panelW;
+			this.m_panelH = panelH;
+
+			this.m_btnW = btnW;
+			this.m_btnH = btnH;
+
+			this.m_confirmationNS = confirmationNS;
+			this.m_cancelNS = cancelNS;
 		}
 	}
 	open(): void {
@@ -48,7 +65,11 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 		}
 	}
 	private createBG(pw: number, ph: number): void {
-
+		let sc = this.getScene();
+		let colorLabel = new ColorLabel();
+		colorLabel.initialize(200, 130);
+		colorLabel.setXY(330, 500);
+		this.addUIEntity(colorLabel);
 	}
 	private createBtn(ns: string, px: number, py: number, idns: string): IButton {
 		let sc = this.getScene();
@@ -69,19 +90,19 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 
 		let sc = this.getScene();
 
-		let colorClipLabel = CoUI.createClipColorLabel();
+		let colorClipLabel = new ClipColorLabel();
 		colorClipLabel.initializeWithoutTex(pw, ph, 4);
 		colorClipLabel.getColorAt(0).setRGB3Bytes(40, 40, 40);
 		colorClipLabel.getColorAt(1).setRGB3Bytes(50, 50, 50);
 		colorClipLabel.getColorAt(2).setRGB3Bytes(40, 40, 60);
 
 		let tta = sc.transparentTexAtlas;
-		let iconLable = CoUI.createClipLabel();
+		let iconLable = new ClipLabel();
 		iconLable.transparent = true;
 		iconLable.premultiplyAlpha = true;
 		iconLable.initialize(tta, [ns]);
 
-		let btn = CoUI.createButton();
+		let btn = new Button();
 		btn.uuid = idns;
 		// btn.info = CoUI.createTipInfo().alignBottom().setContent(info);
 		btn.addLabel(iconLable);
