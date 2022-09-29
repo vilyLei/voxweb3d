@@ -214,7 +214,7 @@ class UIEntityBase {
 	getRContainer(): IDisplayEntityContainer {
 		return this.m_rcontainer;
 	}
-	private updateEneity(e: any): void {
+	private updateEneity(e: ITransformEntity | IDisplayEntityContainer): void {
 		
 		e.setPosition(this.m_pos);
 		e.setScale3(this.m_scaleV);

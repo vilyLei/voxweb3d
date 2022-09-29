@@ -40,6 +40,7 @@ export default interface IRenderEntityContainer {
     getRotationXYZ(rv: IVector3D): void;
     setScaleXYZ(sx: number, sy: number, sz: number): void;
     getScaleXYZ(sv: IVector3D): void;
+    setScale3(sv: IVector3D): void;
 
     localToGlobal(pv: IVector3D): void;
     globalToLocal(pv: IVector3D): void;

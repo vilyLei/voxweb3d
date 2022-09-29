@@ -428,16 +428,14 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
         this.m_sz = sz;
         this.m_transformStatus |= 2;
     }
-    setScaleXY(sx: number, sy: number): void {
-        this.m_sx = sx;
-        this.m_sy = sy;
-        this.m_transformStatus |= 2;
+    setScale3(sv: Vector3D): void {
+        this.setScaleXYZ(sv.x, sv.y, sv.z);
+    }
+    setScaleXY(sx: number, sy: number): void {        
+        this.setScaleXYZ(sx, sy, this.m_sz);
     }
     setScale(s: number): void {
-        this.m_sx = s;
-        this.m_sy = s;
-        this.m_sz = s;
-        this.m_transformStatus |= 2;
+        this.setScaleXYZ(s, s, s);
     }
 
     getRotationXYZ(pv: Vector3D): void {
