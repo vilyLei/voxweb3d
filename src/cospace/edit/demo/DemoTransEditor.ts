@@ -128,7 +128,7 @@ export class DemoTransEditor {
 	private initEditUI(): void {
 
 		this.m_coUIScene = CoUI.createUIScene();
-		this.m_coUIScene.initialize(this.m_rsc, 512, 3);
+		this.m_coUIScene.initialize(this.m_rsc, 512, 4);
 		this.m_uirsc = this.m_coUIScene.rscene;
 		this.m_graph.addScene(this.m_uirsc);
 
@@ -140,6 +140,7 @@ export class DemoTransEditor {
 		this.m_transUI.tip = this.m_tip;
 		this.m_transUI.setOutline( this.m_outline );
 		this.m_transUI.initialize(this.m_rsc, this.m_editUIRenderer, this.m_coUIScene);
+		this.m_nvaUI.tip = this.m_tip;
 		this.m_nvaUI.initialize(this.m_rsc, this.m_editUIRenderer, this.m_coUIScene);
 
 		let minV = CoMath.createVec3(-100, 0, -100);

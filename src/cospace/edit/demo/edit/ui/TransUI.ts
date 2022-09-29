@@ -22,6 +22,7 @@ import { ICoKeyboardInteraction } from "../../../../voxengine/ui/ICoKeyboardInte
 import { ICoTransformRecorder } from "../../../recorde/ICoTransformRecorder";
 import { IRectTextTip } from "../../../../voxui/entity/IRectTextTip";
 import { SelectButtonGroup } from "../../../../voxui/button/SelectButtonGroup";
+import { TipInfo } from "../../../../voxui/base/TipInfo";
 
 declare var CoRScene: ICoRScene;
 declare var CoUIInteraction: ICoUIInteraction;
@@ -232,18 +233,22 @@ class TransUI {
 		iconLable.premultiplyAlpha = true;
 		iconLable.initialize(tta, [urls[labelIndex]]);
 
+		// let tipInfo = new TipInfo().alignRight().setContent(info);
+		// let tipInfo = CoUI.createTipInfo().alignRight().setContent(info);
+
 		let btn = CoUI.createButton();
 		btn.uuid = idns;
-		btn.info = info;
+		btn.info = CoUI.createTipInfo().alignRight().setContent(info);
 		btn.addLabel(iconLable);
 		btn.initializeWithLable(colorClipLabel);
 		btn.setXY(px, py);
 		this.m_coUIScene.addEntity(btn, 1);
-		const ME = CoRScene.MouseEvent;
+		this.tip.addEntity( btn );
+		// const ME = CoRScene.MouseEvent;
 		// btn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
-		btn.addEventListener(ME.MOUSE_OUT, this.tip, this.tip.targetMouseOut);
-		btn.addEventListener(ME.MOUSE_OVER, this.tip, this.tip.targetMouseOver);
-		btn.addEventListener(ME.MOUSE_MOVE, this.tip, this.tip.targetMouseMove);
+		// btn.addEventListener(ME.MOUSE_OUT, this.tip, this.tip.targetMouseOut);
+		// btn.addEventListener(ME.MOUSE_OVER, this.tip, this.tip.targetMouseOver);
+		// btn.addEventListener(ME.MOUSE_MOVE, this.tip, this.tip.targetMouseMove);
 
 		return btn;
 	}
@@ -277,19 +282,13 @@ class TransUI {
 		let KEY = CoRScene.Keyboard;
 		switch (evt.keyCode) {
 			case KEY.W:
-				// this.selectBtn(this.m_transBtns[0]);
 				this.m_btnGroup.select(this.m_transBtns[0].uuid);
-				// this.m_transCtr.toTranslation();
-				break;
-			case KEY.E:
-				// this.selectBtn(this.m_transBtns[1]);
-				this.m_btnGroup.select(this.m_transBtns[1].uuid);
-				// this.m_transCtr.toScale();
 				break;
 			case KEY.R:
-				// this.selectBtn(this.m_transBtns[2]);
+				this.m_btnGroup.select(this.m_transBtns[1].uuid);
+				break;
+			case KEY.E:
 				this.m_btnGroup.select(this.m_transBtns[2].uuid);
-				// this.m_transCtr.toRotation();
 				break;
 			default:
 				break;

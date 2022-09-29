@@ -152,7 +152,6 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 		if (bgColor == null) {
 			bgColor = CoMaterial.createColor4();
 		}
-		console.log("bgColor: ",bgColor);
 		let ftCStr = fontColor.getCSSDecRGBAColor();
 		let bgCStr = bgColor.getCSSDecRGBAColor();
 		let keyStr = chars + "_" + fontSize + "_" + ftCStr + "_" + bgCStr;

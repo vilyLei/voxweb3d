@@ -389,7 +389,7 @@ export default class CoRendererSubScene implements IRenderer, ICoRendererScene, 
 						this.m_nodeWaitLinker = new Entity3DNodeLinker();
 						this.m_nodeWaitQueue = new EntityNodeQueue();
 					}
-					let node: Entity3DNode = this.m_nodeWaitQueue.addEntity(entity);
+					let node = this.m_nodeWaitQueue.addEntity(entity);
 					node.rstatus = processIndex;
 					this.m_nodeWaitLinker.addNode(node);
 				}
@@ -671,7 +671,10 @@ export default class CoRendererSubScene implements IRenderer, ICoRendererScene, 
 
 			this.runRenderNodes(this.m_prependNodes);
 
-			for (let i: number = 0; i < this.m_processidsLen; ++i) {
+			// for (let i = this.m_processidsLen - 1; i >= 0; --i) {
+			// 	this.m_renderer.runAt(this.m_processids[i]);
+			// }
+			for (let i = 0; i < this.m_processidsLen; ++i) {
 				this.m_renderer.runAt(this.m_processids[i]);
 			}
 

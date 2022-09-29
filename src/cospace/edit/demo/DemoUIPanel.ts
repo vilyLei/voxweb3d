@@ -46,7 +46,7 @@ declare var CoUI: ICoUI;
 /**
  * cospace renderer
  */
-export class DemoUIScene {
+export class DemoUIPanel {
 	private m_rscene: ICoRendererScene = null;
 	private m_interact: IMouseInteraction = null;
 
@@ -56,7 +56,7 @@ export class DemoUIScene {
 	constructor() { }
 
 	initialize(): void {
-		console.log("DemoUIScene::initialize() ...");
+		console.log("DemoUIPanel::initialize() ...");
 
 		document.onmousedown = (evt: any): void => {
 			this.mouseDown(evt);
@@ -311,7 +311,7 @@ export class DemoUIScene {
 		let colorLabel = new ColorLabel();
 		colorLabel.initialize(200, 130);
 		colorLabel.setXY(330, 500);
-		this.m_uiScene.addEntity(colorLabel, 1);
+		this.m_uiScene.addEntity(colorLabel);
 
 		let colorClipLabel2 = new ClipColorLabel();
 		colorClipLabel2.initializeWithoutTex(90, 40, 4);
@@ -329,7 +329,6 @@ export class DemoUIScene {
 
 		let fontColor = CoMaterial.createColor4(1, 1, 1, 1);
 		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
-		
 		urls = ["BBB-0", "BBB-1", "BBB-2", "BBB-3"];
 		img = tta.createCharsCanvasFixSize(90, 40, urls[0], 30, fontColor, bgColor);
 		tta.addImageToAtlas(urls[0], img);
@@ -350,7 +349,7 @@ export class DemoUIScene {
 		colorBtn2.addLabel(iconLable);
 		colorBtn2.initializeWithLable(colorClipLabel2);
 		colorBtn2.setXY(500, 600);
-		this.m_uiScene.addEntity(colorBtn2, 0);
+		this.m_uiScene.addEntity(colorBtn2, 1);
 
 		let layouter = uisc.layout.createLeftTopLayouter();
 		layouter.addUIEntity(colorBtn2);
@@ -480,4 +479,4 @@ export class DemoUIScene {
 	}
 }
 
-export default DemoUIScene;
+export default DemoUIPanel;
