@@ -141,12 +141,12 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 		console.log("PromptPanel::btnMouseUpListener(), evt.currentTarget: ", evt.currentTarget);
 		let uuid = evt.uuid;
 		switch (uuid) {
-
+			
 			case "confirm":
-
+				this.close();
 				break;
 			case "cancel":
-
+				this.close();
 				break;
 			default:
 				break;
