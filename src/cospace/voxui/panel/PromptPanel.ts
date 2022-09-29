@@ -60,8 +60,8 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 			let confirmBtn = this.createBtn(this.m_confirmationNS, 10, 10, "confirm");
 			let cancelBtn = this.createBtn(this.m_cancelNS, 100, 10, "cancel");
 
-			this.addUIEntity(cancelBtn);
-			this.addUIEntity(confirmBtn);
+			this.addEntity(cancelBtn);
+			this.addEntity(confirmBtn);
 		}
 	}
 	private createBG(pw: number, ph: number): void {
@@ -69,7 +69,7 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 		let colorLabel = new ColorLabel();
 		colorLabel.initialize(200, 130);
 		colorLabel.setXY(330, 500);
-		this.addUIEntity(colorLabel);
+		this.addEntity(colorLabel);
 	}
 	private createBtn(ns: string, px: number, py: number, idns: string): IButton {
 		let sc = this.getScene();

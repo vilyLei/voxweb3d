@@ -1,10 +1,11 @@
 import { IUIEntity } from "./IUIEntity";
+import { IUIEntityContainer } from "./IUIEntityContainer";
 import { UIEntityBase } from "./UIEntityBase";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 
-class UIEntityContainer extends UIEntityBase implements IUIEntity {
+class UIEntityContainer extends UIEntityBase implements IUIEntityContainer {
 
 	protected m_uientities: IUIEntity[] = [];
 	constructor() { super(); }
@@ -15,7 +16,7 @@ class UIEntityContainer extends UIEntityBase implements IUIEntity {
 			this.m_rcontainer = CoRScene.createDisplayEntityContainer();
 		}
 	}
-	addUIEntity(entity: IUIEntity): void {
+	addEntity(entity: IUIEntity): void {
 		if (entity != null) {
 			let i = 0;
 			for (; i < this.m_uientities.length; ++i) {
@@ -35,7 +36,7 @@ class UIEntityContainer extends UIEntityBase implements IUIEntity {
 			}
 		}
 	}
-	removeUIEntity(entity: IUIEntity): void {
+	removeEntity(entity: IUIEntity): void {
 		if (entity != null) {
 			let i = 0;
 			for (; i < this.m_uientities.length; ++i) {
@@ -53,6 +54,10 @@ class UIEntityContainer extends UIEntityBase implements IUIEntity {
 				}
 			}
 		}
+	}
+	
+	getEneitysTotal(): number {
+		return this.m_uientities.length;
 	}
 }
 export { UIEntityContainer };
