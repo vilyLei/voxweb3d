@@ -12,7 +12,7 @@ import IVector3D from "../../../../../vox/math/IVector3D";
 import IRendererScene from "../../../../../vox/scene/IRendererScene";
 import { ITransformController } from "../../../transform/ITransformController";
 import { UserEditEvent } from "../../../event/UserEditEvent";
-import { IButton } from "../../../../voxui/entity/IButton";
+import { IButton } from "../../../../voxui/button/IButton";
 import { PostOutline } from "../../effect/PostOutline";
 import { UIRectLine } from "../../edit/UIRectLine";
 import { IColorClipLabel } from "../../../../voxui/entity/IColorClipLabel";

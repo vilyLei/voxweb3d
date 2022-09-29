@@ -22,12 +22,13 @@ import IPlane from "../../ageom/base/IPlane";
 // import ImageTexAtlas from "../../voxtexture/atlas/ImageTexAtlas";
 import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
 import { ClipLabel } from "../../voxui/entity/ClipLabel";
-import { Button } from "../../voxui/entity/Button";
+import { Button } from "../../voxui/button/Button";
 import { ClipColorLabel } from "../../voxui/entity/ClipColorLabel";
 import { ColorClipLabel } from "../../voxui/entity/ColorClipLabel";
 import { CoUIScene } from "../../voxui/scene/CoUIScene";
 import { LeftTopLayouter } from "../../voxui/layout/LeftTopLayouter";
 import { ColorLabel } from "../../voxui/entity/ColorLabel";
+import { PromptPanel } from "../../voxui/panel/PromptPanel";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 //CanvasTexAtlas
@@ -307,6 +308,10 @@ export class DemoUIPanel {
 		// let csLable2 = new ClipLabel();
 		// csLable2.initialize(texAtlas, urls);
 		//*/
+
+
+		let panel = new PromptPanel();
+		
 
 		let colorLabel = new ColorLabel();
 		colorLabel.initialize(200, 130);

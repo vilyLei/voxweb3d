@@ -4,10 +4,10 @@ import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import { IButton } from "./IButton";
 import IVector3D from "../../../vox/math/IVector3D";
-import { ClipLabel } from "./ClipLabel";
-import { IClipEntity } from "./IClipEntity";
-import { IUIEntity } from "./IUIEntity";
-import { UIEntityBase } from "./UIEntityBase";
+import { ClipLabel } from "../entity/ClipLabel";
+import { IClipEntity } from "../entity/IClipEntity";
+import { IUIEntity } from "../entity/IUIEntity";
+import { UIEntityBase } from "../entity/UIEntityBase";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;

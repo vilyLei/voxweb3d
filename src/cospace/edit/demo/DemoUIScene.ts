@@ -22,7 +22,7 @@ import IPlane from "../../ageom/base/IPlane";
 // import ImageTexAtlas from "../../voxtexture/atlas/ImageTexAtlas";
 import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
 import { ClipLabel } from "../../voxui/entity/ClipLabel";
-import { Button } from "../../voxui/entity/Button";
+import { Button } from "../../voxui/button/Button";
 import { ClipColorLabel } from "../../voxui/entity/ClipColorLabel";
 import { ColorClipLabel } from "../../voxui/entity/ColorClipLabel";
 import { CoUIScene } from "../../voxui/scene/CoUIScene";

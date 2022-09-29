@@ -3,7 +3,7 @@ import { UIEntityContainer } from "../entity/UIEntityContainer";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
-import { IButton } from "../entity/IButton";
+import { IButton } from "../button/IButton";
 import { ICoUI } from "../ICoUI";
 
 declare var CoRScene: ICoRScene;

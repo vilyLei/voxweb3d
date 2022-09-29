@@ -4,7 +4,7 @@ import { ICoUI } from "../../../../voxui/ICoUI";
 import { ICoUIScene } from "../../../../voxui/scene/ICoUIScene";
 import { ICoRScene } from "../../../../voxengine/ICoRScene";
 import IRendererScene from "../../../../../vox/scene/IRendererScene";
-import { IButton } from "../../../../voxui/entity/IButton";
+import { IButton } from "../../../../voxui/button/IButton";
 import { ICoMaterial } from "../../../../voxmaterial/ICoMaterial";
 import { IRectTextTip } from "../../../../voxui/entity/IRectTextTip";
 import { TipInfo } from "../../../../voxui/base/TipInfo";

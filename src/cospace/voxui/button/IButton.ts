@@ -1,7 +1,7 @@
 
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
-import { IMouseEvtUIEntity } from "./IMouseEvtUIEntity";
-import { IClipEntity } from "./IClipEntity";
+import { IMouseEvtUIEntity } from "../entity/IMouseEvtUIEntity";
+import { IClipEntity } from "../entity/IClipEntity";
 
 interface IButton extends IMouseEvtUIEntity {
 

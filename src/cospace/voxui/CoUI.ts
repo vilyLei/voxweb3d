@@ -5,8 +5,8 @@ import { ClipColorLabel } from "./entity/ClipColorLabel";
 import { ColorClipLabel } from "./entity/ColorClipLabel";
 import { ColorLabel } from "./entity/ColorLabel";
 
-import { IButton } from "./entity/IButton";
-import { Button } from "./entity/Button";
+import { IButton } from "./button/IButton";
+import { Button } from "./button/Button";
 import { ICoUIScene } from "./scene/ICoUIScene";
 import { CoUIScene } from "./scene/CoUIScene";
 import { RectTextTip } from "./entity/RectTextTip";

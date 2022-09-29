@@ -23,7 +23,7 @@ import { IRendererSceneAccessor } from "../../../vox/scene/IRendererSceneAccesso
 import RendererSceneGraph from "../../../vox/scene/RendererSceneGraph";
 import { TransformController } from "../transform/TransformController";
 import { UserEditEvent } from "../event/UserEditEvent";
-import { IButton } from "../../voxui/entity/IButton";
+import { IButton } from "../../voxui/button/IButton";
 import { IClipLabel } from "../../voxui/entity/IClipLabel";
 import { PostOutline } from "./effect/PostOutline";
 import { UIRectLine } from "./edit/UIRectLine";

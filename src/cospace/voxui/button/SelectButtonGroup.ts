@@ -1,4 +1,4 @@
-import { IButton } from "../entity/IButton";
+import { IButton } from "../button/IButton";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
