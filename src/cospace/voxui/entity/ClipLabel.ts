@@ -5,6 +5,7 @@ import { IClipLabel } from "./IClipLabel";
 import IVector3D from "../../../vox/math/IVector3D";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import { ClipLabelBase } from "./ClipLabelBase";
+import IDefault3DMaterial from "../../../vox/material/mcase/IDefault3DMaterial";
 
 import { ICoMesh } from "../../voxmesh/ICoMesh";
 declare var CoMesh: ICoMesh;
@@ -13,7 +14,6 @@ declare var CoMaterial: ICoMaterial;
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
 import { ICoEntity } from "../../voxentity/ICoEntity";
-import IDefault3DMaterial from "../../../vox/material/mcase/IDefault3DMaterial";
 import IColor4 from "../../../vox/material/IColor4";
 declare var CoEntity: ICoEntity;
 
@@ -61,9 +61,9 @@ class ClipLabel extends ClipLabelBase implements IClipLabel {
 	}
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): void {
 
-		if (this.m_entities == null && atlas != null && idnsList != null && idnsList.length > 0) {
+		if (this.isIniting() && atlas != null && idnsList != null && idnsList.length > 0) {
 
-			this.m_entities = [];
+			this.init();
 
 			this.m_pos = CoMath.createVec3();
 
@@ -74,6 +74,9 @@ class ClipLabel extends ClipLabelBase implements IClipLabel {
 			let material = CoMaterial.createDefaultMaterial();
 			material.setTextureList([obj.texture]);
 			this.m_material = material;
+
+			this.m_material = this.createMaterial(obj.texture);
+
 			let et = CoEntity.createDisplayEntity();
 			et.setMaterial(material);
 			et.setMesh(mesh);
@@ -85,11 +88,13 @@ class ClipLabel extends ClipLabelBase implements IClipLabel {
 		}
 	}
 	initializeWithLable(srcLable: IClipLabel): void {
-		if (this.m_entities == null && srcLable != null && srcLable != this) {
+		if (this.isIniting() && srcLable != null && srcLable != this) {
 			if (srcLable.getClipsTotal() < 1) {
 				throw Error("Error: srcLable.getClipsTotal() < 1");
 			}
-			this.m_entities = [];
+
+			this.init();
+
 			let ls = srcLable.getREntities();
 			for (let i = 0; i < ls.length; ++i) {
 
@@ -110,6 +115,7 @@ class ClipLabel extends ClipLabelBase implements IClipLabel {
 
 				this.m_vtCount = mesh.vtCount;
 				let material = CoMaterial.createDefaultMaterial();
+				material.premultiplyAlpha = this.premultiplyAlpha;
 				material.setTextureList([tex]);
 				this.m_material = material;
 

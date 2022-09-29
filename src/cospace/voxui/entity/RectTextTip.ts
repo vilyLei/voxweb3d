@@ -15,6 +15,7 @@ import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
 import IColor4 from "../../../vox/material/IColor4";
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { IUIEntity } from "./IUIEntity";
+import { IMouseEvtUIEntity } from "./IMouseEvtUIEntity";
 import { IRectTextTip } from "./IRectTextTip";
 
 declare var CoRScene: ICoRScene;
@@ -59,7 +60,7 @@ class RectTextTip implements IRectTextTip {
 			this.m_tex = uiScene.rscene.textureBlock.createImageTex2D(img.width, img.height);
 			this.m_tex.setDataFromImage(img);
 			this.m_tex.flipY = true;
-			this.m_tex.premultiplyAlpha = true;			
+			this.m_tex.premultiplyAlpha = true;
 			this.m_tex.minFilter = CoRScene.TextureConst.LINEAR;
 			this.m_tex.magFilter = CoRScene.TextureConst.NEAREST;
 
@@ -82,27 +83,51 @@ class RectTextTip implements IRectTextTip {
 
 		}
 	}
+	addEntity(entity: IMouseEvtUIEntity): void {
+		if(entity != null) {
+
+			const ME = CoRScene.MouseEvent;
+			entity.addEventListener(ME.MOUSE_OUT, this, this.targetMouseOut);
+			entity.addEventListener(ME.MOUSE_OVER, this, this.targetMouseOver);
+			entity.addEventListener(ME.MOUSE_MOVE, this, this.targetMouseMove);
+		}
+	}
+	removeEntity(entity: IMouseEvtUIEntity): void {
+		if(entity != null) {
+
+			const ME = CoRScene.MouseEvent;
+			entity.removeEventListener(ME.MOUSE_OUT, this, this.targetMouseOut);
+			entity.removeEventListener(ME.MOUSE_OVER, this, this.targetMouseOver);
+			entity.removeEventListener(ME.MOUSE_MOVE, this, this.targetMouseMove);
+		}
+	}
+
 	private moveTar(tar: IUIEntity, mx: number, my: number): void {
 
-		let bounds = tar.getREntities()[0].getGlobalBounds();
-		let maxV = bounds.max;
-		let px = maxV.x + 2;
-		let py = my + 2 - this.m_ph;
-		this.setXY(px, py);
+		// let bounds = tar.getREntities()[0].getGlobalBounds();
+		let bounds = tar.getGlobalBounds();
+		// let maxV = bounds.max;
+		// let px = maxV.x + 2;
+		// let py = my + 2 - this.m_ph;
+		// this.setXY(px, py);
+		
+		let info = tar.info;
+		let pv = info.getPos(mx, my, bounds, this.m_entity.getGlobalBounds())
+		this.setXY(pv.x, pv.y);
 		this.update();
 	}
-	targetMouseOver(evt: any): void {
+	private targetMouseOver(evt: any): void {
 
 		this.setVisible(true);
 		let tar = evt.currentTarget as IUIEntity;
-		this.setText(tar.info);
+		this.setText(tar.info.getCotent());
 		this.moveTar(tar, evt.mouseX, evt.mouseY);
 	}
-	targetMouseMove(evt: any): void {
+	private targetMouseMove(evt: any): void {
 		let tar = evt.currentTarget as IUIEntity;
 		this.moveTar(tar, evt.mouseX, evt.mouseY);
 	}
-	targetMouseOut(evt: any): void {
+	private targetMouseOut(evt: any): void {
 		this.setVisible(false);
 	}
 	setText(text: string): void {

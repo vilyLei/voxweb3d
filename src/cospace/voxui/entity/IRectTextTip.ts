@@ -1,5 +1,6 @@
 import IVector3D from "../../../vox/math/IVector3D";
 import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
+import { IMouseEvtUIEntity } from "./IMouseEvtUIEntity";
 interface IRectTextTip {
 
 	/**
@@ -9,9 +10,8 @@ interface IRectTextTip {
 	 */
 	initialize(uiScene: ICoUIScene, rpi?: number, fontSize?: number): void;
 	
-	targetMouseOver(evt: any): void;
-	targetMouseMove(evt: any): void;
-	targetMouseOut(evt: any): void;
+	addEntity(entity: IMouseEvtUIEntity): void;
+	removeEntity(entity: IMouseEvtUIEntity): void;
 	setText(text: string): void;
 	getWidth(): number;
 	getHeight(): number;

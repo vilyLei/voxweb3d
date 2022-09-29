@@ -1,10 +1,16 @@
-import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IVector3D from "../../../vox/math/IVector3D";
-import IDisplayEntityContainer from "../../../vox/entity/IDisplayEntityContainer";
-interface IUIEntity {
+import { ITipInfo } from "../base/ITipInfo";
+import { IUISceneEntity } from "../scene/IUISceneEntity";
+import IAABB from "../../../vox/geom/IAABB";
+
+interface IUIEntity extends IUISceneEntity {
 	premultiplyAlpha: boolean;
 	transparent: boolean;
-	info: string;
+	info: ITipInfo;
+	setParent(parent: IUIEntity): IUIEntity;
+	getParent(): IUIEntity;
+	
+	getGlobalBounds(): IAABB;
 	getWidth(): number;
 	getHeight(): number;
 	setX(x: number): void;
@@ -24,17 +30,5 @@ interface IUIEntity {
 	getScaleX(): number;
 	getScaleY(): number;
 	copyTransformFrom(src: IUIEntity): void;
-	/**
-	 * get renderable entity for renderer scene
-	 * @returns ITransformEntity instance
-	 */
-	getREntities(): ITransformEntity[];
-	/**
-	 * get renderable entity container for renderer scene
-	 * @returns IDisplayEntityContainer instance
-	 */
-	getRContainer(): IDisplayEntityContainer;
-	update(): void;
-	destroy(): void;
 }
 export { IUIEntity };

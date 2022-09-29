@@ -7,27 +7,21 @@ import IVector3D from "../../../vox/math/IVector3D";
 import { ClipLabel } from "./ClipLabel";
 import { IClipEntity } from "./IClipEntity";
 import { IUIEntity } from "./IUIEntity";
+import { UIEntityBase } from "./UIEntityBase";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
 
-class Button implements IButton {
+class Button extends UIEntityBase implements IButton {
 
 	private m_enabled = true;
 	private m_dp: IEvtDispatcher;
 	private m_lb: IClipEntity = null;
 	private m_lbs: IClipEntity[] = [];
-	private m_entities: ITransformEntity[] = null;
-	protected m_v0: IVector3D = null;
-
-	premultiplyAlpha = false;
-	transparent = false;
 	uuid = "btn";
-	info = "button";
-	
-	constructor() { }
+	constructor() { super(); }
 	addLabel(label: IClipEntity): void {
 		this.m_lbs.push(label);
 	}
@@ -62,7 +56,8 @@ class Button implements IButton {
 
 	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): IButton {
 
-		if (this.m_lb == null && atlas != null && idnsList != null) {
+		if (this.isIniting() && atlas != null && idnsList != null) {
+			this.init();
 			if (idnsList.length != 4) {
 				throw Error("Error: idnsList.length != 4");
 			}
@@ -77,7 +72,8 @@ class Button implements IButton {
 
 	initializeWithLable(lable: IClipEntity): IButton {
 
-		if (this.m_lb == null) {
+		if (this.isIniting()) {
+			this.init();
 			if (lable.getClipsTotal() < 1) {
 				throw Error("Error: lable.getClipsTotal() < 1");
 			}
@@ -168,69 +164,12 @@ class Button implements IButton {
 			}
 		}
 	}
-	setClipIndex(i: number): void {
+	setClipIndex(i: number): IButton {
 		this.m_lb.setClipIndex(i);
+		return this;
 	}
-	getWidth(): number {
-		return this.m_lb.getWidth();
-	}
-	getHeight(): number {
-		return this.m_lb.getHeight();
-	}
-	setX(x: number): void {
-		this.m_lb.setX(x);
-	}
-	setY(y: number): void {
-		this.m_lb.setY(y);
-	}
-	setZ(z: number): void {
-		this.m_lb.setZ(z);
-	}
-	getX(): number {
-		return this.m_lb.getX();
-	}
-	getY(): number {
-		return this.m_lb.getY();
-	}
-	getZ(): number {
-		return this.m_lb.getZ();
-	}
-	setXY(px: number, py: number): void {
-		this.m_lb.setXY(px, py);
-	}
-	setPosition(pv: IVector3D): void {
-		this.m_lb.setPosition(pv);
-	}
-	getPosition(pv: IVector3D): void {
-		this.m_lb.getPosition(pv);
-	}
-	setRotation(r: number): void {
-		this.m_lb.setRotation(r);
-	}
-	getRotation(): number {
-		return this.m_lb.getRotation();
-	}
-	setScaleXY(sx: number, sy: number): void {
-		this.m_lb.setScaleXY(sx, sy);
-	}
-	setScaleX(sx: number): void {
-		this.m_lb.setScaleX(sx);
-	}
-	setScaleY(sy: number): void {
-		this.m_lb.setScaleX(sy);
-	}
-	getScaleX(): number {
-		return this.m_lb.getScaleX();
-	}
-	getScaleY(): number {
-		return this.m_lb.getScaleY();
-	}
-
 	copyTransformFrom(src: IUIEntity): void {
 		if (src != null) {
-			if (this.m_v0 == null) {
-				this.m_v0 = CoMath.createVec3();
-			}
 			let sx = src.getScaleX();
 			let sy = src.getScaleY();
 			let r = src.getRotation();
@@ -259,14 +198,24 @@ class Button implements IButton {
 		return null;
 	}
 	update(): void {
-		this.m_lb.update();
+		this.m_bounds.reset();
+		let sv = this.m_scaleV;
+		let b = this.m_lb;
+		b.setRotation(this.m_rotation);
+		b.setScaleXY(sv.x, sv.y);
+		b.setPosition(this.m_pos);
+		b.update();
+		this.m_bounds.union(b.getGlobalBounds());
 		let ls = this.m_lbs;
 		if (ls.length > 0) {
 			for (let i = 0; i < ls.length; ++i) {
+
 				ls[i].copyTransformFrom(this.m_lb);
 				ls[i].update();
+				this.m_bounds.union(ls[i].getGlobalBounds());
 			}
 		}
+		this.m_bounds.updateFast();
 	}
 	destroy(): void {
 
@@ -286,7 +235,8 @@ class Button implements IButton {
 			this.m_dp.destroy();
 			this.m_dp = null;
 		}
-		this.m_entities = null;
+		
+		super.destroy();
 	}
 }
 export { Button };

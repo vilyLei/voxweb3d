@@ -5,13 +5,12 @@ import IVector3D from "../../../vox/math/IVector3D";
 import IColor4 from "../../../vox/material/IColor4";
 import { IClipLabel } from "./IClipLabel";
 import { IUIEntity } from "./IUIEntity";
+import { UIEntityBase } from "./UIEntityBase";
 
-import { ICoMath } from "../../math/ICoMath";
-declare var CoMath: ICoMath;
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 declare var CoMaterial: ICoMaterial;
 
-class ColorClipLabel implements IColorClipLabel {
+class ColorClipLabel extends UIEntityBase implements IColorClipLabel {
 
 	private m_index = 0;
 	private m_total = 0;
@@ -20,14 +19,9 @@ class ColorClipLabel implements IColorClipLabel {
 	private m_hasTex: boolean = true;
 	private m_lb: IClipLabel = null;
 	private m_ilb: IClipLabel = null;
-	protected m_v0: IVector3D = null;
-
-	premultiplyAlpha = false;
-	transparent = false;	
-	info = "color clip label";	
 	uuid = "colorClipLabel";
 	
-	constructor() { }
+	constructor() { super(); }
 
 	hasTexture(): boolean {
 		return this.m_hasTex;
@@ -40,7 +34,9 @@ class ColorClipLabel implements IColorClipLabel {
 	}
 	initialize(label: IClipLabel, colorsTotal: number): void {
 
-		if (this.m_lb == null && colorsTotal > 0) {
+		if (this.isIniting() && colorsTotal > 0) {
+			
+			this.init();
 			this.m_lb = label;
 			let colors = new Array(colorsTotal);
 			for (let i = 0; i < colorsTotal; ++i) {
@@ -103,66 +99,8 @@ class ColorClipLabel implements IColorClipLabel {
 	getClipHeight(): number {
 		return this.m_lb.getClipWidth();
 	}
-	getWidth(): number {
-		return this.m_lb.getWidth();
-	}
-	getHeight(): number {
-		return this.m_lb.getHeight();
-	}
-	setX(x: number): void {
-		this.m_lb.setX(x);
-	}
-	setY(y: number): void {
-		this.m_lb.setX(y);
-	}
-	setZ(z: number): void {
-		this.m_lb.setZ(z);
-	}
-	getX(): number {
-		return this.m_lb.getX();
-	}
-	getY(): number {
-		return this.m_lb.getY();
-	}
-	getZ(): number {
-		return this.m_lb.getZ();
-	}
-	setXY(px: number, py: number): void {
-		this.m_lb.setXY(px, py);
-	}
-	setPosition(pv: IVector3D): void {
-		this.m_lb.setPosition(pv);
-	}
-	getPosition(pv: IVector3D): void {
-		this.m_lb.getPosition(pv);
-	}
-	setRotation(r: number): void {
-		this.m_lb.setRotation(r);
-	}
-	getRotation(): number {
-		return this.m_lb.getRotation();
-	}
-	setScaleXY(sx: number, sy: number): void {
-		this.m_lb.setScaleXY(sx, sy);
-	}
-	setScaleX(sx: number): void {
-		this.m_lb.setScaleX(sx);
-	}
-	setScaleY(sy: number): void {
-		this.m_lb.setScaleY(sy);
-	}
-	getScaleX(): number {
-		return this.m_lb.getScaleX();
-	}
-	getScaleY(): number {
-		return this.m_lb.getScaleY();
-	}
-
 	copyTransformFrom(src: IUIEntity): void {
 		if (src != null) {
-			if (this.m_v0 == null) {
-				this.m_v0 = CoMath.createVec3();
-			}
 			let sx = src.getScaleX();
 			let sy = src.getScaleY();
 			let r = src.getRotation();
@@ -187,12 +125,21 @@ class ColorClipLabel implements IColorClipLabel {
 		return null;
 	}
 	update(): void {
-		this.m_lb.update();
-		let b = this.m_ilb;
+		this.m_bounds.reset();
+		let sv = this.m_scaleV;
+		let b = this.m_lb;
+		b.setRotation(this.m_rotation);
+		b.setScaleXY(sv.x, sv.y);
+		b.setPosition(this.m_pos);
+		b.update();
+		this.m_bounds.union(b.getGlobalBounds());
+		b = this.m_ilb;
 		if (b != null) {
 			b.copyTransformFrom(this.m_lb);
 			b.update();
+			this.m_bounds.union(b.getGlobalBounds());
 		}
+		this.m_bounds.updateFast();
 	}
 	destroy(): void {
 		
@@ -209,6 +156,7 @@ class ColorClipLabel implements IColorClipLabel {
 			b.destroy();
 			b = null;
 		}
+		super.destroy();
 	}
 }
 export { ColorClipLabel };

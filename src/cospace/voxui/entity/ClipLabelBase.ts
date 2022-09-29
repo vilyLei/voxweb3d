@@ -2,48 +2,24 @@ import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IDisplayEntityContainer from "../../../vox/entity/IDisplayEntityContainer";
 import IVector3D from "../../../vox/math/IVector3D";
 import { IUIEntity } from "./IUIEntity";
+import { UIEntityBase } from "./UIEntityBase";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
 
-class ClipLabelBase {
+class ClipLabelBase extends UIEntityBase {
 
-	private m_rotation = 0;
-	private m_sx = 1;
-	private m_sy = 1;
-
-	protected m_entities: ITransformEntity[] = null;
-	protected m_width = 0;
-	protected m_height = 0;
 	protected m_index = 0;
 	protected m_total = 0;
 	protected m_step = 6;
 	protected m_vtCount = 0;
-	protected m_pos: IVector3D;
-	protected m_v0: IVector3D = null;
 	protected m_sizes: number[] = null;
 
-	premultiplyAlpha: boolean = false;
-	transparent: boolean = false;
-	info = "label";	
 	uuid = "label";
 
-	constructor() { }
-	protected applyRST(entity: ITransformEntity): void {
-		const RST = CoRScene.RendererState;
-		if(this.transparent) {
-			if(this.premultiplyAlpha) {
-				// entity.setRenderState(RST.BACK_ALPHA_ADD_BLENDSORT_STATE);
-				entity.setRenderState(RST.BACK_ALPHA_ADD_ALWAYS_STATE);
-			}else {
-				entity.setRenderState(RST.BACK_TRANSPARENT_STATE);
-			}
-		}else {
-			entity.setRenderState(RST.NORMAL_STATE);
-		}
-	}
+	constructor() { super(); }
 	protected createVS(startX: number, startY: number, pwidth: number, pheight: number): number[] {
 		let minX = startX;
 		let minY = startY;
@@ -95,6 +71,7 @@ class ClipLabelBase {
 	getClipHeight(): number {
 		return this.m_height;
 	}
+	/*
 	getWidth(): number {
 		return this.m_width * this.m_sx;
 	}
@@ -188,34 +165,37 @@ class ClipLabelBase {
 			this.setPosition( this.m_v0 );
 		}
 	}
-	/**
-	 * get renderable entities for renderer scene
-	 * @returns ITransformEntity instance list
-	 */
-	getREntities(): ITransformEntity[] {
-		return this.m_entities.slice(0);
-	}
-	
-	getRContainer(): IDisplayEntityContainer {
-		return null;
-	}
-	update(): void {
-		let ls = this.m_entities;
-		for (let i = 0; i < ls.length; ++i) {
-			let sv = CoMath.createVec3();
-			ls[i].getScaleXYZ(sv);
-			ls[i].update();
-		}
-	}
+	// /**
+	//  * get renderable entities for renderer scene
+	//  * @returns ITransformEntity instance list
+	//  */
+	// getREntities(): ITransformEntity[] {
+	// 	return this.m_entities.slice(0);
+	// }
+
+	// getRContainer(): IDisplayEntityContainer {
+	// 	return null;
+	// }
+	// update(): void {
+	// 	let ls = this.m_entities;
+	// 	for (let i = 0; i < ls.length; ++i) {
+	// 		ls[i].update();
+	// 	}
+	// }
+	// destroy(): void {
+	// 	this.m_sizes = null;
+	// 	this.m_total = 0;
+	// 	let ls = this.m_entities;
+	// 	if (ls != null) {
+	// 		for (let i = 0; i < ls.length; ++i) {
+	// 			ls[i].update();
+	// 		}
+	// 	}
+	// }
 	destroy(): void {
 		this.m_sizes = null;
 		this.m_total = 0;
-		let ls = this.m_entities;
-		if (ls != null) {
-			for (let i = 0; i < ls.length; ++i) {
-				ls[i].update();
-			}
-		}
+		super.destroy();
 	}
 }
 export { ClipLabelBase };

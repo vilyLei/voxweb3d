@@ -15,10 +15,10 @@ declare var CoMaterial: ICoMaterial;
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
 import { ICoEntity } from "../../voxentity/ICoEntity";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 declare var CoEntity: ICoEntity;
 
 class ClipColorLabel extends ClipLabelBase implements IClipColorLabel {
-
 
 	private m_colors: IColor4[] = null;
 	private m_material: IDefault3DMaterial = null;
@@ -48,11 +48,10 @@ class ClipColorLabel extends ClipLabelBase implements IClipColorLabel {
 	}
 	initialize(atlas: ICanvasTexAtlas, idns: string, colorsTotal: number): void {
 
-		if (this.m_entities == null && colorsTotal > 0) {
-			
-			this.m_entities = [];
+		if (this.isIniting() && colorsTotal > 0) {
+			this.init();
 			this.m_hasTex = false;
-			let material = CoMaterial.createDefaultMaterial();
+			let tex: IRenderTexture = null;
 			if (idns != "" && atlas != null) {
 				let obj = atlas.getTexObjFromAtlas(idns);
 				if (this.m_fixSize) {
@@ -60,8 +59,9 @@ class ClipColorLabel extends ClipLabelBase implements IClipColorLabel {
 					this.m_height = obj.getHeight();
 				}
 				this.m_hasTex = true;
-				material.setTextureList([obj.texture]);
+				tex = obj.texture;
 			}
+			let material = this.createMaterial( tex );
 			let mesh = this.createMesh(atlas, idns);
 			let et = CoEntity.createDisplayEntity();
 			et.setMaterial(material);
@@ -69,7 +69,7 @@ class ClipColorLabel extends ClipLabelBase implements IClipColorLabel {
 			this.m_entities.push(et);
 
 			this.m_material = material;
-			this.m_pos = CoMath.createVec3();
+			
 			let colors = new Array(colorsTotal);
 			for (let i = 0; i < colorsTotal; ++i) {
 				colors[i] = CoMaterial.createColor4();
@@ -94,7 +94,7 @@ class ClipColorLabel extends ClipLabelBase implements IClipColorLabel {
 		}
 	}
 	initializeWithLable(srcLable: IClipColorLabel): void {
-		if (this.m_entities == null && srcLable != null && srcLable != this) {
+		if (this.isIniting() && srcLable != null && srcLable != this) {
 			if (srcLable.getClipsTotal() < 1) {
 				throw Error("Error: srcLable.getClipsTotal() < 1");
 			}
@@ -102,8 +102,6 @@ class ClipColorLabel extends ClipLabelBase implements IClipColorLabel {
 			for (let i = 0; i < ls.length; ++i) {
 				let entity = ls[i];
 				let mesh = entity.getMesh();
-
-				this.m_pos = CoMath.createVec3();
 
 				let tex = entity.getMaterial().getTextureAt(0);
 				let n = (this.m_total = srcLable.getClipsTotal());
@@ -117,8 +115,7 @@ class ClipColorLabel extends ClipLabelBase implements IClipColorLabel {
 				this.m_colors = colors;
 				this.m_width = srcLable.getWidth();
 				this.m_height = srcLable.getHeight();
-				let material = CoMaterial.createDefaultMaterial();
-				material.setTextureList([tex]);
+				let material = this.createMaterial( tex );
 				let et = CoEntity.createDisplayEntity();
 				et.setMaterial(material);
 				et.setMesh(mesh);
