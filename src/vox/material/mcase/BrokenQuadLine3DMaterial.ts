@@ -136,6 +136,11 @@ gl_Position = u_projMat * vec4(pv3b + pos.xyz, 1.0);
 export default class BrokenQuadLine3DMaterial extends MaterialBase implements IColorMaterial {
     private m_dynColorEnabled: boolean = false;
     private m_data: Float32Array = null;
+    
+    premultiplyAlpha: boolean = false;
+    normalEnabled: boolean = false;
+    shadowReceiveEnabled: boolean = false;
+    
     constructor(dynColorEnabled: boolean = false) {
         super();
         if (dynColorEnabled) {

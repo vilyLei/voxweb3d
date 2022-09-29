@@ -21,6 +21,8 @@ export default class StageBase {
     protected m_viewY: number = 0.0;
     protected m_viewW: number = 1.0
     protected m_viewH: number = 1.0;
+    protected m_stW: number = 800;
+    protected m_stH: number = 600;
     // mouse event dispatcher
     protected m_dp = new MouseEvt3DDispatcher();
     // 是否舞台尺寸和view自动同步一致

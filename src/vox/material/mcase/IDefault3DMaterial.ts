@@ -11,8 +11,5 @@ import IColor4 from "../IColor4";
 export default interface IDefault3DMaterial extends IColorMaterial {
 
     vertColorEnabled: boolean;
-    premultiplyAlpha: boolean;
-    normalEnabled: boolean;
-    shadowReceiveEnabled: boolean;
     vtxMatrixTransform: boolean;
 }

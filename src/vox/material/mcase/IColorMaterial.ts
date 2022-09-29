@@ -10,6 +10,9 @@ import IColor4 from "../IColor4";
 
 export default interface IColorMaterial extends IRenderMaterial {
 
+    premultiplyAlpha: boolean;
+    normalEnabled: boolean;
+    shadowReceiveEnabled: boolean;
     setRGB3f(pr: number, pg: number, pb: number): void;
     setRGBA4f(pr: number, pg: number, pb: number, pa: number): void;
     setAlpha(pa: number): void;

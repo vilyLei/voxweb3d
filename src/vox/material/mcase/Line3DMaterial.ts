@@ -82,6 +82,10 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
 export default class Line3DMaterial extends MaterialBase implements IColorMaterial {
     private m_dynColorEnabled: boolean = false;
     private m_data: Float32Array = null;
+    
+    premultiplyAlpha: boolean = false;
+    normalEnabled: boolean = false;
+    shadowReceiveEnabled: boolean = false;
     /**
      * @param dynColorEnabled the default value is false
      */

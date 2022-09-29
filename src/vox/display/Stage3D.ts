@@ -13,7 +13,6 @@ import StageBase from "./StageBase";
 
 export default class Stage3D extends StageBase implements IRenderStage3D {
     private static s_document: any = null;
-    
     private m_resize_listener: ((evt: any) => void)[] = [];
     private m_resize_ers: any[] = [];
     private m_enterFrame_listener: ((evt: any) => void)[] = [];
@@ -78,12 +77,19 @@ export default class Stage3D extends StageBase implements IRenderStage3D {
                 this.m_viewH = this.stageHeight;
                 this.updateViewUData();
             }
-            this.stageHalfWidth = 0.5 * this.stageWidth;
-            this.stageHalfHeight = 0.5 * this.stageHeight;
+            this.m_stW = this.stageWidth;
+            this.m_stH = this.stageHeight;
+            this.stageHalfWidth = 0.5 * this.m_stW;
+            this.stageHalfHeight = 0.5 * this.m_stH;
             this.m_baseEvt.target = this;
             this.m_baseEvt.type = EventBase.RESIZE;
             this.m_baseEvt.phase = 1;
             this.sendResizeEvt(this.m_baseEvt);
+        }else {
+            this.stageWidth = this.m_stW;
+            this.stageHeight = this.m_stH;
+            this.stageHalfWidth = 0.5 * this.m_stW;
+            this.stageHalfHeight = 0.5 * this.m_stH;
         }
     }
     private keyDown(evt: any): void {

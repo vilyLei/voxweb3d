@@ -36,21 +36,21 @@ export class TextureProxy implements IRenderTexture {
     // The fragment processor texture sampler type.
     protected m_sampler: number = -1;
     // have render useable data
-    protected m_haveRData: boolean = false;
-    protected m_type: TextureProxyType = TextureProxyType.Default;
-    protected m_generateMipmap: boolean = true;
+    protected m_haveRData = false;
+    protected m_type = TextureProxyType.Default;
+    protected m_generateMipmap = true;
 
-    name: string = "TextureProxy";
-    internalFormat: number = TextureFormat.RGBA;
-    srcFormat: number = TextureFormat.RGBA;
-    dataType: number = TextureDataType.UNSIGNED_BYTE;
-    wrap_s: number = TextureConst.WRAP_CLAMP_TO_EDGE;
-    wrap_t: number = TextureConst.WRAP_CLAMP_TO_EDGE;
-    wrap_r: number = TextureConst.WRAP_CLAMP_TO_EDGE;
+    name = "TextureProxy";
+    internalFormat = TextureFormat.RGBA;
+    srcFormat = TextureFormat.RGBA;
+    dataType = TextureDataType.UNSIGNED_BYTE;
+    wrap_s = TextureConst.WRAP_CLAMP_TO_EDGE;
+    wrap_t = TextureConst.WRAP_CLAMP_TO_EDGE;
+    wrap_r = TextureConst.WRAP_CLAMP_TO_EDGE;
 
-    mipmapEnabled: boolean = false;
-    flipY: boolean = false;
-    premultiplyAlpha: boolean = false;
+    mipmapEnabled = false;
+    flipY = false;
+    premultiplyAlpha = false;
     /**
      * the value contains (1,2,4,8) 
      */
