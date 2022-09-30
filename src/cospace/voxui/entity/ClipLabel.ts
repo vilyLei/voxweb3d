@@ -71,14 +71,11 @@ class ClipLabel extends ClipLabelBase implements IClipLabel {
 			let obj = atlas.getTexObjFromAtlas(idnsList[0]);
 			let mesh = this.createMesh(atlas, idnsList);
 			this.m_vtCount = mesh.vtCount;
-			let material = CoMaterial.createDefaultMaterial();
-			material.setTextureList([obj.texture]);
-			this.m_material = material;
-
+			
 			this.m_material = this.createMaterial(obj.texture);
 
 			let et = CoEntity.createDisplayEntity();
-			et.setMaterial(material);
+			et.setMaterial(this.m_material);
 			et.setMesh(mesh);
 			et.setIvsParam(0, this.m_step);
 			this.m_entities.push(et);
@@ -114,13 +111,11 @@ class ClipLabel extends ClipLabelBase implements IClipLabel {
 				}
 
 				this.m_vtCount = mesh.vtCount;
-				let material = CoMaterial.createDefaultMaterial();
-				material.premultiplyAlpha = this.premultiplyAlpha;
-				material.setTextureList([tex]);
-				this.m_material = material;
+				
+				this.m_material = this.createMaterial(tex);
 
 				let et = CoEntity.createDisplayEntity();
-				et.setMaterial(material);
+				et.setMaterial(this.m_material);
 				et.setMesh(mesh);
 				et.setIvsParam(0, this.m_step);
 				this.m_entities.push(et);
@@ -138,7 +133,6 @@ class ClipLabel extends ClipLabelBase implements IClipLabel {
 			// if (this.m_entities == null) {
 			// 	this.initializeWithLable(srcLable);
 			// } else if (this.m_entities[0].isRFree()) {
-
 			// }
 		}
 	}

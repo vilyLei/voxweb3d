@@ -1,7 +1,10 @@
 import IVector3D from "../../../vox/math/IVector3D";
 import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
 import { IMouseEvtUIEntity } from "./IMouseEvtUIEntity";
-interface IRectTextTip {
+
+import { IUIEntity } from "./IUIEntity";
+
+interface IRectTextTip extends IUIEntity {
 
 	/**
 	 * @param uiScene ICoUIScene instance
@@ -13,15 +16,15 @@ interface IRectTextTip {
 	addEntity(entity: IMouseEvtUIEntity): void;
 	removeEntity(entity: IMouseEvtUIEntity): void;
 	setText(text: string): void;
-	getWidth(): number;
-	getHeight(): number;
-	setXY(px: number, py: number): void;
-	setPosition(pv: IVector3D): void;
-	getPosition(pv: IVector3D): IVector3D;
+	// getWidth(): number;
+	// getHeight(): number;
+	// setXY(px: number, py: number): void;
+	// setPosition(pv: IVector3D): void;
+	// getPosition(pv: IVector3D): IVector3D;
 	getText(): string;
-	setVisible(v: boolean): void;
-	update(): void;
-	destroy(): void;
+	// setVisible(v: boolean): void;
+	// update(): void;
+	// destroy(): void;
 }
 
 export { IRectTextTip }

@@ -14,7 +14,7 @@ declare var CoMath: ICoMath;
 import { ICoEntity } from "../../voxentity/ICoEntity";
 declare var CoEntity: ICoEntity;
 
-class ColorLabel extends UIEntityBase implements IColorLabel {
+class TextLabel extends UIEntityBase {
 
 	private m_color: IColor4 = null;
 	private m_material: IDefault3DMaterial = null;
@@ -53,9 +53,7 @@ class ColorLabel extends UIEntityBase implements IColorLabel {
 	}
 	setColor(c: IColor4): IColor4 {
 		this.m_color.copyFrom(c);
-		if(this.m_material != null) {
-			this.m_material.setColor(c);
-		}
+		this.m_material.setColor(c);
 		return c;
 	}
 	getColor(): IColor4 {
@@ -63,7 +61,7 @@ class ColorLabel extends UIEntityBase implements IColorLabel {
 	}
 	destroy(): void {
 		super.destroy();
-		this.m_material = null;
+		this.m_material = null
 	}
 }
-export { ColorLabel };
+export { TextLabel };
