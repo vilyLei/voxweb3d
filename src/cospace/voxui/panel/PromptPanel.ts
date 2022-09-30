@@ -4,17 +4,22 @@ import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { IButton } from "../button/IButton";
-import { ICoUI } from "../ICoUI";
+
 import { ClipColorLabel } from "../entity/ClipColorLabel";
 import { ColorLabel } from "../entity/ColorLabel";
 import { ClipLabel } from "../entity/ClipLabel";
 import { Button } from "../button/Button";
+import IColor4 from "../../../vox/material/IColor4";
+import ITransformEntity from "../../../vox/entity/ITransformEntity";
+import { ICoUIScene } from "../scene/ICoUIScene";
 
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
-declare var CoUI: ICoUI;
 class PromptPanel extends UIEntityContainer implements IUIEntity {
 
+	private m_scene: ICoUIScene;
+	private m_rpi: number;
+	private m_bgColor: IColor4;
 	private m_confirmBtn: IButton;
 	private m_cancelBtn: IButton;
 	private m_bgLabel: ColorLabel;
@@ -22,21 +27,29 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 	private m_panelH: number = 130;
 	private m_btnW: number = 90;
 	private m_btnH: number = 50;
-	private m_confirmationNS = "confirm";
-	private m_cancelNS = "cancel";
-	private m_isOpen = true;
+	private m_confirmNS: string;
+	private m_cancelNS: string;
+	private m_isOpen = false;
 	private m_confirmFunc: () => void = null;
 	private m_cancelFunc: () => void = null;
 
-	factor: number = 0.3;
+	layoutXFactor: number = 0.7;
+
 	constructor() { super(); }
 
-	getBGLabel(): ColorLabel {
-		return this.m_bgLabel;
+	setBGColor(c: IColor4): this {
+		this.m_bgColor.copyFrom(c);
+		if (this.m_bgLabel != null) {
+			this.m_bgLabel.setColor(c);
+		}
+		return this;
 	}
-	initialize(panelW: number, panelH: number, btnW: number, btnH: number, confirmationNS: string = "confirm", cancelNS: string = "cancel"): void {
+	initialize(scene: ICoUIScene, rpi: number, panelW: number, panelH: number, btnW: number, btnH: number, confirmNS: string = "Confirm", cancelNS: string = "Cancel"): void {
 		if (this.isIniting()) {
 			this.init();
+
+			this.m_scene = scene;
+			this.m_rpi = rpi;
 
 			this.m_panelW = panelW;
 			this.m_panelH = panelH;
@@ -44,20 +57,36 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 			this.m_btnW = btnW;
 			this.m_btnH = btnH;
 
-			this.m_confirmationNS = confirmationNS;
+			this.m_confirmNS = confirmNS;
 			this.m_cancelNS = cancelNS;
+
+			this.m_bgColor = CoMaterial.createColor4();
 		}
 	}
 	open(): void {
-		this.m_isOpen = true;
-		this.setVisible(true);
+		if (!this.m_isOpen) {
+
+			this.m_scene.addEntity( this, this.m_rpi );
+			this.addEvt();
+			this.layout();
+
+			this.m_isOpen = true;
+			this.setVisible(true);
+		}
 	}
 	isOpen(): boolean {
 		return this.m_isOpen;
 	}
 	close(): void {
-		this.m_isOpen = false;
-		this.setVisible(false);
+
+		if (this.m_isOpen) {
+
+			this.m_scene.removeEntity( this );
+
+			this.m_isOpen = false;
+			this.setVisible(false);
+			this.removeEvt();
+		}
 	}
 	setListener(confirmFunc: () => void, cancelFunc: () => void): void {
 		this.m_confirmFunc = confirmFunc;
@@ -65,12 +94,27 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 	}
 	destroy(): void {
 		super.destroy();
+
 		this.m_confirmFunc = null;
 		this.m_cancelFunc = null;
+
+		if (this.m_confirmBtn != null) {
+
+			this.m_confirmBtn.destroy();
+			this.m_cancelBtn.destroy();
+			this.m_bgLabel.destroy();
+
+			this.m_confirmBtn = null;
+			this.m_cancelBtn = null;
+			this.m_bgLabel = null;
+		}
 	}
+	private m_building = true;
 	protected updateScene(): void {
 		let sc = this.getScene();
-		if (sc != null) {
+		if (sc != null && this.m_building) {
+			
+			this.m_building = false;
 
 			let pw = this.m_panelW;
 			let ph = this.m_panelH;
@@ -82,28 +126,69 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 			let py = (ph - btnH) * 0.5;
 
 			let dis = btnW * 2.0;
-			let gapW = pw - dis;
+			let gapW = (pw - dis) * 0.5;
 
 
-			px = this.factor * gapW;
-			let confirmBtn = this.createBtn(this.m_confirmationNS, px, py, "confirm");
+			px = this.layoutXFactor * gapW;
+			let confirmBtn = this.createBtn(this.m_confirmNS, px, py, "confirm");
 			px = pw - px - btnW;
 			let cancelBtn = this.createBtn(this.m_cancelNS, px, py, "cancel");
-			(cancelBtn.getREntities()[0] as any).name = "cancelBtn";
-			(confirmBtn.getREntities()[0] as any).name = "confirmBtn";
 			this.createBG(pw, ph);
 			this.addEntity(cancelBtn);
 			this.addEntity(confirmBtn);
+
+			this.setVisible(this.m_isOpen);
+			if (this.m_isOpen) {
+				this.addEvt();
+				this.layout();
+			}
+		}
+	}
+	private addEvt(): void {
+		let sc = this.getScene();
+		if (sc != null) {
+			let st = sc.getStage();
+			let EB = CoRScene.EventBase;
+			st.addEventListener(EB.RESIZE, this, this.resize);
+		}
+	}
+	private removeEvt(): void {
+		let sc = this.getScene();
+		if (sc != null) {
+			let st = sc.getStage();
+			let EB = CoRScene.EventBase;
+			st.removeEventListener(EB.RESIZE, this, this.resize);
 		}
 	}
 	private createBG(pw: number, ph: number): void {
 		let sc = this.getScene();
-		let colorLabel = new ColorLabel();
-		colorLabel.depthTest = true;
-		colorLabel.initialize(pw, ph);
-		(colorLabel.getREntities()[0] as any).name = "planeBG";
-		this.m_bgLabel = colorLabel;
-		this.addEntity(colorLabel);
+		let bgLabel = new ColorLabel();
+		bgLabel.depthTest = true;
+		bgLabel.initialize(pw, ph);
+		bgLabel.setZ(-0.1);
+		bgLabel.setColor( this.m_bgColor );
+		this.m_bgLabel = bgLabel;
+		// colorLabel.getREntities()[0].mouseEnabled = true;
+		this.initializeEvent(bgLabel.getREntities()[0]);
+		this.addEntity(bgLabel);
+	}
+
+	private initializeEvent(entity: ITransformEntity): void {
+
+		const me = CoRScene.MouseEvent;
+		let dpc = CoRScene.createMouseEvt3DDispatcher();
+		dpc.currentTarget = this;
+		dpc.uuid = "prompt plane";
+		dpc.addEventListener(me.MOUSE_OVER, this, this.mouseOverListener);
+		dpc.addEventListener(me.MOUSE_OUT, this, this.mouseOutListener);
+		entity.setEvtDispatcher(dpc);
+		entity.mouseEnabled = true;
+	}
+	private mouseOverListener(evt: any): void {
+		// console.log("mouseOverListener() ...");
+	}
+	private mouseOutListener(evt: any): void {
+		// console.log("mouseOutListener() ...");
 	}
 	private createBtn(ns: string, px: number, py: number, idns: string): IButton {
 		let sc = this.getScene();
@@ -112,15 +197,15 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 		let pw = this.m_btnW;
 		let ph = this.m_btnH;
 
-		let fontColor = CoMaterial.createColor4().setRGB3Bytes(170, 170, 170);
+		let fontColor = CoMaterial.createColor4();
 		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
 		let img = tta.createCharsCanvasFixSize(pw, ph, ns, 30, fontColor, bgColor);
 		tta.addImageToAtlas(ns, img);
 
-		return this.crateABtn(ns, pw, ph, px, py, idns);
+		return this.crateCurrBtn(ns, pw, ph, px, py, idns);
 	}
 
-	private crateABtn(ns: string, pw: number, ph: number, px: number, py: number, idns: string): IButton {
+	private crateCurrBtn(ns: string, pw: number, ph: number, px: number, py: number, idns: string): IButton {
 
 		let sc = this.getScene();
 
@@ -136,6 +221,7 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 		iconLable.transparent = true;
 		iconLable.premultiplyAlpha = true;
 		iconLable.initialize(tta, [ns]);
+		iconLable.setColor(CoMaterial.createColor4(0.8, 0.8, 0.8));
 
 		let btn = new Button();
 		btn.uuid = idns;
@@ -146,7 +232,8 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 		btn.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.btnMouseUpListener);
 
 		return btn;
-	} private btnMouseUpListener(evt: any): void {
+	}
+	private btnMouseUpListener(evt: any): void {
 
 		console.log("PromptPanel::btnMouseUpListener(), evt.currentTarget: ", evt.currentTarget);
 		let uuid = evt.uuid;
@@ -166,6 +253,22 @@ class PromptPanel extends UIEntityContainer implements IUIEntity {
 				break;
 			default:
 				break;
+		}
+	}
+	private resize(evt: any): void {
+		this.layout();
+	}
+	private layout(): void {
+		let sc = this.getScene();
+		if (sc != null) {
+			let st = sc.getStage();
+			let rect = sc.getRect();
+			// let bounds = this.getGlobalBounds();
+
+			let px = rect.x + (rect.width - this.getWidth()) * 0.5;
+			let py = rect.y + (rect.height - this.getHeight()) * 0.5;
+			this.setXY(px, py);
+			this.update();
 		}
 	}
 }
