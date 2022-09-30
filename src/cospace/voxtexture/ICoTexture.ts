@@ -34,6 +34,7 @@ interface CoImageTexAtlas {
 
 interface ICoTexture {
 	ImageTexAtlas: CoImageTexAtlas;
+	createCharsImage(chars: string, fontSize: number, fontColor?: IColor4, bgColor?: IColor4): HTMLCanvasElement | HTMLImageElement;
 	createCanvasTexAtlas(): ICanvasTexAtlas;
 	createImageTexAtlas(
 		rscene: IRendererScene,

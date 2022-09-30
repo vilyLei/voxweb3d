@@ -9,6 +9,12 @@ import { ICoRScene } from "../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 
 
+function createCharsImage(chars: string, fontSize: number, fontColor: IColor4 = null, bgColor: IColor4 = null): HTMLCanvasElement | HTMLImageElement {
+	if (chars == null || chars == "" || fontSize < 8) {
+		return null;
+	}
+	return ImageTexAtlas.CreateCharsCanvas(chars, fontSize, fontColor, bgColor);
+}
 function createCanvasTexAtlas(): ICanvasTexAtlas {
 	return new CanvasTexAtlas();
 }
@@ -17,6 +23,7 @@ function createImageTexAtlas(rscene: IRendererScene, canvasWidth: number, canvas
 }
 export {
 	ImageTexAtlas,
+	createCharsImage,
 	createCanvasTexAtlas,
 	createImageTexAtlas
 };
