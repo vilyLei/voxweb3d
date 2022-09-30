@@ -9,13 +9,14 @@ import { ClipColorLabel } from "../entity/ClipColorLabel";
 import { ColorLabel } from "../entity/ColorLabel";
 import { ClipLabel } from "../entity/ClipLabel";
 import { Button } from "../button/Button";
+import { IPromptPanel } from "./IPromptPanel";
 import IColor4 from "../../../vox/material/IColor4";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import { ICoUIScene } from "../scene/ICoUIScene";
 
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
-class PromptPanel extends UIEntityContainer implements IUIEntity {
+class PromptPanel extends UIEntityContainer implements IPromptPanel {
 
 	private m_scene: ICoUIScene;
 	private m_rpi: number;

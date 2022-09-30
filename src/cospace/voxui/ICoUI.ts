@@ -7,6 +7,7 @@ import { ICoUIScene } from "./scene/ICoUIScene";
 import { IRectTextTip } from "./entity/IRectTextTip";
 import { ITipInfo } from "./base/ITipInfo";
 import { IUILayout } from "./layout/IUILayout";
+import { IPromptPanel } from "./panel/IPromptPanel";
 
 interface ICoUI {
 	createColorLabel(): IColorLabel;
@@ -18,6 +19,8 @@ interface ICoUI {
 	createClipColorLabel(): IClipColorLabel;
 	createColorClipLabel(): IColorClipLabel;
 	createButton(): IButton;
+	createPromptPanel(): IPromptPanel;
+
 	createUIScene(): ICoUIScene;
 }
 export { ICoUI };

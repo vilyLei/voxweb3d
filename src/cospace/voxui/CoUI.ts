@@ -12,6 +12,7 @@ import { CoUIScene } from "./scene/CoUIScene";
 import { RectTextTip } from "./entity/RectTextTip";
 import { TipInfo } from "./base/TipInfo";
 import { UILayout } from "./layout/UILayout";
+import { PromptPanel } from "./panel/PromptPanel";
 
 
 function createColorLabel(): ColorLabel {
@@ -33,6 +34,11 @@ function createColorClipLabel(): ColorClipLabel {
 function createButton(): IButton {
 	return new Button();
 }
+
+function createPromptPanel(): PromptPanel {
+	return new PromptPanel();
+}
+
 function createUIScene(): ICoUIScene {
 	return new CoUIScene();
 }
@@ -53,5 +59,6 @@ export {
 	createClipColorLabel,
 	createColorClipLabel,
 	createButton,
+	createPromptPanel,
 	createUIScene
 };
