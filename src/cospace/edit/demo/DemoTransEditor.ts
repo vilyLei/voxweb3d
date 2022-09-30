@@ -63,7 +63,6 @@ export class DemoTransEditor {
 
 	initialize(): void {
 
-
 		document.oncontextmenu = function (e) {
 			e.preventDefault();
 		}
@@ -151,24 +150,7 @@ export class DemoTransEditor {
 		
 	}
 
-	private createDefaultEntity(): void {
-
-		// let axis = CoRScene.createAxis3DEntity();
-		// this.m_rsc.addEntity(axis);
-
-		/*
-		let texList = [this.createTexByUrl()];
-		let material = CoRScene.createDefaultMaterial();
-		material.setTextureList(texList);
-		let entity = CoRScene.createDisplayEntity();
-		entity.setMaterial(material);
-		entity.copyMeshFrom(this.m_rsc.entityBlock.unitXOZPlane);
-		entity.setScaleXYZ(700.0, 0.0, 700.0);
-		this.m_rsc.addEntity(entity);
-		//*/
-	}
 	private initScene(): void {
-		this.createDefaultEntity();
 
 	}
 	isEngineEnabled(): boolean {

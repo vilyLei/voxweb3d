@@ -29,6 +29,7 @@ import { CoUIScene } from "../../voxui/scene/CoUIScene";
 import { LeftTopLayouter } from "../../voxui/layout/LeftTopLayouter";
 import { ColorLabel } from "../../voxui/entity/ColorLabel";
 import { PromptPanel } from "../../voxui/panel/PromptPanel";
+import { RectTextTip } from "../../voxui/entity/RectTextTip";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 //CanvasTexAtlas
@@ -308,21 +309,38 @@ export class DemoUIPanel {
 		// let csLable2 = new ClipLabel();
 		// csLable2.initialize(texAtlas, urls);
 		//*/
+		// let pw = 90;
+		// let ph = 50;
+		// let ns = "确认";
 
+		// let fontC = CoMaterial.createColor4();
+		// let bgC = CoMaterial.createColor4(1, 1, 1, 0);
+		// let img0 = tta.createCharsCanvasFixSize(pw, ph, ns, 30, fontC, bgC);
+		// tta.addImageToAtlas(ns, img0);
+		// let iconLable0 = new ClipLabel();
+		// iconLable0.depthTest = true;
+		// iconLable0.transparent = true;
+		// iconLable0.premultiplyAlpha = true;
+		// iconLable0.initialize(tta, [ns]);
+		// iconLable0.setColor(CoMaterial.createColor4(0.8, 0.0, 0.8));
+		// iconLable0.setXY(300, 400);
+		// this.m_uiScene.addEntity(iconLable0);
+		// return;
 
+		let tip: RectTextTip = new RectTextTip();
+		tip.initialize(this.m_uiScene, 1);
+		return;
 		let panel = new PromptPanel();
-		panel.initialize(300, 200, 110, 50);
-		panel.setXY(200,300);
-		this.m_uiScene.addEntity(panel);
-
-		let bgLabel = panel.getBGLabel();
-		bgLabel.setColor(CoMaterial.createColor4(0.2,0.2,0.2));
+		panel.initialize(this.m_uiScene, 0, 300, 200, 120, 50);
+		// this.m_uiScene.addEntity(panel);
+		panel.open();
+		panel.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
 
 		panel.setListener(
-			():void=>{
+			(): void => {
 				console.log("panel confirm...");
 			},
-			():void=>{
+			(): void => {
 				console.log("panel cancel...");
 			}
 		);
@@ -375,8 +393,8 @@ export class DemoUIPanel {
 		layouter.addUIEntity(colorBtn2);
 	}
 	private createDefaultEntity(): void {
-		let axis = CoRScene.createAxis3DEntity();
-		this.m_rscene.addEntity(axis);
+		// let axis = CoRScene.createAxis3DEntity(700);
+		// this.m_rscene.addEntity(axis);
 
 		// let texList = [this.createTexByUrl()];
 		// let material = CoRScene.createDefaultMaterial();
@@ -394,70 +412,6 @@ export class DemoUIPanel {
 	isEngineEnabled(): boolean {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";
 	}
-	private loadedImg(img: HTMLImageElement, url: string): void {
-		if (url != "") {
-			console.log("XXX loadedImg(), url: ", url);
-			let uisc = this.m_uiScene;
-			let texAtlas = uisc.texAtlas;
-			texAtlas.addImageToAtlas(url, img);
-			this.m_urls.push(url);
-			if (this.m_urls.length == 31) {
-				let urls = this.m_urls;
-				let lable = CoUI.createClipLabel(); //new ClipLabel();
-				lable.initialize(texAtlas, this.m_urls);
-				lable.setClipIndex(2);
-				lable.setXY(300, 200);
-				this.m_uiScene.addEntity(lable);
-
-				let lable01 = CoUI.createClipLabel(); //new ClipLabel();
-				lable01.initializeWithLable(lable);
-				lable01.setClipIndex(1);
-				lable01.setXY(200, 300);
-				this.m_uiScene.addEntity(lable01);
-
-				let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
-				let btn = CoUI.createButton(); //new Button();
-				btn.initialize(texAtlas, btnUrls);
-				// btn.initializeWithLable(lable01);
-				this.m_uiScene.addEntity(btn);
-			}
-		}
-	}
-	private loadImgs(): void {
-		let url0 = "static/assets/flare_core_01.jpg";
-		let url1 = "static/assets/flare_core_02.jpg";
-		let url2 = "static/assets/flare_core_03.jpg";
-		this.loadImgByUrl(url0, (img: HTMLImageElement, url: string): void => {
-			this.loadedImg(img, url);
-		});
-		this.loadImgByUrl(url1, (img: HTMLImageElement, url: string): void => {
-			this.loadedImg(img, url);
-		});
-		this.loadImgByUrl(url2, (img: HTMLImageElement, url: string): void => {
-			this.loadedImg(img, url);
-		});
-	}
-	private createTexByUrl(url: string = ""): IRenderTexture {
-		let tex = this.m_rscene.textureBlock.createImageTex2D(64, 64, false);
-
-		// this.m_plane = new Plane3DEntity();
-		// this.m_plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex]);
-		// this.m_rscene.addEntity(this.m_plane);
-
-		let img: HTMLImageElement = new Image();
-		img.onload = (evt: any): void => {
-			tex.setDataFromImage(img, 0, 0, 0, false);
-		};
-		img.src = url != "" ? url : "static/assets/box.jpg";
-		return tex;
-	}
-	private loadImgByUrl(url: string, loaded: (img: HTMLImageElement, url: string) => void): void {
-		let img: HTMLImageElement = new Image();
-		img.onload = (evt: any): void => {
-			loaded(img, url);
-		};
-		img.src = url != "" ? url : "static/assets/box.jpg";
-	}
 	private initInteract(): void {
 		if (this.m_rscene != null && this.m_interact == null && typeof CoMouseInteraction !== "undefined") {
 			this.m_interact = CoMouseInteraction.createMouseInteraction();
@@ -467,23 +421,19 @@ export class DemoUIPanel {
 	}
 	private initRenderer(): void {
 		if (this.m_rscene == null) {
+
 			let RendererDevice = CoRScene.RendererDevice;
-			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-			RendererDevice.SetWebBodyColor("#888888");
+			RendererDevice.SetWebBodyColor("#282828");
 
 			let rparam = CoRScene.createRendererSceneParam();
 			rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 			rparam.setCamProject(45, 20.0, 9000.0);
 			this.m_rscene = CoRScene.createRendererScene(rparam, 3);
-			this.m_rscene.setClearUint24Color(0x888888);
+			this.m_rscene.setClearUint24Color(0x282828);
 		}
-	}
-	private loadOBJ(): void {
-		let baseUrl: string = "static/private/obj/";
-		let url = baseUrl + "base.obj";
-		url = baseUrl + "base4.obj";
 	}
 	private mouseDown(evt: any): void { }
 	run(): void {

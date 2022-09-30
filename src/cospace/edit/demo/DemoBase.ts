@@ -104,9 +104,16 @@ export class DemoBase {
 
         // return;
 
-        let quadL = new QuadBrokenLine3DEntity();
-        quadL.initialize([0.0,0.0,0.0, 300.0,0.0,0.0, 300.0,300.0,0.0, 600.0,300.0,0.0], 56.0);
-        this.m_rscene.addEntity(quadL);
+        // let quadL = new QuadBrokenLine3DEntity();
+        // quadL.initialize([0.0,0.0,0.0, 300.0,0.0,0.0, 300.0,300.0,0.0, 600.0,300.0,0.0], 56.0);
+        // this.m_rscene.addEntity(quadL);
+
+        
+        let plane0 = new Plane3DEntity();
+        // plane0.normalEnabled = true;
+        plane0.premultiplyAlpha = true;
+        plane0.initializeXOYSquare(200);
+        this.m_rscene.addEntity(plane0);
 
         return;
 
