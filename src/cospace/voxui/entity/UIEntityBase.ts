@@ -173,7 +173,7 @@ class UIEntityBase {
 	getRotation(): number {
 		return this.m_rotation;
 	}
-	setScaleXYZ(sx: number, sy: number, sz: number): void {
+	protected setScaleXYZ(sx: number, sy: number, sz: number): void {
 		this.m_scaleV.setXYZ(sx, sy, sz);
 	}
 	setScaleXY(sx: number, sy: number): void {

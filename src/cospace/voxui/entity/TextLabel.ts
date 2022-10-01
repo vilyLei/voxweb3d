@@ -2,6 +2,7 @@ import IDefault3DMaterial from "../../../vox/material/mcase/IDefault3DMaterial";
 import { IColorLabel } from "./IColorLabel";
 import IVector3D from "../../../vox/math/IVector3D";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
+import { ITextLabel } from "./ITextLabel";
 import IColor4 from "../../../vox/material/IColor4";
 import { UIEntityBase } from "./UIEntityBase";
 import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
@@ -16,10 +17,12 @@ import { ICoEntity } from "../../voxentity/ICoEntity";
 import { IImageTexture } from "../../../vox/render/texture/IImageTexture";
 declare var CoEntity: ICoEntity;
 
-class TextLabel extends UIEntityBase {
+class TextLabel extends UIEntityBase implements ITextLabel {
 
 	private m_pw = 10;
 	private m_ph = 10;
+	private m_sx = 1.0;
+	private m_sy = 1.0;
 	private m_rpi = 0;
 	private m_material: IDefault3DMaterial = null;
 	private m_uiScene: ICoUIScene;
@@ -27,7 +30,7 @@ class TextLabel extends UIEntityBase {
 	private m_tex: IImageTexture = null;
 	private m_fontSize = 24;
 	private m_text = "";
-	constructor(){ super(); }
+	constructor() { super(); }
 
 	initialize(text: string, uiScene: ICoUIScene, rpi: number = 0, fontSize: number = 24): void {
 
@@ -54,24 +57,52 @@ class TextLabel extends UIEntityBase {
 			this.m_tex.magFilter = CoRScene.TextureConst.NEAREST;
 
 			let material = this.createMaterial(this.m_tex);
-			material.setColor( this.m_fontColor );
+			material.setColor(this.m_fontColor);
 			CoMesh.plane.setBufSortFormat(material.getBufSortFormat());
-			let mesh = CoMesh.plane.createXOY(0, 0, img.width, img.height);
+			let mesh = CoMesh.plane.createXOY(0, 0, 1.0, 1.0);
 			this.m_pw = img.width;
 			this.m_ph = img.height;
 			entity.setMaterial(material);
 			entity.setMesh(mesh);
 			this.m_entities.push(entity);
 			this.applyRST(entity);
-			// this.setScaleXY(img.width, img.height);
+			// super.setScaleXY(this.m_pw, this.m_ph);
+			super.setScaleXY(this.m_sx * this.m_pw, this.m_sy * this.m_ph);
+		}
+	}
+
+
+	setScaleXY(sx: number, sy: number): void {
+		this.m_sx = sx;
+		this.m_sy = sy;
+		super.setScaleXY(sx * this.m_pw, sy * this.m_ph);
+	}
+	setScaleX(sx: number): void {
+		this.m_sx = sx;
+		super.setScaleX(sx * this.m_pw);
+	}
+	setScaleY(sy: number): void {
+		this.m_sy = sy;
+		super.setScaleX(sy * this.m_ph);
+	}
+	getScaleX(): number {
+		return this.m_sx;
+	}
+	getScaleY(): number {
+		return this.m_sy;
+	}
+
+	setText(text: string): void {
+		if (this.m_uiScene != null) {
+
 		}
 	}
 	getText(): string {
 		return this.m_text;
 	}
-	setColor(c: IColor4): TextLabel {
+	setColor(c: IColor4): ITextLabel {
 		this.m_fontColor.copyFrom(c);
-		if(this.m_material != null) {
+		if (this.m_material != null) {
 			this.m_material.setColor(c);
 		}
 		return this;
