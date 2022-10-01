@@ -13,6 +13,7 @@ import { IPromptPanel } from "./IPromptPanel";
 import IColor4 from "../../../vox/material/IColor4";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import { ICoUIScene } from "../scene/ICoUIScene";
+import { TextLabel } from "../entity/TextLabel";
 
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
@@ -35,6 +36,7 @@ class PromptPanel extends UIEntityContainer implements IPromptPanel {
 	private m_cancelFunc: () => void = null;
 
 	layoutXFactor: number = 0.7;
+	layoutYFactor: number = 0.7;
 
 	constructor() { super(); }
 
@@ -126,8 +128,8 @@ class PromptPanel extends UIEntityContainer implements IPromptPanel {
 			let px = 0;
 			let py = (ph - btnH) * 0.5;
 
-			let dis = btnW * 2.0;
-			let gapW = (pw - dis) * 0.5;
+			let disW = btnW * 2.0;
+			let gapW = (pw - disW) * 0.5;
 
 
 			px = this.layoutXFactor * gapW;
@@ -135,6 +137,10 @@ class PromptPanel extends UIEntityContainer implements IPromptPanel {
 			px = pw - px - btnW;
 			let cancelBtn = this.createBtn(this.m_cancelNS, px, py, "cancel");
 			this.createBG(pw, ph);
+
+			// let textLabel = new TextLabel();
+			// textLabel.initialize("Hi, ...", sc, )
+
 			this.addEntity(cancelBtn);
 			this.addEntity(confirmBtn);
 

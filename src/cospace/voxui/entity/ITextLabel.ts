@@ -10,10 +10,9 @@ interface ITextLabel extends IUIEntity {
 	/**
 	 * @param text text content
 	 * @param uiScene ICoUIScene instance
-	 * @param rpi the default value is 0
 	 * @param fontSize the default value is 24
 	 */
-	initialize(text: string, uiScene: ICoUIScene, rpi?: number, fontSize?: number): void;
+	initialize(text: string, uiScene: ICoUIScene, fontSize?: number): void;
 	setText(text: string): void;
 	getText(): string;
 

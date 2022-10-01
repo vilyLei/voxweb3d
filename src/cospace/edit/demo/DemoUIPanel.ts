@@ -176,7 +176,7 @@ export class DemoUIPanel {
 		// this.loadImgs();
 		this.createCanvasClips();
 	}
-	private m_textLabel: ITextLabel;
+	private m_textLabel: ITextLabel = null;
 	private createCanvasClips(): void {
 		console.log("createCanvasClips()................");
 
@@ -191,7 +191,7 @@ export class DemoUIPanel {
 		
 		
 		let textLabel = new TextLabel();
-		textLabel.initialize("hello", uisc, 0, 24);
+		textLabel.initialize("hello", uisc, 24);
 		textLabel.setXY(200, 100);
 		this.m_uiScene.addEntity( textLabel );
 		this.m_textLabel = textLabel;

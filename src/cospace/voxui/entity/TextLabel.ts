@@ -23,7 +23,7 @@ class TextLabel extends UIEntityBase implements ITextLabel {
 	private m_ph = 10;
 	private m_sx = 1.0;
 	private m_sy = 1.0;
-	private m_rpi = 0;
+	// private m_rpi = 0;
 	private m_material: IDefault3DMaterial = null;
 	private m_uiScene: ICoUIScene;
 	private m_fontColor: IColor4;
@@ -33,16 +33,14 @@ class TextLabel extends UIEntityBase implements ITextLabel {
 	private m_text = "";
 	constructor() { super(); }
 
-	initialize(text: string, uiScene: ICoUIScene, rpi: number = 0, fontSize: number = 24): void {
+	initialize(text: string, uiScene: ICoUIScene, fontSize: number = 24): void {
 
 		if (text != "" && this.isIniting()) {
 
-			if (rpi < 0) rpi = 0;
 			if (fontSize < 12) fontSize = 12;
 			this.init();
 			this.m_text = text;
 			this.m_uiScene = uiScene;
-			this.m_rpi = rpi;
 
 			let entity = CoEntity.createDisplayEntity();
 
@@ -68,7 +66,6 @@ class TextLabel extends UIEntityBase implements ITextLabel {
 			entity.setMesh(mesh);
 			this.m_entities.push(entity);
 			this.applyRST(entity);
-			// super.setScaleXY(this.m_pw, this.m_ph);
 			super.setScaleXY(this.m_sx * this.m_pw, this.m_sy * this.m_ph);
 		}
 	}
@@ -106,7 +103,7 @@ class TextLabel extends UIEntityBase implements ITextLabel {
 			this.m_pw = img.width;
 			this.m_ph = img.height;
 			super.setScaleXY(this.m_sx * this.m_pw, this.m_sy * this.m_ph);
-			
+
 		}
 	}
 	getText(): string {
