@@ -11,6 +11,7 @@ import { TipInfo } from "../../../../voxui/base/TipInfo";
 import { ColorLabel } from "../../../../voxui/entity/ColorLabel";
 import { IColorLabel } from "../../../../voxui/entity/IColorLabel";
 import { PromptPanel } from "../../../../voxui/panel/PromptPanel";
+import { IPromptPanel } from "../../../../voxui/panel/IPromptPanel";
 // import { LeftTopLayouter } from "../../../../voxui/layout/LeftTopLayouter";
 
 declare var CoRenderer: ICoRenderer;
@@ -53,7 +54,7 @@ class NavigationUI {
 
 		this.initNavigationUI();
 	}
-	private m_promptPanel: PromptPanel = null;// = new PromptPanel();
+	private m_promptPanel: IPromptPanel = null;// = new PromptPanel();
 	
 	private m_bgLabel: IColorLabel = null;
 	private m_bgLabelW: number;
@@ -123,7 +124,8 @@ class NavigationUI {
 		}
 
 		// this.m_promptPanel = new PromptPanel();
-		let panel = new PromptPanel();
+		// let panel = new PromptPanel();
+		let panel = CoUI.createPromptPanel();
 		panel.initialize(uiScene,0,  320, 200, 120, 50, "确认", "取消");
 		// uiScene.addEntity(panel);
 		// panel.open();

@@ -6,11 +6,11 @@
 // import { DemoMoveObj as Demo } from "./demo/DemoMoveObj";
 
 // import { DemoEditTrans as Demo } from "./demo/DemoEditTrans";
-// import { DemoTransEditor as Demo } from "./demo/DemoTransEditor";
+import { DemoTransEditor as Demo } from "./demo/DemoTransEditor";
 
 // import { DemoUIAtlas as Demo } from "./demo/DemoUIAtlas";
 // import { DemoUIScene as Demo } from "./demo/DemoUIScene";
-import { DemoUIPanel as Demo } from "./demo/DemoUIPanel";
+// import { DemoUIPanel as Demo } from "./demo/DemoUIPanel";
 
 // import { DemoKeyboardEvent as Demo } from "./demo/DemoKeyboardEvent";
 // import { DemoTransRecoder as Demo } from "./demo/DemoTransRecoder";
