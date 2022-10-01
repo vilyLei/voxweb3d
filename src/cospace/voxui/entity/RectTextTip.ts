@@ -42,7 +42,7 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 		this.premultiplyAlpha = true;
 	}
 
-	initialize(uiScene: ICoUIScene, rpi: number = 0, fontSize: number = 24): void {
+	initialize(uiScene: ICoUIScene, rpi: number = 0, fontSize: number = 24, fontColor: IColor4 = null, bgColor: IColor4 = null): void {
 
 		if (this.isIniting()) {
 
@@ -55,9 +55,9 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 			this.m_rpi = rpi;
 
 			let entity = CoEntity.createDisplayEntity();
-
-			this.m_fontColor = CoMaterial.createColor4().setRGB3Bytes(170, 170, 170);
-			this.m_bgColor = CoMaterial.createColor4(0.1, 0.1, 0.1, 0.5);
+			
+			this.m_fontColor = fontColor == null ? CoMaterial.createColor4().setRGB3Bytes(170, 170, 170) : fontColor;
+			this.m_bgColor = bgColor == null ? CoMaterial.createColor4(0.1, 0.1, 0.1, 0.5) : bgColor;
 
 			let img = this.m_texAtlas.createCharsImage(this.m_text, this.m_fontSize, this.m_fontColor, this.m_bgColor);
 			this.m_tex = uiScene.rscene.textureBlock.createImageTex2D(img.width, img.height);
