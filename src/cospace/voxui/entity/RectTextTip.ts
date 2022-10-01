@@ -55,7 +55,7 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 			this.m_rpi = rpi;
 
 			let entity = CoEntity.createDisplayEntity();
-			
+
 			this.m_fontColor = fontColor == null ? CoMaterial.createColor4().setRGB3Bytes(170, 170, 170) : fontColor;
 			this.m_bgColor = bgColor == null ? CoMaterial.createColor4(0.1, 0.1, 0.1, 0.5) : bgColor;
 
@@ -129,7 +129,7 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 		this.m_uiScene.removeEntity(this);
 	}
 	setText(text: string): void {
-		if (text != "" && this.m_text != text) {
+		if (this.m_tex != null && text != "" && this.m_text != text) {
 
 			this.m_text = text;
 			let img = this.m_texAtlas.createCharsImage(text, this.m_fontSize, this.m_fontColor, this.m_bgColor);

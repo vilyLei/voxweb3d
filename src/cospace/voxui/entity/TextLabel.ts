@@ -27,6 +27,7 @@ class TextLabel extends UIEntityBase implements ITextLabel {
 	private m_material: IDefault3DMaterial = null;
 	private m_uiScene: ICoUIScene;
 	private m_fontColor: IColor4;
+	private m_bgColor: IColor4;
 	private m_tex: IImageTexture = null;
 	private m_fontSize = 24;
 	private m_text = "";
@@ -45,9 +46,10 @@ class TextLabel extends UIEntityBase implements ITextLabel {
 
 			let entity = CoEntity.createDisplayEntity();
 
-			this.m_fontColor = CoMaterial.createColor4()
+			this.m_fontColor = CoMaterial.createColor4();
+			this.m_bgColor = CoMaterial.createColor4(1.0, 1.0, 1.0, 0.0);
 
-			let img = this.m_uiScene.texAtlas.createCharsImage(this.m_text, this.m_fontSize, this.m_fontColor, CoMaterial.createColor4(1.0, 1.0, 1.0, 0.0));
+			let img = this.m_uiScene.texAtlas.createCharsImage(this.m_text, this.m_fontSize, this.m_fontColor, this.m_bgColor);
 			this.m_tex = uiScene.rscene.textureBlock.createImageTex2D(img.width, img.height);
 			this.m_tex.setDataFromImage(img);
 
@@ -93,8 +95,18 @@ class TextLabel extends UIEntityBase implements ITextLabel {
 	}
 
 	setText(text: string): void {
-		if (this.m_uiScene != null) {
+		if (this.m_tex != null && text != "" && this.m_text != text) {
 
+			this.m_text = text;
+			let img = this.m_uiScene.texAtlas.createCharsImage(text, this.m_fontSize, this.m_fontColor, this.m_bgColor);
+
+			this.m_tex.setDataFromImage(img, 0, 0, 0, true);
+			this.m_tex.updateDataToGpu();
+
+			this.m_pw = img.width;
+			this.m_ph = img.height;
+			super.setScaleXY(this.m_sx * this.m_pw, this.m_sy * this.m_ph);
+			
 		}
 	}
 	getText(): string {

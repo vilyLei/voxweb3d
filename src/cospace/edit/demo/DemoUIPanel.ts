@@ -31,6 +31,7 @@ import { ColorLabel } from "../../voxui/entity/ColorLabel";
 import { PromptPanel } from "../../voxui/panel/PromptPanel";
 import { RectTextTip } from "../../voxui/entity/RectTextTip";
 import { TextLabel } from "../../voxui/entity/TextLabel";
+import { ITextLabel } from "../../voxui/entity/ITextLabel";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 //CanvasTexAtlas
@@ -60,10 +61,6 @@ export class DemoUIPanel {
 
 	initialize(): void {
 		console.log("DemoUIPanel::initialize() ...");
-
-		document.onmousedown = (evt: any): void => {
-			this.mouseDown(evt);
-		};
 
 		this.initEngineModule();
 	}
@@ -179,6 +176,7 @@ export class DemoUIPanel {
 		// this.loadImgs();
 		this.createCanvasClips();
 	}
+	private m_textLabel: ITextLabel;
 	private createCanvasClips(): void {
 		console.log("createCanvasClips()................");
 
@@ -194,7 +192,9 @@ export class DemoUIPanel {
 		
 		let textLabel = new TextLabel();
 		textLabel.initialize("hello", uisc, 0, 24);
+		textLabel.setXY(200, 100);
 		this.m_uiScene.addEntity( textLabel );
+		this.m_textLabel = textLabel;
 
 		// let tip: RectTextTip = new RectTextTip();
 		// tip.initialize(this.m_uiScene, 1);
@@ -302,9 +302,15 @@ export class DemoUIPanel {
 			rparam.setCamProject(45, 20.0, 9000.0);
 			this.m_rscene = CoRScene.createRendererScene(rparam, 3);
 			this.m_rscene.setClearUint24Color(0x282828);
+			this.m_rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_CLICK, this, this.mouseDownListener);
 		}
 	}
-	private mouseDown(evt: any): void { }
+	private mouseDownListener(evt: any): void {
+		if(this.m_textLabel != null) {
+			this.m_textLabel.setText("Good-Day");
+			this.m_textLabel.update();
+		}
+	}
 	run(): void {
 		if (this.m_rscene != null) {
 			if (this.m_interact != null) {
