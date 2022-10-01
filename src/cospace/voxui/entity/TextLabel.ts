@@ -31,7 +31,9 @@ class TextLabel extends UIEntityBase implements ITextLabel {
 	private m_tex: IImageTexture = null;
 	private m_fontSize = 24;
 	private m_text = "";
-	constructor() { super(); }
+	constructor() {
+		super();
+	}
 
 	initialize(text: string, uiScene: ICoUIScene, fontSize: number = 24): void {
 
@@ -39,6 +41,8 @@ class TextLabel extends UIEntityBase implements ITextLabel {
 
 			if (fontSize < 12) fontSize = 12;
 			this.init();
+			// this.transparent = true;
+			// this.premultiplyAlpha = true;
 			this.m_text = text;
 			this.m_uiScene = uiScene;
 
@@ -52,7 +56,7 @@ class TextLabel extends UIEntityBase implements ITextLabel {
 			this.m_tex.setDataFromImage(img);
 
 			this.m_tex.flipY = true;
-			this.m_tex.premultiplyAlpha = true;
+			this.m_tex.premultiplyAlpha = true;//this.premultiplyAlpha;
 			this.m_tex.minFilter = CoRScene.TextureConst.LINEAR;
 			this.m_tex.magFilter = CoRScene.TextureConst.NEAREST;
 
@@ -67,6 +71,7 @@ class TextLabel extends UIEntityBase implements ITextLabel {
 			this.m_entities.push(entity);
 			this.applyRST(entity);
 			super.setScaleXY(this.m_sx * this.m_pw, this.m_sy * this.m_ph);
+			this.update();
 		}
 	}
 

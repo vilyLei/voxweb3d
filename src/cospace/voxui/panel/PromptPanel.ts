@@ -25,6 +25,7 @@ class PromptPanel extends UIEntityContainer implements IPromptPanel {
 	private m_confirmBtn: IButton;
 	private m_cancelBtn: IButton;
 	private m_bgLabel: ColorLabel;
+	private m_textLabel: TextLabel;
 	private m_panelW: number = 17;
 	private m_panelH: number = 130;
 	private m_btnW: number = 90;
@@ -36,7 +37,7 @@ class PromptPanel extends UIEntityContainer implements IPromptPanel {
 	private m_cancelFunc: () => void = null;
 
 	layoutXFactor: number = 0.7;
-	layoutYFactor: number = 0.7;
+	layoutYFactor: number = 0.9;
 
 	constructor() { super(); }
 
@@ -132,17 +133,33 @@ class PromptPanel extends UIEntityContainer implements IPromptPanel {
 			let gapW = (pw - disW) * 0.5;
 
 
+			let textLabel = new TextLabel();
+			textLabel.depthTest = true;
+			textLabel.transparent = true;
+			textLabel.premultiplyAlpha = true;
+			textLabel.initialize("Hi, ...", sc);
+			this.m_textLabel = textLabel;
+			let disH = btnH + textLabel.getHeight();
+			let gapH = (ph - disH) * 0.5;
+
+			console.log("textLabel.getHeight(): ", textLabel.getHeight());
+			
 			px = this.layoutXFactor * gapW;
+			py = this.layoutYFactor * gapH;
 			let confirmBtn = this.createBtn(this.m_confirmNS, px, py, "confirm");
 			px = pw - px - btnW;
 			let cancelBtn = this.createBtn(this.m_cancelNS, px, py, "cancel");
-			this.createBG(pw, ph);
 
-			// let textLabel = new TextLabel();
-			// textLabel.initialize("Hi, ...", sc, )
 
 			this.addEntity(cancelBtn);
 			this.addEntity(confirmBtn);
+			this.createBG(pw, ph);
+
+
+			px = (pw - textLabel.getWidth()) * 0.5;
+			py = ph - py - textLabel.getHeight();
+			textLabel.setXY(px,py);
+			this.addEntity(textLabel);
 
 			this.setVisible(this.m_isOpen);
 			if (this.m_isOpen) {

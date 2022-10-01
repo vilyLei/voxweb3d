@@ -190,15 +190,14 @@ export class DemoUIPanel {
 		let tta = transparentTexAtlas;
 		
 		
-		let textLabel = new TextLabel();
-		textLabel.initialize("hello", uisc, 24);
-		textLabel.setXY(200, 100);
-		this.m_uiScene.addEntity( textLabel );
-		this.m_textLabel = textLabel;
-
-		// let tip: RectTextTip = new RectTextTip();
-		// tip.initialize(this.m_uiScene, 1);
-		return;
+		// let textLabel = new TextLabel();
+		// textLabel.initialize("hello", uisc, 24);
+		// textLabel.setXY(200, 100);
+		// this.m_uiScene.addEntity( textLabel );
+		// this.m_textLabel = textLabel;
+		// // let tip: RectTextTip = new RectTextTip();
+		// // tip.initialize(this.m_uiScene, 1);
+		// return;
 		let panel = new PromptPanel();
 		panel.initialize(this.m_uiScene, 0, 300, 200, 120, 50);
 		// this.m_uiScene.addEntity(panel);
