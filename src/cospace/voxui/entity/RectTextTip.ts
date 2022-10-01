@@ -28,11 +28,10 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 
 	private m_pw = 10;
 	private m_ph = 10;
+	private m_rpi = 0;
 	private m_uiScene: ICoUIScene;
-	// private m_pos: IVector3D;
 	private m_fontColor: IColor4;
 	private m_bgColor: IColor4;
-	// private m_entity: ITransformEntity = null;
 	private m_texAtlas: ICanvasTexAtlas = null;
 	private m_tex: IImageTexture = null;
 	private m_fontSize = 24;
@@ -53,10 +52,9 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 			this.init();
 
 			this.m_uiScene = uiScene;
+			this.m_rpi = rpi;
 
 			let entity = CoEntity.createDisplayEntity();
-
-			// this.m_pos = CoMath.createVec3();
 
 			this.m_fontColor = CoMaterial.createColor4().setRGB3Bytes(170, 170, 170);
 			this.m_bgColor = CoMaterial.createColor4(0.1, 0.1, 0.1, 0.5);
@@ -71,7 +69,7 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 			this.m_tex.magFilter = CoRScene.TextureConst.NEAREST;
 
 			let material = this.createMaterial(this.m_tex);
-			
+
 			CoMesh.plane.setBufSortFormat(material.getBufSortFormat());
 			let mesh = CoMesh.plane.createXOY(0, 0, 1.0, 1.0);
 			this.m_pw = img.width;
@@ -79,20 +77,16 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 			entity.setMaterial(material);
 			entity.setMesh(mesh);
 			this.m_entities.push(entity);
-			this.applyRST( entity );
+			this.applyRST(entity);
 			this.setScaleXY(img.width, img.height);
 
-			// uiScene.rscene.addEntity(entity, rpi);
-			uiScene.addEntity(this, rpi);
-
-			// entity.setRenderState(CoRScene.RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
-
-			this.setVisible(false);
+			// this.m_uiScene.addEntity(this, this.m_rpi);
+			// this.setVisible(false);
 
 		}
 	}
 	addEntity(entity: IMouseEvtUIEntity): void {
-		if(entity != null) {
+		if (entity != null) {
 
 			const ME = CoRScene.MouseEvent;
 			entity.addEventListener(ME.MOUSE_OUT, this, this.targetMouseOut);
@@ -101,7 +95,7 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 		}
 	}
 	removeEntity(entity: IMouseEvtUIEntity): void {
-		if(entity != null) {
+		if (entity != null) {
 
 			const ME = CoRScene.MouseEvent;
 			entity.removeEventListener(ME.MOUSE_OUT, this, this.targetMouseOut);
@@ -112,7 +106,7 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 
 	private moveTar(tar: IUIEntity, mx: number, my: number): void {
 
-		let bounds = tar.getGlobalBounds();		
+		let bounds = tar.getGlobalBounds();
 		let info = tar.info;
 		let pv = info.getPos(mx, my, bounds, this.getGlobalBounds());
 		this.setXY(pv.x, pv.y);
@@ -120,7 +114,8 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 	}
 	private targetMouseOver(evt: any): void {
 
-		this.setVisible(true);
+		this.m_uiScene.addEntity(this, this.m_rpi);
+		// this.setVisible(true);
 		let tar = evt.currentTarget as IUIEntity;
 		this.setText(tar.info.getCotent());
 		this.moveTar(tar, evt.mouseX, evt.mouseY);
@@ -130,7 +125,8 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 		this.moveTar(tar, evt.mouseX, evt.mouseY);
 	}
 	private targetMouseOut(evt: any): void {
-		this.setVisible(false);
+		// this.setVisible(false);
+		this.m_uiScene.removeEntity(this);
 	}
 	setText(text: string): void {
 		if (text != "" && this.m_text != text) {
@@ -138,12 +134,11 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 			this.m_text = text;
 			let img = this.m_texAtlas.createCharsImage(text, this.m_fontSize, this.m_fontColor, this.m_bgColor);
 
-			this.m_tex.setDataFromImage(img,0,0,0,true);
+			this.m_tex.setDataFromImage(img, 0, 0, 0, true);
 			this.m_tex.updateDataToGpu();
 
 			this.m_pw = img.width;
 			this.m_ph = img.height;
-			// this.m_entity.setScaleXYZ(img.width, img.height, 1.0);
 			this.setScaleXY(img.width, img.height);
 		}
 	}
@@ -156,42 +151,6 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 		this.m_tex = null;
 		this.m_texAtlas = null;
 	}
-	// getWidth(): number {
-	// 	return this.m_pw;
-	// }
-	// getHeight(): number {
-	// 	return this.m_ph;
-	// }
-	// setXY(px: number, py: number): void {
-
-	// 	this.m_pos.x = px;
-	// 	this.m_pos.y = py;
-	// 	this.m_entity.setPosition( this.m_pos );
-
-	// }
-	// setPosition(pv: IVector3D): void {
-	// 	this.m_pos.copyFrom(pv);
-	// 	this.m_entity.setPosition(pv);
-	// }
-	// getPosition(pv: IVector3D): IVector3D {
-	// 	return this.m_entity.getPosition(pv);
-	// }
-	// setVisible(v: boolean): void {
-	// 	this.m_entity.setVisible(v);
-	// }
-	// update(): void {
-	// 	this.m_entity.update();
-	// }
-	// destroy(): void {
-	// 	if(this.m_entity != null) {
-	// 		this.m_entity.destroy();
-	// 		this.m_entity = null;
-
-	// 		this.m_uiScene = null;
-	// 		this.m_tex = null;
-
-	// 	}
-	// }
 }
 
 export { RectTextTip }
