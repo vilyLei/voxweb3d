@@ -71,9 +71,7 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 			this.m_tex.magFilter = CoRScene.TextureConst.NEAREST;
 
 			let material = this.createMaterial(this.m_tex);
-			// material.setTextureList([this.m_tex]);
-			// material.premultiplyAlpha = true;
-			// material.initializeByCodeBuf(true);
+			
 			CoMesh.plane.setBufSortFormat(material.getBufSortFormat());
 			let mesh = CoMesh.plane.createXOY(0, 0, 1.0, 1.0);
 			this.m_pw = img.width;

@@ -16,6 +16,12 @@ class UIEntityContainer extends UIEntityBase implements IUIEntityContainer {
 			this.m_rcontainer = CoRScene.createDisplayEntityContainer();
 		}
 	}
+	protected addedEntity(entity: IUIEntity): void {
+
+	}
+	protected removedEntity(entity: IUIEntity): void {
+
+	}
 	addEntity(entity: IUIEntity): void {
 		if (entity != null) {
 			let i = 0;
@@ -25,6 +31,7 @@ class UIEntityContainer extends UIEntityBase implements IUIEntityContainer {
 			if (i >= this.m_uientities.length) {
 				this.m_uientities.push(entity);
 				entity.update();
+
 				let container = entity.getRContainer();
 				if (container != null) {
 					this.m_rcontainer.addChild(container);
@@ -33,6 +40,7 @@ class UIEntityContainer extends UIEntityBase implements IUIEntityContainer {
 				for (let k = 0; k < ls.length; ++k) {
 					this.m_rcontainer.addEntity(ls[k]);
 				}
+				this.addedEntity(entity);
 			}
 		}
 	}
@@ -42,6 +50,7 @@ class UIEntityContainer extends UIEntityBase implements IUIEntityContainer {
 			for (; i < this.m_uientities.length; ++i) {
 				if (this.m_uientities[i] == entity) {
 					this.m_uientities.splice(i, 1);
+
 					let container = entity.getRContainer();
 					if (container != null) {
 						this.m_rcontainer.removeChild(container);
@@ -50,6 +59,7 @@ class UIEntityContainer extends UIEntityBase implements IUIEntityContainer {
 					for (let k = 0; k < ls.length; ++k) {
 						this.m_rcontainer.removeEntity(ls[k]);
 					}
+					this.removedEntity(entity);
 					break;
 				}
 			}
