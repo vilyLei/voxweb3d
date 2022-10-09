@@ -108,7 +108,7 @@ class TextLabel extends UIEntityBase implements ITextLabel {
 			this.m_pw = img.width;
 			this.m_ph = img.height;
 			super.setScaleXY(this.m_sx * this.m_pw, this.m_sy * this.m_ph);
-
+			this.update();
 		}
 	}
 	getText(): string {
