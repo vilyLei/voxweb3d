@@ -54,7 +54,7 @@ class Button extends UIEntityBase implements IButton {
 		return this.m_entities != null && this.m_entities[0].mouseEnabled;
 	}
 
-	initialize(atlas: ICanvasTexAtlas, idnsList: string[]): IButton {
+	initialize(atlas: ICanvasTexAtlas, idnsList: string[] = null): IButton {
 
 		if (this.isIniting() && atlas != null && idnsList != null) {
 			this.init();
@@ -106,7 +106,6 @@ class Button extends UIEntityBase implements IButton {
 	}
 
 	addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): IButton {
-
 		this.m_dp.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
 		return this;
 	}
@@ -153,7 +152,6 @@ class Button extends UIEntityBase implements IButton {
 		}
 	}
 	protected mouseUpListener(evt: any): void {
-		// console.log("Button::mouseUpListener() ...");
 		if (this.m_enabled) {
 			this.m_lb.setClipIndex(3);
 			let ls = this.m_lbs;
