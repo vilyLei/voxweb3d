@@ -28,6 +28,8 @@ import { ColorClipLabel } from "../../voxui/entity/ColorClipLabel";
 import { CoUIScene } from "../../voxui/scene/CoUIScene";
 import { LeftTopLayouter } from "../../voxui/layout/LeftTopLayouter";
 import { ColorLabel } from "../../voxui/entity/ColorLabel";
+import IColor4 from "../../../vox/material/IColor4";
+import { FlagButton } from "../../voxui/button/FlagButton";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 //CanvasTexAtlas
@@ -174,7 +176,81 @@ export class DemoUIScene {
 		// document.body.appendChild(canvas);
 
 		// this.loadImgs();
-		this.createCanvasClips();
+		// this.createCanvasClips();
+		this.createFlagBtn();
+	}
+	private selectLic(evt: any): void {
+		console.log("select, evt: ", evt);
+	}
+	private createFlagBtn(): void {
+
+		let uisc = this.m_uiScene;
+		let texAtlas = uisc.texAtlas;
+
+		let flagBtn = new FlagButton();
+		flagBtn.initializeWithSize(texAtlas);
+		flagBtn.setXY(200,30);
+		this.m_uiScene.addEntity(flagBtn);
+		flagBtn.addEventListener(CoRScene.SelectionEvent.SELECT, this, this.selectLic);
+		/*
+		let borderColor = CoMaterial.createColor4(0.7, 0.7, 0.7);
+		let bgColor = CoMaterial.createColor4(0.3, 0.3, 0.3);
+		let canvas = this.createFlagImg(borderColor, bgColor);
+		// document.body.append(canvas);
+		
+		texAtlas.addImageToAtlas("flagBtn_01", canvas);
+
+		borderColor = CoMaterial.createColor4(0.7, 0.7, 0.7);
+		bgColor = CoMaterial.createColor4(0.3, 0.3, 0.3);
+		let flagColor = CoMaterial.createColor4(1.0,1.0,1.0);
+		canvas = this.createFlagImg(borderColor, bgColor, flagColor, 4);
+		// document.body.append(canvas);
+		texAtlas.addImageToAtlas("flagBtn_02", canvas);
+
+		let urls = ["flagBtn_01", "flagBtn_02"];
+		let csLable = new ClipLabel();
+		csLable.initialize(texAtlas, urls);
+
+		let colorClipLabel = new ColorClipLabel();
+		colorClipLabel.initialize(csLable, 4);
+		colorClipLabel.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
+		colorClipLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
+		colorClipLabel.getColorAt(2).setRGB3f(1.0, 0.2, 1.0);
+		colorClipLabel.setLabelClipIndex( 1 );
+		// colorClipLabel.setXY(200,0);
+		// colorClipLabel.setClipIndex(2);
+		// this.m_uiScene.addEntity(colorClipLabel);
+		// let colorBtn = CoUI.createButton(); //new Button();
+
+		let colorBtn = new Button();
+		colorBtn.initializeWithLable(colorClipLabel);
+		colorBtn.setXY(200,0);
+		this.m_uiScene.addEntity(colorBtn);
+
+		// let csLable2 = new ClipLabel();
+		// csLable2.initialize(texAtlas, urls);
+		//*/
+	}
+	private createFlagImg(borderColor: IColor4, bgColor: IColor4, flagColor: IColor4 = null, dis: number = 2): HTMLCanvasElement | HTMLImageElement {
+
+		let uisc = this.m_uiScene;
+		let texAtlas = uisc.texAtlas;
+		let pw = 32;
+		let ph = 32;
+		let borderWidth = 4;
+		// let borderColor = CoMaterial.createColor4(0.7,0.7,0.7);
+		// let bgColor = CoMaterial.createColor4(0.3,0.3,0.3);
+		let canvas = texAtlas.createCanvas(pw, ph, borderColor, false);
+		let ctx2D = canvas.getContext("2d");
+		ctx2D.fillStyle = bgColor.getCSSDecRGBAColor();
+		ctx2D.fillRect(borderWidth, borderWidth, pw - 2 * borderWidth, ph - 2 * borderWidth);
+		// texAtlas.addImageToAtlas("selectR_01", canvas);
+		if (flagColor != null) {
+			ctx2D.fillStyle = flagColor.getCSSDecRGBAColor();
+			ctx2D.fillRect(borderWidth + dis, borderWidth + dis, pw - 2 * (borderWidth + dis), ph - 2 * (borderWidth + dis));
+		}
+
+		return canvas;
 	}
 	private createCanvasClips(): void {
 		console.log("createCanvasClips()................");
@@ -229,6 +305,21 @@ export class DemoUIScene {
 		this.m_uiScene.addEntity(btn01);
 		return;
 		//*/
+		///*
+		let pw = 32;
+		let ph = 32;
+		let borderWidth = 4;
+		let borderColor = CoMaterial.createColor4(0.7, 0.7, 0.7);
+		let bgColor = CoMaterial.createColor4(0.3, 0.3, 0.3);
+		let canvas = texAtlas.createCanvas(pw, ph, borderColor, false);
+		let ctx2D = canvas.getContext("2d");
+		ctx2D.fillStyle = bgColor.getCSSDecRGBAColor();
+		ctx2D.fillRect(borderWidth, borderWidth, pw - 2 * borderWidth, ph - 2 * borderWidth);
+		document.body.append(canvas);
+		texAtlas.addImageToAtlas("selectR_01", canvas);
+
+
+		//*/
 		/*
 		urls = ["AAA-0", "AAA-1", "AAA-2", "AAA-3"];
 		img = texAtlas.createCharsCanvasFixSize(90, 40, urls[0], 30);
@@ -250,31 +341,31 @@ export class DemoUIScene {
 		let layouter = uisc.layout.createLeftTopLayouter();
 		layouter.addUIEntity(lable);
 		
-		lable = new ClipLabel();
-		lable.initialize(texAtlas, urls);
-		lable.setClipIndex(1);
-		lable.setXY(850, 600);
-		this.m_uiScene.addEntity(lable);
-		lable.setColor(CoMaterial.createColor4(0.1, 1.0, 0.4));
-		layouter = uisc.layout.createRightTopLayouter();
-		layouter.addUIEntity(lable);
-		//createRightBottomLayouter
-		lable = new ClipLabel();
-		lable.initialize(texAtlas, urls);
-		lable.setClipIndex(1);
-		lable.setXY(600, 100);
-		this.m_uiScene.addEntity(lable);
-		lable.setColor(CoMaterial.createColor4(0.1, 1.0, 0.4));
-		layouter = uisc.layout.createRightBottomLayouter();
-		layouter.addUIEntity(lable);
-		//return;
+		// lable = new ClipLabel();
+		// lable.initialize(texAtlas, urls);
+		// lable.setClipIndex(1);
+		// lable.setXY(850, 600);
+		// this.m_uiScene.addEntity(lable);
+		// lable.setColor(CoMaterial.createColor4(0.1, 1.0, 0.4));
+		// layouter = uisc.layout.createRightTopLayouter();
+		// layouter.addUIEntity(lable);
+		// //createRightBottomLayouter
+		// lable = new ClipLabel();
+		// lable.initialize(texAtlas, urls);
+		// lable.setClipIndex(1);
+		// lable.setXY(600, 100);
+		// this.m_uiScene.addEntity(lable);
+		// lable.setColor(CoMaterial.createColor4(0.1, 1.0, 0.4));
+		// layouter = uisc.layout.createRightBottomLayouter();
+		// layouter.addUIEntity(lable);
+		// //return;
 
-		// let lable01 = CoUI.createClipLabel();
-		let lable01 = new ClipLabel();
-		lable01.initializeWithLable(lable);
-		lable01.setClipIndex(1);
-		lable01.setXY(200, 200);
-		this.m_uiScene.addEntity(lable01);
+		// // let lable01 = CoUI.createClipLabel();
+		// let lable01 = new ClipLabel();
+		// lable01.initializeWithLable(lable);
+		// lable01.setClipIndex(1);
+		// lable01.setXY(200, 200);
+		// this.m_uiScene.addEntity(lable01);
 
 		let btnUrls = [urls[0], urls[1], urls[2], urls[1]];
 		btnUrls = urls;
@@ -284,7 +375,7 @@ export class DemoUIScene {
 		btn.setXY(50,0);
 		// btn.initializeWithLable(lable01);
 		this.m_uiScene.addEntity(btn);
-		//return;
+		/*
 		let csLable = new ClipLabel();
 		csLable.initialize(texAtlas, urls);
 
@@ -308,6 +399,7 @@ export class DemoUIScene {
 		// csLable2.initialize(texAtlas, urls);
 		//*/
 
+		/*
 		let colorLabel = new ColorLabel();
 		colorLabel.initialize(200, 130);
 		colorLabel.setXY(330, 500);
@@ -354,6 +446,7 @@ export class DemoUIScene {
 
 		let layouter = uisc.layout.createLeftTopLayouter();
 		layouter.addUIEntity(colorBtn2);
+		//*/
 	}
 	private createDefaultEntity(): void {
 		let axis = CoRScene.createAxis3DEntity();

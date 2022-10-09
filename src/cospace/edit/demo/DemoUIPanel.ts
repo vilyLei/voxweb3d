@@ -32,6 +32,7 @@ import { PromptPanel } from "../../voxui/panel/PromptPanel";
 import { RectTextTip } from "../../voxui/entity/RectTextTip";
 import { TextLabel } from "../../voxui/entity/TextLabel";
 import { ITextLabel } from "../../voxui/entity/ITextLabel";
+import { NormalPptPanel } from "../../app/normalViewer/ui/NormalPptPanel";
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
 //CanvasTexAtlas
@@ -177,6 +178,7 @@ export class DemoUIPanel {
 		this.createCanvasClips();
 	}
 	private m_textLabel: ITextLabel = null;
+	private m_promptLabel: PromptPanel = null;
 	private createCanvasClips(): void {
 		console.log("createCanvasClips()................");
 
@@ -198,6 +200,7 @@ export class DemoUIPanel {
 		// // let tip: RectTextTip = new RectTextTip();
 		// // tip.initialize(this.m_uiScene, 1);
 		// return;
+		/*
 		let panel = new PromptPanel();
 		panel.initialize(this.m_uiScene, 0, 300, 200, 120, 50);
 		// this.m_uiScene.addEntity(panel);
@@ -212,6 +215,13 @@ export class DemoUIPanel {
 				console.log("panel cancel...");
 			}
 		);
+		this.m_promptLabel = panel;
+		//*/
+		let panel = new NormalPptPanel();
+		panel.initialize(this.m_uiScene, 0, 360, 300, 50);
+		// this.m_uiScene.addEntity(panel);
+		panel.open();
+		panel.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
 
 		return;
 		let colorLabel = new ColorLabel();
@@ -305,9 +315,12 @@ export class DemoUIPanel {
 		}
 	}
 	private mouseDownListener(evt: any): void {
-		if(this.m_textLabel != null) {
-			this.m_textLabel.setText("Good-Day");
-			this.m_textLabel.update();
+		// if(this.m_textLabel != null) {
+		// 	this.m_textLabel.setText("Good-Day");
+		// 	this.m_textLabel.update();
+		// }
+		if(this.m_promptLabel != null) {
+			this.m_promptLabel.setPrompt("How are you?");
 		}
 	}
 	run(): void {
