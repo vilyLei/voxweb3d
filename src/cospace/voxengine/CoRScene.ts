@@ -14,6 +14,8 @@ import RendererParam from "../../vox/scene/RendererParam";
 import { ICoRendererScene } from "./scene/ICoRendererScene";
 
 import EventBase from "../../vox/event/EventBase";
+import EventBaseDispatcher from "../../vox/event/EventBaseDispatcher";
+import SelectionEvent from "../../vox/event/SelectionEvent";
 import MouseEvent from "../../vox/event/MouseEvent";
 import KeyboardEvent from "../../vox/event/KeyboardEvent";
 import EvtNode from "../../vox/event/EvtNode";
@@ -115,6 +117,9 @@ function getRendererScene(): ICoRendererScene {
 
 function createMouseEvt3DDispatcher(): IEvtDispatcher {
 	return new MouseEvt3DDispatcher();
+}
+function createEventBaseDispatcher(): EventBaseDispatcher {
+	return new EventBaseDispatcher();
 }
 function createDataMesh(): IDataMesh {
 	return new DataMesh();
@@ -260,6 +265,9 @@ function createRendererSceneGraph(): IRendererSceneGraph {
 function createEvtNode(): EvtNode {
 	return new EvtNode();
 }
+function createSelectionEvent(): SelectionEvent {
+	return new SelectionEvent();
+}
 export {
 
 	RendererDevice,
@@ -275,6 +283,7 @@ export {
 	Color4,
 	MouseEvent,
 	EventBase,
+	SelectionEvent,
 	KeyboardEvent,
 	Keyboard,
 
@@ -283,6 +292,8 @@ export {
 	MaterialContextParam,
 	RendererParam,
 	CoRendererScene,
+
+	createSelectionEvent,
 
 	createVec3,
 	createMat4,
@@ -294,7 +305,10 @@ export {
 	createRendererScene,
 	setRendererScene,
 	getRendererScene,
+
 	createMouseEvt3DDispatcher,
+	createEventBaseDispatcher,
+
 	createDataMesh,
 	createRawMesh,
 	createBoundsMesh,

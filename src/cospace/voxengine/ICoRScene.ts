@@ -8,6 +8,7 @@ import { ICoRendererScene } from "./scene/ICoRendererScene";
 import IEvtNode from "../../vox/event/IEvtNode";
 
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
+import ISelectionEvent from "../../vox/event/ISelectionEvent";
 import ITransformEntity from "../../vox/entity/ITransformEntity";
 import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
 import IBoundsEntity from "../../vox/entity/IBoundsEntity";
@@ -156,6 +157,9 @@ interface COEventBase {
 	readonly ENTER_FRAME: number;
 }
 
+interface CoSelectionEvent {
+	readonly SELECT: number;
+}
 interface ICoRScene {
 
 	RendererDevice: CoRendererDevice;
@@ -167,12 +171,15 @@ interface ICoRScene {
 	Vector3D: CoVec3;
 	MouseEvent: ICoMouseEvent;
 	EventBase: COEventBase;
+	SelectionEvent: CoSelectionEvent;
 	KeyboardEvent: ICoKeyboardEvent;
 	Keyboard: ICoKeyboard;
 
 	ShaderCodeUUID: CoShaderCodeUUID;
 	MaterialContextParam: CoMaterialContextParam;
 	MaterialPipeType: CoMaterialPipeType;
+
+	createSelectionEvent(): ISelectionEvent;
 	/**
 	 * create a Vector3D instance
 	 * @param px the default vaue is 0.0
@@ -207,6 +214,7 @@ interface ICoRScene {
 	getRendererScene(): ICoRendererScene;
 
 	createMouseEvt3DDispatcher(): IEvtDispatcher;
+	createEventBaseDispatcher(): IEvtDispatcher;
 
 	/**
 	 * build default 3d entity rendering material
