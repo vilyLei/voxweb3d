@@ -203,6 +203,7 @@ class PlaneMeshBuilder extends MeshBuilder implements IPlaneMeshBuilder {
 		mesh.reset();
         mesh.setTransformMatrix(this.transMatrix);
         mesh.setBufSortFormat(this.m_bufSortFormat);
+		this.transMatrix = null;
 		
 		mesh.addFloat32Data(vs, 3);
 		// console.log("XXXX BBBB mesh.isUVSEnabled(): ", mesh.isUVSEnabled());
