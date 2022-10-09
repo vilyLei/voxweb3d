@@ -10,6 +10,7 @@ interface IPromptPanel extends IUIEntity {
 	isOpen(): boolean;
 	close(): void;
 	setListener(confirmFunc: () => void, cancelFunc: () => void): void;
+	setPrompt(text: string): void;
 	
 }
 export { IPromptPanel };
