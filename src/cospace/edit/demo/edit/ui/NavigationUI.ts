@@ -54,7 +54,7 @@ class NavigationUI {
 
 		this.initNavigationUI();
 	}
-	private m_promptPanel: IPromptPanel = null;// = new PromptPanel();
+	private m_promptPanel: IPromptPanel = null;
 	
 	private m_bgLabel: IColorLabel = null;
 	private m_bgLabelW: number;
@@ -124,8 +124,8 @@ class NavigationUI {
 		}
 
 		// this.m_promptPanel = new PromptPanel();
-		// let panel = new PromptPanel();
-		let panel = CoUI.createPromptPanel();
+		let panel = new PromptPanel();
+		// let panel = CoUI.createPromptPanel();
 		panel.initialize(uiScene,0,  320, 200, 120, 50, "确认", "取消");
 		// uiScene.addEntity(panel);
 		// panel.open();

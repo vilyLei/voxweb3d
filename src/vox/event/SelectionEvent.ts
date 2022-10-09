@@ -6,18 +6,13 @@
 /***************************************************************************/
 
 import EventBase from "./EventBase";
-export default class SelectionEvent extends EventBase
-{
-    static SELECT:number = 3201;
-    
+import ISelectionEvent from "./ISelectionEvent";
+export default class SelectionEvent extends EventBase implements ISelectionEvent{
+    static SELECT: number = 3201;
+
     flag: boolean = true;
-    constructor()
-    {
+    constructor() {
         super();
         this.type = SelectionEvent.SELECT;
-    }
-    toString():string
-    {
-        return "[SelectionEvent]";
     }
 }

@@ -6,21 +6,11 @@
 /***************************************************************************/
 // 基本事件类
 
-interface IEventBase {
-    uuid: string;
-    getClassType(): number;
+import IEventBase from "./IEventBase";
+interface ISelectionEvent extends IEventBase {
     /**
-     * the default value is 0
-     */
-    phase: number;
-    // 事件类型
-    type: number;
-    // 事件发送者
-    target: any;
-    // 事件产生者, 例如容器发送了一个mouse down事件, 则容器是target而ray pick到的这个 entity就是currentTarget
-    currentTarget: any;
-    data: any;
-    preventDefault(): void;
-    reset(): void;
+	 * the default value is false
+	 */
+	flag: boolean;
 }
-export default IEventBase;
+export default ISelectionEvent;
