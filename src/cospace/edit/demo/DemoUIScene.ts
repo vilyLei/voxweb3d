@@ -176,8 +176,8 @@ export class DemoUIScene {
 		// document.body.appendChild(canvas);
 
 		// this.loadImgs();
-		// this.createCanvasClips();
-		this.createFlagBtn();
+		this.createCanvasClips();
+		// this.createFlagBtn();
 	}
 	private selectLic(evt: any): void {
 		console.log("select, evt: ", evt);
@@ -305,7 +305,7 @@ export class DemoUIScene {
 		this.m_uiScene.addEntity(btn01);
 		return;
 		//*/
-		///*
+		/*
 		let pw = 32;
 		let ph = 32;
 		let borderWidth = 4;
@@ -375,6 +375,7 @@ export class DemoUIScene {
 		btn.setXY(50,0);
 		// btn.initializeWithLable(lable01);
 		this.m_uiScene.addEntity(btn);
+		//*/
 		/*
 		let csLable = new ClipLabel();
 		csLable.initialize(texAtlas, urls);
@@ -399,10 +400,10 @@ export class DemoUIScene {
 		// csLable2.initialize(texAtlas, urls);
 		//*/
 
-		/*
+		///*
 		let colorLabel = new ColorLabel();
 		colorLabel.initialize(200, 130);
-		colorLabel.setXY(330, 500);
+		colorLabel.setXY(330, 400);
 		this.m_uiScene.addEntity(colorLabel, 1);
 
 		let colorClipLabel2 = new ClipColorLabel();

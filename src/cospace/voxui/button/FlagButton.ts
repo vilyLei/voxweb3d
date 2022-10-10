@@ -126,10 +126,10 @@ class FlagButton extends Button implements IButton {
 		let canvas = texAtlas.createCanvas(pw, ph, borderColor, false);
 		let ctx2D = canvas.getContext("2d");
 		ctx2D.fillStyle = bgColor.getCSSDecRGBAColor();
-		ctx2D.fillRect(borderWidth, borderWidth, pw - 2 * borderWidth, ph - 2 * borderWidth);
+		ctx2D.fillRect(borderWidth, borderWidth, pw - 2 * borderWidth, ph - 2 * borderWidth - 1);
 		if (flagColor != null) {
 			ctx2D.fillStyle = flagColor.getCSSDecRGBAColor();
-			ctx2D.fillRect(borderWidth + dis, borderWidth + dis, pw - 2 * (borderWidth + dis), ph - 2 * (borderWidth + dis));
+			ctx2D.fillRect(borderWidth + dis, borderWidth + dis, pw - 2 * (borderWidth + dis), ph - 2 * (borderWidth + dis) - 1);
 		}
 
 		return canvas;

@@ -8,6 +8,7 @@ import { IUISceneEntity } from "./IUISceneEntity";
 import { IUILayout } from "../layout/IUILayout";
 
 interface ICoUIScene {
+	
 	readonly rscene: IRendererScene;
 	readonly texAtlas: ICanvasTexAtlas;
 	readonly transparentTexAtlas: ICanvasTexAtlas;
@@ -19,6 +20,8 @@ interface ICoUIScene {
 	 * @param renderProcessesTotal the default value is 3
 	 */
 	initialize(crscene?: ICoRendererScene, atlasSize?: number, renderProcessesTotal?: number): void;
+	addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled?: boolean, bubbleEnabled?: boolean): ICoUIScene;
+	removeEventListener(type: number, listener: any, func: (evt: any) => void): ICoUIScene;
 	getStage(): IRenderStage3D;
 	getRect(): IAABB2D;
 	addEntity(entity: IUISceneEntity, processid?: number): void;

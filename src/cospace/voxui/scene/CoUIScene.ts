@@ -71,6 +71,15 @@ class CoUIScene implements ICoUIScene {
 			this.layout.initialize(this.m_stageRect);
 		}
 	}
+	
+	addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): ICoUIScene {
+		this.m_rstage.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+		return this;
+	}
+	removeEventListener(type: number, listener: any, func: (evt: any) => void): ICoUIScene {
+		this.m_rstage.removeEventListener(type, listener, func);
+		return this;
+	}
 	getStage(): IRenderStage3D {
 		return this.rscene.getStage3D();
 	}

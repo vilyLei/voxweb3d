@@ -4,9 +4,11 @@ import { IClipColorLabel } from "./entity/IClipColorLabel";
 import { ClipColorLabel } from "./entity/ClipColorLabel";
 import { ColorClipLabel } from "./entity/ColorClipLabel";
 import { ColorLabel } from "./entity/ColorLabel";
+import { TextLabel } from "./entity/TextLabel";
 
 import { IButton } from "./button/IButton";
 import { Button } from "./button/Button";
+import { FlagButton } from "./button/FlagButton";
 import { ICoUIScene } from "./scene/ICoUIScene";
 import { CoUIScene } from "./scene/CoUIScene";
 import { RectTextTip } from "./entity/RectTextTip";
@@ -30,9 +32,15 @@ function createClipColorLabel(): IClipColorLabel {
 function createColorClipLabel(): ColorClipLabel {
 	return new ColorClipLabel();
 }
+function createTextLabel(): TextLabel {
+	return new TextLabel();
+}
 
 function createButton(): IButton {
 	return new Button();
+}
+function createFlagButton(): FlagButton {
+	return new FlagButton();
 }
 
 function createPromptPanel(): PromptPanel {
@@ -58,7 +66,9 @@ export {
 	createClipLabel,
 	createClipColorLabel,
 	createColorClipLabel,
+	createTextLabel,
 	createButton,
+	createFlagButton,
 	createPromptPanel,
 	createUIScene
 };

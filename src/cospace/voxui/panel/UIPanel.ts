@@ -126,7 +126,6 @@ class UIPanel extends UIEntityContainer {
 		bgLabel.setZ(-0.1);
 		bgLabel.setColor(this.m_bgColor);
 		this.m_bgLabel = bgLabel;
-		// colorLabel.getREntities()[0].mouseEnabled = true;
 		this.initializeEvent(bgLabel.getREntities()[0]);
 		this.addEntity(bgLabel);
 	}
@@ -154,7 +153,7 @@ class UIPanel extends UIEntityContainer {
 	protected layout(): void {
 		let sc = this.getScene();
 		if (sc != null) {
-			let st = sc.getStage();
+			// let st = sc.getStage();
 			let rect = sc.getRect();
 			// let bounds = this.getGlobalBounds();
 
