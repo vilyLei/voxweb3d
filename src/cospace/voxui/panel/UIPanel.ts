@@ -6,11 +6,12 @@ import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ColorLabel } from "../entity/ColorLabel";
 import IColor4 from "../../../vox/material/IColor4";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
+import { IUIPanel } from "../panel/IUIPanel";
 import { ICoUIScene } from "../scene/ICoUIScene";
 
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
-class UIPanel extends UIEntityContainer {
+class UIPanel extends UIEntityContainer implements IUIPanel {
 
 	protected m_scene: ICoUIScene;
 	protected m_rpi: number;
@@ -24,7 +25,7 @@ class UIPanel extends UIEntityContainer {
 
 	constructor() { super(); }
 
-	setBGColor(c: IColor4): this {
+	setBGColor(c: IColor4): IUIPanel {
 		// if(this.m_bgColor != null) {
 		this.m_bgColor.copyFrom(c);
 		if (this.m_bgLabel != null) {
@@ -46,9 +47,16 @@ class UIPanel extends UIEntityContainer {
 	// 		this.m_bgColor = CoMaterial.createColor4();
 	// 	}
 	// }
-	open(): void {
+	setUIscene(scene: ICoUIScene): void {
+		if(this.m_scene == null) {
+			this.m_scene = scene;
+		}
+	}
+	open(scene: ICoUIScene = null): void {
+
 		if (!this.m_isOpen) {
 
+			if(scene != null) this.m_scene = scene;
 			this.m_scene.addEntity(this, this.m_rpi);
 			this.addLayoutEvt();
 			this.layout();
@@ -87,7 +95,7 @@ class UIPanel extends UIEntityContainer {
 	}
 	protected updateScene(): void {
 		let sc = this.getScene();
-		if (sc != null && this.m_panelBuilding) {
+		if (sc != null && this.m_panelBuilding && this.m_bgLabel == null) {
 
 			this.m_panelBuilding = false;
 
