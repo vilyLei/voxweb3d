@@ -15,6 +15,7 @@ import { RectTextTip } from "./entity/RectTextTip";
 import { TipInfo } from "./base/TipInfo";
 import { UILayout } from "./layout/UILayout";
 import { PromptPanel } from "./panel/PromptPanel";
+import { UIPanel } from "./panel/UIPanel";
 
 
 function createColorLabel(): ColorLabel {
@@ -43,6 +44,9 @@ function createFlagButton(): FlagButton {
 	return new FlagButton();
 }
 
+function createUIPanel(): UIPanel {
+	return new UIPanel();
+}
 function createPromptPanel(): PromptPanel {
 	return new PromptPanel();
 }
@@ -69,6 +73,8 @@ export {
 	createTextLabel,
 	createButton,
 	createFlagButton,
+	
+	createUIPanel,
 	createPromptPanel,
 	createUIScene
 };

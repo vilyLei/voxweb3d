@@ -9,6 +9,7 @@ import { ICoUIScene } from "./scene/ICoUIScene";
 import { IRectTextTip } from "./entity/IRectTextTip";
 import { ITipInfo } from "./base/ITipInfo";
 import { IUILayout } from "./layout/IUILayout";
+import { IUIPanel } from "./panel/IUIPanel";
 import { IPromptPanel } from "./panel/IPromptPanel";
 
 interface ICoUI {
@@ -24,6 +25,7 @@ interface ICoUI {
 	
 	createButton(): IButton;
 	createFlagButton(): IFlagButton;
+	createUIPanel(): IUIPanel;
 	createPromptPanel(): IPromptPanel;
 
 	createUIScene(): ICoUIScene;
