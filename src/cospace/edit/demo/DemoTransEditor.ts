@@ -18,7 +18,7 @@ import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../app/CoSpaceA
 import IVector3D from "../../../vox/math/IVector3D";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import { IRendererSceneAccessor } from "../../../vox/scene/IRendererSceneAccessor";
-import RendererSceneGraph from "../../../vox/scene/RendererSceneGraph";
+import IRendererSceneGraph from "../../../vox/scene/IRendererSceneGraph";
 import { PostOutline } from "./effect/PostOutline";
 import { TransUI } from "./edit/ui/TransUI";
 import { NavigationUI } from "./edit/ui/NavigationUI";
@@ -100,16 +100,10 @@ export class DemoTransEditor {
 
 				this.initScene();
 				new ModuleLoader(3, (): void => {
-
 					console.log("math module loaded ...");
-
 					new ModuleLoader(6, (): void => {
 						console.log("ageom module loaded ...");
-
 						this.initEditUI();
-
-						// this.createEditEntity();
-						// this.initUI();
 					}).load(url3).load(url4).load(url6).load(url7).load(url9).load(url10);
 
 				}).load(url2).load(url5).load(url8);
@@ -154,8 +148,11 @@ export class DemoTransEditor {
 		let viewer = new NormalViewer();
 		viewer.initialize( this.m_coUIScene, this.m_vcoapp );
 		viewer.open();
-		viewer.normalScene.entityScene.transUI = this.m_transUI;
 		this.m_viewer = viewer;
+		let entitySC = viewer.normalScene.entityScene;
+		entitySC.rscene = this.m_rsc;
+		entitySC.transUI = this.m_transUI;
+		entitySC.initialize();
 	}
 
 	private initScene(): void {
@@ -175,7 +172,7 @@ export class DemoTransEditor {
 		}
 	}
 
-	private m_graph: RendererSceneGraph = null;
+	private m_graph: IRendererSceneGraph = null;
 	private initRenderer(): void {
 
 		if (this.m_rsc == null) {
@@ -208,7 +205,7 @@ export class DemoTransEditor {
 			subScene.setAccessor(new SceneAccessor());
 
 			this.m_editUIRenderer = subScene;
-			this.m_graph = new RendererSceneGraph();
+			this.m_graph = CoRScene.createRendererSceneGraph();//new RendererSceneGraph();
 			this.m_graph.addScene(this.m_rsc);
 			this.m_graph.addScene(this.m_editUIRenderer);
 			this.m_outline = new PostOutline(rscene);
@@ -240,11 +237,11 @@ export class DemoTransEditor {
 
 		// this.m_viewer.open();
 
-		let baseUrl: string = "static/private/obj/";
-		let url = baseUrl + "base.obj";
-		url = baseUrl + "base4.obj";
-		console.log("initModel() init...");
-		this.loadGeomModel(url, CoDataFormat.OBJ);
+		// let baseUrl: string = "static/private/obj/";
+		// let url = baseUrl + "base.obj";
+		// url = baseUrl + "base4.obj";
+		// console.log("initModel() init...");
+		// this.loadGeomModel(url, CoDataFormat.OBJ);
 	}
 	///*
 	private loadGeomModel(url: string, format: CoDataFormat): void {
@@ -319,13 +316,13 @@ export class DemoTransEditor {
 		console.log("mouseOverTargetListener()..., evt.target: ", evt.target);
 		let entity = evt.target as ITransformEntity;
 		let material = entity.getMaterial() as IColorMaterial;
-		material.setRGB3f(1.0,0.1,0.1);
+		material.setRGB3f(0.8, 0.8, 0.8);
 	}
 	private mouseOutTargetListener(evt: any): void {
 		console.log("mouseOutTargetListener()..., evt.target: ", evt.target);
 		let entity = evt.target as ITransformEntity;
 		let material = entity.getMaterial() as IColorMaterial;
-		material.setRGB3f(1.0,1.0, 1.0);
+		material.setRGB3f(0.7, 0.7, 0.7);
 	}
 	private mouseDownTargetListener(evt: any): void {
 		console.log("mouseDownTargetListener()..., evt.target: ", evt.target);

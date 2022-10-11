@@ -8,6 +8,7 @@ import { ViewerCoSApp } from "../../../demo/coViewer/ViewerCoSApp";
 import { TransUI } from "../../../edit/demo/edit/ui/TransUI";
 import ITransformEntity from "../../../../vox/entity/ITransformEntity";
 import IRendererScene from "../../../../vox/scene/IRendererScene";
+import IColorMaterial from "../../../../vox/material/mcase/IColorMaterial";
 
 declare var CoUI: ICoUI;
 
@@ -49,6 +50,7 @@ class NormalEntityScene {
 	}
 
 	private loadGeomModel(url: string, format: CoDataFormat): void {
+		
 		let ins = this.m_vcoapp.coappIns;
 		if (ins != null) {
 
@@ -114,9 +116,15 @@ class NormalEntityScene {
 
 	private mouseOverTargetListener(evt: any): void {
 		console.log("mouseOverTargetListener()..., evt.target: ", evt.target);
+		let entity = evt.target as ITransformEntity;
+		let material = entity.getMaterial() as IColorMaterial;
+		material.setRGB3f(0.8, 0.8, 0.8);
 	}
 	private mouseOutTargetListener(evt: any): void {
 		console.log("mouseOutTargetListener()..., evt.target: ", evt.target);
+		let entity = evt.target as ITransformEntity;
+		let material = entity.getMaterial() as IColorMaterial;
+		material.setRGB3f(0.7, 0.7, 0.7);
 	}
 	private mouseDownTargetListener(evt: any): void {
 		console.log("mouseDownTargetListener()..., evt.target: ", evt.target);
