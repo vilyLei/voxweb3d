@@ -9,6 +9,8 @@ import { TextLabel } from "./entity/TextLabel";
 import { IButton } from "./button/IButton";
 import { Button } from "./button/Button";
 import { FlagButton } from "./button/FlagButton";
+import { SelectButtonGroup } from "./button/SelectButtonGroup";
+
 import { ICoUIScene } from "./scene/ICoUIScene";
 import { CoUIScene } from "./scene/CoUIScene";
 import { RectTextTip } from "./entity/RectTextTip";
@@ -44,6 +46,10 @@ function createFlagButton(): FlagButton {
 	return new FlagButton();
 }
 
+function createSelectButtonGroup(): SelectButtonGroup {
+	return new SelectButtonGroup();
+}
+
 function createUIPanel(): UIPanel {
 	return new UIPanel();
 }
@@ -73,6 +79,7 @@ export {
 	createTextLabel,
 	createButton,
 	createFlagButton,
+	createSelectButtonGroup,
 	
 	createUIPanel,
 	createPromptPanel,

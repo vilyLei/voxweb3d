@@ -42,8 +42,6 @@ class NormalPptPanel extends UIPanel {
 			this.m_panelH = panelH;
 
 			this.m_btnH = btnH;
-
-			this.m_bgColor = CoMaterial.createColor4();
 		}
 	}
 	destroy(): void {

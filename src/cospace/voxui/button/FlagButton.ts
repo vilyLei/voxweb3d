@@ -1,6 +1,6 @@
-import ITransformEntity from "../../../vox/entity/ITransformEntity";
-import IDisplayEntityContainer from "../../../vox/entity/IDisplayEntityContainer";
 import IEvtDispatcher from "../../../vox/event/IEvtDispatcher";
+import ISelectionEvent from "../../../vox/event/ISelectionEvent";
+import IColor4 from "../../../vox/material/IColor4";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import { IButton } from "./IButton";
 import { Button } from "./Button";
@@ -16,8 +16,6 @@ declare var CoRScene: ICoRScene;
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
-import IColor4 from "../../../vox/material/IColor4";
-import ISelectionEvent from "../../../vox/event/ISelectionEvent";
 declare var CoMaterial: ICoMaterial;
 
 class FlagButton extends Button implements IButton {
@@ -85,8 +83,8 @@ class FlagButton extends Button implements IButton {
 		csLable.initialize(texAtlas, urls);
 		let clb = new ColorClipLabel();
 		clb.initialize(csLable, 4);
-		clb.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
-		clb.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
+		clb.getColorAt(0).setRGB3f(0.8, 0.8, 0.8);
+		clb.getColorAt(1).setRGB3f(0.0, 1.0, 0.2);
 		clb.getColorAt(2).setRGB3f(1.0, 0.2, 1.0);
 		clb.setLabelClipIndex(0);
 		this.m_flagLb = csLable;

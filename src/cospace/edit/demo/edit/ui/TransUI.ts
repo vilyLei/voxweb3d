@@ -21,7 +21,7 @@ import IRenderEntity from "../../../../../vox/render/IRenderEntity";
 import { ICoKeyboardInteraction } from "../../../../voxengine/ui/ICoKeyboardInteraction";
 import { ICoTransformRecorder } from "../../../recorde/ICoTransformRecorder";
 import { IRectTextTip } from "../../../../voxui/entity/IRectTextTip";
-import { SelectButtonGroup } from "../../../../voxui/button/SelectButtonGroup";
+import { ISelectButtonGroup } from "../../../../voxui/button/ISelectButtonGroup";
 import { TipInfo } from "../../../../voxui/base/TipInfo";
 
 declare var CoRScene: ICoRScene;
@@ -135,15 +135,17 @@ class TransUI {
 		if (this.m_selectFrame == null) {
 			this.m_selectFrame = new UIRectLine();
 			this.m_selectFrame.initialize(this.m_uirsc);
+			this.m_selectFrame.setZ(-0.5);
 			this.m_selectFrame.enable();
 		}
 
 		this.initTransUI();
 	}
 
-	private m_btnGroup = new SelectButtonGroup();
+	private m_btnGroup: ISelectButtonGroup;// = new ISelectButtonGroup();
 	private initTransUI(): void {
 
+		this.m_btnGroup = CoUI.createSelectButtonGroup();
 		let uiScene = this.m_coUIScene;
 		let tta = uiScene.transparentTexAtlas;
 		let pw = 90;

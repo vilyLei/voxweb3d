@@ -18,20 +18,24 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 	protected m_bgColor: IColor4;
 	protected m_bgLabel: ColorLabel;
 
-	protected m_panelW: number = 17;
-	protected m_panelH: number = 130;
+	protected m_panelW: number = 100;
+	protected m_panelH: number = 150;
 
 	protected m_isOpen = false;
-
+	autoLayout = true;
 	constructor() { super(); }
 
+	setSize(pw: number, ph: number): void {
+		this.m_panelW = pw;
+		this.m_panelH = ph;
+	}
 	setBGColor(c: IColor4): IUIPanel {
-		// if(this.m_bgColor != null) {
+
+		if (this.m_bgColor == null) this.m_bgColor = CoMaterial.createColor4();
 		this.m_bgColor.copyFrom(c);
 		if (this.m_bgLabel != null) {
 			this.m_bgLabel.setColor(c);
 		}
-		// }
 		return this;
 	}
 	// initialize(scene: ICoUIScene, rpi: number, panelW: number, panelH: number): void {
@@ -47,19 +51,32 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 	// 		this.m_bgColor = CoMaterial.createColor4();
 	// 	}
 	// }
+	protected init(): void {
+
+		if (this.isIniting()) {
+
+			if (this.m_bgColor == null) this.m_bgColor = CoMaterial.createColor4();
+			super.init();
+		}
+	}
 	setUIscene(scene: ICoUIScene): void {
-		if(this.m_scene == null) {
+		if (this.m_scene == null && scene != null) {
 			this.m_scene = scene;
+			this.init();
 		}
 	}
 	open(scene: ICoUIScene = null): void {
 
 		if (!this.m_isOpen) {
-
-			if(scene != null) this.m_scene = scene;
+			if (this.isIniting()) {
+				this.init();
+			}
+			if (scene != null) this.m_scene = scene;
 			this.m_scene.addEntity(this, this.m_rpi);
-			this.addLayoutEvt();
-			this.layout();
+			if (this.autoLayout) {
+				this.addLayoutEvt();
+				this.layout();
+			}
 
 			this.m_isOpen = true;
 			this.setVisible(true);
@@ -82,7 +99,7 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 	destroy(): void {
 
 		super.destroy();
-
+		this.m_panelBuilding = true;
 		if (this.m_bgLabel != null) {
 
 			this.m_bgLabel.destroy();
@@ -111,23 +128,24 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 		}
 	}
 	protected addLayoutEvt(): void {
-		let sc = this.getScene();
-		if (sc != null) {
-			let st = sc.getStage();
-			let EB = CoRScene.EventBase;
-			st.addEventListener(EB.RESIZE, this, this.resize);
+		if (this.autoLayout) {
+			let sc = this.getScene();
+			if (sc != null) {
+				let EB = CoRScene.EventBase;
+				sc.addEventListener(EB.RESIZE, this, this.resize);
+			}
 		}
 	}
 	protected removeLayoutEvt(): void {
-		let sc = this.getScene();
-		if (sc != null) {
-			let st = sc.getStage();
-			let EB = CoRScene.EventBase;
-			st.removeEventListener(EB.RESIZE, this, this.resize);
+		if (this.autoLayout) {
+			let sc = this.getScene();
+			if (sc != null) {
+				let EB = CoRScene.EventBase;
+				sc.removeEventListener(EB.RESIZE, this, this.resize);
+			}
 		}
 	}
 	protected createBG(pw: number, ph: number): void {
-		let sc = this.getScene();
 		let bgLabel = new ColorLabel();
 		bgLabel.depthTest = true;
 		bgLabel.initialize(pw, ph);
@@ -161,10 +179,7 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 	protected layout(): void {
 		let sc = this.getScene();
 		if (sc != null) {
-			// let st = sc.getStage();
 			let rect = sc.getRect();
-			// let bounds = this.getGlobalBounds();
-
 			let px = rect.x + (rect.width - this.getWidth()) * 0.5;
 			let py = rect.y + (rect.height - this.getHeight()) * 0.5;
 			this.setXY(px, py);

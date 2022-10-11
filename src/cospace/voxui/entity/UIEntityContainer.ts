@@ -3,6 +3,7 @@ import { IUIEntityContainer } from "./IUIEntityContainer";
 import { UIEntityBase } from "./UIEntityBase";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
+import IVector3D from "../../../vox/math/IVector3D";
 declare var CoRScene: ICoRScene;
 
 class UIEntityContainer extends UIEntityBase implements IUIEntityContainer {
@@ -65,7 +66,12 @@ class UIEntityContainer extends UIEntityBase implements IUIEntityContainer {
 			}
 		}
 	}
-	
+	globalToLocal(pv: IVector3D): void {
+		this.m_rcontainer.globalToLocal(pv);
+	}
+	localToGlobal(pv: IVector3D): void {
+		this.m_rcontainer.localToGlobal(pv);
+	}
 	getEneitysTotal(): number {
 		return this.m_uientities.length;
 	}

@@ -24,6 +24,8 @@ import { TransUI } from "./edit/ui/TransUI";
 import { NavigationUI } from "./edit/ui/NavigationUI";
 import { RectTextTip } from "../../voxui/entity/RectTextTip";
 import { IRectTextTip } from "../../voxui/entity/IRectTextTip";
+import { NormalViewer } from "../../app/normalViewer/sc/NormalViewer";
+import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -114,7 +116,7 @@ export class DemoTransEditor {
 
 				this.m_vcoapp = new ViewerCoSApp();
 				this.m_vcoapp.initialize((): void => {
-					this.loadOBJ();
+					this.initModel();
 				});
 			}
 		}).addLoader(uiInteractML)
@@ -124,6 +126,7 @@ export class DemoTransEditor {
 		uiInteractML.load(url);
 	}
 	private m_tip: IRectTextTip = null;
+	private m_viewer: NormalViewer = null;
 	private initEditUI(): void {
 
 		this.m_coUIScene = CoUI.createUIScene();
@@ -148,6 +151,11 @@ export class DemoTransEditor {
 		let grid = CoEdit.createFloorLineGrid();
 		grid.initialize(this.m_rsc, 0, minV.scaleBy(scale), maxV.scaleBy(scale), 30);
 		
+		let viewer = new NormalViewer();
+		viewer.initialize( this.m_coUIScene, this.m_vcoapp );
+		viewer.open();
+		viewer.normalScene.entityScene.transUI = this.m_transUI;
+		this.m_viewer = viewer;
 	}
 
 	private initScene(): void {
@@ -173,7 +181,7 @@ export class DemoTransEditor {
 		if (this.m_rsc == null) {
 
 			let RendererDevice = CoRScene.RendererDevice;
-			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			RendererDevice.SetWebBodyColor("#606060");
 
@@ -228,15 +236,17 @@ export class DemoTransEditor {
 				break;
 		}
 	}
-	private loadOBJ(): void {
+	private initModel(): void {
+
+		// this.m_viewer.open();
 
 		let baseUrl: string = "static/private/obj/";
 		let url = baseUrl + "base.obj";
 		url = baseUrl + "base4.obj";
-		console.log("loadOBJ() init...");
+		console.log("initModel() init...");
 		this.loadGeomModel(url, CoDataFormat.OBJ);
 	}
-
+	///*
 	private loadGeomModel(url: string, format: CoDataFormat): void {
 		let ins = this.m_vcoapp.coappIns;
 		if (ins != null) {
@@ -264,14 +274,19 @@ export class DemoTransEditor {
 		this.m_transUI.getRecoder().save(this.m_entities);
 	}
 	private m_entities: ITransformEntity[] = [];
+	private m_material: IColorMaterial;
 	private createEntity(model: CoGeomDataType): ITransformEntity {
 		// let rst = CoRenderer.RendererState;
 
 		const MouseEvent = CoRScene.MouseEvent;
-		// let material = new CoNormalMaterial().build().material;
-		let material = CoRScene.createDefaultMaterial(true);
-		material.initializeByCodeBuf(false);
-		material.setRGB3f(0.7, 0.7, 0.7);
+		let material = this.m_material;
+		// if(this.m_material == null) {
+			// let material = new CoNormalMaterial().build().material;
+			material = CoRScene.createDefaultMaterial(true);
+			material.initializeByCodeBuf(false);
+			material.setRGB3f(0.7, 0.7, 0.7);
+			this.m_material = material;
+		// }
 
 		let mesh = CoRScene.createDataMeshFromModel(model, material);
 		let cv = mesh.bounds.center.clone();
@@ -302,14 +317,19 @@ export class DemoTransEditor {
 
 	private mouseOverTargetListener(evt: any): void {
 		console.log("mouseOverTargetListener()..., evt.target: ", evt.target);
+		let entity = evt.target as ITransformEntity;
+		let material = entity.getMaterial() as IColorMaterial;
+		material.setRGB3f(1.0,0.1,0.1);
 	}
 	private mouseOutTargetListener(evt: any): void {
 		console.log("mouseOutTargetListener()..., evt.target: ", evt.target);
+		let entity = evt.target as ITransformEntity;
+		let material = entity.getMaterial() as IColorMaterial;
+		material.setRGB3f(1.0,1.0, 1.0);
 	}
 	private mouseDownTargetListener(evt: any): void {
 		console.log("mouseDownTargetListener()..., evt.target: ", evt.target);
 		let entity = evt.target as ITransformEntity;
-		// this.selectEntities([entity]);
 		this.m_transUI.selectEntities([entity]);
 	}
 	private mouseUpTargetListener(evt: any): void {
@@ -318,7 +338,7 @@ export class DemoTransEditor {
 		// 	this.m_transCtr.enable(this.m_ctrlType);
 		// }
 	}
-
+	//*/
 	run(): void {
 		if (this.m_graph != null) {
 			if (this.m_interact != null) {

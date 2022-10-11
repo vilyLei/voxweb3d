@@ -33,6 +33,7 @@ import { CoRendererDevice } from "./render/CoRendererDevice";
 import { CoRendererState } from "./render/CoRendererState";
 import CoVtxBufConst from "./mesh/CoVtxBufConst";
 import IRendererSceneGraph from "../../vox/scene/IRendererSceneGraph";
+import IProgressDataEvent from "../../vox/event/IProgressDataEvent";
 
 interface CoVec3 {
 
@@ -160,6 +161,9 @@ interface COEventBase {
 interface CoSelectionEvent {
 	readonly SELECT: number;
 }
+interface CoProgressDataEvent {
+	readonly PROGRESS: number;
+}
 interface ICoRScene {
 
 	RendererDevice: CoRendererDevice;
@@ -172,6 +176,7 @@ interface ICoRScene {
 	MouseEvent: ICoMouseEvent;
 	EventBase: COEventBase;
 	SelectionEvent: CoSelectionEvent;
+	ProgressDataEvent: CoProgressDataEvent;
 	KeyboardEvent: ICoKeyboardEvent;
 	Keyboard: ICoKeyboard;
 
@@ -180,6 +185,7 @@ interface ICoRScene {
 	MaterialPipeType: CoMaterialPipeType;
 
 	createSelectionEvent(): ISelectionEvent;
+	createProgressDataEvent(): IProgressDataEvent;
 	/**
 	 * create a Vector3D instance
 	 * @param px the default vaue is 0.0

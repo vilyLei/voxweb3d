@@ -16,6 +16,7 @@ import { ICoRendererScene } from "./scene/ICoRendererScene";
 import EventBase from "../../vox/event/EventBase";
 import EventBaseDispatcher from "../../vox/event/EventBaseDispatcher";
 import SelectionEvent from "../../vox/event/SelectionEvent";
+import ProgressDataEvent from "../../vox/event/ProgressDataEvent";
 import MouseEvent from "../../vox/event/MouseEvent";
 import KeyboardEvent from "../../vox/event/KeyboardEvent";
 import EvtNode from "../../vox/event/EvtNode";
@@ -268,6 +269,10 @@ function createEvtNode(): EvtNode {
 function createSelectionEvent(): SelectionEvent {
 	return new SelectionEvent();
 }
+function createProgressDataEvent(): ProgressDataEvent {
+	return new ProgressDataEvent();
+}
+
 export {
 
 	RendererDevice,
@@ -284,6 +289,7 @@ export {
 	MouseEvent,
 	EventBase,
 	SelectionEvent,
+	ProgressDataEvent,
 	KeyboardEvent,
 	Keyboard,
 
@@ -294,6 +300,7 @@ export {
 	CoRendererScene,
 
 	createSelectionEvent,
+	createProgressDataEvent,
 
 	createVec3,
 	createMat4,

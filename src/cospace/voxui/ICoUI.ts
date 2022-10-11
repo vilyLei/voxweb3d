@@ -5,6 +5,7 @@ import { ITextLabel } from "./entity/ITextLabel";
 import { IColorLabel } from "./entity/IColorLabel";
 import { IButton } from "./button/IButton";
 import { IFlagButton } from "./button/IFlagButton";
+import { ISelectButtonGroup } from "./button/ISelectButtonGroup";
 import { ICoUIScene } from "./scene/ICoUIScene";
 import { IRectTextTip } from "./entity/IRectTextTip";
 import { ITipInfo } from "./base/ITipInfo";
@@ -25,6 +26,8 @@ interface ICoUI {
 	
 	createButton(): IButton;
 	createFlagButton(): IFlagButton;
+	createSelectButtonGroup(): ISelectButtonGroup;
+
 	createUIPanel(): IUIPanel;
 	createPromptPanel(): IPromptPanel;
 

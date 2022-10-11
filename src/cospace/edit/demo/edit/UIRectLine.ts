@@ -18,7 +18,7 @@ class UIRectLine {
 
 	private m_rscene: IRendererScene;
 	private m_entity: ITransformEntity = null;
-
+	private m_pz = 0.0;
 	private m_flag = false;
 	private m_prePos: IVector3D = CoMath.createVec3();
 	private m_currPos: IVector3D = CoMath.createVec3();
@@ -41,7 +41,6 @@ class UIRectLine {
 			let mesh = CoMesh.line.createRectXOY(0, 0, 1, 1);
 			this.m_entity.setMaterial(material);
 			this.m_entity.setMesh(mesh);
-			this.m_entity.setXYZ(80, 80, 0);
 			rscene.addEntity(this.m_entity);
 			this.disable();
 		}
@@ -71,10 +70,13 @@ class UIRectLine {
 		}
 		return false;
 	}
+	setZ(pz: number): void {
+		this.m_pz = pz;
+	}
 	begin(px: number, py: number): void {
 		this.m_flag = true;
 		if (this.m_enabled) {
-			this.m_prePos.setXYZ(px, py, 0);
+			this.m_prePos.setXYZ(px, py, this.m_pz);
 			// this.m_currPos.copyFrom( this.m_prePos );
 			this.move(px, py);
 		}

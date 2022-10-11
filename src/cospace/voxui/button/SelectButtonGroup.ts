@@ -1,9 +1,10 @@
 import { IButton } from "../button/IButton";
+import { ISelectButtonGroup } from "../button/ISelectButtonGroup";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 
-class SelectButtonGroup {
+class SelectButtonGroup implements ISelectButtonGroup {
 
 	private m_map: Map<string, IButton> = new Map();
 	private m_selectFunc: (btn: IButton)=>void = null;
