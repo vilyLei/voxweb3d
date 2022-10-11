@@ -223,7 +223,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                 }
                 // console.log("RODataBuilder::updateDispMaterial(), runit: ",runit);
                 // console.log("RODataBuilder::updateDispMaterial(), runit.uid: ",runit.getUid());
-                //  console.log("RODataBuilder::updateDispMaterial(), runit.transUniform == null: ",runit.transUniform == null);
+                // console.log("RODataBuilder::updateDispMaterial(), runit.transUniform == null: ",runit.transUniform == null);
                 if (runit.transUniform == null) {
                     runit.transUniform = this.m_shdUniformTool.buildLocalFromTransformV(hasTrans ? disp.getMatrixFS32() : null, shdp);
                     ROTransPool.SetTransUniform(disp.getTransform(), runit.transUniform);

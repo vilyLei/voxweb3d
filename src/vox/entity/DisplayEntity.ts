@@ -377,7 +377,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
      * @return 返回true是则表示这是基于三角面的多面体, 返回false则是一个数学方程描述的几何体(例如球体),默认返回true
      */
     isPolyhedral(): boolean {
-        return this.m_mesh == null || this.m_mesh.isPolyhedral();
+        return this.m_mesh === null || this.m_mesh.isPolyhedral();
     }
     /**
      * @boundsHit       表示是否包围盒体已经和射线相交了

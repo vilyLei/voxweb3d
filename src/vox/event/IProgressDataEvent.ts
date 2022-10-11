@@ -5,17 +5,28 @@
 /*                                                                         */
 /***************************************************************************/
 
-import EventBase from "./EventBase";
-import IProgressDataEvent from "./IProgressDataEvent";
-export default class ProgressDataEvent extends EventBase implements IProgressDataEvent {
-    static PROGRESS: number = 3101;
-    status: number = 0;
-    progress: number = 0.0;
-    minValue: number = 0.0;
-    maxValue: number = 1.0;
-    value: number = 0.0;
-    constructor() {
-        super();
-        this.type = ProgressDataEvent.PROGRESS;
-    }
+import IEventBase from "./IEventBase";
+interface IProgressDataEvent extends IEventBase {
+
+    /**
+	 * the default value is 0
+	 */
+	status: number;
+    /**
+	 * the default value is 0.0
+	 */
+	progress: number;
+	/**
+	 * the default value is 0.0
+	 */
+    minValue: number;
+	/**
+	 * the default value is 1.0
+	 */
+    maxValue: number;	
+	/**
+	 * the default value is 0.0
+	 */
+    value: number;
 }
+export default IProgressDataEvent;
