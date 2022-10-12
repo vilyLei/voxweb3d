@@ -3,6 +3,7 @@ import ISelectionEvent from "../../../vox/event/ISelectionEvent";
 import IColor4 from "../../../vox/material/IColor4";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import { IButton } from "./IButton";
+import { IFlagButton } from "./IFlagButton";
 import { Button } from "./Button";
 import IVector3D from "../../../vox/math/IVector3D";
 import { ClipLabel } from "../entity/ClipLabel";
@@ -18,7 +19,7 @@ declare var CoMath: ICoMath;
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 declare var CoMaterial: ICoMaterial;
 
-class FlagButton extends Button implements IButton {
+class FlagButton extends Button implements IFlagButton {
 
 	
     private m_selectDispatcher: IEvtDispatcher;
@@ -32,7 +33,7 @@ class FlagButton extends Button implements IButton {
 	constructor() { super(); this.uuid = "flagBtn"; }
 
 
-	initializeWithSize(atlas: ICanvasTexAtlas, pw: number = 32, ph: number = 32, borderWidth: number = 4, dis: number = 4): IButton {
+	initializeWithSize(atlas: ICanvasTexAtlas, pw: number = 32, ph: number = 32, borderWidth: number = 4, dis: number = 4): IFlagButton {
 
 		if (this.isIniting() && atlas != null) {
 			this.m_pw = pw;
@@ -96,7 +97,7 @@ class FlagButton extends Button implements IButton {
         this.m_selectDispatcher.uuid = this.uuid;
         this.m_currEvent.target = this;
         this.m_currEvent.type = CoRScene.SelectionEvent.SELECT;
-        this.m_currEvent.flag = this.m_flagLb.getClipIndex() == 1;
+        this.m_currEvent.flag = this.getFlag();
         this.m_currEvent.phase = 1;
         this.m_selectDispatcher.dispatchEvt(this.m_currEvent);
 		this.m_currEvent.target = null;
@@ -107,6 +108,15 @@ class FlagButton extends Button implements IButton {
 			this.selectListener();
 		}
 	}
+	setFlag(flag: boolean, sendEvent: boolean = false): void {
+		this.m_flagLb.setClipIndex(flag ? 1 : 0);
+		if(sendEvent) {
+			this.sendSelectionEvt();
+		}
+	}
+	getFlag(): boolean {
+		return this.m_flagLb.getClipIndex() == 1;
+	}
 	private selectListener(): void {
 		if(this.m_flagLb.getClipIndex() == 1) {
 			this.m_flagLb.setClipIndex(0);
@@ -114,7 +124,7 @@ class FlagButton extends Button implements IButton {
 			this.m_flagLb.setClipIndex(1);
 		}
 		console.log("cccccccc selectListener ccccccc, this.m_flagLb.getClipIndex(): ", this.m_flagLb.getClipIndex());
-		this.sendSelectionEvt()
+		this.sendSelectionEvt();
 	}
 	private createFlagImg(texAtlas: ICanvasTexAtlas, borderColor: IColor4, bgColor: IColor4, flagColor: IColor4 = null, dis: number = 2): HTMLCanvasElement | HTMLImageElement {
 
