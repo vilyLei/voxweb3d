@@ -298,6 +298,19 @@ class TransUI {
 	}
 	private m_entityQuery: RectFrameQuery = null;
 	private m_selectList: IRenderEntity[] = null;
+	private m_selectListeners: ((list: IRenderEntity[]) => void)[] = [];
+	addSelectListener(listener: (list: IRenderEntity[]) => void): void {
+		if(listener != null) {
+			this.m_selectListeners.push( listener );
+		}
+	}
+	private sendSelectList(list: IRenderEntity[]): void {
+		let ls = this.m_selectListeners;
+		let len = ls.length;
+		for(let i = 0; i < len; ++i) {
+			ls[i](list);
+		}
+	}
 	selectEntities(list: IRenderEntity[]): void {
 		this.m_selectList = list;
 		if (list != null && list.length > 0) {
@@ -315,6 +328,9 @@ class TransUI {
 				transCtr.select(list as ITransformEntity[], pos);
 				this.m_outline.select(list);
 			}
+			this.sendSelectList( list );
+		}else {
+			this.sendSelectList( null );
 		}
 	}
 	private mouseUpListener(evt: any): void {
@@ -329,7 +345,8 @@ class TransUI {
 		if (this.m_transCtr != null) {
 			this.m_transCtr.disable();
 		}
-		this.m_outline.deselect();
+		this.m_outline.deselect();		
+		this.sendSelectList( null );
 	}
 	run(): void {
 
