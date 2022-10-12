@@ -55,7 +55,7 @@ class NavigationUI {
 		this.initNavigationUI();
 	}
 	private m_promptPanel: IPromptPanel = null;// = new PromptPanel();
-	
+
 	private m_bgLabel: IColorLabel = null;
 	private m_bgLabelW: number;
 	private m_bgLabelH: number;
@@ -90,8 +90,8 @@ class NavigationUI {
 		let EB = CoRScene.EventBase;
 		uiScene.getStage().addEventListener(EB.RESIZE, this, this.resize);
 
-		let keys = ["file", "edit", "model", "normal", "texture", "material", "light", "animation", "particle", "help"];
-		let urls = ["文件", "编辑", "模型", "法线", "纹理", "材质", "灯光", "动画", "粒子", "帮助"];
+		let keys = ["file", "edit", "model", "normal", "texture", "material", "light", "animation", "particle", "rendering", "physics", "help"];
+		let urls = ["文件", "编辑", "模型", "法线", "纹理", "材质", "灯光", "动画", "粒子", "渲染", "物理", "帮助"];
 		let infos = [
 			"File system operations.",
 			"Editing operations.",
@@ -102,6 +102,8 @@ class NavigationUI {
 			"Light system operations.",
 			"Animation system operations.",
 			"Paiticle system operations.",
+			"Rendering system operations.",
+			"Physics system operations.",
 			"Help infomation.",
 		];
 
@@ -126,17 +128,17 @@ class NavigationUI {
 		// this.m_promptPanel = new PromptPanel();
 		// let panel = new PromptPanel();
 		let panel = CoUI.createPromptPanel();
-		panel.initialize(uiScene,0,  320, 200, 120, 50, "确认", "取消");
+		panel.initialize(uiScene, 0, 320, 200, 120, 50, "确认", "取消");
 		// uiScene.addEntity(panel);
 		// panel.open();
 		panel.setPrompt("Nothing!");
-		panel.setBGColor(CoMaterial.createColor4(0.2,0.2,0.2));
+		panel.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
 
 		panel.setListener(
-			():void=>{
+			(): void => {
 				console.log("panel confirm...");
 			},
-			():void=>{
+			(): void => {
 				console.log("panel cancel...");
 			}
 		);
