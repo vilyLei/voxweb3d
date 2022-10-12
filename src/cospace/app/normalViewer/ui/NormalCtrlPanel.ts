@@ -44,6 +44,7 @@ class NormalCtrlPanel {
 	private m_progressDispatcher: IEvtDispatcher;
 	private m_flagEvt: ISelectionEvent;
 	private m_progressEvt: IProgressDataEvent;
+	private m_normalScale = 0.0;
 
 	autoLayout: boolean = true;
 	constructor() { }
@@ -91,13 +92,16 @@ class NormalCtrlPanel {
 		this.m_flagEvt = null;
 		this.m_progressEvt = null;
 
+		this.m_modelVisiBtn = null;
+		this.m_normalVisiBtn = null;
+
 		if (this.m_panel != null) {
 
 			this.m_panel.destroy();
 			this.m_panel = null;
 		}
 	}
-	open(scene: ICoUIScene = null): void {
+	open(scene: ICoUIScene = null, rpi: number = -1): void {
 
 		this.m_panel.open(scene);
 		if (this.autoLayout) {
@@ -170,7 +174,7 @@ class NormalCtrlPanel {
 
 		textLabel = this.createText("model visible", startX + btnSize + disX, py - 10);
 		py = textLabel.getY();
-		this.m_normalVisiBtn = this.createFlagBtn(btnSize, px, py, "model");
+		this.m_modelVisiBtn = this.createFlagBtn(btnSize, px, py, "model");
 
 		textLabel = this.createText("normal line length:", startX, py - 15);
 		px = startX;
@@ -194,8 +198,6 @@ class NormalCtrlPanel {
 				label = btn.getLable() as IColorClipLabel;
 				label.getColorAt(0).setRGB3Bytes(71, 114, 179);
 				label.setClipIndex(0);
-
-				// this.selectTrans(btn.uuid);
 			},
 			(btn: IButton): void => {
 				let label: IColorClipLabel;
@@ -211,16 +213,6 @@ class NormalCtrlPanel {
 		this.sendSelectionEvt(evt.uuid, true);
 	}
 	private selectVisibleFunc(evt: any): void {
-
-		// switch (evt.uuid) {
-		// 	case "normal":
-		// 		break;
-		// 	case "model":
-		// 		break;
-		// 	default:
-		// 		break;
-		// }
-		// console.log("selectVisibleFunc, evt.flag: ", evt.flag, ", evt.uuid: ", evt.uuid);
 		this.sendSelectionEvt(evt.uuid, evt.flag);
 	}
 	private createFlagBtn(size: number, px: number, py: number, uuid: string = "model"): IFlagButton {
@@ -235,22 +227,31 @@ class NormalCtrlPanel {
 		this.m_panel.addEntity(flagBtn);
 		return flagBtn;
 	}
-
-    private sendProgressEvt(uuid: string, v: number): void {
+	getNormalScale(): number {
+		return this.m_normalScale;
+	}
+	setNormalFlag(flag: boolean): void {
+		console.log("setNormalFlag, flag: ", flag);
+		this.m_normalVisiBtn.setFlag(flag);
+	}
+	setModelFlag(flag: boolean): void {
+		this.m_modelVisiBtn.setFlag(flag);
+	}
+	private sendProgressEvt(uuid: string, v: number): void {
 
 		let e = this.m_progressEvt;
-        e.target = this;
-        e.status = 2;
-        e.type = CoRScene.ProgressDataEvent.PROGRESS;
-        e.minValue = 0.0;
-        e.maxValue = 1.0;
-        e.value = v;
-        e.progress = v;
-        e.phase = 1;
-        e.uuid = uuid;
-        this.m_progressDispatcher.dispatchEvt(e);
+		e.target = this;
+		e.status = 2;
+		e.type = CoRScene.ProgressDataEvent.PROGRESS;
+		e.minValue = 0.0;
+		e.maxValue = 1.0;
+		e.value = v;
+		e.progress = v;
+		e.phase = 1;
+		e.uuid = uuid;
+		this.m_progressDispatcher.dispatchEvt(e);
 		e.target = null;
-    }
+	}
 
 	private sendSelectionEvt(uuid: string, flag: boolean): void {
 
@@ -260,7 +261,7 @@ class NormalCtrlPanel {
 		e.type = CoRScene.SelectionEvent.SELECT;
 		e.flag = flag;
 		e.phase = 1;
-		this.m_selectDispatcher.dispatchEvt( e );
+		this.m_selectDispatcher.dispatchEvt(e);
 		e.target = null;
 	}
 
@@ -351,6 +352,7 @@ class NormalCtrlPanel {
 		let f = (px - this.m_dragMinX) / this.m_progressLen;
 		// console.log("f: ",f, (0.1 + f * 2.0));
 		// f = 0.1 + f * 3.0;
+		this.m_normalScale = f;
 		this.sendProgressEvt("normalScale", f);
 	}
 	private createBtn(ns: string, px: number, py: number, idns: string): IButton {
@@ -400,29 +402,6 @@ class NormalCtrlPanel {
 
 		return btn;
 	}
-	// private btnMouseUpListener(evt: any): void {
-
-	// 	console.log("NormalCtrlPanel::btnMouseUpListener(), evt.currentTarget: ", evt.currentTarget);
-	// 	let uuid = evt.uuid;
-	// 	switch (uuid) {
-
-	// 		case "local":
-	// 			// this.close();
-
-	// 			break;
-	// 		case "global":
-	// 			// this.close();
-
-	// 			break;
-	// 		case "difference":
-	// 			// this.close();
-
-	// 			break;
-	// 		default:
-	// 			break;
-	// 	}
-	// }
-
 	protected addLayoutEvt(): void {
 		if (this.autoLayout) {
 			let sc = this.getScene();

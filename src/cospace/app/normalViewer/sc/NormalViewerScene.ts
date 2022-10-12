@@ -41,28 +41,34 @@ class NormalViewerScene {
 		this.m_ctrPanel = panel;
 		panel.addEventListener(CoRScene.SelectionEvent.SELECT, this, this.selectDisplay);
 		panel.addEventListener(CoRScene.ProgressDataEvent.PROGRESS, this, this.normalScale);
+		this.entityScene.ctrPanel = panel;
+		this.entityScene.nodeGroup.ctrPanel = panel;
 	}
 	private selectDisplay(evt: any): void {
 		console.log("NormalViewerScene::selectDisplay(), evt.uuid: ", evt.uuid);
-		switch (evt.uuid) {
+		let group = this.entityScene.nodeGroup;
+		let uuid = evt.uuid;
+		switch (uuid) {
 			case "normal":
 			case "model":
 				// console.log("flag call");
+				group.applyVisibility(uuid, evt.flag);
 				break;
 			case "local":
 			case "global":
 			case "difference":
 				// console.log("select call");
+				group.applyFeatureColor(uuid);
 				break;
 			default:
 				break;
 		}
 	}
 	private normalScale(evt: any): void {
-		console.log("NormalViewerScene::normalScale(), evt.uuid: ", evt.uuid, evt.progress);
+		// console.log("NormalViewerScene::normalScale(), evt.uuid: ", evt.uuid, evt.progress);
 		// console.log("NormalViewerScene::normalScale(), evt.progress: ", evt.progress);
-		let f = evt.progress;
-		f = 0.1 + f * 3.0;
+		let group = this.entityScene.nodeGroup;
+		group.applyNormalScale( evt.progress );
 	}
 	
 	destroy(): void {
