@@ -20,8 +20,8 @@ declare var CoMath: ICoMath;
 
 class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
 
-    private m_posvs: number[] = null;
-    private m_colorvs: number[] = null;
+    private m_posvs: Float32Array = null;
+    private m_colorvs: Float32Array = null;
     private m_beginRad: number = 0.0;
     private m_rangeRad: number = 0.0;
 
@@ -45,7 +45,7 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
 
         if (this.m_colorvs != null) {
             if (this.m_colorvs.length != vs.length) throw ("Error: colorvs.length == vs.length");
-            mesh.addFloat32Data(new Float32Array(this.m_colorvs), 3);
+            mesh.addFloat32Data(this.m_colorvs, 3);
         }
         mesh.vbWholeDataEnabled = false;
         mesh.initialize();
@@ -57,19 +57,19 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
     private useColor(posTotal: number): void {
         this.m_colorvs = null;
         if (!this.dynColorEnabled) {
-            this.m_colorvs = new Array(posTotal * 3);
+            this.m_colorvs = new Float32Array(posTotal * 3);
             for (let i = 0; i < posTotal; ++i) this.color.toArray3(this.m_colorvs, i * 3);
         }
     }
     createLine(begin: IVector3D, end: IVector3D = null, axialRadius: number = 0.0): IRawMesh {
 
-        this.m_posvs = [0.0, 0.0, 0.0, 100.0, 0, 0];
+        this.m_posvs = new Float32Array([0.0, 0.0, 0.0, 100.0, 0, 0]);
 
         if (begin != null) begin.toArray(this.m_posvs);
         if (end != null) end.toArray(this.m_posvs, 3);
         this.useColor(2);
         let mesh = this.createLineMesh();
-        if(axialRadius > 0.00001) {
+        if (axialRadius > 0.00001) {
             let r = axialRadius;
 
             let ab0 = CoMath.createAABB();
@@ -80,7 +80,7 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
             ab1.min.setXYZ(end.x - r, end.y - r, end.z - r);
             ab1.max.setXYZ(end.x + r, end.y + r, end.z + r);
             ab0.union(ab1);
-            
+
             mesh.bounds.copyFrom(ab0);
             mesh.bounds.update();
         }
@@ -91,14 +91,14 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
         pw += px;
         ph += py;
         this.useColor(8);
-        this.m_posvs = [px, py, 0.0, pw, py, 0.0, pw, py, 0.0, pw, ph, 0.0, pw, ph, 0.0, px, ph, 0.0, px, ph, 0.0, px, py, 0.0];
+        this.m_posvs = new Float32Array([px, py, 0.0, pw, py, 0.0, pw, py, 0.0, pw, ph, 0.0, pw, ph, 0.0, px, ph, 0.0, px, ph, 0.0, px, py, 0.0]);
         return this.createLineMesh();
     }
     createRectXOZ(px: number, pz: number, pw: number, pl: number): IRawMesh {
         pw += px;
         pl += pz;
         this.useColor(8);
-        this.m_posvs = [px, 0.0, pz, pw, 0.0, pz, pw, 0.0, pz, pw, 0.0, pl, pw, 0.0, pl, px, 0.0, pl, px, 0.0, pl, px, 0.0, pz];
+        this.m_posvs = new Float32Array([px, 0.0, pz, pw, 0.0, pz, pw, 0.0, pz, pw, 0.0, pl, pw, 0.0, pl, px, 0.0, pl, px, 0.0, pl, px, 0.0, pz]);
         return this.createLineMesh();
     }
 
@@ -106,12 +106,12 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
         pw += py;
         pl += pz;
         this.useColor(8);
-        this.m_posvs = [0.0, py, pz, 0.0, pw, pz, 0.0, pw, pz, 0.0, pw, pl, 0.0, pw, pl, 0.0, py, pl, 0.0, py, pl, 0.0, py, pz];
+        this.m_posvs = new Float32Array([0.0, py, pz, 0.0, pw, pz, 0.0, pw, pz, 0.0, pw, pl, 0.0, pw, pl, 0.0, py, pl, 0.0, py, pl, 0.0, py, pz]);
         return this.createLineMesh();
     }
     private createCircle(vs: number[], segsTotal: number): void {
 
-        this.m_posvs = new Array((segsTotal * 2) * 3);
+        this.m_posvs = new Float32Array((segsTotal * 2) * 3);
         let k = 0, j = 0;
         let pvs = this.m_posvs;
 
@@ -145,7 +145,6 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
             vs[j + iz] = cvs[iz];
             j += 3;
         }
-        console.log("createCircleData() XXXXXXXXXXXXXXXXXXXX");
         return vs;
     }
     createCircleXOY(radius: number, segsTotal: number, center: IVector3D = null, beginRad: number = 0.0, rangeRad: number = 0.0): IRawMesh {
@@ -153,7 +152,7 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
         this.m_beginRad = beginRad;
         this.m_rangeRad = rangeRad;
 
-        let vs = this.createCircleData(0,1,2, radius, segsTotal, center);
+        let vs = this.createCircleData(0, 1, 2, radius, segsTotal, center);
         this.createCircle(vs, segsTotal);
         return this.createLineMesh();
     }
@@ -162,7 +161,7 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
         this.m_beginRad = beginRad;
         this.m_rangeRad = rangeRad;
 
-        let vs = this.createCircleData(0,2,1, radius, segsTotal, center);
+        let vs = this.createCircleData(0, 2, 1, radius, segsTotal, center);
         this.createCircle(vs, segsTotal);
         return this.createLineMesh();
     }
@@ -171,30 +170,38 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
         this.m_beginRad = beginRad;
         this.m_rangeRad = rangeRad;
 
-        let vs = this.createCircleData(1,2,0, radius, segsTotal, center);
+        let vs = this.createCircleData(1, 2, 0, radius, segsTotal, center);
         this.createCircle(vs, segsTotal);
         return this.createLineMesh();
     }
     createCurveByPositions(posList: IVector3D[], colorList: IColor4[] = null): IRawMesh {
 
-        this.m_posvs = [];
+        this.m_posvs = new Float32Array(posList.length * 6);
+        let k = 0;
         if (!this.dynColorEnabled) {
-            this.m_colorvs = [];
             if (colorList == null) {
                 this.useColor(posList.length * 2);
             }
             else {
+                this.m_colorvs = new Float32Array(posList.length * 6);
                 let c: IColor4;
                 for (let i = 0; i < posList.length; ++i) {
                     c = colorList[i];
-                    this.m_colorvs.push(c.r, c.g, c.b);
-                    this.m_colorvs.push(c.r, c.g, c.b);
+                    c.fromArray3(this.m_colorvs, k);
+                    k += 3;
+                    c.fromArray3(this.m_colorvs, k);
+                    k += 3;
                 }
             }
         }
+        k = 0;
         for (let i = 1; i < posList.length; ++i) {
-            this.m_posvs.push(posList[i - 1].x, posList[i - 1].y, posList[i - 1].z);
-            this.m_posvs.push(posList[i].x, posList[i].y, posList[i].z);
+            posList[i - 1].toArray(this.m_posvs, k);
+            k+=3;
+            posList[i].toArray(this.m_posvs, k);
+            k+=3;
+            // this.m_posvs.push(posList[i - 1].x, posList[i - 1].y, posList[i - 1].z);
+            // this.m_posvs.push(posList[i].x, posList[i].y, posList[i].z);
         }
         return this.createLineMesh();
     }
@@ -202,26 +209,50 @@ class LineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
         return this.createCurveByPositions(posList, colorList);
     }
     createLines(linePosList: IVector3D[], colorList: IColor4[] = null): IRawMesh {
-        if(linePosList.length < 1 || linePosList.length % 2 != 0) {
+        if (linePosList.length < 1 || linePosList.length % 2 != 0) {
             throw Error("illegal positions data for creating lines.");
         }
-        this.m_posvs = [];
+        this.m_posvs = new Float32Array(linePosList.length * 3);
+        let k = 0;
         if (!this.dynColorEnabled) {
-            this.m_colorvs = [];
             if (colorList == null) {
                 this.useColor(linePosList.length);
             }
             else {
+                this.m_colorvs = new Float32Array(linePosList.length * 3);
                 let c: IColor4;
                 for (let i = 0; i < linePosList.length; ++i) {
                     c = colorList[i];
-                    this.m_colorvs.push(c.r, c.g, c.b);
+                    c.fromArray3(this.m_colorvs, k)
+                    k += 3;
+                    //this.m_colorvs.push(c.r, c.g, c.b);
                 }
             }
         }
+        k = 0;
         for (let i = 0; i < linePosList.length; ++i) {
-            this.m_posvs.push(linePosList[i].x, linePosList[i].y, linePosList[i].z);
+            // this.m_posvs.push(linePosList[i].x, linePosList[i].y, linePosList[i].z);
+            linePosList[i].toArray(this.m_posvs, k);
+            k += 3;
         }
+        return this.createLineMesh();
+    }
+    createLinesWithFS32(posvs: Float32Array, colorvs: Float32Array = null): IRawMesh {
+        if (posvs.length < 3 || posvs.length % 3 != 0) {
+            throw Error("illegal positions data for creating lines.");
+        }
+        this.m_posvs = posvs;
+        if (!this.dynColorEnabled) {
+            if (colorvs == null) {
+                this.useColor(posvs.length / 3);
+            }
+            else {
+                this.m_colorvs = colorvs;
+            }
+        }
+        // for (let i = 0; i < linePosList.length; ++i) {
+        //     this.m_posvs.push(linePosList[i].x, linePosList[i].y, linePosList[i].z);
+        // }
         return this.createLineMesh();
     }
     destroy(): void {

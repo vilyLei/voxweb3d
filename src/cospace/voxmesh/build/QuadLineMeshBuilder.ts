@@ -314,6 +314,9 @@ class QuadLineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
     }
     createLines(linePosList: IVector3D[], colorList?: IColor4[]): IRawMesh {
         return null;
+    }    
+    createLinesWithFS32(posvs: Float32Array, colorvs?: Float32Array): IRawMesh{
+        return null;
     }
     destroy(): void {
         this.m_colorvs = null;

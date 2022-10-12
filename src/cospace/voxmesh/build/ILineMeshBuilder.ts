@@ -32,6 +32,7 @@ interface ILineMeshBuilder extends IMeshBuilder {
     createCurveByPositions(posList: IVector3D[], colorList: IColor4[]): IRawMesh;
     createPolygon(posList: IVector3D[], colorList: IColor4[]): IRawMesh;
     createLines(linePosList: IVector3D[], colorList?: IColor4[]): IRawMesh;
+    createLinesWithFS32(posvs: Float32Array, colorvs?: Float32Array): IRawMesh;
     destroy(): void;
 }
 export {ILineMeshBuilder}
