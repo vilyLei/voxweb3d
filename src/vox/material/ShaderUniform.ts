@@ -15,6 +15,7 @@ class ShaderUniform implements IRenderShaderUniform {
     constructor() {
     }
     uns: string = "";
+    key = -1;
     program: any = null;
     types: number[] = null;
     uniformSize: number = 0;

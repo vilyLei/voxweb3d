@@ -10,7 +10,7 @@ import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
 import Matrix4 from "../../vox/math/Matrix4";
 import Matrix4Pool from "../../vox/math/Matrix4Pool";
-import ROTransPool from '../../vox/render/ROTransPool';
+// import ROTransPool from '../../vox/render/ROTransPool';
 import IROTransform from './IROTransform';
 
 export default class ROTransform implements IROTransform {
@@ -28,16 +28,32 @@ export default class ROTransform implements IROTransform {
     static readonly UPDATE_TRANSFORM: number = 7;
     static readonly UPDATE_PARENT_MAT: number = 8;
     private m_uid: number = 0;
-    private m_fs32: Float32Array = new Float32Array(16);
+    private m_fs32: Float32Array = null;
     // It is a flag that need inverted mat yes or no
     private m_invMatEnabled: boolean = false;
     private m_rotFlag: boolean = false;
-    constructor() {
+    private m_dt = 0;
+    version = -1;
+    constructor(fs32: Float32Array = null) {
         this.m_uid = ROTransform.s_uid++;
+        this.m_dt = fs32 != null ? 1 : 0;
+        this.m_fs32 = fs32 != null ? fs32 : new Float32Array(16);
     }
     updatedStatus: number = ROTransform.UPDATE_POSITION;
     updateStatus: number = ROTransform.UPDATE_TRANSFORM;
     getUid(): number { return this.m_uid; }
+    getFS32Data(): Float32Array {
+        return this.m_fs32;
+    }
+    /**
+     * 防止因为共享 fs32 数据带来的逻辑错误
+     */
+    rebuildFS32Data(): void {
+        if(this.m_dt > 0) {
+            this.m_dt = 0;
+            this.m_fs32 = new Float32Array(16);
+        }
+    }
     getRotationFlag(): boolean { return this.m_rotFlag; }
     getX(): number { return this.m_fs32[12]; }
     getY(): number { return this.m_fs32[13]; }
@@ -217,7 +233,7 @@ export default class ROTransform implements IROTransform {
                 this.m_localMat = matrix;
             }
             if (this.m_omat != null) {
-                ROTransPool.RemoveTransUniform(this.m_omat);
+                // ROTransPool.RemoveTransUniform(this.m_omat);
                 Matrix4Pool.RetrieveMatrix(this.m_omat);
             }
             this.m_omat = matrix;
@@ -227,13 +243,13 @@ export default class ROTransform implements IROTransform {
         // 当自身被完全移出RenderWorld之后才能执行自身的destroy
         if (this.m_invOmat != null) Matrix4Pool.RetrieveMatrix(this.m_invOmat);
         if (this.m_localMat != null) {
-            if (this.m_omat == this.m_localMat) {
-                ROTransPool.RemoveTransUniform(this.m_omat);
-            }
+            // if (this.m_omat == this.m_localMat) {
+            //     ROTransPool.RemoveTransUniform(this.m_omat);
+            // }
             Matrix4Pool.RetrieveMatrix(this.m_localMat);
         }
         if (this.m_omat != null && this.m_omat != this.m_localMat) {
-            ROTransPool.RemoveTransUniform(this.m_omat);
+            // ROTransPool.RemoveTransUniform(this.m_omat);
             Matrix4Pool.RetrieveMatrix(this.m_omat);
         }
         this.m_invOmat = null;
@@ -241,6 +257,7 @@ export default class ROTransform implements IROTransform {
         this.m_omat = null;
         this.m_parentMat = null;
         this.updateStatus = ROTransform.UPDATE_TRANSFORM;
+        this.m_fs32 = null;
     }
 
     copyFrom(src: ROTransform): void {
@@ -249,12 +266,17 @@ export default class ROTransform implements IROTransform {
         this.updateStatus |= ROTransform.UPDATE_TRANSFORM;
         this.m_rotFlag = src.m_rotFlag;
     }
+    forceUpdate(): void {
+        this.updateStatus |= ROTransform.UPDATE_TRANSFORM;
+        this.update();
+    }
     update(): void {
         
         if (this.updateStatus > 0) {
             this.m_invMatEnabled = true;
             this.updateStatus = this.updateStatus | this.updatedStatus;
             if ((this.updateStatus & ROTransform.UPDATE_TRANSFORM) > 0) {
+                
                 this.m_localMat.getLocalFS32().set(this.m_fs32, 0);
                 if (this.m_rotFlag) {
                     this.m_localMat.setRotationEulerAngle(this.m_fs32[1] * MathConst.MATH_PI_OVER_180, this.m_fs32[6] * MathConst.MATH_PI_OVER_180, this.m_fs32[9] * MathConst.MATH_PI_OVER_180);
@@ -278,6 +300,7 @@ export default class ROTransform implements IROTransform {
                 this.m_omat.append(this.m_parentMat);
             }
             this.updateStatus = ROTransform.UPDATE_NONE;
+            this.version ++;
         }
     }
     getMatrixFS32(): Float32Array {
@@ -299,15 +322,16 @@ export default class ROTransform implements IROTransform {
         }
         return -1;
     }
-    static Create(matrix: Matrix4 = null): ROTransform {
+    static Create(matrix: Matrix4 = null, fs32: Float32Array = null): ROTransform {
         let unit: ROTransform = null;
-        let index: number = ROTransform.GetFreeId();
+        let index: number = fs32 != null ? -1: ROTransform.GetFreeId();
         if (index >= 0) {
             unit = ROTransform.m_unitList[index];
             ROTransform.m_unitFlagList[index] = ROTransform.s_FLAG_BUSY;
+            unit.rebuildFS32Data();
         }
         else {
-            unit = new ROTransform();
+            unit = new ROTransform(fs32);
             ROTransform.m_unitList.push(unit);
             ROTransform.m_unitFlagList.push(ROTransform.s_FLAG_BUSY);
             ROTransform.m_unitListLen++;
@@ -319,7 +343,9 @@ export default class ROTransform implements IROTransform {
             unit.m_omat = matrix;
         }
         unit.m_localMat = unit.m_omat;
-        unit.m_fs32.set(ROTransform.s_initData, 0);
+        if(fs32 == null) {
+            unit.m_fs32.set(ROTransform.s_initData, 0);
+        }
         return unit;
     }
 

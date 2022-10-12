@@ -65,9 +65,6 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
     getUniqueShaderName(): string {
         return this.m_uniqueName;
     }
-    toString(): string {
-        return "[Line3DShaderBuffer()]";
-    }
 
     static GetInstance(): Line3DShaderBuffer {
         let lsb = Line3DShaderBuffer;
@@ -82,7 +79,7 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
 export default class Line3DMaterial extends MaterialBase implements IColorMaterial {
     private m_dynColorEnabled: boolean = false;
     private m_data: Float32Array = null;
-    
+
     premultiplyAlpha: boolean = false;
     normalEnabled: boolean = false;
     shadowReceiveEnabled: boolean = false;
@@ -104,7 +101,7 @@ export default class Line3DMaterial extends MaterialBase implements IColorMateri
     getCodeBuf(): ShaderCodeBuffer {
         return Line3DShaderBuffer.GetInstance();
     }
-    
+
     setRGB3f(pr: number, pg: number, pb: number): void {
         this.m_data[0] = pr;
         this.m_data[1] = pg;

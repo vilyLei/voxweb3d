@@ -21,6 +21,7 @@ import IRODisplaySorter from '../../vox/render/IRODisplaySorter';
 import RenderSortBlock from "../../vox/render/RenderSortBlock";
 import RPOBlock from "../../vox/render/RPOBlock";
 import IRenderProcess from "../../vox/render/IRenderProcess";
+import ROTransPool from "./ROTransPool";
 
 export default class RenderProcess implements IRenderProcess, IPoolNode {
     private static s_max_shdTotal: number = 1024;
@@ -237,6 +238,12 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
                 //  console.log("removeDisp(), nodeUId: ",nodeUId, ", this.uid: ",this.getUid());
                 //  console.log("removeDisp(), node != null: "+(node != null),", this.m_blockList: ",this.m_blockList);
                 if (node != null) {
+
+                    let runit = node.unit;
+                    let transU = runit.transUniform;
+                    if (transU != null) {
+                        ROTransPool.RemoveTransUniform(transU.key);
+                    }
                     if (this.m_sortBlock == null) {
                         let block: RPOBlock = this.m_blockList[node.index];
                         block.removeNode(node);
@@ -250,7 +257,6 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 
                     --this.m_nodesLen;
 
-                    let runit: RPOUnit = node.unit;
                     if (this.m_rpoNodeBuilder.restore(node)) {
                         this.m_rpoUnitBuilder.restore(runit);
                     }
@@ -265,7 +271,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
             }
         }
     }
-    getStatus(): number {        
+    getStatus(): number {
         return this.m_version;
     }
     /**
@@ -324,13 +330,13 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
             }
         }
     }
-    drawDisp(disp: IRODisplay, useGlobalUniform: boolean = false,  forceUpdateUniform: boolean = true): void {
-        
+    drawDisp(disp: IRODisplay, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
+
         if (disp != null) {
-            let unit: RPOUnit = disp.__$$runit as RPOUnit;            
+            let unit: RPOUnit = disp.__$$runit as RPOUnit;
             if (unit != null) {
                 if (this.m_shader.isUnLocked()) {
-                    if(forceUpdateUniform) {
+                    if (forceUpdateUniform) {
                         this.m_shader.resetUniform();
                     }
                     this.m_fixBlock.drawUnit(this.m_rc, unit, disp);

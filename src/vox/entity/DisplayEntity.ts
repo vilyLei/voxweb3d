@@ -37,13 +37,17 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     private m_uid: number = 0;
     protected m_transfrom: IROTransform = null;
     protected m_eventDispatcher: IEvtDispatcher = null;
-    constructor(transform: IROTransform = null) {
+    constructor(transform: IROTransform = null, sharedData: boolean = false) {
         this.m_uid = DisplayEntity.s_uid++;
         if (transform == null) {
             this.m_transfrom = ROTransform.Create();
         }
         else {
-            this.m_transfrom = transform;
+            if(sharedData) {
+                this.m_transfrom = ROTransform.Create(null,transform.getFS32Data());
+            }else {
+                this.m_transfrom = transform;
+            }
         }
         this.createBounds();
     }

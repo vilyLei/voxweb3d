@@ -32,6 +32,7 @@ export default interface IShaderCodeBuilder {
     addDefine(name: string, value?: string): void;
     addVertLayout(type: string, name: string): void;
     addFragOutput(type: string, name: string): void;
+    addFragOutputHighp(type: string, name: string): void;
     addVarying(type: string, name: string): void;
     /**
      * 

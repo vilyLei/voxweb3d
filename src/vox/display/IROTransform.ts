@@ -11,6 +11,9 @@ import IMatrix4 from "../../vox/math/IMatrix4";
 export default interface IROTransform {
     updateStatus: number;
     updatedStatus: number;
+    version: number;
+    getUid(): number;
+    getFS32Data(): Float32Array;
     getRotationFlag(): boolean;
     getX(): number;
     getY(): number;
@@ -59,6 +62,7 @@ export default interface IROTransform {
     
 
     copyFrom(src: IROTransform): void;
+    forceUpdate(): void;
     update(): void;
     getMatrixFS32(): Float32Array;    
 }

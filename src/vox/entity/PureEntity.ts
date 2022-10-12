@@ -27,7 +27,7 @@ import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 
 import IRenderProxy from "../../vox/render/IRenderProxy";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
-import ROTransPool from '../../vox/render/ROTransPool';
+// import ROTransPool from '../../vox/render/ROTransPool';
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 
 
@@ -496,7 +496,7 @@ export default class PureEntity implements IDisplayEntity {
             }
             if (this.m_invOmat != null) Matrix4Pool.RetrieveMatrix(this.m_invOmat);
             if (this.m_omat != null) {
-                ROTransPool.RemoveTransUniform(this.m_omat);
+                // ROTransPool.RemoveTransUniform(this.m_omat);
                 Matrix4Pool.RetrieveMatrix(this.m_omat);
             }
             this.m_visible = true;

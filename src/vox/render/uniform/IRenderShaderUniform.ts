@@ -12,6 +12,7 @@ export default interface IRenderShaderUniform extends IRShaderUniform {
     
     uns: string;
     next: IRenderShaderUniform;
+    key: number;
     use(rc: IRenderShader): void;
     useByLocation(rc: IRenderShader, type: number, location: any, i: number): void;
     updateData(): void;
