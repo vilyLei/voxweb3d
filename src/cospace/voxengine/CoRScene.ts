@@ -33,6 +33,7 @@ import BoundsMesh from "../../vox/mesh/BoundsMesh";
 
 import MaterialBase from "../../vox/material/MaterialBase";
 
+import IROTransform from "../../vox/display/IROTransform";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 import ITransformEntity from "../../vox/entity/ITransformEntity";
@@ -212,20 +213,19 @@ function createDisplayEntityWithDataMesh(
 	entity.setMesh(mesh);
 	return entity;
 }
-function createDisplayEntity(): ITransformEntity {
-	return new DisplayEntity();
+function createDisplayEntity(transform: IROTransform = null): ITransformEntity {
+	return new DisplayEntity(transform);
 }
-function createMouseEventEntity(): IMouseEventEntity {
-	return new MouseEventEntity();
+function createMouseEventEntity(transform: IROTransform = null): IMouseEventEntity {
+	return new MouseEventEntity(transform);
 }
-function createBoundsEntity(): IBoundsEntity {
-	return new BoundsEntity();
+function createBoundsEntity(transform: IROTransform = null): IBoundsEntity {
+	return new BoundsEntity(transform);
 }
-//BoundsEntity
 function createDisplayEntityContainer(): DisplayEntityContainer {
 	return new DisplayEntityContainer();
 }
-function createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D): ITransformEntity {
+function createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D, transform: IROTransform = null): ITransformEntity {
 
 	let vs = new Float32Array([minV.x, 0, 0, maxV.x, 0, 0, 0, minV.y, 0, 0, maxV.y, 0, 0, 0, minV.z, 0, 0, maxV.z]);
 	let colors = new Float32Array([1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1]);
@@ -241,16 +241,22 @@ function createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D): ITransformEnt
 	// mesh.setPolyhedral( false );
 
 	let material = new Line3DMaterial(false);
-	let axis = new DisplayEntity();
+	let axis = new DisplayEntity(transform);
 	axis.setMaterial(material);
 	axis.setMesh(mesh);
 
 	return axis;
 }
-function createAxis3DEntity(size: number = 100.0): ITransformEntity {
+function createAxis3DEntity(size: number = 100.0, transform: IROTransform = null): ITransformEntity {
 
 	if (size < 0.0001) size = 0.0001;
-	return createFreeAxis3DEntity(new Vector3D(), new Vector3D(size, size, size));
+	return createFreeAxis3DEntity(new Vector3D(), new Vector3D(size, size, size), transform);
+}
+function createCrossAxis3DEntity(size: number = 100.0, transform: IROTransform = null): ITransformEntity {
+
+	if (size < 0.0001) size = 0.0001;
+	size *= 0.5;
+	return createFreeAxis3DEntity(new Vector3D(-size, -size, -size), new Vector3D(size, size, size), transform);
 }
 
 function creatMaterialContextParam(): MaterialContextParam {
@@ -330,6 +336,7 @@ export {
 	createDisplayEntityFromModel,
 	createFreeAxis3DEntity,
 	createAxis3DEntity,
+	createCrossAxis3DEntity,
 	createDisplayEntityWithDataMesh,
 	createDisplayEntity,
 	createMouseEventEntity,

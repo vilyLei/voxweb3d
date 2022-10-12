@@ -7,6 +7,7 @@ import IRendererParam from "../../vox/scene/IRendererParam";
 import { ICoRendererScene } from "./scene/ICoRendererScene";
 import IEvtNode from "../../vox/event/IEvtNode";
 
+import IROTransform from "../../vox/display/IROTransform";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import ISelectionEvent from "../../vox/event/ISelectionEvent";
 import ITransformEntity from "../../vox/entity/ITransformEntity";
@@ -256,12 +257,22 @@ interface ICoRScene {
 	 * @param vbWhole vtx buffer is whole data or not, the default is false.
 	 */
 	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, texEnabled?: boolean, vbWhole?: boolean): ITransformEntity;
-
-	createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D): ITransformEntity;
+	/**
+	 * @param minV min position value
+	 * @param maxV max position value
+	 * @param transform IROTransform instance, its default is null
+	 */
+	createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D, transform?: IROTransform): ITransformEntity;
 	/**
 	 * @param size th default value is 100.0
+	 * @param transform IROTransform instance, its default is null
 	 */
-	createAxis3DEntity(size?: number): ITransformEntity;
+	createAxis3DEntity(size?: number, transform?: IROTransform): ITransformEntity;
+	/**
+	 * @param size th default value is 100.0
+	 * @param transform IROTransform instance, its default is null
+	 */
+	 createCrossAxis3DEntity(size?: number, transform?: IROTransform): ITransformEntity;
 
 	/**
 	 * @param model IDataMesh instance
@@ -270,9 +281,18 @@ interface ICoRScene {
 	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
 	 */
 	createDisplayEntityWithDataMesh(mesh: IDataMesh, material: IRenderMaterial, texEnabled?: boolean, vbWhole?: boolean): ITransformEntity;
-	createDisplayEntity(): ITransformEntity;
-	createMouseEventEntity(): IMouseEventEntity;
-	createBoundsEntity(): IBoundsEntity;
+	/**
+	 * @param transform the default value is false
+	 */
+	createDisplayEntity(transform?: IROTransform): ITransformEntity;
+	/**
+	 * @param transform the default value is false
+	 */
+	createMouseEventEntity(transform?: IROTransform): IMouseEventEntity;
+	/**
+	 * @param transform the default value is false
+	 */
+	createBoundsEntity(transform?: IROTransform): IBoundsEntity;
 	createDisplayEntityContainer(): IDisplayEntityContainer;
 
 	creatMaterialContextParam(): CoMaterialContextParam;
