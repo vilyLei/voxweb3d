@@ -133,7 +133,6 @@ class NormalCtrlPanel {
 	}
 	protected buildPanel(pw: number, ph: number): void {
 
-
 		this.m_selectDispatcher = CoRScene.createEventBaseDispatcher();
 		this.m_progressDispatcher = CoRScene.createEventBaseDispatcher();
 		this.m_flagEvt = CoRScene.createSelectionEvent();
@@ -179,7 +178,12 @@ class NormalCtrlPanel {
 		textLabel = this.createText("normal line length:", startX, py - 15);
 		px = startX;
 		py = textLabel.getY();
-		this.createProgressBtn(px + 5, py - 25, 200);
+		this.m_dragBar = this.createProgressBtn(px + 5, py - 25, 200);
+
+		py = this.m_dragBar.getY();
+		textLabel = this.createText("normal color:", startX, py - 10);
+		px = startX;
+		py = textLabel.getY();
 
 		let ME = CoRScene.MouseEvent;
 		localBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
@@ -284,7 +288,7 @@ class NormalCtrlPanel {
 	private m_dragMaxX = 0;
 	private m_progressLen = 0;
 
-	private createProgressBtn(px: number, py: number, length: number): void {
+	private createProgressBtn(px: number, py: number, length: number): IButton {
 
 		let sc = this.getScene();
 		let color = CoMaterial.createColor4(0.1, 0.1, 0.1);
@@ -318,7 +322,8 @@ class NormalCtrlPanel {
 		// dragBar.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.progressMouseUp);
 
 		sc.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.progressMouseUp);
-		this.m_dragBar = dragBar;
+		// this.m_dragBar = dragBar;
+		return dragBar;
 	}
 	private progressMouseDown(evt: any): void {
 		this.m_dragging = true;
@@ -396,6 +401,27 @@ class NormalCtrlPanel {
 		btn.uuid = idns;
 		// btn.info = CoUI.createTipInfo().alignBottom().setContent(info);
 		btn.addLabel(iconLable);
+		btn.initializeWithLable(colorClipLabel);
+		btn.setXY(px, py);
+		// btn.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.btnMouseUpListener);
+
+		return btn;
+	}
+	private crateColorBtn(pw: number, ph: number, px: number, py: number, idns: string): IButton {
+
+		let sc = this.getScene();
+
+		// let colorClipLabel = new ClipColorLabel();
+		let colorClipLabel = CoUI.createClipColorLabel();
+		colorClipLabel.initializeWithoutTex(pw, ph, 4);
+		colorClipLabel.getColorAt(0).setRGB3Bytes(80, 80, 80);
+		colorClipLabel.getColorAt(1).setRGB3Bytes(110, 110, 110);
+		colorClipLabel.getColorAt(2).setRGB3Bytes(90, 90, 90);
+
+		// let btn = new Button();
+		let btn = CoUI.createButton();
+		btn.uuid = idns;
+		// btn.info = CoUI.createTipInfo().alignBottom().setContent(info);
 		btn.initializeWithLable(colorClipLabel);
 		btn.setXY(px, py);
 		// btn.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.btnMouseUpListener);
