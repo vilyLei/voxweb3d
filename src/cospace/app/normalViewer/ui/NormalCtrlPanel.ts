@@ -485,6 +485,9 @@ class NormalCtrlPanel {
 			this.update();
 		}
 	}
+	setZ(pz: number): void {
+		this.m_panel.setZ(pz);
+	}
 	setXY(px: number, py: number): void {
 		this.m_panel.setXY(px, py);
 	}

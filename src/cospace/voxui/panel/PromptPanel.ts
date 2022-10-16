@@ -2,14 +2,12 @@ import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { IButton } from "../button/IButton";
-
-import { ClipColorLabel } from "../entity/ClipColorLabel";
-import { ClipLabel } from "../entity/ClipLabel";
-import { Button } from "../button/Button";
 import { IPromptPanel } from "./IPromptPanel";
 import { ICoUIScene } from "../scene/ICoUIScene";
 import { TextLabel } from "../entity/TextLabel";
 import { UIPanel } from "./UIPanel";
+import { ButtonBuilder, ITextParam } from "../button/ButtonBuilder";
+import IColor4 from "../../../vox/material/IColor4";
 
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
@@ -92,7 +90,6 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		let disW = btnW * 2.0;
 		let gapW = (pw - disW) * 0.5;
 
-
 		let textLabel = new TextLabel();
 		textLabel.depthTest = true;
 		textLabel.transparent = true;
@@ -103,13 +100,48 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		let gapH = (ph - disH) * 0.5;
 
 		console.log("textLabel.getHeight(): ", textLabel.getHeight());
+		let tta = sc.transparentTexAtlas;
 
 		px = this.layoutXFactor * gapW;
 		py = this.layoutYFactor * gapH;
-		let confirmBtn = this.createBtn(this.m_confirmNS, px, py, "confirm");
-		px = pw - px - btnW;
-		let cancelBtn = this.createBtn(this.m_cancelNS, px, py, "cancel");
 
+		let ME = CoRScene.MouseEvent;
+		let textParam: ITextParam = {
+			text: this.m_confirmNS,
+			textColor: CoMaterial.createColor4(),
+			fontSize: 30,
+			font: ""
+		};
+		
+		let colors: IColor4[] = [
+			CoMaterial.createColor4().setRGB3Bytes(80, 80, 80),
+			CoMaterial.createColor4().setRGB3Bytes(110, 110, 110),
+			CoMaterial.createColor4().setRGB3Bytes(90, 90, 90)
+		];
+		// let confirmBtn = this.createBtn(this.m_confirmNS, px, py, "confirm");
+		let builder = ButtonBuilder;
+		let confirmBtn = builder.createTextButton(
+			this.m_btnW,
+			this.m_btnH,
+			"confirm",
+			tta,
+			textParam,colors
+			);
+		confirmBtn.setXY(px, py);
+		confirmBtn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
+
+		px = pw - px - btnW;
+		textParam.text = this.m_cancelNS;
+		let cancelBtn = builder.createTextButton(
+			this.m_btnW,
+			this.m_btnH,
+			"cancel",
+			tta,
+			textParam,colors
+			);
+		cancelBtn.setXY(px, py);
+		cancelBtn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
+		// let cancelBtn = this.createBtn(this.m_cancelNS, px, py, "cancel");
 
 		this.addEntity(cancelBtn);
 		this.addEntity(confirmBtn);
@@ -118,48 +150,19 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		py = ph - py - textLabel.getHeight();
 		textLabel.setXY(px, py);
 		this.addEntity(textLabel);
+		sc.addEventListener(ME.MOUSE_DOWN, this, this.stMouseDownListener);
 	}
-	private createBtn(ns: string, px: number, py: number, idns: string): IButton {
-		let sc = this.getScene();
-		let tta = sc.transparentTexAtlas;
+	private stMouseDownListener(evt: any): void {
+		console.log("stMouseDownListener...");
 
-		let pw = this.m_btnW;
-		let ph = this.m_btnH;
-
-		let fontColor = CoMaterial.createColor4();
-		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
-		let img = tta.createCharsCanvasFixSize(pw, ph, ns, 30, fontColor, bgColor);
-		tta.addImageToAtlas(ns, img);
-
-		return this.crateCurrBtn(ns, pw, ph, px, py, idns);
-	}
-
-	private crateCurrBtn(ns: string, pw: number, ph: number, px: number, py: number, idns: string): IButton {
-
-		let sc = this.getScene();
-
-		let colorClipLabel = new ClipColorLabel();
-		colorClipLabel.initializeWithoutTex(pw, ph, 4);
-		colorClipLabel.getColorAt(0).setRGB3Bytes(80, 80, 80);
-		colorClipLabel.getColorAt(1).setRGB3Bytes(110, 110, 110);
-		colorClipLabel.getColorAt(2).setRGB3Bytes(90, 90, 90);
-
-		let tta = sc.transparentTexAtlas;
-		let iconLable = new ClipLabel();
-		iconLable.depthTest = true;
-		iconLable.transparent = true;
-		iconLable.premultiplyAlpha = true;
-		iconLable.initialize(tta, [ns]);
-		iconLable.setColor(CoMaterial.createColor4(0.8, 0.8, 0.8));
-
-		let btn = new Button();
-		btn.uuid = idns;
-		btn.addLabel(iconLable);
-		btn.initializeWithLable(colorClipLabel);
-		btn.setXY(px, py);
-		btn.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.btnMouseUpListener);
-
-		return btn;
+		let px = evt.mouseX;
+		let py = evt.mouseY;
+		let pv = this.m_v0;
+		pv.setXYZ(px, py, 0);
+		this.globalToLocal(pv);
+		if(pv.x < 0 || pv.x > this.m_panelW || pv.y < 0 || pv.y > this.m_panelH) {
+			this.close();
+		}
 	}
 	private btnMouseUpListener(evt: any): void {
 

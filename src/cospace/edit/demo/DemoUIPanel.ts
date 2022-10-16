@@ -201,7 +201,7 @@ export class DemoUIPanel {
 		// // let tip: RectTextTip = new RectTextTip();
 		// // tip.initialize(this.m_uiScene, 1);
 		// return;
-		/*
+		///*
 		let panel = new PromptPanel();
 		panel.initialize(this.m_uiScene, 0, 300, 200, 120, 50);
 		// this.m_uiScene.addEntity(panel);
@@ -219,13 +219,14 @@ export class DemoUIPanel {
 		this.m_promptLabel = panel;
 		//*/
 
+		/*
 		// let panel = new NormalPptPanel();
 		let panel = new NormalCtrlPanel();
 		panel.initialize(this.m_uiScene, 0, 360, 300, 50);
 		// this.m_uiScene.addEntity(panel);
 		panel.open();
 		panel.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
-
+		//*/
 		return;
 		let colorLabel = new ColorLabel();
 		colorLabel.initialize(200, 130);
