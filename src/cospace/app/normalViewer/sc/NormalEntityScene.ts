@@ -40,7 +40,7 @@ class NormalEntityScene {
 		let baseUrl: string = "static/private/";
 		let url = baseUrl + "obj/base.obj";
 		url = baseUrl + "obj/base4.obj";
-		url = "static/assets/obj/apple_01.obj";
+		// url = "static/assets/obj/apple_01.obj";
 		// url = baseUrl + "ctm/errorNormal.ctm";
 		console.log("initModel() init...");
 		this.loadModel( url );

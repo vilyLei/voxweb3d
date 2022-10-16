@@ -28,6 +28,7 @@ class NormalCtrlPanel {
 
 	private m_normalVisiBtn: IFlagButton;
 	private m_modelVisiBtn: IFlagButton;
+	private m_modelColor: IFlagButton;
 
 	private m_btnW: number = 90;
 	private m_btnH: number = 50;
@@ -94,6 +95,7 @@ class NormalCtrlPanel {
 
 		this.m_modelVisiBtn = null;
 		this.m_normalVisiBtn = null;
+		this.m_modelColor = null;
 
 		if (this.m_panel != null) {
 
@@ -163,7 +165,8 @@ class NormalCtrlPanel {
 		let colors: IColor4[] = [
 			CoMaterial.createColor4().setRGB3Bytes(80, 80, 80),
 			CoMaterial.createColor4().setRGB3Bytes(110, 110, 110),
-			CoMaterial.createColor4().setRGB3Bytes(90, 90, 90)
+			CoMaterial.createColor4().setRGB3Bytes(90, 90, 90),
+			CoMaterial.createColor4().setRGB3Bytes(110, 110, 110)
 		];
 		let localBtn = CoUI.createTextButton(
 			this.m_btnW, this.m_btnH, "local",
@@ -208,6 +211,10 @@ class NormalCtrlPanel {
 		textLabel = this.createText("model visible", startX + btnSize + disX, py - 10);
 		py = textLabel.getY();
 		this.m_modelVisiBtn = this.createFlagBtn(btnSize, px, py, "model");
+		
+		textLabel = this.createText("model color", startX + btnSize + disX, py - 10);
+		py = textLabel.getY();
+		this.m_modelColor = this.createFlagBtn(btnSize, px, py, "modelColor");
 
 		textLabel = this.createText("normal line length:", startX, py - 15);
 		px = startX;

@@ -82,25 +82,82 @@ class NormalEntityGroup {
 			}
 		}
 	}
+	
+	private setModelColor(v: boolean): void {
+		let ls = this.m_selectEntities;
+		if(ls != null) {
+			let map = this.m_map;
+			for(let i = 0; i < ls.length; ++i) {
+				const node = map.get(ls[i].getUid());
+				if(node != null) {
+					node.showModelColor(v);
+				}
+			}
+		}
+	}
+	
+	private showNormalLocalColor(): void {
+		let ls = this.m_selectEntities;
+		if(ls != null) {
+			let map = this.m_map;
+			for(let i = 0; i < ls.length; ++i) {
+				const node = map.get(ls[i].getUid());
+				if(node != null) {
+					node.showLocalNormal();
+				}
+			}
+		}
+	}
+	private showNormalGlobalColor(): void {
+		let ls = this.m_selectEntities;
+		if(ls != null) {
+			let map = this.m_map;
+			for(let i = 0; i < ls.length; ++i) {
+				const node = map.get(ls[i].getUid());
+				if(node != null) {
+					node.showGlobalNormal();
+				}
+			}
+		}
+	}
+	private showDifferenceColor(): void {
+		let ls = this.m_selectEntities;
+		if(ls != null) {
+			let map = this.m_map;
+			for(let i = 0; i < ls.length; ++i) {
+				const node = map.get(ls[i].getUid());
+				if(node != null) {
+					node.showDifference();
+				}
+			}
+		}
+	}
 	applyFeatureColor(uuid: string): void {
 		switch (uuid) {
 			case "local":
+				this.showNormalLocalColor();
 				break;
 			case "global":
+				this.showNormalGlobalColor();
 				break;
 			case "difference":
+				this.showDifferenceColor();
 				break;
 			default:
 				break;
 		}
 	}
 	applyVisibility(uuid: string, flag: boolean): void {
+		
 		switch (uuid) {
 			case "normal":
 				this.setNormalVisible(flag);
 				break;
 			case "model":
 				this.setModelVisible(flag);
+				break;
+			case "modelColor":
+				this.setModelColor(flag);
 				break;
 			default:
 				break;

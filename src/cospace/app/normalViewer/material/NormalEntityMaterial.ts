@@ -38,10 +38,25 @@ class NormalEntityMaterial {
 		color.fromArray3(this.m_data);
 	}
 	applyLocalNormal(): void {
+		console.log("apply local normal...");
 		this.m_data[7] = 0.0;
+		this.applyDifference(false);
 	}
 	applyGlobalNormal(): void {
+		console.log("apply global normal...");
 		this.m_data[7] = 1.0;
+		this.applyDifference(false);
+	}
+	applyModelColor(): void {
+		this.m_data[4] = 1.0;
+		this.applyDifference(false);
+	}
+	applyNormalColor(): void {
+		this.m_data[4] = 0.0;
+		this.applyDifference(false);
+	}
+	applyDifference(boo: boolean = true): void {
+		this.m_data[5] = boo ? 1.0 : 0.0;
 	}
 	/**
 	 * @param textureEnabled the default value is false
@@ -64,6 +79,7 @@ class NormalEntityMaterial {
 				coder.addFragHeadCode(
 					`
 				const vec3 gama = vec3(1.0/2.2);
+				const vec3 direc = normalize(vec3(0.3,0.6,0.9));
 					`
 				);
 
@@ -81,9 +97,11 @@ class NormalEntityMaterial {
     		vec3 dstColor = facing ? frontColor : backColor;
 
 			vec4 param = u_params[1];
-			float f = param.x;
-			// f = 0.0;
-			dstColor = f > 0.5 ? u_params[0].xyz : dstColor;
+			
+			float nDotL = max(dot(v_nv.xyz, direc), 0.0);
+			dstColor = param.x > 0.5 ? u_params[0].xyz * vec3(nDotL) : dstColor;
+			vec3 diffColor = vec3(1.0, 0.0, 0.0);
+			dstColor = param.y > 0.5 ? diffColor : dstColor;
 
     		FragColor0 = vec4(dstColor, 1.0);
 					`

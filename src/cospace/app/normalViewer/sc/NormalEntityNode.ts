@@ -38,6 +38,26 @@ class NormalEntityNode {
 	private m_normalScale0 = 1.0;
 	constructor() {
 	}
+	
+	showLocalNormal(): void {
+		this.m_entityMaterial.applyLocalNormal();
+		this.m_entityMaterial.applyNormalColor();
+	}
+	showGlobalNormal(): void {
+		this.m_entityMaterial.applyGlobalNormal();
+		this.m_entityMaterial.applyNormalColor();
+	}
+	showModelColor(boo: boolean): void {
+		if(boo) {
+			this.m_entityMaterial.applyModelColor();
+		}else {
+			this.m_entityMaterial.applyNormalColor();
+		}
+	}
+	showDifference(): void {
+		this.m_entityMaterial.applyDifference();
+	}
+	
 	setEntityModel(model: CoGeomDataType): IMouseEventEntity {
 
 		this.entity = this.createEntity(model);
