@@ -13,6 +13,7 @@ import { ICoMesh } from "../../../voxmesh/ICoMesh";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../app/CoSpaceAppData";
 import IVector3D from "../../../../vox/math/IVector3D";
 import { NormalLineMaterial } from "../material/NormalLineMaterial";
+import { NormalEntityMaterial } from "../material/NormalEntityMaterial";
 
 declare var CoUI: ICoUI;
 declare var CoRScene: ICoRScene;
@@ -29,6 +30,7 @@ class NormalEntityNode {
 	// differenceColorEntity: ITransformEntity = null;
 	normalLine: ITransformEntity = null;
 	// flagEndity: ITransformEntity = null;
+	private m_entityMaterial: NormalEntityMaterial;
 	private m_normalMaterial: NormalLineMaterial;
 	private m_entities: ITransformEntity[] = null;
 	private m_scale = 200.0;
@@ -56,11 +58,12 @@ class NormalEntityNode {
 	}
 	private createEntity(model: CoGeomDataType): IMouseEventEntity {
 		// let rst = CoRenderer.RendererState;
-
+		this.m_entityMaterial = new NormalEntityMaterial();
 		// let material = new CoNormalMaterial().build().material;
-		let material = CoRScene.createDefaultMaterial(true);
+		let material = this.m_entityMaterial.create();//CoRScene.createDefaultMaterial(true);
 		material.initializeByCodeBuf(false);
-		material.setRGB3f(0.7, 0.7, 0.7);
+		this.m_entityMaterial.setRGB3f(0.7, 0.7, 0.7);
+		//material.setRGB3f(0.7, 0.7, 0.7);
 
 		let s = this.m_scale;
 		let mesh = CoRScene.createDataMeshFromModel(model, material);
@@ -190,16 +193,17 @@ class NormalEntityNode {
 	}
 	private mouseOverTargetListener(evt: any): void {
 		console.log("mouseOverTargetListener()..., evt.target: ", evt.target);
-		let entity = evt.target as ITransformEntity;
-		let material = entity.getMaterial() as IColorMaterial;
-		material.setRGB3f(0.8, 0.8, 0.8);
-		// this.flagEndity.update();
+		// let entity = evt.target as ITransformEntity;
+		// let material = entity.getMaterial() as IColorMaterial;
+		// material.setRGB3f(0.8, 0.8, 0.8);
+		this.m_entityMaterial.setRGB3f(0.8, 0.8, 0.8);
 	}
 	private mouseOutTargetListener(evt: any): void {
 		console.log("mouseOutTargetListener()..., evt.target: ", evt.target);
-		let entity = evt.target as ITransformEntity;
-		let material = entity.getMaterial() as IColorMaterial;
-		material.setRGB3f(0.7, 0.7, 0.7);
+		// let entity = evt.target as ITransformEntity;
+		// let material = entity.getMaterial() as IColorMaterial;
+		// material.setRGB3f(0.7, 0.7, 0.7);
+		this.m_entityMaterial.setRGB3f(0.7, 0.7, 0.7);
 	}
 	private mouseDownTargetListener(evt: any): void {
 		console.log("mouseDownTargetListener()..., evt.target: ", evt.target);

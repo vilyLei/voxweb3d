@@ -6,8 +6,11 @@ import IColor4 from "../../../../vox/material/IColor4";
 
 declare var CoRScene: ICoRScene;
 
-class NormalLineMaterial {
-	private m_data: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
+class NormalEntityMaterial {
+	private m_data: Float32Array = new Float32Array([
+		1.0, 1.0, 1.0, 1.0,
+		0.0, 0.0, 0.0, 1.0
+	]);
 	material: IShaderMaterial;
 
 	setRGB3f(pr: number, pg: number, pb: number): void {
@@ -34,36 +37,64 @@ class NormalLineMaterial {
 	getColor(color: IColor4): void {
 		color.fromArray3(this.m_data);
 	}
+	applyLocalNormal(): void {
+		this.m_data[7] = 0.0;
+	}
+	applyGlobalNormal(): void {
+		this.m_data[7] = 1.0;
+	}
 	/**
 	 * @param textureEnabled the default value is false
 	 */
 	create(): IShaderMaterial {
 		if (this.material == null) {
-			
 			let textureEnabled = false;
-			let material = CoRScene.createShaderMaterial("normal_dyn_line_material");
-			material.addUniformDataAt("u_color", this.m_data);
+			let material = CoRScene.createShaderMaterial("normal_entity_material");
+			material.addUniformDataAt("u_params", this.m_data);
 			material.setShaderBuilder((coderBuilder: IShaderCodeBuffer): void => {
 				let coder = coderBuilder.getShaderCodeBuilder();
 
-				coder.addVertLayout("vec2", "a_uvs");
+				// coder.addVertLayout("vec2", "a_uvs");
 				coder.addVertLayout("vec3", "a_nvs");
-				coder.addVertUniform("vec4", "u_color");
-				coder.addFragUniform("vec4", "u_color");
-
+				coder.addVertUniform("vec4", "u_params",2);
+				coder.addFragUniform("vec4", "u_params",2);
+				coder.addVarying("vec4", "v_nv");
 				coder.addFragOutputHighp("vec4", "FragColor0");
+
+				coder.addFragHeadCode(
+					`
+				const vec3 gama = vec3(1.0/2.2);
+					`
+				);
 
 				coder.addFragMainCode(
 					`
-			FragColor0 = vec4(u_color.xyz, 1.0);
+			bool facing = gl_FrontFacing;
+    		vec2 dv = fract(gl_FragCoord.xy/vec2(5.0)) - vec2(0.5);
+    		vec2 f2 = sign(dv);
+    
+    		vec3 nv = normalize(v_nv.xyz);
+    		vec3 color = pow(nv, gama);
+
+    		vec3 frontColor = color.xyz;
+    		vec3 backColor = vec3(sign(f2.x * f2.y), 1.0, 1.0);
+    		vec3 dstColor = facing ? frontColor : backColor;
+
+			vec4 param = u_params[1];
+			float f = param.x;
+			// f = 0.0;
+			dstColor = f > 0.5 ? u_params[0].xyz : dstColor;
+
+    		FragColor0 = vec4(dstColor, 1.0);
 					`
 				);
 				coder.addVertMainCode(
 					`
-			viewPosition = u_viewMat * u_objMat * vec4(a_vs + u_color.www * a_nvs * a_uvs.xxx,1.0);
-			vec4 pv = u_projMat * viewPosition;
-			
+			viewPosition = u_viewMat * u_objMat * vec4(a_vs,1.0);
+			vec4 pv = u_projMat * viewPosition;			
 			gl_Position = pv;
+			vec3 pnv = u_params[1].w < 0.5 ? a_nvs : normalize(a_nvs * inverse(mat3(u_objMat)));
+			v_nv = vec4(pnv, 1.0);
 					`
 				);
 			});
@@ -74,4 +105,4 @@ class NormalLineMaterial {
 	}
 }
 
-export { NormalLineMaterial };
+export { NormalEntityMaterial };

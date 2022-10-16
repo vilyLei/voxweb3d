@@ -68,7 +68,6 @@ class NormalEntityScene {
 			default:
 				break;
 		}
-		console.log("NNNNNNNNNNSS: ", ns, type);
 		this.loadGeomModel(url, type);
 	}
 	private loadGeomModel(url: string, format: CoDataFormat): void {
