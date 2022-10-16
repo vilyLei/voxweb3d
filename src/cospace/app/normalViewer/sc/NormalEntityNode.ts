@@ -36,7 +36,7 @@ class NormalEntityNode {
 	private m_entityMaterial: NormalEntityMaterial;
 	private m_normalMaterial: NormalLineMaterial;
 	private m_entities: ITransformEntity[] = null;
-	private m_scale = 200.0;
+	private m_scale = 1.0;
 	private m_normalScale = 1.0;
 	private m_normalScale0 = 1.0;
 	constructor() {
@@ -101,7 +101,7 @@ class NormalEntityNode {
 		// let mesh = CoRScene.createDataMeshFromModel(model, material);
 		let mesh = this.createEntityMesh(model.indices, model.vertices, nvs2, model.normals, material);
 		let cv = mesh.bounds.center.clone();
-		
+		console.log("create normal entity node, mesh.bounds: ",mesh.bounds);
 		let tot = vs.length;
 		for (let i = 0; i < tot;) {
 			vs[i++] -= cv.x;

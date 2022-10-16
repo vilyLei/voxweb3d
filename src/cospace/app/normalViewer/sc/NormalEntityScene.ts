@@ -88,7 +88,7 @@ class NormalEntityScene {
 	}
 	private m_entities: ITransformEntity[] = [];
 	private createEntityFromUnit(unit: CoGeomDataUnit, status: number = 0): void {
-
+		console.log("XXXXXX createEntityFromUnit, unit: ",unit);
 		let len = unit.data.models.length;
 		for (let i = 0; i < len; ++i) {
 			let entity = this.nodeGroup.addEntityWithModel( unit.data.models[i] );

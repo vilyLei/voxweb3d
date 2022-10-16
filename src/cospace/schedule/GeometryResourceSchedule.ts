@@ -70,7 +70,7 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 
 		for (let i: number = 0; i < taskModules.length; ++i) {
 			const module = taskModules[i];
-			console.log("GeometryResourceSchedule::initTask(), module.name ", module.name);
+			console.log("GeometryResourceSchedule::initTask(), module.name:", module.name);
 			switch (module.name) {
 				case ModuleNS.ctmParser:
 					this.m_ctmListener = new CTMParserListerner(unitPool, threadSchedule, module, receiverSchedule);

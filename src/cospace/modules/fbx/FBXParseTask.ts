@@ -53,7 +53,7 @@ class FBXParseTask extends ThreadTask {
 	parseDone(
 		data: ITaskReceiveData<FBXModelDataType, FBXDescriptorType>, flag: number
 	): boolean {
-		// console.log("FBXParseTask::parseDone(), this.m_listener != null:", this.m_listener != null, data);
+		console.log("FBXParseTask::parseDone(), this.m_listener != null:", this.m_listener != null, data);
 		if (this.m_listener != null) {
 			let modelData = data.data;
 			this.m_listener.fbxParseFinish(modelData.models, modelData.transform, data.descriptor.url, modelData.index, modelData.total);

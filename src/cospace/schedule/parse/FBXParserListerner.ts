@@ -30,6 +30,7 @@ class FBXParserListerner {
 		this.m_unitPool = unitPool;
 		this.m_threadSchedule = threadSchedule;
 		this.m_receiverSchedule = receiverSchedule;
+		// console.log("this.m_moduleUrl: ",this.m_moduleUrl);
 	}
 
 	addUrlToTask(url: string): void {
@@ -48,15 +49,16 @@ class FBXParserListerner {
 			new HttpFileLoader().load(
 				url,
 				(buf: ArrayBuffer, url: string): void => {
-					DivLog.ShowLogOnce("正在解析OBJ数据...");
+					console.log("正在解析fbx数据...");
+					DivLog.ShowLogOnce("正在解析fbx数据...");
 					this.m_parseTask.addBinaryData(buf, url);
 				},
 				(progress: number, url: string): void => {
 					let k = Math.round(100 * progress);
-					DivLog.ShowLogOnce("obj file loading " + k + "%");
+					DivLog.ShowLogOnce("fbx file loading " + k + "%");
 				},
 				(status: number, url: string): void => {
-					console.error("load obj mesh data error, url: ", url);
+					console.error("load fbx mesh data error, url: ", url);
 				}
 			);
 		}
@@ -64,7 +66,7 @@ class FBXParserListerner {
 	// 一个任务数据处理完成后的侦听器回调函数
 	fbxParseFinish(models: GeometryModelDataType[], transform: Float32Array, url: string, index: number, total: number): void {
 
-		// console.log("ObjParserListerner::ctmParseFinish(), models: ", models, ", url: ", url);
+		// console.log("FbxParserListerner::fbxParseFinish(), models: ", models, ", url: ", url);
 
 		if (this.m_unitPool.hasUnitByUrl(url)) {
 
