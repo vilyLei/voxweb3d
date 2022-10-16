@@ -10,15 +10,18 @@ import IRendererScene from "../../../../vox/scene/IRendererScene";
 import IMouseEventEntity from "../../../../vox/entity/IMouseEventEntity";
 import IColorMaterial from "../../../../vox/material/mcase/IColorMaterial";
 import { ICoMesh } from "../../../voxmesh/ICoMesh";
+import { ICoAGeom } from "../../../ageom/ICoAGeom";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../app/CoSpaceAppData";
 import IVector3D from "../../../../vox/math/IVector3D";
 import { NormalLineMaterial } from "../material/NormalLineMaterial";
 import { NormalEntityMaterial } from "../material/NormalEntityMaterial";
+import IRenderMaterial from "../../../../vox/render/IRenderMaterial";
 
 declare var CoUI: ICoUI;
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
 declare var CoMesh: ICoMesh;
+declare var CoAGeom: ICoAGeom;
 
 class NormalEntityNode {
 
@@ -84,11 +87,21 @@ class NormalEntityNode {
 		material.initializeByCodeBuf(false);
 		this.m_entityMaterial.setRGB3f(0.7, 0.7, 0.7);
 		//material.setRGB3f(0.7, 0.7, 0.7);
+		// model.normals = null;
+		
+		let vs = model.vertices;
+		let ivs = model.indices;
+		let trisNumber = ivs.length / 3;
+		let nvs2 = new Float32Array(vs.length);
+		CoAGeom.SurfaceNormal.ClacTrisNormal(vs, vs.length, trisNumber,ivs, nvs2);
+		// nvs2.fill(1.0);
+		// model.normals = nvs2;
 
 		let s = this.m_scale;
-		let mesh = CoRScene.createDataMeshFromModel(model, material);
+		// let mesh = CoRScene.createDataMeshFromModel(model, material);
+		let mesh = this.createEntityMesh(model.indices, model.vertices, nvs2, model.normals, material);
 		let cv = mesh.bounds.center.clone();
-		let vs = model.vertices;
+		
 		let tot = vs.length;
 		for (let i = 0; i < tot;) {
 			vs[i++] -= cv.x;
@@ -96,7 +109,8 @@ class NormalEntityNode {
 			vs[i++] -= cv.z;
 		}
 		cv.scaleBy(this.m_scale);
-		mesh = CoRScene.createDataMeshFromModel(model, material);
+		// mesh = CoRScene.createDataMeshFromModel(model, material);
+		// mesh
 		let entity = CoRScene.createMouseEventEntity();
 		entity.setMaterial(material);
 		entity.setMesh(mesh);
@@ -106,19 +120,38 @@ class NormalEntityNode {
 		entity.update();
 		this.rsc.addEntity(entity);
 
-		this.createNormalLine(entity, model, s);
+		this.createNormalLine(entity, vs, model.vertices, s);
 
 		// let axisEntity = CoRScene.createCrossAxis3DEntity(5, entity.getTransform());
 		// this.rsc.addEntity( axisEntity );
 		// this.flagEndity = axisEntity;
 		return entity;
 	}
-	private createNormalLine(srcEntity: ITransformEntity, model: CoGeomDataType, scale: number, size: number = 2): void {
+	
+	private createEntityMesh(ivs: Uint16Array | Uint32Array , vs: Float32Array, uvs: Float32Array, nvs: Float32Array, matrial: IRenderMaterial): IRawMesh {
+
+		let mesh = CoMesh.createRawMesh();
+		// mesh.ivsEnabled = false;
+		// mesh.aabbEnabled = true;
+		mesh.reset();
+		mesh.setBufSortFormat(matrial.getBufSortFormat());
+		mesh.setIVS(ivs);
+		mesh.addFloat32Data(vs, 3);
+		mesh.addFloat32Data(uvs, 3);
+		mesh.addFloat32Data(nvs, 3);
+		mesh.vbWholeDataEnabled = false;
+		mesh.initialize();
+		// mesh.toArraysLines();
+		// mesh.vtCount = Math.floor(vs.length / 3);
+		return mesh;
+	}
+	private createNormalLine(srcEntity: ITransformEntity, svs: Float32Array, snvs: Float32Array, scale: number, size: number = 2): void {
 		let ml = CoMesh.line;
 		ml.dynColorEnabled = true;
 		let mesh: IRawMesh;
-		let vs = model.vertices;
-		let nvs = model.normals;
+		// let srcMesh = srcEntity.getMesh();
+		let vs = svs;
+		let nvs = snvs;
 		let tot = vs.length / 3;
 		let j = 0;
 		let k_vs = 0;
@@ -212,21 +245,21 @@ class NormalEntityNode {
 		// entity.addEventListener(ME.MOUSE_UP, this, this.mouseUpTargetListener);
 	}
 	private mouseOverTargetListener(evt: any): void {
-		console.log("mouseOverTargetListener()..., evt.target: ", evt.target);
+		// console.log("mouseOverTargetListener()..., evt.target: ", evt.target);
 		// let entity = evt.target as ITransformEntity;
 		// let material = entity.getMaterial() as IColorMaterial;
 		// material.setRGB3f(0.8, 0.8, 0.8);
 		this.m_entityMaterial.setRGB3f(0.8, 0.8, 0.8);
 	}
 	private mouseOutTargetListener(evt: any): void {
-		console.log("mouseOutTargetListener()..., evt.target: ", evt.target);
+		// console.log("mouseOutTargetListener()..., evt.target: ", evt.target);
 		// let entity = evt.target as ITransformEntity;
 		// let material = entity.getMaterial() as IColorMaterial;
 		// material.setRGB3f(0.7, 0.7, 0.7);
 		this.m_entityMaterial.setRGB3f(0.7, 0.7, 0.7);
 	}
 	private mouseDownTargetListener(evt: any): void {
-		console.log("mouseDownTargetListener()..., evt.target: ", evt.target);
+		// console.log("mouseDownTargetListener()..., evt.target: ", evt.target);
 		let entity = evt.target as ITransformEntity;
 		this.transUI.selectEntities([entity]);
 	}

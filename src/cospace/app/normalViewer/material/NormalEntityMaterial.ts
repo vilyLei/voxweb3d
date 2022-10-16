@@ -70,10 +70,12 @@ class NormalEntityMaterial {
 				let coder = coderBuilder.getShaderCodeBuilder();
 
 				// coder.addVertLayout("vec2", "a_uvs");
+				coder.addVertLayout("vec3", "a_uvs");
 				coder.addVertLayout("vec3", "a_nvs");
 				coder.addVertUniform("vec4", "u_params",2);
 				coder.addFragUniform("vec4", "u_params",2);
 				coder.addVarying("vec4", "v_nv");
+				coder.addVarying("vec3", "v_dv");
 				coder.addFragOutputHighp("vec4", "FragColor0");
 
 				coder.addFragHeadCode(
@@ -100,15 +102,21 @@ class NormalEntityMaterial {
 			
 			float nDotL = max(dot(v_nv.xyz, direc), 0.0);
 			dstColor = param.x > 0.5 ? u_params[0].xyz * vec3(nDotL) : dstColor;
-			vec3 diffColor = vec3(1.0, 0.0, 0.0);
+			
+			float f = v_dv.x;
+			f = f < 0.7 ? 1.0 : 0.0;
+			vec3 diffColor = vec3(1.0, 0.0, 0.0) * f + dstColor * (1.0 - f);
 			dstColor = param.y > 0.5 ? diffColor : dstColor;
 
     		FragColor0 = vec4(dstColor, 1.0);
+    		// FragColor0 = vec4(u_params[0].xyz, 1.0);
 					`
 				);
 				coder.addVertMainCode(
 					`
 			viewPosition = u_viewMat * u_objMat * vec4(a_vs,1.0);
+			vec3 puvs = a_uvs;
+			v_dv = vec3(dot(normalize(a_uvs), normalize(a_nvs)));
 			vec4 pv = u_projMat * viewPosition;			
 			gl_Position = pv;
 			vec3 pnv = u_params[1].w < 0.5 ? a_nvs : normalize(a_nvs * inverse(mat3(u_objMat)));
