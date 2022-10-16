@@ -12,7 +12,16 @@ import { ITipInfo } from "./base/ITipInfo";
 import { IUILayout } from "./layout/IUILayout";
 import { IUIPanel } from "./panel/IUIPanel";
 import { IPromptPanel } from "./panel/IPromptPanel";
+import ICanvasTexAtlas from "../voxtexture/atlas/ICanvasTexAtlas";
+import IColor4 from "../../vox/material/IColor4";
 
+interface ITextParam {
+
+	text: string;
+	textColor: IColor4;
+	fontSize: number;
+	font: string;
+}
 interface ICoUI {
 	createColorLabel(): IColorLabel;
 	createUILayout(): IUILayout;
@@ -27,10 +36,11 @@ interface ICoUI {
 	createButton(): IButton;
 	createFlagButton(): IFlagButton;
 	createSelectButtonGroup(): ISelectButtonGroup;
+	createTextButton(width: number, height: number, idns: string, texAtlas: ICanvasTexAtlas, textParam: ITextParam, colors: IColor4[]): IButton;
 
 	createUIPanel(): IUIPanel;
 	createPromptPanel(): IPromptPanel;
 
 	createUIScene(): ICoUIScene;
 }
-export { ICoUI };
+export { ITextParam, ICoUI };

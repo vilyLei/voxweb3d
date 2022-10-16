@@ -18,7 +18,7 @@ import { IColorClipLabel } from "../../../voxui/entity/IColorClipLabel";
 import IEvtDispatcher from "../../../../vox/event/IEvtDispatcher";
 import ISelectionEvent from "../../../../vox/event/ISelectionEvent";
 
-import { ICoUI } from "../../../voxui/ICoUI";
+import { ITextParam, ICoUI } from "../../../voxui/ICoUI";
 import IProgressDataEvent from "../../../../vox/event/IProgressDataEvent";
 declare var CoUI: ICoUI;
 
@@ -149,13 +149,47 @@ class NormalCtrlPanel {
 		let py = 0;
 
 		this.m_btnW = 90;
-		let localBtn = this.createBtn("Local", startX, startY, "local");
+		// let localBtn = this.createBtn("Local", startX, startY, "local");
+
+		let tta = sc.transparentTexAtlas;
+
+		let ME = CoRScene.MouseEvent;
+		let textParam: ITextParam = {
+			text: "Local",
+			textColor: CoMaterial.createColor4(),
+			fontSize: 30,
+			font: ""
+		};
+		let colors: IColor4[] = [
+			CoMaterial.createColor4().setRGB3Bytes(80, 80, 80),
+			CoMaterial.createColor4().setRGB3Bytes(110, 110, 110),
+			CoMaterial.createColor4().setRGB3Bytes(90, 90, 90)
+		];
+		let localBtn = CoUI.createTextButton(
+			this.m_btnW, this.m_btnH, "local",
+			tta, textParam, colors
+		);
+		localBtn.setXY(startX, startY);
+
 		px = px + this.m_btnW + disX;
 		this.m_btnW = 90;
-		let globalBtn = this.createBtn("Global", px, startY, "global");
+		textParam.text = "Global";
+		// let globalBtn = this.createBtn("Global", px, startY, "global");
+		let globalBtn = CoUI.createTextButton(
+			this.m_btnW, this.m_btnH, "global",
+			tta, textParam, colors
+		);
+		globalBtn.setXY(px, startY);
+
 		px = px + this.m_btnW + disX;
-		this.m_btnW = 150;
-		let differenceBtn = this.createBtn("Difference", px, startY, "difference");
+		this.m_btnW = 150;		
+		textParam.text = "Difference";
+		// let differenceBtn = this.createBtn("Difference", px, startY, "difference");
+		let differenceBtn = CoUI.createTextButton(
+			this.m_btnW, this.m_btnH, "difference",
+			tta, textParam, colors
+		);
+		differenceBtn.setXY(px, startY);
 
 		let pl = this.m_panel;
 		pl.addEntity(localBtn);
@@ -185,16 +219,17 @@ class NormalCtrlPanel {
 		px = startX;
 		py = textLabel.getY();
 		let fc4 = CoMaterial.createColor4;
-		let colors = [
+		colors = [
 			fc4().setRGB3Bytes(210, 0, 210),
 			fc4().setRGB3Bytes(240, 0, 240),
 			fc4().setRGB3Bytes(220, 0, 220),
 			fc4().setRGB3Bytes(240, 0, 240)
 		];
-		let normalColorBtn = this.createColorBtn(22, 22, startX + textLabel.getWidth() + disX, py, "normalColor", colors);
+		let normalColorBtn = this.createColorBtn(22, 22, "normalColor", colors);
+		normalColorBtn.setXY(startX + textLabel.getWidth() + disX, py);
 		pl.addEntity(normalColorBtn);
 
-		let ME = CoRScene.MouseEvent;
+		//let ME = CoRScene.MouseEvent;
 		localBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
 		globalBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
 		differenceBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
@@ -374,80 +409,15 @@ class NormalCtrlPanel {
 		this.m_normalScale = f;
 		this.sendProgressEvt("normalScale", f);
 	}
-	private createBtn(ns: string, px: number, py: number, idns: string): IButton {
 
-		let sc = this.getScene();
-		let tta = sc.transparentTexAtlas;
+	private createColorBtn(pw: number, ph: number, idns: string, colors: IColor4[]): IButton {
 
-		let pw = this.m_btnW;
-		let ph = this.m_btnH;
-
-		let fontColor = CoMaterial.createColor4();
-		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
-		let img = tta.createCharsCanvasFixSize(pw, ph, ns, 30, fontColor, bgColor);
-		tta.addImageToAtlas(ns, img);
-
-		return this.crateCurrBtn(ns, pw, ph, px, py, idns);
-	}
-
-	private crateCurrBtn(ns: string, pw: number, ph: number, px: number, py: number, idns: string): IButton {
-
-		let sc = this.getScene();
-
-		// // let colorClipLabel = new ClipColorLabel();
-		// let colorClipLabel = CoUI.createClipColorLabel();
-		// colorClipLabel.initializeWithoutTex(pw, ph, 4);
-		// colorClipLabel.getColorAt(0).setRGB3Bytes(80, 80, 80);
-		// colorClipLabel.getColorAt(1).setRGB3Bytes(110, 110, 110);
-		// colorClipLabel.getColorAt(2).setRGB3Bytes(90, 90, 90);
-
-		let tta = sc.transparentTexAtlas;
-		// let iconLable = new ClipLabel();
-		let iconLable = CoUI.createClipLabel();
-		iconLable.depthTest = true;
-		iconLable.transparent = true;
-		iconLable.premultiplyAlpha = true;
-		iconLable.initialize(tta, [ns]);
-		iconLable.setColor(CoMaterial.createColor4(0.8, 0.8, 0.8));
-
-		// // let btn = new Button();
-		// let btn = CoUI.createButton();
-		// btn.uuid = idns;
-		// // btn.info = CoUI.createTipInfo().alignBottom().setContent(info);
-		// btn.addLabel(iconLable);
-		// btn.initializeWithLable(colorClipLabel);
-		// btn.setXY(px, py);
-		// // btn.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.btnMouseUpListener);
-
-		let fc4 = CoMaterial.createColor4;
-		let colors = [
-			fc4().setRGB3Bytes(80, 80, 80),
-			fc4().setRGB3Bytes(110, 110, 110),
-			fc4().setRGB3Bytes(90, 90, 90)
-		];
-		let btn = this.createColorBtn(pw, ph, px, py, idns, colors);
-		btn.addLabel(iconLable);
-		return btn;
-	}
-	private createColorBtn(pw: number, ph: number, px: number, py: number, idns: string, colors: IColor4[]): IButton {
-
-		let sc = this.getScene();
-
-		// let colorClipLabel = new ClipColorLabel();
 		let colorClipLabel = CoUI.createClipColorLabel();
 		colorClipLabel.initializeWithoutTex(pw, ph, 4);
 		colorClipLabel.setColors(colors);
-		// colorClipLabel.getColorAt(0).setRGB3Bytes(80, 80, 80);
-		// colorClipLabel.getColorAt(1).setRGB3Bytes(110, 110, 110);
-		// colorClipLabel.getColorAt(2).setRGB3Bytes(90, 90, 90);
-
-		// let btn = new Button();
 		let btn = CoUI.createButton();
 		btn.uuid = idns;
-		// btn.info = CoUI.createTipInfo().alignBottom().setContent(info);
 		btn.initializeWithLable(colorClipLabel);
-		btn.setXY(px, py);
-		// btn.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.btnMouseUpListener);
 
 		return btn;
 	}

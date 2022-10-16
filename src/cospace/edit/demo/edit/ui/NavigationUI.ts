@@ -129,6 +129,7 @@ class NavigationUI {
 		// let panel = new PromptPanel();
 		let panel = CoUI.createPromptPanel();
 		panel.initialize(uiScene, 0, 320, 200, 120, 50, "确认", "取消");
+		panel.setZ(3.0);
 		// uiScene.addEntity(panel);
 		// panel.open();
 		panel.setPrompt("Nothing!");

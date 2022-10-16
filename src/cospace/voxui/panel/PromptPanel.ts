@@ -100,10 +100,11 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		let gapH = (ph - disH) * 0.5;
 
 		console.log("textLabel.getHeight(): ", textLabel.getHeight());
-		let tta = sc.transparentTexAtlas;
-
+		
 		px = this.layoutXFactor * gapW;
 		py = this.layoutYFactor * gapH;
+		
+		let tta = sc.transparentTexAtlas;
 
 		let ME = CoRScene.MouseEvent;
 		let textParam: ITextParam = {
@@ -112,7 +113,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			fontSize: 30,
 			font: ""
 		};
-		
+
 		let colors: IColor4[] = [
 			CoMaterial.createColor4().setRGB3Bytes(80, 80, 80),
 			CoMaterial.createColor4().setRGB3Bytes(110, 110, 110),
@@ -125,8 +126,8 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			this.m_btnH,
 			"confirm",
 			tta,
-			textParam,colors
-			);
+			textParam, colors
+		);
 		confirmBtn.setXY(px, py);
 		confirmBtn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
 
@@ -137,8 +138,8 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			this.m_btnH,
 			"cancel",
 			tta,
-			textParam,colors
-			);
+			textParam, colors
+		);
 		cancelBtn.setXY(px, py);
 		cancelBtn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
 		// let cancelBtn = this.createBtn(this.m_cancelNS, px, py, "cancel");
@@ -150,17 +151,29 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		py = ph - py - textLabel.getHeight();
 		textLabel.setXY(px, py);
 		this.addEntity(textLabel);
-		sc.addEventListener(ME.MOUSE_DOWN, this, this.stMouseDownListener);
+
+		this.setOpenAndLoseListener(
+			(): void => {
+				sc.addEventListener(ME.MOUSE_DOWN, this, this.stMouseDownListener);
+			},
+			(): void => {
+				sc.removeEventListener(ME.MOUSE_DOWN, this, this.stMouseDownListener);
+			}
+		);
 	}
+
 	private stMouseDownListener(evt: any): void {
+
 		console.log("stMouseDownListener...");
 
 		let px = evt.mouseX;
 		let py = evt.mouseY;
 		let pv = this.m_v0;
 		pv.setXYZ(px, py, 0);
+		
 		this.globalToLocal(pv);
-		if(pv.x < 0 || pv.x > this.m_panelW || pv.y < 0 || pv.y > this.m_panelH) {
+
+		if (pv.x < 0 || pv.x > this.m_panelW || pv.y < 0 || pv.y > this.m_panelH) {
 			this.close();
 		}
 	}

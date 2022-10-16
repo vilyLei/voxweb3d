@@ -65,6 +65,12 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 			this.init();
 		}
 	}
+	protected m_openListener: ()=>void = null;
+	protected m_closeListener: ()=>void = null;
+	setOpenAndLoseListener(openListener: ()=>void, closeListener: ()=>void): void {
+		this.m_openListener = openListener;
+		this.m_closeListener = closeListener;
+	}
 	open(scene: ICoUIScene = null): void {
 
 		if (!this.m_isOpen) {
@@ -80,6 +86,10 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 
 			this.m_isOpen = true;
 			this.setVisible(true);
+
+			if(this.m_openListener != null) {
+				this.m_openListener();
+			}
 		}
 	}
 	isOpen(): boolean {
@@ -94,6 +104,10 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 			this.m_isOpen = false;
 			this.setVisible(false);
 			this.removeLayoutEvt();
+
+			if(this.m_closeListener != null) {
+				this.m_closeListener();
+			}
 		}
 	}
 	destroy(): void {
@@ -105,6 +119,8 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 			this.m_bgLabel.destroy();
 			this.m_bgLabel = null;
 		}
+		this.m_openListener = null;
+		this.m_closeListener = null;
 	}
 	private m_panelBuilding = true;
 	protected buildPanel(pw: number, ph: number): void {
