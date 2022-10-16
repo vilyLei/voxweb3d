@@ -32,7 +32,7 @@ class NormalEntityGroup {
 			this.setModelVisible(true);
 			let entitys = list as ITransformEntity[];
 			this.m_selectEntities = entitys;
-			this.ctrPanel.setModelFlag(true);
+			this.ctrPanel.setModelFlag(entitys != null && entitys.length > 0);
 			// console.log("NormalEntityGroup get select entities action.");
 			this.testSelect();
 		});

@@ -11,6 +11,7 @@ interface IClipColorLabel extends IClipEntity {
 	getColors(): IColor4[];
 	getColorAt(i: number): IColor4;
 	setColorAt(i: number, color4: IColor4): void;
+	setColors(colors: IColor4[]): void;
 
 }
 export { IClipColorLabel };

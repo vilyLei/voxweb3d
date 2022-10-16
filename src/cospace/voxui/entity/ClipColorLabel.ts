@@ -147,6 +147,18 @@ class ClipColorLabel extends ClipLabelBase implements IClipColorLabel {
 			this.m_colors[i].copyFrom(color4);
 		}
 	}
+	setColors(colors: IColor4[]): void {
+		if(colors != null) {
+			let ls = this.m_colors;
+			let len = colors.length;
+			if(len > ls.length) {
+				len = ls.length;
+			}
+			for(let i = 0; i < len; ++i) {
+				ls[i].copyFrom(colors[i]);
+			}
+		}
+	}
 	setClipIndex(i: number): void {
 		if (i >= 0 && i < this.m_total) {
 			this.m_index = i;
