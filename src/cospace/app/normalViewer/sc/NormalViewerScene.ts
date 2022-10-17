@@ -87,7 +87,7 @@ class NormalViewerScene {
 	}
 	open(scene: ICoUIScene = null): void {
 		if (this.m_ctrPanel != null) {
-			// this.m_ctrPanel.open();
+			this.m_ctrPanel.open();
 		}
 	}
 	isOpen(): boolean {

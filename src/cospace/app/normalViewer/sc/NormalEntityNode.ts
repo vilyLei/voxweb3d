@@ -99,9 +99,11 @@ class NormalEntityNode {
 
 		let s = this.m_scale;
 		// let mesh = CoRScene.createDataMeshFromModel(model, material);
-		let mesh = this.createEntityMesh(model.indices, model.vertices, nvs2, model.normals, material);
-		let cv = mesh.bounds.center.clone();
-		console.log("create normal entity node, mesh.bounds: ",mesh.bounds);
+		let bounds = CoRScene.createAABB();
+		bounds.addXYZFloat32Arr(vs, 3);
+		bounds.updateFast();
+		let cv = bounds.center.clone();
+		console.log("create normal entity node, bounds: ",bounds);
 		let tot = vs.length;
 		for (let i = 0; i < tot;) {
 			vs[i++] -= cv.x;
@@ -109,6 +111,7 @@ class NormalEntityNode {
 			vs[i++] -= cv.z;
 		}
 		cv.scaleBy(this.m_scale);
+		let mesh = this.createEntityMesh(model.indices, model.vertices, nvs2, model.normals, material);
 		// mesh = CoRScene.createDataMeshFromModel(model, material);
 		// mesh
 		let entity = CoRScene.createMouseEventEntity();

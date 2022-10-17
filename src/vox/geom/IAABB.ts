@@ -28,7 +28,7 @@ interface IAABB {
 	addXYZFloat32AndIndicesArr(vs: Float32Array, indices: Uint16Array | Uint32Array): void;
 	/**
 	 * @param vs Float32Array instance
-	 * @param step the default is 3
+	 * @param step the default value is 3
 	 */
 	addXYZFloat32Arr(vs: Float32Array, step?: number): void;
 
