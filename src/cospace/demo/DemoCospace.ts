@@ -55,7 +55,8 @@ export class DemoCospace {
 		document.onmousedown = (evt: any): void => {
 			this.mouseDown(evt);
 		};
-		this.initCTMLoad();
+		// this.initCTMLoad();
+		this.initFBXLoad();
 	}
 	private m_files: string[] = ["hand.ctm", "f2.ctm", "h1.ctm", "s3.ctm"];
 
@@ -127,7 +128,6 @@ export class DemoCospace {
 	private m_receivedTotal: number = 0;
 	private loadCtMAt(index: number): void {
 		let baseUrl: string = window.location.href + "static/private/ctm/";
-
 		// let url: string = baseUrl + "sh0/1 (" + index +").ctm";
 		let url: string = baseUrl + "sh202/sh202_" + index + ".ctm";
 		this.m_cospace.geometry.getCPUDataByUrlAndCallback(
@@ -150,6 +150,38 @@ export class DemoCospace {
 		);
 	}
 
+	private initFBXLoad(): void {
+		let url = "static/private/fbx/hat_hasNormal.fbx";
+		// url = "static/private/fbx/hat_hasNotNormal.fbx";
+		this.loadFBX(url);
+	}
+	private loadFBX(url: string): void {
+		this.m_beginTime = Date.now();
+		//let baseUrl: string = window.location.href + "static/private/ctm/";
+
+		// let url: string = baseUrl + "sh0/1 (" + index +").ctm";
+		//let url: string = baseUrl + "sh202/sh202_" + index + ".ctm";
+		console.log("start load fbx...");
+		this.m_cospace.geometry.getCPUDataByUrlAndCallback(
+			url,
+			DataFormat.FBX,
+			(unit: GeometryDataUnit, status: number): void => {
+				this.m_receivedTotal++;
+				let totLossTime: number = Date.now() - this.m_beginTime;
+				console.log("AAAYYYT05, geometry models:", unit.data.models);
+				// console.log("DemoCospace::loadFBX(), geometry models:", unit.data.models);
+				// console.log("model: ", unit.data.model);
+				// console.log("one res lossTime: ", unit.lossTime + " ms");
+				console.log("### loaded a fbx model total lossTime: ", totLossTime + " ms");
+
+				let info: string = "fbx one lossTime: " + unit.lossTime + " ms";
+				info += "</br>";
+				info += "ALL lossTime: " + totLossTime + " ms, tot: " + this.m_receivedTotal;
+				DivLog.ShowLogOnce(info);
+			},
+			true
+		);
+	}
 	private loadCTM(): void {
 		let baseUrl: string = window.location.href + "static/assets/ctm/";
 

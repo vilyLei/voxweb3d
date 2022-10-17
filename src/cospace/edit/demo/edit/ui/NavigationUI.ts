@@ -92,6 +92,7 @@ class NavigationUI {
 
 		let keys = ["file", "edit", "model", "normal", "texture", "material", "light", "animation", "particle", "rendering", "physics", "help"];
 		let urls = ["文件", "编辑", "模型", "法线", "纹理", "材质", "灯光", "动画", "粒子", "渲染", "物理", "帮助"];
+		urls = urls.slice(0,2);
 		let infos = [
 			"File system operations.",
 			"Editing operations.",
@@ -110,6 +111,7 @@ class NavigationUI {
 		let layouter = uiScene.layout.createLeftTopLayouter();
 		let fontColor = CoMaterial.createColor4().setRGB3Bytes(170, 170, 170);
 		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
+
 
 		for (let i = 0; i < urls.length; ++i) {
 			let img = tta.createCharsCanvasFixSize(pw, ph, urls[i], 30, fontColor, bgColor);

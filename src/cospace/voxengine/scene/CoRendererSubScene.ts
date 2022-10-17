@@ -457,6 +457,9 @@ export default class CoRendererSubScene implements IRenderer, ICoRendererScene, 
 			this.m_renderProxy.reseizeRCViewPort();
 		}
 		this.m_camera.update();
+		if(this.m_rspace != null && this.m_rspace.getUid() == 2) {
+			console.log("update camera ...");
+		}
 		this.m_rcontext.updateCameraDataFromCamera(this.m_camera);
 		this.m_shader.renderBegin();
 		if (this.m_accessor != null) {
@@ -668,12 +671,13 @@ export default class CoRendererSubScene implements IRenderer, ICoRendererScene, 
 				if (this.m_runFlag != 1) this.update();
 				this.m_runFlag = 2;
 			}
+			// let status = this.m_renderProxy.status;
+			// if(this.m_rspace != null && this.m_rspace.getUid() == 2) {
+			// 	status.drawCallTimes = 0;
+			// }
 
 			this.runRenderNodes(this.m_prependNodes);
 
-			// for (let i = this.m_processidsLen - 1; i >= 0; --i) {
-			// 	this.m_renderer.runAt(this.m_processids[i]);
-			// }
 			for (let i = 0; i < this.m_processidsLen; ++i) {
 				this.m_renderer.runAt(this.m_processids[i]);
 			}
@@ -683,6 +687,9 @@ export default class CoRendererSubScene implements IRenderer, ICoRendererScene, 
 			if (autoCycle) {
 				this.runEnd();
 			}
+			// if(this.m_rspace != null && this.m_rspace.getUid() == 2) {
+			// 	console.log("status.drawCallTimes: ", status.drawCallTimes);
+			// }
 		}
 	}
 	runAt(index: number): void {

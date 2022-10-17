@@ -79,7 +79,7 @@ export class DemoFBXFastParser {
 		url = "static/private/fbx/base3.fbx";
 		// url = "static/private/fbx/model_500W.fbx";
 		url = "static/private/fbx/hat_hasNormal.fbx";
-		url = "static/private/fbx/hat_hasNotNormal.fbx";
+		// url = "static/private/fbx/hat_hasNotNormal.fbx";
 		this.loadFBX(url);
 	}
 
@@ -87,6 +87,7 @@ export class DemoFBXFastParser {
 	private m_vtxTotal: number = 0;
 	private m_trisNumber: number = 0;
 	fbxParseFinish(models: GeometryModelDataType[], transform: Float32Array, url: string, index: number, total: number): void {
+		console.log("DemoFBXFastParser::fbxParseFinish(), geometry models:", models);
 		// console.log("loss time: ", (Date.now() - this.m_lossTime));
 		let info: string = "fbx lossTime: " + ((Date.now() - this.m_lossTime));
 		let model = models[0];

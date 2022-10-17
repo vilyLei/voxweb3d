@@ -17,13 +17,14 @@ export class DemoCoApp {
     constructor() { }
 
     private initCurr(): void {
-        
+        // new TaskCodeModuleParam("static/cospace/modules/fbxFast/ModuleFBXGeomFastParser.umd.js", ModuleNS.fbxFastParser, ModuleFileType.JS),
         let modules: CoTaskCodeModuleParam[] = [
             { url: "static/cospace/core/coapp/CoSpaceApp.umd.js", name: CoModuleNS.coSpaceApp, type: CoModuleFileType.JS },
             { url: "static/cospace/core/code/ThreadCore.umd.js", name: CoModuleNS.threadCore, type: CoModuleFileType.JS },
             { url: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", name: CoModuleNS.ctmParser, type: CoModuleFileType.JS },
             { url: "static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", name: CoModuleNS.objParser, type: CoModuleFileType.JS },
             { url: "static/cospace/modules/png/ModulePNGParser.umd.js", name: CoModuleNS.pngParser, type: CoModuleFileType.JS },
+            { url: "static/cospace/modules/fbxFast/ModuleFBXGeomFastParser.umd.js", name: CoModuleNS.fbxFastParser, type: CoModuleFileType.JS },
             { url: "static/cospace/modules/draco/ModuleDracoGeomParser.umd.js", name: CoModuleNS.dracoParser, type: CoModuleFileType.JS, params: ["static/cospace/modules/dracoLib/"] },
         ];
         this.m_modules = modules;
@@ -73,7 +74,8 @@ export class DemoCoApp {
         this.m_appIns.setTaskModuleParams(modules);
         this.m_appIns.initialize(3, modules[1].url, true);
 
-        this.loadCTM();
+        // this.loadCTM();
+        this.loadFBX();
     }
 	private m_pngs: string[] = [
 		"static/assets/xulie_49.png",
@@ -94,6 +96,20 @@ export class DemoCoApp {
 			true
 		);
 	}
+    
+    private loadFBX(): void {
+
+		let url = "static/private/fbx/hat_hasNormal.fbx";
+        this.m_appIns.getCPUDataByUrlAndCallback(
+            url,
+            CoDataFormat.FBX,
+            (unit: CoGeomDataUnit, status: number): void => {
+                let model: CoGeomDataType = unit.data.models[0];
+                console.log("parsing finish fbx unit.data.models: ", unit.data.models);
+            },
+            true
+        );
+    }
     private loadCTM(): void {
 
         let baseUrl: string = "static/private/ctm/";

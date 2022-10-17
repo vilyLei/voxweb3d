@@ -23,6 +23,7 @@ class FBXParserListerner {
 	private m_receiverSchedule: ReceiverSchedule;
 	private m_threadSchedule: ThreadSchedule;
 	private m_moduleUrl: string;
+	private m_modelMap: Map<string, GeometryModelDataType[]> = new Map();
 
 	constructor(unitPool: DataUnitPool<GeometryDataUnit>, threadSchedule: ThreadSchedule, module: ITaskCodeModuleParam, receiverSchedule: ReceiverSchedule) {
 
@@ -37,7 +38,7 @@ class FBXParserListerner {
 
 		if (!this.m_unitPool.hasUnitByUrl(url)) {
 
-			if(this.m_parseTask == null) {
+			if (this.m_parseTask == null) {
 				// 创建ctm 加载解析任务
 				let parseTask = new FBXParseTask(this.m_moduleUrl);
 				// 绑定当前任务到多线程调度器
@@ -67,27 +68,45 @@ class FBXParserListerner {
 	fbxParseFinish(models: GeometryModelDataType[], transform: Float32Array, url: string, index: number, total: number): void {
 
 		// console.log("FbxParserListerner::fbxParseFinish(), models: ", models, ", url: ", url);
-
+		// console.log("AAAYYYT01 this.m_unitPool.hasUnitByUrl(url): ", this.m_unitPool.hasUnitByUrl(url));
+		let m = this.m_modelMap;
+		if (m.has(url)) {
+			let ls = m.get(url);
+			//ls = ls.concat(models);
+			for(let i = 0; i < models.length; ++i){
+				ls.push(models[i]);
+			}
+		} else {
+			m.set(url, models);
+		}
+		if ((index + 1) < total) {
+			
+			return;
+		}
 		if (this.m_unitPool.hasUnitByUrl(url)) {
-
 			let unit: GeometryDataUnit = this.m_unitPool.getUnitByUrl(url);
+			// console.log("AAAYYYT02 unit != null: ", unit != null, index, total);
 			if (unit != null) {
 
 				unit.lossTime = Date.now() - unit.lossTime;
 				unit.data.dataFormat = DataFormat.FBX;
-				unit.data.models = models;
-				if(transform != null) unit.data.transforms = [transform];
+				// unit.data.models = models;
+				unit.data.models = m.get(url);
+				m.delete(url);
+				if (transform != null) unit.data.transforms = [transform];
 				DataUnitLock.lockStatus = 209;
+
 				unit.toCpuPhase();
 				if (unit.immediate) {
 					// console.log("geom data receive at once.");
 					this.m_receiverSchedule.testUnit(unit);
+					// this.m_receiverSchedule.testUnitForce(unit);
 				}
 			}
 		}
 	}
 	destroy(): void {
-		if(this.m_parseTask != null) {
+		if (this.m_parseTask != null) {
 			this.m_parseTask.destroy();
 			this.m_parseTask = null;
 		}

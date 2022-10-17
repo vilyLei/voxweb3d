@@ -36,7 +36,7 @@ class NormalEntityNode {
 	private m_entityMaterial: NormalEntityMaterial;
 	private m_normalMaterial: NormalLineMaterial;
 	private m_entities: ITransformEntity[] = null;
-	private m_scale = 1.0;
+	private m_scale = 0.5;
 	private m_normalScale = 1.0;
 	private m_normalScale0 = 1.0;
 	constructor() {
