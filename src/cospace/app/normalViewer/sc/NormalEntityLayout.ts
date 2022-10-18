@@ -4,7 +4,9 @@ import IAABB from "../../../../vox/geom/IAABB";
 import IMatrix4 from "../../../../vox/math/IMatrix4";
 
 import { ICoRScene } from "../../../voxengine/ICoRScene";
+import { ICoMath } from "../../../math/ICoMath";
 declare var CoRScene: ICoRScene;
+declare var CoMath: ICoMath;
 
 class NormalEntityLayout {
 
@@ -102,11 +104,15 @@ class NormalEntityLayout {
 			if (transform != null) {
 				currMat.copyFrom(transform);
 				currMat.append(mat);
-				entities[k].getTransform().setParentMatrix(currMat);
+				// entities[k].getTransform().setParentMatrix(currMat);
 			} else {
 				currMat.copyFrom(mat);
-				entities[k].getTransform().setParentMatrix(currMat);
+				// entities[k].getTransform().setParentMatrix(currMat);
 			}
+			// let params = currMat.decompose(CoMath.OrientationType.EULER_ANGLES);
+			entities[k].getTransform().setParentMatrix(null);
+			entities[k].setScale3(this.m_scaleV);
+			entities[k].setPosition(offsetV);
 			entities[k].update();
 			if (k > 0) aabb.union(entities[k].getGlobalBounds());
 			else aabb.copyFrom(entities[k].getGlobalBounds());
