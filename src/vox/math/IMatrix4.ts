@@ -7,6 +7,7 @@
 
 import IVector3D from "../../vox/math/IVector3D";
 import Float32Data from "../../vox/base/Float32Data";
+import Matrix4 from "./Matrix4";
 
 interface IMatrix4 extends Float32Data {
 
@@ -32,7 +33,7 @@ interface IMatrix4 extends Float32Data {
 	appendRotationZ(radian: number): void;
 	// 用欧拉角形式旋转(heading->pitch->bank) => (y->x->z)
 	appendRotationEulerAngle(radianX: number, radianY: number, radianZ: number): void;
-
+	setScale(v3: IVector3D): IMatrix4;
 	setScaleXYZ(xScale: number, yScale: number, zScale: number): void;
 	setRotationEulerAngle(radianX: number, radianY: number, radianZ: number): void;
 	setRotationEulerAngle2(cosX: number, sinX: number, cosY: number, sinY: number, cosZ: number, sinZ: number): void;

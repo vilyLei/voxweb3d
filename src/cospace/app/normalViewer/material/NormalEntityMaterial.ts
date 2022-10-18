@@ -104,7 +104,7 @@ class NormalEntityMaterial {
 			dstColor = param.x > 0.5 ? u_params[0].xyz * vec3(nDotL) : dstColor;
 			
 			float f = v_dv.x;
-			f = f < 0.7 ? 1.0 : 0.0;
+			f = f < 0.8 ? 1.0 : 0.0;
 			vec3 diffColor = vec3(1.0, 0.0, 0.0) * f + dstColor * (1.0 - f);
 			dstColor = param.y > 0.5 ? diffColor : dstColor;
 

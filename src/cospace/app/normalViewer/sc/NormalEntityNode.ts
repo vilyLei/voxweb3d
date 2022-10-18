@@ -118,7 +118,7 @@ class NormalEntityNode {
 		entity.setMaterial(material);
 		entity.setMesh(mesh);
 		// entity.setPosition(cv);
-		// // entity.setRenderState(rst.NONE_CULLFACE_NORMAL_STATE);
+		entity.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
 		// entity.setScaleXYZ(s, s, s);
 		// entity.update();
 		this.rsc.addEntity(entity);

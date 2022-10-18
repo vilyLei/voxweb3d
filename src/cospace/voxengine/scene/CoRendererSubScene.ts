@@ -457,9 +457,7 @@ export default class CoRendererSubScene implements IRenderer, ICoRendererScene, 
 			this.m_renderProxy.reseizeRCViewPort();
 		}
 		this.m_camera.update();
-		if(this.m_rspace != null && this.m_rspace.getUid() == 2) {
-			console.log("update camera ...");
-		}
+		
 		this.m_rcontext.updateCameraDataFromCamera(this.m_camera);
 		this.m_shader.renderBegin();
 		if (this.m_accessor != null) {
