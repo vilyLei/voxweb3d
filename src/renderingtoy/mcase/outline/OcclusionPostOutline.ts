@@ -21,49 +21,49 @@ const __minPV: number = 1e-6;
 const __maxNV: number = -1e-6;
 class OCCPlane {
     nv: IVector3D;
-	distance: number = 0.0;
+    distance: number = 0.0;
     intersectBoo: boolean = false;
     __tV0: IVector3D;
-	containsPoint(pos: IVector3D): number {
-		let f = this.nv.dot(pos) - this.distance;
-		if (f > __minPV) {
-			return 1;
-		} else if (f < __maxNV) {
-			return -1;
-		}
-		return 0;
-	}
+    containsPoint(pos: IVector3D): number {
+        let f = this.nv.dot(pos) - this.distance;
+        if (f > __minPV) {
+            return 1;
+        } else if (f < __maxNV) {
+            return -1;
+        }
+        return 0;
+    }
     intersectAABB(minV: IVector3D, maxV: IVector3D): number {
 
-		this.intersectBoo = false;
+        this.intersectBoo = false;
 
-		let pv = this.__tV0;
-		
-		pv.setXYZ(maxV.x, minV.y, maxV.z);
-		let flag: number = this.containsPoint( pv );
-		pv.setXYZ(maxV.x, minV.y, minV.z);
-		flag += this.containsPoint( pv );
+        let pv = this.__tV0;
+
+        pv.setXYZ(maxV.x, minV.y, maxV.z);
+        let flag: number = this.containsPoint(pv);
+        pv.setXYZ(maxV.x, minV.y, minV.z);
+        flag += this.containsPoint(pv);
         pv.setXYZ(minV.x, minV.y, minV.z);
-		flag += this.containsPoint( pv );
+        flag += this.containsPoint(pv);
         pv.setXYZ(minV.x, minV.y, maxV.z);
-		flag += this.containsPoint( pv );
+        flag += this.containsPoint(pv);
 
         pv.setXYZ(maxV.x, maxV.y, maxV.z);
-		flag += this.containsPoint( pv );
+        flag += this.containsPoint(pv);
         pv.setXYZ(maxV.x, maxV.y, minV.z);
-		flag += this.containsPoint( pv );
+        flag += this.containsPoint(pv);
         pv.setXYZ(minV.x, maxV.y, minV.z);
-		flag += this.containsPoint( pv );
+        flag += this.containsPoint(pv);
         pv.setXYZ(minV.x, maxV.y, maxV.z);
-		flag += this.containsPoint( pv );
+        flag += this.containsPoint(pv);
 
-		this.intersectBoo = flag < 8;
-		if(flag < -7) return -1;
-		if(flag > 7) return 1;		
-		return 0;
-	}
+        this.intersectBoo = flag < 8;
+        if (flag < -7) return -1;
+        if (flag > 7) return 1;
+        return 0;
+    }
 }
-export default class OcclusionPostOutline implements IOcclusionPostOutline{
+export default class OcclusionPostOutline implements IOcclusionPostOutline {
     constructor() { }
 
     private m_rscene: IRendererScene = null;
@@ -262,6 +262,8 @@ export default class OcclusionPostOutline implements IOcclusionPostOutline{
                     colorFBO.unlockMaterial();
                 }
             }
+        } else {
+            this.m_runningFlag = false;
         }
     }
     /**
@@ -269,32 +271,29 @@ export default class OcclusionPostOutline implements IOcclusionPostOutline{
      */
     draw(): void {
 
-        if (this.m_runningFlag && this.m_targets != null && this.m_targets.length > 0) {
-            if (this.m_targets[0].isRenderEnabled()) {
+        if (this.m_runningFlag) {
+            // 计算场景摄像机近平面世界坐标空间位置
+            let camera = this.m_rscene.getCamera();
+            let pv = camera.getNV();
+            pv.scaleBy(camera.getZNear() + 1.0);
+            pv.addBy(camera.getPosition());
+            this.m_testPlane.distance = this.m_testPlane.nv.dot(pv);
+            this.m_testPlane.nv.copyFrom(camera.getNV());
 
-                // 计算场景摄像机近平面世界坐标空间位置
-                let camera = this.m_rscene.getCamera();
-                let pv = camera.getNV();
-                pv.scaleBy(camera.getZNear() + 1.0);
-                pv.addBy(camera.getPosition());
-                this.m_testPlane.distance = this.m_testPlane.nv.dot(pv);
-                this.m_testPlane.nv.copyFrom(camera.getNV());
+            this.m_outlineFBO.runBegin();
 
-                this.m_outlineFBO.runBegin();
-
-                let flag = this.m_testPlane.intersectAABB(this.m_bounds.min, this.m_bounds.max);
-                if (flag <= 0) {
-                    this.m_screenDecor.setTexSize(this.m_colorFBO.getFBOWidth(), this.m_colorFBO.getFBOHeight());
-                    this.m_outlineFBO.drawEntity(this.m_outlinePlane, false, true);
-                }
-                else {
-                    this.m_boundsDecor.setTexSize(this.m_colorFBO.getFBOWidth(), this.m_colorFBO.getFBOHeight());
-                    this.m_outlineFBO.drawEntity(this.m_boundsEntity, false, true);
-                }
-                this.m_outlineFBO.runEnd();
-                this.m_rscene.setRenderToBackBuffer();
-                this.m_rscene.drawEntity(this.m_displayPlane, true, true);
+            let flag = this.m_testPlane.intersectAABB(this.m_bounds.min, this.m_bounds.max);
+            if (flag <= 0) {
+                this.m_screenDecor.setTexSize(this.m_colorFBO.getFBOWidth(), this.m_colorFBO.getFBOHeight());
+                this.m_outlineFBO.drawEntity(this.m_outlinePlane, false, true);
             }
+            else {
+                this.m_boundsDecor.setTexSize(this.m_colorFBO.getFBOWidth(), this.m_colorFBO.getFBOHeight());
+                this.m_outlineFBO.drawEntity(this.m_boundsEntity, false, true);
+            }
+            this.m_outlineFBO.runEnd();
+            this.m_rscene.setRenderToBackBuffer();
+            this.m_rscene.drawEntity(this.m_displayPlane, true, true);
         }
     }
 
