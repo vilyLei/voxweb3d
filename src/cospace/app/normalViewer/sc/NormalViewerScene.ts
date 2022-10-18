@@ -18,6 +18,7 @@ class NormalViewerScene {
 	
 	entityScene: NormalEntityScene;
 	private m_vcoapp: ViewerCoSApp;
+
 	constructor() { }
 
 	getUIScene(): ICoUIScene {
@@ -32,6 +33,7 @@ class NormalViewerScene {
 
 			this.entityScene = new NormalEntityScene(uiscene, vcoapp);
 			this.initUI();
+
 		}
 	}
 	protected initUI(): void {

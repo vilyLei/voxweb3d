@@ -76,7 +76,7 @@ class NormalEntityNode {
 	}
 	applyNormalLineScale(s: number): void {
 		// s = s/this.m_scaleBase;
-		this.m_normalScale = s * this.m_normalScale0;		
+		this.m_normalScale = s * this.m_normalScale0;
 		this.m_normalMaterial.setLength(this.m_normalScale);
 	}
 	private createEntity(model: CoGeomDataType): IMouseEventEntity {
@@ -97,33 +97,35 @@ class NormalEntityNode {
 		// nvs2.fill(1.0);
 		// model.normals = nvs2;
 
-		let s = this.m_scale;
-		// let mesh = CoRScene.createDataMeshFromModel(model, material);
-		let bounds = CoRScene.createAABB();
-		bounds.addXYZFloat32Arr(vs, 3);
-		bounds.updateFast();
-		let cv = bounds.center.clone();
-		console.log("create normal entity node, bounds: ",bounds);
-		let tot = vs.length;
-		for (let i = 0; i < tot;) {
-			vs[i++] -= cv.x;
-			vs[i++] -= cv.y;
-			vs[i++] -= cv.z;
-		}
-		cv.scaleBy(this.m_scale);
+		// let s = this.m_scale;
+		// // let mesh = CoRScene.createDataMeshFromModel(model, material);
+		// let bounds = CoRScene.createAABB();
+		// bounds.addXYZFloat32Arr(vs, 3);
+		// bounds.updateFast();
+		// let cv = bounds.center.clone();
+		// console.log("create normal entity node, bounds: ",bounds);
+		// let tot = vs.length;
+		// for (let i = 0; i < tot;) {
+		// 	vs[i++] -= cv.x;
+		// 	vs[i++] -= cv.y;
+		// 	vs[i++] -= cv.z;
+		// }
+		// cv.scaleBy(this.m_scale);
 		let mesh = this.createEntityMesh(model.indices, model.vertices, nvs2, model.normals, material);
 		// mesh = CoRScene.createDataMeshFromModel(model, material);
 		// mesh
 		let entity = CoRScene.createMouseEventEntity();
 		entity.setMaterial(material);
 		entity.setMesh(mesh);
-		entity.setPosition(cv);
-		// entity.setRenderState(rst.NONE_CULLFACE_NORMAL_STATE);
-		entity.setScaleXYZ(s, s, s);
-		entity.update();
+		// entity.setPosition(cv);
+		// // entity.setRenderState(rst.NONE_CULLFACE_NORMAL_STATE);
+		// entity.setScaleXYZ(s, s, s);
+		// entity.update();
 		this.rsc.addEntity(entity);
 
-		this.createNormalLine(entity, vs, model.vertices, s);
+		this.normalLine = CoRScene.createDisplayEntity();
+		
+		// this.createNormalLine(entity, vs, model.vertices, s);
 
 		// let axisEntity = CoRScene.createCrossAxis3DEntity(5, entity.getTransform());
 		// this.rsc.addEntity( axisEntity );

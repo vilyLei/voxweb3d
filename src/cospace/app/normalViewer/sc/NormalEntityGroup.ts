@@ -11,6 +11,8 @@ import IMouseEventEntity from "../../../../vox/entity/IMouseEventEntity";
 import IRenderEntity from "../../../../vox/render/IRenderEntity";
 import { NormalCtrlPanel } from "../ui/NormalCtrlPanel";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../app/CoSpaceAppData";
+import IMatrix4 from "../../../../vox/math/IMatrix4";
+import { NormalEntityLayout } from "./NormalEntityLayout";
 
 declare var CoUI: ICoUI;
 declare var CoRScene: ICoRScene;
@@ -188,10 +190,28 @@ class NormalEntityGroup {
 			node.transUI = this.transUI;
 			let entity = node.setEntityModel(model);
 			map.set(entity.getUid(), node);
+
+
+			this.m_transforms.push( null );
+			this.m_transes.push( entity );
+
 			return entity;
 			// }
 		}
+	}
+	
+	private m_transforms: IMatrix4[] = [];
+	private m_transes: ITransformEntity[] = [];
+	private m_layoutor: NormalEntityLayout = null;
 
+	updateLayout(rotationEnabled: boolean): void {
+		if(this.m_layoutor == null) {
+			this.m_layoutor = new NormalEntityLayout();
+			this.m_layoutor.initialize();
+		}
+		this.m_layoutor.rotationEnabled = rotationEnabled;
+		let pivot = CoRScene.createVec3();
+		this.m_layoutor.fixToPosition(this.m_transes, this.m_transforms, pivot, 300.0);
 	}
 	destroy(): void {
 

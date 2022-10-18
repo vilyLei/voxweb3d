@@ -7,11 +7,13 @@ import ITransformEntity from "../../../../vox/entity/ITransformEntity";
 import IRendererScene from "../../../../vox/scene/IRendererScene";
 import { NormalEntityGroup } from "./NormalEntityGroup";
 import { NormalCtrlPanel } from "../ui/NormalCtrlPanel";
+import { DropModelFileController } from "./DropModelFileController";
 
 class NormalEntityScene {
 
 	private m_uiscene: ICoUIScene = null;	
 	private m_vcoapp: ViewerCoSApp;
+	private m_dropController = new DropModelFileController();
 
 	ctrPanel: NormalCtrlPanel;
 	rscene: IRendererScene;
@@ -34,6 +36,67 @@ class NormalEntityScene {
 		this.nodeGroup.rsc = this.rscene;
 		this.nodeGroup.transUI = this.transUI;
 		this.nodeGroup.initialize();
+
+		
+		let canvas = (this.rscene as any).getCanvas() as HTMLCanvasElement;
+
+		this.m_dropController.initialize(canvas, this);
+	}
+	resetScene(): void {
+
+	}
+	loadModels(urls: string[]): void {
+		if(urls != null && urls.length > 0) {
+			for(let i = 0; i < urls.length; ++i){
+				this.loadModel( urls[i] );
+			}
+		}
+	}
+	isDropEnabled(): boolean {
+		return true;
+	}
+	initFileLoad(files: any[]): void {
+		console.log("initFileLoad(), files.length: ", files.length);
+		let flag: number = 1;
+		if (files.length > 0) {
+			let name: string = "";
+			let urls: string[] = [];
+			for (let i = 0; i < files.length; i++) {
+				if (i == 0) name = files[i].name;
+				const urlObj = window.URL.createObjectURL(files[i]);
+				urls.push(urlObj);
+			}
+
+			if (name != "") {
+				name.toLocaleLowerCase();
+				// let mflag = 0;
+				if (name.indexOf(".ctm") > 1) {
+					// this.resetScene();
+					// this.addCTM(urls);
+					// mflag = 1;
+				} else if (name.indexOf(".fbx") > 1) {
+					// this.resetScene();
+					// this.addFBX(urls);
+					// mflag = 1;
+				} else if (name.indexOf(".obj") > 1) {
+					// this.resetScene();
+					// this.addOBJ(urls);
+					// mflag = 1;
+				} else {
+					flag = 31;
+				}
+				if(flag == 1) {
+					let sc = this;
+					sc.resetScene();
+					sc.loadModels(urls);
+				}
+			} else {
+				flag = 31;
+			}
+		} else {
+			flag = 31;
+		}
+		this.m_dropController.alertShow(flag);
 	}
 	private initModel(): void {
 
@@ -41,9 +104,8 @@ class NormalEntityScene {
 		let url = baseUrl + "obj/base.obj";
 		url = baseUrl + "obj/base4.obj";
 		// url = "static/assets/obj/apple_01.obj";
-		// url = "static/private/fbx/handbag_err.fbx";
-		url = "static/private/fbx/hat_hasNormal.fbx";
-		// url = baseUrl + "ctm/errorNormal.ctm";
+		url = "static/private/fbx/handbag_err.fbx";
+		// url = "static/private/fbx/hat_hasNormal.fbx";
 		console.log("initModel() init...");
 		this.loadModel( url );
 	}
@@ -91,10 +153,13 @@ class NormalEntityScene {
 	private createEntityFromUnit(unit: CoGeomDataUnit, status: number = 0): void {
 		console.log("XXXXXX createEntityFromUnit, unit: ",unit);
 		let len = unit.data.models.length;
+		let group = this.nodeGroup;
 		for (let i = 0; i < len; ++i) {
-			let entity = this.nodeGroup.addEntityWithModel( unit.data.models[i] );
+			let entity = group.addEntityWithModel( unit.data.models[i] );
 			this.m_entities.push(entity);
 		}
+		group.updateLayout(false);
+
 		this.transUI.getRecoder().save(this.m_entities);
 	}
 	protected init(): void {

@@ -59,7 +59,7 @@ class EntityLayout {
 				currMat.append(mat);
 				entities[k].getTransform().setParentMatrix(currMat);
 			} else {
-				currMat.copy(mat);
+				currMat.copyFrom(mat);
 				entities[k].getTransform().setParentMatrix(currMat);
 			}
 			entities[k].update();
