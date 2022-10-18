@@ -23,6 +23,7 @@ import { IRenderableEntityBlock } from "./block/IRenderableEntityBlock";
 import { IFBOInstance } from "./IFBOInstance";
 import IMatrix4 from "../math/IMatrix4";
 import IRendererSpace from "../../vox/scene/IRendererSpace";
+import IRenderNode from "../../vox/scene/IRenderNode";
 
 interface IRendererScene {
 
@@ -31,6 +32,10 @@ interface IRendererScene {
     entityBlock: IRenderableEntityBlock;
 
     setAccessor(accessor: IRendererSceneAccessor): void;
+    prependRenderNode(node: IRenderNode): void;
+	appendRenderNode(node: IRenderNode): void;
+	removeRenderNode(node: IRenderNode): void;
+
     enable(): void;
     disable(): void;
     isEnabled(): boolean;

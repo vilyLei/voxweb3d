@@ -45,6 +45,7 @@ import FBOInstance from "../../vox/scene/FBOInstance";
 import IRODisplaySorter from "../../vox/render/IRODisplaySorter";
 import CameraDsistanceSorter from "../../vox/scene/CameraDsistanceSorter";
 import RendererSubScene from "../../vox/scene/RendererSubScene";
+import IRenderNode from "../../vox/scene/IRenderNode";
 import RenderShader from "../render/RenderShader";
 import Matrix4Pool from "../math/Matrix4Pool";
 import { IRendererSceneAccessor } from "./IRendererSceneAccessor";
@@ -55,7 +56,7 @@ import { IRenderableEntityBlock } from "./block/IRenderableEntityBlock";
 import IMatrix4 from "../math/IMatrix4";
 import Matrix4 from "../math/Matrix4";
 
-export default class RendererScene implements IRenderer, IRendererScene {
+export default class RendererScene implements IRenderer, IRendererScene, IRenderNode {
 
     private static s_uid: number = 0;
     private m_uid: number = -1;
@@ -738,6 +739,59 @@ export default class RendererScene implements IRenderer, IRendererScene {
         }
     }
 
+	private m_prependNodes: IRenderNode[] = null;
+	private m_appendNodes: IRenderNode[] = null;
+
+	private runRenderNodes(nodes: IRenderNode[]): void {
+		if (nodes != null) {
+
+			// console.log("CoSC runRenderNodes(), nodes.length: ", nodes.length);
+			for (let i = 0; i < nodes.length; ++i) {
+				nodes[i].render();
+			}
+		}
+	}
+
+	private addRenderNodes(node: IRenderNode, nodes: IRenderNode[]): void {
+		for (let i = 0; i < nodes.length; ++i) {
+			if (node == nodes[i]) {
+				return;
+			}
+		}
+		nodes.push(node);
+	}
+	prependRenderNode(node: IRenderNode): void {
+		if (node != null && node != this) {
+			if (this.m_prependNodes == null) this.m_prependNodes = [];
+			this.addRenderNodes(node, this.m_prependNodes);
+		}
+	}
+	appendRenderNode(node: IRenderNode): void {
+		if (node != null && node != this) {
+			// console.log("CoSC appendRenderNode(), node: ", node);
+			if (this.m_appendNodes == null) this.m_appendNodes = [];
+			let ls = this.m_appendNodes;
+			for (let i = 0; i < ls.length; ++i) {
+				if (node == ls[i]) {
+					return;
+				}
+			}
+			ls.push(node);
+		}
+	}
+	removeRenderNode(node: IRenderNode): void {
+		if (node != null) {
+			let ls = this.m_prependNodes;
+			if (ls != null) {
+				for (let i = 0; i < ls.length; ++i) {
+					if (node == ls[i]) {
+						ls.splice(i, 1);
+						break;
+					}
+				}
+			}
+		}
+	}
     /**
      * run all renderer processes in the renderer instance
      */
@@ -750,6 +804,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
             }
 
             this.runnableQueue.run();
+			this.runRenderNodes(this.m_prependNodes);
             if (this.m_subscListLen > 0) {
                 for (let i: number = 0; i < this.m_processidsLen; ++i) {
                     this.m_renderer.runAt(this.m_processids[i]);
@@ -758,6 +813,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
             else {
                 this.m_renderer.run();
             }
+			this.runRenderNodes(this.m_appendNodes);
             if (autoCycle) {
                 this.runEnd();
             }
@@ -789,6 +845,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
             this.m_accessor.renderEnd(this);
         }
     }
+	render(): void {}
     renderFlush(): void {
         if (this.m_renderProxy != null) {
             this.m_renderProxy.flush();

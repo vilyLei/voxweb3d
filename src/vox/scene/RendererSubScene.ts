@@ -41,6 +41,7 @@ import RayGpuSelector from "../../vox/scene/RayGpuSelector";
 import MouseEvt3DController from "../../vox/scene/MouseEvt3DController";
 import IEvt3DController from "../../vox/scene/IEvt3DController";
 import FBOInstance from "./FBOInstance";
+import IRenderNode from "../../vox/scene/IRenderNode";
 import Color4 from "../material/Color4";
 import { IRendererSceneAccessor } from "./IRendererSceneAccessor";
 
@@ -50,7 +51,7 @@ import { IRenderableEntityBlock } from "../scene/block/IRenderableEntityBlock";
 import Matrix4 from "../math/Matrix4";
 import IMatrix4 from "../math/IMatrix4";
 
-export default class RendererSubScene implements IRenderer, IRendererScene {
+export default class RendererSubScene implements IRenderer, IRendererScene, IRenderNode {
     private static s_uid: number = 0;
     private m_uid: number = -1;
     private m_adapter: IRenderAdapter = null;
@@ -602,6 +603,60 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
             this.m_rspace.rayTest(this.m_mouse_rlpv, this.m_mouse_rltv);
         }
     }
+    
+	private m_prependNodes: IRenderNode[] = null;
+	private m_appendNodes: IRenderNode[] = null;
+
+	private runRenderNodes(nodes: IRenderNode[]): void {
+		if (nodes != null) {
+
+			// console.log("CoSC runRenderNodes(), nodes.length: ", nodes.length);
+			for (let i = 0; i < nodes.length; ++i) {
+				nodes[i].render();
+			}
+		}
+	}
+
+	private addRenderNodes(node: IRenderNode, nodes: IRenderNode[]): void {
+		for (let i = 0; i < nodes.length; ++i) {
+			if (node == nodes[i]) {
+				return;
+			}
+		}
+		nodes.push(node);
+	}
+	prependRenderNode(node: IRenderNode): void {
+		if (node != null && node != this) {
+			if (this.m_prependNodes == null) this.m_prependNodes = [];
+			this.addRenderNodes(node, this.m_prependNodes);
+		}
+	}
+	appendRenderNode(node: IRenderNode): void {
+		if (node != null && node != this) {
+			// console.log("CoSC appendRenderNode(), node: ", node);
+			if (this.m_appendNodes == null) this.m_appendNodes = [];
+			let ls = this.m_appendNodes;
+			for (let i = 0; i < ls.length; ++i) {
+				if (node == ls[i]) {
+					return;
+				}
+			}
+			ls.push(node);
+		}
+	}
+	removeRenderNode(node: IRenderNode): void {
+		if (node != null) {
+			let ls = this.m_prependNodes;
+			if (ls != null) {
+				for (let i = 0; i < ls.length; ++i) {
+					if (node == ls[i]) {
+						ls.splice(i, 1);
+						break;
+					}
+				}
+			}
+		}
+	}
     // rendering running
     run(autoCycle: boolean = false): void {
 
@@ -613,9 +668,14 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
                 this.m_runFlag = 2;
             }
 
+			this.runRenderNodes(this.m_prependNodes);
+
             for (let i: number = 0; i < this.m_processidsLen; ++i) {
                 this.m_renderer.runAt(this.m_processids[i]);
             }
+
+			this.runRenderNodes(this.m_appendNodes);
+
             if (autoCycle) {
                 this.runEnd();
             }
@@ -639,6 +699,11 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
             this.m_accessor.renderEnd(this);
         }
     }
+	render(): void {
+		if (this.m_renderProxy != null) {
+			this.run(true);
+		}
+	}
     useCamera(camera: IRenderCamera, syncCamView: boolean = false): void {
         this.m_parent.useCamera(camera, syncCamView);
     }

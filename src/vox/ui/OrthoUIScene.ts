@@ -20,6 +20,7 @@ import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 import { IFBOInstance } from "../../vox/scene/IFBOInstance";
 import IRendererScene from "../../vox/scene/IRendererScene";
 import IRendererSpace from "../../vox/scene/IRendererSpace";
+import IRenderNode from "../../vox/scene/IRenderNode";
 import { IRenderCamera } from "../render/IRenderCamera";
 import IRenderProcess from "../render/IRenderProcess";
 import IRenderStage3D from "../render/IRenderStage3D";
@@ -30,7 +31,7 @@ import IVector3D from "../math/IVector3D";
 import { IRendererSceneAccessor } from "../scene/IRendererSceneAccessor";
 
 
-class OrthoUIScene implements IRendererScene {
+class OrthoUIScene implements IRendererScene, IRenderNode {
 
     private m_rscene: RendererScene = null;
     private m_ruisc: RendererSubScene = null;
@@ -120,6 +121,16 @@ class OrthoUIScene implements IRendererScene {
     update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
         this.m_ruisc.update(autoCycle, mouseEventEnabled);
     }
+    
+    prependRenderNode(node: IRenderNode): void {
+
+    }
+	appendRenderNode(node: IRenderNode): void {
+
+    }
+	removeRenderNode(node: IRenderNode): void {
+
+    }
     run(autoCycle: boolean = false): void {
         this.m_ruisc.run(autoCycle);
     }
@@ -128,6 +139,9 @@ class OrthoUIScene implements IRendererScene {
     }
     runAt(index: number): void {
         this.m_ruisc.runAt(index);
+    }
+    render(): void {
+        
     }
     /**
      * add an entity to the renderer process of the renderer instance
