@@ -27,7 +27,8 @@ class MovedTarget implements ICtrTarget {
             if (controller == null) controller = this.m_controllers[0];
             controller.getPosition(this.m_v3);
             for (let i = 0; i < tars.length; ++i) {
-                tars[i].getPosition(vs[i]);
+                // tars[i].getPosition(vs[i]);
+                vs[i].copyFrom(tars[i].getGlobalBounds().center);
                 vs[i].subtractBy(this.m_v3);
             }
         }
@@ -75,8 +76,13 @@ class MovedTarget implements ICtrTarget {
         if (tars != null) {
             let vs = this.m_vs;
             const v3 = this.m_v3;
+            let dv = CoMath.createVec3();
+            let pos = CoMath.createVec3();
             for (let i = 0; i < tars.length; ++i) {
                 v3.addVecsTo(pv, vs[i]);
+                tars[i].getPosition(pos);
+                dv.subVecsTo(tars[i].getGlobalBounds().center, pos);
+                v3.subtractBy(dv);
                 tars[i].setPosition(v3);
             }
         }
