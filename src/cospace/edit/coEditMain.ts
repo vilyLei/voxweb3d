@@ -2,6 +2,7 @@
 // import { DemoBase as Demo } from "./demo/DemoBase";
 // import { DemoMouseEvent as Demo } from "./demo/DemoMouseEvent";
 // import { DemoCoBase as Demo } from "./demo/DemoCoBase";
+// import { DemoCoMesh as Demo } from "./demo/DemoCoMesh";
 // import { DemoCoAGeom as Demo } from "./demo/DemoCoAGeom";
 // import { DemoMoveObj as Demo } from "./demo/DemoMoveObj";
 

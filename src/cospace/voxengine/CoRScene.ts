@@ -227,12 +227,16 @@ function createDisplayEntityContainer(): DisplayEntityContainer {
 }
 function createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D, transform: IROTransform = null): ITransformEntity {
 
+	let material = new Line3DMaterial(false);
+	material.initializeByCodeBuf(false);
+
 	let vs = new Float32Array([minV.x, 0, 0, maxV.x, 0, 0, 0, minV.y, 0, 0, maxV.y, 0, 0, 0, minV.z, 0, 0, maxV.z]);
 	let colors = new Float32Array([1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1]);
 	let mesh: RawMesh = new RawMesh();
 	mesh.ivsEnabled = false;
 	mesh.aabbEnabled = true;
 	mesh.reset();
+	mesh.setBufSortFormat(material.getBufSortFormat());
 	mesh.addFloat32Data(vs, 3);
 	mesh.addFloat32Data(colors, 3);
 	mesh.initialize();
@@ -240,7 +244,6 @@ function createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D, transform: IRO
 	mesh.vtCount = Math.floor(vs.length / 3);
 	// mesh.setPolyhedral( false );
 
-	let material = new Line3DMaterial(false);
 	let axis = new DisplayEntity(transform);
 	axis.setMaterial(material);
 	axis.setMesh(mesh);

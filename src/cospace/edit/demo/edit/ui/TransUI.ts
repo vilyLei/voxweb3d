@@ -320,7 +320,7 @@ class TransUI {
 			let pv = CoMath.createVec3();
 
 			for (let i = 0; i < list.length; ++i) {
-				pos.addBy(list[i].getPosition(pv));
+				pos.addBy(pv.copyFrom(list[i].getGlobalBounds().center));
 			}
 			pos.scaleBy(1.0 / list.length);
 

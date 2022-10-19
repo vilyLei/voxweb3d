@@ -35,7 +35,8 @@ class RectFrameQuery implements IEntityQuery {
 			let st = this.m_rscene.getStage3D();
 			for(let i = 0; i < total; ++i) {
 				if(entities[i].mouseEnabled) {
-					entities[i].getPosition( pv );
+					let bounds = entities[i].getGlobalBounds();
+					pv.copyFrom(bounds.center);
 					cam.worldPosToScreen(pv);
 					pv.x += st.stageHalfWidth;
 					pv.y += st.stageHalfHeight;

@@ -112,6 +112,7 @@ class FloorLineGrid {
 			CoMesh.line.dynColorEnabled = true;
 			let material = CoMaterial.createLineMaterial(CoMesh.line.dynColorEnabled);
 			material.setColor( color );
+			material.initializeByCodeBuf(false);
 			CoMesh.line.setBufSortFormat(material.getBufSortFormat());
 			let mesh = CoMesh.line.createLines(pvs);
 			this.m_entity.setMaterial(material);

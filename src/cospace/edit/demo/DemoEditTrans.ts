@@ -517,21 +517,22 @@ export class DemoEditTrans {
 		material.initializeByCodeBuf(false);
 		material.setRGB3f(0.7, 0.7, 0.7);
 
+		// let mesh = CoRScene.createDataMeshFromModel(model, material);
+		// let cv = mesh.bounds.center.clone();
+		// let vs = model.vertices;
+		// let tot = vs.length;
+		// for (let i = 0; i < tot;) {
+		// 	vs[i++] -= cv.x;
+		// 	vs[i++] -= cv.y;
+		// 	vs[i++] -= cv.z;
+		// }
+		// cv.scaleBy(this.m_scale);
+
 		let mesh = CoRScene.createDataMeshFromModel(model, material);
-		let cv = mesh.bounds.center.clone();
-		let vs = model.vertices;
-		let tot = vs.length;
-		for (let i = 0; i < tot;) {
-			vs[i++] -= cv.x;
-			vs[i++] -= cv.y;
-			vs[i++] -= cv.z;
-		}
-		cv.scaleBy(this.m_scale);
-		mesh = CoRScene.createDataMeshFromModel(model, material);
 		let entity = CoRScene.createMouseEventEntity();
 		entity.setMaterial(material);
 		entity.setMesh(mesh);
-		entity.setPosition(cv);
+		// entity.setPosition(cv);
 		// entity.setRenderState(rst.NONE_CULLFACE_NORMAL_STATE);
 		this.m_renderer.addEntity(entity);
 
