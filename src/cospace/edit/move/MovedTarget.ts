@@ -27,7 +27,6 @@ class MovedTarget implements ICtrTarget {
             if (controller == null) controller = this.m_controllers[0];
             controller.getPosition(this.m_v3);
             for (let i = 0; i < tars.length; ++i) {
-                // tars[i].getPosition(vs[i]);
                 vs[i].copyFrom(tars[i].getGlobalBounds().center);
                 vs[i].subtractBy(this.m_v3);
             }
