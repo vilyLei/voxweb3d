@@ -40,23 +40,26 @@ class NormalEntityMaterial {
 	applyLocalNormal(): void {
 		console.log("apply local normal...");
 		this.m_data[7] = 0.0;
-		this.applyDifference(false);
+		// this.applyDifference(false);
 	}
 	applyGlobalNormal(): void {
 		console.log("apply global normal...");
 		this.m_data[7] = 1.0;
-		this.applyDifference(false);
+		// this.applyDifference(false);
 	}
 	applyModelColor(): void {
 		this.m_data[4] = 1.0;
+		console.log("apply model color...");
 		// this.applyDifference(false);
 	}
 	applyNormalColor(): void {
 		this.m_data[4] = 0.0;
-		this.applyDifference(false);
+		// this.applyDifference(false);
+		console.log("apply normal color...");
 	}
 	applyDifference(boo: boolean = true): void {
 		this.m_data[5] = boo ? 1.0 : 0.0;
+		console.log("apply diff boo: ", boo);
 	}
 	/**
 	 * @param textureEnabled the default value is false

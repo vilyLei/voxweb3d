@@ -185,44 +185,44 @@ class NormalCtrlPanel {
 		globalBtn.setXY(px, startY);
 
 		px = px + this.m_btnW + disX;
-		this.m_btnW = 150;		
-		textParam.text = "Difference";
+		this.m_btnW = 100;		
+		textParam.text = "Color";
 		// let differenceBtn = this.createBtn("Difference", px, startY, "difference");
-		let differenceBtn = CoUI.createTextButton(
-			this.m_btnW, this.m_btnH, "difference",
+		let modelColorBtn = CoUI.createTextButton(
+			this.m_btnW, this.m_btnH, "modelColor",
 			tta, textParam, colors
 		);
-		differenceBtn.setXY(px, startY);
+		modelColorBtn.setXY(px, startY);
 
 		let pl = this.m_panel;
 		pl.addEntity(localBtn);
 		pl.addEntity(globalBtn);
-		pl.addEntity(differenceBtn);
+		pl.addEntity(modelColorBtn);
 
 		let btnSize = 28;
 
 		py = startY - this.m_btnH - disY + 20;
-		let textLabel = this.createText("normal line visible", startX + btnSize + disX, py);
+		let textLabel = this.createText("Normal line visible", startX + btnSize + disX, py);
 
 		px = startX;
 		py = textLabel.getY();
 		this.m_normalVisiBtn = this.createFlagBtn(btnSize, px, py, "normal");
 
-		textLabel = this.createText("model visible", startX + btnSize + disX, py - 10);
+		textLabel = this.createText("Model visible", startX + btnSize + disX, py - 10);
 		py = textLabel.getY();
 		this.m_modelVisiBtn = this.createFlagBtn(btnSize, px, py, "model");
 		
-		textLabel = this.createText("model color", startX + btnSize + disX, py - 10);
+		textLabel = this.createText("Normal difference", startX + btnSize + disX, py - 10);
 		py = textLabel.getY();
-		this.m_modelColor = this.createFlagBtn(btnSize, px, py, "modelColor");
+		this.m_modelColor = this.createFlagBtn(btnSize, px, py, "difference");
 
-		textLabel = this.createText("normal line length:", startX, py - 15);
+		textLabel = this.createText("Normal line length:", startX, py - 15);
 		px = startX;
 		py = textLabel.getY();
 		this.m_dragBar = this.createProgressBtn(px + 5, py - 25, 200);
 
 		py = this.m_dragBar.getY();
-		textLabel = this.createText("normal color:", startX, py - 10);
+		textLabel = this.createText("Normal color:", startX, py - 10);
 		px = startX;
 		py = textLabel.getY();
 		let fc4 = CoMaterial.createColor4;
@@ -239,14 +239,14 @@ class NormalCtrlPanel {
 		//let ME = CoRScene.MouseEvent;
 		localBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
 		globalBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
-		differenceBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
+		modelColorBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
 		normalColorBtn.addEventListener(ME.MOUSE_UP, this, this.normalColorSelect);
 
 		let group = this.m_btnGroup = CoUI.createSelectButtonGroup();
 
 		group.addButton(localBtn);
 		group.addButton(globalBtn);
-		group.addButton(differenceBtn);
+		group.addButton(modelColorBtn);
 		group.setSelectedFunction(
 			(btn: IButton): void => {
 				let label: IColorClipLabel;

@@ -57,8 +57,8 @@ class NormalEntityNode {
 			this.m_entityMaterial.applyNormalColor();
 		}
 	}
-	showDifference(): void {
-		this.m_entityMaterial.applyDifference();
+	showDifference(boo: boolean = true): void {
+		this.m_entityMaterial.applyDifference(boo);
 	}
 	
 	setEntityModel(model: CoGeomDataType): IMouseEventEntity {

@@ -15,7 +15,7 @@ class NormalViewerScene {
 
 	private m_uiscene: ICoUIScene = null;
 	private m_ctrPanel: NormalCtrlPanel = null;
-	
+
 	entityScene: NormalEntityScene;
 	private m_vcoapp: ViewerCoSApp;
 
@@ -38,7 +38,7 @@ class NormalViewerScene {
 	}
 	protected initUI(): void {
 		let panel = new NormalCtrlPanel();
-		panel.initialize(this.m_uiscene, 0, 360, 320, 50);
+		panel.initialize(this.m_uiscene, 0, 310, 320, 50);
 		panel.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
 		this.m_ctrPanel = panel;
 		panel.addEventListener(CoRScene.SelectionEvent.SELECT, this, this.selectDisplay);
@@ -53,13 +53,13 @@ class NormalViewerScene {
 		switch (uuid) {
 			case "normal":
 			case "model":
-			case "modelColor":
+			case "difference":
 				// console.log("flag call");
 				group.applyVisibility(uuid, evt.flag);
 				break;
 			case "local":
 			case "global":
-			case "difference":
+			case "modelColor":
 				// console.log("select call");
 				group.applyFeatureColor(uuid);
 				break;
@@ -71,9 +71,9 @@ class NormalViewerScene {
 		// console.log("NormalViewerScene::normalScale(), evt.uuid: ", evt.uuid, evt.progress);
 		// console.log("NormalViewerScene::normalScale(), evt.progress: ", evt.progress);
 		let group = this.entityScene.nodeGroup;
-		group.applyNormalScale( evt.progress );
+		group.applyNormalScale(evt.progress);
 	}
-	
+
 	destroy(): void {
 
 		this.m_uiscene = null;

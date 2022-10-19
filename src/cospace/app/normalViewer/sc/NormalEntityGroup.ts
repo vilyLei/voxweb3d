@@ -39,17 +39,17 @@ class NormalEntityGroup {
 			this.testSelect();
 		});
 	}
-	
+
 	private testSelect(): void {
 		let ls = this.m_selectEntities;
-		if(ls != null) {
+		if (ls != null) {
 			let map = this.m_map;
 			let lineVisible = false;
 			let scaleBase = this.ctrPanel.getNormalScale();
-			for(let i = 0; i < ls.length; ++i) {
+			for (let i = 0; i < ls.length; ++i) {
 				const node = map.get(ls[i].getUid());
-				if(node != null) {
-					if(node.normalLine.getVisible()) {
+				if (node != null) {
+					if (node.normalLine.getVisible()) {
 						lineVisible = true;
 					}
 					node.select();
@@ -62,11 +62,11 @@ class NormalEntityGroup {
 
 	private setNormalVisible(v: boolean): void {
 		let ls = this.m_selectEntities;
-		if(ls != null) {
+		if (ls != null) {
 			let map = this.m_map;
-			for(let i = 0; i < ls.length; ++i) {
+			for (let i = 0; i < ls.length; ++i) {
 				const node = map.get(ls[i].getUid());
-				if(node != null) {
+				if (node != null) {
 					node.normalLine.setVisible(v);
 				}
 			}
@@ -74,37 +74,37 @@ class NormalEntityGroup {
 	}
 	private setModelVisible(v: boolean): void {
 		let ls = this.m_selectEntities;
-		if(ls != null) {
+		if (ls != null) {
 			let map = this.m_map;
-			for(let i = 0; i < ls.length; ++i) {
+			for (let i = 0; i < ls.length; ++i) {
 				const node = map.get(ls[i].getUid());
-				if(node != null) {
+				if (node != null) {
 					node.entity.setVisible(v);
 				}
 			}
 		}
 	}
-	
+
 	private setModelColor(v: boolean): void {
 		let ls = this.m_selectEntities;
-		if(ls != null) {
+		if (ls != null) {
 			let map = this.m_map;
-			for(let i = 0; i < ls.length; ++i) {
+			for (let i = 0; i < ls.length; ++i) {
 				const node = map.get(ls[i].getUid());
-				if(node != null) {
+				if (node != null) {
 					node.showModelColor(v);
 				}
 			}
 		}
 	}
-	
+
 	private showNormalLocalColor(): void {
 		let ls = this.m_selectEntities;
-		if(ls != null) {
+		if (ls != null) {
 			let map = this.m_map;
-			for(let i = 0; i < ls.length; ++i) {
+			for (let i = 0; i < ls.length; ++i) {
 				const node = map.get(ls[i].getUid());
-				if(node != null) {
+				if (node != null) {
 					node.showLocalNormal();
 				}
 			}
@@ -112,29 +112,30 @@ class NormalEntityGroup {
 	}
 	private showNormalGlobalColor(): void {
 		let ls = this.m_selectEntities;
-		if(ls != null) {
+		if (ls != null) {
 			let map = this.m_map;
-			for(let i = 0; i < ls.length; ++i) {
+			for (let i = 0; i < ls.length; ++i) {
 				const node = map.get(ls[i].getUid());
-				if(node != null) {
+				if (node != null) {
 					node.showGlobalNormal();
 				}
 			}
 		}
 	}
-	private showDifferenceColor(): void {
+	private showDifferenceColor(boo: boolean = true): void {
 		let ls = this.m_selectEntities;
-		if(ls != null) {
+		if (ls != null) {
 			let map = this.m_map;
-			for(let i = 0; i < ls.length; ++i) {
+			for (let i = 0; i < ls.length; ++i) {
 				const node = map.get(ls[i].getUid());
-				if(node != null) {
-					node.showDifference();
+				if (node != null) {
+					node.showDifference(boo);
 				}
 			}
 		}
 	}
 	applyFeatureColor(uuid: string): void {
+		console.log("applyFeatureColor: ",uuid);
 		switch (uuid) {
 			case "local":
 				this.showNormalLocalColor();
@@ -142,15 +143,15 @@ class NormalEntityGroup {
 			case "global":
 				this.showNormalGlobalColor();
 				break;
-			case "difference":
-				this.showDifferenceColor();
+			case "modelColor":
+				this.setModelColor(true);
 				break;
 			default:
 				break;
 		}
 	}
 	applyVisibility(uuid: string, flag: boolean): void {
-		
+		console.log("applyVisibility: ",uuid, flag);
 		switch (uuid) {
 			case "normal":
 				this.setNormalVisible(flag);
@@ -158,8 +159,8 @@ class NormalEntityGroup {
 			case "model":
 				this.setModelVisible(flag);
 				break;
-			case "modelColor":
-				this.setModelColor(flag);
+			case "difference":
+				this.showDifferenceColor(flag);
 				break;
 			default:
 				break;
@@ -171,12 +172,12 @@ class NormalEntityGroup {
 		f = 0.1 + f * 1.0;
 
 		let ls = this.m_selectEntities;
-		if(ls != null) {
+		if (ls != null) {
 			let map = this.m_map;
-			for(let i = 0; i < ls.length; ++i) {
+			for (let i = 0; i < ls.length; ++i) {
 				const node = map.get(ls[i].getUid());
-				if(node != null) {
-					node.applyNormalLineScale( f );
+				if (node != null) {
+					node.applyNormalLineScale(f);
 				}
 			}
 		}
@@ -192,20 +193,20 @@ class NormalEntityGroup {
 			map.set(entity.getUid(), node);
 
 
-			this.m_transforms.push( null );
-			this.m_transes.push( entity );
+			this.m_transforms.push(null);
+			this.m_transes.push(entity);
 
 			return entity;
 			// }
 		}
 	}
-	
+
 	private m_transforms: IMatrix4[] = [];
 	private m_transes: ITransformEntity[] = [];
 	private m_layoutor: NormalEntityLayout = null;
 
 	updateLayout(rotationEnabled: boolean): void {
-		if(this.m_layoutor == null) {
+		if (this.m_layoutor == null) {
 			this.m_layoutor = new NormalEntityLayout();
 			this.m_layoutor.initialize();
 		}
