@@ -38,12 +38,15 @@ class ScaleTarget implements ICtrTarget {
             let cv = this.position;
             cv.setXYZ(0.0, 0.0, 0.0);
             for (let i = 0; i < tars.length; ++i) {
-                tars[i].getPosition(vs[i]);
+                // tars[i].getPosition(vs[i]);
+                vs[i].copyFrom(tars[i].getGlobalBounds().center);
+                // tars[i].getPosition(vs[i]);
                 cv.addBy(vs[i]);
             }
             cv.scaleBy(1.0 / tars.length);
             for (let i = 0; i < tars.length; ++i) {
-                tars[i].getPosition(vs[i]);
+                // tars[i].getPosition(vs[i]);
+                vs[i].copyFrom(tars[i].getGlobalBounds().center);
                 vs[i].subtractBy(cv);
                 tars[i].getScaleXYZ(svs[i]);
             }
@@ -114,16 +117,32 @@ class ScaleTarget implements ICtrTarget {
             const cv = this.position;
             let pv = this.m_pv;
 
+            let dv = CoMath.createVec3();
+            let pos = CoMath.createVec3();
+            // let pcv = CoMath.createVec3();
             let tars = this.m_tars;
-            if (tars.length > 1) {
-                for (let i = 0; i < tars.length; ++i) {
-                    pv.copyFrom(vs[i]).multBy(this.m_sv).addBy(cv);
-                    tars[i].setPosition(pv);
-                }
-            }
+            // if (tars.length > 1) {
+            //     for (let i = 0; i < tars.length; ++i) {
+            //         pv.copyFrom(vs[i]).multBy(this.m_sv).addBy(cv);
+            //         tars[i].setPosition(pv);
+            //     }
+            // }
             for (let i = 0; i < tars.length; ++i) {
                 const sv = svs[i];
                 tars[i].setScaleXYZ(sv.x * sx, sv.y * sy, sv.z * sz);
+            }
+            for (let i = 0; i < tars.length; ++i) {
+                pv.copyFrom(vs[i]).multBy(this.m_sv).addBy(cv);
+                // tars[i].setPosition(pv);
+                
+                // calc new bounds center position
+                
+                tars[i].update();
+                dv.subVecsTo(tars[i].getGlobalBounds().center, pv);
+                tars[i].getPosition(pos);
+                pos.subtractBy(dv);
+
+                tars[i].setPosition(pos);
             }
 
             this.m_changed = true;
