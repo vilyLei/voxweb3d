@@ -39,12 +39,16 @@ class RotatedTarget implements ICtrTarget {
             let cv = this.position;
             cv.setXYZ(0.0, 0.0, 0.0);
             for (let i = 0; i < tars.length; ++i) {
-                tars[i].getPosition(vs[i]);
+                // tars[i].getPosition(vs[i]);
+                vs[i].copyFrom(tars[i].getGlobalBounds().center);
+
                 cv.addBy(vs[i]);
             }
             cv.scaleBy(1.0 / tars.length);
             for (let i = 0; i < tars.length; ++i) {
-                tars[i].getPosition(vs[i]);
+                // tars[i].getPosition(vs[i]);
+                vs[i].copyFrom(tars[i].getGlobalBounds().center);
+
                 vs[i].subtractBy(cv);
                 tars[i].getRotationXYZ(rvs[i]);
                 rvs[i].scaleBy(piOver180);
@@ -113,8 +117,7 @@ class RotatedTarget implements ICtrTarget {
             let piOver180 = Math.PI / 180.0;
             let k180overPI = 180.0 / Math.PI;
             let ir = this.m_rv;
-            ir.copyFrom(pr);
-            ir.scaleBy(piOver180);
+            ir.copyFrom(pr).scaleBy(piOver180);
 
             let mt0 = this.m_mat0;
             let mt1 = this.m_mat1;
@@ -122,16 +125,24 @@ class RotatedTarget implements ICtrTarget {
             const rvs = this.m_rvs;
             const cv = this.position;
             let pv = this.m_pv;
-            if (tars.length > 1) {
-                for (let i = 0; i < tars.length; ++i) {
-                    mt0.identity();
-                    mt0.setRotationEulerAngle(ir.x, ir.y, ir.z);
-                    pv.copyFrom(vs[i]);
-                    mt0.transformVector3Self(pv);
-                    pv.addBy(cv);
-                    tars[i].setPosition(pv);
-                }
-            }
+            pv.setXYZ(0,0,0);
+            let dv = CoMath.createVec3();
+            let pos = CoMath.createVec3();
+            // let pcv = CoMath.createVec3();
+            // if (tars.length > 0) {
+            //     for (let i = 0; i < tars.length; ++i) {
+            //         mt0.identity();
+            //         mt0.setRotationEulerAngle(ir.x, ir.y, ir.z);
+            //         pv.copyFrom(vs[i]);
+            //         mt0.transformVector3Self(pv);
+            //         pv.addBy(cv);
+            //         // tars[i].setPosition(pv);
+            //         tars[i].getPosition(pos);
+            //         dv.subVecsTo(tars[i].getGlobalBounds().center, pos);
+            //         pv.subtractBy(dv);
+            //         tars[i].setPosition(pv);
+            //     }
+            // }
             let eulerType = CoMath.OrientationType.EULER_ANGLES;
             for (let i = 0; i < tars.length; ++i) {
                 const rv = rvs[i];
@@ -144,6 +155,22 @@ class RotatedTarget implements ICtrTarget {
                 let prv = ls[1];
                 prv.scaleBy(k180overPI);
                 tars[i].setRotation3(prv);
+            }
+            for (let i = 0; i < tars.length; ++i) {
+                mt0.identity();
+                mt0.setRotationEulerAngle(ir.x, ir.y, ir.z);
+                pv.copyFrom(vs[i]);
+                mt0.transformVector3Self(pv);
+                pv.addBy(cv);
+
+                // calc new bounds center position
+                
+                tars[i].update();
+                dv.subVecsTo(tars[i].getGlobalBounds().center, pv);
+                tars[i].getPosition(pos);
+                pos.subtractBy(dv);
+
+                tars[i].setPosition(pos);
             }
             this.m_changed = true;
         }
