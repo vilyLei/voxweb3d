@@ -2,28 +2,32 @@ import IVector3D from "../../../vox/math/IVector3D";
 import IAABB from "../../../vox/geom/IAABB";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
 import { ICtrTarget } from "../base/ICtrTarget";
+import { CtrlTargetBase } from "../base/CtrlTargetBase";
 
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
 
-class ScaleTarget implements ICtrTarget {
+class ScaleTarget extends CtrlTargetBase implements ICtrTarget {
 
-    private m_controllers: IEntityTransform[] = [];
-    private m_tars: IEntityTransform[] = null;
-    private m_vs: IVector3D[] = [];
+    // private m_controllers: IEntityTransform[] = [];
+    // private m_tars: IEntityTransform[] = null;
+    // private m_vs: IVector3D[] = [];
+    // private m_svs: IVector3D[] = [];
+    // private m_flags: boolean[] = [];
+    // private m_changed: boolean = false;
+    // /**
+    //  * center
+    //  */
+    // position = CoMath.createVec3();
+
     private m_svs: IVector3D[] = [];
-    private m_flags: boolean[] = [];
-    private m_changed: boolean = false;
     private m_sv: IVector3D = CoMath.createVec3();
     private m_pv: IVector3D = CoMath.createVec3();
 
-    private m_offsetV3 = CoMath.createVec3();
-    /**
-     * center
-     */
-    position = CoMath.createVec3();
+    // private m_offsetV3 = CoMath.createVec3();
 
     constructor() {
+        super();
     }
 
     select(controller: IEntityTransform = null): void {
@@ -49,16 +53,16 @@ class ScaleTarget implements ICtrTarget {
             }
         }
     }
-    deselect(): void {
-        this.m_tars = null;
-    }
+    // deselect(): void {
+    //     this.m_tars = null;
+    // }
 
-    addCtrlEntity(entity: IEntityTransform): void {
-        if (entity != null) {
-            this.m_controllers.push(entity);
-            this.m_flags.push(true);
-        }
-    }
+    // addCtrlEntity(entity: IEntityTransform): void {
+    //     if (entity != null) {
+    //         this.m_controllers.push(entity);
+    //         this.m_flags.push(true);
+    //     }
+    // }
     setTargets(targets: IEntityTransform[]): void {
 
         this.m_tars = targets;
@@ -76,19 +80,19 @@ class ScaleTarget implements ICtrTarget {
             this.m_svs = [];
         }
     }
-    getTargets(): IEntityTransform[] {
-        return this.m_tars;
-    }
+    // getTargets(): IEntityTransform[] {
+    //     return this.m_tars;
+    // }
 
-    setCtrlScaleXYZ(sx: number, sy: number, sz: number): void {
-        for (let i: number = 0; i < this.m_controllers.length; ++i) {
-            this.m_flags[i] = true;
-            this.m_controllers[i].setScaleXYZ(sx, sy, sz);
-        }
-    }
+    // setCtrlScaleXYZ(sx: number, sy: number, sz: number): void {
+    //     for (let i: number = 0; i < this.m_controllers.length; ++i) {
+    //         this.m_flags[i] = true;
+    //         this.m_controllers[i].setScaleXYZ(sx, sy, sz);
+    //     }
+    // }
 
-    setXYZ(px: number, py: number, pz: number): void {
-    }
+    // setXYZ(px: number, py: number, pz: number): void {
+    // }
     setPosition(pv: IVector3D): void {
 
         for (let i = 0; i < this.m_controllers.length; ++i) {
@@ -96,14 +100,14 @@ class ScaleTarget implements ICtrTarget {
             this.m_flags[i] = true;
         }
     }
-    getPosition(pv: IVector3D): IVector3D {
-        pv.copyFrom(this.position);
-        return pv;
-    }
-    setRotation3(r: IVector3D): void {
-    }
-    setRotationXYZ(rx: number, ry: number, rz: number): void {
-    }
+    // getPosition(pv: IVector3D): IVector3D {
+    //     pv.copyFrom(this.position);
+    //     return pv;
+    // }
+    // setRotation3(r: IVector3D): void {
+    // }
+    // setRotationXYZ(rx: number, ry: number, rz: number): void {
+    // }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
 
         if (this.m_tars != null) {
@@ -139,46 +143,46 @@ class ScaleTarget implements ICtrTarget {
         }
 
     }
-    getRotationXYZ(rv: IVector3D): void {
+    // getRotationXYZ(rv: IVector3D): void {
 
-    }
+    // }
     getScaleXYZ(sv: IVector3D): void {
 
         sv.setXYZ(1.0, 1.0, 1.0);
     }
 
-    getGlobalBounds(): IAABB {
-        return null;
-    }
-    getLocalBounds(): IAABB {
-        return null;
-    }
-    localToGlobal(pv: IVector3D): void {
-    }
-    globalToLocal(pv: IVector3D): void {
-    }
+    // getGlobalBounds(): IAABB {
+    //     return null;
+    // }
+    // getLocalBounds(): IAABB {
+    //     return null;
+    // }
+    // localToGlobal(pv: IVector3D): void {
+    // }
+    // globalToLocal(pv: IVector3D): void {
+    // }
 
-    update(): void {
+    // update(): void {
 
-        if (this.m_changed) {
-            if (this.m_tars != null) {
-                let tars = this.m_tars;
-                for (let i = 0; i < tars.length; ++i) {
-                    tars[i].update();
-                }
-            }
-            this.m_changed = false;
-        }
-        for (let i = 0; i < this.m_controllers.length; ++i) {
-            if (this.m_flags[i]) {
-                this.m_flags[i] = false;
-                this.m_controllers[i].update();
-            }
-        }
-    }
-    destroy(): void {
-        this.m_tars = null
-        this.m_controllers = null;
-    }
+    //     if (this.m_changed) {
+    //         if (this.m_tars != null) {
+    //             let tars = this.m_tars;
+    //             for (let i = 0; i < tars.length; ++i) {
+    //                 tars[i].update();
+    //             }
+    //         }
+    //         this.m_changed = false;
+    //     }
+    //     for (let i = 0; i < this.m_controllers.length; ++i) {
+    //         if (this.m_flags[i]) {
+    //             this.m_flags[i] = false;
+    //             this.m_controllers[i].update();
+    //         }
+    //     }
+    // }
+    // destroy(): void {
+    //     this.m_tars = null
+    //     this.m_controllers = null;
+    // }
 }
 export { ScaleTarget };

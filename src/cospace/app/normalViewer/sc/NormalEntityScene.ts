@@ -95,7 +95,7 @@ class NormalEntityScene {
 		url = baseUrl + "obj/base4.obj";
 		// url = "static/assets/obj/apple_01.obj";
 		// url = "static/private/fbx/handbag_err.fbx";
-		// url = "static/private/fbx/hat_hasNormal.fbx";
+		url = "static/private/fbx/hat_hasNormal.fbx";
 		// url = "static/private/ctm/errorNormal.ctm";
 		console.log("initModel() init...");
 		this.loadModel( url );
