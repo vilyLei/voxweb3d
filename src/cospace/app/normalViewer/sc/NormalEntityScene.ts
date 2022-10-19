@@ -8,6 +8,7 @@ import IRendererScene from "../../../../vox/scene/IRendererScene";
 import { NormalEntityGroup } from "./NormalEntityGroup";
 import { NormalCtrlPanel } from "../ui/NormalCtrlPanel";
 import { DropModelFileController } from "./DropModelFileController";
+import { BoxLine3D } from "../../../edit/entity/BoxLine3D";
 
 class NormalEntityScene {
 
@@ -36,7 +37,6 @@ class NormalEntityScene {
 		this.nodeGroup.rsc = this.rscene;
 		this.nodeGroup.transUI = this.transUI;
 		this.nodeGroup.initialize();
-
 		
 		let canvas = (this.rscene as any).getCanvas() as HTMLCanvasElement;
 
@@ -69,19 +69,9 @@ class NormalEntityScene {
 
 			if (name != "") {
 				name.toLocaleLowerCase();
-				// let mflag = 0;
 				if (name.indexOf(".ctm") > 1) {
-					// this.resetScene();
-					// this.addCTM(urls);
-					// mflag = 1;
 				} else if (name.indexOf(".fbx") > 1) {
-					// this.resetScene();
-					// this.addFBX(urls);
-					// mflag = 1;
 				} else if (name.indexOf(".obj") > 1) {
-					// this.resetScene();
-					// this.addOBJ(urls);
-					// mflag = 1;
 				} else {
 					flag = 31;
 				}
@@ -106,7 +96,7 @@ class NormalEntityScene {
 		// url = "static/assets/obj/apple_01.obj";
 		// url = "static/private/fbx/handbag_err.fbx";
 		// url = "static/private/fbx/hat_hasNormal.fbx";
-		url = "static/private/ctm/errorNormal.ctm";
+		// url = "static/private/ctm/errorNormal.ctm";
 		console.log("initModel() init...");
 		this.loadModel( url );
 	}
@@ -152,7 +142,9 @@ class NormalEntityScene {
 	}
 	private m_entities: ITransformEntity[] = [];
 	private createEntityFromUnit(unit: CoGeomDataUnit, status: number = 0): void {
+
 		console.log("XXXXXX createEntityFromUnit, unit: ",unit);
+
 		let len = unit.data.models.length;
 		let group = this.nodeGroup;
 		for (let i = 0; i < len; ++i) {
@@ -160,6 +152,14 @@ class NormalEntityScene {
 			this.m_entities.push(entity);
 		}
 		group.updateLayout(false);
+
+		let sc = this.rscene;
+		// for (let i = 0; i < len; ++i) {
+		// 	let entity = this.m_entities[i];
+		// 	let bounds = entity.getGlobalBounds();
+		// 	let boxLine = new BoxLine3D();
+		// 	boxLine.initializeWithAABB(sc, 0, bounds);
+		// }
 
 		this.transUI.getRecoder().save(this.m_entities);
 	}

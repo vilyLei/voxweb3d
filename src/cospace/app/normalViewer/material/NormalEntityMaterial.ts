@@ -49,7 +49,7 @@ class NormalEntityMaterial {
 	}
 	applyModelColor(): void {
 		this.m_data[4] = 1.0;
-		this.applyDifference(false);
+		// this.applyDifference(false);
 	}
 	applyNormalColor(): void {
 		this.m_data[4] = 0.0;
