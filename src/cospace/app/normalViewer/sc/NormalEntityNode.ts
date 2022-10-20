@@ -33,6 +33,7 @@ class NormalEntityNode {
 	private m_entities: ITransformEntity[] = null;
 	private m_normalScale = 1.0;
 	private m_normalScale0 = 1.0;
+	private m_uid: number = -1;
 
 	rsc: IRendererScene;
 	transUI: TransUI;
@@ -42,7 +43,9 @@ class NormalEntityNode {
 
 	constructor() {
 	}
-	
+	getUid(): number {
+		return this.m_uid;
+	}
 	showLocalNormal(): void {
 		this.m_entityMaterial.applyLocalNormal();
 		this.m_entityMaterial.applyNormalColor();
@@ -68,7 +71,7 @@ class NormalEntityNode {
 	setEntityModel(model: CoGeomDataType): IMouseEventEntity {
 
 		this.entity = this.createEntity(model);
-
+		this.m_uid = this.entity.getUid();
 		this.m_entities = [this.entity];
 		// let ls = this.m_entities;
 

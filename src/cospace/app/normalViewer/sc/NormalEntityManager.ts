@@ -18,7 +18,7 @@ declare var CoUI: ICoUI;
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
 
-class NormalEntityGroup {
+class NormalEntityManager {
 
 	ctrPanel: NormalCtrlPanel;
 	rsc: IRendererScene;
@@ -31,11 +31,13 @@ class NormalEntityGroup {
 	initialize(): void {
 
 		this.transUI.addSelectListener((list: IRenderEntity[]): void => {
+
 			this.setModelVisible(true);
 			let entitys = list as ITransformEntity[];
 			this.m_selectEntities = entitys;
 			this.ctrPanel.setModelVisiFlag(entitys != null && entitys.length > 0);
-			// console.log("NormalEntityGroup get select entities action.");
+			// console.log("NormalEntityManager get select entities action.");
+
 			this.testSelect();
 		});
 	}
@@ -86,7 +88,7 @@ class NormalEntityGroup {
 		}
 	}
 	private setModelVisible(v: boolean): void {
-
+		
 		let ls = this.m_selectEntities;
 		if (ls != null) {
 			let map = this.m_map;
@@ -203,6 +205,7 @@ class NormalEntityGroup {
 		}
 	}
 	applyNormalScale(f: number): void {
+
 		// f = 0.1 + f * 3.0;
 		f = f / this.m_scaleBase;
 		f = 0.1 + f * 1.0;
@@ -218,46 +221,30 @@ class NormalEntityGroup {
 			}
 		}
 	}
-	reset(): void {
-		this.m_transforms = [];
-		this.m_transes = [];
-	}
-	addEntityWithModel(model: CoGeomDataType): NormalEntityNode {
 
-		if (model != null) {
+	addNode(node: NormalEntityNode): void {
 
+		if(node != null) {
+			
 			let map = this.m_map;
-			let node = new NormalEntityNode();
-			node.rsc = this.rsc;
-			node.transUI = this.transUI;
-			let entity = node.setEntityModel( model );
-			map.set(entity.getUid(), node);
-
-			this.m_transforms.push(null);
-			this.m_transes.push(entity);
-
-			return node;
+			if(node.getUid() >= 0 && !map.has(node.getUid())) {
+				map.set(node.getUid(), node);
+			}
 		}
-		return null;
+	}
+	removeNode(node: NormalEntityNode): void {
+		
+		if(node != null) {
+			
+			let map = this.m_map;
+			if(node.getUid() >= 0 && map.has(node.getUid())) {
+				map.delete(node.getUid());
+			}
+		}
 	}
 
-	private m_transforms: IMatrix4[] = [];
-	private m_transes: ITransformEntity[] = [];
-	private m_layoutor: NormalEntityLayout = null;
-
-	updateLayout(rotationEnabled: boolean): void {
-		if (this.m_layoutor == null) {
-			this.m_layoutor = new NormalEntityLayout();
-			this.m_layoutor.initialize();
-		}
-		this.m_layoutor.rotationEnabled = rotationEnabled;
-		let pivot = CoRScene.createVec3();
-		this.m_layoutor.fixToPosition(this.m_transes, this.m_transforms, pivot, 300.0);
-	}
 	destroy(): void {
-
-		this.rsc = null;
 		this.m_map.clear();
 	}
 }
-export { NormalEntityGroup };
+export { NormalEntityManager };
