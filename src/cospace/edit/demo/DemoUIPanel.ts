@@ -176,12 +176,15 @@ export class DemoUIPanel {
 		// document.body.appendChild(canvas);
 
 		// this.loadImgs();
-		this.createCanvasClips();
+		this.testPanel();
 	}
 	private m_textLabel: ITextLabel = null;
 	private m_promptLabel: PromptPanel = null;
-	private createCanvasClips(): void {
-		console.log("createCanvasClips()................");
+	private testPanelDepth(): void {
+		
+	}
+	private testPanel(): void {
+		console.log("testPanel()................");
 
 		let uisc = this.m_uiScene;
 		let texAtlas = uisc.texAtlas;
