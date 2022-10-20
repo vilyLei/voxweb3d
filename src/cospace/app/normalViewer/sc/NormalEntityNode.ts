@@ -80,7 +80,9 @@ class NormalEntityNode {
 		this.m_normalMaterial.setLength(this.m_normalScale);
 	}
 	flipNormalLine(boo: boolean): void {
-		this.m_normalMaterial.setScale(boo ? -1.0 : 1.0);
+		let s = boo ? -1.0 : 1.0;
+		this.m_normalMaterial.setScale(s);
+		this.m_entityMaterial.setNormalScale(s);
 	}
 	setNormalLineColor(c: IColor4): void {
 		this.m_normalMaterial.setColor(c);

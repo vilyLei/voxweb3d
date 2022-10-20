@@ -119,10 +119,11 @@ class NormalEntityMaterial {
 					`
 			viewPosition = u_viewMat * u_objMat * vec4(a_vs,1.0);
 			vec3 puvs = a_uvs;
-			v_dv = vec3(dot(normalize(a_uvs), normalize(u_params[1].zzz * a_nvs)));
+			vec3 pnv = u_params[1].zzz * a_nvs;
+			v_dv = vec3(dot(normalize(a_uvs), normalize( pnv )));
 			vec4 pv = u_projMat * viewPosition;			
 			gl_Position = pv;
-			vec3 pnv = u_params[1].w < 0.5 ? a_nvs : normalize(a_nvs * inverse(mat3(u_objMat)));
+			pnv = u_params[1].w < 0.5 ? pnv : normalize(pnv * inverse(mat3(u_objMat)));
 			v_nv = vec4(pnv, 1.0);
 					`
 				);
