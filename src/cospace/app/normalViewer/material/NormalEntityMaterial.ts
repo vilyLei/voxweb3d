@@ -9,10 +9,12 @@ declare var CoRScene: ICoRScene;
 class NormalEntityMaterial {
 	private m_data: Float32Array = new Float32Array([
 		1.0, 1.0, 1.0, 1.0,
-		0.0, 0.0, 0.0, 1.0
+		0.0, 0.0, 1.0, 1.0
 	]);
 	material: IShaderMaterial;
-
+	setNormalScale(s: number): void {
+		this.m_data[6] = s;
+	}
 	setRGB3f(pr: number, pg: number, pb: number): void {
 		this.m_data[0] = pr;
 		this.m_data[1] = pg;
@@ -38,24 +40,20 @@ class NormalEntityMaterial {
 		color.fromArray3(this.m_data);
 	}
 	applyLocalNormal(): void {
-		console.log("apply local normal...");
+		console.log("apply local normal..., dif: ",this.m_data[5]);
 		this.m_data[7] = 0.0;
-		// this.applyDifference(false);
 	}
 	applyGlobalNormal(): void {
-		console.log("apply global normal...");
+		console.log("apply global normal..., dif: ",this.m_data[5]);
 		this.m_data[7] = 1.0;
-		// this.applyDifference(false);
 	}
 	applyModelColor(): void {
 		this.m_data[4] = 1.0;
-		console.log("apply model color...");
-		// this.applyDifference(false);
+		console.log("apply model color..., dif: ",this.m_data[5]);
 	}
 	applyNormalColor(): void {
 		this.m_data[4] = 0.0;
-		// this.applyDifference(false);
-		console.log("apply normal color...");
+		console.log("apply normal color..., dif: ",this.m_data[5]);
 	}
 	applyDifference(boo: boolean = true): void {
 		this.m_data[5] = boo ? 1.0 : 0.0;
@@ -97,14 +95,16 @@ class NormalEntityMaterial {
     		vec3 nv = normalize(v_nv.xyz);
     		vec3 color = pow(nv, gama);
 
+			float nDotL = max(dot(v_nv.xyz, direc), 0.0);
+			vec3 modelColor = u_params[0].xyz * vec3(nDotL);
 			vec4 param = u_params[1];
 
-    		vec3 frontColor = color.xyz;
+    		vec3 frontColor = param.x > 0.5 ? modelColor : color.xyz;
     		vec3 backColor = param.y > 0.5 ? vec3(sign(f2.x * f2.y), 1.0, 1.0) : frontColor;
     		vec3 dstColor = facing ? frontColor : backColor;
 			
-			float nDotL = max(dot(v_nv.xyz, direc), 0.0);
-			dstColor = param.x > 0.5 ? u_params[0].xyz * vec3(nDotL) : dstColor;
+			frontColor = param.y > 0.5 ? dstColor : modelColor;
+			dstColor = param.x > 0.5 ? frontColor : dstColor;
 			
 			float f = v_dv.x;
 			f = f < 0.8 ? 1.0 : 0.0;
@@ -119,7 +119,7 @@ class NormalEntityMaterial {
 					`
 			viewPosition = u_viewMat * u_objMat * vec4(a_vs,1.0);
 			vec3 puvs = a_uvs;
-			v_dv = vec3(dot(normalize(a_uvs), normalize(a_nvs)));
+			v_dv = vec3(dot(normalize(a_uvs), normalize(u_params[1].zzz * a_nvs)));
 			vec4 pv = u_projMat * viewPosition;			
 			gl_Position = pv;
 			vec3 pnv = u_params[1].w < 0.5 ? a_nvs : normalize(a_nvs * inverse(mat3(u_objMat)));

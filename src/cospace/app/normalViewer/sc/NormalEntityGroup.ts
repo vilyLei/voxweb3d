@@ -135,7 +135,7 @@ class NormalEntityGroup {
 		}
 	}
 	applyFeatureColor(uuid: string): void {
-		console.log("applyFeatureColor: ",uuid);
+		console.log("applyFeatureColor: ", uuid);
 		switch (uuid) {
 			case "local":
 				this.showNormalLocalColor();
@@ -150,8 +150,8 @@ class NormalEntityGroup {
 				break;
 		}
 	}
-	applyVisibility(uuid: string, flag: boolean): void {
-		console.log("applyVisibility: ",uuid, flag);
+	applyCtrlFlag(uuid: string, flag: boolean): void {
+		console.log("applyCtrlFlag: ", uuid, flag);
 		switch (uuid) {
 			case "normal":
 				this.setNormalVisible(flag);
@@ -162,8 +162,24 @@ class NormalEntityGroup {
 			case "difference":
 				this.showDifferenceColor(flag);
 				break;
+			case "normalFlip":
+				this.flipNormalLine(flag);
+				break;
 			default:
 				break;
+		}
+	}
+	flipNormalLine(boo: boolean): void {
+
+		let ls = this.m_selectEntities;
+		if (ls != null) {
+			let map = this.m_map;
+			for (let i = 0; i < ls.length; ++i) {
+				const node = map.get(ls[i].getUid());
+				if (node != null) {
+					node.flipNormalLine(boo);
+				}
+			}
 		}
 	}
 	applyNormalScale(f: number): void {
@@ -182,7 +198,11 @@ class NormalEntityGroup {
 			}
 		}
 	}
-	addEntityWithModel(model: CoGeomDataType): IMouseEventEntity {
+	reset(): void {
+		this.m_transforms = [];
+		this.m_transes = [];
+	}
+	addEntityWithModel(model: CoGeomDataType): NormalEntityNode {
 		if (model != null) {
 			let map = this.m_map;
 			// if(!map.has(entity.getUid())) {
@@ -196,9 +216,10 @@ class NormalEntityGroup {
 			this.m_transforms.push(null);
 			this.m_transes.push(entity);
 
-			return entity;
+			return node;
 			// }
 		}
+		return null;
 	}
 
 	private m_transforms: IMatrix4[] = [];

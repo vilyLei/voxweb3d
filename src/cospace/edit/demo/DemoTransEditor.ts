@@ -70,7 +70,16 @@ export class DemoTransEditor {
 		}
 
 		console.log("DemoTransEditor::initialize() ...");
-
+		// //<a href="D:\Series\Breaking Bad">Click to open a folder</a>
+		// //D:\resource\
+		// let a = document.createElement('a');
+		// a.href = "D:\\resource\\";
+		// a.text = "ddfdfdfdf"
+		// document.body.appendChild(a);
+		// (a as any).style = 'display: none';
+		// a.click();
+		// // a.remove();
+		// return;
 		this.initEngineModule();
 	}
 	private initEngineModule(): void {
@@ -134,7 +143,7 @@ export class DemoTransEditor {
 		this.m_tip = tip;
 
 		this.m_transUI.tip = this.m_tip;
-		this.m_transUI.setOutline( this.m_outline );
+		this.m_transUI.setOutline(this.m_outline);
 		this.m_transUI.initialize(this.m_rsc, this.m_editUIRenderer, this.m_coUIScene);
 		this.m_nvaUI.tip = this.m_tip;
 		this.m_nvaUI.initialize(this.m_rsc, this.m_editUIRenderer, this.m_coUIScene);
@@ -144,9 +153,9 @@ export class DemoTransEditor {
 		let scale = 10.0
 		let grid = CoEdit.createFloorLineGrid();
 		grid.initialize(this.m_rsc, 0, minV.scaleBy(scale), maxV.scaleBy(scale), 30);
-		
+
 		let viewer = new NormalViewer();
-		viewer.initialize( this.m_coUIScene, this.m_vcoapp );
+		viewer.initialize(this.m_coUIScene, this.m_vcoapp);
 		viewer.open();
 		this.m_viewer = viewer;
 		let entitySC = viewer.normalScene.entityScene;
@@ -178,7 +187,7 @@ export class DemoTransEditor {
 		if (this.m_rsc == null) {
 
 			let RendererDevice = CoRScene.RendererDevice;
-			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			RendererDevice.SetWebBodyColor("#606060");
 
@@ -219,7 +228,7 @@ export class DemoTransEditor {
 	private keyDown(evt: any): void {
 
 		console.log("DemoTransEditor::keyDown() ..., evt.keyCode: ", evt.keyCode);
-		
+
 		let KEY = CoRScene.Keyboard;
 		switch (evt.keyCode) {
 			case KEY.S:

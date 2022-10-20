@@ -43,7 +43,7 @@ class NormalCtrlPanel {
 
 	private m_selectDispatcher: IEvtDispatcher;
 	private m_progressDispatcher: IEvtDispatcher;
-	private m_flagEvt: ISelectionEvent;
+	// private m_flagEvt: ISelectionEvent;
 	private m_progressEvt: IProgressDataEvent;
 	private m_normalScale = 0.0;
 
@@ -90,7 +90,7 @@ class NormalCtrlPanel {
 			this.m_progressDispatcher = null;
 
 		}
-		this.m_flagEvt = null;
+		// this.m_flagEvt = null;
 		this.m_progressEvt = null;
 
 		this.m_modelVisiBtn = null;
@@ -137,7 +137,7 @@ class NormalCtrlPanel {
 
 		this.m_selectDispatcher = CoRScene.createEventBaseDispatcher();
 		this.m_progressDispatcher = CoRScene.createEventBaseDispatcher();
-		this.m_flagEvt = CoRScene.createSelectionEvent();
+		// this.m_flagEvt = CoRScene.createSelectionEvent();
 		this.m_progressEvt = CoRScene.createProgressDataEvent();
 
 		let sc = this.m_scene;
@@ -215,6 +215,10 @@ class NormalCtrlPanel {
 		textLabel = this.createText("Normal difference", startX + btnSize + disX, py - 10);
 		py = textLabel.getY();
 		this.m_modelColor = this.createFlagBtn(btnSize, px, py, "difference");
+
+		textLabel = this.createText("Normal flip", startX + btnSize + disX, py - 10);
+		py = textLabel.getY();
+		this.m_modelColor = this.createFlagBtn(btnSize, px, py, "normalFlip");
 
 		textLabel = this.createText("Normal line length:", startX, py - 15);
 		px = startX;
@@ -315,7 +319,8 @@ class NormalCtrlPanel {
 
 	private sendSelectionEvt(uuid: string, flag: boolean): void {
 
-		let e = this.m_flagEvt;
+		let e = CoRScene.createSelectionEvent();
+		// let e = this.m_flagEvt;
 		e.uuid = uuid;
 		e.target = this;
 		e.type = CoRScene.SelectionEvent.SELECT;

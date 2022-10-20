@@ -8,6 +8,7 @@ declare var CoRScene: ICoRScene;
 
 class NormalLineMaterial {
 	private m_data: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
+	private m_scale = 1.0;
 	material: IShaderMaterial;
 
 	setRGB3f(pr: number, pg: number, pb: number): void {
@@ -22,8 +23,11 @@ class NormalLineMaterial {
 	getRGBA4f(color: IColor4): void {
 		color.fromArray(this.m_data);
 	}
+	setScale(s: number): void {
+		this.m_scale = s;
+	}
 	setLength(length: number): void {
-		this.m_data[3] = length;
+		this.m_data[3] = this.m_scale * length;
 	}
 	getLegnth(): number {
 		return this.m_data[3];

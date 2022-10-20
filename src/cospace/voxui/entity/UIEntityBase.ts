@@ -52,7 +52,6 @@ class UIEntityBase {
 	protected createMaterial(tex: IRenderTexture = null): IDefault3DMaterial {
 		let material = CoMaterial.createDefaultMaterial();
 		material.premultiplyAlpha = this.premultiplyAlpha;
-		console.log("XXXXXXXXXXXXXX createMaterial() this.premultiplyAlpha: ", this.premultiplyAlpha);
 		if (tex != null) {
 			material.setTextureList([tex]);
 		}
