@@ -76,6 +76,7 @@ class NormalEntityMaterial {
 				coder.addVertUniform("vec4", "u_params",2);
 				coder.addFragUniform("vec4", "u_params",2);
 				coder.addVarying("vec4", "v_nv");
+				coder.addVarying("vec3", "v_vnv");
 				coder.addVarying("vec3", "v_dv");
 				coder.addFragOutputHighp("vec4", "FragColor0");
 
@@ -95,7 +96,7 @@ class NormalEntityMaterial {
     		vec3 nv = normalize(v_nv.xyz);
     		vec3 color = pow(nv, gama);
 
-			float nDotL = max(dot(v_nv.xyz, direc), 0.0);
+			float nDotL = max(dot(v_vnv.xyz, direc), 0.0);
 			vec3 modelColor = u_params[0].xyz * vec3(nDotL);
 			vec4 param = u_params[1];
 
@@ -117,12 +118,14 @@ class NormalEntityMaterial {
 				);
 				coder.addVertMainCode(
 					`
-			viewPosition = u_viewMat * u_objMat * vec4(a_vs,1.0);
+			mat4 vmat = u_viewMat * u_objMat;
+			viewPosition = vmat * vec4(a_vs,1.0);
 			vec3 puvs = a_uvs;
 			vec3 pnv = u_params[1].zzz * a_nvs;
 			v_dv = vec3(dot(normalize(a_uvs), normalize( pnv )));
 			vec4 pv = u_projMat * viewPosition;			
 			gl_Position = pv;
+			v_vnv = normalize(pnv * inverse(mat3(vmat)));
 			pnv = u_params[1].w < 0.5 ? pnv : normalize(pnv * inverse(mat3(u_objMat)));
 			v_nv = vec4(pnv, 1.0);
 					`
