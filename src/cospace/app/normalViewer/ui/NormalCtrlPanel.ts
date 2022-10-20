@@ -230,7 +230,7 @@ class NormalCtrlPanel {
 		this.m_dragBar = this.createProgressBtn(px + 5, py - 25, 200);
 
 		py = this.m_dragBar.getY();
-		textLabel = this.createText("Normal color:", startX, py - 10);
+		textLabel = this.createText("Normal line color:", startX, py - 10);
 		px = startX;
 		py = textLabel.getY();
 		let fc4 = CoMaterial.createColor4;
