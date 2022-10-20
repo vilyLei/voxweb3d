@@ -102,7 +102,7 @@ class NormalEntityScene {
 		// url = "static/private/fbx/handbag_err.fbx";
 		// url = "static/private/fbx/hat_hasNormal.fbx";
 		// url = "static/private/fbx/hat_hasNotNormal.fbx";
-		// url = "static/private/ctm/errorNormal.ctm";
+		url = "static/private/ctm/errorNormal.ctm";
 		console.log("initModel() init...");
 		this.loadModel(url);
 	}

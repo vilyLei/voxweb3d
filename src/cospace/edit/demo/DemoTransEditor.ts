@@ -205,7 +205,7 @@ export class DemoTransEditor {
 
 			// rscene.addEventListener(CoRScene.KeyboardEvent.KEY_DOWN, this, this.keyDown);
 			// rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_CLICK, this, this.mouseClickListener);
-			// rscene.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
+			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_RIGHT_UP, this, this.mouseUpListener, true, true);
 
 			this.m_rsc = rscene;
 
@@ -221,7 +221,9 @@ export class DemoTransEditor {
 
 		}
 	}
-
+	private mouseUpListener(evt: any): void {
+		console.log("mouse up action...");
+	}
 	private mouseDownListener(evt: any): void {
 		console.log("DemoTransEditor::mouseDownListener() ...");
 	}
