@@ -28,7 +28,8 @@ class NormalCtrlPanel {
 
 	private m_normalVisiBtn: IFlagButton;
 	private m_modelVisiBtn: IFlagButton;
-	private m_modelColor: IFlagButton;
+	private m_diffBtn: IFlagButton;
+	private m_normalFlipBtn: IFlagButton;
 
 	private m_btnW: number = 90;
 	private m_btnH: number = 50;
@@ -43,20 +44,23 @@ class NormalCtrlPanel {
 
 	private m_selectDispatcher: IEvtDispatcher;
 	private m_progressDispatcher: IEvtDispatcher;
-	// private m_flagEvt: ISelectionEvent;
 	private m_progressEvt: IProgressDataEvent;
 	private m_normalScale = 0.0;
 
 	autoLayout: boolean = true;
+
 	constructor() { }
+
 	getScene(): ICoUIScene {
 		return this.m_scene;
 	}
+
 	setBGColor(c: IColor4): void {
 		if (this.m_panel == null) this.m_panel = CoUI.createUIPanel();
 		this.m_panel.autoLayout = false;
 		this.m_panel.setBGColor(c);
 	}
+
 	initialize(scene: ICoUIScene, rpi: number, panelW: number, panelH: number, btnH: number): void {
 
 		if (this.m_scene == null) {
@@ -66,7 +70,6 @@ class NormalCtrlPanel {
 
 			this.m_panelW = panelW;
 			this.m_panelH = panelH;
-
 			this.m_btnH = btnH;
 
 			this.m_v0 = CoRScene.createVec3();
@@ -74,6 +77,7 @@ class NormalCtrlPanel {
 			this.m_panel.autoLayout = false;
 			this.m_panel.setUIscene(scene);
 			this.m_panel.setSize(panelW, panelH);
+
 			this.buildPanel(panelW, panelH);
 		}
 	}
@@ -90,12 +94,12 @@ class NormalCtrlPanel {
 			this.m_progressDispatcher = null;
 
 		}
-		// this.m_flagEvt = null;
+		
 		this.m_progressEvt = null;
-
 		this.m_modelVisiBtn = null;
 		this.m_normalVisiBtn = null;
-		this.m_modelColor = null;
+		this.m_diffBtn = null;
+		this.m_normalFlipBtn = null;
 
 		if (this.m_panel != null) {
 
@@ -214,11 +218,11 @@ class NormalCtrlPanel {
 		
 		textLabel = this.createText("Normal difference", startX + btnSize + disX, py - 10);
 		py = textLabel.getY();
-		this.m_modelColor = this.createFlagBtn(btnSize, px, py, "difference");
+		this.m_diffBtn = this.createFlagBtn(btnSize, px, py, "difference");
 
 		textLabel = this.createText("Normal flip", startX + btnSize + disX, py - 10);
 		py = textLabel.getY();
-		this.m_modelColor = this.createFlagBtn(btnSize, px, py, "normalFlip");
+		this.m_normalFlipBtn = this.createFlagBtn(btnSize, px, py, "normalFlip");
 
 		textLabel = this.createText("Normal line length:", startX, py - 15);
 		px = startX;
@@ -298,8 +302,14 @@ class NormalCtrlPanel {
 		console.log("setNormalFlag, flag: ", flag);
 		this.m_normalVisiBtn.setFlag(flag);
 	}
-	setModelFlag(flag: boolean): void {
+	setModelVisiFlag(flag: boolean): void {
 		this.m_modelVisiBtn.setFlag(flag);
+	}
+	setDifferenceFlag(flag: boolean): void {
+		this.m_diffBtn.setFlag(flag);
+	}
+	setNormalFlipFlag(flag: boolean): void {
+		this.m_normalFlipBtn.setFlag(flag);
 	}
 	private sendProgressEvt(uuid: string, v: number): void {
 

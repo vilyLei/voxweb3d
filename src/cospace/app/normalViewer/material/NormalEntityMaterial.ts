@@ -40,20 +40,20 @@ class NormalEntityMaterial {
 		color.fromArray3(this.m_data);
 	}
 	applyLocalNormal(): void {
-		console.log("apply local normal..., dif: ",this.m_data[5]);
+		console.log("apply local normal..., dif: ", this.m_data[5]);
 		this.m_data[7] = 0.0;
 	}
 	applyGlobalNormal(): void {
-		console.log("apply global normal..., dif: ",this.m_data[5]);
+		console.log("apply global normal..., dif: ", this.m_data[5]);
 		this.m_data[7] = 1.0;
 	}
 	applyModelColor(): void {
 		this.m_data[4] = 1.0;
-		console.log("apply model color..., dif: ",this.m_data[5]);
+		console.log("apply model color..., dif: ", this.m_data[5]);
 	}
 	applyNormalColor(): void {
 		this.m_data[4] = 0.0;
-		console.log("apply normal color..., dif: ",this.m_data[5]);
+		console.log("apply normal color..., dif: ", this.m_data[5]);
 	}
 	applyDifference(boo: boolean = true): void {
 		this.m_data[5] = boo ? 1.0 : 0.0;
@@ -70,11 +70,10 @@ class NormalEntityMaterial {
 			material.setShaderBuilder((coderBuilder: IShaderCodeBuffer): void => {
 				let coder = coderBuilder.getShaderCodeBuilder();
 
-				// coder.addVertLayout("vec2", "a_uvs");
 				coder.addVertLayout("vec3", "a_uvs");
 				coder.addVertLayout("vec3", "a_nvs");
-				coder.addVertUniform("vec4", "u_params",2);
-				coder.addFragUniform("vec4", "u_params",2);
+				coder.addVertUniform("vec4", "u_params", 2);
+				coder.addFragUniform("vec4", "u_params", 2);
 				coder.addVarying("vec4", "v_nv");
 				coder.addVarying("vec3", "v_vnv");
 				coder.addVarying("vec3", "v_dv");
@@ -83,7 +82,8 @@ class NormalEntityMaterial {
 				coder.addFragHeadCode(
 					`
 				const vec3 gama = vec3(1.0/2.2);
-				const vec3 direc = normalize(vec3(0.3,0.6,0.9));
+				const vec3 direc0 = normalize(vec3(-0.3,-0.6,0.9));
+				const vec3 direc1 = normalize(vec3(0.3,0.6,0.9));
 					`
 				);
 
@@ -96,8 +96,10 @@ class NormalEntityMaterial {
     		vec3 nv = normalize(v_nv.xyz);
     		vec3 color = pow(nv, gama);
 
-			float nDotL = max(dot(v_vnv.xyz, direc), 0.0);
-			vec3 modelColor = u_params[0].xyz * vec3(nDotL);
+			float nDotL0 = max(dot(v_vnv.xyz, direc0), 0.1);
+			float nDotL1 = max(dot(v_vnv.xyz, direc1), 0.1);
+			nDotL0 = 0.7 * (nDotL0 + nDotL1);
+			vec3 modelColor = u_params[0].xyz * vec3(nDotL0);
 			vec4 param = u_params[1];
 
     		vec3 frontColor = param.x > 0.5 ? modelColor : color.xyz;

@@ -26,19 +26,20 @@ declare var CoAGeom: ICoAGeom;
 
 class NormalEntityNode {
 
-	rsc: IRendererScene;
-	transUI: TransUI;
-	uid = -1;
-	entity: IMouseEventEntity = null;
-	// normalColorEntity: ITransformEntity = null;
-	// differenceColorEntity: ITransformEntity = null;
-	normalLine: ITransformEntity = null;
-	// flagEndity: ITransformEntity = null;
+	private m_normalFlip: boolean = false;
+	private m_showDifference: boolean = false;
 	private m_entityMaterial: NormalEntityMaterial;
 	private m_normalMaterial: NormalLineMaterial;
 	private m_entities: ITransformEntity[] = null;
 	private m_normalScale = 1.0;
 	private m_normalScale0 = 1.0;
+
+	rsc: IRendererScene;
+	transUI: TransUI;
+	uid = -1;
+	entity: IMouseEventEntity = null;
+	normalLine: ITransformEntity = null;
+
 	constructor() {
 	}
 	
@@ -58,15 +59,18 @@ class NormalEntityNode {
 		}
 	}
 	showDifference(boo: boolean = true): void {
+		this.m_showDifference = boo;
 		this.m_entityMaterial.applyDifference(boo);
 	}
-	
+	isShowDifference(): boolean {
+		return this.m_showDifference;
+	}
 	setEntityModel(model: CoGeomDataType): IMouseEventEntity {
 
 		this.entity = this.createEntity(model);
 
 		this.m_entities = [this.entity];
-		let ls = this.m_entities;
+		// let ls = this.m_entities;
 
 		this.applyEvt(this.entity);
 		return this.entity;
@@ -79,10 +83,14 @@ class NormalEntityNode {
 		this.m_normalScale = s * this.m_normalScale0;
 		this.m_normalMaterial.setLength(this.m_normalScale);
 	}
-	flipNormalLine(boo: boolean): void {
+	flipNormal(boo: boolean): void {
+		this.m_normalFlip = boo;
 		let s = boo ? -1.0 : 1.0;
 		this.m_normalMaterial.setScale(s);
 		this.m_entityMaterial.setNormalScale(s);
+	}
+	isNormalFlipping(): boolean {
+		return this.m_normalFlip;
 	}
 	setNormalLineColor(c: IColor4): void {
 		this.m_normalMaterial.setColor(c);
@@ -141,6 +149,7 @@ class NormalEntityNode {
 
 		let spv = CoRScene.createVec3(1.0);
 		srcEntity.localToGlobal(spv);
+
 		let scale = Math.abs(spv.x);
 		scale = size / scale;
 		this.m_normalScale = scale;
@@ -148,7 +157,7 @@ class NormalEntityNode {
 		let mb = new NormalLineMaterial();
 		mb.setRGB3f(1.0, 0.0, 1.0);
 		this.m_normalMaterial = mb;
-		this.m_normalMaterial.setLength(scale);
+		this.m_normalMaterial.setLength( scale );
 
 		if(snvs == null) {
 			let entity = CoRScene.createDisplayEntity();

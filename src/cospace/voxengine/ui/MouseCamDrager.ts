@@ -88,16 +88,14 @@ export default class MouseCamDrager {
     runWithYAxis(): void {
         if (this.m_swing) {
             this.m_dragSwinger.runWithYAxis();
-        }
-        else {
+        }else {
             this.m_dragSlider.run();
         }
     }
     runWithZAxis(): void {
         if (this.m_swing) {
             this.m_dragSwinger.runWithZAxis();
-        }
-        else {
+        }else {
             this.m_dragSlider.run();
         }
     }

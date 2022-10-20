@@ -34,7 +34,7 @@ class NormalEntityGroup {
 			this.setModelVisible(true);
 			let entitys = list as ITransformEntity[];
 			this.m_selectEntities = entitys;
-			this.ctrPanel.setModelFlag(entitys != null && entitys.length > 0);
+			this.ctrPanel.setModelVisiFlag(entitys != null && entitys.length > 0);
 			// console.log("NormalEntityGroup get select entities action.");
 			this.testSelect();
 		});
@@ -45,18 +45,31 @@ class NormalEntityGroup {
 		if (ls != null) {
 			let map = this.m_map;
 			let lineVisible = false;
-			let scaleBase = this.ctrPanel.getNormalScale();
+			let dif = false;
+			let flip = false;
+			let cpl = this.ctrPanel;
+
+			let scaleBase = cpl.getNormalScale();
+
 			for (let i = 0; i < ls.length; ++i) {
 				const node = map.get(ls[i].getUid());
 				if (node != null) {
 					if (node.normalLine.getVisible()) {
 						lineVisible = true;
 					}
+					if (node.isShowDifference()) {
+						dif = true;
+					}
+					if (node.isNormalFlipping()) {
+						flip = true;
+					}
 					node.select();
 				}
 			}
 			this.m_scaleBase = scaleBase < 0.1 ? 0.1 : scaleBase;
-			this.ctrPanel.setNormalFlag(lineVisible);
+			cpl.setNormalFlag(lineVisible);
+			cpl.setNormalFlipFlag( flip );
+			cpl.setDifferenceFlag( dif );
 		}
 	}
 
@@ -135,6 +148,7 @@ class NormalEntityGroup {
 		}
 	}
 	applyFeatureColor(uuid: string): void {
+
 		console.log("applyFeatureColor: ", uuid);
 		switch (uuid) {
 			case "local":
@@ -151,6 +165,7 @@ class NormalEntityGroup {
 		}
 	}
 	applyCtrlFlag(uuid: string, flag: boolean): void {
+
 		console.log("applyCtrlFlag: ", uuid, flag);
 		switch (uuid) {
 			case "normal":
@@ -172,12 +187,16 @@ class NormalEntityGroup {
 	flipNormalLine(boo: boolean): void {
 
 		let ls = this.m_selectEntities;
+
 		if (ls != null) {
+
 			let map = this.m_map;
+
 			for (let i = 0; i < ls.length; ++i) {
+
 				const node = map.get(ls[i].getUid());
 				if (node != null) {
-					node.flipNormalLine(boo);
+					node.flipNormal( boo );
 				}
 			}
 		}

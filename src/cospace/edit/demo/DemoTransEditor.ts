@@ -205,7 +205,7 @@ export class DemoTransEditor {
 
 			// rscene.addEventListener(CoRScene.KeyboardEvent.KEY_DOWN, this, this.keyDown);
 			// rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_CLICK, this, this.mouseClickListener);
-			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_RIGHT_UP, this, this.mouseUpListener, true, true);
+			// rscene.addEventListener(CoRScene.MouseEvent.MOUSE_RIGHT_UP, this, this.mouseUpListener, true, true);
 
 			this.m_rsc = rscene;
 
@@ -214,7 +214,7 @@ export class DemoTransEditor {
 			subScene.setAccessor(new SceneAccessor());
 
 			this.m_editUIRenderer = subScene;
-			this.m_graph = CoRScene.createRendererSceneGraph();//new RendererSceneGraph();
+			this.m_graph = CoRScene.createRendererSceneGraph();
 			this.m_graph.addScene(this.m_rsc);
 			this.m_graph.addScene(this.m_editUIRenderer);
 			this.m_outline = new PostOutline(rscene);
