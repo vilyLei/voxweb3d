@@ -37,7 +37,7 @@ class NormalEntityNode {
 
 	rsc: IRendererScene;
 	transUI: TransUI;
-	uid = -1;
+	groupUid = -1;
 	entity: IMouseEventEntity = null;
 	normalLine: ITransformEntity = null;
 

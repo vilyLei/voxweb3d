@@ -166,11 +166,12 @@ class NormalCtrlPanel {
 			fontSize: 30,
 			font: ""
 		};
+		let fc4 = CoMaterial.createColor4;
 		let colors: IColor4[] = [
-			CoMaterial.createColor4().setRGB3Bytes(80, 80, 80),
-			CoMaterial.createColor4().setRGB3Bytes(110, 110, 110),
-			CoMaterial.createColor4().setRGB3Bytes(90, 90, 90),
-			CoMaterial.createColor4().setRGB3Bytes(110, 110, 110)
+			fc4().setRGB3Bytes(80, 80, 80),
+			fc4().setRGB3Bytes(110, 110, 110),
+			fc4().setRGB3Bytes(90, 90, 90),
+			fc4().setRGB3Bytes(110, 110, 110)
 		];
 		let localBtn = CoUI.createTextButton(
 			this.m_btnW, this.m_btnH, "local",
@@ -233,22 +234,35 @@ class NormalCtrlPanel {
 		textLabel = this.createText("Normal line color:", startX, py - 10);
 		px = startX;
 		py = textLabel.getY();
-		let fc4 = CoMaterial.createColor4;
-		colors = [
+		let colors1 = [
 			fc4().setRGB3Bytes(210, 0, 210),
 			fc4().setRGB3Bytes(240, 0, 240),
 			fc4().setRGB3Bytes(220, 0, 220),
 			fc4().setRGB3Bytes(240, 0, 240)
 		];
-		let normalColorBtn = this.createColorBtn(22, 22, "normalColor", colors);
-		normalColorBtn.setXY(startX + textLabel.getWidth() + disX, py);
-		pl.addEntity(normalColorBtn);
+		let normalLineColorBtn = this.createColorBtn(22, 22, "normalLineColor", colors1);
+		normalLineColorBtn.setXY(startX + textLabel.getWidth() + disX, py);
+		pl.addEntity(normalLineColorBtn);
+
+		px = startX;
+		py = textLabel.getY() - disY;
+		this.m_btnW = 90;		
+		textParam.text = "Test";
+		// let differenceBtn = this.createBtn("Difference", px, startY, "difference");
+		let normalTestBtn = CoUI.createTextButton(
+			this.m_btnW, this.m_btnH, "normalTest",
+			tta, textParam, colors
+		);
+		normalTestBtn.update();
+		normalTestBtn.setXY(px, py - normalTestBtn.getHeight());
+		pl.addEntity(normalTestBtn);
 
 		//let ME = CoRScene.MouseEvent;
 		localBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
 		globalBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
 		modelColorBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
-		normalColorBtn.addEventListener(ME.MOUSE_UP, this, this.normalColorSelect);
+		normalTestBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
+		normalLineColorBtn.addEventListener(ME.MOUSE_UP, this, this.normalLineColorSelect);
 
 		let group = this.m_btnGroup = CoUI.createSelectButtonGroup();
 
@@ -276,7 +290,7 @@ class NormalCtrlPanel {
 	private normalDisplaySelect(evt: any): void {
 		this.sendSelectionEvt(evt.uuid, true);
 	}
-	private normalColorSelect(evt: any): void {
+	private normalLineColorSelect(evt: any): void {
 		console.log("color select...");
 	}
 

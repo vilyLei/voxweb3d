@@ -13,6 +13,8 @@ import { NormalCtrlPanel } from "../ui/NormalCtrlPanel";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../app/CoSpaceAppData";
 import IMatrix4 from "../../../../vox/math/IMatrix4";
 import { NormalEntityLayout } from "./NormalEntityLayout";
+import { ViewerCoSApp } from "../../../demo/coViewer/ViewerCoSApp";
+import { NormalEntityManager } from "./NormalEntityManager";
 
 declare var CoUI: ICoUI;
 declare var CoRScene: ICoRScene;
@@ -20,209 +22,124 @@ declare var CoMaterial: ICoMaterial;
 
 class NormalEntityGroup {
 
+	private static s_uid = 0;
+	private m_uid = NormalEntityGroup.s_uid++;
+	private m_vcoapp: ViewerCoSApp;
+
 	ctrPanel: NormalCtrlPanel;
 	rsc: IRendererScene;
 	transUI: TransUI;
+	entityManager: NormalEntityManager;
+
 	private m_map: Map<number, NormalEntityNode> = new Map();
 	private m_selectEntities: ITransformEntity[] = null;
 	private m_scaleBase = 1.0;
-	constructor() {
+
+	constructor(vcoapp: ViewerCoSApp) {
+		this.m_vcoapp = vcoapp;
+	}
+	getUid(): number {
+		return this.m_uid;
 	}
 	initialize(): void {
-
-		this.transUI.addSelectListener((list: IRenderEntity[]): void => {
-			this.setModelVisible(true);
-			let entitys = list as ITransformEntity[];
-			this.m_selectEntities = entitys;
-			this.ctrPanel.setModelVisiFlag(entitys != null && entitys.length > 0);
-			// console.log("NormalEntityGroup get select entities action.");
-			this.testSelect();
-		});
 	}
-
-	private testSelect(): void {
-		let ls = this.m_selectEntities;
-		if (ls != null) {
-			let map = this.m_map;
-			let lineVisible = false;
-			let dif = false;
-			let flip = false;
-			let cpl = this.ctrPanel;
-
-			let scaleBase = cpl.getNormalScale();
-
-			for (let i = 0; i < ls.length; ++i) {
-				const node = map.get(ls[i].getUid());
-				if (node != null) {
-					if (node.normalLine.getVisible()) {
-						lineVisible = true;
-					}
-					if (node.isShowDifference()) {
-						dif = true;
-					}
-					if (node.isNormalFlipping()) {
-						flip = true;
-					}
-					node.select();
-				}
-			}
-			this.m_scaleBase = scaleBase < 0.1 ? 0.1 : scaleBase;
-			cpl.setNormalFlag(lineVisible);
-			cpl.setNormalFlipFlag( flip );
-			cpl.setDifferenceFlag( dif );
-		}
-	}
-
-	private setNormalVisible(v: boolean): void {
-		let ls = this.m_selectEntities;
-		if (ls != null) {
-			let map = this.m_map;
-			for (let i = 0; i < ls.length; ++i) {
-				const node = map.get(ls[i].getUid());
-				if (node != null) {
-					node.normalLine.setVisible(v);
-				}
-			}
-		}
-	}
-	private setModelVisible(v: boolean): void {
-
-		let ls = this.m_selectEntities;
-		if (ls != null) {
-			let map = this.m_map;
-			for (let i = 0; i < ls.length; ++i) {
-				const node = map.get(ls[i].getUid());
-				if (node != null) {
-					node.entity.setVisible(v);
-				}
+	private m_loadTotal = 0;
+	private m_loadedTotal = 0;
+	loadModels(urls: string[], typeNS: string = ""): void {
+		if (urls != null && urls.length > 0) {
+			this.m_loadTotal = urls.length;
+			for (let i = 0; i < urls.length; ++i) {
+				this.loadModel(urls[i], typeNS);
 			}
 		}
 	}
 
-	private setModelColor(v: boolean): void {
-		let ls = this.m_selectEntities;
-		if (ls != null) {
-			let map = this.m_map;
-			for (let i = 0; i < ls.length; ++i) {
-				const node = map.get(ls[i].getUid());
-				if (node != null) {
-					node.showModelColor(v);
-				}
-			}
-		}
-	}
+	private loadModel(url: string, typeNS: string = ""): void {
+		console.log("loadModel, url: ", url);
 
-	private showNormalLocalColor(): void {
-		let ls = this.m_selectEntities;
-		if (ls != null) {
-			let map = this.m_map;
-			for (let i = 0; i < ls.length; ++i) {
-				const node = map.get(ls[i].getUid());
-				if (node != null) {
-					node.showLocalNormal();
-				}
-			}
+		let ns = typeNS;
+		if (typeNS == "") {
+			let k0 = url.lastIndexOf(".") + 1;
+			let k1 = url.lastIndexOf("?");
+			ns = k1 < 0 ? url.slice(k0) : url.slice(k0, k1);
 		}
-	}
-	private showNormalGlobalColor(): void {
-		let ls = this.m_selectEntities;
-		if (ls != null) {
-			let map = this.m_map;
-			for (let i = 0; i < ls.length; ++i) {
-				const node = map.get(ls[i].getUid());
-				if (node != null) {
-					node.showGlobalNormal();
-				}
-			}
-		}
-	}
-	private showDifferenceColor(boo: boolean = true): void {
-		let ls = this.m_selectEntities;
-		if (ls != null) {
-			let map = this.m_map;
-			for (let i = 0; i < ls.length; ++i) {
-				const node = map.get(ls[i].getUid());
-				if (node != null) {
-					node.showDifference(boo);
-				}
-			}
-		}
-	}
-	applyFeatureColor(uuid: string): void {
+		ns = ns.toLocaleLowerCase();
 
-		console.log("applyFeatureColor: ", uuid);
-		switch (uuid) {
-			case "local":
-				this.showNormalLocalColor();
+		let type = CoDataFormat.OBJ;
+		switch (ns) {
+			case "obj":
+				type = CoDataFormat.OBJ;
 				break;
-			case "global":
-				this.showNormalGlobalColor();
+			case "fbx":
+				type = CoDataFormat.FBX;
 				break;
-			case "modelColor":
-				this.setModelColor(true);
+			case "drc":
+				type = CoDataFormat.Draco;
+				break;
+			case "ctm":
+				type = CoDataFormat.CTM;
 				break;
 			default:
 				break;
 		}
+		this.loadGeomModel(url, type);
 	}
-	applyCtrlFlag(uuid: string, flag: boolean): void {
+	private loadGeomModel(url: string, format: CoDataFormat): void {
 
-		console.log("applyCtrlFlag: ", uuid, flag);
-		switch (uuid) {
-			case "normal":
-				this.setNormalVisible(flag);
-				break;
-			case "model":
-				this.setModelVisible(flag);
-				break;
-			case "difference":
-				this.showDifferenceColor(flag);
-				break;
-			case "normalFlip":
-				this.flipNormalLine(flag);
-				break;
-			default:
-				break;
+		let ins = this.m_vcoapp.coappIns;
+		if (ins != null) {
+
+			ins.getCPUDataByUrlAndCallback(
+				url,
+				format,
+				(unit: CoGeomDataUnit, status: number): void => {
+					this.createEntityFromUnit(unit, status);
+				},
+				true
+			);
 		}
 	}
-	flipNormalLine(boo: boolean): void {
+	private m_nodes: NormalEntityNode[] = [];
+	private createEntityFromUnit(unit: CoGeomDataUnit, status: number = 0): void {
 
-		let ls = this.m_selectEntities;
+		console.log("XXXXXX createEntityFromUnit, unit: ", unit);
 
-		if (ls != null) {
-
-			let map = this.m_map;
-
-			for (let i = 0; i < ls.length; ++i) {
-
-				const node = map.get(ls[i].getUid());
-				if (node != null) {
-					node.flipNormal( boo );
-				}
+		let entities: ITransformEntity[] = [];
+		let len = unit.data.models.length;
+		// let group = this.nodeGroup;
+		// group.reset();
+		let nodes: NormalEntityNode[] = [];
+		for (let i = 0; i < len; ++i) {
+			const node = this.addEntityWithModel(unit.data.models[i]);
+			if (node != null) {
+				this.entityManager.addNode(node);
+				nodes.push(node);
+				this.m_nodes.push(node);
+				entities.push(node.entity);
 			}
 		}
-	}
-	applyNormalScale(f: number): void {
-		// f = 0.1 + f * 3.0;
-		f = f / this.m_scaleBase;
-		f = 0.1 + f * 1.0;
+		// group.updateLayout(false);
 
-		let ls = this.m_selectEntities;
-		if (ls != null) {
-			let map = this.m_map;
-			for (let i = 0; i < ls.length; ++i) {
-				const node = map.get(ls[i].getUid());
-				if (node != null) {
-					node.applyNormalLineScale(f);
-				}
-			}
+		// let sc = this.rscene;
+		for (let i = 0; i < nodes.length; ++i) {
+			nodes[i].createNormalLine();
 		}
+
+		// for (let i = 0; i < len; ++i) {
+		// 	let entity = this.m_entities[i];
+		// 	let bounds = entity.getGlobalBounds();
+		// 	let boxLine = new BoxLine3D();
+		// 	boxLine.initializeWithAABB(sc, 0, bounds);
+		// }
+
+
+		this.m_loadedTotal++;
+		// if(this.m_loadedTotal >= this.m_loadTotal) {
+		this.updateLayout(false);
+		this.transUI.getRecoder().save(entities);
+		// }
 	}
-	reset(): void {
-		this.m_transforms = [];
-		this.m_transes = [];
-	}
-	addEntityWithModel(model: CoGeomDataType): NormalEntityNode {
+	private addEntityWithModel(model: CoGeomDataType): NormalEntityNode {
 
 		if (model != null) {
 
@@ -230,7 +147,7 @@ class NormalEntityGroup {
 			let node = new NormalEntityNode();
 			node.rsc = this.rsc;
 			node.transUI = this.transUI;
-			let entity = node.setEntityModel( model );
+			let entity = node.setEntityModel(model);
 			map.set(entity.getUid(), node);
 
 			this.m_transforms.push(null);
@@ -246,15 +163,34 @@ class NormalEntityGroup {
 	private m_layoutor: NormalEntityLayout = null;
 
 	updateLayout(rotationEnabled: boolean): void {
+
 		if (this.m_layoutor == null) {
 			this.m_layoutor = new NormalEntityLayout();
 			this.m_layoutor.initialize();
 		}
 		this.m_layoutor.rotationEnabled = rotationEnabled;
+
 		let pivot = CoRScene.createVec3();
 		this.m_layoutor.fixToPosition(this.m_transes, this.m_transforms, pivot, 300.0);
+		this.m_transforms = null;
+		this.m_transes = null;
 	}
+
 	destroy(): void {
+
+		let ls = this.m_nodes;
+		if (ls != null && ls.length > 0) {
+			for (let i = 0; i < ls.length; ++i) {
+				this.entityManager.removeNode(ls[i]);
+				ls[i].destroy();
+			}
+		}
+		this.m_nodes = [];
+		this.entityManager = null;
+
+		this.m_transforms = null;
+		this.m_transes = null;
+		this.m_layoutor = null;
 
 		this.rsc = null;
 		this.m_map.clear();

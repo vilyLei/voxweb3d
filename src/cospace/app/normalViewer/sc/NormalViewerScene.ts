@@ -5,6 +5,8 @@ import { ICoUI } from "../../../voxui/ICoUI";
 import { NormalCtrlPanel } from "../ui/NormalCtrlPanel";
 import { NormalEntityScene } from "./NormalEntityScene";
 import { ViewerCoSApp } from "../../../demo/coViewer/ViewerCoSApp";
+import { NormalEntityManager } from "./NormalEntityManager";
+import { TransUI } from "../../../edit/demo/edit/ui/TransUI";
 
 declare var CoUI: ICoUI;
 
@@ -15,7 +17,8 @@ class NormalViewerScene {
 
 	private m_uiscene: ICoUIScene = null;
 	private m_ctrPanel: NormalCtrlPanel = null;
-
+	private m_transUI: TransUI = null;
+	private m_entityManager: NormalEntityManager = new NormalEntityManager();
 	entityScene: NormalEntityScene;
 	private m_vcoapp: ViewerCoSApp;
 
@@ -25,30 +28,36 @@ class NormalViewerScene {
 		return this.m_uiscene;
 	}
 
-	initialize(uiscene: ICoUIScene, vcoapp: ViewerCoSApp): void {
+	initialize(uiscene: ICoUIScene, vcoapp: ViewerCoSApp, transUI: TransUI): void {
 
 		if (this.m_uiscene == null) {
 			this.m_uiscene = uiscene;
 			this.m_vcoapp = vcoapp;
+			this.m_transUI = transUI;
 
 			this.entityScene = new NormalEntityScene(uiscene, vcoapp);
+			this.entityScene.entityManager = this.m_entityManager;
 			this.initUI();
+			this.entityScene.transUI = transUI;
 
 		}
 	}
 	protected initUI(): void {
+
 		let panel = new NormalCtrlPanel();
-		panel.initialize(this.m_uiscene, 0, 310, 350, 50);
+		panel.initialize(this.m_uiscene, 0, 310, 390, 50);
 		panel.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
-		this.m_ctrPanel = panel;
+		
 		panel.addEventListener(CoRScene.SelectionEvent.SELECT, this, this.selectDisplay);
 		panel.addEventListener(CoRScene.ProgressDataEvent.PROGRESS, this, this.normalScale);
+
+		this.m_ctrPanel = panel;
 		this.entityScene.ctrPanel = panel;
-		this.entityScene.nodeGroup.ctrPanel = panel;
 	}
 	private selectDisplay(evt: any): void {
+
 		console.log("NormalViewerScene::selectDisplay(), evt.uuid: ", evt.uuid);
-		let group = this.entityScene.nodeGroup;
+		let mana = this.m_entityManager;
 		let uuid = evt.uuid;
 		switch (uuid) {
 			case "normal":
@@ -56,13 +65,19 @@ class NormalViewerScene {
 			case "difference":
 			case "normalFlip":
 				// console.log("flag call");
-				group.applyCtrlFlag(uuid, evt.flag);
+				mana.applyCtrlFlag(uuid, evt.flag);
 				break;
 			case "local":
 			case "global":
 			case "modelColor":
 				// console.log("select call");
-				group.applyFeatureColor(uuid);
+				mana.applyFeatureColor(uuid);
+				break;
+			case "normalLineColor":
+				console.log("appaly normal color");
+				break;
+			case "normalTest":
+				console.log("appaly normal data feature test");
 				break;
 			default:
 				break;
@@ -71,8 +86,8 @@ class NormalViewerScene {
 	private normalScale(evt: any): void {
 		// console.log("NormalViewerScene::normalScale(), evt.uuid: ", evt.uuid, evt.progress);
 		// console.log("NormalViewerScene::normalScale(), evt.progress: ", evt.progress);
-		let group = this.entityScene.nodeGroup;
-		group.applyNormalScale(evt.progress);
+		let mana = this.m_entityManager;
+		mana.applyNormalScale(evt.progress);
 	}
 
 	destroy(): void {
