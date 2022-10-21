@@ -133,7 +133,7 @@ export class DemoTransEditor {
 	private initEditUI(): void {
 
 		this.m_coUIScene = CoUI.createUIScene();
-		this.m_coUIScene.initialize(this.m_rsc, 512, 4);
+		this.m_coUIScene.initialize(this.m_rsc, 512, 5);
 		this.m_uirsc = this.m_coUIScene.rscene;
 		this.m_graph.addScene(this.m_uirsc);
 
@@ -155,13 +155,11 @@ export class DemoTransEditor {
 		grid.initialize(this.m_rsc, 0, minV.scaleBy(scale), maxV.scaleBy(scale), 30);
 
 		let viewer = new NormalViewer();
-		viewer.initialize(this.m_coUIScene, this.m_vcoapp);
+		viewer.initialize(this.m_coUIScene, this.m_vcoapp, this.m_transUI);
 		viewer.open();
 		this.m_viewer = viewer;
 		let entitySC = viewer.normalScene.entityScene;
-		entitySC.rscene = this.m_rsc;
-		entitySC.transUI = this.m_transUI;
-		entitySC.initialize();
+		entitySC.initialize( this.m_rsc );
 	}
 
 	private initScene(): void {
@@ -187,7 +185,7 @@ export class DemoTransEditor {
 		if (this.m_rsc == null) {
 
 			let RendererDevice = CoRScene.RendererDevice;
-			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			RendererDevice.SetWebBodyColor("#606060");
 

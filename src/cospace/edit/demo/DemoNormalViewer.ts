@@ -171,9 +171,9 @@ export class DemoNormalViewer {
 		// panel.open();
 		// panel.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
 
-		let viewer = new NormalViewer();
-		viewer.initialize( uisc, null );
-		viewer.open();
+		// let viewer = new NormalViewer();
+		// viewer.initialize( uisc, null, null );
+		// viewer.open();
 
 	}
 	private createDefaultEntity(): void {

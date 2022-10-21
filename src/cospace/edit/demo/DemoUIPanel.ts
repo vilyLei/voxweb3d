@@ -34,10 +34,11 @@ import { TextLabel } from "../../voxui/entity/TextLabel";
 import { ITextLabel } from "../../voxui/entity/ITextLabel";
 import { NormalPptPanel } from "../../app/normalViewer/ui/NormalPptPanel";
 import { NormalCtrlPanel } from "../../app/normalViewer/ui/NormalCtrlPanel";
+import { PromptSystem } from "../../voxui/system/PromptSystem";
+
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
-//CanvasTexAtlas
-//import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
+// import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -68,6 +69,7 @@ export class DemoUIPanel {
 	}
 
 	private initEngineModule(): void {
+
 		let url = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.js";
 		let mouseInteractML = new ModuleLoader(2, (): void => {
 			this.initInteract();
@@ -136,7 +138,11 @@ export class DemoUIPanel {
 		let uisc = new CoUIScene();
 		uisc.texAtlasNearestFilter = true;
 		this.m_uiScene = uisc;
-		uisc.initialize(this.m_rscene, 512);
+		let promptSys = new PromptSystem();
+		promptSys.initialize(uisc);
+		uisc.prompt = promptSys;
+
+		uisc.initialize(this.m_rscene, 512, 3);
 		console.log("uisc: ", uisc);
 		console.log("uisc.rscene: ", uisc.rscene);
 
@@ -204,12 +210,14 @@ export class DemoUIPanel {
 		// // let tip: RectTextTip = new RectTextTip();
 		// // tip.initialize(this.m_uiScene, 1);
 		// return;
-		///*
+		/*
 		let panel = new PromptPanel();
-		panel.initialize(this.m_uiScene, 0, 300, 200, 120, 50);
+		panel.initialize(this.m_uiScene, 1, 300, 200, 120, 50);
+		let depth = 3;
+		// panel.setZ(depth);
 		// this.m_uiScene.addEntity(panel);
-		panel.open();
-		panel.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
+		// panel.open();
+		panel.setBGColor(CoMaterial.createColor4(0.2, 0.3, 0.2));
 
 		panel.setListener(
 			(): void => {
@@ -222,13 +230,13 @@ export class DemoUIPanel {
 		this.m_promptLabel = panel;
 		//*/
 
-		/*
-		// let panel = new NormalPptPanel();
-		let panel = new NormalCtrlPanel();
-		panel.initialize(this.m_uiScene, 0, 360, 300, 50);
+		///*
+		let panel1 = new NormalPptPanel();
+		// let panel = new NormalCtrlPanel();
+		panel1.initialize(this.m_uiScene, 0, 360, 300, 50);
 		// this.m_uiScene.addEntity(panel);
-		panel.open();
-		panel.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
+		panel1.open();
+		panel1.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
 		//*/
 		return;
 		let colorLabel = new ColorLabel();
@@ -308,7 +316,7 @@ export class DemoUIPanel {
 		if (this.m_rscene == null) {
 
 			let RendererDevice = CoRScene.RendererDevice;
-			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			RendererDevice.SetWebBodyColor("#282828");
 
@@ -326,8 +334,10 @@ export class DemoUIPanel {
 		// 	this.m_textLabel.setText("Good-Day");
 		// 	this.m_textLabel.update();
 		// }
+		this.m_uiScene.prompt.showPrompt("Hi, body!");
 		if(this.m_promptLabel != null) {
 			this.m_promptLabel.setPrompt("How are you?");
+			this.m_promptLabel.open();
 		}
 	}
 	run(): void {
