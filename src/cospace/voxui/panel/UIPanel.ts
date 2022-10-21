@@ -59,9 +59,10 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 			super.init();
 		}
 	}
-	setUIscene(scene: ICoUIScene): void {
+	setUIscene(scene: ICoUIScene, rpi: number = -1): void {
 		if (this.m_scene == null && scene != null) {
 			this.m_scene = scene;
+			if(rpi >= 0) this.m_rpi = rpi;
 			this.init();
 		}
 	}
@@ -71,13 +72,15 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 		this.m_openListener = openListener;
 		this.m_closeListener = closeListener;
 	}
-	open(scene: ICoUIScene = null): void {
+	open(uiscene: ICoUIScene = null, rpi: number = -1): void {
 
 		if (!this.m_isOpen) {
 			if (this.isIniting()) {
 				this.init();
 			}
-			if (scene != null) this.m_scene = scene;
+			if (uiscene != null) this.m_scene = uiscene;
+			if(rpi >= 0) this.m_rpi = rpi;
+
 			this.m_scene.addEntity(this, this.m_rpi);
 			if (this.autoLayout) {
 				this.addLayoutEvt();

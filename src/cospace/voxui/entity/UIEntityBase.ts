@@ -214,8 +214,10 @@ class UIEntityBase {
 	getRContainer(): IDisplayEntityContainer {
 		return this.m_rcontainer;
 	}
-	private updateEneity(e: ITransformEntity | IDisplayEntityContainer): void {
-		
+	private updateEntity(e: ITransformEntity | IDisplayEntityContainer): void {
+
+		// console.log("XXXXX UIEntiyBase::this.m_pos: ", this.m_pos, e);
+
 		e.setPosition(this.m_pos);
 		e.setScale3(this.m_scaleV);
 		e.setRotationXYZ(0.0, 0.0, this.m_rotation);
@@ -223,6 +225,7 @@ class UIEntityBase {
 		this.m_bounds.union(e.getGlobalBounds());
 	}
 	update(): void {
+
 		let ls = this.m_entities;
 		let bs = this.m_bounds;
 		this.m_bounds.reset();
@@ -233,10 +236,10 @@ class UIEntityBase {
 			// e.setRotationXYZ(0.0, 0.0, this.m_rotation);
 			// e.update();
 			// bs.union(e.getGlobalBounds());
-			this.updateEneity(ls[i]);
+			this.updateEntity(ls[i]);
 		}
 		if(this.m_rcontainer != null) {
-			this.updateEneity(this.m_rcontainer);
+			this.updateEntity(this.m_rcontainer);
 		}
 		bs.updateFast();
 	}

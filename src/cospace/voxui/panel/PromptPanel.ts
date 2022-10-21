@@ -80,6 +80,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 	}
 
 	protected buildPanel(pw: number, ph: number): void {
+		
 		let sc = this.getScene();
 		let btnW = this.m_btnW;
 		let btnH = this.m_btnH;
@@ -119,7 +120,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			CoMaterial.createColor4().setRGB3Bytes(110, 110, 110),
 			CoMaterial.createColor4().setRGB3Bytes(90, 90, 90)
 		];
-		// let confirmBtn = this.createBtn(this.m_confirmNS, px, py, "confirm");
+		
 		let builder = ButtonBuilder;
 		let confirmBtn = builder.createTextButton(
 			this.m_btnW,
@@ -142,7 +143,6 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		);
 		cancelBtn.setXY(px, py);
 		cancelBtn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
-		// let cancelBtn = this.createBtn(this.m_cancelNS, px, py, "cancel");
 
 		this.addEntity(cancelBtn);
 		this.addEntity(confirmBtn);
