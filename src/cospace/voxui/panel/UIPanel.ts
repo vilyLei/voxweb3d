@@ -143,8 +143,9 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 
 			let pw = this.m_panelW;
 			let ph = this.m_panelH;
-			this.buildPanel(pw, ph);
-			this.createBG(pw, ph);
+			let bgLabel = this.createBG(pw, ph);
+			this.buildPanel(pw, ph);			
+			this.addEntity(bgLabel);
 			this.setVisible(this.m_isOpen);
 			if (this.m_isOpen) {
 				this.addLayoutEvt();
@@ -170,7 +171,7 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 			}
 		}
 	}
-	protected createBG(pw: number, ph: number): void {
+	protected createBG(pw: number, ph: number): ColorLabel {
 		let bgLabel = new ColorLabel();
 		bgLabel.depthTest = true;
 		bgLabel.initialize(pw, ph);
@@ -178,7 +179,7 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 		bgLabel.setColor(this.m_bgColor);
 		this.m_bgLabel = bgLabel;
 		this.initializeEvent(bgLabel.getREntities()[0]);
-		this.addEntity(bgLabel);
+		return bgLabel;
 	}
 
 	protected initializeEvent(entity: ITransformEntity, uuid: string = "uiPlane"): void {

@@ -329,12 +329,19 @@ export class DemoUIPanel {
 			this.m_rscene.addEventListener(CoRScene.MouseEvent.MOUSE_BG_CLICK, this, this.mouseDownListener);
 		}
 	}
+	private m_times = 0;
 	private mouseDownListener(evt: any): void {
 		// if(this.m_textLabel != null) {
 		// 	this.m_textLabel.setText("Good-Day");
 		// 	this.m_textLabel.update();
 		// }
-		this.m_uiScene.prompt.showPrompt("Hi, body!");
+		if(this.m_times < 1) {
+			this.m_uiScene.prompt.showPrompt("Hi, body!");
+		} else {
+			this.m_uiScene.prompt.showPrompt("Hi, body scene.setClearUint24Color(0x282828 !");
+		}
+		this.m_times ++;
+
 		if(this.m_promptLabel != null) {
 			this.m_promptLabel.setPrompt("How are you?");
 			this.m_promptLabel.open();
