@@ -755,6 +755,10 @@ class Matrix4 implements IMatrix4 {
 		v3.z = fs[8 + row_index];
 		v3.w = fs[12 + row_index];
 	}
+	/**
+	 * @param orientationStyle the value example: OrientationType.EULER_ANGLES
+	 * @returns [position, rotation, scale]
+	 */
 	decompose(orientationStyle: number): Vector3D[] {
 		// TODO: optimize after 4 lines
 		let vec = [];
@@ -764,8 +768,8 @@ class Matrix4 implements IMatrix4 {
 		//std::memcpy(&mr, m_rawData, m_rawDataSize);
 		mr.copyFrom(this);
 		///*
-		let pos = this._mvx;//new Vector3D(rfs[12], rfs[13], rfs[14]);
-		let scale = this._mvy;//new Vector3D();
+		let pos = new Vector3D(rfs[12], rfs[13], rfs[14]);
+		let scale = new Vector3D();
 		scale.x = Math.sqrt(rfs[0] * rfs[0] + rfs[1] * rfs[1] + rfs[2] * rfs[2]);
 		scale.y = Math.sqrt(rfs[4] * rfs[4] + rfs[5] * rfs[5] + rfs[6] * rfs[6]);
 		scale.z = Math.sqrt(rfs[8] * rfs[8] + rfs[9] * rfs[9] + rfs[10] * rfs[10]);
@@ -779,7 +783,7 @@ class Matrix4 implements IMatrix4 {
 		rfs[8] /= scale.z;
 		rfs[9] /= scale.z;
 		rfs[10] /= scale.z;
-		let rot = this._mvz;//new Vector3D();
+		let rot = new Vector3D();
 		switch (orientationStyle) {
 			case OrientationType.AXIS_ANGLE:
 				{

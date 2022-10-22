@@ -149,8 +149,9 @@ class NormalEntityGroup {
 			node.transUI = this.transUI;
 			let entity = node.setEntityModel(model);
 			map.set(entity.getUid(), node);
-
-			this.m_transforms.push(transform != null ? CoRScene.createMat4(transform) : null);
+			console.log("DDDXXX transform: ", transform);
+			let mat4 = transform != null ? CoRScene.createMat4(transform) : null;
+			this.m_transforms.push(mat4);
 			this.m_transes.push(entity);
 
 			return node;

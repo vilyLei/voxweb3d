@@ -88,6 +88,10 @@ interface IMatrix4 extends Float32Data {
 	copyRawDataTo(float_rawDataArr: Float32Array, rawDataLength?: number, index?: number, transpose?: boolean): void;
 	copyRowFrom(row_index: number, v3: IVector3D): void;
 	copyRowTo(row_index: number, v3: IVector3D): void;
+	/**
+	 * @param orientationStyle the value example: OrientationType.EULER_ANGLES
+	 * @returns [position, rotation, scale]
+	 */
 	decompose(orientationStyle: number): IVector3D[];
 	invert(): boolean;
 	pointAt(pos: IVector3D, at: IVector3D, up: IVector3D): void;

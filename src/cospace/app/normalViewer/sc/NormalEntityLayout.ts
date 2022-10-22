@@ -109,10 +109,13 @@ class NormalEntityLayout {
 				currMat.copyFrom(mat);
 				// entities[k].getTransform().setParentMatrix(currMat);
 			}
-			// let params = currMat.decompose(CoMath.OrientationType.EULER_ANGLES);
+
+			let params = currMat.decompose(CoMath.OrientationType.EULER_ANGLES);
+			entities[k].setScale3(params[2]);
+			entities[k].setRotation3(params[1]);
+			entities[k].setPosition(params[0]);
+
 			entities[k].getTransform().setParentMatrix(null);
-			entities[k].setScale3(this.m_scaleV);
-			entities[k].setPosition(offsetV);
 			entities[k].update();
 			if (k > 0) aabb.union(entities[k].getGlobalBounds());
 			else aabb.copyFrom(entities[k].getGlobalBounds());

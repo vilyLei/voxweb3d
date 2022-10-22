@@ -225,7 +225,7 @@ class VerifierScene implements IDropFileListerner {
 		// url = "static/private/fbx/base2.fbx";
 		// url = "static/private/fbx/model_500W.fbx";
 		url = "static/private/fbx/base3.fbx";
-		url = "static/private/fbx/base4.fbx";
+		// url = "static/private/fbx/base4.fbx";
 		// url = "static/private/fbx/nvxie_zzb.fbx";
 		// url = "static/private/fbx/3279.fbx";
 		// url = "static/private/fbx/3279_b.fbx";
