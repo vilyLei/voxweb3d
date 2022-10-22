@@ -106,11 +106,11 @@ class NormalEntityGroup {
 
 		let entities: ITransformEntity[] = [];
 		let len = unit.data.models.length;
-		// let group = this.nodeGroup;
-		// group.reset();
+
 		let nodes: NormalEntityNode[] = [];
 		for (let i = 0; i < len; ++i) {
-			const node = this.addEntityWithModel(unit.data.models[i]);
+			let dt = unit.data;
+			const node = this.addEntityWithModel(dt.models[i], dt.transforms != null ? dt.transforms[i] : null);
 			if (node != null) {
 				this.entityManager.addNode(node);
 				nodes.push(node);
@@ -139,7 +139,7 @@ class NormalEntityGroup {
 		this.transUI.getRecoder().save(entities);
 		// }
 	}
-	private addEntityWithModel(model: CoGeomDataType): NormalEntityNode {
+	private addEntityWithModel(model: CoGeomDataType, transform: Float32Array): NormalEntityNode {
 
 		if (model != null) {
 
@@ -150,7 +150,7 @@ class NormalEntityGroup {
 			let entity = node.setEntityModel(model);
 			map.set(entity.getUid(), node);
 
-			this.m_transforms.push(null);
+			this.m_transforms.push(transform != null ? CoRScene.createMat4(transform) : null);
 			this.m_transes.push(entity);
 
 			return node;

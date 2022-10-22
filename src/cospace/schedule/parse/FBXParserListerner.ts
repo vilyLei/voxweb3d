@@ -16,6 +16,15 @@ import { DataFormat, DataUnitLock, GeometryDataUnit } from "../base/GeometryData
 import { FBXParseTask } from "../../modules/fbx/FBXParseTask";
 import DivLog from "../../../vox/utils/DivLog";
 
+class ModelNode {
+	models: GeometryModelDataType[] = null;
+	transforms: Float32Array[] = null;
+	constructor(){}
+	destroy(): void {
+		this.models = null;
+		this.transforms = null;
+	}
+}
 class FBXParserListerner {
 
 	private m_parseTask: FBXParseTask = null;
@@ -23,7 +32,7 @@ class FBXParserListerner {
 	private m_receiverSchedule: ReceiverSchedule;
 	private m_threadSchedule: ThreadSchedule;
 	private m_moduleUrl: string;
-	private m_modelMap: Map<string, GeometryModelDataType[]> = new Map();
+	private m_nodeMap: Map<string, ModelNode> = new Map();
 
 	constructor(unitPool: DataUnitPool<GeometryDataUnit>, threadSchedule: ThreadSchedule, module: ITaskCodeModuleParam, receiverSchedule: ReceiverSchedule) {
 
@@ -69,31 +78,37 @@ class FBXParserListerner {
 
 		// console.log("FbxParserListerner::fbxParseFinish(), models: ", models, ", url: ", url);
 		// console.log("AAAYYYT01 this.m_unitPool.hasUnitByUrl(url): ", this.m_unitPool.hasUnitByUrl(url));
-		let m = this.m_modelMap;
+		let m = this.m_nodeMap;
 		if (m.has(url)) {
-			let ls = m.get(url);
+			let node = m.get(url);
 			//ls = ls.concat(models);
 			for(let i = 0; i < models.length; ++i){
-				ls.push(models[i]);
+				node.models.push(models[i]);
+				node.transforms.push(transform);
 			}
 		} else {
-			m.set(url, models);
+			let node = new ModelNode();
+			node.models = models;
+			node.transforms = [transform];
+			m.set(url, node);
 		}
 		if ((index + 1) < total) {
 			
 			return;
 		}
 		if (this.m_unitPool.hasUnitByUrl(url)) {
-			let unit: GeometryDataUnit = this.m_unitPool.getUnitByUrl(url);
+			let unit = this.m_unitPool.getUnitByUrl(url);
 			// console.log("AAAYYYT02 unit != null: ", unit != null, index, total);
 			if (unit != null) {
-
+				let node = m.get(url);
 				unit.lossTime = Date.now() - unit.lossTime;
 				unit.data.dataFormat = DataFormat.FBX;
-				// unit.data.models = models;
-				unit.data.models = m.get(url);
+				unit.data.models = node.models;
+				unit.data.transforms = node.transforms;
+				node.destroy();
+
 				m.delete(url);
-				if (transform != null) unit.data.transforms = [transform];
+				//if (transform != null) unit.data.transforms = [transform];
 				DataUnitLock.lockStatus = 209;
 
 				unit.toCpuPhase();

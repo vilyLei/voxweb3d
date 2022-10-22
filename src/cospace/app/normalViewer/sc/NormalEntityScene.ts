@@ -57,11 +57,12 @@ class NormalEntityScene {
 		let baseUrl: string = "static/private/";
 		let url = baseUrl + "obj/base.obj";
 		url = baseUrl + "obj/base4.obj";
+		url = baseUrl + "fbx/base4.fbx";
 		// url = "static/assets/obj/apple_01.obj";
 		// url = "static/private/fbx/handbag_err.fbx";
 		// url = "static/private/fbx/hat_hasNormal.fbx";
 		// url = "static/private/fbx/hat_hasNotNormal.fbx";
-		url = "static/private/ctm/errorNormal.ctm";
+		// url = "static/private/ctm/errorNormal.ctm";
 		console.log("initModel() init...");
 		this.loadModels([url])
 	}
