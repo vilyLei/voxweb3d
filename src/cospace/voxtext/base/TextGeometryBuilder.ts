@@ -11,6 +11,7 @@ import H5Text from "./H5Text";
 // import RawMesh from "../../../vox/mesh/RawMesh";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
+import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 declare var CoRScene: ICoRScene;
 
 export default class TextGeometryBuilder {
@@ -41,7 +42,7 @@ export default class TextGeometryBuilder {
 	private static s_currIvs: Uint8Array = new Uint8Array([0, 1, 2, 0, 2, 3]);
 	private static s_sizeArr: number[] = [0, 0];
 
-	private createMesh(text: string, mesh: IRawMesh): IRawMesh {
+	private createMesh(text: string, material: IRenderMaterial): IRawMesh {
 		this.m_text = text;
 		let charsTot = text.length;
 		this.m_charsTotal = charsTot;
@@ -137,6 +138,7 @@ export default class TextGeometryBuilder {
 			let mesh = CoRScene.createRawMesh();
 			// mesh = mesh == null ? new RawMesh() : mesh;
 			mesh.reset();
+			mesh.setBufSortFormat(material.getBufSortFormat());
 			mesh.setIVS(this.m_ivs);
 			mesh.addFloat32Data(this.m_vs, 2);
 			mesh.addFloat32Data(this.m_uvs, 2);
@@ -153,8 +155,8 @@ export default class TextGeometryBuilder {
 	initialize(h5Text: H5Text): void {
 		this.m_h5Text = h5Text;
 	}
-	create(text: string, mesh: IRawMesh = null): IRawMesh {
-		return this.createMesh(text, mesh);
+	create(text: string, material: IRenderMaterial): IRawMesh {
+		return this.createMesh(text, material);
 	}
 	/*
     initialize(text: string, h5Text: H5Text): void {

@@ -6,17 +6,24 @@
 /***************************************************************************/
 
 import RendererState from "../../../vox/render/RendererState";
-import DisplayEntity from "../../../vox/entity/DisplayEntity";
+import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IRenderMaterial from '../../../vox/render/IRenderMaterial';
 import BillboardAlphaTexMaterial from "../../../vox/material/mcase/BillboardAlphaTexMaterial";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import TextMeshBuilder from "./TextGeometryBuilder";
 import H5Text from "./H5Text";
 
-export default class TextEntity extends DisplayEntity {
+import { ICoRScene } from "../../voxengine/ICoRScene";
+import { TextMaterial } from "../material/TextMaterial";
+import IRawMesh from "../../../vox/mesh/IRawMesh";
+import IVector3D from "../../../vox/math/IVector3D";
+declare var CoRScene: ICoRScene;
 
+export default class TextEntity {
+    private m_rentity: ITransformEntity = null;
     private m_dynamicEnbaled: boolean = true;
-    private m_material: BillboardAlphaTexMaterial = null;
+    private m_material: TextMaterial = new TextMaterial();
+    private m_mesh: IRawMesh;
     private m_width: number = 0;
     private m_height: number = 0;
 
@@ -27,7 +34,6 @@ export default class TextEntity extends DisplayEntity {
 
     flipVerticalUV = false;
     constructor(dynamicEnbaled: boolean = true) {
-        super();
         this.m_dynamicEnbaled = dynamicEnbaled;
     }
     getWidth(): number {
@@ -85,53 +91,67 @@ export default class TextEntity extends DisplayEntity {
     setScaleXY(sx: number, sy: number): void {
         this.m_material.setScaleXY(sx, sy);
     }
+    setXYZ(px: number, py: number, pz: number): void {
+
+    }
+    setPosition(pv: IVector3D): void {
+
+    }
     createMaterial(texList: IRenderTexture[]): void {
-        if (this.getMaterial() == null) {
-            this.m_material = new BillboardAlphaTexMaterial();
-            this.m_material.setTextureList(texList);
-            this.setMaterial(this.m_material);
-        }
-        else {
-            this.m_material.setTextureList(texList);
-        }
+        this.m_material.create();
+        this.m_material.material.setTextureList(texList);
     }
     initialize(text: string, h5Text: H5Text, texList: IRenderTexture[] = null): void {
-        this.m_text = text;
-		this.m_h5Text = h5Text;
-        if (texList == null) {
-            this.createMaterial([h5Text.getTextureAt(0)]);
+        if (this.m_rentity == null) {
+            this.m_rentity = CoRScene.createDisplayEntity();
+            this.m_text = text;
+            this.m_h5Text = h5Text;
+            if (texList == null) {
+                this.createMaterial([h5Text.getTextureAt(0)]);
+            }
+            else {
+                this.createMaterial(texList);
+            }
+            this.m_mesh = this.createMesh(this.m_material.material);
+            this.m_rentity.setMaterial(this.m_material.material);
+            this.m_rentity.setMesh(this.m_mesh);
+            this.m_rentity.setRenderState(CoRScene.RendererState.BACK_TRANSPARENT_STATE);
         }
-        else {
-            this.createMaterial(texList);
-        }
-        this.activeDisplay();
-        this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
     }
     protected createBounds(): void {
     }
-    protected __activeMesh(material: IRenderMaterial): void {
-        if (this.getMesh() == null) {
-			let builder = new TextMeshBuilder();
-            builder.vbWholeDataEnabled = this.vbWholeDataEnabled;
-            builder.alignFactorX = this.m_alignFactorX;
-            builder.alignFactorY = this.m_alignFactorY;
-            builder.initialize(this.m_h5Text);
-			this.m_width = builder.getWidth();
-			this.m_height = builder.getHeight();
-            let mesh = builder.create(this.m_text);
-            this.setMesh(mesh);
-        }
+    protected createMesh(material: IRenderMaterial): IRawMesh {
+        let builder = new TextMeshBuilder();
+        builder.vbWholeDataEnabled = false;
+        builder.alignFactorX = this.m_alignFactorX;
+        builder.alignFactorY = this.m_alignFactorY;
+        builder.initialize(this.m_h5Text);
+        this.m_width = builder.getWidth();
+        this.m_height = builder.getHeight();
+        return builder.create(this.m_text, material);
     }
     update(): void {
-        if(this.m_transfrom != null) {
-            if (this.m_dynamicEnbaled && this.m_mesh.isGeomDynamic()) {
-                this.setIvsParam(0, this.m_mesh.vtCount);
+        if (this.m_rentity != null) {
+            this.m_rentity.update();
+            if (this.m_rentity.getTransform() != null) {
+                if (this.m_dynamicEnbaled) {
+                    this.m_rentity.setIvsParam(0, this.m_mesh.vtCount);
+                }
+                // this.m_rentity.getTransform().update();
             }
-            this.m_transfrom.update();
         }
+        // if (this.m_rentity != null && this.m_rentity.getTransform() != null) {
+        //     if (this.m_dynamicEnbaled) {
+        //         this.m_rentity.setIvsParam(0, this.m_mesh.vtCount);
+        //     }
+        //     this.m_rentity.getTransform().update();
+        // }
     }
     destroy(): void {
-        super.destroy();
-        this.m_h5Text = null;
+        if (this.m_rentity != null) {
+            this.m_rentity.destroy();
+            this.m_rentity = null;
+            this.m_h5Text = null;
+        }
     }
 }
