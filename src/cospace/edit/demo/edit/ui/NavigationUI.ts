@@ -54,7 +54,7 @@ class NavigationUI {
 
 		this.initNavigationUI();
 	}
-	private m_promptPanel: IPromptPanel = null;// = new PromptPanel();
+	// private m_promptPanel: IPromptPanel = null;// = new PromptPanel();
 
 	private m_bgLabel: IColorLabel = null;
 	private m_bgLabelW: number;
@@ -127,25 +127,15 @@ class NavigationUI {
 			layouter.addUIEntity(btn);
 		}
 
-		// this.m_promptPanel = new PromptPanel();
-		// let panel = new PromptPanel();
-		let panel = CoUI.createPromptPanel();
-		panel.initialize(uiScene, 3, 320, 200, 120, 50, "确认", "取消");
-		panel.setZ(3.0);
-		// uiScene.addEntity(panel);
-		// panel.open();
-		panel.setPrompt("Nothing!");
-		panel.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
 
-		panel.setListener(
+		this.m_coUIScene.prompt.setPromptListener(
 			(): void => {
-				console.log("panel confirm...");
+				console.log("prompt panel confirm...");
 			},
 			(): void => {
-				console.log("panel cancel...");
+				console.log("prompt panel cancel...");
 			}
 		);
-		this.m_promptPanel = panel;
 	}
 
 	private crateBtn(urls: string[], pw: number, ph: number, px: number, py: number, labelIndex: number, idns: string, info: string): IButton {
@@ -192,7 +182,7 @@ class NavigationUI {
 			case "animation":
 			case "particle":
 			case "help":
-				this.m_promptPanel.open();
+				this.m_coUIScene.prompt.showPrompt("It can't be used now!");
 				break;
 			default:
 				break;

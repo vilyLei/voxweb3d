@@ -26,6 +26,7 @@ import { RectTextTip } from "../../voxui/entity/RectTextTip";
 import { IRectTextTip } from "../../voxui/entity/IRectTextTip";
 import { NormalViewer } from "../../app/normalViewer/sc/NormalViewer";
 import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
+import { PromptSystem } from "../../voxui/system/PromptSystem";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -136,6 +137,10 @@ export class DemoTransEditor {
 		this.m_coUIScene.initialize(this.m_rsc, 512, 5);
 		this.m_uirsc = this.m_coUIScene.rscene;
 		this.m_graph.addScene(this.m_uirsc);
+
+		let promptSys = new PromptSystem();
+		promptSys.initialize( this.m_coUIScene );
+		this.m_coUIScene.prompt = promptSys;
 
 		// let tip = new RectTextTip();
 		let tip = CoUI.createRectTextTip();

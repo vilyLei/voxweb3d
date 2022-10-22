@@ -161,7 +161,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			}
 		);
 	}
-
+	
 	private stMouseDownListener(evt: any): void {
 
 		console.log("stMouseDownListener...");
