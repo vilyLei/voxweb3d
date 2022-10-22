@@ -173,7 +173,7 @@ export class DemoText {
 	}
 	private textModuleLoaded(): void {
 		console.log("xxx textModuleLoaded() ...");
-		this.testStaticText();
+		// this.testStaticText();
 	}
 	private m_uiScene: ICoUIScene = null;
 	private initUIScene(): void {
@@ -194,147 +194,20 @@ export class DemoText {
 
 	private initUISC(): void {
 		let uisc = this.m_uiScene;
-		// this.testText();
-		return;
-		/*
-		let color4 = CoMaterial.createColor4();
-		console.log("color4: ", color4);
-		let texAtlas = uisc.texAtlas;
-		let texObj = texAtlas.createTexObjWithStr("Start", 58, CoMaterial.createColor4(0, 0, 0, 1), CoMaterial.createColor4(1, 1, 1, 0));
-
-		CoMesh.planeMeshBuilder.uvs = texObj.uvs;
-		let mesh = CoMesh.planeMeshBuilder.createXOY(0, 0, texObj.getWidth(), texObj.getHeight());
-
-		let texList = [texObj.texture];
-		// let texList = [this.createTexByUrl()];
-		let material = CoMaterial.createDefaultMaterial(false);
-		material.setTextureList(texList);
-		material.initializeByCodeBuf(true);
-		let entity = CoRScene.createDisplayEntity();
-		entity.setMaterial(material);
-		entity.setMesh(mesh);
-		entity.setRenderState(CoRScene.RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
-
-		uisc.rscene.addEntity(entity);
-		//*/
-		// let canvas = ImageTexAtlas.CreateCharsCanvas("ABC",30);
-
-		// let canvas = ImageTexAtlas.CreateCharsCanvasFixSize(100,40,"ABC",30);
-		// document.body.appendChild(canvas);
-		// canvas = ImageTexAtlas.CreateCharsCanvasFixSize(100,40,"ABCD",30);
-		// canvas.style.top = '40px';
-		// document.body.appendChild(canvas);
-
-		// this.loadImgs();
-		this.testPanel();
+		
 	}
 	private m_textLabel: ITextLabel = null;
 	private m_promptLabel: PromptPanel = null;
-	private testPanelDepth(): void {
-
-	}
-	private testPanel(): void {
-		console.log("testPanel()................");
-
-		let uisc = this.m_uiScene;
-		let texAtlas = uisc.texAtlas;
-		let transparentTexAtlas = uisc.transparentTexAtlas;
-		let urls: string[];
-		let img: HTMLCanvasElement;
-
-		let ta = texAtlas;
-		let tta = transparentTexAtlas;
-
-
-		// let textLabel = new TextLabel();
-		// textLabel.initialize("hello", uisc, 24);
-		// textLabel.setXY(200, 100);
-		// this.m_uiScene.addEntity( textLabel );
-		// this.m_textLabel = textLabel;
-		// // let tip: RectTextTip = new RectTextTip();
-		// // tip.initialize(this.m_uiScene, 1);
-		// return;
-		/*
-		let panel = new PromptPanel();
-		panel.initialize(this.m_uiScene, 1, 300, 200, 120, 50);
-		let depth = 3;
-		// panel.setZ(depth);
-		// this.m_uiScene.addEntity(panel);
-		// panel.open();
-		panel.setBGColor(CoMaterial.createColor4(0.2, 0.3, 0.2));
-
-		panel.setListener(
-			(): void => {
-				console.log("panel confirm...");
-			},
-			(): void => {
-				console.log("panel cancel...");
-			}
-		);
-		this.m_promptLabel = panel;
-		//*/
-
-		///*
-		let panel1 = new NormalPptPanel();
-		// let panel = new NormalCtrlPanel();
-		panel1.initialize(this.m_uiScene, 0, 360, 300, 50);
-		// this.m_uiScene.addEntity(panel);
-		panel1.open();
-		panel1.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
-		//*/
-		return;
-		let colorLabel = new ColorLabel();
-		colorLabel.initialize(200, 130);
-		colorLabel.setXY(330, 500);
-		this.m_uiScene.addEntity(colorLabel);
-
-		let colorClipLabel2 = new ClipColorLabel();
-		colorClipLabel2.initializeWithoutTex(90, 40, 4);
-		// let colorClipLabel2 = new ColorClipLabel();
-		// colorClipLabel2.initialize(csLable2, 4);
-		// colorClipLabel2.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
-		colorClipLabel2.getColorAt(0).setRGB3Bytes(40, 40, 40);
-		colorClipLabel2.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
-		colorClipLabel2.getColorAt(2).setRGB3f(1.0, 0.2, 1.0);
-		// colorClipLabel2.setLabelClipIndex( 1 );
-		// colorClipLabel.setXY(200,0);
-		// colorClipLabel.setClipIndex(2);
-		// this.m_uiScene.addEntity(colorClipLabel);
-		// let colorBtn = CoUI.createButton(); //new Button();
-
-		let fontColor = CoMaterial.createColor4(1, 1, 1, 1);
-		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
-		urls = ["BBB-0", "BBB-1", "BBB-2", "BBB-3"];
-		img = tta.createCharsCanvasFixSize(90, 40, urls[0], 30, fontColor, bgColor);
-		tta.addImageToAtlas(urls[0], img);
-		img = tta.createCharsCanvasFixSize(90, 40, urls[1], 30, fontColor, bgColor);
-		tta.addImageToAtlas(urls[1], img);
-
-		let iconLable = new ClipLabel();
-		iconLable.transparent = true;
-		iconLable.premultiplyAlpha = true;
-		iconLable.initialize(tta, [urls[1]]);
-		// iconLable.setClipIndex(1);
-		// iconLable.setXY(500, 70);
-		// iconLable.setScaleXY(1.5, 1.5);
-		// iconLable.update();
-		// this.m_uiScene.addEntity(iconLable);
-
-		let colorBtn2 = new Button();
-		colorBtn2.addLabel(iconLable);
-		colorBtn2.initializeWithLable(colorClipLabel2);
-		colorBtn2.setXY(500, 600);
-		this.m_uiScene.addEntity(colorBtn2, 1);
-
-		let layouter = uisc.layout.createLeftTopLayouter();
-		layouter.addUIEntity(colorBtn2);
-	}
 	private createDefaultEntity(): void {
 
 		let mesh = this.m_rscene.entityBlock.unitBox.getMesh();
 		let material = CoRScene.createDefaultMaterial(true);
+		material.initializeByCodeBuf(true);
+		material.setTextureList([this.m_rscene.textureBlock.createRGBATex2D(32,32, CoRScene.createColor4())]);
+		// console.log(material.getBufSortFormat(), material.getBufTypeList(), material.getBufSizeList());
 		let entity = CoRScene.createDisplayEntity();
 		entity.setMesh( mesh );
+		// console.log("NNNNNNNNNNNN mesh.getNVS(): ", mesh.getNVS())
 		entity.setMaterial( material );
 		let scale = 100.0;
 		entity.setScaleXYZ(scale, scale, scale);

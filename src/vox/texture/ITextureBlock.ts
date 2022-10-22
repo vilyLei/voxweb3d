@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import Color4 from "../../vox/material/Color4";
+import IColor4 from "../../vox/material/IColor4";
 import IRunnable from "../../vox/base/IRunnable";
 
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
@@ -92,7 +92,7 @@ interface ITextureBlock {
      * @param depth the default value is 1
      */
     createTex3D(texW: number, texH: number, depth?: number): ITexture3D;
-    createRGBATex2D(pw: number, ph: number, color: Color4): IBytesTexture;
+    createRGBATex2D(pw: number, ph: number, color: IColor4): IBytesTexture;
     createAlphaTex2D(pw: number, ph: number, alpha: number): IBytesTexture;
     createAlphaTexBytes2D(pw: number, ph: number, bytes: Uint8Array): IBytesTexture;
 
