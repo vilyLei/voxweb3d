@@ -9,6 +9,7 @@ import { ICoMesh } from "../../voxmesh/ICoMesh";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import { ICoTexture } from "../../voxtexture/ICoTexture";
 import { ICoUI } from "../../voxui/ICoUI";
+import { ICoText } from "../../voxtext/ICoText";
 import { ICoRScene } from "../../voxengine/ICoRScene";
 
 import { ICoMouseInteraction } from "../../voxengine/ui/ICoMouseInteraction";
@@ -51,6 +52,7 @@ declare var CoMesh: ICoMesh;
 declare var CoMaterial: ICoMaterial;
 declare var CoTexture: ICoTexture;
 declare var CoUI: ICoUI;
+declare var CoText: ICoText;
 
 /**
  * cospace renderer
@@ -86,6 +88,7 @@ export class DemoText {
 		let url6 = " static/cospace/cotexture/CoTexture.umd.js";
 		let url7 = "static/cospace/coentity/CoEntity.umd.js";
 		let url8 = "static/cospace/coui/CoUI.umd.js";
+		let url9 = "static/cospace/cotext/CoText.umd.js";
 
 		new ModuleLoader(2, (): void => {
 			if (this.isEngineEnabled()) {
@@ -93,6 +96,11 @@ export class DemoText {
 
 				this.initRenderer();
 				this.initScene();
+
+				new ModuleLoader(1, (): void => {
+					this.textModuleLoaded();
+					}
+				).load(url9);
 
 				new ModuleLoader(1, (): void => {
 					console.log("math module loaded ...");
@@ -134,6 +142,39 @@ export class DemoText {
 
 		mouseInteractML.load(url);
 	}
+	
+	private testText(): void {
+		///*
+
+		let h5Text = new H5Text();
+		h5Text.initialize(this.m_rscene, "text_cv_01", 18, 512, 512);
+		let textObject = new TextEntity();
+		textObject.initialize("Hello", h5Text);
+		textObject.setXYZ(100, 50, -100);
+		textObject.update();
+		this.m_rscene.addEntity(textObject.getREntity());
+		// textObject.setRGB3f(10.5, 0.0, 1.0);
+		//*/
+	}
+	
+	private testStaticText(): void {
+		///*
+
+		let h5Text = CoText.createH5Text(this.m_rscene, "text_cv_01", 18, 512, 512);
+		// h5Text.initialize(this.m_rscene, "text_cv_01", 18, 512, 512);
+		// let textObject = new TextEntity();
+		let textObject = CoText.createStaticTextEntity("Hello", h5Text);
+		// textObject.initialize("Hello", h5Text);
+		textObject.setXYZ(100, 50, -100);
+		textObject.update();
+		this.m_rscene.addEntity(textObject.getREntity());
+		// textObject.setRGB3f(10.5, 0.0, 1.0);
+		//*/
+	}
+	private textModuleLoaded(): void {
+		console.log("xxx textModuleLoaded() ...");
+		this.testStaticText();
+	}
 	private m_uiScene: ICoUIScene = null;
 	private initUIScene(): void {
 		// let uisc = CoUI.createUIScene(); //new CoUIScene();
@@ -151,22 +192,9 @@ export class DemoText {
 		//this.testUIEntity(uisc);
 	}
 
-    private testText(): void {
-        ///*
-
-		let h5Text = new H5Text();
-		h5Text.initialize(this.m_rscene, "text_cv_01", 18, 512,512);
-		let textObject = new TextEntity();
-		textObject.initialize("Hello", h5Text);
-		textObject.setXYZ(100,50, -100);
-		textObject.update();
-        this.m_rscene.addEntity(textObject.getREntity());
-		// textObject.setRGB3f(10.5, 0.0, 1.0);
-        //*/
-    }
 	private initUISC(): void {
 		let uisc = this.m_uiScene;
-		this.testText();
+		// this.testText();
 		return;
 		/*
 		let color4 = CoMaterial.createColor4();
@@ -203,7 +231,7 @@ export class DemoText {
 	private m_textLabel: ITextLabel = null;
 	private m_promptLabel: PromptPanel = null;
 	private testPanelDepth(): void {
-		
+
 	}
 	private testPanel(): void {
 		console.log("testPanel()................");
@@ -216,8 +244,8 @@ export class DemoText {
 
 		let ta = texAtlas;
 		let tta = transparentTexAtlas;
-		
-		
+
+
 		// let textLabel = new TextLabel();
 		// textLabel.initialize("hello", uisc, 24);
 		// textLabel.setXY(200, 100);
@@ -351,14 +379,14 @@ export class DemoText {
 		// 	this.m_textLabel.setText("Good-Day");
 		// 	this.m_textLabel.update();
 		// }
-		if(this.m_times < 1) {
+		if (this.m_times < 1) {
 			this.m_uiScene.prompt.showPrompt("Hi, body!");
 		} else {
 			this.m_uiScene.prompt.showPrompt("Hi, body scene.setClearUint24Color(0x282828 !");
 		}
-		this.m_times ++;
+		this.m_times++;
 
-		if(this.m_promptLabel != null) {
+		if (this.m_promptLabel != null) {
 			this.m_promptLabel.setPrompt("How are you?");
 			this.m_promptLabel.open();
 		}
