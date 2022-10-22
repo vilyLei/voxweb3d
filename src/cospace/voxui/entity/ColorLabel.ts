@@ -19,13 +19,14 @@ class ColorLabel extends UIEntityBase implements IColorLabel {
 	private m_color: IColor4 = null;
 	private m_material: IDefault3DMaterial = null;
 	constructor(){ super(); }
-	private createMesh(): IRawMesh {
+	private createMesh(material: IDefault3DMaterial): IRawMesh {
 
 		let ivs = new Uint16Array([0, 1, 2, 0, 2, 3]);
 		let vs = new Float32Array(this.createVS(0, 0, this.m_width, this.m_height));
 
 		let mesh = CoMesh.createRawMesh();
 		mesh.reset();
+		mesh.setBufSortFormat(material.getBufSortFormat());
 		mesh.setIVS(ivs);
 		mesh.addFloat32Data(vs, 3);
 		mesh.initialize();
@@ -40,8 +41,9 @@ class ColorLabel extends UIEntityBase implements IColorLabel {
 			this.m_width = width;
 			this.m_height = height;
 			let material = CoMaterial.createDefaultMaterial();
+			material.initializeByCodeBuf(false);
 			this.m_color = CoMaterial.createColor4();
-			let mesh = this.createMesh();
+			let mesh = this.createMesh( material );
 			let et = CoEntity.createDisplayEntity();
 			et.setMaterial(material);
 			et.setMesh(mesh);

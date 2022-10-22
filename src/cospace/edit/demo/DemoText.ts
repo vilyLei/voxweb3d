@@ -164,7 +164,8 @@ export class DemoText {
     }
 	private initUISC(): void {
 		let uisc = this.m_uiScene;
-
+		this.testText();
+		return;
 		/*
 		let color4 = CoMaterial.createColor4();
 		console.log("color4: ", color4);
