@@ -110,6 +110,7 @@ export default interface IRenderEntity {
   copyTransformFrom(entity: IRenderEntity): void;
 
   setMesh(material: IMeshBase): void;
+  getMesh(): IMeshBase;
   setMaterial(material: IRenderMaterial): void;
   getMaterial(): IRenderMaterial;
   getDisplay(): IRODisplay;

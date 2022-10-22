@@ -330,6 +330,16 @@ export class DemoText {
 		layouter.addUIEntity(colorBtn2);
 	}
 	private createDefaultEntity(): void {
+
+		let mesh = this.m_rscene.entityBlock.unitBox.getMesh();
+		let material = CoRScene.createDefaultMaterial(true);
+		let entity = CoRScene.createDisplayEntity();
+		entity.setMesh( mesh );
+		entity.setMaterial( material );
+		let scale = 100.0;
+		entity.setScaleXYZ(scale, scale, scale);
+		// entity.setXYZ(scale, scale, scale);
+		this.m_rscene.addEntity(entity);
 		// let axis = CoRScene.createAxis3DEntity(700);
 		// this.m_rscene.addEntity(axis);
 
@@ -360,7 +370,7 @@ export class DemoText {
 		if (this.m_rscene == null) {
 
 			let RendererDevice = CoRScene.RendererDevice;
-			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			RendererDevice.SetWebBodyColor("#282828");
 

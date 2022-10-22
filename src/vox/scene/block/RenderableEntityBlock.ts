@@ -74,7 +74,7 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
 
             let dm = new DataMesh();
             dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
-            dm.vbWholeDataEnabled = true;
+            dm.vbWholeDataEnabled = false;
             dm.initialize();
             this.unitBox.setMesh(dm);
             vs = new Float32Array(vs);
@@ -82,7 +82,7 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
             // console.log("obox vs: ",vs);
             dm = new DataMesh();
             dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
-            dm.vbWholeDataEnabled = true;
+            dm.vbWholeDataEnabled = false;
             dm.initialize();
             this.unitOBox.setMesh(dm);
 
