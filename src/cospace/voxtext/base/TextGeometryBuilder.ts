@@ -5,14 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IAABB from "../../../vox/geom/IAABB";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import H5Text from "./H5Text";
 
-import RawMesh from "../../../vox/mesh/RawMesh";
+// import RawMesh from "../../../vox/mesh/RawMesh";
 
-// import { ICoRScene } from "../../voxengine/ICoRScene";
-// declare var CoRScene: ICoRScene;
+import { ICoRScene } from "../../voxengine/ICoRScene";
+declare var CoRScene: ICoRScene;
 
 export default class TextGeometryBuilder {
 	constructor() {}
@@ -135,8 +134,8 @@ export default class TextGeometryBuilder {
 				j += 8;
 			}
 
-			// let mesh = CoRScene.createRawMesh();
-			mesh = mesh == null ? new RawMesh() : mesh;
+			let mesh = CoRScene.createRawMesh();
+			// mesh = mesh == null ? new RawMesh() : mesh;
 			mesh.reset();
 			mesh.setIVS(this.m_ivs);
 			mesh.addFloat32Data(this.m_vs, 2);

@@ -5,11 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
-import TextureConst from "../../../vox/texture/TextureConst";
 import { IBytesTexture } from "../../../vox/render/texture/IBytesTexture";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 
-import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
+import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 
 class FontTexCharGrid {
