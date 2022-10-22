@@ -93,20 +93,8 @@ export class DemoBase {
             this.initScene();
         }
     }
-    private testText(): void {
-        /*
-		let h5Text = new H5Text();
-		h5Text.initialize(this.m_rscene, "text_cv_01", 18, 512,512);
-		let textObject = new TextEntity();
-		textObject.initialize("Hello", h5Text);
-        this.m_rscene.addEntity(textObject);
-		textObject.setRGB3f(10.5, 0.0, 1.0);
-        //*/
-    }
     private initScene(): void {
 
-        this.testText();
-        return;
         // let bounds: BoundsEntity = null;
         // let box = new Box3DEntity();
         // box.normalEnabled = true;

@@ -17,6 +17,10 @@ class TextMaterial {
 	constructor() {
 
 	}
+    destroy() {
+        this.material = null;
+        this.m_data = null;
+    }
     setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
         this.m_color.r = pr;
         this.m_color.g = pg;

@@ -36,6 +36,9 @@ export default class TextEntity {
     constructor(dynamicEnbaled: boolean = true) {
         this.m_dynamicEnbaled = dynamicEnbaled;
     }
+    getREntity(): ITransformEntity {
+        return this.m_rentity;
+    }
     getWidth(): number {
         return this.m_width;
     }
@@ -92,10 +95,19 @@ export default class TextEntity {
         this.m_material.setScaleXY(sx, sy);
     }
     setXYZ(px: number, py: number, pz: number): void {
-
+        if (this.m_rentity != null) {
+            this.m_rentity.setXYZ(px, py, pz);
+        }
     }
     setPosition(pv: IVector3D): void {
-
+        if (this.m_rentity != null) {
+            this.m_rentity.setPosition(pv);
+        }
+    }
+    getPosition(pv: IVector3D): IVector3D {
+        if (this.m_rentity != null) {
+            return this.m_rentity.getPosition(pv);
+        }
     }
     createMaterial(texList: IRenderTexture[]): void {
         this.m_material.create();
@@ -137,18 +149,13 @@ export default class TextEntity {
                 if (this.m_dynamicEnbaled) {
                     this.m_rentity.setIvsParam(0, this.m_mesh.vtCount);
                 }
-                // this.m_rentity.getTransform().update();
             }
         }
-        // if (this.m_rentity != null && this.m_rentity.getTransform() != null) {
-        //     if (this.m_dynamicEnbaled) {
-        //         this.m_rentity.setIvsParam(0, this.m_mesh.vtCount);
-        //     }
-        //     this.m_rentity.getTransform().update();
-        // }
     }
     destroy(): void {
         if (this.m_rentity != null) {
+            this.m_material.destroy();
+            this.m_material = null;
             this.m_rentity.destroy();
             this.m_rentity = null;
             this.m_h5Text = null;
