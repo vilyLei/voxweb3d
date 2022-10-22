@@ -151,17 +151,24 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		py = ph - py - textLabel.getHeight();
 		textLabel.setXY(px, py);
 		this.addEntity(textLabel);
-
-		this.setOpenAndLoseListener(
-			(): void => {
-				sc.addEventListener(ME.MOUSE_DOWN, this, this.stMouseDownListener);
-			},
-			(): void => {
-				sc.removeEventListener(ME.MOUSE_DOWN, this, this.stMouseDownListener);
-			}
-		);
+		
 	}
-	
+
+	protected openThis(): void {
+
+		let ME = CoRScene.MouseEvent;
+		if(this.m_scene != null) {
+			this.m_scene.addEventListener(ME.MOUSE_DOWN, this, this.stMouseDownListener);
+		}
+	}
+	protected closeThis(): void {
+
+		let ME = CoRScene.MouseEvent;
+		if(this.m_scene != null) {
+			this.m_scene.removeEventListener(ME.MOUSE_DOWN, this, this.stMouseDownListener);
+		}
+	}
+
 	private stMouseDownListener(evt: any): void {
 
 		console.log("stMouseDownListener...");

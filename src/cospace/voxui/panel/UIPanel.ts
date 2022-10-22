@@ -66,6 +66,10 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 			this.init();
 		}
 	}
+	protected openThis(): void {
+	}
+	protected closeThis(): void {		
+	}
 	protected m_openListener: ()=>void = null;
 	protected m_closeListener: ()=>void = null;
 	setOpenAndLoseListener(openListener: ()=>void, closeListener: ()=>void): void {
@@ -90,6 +94,7 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 			this.m_isOpen = true;
 			this.setVisible(true);
 
+			this.openThis();
 			if(this.m_openListener != null) {
 				this.m_openListener();
 			}
@@ -108,6 +113,7 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 			this.setVisible(false);
 			this.removeLayoutEvt();
 
+			this.closeThis();
 			if(this.m_closeListener != null) {
 				this.m_closeListener();
 			}
