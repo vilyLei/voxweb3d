@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import IRawMesh from "../../../vox/mesh/IRawMesh";
-import H5Text from "./H5Text";
+import { IH5Text } from "./IH5Text";
 
 // import RawMesh from "../../../vox/mesh/RawMesh";
 
@@ -19,7 +19,7 @@ export default class TextGeometryBuilder {
 	private m_ivs: Uint16Array = null;
 	private m_vs: Float32Array = null;
 	private m_uvs: Float32Array = null;
-	private m_h5Text: H5Text = null;
+	private m_h5Text: IH5Text = null;
 
 	private m_width: number = 0;
 	private m_height: number = 0;
@@ -152,7 +152,7 @@ export default class TextGeometryBuilder {
 		return null;
 	}
 
-	initialize(h5Text: H5Text): void {
+	initialize(h5Text: IH5Text): void {
 		this.m_h5Text = h5Text;
 	}
 	create(text: string, material: IRenderMaterial): IRawMesh {

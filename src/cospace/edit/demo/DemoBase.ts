@@ -26,8 +26,6 @@ import Line3DMaterial from '../../../vox/material/mcase/Line3DMaterial';
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import RadialLine from "../../../vox/geom/RadialLine";
 import Plane from "../../../vox/geom/Plane";
-import H5Text from "../../voxtext/base/H5Text";
-import TextEntity from "../../voxtext/base/TextEntity";
 import BoundsEntity from "../../../vox/entity/BoundsEntity";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import { Box3DEntity } from "../../voxengine/CoRendererBase";

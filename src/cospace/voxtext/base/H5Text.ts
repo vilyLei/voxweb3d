@@ -7,12 +7,13 @@
 
 import { IBytesTexture } from "../../../vox/render/texture/IBytesTexture";
 import IRendererScene from "../../../vox/scene/IRendererScene";
+import { IH5Text } from "./IH5Text";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 
 class FontTexCharGrid {
-	constructor() {}
+	constructor() { }
 	width: number = 4;
 	height: number = 4;
 	x: number = 0;
@@ -23,7 +24,7 @@ class FontTexCharGrid {
 	}
 }
 export class FontTexCharTable {
-	constructor() {}
+	constructor() { }
 
 	private m_texWidth: number = 512;
 	private m_texHeight: number = 256;
@@ -140,7 +141,7 @@ export class FontTexCharTable {
 }
 
 export class FontTexDataBuilder {
-	constructor() {}
+	constructor() { }
 	private m_currPosX: number = 0;
 	private m_currPosY: number = 0;
 	private m_texText: string = "";
@@ -230,9 +231,9 @@ export class FontTexDataBuilder {
 	}
 }
 
-export default class H5Text {
+class H5Text implements IH5Text {
 
-	constructor() {}
+	constructor() { }
 
 	private m_texWidth = 512;
 	private m_texHeight = 512;
@@ -260,7 +261,7 @@ export default class H5Text {
 		texHeight: number = 512,
 		canvas_visible: boolean = false,
 		mipmapEnabled: boolean = false
-	) {
+	): void {
 		if (this.m_canvas == null) {
 			this.m_rc = rscene;
 
@@ -419,3 +420,4 @@ export default class H5Text {
 		return this.m_tex;
 	}
 }
+export { H5Text };

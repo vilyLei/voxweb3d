@@ -35,8 +35,8 @@ import { ITextLabel } from "../../voxui/entity/ITextLabel";
 import { NormalPptPanel } from "../../app/normalViewer/ui/NormalPptPanel";
 import { NormalCtrlPanel } from "../../app/normalViewer/ui/NormalCtrlPanel";
 import { PromptSystem } from "../../voxui/system/PromptSystem";
-import H5Text from "../../voxtext/base/H5Text";
-import TextEntity from "../../voxtext/base/TextEntity";
+import { H5Text } from "../../voxtext/base/H5Text";
+import { TextEntity } from "../../voxtext/base/TextEntity";
 
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
@@ -158,6 +158,8 @@ export class DemoText {
 		h5Text.initialize(this.m_rscene, "text_cv_01", 18, 512,512);
 		let textObject = new TextEntity();
 		textObject.initialize("Hello", h5Text);
+		textObject.setXYZ(100,50, -100);
+		textObject.update();
         this.m_rscene.addEntity(textObject.getREntity());
 		// textObject.setRGB3f(10.5, 0.0, 1.0);
         //*/

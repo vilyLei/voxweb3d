@@ -5,21 +5,21 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererState from "../../../vox/render/RendererState";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IRenderMaterial from '../../../vox/render/IRenderMaterial';
-import BillboardAlphaTexMaterial from "../../../vox/material/mcase/BillboardAlphaTexMaterial";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import TextMeshBuilder from "./TextGeometryBuilder";
-import H5Text from "./H5Text";
+import { IH5Text } from "./IH5Text";
+import { ITextEntity } from "./ITextEntity";
 
-import { ICoRScene } from "../../voxengine/ICoRScene";
 import { TextMaterial } from "../material/TextMaterial";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import IVector3D from "../../../vox/math/IVector3D";
+
+import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 
-export default class TextEntity {
+class TextEntity implements ITextEntity{
     private m_rentity: ITransformEntity = null;
     private m_dynamicEnbaled: boolean = true;
     private m_material: TextMaterial = new TextMaterial();
@@ -30,7 +30,7 @@ export default class TextEntity {
     private m_text: string = "";
     private m_alignFactorX: number = 0.5;
     private m_alignFactorY: number = 0.5;
-    private m_h5Text: H5Text;
+    private m_h5Text: IH5Text;
 
     flipVerticalUV = false;
     constructor(dynamicEnbaled: boolean = true) {
@@ -109,11 +109,11 @@ export default class TextEntity {
             return this.m_rentity.getPosition(pv);
         }
     }
-    createMaterial(texList: IRenderTexture[]): void {
+    private createMaterial(texList: IRenderTexture[]): void {
         this.m_material.create();
         this.m_material.material.setTextureList(texList);
     }
-    initialize(text: string, h5Text: H5Text, texList: IRenderTexture[] = null): void {
+    initialize(text: string, h5Text: IH5Text, texList: IRenderTexture[] = null): void {
         if (this.m_rentity == null) {
             this.m_rentity = CoRScene.createDisplayEntity();
             this.m_text = text;
@@ -162,3 +162,4 @@ export default class TextEntity {
         }
     }
 }
+export { TextEntity }
