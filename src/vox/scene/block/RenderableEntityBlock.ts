@@ -93,21 +93,21 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
 
             dm = new DataMesh();
             dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
-            dm.vbWholeDataEnabled = true;
+            dm.vbWholeDataEnabled = false;
             dm.initialize();
             this.screenPlane.setMesh(dm);
 
             for (let i = 0; i < vs.length; ++i) { vs[i] *= 0.5; }
             dm = new DataMesh();
             dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
-            dm.vbWholeDataEnabled = true;
+            dm.vbWholeDataEnabled = false;
             dm.initialize();
             this.unitXOYPlane.setMesh(dm);
             vs = new Float32Array(vs);
             for (let i = 0; i < vs.length;) { vs[i++] += 0.5; vs[i++] += 0.5; i++;}
             dm = new DataMesh();
             dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
-            dm.vbWholeDataEnabled = true;
+            dm.vbWholeDataEnabled = false;
             dm.initialize();
             this.unitOXOYPlane.setMesh(dm);
 
@@ -116,14 +116,14 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
             nvs = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
             dm = new DataMesh();
             dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
-            dm.vbWholeDataEnabled = true;
+            dm.vbWholeDataEnabled = false;
             dm.initialize();
             this.unitXOZPlane.setMesh(dm);
             vs = new Float32Array(vs);
             for (let i = 0; i < vs.length;) { vs[i++] += 0.5; i++; vs[i++] += 0.5;}
             dm = new DataMesh();
             dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
-            dm.vbWholeDataEnabled = true;
+            dm.vbWholeDataEnabled = false;
             dm.initialize();
             this.unitOXOZPlane.setMesh(dm);
 
@@ -131,13 +131,13 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
             nvs = new Float32Array([1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]);
             dm = new DataMesh();
             dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
-            dm.vbWholeDataEnabled = true;
+            dm.vbWholeDataEnabled = false;
             dm.initialize();
             this.unitYOZPlane.setMesh(dm);
             for (let i = 0; i < vs.length;) { i++; vs[i++] += 0.5; vs[i++] += 0.5;}
             dm = new DataMesh();
             dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
-            dm.vbWholeDataEnabled = true;
+            dm.vbWholeDataEnabled = false;
             dm.initialize();
             this.unitOYOZPlane.setMesh(dm);
         }

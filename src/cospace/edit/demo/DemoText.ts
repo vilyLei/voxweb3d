@@ -198,6 +198,7 @@ export class DemoText {
 	}
 	private m_textLabel: ITextLabel = null;
 	private m_promptLabel: PromptPanel = null;
+	
 	private createDefaultEntity(): void {
 
 		let mesh = this.m_rscene.entityBlock.unitBox.getMesh();
