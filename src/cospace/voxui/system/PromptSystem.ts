@@ -19,6 +19,8 @@ class PromptSystem implements IPromptSystem {
 			pl.setZ(3.0);
 			pl.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
 			this.m_promptPanel = pl;
+			pl.open();
+			pl.close();
 		}
 	}
 	

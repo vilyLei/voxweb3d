@@ -165,7 +165,6 @@ class NormalExampleGroup implements IRunnable {
 		t.setPosition(pv)
 		t.update();
 		let entity = t.getREntity();
-		// entity.setRenderState(CoRScene.RendererState.NORMAL_STATE);
 		this.m_rscene.addEntity(entity, 1);
 		this.m_textEntities.push(entity);
 	}

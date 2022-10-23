@@ -41,13 +41,10 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 	// initialize(scene: ICoUIScene, rpi: number, panelW: number, panelH: number): void {
 	// 	if (this.isIniting()) {
 	// 		this.init();
-
 	// 		this.m_scene = scene;
 	// 		this.m_rpi = rpi;
-
 	// 		this.m_panelW = panelW;
 	// 		this.m_panelH = panelH;
-
 	// 		this.m_bgColor = CoMaterial.createColor4();
 	// 	}
 	// }
@@ -68,7 +65,7 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 	}
 	protected openThis(): void {
 	}
-	protected closeThis(): void {		
+	protected closeThis(): void {
 	}
 	protected m_openListener: ()=>void = null;
 	protected m_closeListener: ()=>void = null;

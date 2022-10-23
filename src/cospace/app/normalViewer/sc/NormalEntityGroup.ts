@@ -186,7 +186,6 @@ class NormalEntityGroup {
 		this.m_layoutor = null;
 
 		this.rsc = null;
-		// this.m_map.clear();
 	}
 }
 export { NormalEntityGroup };

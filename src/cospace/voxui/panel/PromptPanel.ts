@@ -50,11 +50,12 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 	}
 	setPrompt(text: string): void {
 		this.m_prompt = text;
-		if (this.m_promptLabel != null) {
-			this.m_promptLabel.setText(text);
-			let px = (this.m_panelW - this.m_promptLabel.getWidth()) * 0.5;
-			this.m_promptLabel.setX(px);
-			this.m_promptLabel.update();
+		let pl = this.m_promptLabel;
+		if (pl != null) {
+			pl.setText(text);
+			let px = (this.m_panelW - pl.getWidth()) * 0.5;
+			pl.setX(px);
+			pl.update();
 		}
 	}
 	setListener(confirmFunc: () => void, cancelFunc: () => void): void {
@@ -84,7 +85,9 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		this.buildItems();
 	}
 	protected buildItems(): void {
-
+		if(this.m_confirmBtn != null) {
+			return;
+		}
 		let sc = this.getScene();
 
 		let textLabel = new TextLabel();
