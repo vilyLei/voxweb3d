@@ -230,7 +230,7 @@ export class DemoUIPanel {
 		this.m_promptLabel = panel;
 		//*/
 
-		///*
+		/*
 		let panel1 = new NormalPptPanel();
 		// let panel = new NormalCtrlPanel();
 		panel1.initialize(this.m_uiScene, 0, 360, 300, 50);

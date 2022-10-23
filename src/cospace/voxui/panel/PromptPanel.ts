@@ -189,17 +189,34 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		px = this.layoutXFactor * gapW;
 		py = this.layoutYFactor * gapH;
 
+		// confirmBtn.setXY(px, py);
+		// confirmBtn.update();
+
+		// px = pw - px - btnW;
+		// cancelBtn.setXY(px, py);
+		// cancelBtn.update();
+		this.layoutButtons(px, py);
+
+		px = (pw - textLabel.getWidth()) * 0.5;
+		py = ph - py - textLabel.getHeight();
+		textLabel.setXY(px, py);
+		textLabel.update();
+	}
+	protected layoutButtons(px: number, py: number): void {
+
+		let pw = this.m_panelW;
+		let confirmBtn = this.m_confirmBtn;
+		let cancelBtn = this.m_cancelBtn;
+
+		let btnW = this.m_btnW;
+		let btnH = this.m_btnH;
+
 		confirmBtn.setXY(px, py);
 		confirmBtn.update();
 
 		px = pw - px - btnW;
 		cancelBtn.setXY(px, py);
 		cancelBtn.update();
-
-		px = (pw - textLabel.getWidth()) * 0.5;
-		py = ph - py - textLabel.getHeight();
-		textLabel.setXY(px, py);
-		textLabel.update();
 	}
 	protected openThis(): void {
 
