@@ -12,6 +12,7 @@ import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 import { IRenderCamera } from "../render/IRenderCamera";
 import IRenderStage3D from "../render/IRenderStage3D";
 import IRenderProxy from "../../vox/render/IRenderProxy";
+import IRunnableQueue from "../../vox/base/IRunnableQueue";
 
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 // import IRendererParam from "../../vox/scene/IRendererParam";
@@ -27,7 +28,8 @@ import IRenderNode from "../../vox/scene/IRenderNode";
 
 interface IRendererScene {
 
-    textureBlock: ITextureBlock;
+    readonly runnableQueue: IRunnableQueue;
+    readonly textureBlock: ITextureBlock;
     materialBlock: IRenderableMaterialBlock;
     entityBlock: IRenderableEntityBlock;
 

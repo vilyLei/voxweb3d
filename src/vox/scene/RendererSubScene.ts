@@ -44,6 +44,8 @@ import FBOInstance from "./FBOInstance";
 import IRenderNode from "../../vox/scene/IRenderNode";
 import Color4 from "../material/Color4";
 import { IRendererSceneAccessor } from "./IRendererSceneAccessor";
+import IRunnableQueue from "../../vox/base/IRunnableQueue";
+import RunnableQueue from "../../vox/base/RunnableQueue";
 
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import { IRenderableMaterialBlock } from "../scene/block/IRenderableMaterialBlock";
@@ -86,6 +88,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
     private m_currStage3D: SubStage3D = null;
     private m_enabled: boolean = true;
 
+	readonly runnableQueue: IRunnableQueue = new RunnableQueue();
     readonly textureBlock: ITextureBlock = null;
     materialBlock: IRenderableMaterialBlock = null;
     entityBlock: IRenderableEntityBlock = null;
@@ -667,7 +670,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
                 if (this.m_runFlag != 1) this.update();
                 this.m_runFlag = 2;
             }
-
+            this.runnableQueue.run();
 			this.runRenderNodes(this.m_prependNodes);
 
             for (let i: number = 0; i < this.m_processidsLen; ++i) {
@@ -730,8 +733,8 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
     setRenderToBackBuffer(): void {
         this.m_renderProxy.setRenderToBackBuffer();
     }
-    toString(): string {
-        return "[RendererSubScene(uid = " + this.m_uid + ")]";
+    destroy(): void {
+        this.runnableQueue.destroy();
     }
 
 }

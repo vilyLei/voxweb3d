@@ -24,6 +24,7 @@ import RenderProcess from "../../vox/render/RenderProcess";
 import Entity3DNode from "../../vox/scene/Entity3DNode";
 import EntityNodeQueue from "../../vox/scene/EntityNodeQueue";
 import Entity3DNodeLinker from "../../vox/scene/Entity3DNodeLinker";
+import IRunnableQueue from "../../vox/base/IRunnableQueue";
 import RunnableQueue from "../../vox/base/RunnableQueue";
 
 import IRPONodeBuilder from "../../vox/render/IRPONodeBuilder";
@@ -93,7 +94,7 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
     private m_rparam: RendererParam = null;
     private m_enabled: boolean = true;
 
-    readonly runnableQueue: RunnableQueue = new RunnableQueue();
+    readonly runnableQueue: IRunnableQueue = new RunnableQueue();
     readonly textureBlock: ITextureBlock = new TextureBlock();
     readonly stage3D: Stage3D = null;
 
@@ -768,7 +769,6 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
 	}
 	appendRenderNode(node: IRenderNode): void {
 		if (node != null && node != this) {
-			// console.log("CoSC appendRenderNode(), node: ", node);
 			if (this.m_appendNodes == null) this.m_appendNodes = [];
 			let ls = this.m_appendNodes;
 			for (let i = 0; i < ls.length; ++i) {
@@ -856,7 +856,7 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
             this.m_renderProxy.updateCamera();
         }
     }
-    toString(): string {
-        return "[RendererScene(uid = " + this.m_uid + ")]";
+    destroy(): void {
+        this.runnableQueue.destroy();
     }
 }
