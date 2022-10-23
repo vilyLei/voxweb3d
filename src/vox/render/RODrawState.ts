@@ -95,14 +95,16 @@ export class RODrawState implements IRODrawState {
     }
     setBlendMode(mode: number, params: number[]): void {
         if (this.m_blendMode != mode) {
-            //console.log("this.m_blendMode: "+this.m_blendMode + ",mode: "+mode, params);
+            // if(DebugFlag.Flag_0 > 0) {
+            //     console.log("this.m_blendMode: ",this.m_blendMode,",mode: ",mode,",params: ", params);
+            // }
             this.m_blendMode = mode;
             if(mode > 0) {
 
                 if(params[0] < 1) {
                     //FUNC_ADD
-                    this.m_gl.blendEquation(this.m_gl.FUNC_ADD);
-                    this.m_gl.blendFunc(this.m_gl.ONE, this.m_gl.ZERO);
+                    // this.m_gl.blendEquation(this.m_gl.FUNC_ADD);
+                    // this.m_gl.blendFunc(this.m_gl.ONE, this.m_gl.ZERO);
                     this.m_gl.blendEquation(params[1]);
                     this.m_gl.blendFunc(params[3], params[4]);
                 }
