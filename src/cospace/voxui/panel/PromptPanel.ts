@@ -49,15 +49,17 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		}
 	}
 	setPrompt(text: string): void {
-		this.m_prompt = text;
-		let pl = this.m_promptLabel;
-		if (pl != null) {
-			pl.setText(text);
-			let px = (this.m_panelW - pl.getWidth()) * 0.5;
-			pl.setX(px);
-			pl.update();
-			if (this.m_confirmBtn != null && this.isOpen()) {
-				this.layoutItems();
+		if(text != "" && this.m_prompt != text) {
+			this.m_prompt = text;
+			let pl = this.m_promptLabel;
+			if (pl != null) {
+				pl.setText(text);
+				let px = (this.m_panelW - pl.getWidth()) * 0.5;
+				pl.setX(px);
+				pl.update();
+				if (this.m_confirmBtn != null && this.isOpen()) {
+					this.layoutItems();
+				}
 			}
 		}
 	}

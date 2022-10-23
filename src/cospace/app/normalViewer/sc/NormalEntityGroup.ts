@@ -88,6 +88,7 @@ class NormalEntityGroup {
 
 		let ins = this.m_vcoapp.coappIns;
 		if (ins != null) {
+			this.uiscene.prompt.showPrompt("Model loading!");
 			this.m_loadTotal++;
 			let unit = ins.getCPUDataByUrlAndCallback(
 				url,
@@ -130,6 +131,7 @@ class NormalEntityGroup {
 		if(this.m_loadedTotal >= this.m_loadTotal) {
 			this.uiscene.prompt.showPrompt("Model loaded finish!");
 		}
+		
 	}
 	private addEntityWithModel(model: CoGeomDataType, transform: Float32Array): NormalEntityNode {
 
