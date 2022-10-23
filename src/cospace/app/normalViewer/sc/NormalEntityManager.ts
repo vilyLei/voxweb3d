@@ -26,12 +26,13 @@ class NormalEntityManager {
 	private m_map: Map<number, NormalEntityNode> = new Map();
 	private m_selectEntities: ITransformEntity[] = null;
 	private m_scaleBase = 1.0;
+	private m_visible: boolean = false;
 	constructor() {
 	}
 	initialize(): void {
 
 		this.transUI.addSelectListener((list: IRenderEntity[]): void => {
-			this.setModelVisible(true);
+			this.setSelectedModelVisible(true);
 			let entitys = list as ITransformEntity[];
 			this.m_selectEntities = entitys;
 			this.ctrPanel.setModelVisiFlag(entitys != null && entitys.length > 0);
@@ -39,7 +40,14 @@ class NormalEntityManager {
 			this.testSelect();
 		});
 	}
-
+	setVisible(visible: boolean): void {
+		if(this.m_visible != visible) {
+			this.m_visible = visible;
+			for(let [k,v] of this.m_map.entries()) {
+				v.setVisible(visible);
+			}
+		}
+	}
 	private testSelect(): void {
 		let ls = this.m_selectEntities;
 		if (ls != null) {
@@ -73,7 +81,7 @@ class NormalEntityManager {
 		}
 	}
 
-	private setNormalVisible(v: boolean): void {
+	private setSelectedNormalLineVisible(v: boolean): void {
 		let ls = this.m_selectEntities;
 		if (ls != null) {
 			let map = this.m_map;
@@ -85,7 +93,7 @@ class NormalEntityManager {
 			}
 		}
 	}
-	private setModelVisible(v: boolean): void {
+	private setSelectedModelVisible(v: boolean): void {
 
 		let ls = this.m_selectEntities;
 		if (ls != null) {
@@ -192,10 +200,10 @@ class NormalEntityManager {
 		if (ls != null && ls.length > 0) {
 			switch (uuid) {
 				case "normal":
-					this.setNormalVisible(flag);
+					this.setSelectedNormalLineVisible(flag);
 					break;
 				case "model":
-					this.setModelVisible(flag);
+					this.setSelectedModelVisible(flag);
 					break;
 				case "difference":
 					this.showDifferenceColor(flag);

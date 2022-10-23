@@ -11,6 +11,7 @@ import { DropModelFileController } from "./DropModelFileController";
 import { NormalEntityNode } from "./NormalEntityNode";
 import { NormalEntityManager } from "./NormalEntityManager";
 import { BoxLine3D } from "../../../edit/entity/BoxLine3D";
+import { NormalExampleGroup } from "./NormalExampleGroup";
 
 class NormalEntityScene {
 
@@ -22,9 +23,9 @@ class NormalEntityScene {
 	ctrPanel: NormalCtrlPanel;
 	rscene: IRendererScene;
 	transUI: TransUI;
-	// readonly nodeGroup = new NormalEntityGroup();
-	entityManager: NormalEntityManager;// = new NormalEntityManager();
-
+	
+	readonly entityManager: NormalEntityManager = new NormalEntityManager();
+	readonly exampleGroup: NormalExampleGroup = new NormalExampleGroup();
 	constructor(uiscene: ICoUIScene, vcoapp: ViewerCoSApp) {
 		this.m_uiscene = uiscene;
 		this.m_vcoapp = vcoapp;
@@ -46,19 +47,21 @@ class NormalEntityScene {
 
 		this.entityManager.rsc = rscene;
 		// for test
-		this.initModel();
+		// this.initModel();
+		this.exampleGroup.entityManager = this.entityManager;
+		this.exampleGroup.initialize(rscene, this.transUI);
 
 		let canvas = (this.rscene as any).getCanvas() as HTMLCanvasElement;
 		this.m_dropController.initialize(canvas, this);
 	}
 	resetScene(): void {
 	}
-	initModel(): void {
+	private initModel(): void {
 		let baseUrl: string = "static/private/";
 		let url = baseUrl + "obj/base.obj";
 		url = baseUrl + "obj/base4.obj";
-		// url = baseUrl + "fbx/base4.fbx";
-		url = "static/private/fbx/base3.fbx";
+		url = baseUrl + "fbx/base4.fbx";
+		// url = "static/private/fbx/base3.fbx";
 		// url = "static/assets/obj/apple_01.obj";
 		// url = "static/private/fbx/handbag_err.fbx";
 		// url = "static/private/fbx/hat_hasNormal.fbx";
@@ -76,6 +79,9 @@ class NormalEntityScene {
 		group.entityManager = this.entityManager;
 		group.loadModels(urls, typeNS);
 		this.m_groups.push(group);
+
+		this.transUI.deselect();
+		this.exampleGroup.setEnabled(false);
 	}
 	isDropEnabled(): boolean {
 		return true;
@@ -108,7 +114,7 @@ class NormalEntityScene {
 				}
 				if (flag == 1) {
 					let sc = this;
-					sc.resetScene();
+					// sc.resetScene();
 					sc.loadModels(urls, typeNS);
 				}
 			} else {
@@ -130,7 +136,7 @@ class NormalEntityScene {
 	}
 
 	destroy(): void {
-		this.entityManager = null;
+		this.entityManager.destroy();
 	}
 	update(): void {
 	}

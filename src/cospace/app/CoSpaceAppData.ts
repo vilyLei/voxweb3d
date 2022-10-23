@@ -19,6 +19,7 @@ enum CoModuleNS {
  * 数据文件类型，例如 ctm, draco
  */
 enum CoDataFormat {
+	Undefined = "undefined-format",
 	CTM = "ctm",
 	Draco = "draco",
 	OBJ = "obj",

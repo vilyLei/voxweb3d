@@ -18,7 +18,7 @@ class NormalViewerScene {
 	private m_uiscene: ICoUIScene = null;
 	private m_ctrPanel: NormalCtrlPanel = null;
 	private m_transUI: TransUI = null;
-	private m_entityManager: NormalEntityManager = new NormalEntityManager();
+	private m_entityManager: NormalEntityManager;
 	entityScene: NormalEntityScene;
 	private m_vcoapp: ViewerCoSApp;
 
@@ -36,7 +36,7 @@ class NormalViewerScene {
 			this.m_transUI = transUI;
 
 			this.entityScene = new NormalEntityScene(uiscene, vcoapp);
-			this.entityScene.entityManager = this.m_entityManager;
+			this.m_entityManager = this.entityScene.entityManager;
 			this.initUI();
 			this.entityScene.transUI = transUI;
 

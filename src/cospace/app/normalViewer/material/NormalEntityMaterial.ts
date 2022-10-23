@@ -40,24 +40,24 @@ class NormalEntityMaterial {
 		color.fromArray3(this.m_data);
 	}
 	applyLocalNormal(): void {
-		console.log("apply local normal..., dif: ", this.m_data[5]);
+		// console.log("apply local normal..., dif: ", this.m_data[5]);
 		this.m_data[7] = 0.0;
 	}
 	applyGlobalNormal(): void {
-		console.log("apply global normal..., dif: ", this.m_data[5]);
+		// console.log("apply global normal..., dif: ", this.m_data[5]);
 		this.m_data[7] = 1.0;
 	}
 	applyModelColor(): void {
 		this.m_data[4] = 1.0;
-		console.log("apply model color..., dif: ", this.m_data[5]);
+		// console.log("apply model color..., dif: ", this.m_data[5]);
 	}
 	applyNormalColor(): void {
 		this.m_data[4] = 0.0;
-		console.log("apply normal color..., dif: ", this.m_data[5]);
+		// console.log("apply normal color..., dif: ", this.m_data[5]);
 	}
 	applyDifference(boo: boolean = true): void {
 		this.m_data[5] = boo ? 1.0 : 0.0;
-		console.log("apply diff boo: ", boo);
+		// console.log("apply diff boo: ", boo);
 	}
 	/**
 	 * @param textureEnabled the default value is false
@@ -111,7 +111,9 @@ class NormalEntityMaterial {
 			
 			float f = v_dv.x;
 			f = f < 0.8 ? 1.0 : 0.0;
-			vec3 diffColor = vec3(1.0, 0.0, 0.0) * f + dstColor * (1.0 - f);
+			// vec3 diffColor = vec3(1.0, 0.0, 0.0) * f + dstColor * (1.0 - f);
+			float s = sign(f2.x * f2.y);
+			vec3 diffColor = vec3(1.0, s, s) * f + dstColor * (1.0 - f);
 			dstColor = param.y > 0.5 ? diffColor : dstColor;
 
     		FragColor0 = vec4(dstColor, 1.0);
