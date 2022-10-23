@@ -1,4 +1,3 @@
-
 import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../app/CoSpaceAppData";
 import { ViewerCoSApp } from "../../../demo/coViewer/ViewerCoSApp";
@@ -74,6 +73,7 @@ class NormalEntityScene {
 		
 		let group = new NormalEntityGroup(this.m_vcoapp);
 		group.rsc = this.rscene;
+		group.uiscene = this.m_uiscene;
 		group.transUI = this.transUI;
 		group.ctrPanel = this.ctrPanel;
 		group.entityManager = this.entityManager;

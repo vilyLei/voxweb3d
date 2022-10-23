@@ -1,4 +1,4 @@
-
+import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
 import ITransformEntity from "../../../../vox/entity/ITransformEntity";
 import { NormalEntityNode } from "./NormalEntityNode";
 import { TransUI } from "../../../edit/demo/edit/ui/TransUI";
@@ -26,6 +26,7 @@ class NormalEntityGroup {
 	private m_uid = NormalEntityGroup.s_uid++;
 	private m_vcoapp: ViewerCoSApp;
 
+	uiscene: ICoUIScene;
 	ctrPanel: NormalCtrlPanel;
 	rsc: IRendererScene;
 	transUI: TransUI;
@@ -81,11 +82,13 @@ class NormalEntityGroup {
 			console.error("Can't support this model data format, url: ", url);
 		}
 	}
+	private m_loadTotal = 0;
+	private m_loadedTotal = 0;
 	private loadGeomModel(url: string, format: CoDataFormat): void {
 
 		let ins = this.m_vcoapp.coappIns;
 		if (ins != null) {
-
+			this.m_loadTotal++;
 			let unit = ins.getCPUDataByUrlAndCallback(
 				url,
 				format,
@@ -121,6 +124,11 @@ class NormalEntityGroup {
 		
 		for (let i = 0; i < nodes.length; ++i) {
 			nodes[i].createNormalLine();
+		}
+
+		this.m_loadedTotal ++;
+		if(this.m_loadedTotal >= this.m_loadTotal) {
+			this.uiscene.prompt.showPrompt("Model loaded finish!");
 		}
 	}
 	private addEntityWithModel(model: CoGeomDataType, transform: Float32Array): NormalEntityNode {
@@ -172,6 +180,7 @@ class NormalEntityGroup {
 		this.m_nodes = [];
 		this.entityManager = null;
 
+		this.uiscene = null;
 		this.m_transforms = null;
 		this.m_transes = null;
 		this.m_layoutor = null;
