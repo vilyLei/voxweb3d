@@ -341,11 +341,16 @@ class TransUI {
 		}
 	}
 	private mouseClickListener(evt: any): void {
+		this.deselect();
+	}
+	deselect(): void {
+
 		this.m_selectList = null;
 		if (this.m_transCtr != null) {
 			this.m_transCtr.disable();
 		}
-		this.m_outline.deselect();		
+		
+		this.m_outline.deselect();
 		this.sendSelectList( null );
 	}
 	run(): void {

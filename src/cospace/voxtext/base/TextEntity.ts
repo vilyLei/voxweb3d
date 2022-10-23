@@ -154,11 +154,11 @@ class TextEntity implements ITextEntity{
     }
     destroy(): void {
         if (this.m_rentity != null) {
-            this.m_material.destroy();
-            this.m_material = null;
             this.m_rentity.destroy();
             this.m_rentity = null;
             this.m_h5Text = null;
+            this.m_material.destroy();
+            this.m_material = null;
         }
     }
 }

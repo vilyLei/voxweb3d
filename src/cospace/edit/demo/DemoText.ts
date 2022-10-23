@@ -168,12 +168,12 @@ export class DemoText {
 		textObject.setXYZ(100, 50, -100);
 		textObject.update();
 		this.m_rscene.addEntity(textObject.getREntity());
-		// textObject.setRGB3f(10.5, 0.0, 1.0);
+		textObject.setRGB3f(10.5, 0.0, 1.0);
 		//*/
 	}
 	private textModuleLoaded(): void {
 		console.log("xxx textModuleLoaded() ...");
-		// this.testStaticText();
+		this.testStaticText();
 	}
 	private m_uiScene: ICoUIScene = null;
 	private initUIScene(): void {
@@ -247,7 +247,7 @@ export class DemoText {
 			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			RendererDevice.SetWebBodyColor("#282828");
-
+			
 			let rparam = CoRScene.createRendererSceneParam();
 			rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);

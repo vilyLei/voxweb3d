@@ -31,7 +31,7 @@ class PostOutline implements ICoRenderNode {
 
 	private initOutline(): void {
 		
-		this.m_postOutline.initialize(this.m_rscene, 1, [0]);
+		this.m_postOutline.initialize(this.m_rscene, 0, [0]);
 		this.m_postOutline.setFBOSizeScaleRatio(0.5);
 		this.m_postOutline.setRGB3f(0.0, 1.0, 0.0);
 		this.m_postOutline.setOutlineDensity(2.0);
@@ -46,11 +46,12 @@ class PostOutline implements ICoRenderNode {
 		if (this.m_postOutline != null) {
 			this.m_postOutline.setTargetList(null);
 		}
+		console.log("post outline deselect() ...");
 	}
 	render(): void {
 		
 		if (this.m_postOutline != null) {
-			// console.log("post outline renderNode render() ...");
+			// console.log("post outline getTargetList(): ",this.m_postOutline.getTargetList());
 			this.m_postOutline.drawBegin();
 			this.m_postOutline.draw();
 			this.m_postOutline.drawEnd();

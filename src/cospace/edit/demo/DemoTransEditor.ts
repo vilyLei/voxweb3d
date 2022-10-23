@@ -27,6 +27,7 @@ import { IRectTextTip } from "../../voxui/entity/IRectTextTip";
 import { NormalViewer } from "../../app/normalViewer/sc/NormalViewer";
 import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
 import { PromptSystem } from "../../voxui/system/PromptSystem";
+import { ICoText } from "../../voxtext/ICoText";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -35,6 +36,7 @@ declare var CoMath: ICoMath;
 declare var CoEdit: ICoEdit;
 declare var CoUI: ICoUI;
 declare var CoTexture: ICoTexture;
+declare var CoText: ICoText;
 
 class SceneAccessor implements IRendererSceneAccessor {
 	constructor() { }
@@ -102,6 +104,7 @@ export class DemoTransEditor {
 		let url8 = "static/cospace/coMaterial/CoMaterial.umd.js";
 		let url9 = " static/cospace/cotexture/CoTexture.umd.js";
 		let url10 = "static/cospace/coui/CoUI.umd.js";
+		let url11 = "static/cospace/cotext/CoText.umd.js";
 
 		new ModuleLoader(2, (): void => {
 			if (this.isEngineEnabled()) {
@@ -111,10 +114,10 @@ export class DemoTransEditor {
 				this.initScene();
 				new ModuleLoader(3, (): void => {
 					console.log("math module loaded ...");
-					new ModuleLoader(6, (): void => {
+					new ModuleLoader(7, (): void => {
 						console.log("ageom module loaded ...");
 						this.initEditUI();
-					}).load(url3).load(url4).load(url6).load(url7).load(url9).load(url10);
+					}).load(url3).load(url4).load(url6).load(url7).load(url9).load(url10).load(url11);
 
 				}).load(url2).load(url5).load(url8);
 
