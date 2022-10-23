@@ -56,6 +56,9 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			let px = (this.m_panelW - pl.getWidth()) * 0.5;
 			pl.setX(px);
 			pl.update();
+			if (this.m_confirmBtn != null && this.isOpen()) {
+				this.layoutItems();
+			}
 		}
 	}
 	setListener(confirmFunc: () => void, cancelFunc: () => void): void {
