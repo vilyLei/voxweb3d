@@ -35,6 +35,7 @@ enum CoModuleFileType {
 }
 
 interface CoGeomDataContainer {
+	modelReceiver: (models: CoGeomDataType[], transforms: Float32Array[]) => void;
 	dataType: string;
 	dataFormat: CoDataFormat;
 	models: CoGeomDataType[];

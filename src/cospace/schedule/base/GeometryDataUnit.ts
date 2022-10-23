@@ -3,6 +3,7 @@ import { GeometryModelDataType } from "../../modules/base/GeometryModelDataType"
 
 class GeometryDataContainer {
 
+  modelReceiver: (models: GeometryModelDataType[], transforms: Float32Array[]) => void = null;
   dataClass: DataClass;
   dataType: string;
   dataFormat: DataFormat = DataFormat.CTM;
@@ -33,6 +34,7 @@ class GeometryDataContainer {
   }
   destroy(): void {
     // this.model = null;
+    this.modelReceiver = null;
     this.models = null;
   }
 }

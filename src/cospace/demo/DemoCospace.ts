@@ -1,6 +1,6 @@
 import { CoSpace } from "../CoSpace";
 import { DataFormat } from "../schedule/base/DataUnit";
-import { GeometryDataUnit } from "../schedule/base/GeometryDataUnit";
+import { GeometryModelDataType, GeometryDataUnit } from "../schedule/base/GeometryDataUnit";
 import { TestRenderableEntity } from "./scene/TestRenderableEntity";
 import DivLog from "../../vox/utils/DivLog";
 import { TaskCodeModuleParam } from "../schedule/base/TaskCodeModuleParam";
@@ -151,7 +151,8 @@ export class DemoCospace {
 	}
 
 	private initFBXLoad(): void {
-		let url = "static/private/fbx/hat_hasNormal.fbx";
+		// let url = "static/private/fbx/hat_hasNormal.fbx";
+		let url = "static/private/fbx/base4.fbx";
 		// url = "static/private/fbx/hat_hasNotNormal.fbx";
 		this.loadFBX(url);
 	}
@@ -162,7 +163,7 @@ export class DemoCospace {
 		// let url: string = baseUrl + "sh0/1 (" + index +").ctm";
 		//let url: string = baseUrl + "sh202/sh202_" + index + ".ctm";
 		console.log("start load fbx...");
-		this.m_cospace.geometry.getCPUDataByUrlAndCallback(
+		let unit = this.m_cospace.geometry.getCPUDataByUrlAndCallback(
 			url,
 			DataFormat.FBX,
 			(unit: GeometryDataUnit, status: number): void => {
@@ -181,6 +182,9 @@ export class DemoCospace {
 			},
 			true
 		);
+		unit.data.modelReceiver = (models: GeometryModelDataType[], transforms: Float32Array[]): void => {
+			console.log("XXXX modelReceiver: ",models);
+		}
 	}
 	private loadCTM(): void {
 		let baseUrl: string = window.location.href + "static/assets/ctm/";

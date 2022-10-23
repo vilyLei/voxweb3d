@@ -19,7 +19,7 @@ import DivLog from "../../../vox/utils/DivLog";
 class ModelNode {
 	models: GeometryModelDataType[] = null;
 	transforms: Float32Array[] = null;
-	constructor(){}
+	constructor() { }
 	destroy(): void {
 		this.models = null;
 		this.transforms = null;
@@ -78,26 +78,32 @@ class FBXParserListerner {
 
 		// console.log("FbxParserListerner::fbxParseFinish(), models: ", models, ", url: ", url);
 		// console.log("AAAYYYT01 this.m_unitPool.hasUnitByUrl(url): ", this.m_unitPool.hasUnitByUrl(url));
-		let m = this.m_nodeMap;
-		if (m.has(url)) {
-			let node = m.get(url);
-			//ls = ls.concat(models);
-			for(let i = 0; i < models.length; ++i){
-				node.models.push(models[i]);
-				node.transforms.push(transform);
-			}
-		} else {
-			let node = new ModelNode();
-			node.models = models;
-			node.transforms = [transform];
-			m.set(url, node);
-		}
-		if ((index + 1) < total) {
-			
-			return;
-		}
+		// let unit = this.m_unitPool.hasUnitByUrl(url);
+
 		if (this.m_unitPool.hasUnitByUrl(url)) {
 			let unit = this.m_unitPool.getUnitByUrl(url);
+
+			let m = this.m_nodeMap;
+			if (m.has(url)) {
+				let node = m.get(url);
+				//ls = ls.concat(models);
+				for (let i = 0; i < models.length; ++i) {
+					node.models.push(models[i]);
+					node.transforms.push(transform);
+				}
+			} else {
+				let node = new ModelNode();
+				node.models = models;
+				node.transforms = [transform];
+				m.set(url, node);
+			}
+			if(unit.data.modelReceiver != null) {
+				unit.data.modelReceiver(models, [transform]);
+			}
+			if ((index + 1) < total) {
+				return;
+			}
+
 			// console.log("AAAYYYT02 unit != null: ", unit != null, index, total);
 			if (unit != null) {
 				let node = m.get(url);
