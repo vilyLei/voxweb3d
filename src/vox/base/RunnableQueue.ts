@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import IRunnable from "../../vox/base/IRunnable";
+import IRunnableQueue from "./IRunnableQueue";
 
 class Runner {
     prev: Runner = null;
@@ -79,12 +80,12 @@ class RunnerLinker {
         node.next = null;
     }
 }
-export default class RunnableQueue {
+export default class RunnableQueue implements IRunnableQueue {
 
     private m_linker: RunnerLinker = new RunnerLinker();
     private m_freeIds: number[] = [];
     private m_runners: Runner[] = [new Runner()];
-    
+
     constructor() {
 
     }
@@ -95,7 +96,7 @@ export default class RunnableQueue {
         }
 
         let runner: Runner = new Runner();
-        runner.flag = this.m_runners.length
+        runner.flag = this.m_runners.length;
         this.m_runners.push(runner);
         return runner.flag;
     }
@@ -103,7 +104,7 @@ export default class RunnableQueue {
         if (runner != null && runner.getRunFlag() < 1) {
 
             let i: number = this.getFreeId();
-            
+
             let pr: Runner = this.m_runners[i];
             pr.flag = i;
             pr.target = runner;
@@ -113,7 +114,7 @@ export default class RunnableQueue {
     }
     removeRunner(runner: IRunnable): void {
         if (runner != null && runner.getRunFlag() > 0) {
-            
+
             let i: number = runner.getRunFlag();
             this.m_freeIds.push(i);
             let pr: Runner = this.m_runners[i];
@@ -125,8 +126,8 @@ export default class RunnableQueue {
     }
     run(): void {
 
-        let ro: Runner = this.m_linker.getBegin();
-        let next: Runner = ro;
+        let ro = this.m_linker.getBegin();
+        let next = ro;
 
         while (next != null) {
             ro = next;
@@ -135,5 +136,15 @@ export default class RunnableQueue {
                 ro.target.run();
             }
         }
+    }
+    destroy(): void {
+        let ro = this.m_linker.getBegin();
+        let next = ro;
+        while (next != null) {
+            ro = next;
+            next = ro.next;
+            ro.target = null;
+        }
+        this.m_linker.clear();
     }
 }

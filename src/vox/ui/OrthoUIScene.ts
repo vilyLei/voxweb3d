@@ -29,6 +29,8 @@ import IRenderProxy from "../render/IRenderProxy";
 import IMatrix4 from "../math/IMatrix4";
 import IVector3D from "../math/IVector3D";
 import { IRendererSceneAccessor } from "../scene/IRendererSceneAccessor";
+import IRunnableQueue from "../../vox/base/IRunnableQueue";
+import RunnableQueue from "../../vox/base/RunnableQueue";
 
 
 class OrthoUIScene implements IRendererScene, IRenderNode {
@@ -38,6 +40,7 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
 
     readonly textureBlock: ITextureBlock;
 
+	readonly runnableQueue: IRunnableQueue = new RunnableQueue();
     entityBlock: IRenderableEntityBlock = null;
     materialBlock: IRenderableMaterialBlock = null;
 
