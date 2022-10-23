@@ -185,6 +185,9 @@ export default class OcclusionPostOutline implements IOcclusionPostOutline {
     setTargetList(targets: IRenderEntity[]): void {
         this.m_targets = targets;
     }
+    getTargetList(): IRenderEntity[] {
+        return this.m_targets;
+    }
     setBoundsOffset(offset: number): void {
         if (offset < 1.0) offset = 1.0;
         this.m_expandBias.setXYZ(offset, offset, offset);
@@ -218,14 +221,17 @@ export default class OcclusionPostOutline implements IOcclusionPostOutline {
 
                 if (this.m_runningFlag) {
 
+                    let rproxy = this.m_rscene.getRenderProxy();
+                    let rst = rproxy.renderingState;
+                    rproxy.useRenderState(rst.NORMAL_STATE);
 
-                    let colorMask = this.m_rscene.getRenderProxy().colorMask;
+                    let colorMask = rproxy.colorMask;
                     let bounds = this.m_bounds;
                     let colorFBO = this.m_colorFBO;
 
                     this.m_preDecor.setRGB3f(1.0, 0.0, 0.0);
                     colorFBO.runBegin();
-
+                    // colorFBO.lockRenderState(rst.NORMAL_STATE);
                     bounds.reset();
 
                     for (let i = 0; i < this.m_targets.length; ++i) {
@@ -260,6 +266,7 @@ export default class OcclusionPostOutline implements IOcclusionPostOutline {
                     colorFBO.runEnd();
                     colorFBO.unlockRenderColorMask();
                     colorFBO.unlockMaterial();
+                    // colorFBO.unlockRenderState();
                 }
             }
         } else {

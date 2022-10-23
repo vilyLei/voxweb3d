@@ -15,6 +15,7 @@ export default interface IOcclusionPostOutline {
     setRGB3f(pr: number, pg: number, pb: number): void;
     setPostRenderState(state: number): void;
     setTargetList(targets: IRenderEntity[]): void;
+    getTargetList(): IRenderEntity[];
     setBoundsOffset(offset: number): void;
     startup(): void;
     quit(): void;
