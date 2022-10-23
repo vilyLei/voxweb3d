@@ -1,6 +1,10 @@
+import IColor4 from "../../../vox/material/IColor4";
+
 interface IPromptSystem {
 
-	setPromptListener(confirmFunc: () => void, cancelFunc: () => void): void;
+	setPromptTextColor(color: IColor4, type?: number): void;
+	setPromptBGColor(color: IColor4, type?: number): void;
+	setPromptListener(confirmFunc: () => void, cancelFunc: () => void, type?: number): void;
 	showPrompt(promptInfo: string, type?: number): void;
 	
 }

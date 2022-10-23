@@ -29,6 +29,9 @@ class ColorPanel extends UIPanel implements IPromptPanel {
 
 	constructor() { super(); }
 
+	setPromptTextColor(color: IColor4): void {
+		
+	}
 	initialize(scene: ICoUIScene, rpi: number, panelW: number, panelH: number, btnW: number, btnH: number, confirmNS: string = "Confirm", cancelNS: string = "Cancel"): void {
 		if (this.isIniting()) {
 			this.init();

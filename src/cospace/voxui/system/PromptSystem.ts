@@ -3,6 +3,7 @@ import { PromptPanel } from "../panel/PromptPanel";
 import { IPromptSystem } from "./IPromptSystem";
 
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
+import IColor4 from "../../../vox/material/IColor4";
 declare var CoMaterial: ICoMaterial;
 
 class PromptSystem implements IPromptSystem {
@@ -24,7 +25,7 @@ class PromptSystem implements IPromptSystem {
 		}
 	}
 	
-	setPromptListener(confirmFunc: () => void, cancelFunc: () => void): void {
+	setPromptListener(confirmFunc: () => void, cancelFunc: () => void, type: number = 0): void {
 		if(this.m_promptPanel != null) {
 			this.m_promptPanel.setListener(confirmFunc, cancelFunc);
 		}
@@ -34,6 +35,16 @@ class PromptSystem implements IPromptSystem {
 			this.m_promptPanel.setPrompt(promptInfo);
 			this.m_promptPanel.open();
 		}
-	}	
+	}
+	setPromptTextColor(color: IColor4, type: number = 0): void {
+		if(this.m_promptPanel != null) {
+			this.m_promptPanel.setPromptTextColor(color);
+		}
+	}
+	setPromptBGColor(color: IColor4, type: number = 0): void {
+		if(this.m_promptPanel != null) {
+			this.m_promptPanel.setBGColor(color);
+		}
+	}
 }
 export { PromptSystem };
