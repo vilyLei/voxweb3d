@@ -35,6 +35,7 @@ import RendererParam from "../../../vox/scene/RendererParam";
 import Entity3DNode from "../../../vox/scene/Entity3DNode";
 import EntityNodeQueue from "../../../vox/scene/EntityNodeQueue";
 import Entity3DNodeLinker from "../../../vox/scene/Entity3DNodeLinker";
+import IRunnableQueue from "../../../vox/base/IRunnableQueue";
 import RunnableQueue from "../../../vox/base/RunnableQueue";
 
 // import RendererInstance from "../../../vox/scene/RendererInstance";
@@ -105,7 +106,7 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 	private m_rparam: RendererParam = null;
 	private m_enabled: boolean = true;
 
-	readonly runnableQueue: RunnableQueue = new RunnableQueue();
+	readonly runnableQueue: IRunnableQueue = new RunnableQueue();
 	readonly textureBlock: ITextureBlock = new TextureBlock();
 	readonly stage3D: Stage3D = null;
 
@@ -867,7 +868,7 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 			this.m_renderProxy.updateCamera();
 		}
 	}
-	toString(): string {
-		return "[CoRendererScene(uid = " + this.m_uid + ")]";
-	}
+    destroy(): void {
+        this.runnableQueue.destroy();
+    }
 }

@@ -46,6 +46,8 @@ import MouseEvt3DController from "../../../vox/scene/MouseEvt3DController";
 import IEvt3DController from "../../../vox/scene/IEvt3DController";
 import FBOInstance from "../../../vox/scene/FBOInstance";
 import ICoRenderNode from "./ICoRenderNode";
+import IRunnableQueue from "../../../vox/base/IRunnableQueue";
+import RunnableQueue from "../../../vox/base/RunnableQueue";
 
 import { IRendererSceneAccessor } from "../../../vox/scene/IRendererSceneAccessor";
 
@@ -89,6 +91,7 @@ export default class CoRendererSubScene implements IRenderer, ICoRendererScene, 
 	private m_currStage3D: SubStage3D = null;
 	private m_enabled: boolean = true;
 
+	readonly runnableQueue: IRunnableQueue = new RunnableQueue();
 	readonly textureBlock: ITextureBlock = null;
 	materialBlock: IRenderableMaterialBlock = null;
 	entityBlock: IRenderableEntityBlock = null;
@@ -674,6 +677,7 @@ export default class CoRendererSubScene implements IRenderer, ICoRendererScene, 
 			// 	status.drawCallTimes = 0;
 			// }
 
+            this.runnableQueue.run();
 			this.runRenderNodes(this.m_prependNodes);
 
 			for (let i = 0; i < this.m_processidsLen; ++i) {
@@ -739,7 +743,7 @@ export default class CoRendererSubScene implements IRenderer, ICoRendererScene, 
 	setRenderToBackBuffer(): void {
 		this.m_renderProxy.setRenderToBackBuffer();
 	}
-	toString(): string {
-		return "[RendererSubScene(uid = " + this.m_uid + ")]";
-	}
+    destroy(): void {
+        this.runnableQueue.destroy();
+    }
 }
