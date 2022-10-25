@@ -154,9 +154,9 @@ class TransUI {
 		let keys = ["select", "move", "rotate", "scale"];
 		let infos = [
 			"Select items using box selection.",
-			"Move selected items.",
-			"Rotate selected items.",
-			"Scale(resize) selected items."
+			"Move selected items(W).",
+			"Rotate selected items(R).",
+			"Scale(resize) selected items(E)."
 		];
 
 		let fontColor = CoMaterial.createColor4().setRGB3Bytes(170, 170, 170);;
