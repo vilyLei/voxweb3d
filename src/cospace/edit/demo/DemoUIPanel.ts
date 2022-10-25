@@ -35,6 +35,7 @@ import { ITextLabel } from "../../voxui/entity/ITextLabel";
 import { NormalPptPanel } from "../../app/normalViewer/ui/NormalPptPanel";
 import { NormalCtrlPanel } from "../../app/normalViewer/ui/NormalCtrlPanel";
 import { PromptSystem } from "../../voxui/system/PromptSystem";
+import { AxisAlignCalc } from "../../voxui/layout/AxisAlignCalc";
 
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
@@ -65,6 +66,15 @@ export class DemoUIPanel {
 	initialize(): void {
 		console.log("DemoUIPanel::initialize() ...");
 
+		let layout = new AxisAlignCalc();
+
+		let sizes = [10, 10, 10];
+		let range = layout.calcRange(0.5, 100, 0.3);
+		console.log("range: ", range);
+		let posList = layout.avgLayout(sizes, range[0], range[1]);
+		console.log("posList: ", posList);
+
+		return;
 		this.initEngineModule();
 	}
 
@@ -187,7 +197,7 @@ export class DemoUIPanel {
 	private m_textLabel: ITextLabel = null;
 	private m_promptLabel: PromptPanel = null;
 	private testPanelDepth(): void {
-		
+
 	}
 	private testPanel(): void {
 		console.log("testPanel()................");
@@ -200,8 +210,8 @@ export class DemoUIPanel {
 
 		let ta = texAtlas;
 		let tta = transparentTexAtlas;
-		
-		
+
+
 		// let textLabel = new TextLabel();
 		// textLabel.initialize("hello", uisc, 24);
 		// textLabel.setXY(200, 100);
@@ -335,16 +345,16 @@ export class DemoUIPanel {
 		// 	this.m_textLabel.setText("Good-Day");
 		// 	this.m_textLabel.update();
 		// }
-		if(this.m_times < 1) {
-			this.m_uiScene.prompt.setPromptBGColor(CoRScene.createColor4(0.4,0.4,0.4));
+		if (this.m_times < 1) {
+			this.m_uiScene.prompt.setPromptBGColor(CoRScene.createColor4(0.4, 0.4, 0.4));
 			this.m_uiScene.prompt.showPrompt("Hi, body!");
 		} else {
-			this.m_uiScene.prompt.setPromptTextColor(CoRScene.createColor4(0.4,1.0,0.4));
+			this.m_uiScene.prompt.setPromptTextColor(CoRScene.createColor4(0.4, 1.0, 0.4));
 			this.m_uiScene.prompt.showPrompt("Hi, body scene.setClearUint24Color(0x282828 !");
 		}
-		this.m_times ++;
+		this.m_times++;
 
-		if(this.m_promptLabel != null) {
+		if (this.m_promptLabel != null) {
 			this.m_promptLabel.setPrompt("How are you?");
 			this.m_promptLabel.open();
 		}
