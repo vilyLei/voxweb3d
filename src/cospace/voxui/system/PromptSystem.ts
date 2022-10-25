@@ -1,4 +1,5 @@
 import { ICoUIScene } from "../scene/ICoUIScene";
+import { IPromptPanel } from "../panel/IPromptPanel";
 import { PromptPanel } from "../panel/PromptPanel";
 import { IPromptSystem } from "./IPromptSystem";
 
@@ -45,6 +46,9 @@ class PromptSystem implements IPromptSystem {
 		if(this.m_promptPanel != null) {
 			this.m_promptPanel.setBGColor(color);
 		}
+	}
+	getPromptPanel(type: number = 0): IPromptPanel {
+		return this.m_promptPanel;
 	}
 }
 export { PromptSystem };

@@ -9,6 +9,8 @@ interface IPromptPanel extends IUIPanel {
 	setListener(confirmFunc: () => void, cancelFunc: () => void): void;
 	setPrompt(text: string): void;
 	setPromptTextColor(color: IColor4): void;
+	applyConfirmButton(): void;
+	applyAllButtons(): void;
 
 }
 export { IPromptPanel };

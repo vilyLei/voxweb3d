@@ -345,10 +345,12 @@ export class DemoUIPanel {
 		// 	this.m_textLabel.setText("Good-Day");
 		// 	this.m_textLabel.update();
 		// }
+		let panel = this.m_uiScene.prompt.getPromptPanel();
 		if (this.m_times < 1) {
 			this.m_uiScene.prompt.setPromptBGColor(CoRScene.createColor4(0.4, 0.4, 0.4));
 			this.m_uiScene.prompt.showPrompt("Hi, body!");
 		} else {
+			panel.applyConfirmButton();
 			this.m_uiScene.prompt.setPromptTextColor(CoRScene.createColor4(0.4, 1.0, 0.4));
 			this.m_uiScene.prompt.showPrompt("Hi, body scene.setClearUint24Color(0x282828 !");
 		}

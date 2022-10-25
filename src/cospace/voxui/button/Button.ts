@@ -105,6 +105,13 @@ class Button extends UIEntityBase implements IButton {
 		this.m_entities[0].mouseEnabled = true;
 	}
 
+	setVisible(v: boolean): void {
+		super.setVisible(v);
+		let ls = this.m_lbs;
+		for (let i = 0; i < ls.length; ++i) {
+			ls[i].setVisible(v);
+		}
+	}
 	addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): IButton {
 		this.m_dp.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
 		return this;
@@ -138,7 +145,7 @@ class Button extends UIEntityBase implements IButton {
 			}
 		}
 	}
-
+	
 	protected mouseDownListener(evt: any): void {
 		// console.log("Button::mouseDownListener() ...");
 		if (this.m_enabled) {

@@ -11,7 +11,7 @@ import IColor4 from "../../../vox/material/IColor4";
 
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
-class ColorPanel extends UIPanel implements IPromptPanel {
+class ColorPanel extends UIPanel {
 
 	private m_confirmBtn: IButton;
 	private m_cancelBtn: IButton;

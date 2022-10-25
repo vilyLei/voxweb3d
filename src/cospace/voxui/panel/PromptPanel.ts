@@ -54,6 +54,16 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			this.m_bgColor = CoMaterial.createColor4();
 		}
 	}
+	applyConfirmButton(): void {
+		if(this.m_cancelBtn != null) {
+			this.m_cancelBtn.setVisible(false);
+		}
+	}
+	applyAllButtons(): void {
+		if(this.m_cancelBtn != null) {
+			this.m_cancelBtn.setVisible(true);
+		}
+	}
 	setPrompt(text: string): void {
 		if (text != "" && this.m_prompt != text) {
 			this.m_prompt = text;
@@ -159,15 +169,20 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		this.addEntity(textLabel);
 	}
 	private updateBgSize(): void {
+
 		let pw = this.m_panelW;
 		let textLabel = this.m_promptLabel;
 		textLabel.update();
+
 		let confirmBtn = this.m_confirmBtn;
 		confirmBtn.update();
+
 		let cancelBtn = this.m_cancelBtn;
 		cancelBtn.update();
-		let btw2 = confirmBtn.getWidth() + cancelBtn.getWidth();
-		let bw = btw2 + Math.round(0.2 * btw2) + 70;
+		let bw = cancelBtn.isVisible() ? cancelBtn.getWidth() : 0;
+
+		let btw2 = confirmBtn.getWidth() + bw;
+		bw = btw2 + Math.round(0.2 * btw2) + 70;
 
 		let tw = textLabel.getWidth() + 70;
 
@@ -196,14 +211,17 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		textLabel.setXY(px, pyList[1]);
 		textLabel.update();
 
-		this.layoutButtons(px, pyList[0]);
+		if(this.m_cancelBtn.isVisible()) {
+			this.layoutButtons(px, pyList[0]);
+		}else {
+			this.layoutOnlyConfirm(px, pyList[0]);
+		}
 		
 	}
 	private m_alignCalc = new AxisAlignCalc();
 	protected layoutButtons(px: number, py: number): void {
 
 		let sizes = [this.m_btnW, this.m_btnW];
-		// let pxList = this.m_alignCalc.calcAvgLayout(sizes, this.m_panelW, this.marginXFactor, 0.5);
 		let pxList = this.m_alignCalc.calcAvgFixLayout(sizes, this.m_panelW, 10, this.marginXFactor, 0.5);
 
 		let confirmBtn = this.m_confirmBtn;
@@ -216,6 +234,19 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		cancelBtn.update();
 
 	}
+	
+	protected layoutOnlyConfirm(px: number, py: number): void {
+
+		let sizes = [this.m_btnW];
+		let pxList = this.m_alignCalc.calcAvgFixLayout(sizes, this.m_panelW, 10, this.marginXFactor, 0.5);
+
+		let confirmBtn = this.m_confirmBtn;
+		
+		confirmBtn.setXY(pxList[0], py);
+		confirmBtn.update();
+
+	}
+
 	protected openThis(): void {
 
 		let ME = CoRScene.MouseEvent;
