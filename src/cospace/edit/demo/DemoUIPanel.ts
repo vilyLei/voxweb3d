@@ -353,6 +353,9 @@ export class DemoUIPanel {
 			this.m_uiScene.prompt.showPrompt("Hi, body scene.setClearUint24Color(0x282828 !");
 		}
 		this.m_times++;
+		if(this.m_times > 2) {
+			this.m_times = 0;
+		}
 
 		if (this.m_promptLabel != null) {
 			this.m_promptLabel.setPrompt("How are you?");

@@ -42,6 +42,9 @@ class AxisAlignCalc {
 		let size = 0.0;
 		for (let i = 0; i < len; i++) {
 			size += sizes[i];
+			if(minGap > 0.0 && i > 0) {
+				size += minGap;
+			}
 		}
 		let list = new Array(len);
 		list[0] = min;
@@ -55,13 +58,7 @@ class AxisAlignCalc {
 					list[i] = list[i - 1] + sizes[i - 1] + dl;
 				}
 			} else {
-				if(minGap > 0.0) {
-					let p0 = (dis * 0.5 + min) - (size + (len - 1) * minGap) * 0.5;
-					for (let i = 0; i < len; i++) {
-						list[i] = p0;
-						p0 += sizes[i] + minGap;
-					}
-				} else {
+				if(minGap <= 0.0){
 					let p0 = (list[0] + 0.5 * sizes[0]);
 					dis = (list[len - 1] + 0.5 * sizes[len - 1]) - p0;
 					let dl = dis / (len - 1);
@@ -73,14 +70,13 @@ class AxisAlignCalc {
 					}
 				}
 			}
-		}else {
-			if (size >= dis) {
-				if(minGap > 0.0) {
-					let p0 = (dis * 0.5 + min) - (size + (len - 1) * minGap) * 0.5;
-					for (let i = 0; i < len; i++) {
-						list[i] = p0;
-						p0 += sizes[i] + minGap;
-					}
+		}
+		if (size >= dis) {
+			if(minGap > 0.0) {
+				let p0 = (dis * 0.5 + min) - (size + (len - 1) * minGap) * 0.5;
+				for (let i = 0; i < len; i++) {
+					list[i] = p0;
+					p0 += sizes[i] + minGap;
 				}
 			}
 		}

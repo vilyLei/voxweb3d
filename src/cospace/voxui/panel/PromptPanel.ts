@@ -31,7 +31,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 	/**
 	 * y轴留白比例
 	 */
-	marginYFactor: number = 0.1;
+	marginYFactor: number = 0.6;
 
 	constructor() { super(); }
 
@@ -158,12 +158,35 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		this.addEntity(confirmBtn);
 		this.addEntity(textLabel);
 	}
+	private updateBgSize(): void {
+		let pw = this.m_panelW;
+		let textLabel = this.m_promptLabel;
+		textLabel.update();
+		let confirmBtn = this.m_confirmBtn;
+		confirmBtn.update();
+		let cancelBtn = this.m_cancelBtn;
+		cancelBtn.update();
+		let btw2 = confirmBtn.getWidth() + cancelBtn.getWidth();
+		let bw = btw2 + Math.round(0.2 * btw2) + 70;
+
+		let tw = textLabel.getWidth() + 70;
+
+		tw = bw > tw ? bw : tw;
+		pw = this.m_panelW = tw;
+
+		let bgLabel = this.m_bgLabel;
+		if(Math.abs(bgLabel.getWidth() - pw) > 0.01) {
+			bgLabel.setScaleX(1.0);
+			bgLabel.update();
+			tw = bgLabel.getWidth();
+			bgLabel.setScaleX(pw / tw);
+			bgLabel.update();
+		}
+	}
 	protected layoutItems(): void {
 
-		let pw = this.m_panelW;
-		let ph = this.m_panelH;
 
-		let textLabel = this.m_promptLabel;
+		/*
 		textLabel.update();
 		let confirmBtn = this.m_confirmBtn;
 		confirmBtn.update();
@@ -185,6 +208,21 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		bgLabel.setScaleX(pw / tw);
 		bgLabel.update();
 
+		//*/
+
+		this.updateBgSize();
+
+		let pw = this.m_panelW;
+		let ph = this.m_panelH;
+		let textLabel = this.m_promptLabel;
+		let sizes = [this.m_btnH, textLabel.getHeight()];
+		let pyList = this.m_alignCalc.calcAvgFixLayout(sizes, this.m_panelH, 15, this.marginYFactor, 0.5);
+		let px = (pw - textLabel.getWidth()) * 0.5;
+		textLabel.setXY(px, pyList[1]);
+		textLabel.update();
+		
+		this.layoutButtons(px, pyList[0]);
+		/*
 
 		let btnW = this.m_btnW;
 		let btnH = this.m_btnH;
@@ -213,6 +251,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		py = ph - py - textLabel.getHeight();
 		textLabel.setXY(px, py);
 		textLabel.update();
+		//*/
 	}
 	private m_alignCalc = new AxisAlignCalc();
 	protected layoutButtons(px: number, py: number): void {
