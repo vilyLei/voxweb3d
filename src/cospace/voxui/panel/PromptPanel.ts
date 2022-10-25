@@ -25,6 +25,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 	private m_confirmFunc: () => void = null;
 	private m_cancelFunc: () => void = null;
 	private m_cancelBtnVis: boolean = true;
+	marginWidth: number = 70;
 	/**
 	 * x轴留白比例
 	 */
@@ -192,9 +193,9 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		let bw = cancelBtn.isVisible() ? cancelBtn.getWidth() : 0;
 
 		let btw2 = confirmBtn.getWidth() + bw;
-		bw = btw2 + Math.round(0.2 * btw2) + 70;
+		bw = btw2 + Math.round(0.2 * btw2) + this.marginWidth;
 
-		let tw = textLabel.getWidth() + 70;
+		let tw = textLabel.getWidth() + this.marginWidth;
 
 		tw = bw > tw ? bw : tw;
 		pw = this.m_panelW = tw;
@@ -205,7 +206,6 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			bgLabel.update();
 			tw = bgLabel.getWidth();
 			bgLabel.setScaleX(pw / tw);
-			console.log("XXXX updateBgSize(), bgLabel.getWidth(): ", bgLabel.getWidth());
 			bgLabel.update();
 		}
 	}
@@ -266,7 +266,6 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			this.m_cancelBtn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
 
 			this.layoutItems();
-			console.log("Prompt open this.");
 		}
 	}
 	protected closeThis(): void {
@@ -276,7 +275,6 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			this.m_scene.removeEventListener(ME.MOUSE_DOWN, this, this.stMouseDownListener);
 			this.m_confirmBtn.removeEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
 			this.m_cancelBtn.removeEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
-			console.log("Prompt close this.");
 		}
 	}
 
@@ -297,9 +295,6 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 	}
 	private btnMouseUpListener(evt: any): void {
 
-		// if(!this.m_confirmBtn.getREntities()[0].isInRenderer()) {
-		// 	return;
-		// }
 		console.log("PromptPanel::btnMouseUpListener(), evt.currentTarget: ", evt.currentTarget);
 		let uuid = evt.uuid;
 		switch (uuid) {
