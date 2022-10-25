@@ -8,6 +8,7 @@ import { TextLabel } from "../entity/TextLabel";
 import { UIPanel } from "./UIPanel";
 import { ButtonBuilder, ITextParam } from "../button/ButtonBuilder";
 import IColor4 from "../../../vox/material/IColor4";
+import { AxisAlignCalc } from "../layout/AxisAlignCalc";
 
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
@@ -23,9 +24,14 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 	private m_cancelNS: string;
 	private m_confirmFunc: () => void = null;
 	private m_cancelFunc: () => void = null;
-
-	layoutXFactor: number = 0.7;
-	layoutYFactor: number = 0.9;
+	/**
+	 * x轴留白比例
+	 */
+	marginXFactor: number = 0.5;
+	/**
+	 * y轴留白比例
+	 */
+	marginYFactor: number = 0.1;
 
 	constructor() { super(); }
 
@@ -192,8 +198,8 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		let disH = btnH + textLabel.getHeight();
 		let gapH = (ph - disH) * 0.5;
 
-		px = this.layoutXFactor * gapW;
-		py = this.layoutYFactor * gapH;
+		px = (1.0 - this.marginXFactor) * gapW;
+		py = (1.0 - this.marginYFactor) * gapH;
 
 		// confirmBtn.setXY(px, py);
 		// confirmBtn.update();
@@ -208,21 +214,22 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		textLabel.setXY(px, py);
 		textLabel.update();
 	}
+	private m_alignCalc = new AxisAlignCalc();
 	protected layoutButtons(px: number, py: number): void {
 
-		let pw = this.m_panelW;
+		let sizes = [this.m_btnW, this.m_btnW];
+		// let pxList = this.m_alignCalc.calcAvgLayout(sizes, this.m_panelW, this.marginXFactor, 0.5);
+		let pxList = this.m_alignCalc.calcAvgFixLayout(sizes, this.m_panelW, 10, this.marginXFactor, 0.5);
+
 		let confirmBtn = this.m_confirmBtn;
 		let cancelBtn = this.m_cancelBtn;
-
-		let btnW = this.m_btnW;
-		let btnH = this.m_btnH;
-
-		confirmBtn.setXY(px, py);
+		
+		confirmBtn.setXY(pxList[0], py);
 		confirmBtn.update();
 
-		px = pw - px - btnW;
-		cancelBtn.setXY(px, py);
+		cancelBtn.setXY(pxList[1], py);
 		cancelBtn.update();
+
 	}
 	protected openThis(): void {
 

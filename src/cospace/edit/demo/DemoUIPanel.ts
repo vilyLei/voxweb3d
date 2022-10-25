@@ -66,15 +66,15 @@ export class DemoUIPanel {
 	initialize(): void {
 		console.log("DemoUIPanel::initialize() ...");
 
-		let layout = new AxisAlignCalc();
+		// let layout = new AxisAlignCalc();
 
-		let sizes = [10, 10, 10];
-		let range = layout.calcRange(0.5, 100, 0.3);
-		console.log("range: ", range);
-		let posList = layout.avgLayout(sizes, range[0], range[1]);
-		console.log("posList: ", posList);
+		// let sizes = [10, 10, 10];
+		// let range = layout.calcRange(100, 0.3, 0.5);
+		// console.log("range: ", range);
+		// let posList = layout.avgLayout(sizes, range[0], range[1]);
+		// console.log("posList: ", posList);
 
-		return;
+		// return;
 		this.initEngineModule();
 	}
 
