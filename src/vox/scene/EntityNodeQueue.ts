@@ -84,7 +84,7 @@ export default class EntityNodeQueue {
 		if (RSEntityFlag.TestSpaceContains(entity.__$rseFlag)) {
 			let uid: number = RSEntityFlag.GetSpaceUid(entity.__$rseFlag);
 			if (this.m_entieies[uid] == entity) {
-				this.m_list[uid].entity = null;
+				this.m_list[uid].reset();
 				this.restoreId(uid);
 				entity.__$rseFlag = RSEntityFlag.RemoveSpaceUid(entity.__$rseFlag);
 			}
