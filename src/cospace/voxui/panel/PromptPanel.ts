@@ -24,6 +24,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 	private m_cancelNS: string;
 	private m_confirmFunc: () => void = null;
 	private m_cancelFunc: () => void = null;
+	private m_cancelBtnVis: boolean = true;
 	/**
 	 * x轴留白比例
 	 */
@@ -54,12 +55,21 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			this.m_bgColor = CoMaterial.createColor4();
 		}
 	}
+
 	applyConfirmButton(): void {
-		if(this.m_cancelBtn != null) {
-			this.m_cancelBtn.setVisible(false);
+
+		this.m_cancelBtnVis = false;
+		let btn = this.m_cancelBtn;
+		if(btn != null && !btn.isVisible()) {
+			this.m_cancelBtn.setVisible(false);			
+			if (this.m_confirmBtn != null && this.isOpen()) {
+				this.layoutItems();
+				this.layout();
+			}
 		}
 	}
 	applyAllButtons(): void {
+		this.m_cancelBtnVis = true;
 		if(this.m_cancelBtn != null) {
 			this.m_cancelBtn.setVisible(true);
 		}
@@ -200,7 +210,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		}
 	}
 	protected layoutItems(): void {
-
+		this.m_cancelBtn.setVisible( this.m_cancelBtnVis );
 		this.updateBgSize();
 
 		let pw = this.m_panelW;
@@ -260,7 +270,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		}
 	}
 	protected closeThis(): void {
-
+		this.m_cancelBtnVis = true;
 		let ME = CoRScene.MouseEvent;
 		if (this.m_scene != null) {
 			this.m_scene.removeEventListener(ME.MOUSE_DOWN, this, this.stMouseDownListener);

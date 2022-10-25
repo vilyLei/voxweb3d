@@ -88,6 +88,7 @@ class NormalEntityGroup {
 
 		let ins = this.m_vcoapp.coappIns;
 		if (ins != null) {
+			this.uiscene.prompt.getPromptPanel().applyConfirmButton();
 			this.uiscene.prompt.showPrompt("Model loading!");
 			this.m_loadTotal++;
 			let unit = ins.getCPUDataByUrlAndCallback(
@@ -129,6 +130,7 @@ class NormalEntityGroup {
 
 		this.m_loadedTotal ++;
 		if(this.m_loadedTotal >= this.m_loadTotal) {
+			this.uiscene.prompt.getPromptPanel().applyConfirmButton();
 			this.uiscene.prompt.showPrompt("Model loaded finish!");
 		}
 		
