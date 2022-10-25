@@ -65,6 +65,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 				pl.update();
 				if (this.m_confirmBtn != null && this.isOpen()) {
 					this.layoutItems();
+					this.layout();
 				}
 			}
 		}
@@ -140,7 +141,6 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			tta,
 			textParam, colors
 		);
-		confirmBtn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
 		this.m_confirmBtn = confirmBtn;
 
 		textParam.text = this.m_cancelNS;
@@ -151,7 +151,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			tta,
 			textParam, colors
 		);
-		cancelBtn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
+		// cancelBtn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
 		this.m_cancelBtn = cancelBtn;
 
 		this.addEntity(cancelBtn);
@@ -180,78 +180,24 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			bgLabel.update();
 			tw = bgLabel.getWidth();
 			bgLabel.setScaleX(pw / tw);
+			console.log("XXXX updateBgSize(), bgLabel.getWidth(): ", bgLabel.getWidth());
 			bgLabel.update();
 		}
 	}
 	protected layoutItems(): void {
 
-
-		/*
-		textLabel.update();
-		let confirmBtn = this.m_confirmBtn;
-		confirmBtn.update();
-		let cancelBtn = this.m_cancelBtn;
-		cancelBtn.update();
-		let btw2 = confirmBtn.getWidth() + cancelBtn.getWidth();
-		let bw = btw2 + Math.round(0.2 * btw2) + 70;
-
-		let tw = textLabel.getWidth() + 70;
-
-		tw = bw > tw ? bw : tw;
-		pw = this.m_panelW = tw;
-
-		let bgLabel = this.m_bgLabel;
-
-		bgLabel.setScaleX(1.0);
-		bgLabel.update();
-		tw = bgLabel.getWidth();
-		bgLabel.setScaleX(pw / tw);
-		bgLabel.update();
-
-		//*/
-
 		this.updateBgSize();
 
 		let pw = this.m_panelW;
-		let ph = this.m_panelH;
 		let textLabel = this.m_promptLabel;
 		let sizes = [this.m_btnH, textLabel.getHeight()];
 		let pyList = this.m_alignCalc.calcAvgFixLayout(sizes, this.m_panelH, 15, this.marginYFactor, 0.5);
 		let px = (pw - textLabel.getWidth()) * 0.5;
 		textLabel.setXY(px, pyList[1]);
 		textLabel.update();
-		
+
 		this.layoutButtons(px, pyList[0]);
-		/*
-
-		let btnW = this.m_btnW;
-		let btnH = this.m_btnH;
-
-		let px = 0;
-		let py = (ph - btnH) * 0.5;
-
-		let disW = btnW * 2.0;
-		let gapW = (pw - disW) * 0.5;
-
-		let disH = btnH + textLabel.getHeight();
-		let gapH = (ph - disH) * 0.5;
-
-		px = (1.0 - this.marginXFactor) * gapW;
-		py = (1.0 - this.marginYFactor) * gapH;
-
-		// confirmBtn.setXY(px, py);
-		// confirmBtn.update();
-
-		// px = pw - px - btnW;
-		// cancelBtn.setXY(px, py);
-		// cancelBtn.update();
-		this.layoutButtons(px, py);
-
-		px = (pw - textLabel.getWidth()) * 0.5;
-		py = ph - py - textLabel.getHeight();
-		textLabel.setXY(px, py);
-		textLabel.update();
-		//*/
+		
 	}
 	private m_alignCalc = new AxisAlignCalc();
 	protected layoutButtons(px: number, py: number): void {
@@ -275,8 +221,11 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		let ME = CoRScene.MouseEvent;
 		if (this.m_scene != null) {
 			this.m_scene.addEventListener(ME.MOUSE_DOWN, this, this.stMouseDownListener);
+			this.m_confirmBtn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
+			this.m_cancelBtn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
 
 			this.layoutItems();
+			console.log("Prompt open this.");
 		}
 	}
 	protected closeThis(): void {
@@ -284,12 +233,15 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		let ME = CoRScene.MouseEvent;
 		if (this.m_scene != null) {
 			this.m_scene.removeEventListener(ME.MOUSE_DOWN, this, this.stMouseDownListener);
+			this.m_confirmBtn.removeEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
+			this.m_cancelBtn.removeEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
+			console.log("Prompt close this.");
 		}
 	}
 
 	private stMouseDownListener(evt: any): void {
 
-		console.log("stMouseDownListener...");
+		console.log("Prompt stMouseDownListener...");
 
 		let px = evt.mouseX;
 		let py = evt.mouseY;
@@ -304,6 +256,9 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 	}
 	private btnMouseUpListener(evt: any): void {
 
+		// if(!this.m_confirmBtn.getREntities()[0].isInRenderer()) {
+		// 	return;
+		// }
 		console.log("PromptPanel::btnMouseUpListener(), evt.currentTarget: ", evt.currentTarget);
 		let uuid = evt.uuid;
 		switch (uuid) {

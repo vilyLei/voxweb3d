@@ -83,15 +83,16 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 			if(rpi >= 0) this.m_rpi = rpi;
 
 			this.m_scene.addEntity(this, this.m_rpi);
-			if (this.autoLayout) {
-				this.addLayoutEvt();
-				this.layout();
-			}
+			
 
 			this.m_isOpen = true;
 			this.setVisible(true);
 
 			this.openThis();
+			if (this.autoLayout) {
+				this.addLayoutEvt();
+				this.layout();
+			}
 			if(this.m_openListener != null) {
 				this.m_openListener();
 			}
@@ -202,6 +203,7 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 	protected layout(): void {
 		let sc = this.getScene();
 		if (sc != null) {
+			this.update();
 			let rect = sc.getRect();
 			let px = rect.x + (rect.width - this.getWidth()) * 0.5;
 			let py = rect.y + (rect.height - this.getHeight()) * 0.5;
