@@ -12,13 +12,13 @@ class PostOutline implements ICoRenderNode {
 	private m_rscene: ICoRendererScene;
 	private m_postOutline: IOcclusionPostOutline;
 
-	constructor(rscene: ICoRendererScene) {
+	constructor(rscene: ICoRendererScene, urlChecker: (url: string) => string = null) {
 
 		this.m_rscene = rscene;
 
 		let url = "static/cospace/renderEffect/occPostOutline/OccPostOutlineModule.umd.js";
 
-		new ModuleLoader(1)
+		new ModuleLoader(1, null, urlChecker)
 			.setCallback((): void => {
 
 				this.m_postOutline = OccPostOutlineModule.create();

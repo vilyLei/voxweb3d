@@ -59,6 +59,7 @@ export class DemoTransEditor {
 	private m_transUI = new TransUI();
 	private m_nvaUI = new NavigationUI();
 
+	private m_urlChecker: (url: string) => string = null;
 	private m_vcoapp: ViewerCoSApp;
 	private m_vmctx: ViewerMaterialCtx;
 	private m_outline: PostOutline;
@@ -93,7 +94,7 @@ export class DemoTransEditor {
 			}
 			let hostUrl = window.location.href;
 			url = url.trim();
-			if(hostUrl.indexOf(".artvily.") > 0 || true) {
+			if(hostUrl.indexOf(".artvily.") > 0) {
 				let i = url.lastIndexOf("/");
 				let j = url.indexOf(".", i);
 				
@@ -111,6 +112,7 @@ export class DemoTransEditor {
 			}
 			return url;
 		}
+		this.m_urlChecker = urlChecker;
 
 		let url = "static/cospace/engine/uiInteract/CoUIInteraction.umd.js";
 		let uiInteractML = new ModuleLoader(2, (): void => {
@@ -249,7 +251,7 @@ export class DemoTransEditor {
 			this.m_graph = CoRScene.createRendererSceneGraph();
 			this.m_graph.addScene(this.m_rsc);
 			this.m_graph.addScene(this.m_editUIRenderer);
-			this.m_outline = new PostOutline(rscene);
+			this.m_outline = new PostOutline(rscene, this.m_urlChecker);
 
 		}
 	}
