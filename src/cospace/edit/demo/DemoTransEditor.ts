@@ -105,7 +105,15 @@ export class DemoTransEditor {
 		let url9 = " static/cospace/cotexture/CoTexture.umd.js";
 		let url10 = "static/cospace/coui/CoUI.umd.js";
 		let url11 = "static/cospace/cotext/CoText.umd.js";
-
+		let urlChecker = (url: string): string => {
+			let i = url.lastIndexOf("/");
+			let j = url.indexOf(".");
+			let hostUrl = "http://localhost:9000/test/";
+			let fileName = (url.slice(i,j)).toLocaleLowerCase();
+			let purl = hostUrl + url.slice(0,i) + fileName + ".js";
+			console.log("urlChecker(), purl: ", purl);
+			return purl;
+		}
 		new ModuleLoader(2, (): void => {
 			if (this.isEngineEnabled()) {
 				console.log("engine modules loaded ...");
@@ -126,7 +134,7 @@ export class DemoTransEditor {
 					this.initModel();
 				});
 			}
-		}).addLoader(uiInteractML)
+		}, urlChecker).addLoader(uiInteractML)
 			.load(url0)
 			.load(url1);
 

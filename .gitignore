@@ -23,6 +23,7 @@ dist/
 node_modules/
 *.code-workspace
 src/large/
+public/test/
 public/static/modules/
 public/static/assets/pbr/
 public/static/private/

@@ -5,6 +5,7 @@ class PackedLoader {
 	private static s_uid: number = 0;
 	private m_uid: number = PackedLoader.s_uid++;
 
+	private m_urlChecker: (url: string) => string = null;
 	private m_times: number;
 	private m_oneTimes: boolean = true;
 	private m_loaderMap: Map<number, PackedLoader> = null;
@@ -15,9 +16,10 @@ class PackedLoader {
 	 * @param times 记录总共需要的完成操作的响应次数。这个次数可能是由load直接产生，也可能是由于别的地方驱动。
 	 * @param callback 完成所有响应的之后的回调
 	 */
-	constructor(times: number, callback: (m?: PackedLoader) => void = null) {
+	constructor(times: number, callback: (m?: PackedLoader) => void = null, urlChecker: (url: string) => string = null) {
 		this.m_callback = callback;
 		this.m_times = times;
+		this.m_urlChecker = urlChecker;
 	}
 	getUid(): number {
 		return this.m_uid;
@@ -76,6 +78,9 @@ class PackedLoader {
 		if (url == "") {
 			return this;
 		}
+		if(this.m_urlChecker != null) {
+			url = this.m_urlChecker(url);
+		}
 		let loadedMap = PackedLoader.loadedMap;
 		if (loadedMap.has(url)) {
 			this.use();
@@ -94,7 +99,7 @@ class PackedLoader {
 		}
 		loadingMap.set(url, [this]);
 		this.loadData(url);
-		
+
 		return this;
 	}
 	/**
@@ -154,7 +159,7 @@ class PackedLoader {
 	clearAllData(): void {
 	}
 	destroy(): void {
-
+		this.m_urlChecker = null;
 	}
 }
 
