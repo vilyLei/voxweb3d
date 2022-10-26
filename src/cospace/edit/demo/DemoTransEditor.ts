@@ -112,7 +112,6 @@ export class DemoTransEditor {
 			return url;
 		}
 
-		// let url = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.js";
 		let url = "static/cospace/engine/uiInteract/CoUIInteraction.umd.js";
 		let uiInteractML = new ModuleLoader(2, (): void => {
 			this.initInteract();

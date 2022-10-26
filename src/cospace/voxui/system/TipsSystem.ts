@@ -1,56 +1,52 @@
 import { ICoUIScene } from "../scene/ICoUIScene";
-import { IPromptPanel } from "../panel/IPromptPanel";
-import { PromptPanel } from "../panel/PromptPanel";
+// import { ITipEntity } from "../panel/ITipEntity";
+// import { TipEntity } from "../panel/TipEntity";
+import { IRectTextTip } from "../../voxui/entity/IRectTextTip";
 import { IPromptSystem } from "./IPromptSystem";
 
-import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import IColor4 from "../../../vox/material/IColor4";
+
+import { ICoUI } from "../../voxui/ICoUI";
+
+import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 declare var CoMaterial: ICoMaterial;
+declare var CoUI: ICoUI;
 /**
  * 光标移入的信息提示系统
  */
 class TipsSystem {
 
 	private m_uiscene: ICoUIScene;
-	private m_promptPanel: PromptPanel = null;
+	private m_tipEntity: IRectTextTip = null;
 	constructor(){}
 
 	initialize(uiscene: ICoUIScene, rpi: number = 3): void {
-		if(this.m_promptPanel == null) {
+		if(this.m_tipEntity == null) {
 			this.m_uiscene = uiscene;
-			let pl = new PromptPanel();
-			pl.initialize(this.m_uiscene, rpi, 300, 200, 120, 50);
-			pl.setZ(3.0);
-			pl.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
-			this.m_promptPanel = pl;
-			// pl.open();
-			// pl.close();
+			let tip = CoUI.createRectTextTip();
+			tip.initialize(uiscene, rpi);
+			this.m_tipEntity = tip;
 		}
 	}
 	
-	setPromptListener(confirmFunc: () => void, cancelFunc: () => void, type: number = 0): void {
-		if(this.m_promptPanel != null) {
-			this.m_promptPanel.setListener(confirmFunc, cancelFunc);
-		}
-	}
-	showPrompt(promptInfo: string, type: number = 0): void {
-		if(this.m_promptPanel != null) {
-			this.m_promptPanel.setPrompt(promptInfo);
-			this.m_promptPanel.open();
-		}
-	}
-	setPromptTextColor(color: IColor4, type: number = 0): void {
-		if(this.m_promptPanel != null) {
-			this.m_promptPanel.setPromptTextColor(color);
-		}
-	}
-	setPromptBGColor(color: IColor4, type: number = 0): void {
-		if(this.m_promptPanel != null) {
-			this.m_promptPanel.setBGColor(color);
-		}
-	}
-	getPromptPanel(type: number = 0): IPromptPanel {
-		return this.m_promptPanel;
+	// showTipInfo(promptInfo: string, type: number = 0): void {
+	// 	if(this.m_tipEntity != null) {
+	// 		// this.m_tipEntity.setPrompt(promptInfo);
+	// 		// this.m_tipEntity.open();
+	// 	}
+	// }
+	// setPromptTextColor(color: IColor4, type: number = 0): void {
+	// 	if(this.m_tipEntity != null) {
+	// 		// this.m_tipEntity.setPromptTextColor(color);
+	// 	}
+	// }
+	// setPromptBGColor(color: IColor4, type: number = 0): void {
+	// 	if(this.m_tipEntity != null) {
+	// 		// this.m_tipEntity.setBGColor(color);
+	// 	}
+	// }
+	getTipEntity(type: number = 0): IRectTextTip {
+		return this.m_tipEntity;
 	}
 }
 export { TipsSystem };
