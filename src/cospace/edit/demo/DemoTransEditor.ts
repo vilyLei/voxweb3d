@@ -87,11 +87,36 @@ export class DemoTransEditor {
 	}
 	private initEngineModule(): void {
 
+		let urlChecker = (url: string): string => {
+			if(url.indexOf(".artvily.") > 0) {
+				return url;
+			}
+			let hostUrl = window.location.href;
+			url = url.trim();
+			if(hostUrl.indexOf(".artvily.") > 0 || true) {
+				let i = url.lastIndexOf("/");
+				let j = url.indexOf(".", i);
+				
+				// hostUrl = "http://localhost:9000/test/";
+				hostUrl = "http://www.artvily.com:9090/";
+				let fileName = (url.slice(i,j)).toLocaleLowerCase();
+				if(fileName == "") {
+					console.error("err: ",url);
+					console.error("i, j: ",i,j);
+				}
+				let purl = hostUrl + url.slice(0,i) + fileName + ".js";
+				console.log("urlChecker(), fileName:-"+fileName+"-");
+				console.log("urlChecker(), purl: ", purl);
+				return purl;
+			}
+			return url;
+		}
+
 		// let url = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.js";
 		let url = "static/cospace/engine/uiInteract/CoUIInteraction.umd.js";
 		let uiInteractML = new ModuleLoader(2, (): void => {
 			this.initInteract();
-		});
+		}, urlChecker);
 
 		let url0 = "static/cospace/engine/renderer/CoRenderer.umd.js";
 		let url1 = "static/cospace/engine/rscene/CoRScene.umd.js";
@@ -102,18 +127,10 @@ export class DemoTransEditor {
 		let url6 = "static/cospace/coentity/CoEntity.umd.js";
 		let url7 = "static/cospace/particle/CoParticle.umd.js";
 		let url8 = "static/cospace/coMaterial/CoMaterial.umd.js";
-		let url9 = " static/cospace/cotexture/CoTexture.umd.js";
+		let url9 = "static/cospace/cotexture/CoTexture.umd.js";
 		let url10 = "static/cospace/coui/CoUI.umd.js";
 		let url11 = "static/cospace/cotext/CoText.umd.js";
-		let urlChecker = (url: string): string => {
-			let i = url.lastIndexOf("/");
-			let j = url.indexOf(".");
-			let hostUrl = "http://localhost:9000/test/";
-			let fileName = (url.slice(i,j)).toLocaleLowerCase();
-			let purl = hostUrl + url.slice(0,i) + fileName + ".js";
-			console.log("urlChecker(), purl: ", purl);
-			return purl;
-		}
+		
 		new ModuleLoader(2, (): void => {
 			if (this.isEngineEnabled()) {
 				console.log("engine modules loaded ...");
@@ -121,18 +138,20 @@ export class DemoTransEditor {
 
 				this.initScene();
 				new ModuleLoader(3, (): void => {
+
 					console.log("math module loaded ...");
+
 					new ModuleLoader(7, (): void => {
 						console.log("ageom module loaded ...");
 						this.initEditUI();
-					}).load(url3).load(url4).load(url6).load(url7).load(url9).load(url10).load(url11);
+					}, urlChecker).load(url3).load(url4).load(url6).load(url7).load(url9).load(url10).load(url11);
 
-				}).load(url2).load(url5).load(url8);
+				}, urlChecker).load(url2).load(url5).load(url8);
 
 				this.m_vcoapp = new ViewerCoSApp();
 				this.m_vcoapp.initialize((): void => {
 					this.initModel();
-				});
+				}, urlChecker);
 			}
 		}, urlChecker).addLoader(uiInteractML)
 			.load(url0)

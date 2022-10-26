@@ -20,7 +20,7 @@ export class ViewerCoSApp {
 
 	constructor() {}
 
-	initialize(callback: () => void): void {
+	initialize(callback: () => void, urlChecker: (url: string) => string = null): void {
 		let modules: CoTaskCodeModuleParam[] = [
 			{ url: "static/cospace/core/coapp/CoSpaceApp.umd.js", name: CoModuleNS.coSpaceApp, type: CoModuleFileType.JS },
 			{ url: "static/cospace/core/code/ThreadCore.umd.js", name: CoModuleNS.threadCore, type: CoModuleFileType.JS },
@@ -30,8 +30,13 @@ export class ViewerCoSApp {
 			{ url: "static/cospace/modules/fbxFast/ModuleFBXGeomFastParser.umd.js", name: CoModuleNS.fbxFastParser, type: CoModuleFileType.JS }
 		];
 		this.m_modules = modules;
+		if(urlChecker != null) {
+			for(let i = 0; i < modules.length; ++i) {
+				modules[i].url = urlChecker(modules[i].url);
+			}
+		}
 
-		new ModuleLoader(1)
+		new ModuleLoader(1,null,urlChecker)
 			.setCallback((): void => {
 				this.initCoSpaceApp();
 				if(callback != null) {

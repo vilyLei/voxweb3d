@@ -12,21 +12,21 @@ import { DataUnit } from "./schedule/base/DataUnit";
 
 class Instance {
 
-	/**
-	 * (引擎)数据协同中心实例
-	 */
-	readonly cospace: CoSpace = new CoSpace();
-    constructor(){}
+    /**
+     * (引擎)数据协同中心实例
+     */
+    readonly cospace: CoSpace = new CoSpace();
+    constructor() { }
 
-	/**
-	 * 设置线程中子模块间依赖关系的json描述字符串
-	 * @param graphJsonStr json描述字符串
-	 */
-     setThreadDependencyGraphJsonString(jsonStr: string): void {
-        this.cospace.setThreadDependencyGraphJsonString( jsonStr );
-     }
-	setTaskModuleParams(params: ITaskCodeModuleParam[]): void {
-        this.cospace.setTaskModuleParams( params );
+    /**
+     * 设置线程中子模块间依赖关系的json描述字符串
+     * @param graphJsonStr json描述字符串
+     */
+    setThreadDependencyGraphJsonString(jsonStr: string): void {
+        this.cospace.setThreadDependencyGraphJsonString(jsonStr);
+    }
+    setTaskModuleParams(params: ITaskCodeModuleParam[]): void {
+        this.cospace.setTaskModuleParams(params);
     }
     initialize(threadsTotal: number, coreCodeUrl: string, autoSendData: boolean = true): void {
 
@@ -43,22 +43,22 @@ class Instance {
      * @returns 数据单元实例，用户只能访问不能更改这个实例内部的数据状态，如果必要则可以申请复制一份
      */
     getCPUDataByUrlAndCallback(url: string, dataFormat: DataFormat, callback: (unit: DataUnit, status: number) => void, immediate: boolean = false): DataUnit {
-		switch(dataFormat) {
-			case DataFormat.CTM:
-			case DataFormat.OBJ:
-			case DataFormat.Draco:
-			case DataFormat.FBX:
-			case DataFormat.GLB:
-				return this.cospace.geometry.getCPUDataByUrlAndCallback(url, dataFormat, callback, immediate);
-				break;
-			case DataFormat.Jpg:
-			case DataFormat.Png:
-			case DataFormat.Gif:
-				return this.cospace.texture.getCPUDataByUrlAndCallback(url, dataFormat, callback, immediate);
-				break;
-			default:
-				break;
-		}
+        switch (dataFormat) {
+            case DataFormat.CTM:
+            case DataFormat.OBJ:
+            case DataFormat.Draco:
+            case DataFormat.FBX:
+            case DataFormat.GLB:
+                return this.cospace.geometry.getCPUDataByUrlAndCallback(url, dataFormat, callback, immediate);
+                break;
+            case DataFormat.Jpg:
+            case DataFormat.Png:
+            case DataFormat.Gif:
+                return this.cospace.texture.getCPUDataByUrlAndCallback(url, dataFormat, callback, immediate);
+                break;
+            default:
+                break;
+        }
         return null;
     }
     destroy(): void {
