@@ -1,5 +1,3 @@
-
-// (A) LOAD MODULES
 const path = require("path"),
     fs = require("fs");
 
@@ -11,7 +9,7 @@ function fsExistsSync(path) {
     }
     return true;
 }
-// 递归创建目录 同步方法
+
 function mkdirsSync(dirname) {
     if (fs.existsSync(dirname)) {
         return true;
@@ -43,43 +41,38 @@ function walkSync(currentDirPath, callback) {
         }
     });
 }
+
+function copyLibToServer(filePath, rename) {
+    let path = filePath + "";
+    // console.log("find path: ", path);
+    let keyStr = "../public/static/";
+    let i = keyStr.length;
+    let url = "d:/vdev/server/voxserver/bin/static/" + path.slice(i);
+    // console.log("find dst url: ", url);
+    i = url.lastIndexOf("\\");
+    let dir = url.slice(0, i + 1);
+    let fileName = url.slice(i + 1);
+    // console.log("find dst dir: ", dir, ", fileName: ", fileName);
+    const isExisted = fsExistsSync(dir);
+    // console.log("isExisted: ", isExisted);
+    if (!isExisted) {
+        mkdirsSync(dir);
+    }
+    if (rename) {
+        fileName = fileName.slice(0, fileName.indexOf(".")) + ".js";
+        fileName = fileName.toLowerCase();
+    }
+    url = dir + fileName;
+    fs.copyFileSync(path, dir + fileName);
+    console.log("copy finish url: ", url);
+}
 walkSync('../public/static/cospace/', function (filePath, stat) {
+    // let flag = filePath.indexOf("umd.min.js") > 0 ? 1 : 0;
+    // flag += filePath.indexOf("\\dracoLib\\") > 0 ? 1 : 0;
     if (filePath.indexOf("umd.min.js") > 0) {
-        let path = filePath + "";
-        // console.log("find path: ", path);
-        let keyStr = "../public/static/";
-        let i = keyStr.length;
-        let url = "d:/vdev/server/voxserver/bin/static/" +  path.slice(i);
-        console.log("find dst url: ", url);
-        i = url.lastIndexOf("\\");
-        let dir = url.slice(0, i + 1);
-        let fileName = url.slice(i+1);
-        console.log("find dst dir: ", dir, ", fileName: ", fileName);
-        const isExisted = fsExistsSync(dir);
-        console.log("isExisted: ", isExisted);
-        if (!isExisted) {
-            mkdirsSync(dir);
-        }
-        let currFile = fileName.slice(0, fileName.indexOf(".")) + ".js";
-        currFile = currFile.toLowerCase();
-        fs.copyFileSync(path, dir + currFile);
-    }else if(filePath.indexOf("\\dracoLib\\") > 0) {
-        let path = filePath + "";
-        // console.log("find path: ", path);
-        let keyStr = "../public/static/";
-        let i = keyStr.length;
-        let url = "d:/vdev/server/voxserver/bin/static/" +  path.slice(i);
-        console.log("find dst url: ", url);
-        i = url.lastIndexOf("\\");
-        let dir = url.slice(0, i + 1);
-        let fileName = url.slice(i+1);
-        console.log("find dst dir: ", dir, ", fileName: ", fileName);
-        const isExisted = fsExistsSync(dir);
-        console.log("isExisted: ", isExisted);
-        if (!isExisted) {
-            mkdirsSync(dir);
-        }
-        fs.copyFileSync(path, dir + fileName);
+        copyLibToServer(filePath, true);
+    }else if (filePath.indexOf("\\dracoLib\\") > 0){
+        copyLibToServer(filePath, false);
     }
 });
 /*
