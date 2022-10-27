@@ -66,30 +66,11 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 		unit.data = new GeometryDataContainer();
 		unit.data.dataFormat = dataFormat;
 		unit.url = url;
-		console.log("VVVVVVV XXXXX this.isInitialized(): ", this.isInitialized());
 		if(this.isInitialized()) {
 			this.addUrlToTask(unit);
 		}else {
 			this.m_waitingUnits.push(unit);
 		}
-		// console.log("GeometryResourceSchedule::createDataUnit(), unit.data.dataFormat: ", unit.data.dataFormat);
-		// switch (unit.data.dataFormat) {
-		// 	case DataFormat.CTM:
-		// 		this.m_ctmListener.addUrlToTask(url);
-		// 		break;
-		// 	case DataFormat.Draco:
-		// 		this.m_dracoListener.addUrlToTask(url);
-		// 		break;
-		// 	case DataFormat.OBJ:
-		// 		this.m_objListener.addUrlToTask(url);
-		// 		break;
-		// 	case DataFormat.FBX:
-		// 		this.m_fbxListener.addUrlToTask(url);
-		// 		break;
-		// 	default:
-		// 		console.error("GeometryResourceSchedule::createDataUnit(), illegal data format:", unit.data.dataFormat, ", its url: ", url);
-		// 		break;
-		// }
 		return unit;
 	}
 	/**
@@ -120,7 +101,7 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 
 		let units = this.m_waitingUnits;
 		for(let i = 0; i < units.length; i++) {
-			// console.log("XXXXXX deferred units["+i+"]: ", units[i]);
+			// console.log("XXXXXX geometry deferred units["+i+"]: ", units[i]);
 			this.addUrlToTask(units[i]);
 		}
 		this.m_waitingUnits = [];

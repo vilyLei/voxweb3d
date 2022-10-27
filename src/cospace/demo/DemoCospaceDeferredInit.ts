@@ -55,7 +55,7 @@ export class DemoCospaceDeferredInit {
 			this.mouseDown(evt);
 		};
 		// this.initCTMLoad();
-		this.initFBXLoad();
+		// this.initFBXLoad();
 	}
 	private m_files: string[] = ["hand.ctm", "f2.ctm", "h1.ctm", "s3.ctm"];
 
@@ -76,9 +76,9 @@ export class DemoCospaceDeferredInit {
 		this.m_beginTime = Date.now();
 		// this.initCTMLoad();
 
-		// this.loadPNGByCallback( this.m_pngs[0] );
-		// this.loadPNGByCallback( this.m_pngs[1] );
-		this.loadDraco();
+		this.loadPNGByCallback( this.m_pngs[0] );
+		this.loadPNGByCallback( this.m_pngs[1] );
+		// this.loadDraco();
 	}
 	private loadPNGByCallback(url: string): void {
 
@@ -95,6 +95,7 @@ export class DemoCospaceDeferredInit {
 			},
 			true
 		);
+		this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.js", true, 500);
 	}
 
 	private loadDracoCallback(url: string): void {
@@ -109,6 +110,7 @@ export class DemoCospaceDeferredInit {
 			},
 			true
 		);
+		this.m_cospace.initialize(3, "static/cospace/core/code/ThreadCore.umd.js", true, 500);
 	}
 	private initCTMLoad(): void {
 		//this.loadCTM();
