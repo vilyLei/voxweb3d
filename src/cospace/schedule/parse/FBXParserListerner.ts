@@ -98,7 +98,7 @@ class FBXParserListerner {
 				m.set(url, node);
 			}
 			if(unit.data.modelReceiver != null) {
-				unit.data.modelReceiver(models, [transform]);
+				unit.data.modelReceiver(models, [transform], index, total);
 			}
 			if ((index + 1) < total) {
 				return;

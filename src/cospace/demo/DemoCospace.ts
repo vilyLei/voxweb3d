@@ -182,8 +182,8 @@ export class DemoCospace {
 			},
 			true
 		);
-		unit.data.modelReceiver = (models: GeometryModelDataType[], transforms: Float32Array[]): void => {
-			console.log("XXXX modelReceiver: ",models);
+		unit.data.modelReceiver = (models: GeometryModelDataType[], transforms: Float32Array[], index: number, total: number): void => {
+			console.log("XXXX modelReceiver: ", index, total, models);
 		}
 	}
 	private loadCTM(): void {

@@ -49,10 +49,10 @@ export class DemoFBXFastParser {
 		// 设置一个任务完成的侦听器
 		fbxParseTask.setListener(this);
 		this.m_fbxParseTask = fbxParseTask;
-		
-			//ModuleFBXGeomFastParser
 
-			this.m_threadSchedule = schedule;
+		//ModuleFBXGeomFastParser
+
+		this.m_threadSchedule = schedule;
 
 		DivLog.SetDebugEnabled(true);
 
@@ -62,7 +62,6 @@ export class DemoFBXFastParser {
 		console.log("step1 wsft: ", wsft);
 		let transST = ThreadWFST.GetTransStatus(wsft);
 		console.log("step2 transST: ", transST);
-
 
 		// 启动循环调度
 		this.update();
@@ -74,7 +73,7 @@ export class DemoFBXFastParser {
 		this.initRenderer();
 
 		this.m_lossTime = Date.now();
-		
+
 		let url: string = "static/private/fbx/box.fbx";
 		url = "static/private/fbx/base3.fbx";
 		// url = "static/private/fbx/model_500W.fbx";
@@ -100,7 +99,7 @@ export class DemoFBXFastParser {
 
 		DivLog.ShowLogOnce(info);
 		// return;
-		if(model.normals == null) {
+		if (model.normals == null) {
 			console.error("has not normal in the model");
 		}
 		let material = new NormalUVViewerMaterial();
@@ -119,7 +118,7 @@ export class DemoFBXFastParser {
 
 		let entity: DisplayEntity = new DisplayEntity();
 		// entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-		entity.getTransform().setParentMatrix( new Matrix4(transform) );
+		entity.getTransform().setParentMatrix(new Matrix4(transform));
 		entity.setMesh(dataMesh);
 		entity.setMaterial(material);
 		this.m_rscene.addEntity(entity);
@@ -167,7 +166,7 @@ export class DemoFBXFastParser {
 
 		let axis = new Axis3DEntity();
 		axis.initialize(500);
-		this.m_rscene.addEntity( axis );
+		this.m_rscene.addEntity(axis);
 	}
 	private mouseDown(evt: MouseEvent): void {
 
