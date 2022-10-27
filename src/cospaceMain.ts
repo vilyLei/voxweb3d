@@ -17,7 +17,7 @@
 // import { DemoPNGParser as Demo } from "./cospace/demo/DemoPNGParser";
 // import { DemoMixParser as Demo } from "./cospace/demo/DemoMixParser";
 // import { DemoCospace as Demo } from "./cospace/demo/DemoCospace";
-import { DemoCospaceDeferredInit as Demo } from "./cospace/demo/DemoCospaceDeferredInit";
+// import { DemoCospaceDeferredInit as Demo } from "./cospace/demo/DemoCospaceDeferredInit";
 // import { DemoDependenceGraph as Demo } from "./cospace/demo/DemoDependenceGraph";
 // import { DemoCTMViewer as Demo } from "./cospace/demo/DemoCTMViewer";
 // import { DemoNormalViewer as Demo } from "./cospace/demo/DemoNormalViewer";
@@ -25,6 +25,7 @@ import { DemoCospaceDeferredInit as Demo } from "./cospace/demo/DemoCospaceDefer
 // import { RenderingVerifier as Demo } from "./cospace/demo/RenderingVerifier";
 
 // import { DemoCoApp as Demo } from "./cospace/demo/DemoCoApp";
+import { DemoCoAppDeferredInit as Demo } from "./cospace/demo/DemoCoAppDeferredInit";
 
 // import { DemoCoRenderer as Demo } from "./cospace/demo/DemoCoRenderer";
 // import { DemoCoRendererScene as Demo } from "./cospace/demo/DemoCoRendererScene";
