@@ -58,6 +58,9 @@ class ResourceSchedule<DataUnitType extends DataUnit> {
             this.m_taskModules = taskModules.slice(0);
         }
     }
+    isInitialized(): boolean {
+        return this.m_receiverSchedule != null;
+    }
     initialize(receiverSchedule: ReceiverSchedule, threadSchedule: ThreadSchedule, taskModules: ITaskCodeModuleParam[] = null): void {
 
         if (this.m_receiverSchedule == null && this.m_threadSchedule == null) {
@@ -84,8 +87,8 @@ class ResourceSchedule<DataUnitType extends DataUnit> {
      * @returns 数据单元实例，用户只能访问不能更改这个实例内部的数据状态，如果必要则可以申请复制一份
      */
     getCPUDataByUrlAndCallback(url: string, dataFormat: DataFormat, callback: (unit: DataUnitType, status: number) => void, immediate: boolean = false): DataUnitType {
-
-        let unit: DataUnitType = this.m_unitPool.getUnitByUrl(url) as DataUnitType;
+        
+        let unit = this.m_unitPool.getUnitByUrl(url) as DataUnitType;
         if (unit != null) {
             if (callback != null) {
                 if (unit.isCpuPhase()) {
@@ -152,6 +155,12 @@ class ResourceSchedule<DataUnitType extends DataUnit> {
      * 销毁当前实例
      */
     destroy(): void {
+        
+        if (this.m_receiverSchedule != null) {
+
+            this.m_receiverSchedule = null;
+            this.m_threadSchedule = null;
+        }
     }
 }
 

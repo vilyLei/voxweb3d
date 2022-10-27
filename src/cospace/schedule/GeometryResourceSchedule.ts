@@ -29,21 +29,13 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 	private m_dracoListener: DracoParserListerner;
 	private m_objListener: OBJParserListerner;
 	private m_fbxListener: FBXParserListerner;
+	private m_waitingUnits: GeometryDataUnit[] = [];
 	constructor() {
 		super();
 	}
-	/**
-	 * 覆盖父类函数，实现具体功能
-	 */
-	protected createDataUnit(url: string, dataFormat: DataFormat, immediate: boolean = false): GeometryDataUnit {
-
-		DataUnitLock.lockStatus = 207;
-		let unit = new GeometryDataUnit();
-		unit.lossTime = Date.now();
-		unit.immediate = immediate;
-		unit.data = new GeometryDataContainer();
-		unit.data.dataFormat = dataFormat;
+	private addUrlToTask(unit: GeometryDataUnit): void {
 		console.log("GeometryResourceSchedule::createDataUnit(), unit.data.dataFormat: ", unit.data.dataFormat);
+		let url = unit.url;
 		switch (unit.data.dataFormat) {
 			case DataFormat.CTM:
 				this.m_ctmListener.addUrlToTask(url);
@@ -61,6 +53,42 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 				console.error("GeometryResourceSchedule::createDataUnit(), illegal data format:", unit.data.dataFormat, ", its url: ", url);
 				break;
 		}
+	}
+	/**
+	 * 覆盖父类函数，实现具体功能
+	 */
+	protected createDataUnit(url: string, dataFormat: DataFormat, immediate: boolean = false): GeometryDataUnit {
+
+		DataUnitLock.lockStatus = 207;
+		let unit = new GeometryDataUnit();
+		unit.lossTime = Date.now();
+		unit.immediate = immediate;
+		unit.data = new GeometryDataContainer();
+		unit.data.dataFormat = dataFormat;
+		unit.url = url;
+		if(this.isInitialized()) {
+			this.addUrlToTask(unit);
+		}else {
+			this.m_waitingUnits.push(unit);
+		}
+		// console.log("GeometryResourceSchedule::createDataUnit(), unit.data.dataFormat: ", unit.data.dataFormat);
+		// switch (unit.data.dataFormat) {
+		// 	case DataFormat.CTM:
+		// 		this.m_ctmListener.addUrlToTask(url);
+		// 		break;
+		// 	case DataFormat.Draco:
+		// 		this.m_dracoListener.addUrlToTask(url);
+		// 		break;
+		// 	case DataFormat.OBJ:
+		// 		this.m_objListener.addUrlToTask(url);
+		// 		break;
+		// 	case DataFormat.FBX:
+		// 		this.m_fbxListener.addUrlToTask(url);
+		// 		break;
+		// 	default:
+		// 		console.error("GeometryResourceSchedule::createDataUnit(), illegal data format:", unit.data.dataFormat, ", its url: ", url);
+		// 		break;
+		// }
 		return unit;
 	}
 	/**
@@ -68,7 +96,7 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 	 */
 	protected initTask(unitPool: DataUnitPool<GeometryDataUnit>, threadSchedule: ThreadSchedule, receiverSchedule: ReceiverSchedule, taskModules: ITaskCodeModuleParam[]): void {
 
-		for (let i: number = 0; i < taskModules.length; ++i) {
+		for (let i = 0; i < taskModules.length; ++i) {
 			const module = taskModules[i];
 			console.log("GeometryResourceSchedule::initTask(), module.name:", module.name);
 			switch (module.name) {
@@ -88,12 +116,19 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 					break;
 			}
 		}
+
+		let units = this.m_waitingUnits;
+		for(let i = 0; i < units.length; i++) {
+			this.addUrlToTask(units[i]);
+		}
+		this.m_waitingUnits = [];
 	}
 	/**
 	 * 销毁当前实例
 	 */
 	destroy(): void {
 		super.destroy();
+		this.m_waitingUnits = [];
 		if (this.m_ctmListener != null) {
 			this.m_ctmListener.destroy();
 			this.m_ctmListener = null;
@@ -105,6 +140,10 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 		if (this.m_fbxListener != null) {
 			this.m_fbxListener.destroy();
 			this.m_fbxListener = null;
+		}
+		if (this.m_dracoListener != null) {
+			this.m_dracoListener.destroy();
+			this.m_dracoListener = null;
 		}
 	}
 }
