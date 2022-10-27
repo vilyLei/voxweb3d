@@ -61,6 +61,7 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 
 			let img = this.m_texAtlas.createCharsImage(this.m_text, this.m_fontSize, this.m_fontColor, this.m_bgColor);
 			this.m_tex = uiScene.rscene.textureBlock.createImageTex2D(img.width, img.height);
+			// this.m_tex.__$attachThis();
 			this.m_tex.setDataFromImage(img);
 
 			this.m_tex.flipY = true;
@@ -113,9 +114,10 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 		this.update();
 	}
 	private targetMouseOver(evt: any): void {
-
-		this.m_uiScene.addEntity(this, this.m_rpi);
-		// this.setVisible(true);
+		if(this.getScene() == null) {
+			this.m_uiScene.addEntity(this, this.m_rpi);
+		}
+		this.setVisible(true);
 		let tar = evt.currentTarget as IUIEntity;
 		this.setText(tar.info.getCotent());
 		this.moveTar(tar, evt.mouseX, evt.mouseY);
@@ -125,8 +127,8 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 		this.moveTar(tar, evt.mouseX, evt.mouseY);
 	}
 	private targetMouseOut(evt: any): void {
-		// this.setVisible(false);
-		this.m_uiScene.removeEntity(this);
+		this.setVisible(false);
+		// this.m_uiScene.removeEntity(this);
 	}
 	setText(text: string): void {
 		if (this.m_tex != null && text != "" && this.m_text != text) {
@@ -148,7 +150,10 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 	destroy(): void {
 		super.destroy();
 		this.m_uiScene = null;
-		this.m_tex = null;
+		if(this.m_tex != null) {
+			// this.m_tex.__$detachThis();
+			this.m_tex = null;
+		}
 		this.m_texAtlas = null;
 	}
 }

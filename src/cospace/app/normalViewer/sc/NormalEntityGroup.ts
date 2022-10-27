@@ -42,6 +42,8 @@ class NormalEntityGroup {
 	}
 	loadModels(urls: string[], typeNS: string = ""): void {
 		if (urls != null && urls.length > 0) {
+			// this.m_transforms = [];
+			// this.m_transes = [];
 			for (let i = 0; i < urls.length; ++i) {
 				this.loadModel(urls[i], typeNS);
 			}
@@ -76,9 +78,9 @@ class NormalEntityGroup {
 			default:
 				break;
 		}
-		if(type != CoDataFormat.Undefined) {
+		if (type != CoDataFormat.Undefined) {
 			this.loadGeomModel(url, type);
-		}else {
+		} else {
 			console.error("Can't support this model data format, url: ", url);
 		}
 	}
@@ -95,17 +97,45 @@ class NormalEntityGroup {
 				url,
 				format,
 				(unit: CoGeomDataUnit, status: number): void => {
+					if(format != CoDataFormat.FBX) {
+						this.createEntityFromModels(unit.data.models, unit.data.transforms);
+					}
 					this.createEntityFromUnit(unit, status);
 				},
 				true
 			);
+			if(format == CoDataFormat.FBX) {
+				unit.data.modelReceiver = (models: CoGeomDataType[], transforms: Float32Array[], index: number, total: number): void => {
+					this.createEntityFromModels(models, transforms);
+				}
+			}
 		}
 	}
 	private m_nodes: NormalEntityNode[] = [];
+	private createEntityFromModels(models: CoGeomDataType[], transforms: Float32Array[]): void {
+
+		let entities: ITransformEntity[] = [];
+		let len = models.length;
+
+		let nodes: NormalEntityNode[] = [];
+		for (let i = 0; i < len; ++i) {
+			const node = this.addEntityWithModel(models[i], transforms != null ? transforms[i] : null);
+			if (node != null) {
+				this.entityManager.addNode(node);
+				nodes.push(node);
+				this.m_nodes.push(node);
+				entities.push(node.entity);
+			}
+		}
+
+		this.updateLayout(false);
+		this.transUI.getRecoder().save(entities);
+
+	}
 	private createEntityFromUnit(unit: CoGeomDataUnit, status: number = 0): void {
 
 		console.log("XXXXXX createEntityFromUnit, unit: ", unit);
-
+		/*
 		let entities: ITransformEntity[] = [];
 		let len = unit.data.models.length;
 
@@ -124,16 +154,22 @@ class NormalEntityGroup {
 		this.updateLayout(false);
 		this.transUI.getRecoder().save(entities);
 		
+		// for (let i = 0; i < nodes.length; ++i) {
+		// 	nodes[i].createNormalLine();
+		// }
+		//*/
+
+		let nodes = this.m_nodes;
 		for (let i = 0; i < nodes.length; ++i) {
 			nodes[i].createNormalLine();
 		}
 
-		this.m_loadedTotal ++;
-		if(this.m_loadedTotal >= this.m_loadTotal) {
+		this.m_loadedTotal++;
+		if (this.m_loadedTotal >= this.m_loadTotal) {
 			this.uiscene.prompt.getPromptPanel().applyConfirmButton();
 			this.uiscene.prompt.showPrompt("Model loaded finish!");
 		}
-		
+
 	}
 	private addEntityWithModel(model: CoGeomDataType, transform: Float32Array): NormalEntityNode {
 
@@ -165,11 +201,16 @@ class NormalEntityGroup {
 			this.m_layoutor.initialize();
 		}
 		this.m_layoutor.rotationEnabled = rotationEnabled;
-
+		for (let k = 0; k < this.m_transes.length; ++k) {
+			let et = this.m_transes[k];
+			et.setXYZ(0.0, 0.0, 0.0);
+			et.setScaleXYZ(1.0, 1.0, 1.0);
+			et.setRotationXYZ(0.0, 0.0, 0.0);
+		}
 		let pivot = CoRScene.createVec3();
 		this.m_layoutor.fixToPosition(this.m_transes, this.m_transforms, pivot, 300.0);
-		this.m_transforms = null;
-		this.m_transes = null;
+		// this.m_transforms = null;
+		// this.m_transes = null;
 	}
 
 	destroy(): void {
