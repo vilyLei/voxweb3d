@@ -20,7 +20,7 @@ import { CoRuntime } from "./CoRuntime";
  */
 class CoSpace {
 
-    private m_inited: boolean = true;
+    private m_initing: boolean = true;
     private m_receiver: ReceiverSchedule = new ReceiverSchedule();
 
     readonly system: CoSystem = new CoSystem();
@@ -47,6 +47,9 @@ class CoSpace {
 			this.texture.setTaskModuleParams(taskModules);
 		}
 	}
+    isInitialized(): boolean {
+        return !this.m_initing;
+    }
     /**
      * 初始化引擎数据资源协同空间实例
      * @param maxThreadsTotal 最大线程数量
@@ -54,8 +57,8 @@ class CoSpace {
      * @param autoSendData 是否自动从任务池里取出并发送任务数据到子线程, 默认值是false
      */
     initialize(maxThreadsTotal: number, threadCoreCodeUrl: string, autoSendData: boolean = false, terminateDelayMS: number = 3000): void {
-        if (this.m_inited) {
-            this.m_inited = false;
+        if (this.m_initing) {
+            this.m_initing = false;
 
             // let dependencyGraphObj: object = {
             //     nodes: [
