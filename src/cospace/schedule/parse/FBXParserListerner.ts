@@ -40,11 +40,12 @@ class FBXParserListerner {
 		this.m_unitPool = unitPool;
 		this.m_threadSchedule = threadSchedule;
 		this.m_receiverSchedule = receiverSchedule;
-		// console.log("this.m_moduleUrl: ",this.m_moduleUrl);
+		// console.log("XXXXX >>>> FBXParserListerner::constructor(), this.m_moduleUrl: ",this.m_moduleUrl);
 	}
 
 	addUrlToTask(url: string): void {
 
+		// console.log("XXXXX >>>> FBXParserListerner::addUrlToTask(), url: ", url, !this.m_unitPool.hasUnitByUrl(url));
 		if (!this.m_unitPool.hasUnitByUrl(url)) {
 
 			if (this.m_parseTask == null) {
@@ -76,7 +77,7 @@ class FBXParserListerner {
 	// 一个任务数据处理完成后的侦听器回调函数
 	fbxParseFinish(models: GeometryModelDataType[], transform: Float32Array, url: string, index: number, total: number): void {
 
-		// console.log("FbxParserListerner::fbxParseFinish(), models: ", models, ", url: ", url);
+		// console.log("### FbxParserListerner::fbxParseFinish(), models: ", models, ", url: ", url);
 		// console.log("AAAYYYT01 this.m_unitPool.hasUnitByUrl(url): ", this.m_unitPool.hasUnitByUrl(url));
 		// let unit = this.m_unitPool.hasUnitByUrl(url);
 

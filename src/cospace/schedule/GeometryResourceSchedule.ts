@@ -66,6 +66,7 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 		unit.data = new GeometryDataContainer();
 		unit.data.dataFormat = dataFormat;
 		unit.url = url;
+		console.log("VVVVVVV XXXXX this.isInitialized(): ", this.isInitialized());
 		if(this.isInitialized()) {
 			this.addUrlToTask(unit);
 		}else {
@@ -98,7 +99,7 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 
 		for (let i = 0; i < taskModules.length; ++i) {
 			const module = taskModules[i];
-			console.log("GeometryResourceSchedule::initTask(), module.name:", module.name);
+			// console.log("GeometryResourceSchedule::initTask(), module.name:", module.name);
 			switch (module.name) {
 				case ModuleNS.ctmParser:
 					this.m_ctmListener = new CTMParserListerner(unitPool, threadSchedule, module, receiverSchedule);
@@ -119,6 +120,7 @@ class GeometryResourceSchedule extends ResourceSchedule<GeometryDataUnit> {
 
 		let units = this.m_waitingUnits;
 		for(let i = 0; i < units.length; i++) {
+			// console.log("XXXXXX deferred units["+i+"]: ", units[i]);
 			this.addUrlToTask(units[i]);
 		}
 		this.m_waitingUnits = [];

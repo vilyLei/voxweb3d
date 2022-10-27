@@ -37,6 +37,7 @@ class DataUnitPool<T extends DataUnit> {
     }
     addUnit(url: string, unit: T): void {
         if(url != "" && unit != null && !this.m_urlPool.has(url)) {
+            
             let wrapper = new DataUnitWrapper<T>();
             wrapper.uuid = unit.getUUID();
             wrapper.url = url;

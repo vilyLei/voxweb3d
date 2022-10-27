@@ -26,16 +26,29 @@ class ResourceReceiver<DataUnitType extends DataUnit> extends DataReceiverBase {
         }
     }
 }
+class ReqNode {
+
+    receiver: DataUnitReceiver;
+    unit: DataUnit;
+
+    constructor() { }
+
+    reset(): void {
+        this.receiver = null;
+        this.unit = null;
+    }
+}
 /**
  * 数据资源调度器基类
  */
 class ResourceSchedule<DataUnitType extends DataUnit> {
 
-    private m_receiverSchedule: ReceiverSchedule;
+    protected m_receiverSchedule: ReceiverSchedule = null;
     private m_unitPool: DataUnitPool<DataUnitType> = new DataUnitPool();
     private m_threadSchedule: ThreadSchedule;
     // private m_taskModuleUrls: string[] = null;
     private m_taskModules: ITaskCodeModuleParam[] = null;
+    private m_reqNodes: ReqNode[] = [];
 
     constructor() {
     }
@@ -53,7 +66,7 @@ class ResourceSchedule<DataUnitType extends DataUnit> {
 
     }
     setTaskModuleParams(taskModules: ITaskCodeModuleParam[]): void {
-        if(taskModules != null) {
+        if (taskModules != null) {
             // this.m_taskModuleUrls = taskModuleUrls.slice(0);
             this.m_taskModules = taskModules.slice(0);
         }
@@ -68,11 +81,18 @@ class ResourceSchedule<DataUnitType extends DataUnit> {
             this.m_receiverSchedule = receiverSchedule;
             this.m_threadSchedule = threadSchedule;
             // this.initTask( this.m_unitPool, threadSchedule, receiverSchedule, this.m_taskModuleUrls != null ? this.m_taskModuleUrls: taskModuleUrls);
-            this.initTask( this.m_unitPool, threadSchedule, receiverSchedule, this.m_taskModules != null ? this.m_taskModules: taskModules);
+            this.initTask(this.m_unitPool, threadSchedule, receiverSchedule, this.m_taskModules != null ? this.m_taskModules : taskModules);
+
+            let ls = this.m_reqNodes;
+            for (let i = 0; i < ls.length; i++) {
+                const node = ls[i];
+                // console.log("XXXXXXXX UUUUU --- YYYYY, ResourceSchedule::initialize(), unit:", node.unit);
+                this.m_unitPool.addUnit(node.unit.url, node.unit as DataUnitType);
+                this.m_receiverSchedule.addReceiver(node.receiver, node.unit);
+            }
         }
     }
     hasDataUnit(url: string): boolean {
-
         return this.m_unitPool.hasUnitByUrl(url);
     }
 
@@ -87,7 +107,7 @@ class ResourceSchedule<DataUnitType extends DataUnit> {
      * @returns 数据单元实例，用户只能访问不能更改这个实例内部的数据状态，如果必要则可以申请复制一份
      */
     getCPUDataByUrlAndCallback(url: string, dataFormat: DataFormat, callback: (unit: DataUnitType, status: number) => void, immediate: boolean = false): DataUnitType {
-        
+
         let unit = this.m_unitPool.getUnitByUrl(url) as DataUnitType;
         if (unit != null) {
             if (callback != null) {
@@ -133,10 +153,19 @@ class ResourceSchedule<DataUnitType extends DataUnit> {
             unit = this.createDataUnit(url, dataFormat, immediate);
             unit.lossTime = Date.now();
             unit.url = url;
-            this.m_unitPool.addUnit(url, unit);
+            console.log("           unitPool.addUnit: ", url, unit);
+            if (this.m_receiverSchedule != null) {
+                this.m_unitPool.addUnit(url, unit);
+            }
         }
-
-        this.m_receiverSchedule.addReceiver(receiver, unit);
+        if (this.m_receiverSchedule != null) {
+            this.m_receiverSchedule.addReceiver(receiver, unit);
+        } else {
+            let node = new ReqNode();
+            node.receiver = receiver;
+            node.unit = unit;
+            this.m_reqNodes.push(node);
+        }
         return unit;
     }
     getGPUDataByUrlAndCallback(url: string, dataFormat: DataFormat, callback: (unit: DataUnitType, status: number) => void, immediate: boolean = false): DataUnitType {
@@ -155,7 +184,7 @@ class ResourceSchedule<DataUnitType extends DataUnit> {
      * 销毁当前实例
      */
     destroy(): void {
-        
+
         if (this.m_receiverSchedule != null) {
 
             this.m_receiverSchedule = null;
