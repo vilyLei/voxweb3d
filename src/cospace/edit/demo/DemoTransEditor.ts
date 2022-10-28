@@ -152,7 +152,7 @@ export class DemoTransEditor {
 				this.m_vcoapp = new ViewerCoSApp();
 				this.m_vcoapp.initialize((): void => {
 					this.initModel();
-				}, urlChecker);
+				}, urlChecker, true);
 			}
 		}, urlChecker).addLoader(uiInteractML)
 			.load(url0)

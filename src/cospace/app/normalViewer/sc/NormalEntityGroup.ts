@@ -44,9 +44,13 @@ class NormalEntityGroup {
 		if (urls != null && urls.length > 0) {
 			// this.m_transforms = [];
 			// this.m_transes = [];
-			for (let i = 0; i < urls.length; ++i) {
-				this.loadModel(urls[i], typeNS);
-			}
+			let purls = urls.slice(0);
+			this.m_vcoapp.deferredInit((): void => {
+				console.log("XXXXXXXXXXXXXXXXXXX deferredInit() call...");
+				for (let i = 0; i < purls.length; ++i) {
+					this.loadModel(purls[i], typeNS);
+				}
+			})
 		}
 	}
 
@@ -88,11 +92,23 @@ class NormalEntityGroup {
 	private m_loadedTotal = 0;
 	private loadGeomModel(url: string, format: CoDataFormat): void {
 
-		let ins = this.m_vcoapp.coappIns;
+		// let ins = this.m_vcoapp.coappIns;
+		let ins = this.m_vcoapp;
 		if (ins != null) {
 			this.uiscene.prompt.getPromptPanel().applyConfirmButton();
 			this.uiscene.prompt.showPrompt("Model loading!");
 			this.m_loadTotal++;
+			// let unit = ins.getCPUDataByUrlAndCallback(
+			// 	url,
+			// 	format,
+			// 	(unit: CoGeomDataUnit, status: number): void => {
+			// 		if(format != CoDataFormat.FBX) {
+			// 			this.createEntityFromModels(unit.data.models, unit.data.transforms);
+			// 		}
+			// 		this.createEntityFromUnit(unit, status);
+			// 	},
+			// 	true
+			// );
 			let unit = ins.getCPUDataByUrlAndCallback(
 				url,
 				format,
