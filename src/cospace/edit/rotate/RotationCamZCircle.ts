@@ -99,33 +99,41 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
             this.m_ring.setVisible(false);
         }
     }
+    private m_camVer = -7;
     run(camera: IRenderCamera, rtv: IVector3D): void {
 
-        // 圆面朝向摄像机
-        const sv = this.m_scaleV;
-        let et = this.m_entity;
-        et.getPosition(this.m_posV);
-        
-        this.m_camPos.copyFrom(camera.getPosition());
-        this.m_srcDV.setXYZ(1, 0, 0);
-        this.m_dstDV.subVecsTo(this.m_camPos, this.m_posV);
+        if (this.m_camVer != camera.version) {
+            this.m_camVer = camera.version;
+            
+            // 圆面朝向摄像机
+            
+            const sv = this.m_scaleV;
+            let et = this.m_entity;
+            et.getPosition(this.m_posV);
+            et.getScaleXYZ(sv);
 
-        let rad = CoMath.Vector3D.RadianBetween(this.m_srcDV, this.m_dstDV);
-        let axis = this.m_rotV;
-        CoMath.Vector3D.Cross(this.m_srcDV, this.m_dstDV, axis);
-        axis.normalize();
+            this.m_camPos.copyFrom(camera.getPosition());
+            this.m_srcDV.setXYZ(1, 0, 0);
+            this.m_dstDV.subVecsTo(this.m_camPos, this.m_posV);
 
-        let mat = et.getTransform().getMatrix();
-        mat.identity();
-        mat.appendRotation(rad, axis);
-        mat.appendTranslation(this.m_posV);
+            let rad = CoMath.Vector3D.RadianBetween(this.m_srcDV, this.m_dstDV);
+            let axis = this.m_rotV;
+            CoMath.Vector3D.Cross(this.m_srcDV, this.m_dstDV, axis);
+            axis.normalize();
 
-        let rv = mat.decompose(CoMath.OrientationType.EULER_ANGLES)[1];
-        et.setRotation3(rv.scaleBy(CoMath.MathConst.MATH_180_OVER_PI));
-        et.update();
+            let mat = this.m_mat0;
+            mat.identity();
+            mat.appendRotation(rad, axis);
+            // mat.appendTranslation(this.m_posV);
 
-        this.m_ring.setPosition(this.m_posV);
-        this.m_ring.setRotation3(rv);
+            let rv = mat.decompose(CoMath.OrientationType.EULER_ANGLES)[1];
+            et.setRotation3(rv.scaleBy(CoMath.MathConst.MATH_180_OVER_PI));
+            et.update();
+
+            this.m_ring.setPosition(this.m_posV);
+            this.m_ring.setRotation3(rv);
+            this.m_ring.setScale3(sv);
+        }
     }
     setVisible(visible: boolean): void {
         console.log("RotationCamZCircle::setVisible() ..., visible: ", visible);
@@ -176,7 +184,7 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
     deselect(): void {
         console.log("RotationCamZCircle::deselect() ...");
         if (this.isSelected()) {
-            
+
             this.editEnd();
             this.setAllVisible(true);
             this.m_ring.setVisible(false);

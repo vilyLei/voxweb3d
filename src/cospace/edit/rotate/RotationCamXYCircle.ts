@@ -21,6 +21,7 @@ import { ICoMesh } from "../../voxmesh/ICoMesh";
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import { SphereRayTester } from "../base/SphereRayTester";
 import IRenderStage3D from "../../../vox/render/IRenderStage3D";
+import IMatrix4 from "../../../vox/math/IMatrix4";
 
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
@@ -112,30 +113,37 @@ class RotationCamXYCircle extends RotationCtr implements IRayControl {
         super.disable();
         this.m_entity.mouseEnabled = false;
     }
+    private m_camVer = -7;
     run(camera: IRenderCamera, rtv: IVector3D): void {
+        if (this.m_camVer != camera.version) {
+            this.m_camVer = camera.version;
+            
+            // 圆面朝向摄像机
 
-        // // 圆面朝向摄像机
-        const sv = this.m_scaleV;
-        let et = this.m_circle;
-        et.getPosition(this.m_posV);
-        
-        this.m_camPos.copyFrom(camera.getPosition());
-        this.m_srcDV.setXYZ(1, 0, 0);
-        this.m_dstDV.subVecsTo(this.m_camPos, this.m_posV);
+            const sv = this.m_scaleV;
+            let et = this.m_circle;
+            et.getPosition(this.m_posV);
+            et.getScaleXYZ(sv);
 
-        let rad = CoMath.Vector3D.RadianBetween(this.m_srcDV, this.m_dstDV);
-        let axis = this.m_rotV;
-        CoMath.Vector3D.Cross(this.m_srcDV, this.m_dstDV, axis);
-        axis.normalize();
+            this.m_camPos.copyFrom(camera.getPosition());
+            this.m_srcDV.setXYZ(1, 0, 0);
+            this.m_dstDV.subVecsTo(this.m_camPos, this.m_posV);
 
-        let mat = et.getTransform().getMatrix();
-        mat.identity();
-        
-        mat.appendRotation(rad, axis);
-        mat.appendTranslation(this.m_posV);
+            let rad = CoMath.Vector3D.RadianBetween(this.m_srcDV, this.m_dstDV);
+            let axis = this.m_rotV;
+            CoMath.Vector3D.Cross(this.m_srcDV, this.m_dstDV, axis);
+            axis.normalize();
 
-        let rv = mat.decompose(CoMath.OrientationType.EULER_ANGLES)[1];
-        et.setRotation3(rv.scaleBy(CoMath.MathConst.MATH_180_OVER_PI));
+            let mat = this.m_mat0;
+            mat.identity();
+            mat.appendRotation(rad, axis);
+
+            let rv = mat.decompose(CoMath.OrientationType.EULER_ANGLES)[1];
+            et.setPosition(this.m_posV);
+            et.setScale3(sv);
+            et.setRotation3(rv.scaleBy(CoMath.MathConst.MATH_180_OVER_PI));
+            // et.update();
+        }
     }
     setVisible(visible: boolean): void {
 
@@ -150,6 +158,7 @@ class RotationCamXYCircle extends RotationCtr implements IRayControl {
     setXYZ(px: number, py: number, pz: number): void {
         this.m_entity.setXYZ(px, py, pz);
         this.m_circle.setXYZ(px, py, pz);
+        this.m_camVer = -7;
     }
 
     setRotation3(r: IVector3D): void {
@@ -181,7 +190,7 @@ class RotationCamXYCircle extends RotationCtr implements IRayControl {
         this.outColor.a = 0.05;
         (this.m_circle.getMaterial() as IColorMaterial).setColor(this.outColor);
     }
-    
+
     destroy(): void {
 
         super.destroy();

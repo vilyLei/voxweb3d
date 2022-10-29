@@ -241,8 +241,9 @@ class TransformController implements ITransformController {
             ct.getPosition(pv);
             let vm = cam.getViewMatrix();
             vm.transformVector3Self(pv);
+            
             let s = -this.m_scale * pv.z / cam.getZNear();
-            // console.log(">>> s: ",s);
+            
             ct.setCtrlScaleXYZ(s, s, s);
             ct.updateCtrl();
             this.m_camVer = cam.version;
@@ -254,20 +255,6 @@ class TransformController implements ITransformController {
         if (sc != null) {
             if (this.m_enabled && this.m_type >= 0) {
                 let ct = this.m_controllers[this.m_type];
-                // sc.updateCamera();
-                // let cam = sc.getCamera();
-                // if (this.m_camVer != cam.version) {
-                //     // console.log(cam.version);
-                //     let pv = this.m_pv;
-                //     ct.getPosition(pv);
-                //     let vm = cam.getViewMatrix();
-                //     vm.transformVector3Self(pv);
-                //     let s = -0.015 * pv.z / cam.getZNear();
-                //     // console.log(">>> s: ",s);
-                //     ct.setCtrlScaleXYZ(s, s, s);
-                //     ct.updateCtrl();
-                //     this.m_camVer = cam.version;
-                // }
                 this.updateSize(sc, ct);
                 ct.run();
             }

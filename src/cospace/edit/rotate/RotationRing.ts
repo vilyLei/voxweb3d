@@ -165,6 +165,9 @@ class RotationRing {
     setRotationXYZ(rx: number, ry: number, rz: number): void {
         this.m_container.setRotationXYZ(rx, ry, rz);
     }
+    setScale3(s: IVector3D): void{
+        this.m_container.setScale3(s);
+    }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
         this.m_container.setScaleXYZ(sx, sy, sz);
     }
