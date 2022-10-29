@@ -54,8 +54,6 @@ class NVNavigationUI {
 
 		this.initNavigationUI();
 	}
-	// private m_promptPanel: IPromptPanel = null;// = new PromptPanel();
-
 	private m_bgLabel: IColorLabel = null;
 	private m_bgLabelW: number;
 	private m_bgLabelH: number;
@@ -92,7 +90,7 @@ class NVNavigationUI {
 
 		let keys = ["file", "edit", "model", "normal", "texture", "material", "light", "animation", "particle", "rendering", "physics", "help"];
 		let urls = ["文件", "编辑", "模型", "法线", "纹理", "材质", "灯光", "动画", "粒子", "渲染", "物理", "帮助"];
-		urls = urls.slice(0,2);
+
 		let infos = [
 			"File system operations.",
 			"Editing operations.",
@@ -107,6 +105,13 @@ class NVNavigationUI {
 			"Physics system operations.",
 			"Help infomation.",
 		];
+
+		keys = urls.slice(0, 2);
+		urls = urls.slice(0, 2);
+		infos = infos.slice(0, 2);
+		keys.push("help");
+		urls.push("帮助");
+		infos.push("Help infomation");
 
 		let layouter = uiScene.layout.createLeftTopLayouter();
 		let fontColor = CoMaterial.createColor4().setRGB3Bytes(170, 170, 170);
@@ -181,12 +186,23 @@ class NVNavigationUI {
 
 			case "animation":
 			case "particle":
-			case "help":
 				this.m_coUIScene.prompt.showPrompt("It can't be used now!");
+				break;
+			case "help":
+				this.toHelp();
 				break;
 			default:
 				break;
 		}
+	}
+	private toHelp(): void {
+		let a = document.createElement('a');
+		a.href = "https://blog.csdn.net/vily_lei/article/details/127544595?spm=1001.2014.3001.5501";
+		a.target = "_blank";
+		document.body.appendChild(a);
+		(a as any).style = 'display: none';
+		a.click();
+		a.remove();
 	}
 	run(): void {
 
