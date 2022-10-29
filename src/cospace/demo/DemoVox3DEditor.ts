@@ -1,28 +1,28 @@
-import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
-import { IMouseInteraction } from "../../voxengine/ui/IMouseInteraction";
-import { ICoRenderer } from "../../voxengine/ICoRenderer";
-import { ICoMath } from "../../math/ICoMath";
-import { ICoEdit } from "../../edit/ICoEdit";
-import { ICoUI } from "../../voxui/ICoUI";
-import { ICoTexture } from "../../voxtexture/ICoTexture";
-import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
-import { ICoRScene } from "../../voxengine/ICoRScene";
+import { ICoRendererScene } from "../voxengine/scene/ICoRendererScene";
+import { IMouseInteraction } from "../voxengine/ui/IMouseInteraction";
+import { ICoRenderer } from "../voxengine/ICoRenderer";
+import { ICoMath } from "../math/ICoMath";
+import { ICoEdit } from "../edit/ICoEdit";
+import { ICoUI } from "../voxui/ICoUI";
+import { ICoTexture } from "../voxtexture/ICoTexture";
+import { ICoUIScene } from "../voxui/scene/ICoUIScene";
+import { ICoRScene } from "../voxengine/ICoRScene";
 
-import { ICoUIInteraction } from "../../voxengine/ui/ICoUIInteraction";
-import ViewerMaterialCtx from "../../demo/coViewer/ViewerMaterialCtx";
-import IRendererScene from "../../../vox/scene/IRendererScene";
-import { IRendererSceneAccessor } from "../../../vox/scene/IRendererSceneAccessor";
-import IRendererSceneGraph from "../../../vox/scene/IRendererSceneGraph";
-import { CoPostOutline } from "../../app/effect/CoPostOutline";
-import { NVTransUI } from "../../app/normalViewer/ui/NVTransUI";
-import { NVNavigationUI } from "../../app/normalViewer/ui/NVNavigationUI";
-import { RectTextTip } from "../../voxui/entity/RectTextTip";
-import { IRectTextTip } from "../../voxui/entity/IRectTextTip";
-import { NormalViewer } from "../../app/normalViewer/sc/NormalViewer";
-import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
-import { PromptSystem } from "../../voxui/system/PromptSystem";
-import { ICoText } from "../../voxtext/ICoText";
-import { CoModuleLoader } from "../../app/utils/CoModuleLoader";
+import { ICoUIInteraction } from "../voxengine/ui/ICoUIInteraction";
+import ViewerMaterialCtx from "../demo/coViewer/ViewerMaterialCtx";
+import IRendererScene from "../../vox/scene/IRendererScene";
+import { IRendererSceneAccessor } from "../../vox/scene/IRendererSceneAccessor";
+import IRendererSceneGraph from "../../vox/scene/IRendererSceneGraph";
+import { CoPostOutline } from "../app/effect/CoPostOutline";
+import { NVTransUI } from "../app/normalViewer/ui/NVTransUI";
+import { NVNavigationUI } from "../app/normalViewer/ui/NVNavigationUI";
+import { RectTextTip } from "../voxui/entity/RectTextTip";
+import { IRectTextTip } from "../voxui/entity/IRectTextTip";
+import { NormalViewer } from "../app/normalViewer/sc/NormalViewer";
+import IColorMaterial from "../../vox/material/mcase/IColorMaterial";
+import { PromptSystem } from "../voxui/system/PromptSystem";
+import { ICoText } from "../voxtext/ICoText";
+import { CoModuleLoader } from "../app/utils/CoModuleLoader";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -45,7 +45,7 @@ class SceneAccessor implements IRendererSceneAccessor {
 /**
  * cospace renderer
  */
-export class DemoTransEditor {
+export class DemoVox3DEditor {
 	private m_rsc: ICoRendererScene = null;
 	private m_editUIRenderer: ICoRendererScene = null;
 	private m_uirsc: IRendererScene = null;
@@ -66,7 +66,7 @@ export class DemoTransEditor {
 			e.preventDefault();
 		}
 
-		console.log("DemoTransEditor::initialize() ...");
+		console.log("DemoVox3DEditor::initialize() ...");
 		// //<a href="D:\Series\Breaking Bad">Click to open a folder</a>
 		// //D:\resource\
 		// let a = document.createElement('a');
@@ -221,11 +221,11 @@ export class DemoTransEditor {
 		console.log("mouse up action...");
 	}
 	private mouseDownListener(evt: any): void {
-		console.log("DemoTransEditor::mouseDownListener() ...");
+		console.log("DemoVox3DEditor::mouseDownListener() ...");
 	}
 	private keyDown(evt: any): void {
 
-		console.log("DemoTransEditor::keyDown() ..., evt.keyCode: ", evt.keyCode);
+		console.log("DemoVox3DEditor::keyDown() ..., evt.keyCode: ", evt.keyCode);
 
 		let KEY = CoRScene.Keyboard;
 		switch (evt.keyCode) {
@@ -249,4 +249,4 @@ export class DemoTransEditor {
 	}
 }
 
-export default DemoTransEditor;
+export default DemoVox3DEditor;
