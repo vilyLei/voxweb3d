@@ -10,7 +10,7 @@ import { ICoRScene } from "../../voxengine/ICoRScene";
 
 import { ICoUIInteraction } from "../../voxengine/ui/ICoUIInteraction";
 import ViewerMaterialCtx from "../../demo/coViewer/ViewerMaterialCtx";
-import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
+// import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
 import { CoDataModule } from "../../app/common/CoDataModule";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
@@ -28,6 +28,7 @@ import { NormalViewer } from "../../app/normalViewer/sc/NormalViewer";
 import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
 import { PromptSystem } from "../../voxui/system/PromptSystem";
 import { ICoText } from "../../voxtext/ICoText";
+import { CoModuleLoader } from "../../app/utils/CoModuleLoader";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -112,11 +113,13 @@ export class DemoTransEditor {
 			return url;
 		}
 		this.m_urlChecker = urlChecker;
+		
+		// new CoModuleLoader
 
 		let url = "static/cospace/engine/uiInteract/CoUIInteraction.umd.js";
-		let uiInteractML = new ModuleLoader(2, (): void => {
+		let uiInteractML = new CoModuleLoader(2, (): void => {
 			this.initInteract();
-		}, urlChecker);
+		});
 
 		let url0 = "static/cospace/engine/renderer/CoRenderer.umd.js";
 		let url1 = "static/cospace/engine/rscene/CoRScene.umd.js";
@@ -131,27 +134,27 @@ export class DemoTransEditor {
 		let url10 = "static/cospace/coui/CoUI.umd.js";
 		let url11 = "static/cospace/cotext/CoText.umd.js";
 		
-		new ModuleLoader(2, (): void => {
+		new CoModuleLoader(2, (): void => {
 			if (this.isEngineEnabled()) {
 				console.log("engine modules loaded ...");
 				this.initRenderer();
 
 				this.initScene();
-				new ModuleLoader(3, (): void => {
+				new CoModuleLoader(3, (): void => {
 
 					console.log("math module loaded ...");
 
-					new ModuleLoader(7, (): void => {
+					new CoModuleLoader(7, (): void => {
 						console.log("ageom module loaded ...");
 						this.initEditUI();
-					}, urlChecker).load(url3).load(url4).load(url6).load(url7).load(url9).load(url10).load(url11);
+					}).load(url3).load(url4).load(url6).load(url7).load(url9).load(url10).load(url11);
 
-				}, urlChecker).load(url2).load(url5).load(url8);
+				}).load(url2).load(url5).load(url8);
 
 				this.m_codata = new CoDataModule();
 				this.m_codata.initialize(null, urlChecker, true);
 			}
-		}, urlChecker).addLoader(uiInteractML)
+		}).addLoader(uiInteractML)
 			.load(url0)
 			.load(url1);
 
