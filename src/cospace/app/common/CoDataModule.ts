@@ -18,17 +18,27 @@ declare var CoSpaceApp: ICoSpaceApp;
 
 export class CoDataModule {
 
-	readonly coappIns: ICoSpaceAppIns;
 
+	private m_sysIniting = true;
+	private m_initInsFlag = true;
 	private m_modules: CoTaskCodeModuleParam[];
 	private m_dependencyGraphObj: Object;
 	private m_deferredInit: boolean;
+	private m_sysInitCallback: ()=>void;
 	private m_urlChecker: (url: string) => string = null;
-	constructor() { }
 
-	initialize(callback: () => void, urlChecker: (url: string) => string = null, deferredInit: boolean = false): void {
-		this.m_deferredInit = deferredInit;
+	readonly coappIns: ICoSpaceAppIns;
+	constructor() { }
+	/**
+	 * 初始化
+	 * @param sysInitCallback the default value is null
+	 * @param urlChecker the default value is null
+	 * @param deferredInit the default value is false 
+	 */
+	initialize(sysInitCallback: () => void = null, urlChecker: (url: string) => string = null, deferredInit: boolean = false): void {
+		this.m_sysInitCallback = sysInitCallback;
 		this.m_urlChecker = urlChecker;
+		this.m_deferredInit = deferredInit;
 		let modules: CoTaskCodeModuleParam[] = [
 			{ url: "static/cospace/core/coapp/CoSpaceApp.umd.js", name: CoModuleNS.coSpaceApp, type: CoModuleFileType.JS },
 			{ url: "static/cospace/core/code/ThreadCore.umd.js", name: CoModuleNS.threadCore, type: CoModuleFileType.JS },
@@ -61,18 +71,23 @@ export class CoDataModule {
 			}
 		}
 		if (!deferredInit) {
-			new ModuleLoader(1, null, urlChecker)
-				.setCallback((): void => {
-					this.initCoSpaceApp();
-					if (callback != null) {
-						callback();
-					}
-				})
-				.load(this.m_modules[0].url);
-
+			this.loadSys();
 		}
 	}
-	private m_initInsFlag = true;
+	private loadSys(): void {
+		if (this.m_sysIniting) {
+			new ModuleLoader(1, null, this.m_urlChecker)
+			.setCallback((): void => {
+				this.initCoSpaceSys();
+				if (this.m_sysInitCallback != null) {
+					this.m_sysInitCallback();
+				}
+				this.m_sysInitCallback = null;
+			})
+			.load(this.m_modules[0].url);
+			this.m_sysIniting = false;
+		}
+	}
 	/**
 	 * 注意: 不建议过多使用这个函数,因为回调函数不安全如果是lambda表达式则由性能问题。
 	 * 立即获得CPU侧的数据单元实例, 但是数据单元中的数据可能是空的, 因为数据获取的操作实际是异步的。
@@ -102,27 +117,16 @@ export class CoDataModule {
 		return null;
 	}
 	private m_initCalls: (() => void)[] = [];
-	private m_flag: boolean = true;
 	deferredInit(callback: () => void): void {
 		if (this.coappIns == null) {
 
 			this.m_initCalls.push(callback);
-			if (this.m_flag) {
-				new ModuleLoader(1, null, this.m_urlChecker)
-					.setCallback((): void => {
-						this.initCoSpaceApp();
-						if (callback != null) {
-							callback();
-						}
-					})
-					.load(this.m_modules[0].url);
-				this.m_flag = false;
-			}
+			this.loadSys();
 		} else if (callback != null) {
 			callback();
 		}
 	}
-	private initCoSpaceApp(): void {
+	private initCoSpaceSys(): void {
 
 		if (this.coappIns == null && typeof CoSpaceApp !== "undefined") {
 

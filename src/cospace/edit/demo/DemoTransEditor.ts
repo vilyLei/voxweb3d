@@ -150,9 +150,7 @@ export class DemoTransEditor {
 				}, urlChecker).load(url2).load(url5).load(url8);
 
 				this.m_codata = new CoDataModule();
-				this.m_codata.initialize((): void => {
-					this.initModel();
-				}, urlChecker, true);
+				this.m_codata.initialize(null, urlChecker, true);
 			}
 		}, urlChecker).addLoader(uiInteractML)
 			.load(url0)
@@ -273,8 +271,6 @@ export class DemoTransEditor {
 			default:
 				break;
 		}
-	}
-	private initModel(): void {
 	}
 	run(): void {
 		if (this.m_graph != null) {
