@@ -329,7 +329,9 @@
 
 //  import {DemoOutline as Demo} from "./demo/DemoOutline";
 
- import {DemoOutline2 as Demo} from "./demo/DemoOutline2";
+//  import {DemoOutline2 as Demo} from "./demo/DemoOutline2";
+
+ import {DemoFix3DSize as Demo} from "./demo/DemoFix3DSize";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////
