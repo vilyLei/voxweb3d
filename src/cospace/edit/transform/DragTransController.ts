@@ -218,6 +218,9 @@ class DragTransController{
     setScaleXYZ(sx: number, sy: number, sz: number): void {
         this.m_target.setScaleXYZ(sx, sy, sz);
     }
+    setCtrlScaleXYZ(sx: number, sy: number, sz: number): void {
+        this.m_target.setCtrlScaleXYZ(sx, sy, sz);
+    }
     getRotationXYZ(pv: IVector3D): void {
     }
     getScaleXYZ(pv: IVector3D): void {

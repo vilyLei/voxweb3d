@@ -159,7 +159,7 @@ class TransformController implements ITransformController {
         }
     }
     disable(force: boolean = false): void {
-        
+
         this.m_enabled = false;
         this.m_targets = null;
         let ls = this.m_controllers;
@@ -174,15 +174,22 @@ class TransformController implements ITransformController {
         }
     }
     decontrol(): void {
-        
-        if (this.m_enabled && this.m_type >= 0) {
-            this.m_controllers[this.m_type].decontrol();
+        if (this.m_rsc != null) {
+            if (this.m_enabled && this.m_type >= 0) {
+                this.m_controllers[this.m_type].decontrol();
+            }
+        }
+    }
+    destroy(): void {
+        if (this.m_rsc != null) {
+            this.decontrol();
+            this.m_rsc = null;
         }
     }
     select(targets: IEntityTransform[], wpos: IVector3D = null, autoEnabled: boolean = true): void {
-        
+
         if (targets != null) {
-            
+
             if (this.m_type >= 0) {
                 if (wpos == null) {
                     let pos = this.m_wpos;
@@ -214,8 +221,11 @@ class TransformController implements ITransformController {
         }
     }
     run(): void {
-        if (this.m_enabled && this.m_type >= 0) {
-            this.m_controllers[this.m_type].run();
+        if (this.m_rsc != null) {
+            if (this.m_enabled && this.m_type >= 0) {
+                let ct = this.m_controllers[this.m_type];
+                ct.run();
+            }
         }
     }
 }

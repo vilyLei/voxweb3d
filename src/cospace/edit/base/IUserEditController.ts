@@ -25,7 +25,7 @@ interface IUserEditController extends IEntityTransform {
     deselect(): void;
     setVisible(visible: boolean): void;
     getVisible(): boolean;
-    
+    setCtrlScaleXYZ(sx: number, sy: number, sz: number): void;
     decontrol(): void;
 
 }
