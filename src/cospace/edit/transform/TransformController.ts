@@ -29,7 +29,8 @@ class TransformController implements ITransformController {
     private m_rsc: IRendererScene = null;
     private m_enabled: boolean = false;
     private m_controllers: IUserEditController[] = [null, null, null];
-    private m_wpos: IVector3D = CoMath.createVec3();
+    private m_pv: IVector3D;// = CoMath.createVec3();
+    private m_wpos: IVector3D;// = CoMath.createVec3();
     private m_targets: IEntityTransform[] = null;
 
     private m_movedCtr: IDragMoveController = null;
@@ -56,6 +57,8 @@ class TransformController implements ITransformController {
         if (this.m_rsc == null) {
 
             this.m_rsc = rsc;
+            this.m_pv = CoMath.createVec3();
+            this.m_wpos = CoMath.createVec3();
 
             let ls = this.m_controllers;
 
@@ -220,10 +223,23 @@ class TransformController implements ITransformController {
             console.error("targets == null");
         }
     }
+    private m_camVer = -7;
     run(): void {
-        if (this.m_rsc != null) {
+        let sc = this.m_rsc;
+        if (sc != null) {
             if (this.m_enabled && this.m_type >= 0) {
                 let ct = this.m_controllers[this.m_type];
+                let cam = sc.getCamera();
+                if(this.m_camVer != cam.version) {
+                    let pv = this.m_pv;
+                    ct.getPosition(pv);
+                    let vm = cam.getViewMatrix();
+                    vm.transformVector3Self(pv);
+                    let s = -0.015 * pv.z/cam.getZNear();
+                    // ct.setCtrlScaleXYZ(s,s,s);
+                    // ct.updateCtrl();
+                    this.m_camVer = cam.version;
+                }
                 ct.run();
             }
         }

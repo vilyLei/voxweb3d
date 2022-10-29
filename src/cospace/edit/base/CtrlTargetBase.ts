@@ -83,12 +83,28 @@ class CtrlTargetBase implements ICtrTarget {
                 }
             }
         }
-        for (let i = 0; i < this.m_controllers.length; ++i) {
+        let ls = this.m_controllers;
+        // let t = 0;
+        for (let i = 0; i < ls.length; ++i) {
             if (this.m_flags[i]) {
+                // t++;
                 this.m_flags[i] = false;
-                this.m_controllers[i].update();
+                ls[i].update();
             }
         }
+        // console.log("t: ", t);
+    }
+    updateCtrl(): void {
+        let ls = this.m_controllers;
+        // let t = 0;
+        for (let i = 0; i < ls.length; ++i) {
+            if (this.m_flags[i]) {
+                // t++;
+                this.m_flags[i] = false;
+                ls[i].update();
+            }
+        }
+        // console.log("t: ", t);
     }
     destroy(): void {
         this.m_tars = null;

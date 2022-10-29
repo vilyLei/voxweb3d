@@ -14,5 +14,6 @@ interface ICtrTarget extends IEntityTransform {
     setTargets(targets: IEntityTransform[]): void;
     getTargets(): IEntityTransform[];
     setCtrlScaleXYZ(sx: number, sy: number, sz: number): void;
+    updateCtrl(): void;
 }
 export { ICtrTarget };

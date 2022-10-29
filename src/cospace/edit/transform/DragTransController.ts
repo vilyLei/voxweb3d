@@ -22,7 +22,7 @@ declare var CoMath: ICoMath;
 /**
  * transform 编辑控制器基类
  */
-class DragTransController{
+class DragTransController {
 
     protected m_controllers: IRayControl[] = [];
 
@@ -118,22 +118,22 @@ class DragTransController{
             let cam = this.m_editRS.getCamera();
             let stage = this.m_editRS.getStage3D();
 
-            if (this.fixSize > 0.01) {
-                let vmat = cam.getViewMatrix();
-                let pmat = cam.getProjectMatrix();
-                vmat.transformVector3Self(this.m_tempPos);
-                this.m_pos0.setXYZ(0.0, 0.0, this.m_tempPos.z);
-                this.m_pos1.setXYZ(100.0, 0.0, this.m_tempPos.z);
-                pmat.transformVectorSelf(this.m_pos0);
-                pmat.transformVectorSelf(this.m_pos1);
-                this.m_pos1.x = this.m_pos1.x / this.m_pos1.w - this.m_pos0.x / this.m_pos0.w;
-                if (Math.abs(this.m_px - this.m_pos1.x) > 0.0001) {
-                    this.m_px = this.m_pos1.x;
-                    let scale = this.fixSize / this.m_pos1.x;
-                    this.m_target.setCtrlScaleXYZ(scale, scale, scale);
-                    this.m_target.update();
-                }
-            }
+            // if (this.fixSize > 0.01) {
+            //     // let vmat = cam.getViewMatrix();
+            //     // let pmat = cam.getProjectMatrix();
+            //     // vmat.transformVector3Self(this.m_tempPos);
+            //     // this.m_pos0.setXYZ(0.0, 0.0, this.m_tempPos.z);
+            //     // this.m_pos1.setXYZ(100.0, 0.0, this.m_tempPos.z);
+            //     // pmat.transformVectorSelf(this.m_pos0);
+            //     // pmat.transformVectorSelf(this.m_pos1);
+            //     // this.m_pos1.x = this.m_pos1.x / this.m_pos1.w - this.m_pos0.x / this.m_pos0.w;
+            //     // if (Math.abs(this.m_px - this.m_pos1.x) > 0.0001) {
+            //     //     this.m_px = this.m_pos1.x;
+            //     //     let scale = this.fixSize / this.m_pos1.x;
+            //     //     this.m_target.setCtrlScaleXYZ(scale, scale, scale);
+            //     //     this.m_target.update();
+            //     // }
+            // }
 
             for (let i = 0; i < ls.length; ++i) {
                 if (ls[i].getVisible()) {
@@ -161,7 +161,7 @@ class DragTransController{
         }
         return flag;
     }
-    select(targets: IEntityTransform[]): void {        
+    select(targets: IEntityTransform[]): void {
         this.m_target.setTargets(targets);
         this.m_target.select(null);
         this.setVisible(targets != null);
@@ -180,7 +180,7 @@ class DragTransController{
         }
         this.setVisible(true);
     }
-    
+
     getTargets(): IEntityTransform[] {
         return this.m_target.getTargets();
     }
@@ -207,6 +207,7 @@ class DragTransController{
         this.m_target.update();
     }
     getPosition(pv: IVector3D): IVector3D {
+
         this.m_controllers[0].getPosition(pv);
         return pv;
     }
@@ -236,10 +237,15 @@ class DragTransController{
     }
     globalToLocal(pv: IVector3D): void {
     }
-    update(): void {        
+    update(): void {
+    }
+    updateCtrl(): void {
+        if (this.m_enabled) {
+            this.m_target.updateCtrl();
+        }
     }
     destroy(): void {
-        if(this.m_controllers.length > 0) {
+        if (this.m_controllers.length > 0) {
             for (let i = 0; i < this.m_controllers.length; ++i) {
                 this.m_controllers[i].destroy();
             }
