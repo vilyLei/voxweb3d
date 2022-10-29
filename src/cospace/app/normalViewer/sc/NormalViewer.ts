@@ -3,7 +3,7 @@ import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
 import { ICoUI } from "../../../voxui/ICoUI";
 import { NormalViewerScene } from "./NormalViewerScene";
-import { ViewerCoSApp } from "../../../demo/coViewer/ViewerCoSApp";
+import { CoDataModule } from "../../../app/common/CoDataModule";
 import { TransUI } from "../../../edit/demo/edit/ui/TransUI";
 
 declare var CoUI: ICoUI;
@@ -20,12 +20,12 @@ class NormalViewer {
 	getUIScene(): ICoUIScene {
 		return this.m_uiscene;
 	}
-	initialize(uiscene: ICoUIScene, vcoapp: ViewerCoSApp, transUI: TransUI): void {
+	initialize(uiscene: ICoUIScene, coapp: CoDataModule, transUI: TransUI): void {
 
 		if (this.m_uiscene == null) {
 			this.m_uiscene = uiscene;
 			this.normalScene = new NormalViewerScene();
-			this.normalScene.initialize(uiscene, vcoapp, transUI);
+			this.normalScene.initialize(uiscene, coapp, transUI);
 		}
 	}
 	destroy(): void {

@@ -11,7 +11,7 @@ import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoUIInteraction } from "../../voxengine/ui/ICoUIInteraction";
 import ViewerMaterialCtx from "../../demo/coViewer/ViewerMaterialCtx";
 import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
-import { ViewerCoSApp } from "../../demo/coViewer/ViewerCoSApp";
+import { CoDataModule } from "../../app/common/CoDataModule";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../app/CoSpaceAppData";
@@ -60,7 +60,7 @@ export class DemoTransEditor {
 	private m_nvaUI = new NavigationUI();
 
 	private m_urlChecker: (url: string) => string = null;
-	private m_vcoapp: ViewerCoSApp;
+	private m_codata: CoDataModule;
 	private m_vmctx: ViewerMaterialCtx;
 	private m_outline: PostOutline;
 	private m_scale = 20.0;
@@ -149,8 +149,8 @@ export class DemoTransEditor {
 
 				}, urlChecker).load(url2).load(url5).load(url8);
 
-				this.m_vcoapp = new ViewerCoSApp();
-				this.m_vcoapp.initialize((): void => {
+				this.m_codata = new CoDataModule();
+				this.m_codata.initialize((): void => {
 					this.initModel();
 				}, urlChecker, true);
 			}
@@ -191,7 +191,7 @@ export class DemoTransEditor {
 		grid.initialize(this.m_rsc, 0, minV.scaleBy(scale), maxV.scaleBy(scale), 30);
 
 		let viewer = new NormalViewer();
-		viewer.initialize(this.m_coUIScene, this.m_vcoapp, this.m_transUI);
+		viewer.initialize(this.m_coUIScene, this.m_codata, this.m_transUI);
 		viewer.open();
 		this.m_viewer = viewer;
 		let entitySC = viewer.normalScene.entityScene;

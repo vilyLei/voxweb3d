@@ -4,7 +4,7 @@ import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
 import { ICoUI } from "../../../voxui/ICoUI";
 import { NormalCtrlPanel } from "../ui/NormalCtrlPanel";
 import { NormalEntityScene } from "./NormalEntityScene";
-import { ViewerCoSApp } from "../../../demo/coViewer/ViewerCoSApp";
+import { CoDataModule } from "../../../app/common/CoDataModule";
 import { NormalEntityManager } from "./NormalEntityManager";
 import { TransUI } from "../../../edit/demo/edit/ui/TransUI";
 
@@ -20,7 +20,7 @@ class NormalViewerScene {
 	private m_transUI: TransUI = null;
 	private m_entityManager: NormalEntityManager;
 	entityScene: NormalEntityScene;
-	private m_vcoapp: ViewerCoSApp;
+	private m_coapp: CoDataModule;
 
 	constructor() { }
 
@@ -28,14 +28,14 @@ class NormalViewerScene {
 		return this.m_uiscene;
 	}
 
-	initialize(uiscene: ICoUIScene, vcoapp: ViewerCoSApp, transUI: TransUI): void {
+	initialize(uiscene: ICoUIScene, coapp: CoDataModule, transUI: TransUI): void {
 
 		if (this.m_uiscene == null) {
 			this.m_uiscene = uiscene;
-			this.m_vcoapp = vcoapp;
+			this.m_coapp = coapp;
 			this.m_transUI = transUI;
 
-			this.entityScene = new NormalEntityScene(uiscene, vcoapp);
+			this.entityScene = new NormalEntityScene(uiscene, coapp);
 			this.m_entityManager = this.entityScene.entityManager;
 			this.initUI();
 			this.entityScene.transUI = transUI;

@@ -1,6 +1,6 @@
 import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../app/CoSpaceAppData";
-import { ViewerCoSApp } from "../../../demo/coViewer/ViewerCoSApp";
+import { CoDataModule } from "../../../app/common/CoDataModule";
 import { TransUI } from "../../../edit/demo/edit/ui/TransUI";
 import ITransformEntity from "../../../../vox/entity/ITransformEntity";
 import IRendererScene from "../../../../vox/scene/IRendererScene";
@@ -15,7 +15,7 @@ import { NormalExampleGroup } from "./NormalExampleGroup";
 class NormalEntityScene {
 
 	private m_uiscene: ICoUIScene = null;
-	private m_vcoapp: ViewerCoSApp;
+	private m_coapp: CoDataModule;
 	private m_dropController = new DropModelFileController();
 	private m_groups: NormalEntityGroup[] = [];
 
@@ -25,9 +25,9 @@ class NormalEntityScene {
 	
 	readonly entityManager: NormalEntityManager = new NormalEntityManager();
 	readonly exampleGroup: NormalExampleGroup = new NormalExampleGroup();
-	constructor(uiscene: ICoUIScene, vcoapp: ViewerCoSApp) {
+	constructor(uiscene: ICoUIScene, vcoapp: CoDataModule) {
 		this.m_uiscene = uiscene;
-		this.m_vcoapp = vcoapp;
+		this.m_coapp = vcoapp;
 	}
 
 	getUIScene(): ICoUIScene {
@@ -71,7 +71,7 @@ class NormalEntityScene {
 	}
 	private loadModels(urls: string[], typeNS: string = ""): void {
 		
-		let group = new NormalEntityGroup(this.m_vcoapp);
+		let group = new NormalEntityGroup(this.m_coapp);
 		group.rsc = this.rscene;
 		group.uiscene = this.m_uiscene;
 		group.transUI = this.transUI;

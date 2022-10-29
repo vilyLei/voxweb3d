@@ -13,7 +13,7 @@ import { NormalCtrlPanel } from "../ui/NormalCtrlPanel";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../app/CoSpaceAppData";
 import IMatrix4 from "../../../../vox/math/IMatrix4";
 import { NormalEntityLayout } from "./NormalEntityLayout";
-import { ViewerCoSApp } from "../../../demo/coViewer/ViewerCoSApp";
+import { CoDataModule } from "../../../app/common/CoDataModule";
 import { NormalEntityManager } from "./NormalEntityManager";
 
 declare var CoUI: ICoUI;
@@ -24,7 +24,7 @@ class NormalEntityGroup {
 
 	private static s_uid = 0;
 	private m_uid = NormalEntityGroup.s_uid++;
-	private m_vcoapp: ViewerCoSApp;
+	private m_coapp: CoDataModule;
 
 	uiscene: ICoUIScene;
 	ctrPanel: NormalCtrlPanel;
@@ -32,8 +32,8 @@ class NormalEntityGroup {
 	transUI: TransUI;
 	entityManager: NormalEntityManager;
 
-	constructor(vcoapp: ViewerCoSApp) {
-		this.m_vcoapp = vcoapp;
+	constructor(coapp: CoDataModule) {
+		this.m_coapp = coapp;
 	}
 	getUid(): number {
 		return this.m_uid;
@@ -45,7 +45,7 @@ class NormalEntityGroup {
 			// this.m_transforms = [];
 			// this.m_transes = [];
 			let purls = urls.slice(0);
-			this.m_vcoapp.deferredInit((): void => {
+			this.m_coapp.deferredInit((): void => {
 				console.log("XXXXXXXXXXXXXXXXXXX deferredInit() call...");
 				for (let i = 0; i < purls.length; ++i) {
 					this.loadModel(purls[i], typeNS);
@@ -92,8 +92,8 @@ class NormalEntityGroup {
 	private m_loadedTotal = 0;
 	private loadGeomModel(url: string, format: CoDataFormat): void {
 
-		// let ins = this.m_vcoapp.coappIns;
-		let ins = this.m_vcoapp;
+		// let ins = this.m_coapp.coappIns;
+		let ins = this.m_coapp;
 		if (ins != null) {
 			this.uiscene.prompt.getPromptPanel().applyConfirmButton();
 			this.uiscene.prompt.showPrompt("Model loading!");
