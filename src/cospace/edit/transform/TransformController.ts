@@ -34,6 +34,7 @@ class TransformController implements ITransformController {
     // private m_preV: IVector3D;
     private m_camVer = -7;
     private m_ctrVer = -7;
+    private m_scale = 0.015;
     private m_targets: IEntityTransform[] = null;
 
     private m_movedCtr: IDragMoveController = null;
@@ -54,6 +55,9 @@ class TransformController implements ITransformController {
      */
     readonly ROTATION: number = 2;
     constructor() {
+    }
+    setScale(s: number): void {
+        this.m_scale = s;
     }
     initialize(rsc: IRendererScene, processid: number = 0): void {
 
@@ -237,7 +241,7 @@ class TransformController implements ITransformController {
             ct.getPosition(pv);
             let vm = cam.getViewMatrix();
             vm.transformVector3Self(pv);
-            let s = -0.015 * pv.z / cam.getZNear();
+            let s = -this.m_scale * pv.z / cam.getZNear();
             // console.log(">>> s: ",s);
             ct.setCtrlScaleXYZ(s, s, s);
             ct.updateCtrl();

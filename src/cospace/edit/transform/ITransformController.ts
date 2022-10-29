@@ -30,7 +30,7 @@ interface ITransformController {
      * @param processid the defualt value is 0
      */
     initialize(rsc: IRendererScene, processid?: number): void;
-    
+    setScale(s: number): void;
     /**
      * to translation controller
      */
