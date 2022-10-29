@@ -122,6 +122,7 @@ class NormalEntityGroup {
 			);
 			if(format == CoDataFormat.FBX) {
 				unit.data.modelReceiver = (models: CoGeomDataType[], transforms: Float32Array[], index: number, total: number): void => {
+					console.log("XXX: ", index, ",", total);
 					this.createEntityFromModels(models, transforms);
 				}
 			}

@@ -106,7 +106,7 @@ class NVNavigationUI {
 			"Help infomation.",
 		];
 
-		keys = urls.slice(0, 2);
+		keys = keys.slice(0, 2);
 		urls = urls.slice(0, 2);
 		infos = infos.slice(0, 2);
 		keys.push("help");
@@ -172,20 +172,19 @@ class NVNavigationUI {
 
 		// console.log("btnMouseUpListener(), evt.currentTarget: ", evt.currentTarget);
 		let uuid = evt.uuid;
-		console.log("btnMouseUpListener(), uuid: ", uuid);
+		console.log("XXX CO btnMouseUpListener(), uuid: ", uuid);
 		switch (uuid) {
 
 			case "file":
 			case "edit":
 			case "model":
-
 			case "normal":
 			case "texture":
 			case "material":
 			case "light":
-
 			case "animation":
 			case "particle":
+				console.log("dfdfdffd");
 				this.m_coUIScene.prompt.showPrompt("It can't be used now!");
 				break;
 			case "help":

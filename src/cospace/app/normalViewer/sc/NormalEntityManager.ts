@@ -187,6 +187,10 @@ class NormalEntityManager {
 				case "modelColor":
 					this.setModelColor(true);
 					break;
+				case "normalTest":
+					// this.setModelColor(true);
+					console.log("test");
+					break;
 				default:
 					break;
 			}

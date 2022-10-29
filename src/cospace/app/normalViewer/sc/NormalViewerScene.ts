@@ -77,6 +77,7 @@ class NormalViewerScene {
 				console.log("appaly normal color");
 				break;
 			case "normalTest":
+				this.m_uiscene.prompt.showPrompt("It can't be used now!");
 				console.log("appaly normal data feature test");
 				break;
 			default:
