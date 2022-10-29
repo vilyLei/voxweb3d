@@ -77,6 +77,7 @@ class RotatedTarget extends CtrlTargetBase implements ICtrTarget {
 
         // console.log("setRotationXYZ(), rx, ry, rz: ", rx, ry, rz);
         if (this.m_tars != null) {
+            this.version++;
             let tars = this.m_tars;
             // console.log("setRotation3(), pr: ", pr);
 

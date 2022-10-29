@@ -29,8 +29,11 @@ class TransformController implements ITransformController {
     private m_rsc: IRendererScene = null;
     private m_enabled: boolean = false;
     private m_controllers: IUserEditController[] = [null, null, null];
-    private m_pv: IVector3D;// = CoMath.createVec3();
-    private m_wpos: IVector3D;// = CoMath.createVec3();
+    private m_pv: IVector3D;
+    private m_wpos: IVector3D;
+    // private m_preV: IVector3D;
+    private m_camVer = -7;
+    private m_ctrVer = -7;
     private m_targets: IEntityTransform[] = null;
 
     private m_movedCtr: IDragMoveController = null;
@@ -58,6 +61,7 @@ class TransformController implements ITransformController {
 
             this.m_rsc = rsc;
             this.m_pv = CoMath.createVec3();
+            // this.m_preV = CoMath.createVec3();
             this.m_wpos = CoMath.createVec3();
 
             let ls = this.m_controllers;
@@ -215,7 +219,8 @@ class TransformController implements ITransformController {
                 ctr.setPosition(this.m_wpos);
                 ctr.update();
                 ctr.select(targets);
-                ctr.setVisible(true);
+                ctr.setVisible(true);                
+                this.updateSize(this.m_rsc, ctr);
             } else {
                 this.m_targets = targets;
                 this.m_wpos.copyFrom(wpos);
@@ -224,26 +229,42 @@ class TransformController implements ITransformController {
             console.error("targets == null");
         }
     }
-    private m_camVer = -7;
+    private updateSize(sc: IRendererScene, ct: IUserEditController): void {
+        sc.updateCamera();
+        let cam = sc.getCamera();
+        if (this.m_camVer != cam.version || this.m_ctrVer != ct.getVersion()) {
+            let pv = this.m_pv;
+            ct.getPosition(pv);
+            let vm = cam.getViewMatrix();
+            vm.transformVector3Self(pv);
+            let s = -0.015 * pv.z / cam.getZNear();
+            // console.log(">>> s: ",s);
+            ct.setCtrlScaleXYZ(s, s, s);
+            ct.updateCtrl();
+            this.m_camVer = cam.version;
+            this.m_ctrVer = ct.getVersion();
+        }
+    }
     run(): void {
         let sc = this.m_rsc;
         if (sc != null) {
             if (this.m_enabled && this.m_type >= 0) {
                 let ct = this.m_controllers[this.m_type];
-                sc.updateCamera();
-                let cam = sc.getCamera();
-                if(this.m_camVer != cam.version) {
-                    // console.log(cam.version);
-                    let pv = this.m_pv;
-                    ct.getPosition(pv);
-                    let vm = cam.getViewMatrix();
-                    vm.transformVector3Self(pv);
-                    let s = -0.015 * pv.z/cam.getZNear();
-                    // console.log(">>> s: ",s);
-                    ct.setCtrlScaleXYZ(s,s,s);
-                    ct.updateCtrl();
-                    this.m_camVer = cam.version;
-                }
+                // sc.updateCamera();
+                // let cam = sc.getCamera();
+                // if (this.m_camVer != cam.version) {
+                //     // console.log(cam.version);
+                //     let pv = this.m_pv;
+                //     ct.getPosition(pv);
+                //     let vm = cam.getViewMatrix();
+                //     vm.transformVector3Self(pv);
+                //     let s = -0.015 * pv.z / cam.getZNear();
+                //     // console.log(">>> s: ",s);
+                //     ct.setCtrlScaleXYZ(s, s, s);
+                //     ct.updateCtrl();
+                //     this.m_camVer = cam.version;
+                // }
+                this.updateSize(sc, ct);
                 ct.run();
             }
         }

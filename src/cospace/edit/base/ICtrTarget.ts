@@ -7,7 +7,7 @@ interface ICtrTarget extends IEntityTransform {
      * center
      */
     position: IVector3D;
-
+    version: number;
     select(controller?: IEntityTransform): void;
     deselect(): void;
     addCtrlEntity(entity: IEntityTransform): void;

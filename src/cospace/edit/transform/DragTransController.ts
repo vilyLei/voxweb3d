@@ -184,7 +184,9 @@ class DragTransController {
     getTargets(): IEntityTransform[] {
         return this.m_target.getTargets();
     }
-
+    getVersion(): number {
+        return this.m_target.version;
+    }
     setVisible(visible: boolean): void {
 
         this.m_visible = visible;

@@ -28,6 +28,7 @@ interface IUserEditController extends IEntityTransform {
     setCtrlScaleXYZ(sx: number, sy: number, sz: number): void;
     decontrol(): void;
     updateCtrl(): void;
+    getVersion(): number;
 
 }
 

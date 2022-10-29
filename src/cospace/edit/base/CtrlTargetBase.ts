@@ -15,7 +15,7 @@ class CtrlTargetBase implements ICtrTarget {
     protected m_changed: boolean = false;
     protected m_v3 = CoMath.createVec3();
     position = CoMath.createVec3();
-
+    version = 0;
     constructor() {
     }
 
