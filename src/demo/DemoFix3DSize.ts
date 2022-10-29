@@ -38,15 +38,15 @@ import CameraBase from "../vox/view/CameraBase";
 import { IRenderCamera } from "../vox/render/IRenderCamera";
 
 class SceneAccessor implements IRendererSceneAccessor {
-    srcCam: IRenderCamera;
-    dstCam: IRenderCamera;
+    // srcCam: IRenderCamera;
+    // dstCam: IRenderCamera;
     constructor() { }
     renderBegin(rendererScene: IRendererScene): void {
         let p = rendererScene.getRenderProxy();        
         p.clearDepth(1.0);
-        let sCam = this.srcCam;
-        this.dstCam.lookAtRH(sCam.getPosition(), sCam.getLookAtPosition(), sCam.getUV());
-        this.dstCam.update();
+        // let sCam = this.srcCam;
+        // this.dstCam.lookAtRH(sCam.getPosition(), sCam.getLookAtPosition(), sCam.getUV());
+        // this.dstCam.update();
     }
     renderEnd(rendererScene: IRendererScene): void {
     }
@@ -85,20 +85,20 @@ export class DemoFix3DSize {
             this.m_rscene.updateCamera();
 
             
-            rparam = new RendererParam();
-            rparam.cameraPerspectiveEnabled = false;
-            rparam.setCamProject(45, 20, 9000.0);
-            rparam.setAttriStencil(true);
-            rparam.setCamPosition(1000.0, 1000.0, 1000.0);
+            // rparam = new RendererParam();
+            // rparam.cameraPerspectiveEnabled = false;
+            // rparam.setCamProject(45, 20, 9000.0);
+            // rparam.setAttriStencil(true);
+            // rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 
             let sa = new SceneAccessor();
             this.m_editScene = this.m_rscene.createSubScene();
-            this.m_editScene.initialize(rparam, 3, true);
+            this.m_editScene.initialize(rparam, 3, false);
             this.m_editScene.setAccessor( sa );
             this.m_editScene.enableMouseEvent(true);
             this.m_editScene.updateCamera();
-            sa.srcCam = this.m_rscene.getCamera();
-            sa.dstCam = this.m_editScene.getCamera();
+            // sa.srcCam = this.m_rscene.getCamera();
+            // sa.dstCam = this.m_editScene.getCamera();
 
             this.m_renderGraph.addScene( this.m_rscene );
             this.m_renderGraph.addScene( this.m_editScene );
@@ -134,8 +134,8 @@ export class DemoFix3DSize {
     private initScene(): void {
 
         
-        let cam0 = this.m_rscene.getCamera();
-        let cam1 = this.m_editScene.getCamera();
+        // let cam0 = this.m_rscene.getCamera();
+        // let cam1 = this.m_editScene.getCamera();
 
         let axis = new Axis3DEntity();
         axis.initialize(500);
@@ -148,16 +148,15 @@ export class DemoFix3DSize {
         // let material0 = new FixSizeLine3DMaterial();
 
         let axis0 = new Axis3DEntity();
-        // axis0.setMaterial(material0);
         axis0.initialize(150);
-        axis0.setXYZ(100, 0, 250);
+        axis0.setXYZ(90, 0, 240);
         this.m_rscene.addEntity(axis0);
         
-        let material1 = new FixSizeLine3DMaterial(false, cam0.getProjectMatrix().getLocalFS32());
+        let material1 = new FixSizeLine3DMaterial(false);
         let axis1 = new Axis3DEntity();
         axis1.setMaterial(material1);
         axis1.setXYZ(100, 0, 250);
-        axis1.initialize(150);
+        axis1.initialize(100);
         this.m_editScene.addEntity(axis1);
 
         // let plane: Plane3DEntity = new Plane3DEntity();

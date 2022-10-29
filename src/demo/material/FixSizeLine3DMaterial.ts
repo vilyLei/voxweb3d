@@ -30,7 +30,7 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
         this.m_coder.addVertLayout("vec3", "a_vs");
 
         this.m_coder.addFragUniform("vec4", "u_color");
-        this.m_coder.addVertUniform("mat4", "u_mat");
+        this.m_coder.addVertUniform("vec4", "u_frustumParam");
         if (this.dynColorEnabled) {
             this.m_coder.addDefine("DYNAMIC_COLOR");
         }
@@ -48,13 +48,22 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
     #else
         FragColor0 = u_color;
     #endif
+    FragColor0.xyz = FragColor0.xyz * 0.3 + 0.7;
 `
         );
         this.m_coder.addVertMainCode(
             `
-    vec4 pv0 = u_mat * u_viewMat * u_objMat * vec4(vec3(0.0),1.0);
-    vec4 pv = u_projMat * u_viewMat * vec4(a_vs,1.0);
-    pv.xy += pv0.xy/pv0.w;
+    // vec4 pv0 = u_mat * u_viewMat * u_objMat * vec4(vec3(0.0),1.0);
+    // vec4 pv = u_projMat * u_viewMat * vec4(a_vs,1.0);
+    // pv.xy += pv0.xy/pv0.w;
+    // #ifndef DYNAMIC_COLOR
+    //     v_color = a_cvs;
+    // #endif
+    // gl_Position = pv;
+
+    vec4 pvv0 = u_viewMat * u_objMat * vec4(vec3(0.0),1.0);
+    vec3 sv = vec3(0.02 * -pvv0.z/u_frustumParam.x);
+    vec4 pv = u_projMat * u_viewMat * u_objMat * vec4(a_vs * sv,1.0);
     #ifndef DYNAMIC_COLOR
         v_color = a_cvs;
     #endif
@@ -81,7 +90,6 @@ class FixSizeLine3DMaterial extends MaterialBase implements IColorMaterial {
 
     private m_dynColorEnabled: boolean = false;
     private m_data: Float32Array = null;
-    private m_matFS32: Float32Array = null;
 
     premultiplyAlpha: boolean = false;
     normalEnabled: boolean = false;
@@ -89,17 +97,16 @@ class FixSizeLine3DMaterial extends MaterialBase implements IColorMaterial {
     /**
      * @param dynColorEnabled the default value is false
      */
-    constructor(dynColorEnabled: boolean = false, matFS32: Float32Array = null) {
+    constructor(dynColorEnabled: boolean = false) {
 
         super();
 
         this.m_dynColorEnabled = dynColorEnabled;
         this.m_data = new Float32Array([1.0, 1.0, 1.0, 1.0]);
-        this.m_matFS32 = matFS32;
 
         let oum = new ShaderUniformData();
-        oum.uniformNameList = ["u_color", "u_mat"];
-        oum.dataList = [this.m_data, this.m_matFS32];
+        oum.uniformNameList = ["u_color"];
+        oum.dataList = [this.m_data];
         this.m_shaderUniformData = oum;
     }
     protected buildBuf(): void {
