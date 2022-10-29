@@ -1,7 +1,7 @@
 import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
 import ITransformEntity from "../../../../vox/entity/ITransformEntity";
 import { NormalEntityNode } from "./NormalEntityNode";
-import { TransUI } from "../../../edit/demo/edit/ui/TransUI";
+import { NVTransUI } from "../ui/NVTransUI";
 
 import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
 import { ICoRScene } from "../../../voxengine/ICoRScene";
@@ -29,7 +29,7 @@ class NormalEntityGroup {
 	uiscene: ICoUIScene;
 	ctrPanel: NormalCtrlPanel;
 	rsc: IRendererScene;
-	transUI: TransUI;
+	transUI: NVTransUI;
 	entityManager: NormalEntityManager;
 
 	constructor(coapp: CoDataModule) {

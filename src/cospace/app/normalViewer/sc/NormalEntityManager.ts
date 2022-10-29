@@ -1,7 +1,6 @@
-
 import ITransformEntity from "../../../../vox/entity/ITransformEntity";
 import { NormalEntityNode } from "./NormalEntityNode";
-import { TransUI } from "../../../edit/demo/edit/ui/TransUI";
+import { NVTransUI } from "../ui/NVTransUI";
 
 import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
 import { ICoRScene } from "../../../voxengine/ICoRScene";
@@ -22,7 +21,7 @@ class NormalEntityManager {
 
 	ctrPanel: NormalCtrlPanel;
 	rsc: IRendererScene;
-	transUI: TransUI;
+	transUI: NVTransUI;
 	private m_map: Map<number, NormalEntityNode> = new Map();
 	private m_selectEntities: ITransformEntity[] = null;
 	private m_scaleBase = 1.0;

@@ -1,4 +1,3 @@
-
 import { PackedLoader } from "./PackedLoader";
 class ModuleLoader extends PackedLoader {
 	/**

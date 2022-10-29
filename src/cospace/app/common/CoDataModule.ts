@@ -10,9 +10,7 @@ import {
 
 import { ICoSpaceApp } from "../../app/ICoSpaceApp";
 import { ICoSpaceAppIns } from "../../app/ICoSpaceAppIns";
-
-import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
-
+import { CoModuleLoader } from "../utils/CoModuleLoader";
 
 declare var CoSpaceApp: ICoSpaceApp;
 
@@ -25,7 +23,7 @@ export class CoDataModule {
 	private m_dependencyGraphObj: Object;
 	private m_deferredInit: boolean;
 	private m_sysInitCallback: ()=>void;
-	private m_urlChecker: (url: string) => string = null;
+	// private m_urlChecker: (url: string) => string = null;
 
 	readonly coappIns: ICoSpaceAppIns;
 	constructor() { }
@@ -35,9 +33,9 @@ export class CoDataModule {
 	 * @param urlChecker the default value is null
 	 * @param deferredInit the default value is false 
 	 */
-	initialize(sysInitCallback: () => void = null, urlChecker: (url: string) => string = null, deferredInit: boolean = false): void {
+	initialize(sysInitCallback: () => void = null, deferredInit: boolean = false): void {
 		this.m_sysInitCallback = sysInitCallback;
-		this.m_urlChecker = urlChecker;
+		// this.m_urlChecker = urlChecker;
 		this.m_deferredInit = deferredInit;
 		let modules: CoTaskCodeModuleParam[] = [
 			{ url: "static/cospace/core/coapp/CoSpaceApp.umd.js", name: CoModuleNS.coSpaceApp, type: CoModuleFileType.JS },
@@ -61,6 +59,8 @@ export class CoDataModule {
 		};
 		this.m_dependencyGraphObj = dependencyGraphObj;
 
+		let loader = new CoModuleLoader(1);
+		let urlChecker = loader.getUrlChecker();
 		if (urlChecker != null) {
 			for (let i = 0; i < modules.length; ++i) {
 				modules[i].url = urlChecker(modules[i].url);
@@ -76,13 +76,8 @@ export class CoDataModule {
 	}
 	private loadSys(): void {
 		if (this.m_sysIniting) {
-			new ModuleLoader(1, null, this.m_urlChecker)
-			.setCallback((): void => {
+			new CoModuleLoader(1, (): void => {
 				this.initCoSpaceSys();
-				if (this.m_sysInitCallback != null) {
-					this.m_sysInitCallback();
-				}
-				this.m_sysInitCallback = null;
 			})
 			.load(this.m_modules[0].url);
 			this.m_sysIniting = false;
@@ -149,6 +144,11 @@ export class CoDataModule {
 			}
 			this.m_initCalls = [];
 		}
+		
+		if (this.m_sysInitCallback != null) {
+			this.m_sysInitCallback();
+		}
+		this.m_sysInitCallback = null;
 	}
 }
 

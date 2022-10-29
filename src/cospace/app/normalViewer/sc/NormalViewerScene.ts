@@ -6,7 +6,7 @@ import { NormalCtrlPanel } from "../ui/NormalCtrlPanel";
 import { NormalEntityScene } from "./NormalEntityScene";
 import { CoDataModule } from "../../../app/common/CoDataModule";
 import { NormalEntityManager } from "./NormalEntityManager";
-import { TransUI } from "../../../edit/demo/edit/ui/TransUI";
+import { NVTransUI } from "../ui/NVTransUI";
 
 declare var CoUI: ICoUI;
 
@@ -17,7 +17,7 @@ class NormalViewerScene {
 
 	private m_uiscene: ICoUIScene = null;
 	private m_ctrPanel: NormalCtrlPanel = null;
-	private m_transUI: TransUI = null;
+	private m_transUI: NVTransUI = null;
 	private m_entityManager: NormalEntityManager;
 	entityScene: NormalEntityScene;
 	private m_coapp: CoDataModule;
@@ -28,7 +28,7 @@ class NormalViewerScene {
 		return this.m_uiscene;
 	}
 
-	initialize(uiscene: ICoUIScene, coapp: CoDataModule, transUI: TransUI): void {
+	initialize(uiscene: ICoUIScene, coapp: CoDataModule, transUI: NVTransUI): void {
 
 		if (this.m_uiscene == null) {
 			this.m_uiscene = uiscene;

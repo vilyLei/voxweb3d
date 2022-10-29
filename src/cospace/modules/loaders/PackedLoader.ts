@@ -24,6 +24,9 @@ class PackedLoader {
 	setUrlChecker(urlChecker: (url: string) => string = null): void {
 		this.m_urlChecker = urlChecker;
 	}
+	getUrlChecker(): (url: string) => string {
+		return this.m_urlChecker;
+	}
 	getUid(): number {
 		return this.m_uid;
 	}

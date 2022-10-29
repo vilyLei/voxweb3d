@@ -1,6 +1,5 @@
-
 import ITransformEntity from "../../../../vox/entity/ITransformEntity";
-import { TransUI } from "../../../edit/demo/edit/ui/TransUI";
+import { NVTransUI } from "../ui/NVTransUI";
 import IRendererScene from "../../../../vox/scene/IRendererScene";
 import IMouseEventEntity from "../../../../vox/entity/IMouseEventEntity";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../app/CoSpaceAppData";
@@ -25,7 +24,7 @@ class NormalEntityNode {
 	private m_uid: number = -1;
 
 	rsc: IRendererScene;
-	transUI: TransUI;
+	transUI: NVTransUI;
 	groupUid = -1;
 	entity: IMouseEventEntity = null;
 	normalLine: ITransformEntity = null;

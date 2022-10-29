@@ -1,7 +1,7 @@
 import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
 import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { ICoUI } from "../../../voxui/ICoUI";
-import { TransUI } from "../../../edit/demo/edit/ui/TransUI";
+import { NVTransUI } from "../ui/NVTransUI";
 
 import { NormalEntityNode } from "./NormalEntityNode";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../app/CoSpaceAppData";
@@ -30,11 +30,11 @@ class NormalExampleGroup implements IRunnable {
 	private m_pv: IVector3D = null;
 	private m_textHeight = 130.0;
 	private m_enabled: boolean = true;
-	private m_transUI: TransUI;
+	private m_transUI: NVTransUI;
 
 	entityManager: NormalEntityManager;
 	constructor() { }
-	initialize(rscene: IRendererScene, transUI: TransUI): void {
+	initialize(rscene: IRendererScene, transUI: NVTransUI): void {
 
 		if (this.m_rscene == null) {
 			this.m_rscene = rscene;

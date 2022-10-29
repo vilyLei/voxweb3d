@@ -11,7 +11,7 @@ import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoUIInteraction } from "../../voxengine/ui/ICoUIInteraction";
 import ViewerMaterialCtx from "../../demo/coViewer/ViewerMaterialCtx";
 // import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
-import { CoDataModule } from "../../app/common/CoDataModule";
+// import { CoDataModule } from "../../app/common/CoDataModule";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../app/CoSpaceAppData";
@@ -19,9 +19,9 @@ import IVector3D from "../../../vox/math/IVector3D";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import { IRendererSceneAccessor } from "../../../vox/scene/IRendererSceneAccessor";
 import IRendererSceneGraph from "../../../vox/scene/IRendererSceneGraph";
-import { PostOutline } from "./effect/PostOutline";
-import { TransUI } from "./edit/ui/TransUI";
-import { NavigationUI } from "./edit/ui/NavigationUI";
+import { CoPostOutline } from "../../app/effect/CoPostOutline";
+import { NVTransUI } from "../../app/normalViewer/ui/NVTransUI";
+import { NVNavigationUI } from "../../app/normalViewer/ui/NVNavigationUI";
 import { RectTextTip } from "../../voxui/entity/RectTextTip";
 import { IRectTextTip } from "../../voxui/entity/IRectTextTip";
 import { NormalViewer } from "../../app/normalViewer/sc/NormalViewer";
@@ -57,13 +57,13 @@ export class DemoTransEditor {
 	private m_uirsc: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
 	private m_interact: IMouseInteraction = null;
-	private m_transUI = new TransUI();
-	private m_nvaUI = new NavigationUI();
+	private m_transUI = new NVTransUI();
+	private m_nvaUI = new NVNavigationUI();
 
-	private m_urlChecker: (url: string) => string = null;
-	private m_codata: CoDataModule;
+	// private m_urlChecker: (url: string) => string = null;
+	// private m_codata: CoDataModule;
 	private m_vmctx: ViewerMaterialCtx;
-	private m_outline: PostOutline;
+	private m_outline: CoPostOutline;
 	private m_scale = 20.0;
 
 	constructor() { }
@@ -97,7 +97,7 @@ export class DemoTransEditor {
 			url = url.trim();
 			if(hostUrl.indexOf(".artvily.") > 0) {
 				let i = url.lastIndexOf("/");
-				let j = url.indexOf(".", i);				
+				let j = url.indexOf(".", i);
 				// hostUrl = "http://localhost:9000/test/";
 				hostUrl = "http://www.artvily.com:9090/";
 				let fileName = (url.slice(i,j)).toLocaleLowerCase();
@@ -112,7 +112,7 @@ export class DemoTransEditor {
 			}
 			return url;
 		}
-		this.m_urlChecker = urlChecker;
+		// this.m_urlChecker = urlChecker;
 		
 		// new CoModuleLoader
 
@@ -151,8 +151,8 @@ export class DemoTransEditor {
 
 				}).load(url2).load(url5).load(url8);
 
-				this.m_codata = new CoDataModule();
-				this.m_codata.initialize(null, urlChecker, true);
+				// this.m_codata = new CoDataModule();
+				// this.m_codata.initialize(null, urlChecker, true);
 			}
 		}).addLoader(uiInteractML)
 			.load(url0)
@@ -191,7 +191,7 @@ export class DemoTransEditor {
 		grid.initialize(this.m_rsc, 0, minV.scaleBy(scale), maxV.scaleBy(scale), 30);
 
 		let viewer = new NormalViewer();
-		viewer.initialize(this.m_coUIScene, this.m_codata, this.m_transUI);
+		viewer.initialize(this.m_coUIScene, this.m_transUI);
 		viewer.open();
 		this.m_viewer = viewer;
 		let entitySC = viewer.normalScene.entityScene;
@@ -251,7 +251,7 @@ export class DemoTransEditor {
 			this.m_graph = CoRScene.createRendererSceneGraph();
 			this.m_graph.addScene(this.m_rsc);
 			this.m_graph.addScene(this.m_editUIRenderer);
-			this.m_outline = new PostOutline(rscene, this.m_urlChecker);
+			this.m_outline = new CoPostOutline(rscene);
 
 		}
 	}

@@ -4,7 +4,7 @@ import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
 import { ICoUI } from "../../../voxui/ICoUI";
 import { NormalViewerScene } from "./NormalViewerScene";
 import { CoDataModule } from "../../../app/common/CoDataModule";
-import { TransUI } from "../../../edit/demo/edit/ui/TransUI";
+import { NVTransUI } from "../ui/NVTransUI";
 
 declare var CoUI: ICoUI;
 
@@ -14,18 +14,21 @@ declare var CoMaterial: ICoMaterial;
 class NormalViewer {
 
 	private m_uiscene: ICoUIScene = null;
+	private m_codata: CoDataModule = new CoDataModule();
 	normalScene: NormalViewerScene = null;
 	
 	constructor() {}
 	getUIScene(): ICoUIScene {
 		return this.m_uiscene;
 	}
-	initialize(uiscene: ICoUIScene, coapp: CoDataModule, transUI: TransUI): void {
+	initialize(uiscene: ICoUIScene, transUI: NVTransUI): void {
 
 		if (this.m_uiscene == null) {
+			
+			this.m_codata.initialize(null, true);
 			this.m_uiscene = uiscene;
 			this.normalScene = new NormalViewerScene();
-			this.normalScene.initialize(uiscene, coapp, transUI);
+			this.normalScene.initialize(uiscene, this.m_codata, transUI);
 		}
 	}
 	destroy(): void {

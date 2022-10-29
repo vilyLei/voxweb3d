@@ -1,7 +1,7 @@
 import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../app/CoSpaceAppData";
 import { CoDataModule } from "../../../app/common/CoDataModule";
-import { TransUI } from "../../../edit/demo/edit/ui/TransUI";
+import { NVTransUI } from "../ui/NVTransUI";
 import ITransformEntity from "../../../../vox/entity/ITransformEntity";
 import IRendererScene from "../../../../vox/scene/IRendererScene";
 import { NormalEntityGroup } from "./NormalEntityGroup";
@@ -21,7 +21,7 @@ class NormalEntityScene {
 
 	ctrPanel: NormalCtrlPanel;
 	rscene: IRendererScene;
-	transUI: TransUI;
+	transUI: NVTransUI;
 	
 	readonly entityManager: NormalEntityManager = new NormalEntityManager();
 	readonly exampleGroup: NormalExampleGroup = new NormalExampleGroup();
