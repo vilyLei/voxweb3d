@@ -28,17 +28,25 @@ import DracoMesh from "../voxmesh/draco/DracoMesh";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
 import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
+import { FixSizeLine3DMaterial } from "./material/FixSizeLine3DMaterial";
 
 import IRendererScene from "../vox/scene/IRendererScene";
 import { IRendererSceneAccessor } from "../vox/scene/IRendererSceneAccessor";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import RendererSceneGraph from "../vox/scene/RendererSceneGraph";
+import CameraBase from "../vox/view/CameraBase";
+import { IRenderCamera } from "../vox/render/IRenderCamera";
 
 class SceneAccessor implements IRendererSceneAccessor {
+    srcCam: IRenderCamera;
+    dstCam: IRenderCamera;
     constructor() { }
     renderBegin(rendererScene: IRendererScene): void {
         let p = rendererScene.getRenderProxy();        
         p.clearDepth(1.0);
+        let sCam = this.srcCam;
+        this.dstCam.lookAtRH(sCam.getPosition(), sCam.getLookAtPosition(), sCam.getUV());
+        this.dstCam.update();
     }
     renderEnd(rendererScene: IRendererScene): void {
     }
@@ -63,7 +71,7 @@ export class DemoFix3DSize {
     initialize(): void {
         console.log("DemoFix3DSize::initialize()......");
         if (this.m_rscene == null) {
-            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
@@ -83,11 +91,14 @@ export class DemoFix3DSize {
             rparam.setAttriStencil(true);
             rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 
+            let sa = new SceneAccessor();
             this.m_editScene = this.m_rscene.createSubScene();
             this.m_editScene.initialize(rparam, 3, true);
-            this.m_editScene.setAccessor(new SceneAccessor());
+            this.m_editScene.setAccessor( sa );
             this.m_editScene.enableMouseEvent(true);
-
+            this.m_editScene.updateCamera();
+            sa.srcCam = this.m_rscene.getCamera();
+            sa.dstCam = this.m_editScene.getCamera();
 
             this.m_renderGraph.addScene( this.m_rscene );
             this.m_renderGraph.addScene( this.m_editScene );
@@ -123,17 +134,29 @@ export class DemoFix3DSize {
     private initScene(): void {
 
         
+        let cam0 = this.m_rscene.getCamera();
+        let cam1 = this.m_editScene.getCamera();
+
         let axis = new Axis3DEntity();
         axis.initialize(500);
+        (axis.getMaterial() as any).setRGB3f(0.5,0.5,0.5);
         this.m_rscene.addEntity(axis);
 
-        let axis0 = new Axis3DEntity();
-        axis0.initialize(150);
-        axis0.setXYZ(0, 0, 150);
-        this.m_rscene.addEntity(axis0);
+        // let axisSrc = new Axis3DEntity();
+        // axisSrc.initialize(150);
 
+        // let material0 = new FixSizeLine3DMaterial();
+
+        let axis0 = new Axis3DEntity();
+        // axis0.setMaterial(material0);
+        axis0.initialize(150);
+        axis0.setXYZ(100, 0, 250);
+        this.m_rscene.addEntity(axis0);
+        
+        let material1 = new FixSizeLine3DMaterial(false, cam0.getProjectMatrix().getLocalFS32());
         let axis1 = new Axis3DEntity();
-        axis1.setXYZ(0, 0, 150);
+        axis1.setMaterial(material1);
+        axis1.setXYZ(100, 0, 250);
         axis1.initialize(150);
         this.m_editScene.addEntity(axis1);
 

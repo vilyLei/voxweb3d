@@ -30,6 +30,7 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
         this.m_coder.addVertLayout("vec3", "a_vs");
 
         this.m_coder.addFragUniform("vec4", "u_color");
+        this.m_coder.addVertUniform("mat4", "u_mat");
         if (this.dynColorEnabled) {
             this.m_coder.addDefine("DYNAMIC_COLOR");
         }
@@ -51,8 +52,9 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
         );
         this.m_coder.addVertMainCode(
             `
-    viewPosition = u_viewMat * u_objMat * vec4(a_vs,1.0);
-    vec4 pv = u_projMat * viewPosition;
+    vec4 pv0 = u_mat * u_viewMat * u_objMat * vec4(vec3(0.0),1.0);
+    vec4 pv = u_projMat * u_viewMat * vec4(a_vs,1.0);
+    pv.xy += pv0.xy/pv0.w;
     #ifndef DYNAMIC_COLOR
         v_color = a_cvs;
     #endif
@@ -75,9 +77,11 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
     }
 }
 
-export default class FixSizeLine3DMaterial extends MaterialBase implements IColorMaterial {
+class FixSizeLine3DMaterial extends MaterialBase implements IColorMaterial {
+
     private m_dynColorEnabled: boolean = false;
     private m_data: Float32Array = null;
+    private m_matFS32: Float32Array = null;
 
     premultiplyAlpha: boolean = false;
     normalEnabled: boolean = false;
@@ -85,13 +89,17 @@ export default class FixSizeLine3DMaterial extends MaterialBase implements IColo
     /**
      * @param dynColorEnabled the default value is false
      */
-    constructor(dynColorEnabled: boolean = false) {
+    constructor(dynColorEnabled: boolean = false, matFS32: Float32Array = null) {
+
         super();
+
         this.m_dynColorEnabled = dynColorEnabled;
         this.m_data = new Float32Array([1.0, 1.0, 1.0, 1.0]);
+        this.m_matFS32 = matFS32;
+
         let oum = new ShaderUniformData();
-        oum.uniformNameList = ["u_color"];
-        oum.dataList = [this.m_data];
+        oum.uniformNameList = ["u_color", "u_mat"];
+        oum.dataList = [this.m_data, this.m_matFS32];
         this.m_shaderUniformData = oum;
     }
     protected buildBuf(): void {
@@ -132,3 +140,4 @@ export default class FixSizeLine3DMaterial extends MaterialBase implements IColo
         color.fromArray(this.m_data);
     }
 }
+export {FixSizeLine3DMaterial}
