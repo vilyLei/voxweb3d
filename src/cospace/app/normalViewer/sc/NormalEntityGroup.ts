@@ -175,10 +175,10 @@ class NormalEntityGroup {
 		// }
 		//*/
 
-		let nodes = this.m_nodes;
-		for (let i = 0; i < nodes.length; ++i) {
-			nodes[i].createNormalLine();
-		}
+		// let nodes = this.m_nodes;
+		// for (let i = 0; i < nodes.length; ++i) {
+		// 	nodes[i].createNormalLine();
+		// }
 
 		this.m_loadedTotal++;
 		if (this.m_loadedTotal >= this.m_loadTotal) {

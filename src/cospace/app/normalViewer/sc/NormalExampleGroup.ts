@@ -153,7 +153,7 @@ class NormalExampleGroup implements IRunnable {
 
 		node.setPosition(pv);
 		node.update();
-		node.createNormalLine(5);
+		// node.createNormalLine(5);
 		this.m_nodeEntities.push(node.entity);
 		this.m_nodes.push(node);
 		return node;

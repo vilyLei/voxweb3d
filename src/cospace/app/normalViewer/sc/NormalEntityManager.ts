@@ -61,7 +61,7 @@ class NormalEntityManager {
 			for (let i = 0; i < ls.length; ++i) {
 				const node = map.get(ls[i].getUid());
 				if (node != null) {
-					if (node.normalLine.getVisible()) {
+					if (node.getLineVisible()) {
 						lineVisible = true;
 					}
 					if (node.isShowDifference()) {
@@ -87,7 +87,7 @@ class NormalEntityManager {
 			for (let i = 0; i < ls.length; ++i) {
 				const node = map.get(ls[i].getUid());
 				if (node != null) {
-					node.normalLine.setVisible(v);
+					node.setLineVisible(v);
 				}
 			}
 		}

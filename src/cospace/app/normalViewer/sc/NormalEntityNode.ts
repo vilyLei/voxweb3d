@@ -27,12 +27,22 @@ class NormalEntityNode {
 	transUI: NVTransUI;
 	groupUid = -1;
 	entity: IMouseEventEntity = null;
-	normalLine: ITransformEntity = null;
+	private m_normalLine: ITransformEntity = null;
 
 	constructor() {
 	}
+	setLineVisible(v: boolean): void {
+		if (v) {
+			this.createNormalLine();
+		}
+		if (this.m_normalLine != null) this.m_normalLine.setVisible(v);
+	}
+	getLineVisible(): boolean {
+		return this.m_normalLine != null && this.m_normalLine.getVisible();
+	}
 	setVisible(v: boolean): void {
-		this.normalLine.setVisible(false);
+		this.setLineVisible(v);
+		// this.m_normalLine.setVisible(false);
 		this.entity.setVisible(v);
 	}
 	getUid(): number {
@@ -82,34 +92,36 @@ class NormalEntityNode {
 	applyNormalLineScale(s: number): void {
 
 		this.m_normalScale = s * this.m_normalScale0;
-		this.m_normalMaterial.setLength(this.m_normalScale);
+		if (this.m_normalMaterial != null) this.m_normalMaterial.setLength(this.m_normalScale);
 	}
 	flipNormal(boo: boolean): void {
 		this.m_normalFlip = boo;
 		let s = boo ? -1.0 : 1.0;
-		this.m_normalMaterial.setScale(s);
+		if (this.m_normalMaterial != null) this.m_normalMaterial.setScale(s);
 		this.m_entityMaterial.setNormalScale(s);
 	}
 	isNormalFlipping(): boolean {
 		return this.m_normalFlip;
 	}
 	setNormalLineColor(c: IColor4): void {
-		this.m_normalMaterial.setColor(c);
+		if (this.m_normalMaterial != null) this.m_normalMaterial.setColor(c);
 	}
 
 	private m_model: CoGeomDataType;
 	private readyCreateNormalLine(model: CoGeomDataType): void {
 		this.m_model = model;
 	}
-	createNormalLine(size: number = 5): void {
-
-		let m = this.m_model;
-		let builder = NormalEntityNode.s_entityBuilder;
-		this.normalLine = builder.createNormalLineEntity(this.entity, m.vertices, m.normals, size);
-		this.m_normalMaterial = builder.getNormalLineMaterial();
-		this.m_normalScale = builder.getNormalLineScale();
-		if (this.normalLine.getMesh() != null) {
-			this.rsc.addEntity(this.normalLine);
+	private createNormalLine(size: number = 5): void {
+		if (this.m_normalLine == null) {
+			console.log("XXXXXX create normal line");
+			let m = this.m_model;
+			let builder = NormalEntityNode.s_entityBuilder;
+			this.m_normalLine = builder.createNormalLineEntity(this.entity, m.vertices, m.normals, size);
+			this.m_normalMaterial = builder.getNormalLineMaterial();
+			this.m_normalScale = builder.getNormalLineScale();
+			if (this.m_normalLine.getMesh() != null) {
+				this.rsc.addEntity(this.m_normalLine);
+			}
 		}
 	}
 
@@ -135,7 +147,7 @@ class NormalEntityNode {
 	// private mouseUpTargetListener(evt: any): void {
 	// 	console.log("mouseUpTargetListener() mouse up...");
 	// }
-	
+
 	setPosition(pv: IVector3D): void {
 		if (this.entity != null) {
 			this.entity.setPosition(pv);
@@ -157,13 +169,13 @@ class NormalEntityNode {
 		if (this.entity != null) {
 
 			this.rsc.removeEntity(this.entity);
-			this.rsc.removeEntity(this.normalLine);
+			this.rsc.removeEntity(this.m_normalLine);
 
 			this.entity.destroy();
-			this.normalLine.destroy();
+			this.m_normalLine.destroy();
 
 			this.entity = null;
-			this.normalLine = null;
+			this.m_normalLine = null;
 		}
 	}
 }

@@ -23,7 +23,6 @@ import IColorMaterial from "../../vox/material/mcase/IColorMaterial";
 import { PromptSystem } from "../voxui/system/PromptSystem";
 import { ICoText } from "../voxtext/ICoText";
 import { CoModuleLoader } from "../app/utils/CoModuleLoader";
-import DivLog from "../../vox/utils/DivLog";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
