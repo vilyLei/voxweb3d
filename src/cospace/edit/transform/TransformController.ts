@@ -229,8 +229,10 @@ class TransformController implements ITransformController {
         if (sc != null) {
             if (this.m_enabled && this.m_type >= 0) {
                 let ct = this.m_controllers[this.m_type];
+                sc.updateCamera();
                 let cam = sc.getCamera();
                 if(this.m_camVer != cam.version) {
+                    // console.log(cam.version);
                     let pv = this.m_pv;
                     ct.getPosition(pv);
                     let vm = cam.getViewMatrix();
