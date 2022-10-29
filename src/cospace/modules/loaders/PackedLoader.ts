@@ -21,6 +21,9 @@ class PackedLoader {
 		this.m_times = times;
 		this.m_urlChecker = urlChecker;
 	}
+	setUrlChecker(urlChecker: (url: string) => string = null): void {
+		this.m_urlChecker = urlChecker;
+	}
 	getUid(): number {
 		return this.m_uid;
 	}

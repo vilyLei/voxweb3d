@@ -96,8 +96,7 @@ export class DemoTransEditor {
 			url = url.trim();
 			if(hostUrl.indexOf(".artvily.") > 0) {
 				let i = url.lastIndexOf("/");
-				let j = url.indexOf(".", i);
-				
+				let j = url.indexOf(".", i);				
 				// hostUrl = "http://localhost:9000/test/";
 				hostUrl = "http://www.artvily.com:9090/";
 				let fileName = (url.slice(i,j)).toLocaleLowerCase();
