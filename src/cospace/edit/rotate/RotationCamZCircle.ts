@@ -106,7 +106,6 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
             this.m_camVer = camera.version;
             
             // 圆面朝向摄像机
-            
             const sv = this.m_scaleV;
             let et = this.m_entity;
             et.getPosition(this.m_posV);
@@ -139,12 +138,14 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
         console.log("RotationCamZCircle::setVisible() ..., visible: ", visible);
         this.m_entity.setVisible(visible);
         if (!visible) this.m_ring.setVisible(visible);
+        this.m_camVer = -7;
     }
     getVisible(): boolean {
         return this.m_entity.getVisible();
     }
     setXYZ(px: number, py: number, pz: number): void {
         this.m_entity.setXYZ(px, py, pz);
+        this.m_camVer = -7;
     }
     setRotation3(r: IVector3D): void {
     }
@@ -152,6 +153,8 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
         this.m_entity.setScaleXYZ(sx, sy, sz);
+        this.m_camVer = -7;
+        this.run(this.m_editRS.getCamera(), null);
     }
 
     getScaleXYZ(pv: IVector3D): void {

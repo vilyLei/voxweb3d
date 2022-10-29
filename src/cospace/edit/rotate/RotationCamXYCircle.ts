@@ -151,6 +151,7 @@ class RotationCamXYCircle extends RotationCtr implements IRayControl {
 
         this.m_entity.setVisible(visible);
         this.m_circle.setVisible(visible);
+        this.m_camVer = -7;
     }
     getVisible(): boolean {
         return this.m_entity.getVisible();
@@ -173,7 +174,9 @@ class RotationCamXYCircle extends RotationCtr implements IRayControl {
     setScaleXYZ(sx: number, sy: number, sz: number): void {
         this.m_entity.setScaleXYZ(sx, sy, sz);
         this.m_circle.setScaleXYZ(sx, sy, sz);
+        this.m_camVer = -7;
         // console.log("sx: ",sx);
+        this.run(this.m_editRS.getCamera(), null);
     }
 
     localToGlobal(pv: IVector3D): void {
