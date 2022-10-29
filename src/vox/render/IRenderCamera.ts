@@ -63,6 +63,7 @@ interface IRenderCamera {
     getNearPlaneHeight(): number;
     setNearPlaneHeight(value: number): void;
     getFov(): number;
+    setLookAtPosition(v: IVector3D):void;
     
     getWordFrustumVtxArr(): IVector3D[];
     getWordFrustumWAABBCenter(): IVector3D;

@@ -9,7 +9,7 @@ class MouseInteraction implements IMouseInteraction {
 
 	readonly drager = new MouseCamDrager();
 	readonly zoomer = new MouseCamZoomer();
-	zoomLookAtPosition: IVector3D = null;
+	// zoomLookAtPosition: IVector3D = null;
 	zoomMinDistance = 30;
 
 	constructor() {}
@@ -55,9 +55,12 @@ class MouseInteraction implements IMouseInteraction {
 	setSyncLookAtEnabled(ennabled: boolean): void {
 		this.zoomer.syncLookAt = ennabled;
 	}
+	setLookAtPosition(v: IVector3D): void {
+		this.zoomer.setLookAtPosition(v);
+	}
 	run(): void {
 		if (this.cameraCtrlEnabled) {
-			this.zoomer.run(this.zoomLookAtPosition, this.zoomMinDistance);
+			this.zoomer.run(this.zoomMinDistance);
 			this.drager.runWithYAxis();
 		}
 	}

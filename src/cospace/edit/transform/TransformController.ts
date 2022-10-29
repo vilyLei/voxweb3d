@@ -148,7 +148,7 @@ class TransformController implements ITransformController {
                     ls[t].disable();
                     ls[t].setVisible(false);
                 }
-
+                this.m_camVer = -7;
                 this.m_type = type;
                 ls[type].enable();
                 if (targets != null) {
@@ -205,6 +205,7 @@ class TransformController implements ITransformController {
                 } else {
                     this.m_wpos.copyFrom(wpos);
                 }
+                this.m_camVer = -7;
                 let ctr = this.m_controllers[this.m_type];
                 if (autoEnabled && !ctr.isEnabled()) {
                     this.m_enabled = true;
@@ -238,6 +239,7 @@ class TransformController implements ITransformController {
                     let vm = cam.getViewMatrix();
                     vm.transformVector3Self(pv);
                     let s = -0.015 * pv.z/cam.getZNear();
+                    // console.log(">>> s: ",s);
                     ct.setCtrlScaleXYZ(s,s,s);
                     ct.updateCtrl();
                     this.m_camVer = cam.version;

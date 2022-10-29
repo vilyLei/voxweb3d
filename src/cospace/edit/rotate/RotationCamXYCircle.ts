@@ -164,6 +164,7 @@ class RotationCamXYCircle extends RotationCtr implements IRayControl {
     setScaleXYZ(sx: number, sy: number, sz: number): void {
         this.m_entity.setScaleXYZ(sx, sy, sz);
         this.m_circle.setScaleXYZ(sx, sy, sz);
+        // console.log("sx: ",sx);
     }
 
     localToGlobal(pv: IVector3D): void {

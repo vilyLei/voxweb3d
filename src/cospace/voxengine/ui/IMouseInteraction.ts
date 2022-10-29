@@ -6,7 +6,7 @@ interface IMouseInteraction {
 
     readonly drager: any;
     readonly zoomer: any;
-    zoomLookAtPosition: IVector3D;
+    // zoomLookAtPosition: IVector3D;
     zoomMinDistance: number;
 
 
@@ -26,6 +26,7 @@ interface IMouseInteraction {
     isEnabledSwing(): boolean;
     enableSlide(): void;
     setSyncLookAtEnabled(ennabled: boolean): void;
+    setLookAtPosition(v: IVector3D): void;
     run(): void;
 }
 

@@ -25,20 +25,21 @@ export default class MouseCamZoomer {
     private m_touchZoomSpd: number = 2.0;
     private m_slideSpd: number = 1.0;
     private m_mouseWheelZoomSpd: number = 6.0;
-    private m_tempa: IVector3D = CoRScene.createVec3();
-    private m_tempb: IVector3D = CoRScene.createVec3();
-    private m_preva: IVector3D = CoRScene.createVec3();
-    private m_prevb: IVector3D = CoRScene.createVec3();
-    private m_va: IVector3D = CoRScene.createVec3();
-    private m_vb: IVector3D = CoRScene.createVec3();
-    private m_lookAt: IVector3D = CoRScene.createVec3();
+    private m_tempa: IVector3D;// = CoRScene.createVec3();
+    private m_tempb: IVector3D;// = CoRScene.createVec3();
+    private m_preva: IVector3D;// = CoRScene.createVec3();
+    private m_prevb: IVector3D;// = CoRScene.createVec3();
+    private m_va: IVector3D;// = CoRScene.createVec3();
+    private m_vb: IVector3D;// = CoRScene.createVec3();
+    private m_lookAt: IVector3D;// = CoRScene.createVec3();
+    private m_lookAtPos: IVector3D;
     private m_fowardDis: number = 0;
     private m_initBoo: boolean = true;
     private m_lookAtCtrlEnabled: boolean = true;
     private m_flagDrag: number = 0;
     private m_flagZoom: number = 0;
     private m_windowsEnvFlag: boolean = true;
-    syncLookAt:boolean = false;
+    syncLookAt: boolean = false;
     /**
      * 取值为2, 表示相机的拉近拉远
      * 取值为1, 表示相机的拖动
@@ -67,6 +68,16 @@ export default class MouseCamZoomer {
     initialize(stage3D: IRenderStage3D): void {
         if (this.m_initBoo) {
             this.m_initBoo = false;
+
+            this.m_tempa = CoRScene.createVec3();
+            this.m_tempb = CoRScene.createVec3();
+            this.m_preva = CoRScene.createVec3();
+            this.m_prevb = CoRScene.createVec3();
+            this.m_va = CoRScene.createVec3();
+            this.m_vb = CoRScene.createVec3();
+            this.m_lookAt = CoRScene.createVec3();
+            this.m_lookAtPos = CoRScene.createVec3();
+
             const MouseEvent = CoRScene.MouseEvent;
             stage3D.addEventListener(MouseEvent.MOUSE_WHEEL, this, this.mouseWheelListener, true, true);
             stage3D.addEventListener(MouseEvent.MOUSE_MULTI_MOVE, this, this.mouseMultiMoveListener, true, true);
@@ -78,7 +89,7 @@ export default class MouseCamZoomer {
     }
     private mouseWheelListener(evt: any): void {
 
-        if(evt.wheelDeltaY > 0) {
+        if (evt.wheelDeltaY > 0) {
             this.m_fowardDis += this.m_mouseWheelZoomSpd;
         }
         else {
@@ -147,37 +158,44 @@ export default class MouseCamZoomer {
         this.m_preva.copyFrom(this.m_va);
         this.m_prevb.copyFrom(this.m_vb);
     }
-    run(lookAtPos: IVector3D, minDis: number): void {
+    setLookAtPosition(v: IVector3D): void {
+        if (this.syncLookAt) {
+            if (v == null) {
+                v = this.m_lookAt;
+            }    
+            if(CoRScene.Vector3D.Distance(v, this.m_lookAtPos) > 0.01) {
+                this.m_camera.setLookAtPosition(v);
+                this.m_lookAtPos.copyFrom(v);
+            }
+        }
+    }
+    run(minDis: number): void {
 
         let lookAtEnabled: boolean = this.m_lookAtCtrlEnabled;
-        if (lookAtPos == null) {
-            lookAtPos = this.m_lookAt;
-        }
-
+        
         if (this.m_camera != null) {
-            if(this.syncLookAt) {
-                (this.m_camera as any).setLookAtPosition( lookAtPos );
-            }
+            
             if (this.m_flagType == 2) {
                 const Vector3D = CoRScene.Vector3D;
                 // camera foward update
-                if(Math.abs(this.m_fowardDis) > 0.001) {
+                if (Math.abs(this.m_fowardDis) > 0.001) {
                     let dis: number = Vector3D.Distance(this.m_camera.getPosition(), this.m_camera.getLookAtPosition());
                     let pd: number = this.m_fowardDis;
-                    if(this.m_fowardDis > 0) {
-                        if(dis > minDis) {
+                    if (this.m_fowardDis > 0) {
+                        if (dis > minDis) {
                             pd = dis - minDis;
-                            if(pd > this.m_fowardDis) pd = this.m_fowardDis;
+                            if (pd > this.m_fowardDis) pd = this.m_fowardDis;
                         }
                         else {
                             pd = 0;
                         }
                     }
-                    if( Math.abs(pd) > 0.1) {
+                    if (Math.abs(pd) > 0.1) {
                         (this.m_camera as any).forward(pd);
-                        if (lookAtEnabled) (this.m_camera as any).setLookPosXYZFixUp(lookAtPos.x, lookAtPos.y, lookAtPos.z);
+                        let v = this.m_lookAtPos;
+                        if (lookAtEnabled) (this.m_camera as any).setLookPosXYZFixUp(v.x, v.y, v.z);
                     }
-                    if(this.m_windowsEnvFlag) {
+                    if (this.m_windowsEnvFlag) {
                         this.m_fowardDis *= 0.95;
                     }
                     else {

@@ -323,9 +323,10 @@ class Camera implements IRenderCamera{
     getRV(): Vector3D { this.m_tempRV.copyFrom(this.m_initRV); return this.m_tempRV; }
     getPosition():Vector3D { this.m_tempCamPos.copyFrom(this.m_camPos); return this.m_tempCamPos; }
     getLookAtPosition(): Vector3D { this.m_tempLookAtPos.copyFrom(this.m_lookAtPos); return this.m_tempLookAtPos; }
-    setLookAtPosition(px: number, py: number, pz: number): void {
+    
+    setLookAtPosition(v: Vector3D):void {
         if (this.m_unlock) {
-            this.m_lookAtPos.setTo(px, py, pz);
+            this.m_lookAtPos.setTo(v.x, v.y, v.z);
             this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
             this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
             this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;

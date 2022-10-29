@@ -196,8 +196,10 @@ export class DemoFix3DSize {
         this.m_statusDisp.render();
 
     }
+    private m_camVer = -1;
     run(): void {
-
+        let cam = this.m_rscene.getCamera();
+        // console.log("ver: ",cam.version);
         this.m_statusDisp.update(false);
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
