@@ -77,38 +77,6 @@ export default class DragPlane extends MoveCtr implements IRayControl {
     getEntity(): ITransformEntity {
         return this.m_entity;
     }
-    // addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
-    //     this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
-    // }
-    // removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
-    //     this.m_dispatcher.removeEventListener(type, listener, func);
-    // }
-    // setTarget(target: IMovedTarget): void {
-    //     this.m_target = target;
-    // }
-
-    // private initializeEvent(): void {
-
-    //     if (this.m_dispatcher == null) {
-    //         let MouseEvent = CoRScene.MouseEvent;
-    //         let dispatcher = CoRScene.createMouseEvt3DDispatcher();
-    //         dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-    //         dispatcher.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverListener);
-    //         dispatcher.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutListener);
-    //         this.m_entity.setEvtDispatcher(dispatcher);
-    //         this.m_dispatcher = dispatcher;
-    //     }
-
-    //     this.m_entity.mouseEnabled = true;
-    // }
-    // protected mouseOverListener(evt: any): void {
-    //     console.log("DragPlane::mouseOverListener() ...");
-    //     this.showOverColor();
-    // }
-    // protected mouseOutListener(evt: any): void {
-    //     console.log("DragPlane::mouseOutListener() ...");
-    //     this.showOutColor();
-    // }
     showOverColor(): void {
         (this.m_entity.getMaterial() as any).setRGBA4f(this.overColor.r, this.overColor.g, this.overColor.b, this.overColor.a);
     }
@@ -144,11 +112,10 @@ export default class DragPlane extends MoveCtr implements IRayControl {
         return pv;
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
-        this.m_entity.setXYZ(sx, sy, sz);
+        this.m_entity.setScaleXYZ(sx, sy, sz);
     }
 
     getScaleXYZ(pv: IVector3D): void {
-        // pv.copyFrom( this.m_entityScale );
         this.m_entity.getScaleXYZ(pv);
     }
     setRotation3(r: IVector3D): void {

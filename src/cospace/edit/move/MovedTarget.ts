@@ -55,8 +55,9 @@ class MovedTarget extends CtrlTargetBase implements ICtrTarget {
                 tars[i].setPosition(v3);
             }
         }
-        for (let i = 0; i < this.m_controllers.length; ++i) {
-            this.m_controllers[i].setPosition(pv);
+        let ls = this.m_controllers;
+        for (let i = 0; i < ls.length; ++i) {
+            ls[i].setPosition(pv);
             this.m_flags[i] = true;
         }
         this.position.copyFrom(pv);

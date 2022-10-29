@@ -236,8 +236,8 @@ class TransformController implements ITransformController {
                     let vm = cam.getViewMatrix();
                     vm.transformVector3Self(pv);
                     let s = -0.015 * pv.z/cam.getZNear();
-                    // ct.setCtrlScaleXYZ(s,s,s);
-                    // ct.updateCtrl();
+                    ct.setCtrlScaleXYZ(s,s,s);
+                    ct.updateCtrl();
                     this.m_camVer = cam.version;
                 }
                 ct.run();

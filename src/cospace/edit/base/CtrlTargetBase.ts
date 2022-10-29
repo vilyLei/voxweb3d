@@ -84,7 +84,6 @@ class CtrlTargetBase implements ICtrTarget {
             }
         }
         let ls = this.m_controllers;
-        // let t = 0;
         for (let i = 0; i < ls.length; ++i) {
             if (this.m_flags[i]) {
                 // t++;
@@ -92,7 +91,6 @@ class CtrlTargetBase implements ICtrTarget {
                 ls[i].update();
             }
         }
-        // console.log("t: ", t);
     }
     updateCtrl(): void {
         let ls = this.m_controllers;
