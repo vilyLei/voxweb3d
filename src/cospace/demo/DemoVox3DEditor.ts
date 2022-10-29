@@ -23,6 +23,7 @@ import IColorMaterial from "../../vox/material/mcase/IColorMaterial";
 import { PromptSystem } from "../voxui/system/PromptSystem";
 import { ICoText } from "../voxtext/ICoText";
 import { CoModuleLoader } from "../app/utils/CoModuleLoader";
+import DivLog from "../../vox/utils/DivLog";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -32,7 +33,71 @@ declare var CoEdit: ICoEdit;
 declare var CoUI: ICoUI;
 declare var CoTexture: ICoTexture;
 declare var CoText: ICoText;
+//*
+class LoadingUI {
+	constructor() { }
+	private m_bodyDiv: HTMLDivElement = null;
+	private m_infoDiv: HTMLDivElement = null;
+	initUI(): void {
+		document.body.style.background = "#000000";
+		if(this.m_bodyDiv == null) {
+			this.m_bodyDiv = document.createElement('div');
+			this.m_bodyDiv.style.width = "100vw";
+			this.m_bodyDiv.style.height = "100vh";
+			this.m_bodyDiv.style.zIndex = "9999";
+			this.elementCenter(this.m_bodyDiv);
+			document.body.appendChild(this.m_bodyDiv);
+			document.body.style.margin = '0';
+		}
+	}
 
+	showInfo(str: string): void {
+
+		if (this.m_infoDiv == null) {
+			this.m_infoDiv = document.createElement('div');
+			this.m_infoDiv.style.backgroundColor = "rgba(255,255,255,0.1)";
+			this.m_infoDiv.style.color = "#00ee00";
+			this.m_infoDiv.style.zIndex = "10000";
+			this.elementCenter(this.m_infoDiv);
+            this.m_bodyDiv.appendChild(this.m_infoDiv);
+		}
+		// this.m_bodyDiv.parentElement.removeChild(this.m_bodyDiv);
+		// this.m_bodyDiv.parentElement.removeChild(this.m_bodyDiv);
+		// document.body.appendChild(this.m_bodyDiv);
+		this.m_infoDiv.innerHTML = str;
+	}
+	showLoadProgressInfo(progress: number): void {
+		let str = "loading " + Math.round(100.0 * progress) + "% ";
+		this.showInfo(str);
+	}
+
+	showLoadStart(): void {
+		this.showInfo("loading 0%");
+	}
+	showLoaded(): void {
+		this.showInfo("100%");
+	}
+	loadFinish(index: number = 0): void {
+		if (this.m_bodyDiv != null) {
+			this.m_bodyDiv.parentElement.removeChild(this.m_bodyDiv);
+			this.m_bodyDiv = null;
+		}
+	}
+	private elementCenter(ele: HTMLElement, top: string = "50%", left: string = "50%", position: string = "absolute"): void {
+
+		ele.style.textAlign = "center";
+		ele.style.display = "flex";
+		ele.style.flexDirection = "column";
+		ele.style.justifyContent = "center";
+		ele.style.alignItems = "center";
+		// ele.style.top = top;
+		// ele.style.left = left;
+		// ele.style.position = position;
+		// ele.style.transform = "translate(-50%, -50%)";
+	}
+
+}
+//*/
 class SceneAccessor implements IRendererSceneAccessor {
 	constructor() { }
 	renderBegin(rendererScene: IRendererScene): void {
@@ -57,7 +122,7 @@ export class DemoVox3DEditor {
 	private m_vmctx: ViewerMaterialCtx;
 	private m_outline: CoPostOutline;
 	private m_scale = 20.0;
-
+	private m_loadingUI: LoadingUI = new LoadingUI();
 	constructor() { }
 
 	initialize(): void {
@@ -65,19 +130,11 @@ export class DemoVox3DEditor {
 		document.oncontextmenu = function (e) {
 			e.preventDefault();
 		}
-
 		console.log("DemoVox3DEditor::initialize() ...");
-		// //<a href="D:\Series\Breaking Bad">Click to open a folder</a>
-		// //D:\resource\
-		// let a = document.createElement('a');
-		// a.href = "D:\\resource\\";
-		// a.text = "ddfdfdfdf"
-		// document.body.appendChild(a);
-		// (a as any).style = 'display: none';
-		// a.click();
-		// // a.remove();
-		// return;
+
 		this.initEngineModule();
+		this.m_loadingUI.initUI();
+		this.m_loadingUI.showInfo("initializing rendering engine...");
 	}
 	private initEngineModule(): void {
 
@@ -98,13 +155,14 @@ export class DemoVox3DEditor {
 		let url9 = "static/cospace/cotexture/CoTexture.umd.js";
 		let url10 = "static/cospace/coui/CoUI.umd.js";
 		let url11 = "static/cospace/cotext/CoText.umd.js";
-		
+
 		new CoModuleLoader(2, (): void => {
 			if (this.isEngineEnabled()) {
 				console.log("engine modules loaded ...");
 				this.initRenderer();
 
 				this.initScene();
+				this.m_loadingUI.showInfo("initializing editor system...");
 				new CoModuleLoader(3, (): void => {
 
 					console.log("math module loaded ...");
@@ -112,6 +170,7 @@ export class DemoVox3DEditor {
 					new CoModuleLoader(7, (): void => {
 						console.log("ageom module loaded ...");
 						this.initEditUI();
+						this.m_loadingUI.loadFinish(0);
 					}).load(url3).load(url4).load(url6).load(url7).load(url9).load(url10).load(url11);
 
 				}).load(url2).load(url5).load(url8);
@@ -132,7 +191,7 @@ export class DemoVox3DEditor {
 		this.m_graph.addScene(this.m_uirsc);
 
 		let promptSys = new PromptSystem();
-		promptSys.initialize( this.m_coUIScene );
+		promptSys.initialize(this.m_coUIScene);
 		this.m_coUIScene.prompt = promptSys;
 
 		// let tip = new RectTextTip();
@@ -157,7 +216,7 @@ export class DemoVox3DEditor {
 		viewer.open();
 		this.m_viewer = viewer;
 		let entitySC = viewer.normalScene.entityScene;
-		entitySC.initialize( this.m_rsc );
+		entitySC.initialize(this.m_rsc);
 	}
 
 	private initScene(): void {
