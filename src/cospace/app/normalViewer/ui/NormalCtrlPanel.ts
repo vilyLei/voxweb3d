@@ -372,19 +372,34 @@ class NormalCtrlPanel {
 	private m_dragMinX = 0;
 	private m_dragMaxX = 0;
 	private m_progressLen = 0;
-
+	private m_dragBgBar: IButton;
 	private createProgressBtn(px: number, py: number, length: number): IButton {
 
 		let sc = this.getScene();
 		let color = CoMaterial.createColor4(0.1, 0.1, 0.1);
 		// let bgBar = new ColorLabel();
-		let bgBar = CoUI.createColorLabel();
-		bgBar.depthTest = true;
-		bgBar.initialize(length, 10);
-		bgBar.setZ(-0.05);
-		bgBar.setColor(color);
-		bgBar.setXY(px, py);
-		this.m_panel.addEntity(bgBar);
+			// let bgBar = CoUI.createColorLabel();
+			// bgBar.depthTest = true;
+			// bgBar.initialize(length, 10);
+			// bgBar.setZ(-0.05);
+			// bgBar.setColor(color);
+		// bgBar.setXY(px, py);
+		// this.m_panel.addEntity(bgBar);
+		let barBgLabel = CoUI.createClipColorLabel();
+		barBgLabel.initializeWithoutTex(length, 10, 4);
+		barBgLabel.getColorAt(0).setRGB3Bytes(70, 70, 70);
+		barBgLabel.getColorAt(1).setRGB3f(0.3, 0.3, 0.3);
+		barBgLabel.getColorAt(2).setRGB3Bytes(70, 70, 70);
+		barBgLabel.getColorAt(3).setRGB3Bytes(70, 70, 70);
+
+		let dragBgBar = CoUI.createButton();
+		dragBgBar.initializeWithLable(barBgLabel);
+		dragBgBar.setZ(-0.05);
+		dragBgBar.setXY(px, py);
+		this.m_panel.addEntity(dragBgBar);
+		this.m_dragBgBar = dragBgBar;
+		
+		dragBgBar.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.progressBgMouseDown);
 
 		this.m_progressLen = length - 16;
 		this.m_dragMinX = px;
@@ -409,6 +424,26 @@ class NormalCtrlPanel {
 		sc.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.progressMouseUp);
 		// this.m_dragBar = dragBar;
 		return dragBar;
+	}
+	private progressBgMouseDown(evt: any): void {
+		let px = evt.mouseX;
+		let py = evt.mouseY;
+
+		let pv = this.m_v0;
+		pv.setXYZ(px, py, 0);
+
+		// console.log("px,py: ", px,py);
+		this.m_panel.globalToLocal(pv);
+		// console.log("pv.x, pv.y: ", pv.x, pv.y);
+
+		px = pv.x;
+		if (px < this.m_dragMinX) {
+			px = this.m_dragMinX;
+		} else if (px > this.m_dragMaxX) {
+			px = this.m_dragMaxX;
+		}
+		this.m_dragBar.setX(px);
+		this.m_dragBar.update();
 	}
 	private progressMouseDown(evt: any): void {
 		this.m_dragging = true;
