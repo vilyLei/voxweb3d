@@ -14,6 +14,7 @@ import { EntityLayout } from "./EntityLayout";
 import BoxFrame3D from "../../../vox/entity/BoxFrame3D";
 import ShaderMaterial from "../../../vox/material/mcase/ShaderMaterial";
 import DashedLine3DEntity from "../../../vox/entity/DashedLine3DEntity";
+import { NormalCheckMaterial } from "./NormalCheckMaterial";
 
 class SceneNode implements ISceneNode {
 
@@ -113,13 +114,16 @@ class SceneNode implements ISceneNode {
 
 			this.m_vtxTotal += model.vertices.length;
 
-			let material = new NormalViewerMaterial();
+			let mb = new NormalCheckMaterial();
+			// let material = new NormalViewerMaterial();
+			let material = mb.create()
 			material.initializeByCodeBuf();
 			let dataMesh: DataMesh = new DataMesh();
 			// dataMesh.wireframe = true;
 			dataMesh.vbWholeDataEnabled = false;
 			dataMesh.setVS(model.vertices);
-			dataMesh.setUVS(model.uvsList[0]);
+			// dataMesh.setUVS(model.uvsList[0]);
+			dataMesh.setUVS(model.normals);
 			dataMesh.setNVS(model.normals);
 			dataMesh.setIVS(model.indices);
 			dataMesh.setVtxBufRenderData(material);

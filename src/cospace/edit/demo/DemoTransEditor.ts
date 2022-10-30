@@ -135,10 +135,8 @@ export class DemoTransEditor {
 		tipsSys.initialize( this.m_coUIScene );
 		this.m_coUIScene.tips = tipsSys;
 
-		// this.m_transUI.tip = this.m_tip;
 		this.m_transUI.setOutline(this.m_outline);
 		this.m_transUI.initialize(this.m_rsc, this.m_editUIRenderer, this.m_coUIScene);
-		// this.m_nvaUI.tip = this.m_tip;
 		this.m_nvaUI.initialize(this.m_rsc, this.m_editUIRenderer, this.m_coUIScene);
 
 		let minV = CoMath.createVec3(-100, 0, -100);

@@ -181,7 +181,6 @@ export class DemoVox3DEditor {
 
 		uiInteractML.load(url);
 	}
-	// private m_tip: IRectTextTip = null;
 	private initEditUI(): void {
 
 		this.m_coUIScene = CoUI.createUIScene();
