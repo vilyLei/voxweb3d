@@ -9,7 +9,6 @@ import { ICoTexture } from "../../voxtexture/ICoTexture";
 import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
 import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
 
-// import { ICoMouseInteraction } from "../../voxengine/ui/ICoMouseInteraction";
 import { ICoUIInteraction } from "../../voxengine/ui/ICoUIInteraction";
 import ViewerMaterialCtx from "../../demo/coViewer/ViewerMaterialCtx";
 import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
@@ -38,7 +37,6 @@ import { CoTransformRecorder } from "../recorde/CoTransformRecorder";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
-// declare var CoMouseInteraction: ICoMouseInteraction;
 declare var CoUIInteraction: ICoUIInteraction;
 declare var CoMath: ICoMath;
 declare var CoAGeom: ICoAGeom;

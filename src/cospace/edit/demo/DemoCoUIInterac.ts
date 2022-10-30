@@ -52,6 +52,7 @@ export class DemoCoUIInterac {
 	}
 
 	private initEngineModule(): void {
+		
 		let url = "static/cospace/engine/uiInteract/CoUIInteraction.umd.js";
 		let mouseInteractML = new ModuleLoader(2, (): void => {
 			this.initInteract();

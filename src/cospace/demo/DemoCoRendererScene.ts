@@ -2,12 +2,12 @@ import { ICoRendererScene } from "../voxengine/scene/ICoRendererScene";
 import { IMouseInteraction } from "../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { ICoRScene } from "../voxengine/ICoRScene";
-import { ICoMouseInteraction } from "../voxengine/ui/ICoMouseInteraction";
+import { ICoUIInteraction } from "../voxengine/ui/ICoUIInteraction";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
-declare var CoMouseInteraction: ICoMouseInteraction;
+declare var CoUIInteraction: ICoUIInteraction;
 
 /**
  * cospace renderer scene
@@ -23,7 +23,7 @@ export class DemoCoRendererScene {
 
 		let url0 = "static/cospace/engine/renderer/CoRenderer.umd.min.js";
 		let url1 = "static/cospace/engine/rscene/CoRScene.umd.min.js";
-		let url2 = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.min.js";
+		let url2 = "static/cospace/engine/uiInteract/CoUIInteraction.umd.js";
 
 		let mouseInteractML = new ModuleLoader(2, (): void => {
 			this.initMouseInteraction();
@@ -45,10 +45,12 @@ export class DemoCoRendererScene {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";
 	}
 	private initMouseInteraction(): void {
-		if (this.m_rscene != null && this.m_mouseInteraction == null && (typeof CoMouseInteraction !== "undefined")) {
+		
+		let r = this.m_rscene;
+		if (r != null && this.m_mouseInteraction == null && typeof CoUIInteraction !== "undefined") {
 
-			this.m_mouseInteraction = CoMouseInteraction.createMouseInteraction();
-			this.m_mouseInteraction.initialize(this.m_rscene);
+			this.m_mouseInteraction = CoUIInteraction.createMouseInteraction();
+			this.m_mouseInteraction.initialize(this.m_rscene, 2, true);
 			this.m_mouseInteraction.setSyncLookAtEnabled(true);
 		}
 	}
@@ -75,6 +77,7 @@ export class DemoCoRendererScene {
 	run(): void {
 		if (this.m_rscene != null) {
 			if (this.m_mouseInteraction != null) {
+				this.m_mouseInteraction.setLookAtPosition(null);
 				this.m_mouseInteraction.run();
 			}
 			this.m_rscene.run();

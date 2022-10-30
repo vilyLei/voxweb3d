@@ -3,7 +3,7 @@ import { ICoRendererScene } from "../voxengine/scene/ICoRendererScene";
 import { IMouseInteraction } from "../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { ICoRScene } from "../voxengine/ICoRScene";
-import { ICoMouseInteraction } from "../voxengine/ui/ICoMouseInteraction";
+import { ICoUIInteraction } from "../voxengine/ui/ICoUIInteraction";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 import { ViewerCoSApp } from "./coViewer/ViewerCoSApp";
 import { CoDataFormat } from "../app/CoSpaceAppData";
@@ -11,7 +11,7 @@ import { PostOutlineSceneNode } from "./coViewer/PostOutlineSceneNode";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
-declare var CoMouseInteraction: ICoMouseInteraction;
+declare var CoUIInteraction: ICoUIInteraction;
 
 /**
  * cospace renderer scene
@@ -27,7 +27,7 @@ export class DemoPostOutline {
 	initialize(): void {
 		let url0 = "static/cospace/engine/renderer/CoRenderer.umd.js";
 		let url1 = "static/cospace/engine/rscene/CoRScene.umd.js";
-		let url2 = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.js";
+		let url2 = "static/cospace/engine/uiInteract/CoUIInteraction.umd.js";
 
 		let mouseInteractML = new ModuleLoader(2);
 		mouseInteractML.setCallback((): void => {
@@ -57,9 +57,12 @@ export class DemoPostOutline {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";
 	}
 	private initMouseInteraction(): void {
-		if (this.m_rscene != null && this.m_mouseInteraction == null && typeof CoMouseInteraction !== "undefined") {
-			this.m_mouseInteraction = CoMouseInteraction.createMouseInteraction();
-			this.m_mouseInteraction.initialize(this.m_rscene);
+
+		let r = this.m_rscene;
+		if (r != null && this.m_mouseInteraction == null && typeof CoUIInteraction !== "undefined") {
+
+			this.m_mouseInteraction = CoUIInteraction.createMouseInteraction();
+			this.m_mouseInteraction.initialize(this.m_rscene, 2, true);
 			this.m_mouseInteraction.setSyncLookAtEnabled(true);
 		}
 	}
@@ -105,6 +108,7 @@ export class DemoPostOutline {
 		this.m_statusDisp.update();
 		if (this.m_rscene != null) {
 			if (this.m_mouseInteraction != null) {
+				this.m_mouseInteraction.setLookAtPosition(null);
 				this.m_mouseInteraction.run();
 			}
 			this.m_rscene.run(true);

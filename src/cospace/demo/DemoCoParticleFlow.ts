@@ -5,7 +5,7 @@ import { IMouseInteraction } from "../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { CoMaterialContextParam, ICoRScene } from "../voxengine/ICoRScene";
 
-import { ICoMouseInteraction } from "../voxengine/ui/ICoMouseInteraction";
+import { ICoUIInteraction } from "../voxengine/ui/ICoUIInteraction";
 import ViewerMaterialCtx from "./coViewer/ViewerMaterialCtx";
 import { TextPackedLoader } from "../modules/loaders/TextPackedLoader";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
@@ -19,17 +19,7 @@ import IVector3D from "../../vox/math/IVector3D";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
-declare var CoMouseInteraction: ICoMouseInteraction;
-
-// import { RenderableMaterialBlock } from "../../vox/scene/block/RenderableMaterialBlock";
-// import { MaterialContext } from "../../materialLab/base/MaterialContext";
-// import RendererDevice from "../../vox/render/RendererDevice";
-// import RendererParam from "../../vox/scene/RendererParam";
-// import RendererScene from "../../vox/scene/RendererScene";
-// import Axis3DEntity from "../../vox/entity/Axis3DEntity";
-// import Billboard3DFlowEntity from "../../vox/entity/Billboard3DFlowEntity";
-// import { UserInteraction } from "../../vox/engine/UserInteraction";
-// import Vector3D from "../../vox/math/Vector3D";
+declare var CoUIInteraction: ICoUIInteraction;
 
 /**
  * cospace renderer
@@ -301,7 +291,7 @@ export class DemoCoParticleFlow {
 	// }
 
 	private initEngineModule(): void {
-		let url = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.js";
+		let url = "static/cospace/engine/uiInteract/CoUIInteraction.umd.js";
 		let mouseInteractML = new ModuleLoader(2, (): void => {
 			this.initInteract();
 		});
@@ -374,9 +364,12 @@ export class DemoCoParticleFlow {
 		return tex;
 	}
 	private initInteract(): void {
-		if (this.m_rscene != null && this.m_interact == null && typeof CoMouseInteraction !== "undefined") {
-			this.m_interact = CoMouseInteraction.createMouseInteraction();
-			this.m_interact.initialize(this.m_rscene);
+
+		let r = this.m_rscene;
+		if (r != null && this.m_interact == null && typeof CoUIInteraction !== "undefined") {
+
+			this.m_interact = CoUIInteraction.createMouseInteraction();
+			this.m_interact.initialize(this.m_rscene, 2, true);
 			this.m_interact.setSyncLookAtEnabled(true);
 		}
 	}
@@ -409,6 +402,7 @@ export class DemoCoParticleFlow {
 		this.m_rscene;
 		if (this.m_rscene != null) {
 			if (this.m_interact != null) {
+				this.m_interact.setLookAtPosition(null);
 				this.m_interact.run();
 			}
 			this.m_rscene.run();

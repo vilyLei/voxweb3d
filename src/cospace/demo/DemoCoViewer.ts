@@ -5,7 +5,7 @@ import { IMouseInteraction } from "../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { CoMaterialContextParam, ICoRScene } from "../voxengine/ICoRScene";
 
-import { ICoMouseInteraction } from "../voxengine/ui/ICoMouseInteraction";
+import { ICoUIInteraction } from "../voxengine/ui/ICoUIInteraction";
 import ViewerMaterialCtx from "./coViewer/ViewerMaterialCtx";
 import { TextPackedLoader } from "../modules/loaders/TextPackedLoader";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
@@ -15,7 +15,7 @@ import { ViewerSCData } from "./coViewer/ViewerSCData";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
-declare var CoMouseInteraction: ICoMouseInteraction;
+declare var CoUIInteraction: ICoUIInteraction;
 
 /**
  * cospace renderer
@@ -48,7 +48,7 @@ export class DemoCoViewer {
 
 	private initEngineModule(): void {
 
-		let url = "static/cospace/engine/mouseInteract/CoMouseInteraction.umd.js";
+		let url = "static/cospace/engine/uiInteract/CoUIInteraction.umd.js";
 		let mouseInteractML = new ModuleLoader(2, (): void => {
 			this.initInteract();
 		});
@@ -84,9 +84,11 @@ export class DemoCoViewer {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";
 	}
 	private initInteract(): void {
-		if (this.m_rscene != null && this.m_interact == null && typeof CoMouseInteraction !== "undefined") {
-			this.m_interact = CoMouseInteraction.createMouseInteraction();
-			this.m_interact.initialize(this.m_rscene);
+		let r = this.m_rscene;
+		if (r != null && this.m_interact == null && typeof CoUIInteraction !== "undefined") {
+
+			this.m_interact = CoUIInteraction.createMouseInteraction();
+			this.m_interact.initialize(this.m_rscene, 2, true);
 			this.m_interact.setSyncLookAtEnabled(true);
 		}
 	}
@@ -126,6 +128,7 @@ export class DemoCoViewer {
 		if (this.m_rscene != null) {
 			this.m_vmctx.run();
 			if (this.m_interact != null) {
+				this.m_interact.setLookAtPosition(null);
 				this.m_interact.run();
 			}
 			this.m_rscene.run();
