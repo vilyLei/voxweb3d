@@ -162,8 +162,10 @@ export default class MouseCamZoomer {
         if (this.syncLookAt) {
             if (v == null) {
                 v = this.m_lookAt;
-            }    
-            if(CoRScene.Vector3D.Distance(v, this.m_lookAtPos) > 0.01) {
+            }
+            let disFunc = CoRScene.Vector3D.DistanceSquared;
+            let pv = this.m_camera.getLookAtPosition();
+            if(disFunc(v, this.m_lookAtPos) > 0.0001 || disFunc(pv, v) > 0.0001) {
                 this.m_camera.setLookAtPosition(v);
                 this.m_lookAtPos.copyFrom(v);
             }
