@@ -402,6 +402,7 @@ class NormalCtrlPanel {
 		dragBgBar.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.progressBgMouseDown);
 
 		this.m_progressLen = length - 16;
+		this.m_proBaseLen = this.m_progressLen;
 		this.m_dragMinX = px;
 		this.m_dragMaxX = px + this.m_progressLen;
 
@@ -425,6 +426,18 @@ class NormalCtrlPanel {
 		// this.m_dragBar = dragBar;
 		return dragBar;
 	}
+	private progressMouseDown(evt: any): void {
+		this.m_dragging = true;
+		let sc = this.getScene();
+		this.sendSelectionEvt("normalScaleBtnSelect", true);
+		sc.addEventListener(CoRScene.MouseEvent.MOUSE_MOVE, this, this.progressMouseMove);
+	}
+	private progressMouseUp(evt: any): void {
+		this.m_dragging = false;
+		let sc = this.getScene();
+		sc.removeEventListener(CoRScene.MouseEvent.MOUSE_MOVE, this, this.progressMouseMove);
+	}
+	private m_proBaseLen = 100;
 	private progressBgMouseDown(evt: any): void {
 		let px = evt.mouseX;
 		let py = evt.mouseY;
@@ -444,16 +457,8 @@ class NormalCtrlPanel {
 		}
 		this.m_dragBar.setX(px);
 		this.m_dragBar.update();
-	}
-	private progressMouseDown(evt: any): void {
-		this.m_dragging = true;
-		let sc = this.getScene();
-		sc.addEventListener(CoRScene.MouseEvent.MOUSE_MOVE, this, this.progressMouseMove);
-	}
-	private progressMouseUp(evt: any): void {
-		this.m_dragging = false;
-		let sc = this.getScene();
-		sc.removeEventListener(CoRScene.MouseEvent.MOUSE_MOVE, this, this.progressMouseMove);
+		this.m_proBaseLen = (px - this.m_dragMinX);
+
 	}
 	private progressMouseMove(evt: any): void {
 		let px = evt.mouseX;
@@ -474,7 +479,10 @@ class NormalCtrlPanel {
 		}
 		this.m_dragBar.setX(px);
 		this.m_dragBar.update();
-		let f = (px - this.m_dragMinX) / this.m_progressLen;
+		// console.log("this.m_proBaseLen: ",this.m_proBaseLen, this.m_progressLen);
+		// let f = (px - this.m_dragMinX) / this.m_progressLen;
+		let f = (px - this.m_dragMinX) / this.m_proBaseLen;
+		// console.log("f: ", f, px - this.m_dragMinX);
 		// console.log("f: ",f, (0.1 + f * 2.0));
 		// f = 0.1 + f * 3.0;
 		this.m_normalScale = f;

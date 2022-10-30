@@ -73,6 +73,10 @@ class NormalViewerScene {
 				// console.log("select call");
 				mana.applyFeatureColor(uuid);
 				break;
+			case "normalScaleBtnSelect":
+				console.log("XXXX normalScaleBtnSelect");
+				mana.normalScaleBtnSelect();
+				break;
 			case "normalLineColor":
 				console.log("appaly normal color");
 				break;

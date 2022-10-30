@@ -172,6 +172,19 @@ class NormalEntityManager {
 			}
 		}
 	}
+	normalScaleBtnSelect(): void {
+		let ls = this.m_selectEntities;
+		if (ls != null) {
+			let map = this.m_map;
+			let cpl = this.ctrPanel;
+			for (let i = 0; i < ls.length; ++i) {
+				const node = map.get(ls[i].getUid());
+				if (node != null) {
+					node.select();
+				}
+			}
+		}
+	}
 	applyFeatureColor(uuid: string): void {
 
 		console.log("applyFeatureColor: ", uuid);
@@ -223,11 +236,6 @@ class NormalEntityManager {
 		
 		let ls = this.m_selectEntities;
 		if (ls != null && ls.length > 0) {
-
-			// f = 0.1 + f * 3.0;
-			f = f / this.m_scaleBase;
-			f = 0.1 + f * 1.0;
-
 			let ls = this.m_selectEntities;
 			if (ls != null) {
 				let map = this.m_map;

@@ -88,11 +88,13 @@ class NormalEntityNode {
 	}
 	select(): void {
 		this.m_normalScale0 = this.m_normalScale;
+		// console.log("select this.m_normalScale0: ",this.m_normalScale0);
 	}
 	applyNormalLineScale(s: number): void {
-
-		this.m_normalScale = s * this.m_normalScale0;
-		if (this.m_normalMaterial != null) this.m_normalMaterial.setLength(this.m_normalScale);
+		// console.log("A s: ", s, this.m_normalScale0);
+		s *= this.m_normalScale0;
+		this.m_normalScale = s;
+		if (this.m_normalMaterial != null) this.m_normalMaterial.setLength(s);
 	}
 	flipNormal(boo: boolean): void {
 		this.m_normalFlip = boo;
@@ -113,7 +115,7 @@ class NormalEntityNode {
 	}
 	private createNormalLine(size: number = 5): void {
 		if (this.m_normalLine == null) {
-			console.log("XXXXXX create normal line");
+			// console.log("XXXXXX create normal line");
 			let m = this.m_model;
 			let builder = NormalEntityNode.s_entityBuilder;
 			this.m_normalLine = builder.createNormalLineEntity(this.entity, m.vertices, m.normals, size);

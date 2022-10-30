@@ -23,8 +23,8 @@ class NormalEntityScene {
 	rscene: IRendererScene;
 	transUI: NVTransUI;
 	
-	readonly entityManager: NormalEntityManager = new NormalEntityManager();
-	readonly exampleGroup: NormalExampleGroup = new NormalExampleGroup();
+	readonly entityManager = new NormalEntityManager();
+	readonly exampleGroup = new NormalExampleGroup();
 	constructor(uiscene: ICoUIScene, vcoapp: CoDataModule) {
 		this.m_uiscene = uiscene;
 		this.m_coapp = vcoapp;
