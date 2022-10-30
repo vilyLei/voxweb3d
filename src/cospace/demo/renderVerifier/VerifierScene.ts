@@ -47,7 +47,7 @@ class VerifierScene implements IDropFileListerner {
 
 
 			this.m_dropController.initialize(this.m_rscene.getCanvas(), this);
-			DivLog.ShowLogOnce("模型法线检查</br>请用谷歌浏览器(Google Chrome)</br>请拖入单个模型文件(ctm/obj/fbx)</br>或者拖入只包含ctm文件的文件夹");
+			DivLog.ShowLogOnce("模型法线检查</br>请用谷歌浏览器(Google Chrome)</br>请拖入单个模型文件(ctm/obj/fbx)</br>或者拖入只包含ctm文件的文件夹</br>蓝色点状颜色表示法线需要翻转</br>红色或绿色点状颜色表示法线倾斜了");
 
 			this.test();
 		}
