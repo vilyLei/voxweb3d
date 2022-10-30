@@ -297,6 +297,7 @@ export class DemoVox3DEditor {
 	run(): void {
 		if (this.m_graph != null) {
 			if (this.m_interact != null) {
+				this.m_interact.setLookAtPosition(null);
 				this.m_interact.run();
 			}
 			if (this.m_transUI != null) {
