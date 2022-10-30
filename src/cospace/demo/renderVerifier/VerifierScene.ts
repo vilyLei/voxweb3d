@@ -233,8 +233,8 @@ class VerifierScene implements IDropFileListerner {
 		// url = "static/private/fbx/model2_1000W.fbx";
 		// url = "static/private/fbx/Samba_Dancing.fbx";
 		// url = "static/private/fbx/monkey.fbx";
-		this.addFBX( [url] );
-		return;
+		// this.addFBX( [url] );
+		// return;
 		let hostUrl = this.m_vfParam.hostUrl;
 
 		let baseUrl: string = "static/private/ctm/";
@@ -242,8 +242,8 @@ class VerifierScene implements IDropFileListerner {
 		for (let i = 0; i <= 26; ++i) {
 			urls.push(baseUrl + "sh202/sh202_" + i + ".ctm");
 		}
-		// urls = [baseUrl + "errorNormal.ctm"];
-		urls = [baseUrl + "errorIndex.ctm"];
+		urls = [baseUrl + "errorNormal.ctm"];
+		// urls = [baseUrl + "errorIndex.ctm"];
 		this.addCTM(urls);
 		// this.testCTM(urls[0]);
 

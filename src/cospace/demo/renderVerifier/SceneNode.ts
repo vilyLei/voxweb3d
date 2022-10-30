@@ -15,6 +15,7 @@ import BoxFrame3D from "../../../vox/entity/BoxFrame3D";
 import ShaderMaterial from "../../../vox/material/mcase/ShaderMaterial";
 import DashedLine3DEntity from "../../../vox/entity/DashedLine3DEntity";
 import { NormalCheckMaterial } from "./NormalCheckMaterial";
+import SurfaceNormalCalc from "../../../vox/geom/SurfaceNormalCalc";
 
 class SceneNode implements ISceneNode {
 
@@ -49,7 +50,7 @@ class SceneNode implements ISceneNode {
 		this.m_time = Date.now();
 	}
 	showInfo(info: string): void {
-		DivLog.ShowLogOnce( info );
+		DivLog.ShowLogOnce(info);
 	}
 	protected m_waitPartsTotal: number = -1;
 	private m_entities: DisplayEntity[] = [];
@@ -94,19 +95,19 @@ class SceneNode implements ISceneNode {
 	protected initEntity(model: GeometryModelDataType, transform: Matrix4 = null, index: number = 0): void {
 		if (model != null) {
 			this.m_partsTotal++;
-			if(model.vertices == null || model.vertices.length < 3) {
+			if (model.vertices == null || model.vertices.length < 3) {
 				//this.m_modelsTotal--;
 				// this.m_errInfo = "注意: 子模型数据有错误"
 				this.m_errModelTotal++;
 				return;
 			}
-			if(model.normals == null) {
+			if (model.normals == null) {
 				this.m_normalErrInfo = "当前模型法线数据丢失!!!";
-				console.error( this.m_normalErrInfo );
+				console.error(this.m_normalErrInfo);
 			}
-			this.m_models.push( model );
+			this.m_models.push(model);
 			// this.buildModelNVLine( model );
-			this.m_verticesTotal += model.vertices.length/3;
+			this.m_verticesTotal += model.vertices.length / 3;
 			// let correct = this.normalCorrectionTest( model );
 
 			this.m_lossTime = (Date.now() - this.m_time);
@@ -114,7 +115,14 @@ class SceneNode implements ISceneNode {
 
 			this.m_vtxTotal += model.vertices.length;
 
+			let vs = model.vertices;
+			let ivs = model.indices;
+			let trisNumber = ivs.length / 3;
+			let nvs2 = new Float32Array(vs.length);
+			SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs2);
+
 			let mb = new NormalCheckMaterial();
+			mb.applyDifference(true);
 			// let material = new NormalViewerMaterial();
 			let material = mb.create()
 			material.initializeByCodeBuf();
@@ -123,7 +131,7 @@ class SceneNode implements ISceneNode {
 			dataMesh.vbWholeDataEnabled = false;
 			dataMesh.setVS(model.vertices);
 			// dataMesh.setUVS(model.uvsList[0]);
-			dataMesh.setUVS(model.normals);
+			dataMesh.setUVS(nvs2);
 			dataMesh.setNVS(model.normals);
 			dataMesh.setIVS(model.indices);
 			dataMesh.setVtxBufRenderData(material);
@@ -145,8 +153,8 @@ class SceneNode implements ISceneNode {
 			entity.setMaterial(material);
 			entity.setVisible(false);
 
-			this.m_transforms.push( transform );
-			this.m_transes.push( entity );
+			this.m_transforms.push(transform);
+			this.m_transes.push(entity);
 
 
 			this.fitToCenter();
@@ -163,8 +171,8 @@ class SceneNode implements ISceneNode {
 
 	clear(): void {
 		if (this.isFinish()) {
-			if(this.m_frameBox != null) {
-				this.m_rscene.removeEntity( this.m_frameBox );
+			if (this.m_frameBox != null) {
+				this.m_rscene.removeEntity(this.m_frameBox);
 				this.m_frameBox = null;
 			}
 			this.m_normalErrInfo = "";
@@ -219,11 +227,11 @@ class SceneNode implements ISceneNode {
 					info += "</br>子模型数量: " + this.m_showTotal + "/" + this.m_modelsTotal + "个";
 					if (this.isFinish()) {
 						info += "</br>当前模型加载展示完成";
-						if(this.m_errModelTotal > 0) {
-							info += "</br>注意: 有"+this.m_errModelTotal+"个子模型数据有问题";
+						if (this.m_errModelTotal > 0) {
+							info += "</br>注意: 有" + this.m_errModelTotal + "个子模型数据有问题";
 						}
-						if(this.m_normalErrInfo != "") {
-							info += "</br><font color='#ee00aa'>注意: "+this.m_normalErrInfo+",当前所见的法线由此程序生成</font>";
+						if (this.m_normalErrInfo != "") {
+							info += "</br><font color='#ee00aa'>注意: " + this.m_normalErrInfo + ",当前所见的法线由此程序生成</font>";
 						}
 						this.initEntityFinish();
 					}
