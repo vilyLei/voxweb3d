@@ -88,10 +88,8 @@ class NormalEntityNode {
 	}
 	select(): void {
 		this.m_normalScale0 = this.m_normalScale;
-		// console.log("select this.m_normalScale0: ",this.m_normalScale0);
 	}
 	applyNormalLineScale(s: number): void {
-		// console.log("A s: ", s, this.m_normalScale0);
 		s *= this.m_normalScale0;
 		this.m_normalScale = s;
 		if (this.m_normalMaterial != null) this.m_normalMaterial.setLength(s);

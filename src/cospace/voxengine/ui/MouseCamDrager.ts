@@ -35,25 +35,29 @@ export default class MouseCamDrager {
 
             const ME = CoRScene.MouseEvent;
             let downType = ME.MOUSE_DOWN;
-            if(this.bgEventEnabled) {
+            if (this.bgEventEnabled) {
                 downType = ME.MOUSE_BG_DOWN;
             }
             let upType = ME.MOUSE_UP;
 
             if (this.buttonType == 1) {
-                if(this.bgEventEnabled) {
+                if (this.bgEventEnabled) {
                     downType = ME.MOUSE_BG_MIDDLE_DOWN;
-                }else {
+                } else {
                     downType = ME.MOUSE_MIDDLE_DOWN;
                 }
                 upType = ME.MOUSE_MIDDLE_UP;
             } else if (this.buttonType == 2) {
-                if(this.bgEventEnabled) {
+                if (this.bgEventEnabled) {
                     downType = ME.MOUSE_BG_RIGHT_DOWN;
-                }else {
+                } else {
                     downType = ME.MOUSE_RIGHT_DOWN;
                 }
                 upType = ME.MOUSE_RIGHT_UP;
+                
+                document.oncontextmenu = function (e) {
+                    e.preventDefault();
+                }
             }
             stage3D.addEventListener(downType, this, this.mouseDownListener, true, false);
             stage3D.addEventListener(upType, this, this.mouseUpListener, true, true);
@@ -88,14 +92,14 @@ export default class MouseCamDrager {
     runWithYAxis(): void {
         if (this.m_swing) {
             this.m_dragSwinger.runWithYAxis();
-        }else {
+        } else {
             this.m_dragSlider.run();
         }
     }
     runWithZAxis(): void {
         if (this.m_swing) {
             this.m_dragSwinger.runWithZAxis();
-        }else {
+        } else {
             this.m_dragSlider.run();
         }
     }
