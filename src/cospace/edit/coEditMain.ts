@@ -2,12 +2,12 @@
 // import { DemoBase as Demo } from "./demo/DemoBase";
 // import { DemoMouseEvent as Demo } from "./demo/DemoMouseEvent";
 // import { DemoCoBase as Demo } from "./demo/DemoCoBase";
-import { DemoCoUIInterac as Demo } from "./demo/DemoCoUIInterac";
+// import { DemoCoUIInterac as Demo } from "./demo/DemoCoUIInterac";
 // import { DemoCoMesh as Demo } from "./demo/DemoCoMesh";
 // import { DemoCoAGeom as Demo } from "./demo/DemoCoAGeom";
 // import { DemoMoveObj as Demo } from "./demo/DemoMoveObj";
 
-// import { DemoEditTrans as Demo } from "./demo/DemoEditTrans";
+import { DemoEditTrans as Demo } from "./demo/DemoEditTrans";
 // import { DemoTransEditor as Demo } from "./demo/DemoTransEditor";
 
 // import { DemoUIAtlas as Demo } from "./demo/DemoUIAtlas";
