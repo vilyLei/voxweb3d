@@ -28,7 +28,7 @@ class NVNavigationUI {
 	private m_editUIRenderer: ICoRendererScene = null;
 	private m_uirsc: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
-	tip: IRectTextTip = null;
+	// tip: IRectTextTip = null;
 
 	constructor() { }
 
@@ -127,7 +127,7 @@ class NVNavigationUI {
 		py = st.stageHeight - ph;
 		for (let i = 0; i < urls.length; ++i) {
 			let btn = this.crateBtn(urls, pw, ph, px + pw * i, py, i, keys[i], infos[i]);
-			this.tip.addEntity(btn)
+			this.m_coUIScene.tips.addTipsTarget(btn);
 			this.m_navBtns.push(btn);
 			layouter.addUIEntity(btn);
 		}

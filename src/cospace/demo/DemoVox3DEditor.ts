@@ -23,6 +23,7 @@ import IColorMaterial from "../../vox/material/mcase/IColorMaterial";
 import { PromptSystem } from "../voxui/system/PromptSystem";
 import { ICoText } from "../voxtext/ICoText";
 import { CoModuleLoader } from "../app/utils/CoModuleLoader";
+import { TipsSystem } from "../voxui/system/TipsSystem";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -180,7 +181,7 @@ export class DemoVox3DEditor {
 
 		uiInteractML.load(url);
 	}
-	private m_tip: IRectTextTip = null;
+	// private m_tip: IRectTextTip = null;
 	private initEditUI(): void {
 
 		this.m_coUIScene = CoUI.createUIScene();
@@ -191,16 +192,12 @@ export class DemoVox3DEditor {
 		let promptSys = new PromptSystem();
 		promptSys.initialize(this.m_coUIScene);
 		this.m_coUIScene.prompt = promptSys;
+		let tipsSys = new TipsSystem();
+		tipsSys.initialize(this.m_coUIScene);
+		this.m_coUIScene.tips = tipsSys;
 
-		// let tip = new RectTextTip();
-		let tip = CoUI.createRectTextTip();
-		tip.initialize(this.m_coUIScene, 2);
-		this.m_tip = tip;
-
-		this.m_transUI.tip = this.m_tip;
 		this.m_transUI.setOutline(this.m_outline);
 		this.m_transUI.initialize(this.m_rsc, this.m_editUIRenderer, this.m_coUIScene);
-		this.m_nvaUI.tip = this.m_tip;
 		this.m_nvaUI.initialize(this.m_rsc, this.m_editUIRenderer, this.m_coUIScene);
 
 		let minV = CoMath.createVec3(-100, 0, -100);

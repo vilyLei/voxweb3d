@@ -42,7 +42,7 @@ class NVTransUI {
 	private m_uirsc: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
 	private m_outline: CoPostOutline = null;
-	tip: IRectTextTip = null;
+	// tip: IRectTextTip = null;
 	constructor() { }
 
 	setOutline(outline: CoPostOutline): void {
@@ -246,7 +246,8 @@ class NVTransUI {
 		btn.initializeWithLable(colorClipLabel);
 		btn.setXY(px, py);
 		this.m_coUIScene.addEntity(btn, 1);
-		this.tip.addEntity( btn );
+		this.m_coUIScene.tips.addTipsTarget( btn );
+		// this.tip.addEntity( btn );
 		// const ME = CoRScene.MouseEvent;
 		// btn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
 		// btn.addEventListener(ME.MOUSE_OUT, this.tip, this.tip.targetMouseOut);
