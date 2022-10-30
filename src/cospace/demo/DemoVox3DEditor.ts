@@ -120,8 +120,8 @@ export class DemoVox3DEditor {
 
 	private m_vmctx: ViewerMaterialCtx;
 	private m_outline: CoPostOutline;
-	private m_scale = 20.0;
 	private m_loadingUI: LoadingUI = new LoadingUI();
+	private m_viewer: NormalViewer = null;
 	constructor() { }
 
 	initialize(): void {
@@ -181,7 +181,6 @@ export class DemoVox3DEditor {
 		uiInteractML.load(url);
 	}
 	private m_tip: IRectTextTip = null;
-	private m_viewer: NormalViewer = null;
 	private initEditUI(): void {
 
 		this.m_coUIScene = CoUI.createUIScene();

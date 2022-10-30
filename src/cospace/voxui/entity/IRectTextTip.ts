@@ -1,5 +1,4 @@
 import IColor4 from "../../../vox/material/IColor4";
-import IVector3D from "../../../vox/math/IVector3D";
 import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
 import { IMouseEvtUIEntity } from "./IMouseEvtUIEntity";
 

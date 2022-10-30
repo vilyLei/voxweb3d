@@ -1,20 +1,13 @@
 import { ICoUIScene } from "../scene/ICoUIScene";
-// import { ITipEntity } from "../panel/ITipEntity";
-// import { TipEntity } from "../panel/TipEntity";
+import { IMouseEvtUIEntity } from "../../voxui/entity/IMouseEvtUIEntity";
 import { IRectTextTip } from "../../voxui/entity/IRectTextTip";
-import { IPromptSystem } from "./IPromptSystem";
-
-import IColor4 from "../../../vox/material/IColor4";
-
+import { ITipsSystem } from "./ITipsSystem";
 import { ICoUI } from "../../voxui/ICoUI";
-
-import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
-declare var CoMaterial: ICoMaterial;
 declare var CoUI: ICoUI;
 /**
  * 光标移入的信息提示系统
  */
-class TipsSystem {
+class TipsSystem implements ITipsSystem {
 
 	private m_uiscene: ICoUIScene;
 	private m_tipEntity: IRectTextTip = null;
@@ -28,25 +21,30 @@ class TipsSystem {
 			this.m_tipEntity = tip;
 		}
 	}
-	
-	// showTipInfo(promptInfo: string, type: number = 0): void {
-	// 	if(this.m_tipEntity != null) {
-	// 		// this.m_tipEntity.setPrompt(promptInfo);
-	// 		// this.m_tipEntity.open();
-	// 	}
-	// }
-	// setPromptTextColor(color: IColor4, type: number = 0): void {
-	// 	if(this.m_tipEntity != null) {
-	// 		// this.m_tipEntity.setPromptTextColor(color);
-	// 	}
-	// }
-	// setPromptBGColor(color: IColor4, type: number = 0): void {
-	// 	if(this.m_tipEntity != null) {
-	// 		// this.m_tipEntity.setBGColor(color);
-	// 	}
-	// }
-	getTipEntity(type: number = 0): IRectTextTip {
+	/**
+	 * get tip entity
+	 * @param type the default value is 0
+	 * @returns IRectTextTip instance
+	 */
+	 getTipEntity(type?: number): IRectTextTip {
 		return this.m_tipEntity;
 	}
+	 /**
+	  * @param entity IMouseEvtUIEntity instance
+	  * @param type the default value is 0
+	  */
+	 addTipsTarget(entity: IMouseEvtUIEntity, type?: number): void {
+		this.m_tipEntity.addEntity(entity);
+	 }
+	 /**
+	  * @param entity IMouseEvtUIEntity instance
+	  * @param type the default value is 0
+	  */
+	 removeTipsTarget(entity: IMouseEvtUIEntity, type?: number): void {		
+		this.m_tipEntity.removeEntity(entity);
+	 }
+	 destroy(): void {
+		
+	 }
 }
 export { TipsSystem };
