@@ -7,6 +7,7 @@ import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import { IUISceneEntity } from "./IUISceneEntity";
 import { IUILayout } from "../layout/IUILayout";
 import { IPromptSystem } from "../system/IPromptSystem";
+import { ITipsSystem } from "../system/ITipsSystem";
 
 interface ICoUIScene {
 	
@@ -15,6 +16,7 @@ interface ICoUIScene {
 	readonly transparentTexAtlas: ICanvasTexAtlas;
 	readonly layout: IUILayout;
 	prompt: IPromptSystem;
+	tips: ITipsSystem;
 	
 	/**
 	 * @param crscene the default value is null

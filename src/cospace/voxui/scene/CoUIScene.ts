@@ -7,6 +7,7 @@ import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 import { IUIEntity } from "../entity/IUIEntity";
 import { ICoUIScene } from "./ICoUIScene";
 import { IPromptSystem } from "../system/IPromptSystem";
+import { ITipsSystem } from "../system/ITipsSystem";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
@@ -31,6 +32,7 @@ class CoUIScene implements ICoUIScene {
 	readonly layout = new UILayout();
 
 	prompt: IPromptSystem = null;
+	tips: ITipsSystem = null;
 
 	texAtlasNearestFilter = true;
 	constructor() {
