@@ -34,7 +34,7 @@ class DragScaleController extends DragTransController implements IDragScaleContr
 
         let movePlane = new ScaleDragPlane();
         movePlane.moveSelfEnabled = false;
-        movePlane.initialize(type, this.planeSize);
+        movePlane.initialize(this.m_editRS, this.m_editRSPI, type, this.planeSize);
         outColor.a = alpha;
         movePlane.outColor.copyFrom(outColor);
         outColor.scaleBy(1.5);
@@ -44,7 +44,7 @@ class DragScaleController extends DragTransController implements IDragScaleContr
         movePlane.setTarget(this.m_target);
         this.m_target.addCtrlEntity(movePlane);
         this.m_controllers.push(movePlane);
-        this.m_editRS.addEntity(movePlane.getEntity(), this.m_editRSPI, true);
+        
         movePlane.showOutColor();
         
         return movePlane;

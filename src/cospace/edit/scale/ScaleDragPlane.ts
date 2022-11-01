@@ -9,6 +9,7 @@ import IVector3D from "../../../vox/math/IVector3D";
 import IAABB from "../../../vox/geom/IAABB";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import { IRayControl } from "../base/IRayControl";
+import IRendererScene from "../../../vox/scene/IRendererScene";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
@@ -32,9 +33,11 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
     private m_planeAxisType: number = 0;
 
     constructor() { super() }
-    initialize(planeAxisType: number, size: number): void {
+    initialize(rs: IRendererScene, rspi: number, planeAxisType: number, size: number): void {
 
         if (this.m_entity == null) {
+
+            this.m_editRS = rs;
 
             const V3 = CoMath.Vector3D;
             let material = CoRScene.createDefaultMaterial();
@@ -72,44 +75,18 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
             }
 
             et.setRenderState(CoRScene.RendererState.NONE_TRANSPARENT_STATE);
+            rs.addEntity(et, rspi);
+
             this.showOutColor();
             this.applyEvent( this.m_entity );
         }
     }
-    getEntity(): ITransformEntity {
-        return this.m_entity;
-    }
-    // addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
-    //     this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
-    // }
-    // removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
-    //     this.m_dispatcher.removeEventListener(type, listener, func);
-    // }
-
-    // setTarget(target: IScaleTarget): void {
-    //     this.m_target = target;
-    // }
-
-    // private initializeEvent(): void {
-
-    //     if (this.m_dispatcher == null) {
-    //         let MouseEvent = CoRScene.MouseEvent;
-    //         let dispatcher = CoRScene.createMouseEvt3DDispatcher();
-    //         dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-    //         dispatcher.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverListener);
-    //         dispatcher.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutListener);
-    //         this.m_entity.setEvtDispatcher(dispatcher);
-    //         this.m_dispatcher = dispatcher;
-    //     }
-
-    //     this.m_entity.mouseEnabled = true;
-    // }
     protected mouseOverListener(evt: any): void {
-        console.log("ScaleDragPlane::mouseOverListener() ...");
+        // console.log("ScaleDragPlane::mouseOverListener() ...");
         this.showOverColor();
     }
     protected mouseOutListener(evt: any): void {
-        console.log("ScaleDragPlane::mouseOutListener() ...");
+        // console.log("ScaleDragPlane::mouseOutListener() ...");
         this.showOutColor();
     }
     showOverColor(): void {
