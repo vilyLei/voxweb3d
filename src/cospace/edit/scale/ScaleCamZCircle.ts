@@ -117,7 +117,6 @@ class ScaleCamZCircle extends ScaleCtr implements IRayControl {
             let mat = this.m_mat0;
             mat.identity();
             mat.appendRotation(rad, axis);
-            // mat.appendTranslation(this.m_posV);
 
             let rv = mat.decompose(CoMath.OrientationType.EULER_ANGLES)[1];
             et.setRotation3(rv.scaleBy(CoMath.MathConst.MATH_180_OVER_PI));
@@ -168,6 +167,7 @@ class ScaleCamZCircle extends ScaleCtr implements IRayControl {
         this.m_entity.mouseEnabled = false;
     }
     showOverColor(): void {
+        console.log("ScaleCamZCirlce::showOverColor()...");
         (this.m_entity.getMaterial() as IColorMaterial).setColor(this.overColor);
     }
     showOutColor(): void {
@@ -204,29 +204,21 @@ class ScaleCamZCircle extends ScaleCtr implements IRayControl {
         this.m_entity.update();
     }
 
-    public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
+    private m_sv = CoMath.createVec3();
+    private m_dis: number = 0;
+    moveByRay(rpv: IVector3D, rtv: IVector3D): void {
 
         if (this.isEnabled()) {
             if (this.isSelected()) {
-                // let degree = this.getDegree(rpv, rtv);
-                // degree -= this.m_initDegree;
-                // if (degree > 360) degree -= 360.0;
-                // else if (degree < 0) degree += 360.0;
-
+                let dis = this.getDis(rpv, rtv);
+                
                 let et = this.m_target;
-                if (et != null) {
-
-                    // let mat = this.m_mat0;
-                    // let axis = this.m_dstDV;
-
-                    // axis.subVecsTo(this.m_camPos, this.m_posV);
-                    // axis.normalize();
-                    // mat.identity();
-                    // mat.appendRotation(CoMath.MathConst.DegreeToRadian(degree), axis);
-
-                    // let rv = mat.decompose(CoMath.OrientationType.EULER_ANGLES)[1];
-                    // et.setRotation3(rv.scaleBy(CoMath.MathConst.MATH_180_OVER_PI));
-                    // et.update();
+                if (et != null && dis > 0.001) {
+                    let s = dis / this.m_dis;
+                    const sv = this.m_sv;
+                    // console.log(s, dis);
+                    et.setScaleXYZ(sv.x * s, sv.y * s, sv.z * s);
+                    et.update();
                 }
             }
         }
@@ -240,14 +232,14 @@ class ScaleCamZCircle extends ScaleCtr implements IRayControl {
             this.editBegin();
             this.m_target.select();
             this.setThisVisible(true);
-
-            // this.m_initDegree = this.getDegree(evt.raypv, evt.raytv);
-            
+            this.m_target.getScaleXYZ(this.m_sv);
+            this.m_dis = this.getDis(evt.raypv, evt.raytv);
+            // console.log("dis: ", this.m_dis);
         }
     }
-    /*
-    public getDegree(rpv: IVector3D, rtv: IVector3D): number {
-        let degree = 0;
+    
+    public getDis(rpv: IVector3D, rtv: IVector3D): number {
+        let degree = 0.0;
         if (this.isSelected()) {
             let u = CoAGeom.PlaneUtils;
             let pnv = this.m_srcDV.copyFrom(rtv).scaleBy(-1.0);
@@ -273,10 +265,12 @@ class ScaleCamZCircle extends ScaleCtr implements IRayControl {
 
                     let et = this.m_target;
                     if (et != null) {
-                        // YOZ, X-Axis
-                        degree = CoMath.MathConst.GetDegreeByXY(v.y, v.z);
-                        if (degree > 360) degree -= 360.0;
-                        else if (degree < 0) degree += 360.0;
+                        // // YOZ, X-Axis
+                        // degree = CoMath.MathConst.GetDegreeByXY(v.y, v.z);
+                        // if (degree > 360) degree -= 360.0;
+                        // else if (degree < 0) degree += 360.0;
+                        // console.log("v.getLength(): ",v.getLength());
+                        return v.getLength();
 
                     }
                 }
@@ -284,7 +278,6 @@ class ScaleCamZCircle extends ScaleCtr implements IRayControl {
         }
         return degree;
     }
-    //*/
 }
 
 export { ScaleCamZCircle }
