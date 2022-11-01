@@ -186,6 +186,7 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
         if(this.m_editRS != null) {
             this.m_editRS.removeEntity(this.m_entity);
             this.m_editRS.removeEntity(this.m_frameEntity);
+            this.m_editRS = null;
         }
         
         if (this.m_entity != null) {
@@ -199,7 +200,6 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
     private m_planePos = CoMath.createVec3();
     private m_planeDis = 0.0;
 
-    // private m_flag = -1;
     private m_pos = CoMath.createVec3();
     private m_dv = CoMath.createVec3();
     private m_outV = CoMath.createVec3();

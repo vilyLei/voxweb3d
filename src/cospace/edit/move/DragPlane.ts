@@ -39,7 +39,7 @@ export default class DragPlane extends MoveCtr implements IRayControl {
 
         if (this.m_entity == null) {
             this.m_editRS = rs;
-            
+
             const V3 = CoMath.Vector3D;
             let rscene = CoRScene.getRendererScene();
             let eb = rscene.entityBlock;
@@ -166,6 +166,7 @@ export default class DragPlane extends MoveCtr implements IRayControl {
         if(this.m_editRS != null) {
             this.m_editRS.removeEntity(this.m_entity);
             this.m_editRS.removeEntity(this.m_frameEntity);
+            this.m_editRS = null;
         }
         
         if (this.m_entity != null) {
