@@ -163,16 +163,8 @@ class UserEditCtr {
         (et.getMaterial() as IColorMaterial).setRGBA4f(c.r * brn, c.g * brn, c.b * brn, c.a);
     }
     showOverColor(): void {
-        // let m = this.m_entity.getMaterial() as IColorMaterial;
-        // m.setColor(this.overColor);
-        // m = this.m_cone.getMaterial() as IColorMaterial;
-        // m.setColor(this.overColor);
     }
     showOutColor(): void {
-        // let m = this.m_entity.getMaterial() as IColorMaterial;
-        // m.setColor(this.outColor);
-        // m = this.m_cone.getMaterial() as IColorMaterial;
-        // m.setColor(this.outColor);
     }
 
 

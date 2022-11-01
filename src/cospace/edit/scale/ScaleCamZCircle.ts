@@ -51,8 +51,6 @@ class ScaleCamZCircle extends ScaleCtr implements IRayControl {
     private m_initDegree = 0;
     private m_planeDis = 0;
     private m_material: IColorMaterial = null;
-    private m_editRS: IRendererScene = null;
-    private m_editRSPI: number = 0;
     
     constructor() {
         super();
@@ -223,7 +221,6 @@ class ScaleCamZCircle extends ScaleCtr implements IRayControl {
             }
         }
     }
-    // private m_axisEntity: ITransformEntity = null;
     protected mouseDownListener(evt: any): void {
 
         console.log("ScaleCamZCircle::mouseDownListener() ..., evt: ", evt);
@@ -247,13 +244,6 @@ class ScaleCamZCircle extends ScaleCtr implements IRayControl {
             this.m_entity.getPosition(pos);
             let hitFlag = u.IntersectRayLinePos2(pnv, pos.dot(pnv), rpv, rtv, this.m_outV);
 
-            // if(this.m_axisEntity == null) {
-            //     this.m_axisEntity = CoEntity.createCrossAxis3DEntity(20);
-            //     this.m_editRS.addEntity(this.m_axisEntity, 1);
-            // }
-            // this.m_axisEntity.setPosition(this.m_outV);
-            // this.m_axisEntity.update();
-
             let v = this.m_outV;
             this.m_entity.globalToLocal(v);
             if (hitFlag) {
@@ -265,11 +255,6 @@ class ScaleCamZCircle extends ScaleCtr implements IRayControl {
 
                     let et = this.m_target;
                     if (et != null) {
-                        // // YOZ, X-Axis
-                        // degree = CoMath.MathConst.GetDegreeByXY(v.y, v.z);
-                        // if (degree > 360) degree -= 360.0;
-                        // else if (degree < 0) degree += 360.0;
-                        // console.log("v.getLength(): ",v.getLength());
                         return v.getLength();
 
                     }

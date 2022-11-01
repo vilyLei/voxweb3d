@@ -16,8 +16,6 @@ import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
 import { ICoMesh } from "../../voxmesh/ICoMesh";
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
-import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
-import IColor4 from "../../../vox/material/IColor4";
 
 declare var CoMaterial: ICoMaterial;
 declare var CoRScene: ICoRScene;

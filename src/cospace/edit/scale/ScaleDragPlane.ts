@@ -27,13 +27,9 @@ declare var CoMesh: ICoMesh;
  */
 export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
 
-    // private m_target: IScaleTarget = null;
-    // private m_dispatcher: IEvtDispatcher;
     private m_entity: ITransformEntity = null;
     private offsetV = CoMath.createVec3(30, 30, 30);
     private m_planeAxisType: number = 0;
-
-    // crossRay = false;
 
     constructor() { super() }
     initialize(planeAxisType: number, size: number): void {
