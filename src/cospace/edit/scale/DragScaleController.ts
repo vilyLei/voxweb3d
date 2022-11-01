@@ -1,6 +1,7 @@
 import IVector3D from "../../../vox/math/IVector3D";
 import ScaleDragPlane from "./ScaleDragPlane";
 import DragScaleRayCrossPlane from "./DragScaleRayCrossPlane";
+import { ScaleCamZCircle } from "./ScaleCamZCircle";
 
 import { ScaleDragLine } from "./ScaleDragLine";
 import { ScaleTarget } from "./ScaleTarget";
@@ -25,6 +26,7 @@ class DragScaleController extends DragTransController implements IDragScaleContr
     planeSize = 30.0;
     planeAlpha = 0.6;
     pickTestAxisRadius = 20;
+    camZCircleRadius = 120;
 
     constructor() { super(); }
 
@@ -111,6 +113,15 @@ class DragScaleController extends DragTransController implements IDragScaleContr
         crossPlane.setTarget(this.m_target);
         this.m_target.addCtrlEntity(crossPlane);
         this.m_controllers.push(crossPlane);
+
+        
+        let n = Math.floor(this.camZCircleRadius / 2.0);
+        let camZCtrl = new ScaleCamZCircle();
+        camZCtrl.pickTestRadius = this.pickTestAxisRadius;
+        camZCtrl.initialize(this.m_editRS, this.m_editRSPI, this.camZCircleRadius, n);
+        camZCtrl.setTarget(this.m_target);
+        this.m_target.addCtrlEntity(camZCtrl);
+        this.m_controllers.push(camZCtrl);
     }
 }
 

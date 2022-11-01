@@ -89,7 +89,7 @@ class ScaleCamZCircle extends ScaleCtr implements IRayControl {
             this.m_entity.setMaterial(this.m_material);
             this.m_entity.update();
 
-            // this.applyEvent(this.m_entity);
+            this.applyEvent(this.m_entity);
             rs.addEntity(this.m_entity, rspi);
         }
     }
