@@ -103,7 +103,7 @@ export default class DragPlaneEntity3D extends DisplayEntity implements IRayCont
     }
     private m_rpv: Vector3D = new Vector3D();
     private m_rtv: Vector3D = new Vector3D();
-    public moveByRay(rpv: Vector3D, rtv: Vector3D): void {
+    moveByRay(rpv: Vector3D, rtv: Vector3D): void {
 
         if (this.m_flag) {
             this.m_rpv.copyFrom(rpv);

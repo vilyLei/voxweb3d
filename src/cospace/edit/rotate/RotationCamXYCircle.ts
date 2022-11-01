@@ -220,7 +220,7 @@ class RotationCamXYCircle extends RotationCtr implements IRayControl {
         this.m_circle.update();
     }
 
-    public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
+    moveByRay(rpv: IVector3D, rtv: IVector3D): void {
         if (this.isEnabled()) {
             if (this.isSelected()) {
                 let et = this.m_target;

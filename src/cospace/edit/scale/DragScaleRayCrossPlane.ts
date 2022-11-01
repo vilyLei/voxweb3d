@@ -194,7 +194,7 @@ export default class DragScaleRayCrossPlane extends ScaleCtr implements IRayCont
     private m_rtv = CoMath.createVec3();
     private m_sv = CoMath.createVec3();
     private m_dis = 1.0;
-    public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
+    moveByRay(rpv: IVector3D, rtv: IVector3D): void {
 
         if (this.isEnabled()) {
             if (this.isSelected()) {

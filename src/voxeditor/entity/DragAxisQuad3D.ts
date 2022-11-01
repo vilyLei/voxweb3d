@@ -115,7 +115,7 @@ export default class DragAxisQuad3D extends AxisQuad3DEntity implements IRayCont
     }
     private m_rpv: Vector3D = new Vector3D();
     private m_rtv: Vector3D = new Vector3D();
-    public moveByRay(rpv: Vector3D, rtv: Vector3D): void {
+    moveByRay(rpv: Vector3D, rtv: Vector3D): void {
         if (this.m_flag > -1) {
             this.m_rpv.copyFrom(rpv);
             this.m_rtv.copyFrom(rtv);

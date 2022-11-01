@@ -221,7 +221,7 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
         this.m_ring.update();
     }
 
-    public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
+    moveByRay(rpv: IVector3D, rtv: IVector3D): void {
 
         if (this.isEnabled()) {
             if (this.isSelected()) {

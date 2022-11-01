@@ -214,7 +214,7 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
     private m_rpv = CoMath.createVec3();
     private m_rtv = CoMath.createVec3();
     private m_sv = CoMath.createVec3();
-    public moveByRay(rpv: IVector3D, rtv: IVector3D): void {
+    moveByRay(rpv: IVector3D, rtv: IVector3D): void {
 
         if (this.isEnabled()) {
             if (this.isSelected()) {
