@@ -264,7 +264,7 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
     }
 
     mouseDownListener(evt: any): void {
-        console.log("ScaleDragLine::mouseDownListener() ...");
+        // console.log("ScaleDragLine::mouseDownListener() ...");
         if (this.isEnabled()) {
 
             this.editBegin();

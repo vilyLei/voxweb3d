@@ -143,11 +143,11 @@ class UserEditCtr {
         entity.mouseEnabled = true;
     }
     protected mouseOverListener(evt: any): void {
-        console.log("DragLine::mouseOverListener() ...");
+        // console.log("DragLine::mouseOverListener() ...");
         this.showOverColor();
     }
     protected mouseOutListener(evt: any): void {
-        console.log("DragLine::mouseOutListener() ...");
+        // console.log("DragLine::mouseOutListener() ...");
         this.showOutColor();
     }
     protected mouseDownListener(evt: any): void {

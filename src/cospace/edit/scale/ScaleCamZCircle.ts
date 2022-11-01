@@ -167,7 +167,7 @@ class ScaleCamZCircle extends ScaleCtr implements IRayControl {
         this.m_entity.mouseEnabled = false;
     }
     showOverColor(): void {
-        console.log("ScaleCamZCirlce::showOverColor()...");
+        // console.log("ScaleCamZCirlce::showOverColor()...");
         (this.m_entity.getMaterial() as IColorMaterial).setColor(this.overColor);
     }
     showOutColor(): void {
