@@ -114,12 +114,6 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
     getRotationXYZ(pv: IVector3D): void {
         this.m_entity.getRotationXYZ(pv);
     }
-    // getGlobalBounds(): IAABB {
-    //     return null;
-    // }
-    // getLocalBounds(): IAABB {
-    //     return null;
-    // }
     localToGlobal(pv: IVector3D): void {
         this.m_entity.localToGlobal(pv);
     }

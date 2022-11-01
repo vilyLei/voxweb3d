@@ -91,8 +91,8 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
             }
 
             et.setRenderState(CoRScene.RendererState.NONE_TRANSPARENT_STATE);
-            rs.addEntity(et, rspi);
-            rs.addEntity(etL, rspi);
+            rs.addEntity(et, rspi, true);
+            rs.addEntity(etL, 0, true);
 
             this.showOutColor();
             this.applyEvent( this.m_entity );
