@@ -34,9 +34,6 @@ declare var CoEntity: ICoEntity;
  */
 class ScaleDragLine extends ScaleCtr implements IRayControl {
 
-    // private m_target: IScaleTarget = null;
-    // private m_dispatcher: IEvtDispatcher;
-    // private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
     private m_box: ITransformEntity = null;
 
