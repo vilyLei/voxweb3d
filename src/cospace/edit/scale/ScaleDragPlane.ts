@@ -107,12 +107,12 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
         this.showOutColor();
     }
     showOverColor(): void {
-        this.setEndityColor(this.m_entity, this.overColor);
-        this.setEndityColor(this.m_frameEntity, this.overColor, 0.7);
+        this.setEntityColor(this.m_entity, this.overColor);
+        this.setEntityColor(this.m_frameEntity, this.overColor, 0.7);
     }
     showOutColor(): void {
-        this.setEndityColor(this.m_entity, this.outColor);
-        this.setEndityColor(this.m_frameEntity, this.outColor, 0.7);
+        this.setEntityColor(this.m_entity, this.outColor);
+        this.setEntityColor(this.m_frameEntity, this.outColor, 0.7);
     }
 
     enable(): void {

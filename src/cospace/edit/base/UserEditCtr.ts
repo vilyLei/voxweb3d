@@ -159,7 +159,7 @@ class UserEditCtr {
     protected setMaterialColor(m: IColorMaterial, c: IColor4, brn: number = 1.0): void {
         m.setRGBA4f(c.r * brn, c.g * brn, c.b * brn, c.a);
     }
-    protected setEndityColor(et: ITransformEntity, c: IColor4, brn: number = 1.0): void {
+    protected setEntityColor(et: ITransformEntity, c: IColor4, brn: number = 1.0): void {
         (et.getMaterial() as IColorMaterial).setRGBA4f(c.r * brn, c.g * brn, c.b * brn, c.a);
     }
     showOverColor(): void {
