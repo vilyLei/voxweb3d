@@ -9,19 +9,21 @@ import IVector3D from "../../../vox/math/IVector3D";
 import IAABB from "../../../vox/geom/IAABB";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import { IRayControl } from "../base/IRayControl";
+import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
+import { ScaleCtr } from "./ScaleCtr";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
 import { ICoMesh } from "../../voxmesh/ICoMesh";
-import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
-import { ScaleCtr } from "./ScaleCtr";
+import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 
 declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;
 declare var CoAGeom: ICoAGeom;
 declare var CoMesh: ICoMesh;
+declare var CoMaterial: ICoMaterial;
 
 /**
  * 支持在一个平面上拖动缩放
@@ -29,6 +31,7 @@ declare var CoMesh: ICoMesh;
 export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
 
     private m_entity: ITransformEntity = null;
+    private m_frameEntity: ITransformEntity = null;
     private offsetV = CoMath.createVec3(30, 30, 30);
     private m_planeAxisType: number = 0;
 
@@ -44,6 +47,16 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
             material.initializeByCodeBuf(false);
             this.m_entity = CoRScene.createDisplayEntity();
 
+            this.m_frameEntity = CoRScene.createDisplayEntity();
+
+            let ml = CoMesh.line;
+            ml.dynColorEnabled = true;
+            let line_material = CoMaterial.createLineMaterial(ml.dynColorEnabled);
+            line_material.initializeByCodeBuf(false);
+            ml.setBufSortFormat(material.getBufSortFormat());
+            let etL = this.m_frameEntity;
+            etL.setMaterial(line_material);
+
             let et = this.m_entity;
             et.setMaterial(material);
 
@@ -57,16 +70,19 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
                 case 0:
                     // xoz
                     et.setMesh(mp.createXOZ(ov.x, ov.z, size, size));
+                    etL.setMesh(ml.createRectXOZ(ov.x, ov.z, size, size));
                     this.setPlaneNormal(V3.Y_AXIS);
                     break;
                 case 1:
                     // xoy
                     et.setMesh(mp.createXOY(ov.x, ov.y, size, size));
+                    etL.setMesh(ml.createRectXOY(ov.x, ov.y, size, size));
                     this.setPlaneNormal(V3.Z_AXIS);
                     break;
                 case 2:
                     // yoz
                     et.setMesh(mp.createYOZ(ov.y, ov.z, size, size));
+                    etL.setMesh(ml.createRectYOZ(ov.y, ov.z, size, size));
                     this.setPlaneNormal(CoMath.Vector3D.X_AXIS);
                     break;
                 default:
@@ -76,6 +92,7 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
 
             et.setRenderState(CoRScene.RendererState.NONE_TRANSPARENT_STATE);
             rs.addEntity(et, rspi);
+            rs.addEntity(etL, rspi);
 
             this.showOutColor();
             this.applyEvent( this.m_entity );
@@ -90,15 +107,12 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
         this.showOutColor();
     }
     showOverColor(): void {
-
-        let m = this.m_entity.getMaterial() as IColorMaterial;
-        m.setColor(this.overColor);
-        // (this.m_entity.getMaterial() as any).setRGBA4f(this.overColor.r, this.overColor.g, this.overColor.b, this.overColor.a);
+        this.setEndityColor(this.m_entity, this.overColor);
+        this.setEndityColor(this.m_frameEntity, this.overColor, 0.7);
     }
     showOutColor(): void {
-        let m = this.m_entity.getMaterial() as IColorMaterial;
-        m.setColor(this.outColor);
-        // (this.m_entity.getMaterial() as any).setRGBA4f(this.outColor.r, this.outColor.g, this.outColor.b, this.outColor.a);
+        this.setEndityColor(this.m_entity, this.outColor);
+        this.setEndityColor(this.m_frameEntity, this.outColor, 0.7);
     }
 
     enable(): void {
@@ -113,17 +127,19 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
         this.m_entity.setRenderState(state);
     }
     setVisible(visible: boolean): void {
-        console.log("ScaleDragPlane::setVisible() ..., visible: ", visible);
         this.m_entity.setVisible(visible);
+        this.m_frameEntity.setVisible(visible);
     }
     getVisible(): boolean {
         return this.m_entity.getVisible();
     }
     setXYZ(px: number, py: number, pz: number): void {
         this.m_entity.setXYZ(px, py, pz);
+        this.m_frameEntity.setXYZ(px, py, pz);
     }
     setPosition(pv: IVector3D): void {
         this.m_entity.setPosition(pv);
+        this.m_frameEntity.setPosition(pv);
     }
     getPosition(pv: IVector3D): IVector3D {
         this.m_entity.getPosition(pv);
@@ -131,16 +147,19 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
         this.m_entity.setScaleXYZ(sx, sy, sz);
+        this.m_frameEntity.setScaleXYZ(sx, sy, sz);
     }
 
     getScaleXYZ(pv: IVector3D): void {
         this.m_entity.getScaleXYZ(pv);
     }
     setRotation3(r: IVector3D): void {
-        this.m_entity.setRotation3(r);
+        // this.m_entity.setRotation3(r);
+        // this.m_frameEntity.setRotation3(r);
     }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
-        this.m_entity.setRotationXYZ(rx, ry, rz);
+        // this.m_entity.setRotationXYZ(rx, ry, rz);
+        // this.m_frameEntity.setRotationXYZ(rx, ry, rz);
     }
     getRotationXYZ(pv: IVector3D): void {
         this.m_entity.getRotationXYZ(pv);
@@ -158,32 +177,23 @@ export default class ScaleDragPlane extends ScaleCtr implements IRayControl {
     globalToLocal(pv: IVector3D): void {
         this.m_entity.globalToLocal(pv);
     }
-    // isSelected(): boolean {
-    //     return this.m_flag > -1;
-    // }
-    // select(): void {
-    // }
-    // deselect(): void {
-    //     if (this.m_flag > -1) {
-
-    //         this.editEnd();
-    //         this.setAllVisible(true);
-    //     }
-    //     this.m_flag = -1;
-    // }
     update(): void {
         this.m_entity.update();
+        this.m_frameEntity.update();
     }
     destroy(): void {
-        // this.m_target = null;
         super.destroy();
+        if(this.m_editRS != null) {
+            this.m_editRS.removeEntity(this.m_entity);
+            this.m_editRS.removeEntity(this.m_frameEntity);
+        }
+        
         if (this.m_entity != null) {
             this.m_entity.destroy();
         }
-        // if (this.m_dispatcher != null) {
-        //     this.m_dispatcher.destroy();
-        //     this.m_dispatcher = null;
-        // }
+        if (this.m_frameEntity != null) {
+            this.m_frameEntity.destroy();
+        }
     }
     private m_planeNV = CoMath.createVec3(0.0, 1.0, 0.0);
     private m_planePos = CoMath.createVec3();
