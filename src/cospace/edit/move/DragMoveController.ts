@@ -32,7 +32,7 @@ class DragMoveController extends DragTransController implements IDragMoveControl
 
         let movePlane = new DragPlane();
         movePlane.moveSelfEnabled = false;
-        movePlane.initialize(type, this.planeSize);
+        movePlane.initialize(this.m_editRS, this.m_editRSPI, type, this.planeSize);
         outColor.a = alpha;
         movePlane.outColor.copyFrom(outColor);
         outColor.scaleBy(1.5);
@@ -43,7 +43,7 @@ class DragMoveController extends DragTransController implements IDragMoveControl
         movePlane.setTarget(this.m_target);
         this.m_target.addCtrlEntity(movePlane);
         this.m_controllers.push(movePlane);
-        this.m_editRS.addEntity(movePlane.getEntity(), this.m_editRSPI, true);
+        // this.m_editRS.addEntity(movePlane.getEntity(), this.m_editRSPI, true);
         return movePlane;
     }
     private createDragLine(tv: IVector3D, outColor: IColor4, mat4: IMatrix4): void {

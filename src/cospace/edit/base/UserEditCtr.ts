@@ -9,6 +9,8 @@ import IEntityTransform from "../../../vox/entity/IEntityTransform";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import IEvtNode from "../../../vox/event/IEvtNode";
+import IColor4 from "../../../vox/material/IColor4";
+import IColorMaterial from "../../../vox/material/mcase/IColorMaterial";
 declare var CoRScene: ICoRScene;
 
 class UserEditCtr {
@@ -152,6 +154,13 @@ class UserEditCtr {
     }
     protected mouseDownListener(evt: any): void {
 
+    }
+    
+    protected setMaterialColor(m: IColorMaterial, c: IColor4, brn: number = 1.0): void {
+        m.setRGBA4f(c.r * brn, c.g * brn, c.b * brn, c.a);
+    }
+    protected setEndityColor(et: ITransformEntity, c: IColor4, brn: number = 1.0): void {
+        (et.getMaterial() as IColorMaterial).setRGBA4f(c.r * brn, c.g * brn, c.b * brn, c.a);
     }
     showOverColor(): void {
         // let m = this.m_entity.getMaterial() as IColorMaterial;
