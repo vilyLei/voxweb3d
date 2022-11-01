@@ -124,16 +124,21 @@ class DragLine extends MoveCtr implements IRayControl {
         this.m_entity.globalToLocal(pv);
     }
     showOverColor(): void {
-        let m = this.m_entity.getMaterial() as IColorMaterial;
-        m.setColor(this.overColor);
-        m = this.m_cone.getMaterial() as IColorMaterial;
-        m.setColor(this.overColor);
+        
+        this.setEntityColor(this.m_entity, this.overColor);
+        this.setEntityColor(this.m_cone, this.overColor);
+        // let m = this.m_entity.getMaterial() as IColorMaterial;
+        // m.setColor(this.overColor);
+        // m = this.m_cone.getMaterial() as IColorMaterial;
+        // m.setColor(this.overColor);
     }
     showOutColor(): void {
-        let m = this.m_entity.getMaterial() as IColorMaterial;
-        m.setColor(this.outColor);
-        m = this.m_cone.getMaterial() as IColorMaterial;
-        m.setColor(this.outColor);
+        this.setEntityColor(this.m_entity, this.outColor);
+        this.setEntityColor(this.m_cone, this.outColor);
+        // let m = this.m_entity.getMaterial() as IColorMaterial;
+        // m.setColor(this.outColor);
+        // m = this.m_cone.getMaterial() as IColorMaterial;
+        // m.setColor(this.outColor);
     }
 
     enable(): void {

@@ -31,9 +31,6 @@ declare var CoParticle: ICoParticle;
  */
 export default class DragRayCrossPlane extends MoveCtr implements IRayControl {
 
-    // private m_target: IMovedTarget = null;
-    // private m_dispatcher: IEvtDispatcher;
-    // private m_targetPosOffset = CoMath.createVec3();
     private m_entity: ITransformEntity = null;
     private m_rscene: IRendererScene = null;
 

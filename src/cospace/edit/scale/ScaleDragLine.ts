@@ -128,16 +128,14 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
     }
 
     showOverColor(): void {
-        let m = this.m_entity.getMaterial() as IColorMaterial;
-        m.setColor(this.overColor);
-        m = this.m_box.getMaterial() as IColorMaterial;
-        m.setColor(this.overColor);
+        
+        this.setEntityColor(this.m_entity, this.overColor);
+        this.setEntityColor(this.m_box, this.overColor);
     }
     showOutColor(): void {
-        let m = this.m_entity.getMaterial() as IColorMaterial;
-        m.setColor(this.outColor);
-        m = this.m_box.getMaterial() as IColorMaterial;
-        m.setColor(this.outColor);
+        
+        this.setEntityColor(this.m_entity, this.outColor);
+        this.setEntityColor(this.m_box, this.outColor);
     }
 
     enable(): void {
@@ -150,19 +148,6 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
         this.m_entity.mouseEnabled = false;
         this.m_box.mouseEnabled = false;
     }
-    // isSelected(): boolean {
-    //     return this.m_flag > -1;
-    // }
-    // select(): void {
-    // }
-    // deselect(): void {
-    //     console.log("ScaleDragLine::deselect() ...");
-    //     if (this.m_flag > 0) {
-    //         this.editEnd();
-    //         this.setAllVisible(true);
-    //     }
-    //     this.m_flag = -1;
-    // }
     destroy(): void {
         super.destroy();
         if (this.m_entity != null) {
@@ -173,10 +158,6 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
             this.m_box.destroy();
             this.m_box = null;
         }
-        // if (this.m_dispatcher != null) {
-        //     this.m_dispatcher.destroy();
-        //     this.m_dispatcher = null;
-        // }
     }
     setPosition(pos: IVector3D): void {
         this.m_entity.setPosition(pos);
