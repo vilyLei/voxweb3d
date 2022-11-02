@@ -42,7 +42,6 @@ class NormalEntityNode {
 	}
 	setVisible(v: boolean): void {
 		this.setLineVisible(v);
-		// this.m_normalLine.setVisible(false);
 		this.entity.setVisible(v);
 	}
 	getUid(): number {
@@ -82,8 +81,8 @@ class NormalEntityNode {
 
 		this.entity = normalEntity;
 		this.m_uid = this.entity.getUid();
-
-		this.applyEvt(this.entity);
+		this.entity.mouseEnabled = false;
+		// this.applyEvt(this.entity);
 		return this.entity;
 	}
 	select(): void {
@@ -124,9 +123,12 @@ class NormalEntityNode {
 			}
 		}
 	}
-
+	applyEvent(): void {
+		this.applyEvt( this.entity );
+	}
 	private applyEvt(entity: IMouseEventEntity): void {
 
+		entity.mouseEnabled = true;
 		let ME = CoRScene.MouseEvent;
 		entity.addEventListener(ME.MOUSE_OVER, this, this.mouseOverTargetListener);
 		entity.addEventListener(ME.MOUSE_OUT, this, this.mouseOutTargetListener);

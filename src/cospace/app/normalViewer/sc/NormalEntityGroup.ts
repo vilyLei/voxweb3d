@@ -42,11 +42,8 @@ class NormalEntityGroup {
 	}
 	loadModels(urls: string[], typeNS: string = ""): void {
 		if (urls != null && urls.length > 0) {
-			// this.m_transforms = [];
-			// this.m_transes = [];
 			let purls = urls.slice(0);
 			this.m_coapp.deferredInit((): void => {
-				console.log("XXXXXXXXXXXXXXXXXXX deferredInit() call...");
 				for (let i = 0; i < purls.length; ++i) {
 					this.loadModel(purls[i], typeNS);
 				}
@@ -98,17 +95,6 @@ class NormalEntityGroup {
 			this.uiscene.prompt.getPromptPanel().applyConfirmButton();
 			this.uiscene.prompt.showPrompt("Model loading!");
 			this.m_loadTotal++;
-			// let unit = ins.getCPUDataByUrlAndCallback(
-			// 	url,
-			// 	format,
-			// 	(unit: CoGeomDataUnit, status: number): void => {
-			// 		if(format != CoDataFormat.FBX) {
-			// 			this.createEntityFromModels(unit.data.models, unit.data.transforms);
-			// 		}
-			// 		this.createEntityFromUnit(unit, status);
-			// 	},
-			// 	true
-			// );
 			let unit = ins.getCPUDataByUrlAndCallback(
 				url,
 				format,
@@ -185,6 +171,9 @@ class NormalEntityGroup {
 		if (this.m_loadedTotal >= this.m_loadTotal) {
 			this.uiscene.prompt.getPromptPanel().applyConfirmButton();
 			this.uiscene.prompt.showPrompt("Model loaded finish!");
+			for(let i = 0; i < this.m_nodes.length; ++i) {
+				this.m_nodes[i].applyEvent();
+			}
 		}
 
 	}
