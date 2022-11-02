@@ -13,7 +13,7 @@ class TipsSystem implements ITipsSystem {
 	private m_tipEntity: IRectTextTip = null;
 	constructor(){}
 
-	initialize(uiscene: ICoUIScene, rpi: number = 3): void {
+	initialize(uiscene: ICoUIScene, rpi: number = 2): void {
 		if(this.m_tipEntity == null) {
 			this.m_uiscene = uiscene;
 			let tip = CoUI.createRectTextTip();
