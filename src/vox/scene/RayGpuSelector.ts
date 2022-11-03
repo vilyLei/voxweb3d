@@ -39,11 +39,10 @@ export default class RayGpuSelector implements IRaySelector {
     private m_indexMaterial: PixelPickIndexMaterial = new PixelPickIndexMaterial();
     private m_renderer: IRenderer = null;
     private m_camera: IRenderCamera = null;
-    // private m_headNode: Entity3DNode = null;
     private m_rsn: RaySelectedNode = null;
     // 最多检测256个对象
     private m_hitList: Uint8Array = new Uint8Array(256);
-    private m_rsnList: RaySelectedNode[] = null;
+    private m_rsnList: RaySelectedNode[] = new Array(256);
     private m_selectedNode: RaySelectedNode = null;
     private m_selectedTotal: number = 0;
     private m_testMode: number = 0;
@@ -58,7 +57,11 @@ export default class RayGpuSelector implements IRaySelector {
     private m_gpuTestEnabled = true;
     private m_qu = new QueryUnit();
     etset: IRenderingEntitySet = null;
-
+    constructor() {
+        for (let i = 0; i < 256; ++i) {
+            this.m_rsnList[i] = new RaySelectedNode();
+        }
+    }
     setRenderer(renderer: IRenderer): void {
         this.m_renderer = renderer;
     }
@@ -76,15 +79,6 @@ export default class RayGpuSelector implements IRaySelector {
     }
     setCamera(cam: IRenderCamera): void {
         this.m_camera = cam;
-    }
-    setCullingNodeHead(headNode: Entity3DNode): void {
-        // this.m_headNode = headNode;
-        if (this.m_rsnList == null) {
-            this.m_rsnList = new Array(256);
-            for (let i = 0; i < 256; ++i) {
-                this.m_rsnList[i] = new RaySelectedNode();
-            }
-        }
     }
     getSelectedNode(): RaySelectedNode {
         return this.m_selectedNode;

@@ -219,7 +219,6 @@ export default class RendererSpace implements IRendererSpace {
 		if (this.m_raySelector != null) {
 			this.m_raySelector.etset = this.renderingEntitySet;
 			this.m_raySelector.setCamera(this.m_camera);
-			this.m_raySelector.setCullingNodeHead(this.m_nodeSLinker.getBegin());
 			this.m_raySelector.setRay(rlpv, rltv);
 			this.m_raySelector.run();
 		}

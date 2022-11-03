@@ -30,11 +30,10 @@ class QueryUnit {
 export default class RaySelector implements IRaySelector {
     private m_renderer: IRenderer = null;
     private m_camera: CameraBase = null;
-    private m_headNode: Entity3DNode = null;
     private m_rsn: RaySelectedNode = null;
     // 最多检测256个对象
     private m_hitList: Uint8Array = new Uint8Array(256);
-    private m_rsnList: RaySelectedNode[] = null;
+    private m_rsnList: RaySelectedNode[] = new Array(256);
     private m_selectedNode: RaySelectedNode = null;
     private m_selectedTotal: number = 0;
     private m_testMode: number = 0;
@@ -49,6 +48,11 @@ export default class RaySelector implements IRaySelector {
     private m_gpuTestEnabled: boolean = false;
     private m_qu = new QueryUnit();
     etset: IRenderingEntitySet = null;
+    constructor() {
+        for (let i = 0; i < 256; ++i) {
+            this.m_rsnList[i] = new RaySelectedNode();
+        }
+    }
     setRenderer(renderer: IRenderer): void {
         this.m_renderer = renderer;
     }
@@ -65,15 +69,6 @@ export default class RaySelector implements IRaySelector {
     }
     setCamera(cam: CameraBase): void {
         this.m_camera = cam;
-    }
-    setCullingNodeHead(headNode: Entity3DNode): void {
-        this.m_headNode = headNode;
-        if (this.m_rsnList == null) {
-            this.m_rsnList = new Array(256);
-            for (let i = 0; i < 256; ++i) {
-                this.m_rsnList[i] = new RaySelectedNode();
-            }
-        }
     }
     getSelectedNode(): RaySelectedNode {
         return this.m_selectedNode;
@@ -112,9 +107,6 @@ export default class RaySelector implements IRaySelector {
     }
 
     run(): void {
-        let nextNode: Entity3DNode = this.m_headNode;
-        //console.log("RaySelect run() nextNode != null: "+(nextNode != null));
-        // if (nextNode != null) {
         if (this.etset.getTotal() > 0) {
             let dis: number = 0.0;
             let rtv: Vector3D = this.m_rltv;
@@ -180,69 +172,7 @@ export default class RaySelector implements IRaySelector {
                     }
                 }
             }
-            /*
-            //console.log("raySelector rpv,rtv: ", rpv, rtv);
-            if (Math.abs(rtv.x) > MathConst.MATH_MIN_POSITIVE) {
-                this.m_rlinvtv.x = 1.0 / rtv.x;
-            }
-            else {
-                this.m_rlinvtv.x = MathConst.MATH_MAX_POSITIVE;
-            }
-            if (Math.abs(rtv.y) > MathConst.MATH_MIN_POSITIVE) {
-                this.m_rlinvtv.y = 1.0 / rtv.y;
-            }
-            else {
-                this.m_rlinvtv.y = MathConst.MATH_MAX_POSITIVE;
-            }
-            if (Math.abs(rtv.z) > MathConst.MATH_MIN_POSITIVE) {
-                this.m_rlinvtv.z = 1.0 / rtv.z;
-            }
-            else {
-                this.m_rlinvtv.z = MathConst.MATH_MAX_POSITIVE;
-            }
-            if (this.m_rlinvtv.x < 0) this.m_rlsiv[0] = 1;
-            else this.m_rlsiv[0] = 0;
-            if (this.m_rlinvtv.y < 0) this.m_rlsiv[1] = 1;
-            else this.m_rlsiv[1] = 0;
-            if (this.m_rlinvtv.z < 0) this.m_rlsiv[2] = 1;
-            else this.m_rlsiv[2] = 0;
-
-            while (nextNode != null) {
-                if (nextNode.drawEnabled && nextNode.entity.mouseEnabled) {
-                    //if(AABB.IntersectionRL2(rtv,rpv, nextNode.bounds, outv))
-                    outv.subVecsTo(nextNode.bounds.center, rpv);
-                    // outv.x = nextNode.bounds.center.x - rpv.x;
-                    // outv.y = nextNode.bounds.center.y - rpv.y;
-                    // outv.z = nextNode.bounds.center.z - rpv.z;
-                    dis = outv.dot(rtv);
-                    outv.x -= dis * rtv.x;
-                    outv.y -= dis * rtv.y;
-                    outv.z -= dis * rtv.z;
-
-                    if (outv.getLengthSquared() <= nextNode.bounds.radius2) {
-                        // 如果只是几何检测(例如球体包围体的检测)就不需要在进入后续的aabb检测
-                        if (nextNode.rayTestState < 1) {
-                            this.m_vecs[0] = nextNode.bounds.min;
-                            this.m_vecs[1] = nextNode.bounds.max;
-                            if (AABBCalc.IntersectionRL3(this.m_vecs, this.m_rlsiv, this.m_rlinvtv, rtv, rpv, outv)) {
-                                node = this.m_rsnList[total];
-                                node.entity = nextNode.entity;
-                                node.dis = this.m_rlinvtv.w;
-                                node.wpv.copyFrom(outv);
-                                //  console.log("H Hit Dis: "+rtv.dot(outv));
-                                //console.log("Ray hit test a renderNode.");
-                                ++total;
-                            }
-                        }
-                        //  else
-                        //  {
-                        //      //其他检测方式
-                        //  }
-                    }
-                }
-                nextNode = nextNode.next;
-            }
-            //*/
+            
             this.m_selectedNode = null;
             let i: number = 0;
             if (total > 0) {
