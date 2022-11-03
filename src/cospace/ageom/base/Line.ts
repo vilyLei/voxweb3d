@@ -35,6 +35,7 @@ export default class Line implements ILine {
 	 * @returns
 	 */
 	static CalcPVSquaredDis2(ltv: IVector3D, lpv: IVector3D, spCV: IVector3D): number {
+		__buildLLBase();
 		let pv = __llv0;
 		pv.subVecsTo(spCV, lpv);
 		const s = pv.dot(ltv);
