@@ -78,7 +78,6 @@ class DragRotationController extends DragTransController implements IDragRotatio
         camYXCtrl.setTarget(this.m_target);
         this.m_target.addCtrlEntity(camYXCtrl);
         this.m_controllers.push(camYXCtrl);
-
     }
 }
 export { DragRotationController }
