@@ -137,6 +137,7 @@ export class RendererInstance implements IRendererInstance {
             this.m_renderInsContext.initialize(param, camera, contextParam);
             this.m_adapter = this.m_renderProxy.getRenderAdapter();
             this.m_dataBuilder.initialize(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider, this.m_roVtxBuilder);
+            (this.m_renderProxy as any).rshader = this.m_dataBuilder.getRenderShader();
             this.m_renderInsContext.initManager(this.m_dataBuilder);
             this.m_entity3DMana = new DispEntity3DManager(this.m_uid, this.m_dataBuilder, this.m_rpoUnitBuilder, this.m_processBuider);
 

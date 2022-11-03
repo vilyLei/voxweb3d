@@ -305,7 +305,4 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     destroy(): void {
         this.reset();
     }
-    toString(): string {
-        return "[RPOUnit(uid = " + this.uid + ")]";
-    }
 }

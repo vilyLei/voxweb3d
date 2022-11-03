@@ -21,7 +21,7 @@ import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 import RendererParam from "../../vox/scene/RendererParam";
 import RenderProcess from "../../vox/render/RenderProcess";
-import RenderShader from "../../vox/render/RenderShader";
+import IRenderShader from "../../vox/render/IRenderShader";
 import Entity3DNode from "../../vox/scene/Entity3DNode";
 import EntityNodeQueue from "../../vox/scene/EntityNodeQueue";
 import Entity3DNodeLinker from "../../vox/scene/Entity3DNodeLinker";
@@ -82,7 +82,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
     private m_perspectiveEnabled = true;
     private m_rparam: RendererParam = null;
     private m_stage3D: IRenderStage3D = null;
-    private m_shader: RenderShader = null;
+    private m_shader: IRenderShader = null;
     private m_runFlag: number = -1;
     private m_autoRunning: boolean = true;
     private m_currStage3D: SubStage3D = null;

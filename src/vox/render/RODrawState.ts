@@ -80,7 +80,7 @@ export class RODrawState implements IRODrawState {
         }
     }
     setCullFaceMode(mode: number): void {
-
+        // console.log("this.m_cullMode,mode: ", this.m_cullMode,mode);
         if (this.m_cullMode != mode) {
             this.m_cullMode = mode;
             if(mode != CullFaceMode.NONE) {

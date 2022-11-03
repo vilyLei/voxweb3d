@@ -47,7 +47,7 @@ import IRODisplaySorter from "../../vox/render/IRODisplaySorter";
 import CameraDsistanceSorter from "../../vox/scene/CameraDsistanceSorter";
 import RendererSubScene from "../../vox/scene/RendererSubScene";
 import IRenderNode from "../../vox/scene/IRenderNode";
-import RenderShader from "../render/RenderShader";
+import IRenderShader from "../../vox/render/IRenderShader";
 import Matrix4Pool from "../math/Matrix4Pool";
 import { IRendererSceneAccessor } from "./IRendererSceneAccessor";
 import { ShaderProgramBuilder } from "../../vox/material/ShaderProgramBuilder";
@@ -63,7 +63,7 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
     private m_uid: number = -1;
     private m_adapter: IRenderAdapter = null;
     private m_renderProxy: IRenderProxy = null;
-    private m_shader: RenderShader = null;
+    private m_shader: IRenderShader = null;
     private m_rcontext: IRendererInstanceContext = null;
     private m_renderer: RendererInstance = null;
     private m_processids: Uint8Array = new Uint8Array(128);

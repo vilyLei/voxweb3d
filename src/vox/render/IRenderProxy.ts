@@ -21,40 +21,42 @@ import { IShaderUniformContext } from "../../vox/material/IShaderUniformContext"
 import { IStencil } from "../../vox/render/rendering/IStencil";
 import { IRenderingColorMask } from "./rendering/IRenderingColorMask";
 import { IRenderingState } from "./rendering/IRenderingState";
+import IRenderShader from "../../vox/render/IRenderShader";
 
 import { IRPStatus } from "./status/IRPStatus";
 
 export default interface IRenderProxy {
 
-    RGBA: number;
-    UNSIGNED_BYTE: number;
-    TRIANGLE_STRIP: number;
-    TRIANGLE_FAN: number;
-    TRIANGLES: number;
-    LINES: number;
-    LINE_STRIP: number;
-    UNSIGNED_SHORT: number;
-    UNSIGNED_INT: number;
-    COLOR: number;
-    DEPTH: number;
-    STENCIL: number;
-    DEPTH_STENCIL: number;
+    readonly RGBA: number;
+    readonly UNSIGNED_BYTE: number;
+    readonly TRIANGLE_STRIP: number;
+    readonly TRIANGLE_FAN: number;
+    readonly TRIANGLES: number;
+    readonly LINES: number;
+    readonly LINE_STRIP: number;
+    readonly UNSIGNED_SHORT: number;
+    readonly UNSIGNED_INT: number;
+    readonly COLOR: number;
+    readonly DEPTH: number;
+    readonly STENCIL: number;
+    readonly DEPTH_STENCIL: number;
 
-    MAX: number;
-    MIN: number;
-    RContext: any;
-    //RState: RODrawState = null;
+    readonly MAX: number;
+    readonly MIN: number;
+    readonly RContext: any;
 
-    Vertex: IRenderResource;
-    Texture: IRenderTexResource;
-    VtxBufUpdater: IROVertexBufUpdater;
-    MaterialUpdater: IROMaterialUpdater;
-    uniformContext: IShaderUniformContext;
+    readonly Vertex: IRenderResource;
+    readonly Texture: IRenderTexResource;
+    readonly VtxBufUpdater: IROVertexBufUpdater;
+    readonly MaterialUpdater: IROMaterialUpdater;
+    readonly uniformContext: IShaderUniformContext;
+    readonly rshader: IRenderShader;
 
     readonly stencil: IStencil;
     readonly renderingState: IRenderingState;
     readonly colorMask: IRenderingColorMask;
     readonly status: IRPStatus;
+
     /**
      * @returns return system gpu context
      */
@@ -107,9 +109,7 @@ export default interface IRenderProxy {
     readPixels(px: number, py: number, width: number, height: number, format: number, dataType: number, pixels: Uint8Array): void;
     getGLVersion(): number;
     flush(): void;
-    //createCamera(): IRenderCamera {
-    //    return new IRenderCamera(this.m_uid);
-    //}
+    
     setClearRGBColor3f(pr: number, pg: number, pb: number): void;
     setClearColor(color: IColor4): void;
     /**

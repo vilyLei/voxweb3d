@@ -49,6 +49,7 @@ import { RenderingState } from "./rendering/RenderingState";
 
 import { IRPStatus } from "./status/IRPStatus";
 import { RPStatus } from "./status/RPStatus";
+import IRenderShader from "../../vox/render/IRenderShader";
 
 class RenderProxyParam {
 
@@ -96,6 +97,8 @@ class RenderProxy implements IRenderProxy {
     readonly stencil: IStencil = null;
     readonly renderingState: IRenderingState = null;
     readonly colorMask: IRenderingColorMask = null;
+    readonly rshader: IRenderShader = null;
+    readonly status: IRPStatus = new RPStatus();
 
     private m_uid: number = 0;
     private m_camUBO: any = null;
@@ -115,8 +118,6 @@ class RenderProxy implements IRenderProxy {
     private m_camSwitched: boolean = false;
     // 是否舞台尺寸和view自动同步一致
     private m_autoSynViewAndStage: boolean = true;
-
-    readonly status: IRPStatus = new RPStatus();
 
     constructor(rcuid: number) {
         this.m_uid = rcuid;

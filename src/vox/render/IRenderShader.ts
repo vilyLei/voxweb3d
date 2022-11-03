@@ -12,7 +12,7 @@ import IRUniformUser from "./uniform/IRUniformUser";
  */
 export default interface IRenderShader extends IRUniformUser {
     drawFlag: number;
-    
+    resetRenderState(): void;
 	renderBegin():void;
 	unlock(): void;
 	lock(): void;

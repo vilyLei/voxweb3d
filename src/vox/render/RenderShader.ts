@@ -195,6 +195,9 @@ export default class RenderShader implements IRenderShader, IRenderResource {
         this.m_transformUniform = null;
         this.m_guniform = null;
     }
+    resetRenderState(): void {
+        this.drawFlag = -1;
+    }
     /**
      * frame begin run this function
      */

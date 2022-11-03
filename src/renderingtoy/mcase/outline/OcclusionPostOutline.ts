@@ -224,24 +224,24 @@ export default class OcclusionPostOutline implements IOcclusionPostOutline {
                     let rproxy = this.m_rscene.getRenderProxy();
                     let rst = rproxy.renderingState;
                     rproxy.useRenderState(rst.NORMAL_STATE);
+                    rproxy.rshader.resetRenderState();
 
                     let colorMask = rproxy.colorMask;
                     let bounds = this.m_bounds;
                     let colorFBO = this.m_colorFBO;
+                    let len = this.m_targets.length;
 
                     this.m_preDecor.setRGB3f(1.0, 0.0, 0.0);
                     colorFBO.runBegin();
                     // colorFBO.lockRenderState(rst.NONE_CULLFACE_NORMAL_STATE);
                     bounds.reset();
 
-                    for (let i = 0; i < this.m_targets.length; ++i) {
+                    for (let i = 0; i < len; ++i) {
                         if (this.m_targets[i].isRenderEnabled()) {
-                            // console.log("this.m_targets[i]: ", this.m_targets[i].setRenderState());
                             colorFBO.drawEntity(this.m_targets[i], false, true);
                             bounds.union(this.m_targets[i].getGlobalBounds());
                         }
                     }
-
                     bounds.expand(this.m_expandBias);
                     // let v = bounds.min;
                     // v.x -= 15.0;
@@ -260,17 +260,17 @@ export default class OcclusionPostOutline implements IOcclusionPostOutline {
 
                     colorFBO.lockColorMask(colorMask.ALL_FALSE);
                     colorFBO.clearDepth(1.0);
-                    for (let i: number = 0; i < this.m_targets.length; ++i)
+                    for (let i = 0; i < len; ++i)
                         this.m_targets[i].setVisible(false);
 
                     colorFBO.run(false, false, false, true);
                     colorFBO.lockColorMask(colorMask.GREEN_TRUE);
-                    for (let i: number = 0; i < this.m_targets.length; ++i)
+                    for (let i = 0; i < len; ++i)
                         this.m_targets[i].setVisible(true);
 
                     this.m_preDecor.setRGB3f(0.0, 1.0, 0.0);
                     colorFBO.updateGlobalMaterialUniform();
-                    for (let i: number = 0; i < this.m_targets.length; ++i)
+                    for (let i = 0; i < len; ++i)
                         colorFBO.drawEntity(this.m_targets[i], false, true);
 
                     colorFBO.runEnd();
