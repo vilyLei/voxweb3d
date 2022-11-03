@@ -231,7 +231,7 @@ export default class OcclusionPostOutline implements IOcclusionPostOutline {
 
                     this.m_preDecor.setRGB3f(1.0, 0.0, 0.0);
                     colorFBO.runBegin();
-                    // colorFBO.lockRenderState(rst.NORMAL_STATE);
+                    // colorFBO.lockRenderState(rst.NONE_CULLFACE_NORMAL_STATE);
                     bounds.reset();
 
                     for (let i = 0; i < this.m_targets.length; ++i) {
@@ -242,7 +242,16 @@ export default class OcclusionPostOutline implements IOcclusionPostOutline {
                     }
 
                     bounds.expand(this.m_expandBias);
+                    // let v = bounds.min;
+                    // v.x -= 15.0;
+                    // v.y -= 15.0;
+                    // v.z -= 15.0;
+                    // v = bounds.max;
+                    // v.x += 15.0;
+                    // v.y += 15.0;
+                    // v.z += 15.0;
                     bounds.updateFast();
+                    
 
                     this.m_boundsEntity.setScaleXYZ(bounds.getWidth(), bounds.getHeight(), bounds.getLong());
                     this.m_boundsEntity.setPosition(this.m_bounds.center);

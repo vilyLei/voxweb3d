@@ -314,7 +314,7 @@
 /////////////////////////////     event    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
- import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
+//  import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
 
 //  import {DemoMouseDrag as Demo} from "./demo/DemoMouseDrag";
 
@@ -327,7 +327,7 @@
 //  The reflection in water
 //  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
-//  import {DemoOutline as Demo} from "./demo/DemoOutline";
+ import {DemoOutline as Demo} from "./demo/DemoOutline";
 
 //  import {DemoOutline2 as Demo} from "./demo/DemoOutline2";
 
