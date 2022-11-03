@@ -15,7 +15,7 @@ import { IRenderCamera } from "./IRenderCamera";
 import IRendererParam from "../../vox/scene/IRendererParam";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 
-import { RODrawState } from "../../vox/render/RODrawState";
+import { RODrawState } from "../../vox/render/rendering/RODrawState";
 import { RenderColorMask } from "../../vox/render/rendering/RenderColorMask";
 import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject";
 

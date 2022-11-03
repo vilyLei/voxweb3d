@@ -18,7 +18,7 @@ import TextureDataType from "../../vox/texture/TextureDataType";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import RAdapterContext from "../../vox/render/RAdapterContext";
 
-import { RODrawState } from "../../vox/render/RODrawState";
+import { RODrawState } from "../../vox/render/rendering/RODrawState";
 import { RenderColorMask } from "../../vox/render/rendering/RenderColorMask";
 import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject";
 

@@ -5,10 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { RenderBlendMode, CullFaceMode, DepthTestMode, GLBlendEquation } from "../../vox/render/RenderConst";
-import { IRAdapterContext } from "../../vox/render/IRAdapterContext";
-import { IRODrawState } from "../../vox/render/rendering/IRODrawState";
-import DebugFlag from "../debug/DebugFlag";
+import { RenderBlendMode, CullFaceMode, DepthTestMode, GLBlendEquation } from "../RenderConst";
+import { IRAdapterContext } from "../IRAdapterContext";
+import { IRODrawState } from "./IRODrawState";
 
 class ROStateUnit {
     constructor(){}
