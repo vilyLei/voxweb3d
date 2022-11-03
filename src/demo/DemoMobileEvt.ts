@@ -179,7 +179,8 @@ export class DemoMobileEvt {
             let tex1: TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
             let tex2: TextureProxy = this.getImageTexByUrl("static/assets/color_01.jpg");
 
-            this.m_rscene.enableMouseEvent(true);
+            // this.m_rscene.enableMouseEvent(true);
+            this.m_rscene.enableMouseEvent(false);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());

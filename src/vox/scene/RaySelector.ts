@@ -18,6 +18,15 @@ import IRenderer from "../../vox/scene/IRenderer";
 import { AABBCalc } from "../geom/AABBCalc";
 import IRenderingEntitySet from "./IRenderingEntitySet";
 
+class QueryUnit {
+    ets: IRenderEntity[] = null;
+    total: number = 0;
+    constructor() { }
+    query(ets: IRenderEntity[], total: number): void {
+        this.ets = ets;
+        this.total = total;
+    }
+}
 export default class RaySelector implements IRaySelector {
     private m_renderer: IRenderer = null;
     private m_camera: CameraBase = null;
@@ -38,7 +47,7 @@ export default class RaySelector implements IRaySelector {
     private m_outv: Vector3D = new Vector3D();
     private m_vecs: Vector3D[] = [null, null];
     private m_gpuTestEnabled: boolean = false;
-    
+    private m_qu = new QueryUnit();
     etset: IRenderingEntitySet = null;
     setRenderer(renderer: IRenderer): void {
         this.m_renderer = renderer;
@@ -60,24 +69,15 @@ export default class RaySelector implements IRaySelector {
     setCullingNodeHead(headNode: Entity3DNode): void {
         this.m_headNode = headNode;
         if (this.m_rsnList == null) {
-            this.m_rsnList = [];
-            let i: number = 0;
-            for (; i < 256; ++i) {
-                this.m_rsnList.push(new RaySelectedNode());
+            this.m_rsnList = new Array(256);
+            for (let i = 0; i < 256; ++i) {
+                this.m_rsnList[i] = new RaySelectedNode();
             }
         }
     }
-    //  setSelectedNode(node:RaySelectedNode):void
-    //  {
-    //      this.m_selectedNode = node;
-    //  }
     getSelectedNode(): RaySelectedNode {
         return this.m_selectedNode;
     }
-    //  setSelectedNodes(nodes:RaySelectedNode[], total:number):void
-    //  {
-    //      //this.m_rsnList = nodes;
-    //  }
     getSelectedNodes(): RaySelectedNode[] {
         return this.m_rsnList;
     }
@@ -114,13 +114,73 @@ export default class RaySelector implements IRaySelector {
     run(): void {
         let nextNode: Entity3DNode = this.m_headNode;
         //console.log("RaySelect run() nextNode != null: "+(nextNode != null));
-        if (nextNode != null) {
+        // if (nextNode != null) {
+        if (this.etset.getTotal() > 0) {
             let dis: number = 0.0;
             let rtv: Vector3D = this.m_rltv;
             let rpv: Vector3D = this.m_rlpv;
             let outv: Vector3D = this.m_outv;
             let node: RaySelectedNode = null;
             let total: number = 0;
+            let minv = MathConst.MATH_MIN_POSITIVE;
+            let maxv = MathConst.MATH_MAX_POSITIVE;
+            if (Math.abs(rtv.x) > minv) {
+                this.m_rlinvtv.x = 1.0 / rtv.x;
+            }
+            else {
+                this.m_rlinvtv.x = maxv;
+            }
+            if (Math.abs(rtv.y) > minv) {
+                this.m_rlinvtv.y = 1.0 / rtv.y;
+            }
+            else {
+                this.m_rlinvtv.y = maxv;
+            }
+            if (Math.abs(rtv.z) > minv) {
+                this.m_rlinvtv.z = 1.0 / rtv.z;
+            }
+            else {
+                this.m_rlinvtv.z = maxv;
+            }
+            let rivs = this.m_rlsiv;
+            let rtvs = this.m_rlinvtv;
+            rivs[0] = rtvs.x < 0 ? 1 : 0;
+            rivs[1] = rtvs.y < 0 ? 1 : 0;
+            rivs[2] = rtvs.z < 0 ? 1 : 0;
+
+            let qu = this.m_qu;
+            this.etset.query(qu);
+            let ets = qu.ets;
+            let tot = qu.total;
+
+            let vecs = this.m_vecs;
+            for (let i = 0; i < tot; ++i) {
+                let et = ets[i];
+                if (et.mouseEnabled) {
+
+                    const bounds = et.getGlobalBounds();
+                    outv.subVecsTo(bounds.center, rpv);
+                    dis = outv.dot(rtv);
+                    outv.x -= dis * rtv.x;
+                    outv.y -= dis * rtv.y;
+                    outv.z -= dis * rtv.z;
+
+                    if (outv.getLengthSquared() <= bounds.radius2) {
+                        // 如果只是几何检测(例如球体包围体的检测)就不需要在进入后续的aabb检测
+                        vecs[0] = bounds.min;
+                        vecs[1] = bounds.max;
+                        if (AABBCalc.IntersectionRL3(vecs, rivs, rtvs, rtv, rpv, outv)) {
+                            node = this.m_rsnList[total];
+                            node.entity = et;
+                            node.dis = this.m_rlinvtv.w;
+                            node.wpv.copyFrom(outv);
+                            //  console.log("H Hit Dis: "+rtv.dot(outv));
+                            ++total;
+                        }
+                    }
+                }
+            }
+            /*
             //console.log("raySelector rpv,rtv: ", rpv, rtv);
             if (Math.abs(rtv.x) > MathConst.MATH_MIN_POSITIVE) {
                 this.m_rlinvtv.x = 1.0 / rtv.x;
@@ -182,6 +242,7 @@ export default class RaySelector implements IRaySelector {
                 }
                 nextNode = nextNode.next;
             }
+            //*/
             this.m_selectedNode = null;
             let i: number = 0;
             if (total > 0) {
@@ -260,7 +321,7 @@ export default class RaySelector implements IRaySelector {
                     this.snsort(0, total - 1);
                     for (i = 0; i < total; ++i) {
                         //console.log(i+","+this.m_rsnList[i].entity,this.m_rsnList[i].flag);
-                        if(this.m_rsnList[i].flag > 0) {
+                        if (this.m_rsnList[i].flag > 0) {
                             this.m_selectedNode = this.m_rsnList[i];
                             break;
                         }

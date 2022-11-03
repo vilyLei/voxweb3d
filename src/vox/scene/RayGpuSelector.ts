@@ -56,7 +56,7 @@ export default class RayGpuSelector implements IRaySelector {
     private m_outv = new Vector3D();
     private m_vecs: Vector3D[] = [null, null];
     private m_gpuTestEnabled = true;
-
+    private m_qu = new QueryUnit();
     etset: IRenderingEntitySet = null;
 
     setRenderer(renderer: IRenderer): void {
@@ -121,7 +121,6 @@ export default class RayGpuSelector implements IRaySelector {
             this.snsort(pos + 1, high);
         }
     }
-    private m_qu = new QueryUnit();
     run(): void {
         if (this.etset.getTotal() > 0) {
             let dis: number = 0.0;
