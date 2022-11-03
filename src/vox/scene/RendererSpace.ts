@@ -217,6 +217,7 @@ export default class RendererSpace implements IRendererSpace {
 	}
 	rayTest(rlpv: Vector3D, rltv: Vector3D): void {
 		if (this.m_raySelector != null) {
+			this.m_raySelector.etset = this.renderingEntitySet;
 			this.m_raySelector.setCamera(this.m_camera);
 			this.m_raySelector.setCullingNodeHead(this.m_nodeSLinker.getBegin());
 			this.m_raySelector.setRay(rlpv, rltv);

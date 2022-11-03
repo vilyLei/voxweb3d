@@ -11,10 +11,12 @@ import {IRenderCamera} from "../../vox/render/IRenderCamera";
 import Entity3DNode from "../../vox/scene/Entity3DNode";
 import RaySelectedNode from "../../vox/scene/RaySelectedNode";
 import IRenderer from "../../vox/scene/IRenderer";
+import IRenderingEntitySet from "./IRenderingEntitySet";
 
 
 export default interface IRaySelector
 {
+    etset: IRenderingEntitySet;
     // 是不是使用GPU做拾取检测, 但是即使使用gpu也要注意有些逻辑的或者非多面体的是不能通过gpu来拾取的,所以要结合使用
     //setGPUTestEnabled(enabled:boolean):void;
     setRenderer(renderer:IRenderer):void;

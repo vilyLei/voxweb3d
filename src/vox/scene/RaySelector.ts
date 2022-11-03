@@ -16,6 +16,7 @@ import IRaySelector from '../../vox/scene/IRaySelector';
 import RaySelectedNode from '../../vox/scene/RaySelectedNode';
 import IRenderer from "../../vox/scene/IRenderer";
 import { AABBCalc } from "../geom/AABBCalc";
+import IRenderingEntitySet from "./IRenderingEntitySet";
 
 export default class RaySelector implements IRaySelector {
     private m_renderer: IRenderer = null;
@@ -37,7 +38,8 @@ export default class RaySelector implements IRaySelector {
     private m_outv: Vector3D = new Vector3D();
     private m_vecs: Vector3D[] = [null, null];
     private m_gpuTestEnabled: boolean = false;
-
+    
+    etset: IRenderingEntitySet = null;
     setRenderer(renderer: IRenderer): void {
         this.m_renderer = renderer;
     }

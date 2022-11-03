@@ -23,7 +23,17 @@ import Color4 from "../../vox/material/Color4";
 import PixelPickIndexMaterial from "../../vox/material/mcase/PixelPickIndexMaterial";
 import DebugFlag from "../debug/DebugFlag";
 import { AABBCalc } from "../geom/AABBCalc";
+import IRenderingEntitySet from "./IRenderingEntitySet";
 
+class QueryUnit {
+    ets: IRenderEntity[] = null;
+    total: number = 0;
+    constructor() { }
+    query(ets: IRenderEntity[], total: number): void {
+        this.ets = ets;
+        this.total = total;
+    }
+}
 export default class RayGpuSelector implements IRaySelector {
     private m_initColor: Color4 = new Color4();
     private m_indexMaterial: PixelPickIndexMaterial = new PixelPickIndexMaterial();
@@ -47,10 +57,7 @@ export default class RayGpuSelector implements IRaySelector {
     private m_vecs: Vector3D[] = [null, null];
     private m_gpuTestEnabled: boolean = true;
 
-    //  setGPUTestEnabled(enabled:boolean):void
-    //  {
-    //      this.m_gpuTestEnabled = enabled;
-    //  }
+    etset: IRenderingEntitySet = null;
 
     setRenderer(renderer: IRenderer): void {
         this.m_renderer = renderer;
@@ -115,6 +122,7 @@ export default class RayGpuSelector implements IRaySelector {
             this.snsort(pos + 1, high);
         }
     }
+    private m_qu = new QueryUnit();
     run(): void {
         let nextNode: Entity3DNode = this.m_headNode;
         //console.log("RaySelect run() nextNode != null: "+(nextNode != null));
@@ -143,13 +151,54 @@ export default class RayGpuSelector implements IRaySelector {
             else {
                 this.m_rlinvtv.z = MathConst.MATH_MAX_POSITIVE;
             }
-            if (this.m_rlinvtv.x < 0) this.m_rlsiv[0] = 1;
-            else this.m_rlsiv[0] = 0;
-            if (this.m_rlinvtv.y < 0) this.m_rlsiv[1] = 1;
-            else this.m_rlsiv[1] = 0;
-            if (this.m_rlinvtv.z < 0) this.m_rlsiv[2] = 1;
-            else this.m_rlsiv[2] = 0;
+            let rivs = this.m_rlsiv;
+            let rtvs = this.m_rlinvtv;
+            rivs[0] = rtvs.x < 0 ? 1 : 0;
+            rivs[1] = rtvs.y < 0 ? 1 : 0;
+            rivs[2] = rtvs.z < 0 ? 1 : 0;
 
+            // if (this.m_rlinvtv.x < 0) this.m_rlsiv[0] = 1;
+            // else this.m_rlsiv[0] = 0;
+            // if (this.m_rlinvtv.y < 0) this.m_rlsiv[1] = 1;
+            // else this.m_rlsiv[1] = 0;
+            // if (this.m_rlinvtv.z < 0) this.m_rlsiv[2] = 1;
+            // else this.m_rlsiv[2] = 0;
+
+            ///*
+            let qu = this.m_qu;
+            this.etset.query(qu);
+            let ets = qu.ets;
+            let tot = qu.total;
+            
+            let vecs = this.m_vecs;
+            for (let i = 0; i < tot; ++i) {
+                let et = ets[i];
+                if (et.mouseEnabled) {
+
+                    const bounds = et.getGlobalBounds();
+                    outv.subVecsTo(bounds.center, rpv);
+                    dis = outv.dot(rtv);
+                    outv.x -= dis * rtv.x;
+                    outv.y -= dis * rtv.y;
+                    outv.z -= dis * rtv.z;
+
+                    if (outv.getLengthSquared() <= bounds.radius2) {
+                        // 如果只是几何检测(例如球体包围体的检测)就不需要在进入后续的aabb检测
+                        vecs[0] = bounds.min;
+                        vecs[1] = bounds.max;
+                        if (AABBCalc.IntersectionRL3(vecs, rivs, rtvs, rtv, rpv, outv)) {
+                            node = this.m_rsnList[total];
+                            node.entity = et;
+                            node.dis = this.m_rlinvtv.w;
+                            node.wpv.copyFrom(outv);
+                            //  console.log("H Hit Dis: "+rtv.dot(outv));
+                            ++total;
+                        }
+                    }
+                }
+            }
+            //*/
+            /*
             while (nextNode != null) {
                 if (nextNode.drawEnabled && nextNode.entity.mouseEnabled) {
                     // outv.x = nextNode.bounds.center.x - rpv.x;
@@ -185,6 +234,7 @@ export default class RayGpuSelector implements IRaySelector {
                 }
                 nextNode = nextNode.next;
             }
+            //*/
             this.m_selectedNode = null;
             let i: number = 0;
             if (total > 0) {
