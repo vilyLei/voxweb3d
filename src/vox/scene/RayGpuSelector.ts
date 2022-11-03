@@ -124,32 +124,35 @@ export default class RayGpuSelector implements IRaySelector {
     }
     private m_qu = new QueryUnit();
     run(): void {
-        let nextNode: Entity3DNode = this.m_headNode;
+        // let nextNode: Entity3DNode = this.m_headNode;
         //console.log("RaySelect run() nextNode != null: "+(nextNode != null));
-        if (nextNode != null) {
+        // if (nextNode != null) {
+        if (this.etset.getTotal() > 0) {
             let dis: number = 0.0;
             let rtv: Vector3D = this.m_rltv;
             let rpv: Vector3D = this.m_rlpv;
             let outv: Vector3D = this.m_outv;
             let node: RaySelectedNode = null;
             let total: number = 0;
-            if (Math.abs(rtv.x) > MathConst.MATH_MIN_POSITIVE) {
+            let minv = MathConst.MATH_MIN_POSITIVE;
+            let maxv = MathConst.MATH_MAX_POSITIVE;
+            if (Math.abs(rtv.x) > minv) {
                 this.m_rlinvtv.x = 1.0 / rtv.x;
             }
             else {
-                this.m_rlinvtv.x = MathConst.MATH_MAX_POSITIVE;
+                this.m_rlinvtv.x = maxv;
             }
-            if (Math.abs(rtv.y) > MathConst.MATH_MIN_POSITIVE) {
+            if (Math.abs(rtv.y) > minv) {
                 this.m_rlinvtv.y = 1.0 / rtv.y;
             }
             else {
-                this.m_rlinvtv.y = MathConst.MATH_MAX_POSITIVE;
+                this.m_rlinvtv.y = maxv;
             }
-            if (Math.abs(rtv.z) > MathConst.MATH_MIN_POSITIVE) {
+            if (Math.abs(rtv.z) > minv) {
                 this.m_rlinvtv.z = 1.0 / rtv.z;
             }
             else {
-                this.m_rlinvtv.z = MathConst.MATH_MAX_POSITIVE;
+                this.m_rlinvtv.z = maxv;
             }
             let rivs = this.m_rlsiv;
             let rtvs = this.m_rlinvtv;
@@ -169,7 +172,7 @@ export default class RayGpuSelector implements IRaySelector {
             this.etset.query(qu);
             let ets = qu.ets;
             let tot = qu.total;
-            
+
             let vecs = this.m_vecs;
             for (let i = 0; i < tot; ++i) {
                 let et = ets[i];
