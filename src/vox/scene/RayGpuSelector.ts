@@ -382,7 +382,8 @@ export default class RayGpuSelector implements IRaySelector {
         RendererState.UnlockBlendMode();
         RendererState.UnlockDepthTestMode();
 
-        rcontext.setClearRGBAColor4f(this.m_initColor.r, this.m_initColor.g, this.m_initColor.b, this.m_initColor.a);
+        const c = this.m_initColor;
+        rcontext.setClearRGBAColor4f(c.r, c.g, c.b, c.a);
 
         rcontext.resetState();
     }
@@ -395,9 +396,5 @@ export default class RayGpuSelector implements IRaySelector {
         resultV.x = tv.x * cameraDistance + camPv.x;
         resultV.y = tv.y * cameraDistance + camPv.y;
         resultV.z = tv.z * cameraDistance + camPv.z;
-        //console.log("### cameraDistance: "+cameraDistance);
-        //  console.log("tv: "+tv.toString());
-        //  console.log("camPv: "+camPv.toString());
-        //  console.log("resultV: "+resultV.toString());
     }
 }
