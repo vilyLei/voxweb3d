@@ -47,8 +47,8 @@ export default class PureEntity implements IDisplayEntity {
     }
     private m_visible: boolean = true;
     private m_drawEnabled: boolean = true;
-    private m_rcolorMask: number = RendererState.COLOR_MASK_ALL_TRUE;
-    private m_renderState: number = RendererState.BACK_CULLFACE_NORMAL_STATE;
+    private m_rcolorMask: number = 0;
+    private m_renderState: number = 0;
     private m_display: RODisplay = null;
     protected m_mesh: IMeshBase = null;
     protected m_renderProxy: IRenderProxy = null;
@@ -453,6 +453,9 @@ export default class PureEntity implements IDisplayEntity {
                 this.m_display.__$$runit.setDrawFlag(this.m_renderState, this.m_rcolorMask);
             }
         }
+    }
+    getRenderState(): number {
+        return this.m_renderState;
     }
     protected createDisplay(): void {
         this.m_display = RODisplay.Create();

@@ -53,8 +53,8 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     }
     private m_visible: boolean = true;
     private m_drawEnabled: boolean = true;
-    private m_rcolorMask: number = RendererState.COLOR_MASK_ALL_TRUE;
-    private m_renderState: number = RendererState.BACK_CULLFACE_NORMAL_STATE;
+    private m_rcolorMask: number = 0;
+    private m_renderState: number = 0;
     private m_display: RODisplay = null;
     protected m_mesh: IMeshBase = null;
     // 如果一个entity如果包含了多个mesh,则这个bounds就是多个mesh aabb 合并的aabb
@@ -469,6 +469,9 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
                 this.m_display.__$$runit.setDrawFlag(this.m_renderState, this.m_rcolorMask);
             }
         }
+    }
+    getRenderState(): number {
+        return this.m_renderState;
     }
     setRenderStateByName(renderState_name: string): void {
         this.m_renderState = RendererState.GetRenderStateByName(renderState_name);

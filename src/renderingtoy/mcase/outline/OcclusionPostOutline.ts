@@ -236,6 +236,7 @@ export default class OcclusionPostOutline implements IOcclusionPostOutline {
 
                     for (let i = 0; i < this.m_targets.length; ++i) {
                         if (this.m_targets[i].isRenderEnabled()) {
+                            // console.log("this.m_targets[i]: ", this.m_targets[i].setRenderState());
                             colorFBO.drawEntity(this.m_targets[i], false, true);
                             bounds.union(this.m_targets[i].getGlobalBounds());
                         }

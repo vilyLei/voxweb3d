@@ -32,11 +32,12 @@ import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBl
 import IRendererScene from "../vox/scene/IRendererScene";
 import { IRendererSceneAccessor } from "../vox/scene/IRendererSceneAccessor";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import RendererState from "../vox/render/RendererState";
 
 class SceneAccessor implements IRendererSceneAccessor {
     constructor() { }
     renderBegin(rendererScene: IRendererScene): void {
-        let p = rendererScene.getRenderProxy();        
+        let p = rendererScene.getRenderProxy();
         p.clearDepth(1.0);
     }
     renderEnd(rendererScene: IRendererScene): void {
@@ -84,9 +85,9 @@ export class DemoOutline {
             this.m_editScene.setAccessor(new SceneAccessor());
             this.m_editScene.enableMouseEvent(true);
 
-            let axis0 = new Axis3DEntity();
-            axis0.initialize(500);
-            this.m_editScene.addEntity(axis0);
+            // let axis0 = new Axis3DEntity();
+            // axis0.initialize(500);
+            // this.m_editScene.addEntity(axis0);
 
             let rscene = this.m_rscene;
             let materialBlock = new RenderableMaterialBlock();
@@ -163,32 +164,32 @@ export class DemoOutline {
 
         console.log("dracoParseFinish, modules: ", modules);
 
-        let material: Default3DMaterial = new Default3DMaterial();
-        material.initializeByCodeBuf(true);
-        material.setTextureList([this.getImageTexByUrl("static/assets/wood_01.jpg")]);
-        let mesh: DracoMesh = new DracoMesh();
-        mesh.setBufSortFormat(material.getBufSortFormat());
-        mesh.initialize(modules);
-        let scale = this.m_scale;
-        let entity: DisplayEntity = new DisplayEntity();
-        entity.setMaterial(material);
-        entity.setMesh(mesh);
-        entity.setScaleXYZ(scale, scale, scale);
-        //entity.setRotationXYZ(0, 50, 0);
-        this.m_rscene.addEntity(entity, 1);
-        let pos: Vector3D = new Vector3D();
-        entity.getPosition(pos);
-        let pv: Vector3D = entity.getGlobalBounds().min;
-        pos.y += (0 - pv.y) + 70.0;
-        entity.setPosition(pos);
-        entity.update();
+        // let material: Default3DMaterial = new Default3DMaterial();
+        // material.initializeByCodeBuf(true);
+        // material.setTextureList([this.getImageTexByUrl("static/assets/wood_01.jpg")]);
+        // let mesh: DracoMesh = new DracoMesh();
+        // mesh.setBufSortFormat(material.getBufSortFormat());
+        // mesh.initialize(modules);
+        // let scale = this.m_scale;
+        // let entity: DisplayEntity = new DisplayEntity();
+        // entity.setMaterial(material);
+        // entity.setMesh(mesh);
+        // entity.setScaleXYZ(scale, scale, scale);
+        // //entity.setRotationXYZ(0, 50, 0);
+        // this.m_rscene.addEntity(entity, 1);
+        // let pos: Vector3D = new Vector3D();
+        // entity.getPosition(pos);
+        // let pv: Vector3D = entity.getGlobalBounds().min;
+        // pos.y += (0 - pv.y) + 70.0;
+        // entity.setPosition(pos);
+        // entity.update();
 
-        let box: Box3DEntity = new Box3DEntity();
-        box.initializeCube(100, [this.getImageTexByUrl("static/assets/default.jpg")]);
-        box.setXYZ(Math.random() * 1060 - 530, 100, Math.random() * 1060 - 530);
-        box.setRotationXYZ(Math.random() * 360, Math.random() * 360, Math.random() * 360);
-        box.setScaleXYZ(Math.random() + 0.5, Math.random() + 0.5, Math.random() + 0.5);
-        this.m_rscene.addEntity(box, 1);
+        // let box: Box3DEntity = new Box3DEntity();
+        // box.initializeCube(100, [this.getImageTexByUrl("static/assets/default.jpg")]);
+        // box.setXYZ(Math.random() * 1060 - 530, 100, Math.random() * 1060 - 530);
+        // box.setRotationXYZ(Math.random() * 360, Math.random() * 360, Math.random() * 360);
+        // box.setScaleXYZ(Math.random() + 0.5, Math.random() + 0.5, Math.random() + 0.5);
+        // this.m_rscene.addEntity(box, 1);
 
         // this.m_postOutline.setTargetList([entity, box]);
 
@@ -198,37 +199,45 @@ export class DemoOutline {
         //this.m_postOutline.setRGB3f(2.0,0.0,2.0);
         //this.m_postOutline.setPostRenderState(renderingState.BACK_ADD_BLENDSORT_STATE);
 
-        
-        let box0 = new Box3DEntity();
-        box0.initializeCube(80, [this.getImageTexByUrl("static/assets/default.jpg")]);
-        box0.setXYZ(200, 800, -100);
-        this.m_rscene.addEntity(box0);
-        let box1 = new Box3DEntity();
-        box1.initializeCube(80, [this.getImageTexByUrl("static/assets/default.jpg")]);
-        box1.setXYZ(320, 820, -120);
-        this.m_rscene.addEntity(box1);
 
-        
-        this.m_postOutline.setTargetList([box0, box1]);
+        // let box0 = new Box3DEntity();
+        // box0.initializeCube(80, [this.getImageTexByUrl("static/assets/default.jpg")]);
+        // box0.setXYZ(200, 800, -100);
+        // this.m_rscene.addEntity(box0);
+        // let box1 = new Box3DEntity();
+        // box1.initializeCube(80, [this.getImageTexByUrl("static/assets/default.jpg")]);
+        // box1.setXYZ(320, 820, -120);
+        // this.m_rscene.addEntity(box1);
+        // this.m_postOutline.setTargetList([box0, box1]);
+
+        let plane = new Plane3DEntity();
+        plane.initializeXOZSquare(80, [this.getImageTexByUrl("static/assets/default.jpg")]);
+        plane.setXYZ(100, 300, -100);
+        plane.setRotationXYZ(0, 30, -70);
+        this.m_rscene.addEntity(plane);
+        plane.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        this.m_postOutline.setTargetList([plane]);
+        console.log("RendererState.NONE_CULLFACE_NORMAL_STATE: ", RendererState.NONE_CULLFACE_NORMAL_STATE);
+
     }
     private initScene(): void {
 
         let scale: number = 2.5;
-        let box: Box3DEntity = new Box3DEntity();
-
-        box.uvPartsNumber = 6;
-        box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixparts.jpg")]);
-        box.setScaleXYZ(scale, scale, scale);
-        box.setRotationXYZ(Math.random() * 300.0, Math.random() * 300.0, Math.random() * 300.0);
-        box.setXYZ(0.0, 60.0, 0.0);
-        this.m_rscene.addEntity(box);
-        (box.getMaterial() as any).setRGB3f(0.9, 0.3, 0.2);
+        // let box: Box3DEntity = new Box3DEntity();
+        // box.uvPartsNumber = 6;
+        // box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixparts.jpg")]);
+        // box.setScaleXYZ(scale, scale, scale);
+        // box.setRotationXYZ(Math.random() * 300.0, Math.random() * 300.0, Math.random() * 300.0);
+        // box.setXYZ(0.0, 60.0, 0.0);
+        // this.m_rscene.addEntity(box);
+        // (box.getMaterial() as any).setRGB3f(0.9, 0.3, 0.2);
+        
         this.loadNext();
 
-        let plane: Plane3DEntity = new Plane3DEntity();
-        plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
-        plane.setXYZ(0, -170, 0);
-        this.m_rscene.addEntity(plane, 2);
+        // let plane: Plane3DEntity = new Plane3DEntity();
+        // plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
+        // plane.setXYZ(0, -170, 0);
+        // this.m_rscene.addEntity(plane, 2);
 
     }
     private m_flag: boolean = true;

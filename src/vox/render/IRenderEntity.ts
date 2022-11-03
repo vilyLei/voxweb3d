@@ -65,6 +65,7 @@ export default interface IRenderEntity {
   isDrawEnabled(): boolean;
   setVisible(boo: boolean): void;
   getVisible(): boolean;
+  getRenderState(): number;
   setRenderState(renderState: number): void;
 
   /**
