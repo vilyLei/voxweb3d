@@ -249,6 +249,7 @@ class RendererInstanceContext implements IRendererInstanceContext {
     setRenderToBackBuffer(): void {
         if (this.m_adapter != null) {
             this.m_adapter.setRenderToBackBuffer(FrameBufferType.FRAMEBUFFER);
+            this.m_renderProxy.rshader.resetRenderState();
             this.m_materialProxy.renderBegin();
         }
     }
