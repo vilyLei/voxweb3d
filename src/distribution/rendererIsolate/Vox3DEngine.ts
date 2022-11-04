@@ -48,7 +48,7 @@ import FrustrumFrame3DEntity from "../../vox/entity/FrustrumFrame3DEntity";
 
 import RendererParam from "../../vox/scene/RendererParam";
 import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
-import RendererInstance from "../../vox/scene/RendererInstance";
+import IRendererInstance from "../../vox/scene/IRendererInstance";
 import EngineBase from "../../vox/engine/EngineBase";
 
 
@@ -128,7 +128,7 @@ export class Vox3DEngine {
         }
     }
     
-    getRenderer(): RendererInstance {
+    getRenderer(): IRendererInstance {
         return this.m_engine.rscene.getRenderer();
     }
     getRendererContext(): IRendererInstanceContext {

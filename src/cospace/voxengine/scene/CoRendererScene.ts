@@ -38,8 +38,6 @@ import Entity3DNodeLinker from "../../../vox/scene/Entity3DNodeLinker";
 import IRunnableQueue from "../../../vox/base/IRunnableQueue";
 import RunnableQueue from "../../../vox/base/RunnableQueue";
 
-// import RendererInstance from "../../../vox/scene/RendererInstance";
-
 import { ITextureBlock } from "../../../vox/texture/ITextureBlock";
 import { TextureBlock } from "../../../vox/texture/TextureBlock";
 import IRenderer from "../../../vox/scene/IRenderer";

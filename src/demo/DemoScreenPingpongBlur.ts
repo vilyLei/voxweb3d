@@ -3,7 +3,7 @@ import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
-import RendererInstance from "../vox/scene/RendererInstance";
+import IRendererInstance from "../vox/scene/IRendererInstance";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import PingpongBlur from "../renderingtoy/mcase/PingpongBlur";
 
@@ -24,7 +24,7 @@ export namespace demo {
         }
         private m_rscene: RendererScene = null;
         private m_texBlock: TextureBlock;
-        private m_renderer: RendererInstance = null;
+        private m_renderer: IRendererInstance = null;
         private m_rcontext: RendererInstanceContext = null;
         private m_texLoader: ImageTextureLoader;
         private m_camTrack: CameraTrack = null;
@@ -43,10 +43,6 @@ export namespace demo {
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam, 3);
                 this.m_renderer = this.m_rscene.getRenderer();
-                // this.m_renderer = new RendererInstance();
-                // this.m_renderer.initialize(rparam, new CameraBase());
-                // this.m_renderer.appendProcess();
-                // this.m_renderer.appendProcess();
 
                 this.m_texBlock = new TextureBlock();
                 this.m_texBlock.setRenderer(this.m_renderer.getRenderProxy());
@@ -79,7 +75,7 @@ export namespace demo {
         }
         run(): void {
             let pcontext: RendererInstanceContext = this.m_rcontext;
-            let renderer: RendererInstance = this.m_renderer;
+            let renderer: IRendererInstance = this.m_renderer;
             this.m_statusDisp.update();
 
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);

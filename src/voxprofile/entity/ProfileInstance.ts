@@ -6,21 +6,17 @@
 /***************************************************************************/
 
 import IRenderProcess from "../../vox/render/IRenderProcess";
-import RendererInstance from "../../vox/scene/RendererInstance";
+import IRendererInstance from "../../vox/scene/IRendererInstance";
 import RendererStatus from "../../voxprofile/entity/RendererStatus";
-export default class ProfileInstance
-{
-    private m_rprocess:IRenderProcess = null;
-    private m_renderer:RendererInstance = null;
-    private m_status:RendererStatus = null;
-    
-    constructor()
-    {
+export default class ProfileInstance {
+    private m_rprocess: IRenderProcess = null;
+    private m_renderer: IRendererInstance = null;
+    private m_status: RendererStatus = null;
+
+    constructor() {
     }
-    initialize(renderer:RendererInstance):void
-    {
-        if(this.m_renderer == null)
-        {
+    initialize(renderer: IRendererInstance): void {
+        if (this.m_renderer == null) {
             this.m_renderer = renderer;
             this.m_rprocess = this.m_renderer.createSeparatedProcess();
             this.m_status = new RendererStatus();
@@ -30,16 +26,13 @@ export default class ProfileInstance
     getFPS(): number {
         return this.m_status.getFPS();
     }
-    run(syncStageSize: boolean = false):void
-    {
-        if(this.m_renderer != null)
-        {
+    run(syncStageSize: boolean = false): void {
+        if (this.m_renderer != null) {
             this.m_status.run(syncStageSize);
-            this.m_renderer.runProcess( this.m_rprocess );
+            this.m_renderer.runProcess(this.m_rprocess);
         }
     }
-    toString():string
-    {
+    toString(): string {
         return "[ProfileInstance]";
     }
 }

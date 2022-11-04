@@ -7,7 +7,7 @@ import RendererParam from "../vox/scene/RendererParam";
 import TextureProxy from "../vox/texture/TextureProxy";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
-import RendererInstance from "../vox/scene/RendererInstance";
+import IRendererInstance from "../vox/scene/IRendererInstance";
 import RendererScene from "../vox/scene/RendererScene";
 import MouseEvent from "../vox/event/MouseEvent";
 import Stage3D from "../vox/display/Stage3D";
@@ -250,7 +250,7 @@ class BillParticle {
     private static s_pars: BillParticle[] = [];
     private static s_sleepPars: BillParticle[] = [];
     static texs: TextureProxy[] = [];
-    static renderer: RendererInstance = null;
+    static renderer: IRendererInstance = null;
     static srcBillboard: Billboard3DEntity = null;
     private m_tar: Billboard3DEntity = null;
     private m_isAlive: boolean = true;

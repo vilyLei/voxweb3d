@@ -11,6 +11,7 @@ import IRenderProxy from "../../vox/render/IRenderProxy";
 
 import { IShaderProgramBuilder } from "../../vox/material/IShaderProgramBuilder";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
+import IRODataBuilder from "../../vox/render/IRODataBuilder";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRendererParam from "../../vox/scene/IRendererParam";
 import IRenderProcess from "../../vox/render/IRenderProcess";
@@ -22,6 +23,7 @@ import IRenderer from "../../vox/scene/IRenderer";
  */
 export interface IRendererInstance extends IRenderer {
 
+    __$setStage3D(stage3D: IRenderStage3D): void;
     getUid(): number;
     /**
      * @returns return renderer context unique id
@@ -133,6 +135,7 @@ export interface IRendererInstance extends IRenderer {
     run(): void;
     getRenderUnitsTotal(): number;
     renderflush(): void;
+    getDataBuilder(): IRODataBuilder;
 }
 
 export default IRendererInstance;

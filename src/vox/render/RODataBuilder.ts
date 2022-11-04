@@ -27,14 +27,13 @@ import { GpuVtxObject } from "../../vox/render/vtx/GpuVtxObject";
 import { ROVertexResource } from "../../vox/render/ROVertexResource";
 import ROTextureResource from "../../vox/render/ROTextureResource";
 import IRenderBuffer from "../../vox/render/IRenderBuffer";
-import IROMaterialUpdater from "../../vox/render/IROMaterialUpdater";
-import IROVertexBufUpdater from "../../vox/render/IROVertexBufUpdater";
 import { IShaderProgramBuilder } from "../../vox/material/IShaderProgramBuilder";
+import IRODataBuilder from "./IRODataBuilder";
 
 /**
  * 本类实现了将 系统内存数据 合成为 渲染运行时系统所需的数据资源(包括: 渲染运行时管理数据和显存数据)
  */
-export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUpdater {
+export default class RODataBuilder implements IRODataBuilder {
     private m_emptyTRO: EmptyTexRenderObj = null;
     private m_shader: RenderShader = null;
     private m_rpoUnitBuilder: RPOUnitBuilder = null;
@@ -354,7 +353,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
         }
         return false;
     }
-    update() {
+    update(): void {
         //this.updateDispToProcess();
         if (this.m_haveDeferredUpdate) {
             this.m_haveDeferredUpdate = false;

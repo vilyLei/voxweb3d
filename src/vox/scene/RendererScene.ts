@@ -30,6 +30,7 @@ import RunnableQueue from "../../vox/base/RunnableQueue";
 import IRPONodeBuilder from "../../vox/render/IRPONodeBuilder";
 import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
+import IRendererInstance from "../../vox/scene/IRendererInstance";
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import { TextureBlock } from "../../vox/texture/TextureBlock";
 import IRenderer from "../../vox/scene/IRenderer";
@@ -59,40 +60,40 @@ import Matrix4 from "../math/Matrix4";
 
 export default class RendererScene implements IRenderer, IRendererScene, IRenderNode {
 
-    private static s_uid: number = 0;
-    private m_uid: number = -1;
+    private static s_uid = 0;
+    private m_uid = -1;
     private m_adapter: IRenderAdapter = null;
     private m_renderProxy: IRenderProxy = null;
     private m_shader: IRenderShader = null;
     private m_rcontext: IRendererInstanceContext = null;
-    private m_renderer: RendererInstance = null;
-    private m_processids: Uint8Array = new Uint8Array(128);
-    private m_processidsLen: number = 0;
+    private m_renderer: IRendererInstance = null;
+    private m_processids = new Uint8Array(128);
+    private m_processidsLen = 0;
     private m_rspace: IRendererSpace = null;
-    private m_mouse_rltv: Vector3D = new Vector3D();
-    private m_mouse_rlpv: Vector3D = new Vector3D();
+    private m_mouse_rltv = new Vector3D();
+    private m_mouse_rlpv = new Vector3D();
     private m_accessor: IRendererSceneAccessor = null;
     // event flow control enable
-    private m_evtFlowEnabled: boolean = false;
+    private m_evtFlowEnabled = false;
     private m_evt3DCtr: IEvt3DController = null;
-    private m_mouseEvtEnabled: boolean = true;
-    private m_viewX: number = 0.0;
-    private m_viewY: number = 0.0;
-    private m_viewW: number = 800.0
-    private m_viewH: number = 800.0;
+    private m_mouseEvtEnabled = true;
+    private m_viewX = 0.0;
+    private m_viewY = 0.0;
+    private m_viewW = 800.0
+    private m_viewH = 800.0;
 
     private m_nodeWaitLinker: Entity3DNodeLinker = null;
     private m_nodeWaitQueue: EntityNodeQueue = null;
     private m_camDisSorter: CameraDsistanceSorter = null;
     // recorde renderer sub scenes
     private m_subscList: RendererSubScene[] = [];
-    private m_subscListLen: number = 0;
-    private m_runFlag: number = -1;
-    private m_autoRunning: boolean = true;
-    private m_processUpdate: boolean = false;
+    private m_subscListLen = 0;
+    private m_runFlag = -1;
+    private m_autoRunning = true;
+    private m_processUpdate = false;
     private m_tickId: any = -1;
     private m_rparam: RendererParam = null;
-    private m_enabled: boolean = true;
+    private m_enabled = true;
 
     readonly runnableQueue: IRunnableQueue = new RunnableQueue();
     readonly textureBlock: ITextureBlock = new TextureBlock();
@@ -148,7 +149,7 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
             this.m_renderProxy.setViewPort(px, py, pw, ph);
         }
     }
-    setViewPortFromCamera(camera: CameraBase): void {
+    setViewPortFromCamera(camera: IRenderCamera): void {
         if (this.m_renderProxy != null && camera != null) {
             this.m_viewX = camera.getViewX();
             this.m_viewY = camera.getViewY();
@@ -170,7 +171,7 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
     getRendererAdapter(): IRenderAdapter {
         return this.m_adapter;
     }
-    getRenderer(): RendererInstance {
+    getRenderer(): IRendererInstance {
         return this.m_renderer;
     }
     getRendererContext(): IRendererInstanceContext {
@@ -318,13 +319,15 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
                 renderProcessesTotal = 8;
             }
             this.m_evtFlowEnabled = rparam.evtFlowEnabled;
-            this.m_renderer = new RendererInstance();
+            let rins = new RendererInstance();
 
-            this.m_renderer.__$setStage3D(this.stage3D);
+            rins.__$setStage3D(this.stage3D);
             Matrix4Pool.Allocate(rparam.getMatrix4AllocateSize());
             let camera: CameraBase = new CameraBase();
 
-            this.m_renderer.initialize(rparam, camera, new ShaderProgramBuilder(this.m_renderer.getRCUid()));
+            rins.initialize(rparam, camera, new ShaderProgramBuilder(rins.getRCUid()));
+            this.m_renderer = rins;
+            
             this.m_processids[0] = 0;
             this.m_processidsLen++;
             let process: RenderProcess = null;

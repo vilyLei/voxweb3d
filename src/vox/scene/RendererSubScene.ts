@@ -29,6 +29,7 @@ import Entity3DNodeLinker from "../../vox/scene/Entity3DNodeLinker";
 import RPONodeBuilder from "../../vox/render/RPONodeBuilder";
 import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
+import IRendererInstance from "../../vox/scene/IRendererInstance";
 import IRenderer from "../../vox/scene/IRenderer";
 import IRenderProcess from "../../vox/render/IRenderProcess";
 import IRendererScene from "../../vox/scene/IRendererScene";
@@ -59,7 +60,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
     private m_adapter: IRenderAdapter = null;
     private m_renderProxy: IRenderProxy = null;
     private m_rcontext: IRendererInstanceContext = null;
-    private m_renderer: RendererInstance = null;
+    private m_renderer: IRendererInstance = null;
     private m_parent: IRenderer = null;
     private m_processids: Uint8Array = new Uint8Array(128);
     private m_processidsLen: number = 0;
@@ -93,7 +94,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
     materialBlock: IRenderableMaterialBlock = null;
     entityBlock: IRenderableEntityBlock = null;
 
-    constructor(parent: IRenderer, renderer: RendererInstance, evtFlowEnabled: boolean) {
+    constructor(parent: IRenderer, renderer: IRendererInstance, evtFlowEnabled: boolean) {
         this.m_evtFlowEnabled = evtFlowEnabled;
         this.m_parent = parent;
         this.m_renderer = renderer;
@@ -135,7 +136,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
     getRendererAdapter(): IRenderAdapter {
         return this.m_adapter;
     }
-    getRenderer(): RendererInstance {
+    getRenderer(): IRendererInstance {
         return this.m_renderer;
     }
     getRendererContext(): IRendererInstanceContext {

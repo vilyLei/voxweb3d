@@ -5,7 +5,7 @@ import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../../vox/render/R
 import RendererState from "../../vox/render/RendererState";
 import RendererParam from "../../vox/scene/RendererParam";
 import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
-import RendererInstance from "../../vox/scene/RendererInstance";
+import IRendererInstance from "../../vox/scene/IRendererInstance";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import MouseEvent from "../../vox/event/MouseEvent";
 import Stage3D from "../../vox/display/Stage3D";
@@ -28,13 +28,13 @@ class MotionScene {
     constructor() {
     }
 
-    private m_renderer: RendererInstance = null;
+    private m_renderer: IRendererInstance = null;
     private m_entitys: MotionEntityBase[] = [];
     private m_texLoader: ImageTextureLoader;
 
     private m_srcBox: Box3DEntity = new Box3DEntity();
     private m_srcShadow: Plane3DEntity = new Plane3DEntity();
-    initialize(renderer: RendererInstance, texLoader: ImageTextureLoader): void {
+    initialize(renderer: IRendererInstance, texLoader: ImageTextureLoader): void {
         this.m_renderer = renderer;
         this.m_texLoader = texLoader;
         this.m_srcBox.initialize(new Vector3D(-100.0, 0.0, -100.0), new Vector3D(100.0, 200.0, 100.0), [this.getTexAt(0)]);

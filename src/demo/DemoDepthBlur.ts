@@ -25,7 +25,7 @@ export class DemoDepthBlur {
             rparam.setCamPosition(1700, 1700, 1700);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
-            this.m_renderer = this.m_rscene.getRenderer();
+            this.m_renderer = this.m_rscene.getRenderer() as RendererInstance;
             // this.m_renderer.initialize(rparam, new CameraBase());
             this.m_scene.initialize(this.m_rscene);
             this.m_statusDisp.initialize();

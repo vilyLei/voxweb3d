@@ -7,7 +7,7 @@
 
 import RendererState from "../../vox/render/RendererState";
 import IRenderProcess from "../../vox/render/IRenderProcess";
-import RendererInstance from "../../vox/scene/RendererInstance";
+import IRendererInstance from "../../vox/scene/IRendererInstance";
 import H5FontSystem from "../../vox/text/H5FontSys";
 import Text2DEntity from "../../vox2d/text/Text2DEntity";
 import IRenderProxy from "../../vox/render/IRenderProxy";
@@ -47,7 +47,7 @@ class FPSInfo {
 }
 export default class RendererStatus {
     private m_rprocess: IRenderProcess;
-    private m_renderer: RendererInstance;
+    private m_renderer: IRendererInstance;
     private m_renderProxy: IRenderProxy;
     private m_fpsInfo: FPSInfo = new FPSInfo();
     private m_textFPSNS: Text2DEntity = null;
@@ -68,7 +68,7 @@ export default class RendererStatus {
     private m_povNumber: number = 0;
     constructor() {
     }
-    initialize(renderer: RendererInstance, rprocess: IRenderProcess): void {
+    initialize(renderer: IRendererInstance, rprocess: IRenderProcess): void {
         if (this.m_renderer == null) {
             let fontSize: number = 18;
             if (!H5FontSystem.GetInstance().isEnabled()) {

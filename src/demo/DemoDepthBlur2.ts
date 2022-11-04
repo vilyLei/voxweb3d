@@ -1,6 +1,6 @@
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
-import RendererInstance from "../vox/scene/RendererInstance";
+import IRendererInstance from "../vox/scene/IRendererInstance";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import { DispScene } from "./depthBlur/DispScene";
@@ -12,7 +12,7 @@ export class DemoDepthBlur2 {
     }
     
     private m_rscene: RendererScene = null;
-    private m_renderer: RendererInstance = null;
+    private m_renderer: IRendererInstance = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
     private m_scene: DepthBlurScene = new DepthBlurScene();
@@ -21,7 +21,7 @@ export class DemoDepthBlur2 {
         if (this.m_renderer == null) {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
-            // this.m_renderer = new RendererInstance();
+            // this.m_renderer = new IRendererInstance();
             // let rparam: RendererParam = new RendererParam();
             // rparam.setCamProject(60.0, 0.1, 5000.0);
             // rparam.setCamPosition(1700, 1700, 1700);
@@ -29,7 +29,7 @@ export class DemoDepthBlur2 {
             // this.m_scene.initialize(this.m_renderer);
             // this.m_statusDisp.initialize();
             
-            // this.m_renderer = new RendererInstance();
+            // this.m_renderer = new IRendererInstance();
             let rparam: RendererParam = new RendererParam();
             rparam.setCamProject(60.0, 0.1, 5000.0);
             rparam.setCamPosition(1700, 1700, 1700);
