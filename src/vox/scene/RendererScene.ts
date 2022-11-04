@@ -239,10 +239,9 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
         this.m_rcontext.setRenderToBackBuffer();
     }
 
-    drawBackBufferToCanvas(dstCanvas: HTMLCanvasElement): void {
+    drawBackBufferToCanvas(dstCanvasCtx: CanvasRenderingContext2D, px: number, py: number, width: number, height: number): void {
         let srcCanvas = this.getCanvas();
-        var ctx = dstCanvas.getContext("2d");
-        ctx.drawImage(srcCanvas, 0, 0, dstCanvas.width, dstCanvas.height);
+        dstCanvasCtx.drawImage(srcCanvas, px,py, width, height);
     }
     updateRenderBufferSize(): void {
         this.m_adapter.updateRenderBufferSize();

@@ -332,7 +332,6 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 				renderProcessesTotal = 8;
 			}
 			this.m_evtFlowEnabled = rparam.evtFlowEnabled;
-			// this.m_renderer = new RendererInstance();
 			this.m_renderer = CoRenderer.createRendererInstance();
 
 			(this.m_renderer as any).__$setStage3D(this.stage3D);
@@ -343,10 +342,6 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 
 			let srcSt: any = CoRenderer.RendererState;
 			srcSt.rstb.buildToRST(RendererState);
-			// let src: any = CoRenderer.RendererDevice;
-			// let dst: any = CoRScene.RendererDevice;
-			// dst.SHADERCODE_TRACE_ENABLED = src.SHADERCODE_TRACE_ENABLED;
-			// dst.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = src.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED;
 
 			this.m_processids[0] = 0;
 			this.m_processidsLen++;
