@@ -286,16 +286,20 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
      */
     createSubScene(): RendererSubScene {
         if (this.m_renderer != null) {
-            let subsc: RendererSubScene = new RendererSubScene(this, this.m_renderer, this.m_evtFlowEnabled);
-            this.m_subscList.push(subsc);
+            let subsc = new RendererSubScene(this, this.m_renderer, this.m_evtFlowEnabled);
+            // this.m_subscList.push(subsc);
             this.m_subscListLen++;
 
             let sc: any = subsc;
             sc.textureBlock = this.textureBlock;
+            sc.materialBlock = this.materialBlock;
+            sc.entityBlock = this.entityBlock;
             return subsc;
         }
         return null;
     }
+    // removeSubScene(subScene: RendererSubScene): void {
+    // }
     addEventListener(type: number, target: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
         this.stage3D.addEventListener(type, target, func, captureEnabled, bubbleEnabled);
     }
@@ -812,7 +816,7 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
             this.runnableQueue.run();
 			this.runRenderNodes(this.m_prependNodes);
             if (this.m_subscListLen > 0) {
-                for (let i: number = 0; i < this.m_processidsLen; ++i) {
+                for (let i = 0; i < this.m_processidsLen; ++i) {
                     this.m_renderer.runAt(this.m_processids[i]);
                 }
             }

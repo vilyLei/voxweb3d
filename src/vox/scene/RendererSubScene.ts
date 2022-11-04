@@ -473,7 +473,6 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
         }
         this.renderBegin(contextBeginEnabled);
         if (this.m_rspace != null) {
-            //this.m_rspace.setCamera(camFlag ? this.m_renderProxy.getCamera() : this.m_currCamera);
             this.m_rspace.setCamera(this.m_camera);
             this.m_rspace.runBegin();
         }
