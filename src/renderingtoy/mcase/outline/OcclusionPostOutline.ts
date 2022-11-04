@@ -243,15 +243,29 @@ export default class OcclusionPostOutline implements IOcclusionPostOutline {
                         }
                     }
                     bounds.expand(this.m_expandBias);
-                    // let v = bounds.min;
-                    // v.x -= 15.0;
-                    // v.y -= 15.0;
-                    // v.z -= 15.0;
-                    // v = bounds.max;
-                    // v.x += 15.0;
-                    // v.y += 15.0;
-                    // v.z += 15.0;
                     bounds.updateFast();
+                    let min = bounds.min;
+                    let max = bounds.min;
+                    let bf = false;
+                    if(bounds.getWidth() < 12) {
+                        min.x -= 6;
+                        max.x += 6;
+                        bf = true;
+                    }
+                    if(bounds.getHeight() < 12) {
+                        min.y -= 6;
+                        max.y += 6;
+                        bf = true;
+                    }
+                    if(bounds.getLong() < 12) {
+                        min.z -= 6;
+                        max.z += 6;
+                        bf = true;
+                    }
+                    if(bf) {
+                        bounds.updateFast();
+                    }
+                    
                     
 
                     this.m_boundsEntity.setScaleXYZ(bounds.getWidth(), bounds.getHeight(), bounds.getLong());
