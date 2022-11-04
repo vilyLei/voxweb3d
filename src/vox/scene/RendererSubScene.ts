@@ -91,8 +91,8 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
 
 	readonly runnableQueue: IRunnableQueue = new RunnableQueue();
     readonly textureBlock: ITextureBlock = null;
-    materialBlock: IRenderableMaterialBlock = null;
-    entityBlock: IRenderableEntityBlock = null;
+    readonly materialBlock: IRenderableMaterialBlock = null;
+    readonly entityBlock: IRenderableEntityBlock = null;
 
     constructor(parent: IRenderer, renderer: IRendererInstance, evtFlowEnabled: boolean) {
         this.m_evtFlowEnabled = evtFlowEnabled;

@@ -59,7 +59,7 @@ import IMatrix4 from "../math/IMatrix4";
 import Matrix4 from "../math/Matrix4";
 
 export default class RendererScene implements IRenderer, IRendererScene, IRenderNode {
-
+    private ___$$$$$$$Author:string = "VilyLei(vily313@126.com)";
     private static s_uid = 0;
     private m_uid = -1;
     private m_adapter: IRenderAdapter = null;
@@ -95,8 +95,8 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
     private m_rparam: RendererParam = null;
     private m_enabled = true;
 
-    readonly runnableQueue: IRunnableQueue = new RunnableQueue();
-    readonly textureBlock: ITextureBlock = new TextureBlock();
+    readonly runnableQueue: IRunnableQueue = null;
+    readonly textureBlock: ITextureBlock = null;
     readonly stage3D: Stage3D = null;
 
     materialBlock: IRenderableMaterialBlock = null;
@@ -310,13 +310,17 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
         if (this.m_renderer == null) {
             if (rparam == null) rparam = new RendererParam();
             this.m_rparam = rparam;
+
             let selfT: any = this;
             selfT.stage3D = new Stage3D(this.getUid(), document);
+            selfT.runnableQueue = new RunnableQueue();
+            selfT.textureBlock = new TextureBlock();
+
             if (renderProcessesTotal < 1) {
                 renderProcessesTotal = 1;
             }
-            if (renderProcessesTotal > 8) {
-                renderProcessesTotal = 8;
+            if (renderProcessesTotal > 128) {
+                renderProcessesTotal = 128;
             }
             this.m_evtFlowEnabled = rparam.evtFlowEnabled;
             let rins = new RendererInstance();
@@ -327,7 +331,7 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
 
             rins.initialize(rparam, camera, new ShaderProgramBuilder(rins.getRCUid()));
             this.m_renderer = rins;
-            
+
             this.m_processids[0] = 0;
             this.m_processidsLen++;
             let process: RenderProcess = null;
