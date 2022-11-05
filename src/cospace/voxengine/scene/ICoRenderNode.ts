@@ -4,7 +4,7 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-
-export default interface ICoRendererNode {
-	render(): void;
+import IRenderNode from "../../../vox/scene/IRenderNode";
+export default interface ICoRendererNode extends IRenderNode {
+	// render(): void;
 }

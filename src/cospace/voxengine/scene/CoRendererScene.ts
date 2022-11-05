@@ -189,9 +189,9 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 	getStage3D(): IRenderStage3D {
 		return this.m_renderProxy.getStage3D();
 	}
-	/**
-	 * 获取渲染器可渲染对象管理器状态(版本号)
-	 */
+	// /**
+	//  * 获取渲染器可渲染对象管理器状态(版本号)
+	
 	getRendererStatus(): number {
 		return this.m_renderer.getRendererStatus();
 	}
@@ -290,9 +290,9 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 	getDevicePixelRatio(): number {
 		return this.m_adapter.getDevicePixelRatio();
 	}
-	/**
-	 * very important renderer scene system function
-	 */
+	// /**
+	//  * very important renderer scene system function
+
 	createSubScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): CoRendererSubScene {
 		if (this.m_renderer != null) {
 			let subsc = new CoRendererSubScene(this, this.m_renderer, this.m_evtFlowEnabled);
@@ -377,10 +377,10 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 		this.m_processidsLen++;
 	}
 
-	/**
-	 * get the renderer process by process index
-	 * @param processIndex IRenderProcess instance index in renderer scene instance
-	 */
+	// /**
+	//  * get the renderer process by process index
+	//  * @param processIndex IRenderProcess instance index in renderer scene instance
+
 	getRenderProcessAt(processIndex: number): IRenderProcess {
 		return this.m_renderer.getProcessAt(this.m_processids[processIndex]);
 	}
@@ -444,28 +444,28 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 			process.setSorter(sorter);
 		}
 	}
-	/**
-	 * 将已经在渲染运行时中的entity移动到指定 process uid 的 render process 中去
-	 * move rendering runtime displayEntity to different renderer process
-	 */
+	// /**
+	//  * 将已经在渲染运行时中的entity移动到指定 process uid 的 render process 中去
+	//  * move rendering runtime displayEntity to different renderer process
+
 	moveEntityTo(entity: IRenderEntity, processindex: number): void {
 		this.m_renderer.moveEntityToProcessAt(entity, this.m_processids[processindex]);
 	}
-	/**
-	 * 单独绘制可渲染对象, 可能是使用了 global material也可能没有。这种方式比较耗性能,只能用在特殊的地方。
-	 * @param entity 需要指定绘制的 IRenderEntity 实例
-	 * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform, default value: false
-	 * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform, default value: true
-	 */
+	// /**
+	//  * 单独绘制可渲染对象, 可能是使用了 global material也可能没有。这种方式比较耗性能,只能用在特殊的地方。
+	//  * @param entity 需要指定绘制的 IRenderEntity 实例
+	//  * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform, default value: false
+	//  * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform, default value: true
+
 	drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
 		this.m_renderer.drawEntity(entity, useGlobalUniform, forceUpdateUniform);
 	}
-	/**
-	 * add an entity to the renderer process of the renderer instance
-	 * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
-	 * @param processid this destination renderer process id
-	 * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
-	 */
+	// /**
+	//  * add an entity to the renderer process of the renderer instance
+	//  * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
+	//  * @param processid this destination renderer process id
+	//  * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
+
 	addEntity(entity: IRenderEntity, processid: number = 0, deferred: boolean = true): void {
 		if (entity != null && entity.__$testSpaceEnabled()) {
 			if (entity.isPolyhedral()) {
@@ -493,10 +493,10 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 			}
 		}
 	}
-	/**
-	 * remove an entity from the rendererinstance
-	 * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
-	 */
+	// /**
+	//  * remove an entity from the rendererinstance
+	//  * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
+
 	removeEntity(entity: IRenderEntity): void {
 		if (entity != null) {
 			let node: Entity3DNode = null;
@@ -550,25 +550,25 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 	updateCameraDataFromCamera(camera: CameraBase): void {
 		this.m_renderProxy.updateCameraDataFromCamera(camera);
 	}
-	/**
-	 * reset renderer rendering state
-	 */
+	// /**
+	//  * reset renderer rendering state
+
 	resetState(): void {
 		this.m_rcontext.resetState();
 	}
-	/**
-	 * reset render shader uniform location
-	 */
+	// /**
+	//  * reset render shader uniform location
+
 	resetUniform(): void {
 		this.m_rcontext.resetUniform();
 	}
 	enableSynViewAndStage(): void {
 		this.m_renderProxy.enableSynViewAndStage();
 	}
-	/**
-	 * the function only resets the renderer instance rendering status.
-	 * you should use it before the run or runAt function is called.
-	 */
+	// /**
+	//  * the function only resets the renderer instance rendering status.
+	//  * you should use it before the run or runAt function is called.
+
 	renderBegin(contextBeginEnabled: boolean = true): void {
 		if (this.m_currCamera == null) {
 			this.m_adapter.unlockViewport();
@@ -597,10 +597,10 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 			this.m_accessor.renderBegin(this);
 		}
 	}
-	/**
-	 * the function resets the renderer scene status.
-	 * you should use it on the frame starting time.
-	 */
+	// /**
+	//  * the function resets the renderer scene status.
+	//  * you should use it on the frame starting time.
+
 	runBegin(autoCycle: boolean = true, contextBeginEnabled: boolean = true): void {
 		if (autoCycle && this.m_autoRunning) {
 			if (this.m_runFlag >= 0) this.runEnd();
@@ -662,10 +662,10 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 		return flag;
 	}
 
-	/**
-	 * update all data or status of the renderer runtime
-	 * should call this function per frame
-	 */
+	// /**
+	//  * update all data or status of the renderer runtime
+	//  * should call this function per frame
+
 	update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
 		this.stage3D.enterFrame();
 		if (autoCycle && this.m_autoRunning) {
@@ -798,10 +798,10 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 		}
 	}
 
-	/**
-	 * run all renderer processes in the renderer instance
-	 * @param autoCycle the default is true
-	 */
+	// /**
+	//  * run all renderer processes in the renderer instance
+	//  * @param autoCycle the default is true
+
 	run(autoCycle: boolean = true): void {
 		if (this.m_enabled) {
 			if (autoCycle && this.m_autoRunning) {
@@ -825,10 +825,10 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 		}
 	}
 
-	/**
-	 * run the specific renderer process by its index in the renderer instance
-	 * @param index the renderer process index in the renderer instance
-	 */
+	// /**
+	//  * run the specific renderer process by its index in the renderer instance
+	//  * @param index the renderer process index in the renderer instance
+
 	runAt(index: number): void {
 		if (this.m_enabled) {
 			this.m_renderer.runAt(this.m_processids[index]);

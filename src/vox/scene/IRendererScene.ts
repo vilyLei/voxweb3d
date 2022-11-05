@@ -72,6 +72,7 @@ interface IRendererScene {
      */
     runBegin(autoCycle?: boolean, contextBeginEnabled?: boolean): void;
     setRayTestEnabled(enabled: boolean): void;
+    render(): void;
     /**
      * @param autoCycle the default value is true
      * @param mouseEventEnabled the default value is true
