@@ -163,7 +163,7 @@
 
 //  import {DemoMixProgress as Demo} from "./demo/DemoMixProgress";
 
- import {DemoRenderSort as Demo} from "./demo/DemoRenderSort";
+//  import {DemoRenderSort as Demo} from "./demo/DemoRenderSort";
 
 //  import {DemoThread as Demo} from "./thread/example/DemoThread";
 
@@ -327,7 +327,7 @@
 //  The reflection in water
 //  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
-//  import {DemoOutline as Demo} from "./demo/DemoOutline";
+ import {DemoOutline as Demo} from "./demo/DemoOutline";
 
 //  import {DemoOutline2 as Demo} from "./demo/DemoOutline2";
 

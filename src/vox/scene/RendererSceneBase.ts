@@ -82,6 +82,7 @@ export default class RendererSceneBase {
     protected m_viewY = 0.0;
     protected m_viewW = 800.0
     protected m_viewH = 800.0;
+    protected m_camera: IRenderCamera = null;
     protected m_currCamera: IRenderCamera = null;
 
     private m_nodeWaitLinker: Entity3DNodeLinker = null;
@@ -211,7 +212,8 @@ export default class RendererSceneBase {
         this.m_renderProxy.cameraUnlock();
     }
     getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void {
-        this.m_renderProxy.getMouseXYWorldRay(rl_position, rl_tv);
+        // this.m_renderProxy.getMouseXYWorldRay(rl_position, rl_tv);
+        this.m_camera.getWorldPickingRayByScreenXY(this.m_stage3D.mouseX, this.m_stage3D.mouseY, rl_position, rl_tv);
     }
     createCamera(): IRenderCamera {
         return new CameraBase();
@@ -330,7 +332,6 @@ export default class RendererSceneBase {
             rins.initialize(rparam, camera, new ShaderProgramBuilder(rins.getRCUid()));
             this.m_renderer = rins;
 
-            this.rendererInsInited();
 
             this.m_processids[0] = 0;
             this.m_processidsLen++;
@@ -349,7 +350,9 @@ export default class RendererSceneBase {
             this.m_viewW = stage3D.stageWidth;
             this.m_viewH = stage3D.stageHeight;
             this.m_shader = this.m_renderer.getDataBuilder().getRenderShader();
-            this.textureBlock.setRenderer(this.m_renderProxy);
+            this.textureBlock.setRenderer(this.m_renderProxy);            
+            this.rendererInsInited();
+
             this.m_camDisSorter = new CameraDsistanceSorter(this.m_renderProxy);
             if (this.m_rspace == null) {
                 let space: RendererSpace = new RendererSpace();
@@ -753,7 +756,8 @@ export default class RendererSceneBase {
     // 鼠标位置的射线拾取测试
     mouseRayTest(): void {
         if (this.m_rspace != null) {
-            this.m_renderProxy.getMouseXYWorldRay(this.m_mouse_rlpv, this.m_mouse_rltv);
+            // this.m_renderProxy.getMouseXYWorldRay(this.m_mouse_rlpv, this.m_mouse_rltv);
+            this.getMouseXYWorldRay(this.m_mouse_rlpv, this.m_mouse_rltv);
             this.m_rspace.rayTest(this.m_mouse_rlpv, this.m_mouse_rltv);
         }
     }

@@ -56,7 +56,6 @@ import IMatrix4 from "../math/IMatrix4";
 import RendererSceneBase from "./RendererSceneBase";
 import IRendererParam from "./IRendererParam";
 export default class RendererSubScene extends RendererSceneBase implements IRenderer, IRendererScene, IRenderNode {
-    private m_camera: IRenderCamera = null;
     private m_perspectiveEnabled = true;
     private m_parent: IRendererScene = null;
     constructor(parent: IRendererScene, renderer: IRendererInstance, evtFlowEnabled: boolean) {
@@ -76,9 +75,9 @@ export default class RendererSubScene extends RendererSceneBase implements IRend
     getCamera(): CameraBase {
         return this.m_camera as CameraBase;
     }
-    getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void {
-        this.m_camera.getWorldPickingRayByScreenXY(this.m_stage3D.mouseX, this.m_stage3D.mouseY, rl_position, rl_tv);
-    }
+    // getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void {
+    //     this.m_camera.getWorldPickingRayByScreenXY(this.m_stage3D.mouseX, this.m_stage3D.mouseY, rl_position, rl_tv);
+    // }
     setEvt3DController(evt3DCtr: IEvt3DController): void {
         if (evt3DCtr != null) {
             if (this.m_currStage3D == null) {
@@ -192,12 +191,12 @@ export default class RendererSubScene extends RendererSceneBase implements IRend
             this.m_rspace.runBegin();
         }
     }
-    mouseRayTest(): void {
-        if (this.m_rspace != null) {
-            this.getMouseXYWorldRay(this.m_mouse_rlpv, this.m_mouse_rltv);
-            this.m_rspace.rayTest(this.m_mouse_rlpv, this.m_mouse_rltv);
-        }
-    }
+    // mouseRayTest(): void {
+    //     if (this.m_rspace != null) {
+    //         this.getMouseXYWorldRay(this.m_mouse_rlpv, this.m_mouse_rltv);
+    //         this.m_rspace.rayTest(this.m_mouse_rlpv, this.m_mouse_rltv);
+    //     }
+    // }
     render(): void {
         if (this.m_renderProxy != null) {
             this.run(true);

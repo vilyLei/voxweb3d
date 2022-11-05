@@ -72,6 +72,9 @@ export default class RendererScene extends RendererSceneBase implements IRendere
         this.m_stage3D = this.stage3D;
         return new RendererInstance();
     }
+    protected rendererInsInited(): void {
+        this.m_camera = this.m_renderProxy.getCamera();
+    }
     protected initThis(): void {
         let selfT: any = this;
         selfT.materialBlock = new RenderableMaterialBlock();

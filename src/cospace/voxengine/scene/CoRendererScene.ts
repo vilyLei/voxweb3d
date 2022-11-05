@@ -84,6 +84,7 @@ export default class CoRendererScene extends RendererSceneBase implements IRende
         return CoRenderer.createRendererInstance();
 	}
     protected rendererInsInited(): void {
+        this.m_camera = this.m_renderProxy.getCamera();
 		let srcSt: any = CoRenderer.RendererState;
 		srcSt.rstb.buildToRST(RendererState);
     }
