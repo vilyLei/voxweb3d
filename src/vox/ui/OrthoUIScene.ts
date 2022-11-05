@@ -273,5 +273,9 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
     createVector3(x: number = 0.0, y: number = 0.0, z: number = 0.0, w: number = 1.0): IVector3D {
         return this.m_rscene.createVector3(x, y, z, w);
     }
+    
+    destroy(): void {
+        
+    }
 }
 export { OrthoUIScene };

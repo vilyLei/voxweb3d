@@ -165,5 +165,6 @@ interface IRendererScene {
      * run all renderer processes in the renderer instance
      */
     run(autoCycle?: boolean): void;
+    destroy(): void;
 }
 export default IRendererScene;

@@ -732,4 +732,6 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 			this.m_renderProxy.updateCamera();
 		}
 	}
+	destroy(): void {
+	}
 }

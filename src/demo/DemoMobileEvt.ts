@@ -1,4 +1,3 @@
-
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
