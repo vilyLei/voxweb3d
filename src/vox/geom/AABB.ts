@@ -69,60 +69,74 @@ class AABB implements IAABB {
 		return this;
 	}
 	addPosition(pv: Vector3D): void {
-		if (this.min.x > pv.x) this.min.x = pv.x;
-		if (this.min.y > pv.y) this.min.y = pv.y;
-		if (this.min.z > pv.z) this.min.z = pv.z;
-		if (this.max.x < pv.x) this.max.x = pv.x;
-		if (this.max.y < pv.y) this.max.y = pv.y;
-		if (this.max.z < pv.z) this.max.z = pv.z;
+		// if (this.min.x > pv.x) this.min.x = pv.x;
+		// if (this.min.y > pv.y) this.min.y = pv.y;
+		// if (this.min.z > pv.z) this.min.z = pv.z;
+		// if (this.max.x < pv.x) this.max.x = pv.x;
+		// if (this.max.y < pv.y) this.max.y = pv.y;
+		// if (this.max.z < pv.z) this.max.z = pv.z;
+		this.addXYZ(pv.x, pv.y, pv.z);
 	}
 	addXYZ(pvx: number, pvy: number, pvz: number): void {
+		const min = this.min;
+		const max = this.max;
+		if (min.x > pvx) min.x = pvx;
+		else if (max.x < pvx) max.x = pvx;
 
-		if (this.min.x > pvx) this.min.x = pvx;
-		if (this.min.y > pvy) this.min.y = pvy;
-		if (this.min.z > pvz) this.min.z = pvz;
-		if (this.max.x < pvx) this.max.x = pvx;
-		if (this.max.y < pvy) this.max.y = pvy;
-		if (this.max.z < pvz) this.max.z = pvz;
+		if (min.y > pvy) min.y = pvy;
+		else if (max.y < pvy) max.y = pvy;
+
+		if (min.z > pvz) min.z = pvz;
+		else if (max.z < pvz) max.z = pvz;
+
+		// let v = this.min.x > pvx ? this.min : this.max;
+		// v.x = pvx;
+		// v = this.min.y > pvy ? this.min : this.max;
+		// v.y = pvy;
+		// v = this.min.z > pvz ? this.min : this.max;
+		// v.z = pvz;
 	}
 	addXYZFloat32Arr(vs: Float32Array, step: number = 3): void {
 
 		let len: number = vs.length;
-		let pvx: number = 0.0;
-		let pvy: number = 0.0;
-		let pvz: number = 0.0;
-		for (let i: number = 0; i < len;) {
-			pvx = vs[i];
-			pvy = vs[i + 1];
-			pvz = vs[i + 2];
+		// let pvx: number = 0.0;
+		// let pvy: number = 0.0;
+		// let pvz: number = 0.0;
+		for (let i = 0; i < len;) {
+			this.addXYZ(vs[i], vs[i + 1], vs[i + 2]);
+			// pvx = vs[i];
+			// pvy = vs[i + 1];
+			// pvz = vs[i + 2];
 			i += step;
-			if (this.min.x > pvx) this.min.x = pvx;
-			if (this.min.y > pvy) this.min.y = pvy;
-			if (this.min.z > pvz) this.min.z = pvz;
-			if (this.max.x < pvx) this.max.x = pvx;
-			if (this.max.y < pvy) this.max.y = pvy;
-			if (this.max.z < pvz) this.max.z = pvz;
+			// if (this.min.x > pvx) this.min.x = pvx;
+			// if (this.min.y > pvy) this.min.y = pvy;
+			// if (this.min.z > pvz) this.min.z = pvz;
+			// if (this.max.x < pvx) this.max.x = pvx;
+			// if (this.max.y < pvy) this.max.y = pvy;
+			// if (this.max.z < pvz) this.max.z = pvz;
 		}
 	}
 
 	addXYZFloat32AndIndicesArr(vs: Float32Array, indices: Uint16Array | Uint32Array): void {
 
 		let len: number = indices.length;
-		let pvx: number = 0.0;
-		let pvy: number = 0.0;
-		let pvz: number = 0.0;
+		// let pvx: number = 0.0;
+		// let pvy: number = 0.0;
+		// let pvz: number = 0.0;
 		let i: number;
-		for (let k: number = 0; k < len; k++) {
+		for (let k = 0; k < len; k++) {
 			i = k * 3;
-			pvx = vs[i++];
-			pvy = vs[i++];
-			pvz = vs[i];
-			if (this.min.x > pvx) this.min.x = pvx;
-			if (this.min.y > pvy) this.min.y = pvy;
-			if (this.min.z > pvz) this.min.z = pvz;
-			if (this.max.x < pvx) this.max.x = pvx;
-			if (this.max.y < pvy) this.max.y = pvy;
-			if (this.max.z < pvz) this.max.z = pvz;
+			this.addXYZ(vs[i++], vs[i++], vs[i]);
+
+			// pvx = vs[i++];
+			// pvy = vs[i++];
+			// pvz = vs[i];
+			// if (this.min.x > pvx) this.min.x = pvx;
+			// if (this.min.y > pvy) this.min.y = pvy;
+			// if (this.min.z > pvz) this.min.z = pvz;
+			// if (this.max.x < pvx) this.max.x = pvx;
+			// if (this.max.y < pvy) this.max.y = pvy;
+			// if (this.max.z < pvz) this.max.z = pvz;
 		}
 	}
 	getClosePosition(in_pos: Vector3D, out_pos: Vector3D, bias: number = 0.0): void {
