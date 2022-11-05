@@ -54,6 +54,7 @@ import { IRenderableEntityBlock } from "../scene/block/IRenderableEntityBlock";
 import Matrix4 from "../math/Matrix4";
 import IMatrix4 from "../math/IMatrix4";
 import RendererSceneBase from "./RendererSceneBase";
+import IRendererParam from "./IRendererParam";
 export default class RendererSubScene extends RendererSceneBase implements IRenderer, IRendererScene, IRenderNode {
     private m_camera: IRenderCamera = null;
     private m_perspectiveEnabled = true;
@@ -65,6 +66,9 @@ export default class RendererSubScene extends RendererSceneBase implements IRend
         this.m_renderer = renderer;
         this.m_shader = renderer.getDataBuilder().getRenderShader();
         this.m_localRunning = true;
+    }
+    createSubScene(rparam: IRendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene{
+        return this.m_parent.createSubScene(rparam, renderProcessesTotal, createNewCamera);
     }
     getCurrentStage3D(): IRenderStage3D {
         return this.m_currStage3D;

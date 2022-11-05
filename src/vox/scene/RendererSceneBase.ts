@@ -57,6 +57,7 @@ import { IRenderableMaterialBlock } from "./block/IRenderableMaterialBlock";
 import { IRenderableEntityBlock } from "./block/IRenderableEntityBlock";
 import IMatrix4 from "../math/IMatrix4";
 import Matrix4 from "../math/Matrix4";
+import IRendererParam from "./IRendererParam";
 
 export default class RendererSceneBase {
     private ___$$$$$$$Author: string = "VilyLei(vily313@126.com)";
@@ -109,6 +110,9 @@ export default class RendererSceneBase {
 
     constructor(uidBase: number = 0) {
         this.m_uid = uidBase + RendererSceneBase.s_uid++;
+    }
+    createSubScene(rparam: IRendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
+        return null;
     }
     enable(): void {
         this.m_enabled = true;

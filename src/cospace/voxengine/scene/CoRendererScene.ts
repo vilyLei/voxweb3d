@@ -293,7 +293,7 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 	/**
 	 * very important renderer scene system function
 	 */
-	createSubScene(rparam: RendererParam, renderProcessesTotal: number = 3, createNewCamera: boolean = true): CoRendererSubScene {
+	createSubScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): CoRendererSubScene {
 		if (this.m_renderer != null) {
 			let subsc = new CoRendererSubScene(this, this.m_renderer, this.m_evtFlowEnabled);
 			this.m_subscList.push(subsc);

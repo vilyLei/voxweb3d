@@ -54,6 +54,7 @@ import { IRenderableMaterialBlock } from "../../../vox/scene/block/IRenderableMa
 import { IRenderableEntityBlock } from "../../../vox/scene/block/IRenderableEntityBlock";
 
 import { ICoRenderer } from "../ICoRenderer";
+import IRendererScene from "../../../vox/scene/IRendererScene";
 
 declare var CoRenderer: ICoRenderer;
 
@@ -104,6 +105,7 @@ export default class CoSimpleRendererScene implements IRenderer, ICoRendererScen
 		this.m_tickId = setTimeout(this.tickUpdate.bind(this), this.m_rparam.getTickUpdateTime());
 		this.textureBlock.run();
 	}
+	
 	enable(): void {
 		this.m_enabled = true;
 	}
@@ -263,7 +265,7 @@ export default class CoSimpleRendererScene implements IRenderer, ICoRendererScen
 	/**
 	 * very important renderer scene system function
 	 */
-	createSubScene(rparam: RendererParam, renderProcessesTotal: number = 3, createNewCamera: boolean = true): ICoRendererScene {
+	createSubScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): ICoRendererScene {
 		throw Error("illegal operations !!!");
 		return null;
 	}
