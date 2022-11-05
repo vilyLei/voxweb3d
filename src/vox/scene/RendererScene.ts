@@ -221,7 +221,7 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
     createMatrix4(): IMatrix4 {
         return new Matrix4();
     }
-    createVector3D(x: number = 0.0, y: number = 0.0, z: number = 0.0, w: number = 1.0): IVector3D {
+    createVector3(x: number = 0.0, y: number = 0.0, z: number = 0.0, w: number = 1.0): IVector3D {
         return new Vector3D(x, y, z, w);
     }
     setClearUint24Color(colorUint24: number, alpha: number = 1.0): void {

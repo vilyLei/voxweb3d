@@ -50,7 +50,7 @@ interface IRenderableEntityBlock {
 
     initialize(): void;
 
-    createVector3D(x?: number, y?: number, z?: number, w?: number): IVector3D;
+    createVector3(x?: number, y?: number, z?: number, w?: number): IVector3D;
     createMatrix4(): IMatrix4;
     createAABB(): IAABB;
 

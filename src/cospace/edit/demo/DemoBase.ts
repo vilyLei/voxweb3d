@@ -28,7 +28,6 @@ import RadialLine from "../../../vox/geom/RadialLine";
 import Plane from "../../../vox/geom/Plane";
 import BoundsEntity from "../../../vox/entity/BoundsEntity";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
-import { Box3DEntity } from "../../voxengine/CoRendererBase";
 import { QuadBrokenLine3DEntity } from "../../../vox/entity/QuadLine3DEntity";
 
 //import { DragMoveController } from "../../../../voxeditor/entity/DragMoveController";

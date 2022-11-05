@@ -95,9 +95,9 @@ export default class OcclusionPostOutline implements IOcclusionPostOutline {
             this.m_rscene = rscene;
             let eb = this.m_rscene.entityBlock;
             this.m_bounds = eb.createAABB();
-            this.m_expandBias = eb.createVector3D(10.0, 10.0, 10.0);
-            this.m_testPlane.__tV0 = eb.createVector3D();
-            this.m_testPlane.nv = eb.createVector3D(0.0, 1.0, 0.0);
+            this.m_expandBias = eb.createVector3(10.0, 10.0, 10.0);
+            this.m_testPlane.__tV0 = eb.createVector3();
+            this.m_testPlane.nv = eb.createVector3(0.0, 1.0, 0.0);
 
             let mb = this.m_rscene.materialBlock;
 

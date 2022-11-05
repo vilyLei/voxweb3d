@@ -47,14 +47,17 @@ function createColor4(pr: number = 1.0, pg: number = 1.0, pb: number = 1.0, pa: 
 }
 
 function applySceneBlock(rsecne: ICoRendererScene): void {
-
 	let rscene = rsecne;
-	let materialBlock = new RenderableMaterialBlock();
-	materialBlock.initialize();
-	rscene.materialBlock = materialBlock;
-	let entityBlock = new RenderableEntityBlock();
-	entityBlock.initialize();
-	rscene.entityBlock = entityBlock;
+	if (rscene.materialBlock == null) {
+		let materialBlock = new RenderableMaterialBlock();
+		materialBlock.initialize();
+		(rscene as any).materialBlock = materialBlock;
+	}
+	if (rscene.entityBlock == null) {
+		let entityBlock = new RenderableEntityBlock();
+		entityBlock.initialize();
+		(rscene as any).entityBlock = entityBlock;
+	}
 }
 function createRendererSceneParam(div: HTMLDivElement = null): RendererParam {
 	return new RendererParam(div);

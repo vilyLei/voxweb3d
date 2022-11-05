@@ -88,12 +88,16 @@ function createAABB(): IAABB {
 
 function applySceneBlock(rsecne: ICoRendererScene): void {
 	let rscene = rsecne;
-	let materialBlock = new RenderableMaterialBlock();
-	materialBlock.initialize();
-	rscene.materialBlock = materialBlock;
-	let entityBlock = new RenderableEntityBlock();
-	entityBlock.initialize();
-	rscene.entityBlock = entityBlock;
+	if (rscene.materialBlock == null) {
+		let materialBlock = new RenderableMaterialBlock();
+		materialBlock.initialize();
+		(rscene as any).materialBlock = materialBlock;
+	}
+	if (rscene.entityBlock == null) {
+		let entityBlock = new RenderableEntityBlock();
+		entityBlock.initialize();
+		(rscene as any).entityBlock = entityBlock;
+	}
 }
 function createRendererSceneParam(div: HTMLDivElement = null): RendererParam {
 	return new RendererParam(div);
@@ -161,7 +165,7 @@ function createLineMaterial(dynColorEnabled: boolean = false): IColorMaterial {
  * build 3d quad line entity rendering material
  * @param dynColorEnabled the default value is false
  */
-function createQuadLineMaterial(dynColorEnabled ?: boolean): IColorMaterial {
+function createQuadLineMaterial(dynColorEnabled?: boolean): IColorMaterial {
 	return new BrokenQuadLine3DMaterial(dynColorEnabled);
 }
 function createShaderMaterial(shd_uniqueName: string): IShaderMaterial {
@@ -289,7 +293,7 @@ export {
 
 	RenderDrawMode,
 	VtxBufConst,
-	
+
 	TextureConst,
 
 	Vector3D,

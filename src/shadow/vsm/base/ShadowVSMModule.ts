@@ -79,10 +79,10 @@ export class ShadowVSMModule implements IMaterialPipe, IShadowVSMModule {
     initialize(rscene: IRendererScene, processIDList: number[], buildShadowDelay: number = 120, blurEnabled: boolean = false): void {
         if (this.m_rscene == null) {
             this.m_rscene = rscene;
-            this.m_camPos = rscene.createVector3D();
+            this.m_camPos = rscene.createVector3();
             this.m_camPos.fromArray( this.m_camPosArr );
-            this.m_zero = rscene.createVector3D();
-            this.m_axisZ = rscene.createVector3D(0.0, 0.0, 1.0);
+            this.m_zero = rscene.createVector3();
+            this.m_axisZ = rscene.createVector3(0.0, 0.0, 1.0);
             this.m_buildShadowDelay = buildShadowDelay;
             this.m_processIDList = processIDList.slice(0);
             this.initConfig(processIDList, false);
