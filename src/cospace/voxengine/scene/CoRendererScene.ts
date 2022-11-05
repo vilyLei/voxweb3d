@@ -52,7 +52,7 @@ import MouseEvt3DController from "../../../vox/scene/MouseEvt3DController";
 import IEvt3DController from "../../../vox/scene/IEvt3DController";
 import FBOInstance from "../../../vox/scene/FBOInstance";
 import CameraDsistanceSorter from "../../../vox/scene/CameraDsistanceSorter";
-import ICoRenderNode from "./ICoRenderNode";
+// import IRenderNode from "../../../vox/scene/IRenderNode";
 
 import { IRendererSceneAccessor } from "../../../vox/scene/IRendererSceneAccessor";
 import { ShaderProgramBuilder } from "../../../vox/material/ShaderProgramBuilder";
@@ -72,7 +72,7 @@ import { RenderableEntityBlock } from "../../../vox/scene/block/RenderableEntity
 declare var CoRenderer: ICoRenderer;
 // declare var CoRScene: ICoRScene;
 
-export default class CoRendererScene extends RendererSceneBase implements IRenderer, ICoRendererScene, ICoRenderNode {
+export default class CoRendererScene extends RendererSceneBase implements IRenderer, ICoRendererScene, IRenderNode {
 
     private m_tickId: any = -1;
     constructor() { super(); }
@@ -128,7 +128,7 @@ export default class CoRendererScene extends RendererSceneBase implements IRende
     }
 }
 /*
-export default class CoRendererScene implements IRenderer, ICoRendererScene, ICoRenderNode {
+export default class CoRendererScene implements IRenderer, ICoRendererScene, IRenderNode {
 	private static s_uid: number = 0;
 	private m_uid: number = -1;
 	private m_adapter: IRenderAdapter = null;
@@ -803,10 +803,10 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 		}
 	}
 
-	private m_prependNodes: ICoRenderNode[] = null;
-	private m_appendNodes: ICoRenderNode[] = null;
+	private m_prependNodes: IRenderNode[] = null;
+	private m_appendNodes: IRenderNode[] = null;
 
-	private runRenderNodes(nodes: ICoRenderNode[]): void {
+	private runRenderNodes(nodes: IRenderNode[]): void {
 		if (nodes != null) {
 
 			// console.log("CoSC runRenderNodes(), nodes.length: ", nodes.length);
@@ -816,7 +816,7 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 		}
 	}
 
-	private addRenderNodes(node: ICoRenderNode, nodes: ICoRenderNode[]): void {
+	private addRenderNodes(node: IRenderNode, nodes: IRenderNode[]): void {
 		for (let i = 0; i < nodes.length; ++i) {
 			if (node == nodes[i]) {
 				return;
@@ -824,13 +824,13 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 		}
 		nodes.push(node);
 	}
-	prependRenderNode(node: ICoRenderNode): void {
+	prependRenderNode(node: IRenderNode): void {
 		if (node != null && node != this) {
 			if (this.m_prependNodes == null) this.m_prependNodes = [];
 			this.addRenderNodes(node, this.m_prependNodes);
 		}
 	}
-	appendRenderNode(node: ICoRenderNode): void {
+	appendRenderNode(node: IRenderNode): void {
 		if (node != null && node != this) {
 			// console.log("CoSC appendRenderNode(), node: ", node);
 			if (this.m_appendNodes == null) this.m_appendNodes = [];
@@ -844,7 +844,7 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 		}
 	}
 
-	removeRenderNode(node: ICoRenderNode): void {
+	removeRenderNode(node: IRenderNode): void {
 		if (node != null) {
 			let ls = this.m_prependNodes;
 			if (ls != null) {

@@ -6,9 +6,6 @@
 /***************************************************************************/
 
 import IRendererScene from "../../../vox/scene/IRendererScene";
-import IRendererParam from "../../../vox/scene/IRendererParam";
-import ICoRenderNode from "./ICoRenderNode";
-
 
 interface ICoRendererScene extends IRendererScene {
 	// /**
@@ -17,9 +14,9 @@ interface ICoRendererScene extends IRendererScene {
 	//  * @param createNewCamera the default is true
 	//  */
 	// initialize(rparam?: IRendererParam, renderProcessesTotal?: number, createNewCamera?: boolean): void;
-	// prependRenderNode(node: ICoRenderNode): void;
-	// appendRenderNode(node: ICoRenderNode): void;
-	// removeRenderNode(node: ICoRenderNode): void;
+	// prependRenderNode(node: IRenderNode): void;
+	// appendRenderNode(node: IRenderNode): void;
+	// removeRenderNode(node: IRenderNode): void;
 	// /**
 	//  * @param rparam IRendererParam instance
 	//  * @param renderProcessesTotal the default is 3

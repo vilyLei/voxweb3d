@@ -45,7 +45,7 @@ import RayGpuSelector from "../../../vox/scene/RayGpuSelector";
 import MouseEvt3DController from "../../../vox/scene/MouseEvt3DController";
 import IEvt3DController from "../../../vox/scene/IEvt3DController";
 import FBOInstance from "../../../vox/scene/FBOInstance";
-import ICoRenderNode from "./ICoRenderNode";
+import IRenderNode from "../../../vox/scene/IRenderNode";
 import IRunnableQueue from "../../../vox/base/IRunnableQueue";
 import RunnableQueue from "../../../vox/base/RunnableQueue";
 
@@ -59,7 +59,7 @@ import RendererSceneBase from "../../../vox/scene/RendererSceneBase";
 import IRendererParam from "../../../vox/scene/IRendererParam";
 
 
-export default class CoRendererSubScene extends RendererSceneBase implements IRenderer, ICoRendererScene, ICoRenderNode {
+export default class CoRendererSubScene extends RendererSceneBase implements IRenderer, ICoRendererScene, IRenderNode {
     private m_camera: IRenderCamera = null;
     private m_perspectiveEnabled = true;
     private m_parent: ICoRendererScene = null;
@@ -220,7 +220,7 @@ export default class CoRendererSubScene extends RendererSceneBase implements IRe
     }
 }
 /*
-export default class CoRendererSubScene implements IRenderer, ICoRendererScene, ICoRenderNode {
+export default class CoRendererSubScene implements IRenderer, ICoRendererScene, IRenderNode {
 	private static s_uid: number = 0;
 	private m_uid: number = -1;
 	private m_adapter: IRenderAdapter = null;
@@ -766,10 +766,10 @@ export default class CoRendererSubScene implements IRenderer, ICoRendererScene, 
 		}
 	}
 
-	private m_prependNodes: ICoRenderNode[] = null;
-	private m_appendNodes: ICoRenderNode[] = null;
+	private m_prependNodes: IRenderNode[] = null;
+	private m_appendNodes: IRenderNode[] = null;
 
-	private runRenderNodes(nodes: ICoRenderNode[]): void {
+	private runRenderNodes(nodes: IRenderNode[]): void {
 		if (nodes != null) {
 			for (let i = 0; i < nodes.length; ++i) {
 				nodes[i].render();
@@ -777,7 +777,7 @@ export default class CoRendererSubScene implements IRenderer, ICoRendererScene, 
 		}
 	}
 
-	private addRenderNodes(node: ICoRenderNode, nodes: ICoRenderNode[]): void {
+	private addRenderNodes(node: IRenderNode, nodes: IRenderNode[]): void {
 		for (let i = 0; i < nodes.length; ++i) {
 			if (node == nodes[i]) {
 				return;
@@ -785,13 +785,13 @@ export default class CoRendererSubScene implements IRenderer, ICoRendererScene, 
 		}
 		nodes.push(node);
 	}
-	prependRenderNode(node: ICoRenderNode): void {
+	prependRenderNode(node: IRenderNode): void {
 		if (node != null && node != this) {
 			if (this.m_prependNodes == null) this.m_prependNodes = [];
 			this.addRenderNodes(node, this.m_prependNodes);
 		}
 	}
-	appendRenderNode(node: ICoRenderNode): void {
+	appendRenderNode(node: IRenderNode): void {
 		if (node != null && node != this) {
 			if (this.m_appendNodes == null) this.m_appendNodes = [];
 			let ls = this.m_appendNodes;
@@ -804,7 +804,7 @@ export default class CoRendererSubScene implements IRenderer, ICoRendererScene, 
 		}
 	}
 
-	removeRenderNode(node: ICoRenderNode): void {
+	removeRenderNode(node: IRenderNode): void {
 		if (node != null) {
 			let ls = this.m_prependNodes;
 			if (ls != null) {

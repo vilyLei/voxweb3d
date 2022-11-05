@@ -2,7 +2,6 @@ import { ICoRendererScene } from "../voxengine/scene/ICoRendererScene";
 import { IMouseInteraction } from "../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { ICoRScene } from "../voxengine/ICoRScene";
-import ICoRenderNode from "../voxengine/scene/ICoRenderNode";
 import { ICoUIInteraction } from "../voxengine/ui/ICoUIInteraction";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 
@@ -94,7 +93,7 @@ export class DemoCoRendererSubScene {
 			this.m_rsubscene = this.m_rscene.createSubScene(rparam, 3, false);
 			this.m_rsubscene.setAccessor(new SceneAccessor());
 
-			let rnode = this.m_rsubscene as ICoRenderNode;
+			let rnode = this.m_rsubscene;
 			this.m_rscene.appendRenderNode(rnode);
 
 			let scale = 190.0;
