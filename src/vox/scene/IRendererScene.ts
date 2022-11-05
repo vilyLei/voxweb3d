@@ -35,8 +35,8 @@ interface IRendererScene {
 
     setAccessor(accessor: IRendererSceneAccessor): void;
     prependRenderNode(node: IRenderNode): void;
-	appendRenderNode(node: IRenderNode): void;
-	removeRenderNode(node: IRenderNode): void;
+    appendRenderNode(node: IRenderNode): void;
+    removeRenderNode(node: IRenderNode): void;
 
     enable(): void;
     disable(): void;
@@ -61,7 +61,7 @@ interface IRendererScene {
      * @param contextBeginEnabled the default value is true
      */
     runBegin(autoCycle?: boolean, contextBeginEnabled?: boolean): void;
-    setRayTestEanbled(enabled: boolean): void;
+    setRayTestEnabled(enabled: boolean): void;
     /**
      * @param autoCycle the default value is true
      * @param mouseEventEnabled the default value is true
@@ -71,7 +71,7 @@ interface IRendererScene {
     runEnd(): void;
     runAt(index: number): void;
     isRayPickSelected(): boolean;
-    
+
     getSpace(): IRendererSpace;
     /**
      * get the renderer process by process index
@@ -144,9 +144,9 @@ interface IRendererScene {
      * 获取渲染器可渲染对象管理器状态(版本号)
      */
     getRendererStatus(): number;
-	/**
+    /**
      * run all renderer processes in the renderer instance
      */
-	 run(autoCycle?: boolean): void;
+    run(autoCycle?: boolean): void;
 }
 export default IRendererScene;

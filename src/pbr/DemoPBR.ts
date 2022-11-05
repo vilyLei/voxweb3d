@@ -227,7 +227,7 @@ export class DemoPBR implements IShaderLibListener {
         let uiFlag: boolean = this.m_uiModule.isOpen();
         this.m_rscene.runBegin(false);
         // 如果ui panel 打开, 才会允许 this.m_rscene 鼠标事件检测到3d物体
-        this.m_rscene.setRayTestEanbled(uiFlag);
+        this.m_rscene.setRayTestEnabled(uiFlag);
         this.m_rscene.update(false, !pickFlag);
     }
     private render(): void {

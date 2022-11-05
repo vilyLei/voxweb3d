@@ -571,7 +571,7 @@ export default class CoSimpleRendererScene implements IRenderer, ICoRendererScen
 		this.m_rcontext.renderBegin();
 	}
 
-	setRayTestEanbled(enabled: boolean): void {
+	setRayTestEnabled(enabled: boolean): void {
 	}
 	// @param       evtFlowPhase: 0(none phase),1(capture phase),2(bubble phase)
 	// @param       status: 1(default process),1(deselect ray pick target)

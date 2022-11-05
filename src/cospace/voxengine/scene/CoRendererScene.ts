@@ -622,7 +622,7 @@ export default class CoRendererScene implements IRenderer, ICoRendererScene, ICo
 	private m_rayTestFlag: boolean = true;
 	private m_rayTestEnabled: boolean = true;
 
-	setRayTestEanbled(enabled: boolean): void {
+	setRayTestEnabled(enabled: boolean): void {
 		this.m_rayTestEnabled = enabled;
 	}
 	// @param       evtFlowPhase: 0(none phase),1(capture phase),2(bubble phase)

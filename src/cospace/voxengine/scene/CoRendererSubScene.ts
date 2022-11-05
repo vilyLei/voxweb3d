@@ -489,7 +489,7 @@ export default class CoRendererSubScene implements IRenderer, ICoRendererScene, 
 	private m_rayTestFlag: boolean = true;
 	private m_rayTestEnabled: boolean = true;
 
-	setRayTestEanbled(enabled: boolean): void {
+	setRayTestEnabled(enabled: boolean): void {
 		this.m_rayTestEnabled = enabled;
 	}
 	/**

@@ -118,8 +118,8 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
     runBegin(autoCycle: boolean = true, contextBeginEnabled: boolean = false): void {
         this.m_ruisc.runBegin(autoCycle, contextBeginEnabled);
     }
-    setRayTestEanbled(enabled: boolean): void {
-        this.m_ruisc.setRayTestEanbled(enabled);
+    setRayTestEnabled(enabled: boolean): void {
+        this.m_ruisc.setRayTestEnabled(enabled);
     }
     update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
         this.m_ruisc.update(autoCycle, mouseEventEnabled);
