@@ -88,6 +88,7 @@ export default class RendererSceneBase {
     private m_camDisSorter: CameraDsistanceSorter = null;
     // private m_subscList: RendererSubScene[] = [];
     protected m_subscListLen = 0;
+    protected m_localRunning = false;
     private m_containers: IRenderEntityContainer[] = [];
     private m_containersTotal: number = 0;
 
@@ -711,7 +712,7 @@ export default class RendererSceneBase {
         }
         if (this.m_processUpdate) {
             // this.m_renderer.updateAllProcess();
-            if (this.m_subscListLen > 0) {
+            if (this.m_localRunning) {
                 for (let i = 0; i < this.m_processidsLen; ++i) {
                     this.m_renderer.updateProcessAt(this.m_processids[i]);
                 }

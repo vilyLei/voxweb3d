@@ -80,6 +80,7 @@ export default class RendererScene extends RendererSceneBase implements IRendere
     }
     createSubScene(): RendererSubScene {
         if (this.m_renderer != null) {
+            this.m_localRunning = true;
             let subsc = new RendererSubScene(this, this.m_renderer, this.m_evtFlowEnabled);
             // this.m_subscList.push(subsc);
             this.m_subscListLen++;
