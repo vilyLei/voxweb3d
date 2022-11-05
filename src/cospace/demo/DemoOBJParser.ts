@@ -90,10 +90,10 @@ export class DemoOBJParser {
 		let rscene = rsecne;
 		let materialBlock = new RenderableMaterialBlock();
 		materialBlock.initialize();
-		rscene.materialBlock = materialBlock;
+		//rscene.materialBlock = materialBlock;
 		let entityBlock = new RenderableEntityBlock();
 		entityBlock.initialize();
-		rscene.entityBlock = entityBlock;
+		//rscene.entityBlock = entityBlock;
 	}
 	private initRenderer(): void {
 		RendererDevice.SHADERCODE_TRACE_ENABLED = false;

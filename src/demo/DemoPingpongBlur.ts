@@ -31,10 +31,10 @@ export class DemoPingpongBlur {
         let rscene = this.m_rscene;
         let materialBlock = new RenderableMaterialBlock();
         materialBlock.initialize();
-        rscene.materialBlock = materialBlock;
+        //rscene.materialBlock = materialBlock;
         let entityBlock = new RenderableEntityBlock();
         entityBlock.initialize();
-        rscene.entityBlock = entityBlock;
+        //rscene.entityBlock = entityBlock;
 
         this.m_textureLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
         this.m_cameraTrack = new CameraTrack();

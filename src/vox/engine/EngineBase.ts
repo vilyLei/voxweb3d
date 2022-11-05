@@ -48,12 +48,12 @@ export class EngineBase {
             rscene.initialize(param, renderProcessesTotal);
             rscene.updateCamera();
             
-            let materialBlock = new RenderableMaterialBlock();
-            materialBlock.initialize();
-            rscene.materialBlock = materialBlock;
-            let entityBlock = new RenderableEntityBlock();
-            entityBlock.initialize();
-            rscene.entityBlock = entityBlock;
+            // let materialBlock = new RenderableMaterialBlock();
+            // materialBlock.initialize();
+            // //rscene.materialBlock = materialBlock;
+            // let entityBlock = new RenderableEntityBlock();
+            // entityBlock.initialize();
+            // //rscene.entityBlock = entityBlock;
 
             let selfT: any = this;
             selfT.stage3D = rscene.getStage3D();

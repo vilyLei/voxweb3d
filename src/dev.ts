@@ -314,7 +314,7 @@
 /////////////////////////////     event    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
+ import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
 
 //  import {DemoMouseDrag as Demo} from "./demo/DemoMouseDrag";
 
@@ -423,7 +423,7 @@
 
 //  import {DemoOrthoBtn as Demo} from "./orthoui/demos/DemoOrthoBtn";
 
- import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
+//  import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
 
 // import {DemoUITexAtlas as Demo} from "./orthoui/demos/DemoUITexAtlas";
 

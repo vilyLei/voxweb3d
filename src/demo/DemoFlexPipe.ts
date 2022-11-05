@@ -78,9 +78,9 @@ export class DemoFlexPipe implements IShaderLibListener {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
 
-            let entityBlock = new RenderableEntityBlock();
-            entityBlock.initialize();
-            this.m_rscene.entityBlock = entityBlock;
+            // let entityBlock = new RenderableEntityBlock();
+            // entityBlock.initialize();
+            // this.m_rscene.entityBlock = entityBlock;
 
             this.m_rscene.updateCamera();
             this.m_rcontext = this.m_rscene.getRendererContext() as any;

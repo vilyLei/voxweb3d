@@ -74,12 +74,12 @@ export class DemoBase {
             this.m_rscene.updateCamera();
 
             let rscene = this.m_rscene;
-            let materialBlock = new RenderableMaterialBlock();
-            materialBlock.initialize();
-            rscene.materialBlock = materialBlock;
-            let entityBlock = new RenderableEntityBlock();
-            entityBlock.initialize();
-            rscene.entityBlock = entityBlock;
+            // let materialBlock = new RenderableMaterialBlock();
+            // materialBlock.initialize();
+            // //rscene.materialBlock = materialBlock;
+            // let entityBlock = new RenderableEntityBlock();
+            // entityBlock.initialize();
+            // //rscene.entityBlock = entityBlock;
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 

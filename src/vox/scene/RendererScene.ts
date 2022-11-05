@@ -58,18 +58,28 @@ import { IRenderableEntityBlock } from "./block/IRenderableEntityBlock";
 import IMatrix4 from "../math/IMatrix4";
 import Matrix4 from "../math/Matrix4";
 import RendererSceneBase from "./RendererSceneBase";
+import { RenderableMaterialBlock } from "./block/RenderableMaterialBlock";
+import { RenderableEntityBlock } from "./block/RenderableEntityBlock";
 
 export default class RendererScene extends RendererSceneBase implements IRenderer, IRendererScene, IRenderNode {
-    
+
     private m_tickId: any = -1;
-    constructor(){super();}
-    
+    constructor() { super(); }
+
     protected createRendererIns(): IRendererInstance {
         this.m_currStage3D = this.stage3D;
+        this.m_stage3D = this.stage3D;
         return new RendererInstance();
     }
     protected initThis(): void {
+        let selfT: any = this;
+        selfT.materialBlock = new RenderableMaterialBlock();
+        selfT.entityBlock = new RenderableEntityBlock();
         this.tickUpdate();
+    }
+
+    protected contextRunEnd(): void {
+        this.m_rcontext.runEnd();
     }
     private tickUpdate(): void {
         if (this.m_tickId > -1) {
@@ -79,7 +89,7 @@ export default class RendererScene extends RendererSceneBase implements IRendere
         this.textureBlock.run();
     }
     createSubScene(): RendererSubScene {
-        if (this.m_renderer != null) {
+        if (this.m_renderer != null && this.materialBlock != null) {
             this.m_localRunning = true;
             let subsc = new RendererSubScene(this, this.m_renderer, this.m_evtFlowEnabled);
             // this.m_subscList.push(subsc);
@@ -91,6 +101,7 @@ export default class RendererScene extends RendererSceneBase implements IRendere
             sc.entityBlock = this.entityBlock;
             return subsc;
         }
+        throw Error("Illegal operation!!!");
         return null;
     }
 }
@@ -748,58 +759,58 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
         }
     }
 
-	private m_prependNodes: IRenderNode[] = null;
-	private m_appendNodes: IRenderNode[] = null;
+    private m_prependNodes: IRenderNode[] = null;
+    private m_appendNodes: IRenderNode[] = null;
 
-	private runRenderNodes(nodes: IRenderNode[]): void {
-		if (nodes != null) {
+    private runRenderNodes(nodes: IRenderNode[]): void {
+        if (nodes != null) {
 
-			// console.log("CoSC runRenderNodes(), nodes.length: ", nodes.length);
-			for (let i = 0; i < nodes.length; ++i) {
-				nodes[i].render();
-			}
-		}
-	}
+            // console.log("CoSC runRenderNodes(), nodes.length: ", nodes.length);
+            for (let i = 0; i < nodes.length; ++i) {
+                nodes[i].render();
+            }
+        }
+    }
 
-	private addRenderNodes(node: IRenderNode, nodes: IRenderNode[]): void {
-		for (let i = 0; i < nodes.length; ++i) {
-			if (node == nodes[i]) {
-				return;
-			}
-		}
-		nodes.push(node);
-	}
-	prependRenderNode(node: IRenderNode): void {
-		if (node != null && node != this) {
-			if (this.m_prependNodes == null) this.m_prependNodes = [];
-			this.addRenderNodes(node, this.m_prependNodes);
-		}
-	}
-	appendRenderNode(node: IRenderNode): void {
-		if (node != null && node != this) {
-			if (this.m_appendNodes == null) this.m_appendNodes = [];
-			let ls = this.m_appendNodes;
-			for (let i = 0; i < ls.length; ++i) {
-				if (node == ls[i]) {
-					return;
-				}
-			}
-			ls.push(node);
-		}
-	}
-	removeRenderNode(node: IRenderNode): void {
-		if (node != null) {
-			let ls = this.m_prependNodes;
-			if (ls != null) {
-				for (let i = 0; i < ls.length; ++i) {
-					if (node == ls[i]) {
-						ls.splice(i, 1);
-						break;
-					}
-				}
-			}
-		}
-	}
+    private addRenderNodes(node: IRenderNode, nodes: IRenderNode[]): void {
+        for (let i = 0; i < nodes.length; ++i) {
+            if (node == nodes[i]) {
+                return;
+            }
+        }
+        nodes.push(node);
+    }
+    prependRenderNode(node: IRenderNode): void {
+        if (node != null && node != this) {
+            if (this.m_prependNodes == null) this.m_prependNodes = [];
+            this.addRenderNodes(node, this.m_prependNodes);
+        }
+    }
+    appendRenderNode(node: IRenderNode): void {
+        if (node != null && node != this) {
+            if (this.m_appendNodes == null) this.m_appendNodes = [];
+            let ls = this.m_appendNodes;
+            for (let i = 0; i < ls.length; ++i) {
+                if (node == ls[i]) {
+                    return;
+                }
+            }
+            ls.push(node);
+        }
+    }
+    removeRenderNode(node: IRenderNode): void {
+        if (node != null) {
+            let ls = this.m_prependNodes;
+            if (ls != null) {
+                for (let i = 0; i < ls.length; ++i) {
+                    if (node == ls[i]) {
+                        ls.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
     run(autoCycle: boolean = true): void {
 
@@ -810,7 +821,7 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
             }
 
             this.runnableQueue.run();
-			this.runRenderNodes(this.m_prependNodes);
+            this.runRenderNodes(this.m_prependNodes);
             if (this.m_subscListLen > 0) {
                 for (let i = 0; i < this.m_processidsLen; ++i) {
                     this.m_renderer.runAt(this.m_processids[i]);
@@ -819,7 +830,7 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
             else {
                 this.m_renderer.run();
             }
-			this.runRenderNodes(this.m_appendNodes);
+            this.runRenderNodes(this.m_appendNodes);
             if (autoCycle) {
                 this.runEnd();
             }
@@ -848,7 +859,7 @@ export default class RendererScene implements IRenderer, IRendererScene, IRender
             this.m_accessor.renderEnd(this);
         }
     }
-	render(): void {}
+    render(): void {}
     renderFlush(): void {
         if (this.m_renderProxy != null) {
             this.m_renderProxy.flush();

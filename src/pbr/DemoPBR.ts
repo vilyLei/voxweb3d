@@ -67,13 +67,13 @@ export class DemoPBR implements IShaderLibListener {
             this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();
 
-            let materialBlock = new RenderableMaterialBlock();
-            materialBlock.initialize();
-            this.m_rscene.materialBlock = materialBlock;
+            // let materialBlock = new RenderableMaterialBlock();
+            // materialBlock.initialize();
+            // this.m_rscene.materialBlock = materialBlock;
 
-            let entityBlock = new RenderableEntityBlock();
-            entityBlock.initialize();
-            this.m_rscene.entityBlock = entityBlock;
+            // let entityBlock = new RenderableEntityBlock();
+            // entityBlock.initialize();
+            // this.m_rscene.entityBlock = entityBlock;
             
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);

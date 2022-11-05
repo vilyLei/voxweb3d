@@ -79,10 +79,10 @@ export class DemoNormalViewer {
 			let rscene = this.m_rscene;
 			let materialBlock = new RenderableMaterialBlock();
 			materialBlock.initialize();
-			rscene.materialBlock = materialBlock;
+			//rscene.materialBlock = materialBlock;
 			// let entityBlock = new RenderableEntityBlock();
 			// entityBlock.initialize();
-			// rscene.entityBlock = entityBlock;
+			// //rscene.entityBlock = entityBlock;
 
 			this.m_rscene.addEventListener(
 				MouseEvent.MOUSE_DOWN,

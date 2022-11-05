@@ -54,10 +54,10 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
         let rscene = this.m_rscene;
         let materialBlock = new RenderableMaterialBlock();
         materialBlock.initialize();
-        rscene.materialBlock = materialBlock;
+        //rscene.materialBlock = materialBlock;
         let entityBlock = new RenderableEntityBlock();
         entityBlock.initialize();
-        rscene.entityBlock = entityBlock;
+        //rscene.entityBlock = entityBlock;
 
         console.log("DemoToyCarThread::initialize()......");
         this.m_camTrack = new CameraTrack();

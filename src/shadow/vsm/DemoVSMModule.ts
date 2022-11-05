@@ -69,13 +69,13 @@ export class DemoVSMModule {
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
 
-            let rscene = this.m_rscene;            
-            let materialBlock = new RenderableMaterialBlock();
-            materialBlock.initialize();
-            rscene.materialBlock = materialBlock;
-            let entityBlock = new RenderableEntityBlock();
-            entityBlock.initialize();
-            rscene.entityBlock = entityBlock;
+            // let rscene = this.m_rscene;            
+            // let materialBlock = new RenderableMaterialBlock();
+            // materialBlock.initialize();
+            // //rscene.materialBlock = materialBlock;
+            // let entityBlock = new RenderableEntityBlock();
+            // entityBlock.initialize();
+            // //rscene.entityBlock = entityBlock;
             
             this.m_rscene.enableMouseEvent(true);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());

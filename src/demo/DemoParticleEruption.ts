@@ -109,10 +109,10 @@ export class DemoParticleEruption {
             let rscene = this.m_rscene;
             let materialBlock = new RenderableMaterialBlock();
             materialBlock.initialize();
-            rscene.materialBlock = materialBlock;
+            //rscene.materialBlock = materialBlock;
             let entityBlock = new RenderableEntityBlock();
             entityBlock.initialize();
-            rscene.entityBlock = entityBlock;
+            //rscene.entityBlock = entityBlock;
 
             this.m_interaction.initialize(this.m_rscene);
             // this.m_viewRay.bindCameraAndStage(this.m_rscene.getCamera(), this.m_rscene.getStage3D());

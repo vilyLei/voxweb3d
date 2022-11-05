@@ -22,10 +22,10 @@ class Instance implements IAppBase {
         let rscene = rsecne;
         // let materialBlock = new RenderableMaterialBlock();
         // materialBlock.initialize();
-        // rscene.materialBlock = materialBlock;
+        // //rscene.materialBlock = materialBlock;
         // let entityBlock = new RenderableEntityBlock();
         // entityBlock.initialize();
-        // rscene.entityBlock = entityBlock;
+        // //rscene.entityBlock = entityBlock;
     }
     createDefaultMaterial(normalEnabled: boolean = false): IRenderMaterial {
         let m = new Default3DMaterial();

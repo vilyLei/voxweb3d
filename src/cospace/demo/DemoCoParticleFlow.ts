@@ -62,7 +62,7 @@ export class DemoCoParticleFlow {
 		let rscene = this.m_rscene;
 		let materialBlock = new RenderableMaterialBlock();
 		materialBlock.initialize();
-		rscene.materialBlock = materialBlock;
+		//rscene.materialBlock = materialBlock;
 
 		this.m_mctx = new MaterialContext();
 		this.m_mctx.initialize(this.m_rscene);

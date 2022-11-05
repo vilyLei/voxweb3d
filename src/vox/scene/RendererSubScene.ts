@@ -53,7 +53,166 @@ import { IRenderableMaterialBlock } from "../scene/block/IRenderableMaterialBloc
 import { IRenderableEntityBlock } from "../scene/block/IRenderableEntityBlock";
 import Matrix4 from "../math/Matrix4";
 import IMatrix4 from "../math/IMatrix4";
+import RendererSceneBase from "./RendererSceneBase";
+export default class RendererSubScene extends RendererSceneBase implements IRenderer, IRendererScene, IRenderNode {
+    private m_camera: IRenderCamera = null;
+    private m_perspectiveEnabled = true;
+    private m_parent: IRenderer = null;
+    constructor(parent: IRenderer, renderer: IRendererInstance, evtFlowEnabled: boolean) {
+        super(1024);
+        this.m_evtFlowEnabled = evtFlowEnabled;
+        this.m_parent = parent;
+        this.m_renderer = renderer;
+        this.m_shader = renderer.getDataBuilder().getRenderShader();
+        this.m_localRunning = true;
+    }
+    getCurrentStage3D(): IRenderStage3D {
+        return this.m_currStage3D;
+    }
+    getCamera(): CameraBase {
+        return this.m_camera as CameraBase;
+    }
+    getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void {
+        this.m_camera.getWorldPickingRayByScreenXY(this.m_stage3D.mouseX, this.m_stage3D.mouseY, rl_position, rl_tv);
+    }
+    setEvt3DController(evt3DCtr: IEvt3DController): void {
+        if (evt3DCtr != null) {
+            if (this.m_currStage3D == null) {
+                this.m_currStage3D = new SubStage3D(this.m_renderProxy.getRCUid(), null);
+                this.m_currStage3D.uProbe = this.m_renderProxy.uniformContext.createUniformVec4Probe(1);
+            }
+            evt3DCtr.initialize(this.getStage3D(), this.m_currStage3D);
+            evt3DCtr.setRaySelector(this.m_rspace.getRaySelector());
+        }
+        this.m_evt3DCtr = evt3DCtr;
+    }
+    initialize(rparam: RendererParam, renderProcessesTotal: number = 3, createNewCamera: boolean = true): void {
+        if (this.m_renderProxy == null) {
+            if (renderProcessesTotal < 1) {
+                renderProcessesTotal = 1;
+            } else if (renderProcessesTotal > 32) {
+                renderProcessesTotal = 32;
+            }
+            let selfT: any = this;
+            selfT.runnableQueue = new RunnableQueue();
 
+            this.m_rparam = rparam;
+            this.m_perspectiveEnabled = rparam.cameraPerspectiveEnabled;
+            let process: RenderProcess = null;
+            for (; renderProcessesTotal >= 0;) {
+                process = this.m_renderer.appendProcess(rparam.batchEnabled, rparam.processFixedState) as RenderProcess;
+                this.m_processids[this.m_processidsLen] = process.getRPIndex();
+                this.m_processidsLen++;
+                --renderProcessesTotal;
+            }
+            this.m_rcontext = this.m_renderer.getRendererContext();
+            this.m_renderProxy = this.m_rcontext.getRenderProxy();
+            this.m_adapter = this.m_renderProxy.getRenderAdapter();
+            this.m_stage3D = this.m_renderProxy.getStage3D();
+            this.m_viewX = this.m_stage3D.getViewX();
+            this.m_viewY = this.m_stage3D.getViewY();
+            this.m_viewW = this.m_stage3D.getViewWidth();
+            this.m_viewH = this.m_stage3D.getViewHeight();
+            this.m_camera = createNewCamera ? this.createMainCamera() : this.m_renderProxy.getCamera();
+            if (this.m_rspace == null) {
+                let sp = new RendererSpace();
+                sp.initialize(this.m_renderer, this.m_camera);
+                this.m_rspace = sp;
+            }
+        }
+    }
+
+    private createMainCamera(): IRenderCamera {
+        this.m_camera = new CameraBase();
+        this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
+        this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
+        let vec3 = this.m_rparam.camProjParam;
+        if (this.m_perspectiveEnabled) {
+            this.m_camera.perspectiveRH(MathConst.DegreeToRadian(vec3.x), this.m_viewW / this.m_viewH, vec3.y, vec3.z);
+        }
+        else {
+            this.m_camera.orthoRH(vec3.y, vec3.z, -0.5 * this.m_viewH, 0.5 * this.m_viewH, -0.5 * this.m_viewW, 0.5 * this.m_viewW);
+        }
+        this.m_camera.lookAtRH(this.m_rparam.camPosition, this.m_rparam.camLookAtPos, this.m_rparam.camUpDirect);
+        this.m_camera.update();
+        return this.m_camera;
+    }
+    cameraLock(): void {
+        this.m_camera.lock();
+    }
+    cameraUnlock(): void {
+        this.m_camera.unlock();
+    }
+    /**
+     * the function only resets the renderer instance rendering status.
+     * you should use it before the run or runAt function is called.
+     */
+    renderBegin(contextBeginEnabled: boolean = false): void {
+
+        if (contextBeginEnabled) {
+            this.m_rcontext.renderBegin();
+        }
+        if (this.m_renderProxy.getCamera() != this.m_camera) {
+            //let boo: boolean = this.m_renderProxy.testViewPortChanged(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
+            if (this.m_renderProxy.isAutoSynViewAndStage()) {
+                this.m_viewX = this.m_renderProxy.getViewX();
+                this.m_viewY = this.m_renderProxy.getViewY();
+                this.m_viewW = this.m_renderProxy.getViewWidth();
+                this.m_viewH = this.m_renderProxy.getViewHeight();
+            }
+            this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
+            this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
+            this.m_renderProxy.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH, this.m_renderProxy.isAutoSynViewAndStage());
+            this.m_renderProxy.reseizeRCViewPort();
+        }
+        this.m_camera.update();
+        this.m_rcontext.updateCameraDataFromCamera(this.m_camera);
+        this.m_shader.renderBegin();
+        if (this.m_accessor != null) {
+            this.m_accessor.renderBegin(this);
+        }
+    }
+    /**
+     * the function resets the renderer scene status.
+     * you should use it on the frame starting time.
+     */
+    runBegin(autoCycle: boolean = true, contextBeginEnabled: boolean = false): void {
+
+        if (autoCycle && this.m_autoRunning) {
+            if (this.m_runFlag >= 0) this.runEnd();
+            this.m_runFlag = 0;
+        }
+        this.renderBegin(contextBeginEnabled);
+        if (this.m_rspace != null) {
+            this.m_rspace.setCamera(this.m_camera);
+            this.m_rspace.runBegin();
+        }
+    }
+    mouseRayTest(): void {
+        if (this.m_rspace != null) {
+            this.getMouseXYWorldRay(this.m_mouse_rlpv, this.m_mouse_rltv);
+            this.m_rspace.rayTest(this.m_mouse_rlpv, this.m_mouse_rltv);
+        }
+    }
+    render(): void {
+        if (this.m_renderProxy != null) {
+            this.run(true);
+        }
+    }
+    useCamera(camera: IRenderCamera, syncCamView: boolean = false): void {
+        this.m_parent.useCamera(camera, syncCamView);
+    }
+    useMainCamera(): void {
+        this.m_parent.useMainCamera();
+    }
+    updateCamera(): void {
+        if (this.m_camera != null) {
+            this.m_camera.update();
+        }
+    }
+}
+
+/*
 export default class RendererSubScene implements IRenderer, IRendererScene, IRenderNode {
     private static s_uid: number = 0;
     private m_uid: number = -1;
@@ -89,7 +248,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
     private m_currStage3D: IRenderStage3D = null;
     private m_enabled: boolean = true;
 
-	readonly runnableQueue: IRunnableQueue = new RunnableQueue();
+    readonly runnableQueue: IRunnableQueue = new RunnableQueue();
     readonly textureBlock: ITextureBlock = null;
     readonly materialBlock: IRenderableMaterialBlock = null;
     readonly entityBlock: IRenderableEntityBlock = null;
@@ -159,9 +318,8 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
         return this.m_camera as CameraBase;
     }
 
-    /**
-     * 获取渲染器可渲染对象管理器状态(版本号)
-     */
+    // /**
+    //  * 获取渲染器可渲染对象管理器状态(版本号)
     getRendererStatus(): number {
         return this.m_renderer.getRendererStatus();
     }
@@ -255,12 +413,13 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
             this.m_viewY = this.m_stage3D.getViewY();
             this.m_viewW = this.m_stage3D.getViewWidth();
             this.m_viewH = this.m_stage3D.getViewHeight();
-            if (createNewCamera) {
-                this.createMainCamera();
-            }
-            else {
-                this.m_camera = this.m_renderProxy.getCamera();
-            }
+            // if (createNewCamera) {
+            //     this.createMainCamera();
+            // }
+            // else {
+            //     this.m_camera = this.m_renderProxy.getCamera();
+            // }
+            this.m_camera = createNewCamera ? this.createMainCamera() : this.m_renderProxy.getCamera();
             if (this.m_rspace == null) {
                 this.m_rspace = new RendererSpace();
                 this.m_rspace.initialize(this.m_renderer, this.m_camera);
@@ -268,11 +427,11 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
         }
     }
 
-    private createMainCamera(): void {
+    private createMainCamera(): IRenderCamera {
         this.m_camera = new CameraBase();
         this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
         this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
-        let vec3: Vector3D = this.m_rparam.camProjParam;
+        let vec3 = this.m_rparam.camProjParam;
         if (this.m_perspectiveEnabled) {
             this.m_camera.perspectiveRH(MathConst.DegreeToRadian(vec3.x), this.m_viewW / this.m_viewH, vec3.y, vec3.z);
         }
@@ -281,6 +440,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
         }
         this.m_camera.lookAtRH(this.m_rparam.camPosition, this.m_rparam.camLookAtPos, this.m_rparam.camUpDirect);
         this.m_camera.update();
+        return this.m_camera;
     }
     cameraLock(): void {
         this.m_camera.lock();
@@ -607,59 +767,59 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
         }
     }
     
-	private m_prependNodes: IRenderNode[] = null;
-	private m_appendNodes: IRenderNode[] = null;
+    private m_prependNodes: IRenderNode[] = null;
+    private m_appendNodes: IRenderNode[] = null;
 
-	private runRenderNodes(nodes: IRenderNode[]): void {
-		if (nodes != null) {
+    private runRenderNodes(nodes: IRenderNode[]): void {
+        if (nodes != null) {
 
-			// console.log("CoSC runRenderNodes(), nodes.length: ", nodes.length);
-			for (let i = 0; i < nodes.length; ++i) {
-				nodes[i].render();
-			}
-		}
-	}
+            // console.log("CoSC runRenderNodes(), nodes.length: ", nodes.length);
+            for (let i = 0; i < nodes.length; ++i) {
+                nodes[i].render();
+            }
+        }
+    }
 
-	private addRenderNodes(node: IRenderNode, nodes: IRenderNode[]): void {
-		for (let i = 0; i < nodes.length; ++i) {
-			if (node == nodes[i]) {
-				return;
-			}
-		}
-		nodes.push(node);
-	}
-	prependRenderNode(node: IRenderNode): void {
-		if (node != null && node != this) {
-			if (this.m_prependNodes == null) this.m_prependNodes = [];
-			this.addRenderNodes(node, this.m_prependNodes);
-		}
-	}
-	appendRenderNode(node: IRenderNode): void {
-		if (node != null && node != this) {
-			// console.log("CoSC appendRenderNode(), node: ", node);
-			if (this.m_appendNodes == null) this.m_appendNodes = [];
-			let ls = this.m_appendNodes;
-			for (let i = 0; i < ls.length; ++i) {
-				if (node == ls[i]) {
-					return;
-				}
-			}
-			ls.push(node);
-		}
-	}
-	removeRenderNode(node: IRenderNode): void {
-		if (node != null) {
-			let ls = this.m_prependNodes;
-			if (ls != null) {
-				for (let i = 0; i < ls.length; ++i) {
-					if (node == ls[i]) {
-						ls.splice(i, 1);
-						break;
-					}
-				}
-			}
-		}
-	}
+    private addRenderNodes(node: IRenderNode, nodes: IRenderNode[]): void {
+        for (let i = 0; i < nodes.length; ++i) {
+            if (node == nodes[i]) {
+                return;
+            }
+        }
+        nodes.push(node);
+    }
+    prependRenderNode(node: IRenderNode): void {
+        if (node != null && node != this) {
+            if (this.m_prependNodes == null) this.m_prependNodes = [];
+            this.addRenderNodes(node, this.m_prependNodes);
+        }
+    }
+    appendRenderNode(node: IRenderNode): void {
+        if (node != null && node != this) {
+            // console.log("CoSC appendRenderNode(), node: ", node);
+            if (this.m_appendNodes == null) this.m_appendNodes = [];
+            let ls = this.m_appendNodes;
+            for (let i = 0; i < ls.length; ++i) {
+                if (node == ls[i]) {
+                    return;
+                }
+            }
+            ls.push(node);
+        }
+    }
+    removeRenderNode(node: IRenderNode): void {
+        if (node != null) {
+            let ls = this.m_prependNodes;
+            if (ls != null) {
+                for (let i = 0; i < ls.length; ++i) {
+                    if (node == ls[i]) {
+                        ls.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+        }
+    }
     // rendering running
     run(autoCycle: boolean = false): void {
 
@@ -671,13 +831,13 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
                 this.m_runFlag = 2;
             }
             this.runnableQueue.run();
-			this.runRenderNodes(this.m_prependNodes);
+            this.runRenderNodes(this.m_prependNodes);
 
             for (let i: number = 0; i < this.m_processidsLen; ++i) {
                 this.m_renderer.runAt(this.m_processids[i]);
             }
 
-			this.runRenderNodes(this.m_appendNodes);
+            this.runRenderNodes(this.m_appendNodes);
 
             if (autoCycle) {
                 this.runEnd();
@@ -702,11 +862,11 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
             this.m_accessor.renderEnd(this);
         }
     }
-	render(): void {
-		if (this.m_renderProxy != null) {
-			this.run(true);
-		}
-	}
+    render(): void {
+        if (this.m_renderProxy != null) {
+            this.run(true);
+        }
+    }
     useCamera(camera: IRenderCamera, syncCamView: boolean = false): void {
         this.m_parent.useCamera(camera, syncCamView);
     }
@@ -738,3 +898,4 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
     }
 
 }
+    //*/

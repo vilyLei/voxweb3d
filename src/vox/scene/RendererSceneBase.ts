@@ -98,16 +98,17 @@ export default class RendererSceneBase {
     protected m_rparam: RendererParam = null;
     protected m_enabled = true;
     protected m_currStage3D: IRenderStage3D = null;
+    protected m_stage3D: IRenderStage3D = null;
 
     readonly runnableQueue: IRunnableQueue = null;
     readonly textureBlock: ITextureBlock = null;
     readonly stage3D: Stage3D = null;
 
-    materialBlock: IRenderableMaterialBlock = null;
-    entityBlock: IRenderableEntityBlock = null;
+    readonly materialBlock: IRenderableMaterialBlock = null;
+    readonly entityBlock: IRenderableEntityBlock = null;
 
-    constructor() {
-        this.m_uid = RendererSceneBase.s_uid++;
+    constructor(uidBase: number = 0) {
+        this.m_uid = uidBase + RendererSceneBase.s_uid++;
     }
     enable(): void {
         this.m_enabled = true;
@@ -279,10 +280,10 @@ export default class RendererSceneBase {
         return this.m_adapter.getDevicePixelRatio();
     }
     addEventListener(type: number, target: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
-        this.stage3D.addEventListener(type, target, func, captureEnabled, bubbleEnabled);
+        this.m_currStage3D.addEventListener(type, target, func, captureEnabled, bubbleEnabled);
     }
     removeEventListener(type: number, target: any, func: (evt: any) => void): void {
-        this.stage3D.removeEventListener(type, target, func);
+        this.m_currStage3D.removeEventListener(type, target, func);
     }
     setAccessor(accessor: IRendererSceneAccessor): void {
         this.m_accessor = accessor;
@@ -296,7 +297,7 @@ export default class RendererSceneBase {
     protected initThis(): void {
         // this.tickUpdate();
     }
-    initialize(rparam: RendererParam = null, renderProcessesTotal: number = 3): void {
+    initialize(rparam: RendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): void {
 
         if (this.m_renderer == null) {
             if (rparam == null) rparam = new RendererParam();
@@ -463,7 +464,7 @@ export default class RendererSceneBase {
                         this.m_nodeWaitLinker = new Entity3DNodeLinker();
                         this.m_nodeWaitQueue = new EntityNodeQueue();
                     }
-                    let node: Entity3DNode = this.m_nodeWaitQueue.addEntity(entity);
+                    let node = this.m_nodeWaitQueue.addEntity(entity);
                     node.rstatus = processid;
                     this.m_nodeWaitLinker.addNode(node);
                 }
@@ -484,7 +485,7 @@ export default class RendererSceneBase {
         if (entity != null) {
             let node: Entity3DNode = null;
             if (this.m_nodeWaitLinker != null) {
-                let node: Entity3DNode = this.m_nodeWaitQueue.getNodeByEntity(entity);
+                let node = this.m_nodeWaitQueue.getNodeByEntity(entity);
                 if (node != null) {
                     this.m_nodeWaitLinker.removeNode(node);
                     this.m_nodeWaitQueue.removeEntity(entity);
@@ -622,6 +623,9 @@ export default class RendererSceneBase {
             if (this.m_rayTestFlag && this.m_evt3DCtr.getEvtType() > 0) {
 
                 // 是否对已经获得的拾取列表做进一步的gpu拾取
+                // if (this.m_uid > 1000) {
+                //     console.log("sub sc runMouseTest...", this.m_rayTestFlag, this.m_evt3DCtr.getEvtType());
+                // }
                 let selector = this.m_rspace.getRaySelector();
                 if (selector != null) {
                     if (this.m_rayTestEnabled) {
@@ -811,7 +815,7 @@ export default class RendererSceneBase {
 
             this.runnableQueue.run();
             this.runRenderNodes(this.m_prependNodes);
-            if (this.m_subscListLen > 0) {
+            if (this.m_localRunning) {
                 for (let i = 0; i < this.m_processidsLen; ++i) {
                     this.m_renderer.runAt(this.m_processids[i]);
                 }
@@ -835,11 +839,17 @@ export default class RendererSceneBase {
             this.m_renderer.runAt(this.m_processids[index]);
         }
     }
+    protected contextRunEnd(): void {
+        //this.m_rcontext.runEnd();
+    }
     runEnd(): void {
         if (this.m_evt3DCtr != null) {
             this.m_evt3DCtr.runEnd();
         }
-        this.m_rcontext.runEnd();
+        // if(this.m_localRunning) {
+        // this.m_rcontext.runEnd();
+        // }
+        this.contextRunEnd();
 
         if (this.m_rspace != null) {
             this.m_rspace.runEnd();
