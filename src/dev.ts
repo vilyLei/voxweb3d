@@ -367,7 +367,7 @@
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
- import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
@@ -421,7 +421,7 @@
 
 //  import {DemoFontText as Demo} from "./demo/DemoFontText";
 
-//  import {DemoOrthoBtn as Demo} from "./orthoui/demos/DemoOrthoBtn";
+ import {DemoOrthoBtn as Demo} from "./orthoui/demos/DemoOrthoBtn";
 
 //  import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
 

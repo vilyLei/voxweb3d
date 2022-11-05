@@ -29,7 +29,7 @@ import RunnableQueue from "../../vox/base/RunnableQueue";
 
 import IRPONodeBuilder from "../../vox/render/IRPONodeBuilder";
 import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
-import RendererInstance from "../../vox/scene/RendererInstance";
+// import RendererInstance from "../../vox/scene/RendererInstance";
 import IRendererInstance from "../../vox/scene/IRendererInstance";
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import { TextureBlock } from "../../vox/texture/TextureBlock";
@@ -62,26 +62,26 @@ export default class RendererSceneBase {
     private ___$$$$$$$Author: string = "VilyLei(vily313@126.com)";
     private static s_uid = 0;
     private m_uid = -1;
-    private m_adapter: IRenderAdapter = null;
-    private m_renderProxy: IRenderProxy = null;
-    private m_shader: IRenderShader = null;
-    private m_rcontext: IRendererInstanceContext = null;
-    private m_renderer: IRendererInstance = null;
-    private m_processids = new Uint8Array(128);
-    private m_processidsLen = 0;
-    private m_rspace: IRendererSpace = null;
-    private m_mouse_rltv = new Vector3D();
-    private m_mouse_rlpv = new Vector3D();
-    private m_accessor: IRendererSceneAccessor = null;
+    protected m_adapter: IRenderAdapter = null;
+    protected m_renderProxy: IRenderProxy = null;
+    protected m_shader: IRenderShader = null;
+    protected m_rcontext: IRendererInstanceContext = null;
+    protected m_renderer: IRendererInstance = null;
+    protected m_processids = new Uint8Array(128);
+    protected m_processidsLen = 0;
+    protected m_rspace: IRendererSpace = null;
+    protected m_mouse_rltv = new Vector3D();
+    protected m_mouse_rlpv = new Vector3D();
+    protected m_accessor: IRendererSceneAccessor = null;
     // event flow control enable
-    private m_evtFlowEnabled = false;
-    private m_evt3DCtr: IEvt3DController = null;
-    private m_mouseEvtEnabled = true;
-    private m_viewX = 0.0;
-    private m_viewY = 0.0;
-    private m_viewW = 800.0
-    private m_viewH = 800.0;
-    private m_currCamera: CameraBase = null;
+    protected m_evtFlowEnabled = false;
+    protected m_evt3DCtr: IEvt3DController = null;
+    protected m_mouseEvtEnabled = true;
+    protected m_viewX = 0.0;
+    protected m_viewY = 0.0;
+    protected m_viewW = 800.0
+    protected m_viewH = 800.0;
+    protected m_currCamera: CameraBase = null;
 
     private m_nodeWaitLinker: Entity3DNodeLinker = null;
     private m_nodeWaitQueue: EntityNodeQueue = null;
@@ -91,12 +91,11 @@ export default class RendererSceneBase {
     private m_containers: IRenderEntityContainer[] = [];
     private m_containersTotal: number = 0;
 
-    private m_runFlag = -1;
-    private m_autoRunning = true;
-    private m_processUpdate = false;
-    // private m_tickId: any = -1;
-    private m_rparam: RendererParam = null;
-    private m_enabled = true;
+    protected m_runFlag = -1;
+    protected m_autoRunning = true;
+    protected m_processUpdate = false;
+    protected m_rparam: RendererParam = null;
+    protected m_enabled = true;
 
     readonly runnableQueue: IRunnableQueue = null;
     readonly textureBlock: ITextureBlock = null;
@@ -288,7 +287,8 @@ export default class RendererSceneBase {
     }
     // for overriding by sub class
     protected createRendererIns(): IRendererInstance {
-        return new RendererInstance();
+        // return new RendererInstance();
+        return null;
     }
     // for overriding by sub class
     protected initThis(): void {
