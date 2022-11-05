@@ -54,11 +54,13 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
             let r = this.pickTestRadius;
 
             CoMesh.line.dynColorEnabled = true;
+            let material = CoMaterial.createLineMaterial(true);
+            CoMesh.line.setBufSortFormat(material.getBufSortFormat());
+
             let minV = this.tv.clone().scaleBy(innerSize);
             let maxV = this.tv.clone().scaleBy(size);
             let mesh = CoMesh.line.createLine(minV, maxV, r);
 
-            let material = CoMaterial.createLineMaterial(true);
             this.m_entity = CoEntity.createDisplayEntity();
             this.m_entity.setMaterial(material);
             this.m_entity.setMesh(mesh);
