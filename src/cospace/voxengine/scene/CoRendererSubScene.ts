@@ -55,7 +55,171 @@ import { IRenderableMaterialBlock } from "../../../vox/scene/block/IRenderableMa
 import { IRenderableEntityBlock } from "../../../vox/scene/block/IRenderableEntityBlock";
 import Matrix4 from "../../../vox/math/Matrix4";
 import IVector3D from "../../../vox/math/IVector3D";
+import RendererSceneBase from "../../../vox/scene/RendererSceneBase";
+import IRendererParam from "../../../vox/scene/IRendererParam";
 
+
+export default class CoRendererSubScene extends RendererSceneBase implements IRenderer, ICoRendererScene, ICoRenderNode {
+    private m_camera: IRenderCamera = null;
+    private m_perspectiveEnabled = true;
+    private m_parent: ICoRendererScene = null;
+    constructor(parent: ICoRendererScene, renderer: IRendererInstance, evtFlowEnabled: boolean) {
+        super(1024);
+        this.m_evtFlowEnabled = evtFlowEnabled;
+        this.m_parent = parent;
+        this.m_renderer = renderer;
+        this.m_shader = renderer.getDataBuilder().getRenderShader();
+        this.m_localRunning = true;
+    }
+    createSubScene(rparam: IRendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): ICoRendererScene{
+        return this.m_parent.createSubScene(rparam, renderProcessesTotal, createNewCamera);
+    }
+    getCurrentStage3D(): IRenderStage3D {
+        return this.m_currStage3D;
+    }
+    getCamera(): CameraBase {
+        return this.m_camera as CameraBase;
+    }
+    getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void {
+        this.m_camera.getWorldPickingRayByScreenXY(this.m_stage3D.mouseX, this.m_stage3D.mouseY, rl_position, rl_tv);
+    }
+    setEvt3DController(evt3DCtr: IEvt3DController): void {
+        if (evt3DCtr != null) {
+            if (this.m_currStage3D == null) {
+                this.m_currStage3D = new SubStage3D(this.m_renderProxy.getRCUid(), null);
+                this.m_currStage3D.uProbe = this.m_renderProxy.uniformContext.createUniformVec4Probe(1);
+            }
+            evt3DCtr.initialize(this.getStage3D(), this.m_currStage3D);
+            evt3DCtr.setRaySelector(this.m_rspace.getRaySelector());
+        }
+        this.m_evt3DCtr = evt3DCtr;
+    }
+    initialize(rparam: RendererParam, renderProcessesTotal: number = 3, createNewCamera: boolean = true): void {
+        if (this.m_renderProxy == null) {
+            if (renderProcessesTotal < 1) {
+                renderProcessesTotal = 1;
+            } else if (renderProcessesTotal > 32) {
+                renderProcessesTotal = 32;
+            }
+            let selfT: any = this;
+            selfT.runnableQueue = new RunnableQueue();
+
+            this.m_rparam = rparam;
+            this.m_perspectiveEnabled = rparam.cameraPerspectiveEnabled;
+            // let process: RenderProcess = null;
+            for (; renderProcessesTotal >= 0;) {
+                let process = this.m_renderer.appendProcess(rparam.batchEnabled, rparam.processFixedState);// as RenderProcess;
+                this.m_processids[this.m_processidsLen] = process.getRPIndex();
+                this.m_processidsLen++;
+                --renderProcessesTotal;
+            }
+            this.m_rcontext = this.m_renderer.getRendererContext();
+            this.m_renderProxy = this.m_rcontext.getRenderProxy();
+            this.m_adapter = this.m_renderProxy.getRenderAdapter();
+            this.m_stage3D = this.m_renderProxy.getStage3D();
+            this.m_viewX = this.m_stage3D.getViewX();
+            this.m_viewY = this.m_stage3D.getViewY();
+            this.m_viewW = this.m_stage3D.getViewWidth();
+            this.m_viewH = this.m_stage3D.getViewHeight();
+            this.m_camera = createNewCamera ? this.createMainCamera() : this.m_renderProxy.getCamera();
+            if (this.m_rspace == null) {
+                let sp = new RendererSpace();
+                sp.initialize(this.m_renderer, this.m_camera);
+                this.m_rspace = sp;
+            }
+        }
+    }
+
+    private createMainCamera(): IRenderCamera {
+        this.m_camera = new CameraBase();
+        this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
+        this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
+        let vec3 = this.m_rparam.camProjParam;
+        if (this.m_perspectiveEnabled) {
+            this.m_camera.perspectiveRH(MathConst.DegreeToRadian(vec3.x), this.m_viewW / this.m_viewH, vec3.y, vec3.z);
+        }
+        else {
+            this.m_camera.orthoRH(vec3.y, vec3.z, -0.5 * this.m_viewH, 0.5 * this.m_viewH, -0.5 * this.m_viewW, 0.5 * this.m_viewW);
+        }
+        this.m_camera.lookAtRH(this.m_rparam.camPosition, this.m_rparam.camLookAtPos, this.m_rparam.camUpDirect);
+        this.m_camera.update();
+        return this.m_camera;
+    }
+    cameraLock(): void {
+        this.m_camera.lock();
+    }
+    cameraUnlock(): void {
+        this.m_camera.unlock();
+    }
+    /**
+     * the function only resets the renderer instance rendering status.
+     * you should use it before the run or runAt function is called.
+     */
+    renderBegin(contextBeginEnabled: boolean = false): void {
+
+        if (contextBeginEnabled) {
+            this.m_rcontext.renderBegin();
+        }
+        if (this.m_renderProxy.getCamera() != this.m_camera) {
+            //let boo: boolean = this.m_renderProxy.testViewPortChanged(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
+            if (this.m_renderProxy.isAutoSynViewAndStage()) {
+                this.m_viewX = this.m_renderProxy.getViewX();
+                this.m_viewY = this.m_renderProxy.getViewY();
+                this.m_viewW = this.m_renderProxy.getViewWidth();
+                this.m_viewH = this.m_renderProxy.getViewHeight();
+            }
+            this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
+            this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
+            this.m_renderProxy.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH, this.m_renderProxy.isAutoSynViewAndStage());
+            this.m_renderProxy.reseizeRCViewPort();
+        }
+        this.m_camera.update();
+        this.m_rcontext.updateCameraDataFromCamera(this.m_camera);
+        this.m_shader.renderBegin();
+        if (this.m_accessor != null) {
+            this.m_accessor.renderBegin(this);
+        }
+    }
+    /**
+     * the function resets the renderer scene status.
+     * you should use it on the frame starting time.
+     */
+    runBegin(autoCycle: boolean = true, contextBeginEnabled: boolean = false): void {
+
+        if (autoCycle && this.m_autoRunning) {
+            if (this.m_runFlag >= 0) this.runEnd();
+            this.m_runFlag = 0;
+        }
+        this.renderBegin(contextBeginEnabled);
+        if (this.m_rspace != null) {
+            this.m_rspace.setCamera(this.m_camera);
+            this.m_rspace.runBegin();
+        }
+    }
+    mouseRayTest(): void {
+        if (this.m_rspace != null) {
+            this.getMouseXYWorldRay(this.m_mouse_rlpv, this.m_mouse_rltv);
+            this.m_rspace.rayTest(this.m_mouse_rlpv, this.m_mouse_rltv);
+        }
+    }
+    render(): void {
+        if (this.m_renderProxy != null) {
+            this.run(true);
+        }
+    }
+    useCamera(camera: IRenderCamera, syncCamView: boolean = false): void {
+        this.m_parent.useCamera(camera, syncCamView);
+    }
+    useMainCamera(): void {
+        this.m_parent.useMainCamera();
+    }
+    updateCamera(): void {
+        if (this.m_camera != null) {
+            this.m_camera.update();
+        }
+    }
+}
+/*
 export default class CoRendererSubScene implements IRenderer, ICoRendererScene, ICoRenderNode {
 	private static s_uid: number = 0;
 	private m_uid: number = -1;
@@ -740,3 +904,4 @@ export default class CoRendererSubScene implements IRenderer, ICoRendererScene, 
         this.runnableQueue.destroy();
     }
 }
+//*/
