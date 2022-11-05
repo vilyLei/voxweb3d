@@ -421,9 +421,9 @@
 
 //  import {DemoFontText as Demo} from "./demo/DemoFontText";
 
- import {DemoOrthoBtn as Demo} from "./orthoui/demos/DemoOrthoBtn";
+//  import {DemoOrthoBtn as Demo} from "./orthoui/demos/DemoOrthoBtn";
 
-//  import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
+ import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
 
 // import {DemoUITexAtlas as Demo} from "./orthoui/demos/DemoUITexAtlas";
 

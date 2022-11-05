@@ -53,7 +53,7 @@ interface IRenderStage3D {
     getViewWidth(): number;
     getViewHeight(): number;
     setViewPort(px: number, py: number, pw: number, ph: number): void;
-
+    enterFrame(): void;
     update(): void;
 
     mouseWindowUp(phase?: number): void;

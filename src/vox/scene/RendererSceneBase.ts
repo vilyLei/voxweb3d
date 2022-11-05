@@ -81,7 +81,7 @@ export default class RendererSceneBase {
     protected m_viewY = 0.0;
     protected m_viewW = 800.0
     protected m_viewH = 800.0;
-    protected m_currCamera: CameraBase = null;
+    protected m_currCamera: IRenderCamera = null;
 
     private m_nodeWaitLinker: Entity3DNodeLinker = null;
     private m_nodeWaitQueue: EntityNodeQueue = null;
@@ -96,6 +96,7 @@ export default class RendererSceneBase {
     protected m_processUpdate = false;
     protected m_rparam: RendererParam = null;
     protected m_enabled = true;
+    protected m_currStage3D: IRenderStage3D = null;
 
     readonly runnableQueue: IRunnableQueue = null;
     readonly textureBlock: ITextureBlock = null;
@@ -655,7 +656,9 @@ export default class RendererSceneBase {
      * should call this function per frame
      */
     update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
-        this.stage3D.enterFrame();
+        // this.stage3D.enterFrame();
+        const st = this.m_currStage3D;
+        if (st != null) st.enterFrame();
         if (autoCycle && this.m_autoRunning) {
             if (this.m_runFlag != 0) this.runBegin();
             this.m_runFlag = 1;
@@ -672,13 +675,12 @@ export default class RendererSceneBase {
             let nextNode: Entity3DNode = this.m_nodeWaitLinker.getBegin();
             if (nextNode != null) {
                 let pnode: Entity3DNode;
-                let entity: IRenderEntity;
                 let status: number;
                 while (nextNode != null) {
                     if (nextNode.entity.hasMesh()) {
                         pnode = nextNode;
                         nextNode = nextNode.next;
-                        entity = pnode.entity;
+                        const entity = pnode.entity;
                         status = pnode.rstatus;
                         this.m_nodeWaitLinker.removeNode(pnode);
                         this.m_nodeWaitQueue.removeEntity(pnode.entity);
@@ -692,7 +694,7 @@ export default class RendererSceneBase {
             }
         }
 
-        let i: number = 0;
+        let i = 0;
         for (; i < this.m_containersTotal; ++i) {
             this.m_containers[i].update();
         }
@@ -708,7 +710,15 @@ export default class RendererSceneBase {
             }
         }
         if (this.m_processUpdate) {
-            this.m_renderer.updateAllProcess();
+            // this.m_renderer.updateAllProcess();
+            if (this.m_subscListLen > 0) {
+                for (let i = 0; i < this.m_processidsLen; ++i) {
+                    this.m_renderer.updateProcessAt(this.m_processids[i]);
+                }
+            }
+            else {
+                this.m_renderer.updateAllProcess();
+            }
         }
         if (this.m_mouseTestBoo && !this.m_evtFlowEnabled) {
             if (mouseEventEnabled) {

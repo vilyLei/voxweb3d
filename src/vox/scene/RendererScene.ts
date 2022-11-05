@@ -65,6 +65,7 @@ export default class RendererScene extends RendererSceneBase implements IRendere
     constructor(){super();}
     
     protected createRendererIns(): IRendererInstance {
+        this.m_currStage3D = this.stage3D;
         return new RendererInstance();
     }
     protected initThis(): void {

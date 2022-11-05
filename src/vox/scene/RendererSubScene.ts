@@ -86,7 +86,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
     private m_shader: IRenderShader = null;
     private m_runFlag: number = -1;
     private m_autoRunning: boolean = true;
-    private m_currStage3D: SubStage3D = null;
+    private m_currStage3D: IRenderStage3D = null;
     private m_enabled: boolean = true;
 
 	readonly runnableQueue: IRunnableQueue = new RunnableQueue();
@@ -299,10 +299,10 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
         this.m_processids[this.m_processidsLen] = process.getRPIndex();
         this.m_processidsLen++;
     }
-    /**
-     * get the renderer process by process index
-     * @param processIndex IRenderProcess instance index in renderer scene instance
-     */
+    // /**
+    //  * get the renderer process by process index
+    //  * @param processIndex IRenderProcess instance index in renderer scene instance
+    
     getRenderProcessAt(processIndex: number): IRenderProcess {
         return this.m_renderer.getProcessAt(this.m_processids[processIndex]);
     }
@@ -347,28 +347,28 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
     setAutoRunningEnabled(autoRunning: boolean): void {
         this.m_autoRunning = autoRunning;
     }
-    /**
-     * 将已经在渲染运行时中的entity移动到指定 process uid 的 render process 中去
-     * move rendering runtime displayEntity to different renderer process
-     */
+    // /**
+    //  * 将已经在渲染运行时中的entity移动到指定 process uid 的 render process 中去
+    //  * move rendering runtime displayEntity to different renderer process
+
     moveEntityTo(entity: IRenderEntity, processIndex: number): void {
         this.m_renderer.moveEntityToProcessAt(entity, this.m_processids[processIndex]);
     }
-    /**
-     * 单独绘制可渲染对象, 可能是使用了 global material也可能没有。这种方式比较耗性能,只能用在特殊的地方。
-     * @param entity 需要指定绘制的 IRenderEntity 实例
-     * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform, default value: false
-     * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform, default value: true
-     */
+    // /**
+    //  * 单独绘制可渲染对象, 可能是使用了 global material也可能没有。这种方式比较耗性能,只能用在特殊的地方。
+    //  * @param entity 需要指定绘制的 IRenderEntity 实例
+    //  * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform, default value: false
+    //  * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform, default value: true
+
     drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
         this.m_renderer.drawEntity(entity, useGlobalUniform, forceUpdateUniform);
     }
-    /**
-     * add an entity to the renderer process of the renderer instance
-     * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
-     * @param processid this destination renderer process id
-     * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
-     */
+    // /**
+    //  * add an entity to the renderer process of the renderer instance
+    //  * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
+    //  * @param processid this destination renderer process id
+    //  * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
+
     addEntity(entity: IRenderEntity, processIndex: number = 0, deferred: boolean = true): void {
         if (entity != null && entity.__$testSpaceEnabled()) {
             if (entity.isPolyhedral()) {
@@ -432,10 +432,10 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
 
         this.m_rcontext.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
     }
-    /**
-     * the function only resets the renderer instance rendering status.
-     * you should use it before the run or runAt function is called.
-     */
+    // /**
+    //  * the function only resets the renderer instance rendering status.
+    //  * you should use it before the run or runAt function is called.
+
     renderBegin(contextBeginEnabled: boolean = false): void {
 
         if (contextBeginEnabled) {
@@ -461,10 +461,10 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
             this.m_accessor.renderBegin(this);
         }
     }
-    /**
-     * the function resets the renderer scene status.
-     * you should use it on the frame starting time.
-     */
+    // /**
+    //  * the function resets the renderer scene status.
+    //  * you should use it on the frame starting time.
+
     runBegin(autoCycle: boolean = true, contextBeginEnabled: boolean = false): void {
 
         if (autoCycle && this.m_autoRunning) {
@@ -486,11 +486,11 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
     setRayTestEnabled(enabled: boolean): void {
         this.m_rayTestEnabled = enabled;
     }
-    /**
-     * @param evtFlowPhase  0(none phase),1(capture phase),2(bubble phase)
-     * @param status: 1(default process),1(deselect ray pick target)
-     * @requires 1 is send evt yes,0 is send evt no,-1 is event nothing
-     */
+    // /**
+    //  * @param evtFlowPhase  0(none phase),1(capture phase),2(bubble phase)
+    //  * @param status: 1(default process),1(deselect ray pick target)
+    //  * @requires 1 is send evt yes,0 is send evt no,-1 is event nothing
+
     runMouseTest(evtFlowPhase: number, status: number): number {
         let flag: number = -1;
         if (this.m_evt3DCtr != null && this.m_mouseEvtEnabled) {
@@ -526,10 +526,10 @@ export default class RendererSubScene implements IRenderer, IRendererScene, IRen
         return flag;
     }
 
-    /**
-     * update all data or status of the renderer runtime
-     * should call this function per frame
-     */
+    // /**
+    //  * update all data or status of the renderer runtime
+    //  * should call this function per frame
+
     update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
 
         if (this.m_currStage3D != null) this.m_currStage3D.enterFrame();
