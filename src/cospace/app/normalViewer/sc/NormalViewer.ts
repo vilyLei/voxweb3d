@@ -1,13 +1,13 @@
-import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
-import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
-import { ICoUI } from "../../../voxui/ICoUI";
 import { NormalViewerScene } from "./NormalViewerScene";
 import { CoDataModule } from "../../../app/common/CoDataModule";
 import { NVTransUI } from "../ui/NVTransUI";
 
-declare var CoUI: ICoUI;
+import { ICoUI } from "../../../voxui/ICoUI";
+import { ICoRScene } from "../../../voxengine/ICoRScene";
+import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
 
+declare var CoUI: ICoUI;
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
 
