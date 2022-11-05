@@ -163,14 +163,13 @@ class AABB implements IAABB {
 	addFloat32AndIndicesArr(vs: Float32Array | number[], indices: Uint16Array | Uint32Array): void {
 
 		let len: number = indices.length;
-		let ivs = indices;
 		// let pvx: number = 0.0;
 		// let pvy: number = 0.0;
 		// let pvz: number = 0.0;
 		let i: number;
 		for (let k = 0; k < len; k++) {
-			i = k * 3;
-			this.addXYZ(vs[ivs[i++]], vs[ivs[i++]], vs[ivs[i]]);
+			i = indices[k] * 3;
+			this.addXYZ(vs[i++], vs[i++], vs[i]);
 
 			// pvx = vs[i++];
 			// pvy = vs[i++];
