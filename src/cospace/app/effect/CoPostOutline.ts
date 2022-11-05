@@ -1,5 +1,5 @@
 import IRenderEntity from "../../../vox/render/IRenderEntity";
-import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
+import IRendererScene from "../../../vox/scene/IRendererScene";
 import IRenderNode from "../../../vox/scene/IRenderNode";
 import IOcclusionPostOutline from "../../../renderingtoy/mcase/outline/IOcclusionPostOutline";
 import { CoModuleLoader } from "..//utils/CoModuleLoader";
@@ -9,10 +9,10 @@ declare var OccPostOutlineModule: IOccPostOutlineModule;
 
 class CoPostOutline implements IRenderNode {
 
-	private m_rscene: ICoRendererScene;
+	private m_rscene: IRendererScene;
 	private m_postOutline: IOcclusionPostOutline;
 
-	constructor(rscene: ICoRendererScene) {
+	constructor(rscene: IRendererScene) {
 
 		this.m_rscene = rscene;
 

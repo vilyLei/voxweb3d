@@ -1,5 +1,4 @@
-
-import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
+import IRendererScene from "../../../vox/scene/IRendererScene";
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoParticle } from "../../particle/ICoParticle";
 import IBillboardFlareGroup from "../../particle/entity/IBillboardFlareGroup";
@@ -12,12 +11,12 @@ declare var CoParticle: ICoParticle;
 
 export default class ParticleBuilder {
 
-	private m_rscene: ICoRendererScene = null;
+	private m_rscene: IRendererScene = null;
 	private m_mctx: IMaterialContext = null;
 
 	constructor() { }
 
-	initialize(rscene: ICoRendererScene, mctx: IMaterialContext): void {
+	initialize(rscene: IRendererScene, mctx: IMaterialContext): void {
 
 		this.m_rscene = rscene;
 		this.m_mctx = mctx;

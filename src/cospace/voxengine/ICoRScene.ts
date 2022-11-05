@@ -4,7 +4,7 @@ import IColor4 from "../../vox/material/IColor4";
 import IAABB from "../../vox/geom/IAABB";
 
 import IRendererParam from "../../vox/scene/IRendererParam";
-import { ICoRendererScene } from "./scene/ICoRendererScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import IEvtNode from "../../vox/event/IEvtNode";
 
 import IROTransform from "../../vox/display/IROTransform";
@@ -206,7 +206,7 @@ interface ICoRScene {
 	createColor4(pr?: number, pg?: number, pb?: number, pa?: number): IColor4;
 	createAABB(): IAABB;
 
-	applySceneBlock(rsecne: ICoRendererScene): void;
+	applySceneBlock(rsecne: IRendererScene): void;
 	/**
 	 * @param div HTMLDivElement instance, the default value is null.
 	 */
@@ -216,9 +216,9 @@ interface ICoRScene {
 	 * @param renderProcessesTotal the default value is 3.
 	 * @param sceneBlockEnabled the default value is true.
 	 */
-	createRendererScene(rparam?: IRendererParam, renderProcessesTotal?: number, sceneBlockEnabled?: boolean): ICoRendererScene;
-	setRendererScene(rs: ICoRendererScene): void;
-	getRendererScene(): ICoRendererScene;
+	createRendererScene(rparam?: IRendererParam, renderProcessesTotal?: number, sceneBlockEnabled?: boolean): IRendererScene;
+	setRendererScene(rs: IRendererScene): void;
+	getRendererScene(): IRendererScene;
 
 	createMouseEvt3DDispatcher(): IEvtDispatcher;
 	createEventBaseDispatcher(): IEvtDispatcher;

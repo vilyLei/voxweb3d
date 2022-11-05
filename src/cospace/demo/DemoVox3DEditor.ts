@@ -1,4 +1,4 @@
-import { ICoRendererScene } from "../voxengine/scene/ICoRendererScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import { IMouseInteraction } from "../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { ICoMath } from "../math/ICoMath";
@@ -10,7 +10,6 @@ import { ICoRScene } from "../voxengine/ICoRScene";
 
 import { ICoUIInteraction } from "../voxengine/ui/ICoUIInteraction";
 import ViewerMaterialCtx from "../demo/coViewer/ViewerMaterialCtx";
-import IRendererScene from "../../vox/scene/IRendererScene";
 import { IRendererSceneAccessor } from "../../vox/scene/IRendererSceneAccessor";
 import IRendererSceneGraph from "../../vox/scene/IRendererSceneGraph";
 import { CoPostOutline } from "../app/effect/CoPostOutline";
@@ -111,8 +110,8 @@ class SceneAccessor implements IRendererSceneAccessor {
  * cospace renderer
  */
 export class DemoVox3DEditor {
-	private m_rsc: ICoRendererScene = null;
-	private m_editUIRenderer: ICoRendererScene = null;
+	private m_rsc: IRendererScene = null;
+	private m_editUIRenderer: IRendererScene = null;
 	private m_uirsc: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
 	private m_interact: IMouseInteraction = null;

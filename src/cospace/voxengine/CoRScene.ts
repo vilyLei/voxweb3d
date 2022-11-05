@@ -11,7 +11,6 @@ import RendererDevice from "../../vox/render/RendererDevice";
 import RendererState from "../../vox/render/RendererState";
 
 import RendererParam from "../../vox/scene/RendererParam";
-import { ICoRendererScene } from "./scene/ICoRendererScene";
 
 import EventBase from "../../vox/event/EventBase";
 import EventBaseDispatcher from "../../vox/event/EventBaseDispatcher";
@@ -20,6 +19,7 @@ import ProgressDataEvent from "../../vox/event/ProgressDataEvent";
 import MouseEvent from "../../vox/event/MouseEvent";
 import KeyboardEvent from "../../vox/event/KeyboardEvent";
 import EvtNode from "../../vox/event/EvtNode";
+import IRendererScene from "../../vox/scene/IRendererScene";
 
 import CoRendererScene from "./scene/CoRendererScene";
 
@@ -86,7 +86,7 @@ function createAABB(): IAABB {
 	return new AABB();
 }
 
-function applySceneBlock(rsecne: ICoRendererScene): void {
+function applySceneBlock(rsecne: IRendererScene): void {
 	let rscene = rsecne;
 	if (rscene.materialBlock == null) {
 		let materialBlock = new RenderableMaterialBlock();
@@ -102,8 +102,8 @@ function applySceneBlock(rsecne: ICoRendererScene): void {
 function createRendererSceneParam(div: HTMLDivElement = null): RendererParam {
 	return new RendererParam(div);
 }
-let __$$$RenderScene: ICoRendererScene = null;
-function createRendererScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, sceneBlockEnabled: boolean = true): ICoRendererScene {
+let __$$$RenderScene: IRendererScene = null;
+function createRendererScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, sceneBlockEnabled: boolean = true): IRendererScene {
 	let rs = new CoRendererScene();
 	if (rparam != null) {
 		rs.initialize(rparam, 3);
@@ -114,10 +114,10 @@ function createRendererScene(rparam: RendererParam = null, renderProcessesTotal:
 	__$$$RenderScene = rs;
 	return rs;
 }
-function setRendererScene(rs: ICoRendererScene): void {
+function setRendererScene(rs: IRendererScene): void {
 	__$$$RenderScene = rs;
 }
-function getRendererScene(): ICoRendererScene {
+function getRendererScene(): IRendererScene {
 	return __$$$RenderScene;
 }
 

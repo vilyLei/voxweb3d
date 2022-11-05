@@ -42,7 +42,6 @@ import { ITextureBlock } from "../../../vox/texture/ITextureBlock";
 import { TextureBlock } from "../../../vox/texture/TextureBlock";
 import IRenderer from "../../../vox/scene/IRenderer";
 import IRendererSpace from "../../../vox/scene/IRendererSpace";
-import { ICoRendererScene } from "./ICoRendererScene";
 import RendererSpace from "../../../vox/scene/RendererSpace";
 import RaySelectedNode from "../../../vox/scene/RaySelectedNode";
 import IRaySelector from "../../../vox/scene/IRaySelector";
@@ -52,7 +51,8 @@ import MouseEvt3DController from "../../../vox/scene/MouseEvt3DController";
 import IEvt3DController from "../../../vox/scene/IEvt3DController";
 import FBOInstance from "../../../vox/scene/FBOInstance";
 import CameraDsistanceSorter from "../../../vox/scene/CameraDsistanceSorter";
-// import IRenderNode from "../../../vox/scene/IRenderNode";
+import IRenderNode from "../../../vox/scene/IRenderNode";
+import IRendererScene from "../../../vox/scene/IRendererScene";
 
 import { IRendererSceneAccessor } from "../../../vox/scene/IRendererSceneAccessor";
 import { ShaderProgramBuilder } from "../../../vox/material/ShaderProgramBuilder";
@@ -72,7 +72,7 @@ import { RenderableEntityBlock } from "../../../vox/scene/block/RenderableEntity
 declare var CoRenderer: ICoRenderer;
 // declare var CoRScene: ICoRScene;
 
-export default class CoRendererScene extends RendererSceneBase implements IRenderer, ICoRendererScene, IRenderNode {
+export default class CoRendererScene extends RendererSceneBase implements IRenderer, IRendererScene, IRenderNode {
 
     private m_tickId: any = -1;
     constructor() { super(); }
@@ -107,7 +107,7 @@ export default class CoRendererScene extends RendererSceneBase implements IRende
         this.m_tickId = setTimeout(this.tickUpdate.bind(this), this.m_rparam.getTickUpdateTime());
         this.textureBlock.run();
     }
-    createSubScene(rparam: IRendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): ICoRendererScene {
+    createSubScene(rparam: IRendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
         if (this.m_renderer != null && this.materialBlock != null) {
             this.m_localRunning = true;
             let subsc = new CoRendererSubScene(this, this.m_renderer, this.m_evtFlowEnabled);

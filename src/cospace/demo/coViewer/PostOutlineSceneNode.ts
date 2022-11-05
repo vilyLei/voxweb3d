@@ -1,7 +1,7 @@
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../app/CoSpaceAppData";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
-import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
+import IRendererScene from "../../../vox/scene/IRendererScene";
 import { CoNormalMaterial } from "../../voxengine/material/CoNormalMaterial";
 import { ViewerCoSApp } from "./ViewerCoSApp";
 import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
@@ -16,13 +16,13 @@ declare var CoRScene: ICoRScene;
 declare var OccPostOutlineModule: IOccPostOutlineModule;
 
 class PostOutlineSceneNode implements IRenderNode {
-	private m_rscene: ICoRendererScene;
+	private m_rscene: IRendererScene;
 	private m_vcoapp: ViewerCoSApp;
 	private m_postOutline: IOcclusionPostOutline;
 
 	private m_scale: number = 1.0;
 
-	constructor(rscene: ICoRendererScene, vcoapp: ViewerCoSApp) {
+	constructor(rscene: IRendererScene, vcoapp: ViewerCoSApp) {
 
 		this.m_rscene = rscene;
 		this.m_vcoapp = vcoapp;

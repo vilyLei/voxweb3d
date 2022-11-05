@@ -1,4 +1,3 @@
-import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
 import { IMouseInteraction } from "../../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../../voxengine/ICoRenderer";
 import { ICoMath } from "../../math/ICoMath";
@@ -45,8 +44,8 @@ class SceneAccessor implements IRendererSceneAccessor {
  * cospace renderer
  */
 export class DemoTransEditor {
-	private m_rsc: ICoRendererScene = null;
-	private m_editUIRenderer: ICoRendererScene = null;
+	private m_rsc: IRendererScene = null;
+	private m_editUIRenderer: IRendererScene = null;
 	private m_uirsc: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
 	private m_interact: IMouseInteraction = null;

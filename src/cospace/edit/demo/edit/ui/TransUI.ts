@@ -1,4 +1,3 @@
-import { ICoRendererScene } from "../../../../voxengine/scene/ICoRendererScene";
 import { ICoRScene } from "../../../../voxengine/ICoRScene";
 import { ICoMath } from "../../../../math/ICoMath";
 import { ICoMaterial } from "../../../../voxmaterial/ICoMaterial";
@@ -36,8 +35,8 @@ declare var CoUI: ICoUI;
  */
 class TransUI {
 
-	private m_rsc: ICoRendererScene = null;
-	private m_editUIRenderer: ICoRendererScene = null;
+	private m_rsc: IRendererScene = null;
+	private m_editUIRenderer: IRendererScene = null;
 	private m_uirsc: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
 	private m_outline: PostOutline = null;
@@ -48,7 +47,7 @@ class TransUI {
 		this.m_outline = outline;
 	}
 
-	initialize(rsc: ICoRendererScene, editUIRenderer: ICoRendererScene, coUIScene: ICoUIScene): void {
+	initialize(rsc: IRendererScene, editUIRenderer: IRendererScene, coUIScene: ICoUIScene): void {
 		if (this.m_coUIScene == null) {
 			this.m_rsc = rsc;
 			this.m_editUIRenderer = editUIRenderer;

@@ -1,5 +1,5 @@
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
-import { ICoRendererScene } from "../voxengine/scene/ICoRendererScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import { IMouseInteraction } from "../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { ICoRScene } from "../voxengine/ICoRScene";
@@ -18,7 +18,7 @@ declare var CoUIInteraction: ICoUIInteraction;
  */
 export class DemoPostOutline {
 	private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-	private m_rscene: ICoRendererScene = null;
+	private m_rscene: IRendererScene = null;
 	private m_mouseInteraction: IMouseInteraction = null;
 
 	private m_vcoapp: ViewerCoSApp;

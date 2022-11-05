@@ -1,7 +1,6 @@
 
 import IRenderStage3D from "../../../vox/render/IRenderStage3D";
 import IRendererScene from "../../../vox/scene/IRendererScene";
-import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 
 import { IUIEntity } from "../entity/IUIEntity";
@@ -22,7 +21,7 @@ import IAABB2D from "../../../vox/geom/IAABB2D";
 declare var CoTexture: ICoTexture;
 
 class CoUIScene implements ICoUIScene {
-	private m_crscene: ICoRendererScene;
+	private m_crscene: IRendererScene;
 	private m_rstage: IRenderStage3D;
 	private m_stageRect: IAABB2D;
 
@@ -42,7 +41,7 @@ class CoUIScene implements ICoUIScene {
 	 * @param atlasSize the default value is 1024
 	 * @param renderProcessesTotal the default value is 3
 	 */
-	initialize(crscene: ICoRendererScene = null, atlasSize: number = 1024, renderProcessesTotal: number = 3): void {
+	initialize(crscene: IRendererScene = null, atlasSize: number = 1024, renderProcessesTotal: number = 3): void {
 		if (this.m_crscene == null) {
 
 			this.m_crscene = crscene != null ? crscene : CoRScene.getRendererScene();

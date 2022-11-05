@@ -1,5 +1,5 @@
 import IRenderEntity from "../../../../vox/render/IRenderEntity";
-import { ICoRendererScene } from "../../../voxengine/scene/ICoRendererScene";
+import IRendererScene from "../../../../vox/scene/IRendererScene";
 import IRenderNode from "../../../../vox/scene/IRenderNode";
 import IOcclusionPostOutline from "../../../../renderingtoy/mcase/outline/IOcclusionPostOutline";
 import { ModuleLoader } from "../../../modules/loaders/ModuleLoader";
@@ -9,10 +9,10 @@ declare var OccPostOutlineModule: IOccPostOutlineModule;
 
 class PostOutline implements IRenderNode {
 
-	private m_rscene: ICoRendererScene;
+	private m_rscene: IRendererScene;
 	private m_postOutline: IOcclusionPostOutline;
 
-	constructor(rscene: ICoRendererScene, urlChecker: (url: string) => string = null) {
+	constructor(rscene: IRendererScene, urlChecker: (url: string) => string = null) {
 
 		this.m_rscene = rscene;
 

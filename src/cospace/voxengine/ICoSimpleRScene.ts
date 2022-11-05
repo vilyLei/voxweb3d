@@ -3,7 +3,7 @@ import IMatrix4 from "../../vox/math/IMatrix4";
 import IColor4 from "../../vox/material/IColor4";
 
 import IRendererParam from "../../vox/scene/IRendererParam";
-import { ICoRendererScene } from "./scene/ICoRendererScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 
 import ITransformEntity from "../../vox/entity/ITransformEntity";
 import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";
@@ -85,7 +85,7 @@ interface ICoSimpleRScene {
 
 	createColor4(pr?: number, pg?: number, pb?: number, pa?: number): IColor4;
 
-	applySceneBlock(rsecne: ICoRendererScene): void;
+	applySceneBlock(rsecne: IRendererScene): void;
 	/**
 	 * @param div HTMLDivElement instance, the default value is null.
 	 */
@@ -95,9 +95,9 @@ interface ICoSimpleRScene {
 	 * @param renderProcessesTotal the default value is 3.
 	 * @param sceneBlockEnabled the default value is true.
 	 */
-	createRendererScene(rparam?: IRendererParam, renderProcessesTotal?: number, sceneBlockEnabled?: boolean): ICoRendererScene;
-	setRendererScene(rs: ICoRendererScene): void;
-	getRendererScene(): ICoRendererScene;
+	createRendererScene(rparam?: IRendererParam, renderProcessesTotal?: number, sceneBlockEnabled?: boolean): IRendererScene;
+	setRendererScene(rs: IRendererScene): void;
+	getRendererScene(): IRendererScene;
 
 	/**
 	 * build default 3d entity rendering material

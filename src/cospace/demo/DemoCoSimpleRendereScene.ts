@@ -1,4 +1,4 @@
-import { ICoRendererScene } from "../voxengine/scene/ICoRendererScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import ITransformEntity from "../../vox/entity/ITransformEntity";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { ICoSimpleRScene } from "../voxengine/ICoSimpleRScene";
@@ -13,7 +13,7 @@ declare var CoSimpleRScene: ICoSimpleRScene;
  */
 export class DemoCoSimpleRendereScene {
 
-	private m_rscene: ICoRendererScene = null;
+	private m_rscene: IRendererScene = null;
 	private m_entity: ITransformEntity = null;
 
 	constructor() {}

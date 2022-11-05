@@ -1,4 +1,4 @@
-import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
+import IRendererScene from "../../../vox/scene/IRendererScene";
 import { CoMaterialContextParam, ICoRScene } from "../../voxengine/ICoRScene";
 import { ICoLightModule } from "../../renderEffect/light/ICoLightModule";
 import { ICoEnvLightModule } from "../../renderEffect/light/ICoEnvLightModule";
@@ -15,7 +15,7 @@ declare var CoEnvLightModule: ICoEnvLightModule;
 declare var VSMShadowModule: IVSMShadowModule;
 
 export class ViewerMaterialCtx {
-	private m_rscene: ICoRendererScene;
+	private m_rscene: IRendererScene;
 	private m_mctx: IMaterialContext;
 
 	private m_mctxFlag: number = 0;
@@ -29,7 +29,7 @@ export class ViewerMaterialCtx {
 	getMaterialCtx(): IMaterialContext {
 		return this.m_mctx;
 	}
-	initialize(rscene: ICoRendererScene, materialData: any, callback: () => void): void {
+	initialize(rscene: IRendererScene, materialData: any, callback: () => void): void {
 
 		this.m_rscene = rscene;
 		this.m_materialData = materialData;

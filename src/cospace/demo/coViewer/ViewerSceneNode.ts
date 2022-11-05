@@ -2,7 +2,7 @@ import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../app/CoSpaceA
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../../vox/render/IRenderEntity";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
-import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
+import IRendererScene from "../../../vox/scene/IRendererScene";
 import { CoNormalMaterial } from "../../voxengine/material/CoNormalMaterial";
 import ViewerMaterialCtx from "../coViewer/ViewerMaterialCtx";
 import { ViewerCoSApp } from "./ViewerCoSApp";
@@ -19,7 +19,7 @@ declare var OccPostOutlineModule: IOccPostOutlineModule;
 
 class ViewerSceneNode implements IRenderNode {
 
-	private m_rscene: ICoRendererScene;
+	private m_rscene: IRendererScene;
 	private m_vcoapp: ViewerCoSApp;
 	private m_vmctx: ViewerMaterialCtx;
 	private m_objUnits: CoGeomDataUnit[] = [];
@@ -27,7 +27,7 @@ class ViewerSceneNode implements IRenderNode {
 
 	private m_scale: number = 1.0;
 
-	constructor(rscene: ICoRendererScene, vmctx: ViewerMaterialCtx, vcoapp: ViewerCoSApp) {
+	constructor(rscene: IRendererScene, vmctx: ViewerMaterialCtx, vcoapp: ViewerCoSApp) {
 		
 		this.m_rscene = rscene;
 		this.m_vmctx = vmctx;

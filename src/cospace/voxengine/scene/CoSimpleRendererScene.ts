@@ -41,7 +41,6 @@ import { ITextureBlock } from "../../../vox/texture/ITextureBlock";
 import { TextureBlock } from "../../../vox/texture/TextureBlock";
 import IRenderer from "../../../vox/scene/IRenderer";
 import IRendererSpace from "../../../vox/scene/IRendererSpace";
-import { ICoRendererScene } from "./ICoRendererScene";
 import IEvt3DController from "../../../vox/scene/IEvt3DController";
 import FBOInstance from "../../../vox/scene/FBOInstance";
 import CameraDsistanceSorter from "../../../vox/scene/CameraDsistanceSorter";
@@ -58,7 +57,7 @@ import IRenderNode from "../../../vox/scene/IRenderNode";
 
 declare var CoRenderer: ICoRenderer;
 
-export default class CoSimpleRendererScene implements IRenderer, ICoRendererScene, IRenderNode {
+export default class CoSimpleRendererScene implements IRenderer, IRendererScene, IRenderNode {
 	private static s_uid: number = 0;
 	private m_uid: number = -1;
 	private m_adapter: IRenderAdapter = null;
@@ -265,7 +264,7 @@ export default class CoSimpleRendererScene implements IRenderer, ICoRendererScen
 	/**
 	 * very important renderer scene system function
 	 */
-	createSubScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): ICoRendererScene {
+	createSubScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
 		throw Error("illegal operations !!!");
 		return null;
 	}

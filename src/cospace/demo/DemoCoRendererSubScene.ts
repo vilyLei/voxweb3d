@@ -1,11 +1,10 @@
-import { ICoRendererScene } from "../voxengine/scene/ICoRendererScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import { IMouseInteraction } from "../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { ICoRScene } from "../voxengine/ICoRScene";
 import { ICoUIInteraction } from "../voxengine/ui/ICoUIInteraction";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 
-import IRendererScene from "../../vox/scene/IRendererScene";
 import { IRendererSceneAccessor } from "../../vox/scene/IRendererSceneAccessor";
 
 declare var CoRenderer: ICoRenderer;
@@ -29,8 +28,8 @@ class SceneAccessor implements IRendererSceneAccessor{
  */
 export class DemoCoRendererSubScene {
 
-	private m_rscene: ICoRendererScene = null;
-	private m_rsubscene: ICoRendererScene = null;
+	private m_rscene: IRendererScene = null;
+	private m_rsubscene: IRendererScene = null;
 	private m_mouseInteraction: IMouseInteraction = null;
 
 	constructor() { }

@@ -10,7 +10,7 @@ import RendererDevice from "../../vox/render/RendererDevice";
 import RendererState from "../../vox/render/RendererState";
 
 import RendererParam from "../../vox/scene/RendererParam";
-import { ICoRendererScene } from "./scene/ICoRendererScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 
 import CoSimpleRendererScene from "./scene/CoSimpleRendererScene";
 
@@ -46,7 +46,7 @@ function createColor4(pr: number = 1.0, pg: number = 1.0, pb: number = 1.0, pa: 
 	return new Color4(pr, pg, pb, pa);
 }
 
-function applySceneBlock(rsecne: ICoRendererScene): void {
+function applySceneBlock(rsecne: IRendererScene): void {
 	let rscene = rsecne;
 	if (rscene.materialBlock == null) {
 		let materialBlock = new RenderableMaterialBlock();
@@ -62,8 +62,8 @@ function applySceneBlock(rsecne: ICoRendererScene): void {
 function createRendererSceneParam(div: HTMLDivElement = null): RendererParam {
 	return new RendererParam(div);
 }
-let __$$$RenderScene: ICoRendererScene = null;
-function createRendererScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, sceneBlockEnabled: boolean = true): ICoRendererScene {
+let __$$$RenderScene: IRendererScene = null;
+function createRendererScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, sceneBlockEnabled: boolean = true): IRendererScene {
 	let sc = new CoSimpleRendererScene();
 	if(rparam != null) {
 		sc.initialize(rparam, 3);
@@ -75,10 +75,10 @@ function createRendererScene(rparam: RendererParam = null, renderProcessesTotal:
 	return sc;
 }
 
-function setRendererScene(rs: ICoRendererScene): void {
+function setRendererScene(rs: IRendererScene): void {
 	__$$$RenderScene = rs;
 }
-function getRendererScene(): ICoRendererScene {
+function getRendererScene(): IRendererScene {
 	return __$$$RenderScene;
 }
 

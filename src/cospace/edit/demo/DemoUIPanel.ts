@@ -1,6 +1,4 @@
-import { CoDataFormat } from "../../app/CoSpaceAppData";
-
-import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
+import IRendererScene from "../../../vox/scene/IRendererScene";
 import { IMouseInteraction } from "../../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../../voxengine/ICoRenderer";
 import { ICoMath } from "../../math/ICoMath";
@@ -55,7 +53,7 @@ declare var CoUI: ICoUI;
  * cospace renderer
  */
 export class DemoUIPanel {
-	private m_rscene: ICoRendererScene = null;
+	private m_rscene: IRendererScene = null;
 	private m_interact: IMouseInteraction = null;
 
 	private m_vcoapp: ViewerCoSApp;

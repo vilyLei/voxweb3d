@@ -1,4 +1,3 @@
-import { ICoRendererScene } from "../../../../voxengine/scene/ICoRendererScene";
 import { ICoRenderer } from "../../../../voxengine/ICoRenderer";
 import { ICoUI } from "../../../../voxui/ICoUI";
 import { ICoUIScene } from "../../../../voxui/scene/ICoUIScene";
@@ -24,15 +23,15 @@ declare var CoUI: ICoUI;
  */
 class NavigationUI {
 
-	private m_rsc: ICoRendererScene = null;
-	private m_editUIRenderer: ICoRendererScene = null;
+	private m_rsc: IRendererScene = null;
+	private m_editUIRenderer: IRendererScene = null;
 	private m_uirsc: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
 	tip: IRectTextTip = null;
 
 	constructor() { }
 
-	initialize(rsc: ICoRendererScene, editUIRenderer: ICoRendererScene, coUIScene: ICoUIScene): void {
+	initialize(rsc: IRendererScene, editUIRenderer: IRendererScene, coUIScene: ICoUIScene): void {
 		if (this.m_coUIScene == null) {
 			this.m_rsc = rsc;
 			this.m_editUIRenderer = editUIRenderer;

@@ -1,4 +1,4 @@
-import { ICoRendererScene } from "../../../voxengine/scene/ICoRendererScene";
+import IRendererScene from "../../../../vox/scene/IRendererScene";
 import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { ICoMath } from "../../../math/ICoMath";
 import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
@@ -9,7 +9,6 @@ import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
 import { ICoUIInteraction } from "../../../voxengine/ui/ICoUIInteraction";
 import ITransformEntity from "../../../../vox/entity/ITransformEntity";
 import IVector3D from "../../../../vox/math/IVector3D";
-import IRendererScene from "../../../../vox/scene/IRendererScene";
 import { ITransformController } from "../../../edit/transform/ITransformController";
 
 import { UserEditEvent } from "../../../edit/event/UserEditEvent";
@@ -37,8 +36,8 @@ declare var CoUI: ICoUI;
  */
 class NVTransUI {
 
-	private m_rsc: ICoRendererScene = null;
-	private m_editUIRenderer: ICoRendererScene = null;
+	private m_rsc: IRendererScene = null;
+	private m_editUIRenderer: IRendererScene = null;
 	private m_uirsc: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
 	private m_outline: CoPostOutline = null;
@@ -49,7 +48,7 @@ class NVTransUI {
 		this.m_outline = outline;
 	}
 
-	initialize(rsc: ICoRendererScene, editUIRenderer: ICoRendererScene, coUIScene: ICoUIScene): void {
+	initialize(rsc: IRendererScene, editUIRenderer: IRendererScene, coUIScene: ICoUIScene): void {
 		if (this.m_coUIScene == null) {
 			this.m_rsc = rsc;
 			this.m_editUIRenderer = editUIRenderer;

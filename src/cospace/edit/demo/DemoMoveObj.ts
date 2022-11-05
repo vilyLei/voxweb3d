@@ -1,4 +1,5 @@
-import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
+
+import IRendererScene from "../../../vox/scene/IRendererScene";
 import { IMouseInteraction } from "../../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../../voxengine/ICoRenderer";
 import { ICoMath } from "../../math/ICoMath";
@@ -28,7 +29,6 @@ import { DragScaleController } from "../scale/DragScaleController";
 import { IDragRotationController } from "../rotate/IDragRotationController";
 import { DragRotationController } from "../rotate/DragRotationController";
 
-import IRendererScene from "../../../vox/scene/IRendererScene";
 import { IRendererSceneAccessor } from "../../../vox/scene/IRendererSceneAccessor";
 import RendererSceneGraph from "../../../vox/scene/RendererSceneGraph";
 
@@ -53,8 +53,8 @@ class SceneAccessor implements IRendererSceneAccessor {
  * cospace renderer
  */
 export class DemoMoveObj {
-	private m_rscene: ICoRendererScene = null;
-	private m_rEditScene: ICoRendererScene = null;
+	private m_rscene: IRendererScene = null;
+	private m_rEditScene: IRendererScene = null;
 	private m_interact: IMouseInteraction = null;
 
 	private m_vcoapp: ViewerCoSApp;

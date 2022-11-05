@@ -1,6 +1,6 @@
 import { CoDataFormat } from "../app/CoSpaceAppData";
 
-import { ICoRendererScene } from "../voxengine/scene/ICoRendererScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import { IMouseInteraction } from "../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { CoMaterialContextParam, ICoRScene } from "../voxengine/ICoRScene";
@@ -22,7 +22,7 @@ declare var CoUIInteraction: ICoUIInteraction;
  * cospace renderer
  */
 export class DemoCoParticle {
-	private m_rscene: ICoRendererScene = null;
+	private m_rscene: IRendererScene = null;
 	private m_interact: IMouseInteraction = null;
 
 	private m_vcoapp: ViewerCoSApp;

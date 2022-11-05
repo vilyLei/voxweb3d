@@ -1,7 +1,6 @@
 import IAABB2D from "../../../vox/geom/IAABB2D";
 import IRenderStage3D from "../../../vox/render/IRenderStage3D";
 import IRendererScene from "../../../vox/scene/IRendererScene";
-import { ICoRendererScene } from "../../voxengine/scene/ICoRendererScene";
 import ICanvasTexAtlas from "../../voxtexture/atlas/ICanvasTexAtlas";
 
 import { IUISceneEntity } from "./IUISceneEntity";
@@ -23,7 +22,7 @@ interface ICoUIScene {
 	 * @param atlasSize the default value is 1024
 	 * @param renderProcessesTotal the default value is 3
 	 */
-	initialize(crscene?: ICoRendererScene, atlasSize?: number, renderProcessesTotal?: number): void;
+	initialize(crscene?: IRendererScene, atlasSize?: number, renderProcessesTotal?: number): void;
 	addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled?: boolean, bubbleEnabled?: boolean): ICoUIScene;
 	removeEventListener(type: number, listener: any, func: (evt: any) => void): ICoUIScene;
 	getStage(): IRenderStage3D;

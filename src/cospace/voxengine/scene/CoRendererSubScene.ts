@@ -36,7 +36,7 @@ import Entity3DNodeLinker from "../../../vox/scene/Entity3DNodeLinker";
 import { ITextureBlock } from "../../../vox/texture/ITextureBlock";
 import IRenderer from "../../../vox/scene/IRenderer";
 import IRendererSpace from "../../../vox/scene/IRendererSpace";
-import { ICoRendererScene } from "./ICoRendererScene";
+import IRendererScene from "../../../vox/scene/IRendererScene";
 import RendererSpace from "../../../vox/scene/RendererSpace";
 import RaySelectedNode from "../../../vox/scene/RaySelectedNode";
 import IRaySelector from "../../../vox/scene/IRaySelector";
@@ -59,11 +59,11 @@ import RendererSceneBase from "../../../vox/scene/RendererSceneBase";
 import IRendererParam from "../../../vox/scene/IRendererParam";
 
 
-export default class CoRendererSubScene extends RendererSceneBase implements IRenderer, ICoRendererScene, IRenderNode {
+export default class CoRendererSubScene extends RendererSceneBase implements IRenderer, IRendererScene, IRenderNode {
     private m_camera: IRenderCamera = null;
     private m_perspectiveEnabled = true;
-    private m_parent: ICoRendererScene = null;
-    constructor(parent: ICoRendererScene, renderer: IRendererInstance, evtFlowEnabled: boolean) {
+    private m_parent: IRendererScene = null;
+    constructor(parent: IRendererScene, renderer: IRendererInstance, evtFlowEnabled: boolean) {
         super(1024);
         this.m_evtFlowEnabled = evtFlowEnabled;
         this.m_parent = parent;
@@ -71,7 +71,7 @@ export default class CoRendererSubScene extends RendererSceneBase implements IRe
         this.m_shader = renderer.getDataBuilder().getRenderShader();
         this.m_localRunning = true;
     }
-    createSubScene(rparam: IRendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): ICoRendererScene{
+    createSubScene(rparam: IRendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene{
         return this.m_parent.createSubScene(rparam, renderProcessesTotal, createNewCamera);
     }
     getCurrentStage3D(): IRenderStage3D {
@@ -220,7 +220,7 @@ export default class CoRendererSubScene extends RendererSceneBase implements IRe
     }
 }
 /*
-export default class CoRendererSubScene implements IRenderer, ICoRendererScene, IRenderNode {
+export default class CoRendererSubScene implements IRenderer, IRendererScene, IRenderNode {
 	private static s_uid: number = 0;
 	private m_uid: number = -1;
 	private m_adapter: IRenderAdapter = null;
@@ -385,7 +385,7 @@ export default class CoRendererSubScene implements IRenderer, ICoRendererScene, 
 	getDevicePixelRatio(): number {
 		return this.m_adapter.getDevicePixelRatio();
 	}
-	createSubScene(rparam: RendererParam, renderProcessesTotal: number = 3, createNewCamera: boolean = true): ICoRendererScene {
+	createSubScene(rparam: RendererParam, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
 		throw Error("Illegal Operations !!!");
 		return null;
 	}
