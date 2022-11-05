@@ -254,10 +254,10 @@ export default class Box3DMesh extends MeshBase {
         }
         if (this.m_transMatrix != null) {
             this.m_transMatrix.transformVectorsSelf(this.m_vs, this.m_vs.length);
-            this.bounds.addXYZFloat32Arr(this.m_vs);
+            this.bounds.addFloat32Arr(this.m_vs);
         }
         else {
-            this.bounds.addXYZFloat32Arr(this.m_vs);
+            this.bounds.addFloat32Arr(this.m_vs);
         }
         this.bounds.updateFast();
         ROVertexBuffer.Reset();

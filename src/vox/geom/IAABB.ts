@@ -22,16 +22,21 @@ interface IAABB {
 	containsXZ(vx: number, vz: number): boolean;
 	// 是否包含某一点(同一坐标空间的点)
 	containsYZ(vy: number, vz: number): boolean;
-
+	/**
+	 * @param in_pos dst position
+	 * @param out_pos result position
+	 * @param bias the default value is 0.0
+	 */
+	getClosePosition(in_pos: IVector3D, out_pos: IVector3D, bias?: number): void;
 	addPosition(pv: IVector3D): void;
 	addXYZ(pvx: number, pvy: number, pvz: number): void;
 	addXYZFast(pvx: number, pvy: number, pvz: number): void;
-	addXYZFloat32AndIndicesArr(vs: Float32Array, indices: Uint16Array | Uint32Array): void;
+	addFloat32AndIndicesArr(vs: Float32Array | number[], indices: Uint16Array | Uint32Array): void;
 	/**
 	 * @param vs Float32Array instance
 	 * @param step the default value is 3
 	 */
-	addXYZFloat32Arr(vs: Float32Array, step?: number): void;
+	addFloat32Arr(vs: Float32Array | number[], step?: number): void;
 
 	getLong(): number;
 	getWidth(): number;

@@ -57,7 +57,7 @@ class AABB implements IAABB {
 		return this.min.equalsXYZ(ab.min) && this.max.equalsXYZ(ab.max);
 	}
 	setVolume(width: number, height: number, long: number): void {
-		
+
 		this.m_width = width;
 		this.m_height = height;
 		this.m_long = long;
@@ -122,7 +122,7 @@ class AABB implements IAABB {
 		v = min.z > pvz ? min : max;
 		v.z = pvz;
 	}
-	addXYZFloat32Arr(vs: Float32Array, step: number = 3): void {
+	addFloat32Arr(vs: Float32Array | number[], step: number = 3): void {
 
 		let len = vs.length;
 		let i = 0;
@@ -160,7 +160,7 @@ class AABB implements IAABB {
 		}
 	}
 
-	addXYZFloat32AndIndicesArr(vs: Float32Array, indices: Uint16Array | Uint32Array): void {
+	addFloat32AndIndicesArr(vs: Float32Array | number[], indices: Uint16Array | Uint32Array): void {
 
 		let len: number = indices.length;
 		let ivs = indices;
@@ -184,24 +184,26 @@ class AABB implements IAABB {
 		}
 	}
 	getClosePosition(in_pos: Vector3D, out_pos: Vector3D, bias: number = 0.0): void {
+		const min = this.min;
+		const max = this.max;
 		out_pos.copyFrom(in_pos);
-		if (out_pos.x < this.min.x) {
-			out_pos.x = this.min.x + bias;
+		if (out_pos.x < min.x) {
+			out_pos.x = min.x + bias;
 		}
-		else if (out_pos.x > this.max.x) {
-			out_pos.x = this.max.x - bias;
+		else if (out_pos.x > max.x) {
+			out_pos.x = max.x - bias;
 		}
-		if (out_pos.y < this.min.y) {
-			out_pos.y = this.min.y + bias;
+		if (out_pos.y < min.y) {
+			out_pos.y = min.y + bias;
 		}
-		else if (out_pos.y > this.max.y) {
-			out_pos.y = this.max.y - bias;
+		else if (out_pos.y > max.y) {
+			out_pos.y = max.y - bias;
 		}
-		if (out_pos.z < this.min.z) {
-			out_pos.z = this.min.z + bias;
+		if (out_pos.z < min.z) {
+			out_pos.z = min.z + bias;
 		}
-		else if (out_pos.z > this.max.z) {
-			out_pos.z = this.max.z - bias;
+		else if (out_pos.z > max.z) {
+			out_pos.z = max.z - bias;
 		}
 	}
 	// @param	v	Vector3D instance

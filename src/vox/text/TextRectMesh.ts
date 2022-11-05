@@ -105,7 +105,7 @@ export default class TextRectMesh extends MeshBase {
             if (this.bounds == null) this.bounds = new AABB();
             this.bounds.min.setXYZ(minX, minY, 0.0);
             this.bounds.max.setXYZ(minX + this.m_width, maxY, 0.0);
-            //  this.bounds.addXYZFloat32Arr(this.m_vs);
+            //  this.bounds.addFloat32Arr(this.m_vs);
             //  this.bounds.updateFast();
             let j: number = 0;
             for (i = 0; i < charsTot; ++i) {

@@ -118,7 +118,7 @@ export default class QuadGridMeshGeometry extends GeometryBase {
             }
         }
 
-        this.bounds.addXYZFloat32Arr(this.m_vs);
+        this.bounds.addFloat32Arr(this.m_vs);
         this.bounds.updateFast();
 
         let cn: number = len;

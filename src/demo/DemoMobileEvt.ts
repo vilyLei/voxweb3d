@@ -159,7 +159,7 @@ export class DemoMobileEvt {
 
         // let ab = new AABB();
         // let fs = new Float32Array([-100,-2, -300, 0.5,30,10, 300,400,50]);
-        // ab.addXYZFloat32Arr(fs);
+        // ab.addFloat32Arr(fs);
         // ab.update();
         // console.log("ab: ", ab);
 

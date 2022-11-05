@@ -336,7 +336,7 @@ export default class PureEntity implements IDisplayEntity {
                     }
                     this.m_localBounds.reset();
                     let ivs: Uint16Array | Uint32Array = this.m_mesh.getIVS();
-                    this.m_localBounds.addXYZFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(ivsIndex, ivsIndex + ivsCount));
+                    this.m_localBounds.addFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(ivsIndex, ivsIndex + ivsCount));
                     this.m_localBounds.update();
                 }
             }
@@ -568,7 +568,7 @@ export default class PureEntity implements IDisplayEntity {
             let out_vs: Float32Array = PureEntity.s_boundsOutVS;
             this.m_omat.transformVectors(in_vs, 24, out_vs);
             this.m_globalBounds.reset();
-            this.m_globalBounds.addXYZFloat32Arr(out_vs);
+            this.m_globalBounds.addFloat32Arr(out_vs);
             this.m_globalBounds.update();
         }
     }
@@ -577,7 +577,7 @@ export default class PureEntity implements IDisplayEntity {
 
             this.m_localBounds.reset();
             let ivs: Uint16Array | Uint32Array = this.m_mesh.getIVS();
-            this.m_localBounds.addXYZFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(this.m_display.ivsIndex, this.m_display.ivsIndex + this.m_display.ivsCount));
+            this.m_localBounds.addFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(this.m_display.ivsIndex, this.m_display.ivsIndex + this.m_display.ivsCount));
             this.m_localBounds.update();
         }
         this.update();

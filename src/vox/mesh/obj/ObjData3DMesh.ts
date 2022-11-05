@@ -41,7 +41,7 @@ export default class ObjData3DMesh extends MeshBase {
         
         this.m_vs = this.m_dataParser.getVS();
         this.bounds = new AABB();
-        this.bounds.addXYZFloat32Arr(this.m_vs);
+        this.bounds.addFloat32Arr(this.m_vs);
         this.bounds.update();
         this.vtxTotal = this.m_vs.length / 3;
 

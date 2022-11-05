@@ -101,7 +101,7 @@ export default class DracoMesh extends MeshBase {
                 }
                 
                 subLen = pivs.length;
-                this.bounds.addXYZFloat32Arr(pvs);
+                this.bounds.addFloat32Arr(pvs);
                 
                 if (indexOffset > 0) {
                     for (j = 0; j < subLen; ++j) {
@@ -153,7 +153,7 @@ export default class DracoMesh extends MeshBase {
         //this.m_ivs = new Uint16Array([0,2,3,0,1,2]);
         //this.m_vs = new Float32Array([-10,-10,20, 10,-10,20, 10,10,20, -10,10,20]);
         if (this.bounds == null) this.bounds = new AABB();
-        this.bounds.addXYZFloat32Arr(this.m_vs);
+        this.bounds.addFloat32Arr(this.m_vs);
         this.bounds.updateFast();
         //console.log("this.bounds: "+this.bounds.toString());
 

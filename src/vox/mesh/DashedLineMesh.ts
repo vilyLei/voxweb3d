@@ -49,7 +49,7 @@ export default class DashedLineMesh extends MeshBase {
             if(this.bounds == null) {
                 this.bounds = new AABB();
             }
-            this.bounds.addXYZFloat32Arr(this.m_vs);
+            this.bounds.addFloat32Arr(this.m_vs);
             this.bounds.updateFast();
 
             ROVertexBuffer.Reset();

@@ -91,7 +91,7 @@ class IdGroupMesh extends MeshBase {
 
         if(this.bounds == null) {
             this.bounds = new AABB();
-            this.bounds.addXYZFloat32Arr(this.m_vs, 4);
+            this.bounds.addFloat32Arr(this.m_vs, 4);
             this.bounds.updateFast();
         }
 

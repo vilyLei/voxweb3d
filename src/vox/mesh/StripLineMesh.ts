@@ -30,7 +30,7 @@ export default class StripLineMesh extends MeshBase {
             this.vtCount = Math.floor(posarr.length / 3);
             this.m_vs = new Float32Array(posarr);
             this.bounds = new AABB();
-            //  this.bounds.addXYZFloat32Arr(this.m_vs);
+            //  this.bounds.addFloat32Arr(this.m_vs);
             //  this.bounds.updateFast();
 
             ROVertexBuffer.Reset();

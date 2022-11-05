@@ -72,7 +72,7 @@ export default class Tube3DMesh extends MeshBase {
         }
         if (this.m_boundsChanged) {
             this.bounds.reset();
-            this.bounds.addXYZFloat32Arr(this.m_vs);
+            this.bounds.addFloat32Arr(this.m_vs);
             this.bounds.updateFast();
         }
         this.m_boundsChanged = false;

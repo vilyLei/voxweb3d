@@ -150,12 +150,12 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 
 				if (this.bounds == null) {
 					this.bounds = new AABB();
-					this.bounds.addXYZFloat32Arr(this.m_vs);
+					this.bounds.addFloat32Arr(this.m_vs);
 					this.bounds.update();
 				} else if (this.m_boundsChanged || this.m_boundsVersion == this.bounds.version) {
 					this.bounds.reset();
 					// 如果重新init, 但是版本号却没有改变，说明bounds需要重新计算
-					this.bounds.addXYZFloat32Arr(this.m_vs);
+					this.bounds.addFloat32Arr(this.m_vs);
 					this.bounds.update();
 				}
 			}

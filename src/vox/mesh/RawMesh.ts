@@ -66,7 +66,7 @@ export default class RawMesh extends MeshBase implements IRawMesh {
 			if (this.m_transMatrix != null) {
 				this.m_transMatrix.transformVectorsSelf(vs, vs.length);
 			}
-            this.bounds.addXYZFloat32Arr(vs);
+            this.bounds.addFloat32Arr(vs);
             this.bounds.updateFast();
 		}
 		if(this.ivsEnabled) {

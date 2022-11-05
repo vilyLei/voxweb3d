@@ -111,7 +111,7 @@ export default class RectPlaneMesh extends MeshBase {
                 break;
         }
         if (this.bounds == null) this.bounds = new AABB();
-        this.bounds.addXYZFloat32Arr(this.m_vs);
+        this.bounds.addFloat32Arr(this.m_vs);
         this.bounds.updateFast();
 
         ROVertexBuffer.Reset();

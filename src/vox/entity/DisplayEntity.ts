@@ -364,7 +364,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
                     this.m_transStatus = ROTransform.UPDATE_TRANSFORM;
                     this.m_localBounds.reset();
                     let ivs: Uint16Array | Uint32Array = this.m_mesh.getIVS();
-                    this.m_localBounds.addXYZFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(ivsIndex, ivsIndex + ivsCount));
+                    this.m_localBounds.addFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(ivsIndex, ivsIndex + ivsCount));
                     this.m_localBounds.update();
                 }
             }
@@ -598,7 +598,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
 
                 this.m_localBounds.reset();
                 let ivs: Uint16Array | Uint32Array = this.m_mesh.getIVS();
-                this.m_localBounds.addXYZFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(this.m_display.ivsIndex, this.m_display.ivsIndex + this.m_display.ivsCount));
+                this.m_localBounds.addFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(this.m_display.ivsIndex, this.m_display.ivsIndex + this.m_display.ivsCount));
                 this.m_localBounds.update();
             }
             this.update();
@@ -642,7 +642,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
                 let out_vs = DE.s_boundsOutVS;
                 this.m_transfrom.getMatrix().transformVectors(in_vs, 24, out_vs);
                 this.m_globalBounds.reset();
-                this.m_globalBounds.addXYZFloat32Arr(out_vs);
+                this.m_globalBounds.addFloat32Arr(out_vs);
                 this.m_globalBounds.update();
             }
         }
