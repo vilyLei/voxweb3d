@@ -10,19 +10,20 @@ import Vector3D from "../../vox/math/Vector3D";
 import IAABB from "../../vox/geom/IAABB";
 
 class AABB implements IAABB {
-	min: Vector3D = new Vector3D();
-	max: Vector3D = new Vector3D();
-	version: number = -1;
-	radius: number = 50;
-	radius2: number = 2500;
-	center: Vector3D = new Vector3D(0.0, 0.0, 0.0);
-	private m_long: number = 100.0;
-	private m_width: number = 100.0;
-	private m_height: number = 100.0;
-	private m_halfLong: number = 50.0;
-	private m_halfWidth: number = 50.0;
-	private m_halfHeight: number = 50.0;
-	private m_tempV: Vector3D = new Vector3D();
+	private m_long = 100.0;
+	private m_width = 100.0;
+	private m_height = 100.0;
+	private m_halfLong = 50.0;
+	private m_halfWidth = 50.0;
+	private m_halfHeight = 50.0;
+	private m_tempV = new Vector3D();
+	private m_resetFlag = true;
+	min = new Vector3D();
+	max = new Vector3D();
+	version = -1;
+	radius = 50;
+	radius2 = 2500;
+	center = new Vector3D(0.0, 0.0, 0.0);
 	constructor() {
 		this.reset();
 	}
@@ -35,11 +36,22 @@ class AABB implements IAABB {
 	getHeight(): number {
 		return this.m_height;
 	}
-	reset(): void {
-		let v = this.min;
-		v.x = v.y = v.z = MathConst.MATH_MAX_POSITIVE;
-		v = this.max;
-		v.x = v.y = v.z = MathConst.MATH_MIN_NEGATIVE;
+	reset(v: Vector3D = null): void {
+
+		const min = this.min;
+		const max = this.max;
+
+		this.m_resetFlag = v == null;
+
+		if (v != null) {
+			min.copyFrom(v);
+			max.copyFrom(v);
+		} else {
+			v = min;
+			v.x = v.y = v.z = MathConst.MATH_MAX_POSITIVE;
+			v = max;
+			v.x = v.y = v.z = MathConst.MATH_MIN_NEGATIVE;
+		}
 	}
 	equals(ab: IAABB): boolean {
 		return this.min.equalsXYZ(ab.min) && this.max.equalsXYZ(ab.max);
@@ -81,13 +93,13 @@ class AABB implements IAABB {
 		const min = this.min;
 		const max = this.max;
 		if (min.x > pvx) min.x = pvx;
-		else if (max.x < pvx) max.x = pvx;
+		if (max.x < pvx) max.x = pvx;
 
 		if (min.y > pvy) min.y = pvy;
-		else if (max.y < pvy) max.y = pvy;
+		if (max.y < pvy) max.y = pvy;
 
 		if (min.z > pvz) min.z = pvz;
-		else if (max.z < pvz) max.z = pvz;
+		if (max.z < pvz) max.z = pvz;
 
 		// let v = this.min.x > pvx ? this.min : this.max;
 		// v.x = pvx;
@@ -96,17 +108,47 @@ class AABB implements IAABB {
 		// v = this.min.z > pvz ? this.min : this.max;
 		// v.z = pvz;
 	}
+	/**
+	 * must reset a position vector3d object before one time, example: aabb.reset(new Vector3D(1,2,3))
+	 */
+	addXYZFast(pvx: number, pvy: number, pvz: number): void {
+		const min = this.min;
+		const max = this.max;
+		let v = min.x > pvx ? min : max;
+		v.x = pvx;
+		v = min.y > pvy ? min : max;
+		v.y = pvy;
+		v = min.z > pvz ? min : max;
+		v.z = pvz;
+	}
 	addXYZFloat32Arr(vs: Float32Array, step: number = 3): void {
 
-		let len: number = vs.length;
-		// let pvx: number = 0.0;
-		// let pvy: number = 0.0;
-		// let pvz: number = 0.0;
-		for (let i = 0; i < len;) {
+		let len = vs.length;
+		let i = 0;
+		// let pvx = 0.0;
+		// let pvy = 0.0;
+		// let pvz = 0.0;
+		// const min = this.min;
+		// const max = this.max;
+		// let v = min;
+		// if(this.m_resetFlag) {
+		// 	this.m_resetFlag = false;
+		// 	min.setXYZ(vs[i], vs[i + 1], vs[i + 2]);
+		// 	max.copyFrom(min);
+		// 	i += step;
+		// }
+		for (; i < len;) {
 			this.addXYZ(vs[i], vs[i + 1], vs[i + 2]);
 			// pvx = vs[i];
 			// pvy = vs[i + 1];
 			// pvz = vs[i + 2];
+
+			// v = min.x > pvx ? min : max;
+			// v.x = pvx;
+			// v = min.y > pvy ? min : max;
+			// v.y = pvy;
+			// v = min.z > pvz ? min : max;
+			// v.z = pvz;
 			i += step;
 			// if (this.min.x > pvx) this.min.x = pvx;
 			// if (this.min.y > pvy) this.min.y = pvy;
@@ -120,13 +162,14 @@ class AABB implements IAABB {
 	addXYZFloat32AndIndicesArr(vs: Float32Array, indices: Uint16Array | Uint32Array): void {
 
 		let len: number = indices.length;
+		let ivs = indices;
 		// let pvx: number = 0.0;
 		// let pvy: number = 0.0;
 		// let pvz: number = 0.0;
 		let i: number;
 		for (let k = 0; k < len; k++) {
 			i = k * 3;
-			this.addXYZ(vs[i++], vs[i++], vs[i]);
+			this.addXYZ(vs[ivs[i++]], vs[ivs[i++]], vs[ivs[i]]);
 
 			// pvx = vs[i++];
 			// pvy = vs[i++];
