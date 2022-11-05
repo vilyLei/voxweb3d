@@ -97,7 +97,7 @@ export default class RendererSceneBase {
     protected m_runFlag = -1;
     protected m_autoRunning = true;
     protected m_processUpdate = false;
-    protected m_rparam: RendererParam = null;
+    protected m_rparam: IRendererParam = null;
     protected m_enabled = true;
     protected m_currStage3D: IRenderStage3D = null;
     protected m_stage3D: IRenderStage3D = null;
@@ -335,9 +335,8 @@ export default class RendererSceneBase {
 
             this.m_processids[0] = 0;
             this.m_processidsLen++;
-            let process: IRenderProcess = null;
             for (; renderProcessesTotal >= 0;) {
-                process = this.m_renderer.appendProcess(rparam.batchEnabled, rparam.processFixedState);// as RenderProcess;
+                const process = this.m_renderer.appendProcess(rparam.batchEnabled, rparam.processFixedState);
                 this.m_processids[this.m_processidsLen] = process.getRPIndex();
                 this.m_processidsLen++;
                 --renderProcessesTotal;
@@ -355,7 +354,7 @@ export default class RendererSceneBase {
 
             this.m_camDisSorter = new CameraDsistanceSorter(this.m_renderProxy);
             if (this.m_rspace == null) {
-                let space: RendererSpace = new RendererSpace();
+                let space = new RendererSpace();
                 space.initialize(this.m_renderer, this.m_renderProxy.getCamera());
                 this.m_rspace = space;
             }

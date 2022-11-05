@@ -58,31 +58,30 @@ import IRenderNode from "../../../vox/scene/IRenderNode";
 declare var CoRenderer: ICoRenderer;
 
 export default class CoSimpleRendererScene implements IRenderer, IRendererScene, IRenderNode {
-	private static s_uid: number = 0;
-	private m_uid: number = -1;
+	private static s_uid = 0;
+	private m_uid = -1;
 	private m_adapter: IRenderAdapter = null;
 	private m_renderProxy: IRenderProxy = null;
 	private m_shader: IRenderShader = null;
 	private m_rcontext: IRendererInstanceContext = null;
 	private m_renderer: IRendererInstance = null;
-	private m_processids: Uint8Array = new Uint8Array(128);
-	private m_processidsLen: number = 0;
+	private m_processids = new Uint8Array(128);
+	private m_processidsLen = 0;
 	private m_accessor: IRendererSceneAccessor = null;
-	// event flow control enable
-	private m_evtFlowEnabled: boolean = false;
-	private m_viewX: number = 0.0;
-	private m_viewY: number = 0.0;
-	private m_viewW: number = 800.0;
-	private m_viewH: number = 800.0;
+	
+	private m_viewX = 0.0;
+	private m_viewY = 0.0;
+	private m_viewW = 800.0;
+	private m_viewH = 800.0;
 
 	private m_nodeWaitLinker: Entity3DNodeLinker = null;
 	private m_nodeWaitQueue: EntityNodeQueue = null;
 	private m_camDisSorter: CameraDsistanceSorter = null;
 
-	private m_subscListLen: number = 0;
-	private m_runFlag: number = -1;
-	private m_autoRunning: boolean = true;
-	private m_processUpdate: boolean = false;
+	private m_subscListLen = 0;
+	private m_runFlag = -1;
+	private m_autoRunning = true;
+	private m_processUpdate = false;
 	private m_tickId: any = -1;
 	private m_rparam: RendererParam = null;
 	private m_enabled: boolean = true;
@@ -91,8 +90,8 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 	readonly textureBlock: ITextureBlock = new TextureBlock();
 	readonly stage3D: SimpleStage3D = null;
 
-	materialBlock: IRenderableMaterialBlock = null;
-	entityBlock: IRenderableEntityBlock = null;
+	readonly materialBlock: IRenderableMaterialBlock = null;
+	readonly entityBlock: IRenderableEntityBlock = null;
 
 	constructor() {
 		this.m_uid = CoSimpleRendererScene.s_uid++;
@@ -289,8 +288,6 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 			if (renderProcessesTotal > 8) {
 				renderProcessesTotal = 8;
 			}
-			this.m_evtFlowEnabled = rparam.evtFlowEnabled;
-			// this.m_renderer = new RendererInstance();
 			this.m_renderer = CoRenderer.createRendererInstance();
 
 			(this.m_renderer as any).__$setStage3D(this.stage3D);
@@ -316,18 +313,13 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 			this.m_renderProxy = this.m_rcontext.getRenderProxy();
 			this.m_adapter = this.m_renderProxy.getRenderAdapter();
 
-			let stage3D: IRenderStage3D = this.m_renderProxy.getStage3D();
+			let stage3D = this.m_renderProxy.getStage3D();
 			this.m_viewW = stage3D.stageWidth;
 			this.m_viewH = stage3D.stageHeight;
 			this.m_shader = (this.m_renderer as any).getDataBuilder().getRenderShader();
 			this.textureBlock.setRenderer(this.m_renderProxy);
 			this.m_camDisSorter = new CameraDsistanceSorter(this.m_renderProxy);
 
-			// if (this.m_rspace == null) {
-			// 	let space: RendererSpace = new RendererSpace();
-			// 	space.initialize(this.m_renderer, this.m_renderProxy.getCamera());
-			// 	this.m_rspace = space;
-			// }
 			this.tickUpdate();
 		}
 	}
@@ -527,7 +519,7 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 		if (this.m_currCamera == null) {
 			this.m_adapter.unlockViewport();
 			if (this.m_renderProxy.isAutoSynViewAndStage()) {
-				let boo: boolean = this.m_renderProxy.testViewPortChanged(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
+				let boo = this.m_renderProxy.testViewPortChanged(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
 				this.m_viewX = this.m_renderProxy.getViewX();
 				this.m_viewY = this.m_renderProxy.getViewY();
 				this.m_viewW = this.m_renderProxy.getViewWidth();
@@ -560,13 +552,7 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 			if (this.m_runFlag >= 0) this.runEnd();
 			this.m_runFlag = 0;
 		}
-		let cam = this.m_currCamera;
-		let camFlag: boolean = cam == null;
 		this.renderBegin(contextBeginEnabled);
-		// if (this.m_rspace != null) {
-		// 	this.m_rspace.setCamera(camFlag ? this.m_renderProxy.getCamera() : cam);
-		// 	this.m_rspace.runBegin();
-		// }
 	}
 	renderContextBegin(): void {
 		this.m_rcontext.renderBegin();
@@ -745,8 +731,5 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 		if (this.m_renderProxy != null) {
 			this.m_renderProxy.updateCamera();
 		}
-	}
-	toString(): string {
-		return "[CoSimpleRendererScene(uid = " + this.m_uid + ")]";
 	}
 }
