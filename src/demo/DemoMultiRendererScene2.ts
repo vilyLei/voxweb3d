@@ -346,14 +346,14 @@ export class DemoMultiRendererScene2 {
             rparam = new RendererParam();
             rparam.setCamProject(45.0, 0.1, 5000.0);
             rparam.setCamPosition(1500.0, 1500.0, 1200.0);
-            this.m_rendererRightScene = this.m_rendererScene.createSubScene();
+            this.m_rendererRightScene = this.m_rendererScene.createSubScene() as RendererSubScene;
             this.m_rendererRightScene.initialize(rparam);
             this.m_rendererRightScene.enableMouseEvent(true);
 
             rparam = new RendererParam();
             rparam.setCamProject(45.0, 0.1, 5000.0);
             rparam.setCamPosition(1500.0, 1500.0, 1200.0);
-            this.m_rendererLeftBottomScene = this.m_rendererScene.createSubScene();
+            this.m_rendererLeftBottomScene = this.m_rendererScene.createSubScene() as RendererSubScene;
             this.m_rendererLeftBottomScene.initialize(rparam,);
             this.m_rendererLeftBottomScene.enableMouseEvent(true);
 
@@ -361,7 +361,7 @@ export class DemoMultiRendererScene2 {
             rparam.cameraPerspectiveEnabled = false;
             rparam.setCamProject(45.0, 0.1, 3000.0);
             rparam.setCamPosition(0.0, 0.0, 1500.0);
-            this.m_rendererUIScene = this.m_rendererScene.createSubScene();
+            this.m_rendererUIScene = this.m_rendererScene.createSubScene() as RendererSubScene;
             this.m_rendererUIScene.initialize(rparam);
             this.m_rendererUIScene.enableMouseEvent(true);
             this.m_rendererUIScene.getCamera().translationXYZ(this.m_stage3D.stageHalfWidth, this.m_stage3D.stageHalfHeight, 1500.0);

@@ -15,7 +15,7 @@ import IRenderProxy from "../../vox/render/IRenderProxy";
 import IRunnableQueue from "../../vox/base/IRunnableQueue";
 
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
-// import IRendererParam from "../../vox/scene/IRendererParam";
+import IRendererParam from "../../vox/scene/IRendererParam";
 import IVector3D from "../math/IVector3D";
 import { IRendererSceneAccessor } from "../scene/IRendererSceneAccessor";
 
@@ -32,7 +32,12 @@ interface IRendererScene {
     readonly textureBlock: ITextureBlock;
     readonly materialBlock: IRenderableMaterialBlock;
     readonly entityBlock: IRenderableEntityBlock;
-
+    /**
+     * @param rparam IRendererParam instance
+     * @param renderProcessesTotal the default value is 3
+     * @param createNewCamera the default value is true;
+     */
+    initialize(rparam: IRendererParam, renderProcessesTotal?: number, createNewCamera?: boolean): void;
     setAccessor(accessor: IRendererSceneAccessor): void;
     prependRenderNode(node: IRenderNode): void;
     appendRenderNode(node: IRenderNode): void;
@@ -134,6 +139,12 @@ interface IRendererScene {
     setRenderToBackBuffer(): void;
     updateCamera(): void;
     createCamera(): IRenderCamera;
+    useMainCamera(): void;
+    /**
+     * @param camera IRenderCamera instance
+     * @param syncCamView the default value is false
+     */
+    useCamera(camera: IRenderCamera, syncCamView?: boolean): void;
     getCamera(): IRenderCamera;
     getStage3D(): IRenderStage3D;
     getRenderProxy(): IRenderProxy;

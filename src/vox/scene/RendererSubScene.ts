@@ -57,8 +57,8 @@ import RendererSceneBase from "./RendererSceneBase";
 export default class RendererSubScene extends RendererSceneBase implements IRenderer, IRendererScene, IRenderNode {
     private m_camera: IRenderCamera = null;
     private m_perspectiveEnabled = true;
-    private m_parent: IRenderer = null;
-    constructor(parent: IRenderer, renderer: IRendererInstance, evtFlowEnabled: boolean) {
+    private m_parent: IRendererScene = null;
+    constructor(parent: IRendererScene, renderer: IRendererInstance, evtFlowEnabled: boolean) {
         super(1024);
         this.m_evtFlowEnabled = evtFlowEnabled;
         this.m_parent = parent;

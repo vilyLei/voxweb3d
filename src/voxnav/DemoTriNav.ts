@@ -160,7 +160,7 @@ export namespace voxnav
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(0.0,0.0,1500.0);
                 let subScene:RendererSubScene = null;
-                subScene = this.m_rscene.createSubScene();
+                subScene = this.m_rscene.createSubScene() as RendererSubScene;
                 subScene.initialize(rparam);
                 let rspace:IRendererSpace = subScene.getSpace();
                 let raySelector:RaySelector = new RaySelector();

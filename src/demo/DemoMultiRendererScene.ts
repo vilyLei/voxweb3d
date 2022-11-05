@@ -250,7 +250,7 @@ export class DemoMultiRendererScene {
             rparam = new RendererParam();
             rparam.setCamProject(45.0, 0.1, 5000.0);
             rparam.setCamPosition(1500.0, 1500.0, 1200.0);
-            this.m_rendererRightScene = this.m_rendererLeftScene.createSubScene();
+            this.m_rendererRightScene = this.m_rendererLeftScene.createSubScene() as RendererSubScene;
             this.m_rendererRightScene.initialize(rparam);
             this.m_rendererRightScene.enableMouseEvent(true);
 
@@ -259,7 +259,7 @@ export class DemoMultiRendererScene {
             rparam.setCamProject(45.0, 0.1, 3000.0);
             rparam.setCamPosition(0.0, 0.0, 1500.0);
             let subScene: RendererSubScene = null;
-            subScene = this.m_rendererLeftScene.createSubScene();
+            subScene = this.m_rendererLeftScene.createSubScene() as RendererSubScene;
             subScene.initialize(rparam);
             subScene.enableMouseEvent(true);
             this.m_rendererUIScene = subScene;

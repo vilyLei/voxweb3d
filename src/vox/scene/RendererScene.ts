@@ -88,7 +88,7 @@ export default class RendererScene extends RendererSceneBase implements IRendere
         this.m_tickId = setTimeout(this.tickUpdate.bind(this), this.m_rparam.getTickUpdateTime());
         this.textureBlock.run();
     }
-    createSubScene(): RendererSubScene {
+    createSubScene(): IRendererScene {
         if (this.m_renderer != null && this.materialBlock != null) {
             this.m_localRunning = true;
             let subsc = new RendererSubScene(this, this.m_renderer, this.m_evtFlowEnabled);

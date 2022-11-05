@@ -61,7 +61,7 @@ export class EngineBase {
             selfT.texLoader = new ImageTextureLoader(this.rscene.textureBlock);
 
             selfT.uiScene = new OrthoUIScene();
-            this.uiScene.initialize(this.rscene);
+            this.uiScene.initializeOrtho(this.rscene);
 
             this.interaction.initialize(rscene);
 
@@ -101,7 +101,7 @@ export class EngineBase {
             param.setCamPosition(1800.0, 1800.0, 1800.0);
             param.setCamProject(45, 20.0, 7000.0);
         }
-        let subScene: RendererSubScene = this.rscene.createSubScene();
+        let subScene = this.rscene.createSubScene();
         subScene.initialize(param, renderProcessesTotal, createNewCamera);
         let sceneNode: RendererSceneNode = new RendererSceneNode(subScene);
         sceneNode.priority = priority < 0 ? this.m_sceneList.length : priority;

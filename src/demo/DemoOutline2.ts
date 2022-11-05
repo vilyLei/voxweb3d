@@ -79,7 +79,7 @@ export class DemoOutline2 {
             this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();
 
-            this.m_editScene = this.m_rscene.createSubScene();
+            this.m_editScene = this.m_rscene.createSubScene() as RendererSubScene;
             this.m_editScene.initialize(rparam, 3, false);
             this.m_editScene.setAccessor(new SceneAccessor());
             this.m_editScene.enableMouseEvent(true);

@@ -78,7 +78,7 @@ export namespace voxvat
                     RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.BLEND);
                     RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
 
-                    this.m_ruisc = this.m_rsc.createSubScene();
+                    this.m_ruisc = this.m_rsc.createSubScene() as RendererSubScene;
                     rparam = new RendererParam();
                     rparam.cameraPerspectiveEnabled = false;
                     rparam.setCamProject(45.0,0.1,3000.0);

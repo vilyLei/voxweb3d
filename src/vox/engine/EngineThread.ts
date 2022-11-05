@@ -54,7 +54,7 @@ export class EngineThread {
             this.viewRay.setPlaneParam(new Vector3D(0.0, 1.0, 0.0), 0.0);
 
             selfT.uiScene = new OrthoUIScene();
-            this.uiScene.initialize( this.rscene );
+            this.uiScene.initializeOrtho( this.rscene );
 
             this.rscene.enableMouseEvent(true);
             this.cameraZoomController.bindCamera(this.rscene.getCamera());

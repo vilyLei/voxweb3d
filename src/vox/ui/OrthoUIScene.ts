@@ -31,6 +31,7 @@ import IVector3D from "../math/IVector3D";
 import { IRendererSceneAccessor } from "../scene/IRendererSceneAccessor";
 import IRunnableQueue from "../../vox/base/IRunnableQueue";
 import RunnableQueue from "../../vox/base/RunnableQueue";
+import IRendererParam from "../scene/IRendererParam";
 
 
 class OrthoUIScene implements IRendererScene, IRenderNode {
@@ -54,7 +55,10 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
             this.m_ruisc.setAccessor(accessor);
         }
     }
-    initialize(rscene: RendererScene): void {
+    initialize(rparam: IRendererParam, renderProcessesTotal?: number, createNewCamera?: boolean): void {
+        throw Error("illegal operation!!!");
+    }
+    initializeOrtho(rscene: RendererScene): void {
         if (rscene != null) {
             this.m_rscene = rscene;
             this.m_rscene.addEventListener(EventBase.RESIZE, this, this.resize);
@@ -78,7 +82,7 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
         rparam.setCamPosition(0.0, 0.0, 1500.0);
 
         let subScene: RendererSubScene = null;
-        subScene = this.m_rscene.createSubScene();
+        subScene = this.m_rscene.createSubScene() as RendererSubScene;
         subScene.initialize(rparam);
         subScene.enableMouseEvent(true);
         this.m_ruisc = subScene;
@@ -228,6 +232,12 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
     }
     getCamera(): IRenderCamera {
         return this.m_rscene.getCamera();
+    }
+    useMainCamera(): void {
+        this.m_ruisc.useMainCamera();
+    }
+    useCamera(camera: IRenderCamera, syncCamView: boolean = false): void {
+        this.m_ruisc.useCamera(camera, syncCamView);
     }
     getStage3D(): IRenderStage3D {
         return this.m_ruisc.getStage3D();

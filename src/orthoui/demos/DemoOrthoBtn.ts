@@ -209,7 +209,7 @@ export class DemoOrthoBtn {
         rparam.setCamPosition(0.0, 0.0, 1500.0);
 
         let subScene: RendererSubScene = null;
-        subScene = this.m_rscene.createSubScene();
+        subScene = this.m_rscene.createSubScene() as RendererSubScene;
         subScene.initialize(rparam);
         subScene.enableMouseEvent(true);
         this.m_ruisc = subScene;

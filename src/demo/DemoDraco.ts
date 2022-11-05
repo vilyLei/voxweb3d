@@ -70,7 +70,7 @@ export class DemoDraco extends DemoInstance {
         rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
         rparam.setCamPosition(1800.0, 1800.0, 1800.0);
         rparam.setCamProject(45, 20.0, 9000.0);
-        this.m_subScene = this.m_rscene.createSubScene();
+        this.m_subScene = this.m_rscene.createSubScene() as RendererSubScene;
         this.m_subScene.initialize(rparam, 3, false);
         
         // let axis: Axis3DEntity = new Axis3DEntity();

@@ -92,7 +92,7 @@ export class DemoFix3DSize {
             // rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 
             let sa = new SceneAccessor();
-            this.m_editScene = this.m_rscene.createSubScene();
+            this.m_editScene = this.m_rscene.createSubScene() as RendererSubScene;
             this.m_editScene.initialize(rparam, 3, false);
             this.m_editScene.setAccessor( sa );
             this.m_editScene.enableMouseEvent(true);
