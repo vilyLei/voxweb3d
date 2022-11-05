@@ -159,12 +159,14 @@ export class DemoEditTrans {
 	}
 	
     private keyCtrlZDown(evt: any): void {
+
         console.log("DemoEditTrans::keyCtrlZDown() ..., evt.keyCode: ", evt.keyCode);
         this.m_recoder.undo();
         let list = this.m_recoder.getCurrList();
 		this.selectEntities( list );
     }
     private keyCtrlYDown(evt: any): void {
+		
         console.log("DemoEditTrans::keyCtrlYDown() ..., evt.keyCode: ", evt.keyCode);
         this.m_recoder.redo();
         let list = this.m_recoder.getCurrList();
