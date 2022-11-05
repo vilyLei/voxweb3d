@@ -25,6 +25,7 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import Color4 from "../vox/material/Color4";
 import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
+import AABB from "../vox/geom/AABB";
 
 class DispCtrObj {
     constructor() { }
@@ -155,6 +156,14 @@ export class DemoMobileEvt {
 
     initialize(): void {
         console.log("DemoMobileEvt::initialize()......");
+
+        // let ab = new AABB();
+        // let fs = new Float32Array([-100,-2, -300, 0.5,30,10, 300,400,50]);
+        // ab.addXYZFloat32Arr(fs);
+        // ab.update();
+        // console.log("ab: ", ab);
+
+        // return;
         if (this.m_rscene == null) {
             //H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
@@ -296,13 +305,18 @@ export class DemoMobileEvt {
         }
     }
     run(): void {
-        //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-        this.m_stageDragSwinger.runWithYAxis();
-        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
 
-        this.m_rscene.run(true);
+        if(this.m_rscene != null) {
 
-        if (this.m_profileInstance != null) this.m_profileInstance.run();
+            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            this.m_stageDragSwinger.runWithYAxis();
+            this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
+    
+            this.m_rscene.run(true);
+    
+            if (this.m_profileInstance != null) this.m_profileInstance.run();
+
+        }
     }
 }
 export default DemoMobileEvt;

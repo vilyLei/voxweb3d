@@ -57,18 +57,19 @@ class AABB implements IAABB {
 		return this.min.equalsXYZ(ab.min) && this.max.equalsXYZ(ab.max);
 	}
 	setVolume(width: number, height: number, long: number): void {
+		
 		this.m_width = width;
 		this.m_height = height;
 		this.m_long = long;
-		//
+		
 		this.m_halfLong = 0.5 * this.m_long;
 		this.m_halfWidth = 0.5 * this.m_width;
 		this.m_halfHeight = 0.5 * this.m_height;
-		//
+		
 		this.max.x = this.center.x + this.m_halfWidth;
 		this.max.y = this.center.y + this.m_halfHeight;
 		this.max.z = this.center.z + this.m_halfLong;
-		//
+		
 		this.min.x = this.center.x - this.m_halfWidth;
 		this.min.y = this.center.y - this.m_halfHeight;
 		this.min.z = this.center.z - this.m_halfLong;
@@ -131,7 +132,7 @@ class AABB implements IAABB {
 		// const min = this.min;
 		// const max = this.max;
 		// let v = min;
-		// if(this.m_resetFlag) {
+		// if (this.m_resetFlag) {
 		// 	this.m_resetFlag = false;
 		// 	min.setXYZ(vs[i], vs[i + 1], vs[i + 2]);
 		// 	max.copyFrom(min);
@@ -205,9 +206,9 @@ class AABB implements IAABB {
 	}
 	// @param	v	Vector3D instance
 	containsV(v: Vector3D): boolean {
-		if (v.x < this.max.x || v.x > this.max.x) return false;
-		if (v.y < this.max.y || v.y > this.max.y) return false;
-		if (v.z < this.max.z || v.z > this.max.z) return false;
+		if (v.x < this.min.x || v.x > this.max.x) return false;
+		if (v.y < this.min.y || v.y > this.max.y) return false;
+		if (v.z < this.min.z || v.z > this.max.z) return false;
 		return true;
 	}
 	// 是否包含某一点(同一坐标空间的点)
@@ -255,6 +256,7 @@ class AABB implements IAABB {
 		this.m_halfLong = 0.5 * this.m_long;
 		this.m_halfWidth = 0.5 * this.m_width;
 		this.m_halfHeight = 0.5 * this.m_height;
+		this.m_resetFlag = false;
 
 		++this.version;
 		return this;
@@ -274,9 +276,7 @@ class AABB implements IAABB {
 		this.radius = Math.sqrt(this.radius2);
 
 		this.center.addBy(this.min);
-		// this.center.x += this.min.x;
-		// this.center.y += this.min.y;
-		// this.center.z += this.min.z;
+		this.m_resetFlag = false;
 
 		++this.version;
 	}
