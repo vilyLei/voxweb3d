@@ -76,6 +76,8 @@ export default class RendererScene extends RendererSceneBase implements IRendere
         let selfT: any = this;
         selfT.materialBlock = new RenderableMaterialBlock();
         selfT.entityBlock = new RenderableEntityBlock();
+		this.materialBlock.initialize();
+		this.entityBlock.initialize();
         this.tickUpdate();
     }
 

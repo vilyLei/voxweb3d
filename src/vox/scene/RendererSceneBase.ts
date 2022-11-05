@@ -297,6 +297,8 @@ export default class RendererSceneBase {
         // return new RendererInstance();
         return null;
     }
+    protected rendererInsInited(): void {
+    }
     // for overriding by sub class
     protected initThis(): void {
         // this.tickUpdate();
@@ -327,6 +329,8 @@ export default class RendererSceneBase {
 
             rins.initialize(rparam, camera, new ShaderProgramBuilder(rins.getRCUid()));
             this.m_renderer = rins;
+
+            this.rendererInsInited();
 
             this.m_processids[0] = 0;
             this.m_processidsLen++;

@@ -80,12 +80,20 @@ export default class CoRendererScene extends RendererSceneBase implements IRende
     protected createRendererIns(): IRendererInstance {
         this.m_currStage3D = this.stage3D;
         this.m_stage3D = this.stage3D;
+		
         return CoRenderer.createRendererInstance();
+	}
+    protected rendererInsInited(): void {
+		let srcSt: any = CoRenderer.RendererState;
+		srcSt.rstb.buildToRST(RendererState);
     }
     protected initThis(): void {
         let selfT: any = this;
         selfT.materialBlock = new RenderableMaterialBlock();
         selfT.entityBlock = new RenderableEntityBlock();
+		this.materialBlock.initialize();
+		this.entityBlock.initialize();
+		
         this.tickUpdate();
     }
 
