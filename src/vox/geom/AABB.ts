@@ -17,7 +17,6 @@ class AABB implements IAABB {
 	private m_halfWidth = 50.0;
 	private m_halfHeight = 50.0;
 	private m_tempV = new Vector3D();
-	private m_resetFlag = true;
 	min = new Vector3D();
 	max = new Vector3D();
 	version = -1;
@@ -36,22 +35,14 @@ class AABB implements IAABB {
 	getHeight(): number {
 		return this.m_height;
 	}
-	reset(v: Vector3D = null): void {
+	reset(): void {
 
 		const min = this.min;
 		const max = this.max;
-
-		this.m_resetFlag = v == null;
-
-		if (v != null) {
-			min.copyFrom(v);
-			max.copyFrom(v);
-		} else {
-			v = min;
-			v.x = v.y = v.z = MathConst.MATH_MAX_POSITIVE;
-			v = max;
-			v.x = v.y = v.z = MathConst.MATH_MIN_NEGATIVE;
-		}
+		let v = min;
+		v.x = v.y = v.z = MathConst.MATH_MAX_POSITIVE;
+		v = max;
+		v.x = v.y = v.z = MathConst.MATH_MIN_NEGATIVE;
 	}
 	equals(ab: IAABB): boolean {
 		return this.min.equalsXYZ(ab.min) && this.max.equalsXYZ(ab.max);
@@ -97,34 +88,12 @@ class AABB implements IAABB {
 		if (min.z > pvz) min.z = pvz;
 		if (max.z < pvz) max.z = pvz;
 	}
-	/**
-	 * must reset a position vector3d object before one time, example: aabb.reset(new Vector3D(1,2,3))
-	 */
-	addXYZFast(pvx: number, pvy: number, pvz: number): void {
-
-		const min = this.min;
-		const max = this.max;
-		if (min.x > pvx) min.x = pvx;
-		else if (max.x < pvx) max.x = pvx;
-
-		if (min.y > pvy) min.y = pvy;
-		else if (max.y < pvy) max.y = pvy;
-
-		if (min.z > pvz) min.z = pvz;
-		else if (max.z < pvz) max.z = pvz;
-	}
 
 	addFloat32Arr(vs: Float32Array | number[], step: number = 3): void {
 
 		let len = vs.length;
-		let i = 0;
-		if (this.m_resetFlag) {
-			this.m_resetFlag = false;
-			this.addXYZ( vs[0], vs[1], vs[2] );
-			i = step;
-		}
-		for (; i < len;) {
-			this.addXYZFast(vs[i], vs[i + 1], vs[i + 2]);
+		for (let i = 0; i < len;) {
+			this.addXYZ(vs[i], vs[i + 1], vs[i + 2]);
 			i += step;
 		}
 	}
@@ -133,13 +102,9 @@ class AABB implements IAABB {
 
 		let len = indices.length;
 		let i: number;
-		if (this.m_resetFlag) {
-			this.m_resetFlag = false;
-			this.addXYZ( vs[0], vs[1], vs[2] );
-		}
 		for (let k = 0; k < len; k++) {
 			i = indices[k] * 3;
-			this.addXYZFast(vs[i++], vs[i++], vs[i]);
+			this.addXYZ(vs[i++], vs[i++], vs[i]);
 		}
 	}
 	getClosePosition(in_pos: Vector3D, out_pos: Vector3D, bias: number = 0.0): void {
@@ -217,7 +182,6 @@ class AABB implements IAABB {
 		this.m_halfLong = 0.5 * this.m_long;
 		this.m_halfWidth = 0.5 * this.m_width;
 		this.m_halfHeight = 0.5 * this.m_height;
-		this.m_resetFlag = false;
 
 		++this.version;
 		return this;
@@ -237,7 +201,6 @@ class AABB implements IAABB {
 		this.radius = Math.sqrt(this.radius2);
 
 		this.center.addBy(this.min);
-		this.m_resetFlag = false;
 
 		++this.version;
 	}

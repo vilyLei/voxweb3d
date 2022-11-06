@@ -30,7 +30,6 @@ interface IAABB {
 	getClosePosition(in_pos: IVector3D, out_pos: IVector3D, bias?: number): void;
 	addPosition(pv: IVector3D): IAABB;
 	addXYZ(pvx: number, pvy: number, pvz: number): void;
-	addXYZFast(pvx: number, pvy: number, pvz: number): void;
 	addFloat32AndIndicesArr(vs: Float32Array | number[], indices: Uint16Array | Uint32Array): void;
 	/**
 	 * @param vs Float32Array instance
@@ -45,10 +44,7 @@ interface IAABB {
 	copyFrom(ab: IAABB): IAABB;
 	expand(bias: IVector3D): IAABB;
 	union(ab: IAABB): IAABB;
-	/**
-	 * @param pv the default value is null
-	 */
-	reset(pv?: IVector3D): void;
+	reset(): void;
 	update(): void;
 	updateFast(): void;
 	updateVolume(): IAABB;

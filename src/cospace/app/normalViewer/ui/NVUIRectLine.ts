@@ -97,8 +97,8 @@ class NVUIRectLine {
 				this.setVisible(true);
 
 				let b = this.bounds;
-				b.reset(this.m_prePos);
-				b.addXYZFast(px, py, 0);
+				b.addPosition(this.m_prePos);
+				b.addXYZ(px, py, 0);
 				b.updateFast();
 
 				let et = this.m_entity;

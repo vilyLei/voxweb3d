@@ -164,7 +164,14 @@ export class DemoOutline {
     dracoParseFinish(modules: any[], total: number): void {
 
         console.log("dracoParseFinish, modules: ", modules);
-        
+        let tot = 10000 * 100;
+        let vs = new Float32Array([40, -40, 40, 40, -40, -40, -40, -40, -40, -40, -40, 40, 40, 40, 40, 40, 40, -40, -40, 40, -40, -40, 40, 40, 40, 40, 40, 40, 40, -40, 40, -40, -40, 40, -40, 40, 40, 40, -40, -40, 40, -40, -40, -40, -40, 40, -40, -40, -40, 40, 40, -40, 40, -40, -40, -40, -40, -40, -40, 40, 40, 40, 40, -40, 40, 40, -40, -40, 40, 40, -40, 40]);
+        let ab = new AABB();
+        console.time("Fast time: ");
+        for(let i = 0; i < tot; ++i) {
+            ab.addFloat32Arr(vs);
+        }
+        console.timeEnd("Fast time: ");
         // let material: Default3DMaterial = new Default3DMaterial();
         // material.initializeByCodeBuf(true);
         // material.setTextureList([this.getImageTexByUrl("static/assets/wood_01.jpg")]);
