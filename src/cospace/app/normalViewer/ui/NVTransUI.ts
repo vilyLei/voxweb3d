@@ -202,7 +202,6 @@ class NVTransUI {
 				let label: IColorClipLabel;
 
 				label = btn.getLable() as IColorClipLabel;
-				let cfg = uiScene.uiConfig;
 				let btnColor = cfg.getUIGlobalColor().button.selected;
 				cfg.applyButtonColor(label.getColors(), btnColor);
 				label.setClipIndex(0);
@@ -213,7 +212,6 @@ class NVTransUI {
 				let label: IColorClipLabel;
 
 				label = btn.getLable() as IColorClipLabel;
-				let cfg = uiScene.uiConfig;
 				let btnColor = cfg.getUIGlobalColor().button.common;
 				cfg.applyButtonColor(label.getColors(), btnColor);
 				label.setClipIndex(0);

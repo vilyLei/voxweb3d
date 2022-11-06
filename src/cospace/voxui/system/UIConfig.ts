@@ -26,15 +26,22 @@ class UIConfig implements IUIConfig {
 	}
 	applyButtonColor(btnColors: IColor4[], uiBtnColor: IUIButtonColor): void {
 
-		let ls = uiBtnColor.out;
-		btnColors[0].setRGB3Bytes(ls[0], ls[1], ls[2]);
-		ls = uiBtnColor.over;
-		btnColors[1].setRGB3Bytes(ls[0], ls[1], ls[2]);
-		ls = uiBtnColor.down;
-		btnColors[2].setRGB3Bytes(ls[0], ls[1], ls[2]);
+		// let ls = uiBtnColor.out;
+		// btnColors[0].setRGB3Bytes(ls[0], ls[1], ls[2]);
+		// ls = uiBtnColor.over;
+		// btnColors[1].setRGB3Bytes(ls[0], ls[1], ls[2]);
+		// ls = uiBtnColor.down;
+		// btnColors[2].setRGB3Bytes(ls[0], ls[1], ls[2]);
+		// if(btnColors.length > 3) {
+		// 	ls = uiBtnColor.up;
+		// 	btnColors[3].setRGB3Bytes(ls[0], ls[1], ls[2]);
+		// }
+		btnColors[0].fromBytesArray3(uiBtnColor.out);
+		btnColors[1].fromBytesArray3(uiBtnColor.over);
+		btnColors[2].fromBytesArray3(uiBtnColor.down);
+		
 		if(btnColors.length > 3) {
-			ls = uiBtnColor.up;
-			btnColors[3].setRGB3Bytes(ls[0], ls[1], ls[2]);
+			btnColors[2].fromBytesArray3(uiBtnColor.up);
 		}
 	}
 	getUIGlobalColor(): IUIGlobalColor {

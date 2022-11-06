@@ -47,13 +47,23 @@ class Color4 implements IColor4{
         arr[offset + 2] = this.b;
         return this;
     }
+    
+    fromBytesArray3(arr: number[] | Float32Array, offset: number = 0): Color4 {
+        this.setRGB3Bytes(arr[offset], arr[offset + 1], arr[offset + 2]);
+        return this;
+    }
+    toBytesArray3(arr: number[] | Float32Array, offset: number = 0): Color4 {
+        arr[offset] = Math.round(this.r * 255);
+        arr[offset + 1] = Math.round(this.g * 255);
+        arr[offset + 2] = Math.round(this.b * 255);
+        return this;
+    }
     setRGB3f(r: number, g: number, b: number): Color4 {
         this.r = r;
         this.g = g;
         this.b = b;
         return this;
     }
-    
     setRGB3Bytes(uint8R: number, uint8G: number, uint8B: number): Color4 {
         const k = 1.0 / 255.0;
         this.r = uint8R * k;

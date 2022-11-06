@@ -39,7 +39,14 @@ interface IColor4 {
      * example: r,g,b => [0],[1],[2]
      */
     toArray3(arr: number[] | Float32Array, offset?: number): IColor4;
-    
+    /**
+     * example: [0],[1],[2] => r,g,b
+     */
+     fromBytesArray3(arr: number[] | Float32Array, offset?: number): IColor4;
+     /**
+      * example: r,g,b => [0],[1],[2]
+      */
+     toBytesArray3(arr: number[] | Float32Array, offset?: number): IColor4;
     /**
      * set rgb with three float values
      * @param r example: 0.5

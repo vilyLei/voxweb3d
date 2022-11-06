@@ -146,7 +146,7 @@ class NVNavigationUI {
 		px = 0;
 		py = st.stageHeight - ph;
 		for (let i = 0; i < btnNames.length; ++i) {
-			let btn = this.crateBtn(btnNames, pw, ph, px + pw * i, py, i, keys[i], tips[i], uimodule);
+			let btn = this.crateBtn(pw, ph, px + pw * i, py, i, uimodule);
 			this.m_coUIScene.tips.addTipsTarget(btn);
 			this.m_navBtns.push(btn);
 			layouter.addUIEntity(btn);
@@ -163,7 +163,7 @@ class NVNavigationUI {
 		);
 	}
 
-	private crateBtn(btnNames: string[], pw: number, ph: number, px: number, py: number, labelIndex: number, idns: string, info: string, cfgData: UICfgData): IButton {
+	private crateBtn(pw: number, ph: number, px: number, py: number, labelIndex: number, cfgData: UICfgData): IButton {
 
 		let names = cfgData.names;
 		let keys = cfgData.keys;
@@ -207,7 +207,6 @@ class NVNavigationUI {
 			case "light":
 			case "animation":
 			case "particle":
-				console.log("dfdfdffd");
 				this.m_coUIScene.prompt.showPrompt("It can't be used now!");
 				break;
 			case "help":
