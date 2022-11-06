@@ -1,21 +1,65 @@
 {
 	"name": "normalViewer",
-	"color":{
-		"text": [170, 170, 170],
-		"background": [40, 40, 40],
-		"foreground": [170, 170, 170],
-		"button":{
-			"common":{
-				"out": [40, 40, 40],
-				"over": [50, 50, 50],
-				"down": [60, 60, 60],
-				"up": [40, 40, 40]
+	"color": {
+		"text": [
+			170,
+			170,
+			170
+		],
+		"background": [
+			40,
+			40,
+			40
+		],
+		"foreground": [
+			170,
+			170,
+			170
+		],
+		"button": {
+			"common": {
+				"out": [
+					40,
+					40,
+					40
+				],
+				"over": [
+					50,
+					50,
+					50
+				],
+				"down": [
+					60,
+					60,
+					60
+				],
+				"up": [
+					40,
+					40,
+					40
+				]
 			},
-			"selected":{
-				"out": [71, 114, 179],
-				"over": [81, 124, 189],
-				"down": [71, 114, 189],
-				"up": [71, 114, 179]
+			"selected": {
+				"out": [
+					71,
+					114,
+					179
+				],
+				"over": [
+					81,
+					124,
+					189
+				],
+				"down": [
+					71,
+					114,
+					189
+				],
+				"up": [
+					71,
+					114,
+					179
+				]
 			}
 		}
 	},
@@ -26,14 +70,22 @@
 				"fontSize": 20,
 				"bold": false,
 				"italic": false,
-				"fontColor": [170, 170, 170]
+				"fontColor": [
+					170,
+					170,
+					170
+				]
 			},
 			"tips": {
 				"fontName": "Verdana",
 				"fontSize": 18,
 				"bold": false,
 				"italic": false,
-				"fontColor": [170, 170, 170]
+				"fontColor": [
+					170,
+					170,
+					170
+				]
 			}
 		}
 	},
@@ -102,6 +154,32 @@
 				"Editing operations.",
 				"Help infomation."
 			]
+		},
+		"promptPanel": {
+			"bgColor": [40, 40, 40],
+			"panelSize": [
+				300,
+				200
+			],
+			"btnSize": [
+				120,
+				50
+			],
+			"fontFormat": {
+				"fontName": "Verdana",
+				"fontSize": 30,
+				"bold": false,
+				"italic": false
+			},
+			"names": [
+				"确认",
+				"取消"
+			],
+			"keys": [
+				"Confirm",
+				"Cancel"
+			],
+			"tips": []
 		}
 	}
 }

@@ -189,12 +189,6 @@ export class DemoVox3DEditor {
 		this.m_uirsc = coui.rscene;
 		this.m_graph.addScene(this.m_uirsc);
 
-		let promptSys = new PromptSystem();
-		promptSys.initialize(coui);
-		coui.prompt = promptSys;
-		let tipsSys = new TipsSystem();
-		tipsSys.initialize(coui);
-		coui.tips = tipsSys;
 		let uiConfig = new UIConfig();
 		coui.uiConfig = uiConfig;
 		uiConfig.initialize("static/apps/normalViewer/ui/uicfg.json",(): void => {
@@ -204,7 +198,15 @@ export class DemoVox3DEditor {
 
 	}
 	private initEditSceneSys(): void {
+
 		let coui = this.m_coUIScene;
+		
+		let promptSys = new PromptSystem();
+		promptSys.initialize(coui);
+		coui.prompt = promptSys;
+		let tipsSys = new TipsSystem();
+		tipsSys.initialize(coui);
+		coui.tips = tipsSys;
 		this.m_transUI.setOutline(this.m_outline);
 		this.m_transUI.initialize(this.m_rsc, this.m_editUIRenderer, coui);
 		this.m_nvaUI.initialize(this.m_rsc, this.m_editUIRenderer, coui);

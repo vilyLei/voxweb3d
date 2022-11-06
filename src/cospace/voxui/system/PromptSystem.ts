@@ -5,45 +5,63 @@ import { IPromptSystem } from "./IPromptSystem";
 
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import IColor4 from "../../../vox/material/IColor4";
+import { IFontFormat } from "./IUIConfig";
 declare var CoMaterial: ICoMaterial;
 
+interface UICfgData {
+	button?: object;
+	fontFormat: IFontFormat;
+	bgColor: number[];
+	panelSize: number[];
+	btnSize: number[];
+	names: string[];
+	keys: string[];
+	tips: string[];
+}
 class PromptSystem implements IPromptSystem {
 
 	private m_uiscene: ICoUIScene;
 	private m_promptPanel: PromptPanel = null;
-	constructor(){}
+	constructor() { }
 
 	initialize(uiscene: ICoUIScene, rpi: number = 3): void {
-		if(this.m_promptPanel == null) {
+		if (this.m_promptPanel == null) {
 			this.m_uiscene = uiscene;
+
+			let cfg = uiscene.uiConfig;
+			let uimodule = cfg.getUIModuleByName("promptPanel") as UICfgData;
+			let plSize = uimodule.panelSize;
+			let btnSize = uimodule.btnSize;
+			let names = uimodule.names;
 			let pl = new PromptPanel();
-			pl.initialize(this.m_uiscene, rpi, 300, 200, 120, 50);
+			// pl.initialize(this.m_uiscene, rpi, 300, 200, 120, 50);
+			pl.initialize(this.m_uiscene, rpi, plSize[0], plSize[1], btnSize[0], btnSize[1], names[0], names[1]);
 			pl.setZ(3.0);
+			let color = CoMaterial.createColor4();
+			color.fromBytesArray3(uimodule.bgColor);
 			pl.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
 			this.m_promptPanel = pl;
-			// pl.open();
-			// pl.close();
 		}
 	}
-	
+
 	setPromptListener(confirmFunc: () => void, cancelFunc: () => void, type: number = 0): void {
-		if(this.m_promptPanel != null) {
+		if (this.m_promptPanel != null) {
 			this.m_promptPanel.setListener(confirmFunc, cancelFunc);
 		}
 	}
 	showPrompt(promptInfo: string, type: number = 0): void {
-		if(this.m_promptPanel != null) {
+		if (this.m_promptPanel != null) {
 			this.m_promptPanel.setPrompt(promptInfo);
 			this.m_promptPanel.open();
 		}
 	}
 	setPromptTextColor(color: IColor4, type: number = 0): void {
-		if(this.m_promptPanel != null) {
+		if (this.m_promptPanel != null) {
 			this.m_promptPanel.setPromptTextColor(color);
 		}
 	}
 	setPromptBGColor(color: IColor4, type: number = 0): void {
-		if(this.m_promptPanel != null) {
+		if (this.m_promptPanel != null) {
 			this.m_promptPanel.setBGColor(color);
 		}
 	}
