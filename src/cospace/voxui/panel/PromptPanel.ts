@@ -136,6 +136,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		let uimodule = cfg.getUIModuleByName("promptPanel") as IPromptCfgData;
 		let btf = uimodule.btnTextFontFormat;
 		let ltf = uimodule.textFontFormat;
+		
 		let textLabel = new TextLabel();
 		textLabel.depthTest = true;
 		textLabel.transparent = true;

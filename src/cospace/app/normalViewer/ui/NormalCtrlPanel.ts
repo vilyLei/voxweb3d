@@ -161,6 +161,14 @@ class NormalCtrlPanel {
 		this.m_progressEvt = CoRScene.createProgressDataEvent();
 
 		let sc = this.m_scene;
+		let tta = sc.transparentTexAtlas;
+		let fc4 = CoMaterial.createColor4;
+
+		let cfg = this.m_scene.uiConfig;
+		let gColor = cfg.getUIGlobalColor();
+		let uimodule = cfg.getUIModuleByName("normalCtrlPanel") as INVCtrlPanelCfgData;
+		let btf = uimodule.btnTextFontFormat;
+		let ltf = uimodule.textFontFormat;
 
 		let startX = 10;
 		let startY = this.m_panelH - 10 - this.m_btnH;
@@ -170,11 +178,6 @@ class NormalCtrlPanel {
 		let px = startX;
 		let py = 0;
 
-		this.m_btnW = 90;
-		// let localBtn = this.createBtn("Local", startX, startY, "local");
-
-		let tta = sc.transparentTexAtlas;
-
 		let ME = CoRScene.MouseEvent;
 		let textParam: ITextParam = {
 			text: "Local",
@@ -182,12 +185,11 @@ class NormalCtrlPanel {
 			fontSize: 30,
 			font: ""
 		};
-		let fc4 = CoMaterial.createColor4;
 		let colors: IColor4[] = [
 			fc4().setRGB3Bytes(80, 80, 80),
 			fc4().setRGB3Bytes(110, 110, 110),
 			fc4().setRGB3Bytes(90, 90, 90),
-			fc4().setRGB3Bytes(110, 110, 110)
+			fc4().setRGB3Bytes(80, 80, 80)
 		];
 		let localBtn = CoUI.createTextButton(
 			this.m_btnW, this.m_btnH, "local",
@@ -293,14 +295,16 @@ class NormalCtrlPanel {
 				let label: IColorClipLabel;
 
 				label = btn.getLable() as IColorClipLabel;
-				label.getColorAt(0).setRGB3Bytes(71, 114, 179);
+				let btnColor = cfg.getUIGlobalColor().button.selected;
+				cfg.applyButtonColor(label.getColors(), btnColor);
 				label.setClipIndex(0);
 			},
 			(btn: IButton): void => {
 				let label: IColorClipLabel;
 
 				label = btn.getLable() as IColorClipLabel;
-				label.getColorAt(0).setRGB3Bytes(80, 80, 80);
+				let btnColor = cfg.getUIGlobalColor().button.light;
+				cfg.applyButtonColor(label.getColors(), btnColor);
 				label.setClipIndex(0);
 			}
 		);
