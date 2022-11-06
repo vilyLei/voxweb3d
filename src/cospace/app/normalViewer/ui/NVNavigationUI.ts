@@ -134,7 +134,8 @@ class NVNavigationUI {
 		tips = uimodule.tips;
 
 		let layouter = uiScene.layout.createLeftTopLayouter();
-		let fontColor = CoMaterial.createColor4().setRGB3Bytes(170, 170, 170);
+		let fontColor = CoMaterial.createColor4();
+		fontColor.fromBytesArray3(cfg.getUIGlobalColor().text);
 		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
 		let fontFormat = uimodule.fontFormat;
 		tta.setFontName(fontFormat.font);

@@ -178,7 +178,8 @@ class NVTransUI {
 		let keys = uimodule.keys;
 
 		tta.setFontName(fontFormat.font);
-		let fontColor = CoMaterial.createColor4().setRGB3Bytes(170, 170, 170);;
+		let fontColor = CoMaterial.createColor4();
+		fontColor.fromBytesArray3(cfg.getUIGlobalColor().text);
 		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
 		for (let i = 0; i < btnNames.length; ++i) {
 			let img = tta.createCharsCanvasFixSize(pw, ph, btnNames[i], fontFormat.fontSize, fontColor, bgColor);

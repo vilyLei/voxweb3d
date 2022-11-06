@@ -1,6 +1,7 @@
 {
 	"name": "normalViewer",
 	"color":{
+		"text": [170, 170, 170],
 		"background": [40, 40, 40],
 		"foreground": [170, 170, 170],
 		"button":{

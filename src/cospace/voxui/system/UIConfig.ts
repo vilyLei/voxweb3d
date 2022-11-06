@@ -41,7 +41,7 @@ class UIConfig implements IUIConfig {
 		btnColors[2].fromBytesArray3(uiBtnColor.down);
 		
 		if(btnColors.length > 3) {
-			btnColors[2].fromBytesArray3(uiBtnColor.up);
+			btnColors[3].fromBytesArray3(uiBtnColor.up);
 		}
 	}
 	getUIGlobalColor(): IUIGlobalColor {

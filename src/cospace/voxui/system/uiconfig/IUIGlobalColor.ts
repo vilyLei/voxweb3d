@@ -20,6 +20,8 @@ interface IUIButtonColorSet {
 }
 interface IUIGlobalColor {
 	// uint8 rgb color values, exmple: [170, 50, 30]
+	text: number[];
+	// uint8 rgb color values, exmple: [170, 50, 30]
 	background: number[];
 	// uint8 rgb color values, exmple: [170, 50, 30]
 	foreground: number[];
