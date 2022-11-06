@@ -607,20 +607,20 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     private m_lBoundsVS: Float32Array = null;
     private m_transStatus: number = ROTransform.UPDATE_TRANSFORM;
     private updateLocalBoundsVS(bounds: IAABB): void {
-        let pminV: Vector3D = bounds.min;
-        let pmaxV: Vector3D = bounds.max;
+        let min = bounds.min;
+        let max = bounds.max;
         if (this.m_lBoundsVS == null) {
             this.m_lBoundsVS = new Float32Array(24);
         }
         let pvs: Float32Array = this.m_lBoundsVS;
-        pvs[0] = pminV.x; pvs[1] = pminV.y; pvs[2] = pminV.z;
-        pvs[3] = pmaxV.x; pvs[4] = pminV.y; pvs[5] = pminV.z;
-        pvs[6] = pminV.x; pvs[7] = pminV.y; pvs[8] = pmaxV.z;
-        pvs[9] = pmaxV.x; pvs[10] = pminV.y; pvs[11] = pmaxV.z;
-        pvs[12] = pminV.x; pvs[13] = pmaxV.y; pvs[14] = pminV.z;
-        pvs[15] = pmaxV.x; pvs[16] = pmaxV.y; pvs[17] = pminV.z;
-        pvs[18] = pminV.x; pvs[19] = pmaxV.y; pvs[20] = pmaxV.z;
-        pvs[21] = pmaxV.x; pvs[22] = pmaxV.y; pvs[23] = pmaxV.z;
+        pvs[0] = min.x; pvs[1] = min.y; pvs[2] = min.z;
+        pvs[3] = max.x; pvs[4] = min.y; pvs[5] = min.z;
+        pvs[6] = min.x; pvs[7] = min.y; pvs[8] = max.z;
+        pvs[9] = max.x; pvs[10] = min.y; pvs[11] = max.z;
+        pvs[12] = min.x; pvs[13] = max.y; pvs[14] = min.z;
+        pvs[15] = max.x; pvs[16] = max.y; pvs[17] = min.z;
+        pvs[18] = min.x; pvs[19] = max.y; pvs[20] = max.z;
+        pvs[21] = max.x; pvs[22] = max.y; pvs[23] = max.z;
     }
     protected updateGlobalBounds(): void {
 

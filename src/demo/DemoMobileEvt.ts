@@ -157,13 +157,6 @@ export class DemoMobileEvt {
     initialize(): void {
         console.log("DemoMobileEvt::initialize()......");
 
-        // let ab = new AABB();
-        // let fs = new Float32Array([-100,-2, -300, 0.5,30,10, 300,400,50]);
-        // ab.addFloat32Arr(fs);
-        // ab.update();
-        // console.log("ab: ", ab);
-
-        // return;
         if (this.m_rscene == null) {
             //H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;

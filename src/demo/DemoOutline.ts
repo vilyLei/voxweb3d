@@ -33,6 +33,7 @@ import IRendererScene from "../vox/scene/IRendererScene";
 import { IRendererSceneAccessor } from "../vox/scene/IRendererSceneAccessor";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import RendererState from "../vox/render/RendererState";
+import AABB from "../vox/geom/AABB";
 
 class SceneAccessor implements IRendererSceneAccessor {
     constructor() { }
@@ -163,7 +164,7 @@ export class DemoOutline {
     dracoParseFinish(modules: any[], total: number): void {
 
         console.log("dracoParseFinish, modules: ", modules);
-
+        
         // let material: Default3DMaterial = new Default3DMaterial();
         // material.initializeByCodeBuf(true);
         // material.setTextureList([this.getImageTexByUrl("static/assets/wood_01.jpg")]);
@@ -200,15 +201,19 @@ export class DemoOutline {
         //this.m_postOutline.setPostRenderState(renderingState.BACK_ADD_BLENDSORT_STATE);
 
 
-        // let box0 = new Box3DEntity();
-        // box0.initializeCube(80, [this.getImageTexByUrl("static/assets/default.jpg")]);
-        // box0.setXYZ(200, 800, -100);
-        // this.m_rscene.addEntity(box0);
-        // let box1 = new Box3DEntity();
-        // box1.initializeCube(80, [this.getImageTexByUrl("static/assets/default.jpg")]);
-        // box1.setXYZ(320, 820, -120);
-        // this.m_rscene.addEntity(box1);
-        // this.m_postOutline.setTargetList([box0, box1]);
+        let box0 = new Box3DEntity();
+        box0.initializeCube(80, [this.getImageTexByUrl("static/assets/default.jpg")]);
+        box0.setXYZ(200, 800, -100);
+        this.m_rscene.addEntity(box0);
+        let box1 = new Box3DEntity();
+        box1.initializeCube(80, [this.getImageTexByUrl("static/assets/default.jpg")]);
+        box1.setXYZ(320, 820, -120);
+        this.m_rscene.addEntity(box1);
+        // this.m_postOutline.setTargetList([box1]);
+
+        // // console.log("box0.getMesh().bounds: ",  box0.getMesh().bounds);
+        // console.log("box1.getLocalBounds(): ",  box1.getLocalBounds());
+        // console.log("box1.getGlobalBounds(): ",  box1.getGlobalBounds());
 
         let plane = new Plane3DEntity();
         plane.initializeXOZSquare(80, [this.getImageTexByUrl("static/assets/default.jpg")]);
@@ -216,8 +221,9 @@ export class DemoOutline {
         plane.setRotationXYZ(0, 30, -70);
         this.m_rscene.addEntity(plane);
         plane.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-        this.m_postOutline.setTargetList([plane]);
-        console.log("RendererState.NONE_CULLFACE_NORMAL_STATE: ", RendererState.NONE_CULLFACE_NORMAL_STATE);
+        // // this.m_postOutline.setTargetList([plane]);
+        this.m_postOutline.setTargetList([plane, box0, box1]);
+        // console.log("RendererState.NONE_CULLFACE_NORMAL_STATE: ", RendererState.NONE_CULLFACE_NORMAL_STATE);
 
     }
     private initScene(): void {
@@ -246,7 +252,8 @@ export class DemoOutline {
     }
     private mouseBgDown(evt: any): void {
 
-        console.log("mouse bg down...");
+        DebugFlag.Flag_0 = 1;
+        console.log("mouse bg down...", DebugFlag.Flag_0);
     }
     private editMouseDown(evt: any): void {
         console.log("edit mouse down...");

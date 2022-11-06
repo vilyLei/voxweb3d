@@ -28,7 +28,7 @@ interface IAABB {
 	 * @param bias the default value is 0.0
 	 */
 	getClosePosition(in_pos: IVector3D, out_pos: IVector3D, bias?: number): void;
-	addPosition(pv: IVector3D): void;
+	addPosition(pv: IVector3D): IAABB;
 	addXYZ(pvx: number, pvy: number, pvz: number): void;
 	addXYZFast(pvx: number, pvy: number, pvz: number): void;
 	addFloat32AndIndicesArr(vs: Float32Array | number[], indices: Uint16Array | Uint32Array): void;
