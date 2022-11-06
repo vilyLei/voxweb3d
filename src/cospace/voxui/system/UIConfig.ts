@@ -10,7 +10,7 @@ class UIConfig implements IUIConfig {
 	private m_jsonRawData = "";
 	private m_jsonObj: Object = null;
 	private m_globalColor: IUIGlobalColor = null;
-	private m_globalText: IUIGlobalColor = null;
+	private m_globalText: IUIGlobalText = null;
 	constructor() { }
 	initialize(configUrl: string, callback: () => void): void {
 		// load the cofig text file
@@ -47,13 +47,13 @@ class UIConfig implements IUIConfig {
 		}
 	}
 	
-	getUIGlobalText(): IUIGlobalColor {
+	getUIGlobalText(): IUIGlobalText {
 		if(this.m_globalText != null) return this.m_globalText;
 		let obj = this.m_jsonObj;
 		if (obj != null) {
 			let uiModule = (obj as any)["text"];
 			if (uiModule !== undefined) {
-				this.m_globalText = uiModule as IUIGlobalColor;
+				this.m_globalText = uiModule as IUIGlobalText;
 				return this.m_globalText;
 			}
 		}

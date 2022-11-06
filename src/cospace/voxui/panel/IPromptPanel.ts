@@ -6,7 +6,8 @@ import { IUIFontFormat } from "../system/IUIConfig";
 
 interface IPromptCfgData {
 	button?: object;
-	fontFormat: IUIFontFormat;
+	btnFontFormat: IUIFontFormat;
+	textFontFormat: IUIFontFormat;
 	bgColor: number[];
 	panelSize: number[];
 	btnSize: number[];

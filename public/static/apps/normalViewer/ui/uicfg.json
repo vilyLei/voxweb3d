@@ -114,7 +114,12 @@
 				"fontName": "Verdana",
 				"fontSize": 30,
 				"bold": false,
-				"italic": false
+				"italic": false,
+				"fontColor": [
+					170,
+					170,
+					170
+				]
 			},
 			"names": [
 				"框选",
@@ -148,7 +153,12 @@
 				"fontName": "Verdana",
 				"fontSize": 30,
 				"bold": false,
-				"italic": false
+				"italic": false,
+				"fontColor": [
+					170,
+					170,
+					170
+				]
 			},
 			"names": [
 				"文件",
@@ -176,11 +186,27 @@
 				120,
 				50
 			],
-			"fontFormat": {
+			"btnFontFormat": {
 				"fontName": "Verdana",
 				"fontSize": 30,
 				"bold": false,
-				"italic": false
+				"italic": false,
+				"fontColor": [
+					170,
+					170,
+					170
+				]
+			},
+			"textFontFormat": {
+				"fontName": "Verdana",
+				"fontSize": 30,
+				"bold": false,
+				"italic": false,
+				"fontColor": [
+					170,
+					170,
+					170
+				]
 			},
 			"names": [
 				"确认",
