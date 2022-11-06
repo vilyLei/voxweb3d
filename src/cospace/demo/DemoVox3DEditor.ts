@@ -161,7 +161,7 @@ export class DemoVox3DEditor {
 				console.log("engine modules loaded ...");
 				this.initRenderer();
 
-				this.initScene();
+				this.init3DScene();
 				this.m_loadingUI.showInfo("initializing editor system...");
 				new CoModuleLoader(3, (): void => {
 
@@ -198,9 +198,13 @@ export class DemoVox3DEditor {
 		let uiConfig = new UIConfig();
 		coui.uiConfig = uiConfig;
 		uiConfig.initialize("static/apps/normalViewer/ui/uicfg.json",(): void => {
-			
+			console.log("xxxx initEditSceneSys... ...");
+			this.initEditSceneSys();
 		});
 
+	}
+	private initEditSceneSys(): void {
+		let coui = this.m_coUIScene;
 		this.m_transUI.setOutline(this.m_outline);
 		this.m_transUI.initialize(this.m_rsc, this.m_editUIRenderer, coui);
 		this.m_nvaUI.initialize(this.m_rsc, this.m_editUIRenderer, coui);
@@ -218,8 +222,7 @@ export class DemoVox3DEditor {
 		let entitySC = viewer.normalScene.entityScene;
 		entitySC.initialize(this.m_rsc);
 	}
-
-	private initScene(): void {
+	private init3DScene(): void {
 
 	}
 	isEngineEnabled(): boolean {

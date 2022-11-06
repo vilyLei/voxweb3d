@@ -23,6 +23,7 @@ import { ICoTransformRecorder } from "../../../edit/recorde/ICoTransformRecorder
 import { IRectTextTip } from "../../../voxui/entity/IRectTextTip";
 import { ISelectButtonGroup } from "../../../voxui/button/ISelectButtonGroup";
 import { TipInfo } from "../../../voxui/base/TipInfo";
+import { IFontFormat } from "../../../voxui/system/IUIConfig";
 
 declare var CoRScene: ICoRScene;
 declare var CoUIInteraction: ICoUIInteraction;
@@ -30,6 +31,15 @@ declare var CoMath: ICoMath;
 declare var CoMaterial: ICoMaterial;
 declare var CoEdit: ICoEdit;
 declare var CoUI: ICoUI;
+
+interface UICfgData {
+	fontFormat: IFontFormat;
+	btnTextAreaSize: number[];
+	btnSize: number[];
+	names: string[];
+	keys: string[];
+	tips: string[];
+}
 
 /**
  * NVTransUI
@@ -145,20 +155,30 @@ class NVTransUI {
 	private m_btnGroup: ISelectButtonGroup;// = new ISelectButtonGroup();
 	private initTransUI(): void {
 
-		this.m_btnGroup = CoUI.createSelectButtonGroup();
 		let uiScene = this.m_coUIScene;
-		let tta = uiScene.transparentTexAtlas;
-		let pw = 90;
-		let ph = 70;
-		let btnNames = ["框选", "移动", "旋转", "缩放"];
-		let keys = ["select", "move", "rotate", "scale"];
-		let infos = [
-			"Select items using box selection.",
-			"Move selected items(W).",
-			"Rotate selected items(R).",
-			"Scale(resize) selected items(E)."
-		];
+		let cfg = uiScene.uiConfig;
+		let uimodule = cfg.getUIModuleByName("transformCtrl") as UICfgData;
 
+		console.log("NVTransUI::initTransUI(), uimodule: ",uimodule);
+
+		let fontFormat = uimodule.fontFormat;
+		this.m_btnGroup = CoUI.createSelectButtonGroup();
+		let tta = uiScene.transparentTexAtlas;
+		let pw = uimodule.btnTextAreaSize[0];
+		let ph = uimodule.btnTextAreaSize[1];
+		// let btnNames = ["框选", "移动", "旋转", "缩放"];
+		// let keys = ["select", "move", "rotate", "scale"];
+		// let tips = [
+		// 	"Select items using box selection.",
+		// 	"Move selected items(W).",
+		// 	"Rotate selected items(R).",
+		// 	"Scale(resize) selected items(E)."
+		// ];
+		let btnNames = uimodule.names;
+		let keys = uimodule.keys;
+		let tips = uimodule.tips;
+
+		tta.setFontName(fontFormat.font);
 		let fontColor = CoMaterial.createColor4().setRGB3Bytes(170, 170, 170);;
 		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
 		for (let i = 0; i < btnNames.length; ++i) {
@@ -167,10 +187,11 @@ class NVTransUI {
 		}
 
 		let px = 5;
-		let py = (5 + ph) * 4;
-		ph = 5 + ph;
+		pw = uimodule.btnSize[0];
+		ph = uimodule.btnSize[1];
+		let py = ph * 4;
 		for (let i = 0; i < btnNames.length; ++i) {
-			let btn = this.crateBtn(btnNames, pw, ph, px, py - ph * i, i, keys[i], infos[i]);
+			let btn = this.crateBtn(pw, ph, px, py - ph * i, i, uimodule);
 			if (i > 0) {
 				this.m_transBtns.push(btn);
 				this.m_btnGroup.addButton(btn);
@@ -221,37 +242,31 @@ class NVTransUI {
 		// console.log("ui move (x, y): ", evt.mouseX, evt.mouseY);
 		this.m_selectFrame.move(evt.mouseX, evt.mouseY);
 	}
-	private crateBtn(btnNames: string[], pw: number, ph: number, px: number, py: number, labelIndex: number, idns: string, info: string): IButton {
+	private crateBtn(pw: number, ph: number, px: number, py: number, labelIndex: number, cfgData: UICfgData): IButton {
 
+		let names = cfgData.names;
+		let keys = cfgData.keys;
+		let tips = cfgData.tips;
 		let colorClipLabel = CoUI.createClipColorLabel();
 		colorClipLabel.initializeWithoutTex(pw, ph, 4);
 		colorClipLabel.getColorAt(0).setRGB3Bytes(40, 40, 40);
 		colorClipLabel.getColorAt(1).setRGB3Bytes(50, 50, 50);
-		colorClipLabel.getColorAt(2).setRGB3Bytes(40, 40, 60);
+		colorClipLabel.getColorAt(2).setRGB3Bytes(60, 60, 60);
 
 		let tta = this.m_coUIScene.transparentTexAtlas;
 		let iconLable = CoUI.createClipLabel();
 		iconLable.transparent = true;
 		iconLable.premultiplyAlpha = true;
-		iconLable.initialize(tta, [btnNames[labelIndex]]);
-
-		// let tipInfo = new TipInfo().alignRight().setContent(info);
-		// let tipInfo = CoUI.createTipInfo().alignRight().setContent(info);
+		iconLable.initialize(tta, [names[labelIndex]]);
 
 		let btn = CoUI.createButton();
-		btn.uuid = idns;
-		btn.info = CoUI.createTipInfo().alignRight().setContent(info);
+		btn.uuid = keys[labelIndex];
+		btn.info = CoUI.createTipInfo().alignRight().setContent(tips[labelIndex]);
 		btn.addLabel(iconLable);
 		btn.initializeWithLable(colorClipLabel);
 		btn.setXY(px, py);
 		this.m_coUIScene.addEntity(btn, 1);
 		this.m_coUIScene.tips.addTipsTarget( btn );
-		// this.tip.addEntity( btn );
-		// const ME = CoRScene.MouseEvent;
-		// btn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
-		// btn.addEventListener(ME.MOUSE_OUT, this.tip, this.tip.targetMouseOut);
-		// btn.addEventListener(ME.MOUSE_OVER, this.tip, this.tip.targetMouseOver);
-		// btn.addEventListener(ME.MOUSE_MOVE, this.tip, this.tip.targetMouseMove);
 
 		return btn;
 	}

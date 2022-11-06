@@ -1,74 +1,100 @@
 {
 	"name": "normalViewer",
+	"color":{
+		"background": [40, 40, 40],
+		"foreground": [170, 170, 170],
+		"button":{
+			"common":{
+				"out": [40, 40, 40],
+				"over": [50, 50, 50],
+				"down": [60, 60, 60]
+			},
+			"selected":{
+				"out": [71, 114, 179],
+				"over": [81, 124, 189],
+				"down": [71, 114, 189]
+			}
+		}
+	},
 	"textCfg": {
 		"globalFontFormat": {
 			"common": {
 				"fontName": "Verdana",
 				"fontSize": 20,
 				"bold": false,
-				"italic": false
+				"italic": false,
+				"fontColor": [170, 170, 170]
 			},
 			"tips": {
 				"fontName": "Verdana",
 				"fontSize": 18,
 				"bold": false,
-				"italic": false
+				"italic": false,
+				"fontColor": [170, 170, 170]
 			}
 		}
 	},
-	"uiModules": [
-		{
-			"transformCtrl": {
-				"btnSize" : [90, 70],
-				"fontFormat": {
-					"fontName": "Verdana",
-					"fontSize": 30,
-					"bold": false,
-					"italic": false
-				},
-				"names": [
-					"框选",
-					"移动",
-					"旋转",
-					"缩放"
-				],
-				"keys": [
-					"select",
-					"move",
-					"rotate",
-					"scale"
-				],
-				"tips": [
-					"Select items using box selection.",
-					"Move selected items(W).",
-					"Rotate selected items(R).",
-					"Scale(resize) selected items(E)."
-				]
+	"uiModule": {
+		"transformCtrl": {
+			"btnTextAreaSize": [
+				90,
+				70
+			],
+			"btnSize": [
+				90,
+				75
+			],
+			"fontFormat": {
+				"fontName": "Verdana",
+				"fontSize": 30,
+				"bold": false,
+				"italic": false
 			},
-			"navigation": {
-				"btnSize" : [90, 40],
-				"fontFormat": {
-					"fontName": "Verdana",
-					"fontSize": 30,
-					"bold": false,
-					"italic": false
-				},
-				"names": [
-					"文件",
-					"编辑",
-					"帮助"
-				],
-				"keys": [
-					"file",
-					"edit",
-					"help"
-				],
-				"tips": [
-					"File system operations.",
+			"names": [
+				"框选",
+				"移动",
+				"旋转",
+				"缩放"
+			],
+			"keys": [
+				"select",
+				"move",
+				"rotate",
+				"scale"
+			],
+			"tips": [
+				"Select items using box selection.",
+				"Move selected items(W).",
+				"Rotate selected items(R).",
+				"Scale(resize) selected items(E)."
+			]
+		},
+		"navigation": {
+			"btnSize": [
+				90,
+				40
+			],
+			"fontFormat": {
+				"fontName": "Verdana",
+				"fontSize": 30,
+				"bold": false,
+				"italic": false
+			},
+			"names": [
+				"文件",
+				"编辑",
+				"帮助"
+			],
+			"keys": [
+				"file",
+				"edit",
+				"help"
+			],
+			"tips": [
+				"File system operations.",
 				"Editing operations.",
 				"Help infomation."
 			]
-			}
 		}
-	]
+	}
 }

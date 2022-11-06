@@ -15,9 +15,27 @@ class UIConfig implements IUIConfig {
 			this.m_jsonRawData = jsonLoader.getDataByUrl(configUrl) as string;
 			this.m_jsonObj = JSON.parse(this.m_jsonRawData);
 			console.log("this.m_jsonObj: ", this.m_jsonObj);
+			if(this.m_callback != null) {
+				this.m_callback();
+				this.m_callback = null;
+			}
 		}).load(configUrl);
 	}
-	getModuleByName(moduleName: string): unknown {
+	getUIModuleByName(moduleName: string): unknown | null {
+		if(moduleName != "") {
+			let obj = this.m_jsonObj;
+			if(obj != null) {
+				let uiModule = (obj as any)["uiModule"];
+				console.log("XXXX uiModule: ",uiModule);
+				if(uiModule !== undefined) {
+					let module = uiModule[moduleName];
+					if(module !== undefined) {
+						return module;
+					}
+				}
+			}
+
+		}
 		return null;
 	}
 	destroy(): void {
