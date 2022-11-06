@@ -2,7 +2,7 @@ import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { IButton } from "../button/IButton";
-import { IPromptPanel } from "./IPromptPanel";
+import { IPromptCfgData, IPromptPanel } from "./IPromptPanel";
 import { ICoUIScene } from "../scene/ICoUIScene";
 import { TextLabel } from "../entity/TextLabel";
 import { UIPanel } from "./UIPanel";
@@ -128,29 +128,34 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			return;
 		}
 		let sc = this.getScene();
+		let tta = sc.transparentTexAtlas;
+		let fc4 = CoMaterial.createColor4;
 		
 		let cfg = this.m_scene.uiConfig;
 		let gColor = cfg.getUIGlobalColor();
-
+		let uimodule = cfg.getUIModuleByName("promptPanel") as IPromptCfgData;
+		let btf = uimodule.btnTextFontFormat;
+		let ltf = uimodule.textFontFormat;
 		let textLabel = new TextLabel();
 		textLabel.depthTest = true;
 		textLabel.transparent = true;
 		textLabel.premultiplyAlpha = true;
-		textLabel.initialize(this.m_prompt, sc);
+		textLabel.initialize(this.m_prompt, sc, ltf.fontSize);
+		let color = fc4();
+		color.fromBytesArray3(ltf.fontColor);
+		textLabel.setColor(color);
 		this.m_promptLabel = textLabel;
 
 		// console.log("textLabel.getHeight(): ", textLabel.getHeight());
 
-		let tta = sc.transparentTexAtlas;
-		let fc4 = CoMaterial.createColor4;
 		let ME = CoRScene.MouseEvent;
 		let textParam: ITextParam = {
 			text: this.m_confirmNS,
 			textColor: fc4(),
-			fontSize: 30,
+			fontSize: btf.fontSize,
 			font: ""
 		};
-		// textParam.textColor.fromBytesArray3();
+		textParam.textColor.fromBytesArray3(btf.fontColor);
 
 		let colors: IColor4[] = [
 			fc4().setRGB3Bytes(80, 80, 80),
@@ -158,6 +163,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			fc4().setRGB3Bytes(90, 90, 90),
 			fc4().setRGB3Bytes(80, 80, 80)
 		];
+		cfg.applyButtonColor(colors, gColor.button.light);
 
 		let builder = ButtonBuilder;
 		let confirmBtn = builder.createTextButton(

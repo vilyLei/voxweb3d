@@ -60,6 +60,20 @@
 					114,
 					179
 				]
+			},
+			"light": {
+				"out": [
+					80, 80, 80
+				],
+				"over": [
+					110, 110, 110
+				],
+				"down": [
+					90, 90, 90
+				],
+				"up": [
+					80, 80, 80
+				]
 			}
 		}
 	},
@@ -177,7 +191,7 @@
 			]
 		},
 		"promptPanel": {
-			"bgColor": [40, 40, 40],
+			"bgColor": [51, 51, 51],
 			"panelSize": [
 				300,
 				200
@@ -186,7 +200,7 @@
 				120,
 				50
 			],
-			"btnFontFormat": {
+			"btnTextFontFormat": {
 				"fontName": "Verdana",
 				"fontSize": 30,
 				"bold": false,

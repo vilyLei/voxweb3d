@@ -61,7 +61,7 @@ class TextLabel extends UIEntityBase implements ITextLabel {
 			this.m_tex.magFilter = CoRScene.TextureConst.NEAREST;
 
 			let material = this.createMaterial(this.m_tex);
-			material.setColor(this.m_fontColor);
+			this.m_material = material;
 			CoMesh.plane.setBufSortFormat(material.getBufSortFormat());
 			let mesh = CoMesh.plane.createXOY(0, 0, 1.0, 1.0);
 			this.m_pw = img.width;

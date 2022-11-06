@@ -17,6 +17,10 @@ interface IUIButtonColorSet {
 	 * button selected color list
 	 */
 	selected: IUIButtonColor;
+	/**
+	 * button light color list
+	 */
+	light: IUIButtonColor;
 }
 interface IUIGlobalColor {
 	// uint8 rgb color values, exmple: [170, 50, 30]
