@@ -87,24 +87,24 @@ class DragScaleController extends DragTransController implements IDragScaleContr
         const V3 = CoMath.Vector3D;
         let mat4 = CoMath.createMat4();
 
-        outColor.setRGBUint8(240, 55, 80);
+        outColor.setRGB3Bytes(240, 55, 80);
         mat4.identity();
         this.createDragLine(V3.X_AXIS, outColor, mat4);
-        outColor.setRGBUint8(135, 205, 55);
+        outColor.setRGB3Bytes(135, 205, 55);
         mat4.identity();
         this.createDragLine(V3.Y_AXIS, outColor, mat4);
-        outColor.setRGBUint8(80, 145, 240);
+        outColor.setRGB3Bytes(80, 145, 240);
         mat4.identity();
         this.createDragLine(V3.Z_AXIS, outColor, mat4);
 
         // xoz
-        outColor.setRGBUint8(240, 55, 80);
+        outColor.setRGB3Bytes(240, 55, 80);
         this.createDragPlane(0, alpha, outColor);
         // xoy
-        outColor.setRGBUint8(135, 205, 55);
+        outColor.setRGB3Bytes(135, 205, 55);
         this.createDragPlane(1, alpha, outColor);
         // yoz
-        outColor.setRGBUint8(80, 145, 240);
+        outColor.setRGB3Bytes(80, 145, 240);
         this.createDragPlane(2, alpha, outColor);
 
         let crossPlane = new DragScaleRayCrossPlane();

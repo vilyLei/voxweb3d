@@ -47,12 +47,6 @@ class Color4 implements IColor4{
         arr[offset + 2] = this.b;
         return this;
     }
-    setRGB3Bytes(r: number, g: number, b: number): Color4 {
-        this.r = r / 255.0;
-        this.g = g / 255.0;
-        this.b = b / 255.0;
-        return this;
-    }
     setRGB3f(r: number, g: number, b: number): Color4 {
         this.r = r;
         this.g = g;
@@ -60,13 +54,21 @@ class Color4 implements IColor4{
         return this;
     }
     
-    setRGBUint8(uint8R: number, uint8G: number, uint8B: number): Color4 {
-        let k = 1.0 / 255.0;
+    setRGB3Bytes(uint8R: number, uint8G: number, uint8B: number): Color4 {
+        const k = 1.0 / 255.0;
         this.r = uint8R * k;
         this.g = uint8G * k;
         this.b = uint8B * k;
         return this;
+        // return this.setRGB3Bytes(r,g,b);
     }
+    // setRGB3Bytes(uint8R: number, uint8G: number, uint8B: number): Color4 {
+    //     let k = 1.0 / 255.0;
+    //     this.r = uint8R * k;
+    //     this.g = uint8G * k;
+    //     this.b = uint8B * k;
+    //     return this;
+    // }
     setRGBUint24(rgbUint24: number): Color4 {
         this.r = ((rgbUint24 >> 16) & 0x0000ff) / 255.0;
         this.g = ((rgbUint24 >> 8) & 0x0000ff) / 255.0;

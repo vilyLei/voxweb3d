@@ -85,27 +85,27 @@ class DragMoveController extends DragTransController implements IDragMoveControl
         let mat4 = CoMath.createMat4();
         mat4.identity();
         mat4.rotationZ(-0.5 * Math.PI);
-        outColor.setRGBUint8(240, 55, 80);
+        outColor.setRGB3Bytes(240, 55, 80);
         this.createDragLine(V3.X_AXIS, outColor, mat4);
         mat4.identity();
         mat4.rotationX(0.5 * Math.PI);
         mat4.rotationY(0.5 * Math.PI);
-        outColor.setRGBUint8(135, 205, 55);
+        outColor.setRGB3Bytes(135, 205, 55);
         this.createDragLine(V3.Y_AXIS, outColor, mat4);
         mat4.identity();
         mat4.rotationY(0.5 * Math.PI);
         mat4.rotationX(0.5 * Math.PI);
-        outColor.setRGBUint8(80, 145, 240);
+        outColor.setRGB3Bytes(80, 145, 240);
         this.createDragLine(V3.Z_AXIS, outColor, mat4);
 
         // xoz
-        outColor.setRGBUint8(240, 55, 80);
+        outColor.setRGB3Bytes(240, 55, 80);
         this.createDragPlane(0, alpha, outColor);
         // xoy
-        outColor.setRGBUint8(135, 205, 55);
+        outColor.setRGB3Bytes(135, 205, 55);
         this.createDragPlane(1, alpha, outColor);
         // yoz
-        outColor.setRGBUint8(80, 145, 240);
+        outColor.setRGB3Bytes(80, 145, 240);
         this.createDragPlane(2, alpha, outColor);
 
         let crossPlane = new DragRayCrossPlane();

@@ -34,6 +34,7 @@ import { IRendererSceneAccessor } from "../vox/scene/IRendererSceneAccessor";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import RendererState from "../vox/render/RendererState";
 import AABB from "../vox/geom/AABB";
+import Color4 from "../vox/material/Color4";
 
 class SceneAccessor implements IRendererSceneAccessor {
     constructor() { }
@@ -86,9 +87,9 @@ export class DemoOutline {
             this.m_editScene.setAccessor(new SceneAccessor());
             this.m_editScene.enableMouseEvent(true);
 
-            // let axis0 = new Axis3DEntity();
-            // axis0.initialize(500);
-            // this.m_editScene.addEntity(axis0);
+            let axis0 = new Axis3DEntity();
+            axis0.initialize(500);
+            this.m_editScene.addEntity(axis0);
 
             let rscene = this.m_rscene;
             let materialBlock = new RenderableMaterialBlock();
@@ -172,6 +173,8 @@ export class DemoOutline {
             ab.addFloat32Arr(vs);
         }
         console.timeEnd("Fast time: ");
+        new Vector3D();
+        new Color4();
         // let material: Default3DMaterial = new Default3DMaterial();
         // material.initializeByCodeBuf(true);
         // material.setTextureList([this.getImageTexByUrl("static/assets/wood_01.jpg")]);
@@ -236,21 +239,21 @@ export class DemoOutline {
     private initScene(): void {
 
         let scale: number = 2.5;
-        // let box: Box3DEntity = new Box3DEntity();
-        // box.uvPartsNumber = 6;
-        // box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixparts.jpg")]);
-        // box.setScaleXYZ(scale, scale, scale);
-        // box.setRotationXYZ(Math.random() * 300.0, Math.random() * 300.0, Math.random() * 300.0);
-        // box.setXYZ(0.0, 60.0, 0.0);
-        // this.m_rscene.addEntity(box);
-        // (box.getMaterial() as any).setRGB3f(0.9, 0.3, 0.2);
+        let box: Box3DEntity = new Box3DEntity();
+        box.uvPartsNumber = 6;
+        box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixparts.jpg")]);
+        box.setScaleXYZ(scale, scale, scale);
+        box.setRotationXYZ(Math.random() * 300.0, Math.random() * 300.0, Math.random() * 300.0);
+        box.setXYZ(0.0, 60.0, 0.0);
+        this.m_rscene.addEntity(box);
+        (box.getMaterial() as any).setRGB3f(0.9, 0.3, 0.2);
         
         this.loadNext();
 
-        // let plane: Plane3DEntity = new Plane3DEntity();
-        // plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
-        // plane.setXYZ(0, -170, 0);
-        // this.m_rscene.addEntity(plane, 2);
+        let plane = new Plane3DEntity();
+        plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
+        plane.setXYZ(0, -170, 0);
+        this.m_rscene.addEntity(plane, 2);
 
     }
     private m_flag: boolean = true;

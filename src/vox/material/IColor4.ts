@@ -24,36 +24,47 @@ interface IColor4 {
     a: number;
 
     /**
-     * example: r,g,b,a => [0],[1],[2],[3]
+     * example: [0],[1],[2],[3] => r,g,b,a
      */
     fromArray(arr: number[] | Float32Array, offset?: number): IColor4;
     /**
-     * example: [0],[1],[2],[3] => r,g,b,a
+     * example: r,g,b,a => [0],[1],[2],[3]
      */
     toArray(arr: number[] | Float32Array, offset?: number): IColor4;
     /**
-     * example: r,g,b => [0],[1],[2]
+     * example: [0],[1],[2] => r,g,b
      */
     fromArray3(arr: number[] | Float32Array, offset?: number): IColor4;
     /**
-     * example: [0],[1],[2] => r,g,b
+     * example: r,g,b => [0],[1],[2]
      */
     toArray3(arr: number[] | Float32Array, offset?: number): IColor4;
+    
+    /**
+     * set rgb with three float values
+     * @param r example: 0.5
+     * @param g example: 0.6
+     * @param b example: 0.7
+     */
+    setRGB3f(r: number, g: number, b: number): IColor4;
+    /**
+     * @param rgbUint24 example: 0xFF88cc
+     */
+    setRGBUint24(rgbUint24: number): IColor4;
     /**
      * @param r example: 40
      * @param g example: 50 
      * @param b example: 60 
      */
-    setRGB3Bytes(r: number, g: number, b: number): IColor4
-    setRGB3f(r: number, g: number, b: number): IColor4;
-    setRGBUint24(rgbUint24: number): IColor4;
-    /**
-     * @param uint8R example: 80
-     * @param uint8G example: 100
-     * @param uint8B example: 200
-     */
-    setRGBUint8(uint8R: number, uint8G: number, uint8B: number): IColor4;
+    setRGB3Bytes(r: number, g: number, b: number): IColor4;
     getRGBUint24(): number;
+    /**
+     * set rgba with four float values
+     * @param r example: 0.5
+     * @param g example: 0.6
+     * @param b example: 0.7
+     * @param a example: 1.0
+     */
     setRGBA4f(r: number, g: number, b: number, a: number): IColor4;
     copyFrom(c: IColor4): IColor4;
     copyFromRGB(c: IColor4): IColor4;
