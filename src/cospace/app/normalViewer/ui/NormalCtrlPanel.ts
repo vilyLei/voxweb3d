@@ -61,7 +61,7 @@ class NormalCtrlPanel {
 		this.m_panel.setBGColor(c);
 	}
 
-	initialize(scene: ICoUIScene, rpi: number, panelW: number, panelH: number, btnH: number): void {
+	initialize(scene: ICoUIScene, rpi: number, panelW: number, panelH: number, btnW: number, btnH: number): void {
 
 		if (this.m_scene == null) {
 
@@ -70,6 +70,7 @@ class NormalCtrlPanel {
 
 			this.m_panelW = panelW;
 			this.m_panelH = panelH;
+			this.m_btnW = btnW;
 			this.m_btnH = btnH;
 
 			this.m_v0 = CoRScene.createVec3();

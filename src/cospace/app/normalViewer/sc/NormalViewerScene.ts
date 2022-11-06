@@ -45,7 +45,7 @@ class NormalViewerScene {
 	protected initUI(): void {
 
 		let panel = new NormalCtrlPanel();
-		panel.initialize(this.m_uiscene, 0, 310, 390, 50);
+		panel.initialize(this.m_uiscene, 0, 310, 390, 90, 50);
 		panel.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
 		
 		panel.addEventListener(CoRScene.SelectionEvent.SELECT, this, this.selectDisplay);

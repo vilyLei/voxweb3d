@@ -231,6 +231,49 @@
 				"Cancel"
 			],
 			"tips": []
+		},
+		"normalCtrPanel": {
+			"bgColor": [51, 51, 51],
+			"panelSize": [
+				310, 390
+			],
+			"btnSize": [
+				90,
+				50
+			],
+			"btnTextFontFormat": {
+				"fontName": "Verdana",
+				"fontSize": 30,
+				"bold": false,
+				"italic": false,
+				"fontColor": [
+					170,
+					170,
+					170
+				]
+			},
+			"textFontFormat": {
+				"fontName": "Verdana",
+				"fontSize": 30,
+				"bold": false,
+				"italic": false,
+				"fontColor": [
+					170,
+					170,
+					170
+				]
+			},
+			"names": [
+				"局部",
+				"全局",
+				"颜色"
+			],
+			"keys": [
+				"local",
+				"global",
+				"color"
+			],
+			"tips": []
 		}
 	}
 }
