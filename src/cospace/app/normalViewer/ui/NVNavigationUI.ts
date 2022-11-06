@@ -88,7 +88,7 @@ class NVNavigationUI {
 		uiScene.getStage().addEventListener(EB.RESIZE, this, this.resize);
 
 		let keys = ["file", "edit", "model", "normal", "texture", "material", "light", "animation", "particle", "rendering", "physics", "help"];
-		let urls = ["文件", "编辑", "模型", "法线", "纹理", "材质", "灯光", "动画", "粒子", "渲染", "物理", "帮助"];
+		let btnNames = ["文件", "编辑", "模型", "法线", "纹理", "材质", "灯光", "动画", "粒子", "渲染", "物理", "帮助"];
 
 		let infos = [
 			"File system operations.",
@@ -106,26 +106,26 @@ class NVNavigationUI {
 		];
 
 		keys = keys.slice(0, 2);
-		urls = urls.slice(0, 2);
+		btnNames = btnNames.slice(0, 2);
 		infos = infos.slice(0, 2);
 		keys.push("help");
-		urls.push("帮助");
-		infos.push("Help infomation");
+		btnNames.push("帮助");
+		infos.push("Help infomation.");
 
 		let layouter = uiScene.layout.createLeftTopLayouter();
 		let fontColor = CoMaterial.createColor4().setRGB3Bytes(170, 170, 170);
 		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
 
 
-		for (let i = 0; i < urls.length; ++i) {
-			let img = tta.createCharsCanvasFixSize(pw, ph, urls[i], 30, fontColor, bgColor);
-			tta.addImageToAtlas(urls[i], img);
+		for (let i = 0; i < btnNames.length; ++i) {
+			let img = tta.createCharsCanvasFixSize(pw, ph, btnNames[i], 30, fontColor, bgColor);
+			tta.addImageToAtlas(btnNames[i], img);
 		}
 
 		px = 0;
 		py = st.stageHeight - ph;
-		for (let i = 0; i < urls.length; ++i) {
-			let btn = this.crateBtn(urls, pw, ph, px + pw * i, py, i, keys[i], infos[i]);
+		for (let i = 0; i < btnNames.length; ++i) {
+			let btn = this.crateBtn(btnNames, pw, ph, px + pw * i, py, i, keys[i], infos[i]);
 			this.m_coUIScene.tips.addTipsTarget(btn);
 			this.m_navBtns.push(btn);
 			layouter.addUIEntity(btn);
@@ -142,7 +142,7 @@ class NVNavigationUI {
 		);
 	}
 
-	private crateBtn(urls: string[], pw: number, ph: number, px: number, py: number, labelIndex: number, idns: string, info: string): IButton {
+	private crateBtn(btnNames: string[], pw: number, ph: number, px: number, py: number, labelIndex: number, idns: string, info: string): IButton {
 
 		let colorClipLabel = CoUI.createClipColorLabel();
 		colorClipLabel.initializeWithoutTex(pw, ph, 4);
@@ -154,7 +154,7 @@ class NVNavigationUI {
 		let iconLable = CoUI.createClipLabel();
 		iconLable.transparent = true;
 		iconLable.premultiplyAlpha = true;
-		iconLable.initialize(tta, [urls[labelIndex]]);
+		iconLable.initialize(tta, [btnNames[labelIndex]]);
 
 		let btn = CoUI.createButton();
 		btn.uuid = idns;

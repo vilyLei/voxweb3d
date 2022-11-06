@@ -1,0 +1,74 @@
+{
+	"name": "normalViewer",
+	"textCfg": {
+		"globalFontFormat": {
+			"common": {
+				"fontName": "Verdana",
+				"fontSize": 20,
+				"bold": false,
+				"italic": false
+			},
+			"tips": {
+				"fontName": "Verdana",
+				"fontSize": 18,
+				"bold": false,
+				"italic": false
+			}
+		}
+	},
+	"uiModules": [
+		{
+			"transformCtrl": {
+				"btnSize" : [90, 70],
+				"fontFormat": {
+					"fontName": "Verdana",
+					"fontSize": 30,
+					"bold": false,
+					"italic": false
+				},
+				"names": [
+					"框选",
+					"移动",
+					"旋转",
+					"缩放"
+				],
+				"keys": [
+					"select",
+					"move",
+					"rotate",
+					"scale"
+				],
+				"tips": [
+					"Select items using box selection.",
+					"Move selected items(W).",
+					"Rotate selected items(R).",
+					"Scale(resize) selected items(E)."
+				]
+			},
+			"navigation": {
+				"btnSize" : [90, 40],
+				"fontFormat": {
+					"fontName": "Verdana",
+					"fontSize": 30,
+					"bold": false,
+					"italic": false
+				},
+				"names": [
+					"文件",
+					"编辑",
+					"帮助"
+				],
+				"keys": [
+					"file",
+					"edit",
+					"help"
+				],
+				"tips": [
+					"File system operations.",
+				"Editing operations.",
+				"Help infomation."
+			]
+			}
+		}
+	]
+}

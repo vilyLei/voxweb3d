@@ -150,7 +150,7 @@ class NVTransUI {
 		let tta = uiScene.transparentTexAtlas;
 		let pw = 90;
 		let ph = 70;
-		let urls = ["框选", "移动", "旋转", "缩放"];
+		let btnNames = ["框选", "移动", "旋转", "缩放"];
 		let keys = ["select", "move", "rotate", "scale"];
 		let infos = [
 			"Select items using box selection.",
@@ -161,16 +161,16 @@ class NVTransUI {
 
 		let fontColor = CoMaterial.createColor4().setRGB3Bytes(170, 170, 170);;
 		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
-		for (let i = 0; i < urls.length; ++i) {
-			let img = tta.createCharsCanvasFixSize(pw, ph, urls[i], 30, fontColor, bgColor);
-			tta.addImageToAtlas(urls[i], img);
+		for (let i = 0; i < btnNames.length; ++i) {
+			let img = tta.createCharsCanvasFixSize(pw, ph, btnNames[i], 30, fontColor, bgColor);
+			tta.addImageToAtlas(btnNames[i], img);
 		}
 
 		let px = 5;
 		let py = (5 + ph) * 4;
 		ph = 5 + ph;
-		for (let i = 0; i < urls.length; ++i) {
-			let btn = this.crateBtn(urls, pw, ph, px, py - ph * i, i, keys[i], infos[i]);
+		for (let i = 0; i < btnNames.length; ++i) {
+			let btn = this.crateBtn(btnNames, pw, ph, px, py - ph * i, i, keys[i], infos[i]);
 			if (i > 0) {
 				this.m_transBtns.push(btn);
 				this.m_btnGroup.addButton(btn);
@@ -221,7 +221,7 @@ class NVTransUI {
 		// console.log("ui move (x, y): ", evt.mouseX, evt.mouseY);
 		this.m_selectFrame.move(evt.mouseX, evt.mouseY);
 	}
-	private crateBtn(urls: string[], pw: number, ph: number, px: number, py: number, labelIndex: number, idns: string, info: string): IButton {
+	private crateBtn(btnNames: string[], pw: number, ph: number, px: number, py: number, labelIndex: number, idns: string, info: string): IButton {
 
 		let colorClipLabel = CoUI.createClipColorLabel();
 		colorClipLabel.initializeWithoutTex(pw, ph, 4);
@@ -233,7 +233,7 @@ class NVTransUI {
 		let iconLable = CoUI.createClipLabel();
 		iconLable.transparent = true;
 		iconLable.premultiplyAlpha = true;
-		iconLable.initialize(tta, [urls[labelIndex]]);
+		iconLable.initialize(tta, [btnNames[labelIndex]]);
 
 		// let tipInfo = new TipInfo().alignRight().setContent(info);
 		// let tipInfo = CoUI.createTipInfo().alignRight().setContent(info);
