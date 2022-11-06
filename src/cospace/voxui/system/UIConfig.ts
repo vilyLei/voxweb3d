@@ -5,6 +5,9 @@ import { IUIFontFormat, IUIConfig } from "./IUIConfig";
 import { IUIButtonColor, IUIGlobalColor } from "./uiconfig/IUIGlobalColor";
 import { IUIGlobalText } from "./uiconfig/IUIGlobalText";
 
+import { ICoRScene } from "../../voxengine/ICoRScene";
+declare var CoRScene: ICoRScene;
+
 class UIConfig implements IUIConfig {
 	private m_callback: () => void;
 	private m_jsonRawData = "";
@@ -25,6 +28,11 @@ class UIConfig implements IUIConfig {
 				this.m_callback = null;
 			}
 		}).load(configUrl);
+	}
+	createColorByData(bytesArray3: number[]): IColor4 {
+		let c = CoRScene.createColor4();
+		c.fromBytesArray3(bytesArray3);
+		return c;
 	}
 	applyButtonColor(btnColors: IColor4[], uiBtnColor: IUIButtonColor): void {
 

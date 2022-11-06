@@ -2,7 +2,7 @@ import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
 import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
 import { ICoUI } from "../../../voxui/ICoUI";
-import { NormalCtrlPanel } from "../ui/NormalCtrlPanel";
+import { INVCtrlPanelCfgData, NormalCtrlPanel } from "../ui/NormalCtrlPanel";
 import { NormalEntityScene } from "./NormalEntityScene";
 import { CoDataModule } from "../../../app/common/CoDataModule";
 import { NormalEntityManager } from "./NormalEntityManager";
@@ -43,10 +43,17 @@ class NormalViewerScene {
 		}
 	}
 	protected initUI(): void {
+		let cfg = this.m_uiscene.uiConfig;
+		let uimodule = cfg.getUIModuleByName("normalCtrlPanel") as INVCtrlPanelCfgData;
+		let plSize = uimodule.panelSize;
+		let btnSize = uimodule.btnSize;
+		// let names = uimodule.names;
 
 		let panel = new NormalCtrlPanel();
-		panel.initialize(this.m_uiscene, 0, 310, 390, 90, 50);
-		panel.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
+		// panel.initialize(this.m_uiscene, 0, 310, 390, 90, 50);
+		panel.initialize(this.m_uiscene, 0, plSize[0], plSize[1], btnSize[0], btnSize[1]);
+		// panel.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
+		panel.setBGColor( cfg.createColorByData(uimodule.bgColor) );
 		
 		panel.addEventListener(CoRScene.SelectionEvent.SELECT, this, this.selectDisplay);
 		panel.addEventListener(CoRScene.ProgressDataEvent.PROGRESS, this, this.normalScale);

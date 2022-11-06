@@ -1,6 +1,5 @@
 import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
 
-import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { IButton } from "../../../voxui/button/IButton";
 
 import IColor4 from "../../../voxui/../../vox/material/IColor4";
@@ -16,14 +15,30 @@ import IAABB from "../../../../vox/geom/IAABB";
 import { ISelectButtonGroup } from "../../../voxui/button/ISelectButtonGroup";
 import { IColorClipLabel } from "../../../voxui/entity/IColorClipLabel";
 import IEvtDispatcher from "../../../../vox/event/IEvtDispatcher";
-import ISelectionEvent from "../../../../vox/event/ISelectionEvent";
 
-import { ITextParam, ICoUI } from "../../../voxui/ICoUI";
+import { IUIFontFormat } from "../../../voxui/system/IUIConfig";
+
 import IProgressDataEvent from "../../../../vox/event/IProgressDataEvent";
+
+import { ICoRScene } from "../../../voxengine/ICoRScene";
+import { ITextParam, ICoUI } from "../../../voxui/ICoUI";
+declare var CoRScene: ICoRScene;
 declare var CoUI: ICoUI;
 
-declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
+
+interface INVCtrlPanelCfgData {
+	button?: object;
+	btnTextFontFormat: IUIFontFormat;
+	textFontFormat: IUIFontFormat;
+	bgColor: number[];
+	panelSize: number[];
+	btnSize: number[];
+	names: string[];
+	keys: string[];
+	tips: string[];
+}
+
 class NormalCtrlPanel {
 
 	private m_normalVisiBtn: IFlagButton;
@@ -554,4 +569,4 @@ class NormalCtrlPanel {
 		this.m_panel.update();
 	}
 }
-export { NormalCtrlPanel };
+export { INVCtrlPanelCfgData, NormalCtrlPanel };

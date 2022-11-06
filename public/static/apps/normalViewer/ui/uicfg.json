@@ -232,7 +232,7 @@
 			],
 			"tips": []
 		},
-		"normalCtrPanel": {
+		"normalCtrlPanel": {
 			"bgColor": [51, 51, 51],
 			"panelSize": [
 				310, 390
