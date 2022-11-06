@@ -197,14 +197,13 @@ class NVTransUI {
 				this.m_btnGroup.addButton(btn);
 			}
 		}
-
+		let gbtnColor = cfg.getUIGlobalColor().button;
 		this.m_btnGroup.setSelectedFunction(
 			(btn: IButton): void => {
 				let label: IColorClipLabel;
 
 				label = btn.getLable() as IColorClipLabel;
-				let btnColor = cfg.getUIGlobalColor().button.selected;
-				cfg.applyButtonColor(label.getColors(), btnColor);
+				cfg.applyButtonColor(label.getColors(), gbtnColor.selected);
 				label.setClipIndex(0);
 
 				this.selectTrans(btn.uuid);
@@ -213,8 +212,7 @@ class NVTransUI {
 				let label: IColorClipLabel;
 
 				label = btn.getLable() as IColorClipLabel;
-				let btnColor = cfg.getUIGlobalColor().button.common;
-				cfg.applyButtonColor(label.getColors(), btnColor);
+				cfg.applyButtonColor(label.getColors(), gbtnColor.common);
 				label.setClipIndex(0);
 			}
 		);

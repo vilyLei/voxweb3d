@@ -56,12 +56,15 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 
 			let entity = CoEntity.createDisplayEntity();
 
-			this.m_fontColor = fontColor == null ? CoMaterial.createColor4().setRGB3Bytes(170, 170, 170) : fontColor;
+			let cfg = uiScene.uiConfig;
+			let tipsText = cfg.getUIGlobalText().fontFormat.tips;
+			this.m_fontSize = tipsText.fontSize;
+			// this.m_fontColor = fontColor == null ? CoMaterial.createColor4().setRGB3Bytes(170, 170, 170) : fontColor;
+			this.m_fontColor = fontColor == null ? cfg.createColorByData(tipsText.fontColor) : fontColor;
 			this.m_bgColor = bgColor == null ? CoMaterial.createColor4(0.1, 0.1, 0.1, 0.5) : bgColor;
 
 			let img = this.m_texAtlas.createCharsImage(this.m_text, this.m_fontSize, this.m_fontColor, this.m_bgColor);
 			this.m_tex = uiScene.rscene.textureBlock.createImageTex2D(img.width, img.height);
-			// this.m_tex.__$attachThis();
 			this.m_tex.setDataFromImage(img);
 
 			this.m_tex.flipY = true;
