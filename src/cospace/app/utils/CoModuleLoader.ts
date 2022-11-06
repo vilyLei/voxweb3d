@@ -1,6 +1,6 @@
 
 import { ModuleLoader } from "../../modules/loaders/ModuleLoader";
-//CoModuleLoader
+
 class CoModuleLoader extends ModuleLoader {
 	/**
 	 * @param times 记录总共需要的加载完成操作的响应次数。这个次数可能是由load直接产生，也可能是由于别的地方驱动。
