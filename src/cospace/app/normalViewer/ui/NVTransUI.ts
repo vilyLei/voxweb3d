@@ -159,7 +159,7 @@ class NVTransUI {
 		let cfg = uiScene.uiConfig;
 		let uimodule = cfg.getUIModuleByName("transformCtrl") as UICfgData;
 
-		console.log("NVTransUI::initTransUI(), uimodule: ",uimodule);
+		console.log("NVTransUI::initTransUI(), uimodule: ", uimodule);
 
 		let fontFormat = uimodule.fontFormat;
 		this.m_btnGroup = CoUI.createSelectButtonGroup();
@@ -201,22 +201,26 @@ class NVTransUI {
 		this.m_btnGroup.setSelectedFunction(
 			(btn: IButton): void => {
 				let label: IColorClipLabel;
-		
+
 				label = btn.getLable() as IColorClipLabel;
-				label.getColorAt(0).setRGB3Bytes(71, 114, 179);
+				let cfg = uiScene.uiConfig;
+				let btnColor = cfg.getUIGlobalColor().button.selected;
+				cfg.applyButtonColor(label.getColors(), btnColor);
 				label.setClipIndex(0);
-		
+
 				this.selectTrans(btn.uuid);
-		},
-		(btn: IButton): void => {
-			let label: IColorClipLabel;
-	
-			label = btn.getLable() as IColorClipLabel;
-			label.getColorAt(0).setRGB3Bytes(40, 40, 40);
-			label.setClipIndex(0);
-		}
+			},
+			(btn: IButton): void => {
+				let label: IColorClipLabel;
+
+				label = btn.getLable() as IColorClipLabel;
+				let cfg = uiScene.uiConfig;
+				let btnColor = cfg.getUIGlobalColor().button.common;
+				cfg.applyButtonColor(label.getColors(), btnColor);
+				label.setClipIndex(0);
+			}
 		);
-		this.m_btnGroup.select( keys[1] );
+		this.m_btnGroup.select(keys[1]);
 	}
 	private uiMouseDownListener(evt: any): void {
 
@@ -247,11 +251,15 @@ class NVTransUI {
 		let names = cfgData.names;
 		let keys = cfgData.keys;
 		let tips = cfgData.tips;
-		let colorClipLabel = CoUI.createClipColorLabel();
-		colorClipLabel.initializeWithoutTex(pw, ph, 4);
-		colorClipLabel.getColorAt(0).setRGB3Bytes(40, 40, 40);
-		colorClipLabel.getColorAt(1).setRGB3Bytes(50, 50, 50);
-		colorClipLabel.getColorAt(2).setRGB3Bytes(60, 60, 60);
+		let label = CoUI.createClipColorLabel();
+		label.initializeWithoutTex(pw, ph, 4);
+		// label.getColorAt(0).setRGB3Bytes(40, 40, 40);
+		// label.getColorAt(1).setRGB3Bytes(50, 50, 50);
+		// label.getColorAt(2).setRGB3Bytes(60, 60, 60);
+		let cfg = this.m_coUIScene.uiConfig;
+		let btnColor = cfg.getUIGlobalColor().button.common;
+		cfg.applyButtonColor(label.getColors(), btnColor);
+
 
 		let tta = this.m_coUIScene.transparentTexAtlas;
 		let iconLable = CoUI.createClipLabel();
@@ -263,10 +271,10 @@ class NVTransUI {
 		btn.uuid = keys[labelIndex];
 		btn.info = CoUI.createTipInfo().alignRight().setContent(tips[labelIndex]);
 		btn.addLabel(iconLable);
-		btn.initializeWithLable(colorClipLabel);
+		btn.initializeWithLable(label);
 		btn.setXY(px, py);
 		this.m_coUIScene.addEntity(btn, 1);
-		this.m_coUIScene.tips.addTipsTarget( btn );
+		this.m_coUIScene.tips.addTipsTarget(btn);
 
 		return btn;
 	}
@@ -289,7 +297,7 @@ class NVTransUI {
 			default:
 				break;
 		}
-		if(this.m_selectList == null) {
+		if (this.m_selectList == null) {
 			this.m_transCtr.disable();
 		}
 	}
@@ -316,14 +324,14 @@ class NVTransUI {
 	private m_selectList: IRenderEntity[] = null;
 	private m_selectListeners: ((list: IRenderEntity[]) => void)[] = [];
 	addSelectListener(listener: (list: IRenderEntity[]) => void): void {
-		if(listener != null) {
-			this.m_selectListeners.push( listener );
+		if (listener != null) {
+			this.m_selectListeners.push(listener);
 		}
 	}
 	private sendSelectList(list: IRenderEntity[]): void {
 		let ls = this.m_selectListeners;
 		let len = ls.length;
-		for(let i = 0; i < len; ++i) {
+		for (let i = 0; i < len; ++i) {
 			ls[i](list);
 		}
 	}
@@ -344,9 +352,9 @@ class NVTransUI {
 				transCtr.select(list as ITransformEntity[], pos);
 				this.m_outline.select(list);
 			}
-			this.sendSelectList( list );
-		}else {
-			this.sendSelectList( null );
+			this.sendSelectList(list);
+		} else {
+			this.sendSelectList(null);
 		}
 	}
 	private mouseUpListener(evt: any): void {
@@ -365,9 +373,9 @@ class NVTransUI {
 		if (this.m_transCtr != null) {
 			this.m_transCtr.disable();
 		}
-		
+
 		this.m_outline.deselect();
-		this.sendSelectList( null );
+		this.sendSelectList(null);
 	}
 	run(): void {
 
