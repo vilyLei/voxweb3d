@@ -72,6 +72,10 @@
 			]
 		},
 		"navigation": {
+			"btnTextAreaSize": [
+				90,
+				40
+			],
 			"btnSize": [
 				90,
 				40

@@ -33,6 +33,7 @@ declare var CoEdit: ICoEdit;
 declare var CoUI: ICoUI;
 
 interface UICfgData {
+	button?: object;
 	fontFormat: IFontFormat;
 	btnTextAreaSize: number[];
 	btnSize: number[];
@@ -152,13 +153,12 @@ class NVTransUI {
 		this.initTransUI();
 	}
 
-	private m_btnGroup: ISelectButtonGroup;// = new ISelectButtonGroup();
+	private m_btnGroup: ISelectButtonGroup;
 	private initTransUI(): void {
 
 		let uiScene = this.m_coUIScene;
 		let cfg = uiScene.uiConfig;
 		let uimodule = cfg.getUIModuleByName("transformCtrl") as UICfgData;
-
 		console.log("NVTransUI::initTransUI(), uimodule: ", uimodule);
 
 		let fontFormat = uimodule.fontFormat;
@@ -176,13 +176,12 @@ class NVTransUI {
 		// ];
 		let btnNames = uimodule.names;
 		let keys = uimodule.keys;
-		let tips = uimodule.tips;
 
 		tta.setFontName(fontFormat.font);
 		let fontColor = CoMaterial.createColor4().setRGB3Bytes(170, 170, 170);;
 		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
 		for (let i = 0; i < btnNames.length; ++i) {
-			let img = tta.createCharsCanvasFixSize(pw, ph, btnNames[i], 30, fontColor, bgColor);
+			let img = tta.createCharsCanvasFixSize(pw, ph, btnNames[i], fontFormat.fontSize, fontColor, bgColor);
 			tta.addImageToAtlas(btnNames[i], img);
 		}
 
@@ -253,9 +252,6 @@ class NVTransUI {
 		let tips = cfgData.tips;
 		let label = CoUI.createClipColorLabel();
 		label.initializeWithoutTex(pw, ph, 4);
-		// label.getColorAt(0).setRGB3Bytes(40, 40, 40);
-		// label.getColorAt(1).setRGB3Bytes(50, 50, 50);
-		// label.getColorAt(2).setRGB3Bytes(60, 60, 60);
 		let cfg = this.m_coUIScene.uiConfig;
 		let btnColor = cfg.getUIGlobalColor().button.common;
 		cfg.applyButtonColor(label.getColors(), btnColor);

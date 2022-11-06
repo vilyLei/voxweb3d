@@ -11,6 +11,7 @@ import { ColorLabel } from "../../../voxui/entity/ColorLabel";
 import { IColorLabel } from "../../../voxui/entity/IColorLabel";
 import { PromptPanel } from "../../../voxui/panel/PromptPanel";
 import { IPromptPanel } from "../../../voxui/panel/IPromptPanel";
+import { IFontFormat } from "../../../voxui/system/IUIConfig";
 // import { LeftTopLayouter } from "../../../voxui/layout/LeftTopLayouter";
 
 declare var CoRenderer: ICoRenderer;
@@ -18,6 +19,15 @@ declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
 declare var CoUI: ICoUI;
 
+interface UICfgData {
+	button?: object;
+	fontFormat: IFontFormat;
+	btnTextAreaSize: number[];
+	btnSize: number[];
+	names: string[];
+	keys: string[];
+	tips: string[];
+}
 /**
  * NVNavigationUI
  */
@@ -67,11 +77,18 @@ class NVNavigationUI {
 		let uiScene = this.m_coUIScene;
 		let tta = uiScene.transparentTexAtlas;
 
+		
+		let cfg = uiScene.uiConfig;
+		let uimodule = cfg.getUIModuleByName("navigation") as UICfgData;
+		console.log("NVNavigationUI::initNavigationUI(), uimodule: ", uimodule);
+
 		let px = 0;
 		let py = 0;
 
-		let pw = 90;
-		let ph = 40;
+		// let pw = 90;
+		// let ph = 40;
+		let pw = uimodule.btnTextAreaSize[0];
+		let ph = uimodule.btnTextAreaSize[1];
 
 		let st = this.m_coUIScene.getStage();
 
@@ -90,7 +107,7 @@ class NVNavigationUI {
 		let keys = ["file", "edit", "model", "normal", "texture", "material", "light", "animation", "particle", "rendering", "physics", "help"];
 		let btnNames = ["文件", "编辑", "模型", "法线", "纹理", "材质", "灯光", "动画", "粒子", "渲染", "物理", "帮助"];
 
-		let infos = [
+		let tips = [
 			"File system operations.",
 			"Editing operations.",
 			"Geometry model operations.",
@@ -105,27 +122,31 @@ class NVNavigationUI {
 			"Help infomation.",
 		];
 
-		keys = keys.slice(0, 2);
-		btnNames = btnNames.slice(0, 2);
-		infos = infos.slice(0, 2);
-		keys.push("help");
-		btnNames.push("帮助");
-		infos.push("Help infomation.");
+		// keys = keys.slice(0, 2);
+		// btnNames = btnNames.slice(0, 2);
+		// tips = tips.slice(0, 2);
+		// keys.push("help");
+		// btnNames.push("帮助");
+		// tips.push("Help infomation.");
+		
+		btnNames = uimodule.names;
+		keys = uimodule.keys;
+		tips = uimodule.tips;
 
 		let layouter = uiScene.layout.createLeftTopLayouter();
 		let fontColor = CoMaterial.createColor4().setRGB3Bytes(170, 170, 170);
 		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
-
-
+		let fontFormat = uimodule.fontFormat;
+		tta.setFontName(fontFormat.font);
 		for (let i = 0; i < btnNames.length; ++i) {
-			let img = tta.createCharsCanvasFixSize(pw, ph, btnNames[i], 30, fontColor, bgColor);
+			let img = tta.createCharsCanvasFixSize(pw, ph, btnNames[i], fontFormat.fontSize, fontColor, bgColor);
 			tta.addImageToAtlas(btnNames[i], img);
 		}
 
 		px = 0;
 		py = st.stageHeight - ph;
 		for (let i = 0; i < btnNames.length; ++i) {
-			let btn = this.crateBtn(btnNames, pw, ph, px + pw * i, py, i, keys[i], infos[i]);
+			let btn = this.crateBtn(btnNames, pw, ph, px + pw * i, py, i, keys[i], tips[i], uimodule);
 			this.m_coUIScene.tips.addTipsTarget(btn);
 			this.m_navBtns.push(btn);
 			layouter.addUIEntity(btn);
@@ -142,25 +163,28 @@ class NVNavigationUI {
 		);
 	}
 
-	private crateBtn(btnNames: string[], pw: number, ph: number, px: number, py: number, labelIndex: number, idns: string, info: string): IButton {
+	private crateBtn(btnNames: string[], pw: number, ph: number, px: number, py: number, labelIndex: number, idns: string, info: string, cfgData: UICfgData): IButton {
 
-		let colorClipLabel = CoUI.createClipColorLabel();
-		colorClipLabel.initializeWithoutTex(pw, ph, 4);
-		colorClipLabel.getColorAt(0).setRGB3Bytes(40, 40, 40);
-		colorClipLabel.getColorAt(1).setRGB3Bytes(50, 50, 50);
-		colorClipLabel.getColorAt(2).setRGB3Bytes(40, 40, 60);
+		let names = cfgData.names;
+		let keys = cfgData.keys;
+		let tips = cfgData.tips;
+		let label = CoUI.createClipColorLabel();
+		label.initializeWithoutTex(pw, ph, 4);
+		let cfg = this.m_coUIScene.uiConfig;
+		let btnColor = cfg.getUIGlobalColor().button.common;
+		cfg.applyButtonColor(label.getColors(), btnColor);
 
 		let tta = this.m_coUIScene.transparentTexAtlas;
 		let iconLable = CoUI.createClipLabel();
 		iconLable.transparent = true;
 		iconLable.premultiplyAlpha = true;
-		iconLable.initialize(tta, [btnNames[labelIndex]]);
+		iconLable.initialize(tta, [names[labelIndex]]);
 
 		let btn = CoUI.createButton();
-		btn.uuid = idns;
-		btn.info = CoUI.createTipInfo().alignBottom().setContent(info);
+		btn.uuid = keys[labelIndex];
+		btn.info = CoUI.createTipInfo().alignBottom().setContent(tips[labelIndex]);
 		btn.addLabel(iconLable);
-		btn.initializeWithLable(colorClipLabel);
+		btn.initializeWithLable(label);
 		btn.setXY(px, py);
 		this.m_coUIScene.addEntity(btn, 1);
 		btn.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.btnMouseUpListener);

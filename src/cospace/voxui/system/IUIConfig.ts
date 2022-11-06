@@ -3,7 +3,7 @@ import { IUIButtonColor, IUIGlobalColor } from "./uiconfig/IUIGlobalColor";
 
 interface IFontFormat {
 	font: string;
-	size: number;
+	fontSize: number;
 	bold: boolean;
 	italic: boolean;
 	fontColor: number[];
