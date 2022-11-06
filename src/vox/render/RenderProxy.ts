@@ -471,7 +471,7 @@ class RenderProxy implements IRenderProxy {
         cvs[0] = pr; cvs[1] = pg; cvs[2] = pb;
     }
     setClearColor(color: IColor4): void {
-        color.toArray(this.m_adapter.bgColor);
+        color.toArray4(this.m_adapter.bgColor);
     }
     /**
      * @param colorUint24 uint24 number rgb color value, example: 0xff0000, it is red rolor
@@ -489,7 +489,7 @@ class RenderProxy implements IRenderProxy {
         cvs[0] = pr; cvs[1] = pg; cvs[2] = pb; cvs[3] = pa;
     }
     getClearRGBAColor4f(color4: IColor4): void {
-        color4.fromArray(this.m_adapter.bgColor);
+        color4.fromArray4(this.m_adapter.bgColor);
     }
     getViewportWidth(): number {
         return this.m_adapter.getViewportWidth();

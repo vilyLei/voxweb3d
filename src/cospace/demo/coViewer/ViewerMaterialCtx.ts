@@ -120,7 +120,7 @@ export class ViewerMaterialCtx {
 
 			let light = lightModule.getPointLightAt(i);
 			light.position.fromArray(lo.position);
-			light.color.fromArray(lo.rgb);
+			light.color.fromArray4(lo.rgb);
 			light.attenuationFactor1 = lo.factor1;
 			light.attenuationFactor2 = lo.factor2;
 		}
@@ -131,7 +131,7 @@ export class ViewerMaterialCtx {
 			let light = lightModule.getSpotLightAt(i);
 			light.position.fromArray(lo.position);
 			light.direction.fromArray(lo.direction);
-			light.color.fromArray(lo.rgb);
+			light.color.fromArray4(lo.rgb);
 			light.attenuationFactor1 = lo.factor1;
 			light.attenuationFactor2 = lo.factor2;
 		}
@@ -141,7 +141,7 @@ export class ViewerMaterialCtx {
 
 			let light = lightModule.getDirectionLightAt(i);
 			light.direction.fromArray(lo.direction);
-			light.color.fromArray(lo.rgb);
+			light.color.fromArray4(lo.rgb);
 			light.attenuationFactor1 = lo.factor1;
 			light.attenuationFactor2 = lo.factor2;
 		}

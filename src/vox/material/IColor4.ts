@@ -26,11 +26,11 @@ interface IColor4 {
     /**
      * example: [0],[1],[2],[3] => r,g,b,a
      */
-    fromArray(arr: number[] | Float32Array, offset?: number): IColor4;
+    fromArray4(arr: number[] | Float32Array, offset?: number): IColor4;
     /**
      * example: r,g,b,a => [0],[1],[2],[3]
      */
-    toArray(arr: number[] | Float32Array, offset?: number): IColor4;
+    toArray4(arr: number[] | Float32Array, offset?: number): IColor4;
     /**
      * example: [0],[1],[2] => r,g,b
      */

@@ -21,7 +21,7 @@ class NormalLineMaterial {
 		color.setRGB3f(ds[0], ds[1], ds[2]);
 	}
 	getRGBA4f(color: IColor4): void {
-		color.fromArray(this.m_data);
+		color.fromArray4(this.m_data);
 	}
 	setScale(s: number): void {
 		this.m_scale = s;

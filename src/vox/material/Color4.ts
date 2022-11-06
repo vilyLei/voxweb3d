@@ -21,14 +21,14 @@ class Color4 implements IColor4{
         this.a = pa;
     }
     
-    fromArray(arr: number[] | Float32Array, offset: number = 0): Color4 {
+    fromArray4(arr: number[] | Float32Array, offset: number = 0): Color4 {
         this.r = arr[offset];
         this.g = arr[offset + 1];
         this.b = arr[offset + 2];
         this.a = arr[offset + 3];
         return this;
     }
-    toArray(arr: number[] | Float32Array, offset: number = 0): Color4 {
+    toArray4(arr: number[] | Float32Array, offset: number = 0): Color4 {
         arr[offset] = this.r;
         arr[offset + 1] = this.g;
         arr[offset + 2] = this.b;

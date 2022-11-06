@@ -320,7 +320,7 @@ class RendererInstanceContext implements IRendererInstanceContext {
         this.m_renderProxy.setClearRGBAColor4f(pr, pg, pb, pa);
     }
     getClearRGBAColor4f(color4: IColor4): void {
-        color4.fromArray(this.m_adapter.bgColor);
+        color4.fromArray4(this.m_adapter.bgColor);
     }
     updateRenderBufferSize(): void {
         this.m_adapter.updateRenderBufferSize();

@@ -118,7 +118,7 @@ export default class Line3DMaterial extends MaterialBase implements IColorMateri
         this.m_data[3] = pa;
     }
     getRGBA4f(color: Color4): void {
-        color.fromArray(this.m_data);
+        color.fromArray4(this.m_data);
     }
     setAlpha(pa: number): void {
         this.m_data[3] = pa;
@@ -127,9 +127,9 @@ export default class Line3DMaterial extends MaterialBase implements IColorMateri
         return this.m_data[3];
     }
     setColor(color: Color4): void {
-        color.toArray(this.m_data);
+        color.toArray4(this.m_data);
     }
     getColor(color: Color4): void {
-        color.fromArray(this.m_data);
+        color.fromArray4(this.m_data);
     }
 }

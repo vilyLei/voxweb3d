@@ -169,7 +169,7 @@ class QuadLineMeshBuilder extends MeshBuilder implements ILineMeshBuilder {
     private useColor(posTotal: number): void {
         if (!this.dynColorEnabled) {
             this.m_colorvs = new Array(posTotal * 4);
-            for (let i = 0; i < posTotal; ++i) this.color.toArray(this.m_colorvs, i * 4);
+            for (let i = 0; i < posTotal; ++i) this.color.toArray4(this.m_colorvs, i * 4);
         }
     }
     createLine(begin: IVector3D, end: IVector3D = null, axialRadius: number = 0.0): IRawMesh {
