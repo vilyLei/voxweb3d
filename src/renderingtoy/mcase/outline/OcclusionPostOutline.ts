@@ -224,7 +224,6 @@ export default class OcclusionPostOutline implements IOcclusionPostOutline {
                     let rproxy = this.m_rscene.getRenderProxy();
                     let rst = rproxy.renderingState;
                     rproxy.useRenderState(rst.NORMAL_STATE);
-                    rproxy.rshader.resetRenderState();
 
                     let colorMask = rproxy.colorMask;
                     let bounds = this.m_bounds;

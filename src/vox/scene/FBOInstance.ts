@@ -32,7 +32,7 @@ export default class FBOInstance implements IFBOInstance {
 
     private m_backBufferColor: Color4 = new Color4();
     private m_adapter: IRenderAdapter = null;
-    private m_renderProxy: IRenderProxy = null;
+    private m_rproxy: IRenderProxy = null;
 
     private m_rcontext: IRendererInstanceContext = null;
     private m_bgColor: Color4 = new Color4();
@@ -70,8 +70,8 @@ export default class FBOInstance implements IFBOInstance {
 
         this.m_renderer = renderer;
         this.m_texStore = texStroe;
-        this.m_renderProxy = renderer.getRenderProxy();
-        this.m_adapter = this.m_renderProxy.getRenderAdapter();
+        this.m_rproxy = renderer.getRenderProxy();
+        this.m_adapter = this.m_rproxy.getRenderAdapter();
         this.m_rcontext = renderer.getRendererContext();
     }
     /**
@@ -108,11 +108,11 @@ export default class FBOInstance implements IFBOInstance {
         return this.m_rindexs[i];
     }
     getStage3D(): IRenderStage3D {
-        return this.m_renderProxy.getStage3D();
+        return this.m_rproxy.getStage3D();
     }
     getCamera(): IRenderCamera {
-        if (this.m_renderProxy != null) {
-            return this.m_renderProxy.getCamera();
+        if (this.m_rproxy != null) {
+            return this.m_rproxy.getCamera();
         }
         return null;
     }
@@ -123,13 +123,13 @@ export default class FBOInstance implements IFBOInstance {
         this.m_viewportLock = false;
     }
     updateCamera(): void {
-        if (this.m_renderProxy != null) {
-            this.m_renderProxy.updateCamera();
+        if (this.m_rproxy != null) {
+            this.m_rproxy.updateCamera();
         }
     }
     updateCameraDataFromCamera(cam: IRenderCamera): void {
-        if (this.m_renderProxy != null) {
-            this.m_renderProxy.updateCameraDataFromCamera(cam);
+        if (this.m_rproxy != null) {
+            this.m_rproxy.updateCameraDataFromCamera(cam);
         }
     }
     ////////////////////////////////////////////////////// render state conctrl
@@ -150,11 +150,11 @@ export default class FBOInstance implements IFBOInstance {
             this.m_rcontext.useGlobalRenderState(state < 0 ? this.m_gRState : state);
         }
         else {
-            this.m_renderProxy.lockRenderState();
+            this.m_rproxy.lockRenderState();
         }
     }
     unlockRenderState(): void {
-        this.m_renderProxy.unlockRenderState();
+        this.m_rproxy.unlockRenderState();
     }
 
     ////////////////////////////////////////////////////// render color mask conctrl
@@ -175,12 +175,12 @@ export default class FBOInstance implements IFBOInstance {
             this.m_rcontext.useGlobalRenderColorMask(colorMask < 0 ? this.m_gRColorMask : colorMask);
         }
         else {
-            this.m_renderProxy.lockRenderColorMask();
+            this.m_rproxy.lockRenderColorMask();
         }
     }
     unlockRenderColorMask(): void {
         this.m_rcontext.useGlobalRenderColorMask(RendererState.COLOR_MASK_ALL_TRUE);
-        this.m_renderProxy.unlockRenderColorMask();
+        this.m_rproxy.unlockRenderColorMask();
     }
 
     ////////////////////////////////////////////////////// material conctrl
@@ -343,7 +343,7 @@ export default class FBOInstance implements IFBOInstance {
         this.m_texs[i].enableMipmap();
     }
     generateMipmapTextureAt(i: number): void {
-        this.m_texs[i].generateMipmap(this.m_renderProxy.Texture);
+        this.m_texs[i].generateMipmap(this.m_rproxy.Texture);
     }
     /**
      * 设置渲染到纹理的目标纹理对象(可由用自行创建)和framebuffer output attachment index
@@ -385,13 +385,13 @@ export default class FBOInstance implements IFBOInstance {
     setRenderToHalfFloatTexture(texture: IRTTTexture, outputIndex: number = 0): IRTTTexture {
         if (texture == null) {
             texture = this.m_texStore.createRTTTex2D(128, 128, false);
-            texture.__$setRenderProxy(this.m_renderProxy);
+            texture.__$setRenderProxy(this.m_rproxy);
             texture.internalFormat = TextureFormat.RGBA16F;
             texture.srcFormat = TextureFormat.RGBA;
             texture.dataType = TextureDataType.FLOAT;
             texture.minFilter = TextureConst.LINEAR;
             texture.magFilter = TextureConst.LINEAR;
-            texture.__$setRenderProxy(this.m_renderProxy);
+            texture.__$setRenderProxy(this.m_rproxy);
         }
         return this.setRenderToTexture(texture, outputIndex);
     }
@@ -419,7 +419,7 @@ export default class FBOInstance implements IFBOInstance {
         texture.dataType = TextureDataType.UNSIGNED_BYTE;
         texture.minFilter = TextureConst.LINEAR;
         texture.magFilter = TextureConst.LINEAR;
-        texture.__$setRenderProxy(this.m_renderProxy);
+        texture.__$setRenderProxy(this.m_rproxy);
         return texture;
     }
     setClearState(clearColorBoo: boolean = true, clearDepthBoo: boolean = true, clearStencilBoo: boolean = false): void {
@@ -428,7 +428,7 @@ export default class FBOInstance implements IFBOInstance {
         this.m_clearStencilBoo = clearStencilBoo;
     }
     setRenderToBackBuffer(): void {
-        this.m_renderProxy.setClearColor(this.m_backBufferColor);
+        this.m_rproxy.setClearColor(this.m_backBufferColor);
         this.m_rcontext.setRenderToBackBuffer();
     }
     setClearDepth(depth: number): void { this.m_clearDepth = depth; }
@@ -512,7 +512,8 @@ export default class FBOInstance implements IFBOInstance {
     private runBeginDo(): void {
         if (this.m_runFlag) {
             this.m_runFlag = false;
-            this.m_renderProxy.getClearRGBAColor4f(this.m_backBufferColor);
+            this.m_rproxy.rshader.resetRenderState();
+            this.m_rproxy.getClearRGBAColor4f(this.m_backBufferColor);
 
             if (this.m_viewportLock) {
                 this.m_adapter.lockViewport();
@@ -531,8 +532,8 @@ export default class FBOInstance implements IFBOInstance {
             if (this.m_clearDepth < 128.0) {
                 this.m_adapter.setClearDepth(this.m_clearDepth);
             }
-            this.m_renderProxy.setClearColor(this.m_bgColor);
-            let i: number = 0;
+            this.m_rproxy.setClearColor(this.m_bgColor);
+            let i = 0;
             for (; i < this.m_texsTot; ++i) {
                 this.m_adapter.setRenderToTexture(this.m_texs[i], this.m_enableDepth, this.m_enableStencil, i);
             }
@@ -601,7 +602,7 @@ export default class FBOInstance implements IFBOInstance {
         }
     }
     runEnd(): void {
-        this.m_renderProxy.setClearColor(this.m_backBufferColor);
+        this.m_rproxy.setClearColor(this.m_backBufferColor);
         this.m_runFlag = true;
         if (this.m_viewportLock) {
             this.m_adapter.unlockViewport();
