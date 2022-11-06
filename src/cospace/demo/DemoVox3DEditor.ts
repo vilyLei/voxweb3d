@@ -23,6 +23,7 @@ import { PromptSystem } from "../voxui/system/PromptSystem";
 import { ICoText } from "../voxtext/ICoText";
 import { CoModuleLoader } from "../app/utils/CoModuleLoader";
 import { TipsSystem } from "../voxui/system/TipsSystem";
+import { UIConfig } from "../voxui/system/UIConfig";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -183,29 +184,35 @@ export class DemoVox3DEditor {
 	private initEditUI(): void {
 
 		this.m_coUIScene = CoUI.createUIScene();
-		this.m_coUIScene.initialize(this.m_rsc, 512, 5);
-		this.m_uirsc = this.m_coUIScene.rscene;
+		let coui = this.m_coUIScene;
+		coui.initialize(this.m_rsc, 512, 5);
+		this.m_uirsc = coui.rscene;
 		this.m_graph.addScene(this.m_uirsc);
 
 		let promptSys = new PromptSystem();
-		promptSys.initialize(this.m_coUIScene);
-		this.m_coUIScene.prompt = promptSys;
+		promptSys.initialize(coui);
+		coui.prompt = promptSys;
 		let tipsSys = new TipsSystem();
-		tipsSys.initialize(this.m_coUIScene);
-		this.m_coUIScene.tips = tipsSys;
+		tipsSys.initialize(coui);
+		coui.tips = tipsSys;
+		let uiConfig = new UIConfig();
+		coui.uiConfig = uiConfig;
+		uiConfig.initialize("static/apps/normalViewer/ui/uicfg.json",(): void => {
+			
+		});
 
 		this.m_transUI.setOutline(this.m_outline);
-		this.m_transUI.initialize(this.m_rsc, this.m_editUIRenderer, this.m_coUIScene);
-		this.m_nvaUI.initialize(this.m_rsc, this.m_editUIRenderer, this.m_coUIScene);
+		this.m_transUI.initialize(this.m_rsc, this.m_editUIRenderer, coui);
+		this.m_nvaUI.initialize(this.m_rsc, this.m_editUIRenderer, coui);
 
 		let minV = CoMath.createVec3(-100, 0, -100);
 		let maxV = minV.clone().scaleBy(-1);
-		let scale = 10.0
+		let scale = 10.0;
 		let grid = CoEdit.createFloorLineGrid();
 		grid.initialize(this.m_rsc, 0, minV.scaleBy(scale), maxV.scaleBy(scale), 30);
 
 		let viewer = new NormalViewer();
-		viewer.initialize(this.m_coUIScene, this.m_transUI);
+		viewer.initialize(coui, this.m_transUI);
 		viewer.open();
 		this.m_viewer = viewer;
 		let entitySC = viewer.normalScene.entityScene;

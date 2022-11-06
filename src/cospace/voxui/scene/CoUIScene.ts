@@ -7,6 +7,7 @@ import { IUIEntity } from "../entity/IUIEntity";
 import { ICoUIScene } from "./ICoUIScene";
 import { IPromptSystem } from "../system/IPromptSystem";
 import { ITipsSystem } from "../system/ITipsSystem";
+import {IUIConfig} from "../system/IUIConfig";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
@@ -24,7 +25,7 @@ class CoUIScene implements ICoUIScene {
 	private m_crscene: IRendererScene;
 	private m_rstage: IRenderStage3D;
 	private m_stageRect: IAABB2D;
-
+	
 	readonly rscene: IRendererScene;
 	readonly texAtlas: ICanvasTexAtlas = null;
 	readonly transparentTexAtlas: ICanvasTexAtlas = null;
@@ -32,6 +33,7 @@ class CoUIScene implements ICoUIScene {
 
 	prompt: IPromptSystem = null;
 	tips: ITipsSystem = null;
+	uiConfig: IUIConfig = null;
 
 	texAtlasNearestFilter = true;
 	constructor() {

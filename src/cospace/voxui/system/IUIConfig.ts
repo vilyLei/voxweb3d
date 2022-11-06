@@ -5,7 +5,7 @@ interface IFontFormat {
 	italic: boolean;
 }
 interface IUIConfig {
-	initialize(callback: () => void): void;
+	initialize(configUrl: string, callback: () => void): void;
 	destroy(): void;
 }
 
