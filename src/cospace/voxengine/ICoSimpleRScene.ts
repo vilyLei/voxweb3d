@@ -11,9 +11,11 @@ import IRenderMaterial from "../../vox/render/IRenderMaterial";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 import { IMaterialContext } from "../../materialLab/base/IMaterialContext";
-import IDataMesh from "../../vox/mesh/IDataMesh";
+// import IDataMesh from "../../vox/mesh/IDataMesh";
+import IRawMesh from "../../vox/mesh/IRawMesh";
 import { CoRendererDevice } from "./render/CoRendererDevice";
 import { CoRendererState } from "./render/CoRendererState";
+import IROTransform from "../../vox/display/IROTransform";
 
 interface CoVec3 {
 	ONE: IVector3D;
@@ -107,21 +109,40 @@ interface ICoSimpleRScene {
 	createShaderMaterial(shd_uniqueName: string): IShaderMaterial;
 
 
-	createDataMesh(): IDataMesh;
+	// createDataMesh(): IDataMesh;
+	createRawMesh(): IRawMesh;
 	/**
 	 * @param model geometry model
 	 * @param pmaterial IRenderMaterial instance, the default is null.
 	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
 	 */
-	createDataMeshFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, vbWhole?: boolean): IDataMesh;
+	// createDataMeshFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, vbWhole?: boolean): IDataMesh;
 	/**
 	 * @param model geometry model
 	 * @param pmaterial IRenderMaterial instance, the default is null.
 	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
 	 */
-	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, vbWhole?: boolean): ITransformEntity;
-	createAxis3DEntity(size?: number): ITransformEntity;
+	// createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, vbWhole?: boolean): ITransformEntity;
 
+	/**
+	 * @param minV a 3d position, IVector3D instance
+	 * @param maxV a 3d position, IVector3D instance
+	 * @param transform the default value is null
+	 */
+	createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D, transform?: IROTransform): ITransformEntity;
+
+	/**
+	 * @param size the default value is 100.0
+	 * @param transform the default value is null
+	 */
+	createAxis3DEntity(size?: number, transform?: IROTransform): ITransformEntity;
+
+	/**
+	 * @param size the default value is 100.0
+	 * @param transform the default value is null
+	 */
+	createCrossAxis3DEntity(size: number, transform?: IROTransform): ITransformEntity;
+	
 	createDisplayEntity(): ITransformEntity;
 
 	createMaterialContext(): IMaterialContext;
