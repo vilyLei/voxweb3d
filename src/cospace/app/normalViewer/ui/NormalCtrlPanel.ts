@@ -245,6 +245,9 @@ class NormalCtrlPanel {
 		px = startX;
 		py = textLabel.getY();
 		this.m_dragBar = this.createProgressBtn(px + 5, py - 25, 200);
+		this.m_dragBar.setX(112);
+		this.m_dragBar.update();
+		this.m_proBaseLen = 97;
 
 		py = this.m_dragBar.getY();
 		textLabel = this.createText("Normal line color:", startX, py - 10);
@@ -471,9 +474,11 @@ class NormalCtrlPanel {
 		} else if (px > this.m_dragMaxX) {
 			px = this.m_dragMaxX;
 		}
+		// px = Math.round(px);
 		this.m_dragBar.setX(px);
 		this.m_dragBar.update();
 		this.m_proBaseLen = (px - this.m_dragMinX);
+		// console.log("this.m_proBaseLen, px: ", this.m_proBaseLen, px);
 
 	}
 	private progressMouseMove(evt: any): void {
