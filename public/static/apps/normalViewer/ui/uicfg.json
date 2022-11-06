@@ -85,16 +85,24 @@
 			},
 			"light": {
 				"out": [
-					80, 80, 80
+					80,
+					80,
+					80
 				],
 				"over": [
-					110, 110, 110
+					110,
+					110,
+					110
 				],
 				"down": [
-					90, 90, 90
+					90,
+					90,
+					90
 				],
 				"up": [
-					80, 80, 80
+					80,
+					80,
+					80
 				]
 			}
 		}
@@ -139,16 +147,16 @@
 	"uiModule": {
 		"transformCtrl": {
 			"btnTextAreaSize": [
-				90,
-				70
+				70,
+				50
 			],
 			"btnSize": [
-				90,
-				75
+				70,
+				55
 			],
 			"fontFormat": {
 				"fontName": "Verdana",
-				"fontSize": 30,
+				"fontSize": 20,
 				"bold": false,
 				"italic": false,
 				"fontColor": [
@@ -178,16 +186,16 @@
 		},
 		"navigation": {
 			"btnTextAreaSize": [
-				90,
-				40
+				70,
+				30
 			],
 			"btnSize": [
-				90,
-				40
+				70,
+				30
 			],
 			"fontFormat": {
 				"fontName": "Verdana",
-				"fontSize": 30,
+				"fontSize": 20,
 				"bold": false,
 				"italic": false,
 				"fontColor": [
@@ -213,7 +221,11 @@
 			]
 		},
 		"promptPanel": {
-			"bgColor": [51, 51, 51],
+			"bgColor": [
+				51,
+				51,
+				51
+			],
 			"panelSize": [
 				300,
 				200
@@ -255,9 +267,14 @@
 			"tips": []
 		},
 		"normalCtrlPanel": {
-			"bgColor": [51, 51, 51],
+			"bgColor": [
+				51,
+				51,
+				51
+			],
 			"panelSize": [
-				310, 390
+				310,
+				390
 			],
 			"btnSize": [
 				90,
