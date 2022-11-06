@@ -1,0 +1,318 @@
+{
+	"name": "normalViewer",
+	"color": {
+		"text": [
+			170,
+			170,
+			170
+		],
+		"background": [
+			40,
+			40,
+			40
+		],
+		"foreground": [
+			170,
+			170,
+			170
+		],
+		"button": {
+			"dark": {
+				"out": [
+					20,
+					20,
+					20
+				],
+				"over": [
+					30,
+					30,
+					30
+				],
+				"down": [
+					40,
+					40,
+					40
+				],
+				"up": [
+					20,
+					20,
+					20
+				]
+			},
+			"common": {
+				"out": [
+					40,
+					40,
+					40
+				],
+				"over": [
+					50,
+					50,
+					50
+				],
+				"down": [
+					60,
+					60,
+					60
+				],
+				"up": [
+					40,
+					40,
+					40
+				]
+			},
+			"selected": {
+				"out": [
+					71,
+					114,
+					179
+				],
+				"over": [
+					81,
+					124,
+					189
+				],
+				"down": [
+					71,
+					114,
+					189
+				],
+				"up": [
+					71,
+					114,
+					179
+				]
+			},
+			"light": {
+				"out": [
+					80,
+					80,
+					80
+				],
+				"over": [
+					110,
+					110,
+					110
+				],
+				"down": [
+					90,
+					90,
+					90
+				],
+				"up": [
+					80,
+					80,
+					80
+				]
+			}
+		}
+	},
+	"text": {
+		"fontFormat": {
+			"common": {
+				"fontName": "Verdana",
+				"fontSize": 20,
+				"bold": false,
+				"italic": false,
+				"fontColor": [
+					170,
+					170,
+					170
+				]
+			},
+			"button": {
+				"fontName": "Verdana",
+				"fontSize": 20,
+				"bold": false,
+				"italic": false,
+				"fontColor": [
+					170,
+					170,
+					170
+				]
+			},
+			"tips": {
+				"fontName": "Verdana",
+				"fontSize": 18,
+				"bold": false,
+				"italic": false,
+				"fontColor": [
+					170,
+					170,
+					170
+				]
+			}
+		}
+	},
+	"uiModule": {
+		"transformCtrl": {
+			"btnTextAreaSize": [
+				70,
+				50
+			],
+			"btnSize": [
+				70,
+				55
+			],
+			"fontFormat": {
+				"fontName": "Verdana",
+				"fontSize": 20,
+				"bold": false,
+				"italic": false,
+				"fontColor": [
+					170,
+					170,
+					170
+				]
+			},
+			"names": [
+				"框选",
+				"移动",
+				"旋转",
+				"缩放"
+			],
+			"keys": [
+				"select",
+				"move",
+				"rotate",
+				"scale"
+			],
+			"tips": [
+				"通过矩形框框选场景中的对象.",
+				"移动场景中的对象(W).",
+				"旋转场景中的对象(R).",
+				"缩放场景中的对象(E)."
+			]
+		},
+		"navigation": {
+			"btnTextAreaSize": [
+				70,
+				30
+			],
+			"btnSize": [
+				70,
+				30
+			],
+			"fontFormat": {
+				"fontName": "Verdana",
+				"fontSize": 20,
+				"bold": false,
+				"italic": false,
+				"fontColor": [
+					170,
+					170,
+					170
+				]
+			},
+			"names": [
+				"文件",
+				"编辑",
+				"帮助"
+			],
+			"keys": [
+				"file",
+				"edit",
+				"help"
+			],
+			"tips": [
+				"文件系统相关操作.",
+				"编辑环境相关操作.",
+				"一些帮助信息."
+			]
+		},
+		"promptPanel": {
+			"bgColor": [
+				51,
+				51,
+				51
+			],
+			"panelSize": [
+				300,
+				200
+			],
+			"btnSize": [
+				120,
+				50
+			],
+			"btnTextFontFormat": {
+				"fontName": "Verdana",
+				"fontSize": 30,
+				"bold": false,
+				"italic": false,
+				"fontColor": [
+					170,
+					170,
+					170
+				]
+			},
+			"textFontFormat": {
+				"fontName": "Verdana",
+				"fontSize": 30,
+				"bold": false,
+				"italic": false,
+				"fontColor": [
+					170,
+					170,
+					170
+				]
+			},
+			"names": [
+				"确认",
+				"取消"
+			],
+			"keys": [
+				"Confirm",
+				"Cancel"
+			],
+			"tips": []
+		},
+		"normalCtrlPanel": {
+			"bgColor": [
+				51,
+				51,
+				51
+			],
+			"panelSize": [
+				310,
+				390
+			],
+			"btnSize": [
+				90,
+				50
+			],
+			"btnTextFontFormat": {
+				"fontName": "Verdana",
+				"fontSize": 30,
+				"bold": false,
+				"italic": false,
+				"fontColor": [
+					170,
+					170,
+					170
+				]
+			},
+			"textFontFormat": {
+				"fontName": "Verdana",
+				"fontSize": 30,
+				"bold": false,
+				"italic": false,
+				"fontColor": [
+					170,
+					170,
+					170
+				]
+			},
+			"names": [
+				"局部",
+				"全局",
+				"颜色"
+			],
+			"keys": [
+				"local",
+				"global",
+				"color"
+			],
+			"tips": []
+		}
+	}
+}

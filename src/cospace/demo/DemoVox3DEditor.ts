@@ -191,7 +191,7 @@ export class DemoVox3DEditor {
 
 		let uiConfig = new UIConfig();
 		coui.uiConfig = uiConfig;
-		uiConfig.initialize("static/apps/normalViewer/ui/uicfg.json",(): void => {
+		uiConfig.initialize("static/apps/normalViewer/ui/zh-CN/uicfg.json",(): void => {
 			console.log("xxxx initEditSceneSys... ...");
 			this.initEditSceneSys();
 		});
