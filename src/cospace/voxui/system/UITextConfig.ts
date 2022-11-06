@@ -9,6 +9,9 @@ class FontFormat {
 }
 class UITextConfig {
 	constructor(){}
+	initialize(): void {
+		// load the cofig text file
+	}
 }
 
 export { UITextConfig }

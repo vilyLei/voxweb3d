@@ -131,6 +131,7 @@ export class DemoUIScene {
 	private m_uiScene: ICoUIScene = null;
 	private initUIScene(): void {
 		// let uisc = CoUI.createUIScene(); //new CoUIScene();
+		console.log("create the CoUIScene instance...");
 		let uisc = new CoUIScene();
 		uisc.texAtlasNearestFilter = true;
 		this.m_uiScene = uisc;
@@ -404,8 +405,10 @@ export class DemoUIScene {
 		colorLabel.setXY(330, 400);
 		this.m_uiScene.addEntity(colorLabel, 1);
 
+		let pw = 60;
+		let ph = 30;
 		let colorClipLabel2 = new ClipColorLabel();
-		colorClipLabel2.initializeWithoutTex(90, 40, 4);
+		colorClipLabel2.initializeWithoutTex(pw, ph, 4);
 		// let colorClipLabel2 = new ColorClipLabel();
 		// colorClipLabel2.initialize(csLable2, 4);
 		// colorClipLabel2.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
@@ -420,11 +423,11 @@ export class DemoUIScene {
 
 		let fontColor = CoMaterial.createColor4(1, 1, 1, 1);
 		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
-		
-		urls = ["BBB-0", "BBB-1", "BBB-2", "BBB-3"];
-		img = tta.createCharsCanvasFixSize(90, 40, urls[0], 30, fontColor, bgColor);
+		console.log("create file label...");
+		urls = ["File", "Global", "Color", "BBB-3"];
+		img = tta.createCharsCanvasFixSize(pw, ph, urls[0], 20, fontColor, bgColor);
 		tta.addImageToAtlas(urls[0], img);
-		img = tta.createCharsCanvasFixSize(90, 40, urls[1], 30, fontColor, bgColor);
+		img = tta.createCharsCanvasFixSize(pw, ph, urls[1], 20, fontColor, bgColor);
 		tta.addImageToAtlas(urls[1], img);
 
 		let iconLable = new ClipLabel();

@@ -51,7 +51,9 @@ export class CanvasTexAtlas implements ICanvasTexAtlas {
 			this.m_atlasList[0] = atlas;
 		}
 	}
-
+	setFontName(fontName: string): void {
+		this.m_atlasList[0].setFontName(fontName);
+	}
 	getTexture(i: number = 0): IImageTexture {
 		return this.m_atlasList[i].getTexture();
 	}

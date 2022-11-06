@@ -20,6 +20,7 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 	private m_texture: IImageTexture = null;
 	private m_transparent: boolean = false;
 	private m_fillColor: IColor4 = null;
+	private static s_fontName = "Verdana";
 	constructor(
 		rscene: IRendererScene,
 		canvasWidth: number,
@@ -87,6 +88,9 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 		}
 		return area;
 	}
+	setFontName(fontName: string): void {
+		ImageTexAtlas.s_fontName = fontName;
+	}
 	static CreateCanvas(width: number, height: number, bgColor: IColor4 = null, transparent: boolean = true): HTMLCanvasElement {
 		let canvas = document.createElement("canvas");
 		canvas.width = width;
@@ -132,6 +136,7 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 		if (height < texImg.height) {
 			throw Error("height < texImg.height");
 		}
+
 		let sx = Math.round((width - texImg.width) * 0.5);
 		let sy = Math.round((height - texImg.height) * 0.5);
 		let canvas = ImageTexAtlas.CreateCanvas(width, height, null);
@@ -169,7 +174,7 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 
 		let canvas = ImageTexAtlas.CreateCanvas(width, height);
 		let ctx2D = canvas.getContext("2d");
-		ctx2D.font = fontSize - 4 + "px Verdana";
+		ctx2D.font = fontSize - 4 + "px " + ImageTexAtlas.s_fontName;
 		//ctx2D.textBaseline = "top" || "hanging" || "middle" || "alphabetic" || "ideographic" || "bottom";
 		ctx2D.textBaseline = "top";
 
@@ -180,7 +185,7 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 			width = Math.round(texWidth + 8);
 			canvas.width = width;
 			ctx2D = canvas.getContext("2d");
-			ctx2D.font = fontSize - 4 + "px Verdana";
+			ctx2D.font = fontSize - 4 + "px " + ImageTexAtlas.s_fontName;
 			ctx2D.textBaseline = "top";
 		}
 		/*

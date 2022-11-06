@@ -9,6 +9,7 @@ import ICanvasTexObject from "./ICanvasTexObject";
 export interface ICanvasTexAtlas {
 
     initialize(sc: IRendererScene, canvasWidth: number, canvasHeight: number, fillColor?: IColor4, transparent?: boolean, nearestFilter?: boolean): void;
+    setFontName(fontName: string): void;
     getTexture(i?: number): IImageTexture;
     getAtlasAt(i?: number): IImageTexAtlas;
     addcharsToAtlas(chars: string, size: number, fontColor: IColor4, bgColor: IColor4 ): ICanvasTexObject;
