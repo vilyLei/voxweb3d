@@ -18,9 +18,9 @@ interface ITextParam {
 
 class ButtonBuilder {
 
-	static crateCurrTextBtn(pw: number, ph: number, idns: string, texAtlas: ICanvasTexAtlas, textParam: ITextParam, colors: IColor4[]): Button {
+	static crateCurrTextBtn(pw: number, ph: number, idns: string, texAtlas: ICanvasTexAtlas, textParam: ITextParam, colors: IColor4[] = null): Button {
 
-		if (textParam.text !== null && textParam.text != "" && colors != null) {
+		if (textParam.text !== null && textParam.text != "") {
 	
 			let colorClipLabel = new ClipColorLabel();
 			colorClipLabel.initializeWithoutTex(pw, ph, 4);

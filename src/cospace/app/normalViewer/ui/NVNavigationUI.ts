@@ -97,7 +97,9 @@ class NVNavigationUI {
 		let bgLabel = CoUI.createColorLabel();
 		bgLabel.initialize(this.m_bgLabelW, this.m_bgLabelH);
 		bgLabel.setY(st.stageHeight - ph);
-		bgLabel.setColor(bgLabel.getColor().setRGB3Bytes(40, 40, 40));
+		let bgColorData = cfg.getUIGlobalColor().background;
+		// bgLabel.setColor(bgLabel.getColor().setRGB3Bytes(40, 40, 40));
+		bgLabel.setColor(bgLabel.getColor().fromBytesArray3(bgColorData));
 		uiScene.addEntity(bgLabel);
 		this.m_bgLabel = bgLabel;
 
@@ -147,7 +149,7 @@ class NVNavigationUI {
 		px = 0;
 		py = st.stageHeight - ph;
 		for (let i = 0; i < btnNames.length; ++i) {
-			let btn = this.crateBtn(pw, ph, px + pw * i, py, i, uimodule);
+			let btn = this.createBtn(pw, ph, px + pw * i, py, i, uimodule);
 			this.m_coUIScene.tips.addTipsTarget(btn);
 			this.m_navBtns.push(btn);
 			layouter.addUIEntity(btn);
@@ -164,7 +166,7 @@ class NVNavigationUI {
 		);
 	}
 
-	private crateBtn(pw: number, ph: number, px: number, py: number, labelIndex: number, cfgData: UICfgData): IButton {
+	private createBtn(pw: number, ph: number, px: number, py: number, labelIndex: number, cfgData: UICfgData): IButton {
 
 		let names = cfgData.names;
 		let keys = cfgData.keys;

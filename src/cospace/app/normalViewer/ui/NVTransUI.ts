@@ -191,30 +191,19 @@ class NVTransUI {
 		ph = uimodule.btnSize[1];
 		let py = ph * 4;
 		for (let i = 0; i < btnNames.length; ++i) {
-			let btn = this.crateBtn(pw, ph, px, py - ph * i, i, uimodule);
+			let btn = this.createBtn(pw, ph, px, py - ph * i, i, uimodule);
 			if (i > 0) {
 				this.m_transBtns.push(btn);
 				this.m_btnGroup.addButton(btn);
 			}
 		}
-		// let gbtnColor = cfg.getUIGlobalColor().button;
+		
 		this.m_btnGroup.setSelectedFunction(
 			(btn: IButton): void => {
-				// let label: IColorClipLabel;
-
-				// let label = btn.getLable() as IColorClipLabel;
-				// cfg.applyButtonColor(label.getColors(), gbtnColor.selected);
-				// label.setClipIndex(0);
 				cfg.applyButtonGlobalColor(btn, "selected");
-
 				this.selectTrans(btn.uuid);
 			},
 			(btn: IButton): void => {
-				// let label: IColorClipLabel;
-
-				// let label = btn.getLable() as IColorClipLabel;
-				// cfg.applyButtonColor(label.getColors(), gbtnColor.common);
-				// label.setClipIndex(0);
 				cfg.applyButtonGlobalColor(btn, "common");
 			}
 		);
@@ -244,17 +233,13 @@ class NVTransUI {
 		// console.log("ui move (x, y): ", evt.mouseX, evt.mouseY);
 		this.m_selectFrame.move(evt.mouseX, evt.mouseY);
 	}
-	private crateBtn(pw: number, ph: number, px: number, py: number, labelIndex: number, cfgData: UICfgData): IButton {
+	private createBtn(pw: number, ph: number, px: number, py: number, labelIndex: number, cfgData: UICfgData): IButton {
 
 		let names = cfgData.names;
 		let keys = cfgData.keys;
 		let tips = cfgData.tips;
 		let label = CoUI.createClipColorLabel();
 		label.initializeWithoutTex(pw, ph, 4);
-		let cfg = this.m_coUIScene.uiConfig;
-		let btnColor = cfg.getUIGlobalColor().button.common;
-		cfg.applyButtonColor(label.getColors(), btnColor);
-
 
 		let tta = this.m_coUIScene.transparentTexAtlas;
 		let iconLable = CoUI.createClipLabel();
@@ -270,6 +255,8 @@ class NVTransUI {
 		btn.setXY(px, py);
 		this.m_coUIScene.addEntity(btn, 1);
 		this.m_coUIScene.tips.addTipsTarget(btn);
+
+		this.m_coUIScene.uiConfig.applyButtonGlobalColor(btn, "common");
 
 		return btn;
 	}
