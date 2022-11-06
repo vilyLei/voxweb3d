@@ -6,6 +6,8 @@ import { IUIButtonColor, IUIGlobalColor } from "./uiconfig/IUIGlobalColor";
 import { IUIGlobalText } from "./uiconfig/IUIGlobalText";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
+import { IButton } from "../button/IButton";
+import { IColorClipLabel } from "../entity/IColorClipLabel";
 declare var CoRScene: ICoRScene;
 
 class UIConfig implements IUIConfig {
@@ -34,6 +36,19 @@ class UIConfig implements IUIConfig {
 		c.fromBytesArray3(bytesArray3);
 		return c;
 	}
+	applyButtonGlobalColor(btn: IButton, colorName: string): void {
+		if (btn != null && colorName != "") {
+			let gColor = this.m_globalColor.button;
+			if (gColor != null) {
+				let c = (gColor as any)[colorName] as IUIButtonColor;
+				if (c != undefined) {
+					let label = btn.getLable() as IColorClipLabel;
+					this.applyButtonColor(label.getColors(), c);
+					label.setClipIndex(0);
+				}
+			}
+		}
+	}
 	applyButtonColor(btnColors: IColor4[], uiBtnColor: IUIButtonColor): void {
 
 		// let ls = uiBtnColor.out;
@@ -46,17 +61,19 @@ class UIConfig implements IUIConfig {
 		// 	ls = uiBtnColor.up;
 		// 	btnColors[3].setRGB3Bytes(ls[0], ls[1], ls[2]);
 		// }
+		const len = btnColors.length;
 		btnColors[0].fromBytesArray3(uiBtnColor.out);
 		btnColors[1].fromBytesArray3(uiBtnColor.over);
-		btnColors[2].fromBytesArray3(uiBtnColor.down);
-		
-		if(btnColors.length > 3) {
-			btnColors[3].fromBytesArray3(uiBtnColor.up);
+		if (len > 2) {
+			btnColors[2].fromBytesArray3(uiBtnColor.down != undefined ? uiBtnColor.down : uiBtnColor.out);
+		}
+		if (len > 3) {
+			btnColors[3].fromBytesArray3(uiBtnColor.up != undefined ? uiBtnColor.up : uiBtnColor.out);
 		}
 	}
-	
+
 	getUIGlobalText(): IUIGlobalText {
-		if(this.m_globalText != null) return this.m_globalText;
+		if (this.m_globalText != null) return this.m_globalText;
 		let obj = this.m_jsonObj;
 		if (obj != null) {
 			let uiModule = (obj as any)["text"];
@@ -68,7 +85,7 @@ class UIConfig implements IUIConfig {
 		return null;
 	}
 	getUIGlobalColor(): IUIGlobalColor {
-		if(this.m_globalColor != null) return this.m_globalColor;
+		if (this.m_globalColor != null) return this.m_globalColor;
 		let obj = this.m_jsonObj;
 		if (obj != null) {
 			let uiModule = (obj as any)["color"];

@@ -197,23 +197,25 @@ class NVTransUI {
 				this.m_btnGroup.addButton(btn);
 			}
 		}
-		let gbtnColor = cfg.getUIGlobalColor().button;
+		// let gbtnColor = cfg.getUIGlobalColor().button;
 		this.m_btnGroup.setSelectedFunction(
 			(btn: IButton): void => {
-				let label: IColorClipLabel;
+				// let label: IColorClipLabel;
 
-				label = btn.getLable() as IColorClipLabel;
-				cfg.applyButtonColor(label.getColors(), gbtnColor.selected);
-				label.setClipIndex(0);
+				// let label = btn.getLable() as IColorClipLabel;
+				// cfg.applyButtonColor(label.getColors(), gbtnColor.selected);
+				// label.setClipIndex(0);
+				cfg.applyButtonGlobalColor(btn, "selected");
 
 				this.selectTrans(btn.uuid);
 			},
 			(btn: IButton): void => {
-				let label: IColorClipLabel;
+				// let label: IColorClipLabel;
 
-				label = btn.getLable() as IColorClipLabel;
-				cfg.applyButtonColor(label.getColors(), gbtnColor.common);
-				label.setClipIndex(0);
+				// let label = btn.getLable() as IColorClipLabel;
+				// cfg.applyButtonColor(label.getColors(), gbtnColor.common);
+				// label.setClipIndex(0);
+				cfg.applyButtonGlobalColor(btn, "common");
 			}
 		);
 		this.m_btnGroup.select(keys[1]);

@@ -23,12 +23,22 @@ interface IUIButtonColorSet {
 	light: IUIButtonColor;
 }
 interface IUIGlobalColor {
-	// uint8 rgb color values, exmple: [170, 50, 30]
+	/**
+	 * uint8 rgb color values, exmple: [170, 50, 30]
+	 */
 	text: number[];
-	// uint8 rgb color values, exmple: [170, 50, 30]
+	/**
+	 * uint8 rgb color values, exmple: [170, 50, 30]
+	 */
 	background: number[];
-	// uint8 rgb color values, exmple: [170, 50, 30]
+	/**
+	 * uint8 rgb color values, exmple: [170, 50, 30]
+	 */
 	foreground: number[];
+	/**
+	 * uint8 rgb color values, exmple: [170, 50, 30]
+	 */
+	dark: number[];
 	/**
 	 * button color set
 	 */
