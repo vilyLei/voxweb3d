@@ -11,7 +11,7 @@ import { ColorLabel } from "../../../voxui/entity/ColorLabel";
 import { IColorLabel } from "../../../voxui/entity/IColorLabel";
 import { PromptPanel } from "../../../voxui/panel/PromptPanel";
 import { IPromptPanel } from "../../../voxui/panel/IPromptPanel";
-import { IFontFormat } from "../../../voxui/system/IUIConfig";
+import { IUIFontFormat } from "../../../voxui/system/IUIConfig";
 // import { LeftTopLayouter } from "../../../voxui/layout/LeftTopLayouter";
 
 declare var CoRenderer: ICoRenderer;
@@ -21,7 +21,7 @@ declare var CoUI: ICoUI;
 
 interface UICfgData {
 	button?: object;
-	fontFormat: IFontFormat;
+	fontFormat: IUIFontFormat;
 	btnTextAreaSize: number[];
 	btnSize: number[];
 	names: string[];

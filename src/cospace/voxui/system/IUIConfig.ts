@@ -1,19 +1,15 @@
 import IColor4 from "../../../vox/material/IColor4";
+import { IUIFontFormat } from "./uiconfig/IUIFontFormat";
 import { IUIButtonColor, IUIGlobalColor } from "./uiconfig/IUIGlobalColor";
+import { IUIGlobalText } from "./uiconfig/IUIGlobalText";
 
-interface IFontFormat {
-	font: string;
-	fontSize: number;
-	bold: boolean;
-	italic: boolean;
-	fontColor: number[];
-}
 interface IUIConfig {
 	initialize(configUrl: string, callback: () => void): void;
 	destroy(): void;
 	applyButtonColor(btnColors: IColor4[], uiBtnColor: IUIButtonColor): void;
+	getUIGlobalText(): IUIGlobalColor;
 	getUIGlobalColor(): IUIGlobalColor;
 	getUIModuleByName(moduleName: string): unknown | null;
 }
 
-export { IFontFormat, IUIConfig }
+export { IUIFontFormat, IUIConfig }

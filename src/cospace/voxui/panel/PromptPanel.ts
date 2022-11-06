@@ -128,6 +128,9 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			return;
 		}
 		let sc = this.getScene();
+		
+		let cfg = this.m_scene.uiConfig;
+		let gColor = cfg.getUIGlobalColor();
 
 		let textLabel = new TextLabel();
 		textLabel.depthTest = true;
@@ -147,11 +150,13 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			fontSize: 30,
 			font: ""
 		};
+		// textParam.textColor.fromBytesArray3();
 
 		let colors: IColor4[] = [
 			fc4().setRGB3Bytes(80, 80, 80),
 			fc4().setRGB3Bytes(110, 110, 110),
-			fc4().setRGB3Bytes(90, 90, 90)
+			fc4().setRGB3Bytes(90, 90, 90),
+			fc4().setRGB3Bytes(80, 80, 80)
 		];
 
 		let builder = ButtonBuilder;

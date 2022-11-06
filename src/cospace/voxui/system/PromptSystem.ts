@@ -1,23 +1,12 @@
 import { ICoUIScene } from "../scene/ICoUIScene";
-import { IPromptPanel } from "../panel/IPromptPanel";
+import { IPromptCfgData, IPromptPanel } from "../panel/IPromptPanel";
 import { PromptPanel } from "../panel/PromptPanel";
 import { IPromptSystem } from "./IPromptSystem";
 
 import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 import IColor4 from "../../../vox/material/IColor4";
-import { IFontFormat } from "./IUIConfig";
 declare var CoMaterial: ICoMaterial;
 
-interface UICfgData {
-	button?: object;
-	fontFormat: IFontFormat;
-	bgColor: number[];
-	panelSize: number[];
-	btnSize: number[];
-	names: string[];
-	keys: string[];
-	tips: string[];
-}
 class PromptSystem implements IPromptSystem {
 
 	private m_uiscene: ICoUIScene;
@@ -29,7 +18,7 @@ class PromptSystem implements IPromptSystem {
 			this.m_uiscene = uiscene;
 
 			let cfg = uiscene.uiConfig;
-			let uimodule = cfg.getUIModuleByName("promptPanel") as UICfgData;
+			let uimodule = cfg.getUIModuleByName("promptPanel") as IPromptCfgData;
 			let plSize = uimodule.panelSize;
 			let btnSize = uimodule.btnSize;
 			let names = uimodule.names;
@@ -39,7 +28,8 @@ class PromptSystem implements IPromptSystem {
 			pl.setZ(3.0);
 			let color = CoMaterial.createColor4();
 			color.fromBytesArray3(uimodule.bgColor);
-			pl.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
+			// pl.setBGColor(CoMaterial.createColor4(0.2, 0.2, 0.2));
+			pl.setBGColor(color);
 			this.m_promptPanel = pl;
 		}
 	}

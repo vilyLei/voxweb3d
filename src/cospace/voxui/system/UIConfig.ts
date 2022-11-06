@@ -1,14 +1,16 @@
 
 import IColor4 from "../../../vox/material/IColor4";
 import { TextPackedLoader } from "../../modules/loaders/TextPackedLoader";
-import { IFontFormat, IUIConfig } from "./IUIConfig";
+import { IUIFontFormat, IUIConfig } from "./IUIConfig";
 import { IUIButtonColor, IUIGlobalColor } from "./uiconfig/IUIGlobalColor";
+import { IUIGlobalText } from "./uiconfig/IUIGlobalText";
 
 class UIConfig implements IUIConfig {
 	private m_callback: () => void;
 	private m_jsonRawData = "";
 	private m_jsonObj: Object = null;
 	private m_globalColor: IUIGlobalColor = null;
+	private m_globalText: IUIGlobalColor = null;
 	constructor() { }
 	initialize(configUrl: string, callback: () => void): void {
 		// load the cofig text file
@@ -43,6 +45,19 @@ class UIConfig implements IUIConfig {
 		if(btnColors.length > 3) {
 			btnColors[3].fromBytesArray3(uiBtnColor.up);
 		}
+	}
+	
+	getUIGlobalText(): IUIGlobalColor {
+		if(this.m_globalText != null) return this.m_globalText;
+		let obj = this.m_jsonObj;
+		if (obj != null) {
+			let uiModule = (obj as any)["text"];
+			if (uiModule !== undefined) {
+				this.m_globalText = uiModule as IUIGlobalColor;
+				return this.m_globalText;
+			}
+		}
+		return null;
 	}
 	getUIGlobalColor(): IUIGlobalColor {
 		if(this.m_globalColor != null) return this.m_globalColor;

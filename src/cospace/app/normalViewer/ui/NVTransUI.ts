@@ -23,7 +23,7 @@ import { ICoTransformRecorder } from "../../../edit/recorde/ICoTransformRecorder
 import { IRectTextTip } from "../../../voxui/entity/IRectTextTip";
 import { ISelectButtonGroup } from "../../../voxui/button/ISelectButtonGroup";
 import { TipInfo } from "../../../voxui/base/TipInfo";
-import { IFontFormat } from "../../../voxui/system/IUIConfig";
+import { IUIFontFormat } from "../../../voxui/system/IUIConfig";
 
 declare var CoRScene: ICoRScene;
 declare var CoUIInteraction: ICoUIInteraction;
@@ -34,7 +34,7 @@ declare var CoUI: ICoUI;
 
 interface UICfgData {
 	button?: object;
-	fontFormat: IFontFormat;
+	fontFormat: IUIFontFormat;
 	btnTextAreaSize: number[];
 	btnSize: number[];
 	names: string[];

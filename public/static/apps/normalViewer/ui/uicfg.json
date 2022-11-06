@@ -63,9 +63,20 @@
 			}
 		}
 	},
-	"textCfg": {
-		"globalFontFormat": {
+	"text": {
+		"fontFormat": {
 			"common": {
+				"fontName": "Verdana",
+				"fontSize": 20,
+				"bold": false,
+				"italic": false,
+				"fontColor": [
+					170,
+					170,
+					170
+				]
+			},
+			"button": {
 				"fontName": "Verdana",
 				"fontSize": 20,
 				"bold": false,
