@@ -92,7 +92,6 @@ class DragLine extends MoveCtr implements IRayControl {
         return this.m_entity;
     }
     setVisible(visible: boolean): void {
-        console.log("DragLine::setVisible() ..., visible: ", visible);
         this.m_entity.setVisible(visible);
         this.m_cone.setVisible(visible);
     }

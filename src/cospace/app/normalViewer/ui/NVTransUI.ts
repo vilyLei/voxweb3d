@@ -90,6 +90,7 @@ class NVTransUI {
 	}
 
 	private keyCtrlZDown(evt: any): void {
+		console.log("ctrl-z, undo().");
 		this.m_recoder.undo();
 		let list = this.m_recoder.getCurrList();
 		this.selectEntities(list);
@@ -112,8 +113,8 @@ class NVTransUI {
 		let st = this.m_rsc.getStage3D();
 		this.m_currPos.setXYZ(st.mouseX, st.mouseY, 0);
 		if (CoMath.Vector3D.Distance(this.m_prevPos, this.m_currPos) > 0.5) {
-
 			let list = evt.currentTarget.getTargetEntities();
+			console.log("editEnd(), save list: ", list);
 			this.m_recoder.save(list);
 
 		}

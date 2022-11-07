@@ -90,7 +90,6 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
         return this.m_entity;
     }
     setVisible(visible: boolean): void {
-        console.log("ScaleDragLine::setVisible() ..., visible: ", visible);
         this.m_entity.setVisible(visible);
         this.m_box.setVisible(visible);
     }
