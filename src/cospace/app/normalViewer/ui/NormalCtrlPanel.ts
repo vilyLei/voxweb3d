@@ -22,22 +22,11 @@ import IProgressDataEvent from "../../../../vox/event/IProgressDataEvent";
 
 import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { ITextParam, ICoUI } from "../../../voxui/ICoUI";
+import { ButtonBuilder } from "../../../voxui/button/ButtonBuilder";
 declare var CoRScene: ICoRScene;
 declare var CoUI: ICoUI;
 
 declare var CoMaterial: ICoMaterial;
-
-interface INVCtrlPanelCfgData {
-	button?: object;
-	btnTextFontFormat: IUIFontFormat;
-	textFontFormat: IUIFontFormat;
-	bgColor: number[];
-	panelSize: number[];
-	btnSize: number[];
-	names: string[];
-	keys: string[];
-	tips: string[];
-}
 
 class NormalCtrlPanel {
 
@@ -160,15 +149,16 @@ class NormalCtrlPanel {
 		// this.m_flagEvt = CoRScene.createSelectionEvent();
 		this.m_progressEvt = CoRScene.createProgressDataEvent();
 
+		let builder = ButtonBuilder;
 		let sc = this.m_scene;
 		let tta = sc.transparentTexAtlas;
 		let fc4 = CoMaterial.createColor4;
 
 		let cfg = this.m_scene.uiConfig;
 		let gColor = cfg.getUIGlobalColor();
-		let uimodule = cfg.getUIModuleByName("normalCtrlPanel") as INVCtrlPanelCfgData;
-		let btf = uimodule.btnTextFontFormat;
-		let ltf = uimodule.textFontFormat;
+		let uiCfg = cfg.getUIPanelCfgByName("normalCtrlPanel");
+		let btf = uiCfg.btnTextFontFormat;
+		let ltf = uiCfg.textFontFormat;
 
 		let startX = 10;
 		let startY = this.m_panelH - 10 - this.m_btnH;
@@ -196,6 +186,7 @@ class NormalCtrlPanel {
 			tta, textParam, colors
 		);
 		localBtn.setXY(startX, startY);
+		// builder.createPanelBtnWithCfg(sc, startX, startY, 0, uiCfg);
 
 		px = px + this.m_btnW + disX;
 		this.m_btnW = 90;
@@ -206,6 +197,7 @@ class NormalCtrlPanel {
 			tta, textParam, colors
 		);
 		globalBtn.setXY(px, startY);
+
 
 		px = px + this.m_btnW + disX;
 		this.m_btnW = 100;		
@@ -278,7 +270,6 @@ class NormalCtrlPanel {
 		normalTestBtn.setXY(px, py - normalTestBtn.getHeight());
 		pl.addEntity(normalTestBtn);
 
-		//let ME = CoRScene.MouseEvent;
 		localBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
 		globalBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
 		modelColorBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
@@ -292,20 +283,10 @@ class NormalCtrlPanel {
 		group.addButton(modelColorBtn);
 		group.setSelectedFunction(
 			(btn: IButton): void => {
-				let label: IColorClipLabel;
-
-				label = btn.getLable() as IColorClipLabel;
-				let btnColor = cfg.getUIGlobalColor().button.selected;
-				cfg.applyButtonColor(label.getColors(), btnColor);
-				label.setClipIndex(0);
+				cfg.applyButtonGlobalColor(btn, "selected");
 			},
 			(btn: IButton): void => {
-				let label: IColorClipLabel;
-
-				label = btn.getLable() as IColorClipLabel;
-				let btnColor = cfg.getUIGlobalColor().button.light;
-				cfg.applyButtonColor(label.getColors(), btnColor);
-				label.setClipIndex(0);
+				cfg.applyButtonGlobalColor(btn, "light");
 			}
 		);
 		this.m_btnGroup.select(globalBtn.uuid);
@@ -578,4 +559,4 @@ class NormalCtrlPanel {
 		this.m_panel.update();
 	}
 }
-export { INVCtrlPanelCfgData, NormalCtrlPanel };
+export { NormalCtrlPanel };

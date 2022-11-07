@@ -10,6 +10,7 @@ interface IUIPanelConfig {
 	btnTextFontFormat: IUIFontFormat;
 	textFontFormat: IUIFontFormat;
 	btnTextAreaSize: number[];
+	panelSize: number[];
 	btnSize: number[];
 	btnNames: string[];
 	btnKeys: string[];

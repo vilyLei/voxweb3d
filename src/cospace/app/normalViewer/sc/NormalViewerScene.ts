@@ -2,7 +2,7 @@ import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
 import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
 import { ICoUI } from "../../../voxui/ICoUI";
-import { INVCtrlPanelCfgData, NormalCtrlPanel } from "../ui/NormalCtrlPanel";
+import { NormalCtrlPanel } from "../ui/NormalCtrlPanel";
 import { NormalEntityScene } from "./NormalEntityScene";
 import { CoDataModule } from "../../../app/common/CoDataModule";
 import { NormalEntityManager } from "./NormalEntityManager";
@@ -44,7 +44,7 @@ class NormalViewerScene {
 	}
 	protected initUI(): void {
 		let cfg = this.m_uiscene.uiConfig;
-		let uimodule = cfg.getUIModuleByName("normalCtrlPanel") as INVCtrlPanelCfgData;
+		let uimodule = cfg.getUIPanelCfgByName("normalCtrlPanel");
 		let plSize = uimodule.panelSize;
 		let btnSize = uimodule.btnSize;
 		// let names = uimodule.names;

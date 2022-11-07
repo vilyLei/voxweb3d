@@ -37,7 +37,7 @@ class NVTransUI {
 	private m_uirsc: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
 	private m_outline: CoPostOutline = null;
-	// tip: IRectTextTip = null;
+	
 	constructor() { }
 
 	setOutline(outline: CoPostOutline): void {
@@ -144,7 +144,6 @@ class NVTransUI {
 		let uiScene = this.m_coUIScene;
 		let cfg = uiScene.uiConfig;
 		let uimodule = cfg.getUIPanelCfgByName("transformCtrl");
-		console.log("NVTransUI::initTransUI(), uimodule: ", uimodule);
 
 		this.m_btnGroup = CoUI.createSelectButtonGroup();
 		let pw = uimodule.btnTextAreaSize[0];

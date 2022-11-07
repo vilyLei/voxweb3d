@@ -1,5 +1,5 @@
 import { ICoUIScene } from "../scene/ICoUIScene";
-import { IPromptCfgData, IPromptPanel } from "../panel/IPromptPanel";
+import { IPromptPanel } from "../panel/IPromptPanel";
 import { PromptPanel } from "../panel/PromptPanel";
 import { IPromptSystem } from "./IPromptSystem";
 
@@ -18,10 +18,10 @@ class PromptSystem implements IPromptSystem {
 			this.m_uiscene = uiscene;
 
 			let cfg = uiscene.uiConfig;
-			let uimodule = cfg.getUIModuleByName("promptPanel") as IPromptCfgData;
+			let uimodule = cfg.getUIPanelCfgByName("promptPanel");
 			let plSize = uimodule.panelSize;
 			let btnSize = uimodule.btnSize;
-			let names = uimodule.names;
+			let names = uimodule.btnNames;
 			let pl = new PromptPanel();
 			// pl.initialize(this.m_uiscene, rpi, 300, 200, 120, 50);
 			pl.initialize(this.m_uiscene, rpi, plSize[0], plSize[1], btnSize[0], btnSize[1], names[0], names[1]);

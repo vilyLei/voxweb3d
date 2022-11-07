@@ -2,7 +2,7 @@ import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { IButton } from "../button/IButton";
-import { IPromptCfgData, IPromptPanel } from "./IPromptPanel";
+import { IPromptPanel } from "./IPromptPanel";
 import { ICoUIScene } from "../scene/ICoUIScene";
 import { TextLabel } from "../entity/TextLabel";
 import { UIPanel } from "./UIPanel";
@@ -131,8 +131,8 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 
 			let cfg = this.m_scene.uiConfig;
 			let gColor = cfg.getUIGlobalColor();
-			let uiCfg = cfg.getUIModuleByName("promptPanel") as IPromptCfgData;
-			
+			let uiCfg = cfg.getUIPanelCfgByName("promptPanel");
+			let keys = uiCfg.btnKeys;
 			let btf = uiCfg.btnTextFontFormat;
 			let ltf = uiCfg.textFontFormat;
 
@@ -170,7 +170,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			let confirmBtn = builder.createTextButton(
 				this.m_btnW,
 				this.m_btnH,
-				"confirm",
+				keys[0],
 				tta,
 				textParam, colors
 			);
@@ -180,7 +180,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			let cancelBtn = builder.createTextButton(
 				this.m_btnW,
 				this.m_btnH,
-				"cancel",
+				keys[1],
 				tta,
 				textParam, colors
 			);
