@@ -170,7 +170,7 @@ class NormalEntityGroup {
 		this.m_loadedTotal++;
 		if (this.m_loadedTotal >= this.m_loadTotal) {
 			this.uiscene.prompt.getPromptPanel().applyConfirmButton();
-			this.uiscene.prompt.showPrompt("Model loaded finish!");
+			this.uiscene.prompt.showPrompt("Model loading finish!");
 			for(let i = 0; i < this.m_nodes.length; ++i) {
 				this.m_nodes[i].applyEvent();
 			}

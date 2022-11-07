@@ -22,5 +22,7 @@ interface CoRendererDevice {
 	IsIOS(): boolean;
 	IsIpadOS(): boolean;
 	IsAndroidOS(): boolean;
+	SetLanguage(language: string): void;
+    GetLanguage(): string;
 }
 export { CoRendererDevice };
