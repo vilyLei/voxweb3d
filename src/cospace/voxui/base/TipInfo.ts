@@ -55,6 +55,7 @@ class TopAligner implements IAligner {
 
 		let pv = this.m_pv;
 		let maxV = bounds.max;
+		// console.log("TopAligner: ", maxV, bounds);
 		pv.x = mx + 2;
 		pv.y = maxV.y + 2;
 

@@ -23,6 +23,15 @@ class UIEntityContainer extends UIEntityBase implements IUIEntityContainer {
 	protected removedEntity(entity: IUIEntity): void {
 
 	}
+	update(): void {
+		for (let i = 0; i < this.m_uientities.length; ++i) {
+			this.m_uientities[i].update();
+		}
+		if(this.m_rcontainer != null) {
+			this.m_rcontainer.update();
+		}
+		super.update();
+	}
 	addEntity(entity: IUIEntity): void {
 		if (entity != null) {
 			let i = 0;

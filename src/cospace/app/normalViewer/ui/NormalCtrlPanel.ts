@@ -119,6 +119,7 @@ class NormalCtrlPanel {
 			this.addLayoutEvt();
 			this.layout();
 		}
+		this.update();
 	}
 	isOpen(): boolean {
 		return this.m_panel.isOpen();
@@ -327,7 +328,6 @@ class NormalCtrlPanel {
 		return this.m_normalScale;
 	}
 	setNormalFlag(flag: boolean): void {
-		console.log("setNormalFlag, flag: ", flag);
 		this.m_normalVisiBtn.setFlag(flag);
 	}
 	setModelVisiFlag(flag: boolean): void {

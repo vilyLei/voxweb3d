@@ -57,7 +57,6 @@ class NormalViewerScene {
 		
 		panel.addEventListener(CoRScene.SelectionEvent.SELECT, this, this.selectDisplay);
 		panel.addEventListener(CoRScene.ProgressDataEvent.PROGRESS, this, this.normalScale);
-
 		this.m_ctrPanel = panel;
 		this.entityScene.ctrPanel = panel;
 	}
