@@ -151,6 +151,11 @@
 	},
 	"uiModule": {
 		"transformCtrl": {
+			"bgColor": [
+				40,
+				40,
+				40
+			],
 			"buttonStyle": {
 				"globalColor": "common",
 				"tipsAlign": "right"
@@ -195,6 +200,11 @@
 			]
 		},
 		"navigation": {
+			"bgColor": [
+				40,
+				40,
+				40
+			],
 			"buttonStyle": {
 				"globalColor": "common",
 				"tipsAlign": "bottom"

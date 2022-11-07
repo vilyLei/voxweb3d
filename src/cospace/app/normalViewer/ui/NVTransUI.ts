@@ -154,36 +154,16 @@ class NVTransUI {
 		console.log("NVTransUI::initTransUI(), uimodule: ", uimodule);
 
 		this.m_btnGroup = CoUI.createSelectButtonGroup();
-		// let tta = uiScene.transparentTexAtlas;
 		let pw = uimodule.btnTextAreaSize[0];
 		let ph = uimodule.btnTextAreaSize[1];
-		// let btnNames = ["框选", "移动", "旋转", "缩放"];
-		// let keys = ["select", "move", "rotate", "scale"];
-		// let tips = [
-		// 	"Select items using box selection.",
-		// 	"Move selected items(W).",
-		// 	"Rotate selected items(R).",
-		// 	"Scale(resize) selected items(E)."
-		// ];
 		let btnNames = uimodule.btnNames;
 		let keys = uimodule.btnKeys;
-
-		// let fontFormat = uimodule.fontFormat;
-		// tta.setFontName(fontFormat.font);
-		// let fontColor = CoMaterial.createColor4();
-		// fontColor.fromBytesArray3(cfg.getUIGlobalColor().text);
-		// let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
-		// for (let i = 0; i < btnNames.length; ++i) {
-		// 	let img = tta.createCharsCanvasFixSize(pw, ph, btnNames[i], fontFormat.fontSize, fontColor, bgColor);
-		// 	tta.addImageToAtlas(btnNames[i], img);
-		// }
 
 		let px = 5;
 		pw = uimodule.btnSize[0];
 		ph = uimodule.btnSize[1];
 		let py = ph * 4;
 		for (let i = 0; i < btnNames.length; ++i) {
-			// let btn = this.createBtn(pw, ph, px, py - ph * i, i, uimodule);
 			const btn = ButtonBuilder.createPanelBtnWithCfg(uiScene, px, py - ph * i, i, uimodule);
 			this.m_coUIScene.addEntity(btn, 1);
 			if (i > 0) {
@@ -227,70 +207,6 @@ class NVTransUI {
 		// console.log("ui move (x, y): ", evt.mouseX, evt.mouseY);
 		this.m_selectFrame.move(evt.mouseX, evt.mouseY);
 	}
-	private createBtn(pw: number, ph: number, px: number, py: number, btnIndex: number, cfgData: IUIPanelConfig): IButton {
-
-		let btn = ButtonBuilder.createPanelBtnWithCfg(this.m_coUIScene, px,py, btnIndex, cfgData);
-		this.m_coUIScene.addEntity(btn, 1);
-		return btn;
-		/*
-		let tta = this.m_coUIScene.transparentTexAtlas;
-		let cfg = this.m_coUIScene.uiConfig;
-
-		let names = cfgData.btnNames;
-		let keys = cfgData.btnKeys;
-		let tips = cfgData.btnTips;
-
-		let fontFormat = cfgData.btnTextFontFormat;
-		tta.setFontName(fontFormat.font);
-		let fontColor = CoMaterial.createColor4();
-		fontColor.fromBytesArray3(cfg.getUIGlobalColor().text);
-		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
-		let img = tta.createCharsCanvasFixSize(pw, ph, names[btnIndex], fontFormat.fontSize, fontColor, bgColor);
-		tta.addImageToAtlas(names[btnIndex], img);
-
-		let label = CoUI.createClipColorLabel();
-		label.initializeWithoutTex(pw, ph, 4);
-
-		let iconLable = CoUI.createClipLabel();
-		iconLable.transparent = true;
-		iconLable.premultiplyAlpha = true;
-		iconLable.initialize(tta, [names[btnIndex]]);
-
-		let btn = CoUI.createButton();
-		btn.uuid = keys[btnIndex];
-		btn.addLabel(iconLable);
-		btn.initializeWithLable(label);
-
-		let tipsAlign = "right";
-		let btnStyle = cfgData.buttonStyle;		
-		if (btnStyle != undefined) {
-			if (btnStyle.globalColor != undefined) {
-				tipsAlign = btnStyle.tipsAlign;
-				cfg.applyButtonGlobalColor(btn, btnStyle.globalColor);
-			}
-		}
-		if (tips.length > btnIndex) {
-			this.m_coUIScene.tips.addTipsTarget(btn);
-			let tipInfo = CoUI.createTipInfo().setContent(tips[btnIndex]);
-			switch(tipsAlign) {
-				case "bottom":
-					btn.info = tipInfo.alignBottom();
-					break;
-				default:
-					btn.info = tipInfo.alignRight();
-					break;
-			}
-		}
-
-		btn.setXY(px, py);
-
-		this.m_coUIScene.addEntity(btn, 1);
-
-		return btn;
-		//*/
-	}
-
-
 	private selectTrans(uuid: string): void {
 		switch (uuid) {
 
