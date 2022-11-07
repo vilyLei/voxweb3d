@@ -13,6 +13,7 @@ import { PromptPanel } from "../../../voxui/panel/PromptPanel";
 import { IPromptPanel } from "../../../voxui/panel/IPromptPanel";
 import { IUIFontFormat } from "../../../voxui/system/IUIConfig";
 import { IUIPanelConfig } from "../../../voxui/system/uiconfig/IUIPanelConfig";
+import { ButtonBuilder } from "../../../voxui/button/ButtonBuilder";
 // import { LeftTopLayouter } from "../../../voxui/layout/LeftTopLayouter";
 
 declare var CoRenderer: ICoRenderer;
@@ -148,7 +149,9 @@ class NVNavigationUI {
 		px = 0;
 		py = st.stageHeight - ph;
 		for (let i = 0; i < btnNames.length; ++i) {
-			let btn = this.createBtn(pw, ph, px + pw * i, py, i, uimodule);
+			const btn = ButtonBuilder.createPanelBtnWithCfg(uiScene, px + pw * i, py, i, uimodule);
+			this.m_coUIScene.addEntity(btn, 1);
+			// let btn = this.createBtn(pw, ph, px + pw * i, py, i, uimodule);
 			// this.m_coUIScene.tips.addTipsTarget(btn);
 			this.m_navBtns.push(btn);
 			layouter.addUIEntity(btn);

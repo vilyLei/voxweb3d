@@ -25,6 +25,7 @@ import { ISelectButtonGroup } from "../../../voxui/button/ISelectButtonGroup";
 import { TipInfo } from "../../../voxui/base/TipInfo";
 import { IUIFontFormat } from "../../../voxui/system/IUIConfig";
 import { IUIPanelConfig } from "../../../voxui/system/uiconfig/IUIPanelConfig";
+import { ButtonBuilder } from "../../../voxui/button/ButtonBuilder";
 
 declare var CoRScene: ICoRScene;
 declare var CoUIInteraction: ICoUIInteraction;
@@ -182,7 +183,9 @@ class NVTransUI {
 		ph = uimodule.btnSize[1];
 		let py = ph * 4;
 		for (let i = 0; i < btnNames.length; ++i) {
-			let btn = this.createBtn(pw, ph, px, py - ph * i, i, uimodule);
+			// let btn = this.createBtn(pw, ph, px, py - ph * i, i, uimodule);
+			const btn = ButtonBuilder.createPanelBtnWithCfg(uiScene, px, py - ph * i, i, uimodule);
+			this.m_coUIScene.addEntity(btn, 1);
 			if (i > 0) {
 				this.m_transBtns.push(btn);
 				this.m_btnGroup.addButton(btn);
@@ -226,6 +229,10 @@ class NVTransUI {
 	}
 	private createBtn(pw: number, ph: number, px: number, py: number, btnIndex: number, cfgData: IUIPanelConfig): IButton {
 
+		let btn = ButtonBuilder.createPanelBtnWithCfg(this.m_coUIScene, px,py, btnIndex, cfgData);
+		this.m_coUIScene.addEntity(btn, 1);
+		return btn;
+		/*
 		let tta = this.m_coUIScene.transparentTexAtlas;
 		let cfg = this.m_coUIScene.uiConfig;
 
@@ -280,6 +287,7 @@ class NVTransUI {
 		this.m_coUIScene.addEntity(btn, 1);
 
 		return btn;
+		//*/
 	}
 
 
