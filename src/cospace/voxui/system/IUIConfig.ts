@@ -3,6 +3,7 @@ import { IButton } from "../button/IButton";
 import { IUIFontFormat } from "./uiconfig/IUIFontFormat";
 import { IUIButtonColor, IUIGlobalColor } from "./uiconfig/IUIGlobalColor";
 import { IUIGlobalText } from "./uiconfig/IUIGlobalText";
+import { IUIPanelConfig } from "./uiconfig/IUIPanelConfig";
 
 interface IUIConfig {
 	initialize(configUrl: string, callback: () => void): void;
@@ -13,6 +14,7 @@ interface IUIConfig {
 	getUIGlobalText(): IUIGlobalText;
 	getUIGlobalColor(): IUIGlobalColor;
 	getUIModuleByName(moduleName: string): unknown | null;
+	getUIPanelCfgByName(moduleName: string): IUIPanelConfig;
 }
 
 export { IUIFontFormat, IUIConfig }

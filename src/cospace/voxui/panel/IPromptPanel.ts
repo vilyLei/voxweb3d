@@ -5,7 +5,6 @@ import { ICoUIScene } from "../scene/ICoUIScene";
 import { IUIFontFormat } from "../system/IUIConfig";
 
 interface IPromptCfgData {
-	button?: object;
 	btnTextFontFormat: IUIFontFormat;
 	textFontFormat: IUIFontFormat;
 	bgColor: number[];

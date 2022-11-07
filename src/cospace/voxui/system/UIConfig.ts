@@ -8,6 +8,7 @@ import { IUIGlobalText } from "./uiconfig/IUIGlobalText";
 import { ICoRScene } from "../../voxengine/ICoRScene";
 import { IButton } from "../button/IButton";
 import { IColorClipLabel } from "../entity/IColorClipLabel";
+import { IUIPanelConfig } from "./uiconfig/IUIPanelConfig";
 declare var CoRScene: ICoRScene;
 
 class UIConfig implements IUIConfig {
@@ -110,6 +111,22 @@ class UIConfig implements IUIConfig {
 				}
 			}
 
+		}
+		return null;
+	}
+	
+	getUIPanelCfgByName(panelName: string): IUIPanelConfig {
+		if (panelName != "") {
+			let obj = this.m_jsonObj;
+			if (obj != null) {
+				let uiModule = (obj as any)["uiModule"];
+				if (uiModule !== undefined) {
+					let module = uiModule[panelName] as IUIPanelConfig;
+					if (module !== undefined) {
+						return module;
+					}
+				}
+			}
 		}
 		return null;
 	}

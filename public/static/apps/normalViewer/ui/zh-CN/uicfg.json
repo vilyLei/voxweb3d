@@ -151,6 +151,9 @@
 	},
 	"uiModule": {
 		"transformCtrl": {
+			"buttonStyle": {
+				"globalColor": "common"
+			},
 			"btnTextAreaSize": [
 				70,
 				50
@@ -159,7 +162,7 @@
 				70,
 				55
 			],
-			"fontFormat": {
+			"btnTextFontFormat": {
 				"fontName": "Verdana",
 				"fontSize": 20,
 				"bold": false,
@@ -170,19 +173,20 @@
 					170
 				]
 			},
-			"names": [
+			"textFontFormat": {},
+			"btnNames": [
 				"框选",
 				"移动",
 				"旋转",
 				"缩放"
 			],
-			"keys": [
+			"btnKeys": [
 				"select",
 				"move",
 				"rotate",
 				"scale"
 			],
-			"tips": [
+			"btnTips": [
 				"通过矩形框框选场景中的对象.",
 				"移动场景中的对象(W).",
 				"旋转场景中的对象(R).",
@@ -190,6 +194,9 @@
 			]
 		},
 		"navigation": {
+			"buttonStyle": {
+				"globalColor": "common"
+			},
 			"btnTextAreaSize": [
 				70,
 				30

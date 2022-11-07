@@ -18,7 +18,7 @@ interface ITextParam {
 
 class ButtonBuilder {
 
-	static crateCurrTextBtn(pw: number, ph: number, idns: string, texAtlas: ICanvasTexAtlas, textParam: ITextParam, colors: IColor4[] = null): Button {
+	static createCurrTextBtn(pw: number, ph: number, idns: string, texAtlas: ICanvasTexAtlas, textParam: ITextParam, colors: IColor4[] = null): Button {
 
 		if (textParam.text !== null && textParam.text != "") {
 	
@@ -49,7 +49,7 @@ class ButtonBuilder {
 		let img = texAtlas.createCharsCanvasFixSize(width, height, tp.text, tp.fontSize, CoMaterial.createColor4(), CoMaterial.createColor4(1.0, 1.0, 1.0, 0.0));
 		texAtlas.addImageToAtlas(tp.text, img);
 		
-		return ButtonBuilder.crateCurrTextBtn(width, height, idns, texAtlas, textParam, colors);
+		return ButtonBuilder.createCurrTextBtn(width, height, idns, texAtlas, textParam, colors);
 	}	
 }
 

@@ -24,6 +24,7 @@ import { IRectTextTip } from "../../../voxui/entity/IRectTextTip";
 import { ISelectButtonGroup } from "../../../voxui/button/ISelectButtonGroup";
 import { TipInfo } from "../../../voxui/base/TipInfo";
 import { IUIFontFormat } from "../../../voxui/system/IUIConfig";
+import { IUIPanelConfig } from "../../../voxui/system/uiconfig/IUIPanelConfig";
 
 declare var CoRScene: ICoRScene;
 declare var CoUIInteraction: ICoUIInteraction;
@@ -31,16 +32,6 @@ declare var CoMath: ICoMath;
 declare var CoMaterial: ICoMaterial;
 declare var CoEdit: ICoEdit;
 declare var CoUI: ICoUI;
-
-interface UICfgData {
-	button?: object;
-	fontFormat: IUIFontFormat;
-	btnTextAreaSize: number[];
-	btnSize: number[];
-	names: string[];
-	keys: string[];
-	tips: string[];
-}
 
 /**
  * NVTransUI
@@ -158,12 +149,11 @@ class NVTransUI {
 
 		let uiScene = this.m_coUIScene;
 		let cfg = uiScene.uiConfig;
-		let uimodule = cfg.getUIModuleByName("transformCtrl") as UICfgData;
+		let uimodule = cfg.getUIPanelCfgByName("transformCtrl");
 		console.log("NVTransUI::initTransUI(), uimodule: ", uimodule);
 
-		let fontFormat = uimodule.fontFormat;
 		this.m_btnGroup = CoUI.createSelectButtonGroup();
-		let tta = uiScene.transparentTexAtlas;
+		// let tta = uiScene.transparentTexAtlas;
 		let pw = uimodule.btnTextAreaSize[0];
 		let ph = uimodule.btnTextAreaSize[1];
 		// let btnNames = ["框选", "移动", "旋转", "缩放"];
@@ -174,17 +164,18 @@ class NVTransUI {
 		// 	"Rotate selected items(R).",
 		// 	"Scale(resize) selected items(E)."
 		// ];
-		let btnNames = uimodule.names;
-		let keys = uimodule.keys;
+		let btnNames = uimodule.btnNames;
+		let keys = uimodule.btnKeys;
 
-		tta.setFontName(fontFormat.font);
-		let fontColor = CoMaterial.createColor4();
-		fontColor.fromBytesArray3(cfg.getUIGlobalColor().text);
-		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
-		for (let i = 0; i < btnNames.length; ++i) {
-			let img = tta.createCharsCanvasFixSize(pw, ph, btnNames[i], fontFormat.fontSize, fontColor, bgColor);
-			tta.addImageToAtlas(btnNames[i], img);
-		}
+		// let fontFormat = uimodule.fontFormat;
+		// tta.setFontName(fontFormat.font);
+		// let fontColor = CoMaterial.createColor4();
+		// fontColor.fromBytesArray3(cfg.getUIGlobalColor().text);
+		// let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
+		// for (let i = 0; i < btnNames.length; ++i) {
+		// 	let img = tta.createCharsCanvasFixSize(pw, ph, btnNames[i], fontFormat.fontSize, fontColor, bgColor);
+		// 	tta.addImageToAtlas(btnNames[i], img);
+		// }
 
 		let px = 5;
 		pw = uimodule.btnSize[0];
@@ -197,7 +188,7 @@ class NVTransUI {
 				this.m_btnGroup.addButton(btn);
 			}
 		}
-		
+
 		this.m_btnGroup.setSelectedFunction(
 			(btn: IButton): void => {
 				cfg.applyButtonGlobalColor(btn, "selected");
@@ -233,30 +224,50 @@ class NVTransUI {
 		// console.log("ui move (x, y): ", evt.mouseX, evt.mouseY);
 		this.m_selectFrame.move(evt.mouseX, evt.mouseY);
 	}
-	private createBtn(pw: number, ph: number, px: number, py: number, labelIndex: number, cfgData: UICfgData): IButton {
+	private createBtn(pw: number, ph: number, px: number, py: number, btnIndex: number, cfgData: IUIPanelConfig): IButton {
 
-		let names = cfgData.names;
-		let keys = cfgData.keys;
-		let tips = cfgData.tips;
+		let tta = this.m_coUIScene.transparentTexAtlas;
+		let cfg = this.m_coUIScene.uiConfig;
+
+		let names = cfgData.btnNames;
+		let keys = cfgData.btnKeys;
+		let tips = cfgData.btnTips;
+
+		let fontFormat = cfgData.btnTextFontFormat;
+		tta.setFontName(fontFormat.font);
+		let fontColor = CoMaterial.createColor4();
+		fontColor.fromBytesArray3(cfg.getUIGlobalColor().text);
+		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
+		let img = tta.createCharsCanvasFixSize(pw, ph, names[btnIndex], fontFormat.fontSize, fontColor, bgColor);
+		tta.addImageToAtlas(names[btnIndex], img);
+
 		let label = CoUI.createClipColorLabel();
 		label.initializeWithoutTex(pw, ph, 4);
 
-		let tta = this.m_coUIScene.transparentTexAtlas;
 		let iconLable = CoUI.createClipLabel();
 		iconLable.transparent = true;
 		iconLable.premultiplyAlpha = true;
-		iconLable.initialize(tta, [names[labelIndex]]);
+		iconLable.initialize(tta, [names[btnIndex]]);
 
 		let btn = CoUI.createButton();
-		btn.uuid = keys[labelIndex];
-		btn.info = CoUI.createTipInfo().alignRight().setContent(tips[labelIndex]);
+		btn.uuid = keys[btnIndex];
 		btn.addLabel(iconLable);
 		btn.initializeWithLable(label);
-		btn.setXY(px, py);
-		this.m_coUIScene.addEntity(btn, 1);
-		this.m_coUIScene.tips.addTipsTarget(btn);
+		let btnStyle = cfgData.buttonStyle;
+		console.log("XXXXXX btnStyle: ", btnStyle);
+		if (btnStyle != undefined) {
+			if (btnStyle.globalColor != undefined) {
+				cfg.applyButtonGlobalColor(btn, btnStyle.globalColor);
+			}
+		}
+		if (tips.length > btnIndex) {
+			this.m_coUIScene.tips.addTipsTarget(btn);
+			btn.info = CoUI.createTipInfo().alignRight().setContent(tips[btnIndex]);
+		}
 
-		this.m_coUIScene.uiConfig.applyButtonGlobalColor(btn, "common");
+		btn.setXY(px, py);
+
+		this.m_coUIScene.addEntity(btn, 1);
 
 		return btn;
 	}
