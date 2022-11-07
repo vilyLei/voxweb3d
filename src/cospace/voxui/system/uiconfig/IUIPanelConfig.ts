@@ -4,7 +4,13 @@ interface IUIButtonStyle {
 	globalColor: string;
 	tipsAlign: string;
 }
+
+interface IUIPanelItem {
+	name: string;
+	text: string;
+}
 interface IUIPanelConfig {
+	items?: IUIPanelItem[];
 	buttonStyle?: IUIButtonStyle;
 	bgColor: number[];
 	btnTextFontFormat: IUIFontFormat;

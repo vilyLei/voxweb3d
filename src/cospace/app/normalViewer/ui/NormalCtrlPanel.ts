@@ -159,6 +159,7 @@ class NormalCtrlPanel {
 		let uiCfg = cfg.getUIPanelCfgByName("normalCtrlPanel");
 		let btf = uiCfg.btnTextFontFormat;
 		let ltf = uiCfg.textFontFormat;
+		let items = uiCfg.items;
 
 		let startX = 10;
 		let startY = this.m_panelH - 10 - this.m_btnH;
@@ -219,25 +220,30 @@ class NormalCtrlPanel {
 		let btnSize = 24;
 
 		py = startY - this.m_btnH - disY + 20;
-		let textLabel = this.createText("Normal line visible", startX + btnSize + disX, py, ltf);
+		// let textLabel = this.createText("Normal line visible", startX + btnSize + disX, py, ltf);
+		let textLabel = this.createText(items[0].text, startX + btnSize + disX, py, ltf);
 
 		px = startX;
 		py = textLabel.getY();
 		this.m_normalVisiBtn = this.createFlagBtn(btnSize, px, py, "normal");
 
-		textLabel = this.createText("Model visible", startX + btnSize + disX, py - 10, ltf);
+		// textLabel = this.createText("Model visible", startX + btnSize + disX, py - 10, ltf);
+		textLabel = this.createText(items[1].text, startX + btnSize + disX, py - 10, ltf);
 		py = textLabel.getY();
 		this.m_modelVisiBtn = this.createFlagBtn(btnSize, px, py, "model");
 		
-		textLabel = this.createText("Normal difference", startX + btnSize + disX, py - 10, ltf);
+		// textLabel = this.createText("Normal difference", startX + btnSize + disX, py - 10, ltf);
+		textLabel = this.createText(items[2].text, startX + btnSize + disX, py - 10, ltf);
 		py = textLabel.getY();
 		this.m_diffBtn = this.createFlagBtn(btnSize, px, py, "difference");
 
-		textLabel = this.createText("Normal flip", startX + btnSize + disX, py - 10, ltf);
+		// textLabel = this.createText("Normal flip", startX + btnSize + disX, py - 10, ltf);
+		textLabel = this.createText(items[3].text, startX + btnSize + disX, py - 10, ltf);
 		py = textLabel.getY();
 		this.m_normalFlipBtn = this.createFlagBtn(btnSize, px, py, "normalFlip");
 
-		textLabel = this.createText("Normal line length:", startX, py - 15, ltf);
+		// textLabel = this.createText("Normal line length:", startX, py - 15, ltf);
+		textLabel = this.createText(items[4].text, startX, py - 15, ltf);
 		px = startX;
 		py = textLabel.getY();
 		this.m_dragBar = this.createProgressBtn(px + 5, py - 25, 200);
@@ -246,7 +252,8 @@ class NormalCtrlPanel {
 		this.m_proBaseLen = 97;
 
 		py = this.m_dragBar.getY();
-		textLabel = this.createText("Normal line color:", startX, py - 10, ltf);
+		// textLabel = this.createText("Normal line color:", startX, py - 10, ltf);
+		textLabel = this.createText(items[5].text, startX, py - 10, ltf);
 		px = startX;
 		py = textLabel.getY();
 		let colors1 = [

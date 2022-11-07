@@ -347,7 +347,38 @@
 				"modelColor",
 				"normalTest"
 			],
-			"btnTips": []
+			"btnTips": [
+				"物体坐标空间法线颜色显示.",
+				"世界坐标空间法线颜色显示.",
+				"灰色模型颜色显示.",
+				"分析检查模型法线问题."
+			],
+			"items": [
+				{
+					"name": "normalLineVisible",
+					"text": "法线线条可见性"
+				},
+				{
+					"name": "modelVisible",
+					"text": "模型可见性"
+				},
+				{
+					"name": "normalDifference",
+					"text": "法线问题可视化"
+				},
+				{
+					"name": "normalFlip",
+					"text": "法线翻转"
+				},
+				{
+					"name": "normalLineLength:",
+					"text": "法线线条长度:"
+				},
+				{
+					"name": "normalLineColor:",
+					"text": "法线线条颜色:"
+				}
+			]
 		}
 	}
 }
