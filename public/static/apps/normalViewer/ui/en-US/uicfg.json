@@ -181,10 +181,10 @@
 			},
 			"textFontFormat": {},
 			"btnNames": [
-				"框选",
-				"移动",
-				"旋转",
-				"缩放"
+				"Select",
+				"Move",
+				"Rotate",
+				"Scale"
 			],
 			"btnKeys": [
 				"select",
@@ -193,10 +193,10 @@
 				"scale"
 			],
 			"btnTips": [
-				"按下鼠标左键拖动框选场景中的对象.",
-				"移动场景中的对象(W).",
-				"旋转场景中的对象(R).",
-				"缩放场景中的对象(E)."
+				"Select items using box selection.",
+				"Move selected items(W).",
+				"Rotate selected items(R).",
+				"Scale(resize) selected items(E)."
 			]
 		},
 		"navigation": {
@@ -230,9 +230,9 @@
 			},
 			"textFontFormat": {},
 			"btnNames": [
-				"文件",
-				"编辑",
-				"帮助"
+				"File",
+				"Edit",
+				"Help"
 			],
 			"btnKeys": [
 				"file",
@@ -240,9 +240,9 @@
 				"help"
 			],
 			"btnTips": [
-				"文件系统相关操作.",
-				"编辑环境相关操作.",
-				"一些帮助信息."
+				"File system operations.",
+				"Editing operations.",
+				"Help infomation."
 			]
 		},
 		"promptPanel": {
@@ -286,8 +286,8 @@
 				]
 			},
 			"btnNames": [
-				"确认",
-				"取消"
+				"Confirm",
+				"Cancel"
 			],
 			"btnKeys": [
 				"confirm",
@@ -336,10 +336,10 @@
 				]
 			},
 			"btnNames": [
-				"局部",
-				"全局",
-				"颜色",
-				"检测"
+				"Local",
+				"Global",
+				"Color",
+				"Test"
 			],
 			"btnKeys": [
 				"local",
@@ -348,35 +348,35 @@
 				"normalTest"
 			],
 			"btnTips": [
-				"显示物体坐标空间法线颜色.",
-				"显示世界坐标空间法线颜色.",
-				"显示灰色模型颜色.",
-				"分析检查模型法线问题."
+				"Display local space normal color.",
+				"Display global space normal color.",
+				"Display gray model color.",
+				"Check normal for problems."
 			],
 			"items": [
 				{
 					"name": "normalLineVisible",
-					"text": "法线线条可见性"
+					"text": "Normal line visibility"
 				},
 				{
 					"name": "modelVisible",
-					"text": "模型可见性"
+					"text": "Model visibility"
 				},
 				{
 					"name": "normalDifference",
-					"text": "法线问题可视化"
+					"text": "Normal difference"
 				},
 				{
 					"name": "normalFlip",
-					"text": "法线翻转"
+					"text": "Normal flip"
 				},
 				{
 					"name": "normalLineLength:",
-					"text": "法线线条长度:"
+					"text": "Normal line length:"
 				},
 				{
 					"name": "normalLineColor:",
-					"text": "法线线条颜色:"
+					"text": "Normal line color:"
 				}
 			]
 		}
