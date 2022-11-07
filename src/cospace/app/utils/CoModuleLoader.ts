@@ -19,15 +19,21 @@ class CoModuleLoader extends ModuleLoader {
 				let j = url.indexOf(".", i);
 				// hostUrl = "http://localhost:9000/test/";
 				hostUrl = "http://www.artvily.com:9090/";
-				let fileName = (url.slice(i,j)).toLocaleLowerCase();
+				let fileName = url.slice(i,j);
+				if(url.indexOf(".umd.") > 0) {
+					fileName = fileName.toLocaleLowerCase();
+					url = hostUrl + url.slice(0,i) + fileName + ".js";
+				}else {
+					url = hostUrl + url;
+				}
+				
 				if(fileName == "") {
 					console.error("err: ",url);
 					console.error("i, j: ",i,j);
 				}
-				let purl = hostUrl + url.slice(0,i) + fileName + ".js";
 				console.log("urlChecker(), fileName:-"+fileName+"-");
-				console.log("urlChecker(), purl: ", purl);
-				return purl;
+				console.log("urlChecker(), new url: ", url);
+				return url;
 			}
 			return url;
 		}

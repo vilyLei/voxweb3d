@@ -9,6 +9,7 @@ import { ICoRScene } from "../../voxengine/ICoRScene";
 import { IButton } from "../button/IButton";
 import { IColorClipLabel } from "../entity/IColorClipLabel";
 import { IUIPanelConfig } from "./uiconfig/IUIPanelConfig";
+import { CoModuleLoader } from "../../app/utils/CoModuleLoader";
 declare var CoRScene: ICoRScene;
 
 class UIConfig implements IUIConfig {
@@ -21,6 +22,8 @@ class UIConfig implements IUIConfig {
 	initialize(configUrl: string, callback: () => void): void {
 		// load the cofig text file
 		this.m_callback = callback;
+		let checker = new CoModuleLoader(1).getUrlChecker();
+		configUrl = checker(configUrl);
 		let jsonLoader = new TextPackedLoader(1, (): void => {
 			// console.log("jsonLoader loaded: ", jsonLoader.getDataByUrl(configUrl));
 			this.m_jsonRawData = jsonLoader.getDataByUrl(configUrl) as string;
