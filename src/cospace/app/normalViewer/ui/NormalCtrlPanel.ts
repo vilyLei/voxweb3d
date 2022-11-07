@@ -188,7 +188,7 @@ class NormalCtrlPanel {
 		// localBtn.setXY(startX, startY);
 		let localBtn = builder.createPanelBtnWithCfg(sc, startX, startY, 0, uiCfg);
 
-		px = px + this.m_btnW + disX;
+		px = px + this.m_btnW;
 		// this.m_btnW = 90;
 		// textParam.text = "Global";
 		// // let globalBtn = this.createBtn("Global", px, startY, "global");
@@ -200,7 +200,7 @@ class NormalCtrlPanel {
 		let globalBtn = builder.createPanelBtnWithCfg(sc, px, startY, 1, uiCfg);
 
 
-		px = px + this.m_btnW + disX;
+		px = px + this.m_btnW;
 		// this.m_btnW = 100;		
 		// textParam.text = "Color";
 		// // let differenceBtn = this.createBtn("Difference", px, startY, "difference");
@@ -216,28 +216,28 @@ class NormalCtrlPanel {
 		pl.addEntity(globalBtn);
 		pl.addEntity(modelColorBtn);
 
-		let btnSize = 28;
+		let btnSize = 24;
 
 		py = startY - this.m_btnH - disY + 20;
-		let textLabel = this.createText("Normal line visible", startX + btnSize + disX, py);
+		let textLabel = this.createText("Normal line visible", startX + btnSize + disX, py, ltf);
 
 		px = startX;
 		py = textLabel.getY();
 		this.m_normalVisiBtn = this.createFlagBtn(btnSize, px, py, "normal");
 
-		textLabel = this.createText("Model visible", startX + btnSize + disX, py - 10);
+		textLabel = this.createText("Model visible", startX + btnSize + disX, py - 10, ltf);
 		py = textLabel.getY();
 		this.m_modelVisiBtn = this.createFlagBtn(btnSize, px, py, "model");
 		
-		textLabel = this.createText("Normal difference", startX + btnSize + disX, py - 10);
+		textLabel = this.createText("Normal difference", startX + btnSize + disX, py - 10, ltf);
 		py = textLabel.getY();
 		this.m_diffBtn = this.createFlagBtn(btnSize, px, py, "difference");
 
-		textLabel = this.createText("Normal flip", startX + btnSize + disX, py - 10);
+		textLabel = this.createText("Normal flip", startX + btnSize + disX, py - 10, ltf);
 		py = textLabel.getY();
 		this.m_normalFlipBtn = this.createFlagBtn(btnSize, px, py, "normalFlip");
 
-		textLabel = this.createText("Normal line length:", startX, py - 15);
+		textLabel = this.createText("Normal line length:", startX, py - 15, ltf);
 		px = startX;
 		py = textLabel.getY();
 		this.m_dragBar = this.createProgressBtn(px + 5, py - 25, 200);
@@ -246,7 +246,7 @@ class NormalCtrlPanel {
 		this.m_proBaseLen = 97;
 
 		py = this.m_dragBar.getY();
-		textLabel = this.createText("Normal line color:", startX, py - 10);
+		textLabel = this.createText("Normal line color:", startX, py - 10, ltf);
 		px = startX;
 		py = textLabel.getY();
 		let colors1 = [
@@ -361,14 +361,16 @@ class NormalCtrlPanel {
 		e.target = null;
 	}
 
-	private createText(text: string, px: number, py: number): ITextLabel {
+	private createText(text: string, px: number, py: number, fontFormat: IUIFontFormat): ITextLabel {
 		let sc = this.getScene();
 		// let textLabel = new TextLabel();
 		let textLabel = CoUI.createTextLabel();
 		textLabel.depthTest = true;
 		textLabel.transparent = true;
 		textLabel.premultiplyAlpha = true;
-		textLabel.initialize(text, sc);
+		textLabel.initialize(text, sc, fontFormat.fontSize);
+
+		textLabel.setColor(CoMaterial.createColor4().fromBytesArray3(fontFormat.fontColor));
 		textLabel.setXY(px, py - textLabel.getHeight());
 		textLabel.update();
 		this.m_panel.addEntity(textLabel);
@@ -528,8 +530,8 @@ class NormalCtrlPanel {
 			let rect = sc.getRect();
 			// let bounds = this.getGlobalBounds();
 
-			let px = rect.width - width;
-			let py = rect.y + (rect.height - this.getHeight()) * 0.5;
+			let px = Math.round(rect.width - width);
+			let py = Math.round(rect.y + (rect.height - this.getHeight()) * 0.5);
 			this.setXY(px, py);
 			this.update();
 		}

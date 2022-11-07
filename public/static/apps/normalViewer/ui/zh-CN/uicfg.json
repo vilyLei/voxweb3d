@@ -306,16 +306,16 @@
 				"tipsAlign": "top"
 			},
 			"panelSize": [
-				310,
-				390
+				230,
+				315
 			],
 			"btnSize": [
-				90,
-				50
+				70,
+				30
 			],
 			"btnTextFontFormat": {
 				"fontName": "Verdana",
-				"fontSize": 30,
+				"fontSize": 20,
 				"bold": false,
 				"italic": false,
 				"fontColor": [
@@ -326,7 +326,7 @@
 			},
 			"textFontFormat": {
 				"fontName": "Verdana",
-				"fontSize": 30,
+				"fontSize": 20,
 				"bold": false,
 				"italic": false,
 				"fontColor": [
