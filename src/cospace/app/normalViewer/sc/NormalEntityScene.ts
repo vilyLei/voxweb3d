@@ -47,6 +47,7 @@ class NormalEntityScene {
 		this.entityManager.rsc = rscene;
 		// for test
 		// this.initModel();
+
 		this.exampleGroup.entityManager = this.entityManager;
 		this.exampleGroup.initialize(rscene, this.transUI);
 

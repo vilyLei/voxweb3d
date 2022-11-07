@@ -132,7 +132,7 @@ class NormalExampleGroup implements IRunnable {
 		this.createStaticText(pv, items[3].text, h5Text);
 
 
-		this.m_transUI.getRecoder().save(this.m_nodeEntities);
+		// this.m_transUI.getRecoder().save(this.m_nodeEntities);
 		// node.entity.setRenderState(CoRScene.RendererState.FRONT_CULLFACE_NORMAL_STATE);
 
 	}

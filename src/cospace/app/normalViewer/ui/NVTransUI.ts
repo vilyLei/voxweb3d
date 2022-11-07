@@ -20,6 +20,7 @@ import { ICoKeyboardInteraction } from "../../../voxengine/ui/ICoKeyboardInterac
 import { ICoTransformRecorder } from "../../../edit/recorde/ICoTransformRecorder";
 import { ISelectButtonGroup } from "../../../voxui/button/ISelectButtonGroup";
 import { ButtonBuilder } from "../../../voxui/button/ButtonBuilder";
+import { CoTransformRecorder } from "../../../edit/recorde/CoTransformRecorder";
 
 declare var CoRScene: ICoRScene;
 declare var CoUIInteraction: ICoUIInteraction;
@@ -37,7 +38,7 @@ class NVTransUI {
 	private m_uirsc: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
 	private m_outline: CoPostOutline = null;
-	
+
 	constructor() { }
 
 	setOutline(outline: CoPostOutline): void {
@@ -84,16 +85,28 @@ class NVTransUI {
 		type = this.m_keyInterac.createKeysEventType([Key.CTRL, Key.Z]);
 		this.m_keyInterac.addKeysDownListener(type, this, this.keyCtrlZDown);
 
-		this.m_recoder = CoEdit.createTransformRecorder();
+		// this.m_recoder = CoEdit.createTransformRecorder();
+		this.m_recoder = new CoTransformRecorder();
 
 		this.initUI();
 	}
 
 	private keyCtrlZDown(evt: any): void {
-		console.log("ctrl-z, undo().");
+		console.log("ctrl-z, undo() begin.");
 		this.m_recoder.undo();
 		let list = this.m_recoder.getCurrList();
-		this.selectEntities(list);
+		console.log("ctrl-z, undo() end, list: ", list);
+		if(list != null) {
+			let flag = true;
+			for(let i = 0; i < list.length; ++i) {
+				if(!list[i].getVisible()) {
+					flag = false;
+				}
+			}
+			if(flag) {
+				this.selectEntities(list);
+			}
+		}
 	}
 	private keyCtrlYDown(evt: any): void {
 		this.m_recoder.redo();
@@ -106,8 +119,11 @@ class NVTransUI {
 	private m_prevPos: IVector3D;
 	private m_currPos: IVector3D;
 	private editBegin(evt: any): void {
+		let list = evt.currentTarget.getTargetEntities();
+		console.log("editBegin(), entity list: ", list);
 		let st = this.m_rsc.getStage3D();
 		this.m_prevPos.setXYZ(st.mouseX, st.mouseY, 0);
+		this.m_recoder.save(list);
 	}
 	private editEnd(evt: any): void {
 		let st = this.m_rsc.getStage3D();
@@ -117,6 +133,8 @@ class NVTransUI {
 			console.log("editEnd(), save list: ", list);
 			this.m_recoder.save(list);
 
+		}else {
+			this.m_recoder.fakeUndo();
 		}
 	}
 	private m_transBtns: IButton[] = [];
