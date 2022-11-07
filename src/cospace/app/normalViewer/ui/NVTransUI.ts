@@ -1,7 +1,6 @@
 import IRendererScene from "../../../../vox/scene/IRendererScene";
 import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { ICoMath } from "../../../math/ICoMath";
-import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
 import { ICoEdit } from "../../../edit/ICoEdit";
 import { ICoUI } from "../../../voxui/ICoUI";
 import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
@@ -15,22 +14,16 @@ import { UserEditEvent } from "../../../edit/event/UserEditEvent";
 import { IButton } from "../../../voxui/button/IButton";
 import { CoPostOutline } from "../../effect/CoPostOutline";
 import { NVUIRectLine } from "./NVUIRectLine";
-import { IColorClipLabel } from "../../../voxui/entity/IColorClipLabel";
 import { NVRectFrameQuery } from "./NVRectFrameQuery";
 import IRenderEntity from "../../../../vox/render/IRenderEntity";
 import { ICoKeyboardInteraction } from "../../../voxengine/ui/ICoKeyboardInteraction";
 import { ICoTransformRecorder } from "../../../edit/recorde/ICoTransformRecorder";
-import { IRectTextTip } from "../../../voxui/entity/IRectTextTip";
 import { ISelectButtonGroup } from "../../../voxui/button/ISelectButtonGroup";
-import { TipInfo } from "../../../voxui/base/TipInfo";
-import { IUIFontFormat } from "../../../voxui/system/IUIConfig";
-import { IUIPanelConfig } from "../../../voxui/system/uiconfig/IUIPanelConfig";
 import { ButtonBuilder } from "../../../voxui/button/ButtonBuilder";
 
 declare var CoRScene: ICoRScene;
 declare var CoUIInteraction: ICoUIInteraction;
 declare var CoMath: ICoMath;
-declare var CoMaterial: ICoMaterial;
 declare var CoEdit: ICoEdit;
 declare var CoUI: ICoUI;
 

@@ -103,6 +103,9 @@ class ButtonBuilder {
 			couiScene.tips.addTipsTarget(btn);
 			let tipInfo = CoUI.createTipInfo().setContent(tips[btnIndex]);
 			switch(tipsAlign) {
+				case "top":
+					btn.info = tipInfo.alignTop();
+					break;
 				case "bottom":
 					btn.info = tipInfo.alignBottom();
 					break;

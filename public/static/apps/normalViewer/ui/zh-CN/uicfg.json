@@ -223,9 +223,9 @@
 				"bold": false,
 				"italic": false,
 				"fontColor": [
-					170,
-					170,
-					170
+					200,
+					200,
+					200
 				]
 			},
 			"textFontFormat": {},
@@ -251,6 +251,10 @@
 				51,
 				51
 			],
+			"buttonStyle": {
+				"globalColor": "light",
+				"tipsAlign": "bottom"
+			},
 			"panelSize": [
 				300,
 				200

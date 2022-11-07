@@ -1,35 +1,14 @@
 import IRendererScene from "../../../../vox/scene/IRendererScene";
-import { ICoRenderer } from "../../../voxengine/ICoRenderer";
 import { ICoUI } from "../../../voxui/ICoUI";
 import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
 import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { IButton } from "../../../voxui/button/IButton";
-import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
-import { IRectTextTip } from "../../../voxui/entity/IRectTextTip";
-import { TipInfo } from "../../../voxui/base/TipInfo";
-import { ColorLabel } from "../../../voxui/entity/ColorLabel";
 import { IColorLabel } from "../../../voxui/entity/IColorLabel";
-import { PromptPanel } from "../../../voxui/panel/PromptPanel";
-import { IPromptPanel } from "../../../voxui/panel/IPromptPanel";
-import { IUIFontFormat } from "../../../voxui/system/IUIConfig";
-import { IUIPanelConfig } from "../../../voxui/system/uiconfig/IUIPanelConfig";
 import { ButtonBuilder } from "../../../voxui/button/ButtonBuilder";
-// import { LeftTopLayouter } from "../../../voxui/layout/LeftTopLayouter";
 
-declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
-declare var CoMaterial: ICoMaterial;
 declare var CoUI: ICoUI;
 
-// interface UICfgData {
-// 	button?: object;
-// 	fontFormat: IUIFontFormat;
-// 	btnTextAreaSize: number[];
-// 	btnSize: number[];
-// 	names: string[];
-// 	keys: string[];
-// 	tips: string[];
-// }
 /**
  * NVNavigationUI
  */
@@ -39,7 +18,6 @@ class NVNavigationUI {
 	private m_editUIRenderer: IRendererScene = null;
 	private m_uirsc: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
-	// tip: IRectTextTip = null;
 
 	constructor() { }
 
@@ -53,9 +31,6 @@ class NVNavigationUI {
 		}
 	}
 	private init(): void {
-
-		let editsc = this.m_editUIRenderer;
-
 		this.initUI();
 	}
 	private m_navBtns: IButton[] = [];
@@ -149,7 +124,7 @@ class NVNavigationUI {
 
 		// console.log("btnMouseUpListener(), evt.currentTarget: ", evt.currentTarget);
 		let uuid = evt.uuid;
-		console.log("XXX CO btnMouseUpListener(), uuid: ", uuid);
+		
 		switch (uuid) {
 
 			case "file":

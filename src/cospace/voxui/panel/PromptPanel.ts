@@ -61,8 +61,8 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 
 		this.m_cancelBtnVis = false;
 		let btn = this.m_cancelBtn;
-		if(btn != null && !btn.isVisible()) {
-			this.m_cancelBtn.setVisible(false);			
+		if (btn != null && !btn.isVisible()) {
+			this.m_cancelBtn.setVisible(false);
 			if (this.m_confirmBtn != null && this.isOpen()) {
 				this.layoutItems();
 				this.layout();
@@ -71,7 +71,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 	}
 	applyAllButtons(): void {
 		this.m_cancelBtnVis = true;
-		if(this.m_cancelBtn != null) {
+		if (this.m_cancelBtn != null) {
 			this.m_cancelBtn.setVisible(true);
 		}
 	}
@@ -124,72 +124,71 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		this.buildItems();
 	}
 	protected buildItems(): void {
-		if (this.m_confirmBtn != null) {
-			return;
+		if (this.m_confirmBtn == null) {
+			let sc = this.getScene();
+			let tta = sc.transparentTexAtlas;
+			let fc4 = CoMaterial.createColor4;
+
+			let cfg = this.m_scene.uiConfig;
+			let gColor = cfg.getUIGlobalColor();
+			let uimodule = cfg.getUIModuleByName("promptPanel") as IPromptCfgData;
+			let btf = uimodule.btnTextFontFormat;
+			let ltf = uimodule.textFontFormat;
+
+			let textLabel = new TextLabel();
+			textLabel.depthTest = true;
+			textLabel.transparent = true;
+			textLabel.premultiplyAlpha = true;
+			textLabel.initialize(this.m_prompt, sc, ltf.fontSize);
+			let color = fc4();
+			color.fromBytesArray3(ltf.fontColor);
+			textLabel.setColor(color);
+			this.m_promptLabel = textLabel;
+
+			// console.log("textLabel.getHeight(): ", textLabel.getHeight());
+
+			let ME = CoRScene.MouseEvent;
+			let textParam: ITextParam = {
+				text: this.m_confirmNS,
+				textColor: fc4(),
+				fontSize: btf.fontSize,
+				font: ""
+			};
+			textParam.textColor.fromBytesArray3(btf.fontColor);
+
+			let colors: IColor4[] = [
+				fc4(),//.setRGB3Bytes(80, 80, 80),
+				fc4(),//.setRGB3Bytes(110, 110, 110),
+				fc4(),//.setRGB3Bytes(90, 90, 90),
+				fc4()//.setRGB3Bytes(80, 80, 80)
+			];
+			cfg.applyButtonColor(colors, gColor.button.light);
+
+			let builder = ButtonBuilder;
+			let confirmBtn = builder.createTextButton(
+				this.m_btnW,
+				this.m_btnH,
+				"confirm",
+				tta,
+				textParam, colors
+			);
+			this.m_confirmBtn = confirmBtn;
+
+			textParam.text = this.m_cancelNS;
+			let cancelBtn = builder.createTextButton(
+				this.m_btnW,
+				this.m_btnH,
+				"cancel",
+				tta,
+				textParam, colors
+			);
+			// cancelBtn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
+			this.m_cancelBtn = cancelBtn;
+
+			this.addEntity(cancelBtn);
+			this.addEntity(confirmBtn);
+			this.addEntity(textLabel);
 		}
-		let sc = this.getScene();
-		let tta = sc.transparentTexAtlas;
-		let fc4 = CoMaterial.createColor4;
-		
-		let cfg = this.m_scene.uiConfig;
-		let gColor = cfg.getUIGlobalColor();
-		let uimodule = cfg.getUIModuleByName("promptPanel") as IPromptCfgData;
-		let btf = uimodule.btnTextFontFormat;
-		let ltf = uimodule.textFontFormat;
-		
-		let textLabel = new TextLabel();
-		textLabel.depthTest = true;
-		textLabel.transparent = true;
-		textLabel.premultiplyAlpha = true;
-		textLabel.initialize(this.m_prompt, sc, ltf.fontSize);
-		let color = fc4();
-		color.fromBytesArray3(ltf.fontColor);
-		textLabel.setColor(color);
-		this.m_promptLabel = textLabel;
-
-		// console.log("textLabel.getHeight(): ", textLabel.getHeight());
-
-		let ME = CoRScene.MouseEvent;
-		let textParam: ITextParam = {
-			text: this.m_confirmNS,
-			textColor: fc4(),
-			fontSize: btf.fontSize,
-			font: ""
-		};
-		textParam.textColor.fromBytesArray3(btf.fontColor);
-
-		let colors: IColor4[] = [
-			fc4().setRGB3Bytes(80, 80, 80),
-			fc4().setRGB3Bytes(110, 110, 110),
-			fc4().setRGB3Bytes(90, 90, 90),
-			fc4().setRGB3Bytes(80, 80, 80)
-		];
-		cfg.applyButtonColor(colors, gColor.button.light);
-
-		let builder = ButtonBuilder;
-		let confirmBtn = builder.createTextButton(
-			this.m_btnW,
-			this.m_btnH,
-			"confirm",
-			tta,
-			textParam, colors
-		);
-		this.m_confirmBtn = confirmBtn;
-
-		textParam.text = this.m_cancelNS;
-		let cancelBtn = builder.createTextButton(
-			this.m_btnW,
-			this.m_btnH,
-			"cancel",
-			tta,
-			textParam, colors
-		);
-		// cancelBtn.addEventListener(ME.MOUSE_UP, this, this.btnMouseUpListener);
-		this.m_cancelBtn = cancelBtn;
-
-		this.addEntity(cancelBtn);
-		this.addEntity(confirmBtn);
-		this.addEntity(textLabel);
 	}
 	private updateBgSize(): void {
 
@@ -213,7 +212,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		pw = this.m_panelW = tw;
 
 		let bgLabel = this.m_bgLabel;
-		if(Math.abs(bgLabel.getWidth() - pw) > 0.01) {
+		if (Math.abs(bgLabel.getWidth() - pw) > 0.01) {
 			bgLabel.setScaleX(1.0);
 			bgLabel.update();
 			tw = bgLabel.getWidth();
@@ -222,7 +221,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		}
 	}
 	protected layoutItems(): void {
-		this.m_cancelBtn.setVisible( this.m_cancelBtnVis );
+		this.m_cancelBtn.setVisible(this.m_cancelBtnVis);
 		this.updateBgSize();
 
 		let pw = this.m_panelW;
@@ -233,12 +232,12 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		textLabel.setXY(px, pyList[1]);
 		textLabel.update();
 
-		if(this.m_cancelBtn.isVisible()) {
+		if (this.m_cancelBtn.isVisible()) {
 			this.layoutButtons(px, pyList[0]);
-		}else {
+		} else {
 			this.layoutOnlyConfirm(px, pyList[0]);
 		}
-		
+
 	}
 	private m_alignCalc = new AxisAlignCalc();
 	protected layoutButtons(px: number, py: number): void {
@@ -248,7 +247,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 
 		let confirmBtn = this.m_confirmBtn;
 		let cancelBtn = this.m_cancelBtn;
-		
+
 		confirmBtn.setXY(pxList[0], py);
 		confirmBtn.update();
 
@@ -256,14 +255,14 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 		cancelBtn.update();
 
 	}
-	
+
 	protected layoutOnlyConfirm(px: number, py: number): void {
 
 		let sizes = [this.m_btnW];
 		let pxList = this.m_alignCalc.calcAvgFixLayout(sizes, this.m_panelW, 10, this.marginXFactor, 0.5);
 
 		let confirmBtn = this.m_confirmBtn;
-		
+
 		confirmBtn.setXY(pxList[0], py);
 		confirmBtn.update();
 
