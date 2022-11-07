@@ -2,6 +2,7 @@ import { IUIFontFormat } from "./IUIFontFormat";
 
 interface IUIButtonStyle {
 	globalColor: string;
+	tipsAlign: string;
 }
 interface IUIPanelConfig {
 	buttonStyle?: IUIButtonStyle;

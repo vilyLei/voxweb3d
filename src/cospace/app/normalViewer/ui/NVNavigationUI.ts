@@ -12,6 +12,7 @@ import { IColorLabel } from "../../../voxui/entity/IColorLabel";
 import { PromptPanel } from "../../../voxui/panel/PromptPanel";
 import { IPromptPanel } from "../../../voxui/panel/IPromptPanel";
 import { IUIFontFormat } from "../../../voxui/system/IUIConfig";
+import { IUIPanelConfig } from "../../../voxui/system/uiconfig/IUIPanelConfig";
 // import { LeftTopLayouter } from "../../../voxui/layout/LeftTopLayouter";
 
 declare var CoRenderer: ICoRenderer;
@@ -19,15 +20,15 @@ declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
 declare var CoUI: ICoUI;
 
-interface UICfgData {
-	button?: object;
-	fontFormat: IUIFontFormat;
-	btnTextAreaSize: number[];
-	btnSize: number[];
-	names: string[];
-	keys: string[];
-	tips: string[];
-}
+// interface UICfgData {
+// 	button?: object;
+// 	fontFormat: IUIFontFormat;
+// 	btnTextAreaSize: number[];
+// 	btnSize: number[];
+// 	names: string[];
+// 	keys: string[];
+// 	tips: string[];
+// }
 /**
  * NVNavigationUI
  */
@@ -75,18 +76,16 @@ class NVNavigationUI {
 	private initNavigationUI(): void {
 
 		let uiScene = this.m_coUIScene;
-		let tta = uiScene.transparentTexAtlas;
+		// let tta = uiScene.transparentTexAtlas;
 
 		
 		let cfg = uiScene.uiConfig;
-		let uimodule = cfg.getUIModuleByName("navigation") as UICfgData;
+		let uimodule = cfg.getUIPanelCfgByName("navigation");
 		console.log("NVNavigationUI::initNavigationUI(), uimodule: ", uimodule);
 
 		let px = 0;
 		let py = 0;
 
-		// let pw = 90;
-		// let ph = 40;
 		let pw = uimodule.btnTextAreaSize[0];
 		let ph = uimodule.btnTextAreaSize[1];
 
@@ -131,26 +130,26 @@ class NVNavigationUI {
 		// btnNames.push("帮助");
 		// tips.push("Help infomation.");
 		
-		btnNames = uimodule.names;
-		keys = uimodule.keys;
-		tips = uimodule.tips;
+		btnNames = uimodule.btnNames;
+		keys = uimodule.btnKeys;
+		tips = uimodule.btnTips;
 
 		let layouter = uiScene.layout.createLeftTopLayouter();
-		let fontColor = CoMaterial.createColor4();
-		fontColor.fromBytesArray3(cfg.getUIGlobalColor().text);
-		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
-		let fontFormat = uimodule.fontFormat;
-		tta.setFontName(fontFormat.font);
-		for (let i = 0; i < btnNames.length; ++i) {
-			let img = tta.createCharsCanvasFixSize(pw, ph, btnNames[i], fontFormat.fontSize, fontColor, bgColor);
-			tta.addImageToAtlas(btnNames[i], img);
-		}
+		// let fontColor = CoMaterial.createColor4();
+		// fontColor.fromBytesArray3(cfg.getUIGlobalColor().text);
+		// let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
+		// let fontFormat = uimodule.btnTextFontFormat;
+		// tta.setFontName(fontFormat.font);
+		// for (let i = 0; i < btnNames.length; ++i) {
+		// 	let img = tta.createCharsCanvasFixSize(pw, ph, btnNames[i], fontFormat.fontSize, fontColor, bgColor);
+		// 	tta.addImageToAtlas(btnNames[i], img);
+		// }
 
 		px = 0;
 		py = st.stageHeight - ph;
 		for (let i = 0; i < btnNames.length; ++i) {
 			let btn = this.createBtn(pw, ph, px + pw * i, py, i, uimodule);
-			this.m_coUIScene.tips.addTipsTarget(btn);
+			// this.m_coUIScene.tips.addTipsTarget(btn);
 			this.m_navBtns.push(btn);
 			layouter.addUIEntity(btn);
 		}
@@ -166,12 +165,13 @@ class NVNavigationUI {
 		);
 	}
 
-	private createBtn(pw: number, ph: number, px: number, py: number, labelIndex: number, cfgData: UICfgData): IButton {
-
-		let names = cfgData.names;
-		let keys = cfgData.keys;
-		let tips = cfgData.tips;
+	private createBtn(pw: number, ph: number, px: number, py: number, btnIndex: number, cfgData: IUIPanelConfig): IButton {
+		/*
+		let names = cfgData.btnNames;
+		let keys = cfgData.btnKeys;
+		let tips = cfgData.btnTips;
 		let label = CoUI.createClipColorLabel();
+
 		label.initializeWithoutTex(pw, ph, 4);
 		let cfg = this.m_coUIScene.uiConfig;
 		let btnColor = cfg.getUIGlobalColor().button.common;
@@ -181,17 +181,72 @@ class NVNavigationUI {
 		let iconLable = CoUI.createClipLabel();
 		iconLable.transparent = true;
 		iconLable.premultiplyAlpha = true;
-		iconLable.initialize(tta, [names[labelIndex]]);
+		iconLable.initialize(tta, [names[btnIndex]]);
 
 		let btn = CoUI.createButton();
-		btn.uuid = keys[labelIndex];
-		btn.info = CoUI.createTipInfo().alignBottom().setContent(tips[labelIndex]);
+		btn.uuid = keys[btnIndex];
+		btn.info = CoUI.createTipInfo().alignBottom().setContent(tips[btnIndex]);
 		btn.addLabel(iconLable);
 		btn.initializeWithLable(label);
 		btn.setXY(px, py);
 		this.m_coUIScene.addEntity(btn, 1);
 		btn.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.btnMouseUpListener);
 
+		return btn;
+		//*/
+		
+		let tta = this.m_coUIScene.transparentTexAtlas;
+		let cfg = this.m_coUIScene.uiConfig;
+
+		let names = cfgData.btnNames;
+		let keys = cfgData.btnKeys;
+		let tips = cfgData.btnTips;
+
+		let fontFormat = cfgData.btnTextFontFormat;
+		tta.setFontName(fontFormat.font);
+		let fontColor = CoMaterial.createColor4();
+		fontColor.fromBytesArray3(cfg.getUIGlobalColor().text);
+		let bgColor = CoMaterial.createColor4(1, 1, 1, 0);
+		let img = tta.createCharsCanvasFixSize(pw, ph, names[btnIndex], fontFormat.fontSize, fontColor, bgColor);
+		tta.addImageToAtlas(names[btnIndex], img);
+
+		let label = CoUI.createClipColorLabel();
+		label.initializeWithoutTex(pw, ph, 4);
+
+		let iconLable = CoUI.createClipLabel();
+		iconLable.transparent = true;
+		iconLable.premultiplyAlpha = true;
+		iconLable.initialize(tta, [names[btnIndex]]);
+
+		let btn = CoUI.createButton();
+		btn.uuid = keys[btnIndex];
+		btn.addLabel(iconLable);
+		btn.initializeWithLable(label);
+		
+		let tipsAlign = "right";
+		let btnStyle = cfgData.buttonStyle;		
+		if (btnStyle != undefined) {
+			if (btnStyle.globalColor != undefined) {
+				tipsAlign = btnStyle.tipsAlign;
+				cfg.applyButtonGlobalColor(btn, btnStyle.globalColor);
+			}
+		}
+		if (tips.length > btnIndex) {
+			this.m_coUIScene.tips.addTipsTarget(btn);
+			let tipInfo = CoUI.createTipInfo().setContent(tips[btnIndex]);
+			switch(tipsAlign) {
+				case "bottom":
+					btn.info = tipInfo.alignBottom();
+					break;
+				default:
+					btn.info = tipInfo.alignRight();
+					break;
+			}
+		}
+
+		btn.setXY(px, py);
+
+		this.m_coUIScene.addEntity(btn, 1);
 		return btn;
 	}
 	private btnMouseUpListener(evt: any): void {

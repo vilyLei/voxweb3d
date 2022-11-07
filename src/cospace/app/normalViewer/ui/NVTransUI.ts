@@ -253,16 +253,26 @@ class NVTransUI {
 		btn.uuid = keys[btnIndex];
 		btn.addLabel(iconLable);
 		btn.initializeWithLable(label);
-		let btnStyle = cfgData.buttonStyle;
-		console.log("XXXXXX btnStyle: ", btnStyle);
+
+		let tipsAlign = "right";
+		let btnStyle = cfgData.buttonStyle;		
 		if (btnStyle != undefined) {
 			if (btnStyle.globalColor != undefined) {
+				tipsAlign = btnStyle.tipsAlign;
 				cfg.applyButtonGlobalColor(btn, btnStyle.globalColor);
 			}
 		}
 		if (tips.length > btnIndex) {
 			this.m_coUIScene.tips.addTipsTarget(btn);
-			btn.info = CoUI.createTipInfo().alignRight().setContent(tips[btnIndex]);
+			let tipInfo = CoUI.createTipInfo().setContent(tips[btnIndex]);
+			switch(tipsAlign) {
+				case "bottom":
+					btn.info = tipInfo.alignBottom();
+					break;
+				default:
+					btn.info = tipInfo.alignRight();
+					break;
+			}
 		}
 
 		btn.setXY(px, py);

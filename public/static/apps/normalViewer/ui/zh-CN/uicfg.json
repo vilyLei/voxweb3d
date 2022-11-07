@@ -152,7 +152,8 @@
 	"uiModule": {
 		"transformCtrl": {
 			"buttonStyle": {
-				"globalColor": "common"
+				"globalColor": "common",
+				"tipsAlign": "right"
 			},
 			"btnTextAreaSize": [
 				70,
@@ -195,7 +196,8 @@
 		},
 		"navigation": {
 			"buttonStyle": {
-				"globalColor": "common"
+				"globalColor": "common",
+				"tipsAlign": "bottom"
 			},
 			"btnTextAreaSize": [
 				70,
@@ -205,7 +207,7 @@
 				70,
 				30
 			],
-			"fontFormat": {
+			"btnTextFontFormat": {
 				"fontName": "Verdana",
 				"fontSize": 20,
 				"bold": false,
@@ -216,17 +218,18 @@
 					170
 				]
 			},
-			"names": [
+			"textFontFormat": {},
+			"btnNames": [
 				"文件",
 				"编辑",
 				"帮助"
 			],
-			"keys": [
+			"btnKeys": [
 				"file",
 				"edit",
 				"help"
 			],
-			"tips": [
+			"btnTips": [
 				"文件系统相关操作.",
 				"编辑环境相关操作.",
 				"一些帮助信息."
