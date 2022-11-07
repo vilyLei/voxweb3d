@@ -29,25 +29,25 @@ const source = path.join(__src_dirname, "ageom/"),
     ext = ".umd.min.js";
 console.log("copy begin...");
 
-function walkSync(currentDirPath, callback) {
+function walkSync(currentDirPath, dstDir, callback) {
     var fs = require('fs'),
         path = require('path');
     fs.readdirSync(currentDirPath, { withFileTypes: true }).forEach(function (dirent) {
         var filePath = path.join(currentDirPath, dirent.name);
         if (dirent.isFile()) {
-            callback(filePath, dirent);
+            callback(filePath, dstDir, dirent);
         } else if (dirent.isDirectory()) {
-            walkSync(filePath, callback);
+            walkSync(filePath, dstDir, callback);
         }
     });
 }
 
-function copyLibToServer(filePath, rename) {
+function copyLibToServer(filePath, dstDir, rename) {
     let path = filePath + "";
     // console.log("find path: ", path);
     let keyStr = "../public/static/";
     let i = keyStr.length;
-    let url = "d:/vdev/server/voxserver/bin/static/" + path.slice(i);
+    let url = dstDir + path.slice(i);
     // console.log("find dst url: ", url);
     i = url.lastIndexOf("\\");
     let dir = url.slice(0, i + 1);
@@ -66,14 +66,18 @@ function copyLibToServer(filePath, rename) {
     fs.copyFileSync(path, dir + fileName);
     console.log("copy finish url: ", url);
 }
-walkSync('../public/static/cospace/', function (filePath, stat) {
+walkSync('../public/static/cospace/',"d:/vdev/server/voxserver/bin/static/", function (filePath, dstDir, stat) {
     // let flag = filePath.indexOf("umd.min.js") > 0 ? 1 : 0;
     // flag += filePath.indexOf("\\dracoLib\\") > 0 ? 1 : 0;
     if (filePath.indexOf("umd.min.js") > 0) {
-        copyLibToServer(filePath, true);
+        copyLibToServer(filePath, dstDir, true);
     }else if (filePath.indexOf("\\dracoLib\\") > 0){
-        copyLibToServer(filePath, false);
+        copyLibToServer(filePath, dstDir, false);
     }
+});
+
+walkSync('../public/static/apps/',"d:/vdev/server/voxserver/bin/static/", function (filePath, dstDir, stat) {
+    copyLibToServer(filePath, dstDir, false);
 });
 /*
 fs.readdirSync(source).forEach((file) => {

@@ -6,6 +6,11 @@
 			170,
 			170
 		],
+		"dark": [
+			20,
+			20,
+			20
+		],
 		"background": [
 			40,
 			40,
@@ -146,6 +151,15 @@
 	},
 	"uiModule": {
 		"transformCtrl": {
+			"bgColor": [
+				40,
+				40,
+				40
+			],
+			"buttonStyle": {
+				"globalColor": "common",
+				"tipsAlign": "right"
+			},
 			"btnTextAreaSize": [
 				70,
 				50
@@ -154,7 +168,7 @@
 				70,
 				55
 			],
-			"fontFormat": {
+			"btnTextFontFormat": {
 				"fontName": "Verdana",
 				"fontSize": 20,
 				"bold": false,
@@ -165,35 +179,45 @@
 					170
 				]
 			},
-			"names": [
+			"textFontFormat": {},
+			"btnNames": [
 				"框选",
 				"移动",
 				"旋转",
 				"缩放"
 			],
-			"keys": [
+			"btnKeys": [
 				"select",
 				"move",
 				"rotate",
 				"scale"
 			],
-			"tips": [
-				"Select items using box selection.",
-				"Move selected items(W).",
-				"Rotate selected items(R).",
-				"Scale(resize) selected items(E)."
+			"btnTips": [
+				"按下鼠标左键拖动框选场景中的对象.",
+				"移动场景中的对象(W).",
+				"旋转场景中的对象(R).",
+				"缩放场景中的对象(E)."
 			]
 		},
 		"navigation": {
+			"bgColor": [
+				40,
+				40,
+				40
+			],
+			"buttonStyle": {
+				"globalColor": "common",
+				"tipsAlign": "bottom"
+			},
 			"btnTextAreaSize": [
-				70,
+				60,
 				30
 			],
 			"btnSize": [
-				70,
+				60,
 				30
 			],
-			"fontFormat": {
+			"btnTextFontFormat": {
 				"fontName": "Verdana",
 				"fontSize": 20,
 				"bold": false,
@@ -204,20 +228,21 @@
 					170
 				]
 			},
-			"names": [
+			"textFontFormat": {},
+			"btnNames": [
 				"文件",
 				"编辑",
 				"帮助"
 			],
-			"keys": [
+			"btnKeys": [
 				"file",
 				"edit",
 				"help"
 			],
-			"tips": [
-				"File system operations.",
-				"Editing operations.",
-				"Help infomation."
+			"btnTips": [
+				"文件系统相关操作.",
+				"编辑环境相关操作.",
+				"一些帮助信息."
 			]
 		},
 		"promptPanel": {
@@ -226,28 +251,32 @@
 				51,
 				51
 			],
+			"buttonStyle": {
+				"globalColor": "light",
+				"tipsAlign": "bottom"
+			},
 			"panelSize": [
 				300,
-				200
+				150
 			],
 			"btnSize": [
-				120,
-				50
+				90,
+				30
 			],
 			"btnTextFontFormat": {
 				"fontName": "Verdana",
-				"fontSize": 30,
+				"fontSize": 20,
 				"bold": false,
 				"italic": false,
 				"fontColor": [
-					170,
-					170,
-					170
+					220,
+					220,
+					220
 				]
 			},
 			"textFontFormat": {
 				"fontName": "Verdana",
-				"fontSize": 30,
+				"fontSize": 20,
 				"bold": false,
 				"italic": false,
 				"fontColor": [
@@ -256,15 +285,15 @@
 					170
 				]
 			},
-			"names": [
+			"btnNames": [
 				"确认",
 				"取消"
 			],
-			"keys": [
-				"Confirm",
-				"Cancel"
+			"btnKeys": [
+				"confirm",
+				"cancel"
 			],
-			"tips": []
+			"btnTips": []
 		},
 		"normalCtrlPanel": {
 			"bgColor": [
@@ -272,17 +301,21 @@
 				51,
 				51
 			],
+			"buttonStyle": {
+				"globalColor": "light",
+				"tipsAlign": "top"
+			},
 			"panelSize": [
-				310,
-				390
+				230,
+				315
 			],
 			"btnSize": [
-				90,
-				50
+				70,
+				30
 			],
 			"btnTextFontFormat": {
 				"fontName": "Verdana",
-				"fontSize": 30,
+				"fontSize": 20,
 				"bold": false,
 				"italic": false,
 				"fontColor": [
@@ -293,7 +326,7 @@
 			},
 			"textFontFormat": {
 				"fontName": "Verdana",
-				"fontSize": 30,
+				"fontSize": 20,
 				"bold": false,
 				"italic": false,
 				"fontColor": [
@@ -302,17 +335,50 @@
 					170
 				]
 			},
-			"names": [
+			"btnNames": [
 				"局部",
 				"全局",
-				"颜色"
+				"颜色",
+				"检测"
 			],
-			"keys": [
+			"btnKeys": [
 				"local",
 				"global",
-				"color"
+				"modelColor",
+				"normalTest"
 			],
-			"tips": []
+			"btnTips": [
+				"显示物体坐标空间法线颜色.",
+				"显示世界坐标空间法线颜色.",
+				"显示灰色模型颜色.",
+				"分析检查模型法线问题."
+			],
+			"items": [
+				{
+					"name": "normalLineVisible",
+					"text": "法线线条可见性"
+				},
+				{
+					"name": "modelVisible",
+					"text": "模型可见性"
+				},
+				{
+					"name": "normalDifference",
+					"text": "法线问题可视化"
+				},
+				{
+					"name": "normalFlip",
+					"text": "法线翻转"
+				},
+				{
+					"name": "normalLineLength:",
+					"text": "法线线条长度:"
+				},
+				{
+					"name": "normalLineColor:",
+					"text": "法线线条颜色:"
+				}
+			]
 		}
 	}
 }
