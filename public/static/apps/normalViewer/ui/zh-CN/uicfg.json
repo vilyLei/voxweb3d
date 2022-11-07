@@ -379,6 +379,27 @@
 					"text": "法线线条颜色:"
 				}
 			]
+		},
+		"exampleGroup": {
+			
+			"items": [
+				{
+					"name": "normalCorrect",
+					"text": "法线正确"
+				},
+				{
+					"name": "noNormal",
+					"text": "没有法线数据"
+				},
+				{
+					"name": "normalDifference",
+					"text": "法线错误倾斜"
+				},
+				{
+					"name": "normalFlip",
+					"text": "顶点绕序错误"
+				}
+			]
 		}
 	}
 }

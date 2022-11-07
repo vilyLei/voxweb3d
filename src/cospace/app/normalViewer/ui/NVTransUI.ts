@@ -53,6 +53,9 @@ class NVTransUI {
 			this.init();
 		}
 	}
+	getCoUIScene(): ICoUIScene {
+		return this.m_coUIScene;
+	}
 	private m_transCtr: ITransformController = null;
 	private m_selectFrame: NVUIRectLine = null;
 	private m_keyInterac: ICoKeyboardInteraction;
@@ -143,20 +146,20 @@ class NVTransUI {
 
 		let uiScene = this.m_coUIScene;
 		let cfg = uiScene.uiConfig;
-		let uimodule = cfg.getUIPanelCfgByName("transformCtrl");
+		let uiCfg = cfg.getUIPanelCfgByName("transformCtrl");
 
 		this.m_btnGroup = CoUI.createSelectButtonGroup();
-		let pw = uimodule.btnTextAreaSize[0];
-		let ph = uimodule.btnTextAreaSize[1];
-		let btnNames = uimodule.btnNames;
-		let keys = uimodule.btnKeys;
+		let pw = uiCfg.btnTextAreaSize[0];
+		let ph = uiCfg.btnTextAreaSize[1];
+		let btnNames = uiCfg.btnNames;
+		let keys = uiCfg.btnKeys;
 
 		let px = 5;
-		pw = uimodule.btnSize[0];
-		ph = uimodule.btnSize[1];
+		pw = uiCfg.btnSize[0];
+		ph = uiCfg.btnSize[1];
 		let py = ph * 4;
 		for (let i = 0; i < btnNames.length; ++i) {
-			const btn = ButtonBuilder.createPanelBtnWithCfg(uiScene, px, py - ph * i, i, uimodule);
+			const btn = ButtonBuilder.createPanelBtnWithCfg(uiScene, px, py - ph * i, i, uiCfg);
 			this.m_coUIScene.addEntity(btn, 1);
 			if (i > 0) {
 				this.m_transBtns.push(btn);

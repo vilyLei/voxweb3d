@@ -94,6 +94,10 @@ class NormalExampleGroup implements IRunnable {
 			indices: ivs
 		}
 
+		let cfg = this.m_transUI.getCoUIScene().uiConfig;
+		let uiCfg = cfg.getUIPanelCfgByName("exampleGroup");
+		let items = uiCfg.items;
+
 		let textHeight = this.m_textHeight;
 		let h5Text = CoText.createH5Text(this.m_rscene, "text_cv_01", 22, 512, 512);
 
@@ -102,26 +106,30 @@ class NormalExampleGroup implements IRunnable {
 		let node = this.createEntityWithModel(correct_model, pv.setXYZ(-70.0, 0.0, 70.0));
 		mana.addNode(node);
 		pv.y += textHeight;
-		this.createStaticText(pv, "法线正确", h5Text);
+		// this.createStaticText(pv, "法线正确", h5Text);
+		this.createStaticText(pv, items[0].text, h5Text);
 
-		node = this.createEntityWithModel(normalHasNot_model, pv.setXYZ(-200.0, 0.0, 200.0));
+		node = this.createEntityWithModel(normalHasNot_model, pv.setXYZ(-220.0, 0.0, 220.0));
 		mana.addNode(node);
 		pv.y += textHeight;
-		this.createStaticText(pv, "没有法线数据", h5Text);
+		// this.createStaticText(pv, "没有法线数据", h5Text);
+		this.createStaticText(pv, items[1].text, h5Text);
 
 		node = this.createEntityWithModel(inclinedNormal_model, pv.setXYZ(70.0, 0.0, -70.0));
 		node.showDifference();
 		node.showModelColor(true);
 		mana.addNode(node);
 		pv.y += textHeight;
-		this.createStaticText(pv, "法线错误倾斜", h5Text);
+		// this.createStaticText(pv, "法线错误倾斜", h5Text);
+		this.createStaticText(pv, items[2].text, h5Text);
 
-		node = this.createEntityWithModel(wrapErr_model, pv.setXYZ(200.0, 0.0, -200.0), sm.indices);
+		node = this.createEntityWithModel(wrapErr_model, pv.setXYZ(220.0, 0.0, -220.0), sm.indices);
 		node.showDifference();
 		node.showModelColor(true);
 		mana.addNode(node);
 		pv.y += textHeight;
-		this.createStaticText(pv, "顶点绕序错误", h5Text);
+		// this.createStaticText(pv, "顶点绕序错误", h5Text);
+		this.createStaticText(pv, items[3].text, h5Text);
 
 
 		this.m_transUI.getRecoder().save(this.m_nodeEntities);

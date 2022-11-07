@@ -350,7 +350,7 @@
 			"btnTips": [
 				"Display local space normal color.",
 				"Display global space normal color.",
-				"Display gray model color.",
+				"Display model gray color.",
 				"Check normal for problems."
 			],
 			"items": [
@@ -371,12 +371,33 @@
 					"text": "Normal flip"
 				},
 				{
-					"name": "normalLineLength:",
+					"name": "normalLineLength",
 					"text": "Normal line length:"
 				},
 				{
-					"name": "normalLineColor:",
+					"name": "normalLineColor",
 					"text": "Normal line color:"
+				}
+			]
+		},
+		"exampleGroup": {
+			
+			"items": [
+				{
+					"name": "normalCorrect",
+					"text": "Correct"
+				},
+				{
+					"name": "noNormal",
+					"text": "no normal"
+				},
+				{
+					"name": "normalDifference",
+					"text": "Inclined normal"
+				},
+				{
+					"name": "normalFlip",
+					"text": "Inverse wrapping"
 				}
 			]
 		}
