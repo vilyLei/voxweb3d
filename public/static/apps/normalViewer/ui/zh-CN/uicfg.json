@@ -335,19 +335,19 @@
 					170
 				]
 			},
-			"names": [
+			"btnNames": [
 				"局部",
 				"全局",
 				"颜色",
 				"检测"
 			],
-			"keys": [
+			"btnKeys": [
 				"local",
 				"global",
 				"modelColor",
 				"normalTest"
 			],
-			"tips": []
+			"btnTips": []
 		}
 	}
 }

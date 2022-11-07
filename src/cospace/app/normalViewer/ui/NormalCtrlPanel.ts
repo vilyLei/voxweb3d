@@ -169,45 +169,47 @@ class NormalCtrlPanel {
 		let py = 0;
 
 		let ME = CoRScene.MouseEvent;
-		let textParam: ITextParam = {
-			text: "Local",
-			textColor: CoMaterial.createColor4(),
-			fontSize: 30,
-			font: ""
-		};
-		let colors: IColor4[] = [
-			fc4().setRGB3Bytes(80, 80, 80),
-			fc4().setRGB3Bytes(110, 110, 110),
-			fc4().setRGB3Bytes(90, 90, 90),
-			fc4().setRGB3Bytes(80, 80, 80)
-		];
-		let localBtn = CoUI.createTextButton(
-			this.m_btnW, this.m_btnH, "local",
-			tta, textParam, colors
-		);
-		localBtn.setXY(startX, startY);
-		// builder.createPanelBtnWithCfg(sc, startX, startY, 0, uiCfg);
+		// let textParam: ITextParam = {
+		// 	text: "Local",
+		// 	textColor: CoMaterial.createColor4(),
+		// 	fontSize: 30,
+		// 	font: ""
+		// };
+		// let colors: IColor4[] = [
+		// 	fc4().setRGB3Bytes(80, 80, 80),
+		// 	fc4().setRGB3Bytes(110, 110, 110),
+		// 	fc4().setRGB3Bytes(90, 90, 90),
+		// 	fc4().setRGB3Bytes(80, 80, 80)
+		// ];
+		// let localBtn = CoUI.createTextButton(
+		// 	this.m_btnW, this.m_btnH, "local",
+		// 	tta, textParam, colors
+		// );
+		// localBtn.setXY(startX, startY);
+		let localBtn = builder.createPanelBtnWithCfg(sc, startX, startY, 0, uiCfg);
 
 		px = px + this.m_btnW + disX;
-		this.m_btnW = 90;
-		textParam.text = "Global";
-		// let globalBtn = this.createBtn("Global", px, startY, "global");
-		let globalBtn = CoUI.createTextButton(
-			this.m_btnW, this.m_btnH, "global",
-			tta, textParam, colors
-		);
-		globalBtn.setXY(px, startY);
+		// this.m_btnW = 90;
+		// textParam.text = "Global";
+		// // let globalBtn = this.createBtn("Global", px, startY, "global");
+		// let globalBtn = CoUI.createTextButton(
+		// 	this.m_btnW, this.m_btnH, "global",
+		// 	tta, textParam, colors
+		// );
+		// globalBtn.setXY(px, startY);
+		let globalBtn = builder.createPanelBtnWithCfg(sc, px, startY, 1, uiCfg);
 
 
 		px = px + this.m_btnW + disX;
-		this.m_btnW = 100;		
-		textParam.text = "Color";
-		// let differenceBtn = this.createBtn("Difference", px, startY, "difference");
-		let modelColorBtn = CoUI.createTextButton(
-			this.m_btnW, this.m_btnH, "modelColor",
-			tta, textParam, colors
-		);
-		modelColorBtn.setXY(px, startY);
+		// this.m_btnW = 100;		
+		// textParam.text = "Color";
+		// // let differenceBtn = this.createBtn("Difference", px, startY, "difference");
+		// let modelColorBtn = CoUI.createTextButton(
+		// 	this.m_btnW, this.m_btnH, "modelColor",
+		// 	tta, textParam, colors
+		// );
+		// modelColorBtn.setXY(px, startY);
+		let modelColorBtn = builder.createPanelBtnWithCfg(sc, px, startY, 2, uiCfg);
 
 		let pl = this.m_panel;
 		pl.addEntity(localBtn);
@@ -259,15 +261,17 @@ class NormalCtrlPanel {
 
 		px = startX;
 		py = textLabel.getY() - disY;
-		this.m_btnW = 90;		
-		textParam.text = "Test";
-		// let differenceBtn = this.createBtn("Difference", px, startY, "difference");
-		let normalTestBtn = CoUI.createTextButton(
-			this.m_btnW, this.m_btnH, "normalTest",
-			tta, textParam, colors
-		);
-		normalTestBtn.update();
-		normalTestBtn.setXY(px, py - normalTestBtn.getHeight());
+		// this.m_btnW = 90;		
+		// textParam.text = "Test";
+		// // let differenceBtn = this.createBtn("Difference", px, startY, "difference");
+		// let normalTestBtn = CoUI.createTextButton(
+		// 	this.m_btnW, this.m_btnH, "normalTest",
+		// 	tta, textParam, colors
+		// );
+		// normalTestBtn.update();
+		// normalTestBtn.setXY(px, py - normalTestBtn.getHeight());
+		
+		let normalTestBtn = builder.createPanelBtnWithCfg(sc, px, py - localBtn.getHeight(), 3, uiCfg);
 		pl.addEntity(normalTestBtn);
 
 		localBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
@@ -304,7 +308,6 @@ class NormalCtrlPanel {
 	private createFlagBtn(size: number, px: number, py: number, uuid: string = "model"): IFlagButton {
 
 		let sc = this.getScene();
-		// let flagBtn = new FlagButton();
 		let flagBtn = CoUI.createFlagButton();
 		flagBtn.uuid = uuid;
 		flagBtn.initializeWithSize(sc.texAtlas, size, size);
@@ -380,15 +383,6 @@ class NormalCtrlPanel {
 	private createProgressBtn(px: number, py: number, length: number): IButton {
 
 		let sc = this.getScene();
-		let color = CoMaterial.createColor4(0.1, 0.1, 0.1);
-		// let bgBar = new ColorLabel();
-			// let bgBar = CoUI.createColorLabel();
-			// bgBar.depthTest = true;
-			// bgBar.initialize(length, 10);
-			// bgBar.setZ(-0.05);
-			// bgBar.setColor(color);
-		// bgBar.setXY(px, py);
-		// this.m_panel.addEntity(bgBar);
 		let barBgLabel = CoUI.createClipColorLabel();
 		barBgLabel.initializeWithoutTex(length, 10, 4);
 		barBgLabel.getColorAt(0).setRGB3Bytes(70, 70, 70);
