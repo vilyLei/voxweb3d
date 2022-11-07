@@ -109,10 +109,9 @@ class RectTextTip extends UIEntityBase implements IRectTextTip {
 	}
 
 	private moveTar(tar: IUIEntity, mx: number, my: number): void {
-		
 		let bounds = tar.getGlobalBounds();
 		let info = tar.info;
-		let pv = info.getPos(mx, my, bounds, this.getGlobalBounds());
+		let pv = info.getPos(mx, my, bounds, this.getGlobalBounds(), this.m_uiScene.getRect());
 		this.setXY(pv.x, pv.y);
 		this.update();
 	}

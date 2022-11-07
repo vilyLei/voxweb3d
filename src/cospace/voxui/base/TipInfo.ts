@@ -26,6 +26,10 @@ class LeftAligner implements IAligner {
 		let minV = bounds.min;
 		pv.x = minV.x - 2 - pw;
 		pv.y = my + 2 - ph;
+		
+		if((pv.y + ph) > area.getTop()) {
+			pv.y = area.getTop() - 2 - ph;
+		}
 
 		return pv;
 	}
@@ -41,6 +45,10 @@ class RightAligner implements IAligner {
 		let maxV = bounds.max;
 		pv.x = maxV.x + 2;
 		pv.y = my + 2 - ph;
+		
+		if((pv.y + ph) > area.getTop()) {
+			pv.y = area.getTop() - 2 - ph;
+		}
 
 		return pv;
 	}
@@ -55,9 +63,13 @@ class TopAligner implements IAligner {
 
 		let pv = this.m_pv;
 		let maxV = bounds.max;
-		// console.log("TopAligner: ", maxV, bounds);
+		let pw = tipBounds.getWidth();
 		pv.x = mx + 2;
 		pv.y = maxV.y + 2;
+		
+		if((pv.x + pw) > area.getRight()) {
+			pv.x = area.getRight() - 2 - pw;
+		}
 
 		return pv;
 	}
@@ -73,10 +85,13 @@ class BottomAligner implements IAligner {
 
 		let pv = this.m_pv;
 		let ph = tipBounds.getHeight();
-		// let pw = tipBounds.getWidth();
+		let pw = tipBounds.getWidth();
 		let minV = bounds.min;
 		pv.x = mx + 2;
 		pv.y = minV.y - 2 - ph;
+		if((pv.x + pw) > area.getRight()) {
+			pv.x = area.getRight() - 2 - pw;
+		}
 
 		return pv;
 	}
