@@ -132,7 +132,6 @@ class NormalEntityGroup {
 		}
 
 		this.updateLayout(false);
-		this.transUI.getRecoder().save(entities);
 
 	}
 	private createEntityFromUnit(unit: CoGeomDataUnit, status: number = 0): void {
@@ -169,11 +168,15 @@ class NormalEntityGroup {
 
 		this.m_loadedTotal++;
 		if (this.m_loadedTotal >= this.m_loadTotal) {
+			let entities: ITransformEntity[] = [];
 			this.uiscene.prompt.getPromptPanel().applyConfirmButton();
 			this.uiscene.prompt.showPrompt("Model loading finish!");
 			for(let i = 0; i < this.m_nodes.length; ++i) {
 				this.m_nodes[i].applyEvent();
+				entities.push(this.m_nodes[i].entity);
 			}
+			
+			this.transUI.getRecoder().save(entities);
 		}
 
 	}
