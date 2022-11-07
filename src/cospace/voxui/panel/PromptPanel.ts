@@ -131,9 +131,10 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 
 			let cfg = this.m_scene.uiConfig;
 			let gColor = cfg.getUIGlobalColor();
-			let uimodule = cfg.getUIModuleByName("promptPanel") as IPromptCfgData;
-			let btf = uimodule.btnTextFontFormat;
-			let ltf = uimodule.textFontFormat;
+			let uiCfg = cfg.getUIModuleByName("promptPanel") as IPromptCfgData;
+			
+			let btf = uiCfg.btnTextFontFormat;
+			let ltf = uiCfg.textFontFormat;
 
 			let textLabel = new TextLabel();
 			textLabel.depthTest = true;
@@ -154,6 +155,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 				fontSize: btf.fontSize,
 				font: ""
 			};
+			
 			textParam.textColor.fromBytesArray3(btf.fontColor);
 
 			let colors: IColor4[] = [

@@ -34,6 +34,7 @@ import { NormalPptPanel } from "../../app/normalViewer/ui/NormalPptPanel";
 import { NormalCtrlPanel } from "../../app/normalViewer/ui/NormalCtrlPanel";
 import { PromptSystem } from "../../voxui/system/PromptSystem";
 import { AxisAlignCalc } from "../../voxui/layout/AxisAlignCalc";
+import { UIConfig } from "../../voxui/system/UIConfig";
 
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
@@ -145,18 +146,27 @@ export class DemoUIPanel {
 		// let uisc = CoUI.createUIScene(); //new CoUIScene();
 		let uisc = new CoUIScene();
 		uisc.texAtlasNearestFilter = true;
-		this.m_uiScene = uisc;
-		let promptSys = new PromptSystem();
-		promptSys.initialize(uisc);
-		uisc.prompt = promptSys;
-
 		uisc.initialize(this.m_rscene, 512, 3);
+		this.m_uiScene = uisc;
+		
+		let uiConfig = new UIConfig();
+		uisc.uiConfig = uiConfig;
+		uiConfig.initialize("static/apps/normalViewer/ui/zh-CN/uicfg.json",(): void => {
+			console.log("xxxx initEditSceneSys... ...");
+			this.initEditSceneSys();
+		});
+
 		console.log("uisc: ", uisc);
 		console.log("uisc.rscene: ", uisc.rscene);
 
 		//this.testUIEntity(uisc);
 	}
-
+	private initEditSceneSys(): void {
+		let uisc = this.m_uiScene;
+		let promptSys = new PromptSystem();
+		promptSys.initialize(uisc);
+		uisc.prompt = promptSys;
+	}
 	private initUISC(): void {
 		let uisc = this.m_uiScene;
 

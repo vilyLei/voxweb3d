@@ -223,9 +223,9 @@
 				"bold": false,
 				"italic": false,
 				"fontColor": [
-					200,
-					200,
-					200
+					170,
+					170,
+					170
 				]
 			},
 			"textFontFormat": {},
@@ -269,9 +269,9 @@
 				"bold": false,
 				"italic": false,
 				"fontColor": [
-					170,
-					170,
-					170
+					200,
+					200,
+					200
 				]
 			},
 			"textFontFormat": {
