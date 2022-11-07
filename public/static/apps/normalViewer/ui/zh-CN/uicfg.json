@@ -257,15 +257,15 @@
 			},
 			"panelSize": [
 				300,
-				200
+				150
 			],
 			"btnSize": [
-				120,
-				50
+				90,
+				30
 			],
 			"btnTextFontFormat": {
 				"fontName": "Verdana",
-				"fontSize": 30,
+				"fontSize": 20,
 				"bold": false,
 				"italic": false,
 				"fontColor": [
@@ -276,7 +276,7 @@
 			},
 			"textFontFormat": {
 				"fontName": "Verdana",
-				"fontSize": 30,
+				"fontSize": 20,
 				"bold": false,
 				"italic": false,
 				"fontColor": [

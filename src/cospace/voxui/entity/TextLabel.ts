@@ -39,7 +39,8 @@ class TextLabel extends UIEntityBase implements ITextLabel {
 
 		if (text != "" && this.isIniting()) {
 
-			if (fontSize < 12) fontSize = 12;
+			if (fontSize < 8) fontSize = 8;
+			this.m_fontSize = fontSize;
 			this.init();
 			// this.transparent = true;
 			// this.premultiplyAlpha = true;
@@ -50,7 +51,7 @@ class TextLabel extends UIEntityBase implements ITextLabel {
 
 			this.m_fontColor = CoMaterial.createColor4();
 			this.m_bgColor = CoMaterial.createColor4(1.0, 1.0, 1.0, 0.0);
-
+			
 			let img = this.m_uiScene.texAtlas.createCharsImage(this.m_text, this.m_fontSize, this.m_fontColor, this.m_bgColor);
 			this.m_tex = uiScene.rscene.textureBlock.createImageTex2D(img.width, img.height);
 			this.m_tex.setDataFromImage(img);
