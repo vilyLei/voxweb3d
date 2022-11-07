@@ -205,8 +205,8 @@ class UIPanel extends UIEntityContainer implements IUIPanel {
 		if (sc != null) {
 			this.update();
 			let rect = sc.getRect();
-			let px = rect.x + (rect.width - this.getWidth()) * 0.5;
-			let py = rect.y + (rect.height - this.getHeight()) * 0.5;
+			let px = Math.round(rect.x + (rect.width - this.getWidth()) * 0.5);
+			let py = Math.round(rect.y + (rect.height - this.getHeight()) * 0.5);
 			this.setXY(px, py);
 			this.update();
 		}
