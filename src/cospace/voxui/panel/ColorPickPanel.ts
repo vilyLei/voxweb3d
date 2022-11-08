@@ -115,8 +115,6 @@ class ColorPickPanel extends UIPanel implements IColorPickPanel {
 
 		let imgData = ctx2D.getImageData(0, 0, img.width, img.height);
 		this.m_pixels = imgData.data;
-		let len = this.m_pixels.length;
-		console.log("len / 4 : ", len / 4);
 	}
 	private createTexByUrl(url: string = ""): IRenderTexture {
 		let sc = this.getScene();
@@ -136,7 +134,6 @@ class ColorPickPanel extends UIPanel implements IColorPickPanel {
 		if (this.m_scene != null) {
 			this.m_scene.addEventListener(ME.MOUSE_DOWN, this, this.stMouseDownListener);
 
-			// this.layoutItems();
 		}
 	}
 	protected closeThis(): void {
@@ -147,8 +144,6 @@ class ColorPickPanel extends UIPanel implements IColorPickPanel {
 		this.m_callback = null;
 	}
 	private stMouseDownListener(evt: any): void {
-
-		console.log("color pick stMouseDownListener...");
 
 		let px = evt.mouseX;
 		let py = evt.mouseY;
