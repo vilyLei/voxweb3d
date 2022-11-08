@@ -283,6 +283,7 @@ class NormalCtrlPanel {
 						c,
 						c
 					]);
+					this.m_colorSelectLabel.setClipIndex(0);
 				});
 			}
 		}
