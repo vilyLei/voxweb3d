@@ -13,7 +13,6 @@ import { IUIPanel } from "../../../voxui/panel/IUIPanel";
 import IVector3D from "../../../../vox/math/IVector3D";
 import IAABB from "../../../../vox/geom/IAABB";
 import { ISelectButtonGroup } from "../../../voxui/button/ISelectButtonGroup";
-import { IColorClipLabel } from "../../../voxui/entity/IColorClipLabel";
 import IEvtDispatcher from "../../../../vox/event/IEvtDispatcher";
 
 import { IUIFontFormat } from "../../../voxui/system/IUIConfig";
@@ -21,7 +20,7 @@ import { IUIFontFormat } from "../../../voxui/system/IUIConfig";
 import IProgressDataEvent from "../../../../vox/event/IProgressDataEvent";
 
 import { ICoRScene } from "../../../voxengine/ICoRScene";
-import { ITextParam, ICoUI } from "../../../voxui/ICoUI";
+import { ICoUI } from "../../../voxui/ICoUI";
 import { ButtonBuilder } from "../../../voxui/button/ButtonBuilder";
 declare var CoRScene: ICoRScene;
 declare var CoUI: ICoUI;
@@ -147,7 +146,6 @@ class NormalCtrlPanel {
 
 		this.m_selectDispatcher = CoRScene.createEventBaseDispatcher();
 		this.m_progressDispatcher = CoRScene.createEventBaseDispatcher();
-		// this.m_flagEvt = CoRScene.createSelectionEvent();
 		this.m_progressEvt = CoRScene.createProgressDataEvent();
 
 		let builder = ButtonBuilder;
@@ -175,7 +173,6 @@ class NormalCtrlPanel {
 
 		px = px + this.m_btnW;
 		let globalBtn = builder.createPanelBtnWithCfg(sc, px, startY, 1, uiCfg);
-
 
 		px = px + this.m_btnW;
 		let modelColorBtn = builder.createPanelBtnWithCfg(sc, px, startY, 2, uiCfg);
@@ -230,8 +227,8 @@ class NormalCtrlPanel {
 			fc4().setRGB3Bytes(220, 0, 220),
 			fc4().setRGB3Bytes(240, 0, 240)
 		];
-		let normalLineColorBtn = this.createColorBtn(18, 18, "normalLineColor", colors1);
-		normalLineColorBtn.setXY(startX + textLabel.getWidth() + disX, py + 2);
+		let normalLineColorBtn = this.createColorBtn(16, 16, "normalLineColor", colors1);
+		normalLineColorBtn.setXY(startX + textLabel.getWidth() + disX, py + 3);
 		pl.addEntity(normalLineColorBtn);
 
 		px = startX;

@@ -14,7 +14,8 @@ declare var CoMaterial: ICoMaterial;
 class NormalViewer {
 
 	private m_uiscene: ICoUIScene = null;
-	private m_codata: CoDataModule = new CoDataModule();
+	private m_codata = new CoDataModule();
+	
 	normalScene: NormalViewerScene = null;
 	
 	constructor() {}

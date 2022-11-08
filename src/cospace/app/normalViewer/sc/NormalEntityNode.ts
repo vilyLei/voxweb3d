@@ -136,7 +136,7 @@ class NormalEntityNode {
 		// entity.addEventListener(ME.MOUSE_DOUBLE_CLICK, this, this.mouseDBClickTargetListener);
 		// entity.addEventListener(ME.MOUSE_CLICK, this, this.mouseClickTargetListener);
 		// entity.addEventListener(ME.MOUSE_UP, this, this.mouseUpTargetListener);
-		// 如果双击一个entity则全部选中这个group
+		// 如果双击/(shift+单击)一个entity则全部选中这个group
 	}
 	private mouseClickTargetListener(evt: any): void {
 		console.log("mouseClickTargetListener()....");
