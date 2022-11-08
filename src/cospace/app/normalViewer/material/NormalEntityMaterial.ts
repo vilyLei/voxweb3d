@@ -39,13 +39,22 @@ class NormalEntityMaterial {
 	getColor(color: IColor4): void {
 		color.fromArray3(this.m_data);
 	}
+	isApplyingLocalNormal(): boolean {
+		return this.m_data[7] < 0.5;
+	}
 	applyLocalNormal(): void {
 		// console.log("apply local normal..., dif: ", this.m_data[5]);
 		this.m_data[7] = 0.0;
 	}
+	isApplyingGlobalNormal(): boolean {
+		return this.m_data[7] > 0.5;
+	}
 	applyGlobalNormal(): void {
 		// console.log("apply global normal..., dif: ", this.m_data[5]);
 		this.m_data[7] = 1.0;
+	}
+	isApplyingModelColor(): boolean {
+		return this.m_data[4] >= 1.0;
 	}
 	applyModelColor(): void {
 		this.m_data[4] = 1.0;

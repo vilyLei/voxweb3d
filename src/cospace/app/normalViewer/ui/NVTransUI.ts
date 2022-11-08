@@ -213,7 +213,6 @@ class NVTransUI {
 		if (this.m_selectFrame.isSelectEnabled()) {
 
 			let b = this.m_selectFrame.bounds;
-			console.log("CCCCCCCCCCCCCCCC,b: ", b);
 			let list = this.m_entityQuery.getEntities(b.min, b.max);
 			this.selectEntities(list);
 		}

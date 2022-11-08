@@ -260,7 +260,16 @@ class NormalCtrlPanel {
 	private m_colorSelectLabel: IClipColorLabel;
 	private m_normalLineColorBtn: IButton;
 	private normalDisplaySelect(evt: any): void {
-		this.sendSelectionEvt(evt.uuid, true);
+		// this.sendSelectionEvt(evt.uuid, true);
+		this.setDisplayMode(evt.uuid, true)
+	}
+	setDisplayMode(uuid: string, sendEvt: boolean = false): void {
+		console.log("setDisplayMode, uuid: ", uuid);
+		if(sendEvt) {
+			this.sendSelectionEvt(uuid, sendEvt);
+		}else {
+			this.m_btnGroup.select(uuid);
+		}
 	}
 	setNormalLineColor(color: IColor4, sendEvt: boolean = false): void {
 		let c0 = color.clone().scaleBy(0.9);

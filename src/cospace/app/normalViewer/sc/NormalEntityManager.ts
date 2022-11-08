@@ -59,9 +59,12 @@ class NormalEntityManager {
 
 			let scaleBase = cpl.getNormalScale();
 			let firstLNode: NormalEntityNode = null;
+			let firstNode: NormalEntityNode = null;
 			for (let i = 0; i < ls.length; ++i) {
 				const node = map.get(ls[i].getUid());
 				if (node != null) {
+					if(firstNode == null)
+						firstNode = node;
 					if (node.getLineVisible()) {
 						lineVisible = true;
 						if(firstLNode == null)
@@ -76,12 +79,26 @@ class NormalEntityManager {
 					node.select();
 				}
 			}
+			//getEntityMaterial
 			this.m_scaleBase = scaleBase < 0.1 ? 0.1 : scaleBase;
 			cpl.setNormalFlag(lineVisible);
 			cpl.setNormalFlipFlag(flip);
 			cpl.setDifferenceFlag(dif);
 			if(firstLNode != null)
 				cpl.setNormalLineColor( firstLNode.getNormalLineColor() );
+			if(firstNode != null){
+				let m = firstNode.getEntityMaterial();
+				if(m.isApplyingModelColor()) {
+					cpl.setDisplayMode("modelColor");
+				}else {
+					if(m.isApplyingLocalNormal()) {
+						cpl.setDisplayMode("local");
+					}else {
+						cpl.setDisplayMode("global");
+					}
+				}
+				//cpl.setNormalLineColor( firstNode.getNormalLineColor() );
+			}
 		}
 	}
 

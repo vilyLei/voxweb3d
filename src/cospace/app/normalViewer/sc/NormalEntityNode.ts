@@ -48,6 +48,9 @@ class NormalEntityNode {
 	getUid(): number {
 		return this.m_uid;
 	}
+	getEntityMaterial(): NormalEntityMaterial {
+		return this.m_entityMaterial;
+	}
 	showLocalNormal(): void {
 		this.m_entityMaterial.applyLocalNormal();
 		this.m_entityMaterial.applyNormalColor();
@@ -107,7 +110,7 @@ class NormalEntityNode {
 	setNormalLineColor(c: IColor4): void {
 		if (this.m_normalMaterial != null) this.m_normalMaterial.setColor(c);
 	}
-	
+
 	getNormalLineColor(): IColor4 {
 
 		this.m_color.setRGB3f(1.0, 0.0, 1.0);
