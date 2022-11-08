@@ -1,7 +1,5 @@
 import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
-
 import { IButton } from "../../../voxui/button/IButton";
-
 import IColor4 from "../../../voxui/../../vox/material/IColor4";
 
 import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
@@ -16,15 +14,13 @@ import { ISelectButtonGroup } from "../../../voxui/button/ISelectButtonGroup";
 import IEvtDispatcher from "../../../../vox/event/IEvtDispatcher";
 
 import { IUIFontFormat } from "../../../voxui/system/IUIConfig";
-
 import IProgressDataEvent from "../../../../vox/event/IProgressDataEvent";
-
 import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { ICoUI } from "../../../voxui/ICoUI";
 import { ButtonBuilder } from "../../../voxui/button/ButtonBuilder";
+
 declare var CoRScene: ICoRScene;
 declare var CoUI: ICoUI;
-
 declare var CoMaterial: ICoMaterial;
 
 class NormalCtrlPanel {

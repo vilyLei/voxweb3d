@@ -129,10 +129,12 @@ class NormalEntityNode {
 	private applyEvt(entity: IMouseEventEntity): void {
 
 		entity.mouseEnabled = true;
+
 		let ME = CoRScene.MouseEvent;
 		entity.addEventListener(ME.MOUSE_OVER, this, this.mouseOverTargetListener);
 		entity.addEventListener(ME.MOUSE_OUT, this, this.mouseOutTargetListener);
 		entity.addEventListener(ME.MOUSE_DOWN, this, this.mouseDownTargetListener);
+		
 		// entity.addEventListener(ME.MOUSE_DOUBLE_CLICK, this, this.mouseDBClickTargetListener);
 		// entity.addEventListener(ME.MOUSE_CLICK, this, this.mouseClickTargetListener);
 		// entity.addEventListener(ME.MOUSE_UP, this, this.mouseUpTargetListener);

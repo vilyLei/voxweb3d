@@ -12,6 +12,7 @@ import { AxisAlignCalc } from "../layout/AxisAlignCalc";
 
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
+
 class PromptPanel extends UIPanel implements IPromptPanel {
 
 	private m_confirmBtn: IButton;
@@ -25,6 +26,9 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 	private m_confirmFunc: () => void = null;
 	private m_cancelFunc: () => void = null;
 	private m_cancelBtnVis: boolean = true;
+	/**
+	 * 边距留白尺寸
+	 */
 	marginWidth: number = 70;
 	/**
 	 * x轴留白比例
@@ -111,11 +115,9 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 
 			this.m_confirmBtn.destroy();
 			this.m_cancelBtn.destroy();
-			this.m_bgLabel.destroy();
 
 			this.m_confirmBtn = null;
 			this.m_cancelBtn = null;
-			this.m_bgLabel = null;
 		}
 	}
 

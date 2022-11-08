@@ -15,7 +15,6 @@ class NormalViewer {
 
 	private m_uiscene: ICoUIScene = null;
 	private m_codata = new CoDataModule();
-	
 	normalScene: NormalViewerScene = null;
 	
 	constructor() {}
