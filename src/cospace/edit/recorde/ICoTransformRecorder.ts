@@ -8,10 +8,20 @@ import { IDataRecorde } from "./IDataRecorde";
  */
 interface ICoTransformRecorder extends IDataRecorde {
 	/**
-	 * 存放当前状态，所以初始化target的时候就应该存放进来
+	 * 单步存放当前状态，所以初始化target的时候就应该存放进来
 	 * @param tars IRenderEntity instance list
 	 */
-	save(tars: IRenderEntity[]): void;
+	// save(tars: IRenderEntity[]): void;
+	/**
+	 * 与saveEnd 协作存放当前状态，所以初始化target的时候就应该存放进来
+	 * @param tars IRenderEntity instance list
+	 */
+	saveBegin(tars: IRenderEntity[]): void;
+	/**
+	 * 与saveBegin 协作存放当前状态，所以初始化target的时候就应该存放进来
+	 * @param tars IRenderEntity instance list
+	 */
+	saveEnd(tars: IRenderEntity[]): void;
 	getCurrList(): IRenderEntity[];
 }
 

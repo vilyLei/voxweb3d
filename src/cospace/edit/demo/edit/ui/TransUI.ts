@@ -105,8 +105,10 @@ class TransUI {
 	private m_prevPos: IVector3D;
 	private m_currPos: IVector3D;
 	private editBegin(evt: any): void {
+		let list = evt.currentTarget.getTargetEntities();
 		let st = this.m_rsc.getStage3D();
 		this.m_prevPos.setXYZ(st.mouseX, st.mouseY, 0);
+		this.m_recoder.saveBegin(list);
 	}
 	private editEnd(evt: any): void {
 		let st = this.m_rsc.getStage3D();
@@ -114,8 +116,10 @@ class TransUI {
 		if (CoMath.Vector3D.Distance(this.m_prevPos, this.m_currPos) > 0.5) {
 
 			let list = evt.currentTarget.getTargetEntities();
-			this.m_recoder.save(list);
+			this.m_recoder.saveEnd(list);
 
+		}else {
+			this.m_recoder.saveEnd(null);
 		}
 	}
 	private m_transBtns: IButton[] = [];

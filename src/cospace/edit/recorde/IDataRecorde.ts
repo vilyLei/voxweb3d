@@ -14,7 +14,7 @@ interface IDataRecorde {
 	/**
 	 * remove invalid recod
 	 */
-	fakeUndo(): void;
+	// fakeUndo(): void;
 }
 
 export { IDataRecorde }

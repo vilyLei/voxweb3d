@@ -133,8 +133,8 @@ export class DemoEditTrans {
 	}
 	private m_transCtr: TransformController = null;
 	private m_selectFrame: UIRectLine = null;
-	private m_keyInterac: ICoKeyboardInteraction;	
-    private m_recoder: ICoTransformRecorder;
+	private m_keyInterac: ICoKeyboardInteraction;
+	private m_recoder: ICoTransformRecorder;
 	private createEditEntity(): void {
 
 		let editsc = this.m_editUIRenderer;
@@ -147,8 +147,8 @@ export class DemoEditTrans {
 		this.m_currPos = CoMath.createVec3();
 
 		this.m_keyInterac = new CoKeyboardInteraction();
-		this.m_keyInterac.initialize( this.m_renderer );
-		
+		this.m_keyInterac.initialize(this.m_renderer);
+
 		let Key = CoRScene.Keyboard;
 		let type = this.m_keyInterac.createKeysEventType([Key.CTRL, Key.Y]);
 		this.m_keyInterac.addKeysDownListener(type, this, this.keyCtrlYDown);
@@ -157,28 +157,30 @@ export class DemoEditTrans {
 
 		this.m_recoder = new CoTransformRecorder();
 	}
-	
-    private keyCtrlZDown(evt: any): void {
 
-        console.log("DemoEditTrans::keyCtrlZDown() ..., evt.keyCode: ", evt.keyCode);
-        this.m_recoder.undo();
-        let list = this.m_recoder.getCurrList();
-		this.selectEntities( list );
-    }
-    private keyCtrlYDown(evt: any): void {
-		
-        console.log("DemoEditTrans::keyCtrlYDown() ..., evt.keyCode: ", evt.keyCode);
-        this.m_recoder.redo();
-        let list = this.m_recoder.getCurrList();
-		this.selectEntities( list );
-    }
+	private keyCtrlZDown(evt: any): void {
+
+		console.log("DemoEditTrans::keyCtrlZDown() ..., evt.keyCode: ", evt.keyCode);
+		this.m_recoder.undo();
+		let list = this.m_recoder.getCurrList();
+		this.selectEntities(list);
+	}
+	private keyCtrlYDown(evt: any): void {
+
+		console.log("DemoEditTrans::keyCtrlYDown() ..., evt.keyCode: ", evt.keyCode);
+		this.m_recoder.redo();
+		let list = this.m_recoder.getCurrList();
+		this.selectEntities(list);
+	}
 	private m_prevPos: IVector3D;
 	private m_currPos: IVector3D;
 	private editBegin(evt: any): void {
 		// this.m_transCtr
 		// console.log("XXXXXXXX Edit begin...");
+		let list = evt.currentTarget.getTargetEntities();
 		let st = this.m_renderer.getStage3D();
 		this.m_prevPos.setXYZ(st.mouseX, st.mouseY, 0);
+		this.m_recoder.saveBegin(list);
 	}
 	private editEnd(evt: any): void {
 		// console.log("XXXXXXXX Edit end...");
@@ -190,8 +192,10 @@ export class DemoEditTrans {
 			let list = evt.currentTarget.getTargetEntities();
 			// let list = tar.getTargets();
 			console.log("XXXXXXXX Edit transforming entity list: ", list);
-			this.m_recoder.save( list );
+			this.m_recoder.saveEnd(list);
 
+		} else {
+			this.m_recoder.saveEnd(null);
 		}
 	}
 	private m_transBtns: IButton[] = [];
@@ -449,29 +453,29 @@ export class DemoEditTrans {
 
 		}
 	}
-	
-    private keyDown(evt: any): void {
 
-        console.log("DemoEditTrans::keyDown() ..., evt.keyCode: ", evt.keyCode);
+	private keyDown(evt: any): void {
+
+		console.log("DemoEditTrans::keyDown() ..., evt.keyCode: ", evt.keyCode);
 
 		let KEY = CoRScene.Keyboard;
-		switch(evt.keyCode) {
+		switch (evt.keyCode) {
 			case KEY.W:
-				this.selectBtn(	this.m_transBtns[0] );
+				this.selectBtn(this.m_transBtns[0]);
 				this.m_transCtr.toTranslation();
 				break;
 			case KEY.E:
-				this.selectBtn(	this.m_transBtns[1] );
+				this.selectBtn(this.m_transBtns[1]);
 				this.m_transCtr.toScale();
-				break;				
+				break;
 			case KEY.R:
-				this.selectBtn(	this.m_transBtns[2] );
+				this.selectBtn(this.m_transBtns[2]);
 				this.m_transCtr.toRotation();
 				break;
 			default:
 				break;
 		}
-    }
+	}
 	private loadOBJ(): void {
 		let baseUrl: string = "static/private/obj/";
 		let url = baseUrl + "base.obj";
@@ -502,8 +506,8 @@ export class DemoEditTrans {
 			let entity = this.createEntity(unit.data.models[i]);
 			entity.setScaleXYZ(m_scale, m_scale, m_scale);
 		}
-		
-        this.m_recoder.save( this.m_entities );
+
+		// this.m_recoder.save( this.m_entities );
 	}
 	private m_entityQuery: RectFrameQuery = null;
 	private m_entities: ITransformEntity[] = [];
@@ -557,17 +561,17 @@ export class DemoEditTrans {
 	}
 	private selectEntities(list: IRenderEntity[]): void {
 
-		if(list != null && list.length > 0) {
+		if (list != null && list.length > 0) {
 			let transCtr = this.m_transCtr;
 
 			let pos = CoMath.createVec3();
 			let pv = CoMath.createVec3();
 
 			for (let i = 0; i < list.length; ++i) {
-				pos.addBy( list[i].getPosition(pv) );
+				pos.addBy(list[i].getPosition(pv));
 			}
 			pos.scaleBy(1.0 / list.length);
-			
+
 			if (transCtr != null) {
 				transCtr.select(list as ITransformEntity[], pos);
 				this.m_outline.select(list);

@@ -1,12 +1,9 @@
-import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
 import { ICoRScene } from "../../../voxengine/ICoRScene";
-import { ICoUI } from "../../../voxui/ICoUI";
 import { NVTransUI } from "../ui/NVTransUI";
 
 import { NormalEntityNode } from "./NormalEntityNode";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../app/CoSpaceAppData";
 import IRendererScene from "../../../../vox/scene/IRendererScene";
-// import { NormalEntityBuilder } from "./NormalEntityBuilder";
 import { NormalEntityManager } from "./NormalEntityManager";
 import { ICoText } from "../../../voxtext/ICoText";
 import IVector3D from "../../../../vox/math/IVector3D";
@@ -14,10 +11,7 @@ import { IH5Text } from "../../../voxtext/base/IH5Text";
 import ITransformEntity from "../../../../vox/entity/ITransformEntity";
 import IRunnable from "../../../../vox/base/IRunnable";
 
-declare var CoUI: ICoUI;
-
 declare var CoRScene: ICoRScene;
-declare var CoMaterial: ICoMaterial;
 declare var CoText: ICoText;
 
 class NormalExampleGroup implements IRunnable {
@@ -131,9 +125,6 @@ class NormalExampleGroup implements IRunnable {
 		// this.createStaticText(pv, "顶点绕序错误", h5Text);
 		this.createStaticText(pv, items[3].text, h5Text);
 
-
-		// this.m_transUI.getRecoder().save(this.m_nodeEntities);
-		// node.entity.setRenderState(CoRScene.RendererState.FRONT_CULLFACE_NORMAL_STATE);
 
 	}
 	private flipTriWrap(triIndex: number, ivs: Uint16Array | Uint32Array): void {

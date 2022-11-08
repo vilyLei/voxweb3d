@@ -99,14 +99,14 @@ class NormalEntityGroup {
 				url,
 				format,
 				(unit: CoGeomDataUnit, status: number): void => {
-					if(format != CoDataFormat.FBX) {
+					if (format != CoDataFormat.FBX) {
 						this.createEntityFromModels(unit.data.models, unit.data.transforms);
 					}
 					this.createEntityFromUnit(unit, status);
 				},
 				true
 			);
-			if(format == CoDataFormat.FBX) {
+			if (format == CoDataFormat.FBX) {
 				unit.data.modelReceiver = (models: CoGeomDataType[], transforms: Float32Array[], index: number, total: number): void => {
 					// console.log("XXX: ", index, ",", total);
 					this.createEntityFromModels(models, transforms);
@@ -136,7 +136,7 @@ class NormalEntityGroup {
 	}
 	private createEntityFromUnit(unit: CoGeomDataUnit, status: number = 0): void {
 
-		console.log("XXXXXX createEntityFromUnit, unit: ", unit);
+		// console.log("XXXXXX createEntityFromUnit, unit: ", unit);
 		/*
 		let entities: ITransformEntity[] = [];
 		let len = unit.data.models.length;
@@ -160,7 +160,7 @@ class NormalEntityGroup {
 		// 	nodes[i].createNormalLine();
 		// }
 		//*/
-		
+
 		// let nodes = this.m_nodes;
 		// for (let i = 0; i < nodes.length; ++i) {
 		// 	nodes[i].createNormalLine();
@@ -168,15 +168,12 @@ class NormalEntityGroup {
 
 		this.m_loadedTotal++;
 		if (this.m_loadedTotal >= this.m_loadTotal) {
-			let entities: ITransformEntity[] = [];
 			this.uiscene.prompt.getPromptPanel().applyConfirmButton();
 			this.uiscene.prompt.showPrompt("Model loading finish!");
-			for(let i = 0; i < this.m_nodes.length; ++i) {
-				this.m_nodes[i].applyEvent();
-				entities.push(this.m_nodes[i].entity);
+			let ls = this.m_nodes;
+			for (let i = 0; i < ls.length; ++i) {
+				ls[i].applyEvent();
 			}
-			
-			// this.transUI.getRecoder().save(entities);
 		}
 
 	}

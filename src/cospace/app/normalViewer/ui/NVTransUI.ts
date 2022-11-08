@@ -120,21 +120,21 @@ class NVTransUI {
 	private m_currPos: IVector3D;
 	private editBegin(evt: any): void {
 		let list = evt.currentTarget.getTargetEntities();
-		console.log("editBegin(), entity list: ", list);
+		// console.log("editBegin(), entity list: ", list);
 		let st = this.m_rsc.getStage3D();
 		this.m_prevPos.setXYZ(st.mouseX, st.mouseY, 0);
-		this.m_recoder.save(list);
+		this.m_recoder.saveBegin(list);
 	}
 	private editEnd(evt: any): void {
 		let st = this.m_rsc.getStage3D();
 		this.m_currPos.setXYZ(st.mouseX, st.mouseY, 0);
 		if (CoMath.Vector3D.Distance(this.m_prevPos, this.m_currPos) > 0.5) {
 			let list = evt.currentTarget.getTargetEntities();
-			console.log("editEnd(), save list: ", list);
-			this.m_recoder.save(list);
+			// console.log("editEnd(), save list: ", list);
+			this.m_recoder.saveEnd(list);
 
 		}else {
-			this.m_recoder.fakeUndo();
+			this.m_recoder.saveEnd(null);
 		}
 	}
 	private m_transBtns: IButton[] = [];
@@ -206,12 +206,13 @@ class NVTransUI {
 	private uiMouseUpListener(evt: any): void {
 
 		// console.log("NVTransUI::uiMouseUpListener(), evt: ", evt);
-		// console.log("ui up (x, y): ", evt.mouseX, evt.mouseY);
+		console.log("uiMouseUpListener ui up (x, y): ", evt.mouseX, evt.mouseY);
 
 		if (this.m_selectFrame.isSelectEnabled()) {
 
 			let b = this.m_selectFrame.bounds;
 			let list = this.m_entityQuery.getEntities(b.min, b.max);
+			console.log("uiMouseUpListener list: ",list);
 			this.selectEntities(list);
 		}
 		this.m_selectFrame.end(evt.mouseX, evt.mouseY);
