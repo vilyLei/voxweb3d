@@ -27,6 +27,7 @@ import { PromptSystem } from "./system/PromptSystem";
 import { TipsSystem } from "./system/TipsSystem";
 import { IUIConfig } from "./system/IUIConfig";
 import IRendererScene from "../../vox/scene/IRendererScene";
+import { PanelSystem } from "./system/PanelSystem";
 declare var CoMaterial: ICoMaterial;
 
 function createColorLabel(): ColorLabel {
@@ -84,6 +85,9 @@ function createUIScene(uiConfig: IUIConfig = null, crscene: IRendererScene = nul
 		let tipsSys = new TipsSystem();
 		tipsSys.initialize(uisc);
 		uisc.tips = tipsSys;
+		let panelSys = new PanelSystem();
+		panelSys.initialize(uisc);
+		uisc.panel = panelSys;
 	}
 	return uisc;
 }

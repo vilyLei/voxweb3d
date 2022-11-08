@@ -16,10 +16,8 @@ import { CoPostOutline } from "../app/effect/CoPostOutline";
 import { NVTransUI } from "../app/normalViewer/ui/NVTransUI";
 import { NVNavigationUI } from "../app/normalViewer/ui/NVNavigationUI";
 import { NormalViewer } from "../app/normalViewer/sc/NormalViewer";
-import { PromptSystem } from "../voxui/system/PromptSystem";
 import { ICoText } from "../voxtext/ICoText";
 import { CoModuleLoader } from "../app/utils/CoModuleLoader";
-import { TipsSystem } from "../voxui/system/TipsSystem";
 import { UIConfig } from "../voxui/system/UIConfig";
 
 declare var CoRenderer: ICoRenderer;
