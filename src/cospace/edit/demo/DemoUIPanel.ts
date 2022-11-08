@@ -36,6 +36,7 @@ import { PromptSystem } from "../../voxui/system/PromptSystem";
 import { AxisAlignCalc } from "../../voxui/layout/AxisAlignCalc";
 import { UIConfig } from "../../voxui/system/UIConfig";
 import { ColorPickPanel } from "../../voxui/panel/ColorPickPanel";
+import IColor4 from "../../../vox/material/IColor4";
 
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
@@ -360,9 +361,14 @@ export class DemoUIPanel {
 		if(this.m_colorPanel == null) {
 			this.m_colorPanel = new ColorPickPanel();
 			this.m_colorPanel.setBGColor(CoRScene.createColor4(0.4, 0.4, 0.4));
-			this.m_colorPanel.initialize(this.m_uiScene, 1, 260, 260);
+			this.m_colorPanel.initialize(this.m_uiScene, 1, 260, 260, 3);
 		}
+
+		this.m_colorPanel.setXY(evt.mouseX, evt.mouseY);
 		this.m_colorPanel.open();
+		this.m_colorPanel.setSelectColorCallback((color: IColor4): void => {
+			console.log("selected color: ", color);
+		});
 
 		console.log("xxxxx xxx mouseDownListener() ...");
 		return;

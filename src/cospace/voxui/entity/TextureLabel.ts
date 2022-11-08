@@ -27,7 +27,7 @@ class TextureLabel extends UIEntityBase {
 		super();
 	}
 
-	initialize(uiScene: ICoUIScene, tex: IRenderTexture): void {
+	initialize(uiScene: ICoUIScene, tex: IRenderTexture, width: number = 128, height = 128): void {
 
 		if (tex != null && this.isIniting()) {
 
@@ -36,9 +36,8 @@ class TextureLabel extends UIEntityBase {
 			this.m_tex = tex;
 			this.m_uiScene = uiScene;
 
-			let entity = CoEntity.createDisplayEntity();
-
 			this.m_color = CoMaterial.createColor4();
+
 			
 			this.m_tex.flipY = true;
 			this.m_tex.premultiplyAlpha = true;
@@ -47,12 +46,13 @@ class TextureLabel extends UIEntityBase {
 
 			let material = this.createMaterial(this.m_tex);
 			this.m_material = material;
-			CoMesh.plane.setBufSortFormat(material.getBufSortFormat());
+			CoMesh.plane.applyMaterial(material, true);
 			let mesh = CoMesh.plane.createXOY(0, 0, 1.0, 1.0);
 
-			this.m_pw = tex.getWidth();
-			this.m_ph = tex.getHeight();
+			this.m_pw = width;
+			this.m_ph = height;
 
+			let entity = CoEntity.createDisplayEntity();
 			entity.setMaterial(material);
 			entity.setMesh(mesh);
 			this.m_entities.push(entity);

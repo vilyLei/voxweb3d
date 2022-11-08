@@ -398,8 +398,8 @@ class H5Text implements IH5Text {
 		//let rawUVData = m_fontTexDataBuilder.crateTextUVData(rawFontText, m_texWidth,m_texHeight, m_fontSize);
 		this.m_fontTexDataBuilder.crateTextUVData(rawFontText, this.m_texWidth, this.m_texHeight, this.m_fontSize);
 
-		let fontTexData: any = this.m_ctx2D.getImageData(0, 0, this.m_texWidth, this.m_texHeight);
-		let pixData: any = fontTexData.data;
+		let fontTexData = this.m_ctx2D.getImageData(0, 0, this.m_texWidth, this.m_texHeight);
+		let pixData = fontTexData.data;
 
 		let i: number = 0;
 		let j: number = 0;
