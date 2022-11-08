@@ -97,7 +97,7 @@ class NormalCtrlPanel {
 			this.m_progressDispatcher = null;
 
 		}
-		
+
 		this.m_progressEvt = null;
 		this.m_modelVisiBtn = null;
 		this.m_normalVisiBtn = null;
@@ -195,7 +195,7 @@ class NormalCtrlPanel {
 		textLabel = this.createText(items[1].text, startX + btnSize + disX, py - 10, ltf);
 		py = textLabel.getY();
 		this.m_modelVisiBtn = this.createFlagBtn(btnSize, px, py, "model");
-		
+
 		// textLabel = this.createText("Normal difference", startX + btnSize + disX, py - 10, ltf);
 		textLabel = this.createText(items[2].text, startX + btnSize + disX, py - 10, ltf);
 		py = textLabel.getY();
@@ -232,7 +232,7 @@ class NormalCtrlPanel {
 
 		px = startX;
 		py = textLabel.getY() - disY;
-		
+
 		let normalTestBtn = builder.createPanelBtnWithCfg(sc, px, py - localBtn.getHeight(), 3, uiCfg);
 		pl.addEntity(normalTestBtn);
 
@@ -257,8 +257,19 @@ class NormalCtrlPanel {
 		);
 		this.m_btnGroup.select(globalBtn.uuid);
 	}
+	private m_colorSelectLabel: IClipColorLabel;
+	private m_normalLineColorBtn: IButton;
 	private normalDisplaySelect(evt: any): void {
 		this.sendSelectionEvt(evt.uuid, true);
+	}
+	setNormalLineColor(color: IColor4, sendEvt: boolean = false): void {
+		let c0 = color.clone().scaleBy(0.9);
+		let c1 = color.clone().scaleBy(1.1);
+		this.m_colorSelectLabel.setColors([c0, c1, c0, c0]);
+		this.m_colorSelectLabel.setClipIndex(0);
+		if (sendEvt) {
+			this.sendSelectionEvt(this.m_normalLineColorBtn.uuid, true, color.clone());
+		}
 	}
 	private normalLineColorSelect(evt: any): void {
 		console.log("color select...evt: ", evt);
@@ -266,25 +277,16 @@ class NormalCtrlPanel {
 		let target = evt.target as ITransformEntity;
 		let bounds = target.getGlobalBounds();
 		let panel = this.m_scene.panel.getPanel("colorPickPanel") as IColorPickPanel;
-		if(panel != null) {
-			if(panel.isOpen()) {
+		if (panel != null) {
+			if (panel.isOpen()) {
 				panel.close();
-			}else {
+			} else {
 				panel.open();
 				panel.setXY(bounds.max.x - panel.getWidth(), bounds.max.y);
 				panel.setZ(0.5);
 				panel.update();
 				panel.setSelectColorCallback((color: IColor4): void => {
-					
-					let c = color.clone().scaleBy(0.9);
-					this.m_colorSelectLabel.setColors([
-						c,
-						color.clone().scaleBy(1.1),
-						c,
-						c
-					]);
-					this.m_colorSelectLabel.setClipIndex(0);
-					this.sendSelectionEvt(uuid, true, color.clone());
+					this.setNormalLineColor(color, true);
 				});
 			}
 		}
@@ -386,7 +388,7 @@ class NormalCtrlPanel {
 		dragBgBar.setXY(px, py);
 		this.m_panel.addEntity(dragBgBar);
 		this.m_dragBgBar = dragBgBar;
-		
+
 		dragBgBar.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.progressBgMouseDown);
 
 		this.m_progressLen = length - 16;
@@ -478,7 +480,6 @@ class NormalCtrlPanel {
 		this.m_normalScale = f;
 		this.sendProgressEvt("normalScale", f);
 	}
-	private m_colorSelectLabel: IClipColorLabel;
 	private createColorBtn(pw: number, ph: number, idns: string, colors: IColor4[]): IButton {
 
 		let colorClipLabel = CoUI.createClipColorLabel();
@@ -488,7 +489,7 @@ class NormalCtrlPanel {
 		let btn = CoUI.createButton();
 		btn.uuid = idns;
 		btn.initializeWithLable(colorClipLabel);
-
+		this.m_normalLineColorBtn = btn;
 		return btn;
 	}
 	protected addLayoutEvt(): void {
