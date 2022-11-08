@@ -84,7 +84,7 @@ class NormalViewerScene {
 				mana.normalScaleBtnSelect();
 				break;
 			case "normalLineColor":
-				console.log("appaly normal color");
+				console.log("appaly normal color: ", evt.data);
 				break;
 			case "normalTest":
 				this.m_uiscene.prompt.showPrompt("It can't be used now!");

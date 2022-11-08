@@ -261,7 +261,8 @@ class NormalCtrlPanel {
 		this.sendSelectionEvt(evt.uuid, true);
 	}
 	private normalLineColorSelect(evt: any): void {
-		console.log("color select...");
+		console.log("color select...evt: ", evt);
+		let uuid = evt.uuid;
 		let target = evt.target as ITransformEntity;
 		let bounds = target.getGlobalBounds();
 		let panel = this.m_scene.panel.getPanel("colorPickPanel") as IColorPickPanel;
@@ -283,6 +284,7 @@ class NormalCtrlPanel {
 						c
 					]);
 					this.m_colorSelectLabel.setClipIndex(0);
+					this.sendSelectionEvt(uuid, true, color.clone());
 				});
 			}
 		}
@@ -333,7 +335,7 @@ class NormalCtrlPanel {
 		e.target = null;
 	}
 
-	private sendSelectionEvt(uuid: string, flag: boolean): void {
+	private sendSelectionEvt(uuid: string, flag: boolean, data: any = null): void {
 
 		let e = CoRScene.createSelectionEvent();
 		// let e = this.m_flagEvt;
@@ -342,6 +344,7 @@ class NormalCtrlPanel {
 		e.type = CoRScene.SelectionEvent.SELECT;
 		e.flag = flag;
 		e.phase = 1;
+		e.data = data;
 		this.m_selectDispatcher.dispatchEvt(e);
 		e.target = null;
 	}
