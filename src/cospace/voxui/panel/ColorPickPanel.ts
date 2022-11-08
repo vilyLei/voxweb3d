@@ -10,13 +10,14 @@ import { UIPanel } from "./UIPanel";
 import IColor4 from "../../../vox/material/IColor4";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { TextureLabel } from "../entity/TextureLabel";
+import { IColorPickPanel } from "./IColorPickPanel";
 
 declare var CoRScene: ICoRScene;
 declare var CoMesh: ICoMesh;
 declare var CoMaterial: ICoMaterial;
 declare var CoEntity: ICoEntity;
 
-class ColorPickPanel extends UIPanel {
+class ColorPickPanel extends UIPanel implements IColorPickPanel {
 
 	/**
 	 * 边距留白尺寸
@@ -25,7 +26,7 @@ class ColorPickPanel extends UIPanel {
 
 	constructor() { super(); }
 
-	initialize(scene: ICoUIScene, rpi: number, panelW: number, panelH: number, marginWidth: number = 15): void {
+	initialize(scene: ICoUIScene, rpi: number, panelW: number = 260, panelH: number = 260, marginWidth: number = 3): void {
 		if (this.isIniting()) {
 			this.init();
 
@@ -39,10 +40,6 @@ class ColorPickPanel extends UIPanel {
 			if (this.m_bgColor == null) this.m_bgColor = CoMaterial.createColor4();
 		}
 	}
-	// setListener(confirmFunc: () => void, cancelFunc: () => void): void {
-	// 	this.m_confirmFunc = confirmFunc;
-	// 	this.m_cancelFunc = cancelFunc;
-	// }
 	destroy(): void {
 		super.destroy();
 
