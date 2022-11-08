@@ -12,6 +12,7 @@ import { NormalCtrlPanel } from "../ui/NormalCtrlPanel";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../app/CoSpaceAppData";
 import IMatrix4 from "../../../../vox/math/IMatrix4";
 import { NormalEntityLayout } from "./NormalEntityLayout";
+import IColor4 from "../../../../vox/material/IColor4";
 
 declare var CoUI: ICoUI;
 declare var CoRScene: ICoRScene;
@@ -181,6 +182,19 @@ class NormalEntityManager {
 				const node = map.get(ls[i].getUid());
 				if (node != null) {
 					node.select();
+				}
+			}
+		}
+	}
+	
+	setNormalLineColor(c: IColor4): void {
+		let ls = this.m_selectEntities;
+		if (ls != null) {
+			let map = this.m_map;
+			for (let i = 0; i < ls.length; ++i) {
+				const node = map.get(ls[i].getUid());
+				if (node != null) {
+					node.setNormalLineColor(c);
 				}
 			}
 		}
