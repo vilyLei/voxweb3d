@@ -20,7 +20,7 @@ import { ICoKeyboardInteraction } from "../../../voxengine/ui/ICoKeyboardInterac
 import { ICoTransformRecorder } from "../../../edit/recorde/ICoTransformRecorder";
 import { ISelectButtonGroup } from "../../../voxui/button/ISelectButtonGroup";
 import { ButtonBuilder } from "../../../voxui/button/ButtonBuilder";
-import { CoTransformRecorder } from "../../../edit/recorde/CoTransformRecorder";
+// import { CoTransformRecorder } from "../../../edit/recorde/CoTransformRecorder";
 
 declare var CoRScene: ICoRScene;
 declare var CoUIInteraction: ICoUIInteraction;
@@ -38,6 +38,13 @@ class NVTransUI {
 	private m_uirsc: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
 	private m_outline: CoPostOutline = null;
+	private m_transCtr: ITransformController = null;
+	private m_selectFrame: NVUIRectLine = null;
+	private m_keyInterac: ICoKeyboardInteraction;
+	private m_recoder: ICoTransformRecorder;
+	private m_entityQuery: NVRectFrameQuery = null;
+	private m_selectList: IRenderEntity[] = null;
+	private m_transBtns: IButton[] = [];
 
 	constructor() { }
 
@@ -46,7 +53,9 @@ class NVTransUI {
 	}
 
 	initialize(rsc: IRendererScene, editUIRenderer: IRendererScene, coUIScene: ICoUIScene): void {
+
 		if (this.m_coUIScene == null) {
+
 			this.m_rsc = rsc;
 			this.m_editUIRenderer = editUIRenderer;
 			this.m_coUIScene = coUIScene;
@@ -57,10 +66,6 @@ class NVTransUI {
 	getCoUIScene(): ICoUIScene {
 		return this.m_coUIScene;
 	}
-	private m_transCtr: ITransformController = null;
-	private m_selectFrame: NVUIRectLine = null;
-	private m_keyInterac: ICoKeyboardInteraction;
-	private m_recoder: ICoTransformRecorder;
 	private init(): void {
 
 		this.m_rsc.addEventListener(CoRScene.KeyboardEvent.KEY_DOWN, this, this.keyDown);
@@ -136,7 +141,6 @@ class NVTransUI {
 			this.m_recoder.saveEnd(null);
 		}
 	}
-	private m_transBtns: IButton[] = [];
 	private initUI(): void {
 
 		this.m_uirsc = this.m_coUIScene.rscene;
@@ -209,6 +213,7 @@ class NVTransUI {
 		if (this.m_selectFrame.isSelectEnabled()) {
 
 			let b = this.m_selectFrame.bounds;
+			console.log("CCCCCCCCCCCCCCCC,b: ", b);
 			let list = this.m_entityQuery.getEntities(b.min, b.max);
 			this.selectEntities(list);
 		}
@@ -259,8 +264,6 @@ class NVTransUI {
 				break;
 		}
 	}
-	private m_entityQuery: NVRectFrameQuery = null;
-	private m_selectList: IRenderEntity[] = null;
 	private m_selectListeners: ((list: IRenderEntity[]) => void)[] = [];
 	addSelectListener(listener: (list: IRenderEntity[]) => void): void {
 		if (listener != null) {

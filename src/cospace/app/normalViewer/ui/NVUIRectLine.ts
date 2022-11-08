@@ -77,7 +77,7 @@ class NVUIRectLine {
 		this.m_flag = true;
 		if (this.m_enabled) {
 			this.m_prePos.setXYZ(px, py, this.m_pz);
-			// this.m_currPos.copyFrom( this.m_prePos );
+			this.m_currPos.copyFrom( this.m_prePos );
 			this.move(px, py);
 		}
 	}
