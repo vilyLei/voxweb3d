@@ -14,6 +14,8 @@ import { IUIPanel } from "./panel/IUIPanel";
 import { IPromptPanel } from "./panel/IPromptPanel";
 import ICanvasTexAtlas from "../voxtexture/atlas/ICanvasTexAtlas";
 import IColor4 from "../../vox/material/IColor4";
+import { IUIConfig } from "./system/IUIConfig";
+import IRendererScene from "../../vox/scene/IRendererScene";
 
 interface ITextParam {
 
@@ -40,7 +42,12 @@ interface ICoUI {
 
 	createUIPanel(): IUIPanel;
 	createPromptPanel(): IPromptPanel;
-
-	createUIScene(): ICoUIScene;
+	/**
+	 * @param uiConfig IUIConfig instance, its default value is null
+	 * @param crscene IRendererScene instance, its default value is null
+	 * @param atlasSize the default value is 512
+	 * @param renderProcessesTotal the default value is 3
+	 */
+	createUIScene(uiConfig?: IUIConfig, crscene?: IRendererScene, atlasSize?: number, renderProcessesTotal?: number): ICoUIScene;
 }
 export { ITextParam, ICoUI };

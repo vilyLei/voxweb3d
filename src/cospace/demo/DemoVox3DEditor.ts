@@ -37,7 +37,7 @@ class LoadingUI {
 	private m_infoDiv: HTMLDivElement = null;
 	initUI(): void {
 		document.body.style.background = "#000000";
-		if(this.m_bodyDiv == null) {
+		if (this.m_bodyDiv == null) {
 			this.m_bodyDiv = document.createElement('div');
 			this.m_bodyDiv.style.width = "100vw";
 			this.m_bodyDiv.style.height = "100vh";
@@ -56,7 +56,7 @@ class LoadingUI {
 			this.m_infoDiv.style.color = "#00ee00";
 			this.m_infoDiv.style.zIndex = "10000";
 			this.elementCenter(this.m_infoDiv);
-            this.m_bodyDiv.appendChild(this.m_infoDiv);
+			this.m_bodyDiv.appendChild(this.m_infoDiv);
 		}
 		// this.m_bodyDiv.parentElement.removeChild(this.m_bodyDiv);
 		// this.m_bodyDiv.parentElement.removeChild(this.m_bodyDiv);
@@ -180,21 +180,23 @@ export class DemoVox3DEditor {
 	}
 	private initEditUI(): void {
 
-		this.m_coUIScene = CoUI.createUIScene();
-		let coui = this.m_coUIScene;
-		coui.initialize(this.m_rsc, 512, 5);
-		this.m_uirsc = coui.rscene;
-		this.m_graph.addScene(this.m_uirsc);
 
 		let uiConfig = new UIConfig();
-		coui.uiConfig = uiConfig;
 		let cfgUrl = "static/apps/normalViewer/ui/zh-CN/uicfg.json";
 		let language = CoRScene.RendererDevice.GetLanguage();
 		console.log("XXX language: ", language);
-		if(language != "zh-CN") {
-			cfgUrl = "static/apps/normalViewer/ui/en-US/uicfg.json";			
+		if (language != "zh-CN") {
+			cfgUrl = "static/apps/normalViewer/ui/en-US/uicfg.json";
 		}
-		uiConfig.initialize(cfgUrl,(): void => {
+		uiConfig.initialize(cfgUrl, (): void => {
+
+			this.m_coUIScene = CoUI.createUIScene( uiConfig, this.m_rsc, 512, 5 );
+			let coui = this.m_coUIScene;
+			// coui.initialize(this.m_rsc, 512, 5);
+			this.m_uirsc = coui.rscene;
+			this.m_graph.addScene(this.m_uirsc);
+
+			// coui.uiConfig = uiConfig;
 			this.initEditSceneSys();
 		});
 
@@ -202,13 +204,14 @@ export class DemoVox3DEditor {
 	private initEditSceneSys(): void {
 
 		let coui = this.m_coUIScene;
-		
-		let promptSys = new PromptSystem();
-		promptSys.initialize(coui);
-		coui.prompt = promptSys;
-		let tipsSys = new TipsSystem();
-		tipsSys.initialize(coui);
-		coui.tips = tipsSys;
+
+		// let promptSys = new PromptSystem();
+		// promptSys.initialize(coui);
+		// coui.prompt = promptSys;
+		// let tipsSys = new TipsSystem();
+		// tipsSys.initialize(coui);
+		// coui.tips = tipsSys;
+
 		this.m_transUI.setOutline(this.m_outline);
 		this.m_transUI.initialize(this.m_rsc, this.m_editUIRenderer, coui);
 		this.m_nvaUI.initialize(this.m_rsc, this.m_editUIRenderer, coui);

@@ -23,6 +23,10 @@ import ICanvasTexAtlas from "../voxtexture/atlas/ICanvasTexAtlas";
 import IColor4 from "../../vox/material/IColor4";
 
 import { ICoMaterial } from "../voxmaterial/ICoMaterial";
+import { PromptSystem } from "./system/PromptSystem";
+import { TipsSystem } from "./system/TipsSystem";
+import { IUIConfig } from "./system/IUIConfig";
+import IRendererScene from "../../vox/scene/IRendererScene";
 declare var CoMaterial: ICoMaterial;
 
 function createColorLabel(): ColorLabel {
@@ -67,8 +71,21 @@ function createPromptPanel(): PromptPanel {
 	return new PromptPanel();
 }
 
-function createUIScene(): ICoUIScene {
-	return new CoUIScene();
+function createUIScene(uiConfig: IUIConfig = null, crscene: IRendererScene = null, atlasSize: number = 512, renderProcessesTotal: number = 3): ICoUIScene {
+	let uisc = new CoUIScene();
+	if(crscene != null) {
+		uisc.initialize(crscene, atlasSize, renderProcessesTotal);
+	}
+	uisc.uiConfig = uiConfig;
+	if (uiConfig != null) {
+		let promptSys = new PromptSystem();
+		promptSys.initialize(uisc);
+		uisc.prompt = promptSys;
+		let tipsSys = new TipsSystem();
+		tipsSys.initialize(uisc);
+		uisc.tips = tipsSys;
+	}
+	return uisc;
 }
 function createTipInfo(): TipInfo {
 	return new TipInfo();
