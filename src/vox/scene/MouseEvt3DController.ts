@@ -48,22 +48,37 @@ export default class MouseEvt3DController implements IEvt3DController {
             this.m_mainStage = mainStage;
             this.m_currStage = currStage;
             let ME = MouseEvent;
-            mainStage.addEventListener(ME.MOUSE_DOWN, this, this.mouseDownListener, true, false);
-            mainStage.addEventListener(ME.MOUSE_UP, this, this.mouseUpListener, true, false);
-            mainStage.addEventListener(ME.MOUSE_CLICK, this, this.mouseClickListener, true, false);
-            mainStage.addEventListener(ME.MOUSE_MOVE, this, this.mouseMoveListener, true, false);
-            mainStage.addEventListener(ME.MOUSE_WHEEL, this, this.mouseWheeelListener, true, false);
+            mainStage.addEventListener(ME.MOUSE_DOWN, this, this.mouseListener, true, false);
+            mainStage.addEventListener(ME.MOUSE_UP, this, this.mouseListener, true, false);
+            mainStage.addEventListener(ME.MOUSE_CLICK, this, this.mouseListener, true, false);
+            mainStage.addEventListener(ME.MOUSE_DOUBLE_CLICK, this, this.mouseListener, true, false);
+            mainStage.addEventListener(ME.MOUSE_MOVE, this, this.mouseListener, true, false);
+            mainStage.addEventListener(ME.MOUSE_WHEEL, this, this.mouseListener, true, false);
 
-            mainStage.addEventListener(ME.MOUSE_RIGHT_DOWN, this, this.mouseDownListener, true, false);
-            mainStage.addEventListener(ME.MOUSE_RIGHT_UP, this, this.mouseUpListener, true, false);
-            mainStage.addEventListener(ME.MOUSE_MIDDLE_DOWN, this, this.mouseDownListener, true, false);
-            mainStage.addEventListener(ME.MOUSE_MIDDLE_UP, this, this.mouseUpListener, true, false);
+            mainStage.addEventListener(ME.MOUSE_RIGHT_DOWN, this, this.mouseListener, true, false);
+            mainStage.addEventListener(ME.MOUSE_RIGHT_UP, this, this.mouseListener, true, false);
+            mainStage.addEventListener(ME.MOUSE_MIDDLE_DOWN, this, this.mouseListener, true, false);
+            mainStage.addEventListener(ME.MOUSE_MIDDLE_UP, this, this.mouseListener, true, false);
         }
     }
     setRaySelector(raySelector: IRaySelector): void {
         this.m_raySelector = raySelector;
     }
-    private mouseWheeelListener(evt: any): void {
+    
+    private mouseListener(evt: any): void {
+        if (this.m_currStage != null) {
+            this.m_currStage.mouseX = this.m_mainStage.mouseX;
+            this.m_currStage.mouseY = this.m_mainStage.mouseY;
+        }
+        this.m_evtTypes[this.m_evtTotal] = (evt.type);
+        this.m_evtXList[this.m_evtTotal] = (evt.mouseX);
+        this.m_evtYList[this.m_evtTotal] = (evt.mouseY);
+        this.m_evtWheelDeltaYs[this.m_evtTotal] = (evt.wheelDeltaY);
+        this.m_mouseEvt.type = evt.type;
+        this.m_evtTotal++;
+    }
+    /*
+    private mouseWheelListener(evt: any): void {
         if (this.m_currStage != null) {
             this.m_currStage.mouseX = this.m_mainStage.mouseX;
             this.m_currStage.mouseY = this.m_mainStage.mouseY;
@@ -130,6 +145,7 @@ export default class MouseEvt3DController implements IEvt3DController {
             this.m_evtTotal++;
         }
     }
+    //*/
 
     mouseOutEventTarget(): number {
         if (this.m_currStage != null) {

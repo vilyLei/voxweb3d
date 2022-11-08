@@ -65,6 +65,12 @@ class DispCtrObj {
     mouseOutListener(evt: any): void {
         console.log(this.name,"mouse out");
     }
+    mouseClickListener(evt: any): void {
+        console.log("mouseClickListener ...");
+    }
+    mouseDBClickListener(evt: any): void {
+        console.log("mouseDBClickListener ...");
+    }
     mouseDownListener(evt: any): void {
         //DivLog.ShowLog("mouseDown "+evt.target.name+",name: "+this.name);
         console.log("mouseDown " + evt.target.name + ",name: " + this.name);
@@ -130,10 +136,10 @@ export class DemoMobileEvt {
         stage3D.addEventListener(MouseEvent.MOUSE_BG_UP, this, this.test_bgmouseUpListener);
     }
     mouseDownListener(evt: any): void {
-        console.log("mouseDown...");
+        // console.log("mouseDown...");
     }
     mouseUpListener(evt: any): void {
-        console.log("mouseUP...");
+        // console.log("mouseUP...");
     }
     mouseMoveListener(evt: any): void {
         //console.log("mouseDown...");
@@ -141,16 +147,16 @@ export class DemoMobileEvt {
     }
 
     private test_bgmouseDownListener(evt: any): void {
-        console.log("test_bgmouseDownListener");
+        // console.log("test_bgmouseDownListener");
         //this.m_rscene.setClearRGBColor3f(Math.random() * 0.3, 0, Math.random() * 0.3);
         //this.m_clearColor.randomRGB();
         DispCtrObj.DeselectAll();
     }
     private test_bgmouseUpListener(evt: any): void {
-        console.log("test_bgmouseUpListener");
+        // console.log("test_bgmouseUpListener");
     }
     private test_bgmouseMoveListener(evt: any): void {
-        console.log("test_bgmouseMoveListener");
+        // console.log("test_bgmouseMoveListener");
     }
     private m_clearColor: Color4 = new Color4(0.1, 0.2, 0.1, 1.0);
 
@@ -274,6 +280,9 @@ export class DemoMobileEvt {
         dispatcher.addEventListener(MouseEvent.MOUSE_OVER, ctrObj, ctrObj.mouseOverListener);
         dispatcher.addEventListener(MouseEvent.MOUSE_OUT, ctrObj, ctrObj.mouseOutListener);
         dispatcher.addEventListener(MouseEvent.MOUSE_MOVE, ctrObj, ctrObj.mouseMoveListener);
+        dispatcher.addEventListener(MouseEvent.MOUSE_CLICK, ctrObj, ctrObj.mouseClickListener);
+        dispatcher.addEventListener(MouseEvent.MOUSE_DOUBLE_CLICK, ctrObj, ctrObj.mouseDBClickListener);
+
         entity.setEvtDispatcher(dispatcher);
         entity.mouseEnabled = true;
         if (frameBoo) {

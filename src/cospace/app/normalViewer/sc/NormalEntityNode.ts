@@ -124,7 +124,7 @@ class NormalEntityNode {
 		}
 	}
 	applyEvent(): void {
-		this.applyEvt( this.entity );
+		this.applyEvt(this.entity);
 	}
 	private applyEvt(entity: IMouseEventEntity): void {
 
@@ -133,8 +133,16 @@ class NormalEntityNode {
 		entity.addEventListener(ME.MOUSE_OVER, this, this.mouseOverTargetListener);
 		entity.addEventListener(ME.MOUSE_OUT, this, this.mouseOutTargetListener);
 		entity.addEventListener(ME.MOUSE_DOWN, this, this.mouseDownTargetListener);
+		// entity.addEventListener(ME.MOUSE_DOUBLE_CLICK, this, this.mouseDBClickTargetListener);
+		// entity.addEventListener(ME.MOUSE_CLICK, this, this.mouseClickTargetListener);
 		// entity.addEventListener(ME.MOUSE_UP, this, this.mouseUpTargetListener);
 		// 如果双击一个entity则全部选中这个group
+	}
+	private mouseClickTargetListener(evt: any): void {
+		console.log("mouseClickTargetListener()....");
+	}
+	private mouseDBClickTargetListener(evt: any): void {
+		console.log("mouseDBClickTargetListener()....");
 	}
 	private mouseOverTargetListener(evt: any): void {
 		this.m_entityMaterial.setRGB3f(0.8, 0.8, 0.8);

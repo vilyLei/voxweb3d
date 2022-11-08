@@ -93,6 +93,7 @@ export default class StageBase {
         this.dispatchMouseEvt(1);
     }
     mouseDoubleClick(): void {
+        console.log("stage apply mouseDoubleClick()...");
         this.m_mouseEvt.type = MouseEvent.MOUSE_DOUBLE_CLICK;
         this.dispatchMouseEvt(1);
     }
