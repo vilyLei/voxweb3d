@@ -113,7 +113,7 @@ export class DemoVox3DEditor {
 	private m_interact: IMouseInteraction = null;
 	private m_transUI = new NVTransUI();
 	private m_nvaUI = new NVNavigationUI();
-	
+
 	private m_vmctx: ViewerMaterialCtx;
 	private m_outline: CoPostOutline;
 	private m_loadingUI: LoadingUI = new LoadingUI();
@@ -202,13 +202,6 @@ export class DemoVox3DEditor {
 	private initEditSceneSys(): void {
 
 		let coui = this.m_coUIScene;
-
-		// let promptSys = new PromptSystem();
-		// promptSys.initialize(coui);
-		// coui.prompt = promptSys;
-		// let tipsSys = new TipsSystem();
-		// tipsSys.initialize(coui);
-		// coui.tips = tipsSys;
 
 		this.m_transUI.setOutline(this.m_outline);
 		this.m_transUI.initialize(this.m_rsc, this.m_editUIRenderer, coui);

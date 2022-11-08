@@ -270,7 +270,6 @@ class NormalCtrlPanel {
 				panel.close();
 			}else {
 				panel.open();
-				console.log("panel.getWidth(): ", panel.getWidth());
 				panel.setXY(bounds.max.x - panel.getWidth(), bounds.max.y);
 				panel.setZ(0.5);
 				panel.update();
