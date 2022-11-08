@@ -94,8 +94,6 @@ class ColorPickPanel extends UIPanel implements IColorPickPanel {
 			let r = ls[i];
 			let g = ls[i + 1];
 			let b = ls[i + 2];
-			console.log("getRGBAByXY(), px,py: ", px, py);
-			console.log("getRGBAByXY(), r,g,b: ", r, g, b);
 			this.m_color.setRGB3Bytes(r, g, b);
 		}
 		return this.m_color;
