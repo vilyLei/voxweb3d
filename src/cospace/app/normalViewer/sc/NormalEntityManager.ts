@@ -51,7 +51,6 @@ class NormalEntityManager {
 	private testSelect(): void {
 		let ls = this.m_selectEntities;
 		if (ls != null) {
-			console.log("testSelect, ls: ", ls);
 			let map = this.m_map;
 			let lineVisible = false;
 			let dif = false;
@@ -65,9 +64,8 @@ class NormalEntityManager {
 				if (node != null) {
 					if (node.getLineVisible()) {
 						lineVisible = true;
-						if(firstLNode == null) {
+						if(firstLNode == null)
 							firstLNode = node;
-						}
 					}
 					if (node.isShowDifference()) {
 						dif = true;
@@ -82,22 +80,27 @@ class NormalEntityManager {
 			cpl.setNormalFlag(lineVisible);
 			cpl.setNormalFlipFlag(flip);
 			cpl.setDifferenceFlag(dif);
-			if(firstLNode != null) {
+			if(firstLNode != null)
 				cpl.setNormalLineColor( firstLNode.getNormalLineColor() );
-			}
 		}
 	}
 
 	private setSelectedNormalLineVisible(v: boolean): void {
 		let ls = this.m_selectEntities;
 		if (ls != null) {
+			let cpl = this.ctrPanel;
 			let map = this.m_map;
+			let firstLNode: NormalEntityNode = null;
 			for (let i = 0; i < ls.length; ++i) {
 				const node = map.get(ls[i].getUid());
 				if (node != null) {
+					if(firstLNode == null)
+						firstLNode = node;
 					node.setLineVisible(v);
 				}
 			}
+			if(v)
+				cpl.setNormalLineColor( firstLNode.getNormalLineColor() );
 		}
 	}
 	private setSelectedModelVisible(v: boolean): void {
