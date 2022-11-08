@@ -150,7 +150,7 @@ class RotationRing {
     // setDirection(rv: Vector3D): void {
     // }
     setVisible(visible: boolean): void {
-        console.log("RotationRing::setVisible() ..., visible: ", visible);
+        // console.log("RotationRing::setVisible() ..., visible: ", visible);
         this.m_container.setVisible(visible);
     }
     getVisible(): boolean {

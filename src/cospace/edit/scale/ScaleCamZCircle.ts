@@ -123,7 +123,7 @@ class ScaleCamZCircle extends ScaleCtr implements IRayControl {
         }
     }
     setVisible(visible: boolean): void {
-        console.log("ScaleCamZCircle::setVisible() ..., visible: ", visible);
+        // console.log("ScaleCamZCircle::setVisible() ..., visible: ", visible);
         this.m_entity.setVisible(visible);
         this.m_camVer = -7;
     }

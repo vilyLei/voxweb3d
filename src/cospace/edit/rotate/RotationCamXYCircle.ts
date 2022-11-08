@@ -147,7 +147,7 @@ class RotationCamXYCircle extends RotationCtr implements IRayControl {
     }
     setVisible(visible: boolean): void {
 
-        console.log("RotationCamXYCircle::setVisible() ..., visible: ", visible);
+        // console.log("RotationCamXYCircle::setVisible() ..., visible: ", visible);
 
         this.m_entity.setVisible(visible);
         this.m_circle.setVisible(visible);
