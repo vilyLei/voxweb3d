@@ -103,7 +103,7 @@ class NormalEntityMaterial {
     		vec2 f2 = sign(dv);
     
     		vec3 nv = normalize(v_nv.xyz);
-    		vec3 color = pow(nv, gama);
+    		vec3 color = nv;//pow(nv, gama);
 
 			float nDotL0 = max(dot(v_vnv.xyz, direc0), 0.1);
 			float nDotL1 = max(dot(v_vnv.xyz, direc1), 0.1);
@@ -124,8 +124,8 @@ class NormalEntityMaterial {
 			float s = sign(f2.x * f2.y);
 			vec3 diffColor = vec3(1.0, s, s) * f + dstColor * (1.0 - f);
 			dstColor = param.y > 0.5 ? diffColor : dstColor;
-
-    		FragColor0 = vec4(dstColor, 1.0);
+			
+    		FragColor0 = vec4(pow(dstColor, gama), 1.0);
     		// FragColor0 = vec4(u_params[0].xyz, 1.0);
 					`
 				);
