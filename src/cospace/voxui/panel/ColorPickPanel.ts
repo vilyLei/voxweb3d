@@ -114,7 +114,7 @@ class ColorPickPanel extends UIPanel implements IColorPickPanel {
 		canvas.height = img.height;
 		let ctx2D = canvas.getContext("2d");
 		ctx2D.drawImage(img, 0, 0);
-		document.body.appendChild(canvas);
+		// document.body.appendChild(canvas);
 
 		let imgData = ctx2D.getImageData(0, 0, img.width, img.height);
 		this.m_pixels = imgData.data;

@@ -7,6 +7,7 @@ import { IUISceneEntity } from "./IUISceneEntity";
 import { IUILayout } from "../layout/IUILayout";
 import { IPromptSystem } from "../system/IPromptSystem";
 import { ITipsSystem } from "../system/ITipsSystem";
+import { IPanelSystem } from "../system/IPanelSystem";
 import {IUIConfig} from "../system/IUIConfig";
 
 interface ICoUIScene {
@@ -17,6 +18,7 @@ interface ICoUIScene {
 	readonly layout: IUILayout;
 	prompt: IPromptSystem;
 	tips: ITipsSystem;
+	panel: IPanelSystem;
 	uiConfig: IUIConfig;
 	
 	/**

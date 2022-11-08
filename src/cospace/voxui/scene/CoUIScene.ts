@@ -19,6 +19,7 @@ declare var CoMaterial: ICoMaterial;
 import { ICoTexture } from "../../voxtexture/ICoTexture";
 import { UILayout } from "../layout/UILayout";
 import IAABB2D from "../../../vox/geom/IAABB2D";
+import { IPanelSystem } from "../system/IPanelSystem";
 declare var CoTexture: ICoTexture;
 
 class CoUIScene implements ICoUIScene {
@@ -33,6 +34,7 @@ class CoUIScene implements ICoUIScene {
 
 	prompt: IPromptSystem = null;
 	tips: ITipsSystem = null;
+	panel: IPanelSystem = null;
 	uiConfig: IUIConfig = null;
 
 	texAtlasNearestFilter = true;
