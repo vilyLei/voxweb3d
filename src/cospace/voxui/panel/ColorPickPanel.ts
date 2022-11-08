@@ -103,8 +103,6 @@ class ColorPickPanel extends UIPanel implements IColorPickPanel {
 	private createColorData(img: HTMLImageElement): void {
 
 		let canvas = document.createElement("canvas");
-		// canvas.style.width = img.width + "px";
-		// canvas.style.height = img.height + "px";
 		canvas.style.display = "bolck";
 		canvas.style.overflow = "hidden";
 		canvas.style.left = "0px";
@@ -114,14 +112,11 @@ class ColorPickPanel extends UIPanel implements IColorPickPanel {
 		canvas.height = img.height;
 		let ctx2D = canvas.getContext("2d");
 		ctx2D.drawImage(img, 0, 0);
-		// document.body.appendChild(canvas);
 
 		let imgData = ctx2D.getImageData(0, 0, img.width, img.height);
 		this.m_pixels = imgData.data;
 		let len = this.m_pixels.length;
 		console.log("len / 4 : ", len / 4);
-		// canvas.style.backgroundColor = "transparent";
-		// canvas.style.pointerEvents = "none";
 	}
 	private createTexByUrl(url: string = ""): IRenderTexture {
 		let sc = this.getScene();

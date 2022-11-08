@@ -274,7 +274,7 @@ class NormalCtrlPanel {
 				panel.setZ(0.5);
 				panel.update();
 				panel.setSelectColorCallback((color: IColor4): void => {
-					console.log("selected color: ", color);
+					
 					let c = color.clone().scaleBy(0.9);
 					this.m_colorSelectLabel.setColors([
 						c,
