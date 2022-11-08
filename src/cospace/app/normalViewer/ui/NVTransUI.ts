@@ -85,17 +85,16 @@ class NVTransUI {
 		type = this.m_keyInterac.createKeysEventType([Key.CTRL, Key.Z]);
 		this.m_keyInterac.addKeysDownListener(type, this, this.keyCtrlZDown);
 
-		// this.m_recoder = CoEdit.createTransformRecorder();
-		this.m_recoder = new CoTransformRecorder();
+		this.m_recoder = CoEdit.createTransformRecorder();
+		// this.m_recoder = new CoTransformRecorder();
 
 		this.initUI();
 	}
 
 	private keyCtrlZDown(evt: any): void {
-		console.log("ctrl-z, undo() begin.");
+		// console.log("ctrl-z, undo() begin.");
 		this.m_recoder.undo();
 		let list = this.m_recoder.getCurrList();
-		console.log("ctrl-z, undo() end, list: ", list);
 		if(list != null) {
 			let flag = true;
 			for(let i = 0; i < list.length; ++i) {
@@ -206,13 +205,11 @@ class NVTransUI {
 	private uiMouseUpListener(evt: any): void {
 
 		// console.log("NVTransUI::uiMouseUpListener(), evt: ", evt);
-		console.log("uiMouseUpListener ui up (x, y): ", evt.mouseX, evt.mouseY);
 
 		if (this.m_selectFrame.isSelectEnabled()) {
 
 			let b = this.m_selectFrame.bounds;
 			let list = this.m_entityQuery.getEntities(b.min, b.max);
-			console.log("uiMouseUpListener list: ",list);
 			this.selectEntities(list);
 		}
 		this.m_selectFrame.end(evt.mouseX, evt.mouseY);
