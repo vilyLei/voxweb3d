@@ -51,6 +51,7 @@ class NormalEntityManager {
 	private testSelect(): void {
 		let ls = this.m_selectEntities;
 		if (ls != null) {
+			console.log("testSelect, ls: ", ls);
 			let map = this.m_map;
 			let lineVisible = false;
 			let dif = false;
@@ -58,12 +59,15 @@ class NormalEntityManager {
 			let cpl = this.ctrPanel;
 
 			let scaleBase = cpl.getNormalScale();
-
+			let firstLNode: NormalEntityNode = null;
 			for (let i = 0; i < ls.length; ++i) {
 				const node = map.get(ls[i].getUid());
 				if (node != null) {
 					if (node.getLineVisible()) {
 						lineVisible = true;
+						if(firstLNode == null) {
+							firstLNode = node;
+						}
 					}
 					if (node.isShowDifference()) {
 						dif = true;
@@ -78,6 +82,9 @@ class NormalEntityManager {
 			cpl.setNormalFlag(lineVisible);
 			cpl.setNormalFlipFlag(flip);
 			cpl.setDifferenceFlag(dif);
+			if(firstLNode != null) {
+				cpl.setNormalLineColor( firstLNode.getNormalLineColor() );
+			}
 		}
 	}
 

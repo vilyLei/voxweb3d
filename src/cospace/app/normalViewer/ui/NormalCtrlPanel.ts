@@ -283,7 +283,7 @@ class NormalCtrlPanel {
 			} else {
 				panel.open();
 				panel.setXY(bounds.max.x - panel.getWidth(), bounds.max.y);
-				panel.setZ(0.5);
+				panel.setZ(this.getZ() + 0.3);
 				panel.update();
 				panel.setSelectColorCallback((color: IColor4): void => {
 					this.setNormalLineColor(color, true);
@@ -528,6 +528,9 @@ class NormalCtrlPanel {
 	}
 	setZ(pz: number): void {
 		this.m_panel.setZ(pz);
+	}
+	getZ(): number {
+		return this.m_panel.getZ();
 	}
 	setXY(px: number, py: number): void {
 		this.m_panel.setXY(px, py);

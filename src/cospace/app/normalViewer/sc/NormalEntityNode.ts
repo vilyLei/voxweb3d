@@ -19,6 +19,7 @@ class NormalEntityNode {
 	private m_showDifference: boolean = false;
 	private m_entityMaterial: NormalEntityMaterial;
 	private m_normalMaterial: NormalLineMaterial;
+	private m_color: IColor4 = null;
 	private m_normalScale = 1.0;
 	private m_normalScale0 = 1.0;
 	private m_uid: number = -1;
@@ -73,6 +74,7 @@ class NormalEntityNode {
 		if (this.entity != null) {
 			return this.entity;
 		}
+		this.m_color = CoRScene.createColor4();
 		let builder = NormalEntityNode.s_entityBuilder;
 		let normalEntity = builder.createNormalEntity(model, nivs);
 		this.m_entityMaterial = builder.getEntityMaterial();
@@ -104,6 +106,16 @@ class NormalEntityNode {
 	}
 	setNormalLineColor(c: IColor4): void {
 		if (this.m_normalMaterial != null) this.m_normalMaterial.setColor(c);
+	}
+	
+	getNormalLineColor(): IColor4 {
+
+		this.m_color.setRGB3f(1.0, 0.0, 1.0);
+
+		if (this.m_normalMaterial != null) {
+			this.m_normalMaterial.getColor(this.m_color);
+		}
+		return this.m_color;
 	}
 
 	private m_model: CoGeomDataType;
