@@ -3,6 +3,7 @@ import IColor4 from "../../../vox/material/IColor4";
 import { UIEntityBase } from "./UIEntityBase";
 import { ICoUIScene } from "../../voxui/scene/ICoUIScene";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
+import {ITextureLabel} from "./ITextureLabel";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
@@ -13,7 +14,7 @@ declare var CoMaterial: ICoMaterial;
 import { ICoEntity } from "../../voxentity/ICoEntity";
 declare var CoEntity: ICoEntity;
 
-class TextureLabel extends UIEntityBase {
+class TextureLabel extends UIEntityBase implements ITextureLabel {
 
 	private m_pw = 10;
 	private m_ph = 10;
