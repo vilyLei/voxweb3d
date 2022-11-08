@@ -123,7 +123,7 @@ class ColorPickPanel extends UIPanel implements IColorPickPanel {
 			this.createColorData(img);
 			tex.setDataFromImage(img, 0, 0, 0, false);
 		};
-		img.src = url != "" ? url : "static/assets/box.jpg";
+		img.src = url;
 		return tex;
 	}
 	protected openThis(): void {
