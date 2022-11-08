@@ -11,10 +11,6 @@ interface IDataRecorde {
 	 * Ctrl + Y
 	 */
 	redo(): void;
-	/**
-	 * remove invalid recod
-	 */
-	// fakeUndo(): void;
 }
 
 export { IDataRecorde }

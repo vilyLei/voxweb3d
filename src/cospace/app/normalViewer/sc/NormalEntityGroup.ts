@@ -136,36 +136,6 @@ class NormalEntityGroup {
 	}
 	private createEntityFromUnit(unit: CoGeomDataUnit, status: number = 0): void {
 
-		// console.log("XXXXXX createEntityFromUnit, unit: ", unit);
-		/*
-		let entities: ITransformEntity[] = [];
-		let len = unit.data.models.length;
-
-		let nodes: NormalEntityNode[] = [];
-		for (let i = 0; i < len; ++i) {
-			let dt = unit.data;
-			const node = this.addEntityWithModel(dt.models[i], dt.transforms != null ? dt.transforms[i] : null);
-			if (node != null) {
-				this.entityManager.addNode(node);
-				nodes.push(node);
-				this.m_nodes.push(node);
-				entities.push(node.entity);
-			}
-		}
-		
-		this.updateLayout(false);
-		this.transUI.getRecoder().save(entities);
-		
-		// for (let i = 0; i < nodes.length; ++i) {
-		// 	nodes[i].createNormalLine();
-		// }
-		//*/
-
-		// let nodes = this.m_nodes;
-		// for (let i = 0; i < nodes.length; ++i) {
-		// 	nodes[i].createNormalLine();
-		// }
-
 		this.m_loadedTotal++;
 		if (this.m_loadedTotal >= this.m_loadTotal) {
 			this.uiscene.prompt.getPromptPanel().applyConfirmButton();
@@ -181,12 +151,10 @@ class NormalEntityGroup {
 
 		if (model != null) {
 
-			// let map = this.m_map;
 			let node = new NormalEntityNode();
 			node.rsc = this.rsc;
 			node.transUI = this.transUI;
 			let entity = node.setEntityModel(model);
-			// map.set(node.getUid(), node);
 			let mat4 = transform != null ? CoRScene.createMat4(transform) : null;
 			this.m_transforms.push(mat4);
 			this.m_transes.push(entity);

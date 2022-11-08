@@ -134,6 +134,7 @@ class NormalEntityNode {
 		entity.addEventListener(ME.MOUSE_OUT, this, this.mouseOutTargetListener);
 		entity.addEventListener(ME.MOUSE_DOWN, this, this.mouseDownTargetListener);
 		// entity.addEventListener(ME.MOUSE_UP, this, this.mouseUpTargetListener);
+		// 如果双击一个entity则全部选中这个group
 	}
 	private mouseOverTargetListener(evt: any): void {
 		this.m_entityMaterial.setRGB3f(0.8, 0.8, 0.8);

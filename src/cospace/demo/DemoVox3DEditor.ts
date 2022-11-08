@@ -195,7 +195,6 @@ export class DemoVox3DEditor {
 			cfgUrl = "static/apps/normalViewer/ui/en-US/uicfg.json";			
 		}
 		uiConfig.initialize(cfgUrl,(): void => {
-			console.log("xxxx initEditSceneSys... ...");
 			this.initEditSceneSys();
 		});
 
@@ -260,9 +259,6 @@ export class DemoVox3DEditor {
 			rparam.setCamProject(45, 20.0, 9000.0);
 			let rscene = CoRScene.createRendererScene(rparam, 3);
 			rscene.setClearRGBColor3f(0.23, 0.23, 0.23);
-
-			// console.log("60/255: ", 60/255);
-			// rscene.setClearUint24Color((60 << 16) + (60 << 8) + 60);
 
 			rscene.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
 

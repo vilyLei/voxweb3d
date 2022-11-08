@@ -8,11 +8,6 @@ import { IDataRecorde } from "./IDataRecorde";
  */
 interface ICoTransformRecorder extends IDataRecorde {
 	/**
-	 * 单步存放当前状态，所以初始化target的时候就应该存放进来
-	 * @param tars IRenderEntity instance list
-	 */
-	// save(tars: IRenderEntity[]): void;
-	/**
 	 * 与saveEnd 协作存放当前状态，所以初始化target的时候就应该存放进来
 	 * @param tars IRenderEntity instance list
 	 */
