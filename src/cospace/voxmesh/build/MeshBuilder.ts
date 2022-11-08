@@ -8,6 +8,7 @@ import IRawMesh from "../../../vox/mesh/IRawMesh";
 import IMatrix4 from "../../../vox/math/IMatrix4";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
+import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 declare var CoRScene: ICoRScene;
 
 class MeshBuilder {
@@ -26,6 +27,10 @@ class MeshBuilder {
      */
     setBufSortFormat(layoutBit: number): void {
         this.m_bufSortFormat = layoutBit;
+    }
+    applyMaterial(material: IRenderMaterial, texEnabled: boolean): void {
+        material.initializeByCodeBuf(texEnabled );
+        this.m_bufSortFormat = material.getBufSortFormat();
     }
     protected createMesh(): IRawMesh {
 

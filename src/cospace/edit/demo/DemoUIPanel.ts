@@ -35,6 +35,7 @@ import { NormalCtrlPanel } from "../../app/normalViewer/ui/NormalCtrlPanel";
 import { PromptSystem } from "../../voxui/system/PromptSystem";
 import { AxisAlignCalc } from "../../voxui/layout/AxisAlignCalc";
 import { UIConfig } from "../../voxui/system/UIConfig";
+import { ColorPickPanel } from "../../voxui/panel/ColorPickPanel";
 
 // import TextGeometryBuilder from "../../voxtext/base/TextGeometryBuilder";
 // import { PlaneMeshBuilder } from "../../voxmesh/build/PlaneMeshBuilder";
@@ -163,9 +164,9 @@ export class DemoUIPanel {
 	}
 	private initEditSceneSys(): void {
 		let uisc = this.m_uiScene;
-		let promptSys = new PromptSystem();
-		promptSys.initialize(uisc);
-		uisc.prompt = promptSys;
+		// let promptSys = new PromptSystem();
+		// promptSys.initialize(uisc);
+		// uisc.prompt = promptSys;
 	}
 	private initUISC(): void {
 		let uisc = this.m_uiScene;
@@ -350,11 +351,21 @@ export class DemoUIPanel {
 		}
 	}
 	private m_times = 0;
+	private m_colorPanel: ColorPickPanel = null;
 	private mouseDownListener(evt: any): void {
 		// if(this.m_textLabel != null) {
 		// 	this.m_textLabel.setText("Good-Day");
 		// 	this.m_textLabel.update();
 		// }
+		if(this.m_colorPanel == null) {
+			this.m_colorPanel = new ColorPickPanel();
+			this.m_colorPanel.setBGColor(CoRScene.createColor4(0.4, 0.4, 0.4));
+			this.m_colorPanel.initialize(this.m_uiScene, 1, 260, 260);
+		}
+		this.m_colorPanel.open();
+
+		console.log("xxxxx xxx mouseDownListener() ...");
+		return;
 		let panel = this.m_uiScene.prompt.getPromptPanel();
 		if (this.m_times < 1) {
 			this.m_uiScene.prompt.setPromptBGColor(CoRScene.createColor4(0.4, 0.4, 0.4));

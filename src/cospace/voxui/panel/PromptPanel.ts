@@ -57,7 +57,7 @@ class PromptPanel extends UIPanel implements IPromptPanel {
 			this.m_confirmNS = confirmNS;
 			this.m_cancelNS = cancelNS;
 
-			this.m_bgColor = CoMaterial.createColor4();
+			if(this.m_bgColor == null) this.m_bgColor = CoMaterial.createColor4();
 		}
 	}
 
