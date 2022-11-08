@@ -18,6 +18,7 @@ import IProgressDataEvent from "../../../../vox/event/IProgressDataEvent";
 import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { ICoUI } from "../../../voxui/ICoUI";
 import { ButtonBuilder } from "../../../voxui/button/ButtonBuilder";
+import ITransformEntity from "../../../../vox/entity/ITransformEntity";
 
 declare var CoRScene: ICoRScene;
 declare var CoUI: ICoUI;
@@ -259,6 +260,20 @@ class NormalCtrlPanel {
 	}
 	private normalLineColorSelect(evt: any): void {
 		console.log("color select...");
+		let target = evt.target as ITransformEntity;
+		let bounds = target.getGlobalBounds();
+		let panel = this.m_scene.panel.getPanel("colorPickPanel");
+		if(panel != null) {
+			if(panel.isOpen()) {
+				panel.close();
+			}else {
+				panel.open();
+				console.log("panel.getWidth(): ", panel.getWidth());
+				panel.setXY(bounds.max.x - panel.getWidth(), bounds.max.y);
+				panel.setZ(0.5);
+				panel.update();
+			}
+		}
 	}
 
 	private selectVisibleFunc(evt: any): void {

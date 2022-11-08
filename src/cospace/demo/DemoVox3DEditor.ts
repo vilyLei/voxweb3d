@@ -113,7 +113,7 @@ export class DemoVox3DEditor {
 	private m_interact: IMouseInteraction = null;
 	private m_transUI = new NVTransUI();
 	private m_nvaUI = new NVNavigationUI();
-
+	
 	private m_vmctx: ViewerMaterialCtx;
 	private m_outline: CoPostOutline;
 	private m_loadingUI: LoadingUI = new LoadingUI();
