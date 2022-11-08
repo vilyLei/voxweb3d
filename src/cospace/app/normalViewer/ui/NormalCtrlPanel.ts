@@ -171,46 +171,13 @@ class NormalCtrlPanel {
 		let py = 0;
 
 		let ME = CoRScene.MouseEvent;
-		// let textParam: ITextParam = {
-		// 	text: "Local",
-		// 	textColor: CoMaterial.createColor4(),
-		// 	fontSize: 30,
-		// 	font: ""
-		// };
-		// let colors: IColor4[] = [
-		// 	fc4().setRGB3Bytes(80, 80, 80),
-		// 	fc4().setRGB3Bytes(110, 110, 110),
-		// 	fc4().setRGB3Bytes(90, 90, 90),
-		// 	fc4().setRGB3Bytes(80, 80, 80)
-		// ];
-		// let localBtn = CoUI.createTextButton(
-		// 	this.m_btnW, this.m_btnH, "local",
-		// 	tta, textParam, colors
-		// );
-		// localBtn.setXY(startX, startY);
 		let localBtn = builder.createPanelBtnWithCfg(sc, startX, startY, 0, uiCfg);
 
 		px = px + this.m_btnW;
-		// this.m_btnW = 90;
-		// textParam.text = "Global";
-		// // let globalBtn = this.createBtn("Global", px, startY, "global");
-		// let globalBtn = CoUI.createTextButton(
-		// 	this.m_btnW, this.m_btnH, "global",
-		// 	tta, textParam, colors
-		// );
-		// globalBtn.setXY(px, startY);
 		let globalBtn = builder.createPanelBtnWithCfg(sc, px, startY, 1, uiCfg);
 
 
 		px = px + this.m_btnW;
-		// this.m_btnW = 100;		
-		// textParam.text = "Color";
-		// // let differenceBtn = this.createBtn("Difference", px, startY, "difference");
-		// let modelColorBtn = CoUI.createTextButton(
-		// 	this.m_btnW, this.m_btnH, "modelColor",
-		// 	tta, textParam, colors
-		// );
-		// modelColorBtn.setXY(px, startY);
 		let modelColorBtn = builder.createPanelBtnWithCfg(sc, px, startY, 2, uiCfg);
 
 		let pl = this.m_panel;
@@ -263,21 +230,12 @@ class NormalCtrlPanel {
 			fc4().setRGB3Bytes(220, 0, 220),
 			fc4().setRGB3Bytes(240, 0, 240)
 		];
-		let normalLineColorBtn = this.createColorBtn(22, 22, "normalLineColor", colors1);
-		normalLineColorBtn.setXY(startX + textLabel.getWidth() + disX, py);
+		let normalLineColorBtn = this.createColorBtn(18, 18, "normalLineColor", colors1);
+		normalLineColorBtn.setXY(startX + textLabel.getWidth() + disX, py + 2);
 		pl.addEntity(normalLineColorBtn);
 
 		px = startX;
 		py = textLabel.getY() - disY;
-		// this.m_btnW = 90;		
-		// textParam.text = "Test";
-		// // let differenceBtn = this.createBtn("Difference", px, startY, "difference");
-		// let normalTestBtn = CoUI.createTextButton(
-		// 	this.m_btnW, this.m_btnH, "normalTest",
-		// 	tta, textParam, colors
-		// );
-		// normalTestBtn.update();
-		// normalTestBtn.setXY(px, py - normalTestBtn.getHeight());
 		
 		let normalTestBtn = builder.createPanelBtnWithCfg(sc, px, py - localBtn.getHeight(), 3, uiCfg);
 		pl.addEntity(normalTestBtn);
