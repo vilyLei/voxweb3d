@@ -334,7 +334,7 @@ export class DemoUIPanel {
 	private initInteract(): void {
 		let r = this.m_rscene;
 		if (r != null && this.m_interact == null && typeof CoUIInteraction !== "undefined") {
-
+			
 			this.m_interact = CoUIInteraction.createMouseInteraction();
 			this.m_interact.initialize(this.m_rscene, 2, true);
 			this.m_interact.setSyncLookAtEnabled(true);

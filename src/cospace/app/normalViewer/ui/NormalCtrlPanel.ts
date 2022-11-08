@@ -19,6 +19,8 @@ import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { ICoUI } from "../../../voxui/ICoUI";
 import { ButtonBuilder } from "../../../voxui/button/ButtonBuilder";
 import ITransformEntity from "../../../../vox/entity/ITransformEntity";
+import { IColorPickPanel } from "../../../voxui/panel/IColorPickPanel";
+import { IClipColorLabel } from "../../../voxui/entity/IClipColorLabel";
 
 declare var CoRScene: ICoRScene;
 declare var CoUI: ICoUI;
@@ -262,7 +264,7 @@ class NormalCtrlPanel {
 		console.log("color select...");
 		let target = evt.target as ITransformEntity;
 		let bounds = target.getGlobalBounds();
-		let panel = this.m_scene.panel.getPanel("colorPickPanel");
+		let panel = this.m_scene.panel.getPanel("colorPickPanel") as IColorPickPanel;
 		if(panel != null) {
 			if(panel.isOpen()) {
 				panel.close();
@@ -272,6 +274,16 @@ class NormalCtrlPanel {
 				panel.setXY(bounds.max.x - panel.getWidth(), bounds.max.y);
 				panel.setZ(0.5);
 				panel.update();
+				panel.setSelectColorCallback((color: IColor4): void => {
+					console.log("selected color: ", color);
+					let c = color.clone().scaleBy(0.9);
+					this.m_colorSelectLabel.setColors([
+						c,
+						color.clone().scaleBy(1.1),
+						c,
+						c
+					]);
+				});
 			}
 		}
 	}
@@ -463,12 +475,13 @@ class NormalCtrlPanel {
 		this.m_normalScale = f;
 		this.sendProgressEvt("normalScale", f);
 	}
-
+	private m_colorSelectLabel: IClipColorLabel;
 	private createColorBtn(pw: number, ph: number, idns: string, colors: IColor4[]): IButton {
 
 		let colorClipLabel = CoUI.createClipColorLabel();
 		colorClipLabel.initializeWithoutTex(pw, ph, 4);
 		colorClipLabel.setColors(colors);
+		this.m_colorSelectLabel = colorClipLabel;
 		let btn = CoUI.createButton();
 		btn.uuid = idns;
 		btn.initializeWithLable(colorClipLabel);

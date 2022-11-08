@@ -20,7 +20,9 @@ class Color4 implements IColor4{
         this.b = pb;
         this.a = pa;
     }
-    
+    clone(): Color4 {
+        return new Color4(this.r, this.g, this.b, this.a);
+    }
     fromArray4(arr: number[] | Float32Array, offset: number = 0): Color4 {
         this.r = arr[offset];
         this.g = arr[offset + 1];

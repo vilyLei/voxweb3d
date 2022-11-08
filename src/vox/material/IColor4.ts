@@ -22,7 +22,8 @@ interface IColor4 {
      * the default value is 1.0
      */
     a: number;
-
+    
+    clone(): IColor4;
     /**
      * example: [0],[1],[2],[3] => r,g,b,a
      */
