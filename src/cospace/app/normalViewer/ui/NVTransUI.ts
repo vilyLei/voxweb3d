@@ -268,6 +268,10 @@ class NVTransUI {
 		}
 	}
 	private m_selectListeners: ((list: IRenderEntity[]) => void)[] = [];
+	private m_selectFilter: ((list: IRenderEntity[]) => IRenderEntity[]) = null;
+	addSelectFilter(filter: (list: IRenderEntity[]) => IRenderEntity[]): void {
+		this.m_selectFilter = filter;
+	}
 	addSelectListener(listener: (list: IRenderEntity[]) => void): void {
 		if (listener != null) {
 			this.m_selectListeners.push(listener);
@@ -283,6 +287,11 @@ class NVTransUI {
 	selectEntities(list: IRenderEntity[]): void {
 		this.m_selectList = list;
 		if (list != null && list.length > 0) {
+			
+			if(this.m_selectFilter != null) {
+				list = this.m_selectFilter(list);
+				this.m_selectList = list;
+			}
 			let transCtr = this.m_transCtr;
 
 			let pos = CoMath.createVec3();

@@ -72,7 +72,7 @@ class KeyEvtManager {
 		if (this.m_code0 != evt.keyCode) {
 			this.m_code0 = evt.keyCode;
 
-			console.log("KeyEvtManager::use() B ", evt.keyCode);
+			// console.log("KeyEvtManager::use() B ", evt.keyCode);
 			this.m_code1 = -1;
 
 			this.m_index++;

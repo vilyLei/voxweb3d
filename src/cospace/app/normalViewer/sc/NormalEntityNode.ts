@@ -168,7 +168,9 @@ class NormalEntityNode {
 		this.m_entityMaterial.setRGB3f(0.7, 0.7, 0.7);
 	}
 	private mouseDownTargetListener(evt: any): void {
+
 		// console.log("mouseDownTargetListener()..., evt.target: ", evt.target);
+
 		let entity = evt.target as ITransformEntity;
 		this.transUI.selectEntities([entity]);
 	}

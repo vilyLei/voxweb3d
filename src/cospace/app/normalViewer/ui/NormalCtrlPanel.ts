@@ -33,21 +33,20 @@ class NormalCtrlPanel {
 	private m_diffBtn: IFlagButton;
 	private m_normalFlipBtn: IFlagButton;
 
-	private m_btnW: number = 90;
-	private m_btnH: number = 50;
+	private m_btnW = 90;
+	private m_btnH = 50;
+	private m_normalScale = 0;
 	private m_scene: ICoUIScene = null;
 	private m_rpi: number;
 	private m_panelW: number;
 	private m_panelH: number;
 	private m_v0: IVector3D;
 	private m_panel: IUIPanel = null;
-
 	private m_btnGroup: ISelectButtonGroup;
 
 	private m_selectDispatcher: IEvtDispatcher;
 	private m_progressDispatcher: IEvtDispatcher;
 	private m_progressEvt: IProgressDataEvent;
-	private m_normalScale = 0.0;
 	private m_colorSelectLabel: IClipColorLabel;
 	private m_normalLineColorBtn: IButton;
 	private m_colorPickPanel: IColorPickPanel = null;
@@ -268,7 +267,7 @@ class NormalCtrlPanel {
 		this.setDisplayMode(evt.uuid, true)
 	}
 	setDisplayMode(uuid: string, sendEvt: boolean = false): void {
-		console.log("setDisplayMode, uuid: ", uuid);
+		// console.log("setDisplayMode, uuid: ", uuid);
 		if (sendEvt) {
 			this.sendSelectionEvt(uuid, sendEvt);
 		} else {

@@ -30,7 +30,15 @@ class NormalEntityManager {
 	constructor() {
 	}
 	initialize(): void {
-
+		this.transUI.addSelectFilter((list: IRenderEntity[]): IRenderEntity[] => {
+			console.log("use a list filter() ...");
+			let interac = this.transUI.getKeyInterac();
+			let keyCode = interac.getCurrDownKeyCode();
+			if(keyCode) {
+				console.log("use a SHIFT Key Down.");
+			}
+			return list;
+		});
 		this.transUI.addSelectListener((list: IRenderEntity[]): void => {
 			this.setSelectedModelVisible(true);
 			let entitys = list as ITransformEntity[];
