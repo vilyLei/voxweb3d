@@ -48,6 +48,9 @@ class NormalCtrlPanel {
 	private m_progressDispatcher: IEvtDispatcher;
 	private m_progressEvt: IProgressDataEvent;
 	private m_normalScale = 0.0;
+	private m_colorSelectLabel: IClipColorLabel;
+	private m_normalLineColorBtn: IButton;
+	private m_colorPickPanel: IColorPickPanel = null;
 
 	autoLayout: boolean = true;
 
@@ -125,6 +128,10 @@ class NormalCtrlPanel {
 	close(): void {
 		this.removeLayoutEvt();
 		this.m_panel.close();
+		if(this.m_colorPickPanel != null) {
+			this.m_colorPickPanel.close();
+			this.m_colorPickPanel = null;
+		}
 	}
 
 	addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
@@ -257,17 +264,14 @@ class NormalCtrlPanel {
 		);
 		this.m_btnGroup.select(globalBtn.uuid);
 	}
-	private m_colorSelectLabel: IClipColorLabel;
-	private m_normalLineColorBtn: IButton;
 	private normalDisplaySelect(evt: any): void {
-		// this.sendSelectionEvt(evt.uuid, true);
 		this.setDisplayMode(evt.uuid, true)
 	}
 	setDisplayMode(uuid: string, sendEvt: boolean = false): void {
 		console.log("setDisplayMode, uuid: ", uuid);
-		if(sendEvt) {
+		if (sendEvt) {
 			this.sendSelectionEvt(uuid, sendEvt);
-		}else {
+		} else {
 			this.m_btnGroup.select(uuid);
 		}
 	}
@@ -280,23 +284,35 @@ class NormalCtrlPanel {
 			this.sendSelectionEvt(this.m_normalLineColorBtn.uuid, true, color.clone());
 		}
 	}
+	private layoutPickColorPanel(): void {
+		let panel = this.m_colorPickPanel;
+		if(panel != null && panel.isOpen()) {
+			this.m_normalLineColorBtn.update();
+			let bounds = this.m_normalLineColorBtn.getGlobalBounds();
+			panel.setXY(bounds.max.x - panel.getWidth(), bounds.max.y + 2);
+			panel.setZ(this.getZ() + 0.3);
+			panel.update();
+		}
+	}
 	private normalLineColorSelect(evt: any): void {
 		console.log("color select...evt: ", evt);
-		let uuid = evt.uuid;
-		let target = evt.target as ITransformEntity;
-		let bounds = target.getGlobalBounds();
-		let panel = this.m_scene.panel.getPanel("colorPickPanel") as IColorPickPanel;
-		if (panel != null) {
-			if (panel.isOpen()) {
-				panel.close();
-			} else {
-				panel.open();
-				panel.setXY(bounds.max.x - panel.getWidth(), bounds.max.y);
-				panel.setZ(this.getZ() + 0.3);
-				panel.update();
-				panel.setSelectColorCallback((color: IColor4): void => {
-					this.setNormalLineColor(color, true);
-				});
+		let panel = this.m_colorPickPanel;
+		if(panel != null && panel.isOpen()) {
+			panel.close();
+			this.m_colorPickPanel = null;
+		} else {
+			let panel = this.m_scene.panel.getPanel("colorPickPanel") as IColorPickPanel;			
+			if (panel != null) {
+				if (panel.isOpen()) {
+					panel.close();
+				} else {
+					this.m_colorPickPanel = panel;
+					panel.open();
+					this.layoutPickColorPanel();
+					panel.setSelectColorCallback((color: IColor4): void => {
+						this.setNormalLineColor(color, true);
+					});
+				}
 			}
 		}
 	}
@@ -467,10 +483,7 @@ class NormalCtrlPanel {
 
 		let pv = this.m_v0;
 		pv.setXYZ(px, py, 0);
-
-		// console.log("px,py: ", px,py);
 		this.m_panel.globalToLocal(pv);
-		// console.log("pv.x, pv.y: ", pv.x, pv.y);
 
 		px = pv.x;
 		if (px < this.m_dragMinX) {
@@ -480,14 +493,8 @@ class NormalCtrlPanel {
 		}
 		this.m_dragBar.setX(px);
 		this.m_dragBar.update();
-		// console.log("this.m_proBaseLen: ",this.m_proBaseLen, this.m_progressLen);
-		// let f = (px - this.m_dragMinX) / this.m_progressLen;
 		let f = (px - this.m_dragMinX) / this.m_proBaseLen;
-		// console.log("f: ", f, px - this.m_dragMinX);
-		// console.log("f: ",f, (0.1 + f * 2.0));
-		// f = 0.1 + f * 3.0;
 		this.m_normalScale = f;
-		this.sendProgressEvt("normalScale", f);
 	}
 	private createColorBtn(pw: number, ph: number, idns: string, colors: IColor4[]): IButton {
 
@@ -533,6 +540,7 @@ class NormalCtrlPanel {
 			let py = Math.round(rect.y + (rect.height - this.getHeight()) * 0.5);
 			this.setXY(px, py);
 			this.update();
+			this.layoutPickColorPanel();
 		}
 	}
 	setZ(pz: number): void {
