@@ -103,12 +103,12 @@ class NormalEntityMaterial {
     		vec2 f2 = sign(dv);
     
     		vec3 nv = normalize(v_nv.xyz);
-    		vec3 color = nv;//pow(nv, gama);
+    		vec3 color = nv;
 
 			float nDotL0 = max(dot(v_vnv.xyz, direc0), 0.1);
 			float nDotL1 = max(dot(v_vnv.xyz, direc1), 0.1);
-			nDotL0 = 0.7 * (nDotL0 + nDotL1);
-			vec3 modelColor = u_params[0].xyz * vec3(nDotL0);
+			
+			vec3 modelColor = u_params[0].xyz * vec3( 0.7 * (nDotL0 + nDotL1) );
 			vec4 param = u_params[1];
 
     		vec3 frontColor = param.x > 0.5 ? modelColor : color.xyz;

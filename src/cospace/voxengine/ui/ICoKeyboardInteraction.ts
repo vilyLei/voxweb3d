@@ -5,8 +5,8 @@ interface ICoKeyboardInteraction {
 	initialize(rscene: IRendererScene): void;
 	
 	reset(): void;
+	getCurrDownKeyCode(): number;
 	/**
-	 * 
 	 * @param keyTypes example: [Keyboard.CTRL, Keyboard.Z]
 	 * @returns combination keys event type
 	 */

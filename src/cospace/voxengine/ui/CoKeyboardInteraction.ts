@@ -60,19 +60,26 @@ class KeyEvtManager {
 		this.m_index = -1;
 		this.m_keys.fill(0);
 	}
+	getCurrKeyCode(): number {
+		if (this.m_index > -1) {
+			return this.m_keys[this.m_index];
+		}
+		return -1;
+	}
 	use(evt: any): void {
 
-		// console.log("sfsdfsdfsdfsdfsdfsd use A", this.m_index);
+		// console.log("KeyEvtManager::use() A", this.m_index);
 		if (this.m_code0 != evt.keyCode) {
 			this.m_code0 = evt.keyCode;
-			
+
+			console.log("KeyEvtManager::use() B ", evt.keyCode);
 			this.m_code1 = -1;
 
 			this.m_index++;
 			let keys = this.m_keys;
 			keys[this.m_index] = evt.keyCode;
 			let t = this.createKeysEventType(this.m_keys);
-			
+
 			// console.log("sfsdfsdfsdfsdfsdfsd use B", this.m_index);
 			const pm = this.m_evtMap;
 			let node = pm.get(t);
@@ -108,7 +115,7 @@ class KeyEvtManager {
 		if (keyTypes != null) {
 			let len = keyTypes.length;
 			if (len > 0) {
-				if(len > 4) len = 4;
+				if (len > 4) len = 4;
 				let t = 0x0;
 				for (let i = 0; i < len; ++i) {
 					t = t | (keyTypes[i] << (i * 8));
@@ -160,13 +167,15 @@ class CoKeyboardInteraction implements ICoKeyboardInteraction {
 			let KE = CoRScene.KeyboardEvent
 			this.m_rscene.addEventListener(KE.KEY_DOWN, this, this.keyDown);
 			this.m_rscene.addEventListener(KE.KEY_UP, this, this.keyUp);
-			
-            window.onfocus = (): void => {
-                this.reset();
-            }
+
+			window.onfocus = (): void => {
+				this.reset();
+			}
 		}
 	}
-
+	getCurrDownKeyCode(): number {
+		return this.m_downMana.getCurrKeyCode();
+	}
 	private keyDown(evt: any): void {
 
 		// switch(evt.keyCode) {
@@ -208,7 +217,7 @@ class CoKeyboardInteraction implements ICoKeyboardInteraction {
 	 * @returns combination keys event type
 	 */
 	createKeysEventType(keyTypes: number[]): number {
-		return this.m_downMana.createKeysEventType( keyTypes );
+		return this.m_downMana.createKeysEventType(keyTypes);
 	}
 
 	/**

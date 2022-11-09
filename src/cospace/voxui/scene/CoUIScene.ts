@@ -8,6 +8,7 @@ import { ICoUIScene } from "./ICoUIScene";
 import { IPromptSystem } from "../system/IPromptSystem";
 import { ITipsSystem } from "../system/ITipsSystem";
 import {IUIConfig} from "../system/IUIConfig";
+import { ICoKeyboardInteraction } from "../../voxengine/ui/ICoKeyboardInteraction";
 
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
@@ -36,6 +37,7 @@ class CoUIScene implements ICoUIScene {
 	tips: ITipsSystem = null;
 	panel: IPanelSystem = null;
 	uiConfig: IUIConfig = null;
+	keyboardInteraction: ICoKeyboardInteraction = null;
 
 	texAtlasNearestFilter = true;
 	constructor() {

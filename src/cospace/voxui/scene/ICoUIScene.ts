@@ -9,6 +9,7 @@ import { IPromptSystem } from "../system/IPromptSystem";
 import { ITipsSystem } from "../system/ITipsSystem";
 import { IPanelSystem } from "../system/IPanelSystem";
 import {IUIConfig} from "../system/IUIConfig";
+import { ICoKeyboardInteraction } from "../../voxengine/ui/ICoKeyboardInteraction";
 
 interface ICoUIScene {
 	
@@ -16,10 +17,12 @@ interface ICoUIScene {
 	readonly texAtlas: ICanvasTexAtlas;
 	readonly transparentTexAtlas: ICanvasTexAtlas;
 	readonly layout: IUILayout;
+	
 	prompt: IPromptSystem;
 	tips: ITipsSystem;
 	panel: IPanelSystem;
 	uiConfig: IUIConfig;
+	keyboardInteraction: ICoKeyboardInteraction;
 	
 	/**
 	 * @param crscene the default value is null

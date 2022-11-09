@@ -63,6 +63,9 @@ class NVTransUI {
 			this.init();
 		}
 	}
+	getKeyInterac(): ICoKeyboardInteraction {
+		return this.m_keyInterac;
+	}
 	getCoUIScene(): ICoUIScene {
 		return this.m_coUIScene;
 	}
@@ -83,6 +86,7 @@ class NVTransUI {
 
 		this.m_keyInterac = CoUIInteraction.createKeyboardInteraction();
 		this.m_keyInterac.initialize(this.m_rsc);
+		this.m_coUIScene.keyboardInteraction = this.m_keyInterac;
 
 		let Key = CoRScene.Keyboard;
 		let type = this.m_keyInterac.createKeysEventType([Key.CTRL, Key.Y]);
@@ -246,7 +250,7 @@ class NVTransUI {
 	}
 	private keyDown(evt: any): void {
 
-		console.log("NVTransUI::keyDown() ..., evt.keyCode: ", evt.keyCode);
+		// console.log("NVTransUI::keyDown() ..., evt.keyCode: ", evt.keyCode);
 
 		let KEY = CoRScene.Keyboard;
 		switch (evt.keyCode) {
