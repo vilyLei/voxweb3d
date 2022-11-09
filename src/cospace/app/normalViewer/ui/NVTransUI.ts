@@ -287,10 +287,14 @@ class NVTransUI {
 	selectEntities(list: IRenderEntity[]): void {
 		this.m_selectList = list;
 		if (list != null && list.length > 0) {
-			
+
 			if(this.m_selectFilter != null) {
 				list = this.m_selectFilter(list);
 				this.m_selectList = list;
+				if (list == null || list.length < 1) {
+					this.m_selectList = null;
+					return;
+				}
 			}
 			let transCtr = this.m_transCtr;
 

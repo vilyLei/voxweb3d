@@ -34,8 +34,30 @@ class NormalEntityManager {
 			console.log("use a list filter() ...");
 			let interac = this.transUI.getKeyInterac();
 			let keyCode = interac.getCurrDownKeyCode();
-			if(keyCode) {
+			if (keyCode == 16) {
 				console.log("use a SHIFT Key Down.");
+				let map = this.m_map;
+				let firstNode: NormalEntityNode = null;
+				let ls = list;
+				for (let i = 0; i < ls.length; ++i) {
+					const node = map.get(ls[i].getUid());
+					if (node != null) {
+						if (firstNode == null) {
+							firstNode = node;
+							break;
+						}
+					}
+				}
+				if (firstNode != null) {
+					let guid = firstNode.groupUid;
+					list = [];
+					for(var [k, v] of map.entries()) {
+						if(v.groupUid == guid) {
+							list.push(v.entity);
+						}
+					}
+					// console.log("XXXXXX guid: ", guid, list);
+				}
 			}
 			return list;
 		});
@@ -49,9 +71,9 @@ class NormalEntityManager {
 		});
 	}
 	setVisible(visible: boolean): void {
-		if(this.m_visible != visible) {
+		if (this.m_visible != visible) {
 			this.m_visible = visible;
-			for(let [k,v] of this.m_map.entries()) {
+			for (let [k, v] of this.m_map.entries()) {
 				v.setVisible(visible);
 			}
 		}
@@ -71,11 +93,11 @@ class NormalEntityManager {
 			for (let i = 0; i < ls.length; ++i) {
 				const node = map.get(ls[i].getUid());
 				if (node != null) {
-					if(firstNode == null)
+					if (firstNode == null)
 						firstNode = node;
 					if (node.getLineVisible()) {
 						lineVisible = true;
-						if(firstLNode == null)
+						if (firstLNode == null)
 							firstLNode = node;
 					}
 					if (node.isShowDifference()) {
@@ -92,16 +114,16 @@ class NormalEntityManager {
 			cpl.setNormalFlag(lineVisible);
 			cpl.setNormalFlipFlag(flip);
 			cpl.setDifferenceFlag(dif);
-			if(firstLNode != null)
-				cpl.setNormalLineColor( firstLNode.getNormalLineColor() );
-			if(firstNode != null){
+			if (firstLNode != null)
+				cpl.setNormalLineColor(firstLNode.getNormalLineColor());
+			if (firstNode != null) {
 				let m = firstNode.getEntityMaterial();
-				if(m.isApplyingModelColor()) {
+				if (m.isApplyingModelColor()) {
 					cpl.setDisplayMode("modelColor");
-				}else {
-					if(m.isApplyingLocalNormal()) {
+				} else {
+					if (m.isApplyingLocalNormal()) {
 						cpl.setDisplayMode("local");
-					}else {
+					} else {
 						cpl.setDisplayMode("global");
 					}
 				}
@@ -119,13 +141,13 @@ class NormalEntityManager {
 			for (let i = 0; i < ls.length; ++i) {
 				const node = map.get(ls[i].getUid());
 				if (node != null) {
-					if(firstLNode == null)
+					if (firstLNode == null)
 						firstLNode = node;
 					node.setLineVisible(v);
 				}
 			}
-			if(v)
-				cpl.setNormalLineColor( firstLNode.getNormalLineColor() );
+			if (v)
+				cpl.setNormalLineColor(firstLNode.getNormalLineColor());
 		}
 	}
 	private setSelectedModelVisible(v: boolean): void {
@@ -221,7 +243,7 @@ class NormalEntityManager {
 			}
 		}
 	}
-	
+
 	setNormalLineColor(c: IColor4): void {
 		let ls = this.m_selectEntities;
 		if (ls != null) {
@@ -282,7 +304,7 @@ class NormalEntityManager {
 		}
 	}
 	applyNormalScale(f: number): void {
-		
+
 		let ls = this.m_selectEntities;
 		if (ls != null && ls.length > 0) {
 			let ls = this.m_selectEntities;
@@ -300,20 +322,20 @@ class NormalEntityManager {
 
 	addNode(node: NormalEntityNode): void {
 
-		if(node != null) {
-			
+		if (node != null) {
+
 			let map = this.m_map;
-			if(node.getUid() >= 0 && !map.has(node.getUid())) {
+			if (node.getUid() >= 0 && !map.has(node.getUid())) {
 				map.set(node.getUid(), node);
 			}
 		}
 	}
 	removeNode(node: NormalEntityNode): void {
-		
-		if(node != null) {
-			
+
+		if (node != null) {
+
 			let map = this.m_map;
-			if(node.getUid() >= 0 && map.has(node.getUid())) {
+			if (node.getUid() >= 0 && map.has(node.getUid())) {
 				map.delete(node.getUid());
 			}
 		}

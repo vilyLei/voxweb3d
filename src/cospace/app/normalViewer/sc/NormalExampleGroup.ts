@@ -25,7 +25,7 @@ class NormalExampleGroup implements IRunnable {
 	private m_textHeight = 130.0;
 	private m_enabled: boolean = true;
 	private m_transUI: NVTransUI;
-
+	private m_uid = 65535;
 	entityManager: NormalEntityManager;
 	constructor() { }
 	initialize(rscene: IRendererScene, transUI: NVTransUI): void {
@@ -156,6 +156,7 @@ class NormalExampleGroup implements IRunnable {
 		// node.createNormalLine(5);
 		this.m_nodeEntities.push(node.entity);
 		this.m_nodes.push(node);
+		node.groupUid = this.m_uid;
 		return node;
 	}
 

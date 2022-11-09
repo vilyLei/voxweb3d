@@ -124,6 +124,8 @@ class NormalEntityGroup {
 		for (let i = 0; i < len; ++i) {
 			const node = this.addEntityWithModel(models[i], transforms != null ? transforms[i] : null);
 			if (node != null) {
+				node.groupUid = this.getUid();
+				console.log("XXXXX node.groupUid: ",node.groupUid);
 				this.entityManager.addNode(node);
 				nodes.push(node);
 				this.m_nodes.push(node);
