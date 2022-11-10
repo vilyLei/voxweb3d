@@ -5,6 +5,8 @@ import { NormalEntityNode } from "./NormalEntityNode";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../app/CoSpaceAppData";
 import IRendererScene from "../../../../vox/scene/IRendererScene";
 import { NormalEntityManager } from "./NormalEntityManager";
+
+import {NVEntityGroup} from "./NVEntityGroup";
 import { ICoText } from "../../../voxtext/ICoText";
 import IVector3D from "../../../../vox/math/IVector3D";
 import { IH5Text } from "../../../voxtext/base/IH5Text";
@@ -14,31 +16,15 @@ import IRunnable from "../../../../vox/base/IRunnable";
 declare var CoRScene: ICoRScene;
 declare var CoText: ICoText;
 
-class NormalExampleGroup implements IRunnable {
+class NormalExampleGroup extends NVEntityGroup implements IRunnable {
 
-	private m_rscene: IRendererScene = null;
-	private m_visible: boolean = true;
 	private m_nodes: NormalEntityNode[] = [];
 	private m_nodeEntities: ITransformEntity[] = [];
 	private m_textEntities: ITransformEntity[] = [];
-	private m_pv: IVector3D = null;
 	private m_textHeight = 130.0;
-	private m_enabled: boolean = true;
-	private m_transUI: NVTransUI;
-	private m_uid = 65535;
-	entityManager: NormalEntityManager;
-	constructor() { }
-	initialize(rscene: IRendererScene, transUI: NVTransUI): void {
-
-		if (this.m_rscene == null) {
-			this.m_rscene = rscene;
-			this.m_transUI = transUI;
-			this.createNodes();
-			this.m_pv = CoRScene.createVec3();
-			rscene.runnableQueue.addRunner( this );
-		}
-	}
-	private createNodes(): void {
+	
+	constructor() { super(); }
+	protected createNodes(): void {
 
 		let mesh = this.m_rscene.entityBlock.unitBox.getMesh();
 		let correct_model: CoGeomDataType = {
@@ -189,12 +175,12 @@ class NormalExampleGroup implements IRunnable {
 			this.m_enabled = enabled;
 		}
 	}
-	setVisible(v: boolean): void {
-		this.m_visible = v;
-	}
-	isVisible(): boolean {
-		return this.m_visible;
-	}
+	// setVisible(v: boolean): void {
+	// 	this.m_visible = v;
+	// }
+	// isVisible(): boolean {
+	// 	return this.m_visible;
+	// }
 	update(): void {
 	}
 	destroy(): void {
@@ -218,19 +204,19 @@ class NormalExampleGroup implements IRunnable {
 		}
 	}
 
-	private m_runFlag: number = -1;
-	setRunFlag(flag: number): void {
-		this.m_runFlag = flag;
-	}
-	getRunFlag(): number {
-		return this.m_runFlag;
-	}
-	isRunning(): boolean {
-		return this.m_enabled;
-	}
-	isStopped(): boolean {
-		return !this.m_enabled;
-	}
+	// private m_runFlag: number = -1;
+	// setRunFlag(flag: number): void {
+	// 	this.m_runFlag = flag;
+	// }
+	// getRunFlag(): number {
+	// 	return this.m_runFlag;
+	// }
+	// isRunning(): boolean {
+	// 	return this.m_enabled;
+	// }
+	// isStopped(): boolean {
+	// 	return !this.m_enabled;
+	// }
 	run(): void {
 
 		let ns = this.m_nodes;

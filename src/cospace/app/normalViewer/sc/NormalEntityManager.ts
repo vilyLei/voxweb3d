@@ -26,7 +26,7 @@ class NormalEntityManager {
 	private m_map: Map<number, NormalEntityNode> = new Map();
 	private m_selectEntities: ITransformEntity[] = null;
 	private m_scaleBase = 1.0;
-	private m_visible: boolean = false;
+	private m_visible = false;
 	constructor() {
 	}
 	initialize(): void {

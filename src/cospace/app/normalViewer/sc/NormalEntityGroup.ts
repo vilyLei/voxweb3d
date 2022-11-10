@@ -15,30 +15,27 @@ import IMatrix4 from "../../../../vox/math/IMatrix4";
 import { NormalEntityLayout } from "./NormalEntityLayout";
 import { CoDataModule } from "../../../app/common/CoDataModule";
 import { NormalEntityManager } from "./NormalEntityManager";
+import {NVEntityGroup} from "./NVEntityGroup";
 
 declare var CoUI: ICoUI;
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
 
-class NormalEntityGroup {
+class NormalEntityGroup extends NVEntityGroup {
 
-	private static s_uid = 0;
-	private m_uid = NormalEntityGroup.s_uid++;
 	private m_coapp: CoDataModule;
 
 	uiscene: ICoUIScene;
 	ctrPanel: NormalCtrlPanel;
 	rsc: IRendererScene;
 	transUI: NVTransUI;
-	entityManager: NormalEntityManager;
 
 	constructor(coapp: CoDataModule) {
+		super();
 		this.m_coapp = coapp;
 	}
-	getUid(): number {
-		return this.m_uid;
-	}
-	initialize(): void {
+	
+	initialize(rscene: IRendererScene, transUI: NVTransUI): void {
 	}
 	loadModels(urls: string[], typeNS: string = ""): void {
 		if (urls != null && urls.length > 0) {
@@ -125,7 +122,7 @@ class NormalEntityGroup {
 			const node = this.addEntityWithModel(models[i], transforms != null ? transforms[i] : null);
 			if (node != null) {
 				node.groupUid = this.getUid();
-				console.log("XXXXX node.groupUid: ",node.groupUid);
+				// console.log("XXXXX node.groupUid: ",node.groupUid);
 				this.entityManager.addNode(node);
 				nodes.push(node);
 				this.m_nodes.push(node);
