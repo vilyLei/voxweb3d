@@ -29,35 +29,87 @@ class NormalEntityManager {
 	private m_visible = false;
 	constructor() {
 	}
+	private applyShiftKey(list: IRenderEntity[]): IRenderEntity[] {
+		console.log("applyCtrlKey SHIFT Key Down.");
+		let map = this.m_map;
+		let firstNode: NormalEntityNode = null;
+		let ls = list;
+		for (let i = 0; i < ls.length; ++i) {
+			const node = map.get(ls[i].getUid());
+			if (node != null) {
+				if (firstNode == null) {
+					firstNode = node;
+					break;
+				}
+			}
+		}
+		if (firstNode != null) {
+			let guid = firstNode.groupUid;
+			list = [];
+			for (var [k, v] of map.entries()) {
+				if (v.groupUid == guid) {
+					list.push(v.entity);
+				}
+			}
+			// console.log("XXXXXX guid: ", guid, list);
+		}
+		return list;
+	}
+	private applyCtrlKey(list: IRenderEntity[]): IRenderEntity[] {
+		console.log("applyCtrlKey CTRL Key Down.");
+		let ls = list;
+		let sls = this.m_selectEntities != null ? this.m_selectEntities : [];
+		list = [];
+		for (let i = 0; i < ls.length; ++i) {
+			let j = 0;
+			for (; j < sls.length; ++j) {
+				if(ls[i] == sls[j]) {
+					break;
+				}
+			}
+			if(j >= sls.length) {
+				list.push(ls[i]);
+			}
+		}
+		for (let j = 0; j < sls.length; ++j) {
+			list.push(sls[j]);
+		}
+		return list;
+	}
 	initialize(): void {
 		this.transUI.addSelectFilter((list: IRenderEntity[]): IRenderEntity[] => {
-			console.log("use a list filter() ...");
+			console.log("use a list filter(), ls: ", this.m_selectEntities);
 			let interac = this.transUI.getKeyInterac();
 			let keyCode = interac.getCurrDownKeyCode();
+			console.log("use press key code: ", keyCode);
 			if (keyCode == 16) {
 				console.log("use a SHIFT Key Down.");
-				let map = this.m_map;
-				let firstNode: NormalEntityNode = null;
-				let ls = list;
-				for (let i = 0; i < ls.length; ++i) {
-					const node = map.get(ls[i].getUid());
-					if (node != null) {
-						if (firstNode == null) {
-							firstNode = node;
-							break;
-						}
-					}
-				}
-				if (firstNode != null) {
-					let guid = firstNode.groupUid;
-					list = [];
-					for(var [k, v] of map.entries()) {
-						if(v.groupUid == guid) {
-							list.push(v.entity);
-						}
-					}
-					// console.log("XXXXXX guid: ", guid, list);
-				}
+				return this.applyShiftKey( list );
+
+				// let map = this.m_map;
+				// let firstNode: NormalEntityNode = null;
+				// let ls = list;
+				// for (let i = 0; i < ls.length; ++i) {
+				// 	const node = map.get(ls[i].getUid());
+				// 	if (node != null) {
+				// 		if (firstNode == null) {
+				// 			firstNode = node;
+				// 			break;
+				// 		}
+				// 	}
+				// }
+				// if (firstNode != null) {
+				// 	let guid = firstNode.groupUid;
+				// 	list = [];
+				// 	for (var [k, v] of map.entries()) {
+				// 		if (v.groupUid == guid) {
+				// 			list.push(v.entity);
+				// 		}
+				// 	}
+				// 	// console.log("XXXXXX guid: ", guid, list);
+				// }
+			} if(keyCode == 17) {
+				return this.applyCtrlKey(list);
 			}
 			return list;
 		});
