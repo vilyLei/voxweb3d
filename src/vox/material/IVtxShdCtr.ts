@@ -20,4 +20,5 @@ export default interface IVtxShdCtr {
     testVertexAttribPointerType(attribType: number): boolean;
     vertexAttribPointerTypeFloat(attribType: number, stride: number, offset: number): void;
     getVertexAttribByTpye(attribType: number): number;
+    getLocationTypes(): number[];
 }

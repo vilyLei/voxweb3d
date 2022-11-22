@@ -165,6 +165,9 @@ export default class ShdProgram implements IShdProgram {
     getLocationSizeByIndex(index: number): number {
         return this.m_aLocationSizes[index];
     }
+    getLocationTypes(): number[] {
+        return this.m_aLocationTypes;
+    }
 
     private m_attrid: number = 0;
     private m_attridIndex: number = 0;

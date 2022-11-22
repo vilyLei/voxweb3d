@@ -42,8 +42,7 @@ class GpuVtxObject {
         return this.m_attachCount;
     }
     createVRO(rc: IROVtxBuilder, shdp: IVtxShdCtr, vaoEnabled: boolean): IVertexRenderObj {
-        let vro: IVertexRenderObj = this.vertex.createVRO(rc, shdp, vaoEnabled, this.indices, this.indices.getUid());
-        //vro.ibuf = this.indices.getGpuBuf();
+        let vro = this.vertex.createVRO(rc, shdp, vaoEnabled, this.indices, this.indices.getUid());
         vro.ibufStep = this.indices.ibufStep;
         return vro;
     }

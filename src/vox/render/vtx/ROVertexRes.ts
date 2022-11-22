@@ -205,11 +205,13 @@ class ROVertexRes {
     createVRO(rc: IROVtxBuilder, shdp: IVtxShdCtr, vaoEnabled: boolean, ibufRes: ROIndicesRes, ibufId: number): IVertexRenderObj {
 
         let attribsTotal: number = shdp.getLocationsTotal();
+        // console.log("(this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal: ", (this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal);
+        // console.log("(this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal: ", this.m_attribsTotal,attribsTotal,attribsTotal,this.m_attribsTotal);
         if ((this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal) {
-            let mid: number = this.getVROMid(rc, shdp, vaoEnabled, ibufId);
+            let mid = this.getVROMid(rc, shdp, vaoEnabled, ibufId);
 
-            let i: number = 0;
-            let pvro: IVertexRenderObj = VaoVertexRenderObj.GetByMid(mid);
+            let i = 0;
+            let pvro = VaoVertexRenderObj.GetByMid(mid);
             if (pvro != null) {
                 return pvro;
             }
@@ -222,7 +224,7 @@ class ROVertexRes {
                 // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的
                 // console.log("VtxCombinedBuf::createVROBegin(), "+this.m_typeList+" /// "+this.m_wholeStride+" /// "+this.m_offsetList);
                 // console.log("VtxCombinedBuf::createVROBegin(), "+this.m_type);
-                let vro: VaoVertexRenderObj = VaoVertexRenderObj.Create(rc, mid, this.m_vtx.getUid());
+                let vro = VaoVertexRenderObj.Create(rc, mid, this.m_vtx.getUid());
                 vro.indicesRes = ibufRes;
                 vro.vao = rc.createVertexArray();
                 rc.bindVertexArray(vro.vao);
@@ -234,9 +236,17 @@ class ROVertexRes {
                     }
                 }
                 else {
-                    for (i = 0; i < attribsTotal; ++i) {
-                        rc.bindArrBuf(this.m_gpuBufs[i]);
-                        shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], 0, 0);
+                    // console.log("A attribsTotal: ", attribsTotal, this.m_typeList);
+                    // console.log("B shdp.getLocationTypes(): ", shdp.getLocationTypes());
+                    // for (i = 0; i < attribsTotal; ++i) {
+                    //     rc.bindArrBuf(this.m_gpuBufs[i]);
+                    //     shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], 0, 0);
+                    // }
+                    let types = shdp.getLocationTypes();
+                    for (i = 0; i < types.length; ++i) {
+                        const k = types[i] - 1;
+                        rc.bindArrBuf(this.m_gpuBufs[k]);
+                        shdp.vertexAttribPointerTypeFloat(this.m_typeList[k], 0, 0);
                     }
                 }
                 pvro = vro;
