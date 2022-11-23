@@ -10,7 +10,7 @@ import MaterialBase from "../../vox/material/MaterialBase";
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import Color4 from "../../vox/material/Color4";
 
-class VBuf2AShaderCodeBuffer extends ShaderCodeBuffer {
+class VBuf3AShaderCodeBuffer extends ShaderCodeBuffer {
 
     private m_uniqueName: string = "";
     constructor() {
@@ -18,7 +18,7 @@ class VBuf2AShaderCodeBuffer extends ShaderCodeBuffer {
     }
     initialize(texEnabled: boolean): void {
         super.initialize(texEnabled);
-        this.m_uniqueName = "VOX_VBuf2AShd";
+        this.m_uniqueName = "VOX_VBuf3AShd";
         this.adaptationShaderVersion = false;
     }
 
@@ -33,8 +33,10 @@ class VBuf2AShaderCodeBuffer extends ShaderCodeBuffer {
         coder.useVertSpaceMats(true, true, true);
 
         coder.addVertLayout("vec3", "a_nvs");
+        coder.addVertLayout("vec3", "a_cvs");
 
         coder.addVarying("vec3", "v_worldNormal");
+        coder.addVarying("vec3", "v_cv");
 
         coder.addFragHeadCode("const vec3 direc0 = normalize(vec3(0.3,0.6,0.9));");
         coder.addFragHeadCode("const vec3 direc1 = normalize(vec3(-0.3,0.6,0.9));");
@@ -44,11 +46,11 @@ class VBuf2AShaderCodeBuffer extends ShaderCodeBuffer {
         coder.addFragMainCode(
             `
     FragColor0 = vec4(1.0);
+    FragColor0.xyz *= v_cv.xyz;
     FragColor0 *= u_color;
     float nDotL0 = max(dot(v_worldNormal.xyz, direc0), 0.1);
     float nDotL1 = max(dot(v_worldNormal.xyz, direc1), 0.1);
     FragColor0.xyz = FragColor0.xyz * 0.3 + 0.7 * FragColor0.xyz * vec3( 0.7 * (nDotL0 + nDotL1) );
-    // FragColor0 = vec4(v_worldNormal.xyz, 1.0);
 `
         );
 
@@ -61,6 +63,7 @@ class VBuf2AShaderCodeBuffer extends ShaderCodeBuffer {
     viewPosition = u_viewMat * worldPosition;
     gl_Position = u_projMat * viewPosition;
     v_worldNormal = normalize(a_nvs.xyz * inverse(mat3(vmat)));
+    v_cv = a_cvs.xyz;
 `
         );
 
@@ -70,26 +73,26 @@ class VBuf2AShaderCodeBuffer extends ShaderCodeBuffer {
     }
 
 }
-export default class VBuf2AMaterial extends MaterialBase {
+export default class VBuf3AMaterial extends MaterialBase {
 
-    private static s_shdCodeBuffer: VBuf2AShaderCodeBuffer = null;
+    private static s_shdCodeBuffer: VBuf3AShaderCodeBuffer = null;
     private m_data = new Float32Array([1.0, 1.0, 1.0, 1.0]);
     constructor() {
         super();
-        if (VBuf2AMaterial.s_shdCodeBuffer == null) {
-            VBuf2AMaterial.s_shdCodeBuffer = new VBuf2AShaderCodeBuffer();
+        if (VBuf3AMaterial.s_shdCodeBuffer == null) {
+            VBuf3AMaterial.s_shdCodeBuffer = new VBuf3AShaderCodeBuffer();
         }
     }
     protected buildBuf(): void {
         
-        let buf: VBuf2AShaderCodeBuffer = VBuf2AMaterial.s_shdCodeBuffer;
+        let buf: VBuf3AShaderCodeBuffer = VBuf3AMaterial.s_shdCodeBuffer;
     }
     /**
      * get a shader code buf instance, for sub class override
      * @returns a ShaderCodeBuffer class instance
      */
     getCodeBuf(): ShaderCodeBuffer {
-        return VBuf2AMaterial.s_shdCodeBuffer;
+        return VBuf3AMaterial.s_shdCodeBuffer;
     }
     setRGB3f(pr: number, pg: number, pb: number): void {
         this.m_data[0] = pr;
