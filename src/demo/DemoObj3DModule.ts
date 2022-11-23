@@ -80,7 +80,7 @@ export class DemoObj3DModule {
             let objUrl: string = "static/assets/obj/box01.obj";
             objUrl = "static/assets/obj/building_001.obj";
             objUrl = "static/assets/obj/torus01.obj";
-            let objDisp: ObjData3DEntity = new ObjData3DEntity();
+            let objDisp = new ObjData3DEntity();
             //objDisp.mouseEnabled = true;
             objDisp.moduleScale = 3.0;
             objDisp.initializeByObjDataUrl(objUrl, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
