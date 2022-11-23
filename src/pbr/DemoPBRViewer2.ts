@@ -69,8 +69,8 @@ export class DemoPBRViewer2 implements IShaderLibListener {
 
 			let rparam: RendererParam = new RendererParam();
 			//rparam.maxWebGLVersion = 1;
-            rparam.cameraPerspectiveEnabled = false;
-			rparam.setCamProject(45, 0.0, 10000.0);
+            // rparam.cameraPerspectiveEnabled = false;
+			rparam.setCamProject(45, 50.0, 10000.0);
 			rparam.setAttriStencil(true);
 			rparam.setAttriAntialias(true);
 			//rparam.setCamPosition(2000.0, 2000.0, 2000.0);
@@ -167,15 +167,15 @@ export class DemoPBRViewer2 implements IShaderLibListener {
 		let objUrl: string = "static/assets/obj/box01.obj";
 		objUrl = "static/assets/obj/building_001.obj";
 		objUrl = "static/assets/obj/torus01.obj";
-		objUrl = "static/private/obj/test01/S.obj";
+		// objUrl = "static/private/obj/test01/S.obj";
 		let objDisp = new ObjData3DEntity();
 		objDisp.normalEnabled = true;
-		// objDisp.moduleScale = 0.1;
+		objDisp.moduleScale = 3;
 		objDisp.initializeByObjDataUrl(objUrl, [this.m_materialCtx.getTextureByUrl("static/private/obj/test01/S_diffuse_1001.png")]);
 		//objDisp.setXYZ(Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0);
-        let scale = 0.2;
-        objDisp.setScaleXYZ(scale, scale, scale);
-        objDisp.setXYZ(0, -100, 0);
+        // let scale = 0.2;
+        // objDisp.setScaleXYZ(scale, scale, scale);
+        // objDisp.setXYZ(0, -100, 0);
 		// this.m_rscene.addEntity(objDisp);
 
         let bounds = objDisp.getGlobalBounds();
@@ -219,12 +219,10 @@ export class DemoPBRViewer2 implements IShaderLibListener {
 		//  this.m_rscene.addEntity(axis);
 		this.aoMapEnabled = true;
 		let ns: string = "lava_03";
-		//let diffuseMap: IRenderTexture = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
-		let diffuseMap: IRenderTexture = this.m_materialCtx.getTextureByUrl("static/private/obj/test01/S_diffuse_1001.png");
+		let diffuseMap: IRenderTexture = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
         diffuseMap.flipY = true;
 		//diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
-		//let normalMap: IRenderTexture = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_NRM.png");
-		let normalMap: IRenderTexture = this.m_materialCtx.getTextureByUrl("static/private/obj/test01/S_normal_1001.png");
+		let normalMap: IRenderTexture = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_NRM.png");
         normalMap.flipY = true;
 		let aoMap: IRenderTexture = null;
 		if (this.aoMapEnabled) {
@@ -286,8 +284,8 @@ export class DemoPBRViewer2 implements IShaderLibListener {
         // clothDisp.setScaleXYZ(scale, scale, scale);
         // clothDisp.setXYZ(0, -100, 0);
         let scale = 0.9;
-        clothDisp.setScaleXYZ(scale, scale, scale);
-        clothDisp.setXYZ(0, -300, 0);
+        // clothDisp.setScaleXYZ(scale, scale, scale);
+        // clothDisp.setXYZ(0, -300, 0);
 		this.m_rscene.addEntity(clothDisp);
 
 	}
