@@ -12,16 +12,16 @@ import {ROVertexRes} from "./ROVertexRes";
 import {ROIndicesRes} from "./ROIndicesRes";
 
 class GpuVtxObject {
-    version: number = -1;
+    version = -1;
     // wait del times
-    waitDelTimes: number = 0;
+    waitDelTimes = 0;
     // renderer context unique id
-    rcuid: number = 0;
+    rcuid = 0;
     // texture resource unique id
-    resUid: number = 0;
+    resUid = 0;
 
-    vertex: ROVertexRes = new ROVertexRes();
-    indices: ROIndicesRes = new ROIndicesRes();
+    vertex = new ROVertexRes();
+    indices = new ROIndicesRes();
     constructor() {
     }
     private m_attachCount: number = 0;
@@ -42,7 +42,7 @@ class GpuVtxObject {
         return this.m_attachCount;
     }
     createVRO(rc: IROVtxBuilder, shdp: IVtxShdCtr, vaoEnabled: boolean): IVertexRenderObj {
-        let vro = this.vertex.createVRO(rc, shdp, vaoEnabled, this.indices, this.indices.getUid());
+        let vro = this.vertex.createVRO(rc, shdp, vaoEnabled, this.indices);
         vro.ibufStep = this.indices.ibufStep;
         return vro;
     }

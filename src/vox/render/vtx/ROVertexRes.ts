@@ -202,13 +202,13 @@ class ROVertexRes {
     }
 
     // 创建被 RPOUnit 使用的 vro 实例
-    createVRO(rc: IROVtxBuilder, shdp: IVtxShdCtr, vaoEnabled: boolean, ibufRes: ROIndicesRes, ibufId: number): IVertexRenderObj {
+    createVRO(rc: IROVtxBuilder, shdp: IVtxShdCtr, vaoEnabled: boolean, ibufRes: ROIndicesRes): IVertexRenderObj {
 
         let attribsTotal: number = shdp.getLocationsTotal();
         // console.log("(this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal: ", (this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal);
         // console.log("(this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal: ", this.m_attribsTotal,attribsTotal,attribsTotal,this.m_attribsTotal);
         if ((this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal) {
-            let mid = this.getVROMid(rc, shdp, vaoEnabled, ibufId);
+            let mid = this.getVROMid(rc, shdp, vaoEnabled, ibufRes.getUid());
 
             let i = 0;
             let pvro = VaoVertexRenderObj.GetByMid(mid);
@@ -231,8 +231,13 @@ class ROVertexRes {
                 if (this.m_type < 1) {
                     // combined buf vro
                     rc.bindArrBuf(this.m_gpuBufs[0]);
-                    for (i = 0; i < attribsTotal; ++i) {
-                        shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], this.m_wholeStride, this.m_offsetList[i]);
+                    // for (i = 0; i < attribsTotal; ++i) {
+                    //     shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], this.m_wholeStride, this.m_offsetList[i]);
+                    // }
+                    const types = shdp.getLocationTypes();
+                    for (i = 0; i < types.length; ++i) {
+                        const k = types[i] - 1;
+                        shdp.vertexAttribPointerTypeFloat(this.m_typeList[k], this.m_wholeStride, this.m_offsetList[k]);
                     }
                 }
                 else {
@@ -242,7 +247,7 @@ class ROVertexRes {
                     //     rc.bindArrBuf(this.m_gpuBufs[i]);
                     //     shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], 0, 0);
                     // }
-                    let types = shdp.getLocationTypes();
+                    const types = shdp.getLocationTypes();
                     for (i = 0; i < types.length; ++i) {
                         const k = types[i] - 1;
                         rc.bindArrBuf(this.m_gpuBufs[k]);
