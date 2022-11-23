@@ -4,6 +4,8 @@ import { NormalEntityNode } from "./NormalEntityNode";
 import { NVTransUI } from "../ui/NVTransUI";
 
 import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
+import { ICoEntity } from "../../../voxentity/ICoEntity";
+import { ICoMesh } from "../../../voxmesh/ICoMesh";
 import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { ICoUI } from "../../../voxui/ICoUI";
 import IRendererScene from "../../../../vox/scene/IRendererScene";
@@ -15,14 +17,16 @@ import IMatrix4 from "../../../../vox/math/IMatrix4";
 import { NormalEntityLayout } from "./NormalEntityLayout";
 import { CoDataModule } from "../../../app/common/CoDataModule";
 import { NormalEntityManager } from "./NormalEntityManager";
-import {NVEntityGroup} from "./NVEntityGroup";
+import { NVEntityGroup } from "./NVEntityGroup";
+import { BoxLine3D } from "../../../edit/entity/BoxLine3D";
 
 declare var CoUI: ICoUI;
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
+declare var CoEntity: ICoEntity;
+declare var CoMesh: ICoMesh;
 
 class NormalEntityGroup extends NVEntityGroup {
-
 	private m_coapp: CoDataModule;
 
 	uiscene: ICoUIScene;
@@ -34,9 +38,8 @@ class NormalEntityGroup extends NVEntityGroup {
 		super();
 		this.m_coapp = coapp;
 	}
-	
-	initialize(rscene: IRendererScene, transUI: NVTransUI): void {
-	}
+
+	initialize(rscene: IRendererScene, transUI: NVTransUI): void {}
 	loadModels(urls: string[], typeNS: string = ""): void {
 		if (urls != null && urls.length > 0) {
 			let purls = urls.slice(0);
@@ -44,7 +47,7 @@ class NormalEntityGroup extends NVEntityGroup {
 				for (let i = 0; i < purls.length; ++i) {
 					this.loadModel(purls[i], typeNS);
 				}
-			})
+			});
 		}
 	}
 
@@ -85,7 +88,6 @@ class NormalEntityGroup extends NVEntityGroup {
 	private m_loadTotal = 0;
 	private m_loadedTotal = 0;
 	private loadGeomModel(url: string, format: CoDataFormat): void {
-
 		// let ins = this.m_coapp.coappIns;
 		let ins = this.m_coapp;
 		if (ins != null) {
@@ -107,13 +109,12 @@ class NormalEntityGroup extends NVEntityGroup {
 				unit.data.modelReceiver = (models: CoGeomDataType[], transforms: Float32Array[], index: number, total: number): void => {
 					// console.log("XXX: ", index, ",", total);
 					this.createEntityFromModels(models, transforms);
-				}
+				};
 			}
 		}
 	}
 	private m_nodes: NormalEntityNode[] = [];
 	private createEntityFromModels(models: CoGeomDataType[], transforms: Float32Array[]): void {
-
 		let entities: ITransformEntity[] = [];
 		let len = models.length;
 
@@ -131,10 +132,8 @@ class NormalEntityGroup extends NVEntityGroup {
 		}
 
 		this.updateLayout(false);
-
 	}
 	private createEntityFromUnit(unit: CoGeomDataUnit, status: number = 0): void {
-
 		this.m_loadedTotal++;
 		if (this.m_loadedTotal >= this.m_loadTotal) {
 			this.uiscene.prompt.getPromptPanel().applyConfirmButton();
@@ -143,13 +142,19 @@ class NormalEntityGroup extends NVEntityGroup {
 			for (let i = 0; i < ls.length; ++i) {
 				ls[i].applyEvent();
 			}
+			// this.buildBounds();
 		}
-
+	}
+	private buildBounds(): void {
+		let ls = this.m_nodes;
+		for (let i = 0; i < ls.length; ++i) {
+			//ls[i].applyEvent();
+			let box = new BoxLine3D();
+			box.initializeWithAABB(this.rsc, 1, ls[i].entity.getGlobalBounds(), CoMaterial.createColor4(Math.random() * 1.0 + 0.2, Math.random() * 1.0 + 0.2, Math.random() * 1.0 + 0.2))
+		}
 	}
 	private addEntityWithModel(model: CoGeomDataType, transform: Float32Array): NormalEntityNode {
-
 		if (model != null) {
-
 			let node = new NormalEntityNode();
 			node.rsc = this.rsc;
 			node.transUI = this.transUI;
@@ -168,7 +173,6 @@ class NormalEntityGroup extends NVEntityGroup {
 	private m_layoutor: NormalEntityLayout = null;
 
 	private updateLayout(rotationEnabled: boolean): void {
-
 		if (this.m_layoutor == null) {
 			this.m_layoutor = new NormalEntityLayout();
 			this.m_layoutor.initialize();
@@ -187,7 +191,6 @@ class NormalEntityGroup extends NVEntityGroup {
 	}
 
 	destroy(): void {
-
 		let ls = this.m_nodes;
 		if (ls != null && ls.length > 0) {
 			for (let i = 0; i < ls.length; ++i) {
