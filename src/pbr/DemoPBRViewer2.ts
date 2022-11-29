@@ -171,7 +171,7 @@ export class DemoPBRViewer2 implements IShaderLibListener {
 		let objDisp = new ObjData3DEntity();
 		objDisp.normalEnabled = true;
 		objDisp.moduleScale = 3;
-		objDisp.initializeByObjDataUrl(objUrl, [this.m_materialCtx.getTextureByUrl("static/private/obj/test01/S_diffuse_1001.png")]);
+		objDisp.initializeByObjDataUrl(objUrl, [this.m_materialCtx.getTextureByUrl("static/assets/default.jpg")]);
 		//objDisp.setXYZ(Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0);
         // let scale = 0.2;
         // objDisp.setScaleXYZ(scale, scale, scale);

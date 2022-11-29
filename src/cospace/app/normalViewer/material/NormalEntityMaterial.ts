@@ -79,10 +79,12 @@ class NormalEntityMaterial {
 			material.setShaderBuilder((coderBuilder: IShaderCodeBuffer): void => {
 				let coder = coderBuilder.getShaderCodeBuilder();
 
-				coder.addVertLayout("vec3", "a_uvs");
+				coder.addVertLayout("vec2", "a_uvs");
 				coder.addVertLayout("vec3", "a_nvs");
+				coder.addVertLayout("vec3", "a_nvs2");
 				coder.addVertUniform("vec4", "u_params", 2);
 				coder.addFragUniform("vec4", "u_params", 2);
+				coder.addVarying("vec2", "v_uv");
 				coder.addVarying("vec4", "v_nv");
 				coder.addVarying("vec3", "v_vnv");
 				coder.addVarying("vec3", "v_dv");
@@ -133,9 +135,9 @@ class NormalEntityMaterial {
 					`
 			mat4 vmat = u_viewMat * u_objMat;
 			viewPosition = vmat * vec4(a_vs,1.0);
-			vec3 puvs = a_uvs;
+			v_uv = a_uvs;
 			vec3 pnv = u_params[1].zzz * a_nvs;
-			v_dv = vec3(dot(normalize(a_uvs), normalize( pnv )));
+			v_dv = vec3(dot(normalize(a_nvs2), normalize( pnv )));
 			vec4 pv = u_projMat * viewPosition;			
 			gl_Position = pv;
 			v_vnv = normalize(pnv * inverse(mat3(vmat)));

@@ -51,7 +51,7 @@ class NormalEntityBuilder {
 		if(nvs == null) {
 			nvs = new Float32Array(vs.length);
 		}
-		let mesh = this.createEntityMesh(model.indices, model.vertices, nvs2, nvs, material);
+		let mesh = this.createEntityMesh(model.indices, model.vertices,model.uvsList[0], nvs, nvs2, material);
 
 		let entity = CoRScene.createMouseEventEntity();
 		entity.setMaterial(material);
@@ -154,7 +154,7 @@ class NormalEntityBuilder {
 		return mesh;
 	}
 	
-	createEntityMesh(ivs: Uint16Array | Uint32Array , vs: Float32Array, uvs: Float32Array, nvs: Float32Array, matrial: IRenderMaterial): IRawMesh {
+	createEntityMesh(ivs: Uint16Array | Uint32Array , vs: Float32Array, uvs: Float32Array, nvs: Float32Array, nvs2: Float32Array, matrial: IRenderMaterial): IRawMesh {
 
 		let mesh = CoMesh.createRawMesh();
 		// mesh.ivsEnabled = false;
@@ -163,8 +163,9 @@ class NormalEntityBuilder {
 		mesh.setBufSortFormat(matrial.getBufSortFormat());
 		mesh.setIVS(ivs);
 		mesh.addFloat32Data(vs, 3);
-		mesh.addFloat32Data(uvs, 3);
+		mesh.addFloat32Data(uvs, 2);
 		mesh.addFloat32Data(nvs, 3);
+		mesh.addFloat32Data(nvs2, 3);
 		mesh.vbWholeDataEnabled = false;
 		mesh.initialize();
 		// mesh.toArraysLines();
