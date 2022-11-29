@@ -494,6 +494,9 @@ class NormalCtrlPanel {
 		this.m_dragBar.update();
 		let f = (px - this.m_dragMinX) / this.m_proBaseLen;
 		this.m_normalScale = f;
+		// console.log("progress f: ", f);
+
+		this.sendProgressEvt(evt.uuid, f);
 	}
 	private createColorBtn(pw: number, ph: number, idns: string, colors: IColor4[]): IButton {
 
