@@ -219,6 +219,8 @@ export class DemoVox3DEditor {
 		this.m_viewer = viewer;
 		let entitySC = viewer.normalScene.entityScene;
 		entitySC.initialize(this.m_rsc);
+
+		this.m_nvaUI.viewer = this.m_viewer;
 	}
 	private init3DScene(): void {
 

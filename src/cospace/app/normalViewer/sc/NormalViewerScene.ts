@@ -16,11 +16,12 @@ declare var CoMaterial: ICoMaterial;
 class NormalViewerScene {
 
 	private m_uiscene: ICoUIScene = null;
-	private m_ctrPanel: NormalCtrlPanel = null;
 	private m_transUI: NVTransUI = null;
-	private m_entityManager: NormalEntityManager;
-	entityScene: NormalEntityScene;
 	private m_coapp: CoDataModule;
+	private m_entityManager: NormalEntityManager;
+
+	entityScene: NormalEntityScene;
+	normalCtrPanel: NormalCtrlPanel = null;
 
 	constructor() { }
 
@@ -57,7 +58,7 @@ class NormalViewerScene {
 		
 		panel.addEventListener(CoRScene.SelectionEvent.SELECT, this, this.selectDisplay);
 		panel.addEventListener(CoRScene.ProgressDataEvent.PROGRESS, this, this.normalScale);
-		this.m_ctrPanel = panel;
+		this.normalCtrPanel = panel;
 		this.entityScene.ctrPanel = panel;
 	}
 	private selectDisplay(evt: any): void {
@@ -106,26 +107,26 @@ class NormalViewerScene {
 
 		this.m_uiscene = null;
 
-		if (this.m_ctrPanel != null) {
+		if (this.normalCtrPanel != null) {
 
-			this.m_ctrPanel.destroy();
-			this.m_ctrPanel = null;
+			this.normalCtrPanel.destroy();
+			this.normalCtrPanel = null;
 
 			this.entityScene.destroy();
 			this.entityScene = null;
 		}
 	}
 	open(scene: ICoUIScene = null): void {
-		if (this.m_ctrPanel != null) {
-			this.m_ctrPanel.open();
+		if (this.normalCtrPanel != null) {
+			this.normalCtrPanel.open();
 		}
 	}
 	isOpen(): boolean {
 		return true;
 	}
 	close(): void {
-		if (this.m_ctrPanel != null) {
-			this.m_ctrPanel.close();
+		if (this.normalCtrPanel != null) {
+			this.normalCtrPanel.close();
 		}
 	}
 	update(): void {

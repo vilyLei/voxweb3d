@@ -99,6 +99,7 @@ class NormalEntityScene {
 				urls.push(urlObj);
 			}
 
+			console.log("initFileLoad(), name: ", name);
 			if (name != "") {
 				name.toLocaleLowerCase();
 				let typeNS = "";

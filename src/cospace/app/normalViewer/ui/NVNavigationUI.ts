@@ -5,6 +5,7 @@ import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { IButton } from "../../../voxui/button/IButton";
 import { IColorLabel } from "../../../voxui/entity/IColorLabel";
 import { ButtonBuilder } from "../../../voxui/button/ButtonBuilder";
+import { NormalViewer } from "../sc/NormalViewer";
 
 declare var CoRScene: ICoRScene;
 declare var CoUI: ICoUI;
@@ -18,7 +19,7 @@ class NVNavigationUI {
 	private m_editUIRenderer: IRendererScene = null;
 	private m_uirsc: IRendererScene = null;
 	private m_coUIScene: ICoUIScene = null;
-
+	viewer: NormalViewer = null;
 	constructor() { }
 
 	initialize(rsc: IRendererScene, editUIRenderer: IRendererScene, coUIScene: ICoUIScene): void {
@@ -130,13 +131,20 @@ class NVNavigationUI {
 			case "file":
 			case "edit":
 			case "model":
-			case "normal":
 			case "texture":
 			case "material":
 			case "light":
 			case "animation":
 			case "particle":
 				this.m_coUIScene.prompt.showPrompt("It can't be used now!");
+				break;
+			case "normal":
+				let pl = this.viewer.normalScene.normalCtrPanel;
+				if(pl.isOpen()) {
+					pl.close();
+				}else {
+					pl.open();
+				}
 				break;
 			case "help":
 				this.toHelp();
