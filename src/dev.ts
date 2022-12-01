@@ -316,6 +316,8 @@
 
 //  import {DemoSharedVBuf as Demo} from "./demo/DemoSharedVBuf";
 
+ import {DemoSharedMesh as Demo} from "./demo/DemoSharedMesh";
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     event    ///////////////////////////////////
@@ -378,7 +380,7 @@
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
- import {DemoPBRViewer2 as Demo} from "./pbr/DemoPBRViewer2";
+//  import {DemoPBRViewer2 as Demo} from "./pbr/DemoPBRViewer2";
 
 //  import {DemoPBRTexViewer as Demo} from "./pbr/DemoPBRTexViewer";
 

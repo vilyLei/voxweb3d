@@ -353,12 +353,20 @@ export default class ImageTextureLoader implements IRunnable {
         }
         return null;
     }
+    // addCallbackByUrl(purl:string, callback: () => void): void {
+    //     if(callback != null) {
+    //         let t = this.m_resMap.get(purl);
+    //         if (t != null) {
+
+    //         }
+    //     }
+    // }
     getImageTexByUrl(purl: string, mipLevel: number = 0, offsetTexEnabled: boolean = false, powerOf2Fix: boolean = false): ImageTextureProxy {
         if (purl == "") {
             return null;
         }
         if (mipLevel < 0) mipLevel = 0;
-        let t: ImgResUnit = this.m_resMap.get(purl);
+        let t = this.m_resMap.get(purl);
         if (t == null) {
             t = new ImgResUnit(purl, mipLevel);
             t.powerOf2Fix = powerOf2Fix;

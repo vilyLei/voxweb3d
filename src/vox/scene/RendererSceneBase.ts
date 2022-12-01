@@ -459,7 +459,9 @@ export default class RendererSceneBase {
      * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
      */
     addEntity(entity: IRenderEntity, processid: number = 0, deferred: boolean = true): void {
+        
         if (entity != null && entity.__$testSpaceEnabled()) {
+            
             if (entity.isPolyhedral()) {
                 if (entity.hasMesh()) {
                     this.m_renderer.addEntity(entity, this.m_processids[processid], deferred);
@@ -481,7 +483,7 @@ export default class RendererSceneBase {
             }
             else {
                 this.m_renderer.addEntity(entity, this.m_processids[processid], deferred);
-                if (this.m_rspace != null) {
+                if (this.m_rspace != null) {                    
                     this.m_rspace.addEntity(entity);
                 }
             }

@@ -28,14 +28,17 @@ export default class EntityNodeQueue {
 	}
 
 	private createNode(): Entity3DNode {
-		let index: number = this.getFreeId();
+		let node: Entity3DNode;
+		let index = this.getFreeId();
 		if (index >= 0) {
 			this.m_fs[index] = 1;
-			return this.m_list[index];
+			node = this.m_list[index];
+			node.spaceId = index;
+			return node;
 		} else {
 			// create a new nodeIndex
 			index = this.m_listLen;
-			let node = Entity3DNode.Create();
+			node = Entity3DNode.Create();
 			this.m_list.push(node);
 			this.m_entieies.push(null);
 			node.spaceId = index;
@@ -72,7 +75,7 @@ export default class EntityNodeQueue {
 	}
 	getNodeByEntity(entity: IRenderEntity): Entity3DNode {
 		if (RSEntityFlag.TestSpaceContains(entity.__$rseFlag)) {
-			let uid: number = RSEntityFlag.GetSpaceUid(entity.__$rseFlag);
+			let uid = RSEntityFlag.GetSpaceUid(entity.__$rseFlag);
 
 			if (this.m_entieies[uid] == entity) {
 				return this.m_list[uid];
@@ -82,7 +85,7 @@ export default class EntityNodeQueue {
 	}
 	removeEntity(entity: IRenderEntity): void {
 		if (RSEntityFlag.TestSpaceContains(entity.__$rseFlag)) {
-			let uid: number = RSEntityFlag.GetSpaceUid(entity.__$rseFlag);
+			let uid = RSEntityFlag.GetSpaceUid(entity.__$rseFlag);
 			if (this.m_entieies[uid] == entity) {
 				this.m_list[uid].reset();
 				this.restoreId(uid);

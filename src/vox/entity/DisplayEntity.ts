@@ -404,18 +404,12 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
 
                 this.m_display.visible = this.m_visible && this.m_drawEnabled;
             }
-            //if(this.m_display.getMaterial() != m && this.__$wuid == RSEntityFlag.RENDERER_UID_FLAG && this.m_display.__$ruid < 0)
-            if (this.m_display.getMaterial() != m && (RSEntityFlag.RENDERER_UID_FLAG & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAG && this.m_display.__$ruid < 0) {
-
-                // if(m.getMaterialPipeline() == null && this.getMaterialPipeline() != null) {
-                //     m.setMaterialPipeline( this.getMaterialPipeline() );
-                // }
-                // if(m.pipeTypes == null) {
-                //     m.pipeTypes = this.pipeTypes;
-                // }
-                this.m_display.renderState = this.m_renderState;
-                this.m_display.rcolorMask = this.m_rcolorMask;
-                this.m_display.setMaterial(m);
+            const flag = RSEntityFlag.RENDERER_UID_FLAG;
+            const disp = this.m_display;
+            if (disp.getMaterial() != m && (flag & this.__$rseFlag) == flag && disp.__$ruid < 0) {
+                disp.renderState = this.m_renderState;
+                disp.rcolorMask = this.m_rcolorMask;
+                disp.setMaterial(m);
             }
         }
     }

@@ -13,24 +13,24 @@ import IEntity3DNode from "./IEntity3DNode";
 
 export default class Entity3DNode implements IEntity3DNode {
 	
-	uid: number = -1;
-	rstatus: number = 0;
+	uid = -1;
+	rstatus = 0;
 	/**
 	 * project occlusion culling test enabled
 	 */
-	pcoEnabled: boolean = false;
-	drawEnabled: boolean = true;
+	pcoEnabled = false;
+	drawEnabled = true;
 	prev: Entity3DNode = null;
 	next: Entity3DNode = null;
 	entity: IRenderEntity = null;
 	bounds: IAABB = null;
-	rayTestState: number = 0;
+	rayTestState = 0;
 	rpoNode: IRPONode = null;
-	spaceId: number = -1;
+	spaceId = -1;
 	// 记录上一次摄像机裁剪自身的状态
-	camVisiSt: number = 0;
+	camVisiSt = 0;
 	// 记录摄像机可见状态,大于0表示不可见
-	camVisi: number = RendererConst.CAMERA_VISIBLE_ENABLE;
+	camVisi = RendererConst.CAMERA_VISIBLE_ENABLE;
 	reset(): void {
 		this.rayTestState = 0;
 		this.uid = -1;

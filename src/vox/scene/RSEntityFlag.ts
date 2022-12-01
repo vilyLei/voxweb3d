@@ -90,6 +90,8 @@ export default class RSEntityFlag {
         return (0xFFFFF & flag) < 1;
     }
     static TestSpaceEnabled2(flag: number): boolean {
+        // console.log("   TestSpaceEnabled2(), 0xFFFFF & flag: ", (0xFFFFF & flag));
+        // console.log("                       (0x80000000 & flag) != 0x80000000: ", ((0x80000000 & flag) != 0x80000000));
         return (0xFFFFF & flag) < 1 && (0x80000000 & flag) != 0x80000000;
     }
     static TestContainerEnabled(flag: number): boolean {

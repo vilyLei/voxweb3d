@@ -88,17 +88,18 @@ export default class RendererSpace implements IRendererSpace {
 	}
 	// 可以添加真正被渲染的实体也可以添加只是为了做检测的实体(不允许有material)
 	addEntity(entity: IRenderEntity): void {
-		if (entity.getGlobalBounds() != null && entity.spaceCullMask > SpaceCullingMask.NONE) {
+		const SCM = SpaceCullingMask;
+		if (entity.getGlobalBounds() != null && entity.spaceCullMask > SCM.NONE) {
 			if (RSEntityFlag.TestSpaceEnabled(entity.__$rseFlag)) {
 				entity.update();
 				++this.m_entitysTotal;
 
-				let node: Entity3DNode = this.m_nodeQueue.addEntity(entity);
+				let node = this.m_nodeQueue.addEntity(entity);
 				node.bounds = entity.getGlobalBounds();
-				node.pcoEnabled = (entity.spaceCullMask & SpaceCullingMask.POV) == SpaceCullingMask.POV;
+				node.pcoEnabled = (entity.spaceCullMask & SCM.POV) == SCM.POV;
 
-				let boo: Boolean = entity.isInRendererProcess() || entity.getMaterial() == null;
-				if (boo && (entity.spaceCullMask & SpaceCullingMask.POV) == SpaceCullingMask.POV) {
+				let boo = entity.isInRendererProcess() || entity.getMaterial() == null;
+				if (boo && (entity.spaceCullMask & SCM.POV) == SCM.POV) {
 					node.rstatus = 1;
 					if (entity.getMaterial() == null) {
 						node.rpoNode = this.m_emptyRPONode;
@@ -122,7 +123,9 @@ export default class RendererSpace implements IRendererSpace {
 		}
 	}
 	removeEntity(entity: IRenderEntity): void {
+		
 		if (entity != null && RSEntityFlag.TestSpaceContains(entity.__$rseFlag)) {
+			
 			let node = this.m_nodeQueue.getNodeByEntity(entity);
 			if (node != null) {
 				if (node.rstatus > 0) {
@@ -131,6 +134,7 @@ export default class RendererSpace implements IRendererSpace {
 					this.m_nodeWLinker.removeNode(node);
 				}
 				this.m_nodeQueue.removeEntity(entity);
+				// node.reset();
 				--this.m_entitysTotal;
 			}
 		}

@@ -57,8 +57,8 @@ export class DemoSharedVBuf {
 	private m_clearColor = new Color4(0.1, 0.2, 0.1, 1.0);
 	private m_tex: IRenderTexture = null;
 	initialize(): void {
+		
 		console.log("DemoSharedVBuf::initialize()......");
-		console.log("XXXXXX: ", (4096 * 4096) / 3);
 
 		if (this.m_rscene == null) {
 			//H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
