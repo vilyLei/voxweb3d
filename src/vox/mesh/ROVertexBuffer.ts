@@ -13,27 +13,31 @@ import IROVtxBuf from "../../vox/render/IROVtxBuf";
 import VtxCombinedBuf from "../../vox/mesh/VtxCombinedBuf";
 import VtxSeparatedBuf from "../../vox/mesh/VtxSeparatedBuf";
 import { RenderDrawMode } from "../../vox/render/RenderConst";
+import ROIVertexBuffer from "./ROIVertexBuffer";
 
-export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
-    private static s_uid: number = 0;
-    private m_uid: number = 0;
+export default class ROVertexBuffer extends ROIVertexBuffer implements IVtxBuf, IROVtxBuf {
+    // private static s_uid: number = 0;
+    // private m_uid: number = 0;
 
     private m_vtxBuf: IVtxBuf = null;
-    private m_ivs: Uint16Array | Uint32Array = null;
-    private m_bufDataUsage: number = 0;
-    private m_ibufStep: number = 2;// 2 or 4
+    // private m_ivs: Uint16Array | Uint32Array = null;
+    // private m_bufDataUsage: number = 0;
+    // private m_ibufStep: number = 2;// 2 or 4
     private m_bufTypeList: number[] = null;
     private m_bufSizeList: number[] = null;
 
-    layoutBit: number = 0x0;
-    vertexVer: number = 0;
-    indicesVer: number = 0;
-    version: number = 0;
-    drawMode: number = RenderDrawMode.ELEMENTS_TRIANGLES;
-    bufData: VtxBufData = null;
+    // layoutBit: number = 0x0;
+    // vertexVer: number = 0;
+    // indicesVer: number = 0;
+    // version: number = 0;
+    // drawMode: number = RenderDrawMode.ELEMENTS_TRIANGLES;
+    // bufData: VtxBufData = null;
+    // private constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
+    //     this.m_uid = ROVertexBuffer.s_uid++;
+    //     this.m_bufDataUsage = bufDataUsage;
+    // }
     private constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
-        this.m_uid = ROVertexBuffer.s_uid++;
-        this.m_bufDataUsage = bufDataUsage;
+        super(bufDataUsage);
     }
     private setVtxBuf(vtxBuf: IVtxBuf): void {
         if (vtxBuf != this) {
@@ -149,9 +153,6 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
         this.bufData = null;
         this.m_bufTypeList = null;
         this.m_bufSizeList = null;
-    }
-    toString(): string {
-        return "ROVertexBuffer(uid = " + this.m_uid + ")";
     }
     private static s_FLAG_BUSY: number = 1;
     private static s_FLAG_FREE: number = 0;

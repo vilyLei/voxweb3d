@@ -61,6 +61,8 @@ export default interface IMeshBase {
 	__$detachThis(): void;
 	__$attachVBuf(): IROVertexBuffer;
 	__$detachVBuf(vbuf: IROVertexBuffer): void;
+	__$attachIVBuf(): any;
+	__$detachIVBuf(ivbuf: any): void;
 	/**
 	 * @returns vertex position buffer Float32Array
 	 */

@@ -6,13 +6,14 @@
 /***************************************************************************/
 
 import IROVtxBuilder from "../../../vox/render/IROVtxBuilder";
-import IROVtxBuf from "../../../vox/render/IROVtxBuf";
+// import IROVtxBuf from "../../../vox/render/IROVtxBuf";
+import IROIVtxBuf from "../../../vox/render/IROIVtxBuf";
 import { IROIndicesRes } from "./IROIndicesRes";
 
 class ROIndicesRes implements IROIndicesRes {
     private m_uid: number = 0;
     private static s_uid: number = 0;
-    private m_vtx: IROVtxBuf = null;
+    private m_vtx: IROIVtxBuf = null;
     private m_vtxUid: number = 0;
     private m_gpuBuf: any = null;
     private m_ivsSize: number = 0;
@@ -36,7 +37,7 @@ class ROIndicesRes implements IROIndicesRes {
     }
     updateToGpu(rc: IROVtxBuilder): void {
         if (this.m_gpuBuf != null && this.m_ivsSize > 0) {
-            let vtx: IROVtxBuf = this.m_vtx;
+            let vtx: IROIVtxBuf = this.m_vtx;
             // console.log("indeces updateToGpu vtx.getUId(): ",vtx.getUid(), ", this.version != vtx.indicesVer: ", this.version != vtx.indicesVer);
             if (this.version != vtx.indicesVer) {
                 this.m_ivs = vtx.getIvsData();
@@ -54,27 +55,27 @@ class ROIndicesRes implements IROIndicesRes {
             }
         }
     }
-    initialize(rc: IROVtxBuilder, vtx: IROVtxBuf): void {
-        if (this.m_gpuBuf == null && vtx.getIvsData() != null) {
-            this.version = vtx.indicesVer;
-            this.m_vtx = vtx;
-            this.m_vtxUid = vtx.getUid();
-            this.m_ivs = vtx.getIvsData();
+    initialize(rc: IROVtxBuilder, ivtx: IROIVtxBuf): void {
+        if (this.m_gpuBuf == null && ivtx.getIvsData() != null) {
+            this.version = ivtx.indicesVer;
+            this.m_vtx = ivtx;
+            this.m_vtxUid = ivtx.getUid();
+            this.m_ivs = ivtx.getIvsData();
 
             this.m_gpuBuf = rc.createBuf();
             rc.bindEleBuf(this.m_gpuBuf);
 
-            if (vtx.bufData == null) {
-                rc.eleBufData(this.m_ivs, vtx.getBufDataUsage());
+            if (ivtx.bufData == null) {
+                rc.eleBufData(this.m_ivs, ivtx.getBufDataUsage());
                 this.m_ivsSize = this.m_ivs.length;
             }
             else {
-                rc.eleBufDataMem(vtx.bufData.getIndexDataTotalBytes(), vtx.getBufDataUsage());
+                rc.eleBufDataMem(ivtx.bufData.getIndexDataTotalBytes(), ivtx.getBufDataUsage());
                 let uintArr: any = null;
-                let offset: number = 0;
+                let offset = 0;
                 this.m_ivsSize = 0;
-                for (let i: number = 0, len: number = vtx.bufData.getIndexDataTotal(); i < len; ++i) {
-                    uintArr = vtx.bufData.getIndexDataAt(i);
+                for (let i = 0, len = ivtx.bufData.getIndexDataTotal(); i < len; ++i) {
+                    uintArr = ivtx.bufData.getIndexDataAt(i);
                     rc.eleBufSubData(uintArr, offset);
                     offset += uintArr.byteLength;
                     this.m_ivsSize += uintArr.length;
@@ -90,6 +91,7 @@ class ROIndicesRes implements IROIndicesRes {
             this.m_gpuBuf = null;
             this.m_ivs = null;
             this.m_ivsSize = 0;
+            console.log("ROIndicesRes::destroy() this.m_uid: ",this.m_uid);
         }
     }
 }

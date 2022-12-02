@@ -6,6 +6,7 @@ import { IButton } from "../../../voxui/button/IButton";
 import { IColorLabel } from "../../../voxui/entity/IColorLabel";
 import { ButtonBuilder } from "../../../voxui/button/ButtonBuilder";
 import { NormalViewer } from "../sc/NormalViewer";
+import { ISelectButtonGroup } from "../../../voxui/button/ISelectButtonGroup";
 
 declare var CoRScene: ICoRScene;
 declare var CoUI: ICoUI;
@@ -41,9 +42,11 @@ class NVNavigationUI {
 
 		this.initNavigationUI();
 	}
+	private m_btnGroup: ISelectButtonGroup;
 	private m_bgLabel: IColorLabel = null;
 	private m_bgLabelW: number;
 	private m_bgLabelH: number;
+
 	private resize(evt: any): void {
 		let st = this.m_coUIScene.getStage();
 		this.m_bgLabel.setScaleX(st.stageWidth / this.m_bgLabelW);
@@ -52,7 +55,8 @@ class NVNavigationUI {
 	}
 	private initNavigationUI(): void {
 
-		let uiScene = this.m_coUIScene;		
+		let uiScene = this.m_coUIScene;
+		let cfg = uiScene.uiConfig;	
 		let uimodule = uiScene.uiConfig.getUIPanelCfgByName("navigation");
 		console.log("NVNavigationUI::initNavigationUI(), uimodule: ", uimodule);
 
@@ -63,6 +67,8 @@ class NVNavigationUI {
 		let ph = uimodule.btnTextAreaSize[1];
 
 		let st = this.m_coUIScene.getStage();
+
+		this.m_btnGroup = CoUI.createSelectButtonGroup();
 
 		this.m_bgLabelW = st.stageWidth;
 		this.m_bgLabelH = ph;
@@ -94,10 +100,15 @@ class NVNavigationUI {
 			"Help infomation.",
 		];
 
-		
 		btnNames = uimodule.btnNames;
 		keys = uimodule.btnKeys;
 		tips = uimodule.btnTips;
+		let btnTypes = uimodule.btnTypes!;
+		if(!btnTypes) {
+			btnTypes = new Array(keys.length);
+			btnTypes.fill(0);
+		}
+		console.log("NVNavigationUI::initNavigationUI(), XXXXXX btnTypes: ", btnTypes);
 
 		let layouter = uiScene.layout.createLeftTopLayouter();
 		px = 0;
@@ -108,9 +119,21 @@ class NVNavigationUI {
 			this.m_coUIScene.addEntity(btn, 1);
 			this.m_navBtns.push(btn);
 			layouter.addUIEntity(btn);
+			if(btnTypes[i] == 1) {
+				this.m_btnGroup.addButton(btn);
+			}
 		}
 
 
+		this.m_btnGroup.setSelectedFunction(
+			(btn: IButton): void => {
+				cfg.applyButtonGlobalColor(btn, "selected");
+				// this.selectBtn(btn.uuid);
+			},
+			(btn: IButton): void => {
+				cfg.applyButtonGlobalColor(btn, "common");
+			}
+		);
 		this.m_coUIScene.prompt.setPromptListener(
 			(): void => {
 				console.log("prompt panel confirm...");
@@ -138,13 +161,12 @@ class NVNavigationUI {
 			case "particle":
 				this.m_coUIScene.prompt.showPrompt("It can't be used now!");
 				break;
+			case "material":
+				console.log("switch to material functions");
+				break;
 			case "normal":
 				let pl = this.viewer.normalScene.normalCtrPanel;
-				if(pl.isOpen()) {
-					pl.close();
-				}else {
-					pl.open();
-				}
+				pl.open();
 				break;
 			case "help":
 				this.toHelp();

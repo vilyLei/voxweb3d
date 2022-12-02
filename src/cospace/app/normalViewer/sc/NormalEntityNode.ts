@@ -23,12 +23,12 @@ class NormalEntityNode {
 	private m_normalScale = 1.0;
 	private m_normalScale0 = 1.0;
 	private m_uid: number = -1;
+	private m_normalLine: ITransformEntity = null;
 
 	rsc: IRendererScene;
 	transUI: NVTransUI;
 	groupUid = -1;
 	entity: IMouseEventEntity = null;
-	private m_normalLine: ITransformEntity = null;
 
 	constructor() {
 	}

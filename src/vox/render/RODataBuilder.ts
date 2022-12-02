@@ -286,13 +286,14 @@ export default class RODataBuilder implements IRODataBuilder {
             runit.rcolorMask = disp.rcolorMask;
             runit.trisNumber = disp.trisNumber;
             // build vertex gpu resoure
-            let resUid: number = disp.vbuf.getUid();
+            // let resUid = disp.vbuf.getUid();
+            let resUid = disp.getVtxResUid();
             let vtx: GpuVtxObject;
             let needBuild: boolean = true;
             if (vtxRes.hasResUid(resUid)) {
                 vtx = vtxRes.getVertexRes(resUid);
                 needBuild = vtx.version != disp.vbuf.version;
-                //console.log("GpuVtxObject instance repeat to be used,needBuild: "+needBuild,vtx.getAttachCount());
+                // console.log("GpuVtxObject instance repeat to be used,needBuild: "+needBuild,vtx.getAttachCount());
                 if (needBuild) {
                     vtxRes.destroyRes(resUid);
                     vtx.rcuid = vtxRes.getRCUid();
@@ -304,21 +305,25 @@ export default class RODataBuilder implements IRODataBuilder {
                 vtx.rcuid = vtxRes.getRCUid();
                 vtx.resUid = resUid;
                 vtxRes.addVertexRes(vtx);
-                //console.log("GpuVtxObject instance create new: ",vtx.resUid);
+                // console.log("GpuVtxObject instance create new: ",vtx.resUid);
             }
 
             if (needBuild) {
-                vtx.indices.ibufStep = disp.vbuf.getIBufStep();
-                vtx.indices.initialize(this.m_roVtxBuild, disp.vbuf);
+                // vtx.indices.ibufStep = disp.vbuf.getIBufStep();
+                let ivbuf = disp.ivbuf == null ? disp.vbuf : disp.ivbuf;
+                vtx.indices.ibufStep = ivbuf.getIBufStep();//disp.vbuf.getIBufStep();
+                vtx.indices.initialize(this.m_roVtxBuild, ivbuf);
                 vtx.vertex.initialize(this.m_roVtxBuild, shdp, disp.vbuf);
-                vtx.version = disp.vbuf.version;
+                // vtx.version = disp.vbuf.version;
+                vtx.version = disp.getVtxResVer();
             }
 
             vtxRes.__$attachRes(resUid);
             runit.vro = vtx.createVRO(this.m_roVtxBuild, shdp, true);
             runit.indicesRes = runit.vro.indicesRes;
             runit.vro.__$attachThis();
-            runit.vtxUid = disp.vbuf.getUid();
+            // runit.vtxUid = disp.vbuf.getUid();
+            runit.vtxUid = resUid;
 
             runit.ibufStep = runit.vro.ibufStep;
             runit.ibufType = runit.ibufStep != 4 ? this.m_rc.UNSIGNED_SHORT : this.m_rc.UNSIGNED_INT;
@@ -336,8 +341,8 @@ export default class RODataBuilder implements IRODataBuilder {
                 if (disp.getPartGroup() != null) {
                     runit.partGroup = disp.getPartGroup().slice(0);
                     runit.partTotal = runit.partGroup.length;
-                    let fs: Uint16Array = runit.partGroup;
-                    for (let i: number = 0, len: number = runit.partTotal; i < len;) {
+                    let fs = runit.partGroup;
+                    for (let i = 0, len = runit.partTotal; i < len;) {
                         i++;
                         fs[i++] *= runit.ibufStep;
                     }

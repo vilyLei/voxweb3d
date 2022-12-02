@@ -90,6 +90,7 @@ class SceneNode implements ISceneNode {
 	}
 	private m_lossTime: number = 0;
 	private m_verticesTotal: number = 0;
+	private m_trianglesTotal: number = 0;
 	private m_errModelTotal: number = 0;
 	private m_normalErrInfo: string = "";
 	protected initEntity(model: GeometryModelDataType, transform: Matrix4 = null, index: number = 0): void {
@@ -118,6 +119,7 @@ class SceneNode implements ISceneNode {
 			let vs = model.vertices;
 			let ivs = model.indices;
 			let trisNumber = ivs.length / 3;
+			this.m_trianglesTotal += trisNumber;
 			let nvs2 = new Float32Array(vs.length);
 			SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs2);
 
@@ -177,6 +179,7 @@ class SceneNode implements ISceneNode {
 			}
 			this.m_normalErrInfo = "";
 			this.m_verticesTotal = 0;
+			this.m_trianglesTotal = 0;
 			this.m_transforms = [];
 			this.m_transes = [];
 			this.m_transles = [];
@@ -224,6 +227,7 @@ class SceneNode implements ISceneNode {
 
 					let info = "initialize entity loss time: " + this.m_lossTime + "ms";
 					info += "</br>顶点数量: " + this.m_verticesTotal + "个";
+					info += "</br>三角面数量: " + this.m_trianglesTotal + "个";
 					info += "</br>子模型数量: " + this.m_showTotal + "/" + this.m_modelsTotal + "个";
 					if (this.isFinish()) {
 						info += "</br>当前模型加载展示完成";

@@ -46,10 +46,10 @@ class NormalEntityScene {
 
 		this.entityManager.rsc = rscene;
 		// for test
-		// this.initModel();
+		this.initModel();
 
-		this.exampleGroup.entityManager = this.entityManager;
-		this.exampleGroup.initialize(rscene, this.transUI);
+		// this.exampleGroup.entityManager = this.entityManager;
+		// this.exampleGroup.initialize(rscene, this.transUI);
 
 		let canvas = (this.rscene as any).getCanvas() as HTMLCanvasElement;
 		this.m_dropController.initialize(canvas, this);

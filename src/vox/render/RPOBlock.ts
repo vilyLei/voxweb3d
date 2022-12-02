@@ -293,7 +293,8 @@ export default class RPOBlock {
             if (RendererDevice.IsMobileWeb()) {
                 // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在某些设备上会有问题(例如ip6s上无法正常绘制)
                 // 注意临时产生的 vro 对象的回收问题
-                let vro: IVertexRenderObj = this.vtxResource.getVROByResUid(disp.vbuf.getUid(), this.m_shader.getCurrentShd(), true);
+                // let vro: IVertexRenderObj = this.vtxResource.getVROByResUid(disp.vbuf.getUid(), this.m_shader.getCurrentShd(), true);
+                let vro: IVertexRenderObj = this.vtxResource.getVROByResUid(disp.getVtxResUid(), this.m_shader.getCurrentShd(), true);
                 vro.run();
             }
             else {

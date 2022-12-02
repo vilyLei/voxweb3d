@@ -12,13 +12,15 @@ import RendererState from "../../vox/render/RendererState";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IMatrix4 from "../../vox/math/IMatrix4";
-import Matrix4 from "../../vox/math/Matrix4";
 import IRODisplay from "../../vox/display/IRODisplay";
 import IRPODisplay from "../../vox/render/IRPODisplay";
+import IROIVtxBuf from "../../vox/render/IROIVtxBuf";
 
 export default class RODisplay implements IRODisplay {
     private static s_uid: number = 0;
     private m_uid: number = 0;
+    private m_partGroup: Uint16Array = null;
+    private m_trans: IMatrix4 = null;
 
     private m_material: IRenderMaterial = null;
     // 只是持有引用不做任何管理操作
@@ -26,26 +28,42 @@ export default class RODisplay implements IRODisplay {
 
     name: string = "RODisplay";
     // render yes or no
-    visible: boolean = true;
-    ivsIndex: number = 0;
-    ivsCount: number = 0;
+    visible = true;
+    ivsIndex = 0;
+    ivsCount = 0;
     // only use in drawElementsInstanced()...
-    trisNumber: number = 0;
-    insCount: number = 0;
-    drawMode: number = RenderDrawMode.ELEMENTS_TRIANGLES;
+    trisNumber = 0;
+    insCount = 0;
+    drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
     vbuf: ROVertexBuffer = null;
+    ivbuf: IROIVtxBuf = null;
     // record render state: shadowMode(one byte) + depthTestMode(one byte) + blendMode(one byte) + cullFaceMode(one byte)
     // its value come from: RendererState.CreateRenderState("default", CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);
     renderState: number = RendererState.NORMAL_STATE;
     rcolorMask: number = RendererState.COLOR_MASK_ALL_TRUE;
     // mouse interaction enabled flag
     mouseEnabled: boolean = false;
-    private m_partGroup: Uint16Array = null;
-    private m_trans: IMatrix4 = null;
     private constructor() {
         this.m_uid = RODisplay.s_uid++;
     }
 
+    getVtxResUid(): number {
+
+        let v =  131 + this.vbuf.getUid();
+        if(this.ivbuf == null) {
+            return v;
+        }
+        console.log("RODisplay::getVtxResUid() apply this.ivbuf now.....");
+        return v * 131 + this.ivbuf.getUid();
+    }
+    getVtxResVer(): number {
+
+        let v =  131 + this.vbuf.version;
+        if(this.ivbuf == null) {
+            return v;
+        }
+        return v =  v * 131 + this.ivbuf.version;
+    }
     // draw parts group: [ivsCount0,ivsIndex0, ivsCount1,ivsIndex1, ivsCount2,ivsIndex2, ...]
     getPartGroup(): Uint16Array {
         return this.m_partGroup;

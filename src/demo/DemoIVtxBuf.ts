@@ -13,8 +13,9 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import Color4 from "../vox/material/Color4";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
+import Box3DEntity from "../vox/entity/Box3DEntity";
 
-export class DemoSharedMesh {
+export class DemoIVtxBuf {
 	private m_clearColor = new Color4(0.1, 0.2, 0.1, 1.0);
 	private m_tex: IRenderTexture = null;
 	private m_rscene: RendererScene = null;
@@ -39,25 +40,25 @@ export class DemoSharedMesh {
 		// stage3D.addEventListener(MouseEvent.MOUSE_BG_UP, this, this.test_bgmouseUpListener);
 	}
 	mouseDownListener(evt: any): void {
-		console.log("XXXXXXXXXXXXXXX DemoSharedMesh::mouseDownListener()...");
+		console.log("XXXXXXXXXXXXXXX DemoIVtxBuf::mouseDownListener()...");
 		if (this.m_currDispEntity != null) {
-			let entity = this.m_currDispEntity;
-			this.m_rscene.removeEntity(entity);
+			// let entity = this.m_currDispEntity;
+			// this.m_rscene.removeEntity(entity);
 
-			console.log(">>>>>>>>>>>>>>>>>>>>>> repeat the display entity ...");
-			entity.setXYZ(Math.random() * 1000 - 500,0,100);
+			// console.log(">>>>>>>>>>>>>>>>>>>>>> repeat the display entity ...");
+			// entity.setXYZ(Math.random() * 1000 - 500,0,100);
+			// // this.m_rscene.addEntity(entity);
+			// let mesh = entity.getMesh();
+
+			// let tex1 = this.m_tex;
+			// let material = new Default3DMaterial();
+			// material.normalEnabled = true;
+			// material.setTextureList([tex1]);
+			// material.initializeByCodeBuf(true);
+			// material.setRGB3f(0.5, 1.0, 0.5);
+
+			// entity.setMaterial(material);
 			// this.m_rscene.addEntity(entity);
-			let mesh = entity.getMesh();
-
-			let tex1 = this.m_tex;
-			let material = new Default3DMaterial();
-			material.normalEnabled = true;
-			material.setTextureList([tex1]);
-			material.initializeByCodeBuf(true);
-			material.setRGB3f(0.5, 1.0, 0.5);
-
-			entity.setMaterial(material);
-			this.m_rscene.addEntity(entity);
 		}
 	}
 	mouseUpListener(evt: any): void {
@@ -69,7 +70,7 @@ export class DemoSharedMesh {
 	}
 
 	initialize(): void {
-		console.log("DemoSharedMesh::initialize()......");
+		console.log("DemoIVtxBuf::initialize()......");
 		if (this.m_rscene == null) {
 			
 			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
@@ -86,8 +87,6 @@ export class DemoSharedMesh {
 
 			this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-			this.m_tex = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-
 			this.m_rscene.enableMouseEvent(true);
 			// this.m_rscene.enableMouseEvent(false);
 			this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
@@ -100,28 +99,15 @@ export class DemoSharedMesh {
 		}
 	}
 	private initScene(): void {
-		let tex1 = this.m_tex;
-
-		let scale = 120.0;
-		let mesh = this.m_rscene.entityBlock.unitBox.getMesh();
-
-		let material = new Default3DMaterial();
-		// material.normalEnabled = true;
-		material.setTextureList([tex1]);
-		material.initializeByCodeBuf(true);
-		material.setRGB3f(0.5, 1.0, 1.0);
-
-		let boxEntity = new DisplayEntity();
-		boxEntity.setMaterial(material);
-		boxEntity.setMesh(mesh);
-		boxEntity.setXYZ(-100, 0, 200);
-		boxEntity.setScaleXYZ(scale, scale, scale);
+		
+		let boxEntity = new Box3DEntity();
+		boxEntity.initializeCube(100.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+		boxEntity.setXYZ(-200, 0, 0);
 		this.m_rscene.addEntity(boxEntity);
 		this.m_currDispEntity = boxEntity;
 	}
 	run(): void {
 		if (this.m_rscene != null) {
-			// this.initialize2();
 
 			this.m_stageDragSwinger.runWithYAxis();
 			this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
@@ -130,4 +116,4 @@ export class DemoSharedMesh {
 		}
 	}
 }
-export default DemoSharedMesh;
+export default DemoIVtxBuf;

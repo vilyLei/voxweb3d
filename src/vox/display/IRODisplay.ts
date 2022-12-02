@@ -10,6 +10,7 @@
 import { DisplayRenderSign } from "../../vox/render/RenderConst";
 import IMatrix4 from "../../vox/math/IMatrix4";
 import IROVtxBuf from "../../vox/render/IROVtxBuf";
+import IROIVtxBuf from "../../vox/render/IROIVtxBuf";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRPODisplay from "../../vox/render/IRPODisplay";
 
@@ -25,6 +26,7 @@ interface IRODisplay {
     insCount: number;
     drawMode: number;
     vbuf: IROVtxBuf;
+    ivbuf: IROIVtxBuf;
     
     /**
      * record render state: shadowMode(one byte) + depthTestMode(one byte) + blendMode(one byte) + cullFaceMode(one byte)
@@ -41,6 +43,9 @@ interface IRODisplay {
      * its default value is false
      */
     mouseEnabled: boolean;
+
+    getVtxResUid(): number;
+    getVtxResVer(): number;
     // draw parts group: [ivsCount0,ivsIndex0, ivsCount1,ivsIndex1, ivsCount2,ivsIndex2, ...]
     getPartGroup(): Uint16Array;
     createPartGroup(partsTotal: number): void;

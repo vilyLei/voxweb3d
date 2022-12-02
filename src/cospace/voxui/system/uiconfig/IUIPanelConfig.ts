@@ -21,6 +21,7 @@ interface IUIPanelConfig {
 	btnNames: string[];
 	btnKeys: string[];
 	btnTips: string[];
+	btnTypes?: number[];
 
 }
 

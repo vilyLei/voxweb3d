@@ -259,7 +259,8 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 					if (this.m_rpoNodeBuilder.restore(node)) {
 						this.m_rpoUnitBuilder.restore(runit);
 					}
-					this.m_vtxResource.__$detachRes(disp.vbuf.getUid());
+					// this.m_vtxResource.__$detachRes(disp.vbuf.getUid());
+					this.m_vtxResource.__$detachRes(disp.getVtxResUid());
 					disp.__$$runit = null;
 					disp.__$ruid = -1;
 					this.m_version++;

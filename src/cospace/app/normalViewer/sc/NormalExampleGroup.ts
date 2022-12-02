@@ -163,8 +163,7 @@ class NormalExampleGroup extends NVEntityGroup implements IRunnable {
 			let ns = this.m_nodes;
 			let ts = this.m_textEntities;
 
-			if (enabled) {
-			} else {
+			if (!enabled) {
 				for (let i = 0; i < ns.length; ++i) {
 					mana.removeNode(ns[i]);
 					ns[i].setVisible(false);

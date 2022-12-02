@@ -179,16 +179,26 @@ class NVTransUI {
 		let ph = uiCfg.btnTextAreaSize[1];
 		let btnNames = uiCfg.btnNames;
 		let keys = uiCfg.btnKeys;
+		let btnTypes = uiCfg.btnTypes!;
+		if(!btnTypes) {
+			btnTypes = new Array(keys.length);
+			btnTypes.fill(0);
+		}
+		console.log("NVTransUI::initTransUI(), XXXXXX btnTypes: ", btnTypes);
 
 		let px = 5;
 		pw = uiCfg.btnSize[0];
 		ph = uiCfg.btnSize[1];
 		let py = ph * 4;
+		let defaultKey = "";
 		for (let i = 0; i < btnNames.length; ++i) {
 			const btn = ButtonBuilder.createPanelBtnWithCfg(uiScene, px, py - ph * i, i, uiCfg);
 			this.m_coUIScene.addEntity(btn, 1);
-			if (i > 0) {
-				this.m_transBtns.push(btn);
+			this.m_transBtns.push(btn);
+			if (btnTypes[i] == 1) {
+				if(defaultKey == "") {
+					defaultKey = keys[1];
+				}
 				this.m_btnGroup.addButton(btn);
 			}
 		}
@@ -202,7 +212,9 @@ class NVTransUI {
 				cfg.applyButtonGlobalColor(btn, "common");
 			}
 		);
-		this.m_btnGroup.select(keys[1]);
+		if(defaultKey != "") {
+			this.m_btnGroup.select(defaultKey);
+		}
 	}
 	private uiMouseDownListener(evt: any): void {
 

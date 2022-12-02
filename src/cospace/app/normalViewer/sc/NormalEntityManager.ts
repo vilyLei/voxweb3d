@@ -85,29 +85,6 @@ class NormalEntityManager {
 			if (keyCode == 16) {
 				console.log("use a SHIFT Key Down.");
 				return this.applyShiftKey( list );
-
-				// let map = this.m_map;
-				// let firstNode: NormalEntityNode = null;
-				// let ls = list;
-				// for (let i = 0; i < ls.length; ++i) {
-				// 	const node = map.get(ls[i].getUid());
-				// 	if (node != null) {
-				// 		if (firstNode == null) {
-				// 			firstNode = node;
-				// 			break;
-				// 		}
-				// 	}
-				// }
-				// if (firstNode != null) {
-				// 	let guid = firstNode.groupUid;
-				// 	list = [];
-				// 	for (var [k, v] of map.entries()) {
-				// 		if (v.groupUid == guid) {
-				// 			list.push(v.entity);
-				// 		}
-				// 	}
-				// 	// console.log("XXXXXX guid: ", guid, list);
-				// }
 			} if(keyCode == 17) {
 				return this.applyCtrlKey(list);
 			}
@@ -161,7 +138,6 @@ class NormalEntityManager {
 					node.select();
 				}
 			}
-			//getEntityMaterial
 			this.m_scaleBase = scaleBase < 0.1 ? 0.1 : scaleBase;
 			cpl.setNormalFlag(lineVisible);
 			cpl.setNormalFlipFlag(flip);

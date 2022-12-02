@@ -5,17 +5,17 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IROIVtxBuf from "./IROIVtxBuf";
+import IVtxBufData from "../../vox/mesh/IVtxBufData";
+interface IROIVtxBuf {
+    indicesVer: number;
+    version: number;
 
-interface IROVtxBuf extends IROIVtxBuf {
-    layoutBit: number;
-    vertexVer: number;
-
-    getBuffersTotal(): number;
-    getAttribsTotal(): number;
-    getF32DataAt(index: number): Float32Array;
-
-    getBufTypeList(): number[];
-    getBufSizeList(): number[];
+    bufData: IVtxBufData;
+    
+    getIvsData(): Uint16Array | Uint32Array;
+    getUid(): number;
+    getType(): number;
+    getBufDataUsage(): number;
+    getIBufStep(): number;
 }
-export default IROVtxBuf;
+export default IROIVtxBuf;

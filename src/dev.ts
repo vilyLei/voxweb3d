@@ -316,7 +316,9 @@
 
 //  import {DemoSharedVBuf as Demo} from "./demo/DemoSharedVBuf";
 
- import {DemoSharedMesh as Demo} from "./demo/DemoSharedMesh";
+//  import {DemoSharedMesh as Demo} from "./demo/DemoSharedMesh";
+
+ import {DemoIVtxBuf as Demo} from "./demo/DemoIVtxBuf";
 
 
 ///////////////////////////////////////////////////////////////////////////////

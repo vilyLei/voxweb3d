@@ -198,7 +198,8 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
                 this.m_renderProxy.VtxBufUpdater.updateDispVbuf(this.m_display, deferred);
             }
             else {
-                this.m_renderProxy.VtxBufUpdater.updateVtxDataToGpuByUid(this.m_display.vbuf.getUid(), deferred);
+                // this.m_renderProxy.VtxBufUpdater.updateVtxDataToGpuByUid(this.m_display.vbuf.getUid(), deferred);
+                this.m_renderProxy.VtxBufUpdater.updateVtxDataToGpuByUid(this.m_display.getVtxResUid(), deferred);
             }
         }
     }
@@ -286,19 +287,21 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         }
     }
     private initDisplay(m: IMeshBase): void {
-        this.m_display.vbuf = m.__$attachVBuf() as any;
-        this.m_display.ivsIndex = 0;
-        this.m_display.ivsCount = m.vtCount;
-        this.m_display.drawMode = m.drawMode;
-        this.m_display.trisNumber = m.trisNumber;
-        this.m_display.visible = this.m_visible && this.m_drawEnabled;
+        const d = this.m_display;
+        d.vbuf = m.__$attachVBuf() as any;
+        d.ivbuf = m.__$attachIVBuf() as any;
+        d.ivsIndex = 0;
+        d.ivsCount = m.vtCount;
+        d.drawMode = m.drawMode;
+        d.trisNumber = m.trisNumber;
+        d.visible = this.m_visible && this.m_drawEnabled;
     }
     /**
      * 设置几何相关的数据,必须是构建完备的mesh才能被设置进来
      * 这个设置函数也可以动态运行时更新几何相关的顶点数据
      */
     setMesh(m: IMeshBase): void {
-        // let m = pm as MeshBase;
+        
         if (this.m_mesh == null) {
             if (m != null) {
                 if (!m.isEnabled()) { m.rebuild() }
@@ -327,6 +330,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
             if (this.m_mesh != m && m != null) {
                 this.m_transfrom.updatedStatus |= 2;
                 this.m_mesh.__$detachVBuf(this.m_display.vbuf);
+                this.m_mesh.__$detachIVBuf(this.m_display.ivbuf);
                 this.m_mesh.__$detachThis();
                 m.__$attachThis();
                 this.m_mesh = m;
@@ -351,9 +355,10 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
             this.m_display.ivsIndex = ivsIndex;
             this.m_display.ivsCount = ivsCount;
             if (this.m_display.__$ruid > -1) {
-                this.m_display.__$$runit.trisNumber = Math.floor((ivsCount - ivsIndex) / 3);
-                this.m_display.__$$runit.setIvsParam(ivsIndex, ivsCount);
-                this.m_display.__$$runit.drawMode = this.m_mesh.drawMode;
+                let ut = this.m_display.__$$runit;
+                ut.trisNumber = Math.floor((ivsCount - ivsIndex) / 3);
+                ut.setIvsParam(ivsIndex, ivsCount);
+                ut.drawMode = this.m_mesh.drawMode;
 
                 if (updateBounds && this.isPolyhedral()) {
 
@@ -363,7 +368,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
                     }
                     this.m_transStatus = ROTransform.UPDATE_TRANSFORM;
                     this.m_localBounds.reset();
-                    let ivs: Uint16Array | Uint32Array = this.m_mesh.getIVS();
+                    let ivs = this.m_mesh.getIVS();
                     this.m_localBounds.addFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(ivsIndex, ivsIndex + ivsCount));
                     this.m_localBounds.update();
                 }

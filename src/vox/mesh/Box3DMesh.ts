@@ -16,6 +16,7 @@ import AABB from "../../vox/geom/AABB";
 import MeshBase from "../../vox/mesh/MeshBase";
 import Color4 from "../material/Color4";
 import { AABBCalc } from "../geom/AABBCalc";
+import ROIVertexBuffer from "./ROIVertexBuffer";
 
 export default class Box3DMesh extends MeshBase {
     private m_posList: number[][] = [null, null, null, null, null, null, null, null];
@@ -431,6 +432,16 @@ export default class Box3DMesh extends MeshBase {
             }
             this.m_vbuf.setUintIVSData(this.m_ivs);
             this.vtCount = this.m_ivs.length;
+
+            //// apply the ivbuf example
+            // let i = 0;
+            // let subTot = 12;
+            // let pivs = this.m_ivs.slice(i * subTot, (i + 1) * subTot);
+            // let ivbuf = new ROIVertexBuffer();
+            // ivbuf.setUintIVSData(pivs);
+            // this.m_ivbuf = ivbuf;
+            // this.vtCount = pivs.length;
+
             this.trisNumber = 12;
             this.buildEnd();
         }

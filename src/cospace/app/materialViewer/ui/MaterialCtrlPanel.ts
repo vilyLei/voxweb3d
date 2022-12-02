@@ -1,0 +1,570 @@
+import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
+import { IButton } from "../../../voxui/button/IButton";
+import IColor4 from "../../../voxui/../../vox/material/IColor4";
+
+import { ICoUIScene } from "../../../voxui/scene/ICoUIScene";
+import { ITextLabel } from "../../../voxui/entity/ITextLabel";
+import { UIPanel } from "../../../voxui/panel/UIPanel";
+import { IFlagButton } from "../../../voxui/button/IFlagButton";
+
+import { IUIPanel } from "../../../voxui/panel/IUIPanel";
+import IVector3D from "../../../../vox/math/IVector3D";
+import IAABB from "../../../../vox/geom/IAABB";
+import { ISelectButtonGroup } from "../../../voxui/button/ISelectButtonGroup";
+import IEvtDispatcher from "../../../../vox/event/IEvtDispatcher";
+
+import { IUIFontFormat } from "../../../voxui/system/IUIConfig";
+import IProgressDataEvent from "../../../../vox/event/IProgressDataEvent";
+import { ICoRScene } from "../../../voxengine/ICoRScene";
+import { ICoUI } from "../../../voxui/ICoUI";
+import { ButtonBuilder } from "../../../voxui/button/ButtonBuilder";
+import ITransformEntity from "../../../../vox/entity/ITransformEntity";
+import { IColorPickPanel } from "../../../voxui/panel/IColorPickPanel";
+import { IClipColorLabel } from "../../../voxui/entity/IClipColorLabel";
+
+declare var CoRScene: ICoRScene;
+declare var CoUI: ICoUI;
+declare var CoMaterial: ICoMaterial;
+
+class NormalCtrlPanel {
+
+	private m_normalVisiBtn: IFlagButton;
+	private m_modelVisiBtn: IFlagButton;
+	private m_diffBtn: IFlagButton;
+	private m_normalFlipBtn: IFlagButton;
+
+	private m_btnW = 90;
+	private m_btnH = 50;
+	private m_normalScale = 0;
+	private m_scene: ICoUIScene = null;
+	private m_rpi: number;
+	private m_panelW: number;
+	private m_panelH: number;
+	private m_v0: IVector3D;
+	private m_panel: IUIPanel = null;
+	private m_btnGroup: ISelectButtonGroup;
+
+	private m_selectDispatcher: IEvtDispatcher;
+	private m_progressDispatcher: IEvtDispatcher;
+	private m_progressEvt: IProgressDataEvent;
+	private m_colorSelectLabel: IClipColorLabel;
+	private m_normalLineColorBtn: IButton;
+	private m_colorPickPanel: IColorPickPanel = null;
+
+	autoLayout: boolean = true;
+
+	constructor() { }
+
+	getScene(): ICoUIScene {
+		return this.m_scene;
+	}
+
+	setBGColor(c: IColor4): void {
+		if (this.m_panel == null) this.m_panel = CoUI.createUIPanel();
+		this.m_panel.autoLayout = false;
+		this.m_panel.setBGColor(c);
+	}
+
+	initialize(scene: ICoUIScene, rpi: number, panelW: number, panelH: number, btnW: number, btnH: number): void {
+
+		if (this.m_scene == null) {
+
+			this.m_scene = scene;
+			this.m_rpi = rpi;
+
+			this.m_panelW = panelW;
+			this.m_panelH = panelH;
+			this.m_btnW = btnW;
+			this.m_btnH = btnH;
+
+			this.m_v0 = CoRScene.createVec3();
+			if (this.m_panel == null) this.m_panel = CoUI.createUIPanel();
+			this.m_panel.autoLayout = false;
+			this.m_panel.setUIscene(scene);
+			this.m_panel.setSize(panelW, panelH);
+
+			this.buildPanel(panelW, panelH);
+		}
+	}
+	destroy(): void {
+
+		this.m_scene = null;
+
+		if (this.m_selectDispatcher != null) {
+
+			this.m_selectDispatcher.destroy();
+			this.m_progressDispatcher.destroy();
+
+			this.m_selectDispatcher = null;
+			this.m_progressDispatcher = null;
+
+		}
+
+		this.m_progressEvt = null;
+		this.m_modelVisiBtn = null;
+		this.m_normalVisiBtn = null;
+		this.m_diffBtn = null;
+		this.m_normalFlipBtn = null;
+
+		if (this.m_panel != null) {
+
+			this.m_panel.destroy();
+			this.m_panel = null;
+		}
+	}
+	open(scene: ICoUIScene = null, rpi: number = -1): void {
+
+		this.m_panel.open(scene);
+		if (this.autoLayout) {
+			this.addLayoutEvt();
+			this.layout();
+		}
+		this.update();
+	}
+	isOpen(): boolean {
+		return this.m_panel.isOpen();
+	}
+	close(): void {
+		this.removeLayoutEvt();
+		this.m_panel.close();
+		if(this.m_colorPickPanel != null) {
+			this.m_colorPickPanel.close();
+			this.m_colorPickPanel = null;
+		}
+	}
+
+	addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
+		if (type == CoRScene.SelectionEvent.SELECT) {
+			this.m_selectDispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+		} else if (type == CoRScene.ProgressDataEvent.PROGRESS) {
+			this.m_progressDispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+		}
+	}
+	removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
+		if (type == CoRScene.SelectionEvent.SELECT) {
+			this.m_selectDispatcher.removeEventListener(type, listener, func);
+		} else if (type == CoRScene.ProgressDataEvent.PROGRESS) {
+			this.m_progressDispatcher.removeEventListener(type, listener, func);
+		}
+	}
+	protected buildPanel(pw: number, ph: number): void {
+
+		this.m_selectDispatcher = CoRScene.createEventBaseDispatcher();
+		this.m_progressDispatcher = CoRScene.createEventBaseDispatcher();
+		this.m_progressEvt = CoRScene.createProgressDataEvent();
+
+		let builder = ButtonBuilder;
+		let sc = this.m_scene;
+		let tta = sc.transparentTexAtlas;
+		let fc4 = CoMaterial.createColor4;
+
+		let cfg = this.m_scene.uiConfig;
+		let gColor = cfg.getUIGlobalColor();
+		let uiCfg = cfg.getUIPanelCfgByName("normalCtrlPanel");
+		let btf = uiCfg.btnTextFontFormat;
+		let ltf = uiCfg.textFontFormat;
+		let items = uiCfg.items;
+
+		let startX = 10;
+		let startY = this.m_panelH - 10 - this.m_btnH;
+		let disX = 5;
+		let disY = 5;
+
+		let px = startX;
+		let py = 0;
+
+		let ME = CoRScene.MouseEvent;
+		let localBtn = builder.createPanelBtnWithCfg(sc, startX, startY, 0, uiCfg);
+
+		px = px + this.m_btnW;
+		let globalBtn = builder.createPanelBtnWithCfg(sc, px, startY, 1, uiCfg);
+
+		px = px + this.m_btnW;
+		let modelColorBtn = builder.createPanelBtnWithCfg(sc, px, startY, 2, uiCfg);
+
+		let pl = this.m_panel;
+		pl.addEntity(localBtn);
+		pl.addEntity(globalBtn);
+		pl.addEntity(modelColorBtn);
+
+		let btnSize = 24;
+
+		py = startY - this.m_btnH - disY + 20;
+		// let textLabel = this.createText("Normal line visible", startX + btnSize + disX, py, ltf);
+		let textLabel = this.createText(items[0].text, startX + btnSize + disX, py, ltf);
+
+		px = startX;
+		py = textLabel.getY();
+		this.m_normalVisiBtn = this.createFlagBtn(btnSize, px, py, "normal");
+
+		// textLabel = this.createText("Model visible", startX + btnSize + disX, py - 10, ltf);
+		textLabel = this.createText(items[1].text, startX + btnSize + disX, py - 10, ltf);
+		py = textLabel.getY();
+		this.m_modelVisiBtn = this.createFlagBtn(btnSize, px, py, "model");
+
+		// textLabel = this.createText("Normal difference", startX + btnSize + disX, py - 10, ltf);
+		textLabel = this.createText(items[2].text, startX + btnSize + disX, py - 10, ltf);
+		py = textLabel.getY();
+		this.m_diffBtn = this.createFlagBtn(btnSize, px, py, "difference");
+
+		// textLabel = this.createText("Normal flip", startX + btnSize + disX, py - 10, ltf);
+		textLabel = this.createText(items[3].text, startX + btnSize + disX, py - 10, ltf);
+		py = textLabel.getY();
+		this.m_normalFlipBtn = this.createFlagBtn(btnSize, px, py, "normalFlip");
+
+		// textLabel = this.createText("Normal line length:", startX, py - 15, ltf);
+		textLabel = this.createText(items[4].text, startX, py - 15, ltf);
+		px = startX;
+		py = textLabel.getY();
+		this.m_dragBar = this.createProgressBtn(px + 5, py - 25, 200);
+		this.m_dragBar.setX(112);
+		this.m_dragBar.update();
+		this.m_proBaseLen = 97;
+
+		py = this.m_dragBar.getY();
+		// textLabel = this.createText("Normal line color:", startX, py - 10, ltf);
+		textLabel = this.createText(items[5].text, startX, py - 10, ltf);
+		px = startX;
+		py = textLabel.getY();
+		let colors1 = [
+			fc4().setRGB3Bytes(210, 0, 210),
+			fc4().setRGB3Bytes(240, 0, 240),
+			fc4().setRGB3Bytes(220, 0, 220),
+			fc4().setRGB3Bytes(240, 0, 240)
+		];
+		let normalLineColorBtn = this.createColorBtn(16, 16, "normalLineColor", colors1);
+		normalLineColorBtn.setXY(startX + textLabel.getWidth() + disX, py + 3);
+		pl.addEntity(normalLineColorBtn);
+
+		px = startX;
+		py = textLabel.getY() - disY;
+
+		let normalTestBtn = builder.createPanelBtnWithCfg(sc, px, py - localBtn.getHeight(), 3, uiCfg);
+		pl.addEntity(normalTestBtn);
+
+		localBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
+		globalBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
+		modelColorBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
+		normalTestBtn.addEventListener(ME.MOUSE_UP, this, this.normalDisplaySelect);
+		normalLineColorBtn.addEventListener(ME.MOUSE_UP, this, this.normalLineColorSelect);
+
+		let group = this.m_btnGroup = CoUI.createSelectButtonGroup();
+
+		group.addButton(localBtn);
+		group.addButton(globalBtn);
+		group.addButton(modelColorBtn);
+		group.setSelectedFunction(
+			(btn: IButton): void => {
+				cfg.applyButtonGlobalColor(btn, "selected");
+			},
+			(btn: IButton): void => {
+				cfg.applyButtonGlobalColor(btn, "light");
+			}
+		);
+		this.m_btnGroup.select(globalBtn.uuid);
+	}
+	private normalDisplaySelect(evt: any): void {
+		this.setDisplayMode(evt.uuid, true)
+	}
+	setDisplayMode(uuid: string, sendEvt: boolean = false): void {
+		// console.log("setDisplayMode, uuid: ", uuid);
+		if (sendEvt) {
+			this.sendSelectionEvt(uuid, sendEvt);
+		} else {
+			this.m_btnGroup.select(uuid);
+		}
+	}
+	setNormalLineColor(color: IColor4, sendEvt: boolean = false): void {
+		let c0 = color.clone().scaleBy(0.9);
+		let c1 = color.clone().scaleBy(1.1);
+		this.m_colorSelectLabel.setColors([c0, c1, c0, c0]);
+		this.m_colorSelectLabel.setClipIndex(0);
+		if (sendEvt) {
+			this.sendSelectionEvt(this.m_normalLineColorBtn.uuid, true, color.clone());
+		}
+	}
+	private layoutPickColorPanel(): void {
+		let panel = this.m_colorPickPanel;
+		if(panel != null && panel.isOpen()) {
+			this.m_normalLineColorBtn.update();
+			let bounds = this.m_normalLineColorBtn.getGlobalBounds();
+			panel.setXY(bounds.max.x - panel.getWidth(), bounds.max.y + 2);
+			panel.setZ(this.getZ() + 0.3);
+			panel.update();
+		}
+	}
+	private normalLineColorSelect(evt: any): void {
+		console.log("color select...evt: ", evt);
+		let panel = this.m_colorPickPanel;
+		if(panel != null && panel.isOpen()) {
+			panel.close();
+			this.m_colorPickPanel = null;
+		} else {
+			let panel = this.m_scene.panel.getPanel("colorPickPanel") as IColorPickPanel;			
+			if (panel != null) {
+				if (panel.isOpen()) {
+					panel.close();
+				} else {
+					this.m_colorPickPanel = panel;
+					panel.open();
+					this.layoutPickColorPanel();
+					panel.setSelectColorCallback((color: IColor4): void => {
+						this.setNormalLineColor(color, true);
+					});
+				}
+			}
+		}
+	}
+
+	private selectVisibleFunc(evt: any): void {
+		this.sendSelectionEvt(evt.uuid, evt.flag);
+	}
+	private createFlagBtn(size: number, px: number, py: number, uuid: string = "model"): IFlagButton {
+
+		let sc = this.getScene();
+		let flagBtn = CoUI.createFlagButton();
+		flagBtn.uuid = uuid;
+		flagBtn.initializeWithSize(sc.texAtlas, size, size);
+		flagBtn.setXY(px, py);
+		flagBtn.addEventListener(CoRScene.SelectionEvent.SELECT, this, this.selectVisibleFunc);
+		this.m_panel.addEntity(flagBtn);
+		return flagBtn;
+	}
+	getNormalScale(): number {
+		return this.m_normalScale;
+	}
+	setNormalFlag(flag: boolean): void {
+		this.m_normalVisiBtn.setFlag(flag);
+	}
+	setModelVisiFlag(flag: boolean): void {
+		this.m_modelVisiBtn.setFlag(flag);
+	}
+	setDifferenceFlag(flag: boolean): void {
+		this.m_diffBtn.setFlag(flag);
+	}
+	setNormalFlipFlag(flag: boolean): void {
+		this.m_normalFlipBtn.setFlag(flag);
+	}
+	private sendProgressEvt(uuid: string, v: number): void {
+
+		let e = this.m_progressEvt;
+		e.target = this;
+		e.status = 2;
+		e.type = CoRScene.ProgressDataEvent.PROGRESS;
+		e.minValue = 0.0;
+		e.maxValue = 1.0;
+		e.value = v;
+		e.progress = v;
+		e.phase = 1;
+		e.uuid = uuid;
+		this.m_progressDispatcher.dispatchEvt(e);
+		e.target = null;
+	}
+
+	private sendSelectionEvt(uuid: string, flag: boolean, data: any = null): void {
+
+		let e = CoRScene.createSelectionEvent();
+		// let e = this.m_flagEvt;
+		e.uuid = uuid;
+		e.target = this;
+		e.type = CoRScene.SelectionEvent.SELECT;
+		e.flag = flag;
+		e.phase = 1;
+		e.data = data;
+		this.m_selectDispatcher.dispatchEvt(e);
+		e.target = null;
+	}
+
+	private createText(text: string, px: number, py: number, fontFormat: IUIFontFormat): ITextLabel {
+		let sc = this.getScene();
+		// let textLabel = new TextLabel();
+		let textLabel = CoUI.createTextLabel();
+		textLabel.depthTest = true;
+		textLabel.transparent = true;
+		textLabel.premultiplyAlpha = true;
+		textLabel.initialize(text, sc, fontFormat.fontSize);
+
+		textLabel.setColor(CoMaterial.createColor4().fromBytesArray3(fontFormat.fontColor));
+		textLabel.setXY(px, py - textLabel.getHeight());
+		textLabel.update();
+		this.m_panel.addEntity(textLabel);
+		return textLabel;
+	}
+	private m_dragBar: IButton;
+	private m_dragging: boolean = false;
+	private m_dragMinX = 0;
+	private m_dragMaxX = 0;
+	private m_progressLen = 0;
+	private m_dragBgBar: IButton;
+	private createProgressBtn(px: number, py: number, length: number): IButton {
+
+		let sc = this.getScene();
+		let barBgLabel = CoUI.createClipColorLabel();
+		barBgLabel.initializeWithoutTex(length, 10, 4);
+		barBgLabel.getColorAt(0).setRGB3Bytes(70, 70, 70);
+		barBgLabel.getColorAt(1).setRGB3f(0.3, 0.3, 0.3);
+		barBgLabel.getColorAt(2).setRGB3Bytes(70, 70, 70);
+		barBgLabel.getColorAt(3).setRGB3Bytes(70, 70, 70);
+
+		let dragBgBar = CoUI.createButton();
+		dragBgBar.initializeWithLable(barBgLabel);
+		dragBgBar.setZ(-0.05);
+		dragBgBar.setXY(px, py);
+		this.m_panel.addEntity(dragBgBar);
+		this.m_dragBgBar = dragBgBar;
+
+		dragBgBar.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.progressBgMouseDown);
+
+		this.m_progressLen = length - 16;
+		this.m_proBaseLen = this.m_progressLen;
+		this.m_dragMinX = px;
+		this.m_dragMaxX = px + this.m_progressLen;
+
+		// let barLabel = new ClipColorLabel();
+		let barLabel = CoUI.createClipColorLabel();
+		barLabel.initializeWithoutTex(16, 16, 4);
+		barLabel.getColorAt(0).setRGB3Bytes(130, 130, 130);
+		barLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
+		barLabel.getColorAt(2).setRGB3f(0.2, 1.0, 1.0);
+
+		// let dragBar = new Button();
+		let dragBar = CoUI.createButton();
+		dragBar.initializeWithLable(barLabel);
+		dragBar.setXY(px, py - 3);
+		this.m_panel.addEntity(dragBar);
+
+		dragBar.addEventListener(CoRScene.MouseEvent.MOUSE_DOWN, this, this.progressMouseDown);
+		// dragBar.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.progressMouseUp);
+
+		sc.addEventListener(CoRScene.MouseEvent.MOUSE_UP, this, this.progressMouseUp);
+		// this.m_dragBar = dragBar;
+		return dragBar;
+	}
+	private progressMouseDown(evt: any): void {
+		this.m_dragging = true;
+		let sc = this.getScene();
+		this.sendSelectionEvt("normalScaleBtnSelect", true);
+		sc.addEventListener(CoRScene.MouseEvent.MOUSE_MOVE, this, this.progressMouseMove);
+	}
+	private progressMouseUp(evt: any): void {
+		this.m_dragging = false;
+		let sc = this.getScene();
+		sc.removeEventListener(CoRScene.MouseEvent.MOUSE_MOVE, this, this.progressMouseMove);
+	}
+	private m_proBaseLen = 100;
+	private progressBgMouseDown(evt: any): void {
+		let px = evt.mouseX;
+		let py = evt.mouseY;
+
+		let pv = this.m_v0;
+		pv.setXYZ(px, py, 0);
+
+		// console.log("px,py: ", px,py);
+		this.m_panel.globalToLocal(pv);
+		// console.log("pv.x, pv.y: ", pv.x, pv.y);
+
+		px = pv.x;
+		if (px < this.m_dragMinX) {
+			px = this.m_dragMinX;
+		} else if (px > this.m_dragMaxX) {
+			px = this.m_dragMaxX;
+		}
+		// px = Math.round(px);
+		this.m_dragBar.setX(px);
+		this.m_dragBar.update();
+		this.m_proBaseLen = (px - this.m_dragMinX);
+		// console.log("this.m_proBaseLen, px: ", this.m_proBaseLen, px);
+
+	}
+	private progressMouseMove(evt: any): void {
+		let px = evt.mouseX;
+		let py = evt.mouseY;
+
+		let pv = this.m_v0;
+		pv.setXYZ(px, py, 0);
+		this.m_panel.globalToLocal(pv);
+
+		px = pv.x;
+		if (px < this.m_dragMinX) {
+			px = this.m_dragMinX;
+		} else if (px > this.m_dragMaxX) {
+			px = this.m_dragMaxX;
+		}
+		this.m_dragBar.setX(px);
+		this.m_dragBar.update();
+		let f = (px - this.m_dragMinX) / this.m_proBaseLen;
+		this.m_normalScale = f;
+		// console.log("progress f: ", f);
+
+		this.sendProgressEvt(evt.uuid, f);
+	}
+	private createColorBtn(pw: number, ph: number, idns: string, colors: IColor4[]): IButton {
+
+		let colorClipLabel = CoUI.createClipColorLabel();
+		colorClipLabel.initializeWithoutTex(pw, ph, 4);
+		colorClipLabel.setColors(colors);
+		this.m_colorSelectLabel = colorClipLabel;
+		let btn = CoUI.createButton();
+		btn.uuid = idns;
+		btn.initializeWithLable(colorClipLabel);
+		this.m_normalLineColorBtn = btn;
+		return btn;
+	}
+	protected addLayoutEvt(): void {
+		if (this.autoLayout) {
+			let sc = this.getScene();
+			if (sc != null) {
+				let EB = CoRScene.EventBase;
+				sc.addEventListener(EB.RESIZE, this, this.resize);
+			}
+		}
+	}
+	protected removeLayoutEvt(): void {
+		if (this.autoLayout) {
+			let sc = this.getScene();
+			if (sc != null) {
+				let EB = CoRScene.EventBase;
+				sc.removeEventListener(EB.RESIZE, this, this.resize);
+			}
+		}
+	}
+	private resize(evt: any): void {
+		this.layout();
+	}
+	protected layout(): void {
+		let sc = this.getScene();
+		if (sc != null) {
+			let width = this.getGlobalBounds().getWidth();
+			let rect = sc.getRect();
+			// let bounds = this.getGlobalBounds();
+
+			let px = Math.round(rect.width - width);
+			let py = Math.round(rect.y + (rect.height - this.getHeight()) * 0.5);
+			this.setXY(px, py);
+			this.update();
+			this.layoutPickColorPanel();
+		}
+	}
+	setZ(pz: number): void {
+		this.m_panel.setZ(pz);
+	}
+	getZ(): number {
+		return this.m_panel.getZ();
+	}
+	setXY(px: number, py: number): void {
+		this.m_panel.setXY(px, py);
+	}
+	getGlobalBounds(): IAABB {
+		return this.m_panel.getGlobalBounds();
+	}
+	getWidth(): number {
+		return this.m_panel.getWidth();
+	}
+	getHeight(): number {
+		return this.m_panel.getHeight();
+	}
+	update(): void {
+		this.m_panel.update();
+	}
+}
+export { NormalCtrlPanel };

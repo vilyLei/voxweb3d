@@ -11,6 +11,7 @@ import AABB from "../../vox/geom/AABB";
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
+import ROIVertexBuffer from "../../vox/mesh/ROIVertexBuffer";
 import { RenderDrawMode as RDM } from "../../vox/render/RenderConst";
 import { IVtxBufRenderData } from "../../vox/render/IVtxBufRenderData";
 import { IROVertexBuffer } from "../../vox/mesh/IROVertexBuffer";
@@ -35,12 +36,15 @@ export default class MeshBase implements IMeshBase {
     private m_layoutBit: number = 0x0;
     protected m_transMatrix: Matrix4 = null;
     protected m_vbuf: ROVertexBuffer = null;
+    protected m_ivbuf: ROIVertexBuffer = null;
     protected m_ivs: Uint16Array | Uint32Array = null;
 
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         this.m_bufDataUsage = bufDataUsage;
         //this.m_isDyn = bufDataUsage == VtxBufConst.VTX_DYNAMIC_DRAW;
     }
+    // setIVtxBuffer(ivbuf: ROIVertexBuffer): void {
+    // }
     /**
      * 强制更新 vertex indices buffer 数据, 默认值为false
      */
@@ -198,6 +202,17 @@ export default class MeshBase implements IMeshBase {
             }
         }
     }
+    
+    __$attachIVBuf(): ROIVertexBuffer {
+        return this.m_ivbuf;
+    }
+    __$detachIVBuf(ivbuf: ROIVertexBuffer): void {
+        if (this.m_vbuf != ivbuf) {
+            throw Error("Fatal Error!");
+        }
+        // ROVertexBuffer.__$$DetachAt(this.m_vbuf.getUid());
+    }
+
     __$attachVBuf(): ROVertexBuffer {
         if (this.m_vbuf == null) {
             // rebuild vbuf;

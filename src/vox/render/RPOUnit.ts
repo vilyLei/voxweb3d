@@ -115,7 +115,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         this.drawFlag = (rcolorMask << 10) + renderState;
     }
     drawThis(rc: IRenderProxy): void {
-
+        
         const st = rc.status;
         st.drawCallTimes ++;
         st.drawTrisNumber += this.trisNumber;
