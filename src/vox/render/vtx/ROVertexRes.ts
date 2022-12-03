@@ -38,9 +38,9 @@ class ROVertexRes {
         let map = ROVertexRes.s_map;
         let vt: ROVertexRes;
         // console.log("GpuVtxObject::createVertex(), vtxUid: ", vtxUid, ", uid: ", this.m_uid);
-        if(map.has(vtxUid)) {
-            vt = map.get( vtxUid );
-        }else {
+        if (map.has(vtxUid)) {
+            vt = map.get(vtxUid);
+        } else {
             vt = new ROVertexRes();
             map.set(vtxUid, vt);
             vt.initialize(rc, shdp, vtx);
@@ -241,7 +241,7 @@ class ROVertexRes {
     createVRO(rc: IROVtxBuilder, shdp: IVtxShdCtr, vaoEnabled: boolean, ibufRes: ROIndicesRes): IVertexRenderObj {
 
         let attribsTotal: number = shdp.getLocationsTotal();
-        
+
         if ((this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal) {
 
             // console.log("ROVertexRes::createVRO(), this.m_type: ",this.m_type, ", ibufRes.getUid(): ",ibufRes.getUid(),", vtxUid: ", this.m_vtxUid);
@@ -253,7 +253,7 @@ class ROVertexRes {
             if (pvro != null) {
                 return pvro;
             }
-            
+
             // TODO(vilyLei): 暂时注释掉下面这行代码
             // let flag: boolean = shdp.testVertexAttribPointerOffset(this.m_offsetList);
             // console.log("createVRO testVertexAttribPointerOffset flag: ",flag, this.m_typeList);
@@ -269,11 +269,11 @@ class ROVertexRes {
                 if (this.m_type < 1) {
                     // combined buf vro
                     rc.bindArrBuf(this.m_gpuBufs[0]);
-                    if(this.m_typeList.length == attribsTotal) {
+                    if (this.m_typeList.length == attribsTotal) {
                         for (i = 0; i < attribsTotal; ++i) {
                             shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], this.m_wholeStride, this.m_offsetList[i]);
                         }
-                    }else {
+                    } else {
                         const types = shdp.getLocationTypes();
                         for (i = 0; i < types.length; ++i) {
                             const k = types[i] - 1;
@@ -284,15 +284,18 @@ class ROVertexRes {
                 else {
                     // console.log("A attribsTotal: ", attribsTotal, this.m_typeList);
                     // console.log("B shdp.getLocationTypes(): ", shdp.getLocationTypes());
-                    // for (i = 0; i < attribsTotal; ++i) {
-                    //     rc.bindArrBuf(this.m_gpuBufs[i]);
-                    //     shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], 0, 0);
-                    // }
-                    const types = shdp.getLocationTypes();
-                    for (i = 0; i < types.length; ++i) {
-                        const k = types[i] - 1;
-                        rc.bindArrBuf(this.m_gpuBufs[k]);
-                        shdp.vertexAttribPointerTypeFloat(this.m_typeList[k], 0, 0);
+                    if (this.m_typeList.length == attribsTotal) {
+                        for (i = 0; i < attribsTotal; ++i) {
+                            rc.bindArrBuf(this.m_gpuBufs[i]);
+                            shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], 0, 0);
+                        }
+                    } else {
+                        const types = shdp.getLocationTypes();
+                        for (i = 0; i < types.length; ++i) {
+                            const k = types[i] - 1;
+                            rc.bindArrBuf(this.m_gpuBufs[k]);
+                            shdp.vertexAttribPointerTypeFloat(this.m_typeList[k], 0, 0);
+                        }
                     }
                 }
                 pvro = vro;
@@ -334,10 +337,10 @@ class ROVertexRes {
     }
     destroy(rc: IROVtxBuilder): void {
         // console.log("ROVertexRes::destroy(), this.m_attachCount: ", this.m_attachCount);
-        if(this.m_attachCount < 1) {
+        if (this.m_attachCount < 1) {
             if (this.m_gpuBufs.length > 0) {
                 // console.log("ROVertexRes::destroy(), type: ", this.m_type, ", vtxUid: ", this.m_vtxUid);
-                
+
                 this.m_type = -1;
                 let i = 0;
                 let vro: IVertexRenderObj = null;
@@ -356,7 +359,7 @@ class ROVertexRes {
                 this.m_attribsTotal = 0;
                 this.m_gpuBufs = [];
             }
-            if(this.m_vtxUid >= 0) {
+            if (this.m_vtxUid >= 0) {
                 ROVertexRes.s_map.delete(this.m_vtxUid);
                 this.m_vtxUid = -1;
             }
