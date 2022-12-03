@@ -330,6 +330,9 @@ export default class RODataBuilder implements IRODataBuilder {
 
             vtxRes.__$attachRes(resUid);
             runit.vro = vtx.createVRO(this.m_roVtxBuild, shdp, true);
+
+            // console.log("RODataBuilder::buildVtxRes(), runit.vro: ", runit.vro);
+
             runit.indicesRes = runit.vro.indicesRes;
             runit.vro.__$attachThis();
             // runit.vtxUid = disp.vbuf.getUid();

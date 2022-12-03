@@ -245,7 +245,7 @@ class ROVertexRes {
         // console.log("(this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal: ", this.m_attribsTotal,attribsTotal,attribsTotal,this.m_attribsTotal);
         if ((this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal) {
 
-            console.log("ROVertexRes::createVRO(), this.m_type: ",this.m_type, ", ibufRes.getUid(): ",ibufRes.getUid());
+            console.log("ROVertexRes::createVRO(), this.m_type: ",this.m_type, ", ibufRes.getUid(): ",ibufRes.getUid(),", vtxUid: ", this.m_vtxUid);
 
             let mid = this.getVROMid(rc, shdp, vaoEnabled, ibufRes.getUid());
 
@@ -333,21 +333,19 @@ class ROVertexRes {
     destroy(rc: IROVtxBuilder): void {
         console.log("ROVertexRes::destroy(), this.m_attachCount: ", this.m_attachCount);
         if(this.m_attachCount < 1) {
-            if(this.m_vtxUid >= 0) {
-                let map = ROVertexRes.s_map;
-                map.delete(this.m_vtxUid);
-                this.m_vtxUid = -1;
-            }
             if (this.m_gpuBufs.length > 0) {
-                console.log("ROVertexRes::destroy(), type: ", this.m_type);
+                // console.log("ROVertexRes::destroy(), type: ", this.m_type, ", vtxUid: ", this.m_vtxUid);
+                
                 this.m_type = -1;
                 let i = 0;
                 let vro: IVertexRenderObj = null;
                 for (; i < this.m_vroListLen; ++i) {
-                    vro = this.m_vroList.pop();
-                    vro.restoreThis();
-                    this.m_vroList[i] = null;
+                    // vro = this.m_vroList.pop();
+                    // vro.restoreThis();
+                    // this.m_vroList[i] = null;
+                    this.m_vroList[i].restoreThis();
                 }
+                this.m_vroList = [];
                 this.m_vroListLen = 0;
                 for (i = 0; i < this.m_attribsTotal; ++i) {
                     rc.deleteBuf(this.m_gpuBufs[i]);
@@ -355,6 +353,10 @@ class ROVertexRes {
                 }
                 this.m_attribsTotal = 0;
                 this.m_gpuBufs = [];
+            }
+            if(this.m_vtxUid >= 0) {
+                ROVertexRes.s_map.delete(this.m_vtxUid);
+                this.m_vtxUid = -1;
             }
         }
     }

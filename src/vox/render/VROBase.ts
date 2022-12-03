@@ -55,13 +55,15 @@ export default class VROBase implements IVRO, IVertexRenderObj {
     protected m_attachCount: number = 0;
     __$attachThis(): void {
         ++this.m_attachCount;
+        console.log("VROBase::__$attachThis() this.m_attachCount: ", this.m_attachCount, ", uid: ", this.m_uid);
     }
     __$detachThis(): void {
         --this.m_attachCount;
         if (this.m_attachCount < 1) {
             this.m_attachCount = 0;
-            //console.log("VROBase::__$detachThis() this.m_attachCount value is 0.");
+            console.log("VROBase::__$detachThis() this.m_attachCount value is 0.");
         }
+        console.log("VROBase::__$detachThis() this.m_attachCount: ", this.m_attachCount, ", uid: ", this.m_uid);
     }
     protected __$destroy(): void {
         //console.log("VROBase::__$destroy()..., ("+this.m_uid+")this.m_attachCount: "+this.m_attachCount);
