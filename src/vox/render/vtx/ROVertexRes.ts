@@ -229,6 +229,9 @@ class ROVertexRes {
         // console.log("(this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal: ", (this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal);
         // console.log("(this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal: ", this.m_attribsTotal,attribsTotal,attribsTotal,this.m_attribsTotal);
         if ((this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal) {
+
+            // console.log("ROVertexRes::createVRO(), this.m_type: ",this.m_type, ", ibufRes.getUid(): ",ibufRes.getUid());
+
             let mid = this.getVROMid(rc, shdp, vaoEnabled, ibufRes.getUid());
 
             let i = 0;
@@ -236,7 +239,7 @@ class ROVertexRes {
             if (pvro != null) {
                 return pvro;
             }
-            // console.log("VtxCombinedBuf::createVROBegin(), this.m_type: ",this.m_type, "mid: ",mid);
+            
             // TODO(vilyLei): 暂时注释掉下面这行代码
             // let flag: boolean = shdp.testVertexAttribPointerOffset(this.m_offsetList);
             // console.log("createVRO testVertexAttribPointerOffset flag: ",flag, this.m_typeList);

@@ -11,17 +11,16 @@ import IROIVtxBuf from "../../../vox/render/IROIVtxBuf";
 import { IROIndicesRes } from "./IROIndicesRes";
 
 class ROIndicesRes implements IROIndicesRes {
-    private m_uid: number = 0;
-    private static s_uid: number = 0;
+    private static s_uid = 0;
+    private m_uid = ROIndicesRes.s_uid ++;
     private m_vtx: IROIVtxBuf = null;
-    private m_vtxUid: number = 0;
+    private m_vtxUid = 0;
     private m_gpuBuf: any = null;
-    private m_ivsSize: number = 0;
+    private m_ivsSize = 0;
     private m_ivs: Uint16Array | Uint32Array;
-    version: number;
-    ibufStep: number = 0;
+    version = -1;
+    ibufStep = 0;
     constructor() {
-        this.m_uid = (ROIndicesRes.s_uid + 1);
     }
     getUid(): number {
         return this.m_uid;
@@ -57,6 +56,9 @@ class ROIndicesRes implements IROIndicesRes {
     }
     initialize(rc: IROVtxBuilder, ivtx: IROIVtxBuf): void {
         if (this.m_gpuBuf == null && ivtx.getIvsData() != null) {
+
+            console.log("ROIndicesRes::initialize(), uid: ", this.m_uid, ", ivtx: ", ivtx);
+
             this.version = ivtx.indicesVer;
             this.m_vtx = ivtx;
             this.m_vtxUid = ivtx.getUid();

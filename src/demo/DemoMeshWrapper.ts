@@ -47,9 +47,15 @@ export class DemoMeshWrapper {
 	keyDown(evt: KeyboardEvent): void {
 		switch(evt.keyCode) {
 			case Keyboard.A:
-				this.createMeshWrapper();
+				// this.createMeshWrapper();
+				this.createMeshWrapper2();
 				break;
 			case Keyboard.D:
+				if(this.m_entities.length > 0) {
+					let entity = this.m_entities.pop();
+					this.m_rscene.removeEntity(entity);
+				}
+				
 				break;
 		}
 	}
@@ -58,7 +64,7 @@ export class DemoMeshWrapper {
 		console.log("XXXXXXXXXXXXXXX DemoMeshWrapper::mouseDownListener()...");
 		if (this.m_currDispEntity != null) {
 			let entity = this.m_currDispEntity;
-			// this.m_rscene.removeEntity(entity);
+			// 
 
 			// console.log(">>>>>>>>>>>>>>>>>>>>>> repeat the display entity ...");
 			// entity.setXYZ(Math.random() * 1000 - 500,0,100);
@@ -82,32 +88,41 @@ export class DemoMeshWrapper {
 			this.m_entities.push(wEntity);
 		}
 	}
+	
+	private createMeshWrapper2(): void {
+		console.log("XXXXXXXXXXXXXXX DemoMeshWrapper::mouseDownListener()...");
+		if (this.m_currDispEntity != null) {
+			let entity = this.m_currDispEntity;
+			// 
+
+			// console.log(">>>>>>>>>>>>>>>>>>>>>> repeat the display entity ...");
+			// entity.setXYZ(Math.random() * 1000 - 500,0,100);
+			// // this.m_rscene.addEntity(entity);
+			// let mesh = entity.getMesh();
+
+			let material = new Default3DMaterial();
+			material.normalEnabled = false;
+			material.setTextureList([ this.getImageTexByUrl("static/assets/white.jpg") ]);
+			material.initializeByCodeBuf(true);
+			material.setRGB3f(0.5, 1.0, 0.5);
+			let srcM = entity.getMesh();
+			let ivs = srcM.getIVS();
+			// ivs = ivs.slice(0, 6);
+			ivs = srcM.createWireframeIvs();
+			let wMesh = new MeshWrapper();
+			wMesh.initializeWithMesh( entity.getMesh(), ivs );
+			wMesh.toElementsLines();
+			// wMesh
+			let wEntity = new DisplayEntity();
+			wEntity.setMaterial(material);
+			wEntity.setMesh(wMesh);
+			wEntity.setXYZ(200, 0, 0);
+			this.m_rscene.addEntity(wEntity);
+			this.m_entities.push(wEntity);
+		}
+	}
 	mouseDownListener(evt: any): void {
 		console.log("XXXXXXXXXXXXXXX DemoMeshWrapper::mouseDownListener()...");
-		// if (this.m_currDispEntity != null) {
-		// 	let entity = this.m_currDispEntity;
-		// 	// this.m_rscene.removeEntity(entity);
-
-		// 	// console.log(">>>>>>>>>>>>>>>>>>>>>> repeat the display entity ...");
-		// 	// entity.setXYZ(Math.random() * 1000 - 500,0,100);
-		// 	// // this.m_rscene.addEntity(entity);
-		// 	// let mesh = entity.getMesh();
-
-		// 	let material = new Default3DMaterial();
-		// 	material.normalEnabled = false;
-		// 	material.setTextureList([ this.getImageTexByUrl("static/assets/white.jpg") ]);
-		// 	material.initializeByCodeBuf(true);
-		// 	material.setRGB3f(0.5, 1.0, 0.5);			
-
-		// 	let wMesh = new MeshWrapper();
-		// 	wMesh.initializeWithMesh( entity.getMesh() );
-
-		// 	let wEntity = new DisplayEntity();
-		// 	wEntity.setMaterial(material);
-		// 	wEntity.setMesh(wMesh);
-		// 	wEntity.setXYZ(200, 0, 0);
-		// 	this.m_rscene.addEntity(wEntity);
-		// }
 	}
 	mouseUpListener(evt: any): void {
 		// console.log("mouseUP...");
@@ -149,11 +164,12 @@ export class DemoMeshWrapper {
 	private initScene(): void {
 		
 		let boxEntity = new Box3DEntity();
-		boxEntity.wireframe = true;
+		// boxEntity.wireframe = true;
 		boxEntity.initializeCube(100.0, [this.getImageTexByUrl("static/assets/white.jpg")]);
 		boxEntity.setXYZ(-200, 0, 0);
 		this.m_rscene.addEntity(boxEntity);
 		this.m_currDispEntity = boxEntity;
+		this.m_entities.push(boxEntity);
 	}
 	run(): void {
 		if (this.m_rscene != null) {

@@ -291,13 +291,15 @@ export default class RODataBuilder implements IRODataBuilder {
             let vtx: GpuVtxObject;
             let needBuild = true;
             let dispVtxVer = disp.getVtxResVer();
-            console.log("RODataBuilder::buildVtxRes(), resUid: ", resUid, ", dispVtxVer: ", dispVtxVer);
+            console.log("RODataBuilder::buildVtxRes(), disp.ivsCount: ", disp.ivsCount);
+            // console.log("RODataBuilder::buildVtxRes(), resUid: ", resUid, ", dispVtxVer: ", dispVtxVer);
+            // console.log("RODataBuilder::buildVtxRes(), disp.vbuf: ", disp.vbuf);
             if (vtxRes.hasResUid(resUid)) {
                 vtx = vtxRes.getVertexRes(resUid);
                 // needBuild = vtx.version != disp.vbuf.version;
                 needBuild = vtx.version != dispVtxVer;
-                console.log("RODataBuilder::buildVtxRes(), XXXXXXXXXX AAA 0 ver: ", vtx.version, dispVtxVer);
-                console.log("RODataBuilder::buildVtxRes(), GpuVtxObject instance repeat to be used,needBuild: ",needBuild,vtx.getAttachCount());
+                // console.log("RODataBuilder::buildVtxRes(), XXXXXXXXXX AAA 0 ver: ", vtx.version, dispVtxVer);
+                // console.log("RODataBuilder::buildVtxRes(), GpuVtxObject instance repeat to be used,needBuild: ",needBuild,vtx.getAttachCount());
                 if (needBuild) {
                     vtxRes.destroyRes(resUid);
                     vtx.rcuid = vtxRes.getRCUid();
@@ -309,20 +311,21 @@ export default class RODataBuilder implements IRODataBuilder {
                 vtx.rcuid = vtxRes.getRCUid();
                 vtx.resUid = resUid;
                 vtxRes.addVertexRes(vtx);
-                // console.log("GpuVtxObject instance create new: ",vtx.resUid);
+                // console.log("GpuVtxObject instance create new, resUid: ",resUid, ", vtx.indices.getUid(): ",vtx.indices.getUid());
             }
 
             if (needBuild) {
                 // vtx.indices.ibufStep = disp.vbuf.getIBufStep();
                 // vtx.createVertexByVtxUid(disp.vbuf.getUid());
                 let ivbuf = disp.ivbuf == null ? disp.vbuf : disp.ivbuf;
+                // console.log("RODataBuilder::buildVtxRes(), XXX OOO XXX ivbuf: ", ivbuf);
                 vtx.indices.ibufStep = ivbuf.getIBufStep();//disp.vbuf.getIBufStep();
                 vtx.indices.initialize(this.m_roVtxBuild, ivbuf);
                 vtx.createVertex(this.m_roVtxBuild, shdp, disp.vbuf);
                 // vtx.vertex.initialize(this.m_roVtxBuild, shdp, disp.vbuf);
                 // vtx.version = disp.vbuf.version;
                 vtx.version = dispVtxVer;
-                console.log("RODataBuilder::buildVtxRes(), XXXXXXXXXX AAA 1 ver: ", vtx.version, dispVtxVer);
+                // console.log("RODataBuilder::buildVtxRes(), XXXXXXXXXX AAA 1 ver: ", vtx.version, dispVtxVer);
             }
 
             vtxRes.__$attachRes(resUid);

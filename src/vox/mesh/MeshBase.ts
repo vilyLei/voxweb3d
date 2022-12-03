@@ -24,7 +24,7 @@ import IMeshBase from "../../vox/mesh/IMeshBase";
 */
 export default class MeshBase implements IMeshBase {
 
-    private m_bufDataUsage: number = 0;
+    private m_bufDataUsage = 0;
     private m_bufDataList: Float32Array[] = null;
     private m_bufDataStepList: number[] = null;
     private m_bufStatusList: number[] = null;
@@ -48,28 +48,28 @@ export default class MeshBase implements IMeshBase {
     /**
      * 强制更新 vertex indices buffer 数据, 默认值为false
      */
-    forceUpdateIVS: boolean = false;
+    forceUpdateIVS = false;
     /**
      * 是否启用线框模式数据, 默认值为false
      */
-    wireframe: boolean = false;
+    wireframe = false;
     /**
      * vtx positons bounds AABB in the local space
      */
     bounds: AABB = null;
-    normalType: number = VtxNormalType.GOURAND;
-    normalScale: number = 1.0;
-    vtxTotal: number = 0;
-    trisNumber: number = 0;
+    normalType = VtxNormalType.GOURAND;
+    normalScale = 1.0;
+    vtxTotal = 0;
+    trisNumber = 0;
     //RenderDrawMode
-    drawMode: number = RDM.ELEMENTS_TRIANGLES;
+    drawMode = RDM.ELEMENTS_TRIANGLES;
     //  vtx postion in data stream used count
-    vtCount: number = 0;
+    vtCount = 0;
 
-    vbWholeDataEnabled: boolean = true;
-    drawInsBeginIndex: number = 0;
-    drawInsStride: number = 0;
-    drawInsTotal: number = 0;
+    vbWholeDataEnabled = true;
+    drawInsBeginIndex = 0;
+    drawInsStride = 0;
+    drawInsTotal = 0;
 
     isUVSEnabled(): boolean {
         return this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX);
@@ -123,12 +123,13 @@ export default class MeshBase implements IMeshBase {
     createWireframeIvs(ivs: Uint16Array | Uint32Array = null): Uint16Array | Uint32Array {
         if(ivs == null) ivs = this.m_ivs;
         if(ivs !== null) {
-            
             let len = ivs.length * 2;
-            let wivs: Uint16Array | Uint32Array;
-    
-            if (len < 65535) wivs = new Uint16Array(len);
-            else wivs = new Uint32Array(len);
+            let wivs = len <= 65536 ? new Uint16Array(len) : new Uint32Array(len);
+
+            console.log("VVVVVVVVVVVVVVVVVVV createWireframeIvs() ---------------- len: ", len);
+            // let wivs: Uint16Array | Uint32Array;
+            // if (len < 65535) wivs = new Uint16Array(len);
+            // else wivs = new Uint32Array(len);
     
             let a: number;
             let b: number;

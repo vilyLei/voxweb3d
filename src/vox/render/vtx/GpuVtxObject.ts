@@ -15,8 +15,11 @@ import IROVtxBuf from "../../../vox/render/IROVtxBuf";
 
 // }
 class GpuVtxObject {
-    private m_attachCount: number = 0;
+    private static s_uid = 0;
+    private m_uid = GpuVtxObject.s_uid ++;
     private static s_vtxMap: Map<number, ROVertexRes> = new Map();
+
+    private m_attachCount = 0;
     version = -1;
     // wait del times
     waitDelTimes = 0;
@@ -33,12 +36,14 @@ class GpuVtxObject {
     createVertex(rc: IROVtxBuilder, shdp: IVtxShdCtr, vtx: IROVtxBuf): void {
         let map = GpuVtxObject.s_vtxMap;
         let vt: ROVertexRes;
-        if(map.has(vtx.getUid())) {
-            vt = map.get(vtx.getUid());
+        let vtxUid = vtx.getUid();
+        // console.log("GpuVtxObject::createVertex(), vtxUid: ", vtxUid, ", uid: ", this.m_uid);
+        if(map.has(vtxUid)) {
+            vt = map.get( vtxUid );
         }else {
             vt = new ROVertexRes();
             vt.initialize(rc, shdp, vtx);
-            map.set(vtx.getUid(), vt);
+            map.set(vtxUid, vt);
         }
         vt.__$attachThis();
         this.vertex = vt;
@@ -60,6 +65,8 @@ class GpuVtxObject {
         return this.m_attachCount;
     }
     createVRO(rc: IROVtxBuilder, shdp: IVtxShdCtr, vaoEnabled: boolean): IVertexRenderObj {
+        
+        console.log("GpuVtxObject::createVRO(), this.resUid: ",this.resUid,", uid: ", this.m_uid, ", this.indices.getUid(): ",this.indices.getUid());
         let vro = this.vertex.createVRO(rc, shdp, vaoEnabled, this.indices);
         vro.ibufStep = this.indices.ibufStep;
         return vro;
