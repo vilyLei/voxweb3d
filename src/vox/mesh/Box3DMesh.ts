@@ -215,15 +215,15 @@ export default class Box3DMesh extends MeshBase {
     }
     private initData(): void {
         this.vtxTotal = 24;
-        let i: number = 0;
-        let k: number = 0;
-        let baseI: number = 0;
+        let i = 0;
+        let k = 0;
+        let baseI = 0;
 
-        let newBuild: boolean = (this.m_ivs == null);
+        let newBuild = (this.m_ivs == null);
         if (newBuild) {
             this.m_vs = new Float32Array(72);
             this.m_ivs = new Uint16Array(36);
-            let flags: number[] = [3, 2, 3, 3, 2, 2];
+            let flags = [3, 2, 3, 3, 2, 2];
             for (i = 0; i < 6; ++i) {
                 if (flags[i] == 3) {
                     this.m_ivs[baseI] = k + 3; this.m_ivs[baseI + 1] = k + 2; this.m_ivs[baseI + 2] = k + 1;
@@ -370,8 +370,8 @@ export default class Box3DMesh extends MeshBase {
                 }
             }
             else {
-                let centV: Vector3D = this.bounds.center;
-                let d: number = 0.0;
+                let centV = this.bounds.center;
+                let d = 0.0;
                 while (baseI < this.vtxTotal) {
                     i = baseI * 3;
                     nx = this.m_vs[i] - centV.x;
@@ -432,6 +432,7 @@ export default class Box3DMesh extends MeshBase {
             }
             this.m_vbuf.setUintIVSData(this.m_ivs);
             this.vtCount = this.m_ivs.length;
+            this.trisNumber = 12;
 
             //// apply the ivbuf example
             // let i = 0;
@@ -441,8 +442,8 @@ export default class Box3DMesh extends MeshBase {
             // ivbuf.setUintIVSData(pivs);
             // this.m_ivbuf = ivbuf;
             // this.vtCount = pivs.length;
+            // this.trisNumber = 4;
 
-            this.trisNumber = 12;
             this.buildEnd();
         }
         else {
