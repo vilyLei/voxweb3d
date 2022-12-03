@@ -413,8 +413,8 @@ export default class Box3DMesh extends MeshBase {
         }
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX)) {
             let numTriangles = 12;
-            let tvs: Float32Array = new Float32Array(this.m_nvs.length);
-            let btvs: Float32Array = new Float32Array(this.m_nvs.length);
+            let tvs = new Float32Array(this.m_nvs.length);
+            let btvs = new Float32Array(this.m_nvs.length);
             SurfaceNormalCalc.ClacTrisTangent(this.m_vs, this.m_vs.length, this.m_uvs, this.m_nvs, numTriangles, this.m_ivs, tvs, btvs);
 
             ROVertexBuffer.AddFloat32Data(tvs, 3);

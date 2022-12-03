@@ -148,6 +148,7 @@ export default class MeshBase implements IMeshBase {
                 wIvs[k + 5] = a;
                 k += 6;
             }
+            this.m_ivs = wIvs;
             this.drawMode = RDM.ELEMENTS_LINES;
         }
     }

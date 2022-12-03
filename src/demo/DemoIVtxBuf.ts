@@ -101,7 +101,8 @@ export class DemoIVtxBuf {
 	private initScene(): void {
 		
 		let boxEntity = new Box3DEntity();
-		boxEntity.initializeCube(100.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+		boxEntity.wireframe = true;
+		boxEntity.initializeCube(100.0, [this.getImageTexByUrl("static/assets/white.jpg")]);
 		boxEntity.setXYZ(-200, 0, 0);
 		this.m_rscene.addEntity(boxEntity);
 		this.m_currDispEntity = boxEntity;
