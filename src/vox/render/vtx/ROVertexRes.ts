@@ -14,7 +14,7 @@ import IROVtxBuf from "../../../vox/render/IROVtxBuf";
 import { ROIndicesRes } from "./ROIndicesRes";
 
 class ROVertexRes {
-    version: number;
+    private static s_map: Map<number, ROVertexRes> = new Map();
     private m_vtx: IROVtxBuf = null;
     private m_typeList: number[] = null;
     private m_offsetList: number[] = null;
@@ -30,7 +30,22 @@ class ROVertexRes {
     private m_vroListLen = 0;
     private m_attachCount = 0;
 
+    version: number;
     constructor() {
+    }
+    static create(rc: IROVtxBuilder, shdp: IVtxShdCtr, vtx: IROVtxBuf): ROVertexRes {
+        let vtxUid = vtx.getUid();
+        let map = ROVertexRes.s_map;
+        let vt: ROVertexRes;
+        // console.log("GpuVtxObject::createVertex(), vtxUid: ", vtxUid, ", uid: ", this.m_uid);
+        if(map.has(vtxUid)) {
+            vt = map.get( vtxUid );
+        }else {
+            vt = new ROVertexRes();
+            map.set(vtxUid, vt);
+            vt.initialize(rc, shdp, vtx);
+        }
+        return vt;
     }
     __$attachThis(): void {
         ++this.m_attachCount;
@@ -187,7 +202,7 @@ class ROVertexRes {
             this.m_wholeStride = 0;
         }
     }
-    initialize(rc: IROVtxBuilder, shdp: IVtxShdCtr, vtx: IROVtxBuf): void {
+    private initialize(rc: IROVtxBuilder, shdp: IVtxShdCtr, vtx: IROVtxBuf): void {
         if (this.m_gpuBufs.length < 1 && vtx != null) {
             this.version = vtx.vertexVer;
             this.m_vtx = vtx;
@@ -230,7 +245,7 @@ class ROVertexRes {
         // console.log("(this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal: ", this.m_attribsTotal,attribsTotal,attribsTotal,this.m_attribsTotal);
         if ((this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal) {
 
-            // console.log("ROVertexRes::createVRO(), this.m_type: ",this.m_type, ", ibufRes.getUid(): ",ibufRes.getUid());
+            console.log("ROVertexRes::createVRO(), this.m_type: ",this.m_type, ", ibufRes.getUid(): ",ibufRes.getUid());
 
             let mid = this.getVROMid(rc, shdp, vaoEnabled, ibufRes.getUid());
 
@@ -318,6 +333,11 @@ class ROVertexRes {
     destroy(rc: IROVtxBuilder): void {
         console.log("ROVertexRes::destroy(), this.m_attachCount: ", this.m_attachCount);
         if(this.m_attachCount < 1) {
+            if(this.m_vtxUid >= 0) {
+                let map = ROVertexRes.s_map;
+                map.delete(this.m_vtxUid);
+                this.m_vtxUid = -1;
+            }
             if (this.m_gpuBufs.length > 0) {
                 console.log("ROVertexRes::destroy(), type: ", this.m_type);
                 this.m_type = -1;

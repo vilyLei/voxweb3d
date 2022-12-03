@@ -8,16 +8,15 @@
 import IVtxShdCtr from "../../../vox/material/IVtxShdCtr";
 import IROVtxBuilder from "../../../vox/render/IROVtxBuilder";
 import IVertexRenderObj from "../../../vox/render/IVertexRenderObj";
-import {ROVertexRes} from "./ROVertexRes";
-import {ROIndicesRes} from "./ROIndicesRes";
+import { ROVertexRes } from "./ROVertexRes";
+import { ROIndicesRes } from "./ROIndicesRes";
 import IROVtxBuf from "../../../vox/render/IROVtxBuf";
 // class VtxMap {
 
 // }
 class GpuVtxObject {
     private static s_uid = 0;
-    private m_uid = GpuVtxObject.s_uid ++;
-    private static s_vtxMap: Map<number, ROVertexRes> = new Map();
+    private m_uid = GpuVtxObject.s_uid++;
 
     private m_attachCount = 0;
     version = -1;
@@ -34,19 +33,9 @@ class GpuVtxObject {
     constructor() {
     }
     createVertex(rc: IROVtxBuilder, shdp: IVtxShdCtr, vtx: IROVtxBuf): void {
-        let map = GpuVtxObject.s_vtxMap;
-        let vt: ROVertexRes;
-        let vtxUid = vtx.getUid();
-        // console.log("GpuVtxObject::createVertex(), vtxUid: ", vtxUid, ", uid: ", this.m_uid);
-        if(map.has(vtxUid)) {
-            vt = map.get( vtxUid );
-        }else {
-            vt = new ROVertexRes();
-            vt.initialize(rc, shdp, vtx);
-            map.set(vtxUid, vt);
-        }
-        vt.__$attachThis();
-        this.vertex = vt;
+
+        this.vertex = ROVertexRes.create(rc, shdp, vtx);
+        this.vertex.__$attachThis();
     }
     __$attachThis(): void {
         ++this.m_attachCount;
@@ -65,8 +54,8 @@ class GpuVtxObject {
         return this.m_attachCount;
     }
     createVRO(rc: IROVtxBuilder, shdp: IVtxShdCtr, vaoEnabled: boolean): IVertexRenderObj {
-        
-        console.log("GpuVtxObject::createVRO(), this.resUid: ",this.resUid,", uid: ", this.m_uid, ", this.indices.getUid(): ",this.indices.getUid());
+
+        console.log("GpuVtxObject::createVRO(), this.resUid: ", this.resUid, ", uid: ", this.m_uid, ", this.indices.getUid(): ", this.indices.getUid());
         let vro = this.vertex.createVRO(rc, shdp, vaoEnabled, this.indices);
         vro.ibufStep = this.indices.ibufStep;
         return vro;
@@ -77,7 +66,7 @@ class GpuVtxObject {
     }
     destroy(rc: IROVtxBuilder): void {
         if (this.getAttachCount() < 1 && this.resUid >= 0) {
-            if(this.vertex != null) {
+            if (this.vertex != null) {
                 this.vertex.__$detachThis();
                 this.vertex.destroy(rc);
                 this.vertex = null;
@@ -88,4 +77,4 @@ class GpuVtxObject {
     }
 }
 
-export {GpuVtxObject};
+export { GpuVtxObject };

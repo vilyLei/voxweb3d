@@ -291,7 +291,7 @@ export default class RODataBuilder implements IRODataBuilder {
             let vtx: GpuVtxObject;
             let needBuild = true;
             let dispVtxVer = disp.getVtxResVer();
-            console.log("RODataBuilder::buildVtxRes(), disp.ivsCount: ", disp.ivsCount);
+            // console.log("RODataBuilder::buildVtxRes(), disp.ivsCount: ", disp.ivsCount);
             // console.log("RODataBuilder::buildVtxRes(), resUid: ", resUid, ", dispVtxVer: ", dispVtxVer);
             // console.log("RODataBuilder::buildVtxRes(), disp.vbuf: ", disp.vbuf);
             if (vtxRes.hasResUid(resUid)) {

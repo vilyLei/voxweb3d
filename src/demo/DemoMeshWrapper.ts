@@ -46,8 +46,10 @@ export class DemoMeshWrapper {
 	}
 	keyDown(evt: KeyboardEvent): void {
 		switch(evt.keyCode) {
+			case Keyboard.Q:
+				this.createMeshWrapper();
+				break;
 			case Keyboard.A:
-				// this.createMeshWrapper();
 				this.createMeshWrapper2();
 				break;
 			case Keyboard.D:
@@ -83,7 +85,7 @@ export class DemoMeshWrapper {
 			let wEntity = new DisplayEntity();
 			wEntity.setMaterial(material);
 			wEntity.setMesh(wMesh);
-			wEntity.setXYZ(200, 0, 0);
+			wEntity.setXYZ(200, 0, -200);
 			this.m_rscene.addEntity(wEntity);
 			this.m_entities.push(wEntity);
 		}
@@ -104,7 +106,7 @@ export class DemoMeshWrapper {
 			material.normalEnabled = false;
 			material.setTextureList([ this.getImageTexByUrl("static/assets/white.jpg") ]);
 			material.initializeByCodeBuf(true);
-			material.setRGB3f(0.5, 1.0, 0.5);
+			material.setRGB3f(1.5, 0.5, 0.0);
 			let srcM = entity.getMesh();
 			let ivs = srcM.getIVS();
 			// ivs = ivs.slice(0, 6);
