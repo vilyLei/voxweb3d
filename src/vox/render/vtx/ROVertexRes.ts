@@ -269,6 +269,7 @@ class ROVertexRes {
                 if (this.m_type < 1) {
                     // combined buf vro
                     rc.bindArrBuf(this.m_gpuBufs[0]);
+
                     if (this.m_typeList.length == attribsTotal) {
                         for (i = 0; i < attribsTotal; ++i) {
                             shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], this.m_wholeStride, this.m_offsetList[i]);
@@ -280,10 +281,18 @@ class ROVertexRes {
                             shdp.vertexAttribPointerTypeFloat(this.m_typeList[k], this.m_wholeStride, this.m_offsetList[k]);
                         }
                     }
+
+                    // const ivs = shdp.getLocationIVS();
+                    // const types = shdp.getLocationTypes();
+                    // for (i = 0; i < types.length; ++i) {
+                    //     const k = ivs[types[i]];
+                    //     shdp.vertexAttribPointerTypeFloat(this.m_typeList[k], this.m_wholeStride, this.m_offsetList[k]);
+                    // }
                 }
                 else {
                     // console.log("A attribsTotal: ", attribsTotal, this.m_typeList);
                     // console.log("B shdp.getLocationTypes(): ", shdp.getLocationTypes());
+
                     if (this.m_typeList.length == attribsTotal) {
                         for (i = 0; i < attribsTotal; ++i) {
                             rc.bindArrBuf(this.m_gpuBufs[i]);
@@ -297,6 +306,14 @@ class ROVertexRes {
                             shdp.vertexAttribPointerTypeFloat(this.m_typeList[k], 0, 0);
                         }
                     }
+                    // const ivs = shdp.getLocationIVS();
+                    // const types = shdp.getLocationTypes();
+                    // for (i = 0; i < types.length; ++i) {
+                    //     const k = ivs[types[i]];
+                    //     rc.bindArrBuf(this.m_gpuBufs[k]);
+                    //     shdp.vertexAttribPointerTypeFloat(this.m_typeList[k], 0, 0);
+                    // }
+
                 }
                 pvro = vro;
                 vro.ibuf = ibufRes.getGpuBuf();

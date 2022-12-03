@@ -23,6 +23,7 @@ export default class ShdProgram implements IShdProgram {
 
     // recorde uniform GLUniformLocation id
     private m_aLocations: number[] = null;
+    private m_aLocationIVS: number[] = new Array(12);
     private m_aLocationTypes: number[] = null;
     private m_aLocationSizes: number[] = null;
     private m_uLocations: any[] = null;
@@ -39,6 +40,7 @@ export default class ShdProgram implements IShdProgram {
 
     constructor(uid: number) {
         this.m_uid = uid;
+        this.m_aLocationIVS.fill(0);
     }
 
     setShdData(shdData: IShaderData): void {
@@ -71,6 +73,7 @@ export default class ShdProgram implements IShdProgram {
                 this.m_aLocations = [];
                 this.m_aLocationTypes = [];
                 this.m_aLocationSizes = [];
+                const ls = this.m_aLocationTypes;
                 len = attriNSList.length;
                 let type: number = 0;
                 let altI: number = 0;
@@ -78,12 +81,15 @@ export default class ShdProgram implements IShdProgram {
                     altI = this.m_gl.getAttribLocation(this.m_program, attriNSList[i]);
                     this.m_aLocations.push(altI);
                     type = VtxBufConst.GetVBufAttributeTypeByNS(attriNSList[i]);
-                    this.m_aLocationTypes.push(type);
+                    ls.push(type);
                     this.m_aLocationSizes.push(attriSizeList[i]);
                     this.m_attribLIndexList[type] = altI;
                     this.m_attribTypeSizeList[type] = attriSizeList[i];
                     this.dataUniformEnabled = true;
                     ++i;
+                }
+                for (i = 0; i < ls.length; ++i) {
+                    this.m_aLocationIVS[ls[i]] = i;
                 }
                 this.m_attriSizeList = [];
                 for (i = 0; i < this.m_attribTypeSizeList.length; ++i) {
@@ -167,6 +173,9 @@ export default class ShdProgram implements IShdProgram {
     }
     getLocationTypes(): number[] {
         return this.m_aLocationTypes;
+    }
+    getLocationIVS(): number[] {
+        return this.m_aLocationIVS;
     }
 
     private m_attrid: number = 0;
