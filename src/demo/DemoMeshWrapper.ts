@@ -17,6 +17,7 @@ import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import MeshWrapper from "../vox/mesh/MeshWrapper";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
 
 export class DemoMeshWrapper {
 	private m_clearColor = new Color4(0.1, 0.2, 0.1, 1.0);
@@ -165,6 +166,10 @@ export class DemoMeshWrapper {
 	}
 	private initScene(): void {
 		
+		// let axis = new Axis3DEntity();
+		// axis.initialize(300);
+		// this.m_rscene.addEntity(axis);
+		// return;
 		let boxEntity = new Box3DEntity();
 		// boxEntity.wireframe = true;
 		boxEntity.initializeCube(100.0, [this.getImageTexByUrl("static/assets/white.jpg")]);

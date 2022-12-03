@@ -1,4 +1,3 @@
-//*
 //  import * as VatParallaxMap2 from "./voxvat/demo/VatParallaxMap2";
 //  import Demo = VatParallaxMap2.voxvat.demo.VatParallaxMap2;
 
@@ -140,7 +139,7 @@
 
 //  import {DemoParticleGroup as Demo} from "./demo/DemoParticleGroup";
 
- import {DemoParticleEruption as Demo} from "./demo/DemoParticleEruption";
+//  import {DemoParticleEruption as Demo} from "./demo/DemoParticleEruption";
 
 //  import {DemoParticleClips as Demo} from "./demo/DemoParticleClips";
 
@@ -319,8 +318,8 @@
 //  import {DemoSharedMesh as Demo} from "./demo/DemoSharedMesh";
 
 //  import {DemoIVtxBuf as Demo} from "./demo/DemoIVtxBuf";
-//  import {DemoMeshWrapper as Demo} from "./demo/DemoMeshWrapper";
 
+ import {DemoMeshWrapper as Demo} from "./demo/DemoMeshWrapper";
 
 
 ///////////////////////////////////////////////////////////////////////////////

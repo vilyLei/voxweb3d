@@ -22,9 +22,9 @@ export default class DashedLineMesh extends MeshBase {
     }
     private m_vs: Float32Array = null;
     private m_cvs: Float32Array = null;
-    private m_lsTotal: number = 0;
+    private m_lsTotal = 0;
     // 用于射线检测
-    public rayTestRadius: number = 2.0;
+    public rayTestRadius = 2.0;
     getVS(): Float32Array {
         return this.m_vs;
     }

@@ -616,7 +616,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
             this.m_beginPos.x = 200.0 * Math.sin(this.m_time);            
             this.m_time += 0.02;
             this.m_uvPos.x += 0.01;
-            this.m_uvPos.y += 0.01;            
+            this.m_uvPos.y += 0.001;            
             this.m_billLine.setUVOffset(this.m_uvPos.x, this.m_uvPos.y);            
             ///this.m_billLine.setBeginPos(this.m_beginPos);
             

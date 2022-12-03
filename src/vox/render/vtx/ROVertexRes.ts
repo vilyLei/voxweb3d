@@ -269,13 +269,16 @@ class ROVertexRes {
                 if (this.m_type < 1) {
                     // combined buf vro
                     rc.bindArrBuf(this.m_gpuBufs[0]);
-                    // for (i = 0; i < attribsTotal; ++i) {
-                    //     shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], this.m_wholeStride, this.m_offsetList[i]);
-                    // }
-                    const types = shdp.getLocationTypes();
-                    for (i = 0; i < types.length; ++i) {
-                        const k = types[i] - 1;
-                        shdp.vertexAttribPointerTypeFloat(this.m_typeList[k], this.m_wholeStride, this.m_offsetList[k]);
+                    if(this.m_typeList.length == attribsTotal) {
+                        for (i = 0; i < attribsTotal; ++i) {
+                            shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], this.m_wholeStride, this.m_offsetList[i]);
+                        }
+                    }else {
+                        const types = shdp.getLocationTypes();
+                        for (i = 0; i < types.length; ++i) {
+                            const k = types[i] - 1;
+                            shdp.vertexAttribPointerTypeFloat(this.m_typeList[k], this.m_wholeStride, this.m_offsetList[k]);
+                        }
                     }
                 }
                 else {
