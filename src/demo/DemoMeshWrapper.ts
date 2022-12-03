@@ -2,12 +2,14 @@ import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import Stage3D from "../vox/display/Stage3D";
+import Keyboard from "../vox/ui/Keyboard";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import RendererScene from "../vox/scene/RendererScene";
 import DivLog from "../vox/utils/DivLog";
 import MouseEvent from "../vox/event/MouseEvent";
+import KeyboardEvent from "../vox/event/KeyboardEvent";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import Color4 from "../vox/material/Color4";
@@ -25,6 +27,7 @@ export class DemoMeshWrapper {
 	private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
 	private m_currDispEntity: DisplayEntity = null;
+	private m_entities: DisplayEntity[] = [];
 	constructor() {}
 
 	getImageTexByUrl(purl: string): TextureProxy {
@@ -32,15 +35,26 @@ export class DemoMeshWrapper {
 	}
 
 	private initEvent(): void {
-		let stage3D: Stage3D = this.m_rscene.getStage3D() as Stage3D;
+		let stage3D = this.m_rscene.getStage3D();
 		stage3D.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener, true, false);
 		stage3D.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener);
 		stage3D.addEventListener(MouseEvent.MOUSE_MOVE, this, this.mouseMoveListener);
+		stage3D.addEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
 
 		// stage3D.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.test_bgmouseDownListener);
 		// stage3D.addEventListener(MouseEvent.MOUSE_BG_UP, this, this.test_bgmouseUpListener);
 	}
-	mouseDownListener(evt: any): void {
+	keyDown(evt: KeyboardEvent): void {
+		switch(evt.keyCode) {
+			case Keyboard.A:
+				this.createMeshWrapper();
+				break;
+			case Keyboard.D:
+				break;
+		}
+	}
+
+	private createMeshWrapper(): void {
 		console.log("XXXXXXXXXXXXXXX DemoMeshWrapper::mouseDownListener()...");
 		if (this.m_currDispEntity != null) {
 			let entity = this.m_currDispEntity;
@@ -55,7 +69,7 @@ export class DemoMeshWrapper {
 			material.normalEnabled = false;
 			material.setTextureList([ this.getImageTexByUrl("static/assets/white.jpg") ]);
 			material.initializeByCodeBuf(true);
-			material.setRGB3f(0.5, 1.0, 0.5);			
+			material.setRGB3f(0.5, 1.0, 0.5);
 
 			let wMesh = new MeshWrapper();
 			wMesh.initializeWithMesh( entity.getMesh() );
@@ -65,7 +79,35 @@ export class DemoMeshWrapper {
 			wEntity.setMesh(wMesh);
 			wEntity.setXYZ(200, 0, 0);
 			this.m_rscene.addEntity(wEntity);
+			this.m_entities.push(wEntity);
 		}
+	}
+	mouseDownListener(evt: any): void {
+		console.log("XXXXXXXXXXXXXXX DemoMeshWrapper::mouseDownListener()...");
+		// if (this.m_currDispEntity != null) {
+		// 	let entity = this.m_currDispEntity;
+		// 	// this.m_rscene.removeEntity(entity);
+
+		// 	// console.log(">>>>>>>>>>>>>>>>>>>>>> repeat the display entity ...");
+		// 	// entity.setXYZ(Math.random() * 1000 - 500,0,100);
+		// 	// // this.m_rscene.addEntity(entity);
+		// 	// let mesh = entity.getMesh();
+
+		// 	let material = new Default3DMaterial();
+		// 	material.normalEnabled = false;
+		// 	material.setTextureList([ this.getImageTexByUrl("static/assets/white.jpg") ]);
+		// 	material.initializeByCodeBuf(true);
+		// 	material.setRGB3f(0.5, 1.0, 0.5);			
+
+		// 	let wMesh = new MeshWrapper();
+		// 	wMesh.initializeWithMesh( entity.getMesh() );
+
+		// 	let wEntity = new DisplayEntity();
+		// 	wEntity.setMaterial(material);
+		// 	wEntity.setMesh(wMesh);
+		// 	wEntity.setXYZ(200, 0, 0);
+		// 	this.m_rscene.addEntity(wEntity);
+		// }
 	}
 	mouseUpListener(evt: any): void {
 		// console.log("mouseUP...");
@@ -107,7 +149,7 @@ export class DemoMeshWrapper {
 	private initScene(): void {
 		
 		let boxEntity = new Box3DEntity();
-		// boxEntity.wireframe = true;
+		boxEntity.wireframe = true;
 		boxEntity.initializeCube(100.0, [this.getImageTexByUrl("static/assets/white.jpg")]);
 		boxEntity.setXYZ(-200, 0, 0);
 		this.m_rscene.addEntity(boxEntity);

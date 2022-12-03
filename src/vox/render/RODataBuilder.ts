@@ -289,11 +289,15 @@ export default class RODataBuilder implements IRODataBuilder {
             // let resUid = disp.vbuf.getUid();
             let resUid = disp.getVtxResUid();
             let vtx: GpuVtxObject;
-            let needBuild: boolean = true;
+            let needBuild = true;
+            let dispVtxVer = disp.getVtxResVer();
+            console.log("RODataBuilder::buildVtxRes(), resUid: ", resUid, ", dispVtxVer: ", dispVtxVer);
             if (vtxRes.hasResUid(resUid)) {
                 vtx = vtxRes.getVertexRes(resUid);
-                needBuild = vtx.version != disp.vbuf.version;
-                // console.log("GpuVtxObject instance repeat to be used,needBuild: "+needBuild,vtx.getAttachCount());
+                // needBuild = vtx.version != disp.vbuf.version;
+                needBuild = vtx.version != dispVtxVer;
+                console.log("RODataBuilder::buildVtxRes(), XXXXXXXXXX AAA 0 ver: ", vtx.version, dispVtxVer);
+                console.log("RODataBuilder::buildVtxRes(), GpuVtxObject instance repeat to be used,needBuild: ",needBuild,vtx.getAttachCount());
                 if (needBuild) {
                     vtxRes.destroyRes(resUid);
                     vtx.rcuid = vtxRes.getRCUid();
@@ -317,7 +321,8 @@ export default class RODataBuilder implements IRODataBuilder {
                 vtx.createVertex(this.m_roVtxBuild, shdp, disp.vbuf);
                 // vtx.vertex.initialize(this.m_roVtxBuild, shdp, disp.vbuf);
                 // vtx.version = disp.vbuf.version;
-                vtx.version = disp.getVtxResVer();
+                vtx.version = dispVtxVer;
+                console.log("RODataBuilder::buildVtxRes(), XXXXXXXXXX AAA 1 ver: ", vtx.version, dispVtxVer);
             }
 
             vtxRes.__$attachRes(resUid);
