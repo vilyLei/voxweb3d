@@ -42,8 +42,8 @@ export class DemoMeshWrapper {
 	mouseDownListener(evt: any): void {
 		console.log("XXXXXXXXXXXXXXX DemoMeshWrapper::mouseDownListener()...");
 		if (this.m_currDispEntity != null) {
-			// let entity = this.m_currDispEntity;
-			// this.m_rscene.removeEntity(entity);
+			let entity = this.m_currDispEntity;
+			this.m_rscene.removeEntity(entity);
 
 			// console.log(">>>>>>>>>>>>>>>>>>>>>> repeat the display entity ...");
 			// entity.setXYZ(Math.random() * 1000 - 500,0,100);

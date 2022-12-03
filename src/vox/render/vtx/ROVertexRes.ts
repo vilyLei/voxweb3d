@@ -16,22 +16,43 @@ import { ROIndicesRes } from "./ROIndicesRes";
 class ROVertexRes {
     version: number;
     private m_vtx: IROVtxBuf = null;
-    private m_vtxUid: number = -1;
-    private m_gpuBufs: any[] = [];
-    private m_gpuBufsTotal: number = 0;
-    private m_type: number = 0;
-    private m_attribsTotal: number = 0;
-    private m_wholeStride: number = 0;
     private m_typeList: number[] = null;
     private m_offsetList: number[] = null;
     private m_sizeList: number[] = null;
+    private m_vtxUid = -1;
+    private m_gpuBufs: any[] = [];
+    private m_gpuBufsTotal = 0;
+    private m_type = 0;
+    private m_attribsTotal = 0;
+    private m_wholeStride = 0;
 
     private m_vroList: IVertexRenderObj[] = [];
-    private m_vroListLen: number = 0;
+    private m_vroListLen = 0;
+    private m_attachCount = 0;
 
     constructor() {
     }
-
+    __$attachThis(): void {
+        ++this.m_attachCount;
+        console.log("ROVertexRes::__$attachThis() this.m_attachCount: "+this.m_attachCount);
+    }
+    __$detachThis(): void {
+        if (this.m_attachCount == 1) {
+            --this.m_attachCount;
+            console.log("ROVertexRes::__$detachThis() this.m_attachCount: "+this.m_attachCount);
+            // this.__$dispose();
+        }
+        else {
+            --this.m_attachCount;
+            console.log("ROVertexRes::__$detachThis() this.m_attachCount: "+this.m_attachCount);
+        }
+        if (this.m_attachCount < 1) {
+            this.m_attachCount = 0;
+        }
+    }
+    getAttachCount(): number {
+        return this.m_attachCount;
+    }
     updateToGpu(rc: IROVtxBuilder): void {
         let len: number = this.m_gpuBufs.length;
         if (len > 0) {
@@ -292,23 +313,26 @@ class ROVertexRes {
         return null;
     }
     destroy(rc: IROVtxBuilder): void {
-        if (this.m_gpuBufs.length > 0) {
-            console.log("ROVertexRes::destroy(), type: " + this.m_type);
-            this.m_type = -1;
-            let i: number = 0;
-            let vro: IVertexRenderObj = null;
-            for (; i < this.m_vroListLen; ++i) {
-                vro = this.m_vroList.pop();
-                vro.restoreThis();
-                this.m_vroList[i] = null;
+        console.log("ROVertexRes::destroy(), this.m_attachCount: ", this.m_attachCount);
+        if(this.m_attachCount < 1) {
+            if (this.m_gpuBufs.length > 0) {
+                console.log("ROVertexRes::destroy(), type: ", this.m_type);
+                this.m_type = -1;
+                let i = 0;
+                let vro: IVertexRenderObj = null;
+                for (; i < this.m_vroListLen; ++i) {
+                    vro = this.m_vroList.pop();
+                    vro.restoreThis();
+                    this.m_vroList[i] = null;
+                }
+                this.m_vroListLen = 0;
+                for (i = 0; i < this.m_attribsTotal; ++i) {
+                    rc.deleteBuf(this.m_gpuBufs[i]);
+                    this.m_gpuBufs[i] = null;
+                }
+                this.m_attribsTotal = 0;
+                this.m_gpuBufs = [];
             }
-            this.m_vroListLen = 0;
-            for (i = 0; i < this.m_attribsTotal; ++i) {
-                rc.deleteBuf(this.m_gpuBufs[i]);
-                this.m_gpuBufs[i] = null;
-            }
-            this.m_attribsTotal = 0;
-            this.m_gpuBufs = [];
         }
     }
 }

@@ -10,8 +10,13 @@ import IROVtxBuilder from "../../../vox/render/IROVtxBuilder";
 import IVertexRenderObj from "../../../vox/render/IVertexRenderObj";
 import {ROVertexRes} from "./ROVertexRes";
 import {ROIndicesRes} from "./ROIndicesRes";
+import IROVtxBuf from "../../../vox/render/IROVtxBuf";
+// class VtxMap {
 
+// }
 class GpuVtxObject {
+    private m_attachCount: number = 0;
+    private static s_vtxMap: Map<number, ROVertexRes> = new Map();
     version = -1;
     // wait del times
     waitDelTimes = 0;
@@ -20,11 +25,24 @@ class GpuVtxObject {
     // texture resource unique id
     resUid = 0;
 
-    vertex = new ROVertexRes();
+    // vertex = new ROVertexRes();
+    vertex: ROVertexRes = null;// = new ROVertexRes();
     indices = new ROIndicesRes();
     constructor() {
     }
-    private m_attachCount: number = 0;
+    createVertex(rc: IROVtxBuilder, shdp: IVtxShdCtr, vtx: IROVtxBuf): void {
+        let map = GpuVtxObject.s_vtxMap;
+        let vt: ROVertexRes;
+        if(map.has(vtx.getUid())) {
+            vt = map.get(vtx.getUid());
+        }else {
+            vt = new ROVertexRes();
+            vt.initialize(rc, shdp, vtx);
+            map.set(vtx.getUid(), vt);
+        }
+        vt.__$attachThis();
+        this.vertex = vt;
+    }
     __$attachThis(): void {
         ++this.m_attachCount;
         //console.log("GpuVtxObject::__$attachThis() this.m_attachCount: "+this.m_attachCount);
@@ -52,7 +70,11 @@ class GpuVtxObject {
     }
     destroy(rc: IROVtxBuilder): void {
         if (this.getAttachCount() < 1 && this.resUid >= 0) {
-            this.vertex.destroy(rc);
+            if(this.vertex != null) {
+                this.vertex.__$detachThis();
+                this.vertex.destroy(rc);
+                this.vertex = null;
+            }
             this.indices.destroy(rc);
             this.resUid = -1;
         }
