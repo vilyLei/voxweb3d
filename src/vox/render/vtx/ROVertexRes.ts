@@ -49,17 +49,17 @@ class ROVertexRes {
     }
     __$attachThis(): void {
         ++this.m_attachCount;
-        console.log("ROVertexRes::__$attachThis() this.m_attachCount: "+this.m_attachCount);
+        // console.log("ROVertexRes::__$attachThis() this.m_attachCount: "+this.m_attachCount);
     }
     __$detachThis(): void {
         if (this.m_attachCount == 1) {
             --this.m_attachCount;
-            console.log("ROVertexRes::__$detachThis() this.m_attachCount: "+this.m_attachCount);
+            // console.log("ROVertexRes::__$detachThis() this.m_attachCount: "+this.m_attachCount);
             // this.__$dispose();
         }
         else {
             --this.m_attachCount;
-            console.log("ROVertexRes::__$detachThis() this.m_attachCount: "+this.m_attachCount);
+            // console.log("ROVertexRes::__$detachThis() this.m_attachCount: "+this.m_attachCount);
         }
         if (this.m_attachCount < 1) {
             this.m_attachCount = 0;
@@ -241,11 +241,10 @@ class ROVertexRes {
     createVRO(rc: IROVtxBuilder, shdp: IVtxShdCtr, vaoEnabled: boolean, ibufRes: ROIndicesRes): IVertexRenderObj {
 
         let attribsTotal: number = shdp.getLocationsTotal();
-        // console.log("(this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal: ", (this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal);
-        // console.log("(this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal: ", this.m_attribsTotal,attribsTotal,attribsTotal,this.m_attribsTotal);
+        
         if ((this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal) {
 
-            console.log("ROVertexRes::createVRO(), this.m_type: ",this.m_type, ", ibufRes.getUid(): ",ibufRes.getUid(),", vtxUid: ", this.m_vtxUid);
+            // console.log("ROVertexRes::createVRO(), this.m_type: ",this.m_type, ", ibufRes.getUid(): ",ibufRes.getUid(),", vtxUid: ", this.m_vtxUid);
 
             let mid = this.getVROMid(rc, shdp, vaoEnabled, ibufRes.getUid());
 
@@ -331,7 +330,7 @@ class ROVertexRes {
         return null;
     }
     destroy(rc: IROVtxBuilder): void {
-        console.log("ROVertexRes::destroy(), this.m_attachCount: ", this.m_attachCount);
+        // console.log("ROVertexRes::destroy(), this.m_attachCount: ", this.m_attachCount);
         if(this.m_attachCount < 1) {
             if (this.m_gpuBufs.length > 0) {
                 // console.log("ROVertexRes::destroy(), type: ", this.m_type, ", vtxUid: ", this.m_vtxUid);

@@ -49,9 +49,7 @@ export default class VaoVertexRenderObj extends VROBase {
         }
         VaoVertexRenderObj.Restore(this);
     }
-    toString(): string {
-        return "VaoVertexRenderObj(uid = " + this.m_uid + ", type=" + this.m_mid + ")";
-    }
+
     private static s_FLAG_BUSY: number = 1;
     private static s_FLAG_FREE: number = 0;
     private static s_unitFlagList: number[] = [];

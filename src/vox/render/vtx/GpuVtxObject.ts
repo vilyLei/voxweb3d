@@ -46,7 +46,7 @@ class GpuVtxObject {
         //console.log("GpuVtxObject::__$detachThis() this.m_attachCount: "+this.m_attachCount);
         if (this.m_attachCount < 1) {
             this.m_attachCount = 0;
-            console.log("GpuVtxObject::__$detachThis() this.m_attachCount value is 0.");
+            // console.log("GpuVtxObject::__$detachThis() this.m_attachCount value is 0.");
             // do something
         }
     }
@@ -55,7 +55,7 @@ class GpuVtxObject {
     }
     createVRO(rc: IROVtxBuilder, shdp: IVtxShdCtr, vaoEnabled: boolean): IVertexRenderObj {
 
-        console.log("GpuVtxObject::createVRO(), this.resUid: ", this.resUid, ", uid: ", this.m_uid, ", this.indices.getUid(): ", this.indices.getUid());
+        // console.log("GpuVtxObject::createVRO(), this.resUid: ", this.resUid, ", uid: ", this.m_uid, ", this.indices.getUid(): ", this.indices.getUid());
         let vro = this.vertex.createVRO(rc, shdp, vaoEnabled, this.indices);
         vro.ibufStep = this.indices.ibufStep;
         return vro;

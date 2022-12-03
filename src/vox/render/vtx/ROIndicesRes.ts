@@ -57,7 +57,7 @@ class ROIndicesRes implements IROIndicesRes {
     initialize(rc: IROVtxBuilder, ivtx: IROIVtxBuf): void {
         if (this.m_gpuBuf == null && ivtx.getIvsData() != null) {
 
-            console.log("ROIndicesRes::initialize(), uid: ", this.m_uid, ", ivtx: ", ivtx);
+            // console.log("ROIndicesRes::initialize(), uid: ", this.m_uid, ", ivtx: ", ivtx);
 
             this.version = ivtx.indicesVer;
             this.m_vtx = ivtx;
