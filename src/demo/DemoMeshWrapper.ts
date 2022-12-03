@@ -15,7 +15,7 @@ import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 
-export class DemoIVtxBuf {
+export class DemoMeshWrapper {
 	private m_clearColor = new Color4(0.1, 0.2, 0.1, 1.0);
 	private m_tex: IRenderTexture = null;
 	private m_rscene: RendererScene = null;
@@ -40,7 +40,7 @@ export class DemoIVtxBuf {
 		// stage3D.addEventListener(MouseEvent.MOUSE_BG_UP, this, this.test_bgmouseUpListener);
 	}
 	mouseDownListener(evt: any): void {
-		console.log("XXXXXXXXXXXXXXX DemoIVtxBuf::mouseDownListener()...");
+		console.log("XXXXXXXXXXXXXXX DemoMeshWrapper::mouseDownListener()...");
 		if (this.m_currDispEntity != null) {
 			// let entity = this.m_currDispEntity;
 			// this.m_rscene.removeEntity(entity);
@@ -70,7 +70,7 @@ export class DemoIVtxBuf {
 	}
 
 	initialize(): void {
-		console.log("DemoIVtxBuf::initialize()......");
+		console.log("DemoMeshWrapper::initialize()......");
 		if (this.m_rscene == null) {
 			
 			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
@@ -117,4 +117,4 @@ export class DemoIVtxBuf {
 		}
 	}
 }
-export default DemoIVtxBuf;
+export default DemoMeshWrapper;

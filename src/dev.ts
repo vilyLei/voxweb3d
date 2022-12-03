@@ -319,6 +319,8 @@
 //  import {DemoSharedMesh as Demo} from "./demo/DemoSharedMesh";
 
 //  import {DemoIVtxBuf as Demo} from "./demo/DemoIVtxBuf";
+ import {DemoMeshWrapper as Demo} from "./demo/DemoMeshWrapper";
+
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -414,7 +416,7 @@
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 
-import {SlickRoad as Demo} from "./app/SlickRoad";
+// import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 

@@ -33,13 +33,13 @@ export default class MeshBase implements IMeshBase {
     private m_polyhedral: boolean = true;
     //private m_isDyn:boolean = false;
     // very important!!!
-    private m_layoutBit: number = 0x0;
+    private m_layoutBit = 0x0;
     protected m_transMatrix: Matrix4 = null;
     protected m_vbuf: ROVertexBuffer = null;
     protected m_ivbuf: ROIVertexBuffer = null;
     protected m_ivs: Uint16Array | Uint32Array = null;
 
-    constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
+    constructor(bufDataUsage = VtxBufConst.VTX_STATIC_DRAW) {
         this.m_bufDataUsage = bufDataUsage;
         //this.m_isDyn = bufDataUsage == VtxBufConst.VTX_DYNAMIC_DRAW;
     }
@@ -82,6 +82,7 @@ export default class MeshBase implements IMeshBase {
     }
     toElementsTriangles(): void {
         this.drawMode = RDM.ELEMENTS_TRIANGLES;
+        // this.setPolyhedral(true);
     }
     toElementsTriangleStrip(): void {
         this.drawMode = RDM.ELEMENTS_TRIANGLE_STRIP;
@@ -152,13 +153,13 @@ export default class MeshBase implements IMeshBase {
     }
     protected updateWireframeIvs(): void {
 
-        this.drawMode = RDM.ELEMENTS_TRIANGLES;
+        this.toElementsTriangles();
         if (this.wireframe) {
             let wivs = this.createWireframeIvs();
             if(wivs != null) {
                 this.m_ivs = this.createWireframeIvs();
             }
-            this.drawMode = RDM.ELEMENTS_LINES;
+            this.toElementsLines();
         }
     }
     protected buildEnd(): void {
@@ -199,8 +200,8 @@ export default class MeshBase implements IMeshBase {
             if (this.m_bufDataList != null) {
                 console.log("MeshBase::rebuild()...");
                 ROVertexBuffer.Reset();
-                let i: number = 0;
-                let len: number = this.m_bufDataList.length;
+                let i = 0;
+                let len = this.m_bufDataList.length;
                 for (; i < len; ++i) {
                     ROVertexBuffer.AddFloat32Data(this.m_bufDataList[i], this.m_bufDataStepList[i], this.m_bufStatusList[i]);
                 }
