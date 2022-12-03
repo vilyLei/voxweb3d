@@ -26,6 +26,7 @@ class ROVertexRes {
     private m_attribsTotal = 0;
     private m_wholeStride = 0;
 
+    private m_bufIVS: number[] = null;
     private m_vroList: IVertexRenderObj[] = [];
     private m_vroListLen = 0;
     private m_attachCount = 0;
@@ -281,7 +282,7 @@ class ROVertexRes {
                             shdp.vertexAttribPointerTypeFloat(this.m_typeList[k], this.m_wholeStride, this.m_offsetList[k]);
                         }
                     }
-
+                    // this.m_bufIVS
                     // const ivs = shdp.getLocationIVS();
                     // const types = shdp.getLocationTypes();
                     // for (i = 0; i < types.length; ++i) {
