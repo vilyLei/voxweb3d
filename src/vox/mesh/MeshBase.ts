@@ -120,10 +120,10 @@ export default class MeshBase implements IMeshBase {
     protected createIVSByArray(arr: number[]): Uint16Array | Uint32Array {
         return arr.length > 65535 ? new Uint32Array(arr) : new Uint16Array(arr);
     }
-    createWireframeIvs(): Uint16Array | Uint32Array {
-
-        if(this.m_ivs !== null) {
-            let ivs = this.m_ivs;
+    createWireframeIvs(ivs: Uint16Array | Uint32Array = null): Uint16Array | Uint32Array {
+        if(ivs == null) ivs = this.m_ivs;
+        if(ivs !== null) {
+            
             let len = ivs.length * 2;
             let wivs: Uint16Array | Uint32Array;
     

@@ -14,6 +14,7 @@ import Color4 from "../vox/material/Color4";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import Box3DEntity from "../vox/entity/Box3DEntity";
+import MeshWrapper from "../vox/mesh/MeshWrapper";
 
 export class DemoMeshWrapper {
 	private m_clearColor = new Color4(0.1, 0.2, 0.1, 1.0);
@@ -43,22 +44,27 @@ export class DemoMeshWrapper {
 		console.log("XXXXXXXXXXXXXXX DemoMeshWrapper::mouseDownListener()...");
 		if (this.m_currDispEntity != null) {
 			let entity = this.m_currDispEntity;
-			this.m_rscene.removeEntity(entity);
+			// this.m_rscene.removeEntity(entity);
 
 			// console.log(">>>>>>>>>>>>>>>>>>>>>> repeat the display entity ...");
 			// entity.setXYZ(Math.random() * 1000 - 500,0,100);
 			// // this.m_rscene.addEntity(entity);
 			// let mesh = entity.getMesh();
 
-			// let tex1 = this.m_tex;
-			// let material = new Default3DMaterial();
-			// material.normalEnabled = true;
-			// material.setTextureList([tex1]);
-			// material.initializeByCodeBuf(true);
-			// material.setRGB3f(0.5, 1.0, 0.5);
+			let material = new Default3DMaterial();
+			material.normalEnabled = false;
+			material.setTextureList([ this.getImageTexByUrl("static/assets/white.jpg") ]);
+			material.initializeByCodeBuf(true);
+			material.setRGB3f(0.5, 1.0, 0.5);			
 
-			// entity.setMaterial(material);
-			// this.m_rscene.addEntity(entity);
+			let wMesh = new MeshWrapper();
+			wMesh.initializeWithMesh( entity.getMesh() );
+
+			let wEntity = new DisplayEntity();
+			wEntity.setMaterial(material);
+			wEntity.setMesh(wMesh);
+			wEntity.setXYZ(200, 0, 0);
+			this.m_rscene.addEntity(wEntity);
 		}
 	}
 	mouseUpListener(evt: any): void {
@@ -73,7 +79,7 @@ export class DemoMeshWrapper {
 		console.log("DemoMeshWrapper::initialize()......");
 		if (this.m_rscene == null) {
 			
-			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			DivLog.SetDebugEnabled(false);
 

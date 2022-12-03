@@ -7,18 +7,30 @@
 
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import MeshBase from "./MeshBase";
+import IMeshBase from "./IMeshBase";
+import AABB from "../geom/AABB";
 /**
  * 通过一个 meshBase 实例原有的 vtx buffer, 加上新定义的 indices buf object 生成一个新的mesh
  */
 export default class MeshWrapper extends MeshBase {
-    private m_srcMesh: MeshBase = null;
+    private m_srcMesh: IMeshBase = null;
     constructor(bufDataUsage = VtxBufConst.VTX_STATIC_DRAW) {
         super(bufDataUsage);
     }
-    initializeWithMesh(srcMesh: MeshBase): void {
+    initializeWithMesh(srcMesh: IMeshBase): void {
+
         if(this.m_vbuf == null && srcMesh != null && srcMesh != this) {
+
+            let m = srcMesh as MeshBase;
             this.m_srcMesh = srcMesh;
-            this.m_vbuf = srcMesh.__$attachVBuf();
+            this.m_vbuf = m.__$attachVBuf();
+            this.vtCount = m.vtCount;
+            this.trisNumber = this.vtCount / 3;
+
+            this.setBufSortFormat( m.getBufSortFormat() );
+            this.drawMode = m.drawMode;
+            this.bounds = new AABB();
+            this.bounds.copyFrom(m.bounds);
         }
     }
     /**
