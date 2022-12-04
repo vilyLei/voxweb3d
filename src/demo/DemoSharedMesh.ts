@@ -81,7 +81,7 @@ export class DemoSharedMesh {
 
 		// 这是正确的方式
 		let material = new Default3DMaterial();
-		// material.normalEnabled = true;
+		material.normalEnabled = true;
 		material.setTextureList([tex1]);
 		material.initializeByCodeBuf(true);
 		material.setRGB3f(0.5, 1.0, 1.0);

@@ -6,7 +6,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-// import BitConst from "../../vox/utils/BitConst";
+import BitConst from "../../vox/utils/BitConst";
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import RendererDevice from "../../vox/render/RendererDevice";
 import GLSLConverter from "../../vox/material/code/GLSLConverter";

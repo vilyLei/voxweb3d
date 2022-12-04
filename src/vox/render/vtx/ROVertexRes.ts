@@ -42,7 +42,7 @@ class ROVertexRes {
         if (map.has(vtxUid)) {
             vt = map.get(vtxUid);
         } else {
-            console.log("GpuVtxObject::createVertex() new instance, vtxUid: ", vtxUid);
+            console.log("ROVertexRes::create() new instance, vtxUid: ", vtxUid);
             vt = new ROVertexRes();
             map.set(vtxUid, vt);
             vt.initialize(rc, shdp, vtx);
@@ -219,8 +219,7 @@ class ROVertexRes {
 
             let typeList = vtx.getBufTypeList();
             this.m_attribsTotal = typeList != null ? typeList.length : shdp.getLocationsTotal();
-            let layoutBit = vtx.getBufSortFormat();
-            console.log("XXXXX ROVtx XXX layoutBit: ", layoutBit);
+           
             if (shdp.getLocationsTotal() != vtx.getAttribsTotal()) {
                 let info = "shdp.getLocationsTotal() is " + shdp.getLocationsTotal() + " != vtx.getAttribsTotal(), shdp has " + shdp.getLocationsTotal() + ", vtx has " + vtx.getAttribsTotal();
                 info += "\n这可能会导致渲染过程无法正常使用所有的 vtx buffers";
@@ -234,6 +233,18 @@ class ROVertexRes {
                 // separated buf
                 this.uploadSeparated(rc, shdp);
             }
+            let layoutBit = vtx.getBufSortFormat();
+            // console.log("XXXXX ROVtx XXX layoutBit: ", layoutBit);
+
+            let ivs: number[] = new Array(12);
+            let index = 0;
+            for(let i = 0; i < 10; ++i) {
+                const bit = 1 << i;
+                if((bit & layoutBit) > 0) {
+                    ivs[i+1] = index++;
+                }
+            }
+            this.m_bufIVS = ivs;
         }
     }
     /**
