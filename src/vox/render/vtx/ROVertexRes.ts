@@ -386,15 +386,12 @@ class ROVertexRes {
         if (this.m_attachCount < 1) {
 
             if (this.m_gpuBufs.length > 0) {
-                // console.log("ROVertexRes::destroy(), type: ", this.m_type, ", vtxUid: ", this.m_vtxUid);
+                console.log("ROVertexRes::destroy(), type: ", this.m_type, ", vtxUid: ", this.m_vtxUid);
                 this.m_bufIVS = null;
                 this.m_type = -1;
                 let i = 0;
                 let vro: IVertexRenderObj = null;
                 for (; i < this.m_vroListLen; ++i) {
-                    // vro = this.m_vroList.pop();
-                    // vro.restoreThis();
-                    // this.m_vroList[i] = null;
                     this.m_vroList[i].restoreThis();
                 }
                 this.m_vroList = [];

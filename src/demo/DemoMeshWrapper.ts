@@ -166,10 +166,10 @@ export class DemoMeshWrapper {
 	}
 	private initScene(): void {
 		
-		let axis = new Axis3DEntity();
-		axis.initialize(300);
-		this.m_rscene.addEntity(axis);
-		return;
+		// let axis = new Axis3DEntity();
+		// axis.initialize(300);
+		// this.m_rscene.addEntity(axis);
+		// return;
 		let boxEntity = new Box3DEntity();
 		// boxEntity.wireframe = true;
 		boxEntity.normalEnabled = true;
