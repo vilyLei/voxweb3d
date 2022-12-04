@@ -313,7 +313,7 @@
 /////////////////////////////     mesh    /////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoSharedVBuf as Demo} from "./demo/DemoSharedVBuf";
+ import {DemoSharedVBuf as Demo} from "./demo/DemoSharedVBuf";
 
 //  import {DemoSharedMesh as Demo} from "./demo/DemoSharedMesh";
 
@@ -411,7 +411,7 @@
 
 //  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
- import {RbtDrama as Demo} from "./app/RbtDrama";
+//  import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 

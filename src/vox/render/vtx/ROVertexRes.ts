@@ -234,17 +234,19 @@ class ROVertexRes {
                 this.uploadSeparated(rc, shdp);
             }
             let layoutBit = vtx.getBufSortFormat();
-            // console.log("XXXXX ROVtx XXX layoutBit: ", layoutBit);
-
-            let ivs: number[] = new Array(12);
-            let index = 0;
-            for(let i = 0; i < 10; ++i) {
-                const bit = 1 << i;
-                if((bit & layoutBit) > 0) {
-                    ivs[i+1] = index++;
+            if(layoutBit > 0) {
+                // console.log("XXXXX ROVtx XXX layoutBit: ", layoutBit);
+    
+                let ivs: number[] = new Array(12);
+                let index = 0;
+                for(let i = 0; i < 10; ++i) {
+                    const bit = 1 << i;
+                    if((bit & layoutBit) > 0) {
+                        ivs[i+1] = index++;
+                    }
                 }
+                this.m_bufIVS = ivs;
             }
-            this.m_bufIVS = ivs;
         }
     }
     /**
