@@ -11,18 +11,19 @@ import IROIVtxBuf from "../../vox/render/IROIVtxBuf";
 import { RenderDrawMode } from "../../vox/render/RenderConst";
 
 export default class ROIVertexBuffer implements IROIVtxBuf {
-    private static s_uid: number = 0;
-    protected m_uid: number = 0;
+    private static s_uid = 0;
+    protected m_uid = 0;
+    protected m_layoutBit = 0;
 
     protected m_ivs: Uint16Array | Uint32Array = null;
-    protected m_bufDataUsage: number = 0;
-    protected m_ibufStep: number = 2;// 2 or 4
+    protected m_bufDataUsage = 0;
+    protected m_ibufStep = 2;// 2 or 4
 
-    layoutBit: number = 0x0;
-    vertexVer: number = 0;
-    indicesVer: number = 0;
-    version: number = 0;
-    drawMode: number = RenderDrawMode.ELEMENTS_TRIANGLES;
+    layoutBit = 0x0;
+    vertexVer = 0;
+    indicesVer = 0;
+    version = 0;
+    drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
     bufData: VtxBufData = null;
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         this.m_uid = ROIVertexBuffer.s_uid++;
@@ -34,7 +35,12 @@ export default class ROIVertexBuffer implements IROIVtxBuf {
     getType(): number {
         return 0;
     }
-
+    setBufSortFormat(layoutBit: number): void {
+        this.m_layoutBit = layoutBit;
+    }
+    getBufSortFormat(): number {
+        return this.m_layoutBit;
+    }
     getIBufStep(): number {
         return this.m_ibufStep;
     }
@@ -68,5 +74,6 @@ export default class ROIVertexBuffer implements IROIVtxBuf {
      * this function is only an empty function.
      */
     destroy(): void {
+        this.m_layoutBit = 0;
     }
 }

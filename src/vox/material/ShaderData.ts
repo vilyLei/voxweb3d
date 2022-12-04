@@ -6,7 +6,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import BitConst from "../../vox/utils/BitConst";
+// import BitConst from "../../vox/utils/BitConst";
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import RendererDevice from "../../vox/render/RendererDevice";
 import GLSLConverter from "../../vox/material/code/GLSLConverter";
@@ -105,6 +105,13 @@ export default class ShaderData implements IShaderData {
                 this.m_attriSizeList.push(attri.typeSize);
                 locationsTotal += 1;
                 let vbufType = VtxBufConst.GetVBufTypeByNS(attri.name);
+                if (vbufType >= 3001 && vbufType <= 3010) {
+                    this.m_layoutBit |= 1 << (vbufType - 3001);//BitConst.BIT_ONE_0;
+                } else {
+                    locationsTotal -= 1;
+                    vbufType = 0;
+                }
+                /*
                 switch (vbufType) {
                     case VtxBufConst.VBUF_VS:
                         //mid += mid * 131 + 1;
@@ -152,6 +159,7 @@ export default class ShaderData implements IShaderData {
                         vbufType = 0;
                         break;
                 }
+                //*/
                 if (vbufType > 0) {
                     layoutTypes.push(VtxBufConst.GetVBufAttributeTypeByVBufType(vbufType));
                 }

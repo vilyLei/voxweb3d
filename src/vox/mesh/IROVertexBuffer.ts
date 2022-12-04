@@ -14,5 +14,8 @@ interface IROVertexBuffer {
     getBufDataUsage(): number;
     getBuffersTotal(): number;    
     getAttribsTotal(): number;
+    
+    setBufSortFormat(layoutBit: number): void;
+    getBufSortFormat(): number;
 }
 export { IROVertexBuffer }

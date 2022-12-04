@@ -207,6 +207,10 @@ class ROVertexRes {
         }
     }
     private initialize(rc: IROVtxBuilder, shdp: IVtxShdCtr, vtx: IROVtxBuf): void {
+        /**
+         * 这里的初始化可能会出现错误, 因为 shd 中使用的buffers数量可能少于实际 vtx 中的 attributes 数量
+         * 为了防止错误, 构建这个 RoVertexRes 实例的shdp中的attributes必须是和vtx buffers匹配的
+         */
         if (this.m_gpuBufs.length < 1 && vtx != null) {
             this.version = vtx.vertexVer;
             this.m_vtx = vtx;
@@ -215,9 +219,12 @@ class ROVertexRes {
 
             let typeList = vtx.getBufTypeList();
             this.m_attribsTotal = typeList != null ? typeList.length : shdp.getLocationsTotal();
-
+            let layoutBit = vtx.getBufSortFormat();
+            console.log("XXXXX ROVtx XXX layoutBit: ", layoutBit);
             if (shdp.getLocationsTotal() != vtx.getAttribsTotal()) {
-                console.warn("shdp.getLocationsTotal() is " + shdp.getLocationsTotal() + " != vtx.getAttribsTotal() is " + vtx.getAttribsTotal() + "/" + (typeList != null ? typeList.length : 0));
+                let info = "shdp.getLocationsTotal() is " + shdp.getLocationsTotal() + " != vtx.getAttribsTotal(), shdp has " + shdp.getLocationsTotal() + ", vtx has " + vtx.getAttribsTotal();
+                info += "\n这可能会导致渲染过程无法正常使用所有的 vtx buffers";
+                console.warn(info);                
             }
             if (this.m_type < 1) {
                 // combined buf
@@ -260,6 +267,10 @@ class ROVertexRes {
             // let flag: boolean = shdp.testVertexAttribPointerOffset(this.m_offsetList);
             // console.log("createVRO testVertexAttribPointerOffset flag: ",flag, this.m_typeList);
             // DivLog.ShowLog("createVRO testVertexAttribPointerOffset flag: "+flag);
+
+            // 如果这个ivs的数据和 vtx buffers 数据项不匹配, 则会出现渲染错误的情况
+            // 因为数据项匹配的ROVertexRes实例可能不会构建或者比较迟才构建
+            // 这会导致ivs 是不正确的, 甚至vtx buffers
             const ivs = this.m_bufIVS;
             if (vaoEnabled) {
                 // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的

@@ -67,6 +67,33 @@ export class DemoSharedMesh {
 		//console.log("mouseDown...");
 		//this.m_rscene.setClearRGBColor3f(Math.random(), 0, Math.random());
 	}
+	private initScene(): void {
+		let tex1 = this.m_tex;
+
+		let scale = 120.0;
+		let mesh = this.m_rscene.entityBlock.unitBox.getMesh();
+		// 这是错误的初始化 这个 mesh buffer 的material定义，因为这个material没有完全使用到所有的 vtertex buffers
+		// let material = new Default3DMaterial();
+		// // material.normalEnabled = true;
+		// material.setTextureList([tex1]);
+		// material.initializeByCodeBuf(true);
+		// material.setRGB3f(0.5, 1.0, 1.0);
+
+		// 这是正确的方式
+		let material = new Default3DMaterial();
+		// material.normalEnabled = true;
+		material.setTextureList([tex1]);
+		material.initializeByCodeBuf(true);
+		material.setRGB3f(0.5, 1.0, 1.0);
+
+		let boxEntity = new DisplayEntity();
+		boxEntity.setMaterial(material);
+		boxEntity.setMesh(mesh);
+		boxEntity.setXYZ(-100, 0, 200);
+		boxEntity.setScaleXYZ(scale, scale, scale);
+		this.m_rscene.addEntity(boxEntity);
+		this.m_currDispEntity = boxEntity;
+	}
 
 	initialize(): void {
 		console.log("DemoSharedMesh::initialize()......");
@@ -98,26 +125,6 @@ export class DemoSharedMesh {
 			this.initEvent();
 			this.m_rscene.setClearColor(this.m_clearColor);
 		}
-	}
-	private initScene(): void {
-		let tex1 = this.m_tex;
-
-		let scale = 120.0;
-		let mesh = this.m_rscene.entityBlock.unitBox.getMesh();
-
-		let material = new Default3DMaterial();
-		// material.normalEnabled = true;
-		material.setTextureList([tex1]);
-		material.initializeByCodeBuf(true);
-		material.setRGB3f(0.5, 1.0, 1.0);
-
-		let boxEntity = new DisplayEntity();
-		boxEntity.setMaterial(material);
-		boxEntity.setMesh(mesh);
-		boxEntity.setXYZ(-100, 0, 200);
-		boxEntity.setScaleXYZ(scale, scale, scale);
-		this.m_rscene.addEntity(boxEntity);
-		this.m_currDispEntity = boxEntity;
 	}
 	run(): void {
 		if (this.m_rscene != null) {

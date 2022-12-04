@@ -17,5 +17,6 @@ interface IROVtxBuf extends IROIVtxBuf {
 
     getBufTypeList(): number[];
     getBufSizeList(): number[];
+    getBufSortFormat(): number;
 }
 export default IROVtxBuf;

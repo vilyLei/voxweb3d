@@ -287,9 +287,11 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         }
     }
     private initDisplay(m: IMeshBase): void {
+        let vbuf = m.__$attachVBuf();
+        vbuf.setBufSortFormat(m.getBufSortFormat());
         const d = this.m_display;
-        d.vbuf = m.__$attachVBuf() as any;
-        d.ivbuf = m.__$attachIVBuf() as any;
+        d.vbuf = vbuf as any;
+        d.ivbuf = m.__$attachIVBuf() as any;        
         d.ivsIndex = 0;
         d.ivsCount = m.vtCount;
         d.drawMode = m.drawMode;

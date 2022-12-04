@@ -125,12 +125,6 @@ export default class MeshBase implements IMeshBase {
         if(ivs !== null) {
             let len = ivs.length * 2;
             let wivs = len <= 65536 ? new Uint16Array(len) : new Uint32Array(len);
-
-            console.log("VVVVVVVVVVVVVVVVVVV createWireframeIvs() ---------------- len: ", len);
-            // let wivs: Uint16Array | Uint32Array;
-            // if (len < 65535) wivs = new Uint16Array(len);
-            // else wivs = new Uint32Array(len);
-    
             let a: number;
             let b: number;
             let c: number;

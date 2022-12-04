@@ -109,7 +109,7 @@ export default class ShdProgram implements IShdProgram {
         }
         if (this.m_shdData.haveCommonUniform()) {
             if (this.m_uLocations == null) {
-                let uninforms: UniformLine[] = this.m_shdData.getUniforms();
+                let uninforms = this.m_shdData.getUniforms();
                 this.m_uLocations = [];
                 len = uninforms.length;
                 i = 0;
