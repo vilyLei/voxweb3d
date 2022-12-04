@@ -69,14 +69,14 @@ export default class ShdProgram implements IShdProgram {
         if (attriNSList != null && attriNSList.length > 0) {
             if (this.m_aLocations == null) {
                 this.dataUniformEnabled = false;
-                let attriSizeList: number[] = this.m_shdData.getAttriSizeList();
+                let attriSizeList = this.m_shdData.getAttriSizeList();
                 this.m_aLocations = [];
                 this.m_aLocationTypes = [];
                 this.m_aLocationSizes = [];
                 const ls = this.m_aLocationTypes;
                 len = attriNSList.length;
-                let type: number = 0;
-                let altI: number = 0;
+                let type = 0;
+                let altI = 0;
                 while (i < len) {
                     altI = this.m_gl.getAttribLocation(this.m_program, attriNSList[i]);
                     this.m_aLocations.push(altI);

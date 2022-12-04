@@ -172,6 +172,7 @@ export class DemoMeshWrapper {
 		// return;
 		let boxEntity = new Box3DEntity();
 		// boxEntity.wireframe = true;
+		boxEntity.normalEnabled = true;
 		boxEntity.initializeCube(100.0, [this.getImageTexByUrl("static/assets/white.jpg")]);
 		boxEntity.setXYZ(-200, 0, 0);
 		this.m_rscene.addEntity(boxEntity);

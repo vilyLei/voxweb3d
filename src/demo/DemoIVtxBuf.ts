@@ -42,23 +42,23 @@ export class DemoIVtxBuf {
 	mouseDownListener(evt: any): void {
 		console.log("XXXXXXXXXXXXXXX DemoIVtxBuf::mouseDownListener()...");
 		if (this.m_currDispEntity != null) {
-			// let entity = this.m_currDispEntity;
-			// this.m_rscene.removeEntity(entity);
+			let entity = this.m_currDispEntity;
+			this.m_rscene.removeEntity(entity);
 
-			// console.log(">>>>>>>>>>>>>>>>>>>>>> repeat the display entity ...");
-			// entity.setXYZ(Math.random() * 1000 - 500,0,100);
-			// // this.m_rscene.addEntity(entity);
-			// let mesh = entity.getMesh();
-
-			// let tex1 = this.m_tex;
-			// let material = new Default3DMaterial();
-			// material.normalEnabled = true;
-			// material.setTextureList([tex1]);
-			// material.initializeByCodeBuf(true);
-			// material.setRGB3f(0.5, 1.0, 0.5);
-
-			// entity.setMaterial(material);
+			console.log(">>>>>>>>>>>>>>>>>>>>>> repeat the display entity ...");
+			entity.setXYZ(Math.random() * 1000 - 500,0,100);
 			// this.m_rscene.addEntity(entity);
+			let mesh = entity.getMesh();
+
+			let tex1 = this.m_tex;
+			let material = new Default3DMaterial();
+			material.normalEnabled = true;
+			material.setTextureList([this.getImageTexByUrl("static/assets/white.jpg")]);
+			material.initializeByCodeBuf(true);
+			material.setRGB3f(0.5, 1.0, 0.5);
+
+			entity.setMaterial(material);
+			this.m_rscene.addEntity(entity);
 		}
 	}
 	mouseUpListener(evt: any): void {
