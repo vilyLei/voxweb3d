@@ -56,7 +56,7 @@ installation:
 
     step 1, install global git(https://git-scm.com/downloads).
     
-    step 2, install global nodejs(https://nodejs.org/en/),auto include npm already.
+    step 2, install global nodejs(The recommended major version is 16)(https://nodejs.org/en/),auto include npm already.
     
     step 3, install yarn(console run: npm install -g yarn)
     
