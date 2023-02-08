@@ -9,23 +9,19 @@ import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 
-class CubeMapMRTShaderBuffer extends ShaderCodeBuffer
-{
-    constructor()
-    {
+class CubeMapMRTShaderBuffer extends ShaderCodeBuffer {
+    constructor() {
         super();
     }
-    private static s_instance:CubeMapMRTShaderBuffer = new CubeMapMRTShaderBuffer();
-    private m_uniqueName:string = "";
-    initialize(texEnabled:boolean):void
-    {
+    private static s_instance: CubeMapMRTShaderBuffer = new CubeMapMRTShaderBuffer();
+    private m_uniqueName: string = "";
+    initialize(texEnabled: boolean): void {
         //console.log("CubeMapMRTShaderBuffer::initialize()...");
         this.m_uniqueName = "CubeMapMRTShd";
     }
-    getFragShaderCode():string
-    {
-        let fragCode:string = 
-`#version 300 es
+    getFragShaderCode(): string {
+        let fragCode: string =
+            `#version 300 es
 precision mediump float;
 uniform sampler2D u_sampler0;
 uniform vec4 u_color;
@@ -50,10 +46,9 @@ OutputColor5 = vec4(1.0,1.0,0.0,1.0);
 
         return fragCode;
     }
-    getVertShaderCode():string
-    {
-        let vtxCode:string = 
-`#version 300 es
+    getVertShaderCode(): string {
+        let vtxCode: string =
+            `#version 300 es
 precision mediump float;
 layout(location = 0) in vec3 a_vs;
 layout(location = 1) in vec2 a_uvs;
@@ -72,37 +67,30 @@ v_uvs = a_uvs;
 `;
         return vtxCode;
     }
-    getUniqueShaderName(): string
-    {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
-    toString():string
-    {
+    toString(): string {
         return "[CubeMapMRTShaderBuffer()]";
     }
 
-    static GetInstance():CubeMapMRTShaderBuffer
-    {
+    static GetInstance(): CubeMapMRTShaderBuffer {
         return CubeMapMRTShaderBuffer.s_instance;
     }
 }
 
-export default class CubeMapMRTMaterial extends MaterialBase
-{
-    constructor()
-    {
+export default class CubeMapMRTMaterial extends MaterialBase {
+    constructor() {
         super();
     }
-    
-    getCodeBuf():ShaderCodeBuffer
-    {
+
+    getCodeBuf(): ShaderCodeBuffer {
         return CubeMapMRTShaderBuffer.GetInstance();
     }
-    colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
-    createSelfUniformData():ShaderUniformData
-    {
-        let oum:ShaderUniformData = new ShaderUniformData();
+    colorArray: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
+    createSelfUniformData(): ShaderUniformData {
+        let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_color"];
         oum.dataList = [this.colorArray];
         return oum;

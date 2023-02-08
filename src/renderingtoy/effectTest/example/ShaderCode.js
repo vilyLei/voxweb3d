@@ -5,19 +5,17 @@
 /*                                                                         */
 /***************************************************************************/
 
-import shader_frag_body from "./PBR_fragBody.glsl";
-import shader_frag_head from "./PBR_fragHead.glsl";
+import shader_frag_body from "./fragBody.glsl";
 
-import shader_vert_body from "./PBR_vertBody.glsl";
-import shader_vert_head from "./PBR_vertHead.glsl";
-const PBRShaderCode = {
+import shader_vert_body from "./vertBody.glsl";
+const ShaderCode = {
     vert: "",
-    vert_head: shader_vert_head,
+    vert_head: "",
     vert_body: shader_vert_body,
     frag: "",
-    frag_head: shader_frag_head,
+    frag_head: "",
     frag_body: shader_frag_body,
-    uuid: "pbr"
+    uuid: "effect"
 };
 
-export { PBRShaderCode };
+export { ShaderCode };

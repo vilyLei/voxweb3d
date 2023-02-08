@@ -6,4 +6,4 @@
 /***************************************************************************/
 import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 
-export const PBRShaderCode:IShaderCodeObject;
+export const ShaderCode:IShaderCodeObject;
