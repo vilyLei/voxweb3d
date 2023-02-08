@@ -319,7 +319,7 @@
 
 //  import {DemoIVtxBuf as Demo} from "./demo/DemoIVtxBuf";
 
- import {DemoMeshWrapper as Demo} from "./demo/DemoMeshWrapper";
+//  import {DemoMeshWrapper as Demo} from "./demo/DemoMeshWrapper";
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -344,6 +344,8 @@
 //  import {DemoOutline2 as Demo} from "./demo/DemoOutline2";
 
 //  import {DemoFix3DSize as Demo} from "./demo/DemoFix3DSize";
+
+ import {EffectExample as Demo} from "./renderingtoy/effectTest/example/EffectExample";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////
