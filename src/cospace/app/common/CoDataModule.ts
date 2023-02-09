@@ -149,6 +149,9 @@ export class CoDataModule {
 		}
 		this.m_sysInitCallback = null;
 	}
+	destroy(): void {
+		
+	}
 }
 
 export default CoDataModule;
