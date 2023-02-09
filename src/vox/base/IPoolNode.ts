@@ -5,8 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-export default interface IPoolNode
-{
-    uid:number;
-    reset():void;
+export default interface IPoolNode {
+    uid: number;
+    reset(): void;
 }
