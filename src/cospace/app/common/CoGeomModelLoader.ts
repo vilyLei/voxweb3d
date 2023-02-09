@@ -17,6 +17,8 @@ class CoGeomModelLoader {
 	}
 	load(urls: string[], typeNS: string = ""): void {
 		if (urls != null && urls.length > 0) {
+			
+			this.m_coapp.initialize(null, true);
 			let purls = urls.slice(0);
 			this.m_coapp.deferredInit((): void => {
 				for (let i = 0; i < purls.length; ++i) {

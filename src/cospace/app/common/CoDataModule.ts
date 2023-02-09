@@ -15,13 +15,13 @@ import { CoModuleLoader } from "../utils/CoModuleLoader";
 declare var CoSpaceApp: ICoSpaceApp;
 
 export class CoDataModule {
-
+	private m_init = true;
 	private m_sysIniting = true;
 	private m_initInsFlag = true;
 	private m_modules: CoTaskCodeModuleParam[];
 	private m_dependencyGraphObj: Object;
 	private m_deferredInit: boolean;
-	private m_sysInitCallback: ()=>void;
+	private m_sysInitCallback: () => void;
 	// private m_urlChecker: (url: string) => string = null;
 
 	readonly coappIns: ICoSpaceAppIns;
@@ -33,44 +33,48 @@ export class CoDataModule {
 	 * @param deferredInit the default value is false 
 	 */
 	initialize(sysInitCallback: () => void = null, deferredInit: boolean = false): void {
-		this.m_sysInitCallback = sysInitCallback;
-		// this.m_urlChecker = urlChecker;
-		this.m_deferredInit = deferredInit;
-		let modules: CoTaskCodeModuleParam[] = [
-			{ url: "static/cospace/core/coapp/CoSpaceApp.umd.js", name: CoModuleNS.coSpaceApp, type: CoModuleFileType.JS },
-			{ url: "static/cospace/core/code/ThreadCore.umd.js", name: CoModuleNS.threadCore, type: CoModuleFileType.JS },
-			{ url: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", name: CoModuleNS.ctmParser, type: CoModuleFileType.JS },
-			{ url: "static/cospace/modules/obj/ModuleOBJGeomParser.umd.min.js", name: CoModuleNS.objParser, type: CoModuleFileType.JS },
-			{ url: "static/cospace/modules/png/ModulePNGParser.umd.js", name: CoModuleNS.pngParser, type: CoModuleFileType.JS },
-			{ url: "static/cospace/modules/fbxFast/ModuleFBXGeomFastParser.umd.js", name: CoModuleNS.fbxFastParser, type: CoModuleFileType.JS }
-		];
-		this.m_modules = modules;
-		// 初始化数据协同中心
-		let dependencyGraphObj: object = {
-			nodes: [
-				{ uniqueName: "dracoGeomParser", path: "static/cospace/modules/draco/ModuleDracoGeomParser.umd.js" },
-				{ uniqueName: "dracoWasmWrapper", path: "static/cospace/modules/dracoLib/w2.js" },
-				{ uniqueName: "ctmGeomParser", path: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js" }
-			],
-			maps: [
-				{ uniqueName: "dracoGeomParser", includes: [1] } // 这里[1]表示 dracoGeomParser 依赖数组中的第一个元素也就是 dracoWasmWrapper 这个代码模块
-			]
-		};
-		this.m_dependencyGraphObj = dependencyGraphObj;
+		if (this.m_init) {
+			this.m_init = false;
+			
+			this.m_sysInitCallback = sysInitCallback;
+			// this.m_urlChecker = urlChecker;
+			this.m_deferredInit = deferredInit;
+			let modules: CoTaskCodeModuleParam[] = [
+				{ url: "static/cospace/core/coapp/CoSpaceApp.umd.js", name: CoModuleNS.coSpaceApp, type: CoModuleFileType.JS },
+				{ url: "static/cospace/core/code/ThreadCore.umd.js", name: CoModuleNS.threadCore, type: CoModuleFileType.JS },
+				{ url: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", name: CoModuleNS.ctmParser, type: CoModuleFileType.JS },
+				{ url: "static/cospace/modules/obj/ModuleOBJGeomParser.umd.min.js", name: CoModuleNS.objParser, type: CoModuleFileType.JS },
+				{ url: "static/cospace/modules/png/ModulePNGParser.umd.js", name: CoModuleNS.pngParser, type: CoModuleFileType.JS },
+				{ url: "static/cospace/modules/fbxFast/ModuleFBXGeomFastParser.umd.js", name: CoModuleNS.fbxFastParser, type: CoModuleFileType.JS }
+			];
+			this.m_modules = modules;
+			// 初始化数据协同中心
+			let dependencyGraphObj: object = {
+				nodes: [
+					{ uniqueName: "dracoGeomParser", path: "static/cospace/modules/draco/ModuleDracoGeomParser.umd.js" },
+					{ uniqueName: "dracoWasmWrapper", path: "static/cospace/modules/dracoLib/w2.js" },
+					{ uniqueName: "ctmGeomParser", path: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js" }
+				],
+				maps: [
+					{ uniqueName: "dracoGeomParser", includes: [1] } // 这里[1]表示 dracoGeomParser 依赖数组中的第一个元素也就是 dracoWasmWrapper 这个代码模块
+				]
+			};
+			this.m_dependencyGraphObj = dependencyGraphObj;
 
-		let loader = new CoModuleLoader(1);
-		let urlChecker = loader.getUrlChecker();
-		if (urlChecker != null) {
-			for (let i = 0; i < modules.length; ++i) {
-				modules[i].url = urlChecker(modules[i].url);
+			let loader = new CoModuleLoader(1);
+			let urlChecker = loader.getUrlChecker();
+			if (urlChecker != null) {
+				for (let i = 0; i < modules.length; ++i) {
+					modules[i].url = urlChecker(modules[i].url);
+				}
+				let nodes = (dependencyGraphObj as any).nodes;
+				for (let i = 0; i < nodes.length; ++i) {
+					nodes[i].path = urlChecker(nodes[i].path);
+				}
 			}
-			let nodes = (dependencyGraphObj as any).nodes;
-			for (let i = 0; i < nodes.length; ++i) {
-				nodes[i].path = urlChecker(nodes[i].path);
+			if (!deferredInit) {
+				this.loadSys();
 			}
-		}
-		if (!deferredInit) {
-			this.loadSys();
 		}
 	}
 	private loadSys(): void {
@@ -78,7 +82,7 @@ export class CoDataModule {
 			new CoModuleLoader(1, (): void => {
 				this.initCoSpaceSys();
 			})
-			.load(this.m_modules[0].url);
+				.load(this.m_modules[0].url);
 			this.m_sysIniting = false;
 		}
 	}
@@ -100,7 +104,7 @@ export class CoDataModule {
 				immediate
 			);
 			if (this.m_deferredInit) {
-				if(this.m_initInsFlag) {
+				if (this.m_initInsFlag) {
 					this.m_initInsFlag = false;
 					let modules = this.m_modules;
 					this.coappIns.initialize(3, modules[1].url, true);
@@ -143,14 +147,14 @@ export class CoDataModule {
 			}
 			this.m_initCalls = [];
 		}
-		
+
 		if (this.m_sysInitCallback != null) {
 			this.m_sysInitCallback();
 		}
 		this.m_sysInitCallback = null;
 	}
 	destroy(): void {
-		
+
 	}
 }
 

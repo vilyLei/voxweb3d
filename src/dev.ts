@@ -345,7 +345,9 @@
 
 //  import {DemoFix3DSize as Demo} from "./demo/DemoFix3DSize";
 
- import {EffectExample as Demo} from "./renderingtoy/effectTest/example/EffectExample";
+//  import {EffectExample as Demo} from "./renderingtoy/effectTest/example/EffectExample";
+
+ import {EffectExample as Demo} from "./renderingtoy/effectTest/modelLoad/EffectExample";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////
