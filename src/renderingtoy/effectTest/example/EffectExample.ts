@@ -14,7 +14,6 @@ import RendererScene from "../../../vox/scene/RendererScene";
 
 import CameraStageDragSwinger from "../../../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../../../voxeditor/control/CameraZoomController";
-import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
 import EffectMaterial from "./EffectMaterial";
 
 export class EffectExample {
@@ -26,14 +25,14 @@ export class EffectExample {
     private m_stageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController = new CameraZoomController();
 
-    private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+    private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
     private initSys(): void {
-        
+
         this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
         this.m_rscene.enableMouseEvent(true);
         this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
@@ -42,7 +41,7 @@ export class EffectExample {
 
         this.m_statusDisp.initialize();
         this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
-        
+
         this.update();
 
     }
@@ -61,31 +60,30 @@ export class EffectExample {
 
             this.initSys();
             this.initObjs();
-            
+
         }
     }
     private m_material: EffectMaterial = null;
     private initObjs(): void {
 
-        this.m_material = new EffectMaterial();
+        let material = this.m_material = new EffectMaterial();
+        material.setTextureList([
+            this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
+        ]);
 
         let box = new Box3DEntity();
-        box.setMaterial( this.m_material );
-        
-        this.m_material.setRGB3f(1.5,0.0,0.0);
+        box.setMaterial(material);
 
-        box.initializeCube(100.0, [
-            this.getImageTexByUrl("static/assets/metal_02.jpg")
-        ]);
+        box.initializeCube(100.0);
         box.setScaleXYZ(2.0, 2.0, 2.0);
         //  box.setXYZ(0.0, 0.0, 0.0);
         this.m_rscene.addEntity(box);
     }
     private m_flag: boolean = false;
     private mouseDown(evt: any): void {
-
+        console.log("mouse down.");
         this.m_flag = !this.m_flag;
-        if(!this.m_flag) {
+        if (!this.m_flag) {
             this.m_time = 0;
         }
     }
@@ -103,7 +101,7 @@ export class EffectExample {
     private m_time: number = 0.0;
     run(): void {
 
-        if(this.m_flag) {
+        if (this.m_flag) {
             this.m_time += 0.01;
             this.m_material.setRGB3f(1.0, Math.abs(this.m_time), 1.0);
         }
@@ -112,7 +110,7 @@ export class EffectExample {
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
 
-        this.m_rscene.run( true );
+        this.m_rscene.run(true);
 
     }
 }
