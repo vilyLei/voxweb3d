@@ -16,7 +16,6 @@ declare var CoSpaceApp: ICoSpaceApp;
 
 export class CoDataModule {
 
-
 	private m_sysIniting = true;
 	private m_initInsFlag = true;
 	private m_modules: CoTaskCodeModuleParam[];

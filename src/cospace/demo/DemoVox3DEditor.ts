@@ -116,7 +116,7 @@ export class DemoVox3DEditor {
 
 	private m_vmctx: ViewerMaterialCtx;
 	private m_outline: CoPostOutline;
-	private m_loadingUI: LoadingUI = new LoadingUI();
+	private m_loadingUI = new LoadingUI();
 	private m_viewer: NormalViewer = null;
 	constructor() { }
 

@@ -191,6 +191,7 @@ class NormalEntityGroup extends NVEntityGroup {
 	}
 
 	destroy(): void {
+
 		let ls = this.m_nodes;
 		if (ls != null && ls.length > 0) {
 			for (let i = 0; i < ls.length; ++i) {
@@ -207,6 +208,11 @@ class NormalEntityGroup extends NVEntityGroup {
 		this.m_layoutor = null;
 
 		this.rsc = null;
+		if(this.m_coapp != null) {
+			// todo
+			
+			this.m_coapp = null;
+		}
 	}
 }
 export { NormalEntityGroup };
