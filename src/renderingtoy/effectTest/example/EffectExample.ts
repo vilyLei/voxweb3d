@@ -79,7 +79,7 @@ export class EffectExample {
         //  box.setXYZ(0.0, 0.0, 0.0);
         this.m_rscene.addEntity(box);
     }
-    private m_flag: boolean = false;
+    private m_flag = false;
     private mouseDown(evt: any): void {
         console.log("mouse down.");
         this.m_flag = !this.m_flag;
@@ -92,13 +92,12 @@ export class EffectExample {
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
-        //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
         this.m_timeoutId = setTimeout(this.update.bind(this), 40);// 20 fps
 
         this.m_statusDisp.render();
 
     }
-    private m_time: number = 0.0;
+    private m_time = 0.0;
     run(): void {
 
         if (this.m_flag) {
