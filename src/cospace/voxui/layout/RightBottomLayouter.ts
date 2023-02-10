@@ -22,7 +22,7 @@ class RightBottomLayouter extends LayouterBase implements IUILayouter {
 		for (let i = 0; i < len; ++i) {
 			pv.copyFrom(this.m_offsetvs[i]);
 			pv.x = rect.width - pv.x;
-			// pv.y = rect.height - pv.y;
+			pv.addBy(this.m_offsetV);
 			ls[i].setPosition(pv);
 			ls[i].update();
 		}

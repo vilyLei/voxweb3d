@@ -1,18 +1,22 @@
-import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IVector3D from "../../../vox/math/IVector3D";
-import { IUILayouter } from "./IUILayouter";
 import IAABB2D from "../../../vox/geom/IAABB2D";
 import { IUIEntity } from "../entity/IUIEntity";
+import { IUILayouter } from "./IUILayouter";
 
 import { ICoMath } from "../../math/ICoMath";
 declare var CoMath: ICoMath;
 
-class LayouterBase {
+class LayouterBase implements IUILayouter{
+	
 	protected m_entities: IUIEntity[] = [];
 	protected m_opvs: IVector3D[] = [];
 	protected m_initRect: IAABB2D = null;
+	protected m_offsetV: IVector3D = CoMath.createVec3();
 	constructor() { }
 
+	setOffset(offsetV: IVector3D): void {
+		this.m_offsetV.copyFrom( offsetV );
+	}
 	addUIEntity(entity: IUIEntity): void {
 		if (entity != null) {
 			let i = 0;

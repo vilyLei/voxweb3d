@@ -1,4 +1,3 @@
-import IRendererScene from "../../../vox/scene/IRendererScene";
 import { IUILayouter } from "./IUILayouter";
 import { ICoMath } from "../../math/ICoMath";
 import IAABB2D from "../../../vox/geom/IAABB2D";

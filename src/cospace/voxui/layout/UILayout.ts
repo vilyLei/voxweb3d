@@ -1,9 +1,9 @@
 
-import ITransformEntity from "../../../vox/entity/ITransformEntity";
+// import ITransformEntity from "../../../vox/entity/ITransformEntity";
 import IAABB2D from "../../../vox/geom/IAABB2D";
-import IVector3D from "../../../vox/math/IVector3D";
-import IRenderStage3D from "../../../vox/render/IRenderStage3D";
-import IRendererScene from "../../../vox/scene/IRendererScene";
+// import IVector3D from "../../../vox/math/IVector3D";
+// import IRenderStage3D from "../../../vox/render/IRenderStage3D";
+// import IRendererScene from "../../../vox/scene/IRendererScene";
 import { IUILayouter } from "./IUILayouter";
 import { IUILayout } from "./IUILayout";
 import { ICoMath } from "../../math/ICoMath";
@@ -16,18 +16,18 @@ declare var CoMath: ICoMath;
 class UILayout implements IUILayout {
 
 	private m_layouters: IUILayouter[] = [];
-	private m_uirsc: IRendererScene = null;
-	private m_stage: IRenderStage3D = null;
+	// private m_uirsc: IRendererScene = null;
+	// private m_stage: IRenderStage3D = null;
 	private m_rect: IAABB2D = null;
 
 	constructor() { }
 
-	createFreeLayouter(): FreeLayouter {
+	createFreeLayouter(): IUILayouter {
 		let l = new FreeLayouter();
 		this.addLayouter(l);
 		return l;
 	}
-	createLeftTopLayouter(): LeftTopLayouter {
+	createLeftTopLayouter(): IUILayouter {
 		let l = new LeftTopLayouter();
 		this.addLayouter(l);
 		return l;

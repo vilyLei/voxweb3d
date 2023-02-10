@@ -163,8 +163,9 @@ class UIEntityBase {
 		this.m_pos.x = px;
 		this.m_pos.y = py;
 	}
-	getPosition(pv: IVector3D): void {
+	getPosition(pv: IVector3D): IVector3D {
 		pv.copyFrom(this.m_pos);
+		return pv;
 	}
 	setRotation(r: number): void {
 		this.m_rotation = r;

@@ -17,7 +17,10 @@ class FreeLayouter extends LayouterBase implements IUILayouter {
 
 		const ls = this.m_entities;
 		const len = ls.length;
+		let pv = CoMath.createVec3();
 		for (let i = 0; i < len; ++i) {
+			ls[i].getPosition(pv).addBy(this.m_offsetV);
+			ls[i].setPosition(pv);
 			ls[i].update();
 		}
 	}

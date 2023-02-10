@@ -111,6 +111,7 @@ class NVNavigationUI {
 		console.log("NVNavigationUI::initNavigationUI(), XXXXXX btnTypes: ", btnTypes);
 
 		let layouter = uiScene.layout.createLeftTopLayouter();
+		// layouter.setOffset(CoRScene.createVec3(0.0,-30.0));
 		px = 0;
 		py = st.stageHeight - ph;
 		for (let i = 0; i < btnNames.length; ++i) {

@@ -3,7 +3,7 @@ import IVector3D from "../../../vox/math/IVector3D";
 import IAABB2D from "../../../vox/geom/IAABB2D";
 
 interface IUILayouter {
-	
+	setOffset(offsetV: IVector3D): void;
 	addUIEntity(entity: IUIEntity): void;
 	initLayout(rect: IAABB2D): void;
 	update(rect: IAABB2D): void;

@@ -23,6 +23,7 @@ class RightTopLayouter extends LayouterBase implements IUILayouter {
 			pv.copyFrom(this.m_offsetvs[i]);
 			pv.x = rect.width - pv.x;
 			pv.y = rect.height - pv.y;
+			pv.addBy(this.m_offsetV);
 			ls[i].setPosition(pv);
 			ls[i].update();
 		}
