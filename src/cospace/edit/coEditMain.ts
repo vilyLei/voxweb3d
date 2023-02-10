@@ -11,9 +11,9 @@
 // import { DemoTransEditor as Demo } from "./demo/DemoTransEditor";
 
 // import { DemoUIAtlas as Demo } from "./demo/DemoUIAtlas";
-// import { DemoUIScene as Demo } from "./demo/DemoUIScene";
+import { DemoUIScene as Demo } from "./demo/DemoUIScene";
 // import { DemoUIPanel as Demo } from "./demo/DemoUIPanel";
-import { DemoText as Demo } from "./demo/DemoText";
+// import { DemoText as Demo } from "./demo/DemoText";
 
 // import { DemoNormalViewer as Demo } from "./demo/DemoNormalViewer";
 

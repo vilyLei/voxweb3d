@@ -189,7 +189,7 @@ class NVTransUI {
 		let px = 5;
 		pw = uiCfg.btnSize[0];
 		ph = uiCfg.btnSize[1];
-		let py = ph * 4;
+		let py = ph * 7;
 		let defaultKey = "";
 		for (let i = 0; i < btnNames.length; ++i) {
 			const btn = ButtonBuilder.createPanelBtnWithCfg(uiScene, px, py - ph * i, i, uiCfg);
@@ -242,6 +242,10 @@ class NVTransUI {
 	private selectTrans(uuid: string): void {
 		switch (uuid) {
 
+			case "select_all":
+				// this.m_transCtr.toTranslation();
+
+				break;
 			case "move":
 				this.m_transCtr.toTranslation();
 				break;
