@@ -5,13 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IRenderShaderUniform from "../../vox/render/uniform/IRenderShaderUniform";
 import { IShaderUniformProbe } from "../../vox/material/IShaderUniformProbe";
 import IShdProgram from "../../vox/material/IShdProgram";
 import IRenderShader from "../../vox/render/IRenderShader";
-import DebugFlag from "../debug/DebugFlag";
+import IShaderUniform from "./IShaderUniform";
 
-class ShaderUniform implements IRenderShaderUniform {
+class ShaderUniform implements IShaderUniform {
     constructor() {
     }
     uns: string = "";

@@ -5,12 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { IMaterialPipe } from "../pipeline/IMaterialPipe";
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import IShaderUniformData from "../IShaderUniformData";
 import IRenderTexture from "../../render/texture/IRenderTexture";
+import { IUniformComp } from "./IUniformComp";
 
-class UniformComp {
+class UniformComp implements IUniformComp {
 
     protected m_params: Float32Array = null;
     protected m_uniqueNSKeyString: string = "";
@@ -44,7 +44,7 @@ class UniformComp {
         return this.m_params != null ? this.m_params.length >> 2 : 0;
     }
     buildShaderUniformData(data: IShaderUniformData): void {
-        
+
     }
 }
 export { UniformComp };

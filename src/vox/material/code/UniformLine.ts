@@ -7,8 +7,9 @@
 /***************************************************************************/
 
 import MaterialConst from "../../../vox/material/MaterialConst";
+import IUniformLine from "./IUniformLine";
 
-export default class UniformLine {
+export default class UniformLine implements IUniformLine {
     constructor() { }
     type: number = -1;
     typeName: string = "";

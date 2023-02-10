@@ -1,11 +1,8 @@
-
-import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
-import { ShaderCodeType } from "./ShaderCodeType";
-import { ShaderCodeConfigure } from "./ShaderCodeConfigure";
+import { IShaderCodeConfigure } from "./IShaderCodeConfigure";
 
 interface IShaderLibConfigure {
     version: string;
-    shaderCodeConfigures: ShaderCodeConfigure[];
+    shaderCodeConfigures: IShaderCodeConfigure[];
 }
 
 export { IShaderLibConfigure };

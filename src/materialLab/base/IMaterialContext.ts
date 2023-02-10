@@ -8,7 +8,7 @@ import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import { IShaderLibListener } from "../shader/IShaderLibListener";
 import { IShaderLibConfigure } from "../shader/IShaderLibConfigure";
 import IShaderCodeObject from "../../vox/material/IShaderCodeObject";
-import { MaterialContextParam } from "./MaterialContextParam";
+import { IMaterialContextParam } from "./IMaterialContextParam";
 
 /**
  * 实现 material 构造 pipeline 的上下文
@@ -42,7 +42,7 @@ interface IMaterialContext {
     getTextureByUrl(purl: string, wrapRepeat?: boolean, mipmapEnabled?: boolean): IRenderTexture;
     createShaderLibConfig(): IShaderLibConfigure;
 
-    initialize(rscene: IRendererScene, param?: MaterialContextParam, shaderLibConfigure?: IShaderLibConfigure): void;
+    initialize(rscene: IRendererScene, param?: IMaterialContextParam, shaderLibConfigure?: IShaderLibConfigure): void;
     hasShaderCodeObjectWithUUID(uuid: ShaderCodeUUID): boolean;
     addShaderCodeObject(uuid: ShaderCodeUUID, shaderCodeObject: IShaderCodeObject): void
     addPipeline(pipeline: IMaterialPipeline): void

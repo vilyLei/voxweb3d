@@ -6,7 +6,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-export default class ShaderCompileInfo {
+import IShaderCompileInfo from "./IShaderCompileInfo";
+export default class ShaderCompileInfo implements IShaderCompileInfo {
     info:string = "";
     constructor(){}
 }

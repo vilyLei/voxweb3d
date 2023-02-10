@@ -1,3 +1,6 @@
+interface IShaderCodeUUID {
+
+}
 /**
  * IShaderCodeObject instance uuid
  */

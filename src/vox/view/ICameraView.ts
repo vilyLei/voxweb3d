@@ -5,19 +5,19 @@
 /*                                                                         */
 /***************************************************************************/
 
-import Vector3D from "../../vox/math/Vector3D";
-import Matrix4 from "../../vox/math/Matrix4";
-import CameraBase from "../../vox/view/CameraBase";
+import IVector3D from "../../vox/math/IVector3D";
+import IMatrix4 from "../../vox/math/IMatrix4";
+import {IRenderCamera} from "../../vox/render/IRenderCamera";
 
 /**
  * free move and rotate the camera view
  */
 interface ICameraView {
-    setCamera(camera: CameraBase): void;
-    getCamera(): CameraBase;
+    setCamera(camera: IRenderCamera): void;
+    getCamera(): IRenderCamera;
     
     lookAtXYZUpYAxis(x: number, y: number, z: number): void;
-    lookAtUpYAxis(pv: Vector3D): void;
+    lookAtUpYAxis(pv: IVector3D): void;
     
     /**
      * rotate the camera view space
@@ -34,7 +34,7 @@ interface ICameraView {
      *                offsetRotV.y: rotate "dy" angle degree about the camera view space y-axis
      *                offsetRotV.z: rotate "dz" angle degree about the camera view space z-axis, it will be rolling the camera
      */
-    rotate(offsetRotV: Vector3D): void;
+    rotate(offsetRotV: IVector3D): void;
     /**
      * set the camera view space rotation angle degree
      * @param degreeX set rotatation angle degree about the camera view space x-axis
@@ -48,7 +48,7 @@ interface ICameraView {
      *             rotV.y: set rotatation angle degree about the camera view y-axis
      *             rotV.z: set rotatation angle degree about the camera view z-axis, it will be rolling the camera
      */
-    setRotation(rotV: Vector3D): void;
+    setRotation(rotV: IVector3D): void;
     /**
      * 
      * @returns get the rotatation of the camera view space
@@ -56,7 +56,7 @@ interface ICameraView {
      *               rotV.y: rotatation angle degree about the camera view space y-axis
      *               rotV.z: rotatation angle degree about the camera view space z-axis, it will be rolling the camera
      */
-    getRotation(rotV: Vector3D): void;
+    getRotation(rotV: IVector3D): void;
     
     /**
      * rotate "degree" angle degree about the camera view x-axis from current angle degree
@@ -91,12 +91,12 @@ interface ICameraView {
 
     setXYZ(x: number, y: number, z: number): void;
     moveXYZ(dx: number, dy: number, dz: number): void;
-    move(pv: Vector3D): void;
-    setPosition(pv: Vector3D): void;
-    getPosition(pv: Vector3D): void;
+    move(pv: IVector3D): void;
+    setPosition(pv: IVector3D): void;
+    getPosition(pv: IVector3D): void;
 
-    getViewMatrix(): Matrix4;
-    getViewInvMatrix(): Matrix4;
+    getViewMatrix(): IMatrix4;
+    getViewInvMatrix(): IMatrix4;
 
     update(): void;
     

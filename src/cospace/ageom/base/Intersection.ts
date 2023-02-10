@@ -4,7 +4,9 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
+interface IIntersection{
 
+}
 enum Intersection {
 	None = 0,
 	Hit = 1,

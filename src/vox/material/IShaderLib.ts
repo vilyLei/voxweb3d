@@ -1,10 +1,15 @@
 
-import { ShaderCodeUUID } from "./ShaderCodeUUID";
+// import { ShaderCodeUUID } from "./ShaderCodeUUID";
 import IShaderCodeObject from "./IShaderCodeObject";
 
 interface IShaderLib {
-    
-    getShaderCodeObjectWithUUID(uuid: ShaderCodeUUID): IShaderCodeObject;
-    hasShaderCodeObjectWithUUID(uuid: ShaderCodeUUID): boolean;
+    /**
+     * @param uuid the value from ShaderCodeUUID
+     */
+    getShaderCodeObjectWithUUID(uuid: string): IShaderCodeObject;
+    /**
+     * @param uuid the value from ShaderCodeUUID
+     */
+    hasShaderCodeObjectWithUUID(uuid: string): boolean;
 }
 export { IShaderLib };

@@ -6,13 +6,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-import UniformLine from "../../vox/material/code/UniformLine";
-import ShaderCompileInfo from "../../vox/material/code/ShaderCompileInfo";
+import IUniformLine from "../../vox/material/code/IUniformLine";
+import IShaderCompileInfo from "../../vox/material/code/IShaderCompileInfo";
 
 export default interface IShaderData {
 
     adaptationShaderVersion: boolean;
-    preCompileInfo: ShaderCompileInfo;
+    preCompileInfo: IShaderCompileInfo;
     getVSCodeStr(): string;
     getFSCodeStr(): string;
     getLayoutBit(): number;
@@ -20,7 +20,7 @@ export default interface IShaderData {
     getFragOutputTotal(): number;
     getAttriSizeList(): number[];
     getTexUniformNames(): string[];
-    getUniforms(): UniformLine[];
+    getUniforms(): IUniformLine[];
 
     haveCommonUniform(): boolean;
     getAttriNSList(): string[];

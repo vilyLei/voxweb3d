@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import Color4 from "../../vox/material/Color4";
+import IColor4 from "../../vox/material/IColor4";
 import IRenderProcess from "../../vox/render/IRenderProcess";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
@@ -141,7 +141,7 @@ interface IRendererScene {
     setClearUint24Color(colorUint24: number, alpha?: number): void;
     setClearRGBColor3f(pr: number, pg: number, pb: number): void;
     setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void;
-    setClearColor(color: Color4): void;
+    setClearColor(color: IColor4): void;
     setRenderToBackBuffer(): void;
     updateCamera(): void;
     createCamera(): IRenderCamera;

@@ -5,12 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
+// import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import IShaderCodeObject from "../../vox/material/IShaderCodeObject";
 import IShaderUniformData from "../../vox/material/IShaderUniformData";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
-import { ShaderTextureBuilder } from "../../vox/material/ShaderTextureBuilder";
-import { UniformComp } from "../../vox/material/component/UniformComp";
+import { IShaderTextureBuilder } from "../../vox/material/IShaderTextureBuilder";
+import { IUniformComp } from "../../vox/material/component/IUniformComp";
 
 interface IMaterialDecorator {
 
@@ -47,13 +47,13 @@ interface IMaterialDecorator {
      */
     glossinessEnabeld: boolean;
 
-    vertUniform?: UniformComp;
+    vertUniform?: IUniformComp;
     
     buildBufParams(): void;
     /**
      * user build textures list
      */
-    buildTextureList(builder: ShaderTextureBuilder): void;
+    buildTextureList(builder: IShaderTextureBuilder): void;
     buildShader(coder: IShaderCodeBuilder): void;
     /**
      * @returns local uniform data
@@ -63,7 +63,8 @@ interface IMaterialDecorator {
      * get shader code object uuid, it is defined in the system
      * @returns shader code object uuid
      */
-    getShaderCodeObjectUUID(): ShaderCodeUUID;
+    // getShaderCodeObjectUUID(): ShaderCodeUUID;
+    getShaderCodeObjectUUID(): string;
     /**
      * get custom shader code object
      * @returns shader code object

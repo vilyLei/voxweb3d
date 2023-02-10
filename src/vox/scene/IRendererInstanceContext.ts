@@ -8,11 +8,11 @@
 
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
-import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
+import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import IRenderProxy from "../../vox/render/IRenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
-import Color4 from "../material/Color4";
+import IColor4 from "../material/IColor4";
 
 interface IRendererInstanceContext {
 
@@ -90,7 +90,7 @@ interface IRendererInstanceContext {
     getViewportWidth(): number;
     getViewportHeight(): number;
 
-	useGlobalMaterial(material: IRenderMaterial, texUnlock?: boolean, materialUniformUpdate?: boolean): void;
+    useGlobalMaterial(material: IRenderMaterial, texUnlock?: boolean, materialUniformUpdate?: boolean): void;
     updateMaterialUniform(material: IRenderMaterial): void;
 
     /**
@@ -102,9 +102,9 @@ interface IRendererInstanceContext {
     setCameraParam(fov: number, near: number, far: number): void;
     setClearRGBColor3f(pr: number, pg: number, pb: number): void;
     setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void;
-    getClearRGBAColor4f(color4: Color4): void;
+    getClearRGBAColor4f(color4: IColor4): void;
     updateRenderBufferSize(): void;
-    vertexRenderBegin():void;
+    vertexRenderBegin(): void;
     /**
      * the function resets the renderer instance rendering status.
      * you should use it on the frame starting time.
@@ -115,4 +115,4 @@ interface IRendererInstanceContext {
     resetUniform(): void;
     runEnd(): void;
 }
-export {IRendererInstanceContext};
+export { IRendererInstanceContext };

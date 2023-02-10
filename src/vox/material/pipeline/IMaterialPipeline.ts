@@ -12,7 +12,7 @@ import { IMaterialPipe } from "./IMaterialPipe";
 
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import IRenderShaderUniform from "../../../vox/render/uniform/IRenderShaderUniform";
-import ShaderUniformData from "../../../vox/material/ShaderUniformData";
+import IShaderUniformData from "../../../vox/material/IShaderUniformData";
 import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
@@ -22,7 +22,7 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 interface IMaterialPipeline {
     uuid:string;
     /**
-     * @param shaderCodeUUID IShaderCodeObject instance uuid
+     * @param shaderCodeUUID IShaderCodeObject instance uuid, the value from ShaderCodeUUID
      * @param force default value is false
      */
     addShaderCodeWithUUID(shaderCodeUUID: ShaderCodeUUID, force?: boolean): void;
@@ -40,7 +40,7 @@ interface IMaterialPipeline {
     build(shaderBuilder: IShaderCodeBuilder): void;
     getTextures(shaderBuilder: IShaderCodeBuilder, outList: IRenderTexture[], pipetypes: MaterialPipeType[]): void;
     getSharedUniforms(): IRenderShaderUniform[];
-    getSelfUniformData(): ShaderUniformData;
+    getSelfUniformData(): IShaderUniformData;
     appendKeyString(key: string): void;
     getKeys(): string[];
     getKeysString(): string;

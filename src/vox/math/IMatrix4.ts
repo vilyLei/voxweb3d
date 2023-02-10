@@ -7,7 +7,7 @@
 
 import IVector3D from "../../vox/math/IVector3D";
 import Float32Data from "../../vox/base/Float32Data";
-import Matrix4 from "./Matrix4";
+// import Matrix4 from "./Matrix4";
 
 interface IMatrix4 extends Float32Data {
 

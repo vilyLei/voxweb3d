@@ -4,7 +4,9 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-
+interface ITextureProxyType {
+    
+}
 enum TextureProxyType {
     Default,
     /**

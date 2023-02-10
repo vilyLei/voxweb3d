@@ -8,7 +8,7 @@
  * 只能由渲染器对外提供
  */
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
-import ShaderUniform from "../../vox/material/ShaderUniform";
+import IShaderUniform from "../../vox/material/IShaderUniform";
 
 interface IShaderCodeWrapper {
 
@@ -17,7 +17,7 @@ interface IShaderCodeWrapper {
     getFragShaderCode(codeBuilder:IShaderCodeBuilder): string;
     getVertShaderCode(codeBuilder:IShaderCodeBuilder): string;
     
-    createSharedUniforms():ShaderUniform[];
+    createSharedUniforms():IShaderUniform[];
     getUniqueShaderName(): string;
 }
 export {IShaderCodeWrapper};

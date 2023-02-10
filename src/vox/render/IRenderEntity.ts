@@ -8,7 +8,7 @@
 import IVector3D from "../../vox/math/IVector3D";
 import IMatrix4 from "../../vox/math/IMatrix4";
 import IAABB from "../../vox/geom/IAABB";
-import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
+// import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderProxy from "../../vox/render/IRenderProxy";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
@@ -34,7 +34,7 @@ export default interface IRenderEntity {
    * 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMask, 默认只会有摄像机裁剪
    * the default value is SpaceCullingMask.CAMERA
    */
-  spaceCullMask: SpaceCullingMask;
+  spaceCullMask: number;
 
   /**
    * recorde a draw status, the default value is false

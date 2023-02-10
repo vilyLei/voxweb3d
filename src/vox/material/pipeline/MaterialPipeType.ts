@@ -5,6 +5,9 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
+interface IMaterialPipeType {
+
+}
 
 enum MaterialPipeType {
     

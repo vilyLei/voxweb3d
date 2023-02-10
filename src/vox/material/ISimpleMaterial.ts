@@ -6,12 +6,12 @@
 /***************************************************************************/
 
 import { ISimpleMaterialDecorator } from "./ISimpleMaterialDecorator";
-import { UniformComp } from "../../vox/material/component/UniformComp";
+import { IUniformComp } from "../../vox/material/component/IUniformComp";
 import IRenderMaterial from "../render/IRenderMaterial";
 
 interface ISimpleMaterial extends IRenderMaterial {
     
-    vertUniform: UniformComp;
+    vertUniform: IUniformComp;
     setDecorator(decorator: ISimpleMaterialDecorator): void;
     getDecorator(): ISimpleMaterialDecorator;
     destroy(): void;

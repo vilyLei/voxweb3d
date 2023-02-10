@@ -6,10 +6,9 @@
 /***************************************************************************/
 // 射线拾取器接口规范
 
-import Vector3D from "../../vox/math/Vector3D";
+import IVector3D from "../../vox/math/IVector3D";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
-import Entity3DNode from "../../vox/scene/Entity3DNode";
-import RaySelectedNode from "../../vox/scene/RaySelectedNode";
+import IRaySelectedNode from "./IRaySelectedNode";
 import IRenderer from "../../vox/scene/IRenderer";
 import IRenderingEntitySet from "./IRenderingEntitySet";
 
@@ -20,11 +19,11 @@ export default interface IRaySelector {
     setRenderer(renderer: IRenderer): void;
     // 不同的模式对应不同的射线(GPU)检测流程
     setRayTestMode(testMode: number): void;
-    setRay(rlpv: Vector3D, rltv: Vector3D): void;
-    getRay(out_rlpv: Vector3D, out_rltv: Vector3D): void;
+    setRay(rlpv: IVector3D, rltv: IVector3D): void;
+    getRay(out_rlpv: IVector3D, out_rltv: IVector3D): void;
     setCamera(cam: IRenderCamera): void;
-    getSelectedNode(): RaySelectedNode;
-    getSelectedNodes(): RaySelectedNode[];
+    getSelectedNode(): IRaySelectedNode;
+    getSelectedNodes(): IRaySelectedNode[];
     getSelectedNodesTotal(): number;
     run(): void;
     clear(): void;

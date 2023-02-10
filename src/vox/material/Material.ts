@@ -40,7 +40,7 @@ class MaterialShaderBuffer extends ShaderCodeBuffer {
         this.decorator.buildShader( this.m_coder );
     }
     getShaderCodeObjectUUID(): ShaderCodeUUID {
-        return this.decorator.getShaderCodeObjectUUID();
+        return this.decorator.getShaderCodeObjectUUID() as ShaderCodeUUID;
     }
     getShaderCodeObject(): IShaderCodeObject {
         return this.decorator.getShaderCodeObject();

@@ -18,7 +18,7 @@ export default interface IPlane extends IAGeomEntity {
 	 */
 	nv: IVector3D;
 	/**
-	 * 相交的状态
+	 * 相交的状态, 取值于 Intersection
 	 */
 	intersection: Intersection;
 	/**

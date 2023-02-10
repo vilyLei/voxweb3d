@@ -7,7 +7,7 @@
 // 只是用于视觉表现上的控制, 而和transform或者非渲染的逻辑无关
 // 一个 RODisplay 和一个 IRPODisplay一一对应
 
-import { DisplayRenderSign } from "../../vox/render/RenderConst";
+// import { DisplayRenderSign } from "../../vox/render/RenderConst";
 import IMatrix4 from "../../vox/math/IMatrix4";
 import IROVtxBuf from "../../vox/render/IROVtxBuf";
 import IROIVtxBuf from "../../vox/render/IROIVtxBuf";
@@ -64,7 +64,7 @@ interface IRODisplay {
     // ----------------------------------- 只能由渲染系统内部调用 ----------------------------[
     __$ruid: number;// = -1;        // 用于关联IRPODisplay对象, 默认值false
     __$rpuid: number;// = -1;       // 用于关联RPONode对象, 默认值false
-    __$$rsign: DisplayRenderSign;   // = DisplayRenderSign.NOT_IN_RENDERER;
+    __$$rsign: number;   // = DisplayRenderSign.NOT_IN_RENDERER;
     __$$runit: IRPODisplay;         // 用于关联IRPODisplay对象, 默认值为null
     // ----------------------------------- 只能由渲染系统内部调用 ----------------------------]
 }

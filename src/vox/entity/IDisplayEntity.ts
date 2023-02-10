@@ -8,7 +8,7 @@
 import IAABB from "../../vox/geom/IAABB";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import IMeshBase from "../../vox/mesh/IMeshBase";
-import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
+// import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRODisplay from "../../vox/display/IRODisplay";
 import IRenderEntity from "../../vox/render/IRenderEntity";
@@ -17,7 +17,7 @@ import IRenderEntity from "../../vox/render/IRenderEntity";
 export default interface IDisplayEntity extends IRenderEntity {
 
     // 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMask, 默认只会有摄像机裁剪
-    spaceCullMask: SpaceCullingMask; // the default value is SpaceCullingMask.CAMERA.
+    spaceCullMask: number; // the default value is SpaceCullingMask.CAMERA.
     // recorde a draw status
     drawEnabled: boolean;// = false;
     // mouse interaction enabled

@@ -7,10 +7,9 @@
 
 import IShdProgram from "../../../vox/material/IShdProgram";
 import IRenderShaderUniform from "../../../vox/render/uniform/IRenderShaderUniform";
-import RenderProxy from "../../../vox/render/RenderProxy";
+import IRenderProxy from "../../../vox/render/IRenderProxy";
 
-export default interface IUniformBuilder
-{
-    create( rc:RenderProxy,shdp:IShdProgram):IRenderShaderUniform;
-    getIDNS():string;
+export default interface IUniformBuilder {
+    create(rc: IRenderProxy, shdp: IShdProgram): IRenderShaderUniform;
+    getIDNS(): string;
 }

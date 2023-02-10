@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
-import AABB2D from "../geom/AABB2D";
+import IAABB2D from "../geom/IAABB2D";
 
 interface IRAdapterContext {
 
@@ -48,7 +48,7 @@ interface IRAdapterContext {
     getViewportY(): number;
     getViewportWidth(): number;
     getViewportHeight(): number;
-    getViewPortSize(): AABB2D;
+    getViewPortSize(): IAABB2D;
 
     getFBOWidth(): number;
     getFBOHeight(): number;
