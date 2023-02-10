@@ -152,7 +152,7 @@ export default class Billboard3D3TexMixEntity extends DisplayEntity {
         }
     }
     update(): void {
-        this.m_transfrom.update();
+        this.m_trs.update();
     }
     destroy(): void {
         this.m_currMaterial = null;

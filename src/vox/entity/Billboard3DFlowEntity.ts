@@ -229,7 +229,7 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
         }
     }
     update(): void {
-        this.m_transfrom.update();
+        this.m_trs.update();
     }
     isAwake(): boolean {
         return this.m_playOnce && this.m_currMaterial.getTime() < this.m_billMesh.getEndTime();

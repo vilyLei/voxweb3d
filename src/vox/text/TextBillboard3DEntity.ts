@@ -134,11 +134,11 @@ export default class TextBillboard3DEntity extends DisplayEntity {
         }
     }
     update(): void {
-        if(this.m_transfrom != null) {
+        if(this.m_trs != null) {
             if (this.m_dynamicEnbaled && this.m_mesh.isGeomDynamic()) {
                 this.setIvsParam(0, this.m_mesh.vtCount);
             }
-            this.m_transfrom.update();
+            this.m_trs.update();
         }
     }
     destroy(): void {

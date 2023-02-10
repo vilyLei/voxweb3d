@@ -130,7 +130,7 @@ export default class ClipsBillboard3DEntity extends DisplayEntity {
                 }
             }
         }
-        this.m_transfrom.update();
+        this.m_trs.update();
     }
     toString(): string {
         return "ClipsBillboard3DEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";

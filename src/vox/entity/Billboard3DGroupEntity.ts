@@ -148,7 +148,7 @@ export default class Billboard3DGroupEntity extends DisplayEntity {
         }
     }
     update(): void {
-        this.m_transfrom.update();
+        this.m_trs.update();
     }
     destroy(): void {
         this.m_currMaterial = null;
