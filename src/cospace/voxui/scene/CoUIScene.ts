@@ -54,7 +54,7 @@ class CoUIScene implements ICoUIScene {
 			crscene = this.m_crscene;
 			let stage = this.m_crscene.getStage3D();
 
-			crscene.addEventListener(CoRScene.EventBase.RESIZE, this, this.resize);
+			crscene.addEventListener(CoRScene.EventBase.RESIZE, this, this.resizeHandle);
 			let rparam = CoRScene.createRendererSceneParam();
 			rparam.cameraPerspectiveEnabled = false;
 			rparam.setAttriAlpha(false);
@@ -125,7 +125,7 @@ class CoUIScene implements ICoUIScene {
 	getRect(): IAABB2D {
 		return this.m_stageRect;
 	}
-	private resize(evt: any): void {
+	resize(): void {
 		
 		let st = this.m_rstage;
 		let uicamera = this.rscene.getCamera();
@@ -133,12 +133,19 @@ class CoUIScene implements ICoUIScene {
 		uicamera.update();
 
 		this.m_stageRect.setTo(0, 0, st.stageWidth, st.stageHeight);
+		// this.layout.update( this.m_stageRect );
+		this.updateLayout();
+	}
+	updateLayout(): void {
 		this.layout.update( this.m_stageRect );
 	}
 	run(): void {
 		if (this.rscene != null) {
 			this.rscene.run();
 		}
+	}
+	private resizeHandle(evt: any): void {
+		this.resize();
 	}
 }
 

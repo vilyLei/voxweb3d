@@ -33,8 +33,8 @@ import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 
 export default class DisplayEntity implements IDisplayEntity, IEntityTransform, ITransformEntity {
-    private static s_uid: number = 0;
-    private m_uid: number = 0;
+    private static s_uid = 0;
+    private m_uid = 0;
     protected m_trs: IROTransform = null;
     protected m_eventDispatcher: IEvtDispatcher = null;
     constructor(transform: IROTransform = null, sharedData: boolean = false) {
@@ -51,10 +51,10 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         }
         this.createBounds();
     }
-    private m_visible: boolean = true;
-    private m_drawEnabled: boolean = true;
-    private m_rcolorMask: number = 0;
-    private m_renderState: number = 0;
+    private m_visible = true;
+    private m_drawEnabled = true;
+    private m_rcolorMask = 0;
+    private m_renderState = 0;
     private m_display: RODisplay = null;
     protected m_mesh: IMeshBase = null;
     // 如果一个entity如果包含了多个mesh,则这个bounds就是多个mesh aabb 合并的aabb
@@ -73,8 +73,8 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
      * 第28位开始到29位总共二位存放renderer 载入状态 的相关信息
      * 第30位位存放是否渲染运行时排序
      */
-    __$rseFlag: number = RSEntityFlag.DEFAULT;
-    name: string = "DisplayEntity";
+    __$rseFlag = RSEntityFlag.DEFAULT;
+    name = "DisplayEntity";
     /**
      * 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMask, 默认只会有摄像机裁剪
      */
@@ -82,15 +82,15 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     /**
      * recorde a draw status
      */
-    drawEnabled: boolean = false;
+    drawEnabled = false;
     /**
      * mouse interaction enabled
      */
-    mouseEnabled: boolean = false;
+    mouseEnabled = false;
     /**
      * whether merge vertex geometry data for shader vertex buffer attribute data
      */
-    vbWholeDataEnabled: boolean = true;
+    vbWholeDataEnabled = true;
     /**
      * pipes type list for material pipeline
      */

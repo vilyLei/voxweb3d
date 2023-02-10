@@ -143,6 +143,7 @@ class NVNavigationUI {
 				console.log("prompt panel cancel...");
 			}
 		);
+		this.m_coUIScene.updateLayout();
 	}
 
 	private btnMouseUpListener(evt: any): void {

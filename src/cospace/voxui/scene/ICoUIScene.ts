@@ -36,6 +36,8 @@ interface ICoUIScene {
 	getRect(): IAABB2D;
 	addEntity(entity: IUISceneEntity, processid?: number): void;
 	removeEntity(entity: IUISceneEntity): void;
+	resize(): void;
+	updateLayout(): void;
 	run(): void;
 }
 
