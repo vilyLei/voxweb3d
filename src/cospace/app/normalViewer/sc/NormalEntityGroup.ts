@@ -155,6 +155,7 @@ class NormalEntityGroup extends NVEntityGroup {
 	}
 	private addEntityWithModel(model: CoGeomDataType, transform: Float32Array): NormalEntityNode {
 		if (model != null) {
+			console.log("addEntityWithModel(), model: ", model);
 			let node = new NormalEntityNode();
 			node.rsc = this.rsc;
 			node.transUI = this.transUI;
