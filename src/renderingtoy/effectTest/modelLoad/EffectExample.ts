@@ -17,6 +17,11 @@ import CameraZoomController from "../../../voxeditor/control/CameraZoomControlle
 import EffectMaterial from "./EffectMaterial";
 
 import { CoGeomDataType, CoDataFormat, CoGeomModelLoader } from "../../../cospace/app/common/CoGeomModelLoader";
+import DisplayEntity from "../../../vox/entity/DisplayEntity";
+import RendererState from "../../../vox/render/RendererState";
+import SurfaceNormalCalc from "../../../vox/geom/SurfaceNormalCalc";
+import DataMesh from "../../../vox/mesh/DataMesh";
+import Matrix4 from "../../../vox/math/Matrix4";
 
 export class EffectExample {
     constructor() { }
@@ -72,15 +77,20 @@ export class EffectExample {
         this.m_modelLoader.setListener(
             (models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat): void => {
                 console.log("loaded model.");
+                for (let i = 0; i < models.length; ++i) {
+                    this.createEntity(models[i], transforms != null ? transforms[i] : null);
+                }
             },
             (total): void => {
                 console.log("loaded model all.");
             });
-        
+
         let baseUrl: string = "static/private/";
         let url = baseUrl + "obj/base.obj";
         url = baseUrl + "obj/base4.obj";
         url = baseUrl + "fbx/base4.fbx";
+        // url = baseUrl + "fbx/hat_ok.fbx";
+        url = baseUrl + "obj/apple_01.obj";
         // url = "static/private/fbx/base3.fbx";
         // url = "static/assets/obj/apple_01.obj";
         // url = "static/private/fbx/handbag_err.fbx";
@@ -93,6 +103,46 @@ export class EffectExample {
     private loadModels(urls: string[], typeNS: string = ""): void {
         this.m_modelLoader.load(urls);
     }
+
+    protected createEntity(model: CoGeomDataType, transform: Float32Array = null, index: number = 0): void {
+        if (model != null) {
+            console.log("createEntity(), model: ", model);
+            let vs = model.vertices;
+            let uvs = model.uvsList[0];
+            let ivs = model.indices;
+            let trisNumber = ivs.length / 3;
+
+            let nvs = model.normals;
+            if (nvs == null) {
+                SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
+            }
+            let material = this.m_material = new EffectMaterial();
+            material.setTextureList([
+                this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
+            ]);
+
+            material.initializeByCodeBuf(true);
+            let mesh = new DataMesh();
+            mesh.vbWholeDataEnabled = false;
+            mesh.setVS(vs);
+            mesh.setUVS(uvs);
+            mesh.setNVS(nvs);
+            mesh.setIVS(ivs);
+            mesh.setVtxBufRenderData(material);
+
+            mesh.initialize();
+
+            let entity = new DisplayEntity();
+            entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+            entity.setMesh(mesh);
+            entity.setMaterial(material);
+            entity.getTransform().setParentMatrix(new Matrix4(transform));
+            entity.setScaleXYZ(165.0, 165.0, 165.0);
+            this.m_rscene.addEntity(entity);
+            entity.update();
+        }
+    }
+
     private m_material: EffectMaterial = null;
     private initObjs(): void {
 
