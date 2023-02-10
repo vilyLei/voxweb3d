@@ -138,6 +138,8 @@ export class EffectExample {
             entity.setMaterial(material);
             entity.getTransform().setParentMatrix(new Matrix4(transform));
             entity.setScaleXYZ(165.0, 165.0, 165.0);
+            // entity.setScale3(new Vector3D( 165.0, 165.0, 165.0 ));
+
             this.m_rscene.addEntity(entity);
             entity.update();
         }

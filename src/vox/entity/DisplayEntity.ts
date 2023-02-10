@@ -35,18 +35,18 @@ import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline
 export default class DisplayEntity implements IDisplayEntity, IEntityTransform, ITransformEntity {
     private static s_uid: number = 0;
     private m_uid: number = 0;
-    protected m_transfrom: IROTransform = null;
+    protected m_trs: IROTransform = null;
     protected m_eventDispatcher: IEvtDispatcher = null;
     constructor(transform: IROTransform = null, sharedData: boolean = false) {
         this.m_uid = DisplayEntity.s_uid++;
         if (transform == null) {
-            this.m_transfrom = ROTransform.Create();
+            this.m_trs = ROTransform.Create();
         }
         else {
             if(sharedData) {
-                this.m_transfrom = ROTransform.Create(null,transform.getFS32Data());
+                this.m_trs = ROTransform.Create(null,transform.getFS32Data());
             }else {
-                this.m_transfrom = transform;
+                this.m_trs = transform;
             }
         }
         this.createBounds();
@@ -263,11 +263,11 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         return this.m_visible;
     }
     getTransform(): IROTransform {
-        return this.m_transfrom;
+        return this.m_trs;
     }
     copyPositionFrom(entity: DisplayEntity): void {
         if (entity != null) {
-            this.m_transfrom.copyPositionFrom(entity.getTransform());
+            this.m_trs.copyPositionFrom(entity.getTransform());
         }
     }
     copyMeshFrom(entity: IDisplayEntity): void {
@@ -283,7 +283,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     copyTransformFrom(entity: IDisplayEntity): void {
         let pe: DisplayEntity = entity as DisplayEntity;
         if (pe != null) {
-            this.m_transfrom.copyFrom(pe.m_transfrom);
+            this.m_trs.copyFrom(pe.m_trs);
         }
     }
     private initDisplay(m: IMeshBase): void {
@@ -314,7 +314,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
                         this.createDisplay();
                     }
                     if (this.m_display != null) {
-                        this.m_display.setTransform(this.m_transfrom.getMatrix());
+                        this.m_display.setTransform(this.m_trs.getMatrix());
                         this.initDisplay(m);
                     }
                     //console.log("DisplayEntity::setMesh(), "+this.m_display.toString()+",m.drawMode: "+m.drawMode);
@@ -330,7 +330,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         }
         else if (this.m_display != null && this.m_display.__$ruid > -1) {
             if (this.m_mesh != m && m != null) {
-                this.m_transfrom.updatedStatus |= 2;
+                this.m_trs.updatedStatus |= 2;
                 this.m_mesh.__$detachVBuf(this.m_display.vbuf);
                 this.m_mesh.__$detachIVBuf(this.m_display.ivbuf);
                 this.m_mesh.__$detachThis();
@@ -407,7 +407,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         if (m != null) {
             if (this.m_display == null) {
                 this.m_display = RODisplay.Create();
-                this.m_display.setTransform(this.m_transfrom.getMatrix());
+                this.m_display.setTransform(this.m_trs.getMatrix());
 
                 this.m_display.visible = this.m_visible && this.m_drawEnabled;
             }
@@ -430,7 +430,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         return this.m_display;
     }
     getInvMatrix(): IMatrix4 {
-        return this.m_transfrom.getInvMatrix();
+        return this.m_trs.getInvMatrix();
     }
     /**
      * 获取当前 entity 的 local space to world space matrix
@@ -438,10 +438,10 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
      * @returns local space to world space matrix
      */
     getMatrix(flag: boolean = true): IMatrix4 {
-        return this.m_transfrom.getMatrix(flag);
+        return this.m_trs.getMatrix(flag);
     }
     getToParentMatrix(): IMatrix4 {
-        return this.m_transfrom.getToParentMatrix();
+        return this.m_trs.getToParentMatrix();
     }
     setRenderColorMask(rt: number): void {
         this.m_rcolorMask = rt;
@@ -521,45 +521,45 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     }
     getUid(): number { return this.m_uid; }
     setXYZ(px: number, py: number, pz: number): void {
-        this.m_transfrom.setXYZ(px, py, pz);
+        this.m_trs.setXYZ(px, py, pz);
     }
     offsetPosition(pv: Vector3D): void {
-        this.m_transfrom.offsetPosition(pv);
+        this.m_trs.offsetPosition(pv);
     }
     setPosition(pv: Vector3D): void {
-        this.m_transfrom.setPosition(pv);
+        this.m_trs.setPosition(pv);
     }
     getPosition(pv: Vector3D): Vector3D {
-        this.m_transfrom.getPosition(pv);
+        this.m_trs.getPosition(pv);
         return pv;
     }
     setRotation3(rotV: Vector3D): void {
-        this.m_transfrom.setRotationXYZ(rotV.x, rotV.y, rotV.z);
+        this.m_trs.setRotationXYZ(rotV.x, rotV.y, rotV.z);
     }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
-        this.m_transfrom.setRotationXYZ(rx, ry, rz);
+        this.m_trs.setRotationXYZ(rx, ry, rz);
     }
-    setScale3(scaleV: Vector3D): void {
-        this.m_transfrom.setScaleXYZ(scaleV.x, scaleV.y, scaleV.z);
+    setScale3(sv: Vector3D): void {
+        this.m_trs.setScaleXYZ(sv.x, sv.y, sv.z);
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
-        this.m_transfrom.setScaleXYZ(sx, sy, sz);
+        this.m_trs.setScaleXYZ(sx, sy, sz);
     }
 
     getRotationXYZ(pv: Vector3D): void {
-        this.m_transfrom.getRotationXYZ(pv);
+        this.m_trs.getRotationXYZ(pv);
     }
     getScaleXYZ(pv: Vector3D): void {
-        this.m_transfrom.getScaleXYZ(pv);
+        this.m_trs.getScaleXYZ(pv);
     }
     localToGlobal(pv: Vector3D): void {
-        if (this.m_transfrom != null) {
-            this.m_transfrom.localToGlobal(pv);
+        if (this.m_trs != null) {
+            this.m_trs.localToGlobal(pv);
         }
     }
     globalToLocal(pv: Vector3D): void {
-        if (this.m_transfrom != null) {
-            this.m_transfrom.globalToLocal(pv);
+        if (this.m_trs != null) {
+            this.m_trs.globalToLocal(pv);
         }
     }
     //private static s_boundsInVS: Float32Array = new Float32Array(24);
@@ -592,7 +592,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         return this.drawEnabled && this.m_visible && this.m_display != null && this.m_display.__$ruid > -1;
     }
     updateBounds(): void {
-        if (this.m_transfrom != null) {
+        if (this.m_trs != null) {
             this.m_transStatus = ROTransform.UPDATE_TRANSFORM;
 
             if (this.m_mesh != null && this.m_localBounds != this.m_mesh.bounds) {
@@ -631,17 +631,17 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         let bounds = this.m_localBounds;
         if (this.m_transStatus > ROTransform.UPDATE_POSITION || this.m_localBuondsVer != bounds.version) {
 
-            let st: number = this.m_transfrom.updateStatus;
-            this.m_transfrom.update();
+            let st: number = this.m_trs.updateStatus;
+            this.m_trs.update();
 
-            if (this.m_localBuondsVer != bounds.version || st != this.m_transfrom.updateStatus) {
+            if (this.m_localBuondsVer != bounds.version || st != this.m_trs.updateStatus) {
 
                 this.m_localBuondsVer = bounds.version;
                 this.updateLocalBoundsVS(bounds);
 
                 let in_vs = this.m_lBoundsVS;
                 let out_vs = DE.s_boundsOutVS;
-                this.m_transfrom.getMatrix().transformVectors(in_vs, 24, out_vs);
+                this.m_trs.getMatrix().transformVectors(in_vs, 24, out_vs);
                 this.m_globalBounds.reset();
                 this.m_globalBounds.addFloat32Arr(out_vs);
                 this.m_globalBounds.update();
@@ -650,10 +650,10 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         else {
             DE.s_prePos.setXYZ(0, 0, 0);
             DE.s_pos.setXYZ(0, 0, 0);
-            let matrix = this.m_transfrom.getMatrix(false);
+            let matrix = this.m_trs.getMatrix(false);
             matrix.transformVector3Self(DE.s_prePos);
-            this.m_transfrom.update();
-            matrix = this.m_transfrom.getMatrix(false);
+            this.m_trs.update();
+            matrix = this.m_trs.getMatrix(false);
             matrix.transformVector3Self(DE.s_pos);
             DE.s_pos.subtractBy(DE.s_prePos);
             let gbounds = this.m_globalBounds;
@@ -665,16 +665,16 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     }
     update(): void {
 
-        if (this.m_transfrom.updatedStatus > this.m_transStatus) this.m_transStatus = this.m_transfrom.updatedStatus;
+        if (this.m_trs.updatedStatus > this.m_transStatus) this.m_transStatus = this.m_trs.updatedStatus;
         if (this.m_transStatus != ROTransform.UPDATE_NONE) {
             if (this.m_mesh != null && this.m_globalBounds != null) {
                 this.updateGlobalBounds();
             }
             else {
-                this.m_transfrom.update();
+                this.m_trs.update();
             }
             this.m_transStatus = ROTransform.UPDATE_NONE;
-            this.m_transfrom.updatedStatus = this.m_transStatus;
+            this.m_trs.updatedStatus = this.m_transStatus;
         }
     }
     destroy(): void {
@@ -684,15 +684,15 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
             this.m_eventDispatcher.destroy();
             this.m_eventDispatcher = null;
         }
-        if (this.m_transfrom != null && this.isFree()) {
+        if (this.m_trs != null && this.isFree()) {
             // 这里要保证其在所有的process中都被移除
             if (this.m_display != null) {
                 this.m_mesh.__$detachVBuf(this.m_display.vbuf);
                 RODisplay.Restore(this.m_display);
                 this.m_display = null;
             }
-            ROTransform.Restore(this.m_transfrom as ROTransform);
-            this.m_transfrom = null;
+            ROTransform.Restore(this.m_trs as ROTransform);
+            this.m_trs = null;
             if (this.m_mesh != null) {
                 this.m_mesh.__$detachThis();
                 this.m_mesh = null;
