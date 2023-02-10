@@ -10,14 +10,14 @@ class CoGeomModelLoader {
 
 	constructor() {
 	}
-	
+
 	setListener(loadedCallback: (models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat) => void, loadedAllCallback: (total: number) => void): void {
 		this.m_loadedCall = loadedCallback;
 		this.m_loadedAllCall = loadedAllCallback;
 	}
 	load(urls: string[], typeNS: string = ""): void {
 		if (urls != null && urls.length > 0) {
-			
+
 			this.m_coapp.initialize(null, true);
 			let purls = urls.slice(0);
 			this.m_coapp.deferredInit((): void => {
@@ -67,24 +67,25 @@ class CoGeomModelLoader {
 		}
 	}
 	private loadGeomModel(url: string, format: CoDataFormat): void {
-		
+
 		let ins = this.m_coapp;
 		if (ins != null) {
-			this.m_loadTotal++;
 			let unit = ins.getCPUDataByUrlAndCallback(
 				url,
 				format,
 				(unit: CoGeomDataUnit, status: number): void => {
 					if (format != CoDataFormat.FBX) {
 						this.loadedModels(unit.data.models, unit.data.transforms, format);
+						this.m_loadTotal++;
+						this.loadedModelFromUnit(unit, status);
 					}
-					this.loadedModelFromUnit(unit, status);
 				},
 				true
 			);
 			if (format == CoDataFormat.FBX) {
 				unit.data.modelReceiver = (models: CoGeomDataType[], transforms: Float32Array[], index: number, total: number): void => {
 					// console.log("XXX: ", index, ",", total);
+					this.m_loadTotal++;
 					this.loadedModels(models, transforms, format);
 					this.loadedModelFromUnit(unit, 0);
 				};
@@ -92,7 +93,7 @@ class CoGeomModelLoader {
 		}
 	}
 	private loadedModels(models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat): void {
-		if(this.m_loadedCall != null) {
+		if (this.m_loadedCall != null) {
 			this.m_loadedCall(models, transforms, format);
 		}
 	}
@@ -105,11 +106,11 @@ class CoGeomModelLoader {
 		}
 	}
 	destroy(): void {
-		
+
 		this.m_loadedCall = null;
-		if(this.m_coapp != null) {
+		if (this.m_coapp != null) {
 			// todo
-			
+
 			this.m_coapp = null;
 		}
 	}
