@@ -23,6 +23,27 @@ function mkdirsSync(dirname) {
     }
 }
 
+let emptyFileTxt = `export default interface IRPONode {
+    uid: number;
+    index: number;
+};
+`;
+function writeCurrFile(srcUrl, dstUrl) {
+    if (srcUrl.indexOf("\\IRPONode.ts") < 0) {
+        // return true;
+        fs.copyFileSync(srcUrl, dstUrl);
+    } else {
+        const opt = {
+            flag: 'w'//, // a：追加写入；w：覆盖写入
+        }
+        fs.writeFile(dstUrl, emptyFileTxt, opt, (err) => {
+            if (err) {
+                console.error(err)
+            }
+        })
+    }
+    // return false;
+}
 function copyLib(filePath, dstDir, rename) {
     let path = filePath + "";
     // console.log("find path: ", path);
@@ -49,7 +70,9 @@ function copyLib(filePath, dstDir, rename) {
     //     console.log("OOOOO filePath: ", filePath);
     // }
     url = dir + fileName;
-    fs.copyFileSync(path, dir + fileName);
+    writeCurrFile(path, dir + fileName);
+
+
     console.log("copy finish url: ", url);
 }
 let total = 0;
@@ -80,23 +103,23 @@ function test(url) {
     if (url.indexOf(keyStr) > 0) return false;
     keyStr = "\\cospace\\demo\\";
     if (url.indexOf(keyStr) > 0) return false;
-    
+
     keyStr = "\\cospace\\schedule\\";
     if (url.indexOf(keyStr) > 0) return false;
 
     // keyStr = "\\vox\\scene\\block\\";
     // if (url.indexOf(keyStr) > 0) return false;
 
-    
+
     // keyStr = "\\render\\\\";
     // if (url.indexOf(keyStr) > 0) return false;
 
     keyStr = "\\vox\\motion\\";
     if (url.indexOf(keyStr) > 0) return false;
 
-    keyStr = "\\render\\IRPONode.";
-    if (url.indexOf(keyStr) > 0) return false;
-        
+    // keyStr = "\\render\\IRPONode.";
+    // if (url.indexOf(keyStr) > 0) return false;
+
     keyStr = "\\render\\IRPOUnit.";
     if (url.indexOf(keyStr) > 0) return false;
     keyStr = "\\render\\IVertexRenderObj.";
