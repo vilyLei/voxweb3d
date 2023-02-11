@@ -27,6 +27,7 @@ export class DemoParamCtrlUI {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private m_ui = new ParamCtrlUI();
+    private m_axis: Axis3DEntity = null;
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
@@ -55,9 +56,10 @@ export class DemoParamCtrlUI {
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
-            let axis: Axis3DEntity = new Axis3DEntity();
+            let axis = new Axis3DEntity();
             axis.initialize(300.0);
             this.m_rscene.addEntity(axis);
+            this.m_axis = axis;
 
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
             this.m_statusDisp.initialize();
@@ -86,11 +88,12 @@ export class DemoParamCtrlUI {
         let ui = this.m_ui;
         ui.addItem(item);
     }
-    private createProgressBtn(name: string, uuid: string, progress: number, callback: ItemCallback): void {
+    private createProgressBtn(name: string, uuid: string, progress: number, callback: ItemCallback, colorPick?: boolean): void {
         let item: CtrlParamItem = {
             type: "progress", name: name, uuid: uuid,
             progress: progress,
             visibleAlways: true,
+            colorPick: colorPick,
             callback: callback            
         };
         
@@ -98,14 +101,15 @@ export class DemoParamCtrlUI {
         ui.addItem(item);
     }
     
-    private createValueBtn(name: string, uuid: string, value: number, minValue: number, maxValue: number, callback: ItemCallback): void {
+    private createValueBtn(name: string, uuid: string, value: number, minValue: number, maxValue: number, callback: ItemCallback, colorPick?: boolean): void {
         let item: CtrlParamItem = {
             type: "number_value", name: name, uuid: uuid,
             value: value,
             minValue: minValue,
             maxValue: maxValue,
             visibleAlways: true,
-            callback: callback            
+            colorPick: colorPick,
+            callback: callback
         };
         
         let ui = this.m_ui;
@@ -116,13 +120,19 @@ export class DemoParamCtrlUI {
         ui.initialize(this.m_rscene, true);
         this.m_ruisc = ui.ruisc;
         console.log("initUI --------------------------------------");
-        this.createSelectBtn("透明测试", "alphaTest", "ON", "OFF",(type: string, uuid: string, values: number[], flag: boolean): void => {
+        this.createSelectBtn("透明测试", "alphaTest", "ON", "OFF",(type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean): void => {
             console.log("flag: ", flag);
         });
-        this.createProgressBtn("浓度比", "density", 0.3,(type: string, uuid: string, values: number[], flag: boolean): void => {
+        this.createProgressBtn("缩放值", "scale", 0.3,(type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean): void => {
             console.log("progress: ", values[0]);
+            let s = values[0];
+            this.m_axis.setScaleXYZ(s,s,s);
+            this.m_axis.update();
         });
         this.createValueBtn("体重", "weight", 50, 10, 70,(type: string, uuid: string, values: number[], flag: boolean): void => {
+            console.log("value: ", values[0]);
+        });
+        this.createValueBtn("长度", "width", 500, 100, 700,(type: string, uuid: string, values: number[], flag: boolean): void => {
             console.log("value: ", values[0]);
         });
         ui.alignBtns();

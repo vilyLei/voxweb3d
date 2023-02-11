@@ -10,26 +10,17 @@ import ProgressDataEvent from "../../vox/event/ProgressDataEvent";
 import CanvasTextureTool from "../../orthoui/assets/CanvasTextureTool";
 import SelectionEvent from "../../vox/event/SelectionEvent";
 import SelectionBar from "../../orthoui/button/SelectionBar";
-//import IPBRMaterial from "../material/IPBRMaterial";
-// import IPBRMaterial from "../material/IPBRMaterial";
 import RGBColorPanel, { RGBColoSelectEvent } from "../../orthoui/panel/RGBColorPanel";
 import Color4 from "../../vox/material/Color4";
 import Vector3D from "../../vox/math/Vector3D";
-// import IPBRUI from "./IPBRUI";
-// import { ColorParamUnit } from "./PBRParamUnit";
-// import IPBRParamEntity from "./IPBRParamEntity";
-// import ColorRectImgButton from "../../orthoui/button/ColorRectImgButton";
-// import RendererState from "../../vox/render/RendererState";
 import MathConst from "../../vox/math/MathConst";
-// import MaterialBase from "../../vox/material/MaterialBase";
 import AABB2D from "../../vox/geom/AABB2D";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
-// import { CommonMaterialContext } from "../../materialLab/base/CommonMaterialContext";
 
 // ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false
 // ns: string, uuid: string, progress: number, visibleAlways: boolean = false
 // ns: string, uuid: string, value: number, minValue: number, maxValue: number, visibleAlways: boolean = false
-type ItemCallback = (type: string, uuid: string, values: number[], flag: boolean) => void;
+type ItemCallback = (type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean) => void;
 interface CtrlParamItem {
 
     name: string;
@@ -135,7 +126,6 @@ export default class ParamCtrlUI {
         subScene.enableMouseEvent(true);
         this.ruisc = subScene;
         let stage = this.m_rscene.getStage3D();
-        //this.ruisc.getCamera().translationXYZ(this.m_rscene.getViewWidth() * 0.5, this.m_rscene.getViewHeight() * 0.5, 1500.0);
         this.ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
         this.ruisc.getCamera().update();
 
@@ -149,17 +139,17 @@ export default class ParamCtrlUI {
         this.initCtrlBars();
 
     }
-    private m_btnSize: number = 30;
-    private m_bgLength: number = 200.0;
-    private m_btnPX: number = 122.0;
-    private m_btnPY: number = 10.0;
-    private m_btnYSpace: number = 4.0;
+    private m_btnSize = 30;
+    private m_bgLength = 200.0;
+    private m_btnPX = 122.0;
+    private m_btnPY = 10.0;
+    private m_btnYSpace = 4.0;
     private m_pos = new Vector3D();
     private m_selectPlane: Plane3DEntity = null;
 
     private m_btns: any[] = [];
     private m_menuBtn: SelectionBar = null;
-    private m_minBtnX: number = 10000;
+    private m_minBtnX = 10000;
     private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
 
         let selectBar = new SelectionBar();
@@ -184,7 +174,7 @@ export default class ParamCtrlUI {
     }
     private createProgressBtn(ns: string, uuid: string, progress: number, visibleAlways: boolean = false): ProgressBar {
 
-        let proBar: ProgressBar = new ProgressBar();
+        let proBar = new ProgressBar();
         proBar.uuid = uuid;
         proBar.initialize(this.ruisc, ns, this.m_btnSize, this.m_bgLength);
         proBar.setProgress(progress, false);
@@ -202,7 +192,7 @@ export default class ParamCtrlUI {
 
     private createValueBtn(ns: string, uuid: string, value: number, minValue: number, maxValue: number, visibleAlways: boolean = false): ProgressBar {
 
-        let proBar: ProgressBar = new ProgressBar();
+        let proBar = new ProgressBar();
         proBar.uuid = uuid;
         proBar.initialize(this.ruisc, ns, this.m_btnSize, this.m_bgLength);
         proBar.minValue = minValue;
@@ -253,25 +243,6 @@ export default class ParamCtrlUI {
         this.ruisc.addEntity(this.m_selectPlane);
         this.m_selectPlane.setVisible(false);
 
-        // this.metalBtn = this.createProgressBtn("metal", "metal", 0.5);
-        // this.roughBtn = this.createProgressBtn("roughness", "rough", 0.5);
-        // this.noiseBtn = this.createProgressBtn("noise", "noise", 0.07);
-        // this.reflectionBtn = this.createProgressBtn("reflection", "reflection", 0.5);
-
-        // this.sideBtn = this.createValueBtn("side", "side", 1.0, 0.1, 30.0);
-        // this.surfaceBtn = this.createValueBtn("surface", "surface", 1.0, 0.1, 30.0);
-        // this.scatterBtn = this.createValueBtn("scatter", "scatter", 1.0, 0.1, 128.0);
-        // this.toneBtn = this.createValueBtn("tone", "tone", 2.0, 0.1, 128.0);
-
-        // this.absorbBtn = this.createSelectBtn("absorb", "absorb", "ON", "OFF", false);
-        // this.vtxNoiseBtn = this.createSelectBtn("vtxNoise", "vtxNoise", "ON", "OFF", false);
-
-        // this.f0ColorBtn = this.createValueBtn("F0Color", "F0Color", 1.0, 0.01, 32.0);
-        // this.albedoBtn = this.createValueBtn("albedo", "albedo", 0.2, 0.01, 5.0);
-        // this.ambientBtn = this.createValueBtn("ambient", "ambient", 0.1, 0.01, 1.0);
-        // this.specularBtn = this.createValueBtn("specular", "specular", 1.0, 0.01, 10.0);
-        // this.outlineBtn = this.createValueBtn("outline", "outline", 0.1, 0.01, 1.0);
-
         this.alignBtns();
         // console.log("XXXXXXXXXXXX this.m_minBtnX: ", this.m_minBtnX);
         let flag = RendererDevice.IsMobileWeb();
@@ -301,17 +272,20 @@ export default class ParamCtrlUI {
                     t.maxValue = t.maxValue ? t.maxValue : 10.0;
                     obj.btn = this.createValueBtn(t.name, t.uuid, t.value, t.minValue, t.maxValue);
                     map.set(obj.uuid, obj);
+                    item.callback(item.type, item.uuid, [t.value], t.flag);
                     break;
                 case "progress":
                     t.progress = t.progress ? t.progress : 0.0;
                     obj.btn = this.createProgressBtn(t.name, t.uuid, t.progress, visibleAlways);
                     map.set(obj.uuid, obj);
+                    item.callback(item.type, item.uuid, [t.progress], t.flag);
                     break;
                 case "status":
                 case "status_select":
                     t.flag = t.flag ? t.flag : false;
                     obj.btn = this.createSelectBtn(t.name, t.uuid, t.selectNS, t.deselectNS, t.flag, visibleAlways);
                     map.set(obj.uuid, obj);
+                    item.callback(item.type, item.uuid, [], t.flag);
                     break;
                 default:
                     break;
@@ -363,9 +337,9 @@ export default class ParamCtrlUI {
         if (this.rgbPanel != null) this.rgbPanel.close();
     }
     alignBtns(): void {
-        let pos: Vector3D = new Vector3D();
+        let pos = new Vector3D();
         let dis = 5 - this.m_minBtnX;
-        for (let i: number = 0; i < this.m_btns.length; ++i) {
+        for (let i = 0; i < this.m_btns.length; ++i) {
             this.m_btns[i].getPosition(pos);
             pos.x += dis;
             this.m_btns[i].setPosition(pos);
