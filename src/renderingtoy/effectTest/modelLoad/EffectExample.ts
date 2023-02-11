@@ -91,14 +91,8 @@ export class EffectExample {
         url = baseUrl + "fbx/base4.fbx";
         // url = baseUrl + "fbx/hat_ok.fbx";
         url = baseUrl + "obj/apple_01.obj";
-        // url = "static/private/fbx/base3.fbx";
-        // url = "static/assets/obj/apple_01.obj";
-        // url = "static/private/fbx/handbag_err.fbx";
-        // url = "static/private/fbx/hat_hasNormal.fbx";
-        // url = "static/private/fbx/hat_hasNotNormal.fbx";
-        // url = "static/private/ctm/errorNormal.ctm";
         console.log("initModel() init...");
-        this.loadModels([url])
+        this.loadModels([url]);
     }
     private loadModels(urls: string[], typeNS: string = ""): void {
         this.m_modelLoader.load(urls);
@@ -141,7 +135,6 @@ export class EffectExample {
             // entity.setScale3(new Vector3D( 165.0, 165.0, 165.0 ));
 
             this.m_rscene.addEntity(entity);
-            entity.update();
         }
     }
 
