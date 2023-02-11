@@ -1,8 +1,8 @@
 import IRendererScene from "../../vox/scene/IRendererScene";
 import IRendererSceneNode from "./IRendererSceneNode";
+import IRendererSceneGraphStatus from "./IRendererSceneGraphStatus";
 
-export default interface IRendererSceneGraph {
-
+export default interface IRendererSceneGraph extends IRendererSceneGraphStatus {
     clear(): void;
     addSceneNode(node: IRendererSceneNode, index?: number): void;
     getNodesTotal(): number;
