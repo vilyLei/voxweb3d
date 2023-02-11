@@ -383,7 +383,7 @@
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
- import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
@@ -444,6 +444,8 @@
 //  import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
 
 // import {DemoUITexAtlas as Demo} from "./orthoui/demos/DemoUITexAtlas";
+
+ import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////     distributed runtime     ////////////s//////////////
