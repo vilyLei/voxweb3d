@@ -42,7 +42,8 @@ export class DemoShaderMaterial {
 		let url2 = "static/cospace/engine/uiInteract/CoUIInteraction.umd.js";
 		let url3 = "static/cospace/comesh/CoMesh.umd.js";
 		let url4 = "static/cospace/coentity/CoEntity.umd.js";
-		let url5 = "static/cospace/coMaterial/CoMaterial.umd.js";
+		let url5 = "static/cospace/coMaterial/CoMaterial.umd.js";		
+		let url6 = "static/cospace/math/CoMath.umd.js";
 
 		let mouseInteractML = new ModuleLoader(2, (): void => {
 			this.initMouseInteraction();
@@ -58,7 +59,8 @@ export class DemoShaderMaterial {
 				})
 					.load(url3)
 					.load(url4)
-					.load(url5);
+					.load(url5)
+					.load(url6);
 			}
 		})
 			.addLoader(mouseInteractML)
@@ -110,19 +112,23 @@ export class DemoShaderMaterial {
 
             mesh.initialize();
 
+			let matrix4 = CoRScene.createMat4(transform);
             let entity =CoEntity.createDisplayEntity();
             entity.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
             entity.setMesh(mesh);
             entity.setMaterial(material);
-            entity.getTransform().setParentMatrix(CoRScene.createMat4(transform));
-            entity.setScaleXYZ(165.0, 165.0, 165.0);
+            entity.getTransform().setParentMatrix(matrix4);
+            // entity.setScaleXYZ(165.0, 165.0, 165.0);
             // entity.setScale3(new Vector3D( 165.0, 165.0, 165.0 ));
 
             this.m_rscene.addEntity(entity);
+			
+			this.m_layouter.layoutAppendItem(entity, matrix4);
             // entity.update();
         }
     }
     private initModel(): void {
+		
         this.m_modelLoader.setListener(
             (models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat): void => {
                 console.log("loaded model.");
@@ -132,6 +138,7 @@ export class DemoShaderMaterial {
             },
             (total): void => {
                 console.log("loaded model all.");
+				this.m_layouter.layoutUpdate();
             });
 
         let baseUrl = "static/private/";

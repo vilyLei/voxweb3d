@@ -39,7 +39,7 @@ class CoEntityLayouter {
 		this.m_entities.push(entity);
 		this.m_transforms.push(transform);
 	}	
-	layoutUpdate(rotationEnabled: boolean, fixSize: number = 300.0): void {
+	layoutUpdate(rotationEnabled: boolean = false, fixSize: number = 300.0): void {
 		
 		this.rotationEnabled = rotationEnabled;
 		for (let k = 0; k < this.m_entities.length; ++k) {

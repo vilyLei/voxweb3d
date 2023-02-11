@@ -6,12 +6,8 @@ import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
 import { ICoRScene } from "../../../voxengine/ICoRScene";
 import { ICoUI } from "../../../voxui/ICoUI";
 import IRendererScene from "../../../../vox/scene/IRendererScene";
-import IMouseEventEntity from "../../../../vox/entity/IMouseEventEntity";
 import IRenderEntity from "../../../../vox/render/IRenderEntity";
 import { NormalCtrlPanel } from "../ui/NormalCtrlPanel";
-import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../app/CoSpaceAppData";
-import IMatrix4 from "../../../../vox/math/IMatrix4";
-import { NormalEntityLayout } from "./NormalEntityLayout";
 import IColor4 from "../../../../vox/material/IColor4";
 
 declare var CoUI: ICoUI;
