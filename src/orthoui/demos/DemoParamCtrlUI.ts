@@ -16,6 +16,7 @@ import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 
 import RendererSubScene from "../../vox/scene/RendererSubScene";
 import { ItemCallback, CtrlParamItem, ParamCtrlUI } from "../usage/ParamCtrlUI";
+import RendererSceneGraph from "../../vox/scene/RendererSceneGraph";
 
 export class DemoParamCtrlUI {
     constructor() { }
@@ -26,6 +27,7 @@ export class DemoParamCtrlUI {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
+    private m_grap = new RendererSceneGraph();
     private m_ui = new ParamCtrlUI();
     private m_axis: Axis3DEntity = null;
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
@@ -82,9 +84,9 @@ export class DemoParamCtrlUI {
             selectNS: selectNS, deselectNS: deselectNS,
             flag: false,
             visibleAlways: true,
-            callback: callback            
+            callback: callback
         };
-        
+
         let ui = this.m_ui;
         ui.addItem(item);
     }
@@ -94,13 +96,13 @@ export class DemoParamCtrlUI {
             progress: progress,
             visibleAlways: true,
             colorPick: colorPick,
-            callback: callback            
+            callback: callback
         };
-        
+
         let ui = this.m_ui;
         ui.addItem(item);
     }
-    
+
     private createValueBtn(name: string, uuid: string, value: number, minValue: number, maxValue: number, callback: ItemCallback, colorPick?: boolean): void {
         let item: CtrlParamItem = {
             type: "number_value", name: name, uuid: uuid,
@@ -111,7 +113,7 @@ export class DemoParamCtrlUI {
             colorPick: colorPick,
             callback: callback
         };
-        
+
         let ui = this.m_ui;
         ui.addItem(item);
     }
@@ -120,22 +122,25 @@ export class DemoParamCtrlUI {
         ui.initialize(this.m_rscene, true);
         this.m_ruisc = ui.ruisc;
         console.log("initUI --------------------------------------");
-        this.createSelectBtn("透明测试", "alphaTest", "ON", "OFF",(type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean): void => {
+        this.createSelectBtn("透明测试", "alphaTest", "ON", "OFF", (type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean): void => {
             console.log("flag: ", flag);
         });
-        this.createProgressBtn("缩放值", "scale", 0.3,(type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean): void => {
+        this.createProgressBtn("缩放值", "scale", 0.3, (type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean): void => {
             console.log("progress: ", values[0]);
             let s = values[0];
-            this.m_axis.setScaleXYZ(s,s,s);
+            this.m_axis.setScaleXYZ(s, s, s);
             this.m_axis.update();
         });
-        this.createValueBtn("XXXX体重", "weight", 50, 10, 70,(type: string, uuid: string, values: number[], flag: boolean): void => {
+        this.createValueBtn("XXXX体重", "weight", 50, 10, 70, (type: string, uuid: string, values: number[], flag: boolean): void => {
             console.log("value: ", values[0]);
         });
         // this.createValueBtn("长度", "width", 500, 100, 700,(type: string, uuid: string, values: number[], flag: boolean): void => {
         //     console.log("value: ", values[0]);
         // });
         ui.alignBtns(true);
+
+        this.m_grap.addScene(this.m_rscene);
+        this.m_grap.addScene(this.m_ruisc);
     }
     private mouseDown(evt: any): void {
         // console.log("mouse down... ...");
@@ -166,6 +171,8 @@ export class DemoParamCtrlUI {
             if (this.m_ruisc != null) this.m_ruisc.run(true);
         }
         else {
+            this.m_grap.run();
+            /*
             /////////////////////////////////////////////////////// ---- mouseTest begin.
             let pickFlag = false;
 
@@ -190,6 +197,7 @@ export class DemoParamCtrlUI {
             this.m_ruisc.run(false);
             this.m_ruisc.runEnd();
             /////////////////////////////////////////////////////// ---- rendering end.
+            //*/
 
         }
         // DebugFlag.Reset();
