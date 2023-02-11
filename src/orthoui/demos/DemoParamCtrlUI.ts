@@ -15,7 +15,7 @@ import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwing
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 
 import RendererSubScene from "../../vox/scene/RendererSubScene";
-import { CtrlParamItem, ParamCtrlUI } from "../usage/ParamCtrlUI";
+import { ItemCallback, CtrlParamItem, ParamCtrlUI } from "../usage/ParamCtrlUI";
 
 export class DemoParamCtrlUI {
     constructor() { }
@@ -74,11 +74,36 @@ export class DemoParamCtrlUI {
     }
 
     private m_ruisc: RendererSubScene = null;
-    private createSelectBtn(name: string, uuid: string, selectNS: string, deselectNS: string, callback: (type: string, uuid: string, values: number[], flag: boolean) => void): void {
+    private createSelectBtn(name: string, uuid: string, selectNS: string, deselectNS: string, callback: ItemCallback): void {
         let item: CtrlParamItem = {
             type: "status_select", name: name, uuid: uuid,
             selectNS: selectNS, deselectNS: deselectNS,
             flag: false,
+            visibleAlways: true,
+            callback: callback            
+        };
+        
+        let ui = this.m_ui;
+        ui.addItem(item);
+    }
+    private createProgressBtn(name: string, uuid: string, progress: number, callback: ItemCallback): void {
+        let item: CtrlParamItem = {
+            type: "progress", name: name, uuid: uuid,
+            progress: progress,
+            visibleAlways: true,
+            callback: callback            
+        };
+        
+        let ui = this.m_ui;
+        ui.addItem(item);
+    }
+    
+    private createValueBtn(name: string, uuid: string, value: number, minValue: number, maxValue: number, callback: ItemCallback): void {
+        let item: CtrlParamItem = {
+            type: "number_value", name: name, uuid: uuid,
+            value: value,
+            minValue: minValue,
+            maxValue: maxValue,
             visibleAlways: true,
             callback: callback            
         };
@@ -91,8 +116,14 @@ export class DemoParamCtrlUI {
         ui.initialize(this.m_rscene, true);
         this.m_ruisc = ui.ruisc;
         console.log("initUI --------------------------------------");
-        this.createSelectBtn("高度", "height", "ON", "OFF",(type: string, uuid: string, values: number[], flag: boolean): void => {
-            console.log("status, flag: ", flag);
+        this.createSelectBtn("透明测试", "alphaTest", "ON", "OFF",(type: string, uuid: string, values: number[], flag: boolean): void => {
+            console.log("flag: ", flag);
+        });
+        this.createProgressBtn("浓度比", "density", 0.3,(type: string, uuid: string, values: number[], flag: boolean): void => {
+            console.log("progress: ", values[0]);
+        });
+        this.createValueBtn("体重", "weight", 50, 10, 70,(type: string, uuid: string, values: number[], flag: boolean): void => {
+            console.log("value: ", values[0]);
         });
         ui.alignBtns();
     }

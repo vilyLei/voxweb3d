@@ -29,12 +29,12 @@ import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 // ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false
 // ns: string, uuid: string, progress: number, visibleAlways: boolean = false
 // ns: string, uuid: string, value: number, minValue: number, maxValue: number, visibleAlways: boolean = false
-
+type ItemCallback = (type: string, uuid: string, values: number[], flag: boolean) => void;
 interface CtrlParamItem {
 
     name: string;
     uuid: string;
-    callback: (type:string, uuid: string, values: number[], flag: boolean) => void;
+    callback: ItemCallback;
     /**
      * 取值说明: "number_value"(数值调节按钮),"progress"(百分比调节按钮),"status_select"(状态选择按钮)
      */
@@ -292,20 +292,24 @@ export default class ParamCtrlUI {
             obj.type = item.type;
             obj.uuid = item.uuid;
             let t = item;
-            t.flag = t.flag ? t.flag : false;
             let visibleAlways = t.visibleAlways ? t.visibleAlways : false;
             switch (item.type) {
                 case "number_value":
+                case "number":
+                    t.value = t.value ? t.value : 0.0;
+                    t.minValue = t.minValue ? t.minValue : 0.0;
+                    t.maxValue = t.maxValue ? t.maxValue : 10.0;
                     obj.btn = this.createValueBtn(t.name, t.uuid, t.value, t.minValue, t.maxValue);
                     map.set(obj.uuid, obj);
                     break;
                 case "progress":
-                    obj.btn = this.createProgressBtn(t.name, t.uuid, t.progress ? t.progress : 0.0, visibleAlways);
+                    t.progress = t.progress ? t.progress : 0.0;
+                    obj.btn = this.createProgressBtn(t.name, t.uuid, t.progress, visibleAlways);
                     map.set(obj.uuid, obj);
                     break;
                 case "status":
                 case "status_select":
-                    console.log("BBBBBBBBBBBBBBBBBB");
+                    t.flag = t.flag ? t.flag : false;
                     obj.btn = this.createSelectBtn(t.name, t.uuid, t.selectNS, t.deselectNS, t.flag, visibleAlways);
                     map.set(obj.uuid, obj);
                     break;
@@ -431,9 +435,19 @@ export default class ParamCtrlUI {
             let obj = map.get(uuid);
             let item = obj.desc;
             let btn = obj.btn as ProgressBar;
-            if(item.callback != null && Math.abs(item.value - value) > 0.00001) {
-                item.value = value;
-                item.callback(item.type, uuid, [value], true);
+
+            if(item.type == "progress") {
+                // console.log("valueChange: ", item.progress,value);
+                if(item.callback != null && Math.abs(item.progress - value) > 0.00001) {
+                    item.progress = value;
+                    item.callback(item.type, uuid, [value], true);
+                }
+            }else {
+                // console.log("valueChange: ", item.value,value);
+                if(item.callback != null && Math.abs(item.value - value) > 0.00001) {
+                    item.value = value;
+                    item.callback(item.type, uuid, [value], true);
+                }
             }
         }
         /*
@@ -530,4 +544,4 @@ export default class ParamCtrlUI {
         if (this.rgbPanel != null) this.rgbPanel.close();
     }
 }
-export { CtrlParamItem, ParamCtrlUI };
+export { ItemCallback, CtrlParamItem, ParamCtrlUI };
