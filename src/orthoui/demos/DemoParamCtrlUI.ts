@@ -15,7 +15,7 @@ import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwing
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 
 import RendererSubScene from "../../vox/scene/RendererSubScene";
-import ParamCtrlUI from "../usage/ParamCtrlUI";
+import {CtrlParamItem, ParamCtrlUI} from "../usage/ParamCtrlUI";
 
 export class DemoParamCtrlUI {
     constructor() { }

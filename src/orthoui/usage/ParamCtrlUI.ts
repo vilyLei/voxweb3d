@@ -26,31 +26,70 @@ import AABB2D from "../../vox/geom/AABB2D";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 // import { CommonMaterialContext } from "../../materialLab/base/CommonMaterialContext";
 
+//uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false
+//ns: string, uuid: string, progress: number, visibleAlways: boolean = false
+//ns: string, uuid: string, value: number, minValue: number, maxValue: number, visibleAlways: boolean = false
+
+interface CtrlParamItem {
+
+    name: string;
+    uuid: string;
+    callback: (uuid: string, values: number[], flag: boolean) => void;
+    /**
+     * 取值说明: "number_value"(数值调节按钮),"progress"(百分比调节按钮),"status_select"(状态选择按钮)
+     */
+    type: string;
+    /**
+     * 是否需要动态拾取颜色
+     */
+    colorPick?: boolean;
+    /**
+     * 状态选择按钮选中的状态名
+     */
+    selectNS?: string;
+    /**
+     * 状态选择按钮取消选中的状态名
+     */
+    deselectNS?: string;
+    /**
+     * 状态选中按钮初始状态
+     */
+    flag?: boolean;
+    /**
+     * 是否总是显示
+     */
+    visibleAlways?: boolean;
+    /**
+     * 百分比按钮(取值于0.0 -> 1.0)初始值
+     */
+    progress?: number;
+    /**
+     * 数值调节按钮的初始值
+     */
+    value?: number;
+    /**
+     * 数值调节按钮的取值范围最小值
+     */
+    minValue?: number;
+    /**
+     * 数值调节按钮的取值范围最大值
+     */
+    maxValue?: number;
+}
+class ItemObj {
+    constructor() { }
+    type = "";
+    uuid = "";
+    btn: SelectionBar | ProgressBar = null;
+    desc: CtrlParamItem = null;
+}
 export default class ParamCtrlUI {
-    
+
     private m_rscene: RendererScene = null;
 
     ruisc: RendererSubScene = null;
-
     rgbPanel: RGBColorPanel;
 
-    // metalBtn: ProgressBar;
-    // roughBtn: ProgressBar;
-    // noiseBtn: ProgressBar;
-    // reflectionBtn: ProgressBar;
-    // sideBtn: ProgressBar;
-    // surfaceBtn: ProgressBar;
-    // scatterBtn: ProgressBar;
-    // toneBtn: ProgressBar;
-    // f0ColorBtn: ProgressBar;
-    // albedoBtn: ProgressBar;
-    // ambientBtn: ProgressBar;
-    // specularBtn: ProgressBar;
-    // outlineBtn: ProgressBar;
-
-
-    // absorbBtn: SelectionBar;
-    // vtxNoiseBtn: SelectionBar;
     constructor() { }
 
     initialize(rscene: RendererScene, buildDisplay: boolean = true): void {
@@ -258,6 +297,35 @@ export default class ParamCtrlUI {
         this.rgbPanel.close();
         this.ruisc.addContainer(this.rgbPanel, 1);
     }
+    private m_btnMap: Map<string, ItemObj> = new Map();
+    //"number_value"(数值调节按钮),"progress"(百分比调节按钮),"status_select"(状态选择按钮)
+    addItem(item: CtrlParamItem): void {
+        let map = this.m_btnMap;
+        if (!map.has(item.uuid)) {
+            let obj = new ItemObj();
+            obj.desc = item;
+            obj.type = item.type;
+            obj.uuid = item.uuid;
+            let t = item;
+            let visibleAlways = t.visibleAlways ? t.visibleAlways : false;
+            switch (item.type) {
+                case "number_value":
+                    obj.btn = this.createValueBtn(t.name, t.uuid, t.value, t.minValue, t.maxValue);
+                    map.set(obj.uuid, obj);
+                    break;
+                case "progress":
+                    obj.btn = this.createProgressBtn(t.name, t.uuid, t.progress ? t.progress : 0.0, visibleAlways);
+                    map.set(obj.uuid, obj);
+                    break;
+                case "status_select":
+                    obj.btn = this.createSelectBtn(t.name, t.uuid, t.selectNS, t.deselectNS, t.flag ? t.flag : false, visibleAlways);
+                    map.set(obj.uuid, obj);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
     // materialStatusVersion: number = 0;
     private selectColor(evt: any): void {
         /*
@@ -448,3 +516,4 @@ export default class ParamCtrlUI {
         if (this.rgbPanel != null) this.rgbPanel.close();
     }
 }
+export { CtrlParamItem, ParamCtrlUI };
