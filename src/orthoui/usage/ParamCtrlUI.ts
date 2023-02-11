@@ -355,6 +355,7 @@ export default class ParamCtrlUI {
                 item.flag = flag;
                 item.callback(item.type, uuid, [], flag);
             }
+            this.moveSelectToBtn(selectEvt.target);
         }
         if (this.rgbPanel != null) this.rgbPanel.close();
     }
@@ -383,7 +384,8 @@ export default class ParamCtrlUI {
                         f = item.progress;
                     }else {
                         f = item.value;
-                    }                    
+                    }
+                    console.log("select color f: ", f);
                     let cvs = vs.slice();
                     cvs[0] *= f; cvs[1] *= f; cvs[2] *= f;
                     item.callback(item.type, uuid, cvs, true, true);
@@ -462,6 +464,7 @@ export default class ParamCtrlUI {
                     if (this.rgbPanel != null) this.rgbPanel.close();
                 }
             }
+            this.moveSelectToBtn(progEvt.target);
         }
         /*
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;

@@ -137,9 +137,13 @@ export class DemoParamCtrlUI {
         this.createValueBtn("安全态体重", "weight", 50, 10, 70, (type: string, uuid: string, values: number[], flag: boolean): void => {
             console.log("value: ", values[0]);
         });
-        this.createValueBtn("颜色", "width", 500, 100, 700,(type: string, uuid: string, values: number[], flag: boolean, colorPick: boolean): void => {
+        this.createValueBtn("颜色-A", "color_a", 10.0, 2.0, 20,(type: string, uuid: string, values: number[], flag: boolean, colorPick: boolean): void => {
             console.log("values: ", values, ", colorPick: ", colorPick);
         }, true);
+        this.createValueBtn("颜色-B", "color_b", 0.6, 0.0, 2.0,(type: string, uuid: string, values: number[], flag: boolean, colorPick: boolean): void => {
+            console.log("values: ", values, ", colorPick: ", colorPick);
+        }, true);
+
         ui.alignBtns(true);
 
         this.m_grap.addScene(this.m_rscene);
