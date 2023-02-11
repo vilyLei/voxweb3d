@@ -445,7 +445,7 @@
 
 // import {DemoUITexAtlas as Demo} from "./orthoui/demos/DemoUITexAtlas";
 
- import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
+ import {DemoParamCtrlUI as Demo} from "./orthoui/demos/DemoParamCtrlUI";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////     distributed runtime     ////////////s//////////////

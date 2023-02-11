@@ -1,0 +1,139 @@
+
+import RendererDevice from "../../vox/render/RendererDevice";
+import RendererParam from "../../vox/scene/RendererParam";
+import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
+import Axis3DEntity from "../../vox/entity/Axis3DEntity";
+import TextureConst from "../../vox/texture/TextureConst";
+import TextureProxy from "../../vox/texture/TextureProxy";
+
+import MouseEvent from "../../vox/event/MouseEvent";
+import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
+import CameraTrack from "../../vox/view/CameraTrack";
+import RendererScene from "../../vox/scene/RendererScene";
+
+import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwinger";
+import CameraZoomController from "../../voxeditor/control/CameraZoomController";
+
+import RendererSubScene from "../../vox/scene/RendererSubScene";
+import ParamCtrlUI from "../usage/ParamCtrlUI";
+
+export class DemoParamCtrlUI {
+    constructor() { }
+
+    private m_rscene: RendererScene = null;
+    private m_texLoader: ImageTextureLoader = null;
+    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
+    private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
+    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
+
+    private m_ui = new ParamCtrlUI();
+    private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+        ptex.mipmapEnabled = mipmapEnabled;
+        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
+        return ptex;
+    }
+    initialize(): void {
+        console.log("DemoParamCtrlUI::initialize()......");
+        if (this.m_rscene == null) {
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+            let rparam: RendererParam = new RendererParam();
+            rparam.setCamPosition(1200.0, 1200.0, 1200.0);
+            rparam.setAttriAntialias(true);
+            //rparam.setAttriStencil(true);
+            rparam.setAttriAlpha(true);
+            this.m_rscene = new RendererScene();
+            this.m_rscene.initialize(rparam, 3);
+            this.m_rscene.updateCamera();
+
+            this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+
+            this.m_rscene.enableMouseEvent(true);
+            this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
+            this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
+            this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
+
+            let axis: Axis3DEntity = new Axis3DEntity();
+            axis.initialize(300.0);
+            this.m_rscene.addEntity(axis);
+            
+            //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
+            this.m_statusDisp.initialize();
+
+            this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+            //this.m_rscene.addEventListener(MouseEvent.MOUSE_MOVE, this, this.mouseMove);
+            //this.m_rscene.addEventListener(EventBase.ENTER_FRAME, this, this.enterFrame);
+
+            this.update();
+
+            this.initUI();
+
+        }
+    }
+
+    private m_ruisc: RendererSubScene = null;
+    private initUI(): void {
+
+
+    }
+    private mouseDown(evt: any): void {
+        console.log("mouse down... ...");
+        // DebugFlag.Flag_0 = 1;
+    }
+
+    private m_timeoutId: any = -1;
+    private update(): void {
+        if (this.m_timeoutId > -1) {
+            clearTimeout(this.m_timeoutId);
+        }
+        //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
+        this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
+
+    }
+
+    run(): void {
+
+        this.m_statusDisp.update(false);
+
+        this.m_stageDragSwinger.runWithYAxis();
+        this.m_cameraZoomController.run(null, 30.0);
+        let renderingType = 0;
+        if(renderingType < 1) {
+            // current rendering strategy
+            this.m_rscene.run( true );
+            if(this.m_ruisc != null) this.m_ruisc.run( true );
+        }
+        else {
+            /////////////////////////////////////////////////////// ---- mouseTest begin.
+            let pickFlag: boolean = true;
+
+            this.m_ruisc.runBegin(true, true);
+            this.m_ruisc.update(false, true);
+            pickFlag = this.m_ruisc.isRayPickSelected();
+
+            this.m_rscene.runBegin(false);
+            this.m_rscene.update(false, !pickFlag);
+            pickFlag = pickFlag || this.m_rscene.isRayPickSelected();
+
+            /////////////////////////////////////////////////////// ---- mouseTest end.
+
+
+            /////////////////////////////////////////////////////// ---- rendering begin.
+            this.m_rscene.renderBegin();
+            this.m_rscene.run(false);
+            this.m_rscene.runEnd();
+
+            this.m_ruisc.renderBegin();
+            this.m_ruisc.run(false);
+            this.m_ruisc.runEnd();
+
+            /////////////////////////////////////////////////////// ---- rendering end.
+
+        }
+        // DebugFlag.Reset();
+    }
+
+}
+export default DemoParamCtrlUI;
