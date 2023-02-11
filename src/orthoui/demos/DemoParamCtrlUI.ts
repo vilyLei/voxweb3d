@@ -136,8 +136,8 @@ export class DemoParamCtrlUI {
         this.createValueBtn("安全态体重", "weight", 50, 10, 70, (type: string, uuid: string, values: number[], flag: boolean): void => {
             console.log("value: ", values[0]);
         });
-        this.createValueBtn("长度", "width", 500, 100, 700,(type: string, uuid: string, values: number[], flag: boolean): void => {
-            console.log("value: ", values[0]);
+        this.createValueBtn("颜色", "width", 500, 100, 700,(type: string, uuid: string, values: number[], flag: boolean, colorPick: boolean): void => {
+            console.log("values: ", values, ", colorPick: ", colorPick);
         }, true);
         ui.alignBtns(true);
 

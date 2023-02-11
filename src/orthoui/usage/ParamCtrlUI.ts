@@ -73,7 +73,7 @@ class ItemObj {
     uuid = "";
     btn: SelectionBar | ProgressBar = null;
     desc: CtrlParamItem = null;
-    color = [1.0,1.0,1.0];
+    color = [1.0, 1.0, 1.0];
 }
 export default class ParamCtrlUI {
 
@@ -269,7 +269,7 @@ export default class ParamCtrlUI {
             obj.uuid = item.uuid;
             let t = item;
             let visibleAlways = t.visibleAlways ? t.visibleAlways : false;
-            
+
             t.colorPick = t.colorPick ? t.colorPick : false;
 
             switch (item.type) {
@@ -300,29 +300,6 @@ export default class ParamCtrlUI {
             }
         }
     }
-    // materialStatusVersion: number = 0;
-    private selectColor(evt: any): void {
-        /*
-        let currEvt: RGBColoSelectEvent = evt as RGBColoSelectEvent;
-        switch (this.m_currUUID) {
-            case "F0Color":
-                this.m_paramEntity.f0.setColor(currEvt.color, currEvt.colorId, -1);
-                break;
-            case "albedo":
-                this.m_paramEntity.albedo.setColor(currEvt.color, currEvt.colorId, -1);
-                break;
-            case "ambient":
-                this.m_paramEntity.ambient.setColor(currEvt.color, currEvt.colorId, -1);
-                break;
-            case "specular":
-                this.m_paramEntity.specular.setColor(currEvt.color, currEvt.colorId, -1);
-                break;
-            default:
-                break;
-        }
-        // this.materialStatusVersion++;
-        //*/
-    }
     private menuCtrl(flag: boolean): void {
 
         if (flag && !this.m_visiBtns[0].isOpen()) {
@@ -345,11 +322,11 @@ export default class ParamCtrlUI {
         if (this.rgbPanel != null) this.rgbPanel.close();
     }
     alignBtns(force: boolean = false): void {
-        
+
         let dis = 5 - this.m_minBtnX;
         let pos = new Vector3D();
         let btns = force ? this.m_btns : this.m_visiBtns;
-        
+
         for (let i = 0; i < btns.length; ++i) {
             btns[i].getPosition(pos);
             pos.x += dis;
@@ -358,7 +335,7 @@ export default class ParamCtrlUI {
         }
         this.rgbPanel.setXY(this.m_btnPX, this.m_btnPY);
     }
-    
+
     private selectChange(evt: any): void {
 
         let selectEvt = evt as SelectionEvent;
@@ -369,7 +346,7 @@ export default class ParamCtrlUI {
             let obj = map.get(uuid);
             let item = obj.desc;
             let btn = obj.btn as SelectionBar;
-            if(item.callback != null && item.flag != flag) {
+            if (item.callback != null && item.flag != flag) {
                 item.flag = flag;
                 item.callback(item.type, uuid, [], flag);
             }
@@ -411,8 +388,49 @@ export default class ParamCtrlUI {
         //*/
     }
     private m_currUUID = "";
+
+    // materialStatusVersion: number = 0;
+    private selectColor(evt: any): void {
+        let currEvt = evt as RGBColoSelectEvent;
+        let uuid = this.m_currUUID;
+        let map = this.m_btnMap;
+        if (map.has(uuid)) {
+            let obj = map.get(uuid);
+            let item = obj.desc;
+            if (item.colorPick) {
+                let color = currEvt.color;
+                let vs = obj.color;
+                vs[0] = color.r;
+                vs[1] = color.g;
+                vs[2] = color.b;
+                if (item.callback != null) {
+                    item.callback(item.type, uuid, vs.slice(), true, true);
+                }
+            }
+        }
+        /*
+        let currEvt: RGBColoSelectEvent = evt as RGBColoSelectEvent;
+        switch (this.m_currUUID) {
+            case "F0Color":
+                this.m_paramEntity.f0.setColor(currEvt.color, currEvt.colorId, -1);
+                break;
+            case "albedo":
+                this.m_paramEntity.albedo.setColor(currEvt.color, currEvt.colorId, -1);
+                break;
+            case "ambient":
+                this.m_paramEntity.ambient.setColor(currEvt.color, currEvt.colorId, -1);
+                break;
+            case "specular":
+                this.m_paramEntity.specular.setColor(currEvt.color, currEvt.colorId, -1);
+                break;
+            default:
+                break;
+        }
+        // this.materialStatusVersion++;
+        //*/
+    }
     private valueChange(evt: any): void {
-        
+
         let progEvt = evt as ProgressDataEvent;
         let value = progEvt.value;
         let uuid = progEvt.uuid;
@@ -424,26 +442,38 @@ export default class ParamCtrlUI {
             let obj = map.get(uuid);
             let item = obj.desc;
             let btn = obj.btn as ProgressBar;
-            if(progEvt.status == 2) {
-                if(item.type == "progress") {
+            if (progEvt.status == 2) {
+                if (item.type == "progress") {
                     // console.log("valueChange: ", item.progress,value);
-                    if(item.callback != null && Math.abs(item.progress - value) > 0.00001) {
+                    if (item.callback != null && Math.abs(item.progress - value) > 0.00001) {
                         item.progress = value;
-                        item.callback(item.type, uuid, [value], true);
+                        if (item.colorPick) {
+                            let cvs = obj.color.slice();
+                            cvs[0] *= value;cvs[1] *= value;cvs[2] *= value;
+                            item.callback(item.type, uuid, cvs, true, true);
+                        } else {
+                            item.callback(item.type, uuid, [value], true);
+                        }
                     }
-                }else {
+                } else {
                     // console.log("valueChange: ", item.value,value);
-                    if(item.callback != null && Math.abs(item.value - value) > 0.00001) {
+                    if (item.callback != null && Math.abs(item.value - value) > 0.00001) {
                         item.value = value;
-                        item.callback(item.type, uuid, [value], true);
+                        if (item.colorPick) {
+                            let cvs = obj.color.slice();
+                            cvs[0] *= value;cvs[1] *= value;cvs[2] *= value;
+                            item.callback(item.type, uuid, cvs, true, true);
+                        } else {
+                            item.callback(item.type, uuid, [value], true);
+                        }
                     }
                 }
                 if (this.rgbPanel != null && changeFlag) this.rgbPanel.close();
-            }else if(progEvt.status == 0){
+            } else if (progEvt.status == 0) {
                 console.log("select the btn");
-                if(item.colorPick) {
+                if (item.colorPick) {
                     if (this.rgbPanel != null && this.rgbPanel.isClosed()) this.rgbPanel.open();
-                }else {
+                } else {
                     if (this.rgbPanel != null) this.rgbPanel.close();
                 }
             }
