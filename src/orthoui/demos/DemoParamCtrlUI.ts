@@ -96,66 +96,27 @@ export class DemoParamCtrlUI {
         //metal_02
     }
     private m_ruisc: RendererSubScene = null;
-    private createSelectBtn(name: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, callback: ItemCallback): void {
-        let item: CtrlItemParam = {
-            type: "status_select", name: name, uuid: uuid,
-            selectNS: selectNS, deselectNS: deselectNS,
-            flag: flag,
-            visibleAlways: true,
-            callback: callback
-        };
-
-        let ui = this.m_ui;
-        ui.addItem(item);
-    }
-    private createProgressBtn(name: string, uuid: string, progress: number, callback: ItemCallback, colorPick?: boolean): void {
-        let item: CtrlItemParam = {
-            type: "progress", name: name, uuid: uuid,
-            progress: progress,
-            visibleAlways: true,
-            colorPick: colorPick,
-            callback: callback
-        };
-
-        let ui = this.m_ui;
-        ui.addItem(item);
-    }
-
-    private createValueBtn(name: string, uuid: string, value: number, minValue: number, maxValue: number, callback: ItemCallback, colorPick?: boolean, values?: number[]): void {
-        let item: CtrlItemParam = {
-            type: "number_value", name: name, uuid: uuid,
-            value: value,
-            minValue: minValue,
-            maxValue: maxValue,
-            visibleAlways: true,
-            colorPick: colorPick,
-            values: values,
-            callback: callback
-        };
-
-        let ui = this.m_ui;
-        ui.addItem(item);
-    }
     private initUI(): void {
         let ui = this.m_ui;
         ui.initialize(this.m_rscene, true);
         this.m_ruisc = ui.ruisc;
+        
         console.log("initUI --------------------------------------");
-        this.createSelectBtn("显示-A", "visible-a", "Yes", "No", true, (type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean): void => {
+        ui.addStatusItem("显示-A", "visible-a", "Yes", "No", true, (type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean): void => {
             // console.log("flag: ", flag);
             this.m_box0.setVisible(flag);
         });
-        this.createSelectBtn("显示-B", "visible-b", "Yes", "No", true, (type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean): void => {
+        ui.addStatusItem("显示-B", "visible-b", "Yes", "No", true, (type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean): void => {
             // console.log("flag: ", flag);
             this.m_box1.setVisible(flag);
         });
-        this.createProgressBtn("缩放-A", "scale", 1.0, (type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean): void => {
+        ui.addProgressItem("缩放-A", "scale", 1.0, (type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean): void => {
             // console.log("progress: ", values[0]);
             let s = values[0];
             this.m_box0.setScaleXYZ(s,s,s);
             this.m_box0.update();
         });
-        this.createValueBtn("X轴移动-B", "move-b", 0, -300, 300, (type: string, uuid: string, values: number[], flag: boolean): void => {
+        ui.addValueItem("X轴移动-B", "move-b", 0, -300, 300, (type: string, uuid: string, values: number[], flag: boolean): void => {
             console.log("value: ", values[0]);
             let pv = new Vector3D();
             this.m_box1.getPosition(pv);
@@ -163,12 +124,12 @@ export class DemoParamCtrlUI {
             this.m_box1.setPosition(pv);
             this.m_box1.update();
         });
-        this.createValueBtn("颜色-A", "color-a", 0.8, 0.0, 10, (type: string, uuid: string, values: number[], flag: boolean, colorPick: boolean): void => {
+        ui.addValueItem("颜色-A", "color-a", 0.8, 0.0, 10, (type: string, uuid: string, values: number[], flag: boolean, colorPick: boolean): void => {
             console.log("color-a values: ", values, ", colorPick: ", colorPick);
             let material = this.m_box0.getMaterial() as IColorMaterial;
             material.setRGB3f(values[0], values[1], values[2]);
         }, true);
-        this.createValueBtn("颜色-B", "color-b", 0.6, 0.0, 2.0, (type: string, uuid: string, values: number[], flag: boolean, colorPick: boolean): void => {
+        ui.addValueItem("颜色-B", "color-b", 0.6, 0.0, 2.0, (type: string, uuid: string, values: number[], flag: boolean, colorPick: boolean): void => {
             console.log("color-b, values: ", values, ", colorPick: ", colorPick);
             let material = this.m_box1.getMaterial() as IColorMaterial;
             material.setRGB3f(values[0], values[1], values[2]);

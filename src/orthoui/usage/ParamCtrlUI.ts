@@ -492,24 +492,6 @@ export default class ParamCtrlUI {
                 if (mirrorMaterial != null) mirrorMaterial.setRoughness(value);
                 break;
             case "noise":
-                material.setPixelNormalNoiseIntensity(value);
-                if (mirrorMaterial != null) mirrorMaterial.setPixelNormalNoiseIntensity(value);
-                break;
-            case "reflection":
-                material.setReflectionIntensity(value);
-                if (mirrorMaterial != null) mirrorMaterial.setReflectionIntensity(value);
-                break;
-            case "side":
-                material.setSideIntensity(progEvt.value);
-                if (mirrorMaterial != null) mirrorMaterial.setSideIntensity(progEvt.value);
-                break;
-            case "surface":
-                material.setSurfaceIntensity(progEvt.value);
-                if (mirrorMaterial != null) mirrorMaterial.setSurfaceIntensity(progEvt.value);
-                break;
-            case "scatter":
-                material.setScatterIntensity(progEvt.value);
-                if (mirrorMaterial != null) mirrorMaterial.setScatterIntensity(progEvt.value);
                 break;
             case "tone":
                 material.setToneMapingExposure(progEvt.value);
@@ -562,6 +544,42 @@ export default class ParamCtrlUI {
     }
     private mouseBgDown(evt: any): void {
         if (this.rgbPanel != null) this.rgbPanel.close();
+    }
+    
+    addStatusItem(name: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, callback: ItemCallback): void {
+        let item: CtrlItemParam = {
+            type: "status_select", name: name, uuid: uuid,
+            selectNS: selectNS, deselectNS: deselectNS,
+            flag: flag,
+            visibleAlways: true,
+            callback: callback
+        };
+
+        this.addItem(item);
+    }
+    addProgressItem(name: string, uuid: string, progress: number, callback: ItemCallback, colorPick?: boolean): void {
+        let item: CtrlItemParam = {
+            type: "progress", name: name, uuid: uuid,
+            progress: progress,
+            visibleAlways: true,
+            colorPick: colorPick,
+            callback: callback
+        };
+        this.addItem(item);
+    }
+
+    addValueItem(name: string, uuid: string, value: number, minValue: number, maxValue: number, callback: ItemCallback, colorPick?: boolean, values?: number[]): void {
+        let item: CtrlItemParam = {
+            type: "number_value", name: name, uuid: uuid,
+            value: value,
+            minValue: minValue,
+            maxValue: maxValue,
+            visibleAlways: true,
+            colorPick: colorPick,
+            values: values,
+            callback: callback
+        };
+        this.addItem(item);
     }
 }
 export { ItemCallback, CtrlItemParam, ParamCtrlUI };
