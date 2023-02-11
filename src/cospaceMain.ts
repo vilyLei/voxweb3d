@@ -31,7 +31,8 @@
 // import { DemoCoRendererScene as Demo } from "./cospace/demo/DemoCoRendererScene";
 // import { DemoCoRendererSubScene as Demo } from "./cospace/demo/DemoCoRendererSubScene";
 // import { DemoCoSimpleRendereScene as Demo } from "./cospace/demo/DemoCoSimpleRendereScene";
-import { DemoDisplayModel as Demo } from "./cospace/demo/DemoDisplayModel";
+// import { DemoDisplayModel as Demo } from "./cospace/demo/DemoDisplayModel";
+import { DemoShaderMaterial as Demo } from "./cospace/demo/DemoShaderMaterial";
 
 // import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
 // import { DemoVox3DEditor as Demo } from "./cospace/demo/DemoVox3DEditor";

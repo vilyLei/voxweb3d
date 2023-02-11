@@ -12,6 +12,7 @@ import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 import { CoGeomDataType, CoDataFormat, CoGeomModelLoader } from "../app/common/CoGeomModelLoader";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
+import { ShaderCode } from "./shader/ShaderCode";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -23,7 +24,7 @@ declare var CoEntity: ICoEntity;
 /**
  * cospace renderer scene
  */
-export class DemoDisplayModel {
+export class DemoShaderMaterial {
 
 	private m_rscene: IRendererScene = null;
 	private m_mouseInteraction: IMouseInteraction = null;
@@ -83,6 +84,7 @@ export class DemoDisplayModel {
             // if (nvs == null) {
             //     SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
             // }
+            // let material = this.m_material = new EffectMaterial();
             let material = this.m_material = CoMaterial.createDefaultMaterial();
             material.setTextureList([
                 this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
@@ -191,4 +193,4 @@ export class DemoDisplayModel {
 	}
 }
 
-export default DemoDisplayModel;
+export default DemoShaderMaterial;
