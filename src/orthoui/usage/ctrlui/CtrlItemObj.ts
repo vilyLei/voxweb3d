@@ -13,8 +13,7 @@ class CtrlItemObj {
     color = [1.0, 1.0, 1.0];
     colorId = -1;
     info: CtrlInfo = null;
-    updateparamToBtn(): void {
-    }
+    
     setValueToParam(value: number): void {
         let param = this.param;
         if (param.type == "progress") {
@@ -38,7 +37,7 @@ class CtrlItemObj {
             this.info = { type: param.type, uuid: this.uuid, values: cvs, flag: true, colorPick: true };
             param.callback(this.info);
         }
-    }    
+    }
     /**
      * 将数值由ui发送到外面
      */
@@ -59,7 +58,53 @@ class CtrlItemObj {
             } else {
                 this.info = { type: param.type, uuid: this.uuid, values: [value], flag: true };
             }
-            param.callback( this.info );
+            param.callback(this.info);
+        }
+    }
+    /**
+     * 将(用户已经修改的)参数同步到ui
+     */
+    updateparamToBtn(): void {
+
+        let param = this.param;
+        let t = param;
+        // let visibleAlways = t.visibleAlways ? t.visibleAlways : false;
+        t.colorPick = t.colorPick ? t.colorPick : false;
+
+        switch (param.type) {
+            case "number_value":
+            case "number":
+
+                t.value = t.value ? t.value : 0.0;
+                t.minValue = t.minValue ? t.minValue : 0.0;
+                t.maxValue = t.maxValue ? t.maxValue : 10.0;
+                const b0 = this.btn as ProgressBar;
+                b0.minValue = t.minValue;
+                b0.maxValue = t.maxValue;
+                b0.setValue(t.value, false);
+
+                break;
+            case "progress":
+
+                t.progress = t.progress ? t.progress : 0.0;
+                const b1 = this.btn as ProgressBar;
+                b1.setProgress(t.progress, false);
+
+                break;
+            case "status":
+            case "status_select":
+
+                t.flag = t.flag ? t.flag : false;
+                const b2 = this.btn as SelectionBar;
+                if (t.flag) {
+                    b2.select(false);
+                }
+                else {
+                    b2.deselect(false);
+                }
+                break;
+            default:
+                break;
         }
     }
 }

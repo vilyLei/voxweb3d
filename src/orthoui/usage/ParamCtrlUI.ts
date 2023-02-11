@@ -258,6 +258,12 @@ export default class ParamCtrlUI {
             this.addItem(params[i]);
         }
     }
+    getItemByUUID(uuid: string): CtrlItemObj {
+        if (this.m_btnMap.has(uuid)) {
+            return this.m_btnMap.get( uuid );
+        }
+        return null;
+    }
     private menuCtrl(flag: boolean): void {
 
         if (flag && !this.m_visiBtns[0].isOpen()) {
