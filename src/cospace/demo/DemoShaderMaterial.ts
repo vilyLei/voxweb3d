@@ -13,6 +13,7 @@ import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { CoGeomDataType, CoDataFormat, CoGeomModelLoader } from "../app/common/CoGeomModelLoader";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import { ShaderCode } from "./shader/ShaderCode";
+import { CoEntityLayouter } from "../app/common/CoEntityLayouter";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -29,7 +30,7 @@ export class DemoShaderMaterial {
 	private m_rscene: IRendererScene = null;
 	private m_mouseInteraction: IMouseInteraction = null;
     private m_modelLoader = new CoGeomModelLoader();
-
+	private m_layouter = new CoEntityLayouter();
 	constructor() { }
 
 	initialize(): void {

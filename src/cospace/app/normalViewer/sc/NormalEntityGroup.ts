@@ -19,7 +19,7 @@ import { CoDataModule } from "../../../app/common/CoDataModule";
 import { NormalEntityManager } from "./NormalEntityManager";
 import { NVEntityGroup } from "./NVEntityGroup";
 import { BoxLine3D } from "../../../edit/entity/BoxLine3D";
-import { CoEntityLayout } from "../../common/CoEntityLayout";
+import { CoEntityLayouter } from "../../common/CoEntityLayouter";
 
 declare var CoUI: ICoUI;
 declare var CoRScene: ICoRScene;
@@ -164,22 +164,22 @@ class NormalEntityGroup extends NVEntityGroup {
 			let mat4 = transform != null ? CoRScene.createMat4(transform) : null;
 			// this.m_transforms.push(mat4);
 			// this.m_transes.push(entity);
-			if (this.m_layoutor == null) {
-				this.m_layoutor = new CoEntityLayout();
-				this.m_layoutor.initialize();
-				this.m_layoutor.layoutReset();
-			}
+			// if (this.m_layoutor == null) {
+			// 	this.m_layoutor = new CoEntityLayouter();
+			// 	this.m_layoutor.initialize();
+			// 	this.m_layoutor.layoutReset();
+			// }
 			this.m_layoutor.layoutAppendItem(entity, mat4);
-			
+
 			return node;
 		}
 		return null;
 	}
 
-	private m_transforms: IMatrix4[] = [];
-	private m_transes: ITransformEntity[] = [];
+	// private m_transforms: IMatrix4[] = [];
+	// private m_transes: ITransformEntity[] = [];
 	// private m_layoutor: NormalEntityLayout = null;
-	private m_layoutor: CoEntityLayout = null;
+	private m_layoutor: CoEntityLayouter = new CoEntityLayouter();
 
 	private updateLayout(rotationEnabled: boolean): void {
 		/*
@@ -215,8 +215,8 @@ class NormalEntityGroup extends NVEntityGroup {
 		this.entityManager = null;
 
 		this.uiscene = null;
-		this.m_transforms = null;
-		this.m_transes = null;
+		// this.m_transforms = null;
+		// this.m_transes = null;
 		if(this.m_layoutor != null) {
 			this.m_layoutor.layoutReset();
 			this.m_layoutor = null;

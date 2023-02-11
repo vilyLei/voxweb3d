@@ -8,7 +8,7 @@ import { ICoMath } from "../../math/ICoMath";
 declare var CoRScene: ICoRScene;
 declare var CoMath: ICoMath;
 
-class CoEntityLayout {
+class CoEntityLayouter {
 
 	private m_scaleV: IVector3D = null;
 	private m_tempMat: IMatrix4 = null;
@@ -19,12 +19,13 @@ class CoEntityLayout {
 	private m_transforms: IMatrix4[] = [];
 
 	constructor() { }
-	initialize(): void {
-		this.m_scaleV = CoRScene.createVec3();
-		this.m_tempMat = CoRScene.createMat4();
-		this.m_currMat = CoRScene.createMat4();
-		this.m_aabb = CoRScene.createAABB();
-		this.m_scaleV = CoRScene.createVec3();
+	private initialize(): void {
+		if(this.m_scaleV == null) {
+			this.m_scaleV = CoRScene.createVec3();
+			this.m_tempMat = CoRScene.createMat4();
+			this.m_currMat = CoRScene.createMat4();
+			this.m_aabb = CoRScene.createAABB();
+		}
 	}
 	getAABB(): IAABB {
 		return this.m_aabb;
@@ -39,7 +40,7 @@ class CoEntityLayout {
 		this.m_transforms.push(transform);
 	}	
 	layoutUpdate(rotationEnabled: boolean, fixSize: number = 300.0): void {
-
+		
 		this.rotationEnabled = rotationEnabled;
 		for (let k = 0; k < this.m_entities.length; ++k) {
 			let et = this.m_entities[k];
@@ -52,7 +53,7 @@ class CoEntityLayout {
 	}
 
 	calcAABB(entities: ITransformEntity[], transforms: IMatrix4[]): IAABB {
-
+		this.initialize();
 		let mat: IMatrix4 = this.m_tempMat;
 		let transform: IMatrix4;
 		let currMat: IMatrix4 = this.m_currMat;
@@ -78,7 +79,7 @@ class CoEntityLayout {
 	}
 	rotationEnabled: boolean = false;
 	fixToPosition(entities: ITransformEntity[], transforms: IMatrix4[], fixV3: IVector3D, baseSize: number = 300.0): void {
-
+		this.initialize();
 		let mat = this.m_tempMat;
 		let transform: IMatrix4;
 		let currMat = this.m_currMat;
@@ -150,4 +151,4 @@ class CoEntityLayout {
 	}
 }
 
-export { CoEntityLayout };
+export { CoEntityLayouter };
