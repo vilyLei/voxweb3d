@@ -73,6 +73,7 @@ class ItemObj {
     uuid = "";
     btn: SelectionBar | ProgressBar = null;
     desc: CtrlParamItem = null;
+    color = [1.0,1.0,1.0];
 }
 export default class ParamCtrlUI {
 
@@ -357,6 +358,7 @@ export default class ParamCtrlUI {
         }
         this.rgbPanel.setXY(this.m_btnPX, this.m_btnPY);
     }
+    
     private selectChange(evt: any): void {
 
         let selectEvt = evt as SelectionEvent;
@@ -408,15 +410,16 @@ export default class ParamCtrlUI {
         if (this.rgbPanel != null) this.rgbPanel.close();
         //*/
     }
-    private m_currUUID: string = "";
-    // private m_colorParamUnit: ColorParamUnit = null;
+    private m_currUUID = "";
     private valueChange(evt: any): void {
         
         let progEvt = evt as ProgressDataEvent;
-        console.log("valueChange, init...progEvt.status: ", progEvt.status);
         let value = progEvt.value;
         let uuid = progEvt.uuid;
         let map = this.m_btnMap;
+        let changeFlag = this.m_currUUID != uuid;
+        this.m_currUUID = uuid;
+        console.log("valueChange, init...progEvt.status: ", progEvt.status, "changeFlag: ", changeFlag);
         if (map.has(uuid)) {
             let obj = map.get(uuid);
             let item = obj.desc;
@@ -435,7 +438,7 @@ export default class ParamCtrlUI {
                         item.callback(item.type, uuid, [value], true);
                     }
                 }
-                if (this.rgbPanel != null) this.rgbPanel.close();
+                if (this.rgbPanel != null && changeFlag) this.rgbPanel.close();
             }else if(progEvt.status == 0){
                 console.log("select the btn");
                 if(item.colorPick) {
