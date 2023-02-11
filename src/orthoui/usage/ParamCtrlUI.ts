@@ -270,7 +270,7 @@ export default class ParamCtrlUI {
             let visibleAlways = t.visibleAlways ? t.visibleAlways : false;
             
             t.colorPick = t.colorPick ? t.colorPick : false;
-            
+
             switch (item.type) {
                 case "number_value":
                 case "number":
@@ -412,6 +412,7 @@ export default class ParamCtrlUI {
     private valueChange(evt: any): void {
         
         let progEvt = evt as ProgressDataEvent;
+        console.log("valueChange, init...progEvt.status: ", progEvt.status);
         let value = progEvt.value;
         let uuid = progEvt.uuid;
         let map = this.m_btnMap;
@@ -419,19 +420,22 @@ export default class ParamCtrlUI {
             let obj = map.get(uuid);
             let item = obj.desc;
             let btn = obj.btn as ProgressBar;
-
-            if(item.type == "progress") {
-                // console.log("valueChange: ", item.progress,value);
-                if(item.callback != null && Math.abs(item.progress - value) > 0.00001) {
-                    item.progress = value;
-                    item.callback(item.type, uuid, [value], true);
+            if(progEvt.status == 2) {
+                if(item.type == "progress") {
+                    // console.log("valueChange: ", item.progress,value);
+                    if(item.callback != null && Math.abs(item.progress - value) > 0.00001) {
+                        item.progress = value;
+                        item.callback(item.type, uuid, [value], true);
+                    }
+                }else {
+                    // console.log("valueChange: ", item.value,value);
+                    if(item.callback != null && Math.abs(item.value - value) > 0.00001) {
+                        item.value = value;
+                        item.callback(item.type, uuid, [value], true);
+                    }
                 }
-            }else {
-                // console.log("valueChange: ", item.value,value);
-                if(item.callback != null && Math.abs(item.value - value) > 0.00001) {
-                    item.value = value;
-                    item.callback(item.type, uuid, [value], true);
-                }
+            }else if(progEvt.status == 0){
+                console.log("select the btn");
             }
         }
         /*
