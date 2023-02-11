@@ -83,9 +83,59 @@ class ItemObj {
     type = "";
     uuid = "";
     btn: SelectionBar | ProgressBar = null;
-    desc: CtrlItemParam = null;
+    param: CtrlItemParam = null;
     color = [1.0, 1.0, 1.0];
     colorId = -1;
+    info: CtrlInfo = null;
+    updateparamToBtn(): void {
+    }
+    setValueToParam(value: number): void {
+        let param = this.param;
+        if (param.type == "progress") {
+            param.progress = value;
+        } else {
+            param.value = value;
+        }
+    }
+    /**
+     * 将颜色值由ui发送到外面
+     */
+    sendColorOut(color: Color4): void {
+        let param = this.param;
+        let vs = this.color;
+        color.toArray3(vs);
+        if (param.callback != null) {
+            let f = param.type == "progress" ? param.progress : param.value;
+            // console.log("sendColorOut f: ", f);
+            let cvs = vs.slice();
+            cvs[0] *= f; cvs[1] *= f; cvs[2] *= f;
+            this.info = { type: param.type, uuid: this.uuid, values: cvs, flag: true, colorPick: true };
+            param.callback(this.info);
+        }
+    }    
+    /**
+     * 将数值由ui发送到外面
+     */
+    sendValueOut(value: number): void {
+        let param = this.param;
+        let fp = param.type == "progress";
+        let f = fp ? param.progress : param.value;
+        if (param.callback != null && Math.abs(f - value) > 0.00001) {
+            if (fp) {
+                param.progress = value;
+            } else {
+                param.value = value;
+            }
+            if (param.colorPick) {
+                let cvs = this.color.slice();
+                cvs[0] *= value; cvs[1] *= value; cvs[2] *= value;
+                this.info = { type: param.type, uuid: this.uuid, values: cvs, flag: true, colorPick: true };
+            } else {
+                this.info = { type: param.type, uuid: this.uuid, values: [value], flag: true };
+            }
+            param.callback( this.info );
+        }
+    }
 }
 export default class ParamCtrlUI {
 
@@ -145,7 +195,6 @@ export default class ParamCtrlUI {
         if (buildDisplay) {
             this.initUI();
         }
-
     }
 
     private initUI(): void {
@@ -275,13 +324,13 @@ export default class ParamCtrlUI {
 
         let map = this.m_btnMap;
         if (!map.has(param.uuid)) {
+
             let obj = new ItemObj();
-            obj.desc = param;
+            obj.param = param;
             obj.type = param.type;
             obj.uuid = param.uuid;
             let t = param;
             let visibleAlways = t.visibleAlways ? t.visibleAlways : false;
-
             t.colorPick = t.colorPick ? t.colorPick : false;
 
             switch (param.type) {
@@ -293,23 +342,28 @@ export default class ParamCtrlUI {
                     obj.btn = this.createValueBtn(t.name, t.uuid, t.value, t.minValue, t.maxValue);
                     map.set(obj.uuid, obj);
                     if (!t.colorPick) {
-                        param.callback({type: param.type, uuid: param.uuid, values: [t.value], flag: t.flag});
+                        obj.info = { type: param.type, uuid: param.uuid, values: [t.value], flag: t.flag };
+                        param.callback(obj.info);
                     }
                     break;
                 case "progress":
+
                     t.progress = t.progress ? t.progress : 0.0;
                     obj.btn = this.createProgressBtn(t.name, t.uuid, t.progress, visibleAlways);
                     map.set(obj.uuid, obj);
                     if (!t.colorPick) {
-                        param.callback({type: param.type, uuid: param.uuid, values:[t.progress], flag:t.flag});
+                        obj.info = { type: param.type, uuid: param.uuid, values: [t.progress], flag: t.flag };
+                        param.callback(obj.info);
                     }
                     break;
                 case "status":
                 case "status_select":
+
                     t.flag = t.flag ? t.flag : false;
                     obj.btn = this.createSelectBtn(t.name, t.uuid, t.selectNS, t.deselectNS, t.flag, visibleAlways);
                     map.set(obj.uuid, obj);
-                    param.callback({type: param.type, uuid: param.uuid, values:[], flag: t.flag});
+                    obj.info = { type: param.type, uuid: param.uuid, values: [], flag: t.flag };
+                    param.callback(obj.info);
                     break;
                 default:
                     break;
@@ -317,8 +371,8 @@ export default class ParamCtrlUI {
         }
     }
     addItems(params: CtrlItemParam[]): void {
-        for(let i = 0; i < params.length; ++i) {
-            this.addItem( params[i] );
+        for (let i = 0; i < params.length; ++i) {
+            this.addItem(params[i]);
         }
     }
     private menuCtrl(flag: boolean): void {
@@ -365,19 +419,18 @@ export default class ParamCtrlUI {
         let map = this.m_btnMap;
         if (map.has(uuid)) {
             let obj = map.get(uuid);
-            let param = obj.desc;
+            let param = obj.param;
             let btn = obj.btn as SelectionBar;
             if (param.callback != null && param.flag != flag) {
                 param.flag = flag;
-                param.callback({type: param.type, uuid: uuid, values: [], flag: flag});
+                obj.info = { type: param.type, uuid: uuid, values: [], flag: flag };
+                param.callback(obj.info);
             }
             this.moveSelectToBtn(selectEvt.target);
         }
         if (this.rgbPanel != null) this.rgbPanel.close();
     }
     private m_currUUID = "";
-
-    // materialStatusVersion: number = 0;
     private selectColor(evt: any): void {
 
         let currEvt = evt as RGBColoSelectEvent;
@@ -386,26 +439,10 @@ export default class ParamCtrlUI {
         let map = this.m_btnMap;
         if (map.has(uuid)) {
             let obj = map.get(uuid);
-            let param = obj.desc;
+            let param = obj.param;
             if (param.colorPick) {
                 obj.colorId = currEvt.colorId;
-                let color = currEvt.color;
-                let vs = obj.color;
-                vs[0] = color.r;
-                vs[1] = color.g;
-                vs[2] = color.b;
-                if (param.callback != null) {
-                    let f = 1.0;
-                    if (param.type == "progress") {
-                        f = param.progress;
-                    } else {
-                        f = param.value;
-                    }
-                    console.log("select color f: ", f);
-                    let cvs = vs.slice();
-                    cvs[0] *= f; cvs[1] *= f; cvs[2] *= f;
-                    param.callback({type: param.type, uuid: uuid, values: cvs, flag: true, colorPick: true});
-                }
+                obj.sendColorOut(currEvt.color);
             }
         }
     }
@@ -420,35 +457,15 @@ export default class ParamCtrlUI {
         console.log("valueChange, init...progEvt.status: ", progEvt.status, "changeFlag: ", changeFlag);
         if (map.has(uuid)) {
             let obj = map.get(uuid);
-            let param = obj.desc;
+            let param = obj.param;
             let btn = obj.btn as ProgressBar;
             if (progEvt.status == 2) {
-                let dirty = false;
-                if (param.type == "progress") {
-                    // console.log("valueChange: ", param.progress,value);
-                    if (param.callback != null && Math.abs(param.progress - value) > 0.00001) {
-                        param.progress = value;
-                        dirty = true;
-                    }
-                } else {
-                    // console.log("valueChange: ", param.value,value);
-                    if (param.callback != null && Math.abs(param.value - value) > 0.00001) {
-                        param.value = value;
-                        dirty = true;
-                    }
-                }
-                if(dirty) {
-                    if (param.colorPick) {
-                        let cvs = obj.color.slice();
-                        cvs[0] *= value; cvs[1] *= value; cvs[2] *= value;
-                        param.callback({type: param.type, uuid: uuid, values: cvs, flag: true, colorPick: true});
-                    } else {
-                        param.callback({type: param.type, uuid: uuid, values: [value], flag: true});
-                    }
-                }
+
+                obj.sendValueOut(value);
+
                 if (this.rgbPanel != null && changeFlag) this.rgbPanel.close();
             } else if (progEvt.status == 0) {
-                console.log("select the btn");
+                console.log("only select the btn");
                 if (param.colorPick) {
                     if (this.rgbPanel != null && this.rgbPanel.isClosed()) {
                         this.rgbPanel.open();
@@ -464,7 +481,7 @@ export default class ParamCtrlUI {
     private mouseBgDown(evt: any): void {
         if (this.rgbPanel != null) this.rgbPanel.close();
     }
-    
+
     addStatusItem(name: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, callback: ItemCallback, visibleAlways: boolean = true): void {
         let param: CtrlItemParam = {
             type: "status_select", name: name, uuid: uuid,
