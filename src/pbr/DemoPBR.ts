@@ -4,7 +4,6 @@ import EventBase from "../vox/event/EventBase";
 import MouseEvent from "../vox/event/MouseEvent";
 import RendererDevice from "../vox/render/RendererDevice";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
-import CameraTrack from "../vox/view/CameraTrack";
 
 import RendererParam from "../vox/scene/RendererParam";
 import RendererScene from "../vox/scene/RendererScene";
@@ -19,32 +18,23 @@ import OcclusionPostOutline from "../renderingtoy/mcase/outline/OcclusionPostOut
 
 import { IShaderLibListener, CommonMaterialContext, MaterialContextParam } from "../materialLab/base/CommonMaterialContext";
 import { DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
-import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
-
-import ScreenAlignPlaneEntity from "../vox/entity/ScreenAlignPlaneEntity";
-import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import ScreenPlaneMaterial from "../vox/material/mcase/ScreenPlaneMaterial";
-import Axis3DEntity from "../vox/entity/Axis3DEntity";
-import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
-
 export class DemoPBR implements IShaderLibListener {
     constructor() { }
 
     private m_rscene: RendererScene = null;
     private m_ruisc: RendererSubScene = null;
-    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
+    private m_statusDisp = new RenderStatusDisplay();
 
-    //private m_profileInstance: ProfileInstance = new ProfileInstance();
-    private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
-    //private m_stencilOutline: StencilOutline = new StencilOutline();
+    private m_stageDragSwinger = new CameraStageDragSwinger();
+    private m_cameraZoomController = new CameraZoomController();
 
-    private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
+    private m_materialCtx = new DebugMaterialContext();
 
-    private m_postOutline: OcclusionPostOutline = new OcclusionPostOutline();
-    private m_uiModule: DefaultPBRUI = new DefaultPBRUI();
+    private m_postOutline = new OcclusionPostOutline();
+    private m_uiModule = new DefaultPBRUI();
     private m_pbrScene: PBRScene = null;
-    private m_lookV: Vector3D = new Vector3D(0.0,300.0,0.0);
+    private m_lookV = new Vector3D(0.0,300.0,0.0);
 
     initialize(): void {
 
@@ -66,27 +56,16 @@ export class DemoPBR implements IShaderLibListener {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();
-
-            // let materialBlock = new RenderableMaterialBlock();
-            // materialBlock.initialize();
-            // this.m_rscene.materialBlock = materialBlock;
-
-            // let entityBlock = new RenderableEntityBlock();
-            // entityBlock.initialize();
-            // this.m_rscene.entityBlock = entityBlock;
             
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_CLICK, this, this.mouseBgClick);
             this.m_rscene.addEventListener(EventBase.RESIZE, this, this.resize);
-            //  this.m_stencilOutline.initialize(this.m_rscene);
-            //  this.m_stencilOutline.setRGB3f(1.0, 0.0, 1.0);
             this.m_postOutline.initialize(this.m_rscene, 4, [0,1]);
             this.m_postOutline.setFBOSizeScaleRatio(0.5);
             this.m_postOutline.setOutlineThickness(1.0);
             this.m_postOutline.setOutlineDensity(2.3);
             this.m_postOutline.setOcclusionDensity(0.1);
-            //this.m_postOutline.setPostRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
 
             this.m_rscene.enableMouseEvent(true);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
@@ -95,9 +74,7 @@ export class DemoPBR implements IShaderLibListener {
             
             this.m_statusDisp.initialize();
 
-            //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-
-            let mcParam: MaterialContextParam = new MaterialContextParam();
+            let mcParam = new MaterialContextParam();
             mcParam.pointLightsTotal = 0;
             mcParam.directionLightsTotal = 2;
             mcParam.spotLightsTotal = 0;

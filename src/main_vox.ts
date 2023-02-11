@@ -347,7 +347,7 @@
 
 //  import {EffectExample as Demo} from "./renderingtoy/effectTest/example/EffectExample";
 
- import {EffectExample as Demo} from "./renderingtoy/effectTest/modelLoad/EffectExample";
+//  import {EffectExample as Demo} from "./renderingtoy/effectTest/modelLoad/EffectExample";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////
@@ -383,7 +383,7 @@
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
-//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
+ import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 

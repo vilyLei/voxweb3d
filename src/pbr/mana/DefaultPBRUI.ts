@@ -37,7 +37,7 @@ export class DefaultPBRUI implements IPBRUI {
 
     private m_rscene: RendererScene = null;
     private m_materialCtx: CommonMaterialContext = null;
-    
+
     postOutline: OcclusionPostOutline;
     ruisc: RendererSubScene = null;
 
@@ -72,7 +72,7 @@ export class DefaultPBRUI implements IPBRUI {
             this.m_materialCtx = materialCtx;
 
             CanvasTextureTool.GetInstance().initialize(this.m_rscene);
-            CanvasTextureTool.GetInstance().initializeAtlas(1024,1024, new Color4(1.0,1.0,1.0,0.0), true);
+            CanvasTextureTool.GetInstance().initializeAtlas(1024, 1024, new Color4(1.0, 1.0, 1.0, 0.0), true);
             this.initUIScene(buildDisplay);
         }
     }
@@ -126,7 +126,7 @@ export class DefaultPBRUI implements IPBRUI {
     }
     setParamEntity(param: IPBRParamEntity): void {
         this.m_paramEntity = param;
-        if(param != null) {
+        if (param != null) {
             this.m_paramEntity.pbrUI = this;
             this.m_paramEntity.colorPanel = this.rgbPanel;
         }
@@ -139,15 +139,15 @@ export class DefaultPBRUI implements IPBRUI {
     private m_btnPX: number = 122.0;
     private m_btnPY: number = 10.0;
     private m_btnYSpace: number = 4.0;
-    private m_pos: Vector3D = new Vector3D();
-    private m_selectPlane:Plane3DEntity = null;
+    private m_pos = new Vector3D();
+    private m_selectPlane: Plane3DEntity = null;
 
     private m_btns: any[] = [];
     private m_menuBtn: SelectionBar = null;
     private m_minBtnX: number = 10000;
     private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
 
-        let selectBar: SelectionBar = new SelectionBar();
+        let selectBar = new SelectionBar();
         selectBar.uuid = uuid;
         selectBar.initialize(this.ruisc, ns, selectNS, deselectNS, this.m_btnSize);
         selectBar.addEventListener(SelectionEvent.SELECT, this, this.selectChange);
@@ -162,7 +162,7 @@ export class DefaultPBRUI implements IPBRUI {
         if (!visibleAlways) this.m_btns.push(selectBar);
 
         let minX = this.m_btnPX + selectBar.getRect().x;
-        if(minX < this.m_minBtnX) {
+        if (minX < this.m_minBtnX) {
             this.m_minBtnX = minX;
         }
         return selectBar;
@@ -179,7 +179,7 @@ export class DefaultPBRUI implements IPBRUI {
         if (!visibleAlways) this.m_btns.push(proBar);
 
         let minX = this.m_btnPX + proBar.getRect().x;
-        if(minX < this.m_minBtnX) {
+        if (minX < this.m_minBtnX) {
             this.m_minBtnX = minX;
         }
         return proBar;
@@ -200,13 +200,13 @@ export class DefaultPBRUI implements IPBRUI {
         if (!visibleAlways) this.m_btns.push(proBar);
 
         let minX = this.m_btnPX + proBar.getRect().x;
-        if(minX < this.m_minBtnX) {
+        if (minX < this.m_minBtnX) {
             this.m_minBtnX = minX;
         }
         return proBar;
     }
     private moveSelectToBtn(btn: ProgressBar | SelectionBar): void {
-       
+
         let rect: AABB2D = btn.getRect();
         btn.getPosition(this.m_pos);
         this.m_pos.x += rect.x;
@@ -230,15 +230,15 @@ export class DefaultPBRUI implements IPBRUI {
 
         this.m_selectPlane = new Plane3DEntity();
         this.m_selectPlane.vertColorEnabled = true;
-        this.m_selectPlane.color0.setRGB3f(0.0,0.3,0.0);
-        this.m_selectPlane.color1.setRGB3f(0.0,0.3,0.0);
-        this.m_selectPlane.color2.setRGB3f(0.0,0.5,0.5);
-        this.m_selectPlane.color3.setRGB3f(0.0,0.5,0.5);
-        this.m_selectPlane.initializeXOY(0,0,1.0,1.0);
+        this.m_selectPlane.color0.setRGB3f(0.0, 0.3, 0.0);
+        this.m_selectPlane.color1.setRGB3f(0.0, 0.3, 0.0);
+        this.m_selectPlane.color2.setRGB3f(0.0, 0.5, 0.5);
+        this.m_selectPlane.color3.setRGB3f(0.0, 0.5, 0.5);
+        this.m_selectPlane.initializeXOY(0, 0, 1.0, 1.0);
         this.ruisc.addEntity(this.m_selectPlane);
-        this.m_selectPlane.setVisible( false );
+        this.m_selectPlane.setVisible(false);
 
-        this.metalBtn = this.createProgressBtn("metal", "metal", 0.5);     
+        this.metalBtn = this.createProgressBtn("metal", "metal", 0.5);
         this.roughBtn = this.createProgressBtn("roughness", "rough", 0.5);
         this.noiseBtn = this.createProgressBtn("noise", "noise", 0.07);
         this.reflectionBtn = this.createProgressBtn("reflection", "reflection", 0.5);
@@ -286,7 +286,7 @@ export class DefaultPBRUI implements IPBRUI {
             default:
                 break;
         }
-        this.materialStatusVersion ++;
+        this.materialStatusVersion++;
     }
     private menuCtrl(flag: boolean): void {
 
@@ -298,7 +298,7 @@ export class DefaultPBRUI implements IPBRUI {
             this.m_pos.x = this.m_btnPX;
             this.m_menuBtn.setPosition(this.m_pos);
         }
-        else if(this.m_btns[0].isOpen()){
+        else if (this.m_btns[0].isOpen()) {
             for (let i: number = 0; i < this.m_btns.length; ++i) {
                 this.m_btns[i].close();
             }
@@ -328,14 +328,14 @@ export class DefaultPBRUI implements IPBRUI {
 
         switch (selectEvt.uuid) {
             case "absorb":
-                if(this.m_paramEntity != null && this.m_paramEntity.absorbEnabled != flag) {
+                if (this.m_paramEntity != null && this.m_paramEntity.absorbEnabled != flag) {
                     material = (this.m_paramEntity.getMaterial() as IPBRMaterial).clone();
                     material.decorator.absorbEnabled = flag;
                     this.m_paramEntity.absorbEnabled = flag;
                 }
                 break;
             case "vtxNoise":
-                if(this.m_paramEntity != null && this.m_paramEntity.vtxNoiseEnabled != flag) {
+                if (this.m_paramEntity != null && this.m_paramEntity.vtxNoiseEnabled != flag) {
                     material = (this.m_paramEntity.getMaterial() as IPBRMaterial).clone();
                     material.decorator.normalNoiseEnabled = flag;
                     this.m_paramEntity.vtxNoiseEnabled = flag;
@@ -363,7 +363,7 @@ export class DefaultPBRUI implements IPBRUI {
 
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
         let value: number = progEvt.value;
-        if(this.m_paramEntity == null) {
+        if (this.m_paramEntity == null) {
             return;
         }
         let material: IPBRMaterial = this.m_paramEntity.getMaterial();
@@ -371,7 +371,7 @@ export class DefaultPBRUI implements IPBRUI {
         this.m_currUUID = progEvt.uuid;
         let colorParamUnit: ColorParamUnit;
         this.moveSelectToBtn(progEvt.target);
-        
+
         switch (progEvt.uuid) {
             case "metal":
                 material.setMetallic(value);
@@ -424,7 +424,7 @@ export class DefaultPBRUI implements IPBRUI {
             default:
                 break;
         }
-        this.materialStatusVersion ++;
+        this.materialStatusVersion++;
         if (colorParamUnit != null) {
             if (progEvt.status != 0) {
                 if (this.m_colorParamUnit != colorParamUnit) {
