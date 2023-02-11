@@ -5,11 +5,11 @@ import RendererParam from "../../vox/scene/RendererParam";
 import RendererScene from "../../vox/scene/RendererScene";
 
 import RendererSubScene from "../../vox/scene/RendererSubScene";
+import SelectionBar from "../../orthoui/button/SelectionBar";
 import ProgressBar from "../../orthoui/button/ProgressBar";
 import ProgressDataEvent from "../../vox/event/ProgressDataEvent";
 import CanvasTextureTool from "../../orthoui/assets/CanvasTextureTool";
 import SelectionEvent from "../../vox/event/SelectionEvent";
-import SelectionBar from "../../orthoui/button/SelectionBar";
 import RGBColorPanel, { RGBColoSelectEvent } from "../../orthoui/panel/RGBColorPanel";
 import Color4 from "../../vox/material/Color4";
 import Vector3D from "../../vox/math/Vector3D";
@@ -17,126 +17,9 @@ import MathConst from "../../vox/math/MathConst";
 import AABB2D from "../../vox/geom/AABB2D";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 
-// ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false
-// ns: string, uuid: string, progress: number, visibleAlways: boolean = false
-// ns: string, uuid: string, value: number, minValue: number, maxValue: number, visibleAlways: boolean = false
-interface CtrlInfo {
-    type: string;
-    uuid: string;
-    values: number[];
-    flag: boolean;
-    colorPick?: boolean;
-}
-type ItemCallback = (info: CtrlInfo) => void;
-interface CtrlItemParam {
 
-    name: string;
-    uuid: string;
-    callback: ItemCallback;
-    /**
-     * 存放 颜色值等参数
-     */
-    values?: number[];
-    /**
-     * 取值说明: "number_value"(数值调节按钮),"progress"(百分比调节按钮),"status_select"(状态选择按钮)
-     */
-    type: string;
-    /**
-     * 是否需要动态拾取颜色
-     */
-    colorPick?: boolean;
-    /**
-     * 状态选择按钮选中的状态名
-     */
-    selectNS?: string;
-    /**
-     * 状态选择按钮取消选中的状态名
-     */
-    deselectNS?: string;
-    /**
-     * 状态选中按钮初始状态
-     */
-    flag?: boolean;
-    /**
-     * 是否总是显示
-     */
-    visibleAlways?: boolean;
-    /**
-     * 百分比按钮(取值于0.0 -> 1.0)初始值
-     */
-    progress?: number;
-    /**
-     * 数值调节按钮的初始值
-     */
-    value?: number;
-    /**
-     * 数值调节按钮的取值范围最小值
-     */
-    minValue?: number;
-    /**
-     * 数值调节按钮的取值范围最大值
-     */
-    maxValue?: number;
-}
-class ItemObj {
-    constructor() { }
-    type = "";
-    uuid = "";
-    btn: SelectionBar | ProgressBar = null;
-    param: CtrlItemParam = null;
-    color = [1.0, 1.0, 1.0];
-    colorId = -1;
-    info: CtrlInfo = null;
-    updateparamToBtn(): void {
-    }
-    setValueToParam(value: number): void {
-        let param = this.param;
-        if (param.type == "progress") {
-            param.progress = value;
-        } else {
-            param.value = value;
-        }
-    }
-    /**
-     * 将颜色值由ui发送到外面
-     */
-    sendColorOut(color: Color4): void {
-        let param = this.param;
-        let vs = this.color;
-        color.toArray3(vs);
-        if (param.callback != null) {
-            let f = param.type == "progress" ? param.progress : param.value;
-            // console.log("sendColorOut f: ", f);
-            let cvs = vs.slice();
-            cvs[0] *= f; cvs[1] *= f; cvs[2] *= f;
-            this.info = { type: param.type, uuid: this.uuid, values: cvs, flag: true, colorPick: true };
-            param.callback(this.info);
-        }
-    }    
-    /**
-     * 将数值由ui发送到外面
-     */
-    sendValueOut(value: number): void {
-        let param = this.param;
-        let fp = param.type == "progress";
-        let f = fp ? param.progress : param.value;
-        if (param.callback != null && Math.abs(f - value) > 0.00001) {
-            if (fp) {
-                param.progress = value;
-            } else {
-                param.value = value;
-            }
-            if (param.colorPick) {
-                let cvs = this.color.slice();
-                cvs[0] *= value; cvs[1] *= value; cvs[2] *= value;
-                this.info = { type: param.type, uuid: this.uuid, values: cvs, flag: true, colorPick: true };
-            } else {
-                this.info = { type: param.type, uuid: this.uuid, values: [value], flag: true };
-            }
-            param.callback( this.info );
-        }
-    }
-}
+import { CtrlInfo, ItemCallback, CtrlItemParam, CtrlItemObj } from "./ctrlui/CtrlItemObj";
+
 export default class ParamCtrlUI {
 
     private m_rscene: RendererScene = null;
@@ -318,14 +201,14 @@ export default class ParamCtrlUI {
         this.rgbPanel.close();
         this.ruisc.addContainer(this.rgbPanel, 1);
     }
-    private m_btnMap: Map<string, ItemObj> = new Map();
+    private m_btnMap: Map<string, CtrlItemObj> = new Map();
     //"number_value"(数值调节按钮),"progress"(百分比调节按钮),"status_select"(状态选择按钮)
     addItem(param: CtrlItemParam): void {
 
         let map = this.m_btnMap;
         if (!map.has(param.uuid)) {
 
-            let obj = new ItemObj();
+            let obj = new CtrlItemObj();
             obj.param = param;
             obj.type = param.type;
             obj.uuid = param.uuid;
@@ -518,4 +401,4 @@ export default class ParamCtrlUI {
         this.addItem(param);
     }
 }
-export { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI };
+export { CtrlInfo, ItemCallback, CtrlItemParam, CtrlItemObj, ParamCtrlUI };
