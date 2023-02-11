@@ -84,7 +84,6 @@ export class DemoShaderMaterial {
             // if (nvs == null) {
             //     SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
             // }
-            // let material = this.m_material = new EffectMaterial();
             // let material = this.m_material = CoMaterial.createDefaultMaterial();
             // material.setTextureList([
             //     this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")

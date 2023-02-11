@@ -19,6 +19,7 @@ import { CoDataModule } from "../../../app/common/CoDataModule";
 import { NormalEntityManager } from "./NormalEntityManager";
 import { NVEntityGroup } from "./NVEntityGroup";
 import { BoxLine3D } from "../../../edit/entity/BoxLine3D";
+import { CoEntityLayout } from "../../common/CoEntityLayout";
 
 declare var CoUI: ICoUI;
 declare var CoRScene: ICoRScene;
@@ -161,9 +162,15 @@ class NormalEntityGroup extends NVEntityGroup {
 			node.transUI = this.transUI;
 			let entity = node.setEntityModel(model);
 			let mat4 = transform != null ? CoRScene.createMat4(transform) : null;
-			this.m_transforms.push(mat4);
-			this.m_transes.push(entity);
-
+			// this.m_transforms.push(mat4);
+			// this.m_transes.push(entity);
+			if (this.m_layoutor == null) {
+				this.m_layoutor = new CoEntityLayout();
+				this.m_layoutor.initialize();
+				this.m_layoutor.layoutReset();
+			}
+			this.m_layoutor.layoutAppendItem(entity, mat4);
+			
 			return node;
 		}
 		return null;
@@ -171,9 +178,11 @@ class NormalEntityGroup extends NVEntityGroup {
 
 	private m_transforms: IMatrix4[] = [];
 	private m_transes: ITransformEntity[] = [];
-	private m_layoutor: NormalEntityLayout = null;
+	// private m_layoutor: NormalEntityLayout = null;
+	private m_layoutor: CoEntityLayout = null;
 
 	private updateLayout(rotationEnabled: boolean): void {
+		/*
 		if (this.m_layoutor == null) {
 			this.m_layoutor = new NormalEntityLayout();
 			this.m_layoutor.initialize();
@@ -189,6 +198,8 @@ class NormalEntityGroup extends NVEntityGroup {
 		this.m_layoutor.fixToPosition(this.m_transes, this.m_transforms, pivot, 300.0);
 		// this.m_transforms = null;
 		// this.m_transes = null;
+		//*/
+		this.m_layoutor.layoutUpdate(rotationEnabled);
 	}
 
 	destroy(): void {
@@ -206,7 +217,10 @@ class NormalEntityGroup extends NVEntityGroup {
 		this.uiscene = null;
 		this.m_transforms = null;
 		this.m_transes = null;
-		this.m_layoutor = null;
+		if(this.m_layoutor != null) {
+			this.m_layoutor.layoutReset();
+			this.m_layoutor = null;
+		}
 
 		this.rsc = null;
 		if(this.m_coapp != null) {
