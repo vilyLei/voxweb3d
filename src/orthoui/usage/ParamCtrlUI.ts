@@ -285,13 +285,17 @@ export default class ParamCtrlUI {
                     t.maxValue = t.maxValue ? t.maxValue : 10.0;
                     obj.btn = this.createValueBtn(t.name, t.uuid, t.value, t.minValue, t.maxValue);
                     map.set(obj.uuid, obj);
-                    item.callback(item.type, item.uuid, [t.value], t.flag);
+                    if (!t.colorPick) {
+                        item.callback(item.type, item.uuid, [t.value], t.flag);
+                    }
                     break;
                 case "progress":
                     t.progress = t.progress ? t.progress : 0.0;
                     obj.btn = this.createProgressBtn(t.name, t.uuid, t.progress, visibleAlways);
                     map.set(obj.uuid, obj);
-                    item.callback(item.type, item.uuid, [t.progress], t.flag);
+                    if (!t.colorPick) {
+                        item.callback(item.type, item.uuid, [t.progress], t.flag);
+                    }
                     break;
                 case "status":
                 case "status_select":
@@ -382,7 +386,7 @@ export default class ParamCtrlUI {
                     let f = 1.0;
                     if (item.type == "progress") {
                         f = item.progress;
-                    }else {
+                    } else {
                         f = item.value;
                     }
                     console.log("select color f: ", f);
