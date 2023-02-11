@@ -197,7 +197,7 @@ class NVTransUI {
 			this.m_transBtns.push(btn);
 			if (btnTypes[i] == 1) {
 				if(defaultKey == "") {
-					defaultKey = keys[1];
+					defaultKey = keys[i];
 				}
 				this.m_btnGroup.addButton(btn);
 			}
