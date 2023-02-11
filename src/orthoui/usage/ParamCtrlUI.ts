@@ -268,6 +268,9 @@ export default class ParamCtrlUI {
             obj.uuid = item.uuid;
             let t = item;
             let visibleAlways = t.visibleAlways ? t.visibleAlways : false;
+            
+            t.colorPick = t.colorPick ? t.colorPick : false;
+            
             switch (item.type) {
                 case "number_value":
                 case "number":
@@ -345,7 +348,7 @@ export default class ParamCtrlUI {
         let dis = 5 - this.m_minBtnX;
         let pos = new Vector3D();
         let btns = force ? this.m_btns : this.m_visiBtns;
-        console.log("XXXX btns.length: ", btns.length);
+        
         for (let i = 0; i < btns.length; ++i) {
             btns[i].getPosition(pos);
             pos.x += dis;

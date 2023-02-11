@@ -138,7 +138,7 @@ export class DemoParamCtrlUI {
         });
         this.createValueBtn("长度", "width", 500, 100, 700,(type: string, uuid: string, values: number[], flag: boolean): void => {
             console.log("value: ", values[0]);
-        });
+        }, true);
         ui.alignBtns(true);
 
         this.m_grap.addScene(this.m_rscene);
