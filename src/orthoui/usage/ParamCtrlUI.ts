@@ -355,6 +355,7 @@ export default class ParamCtrlUI {
             btns[i].setPosition(pos);
             btns[i].update();
         }
+        this.rgbPanel.setXY(this.m_btnPX, this.m_btnPY);
     }
     private selectChange(evt: any): void {
 
@@ -434,8 +435,14 @@ export default class ParamCtrlUI {
                         item.callback(item.type, uuid, [value], true);
                     }
                 }
+                if (this.rgbPanel != null) this.rgbPanel.close();
             }else if(progEvt.status == 0){
                 console.log("select the btn");
+                if(item.colorPick) {
+                    if (this.rgbPanel != null && this.rgbPanel.isClosed()) this.rgbPanel.open();
+                }else {
+                    if (this.rgbPanel != null) this.rgbPanel.close();
+                }
             }
         }
         /*
