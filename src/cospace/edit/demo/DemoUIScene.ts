@@ -282,7 +282,7 @@ export class DemoUIScene {
 		this.m_uiScene.addEntity(iconLable);
 		//*/
 		//return;
-		/*
+		///*
 		let canvas = texAtlas.createCharsCanvasFixSize(100, 40, "ABC", 30);
 		document.body.appendChild(canvas);
 		// canvas = texAtlas.createCharsCanvasFixSize(100, 40, "ABCD", 30);
@@ -293,7 +293,7 @@ export class DemoUIScene {
 		let clipColorLabel = new ClipColorLabel();
 		// let clipColorLabel = CoUI.createClipColorLabel();
 		// clipColorLabel.initialize(texAtlas, "ABC", 4);
-		// clipColorLabel.initializeWithoutTex(50, 32, 4);
+		clipColorLabel.initializeWithoutTex(50, 32, 4);
 		clipColorLabel.getColorAt(0).setRGB3f(0.0, 0.8, 0.8);
 		clipColorLabel.getColorAt(1).setRGB3f(0.2, 1.0, 0.2);
 		clipColorLabel.getColorAt(2).setRGB3f(1.0, 0.2, 1.0);
