@@ -15,7 +15,7 @@ import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwing
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 
 import RendererSubScene from "../../vox/scene/RendererSubScene";
-import { ItemCallback, CtrlParamItem, ParamCtrlUI } from "../usage/ParamCtrlUI";
+import { ItemCallback, CtrlItemParam, ParamCtrlUI } from "../usage/ParamCtrlUI";
 import RendererSceneGraph from "../../vox/scene/RendererSceneGraph";
 import IRendererSceneGraphStatus from "../../vox/scene/IRendererSceneGraphStatus";
 import IRendererScene from "../../vox/scene/IRendererScene";
@@ -81,7 +81,7 @@ export class DemoParamCtrlUI {
 
     private m_ruisc: RendererSubScene = null;
     private createSelectBtn(name: string, uuid: string, selectNS: string, deselectNS: string, callback: ItemCallback): void {
-        let item: CtrlParamItem = {
+        let item: CtrlItemParam = {
             type: "status_select", name: name, uuid: uuid,
             selectNS: selectNS, deselectNS: deselectNS,
             flag: false,
@@ -93,7 +93,7 @@ export class DemoParamCtrlUI {
         ui.addItem(item);
     }
     private createProgressBtn(name: string, uuid: string, progress: number, callback: ItemCallback, colorPick?: boolean): void {
-        let item: CtrlParamItem = {
+        let item: CtrlItemParam = {
             type: "progress", name: name, uuid: uuid,
             progress: progress,
             visibleAlways: true,
@@ -105,14 +105,15 @@ export class DemoParamCtrlUI {
         ui.addItem(item);
     }
 
-    private createValueBtn(name: string, uuid: string, value: number, minValue: number, maxValue: number, callback: ItemCallback, colorPick?: boolean): void {
-        let item: CtrlParamItem = {
+    private createValueBtn(name: string, uuid: string, value: number, minValue: number, maxValue: number, callback: ItemCallback, colorPick?: boolean, values?: number[]): void {
+        let item: CtrlItemParam = {
             type: "number_value", name: name, uuid: uuid,
             value: value,
             minValue: minValue,
             maxValue: maxValue,
             visibleAlways: true,
             colorPick: colorPick,
+            values: values,
             callback: callback
         };
 

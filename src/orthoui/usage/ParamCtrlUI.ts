@@ -21,11 +21,15 @@ import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 // ns: string, uuid: string, progress: number, visibleAlways: boolean = false
 // ns: string, uuid: string, value: number, minValue: number, maxValue: number, visibleAlways: boolean = false
 type ItemCallback = (type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean) => void;
-interface CtrlParamItem {
+interface CtrlItemParam {
 
     name: string;
     uuid: string;
     callback: ItemCallback;
+    /**
+     * 存放 颜色值等参数
+     */
+    values?: number[];
     /**
      * 取值说明: "number_value"(数值调节按钮),"progress"(百分比调节按钮),"status_select"(状态选择按钮)
      */
@@ -72,8 +76,9 @@ class ItemObj {
     type = "";
     uuid = "";
     btn: SelectionBar | ProgressBar = null;
-    desc: CtrlParamItem = null;
+    desc: CtrlItemParam = null;
     color = [1.0, 1.0, 1.0];
+    colorId = -1;
 }
 export default class ParamCtrlUI {
 
@@ -260,7 +265,7 @@ export default class ParamCtrlUI {
     }
     private m_btnMap: Map<string, ItemObj> = new Map();
     //"number_value"(数值调节按钮),"progress"(百分比调节按钮),"status_select"(状态选择按钮)
-    addItem(item: CtrlParamItem): void {
+    addItem(item: CtrlItemParam): void {
         let map = this.m_btnMap;
         if (!map.has(item.uuid)) {
             let obj = new ItemObj();
@@ -352,52 +357,21 @@ export default class ParamCtrlUI {
             }
         }
         if (this.rgbPanel != null) this.rgbPanel.close();
-        /*
-        let material: IPBRMaterial = null;
-
-        switch (selectEvt.uuid) {
-            case "absorb":
-                if (this.m_paramEntity != null && this.m_paramEntity.absorbEnabled != flag) {
-                    material = (this.m_paramEntity.getMaterial() as IPBRMaterial).clone();
-                    material.decorator.absorbEnabled = flag;
-                    this.m_paramEntity.absorbEnabled = flag;
-                }
-                break;
-            case "vtxNoise":
-                if (this.m_paramEntity != null && this.m_paramEntity.vtxNoiseEnabled != flag) {
-                    material = (this.m_paramEntity.getMaterial() as IPBRMaterial).clone();
-                    material.decorator.normalNoiseEnabled = flag;
-                    this.m_paramEntity.vtxNoiseEnabled = flag;
-                }
-                break;
-            case "menuCtrl":
-                this.menuCtrl(!flag);
-                return;
-                break;
-            default:
-                break;
-        }
-        if (this.m_paramEntity != null && material != null) {
-            this.m_rscene.removeEntity(this.m_paramEntity.entity);
-            material.initializeByCodeBuf(true);
-            this.m_paramEntity.setMaterial(material);
-            this.m_paramEntity.entity.setMaterial(material as any);
-            this.m_rscene.addEntity(this.m_paramEntity.entity);
-        }
-        if (this.rgbPanel != null) this.rgbPanel.close();
-        //*/
     }
     private m_currUUID = "";
 
     // materialStatusVersion: number = 0;
     private selectColor(evt: any): void {
+
         let currEvt = evt as RGBColoSelectEvent;
+        console.log("selectColor, currEvt: ", currEvt);
         let uuid = this.m_currUUID;
         let map = this.m_btnMap;
         if (map.has(uuid)) {
             let obj = map.get(uuid);
             let item = obj.desc;
             if (item.colorPick) {
+                obj.colorId = currEvt.colorId;
                 let color = currEvt.color;
                 let vs = obj.color;
                 vs[0] = color.r;
@@ -572,4 +546,4 @@ export default class ParamCtrlUI {
         if (this.rgbPanel != null) this.rgbPanel.close();
     }
 }
-export { ItemCallback, CtrlParamItem, ParamCtrlUI };
+export { ItemCallback, CtrlItemParam, ParamCtrlUI };
