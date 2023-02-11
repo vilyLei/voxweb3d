@@ -346,7 +346,7 @@ export default class ParamCtrlUI {
         let pos = new Vector3D();
         let btns = force ? this.m_btns : this.m_visiBtns;
         console.log("XXXX btns.length: ", btns.length);
-        for (let i = 0; i < this.m_visiBtns.length; ++i) {
+        for (let i = 0; i < btns.length; ++i) {
             btns[i].getPosition(pos);
             pos.x += dis;
             btns[i].setPosition(pos);
