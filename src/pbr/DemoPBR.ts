@@ -193,7 +193,7 @@ export class DemoPBR implements IShaderLibListener {
         }
     }
     private renderBegin(): void {
-        let pickFlag: boolean = false;
+        let pickFlag = false;
         if (this.m_ruisc != null) {
             this.m_ruisc.runBegin(true, true);
             this.m_ruisc.update(false, true);
@@ -201,7 +201,7 @@ export class DemoPBR implements IShaderLibListener {
             
         }
         this.m_stageDragSwinger.setEnabled(!pickFlag);
-        let uiFlag: boolean = this.m_uiModule.isOpen();
+        let uiFlag = this.m_uiModule.isOpen();
         this.m_rscene.runBegin(false);
         // 如果ui panel 打开, 才会允许 this.m_rscene 鼠标事件检测到3d物体
         this.m_rscene.setRayTestEnabled(uiFlag);

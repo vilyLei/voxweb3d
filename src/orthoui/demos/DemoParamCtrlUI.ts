@@ -75,7 +75,8 @@ export class DemoParamCtrlUI {
 
     private m_ruisc: RendererSubScene = null;
     private initUI(): void {
-
+        this.m_ui.initialize(this.m_rscene, true);
+        this.m_ruisc = this.m_ui.ruisc;
 
     }
     private mouseDown(evt: any): void {
@@ -99,19 +100,21 @@ export class DemoParamCtrlUI {
 
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(null, 30.0);
-        let renderingType = 0;
-        if(renderingType < 1) {
+
+        let renderingType = 1;
+        if(renderingType < 1 || this.m_ruisc == null) {
             // current rendering strategy
             this.m_rscene.run( true );
             if(this.m_ruisc != null) this.m_ruisc.run( true );
         }
         else {
             /////////////////////////////////////////////////////// ---- mouseTest begin.
-            let pickFlag: boolean = true;
+            let pickFlag = false;
 
             this.m_ruisc.runBegin(true, true);
             this.m_ruisc.update(false, true);
             pickFlag = this.m_ruisc.isRayPickSelected();
+            this.m_stageDragSwinger.setEnabled(!pickFlag);
 
             this.m_rscene.runBegin(false);
             this.m_rscene.update(false, !pickFlag);
@@ -128,7 +131,6 @@ export class DemoParamCtrlUI {
             this.m_ruisc.renderBegin();
             this.m_ruisc.run(false);
             this.m_ruisc.runEnd();
-
             /////////////////////////////////////////////////////// ---- rendering end.
 
         }
