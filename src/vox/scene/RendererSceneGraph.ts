@@ -67,13 +67,17 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
 
         let pickFlag: boolean = true;
         let list = this.m_nodes;
-        let total: number = list.length;
-        let i: number = total - 1;
+        let total = list.length;
+        let i = total - 1;
 
-        let scene: IRendererScene = list[i].getRScene();
+        const node = list[i] as RendererSceneNode;
+        let scene = list[i].getRScene();
+        if(node.p0Call0)node.p0Call0(scene, this);
         scene.runBegin(true, true);
         scene.update(false, true);
         pickFlag = scene.isRayPickSelected();
+        this.rayPickFlag = pickFlag;
+        if(node.p0Call1)node.p0Call1(scene, this);
 
         i -= 1;
         for (; i >= 0; --i) {
@@ -83,7 +87,7 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
             scene.runBegin(false, true);
             scene.update(false, !pickFlag);
             pickFlag = pickFlag || scene.isRayPickSelected();
-            this.rayPickFlag = pickFlag;  
+            this.rayPickFlag = pickFlag;
             if(node.p0Call1)node.p0Call1(scene, this);
         }
         /////////////////////////////////////////////////////// ---- mouseTest end.

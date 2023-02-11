@@ -17,6 +17,8 @@ import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 import RendererSubScene from "../../vox/scene/RendererSubScene";
 import { ItemCallback, CtrlParamItem, ParamCtrlUI } from "../usage/ParamCtrlUI";
 import RendererSceneGraph from "../../vox/scene/RendererSceneGraph";
+import IRendererSceneGraphStatus from "../../vox/scene/IRendererSceneGraphStatus";
+import IRendererScene from "../../vox/scene/IRendererScene";
 
 export class DemoParamCtrlUI {
     constructor() { }
@@ -140,7 +142,11 @@ export class DemoParamCtrlUI {
         ui.alignBtns(true);
 
         this.m_grap.addScene(this.m_rscene);
-        this.m_grap.addScene(this.m_ruisc);
+        let node = this.m_grap.addScene(this.m_ruisc);
+        node.setPhase0Callback(null, (sc: IRendererScene, st: IRendererSceneGraphStatus): void => {
+            // console.log("ooooo");
+            this.m_stageDragSwinger.setEnabled(!st.rayPickFlag);
+        })
     }
     private mouseDown(evt: any): void {
         // console.log("mouse down... ...");

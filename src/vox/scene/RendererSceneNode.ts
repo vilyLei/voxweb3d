@@ -21,6 +21,7 @@ export default class RendererSceneNode implements IRendererSceneNode {
     setPhase0Callback(beforeCall: STCall, afterCall: STCall): void {
         this.p0Call0 = beforeCall;
         this.p0Call1 = afterCall;
+        console.log("NNNNNNNNNNNNNNNN this.p0Call1: ", this.p0Call1);
     }
     setPhase1Callback(beforeCall: STCall, afterCall: STCall): void {
         this.p1Call0 = beforeCall;
