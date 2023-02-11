@@ -15,7 +15,7 @@ import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwing
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 
 import RendererSubScene from "../../vox/scene/RendererSubScene";
-import { ItemCallback, CtrlItemParam, ParamCtrlUI } from "../usage/ParamCtrlUI";
+import { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../usage/ParamCtrlUI";
 import RendererSceneGraph from "../../vox/scene/RendererSceneGraph";
 import IRendererSceneGraphStatus from "../../vox/scene/IRendererSceneGraphStatus";
 import IRendererScene from "../../vox/scene/IRendererScene";
@@ -102,40 +102,44 @@ export class DemoParamCtrlUI {
         this.m_ruisc = ui.ruisc;
         
         console.log("initUI --------------------------------------");
-        ui.addStatusItem("显示-A", "visible-a", "Yes", "No", true, (type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean): void => {
+        ///*
+        ui.addStatusItem("显示-A", "visible-a", "Yes", "No", true, (info: CtrlInfo): void => {
             // console.log("flag: ", flag);
-            this.m_box0.setVisible(flag);
+            this.m_box0.setVisible(info.flag);
         });
-        ui.addStatusItem("显示-B", "visible-b", "Yes", "No", true, (type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean): void => {
+        ui.addStatusItem("显示-B", "visible-b", "Yes", "No", true, (info: CtrlInfo): void => {
             // console.log("flag: ", flag);
-            this.m_box1.setVisible(flag);
+            this.m_box1.setVisible(info.flag);
         });
-        ui.addProgressItem("缩放-A", "scale", 1.0, (type: string, uuid: string, values: number[], flag: boolean, colorPick?: boolean): void => {
+        ui.addProgressItem("缩放-A", "scale", 1.0, (info: CtrlInfo): void => {
             // console.log("progress: ", values[0]);
-            let s = values[0];
+            let s = info.values[0];
             this.m_box0.setScaleXYZ(s,s,s);
             this.m_box0.update();
         });
-        ui.addValueItem("X轴移动-B", "move-b", 0, -300, 300, (type: string, uuid: string, values: number[], flag: boolean): void => {
-            console.log("value: ", values[0]);
+        ui.addValueItem("X轴移动-B", "move-b", 0, -300, 300, (info: CtrlInfo): void => {
+            console.log("value: ", info.values[0]);
             let pv = new Vector3D();
             this.m_box1.getPosition(pv);
-            pv.x = values[0];
+            pv.x = info.values[0];
             this.m_box1.setPosition(pv);
             this.m_box1.update();
         });
-        ui.addValueItem("颜色-A", "color-a", 0.8, 0.0, 10, (type: string, uuid: string, values: number[], flag: boolean, colorPick: boolean): void => {
-            console.log("color-a values: ", values, ", colorPick: ", colorPick);
+        ui.addValueItem("颜色-A", "color-a", 0.8, 0.0, 10, (info: CtrlInfo): void => {
+            let values = info.values;
+            console.log("color-a values: ", values, ", colorPick: ", info.colorPick);
             let material = this.m_box0.getMaterial() as IColorMaterial;
             material.setRGB3f(values[0], values[1], values[2]);
         }, true);
-        ui.addValueItem("颜色-B", "color-b", 0.6, 0.0, 2.0, (type: string, uuid: string, values: number[], flag: boolean, colorPick: boolean): void => {
-            console.log("color-b, values: ", values, ", colorPick: ", colorPick);
+        ui.addValueItem("颜色-B", "color-b", 0.6, 0.0, 2.0, (info: CtrlInfo): void => {
+            let values = info.values;
+            console.log("color-b, values: ", values, ", colorPick: ", info.colorPick);
             let material = this.m_box1.getMaterial() as IColorMaterial;
             material.setRGB3f(values[0], values[1], values[2]);
         }, true);
+        //*/
 
-        ui.alignBtns(true);
+        ui.updateLayout(true);
 
         this.m_grap.addScene(this.m_rscene);
         let node = this.m_grap.addScene(this.m_ruisc);
