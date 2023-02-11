@@ -4,28 +4,17 @@ import { NormalEntityNode } from "./NormalEntityNode";
 import { NVTransUI } from "../ui/NVTransUI";
 
 import { ICoMaterial } from "../../../voxmaterial/ICoMaterial";
-import { ICoEntity } from "../../../voxentity/ICoEntity";
-import { ICoMesh } from "../../../voxmesh/ICoMesh";
 import { ICoRScene } from "../../../voxengine/ICoRScene";
-import { ICoUI } from "../../../voxui/ICoUI";
 import IRendererScene from "../../../../vox/scene/IRendererScene";
-import IMouseEventEntity from "../../../../vox/entity/IMouseEventEntity";
-import IRenderEntity from "../../../../vox/render/IRenderEntity";
 import { NormalCtrlPanel } from "../ui/NormalCtrlPanel";
 import { CoGeomDataType, CoDataFormat, CoGeomDataUnit } from "../../../app/CoSpaceAppData";
-import IMatrix4 from "../../../../vox/math/IMatrix4";
-import { NormalEntityLayout } from "./NormalEntityLayout";
 import { CoDataModule } from "../../../app/common/CoDataModule";
-import { NormalEntityManager } from "./NormalEntityManager";
 import { NVEntityGroup } from "./NVEntityGroup";
 import { BoxLine3D } from "../../../edit/entity/BoxLine3D";
 import { CoEntityLayouter } from "../../common/CoEntityLayouter";
 
-declare var CoUI: ICoUI;
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
-declare var CoEntity: ICoEntity;
-declare var CoMesh: ICoMesh;
 
 class NormalEntityGroup extends NVEntityGroup {
 	private m_coapp: CoDataModule;
@@ -162,13 +151,6 @@ class NormalEntityGroup extends NVEntityGroup {
 			node.transUI = this.transUI;
 			let entity = node.setEntityModel(model);
 			let mat4 = transform != null ? CoRScene.createMat4(transform) : null;
-			// this.m_transforms.push(mat4);
-			// this.m_transes.push(entity);
-			// if (this.m_layoutor == null) {
-			// 	this.m_layoutor = new CoEntityLayouter();
-			// 	this.m_layoutor.initialize();
-			// 	this.m_layoutor.layoutReset();
-			// }
 			this.m_layoutor.layoutAppendItem(entity, mat4);
 
 			return node;
@@ -176,29 +158,9 @@ class NormalEntityGroup extends NVEntityGroup {
 		return null;
 	}
 
-	// private m_transforms: IMatrix4[] = [];
-	// private m_transes: ITransformEntity[] = [];
-	// private m_layoutor: NormalEntityLayout = null;
 	private m_layoutor: CoEntityLayouter = new CoEntityLayouter();
 
 	private updateLayout(rotationEnabled: boolean): void {
-		/*
-		if (this.m_layoutor == null) {
-			this.m_layoutor = new NormalEntityLayout();
-			this.m_layoutor.initialize();
-		}
-		this.m_layoutor.rotationEnabled = rotationEnabled;
-		for (let k = 0; k < this.m_transes.length; ++k) {
-			let et = this.m_transes[k];
-			et.setXYZ(0.0, 0.0, 0.0);
-			et.setScaleXYZ(1.0, 1.0, 1.0);
-			et.setRotationXYZ(0.0, 0.0, 0.0);
-		}
-		let pivot = CoRScene.createVec3();
-		this.m_layoutor.fixToPosition(this.m_transes, this.m_transforms, pivot, 300.0);
-		// this.m_transforms = null;
-		// this.m_transes = null;
-		//*/
 		this.m_layoutor.layoutUpdate(rotationEnabled);
 	}
 
