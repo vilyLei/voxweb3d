@@ -6,8 +6,8 @@
 /***************************************************************************/
 
 import shader_frag_body from "./fragBody.glsl";
-
 import shader_vert_body from "./vertBody.glsl";
+
 const ShaderCode = {
     vert: "",
     vert_head: "",

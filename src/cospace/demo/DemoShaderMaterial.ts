@@ -85,11 +85,19 @@ export class DemoShaderMaterial {
             //     SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
             // }
             // let material = this.m_material = new EffectMaterial();
-            let material = this.m_material = CoMaterial.createDefaultMaterial();
-            material.setTextureList([
+            // let material = this.m_material = CoMaterial.createDefaultMaterial();
+            // material.setTextureList([
+            //     this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
+            // ]);
+			let material = CoMaterial.createShaderMaterial("model_shd");
+			material.setFragShaderCode(ShaderCode.frag_body);
+			material.setVtxShaderCode(ShaderCode.vert_body);
+			// material.addUniformDataAt("u_color",new Float32Array([1.0,1.0,1.0]));// 会出现神奇的边缘效果
+			// material.addUniformDataAt("u_color",new Float32Array([1.0,1.0,1.0, 0.0]));// 这样也会出现。实际上边缘颜色就是frag shader的输出颜色
+			material.addUniformDataAt("u_color",new Float32Array([1.0,1.0,1.0, 1.0]));
+			material.setTextureList([
                 this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
             ]);
-
             material.initializeByCodeBuf(true);
 
             let mesh = CoMesh.createDataMesh();
@@ -131,6 +139,7 @@ export class DemoShaderMaterial {
         url = baseUrl + "fbx/base4.fbx";
         // url = baseUrl + "fbx/hat_ok.fbx";
         url = baseUrl + "obj/apple_01.obj";
+        // url = baseUrl + "ctm/errorNormal.ctm";
 		
         this.loadModels([url]);
     }
@@ -178,8 +187,8 @@ export class DemoShaderMaterial {
 			rparam.setCamProject(45, 20.0, 9000.0);
 			this.m_rscene = CoRScene.createRendererScene(rparam, 3);
 
-			let axis = CoRScene.createAxis3DEntity();
-			this.m_rscene.addEntity(axis);
+			// let axis = CoRScene.createAxis3DEntity();
+			// this.m_rscene.addEntity(axis);
 		}
 	}
 	run(): void {
