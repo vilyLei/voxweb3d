@@ -15,7 +15,7 @@ import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwing
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 
 import RendererSubScene from "../../vox/scene/RendererSubScene";
-import {CtrlParamItem, ParamCtrlUI} from "../usage/ParamCtrlUI";
+import { CtrlParamItem, ParamCtrlUI } from "../usage/ParamCtrlUI";
 
 export class DemoParamCtrlUI {
     constructor() { }
@@ -36,7 +36,7 @@ export class DemoParamCtrlUI {
     initialize(): void {
         console.log("DemoParamCtrlUI::initialize()......");
         if (this.m_rscene == null) {
-            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             let rparam: RendererParam = new RendererParam();
@@ -58,7 +58,7 @@ export class DemoParamCtrlUI {
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(300.0);
             this.m_rscene.addEntity(axis);
-            
+
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
             this.m_statusDisp.initialize();
 
@@ -74,13 +74,30 @@ export class DemoParamCtrlUI {
     }
 
     private m_ruisc: RendererSubScene = null;
+    private createSelectBtn(name: string, uuid: string, selectNS: string, deselectNS: string, callback: (type: string, uuid: string, values: number[], flag: boolean) => void): void {
+        let item: CtrlParamItem = {
+            type: "status_select", name: name, uuid: uuid,
+            selectNS: selectNS, deselectNS: deselectNS,
+            flag: false,
+            visibleAlways: true,
+            callback: callback            
+        };
+        
+        let ui = this.m_ui;
+        ui.addItem(item);
+    }
     private initUI(): void {
-        this.m_ui.initialize(this.m_rscene, true);
-        this.m_ruisc = this.m_ui.ruisc;
-
+        let ui = this.m_ui;
+        ui.initialize(this.m_rscene, true);
+        this.m_ruisc = ui.ruisc;
+        console.log("initUI --------------------------------------");
+        this.createSelectBtn("高度", "height", "ON", "OFF",(type: string, uuid: string, values: number[], flag: boolean): void => {
+            console.log("status, flag: ", flag);
+        });
+        ui.alignBtns();
     }
     private mouseDown(evt: any): void {
-        console.log("mouse down... ...");
+        // console.log("mouse down... ...");
         // DebugFlag.Flag_0 = 1;
     }
 
@@ -102,10 +119,10 @@ export class DemoParamCtrlUI {
         this.m_cameraZoomController.run(null, 30.0);
 
         let renderingType = 1;
-        if(renderingType < 1 || this.m_ruisc == null) {
+        if (renderingType < 1 || this.m_ruisc == null) {
             // current rendering strategy
-            this.m_rscene.run( true );
-            if(this.m_ruisc != null) this.m_ruisc.run( true );
+            this.m_rscene.run(true);
+            if (this.m_ruisc != null) this.m_ruisc.run(true);
         }
         else {
             /////////////////////////////////////////////////////// ---- mouseTest begin.

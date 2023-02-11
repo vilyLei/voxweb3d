@@ -26,15 +26,15 @@ import AABB2D from "../../vox/geom/AABB2D";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 // import { CommonMaterialContext } from "../../materialLab/base/CommonMaterialContext";
 
-//uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false
-//ns: string, uuid: string, progress: number, visibleAlways: boolean = false
-//ns: string, uuid: string, value: number, minValue: number, maxValue: number, visibleAlways: boolean = false
+// ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false
+// ns: string, uuid: string, progress: number, visibleAlways: boolean = false
+// ns: string, uuid: string, value: number, minValue: number, maxValue: number, visibleAlways: boolean = false
 
 interface CtrlParamItem {
 
     name: string;
     uuid: string;
-    callback: (uuid: string, values: number[], flag: boolean) => void;
+    callback: (type:string, uuid: string, values: number[], flag: boolean) => void;
     /**
      * 取值说明: "number_value"(数值调节按钮),"progress"(百分比调节按钮),"status_select"(状态选择按钮)
      */
@@ -146,24 +146,9 @@ export default class ParamCtrlUI {
     }
 
     private initUI(): void {
-
         this.initCtrlBars();
 
     }
-    // private m_paramEntity: IPBRParamEntity;
-    // deselectParamEntity(): void {
-    //     this.m_paramEntity = null;
-    // }
-    // setParamEntity(param: IPBRParamEntity): void {
-    //     this.m_paramEntity = param;
-    //     if (param != null) {
-    //         this.m_paramEntity.pbrUI = this;
-    //         this.m_paramEntity.colorPanel = this.rgbPanel;
-    //     }
-    // }
-    // getParamEntity(): IPBRParamEntity {
-    //     return this.m_paramEntity;
-    // }
     private m_btnSize: number = 30;
     private m_bgLength: number = 200.0;
     private m_btnPX: number = 122.0;
@@ -307,6 +292,7 @@ export default class ParamCtrlUI {
             obj.type = item.type;
             obj.uuid = item.uuid;
             let t = item;
+            t.flag = t.flag ? t.flag : false;
             let visibleAlways = t.visibleAlways ? t.visibleAlways : false;
             switch (item.type) {
                 case "number_value":
@@ -317,8 +303,10 @@ export default class ParamCtrlUI {
                     obj.btn = this.createProgressBtn(t.name, t.uuid, t.progress ? t.progress : 0.0, visibleAlways);
                     map.set(obj.uuid, obj);
                     break;
+                case "status":
                 case "status_select":
-                    obj.btn = this.createSelectBtn(t.name, t.uuid, t.selectNS, t.deselectNS, t.flag ? t.flag : false, visibleAlways);
+                    console.log("BBBBBBBBBBBBBBBBBB");
+                    obj.btn = this.createSelectBtn(t.name, t.uuid, t.selectNS, t.deselectNS, t.flag, visibleAlways);
                     map.set(obj.uuid, obj);
                     break;
                 default:
@@ -382,8 +370,20 @@ export default class ParamCtrlUI {
     }
     private selectChange(evt: any): void {
 
-        let selectEvt: SelectionEvent = evt as SelectionEvent;
-        let flag: boolean = selectEvt.flag;
+        let selectEvt = evt as SelectionEvent;
+        let flag = selectEvt.flag;
+        let uuid = selectEvt.uuid;
+        let map = this.m_btnMap;
+        if (map.has(uuid)) {
+            let obj = map.get(uuid);
+            let item = obj.desc;
+            let btn = obj.btn as SelectionBar;
+            if(item.callback != null && item.flag != flag) {
+                item.flag = flag;
+                item.callback(item.type, uuid, [], flag);
+            }
+        }
+        if (this.rgbPanel != null) this.rgbPanel.close();
         /*
         let material: IPBRMaterial = null;
 
@@ -422,6 +422,20 @@ export default class ParamCtrlUI {
     private m_currUUID: string = "";
     // private m_colorParamUnit: ColorParamUnit = null;
     private valueChange(evt: any): void {
+        
+        let progEvt = evt as ProgressDataEvent;
+        let value = progEvt.value;
+        let uuid = progEvt.uuid;
+        let map = this.m_btnMap;
+        if (map.has(uuid)) {
+            let obj = map.get(uuid);
+            let item = obj.desc;
+            let btn = obj.btn as ProgressBar;
+            if(item.callback != null && Math.abs(item.value - value) > 0.00001) {
+                item.value = value;
+                item.callback(item.type, uuid, [value], true);
+            }
+        }
         /*
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
         let value: number = progEvt.value;
