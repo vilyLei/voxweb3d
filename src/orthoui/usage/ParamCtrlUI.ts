@@ -147,6 +147,7 @@ export default class ParamCtrlUI {
     private m_pos = new Vector3D();
     private m_selectPlane: Plane3DEntity = null;
 
+    private m_visiBtns: any[] = [];
     private m_btns: any[] = [];
     private m_menuBtn: SelectionBar = null;
     private m_minBtnX = 10000;
@@ -164,7 +165,8 @@ export default class ParamCtrlUI {
         }
         selectBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + this.m_btnYSpace;
-        if (!visibleAlways) this.m_btns.push(selectBar);
+        if (!visibleAlways) this.m_visiBtns.push(selectBar);
+        this.m_btns.push(selectBar);
 
         let minX = this.m_btnPX + selectBar.getRect().x;
         if (minX < this.m_minBtnX) {
@@ -181,7 +183,8 @@ export default class ParamCtrlUI {
         proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.valueChange);
         proBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + this.m_btnYSpace;
-        if (!visibleAlways) this.m_btns.push(proBar);
+        if (!visibleAlways) this.m_visiBtns.push(proBar);
+        this.m_btns.push(proBar);
 
         let minX = this.m_btnPX + proBar.getRect().x;
         if (minX < this.m_minBtnX) {
@@ -202,7 +205,8 @@ export default class ParamCtrlUI {
         proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.valueChange);
         proBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + this.m_btnYSpace;
-        if (!visibleAlways) this.m_btns.push(proBar);
+        if (!visibleAlways) this.m_visiBtns.push(proBar);
+        this.m_btns.push(proBar);
 
         let minX = this.m_btnPX + proBar.getRect().x;
         if (minX < this.m_minBtnX) {
@@ -243,7 +247,7 @@ export default class ParamCtrlUI {
         this.ruisc.addEntity(this.m_selectPlane);
         this.m_selectPlane.setVisible(false);
 
-        this.alignBtns();
+        // this.alignBtns();
         // console.log("XXXXXXXXXXXX this.m_minBtnX: ", this.m_minBtnX);
         let flag = RendererDevice.IsMobileWeb();
         this.rgbPanel = new RGBColorPanel();
@@ -317,17 +321,17 @@ export default class ParamCtrlUI {
     }
     private menuCtrl(flag: boolean): void {
 
-        if (flag && !this.m_btns[0].isOpen()) {
-            for (let i: number = 0; i < this.m_btns.length; ++i) {
-                this.m_btns[i].open();
+        if (flag && !this.m_visiBtns[0].isOpen()) {
+            for (let i: number = 0; i < this.m_visiBtns.length; ++i) {
+                this.m_visiBtns[i].open();
             }
             this.m_menuBtn.getPosition(this.m_pos);
             this.m_pos.x = this.m_btnPX;
             this.m_menuBtn.setPosition(this.m_pos);
         }
-        else if (this.m_btns[0].isOpen()) {
-            for (let i: number = 0; i < this.m_btns.length; ++i) {
-                this.m_btns[i].close();
+        else if (this.m_visiBtns[0].isOpen()) {
+            for (let i: number = 0; i < this.m_visiBtns.length; ++i) {
+                this.m_visiBtns[i].close();
             }
             this.m_menuBtn.getPosition(this.m_pos);
             this.m_pos.x = 0;
@@ -336,14 +340,17 @@ export default class ParamCtrlUI {
         }
         if (this.rgbPanel != null) this.rgbPanel.close();
     }
-    alignBtns(): void {
-        let pos = new Vector3D();
+    alignBtns(force: boolean = false): void {
+        
         let dis = 5 - this.m_minBtnX;
-        for (let i = 0; i < this.m_btns.length; ++i) {
-            this.m_btns[i].getPosition(pos);
+        let pos = new Vector3D();
+        let btns = force ? this.m_btns : this.m_visiBtns;
+        console.log("XXXX btns.length: ", btns.length);
+        for (let i = 0; i < this.m_visiBtns.length; ++i) {
+            btns[i].getPosition(pos);
             pos.x += dis;
-            this.m_btns[i].setPosition(pos);
-            this.m_btns[i].update();
+            btns[i].setPosition(pos);
+            btns[i].update();
         }
     }
     private selectChange(evt: any): void {

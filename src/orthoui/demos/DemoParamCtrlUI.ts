@@ -129,13 +129,13 @@ export class DemoParamCtrlUI {
             this.m_axis.setScaleXYZ(s,s,s);
             this.m_axis.update();
         });
-        this.createValueBtn("体重", "weight", 50, 10, 70,(type: string, uuid: string, values: number[], flag: boolean): void => {
+        this.createValueBtn("XXXX体重", "weight", 50, 10, 70,(type: string, uuid: string, values: number[], flag: boolean): void => {
             console.log("value: ", values[0]);
         });
-        this.createValueBtn("长度", "width", 500, 100, 700,(type: string, uuid: string, values: number[], flag: boolean): void => {
-            console.log("value: ", values[0]);
-        });
-        ui.alignBtns();
+        // this.createValueBtn("长度", "width", 500, 100, 700,(type: string, uuid: string, values: number[], flag: boolean): void => {
+        //     console.log("value: ", values[0]);
+        // });
+        ui.alignBtns(true);
     }
     private mouseDown(evt: any): void {
         // console.log("mouse down... ...");
