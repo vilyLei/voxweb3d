@@ -38,7 +38,7 @@ class CoEntityLayout {
 		this.m_entities.push(entity);
 		this.m_transforms.push(transform);
 	}	
-	layoutUpdate(rotationEnabled: boolean): void {
+	layoutUpdate(rotationEnabled: boolean, fixSize: number = 300.0): void {
 
 		this.rotationEnabled = rotationEnabled;
 		for (let k = 0; k < this.m_entities.length; ++k) {
@@ -48,7 +48,7 @@ class CoEntityLayout {
 			et.setRotationXYZ(0.0, 0.0, 0.0);
 		}
 		let pivot = CoRScene.createVec3();
-		this.fixToPosition(this.m_entities, this.m_transforms, pivot, 300.0);
+		this.fixToPosition(this.m_entities, this.m_transforms, pivot, fixSize);
 	}
 
 	calcAABB(entities: ITransformEntity[], transforms: IMatrix4[]): IAABB {
