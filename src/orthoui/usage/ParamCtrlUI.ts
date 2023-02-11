@@ -378,7 +378,15 @@ export default class ParamCtrlUI {
                 vs[1] = color.g;
                 vs[2] = color.b;
                 if (item.callback != null) {
-                    item.callback(item.type, uuid, vs.slice(), true, true);
+                    let f = 1.0;
+                    if (item.type == "progress") {
+                        f = item.progress;
+                    }else {
+                        f = item.value;
+                    }                    
+                    let cvs = vs.slice();
+                    cvs[0] *= f; cvs[1] *= f; cvs[2] *= f;
+                    item.callback(item.type, uuid, cvs, true, true);
                 }
             }
         }
@@ -423,7 +431,7 @@ export default class ParamCtrlUI {
                         item.progress = value;
                         if (item.colorPick) {
                             let cvs = obj.color.slice();
-                            cvs[0] *= value;cvs[1] *= value;cvs[2] *= value;
+                            cvs[0] *= value; cvs[1] *= value; cvs[2] *= value;
                             item.callback(item.type, uuid, cvs, true, true);
                         } else {
                             item.callback(item.type, uuid, [value], true);
@@ -435,7 +443,7 @@ export default class ParamCtrlUI {
                         item.value = value;
                         if (item.colorPick) {
                             let cvs = obj.color.slice();
-                            cvs[0] *= value;cvs[1] *= value;cvs[2] *= value;
+                            cvs[0] *= value; cvs[1] *= value; cvs[2] *= value;
                             item.callback(item.type, uuid, cvs, true, true);
                         } else {
                             item.callback(item.type, uuid, [value], true);
@@ -446,7 +454,10 @@ export default class ParamCtrlUI {
             } else if (progEvt.status == 0) {
                 console.log("select the btn");
                 if (item.colorPick) {
-                    if (this.rgbPanel != null && this.rgbPanel.isClosed()) this.rgbPanel.open();
+                    if (this.rgbPanel != null && this.rgbPanel.isClosed()) {
+                        this.rgbPanel.open();
+                    }
+                    if (obj.colorId >= 0) this.rgbPanel.selectColorById(obj.colorId);
                 } else {
                     if (this.rgbPanel != null) this.rgbPanel.close();
                 }
