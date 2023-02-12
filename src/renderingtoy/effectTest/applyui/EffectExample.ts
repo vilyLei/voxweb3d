@@ -1,16 +1,13 @@
 
 import Vector3D from "../../../vox/math/Vector3D";
 import RendererDevice from "../../../vox/render/RendererDevice";
-import RendererParam from "../../../vox/scene/RendererParam";
 import RenderStatusDisplay from "../../../vox/scene/RenderStatusDisplay";
 
-import Box3DEntity from "../../../vox/entity/Box3DEntity";
 import TextureConst from "../../../vox/texture/TextureConst";
 import TextureProxy from "../../../vox/texture/TextureProxy";
 
 import MouseEvent from "../../../vox/event/MouseEvent";
 import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
-import RendererScene from "../../../vox/scene/RendererScene";
 
 import CameraStageDragSwinger from "../../../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../../../voxeditor/control/CameraZoomController";
@@ -18,7 +15,6 @@ import EffectMaterial from "./EffectMaterial";
 
 import { CoGeomDataType, CoDataFormat, CoGeomModelLoader } from "../../../cospace/app/common/CoGeomModelLoader";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
-import RendererState from "../../../vox/render/RendererState";
 import SurfaceNormalCalc from "../../../vox/geom/SurfaceNormalCalc";
 import DataMesh from "../../../vox/mesh/DataMesh";
 import Matrix4 from "../../../vox/math/Matrix4";
@@ -30,7 +26,6 @@ import IRendererSceneGraphStatus from "../../../vox/scene/IRendererSceneGraphSta
 import { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../../../orthoui/usage/ParamCtrlUI";
 
 export class EffectExample {
-    constructor() { }
 
     private m_rscene: IRendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
@@ -44,7 +39,11 @@ export class EffectExample {
     private m_ctrlui = new ParamCtrlUI();
 
     private m_sv: Vector3D = new Vector3D();
+    private m_currSV = new Vector3D();
     private m_entities: DisplayEntity[] = [];
+
+    constructor() { }
+
     private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
@@ -52,6 +51,7 @@ export class EffectExample {
         return ptex;
     }
     private initSys(): void {
+        
         // 阻止右键
         document.oncontextmenu = function (e) {
             e.preventDefault();
@@ -84,24 +84,23 @@ export class EffectExample {
             this.initModel();
         }
     }
-    private m_currSV = new Vector3D();
     private initUI(): void {
 
         let ui = this.m_ctrlui;
         ui.initialize(this.m_rscene, true);
 
-        // this.m_sv
         let ls = this.m_entities;
-        ls[0].getScaleXYZ(this.m_sv);
-        // ls[0].getScaleXYZ(this.m_currSV);
+        let entity0 = ls[0];
+        let entity1 = ls[1];
+        entity0.getScaleXYZ(this.m_sv);
 
         console.log("initUI --------------------------------------");
 
         ui.addStatusItem("显示-A", "visible-a", "Yes", "No", true, (info: CtrlInfo): void => {
-            ls[0].setVisible(info.flag);
+            entity0.setVisible(info.flag);
         });
         ui.addStatusItem("显示-B", "visible-b", "Yes", "No", true, (info: CtrlInfo): void => {
-            ls[1].setVisible(info.flag);
+            entity1.setVisible(info.flag);
         });
 
         ui.addProgressItem("缩放-A", "scale", 1.0, (info: CtrlInfo): void => {
@@ -109,27 +108,27 @@ export class EffectExample {
             let s = info.values[0];
             console.log("xxx s: ", s);
             this.m_currSV.scaleBy(s);
-            ls[0].setScale3(this.m_currSV);
-            ls[0].update();
+            entity0.setScale3(this.m_currSV);
+            entity0.update();
         });
         ui.addValueItem("Y轴移动-B", "move-b", 0, -300, 300, (info: CtrlInfo): void => {
             
             let pv = new Vector3D();
-            ls[1].getPosition(pv);
+            entity1.getPosition(pv);
             pv.y = info.values[0];
-            ls[1].setPosition(pv);
-            ls[1].update();
+            entity1.setPosition(pv);
+            entity1.update();
         });
         ui.addValueItem("颜色-A", "color-a", 0.8, 0.0, 10, (info: CtrlInfo): void => {
             let values = info.values;
             console.log("color-a values: ", values, ", colorPick: ", info.colorPick);
-            let material = ls[0].getMaterial() as EffectMaterial;
+            let material = entity0.getMaterial() as EffectMaterial;
             material.setRGB3f(values[0], values[1], values[2]);
         }, true);
         ui.addValueItem("颜色-B", "color-b", 0.6, 0.0, 2.0, (info: CtrlInfo): void => {
             let values = info.values;
             console.log("color-b, values: ", values, ", colorPick: ", info.colorPick);
-            let material = ls[1].getMaterial() as EffectMaterial;
+            let material = entity1.getMaterial() as EffectMaterial;
             material.setRGB3f(values[0], values[1], values[2]);
         }, true);
         //*/
