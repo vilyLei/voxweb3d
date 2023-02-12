@@ -6,6 +6,7 @@ import RendererParam from "./RendererParam";
 import RendererScene from "./RendererScene";
 
 export default class RendererSceneGraph implements IRendererSceneGraph {
+    private m_map: Map<number, IRendererSceneNode> = new Map();
     private m_nodes: IRendererSceneNode[] = [];
     rayPickFlag: boolean = false;
     constructor() {
@@ -20,22 +21,30 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
             ls[i].clear();
         }
         this.m_nodes = [];
+        this.m_map.clear();
     }
     addSceneNode(node: IRendererSceneNode, index: number = -1): void {
 
-        if (node != null) {
+        if (node != null && node.getRScene() != null) {
 
             const ls = this.m_nodes;
             let tot = ls.length;
             let i = 0;
             for (; i < tot; ++i) {
                 if (ls[i] == node) {
-
                     break;
                 }
             }
             if (i >= tot) {
-                ls.push(node);
+                const sc = node.getRScene();
+                for (i = 0; i < tot; ++i) {
+                    if (ls[i].getRScene() == sc) {
+                        break;
+                    }
+                }
+                if (i >= tot) {
+                    ls.push(node);
+                }
             }
 
         }
@@ -50,12 +59,32 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
         if (i >= 0 && i < this.m_nodes.length) return this.m_nodes[i];
         return null;
     }
+    /**
+     * @param rparam IRendererParam instance, the default value is null
+     * @param renderProcessesTotal the default value is 3
+     * @param createNewCamera the default value is true
+     */
     createScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
         let sc = new RendererScene();
         sc.initialize(rparam, renderProcessesTotal, createNewCamera);
         let node = new RendererSceneNode(sc);
         this.m_nodes.push(node);
+        this.m_map.set(sc.getUid(), node);
         return sc;
+    }
+    /**
+     * @param rparam IRendererParam instance, the default value is null
+     * @param renderProcessesTotal the default value is 3
+     * @param createNewCamera the default value is true
+     */
+    createSubScene(rparam?: RendererParam, renderProcessesTotal?: number, createNewCamera?: boolean): IRendererScene {
+        if(this.m_nodes.length > 0) {
+            let sc = this.m_nodes[0].getRScene().createSubScene(rparam, renderProcessesTotal, createNewCamera);
+            let node = new RendererSceneNode(sc);
+            this.m_nodes.push(node);
+            this.m_map.set(sc.getUid(), node);
+        }
+        return null;
     }
     addScene(sc: IRendererScene): IRendererSceneNode {
         if (sc != null) {
@@ -67,6 +96,7 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
             }
             let node = new RendererSceneNode(sc);
             ls.push(node);
+            this.m_map.set(sc.getUid(), node);
             return node;
         }
         return null;
