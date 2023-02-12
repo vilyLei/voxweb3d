@@ -27,8 +27,8 @@ export class DemoParamCtrlUI {
     private m_rscene: IRendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-    private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
+    private m_stageDragSwinger = new CameraStageDragSwinger();
+    private m_cameraZoomController = new CameraZoomController();
 
     private m_grap = new RendererSceneGraph();
     private m_ctrlui = new ParamCtrlUI();
@@ -59,9 +59,8 @@ export class DemoParamCtrlUI {
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             this.m_rscene.enableMouseEvent(true);
-            this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
-            this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
-            this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera() as any);
+            this.m_cameraZoomController.initWithRScene(this.m_rscene);
+            this.m_stageDragSwinger.initWithRScene(this.m_rscene);
 
             this.m_statusDisp.initialize();
 
@@ -69,7 +68,6 @@ export class DemoParamCtrlUI {
             this.m_rscene.addEventListener(MouseEvent.MOUSE_MIDDLE_DOWN, this, this.mouseMiddleDown);
 
             this.update();
-
             this.initScene();
             this.initUI();
 

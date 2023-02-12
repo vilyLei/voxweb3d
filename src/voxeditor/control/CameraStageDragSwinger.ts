@@ -5,10 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-import CameraBase from "../../vox/view/CameraBase";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import MouseEvent from "../../vox/event/MouseEvent";
 import { CameraDragSwinger } from "../../voxeditor/control/CameraDragSwinger";
+import { IRenderCamera } from "../../vox/render/IRenderCamera";
+import IRendererScene from "../../vox/scene/IRendererScene";
 
 export default class CameraStageDragSwinger {
     constructor() { }
@@ -25,17 +26,14 @@ export default class CameraStageDragSwinger {
     setAutoRotationEnabled(enabled: boolean): void {
         this.m_dragSwinger.autoRotationEnabled = enabled;
     }
-    initialize(stage3D: IRenderStage3D, camera: CameraBase): void {
+    
+    initWithRScene(sc: IRendererScene): void {
+        this.initialize( sc.getStage3D(), sc.getCamera() );
+    }
+    initialize(stage3D: IRenderStage3D, camera: IRenderCamera): void {
         if (this.m_stage3D == null) {
             this.m_stage3D = stage3D;
             this.m_dragSwinger.initialize(stage3D, camera);
-            // if(bgMouseDown) {
-            //     stage3D.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseDownListener, true, false);
-            // }
-            // else {
-            //     stage3D.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener, true, false);
-            // }
-            // stage3D.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
 
             const ME = MouseEvent;
             let downType = ME.MOUSE_DOWN;

@@ -13,6 +13,7 @@ import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import DivLog from "../../vox/utils/DivLog";
 import MouseEvent from "../../vox/event/MouseEvent";
 import RendererDevice from "../../vox/render/RendererDevice";
+import IRendererScene from "../../vox/scene/IRendererScene";
 
 export default class CameraZoomController {
     private m_camera: IRenderCamera = null;
@@ -59,6 +60,10 @@ export default class CameraZoomController {
     }
     bindCamera(camera: IRenderCamera) {
         this.m_camera = camera;
+    }
+    initWithRScene(sc: IRendererScene): void {
+        this.bindCamera(sc.getCamera());
+        this.initialize(sc.getStage3D());
     }
     initialize(stage3D: IRenderStage3D): void {
         if (this.m_initBoo) {

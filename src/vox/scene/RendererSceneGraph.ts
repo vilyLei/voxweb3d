@@ -109,7 +109,7 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
     }
     run(): void {
 
-        let pickFlag: boolean = true;
+        let pickFlag = true;
         let list = this.m_nodes;
         let total = list.length;
         let i = total - 1;
