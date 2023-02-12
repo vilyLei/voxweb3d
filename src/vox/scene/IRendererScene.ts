@@ -32,6 +32,8 @@ interface IRendererScene {
     readonly textureBlock: ITextureBlock;
     readonly materialBlock: IRenderableMaterialBlock;
     readonly entityBlock: IRenderableEntityBlock;
+    
+    createRendererParam(): IRendererParam;
     /**
      * @param rparam IRendererParam instance
      * @param renderProcessesTotal the default value is 3

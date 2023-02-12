@@ -46,7 +46,9 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
     materialBlock: IRenderableMaterialBlock = null;
 
     constructor() { }
-    
+    createRendererParam(): IRendererParam {
+        return new RendererParam();
+    }
     createSubScene(rparam: RendererParam, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
         return null;
     }

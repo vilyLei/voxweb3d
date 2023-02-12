@@ -112,6 +112,9 @@ export default class RendererSceneBase {
     constructor(uidBase: number = 0) {
         this.m_uid = uidBase + RendererSceneBase.s_uid++;
     }
+    createRendererParam(): IRendererParam {
+        return new RendererParam();
+    }
     createSubScene(rparam: IRendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
         return null;
     }

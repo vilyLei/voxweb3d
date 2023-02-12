@@ -54,6 +54,7 @@ import { IRenderableEntityBlock } from "../../../vox/scene/block/IRenderableEnti
 import { ICoRenderer } from "../ICoRenderer";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import IRenderNode from "../../../vox/scene/IRenderNode";
+import IRendererParam from "../../../vox/scene/IRendererParam";
 
 declare var CoRenderer: ICoRenderer;
 
@@ -86,8 +87,8 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 	private m_rparam: RendererParam = null;
 	private m_enabled: boolean = true;
 
-	readonly runnableQueue: RunnableQueue = new RunnableQueue();
-	readonly textureBlock: ITextureBlock = new TextureBlock();
+	readonly runnableQueue = new RunnableQueue();
+	readonly textureBlock = new TextureBlock();
 	readonly stage3D: SimpleStage3D = null;
 
 	readonly materialBlock: IRenderableMaterialBlock = null;
@@ -103,7 +104,9 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 		this.m_tickId = setTimeout(this.tickUpdate.bind(this), this.m_rparam.getTickUpdateTime());
 		this.textureBlock.run();
 	}
-	
+	createRendererParam(): IRendererParam {
+        return new RendererParam();
+    }
 	enable(): void {
 		this.m_enabled = true;
 	}
