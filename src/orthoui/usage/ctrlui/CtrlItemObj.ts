@@ -75,7 +75,7 @@ class CtrlItemObj {
     /**
      * 将(用户已经修改的)参数同步到ui
      */
-    updateparamToUI(): void {
+    updateParamToUI(): void {
 
         let param = this.param;
         let t = param;

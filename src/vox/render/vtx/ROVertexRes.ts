@@ -42,7 +42,7 @@ class ROVertexRes {
         if (map.has(vtxUid)) {
             vt = map.get(vtxUid);
         } else {
-            console.log("ROVertexRes::create() new instance, vtxUid: ", vtxUid);
+            // console.log("ROVertexRes::create() new instance, vtxUid: ", vtxUid);
             vt = new ROVertexRes();
             map.set(vtxUid, vt);
             vt.initialize(rc, shdp, vtx);

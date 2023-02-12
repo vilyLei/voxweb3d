@@ -38,6 +38,17 @@ export class DemoParamCtrlUI {
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
+    private initSys(): void {
+
+        this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+        this.m_cameraZoomController.initWithRScene(this.m_rscene);
+        this.m_stageDragSwinger.initWithRScene(this.m_rscene);
+        this.m_statusDisp.initialize();
+
+        this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+        this.m_rscene.addEventListener(MouseEvent.MOUSE_MIDDLE_DOWN, this, this.mouseMiddleDown);
+
+    }
     initialize(): void {
         console.log("DemoParamCtrlUI::initialize()......");
         if (this.m_rscene == null) {
@@ -57,18 +68,9 @@ export class DemoParamCtrlUI {
             rparam.setAttriAlpha(true);
 
             this.m_rscene = this.m_grap.createScene(rparam, 3);
-
-            this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-
             this.m_rscene.enableMouseEvent(true);
-            this.m_cameraZoomController.initWithRScene(this.m_rscene);
-            this.m_stageDragSwinger.initWithRScene(this.m_rscene);
 
-            this.m_statusDisp.initialize();
-
-            this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
-            this.m_rscene.addEventListener(MouseEvent.MOUSE_MIDDLE_DOWN, this, this.mouseMiddleDown);
-
+            this.initSys();
             this.update();
             this.initScene();
             this.initUI();
@@ -96,21 +98,18 @@ export class DemoParamCtrlUI {
         console.log("initUI --------------------------------------");
 
         ui.addStatusItem("显示-A", "visible-a", "Yes", "No", true, (info: CtrlInfo): void => {
-            // console.log("flag: ", flag);
             this.m_box0.setVisible(info.flag);
         });
         ui.addStatusItem("显示-B", "visible-b", "Yes", "No", true, (info: CtrlInfo): void => {
-            // console.log("flag: ", flag);
             this.m_box1.setVisible(info.flag);
         });
         ui.addProgressItem("缩放-A", "scale", 1.0, (info: CtrlInfo): void => {
-            // console.log("progress: ", values[0]);
             let s = info.values[0];
             this.m_box0.setScaleXYZ(s, s, s);
             this.m_box0.update();
         });
         ui.addValueItem("X轴移动-B", "move-b", 0, -300, 300, (info: CtrlInfo): void => {
-            console.log("value: ", info.values[0]);
+            
             let pv = new Vector3D();
             this.m_box1.getPosition(pv);
             pv.x = info.values[0];
@@ -143,11 +142,15 @@ export class DemoParamCtrlUI {
     private mouseDown(evt: any): void {
     }
     private mouseMiddleDown(evt: any): void {
+
         console.log("mouse middle down... ...");
+        /**
+         * 直接同步参数数据到UI和控制对象
+         */
         let item = this.m_ctrlui.getItemByUUID("move-b");
         item.param.value = 50;
         item.syncEnabled = true;
-        item.updateparamToUI();
+        item.updateParamToUI();
     }
 
     private m_timeoutId: any = -1;
@@ -155,7 +158,6 @@ export class DemoParamCtrlUI {
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
-        //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
         this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
 
     }
