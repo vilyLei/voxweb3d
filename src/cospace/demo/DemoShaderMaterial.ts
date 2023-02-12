@@ -35,6 +35,9 @@ export class DemoShaderMaterial {
 
 	initialize(): void {
 
+        document.oncontextmenu = function (e) {
+            e.preventDefault();
+        }
         console.log("EffectExample::initialize()......");
 
 		let url0 = "static/cospace/engine/renderer/CoRenderer.umd.min.js";

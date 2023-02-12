@@ -6,9 +6,12 @@ import RendererParam from "./RendererParam";
 import RendererScene from "./RendererScene";
 
 export default class RendererSceneGraph implements IRendererSceneGraph {
+
     private m_map: Map<number, IRendererSceneNode> = new Map();
     private m_nodes: IRendererSceneNode[] = [];
-    rayPickFlag: boolean = false;
+
+    rayPickFlag = false;
+
     constructor() {
     }
     clear(): void {
@@ -26,7 +29,7 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
     addSceneNode(node: IRendererSceneNode, index: number = -1): void {
 
         if (node != null && node.getRScene() != null) {
-
+            
             const ls = this.m_nodes;
             let tot = ls.length;
             let i = 0;
@@ -37,13 +40,9 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
             }
             if (i >= tot) {
                 const sc = node.getRScene();
-                for (i = 0; i < tot; ++i) {
-                    if (ls[i].getRScene() == sc) {
-                        break;
-                    }
-                }
-                if (i >= tot) {
+                if(!this.m_map.has(sc.getUid())) {
                     ls.push(node);
+                    this.m_map.set(sc.getUid(), node);
                 }
             }
 
@@ -94,10 +93,17 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
                     return ls[i];
                 }
             }
+            
             let node = new RendererSceneNode(sc);
             ls.push(node);
             this.m_map.set(sc.getUid(), node);
             return node;
+        }
+        return null;
+    }
+    getNodeBySceneUid(uid: number): IRendererSceneNode {
+        if(this.m_map.has(uid)) {
+            return this.m_map.get(uid);
         }
         return null;
     }

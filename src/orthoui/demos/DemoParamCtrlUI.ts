@@ -7,12 +7,10 @@ import TextureProxy from "../../vox/texture/TextureProxy";
 
 import MouseEvent from "../../vox/event/MouseEvent";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
-import RendererScene from "../../vox/scene/RendererScene";
 
 import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 
-import RendererSubScene from "../../vox/scene/RendererSubScene";
 import { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../usage/ParamCtrlUI";
 import RendererSceneGraph from "../../vox/scene/RendererSceneGraph";
 import IRendererSceneGraphStatus from "../../vox/scene/IRendererSceneGraphStatus";
@@ -32,7 +30,7 @@ export class DemoParamCtrlUI {
 
     private m_grap = new RendererSceneGraph();
     private m_ctrlui = new ParamCtrlUI();
-    
+
     private m_box0: Box3DEntity = null;
     private m_box1: Box3DEntity = null;
     private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
@@ -44,17 +42,22 @@ export class DemoParamCtrlUI {
     initialize(): void {
         console.log("DemoParamCtrlUI::initialize()......");
         if (this.m_rscene == null) {
+
+
+            document.oncontextmenu = function (e) {
+                e.preventDefault();
+            }
+
             RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+
             let rparam: RendererParam = new RendererParam();
             rparam.setCamPosition(1200.0, 1200.0, 1200.0);
             rparam.setAttriAntialias(true);
-            //rparam.setAttriStencil(true);
             rparam.setAttriAlpha(true);
-            this.m_rscene = new RendererScene();
-            this.m_rscene.initialize(rparam, 3);
-            this.m_grap.addScene(this.m_rscene);
+
+            this.m_rscene = this.m_grap.createScene(rparam, 3);
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
@@ -90,9 +93,9 @@ export class DemoParamCtrlUI {
         let ui = this.m_ctrlui;
         ui.initialize(this.m_rscene, true);
         this.m_ruisc = ui.ruisc;
-        
+
         console.log("initUI --------------------------------------");
-        ///*
+
         ui.addStatusItem("显示-A", "visible-a", "Yes", "No", true, (info: CtrlInfo): void => {
             // console.log("flag: ", flag);
             this.m_box0.setVisible(info.flag);
@@ -104,7 +107,7 @@ export class DemoParamCtrlUI {
         ui.addProgressItem("缩放-A", "scale", 1.0, (info: CtrlInfo): void => {
             // console.log("progress: ", values[0]);
             let s = info.values[0];
-            this.m_box0.setScaleXYZ(s,s,s);
+            this.m_box0.setScaleXYZ(s, s, s);
             this.m_box0.update();
         });
         ui.addValueItem("X轴移动-B", "move-b", 0, -300, 300, (info: CtrlInfo): void => {
@@ -127,13 +130,14 @@ export class DemoParamCtrlUI {
             let material = this.m_box1.getMaterial() as IColorMaterial;
             material.setRGB3f(values[0], values[1], values[2]);
         }, true);
-        //*/
 
         ui.updateLayout(true);
 
         let node = this.m_grap.addScene(this.m_ruisc);
         node.setPhase0Callback(null, (sc: IRendererScene, st: IRendererSceneGraphStatus): void => {
-            // console.log("ooooo");
+            /**
+             * 设置摄像机转动操作的启用状态
+             */
             this.m_stageDragSwinger.setEnabled(!st.rayPickFlag);
         })
     }
@@ -164,16 +168,7 @@ export class DemoParamCtrlUI {
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(null, 30.0);
 
-        let renderingType = 1;
-        if (renderingType < 1 || this.m_ruisc == null) {
-            // current rendering strategy
-            this.m_rscene.run(true);
-            if (this.m_ruisc != null) this.m_ruisc.run(true);
-        }
-        else {
-            this.m_grap.run();
-
-        }
+        this.m_grap.run();
     }
 
 }
