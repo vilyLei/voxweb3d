@@ -71,14 +71,14 @@ class ROVertexRes {
         return this.m_attachCount;
     }
     updateToGpu(rc: IROVtxBuilder): void {
-        let len: number = this.m_gpuBufs.length;
+        let len = this.m_gpuBufs.length;
         if (len > 0) {
             let vtx: IROVtxBuf = this.m_vtx;
             if (this.version != vtx.vertexVer) {
-                let usage: number = vtx.getBufDataUsage();
+                let usage = vtx.getBufDataUsage();
                 let fvs: Float32Array;
-                let sizeList: number[] = this.m_sizeList;
-                for (let i: number = 0; i < len; ++i) {
+                let sizeList = this.m_sizeList;
+                for (let i = 0; i < len; ++i) {
                     fvs = vtx.getF32DataAt(i);
                     if (sizeList[i] >= fvs.length) {
                         rc.bindArrBuf(this.m_gpuBufs[i]);
@@ -137,9 +137,9 @@ class ROVertexRes {
     private uploadSeparated(rc: IROVtxBuilder, shdp: IVtxShdCtr): void {
 
         let vtx: IROVtxBuf = this.m_vtx;
-        let i: number = 0;
+        let i = 0;
         let buf: any = null;
-        let dataUsage: number = vtx.getBufDataUsage();
+        let dataUsage = vtx.getBufDataUsage();
         this.m_gpuBufsTotal = this.m_vtx.getBuffersTotal();
         this.m_sizeList = new Array(this.m_attribsTotal);
 
