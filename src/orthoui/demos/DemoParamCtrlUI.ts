@@ -54,7 +54,7 @@ export class DemoParamCtrlUI {
             rparam.setAttriAlpha(true);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
-            this.m_rscene.updateCamera();
+            this.m_grap.addScene(this.m_rscene);
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
@@ -133,7 +133,6 @@ export class DemoParamCtrlUI {
 
         ui.updateLayout(true);
 
-        this.m_grap.addScene(this.m_rscene);
         let node = this.m_grap.addScene(this.m_ruisc);
         node.setPhase0Callback(null, (sc: IRendererScene, st: IRendererSceneGraphStatus): void => {
             // console.log("ooooo");
