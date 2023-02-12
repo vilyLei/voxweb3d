@@ -27,7 +27,7 @@ export class DemoParamCtrlUI {
     private m_stageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController = new CameraZoomController();
 
-    private m_grap = new RendererSceneGraph();
+    private m_graph = new RendererSceneGraph();
     private m_ctrlui = new ParamCtrlUI();
 
     private m_box0: Box3DEntity = null;
@@ -62,12 +62,12 @@ export class DemoParamCtrlUI {
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
-            let rparam = this.m_grap.createRendererParam();
+            let rparam = this.m_graph.createRendererParam();
             rparam.setCamPosition(1200.0, 1200.0, 1200.0);
             rparam.setAttriAntialias(true);
             rparam.setAttriAlpha(true);
 
-            this.m_rscene = this.m_grap.createScene(rparam, 3);
+            this.m_rscene = this.m_graph.createScene(rparam, 3);
             this.m_rscene.enableMouseEvent(true);
 
             this.initSys();
@@ -88,12 +88,10 @@ export class DemoParamCtrlUI {
         this.m_box1.setXYZ(150, 0, -200);
         this.m_rscene.addEntity(this.m_box1);
     }
-    private m_ruisc: IRendererScene = null;
     private initUI(): void {
 
         let ui = this.m_ctrlui;
         ui.initialize(this.m_rscene, true);
-        this.m_ruisc = ui.ruisc;
 
         console.log("initUI --------------------------------------");
 
@@ -131,7 +129,7 @@ export class DemoParamCtrlUI {
 
         ui.updateLayout(true);
 
-        let node = this.m_grap.addScene(this.m_ruisc);
+        let node = this.m_graph.addScene(ui.ruisc);
         node.setPhase0Callback(null, (sc: IRendererScene, st: IRendererSceneGraphStatus): void => {
             /**
              * 设置摄像机转动操作的启用状态
@@ -169,7 +167,7 @@ export class DemoParamCtrlUI {
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(null, 30.0);
 
-        this.m_grap.run();
+        this.m_graph.run();
     }
 
 }

@@ -25,6 +25,9 @@ import Matrix4 from "../../../vox/math/Matrix4";
 import RendererSceneGraph from "../../../vox/scene/RendererSceneGraph";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import { EntityLayouter } from "../../../vox/utils/EntityLayouter";
+import IRendererSceneGraphStatus from "../../../vox/scene/IRendererSceneGraphStatus";
+
+import { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../../../orthoui/usage/ParamCtrlUI";
 
 export class EffectExample {
     constructor() { }
@@ -37,8 +40,11 @@ export class EffectExample {
 
     private m_modelLoader = new CoGeomModelLoader();
     private m_graph = new RendererSceneGraph();
-	private m_layouter = new EntityLayouter();
+    private m_layouter = new EntityLayouter();
+    private m_ctrlui = new ParamCtrlUI();
 
+    private m_sv: Vector3D = new Vector3D();
+    private m_entities: DisplayEntity[] = [];
     private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
@@ -57,6 +63,7 @@ export class EffectExample {
 
         this.m_statusDisp.initialize();
         this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+        this.m_rscene.addEventListener(MouseEvent.MOUSE_MIDDLE_DOWN, this, this.mouseMiddleDown);
 
         this.update();
 
@@ -77,6 +84,65 @@ export class EffectExample {
             this.initModel();
         }
     }
+    private m_currSV = new Vector3D();
+    private initUI(): void {
+
+        let ui = this.m_ctrlui;
+        ui.initialize(this.m_rscene, true);
+
+        // this.m_sv
+        let ls = this.m_entities;
+        ls[0].getScaleXYZ(this.m_sv);
+        // ls[0].getScaleXYZ(this.m_currSV);
+
+        console.log("initUI --------------------------------------");
+
+        ui.addStatusItem("显示-A", "visible-a", "Yes", "No", true, (info: CtrlInfo): void => {
+            ls[0].setVisible(info.flag);
+        });
+        ui.addStatusItem("显示-B", "visible-b", "Yes", "No", true, (info: CtrlInfo): void => {
+            ls[1].setVisible(info.flag);
+        });
+
+        ui.addProgressItem("缩放-A", "scale", 1.0, (info: CtrlInfo): void => {
+            this.m_currSV.copyFrom(this.m_sv);
+            let s = info.values[0];
+            console.log("xxx s: ", s);
+            this.m_currSV.scaleBy(s);
+            ls[0].setScale3(this.m_currSV);
+            ls[0].update();
+        });
+        ui.addValueItem("Y轴移动-B", "move-b", 0, -300, 300, (info: CtrlInfo): void => {
+            
+            let pv = new Vector3D();
+            ls[1].getPosition(pv);
+            pv.y = info.values[0];
+            ls[1].setPosition(pv);
+            ls[1].update();
+        });
+        ui.addValueItem("颜色-A", "color-a", 0.8, 0.0, 10, (info: CtrlInfo): void => {
+            let values = info.values;
+            console.log("color-a values: ", values, ", colorPick: ", info.colorPick);
+            let material = ls[0].getMaterial() as EffectMaterial;
+            material.setRGB3f(values[0], values[1], values[2]);
+        }, true);
+        ui.addValueItem("颜色-B", "color-b", 0.6, 0.0, 2.0, (info: CtrlInfo): void => {
+            let values = info.values;
+            console.log("color-b, values: ", values, ", colorPick: ", info.colorPick);
+            let material = ls[1].getMaterial() as EffectMaterial;
+            material.setRGB3f(values[0], values[1], values[2]);
+        }, true);
+        //*/
+        ui.updateLayout(true);
+
+        let node = this.m_graph.addScene(ui.ruisc);
+        node.setPhase0Callback(null, (sc: IRendererScene, st: IRendererSceneGraphStatus): void => {
+            /**
+             * 设置摄像机转动操作的启用状态
+             */
+            this.m_stageDragSwinger.setEnabled(!st.rayPickFlag);
+        })
+    }
     private initModel(): void {
         this.m_modelLoader.setListener(
             (models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat): void => {
@@ -90,13 +156,16 @@ export class EffectExample {
 
                 // for automatically fitting the model size in the scene
                 this.m_layouter.layoutUpdate();
+
+                this.initUI();
+
             });
 
         let baseUrl = "static/private/";
         let url = baseUrl + "fbx/base4.fbx";
         // url = baseUrl + "fbx/hat_ok.fbx";
         url = baseUrl + "obj/apple_01.obj";
-        
+
         this.loadModels([url]);
     }
     private loadModels(urls: string[], typeNS: string = ""): void {
@@ -129,23 +198,35 @@ export class EffectExample {
             mesh.setNVS(nvs);
             mesh.setIVS(ivs);
             mesh.setVtxBufRenderData(material);
-
             mesh.initialize();
+
             let matrix4 = new Matrix4(transform);
             let entity = new DisplayEntity();
-            entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+            // entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
             entity.setMesh(mesh);
             entity.setMaterial(material);
-            entity.getTransform().setParentMatrix( matrix4 );
+            entity.getTransform().setParentMatrix(matrix4);
 
             this.m_rscene.addEntity(entity);
+            this.m_entities.push(entity);
 
             // for automatically fitting the model size in the scene
-			this.m_layouter.layoutAppendItem(entity, matrix4);
+            this.m_layouter.layoutAppendItem(entity, matrix4);
         }
     }
 
     private mouseDown(evt: any): void {
+    }
+    private mouseMiddleDown(evt: any): void {
+
+        console.log("mouse middle down... ...");
+        /**
+         * 直接同步参数数据到UI和控制对象
+         */
+        let item = this.m_ctrlui.getItemByUUID("move-b");
+        item.param.value = 50;
+        item.syncEnabled = true;
+        item.updateParamToUI();
     }
 
     private m_timeoutId: any = -1;
