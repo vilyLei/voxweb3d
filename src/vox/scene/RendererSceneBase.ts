@@ -305,7 +305,7 @@ export default class RendererSceneBase {
     protected initThis(): void {
         // this.tickUpdate();
     }
-    initialize(rparam: RendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): void {
+    initialize(rparam: IRendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): void {
 
         if (this.m_renderer == null) {
             if (rparam == null) rparam = new RendererParam();

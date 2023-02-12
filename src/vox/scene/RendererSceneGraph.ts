@@ -4,6 +4,7 @@ import RendererSceneNode from "./RendererSceneNode";
 import IRendererSceneGraph from "./IRendererSceneGraph";
 import RendererParam from "./RendererParam";
 import RendererScene from "./RendererScene";
+import IRendererParam from "./IRendererParam";
 
 export default class RendererSceneGraph implements IRendererSceneGraph {
 
@@ -58,12 +59,15 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
         if (i >= 0 && i < this.m_nodes.length) return this.m_nodes[i];
         return null;
     }
+    createRendererParam(): IRendererParam {
+        return new RendererParam();
+    }
     /**
      * @param rparam IRendererParam instance, the default value is null
      * @param renderProcessesTotal the default value is 3
      * @param createNewCamera the default value is true
      */
-    createScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
+    createScene(rparam: IRendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
         let sc = new RendererScene();
         sc.initialize(rparam, renderProcessesTotal, createNewCamera);
         let node = new RendererSceneNode(sc);
@@ -76,7 +80,7 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
      * @param renderProcessesTotal the default value is 3
      * @param createNewCamera the default value is true
      */
-    createSubScene(rparam?: RendererParam, renderProcessesTotal?: number, createNewCamera?: boolean): IRendererScene {
+    createSubScene(rparam?: IRendererParam, renderProcessesTotal?: number, createNewCamera?: boolean): IRendererScene {
         if(this.m_nodes.length > 0) {
             let sc = this.m_nodes[0].getRScene().createSubScene(rparam, renderProcessesTotal, createNewCamera);
             let node = new RendererSceneNode(sc);

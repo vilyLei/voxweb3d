@@ -1,6 +1,5 @@
 
 import RendererDevice from "../../vox/render/RendererDevice";
-import RendererParam from "../../vox/scene/RendererParam";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import TextureConst from "../../vox/texture/TextureConst";
 import TextureProxy from "../../vox/texture/TextureProxy";
@@ -52,7 +51,7 @@ export class DemoParamCtrlUI {
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
-            let rparam: RendererParam = new RendererParam();
+            let rparam = this.m_grap.createRendererParam();
             rparam.setCamPosition(1200.0, 1200.0, 1200.0);
             rparam.setAttriAntialias(true);
             rparam.setAttriAlpha(true);

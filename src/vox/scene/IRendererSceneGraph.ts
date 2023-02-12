@@ -4,6 +4,8 @@ import IRendererSceneGraphStatus from "./IRendererSceneGraphStatus";
 import IRendererParam from "./IRendererParam";
 
 export default interface IRendererSceneGraph extends IRendererSceneGraphStatus {
+
+    createRendererParam(): IRendererParam;
     clear(): void;
     /**
      * @param node IRendererSceneNode instance

@@ -35,7 +35,6 @@ export default class ParamCtrlUI {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDown);
 
-
             CanvasTextureTool.GetInstance().initialize(this.m_rscene);
             CanvasTextureTool.GetInstance().initializeAtlas(1024, 1024, new Color4(1.0, 1.0, 1.0, 0.0), true);
             this.initUIScene(buildDisplay);
@@ -59,7 +58,7 @@ export default class ParamCtrlUI {
     }
     private initUIScene(buildDisplay: boolean): void {
 
-        let rparam: RendererParam = new RendererParam();
+        let rparam = new RendererParam();
         rparam.cameraPerspectiveEnabled = false;
         rparam.setCamProject(45.0, 0.1, 3000.0);
         rparam.setCamPosition(0.0, 0.0, 1500.0);
