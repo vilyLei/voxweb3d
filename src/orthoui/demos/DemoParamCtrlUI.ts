@@ -86,7 +86,7 @@ export class DemoParamCtrlUI {
         this.m_box1.setXYZ(150, 0, -200);
         this.m_rscene.addEntity(this.m_box1);
     }
-    private m_ruisc: RendererSubScene = null;
+    private m_ruisc: IRendererScene = null;
     private initUI(): void {
 
         let ui = this.m_ctrlui;

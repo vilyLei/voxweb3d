@@ -2,8 +2,6 @@ import RendererDevice from "../../vox/render/RendererDevice";
 import MouseEvent from "../../vox/event/MouseEvent";
 
 import RendererParam from "../../vox/scene/RendererParam";
-
-import RendererSubScene from "../../vox/scene/RendererSubScene";
 import SelectionBar from "../../orthoui/button/SelectionBar";
 import ProgressBar from "../../orthoui/button/ProgressBar";
 import ProgressDataEvent from "../../vox/event/ProgressDataEvent";
@@ -24,7 +22,7 @@ export default class ParamCtrlUI {
 
     private m_rscene: IRendererScene = null;
 
-    ruisc: RendererSubScene = null;
+    ruisc: IRendererScene = null;
     rgbPanel: RGBColorPanel;
 
     constructor() { }
@@ -66,8 +64,7 @@ export default class ParamCtrlUI {
         rparam.setCamProject(45.0, 0.1, 3000.0);
         rparam.setCamPosition(0.0, 0.0, 1500.0);
 
-        let subScene: RendererSubScene = null;
-        subScene = this.m_rscene.createSubScene() as RendererSubScene;
+        let subScene = this.m_rscene.createSubScene();
         subScene.initialize(rparam);
         subScene.enableMouseEvent(true);
         this.ruisc = subScene;
