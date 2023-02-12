@@ -2,9 +2,10 @@ import IRendererScene from "../../vox/scene/IRendererScene";
 import IRendererSceneNode from "./IRendererSceneNode";
 import RendererSceneNode from "./RendererSceneNode";
 import IRendererSceneGraph from "./IRendererSceneGraph";
+import RendererParam from "./RendererParam";
+import RendererScene from "./RendererScene";
 
 export default class RendererSceneGraph implements IRendererSceneGraph {
-    private m_scenes: IRendererScene[] = [];
     private m_nodes: IRendererSceneNode[] = [];
     rayPickFlag: boolean = false;
     constructor() {
@@ -49,10 +50,23 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
         if (i >= 0 && i < this.m_nodes.length) return this.m_nodes[i];
         return null;
     }
+    createScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
+        let sc = new RendererScene();
+        sc.initialize(rparam, renderProcessesTotal, createNewCamera);
+        let node = new RendererSceneNode(sc);
+        this.m_nodes.push(node);
+        return sc;
+    }
     addScene(sc: IRendererScene): IRendererSceneNode {
         if (sc != null) {
+            let ls = this.m_nodes;
+            for (let i = 0; i < ls.length; ++i) {
+                if (ls[i].getRScene() == sc) {
+                    return ls[i];
+                }
+            }
             let node = new RendererSceneNode(sc);
-            this.m_nodes.push(node);
+            ls.push(node);
             return node;
         }
         return null;
@@ -72,23 +86,23 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
 
         const node = list[i] as RendererSceneNode;
         let scene = list[i].getRScene();
-        if(node.p0Call0)node.p0Call0(scene, this);
+        if (node.p0Call0) node.p0Call0(scene, this);
         scene.runBegin(true, true);
         scene.update(false, true);
         pickFlag = scene.isRayPickSelected();
         this.rayPickFlag = pickFlag;
-        if(node.p0Call1)node.p0Call1(scene, this);
+        if (node.p0Call1) node.p0Call1(scene, this);
 
         i -= 1;
         for (; i >= 0; --i) {
             const node = list[i] as RendererSceneNode;
             scene = list[i].getRScene();
-            if(node.p0Call0)node.p0Call0(scene, this);
+            if (node.p0Call0) node.p0Call0(scene, this);
             scene.runBegin(false, true);
             scene.update(false, !pickFlag);
             pickFlag = pickFlag || scene.isRayPickSelected();
             this.rayPickFlag = pickFlag;
-            if(node.p0Call1)node.p0Call1(scene, this);
+            if (node.p0Call1) node.p0Call1(scene, this);
         }
         /////////////////////////////////////////////////////// ---- mouseTest end.
 
@@ -96,7 +110,7 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
         for (i = 0; i < total; ++i) {
             const node = list[i] as RendererSceneNode;
             scene = list[i].getRScene();
-            if(node.p1Call0)node.p0Call0(scene, this);
+            if (node.p1Call0) node.p0Call0(scene, this);
             scene.renderBegin(node.contextResetEnabled);
             const idList = node.processIdList;
             if (idList == null) {
@@ -108,7 +122,7 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
                 }
             }
             scene.runEnd();
-            if(node.p1Call0)node.p0Call1(scene, this);
+            if (node.p1Call0) node.p0Call1(scene, this);
         }
     }
 }

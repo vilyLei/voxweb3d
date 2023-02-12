@@ -47,7 +47,7 @@ interface IRendererScene {
      * @param renderProcessesTotal the default value is 3
      * @param createNewCamera the default value is true
      */
-    createSubScene(rparam: IRendererParam, renderProcessesTotal: number, createNewCamera: boolean): IRendererScene;
+    createSubScene(rparam?: IRendererParam, renderProcessesTotal?: number, createNewCamera?: boolean): IRendererScene;
     enable(): void;
     disable(): void;
     isEnabled(): boolean;

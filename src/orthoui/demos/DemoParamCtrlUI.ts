@@ -24,7 +24,7 @@ import IColorMaterial from "../../vox/material/mcase/IColorMaterial";
 export class DemoParamCtrlUI {
     constructor() { }
 
-    private m_rscene: RendererScene = null;
+    private m_rscene: IRendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
@@ -61,7 +61,7 @@ export class DemoParamCtrlUI {
             this.m_rscene.enableMouseEvent(true);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
-            this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
+            this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera() as any);
 
             this.m_statusDisp.initialize();
 
@@ -85,10 +85,10 @@ export class DemoParamCtrlUI {
         this.m_box1.initializeCube(100, [this.getTexByUrl("static/assets/metal_02.jpg")]);
         this.m_box1.setXYZ(150, 0, -200);
         this.m_rscene.addEntity(this.m_box1);
-        //metal_02
     }
     private m_ruisc: RendererSubScene = null;
     private initUI(): void {
+
         let ui = this.m_ctrlui;
         ui.initialize(this.m_rscene, true);
         this.m_ruisc = ui.ruisc;

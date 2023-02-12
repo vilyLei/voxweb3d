@@ -2,7 +2,6 @@ import RendererDevice from "../../vox/render/RendererDevice";
 import MouseEvent from "../../vox/event/MouseEvent";
 
 import RendererParam from "../../vox/scene/RendererParam";
-import RendererScene from "../../vox/scene/RendererScene";
 
 import RendererSubScene from "../../vox/scene/RendererSubScene";
 import SelectionBar from "../../orthoui/button/SelectionBar";
@@ -19,17 +18,18 @@ import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 
 
 import { CtrlInfo, ItemCallback, CtrlItemParam, CtrlItemObj } from "./ctrlui/CtrlItemObj";
+import IRendererScene from "../../vox/scene/IRendererScene";
 
 export default class ParamCtrlUI {
 
-    private m_rscene: RendererScene = null;
+    private m_rscene: IRendererScene = null;
 
     ruisc: RendererSubScene = null;
     rgbPanel: RGBColorPanel;
 
     constructor() { }
 
-    initialize(rscene: RendererScene, buildDisplay: boolean = true): void {
+    initialize(rscene: IRendererScene, buildDisplay: boolean = true): void {
 
         if (this.m_rscene == null) {
 
