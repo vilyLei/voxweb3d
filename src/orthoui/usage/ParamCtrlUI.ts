@@ -1,7 +1,6 @@
 import RendererDevice from "../../vox/render/RendererDevice";
 import MouseEvent from "../../vox/event/MouseEvent";
 
-import RendererParam from "../../vox/scene/RendererParam";
 import SelectionBar from "../../orthoui/button/SelectionBar";
 import ProgressBar from "../../orthoui/button/ProgressBar";
 import ProgressDataEvent from "../../vox/event/ProgressDataEvent";
@@ -17,6 +16,7 @@ import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 
 import { CtrlInfo, ItemCallback, CtrlItemParam, CtrlItemObj } from "./ctrlui/CtrlItemObj";
 import IRendererScene from "../../vox/scene/IRendererScene";
+import EventBase from "../../vox/event/EventBase";
 
 export default class ParamCtrlUI {
 
@@ -58,24 +58,29 @@ export default class ParamCtrlUI {
     }
     private initUIScene(buildDisplay: boolean): void {
 
-        let rparam = new RendererParam();
+        let rparam = this.m_rscene.createRendererParam();
         rparam.cameraPerspectiveEnabled = false;
         rparam.setCamProject(45.0, 0.1, 3000.0);
         rparam.setCamPosition(0.0, 0.0, 1500.0);
+
+        this.m_rscene.addEventListener(EventBase.RESIZE, this, this.resize);
 
         let subScene = this.m_rscene.createSubScene();
         subScene.initialize(rparam);
         subScene.enableMouseEvent(true);
         this.ruisc = subScene;
-        let stage = this.m_rscene.getStage3D();
-        this.ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
-        this.ruisc.getCamera().update();
+
+        this.resize(null);
 
         if (buildDisplay) {
             this.initUI();
         }
     }
-
+    private resize(evt: any): void {
+        let stage = this.m_rscene.getStage3D();
+        this.ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
+        this.ruisc.getCamera().update();
+    }
     private initUI(): void {
         this.initCtrlBars();
 
@@ -157,7 +162,7 @@ export default class ParamCtrlUI {
     }
     private moveSelectToBtn(btn: ProgressBar | SelectionBar): void {
 
-        let rect: AABB2D = btn.getRect();
+        let rect = btn.getRect();
         btn.getPosition(this.m_pos);
         this.m_pos.x += rect.x;
         this.m_selectPlane.setXYZ(this.m_pos.x, this.m_pos.y, -1.0);
