@@ -2,13 +2,11 @@
 import RendererDevice from "../../vox/render/RendererDevice";
 import RendererParam from "../../vox/scene/RendererParam";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
-import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import TextureConst from "../../vox/texture/TextureConst";
 import TextureProxy from "../../vox/texture/TextureProxy";
 
 import MouseEvent from "../../vox/event/MouseEvent";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
-import CameraTrack from "../../vox/view/CameraTrack";
 import RendererScene from "../../vox/scene/RendererScene";
 
 import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwinger";
@@ -34,7 +32,7 @@ export class DemoParamCtrlUI {
 
     private m_grap = new RendererSceneGraph();
     private m_ctrlui = new ParamCtrlUI();
-    // private m_axis: Axis3DEntity = null;
+    
     private m_box0: Box3DEntity = null;
     private m_box1: Box3DEntity = null;
     private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
@@ -65,8 +63,6 @@ export class DemoParamCtrlUI {
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
-
-            //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
             this.m_statusDisp.initialize();
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
@@ -80,11 +76,6 @@ export class DemoParamCtrlUI {
         }
     }
     private initScene(): void {
-
-        // let axis = new Axis3DEntity();
-        // axis.initialize(300.0);
-        // this.m_rscene.addEntity(axis);
-        // this.m_axis = axis;
 
         this.m_box0 = new Box3DEntity();
         this.m_box0.initializeCube(150, [this.getTexByUrl("static/assets/box.jpg")]);
@@ -153,7 +144,6 @@ export class DemoParamCtrlUI {
     }
     private mouseMiddleDown(evt: any): void {
         console.log("mouse middle down... ...");
-        // DebugFlag.Flag_0 = 1;
         let item = this.m_ctrlui.getItemByUUID("move-b");
         item.param.value = 50;
         item.syncEnabled = true;
@@ -185,35 +175,8 @@ export class DemoParamCtrlUI {
         }
         else {
             this.m_grap.run();
-            /*
-            /////////////////////////////////////////////////////// ---- mouseTest begin.
-            let pickFlag = false;
-
-            this.m_ruisc.runBegin(true, true);
-            this.m_ruisc.update(false, true);
-            pickFlag = this.m_ruisc.isRayPickSelected();
-            this.m_stageDragSwinger.setEnabled(!pickFlag);
-
-            this.m_rscene.runBegin(false);
-            this.m_rscene.update(false, !pickFlag);
-            pickFlag = pickFlag || this.m_rscene.isRayPickSelected();
-
-            /////////////////////////////////////////////////////// ---- mouseTest end.
-
-
-            /////////////////////////////////////////////////////// ---- rendering begin.
-            this.m_rscene.renderBegin();
-            this.m_rscene.run(false);
-            this.m_rscene.runEnd();
-
-            this.m_ruisc.renderBegin();
-            this.m_ruisc.run(false);
-            this.m_ruisc.runEnd();
-            /////////////////////////////////////////////////////// ---- rendering end.
-            //*/
 
         }
-        // DebugFlag.Reset();
     }
 
 }

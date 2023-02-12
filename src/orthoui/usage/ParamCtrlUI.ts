@@ -192,7 +192,6 @@ export default class ParamCtrlUI {
         this.ruisc.addEntity(this.m_selectPlane);
         this.m_selectPlane.setVisible(false);
 
-        // console.log("XXXXXXXXXXXX this.m_minBtnX: ", this.m_minBtnX);
         let flag = RendererDevice.IsMobileWeb();
         this.rgbPanel = new RGBColorPanel();
         this.rgbPanel.initialize(flag ? 64 : 32, 4);
@@ -219,6 +218,7 @@ export default class ParamCtrlUI {
             switch (param.type) {
                 case "number_value":
                 case "number":
+
                     t.value = t.value ? t.value : 0.0;
                     t.minValue = t.minValue ? t.minValue : 0.0;
                     t.maxValue = t.maxValue ? t.maxValue : 10.0;
