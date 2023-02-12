@@ -24,6 +24,7 @@ import DataMesh from "../../../vox/mesh/DataMesh";
 import Matrix4 from "../../../vox/math/Matrix4";
 import RendererSceneGraph from "../../../vox/scene/RendererSceneGraph";
 import IRendererScene from "../../../vox/scene/IRendererScene";
+import { EntityLayouter } from "../../../vox/utils/EntityLayouter";
 
 export class EffectExample {
     constructor() { }
@@ -36,6 +37,7 @@ export class EffectExample {
 
     private m_modelLoader = new CoGeomModelLoader();
     private m_graph = new RendererSceneGraph();
+	private m_layouter = new EntityLayouter();
 
     private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex = this.m_texLoader.getImageTexByUrl(purl);
@@ -50,7 +52,7 @@ export class EffectExample {
         }
         this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
         this.m_rscene.enableMouseEvent(true);
-        this.m_cameraZoomController.initWithRScene(this.m_rscene);;
+        this.m_cameraZoomController.initWithRScene(this.m_rscene);
         this.m_stageDragSwinger.initWithRScene(this.m_rscene);
 
         this.m_statusDisp.initialize();
@@ -62,7 +64,8 @@ export class EffectExample {
     initialize(): void {
         console.log("EffectExample::initialize()......");
         if (this.m_rscene == null) {
-            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
@@ -77,13 +80,16 @@ export class EffectExample {
     private initModel(): void {
         this.m_modelLoader.setListener(
             (models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat): void => {
-                console.log("loaded model.");
+
                 for (let i = 0; i < models.length; ++i) {
                     this.createEntity(models[i], transforms != null ? transforms[i] : null);
                 }
             },
             (total): void => {
                 console.log("loaded model all.");
+
+                // for automatically fitting the model size in the scene
+                this.m_layouter.layoutUpdate();
             });
 
         let baseUrl = "static/private/";
@@ -98,6 +104,7 @@ export class EffectExample {
     }
 
     protected createEntity(model: CoGeomDataType, transform: Float32Array = null, index: number = 0): void {
+
         if (model != null) {
             console.log("createEntity(), model: ", model);
             let vs = model.vertices;
@@ -124,28 +131,30 @@ export class EffectExample {
             mesh.setVtxBufRenderData(material);
 
             mesh.initialize();
-
+            let matrix4 = new Matrix4(transform);
             let entity = new DisplayEntity();
             entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
             entity.setMesh(mesh);
             entity.setMaterial(material);
-            entity.getTransform().setParentMatrix(new Matrix4(transform));
-            entity.setScaleXYZ(165.0, 165.0, 165.0);
-            // entity.setScale3(new Vector3D( 165.0, 165.0, 165.0 ));
+            entity.getTransform().setParentMatrix( matrix4 );
 
             this.m_rscene.addEntity(entity);
+
+            // for automatically fitting the model size in the scene
+			this.m_layouter.layoutAppendItem(entity, matrix4);
         }
     }
 
     private mouseDown(evt: any): void {
     }
+
     private m_timeoutId: any = -1;
     private update(): void {
+
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
         this.m_timeoutId = setTimeout(this.update.bind(this), 40);// 20 fps
-
         this.m_statusDisp.render();
 
     }
