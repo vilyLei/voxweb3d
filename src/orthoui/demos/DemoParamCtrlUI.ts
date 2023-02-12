@@ -33,7 +33,7 @@ export class DemoParamCtrlUI {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private m_grap = new RendererSceneGraph();
-    private m_ui = new ParamCtrlUI();
+    private m_ctrlui = new ParamCtrlUI();
     // private m_axis: Axis3DEntity = null;
     private m_box0: Box3DEntity = null;
     private m_box1: Box3DEntity = null;
@@ -70,6 +70,7 @@ export class DemoParamCtrlUI {
             this.m_statusDisp.initialize();
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+            this.m_rscene.addEventListener(MouseEvent.MOUSE_MIDDLE_DOWN, this, this.mouseMiddleDown);
 
             this.update();
 
@@ -97,7 +98,7 @@ export class DemoParamCtrlUI {
     }
     private m_ruisc: RendererSubScene = null;
     private initUI(): void {
-        let ui = this.m_ui;
+        let ui = this.m_ctrlui;
         ui.initialize(this.m_rscene, true);
         this.m_ruisc = ui.ruisc;
         
@@ -149,8 +150,14 @@ export class DemoParamCtrlUI {
         })
     }
     private mouseDown(evt: any): void {
-        // console.log("mouse down... ...");
+    }
+    private mouseMiddleDown(evt: any): void {
+        console.log("mouse middle down... ...");
         // DebugFlag.Flag_0 = 1;
+        let item = this.m_ctrlui.getItemByUUID("move-b");
+        item.param.value = 50;
+        item.syncEnabled = true;
+        item.updateparamToUI();
     }
 
     private m_timeoutId: any = -1;

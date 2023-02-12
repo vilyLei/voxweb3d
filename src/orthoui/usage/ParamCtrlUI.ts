@@ -92,8 +92,8 @@ export default class ParamCtrlUI {
     private m_pos = new Vector3D();
     private m_selectPlane: Plane3DEntity = null;
 
-    private m_visiBtns: any[] = [];
-    private m_btns: any[] = [];
+    private m_visiBtns: (SelectionBar | ProgressBar)[] = [];
+    private m_btns: (SelectionBar | ProgressBar)[] = [];
     private m_menuBtn: SelectionBar = null;
     private m_minBtnX = 10000;
     private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
@@ -308,13 +308,7 @@ export default class ParamCtrlUI {
         let map = this.m_btnMap;
         if (map.has(uuid)) {
             let obj = map.get(uuid);
-            let param = obj.param;
-            let btn = obj.btn as SelectionBar;
-            if (param.callback != null && param.flag != flag) {
-                param.flag = flag;
-                obj.info = { type: param.type, uuid: uuid, values: [], flag: flag };
-                param.callback(obj.info);
-            }
+            obj.sendFlagOut( flag );
             this.moveSelectToBtn(selectEvt.target);
         }
         if (this.rgbPanel != null) this.rgbPanel.close();
@@ -343,11 +337,10 @@ export default class ParamCtrlUI {
         let map = this.m_btnMap;
         let changeFlag = this.m_currUUID != uuid;
         this.m_currUUID = uuid;
-        console.log("valueChange, init...progEvt.status: ", progEvt.status, "changeFlag: ", changeFlag);
+        
         if (map.has(uuid)) {
             let obj = map.get(uuid);
             let param = obj.param;
-            let btn = obj.btn as ProgressBar;
             if (progEvt.status == 2) {
 
                 obj.sendValueOut(value);
