@@ -1,0 +1,120 @@
+/***************************************************************************/
+/*                                                                         */
+/*  Copyright 2018-2022 by                                                 */
+/*  Vily(vily313@126.com)                                                  */
+/*                                                                         */
+/***************************************************************************/
+
+import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
+import ShaderUniformData from "../../../vox/material/ShaderUniformData";
+import MaterialBase from "../../../vox/material/MaterialBase";
+import Color4 from "../../../vox/material/Color4";
+import { ShaderCode } from "./ShaderCode";
+
+class BakeShaderBuffer extends ShaderCodeBuffer {
+    constructor() {
+        super();
+    }
+    private static s_instance = new BakeShaderBuffer();
+    private m_uniqueName = "";
+    initialize(texEnabled: boolean): void {
+        //console.log("BakeShaderBuffer::initialize()...");
+        this.m_uniqueName = "BakeShd";
+    }
+    getFragShaderCode(): string {
+        //         let fragCode: string =
+        //             `#version 300 es
+        // precision mediump float;
+        // uniform sampler2D u_sampler0;
+        // uniform vec4 u_color;
+        // in vec3 v_nv;
+        // in vec2 v_uvs;
+        // layout(location = 0) out vec4 FragColor0;
+        // void main()
+        // {
+        //     FragColor0 = texture(u_sampler0, v_uvs.xy) * u_color;
+        // }
+        // `;
+        //         return fragCode;
+
+        return ShaderCode.frag_body;
+    }
+    getVertShaderCode(): string {
+        //         let vtxCode: string =
+        //             `#version 300 es
+        // precision mediump float;
+        // layout(location = 0) in vec3 a_vs;
+        // layout(location = 1) in vec2 a_uvs;
+        // layout(location = 2) in vec3 a_nvs;
+        // uniform mat4 u_objMat;
+        // uniform mat4 u_viewMat;
+        // uniform mat4 u_projMat;
+        // out vec3 v_nv;
+        // out vec2 v_uvs;
+        // void main()
+        // {
+        //     gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);
+        //     v_nv = a_nvs;
+        //     v_uvs = a_uvs;
+        // }
+        // `;
+        //         return vtxCode;
+
+        return ShaderCode.vert_body;
+    }
+    getUniqueShaderName(): string {
+        //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
+        return this.m_uniqueName;
+    }
+
+    static GetInstance(): BakeShaderBuffer {
+        return BakeShaderBuffer.s_instance;
+    }
+}
+
+export default class BakeMaterial extends MaterialBase {
+    private m_data = new Float32Array([1.0, 1.0, 1.0, 1.0]);
+    constructor() {
+        super();
+    }
+
+    getCodeBuf(): ShaderCodeBuffer {
+        return BakeShaderBuffer.GetInstance();
+    }
+    setRGB3f(pr: number, pg: number, pb: number): void {
+        this.m_data[0] = pr;
+        this.m_data[1] = pg;
+        this.m_data[2] = pb;
+    }
+    getRGB3f(color: Color4): void {
+        let ds = this.m_data;
+        color.setRGB3f(ds[0], ds[1], ds[2]);
+    }
+    setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
+        this.m_data[0] = pr;
+        this.m_data[1] = pg;
+        this.m_data[2] = pb;
+        this.m_data[3] = pa;
+    }
+    getRGBA4f(color: Color4): void {
+        color.fromArray4(this.m_data);
+    }
+    setAlpha(pa: number): void {
+        this.m_data[3] = pa;
+    }
+    getAlpha(): number {
+        return this.m_data[3];
+    }
+    setColor(color: Color4): void {
+        color.toArray4(this.m_data);
+    }
+    getColor(color: Color4): void {
+        color.fromArray4(this.m_data);
+    }
+    createSelfUniformData(): ShaderUniformData {
+        let oum = new ShaderUniformData();
+        oum.uniformNameList = ["u_color"];
+        oum.dataList = [this.m_data];
+        return oum;
+    }
+}
