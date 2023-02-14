@@ -2,7 +2,8 @@
 import { IVector3D, CoMathConst, CoOrientationType, CoVec3, IMatrix4, IAABB, IAABB2D, ICoMath } from "./ICoMath";
 
 declare var CoMath: ICoMath;
-
+interface inter_T_CoMath{
+}
 class T_CoMath {
     get Vector3D(): CoVec3 {
         return CoMath.Vector3D;

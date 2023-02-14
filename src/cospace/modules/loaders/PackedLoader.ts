@@ -1,3 +1,5 @@
+interface I_PackedLoader {
+}
 /**
  * 将加载逻辑打包的loader
  */
