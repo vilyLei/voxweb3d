@@ -19,12 +19,8 @@ export class DemoCoRenderer {
 
 	initialize(): void {
 		VoxRenderer.initialize((urls: string[]): void => {
-			this.initRenderer();
+				this.initRenderer();
 		});
-	}
-
-	isEngineEnabled(): boolean {
-		return VoxRenderer.isEnabled();
 	}
 	private initRenderer(): void {
 

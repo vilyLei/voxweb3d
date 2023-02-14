@@ -63,7 +63,7 @@ class T_CoRScene {
 				urlRenderer = urls[0];
 				total++;
 				if (total > 1) {
-					if (callback != null) callback([urlRenderer, url]);
+					if (callback != null && this.isEnabled()) callback([urlRenderer, url]);
 				}
 
 			})
@@ -75,10 +75,10 @@ class T_CoRScene {
 				if (flag) {
 					total++;
 					if (total > 1) {
-						if (callback != null) callback([urlRenderer, url]);
+						if (callback != null && this.isEnabled()) callback([urlRenderer, url]);
 					}
 				} else {
-					if (callback != null) callback([url]);
+					if (callback != null && typeof CoRScene !== "undefined") callback([url]);
 				}
 			}).load(url);
 

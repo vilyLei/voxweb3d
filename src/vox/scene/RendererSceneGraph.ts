@@ -62,6 +62,9 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
     createRendererParam(): IRendererParam {
         return new RendererParam();
     }
+    createRendererSceneParam(): IRendererParam {
+        return new RendererParam();
+    }
     /**
      * @param rparam IRendererParam instance, the default value is null
      * @param renderProcessesTotal the default value is 3
@@ -86,6 +89,7 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
             let node = new RendererSceneNode(sc);
             this.m_nodes.push(node);
             this.m_map.set(sc.getUid(), node);
+            return sc;
         }
         return null;
     }

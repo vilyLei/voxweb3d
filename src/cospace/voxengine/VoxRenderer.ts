@@ -20,7 +20,7 @@ class T_CoRenderer {
                 url = "static/cospace/engine/renderer/CoRenderer.umd.min.js";
 			}
 			new ModuleLoader(1, (): void => {
-				if (callback != null) callback([url]);
+				if (callback != null && this.isEnabled()) callback([url]);
 			}).load(url);
 
             return true;

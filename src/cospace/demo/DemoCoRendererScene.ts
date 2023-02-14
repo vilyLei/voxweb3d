@@ -1,8 +1,7 @@
 import IRendererScene from "../../vox/scene/IRendererScene";
 import { IMouseInteraction } from "../voxengine/ui/IMouseInteraction";
 
-import { VoxRenderer } from "../voxengine/VoxRenderer";
-import { VoxRScene } from "../voxengine/VoxRScene";
+import { RendererDevice, VoxRScene } from "../voxengine/VoxRScene";
 import { VoxUIInteraction } from "../voxengine/ui/VoxUIInteraction";
 
 /**
@@ -21,13 +20,10 @@ export class DemoCoRendererScene {
 			VoxUIInteraction.initialize((urls: string[]): void => {
 				this.initMouseInteraction();
 			});
-		});		
-	}
-	isEngineEnabled(): boolean {
-		return VoxRenderer.isEnabled() && VoxRScene.isEnabled();
+		});
 	}
 	private initMouseInteraction(): void {
-		
+
 		let r = this.m_rscene;
 		if (r != null && this.m_mouseInteraction == null && VoxUIInteraction.isEnabled()) {
 
@@ -41,7 +37,6 @@ export class DemoCoRendererScene {
 
 		if (this.m_rscene == null) {
 
-			let RendererDevice = VoxRScene.RendererDevice;
 			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			RendererDevice.SetWebBodyColor("black");
