@@ -50,10 +50,16 @@ interface I_CoRScene {
 var RendererDevice: CoRendererDevice = null;
 
 class T_CoRScene {
-	
 	private m_init = true;
+	private init(): void {
+
+		if(typeof CoRScene !== "undefined") {
+			RendererDevice = CoRScene.RendererDevice;
+		}
+	}
 	initialize(callback: (urls: string[]) => void = null, url: string = ""): boolean {
 
+		this.init();
 		if (this.m_init) {
 			this.m_init = false;
 			let flag = false;
@@ -71,7 +77,7 @@ class T_CoRScene {
 				url = "static/cospace/engine/rscene/CoRScene.umd.min.js";
 			}
 			new ModuleLoader(1, (): void => {
-				RendererDevice = CoRScene.RendererDevice;
+				this.init();
 				if (flag) {
 					total++;
 					if (total > 1) {

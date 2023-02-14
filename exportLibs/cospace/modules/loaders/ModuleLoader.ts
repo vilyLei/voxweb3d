@@ -33,10 +33,8 @@ class ModuleLoader extends PackedLoader {
 		};
 		scriptEle.type = "text/javascript";
 		try {
-			console.log("ModuleLoader::loadedData(), module compile A, url: ", url);
 			scriptEle.innerHTML = data as string;
 			document.head.appendChild(scriptEle);
-			console.log("ModuleLoader::loadedData(), module compile B, url: ", url);
 		} catch (e) {
 			console.error("ModuleLoader::loadedData() apply script ele error.");
 			throw e;

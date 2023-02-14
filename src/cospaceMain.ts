@@ -28,8 +28,8 @@
 // import { DemoCoAppDeferredInit as Demo } from "./cospace/demo/DemoCoAppDeferredInit";
 
 // import { DemoCoRenderer as Demo } from "./cospace/demo/DemoCoRenderer";
-import { DemoCoRendererScene as Demo } from "./cospace/demo/DemoCoRendererScene";
-// import { DemoCoRendererSubScene as Demo } from "./cospace/demo/DemoCoRendererSubScene";
+// import { DemoCoRendererScene as Demo } from "./cospace/demo/DemoCoRendererScene";
+import { DemoCoRendererSubScene as Demo } from "./cospace/demo/DemoCoRendererSubScene";
 // import { DemoCoRendererSceneGraph as Demo } from "./cospace/demo/DemoCoRendererSceneGraph";
 // import { DemoCoSimpleRendereScene as Demo } from "./cospace/demo/DemoCoSimpleRendereScene";
 // import { DemoDisplayModel as Demo } from "./cospace/demo/DemoDisplayModel";

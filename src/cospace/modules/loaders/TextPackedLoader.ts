@@ -1,5 +1,8 @@
 
 import { PackedLoader } from "./PackedLoader";
+interface I_TextPackedLoader {
+}
+
 class TextPackedLoader extends PackedLoader{
 	private m_dataMap: Map<string, string> = new Map();
 	// /**

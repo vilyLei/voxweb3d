@@ -127,12 +127,13 @@ function test(url) {
 
     return true;
 }
+let forceCopy = false;
 function copy_lib_interface(srcDir) {
     //'../src/cospace/'
     walkSync(srcDir, "../exportLibs/", function (filePath, dstDir, stat) {
         // console.log("filePath: ", filePath);
         // console.log("filePath.lastIndexOf('.ts'): ", filePath.lastIndexOf(".ts"), filePath.length);
-        if (test(filePath)) {
+        if (forceCopy || test(filePath)) {
             if (filePath.lastIndexOf(".ts") == (filePath.length - 3) && filePath.indexOf(".d.ts") < 0) {
                 const fs = require('fs')
                 fs.readFile(filePath, (err, data) => {
@@ -168,24 +169,32 @@ function copy_lib_interface(srcDir) {
     });
 }
 function copy_vox() {
+    forceCopy = false;
     copy_lib_interface('../src/vox/');
 }
 function copy_cospace() {
+    forceCopy = false;
     copy_lib_interface('../src/cospace/');
 }
 function copy_light() {
+    forceCopy = false;
     copy_lib_interface('../src/light/');
 }
 function copy_renderingtoy() {
     copy_lib_interface('../src/renderingtoy/');
 }
 function copy_shadow() {
+    forceCopy = false;
     copy_lib_interface('../src/shadow/');
 }
 function copy_materialLab() {
+    forceCopy = false;
     copy_lib_interface('../src/materialLab/');
 }
-//materialLab
+function copy_cospace_modules_loaders() {
+    forceCopy = true;
+    copy_lib_interface('../src/cospace/modules/loaders/');
+}
 
 copy_vox();
 copy_cospace();
@@ -193,3 +202,4 @@ copy_light();
 copy_renderingtoy();
 copy_shadow();
 copy_materialLab();
+copy_cospace_modules_loaders();
