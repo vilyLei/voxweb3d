@@ -127,4 +127,4 @@ interface ICoMath {
     isLessRealZero(v: number): boolean;
 }
 
-export { CoVec3, ICoMath };
+export { IVector3D, CoMathConst, CoOrientationType, CoVec3, IMatrix4, IAABB, IAABB2D, ICoMath };

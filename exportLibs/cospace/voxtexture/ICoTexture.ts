@@ -45,4 +45,4 @@ interface ICoTexture {
 		nearestFilter?: boolean
 	): IImageTexAtlas;
 }
-export { ICoTexture };
+export { CoImageTexAtlas, ICoTexture };

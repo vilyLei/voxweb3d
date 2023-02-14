@@ -195,6 +195,11 @@ interface ICoRScene {
 	 * @param pw the default vaue is 1.0
 	 */
 	createVec3(px?: number, py?: number, pz?: number, pw?: number): IVector3D;
+	/**
+	 * create a Mattrix4 instance
+	 * @param pfs32 the default value is null
+	 * @param index the default value is 0
+	 */
 	createMat4(pfs32?: Float32Array, index?: number): IMatrix4;
 	/**
 	 * set Color4 instance
@@ -310,4 +315,4 @@ interface ICoRScene {
 	
 	createEvtNode(): IEvtNode;
 }
-export { CoVec3, CoMaterialContextParam, ICoRScene };
+export { CoMaterialPipeType, CoShaderCodeUUID, CoProgressDataEvent, CoSelectionEvent, COEventBase, CoTextureConst, CoRenderDrawMode, CoVec3, CoMaterialContextParam, ICoRScene };

@@ -153,4 +153,4 @@ interface ICoAGeom {
 	 */
 	createSphere(): ISphere;
 }
-export { ICoAGeom };
+export { CoIntersection, CoLine, CoRayLine, CoPlaneUtils, CoSurfaceNormal, ICoAGeom };
