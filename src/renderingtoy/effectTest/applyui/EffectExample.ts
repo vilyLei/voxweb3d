@@ -38,7 +38,7 @@ export class EffectExample {
     private m_layouter = new EntityLayouter();
     private m_ctrlui = new ParamCtrlUI();
 
-    private m_sv: Vector3D = new Vector3D();
+    private m_sv = new Vector3D();
     private m_currSV = new Vector3D();
     private m_entities: DisplayEntity[] = [];
 

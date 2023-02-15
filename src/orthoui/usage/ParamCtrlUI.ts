@@ -10,7 +10,6 @@ import RGBColorPanel, { RGBColoSelectEvent } from "../../orthoui/panel/RGBColorP
 import Color4 from "../../vox/material/Color4";
 import Vector3D from "../../vox/math/Vector3D";
 import MathConst from "../../vox/math/MathConst";
-import AABB2D from "../../vox/geom/AABB2D";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 
 

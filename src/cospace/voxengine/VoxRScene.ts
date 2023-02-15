@@ -37,8 +37,6 @@ import IRendererSceneGraph from "../../vox/scene/IRendererSceneGraph";
 import IProgressDataEvent from "../../vox/event/IProgressDataEvent";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 
-// import { ICoRenderer } from "../voxengine/ICoRenderer";
-// declare var CoRenderer: ICoRenderer;
 import { CoMaterialPipeType, CoMaterialContextParam, CoShaderCodeUUID, CoProgressDataEvent, CoSelectionEvent, COEventBase, CoVec3, CoTextureConst, CoRenderDrawMode, ICoRScene } from "./ICoRScene";
 import { VoxRenderer } from "./VoxRenderer";
 declare var CoRScene: ICoRScene;
