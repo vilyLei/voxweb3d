@@ -59,6 +59,10 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
         if (i >= 0 && i < this.m_nodes.length) return this.m_nodes[i];
         return null;
     }
+    getSceneAt(i: number): IRendererScene {
+        if (i >= 0 && i < this.m_nodes.length) return this.m_nodes[i].getRScene();
+        return null;
+    }
     createRendererParam(): IRendererParam {
         return new RendererParam();
     }
@@ -93,6 +97,7 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
         }
         return null;
     }
+    
     addScene(sc: IRendererScene): IRendererSceneNode {
         if (sc != null) {
             let ls = this.m_nodes;
