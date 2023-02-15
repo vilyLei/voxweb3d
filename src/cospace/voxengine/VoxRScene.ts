@@ -48,6 +48,10 @@ interface I_CoRScene {
 
 
 var RendererDevice: CoRendererDevice = null;
+var SelectionEvent: CoSelectionEvent = null;
+var ProgressDataEvent: CoProgressDataEvent = null;
+var MouseEvent: ICoMouseEvent = null;
+var EventBase: COEventBase = null;
 
 class T_CoRScene {
 	private m_init = true;
@@ -55,11 +59,16 @@ class T_CoRScene {
 
 		if(typeof CoRScene !== "undefined") {
 			RendererDevice = CoRScene.RendererDevice;
+			SelectionEvent = CoRScene.SelectionEvent;
+			ProgressDataEvent = CoRScene.ProgressDataEvent;
+			EventBase = CoRScene.EventBase;
+			MouseEvent = CoRScene.MouseEvent;
 		}
 	}
 	initialize(callback: (urls: string[]) => void = null, url: string = ""): boolean {
 
 		this.init();
+		this.m_init = !this.isEnabled();
 		if (this.m_init) {
 			this.m_init = false;
 			let flag = false;
@@ -353,4 +362,4 @@ class T_CoRScene {
 	}
 }
 const VoxRScene = new T_CoRScene();
-export { RendererDevice, VoxRScene };
+export { MouseEvent, EventBase, ProgressDataEvent, SelectionEvent, RendererDevice, VoxRScene };

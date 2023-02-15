@@ -5,15 +5,15 @@ interface I_CoGeomModelLoader {
 }
 class CoGeomModelLoader {
 	private m_coapp = new CoDataModule();
-	private m_loadedCall: (models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat) => void = null;
-	private m_loadedAllCall: (total: number) => void = null;
+	private m_loadedCall: (models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat, url?: string) => void = null;
+	private m_loadedAllCall: (total: number, url?: string) => void = null;
 	private m_loadTotal = 0;
 	private m_loadedTotal = 0;
 
 	constructor() {
 	}
 
-	setListener(loadedCallback: (models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat) => void, loadedAllCallback: (total: number) => void): void {
+	setListener(loadedCallback: (models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat, url?: string) => void, loadedAllCallback: (total: number, url?: string) => void): void {
 		this.m_loadedCall = loadedCallback;
 		this.m_loadedAllCall = loadedAllCallback;
 	}
@@ -77,7 +77,7 @@ class CoGeomModelLoader {
 				format,
 				(unit: CoGeomDataUnit, status: number): void => {
 					if (format != CoDataFormat.FBX) {
-						this.loadedModels(unit.data.models, unit.data.transforms, format);
+						this.loadedModels(unit.data.models, unit.data.transforms, format, unit.url);
 						this.m_loadTotal++;
 						this.loadedModelFromUnit(unit, status);
 					}
@@ -88,15 +88,15 @@ class CoGeomModelLoader {
 				unit.data.modelReceiver = (models: CoGeomDataType[], transforms: Float32Array[], index: number, total: number): void => {
 					// console.log("XXX: ", index, ",", total);
 					this.m_loadTotal++;
-					this.loadedModels(models, transforms, format);
+					this.loadedModels(models, transforms, format, unit.url);
 					this.loadedModelFromUnit(unit, 0);
 				};
 			}
 		}
 	}
-	private loadedModels(models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat): void {
+	private loadedModels(models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat, url?: string): void {
 		if (this.m_loadedCall != null) {
-			this.m_loadedCall(models, transforms, format);
+			this.m_loadedCall(models, transforms, format, url);
 		}
 	}
 	private loadedModelFromUnit(unit: CoGeomDataUnit, status: number = 0): void {
@@ -104,7 +104,7 @@ class CoGeomModelLoader {
 		if (this.m_loadedTotal >= this.m_loadTotal) {
 			let total = this.m_loadedTotal;
 			this.reset();
-			this.m_loadedAllCall(total);
+			this.m_loadedAllCall(total, unit.url);
 		}
 	}
 	destroy(): void {

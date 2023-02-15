@@ -1,10 +1,31 @@
 
+import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 import { IVector3D, CoMathConst, CoOrientationType, CoVec3, IMatrix4, IAABB, IAABB2D, ICoMath } from "./ICoMath";
 
 declare var CoMath: ICoMath;
 interface inter_T_CoMath{
 }
 class T_CoMath {
+    
+	private m_init = true;
+	initialize(callback: (urls: string[]) => void = null, url: string = ""): boolean {
+		this.m_init = !this.isEnabled();
+		if (this.m_init) {
+			this.m_init = false;
+			if (url == "" || url === undefined) {
+                url = "static/cospace/math/CoMath.umd.js";
+			}
+			new ModuleLoader(1, (): void => {
+				if (callback != null && this.isEnabled()) callback([url]);
+			}).load(url);
+
+            return true;
+		}
+        return false;
+	}
+    isEnabled(): boolean {
+        return typeof CoMath !== "undefined";
+    }
     get Vector3D(): CoVec3 {
         return CoMath.Vector3D;
     }

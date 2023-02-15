@@ -23,7 +23,10 @@ interface ICoUIScene {
 	panel: IPanelSystem;
 	uiConfig: IUIConfig;
 	keyboardInteraction: ICoKeyboardInteraction;
-	
+	/**
+	 * the default value is true
+	 */
+	texAtlasNearestFilter: boolean;
 	/**
 	 * @param crscene the default value is null
 	 * @param atlasSize the default value is 1024

@@ -60,6 +60,7 @@ class T_CoRScene {
 	initialize(callback: (urls: string[]) => void = null, url: string = ""): boolean {
 
 		this.init();
+		this.m_init = !this.isEnabled();
 		if (this.m_init) {
 			this.m_init = false;
 			let flag = false;

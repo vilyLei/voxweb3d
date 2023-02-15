@@ -14,7 +14,7 @@ class T_CoTexture {
 
 	private m_init = true;
 	initialize(callback: (urls: string[]) => void = null, url: string = ""): boolean {
-
+		this.m_init = !this.isEnabled();
 		if (this.m_init) {
 			this.m_init = false;
 			if (url == "" || url === undefined) {

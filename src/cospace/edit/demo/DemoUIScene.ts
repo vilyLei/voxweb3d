@@ -282,7 +282,7 @@ export class DemoUIScene {
 		this.m_uiScene.addEntity(iconLable);
 		//*/
 		//return;
-		///*
+		/*
 		let canvas = texAtlas.createCharsCanvasFixSize(100, 40, "ABC", 30);
 		document.body.appendChild(canvas);
 		// canvas = texAtlas.createCharsCanvasFixSize(100, 40, "ABCD", 30);
