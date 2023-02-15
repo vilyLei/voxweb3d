@@ -14,7 +14,7 @@ import { ICoMaterial } from "../../voxmaterial/ICoMaterial";
 declare var CoMaterial: ICoMaterial;
 
 export class CanvasTexObject {
-	constructor() {}
+	constructor() { }
 
 	uvs: Float32Array = null;
 	texture: IRenderTexture = null;
@@ -39,7 +39,7 @@ export class CanvasTexAtlas implements ICanvasTexAtlas {
 	private m_sc: IRendererScene = null;
 	private m_atlasList: ImageTexAtlas[] = [null, null, null, null];
 	private m_objMap: Map<string, CanvasTexObject> = new Map();
-	constructor() {}
+	constructor() { }
 	initialize(sc: IRendererScene, canvasWidth: number, canvasHeight: number, fillColor: IColor4 = null, transparent: boolean = false, nearestFilter: boolean = false): void {
 		this.m_sc = sc;
 		let atlas: ImageTexAtlas = null;
@@ -124,6 +124,18 @@ export class CanvasTexAtlas implements ICanvasTexAtlas {
 	createCanvas(width: number, height: number, bgColor: IColor4 = null, transparent: boolean = true): HTMLCanvasElement {
 		return ImageTexAtlas.CreateCanvas(width, height, bgColor, transparent);
 	}
+	createCharsCanvasWithSize(
+		width: number,
+		height: number,
+		offsetW: number,
+		offsetH: number,
+		chars: string,
+		fontSize: number,
+		fontColor: IColor4 = null,
+		bgColor: IColor4 = null
+	): HTMLCanvasElement {
+		return ImageTexAtlas.CreateCharsCanvasWithSize(width, height, offsetW, offsetH, chars, fontSize, fontColor, bgColor);
+	}
 	createCharsCanvasFixSize(
 		width: number,
 		height: number,
@@ -134,6 +146,7 @@ export class CanvasTexAtlas implements ICanvasTexAtlas {
 	): HTMLCanvasElement {
 		return ImageTexAtlas.CreateCharsCanvasFixSize(width, height, chars, fontSize, fontColor, bgColor);
 	}
+
 	createCharsImage(chars: string, fontSize: number, fontColor: IColor4 = null, bgColor: IColor4 = null): HTMLCanvasElement | HTMLImageElement {
 		if (chars == null || chars == "" || fontSize < 8) {
 			return null;

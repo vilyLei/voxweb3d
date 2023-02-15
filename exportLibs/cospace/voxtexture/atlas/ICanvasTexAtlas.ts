@@ -19,6 +19,17 @@ export interface ICanvasTexAtlas {
     createTexObjWithStr(chars: string, size: number, fontColor?: IColor4, bgColor?: IColor4): ICanvasTexObject;
 
 	createCanvas(width: number, height: number, bgColor?: IColor4, transparent?: boolean): HTMLCanvasElement;
+
+	createCharsCanvasWithSize(
+		width: number,
+		height: number,
+		offsetW: number,
+		offsetH: number,
+		chars: string,
+		fontSize: number,
+		frontColor?: IColor4,
+		bgColor?: IColor4
+	): HTMLCanvasElement
 	createCharsCanvasFixSize(
 		width: number,
 		height: number,

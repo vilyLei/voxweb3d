@@ -38,7 +38,7 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 		canvas.style.top = "0px";
 		canvas.style.position = "absolute";
 		canvas.style.pointerEvents = "none";
-		this.m_transparent = transparent;		
+		this.m_transparent = transparent;
 		if (transparent) {
 			canvas.style.backgroundColor = "transparent";
 		}
@@ -58,7 +58,7 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 		this.m_texture.__$setRenderProxy(this.m_rscene.getRenderProxy());
 		this.m_texture.setDataFromImage(this.m_canvas, 0, 0, 0, false);
 		this.m_texture.premultiplyAlpha = true;
-		if(nearestFilter) {
+		if (nearestFilter) {
 			this.m_texture.minFilter = CoRScene.TextureConst.LINEAR;
 			this.m_texture.magFilter = CoRScene.TextureConst.NEAREST;
 		}
@@ -110,6 +110,47 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 		return canvas;
 	}
 	private static s_inputTF: HTMLInputElement = null;
+
+	static CreateCharsCanvasWithSize(
+		width: number,
+		height: number,
+		offsetW: number,
+		offsetH: number,
+		chars: string,
+		fontSize: number,
+		fontColor: IColor4 = null,
+		bgColor: IColor4 = null
+	): HTMLCanvasElement {
+		if (fontColor == null) {
+			fontColor = CoMaterial.createColor4(0, 0, 0, 1.0);
+		}
+		if (bgColor == null) {
+			bgColor = CoMaterial.createColor4();
+		}
+		width = 0 | width;
+		height = 0 | height;
+		let texImg = ImageTexAtlas.CreateCharsCanvas(chars, fontSize, fontColor, bgColor);
+		if (width == texImg.width && height == texImg.height) {
+			return texImg;
+		}
+		if (width < texImg.width) {
+			console.warn("width < texImg.width in the CreateCharsCanvasWithSize function.");
+			width = Math.round(texImg.width) + offsetW;
+		}
+		if (height < texImg.height) {
+			console.warn("height < texImg.height in the CreateCharsCanvasWithSize function.");
+			height = Math.round(texImg.height) + offsetH;
+		}
+
+		let sx = Math.round((width - texImg.width) * 0.5);
+		let sy = Math.round((height - texImg.height) * 0.5);
+		let canvas = ImageTexAtlas.CreateCanvas(width, height, null);
+		let ctx2D = canvas.getContext("2d");
+		ctx2D.fillStyle = bgColor.getCSSDecRGBAColor();
+		ctx2D.fillRect(0, 0, width, height);
+		ctx2D.drawImage(texImg, sx, sy, texImg.width, texImg.height);
+		return canvas;
+	}
 	static CreateCharsCanvasFixSize(
 		width: number,
 		height: number,
