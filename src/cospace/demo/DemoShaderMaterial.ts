@@ -2,10 +2,7 @@ import IRendererScene from "../../vox/scene/IRendererScene";
 import { IMouseInteraction } from "../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { ICoRScene } from "../voxengine/ICoRScene";
-import { ICoMesh } from "../voxmesh/ICoMesh";
 import { ICoMaterial } from "../voxmaterial/ICoMaterial";
-import { ICoEntity } from "../voxentity/ICoEntity";
-
 import { ICoUIInteraction } from "../voxengine/ui/ICoUIInteraction";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
@@ -18,9 +15,7 @@ import { CoEntityLayouter } from "../app/common/CoEntityLayouter";
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
 declare var CoUIInteraction: ICoUIInteraction;
-declare var CoMesh: ICoMesh;
 declare var CoMaterial: ICoMaterial;
-declare var CoEntity: ICoEntity;
 
 /**
  * cospace renderer scene
@@ -29,23 +24,23 @@ export class DemoShaderMaterial {
 
 	private m_rscene: IRendererScene = null;
 	private m_mouseInteraction: IMouseInteraction = null;
-    private m_modelLoader = new CoGeomModelLoader();
+	private m_modelLoader = new CoGeomModelLoader();
 	private m_layouter = new CoEntityLayouter();
 	constructor() { }
 
 	initialize(): void {
 
-        document.oncontextmenu = function (e) {
-            e.preventDefault();
-        }
-        console.log("EffectExample::initialize()......");
+		console.log("EffectExample::initialize()......");
+		document.oncontextmenu = function (e) {
+			e.preventDefault();
+		}
 
 		let url0 = "static/cospace/engine/renderer/CoRenderer.umd.min.js";
 		let url1 = "static/cospace/engine/rscene/CoRScene.umd.min.js";
 		let url2 = "static/cospace/engine/uiInteract/CoUIInteraction.umd.js";
 		let url3 = "static/cospace/comesh/CoMesh.umd.js";
 		let url4 = "static/cospace/coentity/CoEntity.umd.js";
-		let url5 = "static/cospace/coMaterial/CoMaterial.umd.js";		
+		let url5 = "static/cospace/coMaterial/CoMaterial.umd.js";
 		let url6 = "static/cospace/math/CoMath.umd.js";
 
 		let mouseInteractML = new ModuleLoader(2, (): void => {
@@ -72,90 +67,52 @@ export class DemoShaderMaterial {
 
 		mouseInteractML.load(url2);
 	}
-	// private initSceneObjs(): void {
-	// 	let entity = CoEntity.createDisplayEntity();
-	// 	let mesh = CoMesh.createDataMesh();
-
-	// }
 	private m_material: IRenderMaterial = null;
-    protected createEntity(model: CoGeomDataType, transform: Float32Array = null, index: number = 0): void {
-        if (model != null) {
-            console.log("createEntity(), model: ", model);
-            let vs = model.vertices;
-            let uvs = model.uvsList[0];
-            let ivs = model.indices;
-            let trisNumber = ivs.length / 3;
-
-            let nvs = model.normals;
-            // if (nvs == null) {
-            //     SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
-            // }
-            // let material = this.m_material = CoMaterial.createDefaultMaterial();
-            // material.setTextureList([
-            //     this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
-            // ]);
+	protected createEntity(model: CoGeomDataType, transform: Float32Array = null, index: number = 0): void {
+		if (model != null) {
+			console.log("createEntity(), model: ", model);
 			let material = CoMaterial.createShaderMaterial("model_shd");
 			material.setFragShaderCode(ShaderCode.frag_body);
 			material.setVtxShaderCode(ShaderCode.vert_body);
 			// material.addUniformDataAt("u_color",new Float32Array([1.0,1.0,1.0]));// 会出现神奇的边缘效果
 			// material.addUniformDataAt("u_color",new Float32Array([1.0,1.0,1.0, 0.0]));// 这样也会出现。实际上边缘颜色就是frag shader的输出颜色
-			material.addUniformDataAt("u_color",new Float32Array([1.0,1.0,1.0, 1.0]));
+			material.addUniformDataAt("u_color", new Float32Array([1.0, 1.0, 1.0, 1.0]));
 			material.setTextureList([
-                this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
-            ]);
-            material.initializeByCodeBuf(true);
-
-            let mesh = CoMesh.createDataMesh();
-            mesh.vbWholeDataEnabled = false;
-            mesh.setVS(vs);
-            mesh.setUVS(uvs);
-            mesh.setNVS(nvs);
-            mesh.setIVS(ivs);
-            mesh.setVtxBufRenderData(material);
-
-            mesh.initialize();
+				this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
+			]);
 
 			let matrix4 = CoRScene.createMat4(transform);
-            let entity =CoEntity.createDisplayEntity();
-            entity.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
-            entity.setMesh(mesh);
-            entity.setMaterial(material);
-            entity.getTransform().setParentMatrix(matrix4);
-            // entity.setScaleXYZ(165.0, 165.0, 165.0);
-            // entity.setScale3(new Vector3D( 165.0, 165.0, 165.0 ));
+			let entity = CoRScene.createDisplayEntityFromModel(model, material);
+			entity.getTransform().setParentMatrix(matrix4);
+			this.m_rscene.addEntity(entity);
 
-            this.m_rscene.addEntity(entity);
-			
 			this.m_layouter.layoutAppendItem(entity, matrix4);
-            // entity.update();
-        }
-    }
-    private initModel(): void {
-		
-        this.m_modelLoader.setListener(
-            (models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat): void => {
-                console.log("loaded model.");
-                for (let i = 0; i < models.length; ++i) {
-                    this.createEntity(models[i], transforms != null ? transforms[i] : null);
-                }
-            },
-            (total): void => {
-                console.log("loaded model all.");
-				this.m_layouter.layoutUpdate();
-            });
+		}
+	}
+	private initModel(): void {
 
-        let baseUrl = "static/private/";
-        let url = baseUrl + "obj/base.obj";
-        url = baseUrl + "fbx/base4.fbx";
-        // url = baseUrl + "fbx/hat_ok.fbx";
-        url = baseUrl + "obj/apple_01.obj";
-        // url = baseUrl + "ctm/errorNormal.ctm";
-		
-        this.loadModels([url]);
-    }
-    private loadModels(urls: string[], typeNS: string = ""): void {
-        this.m_modelLoader.load(urls);
-    }
+		this.m_layouter.layoutReset();
+		this.m_modelLoader.setListener(
+			(models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat): void => {
+				console.log("loaded model.");
+				for (let i = 0; i < models.length; ++i) {
+					this.createEntity(models[i], transforms != null ? transforms[i] : null);
+				}
+			},
+			(total): void => {
+				console.log("loaded model all.");
+				this.m_layouter.layoutUpdate();
+			});
+
+		let baseUrl = "static/private/";
+		let url = baseUrl + "fbx/base4.fbx";
+		url = baseUrl + "obj/apple_01.obj";
+
+		this.loadModels([url]);
+	}
+	private loadModels(urls: string[], typeNS: string = ""): void {
+		this.m_modelLoader.load(urls);
+	}
 	isEngineEnabled(): boolean {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";
 	}
@@ -186,19 +143,16 @@ export class DemoShaderMaterial {
 
 		if (this.m_rscene == null) {
 
-			let RendererDevice = CoRenderer.RendererDevice;
-			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
-			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-			RendererDevice.SetWebBodyColor("black");
+			// let RendererDevice = CoRenderer.RendererDevice;
+			// RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+			// RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+			// RendererDevice.SetWebBodyColor("black");
 
 			let rparam = CoRScene.createRendererSceneParam();
-			rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
+			// rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 			rparam.setCamProject(45, 20.0, 9000.0);
 			this.m_rscene = CoRScene.createRendererScene(rparam, 3);
-
-			// let axis = CoRScene.createAxis3DEntity();
-			// this.m_rscene.addEntity(axis);
 		}
 	}
 	run(): void {

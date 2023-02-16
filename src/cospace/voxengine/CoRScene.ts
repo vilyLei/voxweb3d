@@ -73,6 +73,9 @@ import RendererSceneGraph from "../../vox/scene/RendererSceneGraph";
 import Keyboard from "../../vox/ui/Keyboard";
 
 
+import { ICoAGeom } from "../ageom/ICoAGeom";
+declare var CoAGeom: ICoAGeom;
+
 function createVec3(px: number = 0.0, py: number = 0.0, pz: number = 0.0, pw: number = 1.0): IVector3D {
 	return new Vector3D(px, py, pz, pw);
 }
@@ -177,20 +180,36 @@ function createMaterial(dcr: IMaterialDecorator): IMaterial {
 	return m;
 }
 
-function createDisplayEntityFromModel(model: CoGeomDataType, material: MaterialBase = null, vbWhole: boolean = false): ITransformEntity {
-	if (material == null) {
+function createDisplayEntityFromModel(model: CoGeomDataType, material: IRenderMaterial = null, texEnabled: boolean = true, vbWhole: boolean = false): ITransformEntity {
+	if (!material) {
 		material = new Default3DMaterial();
-		material.initializeByCodeBuf();
+		material.initializeByCodeBuf(texEnabled);
+	}else {
+		material.initializeByCodeBuf(texEnabled || material.getTextureAt(0) != null);
 	}
 	if (material.getCodeBuf() == null || material.getBufSortFormat() < 0x1) {
 		throw Error("the material does not call the initializeByCodeBuf() function. !!!");
 	}
+
+	let ivs = model.indices;
+	let vs = model.vertices;
+	let uvs: Float32Array;
+	if (model.uvsList) {
+		uvs = model.uvsList[0];
+	} else {
+		uvs = new Float32Array( 2 * vs.length / 3 );
+	}
+	let nvs = model.normals;
+	if (nvs && typeof CoAGeom !== "undefined") {
+		CoAGeom.SurfaceNormal.ClacTrisNormal(vs, vs.length, ivs.length / 3, ivs, nvs);
+	}
+
 	const dataMesh = new DataMesh();
 	dataMesh.vbWholeDataEnabled = vbWhole;
-	dataMesh.setVS(model.vertices);
-	dataMesh.setUVS(model.uvsList[0]);
-	dataMesh.setNVS(model.normals);
-	dataMesh.setIVS(model.indices);
+	dataMesh.setVS(vs);
+	dataMesh.setUVS(uvs);
+	dataMesh.setNVS(nvs);
+	dataMesh.setIVS(ivs);
 	dataMesh.setVtxBufRenderData(material);
 	dataMesh.initialize();
 
