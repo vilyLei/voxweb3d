@@ -362,6 +362,9 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     getVisible(): boolean {
         return this.m_visible;
     }
+    isVisible(): boolean {
+        return this.m_visible;
+    }
     getUid(): number { return this.m_uid; }
     getX(): number { return this.m_pos.x; }
     getY(): number { return this.m_pos.y; }

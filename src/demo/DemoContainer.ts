@@ -4,8 +4,6 @@ import RendererDevice from "../vox/render/RendererDevice";
 import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
-import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
-import RendererInstance from "../vox/scene/RendererInstance";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import DisplayEntity from "../vox/entity/DisplayEntity";
@@ -22,9 +20,6 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 import DecayBrnParticle from "../particle/base/DecayBrnParticle";
-import CameraBase from '../vox/view/CameraBase';
-import { ShaderProgramBuilder } from "../vox/material/ShaderProgramBuilder";
-
 import {EntityDispQueue} from "./base/EntityDispQueue";
 import RendererScene from '../vox/scene/RendererScene';
 export class DemoContainer {
@@ -173,7 +168,7 @@ export class DemoContainer {
     run(): void {
         this.m_equeue.run();
         this.m_statusDisp.update();
-        
+
         this.m_rscene.setClearRGBColor3f(0.0, 0.5, 0.0);
         this.m_rscene.run();
         this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
