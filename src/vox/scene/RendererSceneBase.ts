@@ -462,6 +462,7 @@ export default class RendererSceneBase {
      * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
      */
     addEntity(entity: IRenderEntity, processid: number = 0, deferred: boolean = true): void {
+
         if (entity.getREType() < 12) {
 
             if (entity != null && entity.__$testSpaceEnabled()) {
@@ -499,19 +500,23 @@ export default class RendererSceneBase {
      * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
      */
     removeEntity(entity: IRenderEntity): void {
-        if (entity != null) {
-            let node: Entity3DNode = null;
-            if (this.m_nodeWaitLinker != null) {
-                let node = this.m_nodeWaitQueue.getNodeByEntity(entity);
-                if (node != null) {
-                    this.m_nodeWaitLinker.removeNode(node);
-                    this.m_nodeWaitQueue.removeEntity(entity);
+
+        if (entity.getREType() < 12) {
+            
+            if (entity != null) {
+                let node: Entity3DNode = null;
+                if (this.m_nodeWaitLinker != null) {
+                    let node = this.m_nodeWaitQueue.getNodeByEntity(entity);
+                    if (node != null) {
+                        this.m_nodeWaitLinker.removeNode(node);
+                        this.m_nodeWaitQueue.removeEntity(entity);
+                    }
                 }
-            }
-            if (node == null) {
-                this.m_renderer.removeEntity(entity);
-                if (this.m_rspace != null) {
-                    this.m_rspace.removeEntity(entity);
+                if (node == null) {
+                    this.m_renderer.removeEntity(entity);
+                    if (this.m_rspace != null) {
+                        this.m_rspace.removeEntity(entity);
+                    }
                 }
             }
         }
