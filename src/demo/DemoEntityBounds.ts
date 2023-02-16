@@ -256,20 +256,21 @@ export class DemoEntityBounds {
         this.m_topContainer = new DisplayEntityContainer();
         this.m_mainContainer = new DisplayEntityContainer();
 
-        this.m_rscene.addContainer(this.m_mainContainer);
+        // this.m_rscene.addContainer(this.m_mainContainer);
+        this.m_rscene.addEntity(this.m_mainContainer);
 
         let srcBox: Box3DEntity = new Box3DEntity();
         srcBox.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [this.m_texList[0]]);
 
-        let box0: Box3DEntity = new Box3DEntity();
+        let box0 = new Box3DEntity();
         box0.mouseEnabled = true;
         box0.setMesh(srcBox.getMesh());
         box0.initializeCube(100.0, [this.m_texList[0]]);
-        let box1: Box3DEntity = new Box3DEntity();
+        let box1 = new Box3DEntity();
         box1.mouseEnabled = true;
         box1.setMesh(srcBox.getMesh());
         box1.initializeCube(100.0, [this.m_texList[1]]);
-        let box2: Box3DEntity = new Box3DEntity();
+        let box2 = new Box3DEntity();
         box2.mouseEnabled = true;
         box2.setMesh(srcBox.getMesh());
         box2.initializeCube(100.0, [this.m_texList[2]]);

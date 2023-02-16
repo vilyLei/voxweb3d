@@ -122,7 +122,22 @@ export class DemoContainerTransform {
             this.m_elist.push(entity);
         }
     }
+    private m_flag0 = true;
+    containerTest(): void {
+        if (this.m_flag0) {
+            // this.m_rscene.remeoveContainer(this.m_containerMain);
+            this.m_rscene.removeEntity(this.m_containerMain);
+        }else {
+            // this.m_rscene.addContainer(this.m_containerMain);
+            this.m_rscene.removeEntity(this.m_containerMain);
+        }
+        this.m_flag0 = !this.m_flag0;
+        // this.m_containerMain.setVisible(this.m_flag0);
+    }
     mouseDownListener(evt: any): void {
+        console.log("XXXXX mouseDownListener() ...");
+        // this.containerTest();
+        // return;
         if (this.m_targetEntity != null) {
             let destroyEnabled: boolean = true;
             console.log("this.m_targetEntity.isFree(): ", this.m_targetEntity.isFree(), ", destroyEnabled: ", destroyEnabled);
@@ -164,7 +179,7 @@ export class DemoContainerTransform {
             this.m_followEntity.update();
         }
 
-		const st = this.m_rscene.getRenderProxy().status;
+        const st = this.m_rscene.getRenderProxy().status;
         this.m_statusDisp.statusInfo = "/" + st.drawCallTimes;
         this.m_statusDisp.update();
     }

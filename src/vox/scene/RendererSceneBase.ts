@@ -403,8 +403,11 @@ export default class RendererSceneBase {
         }
     }
     removeContainer(container: IRenderEntityContainer): void {
-        if (container != null && container.__$wuid == this.m_uid && container.getRenderer() == this.m_renderer) {
-            let i: number = 0;
+
+        // if (container != null && container.__$wuid == this.m_uid && container.getRenderer() == this.m_renderer) {
+        if (container != null && container.__$wuid == this.m_uid && container.getRenderer() == this) {
+            let i = 0;
+            
             for (; i < this.m_containersTotal; ++i) {
                 if (this.m_containers[i] == container) {
                     container.__$wuid = -1;
@@ -525,6 +528,7 @@ export default class RendererSceneBase {
                 }
             }
         } else {
+            
             let re = entity as IRenderEntityContainer;
             this.removeContainer(re);
         }
