@@ -1,3 +1,3 @@
-export default interface IRendererSceneGraph {
+export default interface IRendererSceneGraphStatus {
     rayPickFlag: boolean;
 }

@@ -28,7 +28,7 @@ export default interface IRendererSceneGraph extends IRendererSceneGraphStatus {
     getNodesTotal(): number;
     getNodes(): IRendererSceneNode[];
     getNodeAt(i: number): IRendererSceneNode;
-    
+    getSceneAt(i: number): IRendererScene;
     addScene(sc: IRendererScene): IRendererSceneNode;
     
     run(): void;

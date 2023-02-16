@@ -9,9 +9,13 @@ import IVector3D from "../../vox/math/IVector3D";
 import IAABB from "../../vox/geom/IAABB";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import IRenderer from "../../vox/scene/IRenderer";
+import IRenderEntityBase from "./IRenderEntityBase";
 
-export default interface IRenderEntityContainer {
-    mouseEnabled: boolean;
+export default interface IRenderEntityContainer extends IRenderEntityBase {
+    // /**
+    //  * mouse interaction enabled, the default value is false
+    //  */
+    // mouseEnabled: boolean;
     // 自身所在的world的唯一id, 通过这个id可以找到对应的world
     __$wuid: number;
     // render process uid
@@ -22,16 +26,11 @@ export default interface IRenderEntityContainer {
     __$setRenderer(renderer: IRenderer): void;
     getRenderer(): IRenderer;
 
-    setVisible(boo: boolean): void;
-    getVisible(): boolean;
-
     dispatchEvt(evt: any): number;
     getEvtDispatcher(evtClassType: number): IEvtDispatcher;
     getGlobalBounds(): IAABB;
     getChildrenTotal(): number;
     getEntitysTotal(): number;
-    getVisible(): boolean;
-    getUid(): number;
     setXYZ(px: number, py: number, pz: number): void;
     setPosition(pv: IVector3D): void;
     getPosition(pv: IVector3D): void;
@@ -45,6 +44,11 @@ export default interface IRenderEntityContainer {
     localToGlobal(pv: IVector3D): void;
     globalToLocal(pv: IVector3D): void;
     sphereIntersect(centerV: IVector3D, radius: number): boolean;
-    update(): void;
-    destroy(): void;
+
+    // update(): void;
+    // destroy(): void;
+    // getUid(): number;
+    // setVisible(boo: boolean): void;
+    // getVisible(): boolean;
+    // isVisible(): boolean;
 }
