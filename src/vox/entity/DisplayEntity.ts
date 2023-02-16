@@ -265,6 +265,9 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     isVisible(): boolean {
         return this.m_visible;
     }
+    getREType(): number {
+        return 1;
+    }
     getTransform(): IROTransform {
         return this.m_trs;
     }

@@ -63,7 +63,7 @@ export class DemoContainer {
             // this.m_texBlock.setRenderer(this.m_rscene.getRenderProxy());
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-            let tex0: TextureProxy = this.getImageTexByUrl("static/assets/meBlurTest.jpg");
+            let tex0: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
             let tex1: TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
             let tex2: TextureProxy = this.getImageTexByUrl("static/assets/guangyun_H_0007.png");
             //DecayBrnParticle.texs.push(tex2);

@@ -352,7 +352,7 @@ export default class RendererSceneBase {
             this.m_viewW = stage3D.stageWidth;
             this.m_viewH = stage3D.stageHeight;
             this.m_shader = this.m_renderer.getDataBuilder().getRenderShader();
-            this.textureBlock.setRenderer(this.m_renderProxy);            
+            this.textureBlock.setRenderer(this.m_renderProxy);
             this.rendererInsInited();
 
             this.m_camDisSorter = new CameraDsistanceSorter(this.m_renderProxy);
@@ -462,32 +462,34 @@ export default class RendererSceneBase {
      * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
      */
     addEntity(entity: IRenderEntity, processid: number = 0, deferred: boolean = true): void {
-        
-        if (entity != null && entity.__$testSpaceEnabled()) {
-            
-            if (entity.isPolyhedral()) {
-                if (entity.hasMesh()) {
+        if (entity.getREType() < 12) {
+
+            if (entity != null && entity.__$testSpaceEnabled()) {
+
+                if (entity.isPolyhedral()) {
+                    if (entity.hasMesh()) {
+                        this.m_renderer.addEntity(entity, this.m_processids[processid], deferred);
+                        if (this.m_rspace != null) {
+                            this.m_rspace.addEntity(entity);
+                        }
+                    }
+                    else {
+                        // 这里的等待队列可能会和加入容器的操作冲突
+                        // wait queue
+                        if (this.m_nodeWaitLinker == null) {
+                            this.m_nodeWaitLinker = new Entity3DNodeLinker();
+                            this.m_nodeWaitQueue = new EntityNodeQueue();
+                        }
+                        let node = this.m_nodeWaitQueue.addEntity(entity);
+                        node.rstatus = processid;
+                        this.m_nodeWaitLinker.addNode(node);
+                    }
+                }
+                else {
                     this.m_renderer.addEntity(entity, this.m_processids[processid], deferred);
                     if (this.m_rspace != null) {
                         this.m_rspace.addEntity(entity);
                     }
-                }
-                else {
-                    // 这里的等待队列可能会和加入容器的操作冲突
-                    // wait queue
-                    if (this.m_nodeWaitLinker == null) {
-                        this.m_nodeWaitLinker = new Entity3DNodeLinker();
-                        this.m_nodeWaitQueue = new EntityNodeQueue();
-                    }
-                    let node = this.m_nodeWaitQueue.addEntity(entity);
-                    node.rstatus = processid;
-                    this.m_nodeWaitLinker.addNode(node);
-                }
-            }
-            else {
-                this.m_renderer.addEntity(entity, this.m_processids[processid], deferred);
-                if (this.m_rspace != null) {                    
-                    this.m_rspace.addEntity(entity);
                 }
             }
         }

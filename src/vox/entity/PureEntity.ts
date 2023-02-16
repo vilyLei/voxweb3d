@@ -227,6 +227,9 @@ export default class PureEntity implements IDisplayEntity {
     isVisible(): boolean {
         return this.m_visible;
     }
+    getREType(): number {
+        return 1;
+    }
     setXYZ(px: number, py: number, pz: number): void {}
     setPosition(pos: Vector3D): void {}
     setRotationXYZ(rx: number, ry: number, rz: number): void {}
