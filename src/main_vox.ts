@@ -269,7 +269,7 @@
 ////////////////////////////   transform    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoContainer as Demo} from "./demo/DemoContainer";
+ import {DemoContainer as Demo} from "./demo/DemoContainer";
 
 //  import {DemoContainerTransform as Demo}  from "./demo/DemoContainerTransform";
 
@@ -349,7 +349,7 @@
 
 //  import {EffectExample as Demo} from "./renderingtoy/effectTest/modelLoad/EffectExample";
 
- import {EffectExample as Demo} from "./renderingtoy/effectTest/applyui/EffectExample";
+//  import {EffectExample as Demo} from "./renderingtoy/effectTest/applyui/EffectExample";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////

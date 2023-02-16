@@ -133,7 +133,6 @@ export class DemoShaderMaterial {
 		let tex = sc.textureBlock.createImageTex2D(64, 64, false);
 		let img = new Image();
 		img.onload = (evt: any): void => {
-			// this.createColorData(img);
 			tex.setDataFromImage(img, 0, 0, 0, false);
 		};
 		img.src = url;
@@ -149,10 +148,9 @@ export class DemoShaderMaterial {
 			// RendererDevice.SetWebBodyColor("black");
 
 			let rparam = CoRScene.createRendererSceneParam();
-			// rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 			rparam.setCamProject(45, 20.0, 9000.0);
-			this.m_rscene = CoRScene.createRendererScene(rparam, 3);
+			this.m_rscene = CoRScene.createRendererScene(rparam);
 		}
 	}
 	run(): void {

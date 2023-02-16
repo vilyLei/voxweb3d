@@ -48,6 +48,7 @@ export default interface IRenderEntity {
   __$testSpaceEnabled(): boolean;
   __$testContainerEnabled(): boolean;
   __$testRendererEnabled(): boolean;
+  
   getRendererUid(): number;
   /**
    * @returns 自身是否未被任何渲染器相关的系统使用
