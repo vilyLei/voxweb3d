@@ -344,7 +344,12 @@ export default class ROTransform implements IROTransform {
         }
         unit.m_localMat = unit.m_omat;
         if(fs32 == null) {
-            unit.m_fs32.set(ROTransform.s_initData, 0);
+            let ida = ROTransform.s_initData;
+            if(unit.m_fs32 == null) {
+                unit.m_fs32 = ida.slice(0);
+            }else {
+                unit.m_fs32.set(ida, 0);
+            }
         }
         return unit;
     }

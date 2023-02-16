@@ -80,7 +80,7 @@ export class DemoContainer {
             plane.showDoubleFace();
             plane.initializeXOZ(-300.0, -300.0, 600.0, 600.0, [tex0]);
 
-            let container: DisplayEntityContainer = new DisplayEntityContainer();
+            let container = new DisplayEntityContainer();
             container.addEntity(plane);
 
             container.setXYZ(100.0, 100.0, 100.0);
@@ -90,7 +90,7 @@ export class DemoContainer {
             plane.__$rseFlag = RSEntityFlag.AddRendererLoad(plane.__$rseFlag);
             //plane.setRenderStateByName("ADD01");
             //container.update();
-            let containerB: DisplayEntityContainer = new DisplayEntityContainer();
+            let containerB = new DisplayEntityContainer();
             containerB.addChild(container);
             this.m_container = container;
             this.m_containerMain = containerB;

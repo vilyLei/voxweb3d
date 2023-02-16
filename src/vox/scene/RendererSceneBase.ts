@@ -58,6 +58,7 @@ import { IRenderableEntityBlock } from "./block/IRenderableEntityBlock";
 import IMatrix4 from "../math/IMatrix4";
 import Matrix4 from "../math/Matrix4";
 import IRendererParam from "./IRendererParam";
+import IRenderEntityBase from "../render/IRenderEntityBase";
 
 export default class RendererSceneBase {
     private ___$$$$$$$Author: string = "VilyLei(vily313@126.com)";
@@ -457,21 +458,21 @@ export default class RendererSceneBase {
     }
     /**
      * add an entity to the renderer process of the renderer instance
-     * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
+     * @param entity IRenderEntityBase instance(for example: DisplayEntity class instance)
      * @param processid this destination renderer process id
      * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
      */
-    addEntity(entity: IRenderEntity, processid: number = 0, deferred: boolean = true): void {
+    addEntity(entity: IRenderEntityBase, processid: number = 0, deferred: boolean = true): void {
 
         if (entity.getREType() < 12) {
 
-            if (entity != null && entity.__$testSpaceEnabled()) {
-
-                if (entity.isPolyhedral()) {
-                    if (entity.hasMesh()) {
-                        this.m_renderer.addEntity(entity, this.m_processids[processid], deferred);
+            let re = entity as IRenderEntity;
+            if (re != null && re.__$testSpaceEnabled()) {
+                if (re.isPolyhedral()) {
+                    if (re.hasMesh()) {
+                        this.m_renderer.addEntity(re, this.m_processids[processid], deferred);
                         if (this.m_rspace != null) {
-                            this.m_rspace.addEntity(entity);
+                            this.m_rspace.addEntity(re);
                         }
                     }
                     else {
@@ -481,44 +482,51 @@ export default class RendererSceneBase {
                             this.m_nodeWaitLinker = new Entity3DNodeLinker();
                             this.m_nodeWaitQueue = new EntityNodeQueue();
                         }
-                        let node = this.m_nodeWaitQueue.addEntity(entity);
+                        let node = this.m_nodeWaitQueue.addEntity(re);
                         node.rstatus = processid;
                         this.m_nodeWaitLinker.addNode(node);
                     }
                 }
                 else {
-                    this.m_renderer.addEntity(entity, this.m_processids[processid], deferred);
+                    this.m_renderer.addEntity(re, this.m_processids[processid], deferred);
                     if (this.m_rspace != null) {
-                        this.m_rspace.addEntity(entity);
+                        this.m_rspace.addEntity(re);
                     }
                 }
             }
+        } else {
+            let re = entity as IRenderEntityContainer;
+            this.addContainer(re, processid);
         }
     }
     /**
      * remove an entity from the rendererinstance
-     * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
+     * @param entity IRenderEntityBase instance(for example: DisplayEntity class instance)
      */
-    removeEntity(entity: IRenderEntity): void {
+    removeEntity(entity: IRenderEntityBase): void {
 
         if (entity.getREType() < 12) {
-            
+
+            let re = entity as IRenderEntity;
             if (entity != null) {
                 let node: Entity3DNode = null;
                 if (this.m_nodeWaitLinker != null) {
-                    let node = this.m_nodeWaitQueue.getNodeByEntity(entity);
+                    let node = this.m_nodeWaitQueue.getNodeByEntity(re);
                     if (node != null) {
                         this.m_nodeWaitLinker.removeNode(node);
-                        this.m_nodeWaitQueue.removeEntity(entity);
+                        this.m_nodeWaitQueue.removeEntity(re);
                     }
                 }
                 if (node == null) {
-                    this.m_renderer.removeEntity(entity);
+                    this.m_renderer.removeEntity(re);
                     if (this.m_rspace != null) {
-                        this.m_rspace.removeEntity(entity);
+                        this.m_rspace.removeEntity(re);
                     }
                 }
             }
+        } else {
+            let re = entity as IRenderEntityContainer;
+            this.removeContainer(re);
         }
     }
 

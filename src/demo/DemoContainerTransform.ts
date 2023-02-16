@@ -80,7 +80,8 @@ export class DemoContainerTransform {
 
             this.m_containerMain = new DisplayEntityContainer();
             this.m_containerMain.addChild(this.m_container);
-            this.m_rscene.addContainer(this.m_containerMain);
+            // this.m_rscene.addContainer(this.m_containerMain);
+            this.m_rscene.addEntity(this.m_containerMain);
 
             let axisEntity: Axis3DEntity = new Axis3DEntity();
             axisEntity.initialize(30.0);

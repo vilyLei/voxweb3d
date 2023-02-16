@@ -269,9 +269,9 @@
 ////////////////////////////   transform    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
- import {DemoContainer as Demo} from "./demo/DemoContainer";
+//  import {DemoContainer as Demo} from "./demo/DemoContainer";
 
-//  import {DemoContainerTransform as Demo}  from "./demo/DemoContainerTransform";
+ import {DemoContainerTransform as Demo}  from "./demo/DemoContainerTransform";
 
 // import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
 
