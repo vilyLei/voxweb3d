@@ -45,15 +45,6 @@ export class DemoContainerTransform {
         if (this.m_rscene == null) {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
-            //      let rseFlag:number = RSEntityFlag.DEFAULT;
-            //      console.log("A 0  "+rseFlag.toString(2));
-            //      rseFlag = RSEntityFlag.AddRendererUid(rseFlag, 2);
-            //      console.log("A 1  "+rseFlag.toString(2));
-            //      console.log("XXX Renderer Uid: ",RSEntityFlag.GetRendererUid(rseFlag));
-            //      rseFlag = RSEntityFlag.RemoveRendererUid(rseFlag)
-            //      console.log("B 0  "+rseFlag.toString(2));
-            //      console.log("XXXX Renderer Uid: ",RSEntityFlag.GetRendererUid(rseFlag));
-
             let rparam: RendererParam = new RendererParam();
             rparam.setMatrix4AllocateSize(8192 * 4);
             rparam.setCamProject(45.0, 10.0, 3000.0);
@@ -139,7 +130,7 @@ export class DemoContainerTransform {
         this.containerTest();
         return;
         if (this.m_targetEntity != null) {
-            let destroyEnabled: boolean = true;
+            let destroyEnabled = true;
             console.log("this.m_targetEntity.isFree(): ", this.m_targetEntity.isFree(), ", destroyEnabled: ", destroyEnabled);
             if (destroyEnabled) {
                 this.m_container.removeEntity(this.m_targetEntity);
