@@ -4,7 +4,9 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-
+interface I_RenderStatusDisplay {
+    
+}
 class RenderStatusDisplay {
     constructor() { }
     private m_lastTime: number = 0;

@@ -59,7 +59,10 @@ export default interface IRenderEntity extends IRenderEntityBase {
     isFree(): boolean;
     dispatchEvt(evt: any): number;
     getEvtDispatcher(evtClassType: number): IEvtDispatcher;
-    getPosition(resultPos: IVector3D): IVector3D;
+    /**
+     * @param resultPos the default value is null
+     */
+    getPosition(resultPos?: IVector3D): IVector3D;
     getGlobalBounds(): IAABB;
     getLocalBounds(): IAABB;
 
@@ -105,8 +108,15 @@ export default interface IRenderEntity extends IRenderEntityBase {
     setRotation3(rv: IVector3D): void;
     setScaleXYZ(sx: number, sy: number, sz: number): void;
     setScale3(sv: IVector3D): void;
-    getScaleXYZ(pv: IVector3D): void;
-    getRotationXYZ(pv: IVector3D): void;
+    
+    /**
+     * @param sv the default value is null
+     */
+    getScaleXYZ(sv: IVector3D): IVector3D;
+    /**
+     * @param rv the default value is null
+     */
+    getRotationXYZ(rv: IVector3D): IVector3D;
 
     copyPositionFrom(entity: IRenderEntity): void;
     copyMeshFrom(entity: IRenderEntity): void;

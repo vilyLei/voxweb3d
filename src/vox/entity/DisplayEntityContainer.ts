@@ -393,7 +393,8 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
         this.m_pos.z = pv.z;
         this.m_transformStatus |= 1;
     }
-    getPosition(pv: Vector3D): Vector3D {
+    getPosition(pv: Vector3D = null): Vector3D {
+        if(!pv) pv = new Vector3D();
         pv.copyFrom( this.m_pos );
         return pv;
     }
@@ -444,11 +445,15 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
         this.setScaleXYZ(s, s, s);
     }
 
-    getRotationXYZ(pv: Vector3D): void {
+    getRotationXYZ(pv: Vector3D): Vector3D {
+        if(!pv) pv = new Vector3D();
         pv.setXYZ(this.m_rx, this.m_ry, this.m_rz);
+        return pv;
     }
-    getScaleXYZ(pv: Vector3D): void {
+    getScaleXYZ(pv: Vector3D): Vector3D {
+        if(!pv) pv = new Vector3D();
         pv.setXYZ(this.m_sx, this.m_sy, this.m_sz);
+        return pv;
     }
     // local matrix
     private m_localMat: Matrix4 = Matrix4Pool.GetMatrix();

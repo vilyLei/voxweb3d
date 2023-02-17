@@ -535,7 +535,8 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     setPosition(pv: Vector3D): void {
         this.m_trs.setPosition(pv);
     }
-    getPosition(pv: Vector3D): Vector3D {
+    getPosition(pv: Vector3D = null): Vector3D {
+        if(!pv) pv = new Vector3D();
         this.m_trs.getPosition(pv);
         return pv;
     }
@@ -552,11 +553,15 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         this.m_trs.setScaleXYZ(sx, sy, sz);
     }
 
-    getRotationXYZ(pv: Vector3D): void {
+    getRotationXYZ(pv: Vector3D): Vector3D {
+        if(!pv) pv = new Vector3D();
         this.m_trs.getRotationXYZ(pv);
+        return pv;
     }
-    getScaleXYZ(pv: Vector3D): void {
+    getScaleXYZ(pv: Vector3D): Vector3D {
+        if(!pv) pv = new Vector3D();
         this.m_trs.getScaleXYZ(pv);
+        return pv;
     }
     localToGlobal(pv: Vector3D): void {
         if (this.m_trs != null) {

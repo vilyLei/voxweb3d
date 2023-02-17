@@ -113,8 +113,7 @@ export class EffectExample {
         });
         ui.addValueItem("Y轴移动-B", "move-b", 0, -300, 300, (info: CtrlInfo): void => {
             
-            let pv = new Vector3D();
-            entity1.getPosition(pv);
+            let pv = entity1.getPosition();
             pv.y = info.values[0];
             entity1.setPosition(pv);
             entity1.update();

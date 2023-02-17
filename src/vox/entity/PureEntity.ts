@@ -116,12 +116,14 @@ export default class PureEntity implements IDisplayEntity {
     setEvtDispatcher(evtDisptacher: IEvtDispatcher): void {
         this.m_mouseEvtDispatcher = evtDisptacher;
     }
-    getPosition(resultPos: Vector3D): Vector3D {
+    
+    getPosition(pv: Vector3D = null): Vector3D {
+        if(!pv) pv = new Vector3D();
         if (this.m_globalBounds != null) {
-            resultPos.copyFrom(this.m_globalBounds.center);
-            return resultPos;
+            pv.copyFrom(this.m_globalBounds.center);
+            return pv;
         }
-        return null;
+        return pv;
     }
     getGlobalBounds(): IAABB {
         return this.m_globalBounds;
@@ -237,8 +239,8 @@ export default class PureEntity implements IDisplayEntity {
 
     setRotation3(rv: Vector3D): void {}
     setScale3(sv: Vector3D): void {}
-    getScaleXYZ(pv: Vector3D): void {}
-    getRotationXYZ(pv: Vector3D): void {}
+    getScaleXYZ(pv: Vector3D = null): Vector3D {return null;}
+    getRotationXYZ(pv: Vector3D = null): Vector3D {return null;}
     
     copyMeshFrom(entity: IDisplayEntity): void {
         if (entity != null) {
