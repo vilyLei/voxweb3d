@@ -60,18 +60,20 @@ class RawCodeShaderBuffer extends ShaderCodeBuffer {
 
 export default class ShaderMaterial extends MaterialBase implements IShaderMaterial {
 
-	private m_buffer: RawCodeShaderBuffer = new RawCodeShaderBuffer();
+	private m_buffer = new RawCodeShaderBuffer();
 	private m_uniformData: ShaderUniformData = null;
 	private m_shaderBuilder: (shdCodeBuf: IShaderCodeBuffer) => void = null;
 
-	vertColorEnabled: boolean = false;
-	premultiplyAlpha: boolean = false;
-	shadowReceiveEnabled: boolean = false;
-	lightEnabled: boolean = false;
-	fogEnabled: boolean = false;
-	envAmbientLightEnabled: boolean = false;
-	brightnessOverlayEnabeld: boolean = false;
-	glossinessEnabeld: boolean = true;
+	private m_map: Map<string, Float32Array> = new Map();
+
+	vertColorEnabled = false;
+	premultiplyAlpha = false;
+	shadowReceiveEnabled = false;
+	lightEnabled = false;
+	fogEnabled = false;
+	envAmbientLightEnabled = false;
+	brightnessOverlayEnabeld = false;
+	glossinessEnabeld = true;
 
 	constructor(shd_uniqueName: string) {
 		super();
@@ -107,7 +109,7 @@ export default class ShaderMaterial extends MaterialBase implements IShaderMater
 	 * @param           data                Float32Array type data stream,for example: vec4(Float32Array(4)),mat4(Float32Array(16))
 	 */
 	addUniformDataAt(uniform_name: string, data: Float32Array): void {
-		if (data != null) {
+		if (data != null && uniform_name != "") {
 			if (this.m_uniformData == null) {
 				this.m_uniformData = new ShaderUniformData();
 				this.m_uniformData.uniformNameList = [];
@@ -115,7 +117,12 @@ export default class ShaderMaterial extends MaterialBase implements IShaderMater
 			}
 			this.m_uniformData.uniformNameList.push(uniform_name);
 			this.m_uniformData.dataList.push(data);
+			this.m_map.set(uniform_name, data);
 		}
+	}
+	getUniformDataAt(uniform_name: string): Float32Array {
+		if(this.m_map.has(uniform_name))return this.m_map.get(uniform_name);
+		return null;
 	}
 	getCodeBuf(): ShaderCodeBuffer {
 		return this.m_buffer;
