@@ -102,7 +102,7 @@ class T_CoEntity {
 		return CoEntity.createXOYPlane(minX, minY, width, height, material, texEnabled);
 	}
 	createXOZPlane(minX: number, minZ: number, width: number, long: number, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
-		return CoEntity.createYOZPlane(minX, minZ, width, long, material, texEnabled);
+		return CoEntity.createXOZPlane(minX, minZ, width, long, material, texEnabled);
 	}
 
 	createYOZPlane(minY: number, minZ: number, height: number, long: number, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
@@ -117,7 +117,7 @@ class T_CoEntity {
 	}
 
 	createSphere(radius: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20, doubleTriFaceEnabled: boolean = false, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
-		return CoEntity.createSphere(radius, longitudeNumSegments, latitudeNumSegments, doubleTriFaceEnabled);
+		return CoEntity.createSphere(radius, longitudeNumSegments, latitudeNumSegments, doubleTriFaceEnabled, material, texEnabled);
 	}
 
 	createCone(radius: number, height: number, longitudeNumSegments: number = 20, alignYRatio: number = -0.5, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {

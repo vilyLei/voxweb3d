@@ -3,22 +3,26 @@ import MouseCamDrager from "./MouseCamDrager";
 import MouseCamZoomer from "./MouseCamZoomer";
 import { IMouseInteraction } from "./IMouseInteraction";
 import IVector3D from "../../../vox/math/IVector3D";
+import IEventBase from "../../../vox/event/IEventBase";
+import { ICoRScene } from "../ICoRScene";
+declare var CoRScene: ICoRScene;
 
 class MouseInteraction implements IMouseInteraction {
 	private m_rscene: IRendererScene = null;
-
+	private m_autoRun = false;
+	private m_axisType = 0;
 	readonly drager = new MouseCamDrager();
 	readonly zoomer = new MouseCamZoomer();
 	// zoomLookAtPosition: IVector3D = null;
 	zoomMinDistance = 30;
 
-	constructor() {}
+	constructor() { }
 
 	/**
 	 * 是否启用摄像机用户控制
 	 */
 	cameraCtrlEnabled: boolean = true;
-	
+
 	/**
 	 * @param rscene renderer scene instance
 	 * @param buttonType the default value is 0, the value contains 0(mouse left button), 1(mouse middle button), 2(mouse right button)
@@ -42,29 +46,68 @@ class MouseInteraction implements IMouseInteraction {
 			z.setLookAtCtrlEnabled(false);
 		}
 	}
-	
-    enableSwing(): void {
-        this.drager.enableSwing();
-    }
-    isEnabledSwing(): boolean {
-        return this.isEnabledSwing();
-    }
-    enableSlide(): void {
-        this.drager.enableSlide();
-    }
+
+	enableSwing(): void {
+		this.drager.enableSwing();
+	}
+	isEnabledSwing(): boolean {
+		return this.isEnabledSwing();
+	}
+	enableSlide(): void {
+		this.drager.enableSlide();
+	}
 	setSyncLookAtEnabled(ennabled: boolean): void {
 		this.zoomer.syncLookAt = ennabled;
 	}
 	setLookAtPosition(v: IVector3D): void {
 		this.zoomer.setLookAtPosition(v);
 	}
-	run(): void {
+	/**
+	 * @param enabled enable auto runnning or not
+	 * @param axisType 0 is y-axis, 1 is z-axis
+	 */
+	setAutoRunning(enabled: boolean, axisType: number = 0): void {
+		this.m_axisType = axisType;
+		this.m_autoRun = enabled;
+		const type = CoRScene.EventBase.ENTER_FRAME;
+		if (enabled) {
+			this.setSyncLookAtEnabled( true );
+			this.m_rscene.addEventListener(type, this, this.autoRun);
+		} else {
+			this.m_rscene.removeEventListener(type, this, this.autoRun);
+		}
+	}
+	private autoRun(evt: IEventBase): void {
+
 		if (this.cameraCtrlEnabled) {
+			this.zoomer.setLookAtPosition(null);
+			this.zoomer.run(this.zoomMinDistance);
+			switch (this.m_axisType) {
+				case 0:
+					this.drager.runWithYAxis();
+					break;
+				case 1:
+					this.drager.runWithZAxis();
+					break;
+				default:
+					this.drager.runWithYAxis();
+					break;
+			}
+		}
+	}
+	run(): void {
+
+		if (this.cameraCtrlEnabled && !this.m_autoRun) {
 			this.zoomer.run(this.zoomMinDistance);
 			this.drager.runWithYAxis();
 		}
 	}
-	destroy(): void {}
+	destroy(): void {
+		if (this.m_rscene != null) {
+			this.setAutoRunning(false);
+			this.m_rscene = null;
+		}
+	}
 }
 
 export { MouseInteraction };

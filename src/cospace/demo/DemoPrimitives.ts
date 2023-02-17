@@ -1,5 +1,4 @@
 import IRendererScene from "../../vox/scene/IRendererScene";
-import { IMouseInteraction } from "../voxengine/ui/IMouseInteraction";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { ICoRScene } from "../voxengine/ICoRScene";
 import { ICoEntity } from "../voxentity/ICoEntity";
@@ -20,7 +19,6 @@ declare var CoEntity: ICoEntity;
 export class DemoPrimitives {
 
 	private m_rscene: IRendererScene = null;
-	private m_mouseInteraction: IMouseInteraction = null;
 	constructor() { }
 
 	initialize(): void {
@@ -63,10 +61,21 @@ export class DemoPrimitives {
 
 		mouseInteractML.load(url2);
 	}
+	private getTexByUrl(url: string): IRenderTexture {
+		let sc = this.m_rscene;
+
+		let tex = sc.textureBlock.createImageTex2D(64, 64, false);
+		let img = new Image();
+		img.onload = (evt: any): void => {
+			tex.setDataFromImage(img);
+		};
+		img.src = url;
+		return tex;
+	}
 	private init3DScene(): void {
 
 		let size = 50;
-		let v0 = CoRScene.createVec3(size, size, size);
+		let v0 = CoRScene.createVec3(-size, -size, -size);
 		let entity = CoEntity.createBox(v0, v0.clone().scaleBy(-1));
 		this.m_rscene.addEntity(entity);
 
@@ -79,6 +88,7 @@ export class DemoPrimitives {
 
 		let sphMaterial = CoMaterial.createDefaultMaterial();
 		sphMaterial.normalEnabled = true;
+		sphMaterial.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
 		let sph = CoEntity.createSphere(150, 20, 20, false, sphMaterial);
 		sph.setXYZ(300, 0, 0);
 		this.m_rscene.addEntity(sph);
@@ -95,31 +105,17 @@ export class DemoPrimitives {
 		plane.setXYZ(-300, 0, 300);
 		this.m_rscene.addEntity(plane);
 	}
+	
 	isEngineEnabled(): boolean {
 		return typeof CoRenderer !== "undefined" && typeof CoRScene !== "undefined";
 	}
 	private initMouseInteraction(): void {
-
-		let r = this.m_rscene;
-		if (r != null && this.m_mouseInteraction == null && typeof CoUIInteraction !== "undefined") {
-
-			this.m_mouseInteraction = CoUIInteraction.createMouseInteraction();
-			this.m_mouseInteraction.initialize(this.m_rscene, 0, true);
-			this.m_mouseInteraction.setSyncLookAtEnabled(true);
-		}
+		
+		const mi = CoUIInteraction.createMouseInteraction();
+		mi.initialize(this.m_rscene, 0, true);
+		mi.setAutoRunning(true);
 	}
 
-	private getTexByUrl(url: string = ""): IRenderTexture {
-		let sc = this.m_rscene;
-
-		let tex = sc.textureBlock.createImageTex2D(64, 64, false);
-		let img = new Image();
-		img.onload = (evt: any): void => {
-			tex.setDataFromImage(img, 0, 0, 0, false);
-		};
-		img.src = url;
-		return tex;
-	}
 	private initRenderer(): void {
 
 		if (this.m_rscene == null) {
@@ -137,10 +133,6 @@ export class DemoPrimitives {
 	}
 	run(): void {
 		if (this.m_rscene != null) {
-			if (this.m_mouseInteraction != null) {
-				this.m_mouseInteraction.setLookAtPosition(null);
-				this.m_mouseInteraction.run();
-			}
 			this.m_rscene.run();
 		}
 	}

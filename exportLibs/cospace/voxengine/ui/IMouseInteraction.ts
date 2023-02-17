@@ -27,6 +27,11 @@ interface IMouseInteraction {
     enableSlide(): void;
     setSyncLookAtEnabled(ennabled: boolean): void;
     setLookAtPosition(v: IVector3D): void;
+    /**
+	 * @param enabled enable auto runnning or not
+	 * @param axisType 0 is y-axis, 1 is z-axis
+	 */
+	setAutoRunning(enabled: boolean, axisType?: number): void
     run(): void;
 }
 

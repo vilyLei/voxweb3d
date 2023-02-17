@@ -24,7 +24,7 @@ class T_CoMath {
 		if (this.m_init) {
 			this.m_init = false;
 			if (url == "" || url === undefined) {
-                url = "static/cospace/math/CoMath.umd.js";
+                url = "static/cospace/math/CoMath.umd.min.js";
 			}
 			new ModuleLoader(1, (): void => {
                 this.init();

@@ -39,7 +39,7 @@ export default class MouseCamZoomer {
     private m_flagDrag: number = 0;
     private m_flagZoom: number = 0;
     private m_windowsEnvFlag: boolean = true;
-    syncLookAt: boolean = false;
+    syncLookAt = false;
     /**
      * 取值为2, 表示相机的拉近拉远
      * 取值为1, 表示相机的拖动
