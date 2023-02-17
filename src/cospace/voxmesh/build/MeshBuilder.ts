@@ -21,6 +21,12 @@ class MeshBuilder {
     constructor() {
     }
 
+    createIVSBYSize(size: number): Uint16Array | Uint32Array {
+        return size > 65535 ? new Uint32Array(size) : new Uint16Array(size);
+    }
+    createIVSByArray(arr: number[]): Uint16Array | Uint32Array {
+        return arr.length > 65535 ? new Uint32Array(arr) : new Uint16Array(arr);
+    }
     /**
      * @param layoutBit vertex shader vertex attributes layout bit status.
      *                  the value of layoutBit comes from the material shdder program.

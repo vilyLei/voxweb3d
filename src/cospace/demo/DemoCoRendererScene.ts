@@ -23,14 +23,9 @@ export class DemoCoRendererScene {
 		});
 	}
 	private initMouseInteraction(): void {
-
-		let r = this.m_rscene;
-		if (r != null && this.m_mouseInteraction == null && VoxUIInteraction.isEnabled()) {
-
-			this.m_mouseInteraction = VoxUIInteraction.createMouseInteraction();
-			this.m_mouseInteraction.initialize(this.m_rscene, 2, true);
-			this.m_mouseInteraction.setSyncLookAtEnabled(true);
-		}
+		this.m_mouseInteraction = VoxUIInteraction.createMouseInteraction();
+		this.m_mouseInteraction.initialize(this.m_rscene, 2, true);
+		this.m_mouseInteraction.setSyncLookAtEnabled(true);
 	}
 
 	private initREngine(): void {

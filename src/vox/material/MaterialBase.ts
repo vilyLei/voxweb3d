@@ -28,7 +28,8 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
     protected m_shaderUniformData: IShaderUniformData = null;
     protected m_pipeLine: IMaterialPipeline = null;
     protected m_uniqueShaderName: string = "";
-
+    // sub rendering pass
+    private m_cases: IRenderMaterial[] = null;
     // tex list unique hash value
     __$troMid: number = -1;
     __$uniform: IRenderShaderUniform = null;
@@ -36,9 +37,15 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
      * pipes type list for material pipeline
      */
     pipeTypes: MaterialPipeType[] = null;
-
+    renderState = 0;
     constructor() { }
-
+    // for multi - pass
+    setCases(ls: IRenderMaterial[]): void {
+        this.m_cases = ls;
+    }
+    getCases(): IRenderMaterial[] {
+        return this.m_cases;
+    }
     /*
      * specifies the scale factors and units to calculate depth values.
      * @param factor the value is a GLfloat which sets the scale factor for the variable depth offset for each polygon. The default value is 0.
@@ -223,7 +230,10 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
         }
     }
     getTextureList(): IRenderTexture[] { return this.m_texList; }
-    getTextureAt(index: number): IRenderTexture { return this.m_texList[index]; }
+    getTextureAt(index: number): IRenderTexture {
+        if(this.m_texList != null && this.m_texList.length > index) return this.m_texList[index];
+        return null;
+    }
     getTextureTotal(): number { return this.m_texListLen; }
     getShdTexTotal(): number {
         if (this.m_shdData != null) {
@@ -238,7 +248,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
             }
             let boo = true;
             let texList = this.m_texList;
-            for (let i: number = 0; i < this.m_texListLen; ++i) {
+            for (let i = 0; i < this.m_texListLen; ++i) {
                 if (!texList[i].isDataEnough()) {
                     boo = false;
                     break;

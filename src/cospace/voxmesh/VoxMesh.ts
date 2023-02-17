@@ -7,6 +7,7 @@ import { IConeMeshBuilder } from "./build/IConeMeshBuilder";
 import { IBoxMeshBuilder } from "./build/IBoxMeshBuilder";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 import { ICoMesh } from "./ICoMesh";
+import { ISphereMeshBuilder } from "./build/ISphereMeshBuilder";
 
 declare var CoMesh: ICoMesh;
 
@@ -57,6 +58,12 @@ class T_CoMesh {
 	 */
 	get box(): IBoxMeshBuilder {
 		return CoMesh.box;
+	}
+	/**
+	 * box mesh builder
+	 */
+	get sphere(): ISphereMeshBuilder {
+		return CoMesh.sphere;
 	}
 
 	createDataMesh(): IDataMesh {

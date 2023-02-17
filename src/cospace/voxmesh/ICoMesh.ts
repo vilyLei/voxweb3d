@@ -5,6 +5,7 @@ import { IPlaneMeshBuilder } from "./build/IPlaneMeshBuilder";
 import { ILineMeshBuilder } from "./build/ILineMeshBuilder";
 import { IConeMeshBuilder } from "./build/IConeMeshBuilder";
 import { IBoxMeshBuilder } from "./build/IBoxMeshBuilder";
+import { ISphereMeshBuilder } from "./build/ISphereMeshBuilder";
 
 interface ICoMesh {
 
@@ -24,6 +25,10 @@ interface ICoMesh {
 	 * box mesh builder
 	 */
 	readonly box: IBoxMeshBuilder;
+	/**
+	 * sphere mesh builder
+	 */
+	readonly sphere: ISphereMeshBuilder;
 
 	createDataMesh(): IDataMesh;
 	createRawMesh(): IRawMesh;	

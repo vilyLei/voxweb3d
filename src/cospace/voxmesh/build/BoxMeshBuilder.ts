@@ -22,12 +22,12 @@ class BoxMeshBuilder extends MeshBuilder implements IBoxMeshBuilder {
     private m_posList: number[][] = new Array(8);
     private m_cv: IVector3D;
 
-    flatNormal: boolean = true;
-    normalScale: number = 1.0;
-    uScale: number = 1.0;
-    vScale: number = 1.0;
-    flipVerticalUV: boolean = false;
-    uvPartsNumber: number = 0;
+    flatNormal = true;
+    normalScale = 1.0;
+    uScale = 1.0;
+    vScale = 1.0;
+    flipVerticalUV = false;
+    uvPartsNumber = 0;
 
     createCube(cubeSize: number): IRawMesh {
         let h = cubeSize * 0.5;
@@ -61,29 +61,29 @@ class BoxMeshBuilder extends MeshBuilder implements IBoxMeshBuilder {
             }
         }
     }
-    private initUVData(baseI: number, uvs: Float32Array): void {
-        let uScale = this.uScale;
-        let vScale = this.vScale;
-        let i: number = 0;
-        if (this.flipVerticalUV) {
-            while (i < baseI) {
-                uvs[i] = 1.0 * uScale; uvs[i + 1] = 1.0 * vScale;
-                uvs[i + 2] = 0.0 * uScale; uvs[i + 3] = 1.0 * vScale;
-                uvs[i + 4] = 0.0 * uScale; uvs[i + 5] = 0.0 * vScale;
-                uvs[i + 6] = 1.0 * uScale; uvs[i + 7] = 0.0 * vScale;
-                i += 8;
-            }
-        }
-        else {
-            while (i < baseI) {
-                uvs[i] = 0.0 * uScale; uvs[i + 1] = 0.0 * vScale;
-                uvs[i + 2] = 1.0 * uScale; uvs[i + 3] = 0.0 * vScale;
-                uvs[i + 4] = 1.0 * uScale; uvs[i + 5] = 1.0 * vScale;
-                uvs[i + 6] = 0.0 * uScale; uvs[i + 7] = 1.0 * vScale;
-                i += 8;
-            }
-        }
-    }
+    // private initUVData(baseI: number, uvs: Float32Array): void {
+    //     let uScale = this.uScale;
+    //     let vScale = this.vScale;
+    //     let i: number = 0;
+    //     if (this.flipVerticalUV) {
+    //         while (i < baseI) {
+    //             uvs[i] = 1.0 * uScale; uvs[i + 1] = 1.0 * vScale;
+    //             uvs[i + 2] = 0.0 * uScale; uvs[i + 3] = 1.0 * vScale;
+    //             uvs[i + 4] = 0.0 * uScale; uvs[i + 5] = 0.0 * vScale;
+    //             uvs[i + 6] = 1.0 * uScale; uvs[i + 7] = 0.0 * vScale;
+    //             i += 8;
+    //         }
+    //     }
+    //     else {
+    //         while (i < baseI) {
+    //             uvs[i] = 0.0 * uScale; uvs[i + 1] = 0.0 * vScale;
+    //             uvs[i + 2] = 1.0 * uScale; uvs[i + 3] = 0.0 * vScale;
+    //             uvs[i + 4] = 1.0 * uScale; uvs[i + 5] = 1.0 * vScale;
+    //             uvs[i + 6] = 0.0 * uScale; uvs[i + 7] = 1.0 * vScale;
+    //             i += 8;
+    //         }
+    //     }
+    // }
     protected setMeshData(mesh: IRawMesh): void {
 
         let facePosIds: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 4, 5, 1, 0, 5, 6, 2, 1, 7, 6, 2, 3, 4, 7, 3, 0];
