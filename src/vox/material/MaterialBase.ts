@@ -20,24 +20,25 @@ import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline
 
 export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData {
 
-    private m_shduns: string = "";
+    private m_shduns = "";
     private m_shdData: ShaderData = null;
     private m_polygonOffset: number[] = null;
 
     protected m_sharedUniforms: IRenderShaderUniform[] = null;
     protected m_shaderUniformData: IShaderUniformData = null;
     protected m_pipeLine: IMaterialPipeline = null;
-    protected m_uniqueShaderName: string = "";
+    protected m_uniqueShaderName = "";
     // sub rendering pass
     private m_cases: IRenderMaterial[] = null;
     // tex list unique hash value
-    __$troMid: number = -1;
+    __$troMid = -1;
     __$uniform: IRenderShaderUniform = null;
     /**
      * pipes type list for material pipeline
      */
     pipeTypes: MaterialPipeType[] = null;
     renderState = 0;
+    multiPass = false;
     constructor() { }
     // for multi - pass
     setCases(ls: IRenderMaterial[]): void {
@@ -84,14 +85,8 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
         return null;
     }
     hasShaderData(): boolean {
-        if (this.m_shdData != null) {
+        if (this.m_shdData) {
             return this.m_shdData.haveTexture() ? this.texDataEnabled() : true;
-            // if (this.m_shdData.haveTexture()) {
-            //     return this.texDataEnabled();
-            // }
-            // else {
-            //     return true;
-            // }
         }
         return false;
     }
@@ -101,8 +96,8 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
     initializeByCodeBuf(texEnabled: boolean = false): void {
         texEnabled = texEnabled || this.getTextureTotal() > 0;
         if (this.m_shdData == null) {
-            let buf: ShaderCodeBuffer = this.getCodeBuf();
-            if (buf != null) {
+            let buf = this.getCodeBuf();
+            if (buf) {
                 buf.reset();
                 buf.pipeline = this.m_pipeLine;
                 buf.pipeTypes = this.pipeTypes;
