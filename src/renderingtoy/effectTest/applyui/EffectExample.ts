@@ -203,7 +203,7 @@ export class EffectExample {
             // entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
             entity.setMesh(mesh);
             entity.setMaterial(material);
-            entity.getTransform().setParentMatrix(matrix4);
+            // entity.getTransform().setParentMatrix(matrix4);
 
             this.m_rscene.addEntity(entity);
             this.m_entities.push(entity);

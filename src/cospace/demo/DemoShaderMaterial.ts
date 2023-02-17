@@ -83,7 +83,6 @@ export class DemoShaderMaterial {
 
 			let matrix4 = CoRScene.createMat4(transform);
 			let entity = CoRScene.createDisplayEntityFromModel(model, material);
-			entity.getTransform().setParentMatrix(matrix4);
 			this.m_rscene.addEntity(entity);
 
 			this.m_layouter.layoutAppendItem(entity, matrix4);
@@ -106,7 +105,7 @@ export class DemoShaderMaterial {
 
 		let baseUrl = "static/private/";
 		let url = baseUrl + "fbx/base4.fbx";
-		url = baseUrl + "obj/apple_01.obj";
+		// url = baseUrl + "obj/apple_01.obj";
 
 		this.loadModels([url]);
 	}

@@ -15,6 +15,7 @@ import RendererScene from "../../../vox/scene/RendererScene";
 import CameraStageDragSwinger from "../../../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../../../voxeditor/control/CameraZoomController";
 import EffectMaterial from "./EffectMaterial";
+import { EntityLayouter } from "../../../vox/utils/EntityLayouter";
 
 import { CoGeomDataType, CoDataFormat, CoGeomModelLoader } from "../../../cospace/app/common/CoGeomModelLoader";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
@@ -22,6 +23,7 @@ import RendererState from "../../../vox/render/RendererState";
 import SurfaceNormalCalc from "../../../vox/geom/SurfaceNormalCalc";
 import DataMesh from "../../../vox/mesh/DataMesh";
 import Matrix4 from "../../../vox/math/Matrix4";
+import OrientationType from "../../../vox/math/OrientationType";
 
 export class EffectExample {
     constructor() { }
@@ -33,6 +35,7 @@ export class EffectExample {
     private m_cameraZoomController = new CameraZoomController();
 
     private m_modelLoader = new CoGeomModelLoader();
+    private m_layouter = new EntityLayouter();
 
     private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex = this.m_texLoader.getImageTexByUrl(purl);
@@ -83,6 +86,7 @@ export class EffectExample {
             },
             (total): void => {
                 console.log("loaded model all.");
+                this.m_layouter.layoutUpdate();
             });
 
         let baseUrl: string = "static/private/";
@@ -90,7 +94,7 @@ export class EffectExample {
         url = baseUrl + "obj/base4.obj";
         url = baseUrl + "fbx/base4.fbx";
         // url = baseUrl + "fbx/hat_ok.fbx";
-        url = baseUrl + "obj/apple_01.obj";
+        // url = baseUrl + "obj/apple_01.obj";
         console.log("initModel() init...");
         this.loadModels([url]);
     }
@@ -126,15 +130,21 @@ export class EffectExample {
 
             mesh.initialize();
 
+            let mat4 = new Matrix4(transform);
+            // let vlist = mat4.decompose(OrientationType.EULER_ANGLES);
+
             let entity = new DisplayEntity();
             entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+            entity.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
             entity.setMesh(mesh);
             entity.setMaterial(material);
-            entity.getTransform().setParentMatrix(new Matrix4(transform));
-            entity.setScaleXYZ(165.0, 165.0, 165.0);
-            // entity.setScale3(new Vector3D( 165.0, 165.0, 165.0 ));
+
+            // entity.setPosition(vlist[0]);
+            // entity.setRotation3(vlist[1])
+            // entity.setScale3(vlist[2]);
 
             this.m_rscene.addEntity(entity);
+            this.m_layouter.layoutAppendItem(entity, mat4);
         }
     }
 
