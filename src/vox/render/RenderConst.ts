@@ -15,7 +15,7 @@ export class RenderDrawMode {
     static readonly ELEMENTS_LINES: number = 8;
     static readonly DISABLE: number = 0;
 }
-// blend mode
+
 export class RenderBlendMode {
     static readonly NORMAL: number = 1;
     static readonly OPAQUE: number = 1;

@@ -5,18 +5,27 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { IRODrawState } from "../../../vox/render/rendering/IRODrawState";
-import { IStencil } from "../../../vox/render/rendering/IStencil";
+import { IRODrawState } from "./IRODrawState";
+import { IStencil } from "./IStencil";
+class Stencil implements IStencil {
 
-class Stencil {
     private m_rstate: IRODrawState = null;
-    constructor(rstate: IRODrawState) {
+    private m_depfs = [0, 0];
+    private m_maskfs = [0, 0];
+    private m_funcfs = [0, 0, 0, 0];
+    private m_opfs = [0, 0, 0, 0];
+    private m_enabled = false;
+    constructor(rstate: IRODrawState = null) {
         this.m_rstate = rstate;
     }
-
+    isEnabled(): boolean {
+        return this.m_enabled;
+    }
     setDepthTestEnable(enable: boolean): void {
-
-        this.m_rstate.setDepthTestEnable(enable);
+        this.m_depfs[0] = enable ? 1 : 0;
+        this.m_depfs[1] = 1;
+        this.m_enabled = true;
+        if (this.m_rstate) this.m_rstate.setDepthTestEnable(enable);
     }
     /**
      * 设置 gpu stencilFunc 状态
@@ -25,14 +34,23 @@ class Stencil {
      * @param mask GLint type number
      */
     setStencilFunc(func: number, ref: number, mask: number): void {
-        this.m_rstate.setStencilFunc(func, ref, mask);
+        const ls = this.m_funcfs;
+        ls[0] = func;
+        ls[1] = ref;
+        ls[2] = mask;
+        ls[3] = 1;
+        this.m_enabled = true;
+        if (this.m_rstate) this.m_rstate.setStencilFunc(func, ref, mask);
     }
     /**
      * 设置 gpu stencilMask 状态
      * @param mask GLint type number
      */
     setStencilMask(mask: number): void {
-        this.m_rstate.setStencilMask(mask);
+        this.m_maskfs[0] = mask;
+        this.m_maskfs[1] = 1;
+        this.m_enabled = true;
+        if (this.m_rstate) this.m_rstate.setStencilMask(mask);
     }
     /**
      * 设置 gpu stencilOp 状态
@@ -41,7 +59,38 @@ class Stencil {
      * @param zpass Specifies the stencil action when both the stencil test and the depth test pass, or when the stencil test passes and either there is no depth buffer or depth testing is not enabled. dppass accepts the same symbolic constants as sfail. The initial value is GL_KEEP.
      */
     setStencilOp(fail: number, zfail: number, zpass: number): void {
-        this.m_rstate.setStencilOp(fail, zfail, zpass);
+        const ls = this.m_opfs;
+        ls[0] = fail;
+        ls[1] = zfail;
+        ls[2] = zpass;
+        ls[3] = 1;
+        this.m_enabled = true;
+        if (this.m_rstate) this.m_rstate.setStencilOp(fail, zfail, zpass);
+    }
+    reset(): void {
+        this.m_depfs[1] = 0;
+        this.m_maskfs[1] = 0;
+        this.m_funcfs[3] = 0;
+        this.m_opfs[3] = 0;
+        this.m_enabled = false;
+    }
+    apply(rstate: IRODrawState): void {
+        if (rstate && this.m_enabled) {
+            if (this.m_depfs[1] > 0) {
+                rstate.setDepthTestEnable(this.m_depfs[0] > 0);
+            }
+            if (this.m_maskfs[1] > 0) {
+                rstate.setStencilMask(this.m_maskfs[0]);
+            }
+            const fs = this.m_funcfs;
+            if (fs[1] > 0) {
+                rstate.setStencilFunc(fs[0], fs[1], fs[2]);
+            }
+            const ps = this.m_opfs;
+            if (ps[1] > 0) {
+                rstate.setStencilOp(ps[0], ps[1], ps[2]);
+            }
+        }
     }
 }
 export { Stencil }

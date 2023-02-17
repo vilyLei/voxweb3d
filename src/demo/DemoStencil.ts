@@ -156,7 +156,7 @@ export class DemoStencil {
         stencil.setStencilMask(0x0);
 
 
-        let scale:number = 1.1;
+        let scale = 1.1;
         this.m_material.setRGB3f(20.0,0.0,0.0);
         this.m_entity.setScaleXYZ(scale,scale,scale);
         this.m_entity.update();
@@ -191,9 +191,8 @@ export class DemoStencil {
         this.m_rscene.runAt(0);
         this.m_rscene.runAt(1);
 
-        let scale:number = 1.0;
+        let scale = 1.0;
         stencil.setStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
-
         stencil.setStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF);
         stencil.setStencilMask(0xFF);
 

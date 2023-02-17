@@ -184,7 +184,7 @@
 
 //  import {DemoGLState as Demo} from "./demo/DemoGLState";
 
-//  import {DemoStencil as Demo} from "./demo/DemoStencil";
+ import {DemoStencil as Demo} from "./demo/DemoStencil";
 
 //  import {DemoBlendMode as Demo} from "./demo/DemoBlendMode";
 
@@ -271,7 +271,7 @@
 
 //  import {DemoContainer as Demo} from "./demo/DemoContainer";
 
- import {DemoContainerTransform as Demo}  from "./demo/DemoContainerTransform";
+//  import {DemoContainerTransform as Demo}  from "./demo/DemoContainerTransform";
 
 // import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
 
