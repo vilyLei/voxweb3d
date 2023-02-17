@@ -21,6 +21,7 @@ interface IRenderMaterial {
      * pipes type list for material pipeline
      */
     pipeTypes: MaterialPipeType[];
+    renderState: number;
 
     /**
      * @param texEnabled the default value is false
@@ -30,6 +31,9 @@ interface IRenderMaterial {
      * @param texEnabled the default value is false
      */
     initializeByCodeBuf(texEnabled: boolean): void;
+    
+    setCases(ls: IRenderMaterial[]): void;
+    getCases(): IRenderMaterial[];
     
     getPolygonOffset(): number[];
     createSharedUniforms(): IRenderShaderUniform[];

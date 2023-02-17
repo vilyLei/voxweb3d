@@ -33,12 +33,24 @@ export default interface IRenderEntityContainer extends IRenderEntityBase {
     getEntitysTotal(): number;
     setXYZ(px: number, py: number, pz: number): void;
     setPosition(pv: IVector3D): void;
-    getPosition(pv: IVector3D): void;
+    /**
+     * @param resultPos the default value is null
+     */
+    getPosition(resultPos?: IVector3D): IVector3D;
+
     setRotation3(rv: IVector3D): void;
     setRotationXYZ(rx: number, ry: number, rz: number): void;
-    getRotationXYZ(rv: IVector3D): void;
+    
+    /**
+     * @param rv the default value is null
+     */
+    getRotationXYZ(rv?: IVector3D): IVector3D;
     setScaleXYZ(sx: number, sy: number, sz: number): void;
-    getScaleXYZ(sv: IVector3D): void;
+    
+    /**
+     * @param sv the default value is null
+     */
+    getScaleXYZ(sv?: IVector3D): IVector3D;
     setScale3(sv: IVector3D): void;
 
     localToGlobal(pv: IVector3D): void;

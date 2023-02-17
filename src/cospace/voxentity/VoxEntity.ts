@@ -91,11 +91,37 @@ class T_CoEntity {
 	 * @param size the default value is 100
 	 */
 	createCrossAxis3DEntity(size: number): ITransformEntity {
-		return CoEntity.createCrossAxis3DEntity( size );
+		return CoEntity.createCrossAxis3DEntity(size);
 	}
 
 	createDisplayEntityContainer(): IDisplayEntityContainer {
 		return CoEntity.createDisplayEntityContainer();
+	}
+
+	createXOYPlane(minX: number, minY: number, width: number, height: number, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
+		return CoEntity.createXOYPlane(minX, minY, width, height, material, texEnabled);
+	}
+	createXOZPlane(minX: number, minZ: number, width: number, long: number, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
+		return CoEntity.createYOZPlane(minX, minZ, width, long, material, texEnabled);
+	}
+
+	createYOZPlane(minY: number, minZ: number, height: number, long: number, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
+		return CoEntity.createYOZPlane(minY, minZ, height, long, material, texEnabled);
+	}
+
+	createCube(size: number, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
+		return CoEntity.createCube(size, material, texEnabled);
+	}
+	createBox(minV: IVector3D, maxV: IVector3D, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
+		return CoEntity.createBox(minV, maxV, material, texEnabled);
+	}
+
+	createSphere(radius: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20, doubleTriFaceEnabled: boolean = false, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
+		return CoEntity.createSphere(radius, longitudeNumSegments, latitudeNumSegments, doubleTriFaceEnabled);
+	}
+
+	createCone(radius: number, height: number, longitudeNumSegments: number = 20, alignYRatio: number = -0.5, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
+		return CoEntity.createCone(radius, height, longitudeNumSegments, alignYRatio, material, texEnabled);
 	}
 }
 const VoxEntity = new T_CoEntity();
