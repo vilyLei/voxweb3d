@@ -5,7 +5,6 @@ import { ITextEntity } from "./base/ITextEntity";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 
 import { ICoText } from "./ICoText";
-
 declare var CoText: ICoText;
 
 interface I_CoText {

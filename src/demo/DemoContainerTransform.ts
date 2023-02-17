@@ -110,11 +110,11 @@ export class DemoContainerTransform {
     }
     private m_elist: DisplayEntity[] = [];
     private createLargeEntitys(total: number): void {
-        let src_axis: Axis3DEntity = new Axis3DEntity();
+        let src_axis = new Axis3DEntity();
         src_axis.initialize(600.0);
         let entity: DisplayEntity = null;
-        for (let i: number = 0; i < total; i++) {
-            let axis: Axis3DEntity = new Axis3DEntity();
+        for (let i = 0; i < total; i++) {
+            let axis = new Axis3DEntity();
             axis.copyMeshFrom(src_axis);
             axis.copyMaterialFrom(src_axis);
             axis.initialize(600.0);
@@ -129,15 +129,15 @@ export class DemoContainerTransform {
             this.m_rscene.removeEntity(this.m_containerMain);
         }else {
             // this.m_rscene.addContainer(this.m_containerMain);
-            this.m_rscene.removeEntity(this.m_containerMain);
+            this.m_rscene.addEntity(this.m_containerMain);
         }
         this.m_flag0 = !this.m_flag0;
         // this.m_containerMain.setVisible(this.m_flag0);
     }
     mouseDownListener(evt: any): void {
         console.log("XXXXX mouseDownListener() ...");
-        // this.containerTest();
-        // return;
+        this.containerTest();
+        return;
         if (this.m_targetEntity != null) {
             let destroyEnabled: boolean = true;
             console.log("this.m_targetEntity.isFree(): ", this.m_targetEntity.isFree(), ", destroyEnabled: ", destroyEnabled);
