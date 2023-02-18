@@ -31,4 +31,9 @@ export default interface IShaderMaterial extends IRenderMaterial {
 	 * @param           data                Float32Array type data stream,for example: vec4(Float32Array(4)),mat4(Float32Array(16))
 	 */
 	addUniformDataAt(uniform_name: string, data: Float32Array): void;
+	/**
+	 * @param uniform_name the name of a uniform in the shader.
+	 * @returns a float32 type data
+	 */
+	getUniformDataAt(uniform_name: string): Float32Array;
 }

@@ -27,5 +27,6 @@ interface IStencil {
      * @param zpass Specifies the stencil action when both the stencil test and the depth test pass, or when the stencil test passes and either there is no depth buffer or depth testing is not enabled. dppass accepts the same symbolic constants as sfail. The initial value is GL_KEEP.
      */
     setStencilOp(fail: number, zfail: number, zpass: number): void;
+    reset(): void;
 }
 export { IStencil }
