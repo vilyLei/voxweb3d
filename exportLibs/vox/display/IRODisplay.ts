@@ -16,7 +16,7 @@ import IRPODisplay from "../../vox/render/IRPODisplay";
 
 interface IRODisplay {
     
-    name: string;
+    uuid: string;
     // render yes or no
     visible: boolean;
     ivsIndex: number;

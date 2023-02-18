@@ -12,6 +12,7 @@ import IRenderer from "../../vox/scene/IRenderer";
 import IRenderEntityBase from "./IRenderEntityBase";
 
 export default interface IRenderEntityContainer extends IRenderEntityBase {
+    uuid: string;
     // /**
     //  * mouse interaction enabled, the default value is false
     //  */
