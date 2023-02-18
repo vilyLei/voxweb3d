@@ -60,7 +60,7 @@ interface ICoEntity {
 	 * @param texEnabled the default value is false
 	 * @returns a plane entity, it is parallel with xoy plane
 	 */
-	createXOYPlane(minX: number, minY: number, width: number, height: number, material?: IRenderMaterial, texEnabled?: boolean): ITransformEntity;
+	createXOYPlane(minX: number, minY: number, width: number, height: number, material?: IRenderMaterial, texEnabled?: boolean): IMouseEventEntity;
 	/**
 	 * @param minX min x-axis value
 	 * @param minZ min z-axis value 
@@ -70,7 +70,7 @@ interface ICoEntity {
 	 * @param texEnabled the default value is false
 	 * @returns a plane entity, it is parallel with xoz plane
 	 */
-	createXOZPlane(minX: number, minZ: number, width: number, long: number, material?: IRenderMaterial, texEnabled?: boolean): ITransformEntity;
+	createXOZPlane(minX: number, minZ: number, width: number, long: number, material?: IRenderMaterial, texEnabled?: boolean): IMouseEventEntity;
 	/**
 	 * @param minY min y-axis value 
 	 * @param minZ min z-axis value 
@@ -80,7 +80,7 @@ interface ICoEntity {
 	 * @param texEnabled the default value is false
 	 * @returns a plane entity, it is parallel with yoz plane
 	 */
-	createYOZPlane(minY: number, minZ: number, height: number, long: number, material?: IRenderMaterial, texEnabled?: boolean): ITransformEntity;
+	createYOZPlane(minY: number, minZ: number, height: number, long: number, material?: IRenderMaterial, texEnabled?: boolean): IMouseEventEntity;
 	/**
 	 * @param minV min position
 	 * @param maxV max position
@@ -88,14 +88,14 @@ interface ICoEntity {
 	 * @param texEnabled the default value is false
 	 * @returns a box entity
 	 */
-	createBox(minV: IVector3D, maxV: IVector3D, material?: IRenderMaterial, texEnabled?: boolean): ITransformEntity;
+	createBox(minV: IVector3D, maxV: IVector3D, material?: IRenderMaterial, texEnabled?: boolean): IMouseEventEntity;
 	/**
 	 * @param size cube size
 	 * @param material the default value is null 
 	 * @param texEnabled the default value is false
 	 * @returns a box entity
 	 */
-	createCube(size: number, material?: IRenderMaterial, texEnabled?: boolean): ITransformEntity;
+	createCube(size: number, material?: IRenderMaterial, texEnabled?: boolean): IMouseEventEntity;
 	/**
 	 * @param radius the sphere radius
 	 * @param longitudeNumSegments the default value is 20
@@ -105,7 +105,7 @@ interface ICoEntity {
 	 * @param texEnabled the default value is false
 	 * @returns a sphere entity
 	 */
-	createSphere(radius: number, longitudeNumSegments?: number, latitudeNumSegments?: number, doubleTriFaceEnabled?: boolean, material?: IRenderMaterial, texEnabled?: boolean): ITransformEntity;
+	createSphere(radius: number, longitudeNumSegments?: number, latitudeNumSegments?: number, doubleTriFaceEnabled?: boolean, material?: IRenderMaterial, texEnabled?: boolean): IMouseEventEntity;
 	/**
 	 * @param radius the cone radius 
 	 * @param height the cone height  
@@ -115,6 +115,6 @@ interface ICoEntity {
 	 * @param texEnabled the default value is false
 	 * @returns a cone entity
 	 */
-	createCone(radius: number, height: number, longitudeNumSegments?: number, alignYRatio?: number, material?: IRenderMaterial, texEnabled?: boolean): ITransformEntity;
+	createCone(radius: number, height: number, longitudeNumSegments?: number, alignYRatio?: number, material?: IRenderMaterial, texEnabled?: boolean): IMouseEventEntity;
 }
 export { ICoEntity };

@@ -98,29 +98,29 @@ class T_CoEntity {
 		return CoEntity.createDisplayEntityContainer();
 	}
 
-	createXOYPlane(minX: number, minY: number, width: number, height: number, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
+	createXOYPlane(minX: number, minY: number, width: number, height: number, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
 		return CoEntity.createXOYPlane(minX, minY, width, height, material, texEnabled);
 	}
-	createXOZPlane(minX: number, minZ: number, width: number, long: number, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
+	createXOZPlane(minX: number, minZ: number, width: number, long: number, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
 		return CoEntity.createXOZPlane(minX, minZ, width, long, material, texEnabled);
 	}
 
-	createYOZPlane(minY: number, minZ: number, height: number, long: number, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
+	createYOZPlane(minY: number, minZ: number, height: number, long: number, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
 		return CoEntity.createYOZPlane(minY, minZ, height, long, material, texEnabled);
 	}
 
-	createCube(size: number, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
+	createCube(size: number, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
 		return CoEntity.createCube(size, material, texEnabled);
 	}
-	createBox(minV: IVector3D, maxV: IVector3D, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
+	createBox(minV: IVector3D, maxV: IVector3D, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
 		return CoEntity.createBox(minV, maxV, material, texEnabled);
 	}
 
-	createSphere(radius: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20, doubleTriFaceEnabled: boolean = false, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
+	createSphere(radius: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20, doubleTriFaceEnabled: boolean = false, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
 		return CoEntity.createSphere(radius, longitudeNumSegments, latitudeNumSegments, doubleTriFaceEnabled, material, texEnabled);
 	}
 
-	createCone(radius: number, height: number, longitudeNumSegments: number = 20, alignYRatio: number = -0.5, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
+	createCone(radius: number, height: number, longitudeNumSegments: number = 20, alignYRatio: number = -0.5, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
 		return CoEntity.createCone(radius, height, longitudeNumSegments, alignYRatio, material, texEnabled);
 	}
 }
