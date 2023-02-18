@@ -28,8 +28,8 @@ export class DemoPrimitives {
 			e.preventDefault();
 		}
 
-		let url0 = "static/cospace/engine/renderer/CoRenderer.umd.min.js";
-		let url1 = "static/cospace/engine/rscene/CoRScene.umd.min.js";
+		let url0 = "static/cospace/engine/renderer/CoRenderer.umd.js";
+		let url1 = "static/cospace/engine/rscene/CoRScene.umd.js";
 		let url2 = "static/cospace/engine/uiInteract/CoUIInteraction.umd.js";
 		let url3 = "static/cospace/comesh/CoMesh.umd.js";
 		let url4 = "static/cospace/coentity/CoEntity.umd.js";
@@ -82,6 +82,7 @@ export class DemoPrimitives {
 		let cubeMaterial = CoMaterial.createDefaultMaterial();
 		cubeMaterial.setRGB3f(0.7, 1.0, 1.0);
 		cubeMaterial.normalEnabled = true;
+		cubeMaterial.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
 		let cube = CoEntity.createCube(200, cubeMaterial);
 		cube.setXYZ(-300, 0, 0);
 		this.m_rscene.addEntity(cube);
@@ -120,10 +121,10 @@ export class DemoPrimitives {
 
 		if (this.m_rscene == null) {
 
-			// let RendererDevice = CoRenderer.RendererDevice;
-			// RendererDevice.SHADERCODE_TRACE_ENABLED = true;
-			// RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-			// RendererDevice.SetWebBodyColor("black");
+			let RendererDevice = CoRScene.RendererDevice;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+			RendererDevice.SetWebBodyColor("black");
 
 			let rparam = CoRScene.createRendererSceneParam();
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);

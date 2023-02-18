@@ -34,7 +34,7 @@
 // import { DemoCoSimpleRendereScene as Demo } from "./cospace/demo/DemoCoSimpleRendereScene";
 // import { DemoDisplayModel as Demo } from "./cospace/demo/DemoDisplayModel";
 // import { DemoShaderMaterial as Demo } from "./cospace/demo/DemoShaderMaterial";
-// import { DemoPrimitives as Demo } from "./cospace/demo/DemoPrimitives";
+import { DemoPrimitives as Demo } from "./cospace/demo/DemoPrimitives";
 
 // import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
 // import { DemoVox3DEditor as Demo } from "./cospace/demo/DemoVox3DEditor";
@@ -43,7 +43,7 @@
 // import { DemoPostOutline as Demo } from "./cospace/demo/DemoPostOutline";
 // import { DemoCoParticle as Demo } from "./cospace/demo/DemoCoParticle";
 // import { DemoCoParticleFlow as Demo } from "./cospace/demo/DemoCoParticleFlow";
-import { DemoCoParticleModule as Demo } from "./cospace/demo/DemoCoParticleModule";
+// import { DemoCoParticleModule as Demo } from "./cospace/demo/DemoCoParticleModule";
 
 // import { DemoCoEdit as Demo } from "./cospace/demo/DemoCoEdit";
 

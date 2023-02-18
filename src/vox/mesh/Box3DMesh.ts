@@ -16,7 +16,6 @@ import AABB from "../../vox/geom/AABB";
 import MeshBase from "../../vox/mesh/MeshBase";
 import Color4 from "../material/Color4";
 import { AABBCalc } from "../geom/AABBCalc";
-import ROIVertexBuffer from "./ROIVertexBuffer";
 
 export default class Box3DMesh extends MeshBase {
     private m_posList: number[][] = [null, null, null, null, null, null, null, null];
