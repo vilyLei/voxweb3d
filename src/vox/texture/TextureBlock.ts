@@ -36,7 +36,6 @@ import BytesCubeTextureProxy from "../../vox/texture/BytesCubeTextureProxy";
 import ImageCubeTextureProxy from "../../vox/texture/ImageCubeTextureProxy";
 import Texture3DProxy from "../../vox/texture/Texture3DProxy";
 
-// import WrapperTextureProxy from "../../vox/texture/WrapperTextureProxy";
 import IRenderProxy from "../../vox/render/IRenderProxy";
 import TextureResSlot from "../../vox/texture/TextureResSlot";
 import { RTTTextureStore } from "../../vox/texture/RTTTextureStore";
@@ -45,7 +44,7 @@ import { ITextureBlock } from "./ITextureBlock";
 /**
  * 本类作为所有基础纹理对象的管理类,只允许在RendererInstance之上的类中使用
  */
-class TextureBlock implements ITextureBlock{
+class TextureBlock implements ITextureBlock {
     private m_texPool: TexturePool = new TexturePool();
     private m_rttStore: RTTTextureStore = null;
     private m_renderProxy: IRenderProxy = null;
@@ -77,8 +76,8 @@ class TextureBlock implements ITextureBlock{
         }
     }
     /**
-     * 设置当前的渲染器
-     * @param renderProxy 当前的渲染器
+     * 设置当前的渲染器代理
+     * @param renderProxy 当前的渲染器代理
      */
     setRenderer(renderProxy: IRenderProxy): void {
         this.m_renderProxy = renderProxy;
@@ -98,10 +97,10 @@ class TextureBlock implements ITextureBlock{
         tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
     }
-    createImageTex2D(pw: number, ph: number, powerof2Boo: boolean = false): IImageTexture {
+    createImageTex2D(w: number = 64, h: number = 64, powerof2Boo: boolean = false): IImageTexture {
         let tex = this.m_texPool.getTexture(TextureProxyType.Image) as ImageTextureProxy;
         if (tex == null) {
-            tex = new ImageTextureProxy(pw, ph, powerof2Boo);
+            tex = new ImageTextureProxy(w, h, powerof2Boo);
         }
         tex.__$setRenderProxy(this.m_renderProxy);
         tex.mipmapEnabled = true;
@@ -135,52 +134,51 @@ class TextureBlock implements ITextureBlock{
     createFloatCubeTex(pw: number, ph: number, powerof2Boo: boolean = false): IFloatCubeTexture {
         return new FloatCubeTextureProxy(pw, ph);
     }
-    createBytesTex(texW: number, texH: number): IBytesTexture {
+    createBytesTex(w: number, h: number): IBytesTexture {
         let tex = this.m_texPool.getTexture(TextureProxyType.Bytes) as BytesTextureProxy;
         if (tex == null) {
-            tex = new BytesTextureProxy(texW, texH);
+            tex = new BytesTextureProxy(w, h);
         }
         tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
     }
 
-    createBytesCubeTex(texW: number, texH: number): IBytesCubeTexture {
-        let tex = new BytesCubeTextureProxy(texW, texH);
+    createBytesCubeTex(w: number, h: number): IBytesCubeTexture {
+        let tex = new BytesCubeTextureProxy(w, h);
         tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
     }
-    createImageCubeTex(texW: number, texH: number): IImageCubeTexture {
-        let tex = new ImageCubeTextureProxy(texW, texH);
+    createImageCubeTex(w: number = 64, h: number = 64): IImageCubeTexture {
+        let tex = new ImageCubeTextureProxy(w, h);
         tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
     }
-    createTex3D(texW: number, texH: number, depth: number = 1): ITexture3D {
+    createTex3D(w: number, h: number, depth: number = 1): ITexture3D {
         if (depth < 1) {
             depth = 1;
         }
-        let tex = new Texture3DProxy(texW, texH, depth);
+        let tex = new Texture3DProxy(w, h, depth);
         tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
     }
     createRGBATex2D(pw: number, ph: number, color: Color4): IBytesTexture {
         pw = pw > 1 ? pw : 1;
         ph = ph > 1 ? ph : 1;
-        let tot: number = pw * ph;
+        let tot = pw * ph;
         let tex = this.createBytesTex(pw, ph);
         let bytes: Uint8Array = new Uint8Array(tot * 4);
-        let pr: number = Math.round(color.r * 255.0);
-        let pg: number = Math.round(color.g * 255.0);
-        let pb: number = Math.round(color.b * 255.0);
-        let pa: number = Math.round(color.a * 255.0);
-        let k: number = 0;
+        let pr = Math.round(color.r * 255.0);
+        let pg = Math.round(color.g * 255.0);
+        let pb = Math.round(color.b * 255.0);
+        let pa = Math.round(color.a * 255.0);
+        let k = 0;
         let fs: number[] = [pr, pg, pb, pa];
-        for (let i: number = 0; i < tot; ++i) {
+        for (let i = 0; i < tot; ++i) {
             bytes.set(fs, k);
             k += 4;
         }
         tex.setDataFromBytes(bytes, 0, pw, ph, 0, 0, false);
         tex.__$setRenderProxy(this.m_renderProxy);
-        return tex;
         return tex;
     }
     createAlphaTex2D(pw: number, ph: number, alpha: number): IBytesTexture {

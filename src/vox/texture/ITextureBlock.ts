@@ -32,82 +32,90 @@ interface ITextureBlock {
     addTexLoader(texLoader: IRunnable): void
     
     /**
-     * 设置当前的渲染器
-     * @param renderProxy 当前的渲染器
+     * 设置当前的渲染器代理
+     * @param renderProxy 当前的渲染器代理
      */
     setRenderer(renderProxy: IRenderProxy): void
     
     getRTTStrore(): IRTTTextureStore;
     /**
-     * @param pw texture width
-     * @param ph texture height
+     * @param w texture width
+     * @param h texture height
      * @param powerof2Boo the default value is false
      */
-    createWrapperTex(pw: number, ph: number, powerof2Boo?: boolean): IWrapperTexture;
+    createWrapperTex(w: number, h: number, powerof2Boo?: boolean): IWrapperTexture;
     /**
-     * @param pw texture width
-     * @param ph texture height
+     * @param w texture width
+     * @param h texture height
      * @param powerof2Boo the default value is false
      */
-    createRTTTex2D(pw: number, ph: number, powerof2Boo?: boolean): IRTTTexture;
+    createRTTTex2D(w: number, h: number, powerof2Boo?: boolean): IRTTTexture;
     /**
-     * @param pw texture width
-     * @param ph texture height
+     * @param w image texture predefined width, the default value is 64 
+     * @param h image texture predefined height, the default value is 64 
      * @param powerof2Boo the default value is false
      */
-    createImageTex2D(pw: number, ph: number, powerof2Boo?: boolean): IImageTexture;
+    createImageTex2D(w?: number, h? : number, powerof2Boo?: boolean): IImageTexture;
 
-    createHalfFloatTex2D(pw: number, ph: number, powerof2Boo?: boolean): IFloatTexture;
+    createHalfFloatTex2D(w: number, h: number, powerof2Boo?: boolean): IFloatTexture;
     /**
-     * @param pw texture width
-     * @param ph texture height
+     * @param w texture width
+     * @param h texture height
      * @param powerof2Boo the default value is false
      */
-    createFloatTex2D(pw: number, ph: number, powerof2Boo?: boolean): IFloatTexture;
+    createFloatTex2D(w: number, h: number, powerof2Boo?: boolean): IFloatTexture;
     /**
-     * @param pw texture width
-     * @param ph texture height
+     * @param w texture width
+     * @param h texture height
      * @param powerof2Boo the default value is false
      */
-    createUint16Tex2D(pw: number, ph: number, powerof2Boo?: boolean): IUint16Texture;
+    createUint16Tex2D(w: number, h: number, powerof2Boo?: boolean): IUint16Texture;
     /**
-     * @param pw texture width
-     * @param ph texture height
+     * @param w texture width
+     * @param h texture height
      * @param powerof2Boo the default value is false
      */
-    createFloatCubeTex(pw: number, ph: number, powerof2Boo?: boolean): IFloatCubeTexture;
-    createBytesTex(texW: number, texH: number): IBytesTexture;
-
-    createBytesCubeTex(texW: number, texH: number): IBytesCubeTexture;
+    createFloatCubeTex(w: number, h: number, powerof2Boo?: boolean): IFloatCubeTexture;
     /**
-     * @param pw texture width
-     * @param ph texture height
+     * @param w texture width
+     * @param h texture height
      * @param powerof2Boo the default value is false
      */
-    createImageCubeTex(texW: number, texH: number): IImageCubeTexture;
+    createBytesTex(w: number, h: number): IBytesTexture;
+    /**
+     * @param w texture width
+     * @param h texture height
+     * @param powerof2Boo the default value is false
+     */
+    createBytesCubeTex(w: number, h: number): IBytesCubeTexture;
+    /**
+     * @param w image texture predefined width, the default value is 64 
+     * @param h image texture predefined height, the default value is 64
+     */
+    createImageCubeTex(w: number, h: number): IImageCubeTexture;
     /**
      * 
-     * @param texW texture width
-     * @param texH texture height
+     * @param w texture width
+     * @param h texture height
      * @param depth the default value is 1
      */
-    createTex3D(texW: number, texH: number, depth?: number): ITexture3D;
-    createRGBATex2D(pw: number, ph: number, color: IColor4): IBytesTexture;
-    createAlphaTex2D(pw: number, ph: number, alpha: number): IBytesTexture;
-    createAlphaTexBytes2D(pw: number, ph: number, bytes: Uint8Array): IBytesTexture;
+    createTex3D(w: number, h: number, depth?: number): ITexture3D;
+    createRGBATex2D(w: number, h: number, color: IColor4): IBytesTexture;
+    createAlphaTex2D(w: number, h: number, alpha: number): IBytesTexture;
+    createAlphaTexBytes2D(w: number, h: number, bytes: Uint8Array): IBytesTexture;
 
     /**
      * get a system cube rtt texture
      * @param i rtt texture index in the system
      */
     getCubeRTTTextureAt(i: number): IRTTTexture;
-    createCubeRTTTextureAt(i: number, pw: number, ph: number): IRTTTexture;
+    createCubeRTTTextureAt(i: number, w: number, h: number): IRTTTexture;
     getRTTTextureAt(i: number): IRTTTexture;
-    createRTTTextureAt(i: number, pw: number, ph: number): IRTTTexture;
+    createRTTTextureAt(i: number, w: number, h: number): IRTTTexture;
     getDepthTextureAt(i: number): IDepthTexture;
-    createDepthTextureAt(i: number, pw: number, ph: number): IDepthTexture;
+    createDepthTextureAt(i: number, w: number, h: number): IDepthTexture;
     getRTTFloatTextureAt(i: number): IRTTTexture;
-    createRTTFloatTextureAt(i: number, pw: number, ph: number): IRTTTexture;
+    createRTTFloatTextureAt(i: number, w: number, h: number): IRTTTexture;
     run(): void;
 
 }
