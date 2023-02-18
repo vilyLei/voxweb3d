@@ -73,7 +73,7 @@ export class DemoShaderMaterial {
 			console.log("createEntity(), model: ", model);
 			let material = CoMaterial.createShaderMaterial("model_shd");
 			material.setFragShaderCode(ShaderCode.frag_body);
-			material.setVtxShaderCode(ShaderCode.vert_body);
+			material.setVertShaderCode(ShaderCode.vert_body);
 			// material.addUniformDataAt("u_color",new Float32Array([1.0,1.0,1.0]));// 会出现神奇的边缘效果
 			// material.addUniformDataAt("u_color",new Float32Array([1.0,1.0,1.0, 0.0]));// 这样也会出现。实际上边缘颜色就是frag shader的输出颜色
 			material.addUniformDataAt("u_color", new Float32Array([1.0, 1.0, 1.0, 1.0]));

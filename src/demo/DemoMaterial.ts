@@ -63,7 +63,7 @@ v_uvs = a_uvs;
         this.m_uniformData = new Float32Array([0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]);
         let material: ShaderMaterial = new ShaderMaterial("testShaderMaterial");
         material.setFragShaderCode(fragCode);
-        material.setVtxShaderCode(vtxCode);
+        material.setVertShaderCode(vtxCode);
         material.addUniformDataAt("u_colors", this.m_uniformData);
 
         let cylinder: Cylinder3DEntity = new Cylinder3DEntity();

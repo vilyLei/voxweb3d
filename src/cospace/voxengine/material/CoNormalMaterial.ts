@@ -38,7 +38,7 @@ class CoNormalMaterial {
 		`
 				);
 			});
-			// material.setVtxShaderCode( this.m_nv_vertCode );
+			// material.setVertShaderCode( this.m_nv_vertCode );
 			// material.setFragShaderCode( this.m_nv_fragCode );
 			material.initializeByCodeBuf(textureEnabled);
 			this.material = material;

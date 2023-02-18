@@ -42,7 +42,7 @@ class RawCodeShaderBuffer extends ShaderCodeBuffer {
 		if (this.m_flag) return this.m_coder.buildFragCode();
 		return this.m_fragCode;
 	}
-	setVtxShaderCode(codeStr: string): void {
+	setVertShaderCode(codeStr: string): void {
 		this.m_vtxCode = codeStr;
 	}
 	getVertShaderCode(): string {
@@ -100,9 +100,9 @@ export default class ShaderMaterial extends MaterialBase implements IShaderMater
 		this.m_buffer.shaderBuilder = null;
 		this.m_buffer.setFragShaderCode(codeStr);
 	}
-	setVtxShaderCode(codeStr: string): void {
+	setVertShaderCode(codeStr: string): void {
 		this.m_buffer.shaderBuilder = null;
-		this.m_buffer.setVtxShaderCode(codeStr);
+		this.m_buffer.setVertShaderCode(codeStr);
 	}
 	/**
 	 * @param           uniform_name        the name of a uniform in the shader.

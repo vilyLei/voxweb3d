@@ -25,7 +25,7 @@ export default interface IShaderMaterial extends IRenderMaterial {
 	initializeByCodeBuf(textureEnabled?: boolean): void;
 	setShaderBuilder(shaderBuilder: (cshdCodeBuf: IShaderCodeBuffer) => void): void;
 	setFragShaderCode(codeStr: string): void;
-	setVtxShaderCode(codeStr: string): void;
+	setVertShaderCode(codeStr: string): void;
 	/**
 	 * @param           uniform_name        the name of a uniform in the shader.
 	 * @param           data                Float32Array type data stream,for example: vec4(Float32Array(4)),mat4(Float32Array(16))

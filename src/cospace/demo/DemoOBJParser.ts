@@ -385,7 +385,7 @@ void main() {
 			return this.m_nv_material;
 		}
 		let material = new ShaderMaterial("nv_material");
-		material.setVtxShaderCode(this.m_nv_vertCode);
+		material.setVertShaderCode(this.m_nv_vertCode);
 		material.setFragShaderCode(this.m_nv_fragCode);
 		material.initializeByCodeBuf();
 		this.m_nv_material = material;
