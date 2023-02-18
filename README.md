@@ -82,6 +82,6 @@ installation and running:
    第九步，在终端中运行 "yarn build" 命令打包js代码。
    step 9, run the "yarn build" command, it can build relevant js package.
 
-about:
+other infomation:
 
     1. You can find some demos in the src/main.ts file.
