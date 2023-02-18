@@ -55,7 +55,7 @@ class T_CoRScene {
 	private m_init = true;
 	private init(): void {
 
-		if(typeof CoRScene !== "undefined") {
+		if (typeof CoRScene !== "undefined") {
 			RendererDevice = CoRScene.RendererDevice;
 			SelectionEvent = CoRScene.SelectionEvent;
 			ProgressDataEvent = CoRScene.ProgressDataEvent;
@@ -65,8 +65,11 @@ class T_CoRScene {
 	}
 	initialize(callback: (urls: string[]) => void = null, url: string = ""): boolean {
 
-		this.init();
 		this.m_init = !this.isEnabled();
+		if (!this.m_init) {
+			VoxRenderer.initialize();
+			this.init();
+		}
 		if (this.m_init) {
 			this.m_init = false;
 			let flag = false;
@@ -84,6 +87,7 @@ class T_CoRScene {
 				url = "static/cospace/engine/rscene/CoRScene.umd.min.js";
 			}
 			new ModuleLoader(1, (): void => {
+				VoxRenderer.initialize();
 				this.init();
 				if (flag) {
 					total++;

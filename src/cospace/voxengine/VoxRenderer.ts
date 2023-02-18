@@ -18,11 +18,34 @@ declare var CoRenderer: ICoRenderer;
 
 interface I_CoRenderer {
 }
+var RenderDrawMode: IRenderDrawMode;
+var CullFaceMode: ICullFaceMode;
+var DepthTestMode: IDepthTestMode;
+var RenderBlendMode: IRenderBlendMode;
+var GLStencilFunc: IGLStencilFunc;
+var GLStencilOp: IGLStencilOp;
+var GLBlendMode: IGLBlendMode;
+var GLBlendEquation: IGLBlendEquation;
 
 class T_CoRenderer {
 
     private m_init = true;
+    private init(): void {
+
+        if (typeof CoRenderer !== "undefined") {
+
+            RenderDrawMode = CoRenderer.RenderDrawMode;
+            CullFaceMode = CoRenderer.CullFaceMode;
+            DepthTestMode = CoRenderer.DepthTestMode;
+            RenderBlendMode = CoRenderer.RenderBlendMode;
+            GLStencilFunc = CoRenderer.GLStencilFunc;
+            GLStencilOp = CoRenderer.GLStencilOp;
+            GLBlendMode = CoRenderer.GLBlendMode;
+            GLBlendEquation = CoRenderer.GLBlendEquation;
+        }
+    }
     initialize(callback: (urls: string[]) => void = null, url: string = ""): boolean {
+        this.init();
         this.m_init = !this.isEnabled();
         if (this.m_init) {
             this.m_init = false;
@@ -30,6 +53,7 @@ class T_CoRenderer {
                 url = "static/cospace/engine/renderer/CoRenderer.umd.min.js";
             }
             new ModuleLoader(1, (): void => {
+				this.init();
                 if (callback != null && this.isEnabled()) callback([url]);
             }).load(url);
 
@@ -78,4 +102,16 @@ class T_CoRenderer {
     }
 }
 const VoxRenderer = new T_CoRenderer();
-export { VoxRenderer }
+export {
+    RenderDrawMode,
+    CullFaceMode,
+    DepthTestMode,
+    RenderBlendMode,
+
+    GLStencilFunc,
+    GLStencilOp,
+    GLBlendMode,
+    GLBlendEquation,
+
+    VoxRenderer
+}
