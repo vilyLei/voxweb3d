@@ -8,7 +8,9 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import EventBase from "./EventBase";
-export default class MouseEvent extends EventBase {
+import IMouseEvent from "./IMouseEvent";
+
+export default class MouseEvent extends EventBase implements IMouseEvent {
     static EventClassType: number = 1002;
     constructor() {
         super();
