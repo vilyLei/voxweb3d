@@ -70,7 +70,7 @@ export class DemoSwapProcess {
             plane = new Plane3DEntity();
             plane.initializeXOZ(-200.0, -200.0, 400.0, 400.0, [tex1]);
             plane.setXYZ(80, -1, 80);
-            plane.name = "plane 0";
+            plane.uuid = "plane 0";
             this.m_rscene.addEntity(plane, 0);
             plane.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
             this.m_targets.push(plane);

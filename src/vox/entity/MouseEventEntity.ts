@@ -9,11 +9,11 @@ import IROTransform from "../../vox/display/IROTransform";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
+import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 
 export default class MouseEventEntity extends DisplayEntity implements IMouseEventEntity {
 
     protected m_dispatcher: MouseEvt3DDispatcher = null;
-    uuid: string = "";
     constructor(transform: IROTransform = null) {
         super(transform);
         this.initializeEvent();
@@ -37,6 +37,7 @@ export default class MouseEventEntity extends DisplayEntity implements IMouseEve
             this.setEvtDispatcher(this.m_dispatcher);
         }
     }
+    
     destroy(): void {
         super.destroy();
         this.m_dispatcher = null;

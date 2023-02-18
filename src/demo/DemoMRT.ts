@@ -81,7 +81,7 @@ export class DemoMRT
             boxMrt0.setXYZ(-150,0,-150);
             this.m_renderer.addEntity(boxMrt0, 1);
             let boxMrt1:Box3DEntity = new Box3DEntity();
-            boxMrt1.name = "boxMrt1";
+            boxMrt1.uuid = "boxMrt1";
             boxMrt1.initialize(new Vector3D(-boxSize,-boxSize,-boxSize),new Vector3D(boxSize,boxSize,boxSize),[this.m_texBlock.getRTTTextureAt(1)]);
             boxMrt1.setXYZ(150,0,150);
             this.m_renderer.addEntity(boxMrt1, 1);

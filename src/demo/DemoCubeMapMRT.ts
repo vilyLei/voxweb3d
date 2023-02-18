@@ -60,13 +60,13 @@ export class DemoCubeMapMRT {
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
             // add common 3d display entity
             var plane: Plane3DEntity = new Plane3DEntity();
-            plane.name = "plane";
+            plane.uuid = "plane";
             plane.setMaterial(new CubeMapMRTMaterial());
             plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [tex0]);
             this.m_renderer.addEntity(plane, 0);
 
             let box: Box3DEntity = new Box3DEntity();
-            box.name = "box";
+            box.uuid = "box";
             box.setMaterial(new CubeMapMRTMaterial());
             box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex1]);
             this.m_renderer.addEntity(box, 0);
@@ -74,7 +74,7 @@ export class DemoCubeMapMRT {
             // add rtt texture 3d display entity
             let boxCubeMapMRT: Box3DEntity = new Box3DEntity();
             boxCubeMapMRT.useGourandNormal();
-            boxCubeMapMRT.name = "boxCubeMapMRT";
+            boxCubeMapMRT.uuid = "boxCubeMapMRT";
             boxCubeMapMRT.setMaterial(new CubeMapMaterial());
             boxCubeMapMRT.initialize(new Vector3D(-80.0, -80.0, -80.0), new Vector3D(80.0, 80.0, 80.0), [this.m_texBlock.createCubeRTTTextureAt(0, 256, 256)]);
             this.m_renderer.addEntity(boxCubeMapMRT, 1);

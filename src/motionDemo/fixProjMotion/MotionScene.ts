@@ -46,12 +46,12 @@ class MotionScene {
         RendererState.CreateRenderState("transparent02", CullFaceMode.BACK, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
 
         let axis: Axis3DEntity = new Axis3DEntity();
-        axis.name = "axis_big";
+        axis.uuid = "axis_big";
         axis.initialize(500.0);
         this.m_renderer.addEntity(axis);
 
         let plane: Plane3DEntity = new Plane3DEntity();
-        plane.name = "plane";
+        plane.uuid = "plane";
         //plane.showDoubleFace();
         plane.initializeXOZ(-500, -500, 1000.0, 1000, [this.getTexAt(1)]);
         this.m_renderer.addEntity(plane, 0);
@@ -64,7 +64,7 @@ class MotionScene {
         let len: number = 5;
         for (; i < len; ++i) {
             box = new Box3DEntity();
-            box.name = "box_motion";
+            box.uuid = "box_motion";
             box.copyMeshFrom(this.m_srcBox);
             box.initializeCube(30,[this.getTexAt(0)]);
             box.setXYZ(Math.random() * 1000.0 - 500.0, 0, Math.random() * 1000.0 - 500.0);
@@ -72,7 +72,7 @@ class MotionScene {
             this.m_renderer.addEntity(box, 2);
 
             let shadow: Plane3DEntity = new Plane3DEntity();
-            shadow.name = "shadow";
+            shadow.uuid = "shadow";
             shadow.copyMeshFrom(this.m_srcShadow);
             shadow.setRenderStateByName("transparent02");
             shadow.initializeXOZ(-100, -100, 200.0, 200, [this.getTexAt(4)]);

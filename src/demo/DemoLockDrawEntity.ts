@@ -99,7 +99,7 @@ export class DemoLockDrawEntity
         for(i = 0; i < 2; ++i)
         {
             box = new Box3DEntity();
-            box.name = "box_"+i;
+            box.uuid = "box_"+i;
             if(srcBox != null)box.setMesh(srcBox.getMesh());
             box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
             box.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
@@ -109,7 +109,7 @@ export class DemoLockDrawEntity
         for(i = 0; i < 1; ++i)
         {
             let sphere:Sphere3DEntity = new Sphere3DEntity();
-            sphere.name = "sphere";
+            sphere.uuid = "sphere";
             sphere.initialize(50.0,15,15,[tex1]);
             sphere.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
             this.m_rscene.addEntity(sphere);
@@ -118,7 +118,7 @@ export class DemoLockDrawEntity
         for(i = 0; i < 2; ++i)
         {
             let cylinder:Cylinder3DEntity = new Cylinder3DEntity();
-            cylinder.name = "cylinder";
+            cylinder.uuid = "cylinder";
             cylinder.initialize(30,80,15,[tex0]);
             cylinder.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
             this.m_rscene.addEntity(cylinder);

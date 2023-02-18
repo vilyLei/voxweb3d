@@ -148,7 +148,7 @@ export class DemoMouseEvent {
             let ctrObj: DispCtrObj = null;
             for (i = 0; i < 8; ++i) {
                 let axis: Axis3DEntity = new Axis3DEntity();
-                axis.name = "axis_" + i;
+                axis.uuid = "axis_" + i;
                 axis.initialize(200.0 + Math.random() * 100.0);
                 this.useEvt(axis);
                 axis.setXYZ(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0);
@@ -170,7 +170,7 @@ export class DemoMouseEvent {
             let plane: Plane3DEntity = null;
             for (i = 0; i < 5; ++i) {
                 plane = new Plane3DEntity();
-                plane.name = "plane_" + i;
+                plane.uuid = "plane_" + i;
 
                 this.useEvt(plane);
 
@@ -195,7 +195,7 @@ export class DemoMouseEvent {
             let box: Box3DEntity = null;
             for (i = 0; i < 5; ++i) {
                 box = new Box3DEntity();
-                box.name = "box_" + i;
+                box.uuid = "box_" + i;
                 this.useEvt(box);
 
                 if (srcBox != null) box.setMesh(srcBox.getMesh());
@@ -215,7 +215,7 @@ export class DemoMouseEvent {
             let sph: Sphere3DEntity = null;
             for (i = 0; i < 5; ++i) {
                 sph = new Sphere3DEntity();
-                sph.name = "sphere_" + i;
+                sph.uuid = "sphere_" + i;
                 this.useEvt(sph);
                 sph.initialize(100, 20, 20, [tex1]);
                 if (total > 1) {
@@ -234,7 +234,7 @@ export class DemoMouseEvent {
 
         let ctrObj: DispCtrObj = new DispCtrObj();
         ctrObj.rscene = this.m_rscene;
-        ctrObj.name = disp.name;
+        ctrObj.name = disp.uuid;
         let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
         //dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,this,this.entityMouseDownListener);
         dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, ctrObj, ctrObj.mouseDownListener);

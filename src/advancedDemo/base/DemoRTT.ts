@@ -70,7 +70,7 @@ export namespace advancedDemo {
                     let plane: Plane3DEntity = null;
                     for (i = 0; i < 5; ++i) {
                         plane = new Plane3DEntity();
-                        plane.name = "plane_" + i;
+                        plane.uuid = "plane_" + i;
                         plane.showDoubleFace();
                         plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [tex0]);
                         plane.setXYZ(Math.random() * 3000.0 - 1500.0, Math.random() * 3000.0 - 1500.0, Math.random() * 2000.0 - 1000.0);
@@ -83,7 +83,7 @@ export namespace advancedDemo {
                     let box: Box3DEntity = null;
                     for (i = 0; i < total; ++i) {
                         box = new Box3DEntity();
-                        box.name = "box_" + i;
+                        box.uuid = "box_" + i;
                         if (srcBox != null) box.setMesh(srcBox.getMesh());
                         box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex1]);
                         if (total > 1) {
@@ -101,7 +101,7 @@ export namespace advancedDemo {
                     total = 5;
                     for (i = 0; i < total; ++i) {
                         sph = new Sphere3DEntity();
-                        sph.name = "sphere_" + i;
+                        sph.uuid = "sphere_" + i;
                         sph.initialize(100, 20, 20, [tex1]);
                         if (total > 1) {
                             sph.setXYZ(Math.random() * 2000.0 - 1000.0, Math.random() * 2000.0 - 1000.0, Math.random() * 2000.0 - 1000.0);

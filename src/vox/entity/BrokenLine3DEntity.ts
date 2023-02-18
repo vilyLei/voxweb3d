@@ -105,7 +105,4 @@ export default class BrokenLine3DEntity extends DisplayEntity {
         this.activeDisplay();
 
     }
-    toString(): string {
-        return "BrokenLine3DEntity(name=" + this.name + ",uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";
-    }
 }

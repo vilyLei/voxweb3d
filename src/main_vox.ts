@@ -168,7 +168,7 @@
 
 //  import {DemoOrtho as Demo} from "./demo/DemoOrtho";
 
-//  import {DemoMouseEvent as Demo} from "./demo/DemoMouseEvent";
+ import {DemoMouseEvent as Demo} from "./demo/DemoMouseEvent";
 
 //  import {DemoOrthoSubScene as Demo} from "./demo/DemoOrthoSubScene";
 
@@ -184,7 +184,7 @@
 
 //  import {DemoGLState as Demo} from "./demo/DemoGLState";
 
- import {DemoStencil as Demo} from "./demo/DemoStencil";
+//  import {DemoStencil as Demo} from "./demo/DemoStencil";
 
 //  import {DemoBlendMode as Demo} from "./demo/DemoBlendMode";
 

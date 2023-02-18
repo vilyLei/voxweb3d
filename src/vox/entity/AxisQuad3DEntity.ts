@@ -69,7 +69,4 @@ export default class AxisQuad3DEntity extends DisplayEntity {
         this.createMaterial();
         this.activeDisplay();
     }
-    toString(): string {
-        return "AxisQuad3DEntity(name=" + this.name + ",uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";
-    }
 }

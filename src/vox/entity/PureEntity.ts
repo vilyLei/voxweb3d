@@ -67,7 +67,7 @@ export default class PureEntity implements IDisplayEntity {
      */
     __$rseFlag: number = RSEntityFlag.DEFAULT;
 
-    name: string = "PureEntity";
+    uuid = "";
     // 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMask, 默认只会有摄像机裁剪
     spaceCullMask: SpaceCullingMask = SpaceCullingMask.CAMERA;
     // recorde a draw status
@@ -597,6 +597,6 @@ export default class PureEntity implements IDisplayEntity {
         this.m_matChanged = false;
     }
     toString(): string {
-        return "PureEntity(name=" + this.name + ",uid = " + this.m_uid + ", rseFlag = " + this.__$rseFlag + ")";
+        return "PureEntity(uuid=" + this.uuid + ",uid = " + this.m_uid + ", rseFlag = " + this.__$rseFlag + ")";
     }
 }

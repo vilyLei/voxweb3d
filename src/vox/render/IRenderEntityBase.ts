@@ -9,6 +9,8 @@
  * to be used in the renderer runtime
  */
 export default interface IRenderEntityBase {
+    
+    uuid: string;
     /**
      * mouse interaction enabled, the default value is false
      */

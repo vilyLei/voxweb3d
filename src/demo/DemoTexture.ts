@@ -69,13 +69,13 @@ export class DemoTexture {
             RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
 
             let axis: Axis3DEntity = new Axis3DEntity();
-            axis.name = "axis";
+            axis.uuid = "axis";
             axis.initialize(300.0);
             axis.setXYZ(100.0, 0.0, 100.0);
             this.m_renderer.addEntity(axis);
 
             let plane: Plane3DEntity = new Plane3DEntity();
-            plane.name = "plane";
+            plane.uuid = "plane";
             plane.showDoubleFace();
             plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [tex0]);
             this.m_renderer.addEntity(plane);
@@ -104,7 +104,7 @@ export class DemoTexture {
             let i: number = 0;
             for (; i < 15; ++i) {
                 let billboard: Billboard3DEntity = new Billboard3DEntity();
-                billboard.name = "billboard";
+                billboard.uuid = "billboard";
                 billboard.toBrightnessBlend();
                 billboard.initialize(100.0, 100.0, [tex2]);
                 billboard.setXYZ(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0);
@@ -117,11 +117,11 @@ export class DemoTexture {
             ///*
 
             axis = new Axis3DEntity();
-            axis.name = "axis";
+            axis.uuid = "axis";
             axis.initialize(600.0);
             this.m_renderer.addEntity(axis);
             axis = new Axis3DEntity();
-            axis.name = "axis";
+            axis.uuid = "axis";
             axis.initialize(50.0);
             axis.setXYZ(0, 300.0, 0);
             this.m_renderer.addEntity(axis);
@@ -131,7 +131,7 @@ export class DemoTexture {
             let box: Box3DEntity = null;
             for (i = 0; i < 2; ++i) {
                 box = new Box3DEntity();
-                box.name = "box_" + i;
+                box.uuid = "box_" + i;
                 box.setMesh(srcBox.getMesh());
                 box.initialize(null, null, [tex1]);
                 box.setXYZ(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0);
@@ -139,28 +139,28 @@ export class DemoTexture {
             }
             for (i = 0; i < 2; ++i) {
                 let sphere: Sphere3DEntity = new Sphere3DEntity();
-                sphere.name = "sphere";
+                sphere.uuid = "sphere";
                 sphere.initialize(50.0, 15, 15, [tex1]);
                 sphere.setXYZ(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0);
                 this.m_renderer.addEntity(sphere);
             }
 
             let axisB: Axis3DEntity = new Axis3DEntity();
-            axisB.name = "axisB";
+            axisB.uuid = "axisB";
             axisB.initialize(50.0);
             axisB.setXYZ(-300.0, 0.0, -300.0);
             this.m_renderer.addEntity(axisB);
 
             for (i = 0; i < 2; ++i) {
                 let cylinder: Cylinder3DEntity = new Cylinder3DEntity();
-                cylinder.name = "cylinder";
+                cylinder.uuid = "cylinder";
                 cylinder.initialize(30, 80, 15, [tex0]);
                 cylinder.setXYZ(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0);
                 this.m_renderer.addEntity(cylinder);
             }
 
             let axisC: Axis3DEntity = new Axis3DEntity();
-            axisC.name = "axisC";
+            axisC.uuid = "axisC";
             axisC.initialize(50.0);
             axisC.setXYZ(300.0, 0.0, 300.0);
             this.m_renderer.addEntity(axisC);

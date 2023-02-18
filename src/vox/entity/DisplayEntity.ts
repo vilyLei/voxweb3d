@@ -74,7 +74,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
      * 第30位位存放是否渲染运行时排序
      */
     __$rseFlag = RSEntityFlag.DEFAULT;
-    name = "DisplayEntity";
+    uuid = "";
     /**
      * 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMask, 默认只会有摄像机裁剪
      */
@@ -149,6 +149,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         return 0;
     }
     getEvtDispatcher(evtClassType: number): IEvtDispatcher {
+        if(this.uuid != "") this.m_eventDispatcher.uuid = this.uuid;
         return this.m_eventDispatcher;
     }
     setEvtDispatcher(evtDisptacher: IEvtDispatcher): void {
@@ -517,7 +518,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
                 if (this.getMesh() == null) {
                     this.__activeMesh(material);
                     //  // for debug
-                    this.m_display.name = this.name;
+                    this.m_display.uuid = this.uuid;
                 }
             }
         }
@@ -719,6 +720,6 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         this.m_pipeLine = null;
     }
     toString(): string {
-        return "DisplayEntity(name=" + this.name + ",uid = " + this.m_uid + ", rseFlag = " + this.__$rseFlag + ")";
+        return "DisplayEntity(uuid=" + this.uuid + ",uid = " + this.m_uid + ", rseFlag = " + this.__$rseFlag + ")";
     }
 }

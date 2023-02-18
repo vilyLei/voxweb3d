@@ -63,7 +63,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     // 父级, 不允许外面其他代码调用
     private __$parent: DisplayEntityContainer = null;
     private __$renderer: IRenderer = null;
-    name: string = "DisplayEntityContainer";
+    uuid = "";
     // mouse interaction enabled
     mouseEnabled: boolean = false;
     private m_entities: ITransformEntity[] = [];

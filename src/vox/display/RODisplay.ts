@@ -26,7 +26,7 @@ export default class RODisplay implements IRODisplay {
     // 只是持有引用不做任何管理操作
     private m_matFS32: Float32Array = null;
 
-    name: string = "RODisplay";
+    uuid = "";
     // render yes or no
     visible = true;
     ivsIndex = 0;
@@ -124,7 +124,7 @@ export default class RODisplay implements IRODisplay {
     }
 
     toString() {
-        return "RODisplay(name=" + this.name + ",uid=" + this.getUid() + ", __$ruid=" + this.__$ruid + ")";
+        return "RODisplay(uuid=" + this.uuid + ",uid=" + this.getUid() + ", __$ruid=" + this.__$ruid + ")";
     }
 
     private destroy(): void {

@@ -63,14 +63,14 @@ export class DemoParticleClips {
             this.m_statusDisp.initialize();
             ///*
             let axis: Axis3DEntity = new Axis3DEntity();
-            axis.name = "axis";
+            axis.uuid = "axis";
             axis.initialize(100.0);
             axis.setXYZ(100.0, 0.0, 100.0);
             this.m_rscene.addEntity(axis);
             this.m_axis = axis;
 
             axis = new Axis3DEntity();
-            axis.name = "axis";
+            axis.uuid = "axis";
             axis.initialize(600.0);
             this.m_rscene.addEntity(axis);
 

@@ -156,7 +156,4 @@ export default class DashedLine3DEntity extends DisplayEntity {
         this.activeDisplay();
 
     }
-    toString(): string {
-        return "DashedLine3DEntity(name=" + this.name + ",uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";
-    }
 }

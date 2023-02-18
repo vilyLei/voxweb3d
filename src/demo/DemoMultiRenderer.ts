@@ -91,7 +91,7 @@ class DemoSRIns
             this.m_rscene.addEntity(cylinder);
 
             let scrPlane: ScreenFixedAlignPlaneEntity = new ScreenFixedAlignPlaneEntity();
-            scrPlane.name = "scrPlane";
+            scrPlane.uuid = "scrPlane";
             scrPlane.showDoubleFace(true,false);
             scrPlane.initialize(-0.2,-0.2,0.5,0.5);
             (scrPlane.getMaterial() as any).setRGB3f(Math.random() + 0.1, Math.random() + 0.1, Math.random() + 0.1);

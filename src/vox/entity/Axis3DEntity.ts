@@ -117,7 +117,4 @@ export default class Axis3DEntity extends DisplayEntity {
         this.activeDisplay();
 
     }
-    toString(): string {
-        return "Axis3DEntity(name=" + this.name + ",uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";
-    }
 }

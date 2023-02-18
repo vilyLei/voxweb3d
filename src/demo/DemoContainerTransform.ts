@@ -93,7 +93,7 @@ export class DemoContainerTransform {
     private createPlane(): void {
 
         let plane: Plane3DEntity = new Plane3DEntity();
-        plane.name = "plane001";
+        plane.uuid = "plane001";
         plane.showDoubleFace();
         plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
         this.m_container.addEntity(plane);

@@ -64,12 +64,12 @@ export namespace demo {
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
                 // add common 3d display entity
                 var plane: Plane3DEntity = new Plane3DEntity();
-                plane.name = "plane";
+                plane.uuid = "plane";
                 plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [tex0]);
                 this.m_renderer.addEntity(plane);
 
                 //  let axis:Axis3DEntity = new Axis3DEntity();
-                //  axis.name = "axis";
+                //  axis.uuid = "axis";
                 //  axis.initialize(300.0);
                 //  this.m_renderer.addEntity(axis);
 

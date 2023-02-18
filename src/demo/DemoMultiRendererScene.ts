@@ -74,7 +74,7 @@ class LeftScene {
         let box: Box3DEntity;
         for (i = 0; i < 1; ++i) {
             box = new Box3DEntity();
-            box.name = "box_" + i;
+            box.uuid = "box_" + i;
             box.initialize(new Vector3D(-50.0, -50.0, -50.0), new Vector3D(50.0, 50.0, 5.0), [tex1]);
             box.setXYZ(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0);
             this.m_rendererScene.addEntity(box);
@@ -84,7 +84,7 @@ class LeftScene {
         let sphere: Sphere3DEntity;
         for (i = 0; i < 1; ++i) {
             sphere = new Sphere3DEntity();
-            sphere.name = "sphere_" + i;
+            sphere.uuid = "sphere_" + i;
             sphere.initialize(110.0, 15, 15, [tex0]);
             sphere.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
             this.m_rendererScene.addEntity(sphere);
@@ -121,7 +121,7 @@ class RightScene {
         let box: Box3DEntity;
         for (i = 0; i < 1; ++i) {
             box = new Box3DEntity();
-            box.name = "box_" + i;
+            box.uuid = "box_" + i;
             box.initialize(new Vector3D(-50.0, -50.0, -50.0), new Vector3D(50.0, 50.0, 5.0), [tex2]);
             box.setXYZ(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0);
             this.m_rendererScene.addEntity(box);
@@ -131,7 +131,7 @@ class RightScene {
         let sphere: Sphere3DEntity;
         for (i = 0; i < 1; ++i) {
             sphere = new Sphere3DEntity();
-            sphere.name = "sphere_" + i;
+            sphere.uuid = "sphere_" + i;
             sphere.initialize(110.0, 15, 15, [tex1]);
             sphere.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
             this.m_rendererScene.addEntity(sphere);

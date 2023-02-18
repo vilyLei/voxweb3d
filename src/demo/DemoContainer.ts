@@ -76,7 +76,7 @@ export class DemoContainer {
             let i: number = 0;
 
             let plane: Plane3DEntity = new Plane3DEntity();
-            plane.name = "plane";
+            plane.uuid = "plane";
             plane.showDoubleFace();
             plane.initializeXOZ(-300.0, -300.0, 600.0, 600.0, [tex0]);
 
@@ -96,7 +96,7 @@ export class DemoContainer {
             this.m_containerMain = containerB;
 
             let axisEntity: Axis3DEntity = new Axis3DEntity();
-            axisEntity.name = "axisEntity";
+            axisEntity.uuid = "axisEntity";
             axisEntity.initialize(30.0);
             //axisEntity.setXYZ(200.0,10.0,150.0);
             //container.addEntity(axisEntity);
@@ -104,13 +104,13 @@ export class DemoContainer {
             this.m_followEntity = axisEntity;
 
             let axis: Axis3DEntity = new Axis3DEntity();
-            axis.name = "axis";
+            axis.uuid = "axis";
             axis.initialize(300.0);
             axis.setXYZ(100.0, 100.0, 100.0);
             this.m_rscene.addEntity(axis);
 
             axis = new Axis3DEntity();
-            axis.name = "axis";
+            axis.uuid = "axis";
             axis.initialize(600.0);
             this.m_rscene.addEntity(axis);
 

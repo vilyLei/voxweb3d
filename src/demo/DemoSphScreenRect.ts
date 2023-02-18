@@ -66,7 +66,7 @@ export class DemoSphScreenRect {
             let stage = this.m_rscene.getStage3D();
 
             let axis: Axis3DEntity = new Axis3DEntity();
-            axis.name = "axis";
+            axis.uuid = "axis";
             axis.initialize(300.0);
             this.m_rscene.addEntity(axis);
             let pv: Vector3D = new Vector3D();

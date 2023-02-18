@@ -107,7 +107,4 @@ export default class FrustrumFrame3DEntity extends DisplayEntity {
     destroy(): void {
         this.m_camera = null;
     }
-    toString(): string {
-        return "FrustrumFrame3DEntity(name=" + this.name + ",uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";
-    }
 }

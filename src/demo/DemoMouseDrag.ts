@@ -61,7 +61,7 @@ class DispCtrObj {
         }
     }
     mouseOverListener(evt: any): void {
-        //console.log(this.name+", mouse over. this.m_frameDisp != null: "+(this.m_frameDisp != null));
+        //console.log(this.uuid+", mouse over. this.m_frameDisp != null: "+(this.m_frameDisp != null));
         if (!DispCtrObj.Draging) {
             this.createDisp(evt);
             if (this.m_frameDisp != null) {
@@ -70,7 +70,7 @@ class DispCtrObj {
         }
     }
     mouseOutListener(evt: any): void {
-        //console.log(this.name+", mouse out. this.m_frameDisp != null: "+(this.m_frameDisp != null));
+        //console.log(this.uuid+", mouse out. this.m_frameDisp != null: "+(this.m_frameDisp != null));
         if (this.m_frameDisp != null) {
             this.m_frameDisp.setVisible(false);
         }
@@ -197,7 +197,7 @@ export class DemoMouseDrag {
                 // axis.initialize(400.0);
                 // axis.setXYZ(200,50,100);
                 this.m_rscene.addEntity(axis);
-                axis.name = "axis_" + i;
+                axis.uuid = "axis_" + i;
                 this.useEvt(axis);
 
             }

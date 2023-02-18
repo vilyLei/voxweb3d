@@ -71,7 +71,7 @@ class EntityManager {
         let box: Box3DEntity = null;
         for (i = 0; i < 100; ++i) {
             box = new Box3DEntity();
-            box.name = "box_" + i;
+            box.uuid = "box_" + i;
             box.setMesh(sreBox.getMesh());
             box.initialize(new Vector3D(-boxSize, -boxSize, -boxSize), new Vector3D(boxSize, boxSize, boxSize), [texList[Math.floor(texList.length * Math.random())]]);
             box.setScaleXYZ(Math.random() + 0.8, Math.random() + 0.8, Math.random() + 0.8);
@@ -84,7 +84,7 @@ class EntityManager {
         srcBillboard.initialize(300.0, 300.0, [billTexList[0]]);
         for (i = 0; i < 150; ++i) {
             billboard = new Billboard3DEntity();
-            billboard.name = "billboard_" + i;
+            billboard.uuid = "billboard_" + i;
             billboard.setRenderStateByName("ADD01");
             billboard.setMesh(srcBillboard.getMesh());
             billboard.initialize(200.0, 200.0, [billTexList[Math.floor(texList.length * Math.random())]]);

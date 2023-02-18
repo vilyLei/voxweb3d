@@ -69,14 +69,14 @@ class DepthBlur {
         this.m_scrDepMaterial.__$attachThis();
 
         let scrColorPlane: Plane3DEntity = new Plane3DEntity();
-        scrColorPlane.name = "scrColorPlane";
+        scrColorPlane.uuid = "scrColorPlane";
         scrColorPlane.flipVerticalUV = true;
         scrColorPlane.setMaterial(new ScreenPlaneMaterial());
         scrColorPlane.initializeFixScreen([this.m_colorFbo.getRTTAt(0)]);
         renderer.addEntity(scrColorPlane, this.m_blurSrcProcess.getRPIndex());
 
         let resultPlane: Plane3DEntity = new Plane3DEntity();
-        resultPlane.name = "resultPlane";
+        resultPlane.uuid = "resultPlane";
         resultPlane.setMaterial(new ScrDepBlurMaterial());
         resultPlane.initializeFixScreen(
             [

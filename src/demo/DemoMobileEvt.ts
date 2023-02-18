@@ -205,7 +205,7 @@ export class DemoMobileEvt {
             ///*
             for (i = 0; i < 2; ++i) {
                 let box: Box3DEntity = new Box3DEntity();
-                box.name = "box_" + i;
+                box.uuid = "box_" + i;
                 box.setMesh(srcBox.getMesh());
                 box.setMaterial(srcBox.getMaterial());
                 box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex1]);
@@ -217,7 +217,7 @@ export class DemoMobileEvt {
             }
             for (i = 0; i < 2; ++i) {
                 let sph: Sphere3DEntity = new Sphere3DEntity();
-                sph.name = "sph_" + i;
+                sph.uuid = "sph_" + i;
                 sph.initialize(150, 20, 20, [tex1]);
                 sph.setXYZ(800 * Math.random() - 400.0, 800 * Math.random() - 400.0, 800 * Math.random() - 400.0);
                 this.useEntityEvtDispatcher(sph);
@@ -228,7 +228,7 @@ export class DemoMobileEvt {
             // container mouse event test
             for (i = 0; i < 2; ++i) {
                 let box: Box3DEntity = new Box3DEntity();
-                box.name = "box_" + i * 10;
+                box.uuid = "box_" + i * 10;
                 box.setMesh(srcBox.getMesh());
                 box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex0]);
                 box.setXYZ(400.0 * (i - 1), 0, 300);
@@ -238,7 +238,7 @@ export class DemoMobileEvt {
                 let container: DisplayEntityContainer = new DisplayEntityContainer();
                 container.addEntity(box);
                 box = new Box3DEntity();
-                box.name = "box_" + i*10+1;
+                box.uuid = "box_" + i*10+1;
                 box.setMesh(srcBox.getMesh());
                 box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex2]);
                 box.setXYZ(400.0 * (i - 1), 0, 450);
@@ -272,7 +272,7 @@ export class DemoMobileEvt {
     }
     private useEntityEvtDispatcher(entity: DisplayEntity, frameBoo: boolean = false): void {
         let ctrObj: DispCtrObj = new DispCtrObj();
-        ctrObj.name = entity.name + "_entity";
+        ctrObj.name = entity.uuid + "_entity";
         ctrObj.rscene = this.m_rscene;
         let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
         dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, ctrObj, ctrObj.mouseDownListener);
@@ -292,7 +292,7 @@ export class DemoMobileEvt {
     private m_containerIndex: number = 0;
     private useContainerEvtDispatcher(entity: DisplayEntityContainer, frameBoo: boolean = false): void {
         let ctrObj: DispCtrObj = new DispCtrObj();
-        ctrObj.name = entity.name + "_container_" + this.m_containerIndex++;
+        ctrObj.name = entity.uuid + "_container_" + this.m_containerIndex++;
         ctrObj.rscene = this.m_rscene;
         let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
         dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, ctrObj, ctrObj.mouseDownListener);

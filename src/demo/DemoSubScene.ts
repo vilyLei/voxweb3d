@@ -57,13 +57,13 @@ class DispCtrObj {
     }
     mouseOverListener(evt: any): void {
         this.createDisp(evt);
-        //console.log(this.name+", mouse over. this.m_frameDisp != null: "+(this.m_frameDisp != null));
+        //console.log(this.uuid+", mouse over. this.m_frameDisp != null: "+(this.m_frameDisp != null));
         if (this.m_frameDisp != null) {
             this.m_frameDisp.setVisible(true);
         }
     }
     mouseOutListener(evt: any): void {
-        //console.log(this.name+", mouse out. this.m_frameDisp != null: "+(this.m_frameDisp != null));
+        //console.log(this.uuid+", mouse out. this.m_frameDisp != null: "+(this.m_frameDisp != null));
         if (this.m_frameDisp != null) {
             this.m_frameDisp.setVisible(false);
         }
@@ -200,8 +200,8 @@ export class DemoSubScene {
                 axis.setScaleXYZ((Math.random() + 0.8) * scaleK, (Math.random() + 0.8) * scaleK, (Math.random() + 0.8) * scaleK);
                 axis.setRotationXYZ(Math.random() * 500.0, Math.random() * 500.0, Math.random() * 500.0);
                 this.m_rscene.addEntity(axis);
-                axis.name = "axis_" + i;
-                ctrObj.name = axis.name;
+                axis.uuid = "axis_" + i;
+                ctrObj.name = axis.uuid;
                 let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
                 dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, ctrObj, ctrObj.mouseDownListener);
                 dispatcher.addEventListener(MouseEvent.MOUSE_UP, ctrObj, ctrObj.mouseUpListener);
@@ -223,8 +223,8 @@ export class DemoSubScene {
                 ctrObj = new DispCtrObj();
                 ctrObj.rscene = this.m_rscene;
                 plane = new Plane3DEntity();
-                plane.name = "plane_" + i;
-                ctrObj.name = plane.name;
+                plane.uuid = "plane_" + i;
+                ctrObj.name = plane.uuid;
                 let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
                 dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, ctrObj, ctrObj.mouseDownListener);
                 dispatcher.addEventListener(MouseEvent.MOUSE_UP, ctrObj, ctrObj.mouseUpListener);
@@ -243,8 +243,8 @@ export class DemoSubScene {
                 plane = new Plane3DEntity();
                 //  ctrObj = new DispCtrObj();
                 //  ctrObj.rscene = this.m_rscene;
-                //  plane.name = "plane_"+i;
-                //  ctrObj.name = plane.name;
+                //  plane.uuid = "plane_"+i;
+                //  ctrObj.uuid = plane.uuid;
                 //  let dispatcher:MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
                 //  dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,ctrObj,ctrObj.mouseDownListener);
                 //  dispatcher.addEventListener(MouseEvent.MOUSE_UP,ctrObj,ctrObj.mouseUpListener);
@@ -268,8 +268,8 @@ export class DemoSubScene {
                 ctrObj = new DispCtrObj();
                 ctrObj.rscene = this.m_rscene;
                 box = new Box3DEntity();
-                box.name = "box_" + i;
-                ctrObj.name = box.name;
+                box.uuid = "box_" + i;
+                ctrObj.name = box.uuid;
                 let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
                 //dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,this,this.entityMouseDownListener);
                 dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, ctrObj, ctrObj.mouseDownListener);
@@ -301,8 +301,8 @@ export class DemoSubScene {
                 ctrObj = new DispCtrObj();
                 ctrObj.rscene = this.m_rscene;
                 sph = new Sphere3DEntity();
-                sph.name = "sphere_" + i;
-                ctrObj.name = sph.name;
+                sph.uuid = "sphere_" + i;
+                ctrObj.name = sph.uuid;
                 let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
                 //dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,this,this.entityMouseDownListener);
                 dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, ctrObj, ctrObj.mouseDownListener);

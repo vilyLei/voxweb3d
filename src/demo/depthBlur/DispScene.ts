@@ -63,14 +63,14 @@ class DispScene {
         let renderer: RendererInstance = this.m_renderer;
         this.m_scrDepMaterial.__$attachThis();
         let scrColorPlane: Plane3DEntity = new Plane3DEntity();
-        scrColorPlane.name = "scrColorPlane";
+        scrColorPlane.uuid = "scrColorPlane";
         //scrColorPlane.flipVerticalUV = true;
         scrColorPlane.setMaterial(new ScreenPlaneMaterial());
         scrColorPlane.initializeXOY(-1.0, -1.0, 2.0, 2.0, [this.getTextureAt(1)]);
         renderer.addEntity(scrColorPlane, 2);
 
         let scrPlane: Plane3DEntity = new Plane3DEntity();
-        scrPlane.name = "scrPlane";
+        scrPlane.uuid = "scrPlane";
         scrPlane.setMaterial(new ScrDepBlurMaterial());
         scrPlane.initializeXOY(-1.0, -1.0, 2.0, 2.0, [this.m_blurModule.getDstTexture(), this.getTextureAt(0), this.getTextureAt(1)]);
         renderer.addEntity(scrPlane, 4);

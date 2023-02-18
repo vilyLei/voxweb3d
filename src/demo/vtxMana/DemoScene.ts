@@ -105,7 +105,7 @@ class DemoScene {
         for (i = 0; i < 1; ++i) {
             box = new Box3DEntity();
             this.m_boxEntity = box;
-            box.name = "box_" + i;
+            box.uuid = "box_" + i;
             if (this.m_srcBoxEntity != null) box.copyMeshFrom(this.m_srcBoxEntity);
             box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [this.getdefaultTexAt(0)]);
             box.setXYZ(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0);
@@ -121,7 +121,7 @@ class DemoScene {
         //this.m_renderer.addEntity( this.m_billMeshSrc0Entity );
 
         let axis: Axis3DEntity = new Axis3DEntity();
-        axis.name = "axis";
+        axis.uuid = "axis";
         axis.initialize(300.0);
         axis.setXYZ(100.0, 0.0, 100.0);
         this.m_renderer.addEntity(axis);
@@ -190,7 +190,7 @@ class DemoScene {
                         box.setMesh(this.m_mesh);
                     }
                     this.m_boxEntity = box;
-                    box.name = "box_" + i;
+                    box.uuid = "box_" + i;
                     if (this.m_srcBoxEntity != null) box.copyMeshFrom(this.m_srcBoxEntity);
                     box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [this.getdefaultTexAt(0)]);
                     box.setXYZ(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0);

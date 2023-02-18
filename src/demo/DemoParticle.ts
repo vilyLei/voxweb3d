@@ -61,13 +61,13 @@ export class DemoParticle {
             RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
 
             let axis: Axis3DEntity = new Axis3DEntity();
-            axis.name = "axis";
+            axis.uuid = "axis";
             axis.initialize(300.0);
             axis.setXYZ(100.0, 100.0, 100.0);
             this.m_rscene.addEntity(axis);
 
             axis = new Axis3DEntity();
-            axis.name = "axis";
+            axis.uuid = "axis";
             axis.initialize(600.0);
             this.m_rscene.addEntity(axis);
 

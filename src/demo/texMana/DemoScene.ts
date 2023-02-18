@@ -91,7 +91,7 @@ class DemoScene {
         this.m_billMeshSrc0Entity.initialize(100.0, 100.0, [this.m_texBlock.createRGBATex2D(16, 16, new Color4(1.0, 0.0, 1.0))]);
 
         let axis: Axis3DEntity = new Axis3DEntity();
-        axis.name = "axis";
+        axis.uuid = "axis";
         axis.initialize(300.0);
         axis.setXYZ(100.0, 0.0, 100.0);
         this.m_renderer.addEntity(axis);

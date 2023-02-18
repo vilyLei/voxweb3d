@@ -198,7 +198,7 @@ export namespace demo
                     dispatcher = new MouseEvt3DDispatcher();
                     dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,ctrObj,ctrObj.mouseDownListener);
                     plane.setEvtDispatcher(dispatcher);
-                    plane.name = "plane";
+                    plane.uuid = "plane";
                     plane.showDoubleFace();
                     plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
                     plane.setXYZ(Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0);

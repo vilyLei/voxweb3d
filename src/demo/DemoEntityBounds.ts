@@ -97,7 +97,7 @@ export class DemoEntityBounds {
             this.initTex();
             
             let axis: Axis3DEntity = new Axis3DEntity();
-            axis.name = "followAxis";
+            axis.uuid = "followAxis";
             axis.initialize(50.0);
             axis.setXYZ(0, 300.0, 0);
             this.m_rscene.addEntity(axis);
@@ -285,7 +285,7 @@ export class DemoEntityBounds {
         this.m_rscene.addEntity(this.m_targetEntity0);
 
         this.m_targetEntity2 = box2;
-        this.m_mainContainer.name = "main";
+        this.m_mainContainer.uuid = "main";
         this.m_mainContainer.addEntity(this.m_targetEntity2);
         this.m_rscene.addEntity(this.m_targetEntity2);
 

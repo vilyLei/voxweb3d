@@ -303,7 +303,7 @@ export namespace demo {
                 let material:CubeMapMaterial = new CubeMapMaterial();
                 //material.setScale(755.0);
                 let box:Box3DEntity = new Box3DEntity();
-                box.name = "box";
+                box.uuid = "box";
                 box.useGourandNormal();
                 //box.setMaterial(material);
                 //box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[cubeTex0]);
@@ -393,7 +393,7 @@ export namespace demo {
             let material: FloatCubeMapMaterial = new FloatCubeMapMaterial();
             //material.setScale(1.0);
             let box: Box3DEntity = new Box3DEntity();
-            box.name = "box";
+            box.uuid = "box";
             box.useGourandNormal();
             box.setMaterial(material);
             box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex]);
