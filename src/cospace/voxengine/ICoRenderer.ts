@@ -1,7 +1,7 @@
 import { IRendererInstance } from "../../vox/scene/IRendererInstance";
 import { CoRendererDevice } from "./render/CoRendererDevice";
 import { CoRendererState } from "./render/CoRendererState";
-interface RenderDrawMode {
+interface IRenderDrawMode {
     ELEMENTS_TRIANGLES: number;// = 1;
     ELEMENTS_TRIANGLE_STRIP: number;// = 2;
     ELEMENTS_TRIANGLE_FAN: number;// = 3;
@@ -13,7 +13,7 @@ interface RenderDrawMode {
     DISABLE: number;// = 0;
 }
 
-interface RenderBlendMode {
+interface IRenderBlendMode {
     NORMAL: number;// = 1;
     OPAQUE: number;// = 1;
     TRANSPARENT: number;// = 2;
@@ -37,7 +37,7 @@ interface RenderBlendMode {
  * gl.GEQUAL:          Pass if (ref & mask) >= (stencil & mask).
  * gl.ALWAYS:          Always pass.
  */
-interface GLStencilFunc {
+interface IGLStencilFunc {
     NEVER: number;// = 1;
     LESS: number;// = 1;
     EQUAL: number;// = 1;
@@ -56,7 +56,7 @@ interface GLStencilFunc {
  * gl.DECR_WRAP         Decrements the current stencil buffer value. Wraps stencil buffer value to the maximum representable unsigned value when decrementing a stencil buffer value of 0.
  * gl.INVERT            Inverts the current stencil buffer value bitwise.
  */
-interface GLStencilOp {
+interface IGLStencilOp {
     KEEP: number;// = 1;
     ZERO: number;// = 1;
     REPLACE: number;// = 1;
@@ -66,7 +66,7 @@ interface GLStencilOp {
     DECR_WRAP: number;// = 1;
     INVERT: number;// = 1;
 }
-interface GLBlendMode {
+interface IGLBlendMode {
     ZERO: number;// = 1;
     ONE: number;// = 1;
     SRC_COLOR: number;// = 1;
@@ -75,7 +75,7 @@ interface GLBlendMode {
     DST_ALPHA: number;// = 1;
     ONE_MINUS_SRC_ALPHA: number;// = 1;
 }
-interface GLBlendEquation {
+interface IGLBlendEquation {
     FUNC_ADD: number;// = 1;
     FUNC_SUBTRACT: number;// = 1;
     FUNC_REVERSE_SUBTRACT: number;// = 1;
@@ -84,14 +84,14 @@ interface GLBlendEquation {
     MIN: number;// = 1;
     MAX: number;// = 1;
 }
-interface CullFaceMode {
+interface ICullFaceMode {
     BACK: number;// = 1;
     FRONT: number;// = 2;
     FRONT_AND_BACK: number;// = 3;
     NONE: number;// = 0;
     DISABLE: number;// = 0;
 }
-interface DepthTestMode {
+interface IDepthTestMode {
     NEVER: number;// = 1;
     //glDepthMask(false); glDepthFunc(GL_ALWAYS);
     ALWAYS: number;// = 2;
@@ -129,18 +129,18 @@ interface DepthTestMode {
 }
 interface ICoRenderer {
 
-	RenderDrawMode: RenderDrawMode,
-	CullFaceMode: CullFaceMode,
-	DepthTestMode: DepthTestMode,
-	RenderBlendMode: RenderBlendMode,
+	RenderDrawMode: IRenderDrawMode,
+	CullFaceMode: ICullFaceMode,
+	DepthTestMode: IDepthTestMode,
+	RenderBlendMode: IRenderBlendMode,
 
-	GLStencilFunc: GLStencilFunc,
-	GLStencilOp: GLStencilOp,
-	GLBlendMode: GLBlendMode,
-	GLBlendEquation: GLBlendEquation,
+	GLStencilFunc: IGLStencilFunc,
+	GLStencilOp: IGLStencilOp,
+	GLBlendMode: IGLBlendMode,
+	GLBlendEquation: IGLBlendEquation,
 
 	RendererDevice: CoRendererDevice;
 	RendererState: CoRendererState;
 	createRendererInstance(): IRendererInstance;
 }
-export { ICoRenderer }
+export { IRenderDrawMode,ICullFaceMode,IDepthTestMode,IRenderBlendMode,IGLStencilFunc,IGLStencilOp,IGLBlendMode,IGLBlendEquation, ICoRenderer }
