@@ -24,6 +24,8 @@ import { EntityLayouter } from "../../../vox/utils/EntityLayouter";
 import IRendererSceneGraphStatus from "../../../vox/scene/IRendererSceneGraphStatus";
 
 import { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../../../orthoui/usage/ParamCtrlUI";
+import RectPlaneMesh from "../../../vox/mesh/RectPlaneMesh";
+import RendererState from "../../../vox/render/RendererState";
 
 export class BakeExample {
 
@@ -51,7 +53,7 @@ export class BakeExample {
         return ptex;
     }
     private initSys(): void {
-        
+
         // 阻止右键
         document.oncontextmenu = function (e) {
             e.preventDefault();
@@ -81,8 +83,31 @@ export class BakeExample {
             this.m_rscene = this.m_graph.createScene(rparam, 4);
 
             this.initSys();
-            this.initModel();
+            // this.initModel();
+            this.init3DScene();
         }
+    }
+    private init3DScene(): void {
+        let material = new BakeMaterial();
+        material.setTextureList([
+            this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
+        ]);
+
+        material.initializeByCodeBuf(true);
+        
+        let mesh = new RectPlaneMesh();
+        mesh.axisFlag = 1;
+        mesh.setBufSortFormat(material.getBufSortFormat());
+        
+        mesh.initialize(-250, -250, 500, 500);
+
+        let entity = new DisplayEntity();
+        entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        entity.setMesh(mesh);
+        entity.setMaterial(material);
+
+        this.m_rscene.addEntity(entity);
+
     }
     private initUI(): void {
 
@@ -112,7 +137,7 @@ export class BakeExample {
             entity0.update();
         });
         ui.addValueItem("Y轴移动-B", "move-b", 0, -300, 300, (info: CtrlInfo): void => {
-            
+
             let pv = new Vector3D();
             entity1.getPosition(pv);
             pv.y = info.values[0];
@@ -156,7 +181,7 @@ export class BakeExample {
                 // for automatically fitting the model size in the scene
                 this.m_layouter.layoutUpdate();
 
-                this.initUI();
+                // this.initUI();
 
             });
 
@@ -222,10 +247,10 @@ export class BakeExample {
         /**
          * 直接同步参数数据到UI和控制对象
          */
-        let item = this.m_ctrlui.getItemByUUID("move-b");
-        item.param.value = 50;
-        item.syncEnabled = true;
-        item.updateParamToUI();
+        // let item = this.m_ctrlui.getItemByUUID("move-b");
+        // item.param.value = 50;
+        // item.syncEnabled = true;
+        // item.updateParamToUI();
     }
 
     private m_timeoutId: any = -1;

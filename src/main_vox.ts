@@ -168,7 +168,7 @@
 
 //  import {DemoOrtho as Demo} from "./demo/DemoOrtho";
 
- import {DemoMouseEvent as Demo} from "./demo/DemoMouseEvent";
+//  import {DemoMouseEvent as Demo} from "./demo/DemoMouseEvent";
 
 //  import {DemoOrthoSubScene as Demo} from "./demo/DemoOrthoSubScene";
 
@@ -453,7 +453,7 @@
 //////////////////////////////     rapp    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {BakeExample as Demo} from "./bake/demo/bakeDiffuse/BakeExample";
+ import {BakeExample as Demo} from "./bake/demo/bakeDiffuse/BakeExample";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////     distributed runtime     ////////////s//////////////
