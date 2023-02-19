@@ -88,17 +88,17 @@ export class BakeExample {
         }
     }
     private init3DScene(): void {
+
         let material = new BakeMaterial();
         material.setTextureList([
-            this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
+            this.getTexByUrl("static/assets/color_02.jpg"),
+            this.getTexByUrl("static/assets/fabric_01.jpg"),
         ]);
-
         material.initializeByCodeBuf(true);
         
         let mesh = new RectPlaneMesh();
         mesh.axisFlag = 1;
         mesh.setBufSortFormat(material.getBufSortFormat());
-        
         mesh.initialize(-250, -250, 500, 500);
 
         let entity = new DisplayEntity();
