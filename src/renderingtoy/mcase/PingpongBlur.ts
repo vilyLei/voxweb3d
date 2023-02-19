@@ -175,8 +175,8 @@ export default class PingpongBlur {
         this.m_hMaterial.setTexSize(blurWidth, blurHeight);
     }
     run(srcProcessId: number = -1): void {
-        let rc: IRenderProxy = this.m_rscene.getRenderProxy();
-        let adapter: IRenderAdapter = rc.getRenderAdapter();
+        let rc = this.m_rscene.getRenderProxy();
+        let adapter = rc.getRenderAdapter();
         if (this.m_syncViewSizeEnabled) {
             adapter.synFBOSizeWithViewport();
         }
@@ -188,6 +188,7 @@ export default class PingpongBlur {
         /////////////////////////////////////////////
         // pingpong blur executing
         this.updateState(adapter);
+        // adapter.bgColor.set([0.0,0.0,0.0,0.0]);
         // 将srcProcessId 里面的显示内容绘制到 fbo, 以便获取初始数据源
         adapter.setRenderToTexture(this.getTextureAt(0), true, false, 0);
         adapter.useFBO(true, true, false);

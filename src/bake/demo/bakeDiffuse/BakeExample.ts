@@ -26,6 +26,12 @@ import IRendererSceneGraphStatus from "../../../vox/scene/IRendererSceneGraphSta
 import { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../../../orthoui/usage/ParamCtrlUI";
 import RectPlaneMesh from "../../../vox/mesh/RectPlaneMesh";
 import RendererState from "../../../vox/render/RendererState";
+import Sphere3DMesh from "../../../vox/mesh/Sphere3DMesh";
+import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
+
+import PingpongBlur from "../../../renderingtoy/mcase/PingpongBlur";
+import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
+import ScreenFixedAlignPlaneEntity from "../../../vox/entity/ScreenFixedAlignPlaneEntity";
 
 export class BakeExample {
 
@@ -49,15 +55,17 @@ export class BakeExample {
     private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
+        // ptex.minFilter = TextureConst.NEAREST;
+        // ptex.magFilter = TextureConst.NEAREST;
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
     private initSys(): void {
 
         // 阻止右键
-        document.oncontextmenu = function (e) {
-            e.preventDefault();
-        }
+        // document.oncontextmenu = function (e) {
+        //     e.preventDefault();
+        // }
         this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
         this.m_rscene.enableMouseEvent(true);
         this.m_cameraZoomController.initWithRScene(this.m_rscene);
@@ -74,20 +82,64 @@ export class BakeExample {
         console.log("BakeExample::initialize()......");
         if (this.m_rscene == null) {
 
-            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
             let rparam = this.m_graph.createRendererParam();
+            rparam.setAttriAntialias(true);
             rparam.setCamPosition(800.0, 800.0, 800.0);
             this.m_rscene = this.m_graph.createScene(rparam, 4);
+            this.m_rscene.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);
 
             this.initSys();
             // this.initModel();
             this.init3DScene();
         }
     }
+    private m_blur: PingpongBlur;// = new PingpongBlur()
     private init3DScene(): void {
+
+        /*
+        let tex_blurSrc = this.getTexByUrl("static/assets/sph_mapping01.png");
+        // tex_blurSrc.flipY = true;
+        let plane = new ScreenFixedAlignPlaneEntity();
+        plane.initialize(-1.0, -1.0, 2.0, 2.0, [tex_blurSrc]);
+        this.m_rscene.addEntity(plane);
+
+        // return;
+
+        this.m_blur = new PingpongBlur(this.m_rscene);
+
+        //this.m_blurModule.setSyncViewSizeEnabled(false);
+        //this.m_blurModule.setFBOSize(128,128);
+        this.m_blur.setBlurDensity(2.0);
+        this.m_blur.bindSrcProcessId(0);
+        this.m_blur.setBackbufferVisible(true);
+        return;
+        //*/
+        //sph_mapping01.png
+        ///*
+        let tex_0 = this.getTexByUrl("static/assets/sph_mapping01b.png");
+        // tex_0.flipY = true;
+        let material_0 = new Default3DMaterial();
+        material_0.setTextureList([
+            tex_0
+        ]);
+        material_0.initializeByCodeBuf(true);
+        let mesh_0 = new Sphere3DMesh();
+        mesh_0.setBufSortFormat(material_0.getBufSortFormat());
+        mesh_0.initialize(200, 20, 20, false);
+
+        let entity_0 = new DisplayEntity();
+        entity_0.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        entity_0.setMesh(mesh_0);
+        entity_0.setMaterial(material_0);
+
+        this.m_rscene.addEntity(entity_0);
+
+        return;
+        //*/
 
         let material = new BakeMaterial();
         material.setTextureList([
@@ -95,11 +147,16 @@ export class BakeExample {
             this.getTexByUrl("static/assets/fabric_01.jpg"),
         ]);
         material.initializeByCodeBuf(true);
-        
-        let mesh = new RectPlaneMesh();
-        mesh.axisFlag = 1;
+
+        let mesh = new Sphere3DMesh();
         mesh.setBufSortFormat(material.getBufSortFormat());
-        mesh.initialize(-250, -250, 500, 500);
+        mesh.initialize(200, 20, 20, false);
+
+
+        // let mesh = new RectPlaneMesh();
+        // mesh.axisFlag = 1;
+        // mesh.setBufSortFormat(material.getBufSortFormat());
+        // mesh.initialize(-250, -250, 500, 500);
 
         let entity = new DisplayEntity();
         entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
@@ -267,9 +324,10 @@ export class BakeExample {
 
         this.m_statusDisp.update(false);
 
-        this.m_stageDragSwinger.runWithYAxis();
-        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
-
+        // this.m_stageDragSwinger.runWithYAxis();
+        // this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
+        // this.m_rscene.update();
+        // this.m_blur.run();
         this.m_graph.run();
 
     }
