@@ -36,7 +36,7 @@ export default class Sphere3DMesh extends MeshBase {
     //
     initialize(radius: number, longitudeNumSegments: number, latitudeNumSegments: number, doubleTriFaceEnabled: boolean): void {
         if (this.vtxTotal < 1) {
-            if (radius < 0.01) return;
+            if (radius < 0.0001) radius = 0.0001;
 
             this.bounds = new AABB();
             this.bounds.min.setXYZ(-radius, -radius, -radius);
@@ -55,27 +55,26 @@ export default class Sphere3DMesh extends MeshBase {
                 this.m_longitudeNumSegments += 1;
             }
 
-            let i: number = 1, j = 0, trisTot = 0;
-            let xRad: number = 0.0, yRad: number = 0.0, px = 0.0, py = 0.0;
-            let vtx: MeshVertex = new MeshVertex(0, -this.m_radius, 0, trisTot);
+            let i = 1, j = 0, trisTot = 0;
+            let xRad = 0.0, yRad = 0.0, px = 0.0, py = 0.0;
+            let vtx = new MeshVertex(0, -this.m_radius, 0, trisTot);
 
             // 计算绕 y轴 的纬度线上的点
             let vtxVec = [];
             let vtxRows: MeshVertex[][] = [];
             vtxRows.push([]);
             let vtxRow: MeshVertex[] = vtxRows[0];
-            let centerUV: number = this.inverseUV ? 1.0 : 0.5;
+            let centerUV = this.inverseUV ? 1.0 : 0.5;
             
             vtx.u = vtx.v = centerUV;
             vtx.nx = 0.0; vtx.ny = -1.0; vtx.nz = 0.0;
             vtxRow.push(vtx.cloneVertex());
             vtxVec.push(vtxRow[0]);
                         
-            let pr: number = 0.0
-            let pr2: number = this.m_radius * 2.01;
-            let py2: number = 0.0;
-            let f: number = 1.0 / this.m_radius;
-            let quarterArc: number = 0.5 * Math.PI * this.m_radius * this.m_radius;
+            let pr = 0.0
+            let py2 = 0.0;
+            let f = 1.0 / this.m_radius;
+            
             for (i = 0; i < this.m_latitudeNumSegments; ++i) {
                 yRad = Math.PI * i / this.m_latitudeNumSegments;
                 px = Math.sin(yRad);

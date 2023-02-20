@@ -61,12 +61,7 @@ class MeshBuilder implements IMeshBuilder {
         return mesh;
     }
     protected setMeshData(mesh: IRawMesh): void {
-        /*
-        mesh.addFloat32Data(vs, 3);
-        mesh.addFloat32Data(uvs, 2);
-        mesh.addFloat32Data(nvs, 3);
-        mesh.setIVS(ivs);
-        //*/
+       
     }
 }
 export { MeshBuilder }
