@@ -55,12 +55,12 @@ export class BakeExample {
     private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
-        ptex.minFilter = TextureConst.NEAREST;
-        ptex.magFilter = TextureConst.NEAREST;
+        // ptex.minFilter = TextureConst.NEAREST;
+        // ptex.magFilter = TextureConst.NEAREST;
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         return ptex;
     }
-    
+
     private initSys(): void {
 
         // 阻止右键
@@ -79,7 +79,7 @@ export class BakeExample {
         this.update();
 
     }
-    
+
     private createDiv(px: number, py: number, pw: number, ph: number): HTMLDivElement {
         let div: HTMLDivElement = document.createElement('div');
         div.style.width = pw + 'px';
@@ -101,7 +101,7 @@ export class BakeExample {
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
-            let rparam = this.m_graph.createRendererParam(this.createDiv(0,0,512,512));
+            let rparam = this.m_graph.createRendererParam(this.createDiv(0, 0, 512, 512));
             rparam.autoSyncRenderBufferAndWindowSize = false;
             rparam.setAttriAntialias(true);
             rparam.setCamPosition(800.0, 800.0, 800.0);
@@ -109,54 +109,34 @@ export class BakeExample {
             this.m_rscene.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);
 
             this.initSys();
-            // this.initModel();
-            this.init3DScene();
+            this.initModel();
+            // this.init3DScene();
         }
     }
-    private m_blur: PingpongBlur;// = new PingpongBlur()
     private init3DScene(): void {
 
-        /*
-        let tex_blurSrc = this.getTexByUrl("static/assets/sph_mapping01.png");
-        // tex_blurSrc.flipY = true;
-        let plane = new ScreenFixedAlignPlaneEntity();
-        plane.initialize(-1.0, -1.0, 2.0, 2.0, [tex_blurSrc]);
-        this.m_rscene.addEntity(plane);
+        this.applyTex();
+        // this.buildTex();
+    }
+    private applyTex(): void {
 
-        // return;
+        let tex = this.getTexByUrl("static/assets/sph_mapping01b.png");
+        tex.flipY = true;
+        let material = new Default3DMaterial();
+        material.setTextureList([tex]);
+        material.initializeByCodeBuf(true);
+        let mesh = new Sphere3DMesh();
+        mesh.setBufSortFormat(material.getBufSortFormat());
+        mesh.initialize(200, 20, 20, false);
 
-        this.m_blur = new PingpongBlur(this.m_rscene);
+        let entity = new DisplayEntity();
+        entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        entity.setMesh(mesh);
+        entity.setMaterial(material);
 
-        //this.m_blurModule.setSyncViewSizeEnabled(false);
-        //this.m_blurModule.setFBOSize(128,128);
-        this.m_blur.setBlurDensity(2.0);
-        this.m_blur.bindSrcProcessId(0);
-        this.m_blur.setBackbufferVisible(true);
-        return;
-        //*/
-        //sph_mapping01.png
-
-        ///*
-        let tex_0 = this.getTexByUrl("static/assets/sph_mapping01b.png");
-        // tex_0.flipY = true;
-        let material_0 = new Default3DMaterial();
-        material_0.setTextureList([
-            tex_0
-        ]);
-        material_0.initializeByCodeBuf(true);
-        let mesh_0 = new Sphere3DMesh();
-        mesh_0.setBufSortFormat(material_0.getBufSortFormat());
-        mesh_0.initialize(200, 20, 20, false);
-
-        let entity_0 = new DisplayEntity();
-        entity_0.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-        entity_0.setMesh(mesh_0);
-        entity_0.setMaterial(material_0);
-
-        this.m_rscene.addEntity(entity_0);
-
-        return;
-        //*/
+        this.m_rscene.addEntity(entity);
+    }
+    private buildTex(): void {
 
         let material = new BakeMaterial();
         material.setTextureList([
@@ -168,7 +148,6 @@ export class BakeExample {
         let mesh = new Sphere3DMesh();
         mesh.setBufSortFormat(material.getBufSortFormat());
         mesh.initialize(200, 20, 20, false);
-
 
         // let mesh = new RectPlaneMesh();
         // mesh.axisFlag = 1;
@@ -182,8 +161,8 @@ export class BakeExample {
 
         this.m_rscene.addEntity(entity);
 
-        
-        // return;
+
+        return;
         material = new BakeMaterial(1);
         material.setTextureList([
             this.getTexByUrl("static/assets/color_02.jpg"),
@@ -208,6 +187,27 @@ export class BakeExample {
 
         this.m_rscene.addEntity(entity, 1);
 
+    }
+    private m_blur: PingpongBlur;// = new PingpongBlur()
+
+    private init3DScene1(): void {
+
+        /*
+        let tex_blurSrc = this.getTexByUrl("static/assets/sph_mapping01.png");
+        // tex_blurSrc.flipY = true;
+        let plane = new ScreenFixedAlignPlaneEntity();
+        plane.initialize(-1.0, -1.0, 2.0, 2.0, [tex_blurSrc]);
+        this.m_rscene.addEntity(plane);
+
+        // return;
+
+        this.m_blur = new PingpongBlur(this.m_rscene);
+
+        //this.m_blurModule.setSyncViewSizeEnabled(false);
+        //this.m_blurModule.setFBOSize(128,128);
+        this.m_blur.setBlurDensity(2.0);
+        this.m_blur.bindSrcProcessId(0);
+        //*/
     }
     private initUI(): void {
 
@@ -289,6 +289,7 @@ export class BakeExample {
         let url = baseUrl + "fbx/base4.fbx";
         // url = baseUrl + "fbx/hat_ok.fbx";
         url = baseUrl + "obj/apple_01.obj";
+        url = baseUrl + "fbx/Mat_Ball.fbx";
 
         this.loadModels([url]);
     }
@@ -309,9 +310,16 @@ export class BakeExample {
             if (nvs == null) {
                 SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
             }
-            let material = new BakeMaterial();
+            // let material = new BakeMaterial();
+            // material.setTextureList([
+            //     this.getTexByUrl("static/assets/color_02.jpg"),
+            //     this.getTexByUrl("static/assets/fabric_01.jpg")
+            // ]);
+            let tex = this.getTexByUrl("static/assets/sph_mapping02.png");
+            tex.flipY = true;
+            let material = new Default3DMaterial();
             material.setTextureList([
-                this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
+                tex
             ]);
 
             material.initializeByCodeBuf(true);

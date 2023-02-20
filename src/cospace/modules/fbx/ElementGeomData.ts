@@ -74,22 +74,104 @@ class ElementGeomData {
 		}
 		return ivs;
 	}
-	private buildBufs(obj: FBXBufferObject, sivs: number[], svs: number[], snvs: number[]): void {
-
+	private buildVS(sivs: number[], svs: number[], sivsLen: number): Float32Array {
 		let vsLen = sivs.length * 3;
-
-		let nvs: Float32Array = null;
-		let ivs = this.calcVtxIVS(sivs);
 		let vs = new Float32Array(vsLen);
+		let sk = 0;
+		let k = 0;
+		for (let i = 0; i < sivsLen; ++i) {
 
-		let sivsLen = sivs.length;
-		let sk: number = 0;
-		let k: number = 0;
-		if (snvs == null || snvs.length == vs.length) {
+			k = i * 3;
+			sk = sivs[i];
+			if (sk < 0) sk = (sk * -1) - 1;
+			sk *= 3;
+			vs[k] = svs[sk];
+			vs[k + 1] = svs[sk + 1];
+			vs[k + 2] = svs[sk + 2];
+
+			k += 3;
+		}
+		return vs;
+	}
+
+	private buildNVS(sivs: number[], snvs: number[], sivsLen: number): Float32Array {
+		let nvs: Float32Array = null;
+		let vsLen = sivs.length * 3;
+		if (snvs == null || snvs.length == vsLen) {
 			if (snvs != null) {
 				nvs = new Float32Array(snvs);
 			}
-			for (let i: number = 0; i < sivsLen; ++i) {
+		} else {
+			let sk = 0;
+			let k = 0;
+			nvs = new Float32Array(vsLen);
+			for (let i = 0; i < sivsLen; ++i) {
+
+				k = i * 3;
+				sk = sivs[i];
+				if (sk < 0) sk = (sk * -1) - 1;
+				sk *= 3;
+
+				nvs[k] = snvs[sk];
+				nvs[k + 1] = snvs[sk + 1];
+				nvs[k + 2] = snvs[sk + 2];
+
+				k += 3;
+			}
+		}
+		return nvs;
+	}
+	
+	private buildUVS(sivs: number[], suvs: number[]): Float32Array {
+		let uvs: Float32Array = null;
+		let vsLen = sivs.length * 2;
+		if (suvs == null || suvs.length == vsLen) {
+			if (suvs != null) {
+				uvs = new Float32Array(suvs);
+			}
+		} else {
+			let sk = 0;
+			let k = 0;
+			uvs = new Float32Array(vsLen);
+			for (let i = 0; i < vsLen; ++i) {
+
+				k = i * 2;
+				sk = sivs[i];
+				if (sk < 0) sk = (sk * -1) - 1;
+				sk *= 2;
+
+				uvs[k] = suvs[sk];
+				uvs[k + 1] = suvs[sk + 1];
+
+				k += 2;
+			}
+		}
+		return uvs;
+	}
+	private buildBufs(obj: FBXBufferObject, sivs: number[], svs: number[], snvs: number[], suvs: number[], suvivs: number[]): void {
+
+		let vsLen = sivs.length * 3;
+		let sivsLen = sivs.length;
+
+		let nvs: Float32Array = null;
+		let ivs = this.calcVtxIVS(sivs);
+
+
+		obj.vertex = this.buildVS(sivs, svs, sivsLen);
+		obj.normal = this.buildNVS(sivs, snvs, sivsLen);
+		obj.uvs = [this.buildUVS(suvivs, suvs)];
+		obj.indices = ivs;
+		return;
+		let vs = new Float32Array(vsLen);
+
+		let sk = 0;
+		let k = 0;
+
+		if (snvs == null || snvs.length == vsLen) {
+			if (snvs != null) {
+				nvs = new Float32Array(snvs);
+			}
+			for (let i = 0; i < sivsLen; ++i) {
 
 				k = i * 3;
 				sk = sivs[i];
@@ -105,7 +187,7 @@ class ElementGeomData {
 		} else {
 			if (snvs != null) {
 				nvs = new Float32Array(vsLen);
-				for (let i: number = 0; i < sivsLen; ++i) {
+				for (let i = 0; i < sivsLen; ++i) {
 
 					k = i * 3;
 					sk = sivs[i];
@@ -124,7 +206,7 @@ class ElementGeomData {
 				}
 			}
 			else {
-				for (let i: number = 0; i < sivsLen; ++i) {
+				for (let i = 0; i < sivsLen; ++i) {
 					k = i * 3;
 					sk = sivs[i];
 					if (sk < 0) sk = (sk * -1) - 1;
@@ -143,20 +225,26 @@ class ElementGeomData {
 	}
 
 	createBufObject(geoInfo: any): FBXBufferObject {
-
+		// console.log("createBufObject(), geoInfo: ", geoInfo);
 		let obj = new FBXBufferObject();
+		let puvs: any = null;
+		let uvList: any[] = geoInfo.uv;
+		if (uvList && uvList.length > 0) {
+			puvs = uvList[0];
+		}
+
 		if (geoInfo.normal != null) {
-			this.buildBufs(obj, geoInfo.vertexIndices, geoInfo.vertexPositions, geoInfo.normal.buffer);
+			this.buildBufs(obj, geoInfo.vertexIndices, geoInfo.vertexPositions, geoInfo.normal.buffer, puvs.buffer, puvs.indices);
 		}
 		else {
-			this.buildBufs(obj, geoInfo.vertexIndices, geoInfo.vertexPositions, null);
+			this.buildBufs(obj, geoInfo.vertexIndices, geoInfo.vertexPositions, null, puvs.buffer, puvs.indices);
 			console.error("当前FBX模型法线数据缺失!!!");
 		}
-		let uvsLen = 2 * obj.vertex.length / 3;
-		let uvs = new Float32Array(uvsLen);
+		// let uvsLen = 2 * obj.vertex.length / 3;
+		// let uvs = new Float32Array(uvsLen);
 
 		obj.isEntity = true;
-		obj.uvs = [uvs];
+		// obj.uvs = [uvs];
 
 		return obj;
 	}

@@ -6,14 +6,11 @@ import DataMesh from "../../../vox/mesh/DataMesh";
 import DivLog from "../../../vox/utils/DivLog";
 import { GeometryModelDataType } from "../../modules/base/GeometryModelDataType";
 import { CoSpace } from "../../CoSpace";
-import { NormalViewerMaterial } from "../material/NormalViewerMaterial";
 import RendererState from "../../../vox/render/RendererState";
 import { ISceneNode } from "./ISceneNode";
 import Matrix4 from "../../../vox/math/Matrix4";
 import { EntityLayout } from "./EntityLayout";
 import BoxFrame3D from "../../../vox/entity/BoxFrame3D";
-import ShaderMaterial from "../../../vox/material/mcase/ShaderMaterial";
-import DashedLine3DEntity from "../../../vox/entity/DashedLine3DEntity";
 import { NormalCheckMaterial } from "./NormalCheckMaterial";
 import SurfaceNormalCalc from "../../../vox/geom/SurfaceNormalCalc";
 
@@ -95,6 +92,7 @@ class SceneNode implements ISceneNode {
 	private m_normalErrInfo: string = "";
 	protected initEntity(model: GeometryModelDataType, transform: Matrix4 = null, index: number = 0): void {
 		if (model != null) {
+			// console.log("initEntity(), model: ", model);
 			this.m_partsTotal++;
 			if (model.vertices == null || model.vertices.length < 3) {
 				//this.m_modelsTotal--;

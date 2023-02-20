@@ -225,7 +225,7 @@ class GeometryBufferParser {
 
 		let advancedModel = geoInfo.vertexPositions.length == 5;
 		if(advancedModel) {
-			
+			// console.log("advancedModel, geoInfo: ", geoInfo);
 			geoInfo.vertexIndices = this.parseData(geoInfo.vertexIndices);
 			geoInfo.vertexPositions = this.parseData(geoInfo.vertexPositions);
 			if(geoInfo.normal != null || geoInfo.normal != undefined) {
@@ -242,7 +242,7 @@ class GeometryBufferParser {
 			return this.m_egd.createBufObject(geoInfo);
 		}
 		// console.log("A1 geoInfo: ", geoInfo);
-		console.log("VVV-XXX advancedModel is False.");
+		// console.log("VVV-XXX advancedModel is False.");
 
 		const bufObj: FBXBufferObject = new FBXBufferObject();
 		bufObj.isEntity = true;
@@ -375,6 +375,7 @@ class GeometryBufferParser {
 	// Generate data for a single face in a geometry. If the face is a quad then split it into 2 tris
 	private genFace( bufObj: FBXBufferObject, geoInfo: any, facePositionIndexes: number[], materialIndex: number, faceNormals: number[], faceColors: number[], faceUVs:number[][], faceWeights: number[], faceWeightIndices:number[], faceLength: number ): void {
 		
+		console.log("XXXX genFace() bufObj.uvs: ", bufObj.uvs);
 		let vps = geoInfo.vertexPositions;
 		let vs = bufObj.vertex;
 		let nvs = bufObj.normal;
@@ -453,6 +454,8 @@ class GeometryBufferParser {
 		}
 		bufObj.i3 = i3;
 		bufObj.i2 = i2;
+
+		console.log("XXXX bufObj.uvs: ", bufObj.uvs);
 	}
 
 	// Parse normal from FBXTree.Objects.Geometry.LayerElementNormal if it exists

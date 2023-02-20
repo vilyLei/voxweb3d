@@ -22,6 +22,9 @@ import { FBXBufferLoader } from "../modules/fbx/FBXBufferLoader";
 import { HttpFileLoader } from "../modules/loaders/HttpFileLoader";
 import { FBXBufferObject } from "../modules/fbx/FBXBufferObject";
 import { NormalUVViewerMaterial } from "./material/NormalUVViewerMaterial";
+import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
+import TextureProxy from "../../vox/texture/TextureProxy";
+import { TextureConst } from "../voxengine/CoRScene";
 
 /**
  * 通过加载到的fbx模型二进制数据，发送CTM资源解析任务给多线程数据处理系统，获取解析之后的CTM模型数据
@@ -76,12 +79,23 @@ export class DemoFBXFastParser {
 
 		let url: string = "static/private/fbx/box.fbx";
 		url = "static/private/fbx/base3.fbx";
+		url = "static/private/fbx/hat_ok.fbx";
+		url = "static/private/fbx/Mat_Ball.fbx";
 		// url = "static/private/fbx/model_500W.fbx";
 		// url = "static/private/fbx/hat_hasNormal.fbx";
 		// url = "static/private/fbx/hat_hasNotNormal.fbx";
 		this.loadFBX(url);
 	}
 
+    private m_texLoader: ImageTextureLoader = null;
+    private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+        let ptex = this.m_texLoader.getImageTexByUrl(purl);
+        ptex.mipmapEnabled = mipmapEnabled;
+        // ptex.minFilter = TextureConst.NEAREST;
+        // ptex.magFilter = TextureConst.NEAREST;
+        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
+        return ptex;
+    }
 	private m_lossTime: number = 0;
 	private m_vtxTotal: number = 0;
 	private m_trisNumber: number = 0;
@@ -102,8 +116,12 @@ export class DemoFBXFastParser {
 		if (model.normals == null) {
 			console.error("has not normal in the model");
 		}
-		let material = new NormalUVViewerMaterial();
-		material.initializeByCodeBuf();
+		// let material = new NormalUVViewerMaterial();
+		// material.initializeByCodeBuf();
+
+		let material = new Default3DMaterial();
+		material.setTextureList([this.getTexByUrl("static/assets/default.jpg")]);
+		material.initializeByCodeBuf( true );
 
 		let dataMesh: DataMesh = new DataMesh();
 		// dataMesh.wireframe = true;
@@ -164,6 +182,7 @@ export class DemoFBXFastParser {
 		this.m_userInterac.initialize(this.m_rscene);
 		this.m_userInterac.cameraZoomController.syncLookAt = true;
 
+        this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 		let axis = new Axis3DEntity();
 		axis.initialize(500);
 		this.m_rscene.addEntity(axis);
