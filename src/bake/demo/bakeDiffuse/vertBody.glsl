@@ -15,7 +15,6 @@ void main()
     v_nv = a_nvs;
     v_uvs = a_uvs;
     vec2 uvpos = v_uvs.xy;
-    // uvpos = fract(uvpos + vec2(2.0));
     uvpos = vec2(2.0) * vec2(uvpos - vec2(0.5));
     uvpos += u_offset.xy;
     gl_Position = vec4(uvpos, 0.0,1.0);

@@ -22,11 +22,12 @@ class PBRTexLightingShaderBuffer extends ShaderCodeBuffer {
         this.m_uniqueName = "PBRTexLightingShd";
     }
     getFragShaderCode(): string {
-        let fragCode: string =
+        let fragCode0: string =
 `#version 300 es
 precision highp float;
-
-out vec4 FragColor;
+`
+        let fragCode2: string =
+`out vec4 FragColor;
 in vec2 TexCoords;
 in vec3 WorldPos;
 in vec3 Normal;
@@ -181,7 +182,7 @@ void main()
     FragColor = vec4(color, 1.0);
 }
 `;
-        return fragCode;
+        return fragCode0 + fragCode2;
     }
     getVertShaderCode(): string {
         let vtxCode: string =
@@ -195,6 +196,7 @@ layout(location = 2) in vec3 a_nvs;
 uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
+uniform vec4 u_offset;
 
 out vec2 TexCoords;
 out vec3 WorldPos;
@@ -211,6 +213,11 @@ void main(){
     TexCoords = a_uvs;
     Normal = normalize(a_nvs * inverse(mat3(u_objMat)));
     v_camPos = (inverse(u_viewMat) * vec4(0.0,0.0,0., 1.0)).xyz;
+    
+    vec2 uvpos = a_uvs.xy;
+    uvpos = vec2(2.0) * vec2(uvpos - vec2(0.5));
+    uvpos += u_offset.xy;
+    // gl_Position = vec4(uvpos, 0.0,1.0);
 }
 `;
         return vtxCode;
@@ -229,10 +236,15 @@ void main(){
 }
 
 export default class PBRTexLightingMaterial extends MaterialBase {
+    private m_offset = new Float32Array([0.0, 0.0, 0.0, 0.0]);
     constructor() {
         super();
     }
 
+    setOffsetXY(px: number, py: number): void {
+        this.m_offset[0] = px;
+        this.m_offset[1] = py;
+    }
     getCodeBuf(): ShaderCodeBuffer {
         return PBRTexLightingShaderBuffer.GetInstance();
     }
@@ -289,8 +301,8 @@ export default class PBRTexLightingMaterial extends MaterialBase {
         //  console.log("this.m_params: ",this.m_params);
         //  console.log("this.m_camPos: ",this.m_camPos);
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_albedo", "u_lightPositions", "u_lightColors", "u_camPos"];
-        oum.dataList = [this.m_albedo, this.m_lightPositions, this.u_lightColors, this.m_camPos];
+        oum.uniformNameList = ["u_albedo", "u_lightPositions", "u_lightColors", "u_camPos", "u_offset"];
+        oum.dataList = [this.m_albedo, this.m_lightPositions, this.u_lightColors, this.m_camPos, this.m_offset];
         return oum;
     }
 }

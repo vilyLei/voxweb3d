@@ -27,15 +27,19 @@ import PBRTexLightingMaterial from "./material/PBRTexLightingMaterial";
 import { IFloatCubeTexture } from "../vox/render/texture/IFloatCubeTexture";
 import FloatCubeTextureProxy from "../vox/texture/FloatCubeTextureProxy";
 import TextureConst from "../vox/texture/TextureConst";
+import IMeshBase from "../vox/mesh/IMeshBase";
+import Sphere3DMesh from "../vox/mesh/Sphere3DMesh";
+import IRenderMaterial from "../vox/render/IRenderMaterial";
+import RendererState from "../vox/render/RendererState";
 
 class TextureLoader {
 
     protected m_rscene: RendererScene = null;
     texture: IFloatCubeTexture = null;
-    constructor() {        
+    constructor() {
     }
-    
-    loadTextureWithUrl(url:string, rscene: RendererScene): void {
+
+    loadTextureWithUrl(url: string, rscene: RendererScene): void {
         //let url: string = "static/bytes/spe.mdf";
         let loader: BinaryLoader = new BinaryLoader();
         loader.uuid = url;
@@ -52,7 +56,7 @@ class TextureLoader {
     }
     loadError(status: number, uuid: string): void {
     }
-    
+
     protected parseTextureBuffer(buffer: ArrayBuffer): void {
         let begin: number = 0;
         let width: number = 128;
@@ -80,7 +84,7 @@ class SpecularTextureLoader extends TextureLoader {
         let begin: number = 0;
         let width: number = 128;
         let height: number = 128;
-        
+
         let fs32: Float32Array = new Float32Array(buffer);
         let subArr: Float32Array = null;
 
@@ -114,11 +118,25 @@ export class DemoEnvLighting {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
-    private m_materials:PBREnvLightingMaterial[] = [];
-    private m_texMaterials:PBRTexLightingMaterial[] = [];
-    
+    private m_materials: PBREnvLightingMaterial[] = [];
+    private m_texMaterials: PBRTexLightingMaterial[] = [];
+
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        return this.m_texLoader.getTexByUrl(purl,wrapRepeat,mipmapEnabled) as TextureProxy;
+        return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled) as TextureProxy;
+    }
+    
+    private createDiv(px: number, py: number, pw: number, ph: number): HTMLDivElement {
+        let div: HTMLDivElement = document.createElement('div');
+        div.style.width = pw + 'px';
+        div.style.height = ph + 'px';
+        document.body.appendChild(div);
+        div.style.display = 'bolck';
+        div.style.left = px + 'px';
+        div.style.top = py + 'px';
+        div.style.position = 'absolute';
+        div.style.display = 'bolck';
+        div.style.position = 'absolute';
+        return div;
     }
     initialize(): void {
         console.log("DemoEnvLighting::initialize()......");
@@ -126,8 +144,11 @@ export class DemoEnvLighting {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
-            
-            let rparam: RendererParam = new RendererParam();
+
+            // let rparam = this.m_graph.createRendererParam(this.createDiv(0, 0, 512, 512));
+            // rparam.autoSyncRenderBufferAndWindowSize = false;
+            let rparam: RendererParam = new RendererParam(this.createDiv(0, 0, 512, 512));
+            rparam.autoSyncRenderBufferAndWindowSize = false;
             //rparam.maxWebGLVersion = 1;
             rparam.setCamPosition(800.0, 800.0, 800.0);
             rparam.setAttriAntialias(true);
@@ -135,7 +156,7 @@ export class DemoEnvLighting {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam);
             this.m_rscene.updateCamera();
-            
+
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             this.m_rscene.enableMouseEvent(true);
@@ -150,20 +171,21 @@ export class DemoEnvLighting {
             this.m_statusDisp.initialize();
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
-            
 
-            let axis: Axis3DEntity = new Axis3DEntity();
-            axis.initialize(500.0);
-            this.m_rscene.addEntity(axis);
+
+            // let axis: Axis3DEntity = new Axis3DEntity();
+            // axis.initialize(500.0);
+            // this.m_rscene.addEntity(axis);
 
             // add common 3d display entity
             //  let plane: Plane3DEntity = new Plane3DEntity();
             //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
             //  this.m_rscene.addEntity(plane);
 
-            this.initFloatCube();
+            // this.initFloatCube();
 
-            //this.initTexLighting();
+            // this.initTexLighting();
+            this.initTexLightingBake();
 
             this.update();
 
@@ -174,85 +196,145 @@ export class DemoEnvLighting {
         let envMapUrl: string = "static/bytes/spe.mdf";
 
         //let loader:TextureLoader = new TextureLoader();
-        let loader:SpecularTextureLoader = new SpecularTextureLoader();
+        let loader: SpecularTextureLoader = new SpecularTextureLoader();
         loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
-        this.initLighting(null,loader.texture);
+        this.initLighting(null, loader.texture);
     }
-    
+
+    private createWithMesh(mesh: IMeshBase, metallic: number, roughness: number, texName: string, dx: number, dy: number): void {
+
+        let material: PBRTexLightingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
+        material.setTextureList( this.getTexList( texName ) );
+        material.initializeByCodeBuf(true);
+        material.setOffsetXY(dx, dy);
+        let sph = new DisplayEntity();
+        sph.setMaterial(material);
+        sph.setMesh(mesh);
+        sph.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+        this.m_rscene.addEntity(sph, 0);
+    }
+    private createLineDraw(pradius: number, metallic: number, roughness: number, texName: string): void {
+        
+        let material: PBRTexLightingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
+        material.setTextureList( this.getTexList( texName ) );
+        material.initializeByCodeBuf(true);
+        let mesh = new Sphere3DMesh();
+        mesh.wireframe = true;
+        mesh.setVtxBufRenderData( material );
+        mesh.initialize(pradius, 30, 30, false);
+
+        let radius = 0.002;
+        let PI2 = Math.PI * 2.0;
+        let total = 8;
+        for (let k = 0; k < 8; ++k) {
+            for (let i = 0; i < total; ++i) {
+                let rad = PI2 * i / total;
+                let dx = Math.cos(rad) * radius;
+                let dy = Math.sin(rad) * radius;
+                // material.setOffsetXY(dx, dy);
+                this.createWithMesh(mesh, metallic, roughness, texName, dx, dy);
+            }
+            radius += 0.002;
+        }
+    }
+    private initTexLightingBake(): void {
+
+        let radius = 150.0;
+        let roughness = 0.0;
+        let metallic = 0.0;
+
+
+        let nameList: string[] = ["gold", "rusted_iron", "grass", "plastic", "wall"];
+        let nameI = 3;
+        metallic = 0.5;
+        roughness = 0.4;
+
+        // this.createLineDraw(radius, metallic, roughness, nameList[nameI]);
+        // return;
+        let material: PBRTexLightingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
+        material.setTextureList( this.getTexList(nameList[nameI]) );
+        material.initializeByCodeBuf(true);
+
+        let mesh = new Sphere3DMesh();
+        mesh.setVtxBufRenderData( material );
+        mesh.initialize(radius, 30, 30, false);
+        let sph = new DisplayEntity();
+        // sph.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+        sph.setMaterial(material);
+        sph.setMesh(mesh);
+        // sph.initialize(radius, 20, 20, this.getTexList(nameList[nameI]));
+        this.m_rscene.addEntity(sph, 1);
+    }
     private initTexLighting(): void {
 
-        let radius:number = 150.0;
-        let rn:number = 3;
-        let cn:number = 3;
+        let radius: number = 150.0;
+        let rn: number = 3;
+        let cn: number = 3;
         let roughness: number = 0.0;
         let metallic: number = 0.0;
-        let disV3:Vector3D = new Vector3D(radius * 2.0 + 50.0, radius * 2.0 + 50.0, 0.0);
-        let beginPos:Vector3D = new Vector3D(disV3.x * (cn - 1) * -0.5, disV3.y * (rn - 1) * -0.5, -100.0);
-        let pos:Vector3D = new Vector3D();
+        let disV3: Vector3D = new Vector3D(radius * 2.0 + 50.0, radius * 2.0 + 50.0, 0.0);
+        let beginPos: Vector3D = new Vector3D(disV3.x * (cn - 1) * -0.5, disV3.y * (rn - 1) * -0.5, -100.0);
+        let pos: Vector3D = new Vector3D();
 
         let nameList: string[] = ["gold", "rusted_iron", "grass", "plastic", "wall"];
 
         let texList: TextureProxy[] = this.getTexList("plastic");
 
-        for(let i:number = 0; i < rn; ++i)
-        {
-            metallic = Math.max(rn - 1,0.001);
+        for (let i: number = 0; i < rn; ++i) {
+            metallic = Math.max(rn - 1, 0.001);
             metallic = i / metallic;
-            for(let j:number = 0; j < cn; ++j)
-            {
-                roughness = Math.max(cn - 1,0.001);
+            for (let j: number = 0; j < cn; ++j) {
+                roughness = Math.max(cn - 1, 0.001);
                 roughness = j / roughness;
 
                 let sph: Sphere3DEntity = new Sphere3DEntity();
-                let material:PBRTexLightingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
+                let material: PBRTexLightingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
                 //let material:PBREnvLightingMaterial = this.makeMaterial(metallic, roughness, 1.3);
                 sph.setMaterial(material);
                 sph.initialize(radius, 20, 20, this.getTexList(nameList[Math.round(Math.random() * 10000) % nameList.length]));
 
-                pos.copyFrom( beginPos );
+                pos.copyFrom(beginPos);
                 pos.x += disV3.x * j;
                 pos.y += disV3.y * i;
                 //pos.z += disV3.z * j;
-                sph.setPosition( pos );
+                sph.setPosition(pos);
 
                 this.m_rscene.addEntity(sph);
             }
         }
     }
-    private initLighting(d_envTex: IFloatCubeTexture,s_envTex: IFloatCubeTexture): void {
+    private initLighting(d_envTex: IFloatCubeTexture, s_envTex: IFloatCubeTexture): void {
 
-        let radius:number = 150.0;
-        let rn:number = 7;
-        let cn:number = 7;
+        let radius: number = 150.0;
+        let rn: number = 7;
+        let cn: number = 7;
         let roughness: number = 0.0;
         let metallic: number = 0.0;
-        let disV3:Vector3D = new Vector3D(radius * 2.0 + 50.0, radius * 2.0 + 50.0, 0.0);
-        let beginPos:Vector3D = new Vector3D(disV3.x * (cn - 1) * -0.5, disV3.y * (rn - 1) * -0.5, -100.0);
-        let pos:Vector3D = new Vector3D();
+        let disV3: Vector3D = new Vector3D(radius * 2.0 + 50.0, radius * 2.0 + 50.0, 0.0);
+        let beginPos: Vector3D = new Vector3D(disV3.x * (cn - 1) * -0.5, disV3.y * (rn - 1) * -0.5, -100.0);
+        let pos: Vector3D = new Vector3D();
 
-        for(let i:number = 0; i < rn; ++i)
-        {
-            metallic = Math.max(rn - 1,0.001);
+        for (let i: number = 0; i < rn; ++i) {
+            metallic = Math.max(rn - 1, 0.001);
             metallic = i / metallic;
             //metallic = 1.0;
-            for(let j:number = 0; j < cn; ++j)
-            {
-                roughness = Math.max(cn - 1,0.001);
+            for (let j: number = 0; j < cn; ++j) {
+                roughness = Math.max(cn - 1, 0.001);
                 roughness = j / roughness;
                 //roughness = 0.0;
 
                 let sph: Sphere3DEntity = new Sphere3DEntity();
                 //let material:PBREnvLightingMaterial = this.makeMaterial(0.0, 0.2, 1.0);
-                let material:PBREnvLightingMaterial = this.makeMaterial(metallic, roughness, 1.3);
+                let material: PBREnvLightingMaterial = this.makeMaterial(metallic, roughness, 1.3);
                 sph.setMaterial(material);
                 //sph.initialize(radius, 20, 20, [this.getImageTexByUrl("static/assets/noise.jpg")]);
                 sph.initialize(radius, 20, 20, [s_envTex]);
 
-                pos.copyFrom( beginPos );
+                pos.copyFrom(beginPos);
                 pos.x += disV3.x * j;
                 pos.y += disV3.y * i;
                 //pos.z += disV3.z * j;
-                sph.setPosition( pos );
+                sph.setPosition(pos);
 
                 this.m_rscene.addEntity(sph);
             }
@@ -260,97 +342,97 @@ export class DemoEnvLighting {
     }
     private getTexList(name: string = "rusted_iron"): TextureProxy[] {
         let list: TextureProxy[] = [
-            
-            this.getImageTexByUrl("static/assets/pbr/"+name+"/albedo.png"),
-            this.getImageTexByUrl("static/assets/pbr/"+name+"/normal.png"),
-            this.getImageTexByUrl("static/assets/pbr/"+name+"/metallic.png"),
-            this.getImageTexByUrl("static/assets/pbr/"+name+"/roughness.png"),
-            this.getImageTexByUrl("static/assets/pbr/"+name+"/ao.png"),
+
+            this.getImageTexByUrl("static/assets/pbr/" + name + "/albedo.png"),
+            this.getImageTexByUrl("static/assets/pbr/" + name + "/normal.png"),
+            this.getImageTexByUrl("static/assets/pbr/" + name + "/metallic.png"),
+            this.getImageTexByUrl("static/assets/pbr/" + name + "/roughness.png"),
+            this.getImageTexByUrl("static/assets/pbr/" + name + "/ao.png"),
         ];
         return list;
     }
-    
-    private makeTexMaterial(metallic: number, roughness: number, ao: number): PBRTexLightingMaterial
-    {
+
+    private makeTexMaterial(metallic: number, roughness: number, ao: number): PBRTexLightingMaterial {
         let dis: number = 700.0;
         let disZ: number = 400.0;
-        let posList:Vector3D[] = [
-            new Vector3D(-dis,  dis, disZ),
-            new Vector3D( dis,  dis, disZ),
+        let posList: Vector3D[] = [
+            new Vector3D(-dis, dis, disZ),
+            new Vector3D(dis, dis, disZ),
             new Vector3D(-dis, -dis, disZ),
-            new Vector3D( dis, -dis, disZ)
+            new Vector3D(dis, -dis, disZ)
         ];
-        let colorSize:number = 300.0;
-        let colorList:Color4[] = [
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize)
+        let colorSize: number = 300.0;
+        // let colorList: Color4[] = [
+        //     new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
+        //     new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
+        //     new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
+        //     new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize)
+        // ];
+        let colorList: Color4[] = [
+            new Color4(300, 100, 10),
+            new Color4(90, 200, 290),
+            new Color4(150, 200, 160),
+            new Color4(200, 200, 270)
         ];
-
-        let material:PBRTexLightingMaterial = new PBRTexLightingMaterial();
-        material.setMetallic( metallic );
-        material.setRoughness( roughness );
-        material.setAO( ao );
+        let material: PBRTexLightingMaterial = new PBRTexLightingMaterial();
+        material.setMetallic(metallic);
+        material.setRoughness(roughness);
+        material.setAO(ao);
 
         material.setCamPos(this.m_rscene.getCamera().getPosition());
 
         this.m_texMaterials.push(material);
 
-        for (let i: number = 0; i < 4; ++i)
-        {
+        for (let i: number = 0; i < 4; ++i) {
             let pos: Vector3D = posList[i];
             material.setPosAt(i, pos.x, pos.y, pos.z);
             let color: Color4 = colorList[i];
             material.setColorAt(i, color.r, color.g, color.b);
         }
-        material.setColor(Math.random(),Math.random(),Math.random());
+        material.setColor(Math.random(), Math.random(), Math.random());
         return material;
     }
-    private makeMaterial(metallic: number, roughness: number, ao: number): PBREnvLightingMaterial
-    {
+    private makeMaterial(metallic: number, roughness: number, ao: number): PBREnvLightingMaterial {
         let dis: number = 700.0;
         let disZ: number = 400.0;
-        let posList:Vector3D[] = [
-            new Vector3D(-dis,  dis, disZ),
-            new Vector3D( dis,  dis, disZ),
+        let posList: Vector3D[] = [
+            new Vector3D(-dis, dis, disZ),
+            new Vector3D(dis, dis, disZ),
             new Vector3D(-dis, -dis, disZ),
-            new Vector3D( dis, -dis, disZ)
+            new Vector3D(dis, -dis, disZ)
         ];
-        let colorSize:number = 300.0;
-        let colorList:Color4[] = [
+        let colorSize: number = 300.0;
+        let colorList: Color4[] = [
             new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
             new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
             new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
             new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize)
         ];
 
-        let material:PBREnvLightingMaterial = new PBREnvLightingMaterial();
-        material.setMetallic( metallic );
-        material.setRoughness( roughness );
-        material.setAO( ao );
-        let f0:number = Math.random() * 0.9;
+        let material: PBREnvLightingMaterial = new PBREnvLightingMaterial();
+        material.setMetallic(metallic);
+        material.setRoughness(roughness);
+        material.setAO(ao);
+        let f0: number = Math.random() * 0.9;
         //material.setF0(Math.random() * 0.9, Math.random() * 0.9, Math.random() * 0.9);
         //material.setF0(f0,f0,f0);
         material.setCamPos(this.m_rscene.getCamera().getPosition());
 
         this.m_materials.push(material);
 
-        for (let i: number = 0; i < 4; ++i)
-        {
+        for (let i: number = 0; i < 4; ++i) {
             let pos: Vector3D = posList[i];
             material.setPosAt(i, pos.x, pos.y, pos.z);
             let color: Color4 = colorList[i];
             material.setColorAt(i, color.r, color.g, color.b);
         }
-        material.setColor(Math.random(),Math.random(),Math.random());
+        material.setColor(Math.random(), Math.random(), Math.random());
         return material;
     }
     private mouseDown(evt: any): void {
         console.log("mouse down... ...");
     }
-    mouseWheelListener(evt:any):void
-    {
+    mouseWheelListener(evt: any): void {
         //this.m_cameraZoomController.setMoevDistance(evt.wheelDeltaY * 0.5);
     }
 
@@ -370,7 +452,7 @@ export class DemoEnvLighting {
 
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
-        
+
         //  for(let i: number = 0, il: number = this.m_materials.length; i < il; ++i) {
         //      this.m_materials[i].setCamPos(this.m_rscene.getCamera().getPosition());
         //  }

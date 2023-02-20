@@ -111,8 +111,8 @@ export class BakeExample {
             this.m_rscene.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);
 
             this.initSys();
-            this.initModel();
-            // this.init3DScene();
+            // this.initModel();
+            this.init3DScene();
         }
     }
     private init3DScene(): void {
@@ -122,7 +122,8 @@ export class BakeExample {
     }
     private applyTex(): void {
 
-        let tex = this.getTexByUrl("static/assets/sph_mapping01.png");
+        // let tex = this.getTexByUrl("static/assets/sph_mapping01.png");
+        let tex = this.getTexByUrl("static/assets/sph_mapping03.png");
         tex.flipY = true;
         tex.premultiplyAlpha = true;
         let material = new Default3DMaterial();
@@ -130,7 +131,7 @@ export class BakeExample {
         material.initializeByCodeBuf(true);
         let mesh = new Sphere3DMesh();
         mesh.setBufSortFormat(material.getBufSortFormat());
-        mesh.initialize(200, 20, 20, false);
+        mesh.initialize(150, 30, 30, false);
 
         let entity = new DisplayEntity();
         entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);

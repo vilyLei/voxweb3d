@@ -383,7 +383,7 @@
 
 //  import {DemoLighting as Demo} from "./pbr/DemoLighting";
 
-//  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
+ import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
 //  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
@@ -453,7 +453,7 @@
 //////////////////////////////     rapp    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
- import {BakeExample as Demo} from "./bake/demo/bakeDiffuse/BakeExample";
+//  import {BakeExample as Demo} from "./bake/demo/bakeDiffuse/BakeExample";
 //  import {BakeExample as Demo} from "./bake/demo/bakeDiffuse2/BakeExample";
 
 ///////////////////////////////////////////////////////////////////////////////
