@@ -55,11 +55,12 @@ export class BakeExample {
     private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
-        // ptex.minFilter = TextureConst.NEAREST;
-        // ptex.magFilter = TextureConst.NEAREST;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
+        ptex.minFilter = TextureConst.NEAREST;
+        ptex.magFilter = TextureConst.NEAREST;
+        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         return ptex;
     }
+    
     private initSys(): void {
 
         // 阻止右键
@@ -78,6 +79,20 @@ export class BakeExample {
         this.update();
 
     }
+    
+    private createDiv(px: number, py: number, pw: number, ph: number): HTMLDivElement {
+        let div: HTMLDivElement = document.createElement('div');
+        div.style.width = pw + 'px';
+        div.style.height = ph + 'px';
+        document.body.appendChild(div);
+        div.style.display = 'bolck';
+        div.style.left = px + 'px';
+        div.style.top = py + 'px';
+        div.style.position = 'absolute';
+        div.style.display = 'bolck';
+        div.style.position = 'absolute';
+        return div;
+    }
     initialize(): void {
         console.log("BakeExample::initialize()......");
         if (this.m_rscene == null) {
@@ -86,7 +101,8 @@ export class BakeExample {
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
-            let rparam = this.m_graph.createRendererParam();
+            let rparam = this.m_graph.createRendererParam(this.createDiv(0,0,512,512));
+            rparam.autoSyncRenderBufferAndWindowSize = false;
             rparam.setAttriAntialias(true);
             rparam.setCamPosition(800.0, 800.0, 800.0);
             this.m_rscene = this.m_graph.createScene(rparam, 4);
@@ -119,6 +135,7 @@ export class BakeExample {
         return;
         //*/
         //sph_mapping01.png
+
         ///*
         let tex_0 = this.getTexByUrl("static/assets/sph_mapping01b.png");
         // tex_0.flipY = true;
@@ -159,11 +176,37 @@ export class BakeExample {
         // mesh.initialize(-250, -250, 500, 500);
 
         let entity = new DisplayEntity();
-        entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
         entity.setMesh(mesh);
         entity.setMaterial(material);
 
         this.m_rscene.addEntity(entity);
+
+        
+        // return;
+        material = new BakeMaterial(1);
+        material.setTextureList([
+            this.getTexByUrl("static/assets/color_02.jpg"),
+            this.getTexByUrl("static/assets/fabric_01.jpg"),
+        ]);
+        material.initializeByCodeBuf(true);
+        mesh = new Sphere3DMesh();
+        mesh.wireframe = true;
+        mesh.setBufSortFormat(material.getBufSortFormat());
+        mesh.initialize(200, 20, 20, false);
+
+
+        // let mesh = new RectPlaneMesh();
+        // mesh.axisFlag = 1;
+        // mesh.setBufSortFormat(material.getBufSortFormat());
+        // mesh.initialize(-250, -250, 500, 500);
+
+        entity = new DisplayEntity();
+        entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+        entity.setMesh(mesh);
+        entity.setMaterial(material);
+
+        this.m_rscene.addEntity(entity, 1);
 
     }
     private initUI(): void {
@@ -324,8 +367,8 @@ export class BakeExample {
 
         this.m_statusDisp.update(false);
 
-        // this.m_stageDragSwinger.runWithYAxis();
-        // this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
+        this.m_stageDragSwinger.runWithYAxis();
+        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
         // this.m_rscene.update();
         // this.m_blur.run();
         this.m_graph.run();

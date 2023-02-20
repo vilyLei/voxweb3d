@@ -63,11 +63,11 @@ export default class RendererSceneGraph implements IRendererSceneGraph {
         if (i >= 0 && i < this.m_nodes.length) return this.m_nodes[i].getRScene();
         return null;
     }
-    createRendererParam(): IRendererParam {
-        return new RendererParam();
+    createRendererParam(div: HTMLDivElement = null): IRendererParam {
+        return new RendererParam(div);
     }
-    createRendererSceneParam(): IRendererParam {
-        return new RendererParam();
+    createRendererSceneParam(div: HTMLDivElement = null): IRendererParam {
+        return new RendererParam(div);
     }
     /**
      * @param rparam IRendererParam instance, the default value is null

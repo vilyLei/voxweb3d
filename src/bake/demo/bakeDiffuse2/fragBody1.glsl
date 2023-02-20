@@ -11,6 +11,7 @@ void main()
     vec4 color0 = texture(u_sampler0, v_uvs.xy);
     vec4 color1 = texture(u_sampler1, v_uvs.xy);
     FragColor0 = mix(color0, color1, 0.6) * u_color;
-    // FragColor0 = vec4(fract(1.0), fract(0.0), 0.0, 1.0) * u_color;
+    // FragColor0 = vec4(1.0,0.0,0.0, 1.0) * 0.3 + FragColor0 * 0.7;
+    FragColor0 = vec4(1.0,0.0,0.0, 1.0);
 }
 // for example
