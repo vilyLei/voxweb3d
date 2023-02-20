@@ -5,6 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
+import IVector3D from "../../vox/math/IVector3D";
+import IMatrix4 from "../../vox/math/IMatrix4";
 import IAABB from "../../vox/geom/IAABB";
 
 export default interface IGeometry {
@@ -18,6 +20,10 @@ export default interface IGeometry {
     clone(): IGeometry;
     
     copyFrom(src: IGeometry): void;
+    
+    getCenterAt(i: number, outV: IVector3D): void;
+    
+    transformAt(i: number, mat4: IMatrix4): void;
     /**
      * @returns vertex position buffer Float32Array
      */

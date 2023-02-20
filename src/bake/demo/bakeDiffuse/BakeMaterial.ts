@@ -30,7 +30,6 @@ class BakeShaderBuffer extends ShaderCodeBuffer {
         if(this.shaderType == 0) {
             return ShaderCode.frag_body;
         }else if(this.shaderType == 1) {
-            console.log("HHHHHHHHHHJJJJJJJJJJJJJJ frag");
             return ShaderCode1.frag_body;
         }        
         return ShaderCode.frag_body;
@@ -40,7 +39,6 @@ class BakeShaderBuffer extends ShaderCodeBuffer {
         if(this.shaderType == 0) {
             return ShaderCode.vert_body;
         }else if(this.shaderType == 1) {
-            console.log("HHHHHHHHHHJJJJJJJJJJJJJJ vert");
             return ShaderCode1.vert_body;
         }
         return ShaderCode.vert_body;
@@ -56,6 +54,7 @@ class BakeShaderBuffer extends ShaderCodeBuffer {
 
 export default class BakeMaterial extends MaterialBase {
     private m_data = new Float32Array([1.0, 1.0, 1.0, 1.0]);
+    private m_offset = new Float32Array([0.0, 0.0, 0.0, 0.0]);
     private m_shaderType = 0;
     constructor(type: number = 0) {
         super();
@@ -65,7 +64,6 @@ export default class BakeMaterial extends MaterialBase {
     getCodeBuf(): ShaderCodeBuffer {
         let ins = BakeShaderBuffer.GetInstance();
         ins.shaderType = this.m_shaderType;
-        console.log("HHHHHHHHHHJJJJJJJJJJJJJJ A0, ins.shaderType: ", ins.shaderType);
         return ins;
     }
     setRGB3f(pr: number, pg: number, pb: number): void {
@@ -95,13 +93,18 @@ export default class BakeMaterial extends MaterialBase {
     setColor(color: Color4): void {
         color.toArray4(this.m_data);
     }
+    
+    setOffsetXY(px: number, py: number): void {
+        this.m_offset[0] = px;
+        this.m_offset[1] = py;
+    }
     getColor(color: Color4): void {
         color.fromArray4(this.m_data);
     }
     createSelfUniformData(): ShaderUniformData {
         let oum = new ShaderUniformData();
-        oum.uniformNameList = ["u_color"];
-        oum.dataList = [this.m_data];
+        oum.uniformNameList = ["u_color", "u_offset"];
+        oum.dataList = [this.m_data, this.m_offset];
         return oum;
     }
 }

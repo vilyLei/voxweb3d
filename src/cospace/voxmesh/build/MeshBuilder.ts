@@ -7,16 +7,18 @@
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import IMatrix4 from "../../../vox/math/IMatrix4";
 
-import { ICoRScene } from "../../voxengine/ICoRScene";
 import IRenderMaterial from "../../../vox/render/IRenderMaterial";
+import { IMeshBuilder } from "./IMeshBuilder";
+
+import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 
-class MeshBuilder {
+class MeshBuilder implements IMeshBuilder {
 
-    protected m_bufSortFormat: number = 0x0;
-    vbWholeDataEnabled: boolean = false;
-    wireframe: boolean = false;
-    polyhedral: boolean = true;
+    protected m_bufSortFormat = 0x0;
+    vbWholeDataEnabled = false;
+    wireframe = false;
+    polyhedral = true;
     transMatrix: IMatrix4 = null;
     constructor() {
     }
@@ -34,7 +36,8 @@ class MeshBuilder {
     setBufSortFormat(layoutBit: number): void {
         this.m_bufSortFormat = layoutBit;
     }
-    applyMaterial(material: IRenderMaterial, texEnabled: boolean): void {
+    applyMaterial(material: IRenderMaterial, texEnabled: boolean = false): void {
+        texEnabled = texEnabled || material.getTextureAt(0) != null;
         material.initializeByCodeBuf(texEnabled );
         this.m_bufSortFormat = material.getBufSortFormat();
     }

@@ -20,8 +20,11 @@ interface IMeshBuilder {
 	 *                  the value of layoutBit comes from the material shdder program.
 	 */
     setBufSortFormat(layoutBit: number): void;
-    
-    applyMaterial(material: IRenderMaterial, texEnabled: boolean): void;
+    /**
+     * @param material IRenderMaterial instance
+     * @param texEnabled the default value is false
+     */
+    applyMaterial(material: IRenderMaterial, texEnabled?: boolean): void;
 }
 
 export { IMeshBuilder }

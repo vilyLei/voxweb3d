@@ -28,11 +28,11 @@ export default class Tube3DMesh extends MeshBase {
     uScale: number = 1.0;
     vScale: number = 1.0;
     getCircleCenterAt(i: number, outV: Vector3D): void {
-        this.geometry.getCircleCenterAt(i, outV);
+        this.geometry.getCenterAt(i, outV);
         this.m_boundsChanged = true;
     }
     transformCircleAt(i: number, mat4: Matrix4): void {
-        this.geometry.transformCircleAt(i, mat4);
+        this.geometry.transformAt(i, mat4);
         this.m_boundsChanged = true;
     }
     getVS(): Float32Array { return this.m_vs; }

@@ -5,12 +5,14 @@
 /*                                                                         */
 /***************************************************************************/
 
-import Vector3D from "../../../vox/math/Vector3D";
-import Matrix4 from "../../../vox/math/Matrix4";
-import AABB from "../../../vox/geom/AABB";
-import GeometryBase from "../../../vox/mesh/GeometryBase"
+import IVector3D from "../../../vox/math/IVector3D";
+import IMatrix4 from "../../../vox/math/IMatrix4";
+import CoGeometry from "./CoGeometry";
 
-export default class PipeGeometry extends GeometryBase {
+import { ICoRScene } from "../../voxengine/ICoRScene";
+declare var CoRScene: ICoRScene;
+
+export default class CoTubeGeometry extends CoGeometry {
     
     private m_longitudeNum: number = 0;
     private m_latitudeNum: number = 0;
@@ -22,9 +24,9 @@ export default class PipeGeometry extends GeometryBase {
         super();
     }
     
-    clone(): GeometryBase {
+    clone(): CoTubeGeometry {
 
-        let geometry: PipeGeometry = new PipeGeometry();
+        let geometry = new CoTubeGeometry();
 
         geometry.m_longitudeNum = this.m_longitudeNum;
         geometry.m_latitudeNum = this.m_latitudeNum;
@@ -34,12 +36,12 @@ export default class PipeGeometry extends GeometryBase {
         geometry.copyFrom( this );
         return geometry;
     }
-    getCenterAt(i: number, outV: Vector3D): void {
+    getCenterAt(i: number, outV: IVector3D): void {
         if (i >= 0 && i <= this.m_latitudeNum) {
             if (this.m_vs != null) {
                 outV.setXYZ(0.0, 0.0, 0.0);
-                let pvs: Float32Array = this.m_vs;
-                let end: number = (i + 1) * (this.m_longitudeNum + 1) * 3;
+                let pvs = this.m_vs;
+                let end = (i + 1) * (this.m_longitudeNum + 1) * 3;
                 i = (i * (this.m_longitudeNum + 1)) * 3;
                 end -= 3;
                 //console.log("i: "+i,end);
@@ -52,40 +54,41 @@ export default class PipeGeometry extends GeometryBase {
             }
         }
     }
-    transformAt(i: number, mat4: Matrix4): void {
+    transformAt(i: number, mat4: IMatrix4): void {
         if (i >= 0 && i <= this.m_latitudeNum) {
-            let pvs: Float32Array = this.m_vs;
-            let end: number = (i + 1) * (this.m_longitudeNum + 1) * 3;
+            let pvs = this.m_vs;
+            let end = (i + 1) * (this.m_longitudeNum + 1) * 3;
             i = (i * (this.m_longitudeNum + 1)) * 3;
             mat4.transformVectorsRangeSelf(pvs, i, end);
         }
     }
 
     initialize(radius: number, height: number, longitudeNumSegments: number, latitudeNumSegments: number, uvType: number = 1, alignYRatio: number = -0.5): void {
-        let i: number = 0;
-        let j: number = 0;
+        let i = 0;
+        let j = 0;
         if (radius < 0.01) radius = 0.01;
         if (longitudeNumSegments < 2) longitudeNumSegments = 2;
         if (latitudeNumSegments < 1) latitudeNumSegments = 1;
         this.m_longitudeNum = longitudeNumSegments;
         this.m_latitudeNum = latitudeNumSegments;
 
-        let m_radius: number = Math.abs(radius);
-        let ph: number = Math.abs(height);
+        let m_radius = Math.abs(radius);
+        let ph = Math.abs(height);
 
-        let yRad: number = 0;
-        let px: number = 0;
-        let py: number = 0;
-        let minY: number = alignYRatio * ph;
+        let yRad = 0;
+        let px = 0;
+        let py = 0;
+        let minY = alignYRatio * ph;
+        if(this.bounds != null) {
+            this.bounds.min.setXYZ(-radius, minY, -radius);
+            this.bounds.max.setXYZ(radius, minY + ph, radius);
+            this.bounds.updateFast();
+        }
 
-        this.bounds.min.setXYZ(-radius, minY, -radius);
-        this.bounds.max.setXYZ(radius, minY + ph, radius);
-        this.bounds.updateFast();
-
-        let vtx: Vector3D = new Vector3D();
-        let srcRow: Vector3D[] = [];
-        let pv: Vector3D;
-        let pi2: number = Math.PI * 2;
+        let vtx = CoRScene.createVec3();
+        let srcRow: IVector3D[] = [];
+        let pv: IVector3D;
+        let pi2 = Math.PI * 2;
         for (i = 0; i < 1; ++i) {
             for (j = 0; j < longitudeNumSegments; ++j) {
                 yRad = (pi2 * j) / longitudeNumSegments;
@@ -93,7 +96,7 @@ export default class PipeGeometry extends GeometryBase {
                 py = Math.cos(yRad);
                 vtx.x = px * m_radius;
                 vtx.z = py * m_radius;
-                pv = new Vector3D(vtx.x, vtx.y, vtx.z, 1.0);
+                pv = CoRScene.createVec3(vtx.x, vtx.y, vtx.z, 1.0);
                 srcRow.push(pv);
             }
             srcRow.push(srcRow[0]);
@@ -101,10 +104,11 @@ export default class PipeGeometry extends GeometryBase {
         this.vtxTotal = (longitudeNumSegments + 1) * (latitudeNumSegments + 1);
         this.m_vs = new Float32Array(this.vtxTotal * 3);
         this.m_uvs = new Float32Array(this.vtxTotal * 2);
+
         // calc cylinder wall vertexes
-        let tot: number = latitudeNumSegments;
-        let k: number = 0;
-        let l: number = 0;
+        let tot = latitudeNumSegments;
+        let k = 0;
+        let l = 0;
         console.log("latitudeNumSegments: ", latitudeNumSegments, " vtx tot: ", this.vtxTotal);
         for (i = 0; i <= tot; ++i) {
             px = i / tot;
@@ -121,9 +125,9 @@ export default class PipeGeometry extends GeometryBase {
                 this.m_vs[k++] = srcRow[j].x; this.m_vs[k++] = py; this.m_vs[k++] = srcRow[j].z;
             }
         }
-        let cn: number = longitudeNumSegments + 1;
-        let a: number = 0;
-        let b: number = 0;
+        let cn = longitudeNumSegments + 1;
+        let a = 0;
+        let b = 0;
         this.m_ivs = new Uint16Array(tot * longitudeNumSegments * 6);
         k = 0;
         for (i = 0; i < tot; ++i) {
@@ -136,8 +140,5 @@ export default class PipeGeometry extends GeometryBase {
         }
         this.vtCount = this.m_ivs.length;
         this.trisNumber = this.vtCount / 3;
-    }
-    toString(): string {
-        return "PipeGeometry()";
     }
 }

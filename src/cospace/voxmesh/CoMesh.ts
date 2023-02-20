@@ -16,6 +16,10 @@ import { ISphereMeshBuilder } from "./build/ISphereMeshBuilder";
 import { SphereMeshBuilder } from "./build/SphereMeshBuilder";
 
 import { ICoRScene } from "../voxengine/ICoRScene";
+import { CylinderMeshBuilder } from "./build/CylinderMeshBuilder";
+import { ICylinderMeshBuilder } from "./build/ICylinderMeshBuilder";
+import { TubeMeshBuilder } from "./build/TubeMeshBuilder";
+import { ITubeMeshBuilder } from "./build/ITubeMeshBuilder";
 declare var CoRScene: ICoRScene;
 
 const plane: IPlaneMeshBuilder = new PlaneMeshBuilder();
@@ -23,6 +27,8 @@ const line: ILineMeshBuilder = new LineMeshBuilder();
 const cone: IConeMeshBuilder = new ConeMeshBuilder();
 const box: IBoxMeshBuilder = new BoxMeshBuilder();
 const sphere: ISphereMeshBuilder = new SphereMeshBuilder();
+const cylinder: ICylinderMeshBuilder = new CylinderMeshBuilder();
+const tube: ITubeMeshBuilder = new TubeMeshBuilder();
 
 function createDataMesh(): IDataMesh {
 	if(typeof CoRScene !== "undefined") {
@@ -51,6 +57,8 @@ export {
 	cone,
 	box,
 	sphere,
+	cylinder,
+	tube,
 
 	createDataMesh,
 	createRawMesh,

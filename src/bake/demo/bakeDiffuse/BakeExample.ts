@@ -32,6 +32,7 @@ import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
 import PingpongBlur from "../../../renderingtoy/mcase/PingpongBlur";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import ScreenFixedAlignPlaneEntity from "../../../vox/entity/ScreenFixedAlignPlaneEntity";
+import IMeshBase from "../../../vox/mesh/IMeshBase";
 
 export class BakeExample {
 
@@ -104,6 +105,7 @@ export class BakeExample {
             let rparam = this.m_graph.createRendererParam(this.createDiv(0, 0, 512, 512));
             rparam.autoSyncRenderBufferAndWindowSize = false;
             rparam.setAttriAntialias(true);
+            // rparam.setAttriAlpha(true);
             rparam.setCamPosition(800.0, 800.0, 800.0);
             this.m_rscene = this.m_graph.createScene(rparam, 4);
             this.m_rscene.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);
@@ -120,8 +122,9 @@ export class BakeExample {
     }
     private applyTex(): void {
 
-        let tex = this.getTexByUrl("static/assets/sph_mapping01b.png");
+        let tex = this.getTexByUrl("static/assets/sph_mapping01.png");
         tex.flipY = true;
+        tex.premultiplyAlpha = true;
         let material = new Default3DMaterial();
         material.setTextureList([tex]);
         material.initializeByCodeBuf(true);
@@ -136,6 +139,35 @@ export class BakeExample {
 
         this.m_rscene.addEntity(entity);
     }
+    private createWithMesh(mesh: IMeshBase, dx: number, dy: number): void {
+
+        let material0 = new BakeMaterial(0);
+        material0.setTextureList([
+            this.getTexByUrl("static/assets/color_02.jpg"),
+            this.getTexByUrl("static/assets/fabric_01.jpg"),
+        ]);
+        material0.initializeByCodeBuf(true);
+        material0.setOffsetXY(dx, dy);
+        let entity0 = new DisplayEntity();
+        entity0.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+        entity0.setMesh(mesh);
+        entity0.setMaterial(material0);
+        this.m_rscene.addEntity(entity0);
+    }
+    private createLineDraw(mesh: IMeshBase): void {
+        let radius = 0.002;
+        let PI2 = Math.PI * 2.0;
+        let total = 8;
+        for (let k = 0; k < 8; ++k) {
+            for (let i = 0; i < total; ++i) {
+                let rad = PI2 * i / total;
+                let dx = Math.cos(rad) * radius;
+                let dy = Math.sin(rad) * radius;
+                this.createWithMesh(mesh, dx, dy);
+            }
+            radius += 0.002;
+        }
+    }
     private buildTex(): void {
 
         let material = new BakeMaterial();
@@ -146,6 +178,7 @@ export class BakeExample {
         material.initializeByCodeBuf(true);
 
         let mesh = new Sphere3DMesh();
+        mesh.wireframe = true;
         mesh.setBufSortFormat(material.getBufSortFormat());
         mesh.initialize(200, 20, 20, false);
 
@@ -154,19 +187,65 @@ export class BakeExample {
         // mesh.setBufSortFormat(material.getBufSortFormat());
         // mesh.initialize(-250, -250, 500, 500);
 
-        let entity = new DisplayEntity();
-        entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
-        entity.setMesh(mesh);
-        entity.setMaterial(material);
-
-        this.m_rscene.addEntity(entity);
-
+        // let material0 = new BakeMaterial();
+        // material0.setTextureList([
+        //     this.getTexByUrl("static/assets/color_02.jpg"),
+        //     this.getTexByUrl("static/assets/fabric_01.jpg"),
+        // ]);
+        // material0.initializeByCodeBuf(true);
+        // material0.setOffsetXY(dx, dx);
+        // let entity0 = new DisplayEntity();
+        // entity0.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+        // entity0.setMesh(mesh);
+        // entity0.setMaterial(material0);
+        // this.m_rscene.addEntity(entity0);
+        let radius = 0.002;
+        let PI2 = Math.PI * 2.0;
+        let total = 8;
+        for (let k = 0; k < 8; ++k) {
+            for (let i = 0; i < total; ++i) {
+                let rad = PI2 * i / total;
+                let dx = Math.cos(rad) * radius;
+                let dy = Math.sin(rad) * radius;
+                this.createWithMesh(mesh, dx, dy);
+            }
+            radius += 0.002;
+        }
+        // let dx = 0.002;
+        // let dy = 0.002;
+        // for(let i = 0; i < 8; ++i ) {
+        //     this.createWithMesh(mesh, -dx, -dy);
+        //     this.createWithMesh(mesh, dx, dy);
+        //     this.createWithMesh(mesh, dx, -dy);
+        //     this.createWithMesh(mesh, -dx, dy);
+        //     this.createWithMesh(mesh, -dx, dy);
+        //     this.createWithMesh(mesh, dx, -dy);
+        //     dx += 0.002;
+        //     console.log("dx: ", dx);
+        //     dy = dx;
+        // }
+        return;
+        let mesh0 = new Sphere3DMesh();
+        mesh0.setBufSortFormat(material.getBufSortFormat());
+        mesh0.initialize(200, 20, 20, false);
+        let material0 = new BakeMaterial();
+        material0.setTextureList([
+            this.getTexByUrl("static/assets/color_02.jpg"),
+            this.getTexByUrl("static/assets/fabric_01.jpg"),
+        ]);
+        material0.initializeByCodeBuf(true);
+        // material0.setOffsetXY(dx, dx);
+        let entity0 = new DisplayEntity();
+        entity0.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+        entity0.setMesh(mesh0);
+        entity0.setMaterial(material0);
+        this.m_rscene.addEntity(entity0, 1);
 
         return;
         material = new BakeMaterial(1);
         material.setTextureList([
             this.getTexByUrl("static/assets/color_02.jpg"),
-            this.getTexByUrl("static/assets/fabric_01.jpg"),
+            this.getTexByUrl("static/assets/fabric_01.jpg")
         ]);
         material.initializeByCodeBuf(true);
         mesh = new Sphere3DMesh();
@@ -180,7 +259,7 @@ export class BakeExample {
         // mesh.setBufSortFormat(material.getBufSortFormat());
         // mesh.initialize(-250, -250, 500, 500);
 
-        entity = new DisplayEntity();
+        let entity = new DisplayEntity();
         entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
         entity.setMesh(mesh);
         entity.setMaterial(material);
@@ -198,11 +277,11 @@ export class BakeExample {
         let plane = new ScreenFixedAlignPlaneEntity();
         plane.initialize(-1.0, -1.0, 2.0, 2.0, [tex_blurSrc]);
         this.m_rscene.addEntity(plane);
-
+    
         // return;
-
+    
         this.m_blur = new PingpongBlur(this.m_rscene);
-
+    
         //this.m_blurModule.setSyncViewSizeEnabled(false);
         //this.m_blurModule.setFBOSize(128,128);
         this.m_blur.setBlurDensity(2.0);
@@ -315,14 +394,16 @@ export class BakeExample {
             //     this.getTexByUrl("static/assets/color_02.jpg"),
             //     this.getTexByUrl("static/assets/fabric_01.jpg")
             // ]);
+
             let tex = this.getTexByUrl("static/assets/sph_mapping02.png");
             tex.flipY = true;
             let material = new Default3DMaterial();
             material.setTextureList([
                 tex
             ]);
-
             material.initializeByCodeBuf(true);
+            //createLineDraw
+
             let mesh = new DataMesh();
             mesh.vbWholeDataEnabled = false;
             mesh.setVS(vs);
@@ -332,6 +413,10 @@ export class BakeExample {
             mesh.setVtxBufRenderData(material);
             mesh.initialize();
 
+            // this.createLineDraw(mesh);
+
+            // return;
+
             let matrix4 = new Matrix4(transform);
             let entity = new DisplayEntity();
             // entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
@@ -339,7 +424,7 @@ export class BakeExample {
             entity.setMaterial(material);
             entity.getTransform().setParentMatrix(matrix4);
 
-            this.m_rscene.addEntity(entity);
+            this.m_rscene.addEntity(entity, 1);
             this.m_entities.push(entity);
 
             // for automatically fitting the model size in the scene

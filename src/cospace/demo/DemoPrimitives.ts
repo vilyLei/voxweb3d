@@ -2,6 +2,7 @@ import IRendererScene from "../../vox/scene/IRendererScene";
 import { ICoRenderer } from "../voxengine/ICoRenderer";
 import { ICoRScene } from "../voxengine/ICoRScene";
 import { ICoEntity } from "../voxentity/ICoEntity";
+import { ICoMesh } from "../voxmesh/ICoMesh";
 import { ICoMaterial } from "../voxmaterial/ICoMaterial";
 import { ICoUIInteraction } from "../voxengine/ui/ICoUIInteraction";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
@@ -12,6 +13,7 @@ declare var CoRScene: ICoRScene;
 declare var CoUIInteraction: ICoUIInteraction;
 declare var CoMaterial: ICoMaterial;
 declare var CoEntity: ICoEntity;
+declare var CoMesh: ICoMesh;
 
 /**
  * cospace renderer scene
@@ -74,6 +76,30 @@ export class DemoPrimitives {
 	}
 	private init3DScene(): void {
 
+
+		let material = CoRScene.createDefaultMaterial();
+		material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
+
+		// CoMesh.cylinder.applyMaterial(material);
+		// let meshCyl = CoMesh.cylinder.create(50, 110, 10);
+
+		// let cyl = CoRScene.createDisplayEntity();
+		// cyl.setMaterial(material);
+		// cyl.setMesh(meshCyl);
+		// this.m_rscene.addEntity(cyl);
+
+		
+		CoMesh.tube.applyMaterial(material);
+		let meshTube = CoMesh.tube.create(50, 110, 10);
+
+		let tube = CoRScene.createDisplayEntity();
+		tube.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
+		tube.setMaterial(material);
+		tube.setMesh(meshTube);
+		this.m_rscene.addEntity(tube);
+
+
+		return;
 		let size = 50;
 		let v0 = CoRScene.createVec3(-size, -size, -size);
 		let entity = CoEntity.createBox(v0, v0.clone().scaleBy(-1));

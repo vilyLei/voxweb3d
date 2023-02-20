@@ -6,6 +6,7 @@ layout(location = 2) in vec3 a_nvs;
 uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
+uniform vec4 u_offset;
 out vec3 v_nv;
 out vec2 v_uvs;
 void main()
@@ -16,5 +17,6 @@ void main()
     vec2 uvpos = v_uvs.xy;
     // uvpos = fract(uvpos + vec2(2.0));
     uvpos = vec2(2.0) * vec2(uvpos - vec2(0.5));
+    uvpos += u_offset.xy;
     gl_Position = vec4(uvpos, 0.0,1.0);
 }
