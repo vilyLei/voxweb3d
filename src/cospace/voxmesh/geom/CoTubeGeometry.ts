@@ -122,7 +122,20 @@ export default class CoTubeGeometry extends CoGeometry {
                     this.m_uvs[l++] = this.uScale * px;
                     this.m_uvs[l++] = this.uScale * (j / longitudeNumSegments);
                 }
-                this.m_vs[k++] = srcRow[j].x; this.m_vs[k++] = py; this.m_vs[k++] = srcRow[j].z;
+                // this.m_vs[k++] = srcRow[j].x; this.m_vs[k++] = py; this.m_vs[k++] = srcRow[j].z;
+                const vtx = srcRow[j];
+                const vs = this.m_vs;
+                switch (this.axisType) {
+                    case 1:
+                        vs[k++] = vtx.x; vs[k++] = py; vs[k++] = vtx.z;
+                        break;
+                    case 2:
+                        vs[k++] = vtx.z; vs[k++] = vtx.x; vs[k++] = py;
+                        break;
+                    default:
+                        vs[k++] = py; vs[k++] = vtx.z; vs[k++] = vtx.x;
+                        break;
+                }
             }
         }
         let cn = longitudeNumSegments + 1;

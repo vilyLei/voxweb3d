@@ -5,6 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
+import IGeometry from "../../../vox/mesh/IGeometry";
 import IRawMesh from "../../../vox/mesh/IRawMesh";
 import { IMeshBuilder } from "./IMeshBuilder";
 
@@ -18,6 +19,7 @@ interface ITubeMeshBuilder extends IMeshBuilder {
      */
     vScale: number;
     
+    readonly geometry: IGeometry;
     /**
      * @param radius sphere radius
      * @param height sphereheight

@@ -15,6 +15,13 @@ export default interface IGeometry {
     vtxTotal: number;
     trisNumber: number;
     vtCount: number;
+    /**
+     * axisType = 0 is XOY plane,
+     * axisType = 1 is XOZ plane,
+     * axisType = 2 is YOZ plane
+     * the default value is 0
+     */
+    axisType: number;
 
 
     clone(): IGeometry;

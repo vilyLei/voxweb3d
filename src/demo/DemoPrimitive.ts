@@ -120,7 +120,7 @@ export class DemoPrimitive {
             //return;
             //  return;
             //*/
-            ///*
+            /*
             let billLine: BillboardLine3DEntity = new BillboardLine3DEntity();
             //lightLine.showDoubleFace();
             billLine.toBrightnessBlend();
@@ -152,13 +152,14 @@ export class DemoPrimitive {
             //let posV:Vector3D = new Vector3D();
             ///*
             let pipe: Tube3DEntity = new Tube3DEntity();
+            pipe.axisType = 2;
             //pipe.wireframe = true;
-            pipe.showDoubleFace();
+            // pipe.showDoubleFace();
             //pipe.toBrightnessBlend(false,true);
             pipe.initialize(50.0, 200.0, 8, 1, [tex3]);
             //pipe.setXYZ(Math.random() * 500.0 - 250.0,Math.random() * 50.0 + 10.0,Math.random() * 500.0 - 250.0);
             this.m_renderer.addEntity(pipe, 1);
-            //return;
+            return;
             //*/
             ///*
             //  pipe.getCircleCenterAt(0,posV);

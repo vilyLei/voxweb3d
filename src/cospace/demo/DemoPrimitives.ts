@@ -90,10 +90,11 @@ export class DemoPrimitives {
 
 		
 		CoMesh.tube.applyMaterial(material);
+		CoMesh.tube.geometry.axisType = 2;
 		let meshTube = CoMesh.tube.create(50, 110, 10);
 
 		let tube = CoRScene.createDisplayEntity();
-		tube.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
+		// tube.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
 		tube.setMaterial(material);
 		tube.setMesh(meshTube);
 		this.m_rscene.addEntity(tube);

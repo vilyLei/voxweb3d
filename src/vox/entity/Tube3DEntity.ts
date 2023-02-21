@@ -26,6 +26,12 @@ export default class Tube3DEntity extends DisplayEntity {
     uScale: number = 1.0;
     vScale: number = 1.0;
     wireframe: boolean = false;
+    /**
+     * axisType = 0 is XOY plane,
+     * axisType = 1 is XOZ plane,
+     * axisType = 2 is YOZ plane
+     */
+    axisType = 0;
     private m_radius: number = 50.0;
     private m_height: number = 100.0;
     constructor(transform: IROTransform = null) {
@@ -85,21 +91,25 @@ export default class Tube3DEntity extends DisplayEntity {
     }
 
     protected __activeMesh(material: IRenderMaterial): void {
+        
         this.m_currMesh = this.getMesh() as Tube3DMesh;
-        if (this.m_currMesh == null) {
-            this.m_currMesh = new Tube3DMesh();
+
+        let mesh = this.m_currMesh;
+        if (mesh == null) {
+            mesh = new Tube3DMesh();
+            mesh.axisType = this.axisType;
 
             if (this.m_transMatrix != null) {
-                this.m_currMesh.setTransformMatrix(this.m_transMatrix);
+                mesh.setTransformMatrix(this.m_transMatrix);
             }
-            this.m_currMesh.uScale = this.uScale;
-            this.m_currMesh.vScale = this.vScale;
-            this.m_currMesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
-            this.m_currMesh.wireframe = this.wireframe;
-            this.m_currMesh.setVtxBufRenderData(material);
-            this.m_currMesh.initialize(this.m_radius, this.m_height, this.m_longitudeNum, this.m_latitudeNum, this.m_uvType, this.m_alignYRatio);
-            this.setMesh(this.m_currMesh);
-            this.m_currMesh.setTransformMatrix(null);
+            mesh.uScale = this.uScale;
+            mesh.vScale = this.vScale;
+            mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
+            mesh.wireframe = this.wireframe;
+            mesh.setVtxBufRenderData(material);
+            mesh.initialize(this.m_radius, this.m_height, this.m_longitudeNum, this.m_latitudeNum, this.m_uvType, this.m_alignYRatio);
+            this.setMesh( mesh );
+            mesh.setTransformMatrix(null);
         }
         this.m_transMatrix = null;
     }

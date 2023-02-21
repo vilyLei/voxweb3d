@@ -145,7 +145,7 @@
 
 //  import {DemoLockDrawEntity as Demo} from "./demo/DemoLockDrawEntity";
 
-//  import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
+ import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 
 //  import {DemoBaseRenderer as Demo} from "./demo/DemoBaseRenderer";
 
@@ -349,7 +349,7 @@
 
 //  import {EffectExample as Demo} from "./renderingtoy/effectTest/modelLoad/EffectExample";
 
- import {EffectExample as Demo} from "./renderingtoy/effectTest/applyui/EffectExample";
+//  import {EffectExample as Demo} from "./renderingtoy/effectTest/applyui/EffectExample";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////

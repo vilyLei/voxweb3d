@@ -22,7 +22,7 @@ class TubeMeshBuilder extends MeshBuilder implements ITubeMeshBuilder {
     private m_latitudeNumSegments: number;
     private m_uvType: number;
     private m_alignYRatio: number;
-    private m_geometry = new CoTubeGeometry();
+    readonly geometry = new CoTubeGeometry();
 
     uScale = 1.0;
     vScale = 1.0;
@@ -39,7 +39,7 @@ class TubeMeshBuilder extends MeshBuilder implements ITubeMeshBuilder {
 
     protected setMeshData(mesh: IRawMesh): void {
         
-        let geometry = this.m_geometry;
+        let geometry = this.geometry;
         geometry.reset();
         geometry.uScale = this.uScale;
         geometry.vScale = this.vScale;

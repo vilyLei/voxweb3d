@@ -21,6 +21,12 @@ export default class CoGeometry implements IGeometry {
     trisNumber: number = 0;
     vtCount: number = 0;
     bounds: IAABB = null;
+    /**
+     * axisType = 0 is XOY plane,
+     * axisType = 1 is XOZ plane,
+     * axisType = 2 is YOZ plane
+     */
+    axisType = 0;
 
     constructor() { }
 

@@ -11,17 +11,16 @@ import AABB from "../../../vox/geom/AABB";
 import GeometryBase from "../../../vox/mesh/GeometryBase"
 
 export default class PipeGeometry extends GeometryBase {
-    
+
     private m_longitudeNum: number = 0;
     private m_latitudeNum: number = 0;
 
-    uScale: number = 1.0;
-    vScale: number = 1.0;
-
+    uScale = 1.0;
+    vScale = 1.0;
     constructor() {
         super();
     }
-    
+
     clone(): GeometryBase {
 
         let geometry: PipeGeometry = new PipeGeometry();
@@ -31,7 +30,7 @@ export default class PipeGeometry extends GeometryBase {
         geometry.uScale = this.uScale;
         geometry.vScale = this.vScale;
 
-        geometry.copyFrom( this );
+        geometry.copyFrom(this);
         return geometry;
     }
     getCenterAt(i: number, outV: Vector3D): void {
@@ -105,7 +104,7 @@ export default class PipeGeometry extends GeometryBase {
         let tot: number = latitudeNumSegments;
         let k: number = 0;
         let l: number = 0;
-        console.log("latitudeNumSegments: ", latitudeNumSegments, " vtx tot: ", this.vtxTotal);
+        
         for (i = 0; i <= tot; ++i) {
             px = i / tot;
             py = minY + ph * px;
@@ -118,7 +117,18 @@ export default class PipeGeometry extends GeometryBase {
                     this.m_uvs[l++] = this.uScale * px;
                     this.m_uvs[l++] = this.uScale * (j / longitudeNumSegments);
                 }
-                this.m_vs[k++] = srcRow[j].x; this.m_vs[k++] = py; this.m_vs[k++] = srcRow[j].z;
+                const vtx = srcRow[j];
+                switch (this.axisType) {
+                    case 1:
+                        this.m_vs[k++] = vtx.x; this.m_vs[k++] = py; this.m_vs[k++] = vtx.z;
+                        break;
+                    case 2:
+                        this.m_vs[k++] = vtx.z; this.m_vs[k++] = vtx.x; this.m_vs[k++] = py;
+                        break;
+                    default:
+                        this.m_vs[k++] = py; this.m_vs[k++] = vtx.z; this.m_vs[k++] = vtx.x;
+                        break;
+                }
             }
         }
         let cn: number = longitudeNumSegments + 1;

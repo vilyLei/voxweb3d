@@ -13,7 +13,7 @@ import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import MeshBase from "../../vox/mesh/MeshBase";
 import PipeGeometry from "../../voxmesh/geometry/primitive/PipeGeometry";
 
-export default class Tube3DMesh extends MeshBase {
+export default class Torus3DMesh extends MeshBase {
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         super(bufDataUsage);
     }
@@ -48,10 +48,24 @@ export default class Tube3DMesh extends MeshBase {
     getCVS(): Float32Array { return this.m_cvs; }
     getIVS(): Uint16Array | Uint32Array { return this.m_ivs; }
 
-    initialize(radius: number, height: number, longitudeNumSegments: number, latitudeNumSegments: number, uvType: number = 1, alignYRatio: number = -0.5): void {
+    initialize(ringRadius: number, axisRadius: number, longitudeNumSegments: number, latitudeNumSegments: number, uvType: number = 1, alignYRatio: number = -0.5): void {
+
         if (this.m_vs == null) {
-            this.geometry.axisType = this.axisType;
-            this.geometry.initialize(radius, height, longitudeNumSegments, latitudeNumSegments, uvType, alignYRatio);
+
+            let g = this.geometry;
+            g.axisType = this.axisType;
+            g.initialize(axisRadius, 0.0, longitudeNumSegments, latitudeNumSegments, uvType, alignYRatio);
+
+            let pi2 = 2.0 * Math.PI;
+            let rad = 0.0;
+            let pv = new Vector3D();
+            for(let i = 0; i <= longitudeNumSegments; ++i) {
+
+                rad = pi2 * i / longitudeNumSegments;
+                pv.x = Math.cos(rad) * ringRadius;
+                pv.z = Math.sin(rad) * ringRadius;
+
+            }
             this.m_vs = this.geometry.getVS();
             this.m_uvs = this.geometry.getUVS();
             this.m_ivs = this.geometry.getIVS();
