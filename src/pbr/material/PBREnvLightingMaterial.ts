@@ -73,7 +73,6 @@ export default class PBREnvLightingMaterial extends MaterialBase {
     private m_albedo: Float32Array = new Float32Array([0.5, 0.0, 0.0, 0.0]);
     private m_params: Float32Array = new Float32Array([0.0, 0.0, 1.0, 0.0]);
     private m_F0: Float32Array = new Float32Array([0.0, 0.0, 0.0, 0.0]);
-    private m_camPos: Float32Array = new Float32Array([500.0, 500.0, 500.0, 1.0]);
     private m_lightPositions: Float32Array = new Float32Array(4 * 4);
     private u_lightColors: Float32Array = new Float32Array(4 * 4);
 
