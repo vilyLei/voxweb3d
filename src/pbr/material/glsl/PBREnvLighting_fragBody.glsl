@@ -1,8 +1,5 @@
 
-//uniform sampler2D u_sampler0;
 uniform samplerCube u_sampler0;
-
-//uniform mat4 u_viewMat;
 
 out vec4 FragColor;
 in vec2 v_texUV;
@@ -18,8 +15,6 @@ uniform vec4 u_F0; //[metallic,roughness,ao, F0 offset]
 // lights
 uniform vec4 u_lightPositions[4];
 uniform vec4 u_lightColors[4];
-
-uniform vec4 u_camPos;
 
 #define PI 3.141592653589793
 #define PI2 6.283185307179586

@@ -405,10 +405,7 @@ export class DemoEnvLighting {
         material.setRoughness(roughness);
         material.setAO(ao);
         let f0: number = Math.random() * 0.9;
-        //material.setF0(Math.random() * 0.9, Math.random() * 0.9, Math.random() * 0.9);
-        //material.setF0(f0,f0,f0);
-        material.setCamPos(this.m_rscene.getCamera().getPosition());
-
+        
         this.m_materials.push(material);
 
         for (let i: number = 0; i < 4; ++i) {

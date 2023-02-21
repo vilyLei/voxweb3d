@@ -116,17 +116,12 @@ export default class PBREnvLightingMaterial extends MaterialBase {
         this.u_lightColors[i + 1] = pg;
         this.u_lightColors[i + 2] = pb;
     }
-    setCamPos(pos: Vector3D): void {
 
-        this.m_camPos[0] = pos.x;
-        this.m_camPos[1] = pos.y;
-        this.m_camPos[2] = pos.z;
-    }
     createSelfUniformData(): ShaderUniformData {
 
         let oum = new ShaderUniformData();
-        oum.uniformNameList = ["u_albedo", "u_params", "u_lightPositions", "u_lightColors", "u_camPos", "u_F0"];
-        oum.dataList = [this.m_albedo, this.m_params, this.m_lightPositions, this.u_lightColors, this.m_camPos, this.m_F0];
+        oum.uniformNameList = ["u_albedo", "u_params", "u_lightPositions", "u_lightColors", "u_F0"];
+        oum.dataList = [this.m_albedo, this.m_params, this.m_lightPositions, this.u_lightColors, this.m_F0];
         return oum;
     }
 }
