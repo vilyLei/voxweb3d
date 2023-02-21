@@ -43,7 +43,7 @@ export default class Torus3DEntity extends DisplayEntity {
             cm.setTextureList(texList);
             this.setMaterial(cm);
         }
-        else if (texList != null) {
+        else if (texList != null && this.getMaterial().getTextureTotal() < 1) {
             this.getMaterial().setTextureList(texList);
         }
     }
