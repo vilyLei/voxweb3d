@@ -42,6 +42,7 @@ import IShaderMaterial from "../vox/material/mcase/IShaderMaterial";
 import MaterialBase from "../vox/material/MaterialBase";
 import Torus3DMesh from "../vox/mesh/Torus3DMesh";
 import Torus3DEntity from "../vox/entity/Torus3DEntity";
+import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 
 class TextureLoader {
 
@@ -506,27 +507,18 @@ export class DemoEnvLighting {
         let beginPos: Vector3D = new Vector3D(disV3.x * (cn - 1) * -0.5, disV3.y * (rn - 1) * -0.5, -100.0);
         let pos: Vector3D = new Vector3D();
 
-        let material = this.makeMaterial(0.3, 0.0, 1.3);
+        let material = this.makeMaterial(0.3, 0.4, 1.3);
         material.setTextureList( [s_envTex] );
         material.initializeByCodeBuf(material.getTextureAt(0) != null);
-        let ringRadius = 200;
-        let latitudeNumSegments = 50;
-        /*
-        let torusMesh = new Torus3DMesh();
-        torusMesh.axisType = 2;
-        torusMesh.setVtxBufRenderData(material);
-        torusMesh.initialize(ringRadius, 30, 30, latitudeNumSegments);
-
-        let torusEntity = new DisplayEntity();
-        torusEntity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-        torusEntity.setMaterial(material);
-        torusEntity.setMesh(torusMesh);
-        this.m_rscene.addEntity(torusEntity, 1);
-        //*/
-        let torus = new Torus3DEntity();
-        torus.setMaterial(material);
-        torus.initialize(ringRadius, 50, 30, 50);
-        this.m_rscene.addEntity(torus, 1);
+        
+        let cly = new Cylinder3DEntity();
+        cly.setMaterial(material);
+        cly.initialize(30, 200, 30);
+        this.m_rscene.addEntity(cly, 1);
+        // let torus = new Torus3DEntity();
+        // torus.setMaterial(material);
+        // torus.initialize(ringRadius, 50, 30, 50);
+        // this.m_rscene.addEntity(torus, 1);
 
         return;
         for (let i: number = 0; i < rn; ++i) {
