@@ -12,5 +12,5 @@ void main()
 {
     gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);
     v_nv = a_nvs;
-    v_uvs = a_uvs;
+    v_uvs = a_uvs * 0.01666;
 }

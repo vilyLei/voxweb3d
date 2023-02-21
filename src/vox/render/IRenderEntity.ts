@@ -103,7 +103,10 @@ export default interface IRenderEntity extends IRenderEntityBase {
 
     setXYZ(px: number, py: number, pz: number): void;
     setPosition(pos: IVector3D): void;
-    getPosition(resultPos: IVector3D): void;
+    /**
+     * @param pv the default value is null
+     */
+    getPosition(pv?: IVector3D): void;
     setRotationXYZ(rx: number, ry: number, rz: number): void;
     setRotation3(rv: IVector3D): void;
     setScaleXYZ(sx: number, sy: number, sz: number): void;
@@ -112,11 +115,11 @@ export default interface IRenderEntity extends IRenderEntityBase {
     /**
      * @param sv the default value is null
      */
-    getScaleXYZ(sv: IVector3D): IVector3D;
+    getScaleXYZ(sv?: IVector3D): IVector3D;
     /**
      * @param rv the default value is null
      */
-    getRotationXYZ(rv: IVector3D): IVector3D;
+    getRotationXYZ(rv?: IVector3D): IVector3D;
 
     copyPositionFrom(entity: IRenderEntity): void;
     copyMeshFrom(entity: IRenderEntity): void;

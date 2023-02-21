@@ -32,6 +32,9 @@ class EntityLayouter {
 		this.m_entities = [];
 		this.m_transforms = [];
 	}
+	getEntities(): ITransformEntity[] {
+		return this.m_entities;
+	}
 	layoutAppendItem(entity: ITransformEntity, transform: Matrix4): void {
 		this.m_entities.push(entity);
 		this.m_transforms.push(transform);
@@ -46,6 +49,7 @@ class EntityLayouter {
 			et.setRotationXYZ(0.0, 0.0, 0.0);
 		}
 		let pivot = new Vector3D();
+		
 		this.fixToPosition(this.m_entities, this.m_transforms, pivot, fixSize);
 	}
 

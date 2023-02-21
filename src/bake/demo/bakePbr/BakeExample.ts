@@ -123,13 +123,15 @@ export class BakeExample {
     private applyTex(): void {
 
         // let tex = this.getTexByUrl("static/assets/sph_mapping01.png");
-        let tex = this.getTexByUrl("static/assets/sph_mapping03.png");
+        let tex = this.getTexByUrl("static/assets/bake/sph_mapping03.png");
         tex.flipY = true;
         tex.premultiplyAlpha = true;
         let material = new Default3DMaterial();
         material.setTextureList([tex]);
         material.initializeByCodeBuf(true);
         let mesh = new Sphere3DMesh();
+        mesh.uvScale = 0.9;
+        mesh.mode = 2;
         mesh.setBufSortFormat(material.getBufSortFormat());
         mesh.initialize(150, 30, 30, false);
 

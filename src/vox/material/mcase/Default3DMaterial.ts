@@ -49,8 +49,31 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
         }
 
         if (this.normalEnabled) {
-            coder.addFragHeadCode("const vec3 direc = normalize(vec3(0.3,0.6,0.9));")
+            coder.addFragHeadCode("const vec3 direc = normalize(vec3(0.3,0.6,0.9));");
         }
+        /*
+        coder.addVertHeadCode(
+`
+float calcValue(float px) {
+
+    if(px > 1.0) {
+        float t = fract(px);
+        px = t > 0.0 ? t : 1.0;
+    }else if(px < 0.0) {
+        px = abs(px);
+        if(px > 1.0) {
+            float t = fract(px);
+            px = t > 0.0 ? t : 1.0;
+        }
+        px = 1.0 - px;
+    }
+    return px;
+}
+vec2 getUV(vec2 uv) {
+    return vec2(calcValue(uv.x), calcValue(uv.y));
+}
+`);
+//*/
         if (this.vertColorEnabled) {
             coder.addVertLayout("vec3", "a_cvs");
             coder.addVarying("vec3", "v_cv");

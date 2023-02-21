@@ -1,45 +1,43 @@
 
-import RendererDevice from "../vox/render/RendererDevice";
-import RendererParam from "../vox/scene/RendererParam";
-import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
-import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
-import DisplayEntity from "../vox/entity/DisplayEntity";
-import Plane3DEntity from "../vox/entity/Plane3DEntity";
-import Axis3DEntity from "../vox/entity/Axis3DEntity";
-import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
-import TextureProxy from "../vox/texture/TextureProxy";
+import RendererDevice from "../../../vox/render/RendererDevice";
+import RendererParam from "../../../vox/scene/RendererParam";
+import RenderStatusDisplay from "../../../vox/scene/RenderStatusDisplay";
+import DisplayEntity from "../../../vox/entity/DisplayEntity";
+import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
+import TextureProxy from "../../../vox/texture/TextureProxy";
 
-import MouseEvent from "../vox/event/MouseEvent";
-import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
-import CameraTrack from "../vox/view/CameraTrack";
-import RendererScene from "../vox/scene/RendererScene";
-import ProfileInstance from "../voxprofile/entity/ProfileInstance";
-import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
-import CameraZoomController from "../voxeditor/control/CameraZoomController";
+import MouseEvent from "../../../vox/event/MouseEvent";
+import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
+import CameraTrack from "../../../vox/view/CameraTrack";
+import RendererScene from "../../../vox/scene/RendererScene";
+import ProfileInstance from "../../../voxprofile/entity/ProfileInstance";
+import CameraStageDragSwinger from "../../../voxeditor/control/CameraStageDragSwinger";
+import CameraZoomController from "../../../voxeditor/control/CameraZoomController";
 
-import Vector3D from "../vox/math/Vector3D";
-import Color4 from "../vox/material/Color4";
+import Vector3D from "../../../vox/math/Vector3D";
+import Color4 from "../../../vox/material/Color4";
 
-import BinaryLoader from "../vox/assets/BinaryLoader";
+import BinaryLoader from "../../../vox/assets/BinaryLoader";
 
-import PBREnvLightingMaterial from "../pbr/material/PBREnvLightingMaterial";
-import PBRTexLightingMaterial from "./material/PBRTexLightingMaterial";
-import { IFloatCubeTexture } from "../vox/render/texture/IFloatCubeTexture";
-import FloatCubeTextureProxy from "../vox/texture/FloatCubeTextureProxy";
-import TextureConst from "../vox/texture/TextureConst";
-import IMeshBase from "../vox/mesh/IMeshBase";
-import Sphere3DMesh from "../vox/mesh/Sphere3DMesh";
-import IRenderMaterial from "../vox/render/IRenderMaterial";
-import RendererState from "../vox/render/RendererState";
-import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
+import PBREnvLightingMaterial from "../../../pbr/material/PBREnvLightingMaterial";
+import PBRBakingMaterial from "./PBRBakingMaterial";
+import { IFloatCubeTexture } from "../../../vox/render/texture/IFloatCubeTexture";
+import FloatCubeTextureProxy from "../../../vox/texture/FloatCubeTextureProxy";
+import TextureConst from "../../../vox/texture/TextureConst";
+import IMeshBase from "../../../vox/mesh/IMeshBase";
+import Sphere3DMesh from "../../../vox/mesh/Sphere3DMesh";
+import IRenderMaterial from "../../../vox/render/IRenderMaterial";
+import RendererState from "../../../vox/render/RendererState";
+import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
 
-import { CoGeomDataType, CoDataFormat, CoGeomModelLoader } from "../cospace/app/common/CoGeomModelLoader";
-import { EntityLayouter } from "../vox/utils/EntityLayouter";
-import DataMesh from "../vox/mesh/DataMesh";
-import SurfaceNormalCalc from "../vox/geom/SurfaceNormalCalc";
-import Matrix4 from "../vox/math/Matrix4";
-import IShaderMaterial from "../vox/material/mcase/IShaderMaterial";
-import MaterialBase from "../vox/material/MaterialBase";
+import { CoGeomDataType, CoDataFormat, CoGeomModelLoader } from "../../../cospace/app/common/CoGeomModelLoader";
+import { EntityLayouter } from "../../../vox/utils/EntityLayouter";
+import DataMesh from "../../../vox/mesh/DataMesh";
+import SurfaceNormalCalc from "../../../vox/geom/SurfaceNormalCalc";
+import Matrix4 from "../../../vox/math/Matrix4";
+import IShaderMaterial from "../../../vox/material/mcase/IShaderMaterial";
+import MaterialBase from "../../../vox/material/MaterialBase";
+import ITransformEntity from "../../../vox/entity/ITransformEntity";
 
 class TextureLoader {
 
@@ -116,7 +114,7 @@ class SpecularTextureLoader extends TextureLoader {
     }
 }
 
-export class DemoEnvLighting {
+export class BakePBR {
     constructor() { }
 
     private m_rscene: RendererScene = null;
@@ -128,7 +126,7 @@ export class DemoEnvLighting {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private m_materials: PBREnvLightingMaterial[] = [];
-    private m_texMaterials: PBRTexLightingMaterial[] = [];
+    private m_texMaterials: PBRBakingMaterial[] = [];
     private m_modelLoader = new CoGeomModelLoader();
     private m_layouter = new EntityLayouter();
 
@@ -149,13 +147,57 @@ export class DemoEnvLighting {
         div.style.position = 'absolute';
         return div;
     }
+    private fract(f: number): number {
+        return f - Math.floor(f);
+    }
+    // private clamp(x: number, minVal: number, maxVal: number): number {
+    //     return Math.min(Math.max(x, minVal), maxVal);
+    // }
+    private calcValue(px: number): number {
+
+        if (px > 1.0) {
+            let t = this.fract(px);
+            px = t > 0.0 ? t : 1.0;
+        } else if (px < 0.0) {
+            px = Math.abs(px);
+            if (px > 1.0) {
+                let t = this.fract(px);
+                px = t > 0.0 ? t : 1.0;
+            }
+            px = 1.0 - px;
+        }
+        return px;
+    }
+    private getUV(uv: { x: number, y: number }): { x: number, y: number } {
+        let px = this.calcValue(uv.x);
+        let py = this.calcValue(uv.y);
+        let obj: { x: number, y: number } = { x: px, y: py };
+        console.log("in: ", uv, ", out: ", obj);
+        return obj;
+    }
+    private getUVSpec(uv: { x: number, y: number }): { x: number, y: number } {
+        let px = this.calcValue(uv.x * 0.0166666675);
+        let py = this.calcValue(uv.y * 0.0166666675);
+        let obj: { x: number, y: number } = { x: px, y: py };
+        console.log("in: ", uv, ", out: ", obj);
+        return obj;
+    }
     initialize(): void {
-        console.log("DemoEnvLighting::initialize()......");
+        console.log("BakePBR::initialize()......");
+
+        // this.getUV({x: 0.0, y: 1.0});
+        // this.getUV({x: 0.0, y: 11.0});
+        // this.getUV({x: 0.4, y: 11.9});
+        // this.getUV({x: -0.0, y: -1.0});
+        // this.getUV({x: -10.2, y: -19.0});
+        //263.29400634765625, 747.8200073242188
+        // this.getUVSpec({x: 263.29400634765625, y: 747.8200073242188});
+        // return;
         if (this.m_rscene == null) {
-            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
-
+            RendererDevice.SetWebBodyColor("white");
             // let rparam = this.m_graph.createRendererParam(this.createDiv(0, 0, 512, 512));
             // rparam.autoSyncRenderBufferAndWindowSize = false;
             let rparam: RendererParam = new RendererParam(this.createDiv(0, 0, 512, 512));
@@ -166,7 +208,7 @@ export class DemoEnvLighting {
             //rparam.setAttriStencil(true);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam);
-            this.m_rscene.updateCamera();
+            // this.m_rscene.setClearRGBColor3f(1.0, 1.0, 1.0);
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
@@ -219,7 +261,18 @@ export class DemoEnvLighting {
 
                 // for automatically fitting the model size in the scene
                 this.m_layouter.layoutUpdate();
-
+                let entities = this.m_layouter.getEntities();
+                let entity = entities[0];
+                let sv = entity.getScaleXYZ();
+                let pv = entity.getPosition();
+                console.log("xxxxx sv: ", sv);
+                console.log("xxxxx pv: ", pv);
+                console.log("xxxxx this.m_wirees: ", this.m_wirees);
+                for(let i = 0;i < this.m_wirees.length; ++i) {
+                    this.m_wirees[i].setPosition(pv);
+                    this.m_wirees[i].setScale3(sv);
+                    this.m_wirees[i].update();
+                }
                 // this.initUI();
 
             });
@@ -249,6 +302,13 @@ export class DemoEnvLighting {
 
         let vs = model.vertices;
         let uvs = model.uvsList[0];
+        // for(let i = 0; i < uvs.length; ++i) {
+        //     if(uvs[i] > 0.0) {
+        //         uvs[i] += 200;
+        //     }else if(uvs[i] < 0.0) {
+        //         uvs[i] -= 200;
+        //     }
+        // }
         let ivs = model.indices;
         let trisNumber = ivs.length / 3;
 
@@ -257,14 +317,15 @@ export class DemoEnvLighting {
             SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
         }
         let material: MaterialBase;
-        if(bakeType < 0) {
-            let tex = this.getTexByUrl("static/assets/bake/mat_ball.png");
-            tex.flipY = bakeType < 0;
+        if (bakeType < 0) {
+            let tex = this.getTexByUrl("static/assets/bake/hat01_bake.png");
+            // tex.flipY = bakeType < 0;
             let materialShow = new Default3DMaterial();
-            materialShow.setTextureList([ tex ]);
+            materialShow.setTextureList([tex]);
             materialShow.initializeByCodeBuf(true);
             material = materialShow;
         }
+        //hat01_bake.png
 
         let bake = bakeType > 0;
         let roughness = 0.0;
@@ -275,19 +336,24 @@ export class DemoEnvLighting {
         let nameI = 3;
         metallic = 0.5;
         roughness = 0.4;
+
+        console.log("xxxxx bake: ", bake);
         if (bake) {
             this.createLineDrawWithModel(model, mat4, bake, metallic, roughness, nameList[nameI]);
             // return;
         }
-        if(bakeType >= 0) {
+        if (bakeType >= 0) {
             let materialPbr = this.makeTexMaterial(metallic, roughness, 1.0);
             materialPbr.bake = bake;
             materialPbr.setTextureList(this.getTexList(nameList[nameI]));
             materialPbr.initializeByCodeBuf(true);
             material = materialPbr;
+            // material = null;
         }
+        console.log("material: ", material);
 
         let mesh = new DataMesh();
+        // mesh.wireframe  = true;
         mesh.vbWholeDataEnabled = false;
         mesh.setVS(model.vertices);
         mesh.setUVS(model.uvsList[0]);
@@ -297,13 +363,14 @@ export class DemoEnvLighting {
         mesh.initialize();
 
         let entity = new DisplayEntity();
-        if (bake) entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+        if (bakeType == 2) entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
         entity.setMaterial(material);
         entity.setMesh(mesh);
 
         if (transform != null) {
             entity.getTransform().setParentMatrix(mat4);
         }
+        entity.setVisible(bakeType == 0 || bakeType == 2 || bakeType == -1);
         this.m_rscene.addEntity(entity, 1);
         // for automatically fitting the model size in the scene
         this.m_layouter.layoutAppendItem(entity, mat4);
@@ -337,11 +404,30 @@ export class DemoEnvLighting {
                 let rad = PI2 * i / total;
                 let dx = Math.cos(rad) * radius * ratio;
                 let dy = Math.sin(rad) * radius;
-                // material.setOffsetXY(dx, dy);
+                material.setOffsetXY(dx, dy);
                 this.createWithMesh(bake, mesh, metallic, roughness, texName, dx, dy, mat4);
             }
             radius += 0.002;
         }
+    }
+    private m_wirees: ITransformEntity[] = [];
+    private createWithMesh(bake: boolean, mesh: IMeshBase, metallic: number, roughness: number, texName: string, dx: number, dy: number, mat4: Matrix4 = null): void {
+
+        let material: PBRBakingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
+        material.bake = bake;
+        material.setTextureList(this.getTexList(texName));
+        material.initializeByCodeBuf(true);
+        material.setOffsetXY(dx, dy);
+        let entity = new DisplayEntity();
+        entity.setMaterial(material);
+        entity.setMesh(mesh);
+        entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+        // console.log("createWithMesh(), mesh: ", mesh);
+        if (mat4 != null) {
+            entity.getTransform().setParentMatrix(mat4);
+        }
+        this.m_wirees.push(entity);
+        this.m_rscene.addEntity(entity, 0);
     }
 
     private applyTex(): void {
@@ -383,7 +469,7 @@ export class DemoEnvLighting {
             this.createLineDraw(bake, radius, metallic, roughness, nameList[nameI]);
             // return;
         }
-        let material: PBRTexLightingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
+        let material: PBRBakingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
         material.bake = bake;
         material.setTextureList(this.getTexList(nameList[nameI]));
         material.initializeByCodeBuf(true);
@@ -408,27 +494,9 @@ export class DemoEnvLighting {
         loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
         this.initLighting(null, loader.texture);
     }
-
-    private createWithMesh(bake: boolean, mesh: IMeshBase, metallic: number, roughness: number, texName: string, dx: number, dy: number, mat4: Matrix4 = null): void {
-
-        let material: PBRTexLightingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
-        material.bake = bake;
-        material.setTextureList(this.getTexList(texName));
-        material.initializeByCodeBuf(true);
-        material.setOffsetXY(dx, dy);
-        let entity = new DisplayEntity();
-        entity.setMaterial(material);
-        entity.setMesh(mesh);
-        entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
-
-        if (mat4 != null) {
-            entity.getTransform().setParentMatrix(mat4);
-        }
-        this.m_rscene.addEntity(entity, 0);
-    }
     private createLineDraw(bake: boolean, pradius: number, metallic: number, roughness: number, texName: string): void {
 
-        let material: PBRTexLightingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
+        let material: PBRBakingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
         material.bake = bake;
         material.setTextureList(this.getTexList(texName));
         material.initializeByCodeBuf(true);
@@ -478,7 +546,7 @@ export class DemoEnvLighting {
                 roughness = j / roughness;
 
                 let sph: Sphere3DEntity = new Sphere3DEntity();
-                let material: PBRTexLightingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
+                let material: PBRBakingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
                 //let material:PBREnvLightingMaterial = this.makeMaterial(metallic, roughness, 1.3);
                 sph.setMaterial(material);
                 sph.initialize(radius, 20, 20, this.getTexList(nameList[Math.round(Math.random() * 10000) % nameList.length]));
@@ -533,7 +601,8 @@ export class DemoEnvLighting {
     private getTexList(name: string = "rusted_iron"): TextureProxy[] {
         let list: TextureProxy[] = [
 
-            this.getTexByUrl("static/assets/pbr/" + name + "/albedo.png"),
+            // this.getTexByUrl("static/assets/pbr/" + name + "/albedo.png"),
+            this.getTexByUrl("static/assets/box.jpg"),
             this.getTexByUrl("static/assets/pbr/" + name + "/normal.png"),
             this.getTexByUrl("static/assets/pbr/" + name + "/metallic.png"),
             this.getTexByUrl("static/assets/pbr/" + name + "/roughness.png"),
@@ -542,7 +611,7 @@ export class DemoEnvLighting {
         return list;
     }
 
-    private makeTexMaterial(metallic: number, roughness: number, ao: number): PBRTexLightingMaterial {
+    private makeTexMaterial(metallic: number, roughness: number, ao: number): PBRBakingMaterial {
         let dis: number = 700.0;
         let disZ: number = 400.0;
         let posList: Vector3D[] = [
@@ -564,7 +633,7 @@ export class DemoEnvLighting {
             new Color4(150, 200, 160),
             new Color4(200, 200, 270)
         ];
-        let material: PBRTexLightingMaterial = new PBRTexLightingMaterial();
+        let material: PBRBakingMaterial = new PBRBakingMaterial();
         material.setMetallic(metallic);
         material.setRoughness(roughness);
         material.setAO(ao);
@@ -634,24 +703,27 @@ export class DemoEnvLighting {
         //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
         this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
 
-        this.m_statusDisp.render();
+        // this.m_statusDisp.render();
     }
 
     run(): void {
-        this.m_statusDisp.update(false);
 
-        this.m_stageDragSwinger.runWithYAxis();
-        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
+        if (this.m_rscene != null) {
 
-        //  for(let i: number = 0, il: number = this.m_materials.length; i < il; ++i) {
-        //      this.m_materials[i].setCamPos(this.m_rscene.getCamera().getPosition());
-        //  }
+            // this.m_statusDisp.update(false);
 
+            this.m_stageDragSwinger.runWithYAxis();
+            this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
 
-        this.m_rscene.run(true);
+            //  for(let i: number = 0, il: number = this.m_materials.length; i < il; ++i) {
+            //      this.m_materials[i].setCamPos(this.m_rscene.getCamera().getPosition());
+            //  }
+            this.m_rscene.run(true);
 
-        //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-        //this.m_profileInstance.run();
+            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            //this.m_profileInstance.run();
+
+        }
     }
 }
-export default DemoEnvLighting;
+export default BakePBR;

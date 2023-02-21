@@ -349,7 +349,7 @@
 
 //  import {EffectExample as Demo} from "./renderingtoy/effectTest/modelLoad/EffectExample";
 
-//  import {EffectExample as Demo} from "./renderingtoy/effectTest/applyui/EffectExample";
+ import {EffectExample as Demo} from "./renderingtoy/effectTest/applyui/EffectExample";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////
@@ -383,7 +383,7 @@
 
 //  import {DemoLighting as Demo} from "./pbr/DemoLighting";
 
- import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
+//  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
 //  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
@@ -455,6 +455,8 @@
 
 //  import {BakeExample as Demo} from "./bake/demo/bakeDiffuse/BakeExample";
 //  import {BakeExample as Demo} from "./bake/demo/bakeDiffuse2/BakeExample";
+//  import {BakeExample as Demo} from "./bake/demo/bakePbr/BakeExample";
+//  import {BakePBR as Demo} from "./bake/demo/bakePbr/BakePBR";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////     distributed runtime     ////////////s//////////////

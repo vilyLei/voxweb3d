@@ -554,12 +554,12 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         this.m_trs.setScaleXYZ(sx, sy, sz);
     }
 
-    getRotationXYZ(pv: Vector3D): Vector3D {
+    getRotationXYZ(pv: Vector3D = null): Vector3D {
         if(!pv) pv = new Vector3D();
         this.m_trs.getRotationXYZ(pv);
         return pv;
     }
-    getScaleXYZ(pv: Vector3D): Vector3D {
+    getScaleXYZ(pv: Vector3D = null): Vector3D {
         if(!pv) pv = new Vector3D();
         this.m_trs.getScaleXYZ(pv);
         return pv;

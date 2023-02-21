@@ -72,7 +72,7 @@ export class EffectExample {
         console.log("EffectExample::initialize()......");
         if (this.m_rscene == null) {
 
-            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
@@ -84,7 +84,12 @@ export class EffectExample {
             this.initModel();
         }
     }
+    private m_initUI = true;
     private initUI(): void {
+        if(!this.m_initUI) {
+            return;
+        }
+        this.m_initUI = false;
 
         let ui = this.m_ctrlui;
         ui.initialize(this.m_rscene, true);
@@ -163,6 +168,7 @@ export class EffectExample {
         let url = baseUrl + "fbx/base4.fbx";
         // url = baseUrl + "fbx/hat_ok.fbx";
         url = baseUrl + "obj/apple_01.obj";
+        url = baseUrl + "fbx/shoes07.fbx";
 
         this.loadModels([url]);
     }
@@ -185,7 +191,7 @@ export class EffectExample {
             }
             let material = new EffectMaterial();
             material.setTextureList([
-                this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
+                this.getTexByUrl("static/assets/box.jpg")
             ]);
 
             material.initializeByCodeBuf(true);
