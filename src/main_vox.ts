@@ -145,7 +145,7 @@
 
 //  import {DemoLockDrawEntity as Demo} from "./demo/DemoLockDrawEntity";
 
- import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
+//  import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 
 //  import {DemoBaseRenderer as Demo} from "./demo/DemoBaseRenderer";
 
@@ -383,7 +383,7 @@
 
 //  import {DemoLighting as Demo} from "./pbr/DemoLighting";
 
-//  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
+ import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
 //  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 

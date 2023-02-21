@@ -40,6 +40,7 @@ import SurfaceNormalCalc from "../vox/geom/SurfaceNormalCalc";
 import Matrix4 from "../vox/math/Matrix4";
 import IShaderMaterial from "../vox/material/mcase/IShaderMaterial";
 import MaterialBase from "../vox/material/MaterialBase";
+import Torus3DMesh from "../vox/mesh/Torus3DMesh";
 
 class TextureLoader {
 
@@ -193,13 +194,13 @@ export class DemoEnvLighting {
             //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getTexByUrl("static/assets/broken_iron.jpg")]);
             //  this.m_rscene.addEntity(plane);
 
-            // this.initFloatCube();
+            this.initFloatCube();
 
             // this.initTexLighting();
             // this.applyTex();
             // this.initTexLightingBake(false);
 
-            this.initModel();
+            // this.initModel();
 
             this.update();
 
@@ -257,11 +258,11 @@ export class DemoEnvLighting {
             SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
         }
         let material: MaterialBase;
-        if(bakeType < 0) {
+        if (bakeType < 0) {
             let tex = this.getTexByUrl("static/assets/bake/mat_ball.png");
             tex.flipY = bakeType < 0;
             let materialShow = new Default3DMaterial();
-            materialShow.setTextureList([ tex ]);
+            materialShow.setTextureList([tex]);
             materialShow.initializeByCodeBuf(true);
             material = materialShow;
         }
@@ -279,7 +280,7 @@ export class DemoEnvLighting {
             this.createLineDrawWithModel(model, mat4, bake, metallic, roughness, nameList[nameI]);
             // return;
         }
-        if(bakeType >= 0) {
+        if (bakeType >= 0) {
             let materialPbr = this.makeTexMaterial(metallic, roughness, 1.0);
             materialPbr.bake = bake;
             materialPbr.setTextureList(this.getTexList(nameList[nameI]));
@@ -504,6 +505,23 @@ export class DemoEnvLighting {
         let beginPos: Vector3D = new Vector3D(disV3.x * (cn - 1) * -0.5, disV3.y * (rn - 1) * -0.5, -100.0);
         let pos: Vector3D = new Vector3D();
 
+        let material = this.makeMaterial(0.3, 0.0, 1.3);
+        material.setTextureList( [s_envTex] );
+        material.initializeByCodeBuf(material.getTextureAt(0) != null);
+        let ringRadius = 200;
+        let latitudeNumSegments = 50;
+        let torusMesh = new Torus3DMesh();
+        torusMesh.axisType = 2;
+        torusMesh.setVtxBufRenderData(material);
+        torusMesh.initialize(ringRadius, 30, 30, latitudeNumSegments);
+
+        let torusEntity = new DisplayEntity();
+        torusEntity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        torusEntity.setMaterial(material);
+        torusEntity.setMesh(torusMesh);
+
+        this.m_rscene.addEntity(torusEntity, 1);
+        return;
         for (let i: number = 0; i < rn; ++i) {
             metallic = Math.max(rn - 1, 0.001);
             metallic = i / metallic;
