@@ -16,8 +16,8 @@ export default class Sphere3DMesh extends MeshBase {
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         super(bufDataUsage);
     }
-    private m_longitudeNumSegments: number = 10;
-    private m_latitudeNumSegments: number = 10;
+    private m_longitudeNumSegments = 10;
+    private m_latitudeNumSegments = 10;
     private m_radius: number = 50;
     private m_vs: Float32Array = null;
     private m_uvs: Float32Array = null;
@@ -58,7 +58,6 @@ export default class Sphere3DMesh extends MeshBase {
             let xRad = 0.0, yRad = 0.0, px = 0.0, py = 0.0;
             let vtx = new MeshVertex(0, -this.m_radius, 0, trisTot);
 
-            console.log("Sphere3DMesh::initialize() ...");
             // 计算绕 y轴 的纬度线上的点
             let vtxVec = [];
             let vtxRows: MeshVertex[][] = [];
@@ -133,9 +132,6 @@ export default class Sphere3DMesh extends MeshBase {
                 lastRow.push(v1);
             }
             vtxVec.push(v1);
-            console.log("vtxRow last: ", lastRow);
-            // vtxVec.push(lastRow[0]);
-            console.log("this.m_longitudeNumSegments: ", this.m_longitudeNumSegments);
             // console.log("vtxRows: ", vtxRows);
             let pvtx: MeshVertex = null;
             ///////////////////////////   ///////////////////////////    ////////////////
@@ -168,8 +164,6 @@ export default class Sphere3DMesh extends MeshBase {
 
                 let halfN = layerN / 2 + 1;
                 let mi = halfN - 1;
-                // let pu = 0.0;
-                console.log("use sph mode 2, halfN: ", halfN, "mi: ", mi);
                 let miRow = vtxRows[mi].slice();
                 let n = miRow.length - 1;
                 for (i = 0; i < n; ++i) {
@@ -245,10 +239,6 @@ export default class Sphere3DMesh extends MeshBase {
                 vtx.u = 0.75;
                 vtx.v = 0.5;
 
-                console.log("list0: ", list0);
-                // console.log("list1: ", list1);
-                console.log("list1_copy: ", list1_copy);
-
                 for (i = 1; i < halfN; ++i) {
                     rowa = list0[i - 1];
                     rowb = list0[i];
@@ -309,7 +299,7 @@ export default class Sphere3DMesh extends MeshBase {
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
                 this.m_nvs = new Float32Array(this.vtxTotal * 3);
-                //
+                
                 i = 0;
                 for (j = 0; j < this.vtxTotal; ++j) {
                     pvtx = vtxVec[j];
@@ -320,7 +310,7 @@ export default class Sphere3DMesh extends MeshBase {
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX)) {
                 this.m_cvs = new Float32Array(this.vtxTotal * 3);
-                //
+                
                 i = 0;
                 for (j = 0; j < this.vtxTotal; ++j) {
                     this.m_cvs[i] = 1.0; this.m_cvs[i + 1] = 1.0; this.m_cvs[i + 2] = 1.0;
@@ -376,8 +366,5 @@ export default class Sphere3DMesh extends MeshBase {
      */
     testRay(rlpv: Vector3D, rltv: Vector3D, outV: Vector3D, boundsHit: boolean): number {
         return RadialLine.IntersectioNearSphere2(rlpv, rltv, Vector3D.ZERO, this.m_radius, outV);
-    }
-    toString(): string {
-        return "Sphere3DMesh()";
     }
 }
