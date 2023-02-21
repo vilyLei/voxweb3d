@@ -383,7 +383,9 @@
 
 //  import {DemoLighting as Demo} from "./pbr/DemoLighting";
 
- import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
+//  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
+
+ import {DemoPBREnvLighting as Demo} from "./pbr/DemoPBREnvLighting";
 
 //  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
