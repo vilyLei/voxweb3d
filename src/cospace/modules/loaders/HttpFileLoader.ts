@@ -5,6 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
+interface I_HttpFileLoader {
+}
 class HttpFileLoader {
 	crossOrigin = 'anonymous';
 	constructor() {

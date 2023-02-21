@@ -16,8 +16,8 @@ import Vector3D from "../vox/math/Vector3D";
 import Color4 from "../vox/material/Color4";
 
 import PBREnvLightingMaterial from "../pbr/material/PBREnvLightingMaterial";
-import { IFloatCubeTexture } from "../vox/render/texture/IFloatCubeTexture";
-import { SpecularTextureLoader } from "./base/SpecularTextureLoader";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
+import { BinaryTextureLoader } from "../cospace/modules/loaders/BinaryTextureLoader";
 
 export class DemoPBREnvLighting {
     constructor() { }
@@ -78,11 +78,11 @@ export class DemoPBREnvLighting {
         let envMapUrl = "static/bytes/spe.mdf";
 
         //let loader:TextureLoader = new TextureLoader();
-        let loader = new SpecularTextureLoader();
+        let loader = new BinaryTextureLoader();
         loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
-        this.initLighting(null, loader.texture);
+        this.initLighting(loader.texture);
     }
-    private initLighting(d_envTex: IFloatCubeTexture, s_envTex: IFloatCubeTexture): void {
+    private initLighting(s_envTex: IRenderTexture): void {
 
         let radius = 150.0;
         let rn = 7;
