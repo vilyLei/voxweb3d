@@ -33,6 +33,9 @@ import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import RendererScene from "../vox/scene/RendererScene";
+import Line3DEntity from "../vox/entity/Line3DEntity";
+import Matrix4 from "../vox/math/Matrix4";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 
 export class DemoPrimitive {
     constructor() { }
@@ -53,8 +56,8 @@ export class DemoPrimitive {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
-    private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+    private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+        let ptex = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
@@ -64,7 +67,7 @@ export class DemoPrimitive {
 
         if (this.m_rscene == null) {
 
-            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 
             let rparam: RendererParam = new RendererParam();
             rparam.setTickUpdateTime(20);
@@ -82,11 +85,11 @@ export class DemoPrimitive {
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             if (this.m_statusDisp != null) this.m_statusDisp.initialize();
-            let tex0: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-            let tex1: TextureProxy = this.getImageTexByUrl("static/assets/color_01.jpg");
-            let tex2: TextureProxy = this.getImageTexByUrl("static/assets/guangyun_H_0007.png");
-            let tex3: TextureProxy = this.getImageTexByUrl("static/assets/flare_core_02.jpg");
-            let tex4: TextureProxy = this.getImageTexByUrl("static/assets/flare_core_01.jpg");
+            let tex0 = this.getTexByUrl("static/assets/box.jpg");
+            let tex1 = this.getTexByUrl("static/assets/color_01.jpg");
+            let tex2 = this.getTexByUrl("static/assets/guangyun_H_0007.png");
+            let tex3 = this.getTexByUrl("static/assets/flare_core_02.jpg");
+            let tex4 = this.getTexByUrl("static/assets/flare_core_01.jpg");
 
             RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
             RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
@@ -110,8 +113,8 @@ export class DemoPrimitive {
             //*/
             let i: number = 0;
             let axis: Axis3DEntity = new Axis3DEntity();
-            // axis.initialize(110.0);
-            // this.m_rscene.addEntity(axis);
+            axis.initialize();
+            this.m_rscene.addEntity(axis);
             // return;
             /*
             let plane: Plane3DEntity = new Plane3DEntity();
@@ -159,19 +162,55 @@ export class DemoPrimitive {
             //let posV:Vector3D = new Vector3D();
 
             let material = new Default3DMaterial();
-            material.initializeByCodeBuf(false);
+            material.normalEnabled = true;
+            // material.setTextureList([tex0]);
+            material.initializeByCodeBuf(material.getTextureAt(0) != null);
 
+            let ringRadius = 200;
+            let latitudeNumSegments = 50;
             let torusMesh = new Torus3DMesh();
+            torusMesh.axisType = 2;
             torusMesh.setVtxBufRenderData(material);
-            torusMesh.initialize(200, 30, 10, 2);
+            torusMesh.initialize(ringRadius, 30, 30, latitudeNumSegments);
+            /*
+            let linevs = new Float32Array([0,0,0, 100,0,0, 100,0,100]);
+            let pvs = torusMesh.geometry.getVSSegAt(1).slice();
+            let line = new Line3DEntity();
+            line.initializeByPosVS(pvs);
+            this.m_rscene.addEntity(line, 1);
+            let pi2 = 2.0 * Math.PI * 0.3;
+            let rad = 0.0;
+            let pv = new Vector3D();
+            let mat4A = new Matrix4();
+            //latitudeNumSegments
+            for (let i = 0; i <= latitudeNumSegments; ++i) {
 
+                rad = pi2 * i / latitudeNumSegments;
+                pv.y = Math.cos(rad) * ringRadius;
+                pv.x = Math.sin(rad) * ringRadius;
+                mat4A.identity();
+                // mat4B.identity();
+                console.log("XXX rad: ", rad);
+                mat4A.rotationZ(-rad);
+                mat4A.setTranslation(pv);
+                // mat4A.append(mat4B);
+
+                let pvs = torusMesh.geometry.getVSSegAt(1).slice();
+                mat4A.transformVectorsSelf(pvs, pvs.length);
+                let line = new Line3DEntity();
+                line.initializeByPosVS(pvs);
+                this.m_rscene.addEntity(line, 1);
+                // g.transformAt(i, mat4A);
+            }
+            //*/
+            ///*
             let torusEntity = new DisplayEntity();
             torusEntity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
             torusEntity.setMaterial(material);
             torusEntity.setMesh(torusMesh);
 
             this.m_rscene.addEntity(torusEntity, 1);
-
+            //*/
             return;
             ///*
             let pipe: Tube3DEntity = new Tube3DEntity();

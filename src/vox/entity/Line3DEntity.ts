@@ -144,6 +144,38 @@ export default class Line3DEntity extends DisplayEntity {
         this.createMaterial();
         this.activeDisplay();
     }
+    
+    initializeByPosVS(vsList: Float32Array, colorList: Color4[] = null): void {
+        
+        this.m_posarr = [];
+        let tot = Math.floor( vsList.length / 3 );
+        if (!this.dynColorEnabled) {
+            this.m_colorarr = [];
+            if(colorList == null) {
+                for(let i = 0; i < tot; ++i) {
+                    this.m_colorarr.push(this.color.r, this.color.g, this.color.b,this.color.r, this.color.g, this.color.b);
+                }
+            }
+            else {
+                let color: Color4;
+                for(let i = 0; i < tot; ++i) {
+                    color = colorList[i];
+                    this.m_colorarr.push(color.r, color.g, color.b);
+                    this.m_colorarr.push(color.r, color.g, color.b);
+                }
+            }
+        }
+        let k = 0;
+        for(let i = 1; i < tot; ++i) {
+            k = (i - 1) * 3;
+            this.m_posarr.push(vsList[k++], vsList[k++], vsList[k]);
+            k = i * 3;
+            this.m_posarr.push(vsList[k++], vsList[k++], vsList[k]);
+        }
+
+        this.createMaterial();
+        this.activeDisplay();
+    }
     initializePolygon(posList: Vector3D[], colorList: Color4[] = null): void {
         this.initializeByPosList(posList, colorList);
     }

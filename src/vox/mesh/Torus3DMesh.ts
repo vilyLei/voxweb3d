@@ -24,7 +24,7 @@ export default class Torus3DMesh extends MeshBase {
     private m_cvs: Float32Array = null;
     private m_boundsChanged: boolean = false;
 
-    geometry = new PipeGeometry();
+    readonly geometry = new PipeGeometry();
     uScale = 1.0;
     vScale = 1.0;
     /**
@@ -53,22 +53,47 @@ export default class Torus3DMesh extends MeshBase {
         if (this.m_vs == null) {
 
             let g = this.geometry;
-            g.axisType = this.axisType;
+            switch (this.axisType) {
+                case 1:
+                    g.axisType = 2;
+                    break;
+                case 2:
+                    g.axisType = 0;
+                    break;
+                default:
+                    g.axisType = 1;
+                    break;
+            }
             g.initialize(axisRadius, 0.0, longitudeNumSegments, latitudeNumSegments, uvType, alignYRatio);
 
-            let pi2 = 2.0 * Math.PI * 0.5;
+            let pi2 = 2.0 * Math.PI;// * 0.5;
             let rad = 0.0;
             let pv = new Vector3D();
             let mat4 = new Matrix4();
-            for (let i = 0; i <= longitudeNumSegments; ++i) {
+            for (let i = 0; i <= latitudeNumSegments; ++i) {
 
-                rad = pi2 * i / longitudeNumSegments;
-                pv.x = Math.cos(rad) * ringRadius;
-                pv.z = Math.sin(rad) * ringRadius;
                 mat4.identity();
-                mat4.rotationY(rad);
-                mat4.setTranslation(pv);
+                rad = pi2 * i / latitudeNumSegments;
+                // console.log("rad: ", rad);
+                switch (this.axisType) {
+                    case 1:
+                        pv.x = Math.cos(rad) * ringRadius;
+                        pv.z = Math.sin(rad) * ringRadius;
+                        mat4.rotationY(-rad);
+                        break;
+                    case 2:
+                        pv.y = Math.cos(rad) * ringRadius;
+                        pv.x = Math.sin(rad) * ringRadius;
+                        mat4.rotationZ(-rad);
+                        break;
+                    default:
+                        pv.z = Math.cos(rad) * ringRadius;
+                        pv.y = Math.sin(rad) * ringRadius;
+                        mat4.rotationX(-rad);
+                        break;
+                }
 
+                mat4.setTranslation(pv);
                 g.transformAt(i, mat4);
             }
             this.m_vs = this.geometry.getVS();

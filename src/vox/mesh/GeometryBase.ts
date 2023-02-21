@@ -95,6 +95,9 @@ export default class GeometryBase implements IGeometry {
     }
     transformAt(i: number, mat4: Matrix4): void {
     }
+    getVSSegAt(i: number): Float32Array {
+        return null;
+    }
     /**
      * @returns vertex position buffer Float32Array
      */

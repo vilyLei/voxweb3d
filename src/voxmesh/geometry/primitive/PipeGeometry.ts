@@ -53,13 +53,25 @@ export default class PipeGeometry extends GeometryBase {
     }
     transformAt(i: number, mat4: Matrix4): void {
         if (i >= 0 && i <= this.m_latitudeNum) {
-            let pvs: Float32Array = this.m_vs;
-            let end: number = (i + 1) * (this.m_longitudeNum + 1) * 3;
-            i = (i * (this.m_longitudeNum + 1)) * 3;
+            const n = this.m_longitudeNum + 1;
+            let pvs = this.m_vs;
+            let end = (i + 1) * n * 3;
+            i = i * n * 3;
             mat4.transformVectorsRangeSelf(pvs, i, end);
         }
     }
 
+    getVSSegAt(i: number): Float32Array {
+        if (i >= 0 && i <= this.m_latitudeNum) {
+            const n = this.m_longitudeNum + 1;
+            let pvs = this.m_vs;
+            let end = (i + 1) * n * 3;
+            i = i * n * 3;
+            return pvs.subarray(i, end);
+            //mat4.transformVectorsRangeSelf(pvs, i, end);
+        }
+        return null;
+    }
     initialize(radius: number, height: number, longitudeNumSegments: number, latitudeNumSegments: number, uvType: number = 1, alignYRatio: number = -0.5): void {
         let i: number = 0;
         let j: number = 0;
