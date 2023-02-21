@@ -14,15 +14,15 @@ import Cone3DMesh from "../../vox/mesh/Cone3DMesh";
 import Matrix4 from "../math/Matrix4";
 
 export default class Cone3DEntity extends DisplayEntity {
-    private m_radius: number = 50.0;
-    private m_height: number = 100.0;
-    private m_plongitudeNumSegments: number = 10.0;
-    private m_uvType: number = 1;
-    private m_alignYRatio: number = -0.5;
+    private m_radius = 50.0;
+    private m_height = 100.0;
+    private m_plongitudeNumSegments = 10.0;
+    private m_uvType = 1;
+    private m_alignYRatio = -0.5;
     private m_transMatrix: Matrix4 = null;
-    uScale: number = 1.0;
-    vScale: number = 1.0;
-    wireframe: boolean = false;
+    uScale = 1.0;
+    vScale = 1.0;
+    wireframe = false;
 
     constructor(transform: IROTransform = null) {
         super(transform);
@@ -32,7 +32,7 @@ export default class Cone3DEntity extends DisplayEntity {
     }
     private createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
-            let cm: Default3DMaterial = new Default3DMaterial();
+            let cm = new Default3DMaterial();
             cm.setTextureList(texList);
             this.setMaterial(cm);
         }
@@ -53,7 +53,7 @@ export default class Cone3DEntity extends DisplayEntity {
 
     protected __activeMesh(material: IRenderMaterial): void {
         if (this.getMesh() == null) {
-            let mesh: Cone3DMesh = new Cone3DMesh();
+            let mesh = new Cone3DMesh();
             if (this.m_transMatrix != null) {
                 mesh.setTransformMatrix(this.m_transMatrix);
             }
@@ -65,9 +65,5 @@ export default class Cone3DEntity extends DisplayEntity {
             mesh.initialize(this.m_radius, this.m_height, this.m_plongitudeNumSegments, 2, this.m_uvType, this.m_alignYRatio);
             this.setMesh(mesh);
         }
-    }
-
-    toString(): string {
-        return "[Cone3DEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")]";
     }
 }
