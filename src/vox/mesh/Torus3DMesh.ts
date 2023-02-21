@@ -56,15 +56,20 @@ export default class Torus3DMesh extends MeshBase {
             g.axisType = this.axisType;
             g.initialize(axisRadius, 0.0, longitudeNumSegments, latitudeNumSegments, uvType, alignYRatio);
 
-            let pi2 = 2.0 * Math.PI;
+            let pi2 = 2.0 * Math.PI * 0.5;
             let rad = 0.0;
             let pv = new Vector3D();
-            for(let i = 0; i <= longitudeNumSegments; ++i) {
+            let mat4 = new Matrix4();
+            for (let i = 0; i <= longitudeNumSegments; ++i) {
 
                 rad = pi2 * i / longitudeNumSegments;
                 pv.x = Math.cos(rad) * ringRadius;
                 pv.z = Math.sin(rad) * ringRadius;
+                mat4.identity();
+                mat4.rotationY(rad);
+                mat4.setTranslation(pv);
 
+                g.transformAt(i, mat4);
             }
             this.m_vs = this.geometry.getVS();
             this.m_uvs = this.geometry.getUVS();
@@ -125,7 +130,7 @@ export default class Torus3DMesh extends MeshBase {
             this.buildEnd();
         }
         else {
-            if(this.forceUpdateIVS) {
+            if (this.forceUpdateIVS) {
                 this.m_vbuf.setUintIVSData(this.m_ivs);
             }
             ROVertexBuffer.UpdateBufData(this.m_vbuf);
