@@ -1,11 +1,7 @@
 
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
-import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
-import DisplayEntity from "../vox/entity/DisplayEntity";
-import Plane3DEntity from "../vox/entity/Plane3DEntity";
-import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
 
@@ -13,98 +9,15 @@ import MouseEvent from "../vox/event/MouseEvent";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
-import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
 import Vector3D from "../vox/math/Vector3D";
 import Color4 from "../vox/material/Color4";
 
-import BinaryLoader from "../vox/assets/BinaryLoader";
-
 import PBREnvLightingMaterial from "../pbr/material/PBREnvLightingMaterial";
-import PBRTexLightingMaterial from "./material/PBRTexLightingMaterial";
 import { IFloatCubeTexture } from "../vox/render/texture/IFloatCubeTexture";
-import TextureConst from "../vox/texture/TextureConst";
-
-import { CoGeomDataType, CoDataFormat, CoGeomModelLoader } from "../cospace/app/common/CoGeomModelLoader";
-import { EntityLayouter } from "../vox/utils/EntityLayouter";
-import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
-
-class TextureLoader {
-
-    protected m_rscene: RendererScene = null;
-    texture: IFloatCubeTexture = null;
-    constructor() {
-    }
-
-    loadTextureWithUrl(url: string, rscene: RendererScene): void {
-        //let url: string = "static/bytes/spe.mdf";
-        let loader: BinaryLoader = new BinaryLoader();
-        loader.uuid = url;
-        loader.load(url, this);
-        this.m_rscene = rscene;
-
-        this.texture = this.m_rscene.textureBlock.createFloatCubeTex(32, 32, false);
-    }
-    loaded(buffer: ArrayBuffer, uuid: string): void {
-        //console.log("loaded... uuid: ", uuid, buffer.byteLength);
-        this.parseTextureBuffer(buffer);
-        this.m_rscene = null;
-        this.texture = null;
-    }
-    loadError(status: number, uuid: string): void {
-    }
-
-    protected parseTextureBuffer(buffer: ArrayBuffer): void {
-        let begin: number = 0;
-        let width: number = 128;
-        let height: number = 128;
-        let size: number = width * height * 3;
-        let fs32: Float32Array = new Float32Array(buffer);
-        let subArr: Float32Array = null;
-        let tex = this.texture;
-        tex.toRGBFormat();
-        for (let i: number = 0, len: number = 6; i < len; ++i) {
-            subArr = fs32.slice(begin, begin + size);
-            console.log("width,height: ", width, height, ", subArr.length: ", subArr.length);
-            tex.setDataFromBytesToFaceAt(i, subArr, width, height, 0);
-            begin += size;
-        }
-    }
-}
-
-class SpecularTextureLoader extends TextureLoader {
-
-    constructor() {
-        super();
-    }
-    protected parseTextureBuffer(buffer: ArrayBuffer): void {
-        let begin: number = 0;
-        let width: number = 128;
-        let height: number = 128;
-
-        let fs32: Float32Array = new Float32Array(buffer);
-        let subArr: Float32Array = null;
-
-        let tex = this.texture;
-        tex.toRGBFormat();
-        tex.mipmapEnabled = false;
-        tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
-        tex.magFilter = TextureConst.LINEAR;
-
-        for (let j = 0; j < 9; j++) {
-            for (let i = 0; i < 6; i++) {
-                const size = width * height * 3;
-                subArr = fs32.slice(begin, begin + size);
-                tex.setDataFromBytesToFaceAt(i, subArr, width, height, j);
-                begin += size;
-            }
-            width >>= 1;
-            height >>= 1;
-        }
-    }
-}
+import {SpecularTextureLoader} from "./base/SpecularTextureLoader";
 
 export class DemoPBREnvLighting {
     constructor() { }
@@ -117,7 +30,6 @@ export class DemoPBREnvLighting {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private m_materials: PBREnvLightingMaterial[] = [];
-    private m_texMaterials: PBRTexLightingMaterial[] = [];
 
     private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled) as TextureProxy;
@@ -166,35 +78,35 @@ export class DemoPBREnvLighting {
         let envMapUrl = "static/bytes/spe.mdf";
 
         //let loader:TextureLoader = new TextureLoader();
-        let loader: SpecularTextureLoader = new SpecularTextureLoader();
+        let loader = new SpecularTextureLoader();
         loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
         this.initLighting(null, loader.texture);
     }
     private initLighting(d_envTex: IFloatCubeTexture, s_envTex: IFloatCubeTexture): void {
 
-        let radius: number = 150.0;
-        let rn: number = 7;
-        let cn: number = 7;
-        let roughness: number = 0.0;
-        let metallic: number = 0.0;
-        let disV3: Vector3D = new Vector3D(radius * 2.0 + 50.0, radius * 2.0 + 50.0, 0.0);
-        let beginPos: Vector3D = new Vector3D(disV3.x * (cn - 1) * -0.5, disV3.y * (rn - 1) * -0.5, -100.0);
-        let pos: Vector3D = new Vector3D();
+        let radius = 150.0;
+        let rn = 7;
+        let cn = 7;
+        let roughness = 0.0;
+        let metallic = 0.0;
+        let disV3 = new Vector3D(radius * 2.0 + 50.0, radius * 2.0 + 50.0, 0.0);
+        let beginPos = new Vector3D(disV3.x * (cn - 1) * -0.5, disV3.y * (rn - 1) * -0.5, -100.0);
+        let pos = new Vector3D();
 
-        let material = this.makeMaterial(0.3, 0.4, 1.3);
-        material.setTextureList( [s_envTex] );
-        material.initializeByCodeBuf(material.getTextureAt(0) != null);
+        // let material = this.makeMaterial(0.3, 0.4, 1.3);
+        // material.setTextureList( [s_envTex] );
+        // material.initializeByCodeBuf(material.getTextureAt(0) != null);
         
-        let cly = new Cylinder3DEntity();
-        cly.setMaterial(material);
-        cly.initialize(30, 200, 30);
-        this.m_rscene.addEntity(cly, 1);
-        // let torus = new Torus3DEntity();
-        // torus.setMaterial(material);
-        // torus.initialize(ringRadius, 50, 30, 50);
-        // this.m_rscene.addEntity(torus, 1);
+        // let cly = new Cylinder3DEntity();
+        // cly.setMaterial(material);
+        // cly.initialize(30, 200, 30);
+        // this.m_rscene.addEntity(cly, 1);
+        // // let torus = new Torus3DEntity();
+        // // torus.setMaterial(material);
+        // // torus.initialize(ringRadius, 50, 30, 50);
+        // // this.m_rscene.addEntity(torus, 1);
 
-        return;
+        // return;
         for (let i: number = 0; i < rn; ++i) {
             metallic = Math.max(rn - 1, 0.001);
             metallic = i / metallic;
