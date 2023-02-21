@@ -28,10 +28,10 @@ class TextureLoader {
     }
 
     protected parseTextureBuffer(buffer: ArrayBuffer): void {
-        let begin: number = 0;
-        let width: number = 128;
-        let height: number = 128;
-        let size: number = width * height * 3;
+        let begin = 0;
+        let width = 128;
+        let height = 128;
+        let size = width * height * 3;
         let fs32: Float32Array = new Float32Array(buffer);
         let subArr: Float32Array = null;
         let tex = this.texture;
@@ -51,11 +51,11 @@ class SpecularTextureLoader extends TextureLoader {
         super();
     }
     protected parseTextureBuffer(buffer: ArrayBuffer): void {
-        let begin: number = 0;
-        let width: number = 128;
-        let height: number = 128;
+        let begin = 0;
+        let width = 128;
+        let height = 128;
 
-        let fs32: Float32Array = new Float32Array(buffer);
+        let fs32 = new Float32Array(buffer);
         let subArr: Float32Array = null;
 
         let tex = this.texture;

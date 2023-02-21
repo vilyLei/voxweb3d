@@ -13,6 +13,9 @@ import IRenderProxy from "../../../vox/render/IRenderProxy";
 interface IRenderTexture extends IRenderBuffer {
 
     name: string;
+    /**
+     * sys automatically generate mipmap or not, the default value is false
+     */
     mipmapEnabled: boolean;
     srcFormat: number;
     dataType: number;

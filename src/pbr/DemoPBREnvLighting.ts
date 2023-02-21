@@ -17,7 +17,7 @@ import Color4 from "../vox/material/Color4";
 
 import PBREnvLightingMaterial from "../pbr/material/PBREnvLightingMaterial";
 import { IFloatCubeTexture } from "../vox/render/texture/IFloatCubeTexture";
-import {SpecularTextureLoader} from "./base/SpecularTextureLoader";
+import { SpecularTextureLoader } from "./base/SpecularTextureLoader";
 
 export class DemoPBREnvLighting {
     constructor() { }
@@ -96,7 +96,7 @@ export class DemoPBREnvLighting {
         // let material = this.makeMaterial(0.3, 0.4, 1.3);
         // material.setTextureList( [s_envTex] );
         // material.initializeByCodeBuf(material.getTextureAt(0) != null);
-        
+
         // let cly = new Cylinder3DEntity();
         // cly.setMaterial(material);
         // cly.initialize(30, 200, 30);
@@ -157,7 +157,7 @@ export class DemoPBREnvLighting {
         let f0: number = Math.random() * 0.9;
         //material.setF0(Math.random() * 0.9, Math.random() * 0.9, Math.random() * 0.9);
         //material.setF0(f0,f0,f0);
-        
+
         this.m_materials.push(material);
 
         for (let i: number = 0; i < 4; ++i) {
