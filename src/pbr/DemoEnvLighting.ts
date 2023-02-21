@@ -31,6 +31,15 @@ import IMeshBase from "../vox/mesh/IMeshBase";
 import Sphere3DMesh from "../vox/mesh/Sphere3DMesh";
 import IRenderMaterial from "../vox/render/IRenderMaterial";
 import RendererState from "../vox/render/RendererState";
+import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
+
+import { CoGeomDataType, CoDataFormat, CoGeomModelLoader } from "../cospace/app/common/CoGeomModelLoader";
+import { EntityLayouter } from "../vox/utils/EntityLayouter";
+import DataMesh from "../vox/mesh/DataMesh";
+import SurfaceNormalCalc from "../vox/geom/SurfaceNormalCalc";
+import Matrix4 from "../vox/math/Matrix4";
+import IShaderMaterial from "../vox/material/mcase/IShaderMaterial";
+import MaterialBase from "../vox/material/MaterialBase";
 
 class TextureLoader {
 
@@ -120,11 +129,13 @@ export class DemoEnvLighting {
 
     private m_materials: PBREnvLightingMaterial[] = [];
     private m_texMaterials: PBRTexLightingMaterial[] = [];
+    private m_modelLoader = new CoGeomModelLoader();
+    private m_layouter = new EntityLayouter();
 
-    private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+    private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled) as TextureProxy;
     }
-    
+
     private createDiv(px: number, py: number, pw: number, ph: number): HTMLDivElement {
         let div: HTMLDivElement = document.createElement('div');
         div.style.width = pw + 'px';
@@ -141,7 +152,7 @@ export class DemoEnvLighting {
     initialize(): void {
         console.log("DemoEnvLighting::initialize()......");
         if (this.m_rscene == null) {
-            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
@@ -179,17 +190,273 @@ export class DemoEnvLighting {
 
             // add common 3d display entity
             //  let plane: Plane3DEntity = new Plane3DEntity();
-            //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+            //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getTexByUrl("static/assets/broken_iron.jpg")]);
             //  this.m_rscene.addEntity(plane);
 
             // this.initFloatCube();
 
             // this.initTexLighting();
-            this.initTexLightingBake();
+            // this.applyTex();
+            // this.initTexLightingBake(false);
+
+            this.initModel();
 
             this.update();
 
         }
+    }
+
+    private initModel(): void {
+        this.m_modelLoader.setListener(
+            (models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat): void => {
+
+                for (let i = 0; i < models.length; ++i) {
+                    this.createEntity(models[i], transforms != null ? transforms[i] : null);
+                }
+            },
+            (total): void => {
+                console.log("loaded model all.");
+
+                // for automatically fitting the model size in the scene
+                this.m_layouter.layoutUpdate();
+
+                // this.initUI();
+
+            });
+
+        let baseUrl = "static/private/";
+        let url = baseUrl + "fbx/base4.fbx";
+        // url = baseUrl + "fbx/hat_ok.fbx";
+        url = baseUrl + "obj/apple_01.obj";
+        url = baseUrl + "fbx/Mat_Ball.fbx";
+
+        this.loadModels([url]);
+    }
+    private loadModels(urls: string[], typeNS: string = ""): void {
+        this.m_modelLoader.load(urls);
+    }
+
+    protected createEntity(model: CoGeomDataType, transform: Float32Array = null, index: number = 0): void {
+
+        if (model != null) {
+            console.log("createEntity(), model: ", model);
+            /*
+            let vs = model.vertices;
+            let uvs = model.uvsList[0];
+            let ivs = model.indices;
+            let trisNumber = ivs.length / 3;
+
+            let nvs = model.normals;
+            if (nvs == null) {
+                SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
+            }
+
+            // let material = new BakeMaterial();
+            // material.setTextureList([
+            //     this.getTexByUrl("static/assets/color_02.jpg"),
+            //     this.getTexByUrl("static/assets/fabric_01.jpg")
+            // ]);
+
+            let tex = this.getTexByUrl("static/assets/bake/sph_mapping02.png");
+            tex.flipY = true;
+            let material = new Default3DMaterial();
+            material.setTextureList([
+                tex
+            ]);
+            material.initializeByCodeBuf(true);
+
+            let mesh = new DataMesh();
+            mesh.wireframe = true;
+            mesh.vbWholeDataEnabled = false;
+            mesh.setVS(vs);
+            mesh.setUVS(uvs);
+            mesh.setNVS(nvs);
+            mesh.setIVS(ivs);
+            mesh.setVtxBufRenderData(material);
+            mesh.initialize();
+
+            // this.createLineDraw(mesh);
+
+            // return;
+
+            let matrix4 = new Matrix4(transform);
+            let entity = new DisplayEntity();
+            // entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+            entity.setMesh(mesh);
+            entity.setMaterial(material);
+            entity.getTransform().setParentMatrix(matrix4);
+
+            this.m_rscene.addEntity(entity, 1);
+            // this.m_entities.push(entity);
+            //*/
+            // for automatically fitting the model size in the scene
+            // this.m_layouter.layoutAppendItem(entity, matrix4);
+            this.initTexLightingBakeWithModel(-1, model, transform);
+        }
+    }
+
+    private initTexLightingBakeWithModel(bakeType: number, model: CoGeomDataType, transform: Float32Array = null): void {
+
+
+        let vs = model.vertices;
+        let uvs = model.uvsList[0];
+        let ivs = model.indices;
+        let trisNumber = ivs.length / 3;
+
+        let nvs = model.normals;
+        if (nvs == null) {
+            SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
+        }
+
+        // let material = new BakeMaterial();
+        // material.setTextureList([
+        //     this.getTexByUrl("static/assets/color_02.jpg"),
+        //     this.getTexByUrl("static/assets/fabric_01.jpg")
+        // ]);
+
+        let material: MaterialBase;
+        if(bakeType < 0) {
+            let tex = this.getTexByUrl("static/assets/bake/mat_ball.png");
+            tex.flipY = bakeType < 0;
+            let materialShow = new Default3DMaterial();
+            materialShow.setTextureList([ tex ]);
+            materialShow.initializeByCodeBuf(true);
+            material = materialShow;
+        }
+
+        let bake = bakeType > 0;
+        let radius = 150.0;
+        let roughness = 0.0;
+        let metallic = 0.0;
+        let mat4 = new Matrix4(transform);
+
+        let nameList: string[] = ["gold", "rusted_iron", "grass", "plastic", "wall"];
+        let nameI = 3;
+        metallic = 0.5;
+        roughness = 0.4;
+        if (bake) {
+            this.createLineDrawWithModel(model, mat4, bake, radius, metallic, roughness, nameList[nameI]);
+            // return;
+        }
+        if(bakeType >= 0) {
+            let materialPbr = this.makeTexMaterial(metallic, roughness, 1.0);
+            materialPbr.bake = bake;
+            materialPbr.setTextureList(this.getTexList(nameList[nameI]));
+            materialPbr.initializeByCodeBuf(true);
+            material = materialPbr;
+        }
+
+        let mesh = new DataMesh();
+        mesh.vbWholeDataEnabled = false;
+        mesh.setVS(model.vertices);
+        mesh.setUVS(model.uvsList[0]);
+        mesh.setNVS(model.normals);
+        mesh.setIVS(model.indices);
+        mesh.setVtxBufRenderData(material);
+        mesh.initialize();
+
+        let entity = new DisplayEntity();
+        if (bake) entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+        entity.setMaterial(material);
+        entity.setMesh(mesh);
+
+        if (transform != null) {
+            entity.getTransform().setParentMatrix(mat4);
+        }
+        this.m_rscene.addEntity(entity, 1);
+        // for automatically fitting the model size in the scene
+        this.m_layouter.layoutAppendItem(entity, mat4);
+        //*/
+    }
+
+    private createLineDrawWithModel(model: CoGeomDataType, mat4: Matrix4, bake: boolean, pradius: number, metallic: number, roughness: number, texName: string): void {
+
+        let material = this.makeTexMaterial(metallic, roughness, 1.0);
+        material.bake = bake;
+        material.setTextureList(this.getTexList(texName));
+        material.initializeByCodeBuf(true);
+
+        let mesh = new DataMesh();
+        mesh.wireframe = true;
+        mesh.vbWholeDataEnabled = false;
+        mesh.setVS(model.vertices);
+        mesh.setUVS(model.uvsList[0]);
+        mesh.setNVS(model.normals);
+        mesh.setIVS(model.indices);
+        mesh.setVtxBufRenderData(material);
+        mesh.initialize();
+
+        let radius = 0.002;
+        let PI2 = Math.PI * 2.0;
+        let total = 8;
+        let stage = this.m_rscene.getStage3D();
+        let ratio = stage.stageHeight / stage.stageWidth;
+        for (let k = 0; k < 8; ++k) {
+            for (let i = 0; i < total; ++i) {
+                let rad = PI2 * i / total;
+                let dx = Math.cos(rad) * radius * ratio;
+                let dy = Math.sin(rad) * radius;
+                // material.setOffsetXY(dx, dy);
+                this.createWithMesh(bake, mesh, metallic, roughness, texName, dx, dy, mat4);
+            }
+            radius += 0.002;
+        }
+    }
+
+    private applyTex(): void {
+        // let tex = this.getTexByUrl("static/assets/bake/sph_mapping01.png");
+        let tex = this.getTexByUrl("static/assets/bake/sph_mapping03.png");
+        // let tex = this.getTexByUrl("static/assets/towBox.jpg");
+        tex.flipY = true;
+        // tex.premultiplyAlpha = true;
+        let material = new Default3DMaterial();
+        material.setTextureList([tex]);
+        material.initializeByCodeBuf(true);
+
+        let mesh = new Sphere3DMesh();
+        mesh.uvScale = 0.9;
+        mesh.mode = 2;
+        mesh.setBufSortFormat(material.getBufSortFormat());
+        mesh.initialize(150, 30, 30, false);
+
+        let entity = new DisplayEntity();
+        entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        entity.setMesh(mesh);
+        entity.setMaterial(material);
+
+        this.m_rscene.addEntity(entity);
+    }
+    private initTexLightingBake(bake: boolean): void {
+
+        // let bake = false;
+        let radius = 150.0;
+        let roughness = 0.0;
+        let metallic = 0.0;
+
+
+        let nameList: string[] = ["gold", "rusted_iron", "grass", "plastic", "wall"];
+        let nameI = 3;
+        metallic = 0.5;
+        roughness = 0.4;
+        if (bake) {
+            this.createLineDraw(bake, radius, metallic, roughness, nameList[nameI]);
+            // return;
+        }
+        let material: PBRTexLightingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
+        material.bake = bake;
+        material.setTextureList(this.getTexList(nameList[nameI]));
+        material.initializeByCodeBuf(true);
+
+        let mesh = new Sphere3DMesh();
+        mesh.uvScale = 0.9;
+        mesh.mode = 2;
+        mesh.setVtxBufRenderData(material);
+        mesh.initialize(radius, 30, 30, false);
+        let sph = new DisplayEntity();
+        if (bake) sph.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+        sph.setMaterial(material);
+        sph.setMesh(mesh);
+        this.m_rscene.addEntity(sph, 1);
     }
     private initFloatCube(): void {
 
@@ -201,69 +468,51 @@ export class DemoEnvLighting {
         this.initLighting(null, loader.texture);
     }
 
-    private createWithMesh(mesh: IMeshBase, metallic: number, roughness: number, texName: string, dx: number, dy: number): void {
+    private createWithMesh(bake: boolean, mesh: IMeshBase, metallic: number, roughness: number, texName: string, dx: number, dy: number, mat4: Matrix4 = null): void {
 
         let material: PBRTexLightingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
-        material.setTextureList( this.getTexList( texName ) );
+        material.bake = bake;
+        material.setTextureList(this.getTexList(texName));
         material.initializeByCodeBuf(true);
         material.setOffsetXY(dx, dy);
-        let sph = new DisplayEntity();
-        sph.setMaterial(material);
-        sph.setMesh(mesh);
-        sph.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
-        this.m_rscene.addEntity(sph, 0);
+        let entity = new DisplayEntity();
+        entity.setMaterial(material);
+        entity.setMesh(mesh);
+        entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+
+        if (mat4 != null) {
+            entity.getTransform().setParentMatrix(mat4);
+        }
+        this.m_rscene.addEntity(entity, 0);
     }
-    private createLineDraw(pradius: number, metallic: number, roughness: number, texName: string): void {
-        
+    private createLineDraw(bake: boolean, pradius: number, metallic: number, roughness: number, texName: string): void {
+
         let material: PBRTexLightingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
-        material.setTextureList( this.getTexList( texName ) );
+        material.bake = bake;
+        material.setTextureList(this.getTexList(texName));
         material.initializeByCodeBuf(true);
         let mesh = new Sphere3DMesh();
+        mesh.uvScale = 0.9;
+        mesh.mode = 2;
         mesh.wireframe = true;
-        mesh.setVtxBufRenderData( material );
+        mesh.setVtxBufRenderData(material);
         mesh.initialize(pradius, 30, 30, false);
 
         let radius = 0.002;
         let PI2 = Math.PI * 2.0;
         let total = 8;
+        let stage = this.m_rscene.getStage3D();
+        let ratio = stage.stageHeight / stage.stageWidth;
         for (let k = 0; k < 8; ++k) {
             for (let i = 0; i < total; ++i) {
                 let rad = PI2 * i / total;
-                let dx = Math.cos(rad) * radius;
+                let dx = Math.cos(rad) * radius * ratio;
                 let dy = Math.sin(rad) * radius;
                 // material.setOffsetXY(dx, dy);
-                this.createWithMesh(mesh, metallic, roughness, texName, dx, dy);
+                this.createWithMesh(bake, mesh, metallic, roughness, texName, dx, dy);
             }
             radius += 0.002;
         }
-    }
-    private initTexLightingBake(): void {
-
-        let radius = 150.0;
-        let roughness = 0.0;
-        let metallic = 0.0;
-
-
-        let nameList: string[] = ["gold", "rusted_iron", "grass", "plastic", "wall"];
-        let nameI = 3;
-        metallic = 0.5;
-        roughness = 0.4;
-
-        // this.createLineDraw(radius, metallic, roughness, nameList[nameI]);
-        // return;
-        let material: PBRTexLightingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
-        material.setTextureList( this.getTexList(nameList[nameI]) );
-        material.initializeByCodeBuf(true);
-
-        let mesh = new Sphere3DMesh();
-        mesh.setVtxBufRenderData( material );
-        mesh.initialize(radius, 30, 30, false);
-        let sph = new DisplayEntity();
-        // sph.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
-        sph.setMaterial(material);
-        sph.setMesh(mesh);
-        // sph.initialize(radius, 20, 20, this.getTexList(nameList[nameI]));
-        this.m_rscene.addEntity(sph, 1);
     }
     private initTexLighting(): void {
 
@@ -327,7 +576,7 @@ export class DemoEnvLighting {
                 //let material:PBREnvLightingMaterial = this.makeMaterial(0.0, 0.2, 1.0);
                 let material: PBREnvLightingMaterial = this.makeMaterial(metallic, roughness, 1.3);
                 sph.setMaterial(material);
-                //sph.initialize(radius, 20, 20, [this.getImageTexByUrl("static/assets/noise.jpg")]);
+                //sph.initialize(radius, 20, 20, [this.getTexByUrl("static/assets/noise.jpg")]);
                 sph.initialize(radius, 20, 20, [s_envTex]);
 
                 pos.copyFrom(beginPos);
@@ -343,11 +592,11 @@ export class DemoEnvLighting {
     private getTexList(name: string = "rusted_iron"): TextureProxy[] {
         let list: TextureProxy[] = [
 
-            this.getImageTexByUrl("static/assets/pbr/" + name + "/albedo.png"),
-            this.getImageTexByUrl("static/assets/pbr/" + name + "/normal.png"),
-            this.getImageTexByUrl("static/assets/pbr/" + name + "/metallic.png"),
-            this.getImageTexByUrl("static/assets/pbr/" + name + "/roughness.png"),
-            this.getImageTexByUrl("static/assets/pbr/" + name + "/ao.png"),
+            this.getTexByUrl("static/assets/pbr/" + name + "/albedo.png"),
+            this.getTexByUrl("static/assets/pbr/" + name + "/normal.png"),
+            this.getTexByUrl("static/assets/pbr/" + name + "/metallic.png"),
+            this.getTexByUrl("static/assets/pbr/" + name + "/roughness.png"),
+            this.getTexByUrl("static/assets/pbr/" + name + "/ao.png"),
         ];
         return list;
     }

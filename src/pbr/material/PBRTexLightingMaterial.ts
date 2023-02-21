@@ -17,6 +17,7 @@ class PBRTexLightingShaderBuffer extends ShaderCodeBuffer {
     }
     private static s_instance: PBRTexLightingShaderBuffer = new PBRTexLightingShaderBuffer();
     private m_uniqueName: string = "";
+    bake = false;
     initialize(texEnabled: boolean): void {
         //console.log("PBRTexLightingShaderBuffer::initialize()...");
         this.m_uniqueName = "PBRTexLightingShd";
@@ -185,10 +186,14 @@ void main()
         return fragCode0 + fragCode2;
     }
     getVertShaderCode(): string {
-        let vtxCode: string =
-`#version 300 es
-precision highp float;
-
+        let vtxCode0: string =`#version 300 es
+        precision highp float;`;
+        let vtxCode1: string = "";
+        if(this.bake) {
+            vtxCode1 = "\n#define BAKE 1\n"
+        }
+        let vtxCode2: string =
+`
 layout(location = 0) in vec3 a_vs;
 layout(location = 1) in vec2 a_uvs;
 layout(location = 2) in vec3 a_nvs;
@@ -213,18 +218,20 @@ void main(){
     TexCoords = a_uvs;
     Normal = normalize(a_nvs * inverse(mat3(u_objMat)));
     v_camPos = (inverse(u_viewMat) * vec4(0.0,0.0,0., 1.0)).xyz;
-    
+
+    #ifdef BAKE
     vec2 uvpos = a_uvs.xy;
     uvpos = vec2(2.0) * vec2(uvpos - vec2(0.5));
     uvpos += u_offset.xy;
-    // gl_Position = vec4(uvpos, 0.0,1.0);
+    gl_Position = vec4(uvpos, 0.0,1.0);
+    #endif
 }
 `;
-        return vtxCode;
+        return vtxCode0 + vtxCode1 + vtxCode2;
     }
     getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
-        return this.m_uniqueName;
+        return this.m_uniqueName + (this.bake ? "bake" : "");
     }
     toString(): string {
         return "[PBRTexLightingShaderBuffer()]";
@@ -237,6 +244,7 @@ void main(){
 
 export default class PBRTexLightingMaterial extends MaterialBase {
     private m_offset = new Float32Array([0.0, 0.0, 0.0, 0.0]);
+    bake = false;
     constructor() {
         super();
     }
@@ -246,7 +254,10 @@ export default class PBRTexLightingMaterial extends MaterialBase {
         this.m_offset[1] = py;
     }
     getCodeBuf(): ShaderCodeBuffer {
-        return PBRTexLightingShaderBuffer.GetInstance();
+
+        let ins = PBRTexLightingShaderBuffer.GetInstance();
+        ins.bake = this.bake;
+        return ins;
     }
 
     private m_albedo: Float32Array = new Float32Array([0.5, 0.0, 0.0, 0.0]);

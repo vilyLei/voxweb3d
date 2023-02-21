@@ -98,12 +98,15 @@ export class BakeExample {
         console.log("BakeExample::initialize()......");
         if (this.m_rscene == null) {
 
-            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
-            let rparam = this.m_graph.createRendererParam(this.createDiv(0, 0, 512, 512));
-            rparam.autoSyncRenderBufferAndWindowSize = false;
+            // let rparam = this.m_graph.createRendererParam(this.createDiv(0, 0, 512, 512));
+            // rparam.autoSyncRenderBufferAndWindowSize = false;
+
+            
+            let rparam = this.m_graph.createRendererParam();
             rparam.setAttriAntialias(true);
             // rparam.setAttriAlpha(true);
             rparam.setCamPosition(800.0, 800.0, 800.0);
@@ -118,18 +121,22 @@ export class BakeExample {
     private init3DScene(): void {
 
         this.applyTex();
+        // this.mapTest();
         // this.buildTex();
     }
     private applyTex(): void {
-
-        // let tex = this.getTexByUrl("static/assets/sph_mapping01.png");
-        let tex = this.getTexByUrl("static/assets/sph_mapping03.png");
+        // let tex = this.getTexByUrl("static/assets/bake/sph_mapping01.png");
+        let tex = this.getTexByUrl("static/assets/bake/sph_mapping03.png");
+        // let tex = this.getTexByUrl("static/assets/towBox.jpg");
         tex.flipY = true;
-        tex.premultiplyAlpha = true;
+        // tex.premultiplyAlpha = true;
         let material = new Default3DMaterial();
         material.setTextureList([tex]);
         material.initializeByCodeBuf(true);
+
         let mesh = new Sphere3DMesh();
+        mesh.uvScale = 0.9;
+        mesh.mode = 2;
         mesh.setBufSortFormat(material.getBufSortFormat());
         mesh.initialize(150, 30, 30, false);
 
@@ -139,6 +146,44 @@ export class BakeExample {
         entity.setMaterial(material);
 
         this.m_rscene.addEntity(entity);
+    }
+    private mapTest(): void {
+
+        // let tex = this.getTexByUrl("static/assets/sph_mapping01.png");
+        // let tex = this.getTexByUrl("static/assets/sph_mapping03.png");
+        let tex = this.getTexByUrl("static/assets/towBox.jpg");
+        // tex.flipY = true;
+        // tex.premultiplyAlpha = true;
+        let material = new Default3DMaterial();
+        material.setTextureList([tex]);
+        material.initializeByCodeBuf(true);
+
+        let mesh = new Sphere3DMesh();
+        mesh.uvScale = 0.9;
+        mesh.mode = 2;
+        mesh.setBufSortFormat(material.getBufSortFormat());
+        mesh.initialize(150, 30, 30, false);
+
+        let entity = new DisplayEntity();
+        entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        entity.setMesh(mesh);
+        entity.setMaterial(material);
+
+        this.m_rscene.addEntity(entity);
+
+        let material0 = new Default3DMaterial();
+        material0.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
+        let mesh0 = new Sphere3DMesh();
+        mesh0.mode = 1;
+        mesh0.setBufSortFormat(material.getBufSortFormat());
+        mesh0.initialize(150, 30, 30, false);
+
+        let entity0 = new DisplayEntity();
+        entity0.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        entity0.setMesh(mesh0);
+        entity0.setMaterial(material0);
+        entity0.setXYZ(300, 0, 300);
+        this.m_rscene.addEntity(entity0);
     }
     private createWithMesh(mesh: IMeshBase, dx: number, dy: number): void {
 

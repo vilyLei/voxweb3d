@@ -24,16 +24,15 @@ export default class Sphere3DMesh extends MeshBase {
     private m_nvs: Float32Array = null;
     private m_cvs: Float32Array = null;
 
-    inverseUV: boolean = false;
-    uvScale: number = 1.0;
-
+    inverseUV = false;
+    uvScale = 1.0;
+    mode = 0;
     getVS(): Float32Array { return this.m_vs; }
     getUVS(): Float32Array { return this.m_uvs; }
     getNVS(): Float32Array { return this.m_nvs; }
     getCVS(): Float32Array { return this.m_cvs; }
     getIVS(): Uint16Array | Uint32Array { return this.m_ivs; }
 
-    //
     initialize(radius: number, longitudeNumSegments: number, latitudeNumSegments: number, doubleTriFaceEnabled: boolean): void {
         if (this.vtxTotal < 1) {
             if (radius < 0.0001) radius = 0.0001;
@@ -59,30 +58,36 @@ export default class Sphere3DMesh extends MeshBase {
             let xRad = 0.0, yRad = 0.0, px = 0.0, py = 0.0;
             let vtx = new MeshVertex(0, -this.m_radius, 0, trisTot);
 
+            console.log("Sphere3DMesh::initialize() ...");
             // 计算绕 y轴 的纬度线上的点
             let vtxVec = [];
             let vtxRows: MeshVertex[][] = [];
             vtxRows.push([]);
-            let vtxRow: MeshVertex[] = vtxRows[0];
+            let vtxRow = vtxRows[0];
             let centerUV = this.inverseUV ? 1.0 : 0.5;
-            
+
             vtx.u = vtx.v = centerUV;
             vtx.nx = 0.0; vtx.ny = -1.0; vtx.nz = 0.0;
-            vtxRow.push(vtx.cloneVertex());
-            vtxVec.push(vtxRow[0]);
-                        
+
+            let v0 = vtx.cloneVertex();
+            for (j = 0; j <= this.m_longitudeNumSegments; ++j) {
+                vtxRow.push(v0);
+            }
+            vtxVec.push(v0);
+
+            // console.log("vtxRow first: ", vtxRow);
             let pr = 0.0
             let py2 = 0.0;
             let f = 1.0 / this.m_radius;
-            
-            for (i = 0; i < this.m_latitudeNumSegments; ++i) {
+
+            for (i = 1; i < this.m_latitudeNumSegments; ++i) {
                 yRad = Math.PI * i / this.m_latitudeNumSegments;
                 px = Math.sin(yRad);
                 py = Math.cos(yRad);
 
                 vtx.y = -this.m_radius * py;
                 pr = this.m_radius * px;
-                
+
                 // py2 = vtx.y;
                 // if (py2 < 0) py2 = -py2;
                 // uv inverse yes or no
@@ -123,27 +128,148 @@ export default class Sphere3DMesh extends MeshBase {
             vtx.nx = 0.0; vtx.ny = 1.0; vtx.nz = 0.0;
             vtxRows.push([]);
             let lastRow = vtxRows[this.m_latitudeNumSegments];
-            lastRow.push(vtx.cloneVertex());
-            vtxVec.push(lastRow[0]);
-
+            let v1 = vtx.cloneVertex();
+            for (j = 0; j <= this.m_longitudeNumSegments; ++j) {
+                lastRow.push(v1);
+            }
+            vtxVec.push(v1);
+            console.log("vtxRow last: ", lastRow);
+            // vtxVec.push(lastRow[0]);
+            console.log("this.m_longitudeNumSegments: ", this.m_longitudeNumSegments);
+            // console.log("vtxRows: ", vtxRows);
             let pvtx: MeshVertex = null;
             ///////////////////////////   ///////////////////////////    ////////////////
             let pivs: number[] = [];
 
             let rowa = null;
             let rowb = null;
-            i = 1;
-            for (; i <= this.m_latitudeNumSegments; ++i) {
-                rowa = vtxRows[i - 1];
-                rowb = vtxRows[i];
-                for (j = 1; j <= this.m_longitudeNumSegments; ++j) {
-                    if (i == 1) {
-                        pivs.push(rowa[0].index); pivs.push(rowb[j].index); pivs.push(rowb[j - 1].index);
+            let layerN = this.m_latitudeNumSegments;
+            if (this.mode == 1) {
+                let halfN = layerN / 2 + 1;
+                for (i = halfN; i <= layerN; ++i) {
+                    rowa = vtxRows[i - 1];
+                    rowb = vtxRows[i];
+                    for (j = 1; j <= this.m_longitudeNumSegments; ++j) {
+                        pivs.push(rowa[j].index); pivs.push(rowb[j - 1].index); pivs.push(rowa[j - 1].index);
+                        pivs.push(rowa[j].index); pivs.push(rowb[j].index); pivs.push(rowb[j - 1].index);
                     }
-                    else if (i == this.m_latitudeNumSegments) {
-                        pivs.push(rowa[j].index); pivs.push(rowb[0].index); pivs.push(rowa[j - 1].index);
+                }
+            } else if (this.mode == -1) {
+                let halfN = layerN / 2 + 1;
+                for (i = 1; i < halfN; ++i) {
+                    rowa = vtxRows[i - 1];
+                    rowb = vtxRows[i];
+                    for (j = 1; j <= this.m_longitudeNumSegments; ++j) {
+                        pivs.push(rowa[j].index); pivs.push(rowb[j - 1].index); pivs.push(rowa[j - 1].index);
+                        pivs.push(rowa[j].index); pivs.push(rowb[j].index); pivs.push(rowb[j - 1].index);
+                    }
+                }
+            } else if (this.mode == 2) {
+
+                let halfN = layerN / 2 + 1;
+                let mi = halfN - 1;
+                // let pu = 0.0;
+                console.log("use sph mode 2, halfN: ", halfN, "mi: ", mi);
+                let miRow = vtxRows[mi].slice();
+                let n = miRow.length - 1;
+                for (i = 0; i < n; ++i) {
+                    vtx = miRow[i].cloneVertex();
+                    ++trisTot;
+                    vtx.index = trisTot;
+                    miRow[i] = vtx;
+                    vtxVec.push(vtx);
+                }
+                miRow[miRow.length - 1] = miRow[0];
+
+                let list0: MeshVertex[][] = [];
+                for (i = 0; i < halfN; ++i) {
+                    list0.push(vtxRows[i]);
+                }
+                list0[list0.length - 1] = miRow;
+
+                let list1 = vtxRows;
+                let list1_copy: MeshVertex[][] = [];
+                for (i = halfN - 1; i <= layerN; ++i) {
+                    list1_copy.push(vtxRows[i]);
+                }
+                console.log("calc UV_U XXXXX");
+                ///*
+                for (i = 1; i < halfN; ++i) {
+                    yRad = Math.PI * i / this.m_latitudeNumSegments;
+                    px = Math.sin(yRad);
+                    py = Math.cos(yRad);
+                    if (this.inverseUV) {
+                        py2 = Math.abs(yRad / Math.PI - 0.5);
                     }
                     else {
+                        py2 = 0.5 - Math.abs(yRad / Math.PI - 0.5);
+                    }
+                    py2 *= this.uvScale;
+
+                    const ls = list0[i];
+                    for (j = 0; j < this.m_longitudeNumSegments; ++j) {
+                        vtx = ls[j];
+                        xRad = (Math.PI * 2 * j) / this.m_longitudeNumSegments;
+                        // calc uv
+                        vtx.u = 0.25 + Math.sin(xRad) * py2 * 0.5;
+                        vtx.v = 0.5 + Math.cos(xRad) * py2;
+                    }
+                }
+                vtx = list0[0][0];
+                vtx.u = 0.25;
+                vtx.v = 0.5;
+                //*/
+                for (i = halfN - 1; i < layerN; ++i) {
+                    yRad = Math.PI * i / this.m_latitudeNumSegments;
+                    px = Math.sin(yRad);
+                    py = Math.cos(yRad);
+                    if (this.inverseUV) {
+                        py2 = Math.abs(yRad / Math.PI - 0.5);
+                    }
+                    else {
+                        py2 = 0.5 - Math.abs(yRad / Math.PI - 0.5);
+                    }
+                    py2 *= this.uvScale;
+
+                    const ls = list1[i];
+                    // const n = ls.length;
+                    for (j = 0; j < this.m_longitudeNumSegments; ++j) {
+                        vtx = ls[j];
+                        xRad = (Math.PI * 2 * j) / this.m_longitudeNumSegments;
+                        // calc uv
+                        vtx.u = 0.75 + Math.sin(xRad) * py2 * 0.5;
+                        vtx.v = 0.5 + Math.cos(xRad) * py2;
+                    }
+                }
+                vtx = list1[list1.length - 1][0];
+                vtx.u = 0.75;
+                vtx.v = 0.5;
+
+                console.log("list0: ", list0);
+                // console.log("list1: ", list1);
+                console.log("list1_copy: ", list1_copy);
+
+                for (i = 1; i < halfN; ++i) {
+                    rowa = list0[i - 1];
+                    rowb = list0[i];
+                    for (j = 1; j <= this.m_longitudeNumSegments; ++j) {
+                        pivs.push(rowa[j].index); pivs.push(rowb[j - 1].index); pivs.push(rowa[j - 1].index);
+                        pivs.push(rowa[j].index); pivs.push(rowb[j].index); pivs.push(rowb[j - 1].index);
+                    }
+                }
+                for (i = halfN; i <= layerN; ++i) {
+                    rowa = list1[i - 1];
+                    rowb = list1[i];
+                    for (j = 1; j <= this.m_longitudeNumSegments; ++j) {
+                        pivs.push(rowa[j].index); pivs.push(rowb[j - 1].index); pivs.push(rowa[j - 1].index);
+                        pivs.push(rowa[j].index); pivs.push(rowb[j].index); pivs.push(rowb[j - 1].index);
+                    }
+                }
+            } else {
+                for (i = 1; i <= layerN; ++i) {
+                    rowa = vtxRows[i - 1];
+                    rowb = vtxRows[i];
+                    for (j = 1; j <= this.m_longitudeNumSegments; ++j) {
                         pivs.push(rowa[j].index); pivs.push(rowb[j - 1].index); pivs.push(rowa[j - 1].index);
                         pivs.push(rowa[j].index); pivs.push(rowb[j].index); pivs.push(rowb[j - 1].index);
                     }
@@ -163,8 +289,7 @@ export default class Sphere3DMesh extends MeshBase {
             i = 0;
             for (j = 0; j < this.vtxTotal; ++j) {
                 pvtx = vtxVec[j];
-                this.m_vs[i] = pvtx.x; this.m_vs[i + 1] = pvtx.y; this.m_vs[i + 2] = pvtx.z;
-                i += 3;
+                this.m_vs[i++] = pvtx.x; this.m_vs[i++] = pvtx.y; this.m_vs[i++] = pvtx.z;
             }
             ROVertexBuffer.Reset();
             ROVertexBuffer.AddFloat32Data(this.m_vs, 3);
