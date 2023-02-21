@@ -41,6 +41,7 @@ import Matrix4 from "../vox/math/Matrix4";
 import IShaderMaterial from "../vox/material/mcase/IShaderMaterial";
 import MaterialBase from "../vox/material/MaterialBase";
 import Torus3DMesh from "../vox/mesh/Torus3DMesh";
+import Torus3DEntity from "../vox/entity/Torus3DEntity";
 
 class TextureLoader {
 
@@ -510,6 +511,7 @@ export class DemoEnvLighting {
         material.initializeByCodeBuf(material.getTextureAt(0) != null);
         let ringRadius = 200;
         let latitudeNumSegments = 50;
+        /*
         let torusMesh = new Torus3DMesh();
         torusMesh.axisType = 2;
         torusMesh.setVtxBufRenderData(material);
@@ -519,8 +521,13 @@ export class DemoEnvLighting {
         torusEntity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
         torusEntity.setMaterial(material);
         torusEntity.setMesh(torusMesh);
-
         this.m_rscene.addEntity(torusEntity, 1);
+        //*/
+        let torus = new Torus3DEntity();
+        torus.setMaterial(material);
+        torus.initialize(ringRadius, 50, 30, 50);
+        this.m_rscene.addEntity(torus, 1);
+
         return;
         for (let i: number = 0; i < rn; ++i) {
             metallic = Math.max(rn - 1, 0.001);
