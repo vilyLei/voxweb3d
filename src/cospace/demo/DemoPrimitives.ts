@@ -109,18 +109,19 @@ export class DemoPrimitives {
 		// this.m_rscene.addEntity(tube);
 
 		
-		let tubeMaterial = CoMaterial.createDefaultMaterial();
-		tubeMaterial.normalEnabled = true;
-		let tube = CoEntity.createTube(50, 150, 30, 1, tubeMaterial);
-		tube.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
-		this.m_rscene.addEntity(tube);
+		// let tubeMaterial = CoMaterial.createDefaultMaterial();
+		// tubeMaterial.normalEnabled = true;
+		// let tube = CoEntity.createTube(50, 150, 30, 1, tubeMaterial);
+		// tube.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
+		// this.m_rscene.addEntity(tube);
 
 		
-		// let torusMaterial = CoMaterial.createDefaultMaterial();
-		// torusMaterial.normalEnabled = true;
-		// let torus = CoEntity.createTorus(100, 50, 20, 30, torusMaterial);
-		// // tube.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
-		// this.m_rscene.addEntity(torus);
+		let torusMaterial = CoMaterial.createDefaultMaterial();
+		torusMaterial.normalEnabled = true;
+		torusMaterial.setRGB3f(1.0,0.0,0.0);
+		let torus = CoEntity.createTorus(100, 2, 20, 70, torusMaterial);
+		// tube.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
+		this.m_rscene.addEntity(torus);
 
 		return;
 		let size = 50;
@@ -176,6 +177,7 @@ export class DemoPrimitives {
 			RendererDevice.SetWebBodyColor("black");
 
 			let rparam = CoRScene.createRendererSceneParam();
+			rparam.setAttriAntialias(true);
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 			rparam.setCamProject(45, 20.0, 9000.0);
 			this.m_rscene = CoRScene.createRendererScene(rparam);

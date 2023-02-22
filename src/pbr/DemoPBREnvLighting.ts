@@ -21,6 +21,7 @@ import { BinaryTextureLoader } from "../cospace/modules/loaders/BinaryTextureLoa
 import Torus3DEntity from "../vox/entity/Torus3DEntity";
 import Tube3DEntity from "../vox/entity/Tube3DEntity";
 import RendererState from "../vox/render/RendererState";
+import Box3DEntity from "../vox/entity/Box3DEntity";
 
 export class DemoPBREnvLighting {
     constructor() { }
@@ -110,11 +111,18 @@ export class DemoPBREnvLighting {
         // torus.initialize(100, 50, 30, 50);
         // this.m_rscene.addEntity(torus, 1);
 
-        let tube = new Tube3DEntity();
-        tube.setMaterial(material);
-        tube.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-        tube.initialize(30, 110, 30, 1);
-        this.m_rscene.addEntity(tube, 1);
+        // let tube = new Tube3DEntity();
+        // tube.setMaterial(material);
+        // tube.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        // tube.initialize(30, 110, 30, 1);
+        // this.m_rscene.addEntity(tube, 1);
+
+        
+        let box = new Box3DEntity();
+        box.setMaterial(material);
+        // box.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        box.initializeSizeXYZ(30, 110, 30);
+        this.m_rscene.addEntity(box, 1);
 
         return;
         for (let i: number = 0; i < rn; ++i) {

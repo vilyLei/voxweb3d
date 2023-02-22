@@ -2,6 +2,7 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 import { IFloatCubeTexture } from "../../../vox/render/texture/IFloatCubeTexture";
 import { HttpFileLoader } from "./HttpFileLoader";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
+import { TextureConst } from "../../voxengine/CoRScene";
 
 class BinaryTextureLoader {
 
@@ -64,7 +65,7 @@ class SpecularEnvTextureLoader extends BinaryTextureLoader {
         tex.mipmapEnabled = false;
         // tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
         // tex.magFilter = TextureConst.LINEAR;
-
+        
         for (let j = 0; j < 9; j++) {
             for (let i = 0; i < 6; i++) {
                 const size = width * height * 3;
