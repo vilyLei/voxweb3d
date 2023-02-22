@@ -25,7 +25,7 @@ class PBREnvLightingShaderBuffer extends ShaderCodeBuffer {
     getFragShaderCode(): string {
 
         let fragCode: string =
-`#version 300 es
+            `#version 300 es
 precision highp float;
 `;
         if (RendererDevice.IsWebGL1()) {
@@ -35,8 +35,7 @@ precision highp float;
 #extension GL_EXT_shader_texture_lod : enable
 #define VOX_TextureCubeLod textureCubeLodEXT
 `;
-        }
-        else {
+        }else {
 
             fragCode +=
                 `

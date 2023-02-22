@@ -9,7 +9,7 @@ import IColor4 from "./IColor4";
 
 const __$mcv: number = 1e-5;
 
-class Color4 implements IColor4{
+class Color4 implements IColor4 {
     r: number;
     g: number;
     b: number;
@@ -49,7 +49,7 @@ class Color4 implements IColor4{
         arr[offset + 2] = this.b;
         return this;
     }
-    
+
     fromBytesArray3(arr: number[] | Float32Array, offset: number = 0): Color4 {
         this.setRGB3Bytes(arr[offset], arr[offset + 1], arr[offset + 2]);
         return this;

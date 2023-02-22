@@ -30,6 +30,7 @@ import TextureConst from "../vox/texture/TextureConst";
 import { CoGeomDataType, CoDataFormat, CoGeomModelLoader } from "../cospace/app/common/CoGeomModelLoader";
 import { EntityLayouter } from "../vox/utils/EntityLayouter";
 import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
+import Torus3DEntity from "../vox/entity/Torus3DEntity";
 
 class TextureLoader {
 
@@ -291,20 +292,21 @@ export class DemoEnvLighting {
         let beginPos: Vector3D = new Vector3D(disV3.x * (cn - 1) * -0.5, disV3.y * (rn - 1) * -0.5, -100.0);
         let pos: Vector3D = new Vector3D();
 
-        let material = this.makeMaterial(0.3, 0.4, 1.3);
+        let material = this.makeMaterial(0.2, 0.1, 1.3);
         material.setTextureList( [s_envTex] );
         material.initializeByCodeBuf(material.getTextureAt(0) != null);
         
-        let cly = new Cylinder3DEntity();
-        cly.setMaterial(material);
-        cly.initialize(30, 200, 30);
-        this.m_rscene.addEntity(cly, 1);
+        // let cly = new Cylinder3DEntity();
+        // cly.setMaterial(material);
+        // cly.initialize(30, 200, 30);
+        // this.m_rscene.addEntity(cly, 1);
+
         // let torus = new Torus3DEntity();
         // torus.setMaterial(material);
-        // torus.initialize(ringRadius, 50, 30, 50);
+        // torus.initialize(200, 50, 30, 50);
         // this.m_rscene.addEntity(torus, 1);
 
-        return;
+        // return;
         for (let i: number = 0; i < rn; ++i) {
             metallic = Math.max(rn - 1, 0.001);
             metallic = i / metallic;

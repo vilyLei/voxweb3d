@@ -22,7 +22,7 @@ interface IColor4 {
      * the default value is 1.0
      */
     a: number;
-    
+
     clone(): IColor4;
     /**
      * example: [0],[1],[2],[3] => r,g,b,a
@@ -43,11 +43,11 @@ interface IColor4 {
     /**
      * example: [0],[1],[2] => r,g,b
      */
-     fromBytesArray3(arr: number[] | Float32Array, offset?: number): IColor4;
-     /**
-      * example: r,g,b => [0],[1],[2]
-      */
-     toBytesArray3(arr: number[] | Float32Array, offset?: number): IColor4;
+    fromBytesArray3(arr: number[] | Float32Array, offset?: number): IColor4;
+    /**
+     * example: r,g,b => [0],[1],[2]
+     */
+    toBytesArray3(arr: number[] | Float32Array, offset?: number): IColor4;
     /**
      * set rgb with three float values
      * @param r example: 0.5
@@ -78,6 +78,10 @@ interface IColor4 {
     copyFromRGB(c: IColor4): IColor4;
     scaleBy(s: number): IColor4;
     inverseRGB(): IColor4;
+    /**
+     * @param density the default value is 1.0
+     * @param bias the default value is 0.0
+     */
     randomRGB(density: number, bias?: number): IColor4;
     normalizeRandom(density?: number, bias?: number): IColor4;
     normalize(density: number): IColor4;

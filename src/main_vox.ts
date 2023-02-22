@@ -383,7 +383,7 @@
 
 //  import {DemoLighting as Demo} from "./pbr/DemoLighting";
 
-//  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
+ import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
 //  import {DemoPBREnvLighting as Demo} from "./pbr/DemoPBREnvLighting";
 
@@ -458,7 +458,7 @@
 //  import {BakeExample as Demo} from "./bake/demo/bakeDiffuse/BakeExample";
 //  import {BakeExample as Demo} from "./bake/demo/bakeDiffuse2/BakeExample";
 //  import {BakeExample as Demo} from "./bake/demo/bakePbr/BakeExample";
- import {BakePBR as Demo} from "./bake/demo/bakePbr/BakePBR";
+//  import {BakePBR as Demo} from "./bake/demo/bakePbr/BakePBR";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////     distributed runtime     ////////////s//////////////

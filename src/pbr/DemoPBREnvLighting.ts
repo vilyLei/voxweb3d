@@ -81,7 +81,6 @@ export class DemoPBREnvLighting {
 
         let envMapUrl = "static/bytes/spe.mdf";
 
-        //let loader:TextureLoader = new TextureLoader();
         let loader = new BinaryTextureLoader();
         loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
         this.initLighting(loader.texture);
@@ -101,15 +100,20 @@ export class DemoPBREnvLighting {
         material.setTextureList( [s_envTex] );
         material.initializeByCodeBuf(material.getTextureAt(0) != null);
 
+        // let sph = new Sphere3DEntity();
+        // sph.setMaterial(material);
+        // sph.initialize(150, 30, 30);
+        // this.m_rscene.addEntity(sph, 1);
+
         // let cly = new Cylinder3DEntity();
         // cly.setMaterial(material);
         // cly.initialize(30, 200, 30);
         // this.m_rscene.addEntity(cly, 1);
 
-        // let torus = new Torus3DEntity();
-        // torus.setMaterial(material);
-        // torus.initialize(100, 50, 30, 50);
-        // this.m_rscene.addEntity(torus, 1);
+        let torus = new Torus3DEntity();
+        torus.setMaterial(material);
+        torus.initialize(100, 50, 30, 50);
+        this.m_rscene.addEntity(torus, 1);
 
         // let tube = new Tube3DEntity();
         // tube.setMaterial(material);
@@ -118,11 +122,11 @@ export class DemoPBREnvLighting {
         // this.m_rscene.addEntity(tube, 1);
 
         
-        let box = new Box3DEntity();
-        box.setMaterial(material);
-        // box.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-        box.initializeSizeXYZ(30, 110, 30);
-        this.m_rscene.addEntity(box, 1);
+        // let box = new Box3DEntity();
+        // box.setMaterial(material);
+        // // box.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        // box.initializeSizeXYZ(30, 110, 30);
+        // this.m_rscene.addEntity(box, 1);
 
         return;
         for (let i: number = 0; i < rn; ++i) {
