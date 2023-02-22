@@ -242,7 +242,4 @@ export default class Plane3DEntity extends DisplayEntity {
             mesh.reinitialize();
         }
     }
-    toString(): string {
-        return "[Plane3DEntity]";
-    }
 }

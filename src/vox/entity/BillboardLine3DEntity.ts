@@ -154,7 +154,4 @@ export default class BillboardLine3DEntity extends DisplayEntity {
             this.setMesh(mesh);
         }
     }
-    toString(): string {
-        return "[BillboardLine3DEntity]";
-    }
 }

@@ -104,7 +104,4 @@ export default class LightLine3DEntity extends DisplayEntity {
             this.setMesh(mesh);
         }
     }
-    toString(): string {
-        return "[LightLine3DEntity]";
-    }
 }

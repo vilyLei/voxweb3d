@@ -18,15 +18,15 @@ export default class Sphere3DEntity extends DisplayEntity {
     constructor(transform: IROTransform = null) {
         super(transform);
     }
-    normalEnabled: boolean = false;
-    doubleTriFaceEnabled: boolean = false;
-    wireframe: boolean = false;
-    inverseUV: boolean = false;
-    uvScale: number = 1.0;
+    normalEnabled = false;
+    doubleTriFaceEnabled = false;
+    wireframe = false;
+    inverseUV = false;
+    uvScale = 1.0;
     vtxColor: Color4 = null;
-    private m_radius: number = 50.0;
-    private m_longitudeNumSegments: number = 10;
-    private m_latitudeNumSegments: number = 10;
+    private m_radius = 50.0;
+    private m_longitudeNumSegments = 10;
+    private m_latitudeNumSegments = 10;
 
     showBackFace(): void {
         this.setRenderState(RendererState.NORMAL_STATE);
@@ -104,9 +104,5 @@ export default class Sphere3DEntity extends DisplayEntity {
             mesh.initialize(this.m_radius, this.m_longitudeNumSegments, this.m_latitudeNumSegments, this.doubleTriFaceEnabled);
             this.setMesh(mesh);
         }
-    }
-
-    toString(): string {
-        return "[Sphere3DEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")]";
     }
 }

@@ -102,7 +102,4 @@ export default class ScreenFixedAlignPlaneEntity extends DisplayEntity {
         super.destroy();
         this.m_currMaterial = null;
     }
-    toString(): string {
-        return "[ScreenFixedAlignPlaneEntity]";
-    }
 }

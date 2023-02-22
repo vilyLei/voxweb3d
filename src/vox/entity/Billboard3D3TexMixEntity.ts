@@ -159,7 +159,4 @@ export default class Billboard3D3TexMixEntity extends DisplayEntity {
         this.m_billMesh = null;
         super.destroy();
     }
-    toString(): string {
-        return "Billboard3D3TexMixEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";
-    }
 }

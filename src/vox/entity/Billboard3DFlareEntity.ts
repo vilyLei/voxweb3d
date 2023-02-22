@@ -189,7 +189,4 @@ export default class Billboard3DFlareEntity extends DisplayEntity {
         this.m_billMesh = null;
         super.destroy();
     }
-    toString(): string {
-        return "Billboard3DGroupFlareEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";
-    }
 }

@@ -181,7 +181,4 @@ export default class Box3DEntity extends DisplayEntity {
         this.m_currMesh = null;
         this.m_initFlag = true;
     }
-    toString(): string {
-        return "[Box3DEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";
-    }
 }

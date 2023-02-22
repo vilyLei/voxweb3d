@@ -128,7 +128,4 @@ export default class Tube3DEntity extends DisplayEntity {
             this.m_currMesh.transformCircleAt(i, mat4);
         }
     }
-    toString(): string {
-        return "[Tube3DEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")]";
-    }
 }

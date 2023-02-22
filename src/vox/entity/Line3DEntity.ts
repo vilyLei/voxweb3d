@@ -183,7 +183,4 @@ export default class Line3DEntity extends DisplayEntity {
         super.destroy();
         this.m_lineMesh = null;
     }
-    toString(): string {
-        return "[Line3DEntity]";
-    }
 }

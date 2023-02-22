@@ -111,10 +111,6 @@ class QuadBrokenLine3DEntity extends DisplayEntity {
         this.activeDisplay();
 
     }
-
-    toString(): string {
-        return "[QuadLine3DEntity]";
-    }
 }
 export default QuadLine3DEntity;
 export { QuadLine3DEntity, QuadBrokenLine3DEntity };

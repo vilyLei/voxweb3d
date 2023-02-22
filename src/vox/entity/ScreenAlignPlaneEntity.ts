@@ -83,7 +83,4 @@ export default class ScreenAlignPlaneEntity extends DisplayEntity {
         super.destroy();
         this.m_currMaterial = null;
     }
-    toString(): string {
-        return "[ScreenAlignPlaneEntity]";
-    }
 }
