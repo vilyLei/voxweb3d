@@ -61,6 +61,14 @@ export default class PipeGeometry extends GeometryBase {
         }
     }
 
+    getRangeAt(i: number, segLen: number = 3): number[] {
+        if (i >= 0 && i <= this.m_latitudeNum) {
+            let end = (i + 1) * (this.m_longitudeNum + 1) * segLen;
+            i = (i * (this.m_longitudeNum + 1)) * segLen;
+            return [i, end];
+        }
+        return [-1, -1];
+    }
     getVSSegAt(i: number): Float32Array {
         if (i >= 0 && i <= this.m_latitudeNum) {
             const n = this.m_longitudeNum + 1;
@@ -73,30 +81,30 @@ export default class PipeGeometry extends GeometryBase {
         return null;
     }
     initialize(radius: number, height: number, longitudeNumSegments: number, latitudeNumSegments: number, uvType: number = 1, alignYRatio: number = -0.5): void {
-        let i: number = 0;
-        let j: number = 0;
+        let i = 0;
+        let j = 0;
         if (radius < 0.01) radius = 0.01;
         if (longitudeNumSegments < 2) longitudeNumSegments = 2;
         if (latitudeNumSegments < 1) latitudeNumSegments = 1;
         this.m_longitudeNum = longitudeNumSegments;
         this.m_latitudeNum = latitudeNumSegments;
 
-        let m_radius: number = Math.abs(radius);
-        let ph: number = Math.abs(height);
+        let m_radius = Math.abs(radius);
+        let ph = Math.abs(height);
 
-        let yRad: number = 0;
-        let px: number = 0;
-        let py: number = 0;
-        let minY: number = alignYRatio * ph;
+        let yRad = 0;
+        let px = 0;
+        let py = 0;
+        let minY = alignYRatio * ph;
 
         this.bounds.min.setXYZ(-radius, minY, -radius);
         this.bounds.max.setXYZ(radius, minY + ph, radius);
         this.bounds.updateFast();
 
-        let vtx: Vector3D = new Vector3D();
+        let vtx = new Vector3D();
         let srcRow: Vector3D[] = [];
         let pv: Vector3D;
-        let pi2: number = Math.PI * 2;
+        let pi2 = Math.PI * 2;
         for (i = 0; i < 1; ++i) {
             for (j = 0; j < longitudeNumSegments; ++j) {
                 yRad = (pi2 * j) / longitudeNumSegments;
@@ -113,9 +121,9 @@ export default class PipeGeometry extends GeometryBase {
         this.m_vs = new Float32Array(this.vtxTotal * 3);
         this.m_uvs = new Float32Array(this.vtxTotal * 2);
         // calc cylinder wall vertexes
-        let tot: number = latitudeNumSegments;
-        let k: number = 0;
-        let l: number = 0;
+        let tot = latitudeNumSegments;
+        let k = 0;
+        let l = 0;
         
         for (i = 0; i <= tot; ++i) {
             px = i / tot;
@@ -143,9 +151,9 @@ export default class PipeGeometry extends GeometryBase {
                 }
             }
         }
-        let cn: number = longitudeNumSegments + 1;
-        let a: number = 0;
-        let b: number = 0;
+        let cn = longitudeNumSegments + 1;
+        let a = 0;
+        let b = 0;
         this.m_ivs = new Uint16Array(tot * longitudeNumSegments * 6);
         k = 0;
         for (i = 0; i < tot; ++i) {
@@ -158,8 +166,5 @@ export default class PipeGeometry extends GeometryBase {
         }
         this.vtCount = this.m_ivs.length;
         this.trisNumber = this.vtCount / 3;
-    }
-    toString(): string {
-        return "PipeGeometry()";
     }
 }

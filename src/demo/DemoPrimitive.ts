@@ -167,11 +167,11 @@ export class DemoPrimitive {
             material.initializeByCodeBuf(material.getTextureAt(0) != null);
 
             let ringRadius = 200;
-            let latitudeNumSegments = 50;
+            let latitudeNumSegments = 30;
             let torusMesh = new Torus3DMesh();
             torusMesh.axisType = 2;
             torusMesh.setVtxBufRenderData(material);
-            torusMesh.initialize(ringRadius, 30, 30, latitudeNumSegments);
+            torusMesh.initialize(ringRadius, 60, 30, latitudeNumSegments);
             /*
             let linevs = new Float32Array([0,0,0, 100,0,0, 100,0,100]);
             let pvs = torusMesh.geometry.getVSSegAt(1).slice();

@@ -88,17 +88,39 @@ export class DemoPrimitives {
 		// cyl.setMesh(meshCyl);
 		// this.m_rscene.addEntity(cyl);
 
-		
-		CoMesh.tube.applyMaterial(material);
-		CoMesh.tube.geometry.axisType = 2;
-		let meshTube = CoMesh.tube.create(50, 110, 10);
+		// CoMesh.torus.applyMaterial(material);
+		// CoMesh.torus.geometry.axisType = 0;
+		// let meshTorus = CoMesh.torus.create(110, 80, 10);
 
-		let tube = CoRScene.createDisplayEntity();
+		// let torus = CoRScene.createDisplayEntity();
+		// // torus.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
+		// torus.setMaterial(material);
+		// torus.setMesh(meshTorus);
+		// this.m_rscene.addEntity(torus);
+		
+		// CoMesh.tube.applyMaterial(material);
+		// CoMesh.tube.geometry.axisType = 2;
+		// let meshTube = CoMesh.tube.create(50, 110, 10);
+
+		// let tube = CoRScene.createDisplayEntity();
 		// tube.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
-		tube.setMaterial(material);
-		tube.setMesh(meshTube);
+		// tube.setMaterial(material);
+		// tube.setMesh(meshTube);
+		// this.m_rscene.addEntity(tube);
+
+		
+		let tubeMaterial = CoMaterial.createDefaultMaterial();
+		tubeMaterial.normalEnabled = true;
+		let tube = CoEntity.createTube(50, 150, 30, 1, tubeMaterial);
+		tube.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
 		this.m_rscene.addEntity(tube);
 
+		
+		// let torusMaterial = CoMaterial.createDefaultMaterial();
+		// torusMaterial.normalEnabled = true;
+		// let torus = CoEntity.createTorus(100, 50, 20, 30, torusMaterial);
+		// // tube.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
+		// this.m_rscene.addEntity(torus);
 
 		return;
 		let size = 50;
@@ -117,13 +139,13 @@ export class DemoPrimitives {
 		let sphMaterial = CoMaterial.createDefaultMaterial();
 		sphMaterial.normalEnabled = true;
 		sphMaterial.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
-		let sph = CoEntity.createSphere(150, 20, 20, false, sphMaterial);
+		let sph = CoEntity.createSphere(150, 20, 20, sphMaterial);
 		sph.setXYZ(300, 0, 0);
 		this.m_rscene.addEntity(sph);
 
 		let coneMaterial = CoMaterial.createDefaultMaterial();
 		coneMaterial.normalEnabled = true;
-		let cone = CoEntity.createCone(100, 150, 20, -0.5, coneMaterial);
+		let cone = CoEntity.createCone(100, 150, 20, coneMaterial);
 		cone.setXYZ(300, 0, -300);
 		this.m_rscene.addEntity(cone);
 		

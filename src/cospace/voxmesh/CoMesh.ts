@@ -20,6 +20,8 @@ import { CylinderMeshBuilder } from "./build/CylinderMeshBuilder";
 import { ICylinderMeshBuilder } from "./build/ICylinderMeshBuilder";
 import { TubeMeshBuilder } from "./build/TubeMeshBuilder";
 import { ITubeMeshBuilder } from "./build/ITubeMeshBuilder";
+import { ITorusMeshBuilder } from "./build/ITorusMeshBuilder";
+import { TorusMeshBuilder } from "./build/TorusMeshBuilder";
 declare var CoRScene: ICoRScene;
 
 const plane: IPlaneMeshBuilder = new PlaneMeshBuilder();
@@ -29,6 +31,7 @@ const box: IBoxMeshBuilder = new BoxMeshBuilder();
 const sphere: ISphereMeshBuilder = new SphereMeshBuilder();
 const cylinder: ICylinderMeshBuilder = new CylinderMeshBuilder();
 const tube: ITubeMeshBuilder = new TubeMeshBuilder();
+const torus: ITorusMeshBuilder = new TorusMeshBuilder();
 
 function createDataMesh(): IDataMesh {
 	if(typeof CoRScene !== "undefined") {
@@ -59,6 +62,7 @@ export {
 	sphere,
 	cylinder,
 	tube,
+	torus,
 
 	createDataMesh,
 	createRawMesh,

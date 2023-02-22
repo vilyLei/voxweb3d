@@ -114,7 +114,7 @@ function createBox(minV: IVector3D, maxV: IVector3D, material: IRenderMaterial =
 	return null;
 }
 
-function createSphere(radius: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20, doubleTriFaceEnabled: boolean = false, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
+function createSphere(radius: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20, material: IRenderMaterial = null, texEnabled: boolean = false, doubleTriFaceEnabled: boolean = false): IMouseEventEntity {
 	
 	if(typeof CoMesh !== "undefined") {
 
@@ -128,7 +128,7 @@ function createSphere(radius: number, longitudeNumSegments: number = 20, latitud
 	return null;
 }
 
-function createCone(radius: number, height: number, longitudeNumSegments: number = 20, alignYRatio: number = -0.5, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
+function createCone(radius: number, height: number, longitudeNumSegments: number = 20, material: IRenderMaterial = null, texEnabled: boolean = false, alignYRatio: number = -0.5): IMouseEventEntity {
 	
 	if(typeof CoMesh !== "undefined") {
 		let builder = CoMesh.cone;
@@ -141,6 +141,44 @@ function createCone(radius: number, height: number, longitudeNumSegments: number
 	return null;
 }
 
+function createCylinder(radius: number, height: number, longitudeNumSegments: number = 20, material: IRenderMaterial = null, texEnabled: boolean = false, uvType: number = 1, alignYRatio: number = -0.5): IMouseEventEntity {
+	
+	if(typeof CoMesh !== "undefined") {
+		let builder = CoMesh.cylinder;
+		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
+			builder.applyMaterial(pm, pt);
+		});
+		let mesh = builder.create(radius, height, longitudeNumSegments, uvType, alignYRatio);
+		return createAMouseEventEntity(mesh, material);		
+	}
+	return null;
+}
+
+function createTube(radius: number, long: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 1, material: IRenderMaterial = null, texEnabled: boolean = false, uvType: number = 1, alignYRatio: number = -0.5): IMouseEventEntity {
+	
+	if(typeof CoMesh !== "undefined") {
+		let builder = CoMesh.tube;
+		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
+			builder.applyMaterial(pm, pt);
+		});
+		let mesh = builder.create(radius, long, longitudeNumSegments, latitudeNumSegments, uvType, alignYRatio);
+		return createAMouseEventEntity(mesh, material);		
+	}
+	return null;
+}
+
+function createTorus(radius: number, height: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 1, material: IRenderMaterial = null, texEnabled: boolean = false, uvType: number = 1, alignYRatio: number = -0.5): IMouseEventEntity {
+	
+	if(typeof CoMesh !== "undefined") {
+		let builder = CoMesh.torus;
+		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
+			builder.applyMaterial(pm, pt);
+		});
+		let mesh = builder.create(radius, height, longitudeNumSegments, latitudeNumSegments, uvType, alignYRatio);
+		return createAMouseEventEntity(mesh, material);		
+	}
+	return null;
+}
 function initAMaterial(material: IRenderMaterial, texEnabled: boolean, callback: (pm: IRenderMaterial, pt: boolean) => void): IRenderMaterial {
 	if(!material) {
 		material = CoRScene.createDefaultMaterial();
@@ -174,5 +212,8 @@ export {
 	createBox,
 	createCube,
 	createSphere,
-	createCone
+	createCone,
+	createCylinder,
+	createTube,
+	createTorus
 };

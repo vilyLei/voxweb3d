@@ -50,11 +50,46 @@ export default class Tube3DMesh extends MeshBase {
 
     initialize(radius: number, height: number, longitudeNumSegments: number, latitudeNumSegments: number, uvType: number = 1, alignYRatio: number = -0.5): void {
         if (this.m_vs == null) {
-            this.geometry.axisType = this.axisType;
-            this.geometry.initialize(radius, height, longitudeNumSegments, latitudeNumSegments, uvType, alignYRatio);
-            this.m_vs = this.geometry.getVS();
-            this.m_uvs = this.geometry.getUVS();
-            this.m_ivs = this.geometry.getIVS();
+            let g = this.geometry;
+            g.axisType = this.axisType;
+            g.initialize(radius, height, longitudeNumSegments, latitudeNumSegments, uvType, alignYRatio);
+
+            let nvFlag = this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX);
+            let vs = this.geometry.getVS();
+            let uvs = this.geometry.getUVS();
+            let ivs = this.geometry.getIVS();
+
+            if (nvFlag) {
+                this.m_nvs = new Float32Array(vs.length);
+            }
+            let nvs = this.m_nvs;
+
+            if (nvFlag) {
+                let pv = new Vector3D();
+                let nv = new Vector3D();
+                for (let i = 0; i <= latitudeNumSegments; ++i) {
+
+                    g.getCenterAt(i, pv);
+                    let cv = pv;
+                    let range = g.getRangeAt(i);
+                    let pvs = vs.subarray(range[0], range[1]);
+                    let pnvs = nvs.subarray(range[0], range[1]);
+                    let tot = pvs.length / 3;
+                    let k = 0;
+                    for (let j = 0; j < tot; ++j) {
+                        k = j * 3;
+                        nv.setXYZ(pvs[k], pvs[k + 1], pvs[k + 2]);
+                        nv.subtractBy(cv);
+                        nv.normalize();
+                        pnvs[k] = nv.x;
+                        pnvs[k + 1] = nv.y;
+                        pnvs[k + 2] = nv.z;
+                    }
+                }
+            }
+            this.m_vs = vs;
+            this.m_uvs = uvs;
+            this.m_ivs = ivs;
 
             if (this.wireframe) {
                 this.updateWireframeIvs();
@@ -91,8 +126,10 @@ export default class Tube3DMesh extends MeshBase {
             ROVertexBuffer.AddFloat32Data(this.m_uvs, 2);
         }
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
-            if (this.m_nvs == null) this.m_nvs = new Float32Array(this.vtxTotal * 3);
-            SurfaceNormalCalc.ClacTrisNormal(this.m_vs, this.m_vs.length, this.trisNumber, this.m_ivs, this.m_nvs);
+            if (this.m_nvs == null) {
+                this.m_nvs = new Float32Array(this.vtxTotal * 3);
+                SurfaceNormalCalc.ClacTrisNormal(this.m_vs, this.m_vs.length, this.trisNumber, this.m_ivs, this.m_nvs);
+            }
             ROVertexBuffer.AddFloat32Data(this.m_nvs, 3);
         }
 
@@ -111,7 +148,7 @@ export default class Tube3DMesh extends MeshBase {
             this.buildEnd();
         }
         else {
-            if(this.forceUpdateIVS) {
+            if (this.forceUpdateIVS) {
                 this.m_vbuf.setUintIVSData(this.m_ivs);
             }
             ROVertexBuffer.UpdateBufData(this.m_vbuf);

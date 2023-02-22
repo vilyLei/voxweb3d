@@ -13,7 +13,7 @@ import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 
 export default class CoTubeGeometry extends CoGeometry {
-    
+
     private m_longitudeNum: number = 0;
     private m_latitudeNum: number = 0;
 
@@ -23,7 +23,7 @@ export default class CoTubeGeometry extends CoGeometry {
     constructor() {
         super();
     }
-    
+
     clone(): CoTubeGeometry {
 
         let geometry = new CoTubeGeometry();
@@ -33,7 +33,7 @@ export default class CoTubeGeometry extends CoGeometry {
         geometry.uScale = this.uScale;
         geometry.vScale = this.vScale;
 
-        geometry.copyFrom( this );
+        geometry.copyFrom(this);
         return geometry;
     }
     getCenterAt(i: number, outV: IVector3D): void {
@@ -62,6 +62,14 @@ export default class CoTubeGeometry extends CoGeometry {
             mat4.transformVectorsRangeSelf(pvs, i, end);
         }
     }
+    getRangeAt(i: number, segLen: number = 3): number[] {
+        if (i >= 0 && i <= this.m_latitudeNum) {
+            let end = (i + 1) * (this.m_longitudeNum + 1) * segLen;
+            i = (i * (this.m_longitudeNum + 1)) * segLen;
+            return [i, end];
+        }
+        return [-1, -1];
+    }
 
     initialize(radius: number, height: number, longitudeNumSegments: number, latitudeNumSegments: number, uvType: number = 1, alignYRatio: number = -0.5): void {
         let i = 0;
@@ -79,7 +87,7 @@ export default class CoTubeGeometry extends CoGeometry {
         let px = 0;
         let py = 0;
         let minY = alignYRatio * ph;
-        if(this.bounds != null) {
+        if (this.bounds != null) {
             this.bounds.min.setXYZ(-radius, minY, -radius);
             this.bounds.max.setXYZ(radius, minY + ph, radius);
             this.bounds.updateFast();

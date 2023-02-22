@@ -66,15 +66,25 @@ export default class Torus3DMesh extends MeshBase {
             }
             g.initialize(axisRadius, 0.0, longitudeNumSegments, latitudeNumSegments, uvType, alignYRatio);
 
-            let pi2 = 2.0 * Math.PI;// * 0.5;
+            let nvFlag = this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX);
+            let vs = this.geometry.getVS();
+            let uvs = this.geometry.getUVS();
+            let ivs = this.geometry.getIVS();
+
+            if (nvFlag) {
+                this.m_nvs = new Float32Array(vs.length);
+            }
+            let nvs = this.m_nvs;
+
+            let pi2 = 2.0 * Math.PI;
             let rad = 0.0;
             let pv = new Vector3D();
+            let nv = new Vector3D();
             let mat4 = new Matrix4();
             for (let i = 0; i <= latitudeNumSegments; ++i) {
 
                 mat4.identity();
                 rad = pi2 * i / latitudeNumSegments;
-                // console.log("rad: ", rad);
                 switch (this.axisType) {
                     case 1:
                         pv.x = Math.cos(rad) * ringRadius;
@@ -95,10 +105,27 @@ export default class Torus3DMesh extends MeshBase {
 
                 mat4.setTranslation(pv);
                 g.transformAt(i, mat4);
+                if (nvFlag) {
+                    let cv = pv;
+                    let range = g.getRangeAt(i);
+                    let pvs = vs.subarray(range[0], range[1]);
+                    let pnvs = nvs.subarray(range[0], range[1]);
+                    let tot = pvs.length / 3;
+                    let k = 0;
+                    for (let j = 0; j < tot; ++j) {
+                        k = j * 3;
+                        nv.setXYZ(pvs[k], pvs[k + 1], pvs[k + 2]);
+                        nv.subtractBy(cv);
+                        nv.normalize();
+                        pnvs[k] = nv.x;
+                        pnvs[k + 1] = nv.y;
+                        pnvs[k + 2] = nv.z;
+                    }
+                }
             }
-            this.m_vs = this.geometry.getVS();
-            this.m_uvs = this.geometry.getUVS();
-            this.m_ivs = this.geometry.getIVS();
+            this.m_vs = vs;
+            this.m_uvs = uvs;
+            this.m_ivs = ivs;
 
             if (this.wireframe) {
                 this.updateWireframeIvs();
@@ -135,8 +162,6 @@ export default class Torus3DMesh extends MeshBase {
             ROVertexBuffer.AddFloat32Data(this.m_uvs, 2);
         }
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
-            if (this.m_nvs == null) this.m_nvs = new Float32Array(this.vtxTotal * 3);
-            SurfaceNormalCalc.ClacTrisNormal(this.m_vs, this.m_vs.length, this.trisNumber, this.m_ivs, this.m_nvs);
             ROVertexBuffer.AddFloat32Data(this.m_nvs, 3);
         }
 

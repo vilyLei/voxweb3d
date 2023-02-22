@@ -8,6 +8,7 @@ import { IBoxMeshBuilder } from "./build/IBoxMeshBuilder";
 import { ISphereMeshBuilder } from "./build/ISphereMeshBuilder";
 import { ICylinderMeshBuilder } from "./build/ICylinderMeshBuilder";
 import { ITubeMeshBuilder } from "./build/ITubeMeshBuilder";
+import { ITorusMeshBuilder } from "./build/ITorusMeshBuilder";
 
 interface ICoMesh {
 
@@ -39,6 +40,10 @@ interface ICoMesh {
 	 * tube mesh builder
 	 */
 	readonly tube: ITubeMeshBuilder;
+	/**
+	 * torus mesh builder
+	 */
+	readonly torus: ITorusMeshBuilder;
 
 	createDataMesh(): IDataMesh;
 	createRawMesh(): IRawMesh;	

@@ -18,6 +18,9 @@ import Color4 from "../vox/material/Color4";
 import PBREnvLightingMaterial from "../pbr/material/PBREnvLightingMaterial";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import { BinaryTextureLoader } from "../cospace/modules/loaders/BinaryTextureLoader";
+import Torus3DEntity from "../vox/entity/Torus3DEntity";
+import Tube3DEntity from "../vox/entity/Tube3DEntity";
+import RendererState from "../vox/render/RendererState";
 
 export class DemoPBREnvLighting {
     constructor() { }
@@ -93,20 +96,27 @@ export class DemoPBREnvLighting {
         let beginPos = new Vector3D(disV3.x * (cn - 1) * -0.5, disV3.y * (rn - 1) * -0.5, -100.0);
         let pos = new Vector3D();
 
-        // let material = this.makeMaterial(0.3, 0.4, 1.3);
-        // material.setTextureList( [s_envTex] );
-        // material.initializeByCodeBuf(material.getTextureAt(0) != null);
+        let material = this.makeMaterial(0.3, 0.4, 1.3);
+        material.setTextureList( [s_envTex] );
+        material.initializeByCodeBuf(material.getTextureAt(0) != null);
 
         // let cly = new Cylinder3DEntity();
         // cly.setMaterial(material);
         // cly.initialize(30, 200, 30);
         // this.m_rscene.addEntity(cly, 1);
-        // // let torus = new Torus3DEntity();
-        // // torus.setMaterial(material);
-        // // torus.initialize(ringRadius, 50, 30, 50);
-        // // this.m_rscene.addEntity(torus, 1);
 
-        // return;
+        // let torus = new Torus3DEntity();
+        // torus.setMaterial(material);
+        // torus.initialize(100, 50, 30, 50);
+        // this.m_rscene.addEntity(torus, 1);
+
+        let tube = new Tube3DEntity();
+        tube.setMaterial(material);
+        tube.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        tube.initialize(30, 110, 30, 1);
+        this.m_rscene.addEntity(tube, 1);
+
+        return;
         for (let i: number = 0; i < rn; ++i) {
             metallic = Math.max(rn - 1, 0.001);
             metallic = i / metallic;

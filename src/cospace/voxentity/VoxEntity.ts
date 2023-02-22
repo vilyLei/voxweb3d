@@ -116,12 +116,12 @@ class T_CoEntity {
 		return CoEntity.createBox(minV, maxV, material, texEnabled);
 	}
 
-	createSphere(radius: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20, doubleTriFaceEnabled: boolean = false, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
-		return CoEntity.createSphere(radius, longitudeNumSegments, latitudeNumSegments, doubleTriFaceEnabled, material, texEnabled);
+	createSphere(radius: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20, material: IRenderMaterial = null, texEnabled: boolean = false, doubleTriFaceEnabled: boolean = false): IMouseEventEntity {
+		return CoEntity.createSphere(radius, longitudeNumSegments, latitudeNumSegments, material, texEnabled, doubleTriFaceEnabled);
 	}
 
-	createCone(radius: number, height: number, longitudeNumSegments: number = 20, alignYRatio: number = -0.5, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
-		return CoEntity.createCone(radius, height, longitudeNumSegments, alignYRatio, material, texEnabled);
+	createCone(radius: number, height: number, longitudeNumSegments: number = 20, material: IRenderMaterial = null, texEnabled: boolean = false, alignYRatio: number = -0.5): IMouseEventEntity {
+		return CoEntity.createCone(radius, height, longitudeNumSegments, material, texEnabled, alignYRatio);
 	}
 }
 const VoxEntity = new T_CoEntity();

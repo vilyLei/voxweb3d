@@ -22,12 +22,12 @@ interface ITubeMeshBuilder extends IMeshBuilder {
     readonly geometry: IGeometry;
     /**
      * @param radius sphere radius
-     * @param height sphereheight
+     * @param long sphereheight
      * @param longitudeNumSegments the default value is 20
      * @param latitudeNumSegments the default value is 1
      * @param uvType the default value is 1
      * @param alignYRatio the default value is -0.5
      */
-    create(radius: number, height: number, longitudeNumSegments?: number, latitudeNumSegments?: number, uvType?: number, alignYRatio?: number): IRawMesh;
+    create(radius: number, long: number, longitudeNumSegments?: number, latitudeNumSegments?: number, uvType?: number, alignYRatio?: number): IRawMesh;
 }
 export { ITubeMeshBuilder };
