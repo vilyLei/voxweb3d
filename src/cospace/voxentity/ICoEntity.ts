@@ -132,24 +132,28 @@ interface ICoEntity {
      * @param long sphereheight
      * @param longitudeNumSegments the default value is 20
      * @param latitudeNumSegments the default value is 1
+	 * @param axisType 0: vertical to x-axis, 1: vertical to y-axis, 2: vertical to z-axis, the default value is 0
 	 * @param material the default value is null 
 	 * @param texEnabled the default value is false
      * @param uvType the default value is 1
      * @param alignYRatio the default value is -0.5
 	 * @returns a tube entity
      */
-    createTube(radius: number, long: number, longitudeNumSegments?: number, latitudeNumSegments?: number, material?: IRenderMaterial, texEnabled?: boolean, uvType?: number, alignYRatio?: number): IMouseEventEntity;
+    createTube(radius: number, long: number, longitudeNumSegments?: number, latitudeNumSegments?: number, axisType?: number, material?: IRenderMaterial, texEnabled?: boolean, uvType?: number, alignYRatio?: number): IMouseEventEntity;
 	/**
      * @param ringRadius the default value is 200
      * @param axisRadius the default value is 50
      * @param longitudeNumSegments the default value is 30
      * @param latitudeNumSegments the default value is 20
+	 * @param axisType 0: vertical to x-axis, 1: vertical to y-axis, 2: vertical to z-axis, the default value is 0
 	 * @param material the default value is null 
 	 * @param texEnabled the default value is false
      * @param uvType the default value is 1
      * @param alignYRatio the default value is -0.5
 	 * @returns a torus entity
      */
-    createTorus(ringRadius?: number, axisRadius?: number, longitudeNumSegments?: number, latitudeNumSegments?: number, material?: IRenderMaterial, texEnabled?: boolean, uvType?: number, alignYRatio?: number): IMouseEventEntity;
+    createTorus(ringRadius?: number, axisRadius?: number, longitudeNumSegments?: number, latitudeNumSegments?: number, axisType?: number, material?: IRenderMaterial, texEnabled?: boolean, uvType?: number, alignYRatio?: number): IMouseEventEntity;
+
+
 }
 export { ICoEntity };

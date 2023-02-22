@@ -154,10 +154,11 @@ function createCylinder(radius: number, height: number, longitudeNumSegments: nu
 	return null;
 }
 
-function createTube(radius: number, long: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 1, material: IRenderMaterial = null, texEnabled: boolean = false, uvType: number = 1, alignYRatio: number = -0.5): IMouseEventEntity {
+function createTube(radius: number, long: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 1, axisType: number = 0, material: IRenderMaterial = null, texEnabled: boolean = false, uvType: number = 1, alignYRatio: number = -0.5): IMouseEventEntity {
 	
 	if(typeof CoMesh !== "undefined") {
 		let builder = CoMesh.tube;
+		CoMesh.tube.geometry.axisType = axisType;
 		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
 			builder.applyMaterial(pm, pt);
 		});
@@ -167,10 +168,11 @@ function createTube(radius: number, long: number, longitudeNumSegments: number =
 	return null;
 }
 
-function createTorus(radius: number, height: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 1, material: IRenderMaterial = null, texEnabled: boolean = false, uvType: number = 1, alignYRatio: number = -0.5): IMouseEventEntity {
+function createTorus(radius: number, height: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 1, axisType: number = 0, material: IRenderMaterial = null, texEnabled: boolean = false, uvType: number = 1, alignYRatio: number = -0.5): IMouseEventEntity {
 	
 	if(typeof CoMesh !== "undefined") {
 		let builder = CoMesh.torus;
+		builder.axisType = axisType;
 		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
 			builder.applyMaterial(pm, pt);
 		});

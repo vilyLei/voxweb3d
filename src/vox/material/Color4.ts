@@ -123,12 +123,9 @@ class Color4 implements IColor4 {
         return this;
     }
     randomRGB(density: number = 1.0, bias: number = 0.0): Color4 {
-        this.r = Math.random() * density;
-        this.g = Math.random() * density;
-        this.b = Math.random() * density;
-        this.r += bias;
-        this.g += bias;
-        this.b += bias;
+        this.r = Math.random() * density + bias;
+        this.g = Math.random() * density + bias;
+        this.b = Math.random() * density + bias;
         return this;
     }
     normalizeRandom(density: number = 1.0, bias: number = 0.0): Color4 {

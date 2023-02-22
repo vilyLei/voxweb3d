@@ -77,8 +77,8 @@ export class DemoPrimitives {
 	private init3DScene(): void {
 
 
-		let material = CoRScene.createDefaultMaterial();
-		material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
+		// let material = CoRScene.createDefaultMaterial();
+		// material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
 
 		// CoMesh.cylinder.applyMaterial(material);
 		// let meshCyl = CoMesh.cylinder.create(50, 110, 10);
@@ -119,7 +119,7 @@ export class DemoPrimitives {
 		let torusMaterial = CoMaterial.createDefaultMaterial();
 		torusMaterial.normalEnabled = true;
 		torusMaterial.setRGB3f(1.0,0.0,0.0);
-		let torus = CoEntity.createTorus(100, 2, 20, 70, torusMaterial);
+		let torus = CoEntity.createTorus(100, 30, 20, 70, 0, torusMaterial);
 		// tube.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
 		this.m_rscene.addEntity(torus);
 

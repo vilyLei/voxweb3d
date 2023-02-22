@@ -22,9 +22,7 @@ export default class CoGeometry implements IGeometry {
     vtCount: number = 0;
     bounds: IAABB = null;
     /**
-     * axisType = 0 is XOY plane,
-     * axisType = 1 is XOZ plane,
-     * axisType = 2 is YOZ plane
+     * 0: vertical to x-axis, 1: vertical to y-axis, 2: vertical to z-axis, the default value is 0
      */
     axisType = 0;
 

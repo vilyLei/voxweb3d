@@ -15,6 +15,10 @@ interface ITorusMeshBuilder extends IMeshBuilder {
     uScale: number;
     vScale: number;
     /**
+     * 0: vertical to x-axis, 1: vertical to y-axis, 2: vertical to z-axis, the default value is 0
+     */
+    axisType: number;
+    /**
      * @param ringRadius the default value is 200
      * @param axisRadius the default value is 50
      * @param longitudeNumSegments the default value is 30
