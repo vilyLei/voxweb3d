@@ -4,8 +4,6 @@ in vec3 WorldPos;
 in vec3 Normal;
 in vec3 v_camPos;
 
-in vec2 v_suv;
-
 // material parameters
 uniform sampler2D u_sampler0;// albedoMap
 uniform sampler2D u_sampler1;// normalMap
@@ -16,8 +14,6 @@ uniform sampler2D u_sampler4;// aoMap
 // lights
 uniform vec4 u_lightPositions[4];
 uniform vec4 u_lightColors[4];
-
-//uniform vec3 u_camPos;
 
 const float PI = 3.14159265359;
 // ----------------------------------------------------------------------------
@@ -153,5 +149,5 @@ void main()
     color = pow(color, vec3(1.0/2.2));
 
     FragColor = vec4(color, 1.0);
-    // FragColor = vec4(v_suv.xy, 0.0, 1.0);
+    // FragColor = vec4(vec3(WorldPos.xyz), 1.0);
 }

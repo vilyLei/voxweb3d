@@ -31,13 +31,16 @@ class EntityLayouter {
 	layoutReset(): void {
 		this.m_entities = [];
 		this.m_transforms = [];
+		console.log("layoutReset(), m_entities: ", this.m_entities);
 	}
 	getEntities(): ITransformEntity[] {
+		console.log("getEntities(), this.m_entities: ", this.m_entities);
 		return this.m_entities;
 	}
 	layoutAppendItem(entity: ITransformEntity, transform: Matrix4): void {
 		this.m_entities.push(entity);
 		this.m_transforms.push(transform);
+		console.log("layoutAppendItem(), entity: ", entity);
 	}	
 	layoutUpdate(rotationEnabled: boolean = false, fixSize: number = 300.0): void {
 		

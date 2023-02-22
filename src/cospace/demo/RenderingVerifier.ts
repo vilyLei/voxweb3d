@@ -44,7 +44,7 @@ export class RenderingVerifier {
 			DivLog.SetTextBgEnabled(false);
 			DivLog.SetXY(2, 8);
 
-			let rparam: RendererParam = new RendererParam();
+			let rparam = new RendererParam();
 			//rparam.maxWebGLVersion = 1;
 			rparam.setCamProject(45, 50.0, 10000.0);
 			rparam.setAttriStencil(true);

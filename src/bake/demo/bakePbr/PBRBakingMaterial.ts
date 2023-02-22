@@ -76,7 +76,6 @@ export default class PBRBakingMaterial extends MaterialBase {
 
     private m_albedo: Float32Array = new Float32Array([0.5, 0.0, 0.0, 0.0]);
     private m_params: Float32Array = new Float32Array([0.0, 0.0, 1.0, 0.0]);
-    private m_camPos: Float32Array = new Float32Array([500.0, 500.0, 500.0, 1.0]);
     private m_lightPositions: Float32Array = new Float32Array(4 * 4);
     private u_lightColors: Float32Array = new Float32Array(4 * 4);
 
@@ -114,20 +113,14 @@ export default class PBRBakingMaterial extends MaterialBase {
         this.u_lightColors[i + 1] = pg;
         this.u_lightColors[i + 2] = pb;
     }
-    setCamPos(pos: Vector3D): void {
-
-        this.m_camPos[0] = pos.x;
-        this.m_camPos[1] = pos.y;
-        this.m_camPos[2] = pos.z;
-    }
     createSelfUniformData(): ShaderUniformData {
 
         //  console.log("this.m_albedo: ",this.m_albedo);
         //  console.log("this.m_params: ",this.m_params);
         //  console.log("this.m_camPos: ",this.m_camPos);
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_albedo", "u_lightPositions", "u_lightColors", "u_camPos", "u_offset"];
-        oum.dataList = [this.m_albedo, this.m_lightPositions, this.u_lightColors, this.m_camPos, this.m_offset];
+        oum.uniformNameList = ["u_albedo", "u_lightPositions", "u_lightColors", "u_offset"];
+        oum.dataList = [this.m_albedo, this.m_lightPositions, this.u_lightColors, this.m_offset];
         return oum;
     }
 }

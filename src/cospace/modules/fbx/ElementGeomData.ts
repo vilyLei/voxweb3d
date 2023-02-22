@@ -225,7 +225,7 @@ class ElementGeomData {
 	}
 
 	createBufObject(geoInfo: any): FBXBufferObject {
-		// console.log("createBufObject(), geoInfo: ", geoInfo);
+		console.log("createBufObject(), geoInfo: ", geoInfo);
 		let obj = new FBXBufferObject();
 		let puvs: any = null;
 		let uvList: any[] = geoInfo.uv;

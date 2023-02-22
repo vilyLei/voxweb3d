@@ -22,11 +22,9 @@ import BinaryLoader from "../../../vox/assets/BinaryLoader";
 import PBREnvLightingMaterial from "../../../pbr/material/PBREnvLightingMaterial";
 import PBRBakingMaterial from "./PBRBakingMaterial";
 import { IFloatCubeTexture } from "../../../vox/render/texture/IFloatCubeTexture";
-import FloatCubeTextureProxy from "../../../vox/texture/FloatCubeTextureProxy";
 import TextureConst from "../../../vox/texture/TextureConst";
 import IMeshBase from "../../../vox/mesh/IMeshBase";
 import Sphere3DMesh from "../../../vox/mesh/Sphere3DMesh";
-import IRenderMaterial from "../../../vox/render/IRenderMaterial";
 import RendererState from "../../../vox/render/RendererState";
 import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
 
@@ -35,84 +33,12 @@ import { EntityLayouter } from "../../../vox/utils/EntityLayouter";
 import DataMesh from "../../../vox/mesh/DataMesh";
 import SurfaceNormalCalc from "../../../vox/geom/SurfaceNormalCalc";
 import Matrix4 from "../../../vox/math/Matrix4";
-import IShaderMaterial from "../../../vox/material/mcase/IShaderMaterial";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
-
-class TextureLoader {
-
-    protected m_rscene: RendererScene = null;
-    texture: IFloatCubeTexture = null;
-    constructor() {
-    }
-
-    loadTextureWithUrl(url: string, rscene: RendererScene): void {
-        //let url: string = "static/bytes/spe.mdf";
-        let loader: BinaryLoader = new BinaryLoader();
-        loader.uuid = url;
-        loader.load(url, this);
-        this.m_rscene = rscene;
-
-        this.texture = this.m_rscene.textureBlock.createFloatCubeTex(32, 32, false);
-    }
-    loaded(buffer: ArrayBuffer, uuid: string): void {
-        //console.log("loaded... uuid: ", uuid, buffer.byteLength);
-        this.parseTextureBuffer(buffer);
-        this.m_rscene = null;
-        this.texture = null;
-    }
-    loadError(status: number, uuid: string): void {
-    }
-
-    protected parseTextureBuffer(buffer: ArrayBuffer): void {
-        let begin: number = 0;
-        let width: number = 128;
-        let height: number = 128;
-        let size: number = width * height * 3;
-        let fs32: Float32Array = new Float32Array(buffer);
-        let subArr: Float32Array = null;
-        let tex = this.texture;
-        tex.toRGBFormat();
-        for (let i: number = 0, len: number = 6; i < len; ++i) {
-            subArr = fs32.slice(begin, begin + size);
-            console.log("width,height: ", width, height, ", subArr.length: ", subArr.length);
-            tex.setDataFromBytesToFaceAt(i, subArr, width, height, 0);
-            begin += size;
-        }
-    }
-}
-
-class SpecularTextureLoader extends TextureLoader {
-
-    constructor() {
-        super();
-    }
-    protected parseTextureBuffer(buffer: ArrayBuffer): void {
-        let begin: number = 0;
-        let width: number = 128;
-        let height: number = 128;
-
-        let fs32: Float32Array = new Float32Array(buffer);
-        let subArr: Float32Array = null;
-
-        let tex = this.texture;
-        tex.toRGBFormat();
-        tex.mipmapEnabled = false;
-        tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
-        tex.magFilter = TextureConst.LINEAR;
-
-        for (let j = 0; j < 9; j++) {
-            for (let i = 0; i < 6; i++) {
-                const size = width * height * 3;
-                subArr = fs32.slice(begin, begin + size);
-                tex.setDataFromBytesToFaceAt(i, subArr, width, height, j);
-                begin += size;
-            }
-            width >>= 1;
-            height >>= 1;
-        }
-    }
-}
+import { BinaryTextureLoader } from "../../../cospace/modules/loaders/BinaryTextureLoader";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
+import { FileIO } from "../../../app/slickRoad/io/FileIO";
+import { HttpFileLoader } from "../../../cospace/modules/loaders/HttpFileLoader";
 
 export class BakePBR {
     constructor() { }
@@ -121,7 +47,6 @@ export class BakePBR {
     private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-    private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
@@ -200,7 +125,7 @@ export class BakePBR {
             RendererDevice.SetWebBodyColor("white");
             // let rparam = this.m_graph.createRendererParam(this.createDiv(0, 0, 512, 512));
             // rparam.autoSyncRenderBufferAndWindowSize = false;
-            let rparam: RendererParam = new RendererParam(this.createDiv(0, 0, 512, 512));
+            let rparam: RendererParam = new RendererParam(this.createDiv(0, 0, 1024, 1024));
             rparam.autoSyncRenderBufferAndWindowSize = false;
             //rparam.maxWebGLVersion = 1;
             rparam.setCamPosition(800.0, 800.0, 800.0);
@@ -247,8 +172,20 @@ export class BakePBR {
 
         }
     }
-
+    private m_uvData: Float32Array = null;
     private initModel(): void {
+        let baseUrl = "static/private/";
+        let url = baseUrl + "fbx/uvData.uv";
+        url = baseUrl + "fbx/uvData1.uv";
+        let loader = new HttpFileLoader();
+        loader.load(url, (buf: ArrayBuffer, url: string): void => {
+            let uvData = new Float32Array(buf);
+            // console.log("uvData: ", uvData);
+            this.m_uvData = uvData;
+            this.initModelLoad();
+        })
+    }
+    private initModelLoad(): void {
         this.m_modelLoader.setListener(
             (models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat): void => {
 
@@ -259,21 +196,23 @@ export class BakePBR {
             (total): void => {
                 console.log("loaded model all.");
 
-                // for automatically fitting the model size in the scene
                 this.m_layouter.layoutUpdate();
+                // for automatically fitting the model size in the scene
                 let entities = this.m_layouter.getEntities();
-                let entity = entities[0];
-                let sv = entity.getScaleXYZ();
-                let pv = entity.getPosition();
-                console.log("xxxxx sv: ", sv);
-                console.log("xxxxx pv: ", pv);
-                console.log("xxxxx this.m_wirees: ", this.m_wirees);
-                for(let i = 0;i < this.m_wirees.length; ++i) {
-                    this.m_wirees[i].setPosition(pv);
-                    this.m_wirees[i].setScale3(sv);
-                    this.m_wirees[i].update();
+                console.log("xxxxx entities: ", entities);
+                if (entities != null && entities.length > 0) {
+                    let entity = entities[0];
+                    let sv = entity.getScaleXYZ();
+                    let pv = entity.getPosition();
+                    console.log("xxxxx sv: ", sv);
+                    console.log("xxxxx pv: ", pv);
+                    console.log("xxxxx this.m_wirees: ", this.m_wirees);
+                    for (let i = 0; i < this.m_wirees.length; ++i) {
+                        this.m_wirees[i].setPosition(pv);
+                        this.m_wirees[i].setScale3(sv);
+                        this.m_wirees[i].update();
+                    }
                 }
-                // this.initUI();
 
             });
 
@@ -282,33 +221,64 @@ export class BakePBR {
         // url = baseUrl + "fbx/hat_ok.fbx";
         url = baseUrl + "obj/apple_01.obj";
         url = baseUrl + "fbx/Mat_Ball.fbx";
-        url = "static/assets/ctm/hat01_a.ctm";
+        // url = baseUrl + "fbx/hat01_unwrapuv.fbx";
+        // url = "static/assets/ctm/hat01_a.ctm";
+        // url = baseUrl + "fbx/hat_ok.fbx";
+        // url = baseUrl + "fbx/icoSph_0_unwrap2.fbx";
+        // url = baseUrl + "fbx/hicoSph_unwrapuv.fbx";
+        url = baseUrl + "fbx/icoSph_0.fbx";
+        url = baseUrl + "fbx/icoSph_1_unwrap.fbx";
+        url = baseUrl + "fbx/icoSph_1.fbx";
 
         this.loadModels([url]);
     }
     private loadModels(urls: string[], typeNS: string = ""): void {
         this.m_modelLoader.load(urls);
     }
-
+    private m_modelIndex = 0;
+    private m_vtxRIndex = 0;
+    private m_vtxRCount = -1;
+    private m_offsetR = 0.0001;
     protected createEntity(model: CoGeomDataType, transform: Float32Array = null, index: number = 0): void {
 
         if (model != null) {
+            console.log("createEntity(), this.m_modelIndex: ", this.m_modelIndex);
             console.log("createEntity(), model: ", model);
-            this.initTexLightingBakeWithModel(0, model, transform);
+
+            if (this.m_modelIndex == 0) {
+                // let fio = new FileIO();
+                // fio.downloadBinFile(model.uvsList[0], "uvData1","uv");
+                // this.m_uvData = model.uvsList[0];
+                console.log("this.m_uvData.length: ", this.m_uvData.length);
+                console.log("model.uvsList[0].length: ", model.uvsList[0].length);
+                model.uvsList.push( this.m_uvData );
+                // this.showUVTri(model);
+                this.m_offsetR = 0.004;
+                this.initTexLightingBakeWithModel(-1, model, transform);
+            }
+            this.m_modelIndex++;
         }
     }
+    private getUVData(i: number, model: CoGeomDataType, uvIndex: number = 1): number[] {
 
+        let uvs2 = model.uvsList[uvIndex];
+        let uv = [uvs2[i * 2], uvs2[i * 2 + 1]];
+        
+        console.log("uv"+i+":", uv);
+        return uv;
+    }
+    private showUVTri(model: CoGeomDataType): void {
+        let ivs = model.indices;
+        let a0 = ivs[0];
+        let a1 = ivs[1];
+        let a2 = ivs[2];
+        let uv0 = this.getUVData(a0, model);
+        let uv1 = this.getUVData(a1, model);
+        let uv2 = this.getUVData(a2, model);
+    }
     private initTexLightingBakeWithModel(bakeType: number, model: CoGeomDataType, transform: Float32Array = null): void {
 
         let vs = model.vertices;
-        let uvs = model.uvsList[0];
-        // for(let i = 0; i < uvs.length; ++i) {
-        //     if(uvs[i] > 0.0) {
-        //         uvs[i] += 200;
-        //     }else if(uvs[i] < 0.0) {
-        //         uvs[i] -= 200;
-        //     }
-        // }
         let ivs = model.indices;
         let trisNumber = ivs.length / 3;
 
@@ -318,8 +288,11 @@ export class BakePBR {
         }
         let material: MaterialBase;
         if (bakeType < 0) {
-            let tex = this.getTexByUrl("static/assets/bake/hat01_bake.png");
-            // tex.flipY = bakeType < 0;
+            if(model.uvsList.length > 1) model.uvsList[0] = model.uvsList[1];
+            // let tex = this.getTexByUrl("static/assets/bake/icoSph_0.png");
+            let tex = this.getTexByUrl("static/assets/bake/icoSph_1.png");
+            // let tex = this.getTexByUrl("static/assets/bake/sph_mapping02b.png");
+            tex.flipY = bakeType < 0;
             let materialShow = new Default3DMaterial();
             materialShow.setTextureList([tex]);
             materialShow.initializeByCodeBuf(true);
@@ -338,8 +311,8 @@ export class BakePBR {
         roughness = 0.4;
 
         console.log("xxxxx bake: ", bake);
-        if (bake) {
-            this.createLineDrawWithModel(model, mat4, bake, metallic, roughness, nameList[nameI]);
+        if (bake && bakeType != 3) {
+            this.createLineDrawWithModel(model, bake, metallic, roughness, nameList[nameI]);
             // return;
         }
         if (bakeType >= 0) {
@@ -350,13 +323,14 @@ export class BakePBR {
             material = materialPbr;
             // material = null;
         }
-        console.log("material: ", material);
+        // console.log("OOOOOO material: ", material);
 
         let mesh = new DataMesh();
         // mesh.wireframe  = true;
         mesh.vbWholeDataEnabled = false;
         mesh.setVS(model.vertices);
         mesh.setUVS(model.uvsList[0]);
+        mesh.setUVS2(model.uvsList[1]);
         mesh.setNVS(model.normals);
         mesh.setIVS(model.indices);
         mesh.setVtxBufRenderData(material);
@@ -370,14 +344,19 @@ export class BakePBR {
         if (transform != null) {
             entity.getTransform().setParentMatrix(mat4);
         }
-        entity.setVisible(bakeType == 0 || bakeType == 2 || bakeType == -1);
+        if(this.m_vtxRCount >= 0) entity.setIvsParam(this.m_vtxRIndex, this.m_vtxRCount);
+        let visible = bakeType == 0 || bakeType == 2 || bakeType == -1 || bakeType == 3;
+        entity.setVisible(visible);
+        entity.update();
+        console.log("xxxx visible: ", visible, mat4);
+        // if(visible)
         this.m_rscene.addEntity(entity, 1);
         // for automatically fitting the model size in the scene
         this.m_layouter.layoutAppendItem(entity, mat4);
         //*/
     }
 
-    private createLineDrawWithModel(model: CoGeomDataType, mat4: Matrix4, bake: boolean, metallic: number, roughness: number, texName: string): void {
+    private createLineDrawWithModel(model: CoGeomDataType, bake: boolean, metallic: number, roughness: number, texName: string): void {
 
         let material = this.makeTexMaterial(metallic, roughness, 1.0);
         material.bake = bake;
@@ -389,215 +368,48 @@ export class BakePBR {
         mesh.vbWholeDataEnabled = false;
         mesh.setVS(model.vertices);
         mesh.setUVS(model.uvsList[0]);
+        mesh.setUVS2(model.uvsList[1]);
         mesh.setNVS(model.normals);
         mesh.setIVS(model.indices);
         mesh.setVtxBufRenderData(material);
         mesh.initialize();
 
-        let radius = 0.002;
+        let radius = this.m_offsetR;
         let PI2 = Math.PI * 2.0;
         let total = 8;
         let stage = this.m_rscene.getStage3D();
         let ratio = stage.stageHeight / stage.stageWidth;
+        console.log("xxxxx ratio: ", ratio);
+        console.log("xxxxx model: ", model);
         for (let k = 0; k < 8; ++k) {
             for (let i = 0; i < total; ++i) {
                 let rad = PI2 * i / total;
                 let dx = Math.cos(rad) * radius * ratio;
                 let dy = Math.sin(rad) * radius;
-                material.setOffsetXY(dx, dy);
-                this.createWithMesh(bake, mesh, metallic, roughness, texName, dx, dy, mat4);
+                this.createWithMesh(bake, mesh, metallic, roughness, texName, dx, dy);
             }
-            radius += 0.002;
+            radius += this.m_offsetR;
         }
     }
     private m_wirees: ITransformEntity[] = [];
-    private createWithMesh(bake: boolean, mesh: IMeshBase, metallic: number, roughness: number, texName: string, dx: number, dy: number, mat4: Matrix4 = null): void {
+    private createWithMesh(bake: boolean, mesh: IMeshBase, metallic: number, roughness: number, texName: string, dx: number, dy: number): void {
 
-        let material: PBRBakingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
+        let material = this.makeTexMaterial(metallic, roughness, 1.0);
         material.bake = bake;
         material.setTextureList(this.getTexList(texName));
         material.initializeByCodeBuf(true);
+
         material.setOffsetXY(dx, dy);
         let entity = new DisplayEntity();
         entity.setMaterial(material);
         entity.setMesh(mesh);
         entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
         // console.log("createWithMesh(), mesh: ", mesh);
-        if (mat4 != null) {
-            entity.getTransform().setParentMatrix(mat4);
-        }
+        if(this.m_vtxRCount >= 0) entity.setIvsParam(this.m_vtxRIndex, this.m_vtxRCount);
         this.m_wirees.push(entity);
         this.m_rscene.addEntity(entity, 0);
     }
-
-    private applyTex(): void {
-        // let tex = this.getTexByUrl("static/assets/bake/sph_mapping01.png");
-        let tex = this.getTexByUrl("static/assets/bake/sph_mapping03.png");
-        // let tex = this.getTexByUrl("static/assets/towBox.jpg");
-        tex.flipY = true;
-        // tex.premultiplyAlpha = true;
-        let material = new Default3DMaterial();
-        material.setTextureList([tex]);
-        material.initializeByCodeBuf(true);
-
-        let mesh = new Sphere3DMesh();
-        mesh.uvScale = 0.9;
-        mesh.mode = 2;
-        mesh.setBufSortFormat(material.getBufSortFormat());
-        mesh.initialize(150, 30, 30, false);
-
-        let entity = new DisplayEntity();
-        entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-        entity.setMesh(mesh);
-        entity.setMaterial(material);
-
-        this.m_rscene.addEntity(entity);
-    }
-    private initTexLightingBake(bake: boolean): void {
-
-        // let bake = false;
-        let radius = 150.0;
-        let roughness = 0.0;
-        let metallic = 0.0;
-
-
-        let nameList: string[] = ["gold", "rusted_iron", "grass", "plastic", "wall"];
-        let nameI = 3;
-        metallic = 0.5;
-        roughness = 0.4;
-        if (bake) {
-            this.createLineDraw(bake, radius, metallic, roughness, nameList[nameI]);
-            // return;
-        }
-        let material: PBRBakingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
-        material.bake = bake;
-        material.setTextureList(this.getTexList(nameList[nameI]));
-        material.initializeByCodeBuf(true);
-
-        let mesh = new Sphere3DMesh();
-        mesh.uvScale = 0.9;
-        mesh.mode = 2;
-        mesh.setVtxBufRenderData(material);
-        mesh.initialize(radius, 30, 30, false);
-        let sph = new DisplayEntity();
-        if (bake) sph.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
-        sph.setMaterial(material);
-        sph.setMesh(mesh);
-        this.m_rscene.addEntity(sph, 1);
-    }
-    private initFloatCube(): void {
-
-        let envMapUrl: string = "static/bytes/spe.mdf";
-
-        //let loader:TextureLoader = new TextureLoader();
-        let loader: SpecularTextureLoader = new SpecularTextureLoader();
-        loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
-        this.initLighting(null, loader.texture);
-    }
-    private createLineDraw(bake: boolean, pradius: number, metallic: number, roughness: number, texName: string): void {
-
-        let material: PBRBakingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
-        material.bake = bake;
-        material.setTextureList(this.getTexList(texName));
-        material.initializeByCodeBuf(true);
-        let mesh = new Sphere3DMesh();
-        mesh.uvScale = 0.9;
-        mesh.mode = 2;
-        mesh.wireframe = true;
-        mesh.setVtxBufRenderData(material);
-        mesh.initialize(pradius, 30, 30, false);
-
-        let radius = 0.002;
-        let PI2 = Math.PI * 2.0;
-        let total = 8;
-        let stage = this.m_rscene.getStage3D();
-        let ratio = stage.stageHeight / stage.stageWidth;
-        for (let k = 0; k < 8; ++k) {
-            for (let i = 0; i < total; ++i) {
-                let rad = PI2 * i / total;
-                let dx = Math.cos(rad) * radius * ratio;
-                let dy = Math.sin(rad) * radius;
-                // material.setOffsetXY(dx, dy);
-                this.createWithMesh(bake, mesh, metallic, roughness, texName, dx, dy);
-            }
-            radius += 0.002;
-        }
-    }
-    private initTexLighting(): void {
-
-        let radius: number = 150.0;
-        let rn: number = 3;
-        let cn: number = 3;
-        let roughness: number = 0.0;
-        let metallic: number = 0.0;
-        let disV3: Vector3D = new Vector3D(radius * 2.0 + 50.0, radius * 2.0 + 50.0, 0.0);
-        let beginPos: Vector3D = new Vector3D(disV3.x * (cn - 1) * -0.5, disV3.y * (rn - 1) * -0.5, -100.0);
-        let pos: Vector3D = new Vector3D();
-
-        let nameList: string[] = ["gold", "rusted_iron", "grass", "plastic", "wall"];
-
-        let texList: TextureProxy[] = this.getTexList("plastic");
-
-        for (let i: number = 0; i < rn; ++i) {
-            metallic = Math.max(rn - 1, 0.001);
-            metallic = i / metallic;
-            for (let j: number = 0; j < cn; ++j) {
-                roughness = Math.max(cn - 1, 0.001);
-                roughness = j / roughness;
-
-                let sph: Sphere3DEntity = new Sphere3DEntity();
-                let material: PBRBakingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
-                //let material:PBREnvLightingMaterial = this.makeMaterial(metallic, roughness, 1.3);
-                sph.setMaterial(material);
-                sph.initialize(radius, 20, 20, this.getTexList(nameList[Math.round(Math.random() * 10000) % nameList.length]));
-
-                pos.copyFrom(beginPos);
-                pos.x += disV3.x * j;
-                pos.y += disV3.y * i;
-                //pos.z += disV3.z * j;
-                sph.setPosition(pos);
-
-                this.m_rscene.addEntity(sph);
-            }
-        }
-    }
-    private initLighting(d_envTex: IFloatCubeTexture, s_envTex: IFloatCubeTexture): void {
-
-        let radius: number = 150.0;
-        let rn: number = 7;
-        let cn: number = 7;
-        let roughness: number = 0.0;
-        let metallic: number = 0.0;
-        let disV3: Vector3D = new Vector3D(radius * 2.0 + 50.0, radius * 2.0 + 50.0, 0.0);
-        let beginPos: Vector3D = new Vector3D(disV3.x * (cn - 1) * -0.5, disV3.y * (rn - 1) * -0.5, -100.0);
-        let pos: Vector3D = new Vector3D();
-
-        for (let i: number = 0; i < rn; ++i) {
-            metallic = Math.max(rn - 1, 0.001);
-            metallic = i / metallic;
-            //metallic = 1.0;
-            for (let j: number = 0; j < cn; ++j) {
-                roughness = Math.max(cn - 1, 0.001);
-                roughness = j / roughness;
-                //roughness = 0.0;
-
-                let sph: Sphere3DEntity = new Sphere3DEntity();
-                //let material:PBREnvLightingMaterial = this.makeMaterial(0.0, 0.2, 1.0);
-                let material: PBREnvLightingMaterial = this.makeMaterial(metallic, roughness, 1.3);
-                sph.setMaterial(material);
-                //sph.initialize(radius, 20, 20, [this.getTexByUrl("static/assets/noise.jpg")]);
-                sph.initialize(radius, 20, 20, [s_envTex]);
-
-                pos.copyFrom(beginPos);
-                pos.x += disV3.x * j;
-                pos.y += disV3.y * i;
-                //pos.z += disV3.z * j;
-                sph.setPosition(pos);
-
-                this.m_rscene.addEntity(sph);
-            }
-        }
-    }
+    
     private getTexList(name: string = "rusted_iron"): TextureProxy[] {
         let list: TextureProxy[] = [
 
@@ -638,8 +450,6 @@ export class BakePBR {
         material.setRoughness(roughness);
         material.setAO(ao);
 
-        material.setCamPos(this.m_rscene.getCamera().getPosition());
-
         this.m_texMaterials.push(material);
 
         for (let i: number = 0; i < 4; ++i) {
@@ -651,49 +461,22 @@ export class BakePBR {
         material.setColor(Math.random(), Math.random(), Math.random());
         return material;
     }
-    private makeMaterial(metallic: number, roughness: number, ao: number): PBREnvLightingMaterial {
-        let dis: number = 700.0;
-        let disZ: number = 400.0;
-        let posList: Vector3D[] = [
-            new Vector3D(-dis, dis, disZ),
-            new Vector3D(dis, dis, disZ),
-            new Vector3D(-dis, -dis, disZ),
-            new Vector3D(dis, -dis, disZ)
-        ];
-        let colorSize: number = 300.0;
-        let colorList: Color4[] = [
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize)
-        ];
-
-        let material: PBREnvLightingMaterial = new PBREnvLightingMaterial();
-        material.setMetallic(metallic);
-        material.setRoughness(roughness);
-        material.setAO(ao);
-        let f0: number = Math.random() * 0.9;
-        //material.setF0(Math.random() * 0.9, Math.random() * 0.9, Math.random() * 0.9);
-        //material.setF0(f0,f0,f0);
-
-        this.m_materials.push(material);
-
-        for (let i: number = 0; i < 4; ++i) {
-            let pos: Vector3D = posList[i];
-            material.setPosAt(i, pos.x, pos.y, pos.z);
-            let color: Color4 = colorList[i];
-            material.setColorAt(i, color.r, color.g, color.b);
-        }
-        material.setColor(Math.random(), Math.random(), Math.random());
-        return material;
-    }
     private mouseDown(evt: any): void {
-        console.log("mouse down... ...");
+        // console.log("mouse down... ...");
+        // let entities = this.m_layouter.getEntities();
+        // console.log("entities[0].getTransform().getParentMatrix(): ", entities[0].getTransform().getParentMatrix());
+        // console.log("entities[0].getPosition(): ", entities[0].getPosition());
+        // console.log("entities[0].getScaleXYZ(): ", entities[0].getScaleXYZ());
+        // console.log("entities[0].getRotationXYZ(): ", entities[0].getRotationXYZ());
+        // console.log("this.m_wirees: ", this.m_wirees);
+        // if(this.m_wirees != null && this.m_wirees.length) {
+        //     this.m_wirees[0].copyTransformFrom(entities[0]);
+        //     this.m_wirees[0].update();
+        //     console.log("this.m_wirees[0].getPosition(): ", this.m_wirees[0].getPosition());
+        //     console.log("this.m_wirees[0].getScaleXYZ(): ", this.m_wirees[0].getScaleXYZ());
+        //     console.log("this.m_wirees[0].getRotationXYZ(): ", this.m_wirees[0].getRotationXYZ());
+        // }
     }
-    mouseWheelListener(evt: any): void {
-        //this.m_cameraZoomController.setMoevDistance(evt.wheelDeltaY * 0.5);
-    }
-
     private m_timeoutId: any = -1;
     private update(): void {
         if (this.m_timeoutId > -1) {
@@ -709,18 +492,10 @@ export class BakePBR {
 
         if (this.m_rscene != null) {
 
-            // this.m_statusDisp.update(false);
-
             this.m_stageDragSwinger.runWithYAxis();
             this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
 
-            //  for(let i: number = 0, il: number = this.m_materials.length; i < il; ++i) {
-            //      this.m_materials[i].setCamPos(this.m_rscene.getCamera().getPosition());
-            //  }
             this.m_rscene.run(true);
-
-            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-            //this.m_profileInstance.run();
 
         }
     }

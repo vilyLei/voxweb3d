@@ -20,6 +20,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	private m_boundsChanged: boolean = true;
 	private m_vs: Float32Array = null;
 	private m_uvs: Float32Array = null;
+	private m_uvs2: Float32Array = null;
 	private m_nvs: Float32Array = null;
 	private m_cvs: Float32Array = null;
 	private m_tvs: Float32Array = null;
@@ -62,6 +63,14 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	 */
 	setUVS(uvs: Float32Array): DataMesh {
 		this.m_uvs = uvs;
+		return this;
+	}
+	/**
+	 * set second vertex uv data
+	 * @param vs vertex uv buffer Float32Array
+	 */
+	setUVS2(uvs: Float32Array): DataMesh {
+		this.m_uvs2 = uvs;
 		return this;
 	}
 	/**
@@ -190,6 +199,10 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 				ROVertexBuffer.AddFloat32Data(this.m_tvs, 3);
 				ROVertexBuffer.AddFloat32Data(this.m_btvs, 3);
 			}
+			
+			if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS2_INDEX)) {
+				ROVertexBuffer.AddFloat32Data(this.m_uvs2, this.uvsStride);
+			}
 			ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
 
 			this.vtCount = this.m_ivs.length;
@@ -244,6 +257,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 
 			this.m_vs = null;
 			this.m_uvs = null;
+			this.m_uvs2 = null;
 			this.m_nvs = null;
 			this.m_cvs = null;
 			this.m_tvs = null;
