@@ -7,6 +7,7 @@ import { ICoMaterial } from "../voxmaterial/ICoMaterial";
 import { ICoUIInteraction } from "../voxengine/ui/ICoUIInteraction";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
+import { VoxEntity } from "../voxentity/VoxEntity";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -111,7 +112,8 @@ export class DemoPrimitives {
 		
 		// let tubeMaterial = CoMaterial.createDefaultMaterial();
 		// tubeMaterial.normalEnabled = true;
-		// let tube = CoEntity.createTube(50, 150, 30, 1, tubeMaterial);
+		// // let tube = CoEntity.createTube(50, 150, 30, 1, 2, tubeMaterial);
+		// let tube = VoxEntity.createTube(50, 150, 30, 1, 2, tubeMaterial);
 		// tube.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
 		// this.m_rscene.addEntity(tube);
 
@@ -119,7 +121,8 @@ export class DemoPrimitives {
 		let torusMaterial = CoMaterial.createDefaultMaterial();
 		torusMaterial.normalEnabled = true;
 		torusMaterial.setRGB3f(1.0,0.0,0.0);
-		let torus = CoEntity.createTorus(100, 30, 20, 70, 0, torusMaterial);
+		// let torus = CoEntity.createTorus(100, 30, 20, 70, 2, torusMaterial);
+		let torus = VoxEntity.createTorus(100, 30, 20, 70, 2, torusMaterial);
 		// tube.setRenderState(CoRScene.RendererState.NONE_CULLFACE_NORMAL_STATE);
 		this.m_rscene.addEntity(torus);
 
