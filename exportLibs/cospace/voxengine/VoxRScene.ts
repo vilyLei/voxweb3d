@@ -50,7 +50,7 @@ var SelectionEvent: CoSelectionEvent = null;
 var ProgressDataEvent: CoProgressDataEvent = null;
 var MouseEvent: ICoMouseEvent = null;
 var EventBase: COEventBase = null;
-var RendererSate: CoRendererState = null;
+var RendererState: CoRendererState = null;
 
 class T_CoRScene {
 	private m_init = true;
@@ -62,7 +62,7 @@ class T_CoRScene {
 			ProgressDataEvent = CoRScene.ProgressDataEvent;
 			EventBase = CoRScene.EventBase;
 			MouseEvent = CoRScene.MouseEvent;
-			RendererSate = CoRScene.RendererState;
+			RendererState = CoRScene.RendererState;
 		}
 	}
 	initialize(callback: (urls: string[]) => void = null, url: string = ""): boolean {
@@ -366,4 +366,4 @@ class T_CoRScene {
 	}
 }
 const VoxRScene = new T_CoRScene();
-export { RendererSate, MouseEvent, EventBase, ProgressDataEvent, SelectionEvent, RendererDevice, VoxRScene };
+export { RendererState, MouseEvent, EventBase, ProgressDataEvent, SelectionEvent, RendererDevice, VoxRScene };
