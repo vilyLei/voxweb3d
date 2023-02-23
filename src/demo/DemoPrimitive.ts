@@ -211,7 +211,7 @@ export class DemoPrimitive {
 
             this.m_rscene.addEntity(torusEntity, 1);
             //*/
-            return;
+            // return;
             ///*
             let pipe: Tube3DEntity = new Tube3DEntity();
             pipe.axisType = 2;
@@ -221,7 +221,7 @@ export class DemoPrimitive {
             pipe.initialize(50.0, 200.0, 8, 1, [tex3]);
             //pipe.setXYZ(Math.random() * 500.0 - 250.0,Math.random() * 50.0 + 10.0,Math.random() * 500.0 - 250.0);
             this.m_rscene.addEntity(pipe, 1);
-            return;
+            // return;
             //*/
             ///*
             //  pipe.getCircleCenterAt(0,posV);

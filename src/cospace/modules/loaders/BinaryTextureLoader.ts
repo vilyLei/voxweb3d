@@ -3,30 +3,27 @@ import { IFloatCubeTexture } from "../../../vox/render/texture/IFloatCubeTexture
 import { HttpFileLoader } from "./HttpFileLoader";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { TextureConst } from "../../voxengine/CoRScene";
+import FloatCubeTextureProxy from "../../../vox/texture/FloatCubeTextureProxy";
 
 class BinaryTextureLoader {
 
-    protected m_rscene: IRendererScene = null;
     texture: IRenderTexture = null;
     constructor() {
     }
     
-    loadTextureWithUrl(url: string, rscene: IRendererScene): void {
-        this.m_rscene = rscene;
+    loadTextureWithUrl(url: string): void {
         this.texture = this.createTex();
         let loader = new HttpFileLoader();
         loader.load(
             url,
             (buffer: ArrayBuffer, uuid: string): void => {
                 this.parseTextureBuffer(buffer);
-                this.m_rscene = null;
                 this.texture = null;
             }
         )
     }
     protected createTex(): IRenderTexture {
-        
-        return this.m_rscene.textureBlock.createFloatCubeTex(32, 32, false);
+        return new FloatCubeTextureProxy(32, 32);
     }
     protected parseTextureBuffer(buffer: ArrayBuffer): void {
         let begin = 0;

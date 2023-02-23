@@ -7,7 +7,7 @@
 
 import IVector3D from "../../vox/math/IVector3D";
 import IMatrix4 from "../../vox/math/IMatrix4";
-
+import ITransUpdater from "../../vox/scene/ITransUpdater";
 export default interface IROTransform {
     updateStatus: number;
     updatedStatus: number;
@@ -64,5 +64,6 @@ export default interface IROTransform {
     copyFrom(src: IROTransform): void;
     forceUpdate(): void;
     update(): void;
-    getMatrixFS32(): Float32Array;    
+    getMatrixFS32(): Float32Array;
+    setUpdater(updater: ITransUpdater): void;
 }

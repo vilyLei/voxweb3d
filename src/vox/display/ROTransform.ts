@@ -12,8 +12,10 @@ import Matrix4 from "../../vox/math/Matrix4";
 import Matrix4Pool from "../../vox/math/Matrix4Pool";
 // import ROTransPool from '../../vox/render/ROTransPool';
 import IROTransform from './IROTransform';
+import IEntityUpdate from "../../vox/scene/IEntityUpdate";
+import ITransUpdater from "../../vox/scene/ITransUpdater";
 
-export default class ROTransform implements IROTransform {
+export default class ROTransform implements IROTransform, IEntityUpdate {
     private static s_uid: number = 0;
     private static s_initData: Float32Array = new Float32Array([
         1.0, 0.0, 0.0, 0.0,
@@ -21,19 +23,24 @@ export default class ROTransform implements IROTransform {
         0.0, 0.0, 1.0, 0.0,
         0.0, 0.0, 0.0, 1.0
     ]);
-    static readonly UPDATE_NONE: number = 0;
-    static readonly UPDATE_POSITION: number = 1;
-    static readonly UPDATE_ROTATION: number = 2;
-    static readonly UPDATE_SCALE: number = 4;
-    static readonly UPDATE_TRANSFORM: number = 7;
-    static readonly UPDATE_PARENT_MAT: number = 8;
-    private m_uid: number = 0;
+    static readonly UPDATE_NONE = 0;
+    static readonly UPDATE_POSITION = 1;
+    static readonly UPDATE_ROTATION = 2;
+    static readonly UPDATE_SCALE = 4;
+    static readonly UPDATE_TRANSFORM = 7;
+    static readonly UPDATE_PARENT_MAT = 8;
+    private m_uid = 0;
     private m_fs32: Float32Array = null;
     // It is a flag that need inverted mat yes or no
-    private m_invMatEnabled: boolean = false;
-    private m_rotFlag: boolean = false;
+    private m_invMatEnabled = false;
+    private m_rotFlag = false;
     private m_dt = 0;
+    private m_updater: ITransUpdater = null;
     version = -1;
+    /**
+     * the default value is 0
+     */
+    __$transUpdate = 0;
     constructor(fs32: Float32Array = null) {
         this.m_uid = ROTransform.s_uid++;
         this.m_dt = fs32 != null ? 1 : 0;
@@ -49,7 +56,7 @@ export default class ROTransform implements IROTransform {
      * 防止因为共享 fs32 数据带来的逻辑错误
      */
     rebuildFS32Data(): void {
-        if(this.m_dt > 0) {
+        if (this.m_dt > 0) {
             this.m_dt = 0;
             this.m_fs32 = new Float32Array(16);
         }
@@ -58,15 +65,16 @@ export default class ROTransform implements IROTransform {
     getX(): number { return this.m_fs32[12]; }
     getY(): number { return this.m_fs32[13]; }
     getZ(): number { return this.m_fs32[14]; }
-    setX(p: number): void { this.updateStatus |= 1; this.updatedStatus |= 1; this.m_fs32[12] = p; }
-    setY(p: number): void { this.updateStatus |= 1; this.updatedStatus |= 1; this.m_fs32[13] = p; }
-    setZ(p: number): void { this.updateStatus |= 1; this.updatedStatus |= 1; this.m_fs32[14] = p; }
+    setX(p: number): void { this.updateStatus |= 1; this.updatedStatus |= 1; this.m_fs32[12] = p; this.updateTo(); }
+    setY(p: number): void { this.updateStatus |= 1; this.updatedStatus |= 1; this.m_fs32[13] = p; this.updateTo(); }
+    setZ(p: number): void { this.updateStatus |= 1; this.updatedStatus |= 1; this.m_fs32[14] = p; this.updateTo(); }
     setXYZ(px: number, py: number, pz: number): void {
         this.m_fs32[12] = px;
         this.m_fs32[13] = py;
         this.m_fs32[14] = pz;
         this.updateStatus |= 1;
         this.updatedStatus |= 1;
+        this.updateTo();
     }
     offsetPosition(pv: Vector3D): void {
         this.m_fs32[12] += pv.x;
@@ -74,6 +82,7 @@ export default class ROTransform implements IROTransform {
         this.m_fs32[14] += pv.z;
         this.updateStatus |= 1;
         this.updatedStatus |= 1;
+        this.updateTo();
     }
     setPosition(pv: Vector3D): void {
         this.m_fs32[12] = pv.x;
@@ -81,6 +90,7 @@ export default class ROTransform implements IROTransform {
         this.m_fs32[14] = pv.z;
         this.updateStatus |= 1;
         this.updatedStatus |= 1;
+        this.updateTo();
     }
     getPosition(pv: Vector3D): void {
         pv.x = this.m_fs32[12];
@@ -94,14 +104,15 @@ export default class ROTransform implements IROTransform {
             this.m_fs32[14] = t.m_fs32[14];
             this.updateStatus |= ROTransform.UPDATE_POSITION;
             this.updatedStatus |= ROTransform.UPDATE_POSITION;
+            this.updateTo();
         }
     }
     getRotationX(): number { return this.m_fs32[1]; }
     getRotationY(): number { return this.m_fs32[6]; }
     getRotationZ(): number { return this.m_fs32[9]; }
-    setRotationX(degrees: number): void { this.m_fs32[1] = degrees; this.m_rotFlag = true; this.updateStatus |= ROTransform.UPDATE_ROTATION; this.updatedStatus |= ROTransform.UPDATE_ROTATION; }
-    setRotationY(degrees: number): void { this.m_fs32[6] = degrees; this.m_rotFlag = true; this.updateStatus |= ROTransform.UPDATE_ROTATION; this.updatedStatus |= ROTransform.UPDATE_ROTATION; }
-    setRotationZ(degrees: number): void { this.m_fs32[9] = degrees; this.m_rotFlag = true; this.updateStatus |= ROTransform.UPDATE_ROTATION; this.updatedStatus |= ROTransform.UPDATE_ROTATION; }
+    setRotationX(degrees: number): void { this.m_fs32[1] = degrees; this.m_rotFlag = true; this.updateStatus |= ROTransform.UPDATE_ROTATION; this.updatedStatus |= ROTransform.UPDATE_ROTATION; this.updateTo(); }
+    setRotationY(degrees: number): void { this.m_fs32[6] = degrees; this.m_rotFlag = true; this.updateStatus |= ROTransform.UPDATE_ROTATION; this.updatedStatus |= ROTransform.UPDATE_ROTATION; this.updateTo(); }
+    setRotationZ(degrees: number): void { this.m_fs32[9] = degrees; this.m_rotFlag = true; this.updateStatus |= ROTransform.UPDATE_ROTATION; this.updatedStatus |= ROTransform.UPDATE_ROTATION; this.updateTo(); }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
         this.m_fs32[1] = rx;
         this.m_fs32[6] = ry;
@@ -109,6 +120,7 @@ export default class ROTransform implements IROTransform {
         this.updateStatus |= ROTransform.UPDATE_ROTATION;
         this.updatedStatus |= ROTransform.UPDATE_ROTATION;
         this.m_rotFlag = true;
+        this.updateTo();
     }
     getScaleX(): number { return this.m_fs32[0]; }
     getScaleY(): number { return this.m_fs32[5]; }
@@ -123,6 +135,7 @@ export default class ROTransform implements IROTransform {
 
         this.updateStatus |= ROTransform.UPDATE_SCALE;
         this.updatedStatus |= ROTransform.UPDATE_SCALE;
+        this.updateTo();
     }
     setScale(s: number): void {
         this.m_fs32[0] = s;
@@ -130,6 +143,7 @@ export default class ROTransform implements IROTransform {
         this.m_fs32[10] = s;
         this.updateStatus |= ROTransform.UPDATE_SCALE;
         this.updatedStatus |= ROTransform.UPDATE_SCALE;
+        this.updateTo();
     }
     getRotationXYZ(pv: Vector3D): void {
         pv.x = this.m_fs32[1];
@@ -213,6 +227,7 @@ export default class ROTransform implements IROTransform {
                 this.updateStatus |= ROTransform.UPDATE_PARENT_MAT;
                 this.updatedStatus = this.updateStatus;
             }
+            this.updateTo();
         }
     }
     getParentMatrix(): Matrix4 {
@@ -223,6 +238,7 @@ export default class ROTransform implements IROTransform {
             this.updateStatus = ROTransform.UPDATE_NONE;
             this.m_invMatEnabled = true;
             this.m_omat.copyFrom(matrix);
+            this.updateTo();
         }
     }
     __$setMatrix(matrix: Matrix4): void {
@@ -237,6 +253,7 @@ export default class ROTransform implements IROTransform {
                 Matrix4Pool.RetrieveMatrix(this.m_omat);
             }
             this.m_omat = matrix;
+            this.updateTo();
         }
     }
     private destroy(): void {
@@ -258,6 +275,7 @@ export default class ROTransform implements IROTransform {
         this.m_parentMat = null;
         this.updateStatus = ROTransform.UPDATE_TRANSFORM;
         this.m_fs32 = null;
+        this.m_updater = null;
     }
 
     copyFrom(src: ROTransform): void {
@@ -265,18 +283,27 @@ export default class ROTransform implements IROTransform {
         this.updatedStatus |= 1;
         this.updateStatus |= ROTransform.UPDATE_TRANSFORM;
         this.m_rotFlag = src.m_rotFlag;
+        this.updateTo();
     }
     forceUpdate(): void {
         this.updateStatus |= ROTransform.UPDATE_TRANSFORM;
         this.update();
     }
+    private updateTo(): void {
+        if (this.m_updater) {
+            this.m_updater.addItem(this);
+        }
+    }
+    setUpdater(updater: ITransUpdater): void {
+        this.m_updater = updater;
+    }
     update(): void {
-        
+
         if (this.updateStatus > 0) {
             this.m_invMatEnabled = true;
             this.updateStatus = this.updateStatus | this.updatedStatus;
             if ((this.updateStatus & ROTransform.UPDATE_TRANSFORM) > 0) {
-                
+
                 this.m_localMat.getLocalFS32().set(this.m_fs32, 0);
                 if (this.m_rotFlag) {
                     this.m_localMat.setRotationEulerAngle(this.m_fs32[1] * MathConst.MATH_PI_OVER_180, this.m_fs32[6] * MathConst.MATH_PI_OVER_180, this.m_fs32[9] * MathConst.MATH_PI_OVER_180);
@@ -300,14 +327,12 @@ export default class ROTransform implements IROTransform {
                 this.m_omat.append(this.m_parentMat);
             }
             this.updateStatus = ROTransform.UPDATE_NONE;
-            this.version ++;
+            this.version++;
         }
+        this.__$transUpdate = 0;
     }
     getMatrixFS32(): Float32Array {
         return this.getMatrix().getLocalFS32();
-    }
-    toString(): string {
-        return "[ROTransform(uid = " + this.m_uid + ")]";
     }
 
     private static s_FLAG_BUSY: number = 1;
@@ -324,7 +349,7 @@ export default class ROTransform implements IROTransform {
     }
     static Create(matrix: Matrix4 = null, fs32: Float32Array = null): ROTransform {
         let unit: ROTransform = null;
-        let index: number = fs32 != null ? -1: ROTransform.GetFreeId();
+        let index: number = fs32 != null ? -1 : ROTransform.GetFreeId();
         if (index >= 0) {
             unit = ROTransform.m_unitList[index];
             ROTransform.m_unitFlagList[index] = ROTransform.s_FLAG_BUSY;
@@ -343,11 +368,11 @@ export default class ROTransform implements IROTransform {
             unit.m_omat = matrix;
         }
         unit.m_localMat = unit.m_omat;
-        if(fs32 == null) {
+        if (fs32 == null) {
             let ida = ROTransform.s_initData;
-            if(unit.m_fs32 == null) {
+            if (unit.m_fs32 == null) {
                 unit.m_fs32 = ida.slice(0);
-            }else {
+            } else {
                 unit.m_fs32.set(ida, 0);
             }
         }

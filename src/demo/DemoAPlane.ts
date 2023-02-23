@@ -5,11 +5,10 @@ import RendererScene from "../vox/scene/RendererScene";
  * a 3d rectangle plane display example
  */
 export class DemoAPlane {
-    constructor() { }
-
     private m_rscene: RendererScene = null;
     private m_plane: Plane3DEntity = null;
-    private m_degreeY: number = 0.0;
+    private m_degreeY = 0.0;
+    constructor() {}
 
     initialize(): void {
         this.m_rscene = new RendererScene();
@@ -18,25 +17,19 @@ export class DemoAPlane {
     }
     private createPlane(): void {
 
-        let tex = this.m_rscene.textureBlock.createImageTex2D(64, 64, false);
+        let tex = this.m_rscene.textureBlock.createImageTex2D();
+        let img = new Image();
+        img.onload = (): void => { tex.setDataFromImage(img); }
+        img.src = "static/assets/yanj.jpg";
 
         this.m_plane = new Plane3DEntity();
         this.m_plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex]);
         this.m_rscene.addEntity(this.m_plane);
-
-        let img: HTMLImageElement = new Image();
-        img.onload = (evt: any): void => {
-            tex.setDataFromImage(img, 0, 0, 0, false);
-        }
-        img.src = "static/assets/yanj.jpg";
     }
-
+    
     run(): void {
 
-        this.m_plane.setRotationXYZ(0.0, this.m_degreeY, 0.0);
-        this.m_plane.update();
-        this.m_degreeY += 0.5;
-
+        this.m_plane.setRotationXYZ(0.0, this.m_degreeY += 0.5, 0.0);
         this.m_rscene.run();
     }
 }

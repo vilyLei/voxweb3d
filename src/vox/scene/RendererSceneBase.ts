@@ -46,7 +46,6 @@ import IEvt3DController from "../../vox/scene/IEvt3DController";
 import FBOInstance from "../../vox/scene/FBOInstance";
 import IRODisplaySorter from "../../vox/render/IRODisplaySorter";
 import CameraDsistanceSorter from "../../vox/scene/CameraDsistanceSorter";
-import RendererSubScene from "../../vox/scene/RendererSubScene";
 import IRenderNode from "../../vox/scene/IRenderNode";
 import IRenderShader from "../../vox/render/IRenderShader";
 import Matrix4Pool from "../math/Matrix4Pool";
@@ -59,6 +58,7 @@ import IMatrix4 from "../math/IMatrix4";
 import Matrix4 from "../math/Matrix4";
 import IRendererParam from "./IRendererParam";
 import IRenderEntityBase from "../render/IRenderEntityBase";
+import EntityTransUpdater from "./EntityTransUpdater";
 
 export default class RendererSceneBase {
     private ___$$$$$$$Author: string = "VilyLei(vily313@126.com)";
@@ -102,6 +102,7 @@ export default class RendererSceneBase {
     protected m_enabled = true;
     protected m_currStage3D: IRenderStage3D = null;
     protected m_stage3D: IRenderStage3D = null;
+    protected m_transUpdater: EntityTransUpdater;
 
     readonly runnableQueue: IRunnableQueue = null;
     readonly textureBlock: ITextureBlock = null;
@@ -336,6 +337,7 @@ export default class RendererSceneBase {
             rins.initialize(rparam, camera, new ShaderProgramBuilder(rins.getRCUid()));
             this.m_renderer = rins;
 
+            this.m_transUpdater = new EntityTransUpdater();
 
             this.m_processids[0] = 0;
             this.m_processidsLen++;
@@ -473,6 +475,7 @@ export default class RendererSceneBase {
             if (re != null && re.__$testSpaceEnabled()) {
                 if (re.isPolyhedral()) {
                     if (re.hasMesh()) {
+                        re.getTransform().setUpdater( this.m_transUpdater );
                         this.m_renderer.addEntity(re, this.m_processids[processid], deferred);
                         if (this.m_rspace != null) {
                             this.m_rspace.addEntity(re);
@@ -491,6 +494,7 @@ export default class RendererSceneBase {
                     }
                 }
                 else {
+                    re.getTransform().setUpdater( this.m_transUpdater );
                     this.m_renderer.addEntity(re, this.m_processids[processid], deferred);
                     if (this.m_rspace != null) {
                         this.m_rspace.addEntity(re);
@@ -695,6 +699,10 @@ export default class RendererSceneBase {
      * should call this function per frame
      */
     update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
+        
+        if(this.m_runner) {
+            this.m_runner();
+        }
         // this.stage3D.enterFrame();
         const st = this.m_currStage3D;
         if (st != null) st.enterFrame();
@@ -733,6 +741,8 @@ export default class RendererSceneBase {
             }
         }
 
+        this.m_transUpdater.update();
+        
         let i = 0;
         for (; i < this.m_containersTotal; ++i) {
             this.m_containers[i].update();
@@ -837,6 +847,10 @@ export default class RendererSceneBase {
             }
         }
     }
+    private m_runner: () => void = null;
+    setRunner(runner: () => void): void {
+        this.m_runner = runner;
+    }
     /**
      * run all renderer processes in the renderer instance
      */
@@ -909,5 +923,6 @@ export default class RendererSceneBase {
     }
     destroy(): void {
         this.runnableQueue.destroy();
+        this.m_transUpdater.destroy();
     }
 }

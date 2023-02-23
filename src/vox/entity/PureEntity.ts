@@ -29,6 +29,7 @@ import IRenderProxy from "../../vox/render/IRenderProxy";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 // import ROTransPool from '../../vox/render/ROTransPool';
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
+import IROTransform from "../../vox/display/IROTransform";
 
 
 // for multi threads
@@ -263,6 +264,10 @@ export default class PureEntity implements IDisplayEntity {
         this.m_display.drawMode = m.drawMode;
         this.m_display.trisNumber = m.trisNumber;
         this.m_display.visible = this.m_visible && this.m_drawEnabled;
+    }
+    
+    getTransform(): IROTransform {
+        return null;
     }
     /**
      * 设置几何相关的数据,必须是构建完备的mesh才能被设置进来

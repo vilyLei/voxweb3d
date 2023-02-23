@@ -19,11 +19,10 @@ import PBREnvLightingMaterial from "../pbr/material/PBREnvLightingMaterial";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import { BinaryTextureLoader } from "../cospace/modules/loaders/BinaryTextureLoader";
 import Torus3DEntity from "../vox/entity/Torus3DEntity";
-import Tube3DEntity from "../vox/entity/Tube3DEntity";
-import RendererState from "../vox/render/RendererState";
-import Box3DEntity from "../vox/entity/Box3DEntity";
 import IRendererScene from "../vox/scene/IRendererScene";
 import ITransformEntity from "../vox/entity/ITransformEntity";
+import EventBase from "../vox/event/EventBase";
+import IEventBase from "../vox/event/IEventBase";
 
 class AnimationScene {
 
@@ -42,6 +41,7 @@ class AnimationScene {
         for (let i = 0; i < 20; ++i) {
             this.createSphere(15, new Vector3D().copyFrom(offsetV).scaleBy(i).addBy(begin));
         }
+        this.m_rscene.addEventListener(EventBase.ENTER_FRAME, this, this.run);
     }
     private createSphere(radius: number, pv: Vector3D): ITransformEntity {
 
@@ -65,7 +65,7 @@ class AnimationScene {
         return sph;
     }
     private m_time = 0.0;
-    run(): void {
+    run(evt: IEventBase = null): void {
 
         let ls = this.m_entities;
         let len = this.m_entities.length;
@@ -81,7 +81,6 @@ class AnimationScene {
             }
             et.setPosition(pos);
             et.setScaleXYZ(scale, scale, scale);
-            et.update();
         }
         this.m_time += 0.05;
     }
@@ -131,7 +130,6 @@ export class DemoPBREnvLighting {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private m_materials: PBREnvLightingMaterial[] = [];
-    private m_aniScene: AnimationScene;// = new AnimationScene();
 
     private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled) as TextureProxy;
@@ -180,10 +178,10 @@ export class DemoPBREnvLighting {
         let envMapUrl = "static/bytes/spe.mdf";
 
         let loader = new BinaryTextureLoader();
-        loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
+        loader.loadTextureWithUrl(envMapUrl);
 
-        this.m_aniScene = new AnimationScene(this.m_rscene, loader.texture);
-        this.m_aniScene.initialize();
+        let aniScene = new AnimationScene(this.m_rscene, loader.texture);
+        aniScene.initialize();
 
         // this.initLighting(loader.texture);
     }
@@ -310,11 +308,14 @@ export class DemoPBREnvLighting {
     }
 
     run(): void {
-        this.m_statusDisp.update(false);
-        this.m_aniScene.run();
-        this.m_stageDragSwinger.runWithYAxis();
-        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
-        this.m_rscene.run(true);
+        if(this.m_rscene != null) {
+
+            this.m_statusDisp.update(false);
+
+            this.m_stageDragSwinger.runWithYAxis();
+            this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
+            this.m_rscene.run(true);
+        }
     }
 }
 export default DemoPBREnvLighting;

@@ -13,7 +13,6 @@ import SubStage3D from "../../vox/display/SubStage3D";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import CameraBase from "../../vox/view/CameraBase";
 import RendererParam from "../../vox/scene/RendererParam";
-import RenderProcess from "../../vox/render/RenderProcess";
 import IRendererInstance from "../../vox/scene/IRendererInstance";
 import IRenderer from "../../vox/scene/IRenderer";
 import IRendererScene from "../../vox/scene/IRendererScene";
@@ -23,6 +22,7 @@ import IRenderNode from "../../vox/scene/IRenderNode";
 import RunnableQueue from "../../vox/base/RunnableQueue";
 import RendererSceneBase from "./RendererSceneBase";
 import IRendererParam from "./IRendererParam";
+import EntityTransUpdater from "./EntityTransUpdater";
 export default class RendererSubScene extends RendererSceneBase implements IRenderer, IRendererScene, IRenderNode {
     private m_perspectiveEnabled = true;
     private m_parent: IRendererScene = null;
@@ -63,6 +63,7 @@ export default class RendererSubScene extends RendererSceneBase implements IRend
             }
             let selfT: any = this;
             selfT.runnableQueue = new RunnableQueue();
+            this.m_transUpdater = new EntityTransUpdater();
 
             this.m_rparam = rparam;
             this.m_perspectiveEnabled = rparam.cameraPerspectiveEnabled;

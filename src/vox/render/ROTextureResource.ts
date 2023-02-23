@@ -54,21 +54,18 @@ class ROTextureResource implements IRenderTexResource {
     private m_resMap: Map<number, GpuTexObect> = new Map();
     private m_freeMap: Map<number, GpuTexObect> = new Map();
     // 显存的纹理buffer的总数
-    private m_texResTotal: number = 0;
-    private m_attachTotal: number = 0;
-    private m_delay: number = 128;
+    private m_texResTotal = 0;
+    private m_attachTotal = 0;
+    private m_delay = 128;
 
     // renderer context unique id
-    private m_rcuid: number = 0;
+    private m_rcuid = 0;
     private m_gl: any = null;
-    texMid: number = -1;
-    unlocked: boolean = true;
-    //readonly updater:ROTexDataUpdater = null;
+    texMid = -1;
+    unlocked = true;
     constructor(rcuid: number, gl: any) {
         this.m_rcuid = rcuid;
         this.m_gl = gl;
-        //  let selfT:any = this;
-        //  selfT.updater = new ROTexDataUpdater(rcuid, gl, this.m_resMap);
     }
     createBuf(): any {
         return this.m_gl.createTexture();
@@ -76,7 +73,7 @@ class ROTextureResource implements IRenderTexResource {
     createResByParams3(resUid: number, param0: number, param1: number, param2: number): boolean {
         //console.log("TexRes createResByParams3, this.m_resMap.has("+resUid+"): ",this.m_resMap.has(resUid));
         if (!this.m_resMap.has(resUid)) {
-            let obj: GpuTexObect = new GpuTexObect();
+            let obj = new GpuTexObect();
             obj.rcuid = this.getRCUid();
             obj.resUid = resUid;
             obj.width = param0;

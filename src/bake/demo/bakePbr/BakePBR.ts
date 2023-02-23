@@ -289,9 +289,9 @@ export class BakePBR {
         let material: MaterialBase;
         if (bakeType < 0) {
             if(model.uvsList.length > 1) model.uvsList[0] = model.uvsList[1];
-            // let tex = this.getTexByUrl("static/assets/bake/icoSph_0.png");
-            let tex = this.getTexByUrl("static/assets/bake/icoSph_1.png");
-            // let tex = this.getTexByUrl("static/assets/bake/sph_mapping02b.png");
+            // let tex = this.getTexByUrl("static/private/bake/icoSph_0.png");
+            let tex = this.getTexByUrl("static/private/bake/icoSph_1.png");
+            // let tex = this.getTexByUrl("static/private/bake/sph_mapping02b.png");
             tex.flipY = bakeType < 0;
             let materialShow = new Default3DMaterial();
             materialShow.setTextureList([tex]);

@@ -136,7 +136,7 @@ class TextureRenderObj implements ITextureRenderObj {
     }
     reset(): void {
         if (this.m_texList != null) {
-            for (let i: number = 0, len: number = this.m_texList.length; i < len; ++i) {
+            for (let i = 0, len = this.m_texList.length; i < len; ++i) {
                 this.m_texList[i].__$detachThis();
                 this.m_texRes.__$detachRes(this.m_texList[i].getResUid());
                 this.m_gtexList[i] = null;
@@ -146,21 +146,17 @@ class TextureRenderObj implements ITextureRenderObj {
         this.m_texList = null;
         this.m_texRes = null;
     }
-    toString(): string {
-        return "TextureRenderObj(uid = " + this.m_uid + ", mid=" + this.m_mid + ")";
-    }
 
     static Create(texRes: ROTextureResource, texList: IRenderTexture[], shdTexTotal: number): TextureRenderObj {
-
-        let texTotal: number = texList.length;
+        let texTotal = texList.length;
         if (texTotal > 0 && shdTexTotal > 0) {
             if (texTotal < shdTexTotal) {
                 throw Error("There are fewer textures than in the shader : (need " + shdTexTotal + ",but only have " + texTotal + ") !!!");
                 return null;
             }
-            let key: number = 31;
-            let t: number = 0;
-            let direct: boolean = true;
+            let key = 31;
+            let t = 0;
+            let direct = true;
             while (t < shdTexTotal) {
                 key = key * 131 + texList[t].getUid();
                 if (!texList[t].isDirect()) {

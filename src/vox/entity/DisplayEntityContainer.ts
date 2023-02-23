@@ -19,11 +19,12 @@ import IDisplayEntityContainer from "../../vox/entity/IDisplayEntityContainer";
 import ITransformEntity from "../../vox/entity/ITransformEntity";
 import IRenderer from "../../vox/scene/IRenderer";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
+import IROTransform from "../../vox/display/IROTransform";
 
 
 export default class DisplayEntityContainer implements IDisplayEntityContainer, IEntityTransform {
-    private static s_uid: number = 0;
-    private m_uid: number = 0;
+    private static s_uid = 0;
+    private m_uid = 0;
     protected m_eventDispatcher: IEvtDispatcher = null;
     constructor(boundsEnabled: boolean = true) {
         if (boundsEnabled) {
@@ -31,18 +32,18 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
         }
         this.m_uid = DisplayEntityContainer.s_uid++;
     }
-    private m_transformStatus: number = 0;
-    private m_rotateBoo: boolean = false;
+    private m_transformStatus = 0;
+    private m_rotateBoo = false;
     // It is a flag that need inverted mat yes or no
-    private m_invMatEnabled: boolean = false;
-    private m_invLocMatEnabled: boolean = false;
-    private m_oMatEnabled: boolean = false;
-    private m_pos: Vector3D = new Vector3D();
-    private m_visible: boolean = true;
-    private m_parentVisible: boolean = true;
+    private m_invMatEnabled = false;
+    private m_invLocMatEnabled = false;
+    private m_oMatEnabled = false;
+    private m_pos = new Vector3D();
+    private m_visible = true;
+    private m_parentVisible = true;
 
     protected m_globalBounds: IAABB = null;
-    protected m_gboundsStatus: number = -1;
+    protected m_gboundsStatus = -1;
     /**
      * entity global bounds version list
      */
@@ -51,7 +52,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
      * child container global bounds version list
      */
     protected m_cbvers: number[] = null;
-    private m_$updateBounds: boolean = true;
+    private m_$updateBounds = true;
     // 自身所在的world的唯一id, 通过这个id可以找到对应的world
     __$wuid: number = -1;
     // render process uid
@@ -120,6 +121,10 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     }
     getParent(): DisplayEntityContainer {
         return this.__$parent;
+    }
+    
+    getTransform(): IROTransform {
+        return null;
     }
     
     dispatchEvt(evt: any): number {
