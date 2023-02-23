@@ -702,9 +702,9 @@ export default class RendererSceneBase {
      */
     update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
 
-        if (this.m_runner) {
-            this.m_runner();
-        }
+        // if (this.m_runner) {
+        //     this.m_runner();
+        // }
         // this.stage3D.enterFrame();
         const st = this.m_currStage3D;
         if (st != null) st.enterFrame();
@@ -849,10 +849,10 @@ export default class RendererSceneBase {
             }
         }
     }
-    private m_runner: () => void = null;
-    setRunner(runner: () => void): void {
-        this.m_runner = runner;
-    }
+    // private m_runner: () => void = null;
+    // setRunner(runner: () => void): void {
+    //     this.m_runner = runner;
+    // }
     /**
      * run all renderer processes in the renderer instance
      */
