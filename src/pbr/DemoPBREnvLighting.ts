@@ -180,8 +180,7 @@ export class DemoPBREnvLighting {
         let loader = new BinaryTextureLoader();
         loader.loadTextureWithUrl(envMapUrl);
 
-        let aniScene = new AnimationScene(this.m_rscene, loader.texture);
-        aniScene.initialize();
+        new AnimationScene(this.m_rscene, loader.texture).initialize();
 
         // this.initLighting(loader.texture);
     }

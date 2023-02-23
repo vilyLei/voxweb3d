@@ -409,7 +409,7 @@ export default class RendererSceneBase {
         // if (container != null && container.__$wuid == this.m_uid && container.getRenderer() == this.m_renderer) {
         if (container != null && container.__$wuid == this.m_uid && container.getRenderer() == this) {
             let i = 0;
-            
+
             for (; i < this.m_containersTotal; ++i) {
                 if (this.m_containers[i] == container) {
                     container.__$wuid = -1;
@@ -475,7 +475,7 @@ export default class RendererSceneBase {
             if (re != null && re.__$testSpaceEnabled()) {
                 if (re.isPolyhedral()) {
                     if (re.hasMesh()) {
-                        re.getTransform().setUpdater( this.m_transUpdater );
+                        re.getTransform().setUpdater(this.m_transUpdater);
                         this.m_renderer.addEntity(re, this.m_processids[processid], deferred);
                         if (this.m_rspace != null) {
                             this.m_rspace.addEntity(re);
@@ -494,7 +494,7 @@ export default class RendererSceneBase {
                     }
                 }
                 else {
-                    re.getTransform().setUpdater( this.m_transUpdater );
+                    re.getTransform().setUpdater(this.m_transUpdater);
                     this.m_renderer.addEntity(re, this.m_processids[processid], deferred);
                     if (this.m_rspace != null) {
                         this.m_rspace.addEntity(re);
@@ -520,19 +520,21 @@ export default class RendererSceneBase {
                 if (this.m_nodeWaitLinker != null) {
                     let node = this.m_nodeWaitQueue.getNodeByEntity(re);
                     if (node != null) {
-                        this.m_nodeWaitLinker.removeNode(node);
+                        re.getTransform().setUpdater(null);
+                        this.m_nodeWaitLinker.removeNode(node);;
                         this.m_nodeWaitQueue.removeEntity(re);
                     }
                 }
                 if (node == null) {
                     this.m_renderer.removeEntity(re);
+                    re.getTransform().setUpdater(null);
                     if (this.m_rspace != null) {
                         this.m_rspace.removeEntity(re);
                     }
                 }
             }
         } else {
-            
+
             let re = entity as IRenderEntityContainer;
             this.removeContainer(re);
         }
@@ -699,8 +701,8 @@ export default class RendererSceneBase {
      * should call this function per frame
      */
     update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
-        
-        if(this.m_runner) {
+
+        if (this.m_runner) {
             this.m_runner();
         }
         // this.stage3D.enterFrame();
@@ -742,7 +744,7 @@ export default class RendererSceneBase {
         }
 
         this.m_transUpdater.update();
-        
+
         let i = 0;
         for (; i < this.m_containersTotal; ++i) {
             this.m_containers[i].update();

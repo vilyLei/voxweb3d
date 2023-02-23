@@ -5,8 +5,8 @@ import IRendererParam from "./IRendererParam";
 
 export default interface IRendererSceneGraph extends IRendererSceneGraphStatus {
 
-    createRendererParam(): IRendererParam;
-    createRendererSceneParam(): IRendererParam;
+    createRendererParam(div?: HTMLDivElement): IRendererParam;
+    createRendererSceneParam(div?: HTMLDivElement): IRendererParam;
     /**
      * @param rparam IRendererParam instance, the default value is null
      * @param renderProcessesTotal the default value is 3

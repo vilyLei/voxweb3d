@@ -100,21 +100,60 @@ interface ICoEntity {
 	 * @param radius the sphere radius
 	 * @param longitudeNumSegments the default value is 20
 	 * @param latitudeNumSegments the default value is 20
-	 * @param doubleTriFaceEnabled the default value is false
 	 * @param material the default value is null 
 	 * @param texEnabled the default value is false
+	 * @param doubleTriFaceEnabled the default value is false
 	 * @returns a sphere entity
 	 */
-	createSphere(radius: number, longitudeNumSegments?: number, latitudeNumSegments?: number, doubleTriFaceEnabled?: boolean, material?: IRenderMaterial, texEnabled?: boolean): IMouseEventEntity;
+	createSphere(radius: number, longitudeNumSegments?: number, latitudeNumSegments?: number, material?: IRenderMaterial, texEnabled?: boolean, doubleTriFaceEnabled?: boolean): IMouseEventEntity;
 	/**
-	 * @param radius the cone radius 
-	 * @param height the cone height  
+	 * @param radius cone radius 
+	 * @param height cone height  
 	 * @param longitudeNumSegments the default value is 20
-	 * @param alignYRatio the default value is -0.5 
 	 * @param material the default value is null 
 	 * @param texEnabled the default value is false
+	 * @param alignYRatio the default value is -0.5 
 	 * @returns a cone entity
 	 */
-	createCone(radius: number, height: number, longitudeNumSegments?: number, alignYRatio?: number, material?: IRenderMaterial, texEnabled?: boolean): IMouseEventEntity;
+	createCone(radius: number, height: number, longitudeNumSegments?: number, material?: IRenderMaterial, texEnabled?: boolean, alignYRatio?: number): IMouseEventEntity;
+	/**
+	 * @param radius cylinder radius
+	 * @param height cylinder height
+	 * @param longitudeNumSegments the default value is 20
+	 * @param material the default value is null 
+	 * @param texEnabled the default value is false
+	 * @param uvType the default value is 1
+	 * @param alignYRatio the default value is -0.5
+	 * @returns a cylinder entity
+	 */
+	createCylinder(radius: number, height: number, longitudeNumSegments?: number, material?: IRenderMaterial, texEnabled?: boolean, uvType?: number, alignYRatio?: number): IMouseEventEntity;
+	/**
+     * @param radius tube radius
+     * @param long tube long
+     * @param longitudeNumSegments the default value is 20
+     * @param latitudeNumSegments the default value is 1
+	 * @param axisType 0: vertical to x-axis, 1: vertical to y-axis, 2: vertical to z-axis, the default value is 0
+	 * @param material the default value is null 
+	 * @param texEnabled the default value is false
+     * @param uvType the default value is 1
+     * @param alignYRatio the default value is -0.5
+	 * @returns a tube entity
+     */
+    createTube(radius: number, long: number, longitudeNumSegments?: number, latitudeNumSegments?: number, axisType?: number, material?: IRenderMaterial, texEnabled?: boolean, uvType?: number, alignYRatio?: number): IMouseEventEntity;
+	/**
+     * @param ringRadius the default value is 200
+     * @param axisRadius the default value is 50
+     * @param longitudeNumSegments the default value is 30
+     * @param latitudeNumSegments the default value is 20
+	 * @param axisType 0: vertical to x-axis, 1: vertical to y-axis, 2: vertical to z-axis, the default value is 0
+	 * @param material the default value is null 
+	 * @param texEnabled the default value is false
+     * @param uvType the default value is 1
+     * @param alignYRatio the default value is -0.5
+	 * @returns a torus entity
+     */
+    createTorus(ringRadius?: number, axisRadius?: number, longitudeNumSegments?: number, latitudeNumSegments?: number, axisType?: number, material?: IRenderMaterial, texEnabled?: boolean, uvType?: number, alignYRatio?: number): IMouseEventEntity;
+
+
 }
 export { ICoEntity };

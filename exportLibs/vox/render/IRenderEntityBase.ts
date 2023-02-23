@@ -5,6 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
+import IROTransform from "../../vox/display/IROTransform";
 /**
  * to be used in the renderer runtime
  */
@@ -23,6 +24,7 @@ export default interface IRenderEntityBase {
     setVisible(boo: boolean): void;
     getVisible(): boolean;
     isVisible(): boolean;
+    getTransform(): IROTransform;
     update(): void;
     destroy(): void;
 }

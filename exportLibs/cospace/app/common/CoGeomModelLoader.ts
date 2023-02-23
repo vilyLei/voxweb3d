@@ -86,10 +86,12 @@ class CoGeomModelLoader {
 			);
 			if (format == CoDataFormat.FBX) {
 				unit.data.modelReceiver = (models: CoGeomDataType[], transforms: Float32Array[], index: number, total: number): void => {
-					// console.log("XXX: ", index, ",", total);
-					this.m_loadTotal++;
+					// console.log("Loaded a fbx model XXX: ", index, ",", total);
+					if(index == 0) {
+						this.m_loadTotal++;
+					}
 					this.loadedModels(models, transforms, format, unit.url);
-					this.loadedModelFromUnit(unit, 0);
+					this.loadedModelFromUnit(unit, 0, (index + 1) == total);
 				};
 			}
 		}
@@ -99,8 +101,8 @@ class CoGeomModelLoader {
 			this.m_loadedCall(models, transforms, format, url);
 		}
 	}
-	private loadedModelFromUnit(unit: CoGeomDataUnit, status: number = 0): void {
-		this.m_loadedTotal++;
+	private loadedModelFromUnit(unit: CoGeomDataUnit, status: number = 0, flag: boolean = true): void {
+		if(flag)this.m_loadedTotal++;
 		if (this.m_loadedTotal >= this.m_loadTotal) {
 			let total = this.m_loadedTotal;
 			this.reset();

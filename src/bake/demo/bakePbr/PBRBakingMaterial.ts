@@ -57,15 +57,39 @@ precision highp float;
 }
 
 export default class PBRBakingMaterial extends MaterialBase {
-    private m_offset = new Float32Array([0.0, 0.0, 0.0, 0.0]);
+    private m_posOffset = new Float32Array([0.0, 0.0, 0.0, 0.0]);
+    private m_uvOffset = new Float32Array([0.0, 0.0, 1.0, 1.0]);
+    private m_albedo = new Float32Array([0.5, 0.0, 0.0, 0.0]);
+    private m_params = new Float32Array([0.0, 0.0, 1.0, 0.0]);
+    private m_lightPositions = new Float32Array(4 * 4);
+    private u_lightColors = new Float32Array(4 * 4);
+
     bake = false;
     constructor() {
         super();
     }
-
+    clone(): PBRBakingMaterial {
+        let m = new PBRBakingMaterial();
+        m.bake = this.bake;
+        m.m_posOffset = this.m_posOffset.slice(0);
+        m.m_uvOffset = this.m_uvOffset.slice(0);
+        m.m_params = this.m_params.slice(0);
+        m.m_lightPositions = this.m_lightPositions.slice(0);
+        m.u_lightColors = this.u_lightColors.slice(0);
+        m.setTextureList(this.getTextureList());
+        return m;
+    }
     setOffsetXY(px: number, py: number): void {
-        this.m_offset[0] = px;
-        this.m_offset[1] = py;
+        this.m_posOffset[0] = px;
+        this.m_posOffset[1] = py;
+    }
+    setOffsetUV(pu: number, pv: number): void {
+        this.m_uvOffset[0] = pu;
+        this.m_uvOffset[1] = pv;
+    }
+    setScaleUV(su: number, sv: number): void {
+        this.m_uvOffset[2] = su;
+        this.m_uvOffset[3] = sv;
     }
     getCodeBuf(): ShaderCodeBuffer {
 
@@ -73,11 +97,6 @@ export default class PBRBakingMaterial extends MaterialBase {
         ins.bake = this.bake;
         return ins;
     }
-
-    private m_albedo: Float32Array = new Float32Array([0.5, 0.0, 0.0, 0.0]);
-    private m_params: Float32Array = new Float32Array([0.0, 0.0, 1.0, 0.0]);
-    private m_lightPositions: Float32Array = new Float32Array(4 * 4);
-    private u_lightColors: Float32Array = new Float32Array(4 * 4);
 
     setMetallic(metallic: number): void {
 
@@ -119,8 +138,8 @@ export default class PBRBakingMaterial extends MaterialBase {
         //  console.log("this.m_params: ",this.m_params);
         //  console.log("this.m_camPos: ",this.m_camPos);
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_albedo", "u_lightPositions", "u_lightColors", "u_offset"];
-        oum.dataList = [this.m_albedo, this.m_lightPositions, this.u_lightColors, this.m_offset];
+        oum.uniformNameList = ["u_albedo", "u_lightPositions", "u_lightColors", "u_posOffset", "u_uvOffset"];
+        oum.dataList = [this.m_albedo, this.m_lightPositions, this.u_lightColors, this.m_posOffset, this.m_uvOffset];
         return oum;
     }
 }

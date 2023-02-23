@@ -5,6 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
+import IVector3D from "../../vox/math/IVector3D";
+import IMatrix4 from "../../vox/math/IMatrix4";
 import IAABB from "../../vox/geom/IAABB";
 
 export default interface IGeometry {
@@ -13,11 +15,18 @@ export default interface IGeometry {
     vtxTotal: number;
     trisNumber: number;
     vtCount: number;
-
+    /**
+     * 0: vertical to x-axis, 1: vertical to y-axis, 2: vertical to z-axis, the default value is 0
+     */
+    axisType: number;
 
     clone(): IGeometry;
     
     copyFrom(src: IGeometry): void;
+    
+    getCenterAt(i: number, outV: IVector3D): void;
+    
+    transformAt(i: number, mat4: IMatrix4): void;
     /**
      * @returns vertex position buffer Float32Array
      */

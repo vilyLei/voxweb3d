@@ -39,8 +39,10 @@ import { BinaryTextureLoader } from "../../../cospace/modules/loaders/BinaryText
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import { FileIO } from "../../../app/slickRoad/io/FileIO";
 import { HttpFileLoader } from "../../../cospace/modules/loaders/HttpFileLoader";
+import { ModelData, ModelDataLoader } from "./ModelDataLoader";
+import { BakedViewer } from "./BakedViewer";
 
-export class BakePBR {
+export class BakeFlow {
     constructor() { }
 
     private m_rscene: RendererScene = null;
@@ -72,52 +74,9 @@ export class BakePBR {
         div.style.position = 'absolute';
         return div;
     }
-    private fract(f: number): number {
-        return f - Math.floor(f);
-    }
-    // private clamp(x: number, minVal: number, maxVal: number): number {
-    //     return Math.min(Math.max(x, minVal), maxVal);
-    // }
-    private calcValue(px: number): number {
-
-        if (px > 1.0) {
-            let t = this.fract(px);
-            px = t > 0.0 ? t : 1.0;
-        } else if (px < 0.0) {
-            px = Math.abs(px);
-            if (px > 1.0) {
-                let t = this.fract(px);
-                px = t > 0.0 ? t : 1.0;
-            }
-            px = 1.0 - px;
-        }
-        return px;
-    }
-    private getUV(uv: { x: number, y: number }): { x: number, y: number } {
-        let px = this.calcValue(uv.x);
-        let py = this.calcValue(uv.y);
-        let obj: { x: number, y: number } = { x: px, y: py };
-        console.log("in: ", uv, ", out: ", obj);
-        return obj;
-    }
-    private getUVSpec(uv: { x: number, y: number }): { x: number, y: number } {
-        let px = this.calcValue(uv.x * 0.0166666675);
-        let py = this.calcValue(uv.y * 0.0166666675);
-        let obj: { x: number, y: number } = { x: px, y: py };
-        console.log("in: ", uv, ", out: ", obj);
-        return obj;
-    }
     initialize(): void {
-        console.log("BakePBR::initialize()......");
+        console.log("BakeFlow::initialize()......");
 
-        // this.getUV({x: 0.0, y: 1.0});
-        // this.getUV({x: 0.0, y: 11.0});
-        // this.getUV({x: 0.4, y: 11.9});
-        // this.getUV({x: -0.0, y: -1.0});
-        // this.getUV({x: -10.2, y: -19.0});
-        //263.29400634765625, 747.8200073242188
-        // this.getUVSpec({x: 263.29400634765625, y: 747.8200073242188});
-        // return;
         if (this.m_rscene == null) {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -150,22 +109,6 @@ export class BakePBR {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
-
-            // let axis: Axis3DEntity = new Axis3DEntity();
-            // axis.initialize(500.0);
-            // this.m_rscene.addEntity(axis);
-
-            // add common 3d display entity
-            //  let plane: Plane3DEntity = new Plane3DEntity();
-            //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getTexByUrl("static/assets/broken_iron.jpg")]);
-            //  this.m_rscene.addEntity(plane);
-
-            // this.initFloatCube();
-
-            // this.initTexLighting();
-            // this.applyTex();
-            // this.initTexLightingBake(false);
-
             this.initModel();
 
             this.update();
@@ -173,111 +116,75 @@ export class BakePBR {
         }
     }
     private m_uvData: Float32Array = null;
+    private m_bakedViewer: BakedViewer = null;
+
     private initModel(): void {
-        let baseUrl = "static/private/";
-        let url = baseUrl + "fbx/uvData.uv";
-        url = baseUrl + "fbx/uvData1.uv";
-        let loader = new HttpFileLoader();
-        loader.load(url, (buf: ArrayBuffer, url: string): void => {
-            let uvData = new Float32Array(buf);
-            // console.log("uvData: ", uvData);
+
+        this.m_bakedViewer = new BakedViewer(this.m_rscene, this.m_texLoader);
+
+        let modelLoader = new ModelDataLoader();
+        modelLoader.setListener((modelData: ModelData, uv2ModelData: ModelData, uvData: Float32Array): void => {
+
+            console.log("loaded model all in main.");
+            let vtxTotal = modelData.models[0].vertices.length / 3;
+            console.log("vtxTotal: ", vtxTotal);
+            console.log("modelData: ", modelData);
+            console.log("uv2ModelData: ", uv2ModelData);
+            console.log("uvData: ", uvData);
+            let models = modelData.models;
+            let transforms = modelData.transforms;
             this.m_uvData = uvData;
-            this.initModelLoad();
-        })
-    }
-    private initModelLoad(): void {
-        this.m_modelLoader.setListener(
-            (models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat): void => {
-
-                for (let i = 0; i < models.length; ++i) {
-                    this.createEntity(models[i], transforms != null ? transforms[i] : null);
+            for (let i = 0; i < models.length; ++i) {
+                if(uv2ModelData != null){
+                    models[i].uvsList.push(uv2ModelData.models[i].uvsList[0]);
+                }else if (uvData != null) {
+                    models[i].uvsList.push(uvData);
                 }
-            },
-            (total): void => {
-                console.log("loaded model all.");
+                this.createEntity(models[i], transforms != null ? transforms[i] : null, { su: 1.0, sv: 1.0 });
+            }
+            this.updateEntities();
 
-                this.m_layouter.layoutUpdate();
-                // for automatically fitting the model size in the scene
-                let entities = this.m_layouter.getEntities();
-                console.log("xxxxx entities: ", entities);
-                if (entities != null && entities.length > 0) {
-                    let entity = entities[0];
-                    let sv = entity.getScaleXYZ();
-                    let pv = entity.getPosition();
-                    console.log("xxxxx sv: ", sv);
-                    console.log("xxxxx pv: ", pv);
-                    console.log("xxxxx this.m_wirees: ", this.m_wirees);
-                    for (let i = 0; i < this.m_wirees.length; ++i) {
-                        this.m_wirees[i].setPosition(pv);
-                        this.m_wirees[i].setScale3(sv);
-                        this.m_wirees[i].update();
-                    }
-                }
+        });
+        let modelUrl = "static/private/fbx/icoSph_1.fbx";
+        let uv2ModelUrl = "static/private/fbx/icoSph_1_unwrap.fbx";
+        let uvDataUrl = "static/private/fbx/uvData1.uv";
 
-            });
-
-        let baseUrl = "static/private/";
-        let url = baseUrl + "fbx/base4.fbx";
-        // url = baseUrl + "fbx/hat_ok.fbx";
-        url = baseUrl + "obj/apple_01.obj";
-        url = baseUrl + "fbx/Mat_Ball.fbx";
-        // url = baseUrl + "fbx/hat01_unwrapuv.fbx";
-        // url = "static/assets/ctm/hat01_a.ctm";
-        // url = baseUrl + "fbx/hat_ok.fbx";
-        // url = baseUrl + "fbx/icoSph_0_unwrap2.fbx";
-        // url = baseUrl + "fbx/hicoSph_unwrapuv.fbx";
-        url = baseUrl + "fbx/icoSph_0.fbx";
-        url = baseUrl + "fbx/icoSph_1_unwrap.fbx";
-        url = baseUrl + "fbx/icoSph_1.fbx";
-        // url = baseUrl + "fbx/hat01_0.fbx";
-
-        this.loadModels([url]);
-    }
-    private loadModels(urls: string[], typeNS: string = ""): void {
-        this.m_modelLoader.load(urls);
+        modelUrl = this.m_modelUrl;
+        uv2ModelUrl = this.m_uv2ModelUrl;
+        uvDataUrl = this.m_uvDataUrl;
+        modelLoader.loadData(modelUrl, uv2ModelUrl, uvDataUrl);
     }
     private m_modelIndex = 0;
     private m_vtxRIndex = 0;
     private m_vtxRCount = -1;
     private m_offsetR = 0.0001;
-    protected createEntity(model: CoGeomDataType, transform: Float32Array = null, index: number = 0): void {
+    // private m_modelUrl = "static/private/fbx/hat01_0.fbx";
+    // private m_modelUrl = "static/private/fbx/hat01_0.obj";
+    private m_modelUrl = "static/private/fbx/hat01_0.fbx";
+    // private m_uv2ModelUrl = "static/private/fbx/hat01_0_unwrap.fbx";
+    private m_uv2ModelUrl = "";
+    // private m_uvDataUrl = "static/private/fbx/uvData1.uv";
+    private m_uvDataUrl = "static/private/fbx/hat01_0.uv2";
+    protected createEntity(model: CoGeomDataType, transform: Float32Array = null, uvParam: { su: number, sv: number }): void {
 
         if (model != null) {
             console.log("createEntity(), this.m_modelIndex: ", this.m_modelIndex);
             console.log("createEntity(), model: ", model);
 
-            if (this.m_modelIndex == 0) {
-                // let fio = new FileIO();
-                // fio.downloadBinFile(model.uvsList[0], "uvData1","uv");
-                // this.m_uvData = model.uvsList[0];
-                console.log("this.m_uvData.length: ", this.m_uvData.length);
-                console.log("model.uvsList[0].length: ", model.uvsList[0].length);
-                model.uvsList.push( this.m_uvData );
-                // this.showUVTri(model);
-                this.m_offsetR = 0.004;
-                this.initTexLightingBakeWithModel(0, model, transform);
-            }
-            this.m_modelIndex++;
+            // let fio = new FileIO();
+            // fio.downloadBinFile(model.uvsList[0], "uvData1","uv");
+
+            this.m_offsetR = 0.004;
+            // let uvOffset = { su: 1.0, sv: 1.0 };
+            let uvOffset = { su: 0.01, sv: 0.01 };
+            
+            let bakedTexUrl = "static/private/bake/icoSph_1.png";
+            bakedTexUrl = "static/private/bake/hat01_0.png";
+            bakedTexUrl = "static/private/bake/hat01_1.png";
+            this.initTexLightingBakeWithModel(1, model, transform, uvOffset, bakedTexUrl);
         }
     }
-    private getUVData(i: number, model: CoGeomDataType, uvIndex: number = 1): number[] {
-
-        let uvs2 = model.uvsList[uvIndex];
-        let uv = [uvs2[i * 2], uvs2[i * 2 + 1]];
-        
-        console.log("uv"+i+":", uv);
-        return uv;
-    }
-    private showUVTri(model: CoGeomDataType): void {
-        let ivs = model.indices;
-        let a0 = ivs[0];
-        let a1 = ivs[1];
-        let a2 = ivs[2];
-        let uv0 = this.getUVData(a0, model);
-        let uv1 = this.getUVData(a1, model);
-        let uv2 = this.getUVData(a2, model);
-    }
-    private initTexLightingBakeWithModel(bakeType: number, model: CoGeomDataType, transform: Float32Array = null): void {
+    private initTexLightingBakeWithModel(bakeType: number, model: CoGeomDataType, transform: Float32Array, uvParam: { su: number, sv: number }, bakedTexUrl: string): void {
 
         let vs = model.vertices;
         let ivs = model.indices;
@@ -287,20 +194,15 @@ export class BakePBR {
         if (nvs == null) {
             SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
         }
-        let material: MaterialBase;
-        if (bakeType < 0) {
-            if(model.uvsList.length > 1) model.uvsList[0] = model.uvsList[1];
-            // let tex = this.getTexByUrl("static/private/bake/icoSph_0.png");
-            let tex = this.getTexByUrl("static/private/bake/icoSph_1.png");
-            // let tex = this.getTexByUrl("static/private/bake/sph_mapping02b.png");
-            tex.flipY = bakeType < 0;
-            let materialShow = new Default3DMaterial();
-            materialShow.setTextureList([tex]);
-            materialShow.initializeByCodeBuf(true);
-            material = materialShow;
-        }
-        // hat01_bake.png
 
+        if (bakeType < 0) {
+            let entity = this.m_bakedViewer.createEntity(model, bakedTexUrl);
+            let mat4 = transform != null ? new Matrix4(transform) : null;
+            this.m_layouter.layoutAppendItem(entity, mat4);
+            return;
+        }
+
+        let material: MaterialBase;
         let bake = bakeType > 0;
         let roughness = 0.0;
         let metallic = 0.0;
@@ -312,7 +214,7 @@ export class BakePBR {
         roughness = 0.4;
 
         let materialPbr = this.makeTexMaterial(metallic, roughness, 1.0);
-        // materialPbr.setScaleUV(0.01, 0.01);
+        materialPbr.setScaleUV(uvParam.su, uvParam.sv);
         materialPbr.bake = bake;
         materialPbr.setTextureList(this.getTexList(nameList[nameI]));
         materialPbr.initializeByCodeBuf(true);
@@ -321,7 +223,7 @@ export class BakePBR {
         }
         console.log("xxxxx bake: ", bake);
         if (bake && bakeType != 3) {
-            this.createLineDrawWithModel(model, bake, metallic, roughness, nameList[nameI]);
+            this.createLineDrawWithModel(materialPbr, model, bake, metallic, roughness, nameList[nameI]);
             // return;
         }
         // console.log("OOOOOO material: ", material);
@@ -336,16 +238,14 @@ export class BakePBR {
         mesh.setIVS(model.indices);
         mesh.setVtxBufRenderData(material);
         mesh.initialize();
+        console.log("mesh.vtxTotal: ",mesh.vtxTotal)
 
         let entity = new DisplayEntity();
         if (bakeType == 2) entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
         entity.setMaterial(material);
         entity.setMesh(mesh);
 
-        if (transform != null) {
-            entity.getTransform().setParentMatrix(mat4);
-        }
-        if(this.m_vtxRCount >= 0) entity.setIvsParam(this.m_vtxRIndex, this.m_vtxRCount);
+        if (this.m_vtxRCount >= 0) entity.setIvsParam(this.m_vtxRIndex, this.m_vtxRCount);
         let visible = bakeType == 0 || bakeType == 2 || bakeType == -1 || bakeType == 3;
         entity.setVisible(visible);
         entity.update();
@@ -357,11 +257,12 @@ export class BakePBR {
         //*/
     }
 
-    private createLineDrawWithModel(model: CoGeomDataType, bake: boolean, metallic: number, roughness: number, texName: string): void {
+    private createLineDrawWithModel(material: PBRBakingMaterial, model: CoGeomDataType, bake: boolean, metallic: number, roughness: number, texName: string): void {
 
-        let material = this.makeTexMaterial(metallic, roughness, 1.0);
+        // let material = this.makeTexMaterial(metallic, roughness, 1.0);
+        material = material.clone();
         material.bake = bake;
-        material.setTextureList(this.getTexList(texName));
+        // material.setTextureList(this.getTexList(texName));
         material.initializeByCodeBuf(true);
 
         let mesh = new DataMesh();
@@ -387,17 +288,18 @@ export class BakePBR {
                 let rad = PI2 * i / total;
                 let dx = Math.cos(rad) * radius * ratio;
                 let dy = Math.sin(rad) * radius;
-                this.createWithMesh(bake, mesh, metallic, roughness, texName, dx, dy);
+                this.createWithMesh(material, bake, mesh, metallic, roughness, texName, dx, dy);
             }
             radius += this.m_offsetR;
         }
     }
     private m_wirees: ITransformEntity[] = [];
-    private createWithMesh(bake: boolean, mesh: IMeshBase, metallic: number, roughness: number, texName: string, dx: number, dy: number): void {
+    private createWithMesh(material: PBRBakingMaterial, bake: boolean, mesh: IMeshBase, metallic: number, roughness: number, texName: string, dx: number, dy: number): void {
 
-        let material = this.makeTexMaterial(metallic, roughness, 1.0);
+        // let material = this.makeTexMaterial(metallic, roughness, 1.0);
+        material = material.clone();
         material.bake = bake;
-        material.setTextureList(this.getTexList(texName));
+        // material.setTextureList(this.getTexList(texName));
         material.initializeByCodeBuf(true);
 
         material.setOffsetXY(dx, dy);
@@ -406,11 +308,32 @@ export class BakePBR {
         entity.setMesh(mesh);
         entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
         // console.log("createWithMesh(), mesh: ", mesh);
-        if(this.m_vtxRCount >= 0) entity.setIvsParam(this.m_vtxRIndex, this.m_vtxRCount);
+        if (this.m_vtxRCount >= 0) entity.setIvsParam(this.m_vtxRIndex, this.m_vtxRCount);
         this.m_wirees.push(entity);
         this.m_rscene.addEntity(entity, 0);
     }
-    
+
+    private updateEntities(): void {
+
+        this.m_layouter.layoutUpdate();
+        // for automatically fitting the model size in the scene
+        let entities = this.m_layouter.getEntities();
+        // console.log("xxxxx entities: ", entities);
+        if (entities != null && entities.length > 0) {
+            let entity = entities[0];
+            let sv = entity.getScaleXYZ();
+            let pv = entity.getPosition();
+            // console.log("xxxxx sv: ", sv);
+            // console.log("xxxxx pv: ", pv);
+            // console.log("xxxxx this.m_wirees: ", this.m_wirees);
+            for (let i = 0; i < this.m_wirees.length; ++i) {
+                this.m_wirees[i].setPosition(pv);
+                this.m_wirees[i].setScale3(sv);
+                this.m_wirees[i].update();
+            }
+        }
+
+    }
     private getTexList(name: string = "rusted_iron"): TextureProxy[] {
         let list: TextureProxy[] = [
 
@@ -439,7 +362,7 @@ export class BakePBR {
             new Color4(150, 200, 160),
             new Color4(200, 200, 270)
         ];
-        let material: PBRBakingMaterial = new PBRBakingMaterial();
+        let material = new PBRBakingMaterial();
         material.setMetallic(metallic);
         material.setRoughness(roughness);
         material.setAO(ao);
@@ -457,29 +380,13 @@ export class BakePBR {
     }
     private mouseDown(evt: any): void {
         // console.log("mouse down... ...");
-        // let entities = this.m_layouter.getEntities();
-        // console.log("entities[0].getTransform().getParentMatrix(): ", entities[0].getTransform().getParentMatrix());
-        // console.log("entities[0].getPosition(): ", entities[0].getPosition());
-        // console.log("entities[0].getScaleXYZ(): ", entities[0].getScaleXYZ());
-        // console.log("entities[0].getRotationXYZ(): ", entities[0].getRotationXYZ());
-        // console.log("this.m_wirees: ", this.m_wirees);
-        // if(this.m_wirees != null && this.m_wirees.length) {
-        //     this.m_wirees[0].copyTransformFrom(entities[0]);
-        //     this.m_wirees[0].update();
-        //     console.log("this.m_wirees[0].getPosition(): ", this.m_wirees[0].getPosition());
-        //     console.log("this.m_wirees[0].getScaleXYZ(): ", this.m_wirees[0].getScaleXYZ());
-        //     console.log("this.m_wirees[0].getRotationXYZ(): ", this.m_wirees[0].getRotationXYZ());
-        // }
     }
     private m_timeoutId: any = -1;
     private update(): void {
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
-        //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
         this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
-
-        // this.m_statusDisp.render();
     }
 
     run(): void {
@@ -494,4 +401,4 @@ export class BakePBR {
         }
     }
 }
-export default BakePBR;
+export default BakeFlow;

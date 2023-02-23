@@ -6,7 +6,8 @@ layout(location = 3) in vec2 a_uvs2;
 uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
-uniform vec4 u_offset;
+uniform vec4 u_posOffset;
+uniform vec4 u_uvOffset;
 
 out vec2 TexCoords;
 out vec3 WorldPos;
@@ -49,14 +50,14 @@ void main(){
 
     v_camPos = (inverse(u_viewMat) * vec4(0.0,0.0,0., 1.0)).xyz;
     
-    TexCoords = a_uvs;
+    TexCoords = a_uvs * u_uvOffset.zw + u_uvOffset.xy;
     
     #ifdef BAKE
     vec2 uvpos = getUV(a_uvs2.xy);
     // vec2 uvpos = (a_uvs2.xy);
     
     uvpos = vec2(2.0) * vec2(uvpos - vec2(0.5));
-    uvpos += u_offset.xy;
+    uvpos += u_posOffset.xy;
     
     gl_Position = vec4(uvpos, 0.0,1.0);
     #endif

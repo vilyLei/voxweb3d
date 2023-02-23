@@ -116,12 +116,63 @@ class T_CoEntity {
 		return CoEntity.createBox(minV, maxV, material, texEnabled);
 	}
 
-	createSphere(radius: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20, doubleTriFaceEnabled: boolean = false, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
-		return CoEntity.createSphere(radius, longitudeNumSegments, latitudeNumSegments, doubleTriFaceEnabled, material, texEnabled);
+	createSphere(radius: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20, material: IRenderMaterial = null, texEnabled: boolean = false, doubleTriFaceEnabled: boolean = false): IMouseEventEntity {
+		return CoEntity.createSphere(radius, longitudeNumSegments, latitudeNumSegments, material, texEnabled, doubleTriFaceEnabled);
 	}
-
-	createCone(radius: number, height: number, longitudeNumSegments: number = 20, alignYRatio: number = -0.5, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
-		return CoEntity.createCone(radius, height, longitudeNumSegments, alignYRatio, material, texEnabled);
+	/**
+	 * @param radius cone radius 
+	 * @param height cone height  
+	 * @param longitudeNumSegments the default value is 20
+	 * @param material the default value is null 
+	 * @param texEnabled the default value is false
+	 * @param alignYRatio the default value is -0.5 
+	 * @returns a cone entity
+	 */
+	createCone(radius: number, height: number, longitudeNumSegments: number = 20, material: IRenderMaterial = null, texEnabled: boolean = false, alignYRatio: number = -0.5): IMouseEventEntity {
+		return CoEntity.createCone(radius, height, longitudeNumSegments, material, texEnabled, alignYRatio);
+	}
+	/**
+	 * @param radius cylinder radius
+	 * @param height cylinder height
+	 * @param longitudeNumSegments the default value is 20
+	 * @param material the default value is null 
+	 * @param texEnabled the default value is false
+	 * @param uvType the default value is 1
+	 * @param alignYRatio the default value is -0.5
+	 * @returns a cylinder entity
+	 */	
+	createCylinder(radius: number, height: number, longitudeNumSegments: number = 20, material: IRenderMaterial = null, texEnabled: boolean = false, alignYRatio: number = -0.5): IMouseEventEntity {
+		return CoEntity.createCylinder(radius, height, longitudeNumSegments, material, texEnabled, alignYRatio);
+	}
+	/**
+     * @param radius tube radius
+     * @param long tube long
+     * @param longitudeNumSegments the default value is 20
+     * @param latitudeNumSegments the default value is 1
+	 * @param axisType 0: vertical to x-axis, 1: vertical to y-axis, 2: vertical to z-axis, the default value is 0
+	 * @param material the default value is null 
+	 * @param texEnabled the default value is false
+     * @param uvType the default value is 1
+     * @param alignYRatio the default value is -0.5
+	 * @returns a tube entity
+     */
+	createTube(radius: number, long: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 1, axisType: number = 0, material: IRenderMaterial = null, texEnabled: boolean = false, uvType: number = 1, alignRatio: number = -0.5): IMouseEventEntity {
+		return CoEntity.createTube(radius, long, longitudeNumSegments, latitudeNumSegments, axisType, material, texEnabled, uvType, alignRatio);
+	}
+	/**
+     * @param ringRadius the default value is 200
+     * @param axisRadius the default value is 50
+     * @param longitudeNumSegments the default value is 30
+     * @param latitudeNumSegments the default value is 20
+	 * @param axisType 0: vertical to x-axis, 1: vertical to y-axis, 2: vertical to z-axis, the default value is 0
+	 * @param material the default value is null 
+	 * @param texEnabled the default value is false
+     * @param uvType the default value is 1
+     * @param alignYRatio the default value is -0.5
+	 * @returns a torus entity
+     */
+	createTorus(radius: number, axisRadius: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 1, axisType: number = 0, material: IRenderMaterial = null, texEnabled: boolean = false, uvType: number = 1, alignRatio: number = -0.5): IMouseEventEntity {
+		return CoEntity.createTorus(radius, axisRadius, longitudeNumSegments, latitudeNumSegments, axisType, material, texEnabled, uvType, alignRatio);
 	}
 }
 const VoxEntity = new T_CoEntity();
