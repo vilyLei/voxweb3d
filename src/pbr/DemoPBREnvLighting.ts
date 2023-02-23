@@ -30,12 +30,13 @@ class AnimationScene {
     private m_envTex: IRenderTexture;
     private m_sphEntity: ITransformEntity = null;
     private m_entities: ITransformEntity[] = [];
+    private m_time = 0.0;
     constructor(sc: IRendererScene, envTex: IRenderTexture) {
         this.m_rscene = sc;
         this.m_envTex = envTex;
     }
     initialize(): void {
-
+        this.m_time = Date.now();
         let begin = new Vector3D(-300, 0, 300);
         let offsetV = new Vector3D(30, 0, -30);
         for (let i = 0; i < 20; ++i) {
@@ -64,14 +65,14 @@ class AnimationScene {
         this.m_entities.push(sph);
         return sph;
     }
-    private m_time = 0.0;
     private run(evt: IEventBase = null): void {
 
         let ls = this.m_entities;
         let len = this.m_entities.length;
         let pos = new Vector3D();
+        let time = (Date.now() - this.m_time) * 0.003;
         for (let i = 0; i < len; ++i) {
-            const factor = Math.sin(i * 0.5 + this.m_time);
+            const factor = Math.sin(i * 0.5 + time);
             const et = ls[i];
             et.getPosition(pos);
             pos.y = factor * 100.0;
@@ -82,7 +83,6 @@ class AnimationScene {
             et.setPosition(pos);
             et.setScaleXYZ(scale, scale, scale);
         }
-        this.m_time += 0.05;
     }
     private makeMaterial(metallic: number, roughness: number, ao: number): PBREnvLightingMaterial {
         let dis = 700.0;
