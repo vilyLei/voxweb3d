@@ -65,7 +65,7 @@ class AnimationScene {
         return sph;
     }
     private m_time = 0.0;
-    run(evt: IEventBase = null): void {
+    private run(evt: IEventBase = null): void {
 
         let ls = this.m_entities;
         let len = this.m_entities.length;
@@ -85,15 +85,15 @@ class AnimationScene {
         this.m_time += 0.05;
     }
     private makeMaterial(metallic: number, roughness: number, ao: number): PBREnvLightingMaterial {
-        let dis: number = 700.0;
-        let disZ: number = 400.0;
+        let dis = 700.0;
+        let disZ = 400.0;
         let posList: Vector3D[] = [
             new Vector3D(-dis, dis, disZ),
             new Vector3D(dis, dis, disZ),
             new Vector3D(-dis, -dis, disZ),
             new Vector3D(dis, -dis, disZ)
         ];
-        let colorSize: number = 300.0;
+        let colorSize = 300.0;
         let colorList: Color4[] = [
             new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
             new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
@@ -105,9 +105,6 @@ class AnimationScene {
         material.setMetallic(metallic);
         material.setRoughness(roughness);
         material.setAO(ao);
-        let f0: number = Math.random() * 0.9;
-        //material.setF0(Math.random() * 0.9, Math.random() * 0.9, Math.random() * 0.9);
-        //material.setF0(f0,f0,f0);
 
         for (let i: number = 0; i < 4; ++i) {
             let pos: Vector3D = posList[i];
