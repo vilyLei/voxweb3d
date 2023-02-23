@@ -22,7 +22,104 @@ import Torus3DEntity from "../vox/entity/Torus3DEntity";
 import Tube3DEntity from "../vox/entity/Tube3DEntity";
 import RendererState from "../vox/render/RendererState";
 import Box3DEntity from "../vox/entity/Box3DEntity";
+import IRendererScene from "../vox/scene/IRendererScene";
+import ITransformEntity from "../vox/entity/ITransformEntity";
 
+class AnimationScene {
+
+    private m_rscene: IRendererScene;
+    private m_envTex: IRenderTexture;
+    private m_sphEntity: ITransformEntity = null;
+    private m_entities: ITransformEntity[] = [];
+    constructor(sc: IRendererScene, envTex: IRenderTexture) {
+        this.m_rscene = sc;
+        this.m_envTex = envTex;
+    }
+    initialize(): void {
+
+        let begin = new Vector3D(-300, 0, 300);
+        let offsetV = new Vector3D(30, 0, -30);
+        for (let i = 0; i < 20; ++i) {
+            this.createSphere(15, new Vector3D().copyFrom(offsetV).scaleBy(i).addBy(begin));
+        }
+    }
+    private createSphere(radius: number, pv: Vector3D): ITransformEntity {
+
+        let material = this.makeMaterial(Math.random(), 0.9, 1.3);
+        material.setTextureList([this.m_envTex]);
+        material.initializeByCodeBuf(material.getTextureAt(0) != null);
+
+        let sph = new Sphere3DEntity();
+        sph.setMaterial(material);
+        if (this.m_sphEntity != null) {
+            sph.copyMeshFrom(this.m_sphEntity);
+        } else {
+            sph.initialize(radius, 20, 20);
+            this.m_sphEntity = sph;
+        }
+
+        sph.setPosition(pv);
+        this.m_rscene.addEntity(sph, 1);
+
+        this.m_entities.push(sph);
+        return sph;
+    }
+    private m_time = 0.0;
+    run(): void {
+
+        let ls = this.m_entities;
+        let len = this.m_entities.length;
+        let pos = new Vector3D();
+        for (let i = 0; i < len; ++i) {
+            const factor = Math.sin(i * 0.5 + this.m_time);
+            const et = ls[i];
+            et.getPosition(pos);
+            pos.y = factor * 100.0;
+            let scale = Math.abs(factor * 1.5);
+            if(scale < 0.3) {
+                scale = 0.3;
+            }
+            et.setPosition(pos);
+            et.setScaleXYZ(scale, scale, scale);
+            et.update();
+        }
+        this.m_time += 0.05;
+    }
+    private makeMaterial(metallic: number, roughness: number, ao: number): PBREnvLightingMaterial {
+        let dis: number = 700.0;
+        let disZ: number = 400.0;
+        let posList: Vector3D[] = [
+            new Vector3D(-dis, dis, disZ),
+            new Vector3D(dis, dis, disZ),
+            new Vector3D(-dis, -dis, disZ),
+            new Vector3D(dis, -dis, disZ)
+        ];
+        let colorSize: number = 300.0;
+        let colorList: Color4[] = [
+            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
+            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
+            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
+            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize)
+        ];
+
+        let material: PBREnvLightingMaterial = new PBREnvLightingMaterial();
+        material.setMetallic(metallic);
+        material.setRoughness(roughness);
+        material.setAO(ao);
+        let f0: number = Math.random() * 0.9;
+        //material.setF0(Math.random() * 0.9, Math.random() * 0.9, Math.random() * 0.9);
+        //material.setF0(f0,f0,f0);
+
+        for (let i: number = 0; i < 4; ++i) {
+            let pos: Vector3D = posList[i];
+            material.setPosAt(i, pos.x, pos.y, pos.z);
+            let color: Color4 = colorList[i];
+            material.setColorAt(i, color.r, color.g, color.b);
+        }
+        material.setColor(Math.random(), Math.random(), Math.random());
+        return material;
+    }
+}
 export class DemoPBREnvLighting {
     constructor() { }
 
@@ -34,6 +131,7 @@ export class DemoPBREnvLighting {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private m_materials: PBREnvLightingMaterial[] = [];
+    private m_aniScene: AnimationScene;// = new AnimationScene();
 
     private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled) as TextureProxy;
@@ -83,7 +181,11 @@ export class DemoPBREnvLighting {
 
         let loader = new BinaryTextureLoader();
         loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
-        this.initLighting(loader.texture);
+
+        this.m_aniScene = new AnimationScene(this.m_rscene, loader.texture);
+        this.m_aniScene.initialize();
+
+        // this.initLighting(loader.texture);
     }
     private initLighting(s_envTex: IRenderTexture): void {
 
@@ -97,7 +199,7 @@ export class DemoPBREnvLighting {
         let pos = new Vector3D();
 
         let material = this.makeMaterial(0.3, 0.9, 1.3);
-        material.setTextureList( [s_envTex] );
+        material.setTextureList([s_envTex]);
         material.initializeByCodeBuf(material.getTextureAt(0) != null);
 
         // let sph = new Sphere3DEntity();
@@ -110,10 +212,10 @@ export class DemoPBREnvLighting {
         // cly.initialize(30, 200, 30);
         // this.m_rscene.addEntity(cly, 1);
 
-        // let torus = new Torus3DEntity();
-        // torus.setMaterial(material);
-        // torus.initialize(100, 50, 30, 50);
-        // this.m_rscene.addEntity(torus, 1);
+        let torus = new Torus3DEntity();
+        torus.setMaterial(material);
+        torus.initialize(100, 50, 30, 50);
+        this.m_rscene.addEntity(torus, 1);
 
         // let tube = new Tube3DEntity();
         // tube.setMaterial(material);
@@ -121,14 +223,14 @@ export class DemoPBREnvLighting {
         // tube.initialize(30, 110, 30, 1);
         // this.m_rscene.addEntity(tube, 1);
 
-        
+
         // let box = new Box3DEntity();
         // box.setMaterial(material);
         // // box.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
         // box.initializeSizeXYZ(30, 110, 30);
         // this.m_rscene.addEntity(box, 1);
 
-        // return;
+        return;
         for (let i: number = 0; i < rn; ++i) {
             metallic = Math.max(rn - 1, 0.001);
             metallic = i / metallic;
@@ -209,7 +311,7 @@ export class DemoPBREnvLighting {
 
     run(): void {
         this.m_statusDisp.update(false);
-
+        this.m_aniScene.run();
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
         this.m_rscene.run(true);
