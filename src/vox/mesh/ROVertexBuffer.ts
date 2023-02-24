@@ -78,26 +78,26 @@ export default class ROVertexBuffer extends ROIVertexBuffer implements IVtxBuf, 
         this.m_vtxBuf.setF32DataAt(index, float32Arr, stepFloatsTotal, setpOffsets);
         this.vertexVer++;
     }
-    setUintIVSData(uint16Or32Arr: Uint16Array | Uint32Array, status: number = VtxBufConst.VTX_STATIC_DRAW): void {
-        if ((uint16Or32Arr instanceof Uint16Array)) {
-            this.m_ibufStep = 2;
-            if(uint16Or32Arr.length > 65535) {
-                throw Error("its type is not Uint32Array.");
-            }
-        }
-        else if ((uint16Or32Arr instanceof Uint32Array)) {
-            this.m_ibufStep = 4;
-        }
-        else {
-            console.error("Error: uint16Or32Arr is not an Uint32Array or an Uint16Array bufferArray instance !!!!");
-            return;
-        }
+    // setUintIVSData(uint16Or32Arr: Uint16Array | Uint32Array, status: number = VtxBufConst.VTX_STATIC_DRAW): void {
+    //     if ((uint16Or32Arr instanceof Uint16Array)) {
+    //         this.m_ibufStep = 2;
+    //         if(uint16Or32Arr.length > 65535) {
+    //             throw Error("its type is not Uint32Array.");
+    //         }
+    //     }
+    //     else if ((uint16Or32Arr instanceof Uint32Array)) {
+    //         this.m_ibufStep = 4;
+    //     }
+    //     else {
+    //         console.error("Error: uint16Or32Arr is not an Uint32Array or an Uint16Array bufferArray instance !!!!");
+    //         return;
+    //     }
 
-        this.m_ivs = uint16Or32Arr;
-        if (uint16Or32Arr != null) {
-            this.indicesVer++;
-        }
-    }
+    //     this.m_ivs = uint16Or32Arr;
+    //     if (uint16Or32Arr != null) {
+    //         this.indicesVer++;
+    //     }
+    // }
     setData4fAt(vertexI: number, attribI: number, px: number, py: number, pz: number, pw: number): void {
         if (this.m_vtxBuf != null) {
             this.m_vtxBuf.setData4fAt(vertexI, attribI, px, py, pz, pw);

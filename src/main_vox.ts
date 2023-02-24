@@ -186,7 +186,7 @@
 
 //  import {DemoGLState as Demo} from "./demo/DemoGLState";
 
- import {DemoStencil as Demo} from "./demo/DemoStencil";
+//  import {DemoStencil as Demo} from "./demo/DemoStencil";
 
 //  import {DemoBlendMode as Demo} from "./demo/DemoBlendMode";
 
@@ -317,7 +317,7 @@
 
 //  import {DemoSharedVBuf as Demo} from "./demo/DemoSharedVBuf";
 
-//  import {DemoSharedMesh as Demo} from "./demo/DemoSharedMesh";
+ import {DemoSharedMesh as Demo} from "./demo/DemoSharedMesh";
 
 //  import {DemoIVtxBuf as Demo} from "./demo/DemoIVtxBuf";
 
