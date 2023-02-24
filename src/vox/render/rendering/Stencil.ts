@@ -9,21 +9,35 @@ import { IRODrawState } from "./IRODrawState";
 import { IStencil } from "./IStencil";
 class Stencil implements IStencil {
 
-    private m_depfs = [0, 0];
-    private m_maskfs = [0, 0];
-    private m_funcfs = [0, 0, 0, 0];
-    private m_opfs = [0, 0, 0, 0];
-    private m_enabled = false;
+    private m_fs = new Uint32Array([
+        0,          // flag[0]
+        0, 0,        // depfs[1,2]
+        0, 0,        // maskfs[3,4]
+        0, 0, 0, 0,    // funcfs[5,6,7,8]
+        0, 0, 0, 0,    // opfs[9,10,11,12]
+
+    ]);
     constructor() {
     }
     isEnabled(): boolean {
-        return this.m_enabled;
+        return this.m_fs[0] > 0;
     }
     setDepthTestEnable(enable: boolean): IStencil {
-        this.m_depfs[0] = enable ? 1 : 0;
-        this.m_depfs[1] = 1;
-        this.m_enabled = true;
-        // if (this.m_rstate) this.m_rstate.setDepthTestEnable(enable);
+        const fs = this.m_fs;
+        fs[0] = 1;
+        fs[1] = enable ? 1 : 0;
+        fs[2] = 1;
+        return this;
+    }
+    /**
+     * 设置 gpu stencilMask 状态
+     * @param mask GLint type number
+     */
+    setStencilMask(mask: number): IStencil {
+        const fs = this.m_fs;
+        fs[0] = 1;
+        fs[3] = 1;
+        fs[4] = mask;
         return this;
     }
     /**
@@ -33,24 +47,12 @@ class Stencil implements IStencil {
      * @param mask GLint type number
      */
     setStencilFunc(func: number, ref: number, mask: number): IStencil {
-        const ls = this.m_funcfs;
-        ls[0] = func;
-        ls[1] = ref;
-        ls[2] = mask;
-        ls[3] = 1;
-        this.m_enabled = true;
-        // if (this.m_rstate) this.m_rstate.setStencilFunc(func, ref, mask);
-        return this;
-    }
-    /**
-     * 设置 gpu stencilMask 状态
-     * @param mask GLint type number
-     */
-    setStencilMask(mask: number): IStencil {
-        this.m_maskfs[0] = mask;
-        this.m_maskfs[1] = 1;
-        this.m_enabled = true;
-        // if (this.m_rstate) this.m_rstate.setStencilMask(mask);
+        const fs = this.m_fs;
+        fs[0] = 1;
+        fs[5] = 1;
+        fs[6] = func;
+        fs[7] = ref;
+        fs[8] = mask;
         return this;
     }
     /**
@@ -60,61 +62,50 @@ class Stencil implements IStencil {
      * @param zpass Specifies the stencil action when both the stencil test and the depth test pass, or when the stencil test passes and either there is no depth buffer or depth testing is not enabled. dppass accepts the same symbolic constants as sfail. The initial value is GL_KEEP.
      */
     setStencilOp(fail: number, zfail: number, zpass: number): IStencil {
-        const ls = this.m_opfs;
-        ls[0] = fail;
-        ls[1] = zfail;
-        ls[2] = zpass;
-        ls[3] = 1;
-        this.m_enabled = true;
-        // if (this.m_rstate) this.m_rstate.setStencilOp(fail, zfail, zpass);
+        const fs = this.m_fs;
+        fs[0] = 1;
+        fs[9] = 1;
+        fs[10] = fail;
+        fs[11] = zfail;
+        fs[12] = zpass;
         return this;
     }
     reset(): void {
-        this.m_depfs[1] = 0;
-        this.m_maskfs[1] = 0;
-        this.m_funcfs[3] = 0;
-        this.m_opfs[3] = 0;
-        this.m_enabled = false;
+        const fs = this.m_fs;
+        for (let i = 0; i < 13; ++i) {
+            fs[i] = 0;
+        }
     }
     /**
      * Note, that this is a renderer system inner function
      * @param rstate renderer rendering state manager
      */
     apply(rstate: IRODrawState): IStencil {
-        if (rstate && this.m_enabled) {
-            if (this.m_depfs[1] > 0) {
-                rstate.setDepthTestEnable(this.m_depfs[0] > 0);
-            }
-            if (this.m_maskfs[1] > 0) {
-                rstate.setStencilMask(this.m_maskfs[0]);
-            }
-            const fs = this.m_funcfs;
+        const fs = this.m_fs;
+        if (rstate && fs[0] > 0) {
             if (fs[1] > 0) {
-                rstate.setStencilFunc(fs[0], fs[1], fs[2]);
+                rstate.setDepthTestEnable(fs[2] > 0);
             }
-            const ps = this.m_opfs;
-            if (ps[1] > 0) {
-                rstate.setStencilOp(ps[0], ps[1], ps[2]);
+            if (fs[3] > 0) {
+                rstate.setStencilMask(fs[4]);
+            }
+            if (fs[5] > 0) {
+                rstate.setStencilFunc(fs[6], fs[7], fs[8]);
+            }
+            if (fs[9] > 0) {
+                rstate.setStencilOp(fs[10], fs[11], fs[12]);
             }
         }
         return this;
     }
-    
+
     clone(): IStencil {
         let st = new Stencil();
-        st.m_enabled = this.m_enabled;
-        st.m_depfs = this.m_depfs.slice();
-        st.m_maskfs = this.m_maskfs.slice();
-        st.m_funcfs = this.m_funcfs.slice();
-        st.m_opfs = this.m_opfs.slice();
+        st.m_fs.set(this.m_fs);
         return this;
     }
     copyFrom(src: Stencil): IStencil {
-        this.m_enabled = src.m_enabled;
-        this.m_depfs = src.m_depfs.slice();
-        this.m_maskfs = src.m_maskfs.slice();
-        this.m_funcfs = src.m_funcfs.slice();
-        this.m_opfs = src.m_opfs.slice();
+        this.m_fs.set(src.m_fs);
         return this;
     }
 }
