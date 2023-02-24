@@ -84,7 +84,6 @@ export class DemoRenderSortA {
             this.m_rscene.setAutoRenderingSort(true);
             this.m_rscene.setProcessSortEnabledAt(1, true, new PosYDsistanceSorter());
 
-
             let tex0 = this.getTexByUrl("static/assets/wood_01.jpg");
             let tex1 = this.getTexByUrl("static/assets/yanj.jpg");
             let tex2 = this.getTexByUrl("static/assets/decorativePattern_01.jpg");
@@ -92,18 +91,18 @@ export class DemoRenderSortA {
             let axis = new Axis3DEntity();
             axis.initialize();
             this.m_rscene.addEntity(axis, 0);
+
             let plane = new Plane3DEntity();
             plane.showDoubleFace();
             plane.initializeXOZ(-300.0, -300.0, 400.0, 400.0, [tex2]);
             plane.setXYZ(0, -60, 0);
             this.m_rscene.addEntity(plane, 1);
-            ///*
 
             plane = new Plane3DEntity();
             plane.initializeXOZ(-200.0, -200.0, 400.0, 400.0, [tex1]);
             plane.setXYZ(80, -100, 80);
             this.m_rscene.addEntity(plane, 1);
-            plane.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
+            plane.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
             this.m_targets.push(plane);
             this.m_plane01 = plane;
 
@@ -111,27 +110,6 @@ export class DemoRenderSortA {
             plane.initializeXOZ(-150.0, -150.0, 300.0, 300.0, [tex0]);
             plane.setXYZ(80, -30, 80);
             this.m_rscene.addEntity(plane, 1);
-            // */
-
-            // let sph = new Sphere3DEntity();
-            // sph.premultiplyAlpha = true;
-            // sph.meshMode = -1;
-            // sph.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
-            // sph.initialize(100,20,20, [tex5]);
-            // (sph.getMaterial() as IColorMaterial).setAlpha(0.9);
-            // this.m_rscene.addEntity(sph, 1);
-
-            // sph = new Sphere3DEntity();
-            // sph.premultiplyAlpha = true;
-            // sph.meshMode = 1;
-            // sph.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
-            // sph.initialize(100,20,20, [tex4]);
-            // (sph.getMaterial() as IColorMaterial).setAlpha(0.9);
-            // this.m_rscene.addEntity(sph, 1);
-
-            // let boxFrame = new BoxFrame3D();
-            // boxFrame.initializeByAABB( sph.getGlobalBounds() );
-            // this.m_rscene.addEntity(boxFrame, 1);
         }
     }
     private m_plane01: Plane3DEntity;
