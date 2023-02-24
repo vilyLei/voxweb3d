@@ -17,6 +17,8 @@ import { IVtxBufRenderData } from "../../vox/render/IVtxBufRenderData";
 
 import { MaterialPipeType } from "./pipeline/MaterialPipeType";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
+// import { IStencil } from "../../vox/render/rendering/IStencil";
+import { Stencil } from "../../vox/render/rendering/Stencil";
 
 export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData {
 
@@ -38,8 +40,16 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
      */
     pipeTypes: MaterialPipeType[] = null;
     renderState = 0;
+    colorMask = 0;
+    /**
+     * the default value is null
+     */
+    stencil: Stencil = null;
+
     multiPass = false;
+
     constructor() { }
+
     // for multi - pass
     setCases(ls: IRenderMaterial[]): void {
         this.m_cases = ls;
@@ -90,9 +100,9 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
         }
         return false;
     }
-    initializeByRenderer(texEnabled: boolean = false): void {
-        this.initializeByCodeBuf(texEnabled);
-    }
+    // initializeByRenderer(texEnabled: boolean = false): void {
+    //     this.initializeByCodeBuf(texEnabled);
+    // }
     initializeByCodeBuf(texEnabled: boolean = false): void {
         texEnabled = texEnabled || this.getTextureTotal() > 0;
         if (this.m_shdData == null) {

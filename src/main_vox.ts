@@ -162,7 +162,7 @@
 
 //  import {DemoMixProgress as Demo} from "./demo/DemoMixProgress";
 
-//  import {DemoRenderSort as Demo} from "./demo/DemoRenderSort";
+ import {DemoRenderSort as Demo} from "./demo/DemoRenderSort";
 
 //  import {DemoThread as Demo} from "./thread/example/DemoThread";
 
@@ -459,7 +459,7 @@
 //  import {BakeExample as Demo} from "./bake/demo/bakeDiffuse2/BakeExample";
 //  import {BakeExample as Demo} from "./bake/demo/bakePbr/BakeExample";
 //  import {BakePBR as Demo} from "./bake/demo/bakePbr/BakePBR";
- import {BakeFlow as Demo} from "./bake/demo/bakePbr/BakeFlow";
+//  import {BakeFlow as Demo} from "./bake/demo/bakePbr/BakeFlow";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////     distributed runtime     ////////////s//////////////

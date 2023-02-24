@@ -431,7 +431,7 @@ export default class RendererSceneBase {
     setProcessSortEnabledAt(processIndex: number, sortEnabled: boolean, sorter: IRODisplaySorter = null): void {
         this.m_renderer.setProcessSortEnabledAt(processIndex, sortEnabled);
         if (sortEnabled) {
-            let process: IRenderProcess = this.m_renderer.getProcessAt(processIndex);
+            let process = this.m_renderer.getProcessAt(processIndex);
             sorter = sorter != null ? sorter : this.m_camDisSorter;
             if (process != null) {
                 process.setSorter(sorter);
@@ -441,7 +441,7 @@ export default class RendererSceneBase {
     setProcessSortEnabled(process: IRenderProcess, sortEnabled: boolean, sorter: IRODisplaySorter = null): void {
         this.m_renderer.setProcessSortEnabled(process, sortEnabled);
         if (sortEnabled && process != null && !process.hasSorter()) {
-            sorter = sorter != null ? sorter : this.m_camDisSorter;
+            sorter = sorter ? sorter : this.m_camDisSorter;
             process.setSorter(sorter);
         }
     }

@@ -9,27 +9,26 @@
 import IVector3D from "../../vox/math/IVector3D";
 import IAABB from "../../vox/geom/IAABB";
 
-interface IRPODisplay
-{
-    value:number;
-    drawMode:number;
-    trisNumber:number;
-    pos:IVector3D;
-    bounds:IAABB;
-    setDrawFlag(renderState:number,rcolorMask:number):void;
-    setIvsParam(ivsIndex:number, ivsCount:number):void;
-    setVisible(boo:boolean):void;
+interface IRPODisplay {
+    value: number;
+    drawMode: number;
+    trisNumber: number;
+    pos: IVector3D;
+    bounds: IAABB;
+    setDrawFlag(renderState: number, rcolorMask: number): void;
+    setIvsParam(ivsIndex: number, ivsCount: number): void;
+    setVisible(boo: boolean): void;
     /**
      * get RPONode instance unique id
      */
-    getRPOUid():number;
+    getRPOUid(): number;
     /**
      * get RenderProcess instance unique id
      */
-    getRPROUid():number;
+    getRPROUid(): number;
     /**
      * get Renderer shader instance unique id
      */
-    getShaderUid():number;
+    getShaderUid(): number;
 }
 export default IRPODisplay;

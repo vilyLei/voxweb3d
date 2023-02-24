@@ -18,11 +18,13 @@ export default class Sphere3DEntity extends DisplayEntity {
     constructor(transform: IROTransform = null) {
         super(transform);
     }
+    premultiplyAlpha = false;
     normalEnabled = false;
     doubleTriFaceEnabled = false;
     wireframe = false;
     inverseUV = false;
     uvScale = 1.0;
+    meshMode = 0;
     vtxColor: Color4 = null;
     private m_radius = 50.0;
     private m_longitudeNumSegments = 10;
@@ -66,7 +68,8 @@ export default class Sphere3DEntity extends DisplayEntity {
     }
     createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
-            let cm: Default3DMaterial = new Default3DMaterial();
+            let cm = new Default3DMaterial();
+            cm.premultiplyAlpha = this.premultiplyAlpha;
             cm.vertColorEnabled = this.vtxColor != null;
             cm.normalEnabled = this.normalEnabled;
             cm.setTextureList(texList);
@@ -96,6 +99,7 @@ export default class Sphere3DEntity extends DisplayEntity {
     protected __activeMesh(material: IRenderMaterial): void {
         if (this.getMesh() == null) {
             let mesh = new Sphere3DMesh();
+            mesh.mode = this.meshMode;
             mesh.wireframe = this.wireframe;
             mesh.inverseUV = this.inverseUV;
             mesh.uvScale = this.uvScale;

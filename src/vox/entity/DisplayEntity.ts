@@ -18,6 +18,7 @@ import IRenderMaterial from "../../vox/render/IRenderMaterial";
 
 import IROTransform from "../../vox/display/IROTransform";
 import ROTransform from "../../vox/display/ROTransform";
+import ROTransUpdateWrapper from "../../vox/display/ROTransUpdateWrapper";
 import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import IRODisplay from "../../vox/display/IRODisplay";
 import RODisplay from "../../vox/display/RODisplay";
@@ -37,6 +38,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     private m_uid = 0;
     protected m_trs: IROTransform = null;
     protected m_eventDispatcher: IEvtDispatcher = null;
+    private m_trw:ROTransUpdateWrapper = null;
     constructor(transform: IROTransform = null, sharedData: boolean = false) {
         this.m_uid = DisplayEntity.s_uid++;
         if (transform == null) {
@@ -49,6 +51,9 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
                 this.m_trs = transform;
             }
         }
+        this.m_trw = new ROTransUpdateWrapper();
+        this.m_trw.__$target = this;
+        this.m_trs.wrapper = this.m_trw;
         this.createBounds();
     }
     private m_visible = true;
@@ -380,6 +385,9 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
                     let ivs = this.m_mesh.getIVS();
                     this.m_localBounds.addFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(ivsIndex, ivsIndex + ivsCount));
                     this.m_localBounds.update();
+                    if(this.m_trw != null) {
+                        this.m_trw.updateTo();
+                    }
                 }
             }
         }
@@ -610,7 +618,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
             if (this.m_mesh != null && this.m_localBounds != this.m_mesh.bounds) {
 
                 this.m_localBounds.reset();
-                let ivs: Uint16Array | Uint32Array = this.m_mesh.getIVS();
+                let ivs = this.m_mesh.getIVS();
                 this.m_localBounds.addFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(this.m_display.ivsIndex, this.m_display.ivsIndex + this.m_display.ivsCount));
                 this.m_localBounds.update();
             }
@@ -618,14 +626,14 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         }
     }
     private m_lBoundsVS: Float32Array = null;
-    private m_transStatus: number = ROTransform.UPDATE_TRANSFORM;
+    private m_transStatus = ROTransform.UPDATE_TRANSFORM;
     private updateLocalBoundsVS(bounds: IAABB): void {
         let min = bounds.min;
         let max = bounds.max;
         if (this.m_lBoundsVS == null) {
             this.m_lBoundsVS = new Float32Array(24);
         }
-        let pvs: Float32Array = this.m_lBoundsVS;
+        let pvs = this.m_lBoundsVS;
         pvs[0] = min.x; pvs[1] = min.y; pvs[2] = min.z;
         pvs[3] = max.x; pvs[4] = min.y; pvs[5] = min.z;
         pvs[6] = min.x; pvs[7] = min.y; pvs[8] = max.z;
@@ -676,7 +684,6 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         }
     }
     update(): void {
-
         if (this.m_trs.updatedStatus > this.m_transStatus) this.m_transStatus = this.m_trs.updatedStatus;
         if (this.m_transStatus != ROTransform.UPDATE_NONE) {
             if (this.m_mesh != null && this.m_globalBounds != null) {
@@ -718,6 +725,10 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         this.m_globalBounds = null;
         this.m_localBounds = null;
         this.m_pipeLine = null;
+        if(this.m_trw != null) {
+            this.m_trw.destroy();
+            this.m_trw = null;
+        }
     }
     toString(): string {
         return "DisplayEntity(uuid=" + this.uuid + ",uid = " + this.m_uid + ", rseFlag = " + this.__$rseFlag + ")";

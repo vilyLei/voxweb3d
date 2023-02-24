@@ -38,9 +38,6 @@ export default class Sphere3DMesh extends MeshBase {
             if (radius < 0.0001) radius = 0.0001;
 
             this.bounds = new AABB();
-            this.bounds.min.setXYZ(-radius, -radius, -radius);
-            this.bounds.max.setXYZ(radius, radius, radius);
-            this.bounds.updateFast();
             if (longitudeNumSegments < 2) longitudeNumSegments = 2;
             if (latitudeNumSegments < 2) latitudeNumSegments = 2;
             this.m_radius = Math.abs(radius);
@@ -150,6 +147,9 @@ export default class Sphere3DMesh extends MeshBase {
                         pivs.push(rowa[j].index); pivs.push(rowb[j].index); pivs.push(rowb[j - 1].index);
                     }
                 }
+                this.bounds.min.setXYZ(-radius, 0, -radius);
+                this.bounds.max.setXYZ(radius, radius, radius);
+
             } else if (this.mode == -1) {
                 let halfN = layerN / 2 + 1;
                 for (i = 1; i < halfN; ++i) {
@@ -160,6 +160,9 @@ export default class Sphere3DMesh extends MeshBase {
                         pivs.push(rowa[j].index); pivs.push(rowb[j].index); pivs.push(rowb[j - 1].index);
                     }
                 }
+                this.bounds.min.setXYZ(-radius, -radius, -radius);
+                this.bounds.max.setXYZ(radius, 0, radius);
+
             } else if (this.mode == 2) {
 
                 let halfN = layerN / 2 + 1;
@@ -255,6 +258,8 @@ export default class Sphere3DMesh extends MeshBase {
                         pivs.push(rowa[j].index); pivs.push(rowb[j].index); pivs.push(rowb[j - 1].index);
                     }
                 }
+                this.bounds.min.setXYZ(-radius, -radius, -radius);
+                this.bounds.max.setXYZ(radius, radius, radius);
             } else {
                 for (i = 1; i <= layerN; ++i) {
                     rowa = vtxRows[i - 1];
@@ -264,7 +269,11 @@ export default class Sphere3DMesh extends MeshBase {
                         pivs.push(rowa[j].index); pivs.push(rowb[j].index); pivs.push(rowb[j - 1].index);
                     }
                 }
+                this.bounds.min.setXYZ(-radius, -radius, -radius);
+                this.bounds.max.setXYZ(radius, radius, radius);
             }
+
+            this.bounds.updateFast();
             this.vtxTotal = vtxVec.length;
             if (doubleTriFaceEnabled) {
                 this.m_ivs = this.createIVSBYSize(pivs.length * 2);
@@ -299,7 +308,7 @@ export default class Sphere3DMesh extends MeshBase {
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
                 this.m_nvs = new Float32Array(this.vtxTotal * 3);
-                
+
                 i = 0;
                 for (j = 0; j < this.vtxTotal; ++j) {
                     pvtx = vtxVec[j];
@@ -310,7 +319,7 @@ export default class Sphere3DMesh extends MeshBase {
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX)) {
                 this.m_cvs = new Float32Array(this.vtxTotal * 3);
-                
+
                 i = 0;
                 for (j = 0; j < this.vtxTotal; ++j) {
                     this.m_cvs[i] = 1.0; this.m_cvs[i + 1] = 1.0; this.m_cvs[i + 2] = 1.0;

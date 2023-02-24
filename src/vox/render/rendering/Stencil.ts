@@ -21,11 +21,12 @@ class Stencil implements IStencil {
     isEnabled(): boolean {
         return this.m_enabled;
     }
-    setDepthTestEnable(enable: boolean): void {
+    setDepthTestEnable(enable: boolean): IStencil {
         this.m_depfs[0] = enable ? 1 : 0;
         this.m_depfs[1] = 1;
         this.m_enabled = true;
         if (this.m_rstate) this.m_rstate.setDepthTestEnable(enable);
+        return this;
     }
     /**
      * 设置 gpu stencilFunc 状态
@@ -33,7 +34,7 @@ class Stencil implements IStencil {
      * @param ref a GLint type number, value range: [0,2n−1];
      * @param mask GLint type number
      */
-    setStencilFunc(func: number, ref: number, mask: number): void {
+    setStencilFunc(func: number, ref: number, mask: number): IStencil {
         const ls = this.m_funcfs;
         ls[0] = func;
         ls[1] = ref;
@@ -41,16 +42,18 @@ class Stencil implements IStencil {
         ls[3] = 1;
         this.m_enabled = true;
         if (this.m_rstate) this.m_rstate.setStencilFunc(func, ref, mask);
+        return this;
     }
     /**
      * 设置 gpu stencilMask 状态
      * @param mask GLint type number
      */
-    setStencilMask(mask: number): void {
+    setStencilMask(mask: number): IStencil {
         this.m_maskfs[0] = mask;
         this.m_maskfs[1] = 1;
         this.m_enabled = true;
         if (this.m_rstate) this.m_rstate.setStencilMask(mask);
+        return this;
     }
     /**
      * 设置 gpu stencilOp 状态
@@ -58,7 +61,7 @@ class Stencil implements IStencil {
      * @param zfail Specifies the stencil action when the stencil test passes, but the depth test fails. dpfail accepts the same symbolic constants as sfail. The initial value is GL_KEEP.
      * @param zpass Specifies the stencil action when both the stencil test and the depth test pass, or when the stencil test passes and either there is no depth buffer or depth testing is not enabled. dppass accepts the same symbolic constants as sfail. The initial value is GL_KEEP.
      */
-    setStencilOp(fail: number, zfail: number, zpass: number): void {
+    setStencilOp(fail: number, zfail: number, zpass: number): IStencil {
         const ls = this.m_opfs;
         ls[0] = fail;
         ls[1] = zfail;
@@ -66,6 +69,7 @@ class Stencil implements IStencil {
         ls[3] = 1;
         this.m_enabled = true;
         if (this.m_rstate) this.m_rstate.setStencilOp(fail, zfail, zpass);
+        return this;
     }
     reset(): void {
         this.m_depfs[1] = 0;
@@ -74,7 +78,7 @@ class Stencil implements IStencil {
         this.m_opfs[3] = 0;
         this.m_enabled = false;
     }
-    apply(rstate: IRODrawState): void {
+    apply(rstate: IRODrawState): IStencil {
         if (rstate && this.m_enabled) {
             if (this.m_depfs[1] > 0) {
                 rstate.setDepthTestEnable(this.m_depfs[0] > 0);
@@ -91,6 +95,25 @@ class Stencil implements IStencil {
                 rstate.setStencilOp(ps[0], ps[1], ps[2]);
             }
         }
+        return this;
+    }
+    
+    clone(): IStencil {
+        let st = new Stencil();
+        st.m_enabled = this.m_enabled;
+        st.m_depfs = this.m_depfs.slice();
+        st.m_maskfs = this.m_maskfs.slice();
+        st.m_funcfs = this.m_funcfs.slice();
+        st.m_opfs = this.m_opfs.slice();
+        return this;
+    }
+    copyFrom(src: Stencil): IStencil {
+        this.m_enabled = src.m_enabled;
+        this.m_depfs = src.m_depfs.slice();
+        this.m_maskfs = src.m_maskfs.slice();
+        this.m_funcfs = src.m_funcfs.slice();
+        this.m_opfs = src.m_opfs.slice();
+        return this;
     }
 }
 export { Stencil }

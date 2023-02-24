@@ -41,10 +41,7 @@ export default class MeshBase implements IMeshBase {
 
     constructor(bufDataUsage = VtxBufConst.VTX_STATIC_DRAW) {
         this.m_bufDataUsage = bufDataUsage;
-        //this.m_isDyn = bufDataUsage == VtxBufConst.VTX_DYNAMIC_DRAW;
     }
-    // setIVtxBuffer(ivbuf: ROIVertexBuffer): void {
-    // }
     /**
      * 强制更新 vertex indices buffer 数据, 默认值为false
      */
@@ -53,6 +50,10 @@ export default class MeshBase implements IMeshBase {
      * 是否启用线框模式数据, 默认值为false
      */
     wireframe = false;
+    /**
+     * 是否启用形状模式数据, 默认值为true
+     */
+    shape = true;
     /**
      * vtx positons bounds AABB in the local space
      */

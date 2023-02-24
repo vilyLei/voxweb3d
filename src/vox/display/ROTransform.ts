@@ -12,6 +12,7 @@ import Matrix4 from "../../vox/math/Matrix4";
 import Matrix4Pool from "../../vox/math/Matrix4Pool";
 // import ROTransPool from '../../vox/render/ROTransPool';
 import IROTransform from './IROTransform';
+import IROTransUpdateWrapper from './IROTransUpdateWrapper';
 import IEntityUpdate from "../../vox/scene/IEntityUpdate";
 import ITransUpdater from "../../vox/scene/ITransUpdater";
 
@@ -35,7 +36,8 @@ export default class ROTransform implements IROTransform, IEntityUpdate {
     private m_invMatEnabled = false;
     private m_rotFlag = false;
     private m_dt = 0;
-    private m_updater: ITransUpdater = null;
+    // private m_updater: ITransUpdater = null;
+    wrapper: IROTransUpdateWrapper = null;
     version = -1;
     /**
      * the default value is 0
@@ -275,7 +277,8 @@ export default class ROTransform implements IROTransform, IEntityUpdate {
         this.m_parentMat = null;
         this.updateStatus = ROTransform.UPDATE_TRANSFORM;
         this.m_fs32 = null;
-        this.m_updater = null;
+        this.wrapper = null;
+        this.wrapper = null;
     }
 
     copyFrom(src: ROTransform): void {
@@ -290,12 +293,10 @@ export default class ROTransform implements IROTransform, IEntityUpdate {
         this.update();
     }
     private updateTo(): void {
-        if (this.m_updater) {
-            this.m_updater.addItem(this);
-        }
+        this.wrapper.updateTo();
     }
     setUpdater(updater: ITransUpdater): void {
-        this.m_updater = updater;
+        this.wrapper.setUpdater( updater );
     }
     update(): void {
 
