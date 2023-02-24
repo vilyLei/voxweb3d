@@ -264,21 +264,20 @@ class T_CoRScene {
 		return CoRScene.createBoundsMesh();
 	}
 	/**
-	 * @param model geometry model
-	 * @param pmaterial IRenderMaterial instance, the default is null.
-	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
+	 * @param model geometry model data
+	 * @param material IRenderMaterial instance, the default value is null.
+	 * @param texEnabled the default value is false;
 	 */
-	createDataMeshFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, vbWhole?: boolean): IDataMesh {
-		return CoRScene.createDataMeshFromModel(model, pmaterial, vbWhole);
+	createDataMeshFromModel(model: CoGeomDataType, material?: IRenderMaterial, texEnabled?: boolean): IDataMesh {
+		return CoRScene.createDataMeshFromModel(model, material, texEnabled);
 	}
 	/**
-	 * @param model geometry model
+	 * @param model geometry model data
 	 * @param pmaterial IRenderMaterial instance, the default is null.
-	 * @param texEnabled texture enabled in the material, the default is true.
-	 * @param vbWhole vtx buffer is whole data or not, the default is false.
+	 * @param texEnabled texture enabled in the material, the default is false.
 	 */
-	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, texEnabled?: boolean, vbWhole?: boolean): ITransformEntity {
-		return CoRScene.createDisplayEntityFromModel(model, pmaterial, texEnabled, vbWhole);
+	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, texEnabled?: boolean): ITransformEntity {
+		return CoRScene.createDisplayEntityFromModel(model, pmaterial, texEnabled);
 	}
 	/**
 	 * @param minV min position value
@@ -306,11 +305,10 @@ class T_CoRScene {
 	/**
 	 * @param model IDataMesh instance
 	 * @param material IRenderMaterial instance.
-	 * @param texEnabled use texture yes or no.
-	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
+	 * @param texEnabled use texture yes or no, the default is false.
 	 */
-	createDisplayEntityWithDataMesh(mesh: IDataMesh, material: IRenderMaterial, texEnabled?: boolean, vbWhole?: boolean): ITransformEntity {
-		return CoRScene.createDisplayEntityWithDataMesh(mesh, material, texEnabled, vbWhole);
+	createDisplayEntityWithDataMesh(mesh: IDataMesh, material: IRenderMaterial, texEnabled?: boolean): ITransformEntity {
+		return CoRScene.createDisplayEntityWithDataMesh(mesh, material, texEnabled);
 	}
 	/**
 	 * @param transform the default value is false

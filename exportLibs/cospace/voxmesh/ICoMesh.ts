@@ -9,6 +9,8 @@ import { ISphereMeshBuilder } from "./build/ISphereMeshBuilder";
 import { ICylinderMeshBuilder } from "./build/ICylinderMeshBuilder";
 import { ITubeMeshBuilder } from "./build/ITubeMeshBuilder";
 import { ITorusMeshBuilder } from "./build/ITorusMeshBuilder";
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
+import { CoGeomDataType } from "../app/CoSpaceAppData";
 
 interface ICoMesh {
 
@@ -44,9 +46,14 @@ interface ICoMesh {
 	 * torus mesh builder
 	 */
 	readonly torus: ITorusMeshBuilder;
-
+	/**
+	 * @param model geometry model data
+	 * @param material IRenderMaterial instance, the default value is null.
+	 * @param texEnabled the default value is false;
+	 */
+	createDataMeshFromModel(model: CoGeomDataType, material?: IRenderMaterial, texEnabled?: boolean): IDataMesh;
 	createDataMesh(): IDataMesh;
-	createRawMesh(): IRawMesh;	
+	createRawMesh(): IRawMesh;
 	createBoundsMesh(): IBoundsMesh;
 }
 export { ICoMesh };

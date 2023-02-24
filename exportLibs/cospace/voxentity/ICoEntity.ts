@@ -13,17 +13,16 @@ interface ICoEntity {
 
 	/**
 	 * @param model geometry model
-	 * @param pmaterial IRenderMaterial instance, the default is null.
-	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
+	 * @param pmaterial IRenderMaterial instance, the default value is null.
+	 * @param vbWhole texture enabled in the material, the default value is false.
 	 */
-	createDataMeshFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, vbWhole?: boolean): IDataMesh;
+	createDataMeshFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, texEnabled?: boolean): IDataMesh;
 	/**
-	 * @param model geometry model
-	 * @param pmaterial IRenderMaterial instance, the default is null.
-	 * @param texEnabled texture enabled in the material, the default is true.
-	 * @param vbWhole vtx buffer is whole data or not, the default is false.
+	 * @param model geometry model data
+	 * @param pmaterial IRenderMaterial instance, the default value is null.
+	 * @param texEnabled texture enabled in the material, the default value is false.
 	 */
-	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, texEnabled?: boolean, vbWhole?: boolean): ITransformEntity;
+	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, texEnabled?: boolean): ITransformEntity;
 
 	createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D): ITransformEntity;
 	/**
@@ -34,10 +33,9 @@ interface ICoEntity {
 	/**
 	 * @param model IDataMesh instance
 	 * @param material IRenderMaterial instance.
-	 * @param texEnabled use texture yes or no.
-	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
+	 * @param texEnabled use texture yes or no, the default value is false.
 	 */
-	createDisplayEntityWithDataMesh(mesh: IDataMesh, material: IRenderMaterial, texEnabled?: boolean, vbWhole?: boolean): ITransformEntity;
+	createDisplayEntityWithDataMesh(mesh: IDataMesh, material: IRenderMaterial, texEnabled?: boolean): ITransformEntity;
 	createDisplayEntity(): ITransformEntity;
 	createMouseEventEntity(): IMouseEventEntity;
 	createBoundsEntity(): IBoundsEntity;
@@ -84,7 +82,7 @@ interface ICoEntity {
 	/**
 	 * @param minV min position
 	 * @param maxV max position
-	 * @param material the default value is null 
+	 * @param material the default value is null
 	 * @param texEnabled the default value is false
 	 * @returns a box entity
 	 */

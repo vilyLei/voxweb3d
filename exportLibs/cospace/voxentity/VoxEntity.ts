@@ -40,21 +40,20 @@ class T_CoEntity {
 		return typeof CoEntity !== "undefined" && typeof CoRScene !== "undefined";
 	}
 	/**
-	 * @param model geometry model
-	 * @param material IRenderMaterial instance, the default is null.
+	 * @param model geometry model data
+	 * @param material IRenderMaterial instance, the default value is null.
 	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
 	 */
 	createDataMeshFromModel(model: CoGeomDataType, material?: IRenderMaterial, vbWhole?: boolean): IDataMesh {
 		return CoEntity.createDataMeshFromModel(model, material, vbWhole);
 	}
 	/**
-	 * @param model geometry model
+	 * @param model geometry model data
 	 * @param pmaterial IRenderMaterial instance, the default is null.
-	 * @param texEnabled texture enabled in the material, the default is true.
-	 * @param vbWhole vtx buffer is whole data or not, the default is false.
+	 * @param texEnabled texture enabled in the material, the default value is true.
 	 */
-	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, texEnabled?: boolean, vbWhole?: boolean): ITransformEntity {
-		return CoEntity.createDisplayEntityFromModel(model, pmaterial, texEnabled, vbWhole);
+	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, texEnabled?: boolean): ITransformEntity {
+		return CoEntity.createDisplayEntityFromModel(model, pmaterial, texEnabled);
 	}
 
 	createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D): ITransformEntity {
@@ -69,12 +68,11 @@ class T_CoEntity {
 
 	/**
 	 * @param model IDataMesh instance
-	 * @param material IRenderMaterial instance.
-	 * @param texEnabled use texture yes or no.
-	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
+	 * @param material IRenderMaterial instance
+	 * @param texEnabled use texture yes or no, the default value is false
 	 */
-	createDisplayEntityWithDataMesh(mesh: IDataMesh, material: IRenderMaterial, texEnabled?: boolean, vbWhole?: boolean): ITransformEntity {
-		return CoEntity.createDisplayEntityWithDataMesh(mesh, material, texEnabled, vbWhole);
+	createDisplayEntityWithDataMesh(mesh: IDataMesh, material: IRenderMaterial, texEnabled?: boolean): ITransformEntity {
+		return CoEntity.createDisplayEntityWithDataMesh(mesh, material, texEnabled);
 	}
 	createDisplayEntity(): ITransformEntity {
 		return CoEntity.createDisplayEntity();
