@@ -1,6 +1,7 @@
 
 interface CoGeomDataType {
 	uuid?: string;
+	vbWhole?: boolean;
 	uvsList: Float32Array[];
 	vertices: Float32Array;
 	normals: Float32Array;

@@ -141,20 +141,24 @@ function createBoundsMesh(): IBoundsMesh {
 	return new BoundsMesh();
 }
 
-function createDataMeshFromModel(model: CoGeomDataType, material: MaterialBase = null, vbWhole: boolean = false): IDataMesh {
+function createDataMeshFromModel(model: CoGeomDataType, material: MaterialBase = null, texEnabled: boolean = false): IDataMesh {
 	const dataMesh = new DataMesh();
-	dataMesh.vbWholeDataEnabled = vbWhole;
+	dataMesh.vbWholeDataEnabled = model.vbWhole ? model.vbWhole : false;
 	dataMesh.setVS(model.vertices);
-	if(model.uvsList != null && model.uvsList.length > 0) {
+	if(model.uvsList && model.uvsList.length > 0) {
 		dataMesh.setUVS(model.uvsList[0]);
 		if(model.uvsList.length > 1) {
 			dataMesh.setUVS2(model.uvsList[0]);
 		}
 	}
-	dataMesh.setNVS(model.normals);
+	if(model.normals) {
+		dataMesh.setNVS(model.normals);
+	}
 	dataMesh.setIVS(model.indices);
 
 	if (material != null) {
+		texEnabled = texEnabled || material.getTextureAt(0) != null;
+		material.initializeByCodeBuf( texEnabled );
 		dataMesh.setVtxBufRenderData(material);
 		dataMesh.initialize();
 	}
