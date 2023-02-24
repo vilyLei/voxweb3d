@@ -226,7 +226,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 					this.m_vbuf = ROVertexBuffer.CreateBySaveDataSeparate(u);
 				}
 			}
-			this.m_vbuf.setUintIVSData(this.m_ivs);
+			this.m_vbuf.setUintIVSDataAt(this.m_ivs);
 
 			this.buildEnd();
 		}

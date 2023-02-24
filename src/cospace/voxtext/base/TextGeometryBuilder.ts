@@ -181,7 +181,7 @@ export default class TextGeometryBuilder {
 
         // ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
         // this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-        // this.m_vbuf.setUintIVSData(this.m_ivs);
+        // this.m_vbuf.setUintIVSDataAt(this.m_ivs);
         // //this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLE_STRIP;
         // this.buildEnd();
     }

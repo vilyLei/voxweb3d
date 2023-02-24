@@ -91,7 +91,7 @@ export default class RawMesh extends MeshBase implements IRawMesh {
 			}
 		}
 		if(this.ivsEnabled) {
-			this.m_vbuf.setUintIVSData(this.m_ivs);
+			this.m_vbuf.setUintIVSDataAt(this.m_ivs);
 		}
 
         this.buildEnd();

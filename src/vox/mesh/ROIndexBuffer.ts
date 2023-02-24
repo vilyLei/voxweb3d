@@ -26,7 +26,7 @@ export namespace vox
             ivsCount:number = 0;
             //
             getType(){ return this.m_type};
-            setUintIVSData(uint16Arr:Uint16Array,status:number):void
+            setUintIVSDataAt(uint16Arr:Uint16Array,status:number):void
             {
                 if(this.m_ivs != null && uint16Arr != null)
                 {

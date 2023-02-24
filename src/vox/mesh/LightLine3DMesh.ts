@@ -115,7 +115,7 @@ export default class LightLine3DMesh extends MeshBase
         // 如果用 VtxBufData 使用样例, 要注释掉下面四句代码
         this.vtCount = this.m_ivs.length;
         this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-        this.m_vbuf.setUintIVSData(this.m_ivs);
+        this.m_vbuf.setUintIVSDataAt(this.m_ivs);
         this.vtxTotal = 4;
         this.trisNumber = 2;
         this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
@@ -198,7 +198,7 @@ export default class LightLine3DMesh extends MeshBase
         // 如果用 VtxBufData 使用样例, 要注释掉下面四句代码
         this.vtCount = this.m_ivs.length;
         this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-        this.m_vbuf.setUintIVSData(this.m_ivs);
+        this.m_vbuf.setUintIVSDataAt(this.m_ivs);
         this.vtxTotal = 4;
         this.trisNumber = 2;
         this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;

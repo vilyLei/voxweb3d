@@ -66,7 +66,4 @@ export default class VtxCombinedBuf implements IVtxBuf {
         this.m_offsetList = null;
         this.m_f32 = null;
     }
-    toString(): string {
-        return "VtxCombinedBuf(uid = " + this.m_uid + ")";
-    }
 }

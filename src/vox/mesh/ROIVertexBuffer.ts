@@ -50,7 +50,7 @@ export default class ROIVertexBuffer implements IROIVtxBuf {
     getIvsData(): Uint16Array | Uint32Array {
         return this.m_ivs;
     }
-    setUintIVSData(uint16Or32Arr: Uint16Array | Uint32Array, status: number = VtxBufConst.VTX_STATIC_DRAW): void {
+    setUintIVSDataAt(uint16Or32Arr: Uint16Array | Uint32Array, index: number = 0, status: number = VtxBufConst.VTX_STATIC_DRAW): void {
         if ((uint16Or32Arr instanceof Uint16Array)) {
             this.m_ibufStep = 2;
             if(uint16Or32Arr.length > 65535) {

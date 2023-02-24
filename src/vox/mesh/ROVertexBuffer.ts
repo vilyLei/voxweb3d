@@ -78,7 +78,7 @@ export default class ROVertexBuffer extends ROIVertexBuffer implements IVtxBuf, 
         this.m_vtxBuf.setF32DataAt(index, float32Arr, stepFloatsTotal, setpOffsets);
         this.vertexVer++;
     }
-    // setUintIVSData(uint16Or32Arr: Uint16Array | Uint32Array, status: number = VtxBufConst.VTX_STATIC_DRAW): void {
+    // setUintIVSDataAt(uint16Or32Arr: Uint16Array | Uint32Array, status: number = VtxBufConst.VTX_STATIC_DRAW): void {
     //     if ((uint16Or32Arr instanceof Uint16Array)) {
     //         this.m_ibufStep = 2;
     //         if(uint16Or32Arr.length > 65535) {
@@ -249,7 +249,7 @@ export default class ROVertexBuffer extends ROIVertexBuffer implements IVtxBuf, 
         let vb: ROVertexBuffer = ROVertexBuffer.Create(bufDataUsage);
         vb.layoutBit = layoutBit;
         if (ROVertexBuffer.s_combinedBufs.length > 0) {
-            let vtx: VtxCombinedBuf = ROVertexBuffer.s_combinedBufs.pop() as VtxCombinedBuf;
+            let vtx = ROVertexBuffer.s_combinedBufs.pop() as VtxCombinedBuf;
             vb.setVtxBuf(vtx);
         }
         else {
@@ -351,7 +351,7 @@ export default class ROVertexBuffer extends ROIVertexBuffer implements IVtxBuf, 
         for (i = 0; i < bufTot; i++) {
             vb.setF32DataAt(i, bufData.getAttributeDataAt(i, 0), stride, offsetList);
         }
-        vb.setUintIVSData(bufData.getIndexDataAt(0));
+        vb.setUintIVSDataAt(bufData.getIndexDataAt(0));
         vb.bufData = bufData;
         return vb;
     }

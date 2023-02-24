@@ -39,7 +39,7 @@ export default class MeshWrapper extends MeshBase {
                 if (ivs != null && ivs != m.getIVS()) {
                     this.m_ivs = ivs;
                     this.m_ivbuf = new ROIVertexBuffer();
-                    this.m_ivbuf.setUintIVSData(ivs);
+                    this.m_ivbuf.setUintIVSDataAt(ivs);
                     this.vtCount = ivs.length;
                     this.trisNumber = this.vtCount / 3;
                     console.log("XXXXXXXXXXXXXX ROIVertexBuffer::initializeWithMesh()...this.vtCount: ", this.vtCount);

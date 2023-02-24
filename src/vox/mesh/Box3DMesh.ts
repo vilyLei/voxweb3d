@@ -429,7 +429,7 @@ export default class Box3DMesh extends MeshBase {
             }else {
                 this.m_vbuf = ROVertexBuffer.CreateBySaveDataSeparate(this.getBufDataUsage());
             }
-            this.m_vbuf.setUintIVSData(this.m_ivs);
+            this.m_vbuf.setUintIVSDataAt(this.m_ivs);
             this.vtCount = this.m_ivs.length;
             this.trisNumber = 12;
 
@@ -438,7 +438,7 @@ export default class Box3DMesh extends MeshBase {
             // let subTot = 12;
             // let pivs = this.m_ivs.slice(i * subTot, (i + 1) * subTot);
             // let ivbuf = new ROIVertexBuffer();
-            // ivbuf.setUintIVSData(pivs);
+            // ivbuf.setUintIVSDataAt(pivs);
             // this.m_ivbuf = ivbuf;
             // this.vtCount = pivs.length;
             // this.trisNumber = 4;
@@ -447,7 +447,7 @@ export default class Box3DMesh extends MeshBase {
         }
         else {
             if(this.forceUpdateIVS) {
-                this.m_vbuf.setUintIVSData(this.m_ivs);
+                this.m_vbuf.setUintIVSDataAt(this.m_ivs);
             }
             ROVertexBuffer.UpdateBufData(this.m_vbuf);
         }

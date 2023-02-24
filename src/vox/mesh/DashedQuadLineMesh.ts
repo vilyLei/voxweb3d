@@ -139,7 +139,7 @@ export default class DashedQuadLineMesh extends MeshBase
             }
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-            this.m_vbuf.setUintIVSData(this.m_ivs);
+            this.m_vbuf.setUintIVSDataAt(this.m_ivs);
             this.vtCount = this.m_ivs.length;
             this.vtxTotal *= 2;
             this.trisNumber = this.m_lsTotal * 2;

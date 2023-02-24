@@ -247,12 +247,12 @@ export default class Cylinder3DMesh extends MeshBase {
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
             if(this.m_vbuf == null) {
                 this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-                this.m_vbuf.setUintIVSData(this.m_ivs);
+                this.m_vbuf.setUintIVSDataAt(this.m_ivs);
                 this.buildEnd();
             }
             else {
                 if(this.forceUpdateIVS) {
-                    this.m_vbuf.setUintIVSData(this.m_ivs);
+                    this.m_vbuf.setUintIVSDataAt(this.m_ivs);
                 }
                 ROVertexBuffer.UpdateBufData(this.m_vbuf);
             }

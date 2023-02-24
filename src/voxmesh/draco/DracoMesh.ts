@@ -166,7 +166,7 @@ export default class DracoMesh extends MeshBase {
         //
         //this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
         this.m_vbuf = ROVertexBuffer.CreateBySaveDataSeparate(this.getBufDataUsage());
-        this.m_vbuf.setUintIVSData(this.m_ivs);
+        this.m_vbuf.setUintIVSDataAt(this.m_ivs);
         this.vtCount = this.m_ivs.length;
         this.vtxTotal = this.vtCount / 3;
         this.trisNumber = this.vtCount / 3;
