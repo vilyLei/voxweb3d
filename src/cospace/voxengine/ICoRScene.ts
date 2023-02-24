@@ -250,11 +250,11 @@ interface ICoRScene {
 	createRawMesh(): IRawMesh;
 	createBoundsMesh(): IBoundsMesh;
 	/**
-	 * @param model geometry model
-	 * @param pmaterial IRenderMaterial instance, the default is null.
-	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
+	 * @param model geometry model data
+	 * @param material IRenderMaterial instance, the default value is null.
+	 * @param texEnabled the default value is false;
 	 */
-	createDataMeshFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, vbWhole?: boolean): IDataMesh;
+	createDataMeshFromModel(model: CoGeomDataType, material?: IRenderMaterial, texEnabled?: boolean): IDataMesh;
 	/**
 	 * @param model geometry model
 	 * @param pmaterial IRenderMaterial instance, the default is null.

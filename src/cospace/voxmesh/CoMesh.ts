@@ -22,6 +22,8 @@ import { TubeMeshBuilder } from "./build/TubeMeshBuilder";
 import { ITubeMeshBuilder } from "./build/ITubeMeshBuilder";
 import { ITorusMeshBuilder } from "./build/ITorusMeshBuilder";
 import { TorusMeshBuilder } from "./build/TorusMeshBuilder";
+import { CoGeomDataType } from "../app/CoSpaceAppData";
+import IRenderMaterial from "../../vox/render/IRenderMaterial";
 declare var CoRScene: ICoRScene;
 
 const plane: IPlaneMeshBuilder = new PlaneMeshBuilder();
@@ -33,6 +35,12 @@ const cylinder: ICylinderMeshBuilder = new CylinderMeshBuilder();
 const tube: ITubeMeshBuilder = new TubeMeshBuilder();
 const torus: ITorusMeshBuilder = new TorusMeshBuilder();
 
+function createDataMeshFromModel(model: CoGeomDataType, material: IRenderMaterial = null, texEnabled: boolean = false): IDataMesh {
+	if(typeof CoRScene !== "undefined") {
+		return CoRScene.createDataMeshFromModel(model, material, texEnabled);
+	}
+	return null;
+}
 function createDataMesh(): IDataMesh {
 	if(typeof CoRScene !== "undefined") {
 		return CoRScene.createDataMesh();
@@ -63,7 +71,7 @@ export {
 	cylinder,
 	tube,
 	torus,
-
+	createDataMeshFromModel,
 	createDataMesh,
 	createRawMesh,
 	createBoundsMesh

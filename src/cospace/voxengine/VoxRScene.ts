@@ -264,12 +264,12 @@ class T_CoRScene {
 		return CoRScene.createBoundsMesh();
 	}
 	/**
-	 * @param model geometry model
-	 * @param pmaterial IRenderMaterial instance, the default is null.
-	 * @param vbWhole vtx buffer is whole data, or not, the default is false.
+	 * @param model geometry model data
+	 * @param material IRenderMaterial instance, the default value is null.
+	 * @param texEnabled the default value is false;
 	 */
-	createDataMeshFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, vbWhole?: boolean): IDataMesh {
-		return CoRScene.createDataMeshFromModel(model, pmaterial, vbWhole);
+	createDataMeshFromModel(model: CoGeomDataType, material?: IRenderMaterial, texEnabled?: boolean): IDataMesh {
+		return CoRScene.createDataMeshFromModel(model, material, texEnabled);
 	}
 	/**
 	 * @param model geometry model
