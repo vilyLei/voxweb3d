@@ -145,7 +145,12 @@ function createDataMeshFromModel(model: CoGeomDataType, material: MaterialBase =
 	const dataMesh = new DataMesh();
 	dataMesh.vbWholeDataEnabled = vbWhole;
 	dataMesh.setVS(model.vertices);
-	dataMesh.setUVS(model.uvsList[0]);
+	if(model.uvsList != null && model.uvsList.length > 0) {
+		dataMesh.setUVS(model.uvsList[0]);
+		if(model.uvsList.length > 1) {
+			dataMesh.setUVS2(model.uvsList[0]);
+		}
+	}
 	dataMesh.setNVS(model.normals);
 	dataMesh.setIVS(model.indices);
 
