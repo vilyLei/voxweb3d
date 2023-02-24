@@ -80,13 +80,16 @@ export class DemoObj3DModule {
             let objUrl: string = "static/assets/obj/box01.obj";
             objUrl = "static/assets/obj/building_001.obj";
             objUrl = "static/assets/obj/torus01.obj";
+            objUrl = "static/assets/obj/torus01.obj";
+            objUrl = "static/private/fbx/plane01.obj";
             let objDisp = new ObjData3DEntity();
-            //objDisp.mouseEnabled = true;
+            objDisp.normalEnabled = true;
             objDisp.moduleScale = 3.0;
             objDisp.initializeByObjDataUrl(objUrl, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
             //objDisp.setXYZ(Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0);
             this.m_rscene.addEntity(objDisp);
-
+            let scale = 30.0;
+            objDisp.setScaleXYZ(scale, scale, scale);
             //  let url:string = "static/assets/obj/objTest01.zip";
             //  let objLoader:ObjLoader = new ObjLoader();
             //  objLoader.load(url);

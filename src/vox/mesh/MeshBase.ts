@@ -31,7 +31,7 @@ export default class MeshBase implements IMeshBase {
     private m_bufTypeList: number[] = null;
     private m_bufSizeList: number[] = null;
     private m_polyhedral: boolean = true;
-    //private m_isDyn:boolean = false;
+    
     // very important!!!
     private m_layoutBit = 0x0;
     protected m_transMatrix: Matrix4 = null;
@@ -297,7 +297,7 @@ export default class MeshBase implements IMeshBase {
     isVBufEnabledAt(i: number): boolean {
         return (i & this.m_layoutBit) > 0;
     }
-    private m_attachCount: number = 0;
+    private m_attachCount = 0;
     __$attachThis(): void {
         ++this.m_attachCount;
         //console.log("MeshBase::__$attachThis() this.m_attachCount: "+this.m_attachCount);

@@ -59,7 +59,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	}
 	/**
 	 * set vertex uv data
-	 * @param vs vertex uv buffer Float32Array
+	 * @param uvs vertex uv buffer Float32Array
 	 */
 	setUVS(uvs: Float32Array): DataMesh {
 		this.m_uvs = uvs;
@@ -67,7 +67,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	}
 	/**
 	 * set second vertex uv data
-	 * @param vs vertex uv buffer Float32Array
+	 * @param uvs vertex uv buffer Float32Array
 	 */
 	setUVS2(uvs: Float32Array): DataMesh {
 		this.m_uvs2 = uvs;
@@ -172,15 +172,15 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 			this.m_boundsChanged = false;
 
 			this.m_ivs = this.m_initIVS;
-
+			let free = this.getBufSortFormat() < 1;
 			ROVertexBuffer.Reset();
 			ROVertexBuffer.AddFloat32Data(this.m_vs, this.vsStride);
-			if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
+			if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX) || (free && this.m_uvs != null)) {
 				ROVertexBuffer.AddFloat32Data(this.m_uvs, this.uvsStride);
 			} else {
 				console.warn("DataMesh hasn't uv data.");
 			}
-			if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
+			if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX) || (free && this.m_nvs != null)) {
 				if (this.m_nvs == null) {
 					let trisNumber = this.m_ivs.length / 3;
 					this.m_nvs = new Float32Array(this.m_vs.length);
@@ -190,17 +190,18 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 			} else {
 				console.warn("DataMesh hasn't normal(nvs) data.");
 			}
-			if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX)) {
+			if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX) || (free && this.m_cvs != null)) {
 				ROVertexBuffer.AddFloat32Data(this.m_cvs, this.cvsStride);
-			} else {
-				console.warn("DataMesh hasn't color(cvs) data.");
 			}
+			// else {
+			// 	console.warn("DataMesh hasn't color(cvs) data.");
+			// }
 			if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX)) {
 				ROVertexBuffer.AddFloat32Data(this.m_tvs, 3);
 				ROVertexBuffer.AddFloat32Data(this.m_btvs, 3);
 			}
 			
-			if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS2_INDEX)) {
+			if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS2_INDEX) || (free && this.m_uvs2 != null)) {
 				ROVertexBuffer.AddFloat32Data(this.m_uvs2, this.uvsStride);
 			}
 			ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;

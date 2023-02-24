@@ -93,9 +93,11 @@ export class DemoShaderMaterial {
 		this.m_layouter.layoutReset();
 		this.m_modelLoader.setListener(
 			(models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat): void => {
-				console.log("loaded model.");
+				console.log("loaded model, models: ", models);
 				for (let i = 0; i < models.length; ++i) {
-					this.createEntity(models[i], transforms != null ? transforms[i] : null);
+					if(models[i].vertices != null) {
+						this.createEntity(models[i], transforms != null ? transforms[i] : null);
+					}
 				}
 			},
 			(total): void => {
@@ -106,6 +108,7 @@ export class DemoShaderMaterial {
 		let baseUrl = "static/private/";
 		let url = baseUrl + "fbx/base4.fbx";
 		// url = baseUrl + "obj/apple_01.obj";
+		url = baseUrl + "fbx/plane01.obj";
 
 		this.loadModels([url]);
 	}

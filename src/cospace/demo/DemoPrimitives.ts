@@ -8,6 +8,9 @@ import { ICoUIInteraction } from "../voxengine/ui/ICoUIInteraction";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { VoxEntity } from "../voxentity/VoxEntity";
+import IGeomModelData from "../../vox/mesh/IGeomModelData";
+import { VoxRScene } from "../voxengine/VoxRScene";
+import { VoxMaterial } from "../voxmaterial/VoxMaterial";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -75,8 +78,51 @@ export class DemoPrimitives {
 		img.src = url;
 		return tex;
 	}
+	private testNoIndicesMesh(): void {
+		// 不推荐的模型数据组织形式
+		let material = VoxMaterial.createDefaultMaterial();
+		material.normalEnabled = true;
+		material.setTextureList([this.getTexByUrl("static/assets/broken_iron.jpg")]);
+
+		let nvs = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
+		let uvs = new Float32Array([1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0]);
+		let vs = new Float32Array([-1, 0, 1, 1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, -1, 0, -1]);
+		let model: IGeomModelData = {vertices: vs, uvsList: [uvs], normals: nvs};
+		let mesh = VoxRScene.createDataMeshFromModel(model, material);
+
+		let scale = 30.0;
+		let entity = CoEntity.createDisplayEntity();
+		entity.setMaterial(material);
+		entity.setMesh(mesh);
+		entity.setScaleXYZ(scale, scale, scale);
+		this.m_rscene.addEntity(entity);
+	}
+	private testHasIndicesMesh(): void {
+		// 推荐的模型数据组织形式
+		let material = VoxMaterial.createDefaultMaterial();
+		// material.normalEnabled = true;
+		material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
+
+		let nvs = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
+		let uvs = new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]);
+		let vs = new Float32Array([10, 0, -10, -10, 0, -10, -10, 0, 10, 10, 0, 10]);
+		let ivs = new Uint16Array([0, 1, 2, 0, 2, 3]);
+		let model: IGeomModelData = {vertices: vs, uvsList: [uvs], normals: nvs, indices: ivs};
+		// let mesh = VoxRScene.createDataMeshFromModel(model, material);
+		let mesh = VoxRScene.createDataMeshFromModel(model);
+
+		let scale = 10.0;
+		let entity = CoEntity.createDisplayEntity();
+		entity.setMaterial(material);
+		entity.setMesh(mesh);
+		entity.setScaleXYZ(scale, scale, scale);
+		this.m_rscene.addEntity(entity);
+	}
 	private init3DScene(): void {
 
+		// this.testNoIndicesMesh();
+		this.testHasIndicesMesh();
+		return;
 
 		// let material = CoRScene.createDefaultMaterial();
 		// material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);

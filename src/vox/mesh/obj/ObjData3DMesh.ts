@@ -53,18 +53,15 @@ export default class ObjData3DMesh extends MeshBase {
         }
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
             this.m_nvs = this.m_dataParser.getNVS();
+            
+            // console.log("m_nvs: ", this.m_nvs);
             ROVertexBuffer.AddFloat32Data(this.m_nvs, 3);
         }
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX)) {
-            //trace("m_vs: "+m_vs);
-            //trace("m_uvs: "+m_uvs);
-            //trace("m_nvs: "+m_nvs);
-            let numTriangles: number = this.m_ivs.length / 3;
-            let tvs: Float32Array = new Float32Array(this.m_vs.length);
-            let btvs: Float32Array = new Float32Array(this.m_vs.length);
+            let numTriangles = this.m_ivs.length / 3;
+            let tvs = new Float32Array(this.m_vs.length);
+            let btvs = new Float32Array(this.m_vs.length);
             SurfaceNormalCalc.ClacTrisTangent(this.m_vs, this.m_vs.length, this.m_uvs, this.m_nvs, numTriangles, this.m_ivs, tvs, btvs);
-            //trace("tvs: "+tvs);
-            //trace("btvs: "+btvs);
             ROVertexBuffer.AddFloat32Data(tvs, 3);
             ROVertexBuffer.AddFloat32Data(btvs, 3);
         }

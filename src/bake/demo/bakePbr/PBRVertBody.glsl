@@ -1,18 +1,3 @@
-layout(location = 0) in vec3 a_vs;
-layout(location = 1) in vec2 a_uvs;
-layout(location = 2) in vec3 a_nvs;
-layout(location = 3) in vec2 a_uvs2;
-
-uniform mat4 u_objMat;
-uniform mat4 u_viewMat;
-uniform mat4 u_projMat;
-uniform vec4 u_posOffset;
-uniform vec4 u_uvOffset;
-
-out vec2 TexCoords;
-out vec3 WorldPos;
-out vec3 Normal;
-out vec3 v_camPos;
 
 float calcValue(float v) {
 
@@ -32,6 +17,25 @@ float calcValue(float v) {
 vec2 getUV(vec2 uv) {
     return vec2(calcValue(uv.x), calcValue(uv.y));
 }
+
+uniform mat4 u_objMat;
+uniform mat4 u_viewMat;
+uniform mat4 u_projMat;
+uniform vec4 u_posOffset;
+uniform vec4 u_uvOffset;
+
+
+out vec2 TexCoords;
+out vec3 WorldPos;
+out vec3 Normal;
+out vec3 v_camPos;
+
+layout(location = 0) in vec3 a_vs;
+layout(location = 1) in vec2 a_uvs;// 第一个uv
+layout(location = 2) in vec3 a_nvs;
+layout(location = 3) in vec2 a_uvs2;// 第二个uv
+
+
 void main(){
 
     vec4 wPos = u_objMat * vec4(a_vs, 1.0);

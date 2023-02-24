@@ -59,7 +59,8 @@ export default class ObjData3DEntity extends DisplayEntity {
             request.open('GET', objDataUrl, true);
 
             request.onload = () => {
-                if (request.status <= 206 && request.responseText.indexOf(" OBJ ") > 0) {
+                // if (request.status <= 206 && request.responseText.indexOf(" OBJ ") > 0) {
+                if (request.status <= 206) {
                     this.initialize(request.responseText, texList);
                 }
                 else {
@@ -75,13 +76,14 @@ export default class ObjData3DEntity extends DisplayEntity {
     }
     protected __activeMesh(material: IRenderMaterial): void {
         if (this.getMesh() == null) {
-            let mesh: ObjData3DMesh = new ObjData3DMesh();
+            let mesh = new ObjData3DMesh();
             mesh.baseParsering = this.baseParsering;
             mesh.moduleScale = this.moduleScale;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.wireframe = this.wireframe;
             mesh.setVtxBufRenderData(material);
             mesh.initialize(this.m_str, this.dataIsZxy);
+            console.log("mesh: ", mesh);
             this.setMesh(mesh);
         }
     }

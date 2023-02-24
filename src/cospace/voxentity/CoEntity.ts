@@ -15,13 +15,13 @@ import { ICoMesh } from "../voxmesh/ICoMesh";
 import IMeshBase from "../../vox/mesh/IMeshBase";
 declare var CoMesh: ICoMesh;
 
-function createDisplayEntityFromModel(model: CoGeomDataType, material: IRenderMaterial = null, vbWhole: boolean = false): ITransformEntity {
+function createDisplayEntityFromModel(model: CoGeomDataType, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
 	
-	return CoRScene.createDisplayEntityFromModel(model, material, vbWhole);
+	return CoRScene.createDisplayEntityFromModel(model, material, texEnabled);
 }
-function createDisplayEntityWithDataMesh(mesh: IDataMesh, pmaterial: IRenderMaterial,texEnabled: boolean = true,vbWhole: boolean = false): ITransformEntity {
+function createDisplayEntityWithDataMesh(mesh: IDataMesh, pmaterial: IRenderMaterial,texEnabled: boolean = false): ITransformEntity {
 	
-	return CoRScene.createDisplayEntityWithDataMesh(mesh, pmaterial, texEnabled, vbWhole);
+	return CoRScene.createDisplayEntityWithDataMesh(mesh, pmaterial, texEnabled);
 }
 function createDisplayEntity(): ITransformEntity {
 	return CoRScene.createDisplayEntity();

@@ -160,11 +160,12 @@ export class BakeFlow {
     private m_offsetR = 0.0001;
     // private m_modelUrl = "static/private/fbx/hat01_0.fbx";
     // private m_modelUrl = "static/private/fbx/hat01_0.obj";
-    private m_modelUrl = "static/private/fbx/hat01_0.fbx";
+    // private m_modelUrl = "static/private/fbx/hat01_0.fbx";
+    private m_modelUrl = "static/private/fbx/hat01_1.fbx";
     // private m_uv2ModelUrl = "static/private/fbx/hat01_0_unwrap.fbx";
     private m_uv2ModelUrl = "";
     // private m_uvDataUrl = "static/private/fbx/uvData1.uv";
-    private m_uvDataUrl = "static/private/fbx/hat01_0.uv2";
+    private m_uvDataUrl = "static/private/fbx/hat01_1.uv2";
     protected createEntity(model: CoGeomDataType, transform: Float32Array = null, uvParam: { su: number, sv: number }): void {
 
         if (model != null) {
@@ -180,8 +181,10 @@ export class BakeFlow {
             
             let bakedTexUrl = "static/private/bake/icoSph_1.png";
             bakedTexUrl = "static/private/bake/hat01_0.png";
-            bakedTexUrl = "static/private/bake/hat01_1.png";
-            this.initTexLightingBakeWithModel(1, model, transform, uvOffset, bakedTexUrl);
+            // bakedTexUrl = "static/private/bake/hat01_1.png";
+            bakedTexUrl = "static/private/bake/hat01_0a.png";
+            bakedTexUrl = "static/private/bake/hat01_1a.png";
+            this.initTexLightingBakeWithModel(-1, model, transform, uvOffset, bakedTexUrl);
         }
     }
     private initTexLightingBakeWithModel(bakeType: number, model: CoGeomDataType, transform: Float32Array, uvParam: { su: number, sv: number }, bakedTexUrl: string): void {

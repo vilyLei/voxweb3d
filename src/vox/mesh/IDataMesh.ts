@@ -44,9 +44,15 @@ export default interface IDataMesh extends IMeshBase {
   setVS(vs: Float32Array): IDataMesh;
   /**
    * set vertex uv data
-   * @param vs vertex uv buffer Float32Array
+   * @param uvs vertex uv buffer Float32Array
    */
   setUVS(uvs: Float32Array): IDataMesh;
+  
+	/**
+	 * set second vertex uv data
+	 * @param uvs vertex uv buffer Float32Array
+	 */
+	setUVS2(uvs: Float32Array): IDataMesh;
   /**
    * set vertex normal data
    * @param vs vertex normal buffer Float32Array
