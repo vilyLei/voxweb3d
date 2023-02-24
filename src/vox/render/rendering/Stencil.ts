@@ -76,6 +76,10 @@ class Stencil implements IStencil {
         this.m_opfs[3] = 0;
         this.m_enabled = false;
     }
+    /**
+     * Note, that this is a renderer system inner function
+     * @param rstate renderer rendering state manager
+     */
     apply(rstate: IRODrawState): IStencil {
         if (rstate && this.m_enabled) {
             if (this.m_depfs[1] > 0) {

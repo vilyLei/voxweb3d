@@ -30,6 +30,11 @@ interface IStencil extends IRenderingStencil {
      */
     setStencilOp(fail: number, zfail: number, zpass: number): IStencil;
     reset(): void;
+    /**
+     * Note, that this is a renderer system inner function
+     * @param rstate renderer rendering state manager
+     */
+    apply(rstate: IRODrawState): IStencil;
     clone(): IStencil;
     copyFrom(src: IStencil): IStencil;
 }

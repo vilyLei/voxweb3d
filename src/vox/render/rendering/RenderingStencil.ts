@@ -10,7 +10,7 @@ import { IRenderingStencil } from "./IRenderingStencil";
 class RenderingStencil implements IRenderingStencil {
 
     private m_rstate: IRODrawState = null;
-    constructor(rstate: IRODrawState = null) {
+    constructor(rstate: IRODrawState) {
         this.m_rstate = rstate;
     }
     isEnabled(): boolean {
