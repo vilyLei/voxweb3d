@@ -39,7 +39,7 @@ import RendererState from "./RendererState";
 import IRenderProxy from "./IRenderProxy";
 import { IShaderUniformContext } from "../../vox/material/IShaderUniformContext";
 import { IStencil } from "../../vox/render/rendering/IStencil";
-import { Stencil } from "./rendering/Stencil";
+import { RenderingStencil } from "./rendering/RenderingStencil";
 import VROBase from "./VROBase";
 
 import { IRenderingColorMask } from "./rendering/IRenderingColorMask";
@@ -403,7 +403,7 @@ class RenderProxy implements IRenderProxy {
 
         selfT.RState = rstate;
         selfT.RContext = this.m_rc;
-        selfT.stencil = new Stencil(rstate);
+        selfT.stencil = new RenderingStencil(rstate);
         selfT.renderingState = new RenderingState(RendererState);
         selfT.colorMask = new RenderingColorMask(RendererState);
 

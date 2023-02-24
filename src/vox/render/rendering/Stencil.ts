@@ -9,14 +9,12 @@ import { IRODrawState } from "./IRODrawState";
 import { IStencil } from "./IStencil";
 class Stencil implements IStencil {
 
-    private m_rstate: IRODrawState = null;
     private m_depfs = [0, 0];
     private m_maskfs = [0, 0];
     private m_funcfs = [0, 0, 0, 0];
     private m_opfs = [0, 0, 0, 0];
     private m_enabled = false;
-    constructor(rstate: IRODrawState = null) {
-        this.m_rstate = rstate;
+    constructor() {
     }
     isEnabled(): boolean {
         return this.m_enabled;
@@ -25,7 +23,7 @@ class Stencil implements IStencil {
         this.m_depfs[0] = enable ? 1 : 0;
         this.m_depfs[1] = 1;
         this.m_enabled = true;
-        if (this.m_rstate) this.m_rstate.setDepthTestEnable(enable);
+        // if (this.m_rstate) this.m_rstate.setDepthTestEnable(enable);
         return this;
     }
     /**
@@ -41,7 +39,7 @@ class Stencil implements IStencil {
         ls[2] = mask;
         ls[3] = 1;
         this.m_enabled = true;
-        if (this.m_rstate) this.m_rstate.setStencilFunc(func, ref, mask);
+        // if (this.m_rstate) this.m_rstate.setStencilFunc(func, ref, mask);
         return this;
     }
     /**
@@ -52,7 +50,7 @@ class Stencil implements IStencil {
         this.m_maskfs[0] = mask;
         this.m_maskfs[1] = 1;
         this.m_enabled = true;
-        if (this.m_rstate) this.m_rstate.setStencilMask(mask);
+        // if (this.m_rstate) this.m_rstate.setStencilMask(mask);
         return this;
     }
     /**
@@ -68,7 +66,7 @@ class Stencil implements IStencil {
         ls[2] = zpass;
         ls[3] = 1;
         this.m_enabled = true;
-        if (this.m_rstate) this.m_rstate.setStencilOp(fail, zfail, zpass);
+        // if (this.m_rstate) this.m_rstate.setStencilOp(fail, zfail, zpass);
         return this;
     }
     reset(): void {

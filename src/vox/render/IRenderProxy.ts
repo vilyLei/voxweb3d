@@ -18,7 +18,7 @@ import IROVertexBufUpdater from '../../vox/render/IROVertexBufUpdater';
 import IROMaterialUpdater from '../../vox/render/IROMaterialUpdater';
 import { IShaderUniformContext } from "../../vox/material/IShaderUniformContext";
 
-import { IStencil } from "../../vox/render/rendering/IStencil";
+import { IRenderingStencil } from "../../vox/render/rendering/IRenderingStencil";
 import { IRenderingColorMask } from "./rendering/IRenderingColorMask";
 import { IRenderingState } from "./rendering/IRenderingState";
 import IRenderShader from "../../vox/render/IRenderShader";
@@ -52,7 +52,7 @@ export default interface IRenderProxy {
     readonly uniformContext: IShaderUniformContext;
     readonly rshader: IRenderShader;
 
-    readonly stencil: IStencil;
+    readonly stencil: IRenderingStencil;
     readonly renderingState: IRenderingState;
     readonly colorMask: IRenderingColorMask;
     readonly status: IRPStatus;

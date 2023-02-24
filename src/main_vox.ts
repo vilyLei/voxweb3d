@@ -164,7 +164,7 @@
 
 //  import {DemoRenderSortA as Demo} from "./demo/DemoRenderSortA";
 
- import {DemoRenderSort as Demo} from "./demo/DemoRenderSort";
+//  import {DemoRenderSort as Demo} from "./demo/DemoRenderSort";
 
 //  import {DemoThread as Demo} from "./thread/example/DemoThread";
 
@@ -186,7 +186,7 @@
 
 //  import {DemoGLState as Demo} from "./demo/DemoGLState";
 
-//  import {DemoStencil as Demo} from "./demo/DemoStencil";
+ import {DemoStencil as Demo} from "./demo/DemoStencil";
 
 //  import {DemoBlendMode as Demo} from "./demo/DemoBlendMode";
 
