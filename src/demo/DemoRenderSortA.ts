@@ -22,10 +22,21 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import Vector3D from "../vox/math/Vector3D";
 import IColorMaterial from "../vox/material/mcase/IColorMaterial";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import IRODisplaySorter from "../vox/render/IRODisplaySorter";
+import IRPODisplay from "../vox/render/IRPODisplay";
+
+class PosYDsistanceSorter implements IRODisplaySorter {
+    sortRODisplay(nodes: IRPODisplay[], nodesTotal: number): number {
+        for (let i = 0; i < nodesTotal; ++i) {
+            nodes[i].value = nodes[i].pos.y;
+        }
+        return 0;
+    }
+}
 /**
  * This example: rendering runtime sort renderable objects
  */
-export class DemoRenderSort {
+export class DemoRenderSortA {
     constructor() { }
 
     private m_rscene: RendererScene = null;
@@ -43,7 +54,7 @@ export class DemoRenderSort {
         return ptex;
     }
     initialize(): void {
-        console.log("DemoRenderSort::initialize()......");
+        console.log("DemoRenderSortA::initialize()......");
         if (this.m_rscene == null) {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -71,29 +82,22 @@ export class DemoRenderSort {
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
             this.m_rscene.setAutoRenderingSort(true);
-            this.m_rscene.setProcessSortEnabledAt(1, true);
+            this.m_rscene.setProcessSortEnabledAt(1, true, new PosYDsistanceSorter());
 
 
             let tex0 = this.getTexByUrl("static/assets/wood_01.jpg");
             let tex1 = this.getTexByUrl("static/assets/yanj.jpg");
             let tex2 = this.getTexByUrl("static/assets/decorativePattern_01.jpg");
-            let tex3 = this.getTexByUrl("static/assets/letterA.png");
-            tex3.premultiplyAlpha = true;
-            let tex4 = this.getTexByUrl("static/assets/redTransparent.png");
-            tex4.premultiplyAlpha = true;
-            let tex5 = this.getTexByUrl("static/assets/blueTransparent.png");
-            tex5.premultiplyAlpha = true;
-            let tex7 = this.m_rscene.textureBlock.createRGBATex2D(16, 16, new Color4(1.0, 0.0, 1.0));
 
             let axis = new Axis3DEntity();
             axis.initialize();
             this.m_rscene.addEntity(axis, 0);
             let plane = new Plane3DEntity();
             plane.showDoubleFace();
-            plane.initializeXOZ(-400.0, -400.0, 400.0, 400.0, [tex2]);
-            // plane.setXYZ(0, -60, 0);
-            this.m_rscene.addEntity(plane, 0);
-            /*
+            plane.initializeXOZ(-300.0, -300.0, 400.0, 400.0, [tex2]);
+            plane.setXYZ(0, -60, 0);
+            this.m_rscene.addEntity(plane, 1);
+            ///*
 
             plane = new Plane3DEntity();
             plane.initializeXOZ(-200.0, -200.0, 400.0, 400.0, [tex1]);
@@ -107,23 +111,23 @@ export class DemoRenderSort {
             plane.initializeXOZ(-150.0, -150.0, 300.0, 300.0, [tex0]);
             plane.setXYZ(80, -30, 80);
             this.m_rscene.addEntity(plane, 1);
-            */
+            // */
 
-            let sph = new Sphere3DEntity();
-            sph.premultiplyAlpha = true;
-            sph.meshMode = -1;
-            sph.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
-            sph.initialize(100,20,20, [tex5]);
-            (sph.getMaterial() as IColorMaterial).setAlpha(0.9);
-            this.m_rscene.addEntity(sph, 1);
+            // let sph = new Sphere3DEntity();
+            // sph.premultiplyAlpha = true;
+            // sph.meshMode = -1;
+            // sph.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
+            // sph.initialize(100,20,20, [tex5]);
+            // (sph.getMaterial() as IColorMaterial).setAlpha(0.9);
+            // this.m_rscene.addEntity(sph, 1);
 
-            sph = new Sphere3DEntity();
-            sph.premultiplyAlpha = true;
-            sph.meshMode = 1;
-            sph.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
-            sph.initialize(100,20,20, [tex4]);
-            (sph.getMaterial() as IColorMaterial).setAlpha(0.9);
-            this.m_rscene.addEntity(sph, 1);
+            // sph = new Sphere3DEntity();
+            // sph.premultiplyAlpha = true;
+            // sph.meshMode = 1;
+            // sph.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
+            // sph.initialize(100,20,20, [tex4]);
+            // (sph.getMaterial() as IColorMaterial).setAlpha(0.9);
+            // this.m_rscene.addEntity(sph, 1);
 
             // let boxFrame = new BoxFrame3D();
             // boxFrame.initializeByAABB( sph.getGlobalBounds() );
@@ -144,7 +148,7 @@ export class DemoRenderSort {
         }
         console.log("mouse down, this.m_isChanged: ", this.m_isChanged);
 
-        this.m_rscene.setProcessSortEnabledAt(1, this.m_isChanged);
+        // this.m_rscene.setProcessSortEnabledAt(1, this.m_isChanged);
         // this.m_rscene.setProcessSortEnabledAt(0, true);
         return;
         if (this.m_targets != null && this.m_targets.length > 0) {
