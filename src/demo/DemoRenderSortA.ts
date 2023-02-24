@@ -113,7 +113,7 @@ export class DemoRenderSortA {
         }
     }
     private m_plane01: Plane3DEntity;
-    private m_isChanged: boolean = true;
+    private m_isChanged = true;
     private mouseDown(evt: any): void {
 
         // this.m_isChanged = !this.m_isChanged;

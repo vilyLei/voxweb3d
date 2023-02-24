@@ -73,9 +73,6 @@ export class DemoRenderSort {
             this.m_rscene.setAutoRenderingSort(true);
             this.m_rscene.setProcessSortEnabledAt(1, true);
 
-
-            let tex0 = this.getTexByUrl("static/assets/wood_01.jpg");
-            let tex1 = this.getTexByUrl("static/assets/yanj.jpg");
             let tex2 = this.getTexByUrl("static/assets/decorativePattern_01.jpg");
             let tex3 = this.getTexByUrl("static/assets/letterA.png");
             tex3.premultiplyAlpha = true;
@@ -83,7 +80,6 @@ export class DemoRenderSort {
             tex4.premultiplyAlpha = true;
             let tex5 = this.getTexByUrl("static/assets/blueTransparent.png");
             tex5.premultiplyAlpha = true;
-            let tex7 = this.m_rscene.textureBlock.createRGBATex2D(16, 16, new Color4(1.0, 0.0, 1.0));
 
             let axis = new Axis3DEntity();
             axis.initialize();
@@ -93,22 +89,7 @@ export class DemoRenderSort {
             plane.initializeXOZ(-400.0, -400.0, 400.0, 400.0, [tex2]);
             // plane.setXYZ(0, -60, 0);
             this.m_rscene.addEntity(plane, 0);
-            /*
-
-            plane = new Plane3DEntity();
-            plane.initializeXOZ(-200.0, -200.0, 400.0, 400.0, [tex1]);
-            plane.setXYZ(80, -100, 80);
-            this.m_rscene.addEntity(plane, 1);
-            plane.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
-            this.m_targets.push(plane);
-            this.m_plane01 = plane;
-
-            plane = new Plane3DEntity();
-            plane.initializeXOZ(-150.0, -150.0, 300.0, 300.0, [tex0]);
-            plane.setXYZ(80, -30, 80);
-            this.m_rscene.addEntity(plane, 1);
-            */
-
+            
             let sph = new Sphere3DEntity();
             sph.premultiplyAlpha = true;
             sph.meshMode = -1;

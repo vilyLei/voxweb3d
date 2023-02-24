@@ -162,8 +162,9 @@
 
 //  import {DemoMixProgress as Demo} from "./demo/DemoMixProgress";
 
- import {DemoRenderSortA as Demo} from "./demo/DemoRenderSortA";
-//  import {DemoRenderSort as Demo} from "./demo/DemoRenderSort";
+//  import {DemoRenderSortA as Demo} from "./demo/DemoRenderSortA";
+
+ import {DemoRenderSort as Demo} from "./demo/DemoRenderSort";
 
 //  import {DemoThread as Demo} from "./thread/example/DemoThread";
 
