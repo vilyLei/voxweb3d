@@ -47,7 +47,7 @@ export default class ROIVertexBuffer implements IROIVtxBuf {
     getBufDataUsage(): number {
         return this.m_bufDataUsage;
     }
-    getIvsData(): Uint16Array | Uint32Array {
+    getIvsDataAt(index: number = 0): Uint16Array | Uint32Array {
         return this.m_ivs;
     }
     setUintIVSDataAt(uint16Or32Arr: Uint16Array | Uint32Array, index: number = 0, status: number = VtxBufConst.VTX_STATIC_DRAW): void {

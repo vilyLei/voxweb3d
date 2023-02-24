@@ -39,7 +39,7 @@ class ROIndicesRes implements IROIndicesRes {
             let vtx: IROIVtxBuf = this.m_vtx;
             // console.log("indeces updateToGpu vtx.getUId(): ",vtx.getUid(), ", this.version != vtx.indicesVer: ", this.version != vtx.indicesVer);
             if (this.version != vtx.indicesVer) {
-                this.m_ivs = vtx.getIvsData();
+                this.m_ivs = vtx.getIvsDataAt();
                 rc.bindEleBuf(this.m_gpuBuf);
                 if (this.m_ivsSize >= this.m_ivs.length) {
                     //console.log("A indeces updateToGpu vtx.getUId(): ",vtx.getUid(), ", ivs.length", this.m_ivs.length);
@@ -55,14 +55,14 @@ class ROIndicesRes implements IROIndicesRes {
         }
     }
     initialize(rc: IROVtxBuilder, ivtx: IROIVtxBuf): void {
-        if (this.m_gpuBuf == null && ivtx.getIvsData() != null) {
+        if (this.m_gpuBuf == null && ivtx.getIvsDataAt() != null) {
 
             // console.log("ROIndicesRes::initialize(), uid: ", this.m_uid, ", ivtx: ", ivtx);
 
             this.version = ivtx.indicesVer;
             this.m_vtx = ivtx;
             this.m_vtxUid = ivtx.getUid();
-            this.m_ivs = ivtx.getIvsData();
+            this.m_ivs = ivtx.getIvsDataAt();
 
             this.m_gpuBuf = rc.createBuf();
             rc.bindEleBuf(this.m_gpuBuf);

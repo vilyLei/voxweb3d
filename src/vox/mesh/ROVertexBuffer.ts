@@ -71,9 +71,9 @@ export default class ROVertexBuffer extends ROIVertexBuffer implements IVtxBuf, 
     getF32DataAt(index: number): Float32Array {
         return this.m_vtxBuf.getF32DataAt(index);
     }
-    getIvsData(): Uint16Array | Uint32Array {
-        return this.m_ivs;
-    }
+    // getIvsDataAt(): Uint16Array | Uint32Array {
+    //     return this.m_ivs;
+    // }
     setF32DataAt(index: number, float32Arr: Float32Array, stepFloatsTotal: number, setpOffsets: number[]): void {
         this.m_vtxBuf.setF32DataAt(index, float32Arr, stepFloatsTotal, setpOffsets);
         this.vertexVer++;

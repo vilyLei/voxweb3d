@@ -11,8 +11,11 @@ interface IROIVtxBuf {
     version: number;
 
     bufData: IVtxBufData;
-    
-    getIvsData(): Uint16Array | Uint32Array;
+    /**
+     * 
+     * @param index the default value is 0
+     */
+    getIvsDataAt(index?: number): Uint16Array | Uint32Array;
     getUid(): number;
     getType(): number;
     getBufDataUsage(): number;
