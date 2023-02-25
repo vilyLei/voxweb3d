@@ -52,15 +52,15 @@ class AABB implements IAABB {
 		this.m_width = width;
 		this.m_height = height;
 		this.m_long = long;
-		
+
 		this.m_halfLong = 0.5 * this.m_long;
 		this.m_halfWidth = 0.5 * this.m_width;
 		this.m_halfHeight = 0.5 * this.m_height;
-		
+
 		this.max.x = this.center.x + this.m_halfWidth;
 		this.max.y = this.center.y + this.m_halfHeight;
 		this.max.z = this.center.z + this.m_halfLong;
-		
+
 		this.min.x = this.center.x - this.m_halfWidth;
 		this.min.y = this.center.y - this.m_halfHeight;
 		this.min.z = this.center.z - this.m_halfLong;
@@ -92,19 +92,33 @@ class AABB implements IAABB {
 	addFloat32Arr(vs: Float32Array | number[], step: number = 3): void {
 
 		let len = vs.length;
-		for (let i = 0; i < len;) {
-			this.addXYZ(vs[i], vs[i + 1], vs[i + 2]);
-			i += step;
+		if (step >= 3) {
+			for (let i = 0; i < len;) {
+				this.addXYZ(vs[i], vs[i + 1], vs[i + 2]);
+				i += step;
+			}
+		} if (step == 2) {
+			for (let i = 0; i < len;) {
+				this.addXYZ(vs[i], vs[i + 1], 0.0);
+				i += step;
+			}
 		}
 	}
 
-	addFloat32AndIndicesArr(vs: Float32Array | number[], indices: Uint16Array | Uint32Array): void {
+	addFloat32AndIndices(vs: Float32Array | number[], indices: Uint16Array | Uint32Array, step: number = 3): void {
 
 		let len = indices.length;
 		let i: number;
-		for (let k = 0; k < len; k++) {
-			i = indices[k] * 3;
-			this.addXYZ(vs[i++], vs[i++], vs[i]);
+		if (step >= 3) {
+			for (let k = 0; k < len; k++) {
+				i = indices[k] * step;
+				this.addXYZ(vs[i++], vs[i++], vs[i]);
+			}
+		}else if (step == 2) {
+			for (let k = 0; k < len; k++) {
+				i = indices[k] * step;
+				this.addXYZ(vs[i++], vs[i], 0.0);
+			}
 		}
 	}
 	getClosePosition(in_pos: Vector3D, out_pos: Vector3D, bias: number = 0.0): void {

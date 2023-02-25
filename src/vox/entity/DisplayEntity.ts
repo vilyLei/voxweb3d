@@ -369,21 +369,24 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
             this.m_display.ivsIndex = ivsIndex;
             this.m_display.ivsCount = ivsCount;
             if (this.m_display.__$ruid > -1) {
+                
+                const mh = this.m_mesh;
+
                 let ut = this.m_display.__$$runit;
                 ut.trisNumber = Math.floor((ivsCount - ivsIndex) / 3);
                 ut.setIvsParam(ivsIndex, ivsCount);
-                ut.drawMode = this.m_mesh.drawMode;
+                ut.drawMode = mh.drawMode;
 
                 if (updateBounds && this.isPolyhedral()) {
 
-                    if (this.m_localBounds == this.m_mesh.bounds) {
+                    if (this.m_localBounds == mh.bounds) {
                         this.m_localBounds = new AABB();
-                        this.m_localBounds.copyFrom(this.m_mesh.bounds);
+                        this.m_localBounds.copyFrom(mh.bounds);
                     }
                     this.m_transStatus = ROTransform.UPDATE_TRANSFORM;
                     this.m_localBounds.reset();
-                    let ivs = this.m_mesh.getIVS();
-                    this.m_localBounds.addFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(ivsIndex, ivsIndex + ivsCount));
+                    let ivs = mh.getIVS();
+                    this.m_localBounds.addFloat32AndIndices(mh.getVS(), ivs.subarray(ivsIndex, ivsIndex + ivsCount), mh.getVSStride());
                     this.m_localBounds.update();
                     if(this.m_trw != null) {
                         this.m_trw.updateTo();
@@ -616,10 +619,11 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
             this.m_transStatus = ROTransform.UPDATE_TRANSFORM;
 
             if (this.m_mesh != null && this.m_localBounds != this.m_mesh.bounds) {
-
+                const mh = this.m_mesh;
+                const dp = this.m_display;
                 this.m_localBounds.reset();
-                let ivs = this.m_mesh.getIVS();
-                this.m_localBounds.addFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(this.m_display.ivsIndex, this.m_display.ivsIndex + this.m_display.ivsCount));
+                let ivs = mh.getIVS();
+                this.m_localBounds.addFloat32AndIndices(mh.getVS(), ivs.subarray(dp.ivsIndex, dp.ivsIndex + dp.ivsCount), mh.getVSStride());
                 this.m_localBounds.update();
             }
             this.update();

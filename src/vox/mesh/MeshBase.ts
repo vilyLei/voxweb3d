@@ -114,7 +114,6 @@ export default class MeshBase implements IMeshBase {
         this.drawMode = RDM.DISABLE;
         this.setPolyhedral(false);
     }
-
     protected createIVSBYSize(size: number): Uint16Array | Uint32Array {
         return size > 65535 ? new Uint32Array(size) : new Uint16Array(size);
     }
@@ -124,8 +123,8 @@ export default class MeshBase implements IMeshBase {
     createWireframeIvs(ivs: Uint16Array | Uint32Array = null): Uint16Array | Uint32Array {
         if(ivs == null) ivs = this.m_ivs;
         if(ivs !== null) {
-            let len = ivs.length * 2;
-            let wivs = len <= 65536 ? new Uint16Array(len) : new Uint32Array(len);
+            const len = ivs.length * 2;
+            const wivs = len <= 65536 ? new Uint16Array(len) : new Uint32Array(len);
             let a: number;
             let b: number;
             let c: number;
@@ -239,6 +238,16 @@ export default class MeshBase implements IMeshBase {
     }
     getBufDataUsage(): number {
         return this.m_bufDataUsage;
+    }
+    
+    getVSStride(): number {
+        return 3;
+    }
+    getUVSStride(): number {
+        return 2;
+    }
+    getNVSStride(): number {
+        return 3;
     }
     /**
      * @returns vertex position buffer Float32Array

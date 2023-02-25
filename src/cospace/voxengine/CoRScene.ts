@@ -74,6 +74,8 @@ import Keyboard from "../../vox/ui/Keyboard";
 
 
 import { ICoAGeom } from "../ageom/ICoAGeom";
+import IGeomModelData from "../../vox/mesh/IGeomModelData";
+import MeshFactor from "../../vox/mesh/MeshFactory";
 declare var CoAGeom: ICoAGeom;
 
 function createVec3(px: number = 0.0, py: number = 0.0, pz: number = 0.0, pw: number = 1.0): IVector3D {
@@ -141,7 +143,9 @@ function createBoundsMesh(): IBoundsMesh {
 	return new BoundsMesh();
 }
 
-function createDataMeshFromModel(model: CoGeomDataType, material: MaterialBase = null, texEnabled: boolean = false): IDataMesh {
+function createDataMeshFromModel(model: IGeomModelData, material: IRenderMaterial = null, texEnabled: boolean = false): IDataMesh {
+	return MeshFactor.createDataMeshFromModel(model, material, texEnabled);
+	/*
 	if (material != null) {
 		texEnabled = texEnabled || material.getTextureAt(0) != null;
 	}
@@ -158,7 +162,7 @@ function createDataMeshFromModel(model: CoGeomDataType, material: MaterialBase =
 			dataMesh.setUVS2(model.uvsList[0]);
 		}
 	} else if (texEnabled) {
-		dataMesh.setUVS(new Float32Array(Math.floor(model.vertices.length / 3) * 2));
+		dataMesh.setUVS(new Float32Array(Math.floor(model.vertices.length / stride) * 2));
 		console.error("hasn't uv data !!!, in the createDataMeshFromModel(...) function.");
 	}
 	if (model.normals) {
@@ -184,6 +188,7 @@ function createDataMeshFromModel(model: CoGeomDataType, material: MaterialBase =
 	}
 	dataMesh.initialize();
 	return dataMesh;
+	//*/
 }
 
 function createDefaultMaterial(normalEnabled: boolean = false): IDefault3DMaterial {

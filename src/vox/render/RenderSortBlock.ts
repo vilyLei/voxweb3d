@@ -68,8 +68,8 @@ export default class RenderSortBlock {
 
 		let unit: RPOUnit = null;
 		let nodes = this.m_nodes;
-		let info:string = "";
-		for (let i: number = 0; i < this.m_renderTotal; ++i) {
+		// let info = "";
+		for (let i = 0; i < this.m_renderTotal; ++i) {
 			unit = nodes[i];
 			this.m_shader.bindToGpu(unit.shdUid);
 			unit.run(rc);
@@ -79,7 +79,7 @@ export default class RenderSortBlock {
 			else {
 				unit.drawPart(rc);
 			}
-			info += unit.value+",";
+			// info += unit.value+",";
 		}
 		//console.log(info);
 	}
@@ -87,8 +87,8 @@ export default class RenderSortBlock {
 		this.m_shader.resetUniform();
 
 		let unit: RPOUnit = null;
-		let nodes: RPOUnit[] = this.m_nodes;
-		for (let i: number = 0; i < this.m_renderTotal; ++i) {
+		let nodes = this.m_nodes;
+		for (let i = 0; i < this.m_renderTotal; ++i) {
 			unit = nodes[i];
 			this.m_shader.bindToGpu(unit.shdUid);
 			unit.vro.run();

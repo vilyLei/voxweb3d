@@ -9,6 +9,14 @@ export default interface IGeomModelData {
 	 * the default value is 3
 	 */
 	stride?: number;
+    /**
+     * 是否启用线框模式数据, 默认值为false
+     */
+    wireframe?: boolean;
+    /**
+     * 是否启用形状模式数据, 默认值为true
+     */
+    shape?: boolean;
 	/**
 	 * the default value is null
 	 */

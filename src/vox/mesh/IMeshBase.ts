@@ -67,6 +67,18 @@ export default interface IMeshBase {
 	__$attachIVBuf(): any;
 	__$detachIVBuf(ivbuf: any): void;
 	/**
+	 * @returns the default value is 3
+	 */
+	getVSStride(): number;
+	/**
+	 * @returns the default value is 2
+	 */
+    getUVSStride(): number;
+	/**
+	 * @returns the default value is 3
+	 */
+    getNVSStride(): number;
+	/**
 	 * @returns vertex position buffer Float32Array
 	 */
 	getVS(): Float32Array;

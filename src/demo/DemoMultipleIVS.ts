@@ -9,66 +9,29 @@ import DivLog from "../vox/utils/DivLog";
 import MouseEvent from "../vox/event/MouseEvent";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
-import Color4 from "../vox/material/Color4";
-import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
-import Box3DEntity from "../vox/entity/Box3DEntity";
+import IGeomModelData from "../vox/mesh/IGeomModelData";
+import MeshFactor from "../vox/mesh/MeshFactory";
 
-export class DemoIVtxBuf {
-	private m_clearColor = new Color4(0.1, 0.2, 0.1, 1.0);
-	private m_tex: IRenderTexture = null;
+export class DemoMultipleIVS {
 	private m_rscene: RendererScene = null;
 	private m_texLoader: ImageTextureLoader = null;
 	private m_stageDragSwinger = new CameraStageDragSwinger();
 	private m_cameraZoomController = new CameraZoomController();
-
-	private m_currDispEntity: DisplayEntity = null;
 	constructor() {}
 
-	getImageTexByUrl(purl: string): TextureProxy {
+	getTexByUrl(purl: string): TextureProxy {
 		return this.m_texLoader.getImageTexByUrl(purl);
 	}
 
 	private initEvent(): void {
 		this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener, true, false);
-		// this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener);
-		// this.m_rscene.addEventListener(MouseEvent.MOUSE_MOVE, this, this.mouseMoveListener);
-
-		// this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.test_bgmouseDownListener);
-		// this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_UP, this, this.test_bgmouseUpListener);
 	}
-	mouseDownListener(evt: any): void {
-		console.log("XXXXXXXXXXXXXXX DemoIVtxBuf::mouseDownListener()...");
-		if (this.m_currDispEntity != null) {
-			let entity = this.m_currDispEntity;
-			this.m_rscene.removeEntity(entity);
-
-			console.log(">>>>>>>>>>>>>>>>>>>>>> repeat the display entity ...");
-			entity.setXYZ(Math.random() * 1000 - 500,0,100);
-			// this.m_rscene.addEntity(entity);
-			let mesh = entity.getMesh();
-
-			let tex1 = this.m_tex;
-			let material = new Default3DMaterial();
-			material.normalEnabled = true;
-			material.setTextureList([this.getImageTexByUrl("static/assets/white.jpg")]);
-			material.initializeByCodeBuf(true);
-			material.setRGB3f(0.5, 1.0, 0.5);
-
-			entity.setMaterial(material);
-			this.m_rscene.addEntity(entity);
-		}
+	mouseDownListener(evt: any): void {		
 	}
-	mouseUpListener(evt: any): void {
-		// console.log("mouseUP...");
-	}
-	mouseMoveListener(evt: any): void {
-		//console.log("mouseDown...");
-		//this.m_rscene.setClearRGBColor3f(Math.random(), 0, Math.random());
-	}
-
+	
 	initialize(): void {
-		console.log("DemoIVtxBuf::initialize()......");
+		console.log("DemoMultipleIVS::initialize()......");
 		if (this.m_rscene == null) {
 			
 			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
@@ -93,18 +56,53 @@ export class DemoIVtxBuf {
 
 			this.initScene();
 			this.initEvent();
-			this.m_rscene.setClearColor(this.m_clearColor);
 		}
 	}
+	private testNoIndicesMesh(): void {
+		// 不推荐的模型数据组织形式
+		let material = new Default3DMaterial();
+		material.normalEnabled = true;
+		material.setTextureList([this.getTexByUrl("static/assets/broken_iron.jpg")]);
+
+		let nvs = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
+		let uvs = new Float32Array([1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0]);
+		let vs = new Float32Array([-1, 0, 1, 1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, -1, 0, -1]);
+		let model: IGeomModelData = {vertices: vs, uvsList: [uvs], normals: nvs};
+		let mesh = MeshFactor.createDataMeshFromModel(model, material);
+
+		let scale = 150.0;
+		let entity = new DisplayEntity();
+		entity.setMaterial(material);
+		entity.setMesh(mesh);
+		entity.setScaleXYZ(scale, scale, scale);
+		this.m_rscene.addEntity(entity);
+	}
+
+	private testHasIndicesMesh(): void {
+		// 推荐的模型数据组织形式
+		let material = new Default3DMaterial();
+		// material.normalEnabled = true;
+		material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
+
+		let nvs = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
+		let uvs = new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]);
+		let vs = new Float32Array([10, 0, -10, -10, 0, -10, -10, 0, 10, 10, 0, 10]);
+		let ivs = new Uint16Array([0, 1, 2, 0, 2, 3]);
+		let model: IGeomModelData = {vertices: vs, uvsList: [uvs], normals: nvs, indices: ivs};
+		// let mesh = VoxRScene.createDataMeshFromModel(model, material);
+		let mesh = MeshFactor.createDataMeshFromModel(model);
+
+		let scale = 10.0;
+		let entity = new DisplayEntity();
+		entity.setMaterial(material);
+		entity.setMesh(mesh);
+		entity.setScaleXYZ(scale, scale, scale);
+		this.m_rscene.addEntity(entity);
+	}
+	
 	private initScene(): void {
-		
-		let boxEntity = new Box3DEntity();
-		boxEntity.normalEnabled = true;
-		// boxEntity.wireframe = true;
-		boxEntity.initializeCube(100.0, [this.getImageTexByUrl("static/assets/white.jpg")]);
-		boxEntity.setXYZ(-200, 0, 0);
-		this.m_rscene.addEntity(boxEntity);
-		this.m_currDispEntity = boxEntity;
+		this.testNoIndicesMesh();
+		// this.testHasIndicesMesh();
 	}
 	run(): void {
 		if (this.m_rscene != null) {
@@ -116,4 +114,4 @@ export class DemoIVtxBuf {
 		}
 	}
 }
-export default DemoIVtxBuf;
+export default DemoMultipleIVS;

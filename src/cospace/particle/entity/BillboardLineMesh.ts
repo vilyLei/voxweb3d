@@ -32,8 +32,7 @@ class BillboardLineMesh {
 			}
 		}
 		let mh = this.mesh;
-
-		mh.vsStride = 2;
+		
 		mh.autoBuilding = false;
 		mh.vtxTotal = 4;
 		mh.trisNumber = 2;
@@ -44,7 +43,7 @@ class BillboardLineMesh {
 		mh.bounds.max.setXYZ(maxX, maxY, maxX);
 		mh.bounds.updateFast();
 
-		mh.setVS(this.m_vs);
+		mh.setVS(this.m_vs, 2);
 		mh.setUVS(this.m_uvs);
 		mh.setIVS(this.m_ivs);
 	}

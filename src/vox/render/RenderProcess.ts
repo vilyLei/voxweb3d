@@ -24,19 +24,19 @@ import IRenderProcess from "../../vox/render/IRenderProcess";
 import ROTransPool from "./ROTransPool";
 
 export default class RenderProcess implements IRenderProcess, IPoolNode {
-	private static s_max_shdTotal: number = 1024;
+	private static s_max_shdTotal = 1024;
 	// 记录自身所在的 rendererInstance id
-	private m_rcuid: number = -1;
+	private m_rcuid = -1;
 	// 记录自身所在 rendererInstance 中分配到的process index
-	private m_rpIndex: number = -1;
+	private m_rpIndex = -1;
 	private m_rc: RenderProxy;
 
-	private m_nodesLen: number = 0;
+	private m_nodesLen = 0;
 	private m_enabled: boolean = true;
 	private m_blockList: RPOBlock[] = []; // 记录以相同shader的node为一个集合对象(RPOBlock) 的数组
-	private m_blockListLen: number = 0;
-	private m_blockFList: Int8Array = new Int8Array(RenderProcess.s_max_shdTotal); // 记录以相同shader的node为一个集合对象(RPOBlock)的构建状态 的数组
-	private m_blockFListLen: number = RenderProcess.s_max_shdTotal; // 假定引擎中同时存在的最多的shader 有1024种
+	private m_blockListLen = 0;
+	private m_blockFList = new Int8Array(RenderProcess.s_max_shdTotal); // 记录以相同shader的node为一个集合对象(RPOBlock)的构建状态 的数组
+	private m_blockFListLen = RenderProcess.s_max_shdTotal; // 假定引擎中同时存在的最多的shader 有1024种
 	private m_shader: RenderShader = null;
 	private m_rpoNodeBuilder: RPONodeBuilder = null;
 	private m_rpoUnitBuilder: RPOUnitBuilder = null;
@@ -46,11 +46,11 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 	private m_sortBlock: RenderSortBlock = null;
 	private m_sorter: IRODisplaySorter = null;
 
-	private m_batchEnabled: boolean = true;
-	private m_fixedState: boolean = true;
-	private m_sortEnabled: boolean = false;
-	private m_version: number = 0;
-	uid: number = -1;
+	private m_batchEnabled = true;
+	private m_fixedState = true;
+	private m_sortEnabled = false;
+	private m_version = 0;
+	uid = -1;
 	constructor(
 		shader: RenderShader,
 		rpoNodeBuilder: RPONodeBuilder,
@@ -185,7 +185,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 				if (disp.__$$runit.getRPROUid() != this.uid) {
                     
 					// console.log("RenderProcess(" + this.uid + ")::addDisp(): ", disp.ivsCount, disp, disp.drawMode);
-					let node: RPONode = this.m_rpoNodeBuilder.create() as RPONode;
+					let node = this.m_rpoNodeBuilder.create() as RPONode;
 					node.unit = this.m_rpoUnitBuilder.getNodeByUid(disp.__$ruid) as RPOUnit;
 					node.unit.shader = this.m_shader;
 					node.unit.__$rprouid = this.uid;

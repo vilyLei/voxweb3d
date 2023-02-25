@@ -1,7 +1,6 @@
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
-import Stage3D from "../vox/display/Stage3D";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
@@ -30,13 +29,12 @@ export class DemoSharedMesh {
 	}
 
 	private initEvent(): void {
-		let stage3D: Stage3D = this.m_rscene.getStage3D() as Stage3D;
-		stage3D.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener, true, false);
-		stage3D.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener);
-		stage3D.addEventListener(MouseEvent.MOUSE_MOVE, this, this.mouseMoveListener);
+		this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener, true, false);
+		this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener);
+		this.m_rscene.addEventListener(MouseEvent.MOUSE_MOVE, this, this.mouseMoveListener);
 
-		// stage3D.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.test_bgmouseDownListener);
-		// stage3D.addEventListener(MouseEvent.MOUSE_BG_UP, this, this.test_bgmouseUpListener);
+		// this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.test_bgmouseDownListener);
+		// this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_UP, this, this.test_bgmouseUpListener);
 	}
 	mouseDownListener(evt: any): void {
 		console.log("XXXXXXXXXXXXXXX DemoSharedMesh::mouseDownListener()...");
@@ -74,7 +72,6 @@ export class DemoSharedMesh {
 		let mesh = this.m_rscene.entityBlock.unitBox.getMesh();
 		// 这是错误的初始化 这个 mesh buffer 的material定义，因为这个material没有完全使用到所有的 vtertex buffers
 		// let material = new Default3DMaterial();
-		// // material.normalEnabled = true;
 		// material.setTextureList([tex1]);
 		// material.initializeByCodeBuf(true);
 		// material.setRGB3f(0.5, 1.0, 1.0);

@@ -18,9 +18,9 @@ export class RbtDrama implements IShaderLibListener {
 
     private m_rscene: RendererScene = null;
     private m_engine: EngineBase = null;
-    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
+    private m_statusDisp = new RenderStatusDisplay();
 
-    private m_scene: SceneModule = new SceneModule();
+    private m_scene = new SceneModule();
 
     //private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();

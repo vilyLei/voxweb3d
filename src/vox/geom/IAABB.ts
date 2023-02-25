@@ -30,9 +30,15 @@ interface IAABB {
 	getClosePosition(in_pos: IVector3D, out_pos: IVector3D, bias?: number): void;
 	addPosition(pv: IVector3D): IAABB;
 	addXYZ(pvx: number, pvy: number, pvz: number): void;
-	addFloat32AndIndicesArr(vs: Float32Array | number[], indices: Uint16Array | Uint32Array): void;
 	/**
-	 * @param vs Float32Array instance
+	 * 
+	 * @param vs a Float32Array instance
+	 * @param indices indices Uint32Array or Uint16Aray data 
+	 * @param step the default value is 3
+	 */
+	addFloat32AndIndices(vs: Float32Array | number[], indices: Uint16Array | Uint32Array, step?: number): void;
+	/**
+	 * @param vs a Float32Array instance
 	 * @param step the default value is 3
 	 */
 	addFloat32Arr(vs: Float32Array | number[], step?: number): void;

@@ -133,12 +133,8 @@ export default class Tube3DMesh extends MeshBase {
             ROVertexBuffer.AddFloat32Data(this.m_nvs, 3);
         }
 
-        if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX)) {
-            let tvs: Float32Array = new Float32Array(this.m_vs.length);
-            let btvs: Float32Array = new Float32Array(this.m_vs.length);
-            SurfaceNormalCalc.ClacTrisTangent(this.m_vs, this.m_vs.length, this.m_uvs, this.m_nvs, this.trisNumber, this.m_ivs, tvs, btvs);
-            ROVertexBuffer.AddFloat32Data(tvs, 3);
-            ROVertexBuffer.AddFloat32Data(btvs, 3);
+        if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX)) {
+            ROVertexBuffer.AddFloat32Data(this.m_cvs, 3);
         }
         this.updateWireframeIvs();
         if (newBuild) {

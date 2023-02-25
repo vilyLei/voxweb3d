@@ -1,7 +1,6 @@
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
-import Stage3D from "../vox/display/Stage3D";
 import Keyboard from "../vox/ui/Keyboard";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import TextureProxy from "../vox/texture/TextureProxy";

@@ -1,7 +1,7 @@
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
-import Stage3D from "../vox/display/Stage3D";
+
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
@@ -35,13 +35,13 @@ export class DemoSharedVBuf {
 	}
 
 	private initEvent(): void {
-		let stage3D: Stage3D = this.m_rscene.getStage3D() as Stage3D;
-		stage3D.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-		stage3D.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener);
-		stage3D.addEventListener(MouseEvent.MOUSE_MOVE, this, this.mouseMoveListener);
+		
+		this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
+		this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener);
+		this.m_rscene.addEventListener(MouseEvent.MOUSE_MOVE, this, this.mouseMoveListener);
 
-		// stage3D.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.test_bgmouseDownListener);
-		// stage3D.addEventListener(MouseEvent.MOUSE_BG_UP, this, this.test_bgmouseUpListener);
+		// this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.test_bgmouseDownListener);
+		// this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_UP, this, this.test_bgmouseUpListener);
 	}
 	mouseDownListener(evt: any): void {
 		// console.log("mouseDown...");

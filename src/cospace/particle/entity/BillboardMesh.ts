@@ -1,4 +1,5 @@
 
+import IDataMesh from "../../../vox/mesh/IDataMesh";
 import { ICoRScene } from "../../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 
@@ -6,9 +7,9 @@ class BillboardMesh {
 	private m_vs: Float32Array = null;
 	private m_uvs: Float32Array = null;
 	private m_ivs: Uint16Array = null;
-	flipVerticalUV: boolean = false;
+	flipVerticalUV = false;
 	vtxUVEnabled: boolean = true;
-	mesh = CoRScene.createDataMesh();
+	mesh: IDataMesh;// = CoRScene.createDataMesh();
 	constructor() {}
 
 	initialize(pwidth: number, pheight: number): void {
@@ -16,10 +17,10 @@ class BillboardMesh {
 			return;
 		}
 		//console.log("RectPlaneMesh::initialize()...");
-		let maxX: number = 0.5 * pwidth;
-		let maxY: number = 0.5 * pheight;
-		let minX: number = -maxX;
-		let minY: number = -maxY;
+		let maxX = 0.5 * pwidth;
+		let maxY = 0.5 * pheight;
+		let minX = -maxX;
+		let minY = -maxY;
 		this.m_ivs = new Uint16Array([1, 2, 0, 3]);
 		this.m_vs = new Float32Array([minX, minY, maxX, minY, maxX, maxY, minX, maxY]);
 		if (this.vtxUVEnabled) {
@@ -31,9 +32,8 @@ class BillboardMesh {
 				}
 			}
 		}
-		let mh = this.mesh;
+		let mh = CoRScene.createDataMesh();
 
-		mh.vsStride = 2;
 		mh.autoBuilding = false;
 		mh.vtxTotal = 4;
 		mh.trisNumber = 2;
@@ -44,9 +44,10 @@ class BillboardMesh {
 		mh.bounds.max.setXYZ(maxX, maxY, maxX);
 		mh.bounds.updateFast();
 
-		mh.setVS(this.m_vs);
+		mh.setVS(this.m_vs, 2);
 		mh.setUVS(this.m_uvs);
 		mh.setIVS(this.m_ivs);
+		this.mesh = mh;
 	}
 	destroy(): void {
 		this.m_vs = null;

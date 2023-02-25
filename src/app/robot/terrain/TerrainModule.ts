@@ -42,8 +42,8 @@ class TerrainModule {
         
         terrData.positionOffset.y = -terrData.terrainHeight;
 
-        let stvs: Uint16Array = new Uint16Array(terrData.rn * terrData.cn);
-        for(let i: number = 0; i < stvs.length; ++i) {
+        let stvs = new Uint16Array(terrData.rn * terrData.cn);
+        for(let i = 0; i < stvs.length; ++i) {
             stvs[i] = Math.random() > 0.9 ? 1 : 0;
         }
         terrData.stvs = stvs;

@@ -16,28 +16,24 @@ import SurfaceNormalCalc from "../geom/SurfaceNormalCalc";
 import ITestRay from "./ITestRay";
 
 export default class DataMesh extends MeshBase implements IDataMesh {
+	
 	private m_initIVS: Uint16Array | Uint32Array = null;
-	private m_boundsChanged: boolean = true;
-	private m_vs: Float32Array = null;
-	private m_uvs: Float32Array = null;
-	private m_uvs2: Float32Array = null;
-	private m_nvs: Float32Array = null;
-	private m_cvs: Float32Array = null;
-	private m_tvs: Float32Array = null;
-	private m_btvs: Float32Array = null;
+	private m_boundsChanged = true;
+	private m_ls: Float32Array[] = new Array(10);
 
 	private m_rayTester: ITestRay = null;
-	private m_boundsVersion: number = -2;
+	private m_boundsVersion = -2;
 
-	autoBuilding: boolean = true;
-
-	vsStride: number = 3;
-	uvsStride: number = 2;
-	nvsStride: number = 3;
-	cvsStride: number = 3;
+	autoBuilding = true;
+	// v,u,n,c,t, v2,u2,n2,c2,t2
+	private m_strides = new Uint8Array([
+		3, 2, 3, 3, 3,
+		3, 2, 3, 3, 3
+	]);
 
 	constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
 		super(bufDataUsage);
+		this.m_ls.fill(null);
 	}
 	setRayTester(rayTester: ITestRay): void {
 		this.m_rayTester = rayTester;
@@ -46,8 +42,19 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	 * set vertex position data
 	 * @param vs vertex position buffer Float32Array
 	 */
-	setVS(vs: Float32Array): DataMesh {
-		this.m_vs = vs;
+	setVS(vs: Float32Array, stride: number = 3): DataMesh {
+		this.m_ls[0] = vs;
+		this.m_strides[0] = stride;
+		this.m_boundsChanged = true;
+		return this;
+	}
+	/**
+	 * set second  vertex position data
+	 * @param vs vertex position buffer Float32Array
+	 */
+	setVS2(vs: Float32Array, stride: number = 3): DataMesh {
+		this.m_ls[5] = vs;
+		this.m_strides[5] = stride;
 		this.m_boundsChanged = true;
 		return this;
 	}
@@ -55,81 +62,91 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	 * @returns vertex position buffer Float32Array
 	 */
 	getVS(): Float32Array {
-		return this.m_vs;
+		return this.m_ls[0];
+	}
+	/**
+	 * @returns vertex position buffer Float32Array
+	 */
+	getVS2(): Float32Array {
+		return this.m_ls[5];
 	}
 	/**
 	 * set vertex uv data
 	 * @param uvs vertex uv buffer Float32Array
 	 */
-	setUVS(uvs: Float32Array): DataMesh {
-		this.m_uvs = uvs;
+	setUVS(uvs: Float32Array, stride: number = 2): DataMesh {
+		this.m_ls[1] = uvs;
+		this.m_strides[1] = stride;
 		return this;
 	}
 	/**
 	 * set second vertex uv data
 	 * @param uvs vertex uv buffer Float32Array
 	 */
-	setUVS2(uvs: Float32Array): DataMesh {
-		this.m_uvs2 = uvs;
+	setUVS2(uvs: Float32Array, stride: number = 2): DataMesh {
+		this.m_ls[6] = uvs;
+		this.m_strides[6] = stride;
 		return this;
 	}
 	/**
 	 * @returns vertex uv buffer Float32Array
 	 */
 	getUVS(): Float32Array {
-		return this.m_uvs;
+		return this.m_ls[1];
+	}
+	/**
+	 * @returns second vertex uv buffer Float32Array
+	 */
+	getUVS2(): Float32Array {
+		return this.m_ls[6];
 	}
 	/**
 	 * set vertex normal data
 	 * @param vs vertex normal buffer Float32Array
 	 */
-	setNVS(nvs: Float32Array): DataMesh {
-		this.m_nvs = nvs;
+	setNVS(nvs: Float32Array, stride: number = 3): DataMesh {
+		this.m_ls[2] = nvs;
+		this.m_strides[2] = stride;
 		return this;
 	}
 	/**
 	 * @returns vertex normal buffer Float32Array
 	 */
 	getNVS(): Float32Array {
-		return this.m_nvs;
+		return this.m_ls[2];
+	}
+
+	/**
+	 * set vertex color(r,g,b) data
+	 * @param vs vertex color(r,g,b) buffer Float32Array
+	 */
+	setCVS(cvs: Float32Array, stride: number = 3): DataMesh {
+		this.m_ls[3] = cvs;
+		this.m_strides[3] = stride;
+		return this;
+	}
+	/**
+	 * @returns vertex color(r,g,b) data
+	 */
+	getCVS(): Float32Array {
+		return this.m_ls[3];
 	}
 	/**
 	 * set vertex tangent data
 	 * @param vs vertex tangent buffer Float32Array
 	 */
-	setTVS(tvs: Float32Array): DataMesh {
-		this.m_tvs = tvs;
+	setTVS(tvs: Float32Array, stride: number = 3): DataMesh {
+		this.m_ls[4] = tvs;
+		this.m_strides[4] = stride;
 		return this;
 	}
 	/**
 	 * @returns vertex tangent buffer Float32Array
 	 */
 	getTVS(): Float32Array {
-		return this.m_tvs;
+		return this.m_ls[4];
 	}
 
-	/**
-	 * set vertex bitangent data
-	 * @param vs vertex bitangent buffer Float32Array
-	 */
-	setBTVS(btvs: Float32Array): DataMesh {
-		this.m_btvs = btvs;
-		return this;
-	}
-	/**
-	 * set vertex color(r,g,b) data
-	 * @param vs vertex color(r,g,b) buffer Float32Array
-	 */
-	setCVS(cvs: Float32Array): DataMesh {
-		this.m_cvs = cvs;
-		return this;
-	}
-	/**
-	 * @returns vertex bitangent buffer Float32Array
-	 */
-	getBTVS(): Float32Array {
-		return this.m_btvs;
-	}
 
 	setIVS(ivs: Uint16Array | Uint32Array): DataMesh {
 		this.m_initIVS = ivs;
@@ -139,32 +156,44 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	}
 
 	initializeFromGeometry(geom: IGeometry): void {
-		this.m_vs = geom.getVS();
-		this.m_uvs = geom.getUVS();
-		this.m_nvs = geom.getNVS();
-		this.m_tvs = geom.getTVS();
-		this.m_btvs = geom.getBTVS();
-		this.m_cvs = geom.getCVS();
+		
+		this.setVS(geom.getVS());
+		this.setUVS(geom.getUVS());
+		this.setNVS(geom.getNVS());
+		this.setCVS(geom.getCVS());
+		this.setTVS(geom.getTVS());
 		this.m_ivs = geom.getIVS();
 
 		this.m_initIVS = this.m_ivs;
 		this.m_boundsChanged = true;
 		this.initialize();
 	}
-
+	private addFloat32Data(data: Float32Array, type: number, stride: number, info: string = ""): void {
+		let free = this.getBufSortFormat() < 1;
+		free = this.isVBufEnabledAt(type) || (free && data != null);
+		// console.log("DataMesh::addFloat32Data(), info: ", info, ", free: ", free, ", data: ", data);
+		if (free) {
+			ROVertexBuffer.AddFloat32Data(data, stride);
+		}
+	}
 	initialize(): void {
-		if (this.m_vs != null) {
 
+		let ls = this.m_ls;
+		if (ls[0] != null) {
+
+			let ds = this.m_strides;
+			let vs = ls[0];
+			let vsStride = ds[0];
 			if (this.autoBuilding) {
 
 				if (this.bounds == null) {
 					this.bounds = new AABB();
-					this.bounds.addFloat32Arr(this.m_vs);
+					this.bounds.addFloat32Arr(vs, vsStride);
 					this.bounds.update();
 				} else if (this.m_boundsChanged || this.m_boundsVersion == this.bounds.version) {
 					this.bounds.reset();
 					// 如果重新init, 但是版本号却没有改变，说明bounds需要重新计算
-					this.bounds.addFloat32Arr(this.m_vs);
+					this.bounds.addFloat32Arr(vs, vsStride);
 					this.bounds.update();
 				}
 			}
@@ -172,43 +201,39 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 			this.m_boundsChanged = false;
 
 			this.m_ivs = this.m_initIVS;
-			let free = this.getBufSortFormat() < 1;
 			ROVertexBuffer.Reset();
-			ROVertexBuffer.AddFloat32Data(this.m_vs, this.vsStride);
-			if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX) || (free && this.m_uvs != null)) {
-				ROVertexBuffer.AddFloat32Data(this.m_uvs, this.uvsStride);
-			} else {
-				console.warn("DataMesh hasn't uv data.");
-			}
-			if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX) || (free && this.m_nvs != null)) {
-				if (this.m_nvs == null) {
+			// console.log("XXXXXX vsStride: ", vsStride, ", vs: ", vs);
+			ROVertexBuffer.AddFloat32Data(vs, vsStride);
+
+			const vc = VtxBufConst;
+			const vcf = this.addFloat32Data.bind(this);
+
+			vcf(ls[1], vc.VBUF_UVS_INDEX, ds[1]);
+
+			let nvsIndex = 2;
+			let nvs = ls[nvsIndex];
+			let free = this.getBufSortFormat() < 1;
+			if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX) || (free && nvs != null)) {
+				if (nvs == null) {
 					let trisNumber = this.m_ivs.length / 3;
-					this.m_nvs = new Float32Array(this.m_vs.length);
-					SurfaceNormalCalc.ClacTrisNormal(this.m_vs, this.m_vs.length, trisNumber, this.m_ivs, this.m_nvs);
+					nvs = new Float32Array(vs.length);
+					SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, this.m_ivs, nvs);
+					ls[nvsIndex] = nvs;
 				}
-				ROVertexBuffer.AddFloat32Data(this.m_nvs, this.nvsStride);
-			} else {
-				console.warn("DataMesh hasn't normal(nvs) data.");
+				// console.log("XXXXXX vsStride: ", ds[nvsIndex], ", nvs: ", nvs);
+				ROVertexBuffer.AddFloat32Data(nvs, ds[nvsIndex]);
 			}
-			if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX) || (free && this.m_cvs != null)) {
-				ROVertexBuffer.AddFloat32Data(this.m_cvs, this.cvsStride);
-			}
-			// else {
-			// 	console.warn("DataMesh hasn't color(cvs) data.");
-			// }
-			if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX)) {
-				ROVertexBuffer.AddFloat32Data(this.m_tvs, 3);
-				ROVertexBuffer.AddFloat32Data(this.m_btvs, 3);
-			}
-			
-			if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS2_INDEX) || (free && this.m_uvs2 != null)) {
-				ROVertexBuffer.AddFloat32Data(this.m_uvs2, this.uvsStride);
-			}
+
+			vcf(ls[3], vc.VBUF_CVS_INDEX, ds[3]);
+			vcf(ls[4], vc.VBUF_TVS_INDEX, ds[4]);
+			vcf(ls[5], vc.VBUF_VS2_INDEX, ds[5]);
+			vcf(ls[6], vc.VBUF_UVS2_INDEX, ds[6]);
+
 			ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
 
 			this.vtCount = this.m_ivs.length;
 			if (this.autoBuilding) {
-				this.vtxTotal = this.m_vs.length / this.vsStride;
+				this.vtxTotal = vs.length / vsStride;
 				this.updateWireframeIvs();
 				this.vtCount = this.m_ivs.length;
 				this.trisNumber = this.vtCount / 3;
@@ -256,13 +281,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 				this.m_rayTester = null;
 			}
 
-			this.m_vs = null;
-			this.m_uvs = null;
-			this.m_uvs2 = null;
-			this.m_nvs = null;
-			this.m_cvs = null;
-			this.m_tvs = null;
-			this.m_btvs = null;
+			this.m_ls.fill(null);
 			this.m_initIVS = null;
 
 			super.__$destroy();

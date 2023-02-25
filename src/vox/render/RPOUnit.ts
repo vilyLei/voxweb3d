@@ -30,33 +30,33 @@ import DebugFlag from "../debug/DebugFlag";
  */
 export default class RPOUnit implements IPoolNode, IRPODisplay {
 
-    uid: number = -1;
-    value: number = -1;
+    uid = -1;
+    value = -1;
     // 记录自身和RPONode的对应关系
-    __$rpuid: number = -1;
+    __$rpuid = -1;
     // renderProcess uid
-    __$rprouid: number = -1;
+    __$rprouid = -1;
     shader: IRenderShader = null;
     // 这个posotion和bounds的center会是同一个实例
     pos: IVector3D = null;
     bounds: IAABB = null;
     // 记录对应的RODisplay的渲染所需的状态数据
-    ibufType: number = 0;                // UNSIGNED_SHORT or UNSIGNED_INT
-    ibufStep: number = 2;                // 2 or 4
-    ivsIndex: number = 0;
-    ivsCount: number = 0;
-    insCount: number = 0;
-    drawOffset: number = 0;
+    ibufType = 0;                // UNSIGNED_SHORT or UNSIGNED_INT
+    ibufStep = 2;                // 2 or 4
+    ivsIndex = 0;
+    ivsCount = 0;
+    insCount = 0;
+    drawOffset = 0;
 
-    partTotal: number = 0;               // partTotal = partGroup.length
+    partTotal = 0;               // partTotal = partGroup.length
     partGroup: Uint16Array = null;
-    trisNumber: number = 0;
-    visible: boolean = true;
-    drawEnabled: boolean = true;
-    drawMode: number = 0;
+    trisNumber = 0;
+    visible = true;
+    drawEnabled = true;
+    drawMode = 0;
 
-    renderState: number = 0;
-    rcolorMask: number = 0;
+    renderState = 0;
+    rcolorMask = 0;
     // 用于记录 renderState(低10位)和ColorMask(高10位) 的状态组合
     drawFlag: number = 0;
     indicesRes: ROIndicesRes;
@@ -67,11 +67,11 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     // materiall uniform
     uniform: IRenderShaderUniform = null;
     // 记录 material 对应的 shader program uid
-    shdUid: number = -1;
-    vtxUid: number = -1;
+    shdUid = -1;
+    vtxUid = -1;
     // record tex group
     tro: ITextureRenderObj = null;
-    texMid: number = -1;
+    texMid = -1;
     ubo: ShaderUBO = null;
     /**
      *  for example: [-70.0,1.0]

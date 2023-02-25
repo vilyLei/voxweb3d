@@ -23,11 +23,11 @@ class SimpleTerrain {
     private m_materialCtx: CommonMaterialContext = null;
     private m_terrainData: TerrainData;
 
-    envAmbientLightEnabled: boolean = false;
-    shadowReceiveEnabled: boolean = false;
-    fogEnabled: boolean = false;
-    renderProcessIndex: number = 1;
-    colorBrightness: number = 1.0;
+    envAmbientLightEnabled = false;
+    shadowReceiveEnabled = false;
+    fogEnabled = false;
+    renderProcessIndex = 1;
+    colorBrightness = 1.0;
     diffuseMap2: IRenderTexture = null;
     diffuseMap2Matrix: Matrix4 = null;
     initialize(scene: RendererScene, materialCtx: CommonMaterialContext, terrainData: TerrainData): void {
@@ -61,24 +61,24 @@ class SimpleTerrain {
     }
     private initTerrain(): void {
 
-        let size: number = this.m_terrainData.gridSize;
-        let terrainHeight: number = this.m_terrainData.terrainHeight;
+        let size = this.m_terrainData.gridSize;
+        let terrainHeight = this.m_terrainData.terrainHeight;
         let minV = new Vector3D(-size * 0.5, 0, -size * 0.5);
         let maxV = new Vector3D(size * 0.5, terrainHeight, size * 0.5);
         let obstacleMinV = new Vector3D(-size * 0.5, 0, -size * 0.5);
         let obstacleMaxV = new Vector3D(size * 0.5, this.m_terrainData.obstacleHeight, size * 0.5);
-        let color: Color4 = new Color4();
+        let color = new Color4();
         let normalMap = null;//this.m_materialCtx.getTextureByUrl("static/assets/disp/box_NRM.png");
         let aoMap = null;//this.m_materialCtx.getTextureByUrl("static/assets/rock_a.jpg");
         let material = this.createLambertMaterial(this.m_materialCtx.getTextureByUrl("static/assets/box_wood01.jpg"), normalMap, aoMap, true);
-        let srcBox: Box3DEntity = new Box3DEntity();
+        let srcBox = new Box3DEntity();
         srcBox.vtxColor = color;
         srcBox.setMaterial( material );
         srcBox.initialize(minV, maxV, [this.m_materialCtx.getTextureByUrl("static/assets/box_wood01.jpg")]);
 
-        let obsMeshMerger: GeometryMerger = new GeometryMerger();
-        let meshMerger1: GeometryMerger = new GeometryMerger();
-        let meshMerger2: GeometryMerger = new GeometryMerger();
+        let obsMeshMerger = new GeometryMerger();
+        let meshMerger1 = new GeometryMerger();
+        let meshMerger2 = new GeometryMerger();
 
         ///*
         //let tex0 = this.m_materialCtx.getTextureByUrl("static/assets/disp/box_COLOR.png");

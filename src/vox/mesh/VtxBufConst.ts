@@ -44,7 +44,7 @@ class VtxBufConst {
     static VBUF_NVS2_INDEX = BC.BIT_ONE_7;
     static VBUF_CVS2_INDEX = BC.BIT_ONE_8;
     static VBUF_TVS2_INDEX = BC.BIT_ONE_9;
-    // name
+    // attributes name
     static VBUF_VS_NS = "a_vs";
     static VBUF_VS2_NS = "a_vs2";
     static VBUF_UVS_NS = "a_uvs";
@@ -55,7 +55,7 @@ class VtxBufConst {
     static VBUF_CVS2_NS = "a_cvs2";
     static VBUF_TVS_NS = "a_tvs";
     static VBUF_TVS2_NS = "a_tvs2";
-    //
+    
     static ToGL(gl: any, param: number): number {
 		const vbc = VtxBufConst;
         switch (param) {

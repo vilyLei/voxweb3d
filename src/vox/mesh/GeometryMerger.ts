@@ -17,7 +17,7 @@ class GeomDataNode {
     uvs: Float32Array = null;
     nvs: Float32Array = null;
     cvs: Float32Array = null;
-    vsBufStep: number = 3;
+    vsStride: number = 3;
     mat4: IMatrix4 = null;
     offset: Vector3D = null;
     
@@ -38,15 +38,15 @@ class GeometryMerger extends GeometryBase {
     constructor() {
         super();
     }
-    static MergeSameIvs(src_ivs: Uint16Array | Uint32Array, src_vs: Float32Array, vsBufStep: number, total: number): Uint16Array | Uint32Array {
+    static MergeSameIvs(src_ivs: Uint16Array | Uint32Array, src_vs: Float32Array, vsStride: number, total: number): Uint16Array | Uint32Array {
         
-        let len: number = src_ivs.length;
-        let new_ivs: Uint16Array = new Uint16Array(len * total);
+        let len = src_ivs.length;
+        let new_ivs = new Uint16Array(len * total);
         new_ivs.set(src_ivs, 0);
-        let ivsStep: number = src_vs.length / vsBufStep;
-        let i: number = 0;
-        let k0: number = 0;
-        let k1: number = 0;
+        let ivsStep = src_vs.length / vsStride;
+        let i = 0;
+        let k0 = 0;
+        let k1 = 0;
         for (k0 = 1; k0 < total; ++k0) {
             ivsStep = k0 * 24;
             i = len * k0;
@@ -60,10 +60,10 @@ class GeometryMerger extends GeometryBase {
     }
     addEntity(entity: DisplayEntity, toWorld: boolean = true): void {
 
-        if (entity != null) {
-
-            let mesh = entity.getMesh();
-            let node: GeomDataNode = new GeomDataNode();
+        let mesh = entity.getMesh();
+        if (entity != null && mesh != null) {
+            entity.update();
+            let node = new GeomDataNode();
             node.ivs = mesh.getIVS();
             node.vs = mesh.getVS();
             node.uvs = mesh.getUVS();
@@ -79,7 +79,7 @@ class GeometryMerger extends GeometryBase {
     }
     addGeometry(geom: GeometryBase, mat4: IMatrix4 = null): void {
         if (geom != null && geom != this) {
-            let node: GeomDataNode = new GeomDataNode();
+            let node = new GeomDataNode();
             node.ivs = geom.getIVS();
             node.vs = geom.getVS();
             node.uvs = geom.getUVS();
@@ -114,31 +114,32 @@ class GeometryMerger extends GeometryBase {
         let cvs: Float32Array = null;
         let i: number = 0;
         let node: GeomDataNode = null;
-        let tot: number = this.m_nodes.length;
-        if (tot > 1) {
+        let tot = this.m_nodes.length;
+        if (tot > 0) {
 
-            let j: number = 0;
-            let ivsLen: number = 0;
-            let vsLen: number = 0;
-            let uvsLen: number = 0;
-            let nvsLen: number = 0;
-            let cvsLen: number = 0;
+            let j = 0;
+            let ivsLen = 0;
+            let vsLen = 0;
+            let uvsLen = 0;
+            let nvsLen = 0;
+            let cvsLen = 0;
 
-            let ivsI: number = 0;
-            let vsI: number = 0;
-            let uvsI: number = 0;
-            let nvsI: number = 0;
-            let cvsI: number = 0;
+            let ivsI = 0;
+            let vsI = 0;
+            let uvsI = 0;
+            let nvsI = 0;
+            let cvsI = 0;
 
             for (i = 0; i < tot; ++i) {
                 node = this.m_nodes[i];
+                console.log("node: ", node);
                 ivsLen += node.ivs.length;
                 vsLen += node.vs.length;
                 if (node.uvs != null) uvsLen += node.uvs.length;
                 if (node.nvs != null) nvsLen += node.nvs.length;
                 if (node.cvs != null) cvsLen += node.cvs.length;
             }
-            let vtxTotal: number = vsLen / node.vsBufStep;
+            let vtxTotal = vsLen / node.vsStride;
             if (vtxTotal > 65535) {
                 ivs = new Uint32Array(ivsLen);
             }
