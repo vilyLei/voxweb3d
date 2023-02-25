@@ -100,8 +100,8 @@ class ROIndicesRes implements IROIndicesRes {
 
             let ird = ivtx.getIvsDataAt();
             this.m_ivsData = ird;
-            this.ibufStep = ird.bufStep;
-            let initIBufStep = this.ibufStep;
+            // this.ibufStep = ird.bufStep;
+            // let initIBufStep = this.ibufStep;
             /*
             this.m_gbuf = rc.createBuf();
             rc.bindEleBuf(this.m_gbuf);
@@ -124,21 +124,22 @@ class ROIndicesRes implements IROIndicesRes {
             }
             //*/
 
-            let bufData = this.createBuf(rc, ivtx);
+            
+            // let bufData = this.createBuf(0, rc, ivtx);
 
-            this.m_gbufs[0] = bufData.buf;
-            this.m_counts[0] = bufData.size;
-            this.m_steps[0] = bufData.step;
-
-            // if(initIBufStep != this.m_steps[0]) {
-            //     console.log("PPPPP initIBufStep: ", initIBufStep, "this.m_steps[0]: ", this.m_steps[0]);
-            // }
-            // this.m_gbuf = this.m_gbufs[0];
-            // this.m_ivsSize = this.m_counts[0];
-            this.toShape();
+            // this.m_gbufs[0] = bufData.buf;
+            // this.m_counts[0] = bufData.size;
+            // this.m_steps[0] = bufData.step;
+            this.createBuf(0, rc, ivtx);
+            if (ird.wireframe) {
+                this.createBuf(1, rc, ivtx, ird.wireframe);
+                this.toWireframe();
+            } else {
+                this.toShape();
+            }
         }
     }
-    private createBuf(rc: IROVtxBuilder, ivtx: IROIVtxBuf, wireframe: boolean = false): BufR {
+    private createBuf(i: number, rc: IROVtxBuilder, ivtx: IROIVtxBuf, wireframe: boolean = false): BufR {
 
         let ird = ivtx.getIvsDataAt();
         let ivs = ird.ivs;
@@ -150,7 +151,7 @@ class ROIndicesRes implements IROIndicesRes {
 
         if (ivtx.bufData == null) {
 
-            if(wireframe) {
+            if (wireframe) {
                 ivs = this.createWireframeIvs(ivs);
             }
             rc.eleBufData(ivs, ivtx.getBufDataUsage());
@@ -165,13 +166,13 @@ class ROIndicesRes implements IROIndicesRes {
             for (let i = 0, len = ivtx.bufData.getIndexDataTotal(); i < len; ++i) {
                 const rd = ivtx.bufData.getIndexDataAt(i);
                 ivs = rd.ivs;
-                if(wireframe) {
+                if (wireframe) {
                     ivs = this.createWireframeIvs(ivs);
                 }
                 list[i] = ivs;
                 size += ivs.length;
             }
-            if(size > 65536) {
+            if (size > 65536) {
 
                 step = 4;
 
@@ -180,10 +181,10 @@ class ROIndicesRes implements IROIndicesRes {
                     ivs = list[i];
                     list[i] = (ivs instanceof Uint32Array) ? ivs : new Uint32Array(ivs);
                 }
-            }else {
+            } else {
                 step = 2;
                 for (let i = 0, len = list.length; i < len; ++i) {
-                    
+
                     ivs = list[i];
                     list[i] = (ivs instanceof Uint16Array) ? ivs : new Uint16Array(ivs);
                 }
@@ -193,7 +194,7 @@ class ROIndicesRes implements IROIndicesRes {
             for (let i = 0, len = list.length; i < len; ++i) {
                 size += list[i].byteLength;
             }
-            
+
             rc.eleBufDataMem(size, ivtx.getBufDataUsage());
 
             offset = 0;
@@ -208,7 +209,11 @@ class ROIndicesRes implements IROIndicesRes {
             }
         }
 
-        return { buf: gbuf, size: size, step: step };
+        let bufData: BufR = { buf: gbuf, size: size, step: step };
+        this.m_gbufs[i] = bufData.buf;
+        this.m_counts[i] = bufData.size;
+        this.m_steps[i] = bufData.step;
+        return bufData;
     }
 
     destroy(rc: IROVtxBuilder): void {
@@ -229,7 +234,7 @@ class ROIndicesRes implements IROIndicesRes {
         if (ivs !== null) {
 
             const len = ivs.length * 2;
-            const wivs = len > 65536 ? new Uint32Array(len): new Uint16Array(len);
+            const wivs = len > 65536 ? new Uint32Array(len) : new Uint16Array(len);
             let a: number;
             let b: number;
             let c: number;
