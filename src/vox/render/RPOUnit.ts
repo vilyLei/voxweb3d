@@ -119,10 +119,11 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         const st = rc.status;
         st.drawCallTimes ++;
         st.drawTrisNumber += this.trisNumber;
+        const ir = this.indicesRes;
         // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
-        let ivsCount = this.indicesRes.getVTCount();
-        if (this.ivsCount <= ivsCount) ivsCount = this.ivsCount;
-
+        let ivsCount = ir.getVTCount();
+        // if (this.ivsCount <= ivsCount) ivsCount = this.ivsCount;
+        // console.log("xxx runit xxx ivsCount: ", ivsCount, this.indicesRes.getVTCount());
         if(this.polygonOffset != null) {
             rc.setPolygonOffset(this.polygonOffset[0],this.polygonOffset[1]);
         }
@@ -131,14 +132,14 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         }
         const rdm = RenderDrawMode;
         let gl = rc.RContext;
-        switch (this.drawMode) {
+        switch (ir.drawMode) {
             case rdm.ELEMENTS_TRIANGLES:
                 // if(DebugFlag.Flag_0 > 0)console.log("RPOUnit::run(), TRIANGLES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
                 //rc.RContext.drawElements(rc.TRIANGLES, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
                 gl.drawElements(rc.TRIANGLES, ivsCount, this.ibufType, this.drawOffset);
                 break;
             case rdm.ELEMENTS_LINES:
-                //console.log("RPOUnit::run(), ELEMENTS_LINES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
+                // console.log("RPOUnit::run(), ELEMENTS_LINES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
                 //rc.RContext.drawElements(rc.ELEMENTS_LINES, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
                 gl.drawElements(rc.LINES, ivsCount, this.ibufType, this.drawOffset);
                 break;
@@ -176,9 +177,10 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         st.drawCallTimes ++;
         st.drawTrisNumber += this.trisNumber;
 
+        const ir = this.indicesRes;
         // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
-        let ivsCount = this.indicesRes.getVTCount();
-        if (this.ivsCount <= ivsCount) ivsCount = this.ivsCount;
+        // let ivsCount = ir.getVTCount();
+        // if (this.ivsCount <= ivsCount) ivsCount = this.ivsCount;
 
         if(this.polygonOffset != null) {
             rc.setPolygonOffset(this.polygonOffset[0],this.polygonOffset[1]);
@@ -190,7 +192,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         const rdm = RenderDrawMode;
         let i = 0;
         let gl = rc.RContext;
-        switch (this.drawMode) {
+        switch (ir.drawMode) {
             case rdm.ELEMENTS_TRIANGLES:
                 for (; i < this.partTotal;) {
                     // 这里面可以增加一个回调函数,这个回调函数可以对uniform(或者transformUniform)做一些数据改变，进而来控制相应的状态

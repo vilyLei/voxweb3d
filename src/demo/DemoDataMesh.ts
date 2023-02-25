@@ -112,7 +112,8 @@ export class DemoDataMesh {
 		let model: IGeomModelData = {vertices: vs, uvsList: [uvs], normals: nvs, indices: ivs, wireframe: true};
 		// let mesh = VoxRScene.createDataMeshFromModel(model, material);
 		let mesh = MeshFactor.createDataMeshFromModel(model);
-
+		//0, 1, 1, 2, 2, 0, 0, 2, 2, 3, 3, 0
+		//0, 1, 1, 2, 2, 0, 0, 2, 2, 3, 3, 0
 		let scale = 10.0;
 		let entity = new DisplayEntity();
 		entity.setMaterial(material);

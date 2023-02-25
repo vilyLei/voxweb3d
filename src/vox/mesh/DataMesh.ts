@@ -248,12 +248,14 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 			if (this.autoBuilding) {
 				this.vtxTotal = vs.length / vsStride;
 
-				// this.toElementsLines();
+				this.toElementsLines();
 				// let pivs = this.updateWireframeIvs(ivs);
 				// if(this.wireframe && pivs != null) {
+				// 	console.log("pivs: ",pivs);
 				// 	ivs = pivs;
 				// }
 				this.vtCount = ivs.length;
+				// this.vtCount = 12;
 				this.trisNumber = this.vtCount / 3;
 			}
 

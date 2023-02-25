@@ -10,6 +10,7 @@ import IROVtxBuilder from "../../../vox/render/IROVtxBuilder";
 import IROIVtxBuf from "../../../vox/render/IROIVtxBuf";
 import IROIvsData from "../../../vox/render/vtx/IROIvsData";
 import { IROIndicesRes } from "./IROIndicesRes";
+import { RenderDrawMode as RDM } from "../RenderConst";
 
 interface BufR {
     buf: any;
@@ -23,16 +24,23 @@ class ROIndicesRes implements IROIndicesRes {
     private m_rc: IROVtxBuilder;
     private m_vtx: IROIVtxBuf = null;
     private m_vtxUid = 0;
-    private m_gbufs: any[] = new Array(2);
-    private m_counts: any[] = new Array(2);
-    private m_steps: any[] = new Array(2);
+
     private m_gbuf: any;
+    private m_gbufs: any[] = new Array(2);
+    private m_sizes: number[] = new Array(2);
+    private m_steps: number[] = new Array(2);
+
     private m_ivsSize = 0;
     private m_ivsData: IROIvsData = null;
+
     version = -1;
     ibufStep = 0;
+    drawMode = RDM.ELEMENTS_TRIANGLES;
+
     constructor() {
         this.m_gbufs.fill(null);
+        this.m_sizes.fill(0);
+        this.m_steps.fill(2);
     }
     getUid(): number {
         return this.m_uid;
@@ -48,14 +56,17 @@ class ROIndicesRes implements IROIndicesRes {
     }
     toWireframe(): void {
 
+        this.drawMode = RDM.ELEMENTS_LINES;
         this.m_gbuf = this.m_gbufs[1];
-        this.m_ivsSize = this.m_counts[1];
+        this.m_ivsSize = this.m_sizes[1];
         this.ibufStep = this.m_steps[1];
+        // console.log("toWireframe()............");
     }
     toShape(): void {
 
+        this.drawMode = RDM.ELEMENTS_TRIANGLES;
         this.m_gbuf = this.m_gbufs[0];
-        this.m_ivsSize = this.m_counts[0];
+        this.m_ivsSize = this.m_sizes[0];
         this.ibufStep = this.m_steps[0];
     }
     use(force: boolean = false): void {
@@ -124,12 +135,6 @@ class ROIndicesRes implements IROIndicesRes {
             }
             //*/
 
-            
-            // let bufData = this.createBuf(0, rc, ivtx);
-
-            // this.m_gbufs[0] = bufData.buf;
-            // this.m_counts[0] = bufData.size;
-            // this.m_steps[0] = bufData.step;
             this.createBuf(0, rc, ivtx);
             if (ird.wireframe) {
                 this.createBuf(1, rc, ivtx, ird.wireframe);
@@ -152,11 +157,14 @@ class ROIndicesRes implements IROIndicesRes {
         if (ivtx.bufData == null) {
 
             if (wireframe) {
+                console.log("A0 XXXXX ivs.length: ", ivs.length);
                 ivs = this.createWireframeIvs(ivs);
+                console.log("A1 XXXXX ivs.length: ", ivs.length);
             }
             rc.eleBufData(ivs, ivtx.getBufDataUsage());
             size = ivs.length;
             step = size > 65536 ? 4 : 2;
+            console.log("A2 XXXXX ivs: ", ivs);
         }
         else {
 
@@ -211,8 +219,9 @@ class ROIndicesRes implements IROIndicesRes {
 
         let bufData: BufR = { buf: gbuf, size: size, step: step };
         this.m_gbufs[i] = bufData.buf;
-        this.m_counts[i] = bufData.size;
+        this.m_sizes[i] = bufData.size;
         this.m_steps[i] = bufData.step;
+        console.log("xxxxx bufData: ", bufData);
         return bufData;
     }
 
