@@ -19,6 +19,7 @@ import IRenderMaterial from "../vox/render/IRenderMaterial";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
 
 export class DemoDataMesh {
 	private m_rscene: RendererScene = null;
@@ -118,10 +119,14 @@ export class DemoDataMesh {
 	}
 	private initEntitys(): void {
 
-		let plane = new Plane3DEntity();
-		plane.wireframe = true;
-		plane.initializeXOZSquare(100);
-		this.m_rscene.addEntity( plane );
+		let axis = new Axis3DEntity();
+		axis.initialize();
+		this.m_rscene.addEntity( axis );
+
+		// let plane = new Plane3DEntity();
+		// plane.wireframe = true;
+		// plane.initializeXOZSquare(100);
+		// this.m_rscene.addEntity( plane );
 
 		return;
 		let box0 = new Box3DEntity();

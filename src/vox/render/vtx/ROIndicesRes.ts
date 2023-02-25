@@ -11,6 +11,7 @@ import IROIVtxBuf from "../../../vox/render/IROIVtxBuf";
 import IROIvsData from "../../../vox/render/vtx/IROIvsData";
 import { IROIndicesRes } from "./IROIndicesRes";
 import { RenderDrawMode as RDM } from "../RenderConst";
+import IRODisplay from "../../display/IRODisplay";
 
 interface BufR {
     buf: any;
@@ -101,12 +102,12 @@ class ROIndicesRes implements IROIndicesRes {
             }
         }
     }
-    initialize(rc: IROVtxBuilder, ivtx: IROIVtxBuf): void {
+    initialize(rc: IROVtxBuilder, ivtx: IROIVtxBuf, disp: IRODisplay): void {
 
         this.m_rc = rc;
 
         if (this.m_gbufs[0] == null && ivtx.getIvsDataAt() != null) {
-
+            
             // console.log("ROIndicesRes::initialize(), uid: ", this.m_uid, ", ivtx: ", ivtx);
 
             this.version = ivtx.indicesVer;
@@ -123,6 +124,9 @@ class ROIndicesRes implements IROIndicesRes {
             } else {
                 this.toShape();
             }
+        }else {
+            this.m_ivsSize = this.m_sizes[0] = this.m_sizes[1] = disp.ivsCount;
+            this.drawMode = disp.drawMode;
         }
     }
     private createBuf(i: number, rc: IROVtxBuilder, ivtx: IROIVtxBuf, wireframe: boolean = false): BufR {

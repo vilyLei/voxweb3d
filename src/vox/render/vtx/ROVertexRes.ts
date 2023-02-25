@@ -310,7 +310,6 @@ class ROVertexRes {
                     //         shdp.vertexAttribPointerTypeFloat(this.m_typeList[k], this.m_wholeStride, this.m_offsetList[k]);
                     //     }
                     // }
-
                     const types = shdp.getLocationTypes();
                     for (i = 0; i < types.length; ++i) {
                         const k = ivs[types[i]];

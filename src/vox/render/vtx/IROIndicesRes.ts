@@ -7,6 +7,7 @@
 
 import IROVtxBuilder from "../../../vox/render/IROVtxBuilder";
 import IROVtxBuf from "../../../vox/render/IROVtxBuf";
+import IRODisplay from "../../display/IRODisplay";
 
 interface IROIndicesRes {
     version: number;
@@ -17,7 +18,7 @@ interface IROIndicesRes {
     getGpuBuf(): any;
     getVTCount(): number;
     updateToGpu(rc: IROVtxBuilder): void;
-    initialize(rc: IROVtxBuilder, vtx: IROVtxBuf): void;
+    initialize(rc: IROVtxBuilder, vtx: IROVtxBuf, disp: IRODisplay): void;
 
     destroy(rc: IROVtxBuilder): void;
 }

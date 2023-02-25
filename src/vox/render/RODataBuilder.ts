@@ -314,7 +314,7 @@ export default class RODataBuilder implements IRODataBuilder {
                 let ivbuf = disp.ivbuf == null ? disp.vbuf : disp.ivbuf;
                 // console.log("RODataBuilder::buildVtxRes(), XXX OOO XXX ivbuf: ", ivbuf);
                 // vtx.indices.ibufStep = ivbuf.getIBufStep();
-                vtx.indices.initialize(this.m_roVtxBuild, ivbuf);
+                vtx.indices.initialize(this.m_roVtxBuild, ivbuf, disp);
                 vtx.createVertex(this.m_roVtxBuild, shdp, disp.vbuf);
                 // vtx.vertex.initialize(this.m_roVtxBuild, shdp, disp.vbuf);
                 // vtx.version = disp.vbuf.version;
