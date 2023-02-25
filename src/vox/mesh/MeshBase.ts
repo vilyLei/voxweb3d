@@ -147,7 +147,7 @@ export default class MeshBase implements IMeshBase {
         return null;
     }
     protected updateWireframeIvs(ivs: Uint16Array | Uint32Array = null): Uint16Array | Uint32Array {
-
+        return ivs;
         this.toElementsTriangles();
         let wivs: Uint16Array | Uint32Array = null;
         if (this.wireframe) {
@@ -193,7 +193,10 @@ export default class MeshBase implements IMeshBase {
         return -1;
     }
     protected crateROIvsData(): ROIvsData {
-        return new ROIvsData();
+        const ird = new ROIvsData();
+        ird.wireframe = this.wireframe;
+        ird.shape = this.shape;
+        return ird;
     }
     public rebuild(): void {
         if (this.m_vbuf == null) {

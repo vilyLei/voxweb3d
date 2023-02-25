@@ -112,9 +112,9 @@ export class DemoDataMesh {
 	
 	private initScene(): void {
 		// this.testNoIndicesMesh();
-		this.testHasIndicesMesh();
+		// this.testHasIndicesMesh();
 		// this.initMergeGeomEntity();
-		// this.initEntitys();
+		this.initEntitys();
 	}
 	private initEntitys(): void {
 
