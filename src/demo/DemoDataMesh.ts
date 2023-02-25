@@ -36,9 +36,20 @@ export class DemoDataMesh {
 	}
 	mouseDownListener(evt: any): void {		
 	}
-	
+	private initCalc(): void {
+		let uv16A = new Uint16Array([0,1,2,3,4,5,6]);
+		let uv32A = new Uint32Array(uv16A);
+		console.log("uv32A: ", uv32A);
+
+		
+		let uv32B = new Uint32Array([0,1,2,3,4,5,6]);
+		let uv16B = new Uint16Array(uv32B);
+		console.log("uv16B: ", uv16B);
+	}
 	initialize(): void {
 		console.log("DataMesh::initialize()......");
+		// this.initCalc();
+		// return;
 		if (this.m_rscene == null) {
 			
 			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
@@ -89,6 +100,7 @@ export class DemoDataMesh {
 
 	private testHasIndicesMesh(): void {
 		// 推荐的模型数据组织形式
+
 		let material = new Default3DMaterial();
 		// material.normalEnabled = true;
 		material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);

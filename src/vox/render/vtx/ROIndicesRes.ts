@@ -48,11 +48,15 @@ class ROIndicesRes implements IROIndicesRes {
     }
     toWireframe(): void {
 
+        this.m_gbuf = this.m_gbufs[1];
+        this.m_ivsSize = this.m_counts[1];
+        this.ibufStep = this.m_steps[1];
     }
     toShape(): void {
+
         this.m_gbuf = this.m_gbufs[0];
         this.m_ivsSize = this.m_counts[0];
-        // this.ibufStep = this.m_steps[0];
+        this.ibufStep = this.m_steps[0];
     }
     use(force: boolean = false): void {
         if (this.m_rc.testRIOUid(this.m_vtxUid) || force) {
@@ -83,7 +87,9 @@ class ROIndicesRes implements IROIndicesRes {
         }
     }
     initialize(rc: IROVtxBuilder, ivtx: IROIVtxBuf): void {
+
         this.m_rc = rc;
+
         if (this.m_gbufs[0] == null && ivtx.getIvsDataAt() != null) {
 
             // console.log("ROIndicesRes::initialize(), uid: ", this.m_uid, ", ivtx: ", ivtx);
@@ -95,7 +101,7 @@ class ROIndicesRes implements IROIndicesRes {
             let ird = ivtx.getIvsDataAt();
             this.m_ivsData = ird;
             this.ibufStep = ird.bufStep;
-
+            let initIBufStep = this.ibufStep;
             /*
             this.m_gbuf = rc.createBuf();
             rc.bindEleBuf(this.m_gbuf);
@@ -124,36 +130,85 @@ class ROIndicesRes implements IROIndicesRes {
             this.m_counts[0] = bufData.size;
             this.m_steps[0] = bufData.step;
 
+            // if(initIBufStep != this.m_steps[0]) {
+            //     console.log("PPPPP initIBufStep: ", initIBufStep, "this.m_steps[0]: ", this.m_steps[0]);
+            // }
             // this.m_gbuf = this.m_gbufs[0];
             // this.m_ivsSize = this.m_counts[0];
             this.toShape();
         }
     }
-    private createBuf(rc: IROVtxBuilder, ivtx: IROIVtxBuf): BufR {
+    private createBuf(rc: IROVtxBuilder, ivtx: IROIVtxBuf, wireframe: boolean = false): BufR {
 
         let ird = ivtx.getIvsDataAt();
         let ivs = ird.ivs;
+        let size = 0;
 
+        let step = 2;
         let gbuf = rc.createBuf();
         rc.bindEleBuf(gbuf);
-        let size = 0;
+
         if (ivtx.bufData == null) {
+
+            if(wireframe) {
+                ivs = this.createWireframeIvs(ivs);
+            }
             rc.eleBufData(ivs, ivtx.getBufDataUsage());
             size = ivs.length;
+            step = size > 65536 ? 4 : 2;
         }
         else {
-            rc.eleBufDataMem(ivtx.bufData.getIndexDataTotalBytes(), ivtx.getBufDataUsage());
+
             let offset = 0;
+            let list: (Uint16Array | Uint32Array)[] = [];
+
             for (let i = 0, len = ivtx.bufData.getIndexDataTotal(); i < len; ++i) {
                 const rd = ivtx.bufData.getIndexDataAt(i);
                 ivs = rd.ivs;
+                if(wireframe) {
+                    ivs = this.createWireframeIvs(ivs);
+                }
+                list[i] = ivs;
+                size += ivs.length;
+            }
+            if(size > 65536) {
+
+                step = 4;
+
+                for (let i = 0, len = list.length; i < len; ++i) {
+
+                    ivs = list[i];
+                    list[i] = (ivs instanceof Uint32Array) ? ivs : new Uint32Array(ivs);
+                }
+            }else {
+                step = 2;
+                for (let i = 0, len = list.length; i < len; ++i) {
+                    
+                    ivs = list[i];
+                    list[i] = (ivs instanceof Uint16Array) ? ivs : new Uint16Array(ivs);
+                }
+            }
+
+            size = 0;
+            for (let i = 0, len = list.length; i < len; ++i) {
+                size += list[i].byteLength;
+            }
+            
+            rc.eleBufDataMem(size, ivtx.getBufDataUsage());
+
+            offset = 0;
+            size = 0;
+
+            for (let i = 0, len = list.length; i < len; ++i) {
+
+                ivs = list[i];
                 rc.eleBufSubData(ivs, offset);
                 offset += ivs.byteLength;
                 size += ivs.length;
             }
         }
 
-        return { buf: gbuf, size: size, step: ivs.length < 65535 ? 2 : 4 };
+        return { buf: gbuf, size: size, step: step };
     }
 
     destroy(rc: IROVtxBuilder): void {
@@ -174,7 +229,7 @@ class ROIndicesRes implements IROIndicesRes {
         if (ivs !== null) {
 
             const len = ivs.length * 2;
-            const wivs = len <= 65536 ? new Uint16Array(len) : new Uint32Array(len);
+            const wivs = len > 65536 ? new Uint32Array(len): new Uint16Array(len);
             let a: number;
             let b: number;
             let c: number;
