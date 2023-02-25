@@ -24,6 +24,7 @@ class ROIndicesRes implements IROIndicesRes {
     private m_rc: IROVtxBuilder;
     private m_vtx: IROIVtxBuf = null;
     private m_vtxUid = 0;
+    private m_index = 0;
 
     private m_gbuf: any;
     private m_gbufs: any[] = new Array(2);
@@ -54,8 +55,11 @@ class ROIndicesRes implements IROIndicesRes {
     getVTCount(): number {
         return this.m_ivsSize;
     }
+    isCommon(): boolean {
+        return this.m_index == 0;
+    }
     toWireframe(): void {
-
+        this.m_index = 1;
         this.drawMode = RDM.ELEMENTS_LINES;
         this.m_gbuf = this.m_gbufs[1];
         this.m_ivsSize = this.m_sizes[1];
@@ -63,7 +67,7 @@ class ROIndicesRes implements IROIndicesRes {
         // console.log("toWireframe()............");
     }
     toShape(): void {
-
+        this.m_index = 0;
         this.drawMode = RDM.ELEMENTS_TRIANGLES;
         this.m_gbuf = this.m_gbufs[0];
         this.m_ivsSize = this.m_sizes[0];
@@ -111,30 +115,7 @@ class ROIndicesRes implements IROIndicesRes {
 
             let ird = ivtx.getIvsDataAt();
             this.m_ivsData = ird;
-            // this.ibufStep = ird.bufStep;
-            // let initIBufStep = this.ibufStep;
-            /*
-            this.m_gbuf = rc.createBuf();
-            rc.bindEleBuf(this.m_gbuf);
-
-            if (ivtx.bufData == null) {
-                rc.eleBufData(ivs, ivtx.getBufDataUsage());
-                this.m_ivsSize = ivs.length;
-            }
-            else {
-                rc.eleBufDataMem(ivtx.bufData.getIndexDataTotalBytes(), ivtx.getBufDataUsage());
-                let offset = 0;
-                this.m_ivsSize = 0;
-                for (let i = 0, len = ivtx.bufData.getIndexDataTotal(); i < len; ++i) {
-                    const rd = ivtx.bufData.getIndexDataAt(i);
-                    const pivs = rd.ivs;
-                    rc.eleBufSubData(pivs, offset);
-                    offset += pivs.byteLength;
-                    this.m_ivsSize += pivs.length;
-                }
-            }
-            //*/
-
+            
             this.createBuf(0, rc, ivtx);
             if (ird.wireframe) {
                 this.createBuf(1, rc, ivtx, ird.wireframe);

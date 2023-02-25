@@ -123,7 +123,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         const ir = this.indicesRes;
         // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
         let ivsCount = ir.getVTCount();
-        if (this.ivsCount <= ivsCount && ir.drawMode == rdm.ELEMENTS_TRIANGLES) ivsCount = this.ivsCount;
+        if (this.ivsCount <= ivsCount && ir.isCommon()) ivsCount = this.ivsCount;
         // console.log("xxx runit xxx ivsCount: ", ivsCount, this.indicesRes.getVTCount());
         if(this.polygonOffset != null) {
             rc.setPolygonOffset(this.polygonOffset[0],this.polygonOffset[1]);
@@ -180,7 +180,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         const ir = this.indicesRes;
         // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
         let ivsCount = ir.getVTCount();
-        if (this.ivsCount <= ivsCount && ir.drawMode == rdm.ELEMENTS_TRIANGLES) ivsCount = this.ivsCount;
+        if (this.ivsCount <= ivsCount && ir.isCommon()) ivsCount = this.ivsCount;
 
         if(this.polygonOffset != null) {
             rc.setPolygonOffset(this.polygonOffset[0],this.polygonOffset[1]);
