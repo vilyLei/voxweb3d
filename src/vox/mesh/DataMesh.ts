@@ -272,8 +272,8 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 			}
 			
 			let ird = this.crateROIvsData();
-			ird.wireframe = this.wireframe;
-			ird.shape = this.shape;
+			// ird.wireframe = this.wireframe;
+			// ird.shape = this.shape;
 			ird.setData(ivs);
 			this.m_vbuf.setIVSDataAt(ird);
 
