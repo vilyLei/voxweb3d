@@ -12,6 +12,7 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import IGeomModelData from "../vox/mesh/IGeomModelData";
 import MeshFactor from "../vox/mesh/MeshFactory";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 export class DemoMultipleIVS {
 	private m_rscene: RendererScene = null;
@@ -53,6 +54,8 @@ export class DemoMultipleIVS {
 			this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
 			this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
 			this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
+			
+            new RenderStatusDisplay(this.m_rscene, true);
 
 			this.initScene();
 			this.initEvent();

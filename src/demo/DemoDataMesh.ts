@@ -17,6 +17,8 @@ import { GeometryMerger } from "../vox/mesh/GeometryMerger";
 import DataMesh from "../vox/mesh/DataMesh";
 import IRenderMaterial from "../vox/render/IRenderMaterial";
 import Box3DEntity from "../vox/entity/Box3DEntity";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
 
 export class DemoDataMesh {
 	private m_rscene: RendererScene = null;
@@ -59,6 +61,8 @@ export class DemoDataMesh {
 			this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
 			this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
+			new RenderStatusDisplay(this.m_rscene, true);
+
 			this.initScene();
 			this.initEvent();
 		}
@@ -93,7 +97,7 @@ export class DemoDataMesh {
 		let uvs = new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]);
 		let vs = new Float32Array([10, 0, -10, -10, 0, -10, -10, 0, 10, 10, 0, 10]);
 		let ivs = new Uint16Array([0, 1, 2, 0, 2, 3]);
-		let model: IGeomModelData = {vertices: vs, uvsList: [uvs], normals: nvs, indices: ivs};
+		let model: IGeomModelData = {vertices: vs, uvsList: [uvs], normals: nvs, indices: ivs, wireframe: true};
 		// let mesh = VoxRScene.createDataMeshFromModel(model, material);
 		let mesh = MeshFactor.createDataMeshFromModel(model);
 
@@ -109,6 +113,22 @@ export class DemoDataMesh {
 		// this.testNoIndicesMesh();
 		this.testHasIndicesMesh();
 		// this.initMergeGeomEntity();
+		// this.initEntitys();
+	}
+	private initEntitys(): void {
+
+		let plane = new Plane3DEntity();
+		plane.wireframe = true;
+		plane.initializeXOZSquare(100);
+		this.m_rscene.addEntity( plane );
+
+		return;
+		let box0 = new Box3DEntity();
+		box0.normalEnabled = true;
+		// box0.wireframe = true;
+		box0.setXYZ(-150, 0, 0);
+		box0.initializeCube(100);
+		this.m_rscene.addEntity( box0 );
 	}
 	private initMergeGeomEntity(): void {
 
@@ -138,7 +158,7 @@ export class DemoDataMesh {
         dataMesh.setBufSortFormat(material.getBufSortFormat());
         dataMesh.initializeFromGeometry(meshMerger);
 
-        let entity: DisplayEntity = new DisplayEntity();
+        let entity = new DisplayEntity();
         entity.setMaterial(material);
         entity.setMesh(dataMesh);
         this.m_rscene.addEntity(entity, 1);

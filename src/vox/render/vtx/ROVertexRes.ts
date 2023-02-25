@@ -14,6 +14,7 @@ import IROVtxBuf from "../../../vox/render/IROVtxBuf";
 import { ROIndicesRes } from "./ROIndicesRes";
 
 class ROVertexRes {
+
     private static s_map: Map<number, ROVertexRes> = new Map();
     private m_vtx: IROVtxBuf = null;
     private m_typeList: number[] = null;
@@ -35,6 +36,7 @@ class ROVertexRes {
     constructor() {
     }
     static create(rc: IROVtxBuilder, shdp: IVtxShdCtr, vtx: IROVtxBuf): ROVertexRes {
+
         let vtxUid = vtx.getUid();
         let map = ROVertexRes.s_map;
         let vt: ROVertexRes;
@@ -73,7 +75,7 @@ class ROVertexRes {
     updateToGpu(rc: IROVtxBuilder): void {
         let len = this.m_gpuBufs.length;
         if (len > 0) {
-            let vtx: IROVtxBuf = this.m_vtx;
+            let vtx = this.m_vtx;
             if (this.version != vtx.vertexVer) {
                 let usage = vtx.getBufDataUsage();
                 let fvs: Float32Array;
@@ -112,12 +114,12 @@ class ROVertexRes {
             this.m_wholeStride = 0;
             this.m_typeList = new Array(this.m_attribsTotal);
             this.m_offsetList = new Array(this.m_attribsTotal);
-            let typeList: number[] = vtx.getBufTypeList();
-            let sizeList: number[] = vtx.getBufSizeList();
+            let typeList = vtx.getBufTypeList();
+            let sizeList = vtx.getBufSizeList();
 
             if (typeList != null) {
 
-                for (let i: number = 0; i < this.m_attribsTotal; ++i) {
+                for (let i = 0; i < this.m_attribsTotal; ++i) {
                     this.m_offsetList[i] = this.m_wholeStride;
                     this.m_wholeStride += sizeList[i] * 4;
                     this.m_typeList[i] = typeList[i];
@@ -125,7 +127,7 @@ class ROVertexRes {
             }
             else {
 
-                for (let i: number = 0; i < this.m_attribsTotal; ++i) {
+                for (let i = 0; i < this.m_attribsTotal; ++i) {
                     this.m_offsetList[i] = this.m_wholeStride;
                     this.m_wholeStride += shdp.getLocationSizeByIndex(i) * 4;
                     this.m_typeList[i] = (shdp.getLocationTypeByIndex(i));
@@ -263,7 +265,7 @@ class ROVertexRes {
     // 创建被 RPOUnit 使用的 vro 实例
     createVRO(rc: IROVtxBuilder, shdp: IVtxShdCtr, vaoEnabled: boolean, ibufRes: ROIndicesRes): IVertexRenderObj {
 
-        let attribsTotal: number = shdp.getLocationsTotal();
+        let attribsTotal = shdp.getLocationsTotal();
         if ((this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal) {
 
             // console.log("ROVertexRes::createVRO(), this.m_type: ",this.m_type, ", ibufRes.getUid(): ",ibufRes.getUid(),", vtxUid: ", this.m_vtxUid);
@@ -343,12 +345,12 @@ class ROVertexRes {
 
                 }
                 pvro = vro;
-                vro.ibuf = ibufRes.getGpuBuf();
+                // vro.ibuf = ibufRes.getGpuBuf();
                 // rc.bindEleBuf(vro.ibuf);
                 rc.bindVertexArray(null);
             }
             else {
-                let vro: VertexRenderObj = VertexRenderObj.Create(rc, mid, this.m_vtx.getUid());
+                let vro = VertexRenderObj.Create(rc, mid, this.m_vtx.getUid());
                 vro.indicesRes = ibufRes;
                 vro.shdp = shdp;
                 vro.attribTypes = [];
@@ -370,7 +372,7 @@ class ROVertexRes {
                 }
 
                 vro.attribTypesLen = vro.attribTypes.length;
-                vro.ibuf = ibufRes.getGpuBuf();
+                // vro.ibuf = ibufRes.getGpuBuf();
                 pvro = vro;
             }
             this.m_vroList.push(pvro);

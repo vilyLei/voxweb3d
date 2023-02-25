@@ -6,19 +6,21 @@
 /***************************************************************************/
 
 import IVtxBufData from "../../vox/mesh/IVtxBufData";
+import IROIvsData from "../../vox/render/vtx/IROIvsData";
 interface IROIVtxBuf {
+
     indicesVer: number;
     version: number;
 
     bufData: IVtxBufData;
+    getIvsDataTotal(): number;
     /**
-     * 
      * @param index the default value is 0
      */
-    getIvsDataAt(index?: number): Uint16Array | Uint32Array;
+    getIvsDataAt(index?: number): IROIvsData;
     getUid(): number;
     getType(): number;
     getBufDataUsage(): number;
-    getIBufStep(): number;
+    // getIBufStep(): number;
 }
 export default IROIVtxBuf;

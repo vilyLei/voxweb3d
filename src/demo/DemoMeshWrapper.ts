@@ -17,6 +17,7 @@ import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import MeshWrapper from "../vox/mesh/MeshWrapper";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 export class DemoMeshWrapper {
 	private m_clearColor = new Color4(0.1, 0.2, 0.1, 1.0);
@@ -158,6 +159,8 @@ export class DemoMeshWrapper {
 			this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
 			this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
+            new RenderStatusDisplay(this.m_rscene, true);
+			
 			this.initScene();
 			this.initEvent();
 			this.m_rscene.setClearColor(this.m_clearColor);

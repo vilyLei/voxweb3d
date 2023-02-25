@@ -26,7 +26,9 @@ export default class MeshFactory {
 		let stride = Math.round(model.stride ? model.stride : 3);
 		stride = stride > 0 && stride < 4 ? stride : 3;
 		const dataMesh = new DataMesh();
+		dataMesh.wireframe = model.wireframe ? model.wireframe : false;
 		dataMesh.vbWholeDataEnabled = vbWhole;
+
 		let vtxTotal = model.vertices.length / stride;
 		dataMesh.setVS(model.vertices);
 		if (model.uvsList && model.uvsList.length > 0) {
@@ -48,7 +50,6 @@ export default class MeshFactory {
 			for (let i = 0; i < vtxTotal; ++i) {
 				ivs[i] = i;
 			}
-			// console.log("crate a new ivs: ", ivs);
 			dataMesh.setIVS(ivs);
 			console.warn("hasn't indices data !, it happened in the MeshBuilder::createDataMeshFromModel(...) function.");
 		}

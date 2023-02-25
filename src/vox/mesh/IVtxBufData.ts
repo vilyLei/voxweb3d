@@ -4,10 +4,12 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
+
+import IROIvsData from "../../vox/render/vtx/IROIvsData";
+type UINTType = Uint16Array | Uint32Array;
 /**
  * 分块上传用于节省内存，而直接使用显存: 从源数据直接上传到显存
  */
-type UINTType = Uint16Array | Uint32Array;
 export default interface IVtxBufData {
 	addAttributeDataAt(attributeIndex: number, f32Data: Float32Array, step: number): void;
 	addAttributeDataStepAt(attributeIndex: number): number;
@@ -21,7 +23,7 @@ export default interface IVtxBufData {
 	getIndexDataTotal(): number;
 	getIndexDataLengthTotal(): number;
 	getTrianglesTotal(): number;
-	getIndexDataAt(i: number): UINTType;
+	getIndexDataAt(i: number): IROIvsData;
 	getIndexDataTotalBytes(): number;
 	destroy(): void;
 }

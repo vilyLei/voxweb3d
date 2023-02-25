@@ -26,12 +26,14 @@ export default class VaoVertexRenderObj extends VROBase {
         if (this.m_rc.testVROUid(this.m_uid)) {
             // console.log("VaoVertexRenderObj::run(), rcuid: ",this.m_rc.getRCUid(),this.m_vtxUid, this.m_uid);
             this.m_rc.bindVertexArray(this.vao);
-            if (this.m_rc.testRIOUid(this.m_vtxUid) || VROBase.s_mid != this.m_mid) {
-            // if (this.m_rc.testRIOUid(this.m_vtxUid)) {
-                // console.log("VaoVertexRenderObj::run(), testRIOUid()..");
-                VROBase.s_mid = this.m_mid;
-                this.m_rc.bindEleBuf(this.ibuf);
-            }
+            this.indicesRes.use(VROBase.s_mid != this.m_mid);
+            VROBase.s_mid = this.m_mid;
+            // if (this.m_rc.testRIOUid(this.m_vtxUid) || VROBase.s_mid != this.m_mid) {
+            // // if (this.m_rc.testRIOUid(this.m_vtxUid)) {
+            //     // console.log("VaoVertexRenderObj::run(), testRIOUid()..");
+            //     this.m_rc.bindEleBuf(this.ibuf);
+            // }
+            // VROBase.s_mid = this.m_mid;
         }
     }
     protected __$destroy(): void {
@@ -39,9 +41,10 @@ export default class VaoVertexRenderObj extends VROBase {
         VROBase.s_midMap.delete(this.m_mid);
         this.m_mid = 0;
         this.m_vtxUid = -1;
-        this.ibuf = null;
+        // this.ibuf = null;
         this.vao = null;
         this.m_rc = null;
+        this.indicesRes = null;
     }
     restoreThis(): void {
         if (this.vao != null) {

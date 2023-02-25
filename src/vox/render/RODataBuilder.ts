@@ -313,7 +313,7 @@ export default class RODataBuilder implements IRODataBuilder {
                 // vtx.createVertexByVtxUid(disp.vbuf.getUid());
                 let ivbuf = disp.ivbuf == null ? disp.vbuf : disp.ivbuf;
                 // console.log("RODataBuilder::buildVtxRes(), XXX OOO XXX ivbuf: ", ivbuf);
-                vtx.indices.ibufStep = ivbuf.getIBufStep();//disp.vbuf.getIBufStep();
+                // vtx.indices.ibufStep = ivbuf.getIBufStep();
                 vtx.indices.initialize(this.m_roVtxBuild, ivbuf);
                 vtx.createVertex(this.m_roVtxBuild, shdp, disp.vbuf);
                 // vtx.vertex.initialize(this.m_roVtxBuild, shdp, disp.vbuf);

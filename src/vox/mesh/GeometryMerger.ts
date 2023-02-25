@@ -132,7 +132,6 @@ class GeometryMerger extends GeometryBase {
 
             for (i = 0; i < tot; ++i) {
                 node = this.m_nodes[i];
-                console.log("node: ", node);
                 ivsLen += node.ivs.length;
                 vsLen += node.vs.length;
                 if (node.uvs != null) uvsLen += node.uvs.length;

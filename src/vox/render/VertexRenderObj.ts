@@ -5,7 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDevice from "../../vox/render/RendererDevice";
 import IVtxShdCtr from "../../vox/material/IVtxShdCtr";
 import IROVtxBuilder from "../../vox/render/IROVtxBuilder";
 import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
@@ -21,9 +20,9 @@ export default class VertexRenderObj extends VROBase {
 
     attribTypes: number[] = null;
     wholeOffsetList: number[] = null;
-    attribTypesLen: number = 0;
-    updateUnlocked: boolean = true;
-    wholeStride: number = 0;
+    attribTypesLen = 0;
+    updateUnlocked = true;
+    wholeStride = 0;
 
     private constructor() {
         super();
@@ -38,9 +37,10 @@ export default class VertexRenderObj extends VROBase {
             else {
                 this.m_rc.useVtxAttribsPtrTypeFloatMulti(this.shdp, this.vbufs, this.attribTypes, this.attribTypesLen, this.wholeOffsetList, this.wholeStride);
             }
-            if (this.m_rc.testRIOUid(this.m_vtxUid)) {
-                this.m_rc.bindEleBuf(this.ibuf);
-            }
+            // if (this.m_rc.testRIOUid(this.m_vtxUid)) {
+            //     this.m_rc.bindEleBuf(this.ibuf);
+            // }
+            this.indicesRes.use();
         }
     }
     protected __$destroy(): void {
@@ -52,7 +52,8 @@ export default class VertexRenderObj extends VROBase {
         this.shdp = null;
         this.vbufs = null;
         this.vbuf = null;
-        this.ibuf = null;
+        // this.ibuf = null;
+        this.indicesRes = null;
 
 
         this.attribTypes = null;

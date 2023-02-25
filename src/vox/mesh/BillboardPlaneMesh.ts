@@ -82,7 +82,7 @@ export default class BillboardPlaneMesh extends MeshBase {
 
         ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
         this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-        this.m_vbuf.setUintIVSDataAt(this.m_ivs);
+        this.m_vbuf.setIVSDataAt( this.crateROIvsData().setData(this.m_ivs) );
         this.vtCount = this.m_ivs.length;
         this.vtxTotal = 4;
         this.trisNumber = 2;

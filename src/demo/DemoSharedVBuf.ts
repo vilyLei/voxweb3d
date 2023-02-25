@@ -23,6 +23,7 @@ import DataMesh from "../vox/mesh/DataMesh";
 import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import VBuf3AMaterial from "./material/VBuf3AMaterial";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 export class DemoSharedVBuf {
 	constructor() {}
 
@@ -84,6 +85,8 @@ export class DemoSharedVBuf {
 			this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
 			this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
 			this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
+
+            new RenderStatusDisplay(this.m_rscene, true);
 		}
 	}
 	private m_initing = true;

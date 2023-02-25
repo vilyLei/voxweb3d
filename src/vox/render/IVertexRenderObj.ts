@@ -11,7 +11,7 @@ interface IVertexRenderObj {
     /**
      * indices buffer object.
      */
-    ibuf: any;
+    // ibuf: any;
     /**
      * be used by the renderer runtime, the value is 2 or 4.
      */

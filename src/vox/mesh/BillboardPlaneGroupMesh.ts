@@ -151,7 +151,7 @@ export default class BillboardPlaneGroupMesh extends MeshBase {
         ROVertexBuffer.AddFloat32Data(this.m_vs2, 3);
         ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
         this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-        this.m_vbuf.setUintIVSDataAt(this.m_ivs);
+        this.m_vbuf.setIVSDataAt( this.crateROIvsData().setData(this.m_ivs) );
         this.vtCount = this.m_ivs.length;
         this.vtxTotal = 4 * this.m_total;
         this.trisNumber = 2 * this.m_total;

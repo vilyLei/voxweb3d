@@ -12,6 +12,7 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import Color4 from "../vox/material/Color4";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 export class DemoSharedMesh {
 	private m_clearColor = new Color4(0.1, 0.2, 0.1, 1.0);
@@ -118,6 +119,7 @@ export class DemoSharedMesh {
 			this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
 			this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
+            new RenderStatusDisplay(this.m_rscene, true);
 			this.initScene();
 			this.initEvent();
 			this.m_rscene.setClearColor(this.m_clearColor);

@@ -16,6 +16,7 @@ import { RenderDrawMode as RDM } from "../../vox/render/RenderConst";
 import { IVtxBufRenderData } from "../../vox/render/IVtxBufRenderData";
 import { IROVertexBuffer } from "../../vox/mesh/IROVertexBuffer";
 import IMeshBase from "../../vox/mesh/IMeshBase";
+import ROIvsData from "./ROIvsData";
 
 /**
  * mesh(Polygon face convex mesh or Parametric geometry Objecct:):
@@ -83,7 +84,6 @@ export default class MeshBase implements IMeshBase {
     }
     toElementsTriangles(): void {
         this.drawMode = RDM.ELEMENTS_TRIANGLES;
-        // this.setPolyhedral(true);
     }
     toElementsTriangleStrip(): void {
         this.drawMode = RDM.ELEMENTS_TRIANGLE_STRIP;
@@ -115,10 +115,10 @@ export default class MeshBase implements IMeshBase {
         this.setPolyhedral(false);
     }
     protected createIVSBYSize(size: number): Uint16Array | Uint32Array {
-        return size > 65535 ? new Uint32Array(size) : new Uint16Array(size);
+        return size > 65536 ? new Uint32Array(size) : new Uint16Array(size);
     }
     protected createIVSByArray(arr: number[]): Uint16Array | Uint32Array {
-        return arr.length > 65535 ? new Uint32Array(arr) : new Uint16Array(arr);
+        return arr.length > 65536 ? new Uint32Array(arr) : new Uint16Array(arr);
     }
     createWireframeIvs(ivs: Uint16Array | Uint32Array = null): Uint16Array | Uint32Array {
         if(ivs == null) ivs = this.m_ivs;
@@ -146,16 +146,18 @@ export default class MeshBase implements IMeshBase {
         }
         return null;
     }
-    protected updateWireframeIvs(): void {
+    protected updateWireframeIvs(ivs: Uint16Array | Uint32Array = null): Uint16Array | Uint32Array {
 
         this.toElementsTriangles();
+        let wivs: Uint16Array | Uint32Array = null;
         if (this.wireframe) {
-            let wivs = this.createWireframeIvs();
+            wivs = this.createWireframeIvs(ivs);
             if(wivs != null) {
                 this.m_ivs = this.createWireframeIvs();
             }
             this.toElementsLines();
         }
+        return wivs;
     }
     protected buildEnd(): void {
 
@@ -190,6 +192,9 @@ export default class MeshBase implements IMeshBase {
     testRay(rlpv: Vector3D, rltv: Vector3D, outV: Vector3D, boundsHit: boolean): number {
         return -1;
     }
+    protected crateROIvsData(): ROIvsData {
+        return new ROIvsData();
+    }
     public rebuild(): void {
         if (this.m_vbuf == null) {
             if (this.m_bufDataList != null) {
@@ -202,7 +207,9 @@ export default class MeshBase implements IMeshBase {
                 }
                 this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
                 if (this.m_ivs != null) {
-                    this.m_vbuf.setUintIVSDataAt(this.m_ivs);
+                    let ird = this.crateROIvsData();
+                    ird.setData(this.m_ivs);
+                    this.m_vbuf.setIVSDataAt(ird);
                     this.vtCount = this.m_ivs.length;
                 }
             }

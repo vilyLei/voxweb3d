@@ -27,8 +27,7 @@ class GpuVtxObject {
     // texture resource unique id
     resUid = 0;
 
-    // vertex = new ROVertexRes();
-    vertex: ROVertexRes = null;// = new ROVertexRes();
+    vertex: ROVertexRes = null;
     indices = new ROIndicesRes();
     constructor() {
     }

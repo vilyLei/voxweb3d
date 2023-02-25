@@ -9,13 +9,16 @@ import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import VtxBufData from "../../vox/mesh/VtxBufData";
 import IROIVtxBuf from "../../vox/render/IROIVtxBuf";
 import { RenderDrawMode } from "../../vox/render/RenderConst";
+// import IROIvsData from "../../vox/render/vtx/IROIvsData";
+import ROIvsData from "./ROIvsData";
 
 export default class ROIVertexBuffer implements IROIVtxBuf {
+
     private static s_uid = 0;
     protected m_uid = 0;
     protected m_layoutBit = 0;
-
-    protected m_ivs: Uint16Array | Uint32Array = null;
+    private m_irdTotal = 0;
+    protected m_irds: ROIvsData[] = new Array(2);
     protected m_bufDataUsage = 0;
     protected m_ibufStep = 2;// 2 or 4
 
@@ -28,6 +31,10 @@ export default class ROIVertexBuffer implements IROIVtxBuf {
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         this.m_uid = ROIVertexBuffer.s_uid++;
         this.m_bufDataUsage = bufDataUsage;
+        this.m_irds.fill(null);
+    }
+    getIvsDataTotal(): number {
+        return 1;
     }
     getUid(): number {
         return this.m_uid;
@@ -41,34 +48,25 @@ export default class ROIVertexBuffer implements IROIVtxBuf {
     getBufSortFormat(): number {
         return this.m_layoutBit;
     }
-    getIBufStep(): number {
-        return this.m_ibufStep;
-    }
+    // getIBufStep(): number {
+    //     return this.m_ibufStep;
+    // }
     getBufDataUsage(): number {
         return this.m_bufDataUsage;
     }
-    getIvsDataAt(index: number = 0): Uint16Array | Uint32Array {
-        return this.m_ivs;
+    getIvsDataAt(index: number = 0): ROIvsData {
+        if(index >= 0 && index < this.m_irdTotal) {
+            return this.m_irds[index];
+        }
+        return null;
     }
-    setUintIVSDataAt(uint16Or32Arr: Uint16Array | Uint32Array, index: number = 0, status: number = VtxBufConst.VTX_STATIC_DRAW): void {
-        if ((uint16Or32Arr instanceof Uint16Array)) {
-            this.m_ibufStep = 2;
-            if(uint16Or32Arr.length > 65535) {
-                throw Error("its type is not Uint32Array.");
-            }
+    setIVSDataAt(data: ROIvsData, index: number = 0): void {
+        if(this.m_irds[index]) {
+            this.m_irds[index].destroy();
         }
-        else if ((uint16Or32Arr instanceof Uint32Array)) {
-            this.m_ibufStep = 4;
-        }
-        else {
-            console.error("Error: uint16Or32Arr is not an Uint32Array or an Uint16Array bufferArray instance !!!!");
-            return;
-        }
-
-        this.m_ivs = uint16Or32Arr;
-        if (uint16Or32Arr != null) {
-            this.indicesVer++;
-        }
+        this.m_irds[index] = data;
+        this.m_irdTotal = index + 1;
+        this.indicesVer++;
     }
     /**
      * this function is only an empty function.

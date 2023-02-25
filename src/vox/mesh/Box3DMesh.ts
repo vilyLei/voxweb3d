@@ -429,7 +429,7 @@ export default class Box3DMesh extends MeshBase {
             }else {
                 this.m_vbuf = ROVertexBuffer.CreateBySaveDataSeparate(this.getBufDataUsage());
             }
-            this.m_vbuf.setUintIVSDataAt(this.m_ivs);
+            this.m_vbuf.setIVSDataAt( this.crateROIvsData().setData(this.m_ivs) );
             this.vtCount = this.m_ivs.length;
             this.trisNumber = 12;
 
@@ -447,7 +447,7 @@ export default class Box3DMesh extends MeshBase {
         }
         else {
             if(this.forceUpdateIVS) {
-                this.m_vbuf.setUintIVSDataAt(this.m_ivs);
+                this.m_vbuf.setIVSDataAt( this.crateROIvsData().setData(this.m_ivs) );
             }
             ROVertexBuffer.UpdateBufData(this.m_vbuf);
         }

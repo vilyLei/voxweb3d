@@ -11,14 +11,14 @@ import { ROIndicesRes } from "../../vox/render/vtx/ROIndicesRes";
 import { IVRO } from "../../vox/render/vtx/IVRO";
 
 export default class VROBase implements IVRO, IVertexRenderObj {
-    protected static s_mid: number = 0;
-    protected m_uid: number = 0;
+    protected static s_mid = 0;
+    protected m_uid = 0;
     // vtx attribute hash map id
-    protected m_mid: number = 0;
-    protected m_vtxUid: number = 0;
+    protected m_mid = 0;
+    protected m_vtxUid = 0;
     protected m_rc: IROVtxBuilder = null;
     indicesRes: ROIndicesRes = null;
-    ibuf: any = null;
+    // ibuf: any = null;
     /**
      * be used by the renderer runtime, the value is 2 or 4.
      */
@@ -70,7 +70,7 @@ export default class VROBase implements IVRO, IVertexRenderObj {
         VROBase.s_midMap.delete(this.m_mid);
         this.m_mid = 0;
         this.m_vtxUid = -1;
-        this.ibuf = null;
+        // this.ibuf = null;
         this.m_rc = null;
         this.indicesRes = null;
     }

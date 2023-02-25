@@ -16,9 +16,9 @@ import SurfaceNormalCalc from "../geom/SurfaceNormalCalc";
 import ITestRay from "./ITestRay";
 
 export default class DataMesh extends MeshBase implements IDataMesh {
-	
-	private m_initIVS: Uint16Array | Uint32Array = null;
+
 	private m_boundsChanged = true;
+	private m_ils: (Uint16Array | Uint32Array)[] = new Array(2);
 	private m_ls: Float32Array[] = new Array(10);
 
 	private m_rayTester: ITestRay = null;
@@ -38,6 +38,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	setRayTester(rayTester: ITestRay): void {
 		this.m_rayTester = rayTester;
 	}
+	
 	/**
 	 * set vertex position data
 	 * @param vs vertex position buffer Float32Array
@@ -147,14 +148,6 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 		return this.m_ls[4];
 	}
 
-
-	setIVS(ivs: Uint16Array | Uint32Array): DataMesh {
-		this.m_initIVS = ivs;
-		this.m_ivs = ivs;
-		this.m_boundsChanged = true;
-		return this;
-	}
-
 	initializeFromGeometry(geom: IGeometry): void {
 		
 		this.setVS(geom.getVS());
@@ -162,9 +155,8 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 		this.setNVS(geom.getNVS());
 		this.setCVS(geom.getCVS());
 		this.setTVS(geom.getTVS());
-		this.m_ivs = geom.getIVS();
+		this.setIVSAt(geom.getIVS());
 
-		this.m_initIVS = this.m_ivs;
 		this.m_boundsChanged = true;
 		this.initialize();
 	}
@@ -175,6 +167,24 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 		if (free) {
 			ROVertexBuffer.AddFloat32Data(data, stride);
 		}
+	}
+
+	setIVS(ivs: Uint16Array | Uint32Array): IDataMesh {
+		this.m_ils[0] = ivs;
+		return this;
+	}
+    /**
+     * @returns vertex indices buffer Uint16Array or Uint32Array
+     */
+    getIVS(): Uint16Array | Uint32Array { return this.m_ils[0]; }
+	setIVSAt(ivs: Uint16Array | Uint32Array, index: number = 0): DataMesh {
+		this.m_ivs = ivs;
+		this.m_boundsChanged = true;
+		this.m_ils[index] = ivs;
+		return this;
+	}
+	getIVSAt(index: number): Uint16Array | Uint32Array {
+		return this.m_ils[index];
 	}
 	initialize(): void {
 
@@ -200,10 +210,13 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 			this.m_boundsVersion = this.bounds.version;
 			this.m_boundsChanged = false;
 
-			this.m_ivs = this.m_initIVS;
+			let ils = this.m_ils;
+			let ivs = ils[0];
+
+			const rvb = ROVertexBuffer;
 			ROVertexBuffer.Reset();
 			// console.log("XXXXXX vsStride: ", vsStride, ", vs: ", vs);
-			ROVertexBuffer.AddFloat32Data(vs, vsStride);
+			rvb.AddFloat32Data(vs, vsStride);
 
 			const vc = VtxBufConst;
 			const vcf = this.addFloat32Data.bind(this);
@@ -215,13 +228,13 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 			let free = this.getBufSortFormat() < 1;
 			if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX) || (free && nvs != null)) {
 				if (nvs == null) {
-					let trisNumber = this.m_ivs.length / 3;
+					let trisNumber = ivs.length / 3;
 					nvs = new Float32Array(vs.length);
-					SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, this.m_ivs, nvs);
+					SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
 					ls[nvsIndex] = nvs;
 				}
 				// console.log("XXXXXX vsStride: ", ds[nvsIndex], ", nvs: ", nvs);
-				ROVertexBuffer.AddFloat32Data(nvs, ds[nvsIndex]);
+				rvb.AddFloat32Data(nvs, ds[nvsIndex]);
 			}
 
 			vcf(ls[3], vc.VBUF_CVS_INDEX, ds[3]);
@@ -229,29 +242,37 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 			vcf(ls[5], vc.VBUF_VS2_INDEX, ds[5]);
 			vcf(ls[6], vc.VBUF_UVS2_INDEX, ds[6]);
 
-			ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
+			rvb.vbWholeDataEnabled = this.vbWholeDataEnabled;
 
-			this.vtCount = this.m_ivs.length;
+			this.vtCount = ivs.length;
 			if (this.autoBuilding) {
 				this.vtxTotal = vs.length / vsStride;
-				this.updateWireframeIvs();
-				this.vtCount = this.m_ivs.length;
+				// let pivs = this.updateWireframeIvs(ivs);
+				// if(this.wireframe && pivs != null) {
+				// 	ivs = pivs;
+				// }
+				this.vtCount = ivs.length;
 				this.trisNumber = this.vtCount / 3;
 			}
 
 			if (this.m_vbuf != null) {
-				ROVertexBuffer.UpdateBufData(this.m_vbuf);
+				rvb.UpdateBufData(this.m_vbuf);
 			} else {
 				let u = this.getBufDataUsage();
 				let f = this.getBufSortFormat();
-				this.m_vbuf = ROVertexBuffer.CreateBySaveData(u, f);
+				this.m_vbuf = rvb.CreateBySaveData(u, f);
 				if (this.vbWholeDataEnabled) {
-					this.m_vbuf = ROVertexBuffer.CreateBySaveData(u, f);
+					this.m_vbuf = rvb.CreateBySaveData(u, f);
 				} else {
-					this.m_vbuf = ROVertexBuffer.CreateBySaveDataSeparate(u);
+					this.m_vbuf = rvb.CreateBySaveDataSeparate(u);
 				}
 			}
-			this.m_vbuf.setUintIVSDataAt(this.m_ivs);
+			
+			let ird = this.crateROIvsData();
+			ird.wireframe = this.wireframe;
+			ird.shape = this.shape;
+			ird.setData(ivs);
+			this.m_vbuf.setIVSDataAt(ird);
 
 			this.buildEnd();
 		}
@@ -282,7 +303,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 			}
 
 			this.m_ls.fill(null);
-			this.m_initIVS = null;
+			this.m_ils.fill(null);
 
 			super.__$destroy();
 		}

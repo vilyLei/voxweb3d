@@ -247,14 +247,14 @@ export default class RectPlaneMesh extends MeshBase {
         this.vtCount = this.m_ivs.length;
         if (this.m_vbuf != null) {
             if(this.forceUpdateIVS) {
-                this.m_vbuf.setUintIVSDataAt(this.m_ivs);
+                this.m_vbuf.setIVSDataAt( this.crateROIvsData().setData(this.m_ivs) );
             }
             ROVertexBuffer.UpdateBufData(this.m_vbuf);
         }
         else {
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage(), this.getBufSortFormat());
         }
-        this.m_vbuf.setUintIVSDataAt(this.m_ivs);
+        this.m_vbuf.setIVSDataAt( this.crateROIvsData().setData(this.m_ivs) );
         this.buildEnd();
     }
     vsFloat32: Float32Array = null;

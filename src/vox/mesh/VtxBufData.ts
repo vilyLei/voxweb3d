@@ -8,10 +8,12 @@
  * 分块上传用于节省内存，而直接使用显存: 从源数据直接上传到显存
  */
 import IVtxBufData from "../../vox/mesh/IVtxBufData";
+import ROIvsData from "./ROIvsData";
 type UINTType = Uint16Array | Uint32Array;
 
 export default class VtxBufData implements IVtxBufData {
-	private m_indexList: UINTType[] = [];
+	// private m_indexList: UINTType[] = [];
+	private m_indexList: ROIvsData[] = [];
 	private m_attriList: Float32Array[][] = null;
 	private m_attriBytesList: number[] = null;
 	private m_attriStepsList: number[] = null;
@@ -64,10 +66,13 @@ export default class VtxBufData implements IVtxBufData {
 	getAttributeStepAt(attributeIndex: number): number {
 		return this.m_attriStepsList[attributeIndex];
 	}
-	addIndexData(indexbufferArr: UINTType): void {
-		this.m_indexBytesTotal += indexbufferArr.byteLength;
-		this.m_indexLengthsTotal += indexbufferArr.length;
-		this.m_indexList.push(indexbufferArr);
+	addIndexData(ivs: UINTType): void {
+		this.m_indexBytesTotal += ivs.byteLength;
+		this.m_indexLengthsTotal += ivs.length;
+		// this.m_indexList.push(indexbufferArr);
+		let data = new ROIvsData();
+		data.setData(ivs);
+		this.m_indexList.push(data);
 	}
 	getIndexDataTotal(): number {
 		return this.m_indexList.length;
@@ -78,7 +83,7 @@ export default class VtxBufData implements IVtxBufData {
 	getTrianglesTotal(): number {
 		return this.m_indexLengthsTotal / 3;
 	}
-	getIndexDataAt(i: number): Uint16Array | Uint32Array {
+	getIndexDataAt(i: number): ROIvsData {
 		return this.m_indexList[i];
 	}
 	getIndexDataTotalBytes(): number {
@@ -86,10 +91,10 @@ export default class VtxBufData implements IVtxBufData {
 	}
 	destroy(): void {
 		if (this.m_indexList != null) {
-			let j: number = 0;
-			let len: number = 0;
+			let j = 0;
+			let len = 0;
 			let list: Float32Array[] = null;
-			for (let i: number = 0; i < this.m_attributesTotal; ++i) {
+			for (let i = 0; i < this.m_attributesTotal; ++i) {
 				list = this.m_attriList[i];
 				len = list.length;
 				for (j = 0; j < len; ++j) {

@@ -176,13 +176,14 @@ export default class Torus3DMesh extends MeshBase {
         if (newBuild) {
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-            this.m_vbuf.setUintIVSDataAt(this.m_ivs);
+            this.m_vbuf.setIVSDataAt( this.crateROIvsData().setData(this.m_ivs) );
             this.buildEnd();
         }
         else {
             if (this.forceUpdateIVS) {
-                this.m_vbuf.setUintIVSDataAt(this.m_ivs);
+                this.m_vbuf.setIVSDataAt( this.crateROIvsData().setData(this.m_ivs) );
             }
+            //setIVSDataAt( this.crateROIvsData().setData(this.m_ivs) );
             ROVertexBuffer.UpdateBufData(this.m_vbuf);
         }
     }

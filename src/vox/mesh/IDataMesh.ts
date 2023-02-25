@@ -66,11 +66,13 @@ export default interface IDataMesh extends IMeshBase {
    */
   getTVS(): Float32Array;
   
+  setIVS(ivs: Uint16Array | Uint32Array): IDataMesh;
   /**
    * @param ivs indices buffer data
+   * @param index the default value is 0
    */
-  setIVS(ivs: Uint16Array | Uint32Array): IDataMesh;
-
+  setIVSAt(ivs: Uint16Array | Uint32Array, index?: number): IDataMesh;
+  getIVSAt(index: number): Uint16Array | Uint32Array;
   /**
    * initialization vertex buffer data
    */

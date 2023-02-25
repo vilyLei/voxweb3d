@@ -393,6 +393,8 @@
 
 //  import {DemoPBREnvLighting as Demo} from "./pbr/DemoPBREnvLighting";
 
+//  import {DemoPBRAnimation as Demo} from "./pbr/DemoPBRAnimation";
+
 //  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
