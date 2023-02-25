@@ -279,7 +279,7 @@ export default class RODataBuilder implements IRODataBuilder {
             runit.visible = disp.visible;
 
             runit.setVisible(disp.visible);
-            runit.drawMode = disp.drawMode;
+            // runit.drawMode = disp.drawMode;
             runit.renderState = disp.renderState;
             runit.rcolorMask = disp.rcolorMask;
             runit.trisNumber = disp.trisNumber;

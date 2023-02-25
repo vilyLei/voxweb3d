@@ -375,7 +375,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
                 let ut = this.m_display.__$$runit;
                 ut.trisNumber = Math.floor((ivsCount - ivsIndex) / 3);
                 ut.setIvsParam(ivsIndex, ivsCount);
-                ut.drawMode = mh.drawMode;
+                // ut.drawMode = mh.drawMode;
 
                 if (updateBounds && this.isPolyhedral()) {
 

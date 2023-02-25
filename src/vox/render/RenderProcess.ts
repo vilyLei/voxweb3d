@@ -168,7 +168,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 	rejoinRunitForVro(runit: RPOUnit): void {
 		let node: RPONode = this.m_rpoNodeBuilder.getNodeByUid(runit.__$rpuid) as RPONode;
 		if (node != null) {
-			node.drawMode = runit.drawMode;
+			// node.drawMode = runit.drawMode;
 			node.ivsIndex = runit.ivsIndex;
 			node.ivsCount = runit.ivsCount;
 			node.insCount = runit.insCount;

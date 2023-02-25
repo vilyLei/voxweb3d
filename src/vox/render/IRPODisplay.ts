@@ -11,7 +11,7 @@ import IAABB from "../../vox/geom/IAABB";
 
 interface IRPODisplay {
     value: number;
-    drawMode: number;
+    // drawMode: number;
     trisNumber: number;
     pos: IVector3D;
     bounds: IAABB;

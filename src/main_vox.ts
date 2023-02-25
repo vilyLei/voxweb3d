@@ -325,7 +325,7 @@
 
 //  import {DemoMultipleIVS as Demo} from "./demo/DemoMultipleIVS";
 
- import {DemoDataMesh as Demo} from "./demo/DemoDataMesh";
+//  import {DemoDataMesh as Demo} from "./demo/DemoDataMesh";
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -395,7 +395,7 @@
 
 //  import {DemoPBRAnimation as Demo} from "./pbr/DemoPBRAnimation";
 
-//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
+ import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 

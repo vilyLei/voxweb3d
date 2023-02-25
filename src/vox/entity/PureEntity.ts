@@ -340,7 +340,7 @@ export default class PureEntity implements IDisplayEntity {
                 const mh = this.m_mesh;
                 this.m_display.__$$runit.trisNumber = Math.floor((ivsCount - ivsIndex) / 3);
                 this.m_display.__$$runit.setIvsParam(ivsIndex, ivsCount);
-                this.m_display.__$$runit.drawMode = mh.drawMode;
+                // this.m_display.__$$runit.drawMode = mh.drawMode;
 
                 if (updateBounds && this.isPolyhedral()) {
 

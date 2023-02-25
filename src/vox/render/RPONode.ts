@@ -46,7 +46,7 @@ export default class RPONode implements IPoolNode, IRPONode {
     }
     updateData(): void {
         let p: RPOUnit = this.unit;
-        this.drawMode = p.drawMode;
+        // this.drawMode = p.drawMode;
         this.ivsIndex = p.ivsIndex;
         this.ivsCount = p.ivsCount;
         this.insCount = p.insCount;

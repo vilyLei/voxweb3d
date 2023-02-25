@@ -7,7 +7,7 @@
 
 import IVector3D from "../../vox/math/IVector3D";
 import IAABB from "../../vox/geom/IAABB";
-import { RenderDrawMode } from "../../vox/render/RenderConst";
+import { RenderDrawMode as rdm } from "../../vox/render/RenderConst";
 import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
 
 import IRenderShader from "../../vox/render/IRenderShader";
@@ -53,7 +53,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     trisNumber = 0;
     visible = true;
     drawEnabled = true;
-    drawMode = 0;
+    // drawMode = 0;
 
     renderState = 0;
     rcolorMask = 0;
@@ -116,13 +116,14 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     }
     drawThis(rc: IRenderProxy): void {
         
+        // const rdm = RenderDrawMode;
         const st = rc.status;
         st.drawCallTimes ++;
         st.drawTrisNumber += this.trisNumber;
         const ir = this.indicesRes;
         // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
         let ivsCount = ir.getVTCount();
-        // if (this.ivsCount <= ivsCount) ivsCount = this.ivsCount;
+        if (this.ivsCount <= ivsCount && ir.drawMode == rdm.ELEMENTS_TRIANGLES) ivsCount = this.ivsCount;
         // console.log("xxx runit xxx ivsCount: ", ivsCount, this.indicesRes.getVTCount());
         if(this.polygonOffset != null) {
             rc.setPolygonOffset(this.polygonOffset[0],this.polygonOffset[1]);
@@ -130,7 +131,6 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         else {
             rc.resetPolygonOffset();
         }
-        const rdm = RenderDrawMode;
         let gl = rc.RContext;
         switch (ir.drawMode) {
             case rdm.ELEMENTS_TRIANGLES:
@@ -179,8 +179,8 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
 
         const ir = this.indicesRes;
         // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
-        // let ivsCount = ir.getVTCount();
-        // if (this.ivsCount <= ivsCount) ivsCount = this.ivsCount;
+        let ivsCount = ir.getVTCount();
+        if (this.ivsCount <= ivsCount && ir.drawMode == rdm.ELEMENTS_TRIANGLES) ivsCount = this.ivsCount;
 
         if(this.polygonOffset != null) {
             rc.setPolygonOffset(this.polygonOffset[0],this.polygonOffset[1]);
@@ -189,7 +189,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
             rc.resetPolygonOffset();
         }
 
-        const rdm = RenderDrawMode;
+        // const rdm = RenderDrawMode;
         let i = 0;
         let gl = rc.RContext;
         switch (ir.drawMode) {
@@ -216,25 +216,25 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
             case rdm.ELEMENTS_TRIANGLE_STRIP:
                 //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
                 //rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
-                gl.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, this.ibufType, this.drawOffset);
+                gl.drawElements(rc.TRIANGLE_STRIP, ivsCount, this.ibufType, this.drawOffset);
                 break;
             case rdm.ELEMENTS_INSTANCED_TRIANGLES:
                 //console.log("RPOUnit::run(), drawElementsInstanced(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+", insCount: "+this.insCount+")");
                 //rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.ivsIndex * this.ibufStep, this.insCount);
-                gl.drawElementsInstanced(rc.TRIANGLES, this.ivsCount, this.ibufType, this.drawOffset, this.insCount);
+                gl.drawElementsInstanced(rc.TRIANGLES, ivsCount, this.ibufType, this.drawOffset, this.insCount);
                 break;
             case rdm.ELEMENTS_TRIANGLE_FAN:
                 //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
                 //rc.RContext.drawElements(rc.TRIANGLE_FAN, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
-                gl.drawElements(rc.TRIANGLE_FAN, this.ivsCount, this.ibufType, this.drawOffset);
+                gl.drawElements(rc.TRIANGLE_FAN, ivsCount, this.ibufType, this.drawOffset);
                 break;
             case rdm.ARRAYS_LINES:
                 //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                gl.drawArrays(rc.LINES, this.ivsIndex, this.ivsCount);
+                gl.drawArrays(rc.LINES, this.ivsIndex, ivsCount);
                 break;
             case rdm.ARRAYS_LINE_STRIP:
                 //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                gl.drawArrays(rc.LINE_STRIP, this.ivsIndex, this.ivsCount);
+                gl.drawArrays(rc.LINE_STRIP, this.ivsIndex, ivsCount);
                 break;
             default:
                 break;
@@ -295,7 +295,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         this.ivsCount = 0;
         this.insCount = 0;
         this.partTotal = 0;
-        this.drawMode = 0;
+        // this.drawMode = 0;
         this.drawFlag = 0x0;
         this.renderState = 0;
         this.rcolorMask = 0;

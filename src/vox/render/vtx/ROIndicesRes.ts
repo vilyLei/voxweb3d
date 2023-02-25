@@ -157,14 +157,14 @@ class ROIndicesRes implements IROIndicesRes {
         if (ivtx.bufData == null) {
 
             if (wireframe) {
-                console.log("A0 XXXXX ivs.length: ", ivs.length);
+                // console.log("A0 XXXXX ivs.length: ", ivs.length);
                 ivs = this.createWireframeIvs(ivs);
-                console.log("A1 XXXXX ivs.length: ", ivs.length);
+                // console.log("A1 XXXXX ivs.length: ", ivs.length);
             }
             rc.eleBufData(ivs, ivtx.getBufDataUsage());
             size = ivs.length;
             step = size > 65536 ? 4 : 2;
-            console.log("A2 XXXXX ivs: ", ivs);
+            // console.log("A2 XXXXX ivs: ", ivs);
         }
         else {
 
@@ -221,7 +221,7 @@ class ROIndicesRes implements IROIndicesRes {
         this.m_gbufs[i] = bufData.buf;
         this.m_sizes[i] = bufData.size;
         this.m_steps[i] = bufData.step;
-        console.log("xxxxx bufData: ", bufData);
+        // console.log("xxxxx bufData: ", bufData);
         return bufData;
     }
 
