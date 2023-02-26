@@ -46,6 +46,8 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
      */
     stencil: Stencil = null;
 
+    wireframe = false;
+
     multiPass = false;
 
     constructor() { }
@@ -330,7 +332,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
             }
         }
     }
-    toString(): string {
-        return "[MaterialBase()]";
+    update(): void {
+        
     }
 }

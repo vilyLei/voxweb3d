@@ -34,11 +34,11 @@ interface IRenderMaterial {
      * the default value is null
      */
     stencil: IStencil;
+    /**
+     * the defaule value is false
+     */
+    wireframe: boolean;
 
-    // /**
-    //  * @param texEnabled the default value is false
-    //  */
-    // initializeByRenderer(texEnabled: boolean): void;
     /**
      * @param texEnabled the default value is false
      */
@@ -74,6 +74,7 @@ interface IRenderMaterial {
     getMaterialPipeline(): IMaterialPipeline;
 
     destroy(): void;
+    update(): void;
     __$attachThis(): void;
     __$detachThis(): void;
 }
