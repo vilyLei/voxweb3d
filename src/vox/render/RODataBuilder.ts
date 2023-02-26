@@ -156,16 +156,17 @@ export default class RODataBuilder implements IRODataBuilder {
     }
     updateDispMaterial(runit: RPOUnit, disp: IRODisplay): IShdProgram {
         let shdp: IShdProgram = null;
+
         if (disp.__$ruid >= 0) {
-            let rc: RenderProxy = this.m_rc;
-            let material: IRenderMaterial = disp.getMaterial();
-            if (material != null) {
+
+            let rc = this.m_rc;
+            let material = disp.getMaterial();
+            if (material ) {
                 if (material.getShaderData() == null) {
-                    let texList: IRenderTexture[] = material.getTextureList();
-                    let texEnabled: boolean = ((texList != null && texList != null) && texList.length > 0);
+                    let texList = material.getTextureList();
+                    let texEnabled = ((texList != null && texList != null) && texList.length > 0);
                     material.initializeByCodeBuf(texEnabled);
                 }
-                // shdp = this.m_shader.create(material.getShaderData());
                 shdp = this.m_shdpBuilder.create(material.getShaderData());
 
                 shdp.upload(rc.RContext, rc.getUid());
@@ -198,15 +199,15 @@ export default class RODataBuilder implements IRODataBuilder {
                 }
                 if (this.m_shader.getSharedUniformByShd(shdp) == null) {
 
-                    let sharedMList: ShaderUniform[] = this.createsharedMList(material, shdp);
-                    if (sharedMList != null) {
-                        for (let i: number = 0; i < sharedMList.length; ++i) {
+                    let sharedMList = this.createsharedMList(material, shdp);
+                    if (sharedMList) {
+                        for (let i = 0; i < sharedMList.length; ++i) {
                             sharedMList[i].program = shdp.getGPUProgram();
                         }
                     }
                     this.m_shader.setSharedUniformByShd(shdp, this.m_shdUniformTool.buildShared(sharedMList, rc, shdp));
                 }
-                let hasTrans: boolean = shdp.hasUniformByName(UniformConst.LocalTransformMatUNS);
+                let hasTrans = shdp.hasUniformByName(UniformConst.LocalTransformMatUNS);
                 if (material.__$uniform == null) {
                     material.__$uniform = this.m_shdUniformTool.buildLocalFromData(material.createSelfUniformData(), shdp);
                 }
@@ -251,10 +252,10 @@ export default class RODataBuilder implements IRODataBuilder {
                 this.m_haveDeferredUpdate = true;
             }
             else {
-                let runit: RPOUnit = disp.__$$runit as RPOUnit;
+                let runit = disp.__$$runit as RPOUnit;
                 if (runit != null && runit.vtxUid != disp.vbuf.getUid()) {
-                    let oldResUid: number = runit.vtxUid;
-                    let vtxRes: ROVertexResource = this.m_vtxRes;
+                    let oldResUid = runit.vtxUid;
+                    let vtxRes = this.m_vtxRes;
                     if (vtxRes.hasResUid(oldResUid)) {
                         vtxRes.__$detachRes(oldResUid);
                     }
@@ -292,7 +293,7 @@ export default class RODataBuilder implements IRODataBuilder {
             
             if (vtxRes.hasResUid(resUid)) {
                 vtx = vtxRes.getVertexRes(resUid);
-                // needBuild = vtx.version != disp.vbuf.version;
+                
                 needBuild = vtx.version != dispVtxVer;
                 if (needBuild) {
                     vtxRes.destroyRes(resUid);
@@ -341,9 +342,10 @@ export default class RODataBuilder implements IRODataBuilder {
                 disp.__$ruid = runit.uid;
                 disp.__$$runit = runit;
 
-                if (disp.getPartGroup() != null) {
-                    runit.partGroup = disp.getPartGroup().slice(0);
-                    runit.partTotal = runit.partGroup.length;
+                const group = disp.getPartGroup();
+                if (group) {
+                    runit.partGroup = group.slice(0);
+                    runit.partTotal = group.length;
                     let fs = runit.partGroup;
                     for (let i = 0, len = runit.partTotal; i < len;) {
                         i++;
@@ -395,15 +397,15 @@ export default class RODataBuilder implements IRODataBuilder {
         }
     }
     private createsharedMList(material: IRenderMaterial, shdp: IShdProgram): ShaderUniform[] {
-        let sharedMList: ShaderUniform[] = material.createSharedUniforms() as ShaderUniform[];
+        let sharedMList = material.createSharedUniforms() as ShaderUniform[];
         if (sharedMList == null) {
             // 通过shader uniform data 创建 shared uniform
             let dataList = material.createSharedUniformsData();
             if (dataList != null && dataList.length > 0) {
                 sharedMList = [];
-                for (let i: number = 0; i < dataList.length; ++i) {
+                for (let i = 0; i < dataList.length; ++i) {
                     if (dataList[i] != null) {
-                        let uniform: ShaderUniform = this.m_shdUniformTool.buildLocalFromData(dataList[i], shdp) as ShaderUniform;
+                        let uniform = this.m_shdUniformTool.buildLocalFromData(dataList[i], shdp) as ShaderUniform;
                         sharedMList.push(uniform);
                     }
                 }
@@ -415,12 +417,14 @@ export default class RODataBuilder implements IRODataBuilder {
         return sharedMList;
     }
     updateGlobalMaterial(material: IRenderMaterial, materialUniformUpdate: boolean = false): void {
+
         if (material != null) {
-            let rc: RenderProxy = this.m_rc;
+
+            let rc = this.m_rc;
             let tro: TextureRenderObj = null;
             let shdp: IShdProgram = null;
             let texList: IRenderTexture[] = null;
-            let texEnabled: boolean = false;
+            let texEnabled = false;
             if (material.getShaderData() == null) {
                 texList = material.getTextureList();
                 texEnabled = (texList != null && texList.length > 0);
@@ -429,16 +433,16 @@ export default class RODataBuilder implements IRODataBuilder {
             else {
                 texList = material.getTextureList();
             }
-            // shdp = this.m_shader.create(material.getShaderData());
+            
             shdp = this.m_shdpBuilder.create(material.getShaderData());
             shdp.upload(rc.RContext, rc.getUid());
-            let texTotal: number = shdp.getTexTotal();
+            let texTotal = shdp.getTexTotal();
             if (texTotal > 0) {
                 tro = this.createTRO( texList, texTotal);
             }
             if (this.m_shader.getSharedUniformByShd(shdp) == null) {
 
-                let sharedMList: ShaderUniform[] = this.createsharedMList(material, shdp);
+                let sharedMList = this.createsharedMList(material, shdp);
 
                 if (sharedMList != null) {
                     for (let i = 0; i < sharedMList.length; ++i) {

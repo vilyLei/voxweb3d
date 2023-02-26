@@ -26,18 +26,18 @@ import DebugFlag from "../debug/DebugFlag";
 //import DebugFlag from "../debug/DebugFlag";
 
 export default class RPOBlock {
-    private static s_uid: number = 0;
-    private m_uid: number = -1;                          // 用于唯一记录运行时的自己(RPOBlock实例)唯一id
-    private m_nodeLinker: RPONodeLinker = new RPONodeLinker();
+    private static s_uid = 0;
+    private m_uid = -1;                          // 用于唯一记录运行时的自己(RPOBlock实例)唯一id
+    private m_nodeLinker = new RPONodeLinker();
     private m_shader: RenderShader = null;
 
-    index: number = -1;                                  // 记录自身在 RenderProcess blocks数组中的序号
-    shdUid: number = -1;                                 // 记录 material 对应的 shader program uid
-    procuid: number = -1;
+    index = -1;                                  // 记录自身在 RenderProcess blocks数组中的序号
+    shdUid = -1;                                 // 记录 material 对应的 shader program uid
+    procuid = -1;
 
-    batchEnabled: boolean = true;
-    fixedState: boolean = true;
-    runMode: number = 0;
+    batchEnabled = true;
+    fixedState = true;
+    runMode = 0;
     rpoNodeBuilder: RPONodeBuilder = null;
     rpoUnitBuilder: RPOUnitBuilder = null;
     vtxResource: ROVertexResource = null;
@@ -134,7 +134,7 @@ export default class RPOBlock {
                     // if(DebugFlag.Flag_0 > 0) console.log("unit.drawEnabled: ",unit.drawEnabled);
                     if (unit.drawEnabled) {
                         if (vtxFlag) {
-                            const ivsI = 0;
+                            // const ivsI = 0;
                             nextNode.vro.run();
                             vtxFlag = false;
                         }
