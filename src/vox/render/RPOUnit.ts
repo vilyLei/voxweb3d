@@ -116,7 +116,6 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     }
     drawThis(rc: IRenderProxy): void {
         
-        // const rdm = RenderDrawMode;
         const st = rc.status;
         st.drawCallTimes ++;
         st.drawTrisNumber += this.trisNumber;
@@ -188,7 +187,6 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
             rc.resetPolygonOffset();
         }
 
-        // const rdm = RenderDrawMode;
         let i = 0;
         let gl = rc.RContext;
         switch (ir.drawMode) {

@@ -324,12 +324,8 @@ export default class RODataBuilder implements IRODataBuilder {
 
             vtxRes.__$attachRes(resUid);
             runit.vro = vtx.createVRO(this.m_roVtxBuild, shdp, true);
-
-            // console.log("RODataBuilder::buildVtxRes(), runit.vro: ", runit.vro);
-
             runit.indicesRes = runit.vro.indicesRes;
             runit.vro.__$attachThis();
-            // runit.vtxUid = disp.vbuf.getUid();
             runit.vtxUid = resUid;
 
             runit.ibufStep = runit.vro.ibufStep;
@@ -369,8 +365,8 @@ export default class RODataBuilder implements IRODataBuilder {
         //this.updateDispToProcess();
         if (this.m_haveDeferredUpdate) {
             this.m_haveDeferredUpdate = false;
-            let len: number = this.m_deferredVbufs.length;
-            let i: number = 0;
+            let len = this.m_deferredVbufs.length;
+            let i = 0;
             if (len > 0) {
                 // deferred update vtx to gpu
                 for (; i < len; ++i) {

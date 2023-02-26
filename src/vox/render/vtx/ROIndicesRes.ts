@@ -32,7 +32,7 @@ class ROIndicesRes implements IROIndicesRes {
     private m_sizes: number[] = new Array(2);
     private m_steps: number[] = new Array(2);
 
-    private m_ivsSize = 0;
+    private m_size = 0;
     private m_ivsData: IROIvsData = null;
 
     version = -1;
@@ -54,7 +54,7 @@ class ROIndicesRes implements IROIndicesRes {
         return this.m_gbuf;
     }
     getVTCount(): number {
-        return this.m_ivsSize;
+        return this.m_size;
     }
     isCommon(): boolean {
         return this.m_index == 0;
@@ -63,7 +63,7 @@ class ROIndicesRes implements IROIndicesRes {
         this.m_index = 1;
         this.drawMode = RDM.ELEMENTS_LINES;
         this.m_gbuf = this.m_gbufs[1];
-        this.m_ivsSize = this.m_sizes[1];
+        this.m_size = this.m_sizes[1];
         this.ibufStep = this.m_steps[1];
         // console.log("toWireframe()............");
     }
@@ -71,7 +71,7 @@ class ROIndicesRes implements IROIndicesRes {
         this.m_index = 0;
         this.drawMode = RDM.ELEMENTS_TRIANGLES;
         this.m_gbuf = this.m_gbufs[0];
-        this.m_ivsSize = this.m_sizes[0];
+        this.m_size = this.m_sizes[0];
         this.ibufStep = this.m_steps[0];
     }
     use(force: boolean = false): void {
@@ -81,7 +81,7 @@ class ROIndicesRes implements IROIndicesRes {
     }
     updateToGpu(rc: IROVtxBuilder): void {
 
-        if (this.m_gbufs[0] != null && this.m_ivsSize > 0) {
+        if (this.m_gbufs[0] != null && this.m_size > 0) {
             let vtx = this.m_vtx;
             // console.log("indeces updateToGpu vtx.getUId(): ",vtx.getUid(), ", this.version != vtx.indicesVer: ", this.version != vtx.indicesVer);
             if (this.version != vtx.indicesVer) {
@@ -89,7 +89,7 @@ class ROIndicesRes implements IROIndicesRes {
                 this.m_ivsData = ird;
                 const ivs = ird.ivs;
                 rc.bindEleBuf(this.m_gbuf);
-                if (this.m_ivsSize >= ivs.length) {
+                if (this.m_size >= ivs.length) {
                     //console.log("A indeces updateToGpu vtx.getUId(): ",vtx.getUid(), ", ivs.length", ivs.length);
                     rc.eleBufSubData(ivs, ird.status);
                 }
@@ -97,7 +97,7 @@ class ROIndicesRes implements IROIndicesRes {
                     //console.log("B indeces updateToGpu vtx.getUId(): ",vtx.getUid(), ", ivs.length", ivs.length);
                     rc.eleBufData(ivs, vtx.getBufDataUsage());
                 }
-                this.m_ivsSize = ivs.length;
+                this.m_size = ivs.length;
                 this.version = vtx.indicesVer;
             }
         }
@@ -125,7 +125,7 @@ class ROIndicesRes implements IROIndicesRes {
                 this.toShape();
             }
         }else {
-            this.m_ivsSize = this.m_sizes[0] = this.m_sizes[1] = disp.ivsCount;
+            this.m_size = this.m_sizes[0] = this.m_sizes[1] = disp.ivsCount;
             this.drawMode = disp.drawMode;
         }
     }
@@ -142,14 +142,11 @@ class ROIndicesRes implements IROIndicesRes {
         if (ivtx.bufData == null) {
 
             if (wireframe) {
-                // console.log("A0 XXXXX ivs.length: ", ivs.length);
                 ivs = this.createWireframeIvs(ivs);
-                // console.log("A1 XXXXX ivs.length: ", ivs.length);
             }
             rc.eleBufData(ivs, ivtx.getBufDataUsage());
             size = ivs.length;
             step = size > 65536 ? 4 : 2;
-            // console.log("A2 XXXXX ivs: ", ivs);
         }
         else {
 
@@ -170,14 +167,12 @@ class ROIndicesRes implements IROIndicesRes {
                 step = 4;
 
                 for (let i = 0, len = list.length; i < len; ++i) {
-
                     ivs = list[i];
                     list[i] = (ivs instanceof Uint32Array) ? ivs : new Uint32Array(ivs);
                 }
             } else {
                 step = 2;
                 for (let i = 0, len = list.length; i < len; ++i) {
-
                     ivs = list[i];
                     list[i] = (ivs instanceof Uint16Array) ? ivs : new Uint16Array(ivs);
                 }
@@ -218,7 +213,7 @@ class ROIndicesRes implements IROIndicesRes {
             rc.deleteBuf(this.m_gbuf);
             this.m_gbuf = null;
             this.m_ivsData = null;
-            this.m_ivsSize = 0;
+            this.m_size = 0;
             console.log("ROIndicesRes::destroy() this.m_uid: ", this.m_uid);
         }
     }
