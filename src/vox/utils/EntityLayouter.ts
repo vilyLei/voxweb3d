@@ -42,7 +42,7 @@ class EntityLayouter {
 		this.m_transforms.push(transform);
 		console.log("layoutAppendItem(), entity: ", entity);
 	}	
-	layoutUpdate(rotationEnabled: boolean = false, fixSize: number = 300.0): void {
+	layoutUpdate(rotationEnabled: boolean = false, fixSize: number = 300.0, pivot: Vector3D = null): void {
 		
 		this.rotationEnabled = rotationEnabled;
 		for (let k = 0; k < this.m_entities.length; ++k) {
@@ -51,7 +51,7 @@ class EntityLayouter {
 			et.setScaleXYZ(1.0, 1.0, 1.0);
 			et.setRotationXYZ(0.0, 0.0, 0.0);
 		}
-		let pivot = new Vector3D();
+		if(pivot == null) pivot = new Vector3D();
 		
 		this.fixToPosition(this.m_entities, this.m_transforms, pivot, fixSize);
 	}
