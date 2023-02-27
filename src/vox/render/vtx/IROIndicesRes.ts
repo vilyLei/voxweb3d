@@ -16,8 +16,8 @@ interface IROIndicesRes {
 
     getUid(): number;
     getVtxUid(): number;
-    // getGpuBuf(): any;
-    getVTCount(): number;
+    // // getGpuBuf(): any;
+    // getVTCount(): number;
     updateToGpu(vrc: IROVtxBuilder): void;
     initialize(rc: IRenderProxy, vrc: IROVtxBuilder, vtx: IROVtxBuf, disp: IRODisplay): void;
 

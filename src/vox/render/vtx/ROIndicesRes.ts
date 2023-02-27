@@ -89,9 +89,9 @@ class ROIndicesRes implements IROIndicesRes {
     // getGpuBuf(): any {
     //     return this.m_gbuf;
     // }
-    getVTCount(): number {
-        return this.m_size;
-    }
+    // getVTCount(): number {
+    //     return this.m_size;
+    // }
     // isCommon(): boolean {
     //     return this.m_index == 0;
     // }
@@ -135,7 +135,7 @@ class ROIndicesRes implements IROIndicesRes {
      */
     bindToGPU(force: boolean = false): void {
         if (this.m_vrc.testRIOUid(this.m_vtxUid) || force) {
-            this.m_vrc.bindEleBuf(this.m_gbuf);
+            this.m_vrc.bindEleBuf(this.rd.buf);
         }
     }
     updateToGpu(rc: IROVtxBuilder): void {
