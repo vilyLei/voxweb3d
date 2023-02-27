@@ -40,7 +40,7 @@ interface IRendererScene {
      * @param renderProcessesTotal the default value is 3
      * @param createNewCamera the default value is true;
      */
-    initialize(rparam: IRendererParam, renderProcessesTotal?: number, createNewCamera?: boolean): void;
+    initialize(rparam: IRendererParam, renderProcessesTotal?: number, createNewCamera?: boolean): IRendererScene;
     setAccessor(accessor: IRendererSceneAccessor): void;
     prependRenderNode(node: IRenderNode): void;
     appendRenderNode(node: IRenderNode): void;
@@ -166,8 +166,10 @@ interface IRendererScene {
     getRendererStatus(): number;
     /**
      * run all renderer processes in the renderer instance
+     * @param autoCycle the default value is true
      */
     run(autoCycle?: boolean): void;
     destroy(): void;
+    setAutoRunning(auto: boolean): void;
 }
 export default IRendererScene;

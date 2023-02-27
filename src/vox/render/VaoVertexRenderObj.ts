@@ -26,7 +26,7 @@ export default class VaoVertexRenderObj extends VROBase {
         if (this.m_rc.testVROUid(this.m_uid)) {
             // console.log("VaoVertexRenderObj::run(), rcuid: ",this.m_rc.getRCUid(),this.m_vtxUid, this.m_uid);
             this.m_rc.bindVertexArray(this.vao);
-            this.indicesRes.use(VROBase.s_mid != this.m_mid);
+            this.indicesRes.bindToGPU(VROBase.s_mid != this.m_mid);
             VROBase.s_mid = this.m_mid;
             // if (this.m_rc.testRIOUid(this.m_vtxUid) || VROBase.s_mid != this.m_mid) {
             // // if (this.m_rc.testRIOUid(this.m_vtxUid)) {

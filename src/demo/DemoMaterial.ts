@@ -7,6 +7,8 @@ import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
 import RendererScene from "../vox/scene/RendererScene";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import { MouseInteraction } from "../vox/ui/MouseInteraction";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 export class DemoMaterial {
     constructor() { }
@@ -20,6 +22,7 @@ export class DemoMaterial {
     }
     private cylinder: Cylinder3DEntity = null;
     private rendererInit(): void {
+
         let rparam: RendererParam = new RendererParam();
         rparam.setCamPosition(800.0, 800.0, 800.0);
         this.m_rscene = new RendererScene();
@@ -27,6 +30,9 @@ export class DemoMaterial {
         this.m_rscene.updateCamera();
         this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
         this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+
+		new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
+		new RenderStatusDisplay(this.m_rscene, true);
     }
     initialize(): void {
         this.rendererInit();
@@ -83,19 +89,21 @@ v_uvs = a_uvs;
         this.m_flag = !this.m_flag;
     }
     run(): void {
-        // 修改uniform数据
-        this.m_time += 1.0;
-        this.m_uniformData[0] = Math.abs(Math.sin(this.m_time * 0.01));
-        this.m_uniformData[6] = Math.abs(Math.cos(this.m_time * 0.002));
-        //  if(this.m_flag)
-        //  {
-        //      this.cylinder.setPosition(this.m_pos);
-        //      this.cylinder.update();
-        //      this.m_pos.x = this.m_pos.x;
-        //      this.m_pos.y = this.m_pos.y;
-        //  }
-        // run rendering process (执行渲染过程)         
-        this.m_rscene.run();
+        if(this.m_rscene != null) {
+            // 修改uniform数据
+            this.m_time += 1.0;
+            this.m_uniformData[0] = Math.abs(Math.sin(this.m_time * 0.01));
+            this.m_uniformData[6] = Math.abs(Math.cos(this.m_time * 0.002));
+            //  if(this.m_flag)
+            //  {
+            //      this.cylinder.setPosition(this.m_pos);
+            //      this.cylinder.update();
+            //      this.m_pos.x = this.m_pos.x;
+            //      this.m_pos.y = this.m_pos.y;
+            //  }
+            // run rendering process (执行渲染过程)         
+            this.m_rscene.run();
+        }
     }
 }
 export default DemoMaterial;

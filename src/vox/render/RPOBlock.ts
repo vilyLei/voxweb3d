@@ -79,7 +79,7 @@ export default class RPOBlock {
         }
     }
     private run0(rc: RenderProxy): void {
-        let nextNode: RPONode = this.m_nodeLinker.getBegin();
+        let nextNode = this.m_nodeLinker.getBegin();
         if (nextNode != null) {
 
             this.m_shader.bindToGpu(this.shdUid);

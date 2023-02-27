@@ -334,7 +334,6 @@
  import {DemoMaterialGraph as Demo} from "./demo/DemoMaterialGraph";
 
 
-
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     event    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -492,8 +491,7 @@
 ///*
 document.title = "Vox APP";
 //document.title = "Rendering & Art";
-let demoIns: Demo = new Demo();
-let ins: any = demoIns;
+let ins = new Demo() as any;
 if (ins.runBegin != undefined) {
     function main1(): void {
         console.log("------ demo --- init ------");
@@ -513,12 +511,15 @@ if (ins.runBegin != undefined) {
 else {
     function main2(): void {
         console.log("------ demo --- init ------");
-        demoIns.initialize();
-        function mainLoop(now: any): void {
-            demoIns.run();
+        ins.initialize();
+        if(ins.run != undefined) {
+            let runFunc = ins.run.bind(ins);
+            function mainLoop(now: any): void {
+                runFunc();
+                window.requestAnimationFrame(mainLoop);
+            }
             window.requestAnimationFrame(mainLoop);
         }
-        window.requestAnimationFrame(mainLoop);
         console.log("------ demo --- running ------");
     }
     //

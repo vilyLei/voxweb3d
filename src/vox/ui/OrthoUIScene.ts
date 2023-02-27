@@ -60,8 +60,9 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
             this.m_ruisc.setAccessor(accessor);
         }
     }
-    initialize(rparam: IRendererParam, renderProcessesTotal?: number, createNewCamera?: boolean): void {
+    initialize(rparam: IRendererParam, renderProcessesTotal?: number, createNewCamera?: boolean): IRendererScene {
         throw Error("illegal operation!!!");
+        return this;
     }
     initializeOrtho(rscene: RendererScene): void {
         if (rscene != null) {
@@ -277,7 +278,8 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
     }
     
     destroy(): void {
-        
+    }    
+    setAutoRunning(auto: boolean): void {
     }
 }
 export { OrthoUIScene };

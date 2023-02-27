@@ -34,8 +34,8 @@ export default class RendererScene extends RendererSceneBase implements IRendere
         let selfT: any = this;
         selfT.materialBlock = new RenderableMaterialBlock();
         selfT.entityBlock = new RenderableEntityBlock();
-		this.materialBlock.initialize();
-		this.entityBlock.initialize();
+        this.materialBlock.initialize();
+        this.entityBlock.initialize();
         this.tickUpdate();
     }
 
@@ -60,12 +60,30 @@ export default class RendererScene extends RendererSceneBase implements IRendere
             sc.textureBlock = this.textureBlock;
             sc.materialBlock = this.materialBlock;
             sc.entityBlock = this.entityBlock;
-            if(rparam != null) {
-				sc.initialize(rparam, renderProcessesTotal, createNewCamera);
-			}
+            if (rparam != null) {
+                sc.initialize(rparam, renderProcessesTotal, createNewCamera);
+            }
             return subsc;
         }
         throw Error("Illegal operation!!!");
         return null;
+    }
+    private m_autoRRun = false;
+    setAutoRunning(auto: boolean): void {
+        
+        if (this.m_autoRRun != auto) {
+            if (this.m_autoRRun) {
+                this.m_autoRRun = false;
+            } else {
+                this.m_autoRRun = true;
+                const func = (): void => {
+                    if (this.m_autoRRun) {
+                        this.run();
+                        window.requestAnimationFrame(func);
+                    }
+                }
+                window.requestAnimationFrame(func);
+            }
+        }
     }
 }

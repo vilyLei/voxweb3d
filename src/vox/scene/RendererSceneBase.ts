@@ -96,7 +96,7 @@ export default class RendererSceneBase {
     private m_containersTotal: number = 0;
 
     protected m_runFlag = -1;
-    protected m_autoRunning = true;
+    protected m_autoRunEnabled = true;
     protected m_processUpdate = false;
     protected m_rparam: IRendererParam = null;
     protected m_enabled = true;
@@ -310,7 +310,7 @@ export default class RendererSceneBase {
     protected initThis(): void {
         // this.tickUpdate();
     }
-    initialize(rparam: IRendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): void {
+    initialize(rparam: IRendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
 
         if (this.m_renderer == null) {
             if (rparam == null) rparam = new RendererParam();
@@ -367,6 +367,7 @@ export default class RendererSceneBase {
 
             this.initThis();
         }
+        return this;
     }
     setRendererProcessParam(index: number, batchEnabled: boolean, processFixedState: boolean): void {
         this.m_renderer.setRendererProcessParam(this.m_processids[index], batchEnabled, processFixedState);
@@ -423,7 +424,7 @@ export default class RendererSceneBase {
         }
     }
     setAutoRunningEnabled(autoRunning: boolean): void {
-        this.m_autoRunning = autoRunning;
+        this.m_autoRunEnabled = autoRunning;
     }
     setAutoRenderingSort(sortEnabled: boolean): void {
         this.m_processUpdate = sortEnabled;
@@ -628,7 +629,7 @@ export default class RendererSceneBase {
      */
     runBegin(autoCycle: boolean = true, contextBeginEnabled: boolean = true): void {
 
-        if (autoCycle && this.m_autoRunning) {
+        if (autoCycle && this.m_autoRunEnabled) {
             if (this.m_runFlag >= 0) this.runEnd();
             this.m_runFlag = 0;
         }
@@ -708,7 +709,7 @@ export default class RendererSceneBase {
         // this.stage3D.enterFrame();
         const st = this.m_currStage3D;
         if (st != null) st.enterFrame();
-        if (autoCycle && this.m_autoRunning) {
+        if (autoCycle && this.m_autoRunEnabled) {
             if (this.m_runFlag != 0) this.runBegin();
             this.m_runFlag = 1;
         }
@@ -855,11 +856,12 @@ export default class RendererSceneBase {
     // }
     /**
      * run all renderer processes in the renderer instance
+     * @param autoCycle the default value is true
      */
     run(autoCycle: boolean = true): void {
 
         if (this.m_enabled) {
-            if (autoCycle && this.m_autoRunning) {
+            if (autoCycle && this.m_autoRunEnabled) {
                 if (this.m_runFlag != 1) this.update();
                 this.m_runFlag = 2;
             }
@@ -905,7 +907,7 @@ export default class RendererSceneBase {
         if (this.m_rspace != null) {
             this.m_rspace.runEnd();
         }
-        if (this.m_autoRunning) {
+        if (this.m_autoRunEnabled) {
             this.m_runFlag = -1;
         }
         if (this.m_accessor != null) {
@@ -926,5 +928,8 @@ export default class RendererSceneBase {
     destroy(): void {
         this.runnableQueue.destroy();
         this.m_transUpdater.destroy();
+    }
+    setAutoRunning(auto: boolean): void {
+
     }
 }

@@ -38,7 +38,7 @@ export default class MeshFactory {
 			}
 		} else if (texEnabled) {
 			dataMesh.setUVS(new Float32Array(Math.floor(model.vertices.length / stride) * 2));
-			console.error("hasn't uv data !!!, it happened in the MeshBuilder::createDataMeshFromModel(...) function.");
+			console.error("hasn't uv data !!!, it happened in the MeshFactory::createDataMeshFromModel(...) function.");
 		}
 		if (model.normals) {
 			dataMesh.setNVS(model.normals);
@@ -51,7 +51,7 @@ export default class MeshFactory {
 				ivs[i] = i;
 			}
 			dataMesh.setIVS(ivs);
-			console.warn("hasn't indices data !, it happened in the MeshBuilder::createDataMeshFromModel(...) function.");
+			console.warn("hasn't indices data !, it happened in the MeshFactory::createDataMeshFromModel(...) function.");
 		}
 
 		if (material != null) {

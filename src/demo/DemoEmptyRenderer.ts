@@ -23,7 +23,7 @@ export class DemoEmptyRenderer {
     run(): void {
 
         if(this.m_rcontext != null) {
-            let t: number = Math.abs( Math.cos( this.m_time += 0.01 ) );
+            let t = Math.abs( Math.cos( this.m_time += 0.01 ) );
             this.m_rcontext.setClearRGBColor3f(0.0, t, 1.0 - t);
 
             this.m_rcontext.renderBegin();

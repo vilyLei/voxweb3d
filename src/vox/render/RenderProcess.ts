@@ -158,7 +158,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 		block.addNode(node);
 	}
 	rejoinRunitForTro(runit: RPOUnit): void {
-		let node: RPONode = this.m_rpoNodeBuilder.getNodeByUid(runit.__$rpuid) as RPONode;
+		let node = this.m_rpoNodeBuilder.getNodeByUid(runit.__$rpuid) as RPONode;
 		if (node != null) {
 			node.tro = runit.tro;
 			node.texMid = node.unit.texMid;
@@ -166,7 +166,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 		}
 	}
 	rejoinRunitForVro(runit: RPOUnit): void {
-		let node: RPONode = this.m_rpoNodeBuilder.getNodeByUid(runit.__$rpuid) as RPONode;
+		let node = this.m_rpoNodeBuilder.getNodeByUid(runit.__$rpuid) as RPONode;
 		if (node != null) {
 			// node.drawMode = runit.drawMode;
 			node.ivsIndex = runit.ivsIndex;

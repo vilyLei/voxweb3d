@@ -40,7 +40,7 @@ export default class VertexRenderObj extends VROBase {
             // if (this.m_rc.testRIOUid(this.m_vtxUid)) {
             //     this.m_rc.bindEleBuf(this.ibuf);
             // }
-            this.indicesRes.use();
+            this.indicesRes.bindToGPU();
         }
     }
     protected __$destroy(): void {

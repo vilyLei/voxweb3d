@@ -279,7 +279,7 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 	setAccessor(accessor: IRendererSceneAccessor): void {
 		this.m_accessor = accessor;
 	}
-	initialize(rparam: RendererParam = null, renderProcessesTotal: number = 3): void {
+	initialize(rparam: RendererParam = null, renderProcessesTotal: number = 3): IRendererScene {
 		if (this.m_renderer == null) {
 			if (rparam == null) rparam = new RendererParam();
 			this.m_rparam = rparam;
@@ -325,6 +325,7 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 
 			this.tickUpdate();
 		}
+		return this;
 	}
 	setRendererProcessParam(index: number, batchEnabled: boolean, processFixedState: boolean): void {
 		this.m_renderer.setRendererProcessParam(this.m_processids[index], batchEnabled, processFixedState);
@@ -737,4 +738,8 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 	}
 	destroy(): void {
 	}
+	
+    setAutoRunning(auto: boolean): void {
+
+    }
 }

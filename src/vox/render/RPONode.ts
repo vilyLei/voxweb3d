@@ -19,25 +19,25 @@ export default class RPONode implements IPoolNode, IRPONode {
     constructor() {
     }
     __$ruid: number = -1;
-    drawEnabled: boolean = true;
-    uid: number = -1;
-    index: number = -1;
+    drawEnabled = true;
+    uid = -1;
+    index = -1;
     // only for show info
-    drawMode: number = 0;
-    ivsIndex: number = 0;
-    ivsCount: number = 0;
-    insCount: number = 0;
-    shdUid: number = -1;
-    vtxUid: number = -1;
-    texMid: number = -1;
-    rtokey: number = -1;
+    drawMode = 0;
+    ivsIndex = 0;
+    ivsCount = 0;
+    insCount = 0;
+    shdUid = -1;
+    vtxUid = -1;
+    texMid = -1;
+    rtokey = -1;
     prev: RPONode = null;
     next: RPONode = null;
     unit: RPOUnit = null;
     vro: IVertexRenderObj = null;
     tro: ITextureRenderObj = null;
-    rvroI: number = -1;
-    rtroI: number = -1;
+    rvroI = -1;
+    rtroI = -1;
     setValue(value: number): void {
         this.unit.value = value;
     }

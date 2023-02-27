@@ -12,17 +12,46 @@ import IROIvsData from "../../../vox/render/vtx/IROIvsData";
 import { IROIndicesRes } from "./IROIndicesRes";
 import { RenderDrawMode as RDM } from "../RenderConst";
 import IRODisplay from "../../display/IRODisplay";
+import IRenderProxy from "../IRenderProxy";
 
-interface BufR {
-    buf: any;
-    size: number;
-    step: number;
+class BufRData {
+    buf: any = null;
+    ivsSize = 0;
+    ivsIndex = 0;
+    step = 2;
+    drawMode = RDM.ELEMENTS_TRIANGLES;
+    common = true;
+    bufType = 0;
+    ivsOffset = 0;
+    clone(): BufRData {
+        let rd = new BufRData;
+        rd.buf = this.buf;
+        rd.ivsIndex = this.ivsIndex;
+        rd.ivsSize = this.ivsSize;
+        rd.step = this.step;
+        rd.drawMode = this.drawMode;
+        rd.common = this.common;
+        rd.bufType = this.bufType;
+        rd.ivsOffset = this.ivsOffset;
+        return rd;
+    }
+    destroy(rc: IROVtxBuilder): void {
+        if (this.buf != null) {
+            rc.deleteBuf(this.buf);
+            this.buf = null;
+        }
+    }
 }
+class BufRDataPair {
+    r0: BufRData;
+    r1: BufRData;
+}
+
 
 class ROIndicesRes implements IROIndicesRes {
     private static s_uid = 0;
     private m_uid = ROIndicesRes.s_uid++;
-    private m_rc: IROVtxBuilder;
+    private m_vrc: IROVtxBuilder;
     private m_vtx: IROIVtxBuf = null;
     private m_vtxUid = 0;
     private m_index = 0;
@@ -39,10 +68,17 @@ class ROIndicesRes implements IROIndicesRes {
     ibufStep = 0;
     drawMode = RDM.ELEMENTS_TRIANGLES;
 
+    private m_rdpType = 0;
+    private m_rdps: BufRDataPair[] = [];
+
+    rd: BufRData = null;
     constructor() {
+
         this.m_gbufs.fill(null);
         this.m_sizes.fill(0);
         this.m_steps.fill(2);
+
+        this.m_rdps.fill(null);
     }
     getUid(): number {
         return this.m_uid;
@@ -50,33 +86,56 @@ class ROIndicesRes implements IROIndicesRes {
     getVtxUid(): number {
         return this.m_vtxUid;
     }
-    getGpuBuf(): any {
-        return this.m_gbuf;
-    }
+    // getGpuBuf(): any {
+    //     return this.m_gbuf;
+    // }
     getVTCount(): number {
         return this.m_size;
     }
-    isCommon(): boolean {
-        return this.m_index == 0;
-    }
+    // isCommon(): boolean {
+    //     return this.m_index == 0;
+    // }
     toWireframe(): void {
-        this.m_index = 1;
-        this.drawMode = RDM.ELEMENTS_LINES;
-        this.m_gbuf = this.m_gbufs[1];
-        this.m_size = this.m_sizes[1];
-        this.ibufStep = this.m_steps[1];
+        // this.m_index = 1;
+        this.m_rdpType = 1;
+        this.rd = this.m_rdps[this.m_index].r1;
+
+        // this.drawMode = RDM.ELEMENTS_LINES;
+        // this.m_gbuf = this.m_gbufs[1];
+        // this.m_size = this.m_sizes[1];
+        // this.ibufStep = this.m_steps[1];
         // console.log("toWireframe()............");
     }
     toShape(): void {
-        this.m_index = 0;
-        this.drawMode = RDM.ELEMENTS_TRIANGLES;
-        this.m_gbuf = this.m_gbufs[0];
-        this.m_size = this.m_sizes[0];
-        this.ibufStep = this.m_steps[0];
+        this.m_rdpType = 0;
+        this.rd = this.m_rdps[this.m_index].r0;
+
+        // this.m_index = 0;
+        // this.drawMode = RDM.ELEMENTS_TRIANGLES;
+        // this.drawMode = this.rd.drawMode;
+        // this.m_gbuf = this.m_gbufs[0];
+        // this.m_size = this.m_sizes[0];
+        // this.ibufStep = this.m_steps[0];
     }
-    use(force: boolean = false): void {
-        if (this.m_rc.testRIOUid(this.m_vtxUid) || force) {
-            this.m_rc.bindEleBuf(this.m_gbuf);
+    toCommon(): void {
+        this.toShape();
+    }
+    applyDataAt(i: number): void {
+        if(this.m_index != i && i >= 0 && i < this.m_rdps.length) {
+            this.m_index = i;
+            if(this.m_rdpType < 1) {
+                this.toShape();
+            }else {
+                this.toWireframe();
+            }
+        }
+    }
+    /**
+     * @param force the default value is false
+     */
+    bindToGPU(force: boolean = false): void {
+        if (this.m_vrc.testRIOUid(this.m_vtxUid) || force) {
+            this.m_vrc.bindEleBuf(this.m_gbuf);
         }
     }
     updateToGpu(rc: IROVtxBuilder): void {
@@ -102,12 +161,13 @@ class ROIndicesRes implements IROIndicesRes {
             }
         }
     }
-    initialize(rc: IROVtxBuilder, ivtx: IROIVtxBuf, disp: IRODisplay): void {
+    initialize(rc: IRenderProxy, vrc: IROVtxBuilder, ivtx: IROIVtxBuf, disp: IRODisplay): void {
 
-        this.m_rc = rc;
-
+        this.m_vrc = vrc;
+        let wireframe = false;
+        let rpdp = new BufRDataPair();
         if (this.m_gbufs[0] == null && ivtx.getIvsDataAt() != null) {
-            
+
             // console.log("ROIndicesRes::initialize(), uid: ", this.m_uid, ", ivtx: ", ivtx);
 
             this.version = ivtx.indicesVer;
@@ -116,35 +176,54 @@ class ROIndicesRes implements IROIndicesRes {
 
             let ird = ivtx.getIvsDataAt();
             this.m_ivsData = ird;
-            
-            this.createBuf(0, rc, ivtx);
-            if (ird.wireframe) {
-                this.createBuf(1, rc, ivtx, ird.wireframe);
-                this.toWireframe();
+            wireframe = ird.wireframe;
+
+            let rd0 = this.createBuf(0, rc, vrc, ivtx, disp.ivsIndex);
+            let rd1: BufRData = null;
+            if (wireframe) {
+                rd1 = this.createBuf(1, rc, vrc, ivtx, disp.ivsIndex, wireframe);
             } else {
-                this.toShape();
+                rd1 = rd0.clone();
             }
-        }else {
+            rpdp.r0 = rd0;
+            rpdp.r1 = rd1;
+        } else {
+            let rd = new BufRData();
+            rd.buf = null;
+            rd.ivsSize = disp.ivsCount;
+            rd.ivsIndex = disp.ivsIndex;
+            rd.step = 2;
+            rd.drawMode = disp.drawMode;
+            rpdp.r0 = rd;
+            rpdp.r1 = rd;
+
             this.m_size = this.m_sizes[0] = this.m_sizes[1] = disp.ivsCount;
             this.drawMode = disp.drawMode;
         }
+        this.m_rdps[0] = rpdp;
+
+        if (wireframe) {
+            this.toWireframe();
+        } else {
+            this.toShape();
+        }
     }
-    private createBuf(i: number, rc: IROVtxBuilder, ivtx: IROIVtxBuf, wireframe: boolean = false): BufR {
+    private createBuf(i: number, rc: IRenderProxy, vrc: IROVtxBuilder, ivtx: IROIVtxBuf, ivsIndex: number, wireframe: boolean = false): BufRData {
 
         let ird = ivtx.getIvsDataAt();
         let ivs = ird.ivs;
         let size = 0;
 
         let step = 2;
-        let gbuf = rc.createBuf();
-        rc.bindEleBuf(gbuf);
+        let gbuf = vrc.createBuf();
+        vrc.bindEleBuf(gbuf);
 
         if (ivtx.bufData == null) {
 
             if (wireframe) {
                 ivs = this.createWireframeIvs(ivs);
             }
-            rc.eleBufData(ivs, ivtx.getBufDataUsage());
+            vrc.eleBufData(ivs, ivtx.getBufDataUsage());
             size = ivs.length;
             step = size > 65536 ? 4 : 2;
         }
@@ -183,7 +262,7 @@ class ROIndicesRes implements IROIndicesRes {
                 size += list[i].byteLength;
             }
 
-            rc.eleBufDataMem(size, ivtx.getBufDataUsage());
+            vrc.eleBufDataMem(size, ivtx.getBufDataUsage());
 
             offset = 0;
             size = 0;
@@ -191,26 +270,35 @@ class ROIndicesRes implements IROIndicesRes {
             for (let i = 0, len = list.length; i < len; ++i) {
 
                 ivs = list[i];
-                rc.eleBufSubData(ivs, offset);
+                vrc.eleBufSubData(ivs, offset);
                 offset += ivs.byteLength;
                 size += ivs.length;
             }
         }
+        let rd = new BufRData();
+        rd.buf = gbuf;
+        rd.ivsSize = size;
+        rd.ivsIndex = wireframe ? ivsIndex * 2 : ivsIndex;
+        rd.step = step;
+        rd.bufType = step != 4 ? rc.UNSIGNED_SHORT : rc.UNSIGNED_INT;
+        rd.ivsOffset = rd.ivsIndex * rd.step;
+        rd.common = !wireframe;
+        rd.drawMode = wireframe ? RDM.ELEMENTS_LINES : RDM.ELEMENTS_TRIANGLES;
 
-        let bufData: BufR = { buf: gbuf, size: size, step: step };
-        this.m_gbufs[i] = bufData.buf;
-        this.m_sizes[i] = bufData.size;
-        this.m_steps[i] = bufData.step;
+        // let bufData: BufR = { buf: gbuf, size: size, step: step };
+        this.m_gbufs[i] = rd.buf;
+        this.m_sizes[i] = rd.ivsSize;
+        this.m_steps[i] = rd.step;
         // console.log("xxxxx bufData: ", bufData);
-        return bufData;
+        return rd;
     }
 
-    destroy(rc: IROVtxBuilder): void {
+    destroy(vrc: IROVtxBuilder): void {
 
-        this.m_rc = null;
+        this.m_vrc = null;
         if (this.m_gbuf != null) {
             this.m_vtx = null;
-            rc.deleteBuf(this.m_gbuf);
+            vrc.deleteBuf(this.m_gbuf);
             this.m_gbuf = null;
             this.m_ivsData = null;
             this.m_size = 0;

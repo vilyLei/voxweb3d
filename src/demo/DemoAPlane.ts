@@ -1,9 +1,6 @@
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import RendererScene from "../vox/scene/RendererScene";
 
-/**
- * a 3d rectangle plane display example
- */
 export class DemoAPlane {
     private m_rscene: RendererScene = null;
     private m_plane: Plane3DEntity = null;
@@ -23,7 +20,7 @@ export class DemoAPlane {
         img.src = "static/assets/yanj.jpg";
 
         this.m_plane = new Plane3DEntity();
-        this.m_plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex]);
+        this.m_plane.initializeXOZSquare(800, [tex]);
         this.m_rscene.addEntity(this.m_plane);
     }
     

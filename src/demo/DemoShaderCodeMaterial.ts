@@ -3,7 +3,6 @@ import Matrix4 from "../vox/math/Matrix4";
 import RendererParam from "../vox/scene/RendererParam";
 import MouseEvent from "../vox/event/MouseEvent";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
-import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
 import RendererScene from "../vox/scene/RendererScene";
@@ -21,6 +20,8 @@ import Color4 from "../vox/material/Color4";
 import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
 import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
 import { ColorMaterialDecorator } from "../demo/material/ColorMaterialDecorator";
+import { MouseInteraction } from "../vox/ui/MouseInteraction";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 class ShaderCodeWrapper implements IShaderCodeWrapper {
 
@@ -142,10 +143,13 @@ export class DemoShaderCodeMaterial {
         this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
 
-        this.m_rscene.enableMouseEvent(true);
-        this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
-        this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
-        this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
+        // this.m_rscene.enableMouseEvent(true);
+        // this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
+        // this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
+        // this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
+
+		new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
+		new RenderStatusDisplay(this.m_rscene, true);
     }
 
     private m_colorData: Float32Array;

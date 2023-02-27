@@ -54,7 +54,7 @@ export default class RendererSubScene extends RendererSceneBase implements IRend
         }
         this.m_evt3DCtr = evt3DCtr;
     }
-    initialize(rparam: RendererParam, renderProcessesTotal: number = 3, createNewCamera: boolean = true): void {
+    initialize(rparam: RendererParam, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
         if (this.m_renderProxy == null) {
             if (renderProcessesTotal < 1) {
                 renderProcessesTotal = 1;
@@ -89,6 +89,7 @@ export default class RendererSubScene extends RendererSceneBase implements IRend
                 this.m_rspace = sp;
             }
         }
+        return this;
     }
 
     private createMainCamera(): IRenderCamera {
@@ -146,7 +147,7 @@ export default class RendererSubScene extends RendererSceneBase implements IRend
      */
     runBegin(autoCycle: boolean = true, contextBeginEnabled: boolean = false): void {
 
-        if (autoCycle && this.m_autoRunning) {
+        if (autoCycle && this.m_autoRunEnabled) {
             if (this.m_runFlag >= 0) this.runEnd();
             this.m_runFlag = 0;
         }

@@ -10,7 +10,7 @@ import DivLog from "../vox/utils/DivLog";
 import MouseEvent from "../vox/event/MouseEvent";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import IGeomModelData from "../vox/mesh/IGeomModelData";
-import MeshFactor from "../vox/mesh/MeshFactory";
+import MeshFactory from "../vox/mesh/MeshFactory";
 import { GeometryMerger } from "../vox/mesh/GeometryMerger";
 import DataMesh from "../vox/mesh/DataMesh";
 import IRenderMaterial from "../vox/render/IRenderMaterial";
@@ -21,8 +21,10 @@ import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
 
 export class DemoDataMesh {
+
 	private m_rscene: RendererScene = null;
 	private m_texLoader: ImageTextureLoader = null;
+
 	constructor() {}
 
 	getTexByUrl(purl: string): TextureProxy {
@@ -69,7 +71,7 @@ export class DemoDataMesh {
 		let uvs = new Float32Array([1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0]);
 		let vs = new Float32Array([-1, 0, 1, 1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, -1, 0, -1]);
 		let model: IGeomModelData = {vertices: vs, uvsList: [uvs], normals: nvs};
-		let mesh = MeshFactor.createDataMeshFromModel(model, material);
+		let mesh = MeshFactory.createDataMeshFromModel(model, material);
 
 		let scale = 150.0;
 		let entity = new DisplayEntity();
@@ -92,9 +94,9 @@ export class DemoDataMesh {
 		let ivs = new Uint16Array([0, 1, 2, 0, 2, 3]);
 		let model: IGeomModelData = {vertices: vs, uvsList: [uvs], normals: nvs, indices: ivs, wireframe: false};
 		// let mesh = VoxRScene.createDataMeshFromModel(model, material);
-		let mesh = MeshFactor.createDataMeshFromModel(model);
-		//0, 1, 1, 2, 2, 0, 0, 2, 2, 3, 3, 0
-		//0, 1, 1, 2, 2, 0, 0, 2, 2, 3, 3, 0
+		let mesh = MeshFactory.createDataMeshFromModel(model);
+		// 0, 1, 1, 2, 2, 0, 0, 2, 2, 3, 3, 0
+		// 0, 1, 1, 2, 2, 0, 0, 2, 2, 3, 3, 0
 		let scale = 10.0;
 		let entity = new DisplayEntity();
 		entity.setMaterial(material);
@@ -145,7 +147,7 @@ export class DemoDataMesh {
 		obsMeshMerger.addEntity(box1);
 
 		// this.addMergedEntity(obsMeshMerger, box0.getMaterial());
-		
+
 		this.m_rscene.addEntity(box0);
 		this.m_rscene.addEntity(box1);
 	}
