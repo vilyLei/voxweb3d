@@ -11,8 +11,7 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import RendererScene from "../vox/scene/RendererScene";
 import DivLog from "../vox/utils/DivLog";
 import MouseEvent from "../vox/event/MouseEvent";
-import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
-import CameraZoomController from "../voxeditor/control/CameraZoomController";
+
 import Color4 from "../vox/material/Color4";
 import VBuf4Material from "./material/VBuf4Material";
 import VBuf1Material from "./material/VBuf1Material";
@@ -20,17 +19,17 @@ import VBuf2Material from "./material/VBuf2Material";
 import VBuf3Material from "./material/VBuf3Material";
 import VBuf2AMaterial from "./material/VBuf2AMaterial";
 import DataMesh from "../vox/mesh/DataMesh";
-import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
+
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import VBuf3AMaterial from "./material/VBuf3AMaterial";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
+import { MouseInteraction } from "../vox/ui/MouseInteraction";
 export class DemoSharedVBuf {
 	constructor() {}
 
 	private m_rscene: RendererScene = null;
 	private m_texLoader: ImageTextureLoader = null;
-	private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-	private m_cameraZoomController: CameraZoomController = new CameraZoomController();
+	
 	getImageTexByUrl(purl: string): TextureProxy {
 		return this.m_texLoader.getImageTexByUrl(purl);
 	}
@@ -79,13 +78,8 @@ export class DemoSharedVBuf {
 			this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
 			this.m_tex = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-
-			this.m_rscene.enableMouseEvent(true);
-			// this.m_rscene.enableMouseEvent(false);
-			this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
-			this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
-			this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
-
+			
+			new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
             new RenderStatusDisplay(this.m_rscene, true);
 		}
 	}
@@ -445,10 +439,6 @@ export class DemoSharedVBuf {
 	run(): void {
 		if (this.m_rscene != null) {
 			this.initialize2();
-
-			this.m_stageDragSwinger.runWithYAxis();
-			this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
-
 			this.m_rscene.run(true);
 		}
 	}

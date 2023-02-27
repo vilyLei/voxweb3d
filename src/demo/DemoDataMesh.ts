@@ -8,8 +8,6 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import RendererScene from "../vox/scene/RendererScene";
 import DivLog from "../vox/utils/DivLog";
 import MouseEvent from "../vox/event/MouseEvent";
-// import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
-// import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import IGeomModelData from "../vox/mesh/IGeomModelData";
 import MeshFactor from "../vox/mesh/MeshFactory";
@@ -25,8 +23,6 @@ import { MouseInteraction } from "../vox/ui/MouseInteraction";
 export class DemoDataMesh {
 	private m_rscene: RendererScene = null;
 	private m_texLoader: ImageTextureLoader = null;
-	// private m_stageDragSwinger = new CameraStageDragSwinger();
-	// private m_cameraZoomController = new CameraZoomController();
 	constructor() {}
 
 	getTexByUrl(purl: string): TextureProxy {
@@ -55,12 +51,6 @@ export class DemoDataMesh {
 			this.m_rscene.updateCamera();
 
 			this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-
-			// this.m_rscene.enableMouseEvent(true);
-			// this.m_rscene.enableMouseEvent(false);
-			// this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
-			// this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
-			// this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
 			new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
 			new RenderStatusDisplay(this.m_rscene, true);
@@ -155,6 +145,7 @@ export class DemoDataMesh {
 		obsMeshMerger.addEntity(box1);
 
 		// this.addMergedEntity(obsMeshMerger, box0.getMaterial());
+		
 		this.m_rscene.addEntity(box0);
 		this.m_rscene.addEntity(box1);
 	}
@@ -173,10 +164,6 @@ export class DemoDataMesh {
     }
 	run(): void {
 		if (this.m_rscene != null) {
-			// console.log(this.m_rscene.getRenderProxy().status.drawCallTimes);
-			// this.m_stageDragSwinger.runWithYAxis();
-			// this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
-
 			this.m_rscene.run(true);
 		}
 	}

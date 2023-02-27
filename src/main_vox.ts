@@ -116,10 +116,6 @@
 
 //  import {DemoGpuTexMana as Demo} from "./demo/DemoGpuTexMana";
 
-//  import {DemoMaterial as Demo} from "./demo/DemoMaterial";
-
-//  import {DemoShaderCodeMaterial as Demo} from "./demo/DemoShaderCodeMaterial";
-
 //  import {DemoVtx as Demo} from "./demo/DemoVtx";
 
 //  import {DemoSwapProcess as Demo} from "./demo/DemoSwapProcess";
@@ -325,7 +321,18 @@
 
 //  import {DemoMultipleIVS as Demo} from "./demo/DemoMultipleIVS";
 
- import {DemoDataMesh as Demo} from "./demo/DemoDataMesh";
+//  import {DemoDataMesh as Demo} from "./demo/DemoDataMesh";
+
+///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////     material    ///////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+//  import {DemoMaterial as Demo} from "./demo/DemoMaterial";
+
+//  import {DemoShaderCodeMaterial as Demo} from "./demo/DemoShaderCodeMaterial";
+
+ import {DemoMaterialGraph as Demo} from "./demo/DemoMaterialGraph";
+
 
 
 ///////////////////////////////////////////////////////////////////////////////

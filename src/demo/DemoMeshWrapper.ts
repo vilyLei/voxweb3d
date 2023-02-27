@@ -9,8 +9,6 @@ import RendererScene from "../vox/scene/RendererScene";
 import DivLog from "../vox/utils/DivLog";
 import MouseEvent from "../vox/event/MouseEvent";
 import KeyboardEvent from "../vox/event/KeyboardEvent";
-import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
-import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import Color4 from "../vox/material/Color4";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
@@ -18,15 +16,13 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import MeshWrapper from "../vox/mesh/MeshWrapper";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
+import { MouseInteraction } from "../vox/ui/MouseInteraction";
 
 export class DemoMeshWrapper {
 	private m_clearColor = new Color4(0.1, 0.2, 0.1, 1.0);
 	private m_tex: IRenderTexture = null;
 	private m_rscene: RendererScene = null;
 	private m_texLoader: ImageTextureLoader = null;
-	private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-	private m_cameraZoomController: CameraZoomController = new CameraZoomController();
-
 	private m_currDispEntity: DisplayEntity = null;
 	private m_entities: DisplayEntity[] = [];
 	constructor() {}
@@ -153,12 +149,7 @@ export class DemoMeshWrapper {
 
 			this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-			this.m_rscene.enableMouseEvent(true);
-			// this.m_rscene.enableMouseEvent(false);
-			this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
-			this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
-			this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
-
+			new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
             new RenderStatusDisplay(this.m_rscene, true);
 			
 			this.initScene();
@@ -183,10 +174,6 @@ export class DemoMeshWrapper {
 	}
 	run(): void {
 		if (this.m_rscene != null) {
-
-			this.m_stageDragSwinger.runWithYAxis();
-			this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
-
 			this.m_rscene.run(true);
 		}
 	}
