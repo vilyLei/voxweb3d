@@ -72,6 +72,7 @@ export default class RenderSortBlock {
 		for (let i = 0; i < this.m_renderTotal; ++i) {
 			unit = nodes[i];
 			this.m_shader.bindToGpu(unit.shdUid);
+			unit.vdrInfo.__$$copyToRDP();
 			unit.run(rc);
 			if (unit.partTotal < 1) {
 				unit.drawThis(rc);
@@ -91,6 +92,7 @@ export default class RenderSortBlock {
 		for (let i = 0; i < this.m_renderTotal; ++i) {
 			unit = nodes[i];
 			this.m_shader.bindToGpu(unit.shdUid);
+			unit.indicesRes.rdp = unit.rdp;
 			unit.vro.run();
 			unit.runLockMaterial2(null);
 			if (unit.partTotal < 1) {

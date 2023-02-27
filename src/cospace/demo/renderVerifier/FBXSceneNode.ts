@@ -24,6 +24,9 @@ class FBXSceneNode extends SceneNode {
 
 				this.m_modelsTotal = total;
 				this.m_waitPartsTotal = total;
+				
+				model.status = bufObj.errorStatus;
+
 				this.initEntity(model, bufObj.transform, index);
 				if ((index + 1) == total) {
 					this.m_waitPartsTotal = 0;

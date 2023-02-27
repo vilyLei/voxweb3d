@@ -159,7 +159,11 @@ class ElementGeomData {
 
 		obj.vertex = this.buildVS(sivs, svs, sivsLen);
 		obj.normal = this.buildNVS(sivs, snvs, sivsLen);
-		obj.uvs = [this.buildUVS(suvivs, suvs)];
+		if(suvs) {
+			obj.uvs = [this.buildUVS(suvivs, suvs)];
+		}else {
+			obj.uvs = null;
+		}
 		obj.indices = ivs;
 		return;
 		let vs = new Float32Array(vsLen);
@@ -232,13 +236,23 @@ class ElementGeomData {
 		if (uvList && uvList.length > 0) {
 			puvs = uvList[0];
 		}
-
+		let uv_buffer: number[] = null;
+		let uv_indices: number[] = null;
+		if(puvs != null) {
+			uv_buffer = puvs.buffer;
+			uv_indices = puvs.indices;
+		}
 		if (geoInfo.normal != null) {
-			this.buildBufs(obj, geoInfo.vertexIndices, geoInfo.vertexPositions, geoInfo.normal.buffer, puvs.buffer, puvs.indices);
+			this.buildBufs(obj, geoInfo.vertexIndices, geoInfo.vertexPositions, geoInfo.normal.buffer, uv_buffer, uv_indices);
 		}
 		else {
-			this.buildBufs(obj, geoInfo.vertexIndices, geoInfo.vertexPositions, null, puvs.buffer, puvs.indices);
-			console.error("当前FBX模型法线数据缺失!!!");
+			this.buildBufs(obj, geoInfo.vertexIndices, geoInfo.vertexPositions, null, uv_buffer, uv_indices);
+			console.error("Error: 当前FBX模型法线数据缺失!!!");
+		}
+		if(obj.uvs == null) {
+			obj.uvs = [new Float32Array(2 * obj.indices.length / 3)];
+			console.error("Error: uvs data is empty !!!");
+			obj.errorStatus = 1;
 		}
 		// let uvsLen = 2 * obj.vertex.length / 3;
 		// let uvs = new Float32Array(uvsLen);

@@ -89,7 +89,9 @@ export default class RPOBlock {
             while (nextNode != null) {
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
+                    unit.vdrInfo.__$$copyToRDP();
                     if (unit.drawEnabled) {
+                        unit.indicesRes.rdp = unit.rdp;
                         unit.run(rc);
                         if (unit.partTotal < 1) {
                             unit.drawThis(rc);
@@ -132,9 +134,11 @@ export default class RPOBlock {
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
                     // if(DebugFlag.Flag_0 > 0) console.log("unit.drawEnabled: ",unit.drawEnabled);
+                    // console.log("unit.rdp.getUid(): ", unit.rdp.getUid(), unit.vdrInfo.rdp.getUid());
+                    const vBoo = unit.vdrInfo.__$$copyToRDP();
+                    vtxFlag = vtxFlag || vBoo;
                     if (unit.drawEnabled) {
                         if (vtxFlag) {
-                            // const ivsI = 0;
                             nextNode.vro.run();
                             vtxFlag = false;
                         }
@@ -183,6 +187,7 @@ export default class RPOBlock {
 
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
+                    unit.vdrInfo.__$$copyToRDP();
                     if (unit.drawEnabled) {
                         if (vtxFlag) {
                             nextNode.vro.run();
@@ -231,6 +236,7 @@ export default class RPOBlock {
                     vtxTotal--;
 
                     unit = nextNode.unit;
+                    unit.vdrInfo.__$$copyToRDP();
                     if (nextNode.drawEnabled && unit.drawEnabled) {
                         if (vtxFlag) {
                             nextNode.vro.run();
@@ -253,6 +259,7 @@ export default class RPOBlock {
             else {
                 while (nextNode != null) {
                     unit = nextNode.unit;
+                    unit.vdrInfo.__$$copyToRDP();
                     if (nextNode.drawEnabled && unit.drawEnabled) {
                         unit.runLockMaterial();
                         if (texUnlock) {
@@ -275,6 +282,7 @@ export default class RPOBlock {
     drawUnit(rc: RenderProxy, unit: RPOUnit, disp: IRODisplay): void {
         if (unit.drawEnabled) {
             this.m_shader.bindToGpu(unit.shdUid);
+            unit.vdrInfo.__$$copyToRDP();
             unit.run(rc);
             if (unit.partTotal < 1) {
                 unit.drawThis(rc);
@@ -291,6 +299,7 @@ export default class RPOBlock {
                 this.m_shader.resetUniform();
             }
             // console.log("***8** drawLockMaterialByUnit(), unit: ",unit);
+            unit.vdrInfo.__$$copyToRDP();
             if (RendererDevice.IsMobileWeb()) {
                 // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在某些设备上会有问题(例如ip6s上无法正常绘制)
                 // 注意临时产生的 vro 对象的回收问题

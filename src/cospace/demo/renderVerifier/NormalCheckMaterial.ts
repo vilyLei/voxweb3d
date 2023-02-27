@@ -61,10 +61,11 @@ class NormalCheckMaterial {
 	/**
 	 * @param textureEnabled the default value is false
 	 */
-	create(): IShaderMaterial {
+	create(grayDisp: boolean = false): IShaderMaterial {
 		if (this.material == null) {
 			let textureEnabled = false;
-			let material = new ShaderMaterial("normal_check_material");
+			// console.log("########## grayDisp: ", grayDisp);
+			let material = new ShaderMaterial("normal_check_material_" + grayDisp);
 			// let material = CoRScene.createShaderMaterial("normal_entity_material");
 			material.addUniformDataAt("u_params", this.m_data);
 			material.setShaderBuilder((coderBuilder: IShaderCodeBuffer): void => {
@@ -78,7 +79,9 @@ class NormalCheckMaterial {
 				coder.addVarying("vec3", "v_vnv");
 				coder.addVarying("vec3", "v_dv");
 				coder.addFragOutputHighp("vec4", "FragColor0");
-
+				if(grayDisp) {
+					coder.addDefine("GRAY_DISPLAY")
+				}
 				coder.addFragHeadCode(
 					`
 				const vec3 gama = vec3(1.0/2.2);
@@ -116,7 +119,11 @@ class NormalCheckMaterial {
 			vec3 diffColor = vec3(1.0, s, s) * f + dstColor * (1.0 - f);
 			dstColor = param.y > 0.5 ? diffColor : dstColor;
 
+			#ifndef GRAY_DISPLAY
     		FragColor0 = vec4(dstColor, 1.0);
+			#else
+    		FragColor0 = vec4(vec3(0.8), 1.0);
+			#endif
     		// FragColor0 = vec4(u_params[0].xyz, 1.0);
 					`
 				);

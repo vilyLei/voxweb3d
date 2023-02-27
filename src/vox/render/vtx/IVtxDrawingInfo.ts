@@ -5,23 +5,18 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { ROIndicesRes } from "./vtx/ROIndicesRes";
-interface IVertexRenderObj {
-    indicesRes: ROIndicesRes;
+// import RenderDrawMode from "../RenderDrawMode";
+import { IROIvsRDP } from "./IROIvsRDP";
+export default interface IVtxDrawingInfo {
+    
+    setWireframe(wireframe: boolean): void;
     /**
-     * indices buffer object.
+     * @param ivsIndex the default value is -1
+     * @param ivsCount the default value is -1 
      */
-    // ibuf: any;
-    /**
-     * be used by the renderer runtime, the value is 2 or 4.
-     */
-    ibufStep: number;
-    // getVTCount(): number;
-    getMid(): number;
-    getVtxUid(): number;
-    run(): void;
-    restoreThis(): void;
-    __$attachThis(): void;
-    __$detachThis(): void;
+    setIvsParam(ivsIndex: number, ivsCount: number): void;
+    reset(): void;
+    // __$$copyToRDP(rdp: IROIvsRDP): void;
+    // clone(): IVtxDrawingInfo;
+    destroy(): void;
 }
-export default IVertexRenderObj;

@@ -84,12 +84,18 @@ class SceneNode implements ISceneNode {
 			entity.update();
 		}
 		//*/
+		//this.m_vels
+		// console.log("XXX XXX XXX, initEntityFinish().");
+		// for(let i = 0; i < this.m_vels.length; ++i) {
+		// 	this.m_vels[i].setVisible(false);
+		// }
 	}
 	private m_lossTime: number = 0;
 	private m_verticesTotal: number = 0;
 	private m_trianglesTotal: number = 0;
 	private m_errModelTotal: number = 0;
 	private m_normalErrInfo: string = "";
+	private m_vels: DisplayEntity[] = [];
 	protected initEntity(model: GeometryModelDataType, transform: Matrix4 = null, index: number = 0): void {
 		if (model != null) {
 			// console.log("initEntity(), model: ", model);
@@ -112,6 +118,17 @@ class SceneNode implements ISceneNode {
 			this.m_lossTime = (Date.now() - this.m_time);
 			// console.log("initEntity lossTime: ", (Date.now() - this.m_time) + " ms");
 
+			let flag = false;
+			let uvErrorCheck = false;
+
+			if(uvErrorCheck) {
+				if(model.status != undefined && model.status > 0) {
+					console.log("Error model.status: ", model.status);
+				}else {
+					flag = true;
+				}
+			}
+
 			this.m_vtxTotal += model.vertices.length;
 
 			let vs = model.vertices;
@@ -124,10 +141,10 @@ class SceneNode implements ISceneNode {
 			let mb = new NormalCheckMaterial();
 			mb.applyDifference(true);
 			// let material = new NormalViewerMaterial();
-			let material = mb.create()
+			let material = mb.create(flag);
 			material.initializeByCodeBuf();
 			let dataMesh: DataMesh = new DataMesh();
-			// dataMesh.wireframe = true;
+			dataMesh.wireframe = flag;
 			dataMesh.vbWholeDataEnabled = false;
 			dataMesh.setVS(model.vertices);
 			// dataMesh.setUVS(model.uvsList[0]);
@@ -162,6 +179,13 @@ class SceneNode implements ISceneNode {
 			this.m_entities.push(entity);
 			this.m_rscene.addEntity(entity);
 			entity.update();
+			
+			if(model.status != undefined && model.status > 0) {
+				console.log("Error model.status: ", model.status);
+			}else {
+				// entity.setIvsParam(0,0);
+				// this.m_vels.push( entity );
+			}
 		}
 	}
 
@@ -181,6 +205,7 @@ class SceneNode implements ISceneNode {
 			this.m_transforms = [];
 			this.m_transes = [];
 			this.m_transles = [];
+			this.m_vels = [];
 			if (this.m_entities != null) {
 				let entities = this.m_entities;
 				for (let k: number = 0; k < entities.length; ++k) {

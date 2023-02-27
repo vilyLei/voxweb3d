@@ -21,6 +21,7 @@ class FBXBufferObject {
 	weightsIndices: number[] = [];
 	isEntity: boolean = false;
 	transform: Matrix4 = null;
+	errorStatus = 0;
 	constructor() {}
 	
 	toGeometryModel(): GeometryModelDataType {

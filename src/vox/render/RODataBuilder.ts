@@ -29,6 +29,9 @@ import ROTextureResource from "../../vox/render/ROTextureResource";
 import IRenderBuffer from "../../vox/render/IRenderBuffer";
 import { IShaderProgramBuilder } from "../../vox/material/IShaderProgramBuilder";
 import IRODataBuilder from "./IRODataBuilder";
+import IVDRInfo from "./vtx/IVDRInfo";
+import { IROIvsRDP } from "./vtx/IROIvsRDP";
+import { BufRDataPair } from "./vtx/ROIndicesRes";
 
 /**
  * 本类实现了将 系统内存数据 合成为 渲染运行时系统所需的数据资源(包括: 渲染运行时管理数据和显存数据)
@@ -102,10 +105,10 @@ export default class RODataBuilder implements IRODataBuilder {
             }
         }
     }
-    private createTRO(texList: IRenderTexture[], texTotal: number, ): TextureRenderObj {
-        if(texList) {
-            for(let i = 0; i < texList.length; ++i) {
-                if( texList[i]) {
+    private createTRO(texList: IRenderTexture[], texTotal: number,): TextureRenderObj {
+        if (texList) {
+            for (let i = 0; i < texList.length; ++i) {
+                if (texList[i]) {
                     texList[i].__$setRenderProxy(this.m_rc);
                 }
             }
@@ -115,17 +118,17 @@ export default class RODataBuilder implements IRODataBuilder {
     }
     private updateTextureTRO(disp: IRODisplay): void {
         if (disp.__$$runit != null) {
-            let material: IRenderMaterial = disp.getMaterial();
+            let material = disp.getMaterial();
             if (material != null) {
-                let texRes: ROTextureResource = this.m_texRes;
-                let runit: RPOUnit = disp.__$$runit as RPOUnit;
-                let tro: TextureRenderObj = TextureRenderObj.GetByMid(texRes.getRCUid(), material.__$troMid);
+                let texRes = this.m_texRes;
+                let runit = disp.__$$runit as RPOUnit;
+                let tro = TextureRenderObj.GetByMid(texRes.getRCUid(), material.__$troMid);
                 if (runit.tro != null && (tro == null || runit.tro.getMid() != tro.getMid())) {
-                    let shdp: IShdProgram = this.m_shdpBuilder.findShdProgramByShdData(material.getShaderData());
+                    let shdp = this.m_shdpBuilder.findShdProgramByShdData(material.getShaderData());
                     if (shdp != null) {
                         if (shdp.getTexTotal() > 0) {
                             if (tro == null) {
-                                tro = this.createTRO( material.getTextureList(), shdp.getTexTotal());
+                                tro = this.createTRO(material.getTextureList(), shdp.getTexTotal());
                             }
                             if (runit.tro != tro) {
                                 if (runit.tro != null) {
@@ -161,7 +164,7 @@ export default class RODataBuilder implements IRODataBuilder {
 
             let rc = this.m_rc;
             let material = disp.getMaterial();
-            if (material ) {
+            if (material) {
                 if (material.getShaderData() == null) {
                     let texList = material.getTextureList();
                     let texEnabled = ((texList != null && texList != null) && texList.length > 0);
@@ -174,7 +177,7 @@ export default class RODataBuilder implements IRODataBuilder {
 
                 let tro: TextureRenderObj = null;
                 if (shdp.getTexTotal() > 0) {
-                    tro = this.createTRO( material.getTextureList(), shdp.getTexTotal());
+                    tro = this.createTRO(material.getTextureList(), shdp.getTexTotal());
                     if (runit.tro != tro) {
                         if (runit.tro != null) {
                             runit.tro.__$detachThis();
@@ -274,12 +277,11 @@ export default class RODataBuilder implements IRODataBuilder {
         if (disp.vbuf != null) {
 
             let vtxRes = this.m_vtxRes;
-            runit.ivsIndex = disp.ivsIndex;
-            runit.ivsCount = disp.ivsCount;
+            // runit.ivsIndex = disp.ivsIndex;
+            // runit.ivsCount = disp.ivsCount;
             runit.insCount = disp.insCount;
             runit.visible = disp.visible;
 
-            runit.setVisible(disp.visible);
             // runit.drawMode = disp.drawMode;
             runit.renderState = disp.renderState;
             runit.rcolorMask = disp.rcolorMask;
@@ -290,10 +292,10 @@ export default class RODataBuilder implements IRODataBuilder {
             let vtx: GpuVtxObject;
             let needBuild = true;
             let dispVtxVer = disp.getVtxResVer();
-            
+
             if (vtxRes.hasResUid(resUid)) {
                 vtx = vtxRes.getVertexRes(resUid);
-                
+
                 needBuild = vtx.version != dispVtxVer;
                 if (needBuild) {
                     vtxRes.destroyRes(resUid);
@@ -329,8 +331,16 @@ export default class RODataBuilder implements IRODataBuilder {
             runit.vro.__$attachThis();
             runit.vtxUid = resUid;
 
-            runit.ibufStep = runit.vro.ibufStep;
-            runit.ibufType = runit.ibufStep != 4 ? this.m_rc.UNSIGNED_SHORT : this.m_rc.UNSIGNED_INT;
+            let material = disp.getMaterial();
+            let vdrInfo = runit.vdrInfo = material.vtxInfo as IVDRInfo;
+            if(vdrInfo.rdp == null) {
+                vdrInfo.rdp = runit.indicesRes.initRdp.clone();
+            }
+            runit.rdp = vdrInfo.rdp as BufRDataPair;
+
+            runit.setVisible(disp.visible);
+            // runit.ibufStep = runit.vro.ibufStep;
+            // runit.ibufType = runit.ibufStep != 4 ? this.m_rc.UNSIGNED_SHORT : this.m_rc.UNSIGNED_INT;
         }
     }
     buildGpuDisp(disp: IRODisplay): boolean {
@@ -338,7 +348,7 @@ export default class RODataBuilder implements IRODataBuilder {
             if (disp.getMaterial() != null) {
                 disp.__$$rsign = DisplayRenderSign.LIVE_IN_RENDERER;
 
-                let runit: RPOUnit = this.m_rpoUnitBuilder.create() as RPOUnit;
+                let runit = this.m_rpoUnitBuilder.create() as RPOUnit;
                 disp.__$ruid = runit.uid;
                 disp.__$$runit = runit;
 
@@ -347,13 +357,13 @@ export default class RODataBuilder implements IRODataBuilder {
                     runit.partGroup = group.slice(0);
                     runit.partTotal = group.length;
                     let fs = runit.partGroup;
+                    let ibufStride = runit.indicesRes.rdp.rd.stride;
                     for (let i = 0, len = runit.partTotal; i < len;) {
                         i++;
-                        fs[i++] *= runit.ibufStep;
+                        fs[i++] *= ibufStride;
                     }
                 }
                 runit.setDrawFlag(disp.renderState, disp.rcolorMask);
-
                 this.buildVtxRes(disp, runit, this.updateDispMaterial(runit, disp));
                 return true;
             }
@@ -433,12 +443,12 @@ export default class RODataBuilder implements IRODataBuilder {
             else {
                 texList = material.getTextureList();
             }
-            
+
             shdp = this.m_shdpBuilder.create(material.getShaderData());
             shdp.upload(rc.RContext, rc.getUid());
             let texTotal = shdp.getTexTotal();
             if (texTotal > 0) {
-                tro = this.createTRO( texList, texTotal);
+                tro = this.createTRO(texList, texTotal);
             }
             if (this.m_shader.getSharedUniformByShd(shdp) == null) {
 
@@ -457,7 +467,7 @@ export default class RODataBuilder implements IRODataBuilder {
             }
             this.m_shader.__$globalUniform = material.__$uniform;
             this.m_shader.bindToGpu(shdp.getUid());
-            if(materialUniformUpdate && material.__$uniform != null) {
+            if (materialUniformUpdate && material.__$uniform != null) {
                 this.m_shader.useUniform(material.__$uniform);
             }
             if (tro != null) {

@@ -3,5 +3,6 @@ interface GeometryModelDataType {
   vertices: Float32Array;
   normals: Float32Array;
   indices: Uint16Array | Uint32Array;
+  status? : number;
 }
 export { GeometryModelDataType };

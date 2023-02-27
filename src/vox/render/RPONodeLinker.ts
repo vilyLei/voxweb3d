@@ -276,7 +276,7 @@ export default class RPONodeLinker {
 			while (nextNode != null) {
 				vtxStr += nextNode.vtxUid + ",";
 				texStr += nextNode.texMid + ",";
-				ivsCountStr += nextNode.ivsCount + ",";
+				ivsCountStr += nextNode.unit.indicesRes.rdp.rd.ivsSize + ",";
 				nextNode = nextNode.next;
 			}
 			console.log("RPONodeLinker::showInfo(), vtx: " + vtxStr);

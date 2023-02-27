@@ -26,10 +26,10 @@ export default class VROBase implements IVRO, IVertexRenderObj {
 
     constructor() {
     }
-    getVTCount(): number {
-        if (this.indicesRes != null) return this.indicesRes.getVTCount();
-        return 0;
-    }
+    // getVTCount(): number {
+    //     if (this.indicesRes != null) return this.indicesRes.getVTCount();
+    //     return 0;
+    // }
     setRC(rc: IROVtxBuilder): void {
         this.m_rc = rc;
     }

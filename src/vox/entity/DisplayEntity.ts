@@ -293,7 +293,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         }
     }
     copyTransformFrom(entity: IDisplayEntity): void {
-        let pe: DisplayEntity = entity as DisplayEntity;
+        let pe = entity as DisplayEntity;
         if (pe != null) {
             this.m_trs.copyFrom(pe.m_trs);
         }

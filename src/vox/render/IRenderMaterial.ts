@@ -13,6 +13,7 @@ import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 import { MaterialPipeType } from "../material/pipeline/MaterialPipeType";
 import { IStencil } from "./rendering/IStencil";
+import IVtxDrawingInfo from "./vtx/IVtxDrawingInfo";
 
 interface IRenderMaterial {
 
@@ -35,10 +36,9 @@ interface IRenderMaterial {
      */
     stencil: IStencil;
     /**
-     * the defaule value is false
+     * vtx drawing info representation
      */
-    wireframe: boolean;
-
+    readonly vtxInfo: IVtxDrawingInfo;
     /**
      * @param texEnabled the default value is false
      */

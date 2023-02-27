@@ -68,7 +68,7 @@ export default class MeshBase implements IMeshBase {
     //  vtx postion in data stream used count
     vtCount = 0;
 
-    vbWholeDataEnabled = true;
+    vbWholeDataEnabled = false;
     drawInsBeginIndex = 0;
     drawInsStride = 0;
     drawInsTotal = 0;

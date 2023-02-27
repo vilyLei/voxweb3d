@@ -21,7 +21,8 @@ import ShaderUBO from "../../vox/material/ShaderUBO";
 import IRenderShaderUniform from "./uniform/IRenderShaderUniform";
 import IRPODisplay from "../../vox/render/IRPODisplay";
 import IPoolNode from "../../vox/base/IPoolNode";
-import { ROIndicesRes } from "./vtx/ROIndicesRes";
+import { BufRDataPair, ROIndicesRes } from "./vtx/ROIndicesRes";
+import IVDRInfo from "./vtx/IVDRInfo";
 import DebugFlag from "../debug/DebugFlag";
 
 /**
@@ -41,12 +42,12 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     pos: IVector3D = null;
     bounds: IAABB = null;
     // 记录对应的RODisplay的渲染所需的状态数据
-    ibufType = 0;                // UNSIGNED_SHORT or UNSIGNED_INT
-    ibufStep = 2;                // 2 or 4
-    ivsIndex = 0;
-    ivsCount = 0;
+    // ibufType = 0;                // UNSIGNED_SHORT or UNSIGNED_INT
+    // ibufStep = 2;                // 2 or 4
+    // ivsIndex = 0;
+    // ivsCount = 0;
     insCount = 0;
-    drawOffset = 0;
+    // drawOffset = 0;
 
     partTotal = 0;               // partTotal = partGroup.length
     partGroup: Uint16Array = null;
@@ -77,6 +78,8 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
      *  for example: [-70.0,1.0]
      */
     polygonOffset: number[] = null;
+    rdp: BufRDataPair = null;
+    vdrInfo: IVDRInfo = null;
     constructor() {
     }
     private testDrawFlag(): void {
@@ -99,14 +102,17 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         return this.shdUid;
     }
     setIvsParam(ivsIndex: number, ivsCount: number): void {
-        this.ivsIndex = ivsIndex;
-        this.ivsCount = ivsCount;
-        this.drawOffset = ivsIndex * this.ibufStep;
-        this.drawEnabled = this.visible && this.ivsCount > 0;
+        console.log("RPOUint::setIvsParam(), ivsIndex: ", ivsIndex, ", ivsCount: ", ivsCount);
+        // this.indicesRes.setIvsParam(ivsIndex, ivsCount);
+        this.rdp.setIvsParam(ivsIndex, ivsCount);
+        this.testVisible();
+    }
+    private testVisible(): void {
+        this.drawEnabled = this.visible && this.indicesRes.rdp.rd.ivsSize > 0;
     }
     setVisible(boo: boolean): void {
         this.visible = boo;
-        this.drawEnabled = boo && this.ivsCount > 0;
+        this.testVisible();
         // if(DebugFlag.Flag_0 > 0) console.log("#### setVisible(): ", boo, "this.drawEnabled: ",this.drawEnabled);
     }
     setDrawFlag(renderState: number, rcolorMask: number): void {
@@ -115,19 +121,20 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         this.drawFlag = (rcolorMask << 10) + renderState;
     }
     drawThis(rc: IRenderProxy): void {
-        
+
         const st = rc.status;
-        st.drawCallTimes ++;
+        st.drawCallTimes++;
         st.drawTrisNumber += this.trisNumber;
-        const ir = this.indicesRes;
-        const rd = ir.rd;
+        // const ir = this.indicesRes;
+        const rd = this.rdp.rd;
+        // console.log("this.rdp.getUid(): ", this.rdp.getUid());
         // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
         // let ivsCount = ir.getVTCount();
         let ivsCount = rd.ivsSize;
         // if (this.ivsCount <= ivsCount && ir.isCommon()) ivsCount = this.ivsCount;
-        // console.log("xxx runit xxx ivsCount: ", ivsCount, this.ivsCount, " rd.ivsOffset: ", rd.ivsOffset);
-        if(this.polygonOffset != null) {
-            rc.setPolygonOffset(this.polygonOffset[0],this.polygonOffset[1]);
+        // console.log("xxx runit xxx ivsCount: ", ivsCount, " rd.ivsOffset: ", rd.ivsOffset);
+        if (this.polygonOffset != null) {
+            rc.setPolygonOffset(this.polygonOffset[0], this.polygonOffset[1]);
         }
         else {
             rc.resetPolygonOffset();
@@ -161,11 +168,11 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
                 break;
             case rdm.ARRAYS_LINES:
                 //console.log("RPOUnit::run(), ARRAYS_LINES drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                gl.drawArrays(rc.LINES, this.ivsIndex, this.ivsCount);
+                gl.drawArrays(rc.LINES, rd.ivsIndex, ivsCount);
                 break;
             case rdm.ARRAYS_LINE_STRIP:
                 //console.log("RPOUnit::run(), ARRAYS_LINE_STRIP drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                gl.drawArrays(rc.LINE_STRIP, this.ivsIndex, this.ivsCount);
+                gl.drawArrays(rc.LINE_STRIP, rd.ivsIndex, ivsCount);
                 break;
             default:
                 break;
@@ -175,16 +182,16 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     drawPart(rc: IRenderProxy): void {
 
         const st = rc.status;
-        st.drawCallTimes ++;
+        st.drawCallTimes++;
         st.drawTrisNumber += this.trisNumber;
 
-        const ir = this.indicesRes;
-        const rd = ir.rd;
+        // const ir = this.indicesRes;
+        const rd = this.rdp.rd;
         // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
         let ivsCount = rd.ivsSize;
         // if (this.ivsCount <= ivsCount && ir.isCommon()) ivsCount = this.ivsCount;
-        if(this.polygonOffset != null) {
-            rc.setPolygonOffset(this.polygonOffset[0],this.polygonOffset[1]);
+        if (this.polygonOffset != null) {
+            rc.setPolygonOffset(this.polygonOffset[0], this.polygonOffset[1]);
         }
         else {
             rc.resetPolygonOffset();
@@ -230,11 +237,11 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
                 break;
             case rdm.ARRAYS_LINES:
                 //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                gl.drawArrays(rc.LINES, this.ivsIndex, ivsCount);
+                gl.drawArrays(rc.LINES, rd.ivsIndex, ivsCount);
                 break;
             case rdm.ARRAYS_LINE_STRIP:
                 //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                gl.drawArrays(rc.LINE_STRIP, this.ivsIndex, ivsCount);
+                gl.drawArrays(rc.LINE_STRIP, rd.ivsIndex, ivsCount);
                 break;
             default:
                 break;
@@ -249,6 +256,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         //  {
         //      console.log("this.shader == null unit this.uid: ",this.uid);
         //  }
+
         this.shader.useTransUniform(this.transUniform);
         this.shader.useUniform(this.uniform);
         this.testDrawFlag();
@@ -258,6 +266,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         if (this.ubo != null) {
             this.ubo.run(rc);
         }
+
         this.vro.run();
         this.tro.run();
         this.shader.useTransUniform(this.transUniform);
@@ -276,33 +285,38 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     }
     reset(): void {
         //  console.log("RPOUnit::reset(), uid: ",this.getUid());
-        this.indicesRes = null;
-        this.polygonOffset = null;
+        if (this.vdrInfo) {
 
-        this.vro.__$detachThis();
-        this.vro = null;
-        this.tro.__$detachThis();
-        this.tro = null;
-        this.texMid = -1;
-        this.__$rprouid = -1;
-        this.ubo = null;
-        this.shdUid = -1;
-        this.vtxUid = -1;
-        this.uniform = null;
-        this.transUniform = null;
-        this.partGroup = null;
-        this.ivsIndex = 0;
-        this.ivsCount = 0;
-        this.insCount = 0;
-        this.partTotal = 0;
-        // this.drawMode = 0;
-        this.drawFlag = 0x0;
-        this.renderState = 0;
-        this.rcolorMask = 0;
-        this.drawEnabled = true;
-        this.shader = null;
-        this.bounds = null;
-        this.pos = null;
+            this.indicesRes = null;
+            this.polygonOffset = null;
+
+            this.vro.__$detachThis();
+            this.vro = null;
+            this.tro.__$detachThis();
+            this.tro = null;
+            this.texMid = -1;
+            this.__$rprouid = -1;
+            this.ubo = null;
+            this.shdUid = -1;
+            this.vtxUid = -1;
+            this.uniform = null;
+            this.transUniform = null;
+            this.partGroup = null;
+            // this.ivsIndex = 0;
+            // this.ivsCount = 0;
+            this.insCount = 0;
+            this.partTotal = 0;
+            // this.drawMode = 0;
+            this.drawFlag = 0x0;
+            this.renderState = 0;
+            this.rcolorMask = 0;
+            this.drawEnabled = true;
+            this.shader = null;
+            this.bounds = null;
+            this.pos = null;
+            this.vdrInfo = null;
+            this.rdp = null;
+        }
     }
     destroy(): void {
         this.reset();

@@ -23,9 +23,10 @@ export default class RPONode implements IPoolNode, IRPONode {
     uid = -1;
     index = -1;
     // only for show info
-    drawMode = 0;
-    ivsIndex = 0;
-    ivsCount = 0;
+
+    // drawMode = 0;
+    // ivsIndex = 0;
+    // ivsCount = 0;
     insCount = 0;
     shdUid = -1;
     vtxUid = -1;
@@ -47,10 +48,10 @@ export default class RPONode implements IPoolNode, IRPONode {
     updateData(): void {
         let p: RPOUnit = this.unit;
         // this.drawMode = p.drawMode;
-        this.ivsIndex = p.ivsIndex;
-        this.ivsCount = p.ivsCount;
+        // this.ivsIndex = p.ivsIndex;
+        // this.ivsCount = p.ivsCount;
         this.insCount = p.insCount;
-        p.drawOffset = p.ivsIndex * p.ibufStep;
+        // p.drawOffset = p.ivsIndex * p.ibufStep;
         this.vtxUid = p.vtxUid;
         this.vro = p.vro;
         // material info etc.
@@ -62,9 +63,9 @@ export default class RPONode implements IPoolNode, IRPONode {
         this.drawEnabled = true;
         this.uid = -1;
         this.index = -1;
-        this.drawMode = 0;
-        this.ivsIndex = 0;
-        this.ivsCount = 0;
+        // this.drawMode = 0;
+        // this.ivsIndex = 0;
+        // this.ivsCount = 0;
         this.insCount = 0;
         this.shdUid = -1;
         this.vtxUid = -1;

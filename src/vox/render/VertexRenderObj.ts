@@ -29,7 +29,7 @@ export default class VertexRenderObj extends VROBase {
         this.m_uid = VertexRenderObj.s_uid++;
     }
     run(): void {
-        if (this.m_rc.testVROUid(this.m_uid)) {
+        if (this.m_rc.testVROUid(this.m_uid) || this.indicesRes.test()) {
             //console.log("VertexRenderObj::run(), B:",rc.getUid(),this.m_vtxUid,this.m_uid);
             if (this.vbuf != null) {
                 this.m_rc.useVtxAttribsPtrTypeFloat(this.shdp, this.vbuf, this.attribTypes, this.attribTypesLen, this.wholeOffsetList, this.wholeStride);

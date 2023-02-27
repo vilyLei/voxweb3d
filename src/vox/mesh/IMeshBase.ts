@@ -17,7 +17,7 @@ export default interface IMeshBase {
 	trisNumber: number;
 	vtxTotal: number;
 	/**
-	 * the default is true
+	 * the default is false
 	 */
 	vbWholeDataEnabled: boolean;
 	/**

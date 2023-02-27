@@ -163,6 +163,7 @@ class GeometryBufferParser {
 
 		//console.log("GeometryBufferParser::genGeometryBuffers(), skeleton: ",skeleton);
 		// let time = Date.now();
+		console.log("geoNode: ", geoNode);
 		const geoInfo = this.parseGeoNode( geoNode );
 		// let lossTime: number = Date.now() - time;
 		// console.log("XXX geoInfo lossTime: ", lossTime);

@@ -56,7 +56,7 @@ class GpuVtxObject {
 
         // console.log("GpuVtxObject::createVRO(), this.resUid: ", this.resUid, ", uid: ", this.m_uid, ", this.indices.getUid(): ", this.indices.getUid());
         let vro = this.vertex.createVRO(rc, shdp, vaoEnabled, this.indices);
-        vro.ibufStep = this.indices.ibufStep;
+        // vro.ibufStep = this.indices.ibufStep;
         return vro;
     }
     updateToGpu(rc: IROVtxBuilder): void {
