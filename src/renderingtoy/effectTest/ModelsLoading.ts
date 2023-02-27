@@ -58,14 +58,14 @@ export class ModolesLoading {
     }
     private initModels(): void {
 
-        let baseUrl = "static/private/";
-        let url0 = baseUrl + "fbx/base4.fbx";
-        let url1 = baseUrl + "obj/apple_01.obj";
-        let url2 = baseUrl + "fbx/hat_ok.fbx";
+        let url0 = "static/assets/fbx/base4.fbx";
+        let url1 = "static/assets/obj/apple_01.obj";
+        let url2 = "static/assets/fbx/hat_ok.fbx";
+        let url3 = "static/assets/ctm/hand.ctm";
 
         let loader = this.m_teamLoader;
 
-        loader.load([url0], (models: IGeomModelData[], transforms: Float32Array[]): void => {
+        loader.load([url0, url2], (models: IGeomModelData[], transforms: Float32Array[]): void => {
 
             this.m_layouter.layoutReset();
             for (let i = 0; i < models.length; ++i) {
@@ -85,7 +85,7 @@ export class ModolesLoading {
         });
 
         
-        loader.load([url2], (models: IGeomModelData[], transforms: Float32Array[]): void => {
+        loader.load([url3], (models: IGeomModelData[], transforms: Float32Array[]): void => {
 
             this.m_layouter.layoutReset();
             for (let i = 0; i < models.length; ++i) {

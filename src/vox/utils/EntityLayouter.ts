@@ -160,7 +160,7 @@ class EntityLayouter {
 			else aabb.copyFrom(entities[k].getGlobalBounds());
 		}
 		aabb.update();
-		console.log("EntityLayouter::fixToPosition(), aabb.center: ", aabb.center.clone());
+		// console.log("EntityLayouter::fixToPosition(), aabb.center: ", aabb.center.clone());
 	}
 	getSizeScale(): number {
 		return this.m_sizeScale;

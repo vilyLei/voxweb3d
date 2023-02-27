@@ -59,10 +59,12 @@ class CoModelTeamLoader {
                 }
             },
             (total: number, url: string): void => {
-                // console.log("CoModelTeamLoader, loaded model all.");
+                console.log("CoModelTeamLoader, loaded model all, url: ", url);
                 let flag = this.m_team.testWithUrl(url);
-                this.m_enabled = true;
-                this.loadNext();
+                if(flag) {
+                    this.m_enabled = true;
+                    this.loadNext();
+                }
             });
     }
     private loadNext(): void {
@@ -70,6 +72,7 @@ class CoModelTeamLoader {
             let team = this.m_teams.shift();
             this.m_team = team;
             this.m_enabled = false;
+            console.log("CoModelTeamLoader, begin load urls: ", team.urls);
             this.m_modelLoader.load(team.urls);
         }
     }
