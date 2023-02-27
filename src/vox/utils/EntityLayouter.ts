@@ -102,6 +102,7 @@ class EntityLayouter {
 		// console.log("AAA xxxxxxxxx aabb: ", aabb);
 		// console.log("AAA xxxxxxxxx baseSize: ", baseSize);
 		// console.log("AAA xxxxxxxxx cv: ", aabb.center.clone());
+		// console.log("AAA xxxxxxxxx fixV3: ", fixV3.clone());
 		let sx = baseSize / aabb.getWidth();
 		let sy = baseSize / aabb.getHeight();
 		let sz = baseSize / aabb.getLong();
@@ -110,11 +111,13 @@ class EntityLayouter {
 		// console.log("AAA xxxxxxxxx sx: ", sx);
 		this.m_sizeScale = sx;
 		this.m_scaleV.setXYZ(sx, sx, sx);
-		let cv = aabb.center;
-		let offsetV = new Vector3D(fixV3.x - cv.x, fixV3.y - cv.y, fixV3.z - cv.z);
+		// let cv = aabb.center;
+		// let offsetV = new Vector3D(fixV3.x - cv.x, fixV3.y - cv.y, fixV3.z - cv.z);
 		// offsetV.scaleBy(sx);
 		// console.log("BBB xxxxxxxxx aabb: ", aabb);
-		// console.log("BBB xxxxxxxxx this.m_scaleV, offsetV: ", this.m_scaleV, offsetV);
+		// console.log("BBB xxxxxxxxx m_scaleV: ", this.m_scaleV);
+		// console.log("BBB xxxxxxxxx offsetV: ", offsetV.clone());
+		aabb.reset();
 		// console.log("BBB xxxxxxxxx this.m_scaleV, offsetV: ", this.m_scaleV, offsetV);
 		for (let k = 0; k < entities.length; ++k) {
 			transform = transforms[k];
@@ -145,14 +148,19 @@ class EntityLayouter {
 		}
 		aabb.update();
 		let pdv = new Vector3D();
-		pdv.subVecsTo(offsetV, aabb.center);
+		pdv.subVecsTo(fixV3, aabb.center);
+
+		aabb.reset();
 		for (let k = 0; k < entities.length; ++k) {
 			let pv = entities[k].getPosition();
 			pv.addBy(pdv);
 			entities[k].setPosition(pv);
 			entities[k].update();
+			if (k > 0) aabb.union(entities[k].getGlobalBounds());
+			else aabb.copyFrom(entities[k].getGlobalBounds());
 		}
-		// console.log("CCC xxxxxxxxx aabb: ", aabb);
+		aabb.update();
+		console.log("EntityLayouter::fixToPosition(), aabb.center: ", aabb.center.clone());
 	}
 	getSizeScale(): number {
 		return this.m_sizeScale;
