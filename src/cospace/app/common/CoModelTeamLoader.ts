@@ -84,4 +84,4 @@ class CoModelTeamLoader {
         this.loadNext();
     }
 }
-export { CoModelTeamLoader };
+export { CoGeomDataType, CoModelTeamLoader };

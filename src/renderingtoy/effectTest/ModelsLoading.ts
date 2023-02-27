@@ -10,14 +10,13 @@ import RendererScene from "../../vox/scene/RendererScene";
 
 import { EntityLayouter } from "../../vox/utils/EntityLayouter";
 
-import { CoModelTeamLoader } from "../../cospace/app/common/CoModelTeamLoader";
+import { CoGeomDataType, CoModelTeamLoader } from "../../cospace/app/common/CoModelTeamLoader";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import RendererState from "../../vox/render/RendererState";
 import Matrix4 from "../../vox/math/Matrix4";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import { MouseInteraction } from "../../vox/ui/MouseInteraction";
 import MeshFactory from "../../vox/mesh/MeshFactory";
-import IGeomModelData from "../../vox/mesh/IGeomModelData";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
 export class ModelsLoading {
@@ -65,7 +64,7 @@ export class ModelsLoading {
 
         let loader = this.m_teamLoader;
 
-        loader.load([url0, url2], (models: IGeomModelData[], transforms: Float32Array[]): void => {
+        loader.load([url0, url2], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
 
             this.m_layouter.layoutReset();
             for (let i = 0; i < models.length; ++i) {
@@ -76,7 +75,7 @@ export class ModelsLoading {
         });
 
 
-        loader.load([url1], (models: IGeomModelData[], transforms: Float32Array[]): void => {
+        loader.load([url1], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
 
             this.m_layouter.layoutReset();
             for (let i = 0; i < models.length; ++i) {
@@ -86,7 +85,7 @@ export class ModelsLoading {
         });
 
 
-        loader.load([url3], (models: IGeomModelData[], transforms: Float32Array[]): void => {
+        loader.load([url3], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
 
             this.m_layouter.layoutReset();
             for (let i = 0; i < models.length; ++i) {
@@ -96,7 +95,7 @@ export class ModelsLoading {
         });
     }
 
-    protected createEntity(model: IGeomModelData, transform: Float32Array = null, uvScale: number = 1.0): DisplayEntity {
+    protected createEntity(model: CoGeomDataType, transform: Float32Array = null, uvScale: number = 1.0): DisplayEntity {
         if (model != null) {
             console.log("createEntity(), model: ", model);
 
