@@ -367,7 +367,7 @@
 
 //  import {EffectExample as Demo} from "./renderingtoy/effectTest/applyui/EffectExample";
 
- import {ModolesLoading as Demo} from "./renderingtoy/effectTest/ModolesLoading";
+ import {ModolesLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////

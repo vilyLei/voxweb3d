@@ -15,6 +15,7 @@ import RendererScene from "../../vox/scene/RendererScene";
 import { EntityLayouter } from "../../vox/utils/EntityLayouter";
 
 import { CoGeomDataType, CoDataFormat, CoGeomModelLoader } from "../../cospace/app/common/CoGeomModelLoader";
+import { CoModelTeamLoader } from "../../cospace/app/common/CoModelTeamLoader";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import RendererState from "../../vox/render/RendererState";
 import SurfaceNormalCalc from "../../vox/geom/SurfaceNormalCalc";
@@ -28,7 +29,8 @@ export class ModolesLoading {
 
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
-    private m_modelLoader = new CoGeomModelLoader();
+    // private m_modelLoader = new CoGeomModelLoader();
+    private m_teamLoader = new CoModelTeamLoader();
     private m_layouter = new EntityLayouter();
 
     private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
@@ -62,36 +64,47 @@ export class ModolesLoading {
             this.initSys();
 
             // this.initObjs();
-            this.initModel();
+            this.initModels();
         }
     }
-    private initModel(): void {
-        this.m_modelLoader.setListener(
-            (models: CoGeomDataType[], transforms: Float32Array[], format: CoDataFormat): void => {
-                console.log("loaded model.");
-                for (let i = 0; i < models.length; ++i) {
-                    this.createEntity(models[i], transforms != null ? transforms[i] : null);
-                }
-            },
-            (total): void => {
-                console.log("loaded model all.");
-                this.m_layouter.layoutUpdate();
-            });
+    private initModels(): void {
 
         let baseUrl: string = "static/private/";
-        let url = baseUrl + "obj/base.obj";
-        url = baseUrl + "obj/base4.obj";
-        url = baseUrl + "fbx/base4.fbx";
-        // url = baseUrl + "fbx/hat_ok.fbx";
-        // url = baseUrl + "obj/apple_01.obj";
-        console.log("initModel() init...");
-        this.loadModels([url]);
-    }
-    private loadModels(urls: string[], typeNS: string = ""): void {
-        this.m_modelLoader.load(urls);
-    }
+        let url0 = baseUrl + "fbx/base4.fbx";
+        let url1 = baseUrl + "obj/apple_01.obj";
+        let url2 = baseUrl + "fbx/hat_ok.fbx";
 
-    protected createEntity(model: CoGeomDataType, transform: Float32Array = null, index: number = 0): void {
+        let loader = this.m_teamLoader;
+        loader.load([url0], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+
+            this.m_layouter.layoutReset();
+            for (let i = 0; i < models.length; ++i) {
+                this.createEntity(models[i], transforms != null ? transforms[i] : null);
+            }
+            this.m_layouter.layoutUpdate(false, 300, new Vector3D(-400, 0, 0));
+        });
+
+
+        loader.load([url1], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+
+            this.m_layouter.layoutReset();
+            for (let i = 0; i < models.length; ++i) {
+                this.createEntity(models[i], transforms != null ? transforms[i] : null);
+            }
+            this.m_layouter.layoutUpdate(false, 300, new Vector3D(300, 0, 0));
+        });
+
+        
+        loader.load([url2], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+
+            this.m_layouter.layoutReset();
+            for (let i = 0; i < models.length; ++i) {
+                this.createEntity(models[i], transforms != null ? transforms[i] : null);
+            }
+            this.m_layouter.layoutUpdate(false, 300, new Vector3D(0, 0, 300));
+        });
+    }
+    protected createEntity(model: CoGeomDataType, transform: Float32Array = null): void {
         if (model != null) {
             console.log("createEntity(), model: ", model);
             let vs = model.vertices;
@@ -132,6 +145,6 @@ export class ModolesLoading {
     private mouseDown(evt: any): void {
         console.log("mouse down.");
     }
-    
+
 }
 export default ModolesLoading;
