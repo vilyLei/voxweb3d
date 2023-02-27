@@ -9,7 +9,7 @@
 import IVtxDrawingInfo from "./IVtxDrawingInfo";
 import { IROIvsRDP } from "./IROIvsRDP";
 export default class VtxDrawingInfo implements IVtxDrawingInfo {
-    
+
     private static s_uid = 0;
     private m_uid = VtxDrawingInfo.s_uid++;
 
@@ -17,29 +17,39 @@ export default class VtxDrawingInfo implements IVtxDrawingInfo {
     private m_ivsCount = -1;
     private m_wireframe = false;
     private m_flag = 0;
+    private m_dynamic = true;
 
     rdp: IROIvsRDP = null;
-    constructor(){}
+    constructor() { }
     destroy(): void {
-        if(this.rdp != null) {
+        if (this.rdp != null) {
             this.rdp.clear();
             this.rdp = null;
         }
     }
+    toStatic(): void {
+
+    }
+    toDynamic(): void {
+
+    }
     setWireframe(wireframe: boolean): void {
-        if(this.m_wireframe != wireframe) {
+        if (this.m_dynamic && this.m_wireframe != wireframe) {
             this.m_wireframe = wireframe;
-            this.m_flag ++;
+            this.m_flag++;
         }
     }
     setIvsParam(ivsIndex: number = -1, ivsCount: number = -1): void {
-        if(ivsIndex >= 0) {
-            this.m_ivsIndex = ivsIndex;
-            this.m_flag ++;
-        }
-        if(ivsCount >= 0) {
-            this.m_ivsCount = ivsCount;
-            this.m_flag ++;
+
+        if (this.m_dynamic) {
+            if (ivsIndex >= 0) {
+                this.m_ivsIndex = ivsIndex;
+                this.m_flag++;
+            }
+            if (ivsCount >= 0) {
+                this.m_ivsCount = ivsCount;
+                this.m_flag++;
+            }
         }
     }
     reset(): void {
@@ -48,16 +58,16 @@ export default class VtxDrawingInfo implements IVtxDrawingInfo {
     __$$copyToRDP(): boolean {
 
         // console.log("__$$copyToRDP() ...rdp.getUid(): ", rdp.getUid());
-        if(this.rdp != null) {
+        if (this.m_dynamic && this.rdp) {
             const rdp = this.rdp;
             // console.log("info rdp.getUid(): ", rdp.getUid(), this.m_uid);
-            if(this.m_flag > 0) {
+            if (this.m_flag > 0) {
                 // console.log("__$$copyToRDP() ...rdp.getUid(): ", rdp.getUid(), ", this.m_uid: ", this.m_uid);
                 rdp.setIvsParam(this.m_ivsIndex, this.m_ivsCount);
-    
-                if(this.m_wireframe) {
+
+                if (this.m_wireframe) {
                     rdp.toWireframe();
-                }else {
+                } else {
                     rdp.toCommon();
                 }
                 this.reset();

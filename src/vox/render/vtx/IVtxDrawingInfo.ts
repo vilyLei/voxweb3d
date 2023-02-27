@@ -9,6 +9,8 @@
 import { IROIvsRDP } from "./IROIvsRDP";
 export default interface IVtxDrawingInfo {
     
+    toStatic(): void;
+    toDynamic(): void;
     setWireframe(wireframe: boolean): void;
     /**
      * @param ivsIndex the default value is -1

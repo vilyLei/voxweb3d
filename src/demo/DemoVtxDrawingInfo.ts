@@ -30,7 +30,7 @@ export class DemoVtxDrawingInfo {
 		rscene.addEventListener(MouseEvent.MOUSE_MIDDLE_DOWN, this, this.MMouseDownListener, true, false);
 	}
 	initialize(): void {
-		console.log("DataMesh::initialize()......");
+		console.log("DemoVtxDrawingInfo::initialize()......");
 		if (this.m_init) {
 			this.m_init = false;
 
