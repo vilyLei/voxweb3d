@@ -69,9 +69,10 @@ export class ModolesLoading {
 
             this.m_layouter.layoutReset();
             for (let i = 0; i < models.length; ++i) {
-                this.createEntity(models[i], transforms != null ? transforms[i] : null);
+                this.createEntity(models[i], transforms != null ? transforms[i] : null, 0.05);
             }
-            this.m_layouter.layoutUpdate(false, 300, new Vector3D(-400, 0, 0));
+            this.m_layouter.layoutUpdate(300, new Vector3D(-400, 0, 0));
+
         });
 
 
@@ -81,7 +82,7 @@ export class ModolesLoading {
             for (let i = 0; i < models.length; ++i) {
                 this.createEntity(models[i], transforms != null ? transforms[i] : null);
             }
-            this.m_layouter.layoutUpdate(false, 300, new Vector3D(300, 0, 0));
+            this.m_layouter.layoutUpdate(300, new Vector3D(300, 0, 0));
         });
 
         
@@ -91,21 +92,22 @@ export class ModolesLoading {
             for (let i = 0; i < models.length; ++i) {
                 this.createEntity(models[i], transforms != null ? transforms[i] : null);
             }
-            this.m_layouter.layoutUpdate(false, 300, new Vector3D(0, 0, 300));
+            this.m_layouter.layoutUpdate(300, new Vector3D(0, 0, 300));
         });
     }
     
-    protected createEntity(model: IGeomModelData, transform: Float32Array = null): void {
+    protected createEntity(model: IGeomModelData, transform: Float32Array = null, uvScale: number = 1.0): DisplayEntity {
         if (model != null) {
             console.log("createEntity(), model: ", model);
             
             let material = new Default3DMaterial();
+            material.normalEnabled = true;
+            material.setUVScale(uvScale,uvScale);
             material.setTextureList([
                 this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
             ]);
 
             let mesh = MeshFactory.createDataMeshFromModel(model, material);
-
             let entity = new DisplayEntity();
             entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
             entity.setMesh(mesh);
@@ -113,6 +115,7 @@ export class ModolesLoading {
 
             this.m_rscene.addEntity(entity);
             this.m_layouter.layoutAppendItem(entity, new Matrix4(transform));
+            return entity;
         }
     }
 

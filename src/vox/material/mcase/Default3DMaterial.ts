@@ -46,6 +46,7 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
             this.m_uniform.addDiffuseMap();
             coder.addVertLayout("vec2", "a_uvs");
             coder.addVarying("vec2", "v_uv");
+            coder.addVertUniform("vec4", "u_uvTrans");
         }
 
         if (this.normalEnabled) {
@@ -124,7 +125,7 @@ vec2 getUV(vec2 uv) {
     #endif
 
     #ifdef VOX_USE_2D_MAP
-        v_uv = a_uvs.xy;
+        v_uv = (a_uvs.xy * u_uvTrans.zw) + u_uvTrans.xy;
     #endif
     #ifdef VOX_USE_VTX_COLOR
         v_cv = a_cvs.xyz;
@@ -142,6 +143,8 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
 
     private static s_shdCodeBuffer: Default3DShaderCodeBuffer = null;
     private m_data = new Float32Array([1.0, 1.0, 1.0, 1.0]);
+    private m_uvTrans = new Float32Array([0.0, 0.0, 1.0, 1.0]);
+
     vertColorEnabled = false;
     premultiplyAlpha = false;
     normalEnabled = false;
@@ -169,6 +172,14 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
      */
     getCodeBuf(): ShaderCodeBuffer {
         return Default3DMaterial.s_shdCodeBuffer;
+    }
+    setUVOffset(px: number, py: number): void {
+        this.m_uvTrans[0] = px;
+        this.m_uvTrans[1] = py;
+    }
+    setUVScale(sx: number, sy: number): void {
+        this.m_uvTrans[2] = sx;
+        this.m_uvTrans[3] = sy;
     }
     setRGB3f(pr: number, pg: number, pb: number): void {
         this.m_data[0] = pr;
@@ -202,8 +213,8 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
     }
     createSelfUniformData(): ShaderUniformData {
         let oum = new ShaderUniformData();
-        oum.uniformNameList = ["u_color"];
-        oum.dataList = [this.m_data];
+        oum.uniformNameList = ["u_color", "u_uvTrans"];
+        oum.dataList = [this.m_data, this.m_uvTrans];
         return oum;
     }
 
