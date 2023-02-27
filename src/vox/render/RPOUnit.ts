@@ -192,7 +192,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
 
         let i = 0;
         let gl = rc.RContext;
-        switch (ir.drawMode) {
+        switch (rd.drawMode) {
             case rdm.ELEMENTS_TRIANGLES:
                 for (; i < this.partTotal;) {
                     // 这里面可以增加一个回调函数,这个回调函数可以对uniform(或者transformUniform)做一些数据改变，进而来控制相应的状态

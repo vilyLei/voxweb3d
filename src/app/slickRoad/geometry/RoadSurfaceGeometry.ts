@@ -103,7 +103,9 @@ export default class RoadSurfaceGeometry extends GeometryBase {
         let a: number = 0;
         let b: number = 0;
         tot = tot - 1;
-        this.m_ivs = new Uint16Array(tot * subLen * 6);
+        let ivsTot = tot * subLen * 6;
+        
+        this.m_ivs = ivsTot < 65536 ? new Uint16Array(ivsTot) : new Uint32Array(ivsTot);
         k = 0;
         for (i = 0; i < tot; ++i) {
             a = i * cn;

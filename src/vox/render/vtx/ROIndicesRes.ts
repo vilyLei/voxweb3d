@@ -35,9 +35,9 @@ class BufRData {
         rd.ivsOffset = this.ivsOffset;
         return rd;
     }
-    destroy(rc: IROVtxBuilder): void {
+    destroy(vrc: IROVtxBuilder): void {
         if (this.buf != null) {
-            rc.deleteBuf(this.buf);
+            vrc.deleteBuf(this.buf);
             this.buf = null;
         }
     }
@@ -45,6 +45,10 @@ class BufRData {
 class BufRDataPair {
     r0: BufRData;
     r1: BufRData;
+    destroy(vrc: IROVtxBuilder): void {
+        this.r0.destroy(vrc);
+        this.r1.destroy(vrc);
+    }
 }
 
 
@@ -56,28 +60,17 @@ class ROIndicesRes implements IROIndicesRes {
     private m_vtxUid = 0;
     private m_index = 0;
 
-    private m_gbuf: any;
-    private m_gbufs: any[] = new Array(2);
-    private m_sizes: number[] = new Array(2);
-    private m_steps: number[] = new Array(2);
+    // private m_gbuf: any;
 
-    private m_size = 0;
     private m_ivsData: IROIvsData = null;
 
     version = -1;
-    ibufStep = 0;
-    drawMode = RDM.ELEMENTS_TRIANGLES;
-
     private m_rdpType = 0;
     private m_rdps: BufRDataPair[] = [];
 
     rd: BufRData = null;
+
     constructor() {
-
-        this.m_gbufs.fill(null);
-        this.m_sizes.fill(0);
-        this.m_steps.fill(2);
-
         this.m_rdps.fill(null);
     }
     getUid(): number {
@@ -86,36 +79,14 @@ class ROIndicesRes implements IROIndicesRes {
     getVtxUid(): number {
         return this.m_vtxUid;
     }
-    // getGpuBuf(): any {
-    //     return this.m_gbuf;
-    // }
-    // getVTCount(): number {
-    //     return this.m_size;
-    // }
-    // isCommon(): boolean {
-    //     return this.m_index == 0;
-    // }
     toWireframe(): void {
-        // this.m_index = 1;
         this.m_rdpType = 1;
         this.rd = this.m_rdps[this.m_index].r1;
-
-        // this.drawMode = RDM.ELEMENTS_LINES;
-        // this.m_gbuf = this.m_gbufs[1];
-        // this.m_size = this.m_sizes[1];
-        // this.ibufStep = this.m_steps[1];
         // console.log("toWireframe()............");
     }
     toShape(): void {
         this.m_rdpType = 0;
         this.rd = this.m_rdps[this.m_index].r0;
-
-        // this.m_index = 0;
-        // this.drawMode = RDM.ELEMENTS_TRIANGLES;
-        // this.drawMode = this.rd.drawMode;
-        // this.m_gbuf = this.m_gbufs[0];
-        // this.m_size = this.m_sizes[0];
-        // this.ibufStep = this.m_steps[0];
     }
     toCommon(): void {
         this.toShape();
@@ -139,16 +110,18 @@ class ROIndicesRes implements IROIndicesRes {
         }
     }
     updateToGpu(rc: IROVtxBuilder): void {
-
-        if (this.m_gbufs[0] != null && this.m_size > 0) {
+        let rd = this.m_rdps.length > 0 ? this.m_rdps[0].r0 : null;
+        if (rc != null && rd.buf != null) {
             let vtx = this.m_vtx;
             // console.log("indeces updateToGpu vtx.getUId(): ",vtx.getUid(), ", this.version != vtx.indicesVer: ", this.version != vtx.indicesVer);
             if (this.version != vtx.indicesVer) {
+                
                 let ird = vtx.getIvsDataAt();
                 this.m_ivsData = ird;
                 const ivs = ird.ivs;
-                rc.bindEleBuf(this.m_gbuf);
-                if (this.m_size >= ivs.length) {
+                rc.bindEleBuf(rd.buf);
+                let size = this.m_rdps[0].r0.ivsSize;
+                if (size >= ivs.length) {
                     //console.log("A indeces updateToGpu vtx.getUId(): ",vtx.getUid(), ", ivs.length", ivs.length);
                     rc.eleBufSubData(ivs, ird.status);
                 }
@@ -156,7 +129,7 @@ class ROIndicesRes implements IROIndicesRes {
                     //console.log("B indeces updateToGpu vtx.getUId(): ",vtx.getUid(), ", ivs.length", ivs.length);
                     rc.eleBufData(ivs, vtx.getBufDataUsage());
                 }
-                this.m_size = ivs.length;
+                rd.ivsSize = ivs.length;
                 this.version = vtx.indicesVer;
             }
         }
@@ -166,7 +139,7 @@ class ROIndicesRes implements IROIndicesRes {
         this.m_vrc = vrc;
         let wireframe = false;
         let rpdp = new BufRDataPair();
-        if (this.m_gbufs[0] == null && ivtx.getIvsDataAt() != null) {
+        if (this.m_rdps.length < 1 && ivtx.getIvsDataAt() != null) {
 
             // console.log("ROIndicesRes::initialize(), uid: ", this.m_uid, ", ivtx: ", ivtx);
 
@@ -196,9 +169,6 @@ class ROIndicesRes implements IROIndicesRes {
             rd.drawMode = disp.drawMode;
             rpdp.r0 = rd;
             rpdp.r1 = rd;
-
-            this.m_size = this.m_sizes[0] = this.m_sizes[1] = disp.ivsCount;
-            this.drawMode = disp.drawMode;
         }
         this.m_rdps[0] = rpdp;
 
@@ -284,24 +254,18 @@ class ROIndicesRes implements IROIndicesRes {
         rd.ivsOffset = rd.ivsIndex * rd.step;
         rd.common = !wireframe;
         rd.drawMode = wireframe ? RDM.ELEMENTS_LINES : RDM.ELEMENTS_TRIANGLES;
-
-        // let bufData: BufR = { buf: gbuf, size: size, step: step };
-        this.m_gbufs[i] = rd.buf;
-        this.m_sizes[i] = rd.ivsSize;
-        this.m_steps[i] = rd.step;
-        // console.log("xxxxx bufData: ", bufData);
         return rd;
     }
 
     destroy(vrc: IROVtxBuilder): void {
 
         this.m_vrc = null;
-        if (this.m_gbuf != null) {
+        if (this.m_rdps .length > 0) {
             this.m_vtx = null;
-            vrc.deleteBuf(this.m_gbuf);
-            this.m_gbuf = null;
-            this.m_ivsData = null;
-            this.m_size = 0;
+            for(let i = 0; i < this.m_rdps.length; ++i) {
+                this.m_rdps[i].destroy(vrc);
+            }
+            this.m_ivsData = null;            
             console.log("ROIndicesRes::destroy() this.m_uid: ", this.m_uid);
         }
     }

@@ -331,7 +331,7 @@
 
 //  import {DemoShaderCodeMaterial as Demo} from "./demo/DemoShaderCodeMaterial";
 
- import {DemoMaterialGraph as Demo} from "./demo/DemoMaterialGraph";
+//  import {DemoMaterialGraph as Demo} from "./demo/DemoMaterialGraph";
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -437,7 +437,7 @@
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 
-// import {SlickRoad as Demo} from "./app/SlickRoad";
+import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 

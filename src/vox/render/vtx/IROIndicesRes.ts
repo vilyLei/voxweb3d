@@ -12,12 +12,8 @@ import IRenderProxy from "../IRenderProxy";
 
 interface IROIndicesRes {
     version: number;
-    ibufStep: number;
-
     getUid(): number;
     getVtxUid(): number;
-    // // getGpuBuf(): any;
-    // getVTCount(): number;
     updateToGpu(vrc: IROVtxBuilder): void;
     initialize(rc: IRenderProxy, vrc: IROVtxBuilder, vtx: IROVtxBuf, disp: IRODisplay): void;
 
