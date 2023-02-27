@@ -9,8 +9,8 @@ import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import RendererScene from "../../vox/scene/RendererScene";
 
 import { EntityLayouter } from "../../vox/utils/EntityLayouter";
-
 import { CoGeomDataType, CoModelTeamLoader } from "../../cospace/app/common/CoModelTeamLoader";
+
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import RendererState from "../../vox/render/RendererState";
 import Matrix4 from "../../vox/math/Matrix4";

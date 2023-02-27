@@ -15,9 +15,16 @@ import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
 
+import { EntityLayouter } from "../vox/utils/EntityLayouter";
+import { CoGeomDataType, CoModelTeamLoader } from "../cospace/app/common/CoModelTeamLoader";
+import Vector3D from "../vox/math/Vector3D";
+import Matrix4 from "../vox/math/Matrix4";
+import RendererState from "../vox/render/RendererState";
 export class DemoVtxMultiRDP {
 	private m_init = true;
 	private m_texLoader: ImageTextureLoader = null;
+    private m_teamLoader = new CoModelTeamLoader();
+    private m_layouter = new EntityLayouter();
 	constructor() { }
 
 	private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
@@ -54,10 +61,50 @@ export class DemoVtxMultiRDP {
 			new MouseInteraction().initialize(rscene, 0, true).setAutoRunning(true);
 			new RenderStatusDisplay(rscene, true);
 
-			this.initScene(rscene);
-			this.initEvent(rscene);
+			// this.initScene(rscene);
+			// this.initEvent(rscene);
+			this.initObjs(rscene);
 		}
 	}
+	private initObjs(rscene: RendererScene): void {
+
+		let url0 = "static/assets/fbx/face4Parts.fbx";
+        let loader = this.m_teamLoader;
+
+        loader.load([url0], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+
+            this.m_layouter.layoutReset();
+            for (let i = 0; i < models.length; ++i) {
+                this.createEntity(rscene, models[i], transforms != null ? transforms[i] : null, 1.0);
+            }
+            this.m_layouter.layoutUpdate(300, new Vector3D(0, 0, 0));
+
+        });
+	}
+	
+    protected createEntity(rscene: RendererScene, model: CoGeomDataType, transform: Float32Array = null, uvScale: number = 1.0): DisplayEntity {
+        if (model != null) {
+            console.log("createEntity(), model: ", model);
+
+            let material = new Default3DMaterial();
+            material.normalEnabled = true;
+            material.setUVScale(uvScale, uvScale);
+            material.setTextureList([
+                this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
+            ]);
+			
+            let mesh = MeshFactory.createDataMeshFromModel(model, material);
+            let entity = new DisplayEntity();
+            entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+            entity.setMesh(mesh);
+            entity.setMaterial(material);
+			
+            rscene.addEntity(entity);
+            this.m_layouter.layoutAppendItem(entity, new Matrix4(transform));
+            return entity;
+        }
+    }
+
 	private m_tarEntity: DisplayEntity = null;
 	private m_tarREntity: DisplayEntity = null;
 	private m_tarMEntity: DisplayEntity = null;
