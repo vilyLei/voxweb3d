@@ -20,7 +20,7 @@ import MeshFactory from "../../vox/mesh/MeshFactory";
 import IGeomModelData from "../../vox/mesh/IGeomModelData";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 
-export class ModolesLoading {
+export class ModelsLoading {
     constructor() { }
 
     private m_rscene: RendererScene = null;
@@ -41,7 +41,7 @@ export class ModolesLoading {
 
     }
     initialize(): void {
-        console.log("ModolesLoading::initialize()......");
+        console.log("ModelsLoading::initialize()......");
         if (this.m_rscene == null) {
             RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -85,7 +85,7 @@ export class ModolesLoading {
             this.m_layouter.layoutUpdate(300, new Vector3D(300, 0, 0));
         });
 
-        
+
         loader.load([url3], (models: IGeomModelData[], transforms: Float32Array[]): void => {
 
             this.m_layouter.layoutReset();
@@ -95,14 +95,14 @@ export class ModolesLoading {
             this.m_layouter.layoutUpdate(300, new Vector3D(0, 0, 300));
         });
     }
-    
+
     protected createEntity(model: IGeomModelData, transform: Float32Array = null, uvScale: number = 1.0): DisplayEntity {
         if (model != null) {
             console.log("createEntity(), model: ", model);
-            
+
             let material = new Default3DMaterial();
             material.normalEnabled = true;
-            material.setUVScale(uvScale,uvScale);
+            material.setUVScale(uvScale, uvScale);
             material.setTextureList([
                 this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
             ]);
@@ -124,4 +124,4 @@ export class ModolesLoading {
     }
 
 }
-export default ModolesLoading;
+export default ModelsLoading;
