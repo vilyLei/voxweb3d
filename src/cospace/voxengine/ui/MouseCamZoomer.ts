@@ -20,25 +20,26 @@ declare var CoRScene: ICoRScene;
 export default class MouseCamZoomer {
     private m_camera: IRenderCamera = null;
 
-    private m_touchZoomBoo: boolean = false;
-    private m_preDis: number = 0;
-    private m_touchZoomSpd: number = 2.0;
-    private m_slideSpd: number = 1.0;
-    private m_mouseWheelZoomSpd: number = 6.0;
-    private m_tempa: IVector3D;// = CoRScene.createVec3();
-    private m_tempb: IVector3D;// = CoRScene.createVec3();
-    private m_preva: IVector3D;// = CoRScene.createVec3();
-    private m_prevb: IVector3D;// = CoRScene.createVec3();
-    private m_va: IVector3D;// = CoRScene.createVec3();
-    private m_vb: IVector3D;// = CoRScene.createVec3();
-    private m_lookAt: IVector3D;// = CoRScene.createVec3();
+    private m_touchZoomBoo = false;
+    private m_preDis = 0;
+    private m_touchZoomSpd = 2.0;
+    private m_slideSpd = 1.0;
+    private m_mouseWheelZoomSpd = 6.0;
+    private m_tempa: IVector3D;
+    private m_tempb: IVector3D;
+    private m_preva: IVector3D;
+    private m_prevb: IVector3D;
+    private m_va: IVector3D;
+    private m_vb: IVector3D;
+    private m_lookAt: IVector3D;
     private m_lookAtPos: IVector3D;
-    private m_fowardDis: number = 0;
-    private m_initBoo: boolean = true;
-    private m_lookAtCtrlEnabled: boolean = true;
-    private m_flagDrag: number = 0;
-    private m_flagZoom: number = 0;
-    private m_windowsEnvFlag: boolean = true;
+    private m_fowardDis = 0;
+    private m_initBoo = true;
+    private m_lookAtCtrlEnabled = true;
+    private m_flagDrag = 0;
+    private m_flagZoom = 0;
+    private m_windowsEnvFlag = true;
+
     syncLookAt = false;
     /**
      * 取值为2, 表示相机的拉近拉远
@@ -110,7 +111,7 @@ export default class MouseCamZoomer {
     private setTouchPosArray(posArray: any[]): void {
         if (posArray != null && posArray.length > 1) {
             const Vector3D = CoRScene.Vector3D;
-            let dis: number = 0;
+            let dis = 0;
             this.m_va.setXYZ(posArray[0].x, posArray[0].y, 0);
             this.m_vb.setXYZ(posArray[1].x, posArray[1].y, 0);
             if (this.m_touchZoomBoo) {
@@ -139,7 +140,7 @@ export default class MouseCamZoomer {
                 else {
                     this.m_tempa.subVecsTo(this.m_va, this.m_preva);
                 }
-                let dv: number = Math.abs(this.m_preDis - dis);
+                let dv = Math.abs(this.m_preDis - dis);
                 if (dv > 0.1) {
                     this.m_fowardDis = (dis - this.m_preDis) * this.m_touchZoomSpd;
                     this.m_preDis = dis;
@@ -173,7 +174,7 @@ export default class MouseCamZoomer {
     }
     run(minDis: number): void {
 
-        let lookAtEnabled: boolean = this.m_lookAtCtrlEnabled;
+        let lookAtEnabled = this.m_lookAtCtrlEnabled;
         
         if (this.m_camera != null) {
             
@@ -181,8 +182,8 @@ export default class MouseCamZoomer {
                 const Vector3D = CoRScene.Vector3D;
                 // camera foward update
                 if (Math.abs(this.m_fowardDis) > 0.001) {
-                    let dis: number = Vector3D.Distance(this.m_camera.getPosition(), this.m_camera.getLookAtPosition());
-                    let pd: number = this.m_fowardDis;
+                    let dis = Vector3D.Distance(this.m_camera.getPosition(), this.m_camera.getLookAtPosition());
+                    let pd = this.m_fowardDis;
                     if (this.m_fowardDis > 0) {
                         if (dis > minDis) {
                             pd = dis - minDis;

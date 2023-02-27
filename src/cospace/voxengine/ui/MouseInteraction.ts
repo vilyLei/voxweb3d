@@ -2,8 +2,10 @@ import IRendererScene from "../../../vox/scene/IRendererScene";
 import MouseCamDrager from "./MouseCamDrager";
 import MouseCamZoomer from "./MouseCamZoomer";
 import { IMouseInteraction } from "./IMouseInteraction";
+
 import IVector3D from "../../../vox/math/IVector3D";
 import IEventBase from "../../../vox/event/IEventBase";
+
 import { ICoRScene } from "../ICoRScene";
 declare var CoRScene: ICoRScene;
 
@@ -21,14 +23,14 @@ class MouseInteraction implements IMouseInteraction {
 	/**
 	 * 是否启用摄像机用户控制
 	 */
-	cameraCtrlEnabled: boolean = true;
+	cameraCtrlEnabled = true;
 
 	/**
 	 * @param rscene renderer scene instance
 	 * @param buttonType the default value is 0, the value contains 0(mouse left button), 1(mouse middle button), 2(mouse right button)
 	 * @param bgEventEnabled apply background mouse event true or false, the default value is true
 	 */
-	initialize(rscene: IRendererScene, buttonType: number = 0, bgEventEnabled: boolean = true): void {
+	initialize(rscene: IRendererScene, buttonType: number = 0, bgEventEnabled: boolean = true): IMouseInteraction {
 		if (this.m_rscene == null) {
 
 			this.m_rscene = rscene;
@@ -45,6 +47,7 @@ class MouseInteraction implements IMouseInteraction {
 			z.initialize(rscene.getStage3D());
 			z.setLookAtCtrlEnabled(false);
 		}
+		return this;
 	}
 
 	enableSwing(): void {
@@ -56,17 +59,19 @@ class MouseInteraction implements IMouseInteraction {
 	enableSlide(): void {
 		this.drager.enableSlide();
 	}
-	setSyncLookAtEnabled(ennabled: boolean): void {
+	setSyncLookAtEnabled(ennabled: boolean): IMouseInteraction {
 		this.zoomer.syncLookAt = ennabled;
+		return this;
 	}
-	setLookAtPosition(v: IVector3D): void {
+	setLookAtPosition(v: IVector3D): IMouseInteraction {
 		this.zoomer.setLookAtPosition(v);
+		return this;
 	}
 	/**
 	 * @param enabled enable auto runnning or not
 	 * @param axisType 0 is y-axis, 1 is z-axis
 	 */
-	setAutoRunning(enabled: boolean, axisType: number = 0): void {
+	setAutoRunning(enabled: boolean, axisType: number = 0): IMouseInteraction {
 		this.m_axisType = axisType;
 		this.m_autoRun = enabled;
 		const type = CoRScene.EventBase.ENTER_FRAME;
@@ -76,6 +81,7 @@ class MouseInteraction implements IMouseInteraction {
 		} else {
 			this.m_rscene.removeEventListener(type, this, this.autoRun);
 		}
+		return this;
 	}
 	private autoRun(evt: IEventBase): void {
 

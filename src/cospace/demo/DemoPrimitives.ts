@@ -211,9 +211,7 @@ export class DemoPrimitives {
 	}
 	private initMouseInteraction(): void {
 		
-		const mi = CoUIInteraction.createMouseInteraction();
-		mi.initialize(this.m_rscene, 0, true);
-		mi.setAutoRunning(true);
+		CoUIInteraction.createMouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
 	}
 
 	private initRenderer(): void {

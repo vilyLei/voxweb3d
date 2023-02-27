@@ -24,15 +24,15 @@ class CamDragSwinger {
         }
     }
 
-    private m_mouseX: number = 0.0;
-    private m_mouseY: number = 0.0;
-    private m_enabled: boolean = false;
-    private m_rotationSpeed: number = 0.0;
-    private m_aotuRotationDelay: number = 100.0;
-    autoRotationEnabled: boolean = false;
-    autoRotationSpeed: number = 0.2;
-    rotationAttenuationEnabled: boolean = false;
-    rotationSpeed: number = 0.2;
+    private m_mouseX = 0.0;
+    private m_mouseY = 0.0;
+    private m_enabled = false;
+    private m_rotationSpeed = 0.0;
+    private m_aotuRotationDelay = 100.0;
+    autoRotationEnabled = false;
+    autoRotationSpeed = 0.2;
+    rotationAttenuationEnabled = false;
+    rotationSpeed = 0.2;
     attach(): void {
         this.m_mouseX = this.m_stage3D.mouseX;
         this.m_mouseY = this.m_stage3D.mouseY;
@@ -51,10 +51,10 @@ class CamDragSwinger {
 
     private run(axis: IVector3D, type: number): void {
         if (this.m_enabled) {
-            let dx: number = this.m_mouseX - this.m_stage3D.mouseX;
-            let dy: number = this.m_mouseY - this.m_stage3D.mouseY;
-            let abs_dx: number = Math.abs(dx);
-            let abs_dy: number = Math.abs(dy);
+            let dx = this.m_mouseX - this.m_stage3D.mouseX;
+            let dy = this.m_mouseY - this.m_stage3D.mouseY;
+            let abs_dx = Math.abs(dx);
+            let abs_dy = Math.abs(dy);
             if (abs_dx > abs_dy) {
                 if (abs_dx > 0.5) {
 					if(type < 1) {

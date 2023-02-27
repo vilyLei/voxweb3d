@@ -17,14 +17,14 @@ export default class MouseCamDrager {
     constructor() { }
 
     private m_stage3D: IRenderStage3D = null;
-    private m_dragSwinger: CamDragSwinger = new CamDragSwinger();
-    private m_dragSlider: CamDragSlider = new CamDragSlider();
-    private m_swing: boolean = true;
+    private m_dragSwinger = new CamDragSwinger();
+    private m_dragSlider = new CamDragSlider();
+    private m_swing = true;
     /**
      * the value contains 0(mouse down), 1(mouse middle), 2(mouse right)
      */
-    buttonType: number = 0;
-    bgEventEnabled: boolean = true;
+    buttonType = 0;
+    bgEventEnabled = true;
     initialize(stage3D: IRenderStage3D, camera: IRenderCamera): void {
 
         if (this.m_stage3D == null) {
