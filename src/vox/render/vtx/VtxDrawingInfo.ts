@@ -31,7 +31,6 @@ export default class VtxDrawingInfo implements IVtxDrawingInfo {
             this.m_wireframe = wireframe;
             this.m_flag ++;
         }
-        console.log("VtxDrawingInfo::setWireframe(), this.m_flag: ", this.m_flag);
     }
     setIvsParam(ivsIndex: number = -1, ivsCount: number = -1): void {
         if(ivsIndex >= 0) {
@@ -42,7 +41,6 @@ export default class VtxDrawingInfo implements IVtxDrawingInfo {
             this.m_ivsCount = ivsCount;
             this.m_flag ++;
         }
-        console.log("VtxDrawingInfo::setIvsParam(), this.m_flag: ", this.m_flag);
     }
     reset(): void {
         this.m_flag = 0;
@@ -54,7 +52,7 @@ export default class VtxDrawingInfo implements IVtxDrawingInfo {
             const rdp = this.rdp;
             // console.log("info rdp.getUid(): ", rdp.getUid(), this.m_uid);
             if(this.m_flag > 0) {
-                console.log("__$$copyToRDP() ...rdp.getUid(): ", rdp.getUid(), ", this.m_uid: ", this.m_uid);
+                // console.log("__$$copyToRDP() ...rdp.getUid(): ", rdp.getUid(), ", this.m_uid: ", this.m_uid);
                 rdp.setIvsParam(this.m_ivsIndex, this.m_ivsCount);
     
                 if(this.m_wireframe) {

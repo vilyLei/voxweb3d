@@ -333,6 +333,8 @@
 
 //  import {DemoMaterialGraph as Demo} from "./demo/DemoMaterialGraph";
 
+ import {DemoVtxDrawingInfo as Demo} from "./demo/DemoVtxDrawingInfo";
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     event    ///////////////////////////////////
@@ -433,7 +435,7 @@
 
 //  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
- import {RbtDrama as Demo} from "./app/RbtDrama";
+//  import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 

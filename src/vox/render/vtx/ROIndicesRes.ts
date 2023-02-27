@@ -83,7 +83,7 @@ class BufRData implements IROIvsRD {
 class BufRDataPair implements IROIvsRDP {
     private static s_uid = 0;
     private m_uid = BufRDataPair.s_uid++;
-    private m_type = 0;
+    private m_rdpType = 0;
     r0: BufRData = null;
     r1: BufRData = null;
     rd: BufRData = null;
@@ -117,28 +117,33 @@ class BufRDataPair implements IROIvsRDP {
             this.r1.setIvsParam(ivsIndex, ivsSize);
         }
     }
+    applyRDPAt(index: number): void {
+        if(this.roiRes != null) {
+            this.roiRes.applyRDPAt( index );
+        }
+    }
     getType(): number {
-        return this.m_type;
+        return this.m_rdpType;
     }
     toWireframe(): void {
-        this.m_type = 1;
+        this.m_rdpType = 1;
         this.rd = this.r1;
         this.buf = this.rd.buf;
         this.roiRes.rdp = this;
-        console.log("BufRDataPair::toWireframe()............, uid: ", this.m_uid);
+        // console.log("BufRDataPair::toWireframe()............, uid: ", this.m_uid);
     }
     toShape(): void {
-        this.m_type = 0;
+        this.m_rdpType = 0;
         this.rd = this.r0;
         this.buf = this.rd.buf;
         this.roiRes.rdp = this;
-        console.log("BufRDataPair::toShape()............, uid: ", this.m_uid);
+        // console.log("BufRDataPair::toShape()............, uid: ", this.m_uid);
     }
     toCommon(): void {
         this.toShape();
     }
     isCommon(): boolean {
-        return this.m_type == 0;
+        return this.m_rdpType == 0;
     }
     test(): boolean {
         // console.log("AAA this.getType(): ", this.getType(), this.getUid());
@@ -150,7 +155,7 @@ class BufRDataPair implements IROIvsRDP {
         rdp.roiRes = this.roiRes;
         rdp.rd = this.rd;
         rdp.buf = this.buf;
-        rdp.m_type = this.m_type;
+        rdp.m_rdpType = this.m_rdpType;
         rdp.r0 = this.r0.clone();
         if(this.r0 != this.r1) {
             rdp.r1 = this.r1.clone();
@@ -176,12 +181,12 @@ class ROIndicesRes implements IROIndicesRes {
 
     private m_ivsData: IROIvsData = null;
 
-    version = -1;
     private m_rdps: BufRDataPair[] = [];
+    private m_rdpType = -2;
 
-    // rd: BufRData = null;
     rdp: BufRDataPair = null;
     initRdp: BufRDataPair = null;
+    version = -1;
     
     constructor() {
         this.m_rdps.fill(null);
@@ -192,20 +197,12 @@ class ROIndicesRes implements IROIndicesRes {
     getVtxUid(): number {
         return this.m_vtxUid;
     }
-    // toWireframe(): void {
-    //     this.rdp.toWireframe();
-    // }
-    // toShape(): void {
-    //     this.rdp.toShape();
-    // }
-    // toCommon(): void {
-    //     this.toShape();
-    // }
-    applyDataAt(index: number): void {
+    applyRDPAt(index: number): void {
         if(this.m_index != index && index >= 0 && index < this.m_rdps.length) {
             let rdp = this.m_rdps[this.m_index];
             this.m_index = index;
             this.rdp = this.m_rdps[index];
+            this.m_rdpType = -2;
             if(rdp.isCommon) {
                 this.rdp.toShape();
             }else {
@@ -213,29 +210,19 @@ class ROIndicesRes implements IROIndicesRes {
             }
         }
     }
-    // setIvsParam(ivsIndex: number, ivsSize: number, index: number = 0): void {
-    //     if(index >= 0 && index < this.m_rdps.length) {
-    //         let rdp = this.m_rdps[index];
-    //         rdp.setIvsParam(ivsIndex, ivsSize);
-    //     }
-    // }
-    private m_type = -2;
     test(): boolean {
-        return this.m_type != this.rdp.getType();
-        // console.log("A this.rdp.getType(): ", this.rdp.getType(), this.rdp.getUid(), boo);
-        // return boo;
-        // // return this.m_type != this.rdp.getType();
+        return this.m_rdpType != this.rdp.getType();
     }
     /**
      * @param force the default value is false
      */
     bindToGPU(force: boolean = false): void {
-        force = force || this.m_type != this.rdp.getType();
+        force = force || this.m_rdpType != this.rdp.getType();
         // console.log("B this.rdp.getType(): ", this.rdp.getType(), this.rdp.getUid());
         if (this.m_vrc.testRIOUid(this.m_vtxUid) || force) {
             // console.log(this.rdp.buf.wireframe);
             this.m_vrc.bindEleBuf(this.rdp.buf);
-            this.m_type = this.rdp.getType();
+            this.m_rdpType = this.rdp.getType();
         }
     }
     updateToGpu(rc: IROVtxBuilder): void {
