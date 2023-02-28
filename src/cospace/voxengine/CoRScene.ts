@@ -69,7 +69,7 @@ import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpac
 import Line3DMaterial from "../../vox/material/mcase/Line3DMaterial";
 import BrokenQuadLine3DMaterial from "../../vox/material/mcase/BrokenQuadLine3DMaterial";
 import IRendererSceneGraph from "../../vox/scene/IRendererSceneGraph";
-import RendererSceneGraph from "../../vox/scene/RendererSceneGraph";
+import CoRendererSceneGraph from "./scene/CoRendererSceneGraph";
 import Keyboard from "../../vox/ui/Keyboard";
 
 
@@ -328,7 +328,7 @@ function createMaterialContext(): IMaterialContext {
 }
 
 function createRendererSceneGraph(): IRendererSceneGraph {
-	return new RendererSceneGraph();
+	return new CoRendererSceneGraph();
 }
 function createEvtNode(): EvtNode {
 	return new EvtNode();

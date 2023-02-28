@@ -1,7 +1,7 @@
 
-import RendererScene from "./RendererScene";
-import IRendererScene from "./IRendererScene";
-import RSCGraph from "./RSCGraph";
+import IRendererScene from "../../../vox/scene/IRendererScene";
+import RSCGraph from "../../../vox/scene/RSCGraph";
+import CoRendererScene from "./CoRendererScene";
 
 export default class RendererSceneGraph extends RSCGraph {
 
@@ -14,6 +14,6 @@ export default class RendererSceneGraph extends RSCGraph {
     // }
     
     protected createRScene(): IRendererScene {
-        return new RendererScene();
+        return new CoRendererScene();
     }
 }
