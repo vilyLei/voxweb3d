@@ -41,7 +41,6 @@ export default class VaoVertexRenderObj extends VROBase {
         VROBase.s_midMap.delete(this.m_mid);
         this.m_mid = 0;
         this.m_vtxUid = -1;
-        // this.ibuf = null;
         this.vao = null;
         this.m_rc = null;
         this.indicesRes = null;

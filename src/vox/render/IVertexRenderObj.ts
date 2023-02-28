@@ -8,15 +8,6 @@
 import { ROIndicesRes } from "./vtx/ROIndicesRes";
 interface IVertexRenderObj {
     indicesRes: ROIndicesRes;
-    /**
-     * indices buffer object.
-     */
-    // ibuf: any;
-    /**
-     * be used by the renderer runtime, the value is 2 or 4.
-     */
-    ibufStep: number;
-    // getVTCount(): number;
     getMid(): number;
     getVtxUid(): number;
     run(): void;

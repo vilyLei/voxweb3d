@@ -18,18 +18,8 @@ export default class VROBase implements IVRO, IVertexRenderObj {
     protected m_vtxUid = 0;
     protected m_rc: IROVtxBuilder = null;
     indicesRes: ROIndicesRes = null;
-    // ibuf: any = null;
-    /**
-     * be used by the renderer runtime, the value is 2 or 4.
-     */
-    ibufStep: number = 2;
-
     constructor() {
     }
-    // getVTCount(): number {
-    //     if (this.indicesRes != null) return this.indicesRes.getVTCount();
-    //     return 0;
-    // }
     setRC(rc: IROVtxBuilder): void {
         this.m_rc = rc;
     }

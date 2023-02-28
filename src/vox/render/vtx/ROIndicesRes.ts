@@ -254,7 +254,7 @@ class ROIndicesRes implements IROIndicesRes {
     private m_vrc: IROVtxBuilder;
     private m_vtx: IROIVtxBuf = null;
     private m_vtxUid = 0;
-    private m_index = 0;
+    // private m_index = 0;
 
     private m_ivsData: IROIvsData = null;
 
