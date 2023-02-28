@@ -73,7 +73,7 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
             let ivs = new Uint16Array([3, 2, 1, 3, 1, 0, 6, 7, 4, 6, 4, 5, 11, 10, 9, 11, 9, 8, 15, 14, 13, 15, 13, 12, 18, 19, 16, 18, 16, 17, 22, 23, 20, 22, 20, 21]);
 
             let dm = new DataMesh();
-            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVSAt(ivs).setVtxBufRenderData(vtxData);
+            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
             dm.vbWholeDataEnabled = true;
             dm.initialize();
             this.unitBox.setMesh(dm);
@@ -81,7 +81,7 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
             for (let i = 0; i < vs.length; ++i) { vs[i] += 0.5; }
             // console.log("obox vs: ",vs);
             dm = new DataMesh();
-            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVSAt(ivs).setVtxBufRenderData(vtxData);
+            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
             dm.vbWholeDataEnabled = true;
             dm.initialize();
             this.unitOBox.setMesh(dm);
@@ -92,21 +92,21 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
             ivs = new Uint16Array([0, 1, 2, 0, 2, 3]);
 
             dm = new DataMesh();
-            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVSAt(ivs).setVtxBufRenderData(vtxData);
+            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
             dm.vbWholeDataEnabled = true;
             dm.initialize();
             this.screenPlane.setMesh(dm);
 
             for (let i = 0; i < vs.length; ++i) { vs[i] *= 0.5; }
             dm = new DataMesh();
-            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVSAt(ivs).setVtxBufRenderData(vtxData);
+            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
             dm.vbWholeDataEnabled = true;
             dm.initialize();
             this.unitXOYPlane.setMesh(dm);
             vs = new Float32Array(vs);
             for (let i = 0; i < vs.length;) { vs[i++] += 0.5; vs[i++] += 0.5; i++;}
             dm = new DataMesh();
-            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVSAt(ivs).setVtxBufRenderData(vtxData);
+            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
             dm.vbWholeDataEnabled = true;
             dm.initialize();
             this.unitOXOYPlane.setMesh(dm);
@@ -115,14 +115,14 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
             vs = new Float32Array([0.5, 0, -0.5, -0.5, 0, -0.5, -0.5, 0, 0.5, 0.5, 0, 0.5]);
             nvs = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
             dm = new DataMesh();
-            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVSAt(ivs).setVtxBufRenderData(vtxData);
+            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
             dm.vbWholeDataEnabled = true;
             dm.initialize();
             this.unitXOZPlane.setMesh(dm);
             vs = new Float32Array(vs);
             for (let i = 0; i < vs.length;) { vs[i++] += 0.5; i++; vs[i++] += 0.5;}
             dm = new DataMesh();
-            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVSAt(ivs).setVtxBufRenderData(vtxData);
+            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
             dm.vbWholeDataEnabled = true;
             dm.initialize();
             this.unitOXOZPlane.setMesh(dm);
@@ -130,13 +130,13 @@ class RenderableEntityBlock implements IRenderableEntityBlock {
             vs = new Float32Array([0, -0.5, -0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0, -0.5, 0.5]);
             nvs = new Float32Array([1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]);
             dm = new DataMesh();
-            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVSAt(ivs).setVtxBufRenderData(vtxData);
+            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
             dm.vbWholeDataEnabled = true;
             dm.initialize();
             this.unitYOZPlane.setMesh(dm);
             for (let i = 0; i < vs.length;) { i++; vs[i++] += 0.5; vs[i++] += 0.5;}
             dm = new DataMesh();
-            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVSAt(ivs).setVtxBufRenderData(vtxData);
+            dm.setVS(vs).setUVS(uvs).setNVS(nvs).setIVS(ivs).setVtxBufRenderData(vtxData);
             dm.vbWholeDataEnabled = true;
             dm.initialize();
             this.unitOYOZPlane.setMesh(dm);

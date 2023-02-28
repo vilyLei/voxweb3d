@@ -330,7 +330,7 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
                 this.__$uniform = null;
             }
         }
-        this.vtxInfo
+        this.vtxInfo.destroy();
     }
     update(): void {
         

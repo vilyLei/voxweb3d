@@ -16,6 +16,8 @@ import IRenderProxy from "../IRenderProxy";
 import { IROIvsRD, IROIvsRDP } from "./IROIvsRDP";
 
 class BufRData implements IROIvsRD {
+    private static s_uid = 0;
+    private m_uid = BufRData.s_uid++;
     buf: any = null;
     // type = 0;
     ivsSize = 0;
@@ -29,8 +31,13 @@ class BufRData implements IROIvsRD {
     common = true;
     bufType = 0;
     ivsOffset = 0;
+    rdpIndex = 0;
+    constructor() { }
+    getUid(): number {
+        return this.m_uid;
+    }
     clone(): BufRData {
-        let rd = new BufRData;
+        let rd = new BufRData();
         rd.buf = this.buf;
         rd.ivsIndex = this.ivsIndex;
         rd.ivsSize = this.ivsSize;
@@ -40,16 +47,17 @@ class BufRData implements IROIvsRD {
         rd.common = this.common;
         rd.bufType = this.bufType;
         rd.ivsOffset = this.ivsOffset;
+        rd.rdpIndex = this.rdpIndex;
         return rd;
     }
     setIvsParam(ivsIndex: number, ivsSize: number): void {
 
         let pI = this.ivsIndex;
         let pS = this.ivsSize;
-        if(ivsIndex >= 0) {
+        if (ivsIndex >= 0) {
             pI = ivsIndex;
         }
-        if(ivsSize >= 0) {
+        if (ivsSize >= 0) {
             pS = ivsSize;
         }
         ivsIndex = pI;
@@ -58,17 +66,20 @@ class BufRData implements IROIvsRD {
         const rd = this;
 
         rd.ivsIndex = rd.common ? ivsIndex : ivsIndex * 2;
-        if(rd.ivsIndex < 0) rd.ivsIndex = 0;
-        else if(rd.ivsIndex >= this.ivsInitSize) rd.ivsIndex = this.ivsInitSize - 1;
+        if (rd.ivsIndex < 0) rd.ivsIndex = 0;
+        else if (rd.ivsIndex >= this.ivsInitSize) rd.ivsIndex = this.ivsInitSize - 1;
 
         rd.ivsOffset = rd.ivsIndex * rd.stride;
-        if(!rd.common) {
+        // console.log(" >>> #### !rd.common: ", !rd.common, ", uid: ",this.getUid());
+        // console.log("!rd.common: ", !rd.common, pI, pS);
+        if (!rd.common) {
             ivsSize *= 2;
-            if((ivsSize + rd.ivsIndex) >= this.ivsInitSize) {
-                ivsSize = this.ivsInitSize - rd.ivsIndex;
-            }
+        }
+        if ((ivsSize + rd.ivsIndex) >= this.ivsInitSize) {
+            ivsSize = this.ivsInitSize - rd.ivsIndex;
         }
         this.ivsSize = ivsSize;
+        // console.log("OOOO BufRData !rd.common #####: ", !rd.common, rd.ivsIndex, this.ivsSize, ", uid: ",this.getUid());
     }
     destroy(vrc: IROVtxBuilder): void {
         if (this.buf != null) {
@@ -83,13 +94,21 @@ class BufRData implements IROIvsRD {
 class BufRDataPair implements IROIvsRDP {
     private static s_uid = 0;
     private m_uid = BufRDataPair.s_uid++;
-    private m_rdpType = 0;
+    private m_rdpVer = 0;
+    private m_st = 101;
+    private m_tst = 0;
+    private m_rdpIndex = 0;
     r0: BufRData = null;
     r1: BufRData = null;
     rd: BufRData = null;
     buf: any = null;
     roiRes: ROIndicesRes = null;
-    constructor(){}
+    constructor(index: number) {
+        this.m_rdpIndex = index;
+    }
+    getRDPIndex(): number {
+        return this.m_rdpIndex;
+    }
     getUid(): number {
         return this.m_uid;
     }
@@ -101,72 +120,130 @@ class BufRDataPair implements IROIvsRDP {
         this.rd = null;
         this.buf = null;
     }
+    private clearBuf(): void {
+        if(this.r0 != null) {
+            this.r0.clear();
+            this.r1.clear();
+            this.roiRes = null;
+            this.r0 = null;
+            this.r1 = null;
+            this.rd = null;
+            this.buf = null;
+        }
+    }
     clear(): void {
-        this.r0.clear();
-        this.r1.clear();
-        this.roiRes = null;
-        this.r0 = null;
-        this.r1 = null;
-        this.rd = null;
-        this.buf = null;
+        this.clearBuf();
+    }
+    private updateStatus(): void {
+        this.m_st++;
+        this.m_tst = (this.m_st * 131 + this.m_rdpVer) * 131 + this.m_uid;
     }
     setIvsParam(ivsIndex: number, ivsSize: number): void {
 
+        // console.log(">>> >>>>>>>>>>>> #### BufRDataPair::setIvsParam(), uid: ", this.getUid());
+        this.updateStatus();
         this.r0.setIvsParam(ivsIndex, ivsSize);
-        if(this.r0 != this.r1) {
+        if (this.r0 != this.r1) {
             this.r1.setIvsParam(ivsIndex, ivsSize);
         }
+        let rd = this.rd;
+        // console.log("BufRDataPair::setIvsParam(), ivsIndex, ivsSize: ", ivsIndex, ivsSize);
+        // console.log("****** ###### !rd.common: ", !rd.common, ", rd.getUid(): ",rd.getUid());
+        // console.log("BufRDataPair::setIvsParam(), rd.ivsIndex, rd.ivsSize: ", rd.ivsIndex, rd.ivsSize);
     }
     applyRDPAt(index: number): void {
-        if(this.roiRes != null) {
-            this.roiRes.applyRDPAt( index );
+        if (this.roiRes != null && this.m_rdpIndex != index) {
+            let rd = this.rd;
+            // console.log("AAAA index: ",index);
+            // console.log("AAAA 0 rd.getUid(): ",rd.getUid(), ", r0.getUid(): ",this.r0.getUid(), ", r0.ivsSize: ", this.r0.ivsSize, ", r0.rdpIndex: ", this.r0.rdpIndex);
+            let rdp = this.roiRes.getRDPDataAt(index);
+            if(rdp) {
+                this.updateStatus();
+                this.clearBuf();
+                this.m_rdpIndex = rdp.getRDPIndex();
+                // console.log("ROInidcesRes::applyRDPAt(), index: ", index);
+                this.copyFrom(rdp, true, false);
+                rd = this.rd;
+                // console.log("AAAA 1 rd.getUid(): ",rd.getUid(), ", r0.getUid(): ",this.r0.getUid(), ", r0.ivsSize: ",  this.r0.ivsSize, ", r0.rdpIndex: ", this.r0.rdpIndex);
+            }
         }
     }
-    getType(): number {
-        return this.m_rdpType;
+    getVersion(): number {
+        return this.m_tst;
     }
     toWireframe(): void {
-        this.m_rdpType = 1;
+
+        this.m_rdpVer = 1;
         this.rd = this.r1;
         this.buf = this.rd.buf;
         this.roiRes.rdp = this;
-        // console.log("BufRDataPair::toWireframe()............, uid: ", this.m_uid);
+
+        this.updateStatus();
+        console.log("BufRDataPair::toWireframe()............, uid: ", this.m_uid);
     }
     toShape(): void {
-        this.m_rdpType = 0;
+
+        this.m_rdpVer = 0;        
         this.rd = this.r0;
         this.buf = this.rd.buf;
         this.roiRes.rdp = this;
-        // console.log("BufRDataPair::toShape()............, uid: ", this.m_uid);
+
+        this.updateStatus();
+        console.log("BufRDataPair::toShape()............, uid: ", this.m_uid);
     }
     toCommon(): void {
         this.toShape();
     }
     isCommon(): boolean {
-        return this.m_rdpType == 0;
+        return this.m_rdpVer == 0;
     }
     test(): boolean {
         // console.log("AAA this.getType(): ", this.getType(), this.getUid());
         this.roiRes.rdp = this;
         return this.roiRes.test();
     }
-    clone(): BufRDataPair {
-        let rdp = new BufRDataPair();
+    copyFrom(rdp: BufRDataPair, auto: boolean = true, force: boolean = true): void {
+
+        // console.log("AAAA 0 copyFrom(), rdp.r0.getUid(): ",rdp.r0.getUid(), ", r0.ivsSize: ", rdp.r0.ivsSize, ", r0.rdpIndex: ", rdp.r0.rdpIndex);
+        this.roiRes = rdp.roiRes;
+        if(force) this.m_rdpVer = rdp.m_rdpVer;
+        this.r0 = rdp.r0.clone();
+        if (rdp.r0 != rdp.r1) {
+            this.r1 = rdp.r1.clone();
+        } else {
+            this.r1 = this.r0;
+        }
+        if (auto) {
+            if (this.isCommon()) {
+                this.toCommon();
+            } else {
+                this.toWireframe();
+            }
+        }
+    }
+    copyTo(rdp: BufRDataPair, auto: boolean = true, force: boolean = true): void {
+
         rdp.roiRes = this.roiRes;
-        rdp.rd = this.rd;
-        rdp.buf = this.buf;
-        rdp.m_rdpType = this.m_rdpType;
+        if(force) rdp.m_rdpVer = this.m_rdpVer;
         rdp.r0 = this.r0.clone();
-        if(this.r0 != this.r1) {
+        if (this.r0 != this.r1) {
             rdp.r1 = this.r1.clone();
-        }else {
+        } else {
             rdp.r1 = rdp.r0;
         }
+        if (auto) {
+            if (rdp.isCommon()) {
+                rdp.toCommon();
+            } else {
+                rdp.toWireframe();
+            }
+        }
+    }
+    clone(): BufRDataPair {
+        let rdp = new BufRDataPair(this.getRDPIndex());
+        this.copyTo(rdp);
         return rdp;
     }
-    // use(): void {
-    //     this.roiRes.rdp = this;
-    // }
 }
 
 
@@ -182,12 +259,12 @@ class ROIndicesRes implements IROIndicesRes {
     private m_ivsData: IROIvsData = null;
 
     private m_rdps: BufRDataPair[] = [];
-    private m_rdpType = -2;
+    private m_rdpVer = -2;
 
     rdp: BufRDataPair = null;
     initRdp: BufRDataPair = null;
     version = -1;
-    
+
     constructor() {
         this.m_rdps.fill(null);
     }
@@ -197,32 +274,46 @@ class ROIndicesRes implements IROIndicesRes {
     getVtxUid(): number {
         return this.m_vtxUid;
     }
-    applyRDPAt(index: number): void {
-        if(this.m_index != index && index >= 0 && index < this.m_rdps.length) {
-            let rdp = this.m_rdps[this.m_index];
-            this.m_index = index;
-            this.rdp = this.m_rdps[index];
-            this.m_rdpType = -2;
-            if(rdp.isCommon) {
-                this.rdp.toShape();
-            }else {
-                this.rdp.toWireframe();
-            }
+    getRDPDataAt(index: number): BufRDataPair {
+        if (index >= 0 && index < this.m_rdps.length) {
+            // console.log("getRDPDataAt(), index: ", index);
+            return this.m_rdps[index];
+            // let rdp = this.m_rdps[index];
+            // console.log("getRDPDataAt(), rdp: ", rdp);
+            // return rdp;
         }
+        return null;
     }
+    // applyRDPAt(index: number): boolean {
+    //     if (this.m_index != index && index >= 0 && index < this.m_rdps.length) {
+    //         let rdp = this.m_rdps[this.m_index];
+    //         this.m_index = index;
+    //         this.rdp = this.m_rdps[index];
+    //         this.m_rdpVer = -2;
+    //         if (rdp.isCommon) {
+    //             this.rdp.toShape();
+    //         } else {
+    //             this.rdp.toWireframe();
+    //         }
+    //         this.initRdp = rdp;
+    //         return true;
+    //     }
+    //     return false;
+    // }
     test(): boolean {
-        return this.m_rdpType != this.rdp.getType();
+        return this.m_rdpVer != this.rdp.getVersion();
     }
     /**
      * @param force the default value is false
      */
     bindToGPU(force: boolean = false): void {
-        force = force || this.m_rdpType != this.rdp.getType();
+        force = force || this.m_rdpVer != this.rdp.getVersion();
         // console.log("B this.rdp.getType(): ", this.rdp.getType(), this.rdp.getUid());
         if (this.m_vrc.testRIOUid(this.m_vtxUid) || force) {
             // console.log(this.rdp.buf.wireframe);
+            // console.log("bindToGPU()");
             this.m_vrc.bindEleBuf(this.rdp.buf);
-            this.m_rdpType = this.rdp.getType();
+            this.m_rdpVer = this.rdp.getVersion();
         }
     }
     updateToGpu(rc: IROVtxBuilder): void {
@@ -231,7 +322,7 @@ class ROIndicesRes implements IROIndicesRes {
             let vtx = this.m_vtx;
             // console.log("indeces updateToGpu vtx.getUId(): ",vtx.getUid(), ", this.version != vtx.indicesVer: ", this.version != vtx.indicesVer);
             if (this.version != vtx.indicesVer) {
-                
+
                 let ird = vtx.getIvsDataAt();
                 this.m_ivsData = ird;
                 const ivs = ird.ivs;
@@ -262,20 +353,9 @@ class ROIndicesRes implements IROIndicesRes {
             this.version = ivtx.indicesVer;
             this.m_vtx = ivtx;
             this.m_vtxUid = ivtx.getUid();
-
-            // let ird = ivtx.getIvsDataAt();
-            // this.m_ivsData = ird;
-            // wireframe = ird.wireframe;
-
-            // rdp.r0 = this.createBuf(rc, vrc, ivtx, disp.ivsIndex);
-            // if (wireframe) {
-            //     rdp.r1 = this.createBuf(rc, vrc, ivtx, disp.ivsIndex, wireframe);
-            // } else {
-            //     rdp.r1 = rdp.r0.clone();
-            // }
             rdp = this.createRDPAt(0, rc, vrc, disp);
         } else {
-            rdp = new BufRDataPair();
+            rdp = new BufRDataPair(0);
             let rd = new BufRData();
             rd.buf = null;
             rd.ivsSize = disp.ivsCount;
@@ -290,29 +370,47 @@ class ROIndicesRes implements IROIndicesRes {
         rdp.roiRes = this;
         rdp.toShape();
         let total = ivtx.getIvsDataTotal();
-        for(let i = 1; i < total; ++i) {
+        // console.log("ROIndicesRes::initialize(), total: ", total);
+        for (let i = 1; i < total; ++i) {
             rdp = this.createRDPAt(i, rc, vrc, disp);
             this.m_rdps.push(rdp);
         }
     }
-    private createRDPAt(index: number, rc: IRenderProxy, vrc: IROVtxBuilder, disp: IRODisplay): BufRDataPair {
-        let rdp = new BufRDataPair();
+    private createRDPAt(rdpIndex: number, rc: IRenderProxy, vrc: IROVtxBuilder, disp: IRODisplay): BufRDataPair {
+        let rdp = new BufRDataPair(rdpIndex);
+        rdp.roiRes = this;
         const ivtx = this.m_vtx;
-        let ird = ivtx.getIvsDataAt( index );
+        let ird = ivtx.getIvsDataAt(rdpIndex);
         this.m_ivsData = ird;
         let wireframe = ird.wireframe;
+        let shape = ird.wireframe;
 
-        rdp.r0 = this.createBuf(rc, vrc, ivtx, disp.ivsIndex);
-        if (wireframe) {
-            rdp.r1 = this.createBuf(rc, vrc, ivtx, disp.ivsIndex, wireframe);
-        } else {
-            rdp.r1 = rdp.r0.clone();
+        let r0: BufRData = null;//this.createBuf(rdpIndex, rc, vrc, ivtx, disp.ivsIndex, shape);
+        let r1: BufRData = null;//r0;
+        if (shape) {
+            r0 = this.createBuf(rdpIndex, rc, vrc, ivtx, disp.ivsIndex, false);
         }
+        if (wireframe) {
+            r1 = this.createBuf(rdpIndex, rc, vrc, ivtx, disp.ivsIndex, wireframe);
+        }
+        if(r0 == null && r1 == null) {
+            r0 = this.createBuf(rdpIndex, rc, vrc, ivtx, disp.ivsIndex, false);
+        }
+        if(r0 == null) {
+            r0 = r1;
+        }else if(r1 == null) {
+            r1 = r0;
+        }
+
+        rdp.r0 = r0;
+        rdp.r1 = r1;
+        // console.log("createRDPAt(), rdpIndex: ", rdpIndex, ", wireframe: ", wireframe,", rdp.r0.getUid(): ", rdp.r0.getUid());
+        // console.log("       rdp.r0.ivsSize: ", rdp.r0.ivsSize, ", r0.rdpIndex: ",rdp.r0.rdpIndex);
         return rdp;
     }
-    private createBuf(rc: IRenderProxy, vrc: IROVtxBuilder, ivtx: IROIVtxBuf, ivsIndex: number, wireframe: boolean = false): BufRData {
-        // console.log("createBuf(), wireframe:", wireframe);
-        let ird = ivtx.getIvsDataAt();
+    private createBuf(rdpIndex: number, rc: IRenderProxy, vrc: IROVtxBuilder, ivtx: IROIVtxBuf, ivsIndex: number, wireframe: boolean = false): BufRData {
+        // console.log("createBuf(), wireframe:", wireframe, ivtx);
+        let ird = ivtx.getIvsDataAt(rdpIndex);
         let ivs = ird.ivs;
         let size = 0;
 
@@ -377,13 +475,18 @@ class ROIndicesRes implements IROIndicesRes {
                 size += ivs.length;
             }
         }
-        let rd = new BufRData();
+
+        gbuf.rdpIndex = rdpIndex;
         gbuf.wireframe = wireframe;
+
+
+        let rd = new BufRData();
         rd.buf = gbuf;
+        rd.rdpIndex = rdpIndex;
         rd.ivsSize = size;
         rd.ivsInitSize = size;
         rd.stride = stride;
-
+        console.log("size: ", size, ", rdpIndex: ", rdpIndex);
         rd.common = !wireframe;
         rd.ivsIndex = rd.common ? ivsIndex : ivsIndex * 2;
         rd.ivsOffset = rd.ivsIndex * rd.stride;
@@ -397,9 +500,9 @@ class ROIndicesRes implements IROIndicesRes {
     destroy(vrc: IROVtxBuilder): void {
 
         this.m_vrc = null;
-        if (this.m_rdps .length > 0) {
+        if (this.m_rdps.length > 0) {
             this.m_vtx = null;
-            for(let i = 0; i < this.m_rdps.length; ++i) {
+            for (let i = 0; i < this.m_rdps.length; ++i) {
                 this.m_rdps[i].destroy(vrc);
             }
             this.m_ivsData = null;

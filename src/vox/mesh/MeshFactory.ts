@@ -12,7 +12,7 @@ import DataMesh from "./DataMesh";
 
 export default class MeshFactory {
 
-	
+
 	/**
 	 * @param model geometry model data
 	 * @param material IRenderMaterial instance, the default value is null.
@@ -43,15 +43,31 @@ export default class MeshFactory {
 		if (model.normals) {
 			dataMesh.setNVS(model.normals);
 		}
+		let extraIvsList = model.extraIndicesList ? model.extraIndicesList : null;
+		let ivsIndex = 0;
 		if (model.indices) {
 			dataMesh.setIVS(model.indices);
-		} else {
+			ivsIndex++;
+		} else if (extraIvsList == null) {
 			let ivs = vtxTotal <= 65535 ? new Uint16Array(vtxTotal) : new Uint32Array(vtxTotal);
 			for (let i = 0; i < vtxTotal; ++i) {
 				ivs[i] = i;
 			}
 			dataMesh.setIVS(ivs);
 			console.warn("hasn't indices data !, it happened in the MeshFactory::createDataMeshFromModel(...) function.");
+		}
+		// console.log("%%%%%%% extraIvsList != null: ", extraIvsList != null, ", ivsIndex: ", ivsIndex);
+		if (extraIvsList != null) {
+			for (let i = 0; i < extraIvsList.length; ++i) {
+				const item = extraIvsList[i];
+				// console.log("	%%%%%%% (item && item.indices): ", (item && item.indices));
+				if (item && item.indices) {
+					// console.log("		%%%%%%% item.indices: ", item.indices);
+					const wireframe = item.wireframe ? item.wireframe : false;
+					const shape = item.shape ? item.shape : true;
+					dataMesh.setIVSAt(item.indices, ivsIndex + i, wireframe, shape);
+				}
+			}
 		}
 
 		if (material != null) {

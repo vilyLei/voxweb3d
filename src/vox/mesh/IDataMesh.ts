@@ -70,8 +70,10 @@ export default interface IDataMesh extends IMeshBase {
   /**
    * @param ivs indices buffer data
    * @param index the default value is 0
+   * @param wireframe the default value is false
+   * @param shape the default value is true
    */
-  setIVSAt(ivs: Uint16Array | Uint32Array, index?: number): IDataMesh;
+  setIVSAt(ivs: Uint16Array | Uint32Array, index?: number, wireframe?: boolean, shape?: boolean): IDataMesh;
   getIVSAt(index: number): Uint16Array | Uint32Array;
   /**
    * initialization vertex buffer data

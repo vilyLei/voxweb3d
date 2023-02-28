@@ -128,9 +128,10 @@ export class BakeFlow {
             console.log("loaded model all in main.");
             let vtxTotal = modelData.models[0].vertices.length / 3;
             console.log("vtxTotal: ", vtxTotal);
-            console.log("modelData: ", modelData);
-            console.log("uv2ModelData: ", uv2ModelData);
-            console.log("uvData: ", uvData);
+            // console.log("modelData: ", modelData);
+            // console.log("uv2ModelData: ", uv2ModelData);
+            console.log("uvsList[0].length: ", modelData.models[0].uvsList[0].length);
+            console.log("uvData.length: ", uvData.length);
             let models = modelData.models;
             let transforms = modelData.transforms;
             this.m_uvData = uvData;
@@ -158,14 +159,18 @@ export class BakeFlow {
     private m_vtxRIndex = 0;
     private m_vtxRCount = -1;
     private m_offsetR = 0.0001;
+    private m_drawTimes = 1;
+    private m_circleTimes = 1;
     // private m_modelUrl = "static/private/fbx/hat01_0.fbx";
     // private m_modelUrl = "static/private/fbx/hat01_0.obj";
     // private m_modelUrl = "static/private/fbx/hat01_0.fbx";
-    private m_modelUrl = "static/private/fbx/hat01_1.fbx";
+    // private m_modelUrl = "static/private/fbx/hat01_1.fbx";
+    private m_modelUrl = "static/private/ctm/highHeel01.ctm";
     // private m_uv2ModelUrl = "static/private/fbx/hat01_0_unwrap.fbx";
     private m_uv2ModelUrl = "";
     // private m_uvDataUrl = "static/private/fbx/uvData1.uv";
-    private m_uvDataUrl = "static/private/fbx/hat01_1.uv2";
+    // private m_uvDataUrl = "static/private/fbx/hat01_1.uv2";
+    private m_uvDataUrl = "static/private/ctm/highHeel01.uv2";
     protected createEntity(model: CoGeomDataType, transform: Float32Array = null, uvParam: { su: number, sv: number }): void {
 
         if (model != null) {
@@ -184,20 +189,27 @@ export class BakeFlow {
             // bakedTexUrl = "static/private/bake/hat01_1.png";
             bakedTexUrl = "static/private/bake/hat01_0a.png";
             bakedTexUrl = "static/private/bake/hat01_1a.png";
-            this.initTexLightingBakeWithModel(-1, model, transform, uvOffset, bakedTexUrl);
+
+            this.initTexLightingBakeWithModel(1, model, transform, uvOffset, bakedTexUrl);
         }
     }
     private initTexLightingBakeWithModel(bakeType: number, model: CoGeomDataType, transform: Float32Array, uvParam: { su: number, sv: number }, bakedTexUrl: string): void {
 
         let vs = model.vertices;
         let ivs = model.indices;
+        let vtCount = vs.length / 3;
         let trisNumber = ivs.length / 3;
+        console.log("ivs.length: ", ivs.length);
+        console.log("trisNumber: ", trisNumber, ", vtCount: ", vtCount);
 
         let nvs = model.normals;
         if (nvs == null) {
             SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
         }
-
+        let uvs = model.uvsList;
+        uvs[1] = uvs[0];
+        console.log("#### uvs[0].length: ", uvs[0].length);
+        if(uvs.length > 1) console.log("#### uvs[1].length: ", uvs[1].length);
         if (bakeType < 0) {
             let entity = this.m_bakedViewer.createEntity(model, bakedTexUrl);
             let mat4 = transform != null ? new Matrix4(transform) : null;
@@ -226,7 +238,7 @@ export class BakeFlow {
         }
         console.log("xxxxx bake: ", bake);
         if (bake && bakeType != 3) {
-            this.createLineDrawWithModel(materialPbr, model, bake, metallic, roughness, nameList[nameI]);
+            // this.createLineDrawWithModel(materialPbr, model, bake, metallic, roughness, nameList[nameI]);
             // return;
         }
         // console.log("OOOOOO material: ", material);
@@ -259,7 +271,6 @@ export class BakeFlow {
         this.m_layouter.layoutAppendItem(entity, mat4);
         //*/
     }
-
     private createLineDrawWithModel(material: PBRBakingMaterial, model: CoGeomDataType, bake: boolean, metallic: number, roughness: number, texName: string): void {
 
         // let material = this.makeTexMaterial(metallic, roughness, 1.0);
@@ -281,12 +292,13 @@ export class BakeFlow {
 
         let radius = this.m_offsetR;
         let PI2 = Math.PI * 2.0;
-        let total = 8;
+
+        let total = this.m_circleTimes;
         let stage = this.m_rscene.getStage3D();
         let ratio = stage.stageHeight / stage.stageWidth;
         console.log("xxxxx ratio: ", ratio);
         console.log("xxxxx model: ", model);
-        for (let k = 0; k < 8; ++k) {
+        for (let k = 0; k < this.m_drawTimes; ++k) {
             for (let i = 0; i < total; ++i) {
                 let rad = PI2 * i / total;
                 let dx = Math.cos(rad) * radius * ratio;

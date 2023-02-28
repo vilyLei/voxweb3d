@@ -132,7 +132,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         // let ivsCount = ir.getVTCount();
         let ivsCount = rd.ivsSize;
         // if (this.ivsCount <= ivsCount && ir.isCommon()) ivsCount = this.ivsCount;
-        // console.log("xxx runit xxx ivsCount: ", ivsCount, " rd.ivsOffset: ", rd.ivsOffset);
+        // console.log("runit::drawThis(), ivsCount: ", ivsCount, ",ivsOffset: ", rd.ivsOffset, this.rdp.getUid(), rd.getUid());
         if (this.polygonOffset != null) {
             rc.setPolygonOffset(this.polygonOffset[0], this.polygonOffset[1]);
         }

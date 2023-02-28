@@ -18,9 +18,9 @@ export default class ROIVertexBuffer implements IROIVtxBuf {
     protected m_uid = 0;
     protected m_layoutBit = 0;
     private m_irdTotal = 0;
-    protected m_irds: ROIvsData[] = new Array(2);
+    protected m_irds: ROIvsData[] = new Array(1);
     protected m_bufDataUsage = 0;
-    protected m_ibufStep = 2;// 2 or 4
+    protected m_ibufStep = 2;
 
     layoutBit = 0x0;
     vertexVer = 0;
@@ -32,9 +32,6 @@ export default class ROIVertexBuffer implements IROIVtxBuf {
         this.m_uid = ROIVertexBuffer.s_uid++;
         this.m_bufDataUsage = bufDataUsage;
         this.m_irds.fill(null);
-    }
-    getIvsDataTotal(): number {
-        return 1;
     }
     getUid(): number {
         return this.m_uid;
@@ -55,23 +52,37 @@ export default class ROIVertexBuffer implements IROIVtxBuf {
         return this.m_bufDataUsage;
     }
     getIvsDataAt(index: number = 0): ROIvsData {
-        if(index >= 0 && index < this.m_irdTotal) {
+        // console.log("FFFFFFFFFF 0 getIvsDataAt(), index: ", index);
+        if (index >= 0 && index < this.m_irdTotal) {
+            // console.log("FFFFFFFFFF 0 this.m_irds["+index+"]: ", this.m_irds[index]);
             return this.m_irds[index];
         }
         return null;
     }
     setIVSDataAt(data: ROIvsData, index: number = 0): void {
-        if(this.m_irds[index]) {
-            this.m_irds[index].destroy();
+        // console.log("A index: ", index, ", XXXXX this.m_irds.length: ", this.m_irds.length);
+        if (index < this.m_irds.length) {
+            if(this.m_irds[index]) {
+                this.m_irds[index].destroy();
+            }
+            this.m_irds[index] = data;
+        }else {
+            this.m_irds.push(data);
         }
-        this.m_irds[index] = data;
-        this.m_irdTotal = index + 1;
+        this.m_irdTotal = this.m_irds.length;
+        // console.log("B index: ", index, ", XXXXX this.m_irdTotal: ", this.m_irdTotal);
         this.indicesVer++;
+    }
+    getIvsDataTotal(): number {
+        return this.m_irdTotal;
     }
     /**
      * this function is only an empty function.
      */
     destroy(): void {
         this.m_layoutBit = 0;
+        this.m_irdTotal = 0;
+        this.m_irds.fill(null);
+        this.m_irds = [];
     }
 }

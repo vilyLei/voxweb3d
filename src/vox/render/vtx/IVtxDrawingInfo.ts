@@ -17,6 +17,7 @@ export default interface IVtxDrawingInfo {
      * @param ivsCount the default value is -1 
      */
     setIvsParam(ivsIndex: number, ivsCount: number): void;
+    applyIvsDataAt(index: number): void;
     reset(): void;
     // __$$copyToRDP(rdp: IROIvsRDP): void;
     // clone(): IVtxDrawingInfo;

@@ -21,6 +21,10 @@ export default interface IGeomModelData {
 	 * the default value is null
 	 */
 	indices?: Uint16Array | Uint32Array;
+	/**
+	 * the default value is undefined or null
+	 */
+	extraIndicesList?: {indices:(Uint16Array | Uint32Array), wireframe?: boolean, shape?:boolean}[];
 	
 	uvsList: Float32Array[];
 	vertices: Float32Array;

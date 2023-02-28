@@ -14,6 +14,7 @@ interface IROIvsRDP {
     r1: IROIvsRD;
 
     getUid(): number;
+    applyRDPAt(index: number): void;
     setIvsParam(ivsIndex: number, ivsSize: number): void;
     toWireframe(): void;
     toShape(): void;

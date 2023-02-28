@@ -18,7 +18,8 @@ import ITestRay from "./ITestRay";
 export default class DataMesh extends MeshBase implements IDataMesh {
 
 	private m_boundsChanged = true;
-	private m_ils: (Uint16Array | Uint32Array)[] = new Array(2);
+	private m_ils: (Uint16Array | Uint32Array)[] = new Array(1);
+	private m_ists: boolean[][] = new Array(1);
 	private m_ls: Float32Array[] = new Array(10);
 
 	private m_rayTester: ITestRay = null;
@@ -34,6 +35,8 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
 		super(bufDataUsage);
 		this.m_ls.fill(null);
+		this.m_ils.fill(null);
+		this.m_ists.fill([true, false]);
 	}
 	setRayTester(rayTester: ITestRay): void {
 		this.m_rayTester = rayTester;
@@ -170,6 +173,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	}
 
 	setIVS(ivs: Uint16Array | Uint32Array): IDataMesh {
+		this.m_ivs = ivs;
 		this.m_ils[0] = ivs;
 		return this;
 	}
@@ -177,10 +181,19 @@ export default class DataMesh extends MeshBase implements IDataMesh {
      * @returns vertex indices buffer Uint16Array or Uint32Array
      */
     getIVS(): Uint16Array | Uint32Array { return this.m_ils[0]; }
-	setIVSAt(ivs: Uint16Array | Uint32Array, index: number = 0): DataMesh {
-		this.m_ivs = ivs;
+	setIVSAt(ivs: Uint16Array | Uint32Array, index: number = 0, wireframe: boolean = false, shape: boolean = true): DataMesh {
+		// console.log("DataMesh::setIVSAt(), index: ", index);
+		if(index == 0) this.m_ivs = ivs;
 		this.m_boundsChanged = true;
-		this.m_ils[index] = ivs;
+		if(index < this.m_ils.length) {
+			this.m_ils[index] = ivs;
+			let ls = this.m_ists[index];
+			ls[0] = shape;
+			ls[1] = wireframe;
+		}else if(index == this.m_ils.length){
+			this.m_ils.push( ivs );
+			this.m_ists.push( [shape, wireframe] );
+		}
 		return this;
 	}
 	getIVSAt(index: number): Uint16Array | Uint32Array {
@@ -270,12 +283,19 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 					this.m_vbuf = rvb.CreateBySaveDataSeparate(u);
 				}
 			}
-			
-			let ird = this.crateROIvsData();
-			// ird.wireframe = this.wireframe;
-			// ird.shape = this.shape;
-			ird.setData(ivs);
-			this.m_vbuf.setIVSDataAt(ird);
+			let sts = this.m_ists;
+			let bls = sts[0];
+			bls[0] = this.shape;
+			bls[1] = this.wireframe;
+			for(let i = 0; i < ils.length; ++i) {
+				let ird = this.crateROIvsData();
+				bls = sts[i];
+				ird.shape = bls[0];
+				ird.wireframe = bls[1];
+				ird.setData(ils[i]);
+				// console.log("vbuf.setIVSDataAt(), i: ", i, ", ivs: ", ivs);
+				this.m_vbuf.setIVSDataAt(ird, i);
+			}
 
 			this.buildEnd();
 		}
@@ -305,8 +325,8 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 				this.m_rayTester = null;
 			}
 
-			this.m_ls.fill(null);
-			this.m_ils.fill(null);
+			this.m_ls = [];
+			this.m_ils = [];
 
 			super.__$destroy();
 		}
