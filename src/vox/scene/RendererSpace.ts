@@ -7,7 +7,7 @@
 // 当前渲染场景空间管理的入口类, 鼠标拾取，摄像机裁剪，空间管理遮挡剔除等都是由这个系统来组织完成的
 
 import RSEntityFlag from "../../vox/scene/RSEntityFlag";
-import Vector3D from "../../vox/math/Vector3D";
+import IVector3D from "../../vox/math/IVector3D";
 import IAABB from "../../vox/geom/IAABB";
 
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
@@ -23,8 +23,8 @@ import Entity3DNodeLinker from "../../vox/scene/Entity3DNodeLinker";
 import IRenderer from "../../vox/scene/IRenderer";
 import IRaySelector from "../../vox/scene/IRaySelector";
 import ISpaceCullingor from "../../vox/scene/ISpaceCullingor";
-import DebugFlag from "../debug/DebugFlag";
 import RenderingEntitySet from "./RenderingEntitySet";
+import DebugFlag from "../debug/DebugFlag";
 
 export default class RendererSpace implements IRendererSpace {
 	private static s_uid: number = 0;
@@ -70,7 +70,7 @@ export default class RendererSpace implements IRendererSpace {
 	getCamera(): IRenderCamera {
 		return this.m_camera;
 	}
-	getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void {
+	getMouseXYWorldRay(rl_position: IVector3D, rl_tv: IVector3D): void {
 		this.m_camera.getWorldPickingRayByScreenXY(this.m_stage3d.mouseX, this.m_stage3d.mouseY, rl_position, rl_tv);
 	}
 	setSpaceCullingor(cullingor: ISpaceCullingor): void {
@@ -181,7 +181,7 @@ export default class RendererSpace implements IRendererSpace {
 			} else {
 				let ab: IAABB = null;
 				let cam = this.m_camera;
-				//let camPos:Vector3D = cam.getPosition();
+				//let camPos:IVector3D = cam.getPosition();
 				while (nextNode != null) {
 					if (nextNode.rpoNode.isVsible() && nextNode.entity.isDrawEnabled()) {
 						ab = nextNode.bounds;
@@ -192,7 +192,7 @@ export default class RendererSpace implements IRendererSpace {
 						total += boo ? 1 : 0;
 						//  if(nextNode.drawEnabled && nextNode.distanceFlag)
 						//  {
-						//      nextNode.rpoNode.setValue(-Vector3D.DistanceSquared(camPos,ab.center));
+						//      nextNode.rpoNode.setValue(-IVector3D.DistanceSquared(camPos,ab.center));
 						//      //console.log((nextNode.entity as any).name,",a runit.value: ",nextNode.rpoNode.unit.value);
 						//  }
 					} else {
@@ -219,7 +219,7 @@ export default class RendererSpace implements IRendererSpace {
 			}
 		}
 	}
-	rayTest(rlpv: Vector3D, rltv: Vector3D): void {
+	rayTest(rlpv: IVector3D, rltv: IVector3D): void {
 		if (this.m_raySelector != null) {
 			this.m_raySelector.etset = this.renderingEntitySet;
 			this.m_raySelector.setCamera(this.m_camera);

@@ -29,7 +29,6 @@ import RunnableQueue from "../../vox/base/RunnableQueue";
 
 import IRPONodeBuilder from "../../vox/render/IRPONodeBuilder";
 import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
-// import RendererInstance from "../../vox/scene/RendererInstance";
 import IRendererInstance from "../../vox/scene/IRendererInstance";
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import { TextureBlock } from "../../vox/texture/TextureBlock";

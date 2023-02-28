@@ -323,9 +323,6 @@ export class TextureProxy implements IRenderTexture {
             this.m_uid = -1;
         }
     }
-    toString(): string {
-        return "[TextureProxy(name:" + this.name + ",uid=" + this.getUid() + ",width=" + this.getWidth() + ",height=" + this.getHeight() + ")]";
-    }
 }
 
 export default TextureProxy;
