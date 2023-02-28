@@ -89,9 +89,8 @@ export default class RPOBlock {
             while (nextNode) {
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
-                    unit.vdrInfo.__$$copyToRDP();
                     if (unit.drawEnabled) {
-                        unit.indicesRes.rdp = unit.rdp;
+                        unit.vdrInfo.__$$copyToRDP();
                         unit.run(rc);
                         if (unit.partTotal < 1) {
                             unit.drawThis(rc);

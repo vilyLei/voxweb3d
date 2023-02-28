@@ -42,12 +42,13 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
      * pipes type list for material pipeline
      */
     pipeTypes: MaterialPipeType[] = null;
-    renderState = 0;
-    colorMask = 0;
-    /**
-     * the default value is null
-     */
-    stencil: Stencil = null;
+
+    // renderState = 0;
+    // colorMask = 0;
+    // /**
+    //  * the default value is null
+    //  */
+    // stencil: Stencil = null;
     // multiPass = false;
     readonly vtxInfo: IVtxDrawingInfo = new VtxDrawingInfo();
     graph: IPassGraph = null;

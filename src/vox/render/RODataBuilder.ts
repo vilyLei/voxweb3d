@@ -32,6 +32,7 @@ import IRODataBuilder from "./IRODataBuilder";
 import IVDRInfo from "./vtx/IVDRInfo";
 import { IROIvsRDP } from "./vtx/IROIvsRDP";
 import { BufRDataPair } from "./vtx/ROIndicesRes";
+import EmptyVDRInfo from "./vtx/EmptyVDRInfo";
 
 /**
  * 本类实现了将 系统内存数据 合成为 渲染运行时系统所需的数据资源(包括: 渲染运行时管理数据和显存数据)
@@ -291,7 +292,6 @@ export default class RODataBuilder implements IRODataBuilder {
 
             if (vtxRes.hasResUid(resUid)) {
                 vtx = vtxRes.getVertexRes(resUid);
-
                 needBuild = vtx.version != dispVtxVer;
                 if (needBuild) {
                     vtxRes.destroyRes(resUid);
@@ -329,7 +329,12 @@ export default class RODataBuilder implements IRODataBuilder {
 
             let material = disp.getMaterial();
             let vdrInfo = runit.vdrInfo = material.vtxInfo as IVDRInfo;
-            if(vdrInfo.rdp == null) {
+            if(vdrInfo) {
+                if(vdrInfo.rdp == null) {
+                    vdrInfo.rdp = runit.indicesRes.initRdp.clone();
+                }
+            }else {
+                vdrInfo = new EmptyVDRInfo();
                 vdrInfo.rdp = runit.indicesRes.initRdp.clone();
             }
             runit.rdp = vdrInfo.rdp as BufRDataPair;
