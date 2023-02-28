@@ -26,7 +26,9 @@ class LoadingTeam {
             this.m_loadedTotal++;
             flag = this.m_loadedTotal >= this.m_total;
             if (flag) {
-                this.callback(this.models, this.transforms);
+                let callback = this.callback;
+                callback(this.models, this.transforms);
+                this.callback = null;
             }
         }
         return flag;
@@ -83,5 +85,7 @@ class CoModelTeamLoader {
         this.m_teams.push(team);
         this.loadNext();
     }
+    // loadWithTeam(urls: string[], callback: (models: CoGeomDataType[], transforms: Float32Array[]) => void): void {
+    // }
 }
 export { CoGeomDataType, CoModelTeamLoader };

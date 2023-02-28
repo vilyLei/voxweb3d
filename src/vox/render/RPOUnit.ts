@@ -23,6 +23,8 @@ import IRPODisplay from "../../vox/render/IRPODisplay";
 import IPoolNode from "../../vox/base/IPoolNode";
 import { BufRDataPair, ROIndicesRes } from "./vtx/ROIndicesRes";
 import IVDRInfo from "./vtx/IVDRInfo";
+
+import IPassGraph from "../material/pass/IPassGraph";
 import DebugFlag from "../debug/DebugFlag";
 
 /**
@@ -59,7 +61,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     renderState = 0;
     rcolorMask = 0;
     // 用于记录 renderState(低10位)和ColorMask(高10位) 的状态组合
-    drawFlag: number = 0;
+    drawFlag = 0;
     indicesRes: ROIndicesRes;
     vro: IVertexRenderObj = null;
 
@@ -80,6 +82,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     polygonOffset: number[] = null;
     rdp: BufRDataPair = null;
     vdrInfo: IVDRInfo = null;
+    rgraph: IPassGraph = null;
     constructor() {
     }
     private testDrawFlag(): void {
@@ -316,6 +319,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
             this.pos = null;
             this.vdrInfo = null;
             this.rdp = null;
+            this.rgraph = null;
         }
     }
     destroy(): void {

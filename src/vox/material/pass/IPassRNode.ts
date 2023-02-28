@@ -5,15 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IPassRNode from "./IPassRNode";
-import IPassGraph from "./IPassGraph";
-export default class PassGraph implements IPassGraph {
-    constructor(){}
-    addNode(node: IPassRNode): void {
-    }
-    initialize(): void {
-    }
-    destroy(): void {
-    }
+export default interface IPassRNode {
+    
+    addNode(node: IPassRNode): void;
+    destroy(): void;
 }
-export { PassGraph }

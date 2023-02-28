@@ -75,7 +75,7 @@ export default class VtxDrawingInfo implements IVtxDrawingInfo {
             if (this.m_dynamic) {
                 // console.log("info rdp.getUid(): ", rdp.getUid(), this.m_uid);
                 if (this.m_flag > 0) {
-                    console.log("__$$copyToRDP() ...rdp.getUid(): ", rdp.getUid(), ", this.m_uid: ", this.m_uid);
+                    // console.log("__$$copyToRDP() ...rdp.getUid(): ", rdp.getUid(), ", this.m_uid: ", this.m_uid);
                     if (this.m_sts[1] > 0) {
                         this.m_sts[1] = 0;
                         // console.log("__$$copyToRDP() ...rdp.setIvsParam(): ", this.m_ivsIndex, this.m_ivsCount);

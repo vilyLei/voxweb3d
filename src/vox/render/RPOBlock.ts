@@ -136,8 +136,8 @@ export default class RPOBlock {
                     // if(DebugFlag.Flag_0 > 0) console.log("unit.drawEnabled: ",unit.drawEnabled);
                     // console.log("unit.rdp.getUid(): ", unit.rdp.getUid(), unit.vdrInfo.rdp.getUid());
                     
-                    vtxFlag = unit.vdrInfo.__$$copyToRDP() || vtxFlag;
                     if (unit.drawEnabled) {
+                        vtxFlag = unit.vdrInfo.__$$copyToRDP() || vtxFlag;
                         if (vtxFlag) {
                             nextNode.vro.run();
                             vtxFlag = false;

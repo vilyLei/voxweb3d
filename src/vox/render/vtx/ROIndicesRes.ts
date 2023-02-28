@@ -381,18 +381,20 @@ class ROIndicesRes implements IROIndicesRes {
         rdp.roiRes = this;
         const ivtx = this.m_vtx;
         let ird = ivtx.getIvsDataAt(rdpIndex);
+        console.log("ird: ", ird);
         this.m_ivsData = ird;
         let wireframe = ird.wireframe;
-        let shape = ird.wireframe;
+        let shape = ird.shape;
 
-        let r0: BufRData = null;//this.createBuf(rdpIndex, rc, vrc, ivtx, disp.ivsIndex, shape);
-        let r1: BufRData = null;//r0;
+        let r0: BufRData = null;
+        let r1: BufRData = null;
         if (shape) {
             r0 = this.createBuf(rdpIndex, rc, vrc, ivtx, disp.ivsIndex, false);
         }
         if (wireframe) {
             r1 = this.createBuf(rdpIndex, rc, vrc, ivtx, disp.ivsIndex, wireframe);
         }
+        // console.log("createRDPAt(), r0: ", r0, ", r1: ", r1);
         if(r0 == null && r1 == null) {
             r0 = this.createBuf(rdpIndex, rc, vrc, ivtx, disp.ivsIndex, false);
         }

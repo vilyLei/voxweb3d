@@ -73,9 +73,11 @@ export class ModelsLoading {
             this.m_layouter.layoutUpdate(300, new Vector3D(-400, 0, 0));
 
         });
+        
+        url1 = "static/private/bake/hat01_0_unwrap.ctm";
+        url2 = "static/private/bake/hat01_1_unwrap.ctm";
 
-
-        loader.load([url1], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+        loader.load([url1, url2], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
 
             this.m_layouter.layoutReset();
             for (let i = 0; i < models.length; ++i) {

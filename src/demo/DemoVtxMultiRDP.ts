@@ -23,8 +23,8 @@ import RendererState from "../vox/render/RendererState";
 export class DemoVtxMultiRDP {
 	private m_init = true;
 	private m_texLoader: ImageTextureLoader = null;
-    private m_teamLoader = new CoModelTeamLoader();
-    private m_layouter = new EntityLayouter();
+	private m_teamLoader = new CoModelTeamLoader();
+	private m_layouter = new EntityLayouter();
 	private m_rscene: RendererScene = null;
 	constructor() { }
 
@@ -71,41 +71,41 @@ export class DemoVtxMultiRDP {
 	private initObjs(rscene: RendererScene): void {
 
 		let url0 = "static/assets/fbx/face4Parts.fbx";
-        let loader = this.m_teamLoader;
+		let loader = this.m_teamLoader;
 
-        loader.load([url0], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+		loader.load([url0], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
 
-            this.m_layouter.layoutReset();
-            for (let i = 0; i < models.length; ++i) {
-                this.createEntity(rscene, models[i], transforms != null ? transforms[i] : null, 1.0);
-            }
-            this.m_layouter.layoutUpdate(300, new Vector3D(0, 0, 0));
+			this.m_layouter.layoutReset();
+			for (let i = 0; i < models.length; ++i) {
+				this.createEntity(rscene, models[i], transforms != null ? transforms[i] : null, 1.0);
+			}
+			this.m_layouter.layoutUpdate(300, new Vector3D(0, 0, 0));
 
-        });
+		});
 	}
-	
-    protected createEntity(rscene: RendererScene, model: CoGeomDataType, transform: Float32Array = null, uvScale: number = 1.0): DisplayEntity {
-        if (model != null) {
-            console.log("createEntity(), model: ", model);
 
-            let material = new Default3DMaterial();
-            material.normalEnabled = true;
-            material.setUVScale(uvScale, uvScale);
-            material.setTextureList([
-                this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
-            ]);
-			
-            let mesh = MeshFactory.createDataMeshFromModel(model, material);
-            let entity = new DisplayEntity();
-            entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-            entity.setMesh(mesh);
-            entity.setMaterial(material);
-			
-            rscene.addEntity(entity);
-            this.m_layouter.layoutAppendItem(entity, new Matrix4(transform));
-            return entity;
-        }
-    }
+	protected createEntity(rscene: RendererScene, model: CoGeomDataType, transform: Float32Array = null, uvScale: number = 1.0): DisplayEntity {
+		if (model != null) {
+			console.log("createEntity(), model: ", model);
+
+			let material = new Default3DMaterial();
+			material.normalEnabled = true;
+			material.setUVScale(uvScale, uvScale);
+			material.setTextureList([
+				this.getTexByUrl("static/assets/effectTest/metal_01_COLOR.png")
+			]);
+
+			let mesh = MeshFactory.createDataMeshFromModel(model, material);
+			let entity = new DisplayEntity();
+			entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+			entity.setMesh(mesh);
+			entity.setMaterial(material);
+
+			rscene.addEntity(entity);
+			this.m_layouter.layoutAppendItem(entity, new Matrix4(transform));
+			return entity;
+		}
+	}
 
 	private m_tarEntity: DisplayEntity = null;
 	private m_tarREntity: DisplayEntity = null;
@@ -115,7 +115,7 @@ export class DemoVtxMultiRDP {
 		console.log("XXX ------------ XXXXXXXXXX testDataMesh XXXXXXXXXXXX ------------ XXX");
 		let staticVtx = true;
 		let material = new Default3DMaterial();
-		if(staticVtx) material.vtxInfo.toStatic();
+		if (staticVtx) material.vtxInfo.toStatic();
 		// material.normalEnabled = true;
 		material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
 
@@ -129,9 +129,9 @@ export class DemoVtxMultiRDP {
 			normals: nvs,
 			indices: ivs,
 			wireframe: true,
-			extraIndicesList:[
-				{indices: new Uint16Array([0, 1, 2]) , wireframe: false},
-				{indices: new Uint16Array([0, 2, 3]) , wireframe: true}
+			extraIndicesList: [
+				{ indices: new Uint16Array([0, 1, 2]), wireframe: false },
+				{ indices: new Uint16Array([0, 2, 3]), wireframe: true }
 			]
 		};
 		let mesh = MeshFactory.createDataMeshFromModel(model);
@@ -146,7 +146,7 @@ export class DemoVtxMultiRDP {
 		entity.setScaleXYZ(scale, scale, scale);
 		rscene.addEntity(entity);
 		this.m_tarEntity = entity;
-		
+
 		material = new Default3DMaterial();
 		// if(staticVtx) material.vtxInfo.toStatic();
 		// material.normalEnabled = true;
@@ -159,7 +159,7 @@ export class DemoVtxMultiRDP {
 		entity.setXYZ(250, 0, 0);
 		rscene.addEntity(entity);
 		this.m_tarREntity = entity;
-		
+
 		// /*
 		entity = new DisplayEntity();
 		entity.setMaterial(material);
@@ -168,9 +168,9 @@ export class DemoVtxMultiRDP {
 		entity.setXYZ(500, 0, 0);
 		rscene.addEntity(entity);
 		this.m_tarMEntity = entity;
-		
+
 		material = new Default3DMaterial();
-		if(staticVtx) material.vtxInfo.toStatic();
+		if (staticVtx) material.vtxInfo.toStatic();
 		// material.normalEnabled = true;
 		material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
 		entity = new DisplayEntity();
@@ -194,20 +194,22 @@ export class DemoVtxMultiRDP {
 	mouseDownListener(evt: any): void {
 
 		console.log("mouse down");
-		let material = this.m_tarEntity.getMaterial();
-		let vtxInfo = material.vtxInfo;
-		// vtxInfo.applyIvsDataAt( 1 );
-		vtxInfo.applyIvsDataAt((this.m_index++)%4);
-		// return;
 		if (this.m_tarEntity != null) {
-			vtxInfo.setWireframe(this.m_flag);
-			// vtxInfo.setWireframe(Math.random() > -0.5);
-			// if(this.m_flag) {
-			// 	vtxInfo.setIvsParam(0,3);
-			// }else {
-			// 	vtxInfo.setIvsParam(0,6);
-			// }
-			this.m_flag = !this.m_flag;
+			let material = this.m_tarEntity.getMaterial();
+			let vtxInfo = material.vtxInfo;
+			// vtxInfo.applyIvsDataAt( 1 );
+			vtxInfo.applyIvsDataAt((this.m_index++) % 4);
+			// return;
+			if (this.m_tarEntity != null) {
+				vtxInfo.setWireframe(this.m_flag);
+				// vtxInfo.setWireframe(Math.random() > -0.5);
+				// if(this.m_flag) {
+				// 	vtxInfo.setIvsParam(0,3);
+				// }else {
+				// 	vtxInfo.setIvsParam(0,6);
+				// }
+				this.m_flag = !this.m_flag;
+			}
 		}
 	}
 	MMouseDownListener(evt: any): void {
@@ -233,7 +235,7 @@ export class DemoVtxMultiRDP {
 			let material = this.m_tarREntity.getMaterial();
 			let vtxInfo = material.vtxInfo;
 			// vtxInfo.setWireframe(this.m_RFlag);
-			vtxInfo.applyIvsDataAt(this.m_RFlag?1:0);
+			vtxInfo.applyIvsDataAt(this.m_RFlag ? 1 : 0);
 			// if(this.m_RFlag) {
 			// 	vtxInfo.setIvsParam(0,3);
 			// }else {
@@ -246,7 +248,7 @@ export class DemoVtxMultiRDP {
 
 	private initScene(rscene: RendererScene): void {
 		this.testDataMesh(rscene);
-		this.initEntitys(rscene);
+		// this.initEntitys(rscene);
 	}
 	private initEntitys(rscene: RendererScene): void {
 
@@ -263,13 +265,14 @@ export class DemoVtxMultiRDP {
 		let box0 = new Box3DEntity();
 		box0.normalEnabled = true;
 		box0.wireframe = true;
+		// box0.shape = false;
 		box0.setXYZ(-150, 0, 0);
 		box0.initializeCube(100);
 		rscene.addEntity(box0);
 		this.m_tarMEntity = box0;
 	}
 	run(): void {
-		if(this.m_rscene != null) {
+		if (this.m_rscene != null) {
 			// console.log(">>> begin");
 			this.m_rscene.run();
 			// console.log(">>> end");

@@ -147,15 +147,17 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     dispatchEvt(evt: any): number {
 
         // if (evt.getClassType() == MouseEvent.EventClassType) {
-        if (this.m_eventDispatcher != null) {
-            return this.m_eventDispatcher.dispatchEvt(evt);
+        const dsp = this.m_eventDispatcher;
+        if (dsp) {
+            return dsp.dispatchEvt(evt);
         }
         // }
         return 0;
     }
     getEvtDispatcher(evtClassType: number): IEvtDispatcher {
-        if(this.uuid != "") this.m_eventDispatcher.uuid = this.uuid;
-        return this.m_eventDispatcher;
+        const dsp = this.m_eventDispatcher;
+        if(dsp && this.uuid != "") dsp.uuid = this.uuid;
+        return dsp;
     }
     setEvtDispatcher(evtDisptacher: IEvtDispatcher): void {
         this.m_eventDispatcher = evtDisptacher;

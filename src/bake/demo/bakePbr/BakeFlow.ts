@@ -84,7 +84,7 @@ export class BakeFlow {
             RendererDevice.SetWebBodyColor("white");
             // let rparam = this.m_graph.createRendererParam(this.createDiv(0, 0, 512, 512));
             // rparam.autoSyncRenderBufferAndWindowSize = false;
-            let rparam: RendererParam = new RendererParam(this.createDiv(0, 0, 1024, 1024));
+            let rparam = new RendererParam(this.createDiv(0, 0, 512, 512));
             rparam.autoSyncRenderBufferAndWindowSize = false;
             //rparam.maxWebGLVersion = 1;
             rparam.setCamPosition(800.0, 800.0, 800.0);
@@ -165,12 +165,12 @@ export class BakeFlow {
     // private m_modelUrl = "static/private/fbx/hat01_0.obj";
     // private m_modelUrl = "static/private/fbx/hat01_0.fbx";
     // private m_modelUrl = "static/private/fbx/hat01_1.fbx";
-    private m_modelUrl = "static/private/ctm/highHeel01.ctm";
+    private m_modelUrl = "static/private/ctm/6.ctm";
     // private m_uv2ModelUrl = "static/private/fbx/hat01_0_unwrap.fbx";
     private m_uv2ModelUrl = "";
     // private m_uvDataUrl = "static/private/fbx/uvData1.uv";
     // private m_uvDataUrl = "static/private/fbx/hat01_1.uv2";
-    private m_uvDataUrl = "static/private/ctm/highHeel01.uv2";
+    private m_uvDataUrl = "static/private/ctm/6.uv2";
     protected createEntity(model: CoGeomDataType, transform: Float32Array = null, uvParam: { su: number, sv: number }): void {
 
         if (model != null) {
@@ -190,7 +190,7 @@ export class BakeFlow {
             bakedTexUrl = "static/private/bake/hat01_0a.png";
             bakedTexUrl = "static/private/bake/hat01_1a.png";
 
-            this.initTexLightingBakeWithModel(1, model, transform, uvOffset, bakedTexUrl);
+            this.initTexLightingBakeWithModel(2, model, transform, uvOffset, bakedTexUrl);
         }
     }
     private initTexLightingBakeWithModel(bakeType: number, model: CoGeomDataType, transform: Float32Array, uvParam: { su: number, sv: number }, bakedTexUrl: string): void {
