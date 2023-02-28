@@ -24,7 +24,7 @@ import IPoolNode from "../../vox/base/IPoolNode";
 import { BufRDataPair, ROIndicesRes } from "./vtx/ROIndicesRes";
 import IVDRInfo from "./vtx/IVDRInfo";
 
-import IPassGraph from "../material/pass/IPassGraph";
+import IPassGraph from "./pass/IPassGraph";
 import DebugFlag from "../debug/DebugFlag";
 
 /**

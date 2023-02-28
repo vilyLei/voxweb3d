@@ -15,6 +15,8 @@ import { MaterialPipeType } from "../material/pipeline/MaterialPipeType";
 import { IStencil } from "./rendering/IStencil";
 import IVtxDrawingInfo from "./vtx/IVtxDrawingInfo";
 
+import IPassGraph from "./pass/IPassGraph";
+
 interface IRenderMaterial {
 
     __$troMid: number;
@@ -39,6 +41,8 @@ interface IRenderMaterial {
      * vtx drawing info representation
      */
     readonly vtxInfo: IVtxDrawingInfo;
+    graph: IPassGraph;
+    
     /**
      * @param texEnabled the default value is false
      */

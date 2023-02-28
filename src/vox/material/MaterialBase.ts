@@ -21,7 +21,7 @@ import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline
 import { Stencil } from "../../vox/render/rendering/Stencil";
 import IVtxDrawingInfo from "../render/vtx/IVtxDrawingInfo";
 import VtxDrawingInfo from "../render/vtx/VtxDrawingInfo";
-import IPassGraph from "./pass/IPassGraph";
+import IPassGraph from "../render/pass/IPassGraph";
 
 export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData {
 
