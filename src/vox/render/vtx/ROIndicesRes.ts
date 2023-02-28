@@ -32,6 +32,7 @@ class BufRData implements IROIvsRD {
     bufType = 0;
     ivsOffset = 0;
     rdpIndex = 0;
+    trisNumber = 0;
     constructor() { }
     getUid(): number {
         return this.m_uid;
@@ -48,6 +49,7 @@ class BufRData implements IROIvsRD {
         rd.bufType = this.bufType;
         rd.ivsOffset = this.ivsOffset;
         rd.rdpIndex = this.rdpIndex;
+        rd.trisNumber = this.trisNumber;
         return rd;
     }
     setIvsParam(ivsIndex: number, ivsSize: number): void {
@@ -79,6 +81,7 @@ class BufRData implements IROIvsRD {
             ivsSize = this.ivsInitSize - rd.ivsIndex;
         }
         this.ivsSize = ivsSize;
+        this.trisNumber = Math.floor(ivsSize / 3);
         // console.log("OOOO BufRData !rd.common #####: ", !rd.common, rd.ivsIndex, this.ivsSize, ", uid: ",this.getUid());
     }
     destroy(vrc: IROVtxBuilder): void {
@@ -146,7 +149,7 @@ class BufRDataPair implements IROIvsRDP {
         if (this.r0 != this.r1) {
             this.r1.setIvsParam(ivsIndex, ivsSize);
         }
-        let rd = this.rd;
+        // let rd = this.rd;
         // console.log("BufRDataPair::setIvsParam(), ivsIndex, ivsSize: ", ivsIndex, ivsSize);
         // console.log("****** ###### !rd.common: ", !rd.common, ", rd.getUid(): ",rd.getUid());
         // console.log("BufRDataPair::setIvsParam(), rd.ivsIndex, rd.ivsSize: ", rd.ivsIndex, rd.ivsSize);
@@ -348,8 +351,6 @@ class ROIndicesRes implements IROIndicesRes {
         let rdp: BufRDataPair = null;
         if (this.m_rdps.length < 1 && ivtx.getIvsDataAt() != null) {
 
-            // console.log("ROIndicesRes::initialize(), uid: ", this.m_uid, ", ivtx: ", ivtx);
-
             this.version = ivtx.indicesVer;
             this.m_vtx = ivtx;
             this.m_vtxUid = ivtx.getUid();
@@ -381,7 +382,7 @@ class ROIndicesRes implements IROIndicesRes {
         rdp.roiRes = this;
         const ivtx = this.m_vtx;
         let ird = ivtx.getIvsDataAt(rdpIndex);
-        console.log("ird: ", ird);
+        // console.log("ird: ", ird);
         this.m_ivsData = ird;
         let wireframe = ird.wireframe;
         let shape = ird.shape;
@@ -488,7 +489,8 @@ class ROIndicesRes implements IROIndicesRes {
         rd.ivsSize = size;
         rd.ivsInitSize = size;
         rd.stride = stride;
-        console.log("size: ", size, ", rdpIndex: ", rdpIndex);
+        rd.trisNumber = Math.floor(size / 3);
+        
         rd.common = !wireframe;
         rd.ivsIndex = rd.common ? ivsIndex : ivsIndex * 2;
         rd.ivsOffset = rd.ivsIndex * rd.stride;

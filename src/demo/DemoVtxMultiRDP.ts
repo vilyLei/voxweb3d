@@ -179,6 +179,7 @@ export class DemoVtxMultiRDP {
 		entity.setScaleXYZ(scale, scale, scale);
 		entity.setXYZ(500, 0, 200);
 		rscene.addEntity(entity);
+		
 		entity = new DisplayEntity();
 		entity.setMaterial(material);
 		entity.setMesh(mesh);

@@ -277,15 +277,11 @@ export default class RODataBuilder implements IRODataBuilder {
         if (disp.vbuf != null) {
 
             let vtxRes = this.m_vtxRes;
-            // runit.ivsIndex = disp.ivsIndex;
-            // runit.ivsCount = disp.ivsCount;
             runit.insCount = disp.insCount;
             runit.visible = disp.visible;
 
-            // runit.drawMode = disp.drawMode;
             runit.renderState = disp.renderState;
             runit.rcolorMask = disp.rcolorMask;
-            runit.trisNumber = disp.trisNumber;
 
             // build vertex gpu resoure
             let resUid = disp.getVtxResUid();
@@ -339,8 +335,6 @@ export default class RODataBuilder implements IRODataBuilder {
             runit.rdp = vdrInfo.rdp as BufRDataPair;
 
             runit.setVisible(disp.visible);
-            // runit.ibufStep = runit.vro.ibufStep;
-            // runit.ibufType = runit.ibufStep != 4 ? this.m_rc.UNSIGNED_SHORT : this.m_rc.UNSIGNED_INT;
         }
     }
     buildGpuDisp(disp: IRODisplay): boolean {

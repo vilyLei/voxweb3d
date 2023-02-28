@@ -86,7 +86,7 @@ export default class RPOBlock {
             this.m_shader.resetUniform();
             let unit: RPOUnit = null;
 
-            while (nextNode != null) {
+            while (nextNode) {
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
                     unit.vdrInfo.__$$copyToRDP();
@@ -298,7 +298,7 @@ export default class RPOBlock {
             if (forceUpdateUniform) {
                 this.m_shader.resetUniform();
             }
-            // console.log("***8** drawLockMaterialByUnit(), unit: ",unit);
+            // console.log("****** drawLockMaterialByUnit(), unit: ",unit);
             unit.vdrInfo.__$$copyToRDP();
             if (RendererDevice.IsMobileWeb()) {
                 // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在某些设备上会有问题(例如ip6s上无法正常绘制)

@@ -44,19 +44,14 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     pos: IVector3D = null;
     bounds: IAABB = null;
     // 记录对应的RODisplay的渲染所需的状态数据
-    // ibufType = 0;                // UNSIGNED_SHORT or UNSIGNED_INT
-    // ibufStep = 2;                // 2 or 4
-    // ivsIndex = 0;
-    // ivsCount = 0;
+
     insCount = 0;
     // drawOffset = 0;
 
     partTotal = 0;               // partTotal = partGroup.length
     partGroup: Uint16Array = null;
-    trisNumber = 0;
     visible = true;
     drawEnabled = true;
-    // drawMode = 0;
 
     renderState = 0;
     rcolorMask = 0;
@@ -127,9 +122,9 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
 
         const st = rc.status;
         st.drawCallTimes++;
-        st.drawTrisNumber += this.trisNumber;
-        // const ir = this.indicesRes;
+        
         const rd = this.rdp.rd;
+        st.drawTrisNumber += rd.trisNumber;
         // console.log("this.rdp.getUid(): ", this.rdp.getUid());
         // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
         // let ivsCount = ir.getVTCount();
@@ -186,10 +181,10 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
 
         const st = rc.status;
         st.drawCallTimes++;
-        st.drawTrisNumber += this.trisNumber;
 
         // const ir = this.indicesRes;
         const rd = this.rdp.rd;
+        st.drawTrisNumber += rd.trisNumber;
         // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
         let ivsCount = rd.ivsSize;
         // if (this.ivsCount <= ivsCount && ir.isCommon()) ivsCount = this.ivsCount;
