@@ -5,22 +5,24 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IVtxBufData from "../../vox/mesh/IVtxBufData";
-import IROIvsData from "../../vox/render/vtx/IROIvsData";
-interface IROIVtxBuf {
-
-    indicesVer: number;
-    version: number;
-
-    bufData: IVtxBufData;
-    getIvsDataTotal(): number;
-    /**
-     * @param index the default value is 0
-     */
-    getIvsDataAt(index?: number): IROIvsData;
-    getUid(): number;
-    getType(): number;
-    getBufDataUsage(): number;
-    // getIBufStep(): number;
+interface IROIvsRD {
+    setIvsParam(ivsIndex: number, ivsSize: number): void;
 }
-export default IROIVtxBuf;
+interface IROIvsRDP {
+    
+    r0: IROIvsRD;
+    r1: IROIvsRD;
+
+    getUid(): number;
+    applyRDPAt(index: number): void;
+    setIvsParam(ivsIndex: number, ivsSize: number): void;
+    toWireframe(): void;
+    toShape(): void;
+    toCommon(): void;
+    isCommon(): boolean;
+    // use(): void;
+    clear(): void;
+    test(): boolean;
+}
+
+export { IROIvsRD, IROIvsRDP };

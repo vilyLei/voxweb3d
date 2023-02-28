@@ -1,12 +1,18 @@
 /***************************************************************************/
 /*                                                                         */
-/*  Copyright 2018-2022 by                                                 */
+/*  Copyright 2018-2023 by                                                 */
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
 
-import IPassRNode from "./IPassRNode";
-export default interface IPassGraph extends IPassRNode {
+export default interface IROIvsData {
+
+    bufStep: number
+    status: number;
+    wireframe: boolean;
+    shape: boolean;
+    ivs: Uint16Array | Uint32Array;
+    version: number;
     
-    initialize(): void;
+    destroy(): void;
 }

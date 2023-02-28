@@ -5,8 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IPassRNode from "./IPassRNode";
-export default interface IPassGraph extends IPassRNode {
-    
-    initialize(): void;
+// import RenderDrawMode from "../RenderDrawMode";
+import { IROIvsRDP } from "./IROIvsRDP";
+import IVtxDrawingInfo from "./IVtxDrawingInfo";
+
+export default interface IVDRInfo extends IVtxDrawingInfo {
+    rdp: IROIvsRDP;
+    __$$copyToRDP(): boolean;
 }

@@ -17,7 +17,7 @@ export default interface IMeshBase {
 	trisNumber: number;
 	vtxTotal: number;
 	/**
-	 * the default is true
+	 * the default is false
 	 */
 	vbWholeDataEnabled: boolean;
 	/**
@@ -66,6 +66,18 @@ export default interface IMeshBase {
 	__$detachVBuf(vbuf: IROVertexBuffer): void;
 	__$attachIVBuf(): any;
 	__$detachIVBuf(ivbuf: any): void;
+	/**
+	 * @returns the default value is 3
+	 */
+	getVSStride(): number;
+	/**
+	 * @returns the default value is 2
+	 */
+    getUVSStride(): number;
+	/**
+	 * @returns the default value is 3
+	 */
+    getNVSStride(): number;
 	/**
 	 * @returns vertex position buffer Float32Array
 	 */

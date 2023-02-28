@@ -20,18 +20,18 @@ interface IMouseInteraction {
 	 * @param buttonType the default value is 0, the value contains 0(mouse left button), 1(mouse middle button), 2(mouse right button)
 	 * @param bgEventEnabled apply background mouse event true or false, the default value is true
 	 */
-    initialize(rscene: IRendererScene, buttonType?: number, bgEventEnabled?: boolean): void;
+    initialize(rscene: IRendererScene, buttonType?: number, bgEventEnabled?: boolean): IMouseInteraction;
     
     enableSwing(): void;
     isEnabledSwing(): boolean;
     enableSlide(): void;
-    setSyncLookAtEnabled(ennabled: boolean): void;
-    setLookAtPosition(v: IVector3D): void;
+    setSyncLookAtEnabled(ennabled: boolean): IMouseInteraction;
+    setLookAtPosition(v: IVector3D): IMouseInteraction;
     /**
 	 * @param enabled enable auto runnning or not
 	 * @param axisType 0 is y-axis, 1 is z-axis
 	 */
-	setAutoRunning(enabled: boolean, axisType?: number): void
+	setAutoRunning(enabled: boolean, axisType?: number): IMouseInteraction;
     run(): void;
 }
 

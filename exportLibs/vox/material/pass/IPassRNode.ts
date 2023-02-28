@@ -5,8 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IPassRNode from "./IPassRNode";
-export default interface IPassGraph extends IPassRNode {
+export default interface IPassRNode {
     
-    initialize(): void;
+    addNode(node: IPassRNode): void;
+    destroy(): void;
 }

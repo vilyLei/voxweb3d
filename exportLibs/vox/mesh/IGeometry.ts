@@ -36,7 +36,10 @@ export default interface IGeometry {
      * @returns vertex uv buffer Float32Array
      */
     getUVS(): Float32Array;
-
+    /**
+     * @returns vertex color(r,g,b) buffer Float32Array
+     */
+    getCVS(): Float32Array;
     /**
      * @returns vertex normal buffer Float32Array
      */
@@ -45,14 +48,6 @@ export default interface IGeometry {
      * @returns vertex tangent buffer Float32Array
      */
     getTVS(): Float32Array;
-    /**
-     * @returns vertex bitangent buffer Float32Array
-     */
-    getBTVS(): Float32Array;
-    /**
-     * @returns vertex color(r,g,b) buffer Float32Array
-     */
-    getCVS(): Float32Array;
     /**
      * @returns vertex indices buffer Uint16Array or Uint32Array
      */
