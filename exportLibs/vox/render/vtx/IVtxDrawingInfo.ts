@@ -5,8 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-// import RenderDrawMode from "../RenderDrawMode";
-import { IROIvsRDP } from "./IROIvsRDP";
 export default interface IVtxDrawingInfo {
     
     toStatic(): void;
@@ -19,7 +17,5 @@ export default interface IVtxDrawingInfo {
     setIvsParam(ivsIndex: number, ivsCount: number): void;
     applyIvsDataAt(index: number): void;
     reset(): void;
-    // __$$copyToRDP(rdp: IROIvsRDP): void;
-    // clone(): IVtxDrawingInfo;
     destroy(): void;
 }

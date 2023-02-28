@@ -13,10 +13,6 @@ import IRenderEntityBase from "./IRenderEntityBase";
 
 export default interface IRenderEntityContainer extends IRenderEntityBase {
     uuid: string;
-    // /**
-    //  * mouse interaction enabled, the default value is false
-    //  */
-    // mouseEnabled: boolean;
     // 自身所在的world的唯一id, 通过这个id可以找到对应的world
     __$wuid: number;
     // render process uid
