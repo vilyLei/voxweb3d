@@ -21,6 +21,7 @@ import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline
 import { Stencil } from "../../vox/render/rendering/Stencil";
 import IVtxDrawingInfo from "../render/vtx/IVtxDrawingInfo";
 import VtxDrawingInfo from "../render/vtx/VtxDrawingInfo";
+import IPassGraph from "./pass/IPassGraph";
 
 export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData {
 
@@ -47,8 +48,9 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
      * the default value is null
      */
     stencil: Stencil = null;
-    multiPass = false;
+    // multiPass = false;
     readonly vtxInfo: IVtxDrawingInfo = new VtxDrawingInfo();
+    graph: IPassGraph = null;
     constructor() { }
 
     // for multi - pass
@@ -329,8 +331,13 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
                 this.__$uniform.destroy();
                 this.__$uniform = null;
             }
+        
+            this.vtxInfo.destroy();
+            if(this.graph) {
+                this.graph.destroy();
+                this.graph = null;
+            }
         }
-        this.vtxInfo.destroy();
     }
     update(): void {
         
