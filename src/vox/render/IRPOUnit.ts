@@ -25,7 +25,7 @@ export default interface IRPOUnit extends IPoolNode, IRPODisplay {
      * @param force the default value is false
      */
     applyShader(force?: boolean): void;
-
+    copyMaterialFrom(unit: IRPOUnit): void;
     run2(rc: IRenderProxy): void;
     draw(rc: IRenderProxy): void;
 }

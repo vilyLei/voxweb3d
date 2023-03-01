@@ -86,7 +86,13 @@ export default class RPOUnit implements IRPOUnit {
             RenderColorMask.UseRenderState(this.rcolorMask);
         }
     }
-    
+    copyMaterialFrom(unit: RPOUnit): void {
+        this.tro = unit.tro;
+        this.uniform = unit.uniform;
+        this.ubo = unit.ubo;
+        this.texMid = unit.texMid;
+        this.shdUid = unit.shdUid;
+    }
     applyShader(force: boolean = false): void {
         this.shader.bindToGpu( this.shdUid );
         if(force) {
