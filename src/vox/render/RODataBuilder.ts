@@ -160,7 +160,7 @@ export default class RODataBuilder implements IRODataBuilder {
             }
         }
     }
-    private updateDispMaterial(runit: RPOUnit, material: IRenderMaterial, disp: IRODisplay = null): IShdProgram {
+    public updateDispMaterial(runit: RPOUnit, material: IRenderMaterial, disp: IRODisplay = null): IShdProgram {
         let shdp: IShdProgram = null;
 
         // if (disp.__$ruid >= 0) {
