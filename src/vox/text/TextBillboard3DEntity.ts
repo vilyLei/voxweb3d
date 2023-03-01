@@ -136,7 +136,11 @@ export default class TextBillboard3DEntity extends DisplayEntity {
     update(): void {
         if(this.m_trs != null) {
             if (this.m_dynamicEnbaled && this.m_mesh.isGeomDynamic()) {
-                this.setIvsParam(0, this.m_mesh.vtCount);
+                // this.setIvsParam(0, this.m_mesh.vtCount);
+                let m = this.getMaterial();
+                if(m) {
+                    m.vtxInfo.setIvsParam(0, this.m_mesh.vtCount);
+                }
             }
             this.m_trs.update();
         }

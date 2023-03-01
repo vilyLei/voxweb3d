@@ -14,6 +14,7 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
+import VtxDrawingInfo from "../vox/render/vtx/VtxDrawingInfo";
 
 export class DemoMaterialGraph {
 	private m_init = true;
@@ -61,11 +62,16 @@ export class DemoMaterialGraph {
 	private m_tarEntity: DisplayEntity = null;
 	private m_tarREntity: DisplayEntity = null;
 	private m_tarMEntity: DisplayEntity = null;
+	private createVtxInfo(): VtxDrawingInfo {
+		// return null;
+		return new VtxDrawingInfo();
+	}
 	private testDataMesh(rscene: RendererScene): void {
 		// 推荐的模型数据组织形式
 
 		let material = new Default3DMaterial();
 		// material.normalEnabled = true;
+		material.vtxInfo = this.createVtxInfo();
 		material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
 
 		let nvs = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
@@ -88,6 +94,7 @@ export class DemoMaterialGraph {
 
 		material = new Default3DMaterial();
 		// material.normalEnabled = true;
+		material.vtxInfo = this.createVtxInfo();
 		material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
 
 		entity = new DisplayEntity();

@@ -22,7 +22,8 @@ import Matrix4 from "../vox/math/Matrix4";
 import RendererState from "../vox/render/RendererState";
 import DebugFlag from "../vox/debug/DebugFlag";
 import VtxDrawingInfo from "../vox/render/vtx/VtxDrawingInfo";
-export class DemoVtxMultiRDP {
+
+export class DemoVtxMatGraph {
 	private m_init = true;
 	private m_texLoader: ImageTextureLoader = null;
 	private m_teamLoader = new CoModelTeamLoader();
@@ -40,7 +41,7 @@ export class DemoVtxMultiRDP {
 		rscene.addEventListener(MouseEvent.MOUSE_MIDDLE_DOWN, this, this.MMouseDownListener, true, false);
 	}
 	initialize(): void {
-		console.log("DemoVtxMultiRDP::initialize()......");
+		console.log("DemoVtxMatGraph::initialize()......");
 		if (this.m_init) {
 			this.m_init = false;
 
@@ -155,6 +156,7 @@ export class DemoVtxMultiRDP {
 		this.m_tarEntity = entity;
 
 
+		/*
 		entity = new DisplayEntity();
 		entity.setMaterial(material);
 		entity.setMesh(mesh);
@@ -162,7 +164,6 @@ export class DemoVtxMultiRDP {
 		entity.setXYZ(0, 0, -200);
 		rscene.addEntity(entity);
 
-		// /*
 		material = new Default3DMaterial();
 		material.vtxInfo = this.createVtxInfo();
 		if(staticVtx) material.vtxInfo.lock();
@@ -303,4 +304,4 @@ export class DemoVtxMultiRDP {
 		}
 	}
 }
-export default DemoVtxMultiRDP;
+export default DemoVtxMatGraph;

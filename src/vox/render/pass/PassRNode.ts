@@ -6,13 +6,14 @@
 /***************************************************************************/
 
 import {IPassRItem, IPassRNode} from "./IPassRNode";
-import IPassGraph from "./IPassGraph";
-export default class PassGraph implements IPassGraph {
+
+export default class PassRNode {
+
     private m_enabled = false;
     private m_items: IPassRItem[] = [];
     private m_nodes: IPassRNode[] = [];
-    constructor(){}
-    
+    constructor() {
+    }
     addItem(item: IPassRItem): void {
         if(item) {
             this.m_items.push(item);
@@ -39,9 +40,9 @@ export default class PassGraph implements IPassGraph {
     isEnabled(): boolean {
         return this.m_enabled;
     }
-    initialize(): void {
-    }
     destroy(): void {
+
     }
 }
-export { PassGraph }
+
+export {IPassRItem, IPassRNode, PassRNode}

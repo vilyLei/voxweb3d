@@ -89,15 +89,10 @@ export default class RPOBlock {
             while (nextNode) {
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
+                    unit.updateVtx();
                     if (unit.drawEnabled) {
-                        unit.vdrInfo.__$$copyToRDP();
                         unit.run(rc);
-                        if (unit.partTotal < 1) {
-                            unit.drawThis(rc);
-                        }
-                        else {
-                            unit.drawPart(rc);
-                        }
+                        unit.draw(rc);
                     }
                 }
                 nextNode = nextNode.next;
@@ -134,36 +129,68 @@ export default class RPOBlock {
                     unit = nextNode.unit;
                     // if(DebugFlag.Flag_0 > 0) console.log("unit.drawEnabled: ",unit.drawEnabled);
                     // console.log("unit.rdp.getUid(): ", unit.rdp.getUid(), unit.vdrInfo.rdp.getUid());
-                    
+
+                    vtxFlag = unit.updateVtx() || vtxFlag;
                     if (unit.drawEnabled) {
-                        vtxFlag = unit.vdrInfo.__$$copyToRDP() || vtxFlag;
-                        if (vtxFlag) {
-                            nextNode.vro.run();
-                            vtxFlag = false;
+                        // if (vtxFlag) {
+                        //     unit.vro.run();
+                        //     vtxFlag = false;
+                        // }
+                        // if (texFlag) {
+                        //     unit.tro.run();
+                        //     texFlag = false;
+                        // }
+                        // unit.run2(rc);
+                        // unit.draw(rc);
+                        if(unit.rgraph) {
+                            this.draw1(rc, unit, vtxFlag, texFlag);
+                        }else {
+                            this.drawGraph1(rc, unit, vtxFlag, texFlag);
                         }
-                        if (texFlag) {
-                            nextNode.tro.run();
-                            texFlag = false;
-                        }
-                        unit.run2(rc);
-                        if (unit.partTotal < 1) {
-                            unit.drawThis(rc);
-                        }
-                        else {
-                            unit.drawPart(rc);
-                        }
+
+                        vtxFlag = false;
+                        texFlag = false;
                     }
                 }
                 nextNode = nextNode.next;
             }
         }
     }
+    private drawGraph1(rc: RenderProxy, unit: RPOUnit, vtxFlag: boolean, texFlag: boolean): void {
+        let graph = unit.rgraph;
+        const func = (): void => {
+            if (vtxFlag) {
+                unit.vro.run();
+                vtxFlag = false;
+            }
+            if (texFlag) {
+                unit.tro.run();
+                texFlag = false;
+            }
+            unit.run2(rc);
+            unit.draw(rc);
+        }
+    }
+    private draw1(rc: RenderProxy, unit: RPOUnit, vtxFlag: boolean, texFlag: boolean): void {
+        if (vtxFlag) {
+            unit.vro.run();
+            vtxFlag = false;
+        }
+        if (texFlag) {
+            unit.tro.run();
+            texFlag = false;
+        }
+        unit.run2(rc);
+        unit.draw(rc);
+    }
+
     private run2(rc: RenderProxy): void {
 
-        let nextNode: RPONode = this.m_nodeLinker.getBegin();
+        let nextNode = this.m_nodeLinker.getBegin();
         if (nextNode != null) {
-            this.m_shader.bindToGpu(this.shdUid);
-            this.m_shader.resetUniform();
+            const shader = this.m_shader;
+            shader.bindToGpu(this.shdUid);
+            shader.resetUniform();
             let unit: RPOUnit = null;
             RenderStateObject.UseRenderState(nextNode.unit.renderState);
             RenderColorMask.UseRenderState(nextNode.unit.rcolorMask);
@@ -186,27 +213,22 @@ export default class RPOBlock {
 
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
-                    vtxFlag = unit.vdrInfo.__$$copyToRDP() || vtxFlag;
+                    vtxFlag = unit.updateVtx() || vtxFlag;
                     if (unit.drawEnabled) {
                         if (vtxFlag) {
-                            nextNode.vro.run();
+                            unit.vro.run();
                             vtxFlag = false;
                         }
                         if (texFlag) {
-                            nextNode.tro.run();
+                            unit.tro.run();
                             texFlag = false;
                         }
                         if (unit.ubo != null) {
                             unit.ubo.run(rc);
                         }
-                        this.m_shader.useTransUniform(unit.transUniform);
-                        this.m_shader.useUniform(unit.uniform);
-                        if (unit.partTotal < 1) {
-                            unit.drawThis(rc);
-                        }
-                        else {
-                            unit.drawPart(rc);
-                        }
+                        shader.useTransUniform(unit.transUniform);
+                        shader.useUniform(unit.uniform);
+                        unit.draw(rc);
                     }
                 }
                 nextNode = nextNode.next;
@@ -234,22 +256,19 @@ export default class RPOBlock {
                     }
                     vtxTotal--;
 
-                    unit = nextNode.unit;
-                    vtxFlag = unit.vdrInfo.__$$copyToRDP() || vtxFlag;
-                    if (nextNode.drawEnabled && unit.drawEnabled) {
-                        if (vtxFlag) {
-                            nextNode.vro.run();
-                            vtxFlag = false;
-                        }
-                        if (texUnlock) {
-                            nextNode.tro.run();
-                        }
-                        unit.runLockMaterial2(null);
-                        if (unit.partTotal < 1) {
-                            unit.drawThis(rc);
-                        }
-                        else {
-                            unit.drawPart(rc);
+                    if (nextNode.drawEnabled) {
+                        unit = nextNode.unit;
+                        vtxFlag = unit.updateVtx() || vtxFlag;
+                        if (unit.drawEnabled) {
+                            if (vtxFlag) {
+                                unit.vro.run();
+                                vtxFlag = false;
+                            }
+                            if (texUnlock) {
+                                unit.tro.run();
+                            }
+                            unit.runLockMaterial2(null);
+                            unit.draw(rc);
                         }
                     }
                     nextNode = nextNode.next;
@@ -257,18 +276,15 @@ export default class RPOBlock {
             }
             else {
                 while (nextNode != null) {
-                    unit = nextNode.unit;
-                    unit.vdrInfo.__$$copyToRDP();
-                    if (nextNode.drawEnabled && unit.drawEnabled) {
-                        unit.runLockMaterial();
-                        if (texUnlock) {
-                            nextNode.tro.run();
-                        }
-                        if (unit.partTotal < 1) {
-                            unit.drawThis(rc);
-                        }
-                        else {
-                            unit.drawPart(rc);
+                    if (nextNode.drawEnabled) {
+                        unit = nextNode.unit;
+                        unit.updateVtx();
+                        if (unit.drawEnabled) {
+                            unit.runLockMaterial();
+                            if (texUnlock) {
+                                nextNode.tro.run();
+                            }
+                            unit.draw(rc);
                         }
                     }
                     nextNode = nextNode.next;
@@ -281,14 +297,9 @@ export default class RPOBlock {
     drawUnit(rc: RenderProxy, unit: RPOUnit, disp: IRODisplay): void {
         if (unit.drawEnabled) {
             this.m_shader.bindToGpu(unit.shdUid);
-            unit.vdrInfo.__$$copyToRDP();
+            unit.updateVtx();
             unit.run(rc);
-            if (unit.partTotal < 1) {
-                unit.drawThis(rc);
-            }
-            else {
-                unit.drawPart(rc);
-            }
+            unit.draw(rc);
         }
     }
     // 在锁定material的时候,直接绘制单个unit
@@ -298,7 +309,7 @@ export default class RPOBlock {
                 this.m_shader.resetUniform();
             }
             // console.log("****** drawLockMaterialByUnit(), unit: ",unit);
-            unit.vdrInfo.__$$copyToRDP();
+            unit.updateVtx();
             if (RendererDevice.IsMobileWeb()) {
                 // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在某些设备上会有问题(例如ip6s上无法正常绘制)
                 // 注意临时产生的 vro 对象的回收问题
@@ -310,12 +321,7 @@ export default class RPOBlock {
                 unit.vro.run();
             }
             unit.runLockMaterial2(useGlobalUniform ? this.m_shader.__$globalUniform : null);
-            if (unit.partTotal < 1) {
-                unit.drawThis(rc);
-            }
-            else {
-                unit.drawPart(rc);
-            }
+            unit.draw(rc);
         }
     }
     reset(): void {

@@ -273,14 +273,12 @@ export default class RODataBuilder implements IRODataBuilder {
         }
     }
     // build vtx gpu data
+    private m_emptyVDRInfo = new EmptyVDRInfo();
     private buildVtxRes(disp: IRODisplay, runit: RPOUnit, shdp: IShdProgram): void {
 
         if (disp.vbuf != null) {
 
             let vtxRes = this.m_vtxRes;
-            runit.insCount = disp.insCount;
-            runit.visible = disp.visible;
-
             runit.renderState = disp.renderState;
             runit.rcolorMask = disp.rcolorMask;
 
@@ -326,18 +324,19 @@ export default class RODataBuilder implements IRODataBuilder {
             runit.indicesRes = runit.vro.indicesRes;
             runit.vro.__$attachThis();
             runit.vtxUid = resUid;
-
             let material = disp.getMaterial();
-            let vdrInfo = runit.vdrInfo = material.vtxInfo as IVDRInfo;
-            if(vdrInfo) {
-                if(vdrInfo.rdp == null) {
-                    vdrInfo.rdp = runit.indicesRes.initRdp.clone();
-                }
+            if (material.vtxInfo) {
+                // 如果是同一个material用在不同vtx 的entity上，会如何?
+                // 如果多个material对应到一个vtx如何用?
+                // 如果是多个对多个如何用?
+                // vdrInfo 需要和 mesh 对应协作
+                
+                runit.vdrInfo = material.vtxInfo as IVDRInfo;
+                runit.rdp = runit.indicesRes.initRdp.clone();
             }else {
-                vdrInfo = new EmptyVDRInfo();
-                vdrInfo.rdp = runit.indicesRes.initRdp.clone();
+                runit.vdrInfo = this.m_emptyVDRInfo;
+                runit.rdp = runit.indicesRes.initRdp;
             }
-            runit.rdp = vdrInfo.rdp as BufRDataPair;
 
             runit.setVisible(disp.visible);
         }
@@ -361,6 +360,11 @@ export default class RODataBuilder implements IRODataBuilder {
                         i++;
                         fs[i++] *= ibufStride;
                     }
+                }
+                if (runit.partTotal < 1) {
+                    runit.draw = runit.__$$drawThis;
+                } else {
+                    runit.draw = runit.__$$drawPart;
                 }
                 runit.setDrawFlag(disp.renderState, disp.rcolorMask);
                 this.buildVtxRes(disp, runit, this.updateDispMaterial(runit, disp));

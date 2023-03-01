@@ -67,12 +67,12 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 
 		this.m_batchEnabled = batchEnabled;
 		this.m_fixedState = processFixedState;
-		for (let k: number = 0; k < this.m_blockFListLen; ++k) {
+		for (let k = 0; k < this.m_blockFListLen; ++k) {
 			this.m_blockFList[k] = -1;
 		}
 	}
 	private createBlock(): RPOBlock {
-		let block: RPOBlock = new RPOBlock(this.m_shader);
+		let block = new RPOBlock(this.m_shader);
 		block.rpoNodeBuilder = this.m_rpoNodeBuilder;
 		block.rpoUnitBuilder = this.m_rpoUnitBuilder;
 		block.vtxResource = this.m_vtxResource;
@@ -169,11 +169,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 
 		let node = this.m_rpoNodeBuilder.getNodeByUid(runit.__$rpuid) as RPONode;
 		if (node != null) {
-			
-			// node.ivsIndex = runit.ivsIndex;
-			// node.ivsCount = runit.ivsCount;
-			node.insCount = runit.insCount;
-			// runit.drawOffset = runit.ivsIndex * runit.ibufStep;
+			// node.insCount = runit.insCount;
 			node.vtxUid = runit.vtxUid;
 			node.vro = runit.vro;
 			this.m_blockList[node.index].rejoinNode(node);

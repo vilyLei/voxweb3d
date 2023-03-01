@@ -19,15 +19,11 @@ export default class RPONode implements IPoolNode, IRPONode {
     constructor() {
     }
     __$ruid: number = -1;
+
     drawEnabled = true;
+
     uid = -1;
     index = -1;
-    // only for show info
-
-    // drawMode = 0;
-    // ivsIndex = 0;
-    // ivsCount = 0;
-    insCount = 0;
     shdUid = -1;
     vtxUid = -1;
     texMid = -1;
@@ -46,12 +42,8 @@ export default class RPONode implements IPoolNode, IRPONode {
         return this.unit == null || this.unit.drawEnabled;
     }
     updateData(): void {
-        let p: RPOUnit = this.unit;
-        // this.drawMode = p.drawMode;
-        // this.ivsIndex = p.ivsIndex;
-        // this.ivsCount = p.ivsCount;
-        this.insCount = p.insCount;
-        // p.drawOffset = p.ivsIndex * p.ibufStep;
+        let p = this.unit;
+        // this.insCount = p.insCount;
         this.vtxUid = p.vtxUid;
         this.vro = p.vro;
         // material info etc.
@@ -63,10 +55,7 @@ export default class RPONode implements IPoolNode, IRPONode {
         this.drawEnabled = true;
         this.uid = -1;
         this.index = -1;
-        // this.drawMode = 0;
-        // this.ivsIndex = 0;
-        // this.ivsCount = 0;
-        this.insCount = 0;
+        // this.insCount = 0;
         this.shdUid = -1;
         this.vtxUid = -1;
         this.texMid = -1;
@@ -76,8 +65,5 @@ export default class RPONode implements IPoolNode, IRPONode {
         this.tro = null;
         this.prev = null;
         this.next = null;
-    }
-    toString(): string {
-        return "[Object RPONode(uid = " + this.uid + ", index = " + this.index + ", shdUid = " + this.shdUid + ", vtxUid = " + this.vtxUid + ")]";
     }
 }

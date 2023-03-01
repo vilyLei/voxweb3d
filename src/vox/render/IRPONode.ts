@@ -26,7 +26,7 @@ export default interface IRPONode extends IPoolNode {
     // ivsIndex: number;
     // ivsCount: number;
     
-    insCount: number;
+    // insCount: number;
     shdUid: number;
     vtxUid: number;
     texMid: number;

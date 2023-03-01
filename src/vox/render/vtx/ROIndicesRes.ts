@@ -14,12 +14,12 @@ import RenderDrawMode from "../RenderDrawMode";
 import IRODisplay from "../../display/IRODisplay";
 import IRenderProxy from "../IRenderProxy";
 import { IROIvsRD, IROIvsRDP } from "./IROIvsRDP";
-
+const RDM = RenderDrawMode;
 class BufRData implements IROIvsRD {
     private static s_uid = 0;
     private m_uid = BufRData.s_uid++;
+    rc: IRenderProxy;
     buf: any = null;
-    // type = 0;
     ivsSize = 0;
     ivsInitSize = 0;
     ivsIndex = 0;
@@ -27,30 +27,66 @@ class BufRData implements IROIvsRD {
      * ivs buffer stride
      */
     stride = 2;
-    drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
-    common = true;
+    drawMode = RDM.ELEMENTS_TRIANGLES;
+    private m_common = true;
     bufType = 0;
     ivsOffset = 0;
     rdpIndex = 0;
     trisNumber = 0;
+    insCount = 0;
+    /**
+     * gl draw mode
+     */
+    gldm = 0;
     constructor() { }
     getUid(): number {
         return this.m_uid;
     }
     clone(): BufRData {
         let rd = new BufRData();
+
         rd.buf = this.buf;
+
         rd.ivsIndex = this.ivsIndex;
         rd.ivsSize = this.ivsSize;
         rd.ivsInitSize = this.ivsInitSize;
         rd.stride = this.stride;
         rd.drawMode = this.drawMode;
-        rd.common = this.common;
-        rd.bufType = this.bufType;
+        rd.gldm = this.gldm;
         rd.ivsOffset = this.ivsOffset;
-        rd.rdpIndex = this.rdpIndex;
         rd.trisNumber = this.trisNumber;
+        rd.insCount = this.insCount;
+
+        rd.m_common = this.m_common;
+        rd.bufType = this.bufType;
+        rd.rdpIndex = this.rdpIndex;
+
         return rd;
+    }
+    hasIvs(): boolean {
+        return this.ivsInitSize > 0;
+    }
+    isCommon(): boolean {
+        return this.m_common;
+    }
+    updateDrawMode(): void {
+
+        if(this.hasIvs()) {
+            this.gldm = this.m_common ? this.rc.TRIANGLES : this.rc.LINES;
+            if(this.insCount < 1) {
+                this.drawMode = this.m_common ? RDM.ELEMENTS_TRIANGLES : RDM.ELEMENTS_LINES;
+            }else {
+                this.drawMode = this.m_common ? RDM.ELEMENTS_INSTANCED_TRIANGLES : RDM.ELEMENTS_INSTANCED_LINES;
+            }
+        }
+    }
+    setCommon(common: boolean): void {
+        this.m_common = common;
+        this.updateDrawMode();
+    }
+    setInsCount(insCount: number): void {
+        this.insCount = insCount;
+        this.updateDrawMode();
     }
     setIvsParam(ivsIndex: number, ivsSize: number): void {
 
@@ -67,14 +103,14 @@ class BufRData implements IROIvsRD {
 
         const rd = this;
 
-        rd.ivsIndex = rd.common ? ivsIndex : ivsIndex * 2;
+        rd.ivsIndex = rd.isCommon() ? ivsIndex : ivsIndex * 2;
         if (rd.ivsIndex < 0) rd.ivsIndex = 0;
         else if (rd.ivsIndex >= this.ivsInitSize) rd.ivsIndex = this.ivsInitSize - 1;
 
         rd.ivsOffset = rd.ivsIndex * rd.stride;
         // console.log(" >>> #### !rd.common: ", !rd.common, ", uid: ",this.getUid());
         // console.log("!rd.common: ", !rd.common, pI, pS);
-        if (!rd.common) {
+        if (!rd.isCommon()) {
             ivsSize *= 2;
         }
         if ((ivsSize + rd.ivsIndex) >= this.ivsInitSize) {
@@ -85,6 +121,7 @@ class BufRData implements IROIvsRD {
         // console.log("OOOO BufRData !rd.common #####: ", !rd.common, rd.ivsIndex, this.ivsSize, ", uid: ",this.getUid());
     }
     destroy(vrc: IROVtxBuilder): void {
+        this.rc = null;
         if (this.buf != null) {
             vrc.deleteBuf(this.buf);
             this.buf = null;
@@ -92,6 +129,7 @@ class BufRData implements IROIvsRD {
     }
     clear(): void {
         this.buf = null;
+        this.rc = null;
     }
 }
 class BufRDataPair implements IROIvsRDP {
@@ -106,6 +144,7 @@ class BufRDataPair implements IROIvsRDP {
     rd: BufRData = null;
     buf: any = null;
     roiRes: ROIndicesRes = null;
+    ver = 0;
     constructor(index: number) {
         this.m_rdpIndex = index;
     }
@@ -279,11 +318,7 @@ class ROIndicesRes implements IROIndicesRes {
     }
     getRDPDataAt(index: number): BufRDataPair {
         if (index >= 0 && index < this.m_rdps.length) {
-            // console.log("getRDPDataAt(), index: ", index);
             return this.m_rdps[index];
-            // let rdp = this.m_rdps[index];
-            // console.log("getRDPDataAt(), rdp: ", rdp);
-            // return rdp;
         }
         return null;
     }
@@ -479,25 +514,24 @@ class ROIndicesRes implements IROIndicesRes {
             }
         }
 
-        gbuf.rdpIndex = rdpIndex;
-        gbuf.wireframe = wireframe;
+        // gbuf.rdpIndex = rdpIndex;
+        // gbuf.wireframe = wireframe;
 
 
         let rd = new BufRData();
+        rd.rc = rc;
         rd.buf = gbuf;
         rd.rdpIndex = rdpIndex;
         rd.ivsSize = size;
         rd.ivsInitSize = size;
         rd.stride = stride;
         rd.trisNumber = Math.floor(size / 3);
-        
-        rd.common = !wireframe;
-        rd.ivsIndex = rd.common ? ivsIndex : ivsIndex * 2;
+        rd.setCommon(!wireframe);
+        rd.ivsIndex = rd.isCommon() ? ivsIndex : ivsIndex * 2;
         rd.ivsOffset = rd.ivsIndex * rd.stride;
 
         rd.bufType = stride != 4 ? rc.UNSIGNED_SHORT : rc.UNSIGNED_INT;
-        rd.drawMode = wireframe ? RenderDrawMode.ELEMENTS_LINES : RenderDrawMode.ELEMENTS_TRIANGLES;
-        // rd.type = wireframe ? 1 : 0;
+
         return rd;
     }
 

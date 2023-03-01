@@ -17,9 +17,14 @@ export default class EmptyVDRInfo implements IVDRInfo {
             this.rdp = null;
         }
     }
-    toStatic(): void {
+    lock(): void {
     }
-    toDynamic(): void {
+    unlock(): void {
+    }
+    isUnlock(): boolean {
+        return false;
+    }
+    setInstanceCount(insCount: number): void {        
     }
     setWireframe(wireframe: boolean): void {
     }

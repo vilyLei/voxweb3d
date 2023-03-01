@@ -43,10 +43,6 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     // 这个posotion和bounds的center会是同一个实例
     pos: IVector3D = null;
     bounds: IAABB = null;
-    // 记录对应的RODisplay的渲染所需的状态数据
-
-    insCount = 0;
-    // drawOffset = 0;
 
     partTotal = 0;               // partTotal = partGroup.length
     partGroup: Uint16Array = null;
@@ -100,13 +96,17 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         return this.shdUid;
     }
     setIvsParam(ivsIndex: number, ivsCount: number): void {
-        console.log("RPOUint::setIvsParam(), ivsIndex: ", ivsIndex, ", ivsCount: ", ivsCount);
-        // this.indicesRes.setIvsParam(ivsIndex, ivsCount);
-        this.rdp.setIvsParam(ivsIndex, ivsCount);
-        this.testVisible();
+        throw Error("illegal operation !!!");
+        // console.log("RPOUint::setIvsParam(), ivsIndex: ", ivsIndex, ", ivsCount: ", ivsCount);
+        // // this.indicesRes.setIvsParam(ivsIndex, ivsCount);
+        // this.rdp.setIvsParam(ivsIndex, ivsCount);
+        // this.testVisible();
     }
-    private testVisible(): void {
-        this.drawEnabled = this.visible && this.indicesRes.rdp.rd.ivsSize > 0;
+    testVisible(): void {
+        if(!this.rdp.rd) {
+            throw Error("illegal operation !!!");
+        }
+        this.drawEnabled = this.visible && this.rdp.rd.ivsSize > 0;
     }
     setVisible(boo: boolean): void {
         this.visible = boo;
@@ -118,11 +118,40 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         this.rcolorMask = rcolorMask;
         this.drawFlag = (rcolorMask << 10) + renderState;
     }
-    drawThis(rc: IRenderProxy): void {
+
+    private m_ver = 0;
+    updateVtx(): boolean {
+        if(this.vdrInfo.isUnlock()) {
+
+            const rdp = this.rdp;
+            rdp.ver = this.m_ver;
+            // if(DebugFlag.Flag_0 > 0) {
+            //     console.log("AA ---- AA XXXXX RPOUint::updateVtx() ..., rdp.getUid(): ", rdp.getUid());
+            //     console.log("           XXXXX RPOUint::updateVtx() ..., rdp.ver: ", rdp.ver);
+            // }
+            const flag = this.vdrInfo.__$$copyToRDP( rdp );
+            this.m_ver = rdp.ver;
+            // if(DebugFlag.Flag_0 > 0) {
+            //     console.log("BB ---- BB XXXXX RPOUint::updateVtx() ..., this.m_ver: ", this.m_ver);
+            // }
+            rdp.ver = 0;
+    
+            this.testVisible();
+            // if(DebugFlag.Flag_0 > 0) {
+            //     console.log("##### ##### ###### ##### ---------------------- RPOUint::updateVtx() ...");
+            // }
+            return flag;
+        }
+        return false;
+    }
+    draw(rc: IRenderProxy): void {
+        throw Error("illegal operation !!!");
+    }
+    __$$drawThis(rc: IRenderProxy): void {
 
         const st = rc.status;
         st.drawCallTimes++;
-        
+
         const rd = this.rdp.rd;
         st.drawTrisNumber += rd.trisNumber;
         // console.log("this.rdp.getUid(): ", this.rdp.getUid());
@@ -131,33 +160,35 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         let ivsCount = rd.ivsSize;
         // if (this.ivsCount <= ivsCount && ir.isCommon()) ivsCount = this.ivsCount;
         // console.log("runit::drawThis(), ivsCount: ", ivsCount, ",ivsOffset: ", rd.ivsOffset, this.rdp.getUid(), rd.getUid());
+        
+        if(DebugFlag.Flag_0 > 0) {
+            console.log("runit::drawThis(), ivsCount: ", ivsCount, ",ivsOffset: ", rd.ivsOffset, this.rdp.getUid(), ", rd.getUid(): " ,rd.getUid());
+        }
         if (this.polygonOffset != null) {
             rc.setPolygonOffset(this.polygonOffset[0], this.polygonOffset[1]);
         }
         else {
             rc.resetPolygonOffset();
         }
-        let gl = rc.RContext;
+        const gl = rc.RContext;
         switch (rd.drawMode) {
             case rdm.ELEMENTS_TRIANGLES:
-                // if(DebugFlag.Flag_0 > 0)console.log("RPOUnit::run(), TRIANGLES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
-                //rc.RContext.drawElements(rc.TRIANGLES, this.ivsCount, rd.ibufType,this.ivsIndex * this.ibufStep);
-                gl.drawElements(rc.TRIANGLES, ivsCount, rd.bufType, rd.ivsOffset);
-                break;
             case rdm.ELEMENTS_LINES:
-                // console.log("RPOUnit::run(), ELEMENTS_LINES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
-                //rc.RContext.drawElements(rc.ELEMENTS_LINES, this.ivsCount, rd.bufType,this.ivsIndex * this.ibufStep);
-                gl.drawElements(rc.LINES, ivsCount, rd.bufType, rd.ivsOffset);
+                // console.log("rd.gldm: ", rd.gldm);
+                // if(DebugFlag.Flag_0 > 0)console.log("RPOUnit::run(), drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
+                //rc.RContext.drawElements(rc.TRIANGLES, this.ivsCount, rd.ibufType,this.ivsIndex * this.ibufStep);
+                gl.drawElements(rd.gldm, ivsCount, rd.bufType, rd.ivsOffset);
+                break;
+            case rdm.ELEMENTS_INSTANCED_TRIANGLES:
+            case rdm.ELEMENTS_INSTANCED_LINES:
+                //console.log("RPOUnit::run(), drawElementsInstanced(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+", insCount: "+this.insCount+")");
+                //rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, rd.bufType, this.ivsIndex * this.ibufStep, this.insCount);
+                gl.drawElementsInstanced(rc.TRIANGLES, ivsCount, rd.bufType, rd.ivsOffset, rd.insCount);
                 break;
             case rdm.ELEMENTS_TRIANGLE_STRIP:
                 //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
                 //rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, rd.bufType,this.ivsIndex * this.ibufStep);
                 gl.drawElements(rc.TRIANGLE_STRIP, ivsCount, rd.bufType, rd.ivsOffset);
-                break;
-            case rdm.ELEMENTS_INSTANCED_TRIANGLES:
-                //console.log("RPOUnit::run(), drawElementsInstanced(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+", insCount: "+this.insCount+")");
-                //rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, rd.bufType, this.ivsIndex * this.ibufStep, this.insCount);
-                gl.drawElementsInstanced(rc.TRIANGLES, ivsCount, rd.bufType, rd.ivsOffset, this.insCount);
                 break;
             case rdm.ELEMENTS_TRIANGLE_FAN:
                 //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
@@ -176,8 +207,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
                 break;
         }
     }
-
-    drawPart(rc: IRenderProxy): void {
+    __$$drawPart(rc: IRenderProxy): void {
 
         const st = rc.status;
         st.drawCallTimes++;
@@ -199,15 +229,6 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         let gl = rc.RContext;
         switch (rd.drawMode) {
             case rdm.ELEMENTS_TRIANGLES:
-                for (; i < this.partTotal;) {
-                    // 这里面可以增加一个回调函数,这个回调函数可以对uniform(或者transformUniform)做一些数据改变，进而来控制相应的状态
-                    // 因此可以通过改变uniform实现大量的显示绘制
-                    //  let count:number = this.partGroup[i++];
-                    //  let offset:number = this.partGroup[i++];
-                    //  gl.drawElements(rc.TRIANGLES, count, this.ibufType, offset);
-                    gl.drawElements(rc.TRIANGLES, this.partGroup[i++], rd.bufType, this.partGroup[i++]);
-                }
-                break;
             case rdm.ELEMENTS_LINES:
                 for (; i < this.partTotal;) {
                     // 这里面可以增加一个回调函数,这个回调函数可以对uniform(或者transformUniform)做一些数据改变，进而来控制相应的状态
@@ -215,18 +236,19 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
                     //  let count:number = this.partGroup[i++];
                     //  let offset:number = this.partGroup[i++];
                     //  gl.drawElements(rc.TRIANGLES, count, this.ibufType, offset);
-                    gl.drawElements(rc.LINES, this.partGroup[i++], rd.bufType, this.partGroup[i++]);
+                    gl.drawElements(rd.gldm, this.partGroup[i++], rd.bufType, this.partGroup[i++]);
                 }
+                break;
+            case rdm.ELEMENTS_INSTANCED_TRIANGLES:
+            case rdm.ELEMENTS_INSTANCED_LINES:
+                //console.log("RPOUnit::run(), drawElementsInstanced(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+", insCount: "+this.insCount+")");
+                //rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.ivsIndex * this.ibufStep, this.insCount);
+                gl.drawElementsInstanced(rd.gldm, ivsCount, rd.bufType, rd.ivsOffset, rd.insCount);
                 break;
             case rdm.ELEMENTS_TRIANGLE_STRIP:
                 //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
                 //rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
                 gl.drawElements(rc.TRIANGLE_STRIP, ivsCount, rd.bufType, rd.ivsOffset);
-                break;
-            case rdm.ELEMENTS_INSTANCED_TRIANGLES:
-                //console.log("RPOUnit::run(), drawElementsInstanced(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+", insCount: "+this.insCount+")");
-                //rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.ivsIndex * this.ibufStep, this.insCount);
-                gl.drawElementsInstanced(rc.TRIANGLES, ivsCount, rd.bufType, rd.ivsOffset, this.insCount);
                 break;
             case rdm.ELEMENTS_TRIANGLE_FAN:
                 //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
@@ -300,11 +322,9 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
             this.uniform = null;
             this.transUniform = null;
             this.partGroup = null;
-            // this.ivsIndex = 0;
-            // this.ivsCount = 0;
-            this.insCount = 0;
+            
             this.partTotal = 0;
-            // this.drawMode = 0;
+            
             this.drawFlag = 0x0;
             this.renderState = 0;
             this.rcolorMask = 0;
@@ -312,8 +332,11 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
             this.shader = null;
             this.bounds = null;
             this.pos = null;
+            if(this.rdp) {
+                this.rdp.clear();
+                this.rdp = null;
+            }
             this.vdrInfo = null;
-            this.rdp = null;
             this.rgraph = null;
         }
     }

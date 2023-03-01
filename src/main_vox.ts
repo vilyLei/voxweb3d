@@ -335,7 +335,9 @@
 
 //  import {DemoVtxDrawingInfo as Demo} from "./demo/DemoVtxDrawingInfo";
 
- import {DemoVtxMultiRDP as Demo} from "./demo/DemoVtxMultiRDP";
+//  import {DemoVtxMultiRDP as Demo} from "./demo/DemoVtxMultiRDP";
+
+ import {DemoVtxMatGraph as Demo} from "./demo/DemoVtxMatGraph";
 
 
 ///////////////////////////////////////////////////////////////////////////////

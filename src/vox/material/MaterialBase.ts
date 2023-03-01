@@ -50,7 +50,11 @@ export default class MaterialBase implements IRenderMaterial, IVtxBufRenderData 
     //  */
     // stencil: Stencil = null;
     // multiPass = false;
-    readonly vtxInfo: IVtxDrawingInfo = new VtxDrawingInfo();
+    /**
+     * 如果是同样的 vtxInfo 内容，则一个material 实例可以对应多个entity即便是mesh不一样也可以
+     * 如果 vtxInfo 内容 和 mesh 已经匹配，则附带这个vtxInfo只能用到对一个mesh的entity
+     */
+    vtxInfo: IVtxDrawingInfo = null;
     graph: IPassGraph = null;
     constructor() { }
 

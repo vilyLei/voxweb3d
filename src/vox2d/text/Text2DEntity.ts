@@ -167,11 +167,13 @@ export default class Text2DEntity extends DisplayEntity {
     }
     update(): void {
         if (this.m_dynamicEnbaled && this.m_mesh.isGeomDynamic()) {
-            this.setIvsParam(0, this.m_mesh.vtCount);
+            //this.setIvsParam(0, this.m_mesh.vtCount);
+            const material = this.getMaterial();
+            if(material) {
+                let vtxInfo = material.vtxInfo;
+                vtxInfo.setIvsParam(0, this.m_mesh.vtCount);
+            }
         }
         this.m_trs.update();
-    }
-    toString(): string {
-        return "Text2DEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";
     }
 }
