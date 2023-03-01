@@ -337,11 +337,11 @@
 
 //  import {DemoVtxMultiRDP as Demo} from "./demo/DemoVtxMultiRDP";
 
- import {DemoMaterialGraphTest as Demo} from "./demo/DemoMaterialGraphTest";
+//  import {DemoMaterialGraphTest as Demo} from "./demo/DemoMaterialGraphTest";
 
 //  import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
 
-//  import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
+ import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
 
 
 ///////////////////////////////////////////////////////////////////////////////

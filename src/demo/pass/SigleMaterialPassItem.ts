@@ -5,6 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
+// import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IPassProcess from "../../vox/render/pass/IPassProcess";
 import PassRItem from "../../vox/render/pass/PassRItem";
 
@@ -15,7 +16,7 @@ export default class SigleMaterialPassItem extends PassRItem {
         this.initialize();
     }
     run(process: IPassProcess): void {
-        
+
         if (this.m_enabled && process) {
 
             const unit = process.units[0];

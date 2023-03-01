@@ -8,6 +8,7 @@
 import IRPOUnit from "../IRPOUnit";
 import IRenderProxy from "../IRenderProxy";
 import IPassProcess from "./IPassProcess";
+import IRenderMaterial from "../IRenderMaterial";
 export default class PassProcess implements IPassProcess {
 
     constructor() { }
@@ -15,6 +16,8 @@ export default class PassProcess implements IPassProcess {
     vtxFlag: boolean;
     texFlag: boolean;
     units: IRPOUnit[] = null;
+    applyMaterial(m: IRenderMaterial): void {
+    }
     run(): void {
         const units = this.units;
         if (units != null) {
