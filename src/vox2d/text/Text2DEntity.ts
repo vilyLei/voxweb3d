@@ -13,6 +13,7 @@ import TextureProxy from "../../vox/texture/TextureProxy";
 import TextRectMesh from "../../vox/text/TextRectMesh";
 import H5FontSystem from "../../vox/text/H5FontSys";
 import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
+import VtxDrawingInfo from "../../vox/render/vtx/VtxDrawingInfo";
 
 export default class Text2DEntity extends DisplayEntity {
     private m_dynamicEnbaled: boolean = true;
@@ -127,6 +128,7 @@ export default class Text2DEntity extends DisplayEntity {
     createMaterial(texList: TextureProxy[]): void {
         if (this.getMaterial() == null) {
             this.m_currMaterial = new Text2DMaterial();
+            this.m_currMaterial.vtxInfo = new VtxDrawingInfo();
             this.m_currMaterial.setTextureList(texList);
             this.setMaterial(this.m_currMaterial);
         }
@@ -170,8 +172,7 @@ export default class Text2DEntity extends DisplayEntity {
             //this.setIvsParam(0, this.m_mesh.vtCount);
             const material = this.getMaterial();
             if(material) {
-                let vtxInfo = material.vtxInfo;
-                vtxInfo.setIvsParam(0, this.m_mesh.vtCount);
+                material.vtxInfo.setIvsParam(0, this.m_mesh.vtCount);
             }
         }
         this.m_trs.update();

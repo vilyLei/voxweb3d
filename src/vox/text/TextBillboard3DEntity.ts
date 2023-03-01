@@ -12,6 +12,7 @@ import BillboardAlphaTexMaterial from "../../vox/material/mcase/BillboardAlphaTe
 import TextureProxy from "../../vox/texture/TextureProxy";
 import TextRectMesh from "../../vox/text/TextRectMesh";
 import H5FontSystem from "../../vox/text/H5FontSys";
+import VtxDrawingInfo from "../render/vtx/VtxDrawingInfo";
 
 export default class TextBillboard3DEntity extends DisplayEntity {
     private m_dynamicEnbaled: boolean = true;
@@ -99,6 +100,7 @@ export default class TextBillboard3DEntity extends DisplayEntity {
     createMaterial(texList: TextureProxy[]): void {
         if (this.getMaterial() == null) {
             this.m_billMateiral = new BillboardAlphaTexMaterial();
+            this.m_billMateiral.vtxInfo = new VtxDrawingInfo();
             this.m_billMateiral.setTextureList(texList);
             this.setMaterial(this.m_billMateiral);
         }

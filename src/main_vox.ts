@@ -339,7 +339,9 @@
 
 //  import {DemoVtxMatGraph as Demo} from "./demo/DemoVtxMatGraph";
 
- import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
+//  import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
+
+//  import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -443,7 +445,7 @@
 
 //  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
-//  import {RbtDrama as Demo} from "./app/RbtDrama";
+ import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 
