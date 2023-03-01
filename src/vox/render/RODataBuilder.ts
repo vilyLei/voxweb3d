@@ -160,13 +160,13 @@ export default class RODataBuilder implements IRODataBuilder {
             }
         }
     }
-    private updateDispMaterial(runit: RPOUnit, disp: IRODisplay): IShdProgram {
+    private updateDispMaterial(runit: RPOUnit, material: IRenderMaterial, disp: IRODisplay = null): IShdProgram {
         let shdp: IShdProgram = null;
 
-        if (disp.__$ruid >= 0) {
+        // if (disp.__$ruid >= 0) {
 
             let rc = this.m_rc;
-            let material = disp.getMaterial();
+            // let material = disp.getMaterial();
             if (material) {
                 if (material.getShaderData() == null) {
                     let texList = material.getTextureList();
@@ -218,7 +218,7 @@ export default class RODataBuilder implements IRODataBuilder {
                     material.__$uniform = this.m_shdUniformTool.buildLocalFromData(material.createSelfUniformData(), shdp);
                 }
 
-                if (hasTrans) {
+                if (disp && hasTrans) {
                     if (disp.getTransform() != null) {
                         //console.log("disp.getTransform().getUid(): "+disp.getTransform().getUid());
                         runit.transUniform = ROTransPool.GetTransUniform(disp.getTransform(), shdp);
@@ -228,21 +228,23 @@ export default class RODataBuilder implements IRODataBuilder {
                 // console.log("RODataBuilder::updateDispMaterial(), runit: ",runit);
                 // console.log("RODataBuilder::updateDispMaterial(), runit.uid: ",runit.getUid());
                 // console.log("RODataBuilder::updateDispMaterial(), runit.transUniform == null: ",runit.transUniform == null);
-                if (runit.transUniform == null) {
-                    runit.transUniform = this.m_shdUniformTool.buildLocalFromTransformV(hasTrans ? disp.getMatrixFS32() : null, shdp);
-                    ROTransPool.SetTransUniform(disp.getTransform(), runit.transUniform, shdp);
-                }
-                else {
-                    runit.transUniform = this.m_shdUniformTool.updateLocalFromTransformV(runit.transUniform, hasTrans ? disp.getMatrixFS32() : null, shdp);
+                if(disp != null) {
+                    if (runit.transUniform == null) {
+                        runit.transUniform = this.m_shdUniformTool.buildLocalFromTransformV(hasTrans ? disp.getMatrixFS32() : null, shdp);
+                        ROTransPool.SetTransUniform(disp.getTransform(), runit.transUniform, shdp);
+                    }
+                    else {
+                        runit.transUniform = this.m_shdUniformTool.updateLocalFromTransformV(runit.transUniform, hasTrans ? disp.getMatrixFS32() : null, shdp);
+                    }
                 }
                 runit.polygonOffset = material.getPolygonOffset();
                 runit.uniform = material.__$uniform;
 
             }
             else {
-                console.log("Error RODataBuilder::updateDispMaterial(), material is null !!!");
+                console.error("Error RODataBuilder::updateDispMaterial(), material is null !!!");
             }
-        }
+        // }
         return shdp;
     }
     updateVtxDataToGpuByUid(vtxUid: number, deferred: boolean): void {
@@ -332,10 +334,10 @@ export default class RODataBuilder implements IRODataBuilder {
                 // 如果多个material对应到一个vtx如何用?
                 // 如果是多个对多个如何用?
                 // vdrInfo 需要和 mesh 对应协作
-                
+
                 runit.vdrInfo = material.vtxInfo as IVDRInfo;
                 runit.rdp = runit.indicesRes.initRdp.clone();
-            }else {
+            } else {
                 runit.vdrInfo = this.m_emptyVDRInfo;
                 runit.rdp = runit.indicesRes.initRdp;
             }
@@ -370,7 +372,13 @@ export default class RODataBuilder implements IRODataBuilder {
                     runit.draw = runit.__$$drawPart;
                 }
                 runit.setDrawFlag(disp.renderState, disp.rcolorMask);
-                this.buildVtxRes(disp, runit, this.updateDispMaterial(runit, disp));
+                if (disp.__$ruid >= 0) {
+                    this.buildVtxRes(disp, runit, this.updateDispMaterial(runit, disp.getMaterial(), disp));
+                } else {
+
+                    console.error("Error RODataBuilder::updateDispMaterial(), material is null !!!");
+                    this.buildVtxRes(disp, runit, null);
+                }
                 return true;
             }
             else {
