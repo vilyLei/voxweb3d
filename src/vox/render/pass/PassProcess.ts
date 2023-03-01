@@ -9,6 +9,8 @@ import IRPOUnit from "../IRPOUnit";
 import IRenderProxy from "../IRenderProxy";
 import IPassProcess from "./IPassProcess";
 import IRenderMaterial from "../IRenderMaterial";
+import IPassMaterialWrapper from "./IPassMaterialWrapper";
+import PassMaterialWrapper from "./PassMaterialWrapper";
 export default class PassProcess implements IPassProcess {
 
     constructor() { }
@@ -16,7 +18,11 @@ export default class PassProcess implements IPassProcess {
     vtxFlag: boolean;
     texFlag: boolean;
     units: IRPOUnit[] = null;
-    applyMaterial(m: IRenderMaterial): void {
+    materials: IPassMaterialWrapper[] = null;
+    createMaterialWrapper(m: IRenderMaterial): IPassMaterialWrapper {
+        let w = new PassMaterialWrapper();
+        w.bindMaterial(m);
+        return w;
     }
     run(): void {
         const units = this.units;
@@ -41,6 +47,7 @@ export default class PassProcess implements IPassProcess {
         }
     }
     destroy(): void {
+        this.materials = null;
         if(this.units != null) {
             this.units = null;
         }

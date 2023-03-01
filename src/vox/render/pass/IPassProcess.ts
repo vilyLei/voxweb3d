@@ -8,13 +8,14 @@
 import IRPOUnit from "../IRPOUnit";
 import IRenderProxy from "../IRenderProxy";
 import IRenderMaterial from "../IRenderMaterial";
-export default interface IPassProcess {
+import IPassMaterialWrapper from "./IPassMaterialWrapper";
 
+export default interface IPassProcess {
+    
+    materials: IPassMaterialWrapper[];
     rc: IRenderProxy;
-    // vtxFlag: boolean;
-    // texFlag: boolean;
     units: IRPOUnit[];
-    applyMaterial(m: IRenderMaterial): void;
+    createMaterialWrapper(m: IRenderMaterial): IPassMaterialWrapper
     run(): void;
     destroy(): void;
 }
