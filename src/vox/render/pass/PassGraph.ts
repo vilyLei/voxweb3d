@@ -6,42 +6,45 @@
 /***************************************************************************/
 
 import {IPassRItem, IPassRNode} from "./IPassRNode";
+import PassRNode from "./PassRNode";
 import IPassGraph from "./IPassGraph";
-export default class PassGraph implements IPassGraph {
-    private m_enabled = false;
-    private m_items: IPassRItem[] = [];
-    private m_nodes: IPassRNode[] = [];
-    constructor(){}
+import IPassProcess from "./IPassProcess";
+export default class PassGraph extends PassRNode implements IPassGraph {
+
+    constructor(){super();}
     
-    addItem(item: IPassRItem): void {
+    addItem(item: IPassRItem): IPassGraph {
         if(item) {
             this.m_items.push(item);
         }
+        return this;
     }
-    addChild(node: IPassRNode): void {
+    addChild(node: IPassRNode): IPassGraph {
         if(node) {
             this.m_nodes.push(node);
         }
+        return this;
     }
-    run(func: () => void): void {
+    run(process: IPassProcess): void {
         if(this.m_enabled) {
             const items = this.m_items;
+            // console.log("PassGraph::run() ...items.length: ", items.length);
             for(let i = 0, ln = items.length; i < ln; ++i) {
-                items[i].run(func);
+                items[i].run(process);
             }
             const nodes = this.m_nodes;
             for(let i = 0, ln = nodes.length; i < ln; ++i) {
-                nodes[i].run(func);
+                nodes[i].run(process);
             }
         }
     }
     
-    isEnabled(): boolean {
-        return this.m_enabled;
-    }
-    initialize(): void {
+    initialize(): IPassGraph {
+        this.m_enabled = true;
+        return this;
     }
     destroy(): void {
+        super.destroy();
     }
 }
 export { PassGraph }

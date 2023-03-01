@@ -42,6 +42,61 @@ import { HttpFileLoader } from "../../../cospace/modules/loaders/HttpFileLoader"
 import { ModelData, ModelDataLoader } from "./ModelDataLoader";
 import { BakedViewer } from "./BakedViewer";
 
+type ImgData = {imgData: Uint8Array, imgWidth: number, imgHeight: number, progress: number};
+class BakeTask {
+    // 部件相关信息
+    uuid: string;
+    //loadCall: () => void;
+    constructor(){}
+    /**
+     * 由前端调用此函数
+     * @param param 前端设置进来的 uv 数据
+     * @param bakeStatusCall 由引擎内部调用的回调函数，以便通知前端一个烘焙任务的进项情况。函数形参status 的值为1，表示当前烘焙完成
+     */
+    bake(param: {uvData: Float32Array}, bakeStatusCall: (status: number, imgData?: ImgData) => void): void {
+        
+    }
+}
+// 在d4中会创建实例，由前端直接使用
+type BakeParam = {quality: number, width: number, height: number};
+class Baker {
+    constructor(){}
+    startup(param: BakeParam ): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            if (true) {
+                resolve(true);
+            } else {
+                reject(false);
+            }
+        });
+    }
+    /**
+     * @returns 返回部烘焙任务总数
+     */
+    getBakeTaskTotal(): number {
+        return 1;
+    }
+    /**
+     * @returns 返回给前端新的烘焙任务
+     */
+    getBakeTask(): BakeTask {
+        return null;
+    }
+    /**
+     * @returns 返回给前端新的烘焙任务
+     */
+    getBakeTasks(): BakeTask[] {
+        return null;
+    }
+    /**
+     * 告诉整体烘焙工作是否完成
+     * @returns 
+     */
+    isFinish(): boolean {
+        return false;
+    }
+}
+
 export class BakeFlow {
     constructor() { }
 
@@ -136,9 +191,9 @@ export class BakeFlow {
             let transforms = modelData.transforms;
             this.m_uvData = uvData;
             for (let i = 0; i < models.length; ++i) {
-                if(uv2ModelData != null){
+                if (uv2ModelData != null) {
                     models[i].uvsList.push(uv2ModelData.models[i].uvsList[0]);
-                }else if (uvData != null) {
+                } else if (uvData != null) {
                     models[i].uvsList.push(uvData);
                 }
                 this.createEntity(models[i], transforms != null ? transforms[i] : null, { su: 1.0, sv: 1.0 });
@@ -183,7 +238,7 @@ export class BakeFlow {
             this.m_offsetR = 0.004;
             // let uvOffset = { su: 1.0, sv: 1.0 };
             let uvOffset = { su: 0.01, sv: 0.01 };
-            
+
             let bakedTexUrl = "static/private/bake/icoSph_1.png";
             bakedTexUrl = "static/private/bake/hat01_0.png";
             // bakedTexUrl = "static/private/bake/hat01_1.png";
@@ -209,7 +264,7 @@ export class BakeFlow {
         let uvs = model.uvsList;
         uvs[1] = uvs[0];
         console.log("#### uvs[0].length: ", uvs[0].length);
-        if(uvs.length > 1) console.log("#### uvs[1].length: ", uvs[1].length);
+        if (uvs.length > 1) console.log("#### uvs[1].length: ", uvs[1].length);
         if (bakeType < 0) {
             let entity = this.m_bakedViewer.createEntity(model, bakedTexUrl);
             let mat4 = transform != null ? new Matrix4(transform) : null;
@@ -253,7 +308,7 @@ export class BakeFlow {
         mesh.setIVS(model.indices);
         mesh.setVtxBufRenderData(material);
         mesh.initialize();
-        console.log("mesh.vtxTotal: ",mesh.vtxTotal)
+        console.log("mesh.vtxTotal: ", mesh.vtxTotal)
 
         let entity = new DisplayEntity();
         if (bakeType == 2) entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);

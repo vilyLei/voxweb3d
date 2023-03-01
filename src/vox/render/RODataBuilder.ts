@@ -33,6 +33,8 @@ import IVDRInfo from "./vtx/IVDRInfo";
 import { IROIvsRDP } from "./vtx/IROIvsRDP";
 import { BufRDataPair } from "./vtx/ROIndicesRes";
 import EmptyVDRInfo from "./vtx/EmptyVDRInfo";
+import IRenderEntity from "./IRenderEntity";
+import IRPOUnit from "./IRPOUnit";
 
 /**
  * 本类实现了将 系统内存数据 合成为 渲染运行时系统所需的数据资源(包括: 渲染运行时管理数据和显存数据)
@@ -158,7 +160,7 @@ export default class RODataBuilder implements IRODataBuilder {
             }
         }
     }
-    updateDispMaterial(runit: RPOUnit, disp: IRODisplay): IShdProgram {
+    private updateDispMaterial(runit: RPOUnit, disp: IRODisplay): IShdProgram {
         let shdp: IShdProgram = null;
 
         if (disp.__$ruid >= 0) {
@@ -337,16 +339,17 @@ export default class RODataBuilder implements IRODataBuilder {
                 runit.vdrInfo = this.m_emptyVDRInfo;
                 runit.rdp = runit.indicesRes.initRdp;
             }
-
+            runit.rgraph = material.graph;
             runit.setVisible(disp.visible);
         }
     }
-    buildGpuDisp(disp: IRODisplay): boolean {
+    buildGpuDisp(disp: IRODisplay, rentity: IRenderEntity): boolean {
         if (disp.__$ruid < 0) {
             if (disp.getMaterial() != null) {
                 disp.__$$rsign = DisplayRenderSign.LIVE_IN_RENDERER;
 
                 let runit = this.m_rpoUnitBuilder.create() as RPOUnit;
+                runit.rentity = rentity;
                 disp.__$ruid = runit.uid;
                 disp.__$$runit = runit;
 

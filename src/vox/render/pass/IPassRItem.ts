@@ -5,17 +5,16 @@
 /*                                                                         */
 /***************************************************************************/
 
-// import IRenderMaterial from "../IRenderMaterial";
+import IRenderMaterial from "../IRenderMaterial";
 import IPassProcess from "./IPassProcess";
-import IPassRItem from "./IPassRItem";
 
-export default interface IPassRNode {
-    addItem(item: IPassRItem): IPassRNode;
-    addChild(node: IPassRNode): IPassRNode;
+export default interface IPassRItem {
+    material: IRenderMaterial;
+    rst: any;
+    initialize(): void;
     run(process: IPassProcess): void;
-    enable(): IPassRNode;
-    disable(): IPassRNode;
+    enable(): IPassRItem;
+    disable(): IPassRItem;
     isEnabled(): boolean;
     destroy(): void;
 }
-export {IPassRItem, IPassRNode}

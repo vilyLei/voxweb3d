@@ -19,20 +19,22 @@ import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject"
 import IRenderProxy from "../../vox/render/IRenderProxy";
 import ShaderUBO from "../../vox/material/ShaderUBO";
 import IRenderShaderUniform from "./uniform/IRenderShaderUniform";
-import IRPODisplay from "../../vox/render/IRPODisplay";
+import IRPOUnit from "./IRPOUnit";
 import IPoolNode from "../../vox/base/IPoolNode";
 import { BufRDataPair, ROIndicesRes } from "./vtx/ROIndicesRes";
 import IVDRInfo from "./vtx/IVDRInfo";
 
 import IPassGraph from "./pass/IPassGraph";
 import DebugFlag from "../debug/DebugFlag";
+import IRenderEntity from "./IRenderEntity";
 
 /**
  * 渲染器渲染运行时核心关键执行显示单元,一个unit代表着一个draw call所渲染的所有数据
  * renderer rendering runtime core executable display unit.
  */
-export default class RPOUnit implements IPoolNode, IRPODisplay {
+export default class RPOUnit implements IRPOUnit {
 
+    rentity: IRenderEntity = null;
     uid = -1;
     value = -1;
     // 记录自身和RPONode的对应关系
@@ -77,10 +79,18 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     constructor() {
     }
     private testDrawFlag(): void {
+        this.drawFlag = (this.rcolorMask << 10) + this.renderState;
         if (this.shader.drawFlag != this.drawFlag) {
             this.shader.drawFlag = this.drawFlag;
             RenderStateObject.UseRenderState(this.renderState);
             RenderColorMask.UseRenderState(this.rcolorMask);
+        }
+    }
+    
+    applyShader(force: boolean = false): void {
+        this.shader.bindToGpu( this.shdUid );
+        if(force) {
+            this.shader.resetUniform();
         }
     }
     getUid(): number {
@@ -113,10 +123,16 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         this.testVisible();
         // if(DebugFlag.Flag_0 > 0) console.log("#### setVisible(): ", boo, "this.drawEnabled: ",this.drawEnabled);
     }
+    // setColorMask(rcolorMask: number): void {
+    //     this.setDrawFlag(this.renderState, rcolorMask);
+    // }
+    // setRenderState(renderState: number): void {
+    //     this.setDrawFlag(renderState, this.rcolorMask);
+    // }
     setDrawFlag(renderState: number, rcolorMask: number): void {
         this.renderState = renderState;
         this.rcolorMask = rcolorMask;
-        this.drawFlag = (rcolorMask << 10) + renderState;
+        this.drawFlag = (this.rcolorMask << 10) + this.renderState;
     }
 
     private m_ver = 0;
@@ -161,9 +177,9 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         // if (this.ivsCount <= ivsCount && ir.isCommon()) ivsCount = this.ivsCount;
         // console.log("runit::drawThis(), ivsCount: ", ivsCount, ",ivsOffset: ", rd.ivsOffset, this.rdp.getUid(), rd.getUid());
         
-        if(DebugFlag.Flag_0 > 0) {
-            console.log("runit::drawThis(), ivsCount: ", ivsCount, ",ivsOffset: ", rd.ivsOffset, this.rdp.getUid(), ", rd.getUid(): " ,rd.getUid());
-        }
+        // if(DebugFlag.Flag_0 > 0) {
+        //     console.log("runit::drawThis(), ivsCount: ", ivsCount, ",ivsOffset: ", rd.ivsOffset, this.rdp.getUid(), ", rd.getUid(): " ,rd.getUid());
+        // }
         if (this.polygonOffset != null) {
             rc.setPolygonOffset(this.polygonOffset[0], this.polygonOffset[1]);
         }
@@ -338,6 +354,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
             }
             this.vdrInfo = null;
             this.rgraph = null;
+            this.rentity = null;
         }
     }
     destroy(): void {

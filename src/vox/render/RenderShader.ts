@@ -35,7 +35,7 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     // material相关的uniform,默认不包括transform相关的信息
     private m_uniform: IRenderShaderUniform = null;
     // 只有transform相关的信息uniform
-    private m_transformUniform: IRenderShaderUniform = null;
+    private m_trsu: IRenderShaderUniform = null;
     private m_shdProgramBuilder: IShaderProgramBuilder = null;
     // 用于记录 renderState(低10位)和ColorMask(高10位) 的状态组合
     drawFlag: number = -1;
@@ -68,10 +68,10 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     getRCUid(): number {
         return this.m_rcuid;
     }
-    useTransUniform(transUniform: IRenderShaderUniform): void {
-        if (this.m_transformUniform != transUniform) {
-            this.m_transformUniform = transUniform;
-            transUniform.use(this);
+    useTransUniform(u: IRenderShaderUniform): void {
+        if (this.m_trsu != u) {
+            this.m_trsu = u;
+            u.use(this);
         }
     }
     useUniform(uniform: IRenderShaderUniform): void {
@@ -190,9 +190,12 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     getCurrentShdUid(): number {
         return this.m_preuid;
     }
+    resetTransUniform(): void {
+        this.m_trsu = null;
+    }
     resetUniform(): void {
         this.m_uniform = null;
-        this.m_transformUniform = null;
+        this.m_trsu = null;
         this.m_guniform = null;
     }
     resetRenderState(): void {
@@ -230,8 +233,8 @@ export default class RenderShader implements IRenderShader, IRenderResource {
             this.m_uniform != uniform;
             uniform.useByShd(this, this.m_currShd);
         }
-        if (this.m_transformUniform != transUniform) {
-            this.m_transformUniform != transUniform;
+        if (this.m_trsu != transUniform) {
+            this.m_trsu != transUniform;
             transUniform.useByShd(this, this.m_currShd);
         }
     }

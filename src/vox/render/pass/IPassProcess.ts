@@ -5,17 +5,14 @@
 /*                                                                         */
 /***************************************************************************/
 
-// import IRenderMaterial from "../IRenderMaterial";
-import IPassProcess from "./IPassProcess";
-import IPassRItem from "./IPassRItem";
+import IRPOUnit from "../IRPOUnit";
+import IRenderProxy from "../IRenderProxy";
+export default interface IPassProcess {
 
-export default interface IPassRNode {
-    addItem(item: IPassRItem): IPassRNode;
-    addChild(node: IPassRNode): IPassRNode;
-    run(process: IPassProcess): void;
-    enable(): IPassRNode;
-    disable(): IPassRNode;
-    isEnabled(): boolean;
+    rc: IRenderProxy;
+    // vtxFlag: boolean;
+    // texFlag: boolean;
+    units: IRPOUnit[];
+    run(): void;
     destroy(): void;
 }
-export {IPassRItem, IPassRNode}

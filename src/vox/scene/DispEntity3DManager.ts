@@ -175,7 +175,7 @@ export default class DispEntity3DManager {
             this.m_rprocess.addDisp(disp);
         }
         else {
-            if (this.m_dataBuilder.buildGpuDisp(disp)) {
+            if (this.m_dataBuilder.buildGpuDisp(disp, entity)) {
                 this.m_rprocess.addDisp(disp);
             }
         }

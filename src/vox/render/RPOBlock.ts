@@ -23,6 +23,7 @@ import RenderProxy from "../../vox/render/RenderProxy";
 import RenderShader from '../../vox/render/RenderShader';
 import ROVertexResource from "../../vox/render/ROVertexResource";
 import DebugFlag from "../debug/DebugFlag";
+import PassProcess from "./pass/PassProcess";
 //import DebugFlag from "../debug/DebugFlag";
 
 export default class RPOBlock {
@@ -132,20 +133,16 @@ export default class RPOBlock {
 
                     vtxFlag = unit.updateVtx() || vtxFlag;
                     if (unit.drawEnabled) {
-                        // if (vtxFlag) {
-                        //     unit.vro.run();
-                        //     vtxFlag = false;
-                        // }
-                        // if (texFlag) {
-                        //     unit.tro.run();
-                        //     texFlag = false;
-                        // }
-                        // unit.run2(rc);
-                        // unit.draw(rc);
-                        if(unit.rgraph) {
-                            this.draw1(rc, unit, vtxFlag, texFlag);
+                        if(unit.rgraph && unit.rgraph.isEnabled()) {
+                            const proc = this.m_passProcess1;
+                            proc.units = [unit];
+                            proc.rc = rc;
+                            proc.vtxFlag = vtxFlag;
+                            proc.texFlag = texFlag;
+                            unit.rgraph.run(proc);
+                            // this.drawGraph1(rc, unit, vtxFlag, texFlag);
                         }else {
-                            this.drawGraph1(rc, unit, vtxFlag, texFlag);
+                            this.draw1(rc, unit, vtxFlag, texFlag);
                         }
 
                         vtxFlag = false;
@@ -156,21 +153,7 @@ export default class RPOBlock {
             }
         }
     }
-    private drawGraph1(rc: RenderProxy, unit: RPOUnit, vtxFlag: boolean, texFlag: boolean): void {
-        let graph = unit.rgraph;
-        const func = (): void => {
-            if (vtxFlag) {
-                unit.vro.run();
-                vtxFlag = false;
-            }
-            if (texFlag) {
-                unit.tro.run();
-                texFlag = false;
-            }
-            unit.run2(rc);
-            unit.draw(rc);
-        }
-    }
+    private m_passProcess1 = new PassProcess();
     private draw1(rc: RenderProxy, unit: RPOUnit, vtxFlag: boolean, texFlag: boolean): void {
         if (vtxFlag) {
             unit.vro.run();

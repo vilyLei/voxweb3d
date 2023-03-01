@@ -14,11 +14,13 @@ export default interface IRenderShader extends IRUniformUser {
     drawFlag: number;
     resetRenderState(): void;
 	renderBegin():void;
+	bindToGpu(uid: number): void;
 	unlock(): void;
 	lock(): void;
 	textureUnlock(): void;
 	textureLock(): void;
 	resetUniform(): void;
+	resetTransUniform(): void;
 
     useTransUniform(runiform: IRShaderUniform): void;
     useUniform(runiform: IRShaderUniform): void;

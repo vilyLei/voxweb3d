@@ -38,16 +38,16 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     private m_uid = 0;
     protected m_trs: IROTransform = null;
     protected m_eventDispatcher: IEvtDispatcher = null;
-    private m_trw:ROTransUpdateWrapper = null;
+    private m_trw: ROTransUpdateWrapper = null;
     constructor(transform: IROTransform = null, sharedData: boolean = false) {
         this.m_uid = DisplayEntity.s_uid++;
         if (transform == null) {
             this.m_trs = ROTransform.Create();
         }
         else {
-            if(sharedData) {
-                this.m_trs = ROTransform.Create(null,transform.getFS32Data());
-            }else {
+            if (sharedData) {
+                this.m_trs = ROTransform.Create(null, transform.getFS32Data());
+            } else {
                 this.m_trs = transform;
             }
         }
@@ -156,7 +156,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     }
     getEvtDispatcher(evtClassType: number): IEvtDispatcher {
         const dsp = this.m_eventDispatcher;
-        if(dsp && this.uuid != "") dsp.uuid = this.uuid;
+        if (dsp && this.uuid != "") dsp.uuid = this.uuid;
         return dsp;
     }
     setEvtDispatcher(evtDisptacher: IEvtDispatcher): void {
@@ -178,7 +178,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     __$setDrawEnabled(boo: boolean): void {
         if (this.m_drawEnabled != boo) {
             this.m_drawEnabled = boo;
-            const  d = this.m_display;
+            const d = this.m_display;
             if (d != null) {
                 d.visible = this.m_visible && boo;
                 if (d.__$$runit != null) {
@@ -305,7 +305,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         vbuf.setBufSortFormat(m.getBufSortFormat());
         const d = this.m_display;
         d.vbuf = vbuf as any;
-        d.ivbuf = m.__$attachIVBuf() as any;        
+        d.ivbuf = m.__$attachIVBuf() as any;
         d.ivsIndex = 0;
         d.ivsCount = m.vtCount;
         d.drawMode = m.drawMode;
@@ -317,7 +317,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
      * 这个设置函数也可以动态运行时更新几何相关的顶点数据
      */
     setMesh(m: IMeshBase): void {
-        
+
         if (this.m_mesh == null) {
             if (m != null) {
                 if (!m.isEnabled()) { m.rebuild() }
@@ -371,7 +371,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
             this.m_display.ivsIndex = ivsIndex;
             this.m_display.ivsCount = ivsCount;
             if (this.m_display.__$ruid > -1) {
-                
+
                 const mh = this.m_mesh;
 
                 let ut = this.m_display.__$$runit;
@@ -388,7 +388,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
                     let ivs = mh.getIVS();
                     this.m_localBounds.addFloat32AndIndices(mh.getVS(), ivs.subarray(ivsIndex, ivsIndex + ivsCount), mh.getVSStride());
                     this.m_localBounds.update();
-                    if(this.m_trw != null) {
+                    if (this.m_trw != null) {
                         this.m_trw.updateTo();
                     }
                 }
@@ -548,7 +548,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         this.m_trs.setPosition(pv);
     }
     getPosition(pv: Vector3D = null): Vector3D {
-        if(!pv) pv = new Vector3D();
+        if (!pv) pv = new Vector3D();
         this.m_trs.getPosition(pv);
         return pv;
     }
@@ -566,12 +566,12 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     }
 
     getRotationXYZ(pv: Vector3D = null): Vector3D {
-        if(!pv) pv = new Vector3D();
+        if (!pv) pv = new Vector3D();
         this.m_trs.getRotationXYZ(pv);
         return pv;
     }
     getScaleXYZ(pv: Vector3D = null): Vector3D {
-        if(!pv) pv = new Vector3D();
+        if (!pv) pv = new Vector3D();
         this.m_trs.getScaleXYZ(pv);
         return pv;
     }
@@ -589,7 +589,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     private static s_boundsOutVS: Float32Array = new Float32Array(24);
     private static s_pos: Vector3D = new Vector3D();
     private static s_prePos: Vector3D = new Vector3D();
-    
+
     /**
      * 表示没有加入任何渲染场景或者渲染器
      */
@@ -729,7 +729,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         this.m_globalBounds = null;
         this.m_localBounds = null;
         this.m_pipeLine = null;
-        if(this.m_trw != null) {
+        if (this.m_trw != null) {
             this.m_trw.destroy();
             this.m_trw = null;
         }
