@@ -30,19 +30,34 @@ export default class PassProcess implements IPassProcess {
             const rc = this.rc;
             let vtxFlag = this.vtxFlag;
             let texFlag = this.texFlag;
-            for (let i = 0, ln = units.length; i < ln; ++i) {
-                const unit = units[i];
-                vtxFlag = unit.updateVtx() || vtxFlag;
-                if (vtxFlag) {
-                    unit.vro.run();
-                    vtxFlag = false;
+            const mts = this.materials;
+            if(mts == null) {
+                for (let i = 0, ln = units.length; i < ln; ++i) {
+                    const unit = units[i];
+                    vtxFlag = unit.updateVtx() || vtxFlag;
+                    if (vtxFlag) {
+                        unit.vro.run();
+                        vtxFlag = false;
+                    }
+                    if (texFlag) {
+                        unit.tro.run();
+                        texFlag = false;
+                    }
+                    unit.run2(rc);
+                    unit.draw(rc);
                 }
-                if (texFlag) {
+            }else {
+                for (let i = 0, ln = units.length; i < ln; ++i) {
+                    const unit = units[i];
+                    vtxFlag = unit.updateVtx() || vtxFlag;
+                    if (vtxFlag) {
+                        unit.vro.run();
+                        vtxFlag = false;
+                    }
                     unit.tro.run();
-                    texFlag = false;
+                    unit.run2(rc);
+                    unit.draw(rc);
                 }
-                unit.run2(rc);
-                unit.draw(rc);
             }
         }
     }
