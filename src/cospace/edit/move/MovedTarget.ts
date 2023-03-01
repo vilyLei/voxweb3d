@@ -39,7 +39,7 @@ class MovedTarget extends CtrlTargetBase implements ICtrTarget {
             this.m_vs = [];
         }
     }
-    setPosition(pv: IVector3D): void {
+    setPosition(pv: IVector3D): MovedTarget {
         this.version++;
         let tars = this.m_tars;
         if (tars != null) {
@@ -62,6 +62,7 @@ class MovedTarget extends CtrlTargetBase implements ICtrTarget {
         }
         this.position.copyFrom(pv);
         this.m_changed = true;
+        return this;
     }
 }
 export { MovedTarget };

@@ -134,32 +134,39 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
             this.m_ring.setScale3(sv);
         }
     }
-    setVisible(visible: boolean): void {
+    setVisible(visible: boolean): RotationCamZCircle {
         // console.log("RotationCamZCircle::setVisible() ..., visible: ", visible);
         this.m_entity.setVisible(visible);
         if (!visible) this.m_ring.setVisible(visible);
         this.m_camVer = -7;
+        return this;
     }
     getVisible(): boolean {
         return this.m_entity.getVisible();
     }
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): RotationCamZCircle {
         this.m_entity.setXYZ(px, py, pz);
         this.m_camVer = -7;
+        return this;
     }
-    setRotation3(r: IVector3D): void {
+    setRotation3(r: IVector3D): RotationCamZCircle {
+        return this;
     }
-    setRotationXYZ(rx: number, ry: number, rz: number): void {
+    setRotationXYZ(rx: number, ry: number, rz: number): RotationCamZCircle {
+        return this;
     }
-    setScaleXYZ(sx: number, sy: number, sz: number): void {
+    setScaleXYZ(sx: number, sy: number, sz: number): RotationCamZCircle {
         this.m_entity.setScaleXYZ(sx, sy, sz);
         this.m_camVer = -7;
         this.run(this.m_editRS.getCamera(), null);
+        return this;
     }
 
-    getScaleXYZ(pv: IVector3D): void {
+    getScaleXYZ(pv: IVector3D): IVector3D {
+        return pv;
     }
-    getRotationXYZ(pv: IVector3D): void {
+    getRotationXYZ(pv: IVector3D): IVector3D {
+        return pv;
     }
 
     localToGlobal(pv: IVector3D): void {
@@ -209,8 +216,9 @@ class RotationCamZCircle extends RotationCtr implements IRayControl {
         this.m_cv = null;
         this.m_planeNV = null;
     }
-    setPosition(pos: IVector3D): void {
+    setPosition(pos: IVector3D): RotationCamZCircle {
         this.m_entity.setPosition(pos);
+        return this;
     }
     getPosition(pv: IVector3D): IVector3D {
         this.m_entity.getPosition(pv);

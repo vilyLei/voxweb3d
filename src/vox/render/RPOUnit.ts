@@ -337,8 +337,8 @@ export default class RPOUnit implements IRPOUnit {
             this.vtxUid = -1;
             this.uniform = null;
             this.transUniform = null;
-            this.partGroup = null;
             
+            this.partGroup = null;            
             this.partTotal = 0;
             
             this.drawFlag = 0x0;

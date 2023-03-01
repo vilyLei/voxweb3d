@@ -44,24 +44,30 @@ class CtrlTargetBase implements ICtrTarget {
         }
     }
 
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): CtrlTargetBase {
+        return this;
     }
-    setPosition(pv: IVector3D): void {
-
+    setPosition(pv: IVector3D): CtrlTargetBase {
+        return this;
     }
     getPosition(pv: IVector3D): IVector3D {
         pv.copyFrom(this.position);
         return pv;
     }
-    setRotation3(r: IVector3D): void {
+    setRotation3(r: IVector3D): CtrlTargetBase {
+        return this;
     }
-    setRotationXYZ(rx: number, ry: number, rz: number): void {
+    setRotationXYZ(rx: number, ry: number, rz: number): CtrlTargetBase {
+        return this;
     }
-    setScaleXYZ(sx: number, sy: number, sz: number): void {
+    setScaleXYZ(sx: number, sy: number, sz: number): CtrlTargetBase {
+        return this;
     }
-    getRotationXYZ(rv: IVector3D): void {
+    getRotationXYZ(rv: IVector3D): IVector3D {
+        return null;
     }
-    getScaleXYZ(sv: IVector3D): void {
+    getScaleXYZ(sv: IVector3D): IVector3D {
+        return null;
     }
     getGlobalBounds(): IAABB {
         return null;

@@ -66,7 +66,7 @@ export default class BoundsButton extends BoundsEntity {
         super.setXYZ(px, py, this.m_posZ);
         this.update();
     }
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): BoundsButton {
         this.m_posZ = pz;
         if (this.m_disp != null) {
             this.m_disp.setXYZ(px, py, pz);
@@ -74,6 +74,7 @@ export default class BoundsButton extends BoundsEntity {
         }
         super.setXYZ(px, py, pz);
         this.update();
+        return this;
     }
 
     addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {

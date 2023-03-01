@@ -34,11 +34,12 @@ export default class ColorTextImgButton extends Plane3DEntity {
     private m_btnStr: string = "button";
     private m_textDisp: TextBillboard3DEntity = null;
 
-    setVisible(boo: boolean): void {
+    setVisible(boo: boolean): ColorTextImgButton {
         if (this.m_textDisp != null) {
             this.m_textDisp.setVisible(boo);
         }
         super.setVisible(boo);
+        return this;
     }
     setAlpha(pa: number, texAlpha: number): void {
         this.overColor.a = pa;
@@ -112,7 +113,7 @@ export default class ColorTextImgButton extends Plane3DEntity {
         this.m_textDisp.update();
         this.update();
     }
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): ColorTextImgButton {
         this.m_posZ = pz;
         super.setXYZ(px, py, pz);
         this.getPosition(this.m_posV);
@@ -120,6 +121,7 @@ export default class ColorTextImgButton extends Plane3DEntity {
         this.m_textDisp.setPosition(this.m_posV);
         this.m_textDisp.update();
         this.update();
+        return this;
     }
 
     addEventListener(type: number, listener: any, func: (evt: any) => void): void {
@@ -133,13 +135,13 @@ export default class ColorTextImgButton extends Plane3DEntity {
         }
     }
     protected mouseOverListener(evt: any): void {
-        this.setColor( this.overColor );
+        this.setColor(this.overColor);
     }
     protected mouseOutListener(evt: any): void {
-        this.setColor( this.outColor );
+        this.setColor(this.outColor);
     }
     protected mouseDownListener(evt: any): void {
-        this.setColor( this.downColor );
+        this.setColor(this.downColor);
     }
     protected mouseUpListener(evt: any): void {
     }

@@ -46,7 +46,7 @@ class CarEntityTransform implements IEntityTransform {
         outV.copyFrom(this.m_position);
         return outV;
     }
-    setPosition(pos: Vector3D): void {
+    setPosition(pos: Vector3D): CarEntityTransform {
         this.m_position.copyFrom(pos);
         //console.log("setPosition(), pos: ",pos);
         //console.log("this.m_entityIndex >= 0: ",this.m_entityIndex >= 0, pos);
@@ -57,8 +57,9 @@ class CarEntityTransform implements IEntityTransform {
             this.status = NavigationStatus.Init;
             this.detector.version++;
         }
+        return this;
     }
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): CarEntityTransform {
         //console.log("setXYZ(), px,py,pz: ",px,py,pz);
         this.m_position.setXYZ(px, py, pz);
         if (this.m_entityIndex >= 0) {
@@ -68,9 +69,10 @@ class CarEntityTransform implements IEntityTransform {
             this.status = NavigationStatus.Init;
             this.detector.version++;
         }
+        return this;
     }
     
-    setRotation3(r: Vector3D): void {
+    setRotation3(r: Vector3D): CarEntityTransform {
         if (this.m_entityIndex >= 0) {
             this.m_fs32Data[3] = r.x;
             this.m_fs32Data[4] = r.y;
@@ -78,8 +80,9 @@ class CarEntityTransform implements IEntityTransform {
             this.status = NavigationStatus.Init;
             this.detector.version++;
         }
+        return this;
     }
-    setRotationXYZ(prx: number, pry: number, prz: number): void {
+    setRotationXYZ(prx: number, pry: number, prz: number): CarEntityTransform {
         if (this.m_entityIndex >= 0) {
             this.m_fs32Data[3] = prx;
             this.m_fs32Data[4] = pry;
@@ -87,6 +90,7 @@ class CarEntityTransform implements IEntityTransform {
             this.status = NavigationStatus.Init;
             this.detector.version++;
         }
+        return this;
     }
     setScale(bodyScale: number): void {
         if (this.m_entityIndex >= 0) {
@@ -143,14 +147,14 @@ class CarEntityTransform implements IEntityTransform {
         }
         return 1.0;
     }
-    setScaleXYZ(sx: number, sy: number, sz: number): void {
-
+    setScaleXYZ(sx: number, sy: number, sz: number): CarEntityTransform {
+        return this;
     }
-    getRotationXYZ(pv: Vector3D): void {
-
+    getRotationXYZ(pv: Vector3D): Vector3D {
+        return pv;
     }
-    getScaleXYZ(pv: Vector3D): void {
-
+    getScaleXYZ(pv: Vector3D): Vector3D {
+        return pv;
     }
     
     getGlobalBounds(): IAABB {

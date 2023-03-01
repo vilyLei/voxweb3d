@@ -38,9 +38,10 @@ class DragMoveTarget implements IEntityTransform {
         }
     }
 
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): DragMoveTarget {
+        return this;
     }
-    setPosition(pv: IVector3D): void {
+    setPosition(pv: IVector3D): DragMoveTarget {
         let i: number = 0;
         if (this.m_entitys[i] != null) {
             this.position.addVecsTo(pv, this.m_targetPosOffset);
@@ -53,38 +54,44 @@ class DragMoveTarget implements IEntityTransform {
             this.m_changFlags[i] = true;
         }
         this.position.copyFrom(pv);
+        return this;
     }
     getPosition(pv: IVector3D): IVector3D {
         pv.copyFrom(this.position);
         return pv
     }
-    setRotation3(r: IVector3D): void {
+    setRotation3(r: IVector3D): DragMoveTarget {
         let i: number = 0;
         if (this.m_entitys[i] != null) {
             this.m_entitys[i].setRotation3(r);
             this.m_changFlags[i] = true;
         }
+        return this;
     }
-    setRotationXYZ(rx: number, ry: number, rz: number): void {
+    setRotationXYZ(rx: number, ry: number, rz: number): DragMoveTarget {
+        return this;
     }
-    setScaleXYZ(sx: number, sy: number, sz: number): void {
+    setScaleXYZ(sx: number, sy: number, sz: number): DragMoveTarget {
         let i: number = 0;
         if (this.m_entitys[i] != null) {
             this.m_entitys[i].setScaleXYZ(sx, sy, sz);
             this.m_changFlags[i] = true;
         }
+        return this;
     }
-    getRotationXYZ(pv: IVector3D): void {
+    getRotationXYZ(pv: IVector3D): IVector3D {
         let i: number = 0;
         if (this.m_entitys[i] != null) {
             this.m_entitys[i].getRotationXYZ(pv);
         }
+        return pv;
     }
-    getScaleXYZ(sv: IVector3D): void {
+    getScaleXYZ(sv: IVector3D): IVector3D {
         let i: number = 0;
         if (this.m_entitys[i] != null) {
             this.m_entitys[i].getScaleXYZ(sv);
         }
+        return sv;
     }
     
     getGlobalBounds(): IAABB {

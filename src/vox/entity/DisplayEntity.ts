@@ -256,7 +256,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
             }
         }
     }
-    setVisible(boo: boolean): void {
+    setVisible(boo: boolean): DisplayEntity {
         if (this.m_visible != boo) {
             this.m_visible = boo;
             if (this.m_display != null) {
@@ -266,6 +266,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
                 }
             }
         }
+        return this;
     }
     getVisible(): boolean {
         return this.m_visible;
@@ -279,26 +280,30 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     getTransform(): IROTransform {
         return this.m_trs;
     }
-    copyPositionFrom(entity: DisplayEntity): void {
+    copyPositionFrom(entity: DisplayEntity): DisplayEntity {
         if (entity != null) {
             this.m_trs.copyPositionFrom(entity.getTransform());
         }
+        return this;
     }
-    copyMeshFrom(entity: IDisplayEntity): void {
+    copyMeshFrom(entity: IDisplayEntity): DisplayEntity {
         if (entity != null) {
             this.setMesh(entity.getMesh());
         }
+        return this;
     }
-    copyMaterialFrom(entity: IDisplayEntity): void {
+    copyMaterialFrom(entity: IDisplayEntity): DisplayEntity {
         if (entity != null) {
             this.setMaterial(entity.getMaterial());
         }
+        return this;
     }
-    copyTransformFrom(entity: IDisplayEntity): void {
+    copyTransformFrom(entity: IDisplayEntity): DisplayEntity {
         let pe = entity as DisplayEntity;
         if (pe != null) {
             this.m_trs.copyFrom(pe.m_trs);
         }
+        return this;
     }
     private initDisplay(m: IMeshBase): void {
         let vbuf = m.__$attachVBuf();
@@ -316,7 +321,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
      * 设置几何相关的数据,必须是构建完备的mesh才能被设置进来
      * 这个设置函数也可以动态运行时更新几何相关的顶点数据
      */
-    setMesh(m: IMeshBase): void {
+    setMesh(m: IMeshBase): DisplayEntity {
 
         if (this.m_mesh == null) {
             if (m != null) {
@@ -355,6 +360,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
                 this.m_meshChanged = true;
             }
         }
+        return this;
     }
     protected updateMesh(): void {
     }
@@ -421,7 +427,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     /**
      * 只允许在加入渲染器之前设置 IRenderMaterial 实例
      */
-    setMaterial(m: IRenderMaterial): void {
+    setMaterial(m: IRenderMaterial): DisplayEntity {
         if (m != null) {
             if (this.m_display == null) {
                 this.m_display = RODisplay.Create();
@@ -437,6 +443,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
                 disp.setMaterial(m);
             }
         }
+        return this;
     }
     getMaterial(): IRenderMaterial {
         if (this.m_display != null) {
@@ -480,7 +487,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
         }
     }
 
-    setRenderState(renderState: number): void {
+    setRenderState(renderState: number): DisplayEntity {
         this.m_renderState = renderState;
         if (this.m_display != null) {
             this.m_display.renderState = this.m_renderState;
@@ -488,6 +495,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
                 this.m_display.__$$runit.setDrawFlag(this.m_renderState, this.m_rcolorMask);
             }
         }
+        return this;
     }
     getRenderState(): number {
         return this.m_renderState;
@@ -538,31 +546,37 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
     protected __activeMesh(material: IRenderMaterial): void {
     }
     getUid(): number { return this.m_uid; }
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): DisplayEntity {
         this.m_trs.setXYZ(px, py, pz);
+        return this;
     }
     offsetPosition(pv: Vector3D): void {
         this.m_trs.offsetPosition(pv);
     }
-    setPosition(pv: Vector3D): void {
+    setPosition(pv: Vector3D): DisplayEntity {
         this.m_trs.setPosition(pv);
+        return this;
     }
     getPosition(pv: Vector3D = null): Vector3D {
         if (!pv) pv = new Vector3D();
         this.m_trs.getPosition(pv);
         return pv;
     }
-    setRotation3(rotV: Vector3D): void {
+    setRotation3(rotV: Vector3D): DisplayEntity {
         this.m_trs.setRotationXYZ(rotV.x, rotV.y, rotV.z);
+        return this;
     }
-    setRotationXYZ(rx: number, ry: number, rz: number): void {
+    setRotationXYZ(rx: number, ry: number, rz: number): DisplayEntity {
         this.m_trs.setRotationXYZ(rx, ry, rz);
+        return this;
     }
-    setScale3(sv: Vector3D): void {
+    setScale3(sv: Vector3D): DisplayEntity {
         this.m_trs.setScaleXYZ(sv.x, sv.y, sv.z);
+        return this;
     }
-    setScaleXYZ(sx: number, sy: number, sz: number): void {
+    setScaleXYZ(sx: number, sy: number, sz: number): DisplayEntity {
         this.m_trs.setScaleXYZ(sx, sy, sz);
+        return this;
     }
 
     getRotationXYZ(pv: Vector3D = null): Vector3D {

@@ -213,7 +213,7 @@ export default class PureEntity implements IDisplayEntity {
         }
 
     }
-    setVisible(boo: boolean): void {
+    setVisible(boo: boolean): PureEntity {
         if (this.m_visible != boo) {
             this.m_visible = boo;
             if (this.m_display != null) {
@@ -223,6 +223,7 @@ export default class PureEntity implements IDisplayEntity {
                 }
             }
         }
+        return this;
     }
     getVisible(): boolean {
         return this.m_visible;
@@ -233,29 +234,33 @@ export default class PureEntity implements IDisplayEntity {
     getREType(): number {
         return 1;
     }
-    setXYZ(px: number, py: number, pz: number): void {}
-    setPosition(pos: Vector3D): void {}
-    setRotationXYZ(rx: number, ry: number, rz: number): void {}
-    setScaleXYZ(sx: number, sy: number, sz: number): void {}
+    setXYZ(px: number, py: number, pz: number): PureEntity {return this;}
+    setPosition(pos: Vector3D): PureEntity {return this;}
+    setRotationXYZ(rx: number, ry: number, rz: number): PureEntity {return this;}
+    setScaleXYZ(sx: number, sy: number, sz: number): PureEntity {return this;}
 
-    setRotation3(rv: Vector3D): void {}
-    setScale3(sv: Vector3D): void {}
+    setRotation3(rv: Vector3D): PureEntity {return this;}
+    setScale3(sv: Vector3D): PureEntity {return this;}
     getScaleXYZ(pv: Vector3D = null): Vector3D {return null;}
     getRotationXYZ(pv: Vector3D = null): Vector3D {return null;}
     
-    copyMeshFrom(entity: IDisplayEntity): void {
+    copyMeshFrom(entity: IDisplayEntity): PureEntity {
         if (entity != null) {
             this.setMesh(entity.getMesh());
         }
+        return this;
     }
-    copyMaterialFrom(entity: IDisplayEntity): void {
+    copyMaterialFrom(entity: IDisplayEntity): PureEntity {
         if (entity != null) {
             this.setMaterial(entity.getMaterial());
         }
+        return this;
     }
-    copyPositionFrom(entity: PureEntity): void {
+    copyPositionFrom(entity: PureEntity): PureEntity {
+        return this;
     }
-    copyTransformFrom(entity: PureEntity): void {
+    copyTransformFrom(entity: PureEntity): PureEntity {
+        return this;
     }
     private initDisplay(m: IMeshBase): void {
         this.m_display.vbuf = m.__$attachVBuf() as any;
@@ -273,7 +278,7 @@ export default class PureEntity implements IDisplayEntity {
      * 设置几何相关的数据,必须是构建完备的mesh才能被设置进来
      * 这个设置函数也可以动态运行时更新几何相关的顶点数据
      */
-    setMesh(m: IMeshBase): void {
+    setMesh(m: IMeshBase): PureEntity {
         if (this.m_mesh == null) {
             if (m != null) {
                 if (!m.isEnabled()) { m.rebuild() }
@@ -315,6 +320,7 @@ export default class PureEntity implements IDisplayEntity {
                 this.m_meshChanged = true;
             }
         }
+        return this;
     }
     protected updateMesh(): void {
 
@@ -379,7 +385,7 @@ export default class PureEntity implements IDisplayEntity {
     /**
      * 只允许在加入渲染器之前设置 IRenderMaterial 实例
      */
-    setMaterial(m: IRenderMaterial): void {
+    setMaterial(m: IRenderMaterial): PureEntity {
         if (m != null) {
             if (this.m_display == null) {
                 this.createDisplay();
@@ -399,6 +405,7 @@ export default class PureEntity implements IDisplayEntity {
                 }
             }
         }
+        return this;
     }
     getMaterial(): IRenderMaterial {
         if (this.m_display != null) {
@@ -447,7 +454,7 @@ export default class PureEntity implements IDisplayEntity {
         }
     }
 
-    setRenderState(renderState: number): void {
+    setRenderState(renderState: number): PureEntity {
         this.m_renderState = renderState;
         if (this.m_display != null) {
             this.m_display.renderState = this.m_renderState;
@@ -455,6 +462,7 @@ export default class PureEntity implements IDisplayEntity {
                 this.m_display.__$$runit.setDrawFlag(this.m_renderState, this.m_rcolorMask);
             }
         }
+        return this;
     }
 
     setRenderStateByName(renderState_name: string): void {

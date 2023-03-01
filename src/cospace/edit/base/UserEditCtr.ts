@@ -83,7 +83,8 @@ class UserEditCtr {
             this.setAllVisible(true);
         }
     }
-    setVisible(visible: boolean): void {
+    setVisible(visible: boolean): UserEditCtr {
+        return this;
     }
     getVisible(): boolean {
         return false;

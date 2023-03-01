@@ -145,38 +145,45 @@ class RotationCamXYCircle extends RotationCtr implements IRayControl {
             // et.update();
         }
     }
-    setVisible(visible: boolean): void {
+    setVisible(visible: boolean): RotationCamXYCircle {
 
         // console.log("RotationCamXYCircle::setVisible() ..., visible: ", visible);
 
         this.m_entity.setVisible(visible);
         this.m_circle.setVisible(visible);
         this.m_camVer = -7;
+        return this;
     }
     getVisible(): boolean {
         return this.m_entity.getVisible();
     }
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): RotationCamXYCircle {
         this.m_entity.setXYZ(px, py, pz);
         this.m_circle.setXYZ(px, py, pz);
         this.m_camVer = -7;
+        return this;
     }
 
-    setRotation3(r: IVector3D): void {
+    setRotation3(r: IVector3D): RotationCamXYCircle {
+        return this;
     }
-    setRotationXYZ(rx: number, ry: number, rz: number): void {
+    setRotationXYZ(rx: number, ry: number, rz: number): RotationCamXYCircle {
+        return this;
     }
-    getScaleXYZ(pv: IVector3D): void {
+    getScaleXYZ(pv: IVector3D): IVector3D {
+        return pv;
     }
-    getRotationXYZ(pv: IVector3D): void {
+    getRotationXYZ(pv: IVector3D): IVector3D {
+        return pv;
     }
 
-    setScaleXYZ(sx: number, sy: number, sz: number): void {
+    setScaleXYZ(sx: number, sy: number, sz: number): RotationCamXYCircle {
         this.m_entity.setScaleXYZ(sx, sy, sz);
         this.m_circle.setScaleXYZ(sx, sy, sz);
         this.m_camVer = -7;
         // console.log("sx: ",sx);
         this.run(this.m_editRS.getCamera(), null);
+        return this;
     }
 
     localToGlobal(pv: IVector3D): void {
@@ -207,9 +214,10 @@ class RotationCamXYCircle extends RotationCtr implements IRayControl {
         this.m_stage = null;
         this.m_mat0 = null;
     }
-    setPosition(pos: IVector3D): void {
+    setPosition(pos: IVector3D): RotationCamXYCircle {
         this.m_entity.setPosition(pos);
         this.m_circle.setPosition(pos);
+        return this;
     }
     getPosition(pv: IVector3D): IVector3D {
         this.m_entity.getPosition(pv);

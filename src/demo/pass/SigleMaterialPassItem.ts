@@ -19,7 +19,7 @@ export default class SigleMaterialPassItem extends PassRItem {
         if (this.m_enabled && process) {
 
             const unit = process.units[0];
-            unit.applyShader(true);
+            // unit.applyShader(true);
             unit.renderState = this.renderState;
             process.run();
             // entity.setRenderState(st.BACK_TRANSPARENT_STATE);

@@ -61,19 +61,20 @@ class RotatedTarget extends CtrlTargetBase implements ICtrTarget {
         }
     }
     
-    setPosition(pv: IVector3D): void {
+    setPosition(pv: IVector3D): RotatedTarget {
 
         for (let i = 0; i < this.m_controllers.length; ++i) {
             this.m_controllers[i].setPosition(pv);
             this.m_flags[i] = true;
         }
+        return this;
     }
     getPosition(pv: IVector3D): IVector3D {
         pv.copyFrom(this.position);
         return pv;
     }
     
-    setRotation3(pr: IVector3D): void {
+    setRotation3(pr: IVector3D): RotatedTarget {
 
         // console.log("setRotationXYZ(), rx, ry, rz: ", rx, ry, rz);
         if (this.m_tars != null) {
@@ -127,10 +128,12 @@ class RotatedTarget extends CtrlTargetBase implements ICtrTarget {
             }
             this.m_changed = true;
         }
+        return this;
     }
     
-    getRotationXYZ(rv: IVector3D): void {
+    getRotationXYZ(rv: IVector3D): IVector3D {
         rv.setXYZ(0.0, 0.0, 0.0);
+        return rv;
     }    
 }
 export { RotatedTarget };

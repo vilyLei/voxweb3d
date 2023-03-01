@@ -105,45 +105,53 @@ export default class DragScaleRayCrossPlane extends ScaleCtr implements IRayCont
     setRenderState(state: number): void {
         this.m_entity.setRenderState(state);
     }
-    setVisible(visible: boolean): void {
+    setVisible(visible: boolean): DragScaleRayCrossPlane {
         this.m_entity.setVisible(visible);
         this.m_circle.entity.setVisible(visible);
         this.m_billPos.entity.setVisible(visible);
+        return this;
     }
     getVisible(): boolean {
         return this.m_entity.getVisible();
     }
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): DragScaleRayCrossPlane {
         this.m_entity.setXYZ(px, py, pz);
         this.m_circle.setXYZ(px, py, pz);
+        return this;
     }
-    setPosition(pv: IVector3D): void {
+    setPosition(pv: IVector3D): DragScaleRayCrossPlane {
         this.m_entity.setPosition(pv);
         this.m_circle.setPosition(pv);
         this.m_billPos.setPosition(pv);
+        return this;
     }
     getPosition(pv: IVector3D): IVector3D {
         this.m_entity.getPosition(pv);
         return pv;
     }
-    setScaleXYZ(sx: number, sy: number, sz: number): void {
+    setScaleXYZ(sx: number, sy: number, sz: number): DragScaleRayCrossPlane {
 
         this.m_entity.setScaleXYZ(sx, sy, sz);
         this.m_circle.setScaleXY(sx, sy);
         this.m_billPos.setScaleXY(sx, sy);
+        return this;
     }
 
-    getScaleXYZ(pv: IVector3D): void {
+    getScaleXYZ(pv: IVector3D): IVector3D {
         this.m_entity.getScaleXYZ(pv);
+        return pv
     }
-    setRotation3(r: IVector3D): void {
+    setRotation3(r: IVector3D): DragScaleRayCrossPlane {
         this.m_entity.setRotation3(r);
+        return this;
     }
-    setRotationXYZ(rx: number, ry: number, rz: number): void {
+    setRotationXYZ(rx: number, ry: number, rz: number): DragScaleRayCrossPlane {
         this.m_entity.setRotationXYZ(rx, ry, rz);
+        return this;
     }
-    getRotationXYZ(pv: IVector3D): void {
+    getRotationXYZ(pv: IVector3D): IVector3D {
         this.m_entity.getRotationXYZ(pv);
+        return pv;
     }
 
     getGlobalBounds(): IAABB {

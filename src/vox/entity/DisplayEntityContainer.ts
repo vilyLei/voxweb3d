@@ -360,9 +360,10 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
             this.m_children[i].__$updateVisible();
         }
     }
-    setVisible(boo: boolean): void {
+    setVisible(boo: boolean): DisplayEntityContainer {
         this.m_visible = boo;
         this.__$updateVisible();
+        return this;
     }
     getVisible(): boolean {
         return this.m_visible;
@@ -380,11 +381,12 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     setX(p: number): void { this.m_pos.x = p; this.m_transformStatus |= 1; }
     setY(p: number): void { this.m_pos.y = p; this.m_transformStatus |= 1; }
     setZ(p: number): void { this.m_pos.z = p; this.m_transformStatus |= 1; }
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): DisplayEntityContainer {
         this.m_pos.x = px;
         this.m_pos.y = py;
         this.m_pos.z = pz;
         this.m_transformStatus |= 1;
+        return this;
     }
     offsetPosition(pv: Vector3D): void {
         this.m_pos.x += pv.x;
@@ -392,11 +394,12 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
         this.m_pos.z += pv.z;
         this.m_transformStatus |= 1;
     }
-    setPosition(pv: Vector3D): void {
+    setPosition(pv: Vector3D): DisplayEntityContainer {
         this.m_pos.x = pv.x;
         this.m_pos.y = pv.y;
         this.m_pos.z = pv.z;
         this.m_transformStatus |= 1;
+        return this;
     }
     getPosition(pv: Vector3D = null): Vector3D {
         if(!pv) pv = new Vector3D();
@@ -413,17 +416,19 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     setRotationY(degrees: number): void { this.m_ry = degrees; this.m_transformStatus |= 2; this.m_rotateBoo = true; }
     setRotationZ(degrees: number): void { this.m_rz = degrees; this.m_transformStatus |= 2; this.m_rotateBoo = true; }
     
-    setRotation3(r: Vector3D): void {
+    setRotation3(r: Vector3D): DisplayEntityContainer {
         this.m_rx = r.x; this.m_transformStatus |= 2; this.m_rotateBoo = true;
         this.m_ry = r.y;
         this.m_rz = r.z;
+        return this;
     }
-    setRotationXYZ(rx: number, ry: number, rz: number): void {
+    setRotationXYZ(rx: number, ry: number, rz: number): DisplayEntityContainer {
         this.m_rx = rx;
         this.m_ry = ry;
         this.m_rz = rz;
         this.m_transformStatus |= 2;
         this.m_rotateBoo = true;
+        return this;
     }
     private m_sx: number = 1.0;
     private m_sy: number = 1.0;
@@ -434,11 +439,12 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     setScaleX(p: number): void { this.m_sx = p; this.m_transformStatus |= 2; }
     setScaleY(p: number): void { this.m_sy = p; this.m_transformStatus |= 2; }
     setScaleZ(p: number): void { this.m_sz = p; this.m_transformStatus |= 2; }
-    setScaleXYZ(sx: number, sy: number, sz: number): void {
+    setScaleXYZ(sx: number, sy: number, sz: number): DisplayEntityContainer {
         this.m_sx = sx;
         this.m_sy = sy;
         this.m_sz = sz;
         this.m_transformStatus |= 2;
+        return this;
     }
     setScale3(sv: Vector3D): void {
         this.setScaleXYZ(sv.x, sv.y, sv.z);

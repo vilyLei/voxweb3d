@@ -187,12 +187,13 @@ class DragTransController {
     getVersion(): number {
         return this.m_target.version;
     }
-    setVisible(visible: boolean): void {
+    setVisible(visible: boolean): DragTransController {
 
         this.m_visible = visible;
         for (let i = 0; i < this.m_controllers.length; ++i) {
             this.m_controllers[i].setVisible(visible);
         }
+        return this;
     }
     moveByRay(rpv: IVector3D, rtv: IVector3D): void {
 
@@ -201,32 +202,39 @@ class DragTransController {
         return this.m_visible;
     }
 
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): DragTransController {
+        return this;
     }
 
-    setPosition(pv: IVector3D): void {
+    setPosition(pv: IVector3D): DragTransController {
         this.m_target.setPosition(pv);
         this.m_target.update();
+        return this;
     }
     getPosition(pv: IVector3D): IVector3D {
 
         this.m_controllers[0].getPosition(pv);
         return pv;
     }
-    setRotation3(r: IVector3D): void {
+    setRotation3(r: IVector3D): DragTransController {
         this.m_target.setRotation3(r);
+        return this;
     }
-    setRotationXYZ(rx: number, ry: number, rz: number): void {
+    setRotationXYZ(rx: number, ry: number, rz: number): DragTransController {
+        return this;
     }
-    setScaleXYZ(sx: number, sy: number, sz: number): void {
+    setScaleXYZ(sx: number, sy: number, sz: number): DragTransController {
         this.m_target.setScaleXYZ(sx, sy, sz);
+        return this;
     }
     setCtrlScaleXYZ(sx: number, sy: number, sz: number): void {
         this.m_target.setCtrlScaleXYZ(sx, sy, sz);
     }
-    getRotationXYZ(pv: IVector3D): void {
+    getRotationXYZ(pv: IVector3D): IVector3D {
+        return null;
     }
-    getScaleXYZ(pv: IVector3D): void {
+    getScaleXYZ(pv: IVector3D): IVector3D {
+        return null;
     }
 
     getGlobalBounds(): IAABB {

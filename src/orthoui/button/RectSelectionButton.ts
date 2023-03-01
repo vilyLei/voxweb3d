@@ -145,10 +145,11 @@ export default class RectSelectionButton extends Plane3DEntity {
         super.setXYZ(px, py, this.m_posZ);
         this.update();
     }
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): RectSelectionButton {
         this.m_posZ = pz;
         super.setXYZ(px, py, pz);
         this.update();
+        return this;
     }
 
     addEventListener(type: number, listener: any, func: (evt: any) => void): void {
@@ -217,8 +218,5 @@ export default class RectSelectionButton extends Plane3DEntity {
     setBgColor(color: Color4): void {
         let material: RectTextureBtnMaterial = this.getMaterial() as RectTextureBtnMaterial;
         material.setBgColor(color);
-    }
-    toString(): string {
-        return "[RectSelectionButton]";
     }
 }

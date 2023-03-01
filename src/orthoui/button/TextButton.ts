@@ -85,10 +85,11 @@ export class TextButton {
                 this.m_container.update();
         }
     }
-    getPosition(pv: Vector3D): void {
+    getPosition(pv: Vector3D): Vector3D {
         if (this.m_container != null) {
             this.m_container.getPosition(pv);
         }
+        return pv;
     }
     setPosition(pv: Vector3D): void {
         if (this.m_container != null) {

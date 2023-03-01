@@ -89,31 +89,38 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
     getEntity(): ITransformEntity {
         return this.m_entity;
     }
-    setVisible(visible: boolean): void {
+    setVisible(visible: boolean): ScaleDragLine {
         this.m_entity.setVisible(visible);
         this.m_box.setVisible(visible);
+        return this;
     }
     getVisible(): boolean {
         return this.m_entity.getVisible();
     }
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): ScaleDragLine {
         this.m_entity.setXYZ(px, py, pz);
+        return this;
     }
-    setRotation3(r: IVector3D): void {
+    setRotation3(r: IVector3D): ScaleDragLine {
         this.m_entity.setRotation3(r);
+        return this;
     }
-    setRotationXYZ(rx: number, ry: number, rz: number): void {
+    setRotationXYZ(rx: number, ry: number, rz: number): ScaleDragLine {
         this.m_entity.setRotationXYZ(rx, ry, rz);
+        return this;
     }
-    setScaleXYZ(sx: number, sy: number, sz: number): void {
+    setScaleXYZ(sx: number, sy: number, sz: number): ScaleDragLine {
         this.m_entity.setScaleXYZ(sx, sy, sz);
+        return this;
     }
 
-    getScaleXYZ(pv: IVector3D): void {
+    getScaleXYZ(pv: IVector3D): IVector3D {
         this.m_entity.getScaleXYZ(pv);
+        return pv;
     }
-    getRotationXYZ(pv: IVector3D): void {
+    getRotationXYZ(pv: IVector3D): IVector3D {
         this.m_entity.getRotationXYZ(pv);
+        return pv;
     }
     localToGlobal(pv: IVector3D): void {
         this.m_entity.localToGlobal(pv);
@@ -154,8 +161,9 @@ class ScaleDragLine extends ScaleCtr implements IRayControl {
             this.m_box = null;
         }
     }
-    setPosition(pos: IVector3D): void {
+    setPosition(pos: IVector3D): ScaleDragLine {
         this.m_entity.setPosition(pos);
+        return this;
     }
     getPosition(pv: IVector3D): IVector3D {
         this.m_entity.getPosition(pv);

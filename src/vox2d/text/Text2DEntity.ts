@@ -81,10 +81,11 @@ export default class Text2DEntity extends DisplayEntity {
     getHeight(): number {
         return this.m_currMesh.getHeight() * this.m_currMaterial.getScaleY();
     }
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): Text2DEntity {
         if (this.m_currMaterial != null) {
             this.m_currMaterial.setXY(px, py);
         }
+        return this;
     }
     setXY(px: number, py: number): void {
         if (this.m_currMaterial != null) {

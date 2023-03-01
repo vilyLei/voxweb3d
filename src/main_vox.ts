@@ -341,7 +341,7 @@
 
 //  import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
 
- import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
+//  import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -413,7 +413,7 @@
 
 //  import {DemoPBRAnimation as Demo} from "./pbr/DemoPBRAnimation";
 
-//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
+ import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 

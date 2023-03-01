@@ -40,9 +40,10 @@ class DragMoveTarget implements IEntityTransform {
         return this.m_engitys[0];
     }
 
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): DragMoveTarget {
+        return this;
     }
-    setPosition(pv: Vector3D): void {
+    setPosition(pv: Vector3D): DragMoveTarget {
         let i: number = 0;
         if (this.m_engitys[i] != null) {
             this.position.addVecsTo(pv, this.m_targetPosOffset);
@@ -54,19 +55,23 @@ class DragMoveTarget implements IEntityTransform {
             this.m_changFlags[i] = true;
         }
         this.position.copyFrom(pv);
+        return this;
     }
     getPosition(pv: Vector3D): Vector3D {
         pv.copyFrom(this.position);
         return pv;
     }
-    setRotation3(r: Vector3D): void {
+    setRotation3(r: Vector3D): DragMoveTarget {
+        return this;
     }
-    setRotationXYZ(rx: number, ry: number, rz: number): void {
+    setRotationXYZ(rx: number, ry: number, rz: number): DragMoveTarget {
+        return this;
     }
-    setScaleXYZ(sx: number, sy: number, sz: number): void {
+    setScaleXYZ(sx: number, sy: number, sz: number): DragMoveTarget {
         // for (let i: number = 1; i < this.m_engitys.length; ++i) {
         //     this.m_engitys[i].setScaleXYZ(sx, sy, sz);
         // }
+        return this;
     }
     setCtrlScaleXYZ(sx: number, sy: number, sz: number): void {
         for (let i: number = 1; i < this.m_engitys.length; ++i) {
@@ -75,9 +80,11 @@ class DragMoveTarget implements IEntityTransform {
             this.m_changFlags[i] = true;
         }
     }
-    getRotationXYZ(pv: Vector3D): void {
+    getRotationXYZ(pv: Vector3D): Vector3D {
+        return pv;
     }
-    getScaleXYZ(pv: Vector3D): void {
+    getScaleXYZ(pv: Vector3D): Vector3D {
+        return pv;
     }
     getGlobalBounds(): IAABB {
         return null;
@@ -314,12 +321,13 @@ class DragMoveController implements IRayControl {
             this.m_controllers[i].deselect();
         }
     }
-    setVisible(visible: boolean): void {
+    setVisible(visible: boolean): DragMoveController {
 
         this.m_visible = visible;
         for (let i: number = 0; i < this.m_controllers.length; ++i) {
             this.m_controllers[i].setVisible(visible);
         }
+        return this;
     }
     moveByRay(rpv: Vector3D, rtv: Vector3D): void {
 
@@ -328,27 +336,34 @@ class DragMoveController implements IRayControl {
         return this.m_visible;
     }
 
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): DragMoveController {
+        return this;
     }
 
-    setPosition(pv: Vector3D): void {
+    setPosition(pv: Vector3D): DragMoveController {
         this.m_dragMoveTarget.setPosition(pv);
         this.m_dragMoveTarget.update();
+        return this;
     }
     getPosition(pv: Vector3D): Vector3D {
         this.m_dragMoveTarget.getPosition(pv);
         return pv;
     }
-    setRotation3(r: Vector3D): void {
+    setRotation3(r: Vector3D): DragMoveController {
+        return this;
     }
-    setRotationXYZ(rx: number, ry: number, rz: number): void {
+    setRotationXYZ(rx: number, ry: number, rz: number): DragMoveController {
+        return this;
     }
-    setScaleXYZ(sx: number, sy: number, sz: number): void {
+    setScaleXYZ(sx: number, sy: number, sz: number): DragMoveController {
         this.m_dragMoveTarget.setScaleXYZ(sx, sy, sz);
+        return this;
     }
-    getRotationXYZ(pv: Vector3D): void {
+    getRotationXYZ(pv: Vector3D): Vector3D {
+        return pv;
     }
-    getScaleXYZ(pv: Vector3D): void {
+    getScaleXYZ(pv: Vector3D): Vector3D {
+        return pv;
     }
     
     getGlobalBounds(): IAABB {

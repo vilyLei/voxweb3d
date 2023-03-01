@@ -91,31 +91,38 @@ class DragLine extends MoveCtr implements IRayControl {
     getEntity(): ITransformEntity {
         return this.m_entity;
     }
-    setVisible(visible: boolean): void {
+    setVisible(visible: boolean): DragLine {
         this.m_entity.setVisible(visible);
         this.m_cone.setVisible(visible);
+        return this;
     }
     getVisible(): boolean {
         return this.m_entity.getVisible();
     }
-    setXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): DragLine {
         this.m_entity.setXYZ(px, py, pz);
+        return this;
     }
-    setRotation3(r: IVector3D): void {
+    setRotation3(r: IVector3D): DragLine {
         this.m_entity.setRotation3(r);
+        return this;
     }
-    setRotationXYZ(rx: number, ry: number, rz: number): void {
+    setRotationXYZ(rx: number, ry: number, rz: number): DragLine {
         this.m_entity.setRotationXYZ(rx, ry, rz);
+        return this;
     }
-    setScaleXYZ(sx: number, sy: number, sz: number): void {
+    setScaleXYZ(sx: number, sy: number, sz: number): DragLine {
         this.m_entity.setScaleXYZ(sx, sy, sz);
+        return this;
     }
 
-    getScaleXYZ(pv: IVector3D): void {
+    getScaleXYZ(pv: IVector3D): IVector3D {
         this.m_entity.getScaleXYZ(pv);
+        return pv
     }
-    getRotationXYZ(pv: IVector3D): void {
+    getRotationXYZ(pv: IVector3D): IVector3D {
         this.m_entity.getRotationXYZ(pv);
+        return pv
     }
     localToGlobal(pv: IVector3D): void {
         this.m_entity.localToGlobal(pv);
@@ -163,8 +170,9 @@ class DragLine extends MoveCtr implements IRayControl {
         }
 
     }
-    setPosition(pos: IVector3D): void {
+    setPosition(pos: IVector3D): DragLine {
         this.m_entity.setPosition(pos);
+        return this;
     }
     getPosition(outPos: IVector3D): IVector3D {
         this.m_entity.getPosition(outPos);

@@ -72,7 +72,7 @@ export default interface IRenderEntity extends IRenderEntityBase {
     isDrawEnabled(): boolean;
 
     getRenderState(): number;
-    setRenderState(renderState: number): void;
+    setRenderState(renderState: number): IRenderEntity;
 
     /**
      * @boundsHit       表示是否包围盒体已经和射线相交了
@@ -101,16 +101,16 @@ export default interface IRenderEntity extends IRenderEntityBase {
      */
     updateMaterialToGpu(rc?: IRenderProxy, deferred?: boolean): void;
 
-    setXYZ(px: number, py: number, pz: number): void;
-    setPosition(pos: IVector3D): void;
+    setXYZ(px: number, py: number, pz: number): IRenderEntity;
+    setPosition(pos: IVector3D): IRenderEntity;
     /**
      * @param pv the default value is null
      */
-    getPosition(pv?: IVector3D): void;
-    setRotationXYZ(rx: number, ry: number, rz: number): void;
-    setRotation3(rv: IVector3D): void;
-    setScaleXYZ(sx: number, sy: number, sz: number): void;
-    setScale3(sv: IVector3D): void;
+    getPosition(pv?: IVector3D): IVector3D;
+    setRotationXYZ(rx: number, ry: number, rz: number): IRenderEntity;
+    setRotation3(rv: IVector3D): IRenderEntity;
+    setScaleXYZ(sx: number, sy: number, sz: number): IRenderEntity;
+    setScale3(sv: IVector3D): IRenderEntity;
     
     /**
      * @param sv the default value is null
@@ -121,14 +121,14 @@ export default interface IRenderEntity extends IRenderEntityBase {
      */
     getRotationXYZ(rv?: IVector3D): IVector3D;
 
-    copyPositionFrom(entity: IRenderEntity): void;
-    copyMeshFrom(entity: IRenderEntity): void;
-    copyMaterialFrom(entity: IRenderEntity): void;
-    copyTransformFrom(entity: IRenderEntity): void;
+    copyPositionFrom(entity: IRenderEntity): IRenderEntity;
+    copyMeshFrom(entity: IRenderEntity): IRenderEntity;
+    copyMaterialFrom(entity: IRenderEntity): IRenderEntity;
+    copyTransformFrom(entity: IRenderEntity): IRenderEntity;
 
-    setMesh(material: IMeshBase): void;
+    setMesh(material: IMeshBase): IRenderEntity;
     getMesh(): IMeshBase;
-    setMaterial(material: IRenderMaterial): void;
+    setMaterial(material: IRenderMaterial): IRenderEntity;
     getMaterial(): IRenderMaterial;
     getDisplay(): IRODisplay;
     getInvMatrix(): IMatrix4;

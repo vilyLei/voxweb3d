@@ -21,7 +21,8 @@ export default class BoundsEntity extends DisplayEntity implements IBoundsEntity
     constructor(transform: IROTransform = null) {
         super(transform);
     }
-    setMaterial(m: IRenderMaterial): void {
+    setMaterial(m: IRenderMaterial): BoundsEntity {
+        return this;
     }
     protected createDisplay(): void {
     }
