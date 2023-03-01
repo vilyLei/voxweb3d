@@ -25,7 +25,7 @@ import VtxDrawingInfo from "../vox/render/vtx/VtxDrawingInfo";
 import DefaultPassGraph from "../vox/render/pass/DefaultPassGraph";
 import AddBlendPassItem from "./pass/AddBlendPassItem";
 
-export class DemoVtxMatGraph {
+export class DemoMaterialGraphTest {
 	private m_init = true;
 	private m_texLoader: ImageTextureLoader = null;
 	private m_teamLoader = new CoModelTeamLoader();
@@ -43,7 +43,7 @@ export class DemoVtxMatGraph {
 		rscene.addEventListener(MouseEvent.MOUSE_MIDDLE_DOWN, this, this.MMouseDownListener, true, false);
 	}
 	initialize(): void {
-		console.log("DemoVtxMatGraph::initialize()......");
+		console.log("DemoMaterialGraphTest::initialize()......");
 		if (this.m_init) {
 			this.m_init = false;
 
@@ -324,4 +324,4 @@ export class DemoVtxMatGraph {
 		}
 	}
 }
-export default DemoVtxMatGraph;
+export default DemoMaterialGraphTest;

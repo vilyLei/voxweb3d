@@ -337,7 +337,7 @@
 
 //  import {DemoVtxMultiRDP as Demo} from "./demo/DemoVtxMultiRDP";
 
-//  import {DemoVtxMatGraph as Demo} from "./demo/DemoVtxMatGraph";
+ import {DemoMaterialGraphTest as Demo} from "./demo/DemoMaterialGraphTest";
 
 //  import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
 
@@ -413,7 +413,7 @@
 
 //  import {DemoPBRAnimation as Demo} from "./pbr/DemoPBRAnimation";
 
- import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
