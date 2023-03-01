@@ -165,85 +165,85 @@ export default class RODataBuilder implements IRODataBuilder {
 
         // if (disp.__$ruid >= 0) {
 
-            let rc = this.m_rc;
-            // let material = disp.getMaterial();
-            if (material) {
-                if (material.getShaderData() == null) {
-                    let texList = material.getTextureList();
-                    let texEnabled = ((texList != null && texList != null) && texList.length > 0);
-                    material.initializeByCodeBuf(texEnabled);
-                }
-                shdp = this.m_shdpBuilder.create(material.getShaderData());
+        let rc = this.m_rc;
+        // let material = disp.getMaterial();
+        if (material) {
+            if (material.getShaderData() == null) {
+                let texList = material.getTextureList();
+                let texEnabled = ((texList != null && texList != null) && texList.length > 0);
+                material.initializeByCodeBuf(texEnabled);
+            }
+            shdp = this.m_shdpBuilder.create(material.getShaderData());
 
-                shdp.upload(rc.RContext, rc.getUid());
-                runit.shdUid = shdp.getUid();
+            shdp.upload(rc.RContext, rc.getUid());
+            runit.shdUid = shdp.getUid();
 
-                let tro: TextureRenderObj = null;
-                if (shdp.getTexTotal() > 0) {
-                    tro = this.createTRO(material.getTextureList(), shdp.getTexTotal());
-                    if (runit.tro != tro) {
-                        if (runit.tro != null) {
-                            runit.tro.__$detachThis();
-                        }
-                        runit.tro = tro;
-                        tro.__$attachThis();
-                        runit.texMid = runit.tro.getMid();
-                        if (runit.__$rprouid >= 0) this.m_processBuider.rejoinRunitForTro(runit);
-                        material.__$troMid = runit.tro.getMid();
+            let tro: TextureRenderObj = null;
+            if (shdp.getTexTotal() > 0) {
+                tro = this.createTRO(material.getTextureList(), shdp.getTexTotal());
+                if (runit.tro != tro) {
+                    if (runit.tro != null) {
+                        runit.tro.__$detachThis();
                     }
+                    runit.tro = tro;
+                    tro.__$attachThis();
+                    runit.texMid = runit.tro.getMid();
+                    if (runit.__$rprouid >= 0) this.m_processBuider.rejoinRunitForTro(runit);
+                    material.__$troMid = runit.tro.getMid();
                 }
-                else {
-                    if (runit.tro != this.m_emptyTRO) {
-                        if (runit.tro != null) {
-                            runit.tro.__$detachThis();
-                        }
-                        runit.tro = this.m_emptyTRO;
-                        runit.texMid = runit.tro.getMid();
-                        if (runit.__$rprouid >= 0) this.m_processBuider.rejoinRunitForTro(runit);
-                        material.__$troMid = runit.texMid;
-                    }
-                }
-                if (this.m_shader.getSharedUniformByShd(shdp) == null) {
-
-                    let sharedMList = this.createsharedMList(material, shdp);
-                    if (sharedMList) {
-                        for (let i = 0; i < sharedMList.length; ++i) {
-                            sharedMList[i].program = shdp.getGPUProgram();
-                        }
-                    }
-                    this.m_shader.setSharedUniformByShd(shdp, this.m_shdUniformTool.buildShared(sharedMList, rc, shdp));
-                }
-                let hasTrans = shdp.hasUniformByName(UniformConst.LocalTransformMatUNS);
-                if (material.__$uniform == null) {
-                    material.__$uniform = this.m_shdUniformTool.buildLocalFromData(material.createSelfUniformData(), shdp);
-                }
-
-                if (disp && hasTrans) {
-                    if (disp.getTransform() != null) {
-                        //console.log("disp.getTransform().getUid(): "+disp.getTransform().getUid());
-                        runit.transUniform = ROTransPool.GetTransUniform(disp.getTransform(), shdp);
-                        //console.log("RODataBuilder::updateDispMaterial(), get runit.transUniform: ",runit.transUniform);
-                    }
-                }
-                // console.log("RODataBuilder::updateDispMaterial(), runit: ",runit);
-                // console.log("RODataBuilder::updateDispMaterial(), runit.uid: ",runit.getUid());
-                // console.log("RODataBuilder::updateDispMaterial(), runit.transUniform == null: ",runit.transUniform == null);
-                if(disp != null) {
-                    if (runit.transUniform == null) {
-                        runit.transUniform = this.m_shdUniformTool.buildLocalFromTransformV(hasTrans ? disp.getMatrixFS32() : null, shdp);
-                        ROTransPool.SetTransUniform(disp.getTransform(), runit.transUniform, shdp);
-                    }
-                    else {
-                        runit.transUniform = this.m_shdUniformTool.updateLocalFromTransformV(runit.transUniform, hasTrans ? disp.getMatrixFS32() : null, shdp);
-                    }
-                }
-                runit.polygonOffset = material.getPolygonOffset();
-                runit.uniform = material.__$uniform;
-
             }
             else {
-                console.error("Error RODataBuilder::updateDispMaterial(), material is null !!!");
+                if (runit.tro != this.m_emptyTRO) {
+                    if (runit.tro != null) {
+                        runit.tro.__$detachThis();
+                    }
+                    runit.tro = this.m_emptyTRO;
+                    runit.texMid = runit.tro.getMid();
+                    if (runit.__$rprouid >= 0) this.m_processBuider.rejoinRunitForTro(runit);
+                    material.__$troMid = runit.texMid;
+                }
             }
+            if (this.m_shader.getSharedUniformByShd(shdp) == null) {
+
+                let sharedMList = this.createsharedMList(material, shdp);
+                if (sharedMList) {
+                    for (let i = 0; i < sharedMList.length; ++i) {
+                        sharedMList[i].program = shdp.getGPUProgram();
+                    }
+                }
+                this.m_shader.setSharedUniformByShd(shdp, this.m_shdUniformTool.buildShared(sharedMList, rc, shdp));
+            }
+            let hasTrans = shdp.hasUniformByName(UniformConst.LocalTransformMatUNS);
+            if (material.__$uniform == null) {
+                material.__$uniform = this.m_shdUniformTool.buildLocalFromData(material.createSelfUniformData(), shdp);
+            }
+            const dispFlag = disp && disp.__$ruid >= 0;
+            if (hasTrans) {
+                if (dispFlag && disp.getTransform() != null) {
+                    //console.log("disp.getTransform().getUid(): "+disp.getTransform().getUid());
+                    runit.transUniform = ROTransPool.GetTransUniform(disp.getTransform(), shdp);
+                    //console.log("RODataBuilder::updateDispMaterial(), get runit.transUniform: ",runit.transUniform);
+                }
+            }
+            // console.log("RODataBuilder::updateDispMaterial(), runit: ",runit);
+            // console.log("RODataBuilder::updateDispMaterial(), runit.uid: ",runit.getUid());
+            // console.log("RODataBuilder::updateDispMaterial(), runit.transUniform == null: ",runit.transUniform == null);
+            if (dispFlag) {
+                if (runit.transUniform == null) {
+                    runit.transUniform = this.m_shdUniformTool.buildLocalFromTransformV(hasTrans ? disp.getMatrixFS32() : null, shdp);
+                    ROTransPool.SetTransUniform(disp.getTransform(), runit.transUniform, shdp);
+                }
+                else {
+                    runit.transUniform = this.m_shdUniformTool.updateLocalFromTransformV(runit.transUniform, hasTrans ? disp.getMatrixFS32() : null, shdp);
+                }
+            }
+            runit.polygonOffset = material.getPolygonOffset();
+            runit.uniform = material.__$uniform;
+
+        }
+        else {
+            console.error("Error RODataBuilder::updateDispMaterial(), material is null !!!");
+        }
         // }
         return shdp;
     }
@@ -375,8 +375,7 @@ export default class RODataBuilder implements IRODataBuilder {
                 if (disp.__$ruid >= 0) {
                     this.buildVtxRes(disp, runit, this.updateDispMaterial(runit, disp.getMaterial(), disp));
                 } else {
-
-                    console.error("Error RODataBuilder::updateDispMaterial(), material is null !!!");
+                    console.error("Error RODataBuilder::buildGpuDisp(), disp is unavailable !!!");
                     this.buildVtxRes(disp, runit, null);
                 }
                 return true;

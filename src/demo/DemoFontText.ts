@@ -36,6 +36,7 @@ export class DemoFontText {
 
     private m_fpsTextBill: TextBillboard3DEntity = null;
     private m_textBill: TextBillboard3DEntity = null;
+    
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
