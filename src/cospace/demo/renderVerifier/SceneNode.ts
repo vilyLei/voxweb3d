@@ -119,7 +119,7 @@ class SceneNode implements ISceneNode {
 			// console.log("initEntity lossTime: ", (Date.now() - this.m_time) + " ms");
 
 			let flag = false;
-			let uvErrorCheck = false;
+			let uvErrorCheck = true;
 
 			if(uvErrorCheck) {
 				if(model.status != undefined && model.status > 0) {
@@ -139,12 +139,14 @@ class SceneNode implements ISceneNode {
 			SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs2);
 
 			let mb = new NormalCheckMaterial();
+			
 			mb.applyDifference(true);
 			// let material = new NormalViewerMaterial();
 			let material = mb.create(flag);
 			material.initializeByCodeBuf();
 			let dataMesh: DataMesh = new DataMesh();
 			dataMesh.wireframe = flag;
+			dataMesh.shape = !uvErrorCheck;
 			dataMesh.vbWholeDataEnabled = false;
 			dataMesh.setVS(model.vertices);
 			// dataMesh.setUVS(model.uvsList[0]);

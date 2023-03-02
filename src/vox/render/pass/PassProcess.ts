@@ -11,16 +11,23 @@ import IPassProcess from "./IPassProcess";
 import IRenderMaterial from "../IRenderMaterial";
 import IPassMaterialWrapper from "./IPassMaterialWrapper";
 import PassMaterialWrapper from "./PassMaterialWrapper";
+import RPOUnit from "../RPOUnit";
+
 export default class PassProcess implements IPassProcess {
 
-    constructor() { }
-    rc: IRenderProxy;
-    vtxFlag: boolean;
-    texFlag: boolean;
+    constructor() {}
+
+    rc: IRenderProxy = null;
+    vtxFlag = false;
+    texFlag = false;
     units: IRPOUnit[] = null;
     materials: IPassMaterialWrapper[] = null;
-    createMaterialWrapper(m: IRenderMaterial): IPassMaterialWrapper {
+
+    createMaterialWrapper(m: IRenderMaterial, hostRUnit: IRPOUnit): IPassMaterialWrapper {
+        const rc = this.rc;
         let w = new PassMaterialWrapper();
+        w.rdataBuilder = rc.rdataBuilder;
+        w.hostUnit = hostRUnit as RPOUnit;
         w.bindMaterial(m);
         return w;
     }
@@ -31,7 +38,7 @@ export default class PassProcess implements IPassProcess {
             let vtxFlag = this.vtxFlag;
             let texFlag = this.texFlag;
             const mts = this.materials as PassMaterialWrapper[];
-            if(mts == null || mts.length == 0) {
+            if(mts == null || mts.length < 1) {
                 for (let i = 0, ln = units.length; i < ln; ++i) {
                     const unit = units[i];
                     vtxFlag = unit.updateVtx() || vtxFlag;
@@ -49,17 +56,22 @@ export default class PassProcess implements IPassProcess {
             }else {
                 const mtln = mts.length;
                 for (let i = 0, ln = units.length; i < ln; ++i) {
-                    const unit = units[i];
                     const mt = i < mtln ? mts[i] : mts[mtln - 1];
-                    vtxFlag = unit.updateVtx() || vtxFlag;
-                    if (vtxFlag) {
-                        unit.vro.run();
-                        vtxFlag = false;
+                    // console.log("mt.isEnabled(): ", mt.isEnabled());
+                    if(mt.isEnabled()) {
+                        
+                        const unit = units[i];
+                        unit.copyMaterialFrom(mt.unit);
+                        unit.applyShader(true);
+                        vtxFlag = unit.updateVtx() || vtxFlag;
+                        if (vtxFlag) {
+                            unit.vro.run();
+                            vtxFlag = false;
+                        }
+                        unit.tro.run();
+                        unit.run2(rc);
+                        unit.draw(rc);
                     }
-                    unit.copyMaterialFrom(mt.unit);
-                    unit.tro.run();
-                    unit.run2(rc);
-                    unit.draw(rc);
                 }
             }
         }

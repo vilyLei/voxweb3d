@@ -14,6 +14,7 @@ import RenderDrawMode from "../RenderDrawMode";
 import IRODisplay from "../../display/IRODisplay";
 import IRenderProxy from "../IRenderProxy";
 import { IROIvsRD, IROIvsRDP } from "./IROIvsRDP";
+import DebugFlag from "../../debug/DebugFlag";
 const RDM = RenderDrawMode;
 class BufRData implements IROIvsRD {
     private static s_uid = 0;
@@ -348,8 +349,11 @@ class ROIndicesRes implements IROIndicesRes {
         force = force || this.m_rdpVer != this.rdp.getVersion();
         // console.log("B this.rdp.getType(): ", this.rdp.getType(), this.rdp.getUid());
         if (this.m_vrc.testRIOUid(this.m_vtxUid) || force) {
+
+            // if(DebugFlag.Flag_0 > 0) {
+            //     console.log("ROIndicesRes::bindToGPU(), rdp: ", this.rdp);
+            // }
             // console.log(this.rdp.buf.wireframe);
-            // console.log("bindToGPU()");
             this.m_vrc.bindEleBuf(this.rdp.buf);
             this.m_rdpVer = this.rdp.getVersion();
         }

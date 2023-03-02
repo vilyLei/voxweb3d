@@ -62,7 +62,7 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
     }
     initialize(rparam: IRendererParam, renderProcessesTotal?: number, createNewCamera?: boolean): IRendererScene {
         throw Error("illegal operation!!!");
-        return this;
+        return null;
     }
     initializeOrtho(rscene: RendererScene): void {
         if (rscene != null) {

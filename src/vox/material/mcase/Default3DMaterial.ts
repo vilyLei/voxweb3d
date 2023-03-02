@@ -16,6 +16,7 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
     private m_uniqueName: string = "";
     normalEnabled: boolean = false;
     vtxMatrixTransform: boolean = true;
+    tns = "";
     constructor() {
         super();
     }
@@ -135,7 +136,7 @@ vec2 getUV(vec2 uv) {
 
     }
     getUniqueShaderName(): string {
-        return this.m_uniqueName;
+        return this.m_uniqueName + "_" + this.tns;
     }
 
 }
@@ -144,6 +145,7 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
     private static s_shdCodeBuffer: Default3DShaderCodeBuffer = null;
     private m_data = new Float32Array([1.0, 1.0, 1.0, 1.0]);
     private m_uvTrans = new Float32Array([0.0, 0.0, 1.0, 1.0]);
+    name = "";
 
     vertColorEnabled = false;
     premultiplyAlpha = false;
@@ -158,7 +160,7 @@ export default class Default3DMaterial extends MaterialBase implements IDefault3
     }
     protected buildBuf(): void {
         let buf: Default3DShaderCodeBuffer = Default3DMaterial.s_shdCodeBuffer;
-
+        buf.tns = this.name;
         buf.getShaderCodeBuilder().normalEnabled = this.normalEnabled;
         buf.vertColorEnabled = this.vertColorEnabled;
         buf.premultiplyAlpha = this.premultiplyAlpha;

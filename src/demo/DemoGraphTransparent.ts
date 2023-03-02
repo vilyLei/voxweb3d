@@ -40,11 +40,13 @@ export class DemoGraphTransparent {
 			this.m_init = false;
 
 			document.oncontextmenu = function (e) {
-				e.preventDefault();
+				// e.preventDefault();
 			}
 
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+			// RendererDevice.SetWebBodyColor("#000000");
+			RendererDevice.SetWebBodyColor("#FFFFFF");
 			DivLog.SetDebugEnabled(false);
 
 			let rparam = new RendererParam();
@@ -52,11 +54,12 @@ export class DemoGraphTransparent {
 			// rparam.maxWebGLVersion = 1;
 			rparam.setCamProject(45, 0.1, 6000.0);
 			rparam.setCamPosition(1100.0, 1100.0, 1100.0);
-			rparam.setAttriAlpha(false);
+			// rparam.setAttriAlpha(false);
 			
 			let rscene = new RendererScene();
 			// rscene.initialize(rparam).setAutoRunning(true);
 			rscene.initialize(rparam);
+			rscene.setClearRGBAColor4f(0.0,0.0,0.0,0.0);
 			this.m_rscene = rscene;
 			this.m_texLoader = new ImageTextureLoader(rscene.textureBlock);
 
@@ -78,7 +81,7 @@ export class DemoGraphTransparent {
 		// 推荐的模型数据组织形式
 		console.log("XXX ------------ XXXXXXXXXX testDataMesh XXXXXXXXXXXX ------------ XXX");
 		let staticVtx = false;
-		let alpha = 0.3;
+		let alpha = 0.8;
 		let material = new Default3DMaterial();
 		material.setAlpha(alpha);
 		material.normalEnabled = true;

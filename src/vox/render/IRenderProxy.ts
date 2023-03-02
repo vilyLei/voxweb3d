@@ -22,6 +22,7 @@ import { IRenderingStencil } from "../../vox/render/rendering/IRenderingStencil"
 import { IRenderingColorMask } from "./rendering/IRenderingColorMask";
 import { IRenderingState } from "./rendering/IRenderingState";
 import IRenderShader from "../../vox/render/IRenderShader";
+import IRODataBuilder from "../../vox/render/IRODataBuilder";
 
 import { IRPStatus } from "./status/IRPStatus";
 
@@ -51,6 +52,7 @@ export default interface IRenderProxy {
     readonly MaterialUpdater: IROMaterialUpdater;
     readonly uniformContext: IShaderUniformContext;
     readonly rshader: IRenderShader;
+    rdataBuilder: IRODataBuilder;
 
     readonly stencil: IRenderingStencil;
     readonly renderingState: IRenderingState;

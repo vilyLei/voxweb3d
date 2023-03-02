@@ -91,7 +91,13 @@ export default class RPOUnit implements IRPOUnit {
         this.uniform = unit.uniform;
         this.ubo = unit.ubo;
         this.texMid = unit.texMid;
+        // if(this.shdUid != unit.shdUid) {
+        //     console.log(">>>>>>> copyMaterialFrom this.shdUid, unit.shdUid: ", this.shdUid, unit.shdUid);
+        //     unit.transUniform.uns = "new_unit_trans";
+        //     unit.uniform.uns = "new_uniform";
+        // }
         this.shdUid = unit.shdUid;
+        this.transUniform = unit.transUniform;
     }
     applyShader(force: boolean = false): void {
         this.shader.bindToGpu( this.shdUid );
@@ -129,12 +135,6 @@ export default class RPOUnit implements IRPOUnit {
         this.testVisible();
         // if(DebugFlag.Flag_0 > 0) console.log("#### setVisible(): ", boo, "this.drawEnabled: ",this.drawEnabled);
     }
-    // setColorMask(rcolorMask: number): void {
-    //     this.setDrawFlag(this.renderState, rcolorMask);
-    // }
-    // setRenderState(renderState: number): void {
-    //     this.setDrawFlag(renderState, this.rcolorMask);
-    // }
     setDrawFlag(renderState: number, rcolorMask: number): void {
         this.renderState = renderState;
         this.rcolorMask = rcolorMask;

@@ -48,6 +48,10 @@ export default interface IRODataBuilder extends IROMaterialUpdater, IROVertexBuf
     updateDispMaterial(runit: IRPOUnit, material: IRenderMaterial, disp?: IRODisplay): IShdProgram;
     
     buildGpuDisp(disp: IRODisplay, rentity: IRenderEntity): boolean;
+    
+    createRPOUnit(): IRPOUnit;
+    restoreRPOUnit(runit: IRPOUnit): boolean;
+
     update(): void;
     updateGlobalMaterial(material: IRenderMaterial, materialUniformUpdate?: boolean): void;
     reset(): void;

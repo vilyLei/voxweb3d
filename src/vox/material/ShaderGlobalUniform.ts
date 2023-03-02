@@ -67,6 +67,7 @@ export default class ShaderGlobalUniform extends ShaderUniform {
     }
     use(rc: IRenderShader): void {
         //let slot: UniformDataSlot = UniformDataSlot.GetSlotAt(rc.getRCUid());
+        
         if (this.always || this.rst != this.m_slotFlags[this.slotIndex]) {
             //  if(rc.getGPUProgram() == null) {
             //      console.warn("current gpu shader program is null");
@@ -77,8 +78,11 @@ export default class ShaderGlobalUniform extends ShaderUniform {
             //  if(this.program != null && rc.getGPUProgram() != this.program) {
             //      console.warn("current gpu shader program can't match this global uniform.");
             //  }
+            
+            // console.log("global uniform run(), names: ", this.uniformNameList);
+
             this.rst = this.m_slotFlags[this.slotIndex];
-            let i: number = 0;
+            let i = 0;
             let datas = this.m_slotDatas;
             if (RendererDevice.IsWebGL1()) {
                 for (; i < this.uniformsTotal; ++i) {

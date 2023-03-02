@@ -78,4 +78,23 @@ export default class CoRendererScene extends RendererSceneBase implements IRende
         throw Error("Illegal operation!!!");
         return null;
     }
+    
+    private m_autoRRun = false;
+    setAutoRunning(auto: boolean): void {
+        
+        if (this.m_autoRRun != auto) {
+            if (this.m_autoRRun) {
+                this.m_autoRRun = false;
+            } else {
+                this.m_autoRRun = true;
+                const func = (): void => {
+                    if (this.m_autoRRun) {
+                        this.run();
+                        window.requestAnimationFrame(func);
+                    }
+                }
+                window.requestAnimationFrame(func);
+            }
+        }
+    }
 }

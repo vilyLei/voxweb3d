@@ -42,7 +42,7 @@ export default class RPOBlock {
     rpoNodeBuilder: RPONodeBuilder = null;
     rpoUnitBuilder: RPOUnitBuilder = null;
     vtxResource: ROVertexResource = null;
-    constructor(shader: RenderShader,) {
+    constructor(shader: RenderShader) {
         this.m_shader = shader;
         this.m_uid = RPOBlock.s_uid++;
     }
@@ -86,42 +86,61 @@ export default class RPOBlock {
             this.m_shader.bindToGpu(this.shdUid);
             this.m_shader.resetUniform();
             let unit: RPOUnit = null;
+            this.m_shdUpdate = false;
 
+            // console.log("run0");
             while (nextNode) {
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
                     unit.updateVtx();
                     if (unit.drawEnabled) {
-                        unit.run(rc);
-                        unit.draw(rc);
+                        if (!unit.rgraph) {
+                            if (this.m_shdUpdate) {
+                                unit.applyShader(true);
+                                this.m_shdUpdate = false;
+                            }
+                            unit.run(rc);
+                            unit.draw(rc);
+                        } else if (unit.rgraph.isEnabled()) {
+                            const proc = this.m_passProcess1;
+                            proc.units = [unit];
+                            proc.rc = rc;
+                            proc.vtxFlag = true;
+                            proc.texFlag = true;
+                            unit.rgraph.run(proc);
+                            this.m_shdUpdate = true;
+                        }
                     }
                 }
                 nextNode = nextNode.next;
             }
         }
     }
+    private m_passProcess1 = new PassProcess();
+    private m_shdUpdate = false;
     private run1(rc: RenderProxy): void {
 
         let nextNode = this.m_nodeLinker.getBegin();
         if (nextNode != null) {
-
             this.m_shader.bindToGpu(this.shdUid);
             this.m_shader.resetUniform();
+
+            let linker = this.m_nodeLinker;
             let unit: RPOUnit = null;
-            let vtxTotal = this.m_nodeLinker.getVtxTotalAt(nextNode.rvroI);
-            let texTotal = this.m_nodeLinker.getTexTotalAt(nextNode.rtroI);
+            let vtxTotal = linker.getVtxTotalAt(nextNode.rvroI);
+            let texTotal = linker.getTexTotalAt(nextNode.rtroI);
             let vtxFlag = vtxTotal > 0;
             let texFlag = texTotal > 0;
-
-            // console.log("run1", vtxFlag, texFlag);
+            this.m_shdUpdate = false;
+            // console.log("run1", vtxFlag, texFlag, this.procuid);
             while (nextNode != null) {
                 if (vtxTotal < 1) {
-                    vtxTotal = this.m_nodeLinker.getVtxTotalAt(nextNode.rvroI);
+                    vtxTotal = linker.getVtxTotalAt(nextNode.rvroI);
                     vtxFlag = true;
                 }
                 vtxTotal--;
                 if (texTotal < 1) {
-                    texTotal = this.m_nodeLinker.getTexTotalAt(nextNode.rtroI);
+                    texTotal = linker.getTexTotalAt(nextNode.rtroI);
                     texFlag = true;
                 }
                 texTotal--;
@@ -133,16 +152,16 @@ export default class RPOBlock {
 
                     vtxFlag = unit.updateVtx() || vtxFlag;
                     if (unit.drawEnabled) {
-                        if(unit.rgraph && unit.rgraph.isEnabled()) {
+                        if (!unit.rgraph) {
+                            this.draw1(rc, unit, vtxFlag, texFlag);
+                        } else if (unit.rgraph.isEnabled()) {
                             const proc = this.m_passProcess1;
                             proc.units = [unit];
                             proc.rc = rc;
                             proc.vtxFlag = vtxFlag;
                             proc.texFlag = texFlag;
                             unit.rgraph.run(proc);
-                            // this.drawGraph1(rc, unit, vtxFlag, texFlag);
-                        }else {
-                            this.draw1(rc, unit, vtxFlag, texFlag);
+                            this.m_shdUpdate = true;
                         }
 
                         vtxFlag = false;
@@ -153,8 +172,11 @@ export default class RPOBlock {
             }
         }
     }
-    private m_passProcess1 = new PassProcess();
     private draw1(rc: RenderProxy, unit: RPOUnit, vtxFlag: boolean, texFlag: boolean): void {
+        if (this.m_shdUpdate) {
+            unit.applyShader(true);
+            this.m_shdUpdate = false;
+        }
         if (vtxFlag) {
             unit.vro.run();
             vtxFlag = false;
@@ -287,22 +309,21 @@ export default class RPOBlock {
     }
     // 在锁定material的时候,直接绘制单个unit
     drawLockMaterialByUnit(rc: RenderProxy, unit: RPOUnit, disp: IRODisplay, useGlobalUniform: boolean, forceUpdateUniform: boolean): void {
+        unit.updateVtx();
         if (unit.drawEnabled) {
             if (forceUpdateUniform) {
                 this.m_shader.resetUniform();
             }
             // console.log("****** drawLockMaterialByUnit(), unit: ",unit);
-            unit.updateVtx();
+            let vro = unit.vro;
             if (RendererDevice.IsMobileWeb()) {
                 // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在某些设备上会有问题(例如ip6s上无法正常绘制)
                 // 注意临时产生的 vro 对象的回收问题
                 // let vro: IVertexRenderObj = this.vtxResource.getVROByResUid(disp.vbuf.getUid(), this.m_shader.getCurrentShd(), true);
-                let vro = this.vtxResource.getVROByResUid(disp.getVtxResUid(), this.m_shader.getCurrentShd(), true);
-                vro.run();
+                vro = this.vtxResource.getVROByResUid(disp.getVtxResUid(), this.m_shader.getCurrentShd(), true);
             }
-            else {
-                unit.vro.run();
-            }
+            vro.run();
+
             unit.runLockMaterial2(useGlobalUniform ? this.m_shader.__$globalUniform : null);
             unit.draw(rc);
         }

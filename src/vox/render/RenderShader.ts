@@ -13,7 +13,7 @@ import IRenderShader from "../../vox/render/IRenderShader";
 import IRenderResource from "../../vox/render/IRenderResource";
 import IRenderShaderUniform from "../../vox/render/uniform/IRenderShaderUniform";
 import { IShaderProgramBuilder } from "../../vox/material/IShaderProgramBuilder";
-import DebugFlag from "../debug/DebugFlag";
+// import DebugFlag from "../debug/DebugFlag";
 
 /**
  * 作为渲染器运行时 material shader 资源的管理类
@@ -70,6 +70,9 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     }
     useTransUniform(u: IRenderShaderUniform): void {
         if (this.m_trsu != u) {
+            // if(DebugFlag.Flag_0 > 0) {
+            //     console.log("useTransUniform() ...", u.dataList);
+            // }
             this.m_trsu = u;
             u.use(this);
         }
@@ -136,7 +139,7 @@ export default class RenderShader implements IRenderShader, IRenderResource {
                 this.m_preuid = resUid;
 
                 //let shd: IShdProgram = this.m_shdList[resUid];
-                let shd: IShdProgram = this.m_shdProgramBuilder.findShdProgramByUid(resUid);
+                let shd = this.m_shdProgramBuilder.findShdProgramByUid(resUid);
                 this.m_fragOutputTotal = shd.getFragOutputTotal();
                 if (this.m_fragOutputTotal != this.getActiveAttachmentTotal()) {
                     //if(RendererDevice.SHOWLOG_ENABLED) {
@@ -148,9 +151,12 @@ export default class RenderShader implements IRenderShader, IRenderResource {
                 this.m_gpuProgram = shd.getGPUProgram();
                 this.m_rc.useProgram(this.m_gpuProgram);
                 shd.useTexLocation();
-                //console.log("use a new shader uid: ",shd.getUid(),",uns: ",shd.getUniqueShaderName());
+                // console.log("use a new shader uid: ",shd.getUid(),",uns: ",shd.getUniqueShaderName());
+                // if(DebugFlag.Flag_0 > 0) {
+                //     console.log("use a new shader uid: ",shd.getUid(),",uns: ",shd.getUniqueShaderName());
+                // }
                 // use global shared uniform
-                let uniform: IRenderShaderUniform = this.m_sharedUniformList[shd.getUid()];
+                let uniform = this.m_sharedUniformList[shd.getUid()];
                 //  let boo: boolean = false;
                 //  if((uniform as any).uns == "u_projMat") {
                 //      console.log("only use projMat begin");
@@ -167,7 +173,7 @@ export default class RenderShader implements IRenderShader, IRenderResource {
                 //  }
             }
             else if (this.m_guniform == null && this.m_currShd != null) {
-                let uniform: IRenderShaderUniform = this.m_sharedUniformList[this.m_currShd.getUid()];
+                let uniform = this.m_sharedUniformList[this.m_currShd.getUid()];
                 this.m_guniform = uniform;
                 while (uniform != null) {
                     uniform.use(this);
@@ -242,11 +248,13 @@ export default class RenderShader implements IRenderShader, IRenderResource {
      * 仅仅更新单个matrix4的uniforms数据
     */
     useUniformMat4(ult: any, mat4f32Arr: Float32Array): void {
+        // console.log("df");
         this.m_rc.uniformMatrix4fv(ult, false, mat4f32Arr);
     }
     useUniformV2(ult: any, type: number, f32Arr: Float32Array, dataSize: number, offset: number): void {
 		const mc = MaterialConst;
 		const rc = this.m_rc;
+        // console.log("useUniformV2 A, type:",type,", dataSize: ",dataSize);
         switch (type) {
             case mc.SHADER_MAT4:
                 rc.uniformMatrix4fv(ult, false, f32Arr, offset, dataSize * 16);
@@ -255,14 +263,14 @@ export default class RenderShader implements IRenderShader, IRenderResource {
                 rc.uniformMatrix3fv(ult, false, f32Arr, 0, dataSize * 9);
                 break;
             case mc.SHADER_VEC4FV:
-                //console.log("MaterialConst.SHADER_VEC4FV dataSize: ",dataSize);
-                //console.log(f32Arr);
+                // console.log("useUniformV2, f32Arr: ",f32Arr);
                 rc.uniform4fv(ult, f32Arr, offset, dataSize * 4);
                 break;
             case mc.SHADER_VEC3FV:
                 rc.uniform3fv(ult, f32Arr, offset, dataSize * 3);
                 break;
             case mc.SHADER_VEC4:
+                // console.log("useUniformV2, vec4 f32Arr.length: ",f32Arr.length);
                 rc.uniform4f(ult, f32Arr[0], f32Arr[1], f32Arr[2], f32Arr[3]);
                 break;
             case mc.SHADER_VEC3:
@@ -278,6 +286,7 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     useUniformV1(ult: any, type: number, f32Arr: Float32Array, dataSize: number): void {
 		const mc = MaterialConst;
 		const rc = this.m_rc;
+        console.log("useUniformV1 A, dataSize: ",dataSize, ", f32Arr: ", f32Arr);
         switch (type) {
             case mc.SHADER_MAT4:
                 rc.uniformMatrix4fv(ult, false, f32Arr);

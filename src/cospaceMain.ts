@@ -56,11 +56,13 @@ let ins: any = demoIns;
 function main(): void {
 	console.log("------ demo --- init ------");
 	ins.initialize();
-	function mainLoop(now: any): void {
-		ins.run();
+	if(ins.run) {
+		function mainLoop(now: any): void {
+			ins.run();
+			window.requestAnimationFrame(mainLoop);
+		}
 		window.requestAnimationFrame(mainLoop);
 	}
-	window.requestAnimationFrame(mainLoop);
 	console.log("------ demo --- running ------");
 }
 main();

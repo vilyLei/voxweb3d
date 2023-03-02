@@ -15,7 +15,7 @@ export default interface IPassProcess {
     materials: IPassMaterialWrapper[];
     rc: IRenderProxy;
     units: IRPOUnit[];
-    createMaterialWrapper(m: IRenderMaterial): IPassMaterialWrapper
+    createMaterialWrapper(m: IRenderMaterial, dstRUnit: IRPOUnit): IPassMaterialWrapper
     run(): void;
     destroy(): void;
 }

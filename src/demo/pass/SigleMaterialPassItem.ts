@@ -6,10 +6,13 @@
 /***************************************************************************/
 
 // import IRenderMaterial from "../../vox/render/IRenderMaterial";
+import IPassMaterialWrapper from "../../vox/render/pass/IPassMaterialWrapper";
 import IPassProcess from "../../vox/render/pass/IPassProcess";
 import PassRItem from "../../vox/render/pass/PassRItem";
 
 export default class SigleMaterialPassItem extends PassRItem {
+    // private m_pmws: IPassMaterialWrapper[] = [null];
+    private m_pmws: IPassMaterialWrapper[] = null;
     renderState = 0;
     constructor() {
         super();
@@ -20,12 +23,14 @@ export default class SigleMaterialPassItem extends PassRItem {
         if (this.m_enabled && process) {
 
             const unit = process.units[0];
-            // unit.applyShader(true);
             unit.renderState = this.renderState;
+
+            if (this.m_pmws == null) {
+                this.m_pmws = [process.createMaterialWrapper(this.material, unit)];
+            }
+
+            process.materials = this.m_pmws;
             process.run();
-            // entity.setRenderState(st.BACK_TRANSPARENT_STATE);
-            // process.run();
-            // entity.setRenderState(rst);
         }
     }
 }

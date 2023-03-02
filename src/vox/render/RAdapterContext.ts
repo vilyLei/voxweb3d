@@ -101,6 +101,7 @@ class RAdapterContext implements IRAdapterContext {
             let attr: any = rattr;
             if (rattr == null) {
                 attr = { depth: this.m_depthTestEnabled, premultipliedAlpha: false, alpha: true, antialias: false, stencil: this.m_stencilTestEnabled, preserveDrawingBuffer: true, powerPreference: "default" };
+                // attr = { depth: this.m_depthTestEnabled, premultipliedAlpha: false, alpha: true, antialias: false, stencil: this.m_stencilTestEnabled, preserveDrawingBuffer: true, powerPreference: "high-performance" };
             }
             else {
                 this.m_depthTestEnabled = attr.depth;

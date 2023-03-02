@@ -132,7 +132,8 @@ class ShaderUniformV2 extends ShaderUniform {
         //     let arr = this.dataList[0].slice(0);
         //     console.log("ggg arr: ",arr);
         // }
-        let i: number = 0;
+        // console.log("ShaderUniformV2::use()..");
+        let i = 0;
         for (; i < this.uniformSize; ++i) {
             rc.useUniformV2(this.locations[i], this.types[i], this.dataList[i], this.dataSizeList[i], 0);
         }
@@ -189,12 +190,14 @@ class ShaderMat4Uniform extends ShaderUniform {
         super();
     }
     use(rc: IRenderShader): void {
+        // console.log("use() uns: ", this.uns);
         rc.useUniformMat4(this.locations[0], this.dataList[0]);
     }
     useByLocation(rc: IRenderShader, type: number, location: any, i: number): void {
         rc.useUniformMat4(location, this.dataList[0]);
     }
     useByShd(rc: IRenderShader, shd: IShdProgram): void {
+        // console.log("useByShd() uns: ", this.uns, "uname: ", this.uniformNameList[0]);
         rc.useUniformMat4(shd.getUniformLocationByNS(this.uniformNameList[0]), this.dataList[0]);
     }
     destroy(): void {

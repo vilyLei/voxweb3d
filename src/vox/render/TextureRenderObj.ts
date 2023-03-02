@@ -98,19 +98,19 @@ class TextureRenderObj implements ITextureRenderObj {
         //console.log("this.m_texRes.unlocked: ",this.m_texRes.unlocked,this.m_texRes.texMid != this.m_mid);
         if (this.m_texRes.unlocked && this.m_texRes.texMid != this.m_mid) {
             this.m_texRes.texMid = this.m_mid;
-            //console.log("this.m_mid: ",this.m_mid,this.m_uid, this.m_texList);
+            // console.log("TextureRenderObj::run(), this.m_mid: ",this.m_mid,this.m_uid, this.m_texList);
             let gl: any = this.m_texRes.getRC();
-            let texI: number = gl.TEXTURE0;
+            let texI = gl.TEXTURE0;
             if (this.direct) {
                 //console.log("this.m_gtexList: ",this.m_gtexList,", total: "+this.m_texTotal);
-                for (let i: number = 0; i < this.m_texTotal; ++i) {
+                for (let i = 0; i < this.m_texTotal; ++i) {
                     gl.activeTexture(texI++);
                     gl.bindTexture(this.m_samplers[i], this.m_gtexList[i]);
                 }
             }
             else {
                 let list: IRenderTexture[] = this.m_texList;
-                for (let i: number = 0; i < this.m_texTotal; ++i) {
+                for (let i = 0; i < this.m_texTotal; ++i) {
                     gl.activeTexture(texI++);
                     list[i].__$$use(this.m_texRes);
                 }

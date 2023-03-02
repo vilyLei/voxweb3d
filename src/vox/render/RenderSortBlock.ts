@@ -10,6 +10,7 @@ import RPONode from "../../vox/render/RPONode";
 import RenderProxy from "../../vox/render/RenderProxy";
 import RenderShader from '../../vox/render/RenderShader';
 import IRODisplaySorter from '../../vox/render/IRODisplaySorter';
+import PassProcess from "./pass/PassProcess";
 
 export default class RenderSortBlock {
 	private m_begin: RPONode = null;
@@ -63,19 +64,38 @@ export default class RenderSortBlock {
 			this.sort();
 		}
 	}
+	
+    private m_passProc = new PassProcess();
+    private m_shdUpdate = false;
 	run(rc: RenderProxy): void {
 		this.m_shader.resetUniform();
 
 		let unit: RPOUnit = null;
 		let nodes = this.m_nodes;
+		this.m_shdUpdate = false;
 		// let info = "";
+		// console.log("sortBlock..");
 		for (let i = 0; i < this.m_renderTotal; ++i) {
 			unit = nodes[i];
 			this.m_shader.bindToGpu(unit.shdUid);
 			unit.updateVtx();
 			if (unit.drawEnabled) {
-				unit.run(rc);
-				unit.draw(rc);
+				if(!unit.rgraph) {
+					if(this.m_shdUpdate) {
+						unit.applyShader(true);
+						this.m_shdUpdate = false;
+					}
+					unit.run(rc);
+					unit.draw(rc);
+				}else if(unit.rgraph.isEnabled()){
+					const proc = this.m_passProc;
+					proc.units = [unit];
+					proc.rc = rc;
+					proc.vtxFlag = true;
+					proc.texFlag = true;
+					unit.rgraph.run(proc);
+					this.m_shdUpdate = true;
+				}
 			}
 			// info += unit.value+",";
 		}

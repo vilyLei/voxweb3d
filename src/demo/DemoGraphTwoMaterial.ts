@@ -14,8 +14,14 @@ import DebugFlag from "../vox/debug/DebugFlag";
 import VtxDrawingInfo from "../vox/render/vtx/VtxDrawingInfo";
 import DefaultPassGraph from "../vox/render/pass/DefaultPassGraph";
 import SigleMaterialPassItem from "./pass/SigleMaterialPassItem";
+import TwoTexMaterial from "./pass/materials/multiTex/TwoTexMaterial";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
+import RendererState from "../vox/render/RendererState";
+import { CullFaceMode, DepthTestMode, RenderBlendMode } from "../vox/render/RenderConst";
+import IGeomModelData from "../vox/mesh/IGeomModelData";
+import MeshFactory from "../vox/mesh/MeshFactory";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
 
 export class DemoGraphTwoMaterial {
 	private m_init = true;
@@ -43,20 +49,26 @@ export class DemoGraphTwoMaterial {
 				e.preventDefault();
 			}
 
-			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			DivLog.SetDebugEnabled(false);
 
 			let rparam = new RendererParam();
 			
 			// rparam.maxWebGLVersion = 1;
-			rparam.setCamProject(45, 0.1, 6000.0);
+			rparam.setCamProject(45, 50., 6000.0);
 			rparam.setCamPosition(1100.0, 1100.0, 1100.0);
-			rparam.setAttriAlpha(false);
+			rparam.setAttriAlpha(true);
+			rparam.setAttriAntialias(true);
 			
 			let rscene = new RendererScene();
 			// rscene.initialize(rparam).setAutoRunning(true);
-			rscene.initialize(rparam);
+			rscene.initialize(rparam, 3);
+			// rscene.setRendererProcessParam(1, false, false);
+			
+            // rscene.setAutoRenderingSort(true);
+            // rscene.setProcessSortEnabledAt(1, true);
+			
 			this.m_rscene = rscene;
 			this.m_texLoader = new ImageTextureLoader(rscene.textureBlock);
 
@@ -80,91 +92,79 @@ export class DemoGraphTwoMaterial {
 		let staticVtx = false;
 		let alpha = 0.3;
 		let material = new Default3DMaterial();
-		material.setAlpha(alpha);
+		// material.setAlpha(alpha);
 		material.normalEnabled = true;
-		// material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
-		// material.setTextureList([this.getTexByUrl("static/assets/guangyun_08_01.png")]);
+		material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
 		// material.setTextureList([this.getTexByUrl("static/assets/color_07.jpg")]);
-		material.setTextureList([this.getTexByUrl("static/assets/blueTransparent.png", true)]);
 
 		let sph = new Sphere3DEntity();
 		sph.setMaterial(material);
-		sph.initialize(160, 20, 20);
+		sph.initialize(16, 20, 20);
 		let mesh = sph.getMesh();
+		/**
+		let nvs = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
+		let uvs = new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]);
+		let vs = new Float32Array([10, 0, -10, -10, 0, -10, -10, 0, 10, 10, 0, 10]);
+		let ivs = new Uint16Array([0, 1, 2, 0, 2, 3]);
+		let model: IGeomModelData = {
+			vertices: vs,
+			uvsList: [uvs],
+			normals: nvs,
+			indices: ivs,
+			wireframe: false
+		};
+		let mesh = MeshFactory.createDataMeshFromModel(model);
+		// */
+		let st0 = RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
+		let st1 = RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.BLAZE, DepthTestMode.TRUE_LEQUAL);
 
 		// 0, 1, 1, 2, 2, 0, 0, 2, 2, 3, 3, 0
 		// 0, 1, 1, 2, 2, 0, 0, 2, 2, 3, 3, 0
-		let item = new SigleMaterialPassItem()
+		
 		let st = this.m_rscene.getRenderProxy().renderingState;
-		let graph = new DefaultPassGraph().addItem(item).initialize();
+		let item0 = new SigleMaterialPassItem();
+		item0.renderState = st.NORMAL_STATE;
+		let itemMaterial = new Default3DMaterial();
+		itemMaterial.normalEnabled = true;
+		itemMaterial.setTextureList([this.getTexByUrl("static/assets/color_07.jpg")]);
+		// itemMaterial.initializeByCodeBuf(true);
+		item0.material = itemMaterial;
+		let item1 = new SigleMaterialPassItem();
+		// item1
+		item1.renderState = st1;//st.BACK_ADD_ALWAYS_STATE;
+		let itemMaterial1 = new TwoTexMaterial();
+		// let itemMaterial1 = new Default3DMaterial();
+		itemMaterial1.name = "xxx";
+		itemMaterial1.normalEnabled = true;
+		itemMaterial1.setTextureList([
+			this.getTexByUrl("static/assets/yanj.jpg"),
+			this.getTexByUrl("static/assets/heightMap04.jpg")
+		]);
+		// itemMaterial1.initializeByCodeBuf(true);
+
+		item1.material = itemMaterial1;
+		let scale = 10;
+		let graph = new DefaultPassGraph().addItem(item0).addItem(item1).initialize();
+		// let graph = new DefaultPassGraph().addItem(item1).initialize();
+		// let graph = new DefaultPassGraph().addItem(item0).initialize();
 		material.graph = graph;
 		// let scale = 10.0;
 		let entity = new DisplayEntity();
-		entity.setRenderState(st.BACK_TRANSPARENT_STATE);
-		entity.setMaterial(material);
+		// entity.setRenderState(st.BACK_TRANSPARENT_STATE);
+		if(material.graph != null) {
+			entity.setMaterial(material);
+		}else {
+			entity.setMaterial(itemMaterial1);
+		}
 		entity.setMesh(mesh);
-		// entity.setScaleXYZ(scale, scale, scale);
+		entity.setScaleXYZ(scale, scale, scale);
 		rscene.addEntity(entity, 1);
 		this.m_tarEntity = entity;
 
-		return;
-		material = new Default3DMaterial();
-		material.graph = graph;
-		material.setAlpha(alpha);
-		material.normalEnabled = true;
-		material.setTextureList([this.getTexByUrl("static/assets/redTransparent.png", true)]);
-
-		entity = new DisplayEntity();
-		entity.setMaterial(material);
-		entity.setMesh(mesh);
-		entity.setXYZ(0, 0, -200);
-		rscene.addEntity(entity, 1);
-		/*
-		material = new Default3DMaterial();
-		material.vtxInfo = this.createVtxInfo();
-		if(staticVtx) material.vtxInfo.lock();
-		// material.normalEnabled = true;
-		material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
-
-		entity = new DisplayEntity();
-		entity.setMaterial(material);
-		entity.setMesh(mesh);
-		entity.setScaleXYZ(scale, scale, scale);
-		entity.setXYZ(250, 0, 0);
-		rscene.addEntity(entity);
-		this.m_tarREntity = entity;
-
-		entity = new DisplayEntity();
-		entity.setMaterial(material);
-		entity.setMesh(mesh);
-		entity.setScaleXYZ(scale, scale, scale);
-		entity.setXYZ(500, 0, 0);
-		rscene.addEntity(entity);
-		this.m_tarMEntity = entity;
-
-		material = new Default3DMaterial();
-		material.vtxInfo = this.createVtxInfo();
-		if (staticVtx) material.vtxInfo.lock();
-		material.normalEnabled = true;
-		material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
-		entity = new DisplayEntity();
-		entity.setMaterial(material);
-		entity.setMesh(mesh);
-		entity.setScaleXYZ(scale, scale, scale);
-		entity.setXYZ(500, 0, 200);
-		rscene.addEntity(entity);
-
-		entity = new DisplayEntity();
-		entity.setMaterial(material);
-		entity.setMesh(mesh);
-		entity.setScaleXYZ(scale, scale, scale);
-		entity.setXYZ(500, 0, 400);
-		rscene.addEntity(entity);
-		//*/
 	}
 	
 	private initScene(rscene: RendererScene): void {
-		this.initEntitys(rscene);
+		// this.initEntitys(rscene);
 		this.testDataMesh(rscene);
 	}
 	private m_flag = true;
@@ -174,7 +174,8 @@ export class DemoGraphTwoMaterial {
 	mouseDownListener(evt: any): void {
 
 		DebugFlag.Flag_0 = 1;
-		console.log("mouse down");
+		console.log("############### mouse down");
+		return;
 		if (this.m_tarEntity != null) {
 			let material = this.m_tarEntity.getMaterial();
 			// let graph = material.graph;
@@ -242,26 +243,30 @@ export class DemoGraphTwoMaterial {
 		// axis.initialize();
 		// rscene.addEntity(axis);
 
-		// let plane = new Plane3DEntity();
+		let plane = new Plane3DEntity();
+		plane.normalEnabled = true;
 		// plane.wireframe = true;
-		// plane.initializeXOZSquare(100);
-		// this.m_rscene.addEntity( plane );
+		plane.initializeXOZSquare(500, [this.getTexByUrl("static/assets/box.jpg")]);
+		this.m_rscene.addEntity( plane, 2 );
 
 		// return;
 		let box0 = new Box3DEntity();
 		box0.normalEnabled = true;
 		box0.wireframe = true;
 		// box0.shape = false;
-		// box0.setXYZ(-150, 0, 0);
+		box0.setXYZ(150, 0, 0);
 		//		material.setTextureList([this.getTexByUrl("static/assets/redTransparent.png", true)]);
 		box0.initializeCube(100, [this.getTexByUrl("static/assets/box.jpg")]);
-		rscene.addEntity(box0);
+		rscene.addEntity(box0, 2);
 		this.m_tarMEntity = box0;
 	}
 	run(): void {
 		if (this.m_rscene != null) {
 			// console.log(">>> begin");
 			this.m_rscene.run();
+			// if(DebugFlag.Flag_0 > 0) {
+			// 	this.m_rscene.run();
+			// }
 			// console.log(">>> end");
 			DebugFlag.Flag_0 = 0;
 		}

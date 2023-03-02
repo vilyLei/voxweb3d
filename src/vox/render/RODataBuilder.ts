@@ -54,6 +54,7 @@ export default class RODataBuilder implements IRODataBuilder {
     private m_haveDeferredUpdate: boolean = false;
     private m_shdUniformTool: ShdUniformTool;
     private m_shdpBuilder: IShaderProgramBuilder = null;
+
     constructor(shdProgramBuilder: IShaderProgramBuilder) {
         this.m_shdpBuilder = shdProgramBuilder;
     }
@@ -63,12 +64,16 @@ export default class RODataBuilder implements IRODataBuilder {
             this.m_vtxRes = rc.Vertex as ROVertexResource;
             this.m_texRes = rc.Texture as ROTextureResource;
             this.m_shader = new RenderShader(rc.getRCUid(), rc.getRC(), rc.getRenderAdapter(), this.m_shdpBuilder);
+            (rc as any).rshader = this.m_shader;
+            (rc as any).rdataBuilder = this;
+
             this.m_rpoUnitBuilder = rpoUnitBuilder;
             this.m_processBuider = processBuider;
             this.m_roVtxBuild = roVtxBuild;
             this.m_emptyTRO = new EmptyTexRenderObj(this.m_texRes);
             this.m_shdUniformTool = new ShdUniformTool();
             this.m_shdUniformTool.initialize();
+            
         }
     }
     getRenderProxy(): RenderProxy {
@@ -165,7 +170,7 @@ export default class RODataBuilder implements IRODataBuilder {
 
         // if (disp.__$ruid >= 0) {
 
-        let rc = this.m_rc;
+        const rc = this.m_rc;
         // let material = disp.getMaterial();
         if (material) {
             if (material.getShaderData() == null) {
@@ -344,6 +349,12 @@ export default class RODataBuilder implements IRODataBuilder {
             runit.rgraph = material.graph;
             runit.setVisible(disp.visible);
         }
+    }
+    createRPOUnit(): RPOUnit {
+        return this.m_rpoUnitBuilder.create() as RPOUnit;
+    }
+    restoreRPOUnit(runit: RPOUnit): boolean {
+        return this.m_rpoUnitBuilder.restore(runit);
     }
     buildGpuDisp(disp: IRODisplay, rentity: IRenderEntity): boolean {
         if (disp.__$ruid < 0) {

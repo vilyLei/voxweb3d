@@ -50,6 +50,7 @@ import { RenderingState } from "./rendering/RenderingState";
 import { IRPStatus } from "./status/IRPStatus";
 import { RPStatus } from "./status/RPStatus";
 import IRenderShader from "../../vox/render/IRenderShader";
+import IRODataBuilder from "../../vox/render/IRODataBuilder";
 
 class RenderProxyParam {
 
@@ -98,6 +99,7 @@ class RenderProxy implements IRenderProxy {
     readonly renderingState: IRenderingState = null;
     readonly colorMask: IRenderingColorMask = null;
     readonly rshader: IRenderShader = null;
+    readonly rdataBuilder: IRODataBuilder = null;
     readonly status: IRPStatus = new RPStatus();
 
     private m_uid: number = 0;

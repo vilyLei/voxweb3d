@@ -5,8 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import Vector3D from "../../vox/math/Vector3D";
-import IRPODisplay from "../../vox/render/IRPODisplay";
+// import Vector3D from "../../vox/math/Vector3D";
+import IRPOUnit from "../../vox/render/IRPOUnit";
 import IRODisplaySorter from "../../vox/render/IRODisplaySorter";
 import IRenderProxy from "../../vox/render/IRenderProxy";
 
@@ -18,12 +18,13 @@ export default class CameraDsistanceSorter implements IRODisplaySorter {
     constructor(rc: IRenderProxy) {
         this.m_rc = rc;
     }
-    sortRODisplay(nodes: IRPODisplay[], nodesTotal: number): number {
-        let camPos = this.m_rc.getCamera().getPosition();
-        for (let i = 0; i < nodesTotal; ++i) {
-            nodes[i].value = -Vector3D.DistanceSquared(nodes[i].bounds.center, camPos);
-            // nodes[i].value = nodes[i].pos.y;
-        }
-        return 0;
+    sortRODisplay(nodes: IRPOUnit[], nodesTotal: number): number {
+        // let camPos = this.m_rc.getCamera().getPosition();
+        // for (let i = 0; i < nodesTotal; ++i) {
+        //     nodes[i].value = -Vector3D.DistanceSquared(nodes[i].bounds.center, camPos);
+        //     // nodes[i].value = nodes[i].pos.y;
+        // }
+        // return 0;// sort
+        return 1;// disable sort
     }
 }

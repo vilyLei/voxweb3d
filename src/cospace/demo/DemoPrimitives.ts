@@ -228,13 +228,14 @@ export class DemoPrimitives {
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 			rparam.setCamProject(45, 20.0, 9000.0);
 			this.m_rscene = CoRScene.createRendererScene(rparam);
+			this.m_rscene.setAutoRunning(true);
 		}
 	}
-	run(): void {
-		if (this.m_rscene != null) {
-			this.m_rscene.run();
-		}
-	}
+	// run(): void {
+	// 	if (this.m_rscene != null) {
+	// 		this.m_rscene.run();
+	// 	}
+	// }
 }
 
 export default DemoPrimitives;

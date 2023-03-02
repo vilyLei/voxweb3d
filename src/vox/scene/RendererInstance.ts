@@ -35,9 +35,9 @@ import DispEntity3DManager from "../../vox/scene/DispEntity3DManager";
  * kernal system instance, it is the renderer instance for the renderer runtime, it is very very very important class.
  */
 export class RendererInstance implements IRendererInstance {
-    private ___$$$$$$$Author:string = "VilyLei(vily313@126.com)";
-    private m_uid: number = -1;
-    private static s_uid: number = 0;
+    private ___$$$$$$$Author = "VilyLei(vily313@126.com)";
+    private m_uid = -1;
+    private static s_uid = 0;
     private m_entity3DMana: DispEntity3DManager = null;
     private m_processes: RenderProcess[] = [];
     private m_processesLen: number = 0;
@@ -47,11 +47,11 @@ export class RendererInstance implements IRendererInstance {
     private m_adapter: IRenderAdapter = null;
     private m_dataBuilder: RODataBuilder = null;
     private m_renderInsContext: RendererInstanceContext = null;
-    private m_batchEnabled: boolean = true;
-    private m_processFixedState: boolean = true;
-    private m_rpoUnitBuilder: RPOUnitBuilder = new RPOUnitBuilder();
-    private m_rpoNodeBuilder: RPONodeBuilder = new RPONodeBuilder();
-    private m_processBuider: RenderProcessBuider = new RenderProcessBuider();
+    private m_batchEnabled = true;
+    private m_processFixedState = true;
+    private m_rpoUnitBuilder = new RPOUnitBuilder();
+    private m_rpoNodeBuilder = new RPONodeBuilder();
+    private m_processBuider = new RenderProcessBuider();
     private m_roVtxBuilder: ROVtxBuilder = null;
     private m_stage3D: IRenderStage3D = null;
     private m_fixProcess: RenderProcess = null;
@@ -138,7 +138,7 @@ export class RendererInstance implements IRendererInstance {
             this.m_renderInsContext.initialize(param, camera, contextParam);
             this.m_adapter = this.m_renderProxy.getRenderAdapter();
             this.m_dataBuilder.initialize(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider, this.m_roVtxBuilder);
-            (this.m_renderProxy as any).rshader = this.m_dataBuilder.getRenderShader();
+            // (this.m_renderProxy as any).rshader = this.m_dataBuilder.getRenderShader();
             this.m_renderInsContext.initManager(this.m_dataBuilder);
             this.m_entity3DMana = new DispEntity3DManager(this.m_uid, this.m_dataBuilder, this.m_rpoUnitBuilder, this.m_processBuider);
 

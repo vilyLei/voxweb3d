@@ -368,11 +368,20 @@ export default class RendererSceneBase {
         }
         return this;
     }
+    /**
+     * @param index renderer process index in the renderer scene
+     * @param batchEnabled the value is true or false
+     * @param processFixedState the value is true or false 
+     */
     setRendererProcessParam(index: number, batchEnabled: boolean, processFixedState: boolean): void {
         this.m_renderer.setRendererProcessParam(this.m_processids[index], batchEnabled, processFixedState);
     }
+    /**
+     * @param batchEnabled the default value true
+     * @param processFixedState the default value false
+     */
     appendARendererProcess(batchEnabled: boolean = true, processFixedState: boolean = false): void {
-        let process: RenderProcess = this.m_renderer.appendProcess(batchEnabled, processFixedState) as RenderProcess;
+        let process = this.m_renderer.appendProcess(batchEnabled, processFixedState) as RenderProcess;
         this.m_processids[this.m_processidsLen] = process.getRPIndex();
         this.m_processidsLen++;
     }
@@ -434,7 +443,7 @@ export default class RendererSceneBase {
             let process = this.m_renderer.getProcessAt(processIndex);
             sorter = sorter != null ? sorter : this.m_camDisSorter;
             if (process != null) {
-                process.setSorter(sorter);
+                // process.setSorter(sorter);
             }
         }
     }
