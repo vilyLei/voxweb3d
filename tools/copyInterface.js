@@ -23,10 +23,32 @@ function mkdirsSync(dirname) {
     }
 }
 
-let emptyFileTxt = `export default interface IRPONode {
+let IRPONodeTxt = `export default interface IRPONode {
     uid: number;
     index: number;
 };
+`;
+
+let IRPOUnitTxt = `
+import IRPODisplay from "../../vox/render/IRPODisplay";
+import IRenderProxy from "./IRenderProxy";
+import IRenderShader from "./IRenderShader";
+import IRenderEntity from "./IRenderEntity";
+export default interface IRPOUnit extends IRPODisplay {
+    
+    renderState: number;
+    rcolorMask: number;
+
+    shader: IRenderShader;
+    rentity: IRenderEntity;
+    /**
+     * @param force the default value is false
+     */
+    applyShader(force?: boolean): void;
+    copyMaterialFrom(unit: IRPOUnit): void;
+    run2(rc: IRenderProxy): void;
+    draw(rc: IRenderProxy): void;
+}
 `;
 function writeCurrFile(srcUrl, dstUrl) {
     if (srcUrl.indexOf("\\IRPONode.ts") < 0) {
@@ -36,11 +58,19 @@ function writeCurrFile(srcUrl, dstUrl) {
         const opt = {
             flag: 'w'//, // a：追加写入；w：覆盖写入
         }
-        fs.writeFile(dstUrl, emptyFileTxt, opt, (err) => {
+        fs.writeFile(dstUrl, IRPONodeTxt, opt, (err) => {
             if (err) {
                 console.error(err)
             }
-        })
+        });
+        dstUrl = dstUrl.replace("IRPONode.", "IRPOUnit.");
+        
+        fs.writeFile(dstUrl, IRPOUnitTxt, opt, (err) => {
+            if (err) {
+                console.error(err)
+            }
+        });
+        // console.log("%%%%%%%% dstUrl: ", dstUrl);
     }
     // return false;
 }
