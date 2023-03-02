@@ -227,8 +227,8 @@ export class DemoPrimitives {
 			rparam.setAttriAntialias(true);
 			rparam.setCamPosition(1000.0, 1000.0, 1000.0);
 			rparam.setCamProject(45, 20.0, 9000.0);
-			this.m_rscene = CoRScene.createRendererScene(rparam);
-			this.m_rscene.setAutoRunning(true);
+			this.m_rscene = CoRScene.createRendererScene(rparam).setAutoRunning(true);
+			// this.m_rscene.setAutoRunning(true);
 		}
 	}
 	// run(): void {
