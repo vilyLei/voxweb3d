@@ -11,9 +11,8 @@ import RendererScene from "../../vox/scene/RendererScene";
 import H5FontSystem from "../../vox/text/H5FontSys";
 
 import CameraTrack from "../../vox/view/CameraTrack";
-import * as SceneFogFlow2T from "../../advancedDemo/depthLight/scene/SceneFogFlow";
 
-import SceneFogFlow = SceneFogFlow2T.advancedDemo.depthLight.scene.SceneFogFlow;
+import { SceneFogFlow } from "../../advancedDemo/depthLight/scene/SceneFogFlow";
 
 export class DemoLightFlow {
     constructor() {
