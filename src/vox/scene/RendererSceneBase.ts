@@ -940,4 +940,7 @@ export default class RendererSceneBase {
     setAutoRunning(auto: boolean): void {
 
     }
+    isAutoRunning(): boolean {
+        return false;
+    }
 }

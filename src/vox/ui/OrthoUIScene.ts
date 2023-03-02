@@ -281,5 +281,8 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
     }    
     setAutoRunning(auto: boolean): void {
     }
+    isAutoRunning(): boolean {
+        return false;
+    }
 }
 export { OrthoUIScene };

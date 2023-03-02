@@ -80,21 +80,36 @@ export default class CoRendererScene extends RendererSceneBase implements IRende
     }
     
     private m_autoRRun = false;
+    fakeRun(autoCycle: boolean = true): void {
+        console.log("fakeRun ...");
+    }
     setAutoRunning(auto: boolean): void {
         
         if (this.m_autoRRun != auto) {
             if (this.m_autoRRun) {
+                
+                let runFunc = this.run;
+                this.run = this.fakeRun;
+                this.fakeRun = runFunc;
+
                 this.m_autoRRun = false;
             } else {
                 this.m_autoRRun = true;
+                let runFunc = this.fakeRun;
+                this.fakeRun = this.run;
+                this.run = runFunc;
                 const func = (): void => {
                     if (this.m_autoRRun) {
-                        this.run();
+                        this.fakeRun();
                         window.requestAnimationFrame(func);
                     }
                 }
                 window.requestAnimationFrame(func);
             }
         }
+    }
+    
+    isAutoRunning(): boolean {
+        return this.m_autoRRun;
     }
 }

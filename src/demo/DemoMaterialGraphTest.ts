@@ -62,6 +62,9 @@ export class DemoMaterialGraphTest {
 			let rscene = new RendererScene();
 			// rscene.initialize(rparam).setAutoRunning(true);
 			rscene.initialize(rparam);
+			// rscene.setRendererProcessParam(0, false, false);
+			rscene.setAutoRenderingSort(true);
+			rscene.setProcessSortEnabledAt(0, true);
 			this.m_rscene = rscene;
 			this.m_texLoader = new ImageTextureLoader(rscene.textureBlock);
 

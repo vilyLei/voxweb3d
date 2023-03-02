@@ -22,6 +22,7 @@ export default class Sphere3DEntity extends DisplayEntity {
     normalEnabled = false;
     doubleTriFaceEnabled = false;
     wireframe = false;
+    shape = true;
     inverseUV = false;
     uvScale = 1.0;
     meshMode = 0;
@@ -101,6 +102,7 @@ export default class Sphere3DEntity extends DisplayEntity {
             let mesh = new Sphere3DMesh();
             mesh.mode = this.meshMode;
             mesh.wireframe = this.wireframe;
+            mesh.shape = this.shape;
             mesh.inverseUV = this.inverseUV;
             mesh.uvScale = this.uvScale;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;

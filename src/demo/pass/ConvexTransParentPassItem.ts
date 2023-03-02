@@ -20,13 +20,13 @@ export default class ConvexTransParentPassItem extends PassRItem {
             const unit = process.units[0];
             let entity = unit.rentity;
             let st = process.rc.renderingState;
-            let rst = entity.getRenderState();
+            let t = entity.getRenderState();
 
             unit.renderState = st.FRONT_TRANSPARENT_STATE;
             process.run();
             unit.renderState = st.BACK_TRANSPARENT_STATE;
             process.run();
-            entity.setRenderState(rst);
+            unit.renderState = t;
         }
     }
 

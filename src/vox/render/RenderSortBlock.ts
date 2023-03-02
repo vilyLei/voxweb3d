@@ -80,14 +80,7 @@ export default class RenderSortBlock {
 			this.m_shader.bindToGpu(unit.shdUid);
 			unit.updateVtx();
 			if (unit.drawEnabled) {
-				if(!unit.rgraph) {
-					if(this.m_shdUpdate) {
-						unit.applyShader(true);
-						this.m_shdUpdate = false;
-					}
-					unit.run(rc);
-					unit.draw(rc);
-				}else if(unit.rgraph.isEnabled()){
+				if(unit.rgraph && unit.rgraph.isEnabled()) {
 					const proc = this.m_passProc;
 					proc.units = [unit];
 					proc.rc = rc;
@@ -95,6 +88,13 @@ export default class RenderSortBlock {
 					proc.texFlag = true;
 					unit.rgraph.run(proc);
 					this.m_shdUpdate = true;
+				}else {
+					if(this.m_shdUpdate) {
+						unit.applyShader(true);
+						this.m_shdUpdate = false;
+					}
+					unit.run(rc);
+					unit.draw(rc);
 				}
 			}
 			// info += unit.value+",";

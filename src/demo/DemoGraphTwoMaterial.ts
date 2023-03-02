@@ -27,6 +27,7 @@ export class DemoGraphTwoMaterial {
 	private m_init = true;
 	private m_texLoader: ImageTextureLoader = null;
 	private m_rscene: RendererScene = null;
+	private m_autoRunning = true;
 	constructor() { }
 
 	private getTexByUrl(purl: string, preAlpha: boolean =false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
@@ -64,6 +65,7 @@ export class DemoGraphTwoMaterial {
 			let rscene = new RendererScene();
 			// rscene.initialize(rparam).setAutoRunning(true);
 			rscene.initialize(rparam, 3);
+			rscene.setAutoRunning(this.m_autoRunning);
 			// rscene.setRendererProcessParam(1, false, false);
 			
             // rscene.setAutoRenderingSort(true);
@@ -173,6 +175,8 @@ export class DemoGraphTwoMaterial {
 	private m_index = 0;
 	mouseDownListener(evt: any): void {
 
+		this.m_autoRunning = !this.m_autoRunning;
+		this.m_rscene.setAutoRunning(this.m_autoRunning);
 		DebugFlag.Flag_0 = 1;
 		console.log("############### mouse down");
 		return;
@@ -261,6 +265,7 @@ export class DemoGraphTwoMaterial {
 		this.m_tarMEntity = box0;
 	}
 	run(): void {
+
 		if (this.m_rscene != null) {
 			// console.log(">>> begin");
 			this.m_rscene.run();

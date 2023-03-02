@@ -182,5 +182,6 @@ interface IRendererScene {
     run(autoCycle?: boolean): void;
     destroy(): void;
     setAutoRunning(auto: boolean): void;
+    isAutoRunning(): boolean;
 }
 export default IRendererScene;

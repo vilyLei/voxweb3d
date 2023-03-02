@@ -222,7 +222,7 @@ class BufRDataPair implements IROIvsRDP {
         this.roiRes.rdp = this;
 
         this.updateStatus();
-        console.log("BufRDataPair::toWireframe()............, uid: ", this.m_uid);
+        // console.log("BufRDataPair::toWireframe()............, uid: ", this.m_uid);
     }
     toShape(): void {
 
@@ -232,7 +232,7 @@ class BufRDataPair implements IROIvsRDP {
         this.roiRes.rdp = this;
 
         this.updateStatus();
-        console.log("BufRDataPair::toShape()............, uid: ", this.m_uid);
+        // console.log("BufRDataPair::toShape()............, uid: ", this.m_uid);
     }
     toCommon(): void {
         this.toShape();

@@ -94,14 +94,7 @@ export default class RPOBlock {
                     unit = nextNode.unit;
                     unit.updateVtx();
                     if (unit.drawEnabled) {
-                        if (!unit.rgraph) {
-                            if (this.m_shdUpdate) {
-                                unit.applyShader(true);
-                                this.m_shdUpdate = false;
-                            }
-                            unit.run(rc);
-                            unit.draw(rc);
-                        } else if (unit.rgraph.isEnabled()) {
+                        if (unit.rgraph && unit.rgraph.isEnabled()) {
                             const proc = this.m_passProcess1;
                             proc.units = [unit];
                             proc.rc = rc;
@@ -109,6 +102,13 @@ export default class RPOBlock {
                             proc.texFlag = true;
                             unit.rgraph.run(proc);
                             this.m_shdUpdate = true;
+                        } else {
+                            if (this.m_shdUpdate) {
+                                unit.applyShader(true);
+                                this.m_shdUpdate = false;
+                            }
+                            unit.run(rc);
+                            unit.draw(rc);
                         }
                     }
                 }
@@ -152,9 +152,7 @@ export default class RPOBlock {
 
                     vtxFlag = unit.updateVtx() || vtxFlag;
                     if (unit.drawEnabled) {
-                        if (!unit.rgraph) {
-                            this.draw1(rc, unit, vtxFlag, texFlag);
-                        } else if (unit.rgraph.isEnabled()) {
+                        if (unit.rgraph && unit.rgraph.isEnabled()) {
                             const proc = this.m_passProcess1;
                             proc.units = [unit];
                             proc.rc = rc;
@@ -162,6 +160,8 @@ export default class RPOBlock {
                             proc.texFlag = texFlag;
                             unit.rgraph.run(proc);
                             this.m_shdUpdate = true;
+                        } else {
+                            this.draw1(rc, unit, vtxFlag, texFlag);
                         }
 
                         vtxFlag = false;
