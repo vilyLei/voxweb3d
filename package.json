@@ -72,7 +72,8 @@
     "dev:vox": "vue-cli-service serve --type=dev[./src/main_vox.ts]",
     "dev:voxweb": "vue-cli-service serve --type=dev[./src/main_voxweb.ts]",
     "dev:cospace": "vue-cli-service serve --type=dev[./src/cospaceMain.ts]",
-    "dev:coedit": "vue-cli-service serve --type=dev[./src/cospace/edit/coEditMain.ts]"
+    "dev:coedit": "vue-cli-service serve --type=dev[./src/cospace/edit/coEditMain.ts]",
+    "dev:advanced": "vue-cli-service serve --type=dev[./src/advanceddemo.ts]"
   },
   "dependencies": {
     "@tweenjs/tween.js": "^18.4.2",

@@ -1,6 +1,8 @@
 //volume light,DemoLightFlow
-import * as DemoLightFlow from "./advancedDemo/depthLight/DemoLightFlow";
-import Demo = DemoLightFlow.advancedDemo.depthLight.DemoLightFlow;
+// import * as DemoLightFlow from "./advancedDemo/depthLight/DemoLightFlow";
+// import Demo = DemoLightFlow.advancedDemo.depthLight.DemoLightFlow;
+
+import {DemoLightFlow as Demo} from "./advancedDemo/depthLight/DemoLightFlow";
 
 //  volume fog
 //  import * as DemoFogFlow from "./advancedDemo/depthFog4/DemoFogFlow";
