@@ -18,10 +18,8 @@ import { RenderableMaterialBlock } from "../../../vox/scene/block/RenderableMate
 import { RenderableEntityBlock } from "../../../vox/scene/block/RenderableEntityBlock";
 
 import { ICoRenderer } from "../ICoRenderer";
-// import { ICoRScene } from "../ICoRScene";
 
 declare var CoRenderer: ICoRenderer;
-// declare var CoRScene: ICoRScene;
 
 export default class CoRendererScene extends RendererSceneBase implements IRenderer, IRendererScene, IRenderNode {
 
@@ -83,7 +81,7 @@ export default class CoRendererScene extends RendererSceneBase implements IRende
     fakeRun(autoCycle: boolean = true): void {
         console.log("fakeRun ...");
     }
-    setAutoRunning(auto: boolean): void {
+    setAutoRunning(auto: boolean): CoRendererScene {
         
         if (this.m_autoRRun != auto) {
             if (this.m_autoRRun) {
@@ -107,6 +105,7 @@ export default class CoRendererScene extends RendererSceneBase implements IRende
                 window.requestAnimationFrame(func);
             }
         }
+        return this;
     }
     
     isAutoRunning(): boolean {

@@ -72,7 +72,7 @@ export default class RendererScene extends RendererSceneBase implements IRendere
     fakeRun(autoCycle: boolean = true): void {
         console.log("fakeRun ...");
     }
-    setAutoRunning(auto: boolean): void {
+    setAutoRunning(auto: boolean): RendererScene {
         
         if (this.m_autoRRun != auto) {
             if (this.m_autoRRun) {
@@ -98,6 +98,7 @@ export default class RendererScene extends RendererSceneBase implements IRendere
                 window.requestAnimationFrame(func);
             }
         }
+        return this;
     }
     
     isAutoRunning(): boolean {

@@ -3,9 +3,7 @@ import { IFloatCubeTexture } from "../../../vox/render/texture/IFloatCubeTexture
 import { HttpFileLoader } from "./HttpFileLoader";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import FloatCubeTextureProxy from "../../../vox/texture/FloatCubeTextureProxy";
-interface I_BinaryTextureLoader {
 
-}
 class BinaryTextureLoader {
 
     protected m_rc: IRendererScene = null;

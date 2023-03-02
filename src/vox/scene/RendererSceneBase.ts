@@ -937,8 +937,8 @@ export default class RendererSceneBase {
         this.runnableQueue.destroy();
         this.m_transUpdater.destroy();
     }
-    setAutoRunning(auto: boolean): void {
-
+    setAutoRunning(auto: boolean): RendererSceneBase {
+        return this;
     }
     isAutoRunning(): boolean {
         return false;

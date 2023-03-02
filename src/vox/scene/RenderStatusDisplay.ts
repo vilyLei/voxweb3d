@@ -9,9 +9,7 @@ import IEventBase from "../event/IEventBase";
 import IRendererScene from "./IRendererScene";
 
 /***************************************************************************/
-interface I_RenderStatusDisplay {
 
-}
 class RenderStatusDisplay {
     private m_rsc: IRendererScene;
     private m_lastTime = 0;

@@ -743,7 +743,7 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
     fakeRun(autoCycle: boolean = true): void {
         console.log("fakeRun ...");
     }
-    setAutoRunning(auto: boolean): void {
+    setAutoRunning(auto: boolean): CoSimpleRendererScene {
         
         if (this.m_autoRRun != auto) {
             if (this.m_autoRRun) {
@@ -767,6 +767,7 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
                 window.requestAnimationFrame(func);
             }
         }
+		return this;
     }
     
     isAutoRunning(): boolean {
