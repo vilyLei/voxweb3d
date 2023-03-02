@@ -21,7 +21,7 @@ export default interface IRenderEntityBase {
      */
     getREType(): number;
     getUid(): number;
-    setVisible(boo: boolean): void;
+    setVisible(boo: boolean): IRenderEntityBase;
     getVisible(): boolean;
     isVisible(): boolean;
     getTransform(): IROTransform;

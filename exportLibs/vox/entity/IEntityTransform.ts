@@ -9,14 +9,14 @@ import IVector3D from "../../vox/math/IVector3D";
 import IAABB from "../../vox/geom/IAABB";
 
 interface IEntityTransform {
-    setXYZ(px: number, py: number, pz: number): void;
-    setPosition(pv: IVector3D): void;
-    getPosition(pv: IVector3D): IVector3D;
-    setRotation3(rotV: IVector3D): void;
-    setRotationXYZ(rx: number, ry: number, rz: number): void;
-    setScaleXYZ(sx: number, sy: number, sz: number): void;
-    getRotationXYZ(pv: IVector3D): void;
-    getScaleXYZ(pv: IVector3D): void;
+    setXYZ(px: number, py: number, pz: number): IEntityTransform;
+    setPosition(pv: IVector3D): IEntityTransform;
+    getPosition(pv?: IVector3D): IVector3D;
+    setRotation3(rotV: IVector3D): IEntityTransform;
+    setRotationXYZ(rx: number, ry: number, rz: number): IEntityTransform;
+    setScaleXYZ(sx: number, sy: number, sz: number): IEntityTransform;
+    getRotationXYZ(pv?: IVector3D): IVector3D;
+    getScaleXYZ(pv?: IVector3D): IVector3D;
     localToGlobal(pv: IVector3D): void;
     globalToLocal(pv: IVector3D): void;
     

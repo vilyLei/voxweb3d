@@ -33,10 +33,10 @@ export default interface IDisplayEntity extends IRenderEntity {
     __$setDrawEnabled(boo: boolean): void;
     isDrawEnabled(): boolean;
 
-    setVisible(boo: boolean): void;
+    setVisible(boo: boolean): IDisplayEntity;
     getVisible(): boolean;
 
-    setMesh(m: IMeshBase): void;
+    setMesh(m: IMeshBase): IDisplayEntity;
     getMesh(): IMeshBase;
     setIvsParam(ivsIndex: number, ivsCount: number): void;
 
@@ -51,7 +51,7 @@ export default interface IDisplayEntity extends IRenderEntity {
     /**
      * 只允许在加入渲染器之前设置 IRenderMaterial 实例
      */
-    setMaterial(m: IRenderMaterial): void;
+    setMaterial(m: IRenderMaterial): IDisplayEntity;
     getMaterial(): IRenderMaterial;
     getDisplay(): IRODisplay;
 

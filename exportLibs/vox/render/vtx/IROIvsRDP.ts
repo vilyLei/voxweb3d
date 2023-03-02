@@ -12,6 +12,7 @@ interface IROIvsRDP {
     
     r0: IROIvsRD;
     r1: IROIvsRD;
+    ver: number;
 
     getUid(): number;
     applyRDPAt(index: number): void;

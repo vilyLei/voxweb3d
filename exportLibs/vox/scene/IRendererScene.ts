@@ -46,6 +46,17 @@ interface IRendererScene {
     appendRenderNode(node: IRenderNode): void;
     removeRenderNode(node: IRenderNode): void;
     /**
+     * @param index renderer process index in the renderer scene
+     * @param batchEnabled the value is true or false
+     * @param processFixedState the value is true or false 
+     */
+    setRendererProcessParam?(index: number, batchEnabled: boolean, processFixedState: boolean): void;
+    /**
+     * @param batchEnabled the default value true
+     * @param processFixedState the default value false
+     */
+    appendARendererProcess?(batchEnabled?: boolean, processFixedState?: boolean): void;
+    /**
      * @param rparam IRendererParam instance, the default value is null
      * @param renderProcessesTotal the default value is 3
      * @param createNewCamera the default value is true
@@ -171,5 +182,6 @@ interface IRendererScene {
     run(autoCycle?: boolean): void;
     destroy(): void;
     setAutoRunning(auto: boolean): void;
+    isAutoRunning(): boolean;
 }
 export default IRendererScene;

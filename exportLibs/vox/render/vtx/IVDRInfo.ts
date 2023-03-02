@@ -9,6 +9,6 @@ import { IROIvsRDP } from "./IROIvsRDP";
 import IVtxDrawingInfo from "./IVtxDrawingInfo";
 
 export default interface IVDRInfo extends IVtxDrawingInfo {
-    rdp: IROIvsRDP;
-    __$$copyToRDP(): boolean;
+    // rdp: IROIvsRDP;
+    __$$copyToRDP(rdp: IROIvsRDP): boolean;
 }

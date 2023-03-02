@@ -11,10 +11,9 @@ import IAABB from "../../vox/geom/IAABB";
 
 interface IRPODisplay {
     value: number;
-    // drawMode: number;
-    // trisNumber: number;
     pos: IVector3D;
     bounds: IAABB;
+    updateVtx(): boolean;
     setDrawFlag(renderState: number, rcolorMask: number): void;
     setIvsParam(ivsIndex: number, ivsCount: number): void;
     setVisible(boo: boolean): void;

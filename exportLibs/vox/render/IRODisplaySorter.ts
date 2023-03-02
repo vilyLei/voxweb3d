@@ -5,9 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IRPODisplay from "../../vox/render/IRPODisplay";
+import IRPOUnit from "../../vox/render/IRPOUnit";
 
 interface IRODisplaySorter {
-    sortRODisplay(nodes: IRPODisplay[], nodesTotal: number): number;
+    sortRODisplay(nodes: IRPOUnit[], nodesTotal: number): number;
 }
 export default IRODisplaySorter;

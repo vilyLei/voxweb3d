@@ -7,8 +7,10 @@
 
 export default interface IVtxDrawingInfo {
     
-    toStatic(): void;
-    toDynamic(): void;
+    lock(): void;
+    unlock(): void;
+    isUnlock(): boolean;
+    setInstanceCount(insCount: number): void;
     setWireframe(wireframe: boolean): void;
     /**
      * @param ivsIndex the default value is -1

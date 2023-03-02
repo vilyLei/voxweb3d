@@ -5,17 +5,17 @@
 /*                                                                         */
 /***************************************************************************/
 
-// import IRenderMaterial from "../IRenderMaterial";
-import IPassProcess from "./IPassProcess";
-import IPassRItem from "./IPassRItem";
+import IRPOUnit from "../IRPOUnit";
+import IRenderProxy from "../IRenderProxy";
+import IRenderMaterial from "../IRenderMaterial";
+import IPassMaterialWrapper from "./IPassMaterialWrapper";
 
-export default interface IPassRNode {
-    addItem(item: IPassRItem): IPassRNode;
-    addChild(node: IPassRNode): IPassRNode;
-    run(process: IPassProcess): void;
-    enable(): IPassRNode;
-    disable(): IPassRNode;
-    isEnabled(): boolean;
+export default interface IPassProcess {
+    
+    materials: IPassMaterialWrapper[];
+    rc: IRenderProxy;
+    units: IRPOUnit[];
+    createMaterialWrapper(m: IRenderMaterial, dstRUnit: IRPOUnit): IPassMaterialWrapper
+    run(): void;
     destroy(): void;
 }
-export {IPassRItem, IPassRNode}
