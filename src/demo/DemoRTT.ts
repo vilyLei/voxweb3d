@@ -76,8 +76,8 @@ export class DemoRTT {
         // --------------------------------------------- rtt begin
         ctx.setClearRGBColor3f(0.1, 0.0, 0.1);
         ctx.synFBOSizeWithViewport();
-        ctx.setRenderToTexture(this.m_rscene.textureBlock.getRTTTextureAt(0), true, false, 0);
-        ctx.useFBO(true, true, false);
+        ctx.setRenderToTexture(this.m_rscene.textureBlock.getRTTTextureAt(0), false, false, 0);
+        ctx.useFBO(true, false, false);
         // to be rendering in framebuffer
         this.m_rscene.runAt(0);
         // --------------------------------------------- rtt end

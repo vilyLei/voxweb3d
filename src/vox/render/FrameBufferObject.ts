@@ -481,13 +481,15 @@ class FrameBufferObject {
 		}
 	}
 	private buildColorRBO(rgl: any, pw: number, ph: number): void {
+		if (this.m_colorRBO == null) this.m_colorRBO = rgl.createRenderbuffer();
+		rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
 		if (this.multisampleEnabled) {
-			if (this.m_colorRBO == null) this.m_colorRBO = rgl.createRenderbuffer();
-			rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
 			rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.RGBA8, pw, ph);
-			rgl.framebufferRenderbuffer(this.m_fboTarget, this.m_COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
-			//
+		}else {
+			rgl.renderbufferStorage(rgl.RENDERBUFFER, rgl.RGBA8, pw, ph);
 		}
+		rgl.framebufferRenderbuffer(this.m_fboTarget, this.m_COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
+		
 		console.log("FrameBufferObject create only color buf...this.multisampleEnabled: " + this.multisampleEnabled + ",this.multisampleLevel:" + this.multisampleLevel);
 	}
 	private createNewFBO(rgl: any, pw: number, ph: number): void {
@@ -535,6 +537,7 @@ class FrameBufferObject {
 			this.buildStencilRBO(rgl, pw, ph);
 		}
 		else {
+			console.log("fffrfrfrfrfrfr");
 			this.buildColorRBO(rgl, pw, ph);
 		}
 		if (boo) {
