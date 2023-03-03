@@ -33,7 +33,7 @@ class RAdapterContext implements IRAdapterContext {
     private m_webGLVersion: number = 2;
     private m_devicePixelRatio: number = 1.0;
 
-    private m_viewEle: RViewElement = new RViewElement();
+    private m_viewEle = new RViewElement();
     // display 3d view buf size auto sync window size
     autoSyncRenderBufferAndWindowSize: boolean = true;
     offscreenRenderEnabled: boolean = false;
@@ -44,8 +44,16 @@ class RAdapterContext implements IRAdapterContext {
         console.log(evt);
     }
     private contextlostHandler(evt: any): void {
-        console.log("webglcontextlost...!!!");
+        console.warn("webglcontextlost...!!!");
         console.log(evt);
+    }
+    syncHtmlBodyColor(r: number, g: number, b: number): void {
+        if(document) {
+            let value = this.m_viewEle.getCSSHEXRGB(r, g, b);
+            const body = document.body;
+            body.style.background = value;
+            console.log("syncHtmlBodyColor(), value: ", value);
+        }
     }
     setWebGLMaxVersion(webgl_ver: number): void {
         if (webgl_ver == 1 || webgl_ver == 2) {
@@ -107,11 +115,12 @@ class RAdapterContext implements IRAdapterContext {
                 this.m_depthTestEnabled = attr.depth;
                 this.m_stencilTestEnabled = attr.stencil;
             }
-            console.log("this.m_devicePixelRatio: " + this.m_devicePixelRatio + ",rattr == null: " + (rattr == null));
-            console.log("depthTestEnabled: " + attr.depth);
-            console.log("stencilTestEnabled: " + attr.stencil);
-            console.log("antialiasEnabled: " + attr.antialias);
-            console.log("alphaEnabled: " + attr.alpha);
+            console.log("this.m_devicePixelRatio: ", this.m_devicePixelRatio, ",rattr == null: ", (rattr == null));
+            console.log("depthTestEnabled: ", attr.depth);
+            console.log("stencilTestEnabled: ", attr.stencil);
+            console.log("antialiasEnabled: ", attr.antialias);
+            console.log("alphaEnabled: ", attr.alpha);
+
             let offscreen: any = null;
             if (this.offscreenRenderEnabled) {
                 offscreen = canvas.transferControlToOffscreen();
@@ -329,7 +338,7 @@ class RAdapterContext implements IRAdapterContext {
             }
             this.m_canvas.style.width = this.m_displayWidth + 'px';
             this.m_canvas.style.height = this.m_displayHeight + 'px';
-            
+
             if (this.m_stage != null) {
                 this.m_stage.stageWidth = this.m_rcanvasWidth;
                 this.m_stage.stageHeight = this.m_rcanvasHeight;

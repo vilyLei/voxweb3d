@@ -41,7 +41,7 @@ export class DemoGraphTransparent {
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			// RendererDevice.SetWebBodyColor("#000000");
-			RendererDevice.SetWebBodyColor("#FFFFFF");
+			// RendererDevice.SetWebBodyColor("#FFFFFF");
 			DivLog.SetDebugEnabled(false);
 
 			let rparam = new RendererParam();

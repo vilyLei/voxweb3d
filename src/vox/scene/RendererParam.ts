@@ -35,9 +35,10 @@ class RendererParam implements IRendererParam {
     readonly camPosition: Vector3D = new Vector3D(2000.0, 2000.0, 2000.0);
     readonly camLookAtPos: Vector3D = new Vector3D(0.0, 0.0, 0.0);
     readonly camUpDirect: Vector3D = new Vector3D(0.0, 1.0, 0.0);
-
-    batchEnabled: boolean = true;
-    processFixedState: boolean = false;
+    syncBgColor = true;
+    batchEnabled = true;
+    processFixedState = false;
+    
     constructor(div: HTMLDivElement = null) {
         this.m_mainDiv = div;
         this.autoSyncRenderBufferAndWindowSize = div == null;

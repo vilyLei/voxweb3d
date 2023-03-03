@@ -22,6 +22,7 @@ import { CullFaceMode, DepthTestMode, RenderBlendMode } from "../vox/render/Rend
 import IGeomModelData from "../vox/mesh/IGeomModelData";
 import MeshFactory from "../vox/mesh/MeshFactory";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Color4 from "../vox/material/Color4";
 
 export class DemoGraphTwoMaterial {
 	private m_init = true;

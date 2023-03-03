@@ -23,20 +23,20 @@ import { RenderColorMask } from "../../vox/render/rendering/RenderColorMask";
 import { RenderStateObject } from "../../vox/render/rendering/RenderStateObject";
 
 import RendererState from "../../vox/render/RendererState";
-import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
+import { IShaderUniformProbe } from "../../vox/material/IShaderUniformProbe";
 import IRendererParam from "../../vox/scene/IRendererParam";
-import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
+import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import AABB2D from "../geom/AABB2D";
 
 class RenderAdapter implements IRenderAdapter {
-	
+
 	// renderer context uid
 	private m_rcuid: number = 0;
 	private m_texResource: ROTextureResource = null;
 	private m_gl: any = null;
 	private m_fontFaceFlipped: boolean = false;// default ccw
 	private m_colorMask: any = { mr: true, mg: true, mb: true, ma: true };
-	private m_rcontext: RAdapterContext = null;
+	private m_rtx: RAdapterContext = null;
 	private m_clearMask: number = 0x0;
 	private m_fboBuf: FrameBufferObject = null;
 	private m_fboIndex: number = 0;
@@ -58,8 +58,8 @@ class RenderAdapter implements IRenderAdapter {
 	private m_activeAttachmentTotal: number = 1;
 	private m_scissorEnabled: boolean = false;
 	private m_rState: RODrawState = null;
-	private m_webglVer: number = 2;
-	readonly bgColor: Float32Array = new Float32Array([0,0,0,1]);
+	private m_webglVer = 2;
+	readonly bgColor = new Float32Array([0, 0, 0, 1]);
 
 	readonly uViewProbe: IShaderUniformProbe = null;
 
@@ -67,14 +67,19 @@ class RenderAdapter implements IRenderAdapter {
 		this.m_texResource = texResource;
 		this.m_rcuid = rcuid;
 	}
-
+	syncHtmlBodyColor(): void {
+		if (this.m_rtx) {
+			const c = this.bgColor;
+			this.m_rtx.syncHtmlBodyColor(c[0], c[1], c[2]);
+		}
+	}
 	initialize(context: RAdapterContext, param: IRendererParam, rState: RODrawState, uViewProbe: IShaderUniformProbe): void {
-		if (this.m_rcontext == null) {
+		if (this.m_rtx == null) {
 			this.m_webglVer = context.getWebGLVersion();
 			this.m_rState = rState;
-			this.m_rcontext = context;
+			this.m_rtx = context;
 			this.m_gl = context.getRC();
-			
+
 			this.m_gl.disable(this.m_gl.SCISSOR_TEST);
 			if (context.isDepthTestEnabled()) this.m_gl.enable(this.m_gl.DEPTH_TEST);
 			else this.m_gl.disable(this.m_gl.DEPTH_TEST);
@@ -125,20 +130,20 @@ class RenderAdapter implements IRenderAdapter {
 			this.m_fontFaceFlipped = faceFlipped;
 		}
 	}
-    enabledPolygonOffset(): void {
-		if(!this.m_polygonOffset) {
+	enabledPolygonOffset(): void {
+		if (!this.m_polygonOffset) {
 			this.m_polygonOffset = true;
 			console.warn("POLYGON_OFFSET_FILL enable !!!");
 			this.m_gl.enable(this.m_gl.POLYGON_OFFSET_FILL);
 		}
-    }
-    disabledPolygonOffset(): void {
-		if(this.m_polygonOffset) {
+	}
+	disabledPolygonOffset(): void {
+		if (this.m_polygonOffset) {
 			this.m_polygonOffset = false;
 			console.warn("POLYGON_OFFSET_FILL disable !!!");
 			this.m_gl.disable(this.m_gl.POLYGON_OFFSET_FILL);
 		}
-    }
+	}
 	/*
 	 * specifies the scale factors and units to calculate depth values.
 	 * @param factor the value is a GLfloat which sets the scale factor for the variable depth offset for each polygon. The default value is 0.
@@ -158,10 +163,10 @@ class RenderAdapter implements IRenderAdapter {
 		}
 	}
 	getDiv(): HTMLDivElement {
-		return this.m_rcontext.getDiv();
+		return this.m_rtx.getDiv();
 	}
 	getCanvas(): HTMLCanvasElement {
-		return this.m_rcontext.getCanvas();
+		return this.m_rtx.getCanvas();
 	}
 	setClearDepth(depth: number): void {
 		this.m_clearDepth = depth;
@@ -170,17 +175,17 @@ class RenderAdapter implements IRenderAdapter {
 		return this.m_clearDepth;
 	}
 	setContextViewSize(pw: number, ph: number): void {
-		this.m_rcontext.autoSyncRenderBufferAndWindowSize = false;
-		this.m_rcontext.resizeBufferSize(pw, ph);
+		this.m_rtx.autoSyncRenderBufferAndWindowSize = false;
+		this.m_rtx.resizeBufferSize(pw, ph);
 	}
-	getViewportX(): number { return this.m_rcontext.getViewportX(); }
-	getViewportY(): number { return this.m_rcontext.getViewportY(); }
-	getViewportWidth(): number { return this.m_rcontext.getViewportWidth(); }
-	getViewportHeight(): number { return this.m_rcontext.getViewportHeight(); }
-	getFBOFitWidth(): number { return this.m_rcontext.getFBOWidth(); }
-	getFBOFitHeight(): number { return this.m_rcontext.getFBOHeight(); }
-	getRCanvasWidth(): number { return this.m_rcontext.getRCanvasWidth(); }
-	getRCanvasHeight(): number { return this.m_rcontext.getRCanvasHeight(); }
+	getViewportX(): number { return this.m_rtx.getViewportX(); }
+	getViewportY(): number { return this.m_rtx.getViewportY(); }
+	getViewportWidth(): number { return this.m_rtx.getViewportWidth(); }
+	getViewportHeight(): number { return this.m_rtx.getViewportHeight(); }
+	getFBOFitWidth(): number { return this.m_rtx.getFBOWidth(); }
+	getFBOFitHeight(): number { return this.m_rtx.getFBOHeight(); }
+	getRCanvasWidth(): number { return this.m_rtx.getRCanvasWidth(); }
+	getRCanvasHeight(): number { return this.m_rtx.getRCanvasHeight(); }
 
 	setColorMask(mr: boolean, mg: boolean, mb: boolean, ma: boolean): void {
 		this.m_colorMask.mr = mr;
@@ -219,7 +224,7 @@ class RenderAdapter implements IRenderAdapter {
 	 * @param depth depth buffer depth value
 	 */
 	clearDepth(depth: number = 1.0): void {
-		
+
 		let mode = this.m_rState.getDepthTestMode();
 		this.m_rState.setDepthTestMode(DepthTestMode.OPAQUE);
 		this.m_clearDepth = depth;
@@ -246,14 +251,14 @@ class RenderAdapter implements IRenderAdapter {
 			this.m_preDepth = this.m_clearDepth;
 			this.m_gl.clearDepth(this.m_clearDepth);
 		}
-		if (this.m_rcontext.isStencilTestEnabled()) {
+		if (this.m_rtx.isStencilTestEnabled()) {
 			this.m_gl.clearStencil(this.m_clearStencil);
 		}
 		let cvs = this.bgColor;
 		this.m_gl.clearColor(cvs[0], cvs[1], cvs[2], cvs[3]);
 		this.m_gl.clear(this.m_clearMask);
 		// this.m_rState.setDepthTestMode(mode);
-		//	if (this.m_rcontext.isStencilTestEnabled()) {
+		//	if (this.m_rtx.isStencilTestEnabled()) {
 		//		this.m_gl.stencilMask(0x0);
 		//	}
 
@@ -261,17 +266,17 @@ class RenderAdapter implements IRenderAdapter {
 	reset(): void {
 		this.m_rState.setCullFaceMode(CullFaceMode.BACK);
 		this.m_rState.setDepthTestMode(DepthTestMode.OPAQUE);
-		RendererState.Reset(this.m_rcontext);
+		RendererState.Reset(this.m_rtx);
 	}
 	getRenderContext(): RAdapterContext {
-		return this.m_rcontext;
+		return this.m_rtx;
 	}
 	renderBegin(): void {
-		if (this.m_rcontext != null) {
+		if (this.m_rtx != null) {
 			this.m_fboSizeFactor = 1.0;
 			this.reseizeViewPort();
 			RenderStateObject.Unlock();
-			
+
 			RenderStateObject.UseRenderState(RendererState.NORMAL_STATE);
 			RenderColorMask.Unlock();
 			RenderColorMask.UseRenderState(RenderColorMask.ALL_TRUE_COLOR_MASK);
@@ -285,21 +290,21 @@ class RenderAdapter implements IRenderAdapter {
 
 	private updateViewPort(): void {
 		let size = this.m_viewPortRect;
-		this.uViewProbe.setVec4Data( size.x, size.y, size.width, size.height );
+		this.uViewProbe.setVec4Data(size.x, size.y, size.width, size.height);
 		this.uViewProbe.update();
 		//DivLog.ShowLog("reseizeFBOViewPort: " + this.m_viewX + "," + this.m_viewY + "," + this.m_viewWidth + "," + this.m_viewHeight);
 		//console.log("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
-		this.m_gl.viewport( size.x, size.y, size.width, size.height );
+		this.m_gl.viewport(size.x, size.y, size.width, size.height);
 	}
 	private checkViewPort(dstSize: AABB2D): void {
 
 		let srcSize = this.m_viewPortRect;
-		let k: number = this.m_rcontext.getDevicePixelRatio();
+		let k: number = this.m_rtx.getDevicePixelRatio();
 		let boo = srcSize.testEqual(dstSize);
 		boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
 		if (boo) {
 			this.m_devPRatio = k;
-			srcSize.copyFrom( dstSize );
+			srcSize.copyFrom(dstSize);
 			this.updateViewPort();
 		}
 	}
@@ -307,17 +312,17 @@ class RenderAdapter implements IRenderAdapter {
 
 		if (this.m_viewportUnlock) {
 
-			this.checkViewPort( this.m_rcontext.getViewPortSize() );
+			this.checkViewPort(this.m_rtx.getViewPortSize());
 		}
 	}
 	private reseizeFBOViewPort(): void {
 		if (this.m_viewportUnlock) {
 
-			this.checkViewPort( this.m_fboViewportRect );
+			this.checkViewPort(this.m_fboViewportRect);
 		}
 	}
 	setViewProbeValue(x: number, y: number, width: number, height: number): void {
-		this.uViewProbe.setVec4Data( x, y, width, height );
+		this.uViewProbe.setVec4Data(x, y, width, height);
 		this.uViewProbe.update();
 	}
 	lockViewport(): void {
@@ -331,24 +336,24 @@ class RenderAdapter implements IRenderAdapter {
 	update(): void {
 	}
 	updateRenderBufferSize(): void {
-		this.m_rcontext.updateRenderBufferSize();
+		this.m_rtx.updateRenderBufferSize();
 	}
 	destroy(): void {
-		this.m_rcontext = null;
+		this.m_rtx = null;
 		this.m_rState = null;
 	}
 	getDevicePixelRatio(): number {
-		return this.m_rcontext.getDevicePixelRatio();
+		return this.m_rtx.getDevicePixelRatio();
 	}
 
 	loseContext(): void {
-		this.m_rcontext.loseContext();
+		this.m_rtx.loseContext();
 	}
 	/**
 	 * @returns return gpu context lost status
 	 */
 	isContextLost(): boolean {
-		return this.m_rcontext.isContextLost();
+		return this.m_rtx.isContextLost();
 	}
 	// read data format include float or unsigned byte ,etc.
 	readPixels(px: number, py: number, width: number, height: number, format: number, dataType: number, pixels: Uint8Array): void {
@@ -435,7 +440,7 @@ class RenderAdapter implements IRenderAdapter {
 	}
 	clearFBODepthAt(index: number, clearDepth: number = 1.0): void {
 		let fboBuf = this.m_fboBufList[index];
-		if(fboBuf != null) {
+		if (fboBuf != null) {
 			fboBuf.clearOnlyDepth(clearDepth);
 		}
 	}
@@ -475,7 +480,7 @@ class RenderAdapter implements IRenderAdapter {
 			if (attachmentIndex == 0) {
 				if (this.m_fboBuf != null) {
 					if (this.m_synFBOSizeWithViewport) {
-						this.m_fboBuf.initialize(this.m_gl, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
+						this.m_fboBuf.initialize(this.m_gl, Math.floor(this.m_rtx.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rtx.getFBOHeight() * this.m_fboSizeFactor));
 					}
 					else {
 						if (this.m_fboViewportRectBoo) {
@@ -493,7 +498,7 @@ class RenderAdapter implements IRenderAdapter {
 						this.m_fboBuf.writeDepthEnabled = enableDepth;
 						this.m_fboBuf.writeStencilEnabled = enableStencil;
 						if (this.m_synFBOSizeWithViewport) {
-							this.m_fboBuf.initialize(this.m_gl, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
+							this.m_fboBuf.initialize(this.m_gl, Math.floor(this.m_rtx.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rtx.getFBOHeight() * this.m_fboSizeFactor));
 						}
 						else {
 							if (this.m_fboViewportRectBoo) {
@@ -564,10 +569,10 @@ class RenderAdapter implements IRenderAdapter {
 				else {
 					if (this.m_synFBOSizeWithViewport) {
 						//console.log("this.m_fboSizeFactor: "+this.m_fboSizeFactor);
-						this.m_fboViewportRect.setTo(0, 0, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
+						this.m_fboViewportRect.setTo(0, 0, Math.floor(this.m_rtx.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rtx.getFBOHeight() * this.m_fboSizeFactor));
 					}
 					else {
-						if(this.m_fboBuf.isSizeChanged()) {
+						if (this.m_fboBuf.isSizeChanged()) {
 							this.m_fboBuf.initialize(this.m_gl, this.m_fboBuf.getWidth(), this.m_fboBuf.getHeight());
 						}
 						this.m_fboViewportRect.setTo(0, 0, this.m_fboBuf.getWidth(), this.m_fboBuf.getHeight());

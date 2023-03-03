@@ -77,7 +77,7 @@ interface IRenderAdapter {
 
 	synFBOSizeWithViewport(): void;
 	asynFBOSizeWithViewport(): void;
-	//
+	
 	/**
 	 * if synFBOSizeWithViewport is true, fbo size = factor * view port size;
 	 * @param factor exmple: the value of factor is 0.5
@@ -86,6 +86,10 @@ interface IRenderAdapter {
 	bindFBOAt(index: number, fboType: number): void;
 	resetFBOAttachmentMask(boo: boolean): void;
 	setFBOAttachmentMaskAt(index: number, boo: boolean): void;
+	/**
+	 * sync the clear bg color and the html body bg color
+	 */
+	syncHtmlBodyColor(): void;
 
 	getFBOAttachmentTotal(): number;
 	/**

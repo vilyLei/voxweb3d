@@ -168,8 +168,8 @@ class Color4 implements IColor4 {
      * @returns for example: #350b7e
      */
     getCSSHeXRGBColor(): string {
-        let str: string = "#";
-        let t: number = Math.floor(this.r * 255.0);
+        let str = "#";
+        let t = Math.floor(this.r * 255.0);
         if (t < 0xf) {
             str += "0" + t.toString(16);
         }

@@ -21,6 +21,7 @@ interface IRendererParam {
     readonly camLookAtPos: IVector3D;
     readonly camUpDirect: IVector3D;
 
+    syncBgColor: boolean;
     batchEnabled: boolean;
     processFixedState: boolean;
     

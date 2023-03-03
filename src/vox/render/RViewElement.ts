@@ -18,6 +18,36 @@ class RViewElement {
     public setDiv(div: HTMLElement): void {
         this.m_div = div;
     }
+    
+    /**
+     * @returns for example: #350b7e
+     */
+    getCSSHEXRGB(r: number, g: number, b: number): string {
+        let str = "#";
+        let t = Math.floor(r * 255.0);
+        if (t < 0xf) {
+            str += "0" + t.toString(16);
+        }
+        else {
+            str += "" + t.toString(16);
+        }
+
+        t = Math.floor(g * 255.0);
+        if (t < 0xf) {
+            str += "0" + t.toString(16);
+        }
+        else {
+            str += "" + t.toString(16);
+        }
+        t = Math.floor(b * 255.0);
+        if (t < 0xf) {
+            str += "0" + t.toString(16);
+        }
+        else {
+            str += "" + t.toString(16);
+        }
+        return str;
+    }
     public createViewEle(pdocument: any, autoResize: boolean): void {
         if (this.m_div == null) {
             this.m_div = document.getElementById("voxEngineDiv");

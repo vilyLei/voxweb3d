@@ -100,26 +100,26 @@ class RenderProxy implements IRenderProxy {
     readonly colorMask: IRenderingColorMask = null;
     readonly rshader: IRenderShader = null;
     readonly rdataBuilder: IRODataBuilder = null;
-    readonly status: IRPStatus = new RPStatus();
+    readonly status = new RPStatus();
 
     private m_uid: number = 0;
     private m_camUBO: any = null;
     private m_adapter: RenderAdapter = null;
-    private m_adapterContext: RAdapterContext = new RAdapterContext();
+    private m_adapterContext = new RAdapterContext();
     private m_vtxRes: ROVertexResource;
     private m_rc: any = null;
     private m_perspectiveEnabled = true;
-    private m_viewPortRect: AABB2D = new AABB2D(0, 0, 800, 600);
-    private m_cameraNear: number = 0.1;
-    private m_cameraFar: number = 5000.0;
-    private m_cameraFov: number = 45.0;
-    private m_maxWebGLVersion: number = 2;
-    private m_WEBGL_VER: number = 2;
+    private m_viewPortRect = new AABB2D(0, 0, 800, 600);
+    private m_cameraNear = 0.1;
+    private m_cameraFar = 5000.0;
+    private m_cameraFov = 45.0;
+    private m_maxWebGLVersion = 2;
+    private m_WEBGL_VER = 2;
     // main camera
     private m_camera: IRenderCamera = null;
-    private m_camSwitched: boolean = false;
+    private m_camSwitched = false;
     // 是否舞台尺寸和view自动同步一致
-    private m_autoSynViewAndStage: boolean = true;
+    private m_autoSynViewAndStage = true;
 
     constructor(rcuid: number) {
         this.m_uid = rcuid;
@@ -471,9 +471,11 @@ class RenderProxy implements IRenderProxy {
     setClearRGBColor3f(pr: number, pg: number, pb: number): void {
         let cvs = this.m_adapter.bgColor;
         cvs[0] = pr; cvs[1] = pg; cvs[2] = pb;
+        this.adapter.syncHtmlBodyColor();
     }
     setClearColor(color: IColor4): void {
         color.toArray4(this.m_adapter.bgColor);
+        this.adapter.syncHtmlBodyColor();
     }
     /**
      * @param colorUint24 uint24 number rgb color value, example: 0xff0000, it is red rolor
@@ -485,10 +487,12 @@ class RenderProxy implements IRenderProxy {
         cvs[1] = ((colorUint24 >> 8) & 0x0000ff) / 255.0;
         cvs[2] = (colorUint24 & 0x0000ff) / 255.0;
         cvs[3] = alpha;
+        this.adapter.syncHtmlBodyColor();
     }
     setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void {
         let cvs = this.m_adapter.bgColor;
         cvs[0] = pr; cvs[1] = pg; cvs[2] = pb; cvs[3] = pa;
+        this.adapter.syncHtmlBodyColor();
     }
     getClearRGBAColor4f(color4: IColor4): void {
         color4.fromArray4(this.m_adapter.bgColor);
