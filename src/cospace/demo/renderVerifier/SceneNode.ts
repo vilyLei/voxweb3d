@@ -24,11 +24,11 @@ class SceneNode implements ISceneNode {
 	protected m_cospace: CoSpace = null;
 	protected m_rscene: RendererScene = null;
 
-	protected m_scaleV: Vector3D = new Vector3D(1.0, 1.0, 1.0);
-	protected m_time: number = 0;
+	protected m_scaleV = new Vector3D(1.0, 1.0, 1.0);
+	protected m_time = 0;
 
-	protected m_modelsTotal: number = 0;
-	protected m_showTotal: number = 0;
+	protected m_modelsTotal = 0;
+	protected m_showTotal = 0;
 	constructor() { }
 
 	initialize(rscene: RendererScene, cospace: CoSpace): void {
@@ -90,12 +90,13 @@ class SceneNode implements ISceneNode {
 		// 	this.m_vels[i].setVisible(false);
 		// }
 	}
-	private m_lossTime: number = 0;
-	private m_verticesTotal: number = 0;
-	private m_trianglesTotal: number = 0;
-	private m_errModelTotal: number = 0;
-	private m_normalErrInfo: string = "";
+	private m_lossTime = 0;
+	private m_verticesTotal = 0;
+	private m_trianglesTotal = 0;
+	private m_errModelTotal = 0;
+	private m_normalErrInfo = "";
 	private m_vels: DisplayEntity[] = [];
+	private m_uvErrTotal = 0;
 	protected initEntity(model: GeometryModelDataType, transform: Matrix4 = null, index: number = 0): void {
 		if (model != null) {
 			// console.log("initEntity(), model: ", model);
@@ -124,6 +125,7 @@ class SceneNode implements ISceneNode {
 			if(uvErrorCheck) {
 				if(model.status != undefined && model.status > 0) {
 					console.log("Error model.status: ", model.status);
+					this.m_uvErrTotal ++;
 				}else {
 					flag = true;
 				}
@@ -201,6 +203,7 @@ class SceneNode implements ISceneNode {
 				this.m_rscene.removeEntity(this.m_frameBox);
 				this.m_frameBox = null;
 			}
+			this.m_uvErrTotal = 0;
 			this.m_normalErrInfo = "";
 			this.m_verticesTotal = 0;
 			this.m_trianglesTotal = 0;
@@ -257,7 +260,10 @@ class SceneNode implements ISceneNode {
 					if (this.isFinish()) {
 						info += "</br>当前模型加载展示完成";
 						if (this.m_errModelTotal > 0) {
-							info += "</br>注意: 有" + this.m_errModelTotal + "个子模型数据有问题";
+							info += "</br><font color='#ee00aa'>注意: 有" + this.m_errModelTotal + "个子模型法线数据有问题</font>";
+						}
+						if(this.m_uvErrTotal) {
+							info += "</br><font color='#ee00aa'>注意: 有" + this.m_uvErrTotal + "个子模型uv数据有问题</font>";
 						}
 						if (this.m_normalErrInfo != "") {
 							info += "</br><font color='#ee00aa'>注意: " + this.m_normalErrInfo + ",当前所见的法线由此程序生成</font>";

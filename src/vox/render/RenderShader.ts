@@ -286,7 +286,7 @@ export default class RenderShader implements IRenderShader, IRenderResource {
     useUniformV1(ult: any, type: number, f32Arr: Float32Array, dataSize: number): void {
 		const mc = MaterialConst;
 		const rc = this.m_rc;
-        console.log("useUniformV1 A, dataSize: ",dataSize, ", f32Arr: ", f32Arr);
+        // console.log("useUniformV1 A, dataSize: ",dataSize, ", f32Arr: ", f32Arr);
         switch (type) {
             case mc.SHADER_MAT4:
                 rc.uniformMatrix4fv(ult, false, f32Arr);

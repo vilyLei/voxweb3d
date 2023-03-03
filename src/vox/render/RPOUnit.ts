@@ -196,6 +196,8 @@ export default class RPOUnit implements IRPOUnit {
         switch (rd.drawMode) {
             case rdm.ELEMENTS_TRIANGLES:
             case rdm.ELEMENTS_LINES:
+            case rdm.ELEMENTS_TRIANGLE_STRIP:
+            case rdm.ELEMENTS_LINES_STRIP:
                 // console.log("rd.gldm: ", rd.gldm);
                 // if(DebugFlag.Flag_0 > 0)console.log("RPOUnit::run(), drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
                 //rc.RContext.drawElements(rc.TRIANGLES, this.ivsCount, rd.ibufType,this.ivsIndex * this.ibufStep);
@@ -203,14 +205,11 @@ export default class RPOUnit implements IRPOUnit {
                 break;
             case rdm.ELEMENTS_INSTANCED_TRIANGLES:
             case rdm.ELEMENTS_INSTANCED_LINES:
+            case rdm.ELEMENTS_INSTANCED_TRIANGLES_STRIP:
+            case rdm.ELEMENTS_INSTANCED_LINES_STRIP:
                 //console.log("RPOUnit::run(), drawElementsInstanced(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+", insCount: "+this.insCount+")");
                 //rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, rd.bufType, this.ivsIndex * this.ibufStep, this.insCount);
-                gl.drawElementsInstanced(rc.TRIANGLES, ivsCount, rd.bufType, rd.ivsOffset, rd.insCount);
-                break;
-            case rdm.ELEMENTS_TRIANGLE_STRIP:
-                //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                //rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, rd.bufType,this.ivsIndex * this.ibufStep);
-                gl.drawElements(rc.TRIANGLE_STRIP, ivsCount, rd.bufType, rd.ivsOffset);
+                gl.drawElementsInstanced(rd.gldm, ivsCount, rd.bufType, rd.ivsOffset, rd.insCount);
                 break;
             case rdm.ELEMENTS_TRIANGLE_FAN:
                 //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
@@ -252,6 +251,8 @@ export default class RPOUnit implements IRPOUnit {
         switch (rd.drawMode) {
             case rdm.ELEMENTS_TRIANGLES:
             case rdm.ELEMENTS_LINES:
+            case rdm.ELEMENTS_TRIANGLE_STRIP:
+            case rdm.ELEMENTS_LINES_STRIP:
                 for (; i < this.partTotal;) {
                     // 这里面可以增加一个回调函数,这个回调函数可以对uniform(或者transformUniform)做一些数据改变，进而来控制相应的状态
                     // 因此可以通过改变uniform实现大量的显示绘制
@@ -263,14 +264,11 @@ export default class RPOUnit implements IRPOUnit {
                 break;
             case rdm.ELEMENTS_INSTANCED_TRIANGLES:
             case rdm.ELEMENTS_INSTANCED_LINES:
+            case rdm.ELEMENTS_INSTANCED_TRIANGLES_STRIP:
+            case rdm.ELEMENTS_INSTANCED_LINES_STRIP:
                 //console.log("RPOUnit::run(), drawElementsInstanced(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+", insCount: "+this.insCount+")");
                 //rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.ivsIndex * this.ibufStep, this.insCount);
                 gl.drawElementsInstanced(rd.gldm, ivsCount, rd.bufType, rd.ivsOffset, rd.insCount);
-                break;
-            case rdm.ELEMENTS_TRIANGLE_STRIP:
-                //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                //rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
-                gl.drawElements(rc.TRIANGLE_STRIP, ivsCount, rd.bufType, rd.ivsOffset);
                 break;
             case rdm.ELEMENTS_TRIANGLE_FAN:
                 //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");

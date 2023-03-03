@@ -37,6 +37,7 @@ class RAdapterContext implements IRAdapterContext {
     // display 3d view buf size auto sync window size
     autoSyncRenderBufferAndWindowSize: boolean = true;
     offscreenRenderEnabled: boolean = false;
+    bodyBgColor = "";
     constructor() { }
 
     private contextrestoredHandler(evt: any): void {
@@ -48,12 +49,13 @@ class RAdapterContext implements IRAdapterContext {
         console.log(evt);
     }
     syncHtmlBodyColor(r: number, g: number, b: number): void {
-        if(document) {
-            let value = this.m_viewEle.getCSSHEXRGB(r, g, b);
-            const body = document.body;
-            body.style.background = value;
-            console.log("syncHtmlBodyColor(), value: ", value);
-        }
+        // if(document) {
+            this.bodyBgColor = this.m_viewEle.getCSSHEXRGB(r, g, b);
+            // let value = this.m_viewEle.getCSSHEXRGB(r, g, b);
+            // const body = document.body;
+            // body.style.background = value;
+            // console.log("syncHtmlBodyColor(), this.bodyBgColor: ", this.bodyBgColor);
+        // }
     }
     setWebGLMaxVersion(webgl_ver: number): void {
         if (webgl_ver == 1 || webgl_ver == 2) {

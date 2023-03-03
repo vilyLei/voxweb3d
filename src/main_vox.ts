@@ -60,7 +60,7 @@
 //  import * as DemoRTTHalfSize from "./demo/DemoRTTHalfSize";
 //  import Demo = DemoRTTHalfSize.demo.DemoRTTHalfSize;
 
-//  import {DemoRTT as Demo} from "./demo/DemoRTT";
+ import {DemoRTT as Demo} from "./demo/DemoRTT";
 
 //  import {DemoFloatRTT as Demo} from "./demo/DemoFloatRTT";
 
@@ -339,7 +339,7 @@
 
 //  import {DemoMaterialGraphTest as Demo} from "./demo/DemoMaterialGraphTest";
 
- import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
+//  import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
 
 //  import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
 

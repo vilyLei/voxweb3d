@@ -10,9 +10,8 @@ import RendererScene from "../../../vox/scene/RendererScene";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import Box3DEntity from "../../../vox/entity/Box3DEntity";
 import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
-import * as FogDepthUVMaterialT from "../../../advancedDemo/depthLight/material/FogDepthUVMaterial";
+import { FogDepthUVMaterial } from "../material/FogDepthUVMaterial";
 
-import FogDepthUVMaterial = FogDepthUVMaterialT.advancedDemo.depthLight.material.FogDepthUVMaterial;
 
 export class RoleScene {
     constructor() {
@@ -80,10 +79,10 @@ export class RoleScene {
         if (this.m_rc == null) {
             this.m_rc = rc;
 
-            let tex0: TextureProxy = this.getImageTexByUrl("moss_04.jpg");
-            let tex1: TextureProxy = this.getImageTexByUrl("metal_08.jpg");
-            let tex2: TextureProxy = this.getImageTexByUrl("brickwall_big.jpg");
-            let tex3: TextureProxy = this.getImageTexByUrl("wood_01.jpg");
+            let tex0 = this.getImageTexByUrl("moss_04.jpg");
+            let tex1 = this.getImageTexByUrl("metal_08.jpg");
+            let tex2 = this.getImageTexByUrl("brickwall_big.jpg");
+            let tex3 = this.getImageTexByUrl("wood_01.jpg");
 
             //  RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.BLEND);
             //  RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
@@ -99,22 +98,22 @@ export class RoleScene {
             let scaleK: number = 1.0;
             this.m_minV = new Vector3D(-halfSize, -halfSize, -halfSize);
             this.m_maxV = new Vector3D(halfSize, halfSize, halfSize);
-            let color: Color4 = new Color4();
-            let material: FogDepthUVMaterial = new FogDepthUVMaterial();
+            let color = new Color4();
+            let material = new FogDepthUVMaterial();
             this.m_srcBox.setMaterial(material);
             this.m_srcSph.setMaterial(material);
             this.m_srcBox.initialize(this.m_minV, this.m_maxV, [tex0]);
             this.m_srcSph.initialize(0.6 * size, 20, 20, [tex0]);
             ///*
-            let tn: number = 8.0;
-            let pv: Vector3D = new Vector3D();
-            let tv: Vector3D = new Vector3D(-tn * size, -3.0 * size, -tn * size);
+            let tn = 8.0;
+            let pv = new Vector3D();
+            let tv = new Vector3D(-tn * size, -3.0 * size, -tn * size);
             let entity: DisplayEntity = null;
-            let rn: number = tn * 2.0;
-            let cn: number = tn * 2.0;
+            let rn = tn * 2.0;
+            let cn = tn * 2.0;
             let f: number;
             let hn: number;
-            let dvs: Float32Array = new Float32Array(rn * cn);
+            let dvs = new Float32Array(rn * cn);
             for (i = 0; i < rn; ++i) {
                 for (j = 0; j < cn; ++j) {
                     dvs[i * cn + j] = Math.random();
@@ -154,7 +153,7 @@ export class RoleScene {
             }
             //*/
             size = 2300.0;
-            let bgBox: Box3DEntity = new Box3DEntity();
+            let bgBox = new Box3DEntity();
             material = new FogDepthUVMaterial();
             material.setFRGB3f(0.6, 0.6, 0.6);
             material.setUVScale(10.0, 10.0);

@@ -28,6 +28,7 @@ class BufRData implements IROIvsRD {
      * ivs buffer stride
      */
     stride = 2;
+    initDrawMode = RDM.ELEMENTS_TRIANGLES;
     drawMode = RDM.ELEMENTS_TRIANGLES;
     private m_common = true;
     bufType = 0;
@@ -72,12 +73,29 @@ class BufRData implements IROIvsRD {
     }
     updateDrawMode(): void {
 
-        if(this.hasIvs()) {
-            this.gldm = this.m_common ? this.rc.TRIANGLES : this.rc.LINES;
-            if(this.insCount < 1) {
-                this.drawMode = this.m_common ? RDM.ELEMENTS_TRIANGLES : RDM.ELEMENTS_LINES;
-            }else {
-                this.drawMode = this.m_common ? RDM.ELEMENTS_INSTANCED_TRIANGLES : RDM.ELEMENTS_INSTANCED_LINES;
+        if (this.hasIvs()) {
+            const im = this.initDrawMode;
+            const flag = im == RDM.ELEMENTS_TRIANGLES || im == RDM.ELEMENTS_LINES;
+            const strip = im == RDM.ELEMENTS_TRIANGLE_STRIP || im == RDM.ELEMENTS_LINES_STRIP;
+            if (flag || strip) {
+                if (strip) {
+                    this.gldm = this.m_common ? this.rc.TRIANGLE_STRIP : this.rc.LINE_STRIP;
+                } else {
+                    this.gldm = this.m_common ? this.rc.TRIANGLES : this.rc.LINES;
+                }
+                if (this.insCount < 1) {
+                    if (strip) {
+                        this.drawMode = this.m_common ? RDM.ELEMENTS_TRIANGLES : RDM.ELEMENTS_LINES;
+                    } else {
+                        this.drawMode = this.m_common ? RDM.ELEMENTS_TRIANGLE_STRIP : RDM.ELEMENTS_LINES_STRIP;
+                    }
+                } else {
+                    if (strip) {
+                        this.drawMode = this.m_common ? RDM.ELEMENTS_INSTANCED_TRIANGLES_STRIP : RDM.ELEMENTS_INSTANCED_LINES_STRIP;
+                    } else {
+                        this.drawMode = this.m_common ? RDM.ELEMENTS_INSTANCED_TRIANGLES : RDM.ELEMENTS_INSTANCED_LINES;
+                    }
+                }
             }
         }
     }
@@ -164,7 +182,7 @@ class BufRDataPair implements IROIvsRDP {
         this.buf = null;
     }
     private clearBuf(): void {
-        if(this.r0 != null) {
+        if (this.r0 != null) {
             this.r0.clear();
             this.r1.clear();
             this.roiRes = null;
@@ -200,7 +218,7 @@ class BufRDataPair implements IROIvsRDP {
             // console.log("AAAA index: ",index);
             // console.log("AAAA 0 rd.getUid(): ",rd.getUid(), ", r0.getUid(): ",this.r0.getUid(), ", r0.ivsSize: ", this.r0.ivsSize, ", r0.rdpIndex: ", this.r0.rdpIndex);
             let rdp = this.roiRes.getRDPDataAt(index);
-            if(rdp) {
+            if (rdp) {
                 this.updateStatus();
                 this.clearBuf();
                 this.m_rdpIndex = rdp.getRDPIndex();
@@ -226,7 +244,7 @@ class BufRDataPair implements IROIvsRDP {
     }
     toShape(): void {
 
-        this.m_rdpVer = 0;        
+        this.m_rdpVer = 0;
         this.rd = this.r0;
         this.buf = this.rd.buf;
         this.roiRes.rdp = this;
@@ -249,7 +267,7 @@ class BufRDataPair implements IROIvsRDP {
 
         // console.log("AAAA 0 copyFrom(), rdp.r0.getUid(): ",rdp.r0.getUid(), ", r0.ivsSize: ", rdp.r0.ivsSize, ", r0.rdpIndex: ", rdp.r0.rdpIndex);
         this.roiRes = rdp.roiRes;
-        if(force) this.m_rdpVer = rdp.m_rdpVer;
+        if (force) this.m_rdpVer = rdp.m_rdpVer;
         this.r0 = rdp.r0.clone();
         if (rdp.r0 != rdp.r1) {
             this.r1 = rdp.r1.clone();
@@ -267,7 +285,7 @@ class BufRDataPair implements IROIvsRDP {
     copyTo(rdp: BufRDataPair, auto: boolean = true, force: boolean = true): void {
 
         rdp.roiRes = this.roiRes;
-        if(force) rdp.m_rdpVer = this.m_rdpVer;
+        if (force) rdp.m_rdpVer = this.m_rdpVer;
         rdp.r0 = this.r0.clone();
         if (this.r0 != this.r1) {
             rdp.r1 = this.r1.clone();
@@ -402,6 +420,7 @@ class ROIndicesRes implements IROIndicesRes {
             rd.ivsIndex = disp.ivsIndex;
             rd.stride = 2;
             rd.drawMode = disp.drawMode;
+            rd.initDrawMode = disp.drawMode;
             rdp.r0 = rd;
             rdp.r1 = rd;
         }
@@ -429,33 +448,34 @@ class ROIndicesRes implements IROIndicesRes {
         let r0: BufRData = null;
         let r1: BufRData = null;
         if (shape) {
-            r0 = this.createBuf(rdpIndex, rc, vrc, ivtx, disp.ivsIndex, false);
+            r0 = this.createBuf(rdpIndex, rc, vrc, ivtx, disp, false);
         }
         if (wireframe) {
-            r1 = this.createBuf(rdpIndex, rc, vrc, ivtx, disp.ivsIndex, wireframe);
+            r1 = this.createBuf(rdpIndex, rc, vrc, ivtx, disp, wireframe);
         }
         // console.log("createRDPAt(), r0: ", r0, ", r1: ", r1);
-        if(r0 == null && r1 == null) {
-            r0 = this.createBuf(rdpIndex, rc, vrc, ivtx, disp.ivsIndex, false);
+        if (r0 == null && r1 == null) {
+            r0 = this.createBuf(rdpIndex, rc, vrc, ivtx, disp, false);
         }
-        if(r0 == null) {
+        if (r0 == null) {
             r0 = r1;
-        }else if(r1 == null) {
+        } else if (r1 == null) {
             r1 = r0;
         }
-
+        
         rdp.r0 = r0;
         rdp.r1 = r1;
         // console.log("createRDPAt(), rdpIndex: ", rdpIndex, ", wireframe: ", wireframe,", rdp.r0.getUid(): ", rdp.r0.getUid());
         // console.log("       rdp.r0.ivsSize: ", rdp.r0.ivsSize, ", r0.rdpIndex: ",rdp.r0.rdpIndex);
         return rdp;
     }
-    private createBuf(rdpIndex: number, rc: IRenderProxy, vrc: IROVtxBuilder, ivtx: IROIVtxBuf, ivsIndex: number, wireframe: boolean = false): BufRData {
+    private createBuf(rdpIndex: number, rc: IRenderProxy, vrc: IROVtxBuilder, ivtx: IROIVtxBuf, disp: IRODisplay, wireframe: boolean = false): BufRData {
         // console.log("createBuf(), wireframe:", wireframe, ivtx);
         let ird = ivtx.getIvsDataAt(rdpIndex);
         let ivs = ird.ivs;
         let size = 0;
 
+        let ivsIndex = disp.ivsIndex;
         let stride = 2;
         let gbuf = vrc.createBuf();
         vrc.bindEleBuf(gbuf);
@@ -530,6 +550,7 @@ class ROIndicesRes implements IROIndicesRes {
         rd.ivsInitSize = size;
         rd.stride = stride;
         rd.trisNumber = Math.floor(size / 3);
+        rd.initDrawMode = disp.drawMode;
         rd.setCommon(!wireframe);
         rd.ivsIndex = rd.isCommon() ? ivsIndex : ivsIndex * 2;
         rd.ivsOffset = rd.ivsIndex * rd.stride;

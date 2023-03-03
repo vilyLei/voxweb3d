@@ -240,8 +240,20 @@ class RenderAdapter implements IRenderAdapter {
 	 * @param color color data
 	 */
 	clearColor(color: IColor4): void {
+		this.m_rtx.syncHtmlBodyColor(color.r ,color.g, color.b);
+		this.syncHtmlColor();
 		this.m_gl.clearColor(color.r, color.g, color.b, color.a);
 		this.m_gl.clear(this.m_gl.COLOR_BUFFER_BIT);
+	}
+	private m_bodyBgColor = "";
+	private syncHtmlColor(): void {
+		// console.log("this.m_rtx.bodyBgColor: ", this.m_rtx.bodyBgColor);
+		if(document && this.m_bodyBgColor != this.m_rtx.bodyBgColor) {
+			this.m_bodyBgColor = this.m_rtx.bodyBgColor;
+            const body = document.body;
+            body.style.background = this.m_bodyBgColor;
+            // console.log("syncHtmlColor(), color: ", this.m_bodyBgColor);
+        }
 	}
 	clear(): void {
 		// console.log("clear back buffer.");
@@ -254,6 +266,7 @@ class RenderAdapter implements IRenderAdapter {
 		if (this.m_rtx.isStencilTestEnabled()) {
 			this.m_gl.clearStencil(this.m_clearStencil);
 		}
+		this.syncHtmlColor();
 		let cvs = this.bgColor;
 		this.m_gl.clearColor(cvs[0], cvs[1], cvs[2], cvs[3]);
 		this.m_gl.clear(this.m_clearMask);
