@@ -299,7 +299,7 @@
 
 //  import {DemoSimpleSubScene as Demo} from "./demo/DemoSimpleSubScene";
 
- import {DemoRendererSceneGraph as Demo} from "./demo/DemoRendererSceneGraph";
+//  import {DemoRendererSceneGraph as Demo} from "./demo/DemoRendererSceneGraph";
 
 //  import {DemoMultiRendererScene2 as Demo} from "./demo/DemoMultiRendererScene2";
 
@@ -349,7 +349,7 @@
 
 //  import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
 
-//  import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
+ import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
 
 
 ///////////////////////////////////////////////////////////////////////////////
