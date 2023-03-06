@@ -14,6 +14,7 @@ import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpac
 import { ICoRScene } from "../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 import { ICoMesh } from "../voxmesh/ICoMesh";
+import IDefault3DMaterial from "../../vox/material/mcase/IDefault3DMaterial";
 declare var CoMesh: ICoMesh;
 
 function createDisplayEntityFromModel(model: CoGeomDataType, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
@@ -58,9 +59,10 @@ function createDisplayEntityContainer(): IDisplayEntityContainer {
 function createFixScreenPlane(minX: number = -1.0, minY: number = -1.0, width: number = 2.0, height: number = 2.0, material: IRenderMaterial = null, texEnabled: boolean = false): IDisplayEntity {
 	if(typeof CoMesh !== "undefined") {
 		let builder = CoMesh.plane;
+		let pmt = material;
 		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
 			builder.applyMaterial(pm, pt);
-		});
+		}, false);
 		let mesh = builder.createFixScreen(minX, minY, width, height);
 		let entity = CoRScene.createDisplayEntity();
 		entity.setMaterial(material);
@@ -196,9 +198,11 @@ function createTorus(radius: number, axisRadius: number, longitudeNumSegments: n
 	}
 	return null;
 }
-function initAMaterial(material: IRenderMaterial, texEnabled: boolean, callback: (pm: IRenderMaterial, pt: boolean) => void): IRenderMaterial {
+function initAMaterial(material: IRenderMaterial, texEnabled: boolean, callback: (pm: IRenderMaterial, pt: boolean) => void, vtxMatEnabled: boolean = true): IRenderMaterial {
 	if(!material) {
-		material = CoRScene.createDefaultMaterial();
+		let pm = CoRScene.createDefaultMaterial();
+		pm.vtxMatrixTransform = vtxMatEnabled;
+		material = pm;
 	}
 	texEnabled = texEnabled || material.getTextureAt(0) != null;
 	material.initializeByCodeBuf( texEnabled );

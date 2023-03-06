@@ -14,8 +14,8 @@ import IDefault3DMaterial from "./IDefault3DMaterial";
 class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
 
     private m_uniqueName: string = "";
-    normalEnabled: boolean = false;
-    vtxMatrixTransform: boolean = true;
+    normalEnabled = false;
+    vtxMatrixTransform = true;
     tns = "";
     constructor() {
         super();

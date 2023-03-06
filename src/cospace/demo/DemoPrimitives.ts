@@ -118,10 +118,15 @@ export class DemoPrimitives {
 		entity.setScaleXYZ(scale, scale, scale);
 		this.m_rscene.addEntity(entity);
 	}
+	private testFixScreenPlane(): void {
+		let plane = VoxEntity.createFixScreenPlane();
+		this.m_rscene.addEntity(plane);
+	}
 	private init3DScene(): void {
 
 		// this.testNoIndicesMesh();
-		this.testHasIndicesMesh();
+		// this.testHasIndicesMesh();
+		this.testFixScreenPlane();
 		return;
 
 		// let material = CoRScene.createDefaultMaterial();
