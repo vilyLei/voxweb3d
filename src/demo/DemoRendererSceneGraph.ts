@@ -3,9 +3,6 @@ import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import MouseEvent from "../vox/event/MouseEvent";
-import Stage3D from "../vox/display/Stage3D";
-import RendererScene from "../vox/scene/RendererScene";
-import RendererSubScene from "../vox/scene/RendererSubScene";
 
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
@@ -154,8 +151,9 @@ export class DemoRendererSceneGraph {
 
 			new RenderStatusDisplay(this.m_mainRScene, true);
 
-			this.m_mainRScene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-			this.m_mainRScene.addEventListener(EventBase.ENTER_FRAME, this, this.enterFrame);
+			let graph = this.m_graph;
+			graph.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
+			graph.addEventListener(EventBase.ENTER_FRAME, this, this.enterFrame);
 
 			this.m_camTrack = new CameraTrack();
 			this.m_camTrack.bindCamera(this.m_mainRScene.getCamera());
@@ -173,6 +171,7 @@ export class DemoRendererSceneGraph {
 	}
 	mouseDownListener(evt: any): void {
 		// DebugFlag.Flag_0 = 1;
+		console.log("mouse down ...");
 	}
 	private enterFrame(): void {
 		this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
