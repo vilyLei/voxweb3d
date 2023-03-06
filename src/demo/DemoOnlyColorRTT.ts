@@ -12,7 +12,7 @@ import RendererScene from "../vox/scene/RendererScene";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-export class DemoRTT {
+export class DemoOnlyColorRTT {
     constructor() {
     }
     private m_rscene: RendererScene = null;
@@ -26,7 +26,7 @@ export class DemoRTT {
     }
     initialize(): void {
         if (!this.m_rscene) {
-            console.log("DemoRTT::initialize()......");
+            console.log("DemoOnlyColorRTT::initialize()......");
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
@@ -76,8 +76,8 @@ export class DemoRTT {
         // --------------------------------------------- rtt begin
         ctx.setClearRGBColor3f(0.1, 0.0, 0.1);
         ctx.synFBOSizeWithViewport();
-        ctx.setRenderToTexture(this.m_rscene.textureBlock.getRTTTextureAt(0), true, false, 0);
-        ctx.useFBO(true, true, false);
+        ctx.setRenderToTexture(this.m_rscene.textureBlock.getRTTTextureAt(0), false, false, 0);
+        ctx.useFBO(true, false, false);
         // to be rendering in framebuffer
         this.m_rscene.runAt(0);
         // --------------------------------------------- rtt end
@@ -89,4 +89,4 @@ export class DemoRTT {
         this.m_rscene.runEnd();
     }
 }
-export default DemoRTT;
+export default DemoOnlyColorRTT;

@@ -60,6 +60,8 @@
 //  import * as DemoRTTHalfSize from "./demo/DemoRTTHalfSize";
 //  import Demo = DemoRTTHalfSize.demo.DemoRTTHalfSize;
 
+//  import {DemoOnlyColorRTT as Demo} from "./demo/DemoOnlyColorRTT";
+
  import {DemoRTT as Demo} from "./demo/DemoRTT";
 
 //  import {DemoFloatRTT as Demo} from "./demo/DemoFloatRTT";
