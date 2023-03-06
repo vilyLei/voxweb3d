@@ -297,6 +297,8 @@
 
 //  import {DemoMultiRendererScene as Demo} from "./demo/DemoMultiRendererScene";
 
+//  import {DemoSimpleSubScene as Demo} from "./demo/DemoSimpleSubScene";
+
  import {DemoRendererSceneGraph as Demo} from "./demo/DemoRendererSceneGraph";
 
 //  import {DemoMultiRendererScene2 as Demo} from "./demo/DemoMultiRendererScene2";

@@ -49,11 +49,15 @@ export default class RendererScene extends RendererSceneBase implements IRendere
         this.m_tickId = setTimeout(this.tickUpdate.bind(this), this.m_rparam.getTickUpdateTime());
         this.textureBlock.run();
     }
+    /**
+     * @param rparam IRendererParam instance, the default value is null
+     * @param renderProcessesTotal the default value is 3
+     * @param createNewCamera the default value is true
+     */
     createSubScene(rparam: IRendererParam = null, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
         if (this.m_renderer != null && this.materialBlock != null) {
             this.m_localRunning = true;
             let subsc = new RendererSubScene(this, this.m_renderer, this.m_evtFlowEnabled);
-            // this.m_subscList.push(subsc);
             this.m_subscListLen++;
 
             let sc: any = subsc;

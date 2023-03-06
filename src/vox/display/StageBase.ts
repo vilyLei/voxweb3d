@@ -15,38 +15,40 @@ import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 
 export default class StageBase {
-    protected m_rcuid: number = 0;
+    protected m_rcuid = 0;
     
-    protected m_viewX: number = 0.0;
-    protected m_viewY: number = 0.0;
-    protected m_viewW: number = 1.0
-    protected m_viewH: number = 1.0;
-    protected m_stW: number = 800;
-    protected m_stH: number = 600;
+    protected m_viewX = 0.0;
+    protected m_viewY = 0.0;
+    protected m_viewW = 1.0
+    protected m_viewH = 1.0;
+    protected m_stW = 800;
+    protected m_stH = 600;
     // mouse event dispatcher
     protected m_dp = new MouseEvt3DDispatcher();
     // 是否舞台尺寸和view自动同步一致
     protected m_autoSynViewAndStageSize: boolean = true;
-    protected m_preStageWidth: number = 0;
-    protected m_preStageHeight: number = 0;
-    protected m_mouseEvt: MouseEvent = new MouseEvent();
-    protected m_baseEvt: EventBase = new EventBase();
+    protected m_preStageWidth = 0;
+    protected m_preStageHeight = 0;
+    protected m_mouseEvt = new MouseEvent();
+    protected m_baseEvt = new EventBase();
 
     uProbe: IShaderUniformProbe = null;
 
     pixelRatio: number = 1.0;
-    stageWidth: number = 800;
-    stageHeight: number = 600;
+    stageX = 0;
+    stageY = 0;
+    stageWidth = 800;
+    stageHeight = 600;
     // 实际宽高, 和gpu端对齐
-    stageHalfWidth: number = 400;
-    stageHalfHeight: number = 300;
-    mouseX: number = 0;
-    mouseY: number = 0;
+    stageHalfWidth = 400;
+    stageHalfHeight = 300;
+    mouseX = 0;
+    mouseY = 0;
     // sdiv页面实际占据的像素宽高
-    viewWidth: number = 800;
-    viewHeight: number = 600;
-    mouseViewX: number = 0;
-    mouseViewY: number = 0;
+    viewWidth = 800;
+    viewHeight = 600;
+    mouseViewX = 0;
+    mouseViewY = 0;
 
     constructor(rcuid: number) {
         this.m_rcuid = rcuid;

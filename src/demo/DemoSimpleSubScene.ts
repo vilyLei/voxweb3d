@@ -111,7 +111,7 @@ class RightScene {
 		evtCtrl.bindTarget(disp);
 	}
 }
-export class DemoRendererSceneGraph {
+export class DemoSimpleSubScene {
 	constructor() {}
 
 	private m_rendererLeftScene: RendererScene = null;
@@ -121,11 +121,11 @@ export class DemoRendererSceneGraph {
 	private m_camTrack2: CameraTrack = null;
 	private m_stage3D: Stage3D = null;
 
-	private m_leftScene: LeftScene = new LeftScene();
-	private m_rightScene: RightScene = new RightScene();
+	private m_leftScene = new LeftScene();
+	private m_rightScene = new RightScene();
 
 	initialize(): void {
-		console.log("DemoRendererSceneGraph::initialize()......");
+		console.log("DemoSimpleSubScene::initialize()......");
 		if (this.m_rendererLeftScene == null) {
 			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
