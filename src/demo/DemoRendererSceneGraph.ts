@@ -17,6 +17,7 @@ import CameraTrack from "../vox/view/CameraTrack";
 
 import MouseEventEntityController from "../voxeditor/control/MouseEventEntityController";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
+import DebugFlag from "../vox/debug/DebugFlag";
 
 class LeftScene {
     private m_rendererScene: RendererScene = null;
@@ -167,8 +168,8 @@ export class DemoRendererSceneGraph {
             this.m_camTrack2 = new CameraTrack();
             this.m_camTrack2.bindCamera(this.m_rendererRightScene.getCamera());
 
-            this.m_leftScene.initialize(this.m_rendererLeftScene,this.m_texLoader);
-            this.m_rightScene.initialize(this.m_rendererRightScene,this.m_texLoader);
+            this.m_leftScene.initialize(this.m_rendererLeftScene, this.m_texLoader);
+            this.m_rightScene.initialize(this.m_rendererRightScene, this.m_texLoader);
         }
     }
     keyDownListener(evt: any): void {
@@ -184,7 +185,7 @@ export class DemoRendererSceneGraph {
         }
     }
     mouseDownListener(evt: any): void {
-        
+        DebugFlag.Flag_0 = 1;
     }
     mouseUpListener(evt: any): void {
         //console.log("mouseUpListener call, this.m_rendererLeftScene: "+this.m_rendererLeftScene.toString());
@@ -236,5 +237,7 @@ export class DemoRendererSceneGraph {
 
         this.m_camTrack.rotationOffsetAngleWorldY( -0.2 );
         this.m_camTrack2.rotationOffsetAngleWorldY( -0.1 );
+
+        DebugFlag.Flag_0 = 0;
     }
 }

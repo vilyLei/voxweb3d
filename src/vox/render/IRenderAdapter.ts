@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
+import IColor4 from "../material/IColor4";
 
 interface IRenderAdapter {
 	bgColor: Float32Array;
@@ -49,6 +50,7 @@ interface IRenderAdapter {
 	 * @param depth depth buffer depth value
 	 */
 	clearDepth(depth: number): void;
+	clearColor(color: IColor4): void;
 	clear(): void;
 	reset(): void;
 	renderBegin(): void;

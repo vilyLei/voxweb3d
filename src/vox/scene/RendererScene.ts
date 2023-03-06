@@ -28,7 +28,7 @@ export default class RendererScene extends RendererSceneBase implements IRendere
         return new RendererInstance();
     }
     protected rendererInsInited(): void {
-        this.m_camera = this.m_renderProxy.getCamera();
+        this.m_camera = this.m_rproxy.getCamera();
     }
     protected initThis(): void {
         let selfT: any = this;

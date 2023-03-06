@@ -27,6 +27,7 @@ import { IShaderUniformProbe } from "../../vox/material/IShaderUniformProbe";
 import IRendererParam from "../../vox/scene/IRendererParam";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import AABB2D from "../geom/AABB2D";
+import DebugFlag from "../debug/DebugFlag";
 
 class RenderAdapter implements IRenderAdapter {
 
@@ -59,6 +60,7 @@ class RenderAdapter implements IRenderAdapter {
 	private m_scissorEnabled: boolean = false;
 	private m_rState: RODrawState = null;
 	private m_webglVer = 2;
+	private m_syncBgColor = true;
 	readonly bgColor = new Float32Array([0, 0, 0, 1]);
 
 	readonly uViewProbe: IShaderUniformProbe = null;
@@ -75,6 +77,7 @@ class RenderAdapter implements IRenderAdapter {
 	}
 	initialize(context: RAdapterContext, param: IRendererParam, rState: RODrawState, uViewProbe: IShaderUniformProbe): void {
 		if (this.m_rtx == null) {
+			this.m_syncBgColor = param.syncBgColor;
 			this.m_webglVer = context.getWebGLVersion();
 			this.m_rState = rState;
 			this.m_rtx = context;
@@ -248,17 +251,21 @@ class RenderAdapter implements IRenderAdapter {
 	private m_bodyBgColor = "";
 	private syncHtmlColor(): void {
 		// console.log("this.m_rtx.bodyBgColor: ", this.m_rtx.bodyBgColor);
-		if(document && this.m_bodyBgColor != this.m_rtx.bodyBgColor) {
-			this.m_bodyBgColor = this.m_rtx.bodyBgColor;
-            const body = document.body;
-            body.style.background = this.m_bodyBgColor;
-            // console.log("syncHtmlColor(), color: ", this.m_bodyBgColor);
-        }
+		if(this.m_syncBgColor) {
+			if(document && this.m_bodyBgColor != this.m_rtx.bodyBgColor) {
+				this.m_bodyBgColor = this.m_rtx.bodyBgColor;
+				const body = document.body;
+				body.style.background = this.m_bodyBgColor;
+				// console.log("syncHtmlColor(), color: ", this.m_bodyBgColor);
+			}
+		}
 	}
 	clear(): void {
+		
 		// console.log("clear back buffer.");
 		// let mode = this.m_rState.getDepthTestMode();
 		// this.m_rState.setDepthTestMode(DepthTestMode.OPAQUE);
+
 		if (this.m_preDepth !== this.m_clearDepth) {
 			this.m_preDepth = this.m_clearDepth;
 			this.m_gl.clearDepth(this.m_clearDepth);
@@ -267,13 +274,20 @@ class RenderAdapter implements IRenderAdapter {
 			this.m_gl.clearStencil(this.m_clearStencil);
 		}
 		this.syncHtmlColor();
-		let cvs = this.bgColor;
+
+		const cvs = this.bgColor;
+
+		if(DebugFlag.Flag_0 > 0) {
+			console.log("color cvs: ", cvs);
+		}
+
 		this.m_gl.clearColor(cvs[0], cvs[1], cvs[2], cvs[3]);
 		this.m_gl.clear(this.m_clearMask);
+		
 		// this.m_rState.setDepthTestMode(mode);
-		//	if (this.m_rtx.isStencilTestEnabled()) {
-		//		this.m_gl.stencilMask(0x0);
-		//	}
+		// if (this.m_rtx.isStencilTestEnabled()) {
+		// 	this.m_gl.stencilMask(0x0);
+		// }
 
 	}
 	reset(): void {

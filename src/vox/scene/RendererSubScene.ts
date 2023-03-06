@@ -46,8 +46,8 @@ export default class RendererSubScene extends RendererSceneBase implements IRend
     setEvt3DController(evt3DCtr: IEvt3DController): void {
         if (evt3DCtr != null) {
             if (this.m_currStage3D == null) {
-                this.m_currStage3D = new SubStage3D(this.m_renderProxy.getRCUid(), null);
-                this.m_currStage3D.uProbe = this.m_renderProxy.uniformContext.createUniformVec4Probe(1);
+                this.m_currStage3D = new SubStage3D(this.m_rproxy.getRCUid(), null);
+                this.m_currStage3D.uProbe = this.m_rproxy.uniformContext.createUniformVec4Probe(1);
             }
             evt3DCtr.initialize(this.getStage3D(), this.m_currStage3D);
             evt3DCtr.setRaySelector(this.m_rspace.getRaySelector());
@@ -55,7 +55,7 @@ export default class RendererSubScene extends RendererSceneBase implements IRend
         this.m_evt3DCtr = evt3DCtr;
     }
     initialize(rparam: RendererParam, renderProcessesTotal: number = 3, createNewCamera: boolean = true): IRendererScene {
-        if (this.m_renderProxy == null) {
+        if (this.m_rproxy == null) {
             if (renderProcessesTotal < 1) {
                 renderProcessesTotal = 1;
             } else if (renderProcessesTotal > 32) {
@@ -75,14 +75,14 @@ export default class RendererSubScene extends RendererSceneBase implements IRend
                 --renderProcessesTotal;
             }
             this.m_rcontext = this.m_renderer.getRendererContext();
-            this.m_renderProxy = this.m_rcontext.getRenderProxy();
-            this.m_adapter = this.m_renderProxy.getRenderAdapter();
-            this.m_stage3D = this.m_renderProxy.getStage3D();
+            this.m_rproxy = this.m_rcontext.getRenderProxy();
+            this.m_adapter = this.m_rproxy.getRenderAdapter();
+            this.m_stage3D = this.m_rproxy.getStage3D();
             this.m_viewX = this.m_stage3D.getViewX();
             this.m_viewY = this.m_stage3D.getViewY();
             this.m_viewW = this.m_stage3D.getViewWidth();
             this.m_viewH = this.m_stage3D.getViewHeight();
-            this.m_camera = createNewCamera ? this.createMainCamera() : this.m_renderProxy.getCamera();
+            this.m_camera = createNewCamera ? this.createMainCamera() : this.m_rproxy.getCamera();
             if (this.m_rspace == null) {
                 let sp = new RendererSpace();
                 sp.initialize(this.m_renderer, this.m_camera);
@@ -122,18 +122,23 @@ export default class RendererSubScene extends RendererSceneBase implements IRend
         if (contextBeginEnabled) {
             this.m_rcontext.renderBegin();
         }
-        if (this.m_renderProxy.getCamera() != this.m_camera) {
-            if (this.m_renderProxy.isAutoSynViewAndStage()) {
-                this.m_viewX = this.m_renderProxy.getViewX();
-                this.m_viewY = this.m_renderProxy.getViewY();
-                this.m_viewW = this.m_renderProxy.getViewWidth();
-                this.m_viewH = this.m_renderProxy.getViewHeight();
+        const ry = this.m_rproxy;
+        if (this.m_rproxy.getCamera() != this.m_camera) {
+            if (this.m_rproxy.isAutoSynViewAndStage()) {
+                this.m_viewX = ry.getViewX();
+                this.m_viewY = ry.getViewY();
+                this.m_viewW = ry.getViewWidth();
+                this.m_viewH = ry.getViewHeight();
             }
             this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
             this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
-            this.m_renderProxy.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH, this.m_renderProxy.isAutoSynViewAndStage());
-            this.m_renderProxy.reseizeRCViewPort();
+            ry.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH, ry.isAutoSynViewAndStage());
+            ry.reseizeRCViewPort();
         }
+        // if(this.m_clearColorFlag) {
+        //     // ry.setClearColor(this.m_clearColor);
+        //     // ry.adapter.clearColor(this.m_clearColor);
+        // }
         this.m_camera.update();
         this.m_rcontext.updateCameraDataFromCamera(this.m_camera);
         this.m_shader.renderBegin();
@@ -158,7 +163,7 @@ export default class RendererSubScene extends RendererSceneBase implements IRend
         }
     }
     render(): void {
-        if (this.m_renderProxy != null) {
+        if (this.m_rproxy != null) {
             this.run(true);
         }
     }

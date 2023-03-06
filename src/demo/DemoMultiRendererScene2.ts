@@ -326,6 +326,7 @@ export class DemoMultiRendererScene2 {
             let rparam: RendererParam;
 
             rparam = new RendererParam(div);
+            rparam.syncBgColor = false;
             rparam.autoSyncRenderBufferAndWindowSize = div == null;
             rparam.setCamProject(45.0, 0.1, 5000.0);
             rparam.setCamPosition(1500.0, 1500.0, 1500.0);

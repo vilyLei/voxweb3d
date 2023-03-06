@@ -58,6 +58,7 @@ export default interface IRenderProxy {
     readonly renderingState: IRenderingState;
     readonly colorMask: IRenderingColorMask;
     readonly status: IRPStatus;
+    readonly adapter: IRenderAdapter;
 
     /**
      * @returns return system gpu context
