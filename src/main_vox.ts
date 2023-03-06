@@ -62,7 +62,7 @@
 
 //  import {DemoOnlyColorRTT as Demo} from "./demo/DemoOnlyColorRTT";
 
- import {DemoRTT as Demo} from "./demo/DemoRTT";
+//  import {DemoRTT as Demo} from "./demo/DemoRTT";
 
 //  import {DemoFloatRTT as Demo} from "./demo/DemoFloatRTT";
 
@@ -289,11 +289,13 @@
 
 //  import {DemoScene as Demo} from "./demo/DemoScene";
 
+//  import {DemoMouseInteraction as Demo} from "./demo/DemoMouseInteraction";
+
 //  import {DemoSubScene as Demo} from "./demo/DemoSubScene";
 
 //  import {DemoDivControl as Demo} from "./demo/DemoDivControl";
 
-//  import {DemoMultiRendererScene as Demo} from "./demo/DemoMultiRendererScene";
+ import {DemoMultiRendererScene as Demo} from "./demo/DemoMultiRendererScene";
 
 //  import {DemoMultiRendererScene2 as Demo} from "./demo/DemoMultiRendererScene2";
 
