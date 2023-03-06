@@ -152,7 +152,6 @@ export class DemoRendererSceneGraph {
 			this.m_camTrack.bindCamera(this.m_mainRScene.getCamera());
 			this.m_mainScene.initialize(this.m_mainRScene, this.m_texLoader);
 
-
 			rparam = new RendererParam();
 			rparam.setCamProject(45.0, 0.1, 5000.0);
 			rparam.setCamPosition(1500.0, 1500.0, 1200.0);

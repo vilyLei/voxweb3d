@@ -88,7 +88,7 @@ export default class RendererSceneBase {
 	private m_nodeWaitLinker: Entity3DNodeLinker = null;
 	private m_nodeWaitQueue: EntityNodeQueue = null;
 	private m_camDisSorter: CameraDsistanceSorter = null;
-    
+
 	protected m_subscListLen = 0;
 	protected m_localRunning = false;
 	private m_containers: IRenderEntityContainer[] = [];
@@ -104,7 +104,7 @@ export default class RendererSceneBase {
 	protected m_transUpdater: EntityTransUpdater;
 
 	// protected m_clearColor = new Color4();
-    // protected m_clearColorFlag = false;
+	// protected m_clearColorFlag = false;
 
 	readonly runnableQueue: IRunnableQueue = null;
 	readonly textureBlock: ITextureBlock = null;
@@ -238,23 +238,23 @@ export default class RendererSceneBase {
 
 	setClearUint24Color(colorUint24: number, alpha: number = 1.0): void {
 		this.m_rproxy.setClearUint24Color(colorUint24, alpha);
-        // this.m_clearColorFlag = true;
+		// this.m_clearColorFlag = true;
 		// this.m_clearColor.setRGBUint24(colorUint24);
 		// this.m_clearColor.a = alpha;
 	}
 	setClearRGBColor3f(pr: number, pg: number, pb: number): void {
 		this.m_rproxy.setClearRGBColor3f(pr, pg, pb);
-        // this.m_clearColorFlag = true;
+		// this.m_clearColorFlag = true;
 		// this.m_clearColor.setRGB3f(pr, pg, pb);
 	}
 	setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void {
 		this.m_rproxy.setClearRGBAColor4f(pr, pg, pb, pa);
-        // this.m_clearColorFlag = true;
+		// this.m_clearColorFlag = true;
 		// this.m_clearColor.setRGBA4f(pr, pg, pb, pa);
 	}
 	setClearColor(color: Color4): void {
 		this.m_rproxy.setClearRGBAColor4f(color.r, color.g, color.b, color.a);
-        // this.m_clearColorFlag = true;
+		// this.m_clearColorFlag = true;
 		// if (color) this.m_clearColor.copyFrom(color);
 	}
 
@@ -316,7 +316,7 @@ export default class RendererSceneBase {
 		// return new RendererInstance();
 		return null;
 	}
-	protected rendererInsInited(): void {}
+	protected rendererInsInited(): void { }
 	// for overriding by sub class
 	protected initThis(): void {
 		// this.tickUpdate();
@@ -351,7 +351,7 @@ export default class RendererSceneBase {
 
 			this.m_processids[0] = 0;
 			this.m_processidsLen++;
-			for (; renderProcessesTotal >= 0; ) {
+			for (; renderProcessesTotal >= 0;) {
 				const process = this.m_renderer.appendProcess(rparam.batchEnabled, rparam.processFixedState);
 				this.m_processids[this.m_processidsLen] = process.getRPIndex();
 				this.m_processidsLen++;
@@ -606,7 +606,7 @@ export default class RendererSceneBase {
 	 */
 	renderBegin(contextBeginEnabled: boolean = true): void {
 
-        const ry = this.m_rproxy;
+		const ry = this.m_rproxy;
 		if (this.m_currCamera == null) {
 			this.m_adapter.unlockViewport();
 
@@ -630,9 +630,9 @@ export default class RendererSceneBase {
 
 		this.m_shader.renderBegin();
 		if (contextBeginEnabled) {
-            // if(this.m_clearColorFlag) {
-            //     ry.setClearColor(this.m_clearColor);  
-            // }
+			// if(this.m_clearColorFlag) {
+			//     ry.setClearColor(this.m_clearColor);  
+			// }
 			this.m_rcontext.renderBegin(this.m_currCamera == null);
 		}
 		this.m_currCamera = null;
@@ -726,7 +726,10 @@ export default class RendererSceneBase {
 		// }
 		// this.stage3D.enterFrame();
 		const st = this.m_currStage3D;
-		if (st != null) st.enterFrame();
+		if (st != null) {
+			st.enterFrame();
+			this.updateCamera();
+		}
 		if (autoCycle && this.m_autoRunEnabled) {
 			if (this.m_runFlag != 0) this.runBegin();
 			this.m_runFlag = 1;
@@ -864,10 +867,7 @@ export default class RendererSceneBase {
 			}
 		}
 	}
-	// private m_runner: () => void = null;
-	// setRunner(runner: () => void): void {
-	//     this.m_runner = runner;
-	// }
+
 	/**
 	 * run all renderer processes in the renderer instance
 	 * @param autoCycle the default value is true
@@ -925,7 +925,7 @@ export default class RendererSceneBase {
 			this.m_accessor.renderEnd(this);
 		}
 	}
-	render(): void {}
+	render(): void { }
 	renderFlush(): void {
 		if (this.m_rproxy != null) {
 			this.m_rproxy.flush();
