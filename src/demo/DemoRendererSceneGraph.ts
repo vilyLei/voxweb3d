@@ -24,7 +24,7 @@ import EventBase from "../vox/event/EventBase";
 class LeftScene {
 	private m_rendererScene: IRendererScene = null;
 	private m_texLoader: ImageTextureLoader;
-	constructor() {}
+	constructor() { }
 	initialize(rscene: IRendererScene, texLoader: ImageTextureLoader): void {
 		this.m_rendererScene = rscene;
 		this.m_texLoader = texLoader;
@@ -63,7 +63,7 @@ class LeftScene {
 class RightScene {
 	private m_rendererScene: IRendererScene = null;
 	private m_texLoader: ImageTextureLoader;
-	constructor() {}
+	constructor() { }
 	initialize(rscene: IRendererScene, texLoader: ImageTextureLoader): void {
 		this.m_rendererScene = rscene;
 		this.m_texLoader = texLoader;
@@ -108,7 +108,7 @@ class RightScene {
 	}
 }
 export class DemoRendererSceneGraph {
-	constructor() {}
+	constructor() { }
 
 	private m_mainRScene: IRendererScene = null;
 	private m_subRScene: IRendererScene = null;
@@ -136,18 +136,11 @@ export class DemoRendererSceneGraph {
 			rparam.setCamProject(45.0, 0.1, 5000.0);
 			rparam.setCamPosition(1500.0, 1500.0, 1500.0);
 			this.m_mainRScene = this.m_graph.createScene(rparam);
-			this.m_mainRScene.initialize(rparam);
 			this.m_mainRScene.enableMouseEvent(true);
 			this.m_mainRScene.setClearRGBColor3f(0.3, 0.1, 0.1);
 			this.m_stage3D = this.m_mainRScene.getStage3D();
 
 			this.m_texLoader = new ImageTextureLoader(this.m_mainRScene.textureBlock);
-
-			rparam = new RendererParam();
-			rparam.setCamProject(45.0, 0.1, 5000.0);
-			rparam.setCamPosition(1500.0, 1500.0, 1200.0);
-			this.m_subRScene = this.m_graph.createSubScene(rparam);
-			this.m_subRScene.enableMouseEvent(true);
 
 			new RenderStatusDisplay(this.m_mainRScene, true);
 
@@ -157,11 +150,18 @@ export class DemoRendererSceneGraph {
 
 			this.m_camTrack = new CameraTrack();
 			this.m_camTrack.bindCamera(this.m_mainRScene.getCamera());
+			this.m_mainScene.initialize(this.m_mainRScene, this.m_texLoader);
+
+
+			rparam = new RendererParam();
+			rparam.setCamProject(45.0, 0.1, 5000.0);
+			rparam.setCamPosition(1500.0, 1500.0, 1200.0);
+			this.m_subRScene = this.m_graph.createSubScene(rparam);
+			this.m_subRScene.enableMouseEvent(true);
+			this.m_subScene.initialize(this.m_subRScene, this.m_texLoader);
+
 			this.m_camTrack2 = new CameraTrack();
 			this.m_camTrack2.bindCamera(this.m_subRScene.getCamera());
-
-			this.m_mainScene.initialize(this.m_mainRScene, this.m_texLoader);
-			this.m_subScene.initialize(this.m_subRScene, this.m_texLoader);
 
 			let vw = this.m_stage3D.stageWidth;
 			let vh = this.m_stage3D.stageHeight;
@@ -174,13 +174,18 @@ export class DemoRendererSceneGraph {
 		console.log("mouse down ...");
 	}
 	private enterFrame(): void {
-		this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-		this.m_camTrack2.rotationOffsetAngleWorldY(-0.1);
+
+		if (this.m_camTrack) {
+			this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+		}
+		if (this.m_camTrack2) {
+			this.m_camTrack2.rotationOffsetAngleWorldY(-0.1);
+		}
 	}
 	// run(): void {
 	//     if(this.m_graph != null) {
 	//         this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-	//         this.m_camTrack2.rotationOffsetAngleWorldY(-0.1);
+	//         if (this.m_camTrack2) this.m_camTrack2.rotationOffsetAngleWorldY(-0.1);
 	//         this.m_graph.run();
 	//     }
 	// }
