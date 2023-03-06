@@ -11,6 +11,7 @@ import { VoxEntity } from "../voxentity/VoxEntity";
 import IGeomModelData from "../../vox/mesh/IGeomModelData";
 import { VoxRScene } from "../voxengine/VoxRScene";
 import { VoxMaterial } from "../voxmaterial/VoxMaterial";
+import { MathConst, VoxMath } from "../math/VoxMath";
 
 declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
@@ -70,7 +71,7 @@ export class DemoPrimitives {
 	private getTexByUrl(url: string): IRenderTexture {
 		let sc = this.m_rscene;
 
-		let tex = sc.textureBlock.createImageTex2D(64, 64, false);
+		let tex = sc.textureBlock.createImageTex2D();
 		let img = new Image();
 		img.onload = (evt: any): void => {
 			tex.setDataFromImage(img);
@@ -119,6 +120,11 @@ export class DemoPrimitives {
 		this.m_rscene.addEntity(entity);
 	}
 	private testFixScreenPlane(): void {
+
+		// let mathConst = VoxMath.MathConst;
+		let mathConst = MathConst;
+		console.log("XXXXXXXXXXXX mathConst: ", mathConst.MATH_PI_OVER_180);
+
 		let plane = VoxEntity.createFixScreenPlane();
 		this.m_rscene.addEntity(plane);
 	}
@@ -224,7 +230,7 @@ export class DemoPrimitives {
 		if (this.m_rscene == null) {
 
 			let RendererDevice = CoRScene.RendererDevice;
-			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			RendererDevice.SetWebBodyColor("black");
 
