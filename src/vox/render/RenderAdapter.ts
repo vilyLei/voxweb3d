@@ -27,6 +27,7 @@ import { IShaderUniformProbe } from "../../vox/material/IShaderUniformProbe";
 import IRendererParam from "../../vox/scene/IRendererParam";
 import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import AABB2D from "../geom/AABB2D";
+
 import DebugFlag from "../debug/DebugFlag";
 
 class RenderAdapter implements IRenderAdapter {
@@ -61,6 +62,8 @@ class RenderAdapter implements IRenderAdapter {
 	private m_rState: RODrawState = null;
 	private m_webglVer = 2;
 	private m_syncBgColor = true;
+	private m_bodyBgColor = "";
+
 	readonly bgColor = new Float32Array([0, 0, 0, 1]);
 
 	readonly uViewProbe: IShaderUniformProbe = null;
@@ -248,7 +251,6 @@ class RenderAdapter implements IRenderAdapter {
 		this.m_gl.clearColor(color.r, color.g, color.b, color.a);
 		this.m_gl.clear(this.m_gl.COLOR_BUFFER_BIT);
 	}
-	private m_bodyBgColor = "";
 	private syncHtmlColor(): void {
 		// console.log("this.m_rtx.bodyBgColor: ", this.m_rtx.bodyBgColor);
 		if(this.m_syncBgColor) {
@@ -277,9 +279,9 @@ class RenderAdapter implements IRenderAdapter {
 
 		const cvs = this.bgColor;
 
-		if(DebugFlag.Flag_0 > 0) {
-			console.log("color cvs: ", cvs);
-		}
+		// if(DebugFlag.Flag_0 > 0) {
+		// 	console.log("color cvs: ", cvs);
+		// }
 
 		this.m_gl.clearColor(cvs[0], cvs[1], cvs[2], cvs[3]);
 		this.m_gl.clear(this.m_clearMask);

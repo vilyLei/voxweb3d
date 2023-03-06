@@ -67,7 +67,8 @@ class LeftTopScene {
 
         let tex0 = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
         let tex1 = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
-
+        
+        // bg color
         let scrPlane: ScreenFixedAlignPlaneEntity = new ScreenFixedAlignPlaneEntity();
         scrPlane.showDoubleFace(true, false);
         scrPlane.initialize(-1.0, -1.0, 2.0, 2.0);
@@ -174,7 +175,7 @@ class RightScene {
 
         this.m_rendererScene = rscene;
         this.m_texLoader = texLoader;
-
+        
         let tex1 = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
         let tex2 = this.m_texLoader.getTexByUrl("static/assets/warter_01.jpg");
 

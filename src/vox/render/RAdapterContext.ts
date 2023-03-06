@@ -14,29 +14,30 @@ import ContextMouseEvtDispatcher from "../../vox/render/ContextMouseEvtDispatche
 import { GLBlendMode, GLBlendEquation, CullFaceMode, GLStencilFunc, GLStencilOp } from "./RenderConst";
 import AABB2D from "../geom/AABB2D";
 import { IRAdapterContext } from "./IRAdapterContext";
+import IRendererParam from "../scene/IRendererParam";
 
 class RAdapterContext implements IRAdapterContext {
 
     private m_mouseEvtDisplather: ContextMouseEvtDispatcher = new ContextMouseEvtDispatcher();
     private m_div: HTMLDivElement = null;
     private m_canvas: HTMLCanvasElement = null;
-    private m_scissorEnabled: boolean = false;
-    private m_depthTestEnabled: boolean = true;
+    private m_scissorEnabled = false;
+    private m_depthTestEnabled = true;
 
-    private m_stencilTestEnabled: boolean = true;
+    private m_stencilTestEnabled = true;
     private m_offcanvas: HTMLCanvasElement = null;
     private m_gl: WebGLRenderingContext = null;
     private m_stage: IRenderStage3D = null;
 
-    private m_viewPortRect: AABB2D = new AABB2D(0, 0, 800, 600);
-    private m_maxWebGLVersion: number = 2;
-    private m_webGLVersion: number = 2;
-    private m_devicePixelRatio: number = 1.0;
+    private m_viewPortRect = new AABB2D(0, 0, 800, 600);
+    private m_maxWebGLVersion = 2;
+    private m_webGLVersion = 2;
+    private m_devicePixelRatio = 1.0;
 
     private m_viewEle = new RViewElement();
     // display 3d view buf size auto sync window size
-    autoSyncRenderBufferAndWindowSize: boolean = true;
-    offscreenRenderEnabled: boolean = false;
+    autoSyncRenderBufferAndWindowSize = true;
+    offscreenRenderEnabled = false;
     bodyBgColor = "";
     constructor() { }
 
@@ -83,7 +84,7 @@ class RAdapterContext implements IRAdapterContext {
     isStencilTestEnabled(): boolean {
         return this.m_stencilTestEnabled;
     }
-    initialize(rcuid: number, stage: IRenderStage3D, div: HTMLElement, rattr: any = null): void {
+    initialize(rcuid: number, stage: IRenderStage3D, param: IRendererParam): void {
         this.m_stage = stage;
         var pdocument: any = null;
         var pwindow: any = null;
@@ -97,11 +98,12 @@ class RAdapterContext implements IRAdapterContext {
             console.log("RAdapterContext::initialize(), document is undefined.");
         }
         if (pdocument != null) {
-
+            let div = param.getDiv();
+            const rattr = param.getRenderContextAttri();
             this.m_devicePixelRatio = window.devicePixelRatio;
             RendererDevice.SetDevicePixelRatio(this.m_devicePixelRatio);
             this.m_viewEle.setDiv(div);
-            this.m_viewEle.createViewEle(pdocument, this.autoSyncRenderBufferAndWindowSize);
+            this.m_viewEle.createViewEle(pdocument, this.autoSyncRenderBufferAndWindowSize, param.divW, param.divH);
             this.m_div = div = this.m_viewEle.getDiv();
             let canvas: any = this.m_canvas = this.m_viewEle.getCanvas();
 

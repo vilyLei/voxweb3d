@@ -258,7 +258,7 @@ class RenderProxy implements IRenderProxy {
         this.m_cameraFar = far;
     }
     getMouseXYWorldRay(rl_position: IVector3D, rl_tv: IVector3D): void {
-        let stage: IRenderStage3D = this.m_adapterContext.getStage();
+        let stage = this.m_adapterContext.getStage();
         this.m_camera.getWorldPickingRayByScreenXY(stage.mouseX, stage.mouseY, rl_position, rl_tv);
     }
     testViewPortChanged(px: number, py: number, pw: number, ph: number): boolean {
@@ -276,8 +276,8 @@ class RenderProxy implements IRenderProxy {
         this.m_autoSynViewAndStage = false;
 
         this.m_viewPortRect.setTo(px, py, pw, ph);
-        let stage: IRenderStage3D = this.m_adapterContext.getStage();
-        if (stage != null) {
+        let stage = this.m_adapterContext.getStage();
+        if (stage) {
             stage.setViewPort(pw, py, pw, ph);
             this.updateCameraView();
         }
@@ -382,7 +382,7 @@ class RenderProxy implements IRenderProxy {
             this.resizeCallback();
         });
         this.m_adapterContext.setWebGLMaxVersion(this.m_maxWebGLVersion);
-        this.m_adapterContext.initialize(this.m_uid, stage, param.getDiv(), param.getRenderContextAttri());
+        this.m_adapterContext.initialize(this.m_uid, stage, param);
         this.m_WEBGL_VER = this.m_adapterContext.getWebGLVersion();
         this.m_rc = this.m_adapterContext.getRC();
 

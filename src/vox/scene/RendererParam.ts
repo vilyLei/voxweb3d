@@ -9,7 +9,8 @@ import Vector3D from "../../vox/math/Vector3D";
 import IRendererParam from "./IRendererParam";
 
 class RendererParam implements IRendererParam {
-    private m_matrix4AllocateSize: number = 8192;
+
+    private m_matrix4AllocateSize = 8192;
     private m_mainDiv: HTMLDivElement = null;
     private m_renderContextAttri: any = {
         depth: true
@@ -20,21 +21,26 @@ class RendererParam implements IRendererParam {
         , preserveDrawingBuffer: true
         , powerPreference: "high-performance"//"default"
     };
-    private m_tickUpdateTime: number = 20;// delay 50 ms
-    private m_polygonOffsetEnabled: boolean = false;
-    private m_ditherEnabled: boolean = false;
-    // display 3d view buf size auto sync window size
-    autoSyncRenderBufferAndWindowSize: boolean = true;
-    maxWebGLVersion: number = 2;
-    cameraPerspectiveEnabled: boolean = true;
-    // event flow control enable
-    evtFlowEnabled: boolean = false;
-    // x: fov, y: near, z: far
-    readonly camProjParam: Vector3D = new Vector3D(45.0, 10.0, 5000.0);
+    private m_tickUpdateTime = 20;// delay 50 ms
+    private m_polygonOffsetEnabled = false;
+    private m_ditherEnabled = false;
+    divW = 800;
+    divH = 600;
 
-    readonly camPosition: Vector3D = new Vector3D(2000.0, 2000.0, 2000.0);
-    readonly camLookAtPos: Vector3D = new Vector3D(0.0, 0.0, 0.0);
-    readonly camUpDirect: Vector3D = new Vector3D(0.0, 1.0, 0.0);
+    // display 3d view buf size auto sync window size
+    autoSyncRenderBufferAndWindowSize = true;
+    maxWebGLVersion = 2;
+    cameraPerspectiveEnabled = true;
+    // event flow control enable
+    evtFlowEnabled = false;
+    /**
+     * x: fov, y: near, z: far
+     */
+    readonly camProjParam = new Vector3D(45.0, 10.0, 5000.0);
+    readonly camPosition = new Vector3D(2000.0, 2000.0, 2000.0);
+    readonly camLookAtPos = new Vector3D(0.0, 0.0, 0.0);
+    readonly camUpDirect = new Vector3D(0.0, 1.0, 0.0);
+
     syncBgColor = true;
     batchEnabled = true;
     processFixedState = false;

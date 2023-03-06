@@ -82,7 +82,6 @@ export class DemoRTTCircle {
             this.m_rttCirM = rttCirM;
             rttCirM.setRaius(100.0);
             rttCirM.setPosXY(500.0, 300.0);
-            //let dpr:number = RendererDevice.GetDevicePixelRatio();
             //rttCirM.setStageSize(this.m_rscene.getStage3D().stageWidth * dpr, this.m_rscene.getStage3D().stageHeight * dpr);
             rttCirM.setStageSize(this.m_rscene.getStage3D().stageWidth, this.m_rscene.getStage3D().stageHeight);
             let scrPlane: Plane3DEntity = new Plane3DEntity();

@@ -72,7 +72,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
         }
         area = this.addSubTexArea(uniqueNS, image.width, image.height);
         if (area != null) {
-            let rect: AABB2D = area.texRect;
+            let rect = area.texRect;
             this.m_canvas2D.drawImage(image, rect.x, rect.y, rect.width, rect.height);
             this.m_texture.setDataFromImage(this.m_canvas, 0,0,0,false);
             this.m_texture.updateDataToGpu(null, true);
@@ -84,7 +84,6 @@ export default class ImageTextureAtlas extends TextureAtlas {
         if (chars == null || chars == "" || size < 8) {
             return null;
         }
-        //size = Math.round(size * RendererDevice.GetDevicePixelRatio());
         let keyStr: string = chars + "_" + size + "_" + frontStyle + "_" + bgStyle;
 
         if (ImageTextureAtlas.s_imgMap.has(keyStr)) {

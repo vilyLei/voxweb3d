@@ -297,11 +297,11 @@
 
 //  import {DemoMultiRendererScene as Demo} from "./demo/DemoMultiRendererScene";
 
-//  import {DemoRendererSceneGraph as Demo} from "./demo/DemoRendererSceneGraph";
+ import {DemoRendererSceneGraph as Demo} from "./demo/DemoRendererSceneGraph";
 
 //  import {DemoMultiRendererScene2 as Demo} from "./demo/DemoMultiRendererScene2";
 
- import {DemoMultiGpuContext as Demo} from "./demo/DemoMultiGpuContext";
+//  import {DemoMultiGpuContext as Demo} from "./demo/DemoMultiGpuContext";
 
 //  import {DemoMultiRenderer as Demo} from "./demo/DemoMultiRenderer";
 
