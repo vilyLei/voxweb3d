@@ -295,7 +295,9 @@
 
 //  import {DemoDivControl as Demo} from "./demo/DemoDivControl";
 
- import {DemoMultiRendererScene as Demo} from "./demo/DemoMultiRendererScene";
+//  import {DemoMultiRendererScene as Demo} from "./demo/DemoMultiRendererScene";
+
+ import {DemoRendererSceneGraph as Demo} from "./demo/DemoRendererSceneGraph";
 
 //  import {DemoMultiRendererScene2 as Demo} from "./demo/DemoMultiRendererScene2";
 
