@@ -145,50 +145,6 @@ function createBoundsMesh(): IBoundsMesh {
 
 function createDataMeshFromModel(model: IGeomModelData, material: IRenderMaterial = null, texEnabled: boolean = false): IDataMesh {
 	return MeshFactor.createDataMeshFromModel(model, material, texEnabled);
-	/*
-	if (material != null) {
-		texEnabled = texEnabled || material.getTextureAt(0) != null;
-	}
-	const vbWhole = model.vbWhole ? model.vbWhole : false;
-	let stride = Math.round(model.stride ? model.stride : 3);
-	stride = stride > 0 && stride < 4 ? stride : 3;
-	const dataMesh = new DataMesh();
-	dataMesh.vbWholeDataEnabled = vbWhole;
-	let vtxTotal = model.vertices.length / stride;
-	dataMesh.setVS(model.vertices);
-	if (model.uvsList && model.uvsList.length > 0) {
-		dataMesh.setUVS(model.uvsList[0]);
-		if (model.uvsList.length > 1) {
-			dataMesh.setUVS2(model.uvsList[0]);
-		}
-	} else if (texEnabled) {
-		dataMesh.setUVS(new Float32Array(Math.floor(model.vertices.length / stride) * 2));
-		console.error("hasn't uv data !!!, in the createDataMeshFromModel(...) function.");
-	}
-	if (model.normals) {
-		dataMesh.setNVS(model.normals);
-	}
-	if (model.indices) {
-		dataMesh.setIVS(model.indices);
-	} else {
-		let ivs = vtxTotal <= 65535 ? new Uint16Array(vtxTotal) : new Uint32Array(vtxTotal);
-		for (let i = 0; i < vtxTotal; ++i) {
-			ivs[i] = i;
-		}
-		// console.log("crate a new ivs: ", ivs);
-		dataMesh.setIVS(ivs);
-		console.warn("hasn't indices data !, in the createDataMeshFromModel(...) function.");
-	}
-
-	if (material != null) {
-		material.initializeByCodeBuf(texEnabled);
-		dataMesh.setVtxBufRenderData(material);
-	} else {
-		console.warn("the material parameter value is null, so this mesh will build all vtx bufs.");
-	}
-	dataMesh.initialize();
-	return dataMesh;
-	//*/
 }
 
 function createDefaultMaterial(normalEnabled: boolean = false): IDefault3DMaterial {
@@ -220,34 +176,6 @@ function createDisplayEntityFromModel(model: CoGeomDataType, material: IRenderMa
 		material = new Default3DMaterial();
 		material.initializeByCodeBuf(texEnabled);
 	}
-	// else {
-	// 	material.initializeByCodeBuf(texEnabled || material.getTextureAt(0) != null);
-	// }
-	// if (material.getCodeBuf() == null || material.getBufSortFormat() < 0x1) {
-	// 	throw Error("the material does not call the initializeByCodeBuf() function. !!!");
-	// }
-
-	// let ivs = model.indices;
-	// let vs = model.vertices;
-	// let uvs: Float32Array;
-	// if (model.uvsList) {
-	// 	uvs = model.uvsList[0];
-	// } else {
-	// 	uvs = new Float32Array( 2 * vs.length / 3 );
-	// }
-	// let nvs = model.normals;
-	// if (nvs && typeof CoAGeom !== "undefined") {
-	// 	CoAGeom.SurfaceNormal.ClacTrisNormal(vs, vs.length, ivs.length / 3, ivs, nvs);
-	// }
-
-	// const dataMesh = new DataMesh();
-	// dataMesh.vbWholeDataEnabled = vbWhole;
-	// dataMesh.setVS(vs);
-	// dataMesh.setUVS(uvs);
-	// dataMesh.setNVS(nvs);
-	// dataMesh.setIVS(ivs);
-	// dataMesh.setVtxBufRenderData(material);
-	// dataMesh.initialize();
 
 	let dataMesh = this.createDataMeshFromModel(model, material, texEnabled);
 	const entity = new DisplayEntity();
