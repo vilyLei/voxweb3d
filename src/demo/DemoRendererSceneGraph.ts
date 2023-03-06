@@ -20,6 +20,7 @@ import IRenderStage3D from "../vox/render/IRenderStage3D";
 
 import DebugFlag from "../vox/debug/DebugFlag";
 import EventBase from "../vox/event/EventBase";
+import IDefault3DMaterial from "../vox/material/mcase/IDefault3DMaterial";
 
 class LeftScene {
 	private m_rendererScene: IRendererScene = null;
@@ -74,8 +75,7 @@ class RightScene {
 		let scrPlane: ScreenFixedAlignPlaneEntity = new ScreenFixedAlignPlaneEntity();
 		scrPlane.showDoubleFace(true, false);
 		scrPlane.initialize(-1.0, -1.0, 2.0, 2.0);
-		// (scrPlane.getMaterial() as any).setRGB3f(Math.random() * 0.3, Math.random() * 0.3, Math.random() * 0.3);
-		(scrPlane.getMaterial() as any).setRGB3f(0.1, 0.3, 0.3);
+		(scrPlane.getMaterial() as IDefault3DMaterial).setRGB3f(0.1, 0.3, 0.3);
 		rscene.addEntity(scrPlane);
 
 		let axis = new Axis3DEntity();
@@ -181,11 +181,4 @@ export class DemoRendererSceneGraph {
 			this.m_camTrack2.rotationOffsetAngleWorldY(-0.1);
 		}
 	}
-	// run(): void {
-	//     if(this.m_graph != null) {
-	//         this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-	//         if (this.m_camTrack2) this.m_camTrack2.rotationOffsetAngleWorldY(-0.1);
-	//         this.m_graph.run();
-	//     }
-	// }
 }
