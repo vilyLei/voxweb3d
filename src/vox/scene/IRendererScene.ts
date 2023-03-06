@@ -69,6 +69,11 @@ interface IRendererScene {
     createFBOInstance(): IFBOInstance;
     createMatrix4(): IMatrix4;
     createVector3(x?: number, y?: number, z?: number, w?: number): IVector3D;
+
+    setViewPort(px: number, py: number, pw: number, ph: number): void;
+    setViewPortFromCamera(camera: IRenderCamera): void;
+	// apply new view port rectangle area
+	reseizeViewPort(): void;
     /**
      * 是否启用鼠标或者touch交互功能
      * @param gpuTestEnabled the default value is true.

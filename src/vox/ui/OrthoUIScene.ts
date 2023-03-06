@@ -60,6 +60,14 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
             this.m_ruisc.setAccessor(accessor);
         }
     }
+    
+    setViewPort(px: number, py: number, pw: number, ph: number): void {
+    }
+    setViewPortFromCamera(camera: IRenderCamera): void {
+    }
+	// apply new view port rectangle area
+	reseizeViewPort(): void {        
+    }
     initialize(rparam: IRendererParam, renderProcessesTotal?: number, createNewCamera?: boolean): IRendererScene {
         throw Error("illegal operation!!!");
         return null;

@@ -19,6 +19,22 @@ export default interface IRendererSceneGraph extends IRendererSceneGraphStatus {
      * @param createNewCamera the default value is true
      */
     createSubScene(rparam?: IRendererParam, renderProcessesTotal?: number, createNewCamera?: boolean): IRendererScene;
+    
+    /**
+     * @param type event type
+     * @param target event listerner
+     * @param func event listerner callback function
+     * @param captureEnabled the default value is true
+     * @param bubbleEnabled the default value is false
+     */
+    addEventListener(type: number, target: any, func: (evt: any) => void, captureEnabled?: boolean, bubbleEnabled?: boolean): void;
+    /**
+     * @param type event type
+     * @param target event listerner
+     * @param func event listerner callback function
+     */
+    removeEventListener(type: number, target: any, func: (evt: any) => void): void;
+    
     clear(): void;
     /**
      * @param node IRendererSceneNode instance
@@ -31,5 +47,6 @@ export default interface IRendererSceneGraph extends IRendererSceneGraphStatus {
     getSceneAt(i: number): IRendererScene;
     addScene(sc: IRendererScene): IRendererSceneNode;
     
-    run(): void;
+    run(): void;setAutoRunning(auto: boolean): IRendererSceneGraph;
+    isAutoRunning(): boolean;
 }
