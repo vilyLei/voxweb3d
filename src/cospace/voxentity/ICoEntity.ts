@@ -6,6 +6,7 @@ import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
 import IBoundsEntity from "../../vox/entity/IBoundsEntity";
 import IDataMesh from "../../vox/mesh/IDataMesh";
 import IRawMesh from "../../vox/mesh/IRawMesh";
+import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 
@@ -48,6 +49,14 @@ interface ICoEntity {
 
 	createDisplayEntityContainer(): IDisplayEntityContainer;
 
+	/**
+	 * @param minX the default value is -1.0
+	 * @param minY the default value is -1.0 
+	 * @param width the default value is 2.0 
+	 * @param height the default value is 2.0 
+	 * @returns a plane entity, it is fixed the screen, it is parallel with xoy plane
+	 */
+	createFixScreenPlane(minX?: number, minY?: number, width?: number, height?: number, material?: IRenderMaterial, texEnabled?: boolean): IDisplayEntity;
 	/**
 	 * 
 	 * @param minX min x-axis value

@@ -23,6 +23,7 @@ import IRenderNode from "../../../vox/scene/IRenderNode";
 import RunnableQueue from "../../../vox/base/RunnableQueue";
 import RendererSceneBase from "../../../vox/scene/RendererSceneBase";
 import IRendererParam from "../../../vox/scene/IRendererParam";
+import EntityTransUpdater from "../../../vox/scene/EntityTransUpdater";
 
 
 export default class CoRendererSubScene extends RendererSceneBase implements IRenderer, IRendererScene, IRenderNode {
@@ -66,6 +67,7 @@ export default class CoRendererSubScene extends RendererSceneBase implements IRe
             }
             let selfT: any = this;
             selfT.runnableQueue = new RunnableQueue();
+            this.m_transUpdater = new EntityTransUpdater();
 
             this.m_rparam = rparam;
             this.m_perspectiveEnabled = rparam.cameraPerspectiveEnabled;

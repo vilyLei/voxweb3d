@@ -13,6 +13,7 @@ import { ICoEntity } from "./ICoEntity";
 declare var CoEntity: ICoEntity;
 
 import { ICoRScene } from "../voxengine/ICoRScene";
+import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 declare var CoRScene: ICoRScene;
 
 interface I_CoEntity {
@@ -96,6 +97,16 @@ class T_CoEntity {
 		return CoEntity.createDisplayEntityContainer();
 	}
 
+	/**
+	 * @param minX the default value is -1.0
+	 * @param minY the default value is -1.0 
+	 * @param width the default value is 2.0 
+	 * @param height the default value is 2.0 
+	 * @returns a plane entity, it is fixed the screen, it is parallel with xoy plane
+	 */
+	createFixScreenPlane(minX: number = -1.0, minY: number = -1.0, width: number = 2.0, height: number = 2.0, material: IRenderMaterial = null, texEnabled: boolean = false): IDisplayEntity {
+		return CoEntity.createFixScreenPlane(minX, minY, width, height, material, texEnabled);
+	}
 	createXOYPlane(minX: number, minY: number, width: number, height: number, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
 		return CoEntity.createXOYPlane(minX, minY, width, height, material, texEnabled);
 	}

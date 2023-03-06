@@ -6,13 +6,14 @@ import IMouseEventEntity from "../../vox/entity/IMouseEventEntity";
 import IDataMesh from "../../vox/mesh/IDataMesh";
 import IRawMesh from "../../vox/mesh/IRawMesh";
 import IBoundsEntity from "../../vox/entity/IBoundsEntity";
+import IMeshBase from "../../vox/mesh/IMeshBase";
+import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
 
 import { ICoRScene } from "../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 import { ICoMesh } from "../voxmesh/ICoMesh";
-import IMeshBase from "../../vox/mesh/IMeshBase";
 declare var CoMesh: ICoMesh;
 
 function createDisplayEntityFromModel(model: CoGeomDataType, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
@@ -54,6 +55,20 @@ function createDisplayEntityContainer(): IDisplayEntityContainer {
 	return CoRScene.createDisplayEntityContainer();
 }
 
+function createFixScreenPlane(minX: number = -1.0, minY: number = -1.0, width: number = 2.0, height: number = 2.0, material: IRenderMaterial = null, texEnabled: boolean = false): IDisplayEntity {
+	if(typeof CoMesh !== "undefined") {
+		let builder = CoMesh.plane;
+		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
+			builder.applyMaterial(pm, pt);
+		});
+		let mesh = builder.createFixScreen(minX, minY, width, height);
+		let entity = CoRScene.createDisplayEntity();
+		entity.setMaterial(material);
+		entity.setMesh(mesh);
+		return entity;
+	}
+	return null;
+}
 function createXOYPlane(minX: number, minY: number, width: number, height: number, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
 	if(typeof CoMesh !== "undefined") {
 		let builder = CoMesh.plane;
@@ -208,6 +223,8 @@ export {
 	createBoundsEntity,
 	createCrossAxis3DEntity,
 	createDisplayEntityContainer,
+
+	createFixScreenPlane,
 	createXOYPlane,
 	createXOZPlane,
 	createYOZPlane,

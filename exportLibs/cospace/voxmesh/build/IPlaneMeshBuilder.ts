@@ -16,11 +16,15 @@ interface IPlaneMeshBuilder extends IMeshBuilder {
 	flipVerticalUV: boolean;
 	
 	createCircle(radius: number, segsTotal: number, beginRad?: number, rangeRad?: number): IRawMesh;
+	
 	/**
-	 * initialize a rectangle fix screen size plane ,and it parallel the 3d space XOY plane
-	 * @param texList textures list, default value is null.
+	 * @param px the default value is -1.0
+	 * @param py the default value is -1.0 
+	 * @param pw the default value is 2.0 
+	 * @param ph the default value is 2.0 
+	 * @returns IRawMesh instance
 	 */
-	createFixScreen(): IRawMesh;
+	createFixScreen(px?: number, py?: number, pw?: number, ph?: number): IRawMesh;
 	/**
 	 * create a rectangle plane ,and it parallel the 3d space XOY plane
 	 * @param minX the min x axis position of the rectangle plane.

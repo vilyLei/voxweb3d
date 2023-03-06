@@ -135,55 +135,59 @@ export default class RSCGraph implements IRendererSceneGraph {
 		return null;
 	}
 	run(): void {
-		let pickFlag = true;
+        
 		let list = this.m_nodes;
 		let total = list.length;
-		let i = total - 1;
 
-		const node = list[i] as RendererSceneNode;
-		let scene = list[i].getRScene();
-		if (node.p0Call0) node.p0Call0(scene, this);
-		scene.runBegin(true, true);
-		scene.update(false, true);
-		pickFlag = scene.isRayPickSelected();
-		this.rayPickFlag = pickFlag;
-		if (node.p0Call1) node.p0Call1(scene, this);
+		if (total > 0) {
+			let pickFlag = true;
+			let i = total - 1;
 
-		i -= 1;
-		for (; i >= 0; --i) {
 			const node = list[i] as RendererSceneNode;
-			scene = list[i].getRScene();
+			let scene = list[i].getRScene();
 			if (node.p0Call0) node.p0Call0(scene, this);
-			scene.runBegin(false, true);
-			scene.update(false, !pickFlag);
-			pickFlag = pickFlag || scene.isRayPickSelected();
+			scene.runBegin(true, true);
+			scene.update(false, true);
+			pickFlag = scene.isRayPickSelected();
 			this.rayPickFlag = pickFlag;
 			if (node.p0Call1) node.p0Call1(scene, this);
-		}
-		/////////////////////////////////////////////////////// ---- mouseTest end.
 
-		/////////////////////////////////////////////////////// ---- rendering begin.
-		for (i = 0; i < total; ++i) {
-			const node = list[i] as RendererSceneNode;
-			scene = list[i].getRScene();
-			if (node.p1Call0) node.p0Call0(scene, this);
-			scene.renderBegin(node.contextResetEnabled);
-			const idList = node.processIdList;
-			if (idList == null) {
-				scene.run(false);
-			} else {
-				for (let j = 0; j < idList.length; ++j) {
-					scene.runAt(idList[j]);
-				}
+			i -= 1;
+			for (; i >= 0; --i) {
+				const node = list[i] as RendererSceneNode;
+				scene = list[i].getRScene();
+				if (node.p0Call0) node.p0Call0(scene, this);
+				scene.runBegin(false, true);
+				scene.update(false, !pickFlag);
+				pickFlag = pickFlag || scene.isRayPickSelected();
+				this.rayPickFlag = pickFlag;
+				if (node.p0Call1) node.p0Call1(scene, this);
 			}
-			scene.runEnd();
-			if (node.p1Call0) node.p0Call1(scene, this);
+			/////////////////////////////////////////////////////// ---- mouseTest end.
+
+			/////////////////////////////////////////////////////// ---- rendering begin.
+			for (i = 0; i < total; ++i) {
+				const node = list[i] as RendererSceneNode;
+				scene = list[i].getRScene();
+				if (node.p1Call0) node.p0Call0(scene, this);
+				scene.renderBegin(node.contextResetEnabled);
+				const idList = node.processIdList;
+				if (idList == null) {
+					scene.run(false);
+				} else {
+					for (let j = 0; j < idList.length; ++j) {
+						scene.runAt(idList[j]);
+					}
+				}
+				scene.runEnd();
+				if (node.p1Call0) node.p0Call1(scene, this);
+			}
 		}
 	}
 
 	private m_autoRRun = false;
 	fakeRun(autoCycle: boolean = true): void {
-		console.log("fakeRun ...");
+		console.log("corgraph fakeRun ...");
 	}
 	setAutoRunning(auto: boolean): IRendererSceneGraph {
 		if (this.m_autoRRun != auto) {
