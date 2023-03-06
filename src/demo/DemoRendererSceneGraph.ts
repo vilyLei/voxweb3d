@@ -113,15 +113,15 @@ class RightScene {
 export class DemoRendererSceneGraph {
 	constructor() {}
 
-	private m_rendererLeftScene: IRendererScene = null;
-	private m_rendererRightScene: IRendererScene = null;
+	private m_mainRScene: IRendererScene = null;
+	private m_subRScene: IRendererScene = null;
 	private m_texLoader: ImageTextureLoader;
 	private m_camTrack: CameraTrack = null;
 	private m_camTrack2: CameraTrack = null;
 	private m_stage3D: IRenderStage3D = null;
 
-	private m_leftScene = new LeftScene();
-	private m_rightScene = new RightScene();
+	private m_mainScene = new LeftScene();
+	private m_subScene = new RightScene();
 	private m_graph: IRendererSceneGraph = null;
 
 	initialize(): void {
@@ -138,37 +138,37 @@ export class DemoRendererSceneGraph {
 			rparam.autoSyncRenderBufferAndWindowSize = false;
 			rparam.setCamProject(45.0, 0.1, 5000.0);
 			rparam.setCamPosition(1500.0, 1500.0, 1500.0);
-			this.m_rendererLeftScene = this.m_graph.createScene(rparam);
-			this.m_rendererLeftScene.initialize(rparam);
-			this.m_rendererLeftScene.enableMouseEvent(true);
-			this.m_rendererLeftScene.setClearRGBColor3f(0.3, 0.1, 0.1);
-			this.m_stage3D = this.m_rendererLeftScene.getStage3D();
+			this.m_mainRScene = this.m_graph.createScene(rparam);
+			this.m_mainRScene.initialize(rparam);
+			this.m_mainRScene.enableMouseEvent(true);
+			this.m_mainRScene.setClearRGBColor3f(0.3, 0.1, 0.1);
+			this.m_stage3D = this.m_mainRScene.getStage3D();
 
-			this.m_texLoader = new ImageTextureLoader(this.m_rendererLeftScene.textureBlock);
+			this.m_texLoader = new ImageTextureLoader(this.m_mainRScene.textureBlock);
 
 			rparam = new RendererParam();
 			rparam.setCamProject(45.0, 0.1, 5000.0);
 			rparam.setCamPosition(1500.0, 1500.0, 1200.0);
-			this.m_rendererRightScene = this.m_graph.createSubScene(rparam);
-			this.m_rendererRightScene.enableMouseEvent(true);
+			this.m_subRScene = this.m_graph.createSubScene(rparam);
+			this.m_subRScene.enableMouseEvent(true);
 
-			new RenderStatusDisplay(this.m_rendererLeftScene, true);
+			new RenderStatusDisplay(this.m_mainRScene, true);
 
-			this.m_rendererLeftScene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-			this.m_rendererLeftScene.addEventListener(EventBase.ENTER_FRAME, this, this.enterFrame);
+			this.m_mainRScene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
+			this.m_mainRScene.addEventListener(EventBase.ENTER_FRAME, this, this.enterFrame);
 
 			this.m_camTrack = new CameraTrack();
-			this.m_camTrack.bindCamera(this.m_rendererLeftScene.getCamera());
+			this.m_camTrack.bindCamera(this.m_mainRScene.getCamera());
 			this.m_camTrack2 = new CameraTrack();
-			this.m_camTrack2.bindCamera(this.m_rendererRightScene.getCamera());
+			this.m_camTrack2.bindCamera(this.m_subRScene.getCamera());
 
-			this.m_leftScene.initialize(this.m_rendererLeftScene, this.m_texLoader);
-			this.m_rightScene.initialize(this.m_rendererRightScene, this.m_texLoader);
+			this.m_mainScene.initialize(this.m_mainRScene, this.m_texLoader);
+			this.m_subScene.initialize(this.m_subRScene, this.m_texLoader);
 
 			let vw = this.m_stage3D.stageWidth;
 			let vh = this.m_stage3D.stageHeight;
 			let halfVW = vw * 0.5;
-			this.m_rendererRightScene.setViewPort(0, 0, halfVW * 0.7, vh * 0.7);
+			this.m_subRScene.setViewPort(0, 0, halfVW * 0.7, vh * 0.7);
 		}
 	}
 	mouseDownListener(evt: any): void {

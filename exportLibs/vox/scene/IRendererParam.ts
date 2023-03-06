@@ -8,6 +8,10 @@
 import IVector3D from "../../vox/math/IVector3D";
 
 interface IRendererParam {
+    
+    divW: number;
+    divH: number;
+
     // display 3d view buf size auto sync window size
     autoSyncRenderBufferAndWindowSize: boolean;
     maxWebGLVersion: number;
@@ -21,6 +25,7 @@ interface IRendererParam {
     readonly camLookAtPos: IVector3D;
     readonly camUpDirect: IVector3D;
 
+    syncBgColor: boolean;
     batchEnabled: boolean;
     processFixedState: boolean;
     

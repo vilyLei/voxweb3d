@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
+import IColor4 from "../material/IColor4";
 
 interface IRenderAdapter {
 	bgColor: Float32Array;
@@ -49,6 +50,7 @@ interface IRenderAdapter {
 	 * @param depth depth buffer depth value
 	 */
 	clearDepth(depth: number): void;
+	clearColor(color: IColor4): void;
 	clear(): void;
 	reset(): void;
 	renderBegin(): void;
@@ -77,7 +79,7 @@ interface IRenderAdapter {
 
 	synFBOSizeWithViewport(): void;
 	asynFBOSizeWithViewport(): void;
-	//
+	
 	/**
 	 * if synFBOSizeWithViewport is true, fbo size = factor * view port size;
 	 * @param factor exmple: the value of factor is 0.5
@@ -86,6 +88,10 @@ interface IRenderAdapter {
 	bindFBOAt(index: number, fboType: number): void;
 	resetFBOAttachmentMask(boo: boolean): void;
 	setFBOAttachmentMaskAt(index: number, boo: boolean): void;
+	/**
+	 * sync the clear bg color and the html body bg color
+	 */
+	syncHtmlBodyColor(): void;
 
 	getFBOAttachmentTotal(): number;
 	/**
