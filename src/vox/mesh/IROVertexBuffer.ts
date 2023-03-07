@@ -10,7 +10,7 @@ interface IROVertexBuffer {
     getUid(): number;
     getType(): number;
     
-    getIBufStep(): number;
+    getIvsUnitBytes(): number;
     getBufDataUsage(): number;
     getBuffersTotal(): number;    
     getAttribsTotal(): number;

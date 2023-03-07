@@ -55,8 +55,8 @@ export default class ROVertexBuffer extends ROIVertexBuffer implements IVtxBuf, 
         return this.m_bufSizeList;
     }
 
-    getIBufStep(): number {
-        return this.m_ibufStep;
+    getIvsUnitBytes(): number {
+        return this.m_ivsUnitBytes;
     }
     getBufDataUsage(): number {
         return this.m_bufDataUsage;

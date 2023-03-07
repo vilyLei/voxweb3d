@@ -21,6 +21,5 @@ interface IROIVtxBuf {
     getUid(): number;
     getType(): number;
     getBufDataUsage(): number;
-    // getIBufStep(): number;
 }
 export default IROIVtxBuf;

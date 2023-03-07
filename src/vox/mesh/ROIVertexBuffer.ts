@@ -20,7 +20,7 @@ export default class ROIVertexBuffer implements IROIVtxBuf {
     private m_irdTotal = 0;
     protected m_irds: ROIvsData[] = new Array(1);
     protected m_bufDataUsage = 0;
-    protected m_ibufStep = 2;
+    protected m_ivsUnitBytes = 2;
 
     layoutBit = 0x0;
     vertexVer = 0;
@@ -45,9 +45,6 @@ export default class ROIVertexBuffer implements IROIVtxBuf {
     getBufSortFormat(): number {
         return this.m_layoutBit;
     }
-    // getIBufStep(): number {
-    //     return this.m_ibufStep;
-    // }
     getBufDataUsage(): number {
         return this.m_bufDataUsage;
     }
