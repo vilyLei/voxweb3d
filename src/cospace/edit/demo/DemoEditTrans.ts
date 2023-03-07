@@ -260,10 +260,10 @@ export class DemoEditTrans {
 		let moveBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 1, 1, "move");
 		let scaleBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 2, 2, "scale");
 		let rotateBtn = this.crateBtn(urls, px, py - (5 + csLable.getClipHeight()) * 3, 3, "rotate");
-		this.m_transBtns = [moveBtn, scaleBtn, rotateBtn];
-		//*/
+		// this.m_transBtns = [moveBtn, scaleBtn, rotateBtn];
 
-		this.selectBtn(moveBtn);
+		// this.selectBtn(moveBtn);
+		//*/
 		// this.m_transCtr.enable(this.m_ctrlType);
 		this.m_transCtr.toTranslation();
 	}

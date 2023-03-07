@@ -345,7 +345,7 @@
 
 //  import {DemoMaterialGraph as Demo} from "./demo/DemoMaterialGraph";
 
- import {DemoVtxDrawingInfo as Demo} from "./demo/DemoVtxDrawingInfo";
+//  import {DemoVtxDrawingInfo as Demo} from "./demo/DemoVtxDrawingInfo";
 
 //  import {DemoVtxMultiRDP as Demo} from "./demo/DemoVtxMultiRDP";
 
@@ -484,6 +484,8 @@
 //  import {DemoOrthoBtn as Demo} from "./orthoui/demos/DemoOrthoBtn";
 
 //  import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
+
+import {DemoCanvasTexAtlas as Demo} from "./orthoui/demos/DemoCanvasTexAtlas";
 
 // import {DemoUITexAtlas as Demo} from "./orthoui/demos/DemoUITexAtlas";
 

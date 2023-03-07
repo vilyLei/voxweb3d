@@ -151,14 +151,7 @@ export default class ImageTexAtlas extends TextureAtlas implements IImageTexAtla
 		ctx2D.drawImage(texImg, sx, sy, texImg.width, texImg.height);
 		return canvas;
 	}
-	static CreateCharsCanvasFixSize(
-		width: number,
-		height: number,
-		chars: string,
-		fontSize: number,
-		fontColor: IColor4 = null,
-		bgColor: IColor4 = null
-	): HTMLCanvasElement {
+	static CreateCharsCanvasFixSize(width: number,height: number,chars: string,fontSize: number,fontColor: IColor4 = null,bgColor: IColor4 = null): HTMLCanvasElement {
 		if (fontColor == null) {
 			fontColor = CoMaterial.createColor4(0, 0, 0, 1.0);
 		}

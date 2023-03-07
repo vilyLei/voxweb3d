@@ -89,11 +89,13 @@ export class DemoCoParticle {
 
 		// this.createDefaultEntity();
 
+		console.log("initScene() .............");
 		let texList = [this.createTexByUrl("static/assets/a_02_c.jpg")];
 		console.log("create billboard entity...");
 		let entity = new Billboard();
 		entity.toBrightnessBlend();
-		entity.initialize(130,130, texList);
+		// entity.initialize(130,130, texList);
+		entity.initializeSquare(130, texList);
 		entity.setXYZ(50,100,100);
 		entity.setRotationZ(50);
 		this.m_rscene.addEntity(entity.entity, 1);

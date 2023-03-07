@@ -40,7 +40,6 @@ class Clock {
 			bodyContainer.addChild(this.m_hourHand);
 			this.m_minutesHand = this.createHand(2, radius * 0.6, new Color4(0.7, 0.9, 0.0));
 			bodyContainer.addChild(this.m_minutesHand);
-            //m_secondsHand
 			this.m_secondsHand = this.createHand(1, radius * 0.8, new Color4(0.7, 0.2, 0.7));
 			bodyContainer.addChild(this.m_secondsHand);
 
