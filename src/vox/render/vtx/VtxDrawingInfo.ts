@@ -5,7 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-// import RenderDrawMode from "../RenderDrawMode";
 import IVtxDrawingInfo from "./IVtxDrawingInfo";
 import { IROIvsRDP } from "./IROIvsRDP";
 

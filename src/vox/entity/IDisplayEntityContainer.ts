@@ -5,13 +5,14 @@
 /*                                                                         */
 /***************************************************************************/
 
+import IRenderEntityBase from "../../vox/render/IRenderEntityBase";
 import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 import ITransformEntity from "./ITransformEntity";
 
 export default interface IDisplayEntityContainer extends IRenderEntityContainer {
 
-    addEntity(entity: ITransformEntity): void;
-    removeEntity(entity: ITransformEntity): void;
-    addChild(child: IDisplayEntityContainer): void;
-    removeChild(child: IDisplayEntityContainer): void;
+    addEntity(entity: IRenderEntityBase | ITransformEntity): void;
+    removeEntity(entity: IRenderEntityBase | ITransformEntity): void;
+    addChild(child: IRenderEntityBase | ITransformEntity): void;
+    removeChild(child: IRenderEntityBase | ITransformEntity): void;
 }

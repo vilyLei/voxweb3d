@@ -94,9 +94,6 @@ export class RODrawState implements IRODrawState {
     }
     setBlendMode(mode: number, params: number[]): void {
         if (this.m_blendMode != mode) {
-            // if(DebugFlag.Flag_0 > 0) {
-            //     console.log("this.m_blendMode: ",this.m_blendMode,",mode: ",mode,",params: ", params);
-            // }
             this.m_blendMode = mode;
             if(mode > 0) {
 
@@ -137,9 +134,6 @@ export class RODrawState implements IRODrawState {
                     gl.depthMask(true); gl.depthFunc(gl.LEQUAL);
                     break;
                 case DTM.OPAQUE:
-                    // if(DebugFlag.Flag_0 > 0) {
-                    //     console.log("setDepthTestMode(), TRUE_LESS");
-                    // }
                     //console.log("OPAQUE type: ", type,gl.LESS);
                     gl.depthMask(true); gl.depthFunc(gl.LESS);
                     break;
@@ -153,9 +147,6 @@ export class RODrawState implements IRODrawState {
                     gl.depthMask(false); gl.depthFunc(gl.LESS);
                     break;
                 case DTM.WIRE_FRAME:
-                    // if(DebugFlag.Flag_0 > 0) {
-                    //     console.log("setDepthTestMode(), TRUE_LEQUAL");
-                    // }
                     gl.depthMask(true); gl.depthFunc(gl.LEQUAL);
                     break;
                 case DTM.NEXT_LAYER:

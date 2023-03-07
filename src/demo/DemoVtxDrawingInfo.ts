@@ -127,7 +127,6 @@ export class DemoVtxDrawingInfo {
 			// if(this.m_MFlag) {
 			// 	vtxInfo.setIvsParam(0,3);
 			// }else {
-
 			// 	vtxInfo.setIvsParam(0,6);
 			// }
 			this.m_MFlag = !this.m_MFlag;

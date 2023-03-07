@@ -221,7 +221,7 @@ class PlaneMeshBuilder extends MeshBuilder implements IPlaneMeshBuilder {
 		}
 		if(mesh.isNVSEnabled()) {
 			let nvs = new Float32Array((segsTotal + 1) * 3);
-			j = 0
+			j = 0;
 			for (let i = 0; i <= segsTotal; ++i) {
 				nvs[j++] = 0.0;
 				nvs[j++] = 0.0;
@@ -235,14 +235,14 @@ class PlaneMeshBuilder extends MeshBuilder implements IPlaneMeshBuilder {
 		return mesh;
 	}
 	/**
-	 * @param px the default value is -1.0
-	 * @param py the default value is -1.0 
-	 * @param pw the default value is 2.0 
-	 * @param ph the default value is 2.0 
-	 * @returns IRawMesh instance
+	 * @param minX the default value is -1.0
+	 * @param minY the default value is -1.0 
+	 * @param width the default value is 2.0 
+	 * @param height the default value is 2.0 
+	 * @returns a fix screen xoy plane mesh
 	 */
-	createFixScreen(px: number = -1.0, py: number = -1.0, pw: number = 2.0, ph: number = 2.0): IRawMesh {
-		return this.createXOY(-1.0, -1.0, 2.0, 2.0);
+	createFixScreen(minX: number = -1.0, minY: number = -1.0, width: number = 2.0, height: number = 2.0): IRawMesh {
+		return this.createXOY(minX, minY, width, height);
 	}
 
 	/**

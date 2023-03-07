@@ -271,6 +271,10 @@
 
 //  import {DemoContainer as Demo} from "./demo/DemoContainer";
 
+//  import {DemoContainer as Demo} from "./demo/DemoContainer";
+
+//  import {DemoEntityContainer as Demo} from "./demo/DemoEntityContainer";
+
 //  import {DemoContainerTransform as Demo}  from "./demo/DemoContainerTransform";
 
 // import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
@@ -341,7 +345,7 @@
 
 //  import {DemoMaterialGraph as Demo} from "./demo/DemoMaterialGraph";
 
-//  import {DemoVtxDrawingInfo as Demo} from "./demo/DemoVtxDrawingInfo";
+ import {DemoVtxDrawingInfo as Demo} from "./demo/DemoVtxDrawingInfo";
 
 //  import {DemoVtxMultiRDP as Demo} from "./demo/DemoVtxMultiRDP";
 
@@ -349,7 +353,7 @@
 
 //  import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
 
- import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
+//  import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
 
 
 ///////////////////////////////////////////////////////////////////////////////

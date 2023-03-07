@@ -35,6 +35,7 @@ import { CoRendererState } from "./render/CoRendererState";
 import CoVtxBufConst from "./mesh/CoVtxBufConst";
 import IRendererSceneGraph from "../../vox/scene/IRendererSceneGraph";
 import IProgressDataEvent from "../../vox/event/IProgressDataEvent";
+import IVtxDrawingInfo from "../../vox/render/vtx/IVtxDrawingInfo";
 
 interface CoVec3 {
 
@@ -228,6 +229,7 @@ interface ICoRScene {
 	createMouseEvt3DDispatcher(): IEvtDispatcher;
 	createEventBaseDispatcher(): IEvtDispatcher;
 
+	createVtxDrawingInfo(): IVtxDrawingInfo;
 	/**
 	 * build default 3d entity rendering material
 	 * @param normalEnabled the default value is false

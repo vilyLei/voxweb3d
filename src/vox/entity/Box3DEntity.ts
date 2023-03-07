@@ -29,7 +29,7 @@ export default class Box3DEntity extends DisplayEntity {
     uScale: number = 1.0;
     vScale: number = 1.0;
     normalScale: number = 1.0;
-    normalEnabled: boolean = false;
+    normalEnabled = false;
     // uvPartsNumber value is 4 or 6
     uvPartsNumber: number = 0;
     wireframe: boolean = false;

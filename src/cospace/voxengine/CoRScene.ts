@@ -76,6 +76,7 @@ import Keyboard from "../../vox/ui/Keyboard";
 import { ICoAGeom } from "../ageom/ICoAGeom";
 import IGeomModelData from "../../vox/mesh/IGeomModelData";
 import MeshFactor from "../../vox/mesh/MeshFactory";
+import VtxDrawingInfo from "../../vox/render/vtx/VtxDrawingInfo";
 declare var CoAGeom: ICoAGeom;
 
 function createVec3(px: number = 0.0, py: number = 0.0, pz: number = 0.0, pw: number = 1.0): IVector3D {
@@ -147,6 +148,9 @@ function createDataMeshFromModel(model: IGeomModelData, material: IRenderMateria
 	return MeshFactor.createDataMeshFromModel(model, material, texEnabled);
 }
 
+function createVtxDrawingInfo(): VtxDrawingInfo {
+	return new VtxDrawingInfo();
+}
 function createDefaultMaterial(normalEnabled: boolean = false): IDefault3DMaterial {
 	let m = new Default3DMaterial();
 	m.normalEnabled = normalEnabled;
@@ -183,11 +187,7 @@ function createDisplayEntityFromModel(model: CoGeomDataType, material: IRenderMa
 	entity.setMaterial(material);
 	return entity;
 }
-function createDisplayEntityWithDataMesh(
-	mesh: IDataMesh,
-	pmaterial: IRenderMaterial,
-	texEnabled: boolean = false
-): ITransformEntity {
+function createDisplayEntityWithDataMesh(mesh: IDataMesh, pmaterial: IRenderMaterial, texEnabled: boolean = false): ITransformEntity {
 
 	if (pmaterial != null) {
 		pmaterial.initializeByCodeBuf(texEnabled);
@@ -316,6 +316,8 @@ export {
 	createBoundsMesh,
 
 	createDataMeshFromModel,
+	
+	createVtxDrawingInfo,
 	createDefaultMaterial,
 	createLineMaterial,
 	createQuadLineMaterial,

@@ -40,7 +40,7 @@ interface IRenderMaterial {
     /**
      * vtx drawing info representation
      */
-    readonly vtxInfo: IVtxDrawingInfo;
+    vtxInfo: IVtxDrawingInfo;
     graph: IPassGraph;
 
     /**

@@ -22,14 +22,13 @@ import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 import DecayBrnParticle from "../particle/base/DecayBrnParticle";
 import {EntityDispQueue} from "./base/EntityDispQueue";
 import RendererScene from '../vox/scene/RendererScene';
+import { MouseInteraction } from '../vox/ui/MouseInteraction';
 export class DemoContainer {
     constructor() { }
     
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
-    private m_texBlock: TextureBlock = null;
-    private m_camTrack: CameraTrack = null;
-    private m_statusDisp = new RenderStatusDisplay();
+    // private m_statusDisp = new RenderStatusDisplay();
     private m_equeue = new EntityDispQueue();
     private m_container: DisplayEntityContainer = null;
     private m_containerMain: DisplayEntityContainer = null;
@@ -46,7 +45,9 @@ export class DemoContainer {
         if (this.m_rscene == null) {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
-            this.m_statusDisp.initialize();
+            // this.m_statusDisp.initialize();
+
+            
             let rparam = new RendererParam();
             rparam.setMatrix4AllocateSize(8192);
             rparam.setCamProject(45.0, 0.1, 3000.0);
@@ -54,13 +55,11 @@ export class DemoContainer {
             
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam);
+            this.m_rscene.setClearRGBColor3f(0.0, 0.5, 0.0);
 
-            this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rscene.getCamera());
+            new RenderStatusDisplay(this.m_rscene, true);
+            new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
 
-
-            // this.m_texBlock = new TextureBlock();
-            // this.m_texBlock.setRenderer(this.m_rscene.getRenderProxy());
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             let tex0: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
@@ -167,12 +166,10 @@ export class DemoContainer {
     delayTime: number = 10;
     run(): void {
         this.m_equeue.run();
-        this.m_statusDisp.update();
+        // this.m_statusDisp.update();
 
-        this.m_rscene.setClearRGBColor3f(0.0, 0.5, 0.0);
         this.m_rscene.run();
-        this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-        
+
         if (this.m_containerMain != null) {
             this.m_container.setRotationY(this.m_container.getRotationY() + 1.0);
             this.m_containerMain.setRotationZ(this.m_containerMain.getRotationZ() + 1.0);

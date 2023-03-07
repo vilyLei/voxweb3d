@@ -24,6 +24,7 @@ export default class Torus3DEntity extends DisplayEntity {
     uScale = 1.0;
     vScale = 1.0;
     wireframe = false;
+    normalEnabled = false;
     /**
      * axisType = 0 is XOY plane,
      * axisType = 1 is XOZ plane,
@@ -40,6 +41,7 @@ export default class Torus3DEntity extends DisplayEntity {
     private createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
             let cm = new Default3DMaterial();
+            cm.normalEnabled = this.normalEnabled;
             cm.setTextureList(texList);
             this.setMaterial(cm);
         }

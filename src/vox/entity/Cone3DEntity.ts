@@ -23,6 +23,7 @@ export default class Cone3DEntity extends DisplayEntity {
     uScale = 1.0;
     vScale = 1.0;
     wireframe = false;
+    normalEnabled = false;
 
     constructor(transform: IROTransform = null) {
         super(transform);
@@ -33,6 +34,7 @@ export default class Cone3DEntity extends DisplayEntity {
     private createMaterial(texList: IRenderTexture[]): void {
         if (this.getMaterial() == null) {
             let cm = new Default3DMaterial();
+            cm.normalEnabled = this.normalEnabled;
             cm.setTextureList(texList);
             this.setMaterial(cm);
         }
@@ -40,6 +42,14 @@ export default class Cone3DEntity extends DisplayEntity {
             this.getMaterial().setTextureList(texList);
         }
     }
+    /**
+     * @param radius radius
+     * @param height height
+     * @param longitudeNumSegments longitude segments number
+     * @param texList the defaule value is null
+     * @param uvType the default value is 1
+     * @param alignYRatio the default value is -0.5
+     */
     initialize(radius: number, height: number, longitudeNumSegments: number, texList: IRenderTexture[] = null, uvType: number = 1, alignYRatio: number = -0.5): void {
         this.m_radius = radius;
         this.m_height = height;

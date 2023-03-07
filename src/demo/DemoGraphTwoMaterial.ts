@@ -19,10 +19,7 @@ import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import RendererState from "../vox/render/RendererState";
 import { CullFaceMode, DepthTestMode, RenderBlendMode } from "../vox/render/RenderConst";
-import IGeomModelData from "../vox/mesh/IGeomModelData";
-import MeshFactory from "../vox/mesh/MeshFactory";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
-import Color4 from "../vox/material/Color4";
 
 export class DemoGraphTwoMaterial {
 	private m_init = true;
@@ -52,7 +49,7 @@ export class DemoGraphTwoMaterial {
 			}
 
 			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
-			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 			DivLog.SetDebugEnabled(false);
 
 			let rparam = new RendererParam();
@@ -176,10 +173,10 @@ export class DemoGraphTwoMaterial {
 	private m_index = 0;
 	mouseDownListener(evt: any): void {
 
-		this.m_autoRunning = !this.m_autoRunning;
-		this.m_rscene.setAutoRunning(this.m_autoRunning);
-		DebugFlag.Flag_0 = 1;
-		console.log("############### mouse down");
+		// this.m_autoRunning = !this.m_autoRunning;
+		// this.m_rscene.setAutoRunning(this.m_autoRunning);
+		// DebugFlag.Flag_0 = 1;
+		// console.log("############### mouse down");
 		return;
 		if (this.m_tarEntity != null) {
 			let material = this.m_tarEntity.getMaterial();
@@ -265,17 +262,17 @@ export class DemoGraphTwoMaterial {
 		rscene.addEntity(box0, 2);
 		this.m_tarMEntity = box0;
 	}
-	run(): void {
+	// run(): void {
 
-		if (this.m_rscene != null) {
-			// console.log(">>> begin");
-			this.m_rscene.run();
-			// if(DebugFlag.Flag_0 > 0) {
-			// 	this.m_rscene.run();
-			// }
-			// console.log(">>> end");
-			DebugFlag.Flag_0 = 0;
-		}
-	}
+	// 	if (this.m_rscene != null) {
+	// 		// console.log(">>> begin");
+	// 		this.m_rscene.run();
+	// 		// if(DebugFlag.Flag_0 > 0) {
+	// 		// 	this.m_rscene.run();
+	// 		// }
+	// 		// console.log(">>> end");
+	// 		DebugFlag.Flag_0 = 0;
+	// 	}
+	// }
 }
 export default DemoGraphTwoMaterial;
