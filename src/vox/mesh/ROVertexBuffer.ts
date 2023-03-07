@@ -238,9 +238,9 @@ export default class ROVertexBuffer extends ROIVertexBuffer implements IVtxBuf, 
     }
     static CreateVtxCombinedBuf(vtxfs32: Float32Array, bufDataStepList: number[], bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW, layoutBit: number = 0x0): ROVertexBuffer {
 
-        let i: number = 0;
-        let stride: number = 0;
-        let bufTot: number = bufDataStepList.length;
+        let i = 0;
+        let stride = 0;
+        let bufTot = bufDataStepList.length;
         let offsetList: number[] = [];
 
         for (; i < bufTot; i++) {

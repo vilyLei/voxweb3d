@@ -280,9 +280,6 @@ export default class RectPlaneMesh extends MeshBase {
         }
         return -1;
     }
-    toString(): string {
-        return "[RectPlaneMesh()]";
-    }
     __$destroy(): void {
         if (this.isResFree()) {
             this.bounds = null;

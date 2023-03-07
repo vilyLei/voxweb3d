@@ -506,9 +506,6 @@ export default class Box3DMesh extends MeshBase {
         let boo: boolean = AABBCalc.IntersectionRL2(rltv, rlpv, this.bounds, outV);
         return boo ? 1 : -1;
     }
-    toString(): string {
-        return "Box3DMesh()";
-    }
     __$destroy(): void {
         if (this.isResFree()) {
             this.bounds = null;

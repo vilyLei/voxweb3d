@@ -226,7 +226,4 @@ export default class Cone3DMesh extends MeshBase {
             super.__$destroy();
         }
     }
-    toString(): string {
-        return "Cone3DMesh()";
-    }
 }

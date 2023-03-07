@@ -143,7 +143,7 @@
 
 //  import {DemoLockDrawEntity as Demo} from "./demo/DemoLockDrawEntity";
 
-//  import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
+ import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 
 //  import {DemoBaseRenderer as Demo} from "./demo/DemoBaseRenderer";
 
@@ -457,7 +457,7 @@
 
 //  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
- import {RbtDrama as Demo} from "./app/RbtDrama";
+//  import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 

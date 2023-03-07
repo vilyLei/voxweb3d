@@ -362,7 +362,4 @@ export default class MeshBase implements IMeshBase {
             this.m_bufSizeList = null;
         }
     }
-    toString(): string {
-        return "[MeshBase()]";
-    }
 }

@@ -38,26 +38,25 @@ export default class Cylinder3DMesh extends MeshBase {
 
             if (longitudeNumSegments < 2) longitudeNumSegments = 2;
             latitudeNumSegments = 3;
-            //
-            let m_radius: number = Math.abs(radius);
-            let m_height: number = Math.abs(height);
-            //
-            let plongitudeNumSegments: number = longitudeNumSegments;
-            let platitudeNumSegments: number = latitudeNumSegments;
-            //
-            let i: number = 1
-            let j: number = 0;
-            let trisTot: number = 0;
-            let yRad: number = 0;
-            let px: number = 0;
-            let py: number = 0;
-            let minY: number = alignYRatio * m_height;
+            
+            let m_radius = Math.abs(radius);
+            let m_height = Math.abs(height);
+            
+            let plongitudeNumSegments = longitudeNumSegments;
+            let platitudeNumSegments = latitudeNumSegments;
+            
+            let i = 1
+            let j = 0;
+            let trisTot = 0;
+            let yRad = 0;
+            let px = 0;
+            let py = 0;
+            let minY = alignYRatio * m_height;
             this.bounds = new AABB();
             this.bounds.min.setXYZ(-radius, minY, -radius);
             this.bounds.max.setXYZ(radius, minY + m_height, radius);
             this.bounds.updateFast();
-
-            //
+            
             let vtx: MeshVertex = new MeshVertex();
             vtx.y = minY;
 
@@ -70,35 +69,36 @@ export default class Cylinder3DMesh extends MeshBase {
             vtx.nx = 0.0; vtx.ny = -1.0; vtx.nz = 0.0;
             vtxRow.push(vtx.cloneVertex());
             vtxVec.push(vtxRow[0]);
-            //
+            
             for (; i < platitudeNumSegments; ++i) {
-                //
+                
                 vtx.y = minY + m_height * (i - 1);
                 vtxRows.push([]);
                 let row = vtxRows[i];
                 for (j = 0; j < plongitudeNumSegments; ++j) {
                     yRad = (Math.PI * 2 * j) / plongitudeNumSegments;
                     ++trisTot;
-                    //Math::sinCos(&px, &py, yRad);
+                    
                     px = Math.sin(yRad);
                     py = Math.cos(yRad);
-                    //
+                    
                     vtx.x = px * m_radius;
                     vtx.z = py * m_radius;
                     vtx.index = trisTot;
+
                     // calc uv
                     px *= 0.495;
                     py *= 0.495;
                     vtx.u = 0.5 + px;
                     vtx.v = 0.5 + py;
-                    //
+                    
                     if (i < 2) {
                         vtx.nx = 0.0; vtx.ny = -1.0; vtx.nz = 0.0;
                     }
                     else {
                         vtx.nx = 0.0; vtx.ny = 1.0; vtx.nz = 0.0;
                     }
-                    //
+                    
                     row.push(vtx.cloneVertex());
                     vtxVec.push(row[j]);
                 }
@@ -129,7 +129,7 @@ export default class Cylinder3DMesh extends MeshBase {
                             vtx.v = 0.0;
                         }
                         else {
-                            vtx.v = this.vScale;//1.0
+                            vtx.v = this.vScale;
                         }
                         vtx.u = this.uScale * (j / plongitudeNumSegments);
                     }
@@ -138,16 +138,13 @@ export default class Cylinder3DMesh extends MeshBase {
                             vtx.u = 0.0;
                         }
                         else {
-                            vtx.u = this.uScale;//1.0;
+                            vtx.u = this.uScale;
                         }
                         vtx.v = this.vScale * (j / plongitudeNumSegments);
                     }
-
-                    //
                     vtx.ny = 0.0;
                     vtx.nx = vtx.x * f;
                     vtx.nz = vtx.z * f;
-                    //
                     row.push(vtx.cloneVertex());
                     vtxVec.push(row[j]);
                 }
@@ -163,13 +160,9 @@ export default class Cylinder3DMesh extends MeshBase {
                 for (j = 1; j <= plongitudeNumSegments; ++j) {
                     if (i == 1) {
                         pivs.push(rowa[0].index); pivs.push(rowb[j].index); pivs.push(rowb[j - 1].index);
-                        //pivs.push(rowa[0].index); pivs.push(rowb[j-1].index); pivs.push(rowb[j].index);
-                        //vtxIndexTriVec.push(vox::kernel::mesh::VertexIndexTriangle(rowa[0].index, rowb[j].index, rowb[j - 1].index));
                     }
                     else if (i == platitudeNumSegments) {
                         pivs.push(rowa[j].index); pivs.push(rowb[0].index); pivs.push(rowa[j - 1].index);
-                        //pivs.push(rowa[j].index); pivs.push(rowa[j - 1].index); pivs.push(rowb[0].index);
-                        //vtxIndexTriVec.push(vox::kernel::mesh::VertexIndexTriangle(rowa[j].index, rowb[0].index, rowa[j - 1].index));
                     }
                 }
             }
@@ -177,20 +170,16 @@ export default class Cylinder3DMesh extends MeshBase {
             rowa = vtxRows[vtxRows.length - 2];
             rowb = vtxRows[vtxRows.length - 1];
             for (j = 1; j <= plongitudeNumSegments; ++j) {
-                //vtxIndexTriVec.push(vox::kernel::mesh::VertexIndexTriangle(rowa[j].index, rowb[j - 1].index, rowa[j - 1].index));
-                //vtxIndexTriVec.push(vox::kernel::mesh::VertexIndexTriangle(rowa[j].index, rowb[j].index, rowb[j - 1].index));
                 pivs.push(rowa[j].index); pivs.push(rowb[j - 1].index); pivs.push(rowa[j - 1].index);
                 pivs.push(rowa[j].index); pivs.push(rowb[j].index); pivs.push(rowb[j - 1].index);
             }
-            //
+            
             this.vtxTotal = vtxVec.length;
-            //
             this.m_vs = new Float32Array(this.vtxTotal * 3);
             i = 0;
             for (j = 0; j < this.vtxTotal; ++j) {
                 pvtx = vtxVec[j];
                 this.m_vs[i] = pvtx.x; this.m_vs[i + 1] = pvtx.y; this.m_vs[i + 2] = pvtx.z;
-                //trace(pvtx.x+","+pvtx.y+","+pvtx.z);
                 i += 3;
             }
             if (this.m_transMatrix != null) {
@@ -206,9 +195,7 @@ export default class Cylinder3DMesh extends MeshBase {
             this.trisNumber = this.vtCount / 3;
             
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
-                // uv
                 this.m_uvs = new Float32Array(this.vtxTotal * 2);
-                //
                 i = 0;
                 for (j = 0; j < this.vtxTotal; ++j) {
                     pvtx = vtxVec[j];
@@ -236,8 +223,8 @@ export default class Cylinder3DMesh extends MeshBase {
 
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX)) {
                 let numTriangles = this.m_ivs.length / 3;
-                let tvs: Float32Array = new Float32Array(this.m_vs.length);
-                let btvs: Float32Array = new Float32Array(this.m_vs.length);
+                let tvs = new Float32Array(this.m_vs.length);
+                let btvs = new Float32Array(this.m_vs.length);
                 SurfaceNormalCalc.ClacTrisTangent(this.m_vs, this.m_vs.length, this.m_uvs, this.m_nvs, numTriangles, this.m_ivs, tvs, btvs);
                 ROVertexBuffer.AddFloat32Data(tvs, 3);
                 ROVertexBuffer.AddFloat32Data(btvs, 3);
@@ -246,7 +233,11 @@ export default class Cylinder3DMesh extends MeshBase {
             this.updateWireframeIvs();
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
             if(this.m_vbuf == null) {
-                this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
+                if(this.vbWholeDataEnabled) {
+                    this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
+                }else {
+                    this.m_vbuf = ROVertexBuffer.CreateBySaveDataSeparate(this.getBufDataUsage());
+                }
                 this.m_vbuf.setIVSDataAt( this.crateROIvsData().setData(this.m_ivs) );
                 this.buildEnd();
             }
@@ -270,8 +261,5 @@ export default class Cylinder3DMesh extends MeshBase {
             this.m_cvs = null;
             super.__$destroy();
         }
-    }
-    toString(): string {
-        return "Cylinder3DMesh()";
     }
 }
