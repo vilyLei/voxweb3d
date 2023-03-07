@@ -103,8 +103,10 @@ class BufRData implements IROIvsRD {
 		this.updateDrawMode();
 	}
 	setInsCount(insCount: number): void {
-		this.insCount = insCount;
-		this.updateDrawMode();
+		if(this.insCount != insCount) {
+			this.insCount = insCount;
+			this.updateDrawMode();
+		}
 	}
 	setIvsParam(ivsIndex: number, ivsSize: number): void {
 		let pI = this.ivsIndex;
@@ -225,6 +227,9 @@ class BufRDataPair implements IROIvsRDP {
 				// console.log("AAAA 1 rd.getUid(): ",rd.getUid(), ", r0.getUid(): ",this.r0.getUid(), ", r0.ivsSize: ",  this.r0.ivsSize, ", r0.rdpIndex: ", this.r0.rdpIndex);
 			}
 		}
+	}
+	setInsCount(insCount: number): void {
+		this.rd.setInsCount( insCount ); 
 	}
 	getVersion(): number {
 		return this.m_tst;

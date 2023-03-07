@@ -143,7 +143,7 @@
 
 //  import {DemoLockDrawEntity as Demo} from "./demo/DemoLockDrawEntity";
 
- import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
+//  import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 
 //  import {DemoBaseRenderer as Demo} from "./demo/DemoBaseRenderer";
 
@@ -345,7 +345,7 @@
 
 //  import {DemoMaterialGraph as Demo} from "./demo/DemoMaterialGraph";
 
-//  import {DemoVtxDrawingInfo as Demo} from "./demo/DemoVtxDrawingInfo";
+ import {DemoVtxDrawingInfo as Demo} from "./demo/DemoVtxDrawingInfo";
 
 //  import {DemoVtxMultiRDP as Demo} from "./demo/DemoVtxMultiRDP";
 
