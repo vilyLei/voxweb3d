@@ -39,6 +39,7 @@ import { ModuleLoader } from "../modules/loaders/ModuleLoader";
 
 import { CoMaterialPipeType, CoMaterialContextParam, CoShaderCodeUUID, CoProgressDataEvent, CoSelectionEvent, COEventBase, CoVec3, CoTextureConst, CoRenderDrawMode, ICoRScene } from "./ICoRScene";
 import { VoxRenderer } from "./VoxRenderer";
+import IVtxDrawingInfo from "../../vox/render/vtx/IVtxDrawingInfo";
 declare var CoRScene: ICoRScene;
 
 interface I_CoRScene {
@@ -221,7 +222,9 @@ class T_CoRScene {
 	createEventBaseDispatcher(): IEvtDispatcher {
 		return CoRScene.createEventBaseDispatcher();
 	}
-
+	createVtxDrawingInfo(): IVtxDrawingInfo {
+		return CoRScene.createVtxDrawingInfo();
+	}
 	/**
 	 * build default 3d entity rendering material
 	 * @param normalEnabled the default value is false
