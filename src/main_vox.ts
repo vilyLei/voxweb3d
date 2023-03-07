@@ -345,7 +345,7 @@
 
 //  import {DemoMaterialGraph as Demo} from "./demo/DemoMaterialGraph";
 
- import {DemoVtxDrawingInfo as Demo} from "./demo/DemoVtxDrawingInfo";
+//  import {DemoVtxDrawingInfo as Demo} from "./demo/DemoVtxDrawingInfo";
 
 //  import {DemoVtxMultiRDP as Demo} from "./demo/DemoVtxMultiRDP";
 
@@ -385,7 +385,7 @@
 
 //  import {EffectExample as Demo} from "./renderingtoy/effectTest/applyui/EffectExample";
 
-//  import {ModelsLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
+ import {ModelsLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////
