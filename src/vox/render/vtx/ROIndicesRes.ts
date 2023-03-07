@@ -164,6 +164,7 @@ class BufRDataPair implements IROIvsRDP {
 	buf: any = null;
 	roiRes: ROIndicesRes = null;
 	ver = 0;
+	lifeTime = 0;
 	constructor(index: number) {
 		this.m_rdpIndex = index;
 	}
@@ -300,6 +301,7 @@ class BufRDataPair implements IROIvsRDP {
 	}
 	clone(): BufRDataPair {
 		let rdp = new BufRDataPair(this.getRDPIndex());
+		rdp.lifeTime = this.lifeTime + 1;
 		this.copyTo(rdp);
 		return rdp;
 	}
@@ -560,6 +562,7 @@ class ROIndicesRes implements IROIndicesRes {
 				this.m_rdps[i].destroy(vrc);
 			}
 			this.m_ivsData = null;
+			this.initRdp = null;
 			this.rdp = null;
 			console.log("ROIndicesRes::destroy() this.m_uid: ", this.m_uid);
 		}
