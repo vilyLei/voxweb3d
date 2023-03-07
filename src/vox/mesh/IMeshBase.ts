@@ -46,10 +46,10 @@ export default interface IMeshBase {
     toArraysPoints(): void;
     toElementsLines(): void;
     toDisable(): void;
-	/**
-	 * @param ivs the default value is null
-	 */
-	createWireframeIvs(ivs?: Uint16Array | Uint32Array): Uint16Array | Uint32Array;
+	// /**
+	//  * @param ivs the default value is null
+	//  */
+	// createWireframeIvs(ivs?: Uint16Array | Uint32Array): Uint16Array | Uint32Array;
 	setTransformMatrix(matrix: IMatrix4): void;
     getTransformMatrix(): IMatrix4;
 

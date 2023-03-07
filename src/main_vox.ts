@@ -457,7 +457,7 @@
 
 //  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
-//  import {RbtDrama as Demo} from "./app/RbtDrama";
+ import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 
@@ -485,7 +485,7 @@
 
 //  import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
 
-import {DemoCanvasTexAtlas as Demo} from "./orthoui/demos/DemoCanvasTexAtlas";
+// import {DemoCanvasTexAtlas as Demo} from "./orthoui/demos/DemoCanvasTexAtlas";
 
 // import {DemoUITexAtlas as Demo} from "./orthoui/demos/DemoUITexAtlas";
 

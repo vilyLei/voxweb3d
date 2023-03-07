@@ -106,8 +106,7 @@ export class DemoMeshWrapper {
 			material.setRGB3f(1.5, 0.5, 0.0);
 			let srcM = entity.getMesh();
 			let ivs = srcM.getIVS();
-			// ivs = ivs.slice(0, 6);
-			ivs = srcM.createWireframeIvs();
+			
 			let wMesh = new MeshWrapper();
 			wMesh.initializeWithMesh( entity.getMesh(), ivs );
 			wMesh.toElementsLines();
