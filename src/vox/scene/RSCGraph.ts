@@ -4,6 +4,7 @@ import RendererSceneNode from "./RendererSceneNode";
 import IRendererSceneGraph from "./IRendererSceneGraph";
 import RendererParam from "./RendererParam";
 import IRendererParam from "./IRendererParam";
+import IRenderer from "./IRenderer";
 
 export default class RSCGraph implements IRendererSceneGraph {
 	private m_map: Map<number, IRendererSceneNode> = new Map();

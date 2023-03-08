@@ -223,7 +223,7 @@ interface ICoRScene {
 	 * @param renderProcessesTotal the default value is 3.
 	 * @param sceneBlockEnabled the default value is true.
 	 */
-	createRendererScene(rparam?: IRendererParam, renderProcessesTotal?: number, sceneBlockEnabled?: boolean): IRendererScene | IRenderer;
+	createRendererScene(rparam?: IRendererParam, renderProcessesTotal?: number, sceneBlockEnabled?: boolean): IRendererScene;
 	setRendererScene(rs: IRendererScene): void;
 	getRendererScene(): IRendererScene;
 

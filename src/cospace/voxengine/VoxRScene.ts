@@ -239,7 +239,7 @@ class T_CoRScene {
 	 * @param renderProcessesTotal the default value is 3.
 	 * @param sceneBlockEnabled the default value is true.
 	 */
-	createRendererScene(rparam?: IRendererParam, renderProcessesTotal?: number, sceneBlockEnabled?: boolean): IRendererScene | IRenderer {
+	createRendererScene(rparam?: IRendererParam, renderProcessesTotal?: number, sceneBlockEnabled?: boolean): IRendererScene {
 		return CoRScene.createRendererScene(rparam, renderProcessesTotal, sceneBlockEnabled);
 	}
 	setRendererScene(rs: IRendererScene): void {

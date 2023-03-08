@@ -110,10 +110,10 @@ function createRendererSceneParam(div: HTMLDivElement = null): RendererParam {
 	return new RendererParam(div);
 }
 let __$$$RenderScene: IRendererScene = null;
-function createRendererScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, sceneBlockEnabled: boolean = true): IRendererScene | IRenderer {
+function createRendererScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, sceneBlockEnabled: boolean = true): IRendererScene {
 	let rs = new CoRendererScene();
 	if (rparam != null) {
-		rs.initialize(rparam, 3);
+		rs.initialize(rparam, renderProcessesTotal);
 		if (sceneBlockEnabled) {
 			applySceneBlock(rs);
 		}
