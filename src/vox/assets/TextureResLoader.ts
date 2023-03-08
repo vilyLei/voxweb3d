@@ -5,29 +5,28 @@
 /*                                                                         */
 /***************************************************************************/
 
+import RendererDevice from "../render/RendererDevice";
 import MathConst from "../../vox/math/MathConst";
 import IRunnable from "../../vox/base/IRunnable";
 import TextureConst from "../../vox/texture/TextureConst";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
-import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
-import ImageCubeTextureProxy from "../../vox/texture/ImageCubeTextureProxy";
-import BytesTextureProxy from "../../vox/texture/BytesTextureProxy";
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
-import RendererDevice from "../render/RendererDevice";
 import { IImageTexture } from "../render/texture/IImageTexture";
 import { IBytesTexture } from "../render/texture/IBytesTexture";
+import { IImageCubeTexture } from "../render/texture/IImageCubeTexture";
+import IRendererScene from "../scene/IRendererScene";
 
 
-function generateCanvasMipmapsAt(src: any) {
-    let width = src.width;
-    let height = src.height;
-    if (width >= 2 || height >= 2) {
-        width = width >= 2 ? ((width / 2) | 0) : 1;
-        height = height >= 2 ? ((height / 2) | 0) : 1;
-        return createImageCanvas(src, width, height).canvas;
-    }
-    return null;
-}
+// function generateCanvasMipmapsAt(src: any) {
+//     let width = src.width;
+//     let height = src.height;
+//     if (width >= 2 || height >= 2) {
+//         width = width >= 2 ? ((width / 2) | 0) : 1;
+//         height = height >= 2 ? ((height / 2) | 0) : 1;
+//         return createImageCanvas(src, width, height).canvas;
+//     }
+//     return null;
+// }
 function createImageCanvas(img: any, pw: number, ph: number): {canvas: HTMLCanvasElement, ctx2d: CanvasRenderingContext2D} {
     var canvas = document.createElement('canvas');
     //document.body.appendChild(canvas);
@@ -97,10 +96,6 @@ class ImgResUnit {
                     console.error("load image url error: ", this.m_url);
                 }
             });
-            // this.m_img.crossOrigin = "";
-            //m_img.setAttribute('crossorigin', 'anonymous');
-            // this.m_img.src = this.m_url;
-
             const request = new XMLHttpRequest();
             request.open("GET", this.m_url, true);
             request.responseType = "blob";
@@ -188,8 +183,9 @@ class ImgResUnit {
                     tex.name = this.m_img.src;
                 }
                 else if (bytesTex != null) {
-                    let pwidth: number = MathConst.CalcNearestCeilPow2(img.width);
-                    let pheight: number = MathConst.CalcNearestCeilPow2(img.height);
+
+                    let pwidth = MathConst.CalcNearestCeilPow2(img.width);
+                    let pheight = MathConst.CalcNearestCeilPow2(img.height);
                     if (pwidth > 2048) pwidth = 2048;
                     if (pheight > 2048) pwidth = 2048;
 
@@ -226,16 +222,16 @@ class ImgResUnit {
 
 class CubeImgResLoader {
     private m_urls: string[] = null;
-    private m_imgs: any[] = [];
-    private m_loadedTotal: number = 0;
+    private m_imgs: HTMLImageElement[] = [];
+    private m_loadedTotal = 0;
     private m_loaded: boolean = false;
-    private m_texList: ImageCubeTextureProxy[] = [];
+    private m_texList: IImageCubeTexture[] = [];
     private m_mLvList: number[] = [];
     constructor(purls: string[]) {
         this.m_urls = purls;
-        var thisT: any = this;
-        let i: number = 0;
-        let img: any = null;
+        var thisT: CubeImgResLoader = this;
+        let i = 0;
+        let img: HTMLImageElement = null;
         for (; i < 6; ++i) {
             img = new Image();
             img.onload = function (info: any): void {
@@ -246,7 +242,7 @@ class CubeImgResLoader {
                         //trace("m_imgs["+i+"] size: "+m_imgs[i].width+","+m_imgs[i].height);
                         thisT.m_texList[0].setDataFromImageToFaceAt(i, thisT.m_imgs[i], thisT.m_mLvList[0]);
                     }
-                    thisT.m_texList[0].name = thisT.m_imgs.src;
+                    thisT.m_texList[0].name = img.src;
                 }
             }
             img.crossOrigin = "";
@@ -254,24 +250,24 @@ class CubeImgResLoader {
             thisT.m_imgs.push(img);
         }
     }
-    addTex(tex: ImageCubeTextureProxy, mipLevel: number): void {
+    addTex(tex: IImageCubeTexture, mipLevel: number): void {
         this.m_texList.push(tex);
         this.m_mLvList.push(mipLevel);
     }
     getURLAt(i: number): string {
         return this.m_urls[0];
     }
-    getTexAt(i: number): ImageCubeTextureProxy {
+    getTexAt(i: number): IImageCubeTexture {
         return this.m_texList[i];
     }
     isLoaded(): boolean {
         return this.m_loaded;
     }
     destroy(): void {
-
     }
 }
 export default class TextureResLoader implements IRunnable {
+
     private m_cubeDict: Map<string, CubeImgResLoader> = new Map();
     private m_resMap: Map<string, ImgResUnit> = new Map();
     private m_loadedList: ImgResUnit[] = [];
@@ -283,15 +279,19 @@ export default class TextureResLoader implements IRunnable {
     private m_testDelay: number = 512;
     private m_testDelayTime: number = 512;
     private m_texBlock: ITextureBlock = null;
-    constructor(texBlock: ITextureBlock) {
-        this.m_texBlock = texBlock;
-        if (texBlock != null) {
-            texBlock.addTexLoader(this);
+
+    constructor(rc:IRendererScene) {
+        if(this.m_texBlock == null && rc != null) {
+            this.m_texBlock = rc.textureBlock;
+            if (this.m_texBlock != null) {
+                this.m_texBlock.addTexLoader(this);
+            }
         }
     }
 
-    getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true, powerOf2Fix: boolean = false): IRenderTexture {
-        let ptex: IRenderTexture = this.getImageTexByUrl(purl, 0, false, powerOf2Fix);
+    getTexByUrl(purl: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true, powerOf2Fix: boolean = false): IRenderTexture {
+        let ptex = this.getImageTexByUrl(purl, 0, false, powerOf2Fix);
+        ptex.premultiplyAlpha = preAlpha;
         ptex.mipmapEnabled = mipmapEnabled;
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
@@ -306,7 +306,7 @@ export default class TextureResLoader implements IRunnable {
             t = new ImgResUnit(purl, mipLevel);
             t.premultipliedAlpha = false;
             this.m_resMap.set(purl, t);
-            let tex: BytesTextureProxy = this.m_texBlock.createBytesTex(1, 1) as BytesTextureProxy;
+            let tex = this.m_texBlock.createBytesTex(1, 1);
             tex.name = purl;
             t.bytesTex = tex;
             this.m_waitLoadList.push(t);
@@ -314,7 +314,7 @@ export default class TextureResLoader implements IRunnable {
         }
         else {
             if (t.bytesTex.isDestroyed()) {
-                t.bytesTex = this.m_texBlock.createBytesTex(1, 1) as BytesTextureProxy;
+                t.bytesTex = this.m_texBlock.createBytesTex(1, 1);
             }
             return t.bytesTex;
         }
@@ -328,7 +328,7 @@ export default class TextureResLoader implements IRunnable {
         if (t == null) {
             t = new ImgResUnit(purl, mipLevel);
             this.m_resMap.set(purl, t);
-            let tex = this.m_texBlock.createBytesTex(1, 1) as BytesTextureProxy;
+            let tex = this.m_texBlock.createBytesTex(1, 1);
             tex.name = purl;
             t.bytesTex = tex;
             this.m_waitLoadList.push(t);
@@ -336,23 +336,23 @@ export default class TextureResLoader implements IRunnable {
         }
         else {
             if (t.bytesTex.isDestroyed()) {
-                t.bytesTex = this.m_texBlock.createBytesTex(1, 1) as BytesTextureProxy;
+                t.bytesTex = this.m_texBlock.createBytesTex(1, 1);
             }
             return t.bytesTex;
         }
     }
-    getImageOffsetTexByUrl(purl: string, mipLevel: number = 0): ImageTextureProxy {
+    getImageOffsetTexByUrl(purl: string, mipLevel: number = 0): IRenderTexture {
         if (purl == "") {
             return null;
         }
         if (mipLevel < 0) mipLevel = 0;
         let t: ImgResUnit = this.m_resMap.get(purl);
         if (t != null) {
-            return t.offsetTex as ImageTextureProxy;
+            return t.offsetTex;
         }
         return null;
     }
-    getImageTexByUrl(purl: string, mipLevel: number = 0, offsetTexEnabled: boolean = false, powerOf2Fix: boolean = false): ImageTextureProxy {
+    getImageTexByUrl(purl: string, mipLevel: number = 0, offsetTexEnabled: boolean = false, powerOf2Fix: boolean = false): IRenderTexture {
         if (purl == "") {
             return null;
         }
@@ -362,10 +362,10 @@ export default class TextureResLoader implements IRunnable {
             t = new ImgResUnit(purl, mipLevel);
             t.powerOf2Fix = powerOf2Fix;
             if (offsetTexEnabled) {
-                t.offsetTex = this.m_texBlock.createImageTex2D(1, 1, false) as ImageTextureProxy;
+                t.offsetTex = this.m_texBlock.createImageTex2D(1, 1, false);
             }
             this.m_resMap.set(purl, t);
-            let tex = this.m_texBlock.createImageTex2D(1, 1, false) as ImageTextureProxy;
+            let tex = this.m_texBlock.createImageTex2D(1, 1, false);
             tex.name = purl;
             t.texture = tex;
             if (this.m_loadingList.length < 6) {
@@ -379,13 +379,13 @@ export default class TextureResLoader implements IRunnable {
         }
         else {
             if (t.texture.isDestroyed()) {
-                t.texture = this.m_texBlock.createImageTex2D(1, 1, false) as ImageTextureProxy;
+                t.texture = this.m_texBlock.createImageTex2D(1, 1, false);
             }
-            return t.texture as ImageTextureProxy;
+            return t.texture;
         }
     }
 
-    getCubeTexAndLoadImg(idns: string, purls: string[], mipLevel: number = 0): ImageCubeTextureProxy {
+    getCubeTexAndLoadImg(idns: string, purls: string[], mipLevel: number = 0): IRenderTexture {
         if (idns == "" || purls == null || purls.length < 6) {
             return null;
         }
@@ -394,7 +394,7 @@ export default class TextureResLoader implements IRunnable {
         if (t == null) {
             t = new CubeImgResLoader(purls);
             this.m_cubeDict.set(idns, t);
-            let tex = this.m_texBlock.createImageCubeTex(8, 8) as ImageCubeTextureProxy;
+            let tex = this.m_texBlock.createImageCubeTex(8, 8);
             t.addTex(tex, mipLevel);
             return tex;
         }
@@ -416,12 +416,12 @@ export default class TextureResLoader implements IRunnable {
         return false;
     }
     run(): void {
-        let i: number = 0;
+        let i = 0;
         let res: ImgResUnit = null;
         --this.m_loadDelay;
         if (this.m_loadDelay < 1) {
             this.m_loadDelay = this.m_loadDelayTime;
-            let loatingTotal: number = this.m_loadingList.length;
+            let loatingTotal = this.m_loadingList.length;
             if (loatingTotal > 0) {
                 for (; i < loatingTotal; ++i) {
                     if (this.m_loadingList[i].isLoaded()) {
@@ -455,7 +455,7 @@ export default class TextureResLoader implements IRunnable {
         if (this.m_testDelay < 1) {
             this.m_testDelay = this.m_testDelayTime;
             let tex: IRenderTexture = null;
-            let len: number = this.m_loadedList.length;
+            let len = this.m_loadedList.length;
             for (i = 0; i < len; ++i) {
                 res = this.m_loadedList[i];
                 tex = res.texture != null ? res.texture : res.bytesTex;

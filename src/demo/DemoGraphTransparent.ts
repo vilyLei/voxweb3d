@@ -16,17 +16,16 @@ import DefaultPassGraph from "../vox/render/pass/DefaultPassGraph";
 import ConvexTransParentPassItem from "./pass/ConvexTransParentPassItem";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
+import TextureResLoader from "../vox/assets/TextureResLoader";
 
 export class DemoGraphTransparent {
 	private m_init = true;
-	private m_texLoader: ImageTextureLoader = null;
+	private m_texLoader: TextureResLoader = null;
 	private m_rscene: RendererScene = null;
 	constructor() { }
 
 	private getTexByUrl(purl: string, preAlpha: boolean =false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
-		let tex = this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled);
-		tex.premultiplyAlpha = preAlpha;
-		return tex;
+		return this.m_texLoader.getTexByUrl(purl, preAlpha, wrapRepeat, mipmapEnabled);
 	}
 
 	initialize(): void {
@@ -55,7 +54,7 @@ export class DemoGraphTransparent {
 			rscene.setClearRGBAColor4f(0.0,0.0,0.0,0.0);
 
 			this.m_rscene = rscene;
-			this.m_texLoader = new ImageTextureLoader(rscene.textureBlock);
+			this.m_texLoader = new TextureResLoader(rscene);
 
 			new MouseInteraction().initialize(rscene, 0, true).setAutoRunning(true);
 			new RenderStatusDisplay(rscene, true);
