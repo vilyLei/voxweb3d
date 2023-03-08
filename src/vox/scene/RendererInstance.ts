@@ -104,6 +104,10 @@ export class RendererInstance implements IRendererInstance {
     createCamera(): IRenderCamera {
         return null;
     }
+    /**
+     * @param camera IRenderCamera instance
+     * @param syncCamView the default value is false
+     */
     useCamera(camera: IRenderCamera, syncCamView: boolean = false): void {
     }
     useMainCamera(): void {
@@ -177,8 +181,8 @@ export class RendererInstance implements IRendererInstance {
     /**
      * add an entity to the renderer process of the renderer instance
      * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
-     * @param processIndex this destination renderer process index of the m_processes array.
-     * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
+     * @param processIndex this destination renderer process index of the m_processes array, the defaule value is 0
+     * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id, the defaule value is true
      */
     addEntity(entity: IRenderEntity, processIndex: number = 0, deferred: boolean = true): void {
         if (entity != null) {

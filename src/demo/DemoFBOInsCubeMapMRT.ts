@@ -95,27 +95,26 @@ export class DemoFBOInsCubeMapMRT {
         this.m_rscene.addEntity(boxCubeMapMRT, 1);
         
     }
-    run1(): void {
+    // run1(): void {
         
-        this.m_rscene.run();
-    }
-    run2(): void {
+    //     this.m_rscene.run();
+    // }
+    // run2(): void {
 
-        this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
-        this.m_rscene.runBegin();
-        this.m_rscene.update();
+    //     this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
+    //     this.m_rscene.runBegin();
+    //     this.m_rscene.update();
 
-        // --------------------------------------------- fbo run begin
-        this.m_fboIns.run();
-        // this.m_fboIns.run(false, false, true , false);
-        // --------------------------------------------- fbo run end
+    //     // --------------------------------------------- fbo run begin
+    //     this.m_fboIns.run();
+    //     // --------------------------------------------- fbo run end
 
-        this.m_rscene.setRenderToBackBuffer();
-        this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
-        this.m_rscene.runAt(1);
+    //     this.m_rscene.setRenderToBackBuffer();
+    //     this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
+    //     this.m_rscene.runAt(1);
 
-        this.m_rscene.runEnd();
-        DebugFlag.Flag_0 = 0;
-    }
+    //     this.m_rscene.runEnd();
+    //     DebugFlag.Flag_0 = 0;
+    // }
 }
 export default DemoFBOInsCubeMapMRT;

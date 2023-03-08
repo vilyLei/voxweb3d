@@ -33,14 +33,14 @@ interface IRenderer {
    * @param useGlobalUniform the default value is false
    * @param forceUpdateUniform the default value is true
    */
-  drawEntity(entity: IRenderEntity, useGlobalUniform: boolean, forceUpdateUniform: boolean): void;
+  drawEntity(entity: IRenderEntity, useGlobalUniform?: boolean, forceUpdateUniform?: boolean): void;
   /**
    * add an entity to the renderer process of the renderer instance
    * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
-   * @param processid this destination renderer process id
-   * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
+   * @param processid this destination renderer process id, the default value is 0
+   * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id, the defaule value is true
    */
-  addEntity(entity: IRenderEntity, processid: number, deferred: boolean): void;
+  addEntity(entity: IRenderEntity, processid?: number, deferred?: boolean): void;
   /**
    * remove an entity from the renderer instance
    * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
@@ -59,10 +59,14 @@ interface IRenderer {
    * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform, default value: false
    * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform, default value: true
    */
-  drawEntity(entity: IRenderEntity, useGlobalUniform: boolean, forceUpdateUniform: boolean): void;
+  drawEntity(entity: IRenderEntity, useGlobalUniform?: boolean, forceUpdateUniform?: boolean): void;
   showInfoAt(index: number): void;
   runAt(index: number): void;
-  useCamera(camera: IRenderCamera, syncCamView: boolean): void;
+  /**
+   * @param camera IRenderCamera instance
+   * @param syncCamView the default value is false
+   */
+  useCamera(camera: IRenderCamera, syncCamView?: boolean): void;
   useMainCamera(): void;
   updateCamera(): void;
 }

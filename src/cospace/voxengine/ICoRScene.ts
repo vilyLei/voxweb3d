@@ -36,6 +36,7 @@ import CoVtxBufConst from "./mesh/CoVtxBufConst";
 import IRendererSceneGraph from "../../vox/scene/IRendererSceneGraph";
 import IProgressDataEvent from "../../vox/event/IProgressDataEvent";
 import IVtxDrawingInfo from "../../vox/render/vtx/IVtxDrawingInfo";
+import IRenderer from "../../vox/scene/IRenderer";
 
 interface CoVec3 {
 
@@ -222,7 +223,7 @@ interface ICoRScene {
 	 * @param renderProcessesTotal the default value is 3.
 	 * @param sceneBlockEnabled the default value is true.
 	 */
-	createRendererScene(rparam?: IRendererParam, renderProcessesTotal?: number, sceneBlockEnabled?: boolean): IRendererScene;
+	createRendererScene(rparam?: IRendererParam, renderProcessesTotal?: number, sceneBlockEnabled?: boolean): IRendererScene | IRenderer;
 	setRendererScene(rs: IRendererScene): void;
 	getRendererScene(): IRendererScene;
 

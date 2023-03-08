@@ -77,7 +77,7 @@
 
 //  import {DemoCubeMapMRT as Demo} from "./demo/DemoCubeMapMRT";
 
- import {DemoFBOInsCubeMapMRT as Demo} from "./demo/DemoFBOInsCubeMapMRT";
+//  import {DemoFBOInsCubeMapMRT as Demo} from "./demo/DemoFBOInsCubeMapMRT";
 
 //  import * as DemoScreenPingpongBlur from "./demo/DemoScreenPingpongBlur";
 //  import Demo = DemoScreenPingpongBlur.demo.DemoScreenPingpongBlur;
@@ -190,7 +190,7 @@
 
 //  import {DemoGLState as Demo} from "./demo/DemoGLState";
 
-//  import {DemoStencil as Demo} from "./demo/DemoStencil";
+ import {DemoStencil as Demo} from "./demo/DemoStencil";
 
 //  import {DemoBlendMode as Demo} from "./demo/DemoBlendMode";
 

@@ -162,6 +162,12 @@ interface IFBOInstance extends IRendererNode {
      */
     setRenderToRTTTextureAt(systemRTTTexIndex: number, outputIndex?: number): void;
     /**
+     * 设置渲染到纹理的目标纹理对象(cube RTT 纹理类型的目标纹理)和framebuffer output attachment index
+     * @param systemCubeRTTTexIndex 作为渲染到目标的目标纹理对象在系统cube rtt 纹理中的序号(0 -> 15)
+     * @param outputIndex framebuffer output attachment index, the default value is 0
+     */
+    setRenderToCubeRTTTextureAt(systemCubeRTTTexIndex: number, outputIndex?: number): void;
+    /**
      * 设置渲染到纹理的目标纹理对象(Float RTT 纹理类型的目标纹理)和framebuffer output attachment index
      * @param systemFloatRTTTexIndex 作为渲染到目标的目标纹理对象在系统float rtt 纹理中的序号(0 -> 15)
      * @param outputIndex framebuffer output attachment index, the default value is 0
@@ -275,7 +281,7 @@ interface IFBOInstance extends IRendererNode {
      * @param autoEnd the defualt value is true
      * @param autoRunBegin the defualt value is true
      */
-    run(lockRenderState: boolean, lockMaterial?: boolean, autoEnd?: boolean, autoRunBegin?: boolean): void;
+    run(lockRenderState?: boolean, lockMaterial?: boolean, autoEnd?: boolean, autoRunBegin?: boolean): void;
     /**
      * 
      * @param index 

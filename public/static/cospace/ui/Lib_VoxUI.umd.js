@@ -765,6 +765,33 @@ class ClipColorLabel extends ClipLabelBase_1.ClipLabelBase {
       for (let i = 0; i < len; ++i) {
         ls[i].copyFrom(colors[i]);
       }
+
+      if (len == 3 && ls.length == 4) {
+        ls[3].copyFrom(colors[1]);
+      }
+
+      this.setClipIndex(this.m_index);
+    }
+  }
+
+  setColorsWithHex(colors) {
+    if (colors != null) {
+      let ls = this.m_colors;
+      let len = colors.length;
+
+      if (len > ls.length) {
+        len = ls.length;
+      }
+
+      for (let i = 0; i < len; ++i) {
+        ls[i].setRGBUint24(colors[i]);
+      }
+
+      if (len == 3 && ls.length == 4) {
+        ls[3].setRGBUint24(colors[1]);
+      }
+
+      this.setClipIndex(this.m_index);
     }
   }
 
@@ -3411,10 +3438,12 @@ function createParamCtrlPanel() {
 }
 
 exports.createParamCtrlPanel = createParamCtrlPanel;
+let __$$$currUISCene = null;
 
 function createUIScene(graph, uiConfig = null, atlasSize = 512, renderProcessesTotal = 3) {
   initialize();
   let uisc = new VoxUIScene_1.VoxUIScene();
+  __$$$currUISCene = uisc;
 
   if (graph != null) {
     uisc.initialize(graph, atlasSize, renderProcessesTotal);
@@ -3450,6 +3479,39 @@ function createUILayout() {
 }
 
 exports.createUILayout = createUILayout;
+
+function createTextLabelButton(uuid, text, width = 90, height = 50, textColor = null, fontSize = 30, fontName = "") {
+  if (text == "" || __$$$currUISCene == null) return null;
+  let uisc = __$$$currUISCene;
+  let tta = uisc.transparentTexAtlas;
+  return ButtonBuilder_1.ButtonBuilder.createTextLabelButton(tta, uuid, text, width, height, textColor, fontSize, fontName); // let uisc = __$$$currUISCene;
+  // let tta = uisc.transparentTexAtlas;
+  // let fontColor = textColor != null ? textColor : VoxMaterial.createColor4(0, 0, 0, 1.0);
+  // let bgColor = VoxMaterial.createColor4(1, 1, 1, 0.0);
+  // if(fontName != "") {
+  // 	tta.setFontName( fontName );
+  // }
+  // let img = tta.createCharsCanvasFixSize(width, height, text, fontSize, fontColor, bgColor);
+  // tta.addImageToAtlas(text, img);
+  // let colorLabel = new ClipColorLabel();
+  // colorLabel.initializeWithoutTex(width, height, 4);
+  // colorLabel.getColorAt(0).setRGB3f(0.5, 0.5, 0.5);
+  // colorLabel.getColorAt(1).setRGB3f(0.7, 0.7, 0.7);
+  // colorLabel.getColorAt(2).setRGB3f(0.6, 0.6, 0.6);
+  // colorLabel.getColorAt(3).copyFrom(colorLabel.getColorAt(1));
+  // let iconLable = new ClipLabel();
+  // iconLable.transparent = true;
+  // iconLable.premultiplyAlpha = true;
+  // iconLable.initialize(tta, [text]);
+  // let btn = new Button();
+  // btn.uuid = uuid;
+  // btn.addLabel(iconLable);
+  // btn.initializeWithLable(colorLabel);
+  // this.m_uiScene.addEntity(btn);
+  // return btn;
+}
+
+exports.createTextLabelButton = createTextLabelButton;
 
 /***/ }),
 
@@ -4511,8 +4573,8 @@ class T_CoEntity {
     return typeof CoEntity !== "undefined" && typeof CoRScene !== "undefined";
   }
   /**
-   * @param model geometry model
-   * @param material IRenderMaterial instance, the default is null.
+   * @param model geometry model data
+   * @param material IRenderMaterial instance, the default value is null.
    * @param vbWhole vtx buffer is whole data, or not, the default is false.
    */
 
@@ -4521,15 +4583,14 @@ class T_CoEntity {
     return CoEntity.createDataMeshFromModel(model, material, vbWhole);
   }
   /**
-   * @param model geometry model
+   * @param model geometry model data
    * @param pmaterial IRenderMaterial instance, the default is null.
-   * @param texEnabled texture enabled in the material, the default is true.
-   * @param vbWhole vtx buffer is whole data or not, the default is false.
+   * @param texEnabled texture enabled in the material, the default value is true.
    */
 
 
-  createDisplayEntityFromModel(model, pmaterial, texEnabled, vbWhole) {
-    return CoEntity.createDisplayEntityFromModel(model, pmaterial, texEnabled, vbWhole);
+  createDisplayEntityFromModel(model, pmaterial, texEnabled) {
+    return CoEntity.createDisplayEntityFromModel(model, pmaterial, texEnabled);
   }
 
   createFreeAxis3DEntity(minV, maxV) {
@@ -4545,14 +4606,13 @@ class T_CoEntity {
   }
   /**
    * @param model IDataMesh instance
-   * @param material IRenderMaterial instance.
-   * @param texEnabled use texture yes or no.
-   * @param vbWhole vtx buffer is whole data, or not, the default is false.
+   * @param material IRenderMaterial instance
+   * @param texEnabled use texture yes or no, the default value is false
    */
 
 
-  createDisplayEntityWithDataMesh(mesh, material, texEnabled, vbWhole) {
-    return CoEntity.createDisplayEntityWithDataMesh(mesh, material, texEnabled, vbWhole);
+  createDisplayEntityWithDataMesh(mesh, material, texEnabled) {
+    return CoEntity.createDisplayEntityWithDataMesh(mesh, material, texEnabled);
   }
 
   createDisplayEntity() {
@@ -4579,6 +4639,18 @@ class T_CoEntity {
   createDisplayEntityContainer() {
     return CoEntity.createDisplayEntityContainer();
   }
+  /**
+   * @param minX the default value is -1.0
+   * @param minY the default value is -1.0
+   * @param width the default value is 2.0
+   * @param height the default value is 2.0
+   * @returns a plane entity, it is fixed the screen, it is parallel with xoy plane
+   */
+
+
+  createFixScreenPlane(minX = -1.0, minY = -1.0, width = 2.0, height = 2.0, material = null, texEnabled = false) {
+    return CoEntity.createFixScreenPlane(minX, minY, width, height, material, texEnabled);
+  }
 
   createXOYPlane(minX, minY, width, height, material = null, texEnabled = false) {
     return CoEntity.createXOYPlane(minX, minY, width, height, material, texEnabled);
@@ -4600,12 +4672,71 @@ class T_CoEntity {
     return CoEntity.createBox(minV, maxV, material, texEnabled);
   }
 
-  createSphere(radius, longitudeNumSegments = 20, latitudeNumSegments = 20, doubleTriFaceEnabled = false, material = null, texEnabled = false) {
-    return CoEntity.createSphere(radius, longitudeNumSegments, latitudeNumSegments, doubleTriFaceEnabled);
+  createSphere(radius, longitudeNumSegments = 20, latitudeNumSegments = 20, material = null, texEnabled = false, doubleTriFaceEnabled = false) {
+    return CoEntity.createSphere(radius, longitudeNumSegments, latitudeNumSegments, material, texEnabled, doubleTriFaceEnabled);
   }
+  /**
+   * @param radius cone radius
+   * @param height cone height
+   * @param longitudeNumSegments the default value is 20
+   * @param material the default value is null
+   * @param texEnabled the default value is false
+   * @param alignYRatio the default value is -0.5
+   * @returns a cone entity
+   */
 
-  createCone(radius, height, longitudeNumSegments = 20, alignYRatio = -0.5, material = null, texEnabled = false) {
-    return CoEntity.createCone(radius, height, longitudeNumSegments, alignYRatio, material, texEnabled);
+
+  createCone(radius, height, longitudeNumSegments = 20, material = null, texEnabled = false, alignYRatio = -0.5) {
+    return CoEntity.createCone(radius, height, longitudeNumSegments, material, texEnabled, alignYRatio);
+  }
+  /**
+   * @param radius cylinder radius
+   * @param height cylinder height
+   * @param longitudeNumSegments the default value is 20
+   * @param material the default value is null
+   * @param texEnabled the default value is false
+   * @param uvType the default value is 1
+   * @param alignYRatio the default value is -0.5
+   * @returns a cylinder entity
+   */
+
+
+  createCylinder(radius, height, longitudeNumSegments = 20, material = null, texEnabled = false, alignYRatio = -0.5) {
+    return CoEntity.createCylinder(radius, height, longitudeNumSegments, material, texEnabled, alignYRatio);
+  }
+  /**
+   * @param radius tube radius
+   * @param long tube long
+   * @param longitudeNumSegments the default value is 20
+   * @param latitudeNumSegments the default value is 1
+   * @param axisType 0: vertical to x-axis, 1: vertical to y-axis, 2: vertical to z-axis, the default value is 0
+   * @param material the default value is null
+   * @param texEnabled the default value is false
+   * @param uvType the default value is 1
+   * @param alignYRatio the default value is -0.5
+   * @returns a tube entity
+   */
+
+
+  createTube(radius, long, longitudeNumSegments = 20, latitudeNumSegments = 1, axisType = 0, material = null, texEnabled = false, uvType = 1, alignRatio = -0.5) {
+    return CoEntity.createTube(radius, long, longitudeNumSegments, latitudeNumSegments, axisType, material, texEnabled, uvType, alignRatio);
+  }
+  /**
+   * @param ringRadius the default value is 200
+   * @param axisRadius the default value is 50
+   * @param longitudeNumSegments the default value is 30
+   * @param latitudeNumSegments the default value is 20
+   * @param axisType 0: vertical to x-axis, 1: vertical to y-axis, 2: vertical to z-axis, the default value is 0
+   * @param material the default value is null
+   * @param texEnabled the default value is false
+   * @param uvType the default value is 1
+   * @param alignYRatio the default value is -0.5
+   * @returns a torus entity
+   */
+
+
+  createTorus(radius, axisRadius, longitudeNumSegments = 20, latitudeNumSegments = 1, axisType = 0, material = null, texEnabled = false, uvType = 1, alignRatio = -0.5) {
+    return CoEntity.createTorus(radius, axisRadius, longitudeNumSegments, latitudeNumSegments, axisType, material, texEnabled, uvType, alignRatio);
   }
 
 }
@@ -5086,126 +5217,6 @@ class ClipLabelBase extends UIEntityBase_1.UIEntityBase {
   getClipHeight() {
     return this.m_height;
   }
-  /*
-  getWidth(): number {
-      return this.m_width * this.m_sx;
-  }
-  getHeight(): number {
-      return this.m_height * this.m_sy;
-  }
-    setPosition(pv: IVector3D): void {
-      this.m_pos.copyFrom(pv);
-      let ls = this.m_entities;
-      for (let i = 0; i < ls.length; ++i) {
-          ls[i].setPosition(pv);
-      }
-  }
-  setX(x: number): void {
-      this.m_pos.x = x;
-      this.setPosition(this.m_pos);
-  }
-  setY(y: number): void {
-      this.m_pos.y = y;
-      this.setPosition(this.m_pos);
-  }
-  setZ(z: number): void {
-      this.m_pos.z = z;
-      this.setPosition(this.m_pos);
-  }
-  getX(): number {
-      return this.m_pos.x;
-  }
-  getY(): number {
-      return this.m_pos.y;
-  }
-  getZ(): number {
-      return this.m_pos.z;
-  }
-  setXY(px: number, py: number): void {
-      this.m_pos.x = px;
-      this.m_pos.y = py;
-      this.setPosition(this.m_pos);
-  }
-  getPosition(pv: IVector3D): void {
-      pv.copyFrom(this.m_pos);
-  }
-  setRotation(r: number): void {
-      this.m_rotation = r;
-      let ls = this.m_entities;
-      for (let i = 0; i < ls.length; ++i) {
-          ls[i].setRotationXYZ(0, 0, r);
-      }
-  }
-  getRotation(): number {
-      return this.m_rotation;
-  }
-  setScaleXYZ(sx: number, sy: number, sz: number): void {
-      let ls = this.m_entities;
-      for (let i = 0; i < ls.length; ++i) {
-          ls[i].setScaleXYZ(sx, sy, sz);
-      }
-  }
-  setScaleXY(sx: number, sy: number): void {
-      this.m_sx = sx;
-      this.m_sy = sy;
-      this.setScaleXYZ(sx, sy, 1.0);
-  }
-  setScaleX(sx: number): void {
-      this.m_sx = sx;
-      this.setScaleXYZ(this.m_sx, this.m_sy, 1.0);
-  }
-  setScaleY(sy: number): void {
-      this.m_sy = sy;
-      this.setScaleXYZ(this.m_sx, this.m_sy, 1.0);
-  }
-  getScaleX(): number {
-      return this.m_sx;
-  }
-  getScaleY(): number {
-      return this.m_sy;
-  }
-  
-  copyTransformFrom(src: IUIEntity): void {
-      if(src != null) {
-          if(this.m_v0 == null) {
-              this.m_v0 = CoMath.createVec3();
-          }
-          let sx = src.getScaleX();
-          let sy = src.getScaleY();
-          let r = src.getRotation();
-          this.setScaleXY(sx, sy);
-          this.setRotation(r);
-          src.getPosition( this.m_v0 );
-          this.setPosition( this.m_v0 );
-      }
-  }
-  // /**
-  //  * get renderable entities for renderer scene
-  //  * @returns ITransformEntity instance list
-  //  */
-  // getREntities(): ITransformEntity[] {
-  // 	return this.m_entities.slice(0);
-  // }
-  // getRContainer(): IDisplayEntityContainer {
-  // 	return null;
-  // }
-  // update(): void {
-  // 	let ls = this.m_entities;
-  // 	for (let i = 0; i < ls.length; ++i) {
-  // 		ls[i].update();
-  // 	}
-  // }
-  // destroy(): void {
-  // 	this.m_sizes = null;
-  // 	this.m_total = 0;
-  // 	let ls = this.m_entities;
-  // 	if (ls != null) {
-  // 		for (let i = 0; i < ls.length; ++i) {
-  // 			ls[i].update();
-  // 		}
-  // 	}
-  // }
-
 
   destroy() {
     this.m_sizes = null;
@@ -5257,6 +5268,36 @@ class ButtonBuilder {
     }
 
     return null;
+  }
+
+  static createTextLabelButton(texAtlas, uuid, text, width = 90, height = 50, textColor = null, fontSize = 30, fontName = "") {
+    if (text == "" || texAtlas == null) return null; // let uisc = __$$$currUISCene;
+
+    let tta = texAtlas;
+    let fontColor = textColor != null ? textColor : VoxMaterial_1.VoxMaterial.createColor4(0, 0, 0, 1.0);
+    let bgColor = VoxMaterial_1.VoxMaterial.createColor4(1, 1, 1, 0.0);
+
+    if (fontName != "") {
+      tta.setFontName(fontName);
+    }
+
+    let img = tta.createCharsCanvasFixSize(width, height, text, fontSize, fontColor, bgColor);
+    tta.addImageToAtlas(text, img);
+    let colorLabel = new ClipColorLabel_1.ClipColorLabel();
+    colorLabel.initializeWithoutTex(width, height, 4);
+    colorLabel.getColorAt(0).setRGB3f(0.5, 0.5, 0.5);
+    colorLabel.getColorAt(1).setRGB3f(0.7, 0.7, 0.7);
+    colorLabel.getColorAt(2).setRGB3f(0.6, 0.6, 0.6);
+    colorLabel.getColorAt(3).copyFrom(colorLabel.getColorAt(1));
+    let iconLable = new ClipLabel_1.ClipLabel();
+    iconLable.transparent = true;
+    iconLable.premultiplyAlpha = true;
+    iconLable.initialize(tta, [text]);
+    let btn = new Button_1.Button();
+    btn.uuid = uuid;
+    btn.addLabel(iconLable);
+    btn.initializeWithLable(colorLabel);
+    return btn;
   }
 
   static createTextButton(width, height, idns, texAtlas, textParam, colors) {
@@ -5355,6 +5396,8 @@ var MouseEvent = null;
 exports.MouseEvent = MouseEvent;
 var EventBase = null;
 exports.EventBase = EventBase;
+var RendererState = null;
+exports.RendererState = RendererState;
 
 class T_CoRScene {
   constructor() {
@@ -5368,12 +5411,17 @@ class T_CoRScene {
       exports.ProgressDataEvent = ProgressDataEvent = CoRScene.ProgressDataEvent;
       exports.EventBase = EventBase = CoRScene.EventBase;
       exports.MouseEvent = MouseEvent = CoRScene.MouseEvent;
+      exports.RendererState = RendererState = CoRScene.RendererState;
     }
   }
 
   initialize(callback = null, url = "") {
-    this.init();
     this.m_init = !this.isEnabled();
+
+    if (!this.m_init) {
+      VoxRenderer_1.VoxRenderer.initialize();
+      this.init();
+    }
 
     if (this.m_init) {
       this.m_init = false;
@@ -5394,6 +5442,7 @@ class T_CoRScene {
       }
 
       new ModuleLoader_1.ModuleLoader(1, () => {
+        VoxRenderer_1.VoxRenderer.initialize();
         this.init();
 
         if (flag) {
@@ -5555,6 +5604,10 @@ class T_CoRScene {
   createEventBaseDispatcher() {
     return CoRScene.createEventBaseDispatcher();
   }
+
+  createVtxDrawingInfo() {
+    return CoRScene.createVtxDrawingInfo();
+  }
   /**
    * build default 3d entity rendering material
    * @param normalEnabled the default value is false
@@ -5608,25 +5661,24 @@ class T_CoRScene {
     return CoRScene.createBoundsMesh();
   }
   /**
-   * @param model geometry model
-   * @param pmaterial IRenderMaterial instance, the default is null.
-   * @param vbWhole vtx buffer is whole data, or not, the default is false.
+   * @param model geometry model data
+   * @param material IRenderMaterial instance, the default value is null.
+   * @param texEnabled the default value is false;
    */
 
 
-  createDataMeshFromModel(model, pmaterial, vbWhole) {
-    return CoRScene.createDataMeshFromModel(model, pmaterial, vbWhole);
+  createDataMeshFromModel(model, material, texEnabled) {
+    return CoRScene.createDataMeshFromModel(model, material, texEnabled);
   }
   /**
-   * @param model geometry model
+   * @param model geometry model data
    * @param pmaterial IRenderMaterial instance, the default is null.
-   * @param texEnabled texture enabled in the material, the default is true.
-   * @param vbWhole vtx buffer is whole data or not, the default is false.
+   * @param texEnabled texture enabled in the material, the default is false.
    */
 
 
-  createDisplayEntityFromModel(model, pmaterial, texEnabled, vbWhole) {
-    return CoRScene.createDisplayEntityFromModel(model, pmaterial, texEnabled, vbWhole);
+  createDisplayEntityFromModel(model, pmaterial, texEnabled) {
+    return CoRScene.createDisplayEntityFromModel(model, pmaterial, texEnabled);
   }
   /**
    * @param minV min position value
@@ -5659,13 +5711,12 @@ class T_CoRScene {
   /**
    * @param model IDataMesh instance
    * @param material IRenderMaterial instance.
-   * @param texEnabled use texture yes or no.
-   * @param vbWhole vtx buffer is whole data, or not, the default is false.
+   * @param texEnabled use texture yes or no, the default is false.
    */
 
 
-  createDisplayEntityWithDataMesh(mesh, material, texEnabled, vbWhole) {
-    return CoRScene.createDisplayEntityWithDataMesh(mesh, material, texEnabled, vbWhole);
+  createDisplayEntityWithDataMesh(mesh, material, texEnabled) {
+    return CoRScene.createDisplayEntityWithDataMesh(mesh, material, texEnabled);
   }
   /**
    * @param transform the default value is false
@@ -6215,12 +6266,43 @@ Object.defineProperty(exports, "__esModule", {
 
 const ModuleLoader_1 = __webpack_require__("75f5");
 
+var RenderDrawMode;
+exports.RenderDrawMode = RenderDrawMode;
+var CullFaceMode;
+exports.CullFaceMode = CullFaceMode;
+var DepthTestMode;
+exports.DepthTestMode = DepthTestMode;
+var RenderBlendMode;
+exports.RenderBlendMode = RenderBlendMode;
+var GLStencilFunc;
+exports.GLStencilFunc = GLStencilFunc;
+var GLStencilOp;
+exports.GLStencilOp = GLStencilOp;
+var GLBlendMode;
+exports.GLBlendMode = GLBlendMode;
+var GLBlendEquation;
+exports.GLBlendEquation = GLBlendEquation;
+
 class T_CoRenderer {
   constructor() {
     this.m_init = true;
   }
 
+  init() {
+    if (typeof CoRenderer !== "undefined") {
+      exports.RenderDrawMode = RenderDrawMode = CoRenderer.RenderDrawMode;
+      exports.CullFaceMode = CullFaceMode = CoRenderer.CullFaceMode;
+      exports.DepthTestMode = DepthTestMode = CoRenderer.DepthTestMode;
+      exports.RenderBlendMode = RenderBlendMode = CoRenderer.RenderBlendMode;
+      exports.GLStencilFunc = GLStencilFunc = CoRenderer.GLStencilFunc;
+      exports.GLStencilOp = GLStencilOp = CoRenderer.GLStencilOp;
+      exports.GLBlendMode = GLBlendMode = CoRenderer.GLBlendMode;
+      exports.GLBlendEquation = GLBlendEquation = CoRenderer.GLBlendEquation;
+    }
+  }
+
   initialize(callback = null, url = "") {
+    this.init();
     this.m_init = !this.isEnabled();
 
     if (this.m_init) {
@@ -6231,12 +6313,45 @@ class T_CoRenderer {
       }
 
       new ModuleLoader_1.ModuleLoader(1, () => {
+        this.init();
         if (callback != null && this.isEnabled()) callback([url]);
       }).load(url);
       return true;
     }
 
     return false;
+  }
+
+  get RenderDrawMode() {
+    return CoRenderer.RenderDrawMode;
+  }
+
+  get CullFaceMode() {
+    return CoRenderer.CullFaceMode;
+  }
+
+  get DepthTestMode() {
+    return CoRenderer.DepthTestMode;
+  }
+
+  get RenderBlendMode() {
+    return CoRenderer.RenderBlendMode;
+  }
+
+  get GLStencilFunc() {
+    return CoRenderer.GLStencilFunc;
+  }
+
+  get GLStencilOp() {
+    return CoRenderer.GLStencilOp;
+  }
+
+  get GLBlendMode() {
+    return CoRenderer.GLBlendMode;
+  }
+
+  get GLBlendEquation() {
+    return CoRenderer.GLBlendEquation;
   }
 
   get RendererDevice() {
@@ -6330,6 +6445,48 @@ class ColorClipLabel extends UIEntityBase_1.UIEntityBase {
     if (i >= 0 && i < this.m_total) {
       this.m_index = i;
       this.m_lb.setColor(this.m_colors[i]);
+    }
+  }
+
+  setColors(colors) {
+    if (colors != null) {
+      let ls = this.m_colors;
+      let len = colors.length;
+
+      if (len > ls.length) {
+        len = ls.length;
+      }
+
+      for (let i = 0; i < len; ++i) {
+        ls[i].copyFrom(colors[i]);
+      }
+
+      if (len == 3 && ls.length == 4) {
+        ls[3].copyFrom(colors[1]);
+      }
+
+      this.setClipIndex(this.m_index);
+    }
+  }
+
+  setColorsWithHex(colors) {
+    if (colors != null) {
+      let ls = this.m_colors;
+      let len = colors.length;
+
+      if (len > ls.length) {
+        len = ls.length;
+      }
+
+      for (let i = 0; i < len; ++i) {
+        ls[i].setRGBUint24(colors[i]);
+      }
+
+      if (len == 3 && ls.length == 4) {
+        ls[3].setRGBUint24(colors[1]);
+      }
+
+      this.setClipIndex(this.m_index);
     }
   }
 
@@ -6974,6 +7131,7 @@ class ClipLabel extends ClipLabelBase_1.ClipLabelBase {
       let mesh = this.createMesh(atlas, idnsList);
       this.m_vtCount = mesh.vtCount;
       this.m_material = this.createMaterial(obj.texture);
+      this.m_material.vtxInfo = CoRScene.createVtxDrawingInfo();
       let et = CoEntity.createDisplayEntity();
       et.setMaterial(this.m_material);
       et.setMesh(mesh);
@@ -7010,6 +7168,7 @@ class ClipLabel extends ClipLabelBase_1.ClipLabelBase {
 
         this.m_vtCount = mesh.vtCount;
         this.m_material = this.createMaterial(tex);
+        this.m_material.vtxInfo = CoRScene.createVtxDrawingInfo();
         let et = CoEntity.createDisplayEntity();
         et.setMaterial(this.m_material);
         et.setMesh(mesh);
@@ -7048,11 +7207,13 @@ class ClipLabel extends ClipLabelBase_1.ClipLabelBase {
 
   setClipIndex(i) {
     if (i >= 0 && i < this.m_total) {
-      this.m_index = i;
+      this.m_index = i; // console.log("setClipIndex(), i: ", i);
+
       let ls = this.m_entities;
 
       for (let k = 0; k < ls.length; ++k) {
-        ls[k].setIvsParam(i * this.m_step, this.m_step);
+        // ls[k].setIvsParam(i * this.m_step, this.m_step);
+        ls[k].getMaterial().vtxInfo.setIvsParam(i * this.m_step, this.m_step);
       }
 
       i = i << 1;

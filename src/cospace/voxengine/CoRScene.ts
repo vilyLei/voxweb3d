@@ -77,6 +77,7 @@ import { ICoAGeom } from "../ageom/ICoAGeom";
 import IGeomModelData from "../../vox/mesh/IGeomModelData";
 import MeshFactor from "../../vox/mesh/MeshFactory";
 import VtxDrawingInfo from "../../vox/render/vtx/VtxDrawingInfo";
+import IRenderer from "../../vox/scene/IRenderer";
 declare var CoAGeom: ICoAGeom;
 
 function createVec3(px: number = 0.0, py: number = 0.0, pz: number = 0.0, pw: number = 1.0): IVector3D {
@@ -109,7 +110,7 @@ function createRendererSceneParam(div: HTMLDivElement = null): RendererParam {
 	return new RendererParam(div);
 }
 let __$$$RenderScene: IRendererScene = null;
-function createRendererScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, sceneBlockEnabled: boolean = true): IRendererScene {
+function createRendererScene(rparam: RendererParam = null, renderProcessesTotal: number = 3, sceneBlockEnabled: boolean = true): IRendererScene | IRenderer {
 	let rs = new CoRendererScene();
 	if (rparam != null) {
 		rs.initialize(rparam, 3);

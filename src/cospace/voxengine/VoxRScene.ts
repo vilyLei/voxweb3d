@@ -36,10 +36,25 @@ import CoVtxBufConst from "./mesh/CoVtxBufConst";
 import IRendererSceneGraph from "../../vox/scene/IRendererSceneGraph";
 import IProgressDataEvent from "../../vox/event/IProgressDataEvent";
 import { ModuleLoader } from "../modules/loaders/ModuleLoader";
+import {
+	IRenderDrawMode,
+	ICullFaceMode,
+	IDepthTestMode,
+	IRenderBlendMode,
+	IGLStencilFunc,
+	IGLStencilOp,
+	IGLBlendMode,
+	IGLBlendEquation,
+
+	ICoRenderer
+ } from "./ICoRenderer";
 
 import { CoMaterialPipeType, CoMaterialContextParam, CoShaderCodeUUID, CoProgressDataEvent, CoSelectionEvent, COEventBase, CoVec3, CoTextureConst, CoRenderDrawMode, ICoRScene } from "./ICoRScene";
 import { VoxRenderer } from "./VoxRenderer";
 import IVtxDrawingInfo from "../../vox/render/vtx/IVtxDrawingInfo";
+import IRenderer from "../../vox/scene/IRenderer";
+
+declare var CoRenderer: ICoRenderer;
 declare var CoRScene: ICoRScene;
 
 interface I_CoRScene {
@@ -53,6 +68,15 @@ var MouseEvent: ICoMouseEvent = null;
 var EventBase: COEventBase = null;
 var RendererState: CoRendererState = null;
 
+var RenderDrawMode: IRenderDrawMode = null;
+var CullFaceMode: ICullFaceMode = null;
+var DepthTestMode: IDepthTestMode = null;
+var RenderBlendMode: IRenderBlendMode = null;
+var GLStencilFunc: IGLStencilFunc = null;
+var GLStencilOp: IGLStencilOp = null;
+var GLBlendMode: IGLBlendMode = null;
+var GLBlendEquation: IGLBlendEquation = null;
+
 class T_CoRScene {
 	private m_init = true;
 	private init(): void {
@@ -64,6 +88,15 @@ class T_CoRScene {
 			EventBase = CoRScene.EventBase;
 			MouseEvent = CoRScene.MouseEvent;
 			RendererState = CoRScene.RendererState;
+
+			RenderDrawMode = CoRenderer.RenderDrawMode;
+			CullFaceMode = CoRenderer.CullFaceMode;
+			DepthTestMode = CoRenderer.DepthTestMode;
+			RenderBlendMode = CoRenderer.RenderBlendMode;
+			GLStencilFunc = CoRenderer.GLStencilFunc;
+			GLStencilOp = CoRenderer.GLStencilOp;
+			GLBlendMode = CoRenderer.GLBlendMode;
+			GLBlendEquation = CoRenderer.GLBlendEquation;
 		}
 	}
 	initialize(callback: (urls: string[]) => void = null, url: string = ""): boolean {
@@ -206,7 +239,7 @@ class T_CoRScene {
 	 * @param renderProcessesTotal the default value is 3.
 	 * @param sceneBlockEnabled the default value is true.
 	 */
-	createRendererScene(rparam?: IRendererParam, renderProcessesTotal?: number, sceneBlockEnabled?: boolean): IRendererScene {
+	createRendererScene(rparam?: IRendererParam, renderProcessesTotal?: number, sceneBlockEnabled?: boolean): IRendererScene | IRenderer {
 		return CoRScene.createRendererScene(rparam, renderProcessesTotal, sceneBlockEnabled);
 	}
 	setRendererScene(rs: IRendererScene): void {
@@ -367,4 +400,15 @@ class T_CoRScene {
 	}
 }
 const VoxRScene = new T_CoRScene();
-export { RendererState, MouseEvent, EventBase, ProgressDataEvent, SelectionEvent, RendererDevice, VoxRScene };
+export {
+	RenderDrawMode,
+	CullFaceMode,
+	DepthTestMode,
+	RenderBlendMode,
+
+	GLStencilFunc,
+	GLStencilOp,
+	GLBlendMode,
+	GLBlendEquation,
+
+	RendererState, MouseEvent, EventBase, ProgressDataEvent, SelectionEvent, RendererDevice, VoxRScene };

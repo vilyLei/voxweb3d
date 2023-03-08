@@ -14,6 +14,6 @@ interface IImageCubeTexture extends IRenderTexture {
      * @param img html image data
      * @param miplevel mipmap level, the default value is 0
      */
-    setDataFromImageToFaceAt(index: number, img: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap, miplevel: number): void;
+    setDataFromImageToFaceAt(index: number, img: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap, miplevel?: number): void;
 }
 export { IImageCubeTexture }
