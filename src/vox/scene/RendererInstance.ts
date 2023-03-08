@@ -7,7 +7,7 @@
 
 import RSEntityFlag from '../../vox/scene/RSEntityFlag';
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
-import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
+import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import { IRenderCamera } from '../render/IRenderCamera';
 import RenderProxy from "../../vox/render/RenderProxy";
 
@@ -22,14 +22,15 @@ import IRenderProcess from "../../vox/render/IRenderProcess";
 import RenderProcess from "../../vox/render/RenderProcess";
 import RenderProcessBuider from "../../vox/render/RenderProcessBuider";
 import ROVtxBuilder from "../../vox/render/ROVtxBuilder";
-import {IRendererInstanceContext} from "../../vox/scene/IRendererInstanceContext";
-import {RendererInstanceContextParam, RendererInstanceContext} from "../../vox/scene/RendererInstanceContext";
+import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
+import { RendererInstanceContextParam, RendererInstanceContext } from "../../vox/scene/RendererInstanceContext";
 import { IRendererInstance } from "../../vox/scene/IRendererInstance";
 
 import { RPOUnitBuilder } from "../../vox/render/RPOUnitBuilder";
 import IRPONodeBuilder from "../../vox/render/IRPONodeBuilder";
 import RPONodeBuilder from "../../vox/render/RPONodeBuilder";
 import DispEntity3DManager from "../../vox/scene/DispEntity3DManager";
+import IRenderNode from "../../vox/scene/IRenderNode";
 
 /**
  * kernal system instance, it is the renderer instance for the renderer runtime, it is very very very important class.
@@ -83,7 +84,7 @@ export class RendererInstance implements IRendererInstance {
         return this.m_renderInsContext;
     }
     getRenderProxy(): RenderProxy {
-        if(this.m_renderProxy != null) {
+        if (this.m_renderProxy != null) {
             return this.m_renderProxy;
         }
         this.m_renderProxy = this.m_renderInsContext.getRenderProxy();
@@ -128,11 +129,11 @@ export class RendererInstance implements IRendererInstance {
             this.m_renderProxy = this.m_renderInsContext.getRenderProxy();
             this.m_uid = this.m_renderProxy.getUid();
 
-            this.m_dataBuilder = new RODataBuilder( shdProgramBuider );
+            this.m_dataBuilder = new RODataBuilder(shdProgramBuider);
             this.m_roVtxBuilder = new ROVtxBuilder();
             this.m_renderInsContext.setCameraParam(param.camProjParam.x, param.camProjParam.y, param.camProjParam.z);
             let contextParam = new RendererInstanceContextParam();
-            contextParam.uniformContext = new ShaderUniformContext( this.m_renderProxy.getRCUid() );
+            contextParam.uniformContext = new ShaderUniformContext(this.m_renderProxy.getRCUid());
             contextParam.camera = camera;
             contextParam.stage = this.m_stage3D;
             contextParam.builder = this.m_dataBuilder;
@@ -176,7 +177,7 @@ export class RendererInstance implements IRendererInstance {
         }
     }
     setEntityManaListener(listener: any): void {
-        this.m_entity3DMana.setListener( listener );
+        this.m_entity3DMana.setListener(listener);
     }
     /**
      * add an entity to the renderer process of the renderer instance
@@ -243,7 +244,7 @@ export class RendererInstance implements IRendererInstance {
     removeEntity(entity: IRenderEntity): void {
         if (entity != null && entity.getRendererUid() == this.m_uid) {
             this.m_entity3DMana.removeEntity(entity);
-            entity.__$setRenderProxy( null );
+            entity.__$setRenderProxy(null);
         }
     }
     /**
@@ -255,7 +256,7 @@ export class RendererInstance implements IRendererInstance {
         if (process != null && process.getRCUid() == this.m_uid) {
             if (entity != null && entity.getRendererUid() == this.m_uid) {
                 process.removeDisp(entity.getDisplay());
-                entity.__$setRenderProxy( null );
+                entity.__$setRenderProxy(null);
             }
         }
     }
@@ -268,7 +269,7 @@ export class RendererInstance implements IRendererInstance {
         if (processIndex >= 0 && processIndex < this.m_processesLen) {
             if (entity != null && entity.getRendererUid() == this.m_uid) {
                 this.m_processes[processIndex].removeDisp(entity.getDisplay());
-                entity.__$setRenderProxy( null );
+                entity.__$setRenderProxy(null);
             }
         }
     }
@@ -419,6 +420,13 @@ export class RendererInstance implements IRendererInstance {
     }
     renderflush(): void {
         this.m_renderProxy.flush();
+    }
+
+    prependRenderNode(node: IRenderNode): void {
+    }
+    appendRenderNode(node: IRenderNode): void {
+    }
+    removeRenderNode(node: IRenderNode): void {
     }
     toString(): string {
         return "[RendererInstance(uid = " + this.m_uid + ")]";
