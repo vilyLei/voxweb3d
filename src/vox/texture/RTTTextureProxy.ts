@@ -71,9 +71,10 @@ class RTTTextureProxy extends TextureProxy implements IRTTTexture {
     }
 
     private bindTexture(rgl: any, fboWidth: number, fboHeight: number): void {
-        let interType: number = TextureFormat.ToGL(rgl, this.internalFormat);
-        let format: number = TextureFormat.ToGL(rgl, this.srcFormat);
-        let type: number = TextureDataType.ToGL(rgl, this.dataType);
+        
+        let interType = TextureFormat.ToGL(rgl, this.internalFormat);
+        let format = TextureFormat.ToGL(rgl, this.srcFormat);
+        let type = TextureDataType.ToGL(rgl, this.dataType);
 
         //console.log(this,", fboWidth, fboHeight: ",fboWidth, fboHeight, interType,format);
         switch (this.m_texTarget) {
@@ -91,9 +92,6 @@ class RTTTextureProxy extends TextureProxy implements IRTTTexture {
             default:
                 break;
         }
-    }
-    toString(): string {
-        return "[RTTTextureProxy(name:" + this.name + ",uid=" + this.getUid() + ",width=" + this.getWidth() + ",height=" + this.getHeight() + ")]";
     }
 }
 export default RTTTextureProxy;

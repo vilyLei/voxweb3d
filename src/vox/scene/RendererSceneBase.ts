@@ -60,7 +60,7 @@ import IRenderEntityBase from "../render/IRenderEntityBase";
 import EntityTransUpdater from "./EntityTransUpdater";
 
 export default class RendererSceneBase {
-	private ___$$$$$$$Author: string = "VilyLei(vily313@126.com)";
+	private ___$$$$$$$Author = "VilyLei(vily313@126.com)";
 	private static s_uid = 0;
 	private m_uid = -1;
 	protected m_adapter: IRenderAdapter = null;
@@ -342,7 +342,7 @@ export default class RendererSceneBase {
 
 			rins.__$setStage3D(this.stage3D);
 			Matrix4Pool.Allocate(rparam.getMatrix4AllocateSize());
-			let camera: CameraBase = new CameraBase();
+			let camera = new CameraBase();
 
 			rins.initialize(rparam, camera, new ShaderProgramBuilder(rins.getRCUid()));
 			this.m_renderer = rins;
@@ -644,6 +644,8 @@ export default class RendererSceneBase {
 	/**
 	 * the function resets the renderer scene status.
 	 * you should use it on the frame starting time.
+	 * @param autoCycle the default value is true
+	 * @param contextBeginEnabled the default value is true
 	 */
 	runBegin(autoCycle: boolean = true, contextBeginEnabled: boolean = true): void {
 		if (autoCycle && this.m_autoRunEnabled) {
@@ -845,7 +847,7 @@ export default class RendererSceneBase {
 	appendRenderNode(node: IRenderNode): void {
 		if (node != null && node != this) {
 			if (this.m_appendNodes == null) this.m_appendNodes = [];
-			let ls = this.m_appendNodes;
+			const ls = this.m_appendNodes;
 			for (let i = 0; i < ls.length; ++i) {
 				if (node == ls[i]) {
 					return;
@@ -856,7 +858,7 @@ export default class RendererSceneBase {
 	}
 	removeRenderNode(node: IRenderNode): void {
 		if (node != null) {
-			let ls = this.m_prependNodes;
+			const ls = this.m_prependNodes;
 			if (ls != null) {
 				for (let i = 0; i < ls.length; ++i) {
 					if (node == ls[i]) {
@@ -874,6 +876,8 @@ export default class RendererSceneBase {
 	 */
 	run(autoCycle: boolean = true): void {
 		if (this.m_enabled) {
+			
+
 			if (autoCycle && this.m_autoRunEnabled) {
 				if (this.m_runFlag != 1) this.update();
 				this.m_runFlag = 2;
@@ -881,12 +885,20 @@ export default class RendererSceneBase {
 
 			this.runnableQueue.run();
 			this.runRenderNodes(this.m_prependNodes);
-			if (this.m_localRunning) {
-				for (let i = 0; i < this.m_processidsLen; ++i) {
-					this.m_renderer.runAt(this.m_processids[i]);
-				}
-			} else {
-				this.m_renderer.run();
+			
+			if(this.m_adapter.isFBORunning()) {
+				this.setRenderToBackBuffer();
+			}
+
+			// if (this.m_localRunning) {
+			// 	for (let i = 0; i < this.m_processidsLen; ++i) {
+			// 		this.m_renderer.runAt(this.m_processids[i]);
+			// 	}
+			// } else {
+			// 	this.m_renderer.run();
+			// }
+			for (let i = 0; i < this.m_processidsLen; ++i) {
+				this.m_renderer.runAt(this.m_processids[i]);
 			}
 			this.runRenderNodes(this.m_appendNodes);
 			if (autoCycle) {

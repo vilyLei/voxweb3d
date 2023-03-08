@@ -17,6 +17,7 @@ interface IROIvsRDP {
     getUid(): number;
     applyRDPAt(index: number): void;
     setIvsParam(ivsIndex: number, ivsSize: number): void;
+    setInsCount(insCount: number): void;
     toWireframe(): void;
     toShape(): void;
     toCommon(): void;

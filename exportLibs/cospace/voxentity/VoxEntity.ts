@@ -150,8 +150,8 @@ class T_CoEntity {
 	 * @param alignYRatio the default value is -0.5
 	 * @returns a cylinder entity
 	 */	
-	createCylinder(radius: number, height: number, longitudeNumSegments: number = 20, material: IRenderMaterial = null, texEnabled: boolean = false, alignYRatio: number = -0.5): IMouseEventEntity {
-		return CoEntity.createCylinder(radius, height, longitudeNumSegments, material, texEnabled, alignYRatio);
+	createCylinder(radius: number, height: number, longitudeNumSegments: number = 20, material: IRenderMaterial = null, texEnabled: boolean = false, uvType: number = 1, alignYRatio: number = -0.5): IMouseEventEntity {
+		return CoEntity.createCylinder(radius, height, longitudeNumSegments, material, texEnabled, uvType, alignYRatio);
 	}
 	/**
      * @param radius tube radius

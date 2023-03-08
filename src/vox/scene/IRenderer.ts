@@ -12,6 +12,7 @@ import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRPONodeBuilder from "../../vox/render/IRPONodeBuilder";
 import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
+import IRenderProcess from "../render/IRenderProcess";
 /**
  * define the renderer instance behaviours;
  */
@@ -25,6 +26,7 @@ interface IRenderer {
 
   getViewWidth(): number;
   getViewHeight(): number;
+  getRenderProcessAt(id: number): IRenderProcess;
   /**
    * 在任意阶段绘制一个指定的 entity,只要其资源数据准备完整
    * @param entity IRenderEntity instance

@@ -12,8 +12,9 @@ import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderProcess from "../../vox/render/IRenderProcess";
+import IRendererNode from "./IRenderNode";
 
-interface IFBOInstance {
+interface IFBOInstance extends IRendererNode {
 
     /**
      * unique name string
@@ -26,24 +27,26 @@ interface IFBOInstance {
     getFBOUid(): number
     /**
      * 设置当前 FBO控制的渲染过程中所需要的 renderer process 序号(id)列表
+     * @param processIDlist 当前渲染器场景中渲染process的序号列表
+     * @param processShared 是否共享process，默认值为true，则表示fbo和renderer scene都会执行这些渲染过程。如果为false，则仅仅被FBOInstance执行渲染过程
      */
-    setRProcessIDList(processIDlist: number[]): void
+    setRProcessIDList(processIDlist: number[], processShared?: boolean): void;
     /**
      * 设置当前 FBO控制的渲染过程中所需要的 renderer process 序号(id)列表
      */
-    setRProcessList(list: IRenderProcess[]): void
-    getRProcessIDAt(i: number): number
-    getStage3D(): IRenderStage3D
-    getCamera(): IRenderCamera
-    lockViewport(): void
-    unlockViewport(): void
-    updateCamera(): void
-    updateCameraDataFromCamera(cam: IRenderCamera): void
+    setRProcessList(list: IRenderProcess[]): void;
+    getRProcessIDAt(i: number): number;
+    getStage3D(): IRenderStage3D;
+    getCamera(): IRenderCamera;
+    lockViewport(): void;
+    unlockViewport(): void;
+    updateCamera(): void;
+    updateCameraDataFromCamera(cam: IRenderCamera): void;
     ////////////////////////////////////////////////////// render state conctrl
-    useGlobalRenderState(state: number): void
-    useGlobalRenderStateByName(stateNS: string): void
-    setGlobalRenderState(state: number): void
-    setGlobalRenderStateByName(stateNS: string): void
+    useGlobalRenderState(state: number): void;
+    useGlobalRenderStateByName(stateNS: string): void;
+    setGlobalRenderState(state: number): void;
+    setGlobalRenderStateByName(stateNS: string): void;
     lockRenderState(state: number): void;
     unlockRenderState(): void;
     ////////////////////////////////////////////////////// render color mask conctrl
@@ -60,14 +63,12 @@ interface IFBOInstance {
 
     ////////////////////////////////////////////////////// material conctrl
     /**
-     * 
      * @param m IRenderMaterial instance
      * @param texUnlock the default value is false
      * @param materialUniformUpdate the default value is false
      */
     useGlobalMaterial(m: IRenderMaterial, texUnlock?: boolean, materialUniformUpdate?: boolean): void;
     /**
-     * 
      * @param material MaterialBase 子类的实例
      * @param texUnlock 是否锁定并使用 material 自身所带的纹理数据,the default value is false
      * @param materialUniformUpdate the default value is false
@@ -160,6 +161,12 @@ interface IFBOInstance {
      * @param outputIndex framebuffer output attachment index, the default value is 0
      */
     setRenderToRTTTextureAt(systemRTTTexIndex: number, outputIndex?: number): void;
+    /**
+     * 设置渲染到纹理的目标纹理对象(cube RTT 纹理类型的目标纹理)和framebuffer output attachment index
+     * @param systemCubeRTTTexIndex 作为渲染到目标的目标纹理对象在系统cube rtt 纹理中的序号(0 -> 15)
+     * @param outputIndex framebuffer output attachment index, the default value is 0
+     */
+    setRenderToCubeRTTTextureAt(systemCubeRTTTexIndex: number, outputIndex?: number): void;
     /**
      * 设置渲染到纹理的目标纹理对象(Float RTT 纹理类型的目标纹理)和framebuffer output attachment index
      * @param systemFloatRTTTexIndex 作为渲染到目标的目标纹理对象在系统float rtt 纹理中的序号(0 -> 15)
@@ -274,7 +281,7 @@ interface IFBOInstance {
      * @param autoEnd the defualt value is true
      * @param autoRunBegin the defualt value is true
      */
-    run(lockRenderState: boolean, lockMaterial?: boolean, autoEnd?: boolean, autoRunBegin?: boolean): void;
+    run(lockRenderState?: boolean, lockMaterial?: boolean, autoEnd?: boolean, autoRunBegin?: boolean): void;
     /**
      * 
      * @param index 
@@ -300,5 +307,13 @@ interface IFBOInstance {
     reset(): void;
 
     clone(): IFBOInstance;
+    /**
+     * @param lockRenderState the default value is false
+     * @param lockMaterial the default value is false 
+     * @param autoEnd the default value is true 
+     * @param autoRunBegin the default value is true 
+     */
+    setRenderingState(lockRenderState?: boolean, lockMaterial?: boolean, autoEnd?: boolean, autoRunBegin?: boolean): void;
+	render(): void;
 }
 export { IFBOInstance }

@@ -23,8 +23,9 @@ class PackedLoader {
 		this.m_times = times;
 		this.m_urlChecker = urlChecker;
 	}
-	setUrlChecker(urlChecker: (url: string) => string = null): void {
+	setUrlChecker(urlChecker: (url: string) => string = null): PackedLoader {
 		this.m_urlChecker = urlChecker;
+		return this;
 	}
 	getUrlChecker(): (url: string) => string {
 		return this.m_urlChecker;

@@ -36,6 +36,7 @@ export class DemoRTT {
             rparam.setCamPosition(1500.0, 1500.0, 1500.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam);
+            this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 			new MouseInteraction().initialize( this.m_rscene, 0, true).setAutoRunning(true);
@@ -67,7 +68,6 @@ export class DemoRTT {
 
         let ctx = this.m_rscene.getRendererContext();
 
-        this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
         // render begin
         this.m_rscene.runBegin();
         // run logic program

@@ -7,7 +7,7 @@
 
 export default interface IROIvsData {
 
-    bufStep: number
+    unitBytes: number
     status: number;
     wireframe: boolean;
     shape: boolean;

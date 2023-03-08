@@ -1,5 +1,3 @@
-
-import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -10,10 +8,10 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
 import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
-import CameraTrack from "../vox/view/CameraTrack";
 import FBOInstance from "../vox/scene/FBOInstance";
 import RendererScene from "../vox/scene/RendererScene";
 import DefaultMRTMaterial from "../vox/material/mcase/DefaultMRTMaterial";
+import { MouseInteraction } from "../vox/ui/MouseInteraction";
 
 
 export class DemoFBOInstance {
@@ -21,9 +19,8 @@ export class DemoFBOInstance {
     constructor() { }
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
-    private m_camTrack: CameraTrack = null;
     private m_fboIns: FBOInstance = null;
-    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
+    
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
@@ -45,12 +42,11 @@ export class DemoFBOInstance {
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-            this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-            this.m_statusDisp.initialize();
+			new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
+			new RenderStatusDisplay(this.m_rscene, true);
 
-            let useMRT: boolean = true;
+            let useMRT = true;
             if (useMRT) {
                 // for mrt example
                 this.buildMRT();
@@ -125,7 +121,6 @@ export class DemoFBOInstance {
         this.m_rscene.addEntity(mrtBox, 1);                   // add rttBox to The second renderer process
     }
     run(): void {
-        this.m_statusDisp.update();
 
         this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
         this.m_rscene.runBegin();
@@ -139,7 +134,6 @@ export class DemoFBOInstance {
         this.m_rscene.runAt(1);
 
         this.m_rscene.runEnd();
-        this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
     }
 }
 export default DemoFBOInstance;

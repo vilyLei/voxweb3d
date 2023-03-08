@@ -181,8 +181,12 @@ class BufRDataPair implements IROIvsRDP {
 		this.r1 = null;
 		this.rd = null;
 		this.buf = null;
+		this.roiRes = null;
 	}
 	private clearBuf(): void {
+		if(this.lifeTime == 0) {
+			throw Error("illegal operation!!!");
+		}
 		if (this.r0 != null) {
 			this.r0.clear();
 			this.r1.clear();

@@ -94,6 +94,7 @@ interface IRenderAdapter {
 	syncHtmlBodyColor(): void;
 
 	getFBOAttachmentTotal(): number;
+	isFBORunning(): boolean;
 	/**
 	 * bind a texture to fbo attachment by attachment index
 	 * @param texProxy  IRenderTexture instance

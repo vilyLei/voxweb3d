@@ -490,6 +490,10 @@ class RenderAdapter implements IRenderAdapter {
 		}
 		return 0;
 	}
+	private m_fboRunning = false;
+	isFBORunning(): boolean {
+		return this.m_fboRunning;
+	}
 	/**
 	 * bind a texture to fbo attachment by attachment index
 	 * @param texProxy  IRenderTexture instance
@@ -541,6 +545,7 @@ class RenderAdapter implements IRenderAdapter {
 				}
 			}
 			if (this.m_fboBuf != null) {
+				this.m_fboRunning = true;
 				this.m_fboBuf.renderToTexAt(this.m_gl, texProxy, attachmentIndex);
 				//console.log("RenderProxy::setRenderToTexture(), fbo: ",this.m_fboBuf.getFBO());
 			}
@@ -612,6 +617,7 @@ class RenderAdapter implements IRenderAdapter {
 		}
 	}
 	setRenderToBackBuffer(frameBufferType: number = FrameBufferType.FRAMEBUFFER): void {
+		this.m_fboRunning = false;
 		this.m_activeAttachmentTotal = 1;
 		FrameBufferObject.BindToBackbuffer(this.m_gl, frameBufferType);
 		this.reseizeViewPort();

@@ -71,7 +71,13 @@
 
 //  import { DemoFBOInstance as Demo } from "./demo/DemoFBOInstance";
 
+//  import { DemoFBOInsRTT as Demo } from "./demo/DemoFBOInsRTT";
+
+//  import { DemoFBOInsMRT as Demo } from "./demo/DemoFBOInsMRT";
+
 //  import {DemoCubeMapMRT as Demo} from "./demo/DemoCubeMapMRT";
+
+ import {DemoFBOInsCubeMapMRT as Demo} from "./demo/DemoFBOInsCubeMapMRT";
 
 //  import * as DemoScreenPingpongBlur from "./demo/DemoScreenPingpongBlur";
 //  import Demo = DemoScreenPingpongBlur.demo.DemoScreenPingpongBlur;
@@ -385,7 +391,7 @@
 
 //  import {EffectExample as Demo} from "./renderingtoy/effectTest/applyui/EffectExample";
 
- import {ModelsLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
+//  import {ModelsLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////

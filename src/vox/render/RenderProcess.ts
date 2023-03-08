@@ -50,6 +50,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 	private m_fixedState = true;
 	private m_sortEnabled = false;
 	private m_version = 0;
+	
 	uid = -1;
 	constructor(
 		shader: RenderShader,

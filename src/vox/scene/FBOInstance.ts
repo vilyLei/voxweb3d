@@ -30,41 +30,42 @@ import { IFBOInstance } from "./IFBOInstance";
 
 export default class FBOInstance implements IFBOInstance {
 
-    private m_backBufferColor: Color4 = new Color4();
+    private m_backBufferColor = new Color4();
     private m_adapter: IRenderAdapter = null;
     private m_rproxy: IRenderProxy = null;
 
     private m_rcontext: IRendererInstanceContext = null;
-    private m_bgColor: Color4 = new Color4();
+    private m_bgColor = new Color4();
     private m_renderer: IRenderer = null;
-    private m_runFlag: boolean = true;
-    private m_fboIndex: number = -1;
-    private m_fboType: number = -1;
-    private m_initW: number = 128;
-    private m_initH: number = 128;
-    private m_enableDepth: boolean = true;
-    private m_enableStencil: boolean = false;
-    private m_multisampleLevel: number = 0;
+    private m_runFlag = true;
+    private m_fboIndex = -1;
+    private m_fboType = -1;
+    private m_initW = 128;
+    private m_initH = 128;
+    private m_enableDepth = true;
+    private m_enableStencil = false;
+    private m_multisampleLevel = 0;
     private m_gMateiral: IRenderMaterial = null;
-    private m_gRState: number = -1;
-    private m_gRColorMask: number = -1;
+    private m_gRState = -1;
+    private m_gRColorMask = -1;
+    private m_processShared = true;
     private m_rindexs: number[] = [];
     private m_texs: IRenderTexture[] = [null, null, null, null, null, null, null, null];
     private m_texStore: IRTTTextureStore = null;
-    private m_texsTot: number = 0;
-    private m_synFBOSizeWithViewport: boolean = true;
-    private m_fboSizeFactor: number = 1.0;
-    private m_clearDepth: number = 256.0;
-    private m_clearColorBoo: boolean = true;
-    private m_clearDepthBoo: boolean = true;
-    private m_clearStencilBoo: boolean = false;
-    private m_viewportLock: boolean = false;
-    private m_texUnlock: boolean = false;
-    private m_tmaterialUniformUpdate: boolean = false;
+    private m_texsTot = 0;
+    private m_synFBOSizeWithViewport = true;
+    private m_fboSizeFactor = 1.0;
+    private m_clearDepth = 256.0;
+    private m_clearColorBoo = true;
+    private m_clearDepthBoo = true;
+    private m_clearStencilBoo = false;
+    private m_viewportLock = false;
+    private m_texUnlock = false;
+    private m_tmaterialUniformUpdate = false;
     /**
      * unique name string
      */
-    uns: string = "FBOInstance";
+    uns = "FBOInstance";
 
     constructor(renderer: IRenderer, texStroe: IRTTTextureStore) {
 
@@ -82,9 +83,11 @@ export default class FBOInstance implements IFBOInstance {
     }
     /**
      * 设置当前 FBO控制的渲染过程中所需要的 renderer process 序号(id)列表
+     * @param processIDlist 当前渲染器场景中渲染process的序号列表
+     * @param processShared 是否共享process，默认值为true，则表示fbo和renderer scene都会绘制调用
      */
-    setRProcessIDList(processIDlist: number[]): void {
-
+    setRProcessIDList(processIDlist: number[], processShared: boolean = true): void {
+        this.m_processShared = processShared;
         if (processIDlist != null) {
             if (processIDlist.length < 1) {
                 throw Error("processIDlist.length < 1, but it must: processIDlist.length >= 1");
@@ -100,7 +103,7 @@ export default class FBOInstance implements IFBOInstance {
             throw Error("list.length < 1, but must: list.length >= 1");
         }
         this.m_rindexs = new Array(list.length);
-        for (let i: number = 0; i < list.length; ++i) {
+        for (let i = 0; i < list.length; ++i) {
             this.m_rindexs[i] = list[i].getRPIndex();
         }
     }
@@ -364,10 +367,19 @@ export default class FBOInstance implements IFBOInstance {
     /**
      * 设置渲染到纹理的目标纹理对象(普通 RTT 纹理类型的目标纹理)和framebuffer output attachment index
      * @param systemRTTTexIndex 作为渲染到目标的目标纹理对象在系统普通rtt 纹理中的序号(0 -> 15)
-     * @param outputIndex framebuffer output attachment index
+     * @param outputIndex framebuffer output attachment index, the default value is 0
      */
     setRenderToRTTTextureAt(systemRTTTexIndex: number, outputIndex: number = 0): void {
         this.setRenderToTexture(this.m_texStore.getRTTTextureAt(systemRTTTexIndex), outputIndex);
+    }
+    /**
+     * 设置渲染到纹理的目标纹理对象(cube RTT 纹理类型的目标纹理)和framebuffer output attachment index
+     * @param systemCubeRTTTexIndex 作为渲染到目标的目标纹理对象在系统cube rtt 纹理中的序号(0 -> 15)
+     * @param outputIndex framebuffer output attachment index, the default value is 0
+     */
+    setRenderToCubeRTTTextureAt(systemCubeRTTTexIndex: number, outputIndex: number = 0): void {
+        const cubeMap = this.m_texStore.getCubeRTTTextureAt(systemCubeRTTTexIndex);
+        this.setRenderToTexture(cubeMap, outputIndex);
     }
     /**
      * 设置渲染到纹理的目标纹理对象(Float RTT 纹理类型的目标纹理)和framebuffer output attachment index
@@ -465,7 +477,7 @@ export default class FBOInstance implements IFBOInstance {
         this.m_bgColor.a = alpha;
     }
     setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void {
-        this.m_bgColor.setRGBA4f(pr, pb, pg, pa);
+        this.m_bgColor.setRGBA4f(pr, pg, pb, pa);
     }
     /**
      * @param			clearType, it is IRenderProxy.COLOR or IRenderProxy.DEPTH or IRenderProxy.STENCIL or IRenderProxy.DEPTH_STENCIL
@@ -558,13 +570,22 @@ export default class FBOInstance implements IFBOInstance {
 
             if (this.m_rindexs != null) {
                 // rendering running
-                for (let i: number = 0, len: number = this.m_rindexs.length; i < len; ++i) {
-                    this.m_renderer.runAt(this.m_rindexs[i]);
+                if(this.m_processShared) {
+                    for (let i = 0, len = this.m_rindexs.length; i < len; ++i) {
+                        this.m_renderer.runAt(this.m_rindexs[i]);
+                    }
+                }else {
+                    for (let i = 0, len = this.m_rindexs.length; i < len; ++i) {
+                        const proc = this.m_renderer.getRenderProcessAt(this.m_rindexs[i]);
+                        proc.setEnabled(true);
+                        this.m_renderer.runAt(this.m_rindexs[i]);
+                        proc.setEnabled(false);
+                    }
                 }
             }
 
         }
-        // this.m_runFlag = true;
+        
         if (lockRenderState) this.unlockRenderState();
         if (lockMaterial) {
             this.unlockMaterial();
@@ -617,7 +638,7 @@ export default class FBOInstance implements IFBOInstance {
     }
     reset(): void {
         this.setGlobalMaterial(null);
-        let i: number = 0;
+        let i = 0;
         for (; i < this.m_texsTot; ++i) {
             this.m_texs[i] = null;
         }
@@ -657,5 +678,18 @@ export default class FBOInstance implements IFBOInstance {
             ins.setRProcessIDList(list);
         }
         return ins;
+    }
+    private m_lockRenderState = false;
+    private m_lockMaterial = false;
+    private m_autoEnd = true;
+    private m_autoRunBegin = true;
+    setRenderingState(lockRenderState: boolean = false, lockMaterial: boolean = false, autoEnd: boolean = true, autoRunBegin: boolean = true): void {
+        this.m_lockRenderState = lockRenderState;
+        this.m_lockMaterial = lockMaterial;
+        this.m_autoEnd = autoEnd;
+        this.m_autoRunBegin = autoRunBegin;
+    }
+	render(): void {
+        this.run(this.m_lockRenderState, this.m_lockMaterial, this.m_autoEnd, this.m_autoRunBegin);
     }
 }
