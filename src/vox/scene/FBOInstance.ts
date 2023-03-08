@@ -783,4 +783,11 @@ export default class FBOInstance implements IFBOInstance {
 	render(): void {
 		this.run(this.m_lockRenderState, this.m_lockMaterial, this.m_autoEnd, this.m_autoRunBegin);
 	}
+	setAutoRunning(auto: boolean): FBOInstance {
+		return this;
+	}
+    isAutoRunning(): boolean {
+        // return this.m_autoRRun;
+		return false;
+    }
 }
