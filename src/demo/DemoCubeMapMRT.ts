@@ -89,8 +89,10 @@ export class DemoCubeMapMRT {
         rsc.runBegin();
         rsc.update();
         // --------------------------------------------- cubemap mrt begin
+        let rttTex = this.m_rscene.textureBlock.getCubeRTTTextureAt(0);
+        // console.log("rttTex.getTargetType(): ", rttTex.getTargetType());
         pcontext.setClearRGBColor3f(0.1, 0.0, 0.1);
-        pcontext.setRenderToTexture(this.m_rscene.textureBlock.getCubeRTTTextureAt(0), true, false, 0);
+        pcontext.setRenderToTexture(rttTex, true, false, 0);
         pcontext.useFBO(true, true, false);
         rsc.runAt(0);
         // --------------------------------------------- cubemap mrt end
