@@ -67,6 +67,7 @@ var ProgressDataEvent: CoProgressDataEvent = null;
 var MouseEvent: ICoMouseEvent = null;
 var EventBase: COEventBase = null;
 var RendererState: CoRendererState = null;
+var TextureConst: CoTextureConst = null;
 
 var RenderDrawMode: IRenderDrawMode = null;
 var CullFaceMode: ICullFaceMode = null;
@@ -88,6 +89,7 @@ class T_CoRScene {
 			EventBase = CoRScene.EventBase;
 			MouseEvent = CoRScene.MouseEvent;
 			RendererState = CoRScene.RendererState;
+			TextureConst = CoRScene.TextureConst;
 
 			RenderDrawMode = CoRenderer.RenderDrawMode;
 			CullFaceMode = CoRenderer.CullFaceMode;
@@ -411,4 +413,6 @@ export {
 	GLBlendMode,
 	GLBlendEquation,
 
-	RendererState, MouseEvent, EventBase, ProgressDataEvent, SelectionEvent, RendererDevice, VoxRScene };
+	RendererState,
+	TextureConst,
+	MouseEvent, EventBase, ProgressDataEvent, SelectionEvent, RendererDevice, VoxRScene };
