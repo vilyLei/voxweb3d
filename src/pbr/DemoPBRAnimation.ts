@@ -82,7 +82,7 @@ class AnimationScene {
             et.setScaleXYZ(scale, scale, scale);
         }
     }
-    private makeMaterial(metallic: number, roughness: number, ao: number): PBREnvLightingMaterial {
+    private makeMaterial(roughness: number, metallic: number, ao: number): PBREnvLightingMaterial {
         let dis = 700.0;
         let disZ = 400.0;
         let posList: Vector3D[] = [

@@ -271,7 +271,7 @@ class CubeImgResLoader {
 
     }
 }
-export default class ImageTextureLoader implements IRunnable {
+export default class TextureResLoader implements IRunnable {
     private m_cubeDict: Map<string, CubeImgResLoader> = new Map();
     private m_resMap: Map<string, ImgResUnit> = new Map();
     private m_loadedList: ImgResUnit[] = [];
@@ -434,7 +434,7 @@ export default class ImageTextureLoader implements IRunnable {
             }
             let waitingTotal: number = this.m_waitLoadList.length;
             if (waitingTotal > 0) {
-                //console.log("ImageTextureLoader::run(), waitingTotal: "+waitingTotal);
+                //console.log("TextureResLoader::run(), waitingTotal: "+waitingTotal);
                 if (loatingTotal < this.m_loadingQueueMaxLength) {
                     i = loatingTotal;
                     for (; i < this.m_loadingQueueMaxLength; ++i) {
@@ -460,7 +460,7 @@ export default class ImageTextureLoader implements IRunnable {
                 res = this.m_loadedList[i];
                 tex = res.texture != null ? res.texture : res.bytesTex;
                 if (tex.isDestroyed()) {
-                    console.log("ImageTextureLoader::run(),remove a resource,url: ", res.getURL());
+                    console.log("TextureResLoader::run(),remove a resource,url: ", res.getURL());
                     this.m_resMap.delete(res.getURL());
                     this.m_loadedList.splice(i, 1);
                     res.destroy();

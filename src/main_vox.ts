@@ -190,7 +190,7 @@
 
 //  import {DemoGLState as Demo} from "./demo/DemoGLState";
 
- import {DemoStencil as Demo} from "./demo/DemoStencil";
+//  import {DemoStencil as Demo} from "./demo/DemoStencil";
 
 //  import {DemoBlendMode as Demo} from "./demo/DemoBlendMode";
 
@@ -429,7 +429,7 @@
 
 //  import {DemoPBREnvLighting as Demo} from "./pbr/DemoPBREnvLighting";
 
-//  import {DemoPBRAnimation as Demo} from "./pbr/DemoPBRAnimation";
+ import {DemoPBRAnimation as Demo} from "./pbr/DemoPBRAnimation";
 
 //  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
