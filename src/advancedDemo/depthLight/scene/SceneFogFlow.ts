@@ -101,8 +101,8 @@ export class SceneFogFlow {
             this.m_rc.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
 
 
-            new MouseInteraction().initialize(this.m_rc, 0, true).setAutoRunning(true);
-            new RenderStatusDisplay(this.m_rc, true);
+            // new MouseInteraction().initialize(this.m_rc, 0, true).setAutoRunning(true);
+            // new RenderStatusDisplay(this.m_rc, true);
 
 
             RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);

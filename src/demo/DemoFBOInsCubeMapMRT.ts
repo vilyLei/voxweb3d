@@ -55,7 +55,6 @@ export class DemoFBOInsCubeMapMRT {
     private mouseDown(evt: IMouseEvent): void {
         DebugFlag.Flag_0 = 1;
     }
-    private m_fboIns: IFBOInstance;
     private buildCubeMRT(): void {
 
 
@@ -83,8 +82,7 @@ export class DemoFBOInsCubeMapMRT {
         fboIns.createFBOAt(0, 512, 512, true, false);
         fboIns.setRenderToCubeRTTTextureAt(0);                          // apply the first cube rtt texture, and apply the fbo framebuffer color attachment 0
         fboIns.setRProcessIDList([0], false);
-        this.m_fboIns = fboIns;
-        this.m_rscene.prependRenderNode( fboIns );
+        fboIns.setAutoRunning( true );
 
         // add rtt texture 3d display entity
         let boxCubeMapMRT = new Box3DEntity();

@@ -19,9 +19,7 @@ export class DemoLightFlow {
     constructor() {
     }
     private m_rc: RendererScene = null;
-    private m_rct: IRendererInstanceContext = null;
-
-    private m_esc: SceneFogFlow = new SceneFogFlow();
+    private m_esc = new SceneFogFlow();
 
     initialize(): void {
         console.log("depthLight::DemoLightFlow::initialize()......");
@@ -30,7 +28,6 @@ export class DemoLightFlow {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
             let rparam = new RendererParam();
-            // rparam.setMatrix4AllocateSize(8192 * 4);
             rparam.setCamProject(45.0, 0.5, 8000.0);
             rparam.setCamPosition(2500.0, 2500.0, 2500.0);
             //rparam.setCamPosition(3000.0,0.0,3000.0);
@@ -39,7 +36,7 @@ export class DemoLightFlow {
             this.m_rc.initialize(rparam, 6);
             this.m_rc.setRendererProcessParam(1, true, true);
             this.m_rc.updateCamera();
-            this.m_rct = this.m_rc.getRendererContext();
+            
             this.m_esc.initialize(this.m_rc);
 
 			new MouseInteraction().initialize( this.m_rc, 0, true).setAutoRunning(true);

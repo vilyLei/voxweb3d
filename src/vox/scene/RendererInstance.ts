@@ -31,6 +31,7 @@ import IRPONodeBuilder from "../../vox/render/IRPONodeBuilder";
 import RPONodeBuilder from "../../vox/render/RPONodeBuilder";
 import DispEntity3DManager from "../../vox/scene/DispEntity3DManager";
 import IRenderNode from "../../vox/scene/IRenderNode";
+import { ITextureBlock } from '../texture/ITextureBlock';
 
 /**
  * kernal system instance, it is the renderer instance for the renderer runtime, it is very very very important class.
@@ -41,9 +42,9 @@ export class RendererInstance implements IRendererInstance {
     private static s_uid = 0;
     private m_entity3DMana: DispEntity3DManager = null;
     private m_processes: RenderProcess[] = [];
-    private m_processesLen: number = 0;
+    private m_processesLen = 0;
     private m_sprocesses: RenderProcess[] = [];
-    private m_sprocessesLen: number = 0;
+    private m_sprocessesLen = 0;
     private m_renderProxy: RenderProxy = null;
     private m_adapter: IRenderAdapter = null;
     private m_dataBuilder: RODataBuilder = null;
@@ -56,6 +57,8 @@ export class RendererInstance implements IRendererInstance {
     private m_roVtxBuilder: ROVtxBuilder = null;
     private m_stage3D: IRenderStage3D = null;
     private m_fixProcess: RenderProcess = null;
+    
+	readonly textureBlock: ITextureBlock = null;
     constructor() {
         this.m_uid = RendererInstance.s_uid++;
         this.m_renderInsContext = new RendererInstanceContext(this.m_uid);
@@ -242,7 +245,7 @@ export class RendererInstance implements IRendererInstance {
      * @param entity IRenderEntity instance
      */
     removeEntity(entity: IRenderEntity): void {
-        if (entity != null && entity.getRendererUid() == this.m_uid) {
+        if (entity && entity.getRendererUid() == this.m_uid) {
             this.m_entity3DMana.removeEntity(entity);
             entity.__$setRenderProxy(null);
         }
@@ -253,8 +256,8 @@ export class RendererInstance implements IRendererInstance {
      * @param process RenderProcess instance
      */
     removeEntityFromProcess(entity: IRenderEntity, process: RenderProcess): void {
-        if (process != null && process.getRCUid() == this.m_uid) {
-            if (entity != null && entity.getRendererUid() == this.m_uid) {
+        if (process && process.getRCUid() == this.m_uid) {
+            if (entity && entity.getRendererUid() == this.m_uid) {
                 process.removeDisp(entity.getDisplay());
                 entity.__$setRenderProxy(null);
             }
@@ -267,7 +270,7 @@ export class RendererInstance implements IRendererInstance {
      */
     removeEntityByProcessIndex(entity: IRenderEntity, processIndex: number): void {
         if (processIndex >= 0 && processIndex < this.m_processesLen) {
-            if (entity != null && entity.getRendererUid() == this.m_uid) {
+            if (entity && entity.getRendererUid() == this.m_uid) {
                 this.m_processes[processIndex].removeDisp(entity.getDisplay());
                 entity.__$setRenderProxy(null);
             }
@@ -279,9 +282,8 @@ export class RendererInstance implements IRendererInstance {
         }
     }
     setProcessSortEnabled(process: IRenderProcess, sortEnabled: boolean): void {
-        if (process != null && process.getRCUid() == this.m_uid) {
-            let p: RenderProcess = process as RenderProcess;
-            p.setSortEnabled(sortEnabled);
+        if (process && process.getRCUid() == this.m_uid) {
+            process.setSortEnabled(sortEnabled);
         }
     }
     /**
@@ -307,7 +309,7 @@ export class RendererInstance implements IRendererInstance {
             processFixedState
         );
 
-        let process: RenderProcess = this.m_processBuider.create() as RenderProcess;
+        let process = this.m_processBuider.create() as RenderProcess;
 
         this.m_processes.push(process);
         process.setRendererParam(this.m_renderProxy, this.m_processesLen);
@@ -328,7 +330,7 @@ export class RendererInstance implements IRendererInstance {
             batchEnabled,
             processFixedState
         );
-        let process: RenderProcess = this.m_processBuider.create() as RenderProcess;
+        let process = this.m_processBuider.create() as RenderProcess;
         this.m_sprocesses.push(process);
         process.setRendererParam(this.m_renderProxy, this.m_sprocessesLen);
         return process;

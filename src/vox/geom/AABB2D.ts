@@ -8,13 +8,13 @@ import IAABB2D from "./IAABB2D";
 
 export default class AABB2D implements IAABB2D {
 	
-	private m_right: number = 100;
-	private m_top: number = 100;
+	private m_right = 100;
+	private m_top = 100;
 
-	x: number = 0;
-	y: number = 0;
-	width: number = 100;
-	height: number = 100;
+	x = 0;
+	y = 0;
+	width = 100;
+	height = 100;
 
 	constructor(px: number = 0.0, py: number = 0.0, pwidth: number = 100.0, pheight: number = 100.0) {
 		this.x = px;
@@ -103,9 +103,8 @@ export default class AABB2D implements IAABB2D {
 		this.m_top = this.height + this.y;
 	}
 	flipY(height: number): void {
-		this.y = height = this.y;
-		this.m_right = this.width + this.x;
-		this.m_top = this.height + this.y;
+		this.y = height - this.y;
+		this.update();
 	}
 	getX(): number {
 		return this.x;

@@ -63,8 +63,5 @@ class DepthTextureProxy extends RTTTextureProxy implements IDepthTexture {
         let gl: any = texRes.getRC();
         gl.texImage2D(this.m_sampler, 0, TextureFormat.ToGL(gl, this.internalFormat), this.m_texWidth, this.m_texHeight, 0, TextureFormat.ToGL(gl, this.srcFormat), TextureDataType.ToGL(gl, this.dataType), null);
     }
-    toString(): string {
-        return "[DepthTextureProxy(name:" + this.name + ",uid=" + this.getUid() + ",width=" + this.getWidth() + ",height=" + this.getHeight() + ")]";
-    }
 }
 export default DepthTextureProxy;

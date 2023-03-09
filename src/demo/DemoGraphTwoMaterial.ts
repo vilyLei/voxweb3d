@@ -55,7 +55,7 @@ export class DemoGraphTwoMaterial {
 			let rparam = new RendererParam();
 			
 			// rparam.maxWebGLVersion = 1;
-			rparam.setCamProject(45, 50., 6000.0);
+			rparam.setCamProject(45, 50.0, 6000.0);
 			rparam.setCamPosition(1100.0, 1100.0, 1100.0);
 			rparam.setAttriAlpha(true);
 			rparam.setAttriAntialias(true);

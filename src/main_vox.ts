@@ -54,8 +54,7 @@
 //  import * as DemoGeom from "./demo/DemoGeom";
 //  import Demo = DemoGeom.demo.DemoGeom;
 
-//  import * as DemoPreDepth from "./demo/DemoPreDepth";
-//  import Demo = DemoPreDepth.demo.DemoPreDepth;
+//  import { DemoPreDepth as Demo } from "./demo/DemoPreDepth";
 
 //  import * as DemoRTTHalfSize from "./demo/DemoRTTHalfSize";
 //  import Demo = DemoRTTHalfSize.demo.DemoRTTHalfSize;
@@ -72,6 +71,8 @@
 //  import { DemoFBOInstance as Demo } from "./demo/DemoFBOInstance";
 
 //  import { DemoFBOInsRTT as Demo } from "./demo/DemoFBOInsRTT";
+
+ import { DemoFBOInsFloatRTT as Demo } from "./demo/DemoFBOInsFloatRTT";
 
 //  import { DemoFBOInsMRT as Demo } from "./demo/DemoFBOInsMRT";
 
@@ -357,7 +358,7 @@
 
 //  import {DemoMaterialGraphTest as Demo} from "./demo/DemoMaterialGraphTest";
 
- import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
+//  import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
 
 //  import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
 

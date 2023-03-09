@@ -39,14 +39,16 @@ interface IRTTTextureStore {
     /**
      * get a system cube rtt texture
      * @param i rtt texture index in the system
+     * @param pw the default value is 64
+     * @param ph the default value is 64
      */
-    getCubeRTTTextureAt(i: number): IRTTTexture;
+    getCubeRTTTextureAt(i: number, pw?: number, ph?: number): IRTTTexture;
     createCubeRTTTextureAt(i: number, pw: number, ph: number): IRTTTexture;
-    getRTTTextureAt(i: number): IRTTTexture;
+    getRTTTextureAt(i: number, pw?: number, ph?: number): IRTTTexture;
     createRTTTextureAt(i: number, pw: number, ph: number): IRTTTexture;
-    getDepthTextureAt(i: number): IDepthTexture;
+    getDepthTextureAt(i: number, pw?: number, ph?: number): IDepthTexture;
     createDepthTextureAt(i: number, pw: number, ph: number): IDepthTexture;
-    getRTTFloatTextureAt(i: number): IRTTTexture;
+    getRTTFloatTextureAt(i: number, pw?: number, ph?: number): IRTTTexture;
     createRTTFloatTextureAt(i: number, pw: number, ph: number): IRTTTexture;
 }
 

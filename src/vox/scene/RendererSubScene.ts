@@ -24,8 +24,8 @@ import RendererSceneBase from "./RendererSceneBase";
 import IRendererParam from "./IRendererParam";
 import EntityTransUpdater from "./EntityTransUpdater";
 export default class RendererSubScene extends RendererSceneBase implements IRenderer, IRendererScene, IRenderNode {
-    private m_perspectiveEnabled = true;
-    private m_parent: IRendererScene = null;
+    protected m_perspectiveEnabled = true;
+    protected m_parent: IRendererScene = null;
     constructor(parent: IRendererScene, renderer: IRendererInstance, evtFlowEnabled: boolean) {
         super(1024);
         this.m_evtFlowEnabled = evtFlowEnabled;

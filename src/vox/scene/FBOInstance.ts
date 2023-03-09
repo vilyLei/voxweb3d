@@ -405,7 +405,7 @@ export default class FBOInstance implements IFBOInstance {
 	 * @param outputIndex framebuffer output attachment index, the default value is 0
 	 */
 	setRenderToCubeRTTTextureAt(systemCubeRTTTexIndex: number, outputIndex: number = 0): void {
-        this.asynFBOSizeWithViewport();
+		this.asynFBOSizeWithViewport();
 		const cubeMap = this.m_texStore.getCubeRTTTextureAt(systemCubeRTTTexIndex);
 		this.setRenderToTexture(cubeMap, outputIndex);
 	}
@@ -783,11 +783,29 @@ export default class FBOInstance implements IFBOInstance {
 	render(): void {
 		this.run(this.m_lockRenderState, this.m_lockMaterial, this.m_autoEnd, this.m_autoRunBegin);
 	}
-	setAutoRunning(auto: boolean): FBOInstance {
+
+	private m_autoRRun = false;
+    /**
+	 * @param auto enable auto runnning this instance
+	 * @param prepend perpend this into the renderer rendering process or append, the default value is true
+	 * @returns instance self
+	 */
+	setAutoRunning(auto: boolean, prepend: boolean = true): FBOInstance {
+		if (auto != this.m_autoRRun) {
+			this.m_autoRRun = auto;
+			if (auto) {
+				if (prepend) {
+					this.m_renderer.prependRenderNode(this);
+				} else {
+					this.m_renderer.appendRenderNode(this);
+				}
+			} else {
+				this.m_renderer.removeRenderNode(this);
+			}
+		}
 		return this;
 	}
-    isAutoRunning(): boolean {
-        // return this.m_autoRRun;
+	isAutoRunning(): boolean {
 		return false;
-    }
+	}
 }

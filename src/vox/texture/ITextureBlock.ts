@@ -39,17 +39,17 @@ interface ITextureBlock {
     
     getRTTStrore(): IRTTTextureStore;
     /**
-     * @param w texture width
-     * @param h texture height
+     * @param w texture width, the default value is 128
+     * @param h texture height, the default value is 128
      * @param powerof2Boo the default value is false
      */
-    createWrapperTex(w: number, h: number, powerof2Boo?: boolean): IWrapperTexture;
+    createWrapperTex(w?: number, h?: number, powerof2Boo?: boolean): IWrapperTexture;
     /**
-     * @param w texture width
-     * @param h texture height
+     * @param w texture width, the default value is 128
+     * @param h texture height, the default value is 128
      * @param powerof2Boo the default value is false
      */
-    createRTTTex2D(w: number, h: number, powerof2Boo?: boolean): IRTTTexture;
+    createRTTTex2D(w?: number, h?: number, powerof2Boo?: boolean): IRTTTexture;
     /**
      * @param w image texture predefined width, the default value is 64 
      * @param h image texture predefined height, the default value is 64 
@@ -79,13 +79,11 @@ interface ITextureBlock {
     /**
      * @param w texture width
      * @param h texture height
-     * @param powerof2Boo the default value is false
      */
     createBytesTex(w: number, h: number): IBytesTexture;
     /**
      * @param w texture width
      * @param h texture height
-     * @param powerof2Boo the default value is false
      */
     createBytesCubeTex(w: number, h: number): IBytesCubeTexture;
     /**

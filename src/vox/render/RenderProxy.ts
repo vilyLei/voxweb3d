@@ -203,7 +203,7 @@ class RenderProxy implements IRenderProxy {
     }
 
     drawInstanced(count: number, offset: number, instanceCount: number): void {
-        if (this.m_WEBGL_VER == 2) {
+        if (this.isWebGL2()) {
             this.m_rc.drawElementsInstanced(this.TRIANGLES, count, this.UNSIGNED_SHORT, offset, instanceCount);
         }
         else {
@@ -336,6 +336,12 @@ class RenderProxy implements IRenderProxy {
     }
     getGLVersion(): number {
         return this.m_WEBGL_VER;
+    }
+    isWebGL2(): boolean {
+        return this.m_WEBGL_VER == 2;
+    }
+    isWebGL1(): boolean {
+        return this.m_WEBGL_VER == 1;
     }
     private buildCameraParam(): void {
 

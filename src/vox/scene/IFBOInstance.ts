@@ -315,5 +315,12 @@ interface IFBOInstance extends IRendererNode {
      */
     setRenderingState(lockRenderState?: boolean, lockMaterial?: boolean, autoEnd?: boolean, autoRunBegin?: boolean): void;
 	render(): void;
+    /**
+	 * @param auto enable auto runnning this instance
+	 * @param prepend perpend this into the renderer rendering process or append, the default value is true
+	 * @returns instance self
+	 */
+	setAutoRunning(auto: boolean, prepend?: boolean): IFBOInstance;
+	isAutoRunning(): boolean;
 }
 export { IFBOInstance }

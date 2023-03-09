@@ -31,7 +31,6 @@ class TwoTexShaderBuffer extends ShaderCodeBuffer {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
-
     static GetInstance(): TwoTexShaderBuffer {
         return TwoTexShaderBuffer.s_instance;
     }

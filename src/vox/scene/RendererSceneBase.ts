@@ -800,6 +800,7 @@ export default class RendererSceneBase {
 				this.m_evt3DCtr.mouseOutEventTarget();
 			}
 		}
+		this.runnableQueue.run();
 	}
 	// 运行渲染可见性裁剪测试，射线检测等空间管理机制
 	cullingTest(): void {
@@ -877,26 +878,22 @@ export default class RendererSceneBase {
 	run(autoCycle: boolean = true): void {
 		if (this.m_enabled) {
 			
-
+			let runFlag = autoCycle;
 			if (autoCycle && this.m_autoRunEnabled) {
-				if (this.m_runFlag != 1) this.update();
+				if (this.m_runFlag != 1){
+					this.update();
+					runFlag = false;
+				}
 				this.m_runFlag = 2;
 			}
-
-			this.runnableQueue.run();
+			if(runFlag) {
+				this.runnableQueue.run();
+			}
 			this.runRenderNodes(this.m_prependNodes);
 			
 			if(this.m_adapter.isFBORunning()) {
 				this.setRenderToBackBuffer();
 			}
-
-			// if (this.m_localRunning) {
-			// 	for (let i = 0; i < this.m_processidsLen; ++i) {
-			// 		this.m_renderer.runAt(this.m_processids[i]);
-			// 	}
-			// } else {
-			// 	this.m_renderer.run();
-			// }
 			for (let i = 0; i < this.m_processidsLen; ++i) {
 				this.m_renderer.runAt(this.m_processids[i]);
 			}

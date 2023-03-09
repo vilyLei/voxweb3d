@@ -119,8 +119,5 @@ class ImageTextureProxy extends TextureProxy implements IImageTexture {
             super.__$destroy();
         }
     }
-    toString(): string {
-        return "[ImageTextureProxy(name:" + this.name + ",uid=" + this.getUid() + ",width=" + this.getWidth() + ",height=" + this.getHeight() + ")]";
-    }
 }
 export default ImageTextureProxy;

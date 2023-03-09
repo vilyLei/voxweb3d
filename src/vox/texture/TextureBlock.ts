@@ -45,14 +45,16 @@ import { ITextureBlock } from "./ITextureBlock";
  * 本类作为所有基础纹理对象的管理类,只允许在RendererInstance之上的类中使用
  */
 class TextureBlock implements ITextureBlock {
+
     private m_texPool: TexturePool = new TexturePool();
     private m_rttStore: RTTTextureStore = null;
     private m_renderProxy: IRenderProxy = null;
     private m_texLoaders: IRunnable[] = [];
+
     addTexLoader(texLoader: IRunnable): void {
         if (texLoader != null) {
-            let i: number = 0;
-            let il: number = this.m_texLoaders.length
+            let i = 0;
+            let il = this.m_texLoaders.length;
             for (; i < il; ++i) {
                 if (texLoader == this.m_texLoaders[i]) {
                     break;
@@ -65,8 +67,8 @@ class TextureBlock implements ITextureBlock {
     }
     removeTexLoader(texLoader: IRunnable): void {
         if (texLoader != null) {
-            let i: number = 0;
-            let il: number = this.m_texLoaders.length
+            let i = 0;
+            let il = this.m_texLoaders.length;
             for (; i < il; ++i) {
                 if (texLoader == this.m_texLoaders[i]) {
                     this.m_texLoaders.slice(i, 1);
@@ -89,10 +91,10 @@ class TextureBlock implements ITextureBlock {
     getRTTStrore(): RTTTextureStore {
         return this.m_rttStore;
     }
-    createWrapperTex(pw: number, ph: number, powerof2Boo: boolean = false): IWrapperTexture {
+    createWrapperTex(pw: number = 128, ph: number = 128, powerof2Boo: boolean = false): IWrapperTexture {
         return this.m_rttStore.createWrapperTex(pw, ph, powerof2Boo);
     }
-    createRTTTex2D(pw: number, ph: number, powerof2Boo: boolean = false): IRTTTexture {
+    createRTTTex2D(pw: number = 128, ph: number = 128, powerof2Boo: boolean = false): IRTTTexture {
         let tex: IRTTTexture = this.m_rttStore.createRTTTex2D(pw, ph, powerof2Boo);
         tex.__$setRenderProxy(this.m_renderProxy);
         return tex;
@@ -166,7 +168,7 @@ class TextureBlock implements ITextureBlock {
         ph = ph > 1 ? ph : 1;
         let tot = pw * ph;
         let tex = this.createBytesTex(pw, ph);
-        let bytes: Uint8Array = new Uint8Array(tot * 4);
+        let bytes = new Uint8Array(tot * 4);
         let pr = Math.round(color.r * 255.0);
         let pg = Math.round(color.g * 255.0);
         let pb = Math.round(color.b * 255.0);
@@ -187,8 +189,8 @@ class TextureBlock implements ITextureBlock {
         let size: number = pw * ph;
         let tex = this.createBytesTex(pw, ph);
         tex.toAlphaFormat();
-        let bytes: Uint8Array = new Uint8Array(size);
-        let value: number = Math.round(alpha * 255.0);
+        let bytes = new Uint8Array(size);
+        let value = Math.round(alpha * 255.0);
         bytes.fill(value, 0, size);
         tex.setDataFromBytes(bytes, 0, pw, ph, 0, 0, false);
         tex.__$setRenderProxy(this.m_renderProxy);
@@ -232,8 +234,8 @@ class TextureBlock implements ITextureBlock {
     }
     private m_clearDelay: number = 128;
     run(): void {
-        let i: number = 0;
-        let il: number = this.m_texLoaders.length;
+        let i = 0;
+        let il = this.m_texLoaders.length;
         for (; i < il; ++i) {
             this.m_texLoaders[i].run();
         }
@@ -245,7 +247,7 @@ class TextureBlock implements ITextureBlock {
             this.m_clearDelay = 128;
 
             let freeMap: Map<number, number> = TextureResSlot.GetInstance().getFreeResUidMap();
-            let total: number = 32;
+            let total = 32;
             for (const [key, value] of freeMap) {
                 if (total < 1) {
                     break;

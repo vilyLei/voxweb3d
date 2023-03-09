@@ -34,7 +34,7 @@ export class DemoFloatRTT {
         return ptex;
     }
     initialize(): void {
-        if (this.m_rcontext == null) {
+        if (this.m_rscene == null) {
             console.log("DemoFloatRTT::initialize()......");
 
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
@@ -45,21 +45,20 @@ export class DemoFloatRTT {
             rparam.maxWebGLVersion = 1;
             rparam.setCamPosition(500.0, 500.0, 500.0);
             this.m_rscene = new RendererScene();
-            this.m_rscene.initialize(rparam, 3);
+            this.m_rscene.initialize(rparam);
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext() as any;
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-            let tex0: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-            let tex1: TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
+            let tex0 = this.getImageTexByUrl("static/assets/default.jpg");
+            let tex1 = this.getImageTexByUrl("static/assets/broken_iron.jpg");
 
             this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
+            this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
             this.m_statusDisp.initialize();
 
-            this.m_rttTex = this.m_rscene.textureBlock.createRTTTex2D(128, 128, false);
+            this.m_rttTex = this.m_rscene.textureBlock.createRTTTex2D();
             this.m_rttTex.to2DTexture();
             this.m_rttTex.internalFormat = TextureFormat.RGBA16F;
             this.m_rttTex.srcFormat = TextureFormat.RGBA;
@@ -90,7 +89,7 @@ export class DemoFloatRTT {
     }
     run(): void {
 
-        let pcontext: RendererInstanceContext = this.m_rcontext;
+        let rcontext = this.m_rscene.getRendererContext()
         // show fps status
         this.m_statusDisp.update();
         this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
@@ -100,15 +99,15 @@ export class DemoFloatRTT {
         this.m_rscene.update();
 
         // --------------------------------------------- rtt begin
-        pcontext.setClearRGBColor3f(0.1, 0.0, 0.1);
-        pcontext.synFBOSizeWithViewport();
-        //pcontext.setRenderToTexture(this.m_rscene.textureBlock.getRTTTextureAt(0), true, false, 0);
-        pcontext.setRenderToTexture(this.m_rttTex, true, false, 0);
-        pcontext.useFBO(true, true, false);
+        rcontext.setClearRGBColor3f(0.1, 0.0, 0.1);
+        rcontext.synFBOSizeWithViewport();
+        //rcontext.setRenderToTexture(this.m_rscene.textureBlock.getRTTTextureAt(0), true, false, 0);
+        rcontext.setRenderToTexture(this.m_rttTex, true, false, 0);
+        rcontext.useFBO(true, true, false);
         // to be rendering in framebuffer
         this.m_rscene.runAt(0);
         // --------------------------------------------- rtt end
-        pcontext.setRenderToBackBuffer();
+        rcontext.setRenderToBackBuffer();
         // to be rendering in backbuffer
         this.m_rscene.runAt(1);
 
