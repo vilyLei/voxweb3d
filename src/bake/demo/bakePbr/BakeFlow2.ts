@@ -175,17 +175,20 @@ export class BakeFlow2 {
 		nvsUrl = "static/private/bake/ctmUnwrap/normal.bin";
 
         
-		//ctmUnwrap
-		ivsUrl = "static/private/bake/ios01/ivs.bin";
-		vsUrl = "static/private/bake/ios01/vs.bin";
-		uvs1Url = "static/private/bake/ios01/uvs1.bin";
-		uvs2Url = "static/private/bake/ios01/uvs2.bin";
-		nvsUrl = "static/private/bake/ios01/nvs.bin";
+		// //ios ctmUnwrap
+		// ivsUrl = "static/private/bake/ios01/ivs.bin";
+		// vsUrl = "static/private/bake/ios01/vs.bin";
+		// uvs1Url = "static/private/bake/ios01/uvs1.bin";
+		// uvs2Url = "static/private/bake/ios01/uvs2.bin";
+		// nvsUrl = "static/private/bake/ios01/nvs.bin";
+
+        let uvParams = { su: 1.0, sv: 1.0 };
+        uvParams = { su: 0.01, sv: 0.01 };
 
 		let loader = new Bin4DataLoader();
 		loader.setListener((model: CoGeomDataType): void => {
 			console.log("Bin4DataLoader loaded model: ", model);
-			this.createEntity(model, null, { su: 1.0, sv: 1.0 });
+			this.createEntity(model, null, uvParams);
 			this.updateEntities();
 		});
 		loader.loadData(vsUrl, uvs1Url, uvs2Url, nvsUrl, ivsUrl);
@@ -216,20 +219,23 @@ export class BakeFlow2 {
 			// fio.downloadBinFile(model.uvsList[0], "uvData1","uv");
 
 			this.m_offsetR = 0.004;
+			let uvOffset = uvParam;
 			// let uvOffset = { su: 1.0, sv: 1.0 };
-			let uvOffset = { su: 0.01, sv: 0.01 };
+			// let uvOffset = { su: 0.01, sv: 0.01 };
 
 			let bakedTexUrl = "static/private/bake/icoSph_1.png";
 			bakedTexUrl = "static/private/bake/hat01_0.png";
 			// bakedTexUrl = "static/private/bake/hat01_1.png";
 			bakedTexUrl = "static/private/bake/hat01_0a.png";
 			bakedTexUrl = "static/private/bake/hat01_1a.png";
+			bakedTexUrl = "static/private/bake/ctmUnwrap/ctmUnwrap.png";
+            
 			console.log("model.uvsList: ", model.uvsList);
 
-			model.uvsList[0] = model.uvsList[1];
+			// model.uvsList[0] = model.uvsList[1];
 			// model.uvsList[1] = model.uvsList[0];
 
-			this.initTexLightingBakeWithModel(0, model, transform, uvOffset, bakedTexUrl);
+			this.initTexLightingBakeWithModel(-1, model, transform, uvOffset, bakedTexUrl);
 		}
 	}
 	private initTexLightingBakeWithModel(
@@ -251,11 +257,12 @@ export class BakeFlow2 {
 			SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
 		}
 		let uvs = model.uvsList;
-		uvs[1] = uvs[0];
+		// uvs[1] = uvs[0];
 		console.log("#### uvs[0].length: ", uvs[0].length);
 		if (uvs.length > 1) console.log("#### uvs[1].length: ", uvs[1].length);
 		if (bakeType < 0) {
 			let entity = this.m_bakedViewer.createEntity(model, bakedTexUrl);
+			entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
 			let mat4 = transform != null ? new Matrix4(transform) : null;
 			this.m_layouter.layoutAppendItem(entity, mat4);
 			return;

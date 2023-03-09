@@ -75,6 +75,8 @@ class Bin4DataLoader {
 		loader.load(url, (buf: ArrayBuffer, url: string): void => {
 			let fs = new Float32Array(buf);
 			this.m_uvs1 = fs;
+            console.log("this.m_uvs1: ", this.m_uvs1);
+            console.log("this.m_uvs1 url: ", url);
 			this.update(url);
 		});
 	}
@@ -84,6 +86,8 @@ class Bin4DataLoader {
 		loader.load(url, (buf: ArrayBuffer, url: string): void => {
 			let fs = new Float32Array(buf);
 			this.m_uvs2 = fs;
+            console.log("this.m_uvs2: ", this.m_uvs2);
+            console.log("this.m_uvs2 url: ", url);
 			this.update(url);
 		});
 	}

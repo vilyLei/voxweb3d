@@ -119,14 +119,14 @@ export class ModelsLoading {
         if (model != null) {
             console.log("createEntity(), model: ", model);
 
-            let fio = new FileIO();
+            // let fio = new FileIO();
 
 			// fio.downloadBinFile(model.vertices, "vs","bin");
 			// fio.downloadBinFile(model.normals, "nvs","bin");
 			// fio.downloadBinFile(model.uvsList[0], "uvs1","bin");
 			// fio.downloadBinFile(model.indices, "ivs","bin");
 
-			fio.downloadBinFile(model.uvsList[0], "uvs2","bin");
+			// fio.downloadBinFile(model.uvsList[0], "uvs2","bin");
 
 
             let material = new Default3DMaterial();
