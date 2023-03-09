@@ -22,7 +22,7 @@ import { BillParticleGroup } from "../../../advancedDemo/depthLight/scene/BillPa
 
 import { RoleScene } from "../../../advancedDemo/depthLight/scene/RoleScene";
 
-export class SceneFogFlow {
+export class SceneFogFlow2 {
     constructor() {
     }
 

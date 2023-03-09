@@ -9,7 +9,7 @@ import RendererParam from "../../vox/scene/RendererParam";
 import RendererScene from "../../vox/scene/RendererScene";
 
 
-import { SceneFogFlow } from "../../advancedDemo/depthLight/scene/SceneFogFlow";
+import { SceneFogFlow2 } from "../../advancedDemo/depthLight/scene/SceneFogFlow2";
 
 import { MouseInteraction } from "../../vox/ui/MouseInteraction";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
@@ -19,7 +19,7 @@ export class DemoLightFlow2 {
     constructor() {
     }
     private m_rc: RendererScene = null;
-    private m_esc = new SceneFogFlow();
+    private m_esc = new SceneFogFlow2();
 
     initialize(): void {
         console.log("depthLight::DemoLightFlow2::initialize()......");
