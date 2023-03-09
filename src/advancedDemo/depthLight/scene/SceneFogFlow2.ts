@@ -1,8 +1,6 @@
 
 import Vector3D from "../../../vox/math/Vector3D";
 import Color4 from "../../../vox/material/Color4";
-import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../../../vox/render/RenderConst";
-import RendererState from "../../../vox/render/RendererState";
 import TextureConst from "../../../vox/texture/TextureConst";
 import TextureProxy from "../../../vox/texture/TextureProxy";
 import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
@@ -12,7 +10,6 @@ import RendererScene from "../../../vox/scene/RendererScene";
 import MouseEvent from "../../../vox/event/MouseEvent";
 
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
-import ProfileInstance from "../../../voxprofile/entity/ProfileInstance";
 import { FogSphShow2Material } from "../material/FogSphShow2Material";
 import { BoxSpaceMotioner } from "../../../voxmotion/primitive/BoxSpaceMotioner";
 import { FogFBOMana } from "../../../advancedDemo/depthLight/scene/FogFBOMana";
@@ -30,8 +27,8 @@ export class SceneFogFlow2 {
     private m_rct: IRendererInstanceContext = null;
     private m_texLoader: ImageTextureLoader;
     
-    // private m_fogSys: FogSystem = null;
-    private m_fogSys: FogSphSystem = null;
+    private m_fogSys: FogSystem = null;
+    // private m_fogSys: FogSphSystem = null;
     private m_roleSc: RoleScene = null;
     private m_billGroup: BillParticleGroup = null;
     getImageTexByUrl(pns: string): TextureProxy {
@@ -155,8 +152,8 @@ export class SceneFogFlow2 {
             );
             this.m_rc.addEntity(this.m_dstPlane, this.m_dstPlaneIndex);
 
-            // this.m_fogSys = new FogSystem();
-            this.m_fogSys = new FogSphSystem();
+            this.m_fogSys = new FogSystem();
+            // this.m_fogSys = new FogSphSystem();
             this.m_fogSys.texLoader = this.m_texLoader;
             this.m_fogSys.initialize(this.m_rc, this.middleFBO, this.factorFBO);
 
