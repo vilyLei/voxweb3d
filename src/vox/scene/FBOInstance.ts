@@ -756,12 +756,12 @@ export default class FBOInstance implements IFBOInstance {
 		ins.m_initH = this.m_initH;
 		ins.m_multisampleLevel = this.m_multisampleLevel;
 
-		let i: number = 0;
+		let i = 0;
 		for (; i < this.m_texsTot; ++i) {
 			ins.m_texs[i] = ins.m_texs[i];
 		}
 		if (this.m_rindexs != null) {
-			let len: number = this.m_rindexs.length;
+			let len = this.m_rindexs.length;
 			let list: number[] = new Array(len);
 			for (i = 0; i < len; ++i) {
 				list[i] = this.m_rindexs[i];

@@ -2,16 +2,12 @@ import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 
 import DisplayEntity from "../vox/entity/DisplayEntity";
-import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import RendererScene from "../vox/scene/RendererScene";
 import DivLog from "../vox/utils/DivLog";
-import MouseEvent from "../vox/event/MouseEvent";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
-import DebugFlag from "../vox/debug/DebugFlag";
-import VtxDrawingInfo from "../vox/render/vtx/VtxDrawingInfo";
 import DefaultPassGraph from "../vox/render/pass/DefaultPassGraph";
 import ConvexTransParentPassItem from "./pass/ConvexTransParentPassItem";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";

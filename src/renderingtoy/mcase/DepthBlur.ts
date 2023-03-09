@@ -43,14 +43,14 @@ class DepthBlur {
             this.m_blurModule.bindSrcProcess(this.m_blurSrcProcess);
             this.m_blurModule.setBackbufferVisible(false);
 
-            this.m_depthFbo = new FBOInstance(this.m_renderer, textureBlock.getRTTStrore());
+            this.m_depthFbo = new FBOInstance(this.m_renderer);
             this.m_depthFbo.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);                     // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
             this.m_depthFbo.createAutoSizeFBOAt(0, true, false);
             this.m_depthFbo.setRenderToHalfFloatTexture(null, 0);                     // framebuffer color attachment 0
             this.m_depthFbo.setRProcessList([this.m_opacityProcess]);
             this.m_depthFbo.useGlobalMaterial(this.m_scrDepMaterial);
 
-            this.m_colorFbo = new FBOInstance(this.m_renderer, textureBlock.getRTTStrore());
+            this.m_colorFbo = new FBOInstance(this.m_renderer);
             this.m_colorFbo.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);                     // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
             this.m_colorFbo.createAutoSizeFBOAt(0, true, false);
             this.m_colorFbo.setRenderToRGBATexture(null, 0);                          // framebuffer color attachment 0

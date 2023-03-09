@@ -8,9 +8,6 @@ import TextureProxy from "../vox/texture/TextureProxy";
 import MouseEvent from "../vox/event/MouseEvent";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import RendererScene from "../vox/scene/RendererScene";
-import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
-import CameraZoomController from "../voxeditor/control/CameraZoomController";
-
 import Vector3D from "../vox/math/Vector3D";
 import Color4 from "../vox/material/Color4";
 
@@ -21,6 +18,7 @@ import IRendererScene from "../vox/scene/IRendererScene";
 import ITransformEntity from "../vox/entity/ITransformEntity";
 import EventBase from "../vox/event/EventBase";
 import IEventBase from "../vox/event/IEventBase";
+import { MouseInteraction } from "../vox/ui/MouseInteraction";
 
 class AnimationScene {
 
@@ -119,8 +117,6 @@ export class DemoPBRAnimation {
 
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
-    private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled) as TextureProxy;
@@ -139,21 +135,17 @@ export class DemoPBRAnimation {
             rparam.setAttriAntialias(true);
             //rparam.setAttriStencil(true);
             this.m_rscene = new RendererScene();
-            this.m_rscene.initialize(rparam);
-            this.m_rscene.updateCamera();
+            this.m_rscene.initialize(rparam).setAutoRunning(true);
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-            this.m_rscene.enableMouseEvent(true);
-            this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
-            this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
-            this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
+            new RenderStatusDisplay(this.m_rscene, true);
+            new MouseInteraction().initialize(this.m_rscene, 0).setAutoRunning(true);
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
             this.initFloatCube();
 
-            new RenderStatusDisplay(this.m_rscene, true);
 
         }
     }
@@ -166,21 +158,9 @@ export class DemoPBRAnimation {
         loader.loadTextureWithUrl(envMapUrl);
 
         new AnimationScene(this.m_rscene, loader.texture).initialize();
-
-        // this.initLighting(loader.texture);
     }
     private mouseDown(evt: any): void {
         console.log("mouse down... ...");
-    }
-
-    run(): void {
-        if(this.m_rscene != null) {
-
-            this.m_stageDragSwinger.runWithYAxis();
-            this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
-
-            this.m_rscene.run(true);
-        }
     }
 }
 export default DemoPBRAnimation;

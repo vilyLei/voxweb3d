@@ -210,7 +210,7 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 		return new CameraBase();
 	}
 	createFBOInstance(): FBOInstance {
-		return new FBOInstance(this, this.textureBlock.getRTTStrore());
+		return new FBOInstance(this);
 	}
 
 	createMatrix4(): IMatrix4 {
@@ -257,7 +257,6 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 		return null;
 	}
 	getSpace(): IRendererSpace {
-		// return this.m_rspace;
 		return null;
 	}
 	getDevicePixelRatio(): number {
