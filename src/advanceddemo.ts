@@ -1,5 +1,7 @@
 
-import {DemoLightFlow as Demo} from "./advancedDemo/depthLight/DemoLightFlow";
+import {DemoLightFlow2 as Demo} from "./advancedDemo/depthLight/DemoLightFlow2";
+
+// import {DemoLightFlow as Demo} from "./advancedDemo/depthLight/DemoLightFlow";
 
 //  import {DemoRTTBlend as Demo} from "./advancedDemo/base/DemoRTTBlend";
 

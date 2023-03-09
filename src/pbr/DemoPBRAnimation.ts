@@ -91,10 +91,10 @@ class AnimationScene {
         ];
         let colorSize = 300.0;
         let colorList: Color4[] = [
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize)
+            new Color4().randomRGB(colorSize),
+            new Color4().randomRGB(colorSize),
+            new Color4().randomRGB(colorSize),
+            new Color4().randomRGB(colorSize)
         ];
 
         let material: PBREnvLightingMaterial = new PBREnvLightingMaterial();
