@@ -166,8 +166,7 @@
 
 //  import {DemoCubeFloatTex as Demo} from "./demo/DemoCubeFloatTex";
 
-//  import * as DemoFloatTex2 from "./example/DemoFloatTex2";
-//  import Demo = DemoFloatTex2.demo.DemoFloatTex2;
+ import {DemoFloatTex2 as Demo} from "./example/DemoFloatTex2";
 
 //  import {DemoMixProgress as Demo} from "./demo/DemoMixProgress";
 
@@ -434,7 +433,7 @@
 
 //  import {DemoPBREnvLighting as Demo} from "./pbr/DemoPBREnvLighting";
 
- import {DemoPBRAnimation as Demo} from "./pbr/DemoPBRAnimation";
+//  import {DemoPBRAnimation as Demo} from "./pbr/DemoPBRAnimation";
 
 //  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
