@@ -67,9 +67,9 @@ export default class FBOInstance implements IFBOInstance {
 	 */
 	uns = "FBOInstance";
 
-	constructor(renderer: IRenderer, texStroe: IRTTTextureStore) {
+	constructor(renderer: IRenderer) {
 		this.m_renderer = renderer;
-		this.m_texStore = texStroe;
+		this.m_texStore = renderer.textureBlock.getRTTStrore();
 		this.m_rproxy = renderer.getRenderProxy();
 		this.m_adapter = this.m_rproxy.getRenderAdapter();
 		this.m_rcontext = renderer.getRendererContext();
@@ -741,7 +741,7 @@ export default class FBOInstance implements IFBOInstance {
 	}
 
 	clone(): FBOInstance {
-		let ins = new FBOInstance(this.m_renderer, this.m_texStore);
+		let ins = new FBOInstance(this.m_renderer);
 		ins.m_fboSizeFactor = this.m_fboSizeFactor;
 		ins.m_bgColor.copyFrom(this.m_bgColor);
 		ins.m_fboIndex = this.m_fboIndex;

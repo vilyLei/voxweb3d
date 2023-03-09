@@ -226,7 +226,7 @@ export default class RendererSceneBase {
 		return new CameraBase();
 	}
 	createFBOInstance(): FBOInstance {
-		return new FBOInstance(this, this.textureBlock.getRTTStrore());
+		return new FBOInstance(this);
 	}
 
 	createMatrix4(): IMatrix4 {
