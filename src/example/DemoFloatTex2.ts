@@ -4,27 +4,19 @@ import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import { IRendererInstanceContext } from "../vox/scene/IRendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
-import Color4 from "../vox/material/Color4";
 
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
-import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import TextureConst from "../vox/texture/TextureConst";
 import TextureFormat from "../vox/texture/TextureFormat";
 import TextureProxy from "../vox/texture/TextureProxy";
 import BytesTextureProxy from "../vox/texture/BytesTextureProxy";
-import BytesCubeTextureProxy from "../vox/texture/BytesCubeTextureProxy";
-import FloatTextureProxy from "../vox/texture/FloatTextureProxy";
-import FloatCubeTextureProxy from "../vox/texture/FloatCubeTextureProxy";
 
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
-import CubeMapMaterial from "../vox/material/mcase/CubeMapMaterial";
-import * as BytesDataLoaderT from "../example/data/BytesDataLoader";
+import {BytesDataLoader} from "../example/data/BytesDataLoader";
 
-import BytesDataLoader = BytesDataLoaderT.example.data.BytesDataLoader;
-import RendererState from "../vox/render/RendererState";
 import FloatCubeMapMaterial from "../vox/material/mcase/FloatCubeMapMaterial";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 
