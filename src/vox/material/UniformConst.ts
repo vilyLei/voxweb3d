@@ -8,12 +8,12 @@ import IUniformParam from "./IUniformParam";
 
 class ShadowVSMParams implements IUniformParam {
     constructor() { }
-    readonly type: string = "vec4";
+    readonly type = "vec4";
     readonly data: Float32Array = null;
     /**
      * uniform name string
      */
-    readonly name: string = "u_vsmParams";
+    readonly name = "u_vsmParams";
     /**
      * uniform array length
      */
@@ -21,7 +21,7 @@ class ShadowVSMParams implements IUniformParam {
 }
 class EnvLightParam implements IUniformParam {
     constructor() { }
-    readonly type: string = "vec4";
+    readonly type = "vec4";
     readonly data: Float32Array = new Float32Array([
 
         0.1, 0.1, 0.1,              // ambient factor x,y,z
@@ -45,7 +45,7 @@ class EnvLightParam implements IUniformParam {
     /**
      * uniform name string
      */
-    readonly name: string = "u_envLightParams";
+    readonly name = "u_envLightParams";
     /**
      * uniform array length
      */
@@ -56,32 +56,32 @@ class EnvLightParam implements IUniformParam {
  */
 class ShadowMat4UniformParam implements IUniformParam {
     constructor() { }
-    readonly type: string = "mat4";
+    readonly type = "mat4";
     readonly data: Float32Array = null;
     /**
      * uniform name string
      */
-    readonly name: string = "u_shadowMat";
+    readonly name = "u_shadowMat";
     /**
      * uniform array length
      */
-    readonly arrayLength: number = 0;
+    readonly arrayLength = 0;
 }
 /**
  * stage param shader uniform name string, vec4: [2.0/stageWidth,2.0/stageHeight, stageWidth,stageHeight]
  */
 class StageUniformParam implements IUniformParam {
     constructor() { }
-    readonly type: string = "vec4";
+    readonly type = "vec4";
     readonly data: Float32Array = null;
     /**
      * uniform name string
      */
-    readonly name: string = "u_stageParam";
+    readonly name = "u_stageParam";
     /**
      * uniform array length
      */
-    readonly arrayLength: number = 0;
+    readonly arrayLength = 0;
 }
 
 /**
@@ -89,32 +89,32 @@ class StageUniformParam implements IUniformParam {
  */
 class ViewUniformParam implements IUniformParam {
     constructor() { }
-    readonly type: string = "vec4";
+    readonly type = "vec4";
     readonly data: Float32Array = null;
     /**
      * uniform name string
      */
-    readonly name: string = "u_viewParam";
+    readonly name = "u_viewParam";
     /**
      * uniform array length
      */
-    readonly arrayLength: number = 0;
+    readonly arrayLength = 0;
 }
 /**
  * camera frustrum param shader uniform name string,vec4: [camera zNear,camera zFar, camera nearPlaneHalfW, camera nearPlaneHalfH]
  */
 class FrustumUniformParam implements IUniformParam {
     constructor() { }
-    readonly type: string = "vec4";
+    readonly type = "vec4";
     readonly data: Float32Array = null;
     /**
      * uniform name string
      */
-    readonly name: string = "u_frustumParam";
+    readonly name = "u_frustumParam";
     /**
      * uniform array length
      */
-    readonly arrayLength: number = 0;
+    readonly arrayLength = 0;
 }
 
 /**
@@ -122,57 +122,57 @@ class FrustumUniformParam implements IUniformParam {
  */
 class CameraPosUniformParam implements IUniformParam {
     constructor() { }
-    readonly type: string = "vec4";
+    readonly type = "vec4";
     readonly data: Float32Array = null;
     /**
      * uniform name string
      */
-    readonly name: string = "u_cameraPosition";
+    readonly name = "u_cameraPosition";
     /**
      * uniform array length
      */
-    readonly arrayLength: number = 0;
+    readonly arrayLength = 0;
 }
 class GlobalLightUniform {
     constructor() { }
-    readonly type: string = "vec4";
-    readonly positionName: string = "u_lightPositions";
-    readonly colorName: string = "u_lightColors";
+    readonly type = "vec4";
+    readonly positionName = "u_lightPositions";
+    readonly colorName = "u_lightColors";
 }
 export default class UniformConst {
     /**
      * object local space to world space matrix shader uniform name string
      */
-    static readonly LocalTransformMatUNS: string = "u_objMat";
+    static readonly LocalTransformMatUNS = "u_objMat";
     /**
      * camera view matrix shader uniform name string
      */
-    static readonly CameraViewMatUNS: string = "u_viewMat";
+    static readonly CameraViewMatUNS = "u_viewMat";
     /**
      * camera projective matrix shader uniform name string
      */
-    static readonly CameraProjectiveMatUNS: string = "u_projMat";
+    static readonly CameraProjectiveMatUNS = "u_projMat";
     /**
      * camera frustrum param shader uniform name string,vec4: [camera zNear,camera zFar, camera nearPlaneHalfW, camera nearPlaneHalfH]
      */
-    static readonly FrustumParam: FrustumUniformParam = new FrustumUniformParam();
+    static readonly FrustumParam = new FrustumUniformParam();
     /**
      * camera world position param shader uniform name string,vec4: [x, y, z, w]
      */
-    static readonly CameraPosParam: CameraPosUniformParam = new CameraPosUniformParam();
+    static readonly CameraPosParam = new CameraPosUniformParam();
     /**
      * stage param shader uniform name string, vec4: [2.0/stageWidth,2.0/stageHeight, stageWidth,stageHeight]
      */
-    static readonly StageParam: StageUniformParam = new StageUniformParam();
+    static readonly StageParam = new StageUniformParam();
     /**
      * view port param shader uniform name string, vec4: [viewPortX, viewPortY, viewPortWidth, viewPortHeight]
      */
-    static readonly ViewportParam: ViewUniformParam = new ViewUniformParam();
+    static readonly ViewportParam = new ViewUniformParam();
 
-    static readonly ShadowMatrix: ShadowMat4UniformParam = new ShadowMat4UniformParam();
-    static readonly ShadowVSMParams: ShadowVSMParams = new ShadowVSMParams();
+    static readonly ShadowMatrix = new ShadowMat4UniformParam();
+    static readonly ShadowVSMParams = new ShadowVSMParams();
 
-    static readonly GlobalLight: GlobalLightUniform = new GlobalLightUniform();
-    static readonly EnvLightParams: EnvLightParam = new EnvLightParam();
+    static readonly GlobalLight = new GlobalLightUniform();
+    static readonly EnvLightParams = new EnvLightParam();
 
 }

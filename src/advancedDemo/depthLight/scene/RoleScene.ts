@@ -152,13 +152,13 @@ export class RoleScene {
                 }
             }
             //*/
-            size = 2300.0;
+            size = 1800.0;
             let bgBox = new Box3DEntity();
             material = new FogDepthUVMaterial();
             material.setFRGB3f(0.6, 0.6, 0.6);
             material.setUVScale(10.0, 10.0);
             bgBox.setMaterial(material);
-            bgBox.showBackFace();
+            bgBox.showFrontFace();
             bgBox.initialize(new Vector3D(-size, -size, -size), new Vector3D(size, size, size), [tex1]);
             bgBox.setScaleXYZ(2.0, 2.0, 2.0);
             this.m_rc.addEntity(bgBox, this.m_entityBGIndex);

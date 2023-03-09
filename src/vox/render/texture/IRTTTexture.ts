@@ -10,7 +10,7 @@ import IRenderTexture from "./IRenderTexture";
 interface IRTTTexture extends IRenderTexture {
     to2DTexture(): void;
     toCubeTexture(): void;
-    toAlphaFormat(): void;
+    toRedFormat(): void;
     enableMipmap(): void;
     disableMipmap(): void;
     setSize(fboTextureWidth: number, fboTextureHeight: number): void;

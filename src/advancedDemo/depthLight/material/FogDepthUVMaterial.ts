@@ -52,11 +52,13 @@ uniform mat4 u_projMat;
 uniform vec4 u_frustumParam;
 out vec4 v_color;
 out vec2 v_uv;
+vec4 worldPos;
+vec4 viewPos;
 void main(){
-    vec4 posV = u_objMat * vec4(a_vs, 1.0);
-    vec4 viewPv = u_viewMat * posV;
-    gl_Position = u_projMat * viewPv;
-    v_color = vec4(viewPv.xyz, length(viewPv.xyz)/u_frustumParam.y);
+    worldPos = u_objMat * vec4(a_vs, 1.0);
+    viewPos = u_viewMat * worldPos;
+    gl_Position = u_projMat * viewPos;
+    v_color = vec4(viewPos.xyz, length(viewPos.xyz)/u_frustumParam.y);
     v_uv = a_uvs;
 }
 `;

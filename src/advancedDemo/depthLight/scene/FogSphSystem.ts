@@ -59,12 +59,12 @@ export class FogSphSystem {
     private m_fogUnits: FogUnit[] = [];
     private initFog(): void {
         let i: number = 0;
-        let rState0: number = RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
+        let rState0: number = RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
         let rState1: number = RendererState.BACK_TRANSPARENT_ALWAYS_STATE;
         this.maxRadius = 800.0;//141.25;
         let baseRadius: number = this.maxRadius;
         let fogUnit: FogUnit;
-        for (i = 0; i < 80; ++i) {
+        for (i = 0; i < 40; ++i) {
             fogUnit = new FogUnit();
             if (Math.random() > 0.9) fogUnit.rstate = rState0;
             else fogUnit.rstate = rState1;
@@ -75,9 +75,11 @@ export class FogSphSystem {
             //  fogUnit.pos.setXYZ(0.0,0.0,0.0);
             this.m_fogUnits.push(fogUnit);
         }
-        rState0 = RendererState.CreateRenderState("factorSphState", CullFaceMode.FRONT, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
+        // rState0 = RendererState.CreateRenderState("factorSphState", CullFaceMode.FRONT, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
+        rState0 = RendererState.FRONT_TRANSPARENT_ALWAYS_STATE;
         let tex3: TextureProxy = this.getImageTexByUrl("displacement_03.jpg");
         this.fogFactorM = new FogMeshGeomFactorMaterial();
+        // this.fogFactorM.setDensity(1.5);
         this.factorEntity = new Sphere3DEntity();
         this.factorEntity.setRenderState(rState0);
         this.factorEntity.setMaterial(this.fogFactorM);
@@ -86,10 +88,10 @@ export class FogSphSystem {
         this.m_rc.addEntity(this.factorEntity, this.m_factorFBO.getRProcessIDAt(0));
     }
     private m_pv: Vector3D = new Vector3D();
-    private m_outV: Vector3D = new Vector3D();
-    private m_status: number = 1;
+    private m_status = 1;
     setStatus(status: number): void {
-        this.m_status = status;
+        this.m_status = status % 3;
+        console.log("this.m_status: ", this.m_status);
     }
     runBegin(): void {
     }
@@ -102,16 +104,15 @@ export class FogSphSystem {
         return this.m_fogUnits.length;
     }
     runFog(): void {
-        let status: number = this.m_status;
-        let outV: Vector3D = this.m_outV;
-        let len: number = this.m_fogUnits.length;
+        let status = this.m_status;
+        let len = this.m_fogUnits.length;
         if (len > 0) {
             this.m_factorFBO.unlockMaterial();
             this.m_factorFBO.unlockRenderState();
             this.m_factorFBO.setClearColorEnabled(true);
             this.m_factorFBO.runBegin();
             // for test: select a displaying mode
-            //m_fogColors
+            
             switch (status) {
                 case 0:
                     this.fogFactorM.setFogDis(this.maxRadius * 5.0);
@@ -126,24 +127,25 @@ export class FogSphSystem {
                     break;
                 default:
                     break;
-
             }
             let fogUnit: FogUnit;
-            let cam: CameraBase = this.m_rc.getCamera();
-            for (let i: number = 0; i < len; ++i) {
+            let outerTotal = 0;
+            const pv =  this.m_pv;
+            let cam = this.m_rc.getCamera();
+            for (let i = 0; i < len; ++i) {
                 fogUnit = this.m_fogUnits[i];
-                this.m_pv.copyFrom(fogUnit.pos);
+                pv.copyFrom(fogUnit.pos);
                 this.m_pv.w = 1.0;
-                if (fogUnit.isAlive() && cam.visiTestSphere3(this.m_pv, fogUnit.radius, -fogUnit.radius * 2.0)) {
-                    //this.m_esc.factorEntity.setRenderState(fogUnit.rstate);
+                if (fogUnit.isAlive() && cam.visiTestSphere3(pv, fogUnit.radius, -fogUnit.radius * 2.0)) {
+                    // this.factorEntity.setRenderState(fogUnit.rstate);
                     this.factorEntity.setPosition(fogUnit.pos);
                     this.factorEntity.setScaleXYZ(fogUnit.radius, fogUnit.radius, fogUnit.radius);
                     this.factorEntity.update();
                     // 将fog factor 写入到目标tex buf
-                    cam.getViewMatrix().transformOutVector3(fogUnit.pos, this.m_pv);
+                    cam.getViewMatrix().transformOutVector3(fogUnit.pos, pv);
 
                     this.fogFactorM.setRadius(fogUnit.radius);
-                    this.fogFactorM.setXYZ3f(this.m_pv.x, this.m_pv.y, this.m_pv.z);
+                    this.fogFactorM.setXYZ3f(pv.x, pv.y, pv.z);
                     if (status < 1) {
                         this.fogFactorM.setFactorRGBColor(fogUnit.factorColor);
                     }
@@ -151,8 +153,11 @@ export class FogSphSystem {
                         this.fogFactorM.setFogRGBColor(fogUnit.fogColor);
                     }
                     this.m_factorFBO.runAt(0);
+                }else {
+                    outerTotal++;
                 }
             }
+            // console.log("outerTotal: ", outerTotal);
         }
     }
 }

@@ -24,6 +24,7 @@ import { RoleScene } from "../../../advancedDemo/depthLight/scene/RoleScene";
 
 import { MouseInteraction } from "../../../vox/ui/MouseInteraction";
 import RenderStatusDisplay from "../../../vox/scene/RenderStatusDisplay";
+import DebugFlag from "../../../vox/debug/DebugFlag";
 
 export class SceneFogFlow {
     constructor() {
@@ -32,7 +33,7 @@ export class SceneFogFlow {
     private m_rc: RendererScene = null;
     private m_rct: IRendererInstanceContext = null;
     private m_texLoader: ImageTextureLoader;
-    // private m_profileInstance: ProfileInstance = null;
+    
     // private m_fogSys: FogSystem = null;
     private m_fogSys: FogSphSystem = null;
     private m_roleSc: RoleScene = null;
@@ -85,10 +86,25 @@ export class SceneFogFlow {
     }
     mouseDownListener(evt: any): void {
         this.m_status++;
-        if (this.m_status > 2) {
-            this.m_status = 0;
-        }
         this.m_fogSys.setStatus(this.m_status);
+
+        // let sys =  this.m_fogSys;
+        // let  status = this.m_status % 3;
+        // switch (status) {
+        //     case 0:
+        //         sys.fogFactorM.setFogDis(sys.maxRadius * 5.0);
+        //         break;
+        //     case 1:
+        //         sys.fogFactorM.setFactorRGB3f(1.0, 1.0, 1.0);
+        //         sys.fogFactorM.setFogDis(sys.maxRadius * 1.0);
+        //         break;
+        //     case 2:
+        //         sys.fogFactorM.setFactorRGB3f(1.0, 1.0, 1.0);
+        //         sys.fogFactorM.setFogDis(sys.maxRadius * 2.0);
+        //         break;
+        //     default:
+        //         break;
+        // }
     }
     initialize(rc: RendererScene): void {
         if (this.m_rc == null) {
@@ -101,13 +117,9 @@ export class SceneFogFlow {
             this.m_rc.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
 
 
-            // new MouseInteraction().initialize(this.m_rc, 0, true).setAutoRunning(true);
-            // new RenderStatusDisplay(this.m_rc, true);
-
-
-            RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
-            RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
-            RendererState.CreateRenderState("ADD03", CullFaceMode.BACK, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
+            // RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
+            // RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
+            // RendererState.CreateRenderState("ADD03", CullFaceMode.BACK, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
 
 
             /*
@@ -130,13 +142,7 @@ export class SceneFogFlow {
             this.factorFBO = this.fboMana.createFactorFBO([this.m_factorPlaneIndex]);
 
             this.fogShow2M = new FogSphShow2Material();
-            // this.fogShow2M.setTextureList(
-            //     [
-            //         this.middleFBO.getRTTAt(1)
-            //         , this.factorFBO.getRTTAt(0)
-            //         , this.factorFBO.getRTTAt(1)
-            //     ]
-            // );
+
             this.fogShow2M.setTextureList(
                 [
                     this.middleFBO.getRTTAt(0)
@@ -149,6 +155,7 @@ export class SceneFogFlow {
             this.m_dstPlane.setMaterial(this.fogShow2M);
             this.m_dstPlane.initializeXOY(
                 -1.0, -1.0, 2.0, 2.0
+                // -0.5, -0.5, 1.0, 1.0
             );
             this.m_rc.addEntity(this.m_dstPlane, this.m_dstPlaneIndex);
 
@@ -164,7 +171,7 @@ export class SceneFogFlow {
         this.runmotion();
         if (this.m_billGroup != null) this.m_billGroup.runAndCreate();
     }
-    private m_bgColor: Color4 = new Color4(0.0, 0.0, 0.0, 1.0);
+    private m_bgColor = new Color4(1.0, 1.0, 1.0, 1.0);
     renderRun(): void {
         this.m_fogSys.runBase();
         this.parFBO.unlockMaterial();
@@ -190,9 +197,12 @@ export class SceneFogFlow {
             }
         }
 
-        this.m_rc.setClearColor(this.m_bgColor);
         this.m_rc.setRenderToBackBuffer();
         this.m_rct.unlockMaterial();
+        // console.log("this.m_bgColor: ", this.m_bgColor);
+        // DebugFlag.Flag_0 = 1;
+        this.m_rc.setClearColor(this.m_bgColor);
+        this.m_rc.renderBegin(true);
         // dst drawing
         this.m_rc.runAt(this.m_dstPlaneIndex);
     }

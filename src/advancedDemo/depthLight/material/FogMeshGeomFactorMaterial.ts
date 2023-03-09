@@ -34,9 +34,9 @@ layout(location = 0) out vec4 OutputColor0;
 layout(location = 1) out vec4 OutputColor1;
 void main()
 {
-    vec2 sv2 = vec2(gl_FragCoord.x/u_viewParam.z,gl_FragCoord.y/u_viewParam.w);
-    vec4 middColor4 = texture(u_sampler0, sv2);
-    middColor4.w *= u_frustumParam.y;
+    vec2 sv2 = gl_FragCoord.xy / u_viewParam.zw;vec2(gl_FragCoord.x/u_viewParam.z,gl_FragCoord.y/u_viewParam.w);
+    vec4 color = texture(u_sampler0, sv2);
+    color.w *= u_frustumParam.y;
     float radius = u_sphParam[1].w;
     sv2 = 2.0 * (sv2 - 0.5);
     vec3 nearPV = vec3(sv2 * u_frustumParam.zw,-u_frustumParam.x);
@@ -53,22 +53,24 @@ void main()
         k = dot(outV,ltv);
         // calc nearest shpere center point on the ray line.
         outV = k * ltv + lpv;
-        //
+        
         vec3 bv = ltv * sqrt(radius * radius - dis * dis);
         //float farDis = min(u_frustumParam.y,length(outV + bv));
         lpv = outV + bv;
         float farDis = length(lpv);
         float nearDis = max(length(outV - bv),length(nearPV));
-        //
+        
         dis = max(farDis - nearDis, 0.0);
         k = clamp(dis/(radius * 2.0),0.0,1.0);
-        middColor4.w = max(min(middColor4.w,farDis) - nearDis, 0.0);
-        //k = pow(k,3.0) * clamp( middColor4.w / (dis + 1.0), 0.0, 1.0 );
-        k = clamp(dis / u_sphParam[0].w, 0.0,1.0) * pow(k,3.0) * clamp( middColor4.w / (dis + 1.0), 0.0, 1.0 );
-        //k = pow(k,2.0) * clamp( middColor4.w / (dis + 1.0), 0.0, 1.0 );
+        color.w = max(min(color.w,farDis) - nearDis, 0.0);
+        //k = pow(k,3.0) * clamp( color.w / (dis + 1.0), 0.0, 1.0 );
+        k = clamp(dis / u_sphParam[0].w, 0.0,1.0) * pow(k,3.0) * clamp( color.w / (dis + 1.0), 0.0, 1.0 );
+        //k = pow(k,2.0) * clamp( color.w / (dis + 1.0), 0.0, 1.0 );
         vec2 flowOffsetV = sphCV.xy * 0.0002;
         //      flowOffsetV = flowOffsetV.xx;
-        vec4 noise = texture(u_sampler1, flowOffsetV + u_sphParam[2].w * (0.5 + (lpv.xy - sphCV.xy)/radius));
+        // flowOffsetV param make the fog flowing effect
+        // vec4 noise = texture(u_sampler1, flowOffsetV + u_sphParam[2].w * (0.5 + (lpv.xy - sphCV.xy)/radius));
+        vec4 noise = texture(u_sampler1, u_sphParam[2].w * (0.5 + (lpv.xy - sphCV.xy)/radius));
         k *= u_sphParam[4].w * noise.x;
         OutputColor0 = vec4(u_sphParam[0].xyz, k);
         OutputColor1 = vec4(u_sphParam[2].xyz, k);
@@ -97,9 +99,6 @@ void main()
     }
     getUniqueShaderName(): string {
         return this.m_uniqueName;
-    }
-    toString(): string {
-        return "[FogMeshGeomFactorShaderBuffer()]";
     }
 
     static GetInstance(): FogMeshGeomFactorShaderBuffer {

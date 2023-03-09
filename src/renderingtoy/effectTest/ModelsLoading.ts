@@ -18,6 +18,7 @@ import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import { MouseInteraction } from "../../vox/ui/MouseInteraction";
 import MeshFactory from "../../vox/mesh/MeshFactory";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
+import { FileIO } from "../../app/slickRoad/io/FileIO";
 
 export class ModelsLoading {
     constructor() { }
@@ -56,6 +57,23 @@ export class ModelsLoading {
         }
     }
     private initModels(): void {
+        //let vsUrl = "static/private/bake/oldIndexUnwrap/vertex.bin";
+        let url0 = "static/assets/fbx/base4.fbx";
+        let url1 = "static/private/bake/oldIndexUnwrap/6.ctm";
+        let url2 = "static/private/bake/ios01/ios01_unwrap.fbx";
+        let loader = this.m_teamLoader;
+
+        loader.load([url2], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+
+            this.m_layouter.layoutReset();
+            for (let i = 0; i < models.length; ++i) {
+                this.createEntity(models[i], transforms != null ? transforms[i] : null, 0.05);
+            }
+            this.m_layouter.layoutUpdate(300, new Vector3D(-400, 0, 0));
+
+        });
+    }
+    private initModels2(): void {
 
         let url0 = "static/assets/fbx/base4.fbx";
         let url1 = "static/assets/obj/apple_01.obj";
@@ -100,6 +118,16 @@ export class ModelsLoading {
     protected createEntity(model: CoGeomDataType, transform: Float32Array = null, uvScale: number = 1.0): DisplayEntity {
         if (model != null) {
             console.log("createEntity(), model: ", model);
+
+            let fio = new FileIO();
+
+			// fio.downloadBinFile(model.vertices, "vs","bin");
+			// fio.downloadBinFile(model.normals, "nvs","bin");
+			// fio.downloadBinFile(model.uvsList[0], "uvs1","bin");
+			// fio.downloadBinFile(model.indices, "ivs","bin");
+
+			fio.downloadBinFile(model.uvsList[0], "uvs2","bin");
+
 
             let material = new Default3DMaterial();
             material.normalEnabled = true;

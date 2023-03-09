@@ -36,9 +36,6 @@ class ShaderCodeShaderBuffer extends ShaderCodeBuffer {
     getUniqueShaderName(): string {
         return this.codeWrapper.getUniqueShaderName();
     }
-    toString(): string {
-        return "[ShaderCodeShaderBuffer()]";
-    }
 
     static GetInstance(): ShaderCodeShaderBuffer {
         return ShaderCodeShaderBuffer.s_instance;

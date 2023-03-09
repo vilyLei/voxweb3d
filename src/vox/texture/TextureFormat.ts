@@ -9,6 +9,8 @@ import RendererDevice from "../../vox/render/RendererDevice";
 
 export default class TextureFormat {
     static readonly R8: number = 101;
+    static readonly R16F: number = 102;
+    static readonly R32F: number = 102;
     static readonly RGB: number = 110;
     static readonly RED: number = 111;
     static readonly RGBA: number = 121;
@@ -28,6 +30,12 @@ export default class TextureFormat {
                 break;
             case tf.R8:
                 return gl.R8;
+                break;
+            case tf.R16F:
+                return gl.R16F;
+                break;
+            case tf.R32F:
+                return gl.R32F;
                 break;
             case tf.RGB:
                 return gl.RGB;

@@ -23,9 +23,18 @@ class RTTTextureProxy extends TextureProxy implements IRTTTexture {
         this.minFilter = TextureConst.NEAREST;
         this.magFilter = TextureConst.NEAREST;
     }
-    toAlphaFormat(): void {
-        this.internalFormat = TextureFormat.ALPHA;
-        this.srcFormat = TextureFormat.ALPHA;
+    toRedFormat(): void {
+
+        this.srcFormat = TextureFormat.RED;
+        if(this.dataType == TextureDataType.FLOAT) {
+            this.internalFormat = TextureFormat.R16F;
+            // this.internalFormat = TextureFormat.R32F;
+        }else {
+            this.internalFormat = TextureFormat.RED;
+        }
+        
+        // this.srcFormat = TextureFormat.RED;
+        // this.internalFormat = TextureFormat.R16F;
     }
     to2DTexture(): void {
         this.m_texTarget = TextureTarget.TEXTURE_2D;

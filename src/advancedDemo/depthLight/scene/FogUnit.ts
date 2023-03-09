@@ -37,7 +37,7 @@ export class FogUnit {
         this.fogColor.randomRGB(2.0);
         this.factorColor.randomRGB(2.0);
         let halfR: number = range * 0.5;
-        this.pos.setXYZ(Math.random() * range - halfR, Math.random() * range - halfR, Math.random() * range - halfR);
+        this.pos.setXYZ(Math.random() * range - halfR, Math.random() * range - halfR * 0.5, Math.random() * range - halfR);
     }
     runBegin(): void {
 

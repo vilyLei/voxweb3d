@@ -99,9 +99,10 @@ class RenderAdapter implements IRenderAdapter {
 			}
 			if (param.getPolygonOffsetEanbled()) this.enabledPolygonOffset();
 			else this.disabledPolygonOffset();
-
+			
 			this.m_gl.enable(this.m_gl.CULL_FACE);
 			this.m_gl.cullFace(this.m_gl.BACK);
+			this.m_gl.enable(this.m_gl.BLEND);
 			this.m_gl.enable(this.m_gl.BLEND);
 
 			if (param.getDitherEanbled()) this.m_gl.enable(this.m_gl.DITHER);
@@ -282,7 +283,6 @@ class RenderAdapter implements IRenderAdapter {
 		// if(DebugFlag.Flag_0 > 0) {
 		// 	console.log("color cvs: ", cvs);
 		// }
-
 		this.m_gl.clearColor(cvs[0], cvs[1], cvs[2], cvs[3]);
 		this.m_gl.clear(this.m_clearMask);
 		
@@ -328,7 +328,7 @@ class RenderAdapter implements IRenderAdapter {
 	private checkViewPort(dstSize: AABB2D): void {
 
 		let srcSize = this.m_viewPortRect;
-		let k: number = this.m_rtx.getDevicePixelRatio();
+		let k = this.m_rtx.getDevicePixelRatio();
 		let boo = srcSize.testEqual(dstSize);
 		boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
 		if (boo) {

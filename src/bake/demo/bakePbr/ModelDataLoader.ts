@@ -1,43 +1,4 @@
-
-import RendererDevice from "../../../vox/render/RendererDevice";
-import RendererParam from "../../../vox/scene/RendererParam";
-import RenderStatusDisplay from "../../../vox/scene/RenderStatusDisplay";
-import DisplayEntity from "../../../vox/entity/DisplayEntity";
-import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
-import TextureProxy from "../../../vox/texture/TextureProxy";
-
-import MouseEvent from "../../../vox/event/MouseEvent";
-import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
-import CameraTrack from "../../../vox/view/CameraTrack";
-import RendererScene from "../../../vox/scene/RendererScene";
-import ProfileInstance from "../../../voxprofile/entity/ProfileInstance";
-import CameraStageDragSwinger from "../../../voxeditor/control/CameraStageDragSwinger";
-import CameraZoomController from "../../../voxeditor/control/CameraZoomController";
-
-import Vector3D from "../../../vox/math/Vector3D";
-import Color4 from "../../../vox/material/Color4";
-
-import BinaryLoader from "../../../vox/assets/BinaryLoader";
-
-import PBREnvLightingMaterial from "../../../pbr/material/PBREnvLightingMaterial";
-import PBRBakingMaterial from "./PBRBakingMaterial";
-import { IFloatCubeTexture } from "../../../vox/render/texture/IFloatCubeTexture";
-import TextureConst from "../../../vox/texture/TextureConst";
-import IMeshBase from "../../../vox/mesh/IMeshBase";
-import Sphere3DMesh from "../../../vox/mesh/Sphere3DMesh";
-import RendererState from "../../../vox/render/RendererState";
-import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
-
 import { CoGeomDataType, CoDataFormat, CoGeomModelLoader } from "../../../cospace/app/common/CoGeomModelLoader";
-import { EntityLayouter } from "../../../vox/utils/EntityLayouter";
-import DataMesh from "../../../vox/mesh/DataMesh";
-import SurfaceNormalCalc from "../../../vox/geom/SurfaceNormalCalc";
-import Matrix4 from "../../../vox/math/Matrix4";
-import MaterialBase from "../../../vox/material/MaterialBase";
-import ITransformEntity from "../../../vox/entity/ITransformEntity";
-import { BinaryTextureLoader } from "../../../cospace/modules/loaders/BinaryTextureLoader";
-import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
-import { FileIO } from "../../../app/slickRoad/io/FileIO";
 import { HttpFileLoader } from "../../../cospace/modules/loaders/HttpFileLoader";
 class ModelData {
     models: CoGeomDataType[] = [];

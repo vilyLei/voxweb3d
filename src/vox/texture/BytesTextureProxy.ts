@@ -45,8 +45,5 @@ class BytesTextureProxy extends RawDataTextureProxy implements IBytesTexture {
     getPixels(px: number, py: number, pw: number, ph: number, outBytes: Uint8Array): void {
         super.getPixels(px, py, pw, ph, outBytes);
     }
-    toString(): string {
-        return "[BytesTextureProxy(width=" + this.getWidth() + ",height=" + this.getHeight() + ")]";
-    }
 }
 export default BytesTextureProxy;

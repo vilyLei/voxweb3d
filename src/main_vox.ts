@@ -72,7 +72,9 @@
 
 //  import { DemoFBOInsRTT as Demo } from "./demo/DemoFBOInsRTT";
 
- import { DemoFBOInsFloatRTT as Demo } from "./demo/DemoFBOInsFloatRTT";
+//  import { DemoFBOInsFloatRTT as Demo } from "./demo/DemoFBOInsFloatRTT";
+
+//  import { DemoAlphaFormatFloatRTT as Demo } from "./demo/DemoAlphaFormatFloatRTT";
 
 //  import { DemoFBOInsMRT as Demo } from "./demo/DemoFBOInsMRT";
 
@@ -88,6 +90,8 @@
 //  import {DemoDepthBlur2 as Demo} from "./demo/DemoDepthBlur2";
 
 //  import {DemoDepthTex as Demo} from "./demo/DemoDepthTex";
+
+//  import {DemoFBOInsDepthRTT as Demo} from "./demo/DemoFBOInsDepthRTT";
 
 //  import * as DemoPNG from "./example/DemoPNG";
 //  import Demo = DemoPNG.example.DemoPNG;
@@ -507,6 +511,7 @@
 //  import {BakeExample as Demo} from "./bake/demo/bakePbr/BakeExample";
 //  import {BakePBR as Demo} from "./bake/demo/bakePbr/BakePBR";
 //  import {BakeFlow as Demo} from "./bake/demo/bakePbr/BakeFlow";
+ import {BakeFlow2 as Demo} from "./bake/demo/bakePbr/BakeFlow2";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////     distributed runtime     ////////////s//////////////

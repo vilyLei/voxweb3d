@@ -25,6 +25,7 @@ class HttpFileLoader {
 		responseType: XMLHttpRequestResponseType = "blob",
 		headRange: string = ""
 	) {
+		// console.log("HttpFileLoader::load(), A url: ", url);
 		// console.log("loadBinBuffer, headRange != '': ", headRange != "");
 		if(onLoad == null) {
 			throw Error("onload == null !!!");
@@ -42,6 +43,7 @@ class HttpFileLoader {
 
 		request.onload = (e) => {
 			// console.log("loaded binary buffer request.status: ", request.status, e);
+			// console.log("HttpFileLoader::load(), B url: ", url);
 			if (request.status <= 206) {
 				reader.readAsArrayBuffer(request.response);
 			} else if(onError != null){

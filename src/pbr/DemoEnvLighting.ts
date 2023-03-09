@@ -185,9 +185,9 @@ export class DemoEnvLighting {
             //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getTexByUrl("static/assets/broken_iron.jpg")]);
             //  this.m_rscene.addEntity(plane);
 
-            this.initFloatCube();
+            // this.initFloatCube();
 
-            // this.initTexLighting();
+            this.initTexLighting();
 
             // this.initModel();
 
@@ -269,7 +269,7 @@ export class DemoEnvLighting {
                 let material: PBRTexLightingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
                 //let material:PBREnvLightingMaterial = this.makeMaterial(metallic, roughness, 1.3);
                 sph.setMaterial(material);
-                sph.initialize(radius, 20, 20, this.getTexList(nameList[Math.round(Math.random() * 10000) % nameList.length]));
+                sph.initialize(radius, 30, 30, this.getTexList(nameList[Math.round(Math.random() * 10000) % nameList.length]));
 
                 pos.copyFrom(beginPos);
                 pos.x += disV3.x * j;
@@ -336,11 +336,11 @@ export class DemoEnvLighting {
     private getTexList(name: string = "rusted_iron"): TextureProxy[] {
         let list: TextureProxy[] = [
 
-            this.getTexByUrl("static/assets/pbrt/" + name + "/albedo.png"),
-            this.getTexByUrl("static/assets/pbrt/" + name + "/normal.png"),
-            this.getTexByUrl("static/assets/pbrt/" + name + "/metallic.png"),
-            this.getTexByUrl("static/assets/pbrt/" + name + "/roughness.png"),
-            this.getTexByUrl("static/assets/pbrt/" + name + "/ao.png"),
+            this.getTexByUrl("static/assets/pbr/" + name + "/albedo.jpg"),
+            this.getTexByUrl("static/assets/pbr/" + name + "/normal.jpg"),
+            this.getTexByUrl("static/assets/pbr/" + name + "/metallic.jpg"),
+            this.getTexByUrl("static/assets/pbr/" + name + "/roughness.jpg"),
+            this.getTexByUrl("static/assets/pbr/" + name + "/ao.jpg"),
         ];
         return list;
     }

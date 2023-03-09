@@ -11,7 +11,7 @@ import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
 import MaterialBase from "../../vox/material/MaterialBase";
 import RenderProxy from "../../vox/render/RenderProxy";
 
-export class DepZColorShaderBuffer extends ShaderCodeBuffer {
+class DepZColorShaderBuffer extends ShaderCodeBuffer {
 	constructor() {
 		super();
 	}

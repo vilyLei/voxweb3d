@@ -50,11 +50,7 @@ class RawCodeShaderBuffer extends ShaderCodeBuffer {
 		return this.m_vtxCode;
 	}
 	getUniqueShaderName(): string {
-		//console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
 		return this.m_uniqueName;
-	}
-	toString(): string {
-		return "[RawCodeShaderBuffer()]";
 	}
 }
 
@@ -122,6 +118,15 @@ export default class ShaderMaterial extends MaterialBase implements IShaderMater
 	}
 	getUniformDataAt(uniform_name: string): Float32Array {
 		if(this.m_map.has(uniform_name))return this.m_map.get(uniform_name);
+		return null;
+	}
+	getUniformDataByIndex(index: number): {data: Float32Array, name: string} {
+		if (this.m_uniformData) {
+			const ls = this.m_uniformData.uniformNameList;
+			if(ls.length >= index && index < ls.length) {
+				return {data: this.m_uniformData.dataList[index], name: ls[index]};
+			}
+		}
 		return null;
 	}
 	getCodeBuf(): ShaderCodeBuffer {

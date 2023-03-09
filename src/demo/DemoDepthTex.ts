@@ -6,11 +6,9 @@ import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-import DepthTextureProxy from "../vox/texture/DepthTextureProxy";
 import CameraTrack from "../vox/view/CameraTrack";
 import MouseEvent from "../vox/event/MouseEvent";
 import DemoInstance from "./DemoInstance";
-import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 
 import DepZColorMaterial from "../demo/material/DepZColorMaterial";
 import { IDepthTexture } from "../vox/render/texture/IDepthTexture";
@@ -21,9 +19,7 @@ export class DemoDepthTex extends DemoInstance {
 		super();
 	}
 	private m_depTex: IDepthTexture = null;
-	private m_camTrack: CameraTrack = null;
-	// private m_statusDisp: RenderStatusDisplay = null;
-	// private m_profileInstance: ProfileInstance = new ProfileInstance();
+
 	protected initializeSceneParam(param: RendererParam): void {
 		this.m_processTotal = 4;
 		param.maxWebGLVersion = 1;
@@ -33,9 +29,8 @@ export class DemoDepthTex extends DemoInstance {
 
 	protected initializeSceneObj(): void {
 		console.log("DemoDepthTex::initialize()......");
-		this.m_camTrack = new CameraTrack();
-		this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
-
+		
+		
 		RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 		RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 		//RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;

@@ -277,15 +277,15 @@ export default class FBOInstance implements IFBOInstance {
 	 * @param fboIndex FBO 对象的序号
 	 * @param width FBO 对象的viewport width, if width < 1, viewport width is stage width;
 	 * @param height FBO 对象的viewport height, if height < 1, viewport width is stage height;
-	 * @param enableDepth FBO 对象的depth读写是否开启
-	 * @param enableStencil FBO 对象的stencil读写是否开启
-	 * @param multisampleLevel FBO 对象的multisample level
+	 * @param enableDepth FBO 对象的depth读写是否开启, the default value is true
+	 * @param enableStencil FBO 对象的stencil读写是否开启, the default value is false
+	 * @param multisampleLevel FBO 对象的multisample level, the default value is 0
 	 */
 	createFBOAt(
 		fboIndex: number,
 		width: number,
 		height: number,
-		enableDepth: boolean = false,
+		enableDepth: boolean = true,
 		enableStencil: boolean = false,
 		multisampleLevel: number = 0
 	): void {
@@ -306,9 +306,9 @@ export default class FBOInstance implements IFBOInstance {
 	 * @param fboIndex FBO 对象的序号
 	 * @param width FBO 对象的viewport width, if width < 1, viewport width is stage width;
 	 * @param height FBO 对象的viewport height, if height < 1, viewport width is stage height;
-	 * @param enableDepth FBO 对象的depth读写是否开启
-	 * @param enableStencil FBO 对象的stencil读写是否开启
-	 * @param multisampleLevel FBO 对象的multisample level
+	 * @param enableDepth FBO 对象的depth读写是否开启, the default value is true
+	 * @param enableStencil FBO 对象的stencil读写是否开启, the default value is false
+	 * @param multisampleLevel FBO 对象的multisample level, the default value is 0
 	 */
 	createReadFBOAt(
 		fboIndex: number,
@@ -334,9 +334,9 @@ export default class FBOInstance implements IFBOInstance {
 	 * @param fboIndex FBO 对象的序号
 	 * @param width FBO 对象的viewport width, if width < 1, viewport width is stage width;
 	 * @param height FBO 对象的viewport height, if height < 1, viewport width is stage height;
-	 * @param enableDepth FBO 对象的depth读写是否开启
-	 * @param enableStencil FBO 对象的stencil读写是否开启
-	 * @param multisampleLevel FBO 对象的multisample level
+	 * @param enableDepth FBO 对象的depth读写是否开启, the default value is true
+	 * @param enableStencil FBO 对象的stencil读写是否开启, the default value is false
+	 * @param multisampleLevel FBO 对象的multisample level, the default value is 0
 	 */
 	createDrawFBOAt(
 		fboIndex: number,

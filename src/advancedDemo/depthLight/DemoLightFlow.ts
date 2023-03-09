@@ -14,6 +14,7 @@ import { SceneFogFlow } from "../../advancedDemo/depthLight/scene/SceneFogFlow";
 
 import { MouseInteraction } from "../../vox/ui/MouseInteraction";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
+import DebugFlag from "../../vox/debug/DebugFlag";
 
 export class DemoLightFlow {
     constructor() {
@@ -28,9 +29,12 @@ export class DemoLightFlow {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
             let rparam = new RendererParam();
-            rparam.setCamProject(45.0, 0.5, 8000.0);
+            // rparam.maxWebGLVersion = 1;
+            rparam.setCamProject(45.0, 1.0, 9000.0);
             rparam.setCamPosition(2500.0, 2500.0, 2500.0);
-            //rparam.setCamPosition(3000.0,0.0,3000.0);
+            rparam.setAttriAntialias(true);
+            rparam.setDitherEanbled(true);
+            // rparam.syncBgColor = false;
 
             this.m_rc = new RendererScene();
             this.m_rc.initialize(rparam, 6);
@@ -47,6 +51,7 @@ export class DemoLightFlow {
 
     run(): void {
         // logic run
+        this.m_rc.setClearRGBAColor4f(1.0,1.0,1.0,1.0);
         this.m_esc.runBegin();
 
         this.m_rc.runBegin();
@@ -57,6 +62,7 @@ export class DemoLightFlow {
 
         this.m_rc.runEnd();
         this.m_esc.runEnd();
+        DebugFlag.Flag_0 = 0;
     }
 }
 
