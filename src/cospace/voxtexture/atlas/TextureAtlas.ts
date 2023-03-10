@@ -91,7 +91,7 @@ export default class TextureAtlas implements ITextureAtlas {
                 texRect.y += area.offset;
                 texRect.width -= area.offset * 2;
                 texRect.height -= area.offset * 2;
-                texRect.flipY(this.m_height);
+                // texRect.flipY(this.m_height);
 
                 let uMin: number = texRect.x / this.m_width;
                 let vMin: number = texRect.y / this.m_height;

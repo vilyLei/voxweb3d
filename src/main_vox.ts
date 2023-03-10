@@ -166,7 +166,7 @@
 
 //  import {DemoCubeFloatTex as Demo} from "./demo/DemoCubeFloatTex";
 
- import {DemoFloatTex2 as Demo} from "./example/DemoFloatTex2";
+//  import {DemoFloatTex2 as Demo} from "./example/DemoFloatTex2";
 
 //  import {DemoMixProgress as Demo} from "./demo/DemoMixProgress";
 
@@ -510,7 +510,7 @@
 //  import {BakeExample as Demo} from "./bake/demo/bakePbr/BakeExample";
 //  import {BakePBR as Demo} from "./bake/demo/bakePbr/BakePBR";
 //  import {BakeFlow as Demo} from "./bake/demo/bakePbr/BakeFlow";
-//  import {BakeFlow2 as Demo} from "./bake/demo/bakePbr/BakeFlow2";
+ import {BakeFlow2 as Demo} from "./bake/demo/bakePbr/BakeFlow2";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////     distributed runtime     ////////////s//////////////

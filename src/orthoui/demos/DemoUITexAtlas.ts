@@ -20,25 +20,12 @@ import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwing
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 
 import RendererState from "../../vox/render/RendererState";
-import { GLBlendMode, CullFaceMode, DepthTestMode } from "../../vox/render/RenderConst";
 import RendererSubScene from "../../vox/scene/RendererSubScene";
-import ColorRectImgButton from "../../orthoui/button/ColorRectImgButton";
 import DebugFlag from "../../vox/debug/DebugFlag";
-import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
-import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
-import CanvasTextureTool from "../assets/CanvasTextureTool";
-import ProgressBar from "../button/ProgressBar";
-import ProgressDataEvent from "../../vox/event/ProgressDataEvent";
-import EventBase from "../../vox/event/EventBase";
-import SelectionBar from "../button/SelectionBar";
-import SelectionEvent from "../../vox/event/SelectionEvent";
-import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
-import RGBColorPanel, { RGBColoSelectEvent } from "../panel/RGBColorPanel";
 import Color4 from "../../vox/material/Color4";
 import Vector3D from "../../vox/math/Vector3D";
 import Line3DEntity from "../../vox/entity/Line3DEntity";
 import AABB2D from "../../vox/geom/AABB2D";
-import TextureAtlas from "../../vox/texture/TextureAtlas";
 import ImageTextureAtlas from "../../vox/texture/ImageTextureAtlas";
 import { TexArea } from "../../vox/texture/TexAreaNode";
 import Box3DEntity from "../../vox/entity/Box3DEntity";
@@ -107,8 +94,8 @@ Learning a language is hard
 
         let fontColor: Color4 = new Color4();
 
-        let altas0: ImageTextureAtlas = new ImageTextureAtlas(this.m_rscene, this.canvasWidth, this.canvasHeight, new Color4(0.0, 0.0, 0.0, 1.0), false, debug);
-        let altas1: ImageTextureAtlas = new ImageTextureAtlas(this.m_rscene, this.canvasWidth, this.canvasHeight, new Color4(0.0, 0.0, 0.0, 1.0), false, debug);
+        let altas0 = new ImageTextureAtlas(this.m_rscene, this.canvasWidth, this.canvasHeight, new Color4(0.0, 0.0, 0.0, 1.0), false, debug);
+        let altas1 = new ImageTextureAtlas(this.m_rscene, this.canvasWidth, this.canvasHeight, new Color4(0.0, 0.0, 0.0, 1.0), false, debug);
         altas0.setMinSize(16);
         altas1.setMinSize(16);
 

@@ -2,6 +2,7 @@ import IRendererScene from "../../vox/scene/IRendererScene";
 import IRendererSceneNode from "./IRendererSceneNode";
 import IRendererSceneGraphStatus from "./IRendererSceneGraphStatus";
 import IRendererParam from "./IRendererParam";
+import IRenderer from "./IRenderer";
 
 export default interface IRendererSceneGraph extends IRendererSceneGraphStatus {
 

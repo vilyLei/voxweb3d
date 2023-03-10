@@ -36,6 +36,7 @@ import CoVtxBufConst from "./mesh/CoVtxBufConst";
 import IRendererSceneGraph from "../../vox/scene/IRendererSceneGraph";
 import IProgressDataEvent from "../../vox/event/IProgressDataEvent";
 import IVtxDrawingInfo from "../../vox/render/vtx/IVtxDrawingInfo";
+import IRenderer from "../../vox/scene/IRenderer";
 
 interface CoVec3 {
 

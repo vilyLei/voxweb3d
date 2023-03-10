@@ -9,6 +9,7 @@ import IRawMesh from "../../vox/mesh/IRawMesh";
 import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 
 import { CoGeomDataType, CoTextureDataUnit, CoGeomDataUnit } from "../app/CoSpaceAppData";
+import IColor4 from "../../vox/material/IColor4";
 
 interface ICoEntity {
 
@@ -24,6 +25,12 @@ interface ICoEntity {
 	 * @param texEnabled texture enabled in the material, the default value is false.
 	 */
 	createDisplayEntityFromModel(model: CoGeomDataType, pmaterial?: IRenderMaterial, texEnabled?: boolean): ITransformEntity;
+	/**
+	 * @param beginV line begin position
+	 * @param endV line begin position
+	 * @param color line color, the default value is null
+	 */
+	createLine(beginV: IVector3D, endV: IVector3D, color?: IColor4): IMouseEventEntity;
 
 	createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D): ITransformEntity;
 	/**

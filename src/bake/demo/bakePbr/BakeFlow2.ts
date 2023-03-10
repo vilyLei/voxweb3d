@@ -2,30 +2,22 @@ import RendererDevice from "../../../vox/render/RendererDevice";
 import RendererParam from "../../../vox/scene/RendererParam";
 import RenderStatusDisplay from "../../../vox/scene/RenderStatusDisplay";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
-import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
 import TextureProxy from "../../../vox/texture/TextureProxy";
 
 import MouseEvent from "../../../vox/event/MouseEvent";
 import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
 import CameraTrack from "../../../vox/view/CameraTrack";
 import RendererScene from "../../../vox/scene/RendererScene";
-import ProfileInstance from "../../../voxprofile/entity/ProfileInstance";
 import CameraStageDragSwinger from "../../../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../../../voxeditor/control/CameraZoomController";
 
 import Vector3D from "../../../vox/math/Vector3D";
 import Color4 from "../../../vox/material/Color4";
 
-import BinaryLoader from "../../../vox/assets/BinaryLoader";
-
 import PBREnvLightingMaterial from "../../../pbr/material/PBREnvLightingMaterial";
 import PBRBakingMaterial from "./PBRBakingMaterial";
-import { IFloatCubeTexture } from "../../../vox/render/texture/IFloatCubeTexture";
-import TextureConst from "../../../vox/texture/TextureConst";
 import IMeshBase from "../../../vox/mesh/IMeshBase";
-import Sphere3DMesh from "../../../vox/mesh/Sphere3DMesh";
 import RendererState from "../../../vox/render/RendererState";
-import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
 
 import { CoGeomDataType, CoDataFormat, CoGeomModelLoader } from "../../../cospace/app/common/CoGeomModelLoader";
 import { EntityLayouter } from "../../../vox/utils/EntityLayouter";
@@ -34,13 +26,12 @@ import SurfaceNormalCalc from "../../../vox/geom/SurfaceNormalCalc";
 import Matrix4 from "../../../vox/math/Matrix4";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import ITransformEntity from "../../../vox/entity/ITransformEntity";
-import { BinaryTextureLoader } from "../../../cospace/modules/loaders/BinaryTextureLoader";
-import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
-import { FileIO } from "../../../app/slickRoad/io/FileIO";
-import { HttpFileLoader } from "../../../cospace/modules/loaders/HttpFileLoader";
 import { ModelData, ModelDataLoader } from "./ModelDataLoader";
 import { BakedViewer } from "./BakedViewer";
 import { Bin4DataLoader } from "./Bin4DataLoader";
+import VtxDrawingInfo from "../../../vox/render/vtx/VtxDrawingInfo";
+
+type BakingParamType = { su: number; sv: number; bakeUrl: string; bakeType: number, drawLine: boolean, drawShape: boolean };
 
 export class BakeFlow2 {
 	constructor() {}
@@ -52,9 +43,7 @@ export class BakeFlow2 {
 	private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
 	private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
-	private m_materials: PBREnvLightingMaterial[] = [];
 	private m_texMaterials: PBRBakingMaterial[] = [];
-	private m_modelLoader = new CoGeomModelLoader();
 	private m_layouter = new EntityLayouter();
 
 	private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
@@ -120,6 +109,9 @@ export class BakeFlow2 {
 	private initModel2(): void {
 		this.m_bakedViewer = new BakedViewer(this.m_rscene, this.m_texLoader);
 
+		let bakeUrl = "static/private/bake/ctmUnwrap2/ctmUnwrap2.png";
+		let uvParams: BakingParamType = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: 0, drawLine: false, drawShape: true };
+
 		let modelLoader = new ModelDataLoader();
 		modelLoader.setListener((modelData: ModelData, uv2ModelData: ModelData, uvData: Float32Array): void => {
 			console.log("loaded model all in main.");
@@ -138,7 +130,7 @@ export class BakeFlow2 {
 				} else if (uvData != null) {
 					models[i].uvsList.push(uvData);
 				}
-				this.createEntity(models[i], transforms != null ? transforms[i] : null, { su: 1.0, sv: 1.0 });
+				this.createEntity(models[i], transforms != null ? transforms[i] : null, uvParams);
 			}
 			this.updateEntities();
 		});
@@ -174,7 +166,6 @@ export class BakeFlow2 {
 		uvs2Url = "static/private/bake/ctmUnwrap/unwrapuv.bin";
 		nvsUrl = "static/private/bake/ctmUnwrap/normal.bin";
 
-        
 		// //ios ctmUnwrap
 		// ivsUrl = "static/private/bake/ios01/ivs.bin";
 		// vsUrl = "static/private/bake/ios01/vs.bin";
@@ -182,8 +173,18 @@ export class BakeFlow2 {
 		// uvs2Url = "static/private/bake/ios01/uvs2.bin";
 		// nvsUrl = "static/private/bake/ios01/nvs.bin";
 
-        let uvParams = { su: 1.0, sv: 1.0 };
-        uvParams = { su: 0.01, sv: 0.01 };
+		//ctmUnwrap
+		vsUrl = "static/private/bake/ctmUnwrap2/vertex.bin";
+		uvs1Url = "static/private/bake/ctmUnwrap2/olduv.bin";
+		uvs2Url = "static/private/bake/ctmUnwrap2/unwrapuv.bin";
+		nvsUrl = "static/private/bake/ctmUnwrap2/normal.bin";
+		let bakeUrl = "static/private/bake/ctmUnwrap2/ctmUnwrap2.png";
+
+		this.m_drawTimes = 8;
+		this.m_circleTimes = 8;
+
+		let uvParams: BakingParamType = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: 0, drawLine: false, drawShape: true };
+		uvParams = { su: 0.01, sv: 0.01, bakeUrl: bakeUrl, bakeType: 0, drawLine: true, drawShape: true };
 
 		let loader = new Bin4DataLoader();
 		loader.setListener((model: CoGeomDataType): void => {
@@ -200,17 +201,8 @@ export class BakeFlow2 {
 	private m_offsetR = 0.0001;
 	private m_drawTimes = 1;
 	private m_circleTimes = 1;
-	// private m_modelUrl = "static/private/fbx/hat01_0.fbx";
-	// private m_modelUrl = "static/private/fbx/hat01_0.obj";
-	// private m_modelUrl = "static/private/fbx/hat01_0.fbx";
-	// private m_modelUrl = "static/private/fbx/hat01_1.fbx";
-	private m_modelUrl = "static/private/ctm/6.ctm";
-	// private m_uv2ModelUrl = "static/private/fbx/hat01_0_unwrap.fbx";
-	private m_uv2ModelUrl = "";
-	// private m_uvDataUrl = "static/private/fbx/uvData1.uv";
-	// private m_uvDataUrl = "static/private/fbx/hat01_1.uv2";
-	private m_uvDataUrl = "static/private/ctm/6.uv2";
-	protected createEntity(model: CoGeomDataType, transform: Float32Array = null, uvParam: { su: number; sv: number }): void {
+
+	protected createEntity(model: CoGeomDataType, transform: Float32Array = null, bvParam: BakingParamType): void {
 		if (model != null) {
 			console.log("createEntity(), this.m_modelIndex: ", this.m_modelIndex);
 			console.log("createEntity(), model: ", model);
@@ -219,32 +211,14 @@ export class BakeFlow2 {
 			// fio.downloadBinFile(model.uvsList[0], "uvData1","uv");
 
 			this.m_offsetR = 0.004;
-			let uvOffset = uvParam;
-			// let uvOffset = { su: 1.0, sv: 1.0 };
-			// let uvOffset = { su: 0.01, sv: 0.01 };
-
-			let bakedTexUrl = "static/private/bake/icoSph_1.png";
-			bakedTexUrl = "static/private/bake/hat01_0.png";
-			// bakedTexUrl = "static/private/bake/hat01_1.png";
-			bakedTexUrl = "static/private/bake/hat01_0a.png";
-			bakedTexUrl = "static/private/bake/hat01_1a.png";
-			bakedTexUrl = "static/private/bake/ctmUnwrap/ctmUnwrap.png";
-            
 			console.log("model.uvsList: ", model.uvsList);
 
-			// model.uvsList[0] = model.uvsList[1];
-			// model.uvsList[1] = model.uvsList[0];
-
-			this.initTexLightingBakeWithModel(-1, model, transform, uvOffset, bakedTexUrl);
+			this.initTexLightingBakeWithModel(bvParam.bakeType, model, transform, bvParam);
 		}
 	}
-	private initTexLightingBakeWithModel(
-		bakeType: number,
-		model: CoGeomDataType,
-		transform: Float32Array,
-		uvParam: { su: number; sv: number },
-		bakedTexUrl: string
-	): void {
+
+	private initTexLightingBakeWithModel(bakeType: number, model: CoGeomDataType, transform: Float32Array, bvParam: BakingParamType): void {
+
 		let vs = model.vertices;
 		let ivs = model.indices;
 		let vtCount = vs.length / 3;
@@ -257,11 +231,10 @@ export class BakeFlow2 {
 			SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs);
 		}
 		let uvs = model.uvsList;
-		// uvs[1] = uvs[0];
 		console.log("#### uvs[0].length: ", uvs[0].length);
 		if (uvs.length > 1) console.log("#### uvs[1].length: ", uvs[1].length);
 		if (bakeType < 0) {
-			let entity = this.m_bakedViewer.createEntity(model, bakedTexUrl);
+			let entity = this.m_bakedViewer.createEntity(model, bvParam.bakeUrl);
 			entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
 			let mat4 = transform != null ? new Matrix4(transform) : null;
 			this.m_layouter.layoutAppendItem(entity, mat4);
@@ -280,22 +253,23 @@ export class BakeFlow2 {
 		roughness = 0.4;
 
 		let materialPbr = this.makeTexMaterial(metallic, roughness, 1.0);
-		materialPbr.setScaleUV(uvParam.su, uvParam.sv);
+		materialPbr.setScaleUV(bvParam.su, bvParam.sv);
 		materialPbr.bake = bake;
 		materialPbr.setTextureList(this.getTexList(nameList[nameI]));
 		materialPbr.initializeByCodeBuf(true);
 		if (bakeType >= 0) {
 			material = materialPbr;
 		}
-		console.log("xxxxx bake: ", bake);
+		console.log("xxxxx bake: ", bake, ", bvParam.drawLine: ", bvParam.drawLine);
 		if (bake && bakeType != 3) {
-			// this.createLineDrawWithModel(materialPbr, model, bake, metallic, roughness, nameList[nameI]);
+			if(bvParam.drawLine) {
+				this.createLineDrawWithModel(materialPbr, model, bake, metallic, roughness, nameList[nameI]);
+			}
 			// return;
 		}
 		// console.log("OOOOOO material: ", material);
-
+		
 		let mesh = new DataMesh();
-		// mesh.wireframe  = true;
 		mesh.vbWholeDataEnabled = false;
 		mesh.setVS(model.vertices);
 		mesh.setUVS(model.uvsList[0]);
@@ -307,13 +281,15 @@ export class BakeFlow2 {
 		console.log("mesh.vtxTotal: ", mesh.vtxTotal);
 
 		let entity = new DisplayEntity();
-		if (bakeType == 2) entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+		if (bakeType == 2 || bakeType == 1) entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
 		entity.setMaterial(material);
 		entity.setMesh(mesh);
 
 		if (this.m_vtxRCount >= 0) entity.setIvsParam(this.m_vtxRIndex, this.m_vtxRCount);
 		let visible = bakeType == 0 || bakeType == 2 || bakeType == -1 || bakeType == 3;
-		// entity.setVisible(visible);
+		visible = visible && bvParam.drawShape;
+		entity.setVisible(visible);
+		// entity.setVisible(bvParam.drawShape);
 		if (bakeType == 0) {
 			entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
 		}
@@ -333,10 +309,8 @@ export class BakeFlow2 {
 		roughness: number,
 		texName: string
 	): void {
-		// let material = this.makeTexMaterial(metallic, roughness, 1.0);
 		material = material.clone();
 		material.bake = bake;
-		// material.setTextureList(this.getTexList(texName));
 		material.initializeByCodeBuf(true);
 
 		let mesh = new DataMesh();
@@ -384,6 +358,8 @@ export class BakeFlow2 {
 		material.bake = bake;
 		// material.setTextureList(this.getTexList(texName));
 		material.initializeByCodeBuf(true);
+		material.vtxInfo = new VtxDrawingInfo();
+		material.vtxInfo.setWireframe(true);
 
 		material.setOffsetXY(dx, dy);
 		let entity = new DisplayEntity();

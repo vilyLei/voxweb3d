@@ -46,7 +46,16 @@ class RendererParam implements IRendererParam {
     processFixedState = false;
     
     constructor(div: HTMLDivElement = null) {
+
         this.m_mainDiv = div;
+        if(div) {
+            let str = div.style.width;
+            str = str.slice(0, str.indexOf("px"));
+            this.divW = parseInt(str);
+            str = div.style.height;
+            str = str.slice(0, str.indexOf("px"));
+            this.divH = parseInt(str);
+        }
         this.autoSyncRenderBufferAndWindowSize = div == null;
     }
     /**

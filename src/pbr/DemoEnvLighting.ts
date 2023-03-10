@@ -31,6 +31,7 @@ import { CoGeomDataType, CoDataFormat, CoGeomModelLoader } from "../cospace/app/
 import { EntityLayouter } from "../vox/utils/EntityLayouter";
 import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 import Torus3DEntity from "../vox/entity/Torus3DEntity";
+import { MouseInteraction } from "../vox/ui/MouseInteraction";
 
 class TextureLoader {
 
@@ -112,9 +113,6 @@ export class DemoEnvLighting {
 
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
-    private m_camTrack: CameraTrack = null;
-    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-    private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
@@ -167,13 +165,11 @@ export class DemoEnvLighting {
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
-            this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rscene.getCamera());
-
-            //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-            this.m_statusDisp.initialize();
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+
+            new RenderStatusDisplay(this.m_rscene, true);
+            new MouseInteraction().initialize(this.m_rscene, 0).setAutoRunning(true);
 
 
             // let axis: Axis3DEntity = new Axis3DEntity();
@@ -190,8 +186,6 @@ export class DemoEnvLighting {
             this.initTexLighting();
 
             // this.initModel();
-
-            this.update();
 
         }
     }
@@ -396,13 +390,13 @@ export class DemoEnvLighting {
         ];
         let colorSize: number = 300.0;
         let colorList: Color4[] = [
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize)
+            new Color4().randomRGB(colorSize),
+            new Color4().randomRGB(colorSize),
+            new Color4().randomRGB(colorSize),
+            new Color4().randomRGB(colorSize)
         ];
 
-        let material: PBREnvLightingMaterial = new PBREnvLightingMaterial();
+        let material = new PBREnvLightingMaterial();
         material.setMetallic(metallic);
         material.setRoughness(roughness);
         material.setAO(ao);
@@ -426,32 +420,10 @@ export class DemoEnvLighting {
         //this.m_cameraZoomController.setMoevDistance(evt.wheelDeltaY * 0.5);
     }
 
-    private m_timeoutId: any = -1;
-    private update(): void {
-        if (this.m_timeoutId > -1) {
-            clearTimeout(this.m_timeoutId);
-        }
-        //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
-        this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
-
-        this.m_statusDisp.render();
-    }
-
     run(): void {
-        this.m_statusDisp.update(false);
-
-        this.m_stageDragSwinger.runWithYAxis();
-        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
-
-        //  for(let i: number = 0, il: number = this.m_materials.length; i < il; ++i) {
-        //      this.m_materials[i].setCamPos(this.m_rscene.getCamera().getPosition());
-        //  }
-
-
-        this.m_rscene.run(true);
-
-        //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-        //this.m_profileInstance.run();
+        if(this.m_rscene) {
+            this.m_rscene.run(true);
+        }
     }
 }
 export default DemoEnvLighting;

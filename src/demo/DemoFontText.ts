@@ -1,4 +1,3 @@
-
 import RendererDevice from "../vox/render/RendererDevice";
 import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
@@ -22,118 +21,95 @@ import CameraTrack from "../vox/view/CameraTrack";
 
 import { EntityDispQueue } from "./base/EntityDispQueue";
 import CameraBase from "../vox/view/CameraBase";
+import RendererScene from "../vox/scene/RendererScene";
+import { MouseInteraction } from "../vox/ui/MouseInteraction";
 
 export class DemoFontText {
-    constructor() {
-    }
-    private m_renderer: RendererInstance = null;
-    private m_rcontext: RendererInstanceContext = null;
-    private m_texLoader: ImageTextureLoader = null;
-    private m_texBlock: TextureBlock;
-    private m_camTrack: CameraTrack = null;
-    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-    private m_equeue: EntityDispQueue = new EntityDispQueue();
+	constructor() {}
+	private m_rscene: RendererScene = null;
+	private m_texLoader: ImageTextureLoader = null;
+	private m_equeue: EntityDispQueue = new EntityDispQueue();
+	private m_statusDisp: RenderStatusDisplay;
+	private m_fpsTextBill: TextBillboard3DEntity = null;
+	private m_textBill: TextBillboard3DEntity = null;
 
-    private m_fpsTextBill: TextBillboard3DEntity = null;
-    private m_textBill: TextBillboard3DEntity = null;
-    
-    private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }
-    initialize(): void {
-        console.log("DemoFontText::initialize()......");
-        if (this.m_rcontext == null) {
+	private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+		let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+		ptex.mipmapEnabled = mipmapEnabled;
+		if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
+		return ptex;
+	}
+	initialize(): void {
+		console.log("DemoFontText::initialize()......");
+		if (this.m_rscene == null) {
+			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
-            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+			let rparam = new RendererParam();
+			rparam.setCamProject(45.0, 0.1, 3000.0);
+			rparam.setCamPosition(500.0, 500.0, 500.0);
+			this.m_rscene = new RendererScene();
+			this.m_rscene.initialize(rparam);
+			let stage3D = this.m_rscene.getStage3D();
 
-            this.m_statusDisp.initialize();
-            let rparam: RendererParam = new RendererParam();
-            rparam.setCamProject(45.0, 0.1, 3000.0);
-            rparam.setCamPosition(500.0, 500.0, 500.0);
-            this.m_renderer = new RendererInstance();
-            let stage3D: Stage3D = new Stage3D(this.m_renderer.getRCUid(), document);
-            this.m_renderer.__$setStage3D(stage3D);
-            this.m_renderer.initialize(rparam, new CameraBase());
-            this.m_renderer.appendProcess();
-            this.m_renderer.appendProcess();
-            this.m_renderer.appendProcess();
-            this.m_rcontext = this.m_renderer.getRendererContext() as any;
+			this.m_statusDisp = new RenderStatusDisplay(this.m_rscene, true);
+			new MouseInteraction().initialize(this.m_rscene, 0).setAutoRunning(true);
 
-            H5FontSystem.GetInstance().setRenderProxy(this.m_renderer.getRenderProxy());
-            H5FontSystem.GetInstance().initialize("fontTex", 18, 512, 512, true, true);
+			H5FontSystem.GetInstance().setRenderProxy(this.m_rscene.getRenderProxy());
+			H5FontSystem.GetInstance().initialize("fontTex", 18, 512, 512, true, true);
 
-            this.m_texBlock = new TextureBlock();
-            this.m_texBlock.setRenderer(this.m_renderer.getRenderProxy());
-            this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
-            stage3D.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-            this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
+			this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+			stage3D.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
 
-            RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
-            RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
+			let paxis = new Axis3DEntity();
+			paxis.initialize(300.0);
+			this.m_rscene.addEntity(paxis, 0);
 
+			let textBill = new TextBillboard3DEntity();
+			//textBill.alignLeftCenter();
+			textBill.alignCenter();
+			textBill.initialize("嗨");
+			textBill.setXYZ(Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0);
+			textBill.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+			this.m_rscene.addEntity(textBill, 1);
+			this.m_textBill = textBill;
 
-            let paxis: Axis3DEntity = new Axis3DEntity();
-            paxis.initialize(300.0);
-            this.m_renderer.addEntity(paxis, 0);
+			textBill = new TextBillboard3DEntity();
+			textBill.initialize("哇塞");
+			textBill.setXYZ(Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0);
+			this.m_rscene.addEntity(textBill);
 
-            let textBill: TextBillboard3DEntity = new TextBillboard3DEntity();
-            //textBill.alignLeftCenter();
-            textBill.alignCenter();
-            textBill.initialize("嗨");
-            textBill.setXYZ(Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0);
-            textBill.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
-            this.m_renderer.addEntity(textBill, 1);
-            this.m_textBill = textBill;
+			this.m_fpsTextBill = new TextBillboard3DEntity();
+			this.m_fpsTextBill.initialize(this.m_statusDisp.getFPSStr());
+			this.m_fpsTextBill.setRGB3f(Math.random() + 0.1, Math.random() + 0.1, Math.random() + 0.1);
+			//this.m_fpsTextBill.setRGB3f(0.0,1.0,1.0);
+			this.m_fpsTextBill.setXYZ(Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0);
+			this.m_rscene.addEntity(this.m_fpsTextBill);
+			this.m_fpsTextBill.__$setRenderProxy(this.m_rscene.getRenderProxy());
+		}
+	}
+	mouseDownListener(evt: any): void {
+		this.m_textBill.setText("事情要做好" + "." + Math.round(Math.random() * 100));
+		this.m_textBill.updateMeshToGpu(this.m_rscene.getRenderProxy());
+		this.m_textBill.update();
+	}
+	private m_delayTime: number = 40;
+	run(): void {
+		if (this.m_rscene) {
+			if (this.m_delayTime < 0) {
+				if (this.m_fpsTextBill != null) {
+					this.m_fpsTextBill.setRGB3f(Math.random() + 0.1, Math.random() + 0.1, Math.random() + 0.1);
+					this.m_fpsTextBill.setText(this.m_statusDisp.getFPSStr() + "." + Math.round(Math.random() * 100));
+					this.m_fpsTextBill.updateMeshToGpu();
+					this.m_fpsTextBill.update();
+				}
+				this.m_delayTime = 40.0;
+			}
+			this.m_delayTime--;
 
-            textBill = new TextBillboard3DEntity();
-            textBill.initialize("哇塞");
-            textBill.setXYZ(Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0);
-            this.m_renderer.addEntity(textBill);
+			this.m_equeue.run();
 
-            this.m_fpsTextBill = new TextBillboard3DEntity();
-            this.m_fpsTextBill.initialize(this.m_statusDisp.getFPSStr());
-            this.m_fpsTextBill.setRGB3f(Math.random() + 0.1, Math.random() + 0.1, Math.random() + 0.1);
-            //this.m_fpsTextBill.setRGB3f(0.0,1.0,1.0);
-            this.m_fpsTextBill.setXYZ(Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0);
-            this.m_renderer.addEntity(this.m_fpsTextBill);
-            this.m_fpsTextBill.__$setRenderProxy(this.m_renderer.getRenderProxy());
-
-        }
-    }
-    mouseDownListener(evt: any): void {
-        this.m_textBill.setText("事情要做好" + "." + Math.round(Math.random() * 100));
-        this.m_textBill.updateMeshToGpu(this.m_renderer.getRenderProxy());
-        this.m_textBill.update();
-    }
-    private m_delayTime: number = 40;
-    run(): void {
-        if (this.m_delayTime < 0) {
-            if (this.m_fpsTextBill != null) {
-                this.m_fpsTextBill.setRGB3f(Math.random() + 0.1, Math.random() + 0.1, Math.random() + 0.1);
-                this.m_fpsTextBill.setText(this.m_statusDisp.getFPSStr() + "." + Math.round(Math.random() * 100));
-                this.m_fpsTextBill.updateMeshToGpu();
-                this.m_fpsTextBill.update();
-            }
-            this.m_delayTime = 40.0;
-        }
-        this.m_delayTime--;
-
-        this.m_equeue.run();
-        this.m_statusDisp.update();
-
-        this.m_rcontext.setClearRGBColor3f(0.0, 0.5, 0.0);
-        this.m_rcontext.renderBegin();
-
-        this.m_renderer.update();
-        this.m_renderer.run();
-
-        this.m_rcontext.runEnd();
-        this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-        this.m_rcontext.updateCamera();
-    }
+			this.m_rscene.run();
+		}
+	}
 }
 export default DemoFontText;

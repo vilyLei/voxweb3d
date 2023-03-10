@@ -15,14 +15,13 @@ import { ICoRScene } from "../voxengine/ICoRScene";
 declare var CoRScene: ICoRScene;
 import { ICoMesh } from "../voxmesh/ICoMesh";
 import IDefault3DMaterial from "../../vox/material/mcase/IDefault3DMaterial";
+import IColor4 from "../../vox/material/IColor4";
 declare var CoMesh: ICoMesh;
 
 function createDisplayEntityFromModel(model: CoGeomDataType, material: IRenderMaterial = null, texEnabled: boolean = false): ITransformEntity {
-	
 	return CoRScene.createDisplayEntityFromModel(model, material, texEnabled);
 }
-function createDisplayEntityWithDataMesh(mesh: IDataMesh, pmaterial: IRenderMaterial,texEnabled: boolean = false): ITransformEntity {
-	
+function createDisplayEntityWithDataMesh(mesh: IDataMesh, pmaterial: IRenderMaterial, texEnabled: boolean = false): ITransformEntity {
 	return CoRScene.createDisplayEntityWithDataMesh(mesh, pmaterial, texEnabled);
 }
 function createDisplayEntity(): ITransformEntity {
@@ -34,13 +33,25 @@ function createMouseEventEntity(): IMouseEventEntity {
 function createBoundsEntity(): IBoundsEntity {
 	return CoRScene.createBoundsEntity();
 }
-
+function createLine(beginV: IVector3D, endV: IVector3D, color: IColor4 = null): IMouseEventEntity {
+	if (typeof CoMesh !== "undefined") {
+		let builder = CoMesh.line;
+		let mesh = builder.createLine(beginV, endV);
+		let material = CoRScene.createLineMaterial(true);
+		if(color != null)material.setColor(color);
+		let entity = CoRScene.createMouseEventEntity();
+		entity.mouseEnabled = false;
+		entity.setMaterial(material);
+		entity.setMesh(mesh);
+		return entity;
+	}
+	return null;
+}
 function createFreeAxis3DEntity(minV: IVector3D, maxV: IVector3D): ITransformEntity {
 	return CoRScene.createFreeAxis3DEntity(minV, maxV);
 }
 function createAxis3DEntity(size: number = 100.0): ITransformEntity {
-
-	if(size < 0.0001)size = 0.0001;
+	if (size < 0.0001) size = 0.0001;
 	let cf = CoRScene.createVec3;
 	return createFreeAxis3DEntity(cf(), cf(size, size, size));
 }
@@ -49,20 +60,32 @@ function createCrossAxis3DEntity(size: number = 100): ITransformEntity {
 	let min = -0.5 * size;
 	let max = 0.5 * size;
 	let cf = CoRScene.createVec3;
-	return CoRScene.createFreeAxis3DEntity(cf(min,min,min), cf(max,max,max));
+	return CoRScene.createFreeAxis3DEntity(cf(min, min, min), cf(max, max, max));
 }
 
 function createDisplayEntityContainer(): IDisplayEntityContainer {
 	return CoRScene.createDisplayEntityContainer();
 }
 
-function createFixScreenPlane(minX: number = -1.0, minY: number = -1.0, width: number = 2.0, height: number = 2.0, material: IRenderMaterial = null, texEnabled: boolean = false): IDisplayEntity {
-	if(typeof CoMesh !== "undefined") {
+function createFixScreenPlane(
+	minX: number = -1.0,
+	minY: number = -1.0,
+	width: number = 2.0,
+	height: number = 2.0,
+	material: IRenderMaterial = null,
+	texEnabled: boolean = false
+): IDisplayEntity {
+	if (typeof CoMesh !== "undefined") {
 		let builder = CoMesh.plane;
 		let pmt = material;
-		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
-			builder.applyMaterial(pm, pt);
-		}, false);
+		material = initAMaterial(
+			material,
+			texEnabled,
+			(pm: IRenderMaterial, pt: boolean): void => {
+				builder.applyMaterial(pm, pt);
+			},
+			false
+		);
 		let mesh = builder.createFixScreen(minX, minY, width, height);
 		let entity = CoRScene.createDisplayEntity();
 		entity.setMaterial(material);
@@ -71,8 +94,15 @@ function createFixScreenPlane(minX: number = -1.0, minY: number = -1.0, width: n
 	}
 	return null;
 }
-function createXOYPlane(minX: number, minY: number, width: number, height: number, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
-	if(typeof CoMesh !== "undefined") {
+function createXOYPlane(
+	minX: number,
+	minY: number,
+	width: number,
+	height: number,
+	material: IRenderMaterial = null,
+	texEnabled: boolean = false
+): IMouseEventEntity {
+	if (typeof CoMesh !== "undefined") {
 		let builder = CoMesh.plane;
 		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
 			builder.applyMaterial(pm, pt);
@@ -82,8 +112,15 @@ function createXOYPlane(minX: number, minY: number, width: number, height: numbe
 	}
 	return null;
 }
-function createXOZPlane(minX: number, minZ: number, width: number, long: number, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
-	if(typeof CoMesh !== "undefined") {
+function createXOZPlane(
+	minX: number,
+	minZ: number,
+	width: number,
+	long: number,
+	material: IRenderMaterial = null,
+	texEnabled: boolean = false
+): IMouseEventEntity {
+	if (typeof CoMesh !== "undefined") {
 		let builder = CoMesh.plane;
 		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
 			builder.applyMaterial(pm, pt);
@@ -94,8 +131,15 @@ function createXOZPlane(minX: number, minZ: number, width: number, long: number,
 	return null;
 }
 
-function createYOZPlane(minY: number, minZ: number, height: number, long: number, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
-	if(typeof CoMesh !== "undefined") {
+function createYOZPlane(
+	minY: number,
+	minZ: number,
+	height: number,
+	long: number,
+	material: IRenderMaterial = null,
+	texEnabled: boolean = false
+): IMouseEventEntity {
+	if (typeof CoMesh !== "undefined") {
 		let builder = CoMesh.plane;
 		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
 			builder.applyMaterial(pm, pt);
@@ -107,8 +151,7 @@ function createYOZPlane(minY: number, minZ: number, height: number, long: number
 }
 
 function createCube(size: number, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
-	
-	if(typeof CoMesh !== "undefined") {
+	if (typeof CoMesh !== "undefined") {
 		let builder = CoMesh.box;
 		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
 			builder.applyMaterial(pm, pt);
@@ -119,8 +162,7 @@ function createCube(size: number, material: IRenderMaterial = null, texEnabled: 
 	return null;
 }
 function createBox(minV: IVector3D, maxV: IVector3D, material: IRenderMaterial = null, texEnabled: boolean = false): IMouseEventEntity {
-	
-	if(typeof CoMesh !== "undefined") {
+	if (typeof CoMesh !== "undefined") {
 		let builder = CoMesh.box;
 		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
 			builder.applyMaterial(pm, pt);
@@ -131,10 +173,15 @@ function createBox(minV: IVector3D, maxV: IVector3D, material: IRenderMaterial =
 	return null;
 }
 
-function createSphere(radius: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 20, material: IRenderMaterial = null, texEnabled: boolean = false, doubleTriFaceEnabled: boolean = false): IMouseEventEntity {
-	
-	if(typeof CoMesh !== "undefined") {
-
+function createSphere(
+	radius: number,
+	longitudeNumSegments: number = 20,
+	latitudeNumSegments: number = 20,
+	material: IRenderMaterial = null,
+	texEnabled: boolean = false,
+	doubleTriFaceEnabled: boolean = false
+): IMouseEventEntity {
+	if (typeof CoMesh !== "undefined") {
 		let builder = CoMesh.sphere;
 		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
 			builder.applyMaterial(pm, pt);
@@ -145,67 +192,103 @@ function createSphere(radius: number, longitudeNumSegments: number = 20, latitud
 	return null;
 }
 
-function createCone(radius: number, height: number, longitudeNumSegments: number = 20, material: IRenderMaterial = null, texEnabled: boolean = false, alignYRatio: number = -0.5): IMouseEventEntity {
-	
-	if(typeof CoMesh !== "undefined") {
+function createCone(
+	radius: number,
+	height: number,
+	longitudeNumSegments: number = 20,
+	material: IRenderMaterial = null,
+	texEnabled: boolean = false,
+	alignYRatio: number = -0.5
+): IMouseEventEntity {
+	if (typeof CoMesh !== "undefined") {
 		let builder = CoMesh.cone;
 		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
 			builder.applyMaterial(pm, pt);
 		});
 		let mesh = builder.create(radius, height, longitudeNumSegments, alignYRatio);
-		return createAMouseEventEntity(mesh, material);		
+		return createAMouseEventEntity(mesh, material);
 	}
 	return null;
 }
 
-function createCylinder(radius: number, height: number, longitudeNumSegments: number = 20, material: IRenderMaterial = null, texEnabled: boolean = false, uvType: number = 1, alignYRatio: number = -0.5): IMouseEventEntity {
-	
-	if(typeof CoMesh !== "undefined") {
+function createCylinder(
+	radius: number,
+	height: number,
+	longitudeNumSegments: number = 20,
+	material: IRenderMaterial = null,
+	texEnabled: boolean = false,
+	uvType: number = 1,
+	alignYRatio: number = -0.5
+): IMouseEventEntity {
+	if (typeof CoMesh !== "undefined") {
 		let builder = CoMesh.cylinder;
 		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
 			builder.applyMaterial(pm, pt);
 		});
 		let mesh = builder.create(radius, height, longitudeNumSegments, uvType, alignYRatio);
-		return createAMouseEventEntity(mesh, material);		
+		return createAMouseEventEntity(mesh, material);
 	}
 	return null;
 }
 
-function createTube(radius: number, long: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 1, axisType: number = 0, material: IRenderMaterial = null, texEnabled: boolean = false, uvType: number = 1, alignYRatio: number = -0.5): IMouseEventEntity {
-	
-	if(typeof CoMesh !== "undefined") {
+function createTube(
+	radius: number,
+	long: number,
+	longitudeNumSegments: number = 20,
+	latitudeNumSegments: number = 1,
+	axisType: number = 0,
+	material: IRenderMaterial = null,
+	texEnabled: boolean = false,
+	uvType: number = 1,
+	alignYRatio: number = -0.5
+): IMouseEventEntity {
+	if (typeof CoMesh !== "undefined") {
 		let builder = CoMesh.tube;
 		CoMesh.tube.geometry.axisType = axisType;
 		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
 			builder.applyMaterial(pm, pt);
 		});
 		let mesh = builder.create(radius, long, longitudeNumSegments, latitudeNumSegments, uvType, alignYRatio);
-		return createAMouseEventEntity(mesh, material);		
+		return createAMouseEventEntity(mesh, material);
 	}
 	return null;
 }
 
-function createTorus(radius: number, axisRadius: number, longitudeNumSegments: number = 20, latitudeNumSegments: number = 1, axisType: number = 0, material: IRenderMaterial = null, texEnabled: boolean = false, uvType: number = 1, alignYRatio: number = -0.5): IMouseEventEntity {
-	
-	if(typeof CoMesh !== "undefined") {
+function createTorus(
+	radius: number,
+	axisRadius: number,
+	longitudeNumSegments: number = 20,
+	latitudeNumSegments: number = 1,
+	axisType: number = 0,
+	material: IRenderMaterial = null,
+	texEnabled: boolean = false,
+	uvType: number = 1,
+	alignYRatio: number = -0.5
+): IMouseEventEntity {
+	if (typeof CoMesh !== "undefined") {
 		let builder = CoMesh.torus;
 		builder.axisType = axisType;
 		material = initAMaterial(material, texEnabled, (pm: IRenderMaterial, pt: boolean): void => {
 			builder.applyMaterial(pm, pt);
 		});
 		let mesh = builder.create(radius, axisRadius, longitudeNumSegments, latitudeNumSegments, uvType, alignYRatio);
-		return createAMouseEventEntity(mesh, material);		
+		return createAMouseEventEntity(mesh, material);
 	}
 	return null;
 }
-function initAMaterial(material: IRenderMaterial, texEnabled: boolean, callback: (pm: IRenderMaterial, pt: boolean) => void, vtxMatEnabled: boolean = true): IRenderMaterial {
-	if(!material) {
+function initAMaterial(
+	material: IRenderMaterial,
+	texEnabled: boolean,
+	callback: (pm: IRenderMaterial, pt: boolean) => void,
+	vtxMatEnabled: boolean = true
+): IRenderMaterial {
+	if (!material) {
 		let pm = CoRScene.createDefaultMaterial();
 		pm.vtxMatrixTransform = vtxMatEnabled;
 		material = pm;
 	}
 	texEnabled = texEnabled || material.getTextureAt(0) != null;
-	material.initializeByCodeBuf( texEnabled );
+	material.initializeByCodeBuf(texEnabled);
 	callback(material, texEnabled);
 	return material;
 }
@@ -217,8 +300,8 @@ function createAMouseEventEntity(mesh: IMeshBase, material: IRenderMaterial): IM
 	return entity;
 }
 export {
-	
 	createDisplayEntityFromModel,
+	createLine,
 	createFreeAxis3DEntity,
 	createAxis3DEntity,
 	createDisplayEntityWithDataMesh,
@@ -227,7 +310,6 @@ export {
 	createBoundsEntity,
 	createCrossAxis3DEntity,
 	createDisplayEntityContainer,
-
 	createFixScreenPlane,
 	createXOYPlane,
 	createXOZPlane,

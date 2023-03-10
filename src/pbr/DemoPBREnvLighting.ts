@@ -23,6 +23,7 @@ import IRendererScene from "../vox/scene/IRendererScene";
 import ITransformEntity from "../vox/entity/ITransformEntity";
 import EventBase from "../vox/event/EventBase";
 import IEventBase from "../vox/event/IEventBase";
+import { MouseInteraction } from "../vox/ui/MouseInteraction";
 
 class AnimationScene {
 
@@ -84,7 +85,8 @@ class AnimationScene {
             et.setScaleXYZ(scale, scale, scale);
         }
     }
-    private makeMaterial(metallic: number, roughness: number, ao: number): PBREnvLightingMaterial {
+    private makeMaterial(roughness: number, metallic: number, ao: number): PBREnvLightingMaterial {
+
         let dis = 700.0;
         let disZ = 400.0;
         let posList: Vector3D[] = [
@@ -95,10 +97,10 @@ class AnimationScene {
         ];
         let colorSize = 300.0;
         let colorList: Color4[] = [
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize)
+            new Color4().randomRGB(colorSize),
+            new Color4().randomRGB(colorSize),
+            new Color4().randomRGB(colorSize),
+            new Color4().randomRGB(colorSize)
         ];
 
         let material: PBREnvLightingMaterial = new PBREnvLightingMaterial();
@@ -121,11 +123,6 @@ export class DemoPBREnvLighting {
 
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
-    private m_camTrack: CameraTrack = null;
-    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-    private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
-
     private m_materials: PBREnvLightingMaterial[] = [];
 
     private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
@@ -149,23 +146,13 @@ export class DemoPBREnvLighting {
             this.m_rscene.updateCamera();
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-
-            this.m_rscene.enableMouseEvent(true);
-            this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
-            this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
-            this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
-
-            this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rscene.getCamera());
-
-            //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-            this.m_statusDisp.initialize();
-
+            
+            new RenderStatusDisplay(this.m_rscene, true);
+            new MouseInteraction().initialize(this.m_rscene).setAutoRunning(true);
+            
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
             this.initFloatCube();
-
-            this.update();
 
         }
     }
@@ -251,7 +238,7 @@ export class DemoPBREnvLighting {
             }
         }
     }
-    private makeMaterial(metallic: number, roughness: number, ao: number): PBREnvLightingMaterial {
+    private makeMaterial(roughness: number, metallic: number, ao: number): PBREnvLightingMaterial {
         let dis: number = 700.0;
         let disZ: number = 400.0;
         let posList: Vector3D[] = [
@@ -262,10 +249,10 @@ export class DemoPBREnvLighting {
         ];
         let colorSize: number = 300.0;
         let colorList: Color4[] = [
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize)
+            new Color4().randomRGB(colorSize),
+            new Color4().randomRGB(colorSize),
+            new Color4().randomRGB(colorSize),
+            new Color4().randomRGB(colorSize)
         ];
 
         let material: PBREnvLightingMaterial = new PBREnvLightingMaterial();
@@ -290,26 +277,8 @@ export class DemoPBREnvLighting {
     private mouseDown(evt: any): void {
         console.log("mouse down... ...");
     }
-
-    private m_timeoutId: any = -1;
-
-    private update(): void {
-        if (this.m_timeoutId > -1) {
-            clearTimeout(this.m_timeoutId);
-        }
-        //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
-        this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
-
-        this.m_statusDisp.render();
-    }
-
     run(): void {
         if(this.m_rscene != null) {
-
-            this.m_statusDisp.update(false);
-
-            this.m_stageDragSwinger.runWithYAxis();
-            this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
             this.m_rscene.run(true);
         }
     }

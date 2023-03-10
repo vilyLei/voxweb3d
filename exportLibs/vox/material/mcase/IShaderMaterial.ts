@@ -36,4 +36,5 @@ export default interface IShaderMaterial extends IRenderMaterial {
 	 * @returns a float32 type data
 	 */
 	getUniformDataAt(uniform_name: string): Float32Array;
+	getUniformDataByIndex(index: number): {data: Float32Array, name: string};
 }

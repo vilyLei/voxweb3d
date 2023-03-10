@@ -112,9 +112,9 @@ interface IFBOInstance extends IRendererNode {
      * @param fboIndex FBO 对象的序号, the default value is 0
      * @param width FBO 对象的viewport width, if width < 1, viewport width is stage width;
      * @param height FBO 对象的viewport height, if height < 1, viewport width is stage height;
-     * @param enableDepth FBO 对象的depth读写是否开启, the default value is false
+     * @param enableDepth FBO 对象的depth读写是否开启, the default value is true
      * @param enableStencil FBO 对象的stencil读写是否开启, the default value is false
-     * @param multisampleLevel FBO 对象的multisample level, the default value is false
+     * @param multisampleLevel FBO 对象的multisample level, the default value is 0
      */
     createFBOAt(fboIndex: number, width: number, height: number, enableDepth?: boolean, enableStencil?: boolean, multisampleLevel?: number): void;
 
@@ -124,7 +124,7 @@ interface IFBOInstance extends IRendererNode {
      * @param fboIndex FBO 对象的序号, the default value is 0
      * @param width FBO 对象的viewport width, if width < 1, viewport width is stage width;
      * @param height FBO 对象的viewport height, if height < 1, viewport width is stage height;
-     * @param enableDepth FBO 对象的depth读写是否开启, the default value is false
+     * @param enableDepth FBO 对象的depth读写是否开启, the default value is true
      * @param enableStencil FBO 对象的stencil读写是否开启, the default value is false
      * @param multisampleLevel FBO 对象的multisample level, the default value is 0
      */
@@ -135,7 +135,7 @@ interface IFBOInstance extends IRendererNode {
      * @param fboIndex FBO 对象的序号, the default value is 0
      * @param width FBO 对象的viewport width, if width < 1, viewport width is stage width;
      * @param height FBO 对象的viewport height, if height < 1, viewport width is stage height;
-     * @param enableDepth FBO 对象的depth读写是否开启, the default value is false
+     * @param enableDepth FBO 对象的depth读写是否开启, the default value is true
      * @param enableStencil FBO 对象的stencil读写是否开启, the default value is false
      * @param multisampleLevel FBO 对象的multisample level, the default value is 0
      */
@@ -315,5 +315,12 @@ interface IFBOInstance extends IRendererNode {
      */
     setRenderingState(lockRenderState?: boolean, lockMaterial?: boolean, autoEnd?: boolean, autoRunBegin?: boolean): void;
 	render(): void;
+    /**
+	 * @param auto enable auto runnning this instance
+	 * @param prepend perpend this into the renderer rendering process or append, the default value is true
+	 * @returns instance self
+	 */
+	setAutoRunning(auto: boolean, prepend?: boolean): IFBOInstance;
+	isAutoRunning(): boolean;
 }
 export { IFBOInstance }
