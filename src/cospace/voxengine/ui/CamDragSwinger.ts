@@ -8,11 +8,12 @@
 import IVector3D from "../../../vox/math/IVector3D";
 import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import IRenderStage3D from "../../../vox/render/IRenderStage3D";
+import { ICamDragSwinger } from "./ICamDragSwinger";
 
 import { ICoRScene } from "../ICoRScene";
 declare var CoRScene: ICoRScene;
 
-class CamDragSwinger {
+class CamDragSwinger implements ICamDragSwinger {
     constructor() { }
 
     private m_stage3D: IRenderStage3D = null;
@@ -57,11 +58,11 @@ class CamDragSwinger {
             let abs_dy = Math.abs(dy);
             if (abs_dx > abs_dy) {
                 if (abs_dx > 0.5) {
-					if(type < 1) {
-						(this.m_camera as any).swingHorizontalWithAxis(dx * 0.2, axis);
-					}else {
-						(this.m_camera as any).swingHorizontal(dx * 0.2);
-					}
+                    if (type < 1) {
+                        (this.m_camera as any).swingHorizontalWithAxis(dx * 0.2, axis);
+                    } else {
+                        (this.m_camera as any).swingHorizontal(dx * 0.2);
+                    }
                 }
             }
             else {
@@ -75,11 +76,11 @@ class CamDragSwinger {
         else if (this.autoRotationEnabled) {
             if (this.m_aotuRotationDelay < 0) {
 
-				if(type < 1) {
-					(this.m_camera as any).swingHorizontalWithAxis(this.autoRotationSpeed, axis);
-				}else {
-					(this.m_camera as any).swingHorizontal(this.autoRotationSpeed);
-				}
+                if (type < 1) {
+                    (this.m_camera as any).swingHorizontalWithAxis(this.autoRotationSpeed, axis);
+                } else {
+                    (this.m_camera as any).swingHorizontal(this.autoRotationSpeed);
+                }
             }
             else {
                 this.m_aotuRotationDelay--;
@@ -87,11 +88,11 @@ class CamDragSwinger {
         }
     }
     runWithAxis(axis: IVector3D): void {
-		this.run(axis, 0);
+        this.run(axis, 0);
     }
 
     runWithCameraAxis(): void {
-		this.run(null, 1);
+        this.run(null, 1);
     }
 }
 export { CamDragSwinger };
