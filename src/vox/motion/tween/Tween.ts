@@ -1,91 +1,6 @@
 /**
  var Tween = {
-    Linear: function(t,b,c,d){ return c*t/d + b; },
-    Quad: {
-        easeIn: function(t,b,c,d){
-            return c*(t/=d)*t + b;
-        },
-        easeOut: function(t,b,c,d){
-            return -c *(t/=d)*(t-2) + b;
-        },
-        easeInOut: function(t,b,c,d){
-            if ((t/=d/2) < 1) return c/2*t*t + b;
-            return -c/2 * ((--t)*(t-2) - 1) + b;
-        }
-    },
-    Cubic: {
-        easeIn: function(t,b,c,d){
-            return c*(t/=d)*t*t + b;
-        },
-        easeOut: function(t,b,c,d){
-            return c*((t=t/d-1)*t*t + 1) + b;
-        },
-        easeInOut: function(t,b,c,d){
-            if ((t/=d/2) < 1) return c/2*t*t*t + b;
-            return c/2*((t-=2)*t*t + 2) + b;
-        }
-    },
-    Quart: {
-        easeIn: function(t,b,c,d){
-            return c*(t/=d)*t*t*t + b;
-        },
-        easeOut: function(t,b,c,d){
-            return -c * ((t=t/d-1)*t*t*t - 1) + b;
-        },
-        easeInOut: function(t,b,c,d){
-            if ((t/=d/2) < 1) return c/2*t*t*t*t + b;
-            return -c/2 * ((t-=2)*t*t*t - 2) + b;
-        }
-    },
-    Quint: {
-        easeIn: function(t,b,c,d){
-            return c*(t/=d)*t*t*t*t + b;
-        },
-        easeOut: function(t,b,c,d){
-            return c*((t=t/d-1)*t*t*t*t + 1) + b;
-        },
-        easeInOut: function(t,b,c,d){
-            if ((t/=d/2) < 1) return c/2*t*t*t*t*t + b;
-            return c/2*((t-=2)*t*t*t*t + 2) + b;
-        }
-    },
-    Sine: {
-        easeIn: function(t,b,c,d){
-            return -c * Math.cos(t/d * (Math.PI/2)) + c + b;
-        },
-        easeOut: function(t,b,c,d){
-            return c * Math.sin(t/d * (Math.PI/2)) + b;
-        },
-        easeInOut: function(t,b,c,d){
-            return -c/2 * (Math.cos(Math.PI*t/d) - 1) + b;
-        }
-    },
-    Expo: {
-        easeIn: function(t,b,c,d){
-            return (t==0) ? b : c * Math.pow(2, 10 * (t/d - 1)) + b;
-        },
-        easeOut: function(t,b,c,d){
-            return (t==d) ? b+c : c * (-Math.pow(2, -10 * t/d) + 1) + b;
-        },
-        easeInOut: function(t,b,c,d){
-            if (t==0) return b;
-            if (t==d) return b+c;
-            if ((t/=d/2) < 1) return c/2 * Math.pow(2, 10 * (t - 1)) + b;
-            return c/2 * (-Math.pow(2, -10 * --t) + 2) + b;
-        }
-    },
-    Circ: {
-        easeIn: function(t,b,c,d){
-            return -c * (Math.sqrt(1 - (t/=d)*t) - 1) + b;
-        },
-        easeOut: function(t,b,c,d){
-            return c * Math.sqrt(1 - (t=t/d-1)*t) + b;
-        },
-        easeInOut: function(t,b,c,d){
-            if ((t/=d/2) < 1) return -c/2 * (Math.sqrt(1 - t*t) - 1) + b;
-            return c/2 * (Math.sqrt(1 - (t-=2)*t) + 1) + b;
-        }
-    },
+    
     Elastic: {
         easeIn: function(t,b,c,d,a,p){
             if (t==0) return b;  if ((t/=d)==1) return b+c;  if (!p) p=d*.3;
@@ -156,8 +71,109 @@ class Tween_Linear {
         return c*t/d + b;
     }
 }
+class Tween_Quad {
+
+    easeIn(t: number,b: number,c: number,d: number): number{
+        return c*(t/=d)*t + b;
+    }
+    easeOut(t: number,b: number,c: number,d: number): number{
+        return -c *(t/=d)*(t-2) + b;
+    }
+    easeInOut(t: number,b: number,c: number,d: number): number{
+        if ((t/=d/2) < 1) return c/2*t*t + b;
+        return -c/2 * ((--t)*(t-2) - 1) + b;
+    }
+}
+class Tween_Cubic {
+
+    easeIn(t: number,b: number,c: number,d: number): number{
+        return c*(t/=d)*t*t + b;
+    }
+    easeOut(t: number,b: number,c: number,d: number): number{
+        return c*((t=t/d-1)*t*t + 1) + b;
+    }
+    easeInOut(t: number,b: number,c: number,d: number): number{
+        if ((t/=d/2) < 1) return c/2*t*t*t + b;
+        return c/2*((t-=2)*t*t + 2) + b;
+    }
+}
+class Tween_Quart {
+
+    easeIn(t: number,b: number,c: number,d: number): number{
+        return c*(t/=d)*t*t*t + b;
+    }
+    easeOut(t: number,b: number,c: number,d: number): number{
+        return -c * ((t=t/d-1)*t*t*t - 1) + b;
+    }
+    easeInOut(t: number,b: number,c: number,d: number): number{
+        if ((t/=d/2) < 1) return c/2*t*t*t*t + b;
+        return -c/2 * ((t-=2)*t*t*t - 2) + b;
+    }
+}
+class Tween_Quint {
+
+    easeIn(t: number,b: number,c: number,d: number): number{
+        return c*(t/=d)*t*t*t*t + b;
+    }
+    easeOut(t: number,b: number,c: number,d: number): number{
+        return c*((t=t/d-1)*t*t*t*t + 1) + b;
+    }
+    easeInOut(t: number,b: number,c: number,d: number): number{
+        if ((t/=d/2) < 1) return c/2*t*t*t*t*t + b;
+        return c/2*((t-=2)*t*t*t*t + 2) + b;
+    }
+}
+
+class Tween_Sine {
+
+    easeIn(t: number,b: number,c: number,d: number): number{
+        return -c * Math.cos(t/d * (Math.PI/2)) + c + b;
+    }
+    easeOut(t: number,b: number,c: number,d: number): number{
+        return c * Math.sin(t/d * (Math.PI/2)) + b;
+    }
+    easeInOut(t: number,b: number,c: number,d: number): number{
+        return -c/2 * (Math.cos(Math.PI*t/d) - 1) + b;
+    }
+}
+
+class Tween_Expo {
+
+    easeIn(t: number,b: number,c: number,d: number): number{
+        return (t==0) ? b : c * Math.pow(2, 10 * (t/d - 1)) + b;
+    }
+    easeOut(t: number,b: number,c: number,d: number): number{
+        return (t==d) ? b+c : c * (-Math.pow(2, -10 * t/d) + 1) + b;
+    }
+    easeInOut(t: number,b: number,c: number,d: number): number{
+        if (t==0) return b;
+        if (t==d) return b+c;
+        if ((t/=d/2) < 1) return c/2 * Math.pow(2, 10 * (t - 1)) + b;
+        return c/2 * (-Math.pow(2, -10 * --t) + 2) + b;
+    }
+}
+
+class Tween_Circ {
+
+    easeIn(t: number,b: number,c: number,d: number): number{
+        return -c * (Math.sqrt(1 - (t/=d)*t) - 1) + b;
+    }
+    easeOut(t: number,b: number,c: number,d: number): number{
+        return c * Math.sqrt(1 - (t=t/d-1)*t) + b;
+    }
+    easeInOut(t: number,b: number,c: number,d: number): number{
+        if ((t/=d/2) < 1) return -c/2 * (Math.sqrt(1 - t*t) - 1) + b;
+        return c/2 * (Math.sqrt(1 - (t-=2)*t) + 1) + b;
+    }
+}
 
 class Tween {
     constructor() {}
     readonly linear = new Tween_Linear();
+    readonly quad = new Tween_Quad();
+    readonly quart = new Tween_Quart();
+    readonly quint = new Tween_Quint();
+    readonly sine = new Tween_Sine();
+    readonly expo = new Tween_Expo();
+    readonly circ = new Tween_Circ();
 }
