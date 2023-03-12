@@ -1,0 +1,3 @@
+class Tween {
+    constructor() {}
+}
