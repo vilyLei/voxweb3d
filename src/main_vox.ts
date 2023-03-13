@@ -271,6 +271,10 @@
 ////////////////////////////   morph    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+//  import {DemoLineMeshUpdate as Demo} from "./demo/DemoLineMeshUpdate";
+
+ import {DemoVtxUpdate as Demo} from "./demo/DemoVtxUpdate";
+
 //  import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
 // free-shaped morph animation
 //  import {DemoFlexPipe as Demo} from "./demo/DemoFlexPipe";
@@ -437,7 +441,7 @@
 
 //  import {DemoPBRAnimation as Demo} from "./pbr/DemoPBRAnimation";
 
- import {DemoPBRTextureShader as Demo} from "./demo/DemoPBRTextureShader";
+//  import {DemoPBRTextureShader as Demo} from "./demo/DemoPBRTextureShader";
 
 //  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 

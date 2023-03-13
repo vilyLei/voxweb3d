@@ -68,15 +68,17 @@ export class DemoOrthoBtn {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
-            let rparam: RendererParam = new RendererParam();
+            let rparam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
             rparam.setCamPosition(800.0, 800.0, 800.0);
             rparam.setAttriAntialias(true);
+            rparam.syncBgColor = false;
             //rparam.setAttriStencil(true);
             rparam.setAttriAlpha(true);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
+            // this.m_rscene.setClearRGBAColor4f(1.0,1.0,1.0,1.0);
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
@@ -133,25 +135,25 @@ export class DemoOrthoBtn {
         this.drawCurve(posList, factor, radiusFactor);
     }
     
-    private m_bezier2: Bezier2Curve = new Bezier2Curve();
-    private m_flag0: boolean = true;
-    private m_offsetFactor: number = 0.5;
-    private m_radiusFactor: number = 1.0;
+    private m_bezier2 = new Bezier2Curve();
+    private m_flag0 = true;
+    private m_offsetFactor = 0.5;
+    private m_radiusFactor = 1.0;
     getCurvePosList(factor: number, radiusFactor: number): Vector3D[] {
 
-        let total: number = 20;
-        let y0: number = 300;
-        let y1: number = 70;
-        let dy: number = Math.abs(y1 - y0);
+        let total = 20;
+        let y0 = 300;
+        let y1 = 70;
+        let dy = Math.abs(y1 - y0);
         this.m_bezier2.begin.setXYZ(0, y0, 0);
         this.m_bezier2.end.setXYZ(dy + 1.0, y1, 0);
         this.m_bezier2.setSegTot(total);
 
-        let dis: number = Vector3D.Distance(this.m_bezier2.begin, this.m_bezier2.end);
+        let dis = Vector3D.Distance(this.m_bezier2.begin, this.m_bezier2.end);
 
-        let direcTV: Vector3D = new Vector3D();
+        let direcTV = new Vector3D();
         direcTV.subVecsTo(this.m_bezier2.end, this.m_bezier2.begin);
-        let direcNV: Vector3D = new Vector3D(-direcTV.y, direcTV.x);
+        let direcNV = new Vector3D(-direcTV.y, direcTV.x);
         direcNV.normalize();
         direcNV.scaleBy(radiusFactor * dy);
 

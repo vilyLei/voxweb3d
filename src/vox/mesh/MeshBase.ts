@@ -184,6 +184,7 @@ export default class MeshBase implements IMeshBase {
     }
     protected crateROIvsData(): ROIvsData {
         const ird = new ROIvsData();
+        // console.log(this, ", crateROIvsData, (), this.wireframe: ", this.wireframe);
         ird.wireframe = this.wireframe;
         ird.shape = this.shape;
         return ird;

@@ -48,6 +48,7 @@ export class DemoPBR implements IShaderLibListener {
 
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
+            rparam.syncBgColor = false;
             rparam.setCamProject(45,50.0,10000.0);
             rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);

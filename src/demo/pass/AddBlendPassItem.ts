@@ -9,6 +9,7 @@ import IPassProcess from "../../vox/render/pass/IPassProcess";
 import PassRItem from "../../vox/render/pass/PassRItem";
 
 export default class AddBlendPassItem extends PassRItem {
+    state = 0;
     constructor() {
         super();
     }
@@ -24,7 +25,8 @@ export default class AddBlendPassItem extends PassRItem {
             // entity.setRenderState(rst);
             for (let i = 0; i < 10; ++i) {
                 if(i > 0) {
-                    entity.setRenderState(rc.renderingState.BACK_ADD_BLENDSORT_STATE);
+                    // entity.setRenderState(rc.renderingState.BACK_ADD_BLENDSORT_STATE);
+                    entity.setRenderState( this.state );
                 }
                 entity.setPosition(pv);
                 entity.update();

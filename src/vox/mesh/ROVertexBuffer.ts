@@ -72,6 +72,7 @@ export default class ROVertexBuffer extends ROIVertexBuffer implements IVtxBuf, 
         return this.m_vtxBuf.getF32DataAt(index);
     }
     setF32DataAt(index: number, float32Arr: Float32Array, stepFloatsTotal: number, setpOffsets: number[]): void {
+        // console.log("setF32DataAt(), ",index, ", float32Arr: ", float32Arr);
         this.m_vtxBuf.setF32DataAt(index, float32Arr, stepFloatsTotal, setpOffsets);
         this.vertexVer++;
     }
@@ -315,12 +316,14 @@ export default class ROVertexBuffer extends ROIVertexBuffer implements IVtxBuf, 
         let i = 0;
         let stride = 0;
         let bufTot = bufData.getAttributesTotal();
-        let offsetList: number[] = new Array(bufTot);
+        let offsetList = new Array(bufTot);
         offsetList.fill(0);
-        let vb = ROVertexBuffer.Create(bufDataUsage);
+
+        const RVB = ROVertexBuffer;
+        let vb = RVB.Create(bufDataUsage);
         vb.layoutBit = layoutBit;
-        if (ROVertexBuffer.s_separatedBufs.length > 0) {
-            let vtx = ROVertexBuffer.s_separatedBufs.pop() as VtxSeparatedBuf;
+        if (RVB.s_separatedBufs.length > 0) {
+            let vtx = RVB.s_separatedBufs.pop() as VtxSeparatedBuf;
             vb.setVtxBuf(vtx);
         }
         else {

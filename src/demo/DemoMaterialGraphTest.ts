@@ -14,6 +14,7 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
+import { CullFaceMode, DepthTestMode, RenderBlendMode } from "../vox/render/RenderConst";
 
 import { EntityLayouter } from "../vox/utils/EntityLayouter";
 import { CoGeomDataType, CoModelTeamLoader } from "../cospace/app/common/CoModelTeamLoader";
@@ -153,10 +154,13 @@ export class DemoMaterialGraphTest {
 		// 0, 1, 1, 2, 2, 0, 0, 2, 2, 3, 3, 0
 		// 0, 1, 1, 2, 2, 0, 0, 2, 2, 3, 3, 0
 
+		let st0 = RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
+		// let st1 = RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.BLAZE, DepthTestMode.FALSE_LEQUAL);
+		
 		let mgraph = new DefaultPassGraph();
-
 		// let item = mgraph.createItem();
 		let item = new AddBlendPassItem();
+		item.state = st0;
 		item.initialize();
 		mgraph.addItem( item );
 		mgraph.initialize();

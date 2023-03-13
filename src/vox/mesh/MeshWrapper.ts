@@ -19,7 +19,7 @@ export default class MeshWrapper extends MeshBase {
         super(bufDataUsage);
     }
 
-    initializeWithMesh(srcMesh: IMeshBase, ivs: Uint16Array | Uint32Array = null): void {
+    initializeWithMesh(srcMesh: IMeshBase, ivs: Uint16Array | Uint32Array = null, force: boolean = false): void {
 
         if (this.m_vbuf == null && srcMesh != null && srcMesh != this) {
 
@@ -36,9 +36,10 @@ export default class MeshWrapper extends MeshBase {
             this.bounds.copyFrom(m.bounds);
             this.m_ivbuf = m.__$attachIVBuf();
             if (this.m_ivbuf == null) {
-                if (ivs != null && ivs != m.getIVS()) {
+                if (ivs != null && ivs != m.getIVS() || force) {
                     this.m_ivs = ivs;
                     this.m_ivbuf = new ROIVertexBuffer();
+                    console.log("MeshWrapper::initializeWithMesh() ...");
                     this.m_ivbuf.setIVSDataAt( this.crateROIvsData().setData(ivs) );
                     this.vtCount = ivs.length;
                     this.trisNumber = this.vtCount / 3;

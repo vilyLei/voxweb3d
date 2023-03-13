@@ -10,6 +10,7 @@ import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
 import { Pos3DPool } from "../base/Pos3DPool";
 import { Pos3D } from "../base/Pos3D";
 import { SegmentData } from "./segment/SegmentData";
+import VtxDrawingInfo from "../../../vox/render/vtx/VtxDrawingInfo";
 
 class PathSegmentObject {
 
@@ -162,12 +163,21 @@ class PathSegmentObject {
         return dispEntity;
     }
     private reInitialize(dispEntity: PathSegmentEntity, force: boolean = false): void {
-        let mesh: RoadMesh = dispEntity.getMesh() as RoadMesh;
+        let mesh = dispEntity.getMesh() as RoadMesh;
         if (mesh != null && (mesh.changed || force)) {
             mesh.wireframe = this.m_wireframeEnabled;
             mesh.changed = false;
             mesh.initialize();
-            dispEntity.setIvsParam(0, mesh.vtCount);
+            let m = dispEntity.getMaterial();
+
+            if(m != null && m.vtxInfo == null) {
+                m.vtxInfo = new VtxDrawingInfo();
+            }
+            dispEntity.getDisplay().ivsCount = mesh.vtCount;
+            m.vtxInfo.setIvsParam(0, mesh.vtCount);
+            
+            // dispEntity.setIvsParam(0, mesh.vtCount);
+
             dispEntity.updateMeshToGpu();
             dispEntity.updateBounds();
         }

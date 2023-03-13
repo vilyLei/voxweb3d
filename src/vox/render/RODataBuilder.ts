@@ -339,7 +339,7 @@ export default class RODataBuilder implements IRODataBuilder {
                 // 如果多个material对应到一个vtx如何用?
                 // 如果是多个对多个如何用?
                 // vdrInfo 需要和 mesh 对应协作
-
+                
                 runit.vdrInfo = material.vtxInfo as IVDRInfo;
                 runit.rdp = runit.indicesRes.initRdp.clone();
             } else {

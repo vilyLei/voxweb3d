@@ -49,7 +49,7 @@ export default class ROIVertexBuffer implements IROIVtxBuf {
         return this.m_bufDataUsage;
     }
     getIvsDataAt(index: number = 0): ROIvsData {
-        // console.log("FFFFFFFFFF 0 getIvsDataAt(), index: ", index);
+        // console.log("FFFFFFFFFF 0 getIvsDataAt(), index: ", index, ", this.m_irdTotal: ", this.m_irdTotal, this.m_irds);
         if (index >= 0 && index < this.m_irdTotal) {
             // console.log("FFFFFFFFFF 0 this.m_irds["+index+"]: ", this.m_irds[index]);
             return this.m_irds[index];
@@ -59,10 +59,13 @@ export default class ROIVertexBuffer implements IROIVtxBuf {
     setIVSDataAt(data: ROIvsData, index: number = 0): void {
         // console.log("A index: ", index, ", XXXXX this.m_irds.length: ", this.m_irds.length);
         if (index < this.m_irds.length) {
-            if(this.m_irds[index]) {
-                this.m_irds[index].destroy();
+            if(this.m_irds[index] != data) {
+                if(this.m_irds[index]) {
+                    this.m_irds[index].destroy();
+                }
+                this.m_irds[index] = data;
             }
-            this.m_irds[index] = data;
+            // console.log("A1 index: ", index, ", XXXXX  this.m_irds: ",  this.m_irds);
         }else {
             this.m_irds.push(data);
         }

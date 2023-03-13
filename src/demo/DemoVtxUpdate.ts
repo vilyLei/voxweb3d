@@ -15,8 +15,11 @@ import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
 import VtxDrawingInfo from "../vox/render/vtx/VtxDrawingInfo";
+import DataMesh from "../vox/mesh/DataMesh";
+import IDataMesh from "../vox/mesh/IDataMesh";
+import DebugFlag from "../vox/debug/DebugFlag";
 
-export class DemoVtxDrawingInfo {
+export class DemoVtxUpdate {
 	private m_init = true;
 	private m_texLoader: ImageTextureLoader = null;
 	constructor() { }
@@ -27,11 +30,9 @@ export class DemoVtxDrawingInfo {
 
 	private initEvent(rscene: RendererScene): void {
 		rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener, true, false);
-		rscene.addEventListener(MouseEvent.MOUSE_RIGHT_DOWN, this, this.RMouseDownListener, true, false);
-		rscene.addEventListener(MouseEvent.MOUSE_MIDDLE_DOWN, this, this.MMouseDownListener, true, false);
 	}
 	initialize(): void {
-		console.log("DemoVtxDrawingInfo::initialize()......");
+		console.log("DemoVtxUpdate::initialize()......");
 		if (this.m_init) {
 			this.m_init = false;
 
@@ -39,7 +40,7 @@ export class DemoVtxDrawingInfo {
 				e.preventDefault();
 			}
 
-			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			DivLog.SetDebugEnabled(false);
 
@@ -67,7 +68,12 @@ export class DemoVtxDrawingInfo {
 		// return null;
 		return new VtxDrawingInfo();
 	}
+	private m_mesh: IDataMesh = null;
 	private testDataMesh(rscene: RendererScene): void {
+
+
+		console.log("testDataMesh() --------------------------------------");
+
 		// 推荐的模型数据组织形式
 
 		let material = new Default3DMaterial();
@@ -79,8 +85,17 @@ export class DemoVtxDrawingInfo {
 		let uvs = new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]);
 		let vs = new Float32Array([10, 0, -10, -10, 0, -10, -10, 0, 10, 10, 0, 10]);
 		let ivs = new Uint16Array([0, 1, 2, 0, 2, 3]);
-		let model: IGeomModelData = { vertices: vs, uvsList: [uvs], normals: nvs, indices: ivs, wireframe: true };
+		let model: IGeomModelData = { vertices: vs, uvsList: [uvs], normals: nvs, indices: ivs, wireframe: false };
 		let mesh = MeshFactory.createDataMeshFromModel(model);
+
+		// let dx = 30;		
+		// let nvs = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 	0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
+		// let uvs = new Float32Array([0, 0, 1, 0, 1, 1, 0, 1, 	0, 0, 1, 0, 1, 1, 0, 1]);
+		// let vs = new Float32Array([10, 0, -10, -10, 0, -10, -10, 0, 10, 10, 0, 10, 		10 + dx, 0, -10, -10 + dx, 0, -10, -10 + dx, 0, 10, 10 + dx, 0, 10]);
+		// let ivs = new Uint16Array([0, 1, 2, 0, 2, 3, 		0+4, 1+4, 2+4, 0+4, 2+4, 3+4]);
+		// let model: IGeomModelData = { vertices: vs, uvsList: [uvs], normals: nvs, indices: ivs, wireframe: false };
+		// let mesh = MeshFactory.createDataMeshFromModel(model);
+		this.m_mesh = mesh;
 
 		// 0, 1, 1, 2, 2, 0, 0, 2, 2, 3, 3, 0
 		// 0, 1, 1, 2, 2, 0, 0, 2, 2, 3, 3, 0
@@ -93,79 +108,43 @@ export class DemoVtxDrawingInfo {
 		rscene.addEntity(entity);
 		this.m_tarEntity = entity;
 
-		material = new Default3DMaterial();
-		// material.normalEnabled = true;
-		material.vtxInfo = this.createVtxInfo();
-		material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
+	}
+	
+	private testDataMesh2(): void {
 
-		entity = new DisplayEntity();
-		entity.setMaterial(material);
-		entity.setMesh(mesh);
-		entity.setScaleXYZ(scale, scale, scale);
-		entity.setXYZ(250, 0, 0);
-		rscene.addEntity(entity);
-		this.m_tarREntity = entity;
+		let dx = 30;
 		
-		entity = new DisplayEntity();
-		entity.setMaterial(material);
-		entity.setMesh(mesh);
-		entity.setScaleXYZ(scale, scale, scale);
-		entity.setXYZ(500, 0, 0);
-		rscene.addEntity(entity);
-		this.m_tarMEntity = entity;
+		let nvs = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 	0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
+		let uvs = new Float32Array([0, 0, 1, 0, 1, 1, 0, 1, 	0, 0, 1, 0, 1, 1, 0, 1]);
+		let vs = new Float32Array([10, 0, -10, -10, 0, -10, -10, 0, 10, 10, 0, 10, 		10 + dx, 0, -10, -10 + dx, 0, -10, -10 + dx, 0, 10, 10 + dx, 0, 10]);
+		let ivs = new Uint16Array([0, 1, 2, 0, 2, 3, 		0+4, 1+4, 2+4, 0+4, 2+4, 3+4]);
+		let mesh = this.m_mesh;
+		mesh.setVS(vs);
+		mesh.setUVS(uvs);
+		mesh.setNVS(nvs);
+		mesh.setIVS(ivs);
+		mesh.initialize();
+
+		this.m_tarEntity.updateMeshToGpu();
+		this.m_tarEntity.getMaterial().vtxInfo.setIvsParam(0, ivs.length);
+
+		// let model: IGeomModelData = { vertices: vs, uvsList: [uvs], normals: nvs, indices: ivs, wireframe: false };
+		// let mesh = MeshFactory.createDataMeshFromModel(model);
+		// this.m_mesh = mesh;
+
 	}
 	private m_flag = true;
-	private m_RFlag = true;
-	private m_MFlag = true;
-	MMouseDownListener(evt: any): void {
-
-		console.log("middle mouse down");
-		if (this.m_tarMEntity != null) {
-			// this.m_tarREntity.setIvsParam(0, 3);
-			let material = this.m_tarMEntity.getMaterial();
-			let vtxInfo = material.vtxInfo;
-			vtxInfo.setWireframe(this.m_MFlag);
-			// if(this.m_MFlag) {
-			// 	vtxInfo.setIvsParam(0,3);
-			// }else {
-			// 	vtxInfo.setIvsParam(0,6);
-			// }
-			this.m_MFlag = !this.m_MFlag;
-		}
-	}
-	RMouseDownListener(evt: any): void {
-
-		console.log("right mouse down");
-		if (this.m_tarREntity != null) {
-			// this.m_tarREntity.setIvsParam(0, 3);
-			let material = this.m_tarREntity.getMaterial();
-			let vtxInfo = material.vtxInfo;
-			// vtxInfo.setWireframe(this.m_flag);
-			if(this.m_RFlag) {
-				vtxInfo.setIvsParam(0,3);
-			}else {
-
-				vtxInfo.setIvsParam(0,6);
-			}
-			this.m_RFlag = !this.m_RFlag;
-		}
-	}
+	private m_flagState = 0;
 	mouseDownListener(evt: any): void {
 
 		console.log("mouse down");
-		if (this.m_tarEntity != null) {
-			// this.m_tarEntity.setIvsParam(0, 3);
-			let material = this.m_tarEntity.getMaterial();
-			let vtxInfo = material.vtxInfo;
-			vtxInfo.setWireframe(this.m_flag);
-			// if(this.m_flag) {
-			// 	vtxInfo.setIvsParam(0,3);
-			// }else {
-
-			// 	vtxInfo.setIvsParam(0,6);
-			// }
-			this.m_flag = !this.m_flag;
+		this.m_flagState ++;
+		if(this.m_flagState == 2) {
+			if (this.m_tarEntity != null) {
+				this.testDataMesh2();
+			}
 		}
+		DebugFlag.Flag_0 = 1;
 	}
 
 	private initScene(rscene: RendererScene): void {
@@ -192,4 +171,4 @@ export class DemoVtxDrawingInfo {
 		rscene.addEntity(box0);
 	}
 }
-export default DemoVtxDrawingInfo;
+export default DemoVtxUpdate;

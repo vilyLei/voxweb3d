@@ -60,7 +60,7 @@ export class DemoMeshWrapper {
 	}
 
 	private createMeshWrapper(): void {
-		console.log("XXXXXXXXXXXXXXX DemoMeshWrapper::mouseDownListener()...");
+		console.log("XXXXXXXXXXXXXXX createMeshWrapper()...");
 		if (this.m_currDispEntity != null) {
 			let entity = this.m_currDispEntity;
 			// 
@@ -89,12 +89,12 @@ export class DemoMeshWrapper {
 	}
 	
 	private createMeshWrapper2(): void {
-		console.log("XXXXXXXXXXXXXXX DemoMeshWrapper::mouseDownListener()...");
+		console.log("XXXXXXXXXXXXXXX createMeshWrapper2()...");
 		if (this.m_currDispEntity != null) {
 			let entity = this.m_currDispEntity;
 			// 
 
-			// console.log(">>>>>>>>>>>>>>>>>>>>>> repeat the display entity ...");
+			console.log(">>>>>>>>>>>>>>>>>>>>>> createMeshWrapper2 repeat the display entity ...");
 			// entity.setXYZ(Math.random() * 1000 - 500,0,100);
 			// // this.m_rscene.addEntity(entity);
 			// let mesh = entity.getMesh();
@@ -108,9 +108,10 @@ export class DemoMeshWrapper {
 			let ivs = srcM.getIVS();
 			
 			let wMesh = new MeshWrapper();
-			wMesh.initializeWithMesh( entity.getMesh(), ivs );
-			wMesh.toElementsLines();
-			// wMesh
+			wMesh.shape = false;
+			wMesh.wireframe = true;
+			wMesh.initializeWithMesh( entity.getMesh(), ivs, true );
+			
 			let wEntity = new DisplayEntity();
 			wEntity.setMaterial(material);
 			wEntity.setMesh(wMesh);

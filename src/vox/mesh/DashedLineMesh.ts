@@ -38,10 +38,13 @@ export default class DashedLineMesh extends MeshBase {
         this.m_cvs = cvs;
     }
     initialize(posarr: number[], colors: number[]): void {
+
         if (this.m_vs != null || posarr.length >= 6) {
             
-            if(this.m_vs == null) {
+            if(this.m_vs == null || this.m_vs.length != posarr.length) {
                 this.m_vs = new Float32Array(posarr);
+            }else {
+                this.m_vs.set(posarr);
             }
             this.vtCount = Math.floor(this.m_vs.length / 3);
             this.m_lsTotal = Math.floor(this.vtCount / 2);
@@ -78,24 +81,25 @@ export default class DashedLineMesh extends MeshBase {
             this.m_vbuf.setData3fAt(i, 0, px, py, pz);
         }
     }
-    toString(): string {
-        return "DashedLineMesh()";
-    }
     isPolyhedral(): boolean { return false; }
-    // @boundsHit       表示是否包围盒体已经和射线相交了
-    // @rlpv            表示物体坐标空间的射线起点
-    // @rltv            表示物体坐标空间的射线朝向
-    // @outV            如果检测相交存放物体坐标空间的交点
-    // @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
-    //
+
+    /**
+     * 射线和自身的相交检测(多面体或几何函数(例如球体))
+     * @rlpv            表示物体坐标空间的射线起点
+     * @rltv            表示物体坐标空间的射线朝向
+     * @outV            如果检测相交存放物体坐标空间的交点
+     * @boundsHit       表示是否包围盒体已经和射线相交了
+     * @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
+     */
     testRay(rlpv: Vector3D, rltv: Vector3D, outV: Vector3D, boundsHit: boolean): number {
-        let j: number = 0;
-        let vs: Float32Array = this.m_vs;
-        let flag: number = 0;
-        let radius: number = this.rayTestRadius;
+
+        let j = 0;
+        let vs = this.m_vs;
+        let flag = 0;
+        let radius = this.rayTestRadius;
         let pv0 = DashedLineMesh.s_pv0;
         let pv1 = DashedLineMesh.s_pv1;
-        for (let i: number = 0; i < this.m_lsTotal; ++i) {
+        for (let i = 0; i < this.m_lsTotal; ++i) {
             pv0.setXYZ(vs[j], vs[j + 1], vs[j + 2]);
             pv1.setXYZ(vs[j + 3], vs[j + 4], vs[j + 5]);
             flag = RadialLine.IntersectionLS(rlpv, rltv, pv0, pv1, outV, radius);

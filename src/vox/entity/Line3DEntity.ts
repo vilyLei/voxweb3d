@@ -11,6 +11,7 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Color4 from '../../vox/material/Color4';
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import Line3DMaterial from '../../vox/material/mcase/Line3DMaterial';
+import VtxDrawingInfo from "../render/vtx/VtxDrawingInfo";
 
 export default class Line3DEntity extends DisplayEntity {
     constructor() {
@@ -20,8 +21,9 @@ export default class Line3DEntity extends DisplayEntity {
     private m_colorarr: number[] = null;
     private m_material: Line3DMaterial = null;
     private m_lineMesh: DashedLineMesh = null;
-    color: Color4 = new Color4(1.0, 0.0, 0.0, 1.0);
-    dynColorEnabled: boolean = false;
+
+    color = new Color4(1.0, 0.0, 0.0, 1.0);
+    dynColorEnabled = false;
     setRGB3f(pr: number, pg: number, pb: number): void {
         if (this.m_material != null) {
             this.m_material.setRGB3f(pr, pg, pb);
@@ -31,13 +33,14 @@ export default class Line3DEntity extends DisplayEntity {
     createMaterial(): void {
         if (this.getMaterial() == null) {
             this.m_material = new Line3DMaterial(this.dynColorEnabled);
+            this.m_material.vtxInfo = new VtxDrawingInfo();
             this.setMaterial(this.m_material);
         }
     }
     protected __activeMesh(material: IRenderMaterial): void {
         if (this.getMesh() == null) {
 
-            let mesh: DashedLineMesh = new DashedLineMesh();
+            let mesh = new DashedLineMesh();
             mesh.vbWholeDataEnabled = false;
             mesh.setBufSortFormat(material.getBufSortFormat());
             mesh.initialize(this.m_posarr, this.m_colorarr);
@@ -53,7 +56,8 @@ export default class Line3DEntity extends DisplayEntity {
     reinitializeMesh(): void {
         if (this.m_lineMesh != null) {
             this.m_lineMesh.initialize(this.m_posarr, this.m_colorarr);
-            this.setIvsParam(0, this.m_lineMesh.vtCount);
+            this.getDisplay().ivsCount = this.m_lineMesh.vtCount;
+            this.m_material.vtxInfo.setIvsParam(0, this.m_lineMesh.vtCount);
         }
     }
     initialize(begin: Vector3D, end: Vector3D = null): void {
@@ -128,7 +132,7 @@ export default class Line3DEntity extends DisplayEntity {
             }
             else {
                 let color: Color4;
-                for(let i: number = 0; i < posList.length; ++i) {
+                for(let i = 0; i < posList.length; ++i) {
                     color = colorList[i];
                     this.m_colorarr.push(color.r, color.g, color.b);
                     this.m_colorarr.push(color.r, color.g, color.b);
@@ -136,7 +140,7 @@ export default class Line3DEntity extends DisplayEntity {
             }
         }
 
-        for(let i: number = 1; i < posList.length; ++i) {
+        for(let i = 1; i < posList.length; ++i) {
             this.m_posarr.push(posList[i-1].x, posList[i-1].y, posList[i-1].z);
             this.m_posarr.push(posList[i].x, posList[i].y, posList[i].z);
         }

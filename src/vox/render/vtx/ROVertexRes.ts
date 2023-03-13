@@ -74,14 +74,17 @@ class ROVertexRes {
     }
     updateToGpu(rc: IROVtxBuilder): void {
         let len = this.m_gpuBufs.length;
+        // console.log("ROVertexRes::updateToGpu(), len > 0: ", len > 0);
         if (len > 0) {
             let vtx = this.m_vtx;
+            // console.log("ROVertexRes::updateToGpu(), this.version != vtx.vertexVer: ", this.version != vtx.vertexVer);
             if (this.version != vtx.vertexVer) {
                 let usage = vtx.getBufDataUsage();
                 let fvs: Float32Array;
                 let sizeList = this.m_sizeList;
                 for (let i = 0; i < len; ++i) {
                     fvs = vtx.getF32DataAt(i);
+                    // console.log("sizeList[i], fvs.length: ", sizeList[i], fvs.length);
                     if (sizeList[i] >= fvs.length) {
                         rc.bindArrBuf(this.m_gpuBufs[i]);
                         rc.arrBufSubData(fvs, 0);

@@ -152,11 +152,11 @@ class ROVertexResource implements IRenderResource {
     }
     update(): void {
         if(this.m_haveDeferredUpdate) {
-            let len: number = this.m_updateIds.length;
+            let len = this.m_updateIds.length;
             if (len > 0) {
                 if(len > this.m_vtxUpdateTotal) len = this.m_vtxUpdateTotal;
                 let resUid: number;
-                for (let i: number = 0; i < len; ++i) {
+                for (let i = 0; i < len; ++i) {
                     resUid = this.m_updateIds.shift();
                     if (this.m_resMap.has(resUid)) {
                         //console.log("ROvtxRes("+resUid+") update vtx("+resUid+") data to gpu with deferred mode.");

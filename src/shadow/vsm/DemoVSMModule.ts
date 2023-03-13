@@ -215,7 +215,7 @@ export class DemoVSMModule {
         this.m_dracoMeshLoader.setListener(this);
         this.loadNext();
 
-        let frustrum: FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
+        let frustrum = new FrustrumFrame3DEntity();
         frustrum.initiazlize(this.m_materialCtx.vsmModule.getCamera());
         this.m_rscene.addEntity(frustrum, 1);
 

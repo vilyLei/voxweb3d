@@ -30,6 +30,7 @@ export class SlickRoad {
             rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
             rparam.setCamPosition(1800.0, 1800.0, 1800.0);
             rparam.setCamProject(45, 20.0, 9000.0);
+            rparam.syncBgColor = true;
             
             this.m_engine = new EngineBase();
             this.m_engine.initialize(rparam, 6);

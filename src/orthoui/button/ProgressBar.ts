@@ -153,16 +153,16 @@ export class ProgressBar {
     }
     private initProBg(container: DisplayEntityContainer, px: number, py: number, width: number, height: number): void {
 
-        let bgPlane: Plane3DEntity = new Plane3DEntity();
+        let bgPlane = new Plane3DEntity();
         bgPlane.premultiplyAlpha = true;
         bgPlane.initializeXOY(0, 0, 1, height, [CanvasTextureTool.GetInstance().createWhiteTex()]);
         bgPlane.setScaleXYZ(width, 1.0, 1.0);
         bgPlane.setXYZ(px, py, 0.0);
-        (bgPlane.getMaterial() as any).setAlpha(0.15);
+        (bgPlane.getMaterial() as any).setAlpha(0.25);
         bgPlane.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         container.addEntity(bgPlane);
 
-        let barPlane: Plane3DEntity = new Plane3DEntity();
+        let barPlane = new Plane3DEntity();
         barPlane.premultiplyAlpha = true;
         barPlane.initializeXOY(0, 0, 1, height, [CanvasTextureTool.GetInstance().createWhiteTex()]);
         barPlane.setXYZ(px, py, 0.0);

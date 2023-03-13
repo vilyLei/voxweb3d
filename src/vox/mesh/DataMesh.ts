@@ -21,6 +21,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	private m_ils: (Uint16Array | Uint32Array)[] = new Array(1);
 	private m_ists: boolean[][] = new Array(1);
 	private m_ls: Float32Array[] = new Array(10);
+	private m_verls = new Uint32Array();
 
 	private m_rayTester: ITestRay = null;
 	private m_boundsVersion = -2;
@@ -37,6 +38,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 		this.m_ls.fill(null);
 		this.m_ils.fill(null);
 		this.m_ists.fill([true, false]);
+		this.m_verls.fill(0);
 	}
 	setRayTester(rayTester: ITestRay): void {
 		this.m_rayTester = rayTester;
@@ -49,6 +51,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	setVS(vs: Float32Array, stride: number = 3): DataMesh {
 		this.m_ls[0] = vs;
 		this.m_strides[0] = stride;
+		this.m_verls[0] ++;
 		this.m_boundsChanged = true;
 		return this;
 	}
@@ -59,6 +62,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	setVS2(vs: Float32Array, stride: number = 3): DataMesh {
 		this.m_ls[5] = vs;
 		this.m_strides[5] = stride;
+		this.m_verls[5] ++;
 		this.m_boundsChanged = true;
 		return this;
 	}
@@ -81,6 +85,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	setUVS(uvs: Float32Array, stride: number = 2): DataMesh {
 		this.m_ls[1] = uvs;
 		this.m_strides[1] = stride;
+		this.m_verls[1] ++;
 		return this;
 	}
 	/**
@@ -90,6 +95,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	setUVS2(uvs: Float32Array, stride: number = 2): DataMesh {
 		this.m_ls[6] = uvs;
 		this.m_strides[6] = stride;
+		this.m_verls[6] ++;
 		return this;
 	}
 	/**
@@ -111,6 +117,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	setNVS(nvs: Float32Array, stride: number = 3): DataMesh {
 		this.m_ls[2] = nvs;
 		this.m_strides[2] = stride;
+		this.m_verls[2] ++;
 		return this;
 	}
 	/**
@@ -127,6 +134,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	setCVS(cvs: Float32Array, stride: number = 3): DataMesh {
 		this.m_ls[3] = cvs;
 		this.m_strides[3] = stride;
+		this.m_verls[3] ++;
 		return this;
 	}
 	/**
@@ -142,6 +150,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	setTVS(tvs: Float32Array, stride: number = 3): DataMesh {
 		this.m_ls[4] = tvs;
 		this.m_strides[4] = stride;
+		this.m_verls[4] ++;
 		return this;
 	}
 	/**
@@ -258,16 +267,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 			rvb.vbWholeDataEnabled = this.vbWholeDataEnabled;
 
 			this.vtCount = ivs.length;
-			if (this.autoBuilding) {
-				this.vtxTotal = vs.length / vsStride;
-
-				// this.toElementsLines();
-				// let pivs = this.updateWireframeIvs(ivs);
-				// if(this.wireframe && pivs != null) {
-				// 	console.log("pivs: ",pivs);
-				// 	ivs = pivs;
-				// }
-			}
+			this.vtxTotal = vs.length / vsStride;
 			this.vtCount = ivs.length;
 			this.trisNumber = this.vtCount / 3;
 
@@ -288,12 +288,15 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 			bls[0] = this.shape;
 			bls[1] = this.wireframe;
 			for(let i = 0; i < ils.length; ++i) {
-				let ird = this.crateROIvsData();
-				bls = sts[i];
-				ird.shape = bls[0];
-				ird.wireframe = bls[1];
+				let ird = this.m_vbuf.getIvsDataAt(i);
+				if(ird == null) {
+					ird = this.crateROIvsData();
+					bls = sts[i];
+					ird.shape = bls[0];
+					ird.wireframe = bls[1];
+				}
+				
 				ird.setData(ils[i]);
-				// console.log("vbuf.setIVSDataAt(), i: ", i, ", ivs: ", ivs);
 				this.m_vbuf.setIVSDataAt(ird, i);
 			}
 

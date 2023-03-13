@@ -182,9 +182,9 @@ export default class RPOUnit implements IRPOUnit {
         let ivsCount = rd.ivsSize;
         // if (this.ivsCount <= ivsCount && ir.isCommon()) ivsCount = this.ivsCount;
         // console.log("runit::drawThis(), ivsCount: ", ivsCount, ",ivsOffset: ", rd.ivsOffset, this.rdp.getUid(), rd.getUid());
-        
         // if(DebugFlag.Flag_0 > 0) {
         //     console.log("runit::drawThis(), ivsCount: ", ivsCount, ",ivsOffset: ", rd.ivsOffset, this.rdp.getUid(), ", rd.getUid(): " ,rd.getUid());
+        //     //DebugFlag.Flag_0 = 0;
         // }
         if (this.polygonOffset != null) {
             rc.setPolygonOffset(this.polygonOffset[0], this.polygonOffset[1]);
@@ -353,7 +353,7 @@ export default class RPOUnit implements IRPOUnit {
             this.bounds = null;
             this.pos = null;
             if(this.rdp) {
-                this.rdp.clear();
+                if(this.rdp.lifeTime > 0)this.rdp.clear();
                 this.rdp = null;
             }
             this.vdrInfo = null;

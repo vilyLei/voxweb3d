@@ -74,6 +74,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
             rparam.setCamProject(45, 10.0, 8000.0);
             rparam.setAttriStencil(true);
             rparam.setAttriAlpha(false);
+            rparam.syncBgColor = false;
             rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
             rparam.setCamPosition(800.0, 800.0, 800.0);
 

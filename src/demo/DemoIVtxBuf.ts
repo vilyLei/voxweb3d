@@ -48,7 +48,7 @@ export class DemoIVtxBuf {
 			let tex1 = this.m_tex;
 			let material = new Default3DMaterial();
 			material.normalEnabled = true;
-			material.setTextureList([this.getImageTexByUrl("static/assets/white.jpg")]);
+			material.setTextureList([this.getImageTexByUrl("static/assets/noise.jpg")]);
 			material.initializeByCodeBuf(true);
 			material.setRGB3f(0.5, 1.0, 0.5);
 
@@ -95,7 +95,7 @@ export class DemoIVtxBuf {
 		let boxEntity = new Box3DEntity();
 		boxEntity.normalEnabled = true;
 		// boxEntity.wireframe = true;
-		boxEntity.initializeCube(100.0, [this.getImageTexByUrl("static/assets/white.jpg")]);
+		boxEntity.initializeCube(100.0, [this.getImageTexByUrl("static/assets/noise.jpg")]);
 		boxEntity.setXYZ(-200, 0, 0);
 		this.m_rscene.addEntity(boxEntity);
 		this.m_currDispEntity = boxEntity;
