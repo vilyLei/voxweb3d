@@ -161,7 +161,7 @@ class NormalEntityGroup extends NVEntityGroup {
 	private m_layoutor: CoEntityLayouter = new CoEntityLayouter();
 
 	private updateLayout(rotationEnabled: boolean): void {
-		this.m_layoutor.layoutUpdate(rotationEnabled);
+		this.m_layoutor.layoutUpdate(300,  null, rotationEnabled);
 	}
 
 	destroy(): void {

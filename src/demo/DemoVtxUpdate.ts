@@ -61,8 +61,6 @@ export class DemoVtxUpdate {
 		}
 	}
 	private m_tarEntity: DisplayEntity = null;
-	private m_tarREntity: DisplayEntity = null;
-	private m_tarMEntity: DisplayEntity = null;
 	
 	private createVtxInfo(): VtxDrawingInfo {
 		// return null;
@@ -88,13 +86,6 @@ export class DemoVtxUpdate {
 		let model: IGeomModelData = { vertices: vs, uvsList: [uvs], normals: nvs, indices: ivs, wireframe: false };
 		let mesh = MeshFactory.createDataMeshFromModel(model);
 
-		// let dx = 30;		
-		// let nvs = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 	0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
-		// let uvs = new Float32Array([0, 0, 1, 0, 1, 1, 0, 1, 	0, 0, 1, 0, 1, 1, 0, 1]);
-		// let vs = new Float32Array([10, 0, -10, -10, 0, -10, -10, 0, 10, 10, 0, 10, 		10 + dx, 0, -10, -10 + dx, 0, -10, -10 + dx, 0, 10, 10 + dx, 0, 10]);
-		// let ivs = new Uint16Array([0, 1, 2, 0, 2, 3, 		0+4, 1+4, 2+4, 0+4, 2+4, 3+4]);
-		// let model: IGeomModelData = { vertices: vs, uvsList: [uvs], normals: nvs, indices: ivs, wireframe: false };
-		// let mesh = MeshFactory.createDataMeshFromModel(model);
 		this.m_mesh = mesh;
 
 		// 0, 1, 1, 2, 2, 0, 0, 2, 2, 3, 3, 0
@@ -127,10 +118,6 @@ export class DemoVtxUpdate {
 
 		this.m_tarEntity.updateMeshToGpu();
 		this.m_tarEntity.getMaterial().vtxInfo.setIvsParam(0, ivs.length);
-
-		// let model: IGeomModelData = { vertices: vs, uvsList: [uvs], normals: nvs, indices: ivs, wireframe: false };
-		// let mesh = MeshFactory.createDataMeshFromModel(model);
-		// this.m_mesh = mesh;
 
 	}
 	private m_flag = true;
