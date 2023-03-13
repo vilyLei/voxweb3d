@@ -44,7 +44,7 @@ class EntityLayouter {
 		this.m_entities.push(entity);
 		this.m_transforms.push(transform);
 		// console.log("layoutAppendItem(), entity: ", entity);
-	}	
+	}
 	layoutUpdate(fixSize: number = 300.0, pivot: Vector3D = null, rotationEnabled: boolean = false): void {
 		
 		this.rotationEnabled = rotationEnabled;
