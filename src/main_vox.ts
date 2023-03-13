@@ -273,7 +273,7 @@
 
 //  import {DemoLineMeshUpdate as Demo} from "./demo/DemoLineMeshUpdate";
 
- import {DemoVtxUpdate as Demo} from "./demo/DemoVtxUpdate";
+//  import {DemoVtxUpdate as Demo} from "./demo/DemoVtxUpdate";
 
 //  import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
 // free-shaped morph animation
@@ -479,7 +479,7 @@
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 
-// import {SlickRoad as Demo} from "./app/SlickRoad";
+import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 

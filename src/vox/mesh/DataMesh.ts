@@ -20,6 +20,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	private m_boundsChanged = true;
 	private m_ils: (Uint16Array | Uint32Array)[] = new Array(1);
 	private m_iverls: number[] = new Array(1);
+	private m_iver1ls: number[] = new Array(1);
 	private m_ists: boolean[][] = new Array(1);
 	private m_ls: Float32Array[] = new Array(10);
 	private m_verls = new Uint32Array();
@@ -39,6 +40,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 		this.m_ls.fill(null);
 		this.m_ils.fill(null);
 		this.m_iverls.fill(0);
+		this.m_iver1ls.fill(0);
 		this.m_ists.fill([true, false]);
 		this.m_verls.fill(0);
 	}
@@ -206,7 +208,8 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 		}else if(index == this.m_ils.length){
 			this.m_ils.push( ivs );
 			this.m_ists.push( [shape, wireframe] );
-			this.m_iverls.push(0);
+			this.m_iverls.push(1);
+			this.m_iver1ls.push(0);
 		}
 		return this;
 	}
@@ -301,9 +304,9 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 					ird.shape = bls[0];
 					ird.wireframe = bls[1];
 				}else {
-					flag = this.m_iverls[i] != ird.version;
-					ird.version = this.m_iverls[i];
+					flag = this.m_iver1ls[i] != this.m_iverls[i];
 				}
+				this.m_iver1ls[i] = this.m_iverls[i];
 				if(flag) {
 					ird.setData(ils[i]);
 					this.m_vbuf.setIVSDataAt(ird, i);
@@ -338,6 +341,8 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 				this.m_rayTester = null;
 			}
 
+			this.m_iverls = [];
+			this.m_iver1ls = [];
 			this.m_ls = [];
 			this.m_ils = [];
 
