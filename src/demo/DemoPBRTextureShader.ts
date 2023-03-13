@@ -70,11 +70,12 @@ export class DemoPBRTextureShader {
 		this.m_rscene.addEntity(sph);
 		
 		param = new PBRParam(Math.random() * 1.2, Math.random() * 1.2, 1.0);
-		this.applyTex(param, "gold");
+		this.applyTex(param, "rusted_iron");
+		// this.applyTex(param, "gold"); 
 		material = this.m_pbr.createTextureMaterialWrapper(param);
 		let cone = new Cone3DEntity();
 		cone.setMaterial(material);
-		cone.initialize(70, 150, 20);
+		cone.initialize(70, 150, 30);
 		cone.setXYZ(-200, 0.0, 200.0);
 		this.m_rscene.addEntity(cone);
 
@@ -83,6 +84,7 @@ export class DemoPBRTextureShader {
 		this.applyTex(param, "wall");
 		material = this.m_pbr.createTextureMaterialWrapper( param );
 		let torus = new Torus3DEntity();
+		torus.axisType = 1;
 		torus.setMaterial(material);
 		torus.initialize(80, 30, 30, 50, null, 1);
 		torus.setXYZ(200, 0.0, -200.0);

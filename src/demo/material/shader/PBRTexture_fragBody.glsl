@@ -10,6 +10,9 @@ void main()
     float matGlossiness = 1.0 - roughness;//0.15;
     float matReflectionIntensity = 0.5;
     float glossinessSquare = matGlossiness * matGlossiness;
+    // //v_nv
+    // FragColor0 = vec4(abs(v_nv.xyz), 1.0);
+    // return;
 
     // vec3 N = normalize(v_normal);
     vec3 N;
@@ -118,5 +121,10 @@ void main()
     color = gammaCorrection(color);
 
     //color = dithering(color);
+
     FragColor0 = vec4(color, 1.0);
+    
+    #ifdef VOX_DEPTH_FOG
+        FragColor1 = v_fogParam;
+    #endif
 }

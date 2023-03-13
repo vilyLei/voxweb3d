@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import BC from "../../vox/utils/BitConst";
+import VtxNormalType from "./VtxNormalType";
 
 class VtxBufConst {
     static VTXTYPE_GL_POINTS = 101;
@@ -174,10 +175,7 @@ class VtxBufConst {
         return vbufType - 3000;
     }
 }
-class VtxNormalType {
-    static FLAT = 210;
-    static GOURAND = 310;
-}
+
 
 export default VtxBufConst;
 export { VtxNormalType };

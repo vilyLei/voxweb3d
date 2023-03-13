@@ -21,7 +21,9 @@ class PBRParam {
 	metallicMap: IRenderTexture = null;
 	aoMap: IRenderTexture = null;
 
-	uvTrans = new Vector3D();
+	uvTrans = new Vector3D(0,0,1.0,1.0);
+
+	depthFog = false;
 
 	constructor(roughness: number, metallic: number, ao: number = 1.0, albedoColor: IColor4 = null){
 		this.roughness = roughness;
@@ -71,7 +73,7 @@ class PBRMateralBuilder {
 
 		const vec3 = new Vector3D();
 		let dis = 700.0;
-		let disY = 400.0;
+		let disY = 900.0;
 		this.m_lightPosList = [
 			vec3.clone().setXYZ(-dis, disY, -dis),
 			vec3.clone().setXYZ(dis, disY, dis),
@@ -119,9 +121,8 @@ class PBRMateralBuilder {
 			this.initLightColor();
 		}
 		let wrapper = new PBRTextureMaterialWrapper();
-		// if(envMapEnabled) {
-		// 	wrapper.setTextureList([PBRMateralBuilder.s_envMap]);
-		// }
+		wrapper.depthFog = param.depthFog;
+		
 		let texList: IRenderTexture[] = [];
 		wrapper.envMapEnabled = param.envMap != null;
 		if(wrapper.envMapEnabled) {
@@ -151,8 +152,8 @@ class PBRMateralBuilder {
 			texList.push(param.aoMap);
 		}
 		for (let i = 0; i < 4; ++i) {
-			wrapper.setPosAt(i, this.m_lightPosList[i]);
-			wrapper.setColorAt(i, this.m_lightColorList[i]);
+			wrapper.setLightPosAt(i, this.m_lightPosList[i]);
+			wrapper.setLightColorAt(i, this.m_lightColorList[i]);
 		}
 		wrapper.setRoughness(param.roughness);
 		wrapper.setMetallic(param.metallic);

@@ -49,7 +49,17 @@ export default class Torus3DEntity extends DisplayEntity {
             this.getMaterial().setTextureList(texList);
         }
     }
-    initialize(ringRadius: number, axisRadius: number, longitudeNumSegments: number, latitudeNumSegments: number, texList: IRenderTexture[] = null, uvType: number = 1, alignYRatio: number = -0.5): void {
+	/**
+     * @param ringRadius the default value is 200
+     * @param axisRadius the default value is 50
+     * @param longitudeNumSegments the default value is 30
+     * @param latitudeNumSegments the default value is 20
+     * @param texList the default value is null
+     * @param uvType the default value is 1
+     * @param alignYRatio the default value is -0.5
+	 * @returns a torus entity
+     */
+    initialize(ringRadius: number = 200, axisRadius: number = 50, longitudeNumSegments: number = 30, latitudeNumSegments: number = 20, texList: IRenderTexture[] = null, uvType: number = 1, alignYRatio: number = -0.5): void {
         this.m_ringRadius = ringRadius;
         this.m_axisRadius = axisRadius;
         this.m_plongitudeNumSegments = longitudeNumSegments;

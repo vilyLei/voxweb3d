@@ -73,7 +73,7 @@ class ConeMeshBuilder extends MeshBuilder implements IConeMeshBuilder {
             vtxVec.push(vtxRow[j]);
         }
         py = minY;
-        let py2: number = 0.499;
+        let py2 = 0.499;
         for (; i < latitudeNumSegments; ++i) {
             yRad = (Math.PI * i) / latitudeNumSegments;
             vtx.y = py;

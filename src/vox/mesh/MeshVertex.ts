@@ -7,18 +7,21 @@
 
 export default class MeshVertex {
     // pos
-    x: number = 0.0;
-    y: number = 0.0;
-    z: number = 0.0;
+    x = 0.0;
+    y = 0.0;
+    z = 0.0;
     // uv
-    u: number = 0.0;
-    v: number = 1.0;
+    u = 0.0;
+    v = 1.0;
     // normal
-    nx: number = 0.0;
-    ny: number = 0.0;
-    nz: number = 0.0;
-    index: number = 0;
-    //
+    nx = 0.0;
+    ny = 0.0;
+    nz = 0.0;
+
+    index = 0;
+
+    f = 0;
+
     constructor(px: number = 0, py: number = 0, pz: number = 0, pindex: number = 0) {
         // pos
         this.x = px;
@@ -27,9 +30,10 @@ export default class MeshVertex {
         this.index = pindex;
     }
     cloneVertex(): MeshVertex {
-        let vtx: MeshVertex = new MeshVertex(this.x, this.y, this.z, this.index);
+        let vtx = new MeshVertex(this.x, this.y, this.z, this.index);
         vtx.nx = this.nx; vtx.ny = this.ny; vtx.nz = this.nz;
         vtx.u = this.u; vtx.v = this.v;
+        vtx.f = this.f;
         return vtx;
     }
     copyFrom(pv: MeshVertex): void {
@@ -37,5 +41,6 @@ export default class MeshVertex {
         this.u = pv.u; this.v = pv.v;
         this.nx = pv.nx; this.ny = pv.ny; this.nz = pv.nz;
         this.index = pv.index;
+        this.f = pv.f;
     }
 }

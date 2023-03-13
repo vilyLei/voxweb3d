@@ -29,7 +29,7 @@ class PBRTextureMaterialWrapper {
 	roughnessMapEnabled = false;
 	metallicMapEnabled = false;
 	aoMapEnabled = false;
-
+	depthFog = false;
 	constructor() {}
 
 	setUVOffset(px: number, py: number): void {
@@ -41,13 +41,35 @@ class PBRTextureMaterialWrapper {
 		this.m_uvTrans[3] = sy;
 	}
 	get material(): IRenderMaterial {
-
 		if (this.m_material == null) {
+			let uns = "";
+			if (this.envMapEnabled) {
+				uns += "env_";
+			}
+			if (this.diffuseMapEnabled) {
+				uns += "diff_";
+			}
+			if (this.normalMapEnabled) {
+				uns += "morm_";
+			}
+			if (this.roughnessMapEnabled) {
+				uns += "roug_";
+			}
+			if (this.metallicMapEnabled) {
+				uns += "metal_";
+			}
+			if (this.aoMapEnabled) {
+				uns += "ao_";
+			}
+			if (this.depthFog) {
+				uns += "depthFog_";
+			}
 
-			let material = new ShaderMaterial("pbr_texture_shader");
+			uns = uns != "" ? "pbr_texture_shader" : "pbr_texture_shader_" + uns;
+			let material = new ShaderMaterial(uns);
 
 			material.setShaderBuilder((coderBuilder: IShaderCodeBuffer): void => {
-				// VOX_ENV_MAP
+				// VOX_ENV_MAP,
 				// VOX_DIFFUSE_MAP,
 				// VOX_NORMAL_MAP,
 				// VOX_ROUGHNESS_MAP,
@@ -66,10 +88,18 @@ class PBRTextureMaterialWrapper {
 				// coder.addVarying("vec2", "v_uv");
 				coder.addVertLayout("vec3", "a_nvs");
 
+				// coder.addVarying("vec3", "v_nv");
 				coder.addVarying("vec3", "v_worldPos");
 				coder.addVarying("vec3", "v_normal");
 				coder.addVarying("vec3", "v_camPos");
 				coder.addFragOutputHighp("vec4", "FragColor0");
+
+				if (this.depthFog) {
+					coder.addDefine("VOX_DEPTH_FOG");
+					coder.addVarying("vec4", "v_fogParam");
+					coder.addVertUniform("vec4", "u_frustumParam");
+					coder.addFragOutputHighp("vec4", "FragColor1");
+				}
 
 				if (this.envMapEnabled) {
 					coder.mapLodEnabled = true;
@@ -96,13 +126,13 @@ class PBRTextureMaterialWrapper {
 				coder.addFragHeadCode(PBRTexture.frag_head);
 				coder.addFragMainCode(PBRTexture.frag_body);
 			});
-            
-            material.addUniformDataAt("u_uvTrans", this.m_uvTrans);
-            material.addUniformDataAt("u_albedo", this.m_albedo);
-            material.addUniformDataAt("u_params", this.m_params);
-            material.addUniformDataAt("u_lightPositions", this.m_lightPositions);
-            material.addUniformDataAt("u_lightColors", this.m_lightColors);
-            material.addUniformDataAt("u_F0", this.m_F0);
+
+			material.addUniformDataAt("u_uvTrans", this.m_uvTrans);
+			material.addUniformDataAt("u_albedo", this.m_albedo);
+			material.addUniformDataAt("u_params", this.m_params);
+			material.addUniformDataAt("u_lightPositions", this.m_lightPositions);
+			material.addUniformDataAt("u_lightColors", this.m_lightColors);
+			material.addUniformDataAt("u_F0", this.m_F0);
 			this.m_material = material;
 		}
 
@@ -127,7 +157,12 @@ class PBRTextureMaterialWrapper {
 		this.m_F0[1] = f0y;
 		this.m_F0[2] = f0z;
 	}
-	setPosAt(i: number, pv: IVector3D): void {
+	setAlbedoColor(color: IColor4): void {
+		this.m_albedo[0] = color.r;
+		this.m_albedo[1] = color.g;
+		this.m_albedo[2] = color.b;
+	}
+	setLightPosAt(i: number, pv: IVector3D): void {
 		if (i < 4) {
 			i *= 4;
 			this.m_lightPositions[i] = pv.x;
@@ -135,12 +170,7 @@ class PBRTextureMaterialWrapper {
 			this.m_lightPositions[i + 2] = pv.z;
 		}
 	}
-	setAlbedoColor(color: IColor4): void {
-		this.m_albedo[0] = color.r;
-		this.m_albedo[1] = color.g;
-		this.m_albedo[2] = color.b;
-	}
-	setColorAt(i: number, color: IColor4): void {
+	setLightColorAt(i: number, color: IColor4): void {
 		if (i < 4) {
 			i *= 4;
 			this.m_lightColors[i] = color.r;

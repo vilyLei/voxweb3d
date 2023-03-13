@@ -22,7 +22,7 @@ export default class Box3DMesh extends MeshBase {
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         super(bufDataUsage);
     }
-    normalType: number = VtxNormalType.FLAT;
+    normalType = VtxNormalType.FLAT;
 
     private m_vs: Float32Array = null;
     private m_uvs: Float32Array = null;
@@ -31,8 +31,8 @@ export default class Box3DMesh extends MeshBase {
 
     vtxColor: Color4 = null;
 
-    flipVerticalUV: boolean = false;
-    uvPartsNumber: number = 0;
+    flipVerticalUV = false;
+    uvPartsNumber = 0;
     getVS() { return this.m_vs; }
     getUVS() { return this.m_uvs; }
     getNVS() { return this.m_nvs; }

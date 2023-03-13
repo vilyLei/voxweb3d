@@ -6,7 +6,6 @@
 /***************************************************************************/
 import RendererDevice from "../../vox/render/RendererDevice";
 import RendererParam from "../../vox/scene/RendererParam";
-import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import RendererScene from "../../vox/scene/RendererScene";
 
 

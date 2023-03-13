@@ -1,8 +1,6 @@
 
 import Vector3D from "../../../vox/math/Vector3D";
 import Color4 from "../../../vox/material/Color4";
-import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../../../vox/render/RenderConst";
-import RendererState from "../../../vox/render/RendererState";
 import TextureConst from "../../../vox/texture/TextureConst";
 import TextureProxy from "../../../vox/texture/TextureProxy";
 import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
@@ -12,11 +10,9 @@ import RendererScene from "../../../vox/scene/RendererScene";
 import MouseEvent from "../../../vox/event/MouseEvent";
 
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
-import ProfileInstance from "../../../voxprofile/entity/ProfileInstance";
 import { FogSphShow2Material } from "../material/FogSphShow2Material";
 import { BoxSpaceMotioner } from "../../../voxmotion/primitive/BoxSpaceMotioner";
 import { FogFBOMana } from "../../../advancedDemo/depthLight/scene/FogFBOMana";
-import { FogSystem } from "../../../advancedDemo/depthLight/scene/FogSystem";
 import { FogSphSystem } from "../../../advancedDemo/depthLight/scene/FogSphSystem";
 import { BillParticleGroup } from "../../../advancedDemo/depthLight/scene/BillParticle";
 
