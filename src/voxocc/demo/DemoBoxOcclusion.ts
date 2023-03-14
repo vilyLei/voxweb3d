@@ -9,14 +9,11 @@ import TextureProxy from "../../vox/texture/TextureProxy";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import RendererScene from "../../vox/scene/RendererScene";
 import MouseEvent from "../../vox/event/MouseEvent";
-import Stage3D from "../../vox/display/Stage3D";
-import H5FontSystem from "../../vox/text/H5FontSys";
 
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Box3DEntity from "../../vox/entity/Box3DEntity";
 import BillboardFrame from "../../vox/entity/BillboardFrame";
 import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
-import CameraTrack from "../../vox/view/CameraTrack";
 import BoxFrame3D from "../../vox/entity/BoxFrame3D";
 import BrokenLine3DEntity from "../../vox/entity/BrokenLine3DEntity";
 import { QuadHolePOV } from '../../voxocc/occlusion/QuadHolePOV';
