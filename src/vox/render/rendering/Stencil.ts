@@ -90,9 +90,11 @@ class Stencil implements IStencil {
                 rstate.setStencilMask(fs[4]);
             }
             if (fs[5] > 0) {
+                // console.log("setStencilFunc fs[5]: ", fs[5]);
                 rstate.setStencilFunc(fs[6], fs[7], fs[8]);
             }
             if (fs[9] > 0) {
+                // console.log("setStencilOp fs[10]: ", fs[10]);
                 rstate.setStencilOp(fs[10], fs[11], fs[12]);
             }
         }

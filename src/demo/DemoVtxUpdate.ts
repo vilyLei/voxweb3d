@@ -120,6 +120,19 @@ export class DemoVtxUpdate {
 		this.m_tarEntity.getMaterial().vtxInfo.setIvsParam(0, ivs.length);
 
 	}
+	private testDataMesh3(): void {
+
+		let dx = 30;
+		
+		let vs = new Float32Array([20, 0, -20, -10, 0, -10, -10, 0, 10, 10, 0, 10, 		10 + dx, 0, -10, -10 + dx, 0, -10, -10 + dx, 0, 10, 10 + dx, 0, 10]);
+		
+		let mesh = this.m_mesh;
+		mesh.setVS(vs);
+		mesh.initialize();
+
+		this.m_tarEntity.updateMeshToGpu();
+
+	}
 	private m_flag = true;
 	private m_flagState = 0;
 	mouseDownListener(evt: any): void {
@@ -130,6 +143,8 @@ export class DemoVtxUpdate {
 			if (this.m_tarEntity != null) {
 				this.testDataMesh2();
 			}
+		}else if(this.m_flagState == 4) {
+			this.testDataMesh3();
 		}
 		DebugFlag.Flag_0 = 1;
 	}

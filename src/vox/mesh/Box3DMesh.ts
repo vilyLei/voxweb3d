@@ -421,8 +421,6 @@ export default class Box3DMesh extends MeshBase {
         }
         ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
 
-        this.updateWireframeIvs();
-        
         if (this.m_vbuf == null) {
             if(this.vbWholeDataEnabled) {
                 this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());

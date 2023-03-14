@@ -23,7 +23,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	private m_iver1ls: number[] = new Array(1);
 	private m_ists: boolean[][] = new Array(1);
 	private m_ls: Float32Array[] = new Array(10);
-	private m_verls = new Uint32Array();
+	private m_verls: number[] = new Array(10);
 
 	private m_rayTester: ITestRay = null;
 	private m_boundsVersion = -2;
@@ -36,7 +36,9 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	]);
 
 	constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
+
 		super(bufDataUsage);
+
 		this.m_ls.fill(null);
 		this.m_ils.fill(null);
 		this.m_iverls.fill(0);
@@ -53,6 +55,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	 * @param vs vertex position buffer Float32Array
 	 */
 	setVS(vs: Float32Array, stride: number = 3): DataMesh {
+
 		this.m_ls[0] = vs;
 		this.m_strides[0] = stride;
 		this.m_verls[0] ++;
@@ -64,6 +67,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	 * @param vs vertex position buffer Float32Array
 	 */
 	setVS2(vs: Float32Array, stride: number = 3): DataMesh {
+
 		this.m_ls[5] = vs;
 		this.m_strides[5] = stride;
 		this.m_verls[5] ++;
@@ -87,6 +91,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	 * @param uvs vertex uv buffer Float32Array
 	 */
 	setUVS(uvs: Float32Array, stride: number = 2): DataMesh {
+
 		this.m_ls[1] = uvs;
 		this.m_strides[1] = stride;
 		this.m_verls[1] ++;
@@ -97,6 +102,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	 * @param uvs vertex uv buffer Float32Array
 	 */
 	setUVS2(uvs: Float32Array, stride: number = 2): DataMesh {
+
 		this.m_ls[6] = uvs;
 		this.m_strides[6] = stride;
 		this.m_verls[6] ++;
@@ -119,6 +125,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	 * @param vs vertex normal buffer Float32Array
 	 */
 	setNVS(nvs: Float32Array, stride: number = 3): DataMesh {
+
 		this.m_ls[2] = nvs;
 		this.m_strides[2] = stride;
 		this.m_verls[2] ++;
@@ -136,6 +143,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	 * @param vs vertex color(r,g,b) buffer Float32Array
 	 */
 	setCVS(cvs: Float32Array, stride: number = 3): DataMesh {
+
 		this.m_ls[3] = cvs;
 		this.m_strides[3] = stride;
 		this.m_verls[3] ++;
@@ -152,6 +160,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	 * @param vs vertex tangent buffer Float32Array
 	 */
 	setTVS(tvs: Float32Array, stride: number = 3): DataMesh {
+
 		this.m_ls[4] = tvs;
 		this.m_strides[4] = stride;
 		this.m_verls[4] ++;
@@ -176,16 +185,19 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 		this.m_boundsChanged = true;
 		this.initialize();
 	}
-	private addFloat32Data(data: Float32Array, type: number, stride: number, info: string = ""): void {
+	private addFloat32Data(data: Float32Array, type: number, stride: number, ver: number, info: string = ""): void {
+
 		let free = this.getBufSortFormat() < 1;
 		free = this.isVBufEnabledAt(type) || (free && data != null);
-		// console.log("DataMesh::addFloat32Data(), info: ", info, ", free: ", free, ", data: ", data);
+		// console.log("DataMesh::addFloat32Data(), info: ", info, ", free: ", free, ", ver: ", ver);
 		if (free) {
+			ROVertexBuffer.AddFloat32DataVer( ver );
 			ROVertexBuffer.AddFloat32Data(data, stride);
 		}
 	}
 
 	setIVS(ivs: Uint16Array | Uint32Array): IDataMesh {
+
 		this.m_ivs = ivs;
 		this.m_ils[0] = ivs;
 		this.m_iverls[0] += 1;
@@ -196,6 +208,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
      */
     getIVS(): Uint16Array | Uint32Array { return this.m_ils[0]; }
 	setIVSAt(ivs: Uint16Array | Uint32Array, index: number = 0, wireframe: boolean = false, shape: boolean = true): DataMesh {
+
 		// console.log("DataMesh::setIVSAt(), index: ", index);
 		if(index == 0) this.m_ivs = ivs;
 		this.m_boundsChanged = true;
@@ -240,18 +253,20 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 			this.m_boundsVersion = this.bounds.version;
 			this.m_boundsChanged = false;
 
-			let ils = this.m_ils;
-			let ivs = ils[0];
+			const ils = this.m_ils;
+			const ivs = ils[0];
 
+			const verls = this.m_verls;
 			const rvb = ROVertexBuffer;
 			ROVertexBuffer.Reset();
 			// console.log("XXXXXX vsStride: ", vsStride, ", vs: ", vs);
-			rvb.AddFloat32Data(vs, vsStride);
+			rvb.AddFloat32DataVer( verls[0] );
+			rvb.AddFloat32Data( vs, vsStride );
 
 			const vc = VtxBufConst;
 			const vcf = this.addFloat32Data.bind(this);
 
-			vcf(ls[1], vc.VBUF_UVS_INDEX, ds[1]);
+			vcf(ls[1], vc.VBUF_UVS_INDEX, ds[1], verls[1]);
 
 			let nvsIndex = 2;
 			let nvs = ls[nvsIndex];
@@ -264,13 +279,14 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 					ls[nvsIndex] = nvs;
 				}
 				// console.log("XXXXXX vsStride: ", ds[nvsIndex], ", nvs: ", nvs);
+				rvb.AddFloat32DataVer( verls[nvsIndex] );
 				rvb.AddFloat32Data(nvs, ds[nvsIndex]);
 			}
 
-			vcf(ls[3], vc.VBUF_CVS_INDEX, ds[3]);
-			vcf(ls[4], vc.VBUF_TVS_INDEX, ds[4]);
-			vcf(ls[5], vc.VBUF_VS2_INDEX, ds[5]);
-			vcf(ls[6], vc.VBUF_UVS2_INDEX, ds[6]);
+			vcf(ls[3], vc.VBUF_CVS_INDEX, ds[3], verls[3]);
+			vcf(ls[4], vc.VBUF_TVS_INDEX, ds[4], verls[4]);
+			vcf(ls[5], vc.VBUF_VS2_INDEX, ds[5], verls[5]);
+			vcf(ls[6], vc.VBUF_UVS2_INDEX, ds[6], verls[6]);
 
 			rvb.vbWholeDataEnabled = this.vbWholeDataEnabled;
 
@@ -284,7 +300,6 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 			} else {
 				let u = this.getBufDataUsage();
 				let f = this.getBufSortFormat();
-				this.m_vbuf = rvb.CreateBySaveData(u, f);
 				if (this.vbWholeDataEnabled) {
 					this.m_vbuf = rvb.CreateBySaveData(u, f);
 				} else {

@@ -91,9 +91,6 @@ export default class Tube3DMesh extends MeshBase {
             this.m_uvs = uvs;
             this.m_ivs = ivs;
 
-            if (this.wireframe) {
-                this.updateWireframeIvs();
-            }
             this.bounds = this.geometry.bounds;
 
             this.vtCount = this.geometry.vtCount;
@@ -136,7 +133,7 @@ export default class Tube3DMesh extends MeshBase {
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX)) {
             ROVertexBuffer.AddFloat32Data(this.m_cvs, 3);
         }
-        this.updateWireframeIvs();
+        
         if (newBuild) {
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());

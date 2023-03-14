@@ -72,7 +72,6 @@ export default class RawMesh extends MeshBase implements IRawMesh {
 		if(this.ivsEnabled) {
 			this.vtCount = this.m_ivs.length;
 			if(this.autoBuilding) {
-				this.updateWireframeIvs();
 				this.vtCount = this.m_ivs.length;
 			}
 		}else {

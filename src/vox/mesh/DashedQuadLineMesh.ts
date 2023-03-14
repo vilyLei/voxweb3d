@@ -134,9 +134,7 @@ export default class DashedQuadLineMesh extends MeshBase
             ROVertexBuffer.AddFloat32Data(this.m_cvs,4);
             ROVertexBuffer.AddFloat32Data(this.m_vs2,4);
             this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
-            if(this.wireframe) {
-                this.updateWireframeIvs();
-            }
+            
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
             this.m_vbuf.setIVSDataAt( this.crateROIvsData().setData(this.m_ivs) );

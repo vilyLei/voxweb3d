@@ -9,12 +9,17 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
 import DefaultPassGraph from "../vox/render/pass/DefaultPassGraph";
-import ConvexTransParentPassItem from "./pass/ConvexTransParentPassItem";
+// import ConvexTransParentPassItem from "./pass/ConvexTransParentPassItem";
+import StencilOutlinePassItem from "./pass/StencilOutlinePassItem";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import TextureResLoader from "../vox/assets/TextureResLoader";
+import { GLStencilFunc, GLStencilOp } from "../vox/render/RenderConst";
+import EventBase from "../vox/event/EventBase";
+import MouseEvent from "../vox/event/MouseEvent";
+import DebugFlag from "../vox/debug/DebugFlag";
 
-export class DemoGraphTransparent {
+export class DemoGraphStencil {
 	private m_init = true;
 	private m_texLoader: TextureResLoader = null;
 	private m_rscene: RendererScene = null;
@@ -25,7 +30,8 @@ export class DemoGraphTransparent {
 	}
 
 	initialize(): void {
-		console.log("DemoGraphTransparent::initialize()......");
+
+		console.log("DemoGraphStencil::initialize()......");
 		if (this.m_init) {
 			this.m_init = false;
 
@@ -42,10 +48,12 @@ export class DemoGraphTransparent {
 			let rparam = new RendererParam();
 			rparam.setCamProject(45, 0.1, 6000.0);
 			rparam.setCamPosition(1100.0, 1100.0, 1100.0);
+			rparam.setAttriStencil(true);
 			// rparam.setAttriAlpha(false);
 			
 			let rscene = new RendererScene();
-			rscene.initialize(rparam).setAutoRunning(true);
+			// rscene.initialize(rparam).setAutoRunning(true);
+			rscene.initialize(rparam)
 			rscene.setClearRGBAColor4f(0.0,0.0,0.0,0.0);
 
 			this.m_rscene = rscene;
@@ -59,49 +67,50 @@ export class DemoGraphTransparent {
 	}
 	private testDataMesh(rscene: RendererScene): void {
 
-		// 推荐的模型数据组织形式
-		
-		let alpha = 0.8;
 		let material = new Default3DMaterial();
-		material.setAlpha(alpha);
 		material.normalEnabled = true;
-		material.setTextureList([this.getTexByUrl("static/assets/blueTransparent.png", true)]);
+		material.setTextureList([this.getTexByUrl("static/assets/box.jpg", true)]);
 
-		let sph = new Sphere3DEntity();
-		// sph.wireframe = true;
-		// sph.shape = false;
-		sph.setMaterial(material);
-		sph.initialize(160, 20, 20);
-		let mesh = sph.getMesh();
+		
+		let item = new StencilOutlinePassItem();
 
-		let st = this.m_rscene.getRenderProxy().renderingState;
-		let graph = new DefaultPassGraph().addItem(new ConvexTransParentPassItem()).initialize();
+		let stc = item.stencil0;		
+        stc.setStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
+        stc.setStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF);
+        stc.setStencilMask(0xFF);
+		
+		stc = item.stencil1;
+        stc.setStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF);
+        stc.setStencilMask(0x0);
+
+		let graph = new DefaultPassGraph().addItem(item).initialize();
 		material.graph = graph;
 		
-		let entity = new DisplayEntity();
-		entity.setRenderState(st.BACK_TRANSPARENT_STATE);
-		entity.setMaterial(material);
-		entity.setMesh(mesh);
-		rscene.addEntity(entity, 1);
-
-		material = new Default3DMaterial();
-		material.graph = graph;
-		material.setAlpha(alpha);
-		material.normalEnabled = true;
-		material.setTextureList([this.getTexByUrl("static/assets/redTransparent.png", true)]);
-
-		entity = new DisplayEntity();
-		entity.setMaterial(material);
-		entity.setMesh(mesh);
-		entity.setXYZ(0, 0, -200);
-		rscene.addEntity(entity, 1);
+		let sph = new Sphere3DEntity();
+		sph.setMaterial(material);
+		sph.initialize(80, 20, 20);
+		sph.setXYZ(-200, 0, -200);
+		rscene.addEntity(sph, 1);
+		
+		let box = new Box3DEntity();
+		box.setMaterial(material);
+		box.initializeCube(200.0);
+		this.m_rscene.addEntity(box,0);
 	}
 	
 	private initScene(rscene: RendererScene): void {
-		this.initEntities(rscene);
+		// this.initEntities(rscene);
 		this.testDataMesh(rscene);
-	}
 
+		// rscene.addEventListener(EventBase.ENTER_FRAME, this, this.enterFrame);
+		rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+	}
+	private mouseDown(): void {
+		DebugFlag.Flag_0 = 1;
+	}
+	private enterFrame(): void {
+
+	}
 	private initEntities(rscene: RendererScene): void {
 
 		let box0 = new Box3DEntity();
@@ -109,5 +118,9 @@ export class DemoGraphTransparent {
 		box0.initializeCube(100, [this.getTexByUrl("static/assets/box.jpg")]);
 		rscene.addEntity(box0);
 	}
+	run(): void {
+		this.m_rscene.run();
+		DebugFlag.Flag_0 = 0;
+	}
 }
-export default DemoGraphTransparent;
+export default DemoGraphStencil;

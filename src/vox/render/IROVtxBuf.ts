@@ -14,6 +14,7 @@ interface IROVtxBuf extends IROIVtxBuf {
     getBuffersTotal(): number;
     getAttribsTotal(): number;
     getF32DataAt(index: number): Float32Array;
+    getF32DataVerAt(index: number): number;
 
     getBufTypeList(): number[];
     getBufSizeList(): number[];

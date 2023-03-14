@@ -34,10 +34,8 @@ class EntityLayouter {
 		this.initialize();
 		this.m_entities = [];
 		this.m_transforms = [];
-		// console.log("layoutReset(), m_entities: ", this.m_entities);
 	}
 	getEntities(): ITransformEntity[] {
-		// console.log("getEntities(), this.m_entities: ", this.m_entities);
 		return this.m_entities;
 	}
 	layoutAppendItem(entity: ITransformEntity, transform: Matrix4): void {
@@ -98,27 +96,15 @@ class EntityLayouter {
 			else aabb.copyFrom(entities[k].getGlobalBounds());
 		}
 		aabb.update();
-
-		// console.log("AAA xxxxxxxxx aabb: ", aabb);
-		// console.log("AAA xxxxxxxxx baseSize: ", baseSize);
-		// console.log("AAA xxxxxxxxx cv: ", aabb.center.clone());
-		// console.log("AAA xxxxxxxxx fixV3: ", fixV3.clone());
 		let sx = baseSize / aabb.getWidth();
 		let sy = baseSize / aabb.getHeight();
 		let sz = baseSize / aabb.getLong();
 
 		sx = Math.min(sx, sy, sz);
-		// console.log("AAA xxxxxxxxx sx: ", sx);
 		this.m_sizeScale = sx;
 		this.m_scaleV.setXYZ(sx, sx, sx);
-		// let cv = aabb.center;
-		// let offsetV = new Vector3D(fixV3.x - cv.x, fixV3.y - cv.y, fixV3.z - cv.z);
-		// offsetV.scaleBy(sx);
-		// console.log("BBB xxxxxxxxx aabb: ", aabb);
-		// console.log("BBB xxxxxxxxx m_scaleV: ", this.m_scaleV);
-		// console.log("BBB xxxxxxxxx offsetV: ", offsetV.clone());
+
 		aabb.reset();
-		// console.log("BBB xxxxxxxxx this.m_scaleV, offsetV: ", this.m_scaleV, offsetV);
 		for (let k = 0; k < entities.length; ++k) {
 			transform = transforms[k];
 			mat.identity();
@@ -126,14 +112,11 @@ class EntityLayouter {
 			if (this.rotationEnabled) {
 				mat.setRotationEulerAngle(0.5 * Math.PI, 0.0, 0.0);
 			}
-			// mat.setTranslation(offsetV);
 			if (transform != null) {
 				currMat.copyFrom(transform);
 				currMat.append(mat);
-				// entities[k].getTransform().setParentMatrix(currMat);
 			} else {
 				currMat.copyFrom(mat);
-				// entities[k].getTransform().setParentMatrix(currMat);
 			}
 			
 			let params = currMat.decompose(OrientationType.EULER_ANGLES);
@@ -160,7 +143,6 @@ class EntityLayouter {
 			else aabb.copyFrom(entities[k].getGlobalBounds());
 		}
 		aabb.update();
-		// console.log("EntityLayouter::fixToPosition(), aabb.center: ", aabb.center.clone());
 	}
 	getSizeScale(): number {
 		return this.m_sizeScale;

@@ -120,35 +120,6 @@ export default class MeshBase implements IMeshBase {
     protected createIVSByArray(arr: number[]): Uint16Array | Uint32Array {
         return arr.length > 65536 ? new Uint32Array(arr) : new Uint16Array(arr);
     }
-    // createWireframeIvs(ivs: Uint16Array | Uint32Array = null): Uint16Array | Uint32Array {
-    //     if(ivs == null) ivs = this.m_ivs;
-    //     if(ivs !== null) {
-    //         const len = ivs.length * 2;
-    //         const wivs = len <= 65536 ? new Uint16Array(len) : new Uint32Array(len);
-    //         let a: number;
-    //         let b: number;
-    //         let c: number;
-    //         let k = 0;
-    //         for (let i = 0, l = ivs.length; i < l; i += 3) {
-    
-    //             a = ivs[i + 0];
-    //             b = ivs[i + 1];
-    //             c = ivs[i + 2];
-    //             wivs[k] = a;
-    //             wivs[k + 1] = b;
-    //             wivs[k + 2] = b;
-    //             wivs[k + 3] = c;
-    //             wivs[k + 4] = c;
-    //             wivs[k + 5] = a;
-    //             k += 6;
-    //         }
-    //         return wivs;
-    //     }
-    //     return null;
-    // }
-    protected updateWireframeIvs(ivs: Uint16Array | Uint32Array = null): Uint16Array | Uint32Array {
-        return ivs;
-    }
     protected buildEnd(): void {
 
         this.m_vbuf.setBufTypeList(this.m_bufTypeList);

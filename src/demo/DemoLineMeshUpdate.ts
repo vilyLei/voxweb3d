@@ -67,18 +67,31 @@ export class DemoLineMeshUpdate {
 	private m_posList = [new Vector3D(), new Vector3D(100), new Vector3D(150, 0, 150)];
 	private m_line: Line3DEntity = null;
 	private m_flag = true;
+	private m_flagState = 0;
 	private mouseBgDown(evt: any): void {}
 	private mouseDown(evt: any): void {
 		console.log("mouse down... ...");
+		
+		this.m_flag = false;
+
+		this.m_flagState++;
+
+		let posList = [new Vector3D(), new Vector3D(200, 0, -200), new Vector3D(170, 0, 170), new Vector3D(210, 0, 190)];
+		if (this.m_flagState == 1) {
+			posList = [new Vector3D(), new Vector3D(200, 0, -200), new Vector3D(170, 0, 170), new Vector3D(210, 0, 190)];
+			// posList = [new Vector3D(), new Vector3D(200, 0, 200), new Vector3D(170, 0, 170), new Vector3D(210, 0, 190)];
+			this.m_flag = true;
+		} else if (this.m_flagState == 3) {
+			posList = [new Vector3D(), new Vector3D(100, 0, 200), new Vector3D(170, 0, 170), new Vector3D(210, 0, 190)];
+			this.m_flag = true;
+		}
 		if (this.m_flag) {
-			this.m_flag = false;
-			// let posList = [new Vector3D(), new Vector3D(200, 0, -200), new Vector3D(170, 0, 170)];
-			let posList = [new Vector3D(), new Vector3D(200, 0, -200), new Vector3D(170, 0, 170), new Vector3D(210,0,190)];
 			this.m_line.initializeByPosList(posList);
 			this.m_line.reinitializeMesh();
-			this.m_line.updateMeshToGpu();
-		}
 
+			// this.m_line.updatePosListToMesh(posList.slice(0, posList.length - 1));
+			// this.m_line.updateMeshToGpu();
+		}
 		DebugFlag.Flag_0 = 1;
 	}
 

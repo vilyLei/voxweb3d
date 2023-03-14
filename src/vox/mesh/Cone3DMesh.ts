@@ -266,7 +266,7 @@ export default class Cone3DMesh extends MeshBase {
 				ROVertexBuffer.AddFloat32Data(tvs, 3);
 				ROVertexBuffer.AddFloat32Data(btvs, 3);
 			}
-			this.updateWireframeIvs();
+			
 			ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
 			if (this.m_vbuf == null) {
 				this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());

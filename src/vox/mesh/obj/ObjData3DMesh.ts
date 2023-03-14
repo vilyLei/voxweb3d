@@ -68,7 +68,6 @@ export default class ObjData3DMesh extends MeshBase {
 
         this.m_ivs = this.m_dataParser.getIVS();
 
-        this.updateWireframeIvs();
         ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
         if (this.m_vbuf == null) {
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());

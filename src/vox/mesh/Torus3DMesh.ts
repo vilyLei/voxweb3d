@@ -127,9 +127,6 @@ export default class Torus3DMesh extends MeshBase {
             this.m_uvs = uvs;
             this.m_ivs = ivs;
 
-            if (this.wireframe) {
-                this.updateWireframeIvs();
-            }
             this.bounds = this.geometry.bounds;
 
             this.vtCount = this.geometry.vtCount;
@@ -172,7 +169,7 @@ export default class Torus3DMesh extends MeshBase {
             ROVertexBuffer.AddFloat32Data(tvs, 3);
             ROVertexBuffer.AddFloat32Data(btvs, 3);
         }
-        this.updateWireframeIvs();
+        
         if (newBuild) {
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());

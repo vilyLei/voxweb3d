@@ -38,7 +38,7 @@ import RSTBuilder from "./RSTBuilder";
 import RendererState from "./RendererState";
 import IRenderProxy from "./IRenderProxy";
 import { IShaderUniformContext } from "../../vox/material/IShaderUniformContext";
-import { IStencil } from "../../vox/render/rendering/IStencil";
+import { IRenderingStencil } from "../../vox/render/rendering/IRenderingStencil";
 import { RenderingStencil } from "./rendering/RenderingStencil";
 import VROBase from "./VROBase";
 
@@ -95,7 +95,7 @@ class RenderProxy implements IRenderProxy {
     readonly uniformContext: IShaderUniformContext = null;
 
     readonly adapter: IRenderAdapter = null;
-    readonly stencil: IStencil = null;
+    readonly stencil: IRenderingStencil = null;
     readonly renderingState: IRenderingState = null;
     readonly colorMask: IRenderingColorMask = null;
     readonly rshader: IRenderShader = null;
@@ -405,11 +405,10 @@ class RenderProxy implements IRenderProxy {
 
         let rstate = new RODrawState();
         rstate.setRenderContext(this.m_adapterContext);
-        // RendererState.Initialize(rstate, new VROBase());
         let obj: any = RendererState;
         new RSTBuilder().initialize(obj, rstate, new VROBase());
 
-        selfT.RState = rstate;
+        selfT.RDrawState = rstate;
         selfT.RContext = this.m_rc;
         selfT.stencil = new RenderingStencil(rstate);
         selfT.renderingState = new RenderingState(RendererState);

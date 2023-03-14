@@ -194,10 +194,6 @@
 
 //  import {DemoRGBETex as Demo} from "./demo/DemoRGBETex";
 
-//  import {DemoGLState as Demo} from "./demo/DemoGLState";
-
-//  import {DemoStencil as Demo} from "./demo/DemoStencil";
-
 //  import {DemoBlendMode as Demo} from "./demo/DemoBlendMode";
 
 //  import {DemoFileSystem as Demo} from "./demo/DemoFileSystem";
@@ -272,6 +268,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 //  import {DemoLineMeshUpdate as Demo} from "./demo/DemoLineMeshUpdate";
+
+//  import {DemoLinePosUpdate as Demo} from "./demo/DemoLinePosUpdate";
 
 //  import {DemoVtxUpdate as Demo} from "./demo/DemoVtxUpdate";
 
@@ -370,6 +368,12 @@
 //  import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
 
 //  import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
+
+ import {DemoGraphStencil as Demo} from "./demo/DemoGraphStencil";
+
+//  import {DemoStencil as Demo} from "./demo/DemoStencil";
+
+//  import {DemoGLState as Demo} from "./demo/DemoGLState";
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -479,7 +483,7 @@
 
 //  import {VoxAppInstance as Demo} from "./app/VoxApp";
 
-import {SlickRoad as Demo} from "./app/SlickRoad";
+// import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 
