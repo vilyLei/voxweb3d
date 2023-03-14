@@ -28,9 +28,11 @@
 //  import {DemoCamVisibleTest as Demo} from "./demo/DemoCamVisibleTest";
 
 // import {DemoSphereOcclusion as Demo} from "./voxocc/demo/DemoSphereOcclusion";
-import {DemoTwoSphereOcclusion as Demo} from "./voxocc/demo/DemoTwoSphereOcclusion";
+// import {DemoTwoSphereOcclusion as Demo} from "./voxocc/demo/DemoTwoSphereOcclusion";
 
 //  import {DemoQuadOcclusion as Demo} from "./voxocc/demo/DemoQuadOcclusion";
+
+ import {DemoQuad2Occlusion as Demo} from "./voxocc/demo/DemoQuad2Occlusion";
 
 //  import * as DemoQuadHoleOcc from "./voxocc/demo/DemoQuadHoleOcc";
 //  import Demo = DemoQuadHoleOcc.voxocc.demo.DemoQuadHoleOcc;

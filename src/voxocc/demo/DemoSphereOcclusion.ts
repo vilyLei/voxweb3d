@@ -32,7 +32,6 @@ export class DemoSphereOcclusion {
 
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader;
-    // private m_camTrack: CameraTrack = null;
     private m_rspace: IRendererSpace = null;
 
     // private m_profileInstance = new ProfileInstance();
@@ -65,20 +64,12 @@ export class DemoSphereOcclusion {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
 
-            // let stage3D: Stage3D = this.m_rscene.getStage3D() as Stage3D;
-            // stage3D.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseUpListener);
-            // stage3D.addEventListener(MouseEvent.MOUSE_WHEEL, this, this.mouseWheeelListener);
-            // this.m_camTrack = new CameraTrack();
-            // this.m_camTrack.bindCamera(this.m_rscene.getCamera());
-            
 			new MouseInteraction().initialize(this.m_rscene).setAutoRunning(true);
 			new RenderStatusDisplay(this.m_rscene, true);
 
             // 总的原则: 不可见的一定不可见， 可见的未必可见。也就是说，只要任何遮挡体判断其为不可见，则其就不可见
             let i = 0;
             let total = 20;
-            // this.m_profileInstance = new ProfileInstance();
-            // this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
             let axis = new Axis3DEntity();
             axis.initialize(300.0);
