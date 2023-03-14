@@ -9,14 +9,14 @@ import SpherePOV from './SpherePOV';
 import ISpacePOV from "../../vox/scene/occlusion/ISpacePOV";
 
 class BoxFace {
-    uid: number = -1;
-    plane_nv: Vector3D = new Vector3D(0.0, 0.0, 1.0);
-    plane_dis: number = 0.0;
+    uid = -1;
+    plane_nv = new Vector3D(0.0, 0.0, 1.0);
+    plane_dis = 0.0;
     pvList: Vector3D[] = [];
     lsIndicis: number[] = [];
     blsList: BoxLS[] = null;
-    visible: boolean = true;
-    private m_pv: Vector3D = new Vector3D();
+    visible = true;
+    private m_pv = new Vector3D();
     constructor(puid: number) {
         this.uid = puid;
     }
@@ -38,7 +38,7 @@ class BoxLS {
     acount: number = 0;
     a: Vector3D = null;
     b: Vector3D = null;
-    nv: Vector3D = new Vector3D();
+    nv = new Vector3D();
     constructor(puid: number, pa: Vector3D, pb: Vector3D) {
         this.uid = puid;
         this.a = pa;
@@ -49,27 +49,29 @@ export default class BoxPOV implements ISpacePOV {
     constructor() {
     }
     private m_subPovs: ISpacePOV[] = null;
-    private m_subPovsTotal: number = 0;
-    private m_sphOcc: SpherePOV = new SpherePOV();
+    private m_subPovsTotal = 0;
+    private m_sphOcc = new SpherePOV();
     private m_pvList: Vector3D[] = [null, null, null, null, null, null, null, null];
-    private m_projNVTotal: number = 0;
+    private m_projNVTotal = 0;
     private m_planeNVList: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D()];
     private m_planeDisList: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
     private m_faceList: BoxFace[] = [];
     private m_blsList: BoxLS[] = [];
 
-    private m_centerv: Vector3D = new Vector3D();
-    private m_pov: Vector3D = new Vector3D();
-    private m_pv: Vector3D = new Vector3D();
-    private m_quadNV: Vector3D = new Vector3D();
-    private m_quadDis: number = 0.0;
-    private m_camPv: Vector3D = new Vector3D();
-    public enabled: boolean = true;
-    public status: number = 0;
+    private m_centerv = new Vector3D();
+    private m_pov = new Vector3D();
+    private m_pv = new Vector3D();
+    private m_quadNV = new Vector3D();
+    private m_quadDis = 0.0;
+    private m_camPv = new Vector3D();
+    public enabled = true;
+    public status = 0;
+
     //public edgeFrame:DashedLine3DEntity = null;
     //private m_initBoo:boolean = true;
     transformMat: Matrix4 = null;
+
     showLSInfo(): void {
         let str: string = "";
         let i: number = 0;
@@ -133,17 +135,18 @@ export default class BoxPOV implements ISpacePOV {
 
     }
     updateOccData(): void {
-        let point0: Vector3D = this.m_pvList[0];
-        let point1: Vector3D = this.m_pvList[1];
-        let point2: Vector3D = this.m_pvList[2];
-        let point3: Vector3D = this.m_pvList[3];
-        let point4: Vector3D = this.m_pvList[4];
-        let point5: Vector3D = this.m_pvList[5];
-        let point6: Vector3D = this.m_pvList[6];
-        let point7: Vector3D = this.m_pvList[7];
+
+        const point0 = this.m_pvList[0];
+        const point1 = this.m_pvList[1];
+        const point2 = this.m_pvList[2];
+        const point3 = this.m_pvList[3];
+        const point4 = this.m_pvList[4];
+        const point5 = this.m_pvList[5];
+        const point6 = this.m_pvList[6];
+        const point7 = this.m_pvList[7];
 
         this.m_centerv.copyFrom(this.m_pvList[0]);
-        let i: number = 1;
+        let i = 1;
         for (; i < 8; ++i) {
             this.m_centerv.addBy(this.m_pvList[i]);
         }

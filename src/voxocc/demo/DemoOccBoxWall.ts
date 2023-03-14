@@ -8,8 +8,6 @@ import TextureProxy from "../../vox/texture/TextureProxy";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import RendererScene from "../../vox/scene/RendererScene";
 import MouseEvent from "../../vox/event/MouseEvent";
-import Stage3D from "../../vox/display/Stage3D";
-import H5FontSystem from "../../vox/text/H5FontSys";
 
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Box3DEntity from "../../vox/entity/Box3DEntity";
@@ -18,7 +16,6 @@ import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
 import CameraTrack from "../../vox/view/CameraTrack";
 import BoxFrame3D from "../../vox/entity/BoxFrame3D";
 import { QuadHolePOV } from '../../voxocc/occlusion/QuadHolePOV';
-import BoxPOV from '../../voxocc/occlusion/BoxPOV';
 import { BoxFarFacePOV } from '../../voxocc/occlusion/BoxFarFacePOV';
 import IRendererSpace from "../../vox/scene/IRendererSpace";
 import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
@@ -55,7 +52,7 @@ export class DemoOccBoxWall {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rspace = this.m_rscene.getSpace();
-            
+
             this.m_rscene.setClearRGBColor3f(0.0, 0.1, 0.1);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
 
@@ -153,8 +150,10 @@ export class DemoOccBoxWall {
                 frameScaleK = box.getGlobalBounds().radius / 100.0;
                 circleFrame.setScaleXY(frameScaleK, frameScaleK);
                 circleFrame.setPosition(pv);
-                //this.m_rscene.addEntity(circleFrame);
+                // this.m_rscene.addEntity(circleFrame);
                 this.m_frameList.push(circleFrame);
+                this.m_rscene.addEntity(circleFrame, 1);
+                circleFrame.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
             }
 
             let cullingor = new SpaceCullingor();
@@ -219,7 +218,8 @@ export class DemoOccBoxWall {
                         console.log("XXXXXXX box.getGlobalBounds().center: " + box.getGlobalBounds().center.toString());
                         circleFrame.setPosition(box.getGlobalBounds().center);
                         //circleFrame.setPosition(tpv);
-                        this.m_rscene.addEntity(circleFrame);
+                        this.m_rscene.addEntity(circleFrame, 1);
+                        circleFrame.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
                     }
                 }
                 else {
@@ -284,46 +284,32 @@ export class DemoOccBoxWall {
     mouseDownListener(evt: any): void {
     }
     showTestStatus(): void {
-        let i: number = 0;
-        let len: number = this.m_dispList.length;
+        let i = 0;
+        let len = this.m_dispList.length;
+        let tot = 0;
         for (; i < len; ++i) {
             //this.m_frameList[i].setRGB3f(1.0,1.0,1.0);
             if (this.m_dispList[i].drawEnabled) {
                 this.m_frameList[i].setRGB3f(1.0, 1.0, 1.0);
             }
             else {
+                tot ++;
                 this.m_frameList[i].setRGB3f(1.0, 0.0, 1.0);
             }
         }
+        // console.log("tot: ", tot, len);
     }
     
     run(): void {
         if(this.m_rscene) {
+
             this.m_rscene.run();
+
             this.showTestStatus();
 
             if (this.m_profileInstance != null) {
                 this.m_profileInstance.run();
             }
         }
-    }
-    run2(): void {
-        //console.log("##-- begin");
-
-        // this.m_rscene.setClearRGBColor3f(0.0, 0.1, 0.1);
-        // this.m_rscene.runBegin();
-
-        // this.m_rscene.update();
-        // this.m_rscene.cullingTest();
-        // this.showTestStatus();
-
-        // this.m_rscene.run();
-        // this.m_rscene.runEnd();
-        // this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-        // this.m_rscene.updateCamera();
-
-        // if (this.m_profileInstance != null) {
-        //     this.m_profileInstance.run();
-        // }
     }
 }

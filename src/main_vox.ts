@@ -39,9 +39,9 @@
 
 //  import {DemoBoxOcclusion as Demo} from "./voxocc/demo/DemoBoxOcclusion";
 
-//  import {DemoOccBoxWall as Demo} from "./voxocc/demo/DemoOccBoxWall";
+ import {DemoOccBoxWall as Demo} from "./voxocc/demo/DemoOccBoxWall";
 
- import {DemoOccBoxWall2 as Demo} from "./voxocc/demo/DemoOccBoxWall2";
+//  import {DemoOccBoxWall2 as Demo} from "./voxocc/demo/DemoOccBoxWall2";
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
