@@ -12,30 +12,30 @@ class QuadHolePOV implements ISpacePOV {
     constructor() {
     }
     private m_subPovs: ISpacePOV[] = null;
-    private m_subPovsTotal: number = 0;
-    private m_sphOcc: SphereGapPOV = new SphereGapPOV();
-    private m_qgPOV0: QuadGapPOV = new QuadGapPOV();
-    private m_qgPOV1: QuadGapPOV = new QuadGapPOV();
+    private m_subPovsTotal = 0;
+    private m_sphOcc = new SphereGapPOV();
+    private m_qgPOV0 = new QuadGapPOV();
+    private m_qgPOV1 = new QuadGapPOV();
 
     private m_pvList: Vector3D[] = [
         new Vector3D, new Vector3D, new Vector3D, new Vector3D
         , new Vector3D, new Vector3D, new Vector3D, new Vector3D
     ];
-    private m_centerv: Vector3D = new Vector3D();
-    private m_pv: Vector3D = new Vector3D();
-    private m_nv0: Vector3D = new Vector3D();
-    private m_nv1: Vector3D = new Vector3D();
+    private m_centerv = new Vector3D();
+    private m_pv = new Vector3D();
+    private m_nv0 = new Vector3D();
+    private m_nv1 = new Vector3D();
     private m_dis0: number = 0.0;
     private m_dis1: number = 0.0;
-    private m_planePv0: Vector3D = new Vector3D();
-    private m_planePv1: Vector3D = new Vector3D();
-    private m_camPv: Vector3D = null;
+    private m_planePv0 = new Vector3D();
+    private m_planePv1 = new Vector3D();
+    private m_camPv = new Vector3D();
 
-    public enabled: boolean = true;
-    public status: number = 0;
+    public enabled = true;
+    public status = 0;
 
     setCamPosition(pv: Vector3D): void {
-        this.m_camPv = pv;
+        this.m_camPv.copyFrom(pv);
         this.m_sphOcc.setCamPosition(pv);
         this.m_qgPOV0.setCamPosition(pv);
         this.m_qgPOV1.setCamPosition(pv);
@@ -189,8 +189,19 @@ class QuadHolePOV implements ISpacePOV {
         }
     }
     cameraTest(camera: IRenderCamera): void {
+        this.m_camPv.copyFrom(camera.getPosition());
+
         this.m_sphOcc.cameraTest(camera);
+        this.m_qgPOV0.cameraTest(camera);
+        this.m_qgPOV1.cameraTest(camera);
+        
         this.status = this.m_sphOcc.status;
+        
+		if (this.m_subPovsTotal > 0) {
+			for (let i = 0; i < this.m_subPovsTotal; ++i) {
+				this.m_subPovs[i].cameraTest(camera);
+			}
+		}
     }
     begin(): void {
         // 检测自身是否被摄像机可见
