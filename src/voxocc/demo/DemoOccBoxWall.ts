@@ -55,6 +55,7 @@ export class DemoOccBoxWall {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rspace = this.m_rscene.getSpace();
+            
             this.m_rscene.setClearRGBColor3f(0.0, 0.1, 0.1);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
 
