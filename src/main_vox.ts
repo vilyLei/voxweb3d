@@ -27,7 +27,8 @@
 
 //  import {DemoCamVisibleTest as Demo} from "./demo/DemoCamVisibleTest";
 
-import {DemoSphereOcclusion as Demo} from "./voxocc/demo/DemoSphereOcclusion";
+// import {DemoSphereOcclusion as Demo} from "./voxocc/demo/DemoSphereOcclusion";
+import {DemoTwoSphereOcclusion as Demo} from "./voxocc/demo/DemoTwoSphereOcclusion";
 
 //  import {DemoQuadOcclusion as Demo} from "./voxocc/demo/DemoQuadOcclusion";
 
