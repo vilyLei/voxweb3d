@@ -142,17 +142,6 @@ export class DemoSphereOcclusion {
             }
         }
     }
-    mouseWheeelListener(evt: any): void {
-        //console.log("mouseWheeelListener call, evt.wheelDeltaY: "+evt.wheelDeltaY);
-        if (evt.wheelDeltaY < 0) {
-            // zoom in
-            ///this.m_rscene.getCamera().forward(-125.0);
-        }
-        else {
-            // zoom out
-            //this.m_rscene.getCamera().forward(125.0);
-        }
-    }
     mouseDownListener(evt: any): void {
         DebugFlag.Flag_0 = 1;
     }

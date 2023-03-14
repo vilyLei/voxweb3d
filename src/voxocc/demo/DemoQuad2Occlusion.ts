@@ -23,6 +23,7 @@ import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import SpaceCullingor from "../../vox/scene/SpaceCullingor";
 import { MouseInteraction } from "../../vox/ui/MouseInteraction";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
+import DebugFlag from "../../vox/debug/DebugFlag";
 
 export class DemoQuad2Occlusion {
 	constructor() {}
@@ -55,6 +56,8 @@ export class DemoQuad2Occlusion {
 
 			new MouseInteraction().initialize(this.m_rscene).setAutoRunning(true);
 			new RenderStatusDisplay(this.m_rscene, true);
+
+            this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
 
             this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
 
@@ -151,15 +154,16 @@ export class DemoQuad2Occlusion {
             
 			let pv = new Vector3D();
 			let circleFrame: BillboardFrame = null;
-			let srcBox: Box3DEntity = new Box3DEntity();
+			let srcBox = new Box3DEntity();
 			srcBox.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex1]);
-			//srcBox = null;
+			
 			let total = 80;
 			let sk = 0.15;
 			let box: Box3DEntity = null;
 			let minV = new Vector3D(-100.0, -100.0, -100.0);
 			let maxV = new Vector3D(100.0, 100.0, 100.0);
 			let texList: TextureProxy[] = [tex1];
+			total = 1;
 			for (i = 0; i < total; ++i) {
 				box = new Box3DEntity();
 				if (srcBox != null) box.setMesh(srcBox.getMesh());
@@ -171,7 +175,10 @@ export class DemoQuad2Occlusion {
 					//console.log("cubeRange.value: "+cubeRange.value);
 					//box.setXYZ(Math.random() * 4000.0 - 2000.0,Math.random() * 4000.0 - 2000.0,Math.random() * 4000.0 - 2000.0);
 				} else {
-					box.setXYZ(-500.0, -200.0, -500.0);
+					// box.setXYZ(-500.0, -200.0, -500.0);
+					box.uuid = "box_"+i;
+					box.setScaleXYZ(0.3, 0.4, 0.7);
+					box.setXYZ(200.0, 0.0, -300.0);
 				}
 				box.spaceCullMask |= SpaceCullingMask.POV;
 				this.m_rscene.addEntity(box);
@@ -186,22 +193,9 @@ export class DemoQuad2Occlusion {
 			}
 		}
 	}
-
-	mouseWheeelListener(evt: any): void {
-		//console.log("mouseWheeelListener call, evt.wheelDeltaY: "+evt.wheelDeltaY);
-		if (evt.wheelDeltaY < 0) {
-			// zoom in
-			///this.m_rscene.getCamera().forward(-125.0);
-		} else {
-			// zoom out
-			//this.m_rscene.getCamera().forward(125.0);
-		}
-	}
-	mouseUpListener(evt: any): void {
-		console.log("mouseUpListener call, this.m_rscene: " + this.m_rscene.toString());
-		//this.m_flagBoo = !this.m_flagBoo;
-		//this.m_quadOccObj.mouseUp();
-	}
+    mouseDownListener(evt: any): void {
+        DebugFlag.Flag_0 = 1;
+    }
 
 	showTestStatus(): void {
 		let i: number = 0;
@@ -219,6 +213,7 @@ export class DemoQuad2Occlusion {
 		if(this.m_rscene) {
 			this.m_rscene.run();
 			this.showTestStatus();
+			DebugFlag.Flag_0 = 0;
 		}
 	}
 }

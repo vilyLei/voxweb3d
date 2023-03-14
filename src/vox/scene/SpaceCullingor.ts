@@ -15,6 +15,7 @@ import DebugFlag from "../debug/DebugFlag";
 import { SpaceCullingMask } from "../space/SpaceCullingMask";
 
 export default class SpaceCullingor implements ISpaceCullingor {
+
 	private m_camera: IRenderCamera = null;
 	private m_headNode: IEntity3DNode = null;
 	private m_pocRawList: ISpacePOV[] = [];
@@ -70,12 +71,12 @@ export default class SpaceCullingor implements ISpaceCullingor {
 			this.m_povNumber = j;
 			while (nextNode != null) {
 				nextNode.drawEnabled = false;
-				// let ns = nextNode.entity.uuid;
-				// if(ns != "") {
-				// 	if(DebugFlag.Flag_0 > 0) {
-				// 		console.log("cullingor ns: ", ns, nextNode.rstatus);
-				// 	}
-				// }
+				let ns = nextNode.entity.uuid;
+				if(ns != "") {
+					if(DebugFlag.Flag_0 > 0) {
+						console.log("cullingor ns: ", ns, nextNode.rstatus);
+					}
+				}
 				if (nextNode.rstatus > 0) {
 					ab = nextNode.bounds;
 					const entity = nextNode.entity;
@@ -106,11 +107,11 @@ export default class SpaceCullingor implements ISpaceCullingor {
 					//      nextNode.rpoNode.setValue(-Vector3D.DistanceSquared(camPos,ab.center));
 					//  }
 				}
-				// if(ns != "") {
-				// 	if(DebugFlag.Flag_0 > 0) {
-				// 		console.log("cullingor ns: ", ns, ", nextNode.drawEnabled: ", nextNode.drawEnabled);
-				// 	}
-				// }
+				if(ns != "") {
+					if(DebugFlag.Flag_0 > 0) {
+						console.log("cullingor ns: ", ns, ", nextNode.drawEnabled: ", nextNode.drawEnabled);
+					}
+				}
 				nextNode = nextNode.next;
 			}
 		}
