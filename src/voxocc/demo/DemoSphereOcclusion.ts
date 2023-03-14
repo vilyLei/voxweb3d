@@ -68,6 +68,7 @@ export class DemoSphereOcclusion {
 			new RenderStatusDisplay(this.m_rscene, true);
 
             // 总的原则: 不可见的一定不可见， 可见的未必可见。也就是说，只要任何遮挡体判断其为不可见，则其就不可见
+            // 这个原则本质上也有纰漏：如果一个实体遮挡体和一个Gap遮挡体同时并列存在，而且他们之间的关系是取交集，这时候就有问题了(有点烧脑)
             let i = 0;
             let total = 20;
 

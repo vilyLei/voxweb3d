@@ -22,8 +22,8 @@ export default class SpaceCullingor implements ISpaceCullingor {
 	private m_pocList: ISpacePOV[] = [];
 	private m_povNumber = 0;
 	/**
- 	 * 可以被渲染的entity数量
- 	 */
+	   * 可以被渲染的entity数量
+	   */
 	total = 0;
 	addPOVObject(poc: ISpacePOV): void {
 		if (poc != null) {
@@ -48,7 +48,7 @@ export default class SpaceCullingor implements ISpaceCullingor {
 			let ab: IAABB = null;
 			let cam = this.m_camera;;
 			let poc: ISpacePOV = null;
-			let pocList  = this.m_pocList;
+			let pocList = this.m_pocList;
 			let i = 0;
 			let j = 0;
 			let len = this.m_pocRawList.length;
@@ -72,8 +72,8 @@ export default class SpaceCullingor implements ISpaceCullingor {
 			while (nextNode != null) {
 				nextNode.drawEnabled = false;
 				let ns = nextNode.entity.uuid;
-				if(ns != "") {
-					if(DebugFlag.Flag_0 > 0) {
+				if (ns != "") {
+					if (DebugFlag.Flag_0 > 0) {
 						console.log("cullingor ns: ", ns, nextNode.rstatus);
 					}
 				}
@@ -102,13 +102,12 @@ export default class SpaceCullingor implements ISpaceCullingor {
 					nextNode.drawEnabled = boo;
 					entity.drawEnabled = boo;
 					rnode.drawEnabled = boo;
-					//  if(boo && nextNode.distanceFlag)
-					//  {
-					//      nextNode.rpoNode.setValue(-Vector3D.DistanceSquared(camPos,ab.center));
-					//  }
+					// if (boo && nextNode.distanceFlag) {
+					// 	nextNode.rpoNode.setValue(-Vector3D.DistanceSquared(camPos, ab.center));
+					// }
 				}
-				if(ns != "") {
-					if(DebugFlag.Flag_0 > 0) {
+				if (ns != "") {
+					if (DebugFlag.Flag_0 > 0) {
 						console.log("cullingor ns: ", ns, ", nextNode.drawEnabled: ", nextNode.drawEnabled);
 					}
 				}
