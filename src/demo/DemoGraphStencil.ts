@@ -9,13 +9,11 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
 import DefaultPassGraph from "../vox/render/pass/DefaultPassGraph";
-// import ConvexTransParentPassItem from "./pass/ConvexTransParentPassItem";
 import StencilOutlinePassItem from "./pass/StencilOutlinePassItem";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import TextureResLoader from "../vox/assets/TextureResLoader";
 import { GLStencilFunc, GLStencilOp } from "../vox/render/RenderConst";
-import EventBase from "../vox/event/EventBase";
 import MouseEvent from "../vox/event/MouseEvent";
 import DebugFlag from "../vox/debug/DebugFlag";
 
@@ -41,19 +39,15 @@ export class DemoGraphStencil {
 
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-			// RendererDevice.SetWebBodyColor("#000000");
-			// RendererDevice.SetWebBodyColor("#FFFFFF");
 			DivLog.SetDebugEnabled(false);
 
 			let rparam = new RendererParam();
 			rparam.setCamProject(45, 0.1, 6000.0);
 			rparam.setCamPosition(1100.0, 1100.0, 1100.0);
 			rparam.setAttriStencil(true);
-			// rparam.setAttriAlpha(false);
 			
 			let rscene = new RendererScene();
-			// rscene.initialize(rparam).setAutoRunning(true);
-			rscene.initialize(rparam)
+			rscene.initialize(rparam).setAutoRunning(true);
 			rscene.setClearRGBAColor4f(0.0,0.0,0.0,0.0);
 
 			this.m_rscene = rscene;
@@ -70,11 +64,10 @@ export class DemoGraphStencil {
 		let material = new Default3DMaterial();
 		material.normalEnabled = true;
 		material.setTextureList([this.getTexByUrl("static/assets/box.jpg", true)]);
-
 		
 		let item = new StencilOutlinePassItem();
 
-		let stc = item.stencil0;		
+		let stc = item.stencil0;
         stc.setStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
         stc.setStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF);
         stc.setStencilMask(0xFF);
@@ -99,28 +92,11 @@ export class DemoGraphStencil {
 	}
 	
 	private initScene(rscene: RendererScene): void {
-		// this.initEntities(rscene);
 		this.testDataMesh(rscene);
-
-		// rscene.addEventListener(EventBase.ENTER_FRAME, this, this.enterFrame);
 		rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 	}
 	private mouseDown(): void {
 		DebugFlag.Flag_0 = 1;
-	}
-	private enterFrame(): void {
-
-	}
-	private initEntities(rscene: RendererScene): void {
-
-		let box0 = new Box3DEntity();
-		box0.normalEnabled = true;
-		box0.initializeCube(100, [this.getTexByUrl("static/assets/box.jpg")]);
-		rscene.addEntity(box0);
-	}
-	run(): void {
-		this.m_rscene.run();
-		DebugFlag.Flag_0 = 0;
 	}
 }
 export default DemoGraphStencil;

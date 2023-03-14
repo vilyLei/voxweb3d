@@ -74,12 +74,12 @@ export class DemoCamVisibleTest {
             RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
             RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
 
-            let tex0: TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
-            let tex1: TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
-            let tex2: TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/guangyun_H_0007.png");
-            let tex3: TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_01.jpg");
-            let tex4: TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
-            let tex5: TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/a_02_c.jpg");
+            let tex0 = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
+            let tex1 = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
+            let tex2 = this.m_texLoader.getImageTexByUrl("static/assets/guangyun_H_0007.png");
+            let tex3 = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_01.jpg");
+            let tex4 = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
+            let tex5 = this.m_texLoader.getImageTexByUrl("static/assets/a_02_c.jpg");
             BillParticle.texs.push(tex2);
             BillParticle.texs.push(tex3);
             BillParticle.texs.push(tex4);
@@ -171,16 +171,17 @@ export class DemoCamVisibleTest {
         //         console.log("miss a entity "+i+".");
         //     }
         // }
-        this.m_rscene.setClearRGBColor3f(0.1, 0.6, 0.1);
-        //this.m_rcontext.setClearRGBAColor4f(0.0, 0.5, 0.0,0.0);
-        this.m_rscene.renderBegin();
+        // this.m_rscene.setClearRGBColor3f(0.1, 0.6, 0.1);
+        // //this.m_rcontext.setClearRGBAColor4f(0.0, 0.5, 0.0,0.0);
+        // this.m_rscene.renderBegin();
 
-        this.m_rscene.update();
-        this.m_rscene.cullingTest();
+        // this.m_rscene.update();
+        // this.m_rscene.cullingTest();
+        // this.m_rscene.run();
+
+        // this.m_rscene.runEnd();
         this.m_rscene.run();
-
-        this.m_rscene.runEnd();
-        //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+        this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         //this.m_rscene.updateCamera();
         if (this.m_containerMain != null) {
             this.m_container.setRotationY(this.m_container.getRotationY() + 1.0);

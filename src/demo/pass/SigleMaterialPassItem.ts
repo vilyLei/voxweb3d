@@ -5,13 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-// import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IPassMaterialWrapper from "../../vox/render/pass/IPassMaterialWrapper";
 import IPassProcess from "../../vox/render/pass/IPassProcess";
 import PassRItem from "../../vox/render/pass/PassRItem";
 
 export default class SigleMaterialPassItem extends PassRItem {
-    // private m_pmws: IPassMaterialWrapper[] = [null];
+    
     private m_pmws: IPassMaterialWrapper[] = null;
     renderState = 0;
     constructor() {

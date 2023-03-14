@@ -179,14 +179,6 @@ export class DemoEntityContainer {
 
 			this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-			let tex0 = this.getImageTexByUrl("static/assets/default.jpg");
-			let tex1 = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-			let tex2 = this.getImageTexByUrl("static/assets/guangyun_H_0007.png");
-
-			// let axis = new Axis3DEntity();
-			// axis.initialize(300);
-			// this.m_rscene.addEntity(axis);
-
 			let clock = new Clock();
 			clock.initialize(this.m_rscene, 100.0);
 		}

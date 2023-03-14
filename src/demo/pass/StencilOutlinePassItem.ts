@@ -5,7 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-import DebugFlag from "../../vox/debug/DebugFlag";
 import Color4 from "../../vox/material/Color4";
 import IColorMaterial from "../../vox/material/mcase/IColorMaterial";
 import IPassProcess from "../../vox/render/pass/IPassProcess";
@@ -28,11 +27,7 @@ export default class ConvexTransParentPassItem extends PassRItem {
 			let entity = unit.rentity;
 			let rdst = process.rc.RDrawState;
 			let stencil = process.rc.stencil;
-
-            // if(DebugFlag.Flag_0 > 0) {
-            //     console.log("ConvexTransParentPassItem::run(), A.......");
-            // }
-
+            
 			stencil.setStencilMask(0x0);
 			this.stencil0.apply(rdst);
 
@@ -49,7 +44,6 @@ export default class ConvexTransParentPassItem extends PassRItem {
 
 			scale = 1.0;
 			entity.setScaleXYZ(scale, scale, scale);
-			// entity.update();
 			material.setRGB3f(1.0, 1.0, 1.0);
 
 			stencil.setStencilMask(0xff);

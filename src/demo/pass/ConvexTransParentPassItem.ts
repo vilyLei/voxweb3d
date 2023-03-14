@@ -8,7 +8,7 @@
 import IPassProcess from "../../vox/render/pass/IPassProcess";
 import PassRItem from "../../vox/render/pass/PassRItem";
 
-export default class ConvexTransParentPassItem extends PassRItem {
+export default class ConvexTransparentPassItem extends PassRItem {
     constructor() {
         super();
         this.initialize();
@@ -21,19 +21,13 @@ export default class ConvexTransParentPassItem extends PassRItem {
             let entity = unit.rentity;
             let st = process.rc.renderingState;
             let t = entity.getRenderState();
-
+            // 绘制背面
             unit.renderState = st.FRONT_TRANSPARENT_STATE;
             process.run();
+            // 绘制正面
             unit.renderState = st.BACK_TRANSPARENT_STATE;
             process.run();
             unit.renderState = t;
         }
     }
-
-    // initialize(): void {
-    //     this.m_enabled = true;
-    // }
-    // destroy(): void {
-    //     super.destroy();
-    // }
 }

@@ -27,10 +27,9 @@
 
 //  import {DemoCamVisibleTest as Demo} from "./demo/DemoCamVisibleTest";
 
-// import {DemoSphereOcclusion as Demo} from "./voxocc/demo/DemoSphereOcclusion";
+import {DemoSphereOcclusion as Demo} from "./voxocc/demo/DemoSphereOcclusion";
 
-//  import * as DemoQuadOcclusion from "./voxocc/demo/DemoQuadOcclusion";
-//  import Demo = DemoQuadOcclusion.voxocc.demo.DemoQuadOcclusion;
+//  import {DemoQuadOcclusion as Demo} from "./voxocc/demo/DemoQuadOcclusion";
 
 //  import * as DemoQuadHoleOcc from "./voxocc/demo/DemoQuadHoleOcc";
 //  import Demo = DemoQuadHoleOcc.voxocc.demo.DemoQuadHoleOcc;
@@ -285,8 +284,6 @@
 
 //  import {DemoContainer as Demo} from "./demo/DemoContainer";
 
-//  import {DemoContainer as Demo} from "./demo/DemoContainer";
-
 //  import {DemoEntityContainer as Demo} from "./demo/DemoEntityContainer";
 
 //  import {DemoContainerTransform as Demo}  from "./demo/DemoContainerTransform";
@@ -369,7 +366,7 @@
 
 //  import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
 
- import {DemoGraphStencil as Demo} from "./demo/DemoGraphStencil";
+//  import {DemoGraphStencil as Demo} from "./demo/DemoGraphStencil";
 
 //  import {DemoStencil as Demo} from "./demo/DemoStencil";
 
