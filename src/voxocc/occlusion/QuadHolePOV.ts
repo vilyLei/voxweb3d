@@ -4,8 +4,8 @@ import AABB from "../../vox/geom/AABB";
 import Plane from "../../vox/geom/Plane";
 import {IRenderCamera} from "../../vox/render/IRenderCamera";
 import ISpacePOV from "../../vox/scene/occlusion/ISpacePOV";
-import {SphereGapPOV} from './SphereGapPOV';
-import {QuadGapPOV} from './QuadGapPOV';
+import SphereGapPOV from './SphereGapPOV';
+import QuadGapPOV from './QuadGapPOV';
 
 // 一般和别的 凸体pov等 结合使用, 一般用于产生 交集
 class QuadHolePOV implements ISpacePOV
