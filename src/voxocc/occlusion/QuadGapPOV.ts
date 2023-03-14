@@ -5,6 +5,7 @@ import AABB from "../../vox/geom/AABB";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import ISpacePOV from "../../vox/scene/occlusion/ISpacePOV";
 import SphereGapPOV from "./SphereGapPOV";
+import DebugFlag from "../../vox/debug/DebugFlag";
 
 // 一般和别的 凸体pov等 结合使用, 一般用于产生 交集
 export default class QuadGapPOV implements ISpacePOV {
@@ -181,6 +182,10 @@ export default class QuadGapPOV implements ISpacePOV {
 			//  }
 		} else {
 			this.status = 1;
+		}
+		
+		if(DebugFlag.Flag_0 > 0) {
+			console.log("QuadGapPOV::test(), this.status: ", this.status);
 		}
 	}
 }

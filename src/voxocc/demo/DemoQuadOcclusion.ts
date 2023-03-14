@@ -32,9 +32,9 @@ export class DemoQuadOcclusion {
 	// private m_camTrack: CameraTrack = null;
 
 	private m_profileInstance: ProfileInstance = new ProfileInstance();
-	private m_quadOccObj: QuadPOV = new QuadPOV();
-	// private m_quadOccObj0: QuadGapPOV = new QuadGapPOV();
-	// private m_quadOccObj1: QuadGapPOV = new QuadGapPOV();
+	private m_quadOccObj = new QuadPOV();
+	private m_quadOccObj0 = new QuadGapPOV();
+	private m_quadOccObj1 = new QuadGapPOV();
 	private m_dispList: DisplayEntity[] = [];
 	private m_frameList: BillboardFrame[] = [];
 	initialize(): void {
@@ -96,7 +96,7 @@ export class DemoQuadOcclusion {
 				new Vector3D(tx + offsetPV.x, -150.0 + offsetPV.y, tz + offsetPV.z),
 				new Vector3D(-tx + offsetPV.x, -150.0 + offsetPV.y, tz + offsetPV.z)
 			];
-            /*
+            ///*
 			this.m_quadOccObj0.setCamPosition(this.m_rscene.getCamera().getPosition());
 			this.m_quadOccObj0.setParam(posList[0], posList[1], posList[2], posList[3]);
 			this.m_quadOccObj0.updateOccData();
@@ -116,7 +116,7 @@ export class DemoQuadOcclusion {
 				new Vector3D(tx + offsetPV.x, -150.0 + offsetPV.y, tz + offsetPV.z),
 				new Vector3D(-tx + offsetPV.x, -150.0 + offsetPV.y, tz + offsetPV.z)
 			];
-            /*
+            ///*
 			this.m_quadOccObj1.setCamPosition(this.m_rscene.getCamera().getPosition());
 			this.m_quadOccObj1.setParam(posList[0], posList[1], posList[2], posList[3]);
 			this.m_quadOccObj1.updateOccData();

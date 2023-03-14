@@ -4,6 +4,7 @@ import AABB from "../../vox/geom/AABB";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import ISpacePOV from "../../vox/scene/occlusion/ISpacePOV";
 import SpherePOV from "./SpherePOV";
+import DebugFlag from "../../vox/debug/DebugFlag";
 
 class QuadPOV implements ISpacePOV {
 	constructor() {}
@@ -14,7 +15,7 @@ class QuadPOV implements ISpacePOV {
 	private m_pnvList: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D()];
 	private m_pdisList: number[] = [0.0, 0.0, 0.0, 0.0];
 	private m_pdvList: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D()];
-	private m_centerv: Vector3D = new Vector3D();
+	private m_centerv = new Vector3D();
 	private m_pv = new Vector3D();
 	private m_camPv = new Vector3D();
 	private m_planeNV = new Vector3D();
@@ -151,9 +152,16 @@ class QuadPOV implements ISpacePOV {
 		}
 	}
 	cameraTest(camera: IRenderCamera): void {
+		
 		this.m_camPv.copyFrom(camera.getPosition());
 		this.m_sphOcc.cameraTest(camera);
 		this.status = this.m_sphOcc.status;
+		
+		if (this.m_subPovsTotal > 0) {
+			for (let i = 0; i < this.m_subPovsTotal; ++i) {
+				this.m_subPovs[i].cameraTest(camera);
+			}
+		}
 	}
 	begin(): void {
 		this.calcPlane();
@@ -184,7 +192,9 @@ class QuadPOV implements ISpacePOV {
 					}
 					if (i > 3) {
 						this.status = 1;
-
+						if(DebugFlag.Flag_0 > 0) {
+							console.log("QuadPOV::test(), this.status: ", this.status);
+						}
 						if (this.m_subPovsTotal > 0 && this.status == 1) {
 							for (i = 0; i < this.m_subPovsTotal; ++i) {
 								this.m_subPovs[i].test(bounds, cullMask);

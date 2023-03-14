@@ -30,10 +30,9 @@ export class DemoQuad2Occlusion {
 
 	private m_rscene: RendererScene = null;
 	private m_texLoader: ImageTextureLoader;
-	// private m_camTrack: CameraTrack = null;
 
-	private m_quadOccObj: QuadPOV = new QuadPOV();
-	private m_quadOccObj0: QuadGapPOV = new QuadGapPOV();
+	private m_quadOccObj = new QuadPOV();
+	private m_quadOccObj0 = new QuadGapPOV();
 	// private m_quadOccObj1: QuadGapPOV = new QuadGapPOV();
 	private m_dispList: DisplayEntity[] = [];
 	private m_frameList: BillboardFrame[] = [];
@@ -76,16 +75,17 @@ export class DemoQuad2Occlusion {
 				new Vector3D(tx + offsetPV.x, -600.0 + offsetPV.y, tz + offsetPV.z),
 				new Vector3D(-tx + offsetPV.x, -600.0 + offsetPV.y, tz + offsetPV.z)
 			];
-
+			let dispLS:BrokenLine3DEntity;// = new BrokenLine3DEntity();
+			///*
 			this.m_quadOccObj.setCamPosition(this.m_rscene.getCamera().getPosition());
 			this.m_quadOccObj.setParam(posList[0], posList[1], posList[2], posList[3]);
 			this.m_quadOccObj.updateOccData();
 
-			let dispLS = new BrokenLine3DEntity();
+			dispLS = new BrokenLine3DEntity();
 			dispLS.initializeQuad(posList[0], posList[1], posList[2], posList[3]);
 			dispLS.setRGB3f(1.0, 1.0, 0.0);
 			this.m_rscene.addEntity(dispLS);
-
+			//*/
 			let axis = new Axis3DEntity();
 			axis.initialize(300.0);
 			this.m_rscene.addEntity(axis);

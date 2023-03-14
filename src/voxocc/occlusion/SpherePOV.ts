@@ -49,6 +49,11 @@ export default class SpherePOV implements ISpacePOV {
 		if (camera.visiTestSphere2(this.m_centerv, this.occRadius)) {
 			this.status = 1;
 		}
+		if (this.m_subPovsTotal > 0) {
+			for (let i = 0; i < this.m_subPovsTotal; ++i) {
+				this.m_subPovs[i].cameraTest(camera);
+			}
+		}
 	}
 	begin(): void {
 
