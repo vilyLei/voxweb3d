@@ -291,13 +291,13 @@ export class DemoOccBoxWall {
             //this.m_frameList[i].setRGB3f(1.0,1.0,1.0);
             if (this.m_dispList[i].drawEnabled) {
                 this.m_frameList[i].setRGB3f(1.0, 1.0, 1.0);
+                tot ++;
             }
             else {
-                tot ++;
                 this.m_frameList[i].setRGB3f(1.0, 0.0, 1.0);
             }
         }
-        // console.log("tot: ", tot, len);
+        console.log("visible total: ", tot, len);
     }
     
     run(): void {
