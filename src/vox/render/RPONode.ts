@@ -35,6 +35,7 @@ export default class RPONode implements IPoolNode, IRPONode {
     tro: ITextureRenderObj = null;
     rvroI = -1;
     rtroI = -1;
+
     setValue(value: number): void {
         this.unit.value = value;
     }
@@ -42,6 +43,7 @@ export default class RPONode implements IPoolNode, IRPONode {
         return this.unit == null || this.unit.drawEnabled;
     }
     updateData(): void {
+        
         let p = this.unit;
         // this.insCount = p.insCount;
         this.vtxUid = p.vtxUid;
@@ -55,7 +57,6 @@ export default class RPONode implements IPoolNode, IRPONode {
         this.drawEnabled = true;
         this.uid = -1;
         this.index = -1;
-        // this.insCount = 0;
         this.shdUid = -1;
         this.vtxUid = -1;
         this.texMid = -1;

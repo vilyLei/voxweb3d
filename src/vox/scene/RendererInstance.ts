@@ -170,7 +170,7 @@ export class RendererInstance implements IRendererInstance {
         this.m_entity3DMana.update();
     }
     updateAllProcess(): void {
-        for (let i: number = 0; i < this.m_processesLen; ++i) {
+        for (let i = 0; i < this.m_processesLen; ++i) {
             this.m_processes[i].update();
         }
     }
@@ -214,9 +214,9 @@ export class RendererInstance implements IRendererInstance {
         if (entity != null && entity.getRendererUid() == this.m_uid) {
             if (entity.isInRendererProcess()) {
                 if (dstProcessIndex > -1 && dstProcessIndex < this.m_processesLen) {
-                    let srcUid: number = entity.getDisplay().__$$runit.getRPROUid();
-                    let src: RenderProcess = this.m_processBuider.getNodeByUid(srcUid) as RenderProcess;
-                    let dst: RenderProcess = this.m_processes[dstProcessIndex];
+                    let srcUid = entity.getDisplay().__$$runit.getRPROUid();
+                    let src = this.m_processBuider.getNodeByUid(srcUid) as RenderProcess;
+                    let dst = this.m_processes[dstProcessIndex];
                     if (src != dst) {
                         src.removeDispUnit(entity.getDisplay());
                         entity.__$rseFlag = dst.getSortEnabled() ? RSEntityFlag.AddSortEnabled(entity.__$rseFlag) : RSEntityFlag.RemoveSortEnabled(entity.__$rseFlag);
@@ -229,10 +229,10 @@ export class RendererInstance implements IRendererInstance {
     moveEntityToProcess(entity: IRenderEntity, dstProcess: IRenderProcess): void {
         if (dstProcess != null && entity != null && entity.getRendererUid() == this.m_uid) {
             if (entity.isInRendererProcess()) {
-                let srcUid: number = entity.getDisplay().__$$runit.getRPROUid();
-                let src: RenderProcess = this.m_processBuider.getNodeByUid(srcUid) as RenderProcess;
+                let srcUid = entity.getDisplay().__$$runit.getRPROUid();
+                let src = this.m_processBuider.getNodeByUid(srcUid) as RenderProcess;
                 if (src != dstProcess) {
-                    let dst: RenderProcess = dstProcess as RenderProcess;
+                    let dst = dstProcess as RenderProcess;
                     src.removeDispUnit(entity.getDisplay());
                     entity.__$rseFlag = dstProcess.getSortEnabled() ? RSEntityFlag.AddSortEnabled(entity.__$rseFlag) : RSEntityFlag.RemoveSortEnabled(entity.__$rseFlag);
                     dst.addDisp(entity.getDisplay());
@@ -362,18 +362,17 @@ export class RendererInstance implements IRendererInstance {
      * 绘制已经完全加入渲染器了渲染资源已经准备完毕的entity
      * 要锁定Material才能用这种绘制方式,再者这个,这种方式比较耗性能，只能用在特殊的地方
      */
-    drawEntityByLockMaterial(entity: IRenderEntity, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
-        if (entity != null && entity.getVisible() && entity.getRendererUid() == this.m_uid && !this.m_renderProxy.isContextLost()) {
-            this.m_fixProcess.drawLockMaterialByDisp(entity.getDisplay(), useGlobalUniform, forceUpdateUniform);
-        }
-    }
+    // drawEntityByLockMaterial(entity: IRenderEntity, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
+    //     if (entity != null && entity.getVisible() && entity.getRendererUid() == this.m_uid && !this.m_renderProxy.isContextLost()) {
+    //         this.m_fixProcess.drawLockMaterialByDisp(entity.getDisplay(), useGlobalUniform, forceUpdateUniform);
+    //     }
+    // }
     /**
      * 在任意阶段绘制一个指定的 entity,只要其资源数据准备完整
      */
     drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
 
         if (entity != null && entity.getVisible() && !this.m_renderProxy.isContextLost()) {
-            // console.log("***8** rendewrer ins drawEntity(), entity: ",entity, entity.getRendererUid() == this.m_uid);
             if (entity.getRendererUid() == this.m_uid) {
                 this.m_fixProcess.drawDisp(entity.getDisplay(), useGlobalUniform, forceUpdateUniform);
             }
@@ -398,7 +397,7 @@ export class RendererInstance implements IRendererInstance {
     }
     runFromIndexTo(index: number): void {
         if (!this.m_renderProxy.isContextLost()) {
-            for (let i: number = index; i < this.m_processesLen; ++i) {
+            for (let i = index; i < this.m_processesLen; ++i) {
                 this.m_processes[i].run();
             }
         }
@@ -408,14 +407,14 @@ export class RendererInstance implements IRendererInstance {
      */
     run(): void {
         if (this.m_entity3DMana.isHaveEntity() && !this.m_renderProxy.isContextLost()) {
-            for (let i: number = 0; i < this.m_processesLen; ++i) {
+            for (let i = 0; i < this.m_processesLen; ++i) {
                 this.m_processes[i].run();
             }
         }
     }
     getRenderUnitsTotal(): number {
-        let total: number = 0;
-        for (let i: number = 0; i < this.m_processesLen; ++i) {
+        let total = 0;
+        for (let i = 0; i < this.m_processesLen; ++i) {
             total += this.m_processes[i].getUnitsTotal();
         }
         return total;

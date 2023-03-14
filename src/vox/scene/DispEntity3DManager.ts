@@ -23,11 +23,11 @@ export default class DispEntity3DManager {
     private m_processBuider: RenderProcessBuider = null;
     private m_waitList: IRenderEntity[] = [];
     private m_processUidList: number[] = [];
-    private m_rendererUid: number = -1;
-    private m_existencetotal: number = 0;
+    private m_rendererUid = -1;
+    private m_existencetotal = 0;
     private m_rprocess: RenderProcess = null;
     private m_entityManaListener: RendererEntityStatusListener = null;
-    version: number = 0;
+    version = 0;
 
     constructor(rendererUid: number, RODataBuilder: RODataBuilder, rpoUnitBuilder: RPOUnitBuilder, processBuider: RenderProcessBuider) {
         

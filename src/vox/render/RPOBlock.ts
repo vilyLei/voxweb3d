@@ -27,10 +27,12 @@ import PassProcess from "./pass/PassProcess";
 //import DebugFlag from "../debug/DebugFlag";
 
 export default class RPOBlock {
+
     private static s_uid = 0;
     private m_uid = -1;                          // 用于唯一记录运行时的自己(RPOBlock实例)唯一id
     private m_nodeLinker = new RPONodeLinker();
     private m_shader: RenderShader = null;
+    private m_runs: ((rc: RenderProxy) => void)[] = new Array(5);
 
     index = -1;                                  // 记录自身在 RenderProcess blocks数组中的序号
     shdUid = -1;                                 // 记录 material 对应的 shader program uid
@@ -42,9 +44,17 @@ export default class RPOBlock {
     rpoNodeBuilder: RPONodeBuilder = null;
     rpoUnitBuilder: RPOUnitBuilder = null;
     vtxResource: ROVertexResource = null;
+
     constructor(shader: RenderShader) {
+
         this.m_shader = shader;
         this.m_uid = RPOBlock.s_uid++;
+
+        const ls = this.m_runs;
+        ls.fill(null);
+        ls[0] = this.run0.bind(this);
+        ls[1] = this.run1.bind(this);
+        ls[2] = this.run2.bind(this);
     }
     showInfo(): void {
         this.m_nodeLinker.showInfo();
@@ -65,21 +75,10 @@ export default class RPOBlock {
         return this.m_nodeLinker.getBegin() == null;
     }
     run(rc: RenderProxy): void {
-        switch (this.runMode) {
-            case 2:
-                this.run2(rc);
-                break;
-            case 1:
-                this.run1(rc);
-                break;
-            case 0:
-                this.run0(rc);
-                break;
-            default:
-                break;
-        }
+        this.m_runs[this.runMode](rc);
     }
     private run0(rc: RenderProxy): void {
+
         let nextNode = this.m_nodeLinker.getBegin();
         if (nextNode != null) {
 
@@ -87,15 +86,14 @@ export default class RPOBlock {
             this.m_shader.resetUniform();
             let unit: RPOUnit = null;
             this.m_shdUpdate = false;
+            const proc = this.m_passProc;
 
-            // console.log("run0");
             while (nextNode) {
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
                     unit.updateVtx();
                     if (unit.drawEnabled) {
                         if (unit.rgraph && unit.rgraph.isEnabled()) {
-                            const proc = this.m_passProcess1;
                             proc.units = [unit];
                             proc.rc = rc;
                             proc.vtxFlag = true;
@@ -116,7 +114,7 @@ export default class RPOBlock {
             }
         }
     }
-    private m_passProcess1 = new PassProcess();
+    private m_passProc = new PassProcess();
     private m_shdUpdate = false;
     private run1(rc: RenderProxy): void {
 
@@ -125,6 +123,7 @@ export default class RPOBlock {
             this.m_shader.bindToGpu(this.shdUid);
             this.m_shader.resetUniform();
 
+            const proc = this.m_passProc;
             let linker = this.m_nodeLinker;
             let unit: RPOUnit = null;
             let vtxTotal = linker.getVtxTotalAt(nextNode.rvroI);
@@ -153,7 +152,6 @@ export default class RPOBlock {
                     vtxFlag = unit.updateVtx() || vtxFlag;
                     if (unit.drawEnabled) {
                         if (unit.rgraph && unit.rgraph.isEnabled()) {
-                            const proc = this.m_passProcess1;
                             proc.units = [unit];
                             proc.rc = rc;
                             proc.vtxFlag = vtxFlag;
@@ -345,6 +343,7 @@ export default class RPOBlock {
                 }
             }
         }
+        
         this.index = -1;
         this.shdUid = -1;
         this.procuid = -1;
@@ -352,6 +351,7 @@ export default class RPOBlock {
         this.rpoNodeBuilder = null;
         this.rpoUnitBuilder = null;
         this.vtxResource = null;
+        this.m_runs.fill(null);
     }
     destroy(): void {
         this.reset();

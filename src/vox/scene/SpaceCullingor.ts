@@ -11,6 +11,8 @@ import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import IEntity3DNode from "../../vox/scene/IEntity3DNode";
 import ISpacePOV from "../../vox/scene/occlusion/ISpacePOV";
 import ISpaceCullingor from "../../vox/scene/ISpaceCullingor";
+import DebugFlag from "../debug/DebugFlag";
+import { SpaceCullingMask } from "../space/SpaceCullingMask";
 
 export default class SpaceCullingor implements ISpaceCullingor {
 	private m_camera: IRenderCamera = null;
@@ -21,7 +23,7 @@ export default class SpaceCullingor implements ISpaceCullingor {
 	/**
  	 * 可以被渲染的entity数量
  	 */
-	total: number = 0;
+	total = 0;
 	addPOVObject(poc: ISpacePOV): void {
 		if (poc != null) {
 			this.m_pocRawList.push(poc);
@@ -50,6 +52,7 @@ export default class SpaceCullingor implements ISpaceCullingor {
 			let j = 0;
 			let len = this.m_pocRawList.length;
 			let boo = false;
+			const camMask = SpaceCullingMask.CAMERA;
 
 			for (i = 0; i < len; i++) {
 				poc = this.m_pocRawList[i];
@@ -67,15 +70,23 @@ export default class SpaceCullingor implements ISpaceCullingor {
 			this.m_povNumber = j;
 			while (nextNode != null) {
 				nextNode.drawEnabled = false;
+				// let ns = nextNode.entity.uuid;
+				// if(ns != "") {
+				// 	if(DebugFlag.Flag_0 > 0) {
+				// 		console.log("cullingor ns: ", ns, nextNode.rstatus);
+				// 	}
+				// }
 				if (nextNode.rstatus > 0) {
 					ab = nextNode.bounds;
-					if (nextNode.entity.getVisible()) {
-						if (nextNode.rpoNode.isVsible()) {
+					const entity = nextNode.entity;
+					const rnode = nextNode.rpoNode;
+					if (entity.isVisible()) {
+						if (rnode.isVsible()) {
 							boo = cam.visiTestSphere2(ab.center, ab.radius);
-							if (boo) {
+							if (boo && entity.spaceCullMask > camMask) {
 								for (i = 0; i < len; i++) {
 									poc = pocList[i];
-									poc.test(nextNode.bounds, nextNode.entity.spaceCullMask);
+									poc.test(nextNode.bounds, entity.spaceCullMask);
 									boo = poc.status != 1;
 									if (!boo) {
 										break;
@@ -88,13 +99,18 @@ export default class SpaceCullingor implements ISpaceCullingor {
 					}
 					this.total += boo ? 1 : 0;
 					nextNode.drawEnabled = boo;
-					nextNode.entity.drawEnabled = boo;
-					nextNode.rpoNode.drawEnabled = boo;
+					entity.drawEnabled = boo;
+					rnode.drawEnabled = boo;
 					//  if(boo && nextNode.distanceFlag)
 					//  {
 					//      nextNode.rpoNode.setValue(-Vector3D.DistanceSquared(camPos,ab.center));
 					//  }
 				}
+				// if(ns != "") {
+				// 	if(DebugFlag.Flag_0 > 0) {
+				// 		console.log("cullingor ns: ", ns, ", nextNode.drawEnabled: ", nextNode.drawEnabled);
+				// 	}
+				// }
 				nextNode = nextNode.next;
 			}
 		}

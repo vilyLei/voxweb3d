@@ -21,9 +21,11 @@ import IROTransform from "../../vox/display/IROTransform";
 import IRenderEntityBase from "../render/IRenderEntityBase";
 
 export default class DisplayEntityContainer implements IDisplayEntityContainer, IEntityTransform {
+
 	private static s_uid = 0;
 	private m_uid = 0;
 	protected m_eventDispatcher: IEvtDispatcher = null;
+
 	constructor(boundsEnabled: boolean = true) {
 		if (boundsEnabled) {
 			this.createBounds();
@@ -42,6 +44,14 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 
 	protected m_globalBounds: IAABB = null;
 	protected m_gboundsStatus = -1;
+
+	// 父级, 不允许外面其他代码调用
+	private __$parent: DisplayEntityContainer = null;
+	private __$renderer: IRenderer = null;
+	private m_entities: ITransformEntity[] = [];
+	private m_entitiesTotal: number = 0;
+	private m_children: DisplayEntityContainer[] = [];
+	private m_childrenTotal: number = 0;
 	/**
 	 * entity global bounds version list
 	 */
@@ -52,26 +62,19 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 	protected m_cbvers: number[] = null;
 	private m_$updateBounds = true;
 	// 自身所在的world的唯一id, 通过这个id可以找到对应的world
-	__$wuid: number = -1;
+	__$wuid = -1;
 	// render process uid
-	wprocuid: number = -1;
+	wprocuid = -1;
 	// 自身在world中被分配的唯一id, 通过这个id就能在world中快速找到自己所在的数组位置
-	__$weid: number = -1;
+	__$weid = -1;
 	// 记录自身是否再容器中(取值为0和1), 不允许外外面其他代码调用
-	__$contId: number = 0;
-	// 父级, 不允许外面其他代码调用
-	private __$parent: DisplayEntityContainer = null;
-	private __$renderer: IRenderer = null;
+	__$contId = 0;
 	uuid = "";
 	// mouse interaction enabled
 	mouseEnabled = false;
-	private m_entities: ITransformEntity[] = [];
-	private m_entitiesTotal: number = 0;
-	private m_children: DisplayEntityContainer[] = [];
-	private m_childrenTotal: number = 0;
 
 	__$setRenderer(renderer: IRenderer): void {
-		let i: number = 0;
+		let i = 0;
 		if (this.__$renderer != null) {
 			if (renderer == null) {
 				// remove all entities from renderer with container

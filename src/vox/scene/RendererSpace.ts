@@ -84,7 +84,7 @@ export default class RendererSpace implements IRendererSpace {
 		return this.m_raySelector;
 	}
 	getPOVNumber(): number {
-		return this.m_cullingor != null ? this.m_cullingor.getPOVNumber() : 0;
+		return this.m_cullingor ? this.m_cullingor.getPOVNumber() : 0;
 	}
 	// 可以添加真正被渲染的实体也可以添加只是为了做检测的实体(不允许有material)
 	addEntity(entity: IRenderEntity): void {
@@ -173,10 +173,11 @@ export default class RendererSpace implements IRendererSpace {
 		nextNode = this.m_nodeSLinker.getBegin();
 		if (nextNode != null) {
 			let total = 0;
-			if (this.m_cullingor != null) {
-				this.m_cullingor.setCamera(this.m_camera);
-				this.m_cullingor.setCullingNodeHead(nextNode);
-				this.m_cullingor.run();
+			const cor = this.m_cullingor;
+			if (cor) {
+				cor.setCamera(this.m_camera);
+				cor.setCullingNodeHead(nextNode);
+				cor.run();
 				total = this.m_cullingor.total;
 			} else {
 				let ab: IAABB = null;

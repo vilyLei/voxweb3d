@@ -8,8 +8,8 @@
 import RPONode from "../../vox/render/RPONode";
 
 export default class RPONodeLinker {
-	private static s_uid: number = 0;
-	private m_uid: number = -1;                          // 用于唯一记录运行时的自己唯一id
+	private static s_uid = 0;
+	private m_uid = -1;                          // 用于唯一记录运行时的自己唯一id
 	constructor() {
 		this.m_uid = RPONodeLinker.s_uid++;
 	}
@@ -18,8 +18,8 @@ export default class RPONodeLinker {
 	private m_end: RPONode = null;
 	private m_unitMap: Map<number, RPONode> = new Map();
 	private m_unitTexMap: Map<number, number> = new Map();
-	private m_FLAG_BUSY: number = 1;
-	private m_FLAG_FREE: number = 0;
+	private m_FLAG_BUSY = 1;
+	private m_FLAG_FREE = 0;
 
 	private m_vtxFlagList: number[] = [];
 	private m_vtxIndexFlagList: number[] = [];
@@ -41,8 +41,8 @@ export default class RPONodeLinker {
 		return -1;
 	}
 	private getVtxIndex(): number {
-		let unitI: number = -1;
-		let index: number = this.getFreeVtxId();
+		let unitI = -1;
+		let index = this.getFreeVtxId();
 		if (index >= 0) {
 			unitI = index;
 			this.m_vtxList[index] = 0;
@@ -152,9 +152,9 @@ export default class RPONodeLinker {
 		return this.m_begin;
 	}
 	containsNode(node: RPONode): boolean {
-		let pnode: RPONode = this.m_unitMap.get(node.vtxUid);
+		let pnode = this.m_unitMap.get(node.vtxUid);
 		if (pnode != null) {
-			let key: number = (31 + pnode.rvroI) * 131;
+			let key = (31 + pnode.rvroI) * 131;
 			key *= key + pnode.texMid;
 			return node.rtokey == key;
 		}
@@ -166,12 +166,12 @@ export default class RPONodeLinker {
 		//trace("RPONodeLinker::addNodeAndSort(), node: "+node);
 		// 首先依据相同的顶点紧凑排序, 然后再以纹理组合排列, 因此用 顶点的key与tex序列的key组合为一个新的key
 		//console.log("addNodeAndSort node.vtxUid: ",node.vtxUid, node.unit.__$dispNS);
-		let pnode: RPONode = this.m_unitMap.get(node.vtxUid);
+		let pnode = this.m_unitMap.get(node.vtxUid);
 		if (pnode == null) {
 			this.m_unitMap.set(node.vtxUid, node);
 			node.rvroI = this.getVtxIndex();
 			this.attachVtxAt(node.rvroI);
-			let key: number = (31 + node.rvroI) * 131;
+			let key = (31 + node.rvroI) * 131;
 			key *= key + node.texMid;
 			node.rtokey = key;
 			node.rtroI = this.getTexIndex();
@@ -182,7 +182,7 @@ export default class RPONodeLinker {
 		else {
 			node.rvroI = pnode.rvroI;
 			this.attachVtxAt(node.rvroI);
-			let key: number = (31 + node.rvroI) * 131;
+			let key = (31 + node.rvroI) * 131;
 			key *= key + node.texMid;
 			if (this.m_unitTexMap.has(key)) {
 				node.rtroI = this.m_unitTexMap.get(key);
@@ -286,7 +286,7 @@ export default class RPONodeLinker {
 	}
 	removeNodeAndSort(node: RPONode): void {
 		//trace("RPONodeLinker::removeNodeAndSort(), node: "+node);
-		let pnode: RPONode = this.m_unitMap.get(node.vtxUid);
+		let pnode = this.m_unitMap.get(node.vtxUid);
 		if (pnode != node) {
 			pnode = null;
 		}

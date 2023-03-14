@@ -409,10 +409,10 @@ export default class RendererSceneBase {
 			processIndex = 0;
 		}
 		if (container != null && container.__$wuid < 0 && container.__$contId < 1) {
-			let i: number = 0;
+			let i = 0;
 			for (; i < this.m_containersTotal; ++i) {
 				if (this.m_containers[i] == container) {
-					return;
+					break;
 				}
 			}
 			if (i >= this.m_containersTotal) {
@@ -453,7 +453,7 @@ export default class RendererSceneBase {
 			let process = this.m_renderer.getProcessAt(processIndex);
 			sorter = sorter != null ? sorter : this.m_camDisSorter;
 			if (process != null) {
-				// process.setSorter(sorter);
+				process.setSorter(sorter);
 			}
 		}
 	}

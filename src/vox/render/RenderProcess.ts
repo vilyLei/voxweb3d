@@ -32,7 +32,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 	private m_rc: RenderProxy;
 
 	private m_nodesLen = 0;
-	private m_enabled: boolean = true;
+	private m_enabled = true;
 	private m_blockList: RPOBlock[] = []; // 记录以相同shader的node为一个集合对象(RPOBlock) 的数组
 	private m_blockListLen = 0;
 	private m_blockFList = new Int8Array(RenderProcess.s_max_shdTotal); // 记录以相同shader的node为一个集合对象(RPOBlock)的构建状态 的数组
@@ -170,7 +170,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 
 		let node = this.m_rpoNodeBuilder.getNodeByUid(runit.__$rpuid) as RPONode;
 		if (node != null) {
-			// node.insCount = runit.insCount;
+			
 			node.vtxUid = runit.vtxUid;
 			node.vro = runit.vro;
 			this.m_blockList[node.index].rejoinNode(node);
@@ -195,7 +195,6 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 
 					++this.m_nodesLen;
 
-					//this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.m_rpIndex, node.uid);
 					this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.getUid(), node.uid);
 					if (this.m_sortEnabled) {
 						console.log("sort process add a disp...");
@@ -217,14 +216,16 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 		}
 	}
 	updateDispMateiral(disp: IRODisplay): void {
+
 		if (disp.__$$runit != null) {
-			let nodeUId: number = disp.__$$runit.getRPOUid();
-			let node: RPONode = this.m_rpoNodeBuilder.getNodeByUid(nodeUId) as RPONode;
+
+			let nodeUId = disp.__$$runit.getRPOUid();
+			let node = this.m_rpoNodeBuilder.getNodeByUid(nodeUId) as RPONode;
 			// material info etc.
 			node.shdUid = node.unit.shdUid;
 			node.texMid = node.unit.texMid;
 			node.tro = node.unit.tro;
-			let block: RPOBlock = this.m_blockList[node.index];
+			let block = this.m_blockList[node.index];
 			block.removeNode(node);
 			this.addNodeToBlock(node);
 		}
@@ -232,8 +233,8 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 	removeDisp(disp: IRODisplay): void {
 		if (disp != null) {
 			if (disp.__$$runit != null) {
-				let nodeUId: number = disp.__$$runit.getRPOUid();
-				let node: RPONode = this.m_rpoNodeBuilder.getNodeByUid(nodeUId) as RPONode;
+				let nodeUId = disp.__$$runit.getRPOUid();
+				let node = this.m_rpoNodeBuilder.getNodeByUid(nodeUId) as RPONode;
 				// console.log("RenderProcess("+this.uid+")::removeDisp(), nodeUId: ",nodeUId,disp);
 				// console.log("removeDisp(), node != null: "+(node != null),", this.m_blockList: ",this.m_blockList);
 				if (node != null) {
@@ -243,7 +244,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 						ROTransPool.RemoveTransUniform(transU.key);
 					}
 					if (this.m_sortBlock == null) {
-						let block: RPOBlock = this.m_blockList[node.index];
+						let block = this.m_blockList[node.index];
 						block.removeNode(node);
 					} else {
 						this.m_sortBlock.removeNode(node);
@@ -277,11 +278,11 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 	removeDispUnit(disp: IRODisplay): void {
 		if (disp != null) {
 			if (disp.__$ruid > -1) {
-				let nodeUId: number = disp.__$$runit.getRPOUid();
-				let node: RPONode = this.m_rpoNodeBuilder.getNodeByUid(nodeUId) as RPONode;
+				let nodeUId = disp.__$$runit.getRPOUid();
+				let node = this.m_rpoNodeBuilder.getNodeByUid(nodeUId) as RPONode;
 				if (node != null) {
 					if (this.m_sortBlock == null) {
-						let block: RPOBlock = this.m_blockList[node.index];
+						let block = this.m_blockList[node.index];
 						block.removeNode(node);
 					} else {
 						this.m_sortBlock.removeNode(node);
@@ -303,14 +304,14 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 	}
 	run(): void {
 		if (this.m_enabled && this.m_nodesLen > 0) {
-			let rc: RenderProxy = this.m_rc;
+			let rc = this.m_rc;
 			if (this.m_sortBlock == null) {
 				if (this.m_shader.isUnLocked()) {
-					for (let i: number = 0; i < this.m_blockListLen; ++i) {
+					for (let i = 0; i < this.m_blockListLen; ++i) {
 						this.m_blockList[i].run(rc);
 					}
 				} else {
-					for (let i: number = 0; i < this.m_blockListLen; ++i) {
+					for (let i = 0; i < this.m_blockListLen; ++i) {
 						this.m_blockList[i].runLockMaterial(rc);
 					}
 				}
@@ -325,7 +326,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 	}
 	drawDisp(disp: IRODisplay, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
 		if (disp != null) {
-			let unit: RPOUnit = disp.__$$runit as RPOUnit;
+			let unit = disp.__$$runit as RPOUnit;
 			if (unit != null) {
 				if (this.m_shader.isUnLocked()) {
 					if (forceUpdateUniform) {
@@ -338,26 +339,27 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 			}
 		}
 	}
-	/**
-	 * Deprecated(不推荐使用)
-	 */
-	drawLockMaterialByDisp(disp: IRODisplay, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
-		if (disp != null) {
-			let unit: RPOUnit = disp.__$$runit as RPOUnit;
-			if (unit != null) {
-				this.m_fixBlock.drawLockMaterialByUnit(this.m_rc, unit, disp, useGlobalUniform, forceUpdateUniform);
-			}
-		}
-	}
+	// /**
+	//  * Deprecated(不推荐使用)
+	//  */
+	// drawLockMaterialByDisp(disp: IRODisplay, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
+	// 	if (disp != null) {
+	// 		let unit = disp.__$$runit as RPOUnit;
+	// 		if (unit != null) {
+	// 			this.m_fixBlock.drawLockMaterialByUnit(this.m_rc, unit, disp, useGlobalUniform, forceUpdateUniform);
+	// 		}
+	// 	}
+	// }
 	reset(): void {
+
 		this.m_sortEnabled = false;
 		this.m_nodesLen = 0;
 		this.uid = -1;
 		this.m_rpIndex = -1;
 		this.m_rcuid = -1;
 		this.m_rpIndex = -1;
-		let i: number = 0;
-		for (; i < this.m_blockListLen; ++i) {
+		
+		for (let i = 0; i < this.m_blockListLen; ++i) {
 			this.m_blockList[i].reset();
 		}
 		this.m_blockListLen = 0;
@@ -374,8 +376,8 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 	}
 
 	showInfo(): void {
-		let i: number = 0;
-		for (; i < this.m_blockListLen; ++i) {
+
+		for (let i = 0; i < this.m_blockListLen; ++i) {
 			this.m_blockList[i].showInfo();
 		}
 	}
@@ -387,8 +389,5 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 	}
 	getEnabled(): boolean {
 		return this.m_enabled;
-	}
-	toString(): string {
-		return "[RenderProcess(uid = " + this.m_rpIndex + ")]";
 	}
 }

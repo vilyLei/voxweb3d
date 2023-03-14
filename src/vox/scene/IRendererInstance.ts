@@ -117,7 +117,7 @@ export interface IRendererInstance extends IRenderer {
      * 绘制已经完全加入渲染器了渲染资源已经准备完毕的entity
      * 要锁定Material才能用这种绘制方式,再者这个,这种方式比较耗性能，只能用在特殊的地方
      */
-    drawEntityByLockMaterial(entity: IRenderEntity, useGlobalUniform?: boolean, forceUpdateUniform?: boolean): void;
+    // drawEntityByLockMaterial(entity: IRenderEntity, useGlobalUniform?: boolean, forceUpdateUniform?: boolean): void;
     /**
      * 在任意阶段绘制一个指定的 entity,只要其资源数据准备完整
      */
