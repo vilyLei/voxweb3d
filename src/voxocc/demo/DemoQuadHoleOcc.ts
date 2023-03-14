@@ -33,10 +33,8 @@ export class DemoQuadHoleOcc {
 
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader;
-    private m_camTrack: CameraTrack = null;
 
     private m_profileInstance = new ProfileInstance();
-    //private m_quadOccObj = new QuadHoleOccObj();
     private m_quadOccObj = new QuadHolePOV();
     private m_dispList: DisplayEntity[] = [];
     private m_frameList: BillboardFrame[] = [];
@@ -44,19 +42,19 @@ export class DemoQuadHoleOcc {
     initialize(): void {
         console.log("DemoQuadHoleOcc::initialize()......");
         if (this.m_rscene == null) {
+            
             H5FontSystem.GetInstance().initialize("fontTex", 18, 512, 512, false, false);
-            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 
-            let rparam: RendererParam = new RendererParam();
+            let rparam = new RendererParam();
             rparam.setMatrix4AllocateSize(8192 * 4);
             rparam.setCamProject(45.0, 50.0, 5000.0);
             rparam.setCamPosition(1500.0, 1500.0, 1500.0);
-            //  this.m_renderer = new RendererInstance();
-            //  this.m_renderer.initialize(rparam);
-            //  this.m_renderer.appendProcess(true,true);
+            
             this.m_rscene = new RendererScene();
-            this.m_rscene.initialize(rparam, 3);
-            this.m_rscene.setRendererProcessParam(1, true, true);
+            this.m_rscene.initialize(rparam);
+            // this.m_rscene.setRendererProcessParam(1, true, true);
+
             this.m_rspace = this.m_rscene.getSpace();
             let cullingor: SpaceCullingor = new SpaceCullingor();
             cullingor.addPOVObject(this.m_quadOccObj);
@@ -71,9 +69,6 @@ export class DemoQuadHoleOcc {
 
             let tex1 = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
 
-            let stage3D: Stage3D = this.m_rscene.getStage3D() as Stage3D;
-            this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rscene.getCamera());
             this.m_rscene.setClearRGBColor3f(0.0, 0.1, 0.1);
             //
             //dis = StraightLine.CalcPVDis(this.m_camNV,this.m_camPv,this.m_pv);
@@ -184,20 +179,6 @@ export class DemoQuadHoleOcc {
 
             this.m_rscene.run();
             this.showTestStatus();
-            //console.log("##-- begin");
-            /*
-            this.m_rscene.setClearRGBColor3f(0.0, 0.1, 0.1);
-            this.m_rscene.runBegin();
-    
-            this.m_rscene.update();
-            this.m_rscene.cullingTest();
-            this.showTestStatus();
-    
-            this.m_rscene.run();
-            this.m_rscene.runEnd();
-            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-            this.m_rscene.updateCamera();
-            //*/
             if (this.m_profileInstance != null) {
                 this.m_profileInstance.run();
             }

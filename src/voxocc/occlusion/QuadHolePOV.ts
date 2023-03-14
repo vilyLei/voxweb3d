@@ -25,11 +25,12 @@ class QuadHolePOV implements ISpacePOV {
     private m_pv = new Vector3D();
     private m_nv0 = new Vector3D();
     private m_nv1 = new Vector3D();
-    private m_dis0: number = 0.0;
-    private m_dis1: number = 0.0;
     private m_planePv0 = new Vector3D();
     private m_planePv1 = new Vector3D();
     private m_camPv = new Vector3D();
+    
+    private m_dis0 = 0.0;
+    private m_dis1 = 0.0;
 
     public enabled = true;
     public status = 0;

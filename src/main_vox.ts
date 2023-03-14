@@ -35,10 +35,9 @@
 
 //  import {DemoQuad2Occlusion as Demo} from "./voxocc/demo/DemoQuad2Occlusion";
 
- import {DemoQuadHoleOcc as Demo} from "./voxocc/demo/DemoQuadHoleOcc";
+//  import {DemoQuadHoleOcc as Demo} from "./voxocc/demo/DemoQuadHoleOcc";
 
-//  import * as DemoBoxOcclusion from "./voxocc/demo/DemoBoxOcclusion";
-//  import Demo = DemoBoxOcclusion.voxocc.demo.DemoBoxOcclusion;
+ import {DemoBoxOcclusion as Demo} from "./voxocc/demo/DemoBoxOcclusion";
 
 //  import * as DemoOccBoxWall from "./voxocc/demo/DemoOccBoxWall";
 //  import Demo = DemoOccBoxWall.voxocc.demo.DemoOccBoxWall;
