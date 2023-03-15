@@ -77,7 +77,8 @@ export class FogSphSystem {
         }
         // rState0 = RendererState.CreateRenderState("factorSphState", CullFaceMode.FRONT, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
         rState0 = RendererState.FRONT_TRANSPARENT_ALWAYS_STATE;
-        let tex3 = this.getImageTexByUrl("displacement_03.jpg");
+        // let tex3 = this.getImageTexByUrl("displacement_03.jpg");/
+        let tex3 = this.getImageTexByUrl("cloud_01.jpg");
         this.fogFactorM = new FogMeshGeomFactorMaterial();
         // this.fogFactorM.setDensity(1.5);
         this.factorEntity = new Sphere3DEntity();

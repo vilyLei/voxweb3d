@@ -81,7 +81,7 @@
 
 //  import { DemoAlphaFormatFloatRTT as Demo } from "./demo/DemoAlphaFormatFloatRTT";
 
-//  import { DemoFBOInsMRT as Demo } from "./demo/DemoFBOInsMRT";
+ import { DemoFBOInsMRT as Demo } from "./demo/DemoFBOInsMRT";
 
 //  import {DemoCubeMapMRT as Demo} from "./demo/DemoCubeMapMRT";
 
@@ -367,7 +367,7 @@
 
 //  import {DemoMaterialGraphTest as Demo} from "./demo/DemoMaterialGraphTest";
 
- import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
+//  import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
 
 //  import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
 

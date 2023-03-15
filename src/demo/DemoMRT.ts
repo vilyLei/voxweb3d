@@ -1,6 +1,6 @@
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
-import {IRenderAdapter} from "../vox/render/IRenderAdapter";
+import { IRenderAdapter } from "../vox/render/IRenderAdapter";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RendererInstance from "../vox/scene/RendererInstance";
@@ -18,39 +18,36 @@ import DivLog from "../vox/utils/DivLog";
 import CameraBase from "../vox/view/CameraBase";
 import FrameBufferType from "../vox/render/FrameBufferType";
 
-export class DemoMRT
-{
-    constructor(){}
-    private m_renderer:RendererInstance = null;
-    private m_rcontext:RendererInstanceContext = null;
-    private m_texLoader:ImageTextureLoader = null;
-    private m_texBlock:TextureBlock;
-    private m_camTrack:CameraTrack = null;
-    private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
+export class DemoMRT {
+    constructor() { }
+    private m_renderer: RendererInstance = null;
+    private m_rcontext: RendererInstanceContext = null;
+    private m_texLoader: ImageTextureLoader = null;
+    private m_texBlock: TextureBlock;
+    private m_camTrack: CameraTrack = null;
+    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
-    initialize():void
-    {
+    initialize(): void {
         console.log("DemoMRT::initialize()......");
-        if(this.m_rcontext == null)
-        {
+        if (this.m_rcontext == null) {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
             this.m_statusDisp.initialize();
             DivLog.SetDebugEnabled(true);
-            let rparam:RendererParam = new RendererParam();
+            let rparam: RendererParam = new RendererParam();
             rparam.maxWebGLVersion = 1;
-            rparam.setCamPosition(800.0,800.0,800.0);
+            rparam.setCamPosition(800.0, 800.0, 800.0);
             this.m_renderer = new RendererInstance();
             this.m_renderer.initialize(rparam, new CameraBase());
             this.m_renderer.appendProcess();
             this.m_rcontext = this.m_renderer.getRendererContext() as any;
 
             this.m_texBlock = new TextureBlock();
-            this.m_texBlock.setRenderer( this.m_renderer.getRenderProxy() );
+            this.m_texBlock.setRenderer(this.m_renderer.getRenderProxy());
             this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
 
-            let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/fruit_01.jpg");
-            let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
+            let tex0: TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/fruit_01.jpg");
+            let tex1: TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
 
             tex0.mipmapEnabled = true;
             tex0.setWrap(TextureConst.WRAP_REPEAT);
@@ -62,40 +59,39 @@ export class DemoMRT
 
             // add common 3d display entity
 
-            var plane:Plane3DEntity = new Plane3DEntity();
+            var plane: Plane3DEntity = new Plane3DEntity();
             plane.setMaterial(new DefaultMRTMaterial());
-            plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
+            plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [tex0]);
             this.m_renderer.addEntity(plane);
             this.m_renderer.addEntity(plane);
 
-            let boxSize:number = 100.0;
-            let box:Box3DEntity = new Box3DEntity();
+            let boxSize: number = 100.0;
+            let box: Box3DEntity = new Box3DEntity();
             box.setMaterial(new DefaultMRTMaterial());
-            box.initialize(new Vector3D(-boxSize,-boxSize,-boxSize),new Vector3D(boxSize,boxSize,boxSize),[tex1]);
+            box.initialize(new Vector3D(-boxSize, -boxSize, -boxSize), new Vector3D(boxSize, boxSize, boxSize), [tex1]);
             this.m_renderer.addEntity(box);
 
             boxSize = 100.0;
             // add mrt texture 3d display entity
-            let boxMrt0:Box3DEntity = new Box3DEntity();
-            boxMrt0.initialize(new Vector3D(-boxSize,-boxSize,-boxSize),new Vector3D(boxSize,boxSize,boxSize),[this.m_texBlock.getRTTTextureAt(0)]);
-            boxMrt0.setXYZ(-150,0,-150);
+            let boxMrt0: Box3DEntity = new Box3DEntity();
+            boxMrt0.initialize(new Vector3D(-boxSize, -boxSize, -boxSize), new Vector3D(boxSize, boxSize, boxSize), [this.m_texBlock.getRTTTextureAt(0)]);
+            boxMrt0.setXYZ(-150, 0, -150);
             this.m_renderer.addEntity(boxMrt0, 1);
-            let boxMrt1:Box3DEntity = new Box3DEntity();
+            let boxMrt1: Box3DEntity = new Box3DEntity();
             boxMrt1.uuid = "boxMrt1";
-            boxMrt1.initialize(new Vector3D(-boxSize,-boxSize,-boxSize),new Vector3D(boxSize,boxSize,boxSize),[this.m_texBlock.getRTTTextureAt(1)]);
-            boxMrt1.setXYZ(150,0,150);
+            boxMrt1.initialize(new Vector3D(-boxSize, -boxSize, -boxSize), new Vector3D(boxSize, boxSize, boxSize), [this.m_texBlock.getRTTTextureAt(1)]);
+            boxMrt1.setXYZ(150, 0, 150);
             this.m_renderer.addEntity(boxMrt1, 1);
         }
     }
-    run():void
-    {
+    run(): void {
 
         this.m_texLoader.run();
         this.m_texBlock.run();
 
-        let pcontext:RendererInstanceContext = this.m_rcontext;
-        let rinstance:RendererInstance = this.m_renderer;
-        let radapter:IRenderAdapter = pcontext.getRenderAdapter();
+        let pcontext: RendererInstanceContext = this.m_rcontext;
+        let rinstance: RendererInstance = this.m_renderer;
+        let radapter: IRenderAdapter = pcontext.getRenderAdapter();
 
         this.m_statusDisp.update();
 

@@ -32,7 +32,8 @@ export class DemoFBOInsMRT {
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
-            let rparam: RendererParam = new RendererParam();
+            let rparam = new RendererParam();
+            rparam.maxWebGLVersion = 1;
             rparam.setCamPosition(500.0, 500.0, 500.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3).setAutoRunning( true );
