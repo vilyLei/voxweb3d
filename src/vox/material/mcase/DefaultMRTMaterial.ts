@@ -22,8 +22,47 @@ class DefaultMRTShaderBuffer extends ShaderCodeBuffer
     initialize(texEnabled:boolean):void
     {
         //console.log("DefaultMRTShaderBuffer::initialize()...");
-        this.m_uniqueName = "DefaultMRTShd";
+        this.m_uniqueName = "DefaultMRTShd";        
+        this.adaptationShaderVersion = false;
     }
+    
+    buildShader(): void {
+
+        let coder = this.m_coder;
+        coder.addVertLayout("vec3", "a_vs");
+        coder.addVertLayout("vec2", "a_uvs");
+        coder.addVarying("vec2", "v_texUV");
+        // coder.useVertSpaceMats(true, false, false);
+
+        this.m_uniform.add2DMap("MAP_0");
+        // this.m_uniform.add2DMap("MAP_1");
+
+        // uniform vec4 u_sphParam[5];
+        // uniform vec4 u_frustumParam;
+        // uniform vec4 u_viewParam;
+
+        coder.addFragUniform("vec4", "u_sphParam", 5);
+        coder.addFragUniform("vec4", "u_frustumParam");
+        coder.addFragUniform("vec4", "u_viewParam");
+
+        coder.addFragOutput("vec4", "FragColor0");
+        coder.addFragOutput("vec4", "FragColor1");
+
+        coder.addVertMainCode(
+            `
+            gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs, 1.0);
+            v_texUV = a_uvs;
+        `
+        );
+        coder.addFragMainCode(
+            `
+            vec4 color = VOX_Texture2D(MAP_0, v_texUV);
+            FragColor0 = vec4(color.rgb,1.0);
+            FragColor1 = vec4(1.0 - color.rgb * color.rgb * color.rgb,1.0);
+            `
+        );
+    }
+    /*
     getFragShaderCode():string
     {
         let fragCode:string = "";
@@ -105,6 +144,7 @@ v_uvs = a_uvs;
         }
         return vtxCode;
     }
+    //*/
     getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
