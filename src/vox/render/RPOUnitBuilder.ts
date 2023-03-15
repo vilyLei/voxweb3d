@@ -16,7 +16,7 @@ class RCRPObj {
     public static readonly RenerProcessMaxTotal: number = 16;
     constructor() {
     }
-    // 这里假定最多有 16 个 RenerProcess, 每一个数组元素存放的是 RPONode 的uid, 数组的序号对应的是RenerProcess 的uid
+    // 这里假定最多有 16 个 RenderProcess, 每一个数组元素存放的是 RPONode 的uid, 数组的序号对应的是RenerProcess 的uid
     idsFlag: number = 0x0;
     count: number = 0;
     // 如果只有加入一个process的时候则有效

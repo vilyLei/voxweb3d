@@ -28,7 +28,7 @@ export default interface IRendererSpace {
     getCamera(): IRenderCamera;
     addEntity(entity: IRenderEntity): void;
     removeEntity(entity: IRenderEntity): void;
-    updateEntity(entity: IRenderEntity): void;
+    // updateEntity(entity: IRenderEntity): void;
     setSpaceCullingor(cullingor: ISpaceCullingor): void;
     setRaySelector(raySelector: IRaySelector): void;
     getPOVNumber(): number;

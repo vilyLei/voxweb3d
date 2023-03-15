@@ -45,6 +45,9 @@ export default class Entity3DNode implements IEntity3DNode {
 		this.spaceId = -1;
 		this.camVisi = 0;
 	}
+	isVisible(): boolean {
+		return this.rpoNode.isVsible() && this.entity.isDrawEnabled();
+	}
 	// busy
 	private static s_b: number = 1;
 	// free

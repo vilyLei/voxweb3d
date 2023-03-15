@@ -144,6 +144,7 @@ export default class RPOBlock {
                     texFlag = true;
                 }
                 texTotal--;
+                
                 // if(DebugFlag.Flag_0 > 0) console.log("nextNode.drawEnabled: ",nextNode.drawEnabled);
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;

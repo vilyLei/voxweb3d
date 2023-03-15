@@ -62,7 +62,7 @@ interface IRODisplay {
     copyFrom(display: IRODisplay): void;
 
     // ----------------------------------- 只能由渲染系统内部调用 ----------------------------[
-    __$ruid: number;// = -1;        // 用于关联IRPODisplay对象, 默认值false
+    __$ruid: number;// = -1;        // 用于关联IRPODisplay对象(runit对象), 默认值false
     __$rpuid: number;// = -1;       // 用于关联RPONode对象, 默认值false
     __$$rsign: number;   // = DisplayRenderSign.NOT_IN_RENDERER;
     __$$runit: IRPODisplay;         // 用于关联IRPODisplay对象, 默认值为null

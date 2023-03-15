@@ -48,6 +48,9 @@ export default class RPOUnit implements IRPOUnit {
 
     partTotal = 0;               // partTotal = partGroup.length
     partGroup: Uint16Array = null;
+    /**
+     * 是否在渲染过程中可见, the default value is true
+     */
     visible = true;
     drawEnabled = true;
 

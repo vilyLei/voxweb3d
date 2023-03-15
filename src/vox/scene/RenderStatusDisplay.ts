@@ -48,7 +48,7 @@ class RenderStatusDisplay {
             }
             if (pdocument != null) {
                 this.m_preWidth = window.innerWidth;
-                let pwith: number = this.m_preWidth - 20;
+                let pwith = this.m_preWidth - 20;
                 this.createCanvas(pwith);
             }
             if(rsc != null && this.m_auto) {
@@ -67,8 +67,7 @@ class RenderStatusDisplay {
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
-        //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
-        this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
+        this.m_timeoutId = setTimeout(this.autoUpdate.bind(this), 50);// 20 fps
 
         this.renderDo();
     }

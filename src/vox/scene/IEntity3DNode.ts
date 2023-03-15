@@ -25,5 +25,6 @@ export default interface IEntity3DNode {
 	camVisiSt: number;
 	// 记录摄像机可见状态,大于0表示不可见
 	camVisi: number;
+	isVisible(): boolean;
 	reset(): void;
 }

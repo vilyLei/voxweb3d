@@ -22,6 +22,10 @@ export default interface IRPOUnit extends IPoolNode, IRPODisplay {
     tro: ITextureRenderObj;
     rentity: IRenderEntity;
     /**
+     * 是否在渲染过程中可见, the default value is true
+     */
+    visible: boolean;
+    /**
      * @param force the default value is false
      */
     applyShader(force?: boolean): void;

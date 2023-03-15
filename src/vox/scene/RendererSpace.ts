@@ -139,16 +139,16 @@ export default class RendererSpace implements IRendererSpace {
 			}
 		}
 	}
-	updateEntity(entity: IRenderEntity): void {
-		//  if(RSEntityFlag.TestSpaceContains( entity.__$rseFlag ))
-		//  {
-		//      let node:Entity3DNode = this.m_nodeQueue.getNodeByEntity(entity);
-		//      //  if(node != null)
-		//      //  {
-		//      //      node.distanceFlag = RSEntityFlag.TestSortEnabled(entity.__$rseFlag);
-		//      //  }
-		//  }
-	}
+	// updateEntity(entity: IRenderEntity): void {
+	// 	//  if(RSEntityFlag.TestSpaceContains( entity.__$rseFlag ))
+	// 	//  {
+	// 	//      let node:Entity3DNode = this.m_nodeQueue.getNodeByEntity(entity);
+	// 	//      //  if(node != null)
+	// 	//      //  {
+	// 	//      //      node.distanceFlag = RSEntityFlag.TestSortEnabled(entity.__$rseFlag);
+	// 	//      //  }
+	// 	//  }
+	// }
 	update(): void { }
 	runBegin(): void { }
 	run(): void {
@@ -156,14 +156,15 @@ export default class RendererSpace implements IRendererSpace {
 		if (nextNode != null) {
 			let pnode: Entity3DNode = null;
 			while (nextNode != null) {
-				if (nextNode.entity.isInRendererProcess()) {
+				const entity = nextNode.entity;
+				if (entity.isInRendererProcess()) {
 					pnode = nextNode;
 					pnode.rstatus = 1;
 					nextNode = nextNode.next;
 					this.m_nodeWLinker.removeNode(pnode);
 					this.m_nodeSLinker.addNode(pnode);
 					if (pnode.rpoNode == null) {
-						pnode.rpoNode = this.m_rpoNodeBuilder.getNodeByUid(pnode.entity.getDisplay().__$rpuid) as IRPONode;
+						pnode.rpoNode = this.m_rpoNodeBuilder.getNodeByUid(entity.getDisplay().__$rpuid) as IRPONode;
 					}
 				} else {
 					nextNode = nextNode.next;
@@ -186,7 +187,8 @@ export default class RendererSpace implements IRendererSpace {
 				let vboo = false;
 				while (nextNode != null) {
 					vboo = false;
-					if (nextNode.rpoNode.isVsible() && nextNode.entity.isDrawEnabled()) {
+					// if (nextNode.rpoNode.isVsible() && nextNode.entity.isDrawEnabled()) {
+					if (nextNode.isVisible()) {
 						ab = nextNode.bounds;
 						vboo = cam.visiTestSphere2(ab.center, ab.radius);
 						// nextNode.drawEnabled = boo;

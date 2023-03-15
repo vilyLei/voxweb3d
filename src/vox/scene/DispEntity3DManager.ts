@@ -189,10 +189,10 @@ export default class DispEntity3DManager {
         this.version ++;
     }
     private updateWaitList(): void {
-        let len: number = this.m_waitList.length;
+        let len = this.m_waitList.length;
         let entity: IRenderEntity = null;
         let disp: IRODisplay = null;
-        for (let i: number = 0; i < len; ++i) {
+        for (let i = 0; i < len; ++i) {
             entity = this.m_waitList[i];
             if ((RSEntityFlag.RENDERER_LOAD_FLAG & entity.__$rseFlag) == RSEntityFlag.RENDERER_LOAD_FLAG) {
                 if (this.testValidData(entity)) {
