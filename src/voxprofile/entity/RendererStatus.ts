@@ -95,7 +95,7 @@ export default class RendererStatus {
             let pw: number = text2D.getWidth();
             text2D = new Text2DEntity();
             text2D.__$setRenderProxy(renderer.getRenderProxy());
-            text2D.initialize("60");
+            text2D.initialize("600");
             text2D.setXY(px2, 2.0);
             this.m_renderer.addEntityToProcess(text2D, this.m_rprocess);
             this.m_textFPS = text2D;
@@ -109,7 +109,7 @@ export default class RendererStatus {
             pw = text2D.getWidth();
             text2D = new Text2DEntity();
             text2D.__$setRenderProxy(renderer.getRenderProxy());
-            text2D.initialize("00");
+            text2D.initialize("00000000");
             text2D.setXY(px2, py2);
             this.m_renderer.addEntityToProcess(text2D, this.m_rprocess);
             this.m_drawCall = text2D;
@@ -124,7 +124,7 @@ export default class RendererStatus {
             pw = text2D.getWidth();
             text2D = new Text2DEntity();
             text2D.__$setRenderProxy(renderer.getRenderProxy());
-            text2D.initialize("00");
+            text2D.initialize("00000000000");
             text2D.setXY(px2, py2);
             this.m_renderer.addEntityToProcess(text2D, this.m_rprocess);
             this.m_drawTri = text2D;
@@ -140,7 +140,7 @@ export default class RendererStatus {
             pw = text2D.getWidth();
             text2D = new Text2DEntity();
             text2D.__$setRenderProxy(renderer.getRenderProxy());
-            text2D.initialize("00");
+            text2D.initialize("000");
             text2D.setXY(px2, py2);
             this.m_renderer.addEntityToProcess(text2D, this.m_rprocess);
             this.m_pov = text2D;
@@ -159,22 +159,23 @@ export default class RendererStatus {
             this.m_textFPS.updateMeshToGpu();
             this.m_textFPS.update();
         }
+        // console.log("st.drawCallTimes: ", st.drawCallTimes);
         if (this.m_drawCalls != st.drawCallTimes) {
-            let drawCallStr: string = (st.drawCallTimes) + "";
+            let drawCallStr = (st.drawCallTimes) + "";
             this.m_drawCalls = st.drawCallTimes;
             this.m_drawCall.setText(drawCallStr);
             this.m_drawCall.updateMeshToGpu();
             this.m_drawCall.update();
         }
         if (this.m_drawTris != st.drawTrisNumber) {
-            let drawTriStr: string = (st.drawTrisNumber) + "";
+            let drawTriStr = (st.drawTrisNumber) + "";
             this.m_drawTris = st.drawTrisNumber;
             this.m_drawTri.setText(drawTriStr);
             this.m_drawTri.updateMeshToGpu();
             this.m_drawTri.update();
         }
         if (this.m_povNumber != st.povNumber) {
-            let povNumber: string = (st.povNumber) + "";
+            let povNumber = (st.povNumber) + "";
             this.m_povNumber = st.povNumber;
             this.m_pov.setText(povNumber);
             this.m_pov.updateMeshToGpu();
@@ -183,8 +184,5 @@ export default class RendererStatus {
         if (syncStageSize) {
             this.m_renderer.getRenderProxy().setViewPort(0, 0, this.m_renderer.getViewWidth(), this.m_renderer.getViewHeight());
         }
-    }
-    toString(): string {
-        return "[RendererStatus]";
     }
 }

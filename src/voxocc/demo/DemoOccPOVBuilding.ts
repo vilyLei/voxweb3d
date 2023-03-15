@@ -152,8 +152,8 @@ export class DemoOccPOVBuilding {
                 circleFrame.setPosition(pv);
                 // this.m_rscene.addEntity(circleFrame);
                 this.m_frameList.push(circleFrame);
-                this.m_rscene.addEntity(circleFrame, 1);
-                circleFrame.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+                // this.m_rscene.addEntity(circleFrame, 1);
+                // circleFrame.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
             }
 
             let cullingor = new SpaceCullingor();
@@ -297,7 +297,7 @@ export class DemoOccPOVBuilding {
                 this.m_frameList[i].setRGB3f(1.0, 0.0, 1.0);
             }
         }
-        console.log("visible total: ", tot, len);
+        // console.log("visible total: ", tot, len);
     }
     
     run(): void {

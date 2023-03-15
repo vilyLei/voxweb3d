@@ -41,9 +41,9 @@
 
 //  import {DemoOccBoxWall as Demo} from "./voxocc/demo/DemoOccBoxWall";
 
-//  import {DemoOccBoxWall2 as Demo} from "./voxocc/demo/DemoOccBoxWall2";
+ import {DemoOccBoxWall2 as Demo} from "./voxocc/demo/DemoOccBoxWall2";
 
- import {DemoOccPOVBuilding as Demo} from "./voxocc/demo/DemoOccPOVBuilding";
+//  import {DemoOccPOVBuilding as Demo} from "./voxocc/demo/DemoOccPOVBuilding";
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
