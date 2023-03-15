@@ -59,10 +59,10 @@ export class FogSphSystem {
     private m_fogUnits: FogUnit[] = [];
     private initFog(): void {
         let i: number = 0;
-        let rState0: number = RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
-        let rState1: number = RendererState.BACK_TRANSPARENT_ALWAYS_STATE;
+        let rState0 = RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
+        let rState1 = RendererState.BACK_TRANSPARENT_ALWAYS_STATE;
         this.maxRadius = 800.0;//141.25;
-        let baseRadius: number = this.maxRadius;
+        let baseRadius = this.maxRadius;
         let fogUnit: FogUnit;
         for (i = 0; i < 40; ++i) {
             fogUnit = new FogUnit();
@@ -77,7 +77,7 @@ export class FogSphSystem {
         }
         // rState0 = RendererState.CreateRenderState("factorSphState", CullFaceMode.FRONT, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
         rState0 = RendererState.FRONT_TRANSPARENT_ALWAYS_STATE;
-        let tex3: TextureProxy = this.getImageTexByUrl("displacement_03.jpg");
+        let tex3 = this.getImageTexByUrl("displacement_03.jpg");
         this.fogFactorM = new FogMeshGeomFactorMaterial();
         // this.fogFactorM.setDensity(1.5);
         this.factorEntity = new Sphere3DEntity();
@@ -87,7 +87,7 @@ export class FogSphSystem {
 
         this.m_rc.addEntity(this.factorEntity, this.m_factorFBO.getRProcessIDAt(0));
     }
-    private m_pv: Vector3D = new Vector3D();
+    private m_pv = new Vector3D();
     private m_status = 1;
     setStatus(status: number): void {
         this.m_status = status % 3;

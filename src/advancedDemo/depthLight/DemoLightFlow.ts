@@ -31,7 +31,7 @@ export class DemoLightFlow {
             rparam.setCamProject(45.0, 1.0, 9000.0);
             rparam.setCamPosition(2500.0, 2500.0, 2500.0);
             rparam.setAttriAntialias(true);
-            rparam.setDitherEanbled(true);
+            rparam.setDitherEanbled(false);
             rparam.syncBgColor = false;
 
             this.m_rc = new RendererScene();

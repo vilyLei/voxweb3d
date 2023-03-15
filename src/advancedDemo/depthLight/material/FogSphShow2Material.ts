@@ -17,7 +17,7 @@ class FogSphShow2ShaderBuffer extends ShaderCodeBuffer {
     private static s_instance: FogSphShow2ShaderBuffer = new FogSphShow2ShaderBuffer();
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
-        //console.log("FogSphShow2ShaderBuffer::initialize()...");
+        
         this.m_uniqueName = "FogSphShow2Shd";
         this.adaptationShaderVersion = false;
     }
@@ -120,7 +120,7 @@ void main()
             vec4 color4 = VOX_Texture2D(MAP_0, v_texUV);
             vec4 factor4 = VOX_Texture2D(MAP_1, v_texUV);
             vec4 fogColor4 = u_color;
-            fogColor4.xyz = texture(MAP_2, v_texUV).xyz;
+            fogColor4.xyz = VOX_Texture2D(MAP_2, v_texUV).xyz;
             //OutputColor = vec4(fogColor4.xyz * factor4.xyz + (1.0 - factor4.xyz) * color4.xyz, 1.0);
             
             // current fog effect
