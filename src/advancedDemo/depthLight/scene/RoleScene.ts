@@ -127,13 +127,13 @@ export class RoleScene {
 			//  RendererState.CreateRenderState("ADD03",CullFaceMode.BACK,RenderBlendMode.TRANSPARENT,DepthTestMode.ALWAYS);
 
 			this.m_size = 128.0;
-			let size: number = this.m_size;
-			let halfSize: number = this.m_size * 0.5;
-			let i: number = 0;
-			let j: number = 0;
-			let k: number = 0;
-			let total: number = 0;
-			let scaleK: number = 1.0;
+			let size = this.m_size;
+			let halfSize = this.m_size * 0.5;
+			let i = 0;
+			let j = 0;
+			let k = 0;
+			let total = 0;
+			let scaleK = 1.0;
 			this.m_minV = new Vector3D(-halfSize, -halfSize, -halfSize);
 			this.m_maxV = new Vector3D(halfSize, halfSize, halfSize);
 			let color = new Color4();

@@ -79,24 +79,6 @@ export class SceneFogFlow {
     mouseDownListener(evt: any): void {
         this.m_status++;
         this.m_fogSys.setStatus(this.m_status);
-
-        // let sys =  this.m_fogSys;
-        // let  status = this.m_status % 3;
-        // switch (status) {
-        //     case 0:
-        //         sys.fogFactorM.setFogDis(sys.maxRadius * 5.0);
-        //         break;
-        //     case 1:
-        //         sys.fogFactorM.setFactorRGB3f(1.0, 1.0, 1.0);
-        //         sys.fogFactorM.setFogDis(sys.maxRadius * 1.0);
-        //         break;
-        //     case 2:
-        //         sys.fogFactorM.setFactorRGB3f(1.0, 1.0, 1.0);
-        //         sys.fogFactorM.setFogDis(sys.maxRadius * 2.0);
-        //         break;
-        //     default:
-        //         break;
-        // }
     }
     initialize(rc: RendererScene): void {
         if (this.m_rc == null) {
@@ -114,7 +96,7 @@ export class SceneFogFlow {
             // RendererState.CreateRenderState("ADD03", CullFaceMode.BACK, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
 
 
-            /*
+            ///*
             this.m_billGroup = new BillParticleGroup();                    
             let ptex0:TextureProxy = this.getImageTexByUrl("flare_core_02.jpg");
             let ptex1:TextureProxy = this.getImageTexByUrl("a_02_c.jpg");

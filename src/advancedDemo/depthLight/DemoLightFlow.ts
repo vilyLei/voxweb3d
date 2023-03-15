@@ -8,7 +8,6 @@ import RendererDevice from "../../vox/render/RendererDevice";
 import RendererParam from "../../vox/scene/RendererParam";
 import RendererScene from "../../vox/scene/RendererScene";
 
-
 import { SceneFogFlow } from "../../advancedDemo/depthLight/scene/SceneFogFlow";
 
 import { MouseInteraction } from "../../vox/ui/MouseInteraction";
@@ -33,7 +32,7 @@ export class DemoLightFlow {
             rparam.setCamPosition(2500.0, 2500.0, 2500.0);
             rparam.setAttriAntialias(true);
             rparam.setDitherEanbled(true);
-            // rparam.syncBgColor = false;
+            rparam.syncBgColor = false;
 
             this.m_rc = new RendererScene();
             this.m_rc.initialize(rparam, 6);
