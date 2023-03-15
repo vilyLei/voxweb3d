@@ -16,9 +16,7 @@ import DebugFlag from "../debug/DebugFlag";
 
 // 为了渲染循环执行中持有RPOUnit和对应的Disp
 export default class RPONode implements IPoolNode, IRPONode {
-    constructor() {
-    }
-    __$ruid: number = -1;
+    __$ruid = -1;
 
     drawEnabled = true;
 
@@ -36,6 +34,9 @@ export default class RPONode implements IPoolNode, IRPONode {
     rvroI = -1;
     rtroI = -1;
 
+    constructor() {
+    }
+
     setValue(value: number): void {
         this.unit.value = value;
     }
@@ -44,8 +45,7 @@ export default class RPONode implements IPoolNode, IRPONode {
     }
     updateData(): void {
         
-        let p = this.unit;
-        // this.insCount = p.insCount;
+        const p = this.unit;
         this.vtxUid = p.vtxUid;
         this.vro = p.vro;
         // material info etc.

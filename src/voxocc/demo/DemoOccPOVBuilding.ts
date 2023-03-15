@@ -47,7 +47,8 @@ export class DemoOccPOVBuilding {
 
             let rparam = new RendererParam();
             rparam.setCamProject(45.0, 50.0, 6000.0);
-            rparam.setCamPosition(1500.0, 1500.0, 1500.0);
+            rparam.setCamPosition(10.0, 300.0, 1800.0);
+            rparam.setAttriAntialias( true );
 
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam);
@@ -60,13 +61,13 @@ export class DemoOccPOVBuilding {
             new RenderStatusDisplay(this.m_rscene, true);
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-
-            let tex0 = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
-            let tex1 = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
-            let tex2 = this.m_texLoader.getImageTexByUrl("static/assets/metal_08.jpg");
-            let tex3 = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_01.jpg");
-            let tex4 = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
-            let tex5 = this.m_texLoader.getImageTexByUrl("static/assets/a_02_c.jpg");
+            let loader = this.m_texLoader;
+            let tex0 = loader.getImageTexByUrl("static/assets/box.jpg");
+            let tex1 = loader.getImageTexByUrl("static/assets/broken_iron.jpg");
+            let tex2 = loader.getImageTexByUrl("static/assets/metal_08.jpg");
+            let tex3 = loader.getImageTexByUrl("static/assets/wood_02.jpg");
+            let tex4 = loader.getImageTexByUrl("static/assets/metal_02.jpg");
+            let tex5 = loader.getImageTexByUrl("static/assets/a_02_c.jpg");
             
             this.m_texList.push(tex0);
             this.m_texList.push(tex1);
@@ -90,8 +91,8 @@ export class DemoOccPOVBuilding {
 
 
             let cubeRange2 = new CubeRandomRange();
-            cubeRange2.min.setXYZ(-700.0, -600.0, -950.0);
-            cubeRange2.max.setXYZ(700.0, 600.0, -800.0);
+            cubeRange2.min.setXYZ(-600.0, -600.0, -950.0);
+            cubeRange2.max.setXYZ(600.0, 600.0, -800.0);
             cubeRange2.initialize();
 
             let i = 0;
@@ -118,19 +119,19 @@ export class DemoOccPOVBuilding {
                 box.initialize(minV, maxV, texList);
                 if (total > 1) {
                     box.setScaleXYZ((Math.random() + 0.8) * scaleK, (Math.random() + 0.8) * scaleK, (Math.random() + 0.8) * scaleK);
-                    let rand: number = Math.random();
-                    if (rand > 0.6) {
+                    let rand = Math.random();
+                    // if (rand > 0.6) {
                         cubeRange2.calc();
                         box.setPosition(cubeRange2.value);
-                    }
-                    else if (rand > 0.3) {
-                        cubeRange1.calc();
-                        box.setPosition(cubeRange1.value);
-                    }
-                    else {
-                        cubeRange.calc();
-                        box.setPosition(cubeRange.value);
-                    }
+                    // }
+                    // else if (rand > 0.3) {
+                    //     cubeRange1.calc();
+                    //     box.setPosition(cubeRange1.value);
+                    // }
+                    // else {
+                    //     cubeRange.calc();
+                    //     box.setPosition(cubeRange.value);
+                    // }
                     //box.setXYZ(Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0);
                 }
                 else {
@@ -161,18 +162,17 @@ export class DemoOccPOVBuilding {
             let gapList: number[] = null;
             gapList = [2, 1];
             //gapList = [];
-            this.createXOYWall(cullingor, new Vector3D(0.0, 0.0, -700.0), 4, 4, gapList, 0, -1, -1);
+            this.m_povs = this.createXOYWall(cullingor, new Vector3D(0.0, 0.0, -700.0), 4, 4, gapList, 0, -1, -1);
             gapList = [1, 1, 3, 2];
-            //gapList = [];
-            this.createXOYWall(cullingor, new Vector3D(0.0, 0.0, 150.0), 5, 4, gapList, 2, -1, -1);
+            // this.createXOYWall(cullingor, new Vector3D(0.0, 0.0, 150.0), 5, 4, gapList, 2, -1, -1);
 
         }
     }
-    createXOYWall(cullingor: SpaceCullingor, pv: Vector3D, rn: number, cn: number, gapList: number[], texId: number, pr: number, pc: number): void {
+    private m_povs:QuadHolePOV[] = null;
+    private m_povEntities:Box3DEntity[] = null;
+    createXOYWall(cullingor: SpaceCullingor, pv: Vector3D, rn: number, cn: number, gapList: number[], texId: number, pr: number, pc: number): QuadHolePOV[] {
         let i = 0;
         let j = 0;
-        //let rn:number = 5;
-        //let cn:number = 4;
 
         let pV = new Vector3D(0.0, 0.0, 0.0);
         let minV = new Vector3D();
@@ -214,8 +214,8 @@ export class DemoOccPOVBuilding {
                         tpv.x += maxV.x * 0.5;
                         tpv.y += maxV.y * 0.5;
                         tpv.z += maxV.z * 0.5;
-                        console.log("XXXXXXX tpv: " + tpv.toString());
-                        console.log("XXXXXXX box.getGlobalBounds().center: " + box.getGlobalBounds().center.toString());
+                        // console.log("XXXXXXX tpv: " + tpv.toString());
+                        // console.log("XXXXXXX box.getGlobalBounds().center: " + box.getGlobalBounds().center.toString());
                         circleFrame.setPosition(box.getGlobalBounds().center);
                         //circleFrame.setPosition(tpv);
                         this.m_rscene.addEntity(circleFrame, 1);
@@ -234,6 +234,9 @@ export class DemoOccPOVBuilding {
         if (cullingor == null) {
             return;
         }
+
+        this.m_povEntities = [];
+
         let subMinV = new Vector3D();
         let subMaxV = new Vector3D();
         let k = 0;
@@ -252,7 +255,9 @@ export class DemoOccPOVBuilding {
             k = i * cn + j;
             boxList[k].setVisible(false);
 
-            let quadHolePOV: QuadHolePOV = new QuadHolePOV();
+            this.m_povEntities.push(boxList[k]);
+            
+            let quadHolePOV = new QuadHolePOV();
             quadHolePOV.setCamPosition(this.m_rscene.getCamera().getPosition());
             quadHolePOV.setParamFromeBoxFaceZ(subMinV, subMaxV);
             quadHolePOV.updateOccData();
@@ -260,18 +265,20 @@ export class DemoOccPOVBuilding {
 
             len -= 2;
         }
-        let boxMinV: Vector3D = new Vector3D(startX, startY, startZ);
-        let boxMaxV: Vector3D = new Vector3D(startX + cn * maxV.x, startY + rn * maxV.y, startZ + maxV.z);
-        let boxFrame: BoxFrame3D = new BoxFrame3D();
-        boxFrame.initialize(boxMinV, boxMaxV);
-        boxFrame.setScaleXYZ(1.01, 1.01, 1.01);
-        this.m_rscene.addEntity(boxFrame);
 
-        //let wallOcc0:BoxPOV = new BoxPOV();
+        let boxMinV = new Vector3D(startX, startY, startZ);
+        let boxMaxV = new Vector3D(startX + cn * maxV.x, startY + rn * maxV.y, startZ + maxV.z);
+
+        // let boxFrame = new BoxFrame3D();
+        // boxFrame.initialize(boxMinV, boxMaxV);
+        // boxFrame.setScaleXYZ(1.01, 1.01, 1.01);
+        // this.m_rscene.addEntity(boxFrame);
+
+        //let wallOcc0 = new BoxPOV();
         let wallOcc0 = new BoxFarFacePOV();
         wallOcc0.setCamPosition(this.m_rscene.getCamera().getPosition());
         wallOcc0.setParam(boxMinV, boxMaxV);
-        wallOcc0.updateOccData();;
+        wallOcc0.updateOccData();
 
         len = povGaps.length - 1;
         for (; len >= 0;) {
@@ -280,8 +287,24 @@ export class DemoOccPOVBuilding {
         }
 
         cullingor.addPOVObject(wallOcc0);
+        return povGaps;
     }
+    private m_enabled = true;
     mouseDownListener(evt: any): void {
+
+        this.m_enabled = !this.m_enabled;
+
+        // console.log("this.m_enabled: ", this.m_enabled);
+
+        if(this.m_povs != null) {
+
+            let index = 0;
+            let pov = this.m_povs[index];
+            pov.enabled = this.m_enabled;
+
+            let entity = this.m_povEntities[index];
+            entity.setVisible(!this.m_enabled);
+        }
     }
     showTestStatus(): void {
         let i = 0;
@@ -304,9 +327,7 @@ export class DemoOccPOVBuilding {
         if(this.m_rscene) {
 
             this.m_rscene.run();
-
             this.showTestStatus();
-
             if (this.m_profileInstance != null) {
                 this.m_profileInstance.run();
             }

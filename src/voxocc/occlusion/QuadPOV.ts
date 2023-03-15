@@ -152,11 +152,10 @@ class QuadPOV implements ISpacePOV {
 		}
 	}
 	cameraTest(camera: IRenderCamera): void {
-		
 		this.m_camPv.copyFrom(camera.getPosition());
 		this.m_sphOcc.cameraTest(camera);
 		this.status = this.m_sphOcc.status;
-		
+
 		if (this.m_subPovsTotal > 0) {
 			for (let i = 0; i < this.m_subPovsTotal; ++i) {
 				this.m_subPovs[i].cameraTest(camera);
@@ -192,17 +191,22 @@ class QuadPOV implements ISpacePOV {
 					}
 					if (i > 3) {
 						this.status = 1;
-						if(DebugFlag.Flag_0 > 0) {
+						if (DebugFlag.Flag_0 > 0) {
 							console.log("QuadPOV::test(), this.status: ", this.status);
 						}
 						if (this.m_subPovsTotal > 0 && this.status == 1) {
+
 							for (i = 0; i < this.m_subPovsTotal; ++i) {
-								this.m_subPovs[i].test(bounds, cullMask);
-								if (this.m_subPovs[i].status != 1) {
-									this.status = 0;
-									break;
+								const pov = this.m_subPovs[i];
+								if (pov.enabled) {
+									pov.test(bounds, cullMask);
+									if (pov.status != 1) {
+										this.status = 0;
+										break;
+									}
 								}
 							}
+							
 						}
 					} else {
 						this.status = 0;

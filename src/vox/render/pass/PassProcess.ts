@@ -12,6 +12,7 @@ import IRenderMaterial from "../IRenderMaterial";
 import IPassMaterialWrapper from "./IPassMaterialWrapper";
 import PassMaterialWrapper from "./PassMaterialWrapper";
 import RPOUnit from "../RPOUnit";
+import IRenderShader from "../IRenderShader";
 
 export default class PassProcess implements IPassProcess {
 
@@ -23,6 +24,13 @@ export default class PassProcess implements IPassProcess {
     units: IRPOUnit[] = null;
     materials: IPassMaterialWrapper[] = null;
 
+    shader: IRenderShader;
+	resetUniform(): void {
+        this.shader.resetUniform();
+    }
+	resetTransUniform(): void {
+        this.shader.resetTransUniform();
+    }
     createMaterialWrapper(m: IRenderMaterial, hostRUnit: IRPOUnit): IPassMaterialWrapper {
         const rc = this.rc;
         let w = new PassMaterialWrapper();

@@ -114,10 +114,13 @@ export default class SpherePOV implements ISpacePOV {
         // }
 		if (this.m_subPovsTotal > 0 && this.status == 1) {
 			for (let i = 0; i < this.m_subPovsTotal; ++i) {
-				this.m_subPovs[i].test(bounds, cullMask);
-				if (this.m_subPovs[i].status != 1) {
-					this.status = 0;
-					break;
+				const pov = this.m_subPovs[i];
+				if (pov.enabled) {
+					pov.test(bounds, cullMask);
+					if (pov.status != 1) {
+						this.status = 0;
+						break;
+					}
 				}
 			}
 		}

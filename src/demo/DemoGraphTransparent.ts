@@ -9,7 +9,7 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
 import DefaultPassGraph from "../vox/render/pass/DefaultPassGraph";
-import ConvexTransParentPassItem from "./pass/ConvexTransparentPassItem";
+import ConvexTransparentPassItem from "./pass/ConvexTransparentPassItem";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import TextureResLoader from "../vox/assets/TextureResLoader";
@@ -65,7 +65,7 @@ export class DemoGraphTransparent {
 		sph.setMaterial(material);
 		sph.initialize(160, 20, 20);
 
-		let graph = new DefaultPassGraph().addItem(new ConvexTransParentPassItem()).initialize();
+		let graph = new DefaultPassGraph().addItem(new ConvexTransparentPassItem()).initialize();
 		material.graph = graph;
 
 		let entity = new DisplayEntity();

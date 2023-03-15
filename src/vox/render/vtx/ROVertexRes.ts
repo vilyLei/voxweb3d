@@ -97,7 +97,7 @@ class ROVertexRes {
 						} else {
 							rc.bindArrBuf(this.m_gpuBufs[i]);
 							rc.arrBufData(fvs, usage);
-							sizeList[i] = fvs.length;
+							sizeList[i] = fvs.byteLength;
 						}
 					}
 				}
@@ -206,9 +206,10 @@ class ROVertexRes {
 					this.m_typeList[i] = typeList[i];
 				}
 			} else {
+				const floatSize = 4;
 				for (let i = 0; i < this.m_attribsTotal; ++i) {
 					this.m_offsetList[i] = this.m_wholeStride;
-					this.m_wholeStride += shdp.getLocationSizeByIndex(i) * 4;
+					this.m_wholeStride += shdp.getLocationSizeByIndex(i) * floatSize;
 					this.m_typeList[i] = shdp.getLocationTypeByIndex(i);
 				}
 			}

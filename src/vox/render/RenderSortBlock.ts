@@ -67,12 +67,14 @@ export default class RenderSortBlock {
 	private m_passProc = new PassProcess();
 	private m_shdUpdate = false;
 	run(rc: RenderProxy): void {
+		
 		this.m_shader.resetUniform();
 
 		let unit: RPOUnit = null;
 		let nodes = this.m_nodes;
 		this.m_shdUpdate = false;
 		const proc = this.m_passProc;
+		proc.shader = this.m_shader;
 		
 		for (let i = 0; i < this.m_renderTotal; ++i) {
 			unit = nodes[i];

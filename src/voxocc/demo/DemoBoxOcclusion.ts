@@ -31,14 +31,14 @@ export class DemoBoxOcclusion {
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader;
 
-    private m_profileInstance: ProfileInstance = new ProfileInstance();
+    private m_profileInstance = new ProfileInstance();
     private m_boxOcc0 = new BoxPOV();
     private m_boxOcc1 = new BoxPOV();
     private m_quadHolePOV = new QuadHolePOV();
     private m_dispList: DisplayEntity[] = [];
     private m_frameList: BillboardFrame[] = [];
     private m_occStatusList: number[] = [];
-    private m_rspace: IRendererSpace = null;
+    
     initialize(): void {
         console.log("DemoBoxOcclusion::initialize()......");
         if (this.m_rscene == null) {
@@ -49,14 +49,14 @@ export class DemoBoxOcclusion {
             rparam.setCamPosition(1500.0, 1500.0, 1500.0);
 
             this.m_rscene = new RendererScene();
-            this.m_rscene.initialize(rparam, 3);
-            this.m_rscene.setRendererProcessParam(1, true, true);
+            this.m_rscene.initialize(rparam);
             this.m_rscene.setClearRGBColor3f(0.0, 0.1, 0.1);
-            this.m_rspace = this.m_rscene.getSpace();
+            let rspace = this.m_rscene.getSpace();
+
             let cullingor = new SpaceCullingor();
             cullingor.addPOVObject(this.m_boxOcc0);
             cullingor.addPOVObject(this.m_boxOcc1);
-            this.m_rspace.setSpaceCullingor(cullingor);
+            rspace.setSpaceCullingor(cullingor);
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
 
@@ -78,6 +78,7 @@ export class DemoBoxOcclusion {
             this.m_boxOcc0.setCamPosition(this.m_rscene.getCamera().getPosition());
             this.m_boxOcc0.setParam(boxMinV, boxMaxV);
             this.m_boxOcc0.updateOccData();
+
             let boxFrame = new BoxFrame3D();
             //boxFrame.initialize(boxMinV,boxMaxV);
             boxFrame.initializeByPosList8(this.m_boxOcc0.getPositionList());
@@ -124,7 +125,7 @@ export class DemoBoxOcclusion {
             //boxFrame.setScaleXYZ(0.98, 0.98,0.98);
             this.m_rscene.addEntity(boxFrame);
 
-            let cubeRange: CubeRandomRange = new CubeRandomRange();
+            let cubeRange = new CubeRandomRange();
             cubeRange.min.setXYZ(-800.0, -400.0, -700.0);
             cubeRange.max.setXYZ(800.0, 400.0, -100.0);
             cubeRange.initialize();
@@ -137,8 +138,9 @@ export class DemoBoxOcclusion {
             let src_circleFrame = new BillboardFrame();
             src_circleFrame.initializeCircle(100.0, 20);
             let circleFrame: BillboardFrame = null;//new BillboardFrame();
-            let srcBox: Box3DEntity = new Box3DEntity();
+            let srcBox = new Box3DEntity();
             srcBox.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex1]);
+
             //srcBox = null;
             let box: Box3DEntity = null;
             let scaleK = 0.2;
@@ -173,7 +175,6 @@ export class DemoBoxOcclusion {
                 this.m_rscene.addEntity(circleFrame);
                 this.m_frameList.push(circleFrame);
                 //this.m_boxOcc0.addEntityFrame( circleFrame );
-
             }
 
         }
@@ -182,8 +183,9 @@ export class DemoBoxOcclusion {
 
     }
     showTestStatus(): void {
-        let i: number = 0;
-        let len: number = this.m_dispList.length;
+
+        let i = 0;
+        let len = this.m_dispList.length;
         for (; i < len; ++i) {
             //this.m_frameList[i].setRGB3f(1.0,1.0,1.0);
             if (this.m_dispList[i].drawEnabled) {
@@ -195,13 +197,12 @@ export class DemoBoxOcclusion {
         }
     }
     run(): void {
-        //console.log("##-- begin");
-
+        
         if(this.m_rscene) {
             this.m_rscene.run();
             this.showTestStatus();
 
-            if (this.m_profileInstance != null) {
+            if (this.m_profileInstance) {
                 this.m_profileInstance.run();
             }
         }

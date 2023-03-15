@@ -87,7 +87,7 @@ export default class RPOBlock {
             let unit: RPOUnit = null;
             this.m_shdUpdate = false;
             const proc = this.m_passProc;
-
+            proc.shader = this.m_shader;
             while (nextNode) {
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
@@ -124,6 +124,7 @@ export default class RPOBlock {
             this.m_shader.resetUniform();
 
             const proc = this.m_passProc;
+            proc.shader = this.m_shader;
             let linker = this.m_nodeLinker;
             let unit: RPOUnit = null;
             let vtxTotal = linker.getVtxTotalAt(nextNode.rvroI);

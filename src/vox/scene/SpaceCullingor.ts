@@ -25,9 +25,9 @@ export default class SpaceCullingor implements ISpaceCullingor {
 	   * 可以被渲染的entity数量
 	   */
 	total = 0;
-	addPOVObject(poc: ISpacePOV): void {
-		if (poc != null) {
-			this.m_pocRawList.push(poc);
+	addPOVObject(pov: ISpacePOV): void {
+		if (pov != null) {
+			this.m_pocRawList.push(pov);
 			this.m_pocList.push(null);
 		}
 	}
@@ -47,7 +47,7 @@ export default class SpaceCullingor implements ISpaceCullingor {
 		if (nextNode != null) {
 			let ab: IAABB = null;
 			let cam = this.m_camera;;
-			let poc: ISpacePOV = null;
+			let pov: ISpacePOV = null;
 			let pocList = this.m_pocList;
 			let i = 0;
 			let j = 0;
@@ -56,12 +56,12 @@ export default class SpaceCullingor implements ISpaceCullingor {
 			const camMask = SpaceCullingMask.CAMERA;
 
 			for (i = 0; i < len; i++) {
-				poc = this.m_pocRawList[i];
-				if (poc.enabled) {
-					poc.cameraTest(cam);
-					if (poc.status > 0) {
-						poc.begin();
-						pocList[j] = poc;
+				pov = this.m_pocRawList[i];
+				if (pov.enabled) {
+					pov.cameraTest(cam);
+					if (pov.status > 0) {
+						pov.begin();
+						pocList[j] = pov;
 						++j;
 					}
 				}
@@ -71,12 +71,12 @@ export default class SpaceCullingor implements ISpaceCullingor {
 			this.m_povNumber = j;
 			while (nextNode != null) {
 				nextNode.drawEnabled = false;
-				let ns = nextNode.entity.uuid;
-				if (ns != "") {
-					if (DebugFlag.Flag_0 > 0) {
-						console.log("cullingor ns: ", ns, nextNode.rstatus);
-					}
-				}
+				// let ns = nextNode.entity.uuid;
+				// if (ns != "") {
+				// 	if (DebugFlag.Flag_0 > 0) {
+				// 		console.log("cullingor ns: ", ns, nextNode.rstatus);
+				// 	}
+				// }
 				if (nextNode.rstatus > 0) {
 					ab = nextNode.bounds;
 					const entity = nextNode.entity;
@@ -86,11 +86,13 @@ export default class SpaceCullingor implements ISpaceCullingor {
 							boo = cam.visiTestSphere2(ab.center, ab.radius);
 							if (boo && entity.spaceCullMask > camMask) {
 								for (i = 0; i < len; i++) {
-									poc = pocList[i];
-									poc.test(nextNode.bounds, entity.spaceCullMask);
-									boo = poc.status != 1;
-									if (!boo) {
-										break;
+									pov = pocList[i];
+									if(pov.enabled) {
+										pov.test(nextNode.bounds, entity.spaceCullMask);
+										boo = pov.status != 1;
+										if (!boo) {
+											break;
+										}
 									}
 								}
 							}
@@ -106,11 +108,11 @@ export default class SpaceCullingor implements ISpaceCullingor {
 					// 	nextNode.rpoNode.setValue(-Vector3D.DistanceSquared(camPos, ab.center));
 					// }
 				}
-				if (ns != "") {
-					if (DebugFlag.Flag_0 > 0) {
-						console.log("cullingor ns: ", ns, ", nextNode.drawEnabled: ", nextNode.drawEnabled);
-					}
-				}
+				// if (ns != "") {
+				// 	if (DebugFlag.Flag_0 > 0) {
+				// 		console.log("cullingor ns: ", ns, ", nextNode.drawEnabled: ", nextNode.drawEnabled);
+				// 	}
+				// }
 				nextNode = nextNode.next;
 			}
 		}

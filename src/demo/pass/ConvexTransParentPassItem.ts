@@ -18,9 +18,8 @@ export default class ConvexTransparentPassItem extends PassRItem {
         if (this.m_enabled && process) {
 
             const unit = process.units[0];
-            let entity = unit.rentity;
             let st = process.rc.renderingState;
-            let t = entity.getRenderState();
+            let t = unit.renderState;
             // 绘制背面
             unit.renderState = st.FRONT_TRANSPARENT_STATE;
             process.run();

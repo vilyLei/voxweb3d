@@ -34,11 +34,11 @@
 // import { DemoCoSimpleRendereScene as Demo } from "./cospace/demo/DemoCoSimpleRendereScene";
 // import { DemoDisplayModel as Demo } from "./cospace/demo/DemoDisplayModel";
 // import { DemoShaderMaterial as Demo } from "./cospace/demo/DemoShaderMaterial";
-import { DemoPrimitives as Demo } from "./cospace/demo/DemoPrimitives";
+// import { DemoPrimitives as Demo } from "./cospace/demo/DemoPrimitives";
 // import { DemoVtxDrawingInfo as Demo } from "./cospace/demo/DemoVtxDrawingInfo";
 
 // import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
-// import { DemoVox3DEditor as Demo } from "./cospace/demo/DemoVox3DEditor";
+import { DemoVox3DEditor as Demo } from "./cospace/demo/DemoVox3DEditor";
 
 // import { DemoOutline as Demo } from "./cospace/demo/DemoOutline";
 // import { DemoPostOutline as Demo } from "./cospace/demo/DemoPostOutline";

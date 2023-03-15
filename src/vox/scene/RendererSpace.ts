@@ -182,26 +182,35 @@ export default class RendererSpace implements IRendererSpace {
 			} else {
 				let ab: IAABB = null;
 				let cam = this.m_camera;
-				//let camPos:IVector3D = cam.getPosition();
+				
+				let vboo = false;
 				while (nextNode != null) {
+					vboo = false;
 					if (nextNode.rpoNode.isVsible() && nextNode.entity.isDrawEnabled()) {
 						ab = nextNode.bounds;
-						const boo = cam.visiTestSphere2(ab.center, ab.radius);
-						nextNode.drawEnabled = boo;
-						nextNode.entity.drawEnabled = boo;
-						nextNode.rpoNode.drawEnabled = boo;
-						total += boo ? 1 : 0;
+						vboo = cam.visiTestSphere2(ab.center, ab.radius);
+						// nextNode.drawEnabled = boo;
+						// nextNode.entity.drawEnabled = boo;
+						// nextNode.rpoNode.drawEnabled = boo;
+						// total += vboo ? 1 : 0;
+						if(vboo) total += 1;
 						//  if(nextNode.drawEnabled && nextNode.distanceFlag)
 						//  {
 						//      nextNode.rpoNode.setValue(-IVector3D.DistanceSquared(camPos,ab.center));
 						//      //console.log((nextNode.entity as any).name,",a runit.value: ",nextNode.rpoNode.unit.value);
 						//  }
-					} else {
-						nextNode.drawEnabled = false;
-						nextNode.entity.drawEnabled = false;
-						nextNode.rpoNode.drawEnabled = false;
 					}
+					// else {
+					// 	nextNode.drawEnabled = false;
+					// 	nextNode.entity.drawEnabled = false;
+					// 	nextNode.rpoNode.drawEnabled = false;
+					// }
 					// if(DebugFlag.Flag_0 > 0) console.log("nextNode.rpoNode.isVsible(): ",nextNode.rpoNode.isVsible(), nextNode.entity.isDrawEnabled(), nextNode.drawEnabled);
+					
+					nextNode.drawEnabled = vboo;
+					nextNode.entity.drawEnabled = vboo;
+					nextNode.rpoNode.drawEnabled = vboo;
+
 					nextNode = nextNode.next;
 				}
 			}
@@ -231,8 +240,5 @@ export default class RendererSpace implements IRendererSpace {
 	runEnd(): void { }
 	getCullingNodeHead(): Entity3DNode {
 		return this.m_nodeSLinker.getBegin();
-	}
-	toString(): string {
-		return "[RendererSpace(uid = " + this.m_uid + ")]";
 	}
 }

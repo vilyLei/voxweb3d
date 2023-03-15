@@ -39,7 +39,7 @@ export default class ConvexTransParentPassItem extends PassRItem {
 			material.setRGB3f(20.0, 0.0, 0.0);
 			entity.setScaleXYZ(scale, scale, scale);
 			entity.update();
-            unit.shader.resetUniform();
+            process.resetUniform();
 			process.run();
 
 			scale = 1.0;

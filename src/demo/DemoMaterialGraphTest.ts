@@ -132,7 +132,7 @@ export class DemoMaterialGraphTest {
 		if (staticVtx) material.vtxInfo.lock();
 		material.normalEnabled = true;
 		// material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
-		material.setTextureList([this.getTexByUrl("static/assets/guangyun_08_01.png")]);
+		material.setTextureList([this.getTexByUrl("static/assets/Effects_Textures_106-1.png")]);
 
 		let nvs = new Float32Array([0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0]);
 		let uvs = new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]);
@@ -154,7 +154,7 @@ export class DemoMaterialGraphTest {
 		// 0, 1, 1, 2, 2, 0, 0, 2, 2, 3, 3, 0
 		// 0, 1, 1, 2, 2, 0, 0, 2, 2, 3, 3, 0
 
-		let st0 = RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
+		let st0 = RendererState.CreateRenderState("ADD01", CullFaceMode.NONE, RenderBlendMode.ADD, DepthTestMode.BLEND);
 		// let st1 = RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.BLAZE, DepthTestMode.FALSE_LEQUAL);
 		
 		let mgraph = new DefaultPassGraph();

@@ -33,20 +33,16 @@ import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import RendererScene from "../vox/scene/RendererScene";
-import Line3DEntity from "../vox/entity/Line3DEntity";
-import Matrix4 from "../vox/math/Matrix4";
+
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import IDefault3DMaterial from "../vox/material/mcase/IDefault3DMaterial";
 
 export class DemoPrimitive {
 	constructor() {}
 
-	// private m_rscene: RendererInstance = null;
-	// private m_rcontext: RendererInstanceContext = null;
 	private m_rscene: RendererScene = null;
 	private m_texLoader: ImageTextureLoader;
 
-	private m_camTrack: CameraTrack = null;
 	private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 	private m_equeue: EntityDispQueue = new EntityDispQueue();
 	private m_billLine: BillboardLine3DEntity = null;
@@ -111,17 +107,17 @@ export class DemoPrimitive {
             return;
             //*/
 
-			tex1 = this.getTexByUrl("static/assets/metal_08.jpg");
-			let size = 300.0;
-			let bgBox = new Box3DEntity();
-			// bgBox.setMaterial(material);
-			bgBox.showFrontFace();
-			bgBox.initialize(new Vector3D(-size, -size, -size), new Vector3D(size, size, size), [tex1]);
-			let bgBoxMaterial = bgBox.getMaterial() as IDefault3DMaterial;
-			bgBoxMaterial.setUVScale(10, 10);
-			bgBox.setScaleXYZ(2.0, 2.0, 2.0);
-			this.m_rscene.addEntity(bgBox);
-			return;
+			// tex1 = this.getTexByUrl("static/assets/metal_08.jpg");
+			// let size = 300.0;
+			// let bgBox = new Box3DEntity();
+			// // bgBox.setMaterial(material);
+			// bgBox.showFrontFace();
+			// bgBox.initialize(new Vector3D(-size, -size, -size), new Vector3D(size, size, size), [tex1]);
+			// let bgBoxMaterial = bgBox.getMaterial() as IDefault3DMaterial;
+			// bgBoxMaterial.setUVScale(10, 10);
+			// bgBox.setScaleXYZ(2.0, 2.0, 2.0);
+			// this.m_rscene.addEntity(bgBox);
+			// return;
 
 			let i: number = 0;
 			let axis: Axis3DEntity = new Axis3DEntity();

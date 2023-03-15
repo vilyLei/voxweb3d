@@ -18,6 +18,7 @@ import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
 import CameraTrack from "../../vox/view/CameraTrack";
 import IRendererSpace from "../../vox/scene/IRendererSpace";
 import SpherePOV from '../../voxocc/occlusion/SpherePOV';
+import SphereGapPOV from '../../voxocc/occlusion/SphereGapPOV';
 import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import SpaceCullingor from '../../vox/scene/SpaceCullingor';
 import { MouseInteraction } from "../../vox/ui/MouseInteraction";
@@ -25,7 +26,7 @@ import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import DebugFlag from "../../vox/debug/DebugFlag";
 
 
-export class DemoSphereOcclusion {
+export class DemoSphereGapOcclusion {
     constructor() {
     }
 
@@ -34,12 +35,13 @@ export class DemoSphereOcclusion {
     private m_rspace: IRendererSpace = null;
 
     private m_profileInstance = new ProfileInstance();
-    private m_sphOccObj = new SpherePOV();
+
+    private m_sphOccObj = new SphereGapPOV();
     private m_entities: DisplayEntity[] = [];
     private m_frameList: BillboardFrame[] = [];
 
     initialize(): void {
-        console.log("DemoSphereOcclusion::initialize()......");
+        console.log("DemoSphereGapOcclusion::initialize()......");
         if (this.m_rscene == null) {
             RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 
@@ -53,12 +55,10 @@ export class DemoSphereOcclusion {
             this.m_rscene.updateCamera();
             this.m_rscene.setClearRGBColor3f(0.0, 0.1, 0.2);
 
-            this.m_rspace = this.m_rscene.getSpace();
-
-            
             this.m_profileInstance = new ProfileInstance();
             this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
+            this.m_rspace = this.m_rscene.getSpace();
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             let tex0 = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
@@ -169,15 +169,15 @@ export class DemoSphereOcclusion {
     pv = new Vector3D();
     delayTime = 10;
     run(): void {
-        //console.log("##-- begin");
-
-        this.m_rscene.run();
-        this.showTestStatus();
-
-        if (this.m_profileInstance != null) {
-            this.m_profileInstance.run();
+        if(this.m_rscene) {
+            this.m_rscene.run();
+            this.showTestStatus();
+    
+            if (this.m_profileInstance != null) {
+                this.m_profileInstance.run();
+            }
         }
         DebugFlag.Flag_0 = 0;
     }
 }
-export default DemoSphereOcclusion;
+export default DemoSphereGapOcclusion;

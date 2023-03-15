@@ -173,7 +173,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 		return this.m_ls[4];
 	}
 
-	initializeFromGeometry(geom: IGeometry): void {
+	initializeFromGeometry(geom: IGeometry): DataMesh {
 		
 		this.setVS(geom.getVS());
 		this.setUVS(geom.getUVS());
@@ -183,7 +183,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 		this.setIVSAt(geom.getIVS());
 
 		this.m_boundsChanged = true;
-		this.initialize();
+		return this.initialize();
 	}
 	private addFloat32Data(data: Float32Array, type: number, stride: number, ver: number, info: string = ""): void {
 
@@ -229,7 +229,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 	getIVSAt(index: number): Uint16Array | Uint32Array {
 		return this.m_ils[index];
 	}
-	initialize(): void {
+	initialize(): DataMesh {
 
 		let ls = this.m_ls;
 		if (ls[0] != null) {
@@ -330,6 +330,7 @@ export default class DataMesh extends MeshBase implements IDataMesh {
 
 			this.buildEnd();
 		}
+		return this;
 	}
 
 	/**

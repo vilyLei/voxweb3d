@@ -29,6 +29,8 @@
 
 // import {DemoSphereOcclusion as Demo} from "./voxocc/demo/DemoSphereOcclusion";
 
+// import {DemoSphereGapOcclusion as Demo} from "./voxocc/demo/DemoSphereGapOcclusion";
+
 // import {DemoTwoSphereOcclusion as Demo} from "./voxocc/demo/DemoTwoSphereOcclusion";
 
 //  import {DemoQuadOcclusion as Demo} from "./voxocc/demo/DemoQuadOcclusion";
@@ -41,7 +43,7 @@
 
 //  import {DemoOccBoxWall as Demo} from "./voxocc/demo/DemoOccBoxWall";
 
- import {DemoOccBoxWall2 as Demo} from "./voxocc/demo/DemoOccBoxWall2";
+//  import {DemoOccBoxWall2 as Demo} from "./voxocc/demo/DemoOccBoxWall2";
 
 //  import {DemoOccPOVBuilding as Demo} from "./voxocc/demo/DemoOccPOVBuilding";
 
@@ -138,8 +140,7 @@
 
 //  import {DemoDelEntity as Demo} from "./demo/DemoDelEntity";
 
-//  import * as DemoText2D from "./demo/DemoText2D";
-//  import Demo = DemoText2D.demo.DemoText2D;
+//  import {DemoText2D as Demo} from "./demo/DemoText2D";
 
 //  import {DemoTexUpdate as Demo} from "./demo/DemoTexUpdate";
 
@@ -274,6 +275,8 @@
 
 //  import {DemoVtxUpdate as Demo} from "./demo/DemoVtxUpdate";
 
+//  import {DemoVtxUpdateFree as Demo} from "./demo/DemoVtxUpdateFree";
+
 //  import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
 // free-shaped morph animation
 //  import {DemoFlexPipe as Demo} from "./demo/DemoFlexPipe";
@@ -364,7 +367,7 @@
 
 //  import {DemoMaterialGraphTest as Demo} from "./demo/DemoMaterialGraphTest";
 
-//  import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
+ import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
 
 //  import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
 
