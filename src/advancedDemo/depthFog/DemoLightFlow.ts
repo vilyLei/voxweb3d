@@ -70,18 +70,6 @@ export class DemoLightFlow {
 
 			this.m_esc.run();
 
-			/*
-			this.m_esc.runBegin();
-
-			this.m_rc.runBegin();
-			this.m_rc.update();
-			this.m_rc.synFBOSizeWithViewport();
-
-			this.m_esc.renderRun();
-
-			this.m_rc.runEnd();
-			this.m_esc.runEnd();
-			//*/
 			this.m_rc.run(false);
 			this.m_rc.runEnd();
 			DebugFlag.Flag_0 = 0;

@@ -92,6 +92,11 @@ export default class FBOInstance implements IFBOInstance {
 				throw Error("processIDlist.length < 1, but it must: processIDlist.length >= 1");
 			}
 			this.m_rindexs = processIDlist.slice(0);
+			if(!processShared) {
+				for(let i = 0; i < this.m_rindexs.length; ++i) {
+					this.m_renderer.setProcessEnabledAt(i, processShared);
+				}
+			}
 		}
 	}
 	/**

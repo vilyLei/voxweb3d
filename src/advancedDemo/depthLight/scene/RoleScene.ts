@@ -16,28 +16,24 @@ import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
 export class RoleScene {
 	private m_pbr = new PBRMateralBuilder();
-	private m_entityRSCIndex = 0;
-	private m_entityBGIndex = 2;
-	private m_srcSph = new Sphere3DEntity();
-	private m_srcBox = new Box3DEntity();
-	private m_minV: Vector3D;
-	private m_maxV: Vector3D;
-	private m_size = 64.0;
-	private m_rc: RendererScene = null;
-
-	texLoader: ImageTextureLoader = null;
-
 	constructor() {}
 
+	private m_rc: RendererScene = null;
+	texLoader: ImageTextureLoader = null;
 	getImageTexByUrl(pns: string): TextureProxy {
-		let tex = this.texLoader.getImageTexByUrl("static/assets/" + pns);
+		let tex: TextureProxy = this.texLoader.getImageTexByUrl("static/assets/" + pns);
 		tex.setWrap(TextureConst.WRAP_REPEAT);
 		tex.mipmapEnabled = true;
 		return tex;
 	}
-
-
-	createMaterial2(color: Color4, uvParam: Vector3D = null, ns: string = ""): IRenderMaterial {
+	private m_entityRSCIndex: number = 0;
+	private m_entityBGIndex: number = 2;
+	private m_srcSph: Sphere3DEntity = new Sphere3DEntity();
+	private m_srcBox: Box3DEntity = new Box3DEntity();
+	private m_minV: Vector3D;
+	private m_maxV: Vector3D;
+	private m_size: number = 64.0;
+	createMaterial2(color: Color4): IRenderMaterial {
 		let material = new FogDepthUVMaterial();
 		if (color) {
 			material.setRGBColor(color);
@@ -207,7 +203,5 @@ export class RoleScene {
             //*/
 		}
 	}
-	run(): void {
-
-	}
+	run(): void {}
 }

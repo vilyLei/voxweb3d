@@ -31,6 +31,7 @@ interface IRenderer {
   getViewWidth(): number;
   getViewHeight(): number;
   getRenderProcessAt(id: number): IRenderProcess;
+	setProcessEnabledAt(i: number, enabled: boolean): void;
   /**
    * 在任意阶段绘制一个指定的 entity,只要其资源数据准备完整
    * @param entity IRenderEntity instance

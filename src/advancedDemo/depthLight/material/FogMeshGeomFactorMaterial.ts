@@ -27,9 +27,6 @@ class FogMeshGeomFactorShaderBuffer extends ShaderCodeBuffer {
 
         let coder = this.m_coder;
 		coder.uns = this.m_uniqueName;
-        // coder.addVertLayout("vec3", "a_vs");
-        // coder.addVarying("vec2", "v_uv");
-        // coder.useVertSpaceMats(true, false, false);
 
         this.m_uniform.add2DMap("MAP_0");
         this.m_uniform.add2DMap("MAP_1");

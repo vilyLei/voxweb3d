@@ -90,13 +90,6 @@ export class SceneFogFlow {
             this.m_rct = this.m_rc.getRendererContext();
 
             this.m_rc.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-
-
-            // RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
-            // RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
-            // RendererState.CreateRenderState("ADD03", CullFaceMode.BACK, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
-
-
             /*
             this.m_billGroup = new BillParticleGroup();
             let ptex0:TextureProxy = this.getImageTexByUrl("flare_core_02.jpg");
