@@ -24,7 +24,7 @@
 
 // import { RenderingVerifier as Demo } from "./cospace/demo/RenderingVerifier";
 
-// import { DemoCoApp as Demo } from "./cospace/demo/DemoCoApp";
+import { DemoCoApp as Demo } from "./cospace/demo/DemoCoApp";
 // import { DemoCoAppDeferredInit as Demo } from "./cospace/demo/DemoCoAppDeferredInit";
 
 // import { DemoCoRenderer as Demo } from "./cospace/demo/DemoCoRenderer";
@@ -38,7 +38,7 @@
 // import { DemoVtxDrawingInfo as Demo } from "./cospace/demo/DemoVtxDrawingInfo";
 
 // import { DemoCoViewer as Demo } from "./cospace/demo/DemoCoViewer";
-import { DemoVox3DEditor as Demo } from "./cospace/demo/DemoVox3DEditor";
+// import { DemoVox3DEditor as Demo } from "./cospace/demo/DemoVox3DEditor";
 
 // import { DemoOutline as Demo } from "./cospace/demo/DemoOutline";
 // import { DemoPostOutline as Demo } from "./cospace/demo/DemoPostOutline";
