@@ -70,6 +70,7 @@ class FBXParserListerner {
 				},
 				(status: number, url: string): void => {
 					console.error("load fbx mesh data error, url: ", url);
+					this.fbxParseFinish([{vertices: null, uvsList: null, normals: null, indices: null}], null, url, 0, 0);
 				}
 			);
 		}

@@ -30,12 +30,12 @@ class CTMParserListerner {
 		this.m_threadSchedule = threadSchedule;
 		this.m_receiverSchedule = receiverSchedule;
 	}
-	
+
 	addUrlToTask(url: string): void {
 
 		if (!this.m_unitPool.hasUnitByUrl(url)) {
 			if(this.m_parseTask == null) {
-				
+
 				let parseTask = new CTMParseTask( this.m_moduleUrl );
 				// 绑定当前任务到多线程调度器
 				this.m_threadSchedule.bindTask(parseTask);
@@ -54,6 +54,7 @@ class CTMParserListerner {
 				},
 				(status: number, url: string): void => {
 					console.error("load ctm mesh data error, url: ", url);
+					this.ctmParseFinish({vertices: null, uvsList: null, normals: null, indices: null, uuid: url}, url);
 				}
 			);
 		}
@@ -67,7 +68,7 @@ class CTMParserListerner {
 
 			let unit: GeometryDataUnit = this.m_unitPool.getUnitByUrl(url);
 			if (unit != null) {
-				
+
 				unit.lossTime = Date.now() - unit.lossTime;
 				unit.data.models = [model];
 

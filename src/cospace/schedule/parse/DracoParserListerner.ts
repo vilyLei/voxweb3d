@@ -61,6 +61,8 @@ class DracoParserListerner {
 				},
 				(status: number, url: string): void => {
 					console.error("load draco mesh data error, url: ", url);
+
+					this.dracoParseSingle({vertices: null, uvsList: null, normals: null, indices: null}, url, 0);
 				}
 			);
 		}

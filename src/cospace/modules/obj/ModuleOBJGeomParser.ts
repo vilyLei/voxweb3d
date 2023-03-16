@@ -27,10 +27,13 @@ class ModuleOBJGeomParser extends BaseTaskInThread {
             console.error("parse obj geom model data error.");
         }
         if (objMeshes != null) {
-            let len: number = objMeshes.length;
-            for (let i: number = 0; i < len; ++i) {
-                const geom: any = objMeshes[i].geometry;
+            let len = objMeshes.length;
+            for (let i = 0; i < len; ++i) {
+				const mesh =  objMeshes[i];
+                const geom: any = mesh.geometry;
+				// console.log("objMeshes["+i+"]: ", objMeshes[i]);
                 const model = this.createModel(geom);
+				model.uuid = mesh.name;
                 if (model.vertices != null) {
                     transfers.push(model.indices);
                     transfers.push(model.vertices);

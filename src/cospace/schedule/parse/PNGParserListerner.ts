@@ -22,8 +22,12 @@ class PNGParserListerner {
 	private m_threadSchedule: ThreadSchedule;
 	private m_moduleUrl: string;
 
-	constructor(unitPool: DataUnitPool<TextureDataUnit>, threadSchedule: ThreadSchedule, module: ITaskCodeModuleParam, receiverSchedule: ReceiverSchedule) {
-
+	constructor(
+		unitPool: DataUnitPool<TextureDataUnit>,
+		threadSchedule: ThreadSchedule,
+		module: ITaskCodeModuleParam,
+		receiverSchedule: ReceiverSchedule
+	) {
 		this.m_moduleUrl = module.url;
 		this.m_unitPool = unitPool;
 		this.m_threadSchedule = threadSchedule;
@@ -31,10 +35,8 @@ class PNGParserListerner {
 	}
 
 	addUrlToTask(url: string): void {
-
 		if (!this.m_unitPool.hasUnitByUrl(url)) {
-
-			if(this.m_parseTask == null) {
+			if (this.m_parseTask == null) {
 				// 创建ctm 加载解析任务
 				let parseTask = new PNGParseTask(this.m_moduleUrl);
 				// 绑定当前任务到多线程调度器
@@ -55,6 +57,7 @@ class PNGParserListerner {
 				},
 				(status: number, url: string): void => {
 					console.error("load png img data error, url: ", url);
+					this.pngParseFinish(null, { url: url, width: 0, height: 0, filterType: 0 });
 				}
 			);
 		}
@@ -62,18 +65,15 @@ class PNGParserListerner {
 
 	// 一个任务数据处理完成后的侦听器回调函数
 	pngParseFinish(pngData: Uint8Array, des: PNGDescriptorType): void {
-
 		// console.log("ObjParserListerner::ctmParseFinish(), models: ", models, ", url: ", url);
 
 		if (this.m_unitPool.hasUnitByUrl(des.url)) {
-
 			let unit: TextureDataUnit = this.m_unitPool.getUnitByUrl(des.url);
 			if (unit != null) {
-
 				unit.lossTime = Date.now() - unit.lossTime;
 				unit.data.dataFormat = DataFormat.Png;
-				unit.data.desList = [ des ];
-				unit.data.imageDatas = [ pngData ];
+				unit.data.desList = [des];
+				unit.data.imageDatas = [pngData];
 
 				DataUnitLock.lockStatus = 209;
 				unit.toCpuPhase();
@@ -85,7 +85,7 @@ class PNGParserListerner {
 		}
 	}
 	destroy(): void {
-		if(this.m_parseTask != null) {
+		if (this.m_parseTask != null) {
 			this.m_parseTask.destroy();
 			this.m_parseTask = null;
 		}

@@ -55,8 +55,8 @@ export class DemoCospace {
 		document.onmousedown = (evt: any): void => {
 			this.mouseDown(evt);
 		};
-		// this.initCTMLoad();
-		this.initFBXLoad();
+		this.initCTMLoad();
+		// this.initFBXLoad();
 	}
 	private m_files: string[] = ["hand.ctm", "f2.ctm", "h1.ctm", "s3.ctm"];
 

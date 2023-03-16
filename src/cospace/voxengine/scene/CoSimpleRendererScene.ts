@@ -69,7 +69,7 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 	private m_processids = new Uint8Array(128);
 	private m_processidsLen = 0;
 	private m_accessor: IRendererSceneAccessor = null;
-	
+
 	private m_viewX = 0.0;
 	private m_viewY = 0.0;
 	private m_viewW = 800.0;
@@ -735,18 +735,21 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 			this.m_renderProxy.updateCamera();
 		}
 	}
+
+    setProcessEnabledAt(i: number, enabled: boolean): void {
+	}
 	destroy(): void {
 	}
-	
+
     private m_autoRRun = false;
     fakeRun(autoCycle: boolean = true): void {
         console.log("fakeRun ...");
     }
     setAutoRunning(auto: boolean): CoSimpleRendererScene {
-        
+
         if (this.m_autoRRun != auto) {
             if (this.m_autoRRun) {
-                
+
                 let runFunc = this.run;
                 this.run = this.fakeRun;
                 this.fakeRun = runFunc;
@@ -768,7 +771,7 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
         }
 		return this;
     }
-    
+
     isAutoRunning(): boolean {
         return this.m_autoRRun;
     }

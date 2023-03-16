@@ -57,6 +57,7 @@ class OBJParserListerner {
 				},
 				(status: number, url: string): void => {
 					console.error("load obj mesh data error, url: ", url);
+					this.objParseFinish([{vertices: null, uvsList: null, normals: null, indices: null}], url);
 				}
 			);
 		}

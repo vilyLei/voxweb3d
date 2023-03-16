@@ -7,7 +7,11 @@
 
 import { CoTextureDataUnit, CoGeomDataUnit, CoDataFormat, CoTaskCodeModuleParam } from "./CoSpaceAppData";
 interface ICoSpaceAppIns {
-	
+
+	/**
+	 * the default value is 8
+	 */
+	netLoadingMaxCount: number;
 	/**
 	 * 设置线程中子模块间依赖关系的json描述字符串
 	 * @param graphJsonStr json描述字符串
