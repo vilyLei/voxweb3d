@@ -12,6 +12,7 @@ export class FogUnit {
     constructor() {
     }
 
+    dis = 0;
     factorColor: Color4 = new Color4();
     fogColor: Color4 = new Color4();
     pos: Vector3D = new Vector3D();

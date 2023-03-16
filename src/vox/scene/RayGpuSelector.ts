@@ -90,7 +90,7 @@ export default class RayGpuSelector implements IRaySelector {
         return this.m_selectedTotal;
     }
     private sorting(low: number, high: number): number {
-        let arr: RaySelectedNode[] = this.m_rsnList;
+        let arr = this.m_rsnList;
         //标记位置为待排序数组段的low处也就时枢轴值
         this.m_rsn = arr[low];
         while (low < high) {
@@ -110,7 +110,7 @@ export default class RayGpuSelector implements IRaySelector {
     }
     private snsort(low: number, high: number): void {
         if (low < high) {
-            let pos: number = this.sorting(low, high);
+            let pos = this.sorting(low, high);
             this.snsort(low, pos - 1);
             this.snsort(pos + 1, high);
         }

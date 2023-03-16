@@ -89,12 +89,50 @@ export class FogSphBuilder {
 	getTotal(): number {
 		return this.m_fogUnits.length;
 	}
+	private m_nodesTotal = 0;
+	private m_rsn: FogUnit;
+	
+    private sorting(low: number, high: number): number {
+        let arr = this.m_fogUnits;
+        //标记位置为待排序数组段的low处也就时枢轴值
+        this.m_rsn = arr[low];
+        while (low < high) {
+            //  如果当前数字已经有序的位于我们的枢轴两端，我们就需要移动它的指针，是high或是low
+            while (low < high && arr[high].dis >= this.m_rsn.dis) {
+                --high;
+            }
+            // 如果当前数字不满足我们的需求，我们就需要将当前数字移动到它应在的一侧
+            arr[low] = arr[high];
+            while (low < high && arr[low].dis <= this.m_rsn.dis) {
+                ++low;
+            }
+            arr[high] = arr[low];
+        }
+        arr[low] = this.m_rsn;
+        return low;
+    }
+    private snsort(low: number, high: number): void {
+        if (low < high) {
+            let pos = this.sorting(low, high);
+            this.snsort(low, pos - 1);
+            this.snsort(pos + 1, high);
+        }
+    }
 	run(): void {
 
 		if (this.m_rc) {
 			let status = this.m_status;
 			let len = this.m_fogUnits.length;
+			this.m_nodesTotal = len;
 			if (len > 0) {
+				// this.snsort(0, len - 1);
+				const cam = this.m_rc.getCamera();
+				for(let i = 0; i < len; ++i) {
+					const t = this.m_fogUnits[i];
+					t.dis = Vector3D.Distance(t.pos, cam.getPosition());
+				}
+				this.snsort(0, len - 1);
+
 				this.m_factorFBO.unlockMaterial();
 				this.m_factorFBO.unlockRenderState();
 				this.m_factorFBO.setClearColorEnabled(true);
@@ -119,7 +157,7 @@ export class FogSphBuilder {
 				let fogUnit: FogUnit;
 				let outerTotal = 0;
 				const pv = this.m_pv;
-				let cam = this.m_rc.getCamera();
+				// let cam = this.m_rc.getCamera();
 				for (let i = 0; i < len; ++i) {
 					fogUnit = this.m_fogUnits[i];
 					pv.copyFrom(fogUnit.pos);
