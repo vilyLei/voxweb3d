@@ -9,7 +9,7 @@ import RendererDevice from "../../vox/render/RendererDevice";
 import RendererParam from "../../vox/scene/RendererParam";
 import RendererScene from "../../vox/scene/RendererScene";
 
-import { SceneFogFlow } from "../../advancedDemo/depthLight/scene/SceneFogFlow";
+import { SceneFogFlow } from "./scene/SceneFogFlow";
 
 import { MouseInteraction } from "../../vox/ui/MouseInteraction";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
@@ -60,7 +60,17 @@ export class DemoLightFlow {
 
 		if(this.m_rflag) {
 			// logic run
+
+			this.m_esc.runBegin();
+
 			this.m_rc.setClearRGBAColor4f(1.0,1.0,1.0,1.0);
+			this.m_rc.synFBOSizeWithViewport();
+			this.m_rc.runBegin();
+			this.m_rc.update();
+
+			this.m_esc.run();
+
+			/*
 			this.m_esc.runBegin();
 
 			this.m_rc.runBegin();
@@ -71,6 +81,9 @@ export class DemoLightFlow {
 
 			this.m_rc.runEnd();
 			this.m_esc.runEnd();
+			//*/
+			this.m_rc.run(false);
+			this.m_rc.runEnd();
 			DebugFlag.Flag_0 = 0;
 			this.m_rflag = true;
 		}

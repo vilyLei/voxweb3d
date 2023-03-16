@@ -5,15 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 import Vector3D from "../../../vox/math/Vector3D";
-import Stage3D from "../../../vox/display/Stage3D";
 import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../../../vox/render/RenderConst";
 import TextureConst from "../../../vox/texture/TextureConst";
 import TextureProxy from "../../../vox/texture/TextureProxy";
 import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
 
-import CameraBase from "../../../vox/view/CameraBase";
 import RendererState from "../../../vox/render/RendererState";
-import { IRendererInstanceContext } from "../../../vox/scene/IRendererInstanceContext";
 import FBOInstance from "../../../vox/scene/FBOInstance";
 import RendererScene from "../../../vox/scene/RendererScene";
 
@@ -21,16 +18,14 @@ import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
 import { FogMeshGeomFactorMaterial } from "../../../advancedDemo/depthLight/material/FogMeshGeomFactorMaterial";
 import { FogUnit } from "../../../advancedDemo/depthLight/scene/FogUnit";
 
-export class FogSphSystem {
+export class FogSphBuilder {
 	constructor() {}
 
 	private m_rc: RendererScene = null;
-	private m_rct: IRendererInstanceContext = null;
 
 	private m_middleFBO: FBOInstance = null;
 	private m_factorFBO: FBOInstance = null;
-	private m_stage3D: Stage3D = null;
-	//
+
 	texLoader: ImageTextureLoader = null;
 	factorEntityIndex: number = 0;
 	maxRadius: number = 800.0;
@@ -46,8 +41,6 @@ export class FogSphSystem {
 	initialize(rc: RendererScene, middleFBO: FBOInstance, factorFBO: FBOInstance): void {
 		if (this.m_rc == null) {
 			this.m_rc = rc;
-			this.m_rct = this.m_rc.getRendererContext();
-			this.m_stage3D = this.m_rct.getStage3D() as Stage3D;
 			this.m_middleFBO = middleFBO;
 			this.m_factorFBO = factorFBO;
 
@@ -93,18 +86,10 @@ export class FogSphSystem {
 		this.m_status = status % 3;
 		console.log("this.m_status: ", this.m_status);
 	}
-	runBegin(): void {}
-	runBase(): void {
-		if (this.m_rc) {
-			// draw middle depth and color
-			this.m_middleFBO.unlockRenderState();
-			this.m_middleFBO.run();
-		}
-	}
-	getFogVolumesTotal(): number {
+	getTotal(): number {
 		return this.m_fogUnits.length;
 	}
-	runFog(): void {
+	run(): void {
 
 		if (this.m_rc) {
 			let status = this.m_status;
@@ -138,10 +123,8 @@ export class FogSphSystem {
 				for (let i = 0; i < len; ++i) {
 					fogUnit = this.m_fogUnits[i];
 					pv.copyFrom(fogUnit.pos);
-					this.m_pv.w = 1.0;
+					pv.w = 1.0;
 					if (fogUnit.isAlive() && cam.visiTestSphere3(pv, fogUnit.radius, -fogUnit.radius * 0.1)) {
-					// if (fogUnit.isAlive()) {
-						// this.factorEntity.setRenderState(fogUnit.rstate);
 						this.factorEntity.setPosition(fogUnit.pos);
 						this.factorEntity.setScaleXYZ(fogUnit.radius, fogUnit.radius, fogUnit.radius);
 						this.factorEntity.update();
@@ -156,12 +139,11 @@ export class FogSphSystem {
 							this.fogFactorM.setFogRGBColor(fogUnit.fogColor);
 						}
 						this.m_factorFBO.drawEntity(this.factorEntity);
-						// this.m_factorFBO.runAt(0);
 					} else {
 						outerTotal++;
 					}
 				}
-				console.log("outerTotal: ", outerTotal);
+				// console.log("skip volume Total: ", outerTotal);
 			}
 		}
 	}

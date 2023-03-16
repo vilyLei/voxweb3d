@@ -72,6 +72,10 @@ export class FogSphSystem {
 			fogUnit.initRandom(baseRadius, range);
 			let r = fogUnit.radius;
 			fogUnit.pos.setXYZ(Math.random() * range - halfR, Math.random() * range * 0.3 + r * 0.2, Math.random() * range - halfR);
+			//  fogUnit.radius = baseRadius * 0.6;
+			//  fogUnit.fogColor.setRGB3f(1.0,1.0,1.0);
+			//  fogUnit.factorColor.setRGB3f(1.0,1.0,1.0);
+			//  fogUnit.pos.setXYZ(0.0,0.0,0.0);
 			this.m_fogUnits.push(fogUnit);
 		}
 		// rState0 = RendererState.CreateRenderState("factorSphState", CullFaceMode.FRONT, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
@@ -139,7 +143,7 @@ export class FogSphSystem {
 					fogUnit = this.m_fogUnits[i];
 					pv.copyFrom(fogUnit.pos);
 					this.m_pv.w = 1.0;
-					if (fogUnit.isAlive() && cam.visiTestSphere3(pv, fogUnit.radius, -fogUnit.radius * 0.1)) {
+					if (fogUnit.isAlive() && cam.visiTestSphere3(pv, fogUnit.radius, -fogUnit.radius * 2.0)) {
 					// if (fogUnit.isAlive()) {
 						// this.factorEntity.setRenderState(fogUnit.rstate);
 						this.factorEntity.setPosition(fogUnit.pos);
@@ -155,13 +159,12 @@ export class FogSphSystem {
 						} else if (status == 1) {
 							this.fogFactorM.setFogRGBColor(fogUnit.fogColor);
 						}
-						this.m_factorFBO.drawEntity(this.factorEntity);
-						// this.m_factorFBO.runAt(0);
+						this.m_factorFBO.runAt(0);
 					} else {
 						outerTotal++;
 					}
 				}
-				console.log("outerTotal: ", outerTotal);
+				// console.log("outerTotal: ", outerTotal);
 			}
 		}
 	}

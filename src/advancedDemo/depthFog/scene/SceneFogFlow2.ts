@@ -13,22 +13,22 @@ import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import { FogSphShow2Material } from "../material/FogSphShow2Material";
 import { BoxSpaceMotioner } from "../../../voxmotion/primitive/BoxSpaceMotioner";
 import { FogFBOMana } from "../../../advancedDemo/depthLight/scene/FogFBOMana";
+import { FogSystem } from "../../../advancedDemo/depthLight/scene/FogSystem";
 import { FogSphSystem } from "../../../advancedDemo/depthLight/scene/FogSphSystem";
 import { BillParticleGroup } from "../../../advancedDemo/depthLight/scene/BillParticle";
 
 import { RoleScene } from "../../../advancedDemo/depthLight/scene/RoleScene";
-import ScreenFixedAlignPlaneEntity from "../../../vox/entity/ScreenFixedAlignPlaneEntity";
 
-export class SceneFogFlow {
+export class SceneFogFlow2 {
     constructor() {
     }
 
     private m_rc: RendererScene = null;
     private m_rct: IRendererInstanceContext = null;
     private m_texLoader: ImageTextureLoader;
-
-    // private m_fogSys: FogSystem = null;
-    private m_fogSys: FogSphSystem = null;
+    
+    private m_fogSys: FogSystem = null;
+    // private m_fogSys: FogSphSystem = null;
     private m_roleSc: RoleScene = null;
     private m_billGroup: BillParticleGroup = null;
     getImageTexByUrl(pns: string): TextureProxy {
@@ -80,6 +80,24 @@ export class SceneFogFlow {
     mouseDownListener(evt: any): void {
         this.m_status++;
         this.m_fogSys.setStatus(this.m_status);
+
+        // let sys =  this.m_fogSys;
+        // let  status = this.m_status % 3;
+        // switch (status) {
+        //     case 0:
+        //         sys.fogFactorM.setFogDis(sys.maxRadius * 5.0);
+        //         break;
+        //     case 1:
+        //         sys.fogFactorM.setFactorRGB3f(1.0, 1.0, 1.0);
+        //         sys.fogFactorM.setFogDis(sys.maxRadius * 1.0);
+        //         break;
+        //     case 2:
+        //         sys.fogFactorM.setFactorRGB3f(1.0, 1.0, 1.0);
+        //         sys.fogFactorM.setFogDis(sys.maxRadius * 2.0);
+        //         break;
+        //     default:
+        //         break;
+        // }
     }
     initialize(rc: RendererScene): void {
         if (this.m_rc == null) {
@@ -98,7 +116,7 @@ export class SceneFogFlow {
 
 
             /*
-            this.m_billGroup = new BillParticleGroup();
+            this.m_billGroup = new BillParticleGroup();                    
             let ptex0:TextureProxy = this.getImageTexByUrl("flare_core_02.jpg");
             let ptex1:TextureProxy = this.getImageTexByUrl("a_02_c.jpg");
             this.m_billGroup.texs = [ptex0,ptex1];
@@ -134,28 +152,24 @@ export class SceneFogFlow {
             );
             this.m_rc.addEntity(this.m_dstPlane, this.m_dstPlaneIndex);
 
-            // this.m_fogSys = new FogSystem();
-            this.m_fogSys = new FogSphSystem();
+            this.m_fogSys = new FogSystem();
+            // this.m_fogSys = new FogSphSystem();
             this.m_fogSys.texLoader = this.m_texLoader;
             this.m_fogSys.initialize(this.m_rc, this.middleFBO, this.factorFBO);
-
-			// let spl = new ScreenFixedAlignPlaneEntity();
-			// spl.initialize(-0.8, -0.8, 0.5,0.5, [this.middleFBO.getRTTAt(0)] );
-            // this.m_rc.addEntity(spl,  this.m_dstPlaneIndex);
 
         }
     }
     runBegin(): void {
         // logic run
         this.runmotion();
-        // if (this.m_billGroup != null) this.m_billGroup.runAndCreate();
+        if (this.m_billGroup != null) this.m_billGroup.runAndCreate();
     }
-    private m_bgColor = new Color4(0.3, 0.7, 0.6, 1.0);
+    private m_bgColor = new Color4(1.0, 1.0, 1.0, 1.0);
     renderRun(): void {
         this.m_fogSys.runBase();
-        // this.parFBO.unlockMaterial();
-        // this.parFBO.unlockRenderState();
-        // this.parFBO.run();
+        this.parFBO.unlockMaterial();
+        this.parFBO.unlockRenderState();
+        this.parFBO.run();
         this.m_fogSys.runFog();
         if (this.m_fogSys.getFogVolumesTotal() > 0) {
             //this.m_status
@@ -183,9 +197,7 @@ export class SceneFogFlow {
         this.m_rc.setClearColor(this.m_bgColor);
         this.m_rc.renderBegin(true);
         // dst drawing
-		// console.log("this.m_dstPlaneIndex: ", this.m_dstPlaneIndex);
         this.m_rc.runAt(this.m_dstPlaneIndex);
-        // this.m_rc.runAt(6);
     }
     runEnd(): void {
     }

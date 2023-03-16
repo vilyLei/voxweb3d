@@ -12,11 +12,11 @@ import MouseEvent from "../../../vox/event/MouseEvent";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import { FogSphShow2Material } from "../material/FogSphShow2Material";
 import { BoxSpaceMotioner } from "../../../voxmotion/primitive/BoxSpaceMotioner";
-import { FogFBOMana } from "../../../advancedDemo/depthLight/scene/FogFBOMana";
-import { FogSphSystem } from "../../../advancedDemo/depthLight/scene/FogSphSystem";
+import { FogFBOMana } from "./FogFBOMana";
+import { FogSphBuilder } from "./FogSphBuilder";
 import { BillParticleGroup } from "../../../advancedDemo/depthLight/scene/BillParticle";
 
-import { RoleScene } from "../../../advancedDemo/depthLight/scene/RoleScene";
+import { RoleScene } from "./RoleScene";
 import ScreenFixedAlignPlaneEntity from "../../../vox/entity/ScreenFixedAlignPlaneEntity";
 
 export class SceneFogFlow {
@@ -28,7 +28,7 @@ export class SceneFogFlow {
     private m_texLoader: ImageTextureLoader;
 
     // private m_fogSys: FogSystem = null;
-    private m_fogSys: FogSphSystem = null;
+    private m_fogSys: FogSphBuilder = null;
     private m_roleSc: RoleScene = null;
     private m_billGroup: BillParticleGroup = null;
     getImageTexByUrl(pns: string): TextureProxy {
@@ -114,7 +114,13 @@ export class SceneFogFlow {
 
             this.middleFBO = this.fboMana.createMiddleFBO([this.m_entityRSCIndex, this.m_entityBGIndex]);
             this.parFBO = this.fboMana.createParFBO([this.m_parIndex]);
-            this.factorFBO = this.fboMana.createFactorFBO([this.m_factorPlaneIndex]);
+            // this.factorFBO = this.fboMana.createFactorFBO([this.m_factorPlaneIndex]);
+            this.factorFBO = this.fboMana.createFactorFBO(null);
+
+			this.m_rc.setProcessEnabledAt(this.m_entityRSCIndex, false);
+			this.m_rc.setProcessEnabledAt(this.m_entityBGIndex, false);
+			this.m_rc.setProcessEnabledAt(this.m_parIndex, false);
+			// this.m_rc.setProcessEnabledAt(this.m_factorPlaneIndex, false);
 
             this.fogShow2M = new FogSphShow2Material();
 
@@ -135,7 +141,7 @@ export class SceneFogFlow {
             this.m_rc.addEntity(this.m_dstPlane, this.m_dstPlaneIndex);
 
             // this.m_fogSys = new FogSystem();
-            this.m_fogSys = new FogSphSystem();
+            this.m_fogSys = new FogSphBuilder();
             this.m_fogSys.texLoader = this.m_texLoader;
             this.m_fogSys.initialize(this.m_rc, this.middleFBO, this.factorFBO);
 
@@ -151,13 +157,14 @@ export class SceneFogFlow {
         // if (this.m_billGroup != null) this.m_billGroup.runAndCreate();
     }
     private m_bgColor = new Color4(0.3, 0.7, 0.6, 1.0);
-    renderRun(): void {
-        this.m_fogSys.runBase();
+    run(): void {
+		this.middleFBO.unlockRenderState();
+		this.middleFBO.run();
         // this.parFBO.unlockMaterial();
         // this.parFBO.unlockRenderState();
         // this.parFBO.run();
-        this.m_fogSys.runFog();
-        if (this.m_fogSys.getFogVolumesTotal() > 0) {
+        this.m_fogSys.run();
+        if (this.m_fogSys.getTotal() > 0) {
             //this.m_status
             switch (this.m_status) {
                 case 0:
@@ -178,6 +185,7 @@ export class SceneFogFlow {
 
         this.m_rc.setRenderToBackBuffer();
         this.m_rct.unlockMaterial();
+		/*
         // console.log("this.m_bgColor: ", this.m_bgColor);
         // DebugFlag.Flag_0 = 1;
         this.m_rc.setClearColor(this.m_bgColor);
@@ -186,7 +194,6 @@ export class SceneFogFlow {
 		// console.log("this.m_dstPlaneIndex: ", this.m_dstPlaneIndex);
         this.m_rc.runAt(this.m_dstPlaneIndex);
         // this.m_rc.runAt(6);
-    }
-    runEnd(): void {
+		//*/
     }
 }

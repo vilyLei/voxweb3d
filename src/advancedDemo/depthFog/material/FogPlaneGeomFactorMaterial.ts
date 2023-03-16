@@ -6,51 +6,38 @@
 /***************************************************************************/
 
 import Vector3D from "../../../vox/math/Vector3D";
+import RendererDevice from "../../../vox/render/RendererDevice";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import Color4 from "../../../vox/material/Color4";
 import MaterialBase from "../../../vox/material/MaterialBase";
 
-class FogMeshGeomFactorShaderBuffer extends ShaderCodeBuffer {
+class FogPlaneGeomFactorShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static s_instance: FogMeshGeomFactorShaderBuffer = new FogMeshGeomFactorShaderBuffer();
+    private static s_instance: FogPlaneGeomFactorShaderBuffer = new FogPlaneGeomFactorShaderBuffer();
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
-        super.initialize(texEnabled);
-        this.adaptationShaderVersion = false;
-        this.m_uniqueName = "FogMeshGeomFactorShd";
+        //console.log("FogPlaneGeomFactorShaderBuffer::initialize()...");
+        this.m_uniqueName = "FogPlaneGeomFactorShd";
     }
-
-    buildShader(): void {
-
-        let coder = this.m_coder;
-		coder.uns = this.m_uniqueName;
-        // coder.addVertLayout("vec3", "a_vs");
-        // coder.addVarying("vec2", "v_uv");
-        // coder.useVertSpaceMats(true, false, false);
-
-        this.m_uniform.add2DMap("MAP_0");
-        this.m_uniform.add2DMap("MAP_1");
-
-        coder.addFragUniform("vec4", "u_sphParam", 5);
-        coder.addFragUniform("vec4", "u_frustumParam");
-        coder.addFragUniform("vec4", "u_viewParam");
-
-        coder.addFragOutput("vec4", "FragColor0");
-        coder.addFragOutput("vec4", "FragColor1");
-
-        coder.addVertMainCode(
-            `
-            gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs, 1.0);
-        `
-        );
-        coder.addFragMainCode(
-            `
-            vec2 sv2 = gl_FragCoord.xy / u_viewParam.zw;
-    vec4 color = VOX_Texture2D(MAP_0, sv2);
-    color.w *= u_frustumParam.y;
+    getFragShaderCode(): string {
+        let fragCode =
+`#version 300 es
+precision mediump float;
+uniform sampler2D u_sampler0;
+uniform sampler2D u_sampler1;
+uniform vec4 u_sphParam[5];
+uniform vec4 u_frustumParam;
+uniform vec4 u_viewParam;
+layout(location = 0) out vec4 OutputColor0;
+layout(location = 1) out vec4 OutputColor1;
+void main()
+{
+    vec2 sv2 = vec2(gl_FragCoord.x/u_viewParam.z,gl_FragCoord.y/u_viewParam.w);
+    vec4 middColor4 = texture(u_sampler0, sv2);
+    middColor4.w *= u_frustumParam.y;
     float radius = u_sphParam[1].w;
     sv2 = 2.0 * (sv2 - 0.5);
     vec3 nearPV = vec3(sv2 * u_frustumParam.zw,-u_frustumParam.x);
@@ -67,45 +54,55 @@ class FogMeshGeomFactorShaderBuffer extends ShaderCodeBuffer {
         k = dot(outV,ltv);
         // calc nearest shpere center point on the ray line.
         outV = k * ltv + lpv;
-
+        //
         vec3 bv = ltv * sqrt(radius * radius - dis * dis);
         //float farDis = min(u_frustumParam.y,length(outV + bv));
         lpv = outV + bv;
         float farDis = length(lpv);
         float nearDis = max(length(outV - bv),length(nearPV));
-
+        //
         dis = max(farDis - nearDis, 0.0);
         k = clamp(dis/(radius * 2.0),0.0,1.0);
-        color.w = max(min(color.w,farDis) - nearDis, 0.0);
-        //k = pow(k,3.0) * clamp( color.w / (dis + 1.0), 0.0, 1.0 );
-        k = clamp(dis / u_sphParam[0].w, 0.0,1.0) * pow(k,3.0) * clamp( color.w / (dis + 1.0), 0.0, 1.0 );
-        //k = pow(k,2.0) * clamp( color.w / (dis + 1.0), 0.0, 1.0 );
+        middColor4.w = max(min(middColor4.w,farDis) - nearDis, 0.0);
+        //k = pow(k,3.0) * clamp( middColor4.w / (dis + 1.0), 0.0, 1.0 );
+        k = clamp(dis / u_sphParam[0].w, 0.0,1.0) * pow(k,3.0) * clamp( middColor4.w / (dis + 1.0), 0.0, 1.0 );
         vec2 flowOffsetV = sphCV.xy * 0.0002;
-        //      flowOffsetV = flowOffsetV.xx;
-        // flowOffsetV param make the fog flowing effect
-        // vec4 noise = VOX_Texture2D(MAP_1, flowOffsetV + u_sphParam[2].w * (0.5 + (lpv.xy - sphCV.xy)/radius));
-        vec4 noise = VOX_Texture2D(MAP_1, u_sphParam[2].w * (0.5 + (lpv.xy - sphCV.xy)/radius));
+        //flowOffsetV = flowOffsetV.xx;
+        vec4 noise = texture(u_sampler1, flowOffsetV + u_sphParam[2].w * (0.5 + (lpv.xy - sphCV.xy)/radius));
         k *= u_sphParam[4].w * noise.x;
-        FragColor0 = vec4(u_sphParam[0].xyz, k);
-        FragColor1 = vec4(u_sphParam[2].xyz, k);
+        OutputColor0 = vec4(u_sphParam[0].xyz, k);
+        OutputColor1 = vec4(u_sphParam[2].xyz, k);
     }else{
-        FragColor0 = vec4(1.0,1.0,1.0, 0.0);
-        FragColor1 = FragColor0;
+        OutputColor0 = vec4(1.0,1.0,1.0, 0.0);
+        OutputColor1 = vec4(1.0,1.0,1.0, 0.0);
     }
-        `
-        );
-
+}
+`;
+        return fragCode;
+    }
+    getVertShaderCode(): string {
+        let vtxCode =
+`#version 300 es
+precision mediump float;
+layout(location = 0) in vec3 a_vs;
+uniform mat4 u_objMat;
+void main()
+{
+gl_Position = u_objMat * vec4(a_vs,1.0);
+}
+`;
+        return vtxCode;
     }
     getUniqueShaderName(): string {
         return this.m_uniqueName;
     }
 
-    static GetInstance(): FogMeshGeomFactorShaderBuffer {
-        return FogMeshGeomFactorShaderBuffer.s_instance;
+    static GetInstance(): FogPlaneGeomFactorShaderBuffer {
+        return FogPlaneGeomFactorShaderBuffer.s_instance;
     }
 }
 
-export class FogMeshGeomFactorMaterial extends MaterialBase {
+export class FogPlaneGeomFactorMaterial extends MaterialBase {
     constructor() {
         super();
         this.m_sphParam[11] = 0.1 + Math.random() * 0.1 * 0.5;
@@ -159,7 +156,7 @@ export class FogMeshGeomFactorMaterial extends MaterialBase {
         this.m_sphParam[19] = d;
     }
     getCodeBuf(): ShaderCodeBuffer {
-        return FogMeshGeomFactorShaderBuffer.GetInstance();
+        return FogPlaneGeomFactorShaderBuffer.GetInstance();
     }
     private m_sphParam: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1000.0, 0.0, 0.0, 0.0, 2500, 1.0, 1.0, 1.0, 0.2, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]);
 

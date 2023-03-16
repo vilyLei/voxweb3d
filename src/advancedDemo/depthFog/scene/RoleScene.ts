@@ -15,6 +15,7 @@ import { PBRParam, PBRMateralBuilder } from "../../../demo/material/PBRMateralBu
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
 export class RoleScene {
+
 	private m_pbr = new PBRMateralBuilder();
 	private m_entityRSCIndex = 0;
 	private m_entityBGIndex = 2;
@@ -207,7 +208,5 @@ export class RoleScene {
             //*/
 		}
 	}
-	run(): void {
-
-	}
+	run(): void {}
 }

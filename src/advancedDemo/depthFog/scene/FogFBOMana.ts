@@ -14,13 +14,14 @@ export class FogFBOMana {
 	constructor() {}
 
 	private m_rc: RendererScene = null;
+	private m_rct: IRendererInstanceContext = null;
 	private m_texLoader: ImageTextureLoader;
-	private m_texs: IRTTTexture[] = [null, null, null, null, null, null];
 	getImageTexByUrl(pns: string): TextureProxy {
 		let tex: TextureProxy = this.m_texLoader.getImageTexByUrl("static/voxgl/assets/" + pns);
 		tex.mipmapEnabled = true;
 		return tex;
 	}
+	private m_texs: IRTTTexture[] = [null, null, null, null, null, null];
 	public getTextureAt(index: number, float: boolean = false): IRTTTexture {
 		if (this.m_texs[index] != null) {
 			return this.m_texs[index];
@@ -36,6 +37,11 @@ export class FogFBOMana {
 			}else {
 				tex.dataType = TextureDataType.HALF_FLOAT;
 			}
+            // tex.internalFormat = TextureFormat.RGBA16F;
+            // tex.srcFormat = TextureFormat.RGBA;
+            // tex.dataType = TextureDataType.HALF_FLOAT_OES;
+            // tex.minFilter = TextureConst.NEAREST;
+            // tex.magFilter = TextureConst.NEAREST;
 		} else {
 			tex.internalFormat = TextureFormat.RGBA;
 			tex.srcFormat = TextureFormat.RGBA;
@@ -84,6 +90,7 @@ export class FogFBOMana {
 		//console.log("FogFBOMana::initialize()......");
 		if (this.m_rc == null) {
 			this.m_rc = rc;
+			this.m_rct = this.m_rc.getRendererContext();
 		}
 	}
 }
