@@ -16,8 +16,6 @@ import RaySelectedNode from '../../vox/scene/RaySelectedNode';
 
 import { RenderBlendMode, DepthTestMode } from "../../vox/render/RenderConst";
 import RendererState from "../../vox/render/RendererState";
-import IRenderProxy from "../../vox/render/IRenderProxy";
-import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import IRenderer from "../../vox/scene/IRenderer";
 import Color4 from "../../vox/material/Color4";
 import PixelPickIndexMaterial from "../../vox/material/mcase/PixelPickIndexMaterial";
@@ -27,7 +25,7 @@ import IRenderingEntitySet from "./IRenderingEntitySet";
 
 class QueryUnit {
     ets: IRenderEntity[] = null;
-    total: number = 0;
+    total = 0;
     constructor() { }
     query(ets: IRenderEntity[], total: number): void {
         this.ets = ets;
@@ -35,17 +33,17 @@ class QueryUnit {
     }
 }
 export default class RayGpuSelector implements IRaySelector {
-    private m_initColor: Color4 = new Color4();
-    private m_indexMaterial: PixelPickIndexMaterial = new PixelPickIndexMaterial();
+    private m_initColor = new Color4();
+    private m_indexMaterial = new PixelPickIndexMaterial();
     private m_renderer: IRenderer = null;
     private m_camera: IRenderCamera = null;
     private m_rsn: RaySelectedNode = null;
     // 最多检测256个对象
-    private m_hitList: Uint8Array = new Uint8Array(256);
+    private m_hitList = new Uint8Array(256);
     private m_rsnList: RaySelectedNode[] = new Array(256);
     private m_selectedNode: RaySelectedNode = null;
-    private m_selectedTotal: number = 0;
-    private m_testMode: number = 0;
+    private m_selectedTotal = 0;
+    private m_testMode = 0;
     private m_invpv = new Vector3D();
     private m_invtv = new Vector3D();
     private m_rlpv: Vector3D = null;
@@ -117,12 +115,12 @@ export default class RayGpuSelector implements IRaySelector {
     }
     run(): void {
         if (this.etset.getTotal() > 0) {
-            let dis: number = 0.0;
-            let rtv: Vector3D = this.m_rltv;
-            let rpv: Vector3D = this.m_rlpv;
-            let outv: Vector3D = this.m_outv;
+            let dis = 0.0;
+            let rtv = this.m_rltv;
+            let rpv = this.m_rlpv;
+            let outv = this.m_outv;
             let node: RaySelectedNode = null;
-            let total: number = 0;
+            let total = 0;
             let minv = MathConst.MATH_MIN_POSITIVE;
             let maxv = MathConst.MATH_MAX_POSITIVE;
             if (Math.abs(rtv.x) > minv) {
@@ -182,19 +180,19 @@ export default class RayGpuSelector implements IRaySelector {
                 }
             }
             this.m_selectedNode = null;
-            let i: number = 0;
+            let i = 0;
             if (total > 0) {
-                let invpv: Vector3D = this.m_invpv;
-                let invtv: Vector3D = this.m_invtv;
+                let invpv = this.m_invpv;
+                let invtv = this.m_invtv;
                 let entity: IRenderEntity = null;
-                let flag: number = 0;
-                let hitTotal: number = 0;
+                let flag = 0;
+                let hitTotal = 0;
                 let mat4: IMatrix4 = null;
                 let rayNode: RaySelectedNode = null;
-                let pvdis: number = rtv.dot(rpv);
-                let preDis: number = 0.0;
-                let polyTest: boolean = !this.m_gpuTestEnabled;
-                let polyTotal: number = 0;
+                let pvdis = rtv.dot(rpv);
+                let preDis = 0.0;
+                let polyTest = !this.m_gpuTestEnabled;
+                let polyTotal = 0;
                 if (total > 1) {
                     this.snsort(0, total - 1);
 
@@ -306,14 +304,14 @@ export default class RayGpuSelector implements IRaySelector {
 
         }
     }
-    private m_uintArray: Uint8Array = new Uint8Array(4);
-    private m_uintList: Uint8Array = new Uint8Array(256);
+    private m_uintArray = new Uint8Array(4);
+    private m_uintList = new Uint8Array(256);
     private gpuPick(total: number): void {
-        let rcontext: IRendererInstanceContext = this.m_renderer.getRendererContext();
-        let proxy: IRenderProxy = this.m_renderer.getRenderProxy();
-        let pmx: number = proxy.getStage3D().mouseX;
+        let rcontext = this.m_renderer.getRendererContext();
+        let proxy = this.m_renderer.getRenderProxy();
+        let pmx = proxy.getStage3D().mouseX;
         //let pmy:number = proxy.getStage3D().stageHeight - proxy.getStage3D().mouseY;
-        let pmy: number = proxy.getStage3D().mouseY;
+        let pmy = proxy.getStage3D().mouseY;
         rcontext.vertexRenderBegin();
         rcontext.getClearRGBAColor4f(this.m_initColor);
         rcontext.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);
@@ -330,8 +328,8 @@ export default class RayGpuSelector implements IRaySelector {
 
         let rayNode: RaySelectedNode = null;
         let entity: IRenderEntity = null;
-        let j: number = -1;
-        let i: number = 0;
+        let j = -1;
+        let i = 0;
 
         for (; i < total; ++i) {
             rayNode = this.m_rsnList[i];
@@ -393,8 +391,9 @@ export default class RayGpuSelector implements IRaySelector {
 
     // @param           the cameraDistance is the distance between camera position and a position
     private getWorldPosByRayDistance(cameraDistance: number, tv: Vector3D, camPv: Vector3D, resultV: Vector3D): void {
-        resultV.x = tv.x * cameraDistance + camPv.x;
-        resultV.y = tv.y * cameraDistance + camPv.y;
-        resultV.z = tv.z * cameraDistance + camPv.z;
+        resultV.copyFrom(tv).scaleBy(cameraDistance).addBy(camPv);
+        // resultV.x = tv.x * cameraDistance + camPv.x;
+        // resultV.y = tv.y * cameraDistance + camPv.y;
+        // resultV.z = tv.z * cameraDistance + camPv.z;
     }
 }
