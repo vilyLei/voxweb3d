@@ -117,9 +117,9 @@ export class SceneFogFlow {
             // this.factorFBO = this.fboMana.createFactorFBO([this.m_factorPlaneIndex]);
             this.factorFBO = this.fboMana.createFactorFBO(null);
 
-			this.m_rc.setProcessEnabledAt(this.m_entityRSCIndex, false);
-			this.m_rc.setProcessEnabledAt(this.m_entityBGIndex, false);
-			this.m_rc.setProcessEnabledAt(this.m_parIndex, false);
+			// this.m_rc.setProcessEnabledAt(this.m_entityRSCIndex, false);
+			// this.m_rc.setProcessEnabledAt(this.m_entityBGIndex, false);
+			// this.m_rc.setProcessEnabledAt(this.m_parIndex, false);
 			// this.m_rc.setProcessEnabledAt(this.m_factorPlaneIndex, false);
 
             this.fogShow2M = new FogSphShow2Material();
