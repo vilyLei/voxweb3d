@@ -60,13 +60,13 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
             this.m_ruisc.setAccessor(accessor);
         }
     }
-    
+
     setViewPort(px: number, py: number, pw: number, ph: number): void {
     }
     setViewPortFromCamera(camera: IRenderCamera): void {
     }
 	// apply new view port rectangle area
-	reseizeViewPort(): void {        
+	reseizeViewPort(): void {
     }
     initialize(rparam: IRendererParam, renderProcessesTotal?: number, createNewCamera?: boolean): IRendererScene {
         throw Error("illegal operation!!!");
@@ -142,7 +142,7 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
     update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
         this.m_ruisc.update(autoCycle, mouseEventEnabled);
     }
-    
+
     prependRenderNode(node: IRenderNode): void {
 
     }
@@ -162,7 +162,7 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
         this.m_ruisc.runAt(index);
     }
     render(): void {
-        
+
     }
     /**
      * add an entity to the renderer process of the renderer instance
@@ -284,9 +284,10 @@ class OrthoUIScene implements IRendererScene, IRenderNode {
     createVector3(x: number = 0.0, y: number = 0.0, z: number = 0.0, w: number = 1.0): IVector3D {
         return this.m_rscene.createVector3(x, y, z, w);
     }
-    
+    setProcessEnabledAt(i: number, enabled: boolean): void {
+	}
     destroy(): void {
-    }    
+    }
     setAutoRunning(auto: boolean): OrthoUIScene {
         return this;
     }

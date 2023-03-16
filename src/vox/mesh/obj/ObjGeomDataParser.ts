@@ -41,6 +41,7 @@ export default class ObjGeomDataParser implements IObjGeomDataParser {
 
             let objParser = new ObjDataParser();
             let objMeshes = objParser.Parse(objDataStr);
+			console.log("objMeshes: ", objMeshes);
             let objMeshesTotal: number = objMeshes.length;
             let vsTotalLen: number = 0;
             for (let i: number = 0; i < objMeshesTotal; ++i) {

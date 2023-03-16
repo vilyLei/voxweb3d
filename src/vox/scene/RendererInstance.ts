@@ -57,7 +57,7 @@ export class RendererInstance implements IRendererInstance {
     private m_roVtxBuilder: ROVtxBuilder = null;
     private m_stage3D: IRenderStage3D = null;
     private m_fixProcess: RenderProcess = null;
-    
+
 	readonly textureBlock: ITextureBlock = null;
     constructor() {
         this.m_uid = RendererInstance.s_uid++;
@@ -340,6 +340,11 @@ export class RendererInstance implements IRendererInstance {
             this.m_processes[index].setRenderParam(batchEnabled, processFixedState);
         }
     }
+	setProcessEnabledAt(i: number, enabled: boolean): void {
+		if (i > -1 && i < this.m_processesLen) {
+            this.m_processes[i].setEnabled(enabled);
+        }
+	}
     getProcessAt(index: number): IRenderProcess {
         if (index > -1 && index < this.m_processesLen) {
             return this.m_processes[index];

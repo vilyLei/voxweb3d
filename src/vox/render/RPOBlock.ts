@@ -9,7 +9,6 @@
 
 import RendererDevice from "../../vox/render/RendererDevice";
 import IRODisplay from "../../vox/display/IRODisplay";
-import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
 import RPOUnit from "../../vox/render/RPOUnit";
 import RPONode from "../../vox/render/RPONode";
 import { RPOUnitBuilder } from "../../vox/render/RPOUnitBuilder";
@@ -86,6 +85,7 @@ export default class RPOBlock {
             this.m_shader.resetUniform();
             let unit: RPOUnit = null;
             this.m_shdUpdate = false;
+
             const proc = this.m_passProc;
             proc.shader = this.m_shader;
             while (nextNode) {
@@ -125,6 +125,7 @@ export default class RPOBlock {
 
             const proc = this.m_passProc;
             proc.shader = this.m_shader;
+
             let linker = this.m_nodeLinker;
             let unit: RPOUnit = null;
             let vtxTotal = linker.getVtxTotalAt(nextNode.rvroI);
@@ -144,7 +145,7 @@ export default class RPOBlock {
                     texFlag = true;
                 }
                 texTotal--;
-                
+
                 // if(DebugFlag.Flag_0 > 0) console.log("nextNode.drawEnabled: ",nextNode.drawEnabled);
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
@@ -345,7 +346,7 @@ export default class RPOBlock {
                 }
             }
         }
-        
+
         this.index = -1;
         this.shdUid = -1;
         this.procuid = -1;

@@ -69,6 +69,7 @@ export default class RendererSceneBase {
 	protected m_rcontext: IRendererInstanceContext = null;
 	protected m_renderer: IRendererInstance = null;
 	protected m_processids = new Uint8Array(128);
+	protected m_penableds = new Array(128);
 	protected m_processidsLen = 0;
 	protected m_rspace: IRendererSpace = null;
 	protected m_mouse_rltv = new Vector3D();
@@ -115,6 +116,7 @@ export default class RendererSceneBase {
 
 	constructor(uidBase: number = 0) {
 		this.m_uid = uidBase + RendererSceneBase.s_uid++;
+		this.m_penableds.fill(true);
 	}
 	createRendererParam(): IRendererParam {
 		return new RendererParam();
@@ -492,6 +494,7 @@ export default class RendererSceneBase {
 			if (re != null && re.__$testSpaceEnabled()) {
 				if (re.isPolyhedral()) {
 					if (re.hasMesh()) {
+						// console.log("add entity into the renderer scene.");
 						re.getTransform().setUpdater(this.m_transUpdater);
 						this.m_renderer.addEntity(re, this.m_processids[processid], deferred);
 						if (this.m_rspace != null) {
@@ -631,7 +634,7 @@ export default class RendererSceneBase {
 		this.m_shader.renderBegin();
 		if (contextBeginEnabled) {
 			// if(this.m_clearColorFlag) {
-			//     ry.setClearColor(this.m_clearColor);  
+			//     ry.setClearColor(this.m_clearColor);
 			// }
 			this.m_rcontext.renderBegin(this.m_currCamera == null);
 		}
@@ -870,14 +873,19 @@ export default class RendererSceneBase {
 			}
 		}
 	}
-
+	setProcessEnabledAt(i: number, enabled: boolean): void {
+		if(i >= 0 && i < this.m_processids.length) {
+			this.m_renderer.setProcessEnabledAt(this.m_processids[i], enabled);
+			this.m_penableds[i] = enabled;
+		}
+	}
 	/**
 	 * run all renderer processes in the renderer instance
 	 * @param autoCycle the default value is true
 	 */
 	run(autoCycle: boolean = true): void {
 		if (this.m_enabled) {
-			
+
 			let runFlag = autoCycle;
 			if (autoCycle && this.m_autoRunEnabled) {
 				if (this.m_runFlag != 1){
@@ -890,12 +898,14 @@ export default class RendererSceneBase {
 				this.runnableQueue.run();
 			}
 			this.runRenderNodes(this.m_prependNodes);
-			
+
 			if(this.m_adapter.isFBORunning()) {
 				this.setRenderToBackBuffer();
 			}
 			for (let i = 0; i < this.m_processidsLen; ++i) {
-				this.m_renderer.runAt(this.m_processids[i]);
+				if(this.m_penableds[i]) {
+					this.m_renderer.runAt(this.m_processids[i]);
+				}
 			}
 			this.runRenderNodes(this.m_appendNodes);
 			if (autoCycle) {

@@ -14,6 +14,7 @@ import AABB from "../../vox/geom/AABB";
 import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
 import {IRenderCamera} from "../../vox/render/IRenderCamera";
 
+const pmin = MathConst.MATH_MIN_POSITIVE;
 class CameraBase implements IRenderCamera {
 
     constructor() {
@@ -24,13 +25,13 @@ class CameraBase implements IRenderCamera {
     ucameraPosProbe: IShaderUniformProbe;
     uniformEnabled: boolean = false;
     name = "Camera";
-    //
+
     private m_tempV: Vector3D = new Vector3D()
     private m_tempV1: Vector3D = new Vector3D();
     private m_initRV: Vector3D = new Vector3D();
     private m_initUP: Vector3D = new Vector3D();
     private m_lookRHEnabled: boolean = true;
-    //
+
     private m_matrix: Matrix4 = new Matrix4();
     private m_viewMat: Matrix4 = new Matrix4();
     private m_viewInvertMat: Matrix4 = new Matrix4();
@@ -42,10 +43,10 @@ class CameraBase implements IRenderCamera {
     private m_up: Vector3D = new Vector3D();
     private m_lookDirectNV: Vector3D = new Vector3D();
     private m_lookAtDirec: Vector3D = new Vector3D();
-    //
+
     private m_nearPlaneWidth: number = 1.0;
     private m_nearPlaneHeight: number = 1.0;
-    //
+
     private m_viewX: number = 0.0;
     private m_viewY: number = 0.0;
     private m_viewW: number = 800.0
@@ -64,7 +65,7 @@ class CameraBase implements IRenderCamera {
     private m_project2Enabled: boolean = false;
     private m_rightHandEnabled: boolean = true;
     private m_rotV: Vector3D = new Vector3D(0.0,0.0,0.0);
-    
+
     private m_viewFieldZoom: number = 1.0;
     private m_changed: boolean = true;
     private m_unlock: boolean = true;
@@ -81,9 +82,10 @@ class CameraBase implements IRenderCamera {
             this.m_camPos.copyFrom(camPos);
             this.m_lookAtPos.copyFrom(lookAtPos);
             this.m_up.copyFrom(up);
-            this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-            this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-            this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+            // this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+            // this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+            // this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+			this.m_lookAtDirec.subVecsTo(this.m_lookAtPos, this.m_camPos);
             this.m_lookRHEnabled = false;
             this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
             this.m_lookDirectNV.normalize();
@@ -98,9 +100,10 @@ class CameraBase implements IRenderCamera {
         if (this.m_unlock) {
             this.m_camPos.copyFrom(camPos);
             this.m_lookAtPos.copyFrom(lookAtPos);
-            this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-            this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-            this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+            // this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+            // this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+            // this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+			this.m_lookAtDirec.subVecsTo(this.m_lookAtPos, this.m_camPos);
             this.m_lookRHEnabled = true;
             this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
             this.m_lookDirectNV.normalize();
@@ -112,7 +115,7 @@ class CameraBase implements IRenderCamera {
             this.m_changed = true;
         }
     }
-    
+
     getLookAtLHToCamera(camera: CameraBase): void {
         camera.lookAtLH(this.m_camPos, this.m_lookAtPos, this.m_up);
     }
@@ -250,16 +253,17 @@ class CameraBase implements IRenderCamera {
     translation(v3: Vector3D): void {
         if (this.m_unlock) {
             this.m_camPos.copyFrom(v3);
-            this.m_lookAtPos.x = v3.x + this.m_lookAtDirec.x;
-            this.m_lookAtPos.y = v3.y + this.m_lookAtDirec.y;
-            this.m_lookAtPos.z = v3.z + this.m_lookAtDirec.z;
+            // this.m_lookAtPos.x = v3.x + this.m_lookAtDirec.x;
+            // this.m_lookAtPos.y = v3.y + this.m_lookAtDirec.y;
+            // this.m_lookAtPos.z = v3.z + this.m_lookAtDirec.z;
+			this.m_lookAtPos.addVecsTo(v3, this.m_lookAtDirec);
             this.m_changed = true;
         }
     }
     translationXYZ(px: number, py: number, pz: number): void {
         this.m_tempV.setXYZ(px,py,pz);
         if (this.m_unlock && Vector3D.DistanceSquared(this.m_camPos, this.m_tempV) > 0.00001) {
-            
+
             this.m_camPos.setTo(px, py, pz);
             this.m_lookAtPos.x = px + this.m_lookAtDirec.x;
             this.m_lookAtPos.y = py + this.m_lookAtDirec.y;
@@ -272,9 +276,10 @@ class CameraBase implements IRenderCamera {
             this.m_camPos.x += this.m_lookDirectNV.x * dis;
             this.m_camPos.y += this.m_lookDirectNV.y * dis;
             this.m_camPos.z += this.m_lookDirectNV.z * dis;
-            this.m_lookAtPos.x = this.m_camPos.x + this.m_lookAtDirec.x;
-            this.m_lookAtPos.y = this.m_camPos.y + this.m_lookAtDirec.y;
-            this.m_lookAtPos.z = this.m_camPos.z + this.m_lookAtDirec.z;
+            // this.m_lookAtPos.x = this.m_camPos.x + this.m_lookAtDirec.x;
+            // this.m_lookAtPos.y = this.m_camPos.y + this.m_lookAtDirec.y;
+            // this.m_lookAtPos.z = this.m_camPos.z + this.m_lookAtDirec.z;
+			this.m_lookAtPos.addVecsTo(this.m_camPos, this.m_lookAtDirec);
             this.m_changed = true;
         }
     }
@@ -300,19 +305,21 @@ class CameraBase implements IRenderCamera {
             this.m_lookAtPos.x += dx;
             this.m_lookAtPos.y += dy;
             this.m_lookAtPos.z += dz;
-            
+
             this.m_changed = true;
         }
     }
 
     forwardFixPos(dis: number, pos: Vector3D): void {
         if (this.m_unlock) {
-            this.m_camPos.x = pos.x + this.m_lookDirectNV.x * dis;
-            this.m_camPos.y = pos.y + this.m_lookDirectNV.y * dis;
-            this.m_camPos.z = pos.z + this.m_lookDirectNV.z * dis;
-            this.m_lookAtPos.x = this.m_camPos.x + this.m_lookAtDirec.x;
-            this.m_lookAtPos.y = this.m_camPos.y + this.m_lookAtDirec.y;
-            this.m_lookAtPos.z = this.m_camPos.z + this.m_lookAtDirec.z;
+			this.m_camPos.copyFrom(this.m_lookDirectNV).scaleBy(dis).addBy(pos);
+            // this.m_camPos.x = pos.x + this.m_lookDirectNV.x * dis;
+            // this.m_camPos.y = pos.y + this.m_lookDirectNV.y * dis;
+            // this.m_camPos.z = pos.z + this.m_lookDirectNV.z * dis;
+            // this.m_lookAtPos.x = this.m_camPos.x + this.m_lookAtDirec.x;
+            // this.m_lookAtPos.y = this.m_camPos.y + this.m_lookAtDirec.y;
+            // this.m_lookAtPos.z = this.m_camPos.z + this.m_lookAtDirec.z;
+			this.m_lookAtPos.addVecsTo(this.m_camPos, this.m_lookAtDirec);
             this.m_changed = true;
         }
     }
@@ -326,16 +333,20 @@ class CameraBase implements IRenderCamera {
             else {
                 this.m_tempMat.appendRotation(rad * MathConst.MATH_PI_OVER_180, Vector3D.Y_AXIS);
             }
-            this.m_lookAtDirec.x = this.m_camPos.x - this.m_lookAtPos.x;
-            this.m_lookAtDirec.y = this.m_camPos.y - this.m_lookAtPos.y;
-            this.m_lookAtDirec.z = this.m_camPos.z - this.m_lookAtPos.z;
+            // this.m_lookAtDirec.x = this.m_camPos.x - this.m_lookAtPos.x;
+            // this.m_lookAtDirec.y = this.m_camPos.y - this.m_lookAtPos.y;
+            // this.m_lookAtDirec.z = this.m_camPos.z - this.m_lookAtPos.z;
+			this.m_lookAtDirec.subVecsTo(this.m_camPos, this.m_lookAtPos);
+
             this.m_tempMat.transformVectorSelf(this.m_lookAtDirec);
-            this.m_camPos.x = this.m_lookAtDirec.x + this.m_lookAtPos.x;
-            this.m_camPos.y = this.m_lookAtDirec.y + this.m_lookAtPos.y;
-            this.m_camPos.z = this.m_lookAtDirec.z + this.m_lookAtPos.z;
-            this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-            this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-            this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+            // this.m_camPos.x = this.m_lookAtDirec.x + this.m_lookAtPos.x;
+            // this.m_camPos.y = this.m_lookAtDirec.y + this.m_lookAtPos.y;
+            // this.m_camPos.z = this.m_lookAtDirec.z + this.m_lookAtPos.z;
+			this.m_camPos.addVecsTo(this.m_lookAtDirec, this.m_lookAtPos);
+            // this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+            // this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+            // this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+			this.m_lookAtDirec.subVecsTo(this.m_lookAtPos, this.m_camPos);
             this.m_lookRHEnabled = true;
             this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
             this.m_lookDirectNV.normalize();
@@ -352,20 +363,24 @@ class CameraBase implements IRenderCamera {
         if (this.m_unlock) {
             this.m_tempMat.identity();
             this.m_tempMat.appendRotation(degree * MathConst.MATH_PI_OVER_180, this.m_up);
-            this.m_lookAtDirec.x = this.m_camPos.x - this.m_lookAtPos.x;
-            this.m_lookAtDirec.y = this.m_camPos.y - this.m_lookAtPos.y;
-            this.m_lookAtDirec.z = this.m_camPos.z - this.m_lookAtPos.z;
+            // this.m_lookAtDirec.x = this.m_camPos.x - this.m_lookAtPos.x;
+            // this.m_lookAtDirec.y = this.m_camPos.y - this.m_lookAtPos.y;
+            // this.m_lookAtDirec.z = this.m_camPos.z - this.m_lookAtPos.z;
+			this.m_lookAtDirec.subVecsTo(this.m_camPos, this.m_lookAtPos);
+
             this.m_tempMat.transformVectorSelf(this.m_lookAtDirec);
-            this.m_camPos.x = this.m_lookAtDirec.x + this.m_lookAtPos.x;
-            this.m_camPos.y = this.m_lookAtDirec.y + this.m_lookAtPos.y;
-            this.m_camPos.z = this.m_lookAtDirec.z + this.m_lookAtPos.z;
-            this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-            this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-            this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+            // this.m_camPos.x = this.m_lookAtDirec.x + this.m_lookAtPos.x;
+            // this.m_camPos.y = this.m_lookAtDirec.y + this.m_lookAtPos.y;
+            // this.m_camPos.z = this.m_lookAtDirec.z + this.m_lookAtPos.z;
+			this.m_camPos.addVecsTo(this.m_lookAtDirec, this.m_lookAtPos);
+            // this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+            // this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+            // this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+			this.m_lookAtDirec.subVecsTo(this.m_lookAtPos, this.m_camPos);
             this.m_lookRHEnabled = true;
             this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
             this.m_lookDirectNV.normalize();
-            //
+
             Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
             this.m_initRV.normalize();
             this.m_changed = true;
@@ -375,20 +390,26 @@ class CameraBase implements IRenderCamera {
         if (this.m_unlock) {
             this.m_tempMat.identity();
             this.m_tempMat.appendRotation(degree * MathConst.MATH_PI_OVER_180, this.m_initRV);
-            this.m_lookAtDirec.x = this.m_camPos.x - this.m_lookAtPos.x;
-            this.m_lookAtDirec.y = this.m_camPos.y - this.m_lookAtPos.y;
-            this.m_lookAtDirec.z = this.m_camPos.z - this.m_lookAtPos.z;
+            // this.m_lookAtDirec.x = this.m_camPos.x - this.m_lookAtPos.x;
+            // this.m_lookAtDirec.y = this.m_camPos.y - this.m_lookAtPos.y;
+            // this.m_lookAtDirec.z = this.m_camPos.z - this.m_lookAtPos.z;
+			this.m_lookAtDirec.subVecsTo(this.m_camPos, this.m_lookAtPos);
+
             this.m_tempMat.transformVectorSelf(this.m_lookAtDirec);
-            this.m_camPos.x = this.m_lookAtDirec.x + this.m_lookAtPos.x;
-            this.m_camPos.y = this.m_lookAtDirec.y + this.m_lookAtPos.y;
-            this.m_camPos.z = this.m_lookAtDirec.z + this.m_lookAtPos.z;
-            this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-            this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-            this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+            // this.m_camPos.x = this.m_lookAtDirec.x + this.m_lookAtPos.x;
+            // this.m_camPos.y = this.m_lookAtDirec.y + this.m_lookAtPos.y;
+            // this.m_camPos.z = this.m_lookAtDirec.z + this.m_lookAtPos.z;
+			this.m_camPos.addVecsTo(this.m_lookAtDirec, this.m_lookAtPos);
+
+            // this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+            // this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+            // this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+			this.m_lookAtDirec.subVecsTo(this.m_lookAtPos, this.m_camPos);
+
             this.m_lookRHEnabled = true;
             this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
             this.m_lookDirectNV.normalize();
-            //
+
             Vector3D.Cross(this.m_initRV, this.m_lookAtDirec, this.m_up);
             this.m_up.normalize();
             this.m_initUP.copyFrom(this.m_up);
@@ -398,18 +419,19 @@ class CameraBase implements IRenderCamera {
     setPosition(v3: Vector3D): void {
         if (this.m_unlock) {
             Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_tempV);
-            let dot: number = this.m_tempV.dot(this.m_initUP);
+            let dot = this.m_tempV.dot(this.m_initUP);
             this.m_tempV1.copyFrom(this.m_initUP);
             this.m_tempV1.scaleBy(dot);
             this.m_tempV.subtractBy(this.m_tempV1);
-            //m_tempV.y = 0;
+
             this.m_camPos.copyFrom(v3);
-            this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-            this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-            this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+            // this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+            // this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+            // this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+			this.m_lookAtDirec.subVecsTo(this.m_lookAtPos, this.m_camPos);
             this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
             this.m_lookDirectNV.normalize();
-            //
+
             Vector3D.Cross(this.m_tempV, this.m_lookAtDirec, this.m_up);
             this.m_up.normalize();
             this.m_changed = true;
@@ -418,17 +440,18 @@ class CameraBase implements IRenderCamera {
     setPositionXYZ(px: number, py: number, pz: number): void {
         if (this.m_unlock) {
             Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_tempV);
-            var dot: number = this.m_tempV.dot(this.m_initUP);
+            var dot = this.m_tempV.dot(this.m_initUP);
             this.m_tempV1.copyFrom(this.m_initUP);
             this.m_tempV1.scaleBy(dot);
             this.m_tempV.subtractBy(this.m_tempV1);
             this.m_camPos.setTo(px, py, pz);
-            this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-            this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-            this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+            // this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+            // this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+            // this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+			this.m_lookAtDirec.subVecsTo(this.m_lookAtPos, this.m_camPos);
             this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
             this.m_lookDirectNV.normalize();
-            //
+
             Vector3D.Cross(this.m_tempV, this.m_lookAtDirec, this.m_up);
             this.m_up.normalize();
             this.m_changed = true;
@@ -437,13 +460,14 @@ class CameraBase implements IRenderCamera {
     setLookPosXYZFixUp(px: number, py: number, pz: number): void {
         if (this.m_unlock) {
             this.m_lookAtPos.setTo(px, py, pz);
-            this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-            this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-            this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+            // this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+            // this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+            // this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+			this.m_lookAtDirec.subVecsTo(this.m_lookAtPos, this.m_camPos);
             this.m_lookRHEnabled = true;
             this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
             this.m_lookDirectNV.normalize();
-            //
+
             Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
             this.m_initRV.normalize();
             this.m_changed = true;
@@ -452,13 +476,14 @@ class CameraBase implements IRenderCamera {
     setPositionXYZFixUp(px: number, py: number, pz: number): void {
         if (this.m_unlock) {
             this.m_camPos.setTo(px, py, pz);
-            this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-            this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-            this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+            // this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+            // this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+            // this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+			this.m_lookAtDirec.subVecsTo(this.m_lookAtPos, this.m_camPos);
             this.m_lookRHEnabled = true;
             this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
             this.m_lookDirectNV.normalize();
-            //
+
             Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
             this.m_initRV.normalize();
             this.m_changed = true;
@@ -467,9 +492,10 @@ class CameraBase implements IRenderCamera {
     setPositionFixUp(v3: Vector3D): void {
         if (this.m_unlock) {
             this.m_camPos.copyFrom(v3);
-            this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-            this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-            this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+            // this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+            // this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+            // this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+			this.m_lookAtDirec.subVecsTo(this.m_lookAtPos, this.m_camPos);
             this.m_lookRHEnabled = true;
             this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
             this.m_lookDirectNV.normalize();
@@ -479,7 +505,7 @@ class CameraBase implements IRenderCamera {
         }
     }
     copyFrom(tarCam: CameraBase): void {
-        let pv: Vector3D = tarCam.getPosition();
+        let pv = tarCam.getPosition();
         this.m_camPos.copyFrom(pv);
         pv = tarCam.getLookAtPosition();
         this.m_lookAtPos.copyFrom(pv);
@@ -490,11 +516,11 @@ class CameraBase implements IRenderCamera {
         this.setPerspectiveEnabled(tarCam.getPerspectiveEnabled());
         this.m_viewInvertMat.copyFrom(tarCam.getViewInvMatrix());
     }
-    private m_tempNV: Vector3D = new Vector3D();
-    private m_tempUPV: Vector3D = new Vector3D();
-    private m_tempRV: Vector3D = new Vector3D();
-    private m_tempCamPos: Vector3D = new Vector3D();
-    private m_tempLookAtPos: Vector3D = new Vector3D();
+    private m_tempNV = new Vector3D();
+    private m_tempUPV = new Vector3D();
+    private m_tempRV = new Vector3D();
+    private m_tempCamPos = new Vector3D();
+    private m_tempLookAtPos = new Vector3D();
     // view space axis z
     getNV(): Vector3D { this.m_tempNV.copyFrom(this.m_lookDirectNV); return this.m_tempNV;}
     // view space axis y
@@ -506,9 +532,10 @@ class CameraBase implements IRenderCamera {
     setLookAtPosition(pv: Vector3D): void {
         if (this.m_unlock) {
             this.m_lookAtPos.copyFrom(pv);
-            this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-            this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-            this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+            // this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+            // this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+            // this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+			this.m_lookAtDirec.subVecsTo(this.m_lookAtPos, this.m_camPos);
             this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
             this.m_lookDirectNV.normalize();
             this.m_changed = true;
@@ -517,9 +544,10 @@ class CameraBase implements IRenderCamera {
     setLookAtXYZ(px: number, py: number, pz: number): void {
         if (this.m_unlock) {
             this.m_lookAtPos.setTo(px, py, pz);
-            this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-            this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-            this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+            // this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+            // this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+            // this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+			this.m_lookAtDirec.subVecsTo(this.m_lookAtPos, this.m_camPos);
             this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
             this.m_lookDirectNV.normalize();
             this.m_changed = true;
@@ -658,14 +686,14 @@ class CameraBase implements IRenderCamera {
         outV.z = outV.z - outV.x;
         outV.w = outV.w - outV.y;
     }
-    private m_frustumWAABB: AABB = new AABB();
+    private m_frustumWAABB = new AABB();
     private m_invViewMat: Matrix4 = null;
-    private m_nearPlaneHalfW: number = 0.5;
-    private m_nearPlaneHalfH: number = 0.5;
-    private m_nearWCV: Vector3D = new Vector3D();
-    private m_farWCV: Vector3D = new Vector3D();
-    private m_wNV: Vector3D = new Vector3D();
-    // 4 far point, 4 near point 
+    private m_nearPlaneHalfW = 0.5;
+    private m_nearPlaneHalfH = 0.5;
+    private m_nearWCV = new Vector3D();
+    private m_farWCV = new Vector3D();
+    private m_wNV = new Vector3D();
+    // 4 far point, 4 near point
     private m_wFrustumVtxArr: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), null, null, null];
     // world space front,back ->(view space -z,z), world space left,right ->(view space -x,x),world space top,bottm ->(view space y,-y)
     private m_wFruPlaneList: Plane[] = [new Plane(), new Plane(), new Plane(), new Plane(), new Plane(), new Plane()];
@@ -689,151 +717,163 @@ class CameraBase implements IRenderCamera {
         this.m_invViewMat.invert();
         //
         let plane: Plane = null;
-        let halfMinH: number = this.m_viewHalfH;
-        let halfMinW: number = this.m_viewHalfW;
-        let halfMaxH: number = this.m_viewHalfH;
-        let halfMaxW: number = this.m_viewHalfW;
+        let halfMinH = this.m_viewHalfH;
+        let halfMinW = this.m_viewHalfW;
+        let halfMaxH = this.m_viewHalfH;
+        let halfMaxW = this.m_viewHalfW;
         if(this.m_perspectiveEnabled) {
-            let tanv: number =  Math.tan(this.m_fovRadian * 0.5);
+            const tanv =  Math.tan(this.m_fovRadian * 0.5);
             halfMinH = this.m_zNear * tanv;
             halfMinW = halfMinH * this.m_aspect;
             halfMaxH = this.m_zFar * tanv;
             halfMaxW = halfMaxH * this.m_aspect;
         }
-        
+
+		const wfva = this.m_wFrustumVtxArr;
+		const wfpa = this.m_wFruPlaneList;
         //console.log("CameraBase::__calcTestParam(), (halfMinW, halfMinH): "+halfMinW+", "+halfMinH);
         this.m_nearPlaneHalfW = halfMinW;
         this.m_nearPlaneHalfH = halfMinH;
         // inner view space
-        this.m_nearWCV.setTo(0, 0, -this.m_zNear);
-        this.m_farWCV.setTo(0, 0, -this.m_zFar);
+        this.m_nearWCV.setXYZ(0, 0, -this.m_zNear);
+        this.m_farWCV.setXYZ(0, 0, -this.m_zFar);
         this.m_invViewMat.transformVectorSelf(this.m_nearWCV);
         this.m_invViewMat.transformVectorSelf(this.m_farWCV);
-        this.m_wNV.x = this.m_farWCV.x - this.m_nearWCV.x;
-        this.m_wNV.y = this.m_farWCV.y - this.m_nearWCV.y;
-        this.m_wNV.z = this.m_farWCV.z - this.m_nearWCV.z;
+        // this.m_wNV.x = this.m_farWCV.x - this.m_nearWCV.x;
+        // this.m_wNV.y = this.m_farWCV.y - this.m_nearWCV.y;
+        // this.m_wNV.z = this.m_farWCV.z - this.m_nearWCV.z;
+		this.m_wNV.addVecsTo(this.m_farWCV, this.m_nearWCV);
         this.m_wNV.normalize();
         // front face
-        plane = this.m_wFruPlaneList[0];
+        plane = wfpa[0];
         plane.nv.copyFrom(this.m_wNV);
         plane.distance = plane.nv.dot(this.m_farWCV);
         plane.position.copyFrom(this.m_farWCV);
         // back face
-        plane = this.m_wFruPlaneList[1];
-        plane.nv.copyFrom(this.m_wFruPlaneList[0].nv);
+        plane = wfpa[1];
+        plane.nv.copyFrom(wfpa[0].nv);
         plane.distance = plane.nv.dot(this.m_nearWCV);
         plane.position.copyFrom(this.m_nearWCV);
-        //
-        this.m_wFrustumVtxArr[8] = this.m_nearWCV;
-        this.m_wFrustumVtxArr[9] = this.m_farWCV;
-        this.m_wFrustumVtxArr[11] = this.m_wNV;
+
+        wfva[8] = this.m_nearWCV;
+        wfva[9] = this.m_farWCV;
+        wfva[11] = this.m_wNV;
         // far face
-        this.m_wFrustumVtxArr[0].setTo(-halfMaxW, -halfMaxH, -this.m_zFar);
-        this.m_wFrustumVtxArr[1].setTo(halfMaxW, -halfMaxH, -this.m_zFar);
-        this.m_wFrustumVtxArr[2].setTo(halfMaxW, halfMaxH, -this.m_zFar);
-        this.m_wFrustumVtxArr[3].setTo(-halfMaxW, halfMaxH, -this.m_zFar);
+        wfva[0].setXYZ(-halfMaxW, -halfMaxH, -this.m_zFar);
+        wfva[1].setXYZ(halfMaxW, -halfMaxH, -this.m_zFar);
+        wfva[2].setXYZ(halfMaxW, halfMaxH, -this.m_zFar);
+        wfva[3].setXYZ(-halfMaxW, halfMaxH, -this.m_zFar);
         // near face
-        this.m_wFrustumVtxArr[4].setTo(-halfMinW, -halfMinH, -this.m_zNear);
-        this.m_wFrustumVtxArr[5].setTo(halfMinW, -halfMinH, -this.m_zNear);
-        this.m_wFrustumVtxArr[6].setTo(halfMinW, halfMinH, -this.m_zNear);
-        this.m_wFrustumVtxArr[7].setTo(-halfMinW, halfMinH, -this.m_zNear);
-        //
-        this.m_invViewMat.transformVectorSelf(this.m_wFrustumVtxArr[0]);
-        this.m_invViewMat.transformVectorSelf(this.m_wFrustumVtxArr[1]);
-        this.m_invViewMat.transformVectorSelf(this.m_wFrustumVtxArr[2]);
-        this.m_invViewMat.transformVectorSelf(this.m_wFrustumVtxArr[3]);
-        this.m_invViewMat.transformVectorSelf(this.m_wFrustumVtxArr[4]);
-        this.m_invViewMat.transformVectorSelf(this.m_wFrustumVtxArr[5]);
-        this.m_invViewMat.transformVectorSelf(this.m_wFrustumVtxArr[6]);
-        this.m_invViewMat.transformVectorSelf(this.m_wFrustumVtxArr[7]);
-        //
+        wfva[4].setXYZ(-halfMinW, -halfMinH, -this.m_zNear);
+        wfva[5].setXYZ(halfMinW, -halfMinH, -this.m_zNear);
+        wfva[6].setXYZ(halfMinW, halfMinH, -this.m_zNear);
+        wfva[7].setXYZ(-halfMinW, halfMinH, -this.m_zNear);
+
+        this.m_invViewMat.transformVectorSelf(wfva[0]);
+        this.m_invViewMat.transformVectorSelf(wfva[1]);
+        this.m_invViewMat.transformVectorSelf(wfva[2]);
+        this.m_invViewMat.transformVectorSelf(wfva[3]);
+        this.m_invViewMat.transformVectorSelf(wfva[4]);
+        this.m_invViewMat.transformVectorSelf(wfva[5]);
+        this.m_invViewMat.transformVectorSelf(wfva[6]);
+        this.m_invViewMat.transformVectorSelf(wfva[7]);
+
         this.m_frustumWAABB.max.setTo(-9999999, -9999999, -9999999);
         this.m_frustumWAABB.min.setTo(9999999, 9999999, 9999999);
-        for (let i: number = 0; i < 8; ++i) {
-            this.m_frustumWAABB.addPosition(this.m_wFrustumVtxArr[i]);
+        for (let i = 0; i < 8; ++i) {
+            this.m_frustumWAABB.addPosition(wfva[i]);
         }
         this.m_frustumWAABB.updateFast();
-        //let abCV = m_frustumWAABB.getCenter();
-        // bottom
-        let v0: Vector3D = this.m_wFrustumVtxArr[0];
-        let v1: Vector3D = this.m_wFrustumVtxArr[4];
-        this.m_tempV.x = v0.x - v1.x;
-        this.m_tempV.y = v0.y - v1.y;
-        this.m_tempV.z = v0.z - v1.z;
-        v0 = this.m_wFrustumVtxArr[1];
-        v1 = this.m_wFrustumVtxArr[5];
-        this.m_tempV1.x = v0.x - v1.x;
-        this.m_tempV1.y = v0.y - v1.y;
-        this.m_tempV1.z = v0.z - v1.z;
-        plane = this.m_wFruPlaneList[3];
+
+        // let v0 = wfva[0];
+        // let v1 = wfva[4];
+        // this.m_tempV.x = v0.x - v1.x;
+        // this.m_tempV.y = v0.y - v1.y;
+        // this.m_tempV.z = v0.z - v1.z;
+		this.m_tempV.subVecsTo(wfva[0], wfva[4]);
+        let v0 = wfva[1];
+        // v1 = wfva[5];
+        // this.m_tempV1.x = v0.x - v1.x;
+        // this.m_tempV1.y = v0.y - v1.y;
+        // this.m_tempV1.z = v0.z - v1.z;
+		this.m_tempV1.subVecsTo(wfva[1], wfva[5]);
+        plane = wfpa[3];
         Vector3D.Cross(this.m_tempV1, this.m_tempV, plane.nv);
         plane.nv.normalize();
         plane.distance = plane.nv.dot(v0);
         plane.position.copyFrom(v0);
         // top
-        v0 = this.m_wFrustumVtxArr[3];
-        v1 = this.m_wFrustumVtxArr[7];
-        this.m_tempV.x = v0.x - v1.x;
-        this.m_tempV.y = v0.y - v1.y;
-        this.m_tempV.z = v0.z - v1.z;
-        v0 = this.m_wFrustumVtxArr[2];
-        v1 = this.m_wFrustumVtxArr[6];
-        this.m_tempV1.x = v0.x - v1.x;
-        this.m_tempV1.y = v0.y - v1.y;
-        this.m_tempV1.z = v0.z - v1.z;
-        plane = this.m_wFruPlaneList[2];
+        // v0 = wfva[3];
+        // v1 = wfva[7];
+        // this.m_tempV.x = v0.x - v1.x;
+        // this.m_tempV.y = v0.y - v1.y;
+        // this.m_tempV.z = v0.z - v1.z;
+		this.m_tempV.subVecsTo(wfva[3], wfva[7]);
+        v0 = wfva[2];
+        // v1 = wfva[6];
+        // this.m_tempV1.x = v0.x - v1.x;
+        // this.m_tempV1.y = v0.y - v1.y;
+        // this.m_tempV1.z = v0.z - v1.z;
+		this.m_tempV1.subVecsTo(wfva[2], wfva[6]);
+        plane = wfpa[2];
         Vector3D.Cross(this.m_tempV1, this.m_tempV, plane.nv);
         plane.nv.normalize();
         plane.distance = plane.nv.dot(v0);
         plane.position.copyFrom(v0);
         // left
-        v0 = this.m_wFrustumVtxArr[0];
-        v1 = this.m_wFrustumVtxArr[4];
-        this.m_tempV.x = v0.x - v1.x;
-        this.m_tempV.y = v0.y - v1.y;
-        this.m_tempV.z = v0.z - v1.z;
-        v0 = this.m_wFrustumVtxArr[3];
-        v1 = this.m_wFrustumVtxArr[7];
-        this.m_tempV1.x = v0.x - v1.x;
-        this.m_tempV1.y = v0.y - v1.y;
-        this.m_tempV1.z = v0.z - v1.z;
-        plane = this.m_wFruPlaneList[4];
+        // v0 = wfva[0];
+        // v1 = wfva[4];
+        // this.m_tempV.x = v0.x - v1.x;
+        // this.m_tempV.y = v0.y - v1.y;
+        // this.m_tempV.z = v0.z - v1.z;
+		this.m_tempV.subVecsTo(wfva[0], wfva[4]);
+        v0 = wfva[3];
+        // v1 = wfva[7];
+        // this.m_tempV1.x = v0.x - v1.x;
+        // this.m_tempV1.y = v0.y - v1.y;
+        // this.m_tempV1.z = v0.z - v1.z;
+		this.m_tempV1.subVecsTo(wfva[3], wfva[7]);
+        plane = wfpa[4];
         Vector3D.Cross(this.m_tempV, this.m_tempV1, plane.nv);
         plane.nv.normalize();
         plane.distance = plane.nv.dot(v0);
         plane.position.copyFrom(v0);
         // right
-        v0 = this.m_wFrustumVtxArr[1];
-        v1 = this.m_wFrustumVtxArr[5];
-        this.m_tempV.x = v0.x - v1.x;
-        this.m_tempV.y = v0.y - v1.y;
-        this.m_tempV.z = v0.z - v1.z;
-        v0 = this.m_wFrustumVtxArr[2];
-        v1 = this.m_wFrustumVtxArr[6];
-        this.m_tempV1.x = v0.x - v1.x;
-        this.m_tempV1.y = v0.y - v1.y;
-        this.m_tempV1.z = v0.z - v1.z;
-        plane = this.m_wFruPlaneList[5];
+        // v0 = wfva[1];
+        // v1 = wfva[5];
+        // this.m_tempV.x = v0.x - v1.x;
+        // this.m_tempV.y = v0.y - v1.y;
+        // this.m_tempV.z = v0.z - v1.z;
+		this.m_tempV.subVecsTo(wfva[1], wfva[5]);
+        v0 = wfva[2];
+        // v1 = wfva[6];
+        // this.m_tempV1.x = v0.x - v1.x;
+        // this.m_tempV1.y = v0.y - v1.y;
+        // this.m_tempV1.z = v0.z - v1.z;
+		this.m_tempV1.subVecsTo(wfva[2], wfva[6]);
+        plane = wfpa[5];
         Vector3D.Cross(this.m_tempV, this.m_tempV1, plane.nv);
         plane.nv.normalize();
         plane.distance = plane.nv.dot(v0);
         plane.position.copyFrom(v0);
-        this.m_fpNVArr[0].copyFrom(this.m_wFruPlaneList[0].nv);
-        this.m_fpNVArr[1].copyFrom(this.m_wFruPlaneList[1].nv);
-        this.m_fpNVArr[1].scaleBy(-1.0);
-        this.m_fpNVArr[2].copyFrom(this.m_wFruPlaneList[2].nv);
-        this.m_fpNVArr[3].copyFrom(this.m_wFruPlaneList[3].nv);
-        this.m_fpNVArr[3].scaleBy(-1.0);
-        this.m_fpNVArr[4].copyFrom(this.m_wFruPlaneList[4].nv);
-        this.m_fpNVArr[4].scaleBy(-1.0);
-        this.m_fpNVArr[5].copyFrom(this.m_wFruPlaneList[5].nv);
-        //
-        this.m_fpDisArr[0] = this.m_wFruPlaneList[0].distance;
-        this.m_fpDisArr[1] = -this.m_wFruPlaneList[1].distance;
-        this.m_fpDisArr[2] = this.m_wFruPlaneList[2].distance;
-        this.m_fpDisArr[3] = -this.m_wFruPlaneList[3].distance;
-        this.m_fpDisArr[4] = -this.m_wFruPlaneList[4].distance;
-        this.m_fpDisArr[5] = this.m_wFruPlaneList[5].distance;
+		const fpna = this.m_fpNVArr;
+        fpna[0].copyFrom(wfpa[0].nv);
+        fpna[1].copyFrom(wfpa[1].nv);
+        fpna[1].scaleBy(-1.0);
+        fpna[2].copyFrom(wfpa[2].nv);
+        fpna[3].copyFrom(wfpa[3].nv);
+        fpna[3].scaleBy(-1.0);
+        fpna[4].copyFrom(wfpa[4].nv);
+        fpna[4].scaleBy(-1.0);
+        fpna[5].copyFrom(wfpa[5].nv);
+
+		const fpda = this.m_fpDisArr;
+        fpda[0] = wfpa[0].distance;
+        fpda[1] = -wfpa[1].distance;
+        fpda[2] = wfpa[2].distance;
+        fpda[3] = -wfpa[3].distance;
+        fpda[4] = -wfpa[4].distance;
+        fpda[5] = wfpa[5].distance;
     }
     getWordFrustumWAABB(): AABB { return this.m_frustumWAABB; }
     getWordFrustumWAABBCenter(): Vector3D { return this.m_frustumWAABB.center; }
@@ -841,98 +881,95 @@ class CameraBase implements IRenderCamera {
     getWordFrustumPlaneArr(): Plane[] { return this.m_wFruPlaneList; }
 
     visiTestSphere2(w_cv: Vector3D, radius: number): boolean {
-        let boo: boolean = (this.m_fpNVArr[0].dot(w_cv) - this.m_fpDisArr[0] - radius) > MathConst.MATH_MIN_POSITIVE;
+
+        let boo = (this.m_fpNVArr[0].dot(w_cv) - this.m_fpDisArr[0] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[1].dot(w_cv) - this.m_fpDisArr[1] - radius) > MathConst.MATH_MIN_POSITIVE;
+        boo = (this.m_fpNVArr[1].dot(w_cv) - this.m_fpDisArr[1] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[2].dot(w_cv) - this.m_fpDisArr[2] - radius) > MathConst.MATH_MIN_POSITIVE;
+        boo = (this.m_fpNVArr[2].dot(w_cv) - this.m_fpDisArr[2] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[3].dot(w_cv) - this.m_fpDisArr[3] - radius) > MathConst.MATH_MIN_POSITIVE;
+        boo = (this.m_fpNVArr[3].dot(w_cv) - this.m_fpDisArr[3] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[4].dot(w_cv) - this.m_fpDisArr[4] - radius) > MathConst.MATH_MIN_POSITIVE;
+        boo = (this.m_fpNVArr[4].dot(w_cv) - this.m_fpDisArr[4] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[5].dot(w_cv) - this.m_fpDisArr[5] - radius) > MathConst.MATH_MIN_POSITIVE;
+        boo = (this.m_fpNVArr[5].dot(w_cv) - this.m_fpDisArr[5] - radius) > pmin;
         if (boo) return false;
         return true;
     }
 
     visiTestSphere3(w_cv: Vector3D, radius: number, farROffset: number): boolean {
-        let boo: boolean = (this.m_fpNVArr[0].dot(w_cv) - this.m_fpDisArr[0] + farROffset - radius) > MathConst.MATH_MIN_POSITIVE;
+
+        let boo = (this.m_fpNVArr[0].dot(w_cv) - this.m_fpDisArr[0] + farROffset - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[1].dot(w_cv) - this.m_fpDisArr[1] - radius) > MathConst.MATH_MIN_POSITIVE;
+        boo = (this.m_fpNVArr[1].dot(w_cv) - this.m_fpDisArr[1] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[2].dot(w_cv) - this.m_fpDisArr[2] - radius) > MathConst.MATH_MIN_POSITIVE;
+        boo = (this.m_fpNVArr[2].dot(w_cv) - this.m_fpDisArr[2] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[3].dot(w_cv) - this.m_fpDisArr[3] - radius) > MathConst.MATH_MIN_POSITIVE;
+        boo = (this.m_fpNVArr[3].dot(w_cv) - this.m_fpDisArr[3] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[4].dot(w_cv) - this.m_fpDisArr[4] - radius) > MathConst.MATH_MIN_POSITIVE;
+        boo = (this.m_fpNVArr[4].dot(w_cv) - this.m_fpDisArr[4] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[5].dot(w_cv) - this.m_fpDisArr[5] - radius) > MathConst.MATH_MIN_POSITIVE;
+        boo = (this.m_fpNVArr[5].dot(w_cv) - this.m_fpDisArr[5] - radius) > pmin;
         if (boo) return false;
         return true;
     }
     visiTestPosition(pv: Vector3D): boolean {
-        let boo: boolean = (this.m_fpNVArr[0].dot(pv) - this.m_fpDisArr[0]) > MathConst.MATH_MIN_POSITIVE;
+        let boo = (this.m_fpNVArr[0].dot(pv) - this.m_fpDisArr[0]) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[1].dot(pv) - this.m_fpDisArr[1]) > MathConst.MATH_MIN_POSITIVE;
+        boo = (this.m_fpNVArr[1].dot(pv) - this.m_fpDisArr[1]) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[2].dot(pv) - this.m_fpDisArr[2]) > MathConst.MATH_MIN_POSITIVE;
+        boo = (this.m_fpNVArr[2].dot(pv) - this.m_fpDisArr[2]) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[3].dot(pv) - this.m_fpDisArr[3]) > MathConst.MATH_MIN_POSITIVE;
+        boo = (this.m_fpNVArr[3].dot(pv) - this.m_fpDisArr[3]) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[4].dot(pv) - this.m_fpDisArr[4]) > MathConst.MATH_MIN_POSITIVE;
+        boo = (this.m_fpNVArr[4].dot(pv) - this.m_fpDisArr[4]) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[5].dot(pv) - this.m_fpDisArr[5]) > MathConst.MATH_MIN_POSITIVE;
+        boo = (this.m_fpNVArr[5].dot(pv) - this.m_fpDisArr[5]) > pmin;
         if (boo) return false;
         return true;
     }
     visiTestPlane(nv: Vector3D, distance: number): boolean {
-        let f0: number = (nv.dot(this.m_wFruPlaneList[0].position) - distance);
-        let f1: number = f0 * (nv.dot(this.m_wFruPlaneList[1].position) - distance);
-        if (f1 < MathConst.MATH_MIN_POSITIVE) return true;
-        f1 = f0 * (nv.dot(this.m_wFruPlaneList[2].position) - distance);
-        if (f1 < MathConst.MATH_MIN_POSITIVE) return true;
-        f1 = f0 * (nv.dot(this.m_wFruPlaneList[3].position) - distance);
-        if (f1 < MathConst.MATH_MIN_POSITIVE) return true;
-        f1 = f0 * (nv.dot(this.m_wFruPlaneList[4].position) - distance);
-        if (f1 < MathConst.MATH_MIN_POSITIVE) return true;
-        f1 = f0 * (nv.dot(this.m_wFruPlaneList[5].position) - distance);
-        if (f1 < MathConst.MATH_MIN_POSITIVE) return true;
+		const ls = this.m_wFruPlaneList;
+        let f0 = (nv.dot(ls[0].position) - distance);
+        let f1 = f0 * (nv.dot(ls[1].position) - distance);
+        if (f1 < pmin) return true;
+        f1 = f0 * (nv.dot(ls[2].position) - distance);
+        if (f1 < pmin) return true;
+        f1 = f0 * (nv.dot(ls[3].position) - distance);
+        if (f1 < pmin) return true;
+        f1 = f0 * (nv.dot(ls[4].position) - distance);
+        if (f1 < pmin) return true;
+        f1 = f0 * (nv.dot(ls[5].position) - distance);
+        if (f1 < pmin) return true;
         return false;
     }
     //this.m_wFruPlaneList
     // frustum intersect sphere in wrod space
     visiTestSphere(w_cv: Vector3D, radius: number): boolean {
-        let boo: boolean = this.m_frustumWAABB.sphereIntersect(w_cv, radius);
-        //
+		const ls = this.m_wFruPlaneList;
+        let boo = this.m_frustumWAABB.sphereIntersect(w_cv, radius);
         if (boo) {
-            let pf0: number = this.m_wFruPlaneList[0].intersectSphere(w_cv, radius);
-            let pf1: number = this.m_wFruPlaneList[1].intersectSphere(w_cv, radius);
-            //trace("0 pf0,pf1: "+pf0+","+pf1);
+            let pf0 = ls[0].intersectSphere(w_cv, radius);
+            let pf1 = ls[1].intersectSphere(w_cv, radius);
             if (pf0 * pf1 >= 0) {
-                //this.intersectBoo
-                //trace("TT A0");
-                if (this.m_wFruPlaneList[0].intersectBoo || this.m_wFruPlaneList[1].intersectBoo) {
+                if (ls[0].intersectBoo || ls[1].intersectBoo) {
                 } else {
                     return false;
                 }
             }
-            pf0 = this.m_wFruPlaneList[2].intersectSphere(w_cv, radius);
-            pf1 = this.m_wFruPlaneList[3].intersectSphere(w_cv, radius);
-            //trace("1 pf0,pf1: "+pf0+","+pf1);
+            pf0 = ls[2].intersectSphere(w_cv, radius);
+            pf1 = ls[3].intersectSphere(w_cv, radius);
             if (pf0 * pf1 >= 0) {
-                //trace("TT A1");
-                if (this.m_wFruPlaneList[2].intersectBoo || this.m_wFruPlaneList[3].intersectBoo) {
+                if (ls[2].intersectBoo || ls[3].intersectBoo) {
                 }
                 else {
                     return false;
                 }
             }
-            pf0 = this.m_wFruPlaneList[4].intersectSphere(w_cv, radius);
-            pf1 = this.m_wFruPlaneList[5].intersectSphere(w_cv, radius);
+            pf0 = ls[4].intersectSphere(w_cv, radius);
+            pf1 = ls[5].intersectSphere(w_cv, radius);
             if (pf0 * pf1 >= 0) {
-                //trace("TT A2");
-                if (this.m_wFruPlaneList[4].intersectBoo || this.m_wFruPlaneList[5].intersectBoo) {
+                if (ls[4].intersectBoo || ls[5].intersectBoo) {
                 }
                 else {
                     return false;
@@ -948,32 +985,33 @@ class CameraBase implements IRenderCamera {
     visiTestAABB(ab: AABB): boolean {
         //trace("ro.bounds.getCenter(): "+ro.bounds.getCenter()+","+ro.bounds.getRadius());
         //return m_frustumWAABB.sphereIntersectFast(ro.bounds.getCenter(),ro.bounds.getRadius());
-        let w_cv: Vector3D = ab.center;
-        let radius: number = ab.radius;
-        let boo: boolean = this.m_frustumWAABB.sphereIntersect(w_cv, radius);
-        //
+        let w_cv = ab.center;
+        let radius = ab.radius;
+        let boo = this.m_frustumWAABB.sphereIntersect(w_cv, radius);
+		const ls = this.m_wFruPlaneList;
+
         if (boo) {
-            let pf0 = this.m_wFruPlaneList[0].intersectSphere(w_cv, radius);
-            let pf1 = this.m_wFruPlaneList[1].intersectSphere(w_cv, radius);
+            let pf0 = ls[0].intersectSphere(w_cv, radius);
+            let pf1 = ls[1].intersectSphere(w_cv, radius);
             if (pf0 * pf1 >= 0) {
-                if (this.m_wFruPlaneList[0].intersectBoo || this.m_wFruPlaneList[1].intersectBoo) {
+                if (ls[0].intersectBoo || ls[1].intersectBoo) {
                 }
                 else {
                     return false;
                 }
             }
-            pf0 = this.m_wFruPlaneList[2].intersectSphere(w_cv, radius);
-            pf1 = this.m_wFruPlaneList[3].intersectSphere(w_cv, radius);
+            pf0 = ls[2].intersectSphere(w_cv, radius);
+            pf1 = ls[3].intersectSphere(w_cv, radius);
             if (pf0 * pf1 >= 0) {
-                if (this.m_wFruPlaneList[2].intersectBoo || this.m_wFruPlaneList[3].intersectBoo) {
+                if (ls[2].intersectBoo || ls[3].intersectBoo) {
                 } else {
                     return false;
                 }
             }
-            pf0 = this.m_wFruPlaneList[4].intersectSphere(w_cv, radius);
-            pf1 = this.m_wFruPlaneList[5].intersectSphere(w_cv, radius);
+            pf0 = ls[4].intersectSphere(w_cv, radius);
+            pf1 = ls[5].intersectSphere(w_cv, radius);
             if (pf0 * pf1 >= 0) {
-                if (this.m_wFruPlaneList[4].intersectBoo || this.m_wFruPlaneList[5].intersectBoo) {
+                if (ls[4].intersectBoo || ls[5].intersectBoo) {
                 } else {
                     return false;
                 }
@@ -1005,7 +1043,7 @@ class CameraBase implements IRenderCamera {
                 }
                 else {
                     this.m_viewMat.lookAtLH(this.m_camPos, this.m_lookAtPos, this.m_up);
-                }                
+                }
                 this.m_viewMat.append(this.m_matrix);
             }
             else {

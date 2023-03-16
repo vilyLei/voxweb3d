@@ -21,13 +21,14 @@ export default interface IRenderProcess {
 	 */
 	getRPIndex(): number;
 	getUnitsTotal(): number;
-	getEnabled(): boolean;
+	// getEnabled(): boolean;
 	hasSorter(): boolean;
 	setSorter(sorter: IRODisplaySorter): void;
 	setSortEnabled(sortEnabled: boolean): void;
 	getSortEnabled(): boolean;
 	getStatus(): number;
 	setEnabled(enabled: boolean): void;
+	isEnabled(): boolean;
 	/**
 	 * update rendering status
 	 */

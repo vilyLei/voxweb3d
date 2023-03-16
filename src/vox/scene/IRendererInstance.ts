@@ -107,6 +107,7 @@ export interface IRendererInstance extends IRenderer {
      * @param processFixedState the process is fix renderer state
      */
     createSeparatedProcess(batchEnabled?: boolean, processFixedState?: boolean): IRenderProcess;
+	setProcessEnabledAt(i: number, enabled: boolean): void;
     setRendererProcessParam(index: number, batchEnabled: boolean, processFixedState: boolean): void;
     getProcessAt(index: number): IRenderProcess;
     showInfoAt(index: number): void;

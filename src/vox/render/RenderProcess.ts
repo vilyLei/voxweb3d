@@ -50,7 +50,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 	private m_fixedState = true;
 	private m_sortEnabled = false;
 	private m_version = 0;
-	
+
 	uid = -1;
 	constructor(
 		shader: RenderShader,
@@ -170,7 +170,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 
 		let node = this.m_rpoNodeBuilder.getNodeByUid(runit.__$rpuid) as RPONode;
 		if (node != null) {
-			
+
 			node.vtxUid = runit.vtxUid;
 			node.vro = runit.vro;
 			this.m_blockList[node.index].rejoinNode(node);
@@ -181,7 +181,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 		if (disp != null) {
 			if (disp.__$$runit != null && disp.__$$runit.getRPROUid() < 0) {
 				if (disp.__$$runit.getRPROUid() != this.uid) {
-                    
+
 					// console.log("RenderProcess(" + this.uid + ")::addDisp(): ", disp.ivsCount, disp, disp.drawMode);
 					let node = this.m_rpoNodeBuilder.create() as RPONode;
 					node.unit = this.m_rpoUnitBuilder.getNodeByUid(disp.__$ruid) as RPOUnit;
@@ -358,7 +358,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 		this.m_rpIndex = -1;
 		this.m_rcuid = -1;
 		this.m_rpIndex = -1;
-		
+
 		for (let i = 0; i < this.m_blockListLen; ++i) {
 			this.m_blockList[i].reset();
 		}
@@ -387,7 +387,11 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 	setEnabled(boo: boolean): void {
 		this.m_enabled = boo;
 	}
-	getEnabled(): boolean {
+	// getEnabled(): boolean {
+	// 	return this.m_enabled;
+	// }
+
+	isEnabled(): boolean {
 		return this.m_enabled;
 	}
 }

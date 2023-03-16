@@ -751,6 +751,7 @@ export default class FBOInstance implements IFBOInstance {
 		ins.m_enableDepth = this.m_enableDepth;
 		ins.m_enableStencil = this.m_enableStencil;
 		ins.m_synFBOSizeWithViewport = this.m_synFBOSizeWithViewport;
+		ins.m_processShared = this.m_processShared;
 
 		ins.m_initW = this.m_initW;
 		ins.m_initH = this.m_initH;

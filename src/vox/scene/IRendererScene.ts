@@ -33,7 +33,7 @@ interface IRendererScene {
     readonly textureBlock: ITextureBlock;
     readonly materialBlock: IRenderableMaterialBlock;
     readonly entityBlock: IRenderableEntityBlock;
-    
+
     createRendererParam(): IRendererParam;
     /**
      * @param rparam IRendererParam instance
@@ -45,10 +45,12 @@ interface IRendererScene {
     prependRenderNode(node: IRenderNode): void;
     appendRenderNode(node: IRenderNode): void;
     removeRenderNode(node: IRenderNode): void;
+
+	setProcessEnabledAt(i: number, enabled: boolean): void;
     /**
      * @param index renderer process index in the renderer scene
      * @param batchEnabled the value is true or false
-     * @param processFixedState the value is true or false 
+     * @param processFixedState the value is true or false
      */
     setRendererProcessParam?(index: number, batchEnabled: boolean, processFixedState: boolean): void;
     /**

@@ -80,27 +80,29 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
      */
     private m_preCompileInfo: ShaderCompileInfo = null;
 
-    fragHeadCodeUnlock: boolean = true;
-    fragMainCodeUnlock: boolean = true;
-    vertHeadCodeUnlock: boolean = true;
-    vertMainCodeUnlock: boolean = true;
-    gamma: boolean = true;
-    autoBuildHeadCodeEnabled: boolean = true;
+    fragHeadCodeUnlock = true;
+    fragMainCodeUnlock = true;
+    vertHeadCodeUnlock = true;
+    vertMainCodeUnlock = true;
+    gamma = true;
+    autoBuildHeadCodeEnabled = true;
 
     readonly uniform: IShaderCodeUniform;
-    mathDefineEanbled: boolean = true;
+    mathDefineEanbled = true;
 
-    normalEnabled: boolean = false;
-    normalMapEnabled: boolean = false;
-    mapLodEnabled: boolean = false;
-    derivatives: boolean = false;
-    vertMatrixInverseEnabled: boolean = false;
-    vtxUVTransfromEnabled: boolean = false;
-    fragMatrixInverseEnabled: boolean = false;
-    
+    normalEnabled = false;
+    normalMapEnabled = false;
+    mapLodEnabled = false;
+    derivatives = false;
+    vertMatrixInverseEnabled = false;
+    vtxUVTransfromEnabled = false;
+    fragMatrixInverseEnabled = false;
+
+	uns = "";
+
     constructor(uniform: IShaderCodeUniform) {
-        let self: any = this;
-        self.uniform = uniform;
+        let selfT: any = this;
+        selfT.uniform = uniform;
     }
 
     getUniqueNSKeyID(): number {
@@ -108,12 +110,14 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         return this.uniform.getUniqueNSKeyID();
     }
     getUniqueNSKeyString(): string {
-        let ns: string = this.m_uniqueNSKeyString;
+        let ns = this.m_uniqueNSKeyString;
         if(this.vtxUVTransfromEnabled) ns += "VtxUVT";
         if(this.normalEnabled) ns += "Nor";
         return this.uniform.getUniqueNSKeyString() + ns;
     }
     reset(): void {
+
+		this.uns = "";
 
         this.m_vertObjMat = true;
         this.m_vertViewMat = true;
@@ -122,7 +126,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         this.m_fragObjMat = false;
         this.m_fragViewMat = false;
         this.m_fragProjMat = false;
-        
+
         this.fragHeadCodeUnlock = true;
         this.fragMainCodeUnlock = true;
         this.vertHeadCodeUnlock = true;
@@ -178,7 +182,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         this.fragMatrixInverseEnabled = false;
         this.vtxUVTransfromEnabled = false;
 
-        this.m_preCompileInfo = null;
+        this.m_preCompileInfo = new ShaderCompileInfo();
 
         this.uniform.reset();
     }
@@ -379,7 +383,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         if (code != "") this.m_fragMainCode += "\n" + code;
     }
     addShaderObject(shaderObj: IShaderCodeObject): void {
-        
+
         if(this.fragHeadCodeUnlock) this.addFragHeadCode(shaderObj.frag_head);
         if(this.fragMainCodeUnlock) this.addFragMainCode(shaderObj.frag_body);
         if(this.vertHeadCodeUnlock) this.addVertHeadCode(shaderObj.vert_head);
@@ -431,8 +435,11 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         if(this.autoBuildHeadCodeEnabled) {
             this.autoBuildHeadCode();
         }
-        
+
+		const scp = this.m_preCompileInfo;
+		scp.fragOutputTotal = this.m_fragOutputNames.length;
         if (this.m_fragOutputNames.length < 1) {
+			scp.fragOutputTotal = 1;
             this.addFragOutput("vec4", "FragColor0");
         }
 
@@ -446,7 +453,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
             code += this.m_versionDeclare;
         }
 
-        this.m_preCompileInfo = new ShaderCompileInfo();
+        // this.m_preCompileInfo = new ShaderCompileInfo();
         this.m_preCompileInfo.info = "\n//##COMPILE_INFO_BEGIN";
         // complie info, for example: uniform info
         this.m_preCompileInfo.info += "\n//##COMPILE_INFO_END";
@@ -745,7 +752,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
             }
         }
 
-        code += ShaderCode.BasePredefined;        
+        code += ShaderCode.BasePredefined;
         code += ShaderCode.VertPredefined;
         if (this.vertMatrixInverseEnabled && RendererDevice.IsWebGL1()) {
             this.addVertFunction(GLSLConverter.__glslInverseMat3);

@@ -82,11 +82,14 @@ export default class ShaderData implements IShaderData {
                 fshdSrc = GLSLConverter.Es3FragShaderToES2(fshdSrc);
             }
         }
-        // 直接使用 preCompileInfo 中的 uniform / attribute 等等关键信息
-        if (this.preCompileInfo != null) {
-
-        }
         this.parseCode(vshdsrc, fshdSrc);
+        // 直接使用 preCompileInfo 中的 uniform / attribute 等等关键信息
+		const scp = this.preCompileInfo;
+        if (scp && !this.adaptationShaderVersion) {
+			this.m_fragOutputTotal = scp.fragOutputTotal;
+			// console.log("shd unique_ns: ", unique_ns, ", fragOutputTotal: ", this.m_fragOutputTotal);
+        }
+
         let pattributes: AttributeLine[] = ShaderData.s_codeParser.attributes;
 
         let i: number = 0;
