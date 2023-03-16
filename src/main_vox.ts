@@ -81,7 +81,7 @@
 
 //  import { DemoAlphaFormatFloatRTT as Demo } from "./demo/DemoAlphaFormatFloatRTT";
 
- import { DemoFBOInsMRT as Demo } from "./demo/DemoFBOInsMRT";
+//  import { DemoFBOInsMRT as Demo } from "./demo/DemoFBOInsMRT";
 
 //  import {DemoCubeMapMRT as Demo} from "./demo/DemoCubeMapMRT";
 
@@ -407,7 +407,7 @@
 
 //  import {EffectExample as Demo} from "./renderingtoy/effectTest/applyui/EffectExample";
 
-//  import {ModelsLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
+ import {ModelsLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////

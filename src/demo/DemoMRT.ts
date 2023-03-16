@@ -3,7 +3,7 @@ import RendererDevice from "../vox/render/RendererDevice";
 import { IRenderAdapter } from "../vox/render/IRenderAdapter";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
-import RendererInstance from "../vox/scene/RendererInstance";
+import RendererScene from "../vox/scene/RendererScene";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
@@ -20,79 +20,76 @@ import FrameBufferType from "../vox/render/FrameBufferType";
 
 export class DemoMRT {
     constructor() { }
-    private m_renderer: RendererInstance = null;
+    private m_rscene: RendererScene = null;
     private m_rcontext: RendererInstanceContext = null;
     private m_texLoader: ImageTextureLoader = null;
-    private m_texBlock: TextureBlock;
     private m_camTrack: CameraTrack = null;
-    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
+
+    private m_statusDisp = new RenderStatusDisplay();
 
     initialize(): void {
         console.log("DemoMRT::initialize()......");
-        if (this.m_rcontext == null) {
+
+        if (this.m_rscene) {
+
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
             this.m_statusDisp.initialize();
+
             DivLog.SetDebugEnabled(true);
-            let rparam: RendererParam = new RendererParam();
-            rparam.maxWebGLVersion = 1;
+
+            let rparam = new RendererParam();
+            // rparam.maxWebGLVersion = 1;
             rparam.setCamPosition(800.0, 800.0, 800.0);
-            this.m_renderer = new RendererInstance();
-            this.m_renderer.initialize(rparam, new CameraBase());
-            this.m_renderer.appendProcess();
-            this.m_rcontext = this.m_renderer.getRendererContext() as any;
 
-            this.m_texBlock = new TextureBlock();
-            this.m_texBlock.setRenderer(this.m_renderer.getRenderProxy());
-            this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
+            this.m_rscene = new RendererScene();
+            this.m_rscene.initialize(rparam);
+            this.m_rcontext = this.m_rscene.getRendererContext() as any;
 
-            let tex0: TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/fruit_01.jpg");
-            let tex1: TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
+            this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
 
-            tex0.mipmapEnabled = true;
-            tex0.setWrap(TextureConst.WRAP_REPEAT);
-            tex1.mipmapEnabled = true;
-            tex1.setWrap(TextureConst.WRAP_REPEAT);
-
-            this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
+            let tex0 = this.m_texLoader.getImageTexByUrl("static/assets/fruit_01.jpg");
+            let tex1 = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
 
             // add common 3d display entity
 
-            var plane: Plane3DEntity = new Plane3DEntity();
+            var plane = new Plane3DEntity();
             plane.setMaterial(new DefaultMRTMaterial());
             plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [tex0]);
-            this.m_renderer.addEntity(plane);
-            this.m_renderer.addEntity(plane);
+            this.m_rscene.addEntity(plane);
+            this.m_rscene.addEntity(plane);
 
-            let boxSize: number = 100.0;
-            let box: Box3DEntity = new Box3DEntity();
+            let boxSize = 100.0;
+            let box = new Box3DEntity();
             box.setMaterial(new DefaultMRTMaterial());
             box.initialize(new Vector3D(-boxSize, -boxSize, -boxSize), new Vector3D(boxSize, boxSize, boxSize), [tex1]);
-            this.m_renderer.addEntity(box);
+            this.m_rscene.addEntity(box);
+
+            let texBlock = this.m_rscene.textureBlock;
 
             boxSize = 100.0;
             // add mrt texture 3d display entity
-            let boxMrt0: Box3DEntity = new Box3DEntity();
-            boxMrt0.initialize(new Vector3D(-boxSize, -boxSize, -boxSize), new Vector3D(boxSize, boxSize, boxSize), [this.m_texBlock.getRTTTextureAt(0)]);
+            let boxMrt0 = new Box3DEntity();
+            boxMrt0.initialize(new Vector3D(-boxSize, -boxSize, -boxSize), new Vector3D(boxSize, boxSize, boxSize), [texBlock.getRTTTextureAt(0)]);
             boxMrt0.setXYZ(-150, 0, -150);
-            this.m_renderer.addEntity(boxMrt0, 1);
-            let boxMrt1: Box3DEntity = new Box3DEntity();
-            boxMrt1.uuid = "boxMrt1";
-            boxMrt1.initialize(new Vector3D(-boxSize, -boxSize, -boxSize), new Vector3D(boxSize, boxSize, boxSize), [this.m_texBlock.getRTTTextureAt(1)]);
+            this.m_rscene.addEntity(boxMrt0, 1);
+
+            let boxMrt1 = new Box3DEntity();
+            boxMrt1.initialize(new Vector3D(-boxSize, -boxSize, -boxSize), new Vector3D(boxSize, boxSize, boxSize), [texBlock.getRTTTextureAt(1)]);
             boxMrt1.setXYZ(150, 0, 150);
-            this.m_renderer.addEntity(boxMrt1, 1);
+            this.m_rscene.addEntity(boxMrt1, 1);
         }
     }
     run(): void {
 
+        let texBlock = this.m_rscene.textureBlock;
+
         this.m_texLoader.run();
-        this.m_texBlock.run();
 
-        let pcontext: RendererInstanceContext = this.m_rcontext;
-        let rinstance: RendererInstance = this.m_renderer;
-        let radapter: IRenderAdapter = pcontext.getRenderAdapter();
-
+        let pcontext = this.m_rcontext;
+        let rinstance = this.m_rscene;
+        let radapter = pcontext.getRenderAdapter();
+        
         this.m_statusDisp.update();
 
         pcontext.setClearRGBColor3f(0.0, 0.0, 0.0);
@@ -102,12 +99,14 @@ export class DemoMRT {
         // --------------------------------------------- mrt begin
         pcontext.setClearRGBColor3f(0.1, 0.0, 0.1);
         radapter.synFBOSizeWithViewport();
-        radapter.setRenderToTexture(this.m_texBlock.getRTTTextureAt(0), true, false, 0);
-        radapter.setRenderToTexture(this.m_texBlock.getRTTTextureAt(1), true, false, 1);
+        radapter.setRenderToTexture(texBlock.getRTTTextureAt(0), true, false, 0);
+        radapter.setRenderToTexture(texBlock.getRTTTextureAt(1), true, false, 1);
         radapter.useFBO(true, true, false);
         rinstance.runAt(0);
+
         // --------------------------------------------- mrt end
         radapter.setRenderToBackBuffer(FrameBufferType.FRAMEBUFFER);
+        pcontext.setClearRGBColor3f(0.0, 0.0, 0.0);
         rinstance.runAt(1);
 
         pcontext.runEnd();

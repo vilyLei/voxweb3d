@@ -36,6 +36,7 @@ import RendererScene from "../vox/scene/RendererScene";
 
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import IDefault3DMaterial from "../vox/material/mcase/IDefault3DMaterial";
+import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
 
 export class DemoPrimitive {
 	constructor() {}
@@ -119,6 +120,11 @@ export class DemoPrimitive {
 			// this.m_rscene.addEntity(bgBox);
 			// return;
 
+
+			// let spl = new ScreenFixedAlignPlaneEntity();
+			// spl.initialize(-0.8, -0.8, 0.5,0.5);
+            // this.m_rscene.addEntity(spl, 6);
+			// return;
 			let i: number = 0;
 			let axis: Axis3DEntity = new Axis3DEntity();
 			axis.initialize();

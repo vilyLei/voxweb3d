@@ -22,7 +22,6 @@ export class DemoFloatRTT {
     constructor() {
     }
     private m_rscene: RendererScene = null;
-    private m_rcontext: RendererInstanceContext = null;
     private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
@@ -42,7 +41,7 @@ export class DemoFloatRTT {
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
             let rparam: RendererParam = new RendererParam();
-            rparam.maxWebGLVersion = 1;
+            rparam.maxWebGLVersion = 2;
             rparam.setCamPosition(500.0, 500.0, 500.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam);
