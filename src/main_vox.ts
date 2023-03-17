@@ -79,6 +79,8 @@
 
 //  import { DemoFBOInsFloatRTT as Demo } from "./demo/DemoFBOInsFloatRTT";
 
+ import { DemoFBOInsMultiFloatMRT as Demo } from "./demo/DemoFBOInsMultiFloatMRT";
+
 //  import { DemoAlphaFormatFloatRTT as Demo } from "./demo/DemoAlphaFormatFloatRTT";
 
 //  import { DemoFBOInsMRT as Demo } from "./demo/DemoFBOInsMRT";
@@ -158,7 +160,7 @@
 
 //  import {DemoLockDrawEntity as Demo} from "./demo/DemoLockDrawEntity";
 
- import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
+//  import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 
 //  import {DemoBaseRenderer as Demo} from "./demo/DemoBaseRenderer";
 
