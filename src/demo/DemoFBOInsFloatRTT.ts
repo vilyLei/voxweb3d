@@ -14,12 +14,12 @@ import { DepthDistanceShowMaterial } from "./material/DepthDistanceShowMaterial"
 
 
 export class DemoFBOInsFloatRTT {
-    
+
     constructor() { }
 
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
-    
+
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
 
         let ptex = this.m_texLoader.getImageTexByUrl(purl);
@@ -37,7 +37,7 @@ export class DemoFBOInsFloatRTT {
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
             let rparam = new RendererParam();
-            rparam.maxWebGLVersion = 1;
+            // rparam.maxWebGLVersion = 1;
             rparam.setCamPosition(500.0, 500.0, 500.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3).setAutoRunning( true );
@@ -56,12 +56,12 @@ export class DemoFBOInsFloatRTT {
 
     private buildRTT(): void {
 
-        let tex0: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-        let tex1: TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
+        let tex0 = this.getImageTexByUrl("static/assets/default.jpg");
+        let tex1 = this.getImageTexByUrl("static/assets/broken_iron.jpg");
 
         // add common 3d display entity ---------------------------------- begin
-        
-        
+
+
         var plane = new Plane3DEntity();
         plane.setMaterial( new DepthDistanceMaterial() );
         plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [tex0]);

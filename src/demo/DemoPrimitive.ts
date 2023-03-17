@@ -3,8 +3,6 @@ import RendererDevice from "../vox/render/RendererDevice";
 import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
-import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
-import RendererInstance from "../vox/scene/RendererInstance";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
@@ -15,17 +13,11 @@ import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 import Tube3DEntity from "../vox/entity/Tube3DEntity";
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import BillboardLine3DEntity from "../vox/entity/BillboardLine3DEntity";
-import TextureProxy from "../vox/texture/TextureProxy";
 import TextureConst from "../vox/texture/TextureConst";
 
-import { TextureBlock } from "../vox/texture/TextureBlock";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
-import CameraTrack from "../vox/view/CameraTrack";
 
-import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
-import CameraBase from "../vox/view/CameraBase";
 import { EntityDispQueue } from "./base/EntityDispQueue";
-import { ShaderProgramBuilder } from "../vox/material/ShaderProgramBuilder";
 import Torus3DMesh from "../vox/mesh/Torus3DMesh";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
@@ -33,10 +25,7 @@ import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import RendererScene from "../vox/scene/RendererScene";
-
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
-import IDefault3DMaterial from "../vox/material/mcase/IDefault3DMaterial";
-import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
 
 export class DemoPrimitive {
 	constructor() {}
@@ -53,7 +42,8 @@ export class DemoPrimitive {
 
 	private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
 	private m_cameraZoomController: CameraZoomController = new CameraZoomController();
-
+	private m_sph = new Sphere3DEntity();
+	private m_sphPv = new Vector3D();
 	private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
 		let ptex = this.m_texLoader.getImageTexByUrl(purl);
 		ptex.mipmapEnabled = mipmapEnabled;
@@ -63,6 +53,9 @@ export class DemoPrimitive {
 
 	initialize(): void {
 		if (this.m_rscene == null) {
+
+			console.log("DemoPrimitive::initialize()......");
+
 			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 
 			let rparam = new RendererParam();
@@ -120,16 +113,21 @@ export class DemoPrimitive {
 			// this.m_rscene.addEntity(bgBox);
 			// return;
 
-
 			// let spl = new ScreenFixedAlignPlaneEntity();
 			// spl.initialize(-0.8, -0.8, 0.5,0.5);
-            // this.m_rscene.addEntity(spl, 6);
+			// this.m_rscene.addEntity(spl, 6);
 			// return;
 			let i: number = 0;
-			let axis: Axis3DEntity = new Axis3DEntity();
+			// this.m_sph.initialize(100, 30, 30);
+			// this.m_sph.setXYZ(0, 0, 0);
+			// this.m_rscene.addEntity(this.m_sph);
+			// this.m_sphPv = this.m_sph.getPosition();
+			// // return;
+			let axis = new Axis3DEntity();
 			axis.initialize();
+			console.log("BBBBBBBB dfsfsd9");
 			this.m_rscene.addEntity(axis);
-			// return;
+			return;
 			/*
             let plane: Plane3DEntity = new Plane3DEntity();
             //plane.wireframe = true;

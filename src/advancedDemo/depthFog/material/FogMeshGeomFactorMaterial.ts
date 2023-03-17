@@ -29,6 +29,7 @@ class FogMeshGeomFactorShaderBuffer extends ShaderCodeBuffer {
 		coder.uns = this.m_uniqueName;
         // coder.addVertLayout("vec3", "a_vs");
         // coder.addVarying("vec2", "v_uv");
+        coder.addVarying("vec4", "v_vpos");
         // coder.useVertSpaceMats(true, false, false);
 
         this.m_uniform.add2DMap("MAP_0");
@@ -43,15 +44,19 @@ class FogMeshGeomFactorShaderBuffer extends ShaderCodeBuffer {
 
         coder.addVertMainCode(
             `
-            gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs, 1.0);
+            vec4 vpos = u_viewMat * u_objMat * vec4(a_vs, 1.0);
+            gl_Position = u_projMat * vpos;
+			v_vpos = u_viewMat *vec4(a_vs, 1.0);
         `
         );
         coder.addFragMainCode(
             `
+			float radius = u_sphParam[1].w;
+			// vec2 vpos = (v_vpos.xy / vec2(radius)) * 0.495 + 0.5;
+
             vec2 sv2 = gl_FragCoord.xy / u_viewParam.zw;
     vec4 color = VOX_Texture2D(MAP_0, sv2);
     color.w *= u_frustumParam.y;
-    float radius = u_sphParam[1].w;
     sv2 = 2.0 * (sv2 - 0.5);
     vec3 nearPV = vec3(sv2 * u_frustumParam.zw,-u_frustumParam.x);
     vec3 ltv = normalize(nearPV);

@@ -27,8 +27,8 @@ export class SceneFogFlow {
     private m_rct: IRendererInstanceContext = null;
     private m_texLoader: ImageTextureLoader;
 
-    // private m_fogSys: FogSystem = null;
-    private m_fogSys: FogSphBuilder = null;
+    // private m_fogBuilder: FogSystem = null;
+    private m_fogBuilder: FogSphBuilder = null;
     private m_roleSc: RoleScene = null;
     private m_billGroup: BillParticleGroup = null;
     getImageTexByUrl(pns: string): TextureProxy {
@@ -41,7 +41,6 @@ export class SceneFogFlow {
     private m_entityRSCIndex: number = 0;
     private m_parIndex: number = 1;
     private m_entityBGIndex: number = 2;
-    private m_factorPlaneIndex: number = 4;
     private m_dstPlaneIndex: number = 3;
 
     fogShow2M: FogSphShow2Material;
@@ -79,32 +78,26 @@ export class SceneFogFlow {
     }
     mouseDownListener(evt: any): void {
         this.m_status++;
-        this.m_fogSys.setStatus(this.m_status);
+        this.m_fogBuilder.setStatus(this.m_status);
     }
     initialize(rc: RendererScene): void {
         if (this.m_rc == null) {
             this.m_rc = rc;
-
 
             this.m_texLoader = new ImageTextureLoader(rc.textureBlock);
             this.m_rct = this.m_rc.getRendererContext();
 
             this.m_rc.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
 
-
-            // RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
-            // RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
-            // RendererState.CreateRenderState("ADD03", CullFaceMode.BACK, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
-
-
-            /*
+            ///*
             this.m_billGroup = new BillParticleGroup();
-            let ptex0:TextureProxy = this.getImageTexByUrl("flare_core_02.jpg");
-            let ptex1:TextureProxy = this.getImageTexByUrl("a_02_c.jpg");
+            let ptex0 = this.getImageTexByUrl("flare_core_02.jpg");
+            let ptex1 = this.getImageTexByUrl("a_02_c.jpg");
             this.m_billGroup.texs = [ptex0,ptex1];
             this.m_billGroup.renderer = this.m_rc;
             this.m_billGroup.rendererIndex = this.m_parIndex;
             //*/
+
             this.m_roleSc = new RoleScene();
             this.m_roleSc.texLoader = this.m_texLoader;
             this.m_roleSc.initialize(this.m_rc);
@@ -114,13 +107,7 @@ export class SceneFogFlow {
 
             this.middleFBO = this.fboMana.createMiddleFBO([this.m_entityRSCIndex, this.m_entityBGIndex]);
             this.parFBO = this.fboMana.createParFBO([this.m_parIndex]);
-            // this.factorFBO = this.fboMana.createFactorFBO([this.m_factorPlaneIndex]);
-            this.factorFBO = this.fboMana.createFactorFBO(null);
-
-			// this.m_rc.setProcessEnabledAt(this.m_entityRSCIndex, false);
-			// this.m_rc.setProcessEnabledAt(this.m_entityBGIndex, false);
-			// this.m_rc.setProcessEnabledAt(this.m_parIndex, false);
-			// this.m_rc.setProcessEnabledAt(this.m_factorPlaneIndex, false);
+            this.factorFBO = this.fboMana.createFactorFBO();
 
             this.fogShow2M = new FogSphShow2Material();
 
@@ -140,10 +127,10 @@ export class SceneFogFlow {
             );
             this.m_rc.addEntity(this.m_dstPlane, this.m_dstPlaneIndex);
 
-            // this.m_fogSys = new FogSystem();
-            this.m_fogSys = new FogSphBuilder();
-            this.m_fogSys.texLoader = this.m_texLoader;
-            this.m_fogSys.initialize(this.m_rc, this.middleFBO, this.factorFBO);
+            // this.m_fogBuilder = new FogSystem();
+            this.m_fogBuilder = new FogSphBuilder();
+            this.m_fogBuilder.texLoader = this.m_texLoader;
+            this.m_fogBuilder.initialize(this.m_rc, this.middleFBO.getRTTAt(1), this.factorFBO);
 
 			// let spl = new ScreenFixedAlignPlaneEntity();
 			// spl.initialize(-0.8, -0.8, 0.5,0.5, [this.middleFBO.getRTTAt(0)] );
@@ -154,17 +141,17 @@ export class SceneFogFlow {
     runBegin(): void {
         // logic run
         this.runmotion();
-        // if (this.m_billGroup != null) this.m_billGroup.runAndCreate();
+        if (this.m_billGroup) this.m_billGroup.runAndCreate();
     }
     private m_bgColor = new Color4(0.3, 0.7, 0.6, 1.0);
     run(): void {
 		this.middleFBO.unlockRenderState();
 		this.middleFBO.run();
-        // this.parFBO.unlockMaterial();
-        // this.parFBO.unlockRenderState();
-        // this.parFBO.run();
-        this.m_fogSys.run();
-        if (this.m_fogSys.getTotal() > 0) {
+        this.parFBO.unlockMaterial();
+        this.parFBO.unlockRenderState();
+        this.parFBO.run();
+        this.m_fogBuilder.run();
+        if (this.m_fogBuilder.getTotal() > 0) {
             //this.m_status
             switch (this.m_status) {
                 case 0:

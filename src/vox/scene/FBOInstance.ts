@@ -780,13 +780,21 @@ export default class FBOInstance implements IFBOInstance {
 	private m_lockMaterial = false;
 	private m_autoEnd = true;
 	private m_autoRunBegin = true;
+
 	setRenderingState(lockRenderState: boolean = false, lockMaterial: boolean = false, autoEnd: boolean = true, autoRunBegin: boolean = true): void {
+
 		this.m_lockRenderState = lockRenderState;
 		this.m_lockMaterial = lockMaterial;
 		this.m_autoEnd = autoEnd;
 		this.m_autoRunBegin = autoRunBegin;
 	}
 	render(): void {
+		if(!this.m_lockRenderState) {
+			this.unlockRenderState();
+		}
+		if(!this.m_lockMaterial) {
+			this.unlockMaterial();
+		}
 		this.run(this.m_lockRenderState, this.m_lockMaterial, this.m_autoEnd, this.m_autoRunBegin);
 	}
 
@@ -812,6 +820,6 @@ export default class FBOInstance implements IFBOInstance {
 		return this;
 	}
 	isAutoRunning(): boolean {
-		return false;
+		return this.m_autoRRun;
 	}
 }

@@ -126,10 +126,10 @@ export class BillParticleGroup {
         this.run();
     }
     run(): void {
-        let pars: BillParticle[] = this.m_pars;
-        let i: number = 0;
-        let len: number = pars.length;
 
+        let pars = this.m_pars;
+        let i = 0;
+        let len = pars.length;
         for (; i < len; ++i) {
             pars[i].update();
             if (!pars[i].isAlive()) {

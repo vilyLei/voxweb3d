@@ -15,17 +15,17 @@ import FBOInstance from "../../../vox/scene/FBOInstance";
 import RendererScene from "../../../vox/scene/RendererScene";
 
 import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
-import { FogMeshGeomFactorMaterial } from "../../../advancedDemo/depthLight/material/FogMeshGeomFactorMaterial";
-import { FogUnit } from "../../../advancedDemo/depthLight/scene/FogUnit";
+import { FogMeshGeomFactorMaterial } from "../material/FogMeshGeomFactorMaterial";
+import { FogUnit } from "./FogUnit";
+import { IRTTTexture } from "../../../vox/render/texture/IRTTTexture";
 
 export class FogSphBuilder {
 	constructor() {}
 
 	private m_rc: RendererScene = null;
 
-	private m_middleFBO: FBOInstance = null;
 	private m_factorFBO: FBOInstance = null;
-
+	private m_disTex: IRTTTexture = null;
 	texLoader: ImageTextureLoader = null;
 	factorEntityIndex: number = 0;
 	maxRadius: number = 800.0;
@@ -38,10 +38,10 @@ export class FogSphBuilder {
 		tex.mipmapEnabled = true;
 		return tex;
 	}
-	initialize(rc: RendererScene, middleFBO: FBOInstance, factorFBO: FBOInstance): void {
+	initialize(rc: RendererScene, disTex: IRTTTexture, factorFBO: FBOInstance): void {
 		if (this.m_rc == null) {
 			this.m_rc = rc;
-			this.m_middleFBO = middleFBO;
+			this.m_disTex = disTex;
 			this.m_factorFBO = factorFBO;
 
 			this.initFog();
@@ -50,7 +50,7 @@ export class FogSphBuilder {
 	private m_fogUnits: FogUnit[] = [];
 	private initFog(): void {
 		let i: number = 0;
-		let rState0 = RendererState.CreateRenderState("ADD02", CullFaceMode.FRONT, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
+		let rState0 = RendererState.CreateRenderState("ADD02", CullFaceMode.FRONT, RenderBlendMode.BLAZE, DepthTestMode.ALWAYS);
 		let rState1 = RendererState.BACK_TRANSPARENT_ALWAYS_STATE;
 		this.maxRadius = 800.0; //141.25;
 		let baseRadius = this.maxRadius;
@@ -69,6 +69,7 @@ export class FogSphBuilder {
 		}
 		// rState0 = RendererState.CreateRenderState("factorSphState", CullFaceMode.FRONT, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
 		rState0 = RendererState.FRONT_TRANSPARENT_ALWAYS_STATE;
+		// rState1 = rState0;
 		// let tex3 = this.getImageTexByUrl("displacement_03.jpg");
 		let tex3 = this.getImageTexByUrl("cloud_01.jpg");
 		this.fogFactorM = new FogMeshGeomFactorMaterial();
@@ -76,14 +77,14 @@ export class FogSphBuilder {
 		this.factorEntity = new Sphere3DEntity();
 		this.factorEntity.setRenderState(rState0);
 		this.factorEntity.setMaterial(this.fogFactorM);
-		this.factorEntity.initialize(1.0, 20, 20, [this.m_middleFBO.getRTTAt(1), tex3]);
+		this.factorEntity.initialize(1.0, 20, 20, [this.m_disTex, tex3]);
 
 		// this.m_rc.addEntity(this.factorEntity, this.m_factorFBO.getRProcessIDAt(0));
 	}
 	private m_pv = new Vector3D();
 	private m_status = 1;
 	setStatus(status: number): void {
-		this.m_status = status % 3;
+		// this.m_status = status % 3;
 		console.log("this.m_status: ", this.m_status);
 	}
 	getTotal(): number {
@@ -91,7 +92,7 @@ export class FogSphBuilder {
 	}
 	private m_nodesTotal = 0;
 	private m_rsn: FogUnit;
-	
+
     private sorting(low: number, high: number): number {
         let arr = this.m_fogUnits;
         //标记位置为待排序数组段的low处也就时枢轴值
@@ -118,6 +119,7 @@ export class FogSphBuilder {
             this.snsort(pos + 1, high);
         }
     }
+	maxDistance = 7000.0;
 	run(): void {
 
 		if (this.m_rc) {
@@ -125,63 +127,73 @@ export class FogSphBuilder {
 			let len = this.m_fogUnits.length;
 			this.m_nodesTotal = len;
 			if (len > 0) {
-				// this.snsort(0, len - 1);
+
 				const cam = this.m_rc.getCamera();
 				for(let i = 0; i < len; ++i) {
 					const t = this.m_fogUnits[i];
 					t.dis = Vector3D.Distance(t.pos, cam.getPosition());
+					t.dis -= t.radius;
+					// t.dis = Math.round(t.dis - t.radius);
 				}
-				this.snsort(0, len - 1);
+				// this.snsort(0, len - 1);
+				// let i = 10;
+				// console.log("this.m_fogUnits[0].dis: ", this.m_fogUnits[i].dis, Math.round(cam.getPosition().getLength()));
+				const entity = this.factorEntity;
 
 				this.m_factorFBO.unlockMaterial();
 				this.m_factorFBO.unlockRenderState();
 				this.m_factorFBO.setClearColorEnabled(true);
 				this.m_factorFBO.runBegin();
 				// for test: select a displaying mode
-
+				const fogM = this.fogFactorM;
 				switch (status) {
 					case 0:
-						this.fogFactorM.setFogDis(this.maxRadius * 5.0);
+						fogM.setFogDis(this.maxRadius * 5.0);
 						break;
 					case 1:
-						this.fogFactorM.setFactorRGB3f(1.0, 1.0, 1.0);
-						this.fogFactorM.setFogDis(this.maxRadius * 1.0);
+						fogM.setFactorRGB3f(1.0, 1.0, 1.0);
+						fogM.setFogDis(this.maxRadius * 1.0);
 						break;
 					case 2:
-						this.fogFactorM.setFactorRGB3f(1.0, 1.0, 1.0);
-						this.fogFactorM.setFogDis(this.maxRadius * 2.0);
+						fogM.setFactorRGB3f(1.0, 1.0, 1.0);
+						fogM.setFogDis(this.maxRadius * 2.0);
 						break;
 					default:
 						break;
 				}
-				let fogUnit: FogUnit;
-				let outerTotal = 0;
-				const pv = this.m_pv;
-				// let cam = this.m_rc.getCamera();
-				for (let i = 0; i < len; ++i) {
-					fogUnit = this.m_fogUnits[i];
-					pv.copyFrom(fogUnit.pos);
-					pv.w = 1.0;
-					if (fogUnit.isAlive() && cam.visiTestSphere3(pv, fogUnit.radius, -fogUnit.radius * 0.1)) {
-						this.factorEntity.setPosition(fogUnit.pos);
-						this.factorEntity.setScaleXYZ(fogUnit.radius, fogUnit.radius, fogUnit.radius);
-						this.factorEntity.update();
-						// 将fog factor 写入到目标tex buf
-						cam.getViewMatrix().transformOutVector3(fogUnit.pos, pv);
 
-						this.fogFactorM.setRadius(fogUnit.radius);
-						this.fogFactorM.setXYZ3f(pv.x, pv.y, pv.z);
+
+				let fu: FogUnit;
+
+				let skipTotal = 0;
+
+				const pv = this.m_pv;
+				const viewMat = cam.getViewMatrix();
+
+				for (let i = 0; i < len; ++i) {
+					fu = this.m_fogUnits[i];
+					pv.copyFrom(fu.pos).w = 1.0;
+					if (fu.dis < this.maxDistance && fu.isAlive() && cam.visiTestSphere3(pv, fu.radius, -fu.radius * 0.1)) {
+
+						entity.setPosition(fu.pos);
+						entity.setScaleXYZ(fu.radius, fu.radius, fu.radius);
+						entity.update();
+						// 将fog factor 写入到目标tex buf
+						viewMat.transformOutVector3(fu.pos, pv);
+
+						fogM.setRadius(fu.radius);
+						fogM.setXYZ3f(pv.x, pv.y, pv.z);
 						if (status < 1) {
-							this.fogFactorM.setFactorRGBColor(fogUnit.factorColor);
+							fogM.setFactorRGBColor(fu.factorColor);
 						} else if (status == 1) {
-							this.fogFactorM.setFogRGBColor(fogUnit.fogColor);
+							fogM.setFogRGBColor(fu.fogColor);
 						}
 						this.m_factorFBO.drawEntity(this.factorEntity);
 					} else {
-						outerTotal++;
+						skipTotal++;
 					}
 				}
-				// console.log("skip volume Total: ", outerTotal);
+				// console.log("skip volume Total: ", skipTotal);
 			}
 		}
 	}

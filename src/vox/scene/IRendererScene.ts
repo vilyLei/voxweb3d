@@ -25,9 +25,9 @@ import { IFBOInstance } from "./IFBOInstance";
 import IMatrix4 from "../math/IMatrix4";
 import IRendererSpace from "../../vox/scene/IRendererSpace";
 import IRenderNode from "../../vox/scene/IRenderNode";
-import IRenderEntityBase from "../render/IRenderEntityBase";
+import IREntityScene from "./IREntityScene";
 
-interface IRendererScene {
+interface IRendererScene extends IREntityScene {
 
     readonly runnableQueue: IRunnableQueue;
     readonly textureBlock: ITextureBlock;
@@ -110,18 +110,18 @@ interface IRendererScene {
      * @param processIndex IRenderProcess instance index in renderer scene instance
      */
     getRenderProcessAt(processIndex: number): IRenderProcess;
-    /**
-     * add an entity to the renderer process of the renderer instance
-     * @param entity IRenderEntityBase instance(for example: DisplayEntity class instance)
-     * @param processid this destination renderer process id, the default value is 0
-     * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id.the default value is true
-     */
-    addEntity(entity: IRenderEntityBase, processid?: number, deferred?: boolean): void;
-    /**
-     * remove an entity from the renderer instance
-     * @param entity IRenderEntityBase instance(for example: DisplayEntity class instance)
-     */
-    removeEntity(entity: IRenderEntityBase): void;
+    // /**
+    //  * add an entity to the renderer process of the renderer instance
+    //  * @param entity IRenderEntityBase instance(for example: DisplayEntity class instance)
+    //  * @param processid this destination renderer process id, the default value is 0
+    //  * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id.the default value is true
+    //  */
+    // addEntity(entity: IRenderEntityBase, processid?: number, deferred?: boolean): void;
+    // /**
+    //  * remove an entity from the renderer instance
+    //  * @param entity IRenderEntityBase instance(for example: DisplayEntity class instance)
+    //  */
+    // removeEntity(entity: IRenderEntityBase): void;
     /**
      * add an entity container from the renderer process of the renderer instance
      * @param container a IRenderEntityContainer instance

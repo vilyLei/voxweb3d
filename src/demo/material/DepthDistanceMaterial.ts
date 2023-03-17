@@ -12,62 +12,38 @@ class DepthDistanceShaderBuffer extends ShaderCodeBuffer {
 	constructor() {
 		super();
 	}
-	private static s_instance: DepthDistanceShaderBuffer = new DepthDistanceShaderBuffer();
-	private m_uniqueName: string = "";
+	private static s_instance = new DepthDistanceShaderBuffer();
+	private m_uniqueName = "";
 	initialize(texEnabled: boolean): void {
-		//console.log("DepthDistanceShaderBuffer::initialize()...");
+        super.initialize(texEnabled);
+        this.adaptationShaderVersion = false;
 		this.m_uniqueName = "DepthDistanceShd";
 	}
-	getFragShaderCode(): string {
-		let fragCode = `#version 300 es
-precision mediump float;
-layout(location = 0) out vec4 FragColor0;
 
-uniform sampler2D u_sampler0;
-in float v_depthV;
-in vec2 v_uv;
+	buildShader(): void {
+		let coder = this.m_coder;
 
-void main()
-{
-	vec4 color = texture(u_sampler0, v_uv);
-    FragColor0 = vec4(color.xyz, v_depthV);
-}
-`;
-		return fragCode;
-	}
-	getVertShaderCode(): string {
-		let vtxCode = `#version 300 es
-precision mediump float;
-layout(location = 0) in vec3 a_vs;
-layout(location = 1) in vec2 a_uvs;
-uniform mat4 u_objMat;
-uniform mat4 u_viewMat;
-uniform mat4 u_projMat;
+		coder.addVarying("float", "v_depthV");
+		this.m_uniform.add2DMap("MAP_0");
+		coder.addFragOutput("vec4", "FragColor0");
 
-out float v_depthV;
-out vec2 v_uv;
-
-// these codes are very important, they can prevent depth z-fighting when the depth func contains equal.
-vec4 worldPos;
-vec4 viewPos;
-void main(){
-    worldPos = u_objMat * vec4(a_vs, 1.0);
-    viewPos = u_viewMat * worldPos;
-    gl_Position = u_projMat * viewPos;
-    v_depthV = length(viewPos.xyz);
-	v_uv = a_uvs.xy;
-}
-`;
-		return vtxCode;
+		coder.addVertMainCode(
+			`
+    		vec4 worldPos = u_objMat * vec4(a_vs, 1.0);
+    		vec4 viewPos = u_viewMat * worldPos;
+    		gl_Position = u_projMat * viewPos;
+    		v_depthV = length(viewPos.xyz);
+			v_uv = a_uvs.xy;
+        `
+		);
+		coder.addFragMainCode(`
+			vec4 color = VOX_Texture2D(MAP_0, v_uv);
+			FragColor0 = vec4(color.xyz, v_depthV);
+		`);
 	}
 	getUniqueShaderName(): string {
-		//console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
 		return this.m_uniqueName;
 	}
-	toString(): string {
-		return "[DepthDistanceShaderBuffer()]";
-	}
-
 	static GetInstance(): DepthDistanceShaderBuffer {
 		return DepthDistanceShaderBuffer.s_instance;
 	}

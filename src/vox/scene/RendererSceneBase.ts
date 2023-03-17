@@ -58,6 +58,7 @@ import Matrix4 from "../math/Matrix4";
 import IRendererParam from "./IRendererParam";
 import IRenderEntityBase from "../render/IRenderEntityBase";
 import EntityTransUpdater from "./EntityTransUpdater";
+import EntityFency from "./mana/EntityFence";
 
 export default class RendererSceneBase {
 	private ___$$$$$$$Author = "VilyLei(vily313@126.com)";
@@ -86,8 +87,11 @@ export default class RendererSceneBase {
 	protected m_camera: IRenderCamera = null;
 	protected m_currCamera: IRenderCamera = null;
 
-	private m_nodeWaitLinker: Entity3DNodeLinker = null;
-	private m_nodeWaitQueue: EntityNodeQueue = null;
+	// private m_nodeWaitLinker: Entity3DNodeLinker = null;
+	// private m_nodeWaitQueue: EntityNodeQueue = null;
+
+	private m_entityFence: EntityFency;
+
 	private m_camDisSorter: CameraDsistanceSorter = null;
 
 	protected m_subscListLen = 0;
@@ -117,6 +121,7 @@ export default class RendererSceneBase {
 	constructor(uidBase: number = 0) {
 		this.m_uid = uidBase + RendererSceneBase.s_uid++;
 		this.m_penableds.fill(true);
+		this.m_entityFence = new EntityFency(this);
 	}
 	createRendererParam(): IRendererParam {
 		return new RendererParam();
@@ -318,7 +323,7 @@ export default class RendererSceneBase {
 		// return new RendererInstance();
 		return null;
 	}
-	protected rendererInsInited(): void { }
+	protected rendererInsInited(): void {}
 	// for overriding by sub class
 	protected initThis(): void {
 		// this.tickUpdate();
@@ -353,7 +358,7 @@ export default class RendererSceneBase {
 
 			this.m_processids[0] = 0;
 			this.m_processidsLen++;
-			for (; renderProcessesTotal >= 0;) {
+			for (; renderProcessesTotal >= 0; ) {
 				const process = this.m_renderer.appendProcess(rparam.batchEnabled, rparam.processFixedState);
 				this.m_processids[this.m_processidsLen] = process.getRPIndex();
 				this.m_processidsLen++;
@@ -489,39 +494,47 @@ export default class RendererSceneBase {
 	 * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
 	 */
 	addEntity(entity: IRenderEntityBase, processid: number = 0, deferred: boolean = true): void {
-		if (entity.getREType() < 12) {
-			let re = entity as IRenderEntity;
-			if (re != null && re.__$testSpaceEnabled()) {
-				if (re.isPolyhedral()) {
-					if (re.hasMesh()) {
-						// console.log("add entity into the renderer scene.");
+		if (entity) {
+			// console.log("add entity into the renderer scene A0.");
+			if (entity.getREType() < 12) {
+				let re = entity as IRenderEntity;
+				if (re != null && re.__$testSpaceEnabled()) {
+					// console.log("add entity into the renderer scene A1.");
+					if (re.isPolyhedral()) {
+						// console.log("add entity into the renderer scene A2.");
+						if (re.hasMesh()) {
+							// console.log("add entity into the renderer scene.");
+							re.getTransform().setUpdater(this.m_transUpdater);
+							this.m_renderer.addEntity(re, this.m_processids[processid], deferred);
+							if (this.m_rspace != null) {
+								this.m_rspace.addEntity(re);
+							}
+						} else {
+							// 这里的等待队列可能会和加入容器的操作冲突
+							// wait queue
+							// if (this.m_nodeWaitLinker == null) {
+							// 	this.m_nodeWaitLinker = new Entity3DNodeLinker();
+							// 	this.m_nodeWaitQueue = new EntityNodeQueue();
+							// }
+							// let node = this.m_nodeWaitQueue.addEntity(re);
+							// node.rstatus = processid;
+							// this.m_nodeWaitLinker.addNode(node);
+
+							this.m_entityFence.addEntity(re, processid);
+						}
+					} else {
+						// console.log("add entity into the renderer scene A3.");
 						re.getTransform().setUpdater(this.m_transUpdater);
 						this.m_renderer.addEntity(re, this.m_processids[processid], deferred);
 						if (this.m_rspace != null) {
 							this.m_rspace.addEntity(re);
 						}
-					} else {
-						// 这里的等待队列可能会和加入容器的操作冲突
-						// wait queue
-						if (this.m_nodeWaitLinker == null) {
-							this.m_nodeWaitLinker = new Entity3DNodeLinker();
-							this.m_nodeWaitQueue = new EntityNodeQueue();
-						}
-						let node = this.m_nodeWaitQueue.addEntity(re);
-						node.rstatus = processid;
-						this.m_nodeWaitLinker.addNode(node);
-					}
-				} else {
-					re.getTransform().setUpdater(this.m_transUpdater);
-					this.m_renderer.addEntity(re, this.m_processids[processid], deferred);
-					if (this.m_rspace != null) {
-						this.m_rspace.addEntity(re);
 					}
 				}
+			} else {
+				let re = entity as IRenderEntityContainer;
+				this.addContainer(re, processid);
 			}
-		} else {
-			let re = entity as IRenderEntityContainer;
-			this.addContainer(re, processid);
 		}
 	}
 	/**
@@ -529,29 +542,32 @@ export default class RendererSceneBase {
 	 * @param entity IRenderEntityBase instance(for example: DisplayEntity class instance)
 	 */
 	removeEntity(entity: IRenderEntityBase): void {
-		if (entity.getREType() < 12) {
-			let re = entity as IRenderEntity;
-			if (entity != null) {
-				let node: Entity3DNode = null;
-				if (this.m_nodeWaitLinker != null) {
-					let node = this.m_nodeWaitQueue.getNodeByEntity(re);
-					if (node != null) {
-						re.getTransform().setUpdater(null);
-						this.m_nodeWaitLinker.removeNode(node);
-						this.m_nodeWaitQueue.removeEntity(re);
-					}
-				}
-				if (node == null) {
+		if (entity) {
+			if (entity.getREType() < 12) {
+				// let node: Entity3DNode = null;
+				// if (this.m_nodeWaitLinker != null) {
+				// 	node = this.m_nodeWaitQueue.getNodeByEntity(re);
+				// 	if (node != null) {
+				// 		re.getTransform().setUpdater(null);
+				// 		this.m_nodeWaitLinker.removeNode(node);
+				// 		this.m_nodeWaitQueue.removeEntity(re);
+				// 	}
+				// }
+				// if (node == null) {
+
+				let re = entity as IRenderEntity;
+				const flag = this.m_entityFence.removeEntity(re);
+				if (!flag) {
 					this.m_renderer.removeEntity(re);
 					re.getTransform().setUpdater(null);
 					if (this.m_rspace != null) {
 						this.m_rspace.removeEntity(re);
 					}
 				}
+			} else {
+				let re = entity as IRenderEntityContainer;
+				this.removeContainer(re);
 			}
-		} else {
-			let re = entity as IRenderEntityContainer;
-			this.removeContainer(re);
 		}
 	}
 
@@ -608,7 +624,6 @@ export default class RendererSceneBase {
 	 * you should use it before the run or runAt function is called.
 	 */
 	renderBegin(contextBeginEnabled: boolean = true): void {
-
 		const ry = this.m_rproxy;
 		if (this.m_currCamera == null) {
 			this.m_adapter.unlockViewport();
@@ -747,27 +762,27 @@ export default class RendererSceneBase {
 		this.m_rayTestFlag = true;
 
 		// wait mesh data ready to finish
-		if (this.m_nodeWaitLinker != null) {
-			let nextNode: Entity3DNode = this.m_nodeWaitLinker.getBegin();
-			if (nextNode != null) {
-				let pnode: Entity3DNode;
-				let status: number;
-				while (nextNode) {
-					if (nextNode.entity.hasMesh()) {
-						pnode = nextNode;
-						nextNode = nextNode.next;
-						const entity = pnode.entity;
-						status = pnode.rstatus;
-						this.m_nodeWaitLinker.removeNode(pnode);
-						this.m_nodeWaitQueue.removeEntity(pnode.entity);
-						//console.log("RenderScene::update(), ready a mesh data that was finished.");
-						this.addEntity(entity, status);
-					} else {
-						nextNode = nextNode.next;
-					}
-				}
-			}
-		}
+		// if (this.m_nodeWaitLinker != null) {
+		// 	let nextNode: Entity3DNode = this.m_nodeWaitLinker.getBegin();
+		// 	if (nextNode != null) {
+		// 		let pnode: Entity3DNode;
+		// 		let status: number;
+		// 		while (nextNode) {
+		// 			if (nextNode.entity.hasMesh()) {
+		// 				pnode = nextNode;
+		// 				nextNode = nextNode.next;
+		// 				const entity = pnode.entity;
+		// 				status = pnode.rstatus;
+		// 				this.m_nodeWaitLinker.removeNode(pnode);
+		// 				this.m_nodeWaitQueue.removeEntity(pnode.entity);
+		// 				//console.log("RenderScene::update(), ready a mesh data that was finished.");
+		// 				this.addEntity(entity, status);
+		// 			} else {
+		// 				nextNode = nextNode.next;
+		// 			}
+		// 		}
+		// 	}
+		// }
 
 		this.m_transUpdater.update();
 
@@ -874,7 +889,7 @@ export default class RendererSceneBase {
 		}
 	}
 	setProcessEnabledAt(i: number, enabled: boolean): void {
-		if(i >= 0 && i < this.m_processids.length) {
+		if (i >= 0 && i < this.m_processids.length) {
 			this.m_renderer.setProcessEnabledAt(this.m_processids[i], enabled);
 			this.m_penableds[i] = enabled;
 		}
@@ -885,25 +900,24 @@ export default class RendererSceneBase {
 	 */
 	run(autoCycle: boolean = true): void {
 		if (this.m_enabled) {
-
 			let runFlag = autoCycle;
 			if (autoCycle && this.m_autoRunEnabled) {
-				if (this.m_runFlag != 1){
+				if (this.m_runFlag != 1) {
 					this.update();
 					runFlag = false;
 				}
 				this.m_runFlag = 2;
 			}
-			if(runFlag) {
+			if (runFlag) {
 				this.runnableQueue.run();
 			}
 			this.runRenderNodes(this.m_prependNodes);
 
-			if(this.m_adapter.isFBORunning()) {
+			if (this.m_adapter.isFBORunning()) {
 				this.setRenderToBackBuffer();
 			}
 			for (let i = 0; i < this.m_processidsLen; ++i) {
-				if(this.m_penableds[i]) {
+				if (this.m_penableds[i]) {
 					this.m_renderer.runAt(this.m_processids[i]);
 				}
 			}
@@ -944,7 +958,7 @@ export default class RendererSceneBase {
 			this.m_accessor.renderEnd(this);
 		}
 	}
-	render(): void { }
+	render(): void {}
 	renderFlush(): void {
 		if (this.m_rproxy != null) {
 			this.m_rproxy.flush();

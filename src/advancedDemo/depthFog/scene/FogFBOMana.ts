@@ -58,6 +58,7 @@ export class FogFBOMana {
 	private m_factorFBO: FBOInstance = null;
 	createMiddleFBO(rpids: number[]): FBOInstance {
 		this.m_middleFBO = this.m_rc.createFBOInstance();
+		// this.m_middleFBO.setClearRGBAColor4f(1.0, 1.0, 1.0, 1.0);
 		this.m_middleFBO.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);
 		//this.m_middleFBO.createFBOAt(0,this.m_rct.getViewWidth(), this.m_rct.getViewHeight(),true,false);
 		this.m_middleFBO.createViewportSizeFBOAt(0, true, false);
@@ -69,12 +70,12 @@ export class FogFBOMana {
 	}
 	createParFBO(rpids: number[]): FBOInstance {
 		this.m_parFBO = this.m_middleFBO.clone();
-		// this.m_parFBO.setRenderToTexture(this.getTextureAt(0, false), 0);
+		this.m_parFBO.setRenderToTexture(this.getTextureAt(0, RendererDevice.IsWebGL1()), 0);
 		this.m_parFBO.setClearState(false, false, false);
 		this.m_parFBO.setRProcessIDList(rpids, false);
 		return this.m_parFBO;
 	}
-	createFactorFBO(rpids: number[]): FBOInstance {
+	createFactorFBO(rpids: number[] = null): FBOInstance {
 		this.m_factorFBO = this.m_rc.createFBOInstance();
 		this.m_factorFBO.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);
 		//this.m_factorFBO.createFBOAt(1,this.m_rct.getViewWidth(), this.m_rct.getViewHeight(),false,false);

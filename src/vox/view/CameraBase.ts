@@ -742,7 +742,7 @@ class CameraBase implements IRenderCamera {
         // this.m_wNV.x = this.m_farWCV.x - this.m_nearWCV.x;
         // this.m_wNV.y = this.m_farWCV.y - this.m_nearWCV.y;
         // this.m_wNV.z = this.m_farWCV.z - this.m_nearWCV.z;
-		this.m_wNV.addVecsTo(this.m_farWCV, this.m_nearWCV);
+		this.m_wNV.subVecsTo(this.m_farWCV, this.m_nearWCV);
         this.m_wNV.normalize();
         // front face
         plane = wfpa[0];

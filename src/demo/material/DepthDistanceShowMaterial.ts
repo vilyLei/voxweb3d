@@ -12,59 +12,38 @@ class DepthDistanceShowShaderBuffer extends ShaderCodeBuffer {
 	constructor() {
 		super();
 	}
-	private static s_instance: DepthDistanceShowShaderBuffer = new DepthDistanceShowShaderBuffer();
-	private m_uniqueName: string = "";
+	private static s_instance = new DepthDistanceShowShaderBuffer();
+	private m_uniqueName = "";
+
 	initialize(texEnabled: boolean): void {
-		//console.log("DepthDistanceShowShaderBuffer::initialize()...");
+		super.initialize(texEnabled);
+		this.adaptationShaderVersion = false;
 		this.m_uniqueName = "DepthDistanceShowShd";
 	}
-	getFragShaderCode(): string {
-		let fragCode = `#version 300 es
-precision mediump float;
-layout(location = 0) out vec4 FragColor0;
 
-uniform sampler2D u_sampler0;
-in vec2 v_uv;
+	buildShader(): void {
+		let coder = this.m_coder;
 
-void main()
-{
-	vec4 color = texture(u_sampler0, v_uv);
-    FragColor0 = vec4(color.xyz * color.w * 0.003, 1.0);
-}
-`;
-		return fragCode;
-	}
-	getVertShaderCode(): string {
-		let vtxCode = `#version 300 es
-precision mediump float;
-layout(location = 0) in vec3 a_vs;
-layout(location = 1) in vec2 a_uvs;
-uniform mat4 u_objMat;
-uniform mat4 u_viewMat;
-uniform mat4 u_projMat;
+		this.m_uniform.add2DMap("MAP_0");
 
-out vec2 v_uv;
+		coder.addFragOutput("vec4", "FragColor0");
 
-vec4 worldPos;
-vec4 viewPos;
-
-void main(){
-    worldPos = u_objMat * vec4(a_vs, 1.0);
-    viewPos = u_viewMat * worldPos;
-    gl_Position = u_projMat * viewPos;
-	v_uv = a_uvs.xy;
-}
-`;
-		return vtxCode;
+		coder.addVertMainCode(
+			`
+    		vec4 worldPos = u_objMat * vec4(a_vs, 1.0);
+    		vec4 viewPos = u_viewMat * worldPos;
+    		gl_Position = u_projMat * viewPos;
+			v_uv = a_uvs.xy;
+        `
+		);
+		coder.addFragMainCode(`
+			vec4 color = VOX_Texture2D(MAP_0, v_uv);
+    		FragColor0 = vec4(color.xyz * color.w * 0.003, 1.0);
+		`);
 	}
 	getUniqueShaderName(): string {
-		//console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
 		return this.m_uniqueName;
 	}
-	toString(): string {
-		return "[DepthDistanceShowShaderBuffer()]";
-	}
-
 	static GetInstance(): DepthDistanceShowShaderBuffer {
 		return DepthDistanceShowShaderBuffer.s_instance;
 	}

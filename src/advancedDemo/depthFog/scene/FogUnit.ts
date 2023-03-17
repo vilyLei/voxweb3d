@@ -12,17 +12,18 @@ export class FogUnit {
     constructor() {
     }
 
-    factorColor: Color4 = new Color4();
-    fogColor: Color4 = new Color4();
-    pos: Vector3D = new Vector3D();
-    topPos: Vector3D = new Vector3D(0.0, 500.0, 0.0);
-    bottomPos: Vector3D = new Vector3D(0.0, -200.0, 0.0);
-    coneHeight: number = 200.0;
-    coneRadius: number = 80.0;
-    mcos: number = 1.0;
-    mcos2: number = 1.0;
-    rstate: number = 0;
-    radius: number = 1000.0;
+    factorColor = new Color4();
+    fogColor = new Color4();
+    pos = new Vector3D();
+    topPos = new Vector3D(0.0, 500.0, 0.0);
+    bottomPos = new Vector3D(0.0, -200.0, 0.0);
+    coneHeight = 200.0;
+    coneRadius = 80.0;
+    mcos = 1.0;
+    mcos2 = 1.0;
+    rstate = 0;
+    radius = 1000.0;
+	dis = 0;
     protected m_isAlive: boolean = true;
     update(): void {
         this.mcos = this.coneHeight / Math.sqrt(this.coneHeight * this.coneHeight + this.coneRadius * this.coneRadius);
@@ -38,11 +39,5 @@ export class FogUnit {
         this.factorColor.randomRGB(2.0);
         let halfR: number = range * 0.5;
         this.pos.setXYZ(Math.random() * range - halfR, Math.random() * range - halfR * 0.5, Math.random() * range - halfR);
-    }
-    runBegin(): void {
-
-    }
-    run(): void {
-
     }
 }
