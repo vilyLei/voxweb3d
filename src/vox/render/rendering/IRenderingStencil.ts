@@ -32,5 +32,6 @@ interface IRenderingStencil {
     // reset(): IRenderingStencil;
     // clone(): IStencil;
     // copyFrom(src: IStencil): IStencil;
+
 }
 export { IRenderingStencil }

@@ -51,6 +51,7 @@ import { IRPStatus } from "./status/IRPStatus";
 import { RPStatus } from "./status/RPStatus";
 import IRenderShader from "../../vox/render/IRenderShader";
 import IRODataBuilder from "../../vox/render/IRODataBuilder";
+import { IStencil } from "./rendering/IStencil";
 
 class RenderProxyParam {
 
@@ -124,6 +125,10 @@ class RenderProxy implements IRenderProxy {
     constructor(rcuid: number) {
         this.m_uid = rcuid;
     }
+
+	applyStencil(st: IStencil): void {
+		st.apply( this.RDrawState );
+	}
     /**
      * @returns return system gpu context
      */

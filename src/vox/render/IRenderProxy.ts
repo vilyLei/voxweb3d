@@ -63,6 +63,7 @@ export default interface IRenderProxy {
     readonly status: IRPStatus;
     readonly adapter: IRenderAdapter;
 
+	applyStencil(st: IStencil): void;
     /**
      * @returns return system gpu context
      */
@@ -117,7 +118,7 @@ export default interface IRenderProxy {
     isWebGL2(): boolean;
     isWebGL1(): boolean;
     flush(): void;
-    
+
     setClearRGBColor3f(pr: number, pg: number, pb: number): void;
     setClearColor(color: IColor4): void;
     /**
