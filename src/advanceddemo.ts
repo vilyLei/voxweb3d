@@ -3,7 +3,11 @@
 
 // import {DemoLightFlow as Demo} from "./advancedDemo/depthLight/DemoLightFlow";
 
-import {DemoLightFlow as Demo} from "./advancedDemo/depthFog/DemoLightFlow";
+// import {DemoLightFlow as Demo} from "./advancedDemo/depthFog/DemoLightFlow";
+
+import { DemoSphDepthFogRender as Demo } from "./advancedDemo/base/DemoSphDepthFogRender";
+
+// import { DemoSphDepthFog as Demo } from "./advancedDemo/base/DemoSphDepthFog";
 
 // import { DemoFog as Demo } from "./advancedDemo/base/DemoFog";
 
