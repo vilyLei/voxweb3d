@@ -19,7 +19,7 @@ import RendererScene from "../../../vox/scene/RendererScene";
 
 import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
 import { FogMeshGeomFactorMaterial } from "../../../advancedDemo/depthLight/material/FogMeshGeomFactorMaterial";
-import { FogUnit } from "../../../advancedDemo/depthLight/scene/FogUnit";
+import { FogUnit } from "./FogUnit";
 
 export class FogSphSystem {
 	constructor() {}
@@ -69,7 +69,7 @@ export class FogSphSystem {
 			else fogUnit.rstate = rState1;
 			const range = 2000.0;
 			const halfR = range * 0.5;
-			fogUnit.initRandom(baseRadius, range);
+			fogUnit.initWithRandomParam(baseRadius, range);
 			let r = fogUnit.radius;
 			fogUnit.pos.setXYZ(Math.random() * range - halfR, Math.random() * range * 0.3 + r * 0.2, Math.random() * range - halfR);
 			//  fogUnit.radius = baseRadius * 0.6;

@@ -1,9 +1,7 @@
 import TextureConst from "../../../vox/texture/TextureConst";
 import TextureFormat from "../../../vox/texture/TextureFormat";
 import TextureProxy from "../../../vox/texture/TextureProxy";
-import RTTTextureProxy from "../../../vox/texture/RTTTextureProxy";
 import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
-import { IRendererInstanceContext } from "../../../vox/scene/IRendererInstanceContext";
 import FBOInstance from "../../../vox/scene/FBOInstance";
 import RendererScene from "../../../vox/scene/RendererScene";
 import TextureDataType from "../../../vox/texture/TextureDataType";
@@ -14,7 +12,6 @@ export class FogFBOMana {
 	constructor() {}
 
 	private m_rc: RendererScene = null;
-	private m_rct: IRendererInstanceContext = null;
 	private m_texLoader: ImageTextureLoader;
 	getImageTexByUrl(pns: string): TextureProxy {
 		let tex: TextureProxy = this.m_texLoader.getImageTexByUrl("static/voxgl/assets/" + pns);
@@ -26,7 +23,7 @@ export class FogFBOMana {
 		if (this.m_texs[index] != null) {
 			return this.m_texs[index];
 		}
-		let tex = this.m_texs[index] = this.m_rc.textureBlock.createRTTTex2D() as RTTTextureProxy;
+		let tex = this.m_texs[index] = this.m_rc.textureBlock.createRTTTex2D();
 		// float = false;
 		if (float) {
 			// tex.internalFormat = TextureFormat.RGBA;
@@ -70,7 +67,7 @@ export class FogFBOMana {
 	}
 	createParFBO(rpids: number[]): FBOInstance {
 		this.m_parFBO = this.m_middleFBO.clone();
-		this.m_parFBO.setRenderToTexture(this.getTextureAt(0, RendererDevice.IsWebGL1()), 0);
+		// this.m_parFBO.setRenderToTexture(this.getTextureAt(0, RendererDevice.IsWebGL1()), 0);
 		this.m_parFBO.setClearState(false, false, false);
 		this.m_parFBO.setRProcessIDList(rpids, false);
 		return this.m_parFBO;
@@ -91,7 +88,6 @@ export class FogFBOMana {
 		//console.log("FogFBOMana::initialize()......");
 		if (this.m_rc == null) {
 			this.m_rc = rc;
-			this.m_rct = this.m_rc.getRendererContext();
 		}
 	}
 }

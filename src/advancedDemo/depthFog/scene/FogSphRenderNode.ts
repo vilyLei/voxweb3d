@@ -17,9 +17,14 @@ import RendererScene from "../../../vox/scene/RendererScene";
 import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
 import { FogMeshGeomFactorMaterial } from "../material/FogMeshGeomFactorMaterial";
 import { FogUnit } from "./FogUnit";
-import { IRTTTexture } from "../../../vox/render/texture/IRTTTexture";
 
-export class FogSphBuilder {
+import { IRTTTexture } from "../../../vox/render/texture/IRTTTexture";
+import TextureFormat from "../../../vox/texture/TextureFormat";
+import TextureDataType from "../../../vox/texture/TextureDataType";
+import IRenderNode from "../../../vox/scene/IRenderNode";
+import RendererDevice from "../../../vox/render/RendererDevice";
+
+export class FogSphRenderNode implements IRenderNode {
 	constructor() {}
 
 	private m_rc: RendererScene = null;
@@ -38,6 +43,62 @@ export class FogSphBuilder {
 		tex.mipmapEnabled = true;
 		return tex;
 	}
+	/*
+	private m_texs: IRTTTexture[] = [null, null, null, null, null, null];
+	public getTextureAt(index: number, float: boolean = false): IRTTTexture {
+		if (this.m_texs[index] != null) {
+			return this.m_texs[index];
+		}
+		let tex = (this.m_texs[index] = this.m_rc.textureBlock.createRTTTex2D());
+		if (float) {
+			tex.internalFormat = TextureFormat.RGBA16F;
+			tex.srcFormat = TextureFormat.RGBA;
+			if (RendererDevice.IsWebGL1()) {
+				tex.dataType = TextureDataType.HALF_FLOAT_OES;
+			} else {
+				tex.dataType = TextureDataType.HALF_FLOAT;
+			}
+		} else {
+			tex.internalFormat = TextureFormat.RGBA;
+			tex.srcFormat = TextureFormat.RGBA;
+		}
+		tex.minFilter = TextureConst.NEAREST;
+		tex.magFilter = TextureConst.NEAREST;
+
+		return tex;
+	}
+
+	createCommonFBO(rpids: number[]): FBOInstance {
+		let fbo = this.m_rc.createFBOInstance();
+		fbo.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);
+		fbo.createViewportSizeFBOAt(0, true, false);
+		fbo.setClearState(true, true, false);
+		fbo.setRenderToTexture(this.getTextureAt(0, RendererDevice.IsWebGL1()), 0); // color
+		fbo.setRenderToTexture(this.getTextureAt(1, true), 1); // depth
+		fbo.setRProcessIDList(rpids, false);
+
+		return fbo;
+	}
+
+	createParticleFBO(rpids: number[], srcFBO: FBOInstance): FBOInstance {
+		let fbo = srcFBO.clone();
+		fbo.setRenderToTexture(this.getTextureAt(0, RendererDevice.IsWebGL1()), 0);
+		fbo.setClearState(false, false, false);
+		fbo.setRProcessIDList(rpids, false);
+
+		return fbo;
+	}
+	createFactorFBO(): FBOInstance {
+		let fbo = this.m_rc.createFBOInstance();
+		fbo.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);
+		fbo.createViewportSizeFBOAt(1, true, false);
+		fbo.setClearState(true, true, false);
+		fbo.setRenderToTexture(this.getTextureAt(2, false), 0);
+		fbo.setRenderToTexture(this.getTextureAt(3, false), 1);
+
+		return fbo;
+	}
+	//*/
 	initialize(rc: RendererScene, disTex: IRTTTexture, factorFBO: FBOInstance): void {
 		if (this.m_rc == null) {
 			this.m_rc = rc;
@@ -56,7 +117,6 @@ export class FogSphBuilder {
 		let baseRadius = this.maxRadius;
 		let fogUnit: FogUnit;
 		for (i = 0; i < 40; ++i) {
-
 			fogUnit = new FogUnit();
 			if (Math.random() > 0.9) fogUnit.rstate = rState0;
 			else fogUnit.rstate = rState1;
@@ -79,7 +139,9 @@ export class FogSphBuilder {
 		this.factorEntity.setMaterial(this.fogFactorM);
 		this.factorEntity.initialize(1.0, 20, 20, [this.m_disTex, tex3]);
 
-		// this.m_rc.addEntity(this.factorEntity, this.m_factorFBO.getRProcessIDAt(0));
+		const fogM = this.fogFactorM;
+		fogM.setFactorRGB3f(1.0, 1.0, 1.0);
+		fogM.setFogDis(this.maxRadius);
 	}
 	private m_pv = new Vector3D();
 	private m_status = 1;
@@ -90,46 +152,18 @@ export class FogSphBuilder {
 	getTotal(): number {
 		return this.m_fogUnits.length;
 	}
-	private m_nodesTotal = 0;
-	private m_rsn: FogUnit;
-
-    private sorting(low: number, high: number): number {
-        let arr = this.m_fogUnits;
-        //标记位置为待排序数组段的low处也就时枢轴值
-        this.m_rsn = arr[low];
-        while (low < high) {
-            //  如果当前数字已经有序的位于我们的枢轴两端，我们就需要移动它的指针，是high或是low
-            while (low < high && arr[high].dis >= this.m_rsn.dis) {
-                --high;
-            }
-            // 如果当前数字不满足我们的需求，我们就需要将当前数字移动到它应在的一侧
-            arr[low] = arr[high];
-            while (low < high && arr[low].dis <= this.m_rsn.dis) {
-                ++low;
-            }
-            arr[high] = arr[low];
-        }
-        arr[low] = this.m_rsn;
-        return low;
-    }
-    private snsort(low: number, high: number): void {
-        if (low < high) {
-            let pos = this.sorting(low, high);
-            this.snsort(low, pos - 1);
-            this.snsort(pos + 1, high);
-        }
-    }
 	maxDistance = 7000.0;
+
+	render(): void {
+		this.run();
+	}
 	run(): void {
-
 		if (this.m_rc) {
-			let status = this.m_status;
 			let len = this.m_fogUnits.length;
-			this.m_nodesTotal = len;
 			if (len > 0) {
-
+				let status = this.m_status;
 				const cam = this.m_rc.getCamera();
-				for(let i = 0; i < len; ++i) {
+				for (let i = 0; i < len; ++i) {
 					const t = this.m_fogUnits[i];
 					t.dis = Vector3D.Distance(t.pos, cam.getPosition());
 					t.dis -= t.radius;
@@ -144,25 +178,10 @@ export class FogSphBuilder {
 				this.m_factorFBO.unlockRenderState();
 				this.m_factorFBO.setClearColorEnabled(true);
 				this.m_factorFBO.runBegin();
+
 				// for test: select a displaying mode
+
 				const fogM = this.fogFactorM;
-				switch (status) {
-					case 0:
-						fogM.setFogDis(this.maxRadius * 5.0);
-						break;
-					case 1:
-						fogM.setFactorRGB3f(1.0, 1.0, 1.0);
-						fogM.setFogDis(this.maxRadius * 1.0);
-						break;
-					case 2:
-						fogM.setFactorRGB3f(1.0, 1.0, 1.0);
-						fogM.setFogDis(this.maxRadius * 2.0);
-						break;
-					default:
-						break;
-				}
-
-
 				let fu: FogUnit;
 
 				let skipTotal = 0;
@@ -174,7 +193,6 @@ export class FogSphBuilder {
 					fu = this.m_fogUnits[i];
 					pv.copyFrom(fu.pos).w = 1.0;
 					if (fu.dis < this.maxDistance && fu.isAlive() && cam.visiTestSphere3(pv, fu.radius, -fu.radius * 0.1)) {
-
 						entity.setPosition(fu.pos);
 						entity.setScaleXYZ(fu.radius, fu.radius, fu.radius);
 						entity.update();

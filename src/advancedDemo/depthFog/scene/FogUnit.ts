@@ -33,7 +33,7 @@ export class FogUnit {
     isAlive(): boolean {
         return this.m_isAlive;
     }
-    initRandom(baseRadius: number, range: number): void {
+    initWithRandomParam(baseRadius: number, range: number): void {
         this.radius = (0.2 + Math.random()) * baseRadius;
         this.fogColor.randomRGB(2.0);
         this.factorColor.randomRGB(2.0);
