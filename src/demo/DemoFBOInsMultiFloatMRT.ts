@@ -108,7 +108,7 @@ export class DemoFBOInsMultiFloatMRT {
 			//RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
 			let rparam = new RendererParam();
-			// rparam.maxWebGLVersion = 1;
+			rparam.maxWebGLVersion = 1;
 			rparam.setCamProject(45.0, 1.0, 9000.0);
 			rparam.setCamPosition(2500.0, 2500.0, 2500.0);
 			this.m_rscene = new RendererScene();

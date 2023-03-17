@@ -247,18 +247,18 @@ class RenderAdapter implements IRenderAdapter {
 	 * @param color color data
 	 */
 	clearColor(color: IColor4): void {
-		this.m_rtx.syncHtmlBodyColor(color.r ,color.g, color.b);
+		this.m_rtx.syncHtmlBodyColor(color.r, color.g, color.b);
 		this.syncHtmlColor();
 		this.m_gl.clearColor(color.r, color.g, color.b, color.a);
 		this.m_gl.clear(this.m_gl.COLOR_BUFFER_BIT);
-		if(DebugFlag.Flag_0 > 0) {
+		if (DebugFlag.Flag_0 > 0) {
 			console.log("clearColor >>>>>>>");
 		}
 	}
 	private syncHtmlColor(): void {
 		// console.log("this.m_rtx.bodyBgColor: ", this.m_rtx.bodyBgColor);
-		if(this.m_syncBgColor) {
-			if(document && this.m_bodyBgColor != this.m_rtx.bodyBgColor) {
+		if (this.m_syncBgColor) {
+			if (document && this.m_bodyBgColor != this.m_rtx.bodyBgColor) {
 				this.m_bodyBgColor = this.m_rtx.bodyBgColor;
 				const body = document.body;
 				body.style.background = this.m_bodyBgColor;
@@ -283,7 +283,7 @@ class RenderAdapter implements IRenderAdapter {
 
 		const cvs = this.bgColor;
 
-		if(DebugFlag.Flag_0 > 0) {
+		if (DebugFlag.Flag_0 > 0) {
 			console.log("clear >>>>>>>");
 		}
 		// if(DebugFlag.Flag_0 > 0) {
@@ -593,8 +593,22 @@ class RenderAdapter implements IRenderAdapter {
 					this.m_fboBuf.clearOnlyStencil(0xff);
 				}
 				if (this.m_webglVer == 1) {
-					// m_gl.colorMask(m_colorMask.mr,m_colorMask.mg,m_colorMask.mb,m_colorMask.ma);
-					this.m_gl.clear(this.m_clearMask);
+					// // m_gl.colorMask(m_colorMask.mr,m_colorMask.mg,m_colorMask.mb,m_colorMask.ma);
+					// this.m_gl.clear(this.m_clearMask);
+					const gl = this.m_gl;
+					let mask = 0x0;
+					if (clearColorBoo) {
+						mask |= gl.COLOR_BUFFER_BIT;
+					}
+					if (clearDepthBoo) {
+						mask |= gl.DEPTH_BUFFER_BIT;
+					}
+					if (clearStencilBoo) {
+						mask |= gl.STENCIL_BUFFER_BIT;
+					}
+					if (mask > 0) {
+						gl.clear(mask);
+					}
 				}
 				let size = this.m_viewPortRect;
 				this.m_fboBiltRectData[4] = this.m_fboBiltRectData[0] = size.x;
