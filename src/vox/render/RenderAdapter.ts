@@ -99,7 +99,7 @@ class RenderAdapter implements IRenderAdapter {
 			}
 			if (param.getPolygonOffsetEanbled()) this.enabledPolygonOffset();
 			else this.disabledPolygonOffset();
-			
+
 			this.m_gl.enable(this.m_gl.CULL_FACE);
 			this.m_gl.cullFace(this.m_gl.BACK);
 			this.m_gl.enable(this.m_gl.BLEND);
@@ -124,7 +124,7 @@ class RenderAdapter implements IRenderAdapter {
 		}
 	}
 	/**
-	 * @param faceFlipped the value is true, frontFace is CW. the value is false, frontFace is CCW. 
+	 * @param faceFlipped the value is true, frontFace is CW. the value is false, frontFace is CCW.
 	 */
 	setFrontFaceFlipped(faceFlipped: boolean): void {
 		if (this.m_fontFaceFlipped != faceFlipped) {
@@ -251,6 +251,9 @@ class RenderAdapter implements IRenderAdapter {
 		this.syncHtmlColor();
 		this.m_gl.clearColor(color.r, color.g, color.b, color.a);
 		this.m_gl.clear(this.m_gl.COLOR_BUFFER_BIT);
+		if(DebugFlag.Flag_0 > 0) {
+			console.log("clearColor >>>>>>>");
+		}
 	}
 	private syncHtmlColor(): void {
 		// console.log("this.m_rtx.bodyBgColor: ", this.m_rtx.bodyBgColor);
@@ -264,7 +267,7 @@ class RenderAdapter implements IRenderAdapter {
 		}
 	}
 	clear(): void {
-		
+
 		// console.log("clear back buffer.");
 		// let mode = this.m_rState.getDepthTestMode();
 		// this.m_rState.setDepthTestMode(DepthTestMode.OPAQUE);
@@ -280,12 +283,15 @@ class RenderAdapter implements IRenderAdapter {
 
 		const cvs = this.bgColor;
 
+		if(DebugFlag.Flag_0 > 0) {
+			console.log("clear >>>>>>>");
+		}
 		// if(DebugFlag.Flag_0 > 0) {
 		// 	console.log("color cvs: ", cvs);
 		// }
 		this.m_gl.clearColor(cvs[0], cvs[1], cvs[2], cvs[3]);
 		this.m_gl.clear(this.m_clearMask);
-		
+
 		// this.m_rState.setDepthTestMode(mode);
 		// if (this.m_rtx.isStencilTestEnabled()) {
 		// 	this.m_gl.stencilMask(0x0);
@@ -441,7 +447,7 @@ class RenderAdapter implements IRenderAdapter {
 	asynFBOSizeWithViewport(): void {
 		this.m_synFBOSizeWithViewport = false;
 	}
-	// 
+	//
 	/**
 	 * if synFBOSizeWithViewport is true, fbo size = factor * view port size;
 	 * @param factor exmple: the value of factor is 0.5

@@ -60,7 +60,7 @@ class BillboardShaderBuffer extends ShaderCodeBuffer {
     FragColor0 = color;
 `;
         coder.addFragMainCode(fragCode0 + fadeCode + fragCode2);
-        
+
         coder.addVertMainCode(
             `
     vec4 temp = u_billParam[0];
@@ -110,7 +110,7 @@ export default class BillboardMaterial extends MaterialBase {
         this.m_rotationEnabled = rotationEnabled;
     }
     protected buildBuf(): void {
-        
+
         let buf: BillboardShaderBuffer = BillboardShaderBuffer.GetInstance();
         buf.rotationEnabled = this.m_rotationEnabled;
         buf.brightnessEnabled = this.m_brightnessEnabled;
@@ -192,7 +192,7 @@ export default class BillboardMaterial extends MaterialBase {
     }
 
     destroy() {
-        
+
         super.destroy();
         this.m_uniformData = null;
     }

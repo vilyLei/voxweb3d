@@ -375,6 +375,12 @@ export default class FBOInstance implements IFBOInstance {
 	getRTTAt(i: number): IRTTTexture {
 		return this.m_texs[i] as IRTTTexture;
 	}
+	/**
+	 * @returns 当前fbo正在使用的额rtt数量
+	 */
+	getRTTTotal(): number {
+		return this.m_texsTot;
+	}
 	enableMipmapRTTAt(i: number): void {
 		this.m_texs[i].enableMipmap();
 	}
