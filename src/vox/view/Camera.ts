@@ -435,8 +435,8 @@ class Camera implements IRenderCamera{
         return true;
     }
 
-    visiTestNearPlaneWithSphere(w_cv: Vector3D, radius: number): boolean {
-        return true;
+    visiTestNearPlaneWithSphere(w_cv: Vector3D, radius: number): number {
+        return 2;
     }
     visiTestSphere3(w_cv: Vector3D, radius: number, farROffset: number): boolean {
         return true;

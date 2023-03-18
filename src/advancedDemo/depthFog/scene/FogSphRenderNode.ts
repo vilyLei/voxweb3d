@@ -136,21 +136,26 @@ export class FogSphRenderNode implements IRenderNode {
 				for (let i = 0; i < len; ++i) {
 					fu = this.m_fogUnits[i];
 					pv.copyFrom(fu.pos).w = 1.0;
-					if (fu.dis < this.maxDistance && fu.isAlive() && cam.visiTestSphere3(pv, fu.radius, -fu.radius * 0.1)) {
-						entity.setPosition(fu.pos);
-						entity.setScaleXYZ(fu.radius, fu.radius, fu.radius);
-						entity.update();
-						// 将fog factor 写入到目标tex buf
-						viewMat.transformOutVector3(fu.pos, pv);
-
-						fogM.setRadius(fu.radius);
-						fogM.setXYZ3f(pv.x, pv.y, pv.z);
-						if (status < 1) {
-							fogM.setFactorRGBColor(fu.factorColor);
-						} else if (status == 1) {
-							fogM.setFogRGBColor(fu.fogColor);
+					if (fu.dis < this.maxDistance && cam.visiTestNearPlaneWithSphere(pv, fu.radius) >= 0) {
+						// console.log("dfdfd");
+						if (fu.isAlive() && cam.visiTestSphere3(pv, fu.radius, -fu.radius * 0.1)) {
+							entity.setPosition(fu.pos);
+							entity.setScaleXYZ(fu.radius, fu.radius, fu.radius);
+							entity.update();
+							// 将fog factor 写入到目标tex buf
+							viewMat.transformOutVector3(fu.pos, pv);
+	
+							fogM.setRadius(fu.radius);
+							fogM.setXYZ3f(pv.x, pv.y, pv.z);
+							if (status < 1) {
+								fogM.setFactorRGBColor(fu.factorColor);
+							} else if (status == 1) {
+								fogM.setFogRGBColor(fu.fogColor);
+							}
+							this.m_factorFBO.drawEntity(this.factorEntity);
+						} else {
+							skipTotal++;
 						}
-						this.m_factorFBO.drawEntity(this.factorEntity);
 					} else {
 						skipTotal++;
 					}

@@ -68,7 +68,9 @@ interface IRenderCamera {
     getWordFrustumVtxArr(): IVector3D[];
     getWordFrustumWAABBCenter(): IVector3D;
     visiTestSphere2(w_cv: IVector3D, radius: number): boolean;
-    visiTestNearPlaneWithSphere(w_cv: IVector3D, radius: number): boolean;
+
+    visiTestNearPlaneWithSphere(w_cv: IVector3D, radius: number): number;
+    
     visiTestSphere3(w_cv: IVector3D, radius: number, farROffset: number): boolean;
     visiTestPosition(pv: IVector3D): boolean;
     visiTestPlane(nv: IVector3D, distance: number): boolean;

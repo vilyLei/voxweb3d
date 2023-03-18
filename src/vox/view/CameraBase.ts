@@ -846,9 +846,17 @@ class CameraBase implements IRenderCamera {
     getWordFrustumVtxArr(): Vector3D[] { return this.m_wFrustumVS; }
     getWordFrustumPlaneArr(): Plane[] { return this.m_wFruPlanes; }
 
-    visiTestNearPlaneWithSphere(w_cv: Vector3D, radius: number): boolean {
-        const v = this.m_fpNVArr[1].dot(w_cv) - this.m_fpDisArr[1] - radius;
-        return v <= pmin;
+    visiTestNearPlaneWithSphere(w_cv: Vector3D, radius: number): number {
+        const v = this.m_fpNVArr[1].dot(w_cv) - this.m_fpDisArr[1];// - radius;
+        if((v - radius) > pmin) {
+            // 表示完全在近平面之外，也就是前面
+            return -1;
+        }else if((v + radius) < MathConst.MATH_MIN_NEGATIVE){
+            // 表示完全在近平面内, 也就是后面
+            return 1;
+        }
+        // 表示和近平面相交
+        return 0;
     }
     visiTestSphere2(w_cv: Vector3D, radius: number): boolean {
 
