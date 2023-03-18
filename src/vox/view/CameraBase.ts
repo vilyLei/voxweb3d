@@ -697,8 +697,8 @@ class CameraBase implements IRenderCamera {
     private m_wFrustumVS: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), null, null, null];
     // world space front,back ->(view space -z,z), world space left,right ->(view space -x,x),world space top,bottm ->(view space y,-y)
     private m_wFruPlanes: Plane[] = [new Plane(), new Plane(), new Plane(), new Plane(), new Plane(), new Plane()];
-    private m_fpNVArr: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D()];
-    private m_fpDisArr: number[] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    private m_fpns: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D()];
+    private m_fpds: number[] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
     getFrustumWorldPlantAt(i: number): Plane {
         return this.m_wFruPlanes[i];
     }
@@ -822,7 +822,7 @@ class CameraBase implements IRenderCamera {
         plane.nv.normalize();
         plane.distance = plane.nv.dot(v0);
         plane.position.copyFrom(v0);
-		const fpna = this.m_fpNVArr;
+		const fpna = this.m_fpns;
         fpna[0].copyFrom(wfpa[0].nv);
         fpna[1].copyFrom(wfpa[1].nv);
         fpna[1].scaleBy(-1.0);
@@ -833,7 +833,7 @@ class CameraBase implements IRenderCamera {
         fpna[4].scaleBy(-1.0);
         fpna[5].copyFrom(wfpa[5].nv);
 
-		const fpda = this.m_fpDisArr;
+		const fpda = this.m_fpds;
         fpda[0] = wfpa[0].distance;
         fpda[1] = -wfpa[1].distance;
         fpda[2] = wfpa[2].distance;
@@ -846,63 +846,68 @@ class CameraBase implements IRenderCamera {
     getWordFrustumVtxArr(): Vector3D[] { return this.m_wFrustumVS; }
     getWordFrustumPlaneArr(): Plane[] { return this.m_wFruPlanes; }
 
+    /**
+     * @param w_cv 世界坐标位置
+     * @param radius 球体半径
+     * @returns 0表示完全不会再近平面内, 1表示完全在近平面内, 2表示和近平面相交
+     */
     visiTestNearPlaneWithSphere(w_cv: Vector3D, radius: number): number {
-        const v = this.m_fpNVArr[1].dot(w_cv) - this.m_fpDisArr[1];// - radius;
+        const v = this.m_fpns[1].dot(w_cv) - this.m_fpds[1];// - radius;
         if((v - radius) > pmin) {
             // 表示完全在近平面之外，也就是前面
-            return -1;
-        }else if((v + radius) < MathConst.MATH_MIN_NEGATIVE){
+            return 0;
+        }else if((v + radius) < MathConst.MATH_MAX_NEGATIVE){
             // 表示完全在近平面内, 也就是后面
             return 1;
         }
         // 表示和近平面相交
-        return 0;
+        return 2;
     }
     visiTestSphere2(w_cv: Vector3D, radius: number): boolean {
 
-        let boo = (this.m_fpNVArr[0].dot(w_cv) - this.m_fpDisArr[0] - radius) > pmin;
+        let boo = (this.m_fpns[0].dot(w_cv) - this.m_fpds[0] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[1].dot(w_cv) - this.m_fpDisArr[1] - radius) > pmin;
+        boo = (this.m_fpns[1].dot(w_cv) - this.m_fpds[1] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[2].dot(w_cv) - this.m_fpDisArr[2] - radius) > pmin;
+        boo = (this.m_fpns[2].dot(w_cv) - this.m_fpds[2] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[3].dot(w_cv) - this.m_fpDisArr[3] - radius) > pmin;
+        boo = (this.m_fpns[3].dot(w_cv) - this.m_fpds[3] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[4].dot(w_cv) - this.m_fpDisArr[4] - radius) > pmin;
+        boo = (this.m_fpns[4].dot(w_cv) - this.m_fpds[4] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[5].dot(w_cv) - this.m_fpDisArr[5] - radius) > pmin;
+        boo = (this.m_fpns[5].dot(w_cv) - this.m_fpds[5] - radius) > pmin;
         if (boo) return false;
         return true;
     }
 
     visiTestSphere3(w_cv: Vector3D, radius: number, farROffset: number): boolean {
 
-        let boo = (this.m_fpNVArr[0].dot(w_cv) - this.m_fpDisArr[0] + farROffset - radius) > pmin;
+        let boo = (this.m_fpns[0].dot(w_cv) - this.m_fpds[0] + farROffset - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[1].dot(w_cv) - this.m_fpDisArr[1] - radius) > pmin;
+        boo = (this.m_fpns[1].dot(w_cv) - this.m_fpds[1] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[2].dot(w_cv) - this.m_fpDisArr[2] - radius) > pmin;
+        boo = (this.m_fpns[2].dot(w_cv) - this.m_fpds[2] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[3].dot(w_cv) - this.m_fpDisArr[3] - radius) > pmin;
+        boo = (this.m_fpns[3].dot(w_cv) - this.m_fpds[3] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[4].dot(w_cv) - this.m_fpDisArr[4] - radius) > pmin;
+        boo = (this.m_fpns[4].dot(w_cv) - this.m_fpds[4] - radius) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[5].dot(w_cv) - this.m_fpDisArr[5] - radius) > pmin;
+        boo = (this.m_fpns[5].dot(w_cv) - this.m_fpds[5] - radius) > pmin;
         if (boo) return false;
         return true;
     }
     visiTestPosition(pv: Vector3D): boolean {
-        let boo = (this.m_fpNVArr[0].dot(pv) - this.m_fpDisArr[0]) > pmin;
+        let boo = (this.m_fpns[0].dot(pv) - this.m_fpds[0]) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[1].dot(pv) - this.m_fpDisArr[1]) > pmin;
+        boo = (this.m_fpns[1].dot(pv) - this.m_fpds[1]) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[2].dot(pv) - this.m_fpDisArr[2]) > pmin;
+        boo = (this.m_fpns[2].dot(pv) - this.m_fpds[2]) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[3].dot(pv) - this.m_fpDisArr[3]) > pmin;
+        boo = (this.m_fpns[3].dot(pv) - this.m_fpds[3]) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[4].dot(pv) - this.m_fpDisArr[4]) > pmin;
+        boo = (this.m_fpns[4].dot(pv) - this.m_fpds[4]) > pmin;
         if (boo) return false;
-        boo = (this.m_fpNVArr[5].dot(pv) - this.m_fpDisArr[5]) > pmin;
+        boo = (this.m_fpns[5].dot(pv) - this.m_fpds[5]) > pmin;
         if (boo) return false;
         return true;
     }

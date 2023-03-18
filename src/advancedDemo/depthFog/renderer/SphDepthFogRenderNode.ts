@@ -32,11 +32,11 @@ export class SphDepthFogRenderNode implements IRenderNode {
 
 	private m_factorFBO: FBOInstance = null;
 	private m_commonFBO: FBOInstance = null;
-	// private m_disTex: IRTTTexture = null;
+	
 	texLoader: ImageTextureLoader = null;
 	factorEntityIndex: number = 0;
 	maxRadius: number = 800.0;
-	//factorEntity:Plane3DEntity;
+	
 	factorEntity: Sphere3DEntity;
 	fogFactorM: FogMeshGeomFactorMaterial;
 	private getImageTexByUrl(pns: string): TextureProxy {
@@ -202,6 +202,9 @@ export class SphDepthFogRenderNode implements IRenderNode {
 				const fogM = this.fogFactorM;
 				let fu: SphDepthFogUnit;
 
+				const rst0 = RendererState.BACK_TRANSPARENT_STATE;
+				const rst1 = RendererState.FRONT_TRANSPARENT_ALWAYS_STATE;
+
 				let skipTotal = 0;
 
 				const pv = this.m_pv;
@@ -211,6 +214,13 @@ export class SphDepthFogRenderNode implements IRenderNode {
 					fu = this.m_units[i];
 					pv.copyFrom(fu.pos).w = 1.0;
 					if (fu.dis < this.maxDistance && fu.isAlive() && cam.visiTestSphere3(pv, fu.radius, -fu.radius * 0.1)) {
+						const flag = cam.visiTestNearPlaneWithSphere(pv, fu.radius);
+						// console.log("XXX flag: ", flag);
+						if(flag == 1) {
+							entity.setRenderState(rst0);
+						}else {
+							entity.setRenderState(rst1);
+						}
 						entity.setPosition(fu.pos);
 						entity.setScaleXYZ(fu.radius, fu.radius, fu.radius);
 						entity.update();
