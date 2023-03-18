@@ -694,11 +694,14 @@ class CameraBase implements IRenderCamera {
     private m_farWCV = new Vector3D();
     private m_wNV = new Vector3D();
     // 4 far point, 4 near point
-    private m_wFrustumVtxArr: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), null, null, null];
+    private m_wFrustumVS: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), null, null, null];
     // world space front,back ->(view space -z,z), world space left,right ->(view space -x,x),world space top,bottm ->(view space y,-y)
-    private m_wFruPlaneList: Plane[] = [new Plane(), new Plane(), new Plane(), new Plane(), new Plane(), new Plane()];
+    private m_wFruPlanes: Plane[] = [new Plane(), new Plane(), new Plane(), new Plane(), new Plane(), new Plane()];
     private m_fpNVArr: Vector3D[] = [new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D(), new Vector3D()];
     private m_fpDisArr: number[] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    getFrustumWorldPlantAt(i: number): Plane {
+        return this.m_wFruPlanes[i];
+    }
     getInvertViewMatrix(): Matrix4 { return this.m_invViewMat; };
     getZNear(): number { return this.m_zNear; }
     setZNear(value: number): void { this.m_zNear = value; }
@@ -729,8 +732,8 @@ class CameraBase implements IRenderCamera {
             halfMaxW = halfMaxH * this.m_aspect;
         }
 
-		const wfva = this.m_wFrustumVtxArr;
-		const wfpa = this.m_wFruPlaneList;
+		const wfva = this.m_wFrustumVS;
+		const wfpa = this.m_wFruPlanes;
         //console.log("CameraBase::__calcTestParam(), (halfMinW, halfMinH): "+halfMinW+", "+halfMinH);
         this.m_nearPlaneHalfW = halfMinW;
         this.m_nearPlaneHalfH = halfMinH;
@@ -840,9 +843,13 @@ class CameraBase implements IRenderCamera {
     }
     getWordFrustumWAABB(): AABB { return this.m_frustumWAABB; }
     getWordFrustumWAABBCenter(): Vector3D { return this.m_frustumWAABB.center; }
-    getWordFrustumVtxArr(): Vector3D[] { return this.m_wFrustumVtxArr; }
-    getWordFrustumPlaneArr(): Plane[] { return this.m_wFruPlaneList; }
+    getWordFrustumVtxArr(): Vector3D[] { return this.m_wFrustumVS; }
+    getWordFrustumPlaneArr(): Plane[] { return this.m_wFruPlanes; }
 
+    visiTestNearPlaneWithSphere(w_cv: Vector3D, radius: number): boolean {
+        const v = this.m_fpNVArr[1].dot(w_cv) - this.m_fpDisArr[1] - radius;
+        return v <= pmin;
+    }
     visiTestSphere2(w_cv: Vector3D, radius: number): boolean {
 
         let boo = (this.m_fpNVArr[0].dot(w_cv) - this.m_fpDisArr[0] - radius) > pmin;
@@ -892,7 +899,7 @@ class CameraBase implements IRenderCamera {
         return true;
     }
     visiTestPlane(nv: Vector3D, distance: number): boolean {
-		const ls = this.m_wFruPlaneList;
+		const ls = this.m_wFruPlanes;
         let f0 = (nv.dot(ls[0].position) - distance);
         let f1 = f0 * (nv.dot(ls[1].position) - distance);
         if (f1 < pmin) return true;
@@ -906,10 +913,10 @@ class CameraBase implements IRenderCamera {
         if (f1 < pmin) return true;
         return false;
     }
-    //this.m_wFruPlaneList
+    //this.m_wFruPlanes
     // frustum intersect sphere in wrod space
     visiTestSphere(w_cv: Vector3D, radius: number): boolean {
-		const ls = this.m_wFruPlaneList;
+		const ls = this.m_wFruPlanes;
         let boo = this.m_frustumWAABB.sphereIntersect(w_cv, radius);
         if (boo) {
             let pf0 = ls[0].intersectSphere(w_cv, radius);
@@ -951,7 +958,7 @@ class CameraBase implements IRenderCamera {
         let w_cv = ab.center;
         let radius = ab.radius;
         let boo = this.m_frustumWAABB.sphereIntersect(w_cv, radius);
-		const ls = this.m_wFruPlaneList;
+		const ls = this.m_wFruPlanes;
 
         if (boo) {
             let pf0 = ls[0].intersectSphere(w_cv, radius);
