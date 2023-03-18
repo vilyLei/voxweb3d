@@ -43,62 +43,6 @@ export class FogSphRenderNode implements IRenderNode {
 		tex.mipmapEnabled = true;
 		return tex;
 	}
-	/*
-	private m_texs: IRTTTexture[] = [null, null, null, null, null, null];
-	public getTextureAt(index: number, float: boolean = false): IRTTTexture {
-		if (this.m_texs[index] != null) {
-			return this.m_texs[index];
-		}
-		let tex = (this.m_texs[index] = this.m_rc.textureBlock.createRTTTex2D());
-		if (float) {
-			tex.internalFormat = TextureFormat.RGBA16F;
-			tex.srcFormat = TextureFormat.RGBA;
-			if (RendererDevice.IsWebGL1()) {
-				tex.dataType = TextureDataType.HALF_FLOAT_OES;
-			} else {
-				tex.dataType = TextureDataType.HALF_FLOAT;
-			}
-		} else {
-			tex.internalFormat = TextureFormat.RGBA;
-			tex.srcFormat = TextureFormat.RGBA;
-		}
-		tex.minFilter = TextureConst.NEAREST;
-		tex.magFilter = TextureConst.NEAREST;
-
-		return tex;
-	}
-
-	createCommonFBO(rpids: number[]): FBOInstance {
-		let fbo = this.m_rc.createFBOInstance();
-		fbo.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);
-		fbo.createViewportSizeFBOAt(0, true, false);
-		fbo.setClearState(true, true, false);
-		fbo.setRenderToTexture(this.getTextureAt(0, RendererDevice.IsWebGL1()), 0); // color
-		fbo.setRenderToTexture(this.getTextureAt(1, true), 1); // depth
-		fbo.setRProcessIDList(rpids, false);
-
-		return fbo;
-	}
-
-	createParticleFBO(rpids: number[], srcFBO: FBOInstance): FBOInstance {
-		let fbo = srcFBO.clone();
-		fbo.setRenderToTexture(this.getTextureAt(0, RendererDevice.IsWebGL1()), 0);
-		fbo.setClearState(false, false, false);
-		fbo.setRProcessIDList(rpids, false);
-
-		return fbo;
-	}
-	createFactorFBO(): FBOInstance {
-		let fbo = this.m_rc.createFBOInstance();
-		fbo.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);
-		fbo.createViewportSizeFBOAt(1, true, false);
-		fbo.setClearState(true, true, false);
-		fbo.setRenderToTexture(this.getTextureAt(2, false), 0);
-		fbo.setRenderToTexture(this.getTextureAt(3, false), 1);
-
-		return fbo;
-	}
-	//*/
 	initialize(rc: RendererScene, disTex: IRTTTexture, factorFBO: FBOInstance): void {
 		if (this.m_rc == null) {
 			this.m_rc = rc;

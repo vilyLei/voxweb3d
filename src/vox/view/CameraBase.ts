@@ -712,10 +712,10 @@ class CameraBase implements IRenderCamera {
         return this.m_fovRadian;
     }
     private __calcTestParam(): void {
-        if (this.m_invViewMat == null) this.m_invViewMat = new Matrix4();//Matrix4Pool.GetMatrix();
+        if (this.m_invViewMat == null) this.m_invViewMat = new Matrix4();
         this.m_invViewMat.copyFrom(this.m_viewMat);
         this.m_invViewMat.invert();
-        //
+        
         let plane: Plane = null;
         let halfMinH = this.m_viewHalfH;
         let halfMinW = this.m_viewHalfW;
@@ -739,17 +739,15 @@ class CameraBase implements IRenderCamera {
         this.m_farWCV.setXYZ(0, 0, -this.m_zFar);
         this.m_invViewMat.transformVectorSelf(this.m_nearWCV);
         this.m_invViewMat.transformVectorSelf(this.m_farWCV);
-        // this.m_wNV.x = this.m_farWCV.x - this.m_nearWCV.x;
-        // this.m_wNV.y = this.m_farWCV.y - this.m_nearWCV.y;
-        // this.m_wNV.z = this.m_farWCV.z - this.m_nearWCV.z;
 		this.m_wNV.subVecsTo(this.m_farWCV, this.m_nearWCV);
         this.m_wNV.normalize();
-        // front face
+
+        // front face, far plane
         plane = wfpa[0];
         plane.nv.copyFrom(this.m_wNV);
         plane.distance = plane.nv.dot(this.m_farWCV);
         plane.position.copyFrom(this.m_farWCV);
-        // back face
+        // back face, near face
         plane = wfpa[1];
         plane.nv.copyFrom(wfpa[0].nv);
         plane.distance = plane.nv.dot(this.m_nearWCV);
@@ -769,33 +767,25 @@ class CameraBase implements IRenderCamera {
         wfva[6].setXYZ(halfMinW, halfMinH, -this.m_zNear);
         wfva[7].setXYZ(-halfMinW, halfMinH, -this.m_zNear);
 
-        this.m_invViewMat.transformVectorSelf(wfva[0]);
-        this.m_invViewMat.transformVectorSelf(wfva[1]);
-        this.m_invViewMat.transformVectorSelf(wfva[2]);
-        this.m_invViewMat.transformVectorSelf(wfva[3]);
-        this.m_invViewMat.transformVectorSelf(wfva[4]);
-        this.m_invViewMat.transformVectorSelf(wfva[5]);
-        this.m_invViewMat.transformVectorSelf(wfva[6]);
-        this.m_invViewMat.transformVectorSelf(wfva[7]);
+        const invM = this.m_invViewMat;
+        invM.transformVectorSelf(wfva[0]);
+        invM.transformVectorSelf(wfva[1]);
+        invM.transformVectorSelf(wfva[2]);
+        invM.transformVectorSelf(wfva[3]);
+        invM.transformVectorSelf(wfva[4]);
+        invM.transformVectorSelf(wfva[5]);
+        invM.transformVectorSelf(wfva[6]);
+        invM.transformVectorSelf(wfva[7]);
 
-        this.m_frustumWAABB.max.setTo(-9999999, -9999999, -9999999);
-        this.m_frustumWAABB.min.setTo(9999999, 9999999, 9999999);
+        this.m_frustumWAABB.reset();
         for (let i = 0; i < 8; ++i) {
             this.m_frustumWAABB.addPosition(wfva[i]);
         }
         this.m_frustumWAABB.updateFast();
 
-        // let v0 = wfva[0];
-        // let v1 = wfva[4];
-        // this.m_tempV.x = v0.x - v1.x;
-        // this.m_tempV.y = v0.y - v1.y;
-        // this.m_tempV.z = v0.z - v1.z;
+        // bottom
 		this.m_tempV.subVecsTo(wfva[0], wfva[4]);
         let v0 = wfva[1];
-        // v1 = wfva[5];
-        // this.m_tempV1.x = v0.x - v1.x;
-        // this.m_tempV1.y = v0.y - v1.y;
-        // this.m_tempV1.z = v0.z - v1.z;
 		this.m_tempV1.subVecsTo(wfva[1], wfva[5]);
         plane = wfpa[3];
         Vector3D.Cross(this.m_tempV1, this.m_tempV, plane.nv);
@@ -803,17 +793,8 @@ class CameraBase implements IRenderCamera {
         plane.distance = plane.nv.dot(v0);
         plane.position.copyFrom(v0);
         // top
-        // v0 = wfva[3];
-        // v1 = wfva[7];
-        // this.m_tempV.x = v0.x - v1.x;
-        // this.m_tempV.y = v0.y - v1.y;
-        // this.m_tempV.z = v0.z - v1.z;
 		this.m_tempV.subVecsTo(wfva[3], wfva[7]);
         v0 = wfva[2];
-        // v1 = wfva[6];
-        // this.m_tempV1.x = v0.x - v1.x;
-        // this.m_tempV1.y = v0.y - v1.y;
-        // this.m_tempV1.z = v0.z - v1.z;
 		this.m_tempV1.subVecsTo(wfva[2], wfva[6]);
         plane = wfpa[2];
         Vector3D.Cross(this.m_tempV1, this.m_tempV, plane.nv);
@@ -821,17 +802,8 @@ class CameraBase implements IRenderCamera {
         plane.distance = plane.nv.dot(v0);
         plane.position.copyFrom(v0);
         // left
-        // v0 = wfva[0];
-        // v1 = wfva[4];
-        // this.m_tempV.x = v0.x - v1.x;
-        // this.m_tempV.y = v0.y - v1.y;
-        // this.m_tempV.z = v0.z - v1.z;
 		this.m_tempV.subVecsTo(wfva[0], wfva[4]);
         v0 = wfva[3];
-        // v1 = wfva[7];
-        // this.m_tempV1.x = v0.x - v1.x;
-        // this.m_tempV1.y = v0.y - v1.y;
-        // this.m_tempV1.z = v0.z - v1.z;
 		this.m_tempV1.subVecsTo(wfva[3], wfva[7]);
         plane = wfpa[4];
         Vector3D.Cross(this.m_tempV, this.m_tempV1, plane.nv);
@@ -839,17 +811,8 @@ class CameraBase implements IRenderCamera {
         plane.distance = plane.nv.dot(v0);
         plane.position.copyFrom(v0);
         // right
-        // v0 = wfva[1];
-        // v1 = wfva[5];
-        // this.m_tempV.x = v0.x - v1.x;
-        // this.m_tempV.y = v0.y - v1.y;
-        // this.m_tempV.z = v0.z - v1.z;
 		this.m_tempV.subVecsTo(wfva[1], wfva[5]);
         v0 = wfva[2];
-        // v1 = wfva[6];
-        // this.m_tempV1.x = v0.x - v1.x;
-        // this.m_tempV1.y = v0.y - v1.y;
-        // this.m_tempV1.z = v0.z - v1.z;
 		this.m_tempV1.subVecsTo(wfva[2], wfva[6]);
         plane = wfpa[5];
         Vector3D.Cross(this.m_tempV, this.m_tempV1, plane.nv);
