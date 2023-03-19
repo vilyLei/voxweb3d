@@ -13,6 +13,12 @@ interface IRPODisplay {
     value: number;
     pos: IVector3D;
     bounds: IAABB;
+    /**
+     * 是否对当前unit进行渲染的状态
+     * the default value is true
+     */
+    rendering: boolean;
+
     updateVtx(): boolean;
     setDrawFlag(renderState: number, rcolorMask: number): void;
     setIvsParam(ivsIndex: number, ivsCount: number): void;

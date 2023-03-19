@@ -53,6 +53,10 @@ export default class RPOUnit implements IRPOUnit {
      */
     visible = true;
     drawEnabled = true;
+    /**
+     * 是否对当前unit进行渲染的状态
+     */
+    rendering = true;
 
     renderState = 0;
     rcolorMask = 0;
