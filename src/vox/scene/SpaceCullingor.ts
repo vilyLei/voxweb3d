@@ -80,9 +80,10 @@ export default class SpaceCullingor implements ISpaceCullingor {
 				if (nextNode.rstatus > 0) {
 					ab = nextNode.bounds;
 					const entity = nextNode.entity;
-					const rnode = nextNode.rpoNode;
+					const runit = nextNode.runit;
 					if (entity.isVisible()) {
-						if (rnode.isVsible()) {
+						// 不管是不是可渲染几何体的mesh entity都需要处理遮挡提出的操作
+						if (runit.rendering) {
 							boo = cam.visiTestSphere2(ab.center, ab.radius);
 							if (boo && entity.spaceCullMask > camMask) {
 								for (i = 0; i < len; i++) {
@@ -103,7 +104,7 @@ export default class SpaceCullingor implements ISpaceCullingor {
 					this.total += boo ? 1 : 0;
 					nextNode.drawEnabled = boo;
 					entity.drawEnabled = boo;
-					rnode.drawEnabled = boo;
+					runit.rendering = boo;
 					// if (boo && nextNode.distanceFlag) {
 					// 	nextNode.rpoNode.setValue(-Vector3D.DistanceSquared(camPos, ab.center));
 					// }

@@ -18,7 +18,7 @@ import DebugFlag from "../debug/DebugFlag";
 export default class RPONode implements IPoolNode, IRPONode {
     __$ruid = -1;
 
-    drawEnabled = true;
+    // drawEnabled = true;
 
     uid = -1;
     index = -1;
@@ -40,9 +40,9 @@ export default class RPONode implements IPoolNode, IRPONode {
     setValue(value: number): void {
         this.unit.value = value;
     }
-    isVsible(): boolean {
-        return this.unit == null || this.unit.drawEnabled;
-    }
+    // isVsible(): boolean {
+    //     return this.unit == null || this.unit.drawing;
+    // }
     updateData(): void {
         
         const p = this.unit;
@@ -54,7 +54,7 @@ export default class RPONode implements IPoolNode, IRPONode {
         this.tro = p.tro;
     }
     reset(): void {
-        this.drawEnabled = true;
+        // this.drawEnabled = true;
         this.uid = -1;
         this.index = -1;
         this.shdUid = -1;

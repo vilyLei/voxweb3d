@@ -8,6 +8,8 @@
 import IPoolNode from "../../vox/base/IPoolNode";
 import PoolNodeBuilder from "../../vox/base/PoolNodeBuilder";
 import IRPONode from "../../vox/render/IRPONode";
+import IRPOUnit from "../../vox/render/IRPOUnit";
+import RPOUnit from "../../vox/render/RPOUnit";
 import RPONode from "../../vox/render/RPONode";
 import IRPONodeBuilder from "../../vox/render/IRPONodeBuilder";
 
@@ -21,5 +23,8 @@ export default class RPONodeBuilder extends PoolNodeBuilder implements IRPONodeB
     }
 	createRPONode(): IRPONode {
         return new RPONode();
+    }
+	createRPOUnit(): IRPOUnit {
+        return new RPOUnit();
     }
 }

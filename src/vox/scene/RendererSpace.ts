@@ -25,6 +25,7 @@ import IRaySelector from "../../vox/scene/IRaySelector";
 import ISpaceCullingor from "../../vox/scene/ISpaceCullingor";
 import RenderingEntitySet from "./RenderingEntitySet";
 import DebugFlag from "../debug/DebugFlag";
+import IRPOUnit from "../render/IRPOUnit";
 
 export default class RendererSpace implements IRendererSpace {
 	private static s_uid: number = 0;
@@ -32,7 +33,7 @@ export default class RendererSpace implements IRendererSpace {
 	private m_renderer: IRenderer = null;
 	private m_camera: IRenderCamera = null;
 	private m_stage3d: IRenderStage3D = null;
-	private m_emptyRPONode: IRPONode = null;
+	private m_emptyRPOUnit: IRPOUnit = null;
 
 	private m_rpoNodeBuilder: IRPONodeBuilder = null;
 
@@ -57,7 +58,7 @@ export default class RendererSpace implements IRendererSpace {
 			this.m_stage3d = renderer.getStage3D();
 			this.m_camera = camera;
 			this.m_rpoNodeBuilder = renderer.getRPONodeBuilder();
-			this.m_emptyRPONode = this.m_rpoNodeBuilder.createRPONode();
+			this.m_emptyRPOUnit = this.m_rpoNodeBuilder.createRPOUnit();
 		}
 	}
 
@@ -102,17 +103,17 @@ export default class RendererSpace implements IRendererSpace {
 				if (boo && (entity.spaceCullMask & SCM.POV) == SCM.POV) {
 					node.rstatus = 1;
 					if (entity.getMaterial() == null) {
-						node.rpoNode = this.m_emptyRPONode;
+						node.runit = this.m_emptyRPOUnit;
 					}
 
-					if (node.rpoNode == null) {
-						node.rpoNode = this.m_rpoNodeBuilder.getNodeByUid(entity.getDisplay().__$rpuid) as IRPONode;
+					if (node.runit == null) {
+						node.runit = entity.getDisplay().__$$runit as IRPOUnit;
 					}
 					this.m_nodeSLinker.addNode(node);
 				} else {
 					if (entity.getMaterial() == null) {
 						node.rstatus = 1;
-						node.rpoNode = this.m_emptyRPONode;
+						node.runit = this.m_emptyRPOUnit;
 						this.m_nodeSLinker.addNode(node);
 					} else {
 						node.rstatus = 0;
@@ -139,16 +140,6 @@ export default class RendererSpace implements IRendererSpace {
 			}
 		}
 	}
-	// updateEntity(entity: IRenderEntity): void {
-	// 	//  if(RSEntityFlag.TestSpaceContains( entity.__$rseFlag ))
-	// 	//  {
-	// 	//      let node:Entity3DNode = this.m_nodeQueue.getNodeByEntity(entity);
-	// 	//      //  if(node != null)
-	// 	//      //  {
-	// 	//      //      node.distanceFlag = RSEntityFlag.TestSortEnabled(entity.__$rseFlag);
-	// 	//      //  }
-	// 	//  }
-	// }
 	update(): void { }
 	runBegin(): void { }
 	run(): void {
@@ -163,8 +154,8 @@ export default class RendererSpace implements IRendererSpace {
 					nextNode = nextNode.next;
 					this.m_nodeWLinker.removeNode(pnode);
 					this.m_nodeSLinker.addNode(pnode);
-					if (pnode.rpoNode == null) {
-						pnode.rpoNode = this.m_rpoNodeBuilder.getNodeByUid(entity.getDisplay().__$rpuid) as IRPONode;
+					if (pnode.runit == null) {
+						pnode.runit = entity.getDisplay().__$$runit as IRPOUnit;
 					}
 				} else {
 					nextNode = nextNode.next;
@@ -195,7 +186,7 @@ export default class RendererSpace implements IRendererSpace {
 					
 					nextNode.drawEnabled = vboo;
 					nextNode.entity.drawEnabled = vboo;
-					nextNode.rpoNode.drawEnabled = vboo;
+					nextNode.runit.rendering = vboo;
 
 					nextNode = nextNode.next;
 				}

@@ -9,7 +9,7 @@
 
 import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
 import ITextureRenderObj from "../../vox/render/ITextureRenderObj";
-import RPOUnit from "../../vox/render/RPOUnit";
+import IRPOUnit from "./RPOUnit";
 import IPoolNode from "../../vox/base/IPoolNode";
 import DebugFlag from "../debug/DebugFlag";
 
@@ -17,7 +17,7 @@ import DebugFlag from "../debug/DebugFlag";
 export default interface IRPONode extends IPoolNode {
 
     __$ruid: number;
-    drawEnabled: boolean;
+    // drawEnabled: boolean;
     uid: number;
     index: number;
     // only for show info
@@ -33,13 +33,13 @@ export default interface IRPONode extends IPoolNode {
     rtokey: number;
     prev: IRPONode;
     next: IRPONode;
-    unit: RPOUnit;
+    unit: IRPOUnit;
     vro: IVertexRenderObj;
     tro: ITextureRenderObj;
     rvroI: number;
     rtroI: number;
     setValue(value: number): void;
-    isVsible(): boolean;
+    // isVsible(): boolean;
     updateData(): void;
     reset(): void;
     toString(): string;

@@ -20,7 +20,6 @@ import IRenderProxy from "../../vox/render/IRenderProxy";
 import ShaderUBO from "../../vox/material/ShaderUBO";
 import IRenderShaderUniform from "./uniform/IRenderShaderUniform";
 import IRPOUnit from "./IRPOUnit";
-import IPoolNode from "../../vox/base/IPoolNode";
 import { BufRDataPair, ROIndicesRes } from "./vtx/ROIndicesRes";
 import IVDRInfo from "./vtx/IVDRInfo";
 
@@ -52,7 +51,7 @@ export default class RPOUnit implements IRPOUnit {
      * 是否在渲染过程中可见, the default value is true
      */
     visible = true;
-    drawEnabled = true;
+    drawing = true;
     /**
      * 是否对当前unit进行渲染的状态
      */
@@ -135,12 +134,12 @@ export default class RPOUnit implements IRPOUnit {
         if(!this.rdp.rd) {
             throw Error("illegal operation !!!");
         }
-        this.drawEnabled = this.visible && this.rdp.rd.ivsSize > 0;
+        this.drawing = this.visible && this.rdp.rd.ivsSize > 0;
     }
     setVisible(boo: boolean): void {
         this.visible = boo;
         this.testVisible();
-        // if(DebugFlag.Flag_0 > 0) console.log("#### setVisible(): ", boo, "this.drawEnabled: ",this.drawEnabled);
+        // if(DebugFlag.Flag_0 > 0) console.log("#### setVisible(): ", boo, "this.drawing: ",this.drawing);
     }
     setDrawFlag(renderState: number, rcolorMask: number): void {
         this.renderState = renderState;
@@ -355,7 +354,8 @@ export default class RPOUnit implements IRPOUnit {
             this.drawFlag = 0x0;
             this.renderState = 0;
             this.rcolorMask = 0;
-            this.drawEnabled = true;
+            this.drawing = true;
+            this.rendering = true;
             this.shader = null;
             this.bounds = null;
             this.pos = null;

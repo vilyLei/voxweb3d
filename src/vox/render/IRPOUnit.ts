@@ -16,6 +16,7 @@ export default interface IRPOUnit extends IPoolNode, IRPODisplay {
     
     renderState: number;
     rcolorMask: number;
+    drawing: boolean;
 
     shader: IRenderShader;
     vro: IVertexRenderObj;

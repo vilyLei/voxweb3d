@@ -67,7 +67,7 @@ export default class RenderSortBlock {
 	private m_passProc = new PassProcess();
 	private m_shdUpdate = false;
 	run(rc: RenderProxy): void {
-		
+
 		this.m_shader.resetUniform();
 
 		let unit: RPOUnit = null;
@@ -75,27 +75,29 @@ export default class RenderSortBlock {
 		this.m_shdUpdate = false;
 		const proc = this.m_passProc;
 		proc.shader = this.m_shader;
-		
+
 		for (let i = 0; i < this.m_renderTotal; ++i) {
 			unit = nodes[i];
-			this.m_shader.bindToGpu(unit.shdUid);
-			unit.updateVtx();
-			if (unit.drawEnabled) {
-				if (unit.rgraph && unit.rgraph.isEnabled()) {
-					
-					proc.units = [unit];
-					proc.rc = rc;
-					proc.vtxFlag = true;
-					proc.texFlag = true;
-					unit.rgraph.run(proc);
-					this.m_shdUpdate = true;
-				} else {
-					if (this.m_shdUpdate) {
-						unit.applyShader(true);
-						this.m_shdUpdate = false;
+			if (unit.rendering) {
+				this.m_shader.bindToGpu(unit.shdUid);
+				unit.updateVtx();
+				if (unit.drawing) {
+					if (unit.rgraph && unit.rgraph.isEnabled()) {
+
+						proc.units = [unit];
+						proc.rc = rc;
+						proc.vtxFlag = true;
+						proc.texFlag = true;
+						unit.rgraph.run(proc);
+						this.m_shdUpdate = true;
+					} else {
+						if (this.m_shdUpdate) {
+							unit.applyShader(true);
+							this.m_shdUpdate = false;
+						}
+						unit.run(rc);
+						unit.draw(rc);
 					}
-					unit.run(rc);
-					unit.draw(rc);
 				}
 			}
 		}
@@ -107,12 +109,14 @@ export default class RenderSortBlock {
 		let nodes = this.m_nodes;
 		for (let i = 0; i < this.m_renderTotal; ++i) {
 			unit = nodes[i];
-			this.m_shader.bindToGpu(unit.shdUid);
-			unit.updateVtx();
-			if (unit.drawEnabled) {
-				unit.vro.run();
-				unit.runLockMaterial2(null);
-				unit.draw(rc);
+			if (unit.rendering) {
+				this.m_shader.bindToGpu(unit.shdUid);
+				unit.updateVtx();
+				if (unit.drawing) {
+					unit.vro.run();
+					unit.runLockMaterial2(null);
+					unit.draw(rc);
+				}
 			}
 		}
 	}
@@ -126,8 +130,9 @@ export default class RenderSortBlock {
 			}
 			let i = 0;
 			while (next != null) {
-				if (next.drawEnabled && next.unit.drawEnabled) {
-					this.m_nodes[i] = next.unit;
+				const unit = next.unit;
+				if (unit.rendering && unit.drawing) {
+					this.m_nodes[i] = unit;
 					++i;
 				}
 				next = next.next;

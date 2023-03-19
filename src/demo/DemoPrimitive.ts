@@ -142,7 +142,7 @@ export class DemoPrimitive {
 			let i = 0;
 			let radius = 100.0;
 			this.m_sph.initialize(radius, 30, 30);
-			this.m_sph.setXYZ(1551, 1550, 1550);
+			this.m_sph.setXYZ(50, 50, 50);
 			this.m_rscene.addEntity(this.m_sph);
 			this.m_sphPv = this.m_sph.getPosition();
 			this.m_rscene.updateCamera();

@@ -7,9 +7,9 @@
 
 import RendererConst from "../../vox/scene/RendererConst";
 import IAABB from "../../vox/geom/IAABB";
-import IRPONode from "../../vox/render/IRPONode";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IEntity3DNode from "./IEntity3DNode";
+import IRPOUnit from "../render/IRPOUnit";
 
 export default class Entity3DNode implements IEntity3DNode {
 	
@@ -25,7 +25,7 @@ export default class Entity3DNode implements IEntity3DNode {
 	entity: IRenderEntity = null;
 	bounds: IAABB = null;
 	rayTestState = 0;
-	rpoNode: IRPONode = null;
+	runit: IRPOUnit = null;
 	spaceId = -1;
 	// 记录上一次摄像机裁剪自身的状态
 	camVisiSt = 0;
@@ -41,12 +41,12 @@ export default class Entity3DNode implements IEntity3DNode {
 		this.next = null;
 		this.entity = null;
 		this.bounds = null;
-		this.rpoNode = null;
+		this.runit = null;
 		this.spaceId = -1;
 		this.camVisi = 0;
 	}
 	isVisible(): boolean {
-		return this.rpoNode.isVsible() && this.entity.isDrawEnabled();
+		return this.runit.rendering && this.runit.drawing;
 	}
 	// busy
 	private static s_b: number = 1;

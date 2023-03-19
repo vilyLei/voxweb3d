@@ -89,10 +89,10 @@ export default class RPOBlock {
             const proc = this.m_passProc;
             proc.shader = this.m_shader;
             while (nextNode) {
-                if (nextNode.drawEnabled) {
-                    unit = nextNode.unit;
+                unit = nextNode.unit;
+                if (unit.rendering) {
                     unit.updateVtx();
-                    if (unit.drawEnabled) {
+                    if (unit.drawing) {
                         if (unit.rgraph && unit.rgraph.isEnabled()) {
                             proc.units = [unit];
                             proc.rc = rc;
@@ -147,13 +147,13 @@ export default class RPOBlock {
                 texTotal--;
 
                 // if(DebugFlag.Flag_0 > 0) console.log("nextNode.drawEnabled: ",nextNode.drawEnabled);
-                if (nextNode.drawEnabled) {
-                    unit = nextNode.unit;
+                unit = nextNode.unit;
+                if (unit.rendering) {
                     // if(DebugFlag.Flag_0 > 0) console.log("unit.drawEnabled: ",unit.drawEnabled);
                     // console.log("unit.rdp.getUid(): ", unit.rdp.getUid(), unit.vdrInfo.rdp.getUid());
 
                     vtxFlag = unit.updateVtx() || vtxFlag;
-                    if (unit.drawEnabled) {
+                    if (unit.drawing) {
                         if (unit.rgraph && unit.rgraph.isEnabled()) {
                             proc.units = [unit];
                             proc.rc = rc;
@@ -217,10 +217,10 @@ export default class RPOBlock {
                 }
                 texTotal--;
 
-                if (nextNode.drawEnabled) {
-                    unit = nextNode.unit;
+                unit = nextNode.unit;
+                if (unit.rendering) {
                     vtxFlag = unit.updateVtx() || vtxFlag;
-                    if (unit.drawEnabled) {
+                    if (unit.drawing) {
                         if (vtxFlag) {
                             unit.vro.run();
                             vtxFlag = false;
@@ -262,10 +262,10 @@ export default class RPOBlock {
                     }
                     vtxTotal--;
 
-                    if (nextNode.drawEnabled) {
-                        unit = nextNode.unit;
+                    unit = nextNode.unit;
+                    if (unit.rendering) {
                         vtxFlag = unit.updateVtx() || vtxFlag;
-                        if (unit.drawEnabled) {
+                        if (unit.drawing) {
                             if (vtxFlag) {
                                 unit.vro.run();
                                 vtxFlag = false;
@@ -282,10 +282,10 @@ export default class RPOBlock {
             }
             else {
                 while (nextNode != null) {
-                    if (nextNode.drawEnabled) {
-                        unit = nextNode.unit;
+                    unit = nextNode.unit;
+                    if (unit.rendering) {
                         unit.updateVtx();
-                        if (unit.drawEnabled) {
+                        if (unit.drawing) {
                             unit.runLockMaterial();
                             if (texUnlock) {
                                 nextNode.tro.run();
@@ -301,7 +301,8 @@ export default class RPOBlock {
     }
     // 在锁定material的时候,直接绘制单个unit
     drawUnit(rc: RenderProxy, unit: RPOUnit, disp: IRODisplay): void {
-        if (unit.drawEnabled) {
+        unit.updateVtx();
+        if (unit.drawing) {
             this.m_shader.bindToGpu(unit.shdUid);
             unit.updateVtx();
             unit.run(rc);
@@ -311,7 +312,7 @@ export default class RPOBlock {
     // 在锁定material的时候,直接绘制单个unit
     drawLockMaterialByUnit(rc: RenderProxy, unit: RPOUnit, disp: IRODisplay, useGlobalUniform: boolean, forceUpdateUniform: boolean): void {
         unit.updateVtx();
-        if (unit.drawEnabled) {
+        if (unit.drawing) {
             if (forceUpdateUniform) {
                 this.m_shader.resetUniform();
             }
