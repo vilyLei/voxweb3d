@@ -251,9 +251,9 @@ class RenderAdapter implements IRenderAdapter {
 		this.syncHtmlColor();
 		this.m_gl.clearColor(color.r, color.g, color.b, color.a);
 		this.m_gl.clear(this.m_gl.COLOR_BUFFER_BIT);
-		if (DebugFlag.Flag_0 > 0) {
-			console.log("clearColor >>>>>>>");
-		}
+		// if (DebugFlag.Flag_0 > 0) {
+		// 	console.log("clearColor >>>>>>>");
+		// }
 	}
 	private syncHtmlColor(): void {
 		// console.log("this.m_rtx.bodyBgColor: ", this.m_rtx.bodyBgColor);
@@ -283,9 +283,9 @@ class RenderAdapter implements IRenderAdapter {
 
 		const cvs = this.bgColor;
 
-		if (DebugFlag.Flag_0 > 0) {
-			console.log("clear >>>>>>>");
-		}
+		// if (DebugFlag.Flag_0 > 0) {
+		// 	console.log("clear >>>>>>>");
+		// }
 		// if(DebugFlag.Flag_0 > 0) {
 		// 	console.log("color cvs: ", cvs);
 		// }

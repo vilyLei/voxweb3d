@@ -27,6 +27,8 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import RendererScene from "../vox/scene/RendererScene";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import MathConst from "../vox/math/MathConst";
+import MouseEvent from "../vox/event/MouseEvent";
+import IMouseEvent from "../vox/event/IMouseEvent";
 
 export class DemoPrimitive {
 	constructor() { }
@@ -73,6 +75,14 @@ export class DemoPrimitive {
 		// 表示和近平面相交
 		return 2;
 	}
+	private m_target: DisplayEntity = null;
+	private mouseDown(evt: IMouseEvent): void {
+
+		let flag = this.m_target.isVisible();
+		this.m_target.setVisible(!flag);
+		
+		console.log("mouseDown(), flag: ", flag);
+	}
 	initialize(): void {
 		if (this.m_rscene == null) {
 
@@ -94,6 +104,7 @@ export class DemoPrimitive {
 			this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
 			this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+			this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
 			if (this.m_statusDisp != null) this.m_statusDisp.initialize();
 			let tex0 = this.getTexByUrl("static/assets/box.jpg");
@@ -150,6 +161,7 @@ export class DemoPrimitive {
 			let flag = cam.visiTestNearPlaneWithSphere(this.m_sph.getPosition(), radius);
 			// let flag = this.visiTestNearPlaneWithSphere(this.m_sph.getPosition(), radius);
 			console.log("XXXXX flag: ", flag);
+			this.m_target = this.m_sph;
 			return;
 			let axis = new Axis3DEntity();
 			axis.initialize();

@@ -46,7 +46,9 @@ export default class Entity3DNode implements IEntity3DNode {
 		this.camVisi = 0;
 	}
 	isVisible(): boolean {
-		return this.runit.rendering && this.runit.drawing;
+		// console.log(this.runit.rendering, ",", this.runit.drawing);
+		return this.runit.drawing && this.entity.isDrawEnabled();
+		// return this.runit.rendering && this.runit.drawing;
 	}
 	// busy
 	private static s_b: number = 1;
