@@ -412,6 +412,10 @@ export default class RendererSceneBase {
 		return this.m_renderer.getProcessAt(this.m_processids[processIndex]);
 	}
 	addContainer(container: IRenderEntityContainer, processIndex: number = 0): void {
+
+		if(container.getREType() < 12) {
+			throw Error("illegal operation !!!");
+		}
 		if (processIndex < 0) {
 			processIndex = 0;
 		}
@@ -423,11 +427,15 @@ export default class RendererSceneBase {
 				}
 			}
 			if (i >= this.m_containersTotal) {
+
 				container.__$wuid = this.m_uid;
 				container.wprocuid = processIndex;
 				container.__$setRenderer(this);
 				this.m_containers.push(container);
 				this.m_containersTotal++;
+				if(container.isSpaceEnabled()) {
+					this.m_rspace.addEntity(container);
+				}
 			}
 		}
 	}
@@ -438,6 +446,8 @@ export default class RendererSceneBase {
 
 			for (; i < this.m_containersTotal; ++i) {
 				if (this.m_containers[i] == container) {
+
+					this.m_rspace.removeEntity(container);
 					container.__$wuid = -1;
 					container.wprocuid = -1;
 					container.__$setRenderer(null);
@@ -487,6 +497,25 @@ export default class RendererSceneBase {
 	drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
 		this.m_renderer.drawEntity(entity, useGlobalUniform, forceUpdateUniform);
 	}
+	private addEntityToSpace(re: IRenderEntity): void {
+		const sp = this.m_rspace;
+		if (sp) {
+			let flag = true;
+			let parent = re.__$getParent();
+			// console.log("parent: ", parent);
+			while(parent) {
+				// console.log("parent.isSpaceEnabled(): ", parent.isSpaceEnabled());
+				if(!parent.hasParent() && parent.isSpaceEnabled()) {
+					flag = false;
+				}
+				parent = parent.getParent();
+			}
+			// console.log("addEntityToSpace(), flag: ", flag);
+			if(flag) {
+				sp.addEntity(re);
+			}
+		}
+	}
 	/**
 	 * add an entity to the renderer process of the renderer instance
 	 * @param entity IRenderEntityBase instance(for example: DisplayEntity class instance)
@@ -506,29 +535,15 @@ export default class RendererSceneBase {
 							// console.log("add entity into the renderer scene.");
 							re.getTransform().setUpdater(this.m_transUpdater);
 							this.m_renderer.addEntity(re, this.m_processids[processid], deferred);
-							if (this.m_rspace != null) {
-								this.m_rspace.addEntity(re);
-							}
+							this.addEntityToSpace(re);
 						} else {
-							// 这里的等待队列可能会和加入容器的操作冲突
-							// wait queue
-							// if (this.m_nodeWaitLinker == null) {
-							// 	this.m_nodeWaitLinker = new Entity3DNodeLinker();
-							// 	this.m_nodeWaitQueue = new EntityNodeQueue();
-							// }
-							// let node = this.m_nodeWaitQueue.addEntity(re);
-							// node.rstatus = processid;
-							// this.m_nodeWaitLinker.addNode(node);
-
 							this.m_entityFence.addEntity(re, processid);
 						}
 					} else {
 						// console.log("add entity into the renderer scene A3.");
 						re.getTransform().setUpdater(this.m_transUpdater);
 						this.m_renderer.addEntity(re, this.m_processids[processid], deferred);
-						if (this.m_rspace != null) {
-							this.m_rspace.addEntity(re);
-						}
+						this.addEntityToSpace(re);
 					}
 				}
 			} else {

@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import MathConst from "../../vox/math/MathConst";
-import RSEntityFlag from "../../vox/scene/RSEntityFlag";
+import REF from "../../vox/scene/RSEntityFlag";
 import Vector3D from "../../vox/math/Vector3D";
 import IAABB from "../../vox/geom/IAABB";
 import AABB from "../../vox/geom/AABB";
@@ -19,18 +19,21 @@ import IRenderer from "../../vox/scene/IRenderer";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import IROTransform from "../../vox/display/IROTransform";
 import IRenderEntityBase from "../render/IRenderEntityBase";
+import { SpaceCullingMask } from "../space/SpaceCullingMask";
+import IRenderEntity from "../render/IRenderEntity";
 
 export default class DisplayEntityContainer implements IDisplayEntityContainer, IEntityTransform {
 
 	private static s_uid = 0;
-	private m_uid = 0;
+	private m_uid = DisplayEntityContainer.s_uid++;
 	protected m_eventDispatcher: IEvtDispatcher = null;
+	protected m_spaceEnabled = false;
 
-	constructor(boundsEnabled: boolean = true) {
+	constructor(boundsEnabled: boolean = true, spaceEnabled = false) {
 		if (boundsEnabled) {
 			this.createBounds();
 		}
-		this.m_uid = DisplayEntityContainer.s_uid++;
+		this.m_spaceEnabled = spaceEnabled;
 	}
 	private m_transformStatus = 0;
 	private m_rotateBoo = false;
@@ -61,6 +64,16 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 	 */
 	protected m_cbvers: number[] = null;
 	private m_$updateBounds = true;
+
+	/**
+	 * renderer scene entity flag, be used by the renderer system
+	 * 第0位到第19位总共20位存放自身在space中的 index id(最小值为1, 最大值为1048575,默认值是0, 也就是最多只能展示1048575个entitys),
+	 * 第20位开始到26位为总共7位止存放在renderer中的状态数据(renderer unique id and others)
+	 * 第27位存放是否在container里面
+	 * 第28位开始到29位总共二位存放renderer 载入状态 的相关信息
+	 * 第30位位存放是否渲染运行时排序
+	 */
+	__$rseFlag = REF.DEFAULT;
 	// 自身所在的world的唯一id, 通过这个id可以找到对应的world
 	__$wuid = -1;
 	// render process uid
@@ -69,7 +82,16 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 	__$weid = -1;
 	// 记录自身是否再容器中(取值为0和1), 不允许外外面其他代码调用
 	__$contId = 0;
+
 	uuid = "";
+	/**
+	 * 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMask, 默认只会有摄像机裁剪
+	 */
+	spaceCullMask = SpaceCullingMask.CAMERA;
+	// /**
+	//  * recorde a draw status
+	//  */
+	// drawEnabled = false;
 	// mouse interaction enabled
 	mouseEnabled = false;
 
@@ -88,9 +110,10 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 			if (renderer != null) {
 				// add all entities into renderer
 				for (; i < this.m_entitiesTotal; ++i) {
-					this.m_entities[i].__$rseFlag = RSEntityFlag.RemoveContainerFlag(this.m_entities[i].__$rseFlag);
-					this.__$renderer.addEntity(this.m_entities[i], this.wprocuid, false);
-					this.m_entities[i].__$rseFlag = RSEntityFlag.AddContainerFlag(this.m_entities[i].__$rseFlag);
+					const et = this.m_entities[i];
+					et.__$rseFlag = REF.RemoveContainerFlag(et.__$rseFlag);
+					this.__$renderer.addEntity(et, this.wprocuid, false);
+					et.__$rseFlag = REF.AddContainerFlag(et.__$rseFlag);
 				}
 			}
 		}
@@ -99,7 +122,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 			this.m_children[i].__$setRenderer(renderer);
 		}
 	}
-	__$setParent(parent: DisplayEntityContainer): void {
+	protected __$setParent(parent: DisplayEntityContainer): void {
 		if (parent != this && parent != this.__$parent) {
 			this.m_$updateBounds = true;
 			this.__$parent = parent;
@@ -113,6 +136,10 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 			this.__$setParentMatrix(parent);
 		}
 	}
+
+	hasParent(): boolean {
+		return this.__$parent != null;
+	}
 	getRenderer(): IRenderer {
 		return this.__$renderer;
 	}
@@ -122,6 +149,29 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 
 	getTransform(): IROTransform {
 		return null;
+	}
+	/**
+	 * @returns 是否用于空间管理系统
+	 */
+	isSpaceEnabled(): boolean {
+		return this.m_spaceEnabled;
+	}
+	protected m_rendering = true;
+	isRendering(): boolean {
+		return this.m_rendering;
+	}
+	__$setRendering(r: boolean): void {
+		this.m_rendering = r;
+	}
+	setRendering(rendering: boolean): void {
+		// console.log("rendering: ", rendering);
+		this.m_rendering = rendering;
+		for (let i = 0; i < this.m_entitiesTotal; ++i) {
+			this.m_entities[i].setRendering(rendering);
+		}
+		for (let i = 0; i < this.m_childrenTotal; ++i) {
+			this.m_children[i].setRendering(rendering);
+		}
 	}
 
 	dispatchEvt(evt: any): number {
@@ -145,6 +195,13 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 			this.m_cbvers = [];
 		}
 	}
+
+	/**
+	 * @return 返回true表示当前entity能被用于渲染
+	 */
+	isDrawEnabled(): boolean {
+		return true;
+	}
 	getGlobalBounds(): IAABB {
 		return this.m_globalBounds;
 	}
@@ -157,6 +214,14 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 		}
 		return -1;
 	}
+
+    getEntities(): IRenderEntity[] {
+		return this.m_entities;
+	}
+    getContainers(): IDisplayEntityContainer[] {
+		return this.m_children;
+	}
+
 	addChild(et: IRenderEntityBase): void {
 		if (et != null) {
 			if (et.getREType() < 12) {
@@ -172,9 +237,24 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 					}
 				}
 				if (i >= this.m_childrenTotal) {
+
+					let flag = false;
+					let parent: DisplayEntityContainer = this;
+					while(parent) {
+						if(parent.isSpaceEnabled()) {
+							flag = true;
+						}
+						parent = parent.getParent();
+					}
+					if(flag != child.isSpaceEnabled()) {
+						throw Error("illegal operation !!!");
+					}
+
 					if (this.m_cbvers != null) {
 						this.m_cbvers.push(-1);
 					}
+					child.spaceCullMask |= this.spaceCullMask;
+
 					child.__$contId = 1;
 					child.wprocuid = this.wprocuid;
 					child.__$setParent(this);
@@ -266,13 +346,16 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 						this.m_ebvers.push(-1);
 					}
 					entity.getTransform().setParentMatrix(this.getMatrix());
-					if (this.__$renderer != null) {
+
+					entity.spaceCullMask |= this.spaceCullMask;
+
+					entity.__$setParent(this);
+					if (this.__$renderer) {
 						//entity.__$contId = 0;
-						entity.__$rseFlag = RSEntityFlag.RemoveContainerFlag(entity.__$rseFlag);
+						entity.__$rseFlag = REF.RemoveContainerFlag(entity.__$rseFlag);
 						this.__$renderer.addEntity(this.m_entities[i], this.wprocuid, false);
 					}
-					entity.__$rseFlag = RSEntityFlag.AddContainerFlag(entity.__$rseFlag);
-					entity.__$setParent(this);
+					entity.__$rseFlag = REF.AddContainerFlag(entity.__$rseFlag);
 					entity.update();
 				}
 			}
@@ -285,10 +368,10 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 				return;
 			}
 			let entity = et as ITransformEntity;
-			if (entity.__$getParent() == this) {				
+			if (entity.__$getParent() == this) {
 				for (let i = 0; i < this.m_entitiesTotal; ++i) {
 					if (this.m_entities[i] == entity) {
-						entity.__$rseFlag = RSEntityFlag.RemoveContainerFlag(entity.__$rseFlag);
+						entity.__$rseFlag = REF.RemoveContainerFlag(entity.__$rseFlag);
 						this.m_entities[i].__$setParent(null);
 						this.m_entities.splice(i, 1);
 						if (this.m_ebvers != null) {
@@ -308,7 +391,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 		if (uid > -1) {
 			for (let i = 0; i < this.m_entitiesTotal; ++i) {
 				if (this.m_entities[i].getUid() == uid) {
-					this.m_entities[i].__$rseFlag = RSEntityFlag.RemoveContainerFlag(this.m_entities[i].__$rseFlag);
+					this.m_entities[i].__$rseFlag = REF.RemoveContainerFlag(this.m_entities[i].__$rseFlag);
 					this.m_entities[i].__$setParent(null);
 					if (this.__$renderer != null) {
 						this.__$renderer.removeEntity(this.m_entities[i]);
@@ -329,13 +412,13 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 		}
 		return null;
 	}
-	getEntities(): ITransformEntity[] {
+	getAllEntities(): ITransformEntity[] {
 		let entities: ITransformEntity[] = null;
 		if (this.m_entities != null) {
 			entities = this.m_entities.slice(0);
 		}
 		for (let i = 0; i < this.m_children.length; ++i) {
-			let list = this.m_children[i].getEntities();
+			let list = this.m_children[i].getAllEntities();
 			if (list != null) {
 				entities = entities.concat(list);
 			}
@@ -352,22 +435,22 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 		}
 		return null;
 	}
-	getEntitysTotal(): number {
+	getEntitiesTotal(): number {
 		return this.m_entitiesTotal;
 	}
 	sphereIntersect(centerV: Vector3D, radius: number): boolean {
 		return false;
 	}
-	__$getParentVisible(): boolean {
+	protected __$getParentVisible(): boolean {
 		return this.m_parentVisible;
 	}
-	__$updateVisible(): void {
+	protected __$updateVisible(): void {
 		if (this.__$parent != null) {
 			this.m_parentVisible = this.__$parent.__$getParentVisible() && this.__$parent.getVisible();
 		}
-		let i: number = 0;
+		let i = 0;
 		//console.log("this.m_visible: "+this.m_visible+", this.m_parentVisible: "+this.m_parentVisible);
-		let boo: boolean = this.m_visible && this.m_parentVisible;
+		let boo = this.m_visible && this.m_parentVisible;
 		for (; i < this.m_entitiesTotal; ++i) {
 			this.m_entities[i].__$setDrawEnabled(boo);
 		}
@@ -388,6 +471,12 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 	}
 	getREType(): number {
 		return 12;
+	}
+	/**
+	 * @returns 自身是否未必任何渲染器相关的系统使用
+	 */
+	isFree(): boolean {
+		return this.__$rseFlag == REF.DEFAULT;
 	}
 	getUid(): number {
 		return this.m_uid;
@@ -594,7 +683,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 			return this.m_localMat;
 		}
 	}
-	__$setParentMatrix(parent: DisplayEntityContainer): void {
+	protected __$setParentMatrix(parent: DisplayEntityContainer): void {
 		this.m_parentMat = parent.getMatrix();
 		if (this.m_parentMat != null) {
 			if (this.m_omat == null) {
@@ -642,32 +731,34 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 		this.m_$updateBounds = true;
 	}
 	protected updateBounds(): void {
-		if (this.m_globalBounds != null && this.m_gboundsStatus > 0) {
-			let i: number = 0;
+		const gb = this.m_globalBounds;
+		if (gb && this.m_gboundsStatus > 0) {
+			let i = 0;
 			if (this.m_gboundsStatus < 2) {
 				// 表示父级和子集的global bounds都要发生变化
 				for (; i < this.m_childrenTotal; ++i) {
 					this.m_children[i].updateBounds();
 				}
 			}
-			this.m_globalBounds.reset();
+			gb.reset();
 			i = 0;
 			let bounds: IAABB = null;
 			for (; i < this.m_entitiesTotal; ++i) {
+				// this.m_entities[i].update();
 				bounds = this.m_entities[i].getGlobalBounds();
 				if (bounds != null) {
-					this.m_globalBounds.union(bounds);
+					gb.union(bounds);
 				}
 				this.m_ebvers[i] = this.m_entities[i].getGlobalBoundsVer();
 			}
 			for (i = 0; i < this.m_childrenTotal; ++i) {
 				bounds = this.m_children[i].getGlobalBounds();
 				if (bounds != null) {
-					this.m_globalBounds.union(bounds);
+					gb.union(bounds);
 				}
 				this.m_cbvers[i] = this.m_children[i].getGlobalBoundsVer();
 			}
-			this.m_globalBounds.update();
+			gb.update();
 			if (this.__$parent != null) {
 				// 只需要父级执行bounds尺寸范围的调节
 				let parent: DisplayEntityContainer = this.__$parent;
@@ -753,7 +844,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 	//// local to world matrix, 使用的时候注意数据安全->防止多个显示对象拥有而出现多次修改的问题,因此此函数尽量不要用
 	destroy(): void {
 		// 当自身被完全移出RenderWorld之后才能执行自身的destroy
-		if (this.__$wuid < 0) {
+		if (this.__$wuid < 0 && this.isFree()) {
 			if (this.m_eventDispatcher != null) {
 				this.m_eventDispatcher.destroy();
 				this.m_eventDispatcher = null;
@@ -768,8 +859,5 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 			this.m_parentMat = null;
 			this.m_omat = null;
 		}
-	}
-	toString(): string {
-		return "[DisplayEntityContainer(uid = " + this.m_uid + ", __$wuid = " + this.__$wuid + ", __$weid = " + this.__$weid + ")]";
 	}
 }

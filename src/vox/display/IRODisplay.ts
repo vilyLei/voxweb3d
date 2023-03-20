@@ -15,7 +15,7 @@ import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRPODisplay from "../../vox/render/IRPODisplay";
 
 interface IRODisplay {
-    
+
     uuid: string;
     // render yes or no
     visible: boolean;
@@ -27,7 +27,8 @@ interface IRODisplay {
     drawMode: number;
     vbuf: IROVtxBuf;
     ivbuf: IROIVtxBuf;
-    
+
+	rendering: boolean;
     /**
      * record render state: shadowMode(one byte) + depthTestMode(one byte) + blendMode(one byte) + cullFaceMode(one byte)
      * its value come from: RendererState.CreateRenderState("default", CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);

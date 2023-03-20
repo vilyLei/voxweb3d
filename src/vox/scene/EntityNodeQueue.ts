@@ -5,8 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RSEntityFlag from "../../vox/scene/RSEntityFlag";
-import IRenderEntity from "../../vox/render/IRenderEntity";
+import REF from "../../vox/scene/RSEntityFlag";
+import IRenderEntityBase from "../../vox/render/IRenderEntityBase";
 import Entity3DNode from "../../vox/scene/Entity3DNode";
 
 export default class EntityNodeQueue {
@@ -14,7 +14,7 @@ export default class EntityNodeQueue {
 	private m_listLen: number = 0;
 	private m_ids: number[] = [];
 	private m_list: Entity3DNode[] = [];
-	private m_entieies: IRenderEntity[] = [];
+	private m_entieies: IRenderEntityBase[] = [];
 	private m_fs: number[] = [];
 	// free id list
 	private m_fids: number[] = [];
@@ -58,24 +58,24 @@ export default class EntityNodeQueue {
 		}
 	}
 	// 可以添加真正被渲染的实体也可以添加只是为了做检测的实体(不允许有material)
-	addEntity(entity: IRenderEntity): Entity3DNode {
+	addEntity(entity: IRenderEntityBase): Entity3DNode {
 		let node = this.createNode();
 		this.m_entieies[node.spaceId] = entity;
 		node.entity = entity;
-		entity.__$rseFlag = RSEntityFlag.AddSpaceUid(entity.__$rseFlag, node.spaceId);
+		entity.__$rseFlag = REF.AddSpaceUid(entity.__$rseFlag, node.spaceId);
 		return node;
 	}
 	initialize(total: number): void {
 		if (total > 0) {
 			for (let i: number = 0; i < total; i++) {
-				let node: Entity3DNode = this.createNode();
+				let node = this.createNode();
 				this.m_entieies[node.spaceId] = null;
 			}
 		}
 	}
-	getNodeByEntity(entity: IRenderEntity): Entity3DNode {
-		if (RSEntityFlag.TestSpaceContains(entity.__$rseFlag)) {
-			let uid = RSEntityFlag.GetSpaceUid(entity.__$rseFlag);
+	getNodeByEntity(entity: IRenderEntityBase): Entity3DNode {
+		if (REF.TestSpaceContains(entity.__$rseFlag)) {
+			let uid = REF.GetSpaceUid(entity.__$rseFlag);
 
 			if (this.m_entieies[uid] == entity) {
 				return this.m_list[uid];
@@ -83,13 +83,13 @@ export default class EntityNodeQueue {
 		}
 		return null;
 	}
-	removeEntity(entity: IRenderEntity): void {
-		if (RSEntityFlag.TestSpaceContains(entity.__$rseFlag)) {
-			let uid = RSEntityFlag.GetSpaceUid(entity.__$rseFlag);
+	removeEntity(entity: IRenderEntityBase): void {
+		if (REF.TestSpaceContains(entity.__$rseFlag)) {
+			let uid = REF.GetSpaceUid(entity.__$rseFlag);
 			if (this.m_entieies[uid] == entity) {
 				this.m_list[uid].reset();
 				this.restoreId(uid);
-				entity.__$rseFlag = RSEntityFlag.RemoveSpaceUid(entity.__$rseFlag);
+				entity.__$rseFlag = REF.RemoveSpaceUid(entity.__$rseFlag);
 			}
 		}
 	}

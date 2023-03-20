@@ -37,10 +37,11 @@ export default class RODisplay implements IRODisplay {
     drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
     vbuf: ROVertexBuffer = null;
     ivbuf: IROIVtxBuf = null;
+	rendering = true;
     // record render state: shadowMode(one byte) + depthTestMode(one byte) + blendMode(one byte) + cullFaceMode(one byte)
     // its value come from: RendererState.CreateRenderState("default", CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);
-    renderState: number = RendererState.NORMAL_STATE;
-    rcolorMask: number = RendererState.COLOR_MASK_ALL_TRUE;
+    renderState = RendererState.NORMAL_STATE;
+    rcolorMask = RendererState.COLOR_MASK_ALL_TRUE;
     // mouse interaction enabled flag
     mouseEnabled: boolean = false;
     private constructor() {
@@ -144,6 +145,7 @@ export default class RODisplay implements IRODisplay {
         this.ivsCount = 0;
         this.m_partGroup = null;
         this.__$$runit = null;
+		this.rendering = true;
     }
     // 只能由渲染系统内部调用
     __$ruid: number = -1;     // 用于关联IRPODisplay对象
@@ -171,7 +173,7 @@ export default class RODisplay implements IRODisplay {
     }
     static Create(): RODisplay {
         let unit: RODisplay = null;
-        let index: number = RODisplay.GetFreeId();
+        let index = RODisplay.GetFreeId();
         //console.log("RODisplay::Create(), RODisplay.m_unitList.length: "+RODisplay.m_unitList.length);
         if (index >= 0) {
             unit = RODisplay.m_unitList[index];
@@ -188,7 +190,7 @@ export default class RODisplay implements IRODisplay {
 
     static Restore(pdisp: RODisplay): void {
         if (pdisp != null && RODisplay.m_unitFlagList[pdisp.getUid()] == RODisplay.s_FLAG_BUSY) {
-            let uid: number = pdisp.getUid();
+            let uid = pdisp.getUid();
             RODisplay.m_freeIdList.push(uid);
             RODisplay.m_unitFlagList[uid] = RODisplay.s_FLAG_FREE;
             pdisp.destroy();

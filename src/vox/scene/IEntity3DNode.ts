@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import IAABB from "../../vox/geom/IAABB";
-import IRenderEntity from "../../vox/render/IRenderEntity";
+import IRenderEntityBase from "../../vox/render/IRenderEntityBase";
 import IRPOUnit from "../render/IRPOUnit";
 
 export default interface IEntity3DNode {
@@ -16,7 +16,7 @@ export default interface IEntity3DNode {
 	drawEnabled: boolean;
 	prev: IEntity3DNode;
 	next: IEntity3DNode;
-	entity: IRenderEntity;
+	entity: IRenderEntityBase;
 	bounds: IAABB;
 	rayTestState: number;
 	runit: IRPOUnit;

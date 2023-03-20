@@ -32,15 +32,16 @@ export default class VtxSeparatedBuf implements IVtxBuf {
     getBuffersTotal(): number {
         return this.m_bufersTotal;
     }
-    
+
     getAttribsTotal(): number {
         return this.m_bufersTotal;
     }
     getF32DataAt(index: number): Float32Array {
+        // console.log("VtxSeparatedBuf::getF32DataAt(), VVV index: ",index, ", this.m_list[index]: ", this.m_list[index]);
         return this.m_list[index];
     }
     setF32DataAt(index: number, float32Arr: Float32Array, stepFloatsTotal: number, setpOffsets: number[]): void {
-        
+
         if(index < 1) this.m_bufersTotal = 1;
         else this.m_bufersTotal = index + 1;
 
@@ -57,13 +58,13 @@ export default class VtxSeparatedBuf implements IVtxBuf {
             this.m_dirtyList[index] = true;
         }
         if (setpOffsets != null) this.m_ofList = setpOffsets;
-        
-        // console.log("VtxSeparatedBuf::setF32DataAt(), this.m_bufersTotal: ",this.m_bufersTotal);
+
+        // console.log("VtxSeparatedBuf::setF32DataAt(), this.m_bufersTotal: ",this.m_bufersTotal, setpOffsets);
         // if (float32Arr != null) {
         //     this.m_sizeList[index] = float32Arr.length;
         // }
     }
-    
+
 	getF32DataVerAt(index: number): number {
         // console.log("VtxSeparatedBuf::getF32DataVerAt(), VVV index: ",index, ", ver: ", this.m_verList[index]);
         return this.m_verList[index];
@@ -74,29 +75,30 @@ export default class VtxSeparatedBuf implements IVtxBuf {
     }
     setData4fAt(vertexI: number, attribI: number, px: number, py: number, pz: number, pw: number): void {
         vertexI *= this.m_ofList[attribI];
-        this.m_list[attribI][vertexI++] = px;
-        this.m_list[attribI][vertexI++] = py;
-        this.m_list[attribI][vertexI++] = pz;
-        this.m_list[attribI][vertexI++] = pw;
+		const vs = this.m_list[attribI];
+        vs[vertexI++] = px;
+        vs[vertexI++] = py;
+        vs[vertexI++] = pz;
+        vs[vertexI++] = pw;
     }
     setData3fAt(vertexI: number, attribI: number, px: number, py: number, pz: number): void {
         vertexI *= this.m_ofList[attribI];
-        this.m_list[attribI][vertexI++] = px;
-        this.m_list[attribI][vertexI++] = py;
-        this.m_list[attribI][vertexI++] = pz;
+		const vs = this.m_list[attribI];
+        vs[vertexI++] = px;
+        vs[vertexI++] = py;
+        vs[vertexI++] = pz;
     }
     setData2fAt(vertexI: number, attribI: number, px: number, py: number): void {
         vertexI *= this.m_ofList[attribI];
-        this.m_list[attribI][vertexI++] = px;
-        this.m_list[attribI][vertexI++] = py;
+		const vs = this.m_list[attribI];
+        vs[vertexI++] = px;
+        vs[vertexI++] = py;
     }
     public destroy(): void {
         this.m_list = null;
         this.m_dirtyList = null;
         // this.m_sizeList = null;
         // //this.m_f32PreSizeList = null;
-
-        console.log("VtxSeparatedBuf::__$destroy()... ", this);
         this.m_list = null;
     }
 }

@@ -13,8 +13,6 @@ import IDisplayEntityContainer from "../../vox/entity/IDisplayEntityContainer";
 
 interface ITransformEntity extends IDisplayEntity{
     __$setParent(parent: IDisplayEntityContainer): void;
-    // localToGlobal(pv: IVector3D): void;
-    // globalToLocal(pv: IVector3D): void;
     getTransform(): IROTransform;
     getGlobalBoundsVer(): number;
 
@@ -28,7 +26,7 @@ interface ITransformEntity extends IDisplayEntity{
     getScaleXYZ(pv?: IVector3D): IVector3D;
     localToGlobal(pv: IVector3D): void;
     globalToLocal(pv: IVector3D): void;
-    
+
     getGlobalBounds(): IAABB;
     getLocalBounds(): IAABB;
     update(): void;

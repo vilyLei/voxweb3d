@@ -71,13 +71,16 @@ export default class PureEntity implements IDisplayEntity {
     uuid = "";
     // 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMask, 默认只会有摄像机裁剪
     spaceCullMask: SpaceCullingMask = SpaceCullingMask.CAMERA;
-    // recorde a draw status
-    drawEnabled: boolean = false;
+    // // recorde a draw status
+    // drawEnabled: boolean = false;
     // mouse interaction enabled
     mouseEnabled: boolean = false;
     //
     vbWholeDataEnabled: boolean = true;
 
+	hasParent(): boolean {
+		return false;
+	}
     __$setRenderProxy(rc: IRenderProxy): void {
         this.m_renderProxy = rc;
     }
@@ -99,6 +102,41 @@ export default class PureEntity implements IDisplayEntity {
     getRendererUid(): number {
         return RSEntityFlag.GetRendererUid(this.__$rseFlag);
     }
+
+	protected m_rendering = true;
+	isRendering(): boolean {
+		return this.m_rendering;
+	}
+	setRendering(rendering: boolean): void {
+		this.m_rendering = rendering;
+		const d = this.m_display;
+		if (d) {
+			d.rendering = rendering;
+			if (d.__$$runit) {
+				d.__$$runit.rendering = rendering;
+			}
+		}
+	}
+
+    __$setDrawEnabled(boo: boolean): void {
+        if (this.m_drawEnabled != boo) {
+            //  console.log("PureEntity::__$setDrawEnabled: "+boo);
+            //  if(!this.m_drawEnabled)
+            //  {
+            //      console.log("PureEntity::__$setDrawEnabled A: "+boo);
+            //  }
+            this.m_drawEnabled = boo;
+            if (this.m_display != null) {
+                this.m_display.visible = this.m_visible && boo;
+                if (this.m_display.__$ruid > -1) {
+                    this.m_display.__$$runit.setVisible(this.m_display.visible);
+                }
+            }
+        }
+    }
+    isDrawEnabled(): boolean {
+        return this.m_drawEnabled;
+    }
     /**
      * @returns 自身是否未必被任何渲染器相关的系统使用
      */
@@ -117,7 +155,7 @@ export default class PureEntity implements IDisplayEntity {
     setEvtDispatcher(evtDisptacher: IEvtDispatcher): void {
         this.m_mouseEvtDispatcher = evtDisptacher;
     }
-    
+
     getPosition(pv: Vector3D = null): Vector3D {
         if(!pv) pv = new Vector3D();
         if (this.m_globalBounds != null) {
@@ -138,26 +176,6 @@ export default class PureEntity implements IDisplayEntity {
             return this.m_globalBounds.version;
         }
         return -1;
-    }
-
-    __$setDrawEnabled(boo: boolean): void {
-        if (this.m_drawEnabled != boo) {
-            //  console.log("PureEntity::__$setDrawEnabled: "+boo);
-            //  if(!this.m_drawEnabled)
-            //  {
-            //      console.log("PureEntity::__$setDrawEnabled A: "+boo);
-            //  }
-            this.m_drawEnabled = boo;
-            if (this.m_display != null) {
-                this.m_display.visible = this.m_visible && boo;
-                if (this.m_display.__$ruid > -1) {
-                    this.m_display.__$$runit.setVisible(this.m_display.visible);
-                }
-            }
-        }
-    }
-    isDrawEnabled(): boolean {
-        return this.m_drawEnabled;
     }
     // update material texture list
     protected m_texChanged: boolean = false;
@@ -243,7 +261,7 @@ export default class PureEntity implements IDisplayEntity {
     setScale3(sv: Vector3D): PureEntity {return this;}
     getScaleXYZ(pv: Vector3D = null): Vector3D {return null;}
     getRotationXYZ(pv: Vector3D = null): Vector3D {return null;}
-    
+
     copyMeshFrom(entity: IDisplayEntity): PureEntity {
         if (entity != null) {
             this.setMesh(entity.getMesh());
@@ -270,7 +288,7 @@ export default class PureEntity implements IDisplayEntity {
         this.m_display.trisNumber = m.trisNumber;
         this.m_display.visible = this.m_visible && this.m_drawEnabled;
     }
-    
+
     getTransform(): IROTransform {
         return null;
     }
@@ -550,7 +568,7 @@ export default class PureEntity implements IDisplayEntity {
      * @returns 是否能被渲染
      */
     isRenderEnabled(): boolean {
-        return this.drawEnabled && this.m_visible && this.m_display != null && this.m_display.__$ruid > -1;
+        return this.m_rendering && this.m_visible && this.m_display != null && this.m_display.__$ruid > -1;
     }
 
     private static s_pos: Vector3D = new Vector3D();
@@ -595,7 +613,7 @@ export default class PureEntity implements IDisplayEntity {
     updateBounds(): void {
         const mh = this.m_mesh;
         if (mh != null && this.m_localBounds != mh.bounds) {
-            
+
             this.m_localBounds.reset();
             let ivs = mh.getIVS();
             const dp = this.m_display;

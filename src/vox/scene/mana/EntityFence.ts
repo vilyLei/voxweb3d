@@ -69,16 +69,19 @@ export default class EntityFency {
 				let status: number;
 				while (nextNode) {
 					console.log("EntityFency::update(), nextNode.entity.hasMesh().");
-					if (nextNode.entity.hasMesh()) {
-						pnode = nextNode;
-						nextNode = nextNode.next;
-						status = pnode.rstatus;
-						const entity = pnode.entity;
-						this.m_wlinker.removeNode(pnode);
-						this.m_wq.removeEntity(pnode.entity);
-						console.log("EntityFency::update(), ready a mesh data that was finished.");
-						this.m_rc.addEntity(entity, status);
-					} else {
+					const entity = nextNode.entity;
+					const retype = entity.getREType();
+					if(retype >= 12 || retype < 12 && (entity as IRenderEntity).hasMesh()) {
+
+							pnode = nextNode;
+							nextNode = nextNode.next;
+							status = pnode.rstatus;
+							const entity = pnode.entity;
+							this.m_wlinker.removeNode(pnode);
+							this.m_wq.removeEntity(pnode.entity);
+							console.log("EntityFency::update(), ready a mesh data that was finished.");
+							this.m_rc.addEntity(entity, status);
+					}else {
 						flag = true;
 						nextNode = nextNode.next;
 					}

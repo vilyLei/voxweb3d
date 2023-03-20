@@ -23,7 +23,7 @@ export default class BoxFrame3D extends DisplayEntity {
     private m_minV: Vector3D = new Vector3D(-100.0, -100.0, -100.0);
     private m_maxV: Vector3D = new Vector3D(100.0, 100.0, 100.0);
     private m_posarr: number[] = null;
-    private m_selfMesh: DashedLineMesh = null;
+    private m_sm: DashedLineMesh = null;
     private m_currMaterial: Line3DMaterial = null;
     // 用于射线检测
     public rayTestRadius: number = 8.0;
@@ -56,17 +56,17 @@ export default class BoxFrame3D extends DisplayEntity {
                     colorarr.push(this.color.r, this.color.g, this.color.b);
                 }
             }
-            this.m_selfMesh = new DashedLineMesh(VtxBufConst.VTX_DYNAMIC_DRAW);
-            this.m_selfMesh.rayTestRadius = this.rayTestRadius;
-            this.m_selfMesh.vbWholeDataEnabled = false;
-            this.m_selfMesh.setBufSortFormat(material.getBufSortFormat());
+            this.m_sm = new DashedLineMesh(VtxBufConst.VTX_DYNAMIC_DRAW);
+            this.m_sm.rayTestRadius = this.rayTestRadius;
+            this.m_sm.vbWholeDataEnabled = false;
+            this.m_sm.setBufSortFormat(material.getBufSortFormat());
             if (this.m_dynColorBoo) {
-                this.m_selfMesh.initialize(this.m_posarr, null);
+                this.m_sm.initialize(this.m_posarr, null);
             }
             else {
-                this.m_selfMesh.initialize(this.m_posarr, colorarr);
+                this.m_sm.initialize(this.m_posarr, colorarr);
             }
-            this.setMesh(this.m_selfMesh);
+            this.setMesh(this.m_sm);
         }
     }
     initializeByAABB(aabb: IAABB): void {
@@ -95,7 +95,7 @@ export default class BoxFrame3D extends DisplayEntity {
 
         this.createMaterial();
         this.activeDisplay();
-        if (this.m_selfMesh == null) this.m_selfMesh = this.getMesh() as DashedLineMesh;
+        if (this.m_sm == null) this.m_sm = this.getMesh() as DashedLineMesh;
     }
 
     initializeByPosList8(posList8: Vector3D[]): void {
@@ -119,10 +119,10 @@ export default class BoxFrame3D extends DisplayEntity {
 
         this.createMaterial();
         this.activeDisplay();
-        if (this.m_selfMesh == null) this.m_selfMesh = this.getMesh() as DashedLineMesh;
+        if (this.m_sm == null) this.m_sm = this.getMesh() as DashedLineMesh;
     }
     getVertexAt(vtxIndex: number, outPos: Vector3D): void {
-        if (this.m_selfMesh != null) {
+        if (this.m_sm != null) {
             let k: number = 0;
             switch (vtxIndex) {
                 case 0:
@@ -162,63 +162,63 @@ export default class BoxFrame3D extends DisplayEntity {
         }
     }
     setVertexAt(vtxIndex: number, pos: Vector3D): void {
-        if (this.m_selfMesh != null) {
+        if (this.m_sm != null) {
             let k: number = 0;
             switch (vtxIndex) {
                 case 0:
                     this.m_posarr[k] = pos.x; this.m_posarr[++k] = pos.y; this.m_posarr[++k] = pos.z;
-                    this.m_selfMesh.setVSXYZAt(0, pos.x, pos.y, pos.z);
-                    this.m_selfMesh.setVSXYZAt(2, pos.x, pos.y, pos.z);
-                    this.m_selfMesh.setVSXYZAt(8, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(0, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(2, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(8, pos.x, pos.y, pos.z);
                     break;
                 case 1:
                     k = 3;
                     this.m_posarr[k] = pos.x; this.m_posarr[++k] = pos.y; this.m_posarr[++k] = pos.z;
-                    this.m_selfMesh.setVSXYZAt(1, pos.x, pos.y, pos.z);
-                    this.m_selfMesh.setVSXYZAt(4, pos.x, pos.y, pos.z);
-                    this.m_selfMesh.setVSXYZAt(10, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(1, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(4, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(10, pos.x, pos.y, pos.z);
                     break;
                 case 2:
                     k = 15;
                     this.m_posarr[k] = pos.x; this.m_posarr[++k] = pos.y; this.m_posarr[++k] = pos.z;
-                    this.m_selfMesh.setVSXYZAt(5, pos.x, pos.y, pos.z);
-                    this.m_selfMesh.setVSXYZAt(7, pos.x, pos.y, pos.z);
-                    this.m_selfMesh.setVSXYZAt(14, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(5, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(7, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(14, pos.x, pos.y, pos.z);
                     break;
                 case 3:
                     k = 9;
                     this.m_posarr[k] = pos.x; this.m_posarr[++k] = pos.y; this.m_posarr[++k] = pos.z;
-                    this.m_selfMesh.setVSXYZAt(3, pos.x, pos.y, pos.z);
-                    this.m_selfMesh.setVSXYZAt(6, pos.x, pos.y, pos.z);
-                    this.m_selfMesh.setVSXYZAt(12, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(3, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(6, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(12, pos.x, pos.y, pos.z);
                     break;
                 case 4:
                     k = 27;
                     this.m_posarr[k] = pos.x; this.m_posarr[++k] = pos.y; this.m_posarr[++k] = pos.z;
-                    this.m_selfMesh.setVSXYZAt(9, pos.x, pos.y, pos.z);
-                    this.m_selfMesh.setVSXYZAt(16, pos.x, pos.y, pos.z);
-                    this.m_selfMesh.setVSXYZAt(18, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(9, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(16, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(18, pos.x, pos.y, pos.z);
                     break;
                 case 5:
                     k = 33;
                     this.m_posarr[k] = pos.x; this.m_posarr[++k] = pos.y; this.m_posarr[++k] = pos.z;
-                    this.m_selfMesh.setVSXYZAt(11, pos.x, pos.y, pos.z);
-                    this.m_selfMesh.setVSXYZAt(17, pos.x, pos.y, pos.z);
-                    this.m_selfMesh.setVSXYZAt(20, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(11, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(17, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(20, pos.x, pos.y, pos.z);
                     break;
                 case 6:
                     k = 45;
                     this.m_posarr[k] = pos.x; this.m_posarr[++k] = pos.y; this.m_posarr[++k] = pos.z;
-                    this.m_selfMesh.setVSXYZAt(15, pos.x, pos.y, pos.z);
-                    this.m_selfMesh.setVSXYZAt(21, pos.x, pos.y, pos.z);
-                    this.m_selfMesh.setVSXYZAt(23, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(15, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(21, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(23, pos.x, pos.y, pos.z);
                     break;
                 case 7:
                     k = 39;
                     this.m_posarr[k] = pos.x; this.m_posarr[++k] = pos.y; this.m_posarr[++k] = pos.z;
-                    this.m_selfMesh.setVSXYZAt(13, pos.x, pos.y, pos.z);
-                    this.m_selfMesh.setVSXYZAt(19, pos.x, pos.y, pos.z);
-                    this.m_selfMesh.setVSXYZAt(22, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(13, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(19, pos.x, pos.y, pos.z);
+                    this.m_sm.setVSXYZAt(22, pos.x, pos.y, pos.z);
                     break;
                 default:
                     break;
@@ -226,10 +226,10 @@ export default class BoxFrame3D extends DisplayEntity {
         }
     }
     updateFrame(minV: Vector3D, maxV: Vector3D): void {
-        if (this.m_selfMesh != null) {
+        if (this.m_sm) {
             this.m_minV.copyFrom(minV);
             this.m_maxV.copyFrom(maxV);
-            let m: DashedLineMesh = this.m_selfMesh;
+            let m = this.m_sm;
             // bottom frame
             m.setVSXYZAt(0, minV.x, minV.y, minV.z); m.setVSXYZAt(1, minV.x, minV.y, maxV.z);
             m.setVSXYZAt(2, minV.x, minV.y, minV.z); m.setVSXYZAt(3, maxV.x, minV.y, minV.z);
@@ -245,7 +245,6 @@ export default class BoxFrame3D extends DisplayEntity {
             m.setVSXYZAt(18, minV.x, maxV.y, minV.z); m.setVSXYZAt(19, maxV.x, maxV.y, minV.z);
             m.setVSXYZAt(20, minV.x, maxV.y, maxV.z); m.setVSXYZAt(21, maxV.x, maxV.y, maxV.z);
             m.setVSXYZAt(22, maxV.x, maxV.y, minV.z); m.setVSXYZAt(23, maxV.x, maxV.y, maxV.z);
-
         }
     }
     private m_abVersion: number = -1;

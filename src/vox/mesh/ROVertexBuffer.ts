@@ -73,6 +73,12 @@ export default class ROVertexBuffer extends ROIVertexBuffer implements IVtxBuf, 
 	setF32DataVerAt(index: number, ver: number): void {
 		this.m_vtxBuf.setF32DataVerAt(index, ver);
 	}
+
+	updateF32DataVerAt(index: number): void {
+		let ver = this.m_vtxBuf.getF32DataVerAt(index) + 1;
+		this.m_vtxBuf.setF32DataVerAt(index, ver);
+		this.vertexVer++;
+	}
 	getF32DataAt(index: number): Float32Array {
 		return this.m_vtxBuf.getF32DataAt(index);
 	}
@@ -82,19 +88,20 @@ export default class ROVertexBuffer extends ROIVertexBuffer implements IVtxBuf, 
 		this.vertexVer++;
 	}
 	setData4fAt(vertexI: number, attribI: number, px: number, py: number, pz: number, pw: number): void {
-		if (this.m_vtxBuf != null) {
+
+		if (this.m_vtxBuf) {
 			this.m_vtxBuf.setData4fAt(vertexI, attribI, px, py, pz, pw);
 			this.vertexVer++;
 		}
 	}
 	setData3fAt(vertexI: number, attribI: number, px: number, py: number, pz: number): void {
-		if (this.m_vtxBuf != null) {
+		if (this.m_vtxBuf) {
 			this.m_vtxBuf.setData3fAt(vertexI, attribI, px, py, pz);
 			this.vertexVer++;
 		}
 	}
 	setData2fAt(vertexI: number, attribI: number, px: number, py: number): void {
-		if (this.m_vtxBuf != null) {
+		if (this.m_vtxBuf) {
 			this.m_vtxBuf.setData2fAt(vertexI, attribI, px, py);
 			this.vertexVer++;
 		}
@@ -380,7 +387,9 @@ export default class ROVertexBuffer extends ROIVertexBuffer implements IVtxBuf, 
 		} else {
 			vb.setVtxBuf(new VtxSeparatedBuf());
 		}
-
+		for (i = 0; i < bufTot; i++) {
+			offsetList[i] = rvb.BufDataStepList[i];
+		}
 		for (i = 0; i < bufTot; i++) {
 			vb.setF32DataAt(i, rvb.BufDataList[i], stride, offsetList);
 		}
@@ -393,10 +402,13 @@ export default class ROVertexBuffer extends ROIVertexBuffer implements IVtxBuf, 
 		return vb;
 	}
 	private static UpdateSeparatedBufData(vb: ROVertexBuffer): ROVertexBuffer {
-        
+
 		const rvb = ROVertexBuffer;
 		let bufTot = rvb.BufDataStepList.length;
 		let offsetList: number[] = new Array(bufTot);
+		for (let i = 0; i < bufTot; i++) {
+			offsetList[i] = rvb.BufDataStepList[i];
+		}
 		// console.log("ROVertexBuffer::CreateBySaveDataSeparate(), bufTot: "+bufTot);
 		for (let i = 0; i < bufTot; i++) {
 			vb.setF32DataAt(i, rvb.BufDataList[i], 0, offsetList);

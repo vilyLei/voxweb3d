@@ -86,11 +86,11 @@ class ROVertexRes {
 				for (let i = 0; i < len; ++i) {
 					const ver = vtx.getF32DataVerAt(i);
 					// console.log("updateToGpu(), i:", i, ", ver: ", ver, ", this.m_verList[i]: ", this.m_verList[i]);
-					// console.log("sizeList[i], fvs.length: ", sizeList[i], fvs.length);
 					if (this.m_verList[i] != ver) {
 						this.m_verList[i] = ver;
                         // console.log("updateToGpu() updating data i: ", i);
                         fvs = vtx.getF32DataAt(i);
+						// console.log("sizeList[i], fvs.length: ", sizeList[i], fvs.length);
 						if (sizeList[i] >= fvs.byteLength) {
 							rc.bindArrBuf(this.m_gpuBufs[i]);
 							rc.arrBufSubData(fvs, 0);

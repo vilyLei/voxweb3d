@@ -25,13 +25,13 @@ export default class DashedLineMesh extends MeshBase {
 	private m_vs: Float32Array = null;
 	private m_cvs: Float32Array = null;
 	private m_lsTotal = 0;
-    
+
 	// 用于射线检测
 	public rayTestRadius = 2.0;
 	getVS(): Float32Array {
 		return this.m_vs;
 	}
-    
+
 	setVSData(data: Float32Array | number[], offset: number = 0): void {
         if(data && this.m_vs != null && (data.length + offset) <= this.m_vs.length) {
             this.m_vs.set(data, offset);
@@ -100,6 +100,7 @@ export default class DashedLineMesh extends MeshBase {
 			if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX)) {
 				if (this.m_cvs == null) {
 					this.m_cvs = colors ? new Float32Array(colors) : new Float32Array(this.m_vs.length);
+					rvb.AddFloat32DataVer(++this.m_vsVer);
 				} else {
 					if (colors) {
 						rvb.AddFloat32DataVer(++this.m_cvsVer);
@@ -127,8 +128,10 @@ export default class DashedLineMesh extends MeshBase {
 		}
 	}
 	setVSXYZAt(i: number, px: number, py: number, pz: number): void {
-		if (this.m_vbuf != null) {
+		if (this.m_vbuf) {
+			// ++this.m_vsVer;
 			this.m_vbuf.setData3fAt(i, 0, px, py, pz);
+			this.m_vbuf.updateF32DataVerAt(0);
 		}
 	}
 	isPolyhedral(): boolean {

@@ -7,12 +7,12 @@
 
 import RendererConst from "../../vox/scene/RendererConst";
 import IAABB from "../../vox/geom/IAABB";
-import IRenderEntity from "../../vox/render/IRenderEntity";
+import IRenderEntityBase from "../../vox/render/IRenderEntityBase";
 import IEntity3DNode from "./IEntity3DNode";
 import IRPOUnit from "../render/IRPOUnit";
 
 export default class Entity3DNode implements IEntity3DNode {
-	
+
 	uid = -1;
 	rstatus = 0;
 	/**
@@ -22,7 +22,7 @@ export default class Entity3DNode implements IEntity3DNode {
 	drawEnabled = true;
 	prev: Entity3DNode = null;
 	next: Entity3DNode = null;
-	entity: IRenderEntity = null;
+	entity: IRenderEntityBase = null;
 	bounds: IAABB = null;
 	rayTestState = 0;
 	runit: IRPOUnit = null;

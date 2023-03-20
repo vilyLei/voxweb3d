@@ -6,7 +6,7 @@
 /***************************************************************************/
 // 当前渲染场景空间管理的入口类, 鼠标拾取，摄像机裁剪，空间管理遮挡剔除等都是由这个系统来组织完成的
 
-import RSEntityFlag from "../../vox/scene/RSEntityFlag";
+import REF from "../../vox/scene/RSEntityFlag";
 import IVector3D from "../../vox/math/IVector3D";
 import IAABB from "../../vox/geom/IAABB";
 
@@ -26,6 +26,8 @@ import ISpaceCullingor from "../../vox/scene/ISpaceCullingor";
 import RenderingEntitySet from "./RenderingEntitySet";
 import DebugFlag from "../debug/DebugFlag";
 import IRPOUnit from "../render/IRPOUnit";
+import IRenderEntityBase from "../render/IRenderEntityBase";
+import IDisplayEntityContainer from "../entity/IDisplayEntityContainer";
 
 export default class RendererSpace implements IRendererSpace {
 	private static s_uid: number = 0;
@@ -88,45 +90,52 @@ export default class RendererSpace implements IRendererSpace {
 		return this.m_cullingor ? this.m_cullingor.getPOVNumber() : 0;
 	}
 	// 可以添加真正被渲染的实体也可以添加只是为了做检测的实体(不允许有material)
-	addEntity(entity: IRenderEntity): void {
+	addEntity(et: IRenderEntityBase): void {
 		const SCM = SpaceCullingMask;
-		if (entity.getGlobalBounds() != null && entity.spaceCullMask > SCM.NONE) {
-			if (RSEntityFlag.TestSpaceEnabled(entity.__$rseFlag)) {
-				entity.update();
+		if (et.getGlobalBounds() != null && et.spaceCullMask > SCM.NONE) {
+			if (REF.TestSpaceEnabled(et.__$rseFlag)) {
+				et.update();
 				++this.m_entitysTotal;
 
-				let node = this.m_nodeQueue.addEntity(entity);
-				node.bounds = entity.getGlobalBounds();
-				node.pcoEnabled = (entity.spaceCullMask & SCM.POV) == SCM.POV;
-
-				let boo = entity.isInRendererProcess() || entity.getMaterial() == null;
-				if (boo && (entity.spaceCullMask & SCM.POV) == SCM.POV) {
-					node.rstatus = 1;
-					if (entity.getMaterial() == null) {
-						node.runit = this.m_emptyRPOUnit;
-					}
-
-					if (node.runit == null) {
-						node.runit = entity.getDisplay().__$$runit as IRPOUnit;
-					}
-					this.m_nodeSLinker.addNode(node);
-				} else {
-					if (entity.getMaterial() == null) {
+				let node = this.m_nodeQueue.addEntity(et);
+				node.bounds = et.getGlobalBounds();
+				node.pcoEnabled = (et.spaceCullMask & SCM.POV) == SCM.POV;
+				if (et.getREType() < 12) {
+					const entity = et as IRenderEntity;
+					// let boo = entity.isInRendererProcess() || entity.getMaterial() == null;
+					let boo = entity.isInRendererProcess() || !entity.isPolyhedral();
+					if (boo && (entity.spaceCullMask & SCM.POV) == SCM.POV) {
 						node.rstatus = 1;
-						node.runit = this.m_emptyRPOUnit;
+						// if (entity.getMaterial() == null) {
+						if (!entity.isPolyhedral()) {
+							node.runit = this.m_emptyRPOUnit;
+						}
+						if (node.runit == null) {
+							node.runit = entity.getDisplay().__$$runit as IRPOUnit;
+						}
 						this.m_nodeSLinker.addNode(node);
 					} else {
-						node.rstatus = 0;
-						this.m_nodeWLinker.addNode(node);
+						// if (entity.getMaterial() == null) {
+						if (!entity.isPolyhedral()) {
+							node.rstatus = 1;
+							node.runit = this.m_emptyRPOUnit;
+							this.m_nodeSLinker.addNode(node);
+						} else {
+							node.rstatus = 0;
+							this.m_nodeWLinker.addNode(node);
+						}
 					}
+				} else {
+					console.log("add a container into the renderer space.");
+					node.rstatus = 1;
+					node.runit = this.m_emptyRPOUnit;
+					this.m_nodeSLinker.addNode(node);
 				}
 			}
 		}
 	}
 	removeEntity(entity: IRenderEntity): void {
-		
-		if (entity != null && RSEntityFlag.TestSpaceContains(entity.__$rseFlag)) {
-			
+		if (entity != null && REF.TestSpaceContains(entity.__$rseFlag)) {
 			let node = this.m_nodeQueue.getNodeByEntity(entity);
 			if (node != null) {
 				if (node.rstatus > 0) {
@@ -140,22 +149,27 @@ export default class RendererSpace implements IRendererSpace {
 			}
 		}
 	}
-	update(): void { }
-	runBegin(): void { }
+	update(): void {}
+	runBegin(): void {}
 	run(): void {
 		let nextNode = this.m_nodeWLinker.getBegin();
-		if (nextNode != null) {
+		if (nextNode) {
 			let pnode: Entity3DNode = null;
-			while (nextNode != null) {
+			while (nextNode) {
 				const entity = nextNode.entity;
-				if (entity.isInRendererProcess()) {
-					pnode = nextNode;
-					pnode.rstatus = 1;
-					nextNode = nextNode.next;
-					this.m_nodeWLinker.removeNode(pnode);
-					this.m_nodeSLinker.addNode(pnode);
-					if (pnode.runit == null) {
-						pnode.runit = entity.getDisplay().__$$runit as IRPOUnit;
+				if (entity.getREType() < 12) {
+					const rentity = entity as IRenderEntity;
+					if (rentity.isInRendererProcess()) {
+						pnode = nextNode;
+						pnode.rstatus = 1;
+						nextNode = nextNode.next;
+						this.m_nodeWLinker.removeNode(pnode);
+						this.m_nodeSLinker.addNode(pnode);
+						if (pnode.runit == null) {
+							pnode.runit = rentity.getDisplay().__$$runit as IRPOUnit;
+						}
+					} else {
+						nextNode = nextNode.next;
 					}
 				} else {
 					nextNode = nextNode.next;
@@ -163,8 +177,9 @@ export default class RendererSpace implements IRendererSpace {
 			}
 		}
 		nextNode = this.m_nodeSLinker.getBegin();
+
 		const cam = this.m_camera;
-		if (nextNode != null) {
+		if (nextNode) {
 			let total = 0;
 			const cor = this.m_cullingor;
 			if (cor) {
@@ -174,20 +189,32 @@ export default class RendererSpace implements IRendererSpace {
 				total = this.m_cullingor.total;
 			} else {
 				let ab: IAABB = null;
-				
+
 				let vboo = false;
-				while (nextNode != null) {
+				while (nextNode) {
 					vboo = false;
+					const entity = nextNode.entity;
+					const ty = entity.getREType();
 					if (nextNode.isVisible()) {
 						ab = nextNode.bounds;
 						vboo = cam.visiTestSphere2(ab.center, ab.radius);
-						if(vboo) total += 1;
+						if (vboo) {
+							total += 1;
+							if (ty >= 12) {
+								const c = entity as IDisplayEntityContainer;
+								c.__$setRendering(vboo);
+								this.camVisiContainer(c, cam);
+							}
+						} else {
+							entity.setRendering(vboo);
+						}
 					}
-					
 					nextNode.drawEnabled = vboo;
-					nextNode.entity.drawEnabled = vboo;
-					nextNode.runit.rendering = vboo;
-
+					if (ty < 12) {
+						entity.setRendering(vboo);
+					}
+					// nextNode.runit.rendering = vboo;
+					// console.log(nextNode.runit.rendering);
 					nextNode = nextNode.next;
 				}
 			}
@@ -195,14 +222,56 @@ export default class RendererSpace implements IRendererSpace {
 			if (total > 0) {
 				etset.reset(total);
 				nextNode = this.m_nodeSLinker.getBegin();
-				while (nextNode != null) {
+				while (nextNode) {
 					if (nextNode.drawEnabled) {
-						etset.addEntity(nextNode.entity);
+						const entity = nextNode.entity;
+						if (entity.getREType() < 12) {
+							etset.addEntity(entity as IRenderEntity);
+						}
 					}
 					nextNode = nextNode.next;
 				}
 			} else {
 				etset.clear();
+			}
+		}
+	}
+	private camVisiContainer(c: IDisplayEntityContainer, cam: IRenderCamera): void {
+		// let ab = c.getGlobalBounds();
+
+		// let vboo = cam.visiTestSphere2(ab.center, ab.radius);
+		// if(vboo) {
+		const etotal = c.getEntitiesTotal();
+		const ets = c.getEntities();
+
+		for (let i = 0; i < etotal; ++i) {
+			const et = ets[i];
+			const ab = et.getGlobalBounds();
+			const vboo = cam.visiTestSphere2(ab.center, ab.radius);
+			et.setRendering(vboo);
+			// // for log test
+			// const disp = et.getDisplay();
+			// const runit = disp ? (disp.__$$runit as IRPOUnit) : null;
+			// if (runit) {
+			// 	// runit.rendering = vboo;
+			// 	if(!runit.rendering) {
+			// 		console.log("false ............");
+			// 	}
+			// }
+		}
+
+		const ctotal = c.getChildrenTotal();
+		const ecs = c.getContainers();
+
+		for (let i = 0; i < ctotal; ++i) {
+			const ec = ecs[i];
+			const ab = ec.getGlobalBounds();
+			const vboo = cam.visiTestSphere2(ab.center, ab.radius);
+			if (vboo) {
+				ec.__$setRendering(vboo);
+				this.camVisiContainer(ec, cam);
+			} else {
+				ec.setRendering(vboo);
 			}
 		}
 	}
@@ -214,7 +283,7 @@ export default class RendererSpace implements IRendererSpace {
 			this.m_raySelector.run();
 		}
 	}
-	runEnd(): void { }
+	runEnd(): void {}
 	getCullingNodeHead(): Entity3DNode {
 		return this.m_nodeSLinker.getBegin();
 	}
