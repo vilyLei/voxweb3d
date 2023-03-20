@@ -15,30 +15,30 @@ import FBOInstance from "../../../vox/scene/FBOInstance";
 import RendererScene from "../../../vox/scene/RendererScene";
 
 import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
-import { FogMeshGeomFactorMaterial } from "../material/FogMeshGeomFactorMaterial";
-import { SphDepthFogUnit } from "./SphDepthFogUnit";
 
 import { IRTTTexture } from "../../../vox/render/texture/IRTTTexture";
 import TextureFormat from "../../../vox/texture/TextureFormat";
 import TextureDataType from "../../../vox/texture/TextureDataType";
 import IRenderNode from "../../../vox/scene/IRenderNode";
 import RendererDevice from "../../../vox/render/RendererDevice";
-import { FogSphShow2Material } from "../material/FogSphShow2Material";
+
+import { FogSphFactorMaterial } from "./FogSphFactorMaterial";
+import { SphDepthFogUnit } from "./SphDepthFogUnit";
+import { FogSphShowMaterial } from "./FogSphShowMaterial";
 
 export class SphDepthFogRenderNode implements IRenderNode {
 	constructor() {}
 
 	private m_rc: RendererScene = null;
-
 	private m_factorFBO: FBOInstance = null;
 	private m_commonFBO: FBOInstance = null;
-	
+
 	texLoader: ImageTextureLoader = null;
-	factorEntityIndex: number = 0;
-	maxRadius: number = 800.0;
-	
-	factorEntity: Sphere3DEntity;
-	fogFactorM: FogMeshGeomFactorMaterial;
+	factorEntityIndex = 0;
+	maxRadius = 800.0;
+
+	private m_factorEntity: Sphere3DEntity;
+	private m_fogFactorM: FogSphFactorMaterial;
 	private getImageTexByUrl(pns: string): TextureProxy {
 		let tex: TextureProxy = this.texLoader.getImageTexByUrl("static/assets/" + pns);
 		tex.setWrap(TextureConst.WRAP_REPEAT);
@@ -103,9 +103,8 @@ export class SphDepthFogRenderNode implements IRenderNode {
 		fbo.setRenderToTexture(this.getTextureAt(3, false), 1);
 		this.m_factorFBO = fbo;
 	}
-	createDisplayMaterial(): FogSphShow2Material {
-		let m = new FogSphShow2Material();
-
+	createDisplayMaterial(): FogSphShowMaterial {
+		let m = new FogSphShowMaterial();
 		m.setTextureList(
 			[
 				this.m_commonFBO.getRTTAt(0)
@@ -120,8 +119,6 @@ export class SphDepthFogRenderNode implements IRenderNode {
 		if (this.m_rc == null && rc) {
 
 			this.m_rc = rc;
-			// this.m_disTex = disTex;
-			// this.m_factorFBO = factorFBO;
 			this.createCommonFBO(conmonPIds);
 			this.createParticleFBO(particlePIds);
 			this.createFactorFBO();
@@ -153,14 +150,14 @@ export class SphDepthFogRenderNode implements IRenderNode {
 		// rState1 = rState0;
 		// let tex3 = this.getImageTexByUrl("displacement_03.jpg");
 		let tex3 = this.getImageTexByUrl("cloud_01.jpg");
-		this.fogFactorM = new FogMeshGeomFactorMaterial();
-		// this.fogFactorM.setDensity(1.5);
-		this.factorEntity = new Sphere3DEntity();
-		this.factorEntity.setRenderState(rState0);
-		this.factorEntity.setMaterial(this.fogFactorM);
-		this.factorEntity.initialize(1.0, 20, 20, [this.m_commonFBO.getRTTAt(1), tex3]);
+		this.m_fogFactorM = new FogSphFactorMaterial();
+		// this.m_fogFactorM.setDensity(1.5);
+		this.m_factorEntity = new Sphere3DEntity();
+		this.m_factorEntity.setRenderState(rState0);
+		this.m_factorEntity.setMaterial(this.m_fogFactorM);
+		this.m_factorEntity.initialize(1.0, 20, 20, [this.m_commonFBO.getRTTAt(1), tex3]);
 
-		const fogM = this.fogFactorM;
+		const fogM = this.m_fogFactorM;
 		fogM.setFactorRGB3f(1.0, 1.0, 1.0);
 		fogM.setFogDis(this.maxRadius);
 	}
@@ -190,7 +187,7 @@ export class SphDepthFogRenderNode implements IRenderNode {
 					t.dis -= t.radius;
 					// t.dis = Math.round(t.dis - t.radius);
 				}
-				const entity = this.factorEntity;
+				const entity = this.m_factorEntity;
 
 				this.m_factorFBO.unlockMaterial();
 				this.m_factorFBO.unlockRenderState();
@@ -199,7 +196,7 @@ export class SphDepthFogRenderNode implements IRenderNode {
 
 				// for test: select a displaying mode
 
-				const fogM = this.fogFactorM;
+				const fogM = this.m_fogFactorM;
 				let fu: SphDepthFogUnit;
 
 				const rst0 = RendererState.BACK_TRANSPARENT_STATE;
@@ -234,7 +231,7 @@ export class SphDepthFogRenderNode implements IRenderNode {
 						} else if (status == 1) {
 							fogM.setFogRGBColor(fu.fogColor);
 						}
-						this.m_factorFBO.drawEntity(this.factorEntity);
+						this.m_factorFBO.drawEntity(this.m_factorEntity);
 					} else {
 						skipTotal++;
 					}

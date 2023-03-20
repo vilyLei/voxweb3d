@@ -162,18 +162,22 @@ export class DemoSphDepthFogRender {
 		const commonFBO = fogRenderNode.getCommonFBO();
 		const factorFBO = fogRenderNode.getFactorFBO();
 		let tipsProcIndex = 4;
+		// display the color rtt rendering content
 		let scrPlane = new ScreenFixedAlignPlaneEntity();
 		scrPlane.initialize(-0.9, -0.9, 0.3, 0.3, [commonFBO.getRTTAt(0)]);
 		this.m_rscene.addEntity(scrPlane, tipsProcIndex);
 
+		// display the depth rtt rendering content
 		scrPlane = new ScreenFixedAlignPlaneEntity();
 		scrPlane.initialize(-0.55, -0.9, 0.3, 0.3, [commonFBO.getRTTAt(1)]);
 		this.m_rscene.addEntity(scrPlane, tipsProcIndex);
 
+		// display the fog factor rtt rendering content
 		scrPlane = new ScreenFixedAlignPlaneEntity();
 		scrPlane.initialize(-0.2, -0.9, 0.3, 0.3, [factorFBO.getRTTAt(0)]);
 		this.m_rscene.addEntity(scrPlane, tipsProcIndex);
 
+		// display the fog color rendering content
 		scrPlane = new ScreenFixedAlignPlaneEntity();
 		scrPlane.initialize(0.15, -0.9, 0.3, 0.3, [factorFBO.getRTTAt(1)]);
 		this.m_rscene.addEntity(scrPlane, tipsProcIndex);

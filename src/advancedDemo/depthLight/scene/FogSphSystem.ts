@@ -90,8 +90,8 @@ export class FogSphSystem {
 	private m_pv = new Vector3D();
 	private m_status = 1;
 	setStatus(status: number): void {
-		this.m_status = status % 3;
-		console.log("this.m_status: ", this.m_status);
+		// this.m_status = status % 3;
+		// console.log("this.m_status: ", this.m_status);
 	}
 	runBegin(): void {}
 	runBase(): void {
