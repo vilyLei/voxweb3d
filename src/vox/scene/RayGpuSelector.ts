@@ -181,6 +181,7 @@ export default class RayGpuSelector implements IRaySelector {
             }
             this.m_selectedNode = null;
             let i = 0;
+            // 需要支持容器操作，也相当于是容器可控制渲染
             if (total > 0) {
                 let invpv = this.m_invpv;
                 let invtv = this.m_invtv;

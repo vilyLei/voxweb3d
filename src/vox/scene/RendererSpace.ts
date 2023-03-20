@@ -198,24 +198,34 @@ export default class RendererSpace implements IRendererSpace {
 					if (nextNode.isVisible()) {
 						ab = nextNode.bounds;
 						vboo = cam.visiTestSphere2(ab.center, ab.radius);
-						if (vboo) {
-							total += 1;
-							if (ty >= 12) {
-								const c = entity as IDisplayEntityContainer;
-								c.__$setRendering(vboo);
-								this.camVisiContainer(c, cam);
-							}
-						} else {
-							entity.setRendering(vboo);
-						}
+						// if (vboo) {
+						// 	total += 1;
+						// 	if (ty >= 12) {
+						// 		const c = entity as IDisplayEntityContainer;
+						// 		c.__$setRendering(vboo);
+						// 		this.camVisiContainer(c, cam);
+						// 	}
+						// } else {
+						// 	entity.setRendering(vboo);
+						// }
 					}
 					nextNode.drawEnabled = vboo;
-					if (ty < 12) {
+					// if (ty < 12) {
+					// 	entity.setRendering(vboo);
+					// }
+					nextNode = nextNode.next;
+					if (vboo) {
+						total += 1;
+						if (ty >= 12) {
+							const c = entity as IDisplayEntityContainer;
+							c.__$setRendering(vboo);
+							this.camVisiContainer(c, cam);
+						}else {
+							entity.setRendering(vboo);
+						}
+					} else {
 						entity.setRendering(vboo);
 					}
-					// nextNode.runit.rendering = vboo;
-					// console.log(nextNode.runit.rendering);
-					nextNode = nextNode.next;
 				}
 			}
 			const etset = this.renderingEntitySet;
@@ -237,10 +247,7 @@ export default class RendererSpace implements IRendererSpace {
 		}
 	}
 	private camVisiContainer(c: IDisplayEntityContainer, cam: IRenderCamera): void {
-		// let ab = c.getGlobalBounds();
 
-		// let vboo = cam.visiTestSphere2(ab.center, ab.radius);
-		// if(vboo) {
 		const etotal = c.getEntitiesTotal();
 		const ets = c.getEntities();
 
@@ -249,15 +256,6 @@ export default class RendererSpace implements IRendererSpace {
 			const ab = et.getGlobalBounds();
 			const vboo = cam.visiTestSphere2(ab.center, ab.radius);
 			et.setRendering(vboo);
-			// // for log test
-			// const disp = et.getDisplay();
-			// const runit = disp ? (disp.__$$runit as IRPOUnit) : null;
-			// if (runit) {
-			// 	// runit.rendering = vboo;
-			// 	if(!runit.rendering) {
-			// 		console.log("false ............");
-			// 	}
-			// }
 		}
 
 		const ctotal = c.getChildrenTotal();
