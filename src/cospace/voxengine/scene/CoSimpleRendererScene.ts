@@ -55,6 +55,7 @@ import { ICoRenderer } from "../ICoRenderer";
 import IRendererScene from "../../../vox/scene/IRendererScene";
 import IRenderNode from "../../../vox/scene/IRenderNode";
 import IRendererParam from "../../../vox/scene/IRendererParam";
+import IRenderEntityBase from "../../../vox/render/IRenderEntityBase";
 
 declare var CoRenderer: ICoRenderer;
 
@@ -583,29 +584,28 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 
 		// wait mesh data ready to finish
 		if (this.m_nodeWaitLinker != null) {
-			let nextNode: Entity3DNode = this.m_nodeWaitLinker.getBegin();
+			let nextNode = this.m_nodeWaitLinker.getBegin();
 			if (nextNode != null) {
 				let pnode: Entity3DNode;
-				let entity: IRenderEntity;
+				let entity: IRenderEntityBase;
 				let status: number;
 				while (nextNode != null) {
-					if (nextNode.entity.hasMesh()) {
-						pnode = nextNode;
+					pnode = nextNode;
+					entity = pnode.entity;
+					if (entity.getREType() < 12 && (entity as IRenderEntity).hasMesh()) {
 						nextNode = nextNode.next;
-						entity = pnode.entity;
 						status = pnode.rstatus;
 						this.m_nodeWaitLinker.removeNode(pnode);
-						this.m_nodeWaitQueue.removeEntity(pnode.entity);
+						this.m_nodeWaitQueue.removeEntity(entity);
 						//console.log("RenderScene::update(), ready a mesh data that was finished.");
-						this.addEntity(entity, status);
-					} else {
-						nextNode = nextNode.next;
+						this.addEntity(entity as IRenderEntity, status);
 					}
+					nextNode = nextNode.next;
 				}
 			}
 		}
 
-		let i: number = 0;
+		let i = 0;
 		for (; i < this.m_containersTotal; ++i) {
 			this.m_containers[i].update();
 		}
