@@ -42,7 +42,7 @@ export class DemoQuadHoleOcc {
     initialize(): void {
         console.log("DemoQuadHoleOcc::initialize()......");
         if (this.m_rscene == null) {
-            
+
             H5FontSystem.GetInstance().initialize("fontTex", 18, 512, 512, false, false);
             RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 
@@ -50,7 +50,7 @@ export class DemoQuadHoleOcc {
             rparam.setMatrix4AllocateSize(8192 * 4);
             rparam.setCamProject(45.0, 50.0, 5000.0);
             rparam.setCamPosition(1500.0, 1500.0, 1500.0);
-            
+
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam);
             // this.m_rscene.setRendererProcessParam(1, true, true);
@@ -88,7 +88,7 @@ export class DemoQuadHoleOcc {
                 , new Vector3D(500.0,700.0,200.0)
                 , new Vector3D(500.0,-700.0,200.0)
                 , new Vector3D(-500.0,-700.0,200.0)
-                
+
                 , new Vector3D(-500.0,700.0,-200.0)
                 , new Vector3D(500.0,700.0,-200.0)
                 , new Vector3D(500.0,-700.0,-200.0)
@@ -166,7 +166,7 @@ export class DemoQuadHoleOcc {
         let len = this.m_dispList.length;
         for (; i < len; ++i) {
             //this.m_frameList[i].setRGB3f(1.0,1.0,1.0);
-            if (this.m_dispList[i].drawEnabled) {
+            if (this.m_dispList[i].isRendering()) {
                 this.m_frameList[i].setRGB3f(1.0, 1.0, 1.0);
             }
             else {

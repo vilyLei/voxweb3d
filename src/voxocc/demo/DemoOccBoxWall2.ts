@@ -42,7 +42,7 @@ export class DemoOccBoxWall2 {
     initialize(): void {
         console.log("DemoOccBoxWall2::initialize()......");
         if (this.m_rscene == null) {
-            
+
             RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 
             let rparam = new RendererParam();
@@ -54,8 +54,8 @@ export class DemoOccBoxWall2 {
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.setRendererProcessParam(1, true, true);
             this.m_rspace = this.m_rscene.getSpace();
-            
-            
+
+
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
 
             new MouseInteraction().initialize(this.m_rscene).setAutoRunning(true);
@@ -70,7 +70,7 @@ export class DemoOccBoxWall2 {
             let tex3 = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_01.jpg");
             let tex4 = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
             let tex5 = this.m_texLoader.getImageTexByUrl("static/assets/moss_02.jpg");
-            
+
             this.m_texList.push(tex0);
             this.m_texList.push(tex1);
             this.m_texList.push(tex2);
@@ -205,7 +205,7 @@ export class DemoOccBoxWall2 {
         let i = 0;
         let len = this.m_dispList.length;
         for (; i < len; ++i) {
-            if (this.m_dispList[i].drawEnabled) {
+            if (this.m_dispList[i].isRendering()) {
                 this.m_frameList[i].setRGB3f(1.0, 1.0, 1.0);
             }
             else {
@@ -213,7 +213,7 @@ export class DemoOccBoxWall2 {
             }
         }
     }
-    
+
     run(): void {
         if(this.m_rscene) {
             this.m_rscene.run();

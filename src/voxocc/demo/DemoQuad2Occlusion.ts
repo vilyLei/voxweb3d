@@ -39,7 +39,7 @@ export class DemoQuad2Occlusion {
 	initialize(): void {
 		console.log("DemoQuad2Occlusion::initialize()......");
 		if (this.m_rscene == null) {
-			
+
 			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
 			let rparam = new RendererParam();
@@ -151,12 +151,12 @@ export class DemoQuad2Occlusion {
 			cubeRange.min.setXYZ(-400.0, -400.0, -400.0);
 			cubeRange.max.setXYZ(400.0, 400.0, -200.0);
 			cubeRange.initialize();
-            
+
 			let pv = new Vector3D();
 			let circleFrame: BillboardFrame = null;
 			let srcBox = new Box3DEntity();
 			srcBox.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex1]);
-			
+
 			let total = 80;
 			let sk = 0.15;
 			let box: Box3DEntity = null;
@@ -202,7 +202,7 @@ export class DemoQuad2Occlusion {
 		let len: number = this.m_dispList.length;
 		for (; i < len; ++i) {
 			//this.m_frameList[i].setRGB3f(1.0,1.0,1.0);
-			if (this.m_dispList[i].drawEnabled) {
+			if (this.m_dispList[i].isRendering()) {
 				this.m_frameList[i].setRGB3f(1.0, 1.0, 1.0);
 			} else {
 				this.m_frameList[i].setRGB3f(1.0, 0.0, 1.0);

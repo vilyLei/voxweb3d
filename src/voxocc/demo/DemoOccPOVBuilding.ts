@@ -42,7 +42,7 @@ export class DemoOccPOVBuilding {
         console.log("DemoOccPOVBuilding::initialize()......");
 
         if (this.m_rscene == null) {
-            
+
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
             let rparam = new RendererParam();
@@ -68,7 +68,7 @@ export class DemoOccPOVBuilding {
             let tex3 = loader.getImageTexByUrl("static/assets/wood_02.jpg");
             let tex4 = loader.getImageTexByUrl("static/assets/metal_02.jpg");
             let tex5 = loader.getImageTexByUrl("static/assets/a_02_c.jpg");
-            
+
             this.m_texList.push(tex0);
             this.m_texList.push(tex1);
             this.m_texList.push(tex2);
@@ -256,7 +256,7 @@ export class DemoOccPOVBuilding {
             boxList[k].setVisible(false);
 
             this.m_povEntities.push(boxList[k]);
-            
+
             let quadHolePOV = new QuadHolePOV();
             quadHolePOV.setCamPosition(this.m_rscene.getCamera().getPosition());
             quadHolePOV.setParamFromeBoxFaceZ(subMinV, subMaxV);
@@ -312,7 +312,7 @@ export class DemoOccPOVBuilding {
         let tot = 0;
         for (; i < len; ++i) {
             //this.m_frameList[i].setRGB3f(1.0,1.0,1.0);
-            if (this.m_dispList[i].drawEnabled) {
+            if (this.m_dispList[i].isRendering()) {
                 this.m_frameList[i].setRGB3f(1.0, 1.0, 1.0);
                 tot ++;
             }
@@ -322,7 +322,7 @@ export class DemoOccPOVBuilding {
         }
         // console.log("visible total: ", tot, len);
     }
-    
+
     run(): void {
         if(this.m_rscene) {
 

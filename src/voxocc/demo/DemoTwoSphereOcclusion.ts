@@ -96,7 +96,7 @@ export class DemoTwoSphereOcclusion {
             circleOccFrame.setPosition(occPv);
             this.m_rscene.addEntity(circleOccFrame);
 
-            
+
             let circleOccFrame2 = new BillboardFrame();
             circleOccFrame2.color.setRGB3f(0.5,1.0,0.5);
             circleOccFrame2.initializeCircle(this.m_sphOccObj2.occRadius, 20);
@@ -120,7 +120,7 @@ export class DemoTwoSphereOcclusion {
             let maxV = new Vector3D(100.0, 100.0, 100.0);
             let texList = [tex1];
             let box: Box3DEntity = null;
-           
+
             for (i = 0; i < total; ++i) {
                 box = new Box3DEntity();
                 if (srcBox != null) box.copyMeshFrom(srcBox);
@@ -161,7 +161,7 @@ export class DemoTwoSphereOcclusion {
             // if(DebugFlag.Flag_0 > 0) {
             //     console.log("this.m_frameList[i].drawEnabled: ", this.m_frameList[i].drawEnabled);
             // }
-            if (this.m_entities[i].drawEnabled) {
+            if (this.m_entities[i].isRendering()) {
                 this.m_frameList[i].setRGB3f(1.0, 1.0, 1.0);
             }
             else {

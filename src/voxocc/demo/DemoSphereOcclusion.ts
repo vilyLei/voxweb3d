@@ -55,8 +55,6 @@ export class DemoSphereOcclusion {
 
             this.m_rspace = this.m_rscene.getSpace();
 
-            
-            this.m_profileInstance = new ProfileInstance();
             this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
@@ -158,7 +156,7 @@ export class DemoSphereOcclusion {
             // if(DebugFlag.Flag_0 > 0) {
             //     console.log("this.m_frameList[i].drawEnabled: ", this.m_frameList[i].drawEnabled);
             // }
-            if (this.m_entities[i].drawEnabled) {
+            if (this.m_entities[i].isRendering()) {
                 this.m_frameList[i].setRGB3f(1.0, 1.0, 1.0);
             }
             else {

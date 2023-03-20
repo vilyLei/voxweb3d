@@ -158,7 +158,7 @@ export class DemoSphereGapOcclusion {
             // if(DebugFlag.Flag_0 > 0) {
             //     console.log("this.m_frameList[i].drawEnabled: ", this.m_frameList[i].drawEnabled);
             // }
-            if (this.m_entities[i].drawEnabled) {
+            if (this.m_entities[i].isRendering()) {
                 this.m_frameList[i].setRGB3f(1.0, 1.0, 1.0);
             }
             else {
@@ -172,7 +172,7 @@ export class DemoSphereGapOcclusion {
         if(this.m_rscene) {
             this.m_rscene.run();
             this.showTestStatus();
-    
+
             if (this.m_profileInstance != null) {
                 this.m_profileInstance.run();
             }

@@ -42,7 +42,7 @@ export class DemoOccBoxWall {
         console.log("DemoOccBoxWall::initialize()......");
 
         if (this.m_rscene == null) {
-            
+
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
             let rparam = new RendererParam();
@@ -67,7 +67,7 @@ export class DemoOccBoxWall {
             let tex3 = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_01.jpg");
             let tex4 = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
             let tex5 = this.m_texLoader.getImageTexByUrl("static/assets/a_02_c.jpg");
-            
+
             this.m_texList.push(tex0);
             this.m_texList.push(tex1);
             this.m_texList.push(tex2);
@@ -289,7 +289,7 @@ export class DemoOccBoxWall {
         let tot = 0;
         for (; i < len; ++i) {
             //this.m_frameList[i].setRGB3f(1.0,1.0,1.0);
-            if (this.m_dispList[i].drawEnabled) {
+            if (this.m_dispList[i].isRendering()) {
                 this.m_frameList[i].setRGB3f(1.0, 1.0, 1.0);
                 tot ++;
             }
@@ -299,7 +299,7 @@ export class DemoOccBoxWall {
         }
         console.log("visible total: ", tot, len);
     }
-    
+
     run(): void {
         if(this.m_rscene) {
 

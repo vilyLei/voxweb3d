@@ -38,7 +38,7 @@ export class DemoBoxOcclusion {
     private m_dispList: DisplayEntity[] = [];
     private m_frameList: BillboardFrame[] = [];
     private m_occStatusList: number[] = [];
-    
+
     initialize(): void {
         console.log("DemoBoxOcclusion::initialize()......");
         if (this.m_rscene == null) {
@@ -66,7 +66,7 @@ export class DemoBoxOcclusion {
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             let tex1 = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
-            
+
             RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
             RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
 
@@ -188,7 +188,7 @@ export class DemoBoxOcclusion {
         let len = this.m_dispList.length;
         for (; i < len; ++i) {
             //this.m_frameList[i].setRGB3f(1.0,1.0,1.0);
-            if (this.m_dispList[i].drawEnabled) {
+            if (this.m_dispList[i].isRendering()) {
                 this.m_frameList[i].setRGB3f(1.0, 1.0, 1.0);
             }
             else {
@@ -197,7 +197,7 @@ export class DemoBoxOcclusion {
         }
     }
     run(): void {
-        
+
         if(this.m_rscene) {
             this.m_rscene.run();
             this.showTestStatus();

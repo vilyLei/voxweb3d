@@ -40,7 +40,7 @@ export class DemoQuadOcclusion {
 	initialize(): void {
 		console.log("DemoQuadOcclusion::initialize()......");
 		if (this.m_rscene == null) {
-			
+
 			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
 			let rparam = new RendererParam();
@@ -148,7 +148,7 @@ export class DemoQuadOcclusion {
 			cubeRange.min.setXYZ(-400.0, -400.0, -400.0);
 			cubeRange.max.setXYZ(400.0, 400.0, -200.0);
 			cubeRange.initialize();
-            
+
 			let pv = new Vector3D();
 			let circleFrame: BillboardFrame = null;
 			let srcBox: Box3DEntity = new Box3DEntity();
@@ -208,7 +208,7 @@ export class DemoQuadOcclusion {
 		let len: number = this.m_dispList.length;
 		for (; i < len; ++i) {
 			//this.m_frameList[i].setRGB3f(1.0,1.0,1.0);
-			if (this.m_dispList[i].drawEnabled) {
+			if (this.m_dispList[i].isRendering()) {
 				this.m_frameList[i].setRGB3f(1.0, 1.0, 1.0);
 			} else {
 				this.m_frameList[i].setRGB3f(1.0, 0.0, 1.0);
