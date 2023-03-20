@@ -12,6 +12,8 @@ import Vector3D from "../vox/math/Vector3D";
 import Line3DEntity from "../vox/entity/Line3DEntity";
 import { Bezier2Curve } from "../vox/geom/curve/BezierCurve";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
+import BoxFrame3D from "../vox/entity/BoxFrame3D";
+import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 
 export class DemoLinePosUpdate {
 	constructor() {}
@@ -50,34 +52,60 @@ export class DemoLinePosUpdate {
 			this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 			// this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDown);
 
-			let total = 50;
-			let posList = this.m_posList = new Array();
-			for(let i = 0; i < total; ++i) {
-				posList[i] = new Vector3D(i * 5.0);
-			}
-
-			this.m_line = new Line3DEntity();
-			this.m_line.initializeByPosList(this.m_posList);
-			this.m_rscene.addEntity(this.m_line);
+			this.initBoxFrame();
+			// this.initLine();
 		}
+	}
+	private m_frameBox: BoxFrame3D = null;
+	private m_sph: Sphere3DEntity = null;
+	private initBoxFrame(): void {
+
+		this.m_sph = new Sphere3DEntity();
+		this.m_sph.normalEnabled = true;
+		this.m_sph.initialize(50, 30, 30);
+		this.m_rscene.addEntity(this.m_sph);
+
+		this.m_frameBox = new BoxFrame3D();
+		this.m_frameBox.initializeByAABB(this.m_sph.getGlobalBounds());
+		this.m_rscene.addEntity(this.m_frameBox);
+	}
+
+	private updateBoxFrame(): void {
+		this.m_sph.offsetPosition(new Vector3D(50));
+		this.m_sph.update();
+		this.m_frameBox.updateFrameByAABB(this.m_sph.getGlobalBounds());
+		this.m_frameBox.updateMeshToGpu();
+	}
+	private initLine(): void {
+		let total = 50;
+		let posList = this.m_posList = new Array();
+		for(let i = 0; i < total; ++i) {
+			posList[i] = new Vector3D(i * 5.0);
+		}
+
+		this.m_line = new Line3DEntity();
+		this.m_line.initializeByPosList(this.m_posList);
+		this.m_rscene.addEntity(this.m_line);
 	}
 	private m_posList: Vector3D[];
 	private m_line: Line3DEntity = null;
 	private m_time = 0;
 	private updateCurveData(): void {
-
-		let posList = this.m_posList;
-		for (let i = 0; i < posList.length; ++i) {
-			posList[i].y = Math.cos(posList[i].x * 0.05 + this.m_time) * 100.0;
+		if(this.m_line) {
+			let posList = this.m_posList;
+			for (let i = 0; i < posList.length; ++i) {
+				posList[i].y = Math.cos(posList[i].x * 0.05 + this.m_time) * 100.0;
+			}
+			this.m_time += 0.05;
+			this.m_line.updatePosListToMesh(posList);
+			this.m_line.updateMeshToGpu();
 		}
-		this.m_time += 0.05;
-		this.m_line.updatePosListToMesh(posList);
-		this.m_line.updateMeshToGpu();
 	}
 	private mouseDown(evt: any): void {
 		console.log("mouse down... ...");
 
 		this.updateCurveData();
+		this.updateBoxFrame();
 	}
 
 	run(): void {

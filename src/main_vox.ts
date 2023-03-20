@@ -29,6 +29,8 @@
 
 // import {DemoSphereOcclusion as Demo} from "./voxocc/demo/DemoSphereOcclusion";
 
+// import {DemoSphOccContainer as Demo} from "./voxocc/demo/DemoSphOccContainer";
+
 // import {DemoSphereGapOcclusion as Demo} from "./voxocc/demo/DemoSphereGapOcclusion";
 
 // import {DemoTwoSphereOcclusion as Demo} from "./voxocc/demo/DemoTwoSphereOcclusion";
@@ -293,6 +295,8 @@
 
 //  import {DemoEntityContainer as Demo} from "./demo/DemoEntityContainer";
 
+ import {DemoContainerToRSpace as Demo} from "./demo/DemoContainerToRSpace";
+
 //  import {DemoContainerTransform as Demo}  from "./demo/DemoContainerTransform";
 
 // import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
@@ -451,7 +455,7 @@
 
 //  import {DemoPBRTextureShader as Demo} from "./demo/DemoPBRTextureShader";
 
- import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 

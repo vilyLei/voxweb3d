@@ -23,7 +23,7 @@ import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBl
 import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
 
 export class DemoEntityBounds {
-    
+
     constructor() {
     }
 
@@ -66,7 +66,7 @@ export class DemoEntityBounds {
             rparam.setCamPosition(1500.0, 1500.0, 1500.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam);
-            
+
             let rscene = this.m_rscene;
             let materialBlock = new RenderableMaterialBlock();
             materialBlock.initialize();
@@ -75,7 +75,7 @@ export class DemoEntityBounds {
             entityBlock.initialize();
             //rscene.entityBlock = entityBlock;
 
-            
+
             this.m_postOutline.initialize(this.m_rscene, 1, [0]);
             this.m_postOutline.setFBOSizeScaleRatio(0.5);
             this.m_postOutline.setRGB3f(0.0,2.0,0.0);
@@ -92,10 +92,10 @@ export class DemoEntityBounds {
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
             this.m_stageDragSwinger.setAutoRotationEnabled( true );
-            
+
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
             this.initTex();
-            
+
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.uuid = "followAxis";
             axis.initialize(50.0);
@@ -118,7 +118,7 @@ export class DemoEntityBounds {
             }
             else {
                 let entity: DisplayEntity = evt.target as DisplayEntity;
-                
+
                 if(entity.__$getParent() != null) {
                     container = entity.__$getParent() as DisplayEntityContainer;
                     targets = container.getEntities() as DisplayEntity[];
@@ -138,7 +138,7 @@ export class DemoEntityBounds {
     }
     private useEntityEvtDispatcher(entity: DisplayEntity, frameBoo: boolean = false): void {
 
-        let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
+        let dispatcher = new MouseEvt3DDispatcher();
         dispatcher.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverTargetListener);
         dispatcher.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutTargetListener);
         entity.setEvtDispatcher(dispatcher);
@@ -147,7 +147,7 @@ export class DemoEntityBounds {
     }
     private useContainerEvtDispatcher(entity: DisplayEntityContainer, frameBoo: boolean = false): void {
 
-        let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
+        let dispatcher = new MouseEvt3DDispatcher();
         dispatcher.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverTargetListener);
         dispatcher.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutTargetListener);
         entity.setEvtDispatcher(dispatcher);
@@ -164,13 +164,13 @@ export class DemoEntityBounds {
     run(): void {
 
         this.m_statusDisp.update();
-        
+
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
 
         this.runEntityBoundsTest();
         this.runContainerBoundsTest();
-        
+
         //this.m_rscene.run();
         this.m_rscene.runBegin();
         this.m_rscene.run(true);
