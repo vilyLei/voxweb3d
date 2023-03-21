@@ -46,7 +46,7 @@ Feature:
        pc web client mouse event and mobile(pad) touch event support.
 
     13.Features that will be supported in the future:
-       RSM, SSDO, VXGI
+       RSM, SSDO, VXGI, WebGPU, RayTracing
 
 Engine code under the path: "src\vox\"
 
