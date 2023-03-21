@@ -180,11 +180,25 @@ export class BakeFlow2 {
 		nvsUrl = "static/private/bake/ctmUnwrap2/normal.bin";
 		let bakeUrl = "static/private/bake/ctmUnwrap2/ctmUnwrap2.png";
 
-		this.m_drawTimes = 8;
-		this.m_circleTimes = 8;
+
+		vsUrl = "static/private/bake/box01/vertices.bin";
+		uvs1Url = "static/private/bake/box01/uv1.bin";
+		uvs2Url = "static/private/bake/box01/uv2.bin";
+		nvsUrl = "static/private/bake/box01/normal.bin";
+		bakeUrl = "static/private/bake/box01/box01_baked.png";
+
+		vsUrl = "static/private/bake/cyl01/vertices.bin";
+		uvs1Url = "static/private/bake/cyl01/uv1.bin";
+		uvs2Url = "static/private/bake/cyl01/uv2.bin";
+		nvsUrl = "static/private/bake/cyl01/normal.bin";
+		bakeUrl = "static/private/bake/cyl01/cyl01_baked.png";
+
+		let bakeType = -1;
+		this.m_drawTimes = 1;
+		this.m_circleTimes = 1;
 
 		let uvParams: BakingParamType = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: 0, drawLine: false, drawShape: true };
-		uvParams = { su: 0.01, sv: 0.01, bakeUrl: bakeUrl, bakeType: 0, drawLine: true, drawShape: true };
+		uvParams = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: bakeType, drawLine: true, drawShape: true };
 
 		let loader = new Bin4DataLoader();
 		loader.setListener((model: CoGeomDataType): void => {
@@ -268,7 +282,7 @@ export class BakeFlow2 {
 			// return;
 		}
 		// console.log("OOOOOO material: ", material);
-		
+
 		let mesh = new DataMesh();
 		mesh.vbWholeDataEnabled = false;
 		mesh.setVS(model.vertices);

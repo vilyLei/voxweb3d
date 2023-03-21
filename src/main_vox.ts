@@ -295,7 +295,9 @@
 
 //  import {DemoEntityContainer as Demo} from "./demo/DemoEntityContainer";
 
- import {DemoContainerToRSpace as Demo} from "./demo/DemoContainerToRSpace";
+//  import {DemoContainerToRSpace as Demo} from "./demo/DemoContainerToRSpace";
+
+//  import {DemoContainerToRender as Demo} from "./demo/DemoContainerToRender";
 
 //  import {DemoContainerTransform as Demo}  from "./demo/DemoContainerTransform";
 
@@ -413,7 +415,7 @@
 
 //  import {EffectExample as Demo} from "./renderingtoy/effectTest/applyui/EffectExample";
 
-//  import {ModelsLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
+ import {ModelsLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////

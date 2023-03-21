@@ -20,12 +20,14 @@ export default interface IRPONode extends IPoolNode {
     // drawEnabled: boolean;
     uid: number;
     index: number;
+	// it the value is less 12, it is a renderable entity, or not is a entity container
+	reType: number;
     // only for show info
 
     // drawMode: number;
     // ivsIndex: number;
     // ivsCount: number;
-    
+
     // insCount: number;
     shdUid: number;
     vtxUid: number;
@@ -38,7 +40,7 @@ export default interface IRPONode extends IPoolNode {
     tro: ITextureRenderObj;
     rvroI: number;
     rtroI: number;
-    setValue(value: number): void;
+    // setValue(value: number): void;
     // isVsible(): boolean;
     updateData(): void;
     reset(): void;

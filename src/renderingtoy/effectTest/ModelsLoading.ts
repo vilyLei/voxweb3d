@@ -60,7 +60,8 @@ export class ModelsLoading {
         //let vsUrl = "static/private/bake/oldIndexUnwrap/vertex.bin";
         let url0 = "static/assets/fbx/base4.fbx";
         let url1 = "static/private/bake/oldIndexUnwrap/6.ctm";
-        let url2 = "static/private/bake/ios01/ios01_unwrap.fbx";
+        // let url2 = "static/private/bake/ios01/ios01_unwrap.fbx";
+        let url2 = "static/private/bake/cyl01/cly01.ctm";
         let loader = this.m_teamLoader;
 
         loader.load([url2], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
@@ -91,7 +92,7 @@ export class ModelsLoading {
             this.m_layouter.layoutUpdate(300, new Vector3D(-400, 0, 0));
 
         });
-        
+
         url1 = "static/private/bake/hat01_0_unwrap.ctm";
         url2 = "static/private/bake/hat01_1_unwrap.ctm";
 

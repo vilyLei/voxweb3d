@@ -185,9 +185,8 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 					// console.log("RenderProcess(" + this.uid + ")::addDisp(): ", disp.ivsCount, disp, disp.drawMode);
 					let node = this.m_rpoNodeBuilder.create() as RPONode;
 					node.unit = this.m_rpoUnitBuilder.getNodeByUid(disp.__$ruid) as RPOUnit;
-					node.unit.shader = this.m_shader;
+					// node.unit.shader = this.m_shader;
 					node.unit.__$rprouid = this.uid;
-
 					disp.__$rpuid = node.uid;
 					node.__$ruid = disp.__$ruid;
 					node.unit.__$rpuid = node.uid;
@@ -282,8 +281,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 				let node = this.m_rpoNodeBuilder.getNodeByUid(nodeUId) as RPONode;
 				if (node != null) {
 					if (this.m_sortBlock == null) {
-						let block = this.m_blockList[node.index];
-						block.removeNode(node);
+						this.m_blockList[node.index].removeNode(node);
 					} else {
 						this.m_sortBlock.removeNode(node);
 					}

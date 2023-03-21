@@ -26,6 +26,10 @@ export default class RPONode implements IPoolNode, IRPONode {
     vtxUid = -1;
     texMid = -1;
     rtokey = -1;
+
+	// it the value is less 12, it is a renderable entity, or not is a entity container
+	reType = 1;
+
     prev: RPONode = null;
     next: RPONode = null;
     unit: RPOUnit = null;
@@ -37,24 +41,25 @@ export default class RPONode implements IPoolNode, IRPONode {
     constructor() {
     }
 
-    setValue(value: number): void {
-        this.unit.value = value;
-    }
+    // setValue(value: number): void {
+    //     this.unit.value = value;
+    // }
     // isVsible(): boolean {
     //     return this.unit == null || this.unit.drawing;
     // }
     updateData(): void {
-        
+
         const p = this.unit;
         this.vtxUid = p.vtxUid;
         this.vro = p.vro;
+
         // material info etc.
         this.shdUid = p.shdUid;
         this.texMid = p.texMid;
         this.tro = p.tro;
     }
     reset(): void {
-        // this.drawEnabled = true;
+		this.reType = 1;
         this.uid = -1;
         this.index = -1;
         this.shdUid = -1;

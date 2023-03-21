@@ -366,6 +366,7 @@ export default class RODataBuilder implements IRODataBuilder {
                 disp.__$ruid = runit.uid;
                 disp.__$$runit = runit;
 				runit.rendering = disp.rendering;
+				runit.shader = this.m_shader;
 
                 const group = disp.getPartGroup();
                 if (group) {

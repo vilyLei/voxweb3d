@@ -23,6 +23,9 @@ import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import SpaceCullingor from '../../vox/scene/SpaceCullingor';
 import { MouseInteraction } from "../../vox/ui/MouseInteraction";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
+import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
+import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
+import IRenderEntityBase from "../../vox/render/IRenderEntityBase";
 
 export class DemoBoxOcclusion {
     constructor() {
@@ -35,7 +38,7 @@ export class DemoBoxOcclusion {
     private m_boxOcc0 = new BoxPOV();
     private m_boxOcc1 = new BoxPOV();
     private m_quadHolePOV = new QuadHolePOV();
-    private m_dispList: DisplayEntity[] = [];
+    private m_entities: IRenderEntityBase[] = [];
     private m_frameList: BillboardFrame[] = [];
     private m_occStatusList: number[] = [];
 
@@ -162,7 +165,7 @@ export class DemoBoxOcclusion {
 
                 box.spaceCullMask |= SpaceCullingMask.POV;
                 this.m_rscene.addEntity(box);
-                this.m_dispList.push(box);
+                this.m_entities.push(box);
                 this.m_occStatusList.push(0);
                 //this.m_boxOcc0.addEntity(box);
                 box.getPosition(pv);
@@ -177,18 +180,86 @@ export class DemoBoxOcclusion {
                 //this.m_boxOcc0.addEntityFrame( circleFrame );
             }
 
+			this.createContainer();
         }
     }
+
+	private createContainer(): void {
+		let tex0 = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
+		let tex1 = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
+		let tex2 = this.m_texLoader.getImageTexByUrl("static/assets/box.jpg");
+
+		let i = 0;
+
+		// box.setXYZ(200, 0, 200);
+		// box.spaceCullMask |= SpaceCullingMask.POV;
+		// this.m_rscene.addEntity(box);
+		// this.m_entities.push(box);
+
+		let container = new DisplayEntityContainer(true, true);
+		container.spaceCullMask |= SpaceCullingMask.POV;
+		this.m_rscene.addEntity(container);
+		container.setXYZ(-200, 100, 300);
+		this.m_entities.push( container );
+
+
+		let box0 = new Box3DEntity();
+		box0.uuid = "box0";
+		box0.initializeCube(20, [tex0]);
+		container.addEntity( box0 );
+
+		let box1 = new Box3DEntity();
+		box1.uuid = "box1";
+		box1.initializeCube(40, [tex2]);
+		box1.setXYZ(200, 100, 0);
+		container.addEntity( box1 );
+
+
+
+		///*
+		let container2 = new DisplayEntityContainer(true, true);
+		container2.setXYZ(100, 50, 80);
+		container.addEntity( container2 );
+		let sph = new Sphere3DEntity();
+		sph.initialize(30, 30, 30, [tex0]);
+		container2.addEntity( sph );
+
+		sph = new Sphere3DEntity();
+		sph.initialize(30, 30, 30, [tex0]);
+		sph.setXYZ(50, 20, 0);
+		container2.addEntity( sph );
+		//*/
+
+		container.update();
+
+		let gb = container.getGlobalBounds();
+		// console.log("XXXX box: ", box0.getGlobalBounds());
+		// console.log("XXXX box1: ", box1.getGlobalBounds());
+		// console.log("XXXX container: ", container.getGlobalBounds());
+		// console.log("XXXX radius: ", (100 + 30) * 0.707);
+		// console.log("XXXX gb.radius: ", gb.radius);
+		let circleFrame = new BillboardFrame();
+		circleFrame.uuid = "cirf_container_" + i;
+		circleFrame.initializeCircle(gb.radius, 20);
+		circleFrame.setPosition(gb.center);
+		this.m_rscene.addEntity(circleFrame);
+		this.m_frameList.push(circleFrame);
+
+		// let sph2 = new Sphere3DEntity();
+		// sph2.initialize(gb.radius, 30, 30);
+		// sph2.setPosition(gb.center);
+		// this.m_rscene.addEntity(sph2);
+	}
     mouseDownListener(evt: any): void {
 
     }
     showTestStatus(): void {
 
         let i = 0;
-        let len = this.m_dispList.length;
+        let len = this.m_entities.length;
         for (; i < len; ++i) {
             //this.m_frameList[i].setRGB3f(1.0,1.0,1.0);
-            if (this.m_dispList[i].isRendering()) {
+            if (this.m_entities[i].isRendering()) {
                 this.m_frameList[i].setRGB3f(1.0, 1.0, 1.0);
             }
             else {

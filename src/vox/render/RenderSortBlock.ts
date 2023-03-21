@@ -16,9 +16,9 @@ export default class RenderSortBlock {
 	private m_begin: RPONode = null;
 	private m_end: RPONode = null;
 	private m_next: RPONode = null;
-	private m_node: RPOUnit = null;
-	private m_nodes: RPOUnit[] = [];
-	private m_nodesTotal: number = 0;
+	private m_unit: RPOUnit = null;
+	private m_units: RPOUnit[] = [];
+	private m_unitsTotal: number = 0;
 	private m_shader: RenderShader = null;
 	private m_renderTotal = 0;
 	private m_sorter: IRODisplaySorter = null;
@@ -41,7 +41,7 @@ export default class RenderSortBlock {
 	}
 	clear(): void {
 		if (this.m_shader != null) {
-			if (this.m_nodes.length > 0) this.m_nodes = [];
+			if (this.m_units.length > 0) this.m_units = [];
 			let next: RPONode = this.m_begin;
 			let curr: RPONode = null;
 			while (next != null) {
@@ -51,7 +51,7 @@ export default class RenderSortBlock {
 				curr.next = null;
 			}
 			this.m_begin = this.m_end = null;
-			this.m_nodesTotal = 0;
+			this.m_unitsTotal = 0;
 			this.m_renderTotal = 0;
 			this.sortEnabled = true;
 			this.m_shader = null;
@@ -71,7 +71,7 @@ export default class RenderSortBlock {
 		this.m_shader.resetUniform();
 
 		let unit: RPOUnit = null;
-		let nodes = this.m_nodes;
+		let nodes = this.m_units;
 		this.m_shdUpdate = false;
 		const proc = this.m_passProc;
 		proc.shader = this.m_shader;
@@ -106,7 +106,7 @@ export default class RenderSortBlock {
 		this.m_shader.resetUniform();
 
 		let unit: RPOUnit = null;
-		let nodes = this.m_nodes;
+		let nodes = this.m_units;
 		for (let i = 0; i < this.m_renderTotal; ++i) {
 			unit = nodes[i];
 			if (unit.rendering) {
@@ -121,18 +121,18 @@ export default class RenderSortBlock {
 		}
 	}
 	sort(): void {
-		if (this.m_nodesTotal > 0) {
+		if (this.m_unitsTotal > 0) {
 			// 整个sort执行过程放在渲染运行时渲染执行阶段是不妥的,但是目前还没有好办法
 			// 理想的情况是运行时不会被复杂计算打断，复杂计算应该再渲染执行之前完成
 			let next = this.m_begin;
-			if (this.m_nodes.length < this.m_nodesTotal) {
-				this.m_nodes = new Array(Math.round(this.m_nodesTotal * 1.1) + 1);
+			if (this.m_units.length < this.m_unitsTotal) {
+				this.m_units = new Array(Math.round(this.m_unitsTotal * 1.1) + 1);
 			}
 			let i = 0;
 			while (next != null) {
 				const unit = next.unit;
 				if (unit.rendering && unit.drawing) {
-					this.m_nodes[i] = unit;
+					this.m_units[i] = unit;
 					++i;
 				}
 				next = next.next;
@@ -141,7 +141,7 @@ export default class RenderSortBlock {
 
 			let flat = 0;
 			if (this.m_sorter != null) {
-				flat = this.m_sorter.sortRODisplay(this.m_nodes, i);
+				flat = this.m_sorter.sortRODisplay(this.m_units, i);
 			}
 			if (flat < 1) {
 				this.snsort(0, i - 1);
@@ -149,9 +149,9 @@ export default class RenderSortBlock {
 		}
 	}
 	private sorting(low: number, high: number): number {
-		let arr = this.m_nodes;
-		this.m_node = arr[low];
-		let pvalue = this.m_node.value;
+		let arr = this.m_units;
+		this.m_unit = arr[low];
+		let pvalue = this.m_unit.value;
 		while (low < high) {
 			while (low < high && arr[high].value >= pvalue) {
 				--high;
@@ -162,7 +162,7 @@ export default class RenderSortBlock {
 			}
 			arr[high] = arr[low];
 		}
-		arr[low] = this.m_node;
+		arr[low] = this.m_unit;
 		return low;
 	}
 	private snsort(low: number, high: number): void {
@@ -173,7 +173,7 @@ export default class RenderSortBlock {
 		}
 	}
 	getNodesTotal(): number {
-		return this.m_nodesTotal;
+		return this.m_unitsTotal;
 	}
 	getBegin(): RPONode {
 		this.m_next = this.m_begin;
@@ -186,7 +186,7 @@ export default class RenderSortBlock {
 		return this.m_next;
 	}
 	isEmpty(): boolean {
-		return this.m_nodesTotal < 1;
+		return this.m_unitsTotal < 1;
 		// return this.m_begin == null;
 	}
 	addNode(node: RPONode) {
@@ -206,8 +206,8 @@ export default class RenderSortBlock {
 				}
 			}
 			this.m_end.next = null;
-			this.m_nodesTotal++;
-			//console.log("sort add node,this.m_nodesTotal: ",this.m_nodesTotal);
+			this.m_unitsTotal++;
+			//console.log("sort add node,this.m_unitsTotal: ",this.m_unitsTotal);
 		}
 	}
 
@@ -230,8 +230,8 @@ export default class RenderSortBlock {
 			}
 			node.prev = null;
 			node.next = null;
-			this.m_nodesTotal--;
-			//console.log("sort remove node,this.m_nodesTotal: ",this.m_nodesTotal);
+			this.m_unitsTotal--;
+			//console.log("sort remove node,this.m_unitsTotal: ",this.m_unitsTotal);
 		}
 	}
 }
