@@ -38,7 +38,8 @@ export class DemoGraphTransparent {
 			let rparam = new RendererParam();
 			rparam.setCamProject(45, 0.1, 6000.0);
 			rparam.setCamPosition(1100.0, 1100.0, 1100.0);
-			rparam.syncBgColor = false;
+			// 保持 html body color 和 renderer clear color 同步，以便正确表现alpha混合
+			// rparam.syncBgColor = false;
 
 			let rscene = new RendererScene();
 			rscene.initialize(rparam).setAutoRunning(true);
@@ -55,7 +56,7 @@ export class DemoGraphTransparent {
 	private testDataMesh(rscene: RendererScene): void {
 
 		// 推荐的模型数据组织形式
-		let alpha = 0.2;
+		let alpha = 0.5;
 		let material = new Default3DMaterial();
 		material.setAlpha(alpha);
 		material.normalEnabled = true;

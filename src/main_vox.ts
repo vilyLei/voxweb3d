@@ -375,7 +375,7 @@
 
 //  import {DemoMaterialGraphTest as Demo} from "./demo/DemoMaterialGraphTest";
 
-//  import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
+ import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
 
 //  import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
 
@@ -415,7 +415,7 @@
 
 //  import {EffectExample as Demo} from "./renderingtoy/effectTest/applyui/EffectExample";
 
- import {ModelsLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
+//  import {ModelsLoading as Demo} from "./renderingtoy/effectTest/ModelsLoading";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////
