@@ -17,9 +17,7 @@ import DebugFlag from "../debug/DebugFlag";
 // 为了渲染循环执行中持有RPOUnit和对应的Disp
 export default class RPONode implements IPoolNode, IRPONode {
     __$ruid = -1;
-
-    // drawEnabled = true;
-
+    
     uid = -1;
     index = -1;
     shdUid = -1;
@@ -41,12 +39,6 @@ export default class RPONode implements IPoolNode, IRPONode {
     constructor() {
     }
 
-    // setValue(value: number): void {
-    //     this.unit.value = value;
-    // }
-    // isVsible(): boolean {
-    //     return this.unit == null || this.unit.drawing;
-    // }
     updateData(): void {
 
         const p = this.unit;

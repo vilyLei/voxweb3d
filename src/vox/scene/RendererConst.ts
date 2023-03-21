@@ -5,8 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-export default class RendererConst
-{
-    static CAMERA_VISIBLE_ENABLE:number = 0;
-    static CAMERA_VISIBLE_DISABLE:number = 1;
+export default class RendererConst {
+    static CAMERA_VISIBLE_ENABLE = 0;
+    static CAMERA_VISIBLE_DISABLE = 1;
 }

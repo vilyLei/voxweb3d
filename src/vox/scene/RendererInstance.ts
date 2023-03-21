@@ -16,7 +16,6 @@ import { ShaderUniformContext } from "../../vox/material/ShaderUniformContext";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import RODataBuilder from "../../vox/render/RODataBuilder";
-import IRODataBuilder from "../../vox/render/IRODataBuilder";
 import IRendererParam from "../../vox/scene/IRendererParam";
 import IRenderProcess from "../../vox/render/IRenderProcess";
 import RenderProcess from "../../vox/render/RenderProcess";

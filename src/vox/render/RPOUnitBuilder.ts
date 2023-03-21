@@ -9,8 +9,6 @@ import IPoolNode from "../../vox/base/IPoolNode";
 import PoolNodeBuilder from "../../vox/base/PoolNodeBuilder";
 import RPOUnit from "../../vox/render/RPOUnit";
 
-//import PoolNodeBuilder = PoolNodeBuilderT.vox.base.PoolNodeBuilder;
-
 // 这个类的实例，和每一个RPOUnit或者RODisplay关联(通过唯一的uid)
 class RCRPObj {
     public static readonly RenerProcessMaxTotal: number = 16;

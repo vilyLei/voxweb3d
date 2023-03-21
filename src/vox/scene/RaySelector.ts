@@ -28,24 +28,22 @@ class QueryUnit {
     }
 }
 export default class RaySelector implements IRaySelector {
-    private m_renderer: IRenderer = null;
-    private m_camera: CameraBase = null;
     private m_rsn: RaySelectedNode = null;
     // 最多检测256个对象
-    private m_hitList: Uint8Array = new Uint8Array(256);
+    private m_hitList = new Uint8Array(256);
     private m_rsnList: RaySelectedNode[] = new Array(256);
     private m_selectedNode: RaySelectedNode = null;
     private m_selectedTotal: number = 0;
-    private m_testMode: number = 0;
-    private m_invpv: Vector3D = new Vector3D();
-    private m_invtv: Vector3D = new Vector3D();
+    private m_testMode = 0;
+    private m_invpv = new Vector3D();
+    private m_invtv = new Vector3D();
     private m_rlpv: Vector3D = null;
     private m_rltv: Vector3D = null;
-    private m_rlsiv: Uint8Array = new Uint8Array(4);
-    private m_rlinvtv: Vector3D = new Vector3D();
-    private m_outv: Vector3D = new Vector3D();
+    private m_rlsiv = new Uint8Array(4);
+    private m_rlinvtv = new Vector3D();
+    private m_outv = new Vector3D();
     private m_vecs: Vector3D[] = [null, null];
-    private m_gpuTestEnabled: boolean = false;
+    private m_gpuTestEnabled = false;
     private m_qu = new QueryUnit();
     etset: IRenderingEntitySet = null;
     constructor() {
@@ -54,7 +52,6 @@ export default class RaySelector implements IRaySelector {
         }
     }
     setRenderer(renderer: IRenderer): void {
-        this.m_renderer = renderer;
     }
     setRayTestMode(testMode: number): void {
         this.m_testMode = testMode;
@@ -68,7 +65,6 @@ export default class RaySelector implements IRaySelector {
         out_rltv.copyFrom(this.m_rltv);
     }
     setCamera(cam: CameraBase): void {
-        this.m_camera = cam;
     }
     getSelectedNode(): RaySelectedNode {
         return this.m_selectedNode;
