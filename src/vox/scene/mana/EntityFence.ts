@@ -68,7 +68,7 @@ export default class EntityFency {
 				let pnode: Entity3DNode;
 				let status: number;
 				while (nextNode) {
-					console.log("EntityFency::update(), nextNode.entity.hasMesh().");
+					// console.log("EntityFency::update(), nextNode.entity.hasMesh().");
 					const entity = nextNode.entity;
 					const retype = entity.getREType();
 					if(retype >= 12 || retype < 12 && (entity as IRenderEntity).hasMesh()) {
@@ -79,7 +79,7 @@ export default class EntityFency {
 							const entity = pnode.entity;
 							this.m_wlinker.removeNode(pnode);
 							this.m_wq.removeEntity(pnode.entity);
-							console.log("EntityFency::update(), ready a mesh data that was finished.");
+							// console.log("EntityFency::update(), ready a mesh data that was finished.");
 							this.m_rc.addEntity(entity, status);
 					}else {
 						flag = true;

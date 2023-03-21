@@ -83,7 +83,6 @@ export default class SpaceCullingor implements ISpaceCullingor {
 				if (nextNode.rstatus > 0) {
 					ab = nextNode.bounds;
 					const entity = nextNode.entity;
-					// if (entity.getREType() < 12) {
 					if (entity.isVisible()) {
 						// 不管是不是可渲染几何体的mesh entity都需要处理遮挡剔除的操作
 						const runit = nextNode.runit;
@@ -124,7 +123,6 @@ export default class SpaceCullingor implements ISpaceCullingor {
 							entity.setRendering(boo);
 						}
 					}
-					// }
 				}
 				// if (ns != "") {
 				// 	if (DebugFlag.Flag_0 > 0) {

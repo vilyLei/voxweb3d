@@ -297,7 +297,7 @@
 
 //  import {DemoContainerToRSpace as Demo} from "./demo/DemoContainerToRSpace";
 
-//  import {DemoContainerToRender as Demo} from "./demo/DemoContainerToRender";
+ import {DemoContainerToRender as Demo} from "./demo/DemoContainerToRender";
 
 //  import {DemoContainerTransform as Demo}  from "./demo/DemoContainerTransform";
 
@@ -375,7 +375,7 @@
 
 //  import {DemoMaterialGraphTest as Demo} from "./demo/DemoMaterialGraphTest";
 
- import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
+//  import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
 
 //  import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
 
