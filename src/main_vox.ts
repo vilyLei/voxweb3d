@@ -297,7 +297,7 @@
 
 //  import {DemoContainerToRSpace as Demo} from "./demo/DemoContainerToRSpace";
 
- import {DemoContainerToRender as Demo} from "./demo/DemoContainerToRender";
+//  import {DemoContainerToRender as Demo} from "./demo/DemoContainerToRender";
 
 //  import {DemoContainerTransform as Demo}  from "./demo/DemoContainerTransform";
 
@@ -530,7 +530,7 @@
 //  import {BakeExample as Demo} from "./bake/demo/bakePbr/BakeExample";
 //  import {BakePBR as Demo} from "./bake/demo/bakePbr/BakePBR";
 //  import {BakeFlow as Demo} from "./bake/demo/bakePbr/BakeFlow";
-//  import {BakeFlow2 as Demo} from "./bake/demo/bakePbr/BakeFlow2";
+ import {BakeFlow2 as Demo} from "./bake/demo/bakePbr/BakeFlow2";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////     distributed runtime     ////////////s//////////////

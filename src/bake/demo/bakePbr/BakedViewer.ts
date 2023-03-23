@@ -44,7 +44,7 @@ class BakedViewer {
         // let tex = this.getTexByUrl("static/private/bake/icoSph_1.png");
         let tex = this.getTexByUrl(texUrl);
         // let tex = this.getTexByUrl("static/private/bake/sph_mapping02b.png");
-        tex.flipY = true;
+        // tex.flipY = true;
         let materialShow = new Default3DMaterial();
         materialShow.setTextureList([tex]);
         materialShow.initializeByCodeBuf(true);

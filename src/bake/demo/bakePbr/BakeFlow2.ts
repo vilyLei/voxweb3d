@@ -67,7 +67,7 @@ export class BakeFlow2 {
 		console.log("BakeFlow2::initialize()......");
 
 		if (this.m_rscene == null) {
-			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 			RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 			//RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 			RendererDevice.SetWebBodyColor("white");
