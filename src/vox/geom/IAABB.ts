@@ -8,12 +8,13 @@
 import IVector3D from "../../vox/math/IVector3D";
 interface IAABB {
 
-	min: IVector3D;
-	max: IVector3D;
 	version: number;
 	radius: number;
 	radius2: number;
-	center: IVector3D;
+
+	readonly min: IVector3D;
+	readonly max: IVector3D;
+	readonly center: IVector3D;
 
 	containsV(v: IVector3D): boolean;
 	// 是否包含某一点(同一坐标空间的点)

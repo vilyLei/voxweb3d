@@ -17,12 +17,13 @@ class AABB implements IAABB {
 	private m_halfWidth = 50.0;
 	private m_halfHeight = 50.0;
 	private m_tempV = new Vector3D();
-	min = new Vector3D();
-	max = new Vector3D();
 	version = -1;
 	radius = 50;
 	radius2 = 2500;
-	center = new Vector3D(0.0, 0.0, 0.0);
+
+	readonly min = new Vector3D();
+	readonly max = new Vector3D();
+	readonly center = new Vector3D();
 	constructor() {
 		this.reset();
 	}
