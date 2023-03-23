@@ -32,12 +32,10 @@ import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceConte
 import IRendererInstance from "../../vox/scene/IRendererInstance";
 import { ITextureBlock } from "../../vox/texture/ITextureBlock";
 import { TextureBlock } from "../../vox/texture/TextureBlock";
-import IRenderer from "../../vox/scene/IRenderer";
 import IRendererSpace from "../../vox/scene/IRendererSpace";
 import IRendererScene from "../../vox/scene/IRendererScene";
 import RendererSpace from "../../vox/scene/RendererSpace";
 import RaySelectedNode from "../../vox/scene/RaySelectedNode";
-import IRaySelector from "../../vox/scene/IRaySelector";
 import RaySelector from "../../vox/scene/RaySelector";
 import RayGpuSelector from "../../vox/scene/RayGpuSelector";
 import MouseEvt3DController from "../../vox/scene/MouseEvt3DController";
@@ -87,9 +85,6 @@ export default class RendererSceneBase {
 	protected m_camera: IRenderCamera = null;
 	protected m_currCamera: IRenderCamera = null;
 
-	// private m_nodeWaitLinker: Entity3DNodeLinker = null;
-	// private m_nodeWaitQueue: EntityNodeQueue = null;
-
 	private m_entityFence: EntityFency;
 
 	private m_camDisSorter: CameraDsistanceSorter = null;
@@ -107,9 +102,6 @@ export default class RendererSceneBase {
 	protected m_currStage3D: IRenderStage3D = null;
 	protected m_stage3D: IRenderStage3D = null;
 	protected m_transUpdater: EntityTransUpdater;
-
-	// protected m_clearColor = new Color4();
-	// protected m_clearColorFlag = false;
 
 	readonly runnableQueue: IRunnableQueue = null;
 	readonly textureBlock: ITextureBlock = null;
@@ -245,24 +237,15 @@ export default class RendererSceneBase {
 
 	setClearUint24Color(colorUint24: number, alpha: number = 1.0): void {
 		this.m_rproxy.setClearUint24Color(colorUint24, alpha);
-		// this.m_clearColorFlag = true;
-		// this.m_clearColor.setRGBUint24(colorUint24);
-		// this.m_clearColor.a = alpha;
 	}
 	setClearRGBColor3f(pr: number, pg: number, pb: number): void {
 		this.m_rproxy.setClearRGBColor3f(pr, pg, pb);
-		// this.m_clearColorFlag = true;
-		// this.m_clearColor.setRGB3f(pr, pg, pb);
 	}
 	setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void {
 		this.m_rproxy.setClearRGBAColor4f(pr, pg, pb, pa);
-		// this.m_clearColorFlag = true;
-		// this.m_clearColor.setRGBA4f(pr, pg, pb, pa);
 	}
 	setClearColor(color: Color4): void {
 		this.m_rproxy.setClearRGBAColor4f(color.r, color.g, color.b, color.a);
-		// this.m_clearColorFlag = true;
-		// if (color) this.m_clearColor.copyFrom(color);
 	}
 
 	setRenderToBackBuffer(): void {
@@ -559,16 +542,6 @@ export default class RendererSceneBase {
 	removeEntity(entity: IRenderEntityBase): void {
 		if (entity) {
 			if (entity.getREType() < 12) {
-				// let node: Entity3DNode = null;
-				// if (this.m_nodeWaitLinker != null) {
-				// 	node = this.m_nodeWaitQueue.getNodeByEntity(re);
-				// 	if (node != null) {
-				// 		re.getTransform().setUpdater(null);
-				// 		this.m_nodeWaitLinker.removeNode(node);
-				// 		this.m_nodeWaitQueue.removeEntity(re);
-				// 	}
-				// }
-				// if (node == null) {
 
 				let re = entity as IRenderEntity;
 				const flag = this.m_entityFence.removeEntity(re);
@@ -663,9 +636,6 @@ export default class RendererSceneBase {
 
 		this.m_shader.renderBegin();
 		if (contextBeginEnabled) {
-			// if(this.m_clearColorFlag) {
-			//     ry.setClearColor(this.m_clearColor);
-			// }
 			this.m_rcontext.renderBegin(this.m_currCamera == null);
 		}
 		this.m_currCamera = null;
@@ -718,9 +688,6 @@ export default class RendererSceneBase {
 		if (this.m_evt3DCtr != null && this.m_mouseEvtEnabled) {
 			if (this.m_rayTestFlag && this.m_evt3DCtr.getEvtType() > 0) {
 				// 是否对已经获得的拾取列表做进一步的gpu拾取
-				// if (this.m_uid > 1000) {
-				//     console.log("sub sc runMouseTest...", this.m_rayTestFlag, this.m_evt3DCtr.getEvtType());
-				// }
 
 				let selector = this.m_rspace.getRaySelector();
 				if (selector) {
@@ -775,29 +742,6 @@ export default class RendererSceneBase {
 		this.m_mouseTestBoo = true;
 		this.m_cullingTestBoo = true;
 		this.m_rayTestFlag = true;
-
-		// wait mesh data ready to finish
-		// if (this.m_nodeWaitLinker != null) {
-		// 	let nextNode: Entity3DNode = this.m_nodeWaitLinker.getBegin();
-		// 	if (nextNode != null) {
-		// 		let pnode: Entity3DNode;
-		// 		let status: number;
-		// 		while (nextNode) {
-		// 			if (nextNode.entity.hasMesh()) {
-		// 				pnode = nextNode;
-		// 				nextNode = nextNode.next;
-		// 				const entity = pnode.entity;
-		// 				status = pnode.rstatus;
-		// 				this.m_nodeWaitLinker.removeNode(pnode);
-		// 				this.m_nodeWaitQueue.removeEntity(pnode.entity);
-		// 				//console.log("RenderScene::update(), ready a mesh data that was finished.");
-		// 				this.addEntity(entity, status);
-		// 			} else {
-		// 				nextNode = nextNode.next;
-		// 			}
-		// 		}
-		// 	}
-		// }
 
 		this.m_transUpdater.update();
 
