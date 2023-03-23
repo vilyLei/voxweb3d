@@ -22,9 +22,9 @@
 // import { DemoCTMViewer as Demo } from "./cospace/demo/DemoCTMViewer";
 // import { DemoNormalViewer as Demo } from "./cospace/demo/DemoNormalViewer";
 
-// import { RenderingVerifier as Demo } from "./cospace/demo/RenderingVerifier";
+import { RenderingVerifier as Demo } from "./cospace/demo/RenderingVerifier";
 
-import { DemoCoApp as Demo } from "./cospace/demo/DemoCoApp";
+// import { DemoCoApp as Demo } from "./cospace/demo/DemoCoApp";
 // import { DemoCoAppDeferredInit as Demo } from "./cospace/demo/DemoCoAppDeferredInit";
 
 // import { DemoCoRenderer as Demo } from "./cospace/demo/DemoCoRenderer";

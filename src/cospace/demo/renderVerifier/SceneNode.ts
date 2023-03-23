@@ -141,7 +141,7 @@ class SceneNode implements ISceneNode {
 			SurfaceNormalCalc.ClacTrisNormal(vs, vs.length, trisNumber, ivs, nvs2);
 
 			let mb = new NormalCheckMaterial();
-			
+
 			mb.applyDifference(true);
 			// let material = new NormalViewerMaterial();
 			let material = mb.create(flag);
@@ -183,7 +183,7 @@ class SceneNode implements ISceneNode {
 			this.m_entities.push(entity);
 			this.m_rscene.addEntity(entity);
 			entity.update();
-			
+
 			if(model.status != undefined && model.status > 0) {
 				console.log("Error model.status: ", model.status);
 			}else {
@@ -268,6 +268,9 @@ class SceneNode implements ISceneNode {
 						if (this.m_normalErrInfo != "") {
 							info += "</br><font color='#ee00aa'>注意: " + this.m_normalErrInfo + ",当前所见的法线由此程序生成</font>";
 						}
+
+						info += "</br><b><pre><font color='#eeFFaa'>shoLog(info)</font></pre></b>";
+
 						this.initEntityFinish();
 					}
 					DivLog.ShowLogOnce(info);
