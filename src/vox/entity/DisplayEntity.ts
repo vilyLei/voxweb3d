@@ -694,13 +694,14 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
 			let st: number = this.m_trs.updateStatus;
 			this.m_trs.update();
 
+			const mat = this.m_trs.getMatrix();
 			if (this.m_localBuondsVer != bounds.version || st != this.m_trs.updateStatus) {
 				this.m_localBuondsVer = bounds.version;
 				this.updateLocalBoundsVS(bounds);
 
 				let in_vs = this.m_lBoundsVS;
 				let out_vs = DE.s_boundsOutVS;
-				this.m_trs.getMatrix().transformVectors(in_vs, 24, out_vs);
+				mat.transformVectors(in_vs, 24, out_vs);
 				this.m_globalBounds.reset();
 				this.m_globalBounds.addFloat32Arr(out_vs);
 				this.m_globalBounds.update();

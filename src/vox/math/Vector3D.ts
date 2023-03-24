@@ -22,6 +22,12 @@ export default class Vector3D implements IVector3D {
     clone(): Vector3D {
         return new Vector3D(this.x, this.y, this.z, this.w);
     }
+	abs(): Vector3D {
+		this.x = Math.abs(this.x);
+		this.y = Math.abs(this.y);
+		this.z = Math.abs(this.z);
+		return this;
+	}
     setTo(px: number, py: number, pz: number, pw: number = 1.0): Vector3D {
         this.x = px;
         this.y = py;
@@ -160,16 +166,16 @@ export default class Vector3D implements IVector3D {
         );
     }
     crossBy(a: Vector3D): Vector3D {
-        let px: number = this.y * a.z - this.z * a.y;
-        let py: number = this.z * a.x - this.x * a.z;
-        let pz: number = this.x * a.y - this.y * a.x;
+        let px = this.y * a.z - this.z * a.y;
+        let py = this.z * a.x - this.x * a.z;
+        let pz = this.x * a.y - this.y * a.x;
         this.x = px;
         this.y = py;
         this.z = pz;
         return this;
     }
     reflectBy(nv: Vector3D): Vector3D {
-        let idotn2: number = (this.x * nv.x + this.y * nv.y + this.z * nv.z) * 2.0;
+        let idotn2 = (this.x * nv.x + this.y * nv.y + this.z * nv.z) * 2.0;
         this.x = this.x - idotn2 * nv.x;
         this.y = this.y - idotn2 * nv.y;
         this.z = this.z - idotn2 * nv.z;

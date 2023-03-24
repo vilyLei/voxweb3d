@@ -10,17 +10,15 @@ interface IOBB {
 
 	version: number;
 	radius: number;
-	radius2: number;
 
-	
 	readonly axis: IVector3D[];
 	readonly extent: IVector3D;
 	readonly center: IVector3D;
 
-	equals(ab: IOBB): boolean;
+	equals(ob: IOBB): boolean;
 	reset(): void;
 	update(): void;
-
+	intersect(ob: IOBB): boolean;
 }
 
 export default IOBB;

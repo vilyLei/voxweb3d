@@ -97,7 +97,7 @@ class Matrix4 implements IMatrix4 {
 			*
 			(lfs[2] * lfs[7] - lfs[6] * lfs[3]);
 	}
-	
+
 	multiplyMatrices( a: IMatrix4, b: IMatrix4 ): IMatrix4 {
 
 		const ae = a.getLocalFS32();
@@ -145,7 +145,7 @@ class Matrix4 implements IMatrix4 {
 		}
 		return this;
 	}
-	
+
 	premultiply(m: IMatrix4): IMatrix4 {
 		if(m != this && m != null) {
 			return this.multiplyMatrices(m, this);
@@ -351,7 +351,7 @@ class Matrix4 implements IMatrix4 {
 		fs[6] = cosY * sinXscaleY;
 		fs[10] = cosY * cosXscaleZ;
 	}
-	
+
 	compose( position: Vector3D, quaternion: Quaternion, scale: Vector3D ): Matrix4 {
 
 		const fs = this.m_localFS32;
@@ -402,7 +402,7 @@ class Matrix4 implements IMatrix4 {
 		}
 
 		const fs = this.m_localFS32;
-		
+
 		const x = euler.x, y = euler.y, z = euler.z;
 		const a = Math.cos( x ), b = Math.sin( x );
 		const c = Math.cos( y ), d = Math.sin( y );
@@ -520,7 +520,7 @@ class Matrix4 implements IMatrix4 {
 		return this;
 
 	}
-	
+
 	extractRotation( m: Matrix4 ): Matrix4 {
 
 		// this method does not support reflection matrices
@@ -904,7 +904,7 @@ class Matrix4 implements IMatrix4 {
 		dir.normalize();
 		vup.normalize();
 		let dir2 = dir.clone().scaleBy(vup.dot(dir));
-		
+
 		vup.subtractBy(dir2);
 		if (vup.getLength() > MathConst.MATH_MIN_POSITIVE) vup.normalize();
 		else if (dir.x != 0) vup.setTo(-dir.y, dir.x, 0);
@@ -1166,10 +1166,10 @@ class Matrix4 implements IMatrix4 {
 	}
 
 	deltaTransformVectorSelf(v3: Vector3D): void {
-		let fs: Float32Array = this.m_localFS32;
-		let x: number = v3.x;
-		let y: number = v3.y;
-		let z: number = v3.z;
+		let fs = this.m_localFS32;
+		let x = v3.x;
+		let y = v3.y;
+		let z = v3.z;
 		v3.x = x * fs[0] + y * fs[4] + z * fs[8];
 		v3.y = x * fs[1] + y * fs[5] + z * fs[9];
 		v3.z = x * fs[2] + y * fs[6] + z * fs[10];
@@ -1396,7 +1396,7 @@ class Matrix4 implements IMatrix4 {
 		fs[14] = m14;
 	}
 	orthoRH(b: number, t: number, l: number, r: number, zNear: number, zFar: number): void {
-		
+
 		this.identity();
 		const fs = this.m_localFS32;
 		fs[0] = 2.0 / (r - l);

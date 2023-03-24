@@ -13,6 +13,7 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Color4 from '../../vox/material/Color4';
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import Line3DMaterial from '../../vox/material/mcase/Line3DMaterial';
+import IOBB from "../geom/IOBB";
 
 export default class BoxFrame3D extends DisplayEntity {
     private m_dynColorBoo: boolean = false;
@@ -98,6 +99,34 @@ export default class BoxFrame3D extends DisplayEntity {
         if (this.m_sm == null) this.m_sm = this.getMesh() as DashedLineMesh;
     }
 
+    initializeByOBB(obb: IOBB, scale: number = 1.0): void {
+		let pv = new Vector3D();
+		// bottom frame plane wit "-y axis"
+		let et = obb.extent.clone().scaleBy(scale);
+
+		let cv = obb.center;
+		let max_vx = obb.axis[0].clone().scaleBy(et.x);
+		let max_vy = obb.axis[1].clone().scaleBy(et.y);
+		let max_vz = obb.axis[2].clone().scaleBy(et.z);
+		let min_vx = max_vx.clone().scaleBy(-1);
+		let min_vy = max_vy.clone().scaleBy(-1);
+		let min_vz = max_vz.clone().scaleBy(-1);
+
+
+		// 与"y"轴垂直的center positon之上的面
+		let v0 = max_vx.clone().addBy(max_vy).addBy(max_vz).addBy(cv);// max pos
+		let v1 = max_vx.clone().addBy(max_vy).addBy(min_vz).addBy(cv);
+		let v2 = min_vx.clone().addBy(max_vy).addBy(min_vz).addBy(cv);
+		let v3 = min_vx.clone().addBy(max_vy).addBy(max_vz).addBy(cv);
+		// 与"y"轴垂直的center positon之下的面
+		let p0 = max_vx.clone().addBy(min_vy).addBy(max_vz).addBy(cv);
+		let p1 = max_vx.clone().addBy(min_vy).addBy(min_vz).addBy(cv);
+		let p2 = min_vx.clone().addBy(min_vy).addBy(min_vz).addBy(cv);
+		let p3 = min_vx.clone().addBy(min_vy).addBy(max_vz).addBy(cv);
+
+		let ls = [v0, v1, v2, v3, p0, p1, p2, p3];
+		this.initializeByPosList8(ls);
+	}
     initializeByPosList8(posList8: Vector3D[]): void {
         this.m_posarr = [
             // bottom frame
