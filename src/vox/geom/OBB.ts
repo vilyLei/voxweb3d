@@ -11,18 +11,15 @@ import IOBB from "../../vox/geom/IOBB";
 import IAABB from "./IAABB";
 import IMatrix4 from "../math/IMatrix4";
 class Mat3 {
-	// vs = new Float32Array(9);
 	vs = [
 		new Float32Array(3),
 		new Float32Array(3),
 		new Float32Array(3)
 	];
 	getAt(i: number, j: number): number {
-		// getAt(j: number, i: number): number {
 		return this.vs[i][j];
 	}
 	setAt(i: number, j: number, value: number): void {
-		// setAt(j: number, i: number, value: number): void {
 		this.vs[i][j] = value;
 	}
 }
@@ -64,9 +61,11 @@ class OBB implements IOBB {
 		console.log("#### ab.center: ", ab.center);
 		console.log("#### ab.max: ", ab.max);
 		if (transform) {
+			
 			transform.deltaTransformVectorSelf(ls[0]);
 			transform.deltaTransformVectorSelf(ls[1]);
 			transform.deltaTransformVectorSelf(ls[2]);
+
 			ls[0].normalize();
 			ls[1].normalize();
 			ls[2].normalize();
@@ -179,17 +178,21 @@ class OBB implements IOBB {
 		return true;
 	}
 	obbIntersect2(a: OBB, b: OBB): boolean {
+
+		console.log("obbIntersect2() call() ...");
+
 		const R = new Mat3();
 		const AbsR = new Mat3();
 
-		// obb1.update();
-		// obb2.update();
+		let Avs = AbsR.vs;
+		let Rvs = R.vs;
 
 		const abs = Math.abs;
 		// 计算旋转矩阵R
 		for (let i = 0; i < 3; ++i) {
 			for (let j = 0; j < 3; ++j) {
-				R.setAt(i, j, a.axis[i].dot(b.axis[j]));
+				// R.setAt(i, j, a.axis[i].dot(b.axis[j]));
+				Rvs[i][j] = a.axis[i].dot(b.axis[j]);
 			}
 		}
 
@@ -197,11 +200,13 @@ class OBB implements IOBB {
 		// Vector3f t = obb2.center - obb1.center;
 		let t = new Vector3D().subVecsTo(b.center, a.center);		
 		t = new Vector3D(t.dot(a.axis[0]), t.dot(a.axis[1]), t.dot(a.axis[2]));
+		// t.normalize();
 		let ts = [t.x, t.y, t.z];
 		// 计算旋转矩阵R的绝对值AbsR
 		for (let i = 0; i < 3; ++i) {
 			for (let j = 0; j < 3; ++j) {
-				AbsR.setAt(i, j, abs(R.getAt(i, j)) + 1e-6);
+				// AbsR.setAt(i, j, abs(R.getAt(i, j)) + 1e-6);
+				Avs[i][j] = abs(Rvs[i][j]) + 1e-6;
 			}
 		}
 
@@ -209,8 +214,7 @@ class OBB implements IOBB {
 		const bets = b.extents;
 		let ra = 0;
 		let rb = 0;
-		let Avs = AbsR.vs;
-		let Rvs = R.vs;
+
 		// test axes(A0, A1, A2) 
 		for (let i = 0; i < 3; ++i) {
 			ra = aets[i];
@@ -302,6 +306,7 @@ class OBB implements IOBB {
 		let t = new Vector3D().subVecsTo(obb2.center, obb1.center);
 
 		t = new Vector3D(t.dot(obb1.axis[0]), t.dot(obb1.axis[1]), t.dot(obb1.axis[2]));
+		t.normalize();
 		let ts = [t.x, t.y, t.z];
 		// 计算旋转矩阵R的绝对值AbsR
 		for (let i = 0; i < 3; ++i) {

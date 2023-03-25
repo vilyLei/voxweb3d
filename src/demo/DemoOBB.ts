@@ -152,8 +152,8 @@ export class DemoOBB {
 		box1.normalEnabled = true;
 		box1.initializeSizeXYZ(80, 80, 80);
 		(box1.getMaterial() as IColorMaterial).setRGB3f(0.5, 1.0, 0.8);
-		box1.setXYZ(65, 80, 0);
-		box1.setRotationXYZ(0, 90, 80);
+		box1.setXYZ(95, 60, 30);
+		box1.setRotationXYZ(130, 0, 110);
 		this.m_rscene.addEntity(box1);
 
 
@@ -174,6 +174,7 @@ export class DemoOBB {
 		// let intersection = obb0.intersect(obb1);
 
 		// let intersection = obb0.obbIntersect(obb0, obb1);
+		// console.log("$$$$$$$$$ intersection: ", intersection);
 
 		// let intersection0 = obb0.obbIntersect2(obb0, obb1);
 		// let intersection1 = obb0.obbIntersect2(obb1, obb0);

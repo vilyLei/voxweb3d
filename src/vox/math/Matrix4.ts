@@ -1175,16 +1175,16 @@ class Matrix4 implements IMatrix4 {
 		v3.z = x * fs[2] + y * fs[6] + z * fs[10];
 	}
 	deltaTransformOutVector(v3: Vector3D, out_v3: Vector3D): void {
-		let fs: Float32Array = this.m_localFS32;
+		let fs = this.m_localFS32;
 		out_v3.x = v3.x * fs[0] + v3.y * fs[4] + v3.z * fs[8];
 		out_v3.y = v3.x * fs[1] + v3.y * fs[5] + v3.z * fs[9];
 		out_v3.z = v3.x * fs[2] + v3.y * fs[6] + v3.z * fs[10];
 	}
 	transformVector(v3: Vector3D): Vector3D {
-		let fs: Float32Array = this.m_localFS32;
-		let x: number = v3.x;
-		let y: number = v3.y;
-		let z: number = v3.z;
+		let fs = this.m_localFS32;
+		let x = v3.x;
+		let y = v3.y;
+		let z = v3.z;
 		return new Vector3D(
 			x * fs[0] + y * fs[4] + z * fs[8] + fs[12]
 			, x * fs[1] + y * fs[5] + z * fs[9] + fs[13]
