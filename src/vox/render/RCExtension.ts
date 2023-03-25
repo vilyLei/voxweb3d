@@ -122,12 +122,6 @@ void main(){
         }
         else
         {
-            //  selfT.OES_standard_derivatives = gl.getExtension('OES_standard_derivatives');
-            //  if(selfT.OES_standard_derivatives != null)
-            //  console.log("Use OES_standard_derivatives Extension success!");
-            //  else
-            //  console.log("OES_standard_derivatives Extension can not support!");
-
             selfT.EXT_shader_texture_lod = gl.getExtension('EXT_shader_texture_lod');
             if(selfT.EXT_shader_texture_lod != null)
             console.log("Use EXT_shader_texture_lod Extension success!");

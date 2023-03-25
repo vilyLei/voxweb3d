@@ -98,10 +98,10 @@ export class DemoOBB {
 		let centV = new Vector3D();
 		for(let i = 0; i < ls.length; ++i) {
 			centV.addBy( ls[i] );
-			let sph = new Sphere3DEntity();
-			sph.initialize(5, 20,20);
-			sph.setPosition(ls[i]);
-			this.m_rscene.addEntity( sph );
+			// let sph = new Sphere3DEntity();
+			// sph.initialize(5, 20,20);
+			// sph.setPosition(ls[i]);
+			// this.m_rscene.addEntity( sph );
 		}
 		centV.scaleBy(1.0 / ls.length);
 		console.log("cv: ", cv);
@@ -152,7 +152,8 @@ export class DemoOBB {
 		box1.normalEnabled = true;
 		box1.initializeSizeXYZ(80, 80, 80);
 		(box1.getMaterial() as IColorMaterial).setRGB3f(0.5, 1.0, 0.8);
-		box1.setXYZ(80, 90, 0);
+		box1.setXYZ(65, 80, 0);
+		box1.setRotationXYZ(0, 90, 80);
 		this.m_rscene.addEntity(box1);
 
 
@@ -173,14 +174,16 @@ export class DemoOBB {
 		// let intersection = obb0.intersect(obb1);
 
 		// let intersection = obb0.obbIntersect(obb0, obb1);
-		let intersection0 = obb0.detectIntersection(obb0, obb1);
-		let intersection1 = obb0.detectIntersection(obb1, obb0);
-		let intersection = intersection0 && intersection1;
-		console.log("$$$$$$$$$ intersection0: ", intersection0);
-		console.log("$$$$$$$$$ intersection1: ", intersection1);
-		console.log("$$$$$$$$$ intersection: ", intersection);
 
-		new BoxFrame3D();
+		// let intersection0 = obb0.obbIntersect2(obb0, obb1);
+		// let intersection1 = obb0.obbIntersect2(obb1, obb0);
+		// let intersection = intersection0 && intersection1;
+		// console.log("$$$$$$$$$ intersection0: ", intersection0);
+		// console.log("$$$$$$$$$ intersection1: ", intersection1);
+		// console.log("$$$$$$$$$ intersection: ", intersection);
+
+		let intersection = obb0.obbIntersect2(obb0, obb1);
+		console.log("$$$$$$$$$ intersection: ", intersection);
 	}
 	private test01(): void {
 
