@@ -73,6 +73,9 @@ export class DemoOBBUICtrl {
 	private m_obbFrame0 = new BoxFrame3D();
 	private m_obbFrame1 = new BoxFrame3D();
 	private m_initUI = true;
+	private m_ver = 0;
+	private m_currPos = new Vector3D();
+	private m_initPos = new Vector3D();
 	private initUI(): void {
 		if (!this.m_initUI) {
 			return;
@@ -114,24 +117,30 @@ export class DemoOBBUICtrl {
 			this.m_opType = 2;
 		});
 
-		ui.addValueItem("操作X轴", "op-x", 0, -300, 300, (info: CtrlInfo): void => {
+		ui.addValueItem("操作X轴", "op-x", 0, -360, 360, (info: CtrlInfo): void => {
 			// let pv = entity1.getPosition();
 			// pv.y = info.values[0];
 			// entity1.setPosition(pv);
 			// entity1.update();
+			this.m_currPos.x = info.values[0];
+			this.m_ver++;
 		});
 
-		ui.addValueItem("操作Y轴", "op-y", 0, -300, 300, (info: CtrlInfo): void => {
+		ui.addValueItem("操作Y轴", "op-y", 0, -360, 360, (info: CtrlInfo): void => {
 			// let pv = entity1.getPosition();
 			// pv.y = info.values[0];
 			// entity1.setPosition(pv);
 			// entity1.update();
+			this.m_currPos.y = info.values[0];
+			this.m_ver++;
 		});
-		ui.addValueItem("操作Z轴", "op-z", 0, -300, 300, (info: CtrlInfo): void => {
+		ui.addValueItem("操作Z轴", "op-z", 0, -360, 360, (info: CtrlInfo): void => {
 			// let pv = entity1.getPosition();
 			// pv.y = info.values[0];
 			// entity1.setPosition(pv);
 			// entity1.update();
+			this.m_currPos.z = info.values[0];
+			this.m_ver++;
 		});
 
 		//*/
@@ -145,6 +154,8 @@ export class DemoOBBUICtrl {
 		//     this.m_stageDragSwinger.setEnabled(!st.rayPickFlag);
 		// })
 	}
+	private trans
+
 	private init3DScene(): void {
 		// this.test01();
 		this.test02();
