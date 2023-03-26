@@ -18,17 +18,14 @@ export default class ROIvsData implements IROIvsData {
     version = -2;
     setData(ivs: Uint16Array | Uint32Array, status: number = VtxBufConst.VTX_STATIC_DRAW): ROIvsData {
         if ((ivs instanceof Uint16Array)) {
-            this.unitBytes = 2;
             if(ivs.length > 65536) {
                 throw Error("ivs.length > 65536, but its type is not Uint32Array.");
             }
         }
-        else if ((ivs instanceof Uint32Array)) {
-            this.unitBytes = 4;
-        }
-        else {
+        else if (!(ivs instanceof Uint32Array)) {
             throw Error("Error: ivs is not an Uint32Array or an Uint16Array bufferArray instance !!!!");
         }
+        this.unitBytes = ivs.BYTES_PER_ELEMENT;
 
         this.ivs = ivs;
         if (ivs != null) {

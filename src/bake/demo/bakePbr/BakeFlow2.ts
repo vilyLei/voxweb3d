@@ -193,6 +193,13 @@ export class BakeFlow2 {
 		nvsUrl = "static/private/bake/cyl01/normal.bin";
 		bakeUrl = "static/private/bake/cyl01/cyl01_baked.png";
 
+
+		vsUrl = "static/private/bake/hat_a_01/vertices.bin";
+		uvs1Url = "static/private/bake/hat_a_01/uv1.bin";
+		uvs2Url = "static/private/bake/hat_a_01/uv2.bin";
+		nvsUrl = "static/private/bake/hat_a_01/normal.bin";
+		bakeUrl = "static/private/bake/hat_a_01/hat_a_01.png";
+
 		let bakeType = -1;
 		this.m_drawTimes = 1;
 		this.m_circleTimes = 1;

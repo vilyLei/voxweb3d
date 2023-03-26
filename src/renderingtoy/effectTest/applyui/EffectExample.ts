@@ -51,7 +51,7 @@ export class EffectExample {
         return ptex;
     }
     private initSys(): void {
-        
+
         // 阻止右键
         document.oncontextmenu = function (e) {
             e.preventDefault();
@@ -117,7 +117,7 @@ export class EffectExample {
             entity0.update();
         });
         ui.addValueItem("Y轴移动-B", "move-b", 0, -300, 300, (info: CtrlInfo): void => {
-            
+
             let pv = entity1.getPosition();
             pv.y = info.values[0];
             entity1.setPosition(pv);
@@ -167,8 +167,8 @@ export class EffectExample {
         let baseUrl = "static/private/";
         let url = baseUrl + "fbx/base4.fbx";
         // url = baseUrl + "fbx/hat_ok.fbx";
-        url = baseUrl + "obj/apple_01.obj";
-        url = baseUrl + "fbx/shoes07.fbx";
+        url = "static/assets/obj/apple_01.obj";
+        // url = baseUrl + "fbx/shoes07.fbx";
 
         this.loadModels([url]);
     }

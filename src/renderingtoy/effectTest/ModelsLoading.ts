@@ -61,14 +61,16 @@ export class ModelsLoading {
         let url0 = "static/assets/fbx/base4.fbx";
         let url1 = "static/private/bake/oldIndexUnwrap/6.ctm";
         // let url2 = "static/private/bake/ios01/ios01_unwrap.fbx";
-        let url2 = "static/private/bake/cyl01/cly01.ctm";
+        // let url2 = "static/private/bake/cyl01/cly01.ctm";
+        let url2 = "static/private/bake/hat_a_01/model.ctm";
+        let url3 = "static/private/bake/hat_a_02/model.ctm";
         let loader = this.m_teamLoader;
 
-        loader.load([url2], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
+        loader.load([url2, url3], (models: CoGeomDataType[], transforms: Float32Array[]): void => {
 
             this.m_layouter.layoutReset();
             for (let i = 0; i < models.length; ++i) {
-                this.createEntity(models[i], transforms != null ? transforms[i] : null, 0.05);
+                this.createEntity(models[i], transforms != null ? transforms[i] : null, 1.0);
             }
             this.m_layouter.layoutUpdate(300, new Vector3D(-400, 0, 0));
 
