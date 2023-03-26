@@ -25,6 +25,17 @@ import IRendererScene from "../vox/scene/IRendererScene";
 import IRendererSceneGraphStatus from "../vox/scene/IRendererSceneGraphStatus";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 
+class OBBEntity {
+	entity: DisplayEntity = null;
+	obb: OBB = new OBB();
+	constructor() {
+	}
+	initialize(): void {
+	}
+	update(): void {
+
+	}
+}
 export class DemoOBBUICtrl {
 	private m_graph = new RendererSceneGraph();
 	private m_rscene: IRendererScene = null;
@@ -154,7 +165,7 @@ export class DemoOBBUICtrl {
 		//     this.m_stageDragSwinger.setEnabled(!st.rayPickFlag);
 		// })
 	}
-	private trans
+	// private trans
 
 	private init3DScene(): void {
 		// this.test01();
