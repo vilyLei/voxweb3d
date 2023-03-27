@@ -20,6 +20,7 @@ import { ICoEntity } from "../../voxentity/ICoEntity";
 import { ICoMath } from "../../math/ICoMath";
 import { ICoAGeom } from "../../ageom/ICoAGeom";
 import { ICoMesh } from "../../voxmesh/ICoMesh";
+import VtxDrawingInfo from "../../../vox/render/vtx/VtxDrawingInfo";
 
 declare var CoRScene: ICoRScene;
 declare var CoMaterial: ICoMaterial;
@@ -104,6 +105,7 @@ class RotationRing {
 
             ring.setMesh(mesh);
             this.m_material = CoMaterial.createLineMaterial(ml.dynColorEnabled);
+			this.m_material.vtxInfo = new VtxDrawingInfo();
             ring.setMaterial(this.m_material);
             ring.update();
             this.m_ring = ring;
@@ -127,7 +129,8 @@ class RotationRing {
                 n = tot;
             }
             // console.log("setProgress(), n: ", n);
-            this.m_ring.setIvsParam(0, n);
+            // this.m_ring.setIvsParam(0, n);
+			this.m_ring.getMaterial().vtxInfo.setIvsParam(0, n);
         }
     }
     setRingRotation(degree: number): void {

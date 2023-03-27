@@ -9,10 +9,10 @@ import IVector3D from "../../vox/math/IVector3D";
 const v_m_180pk = 180.0 / Math.PI;
 const v_m_minp: number = 1e-7;
 export default class Vector3D implements IVector3D {
-    x: number = 0.0;
-    y: number = 0.0;
-    z: number = 0.0;
-    w: number = 0.0;
+    x = 0.0;
+    y = 0.0;
+    z = 0.0;
+    w = 0.0;
     constructor(px: number = 0.0, py: number = 0.0, pz: number = 0.0, pw: number = 1.0) {
         this.x = px;
         this.y = py;

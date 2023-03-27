@@ -107,7 +107,7 @@ export class DemoParamCtrlUI {
             this.m_box0.update();
         });
         ui.addValueItem("X轴移动-B", "move-b", 0, -300, 300, (info: CtrlInfo): void => {
-            
+
             let pv = new Vector3D();
             this.m_box1.getPosition(pv);
             pv.x = info.values[0];
@@ -150,7 +150,6 @@ export class DemoParamCtrlUI {
         item.syncEnabled = true;
         item.updateParamToUI();
     }
-
     private m_timeoutId: any = -1;
     private update(): void {
         if (this.m_timeoutId > -1) {

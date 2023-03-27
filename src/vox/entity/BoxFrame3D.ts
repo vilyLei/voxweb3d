@@ -100,7 +100,12 @@ export default class BoxFrame3D extends DisplayEntity {
     }
 
     initializeByOBB(obb: IOBB, scale: number = 1.0): void {
-		let pv = new Vector3D();
+		let ls = this.createPosList8ByOBB(obb, scale);
+		this.initializeByPosList8(ls);
+	}
+
+	private createPosList8ByOBB(obb: IOBB, scale: number = 1.0): Vector3D[] {
+
 		// bottom frame plane wit "-y axis"
 		let et = obb.extent.clone().scaleBy(scale);
 
@@ -125,10 +130,10 @@ export default class BoxFrame3D extends DisplayEntity {
 		let p3 = min_vx.clone().addBy(min_vy).addBy(max_vz).addBy(cv);
 
 		let ls = [v0, v1, v2, v3, p0, p1, p2, p3];
-		this.initializeByPosList8(ls);
+		return ls;
 	}
-    initializeByPosList8(posList8: Vector3D[]): void {
-        this.m_posarr = [
+	private createVSDataByPosList8(posList8: Vector3D[]): number[] {
+		let posarr = [
             // bottom frame
             posList8[0].x, posList8[0].y, posList8[0].z, posList8[1].x, posList8[1].y, posList8[1].z,
             posList8[1].x, posList8[1].y, posList8[1].z, posList8[2].x, posList8[2].y, posList8[2].z,
@@ -145,7 +150,10 @@ export default class BoxFrame3D extends DisplayEntity {
             posList8[6].x, posList8[6].y, posList8[6].z, posList8[7].x, posList8[7].y, posList8[7].z,
             posList8[7].x, posList8[7].y, posList8[7].z, posList8[4].x, posList8[4].y, posList8[4].z
         ];
-
+		return posarr;
+	}
+    initializeByPosList8(posList8: Vector3D[]): void {
+		this.m_posarr = this.createVSDataByPosList8(posList8);
         this.createMaterial();
         this.activeDisplay();
         if (this.m_sm == null) this.m_sm = this.getMesh() as DashedLineMesh;
@@ -283,4 +291,12 @@ export default class BoxFrame3D extends DisplayEntity {
             this.updateFrame(ab.min, ab.max);
         }
     }
+	updateFrameByOBB(obb: IOBB, scale: number = 1.0): void {
+		if (this.m_abVersion != obb.version) {
+			let ls = this.createPosList8ByOBB(obb, scale);
+			this.m_posarr = this.createVSDataByPosList8(ls);
+			this.m_sm.setVSData( this.m_posarr );
+            this.m_sm.updateData();
+        }
+	}
 }

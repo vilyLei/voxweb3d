@@ -6,8 +6,6 @@
 /***************************************************************************/
 
 import IVector3D from "../../vox/math/IVector3D";
-import IMatrix4 from "../../vox/math/IMatrix4";
-import IAABB from "../../vox/geom/IAABB";
 // import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderProxy from "../../vox/render/IRenderProxy";
@@ -100,8 +98,6 @@ export default interface IRenderEntity extends IRenderEntityBase {
     setMaterial(material: IRenderMaterial): IRenderEntity;
     getMaterial(): IRenderMaterial;
     getDisplay(): IRODisplay;
-    getInvMatrix(): IMatrix4;
-    getMatrix(): IMatrix4;
     activeDisplay(): void;
 
     /**

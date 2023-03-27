@@ -93,7 +93,7 @@ class CtrlItemObj {
                 b0.minValue = t.minValue;
                 b0.maxValue = t.maxValue;
                 b0.setValue(t.value, false);
-                console.log("t.value: ", t.value);
+                // console.log("t.value: ", t.value);
                 if (this.syncEnabled) {
                     this.sendValueOut(t.value, true);
                 }

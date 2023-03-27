@@ -52,5 +52,9 @@ interface CtrlItemParam {
      * 数值调节按钮的取值范围最大值
      */
     maxValue?: number;
+	/**
+	 * 是否同步状态到回调函数
+	 */
+    syncEnabled?: boolean;
 }
 export { CtrlInfo, ItemCallback, CtrlItemParam }

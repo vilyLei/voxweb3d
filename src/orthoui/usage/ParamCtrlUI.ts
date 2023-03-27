@@ -226,7 +226,9 @@ export default class ParamCtrlUI {
                     map.set(obj.uuid, obj);
                     if (!t.colorPick) {
                         obj.info = { type: param.type, uuid: param.uuid, values: [t.value], flag: t.flag };
-                        param.callback(obj.info);
+						if(param.syncEnabled) {
+							param.callback(obj.info);
+						}
                     }
                     break;
                 case "progress":
@@ -236,7 +238,9 @@ export default class ParamCtrlUI {
                     map.set(obj.uuid, obj);
                     if (!t.colorPick) {
                         obj.info = { type: param.type, uuid: param.uuid, values: [t.progress], flag: t.flag };
-                        param.callback(obj.info);
+                        if(param.syncEnabled) {
+							param.callback(obj.info);
+						}
                     }
                     break;
                 case "status":
@@ -246,7 +250,9 @@ export default class ParamCtrlUI {
                     obj.btn = this.createSelectBtn(t.name, t.uuid, t.selectNS, t.deselectNS, t.flag, visibleAlways);
                     map.set(obj.uuid, obj);
                     obj.info = { type: param.type, uuid: param.uuid, values: [], flag: t.flag };
-                    param.callback(obj.info);
+                    if(param.syncEnabled) {
+						param.callback(obj.info);
+					}
                     break;
                 default:
                     break;
@@ -337,7 +343,7 @@ export default class ParamCtrlUI {
         let map = this.m_btnMap;
         let changeFlag = this.m_currUUID != uuid;
         this.m_currUUID = uuid;
-        
+
         if (map.has(uuid)) {
             let obj = map.get(uuid);
             let param = obj.param;
@@ -364,18 +370,19 @@ export default class ParamCtrlUI {
         if (this.rgbPanel != null) this.rgbPanel.close();
     }
 
-    addStatusItem(name: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, callback: ItemCallback, visibleAlways: boolean = true): void {
+    addStatusItem(name: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, callback: ItemCallback, visibleAlways: boolean = true, syncEnabled: boolean = true): void {
         let param: CtrlItemParam = {
             type: "status_select", name: name, uuid: uuid,
             selectNS: selectNS, deselectNS: deselectNS,
             flag: flag,
             visibleAlways: visibleAlways,
+            syncEnabled: syncEnabled,
             callback: callback
         };
 
         this.addItem(param);
     }
-    addProgressItem(name: string, uuid: string, progress: number, callback: ItemCallback, colorPick?: boolean, visibleAlways: boolean = true): void {
+    addProgressItem(name: string, uuid: string, progress: number, callback: ItemCallback, colorPick?: boolean, visibleAlways: boolean = true, syncEnabled: boolean = true): void {
         let param: CtrlItemParam = {
             type: "progress", name: name, uuid: uuid,
             progress: progress,
@@ -386,13 +393,14 @@ export default class ParamCtrlUI {
         this.addItem(param);
     }
 
-    addValueItem(name: string, uuid: string, value: number, minValue: number, maxValue: number, callback: ItemCallback, colorPick?: boolean, visibleAlways: boolean = true, values?: number[]): void {
+    addValueItem(name: string, uuid: string, value: number, minValue: number, maxValue: number, callback: ItemCallback, colorPick?: boolean, visibleAlways: boolean = true, values?: number[], syncEnabled: boolean = true): void {
         let param: CtrlItemParam = {
             type: "number_value", name: name, uuid: uuid,
             value: value,
             minValue: minValue,
             maxValue: maxValue,
             visibleAlways: visibleAlways,
+            syncEnabled: syncEnabled,
             colorPick: colorPick,
             values: values,
             callback: callback

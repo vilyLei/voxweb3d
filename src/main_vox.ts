@@ -29,7 +29,7 @@
 
 // import {DemoSphereOcclusion as Demo} from "./voxocc/demo/DemoSphereOcclusion";
 
-// import {DemoSphOccContainer as Demo} from "./voxocc/demo/DemoSphOccContainer";
+import {DemoSphOccContainer as Demo} from "./voxocc/demo/DemoSphOccContainer";
 
 // import {DemoSphereGapOcclusion as Demo} from "./voxocc/demo/DemoSphereGapOcclusion";
 
@@ -311,7 +311,7 @@
 
 //  import {DemoOBB as Demo} from "./demo/DemoOBB";
 
- import {DemoOBBUICtrl as Demo} from "./demo/DemoOBBUICtrl";
+//  import {DemoOBBUICtrl as Demo} from "./demo/DemoOBBUICtrl";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   renderer    ////////////////////////////////////

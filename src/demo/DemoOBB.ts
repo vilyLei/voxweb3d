@@ -171,19 +171,8 @@ export class DemoOBB {
 
 		console.log("obb0: ", obb0);
 		console.log("obb1: ", obb1);
-		// let intersection = obb0.intersect(obb1);
 
-		// let intersection = obb0.obbIntersect(obb0, obb1);
-		// console.log("$$$$$$$$$ intersection: ", intersection);
-
-		// let intersection0 = obb0.obbIntersect2(obb0, obb1);
-		// let intersection1 = obb0.obbIntersect2(obb1, obb0);
-		// let intersection = intersection0 && intersection1;
-		// console.log("$$$$$$$$$ intersection0: ", intersection0);
-		// console.log("$$$$$$$$$ intersection1: ", intersection1);
-		// console.log("$$$$$$$$$ intersection: ", intersection);
-
-		let intersection = obb0.obbIntersect2(obb0, obb1);
+		let intersection = obb0.intersect(obb0, obb1);
 		console.log("$$$$$$$$$ intersection: ", intersection);
 	}
 	private test01(): void {

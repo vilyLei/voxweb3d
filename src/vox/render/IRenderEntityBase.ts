@@ -7,6 +7,7 @@
 
 import IROTransform from "../../vox/display/IROTransform";
 import IAABB from "../../vox/geom/IAABB";
+import IMatrix4 from "../math/IMatrix4";
 /**
  * to be used in the renderer runtime
  */
@@ -63,5 +64,7 @@ export default interface IRenderEntityBase {
     update(): void;
     destroy(): void;
 
+    getInvMatrix(): IMatrix4;
+    getMatrix(): IMatrix4;
 	hasParent(): boolean;
 }

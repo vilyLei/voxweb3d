@@ -13,15 +13,16 @@ import Line3DMaterial from '../../vox/material/mcase/Line3DMaterial';
 import Vector3D from '../math/Vector3D';
 
 export default class Axis3DEntity extends DisplayEntity {
+    private m_sm: DashedLineMesh = null;
+    // 用于射线检测
+    public rayTestRadius = 8.0;
+    private m_posarr: number[] = [0, 0, 0, 100.0, 0, 0, 0, 0, 0, 0, 100.0, 0, 0, 0, 0, 0, 0, 100.0];
+    colorX = new Color4(1.0, 0.0, 0.0, 1.0);
+    colorY = new Color4(0.0, 1.0, 0.0, 1.0);
+    colorZ = new Color4(0.0, 0.0, 1.0, 1.0);
     constructor() {
         super();
     }
-    // 用于射线检测
-    public rayTestRadius: number = 8.0;
-    colorX: Color4 = new Color4(1.0, 0.0, 0.0, 1.0);
-    colorY: Color4 = new Color4(0.0, 1.0, 0.0, 1.0);
-    colorZ: Color4 = new Color4(0.0, 0.0, 1.0, 1.0);
-    private m_posarr: number[] = [0, 0, 0, 100.0, 0, 0, 0, 0, 0, 0, 100.0, 0, 0, 0, 0, 0, 0, 100.0];
     setLineWidth(lineW: number): void {
         //if(this.getMesh())
         //{
@@ -41,14 +42,23 @@ export default class Axis3DEntity extends DisplayEntity {
                 , this.colorY.r, this.colorY.g, this.colorY.b, this.colorY.r, this.colorY.g, this.colorY.b
                 , this.colorZ.r, this.colorZ.g, this.colorZ.b, this.colorZ.r, this.colorZ.g, this.colorZ.b
             ];
-            let mesh: DashedLineMesh = new DashedLineMesh();
+            let mesh = new DashedLineMesh();
             mesh.rayTestRadius = this.rayTestRadius;
             mesh.vbWholeDataEnabled = false;
             mesh.setBufSortFormat(material.getBufSortFormat());
             mesh.initialize(this.m_posarr, colorarr);
             this.setMesh(mesh);
+			this.m_sm = mesh;
         }
     }
+	updateDataWithPos(axisXPos: Vector3D, axisYPos: Vector3D, axisZPos: Vector3D): void {
+		let ls = this.m_posarr;
+		axisXPos.toArray(ls, 3);
+		axisYPos.toArray(ls, 9);
+		axisZPos.toArray(ls, 15);
+		this.m_sm.setVSData( this.m_posarr );
+		this.m_sm.updateData();
+	}
     /**
      * initialize the axis entity mesh and geometry data
      * @param axisSize the X/Y/Z axis length
@@ -117,4 +127,8 @@ export default class Axis3DEntity extends DisplayEntity {
         this.activeDisplay();
 
     }
+	destroy(): void {
+		super.destroy();
+		this.m_sm = null;
+	}
 }
