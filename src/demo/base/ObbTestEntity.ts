@@ -15,7 +15,7 @@ class OBBTestEntity {
 	private m_value3: Vector3D = null;
 	private m_valueS3 = new Vector3D(0.5, 0.5, 0.5);
 	private m_valueR3 = new Vector3D();
-	private m_valueV3 = new Vector3D(0.5, 0.5, 0.5);
+	private m_valueT3 = new Vector3D(0.5, 0.5, 0.5);
 	private m_pos = new Vector3D();
 	private m_initVer = 0;
 	private m_ver = 0;
@@ -59,17 +59,18 @@ class OBBTestEntity {
 			this.m_value3 = this.m_valueS3;
 		}
 	}
+
 	showErrorData(): void {
 		const s3 = this.m_valueS3.clone().scaleBy(2.0);
 		const r3 = this.m_valueR3.clone().scaleBy(360);
-		const v3 = this.m_valueV3.clone();
-		v3.subtractBy(new Vector3D(0.5, 0.5, 0.5));
-		v3.scaleBy(600.0);
-		v3.addBy(this.m_pos);
-		console.log(this.name , "error data: ");
+		const t3 = this.m_valueT3.clone();
+		t3.subtractBy(new Vector3D(0.5, 0.5, 0.5));
+		t3.scaleBy(600.0);
+		t3.addBy(this.m_pos);
+		console.log(this.name, "error data: ");
 		console.log("         scale: ", s3);
 		console.log("    rotatation: ", r3);
-		console.log("   translation: ", v3);
+		console.log("   translation: ", t3);
 	}
 	setFrameColor(color: Color4): void {
 		this.m_frame.setRGB3f(color.r, color.g, color.b);
@@ -81,7 +82,7 @@ class OBBTestEntity {
 		return this.m_valueR3;
 	}
 	getTranslationV(): Vector3D {
-		return this.m_valueV3;
+		return this.m_valueT3;
 	}
 
 	setValueX(v: number): void {
@@ -110,7 +111,7 @@ class OBBTestEntity {
 				this.m_value3 = this.m_valueR3;
 				break;
 			case 2:
-				this.m_value3 = this.m_valueV3;
+				this.m_value3 = this.m_valueT3;
 				break;
 			default:
 				break;
@@ -128,36 +129,42 @@ class OBBTestEntity {
 	deselect(): void {
 		this.setFrameColor(new Color4(0, 0, 0));
 	}
+
+	updateWithParams(sv3: Vector3D, rv3: Vector3D, tv3: Vector3D): void {
+		const obb = this.obb;
+		const et = this.entity;
+		et.setPosition(tv3);
+		et.setScale3(sv3);
+		et.setRotation3(rv3);
+		et.update();
+		obb.fromEntity(et);
+
+		const xPv = obb.axis[0].clone().scaleBy(this.m_size);
+		const yPv = obb.axis[1].clone().scaleBy(this.m_size);
+		const zPv = obb.axis[2].clone().scaleBy(this.m_size);
+		this.m_axis.updateDataWithPos(xPv, yPv, zPv);
+		this.m_axis.updateMeshToGpu();
+
+		this.m_axis.setPosition(obb.center);
+		this.m_axis.update();
+
+		this.m_frame.updateFrameByOBB(obb, 1.0);
+		this.m_frame.updateMeshToGpu();
+	}
+
 	update(): void {
 		if (this.m_initVer != this.m_ver) {
 			this.m_initVer = this.m_ver;
 
-			const obb = this.obb;
 			const s3 = this.m_valueS3.clone().scaleBy(2.0);
 			const r3 = this.m_valueR3.clone().scaleBy(360);
-			const v3 = this.m_valueV3.clone();
+			const t3 = this.m_valueT3.clone();
 
-			v3.subtractBy(new Vector3D(0.5, 0.5, 0.5));
-			v3.scaleBy(600.0);
-			v3.addBy(this.m_pos);
-			const et = this.entity;
-			et.setPosition(v3);
-			et.setScale3(s3);
-			et.setRotation3(r3);
-			et.update();
-			obb.fromEntity(et);
+			t3.subtractBy(new Vector3D(0.5, 0.5, 0.5));
+			t3.scaleBy(600.0);
+			t3.addBy(this.m_pos);
 
-			const xPv = obb.axis[0].clone().scaleBy(this.m_size);
-			const yPv = obb.axis[1].clone().scaleBy(this.m_size);
-			const zPv = obb.axis[2].clone().scaleBy(this.m_size);
-			this.m_axis.updateDataWithPos(xPv, yPv, zPv);
-			this.m_axis.updateMeshToGpu();
-
-			this.m_axis.setPosition(obb.center);
-			this.m_axis.update();
-
-			this.m_frame.updateFrameByOBB(obb, 1.0);
-			this.m_frame.updateMeshToGpu();
+			this.updateWithParams(s3, r3, t3);
 		}
 	}
 }
