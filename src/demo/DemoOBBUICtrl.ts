@@ -174,11 +174,20 @@ export class DemoOBBUICtrl {
 			this.m_obbEntity.setValueZ(info.values[0]);
 			this.obbTest();
 		}, false, true, null, false);
-		ui.addStatusItem("问题", "test_obb", "输出", "输出", true, (info: CtrlInfo): void => {
+		ui.addStatusItem("问题", "print_obb_err", "输出", "输出", true, (info: CtrlInfo): void => {
 
 			console.log("问题数据输出 ...");
 			this.m_obbEntity0.showErrorData();
 			this.m_obbEntity1.showErrorData();
+
+		}, true, false);
+
+		ui.addStatusItem("数据", "test_spec_obb", "测试", "测试", true, (info: CtrlInfo): void => {
+
+			console.log("测试 ...");
+			// this.m_obbEntity0.showErrorData();
+			// this.m_obbEntity1.showErrorData();
+			this.testSpecObb();
 
 		}, true, false);
 		//*/
@@ -190,7 +199,12 @@ export class DemoOBBUICtrl {
 		this.obbTest();
 		this.m_graph.addScene(ui.ruisc);
 	}
-
+	private testSpecObb(): void {
+		let oe0 = this.m_obbEntity0;
+		let oe1 = this.m_obbEntity1;
+		oe0.updateWithParams(new Vector3D(1,1,1), new Vector3D(0, 28.8,84.6), new Vector3D(-22.799, 33.0, -15.0));
+		oe1.updateWithParams(new Vector3D(1,1,1), new Vector3D(34.2, 5.399, 43.1), new Vector3D(134, 0.0, 0.0));
+	}
 	private obbTest(): void {
 
 		this.m_obbEntity0.update();
