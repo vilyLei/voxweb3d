@@ -106,6 +106,7 @@ class OBB implements IOBB {
 	private R = new Mat3();
 	private AbsR = new Mat3();
 	private m_ts = [0,0,0];
+	private m_tv = new Vector3D();
 	intersect(a: OBB, b: OBB = null): boolean {
 
 		// console.log("obbIntersect2() call() ...");
@@ -125,7 +126,7 @@ class OBB implements IOBB {
 
 		// 计算距离向量t
 		const t0 = this.m_pv.subVecsTo(b.center, a.center);
-		const t = new Vector3D(t0.dot(a.axis[0]), t0.dot(a.axis[1]), t0.dot(a.axis[2]));
+		const t = this.m_tv.setXYZ(t0.dot(a.axis[0]), t0.dot(a.axis[1]), t0.dot(a.axis[2]));
 		const ts = this.m_ts;
 		t.toArray(ts);
 		// let ts = [t.x, t.y, t.z];
@@ -136,7 +137,7 @@ class OBB implements IOBB {
 				Avs[i][j] = abs(Rvs[i][j]) + 1e-6;
 			}
 		}
-
+		// console.log("Avs: ", Avs);
 		const aets = a.extents;
 		const bets = b.extents;
 		let ra = 0;
@@ -148,6 +149,7 @@ class OBB implements IOBB {
 			rb = bets[0] * Avs[i][0] + bets[1] * Avs[i][1] + bets[2] * Avs[i][2];
 			if(abs(ts[i]) > (ra + rb)) return false;
 		}
+		// console.log("C 0.");
 		// test axes(B0, B1, B2)
 		for (let i = 0; i < 3; ++i) {
 			ra = aets[0] * Avs[i][0] + aets[1] * Avs[i][1] + aets[2] * Avs[i][2];
@@ -156,18 +158,20 @@ class OBB implements IOBB {
 			if(abs(ts[0] * Rvs[0][i] + ts[1] * Rvs[1][i] + ts[2] * Rvs[2][i]) > (ra + rb)) return false;
 		}
 
+		// console.log("C 1.");
 		// test axis L = A0 x B0
 		ra = aets[1] * Avs[2][0] + aets[2] * Avs[1][0];
 		rb = bets[1] * Avs[0][2] + bets[2] * Avs[0][1];
 		if(abs(ts[2] * Rvs[1][0] - ts[1] * Rvs[2][0]) > (ra + rb)) return false;
 
 
+		// console.log("C 2.");
 		// test axis L = A0 x B1
 		ra = aets[1] * Avs[2][1] + aets[2] * Avs[1][1];
 		rb = bets[0] * Avs[0][2] + bets[2] * Avs[0][0];
 		if(abs(ts[2] * Rvs[1][1] - ts[1] * Rvs[2][1]) > (ra + rb)) return false;
 
-
+		// console.log("C 3.");
 		// test axis L = A0 x B2
 		ra = aets[1] * Avs[2][2] + aets[2] * Avs[1][2];
 		rb = bets[0] * Avs[0][1] + bets[1] * Avs[0][0];

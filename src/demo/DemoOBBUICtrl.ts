@@ -184,7 +184,7 @@ export class DemoOBBUICtrl {
 
 		ui.addStatusItem("数据", "test_spec_obb", "测试", "测试", true, (info: CtrlInfo): void => {
 
-			console.log("测试 ...");
+			console.log("测试特殊数据 ...");
 			// this.m_obbEntity0.showErrorData();
 			// this.m_obbEntity1.showErrorData();
 			this.testSpecObb();
@@ -204,6 +204,7 @@ export class DemoOBBUICtrl {
 		let oe1 = this.m_obbEntity1;
 		oe0.updateWithParams(new Vector3D(1,1,1), new Vector3D(0, 28.8,84.6), new Vector3D(-22.799, 33.0, -15.0));
 		oe1.updateWithParams(new Vector3D(1,1,1), new Vector3D(34.2, 5.399, 43.1), new Vector3D(134, 0.0, 0.0));
+		this.obbTest();
 	}
 	private obbTest(): void {
 
@@ -214,8 +215,11 @@ export class DemoOBBUICtrl {
 		let obb1 = this.m_obbEntity1.obb;
 
 		let intersection = obb0.intersect(obb1);
+		let intersection2 = obb1.intersect(obb0);
+		intersection = intersection || intersection2;
+		// console.log("intersection2: ", intersection2);
 		// let intersection = obb0.obbIntersect(obb1);
-
+		// console.log("obbTest() ...");
 		if(intersection) {
 			this.m_infoDiv.innerHTML = "<font color='#ee0000'>相交测试结果: (" + intersection + ")</font>";
 		}else {
