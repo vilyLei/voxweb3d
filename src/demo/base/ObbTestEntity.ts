@@ -67,6 +67,11 @@ class OBBTestEntity {
 		t3.subtractBy(new Vector3D(0.5, 0.5, 0.5));
 		t3.scaleBy(600.0);
 		t3.addBy(this.m_pos);
+
+		console.log(this.name, "error ctrl data: ");
+		console.log("         ctrl scale: ", this.m_valueS3);
+		console.log("    ctrl rotatation: ", this.m_valueR3);
+		console.log("   ctrl translation: ", this.m_valueT3);
 		console.log(this.name, "error data: ");
 		console.log("         scale: ", s3);
 		console.log("    rotatation: ", r3);
@@ -129,7 +134,20 @@ class OBBTestEntity {
 	deselect(): void {
 		this.setFrameColor(new Color4(0, 0, 0));
 	}
+	updateWithCtrlParams(sv3: Vector3D, rv3: Vector3D, tv3: Vector3D): void {
 
+		this.m_valueS3.copyFrom(sv3);
+		this.m_valueR3.copyFrom(rv3);
+		this.m_valueT3.copyFrom(tv3);
+
+		const s3 = this.m_valueS3.clone().scaleBy(2.0);
+		const r3 = this.m_valueR3.clone().scaleBy(360);
+		const t3 = this.m_valueT3.clone();
+		t3.subtractBy(new Vector3D(0.5, 0.5, 0.5));
+		t3.scaleBy(600.0);
+		t3.addBy(this.m_pos);
+		this.updateWithParams(s3, r3, t3);
+	}
 	updateWithParams(sv3: Vector3D, rv3: Vector3D, tv3: Vector3D): void {
 		const obb = this.obb;
 		const et = this.entity;
