@@ -26,15 +26,11 @@ class DragTransController {
 
     protected m_controllers: IRayControl[] = [];
 
-    private m_pos0 = CoMath.createVec3();
-    private m_pos1 = CoMath.createVec3();
-
     private m_rpv = CoMath.createVec3();
     private m_rtv = CoMath.createVec3();
     private m_tempPos = CoMath.createVec3();
     private m_mv0 = CoMath.createVec3(-100000, -100000, 0);
     private m_mv1 = CoMath.createVec3();
-    private m_px = 0;
 
     protected m_visible = true;
     protected m_enabled = true;
@@ -117,23 +113,6 @@ class DragTransController {
             this.m_tempPos.copyFrom(this.m_target.position);
             let cam = this.m_editRS.getCamera();
             let stage = this.m_editRS.getStage3D();
-
-            // if (this.fixSize > 0.01) {
-            //     // let vmat = cam.getViewMatrix();
-            //     // let pmat = cam.getProjectMatrix();
-            //     // vmat.transformVector3Self(this.m_tempPos);
-            //     // this.m_pos0.setXYZ(0.0, 0.0, this.m_tempPos.z);
-            //     // this.m_pos1.setXYZ(100.0, 0.0, this.m_tempPos.z);
-            //     // pmat.transformVectorSelf(this.m_pos0);
-            //     // pmat.transformVectorSelf(this.m_pos1);
-            //     // this.m_pos1.x = this.m_pos1.x / this.m_pos1.w - this.m_pos0.x / this.m_pos0.w;
-            //     // if (Math.abs(this.m_px - this.m_pos1.x) > 0.0001) {
-            //     //     this.m_px = this.m_pos1.x;
-            //     //     let scale = this.fixSize / this.m_pos1.x;
-            //     //     this.m_target.setCtrlScaleXYZ(scale, scale, scale);
-            //     //     this.m_target.update();
-            //     // }
-            // }
 
             for (let i = 0; i < ls.length; ++i) {
                 if (ls[i].getVisible()) {
