@@ -465,7 +465,7 @@
 
 //  import {DemoPBRTextureShader as Demo} from "./demo/DemoPBRTextureShader";
 
-//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
+ import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
@@ -539,7 +539,7 @@
 //  import {BakePBR as Demo} from "./bake/demo/bakePbr/BakePBR";
 //  import {BakeFlow as Demo} from "./bake/demo/bakePbr/BakeFlow";
 //  import {BakeFlow2 as Demo} from "./bake/demo/bakePbr/BakeFlow2";
- import {BakedModel as Demo} from "./bake/demo/bakePbr/BakedModel";
+//  import {BakedModel as Demo} from "./bake/demo/bakePbr/BakedModel";
 //  import {BakedNormal as Demo} from "./bake/demo/bakePbr/BakedNormal";
 
 ///////////////////////////////////////////////////////////////////////////////

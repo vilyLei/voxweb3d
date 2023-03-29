@@ -24,7 +24,10 @@ export default interface IRenderEntityBase {
      * the default value is SpaceCullingMask.CAMERA
      */
     spaceCullMask: number;
-
+	/**
+	 * 是否需要渲染中动态(自定义)排序, 如果这个值为true，则会加入到一个process中的sorting block
+	 */
+	//rsorting
 
     /**
      * renderer scene entity flag, be used by the renderer system

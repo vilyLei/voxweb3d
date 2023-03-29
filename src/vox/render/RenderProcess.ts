@@ -170,7 +170,6 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 
 		let node = this.m_rpoNodeBuilder.getNodeByUid(runit.__$rpuid) as RPONode;
 		if (node != null) {
-
 			node.vtxUid = runit.vtxUid;
 			node.vro = runit.vro;
 			this.m_blockList[node.index].rejoinNode(node);
@@ -275,15 +274,15 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 	 * remoev display unit from this render process
 	 */
 	removeDispUnit(disp: IRODisplay): void {
-		if (disp != null) {
+		if (disp) {
 			if (disp.__$ruid > -1) {
 				let nodeUId = disp.__$$runit.getRPOUid();
 				let node = this.m_rpoNodeBuilder.getNodeByUid(nodeUId) as RPONode;
-				if (node != null) {
-					if (this.m_sortBlock == null) {
-						this.m_blockList[node.index].removeNode(node);
-					} else {
+				if (node) {
+					if (this.m_sortBlock) {
 						this.m_sortBlock.removeNode(node);
+					} else {
+						this.m_blockList[node.index].removeNode(node);
 					}
 					this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.m_rpIndex, -1);
 					node.unit.__$rprouid = -1;
@@ -303,7 +302,13 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 	run(): void {
 		if (this.m_enabled && this.m_nodesLen > 0) {
 			let rc = this.m_rc;
-			if (this.m_sortBlock == null) {
+			if (this.m_sortBlock) {
+				if (this.m_shader.isUnLocked()) {
+					this.m_sortBlock.run(rc);
+				} else {
+					this.m_sortBlock.runLockMaterial(rc);
+				}
+			} else {
 				if (this.m_shader.isUnLocked()) {
 					for (let i = 0; i < this.m_blockListLen; ++i) {
 						this.m_blockList[i].run(rc);
@@ -312,12 +317,6 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
 					for (let i = 0; i < this.m_blockListLen; ++i) {
 						this.m_blockList[i].runLockMaterial(rc);
 					}
-				}
-			} else {
-				if (this.m_shader.isUnLocked()) {
-					this.m_sortBlock.run(rc);
-				} else {
-					this.m_sortBlock.runLockMaterial(rc);
 				}
 			}
 		}
