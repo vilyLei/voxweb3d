@@ -18,7 +18,6 @@ import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import { MouseInteraction } from "../../vox/ui/MouseInteraction";
 import MeshFactory from "../../vox/mesh/MeshFactory";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
-import { FileIO } from "../../app/slickRoad/io/FileIO";
 
 export class ModelsLoading {
     constructor() { }

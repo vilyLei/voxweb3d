@@ -538,8 +538,9 @@
 //  import {BakeExample as Demo} from "./bake/demo/bakePbr/BakeExample";
 //  import {BakePBR as Demo} from "./bake/demo/bakePbr/BakePBR";
 //  import {BakeFlow as Demo} from "./bake/demo/bakePbr/BakeFlow";
- import {BakeFlow2 as Demo} from "./bake/demo/bakePbr/BakeFlow2";
-//  import {BakedModel as Demo} from "./bake/demo/bakePbr/BakedModel";
+//  import {BakeFlow2 as Demo} from "./bake/demo/bakePbr/BakeFlow2";
+ import {BakedModel as Demo} from "./bake/demo/bakePbr/BakedModel";
+//  import {BakedNormal as Demo} from "./bake/demo/bakePbr/BakedNormal";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////     distributed runtime     ////////////s//////////////

@@ -20,6 +20,7 @@ import ScreenFixedAlignPlaneEntity from "../../vox/entity/ScreenFixedAlignPlaneE
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
 import { SphDepthFogRenderNode } from "../../advancedDemo/depthFog/renderer/SphDepthFogRenderNode";
+import { RendererState } from "../../cospace/voxengine/VoxRScene";
 
 export class DemoSphDepthFogRender {
 	private m_pbr = new PBRMateralBuilder();
@@ -104,24 +105,23 @@ export class DemoSphDepthFogRender {
 
 		let material = this.createMaterial();
 
-		let plane = new Plane3DEntity();
+		let planeSph = new Sphere3DEntity();
+		// planeSph.meshMode = 1;
+		// planeSph.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+		planeSph.setMaterial(material);
+		planeSph.initialize(100.0, 30, 30);
+		planeSph.setXYZ(0, -250, 0);
+		this.m_rscene.addEntity(planeSph);
 
-		plane.setMaterial(material);
-		plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [tex0]);
-		this.m_rscene.addEntity(plane);
-
-		let box = new Box3DEntity();
-		box.setMaterial(material);
-		box.initializeCube(150.0, [tex1]);
-		this.m_rscene.addEntity(box);
+		let sph = new Sphere3DEntity();
+		sph.setMaterial(material);
+		sph.initialize(150.0, 30, 30);
+		this.m_rscene.addEntity(sph);
 
 		let size = 1800.0;
 		let bgBox = new Box3DEntity();
 		bgBox.normalScale = -1.0;
 		material = this.createMaterial(null, new Vector3D(0.0, 0.0, 5.0, 5.0), "rusted_iron");
-		// material = new FogDepthUVMaterial();
-		// material.setFRGB3f(0.6, 0.6, 0.6);
-		// material.setUVScale(10.0, 10.0);
 		bgBox.setMaterial(material);
 		bgBox.showFrontFace();
 		bgBox.initialize(new Vector3D(-size, -size, -size), new Vector3D(size, size, size), [tex1]);

@@ -207,12 +207,22 @@ export class BakeFlow2 {
 		// nvsUrl = "static/private/bake/cly02/normal.bin";
 		// bakeUrl = "static/private/bake/cly02/cly02_baked.png";
 
+
+		// vsUrl = "static/private/bake/hat_b_02/vertices.bin";
+		// uvs1Url = "static/private/bake/hat_b_02/uv1.bin";
+		// uvs2Url = "static/private/bake/hat_b_02/uv2.bin";
+		// nvsUrl = "static/private/bake/hat_b_02/normal.bin";
+		// ivsUrl = "static/private/bake/hat_b_02/indices.bin";
+		// bakeUrl = "static/private/bake/hat_b_02/hat_b_02.png";
+
 		let bakeType = -1;
-		this.m_drawTimes = 1;
-		this.m_circleTimes = 1;
+		this.m_drawTimes = 16;
+		this.m_circleTimes = 16;
+		this.m_offsetR = 0.0002;
 
 		let uvParams: BakingParamType = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: 0, drawLine: false, drawShape: true };
 		uvParams = { su: 1.0, sv: 1.0, bakeUrl: bakeUrl, bakeType: bakeType, drawLine: true, drawShape: true };
+		uvParams = { su: 0.01, sv: 0.01, bakeUrl: bakeUrl, bakeType: bakeType, drawLine: true, drawShape: true };
 
 		let loader = new Bin4DataLoader();
 		loader.setListener((model: CoGeomDataType): void => {
@@ -244,9 +254,12 @@ export class BakeFlow2 {
 			this.initTexLightingBakeWithModel(bvParam.bakeType, model, transform, bvParam);
 		}
 	}
-
+	private m_bakeType = -1;
+	private m_runTimes = 0;
 	private initTexLightingBakeWithModel(bakeType: number, model: CoGeomDataType, transform: Float32Array, bvParam: BakingParamType): void {
 
+		this.m_runTimes = -1;
+		this.m_bakeType = bakeType;
 		let vs = model.vertices;
 		let ivs = model.indices;
 		let vtCount = vs.length / 3;
@@ -459,6 +472,7 @@ export class BakeFlow2 {
 	}
 	private mouseDown(evt: any): void {
 		// console.log("mouse down... ...");
+		this.m_runTimes = 1;
 	}
 	private m_timeoutId: any = -1;
 	private update(): void {
@@ -470,10 +484,14 @@ export class BakeFlow2 {
 
 	run(): void {
 		if (this.m_rscene != null) {
-			this.m_stageDragSwinger.runWithYAxis();
-			this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
-
-			this.m_rscene.run(true);
+			if(this.m_bakeType <= 0) {
+				this.m_stageDragSwinger.runWithYAxis();
+				this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
+				this.m_rscene.run(true);
+			}else if(this.m_runTimes > 0){
+				this.m_runTimes --;
+				this.m_rscene.run(true);
+			}
 		}
 	}
 }
