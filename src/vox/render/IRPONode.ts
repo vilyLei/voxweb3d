@@ -21,7 +21,7 @@ export default interface IRPONode extends IPoolNode {
     uid: number;
     index: number;
 	// it the value is less 12, it is a renderable entity, or not is a entity container
-	reType: number;
+	// reType: number;
     // only for show info
 
     // drawMode: number;

@@ -5,6 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
+import IRenderEntity from "../IRenderEntity";
 import IPassProcess from "./IPassProcess";
 import PassRItem from "./PassRItem";
 
@@ -15,7 +16,7 @@ export default class DefaultPassRItem extends PassRItem {
     run(process: IPassProcess): void {
         if (this.m_enabled && process) {
             const unit = process.units[0];
-            let entity = unit.rentity;
+            let entity = unit.rentity as IRenderEntity;
             let rst = entity.getRenderState();
             let v0 = entity.getPosition();
             let rc = process.rc;

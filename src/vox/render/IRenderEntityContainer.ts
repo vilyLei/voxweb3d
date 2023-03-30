@@ -17,8 +17,11 @@ export default interface IRenderEntityContainer extends IRenderEntityBase {
     uuid: string;
     // 自身所在的world的唯一id, 通过这个id可以找到对应的world
     __$wuid: number;
-    // render process uid
-    wprocuid: number;
+
+	/**
+	 * render process uid, the default value is -1
+	 */
+	__$wprocuid: number;
     // 记录自身是否再容器中(取值为0和1), 不允许外外面其他代码调用
     __$contId: number;
 

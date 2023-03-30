@@ -25,7 +25,7 @@ import IVDRInfo from "./vtx/IVDRInfo";
 
 import IPassGraph from "./pass/IPassGraph";
 import DebugFlag from "../debug/DebugFlag";
-import IRenderEntity from "./IRenderEntity";
+import IRenderEntityBase from "./IRenderEntityBase";
 
 /**
  * 渲染器渲染运行时核心关键执行显示单元,一个unit代表着一个draw call所渲染的所有数据
@@ -33,7 +33,8 @@ import IRenderEntity from "./IRenderEntity";
  */
 export default class RPOUnit implements IRPOUnit {
 
-    rentity: IRenderEntity = null;
+    rentity: IRenderEntityBase = null;
+	retype = 0;
     uid = -1;
     value = -1;
     // 记录自身和RPONode的对应关系
@@ -163,7 +164,7 @@ export default class RPOUnit implements IRPOUnit {
             //     console.log("BB ---- BB XXXXX RPOUint::updateVtx() ..., this.m_ver: ", this.m_ver);
             // }
             rdp.ver = 0;
-    
+
             this.testVisible();
             // if(DebugFlag.Flag_0 > 0) {
             //     console.log("##### ##### ###### ##### ---------------------- RPOUint::updateVtx() ...");
@@ -347,10 +348,10 @@ export default class RPOUnit implements IRPOUnit {
             this.vtxUid = -1;
             this.uniform = null;
             this.transUniform = null;
-            
-            this.partGroup = null;            
+
+            this.partGroup = null;
             this.partTotal = 0;
-            
+
             this.drawFlag = 0x0;
             this.renderState = 0;
             this.rcolorMask = 0;

@@ -142,11 +142,11 @@ export default class RenderShader implements IRenderShader, IRenderResource {
                 let shd = this.m_shdProgramBuilder.findShdProgramByUid(resUid);
                 this.m_fragOutputTotal = shd.getFragOutputTotal();
                 if (this.m_fragOutputTotal != this.getActiveAttachmentTotal()) {
-                    //if(RendererDevice.SHOWLOG_ENABLED) {
+                    // if(RendererDevice.SHOWLOG_ENABLED) {
                     console.log("shd.getUniqueShaderName(): string: " + shd.getUniqueShaderName());
                     console.log("this.m_fragOutputTotal: " + this.m_fragOutputTotal + ", rc.getActiveAttachmentTotal(): " + this.getActiveAttachmentTotal());
                     console.error("Error: MRT output amount is not equal to current shader( " + shd.toString() + " ) frag shader output amount !!!");
-                    //}
+                    // }
                 }
                 this.m_gpuProgram = shd.getGPUProgram();
                 this.m_rc.useProgram(this.m_gpuProgram);

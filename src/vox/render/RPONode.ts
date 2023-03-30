@@ -17,7 +17,7 @@ import DebugFlag from "../debug/DebugFlag";
 // 为了渲染循环执行中持有RPOUnit和对应的Disp
 export default class RPONode implements IPoolNode, IRPONode {
     __$ruid = -1;
-    
+
     uid = -1;
     index = -1;
     shdUid = -1;
@@ -26,7 +26,7 @@ export default class RPONode implements IPoolNode, IRPONode {
     rtokey = -1;
 
 	// it the value is less 12, it is a renderable entity, or not is a entity container
-	reType = 1;
+	// reType = 1;
 
     prev: RPONode = null;
     next: RPONode = null;
@@ -51,7 +51,7 @@ export default class RPONode implements IPoolNode, IRPONode {
         this.tro = p.tro;
     }
     reset(): void {
-		this.reType = 1;
+		// this.reType = 1;
         this.uid = -1;
         this.index = -1;
         this.shdUid = -1;

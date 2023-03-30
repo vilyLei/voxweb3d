@@ -363,6 +363,7 @@ export default class RODataBuilder implements IRODataBuilder {
 
                 let runit = this.m_rpoUnitBuilder.create() as RPOUnit;
                 runit.rentity = rentity;
+				runit.retype = rentity.getREType();
                 disp.__$ruid = runit.uid;
                 disp.__$$runit = runit;
 				runit.rendering = disp.rendering;

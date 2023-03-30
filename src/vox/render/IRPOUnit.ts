@@ -11,9 +11,9 @@ import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
 import ITextureRenderObj from "../../vox/render/ITextureRenderObj";
 import IRenderProxy from "./IRenderProxy";
 import IRenderShader from "./IRenderShader";
-import IRenderEntity from "./IRenderEntity";
+import IRenderEntityBase from "./IRenderEntityBase";
 export default interface IRPOUnit extends IPoolNode, IRPODisplay {
-    
+
     renderState: number;
     rcolorMask: number;
     drawing: boolean;
@@ -21,7 +21,7 @@ export default interface IRPOUnit extends IPoolNode, IRPODisplay {
     shader: IRenderShader;
     vro: IVertexRenderObj;
     tro: ITextureRenderObj;
-    rentity: IRenderEntity;
+    rentity: IRenderEntityBase;
     /**
      * 是否在渲染过程中可见, the default value is true
      */

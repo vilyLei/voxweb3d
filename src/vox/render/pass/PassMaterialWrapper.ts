@@ -12,6 +12,7 @@ import IRenderMaterial from "../IRenderMaterial";
 import IPassMaterialWrapper from "./IPassMaterialWrapper";
 import RPOUnit from "../RPOUnit";
 import IRODataBuilder from "../IRODataBuilder";
+import IRenderEntity from "../IRenderEntity";
 export default class PassMaterialWrapper implements IPassMaterialWrapper {
     private m_mt: IRenderMaterial = null;
     private m_build = false;
@@ -34,20 +35,23 @@ export default class PassMaterialWrapper implements IPassMaterialWrapper {
     private build(m: IRenderMaterial): void {
         if (m.hasShaderData()) {
             if (this.m_mt != m) {
-                if (this.m_mt != null) {
+                if (this.m_mt) {
                     this.m_mt.__$detachThis();
                 }
                 this.m_mt = m;
 
                 const builder = this.rdataBuilder;
-                if (this.m_mt != null) {
+                if (this.m_mt) {
                     this.m_mt.__$attachThis();
                     if (this.unit == null) {
                         this.unit = builder.createRPOUnit() as RPOUnit;
                     }
-                    builder.updateDispMaterial(this.unit, this.m_mt, this.hostUnit.rentity.getDisplay());
+					let entity = this.hostUnit.rentity;
+					if(entity.getREType() < 12) {
+						builder.updateDispMaterial(this.unit, this.m_mt, (entity as IRenderEntity).getDisplay());
+					}
                 } else {
-                    if (this.unit != null) {
+                    if (this.unit) {
                         this.unit.destroy();
                         builder.restoreRPOUnit(this.unit);
                         this.unit = null;
@@ -74,8 +78,8 @@ export default class PassMaterialWrapper implements IPassMaterialWrapper {
             this.unit = null;
         }
         this.m_build = false;
-        this.hostUnit = null;        
-        this.rdataBuilder = null;        
+        this.hostUnit = null;
+        this.rdataBuilder = null;
         if (this.m_mt != null) {
             this.m_mt = null;
         }

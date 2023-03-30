@@ -44,6 +44,7 @@ export default interface IRenderEntityBase {
     //  */
     // drawEnabled: boolean;
 	isRendering(): boolean;
+	isInRenderer(): boolean;
 	setRendering(rendering: boolean): void;
 
 

@@ -10,29 +10,38 @@ import RPONode from "../../vox/render/RPONode";
 import RenderProxy from "../../vox/render/RenderProxy";
 import RenderShader from "../../vox/render/RenderShader";
 import IRODisplaySorter from "../../vox/render/IRODisplaySorter";
+import RPOBlock from "./RPOBlock";
 import PassProcess from "./pass/PassProcess";
+import IRenderEntityContainer from "./IRenderEntityContainer";
+import RPOUnitCont from "./RPOUnitCont";
+class NodeCont {
+	container: IRenderEntityContainer;
+	node: RPONode;
+	destroy(): void {
+		this.container = null;
+		this.node.unit.reset();
+		this.node.reset();
+		this.node = null;
+	}
+}
+export default class RenderSortBlock extends RPOBlock {
 
-export default class RenderSortBlock {
 	private m_begin: RPONode = null;
 	private m_end: RPONode = null;
 	private m_next: RPONode = null;
 	private m_unit: RPOUnit = null;
 	private m_units: RPOUnit[] = [];
-	private m_unitsTotal: number = 0;
-	private m_shader: RenderShader = null;
+	private m_unitsTotal = 0;
 	private m_renderTotal = 0;
-	private m_sorter: IRODisplaySorter = null;
-	sortEnabled = true;
+	private m_nodeConts: NodeCont[] = [];
 	constructor(shader: RenderShader) {
-		this.m_shader = shader;
-	}
-	setSorter(sorter: IRODisplaySorter): void {
-		this.m_sorter = sorter;
+		// this.m_shader = shader;
+		super(shader);
 	}
 	showInfo(): void {
 		let info: string = "";
 		let next: RPONode = this.m_begin;
-		while (next != null) {
+		while (next) {
 			//info += "("+next.unit.value+","+next.uid+"),";
 			info += next.unit.value + ",";
 			next = next.next;
@@ -40,9 +49,9 @@ export default class RenderSortBlock {
 		console.log("RenderSortBlock info: \n", info);
 	}
 	clear(): void {
-		if (this.m_shader != null) {
+		if (this.m_shader) {
 			if (this.m_units.length > 0) this.m_units = [];
-			let next: RPONode = this.m_begin;
+			let next = this.m_begin;
 			let curr: RPONode = null;
 			while (next != null) {
 				curr = next;
@@ -63,7 +72,64 @@ export default class RenderSortBlock {
 			this.sort();
 		}
 	}
+	addContainer(container: IRenderEntityContainer): boolean {
+		let i = 0;
+		const ls = this.m_nodeConts;
+		for(; i < ls.length; ++i) {
+			if(ls[i].container == container) {
+				break;
+			}
+		}
+		if(i >= ls.length) {
 
+			let unit = new RPOUnitCont();
+			unit.shader = this.m_shader;
+			unit.rentity = container;
+			unit.retype = container.getREType();
+
+			unit.bounds = container.getGlobalBounds();
+			unit.pos = unit.bounds.center;
+
+			let node = new RPONode();
+			node.unit = unit;
+			this.addNode(node);
+
+			let nc = new NodeCont();
+			nc.container = container;
+			nc.node = node;
+			ls.push(nc);
+			console.log("RenderSortBlock::addContainer() ...unit: ", unit);
+			return true;
+		}
+		return false;
+	}
+	removeContainer(container: IRenderEntityContainer): boolean {
+		let i = 0;
+		const ls = this.m_nodeConts;
+		for(; i < ls.length; ++i) {
+			if(ls[i].container == container) {
+				const node = ls[i].node;
+				this.removeNode(node);
+				ls[i].destroy();
+				ls.splice(i, 1);
+				console.log("RenderSortBlock::removeContainer() ...");
+				break;
+			}
+		}
+		if(i >= ls.length) {
+
+			let unit = new RPOUnitCont();
+			unit.shader = this.m_shader;
+			unit.rentity = container;
+			unit.retype = container.getREType();
+
+			let node = new RPONode();
+			node.unit = unit;
+			this.removeNode(node);
+			return true;
+		}
+		return false;
+	}
 	private m_passProc = new PassProcess();
 	private m_shdUpdate = false;
 	run(rc: RenderProxy): void {
@@ -71,34 +137,37 @@ export default class RenderSortBlock {
 		this.m_shader.resetUniform();
 
 		let unit: RPOUnit = null;
-		let nodes = this.m_units;
+		let uints = this.m_units;
 		this.m_shdUpdate = false;
 		const proc = this.m_passProc;
 		proc.shader = this.m_shader;
-
 		for (let i = 0; i < this.m_renderTotal; ++i) {
-			unit = nodes[i];
-			if (unit.rendering) {
-				this.m_shader.bindToGpu(unit.shdUid);
-				unit.updateVtx();
-				if (unit.drawing) {
-					if (unit.rgraph && unit.rgraph.isEnabled()) {
+			unit = uints[i];
+			if(unit.retype < 12) {
+				if (unit.rendering) {
+					this.m_shader.bindToGpu(unit.shdUid);
+					unit.updateVtx();
+					if (unit.drawing) {
+						if (unit.rgraph && unit.rgraph.isEnabled()) {
 
-						proc.units = [unit];
-						proc.rc = rc;
-						proc.vtxFlag = true;
-						proc.texFlag = true;
-						unit.rgraph.run(proc);
-						this.m_shdUpdate = true;
-					} else {
-						if (this.m_shdUpdate) {
-							unit.applyShader(true);
-							this.m_shdUpdate = false;
+							proc.units = [unit];
+							proc.rc = rc;
+							proc.vtxFlag = true;
+							proc.texFlag = true;
+							unit.rgraph.run(proc);
+							this.m_shdUpdate = true;
+						} else {
+							if (this.m_shdUpdate) {
+								unit.applyShader(true);
+								this.m_shdUpdate = false;
+							}
+							unit.run(rc);
+							unit.draw(rc);
 						}
-						unit.run(rc);
-						unit.draw(rc);
 					}
 				}
+			}else {
+				unit.run(rc);
 			}
 		}
 	}
@@ -106,17 +175,21 @@ export default class RenderSortBlock {
 		this.m_shader.resetUniform();
 
 		let unit: RPOUnit = null;
-		let nodes = this.m_units;
+		let units = this.m_units;
 		for (let i = 0; i < this.m_renderTotal; ++i) {
-			unit = nodes[i];
-			if (unit.rendering) {
-				this.m_shader.bindToGpu(unit.shdUid);
-				unit.updateVtx();
-				if (unit.drawing) {
-					unit.vro.run();
-					unit.runLockMaterial2(null);
-					unit.draw(rc);
+			unit = units[i];
+			if(unit.retype < 12) {
+				if (unit.rendering) {
+					this.m_shader.bindToGpu(unit.shdUid);
+					unit.updateVtx();
+					if (unit.drawing) {
+						unit.vro.run();
+						unit.runLockMaterial2(null);
+						unit.draw(rc);
+					}
 				}
+			}else {
+				unit.runLockMaterial2(null);
 			}
 		}
 	}
@@ -131,7 +204,12 @@ export default class RenderSortBlock {
 			let i = 0;
 			while (next != null) {
 				const unit = next.unit;
-				if (unit.rendering && unit.drawing) {
+				if(unit.retype < 12) {
+					if (unit.rendering && unit.drawing) {
+						this.m_units[i] = unit;
+						++i;
+					}
+				}else {
 					this.m_units[i] = unit;
 					++i;
 				}
@@ -140,8 +218,9 @@ export default class RenderSortBlock {
 			this.m_renderTotal = i;
 
 			let flat = 0;
-			if (this.m_sorter != null) {
-				flat = this.m_sorter.sortRODisplay(this.m_units, i);
+			const st = this.m_sorter;
+			if (st) {
+				flat = st.sortRODisplay(this.m_units, i);
 			}
 			if (flat < 1) {
 				this.snsort(0, i - 1);
@@ -172,14 +251,14 @@ export default class RenderSortBlock {
 			this.snsort(pos + 1, high);
 		}
 	}
-	getNodesTotal(): number {
+	private getNodesTotal(): number {
 		return this.m_unitsTotal;
 	}
-	getBegin(): RPONode {
+	private getBegin(): RPONode {
 		this.m_next = this.m_begin;
 		return this.m_begin;
 	}
-	getNext(): RPONode {
+	private getNext(): RPONode {
 		if (this.m_next != null) {
 			this.m_next = this.m_next.next;
 		}
@@ -187,10 +266,9 @@ export default class RenderSortBlock {
 	}
 	isEmpty(): boolean {
 		return this.m_unitsTotal < 1;
-		// return this.m_begin == null;
 	}
 	addNode(node: RPONode) {
-		//console.log("sort add node: ",node);
+		console.log("sort add node: ",node);
 		if (node.prev == null && node.next == null) {
 			if (this.m_begin == null) {
 				this.m_end = this.m_begin = node;
@@ -207,7 +285,7 @@ export default class RenderSortBlock {
 			}
 			this.m_end.next = null;
 			this.m_unitsTotal++;
-			//console.log("sort add node,this.m_unitsTotal: ",this.m_unitsTotal);
+			console.log("sort add node,this.m_unitsTotal: ",this.m_unitsTotal);
 		}
 	}
 
@@ -231,7 +309,7 @@ export default class RenderSortBlock {
 			node.prev = null;
 			node.next = null;
 			this.m_unitsTotal--;
-			//console.log("sort remove node,this.m_unitsTotal: ",this.m_unitsTotal);
+			console.log("sort remove node,this.m_unitsTotal: ",this.m_unitsTotal);
 		}
 	}
 }
