@@ -29,11 +29,13 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 	protected m_eventDispatcher: IEvtDispatcher = null;
 	protected m_spaceEnabled = false;
 
-	constructor(boundsEnabled = true, spaceEnabled = false) {
+	private m_renderingFlow = false;
+	constructor(boundsEnabled = true, spaceEnabled = false, renderingFlow = false) {
 		if (boundsEnabled) {
 			this.createBounds();
 		}
 		this.m_spaceEnabled = spaceEnabled;
+		this.m_renderingFlow = renderingFlow;
 	}
 	private m_transformStatus = 0;
 	private m_rotateBoo = false;
@@ -472,8 +474,9 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 	isVisible(): boolean {
 		return this.m_visible;
 	}
+
 	getREType(): number {
-		return 12;
+		return this.m_renderingFlow ? 20 : 12;
 	}
 	/**
 	 * @returns 自身是否未必任何渲染器相关的系统使用
