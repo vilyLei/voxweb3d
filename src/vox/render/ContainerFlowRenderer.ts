@@ -10,7 +10,6 @@ import IRenderProxy from "../../vox/render/IRenderProxy";
 import RPOUnit from "./RPOUnit";
 import IRenderEntityContainer from "./IRenderEntityContainer";
 import PassProcess from "./pass/PassProcess";
-import IRenderShaderUniform from "./uniform/IRenderShaderUniform";
 import IRenderShader from "./IRenderShader";
 /**
  * 渲染器渲染运行时核心关键执行显示单元,一个unit代表着一个draw call所渲染的所有数据
