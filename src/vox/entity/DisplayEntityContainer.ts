@@ -29,7 +29,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 	protected m_eventDispatcher: IEvtDispatcher = null;
 	protected m_spaceEnabled = false;
 
-	constructor(boundsEnabled: boolean = true, spaceEnabled = false) {
+	constructor(boundsEnabled = true, spaceEnabled = false) {
 		if (boundsEnabled) {
 			this.createBounds();
 		}
@@ -76,8 +76,10 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 	__$rseFlag = REF.DEFAULT;
 	// 自身所在的world的唯一id, 通过这个id可以找到对应的world
 	__$wuid = -1;
-	// render process uid
-	wprocuid = -1;
+	/**
+	 * render process uid
+	 */
+	__$wprocuid = -1;
 	// 自身在world中被分配的唯一id, 通过这个id就能在world中快速找到自己所在的数组位置
 	__$weid = -1;
 	// 记录自身是否再容器中(取值为0和1), 不允许外外面其他代码调用
@@ -88,16 +90,14 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 	 * 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMask, 默认只会有摄像机裁剪
 	 */
 	spaceCullMask = SpaceCullingMask.CAMERA;
-	// /**
-	//  * recorde a draw status
-	//  */
-	// drawEnabled = false;
-	// mouse interaction enabled
+	/**
+	 * mouse interaction enabled
+	 */
 	mouseEnabled = false;
 
 	__$setRenderer(renderer: IRenderer): void {
 		let i = 0;
-		if (this.__$renderer != null) {
+		if (this.__$renderer) {
 			if (renderer == null) {
 				// remove all entities from renderer with container
 				for (; i < this.m_entitiesTotal; ++i) {
@@ -107,18 +107,18 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 			this.__$renderer = renderer;
 		} else {
 			this.__$renderer = renderer;
-			if (renderer != null) {
+			if (renderer) {
 				// add all entities into renderer
 				for (; i < this.m_entitiesTotal; ++i) {
 					const et = this.m_entities[i];
 					et.__$rseFlag = REF.RemoveContainerFlag(et.__$rseFlag);
-					this.__$renderer.addEntity(et, this.wprocuid, false);
+					this.__$renderer.addEntity(et, this.__$wprocuid, false);
 					et.__$rseFlag = REF.AddContainerFlag(et.__$rseFlag);
 				}
 			}
 		}
 		for (i = 0; i < this.m_childrenTotal; ++i) {
-			this.m_children[i].wprocuid = this.wprocuid;
+			this.m_children[i].__$wprocuid = this.__$wprocuid;
 			this.m_children[i].__$setRenderer(renderer);
 		}
 	}
@@ -127,7 +127,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 			this.m_$updateBounds = true;
 			this.__$parent = parent;
 			if (parent != null) {
-				this.wprocuid = parent.wprocuid;
+				this.__$wprocuid = parent.__$wprocuid;
 				this.m_parentVisible = parent.__$getParentVisible() && parent.getVisible();
 				this.__$setRenderer(parent.__$renderer);
 			} else {
@@ -137,6 +137,9 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 		}
 	}
 
+	isInRenderer(): boolean {
+		return this.__$wprocuid >= 0;
+	}
 	hasParent(): boolean {
 		return this.__$parent != null;
 	}
@@ -256,7 +259,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 					child.spaceCullMask |= this.spaceCullMask;
 
 					child.__$contId = 1;
-					child.wprocuid = this.wprocuid;
+					child.__$wprocuid = this.__$wprocuid;
 					child.__$setParent(this);
 					this.m_children.push(child);
 					this.m_childrenTotal++;
@@ -275,7 +278,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 				for (let i = 0; i < this.m_childrenTotal; ++i) {
 					if (this.m_children[i] == child) {
 						child.__$contId = 0;
-						child.wprocuid = -1;
+						child.__$wprocuid = -1;
 						child.__$setParent(null);
 						this.m_children.splice(i, 1);
 						if (this.m_cbvers != null) {
@@ -353,7 +356,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 					if (this.__$renderer) {
 						//entity.__$contId = 0;
 						entity.__$rseFlag = REF.RemoveContainerFlag(entity.__$rseFlag);
-						this.__$renderer.addEntity(this.m_entities[i], this.wprocuid, false);
+						this.__$renderer.addEntity(this.m_entities[i], this.__$wprocuid, false);
 					}
 					entity.__$rseFlag = REF.AddContainerFlag(entity.__$rseFlag);
 					entity.update();

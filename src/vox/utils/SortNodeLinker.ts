@@ -12,8 +12,8 @@ interface ISortNodeLinkerNode {
 	next: ISortNodeLinkerNode;
 }
 class SortNodeLinkerNode implements ISortNodeLinkerNode {
-	value: number = 0;
-	uid: number = -1;
+	value = 0;
+	uid = -1;
 	prev: ISortNodeLinkerNode = null;
 	next: ISortNodeLinkerNode = null;
 	constructor() {}
@@ -24,7 +24,7 @@ class SortNodeLinker {
 	private m_next: ISortNodeLinkerNode = null;
 	private m_node: ISortNodeLinkerNode = null;
 	private m_nodes: ISortNodeLinkerNode[] = [];
-	private m_nodesTotal: number = 0;
+	private m_nodesTotal = 0;
 	constructor() {}
 
 	showInfo(): void {
@@ -39,7 +39,7 @@ class SortNodeLinker {
 	}
 	clear(): void {
 		this.m_nodes = [];
-		let next: ISortNodeLinkerNode = this.m_begin;
+		let next = this.m_begin;
 		let curr: ISortNodeLinkerNode = null;
 		while (next != null) {
 			curr = next;
@@ -54,11 +54,11 @@ class SortNodeLinker {
 		if (this.m_nodesTotal > 0) {
 			//console.log("this.m_nodesTotal: ",this.m_nodesTotal);
 			// 如果是remove实际上是不需要排序的
-			let next: ISortNodeLinkerNode = this.m_begin;
+			let next = this.m_begin;
 			if (this.m_nodes.length < this.m_nodesTotal) {
 				this.m_nodes = new Array(Math.round(this.m_nodesTotal * 1.1) + 1);
 			}
-			let i: number = 0;
+			let i = 0;
 			while (next != null) {
 				this.m_nodes[i] = next;
 				next = next.next;
@@ -69,7 +69,7 @@ class SortNodeLinker {
 			this.m_begin.uid = 2;
 			this.m_begin.next = null;
 			this.m_begin.prev = null;
-			let prev: ISortNodeLinkerNode = this.m_begin;
+			let prev = this.m_begin;
 			for (i = 1; i < this.m_nodesTotal; ++i) {
 				next = this.m_nodes[i];
 				next.uid = 2 + i;
@@ -83,7 +83,7 @@ class SortNodeLinker {
 		}
 	}
 	private sorting(low: number, high: number): number {
-		let arr: ISortNodeLinkerNode[] = this.m_nodes;
+		let arr = this.m_nodes;
 		this.m_node = arr[low];
 		while (low < high) {
 			while (low < high && arr[high].value >= this.m_node.value) {
@@ -100,7 +100,7 @@ class SortNodeLinker {
 	}
 	private snsort(low: number, high: number): void {
 		if (low < high) {
-			let pos: number = this.sorting(low, high);
+			let pos = this.sorting(low, high);
 			this.snsort(low, pos - 1);
 			this.snsort(pos + 1, high);
 		}
