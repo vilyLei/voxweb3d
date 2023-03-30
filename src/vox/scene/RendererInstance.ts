@@ -31,6 +31,7 @@ import RPONodeBuilder from "../../vox/render/RPONodeBuilder";
 import DispEntity3DManager from "../../vox/scene/DispEntity3DManager";
 import IRenderNode from "../../vox/scene/IRenderNode";
 import { ITextureBlock } from '../texture/ITextureBlock';
+import IRenderEntityContainer from '../render/IRenderEntityContainer';
 
 /**
  * kernal system instance, it is the renderer instance for the renderer runtime, it is very very very important class.
@@ -181,6 +182,20 @@ export class RendererInstance implements IRendererInstance {
     setEntityManaListener(listener: any): void {
         this.m_entity3DMana.setListener(listener);
     }
+    addContainer(container: IRenderEntityContainer, processIndex: number = 0): void {
+		if(container) {
+			if (processIndex > -1 && processIndex < this.m_processesLen) {
+				this.m_entity3DMana.addContainer(container, this.m_processes[processIndex].getUid());
+			}
+		}
+	}
+    removeContainer(container: IRenderEntityContainer, processIndex: number = 0): void {
+		if(container) {
+			if (processIndex > -1 && processIndex < this.m_processesLen) {
+				this.m_entity3DMana.removeContainer(container, this.m_processes[processIndex].getUid());
+			}
+		}
+	}
     /**
      * add an entity to the renderer process of the renderer instance
      * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
@@ -188,7 +203,7 @@ export class RendererInstance implements IRendererInstance {
      * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id, the defaule value is true
      */
     addEntity(entity: IRenderEntity, processIndex: number = 0, deferred: boolean = true): void {
-        if (entity != null) {
+        if (entity) {
             if (entity.__$testRendererEnabled()) {
                 if (processIndex > -1 && processIndex < this.m_processesLen) {
                     this.m_entity3DMana.addEntity(entity, this.m_processes[processIndex].getUid(), deferred);
@@ -197,7 +212,7 @@ export class RendererInstance implements IRendererInstance {
         }
     }
     addEntityToProcess(entity: IRenderEntity, process: IRenderProcess, deferred: boolean = true): void {
-        if (process != null && entity != null) {
+        if (process && entity) {
             if (entity.__$testRendererEnabled()) {
                 if (process.getRCUid() == this.m_uid) {
                     this.m_entity3DMana.addEntity(entity, process.getUid(), deferred);
@@ -210,7 +225,7 @@ export class RendererInstance implements IRendererInstance {
      * move rendering runtime displayEntity to different renderer process
      */
     moveEntityToProcessAt(entity: IRenderEntity, dstProcessIndex: number): void {
-        if (entity != null && entity.getRendererUid() == this.m_uid) {
+        if (entity && entity.getRendererUid() == this.m_uid) {
             if (entity.isInRendererProcess()) {
                 if (dstProcessIndex > -1 && dstProcessIndex < this.m_processesLen) {
                     let srcUid = entity.getDisplay().__$$runit.getRPROUid();
@@ -226,7 +241,7 @@ export class RendererInstance implements IRendererInstance {
         }
     }
     moveEntityToProcess(entity: IRenderEntity, dstProcess: IRenderProcess): void {
-        if (dstProcess != null && entity != null && entity.getRendererUid() == this.m_uid) {
+        if (dstProcess && entity && entity.getRendererUid() == this.m_uid) {
             if (entity.isInRendererProcess()) {
                 let srcUid = entity.getDisplay().__$$runit.getRPROUid();
                 let src = this.m_processBuider.getNodeByUid(srcUid) as RenderProcess;

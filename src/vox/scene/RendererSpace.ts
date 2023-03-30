@@ -254,7 +254,7 @@ export default class RendererSpace implements IRendererSpace {
 		for (let i = 0; i < etotal; ++i) {
 			const et = ets[i];
 			const ab = et.getGlobalBounds();
-			const vboo = cam.visiTestSphere2(ab.center, ab.radius);
+			const vboo = ab ? cam.visiTestSphere2(ab.center, ab.radius) : true;
 			et.setRendering(vboo);
 		}
 

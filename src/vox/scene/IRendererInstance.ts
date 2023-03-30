@@ -17,6 +17,7 @@ import IRendererParam from "../../vox/scene/IRendererParam";
 import IRenderProcess from "../../vox/render/IRenderProcess";
 import {IRendererInstanceContext} from "../../vox/scene/IRendererInstanceContext";
 import IRenderer from "../../vox/scene/IRenderer";
+import IRenderEntityContainer from "../render/IRenderEntityContainer";
 
 /**
  * kernal system instance, it is the renderer instance for the renderer runtime, it is very very very important class.
@@ -56,6 +57,8 @@ export interface IRendererInstance extends IRenderer {
     updateAllProcess(): void;
     updateProcessAt(processIndex: number): void;
     setEntityManaListener(listener: any): void;
+    addContainer(container: IRenderEntityContainer, processIndex?: number): void;
+    removeContainer(container: IRenderEntityContainer, processIndex?: number): void;
     /**
      * add an entity to the renderer process of the renderer instance
      * @param entity IRenderEntity instance(for example: DisplayEntity class instance)

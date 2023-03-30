@@ -389,18 +389,18 @@ export default class RendererSceneBase {
 
 	/**
 	 * get the renderer process by process index
-	 * @param processIndex IRenderProcess instance index in renderer scene instance
+	 * @param processid IRenderProcess instance index in renderer scene instance
 	 */
-	getRenderProcessAt(processIndex: number): IRenderProcess {
-		return this.m_renderer.getProcessAt(this.m_processids[processIndex]);
+	getRenderProcessAt(processid: number): IRenderProcess {
+		return this.m_renderer.getProcessAt(this.m_processids[processid]);
 	}
-	addContainer(container: IRenderEntityContainer, processIndex: number = 0): void {
+	addContainer(container: IRenderEntityContainer, processid: number = 0): void {
 
 		if(container.getREType() < 12) {
 			throw Error("illegal operation !!!");
 		}
-		if (processIndex < 0) {
-			processIndex = 0;
+		if (processid < 0) {
+			processid = 0;
 		}
 		if (container != null && container.__$wuid < 0 && container.__$contId < 1) {
 			let i = 0;
@@ -412,12 +412,15 @@ export default class RendererSceneBase {
 			if (i >= this.m_containersTotal) {
 
 				container.__$wuid = this.m_uid;
-				container.wprocuid = processIndex;
+				container.__$wprocuid = processid;
 				container.__$setRenderer(this);
 				this.m_containers.push(container);
 				this.m_containersTotal++;
 				if(container.isSpaceEnabled()) {
 					this.m_rspace.addEntity(container);
+				}
+				if(container.getREType() >= 20) {
+					this.m_renderer.addContainer(container, this.m_processids[processid]);
 				}
 			}
 		}
@@ -429,13 +432,16 @@ export default class RendererSceneBase {
 
 			for (; i < this.m_containersTotal; ++i) {
 				if (this.m_containers[i] == container) {
-
+					const wprocuid = container.__$wprocuid;
 					this.m_rspace.removeEntity(container);
-					container.__$wuid = -1;
-					container.wprocuid = -1;
 					container.__$setRenderer(null);
+					container.__$wuid = -1;
+					container.__$wprocuid = -1;
 					this.m_containers.splice(i, 1);
 					--this.m_containersTotal;
+					if(container.getREType() >= 20) {
+						this.m_renderer.removeContainer(container, wprocuid);
+					}
 					break;
 				}
 			}
@@ -545,6 +551,7 @@ export default class RendererSceneBase {
 
 				let re = entity as IRenderEntity;
 				const flag = this.m_entityFence.removeEntity(re);
+				// console.log("removeEntity(), flag: ", flag);
 				if (!flag) {
 					this.m_renderer.removeEntity(re);
 					re.getTransform().setUpdater(null);
