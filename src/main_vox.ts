@@ -178,9 +178,12 @@
 
 //  import {DemoMixProgress as Demo} from "./demo/DemoMixProgress";
 
+//  import {DemoRenderSort as Demo} from "./demo/DemoRenderSort";
+
 //  import {DemoRenderSortA as Demo} from "./demo/DemoRenderSortA";
 
-//  import {DemoRenderSort as Demo} from "./demo/DemoRenderSort";
+ import {DemoRenderSortContainerRender as Demo} from "./demo/DemoRenderSortContainerRender";
+
 
 //  import {DemoThread as Demo} from "./thread/example/DemoThread";
 
@@ -294,6 +297,10 @@
 //  import {DemoContainer as Demo} from "./demo/DemoContainer";
 
 //  import {DemoEntityContainer as Demo} from "./demo/DemoEntityContainer";
+
+//  import {DemoEntityContainerRender as Demo} from "./demo/DemoEntityContainerRender";
+
+//  import {DemoEntityContainerRender2 as Demo} from "./demo/DemoEntityContainerRender2";
 
 //  import {DemoContainerToRSpace as Demo} from "./demo/DemoContainerToRSpace";
 
@@ -465,7 +472,7 @@
 
 //  import {DemoPBRTextureShader as Demo} from "./demo/DemoPBRTextureShader";
 
- import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 

@@ -194,11 +194,11 @@ export class BakeFlow2 {
 		bakeUrl = "static/private/bake/cyl01/cyl01_baked.png";
 
 
-		vsUrl = "static/private/bake/hat_a_02/vertices.bin";
-		uvs1Url = "static/private/bake/hat_a_02/uv1.bin";
-		uvs2Url = "static/private/bake/hat_a_02/uv2.bin";
-		nvsUrl = "static/private/bake/hat_a_02/normal.bin";
-		bakeUrl = "static/private/bake/hat_a_02/hat_a_02.png";
+		// vsUrl = "static/private/bake/hat_a_02/vertices.bin";
+		// uvs1Url = "static/private/bake/hat_a_02/uv1.bin";
+		// uvs2Url = "static/private/bake/hat_a_02/uv2.bin";
+		// nvsUrl = "static/private/bake/hat_a_02/normal.bin";
+		// bakeUrl = "static/private/bake/hat_a_02/hat_a_02.png";
 
 
 		// vsUrl = "static/private/bake/cly02/vertices.bin";
