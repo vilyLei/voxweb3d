@@ -13,14 +13,23 @@ import IRODisplaySorter from "../../vox/render/IRODisplaySorter";
 import RPOBlock from "./RPOBlock";
 import PassProcess from "./pass/PassProcess";
 import IRenderEntityContainer from "./IRenderEntityContainer";
+import ContainerFlowRenderer from "./ContainerFlowRenderer";
 
 export default class ContainerRPOBlock extends RPOBlock {
 
 	private m_unitsTotal = 0;
 	private m_container: IRenderEntityContainer = null;
+	private m_cr = new ContainerFlowRenderer();
 
 	constructor(shader: RenderShader) {
 		super(shader);
+	}
+	
+	private resetCR(): void {
+		const cr = this.m_cr;
+		cr.passProc = this.m_passProc;
+		cr.shdUpdate = false;
+		cr.shader = this.m_shader;
 	}
 	showInfo(): void {
 		// let info: string = "";
@@ -60,8 +69,8 @@ export default class ContainerRPOBlock extends RPOBlock {
 		return this.m_container == null;
 	}
 	private m_passProc = new PassProcess();
-	private m_shdUpdate = false;
-
+	// private m_shdUpdate = false;
+	/*
 	private runContainer(rc: RenderProxy, container: IRenderEntityContainer): void {
 		const els = container.getEntities();
 		const elen = els.length;
@@ -137,21 +146,25 @@ export default class ContainerRPOBlock extends RPOBlock {
 			}
 		}
 	}
-
+	//*/
 	run(rc: RenderProxy): void {
 		// this.m_shader.resetUniform();
 		// console.log("ContainerRPOBlock::run() ...");
 		const c = this.m_container;
 		if(c && c.isVisible()) {
-			this.m_shdUpdate = false;
-			this.runContainer(rc, c);
+			// this.m_shdUpdate = false;
+			// this.runContainer(rc, c);
+			this.resetCR();
+			this.m_cr.runContainer(rc, c);
 		}
 	}
 	runLockMaterial(rc: RenderProxy): void {
 		// this.m_shader.resetUniform();
 		const c = this.m_container;
 		if(c && c.isVisible()) {
-			this.runContainerLock(rc, c);
+			// this.runContainerLock(rc, c);
+			this.resetCR();
+			this.m_cr.runContainerLock(rc, c);
 		}
 	}
 	getNodesTotal(): number {
