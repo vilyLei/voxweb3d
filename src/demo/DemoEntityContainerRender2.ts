@@ -327,13 +327,13 @@ export class DemoEntityContainerRender2 {
 	mouseDownListener(evt: any): void {
 		console.log("mouseDownListener call, this.m_rscene: ", this.m_rscene.toString());
 		this.m_flag++;
-		// if (this.m_flag % 2 == 0) {
-		// 	console.log("remove from renderer");
-		// 	this.m_rscene.removeContainer(this.m_cet.getContainer());
-		// }else {
-		// 	console.log("add to renderer");
-		// 	this.m_rscene.addContainer(this.m_cet.getContainer());
-		// }
+		if (this.m_flag % 2 == 0) {
+			console.log("remove from renderer");
+			this.m_rscene.removeContainer(this.m_cet.getContainer());
+		}else {
+			console.log("add to renderer");
+			this.m_rscene.addContainer(this.m_cet.getContainer());
+		}
 	}
 	run(): void {
 		// if (this.m_flag > 0) {

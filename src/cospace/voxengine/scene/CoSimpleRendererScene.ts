@@ -358,7 +358,7 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 			}
 			if (i >= this.m_containersTotal) {
 				container.__$wuid = this.m_uid;
-				container.wprocuid = processIndex;
+				container.__$wprocuid = processIndex;
 				container.__$setRenderer(this);
 				this.m_containers.push(container);
 				this.m_containersTotal++;
@@ -371,7 +371,7 @@ export default class CoSimpleRendererScene implements IRenderer, IRendererScene,
 			for (; i < this.m_containersTotal; ++i) {
 				if (this.m_containers[i] == container) {
 					container.__$wuid = -1;
-					container.wprocuid = -1;
+					container.__$wprocuid = -1;
 					container.__$setRenderer(null);
 					this.m_containers.splice(i, 1);
 					--this.m_containersTotal;
