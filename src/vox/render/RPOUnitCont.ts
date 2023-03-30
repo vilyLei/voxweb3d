@@ -12,10 +12,7 @@ import IRenderEntityContainer from "./IRenderEntityContainer";
 import PassProcess from "./pass/PassProcess";
 import IRenderShaderUniform from "./uniform/IRenderShaderUniform";
 import ContainerFlowRenderer from "./ContainerFlowRenderer";
-/**
- * 渲染器渲染运行时核心关键执行显示单元,一个unit代表着一个draw call所渲染的所有数据
- * renderer rendering runtime core executable display unit.
- */
+
 export default class RPOUnitCont extends RPOUnit {
 	private m_passProc = new PassProcess();
 	private m_cr = new ContainerFlowRenderer();

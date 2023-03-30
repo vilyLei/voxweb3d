@@ -30,14 +30,6 @@ export default class ContainerRPOBlock extends RPOBlock {
 		cr.shader = this.m_shader;
 	}
 	showInfo(): void {
-		// let info: string = "";
-		// let next: RPONode = this.m_begin;
-		// while (next) {
-		// 	//info += "("+next.unit.value+","+next.uid+"),";
-		// 	info += next.unit.value + ",";
-		// 	next = next.next;
-		// }
-		// console.log("ContainerRPOBlock info: \n", info);
 	}
 	clear(): void {
 		if (this.m_shader) {
@@ -51,11 +43,9 @@ export default class ContainerRPOBlock extends RPOBlock {
 		}
 	}
 	addContainer(container: IRenderEntityContainer): void {
-		// console.log("ContainerRPOBlock::addContainer() ...");
 		this.m_container = container;
 	}
 	removeContainer(container: IRenderEntityContainer): void {
-		// console.log("ContainerRPOBlock::removeContainer() ...");
 		if(container == this.m_container) {
 			this.m_container = null;
 		}
@@ -70,7 +60,6 @@ export default class ContainerRPOBlock extends RPOBlock {
 
 	run(rc: RenderProxy): void {
 		// this.m_shader.resetUniform();
-		// console.log("ContainerRPOBlock::run() ...");
 		const c = this.m_container;
 		if(c && c.isVisible()) {
 			this.resetCR();
