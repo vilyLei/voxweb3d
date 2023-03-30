@@ -41,8 +41,8 @@ export class DemoStencil {
     private m_material:any = null;
     private m_entity:DisplayEntity = null;
     private m_renderProxy:RenderProxy = null;
-    private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+    private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+        let ptex = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
@@ -84,19 +84,19 @@ export class DemoStencil {
 
             // add common 3d display entity
             let plane:Plane3DEntity = new Plane3DEntity();
-            plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+            plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getTexByUrl("static/assets/broken_iron.jpg")]);
             this.m_rscene.addEntity(plane,1);
 
             //  let sph: Sphere3DEntity = new Sphere3DEntity();
-            //  //sph.initialize(200.0,20,20,[this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
-            //  sph.initialize(200.0, 20, 20, [this.getImageTexByUrl("static/assets/default.jpg")]);
+            //  //sph.initialize(200.0,20,20,[this.getTexByUrl("static/assets/broken_iron.jpg")]);
+            //  sph.initialize(200.0, 20, 20, [this.getTexByUrl("static/assets/default.jpg")]);
             //  this.m_rscene.addEntity(sph,0);
             //  this.m_entity = sph;
             //  this.m_material = sph.getMaterial() as any;
             //  //this.m_rscene.addEntity(sph,2);
 
             let box: Box3DEntity = new Box3DEntity();
-            box.initializeCube(200.0,[this.getImageTexByUrl("static/assets/default.jpg")]);
+            box.initializeCube(200.0,[this.getTexByUrl("static/assets/default.jpg")]);
             this.m_rscene.addEntity(box,0);
             this.m_entity = box;
             this.m_material = box.getMaterial() as any;

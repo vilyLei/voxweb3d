@@ -5,6 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
+import IRenderEntity from "../../vox/render/IRenderEntity";
 import IPassProcess from "../../vox/render/pass/IPassProcess";
 import PassRItem from "../../vox/render/pass/PassRItem";
 
@@ -16,9 +17,9 @@ export default class AddBlendPassItem extends PassRItem {
     run(process: IPassProcess): void {
         if (this.m_enabled && process) {
             const unit = process.units[0];
-            let entity = unit.rentity;
+            let entity = unit.rentity as IRenderEntity;
             let rst = entity.getRenderState();
-            
+
             let v0 = entity.getPosition();
             let pv = entity.getPosition();
 

@@ -11,6 +11,7 @@ import IPassProcess from "../../vox/render/pass/IPassProcess";
 import PassRItem from "../../vox/render/pass/PassRItem";
 import { Stencil } from "../../vox/render/rendering/Stencil";
 import { GLStencilFunc, GLStencilOp } from "../../vox/render/RenderConst";
+import IRenderEntity from "../../vox/render/IRenderEntity";
 
 export default class ConvexTransParentPassItem extends PassRItem {
 
@@ -44,7 +45,7 @@ export default class ConvexTransParentPassItem extends PassRItem {
 
 			const rc = process.rc;
 			const unit = process.units[0];
-			let entity = unit.rentity;
+			let entity = unit.rentity as IRenderEntity;
 
 			// draw pass 0
             process.resetUniform();

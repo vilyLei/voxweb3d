@@ -7,14 +7,15 @@
 
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import { PBREnvLighting } from "./shader/PBREnvLighting";
-import { RendererDevice } from "../../cospace/voxengine/VoxRScene";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import IShaderMaterial from "../../vox/material/mcase/IShaderMaterial";
 import IColor4 from "../../vox/material/IColor4";
 import IVector3D from "../../vox/math/IVector3D";
 import ShaderMaterial from "../../vox/material/mcase/ShaderMaterial";
+import RendererDevice from "../../vox/render/RendererDevice";
 
 class PBREnvLightingMaterialWrapper {
+
 
     private m_albedo = new Float32Array([0.0, 0.0, 0.0, 0.0]);
     private m_params = new Float32Array([0.0, 0.0, 1.0, 0.0]);
@@ -28,7 +29,7 @@ class PBREnvLightingMaterialWrapper {
     get material(): IRenderMaterial {
 
         if (this.m_material == null) {
-            
+
             let material = new ShaderMaterial("pbr_envLighting_shader");
 
             let headCode =
@@ -44,7 +45,7 @@ precision highp float;
 #define VOX_TextureCubeLod textureCubeLodEXT
 `;
             } else {
-    
+
                 fragCode +=
                     `
 #define VOX_TextureCubeLod textureLod
