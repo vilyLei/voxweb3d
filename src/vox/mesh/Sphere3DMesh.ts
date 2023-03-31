@@ -26,6 +26,12 @@ export default class Sphere3DMesh extends MeshBase {
 
     inverseUV = false;
     uvScale = 1.0;
+
+	/**
+	 *  1: positive half sphere
+	 *  0: entire sphere
+	 * -1:negative half sphere
+	 */
     mode = 0;
     getVS(): Float32Array { return this.m_vs; }
     getUVS(): Float32Array { return this.m_uvs; }

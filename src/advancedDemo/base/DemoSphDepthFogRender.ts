@@ -20,7 +20,7 @@ import ScreenFixedAlignPlaneEntity from "../../vox/entity/ScreenFixedAlignPlaneE
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
 import { SphDepthFogRenderNode } from "../../advancedDemo/depthFog/renderer/SphDepthFogRenderNode";
-import { RendererState } from "../../cospace/voxengine/VoxRScene";
+import RendererState from "../../vox/render/RendererState";
 
 export class DemoSphDepthFogRender {
 	private m_pbr = new PBRMateralBuilder();
@@ -106,11 +106,11 @@ export class DemoSphDepthFogRender {
 		let material = this.createMaterial();
 
 		let planeSph = new Sphere3DEntity();
-		// planeSph.meshMode = 1;
-		// planeSph.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+		planeSph.meshMode = -1;
+		planeSph.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
 		planeSph.setMaterial(material);
-		planeSph.initialize(100.0, 30, 30);
-		planeSph.setXYZ(0, -250, 0);
+		planeSph.initialize(220.0, 30, 30);
+		planeSph.setXYZ(0, -70, 0);
 		this.m_rscene.addEntity(planeSph);
 
 		let sph = new Sphere3DEntity();

@@ -25,6 +25,11 @@ export default class Sphere3DEntity extends DisplayEntity {
     shape = true;
     inverseUV = false;
     uvScale = 1.0;
+	/**
+	 *  1: positive half sphere
+	 *  0: entire sphere
+	 * -1:negative half sphere
+	 */
     meshMode = 0;
     vtxColor: Color4 = null;
     private m_radius = 50.0;
