@@ -150,7 +150,7 @@
 
 //  import {DemoKeyboardEvt as Demo} from "./demo/DemoKeyboardEvt";
 
-//  import {DemoParticle as Demo} from "./demo/DemoParticle";
+ import {DemoParticle as Demo} from "./demo/DemoParticle";
 
 //  import {DemoParticleMixTex as Demo} from "./demo/DemoParticleMixTex";
 
@@ -300,7 +300,7 @@
 
 //  import {DemoEntityContainerRender as Demo} from "./demo/DemoEntityContainerRender";
 
- import {DemoEntityContainerRender2 as Demo} from "./demo/DemoEntityContainerRender2";
+//  import {DemoEntityContainerRender2 as Demo} from "./demo/DemoEntityContainerRender2";
 
 //  import {DemoContainerToRSpace as Demo} from "./demo/DemoContainerToRSpace";
 
@@ -547,6 +547,8 @@
 //  import {BakeFlow as Demo} from "./bake/demo/bakePbr/BakeFlow";
 //  import {BakeFlow2 as Demo} from "./bake/demo/bakePbr/BakeFlow2";
 //  import {BakedModel as Demo} from "./bake/demo/bakePbr/BakedModel";
+//  import {BakedModelViewerTest as Demo} from "./bake/demo/bakePbr/BakedModelViewerTest";
+//  import {BakedModelViewerTest2 as Demo} from "./bake/demo/bakePbr/BakedModelViewerTest2";
 //  import {BakedNormal as Demo} from "./bake/demo/bakePbr/BakedNormal";
 
 ///////////////////////////////////////////////////////////////////////////////

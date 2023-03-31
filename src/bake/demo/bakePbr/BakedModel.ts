@@ -101,11 +101,17 @@ export class BakedModel {
 			// this.updateEntities();
 			model.uvsList[0] = model.uvsList[1];
 			let tex = this.getTexByUrl(bakeUrl);
-			this.createEntity(model, tex);
+			// this.createEntity(model, tex);
+			this.createEntityWithParams(loader.getVS(), loader.getUV2(), loader.getIVS(), tex);
 		});
 		loader.loadData(vsUrl, uvs1Url, uvs2Url, nvsUrl, "");
 	}
+	private createEntityWithParams(vs: Float32Array, uv: Float32Array, ivs: Uint16Array | Uint32Array, tex: IRenderTexture): void {
+		let model: IGeomModelData = {vertices: vs, uvsList: [uv], indices: ivs};
+		this.createEntity( model, tex );
+	}
 	private createEntity(model: IGeomModelData, tex: IRenderTexture): void {
+
 		let material = new Default3DMaterial();
 		material.setTextureList([tex]);
 		let mesh = MeshFactory.createDataMeshFromModel(model, material);
@@ -116,9 +122,9 @@ export class BakedModel {
 		this.m_layouter.layoutAppendItem( entity, null );
 
 		this.mIndex++;
-		if(this.mIndex >= this.mTotal) {
-			this.m_layouter.layoutUpdate();
-		}
+		// if(this.mIndex >= this.mTotal) {
+		this.m_layouter.layoutUpdate();
+		// }
 	}
 	private mouseDown(evt: any): void {
 		console.log("mouse down... ...");

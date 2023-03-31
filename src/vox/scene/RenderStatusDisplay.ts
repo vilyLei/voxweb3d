@@ -21,16 +21,19 @@ class RenderStatusDisplay {
     private m_width = 128;
     private m_height = 70;
     private m_auto = false;
+	private m_dcBoo = false;
     delayTime = 40;
     statusInfo = "";
     statusEnbled = true;
-
     constructor(rsc: IRendererScene = null, auto: boolean = false) {
         if(rsc != null) {
             this.initialize(rsc, auto);
         }
     }
-
+	setParams(drawCallTimesEnabled: boolean): RenderStatusDisplay {
+		this.m_dcBoo = drawCallTimesEnabled;
+		return this;
+	}
     initialize(rsc: IRendererScene = null, auto: boolean = false): void {
 
         if (this.m_canvas2D == null) {
@@ -105,15 +108,29 @@ class RenderStatusDisplay {
     }
 
     private renderDo(): void {
-        
+
         if (this.m_preWidth != window.innerWidth) {
             this.m_preWidth = window.innerWidth;
             let pwith: number = this.m_preWidth - 20;
             this.createCanvas(pwith);
         }
         if (this.statusEnbled) {
+
             this.m_ctx2D.clearRect(0, 0, this.m_width, this.m_height);
-            this.m_ctx2D.fillText("FPS:" + this.m_fps + this.statusInfo, 5, 50);
+
+			const st = this.m_rsc.getRenderProxy().status;
+			let info = "";
+			if(this.m_dcBoo) {
+				info += "/" + st.drawCallTimes;
+			}
+			if(this.statusInfo != "") {
+				if(info != "") {
+					info += "/" + this.statusInfo;
+				}else {
+					info = this.statusInfo;
+				}
+			}
+            this.m_ctx2D.fillText(this.getFPSStr() + info, 5, 50);
             //  this.m_ctx2D.fillRect(0, 0, this.m_width, this.m_height);
         }
     }

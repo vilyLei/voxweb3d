@@ -17,8 +17,8 @@ export default class BillboardPlaneMesh extends MeshBase {
     }
     private m_vs: Float32Array = null;
     private m_uvs: Float32Array = null;
-    flipVerticalUV: boolean = false;
-    vtxUVEnabled: boolean = true;
+    flipVerticalUV = false;
+    vtxUVEnabled = true;
 
     setUVSFloatArr(uvsFloatArr8: Float32Array): void {
         if (this.m_uvs == null) {
@@ -37,13 +37,14 @@ export default class BillboardPlaneMesh extends MeshBase {
             return;
         }
         //console.log("RectPlaneMesh::initialize()...");
-        let maxX: number = 0.5 * pwidth;
-        let maxY: number = 0.5 * pheight;
-        let minX: number = -maxX;
-        let minY: number = -maxY;
+        let maxX = 0.5 * pwidth;
+        let maxY = 0.5 * pheight;
+        let minX = -maxX;
+        let minY = -maxY;
+		let maxZ = Math.max(maxX, maxY);
         this.bounds = new AABB();
-        this.bounds.min.setXYZ(minX, minY, minX);
-        this.bounds.max.setXYZ(maxX, maxY, maxX);
+        this.bounds.min.setXYZ(minX, minY, -maxZ);
+        this.bounds.max.setXYZ(maxX, maxY, maxZ);
         this.bounds.updateFast();
         // ccw is positive, left-bottom pos(minX,minY) -> right-bottom pos(maxX,minY) -> right-top pos(maxX,maxY)  -> right-top pos(minX,maxY)
         //this.m_ivs = new Uint16Array([0,3,1,2]);// ELEMENTS_TRIANGLE_STRIP

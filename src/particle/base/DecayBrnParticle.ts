@@ -76,7 +76,7 @@ export default class DecayBrnParticle {
         }
     }
     private static createParticle(): DecayBrnParticle {
-        let billboard: Billboard3DEntity = new Billboard3DEntity();
+        let billboard = new Billboard3DEntity(null, false);
         billboard.setMesh(DecayBrnParticle.s_srcBillboard.getMesh());
         billboard.setRenderStateByName("ADD02");
         billboard.initialize(100.0, 100.0, [DecayBrnParticle.s_textures[Math.floor(Math.random() * (DecayBrnParticle.s_textures.length - 0.5))]]);

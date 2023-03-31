@@ -191,10 +191,12 @@ export default class RendererSpace implements IRendererSpace {
 				let ab: IAABB = null;
 
 				let vboo = false;
+				let entity = nextNode.entity;
+				let ty = entity.getREType();
 				while (nextNode) {
 					vboo = false;
-					const entity = nextNode.entity;
-					const ty = entity.getREType();
+					entity = nextNode.entity;
+					ty = entity.getREType();
 					if (nextNode.isVisible()) {
 						ab = nextNode.bounds;
 						vboo = cam.visiTestSphere2(ab.center, ab.radius);
@@ -254,7 +256,8 @@ export default class RendererSpace implements IRendererSpace {
 		for (let i = 0; i < etotal; ++i) {
 			const et = ets[i];
 			const ab = et.getGlobalBounds();
-			const vboo = ab ? cam.visiTestSphere2(ab.center, ab.radius) : true;
+			// const vboo = ab ? cam.visiTestSphere2(ab.center, ab.radius) : true;
+			const vboo = cam.visiTestSphere2(ab.center, ab.radius);
 			et.setRendering(vboo);
 		}
 

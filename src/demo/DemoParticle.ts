@@ -12,19 +12,16 @@ import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
 import TextureConst from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
-import CameraTrack from "../vox/view/CameraTrack";
-import Color4 from "../vox/material/Color4";
 import DecayBrnParticle from "../particle/base/DecayBrnParticle";
 
 import { EntityDispQueue } from "./base/EntityDispQueue";
+import { MouseInteraction } from "../vox/ui/MouseInteraction";
 
 export class DemoParticle {
     constructor() {
     }
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
-    private m_camTrack: CameraTrack = null;
-    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_equeue: EntityDispQueue = new EntityDispQueue();
     private m_timeoutEnabled: boolean = true;
     private m_intervalEnabled: boolean = false;
@@ -53,10 +50,11 @@ export class DemoParticle {
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-            this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-            this.m_statusDisp.initialize();
+
+			new RenderStatusDisplay(this.m_rscene, true).setParams(true);
+			new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
+
             RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
             RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
 
@@ -103,14 +101,14 @@ export class DemoParticle {
         this.m_rscene.setClearRGBColor3f(0.1, 0.1, 0.1);
         this.m_rscene.run();
 
-        this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+        // this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
 
         if (!this.m_timeoutEnabled) {
             this.parRun();
         }
 		const st = this.m_rscene.getRenderProxy().status;
-        this.m_statusDisp.statusInfo = "/" + st.drawCallTimes;
-        this.m_statusDisp.update();
+        // this.m_statusDisp.statusInfo = "/" + st.drawCallTimes;
+        // this.m_statusDisp.update();
     }
 
     parRun(): void {
@@ -145,4 +143,4 @@ export class DemoParticle {
         }
     }
 }
-export default DemoParticle; 
+export default DemoParticle;

@@ -13,7 +13,8 @@ class Bin4DataLoader {
 	private m_ivs: Uint16Array | Uint32Array;
 	private m_listener: ListenerType;
 	private m_loadingTotal = 0;
-    private m_ivsUrl = "";
+	private m_ivsUrl = "";
+	logEnabled = false;
 	constructor() {}
 
 	setListener(listener: ListenerType): void {
@@ -25,8 +26,8 @@ class Bin4DataLoader {
 		this.m_uvs2 = null;
 		this.m_nvs = null;
 		this.m_ivs = null;
-        this.m_ivs = null;
-        this.m_ivsUrl = "";
+		this.m_ivs = null;
+		this.m_ivsUrl = "";
 
 		if (vsUrl != "") {
 			this.m_loadingTotal++;
@@ -42,20 +43,36 @@ class Bin4DataLoader {
 		}
 		if (ivsUrl != "") {
 			this.m_loadingTotal++;
-            this.m_ivsUrl = ivsUrl;
+			this.m_ivsUrl = ivsUrl;
 		}
-        
+
 		this.loadVS(vsUrl);
 		this.loadUV1(uvs1Url);
 		this.loadUV2(uvs2Url);
 		this.loadNV(nvsUrl);
 	}
+	getVS(): Float32Array {
+		return this.m_vs;
+	}
+	getNVS(): Float32Array {
+		return this.m_nvs;
+	}
+	getIVS(): Uint16Array | Uint32Array {
+		return this.m_ivs;
+	}
+	getUV1(): Float32Array {
+		return this.m_uvs1;
+	}
+	getUV2(): Float32Array {
+		return this.m_uvs2;
+	}
+
 	private loadIVS(url: string): void {
 		if (url == "") return;
 		let loader = new HttpFileLoader();
 		loader.load(url, (buf: ArrayBuffer, url: string): void => {
-            let vtxTotal = this.m_vs.length / 3;
-            this.m_ivs = vtxTotal <= 65535 ? new Uint16Array(buf) : new Uint32Array(buf);
+			let vtxTotal = this.m_vs.length / 3;
+			this.m_ivs = vtxTotal <= 65535 ? new Uint16Array(buf) : new Uint32Array(buf);
 			this.update(url);
 		});
 	}
@@ -66,7 +83,7 @@ class Bin4DataLoader {
 			let fs = new Float32Array(buf);
 			this.m_vs = fs;
 			this.update(url);
-            this.loadIVS(this.m_ivsUrl);
+			this.loadIVS(this.m_ivsUrl);
 		});
 	}
 	private loadUV1(url: string): void {
@@ -75,8 +92,10 @@ class Bin4DataLoader {
 		loader.load(url, (buf: ArrayBuffer, url: string): void => {
 			let fs = new Float32Array(buf);
 			this.m_uvs1 = fs;
-            console.log("this.m_uvs1: ", this.m_uvs1);
-            console.log("this.m_uvs1 url: ", url);
+			if (this.logEnabled) {
+				console.log("this.m_uvs1: ", this.m_uvs1);
+				console.log("this.m_uvs1 url: ", url);
+			}
 			this.update(url);
 		});
 	}
@@ -86,37 +105,38 @@ class Bin4DataLoader {
 		loader.load(url, (buf: ArrayBuffer, url: string): void => {
 			let fs = new Float32Array(buf);
 			this.m_uvs2 = fs;
-            console.log("this.m_uvs2: ", this.m_uvs2);
-            console.log("this.m_uvs2 url: ", url);
+			if (this.logEnabled) {
+				console.log("this.m_uvs2: ", this.m_uvs2);
+				console.log("this.m_uvs2 url: ", url);
+			}
 			this.update(url);
 		});
 	}
 	private loadNV(url: string): void {
 		if (url == "") return;
-        // console.log("loadNV(), A url: ", url);
+		// console.log("loadNV(), A url: ", url);
 		let loader = new HttpFileLoader();
 		loader.load(url, (buf: ArrayBuffer, url: string): void => {
 			let fs = new Float32Array(buf);
 			this.m_nvs = fs;
-            // console.log("loadNV(), B loaded the normal data...");
+			// console.log("loadNV(), B loaded the normal data...");
 			this.update(url);
 		});
 	}
 
 	private update(url: string = ""): void {
-		console.log("XXXX this.m_loadingTotal: ", this.m_loadingTotal);
+		// console.log("XXXX this.m_loadingTotal: ", this.m_loadingTotal);
 		// console.log("       XXXX url: ", url);
 		if (this.m_loadingTotal > 0) {
-
 			this.m_loadingTotal--;
 			if (this.m_loadingTotal < 1) {
-                if(!this.m_ivs) {
-                    let vtxTotal = this.m_vs.length / 3;
-                    this.m_ivs = vtxTotal <= 65535 ? new Uint16Array(vtxTotal) : new Uint32Array(vtxTotal);
-                    for (let i = 0; i < vtxTotal; ++i) {
-                        this.m_ivs[i] = i;
-                    }
-                }
+				if (!this.m_ivs) {
+					let vtxTotal = this.m_vs.length / 3;
+					this.m_ivs = vtxTotal <= 65535 ? new Uint16Array(vtxTotal) : new Uint32Array(vtxTotal);
+					for (let i = 0; i < vtxTotal; ++i) {
+						this.m_ivs[i] = i;
+					}
+				}
 				let model: CoGeomDataType = {
 					vertices: this.m_vs,
 					uvsList: [this.m_uvs1, this.m_uvs2],

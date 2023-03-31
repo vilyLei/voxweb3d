@@ -36,9 +36,10 @@ export class DemoContainerToRender {
 
 		if (this.m_rscene == null) {
 
-			RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
 			let rparam = new RendererParam();
+			// rparam.maxWebGLVersion = 2;
 			rparam.setAttriAntialias(true);
 			rparam.setCamProject(45.0, 10.1, 3000.0);
 			rparam.setCamPosition(1500.0, 1500.0, 1500.0);
@@ -70,11 +71,14 @@ export class DemoContainerToRender {
 		billboard.setXYZ(100,100,-200);
 		billboard.initialize(100, 100, [this.getTexByUrl("static/assets/flare_core_03.jpg")]);
 		billboard.setRGB3f(1.0, 0.3, 0.4);
-		this.m_rscene.addEntity(billboard);
+		// this.m_rscene.addEntity( billboard );
 
 		let container = new RenderableEntityContainer();
-		this.m_target = container;
+		// this.m_target = container;
+		container.addChild( billboard );
 		this.m_rscene.addEntity(container);
+
+		return;
 
 		let box = new Box3DEntity();
 		box.normalEnabled = true;
@@ -108,12 +112,14 @@ export class DemoContainerToRender {
 
 	}
 	mouseDownListener(evt: any): void {
-		console.log("this.m_target.isInRenderer(): ", this.m_target.isInRenderer());
-		if(this.m_target.isInRenderer()) {
-			// this.m_rscene.removeContainer( this.m_target );
-			this.m_rscene.removeEntity( this.m_target );
-		}else {
-			this.m_rscene.addEntity( this.m_target );
+		if(this.m_target) {
+			console.log("this.m_target.isInRenderer(): ", this.m_target.isInRenderer());
+			if(this.m_target.isInRenderer()) {
+				// this.m_rscene.removeContainer( this.m_target );
+				this.m_rscene.removeEntity( this.m_target );
+			}else {
+				this.m_rscene.addEntity( this.m_target );
+			}
 		}
 	}
 	run(): void {
