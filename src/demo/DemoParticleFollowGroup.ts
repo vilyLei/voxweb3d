@@ -13,11 +13,11 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraViewRay from "../vox/view/CameraViewRay";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
 import Color4 from "../vox/material/Color4";
-import FollowParticle from "../particle/base/FollowParticle";
+import { FollowParticleParam, FollowParticle } from "../particle/base/FollowParticle";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 
 export class DemoParticleFollowGroup {
-	constructor() {}
+	constructor() { }
 	private m_rscene: RendererScene = null;
 	private m_texLoader: ImageTextureLoader = null;
 
@@ -62,7 +62,11 @@ export class DemoParticleFollowGroup {
 			// this.m_rscene.addEntity(axis);
 
 			let texs = [this.getImageTexByUrl("static/assets/testEFT4_monochrome3.jpg")];
-			this.m_followParticle.initialize(500, texs);
+			let fpParam = new FollowParticleParam();
+			fpParam.textures = texs;
+			fpParam.speedScale = 2.0;
+			// fpParam.uvParams = texs;
+			this.m_followParticle.initialize(20, fpParam);
 			this.m_flowBill = this.m_followParticle.particleEntity;
 			// this.m_flowBill.setXYZ(0,);
 			this.m_rscene.addEntity(this.m_followParticle.particleEntity, 1);
