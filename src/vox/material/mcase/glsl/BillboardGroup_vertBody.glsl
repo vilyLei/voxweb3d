@@ -6,7 +6,7 @@
             time = min(time, a_uvs2.x);
         #endif
         float kf = fract(time/a_uvs2.x);
-        // discard the invisible vtx
+        // discard invisible vtx in the z-space.
         zfk = 1.0 - max(sign(kf - 0.001), 0.0);
         time = kf * a_uvs2.x;
     #else

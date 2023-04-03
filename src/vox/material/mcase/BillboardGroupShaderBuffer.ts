@@ -13,12 +13,12 @@ import { BillboardGroupShaderCode } from "../mcase/glsl/BillboardGroupShaderCode
 
 export default class BillboardGroupShaderBuffer extends ShaderCodeBuffer {
 	private static s_billFS: BillboardFSBase = new BillboardFSBase();
-	protected m_clipEnabled: boolean = false;
-	protected m_hasOffsetColorTex: boolean = false;
-	protected m_useRawUVEnabled: boolean = false;
-	protected m_brightnessEnabled: boolean = false;
+	protected m_clipEnabled = false;
+	protected m_hasOffsetColorTex = false;
+	protected m_useRawUVEnabled = false;
+	protected m_brightnessEnabled = false;
 
-	protected m_uniqueName: string = "";
+	protected m_uniqueName = "";
 
 	clipMixEnabled = false;
 	brightnessEnabled = false;

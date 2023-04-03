@@ -201,7 +201,7 @@ export default class FollowParticle {
 				billGroup.setPositionAt(0, 0, 0, 0);
 			}
 			pv.setXYZ( Math.random() * 0.6 - 0.3,  Math.random() * 0.6 - 0.3,  Math.random() * 0.6 - 0.3);
-			pv.scaleBy(2.0);
+			pv.scaleBy(4.0);
 			billGroup.setAccelerationAt(i, 0.0, 0.0, 0.0);
 			billGroup.setVelocityAt(i, pv.x, pv.y, pv.z);
 			pv.normalize();
