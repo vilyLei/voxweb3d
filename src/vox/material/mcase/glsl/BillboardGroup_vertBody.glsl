@@ -1,11 +1,13 @@
     vec4 temp = u_billParam[0];
-
+    float zfk = 0.0;
     #ifndef VOX_PARTICLE_FLARE
         float time = max(a_nvs.w * temp.z - a_uvs2.w, 0.0);
         #ifdef PLAY_ONCE
             time = min(time, a_uvs2.x);
         #endif
         float kf = fract(time/a_uvs2.x);
+        // discard the invisible vtx
+        zfk = 1.0 - max(sign(kf - 0.001), 0.0);
         time = kf * a_uvs2.x;
     #else
         float kf = fract(a_uvs2.w * temp.z/a_uvs2.x);
@@ -26,6 +28,7 @@
     temp = u_billParam[0];
     // use depth offset
     gl_Position.z = ((gl_Position.z / gl_Position.w) + temp.w) * gl_Position.w;
+    gl_Position.z -= zfk * 999999.0;
 
     v_factor = vec4(0.0,0.0, kf * a_vs2.w, fi);
 

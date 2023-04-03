@@ -41,7 +41,7 @@ export class DemoParticleFollowGroup {
 			rparam.setTickUpdateTime(20);
 			rparam.setAttriAlpha(false);
 			rparam.setMatrix4AllocateSize(8192 * 4);
-			rparam.setCamProject(45.0, 10.0, 3000.0);
+			rparam.setCamProject(45.0, 10.0, 6000.0);
 			rparam.setCamPosition(1500.0, 1500.0, 1500.0);
 
 			this.m_rscene = new RendererScene();
@@ -58,9 +58,10 @@ export class DemoParticleFollowGroup {
 			new RenderStatusDisplay(this.m_rscene, true).setParams(true);
 			new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
 
-			let axis = new Axis3DEntity();
-			axis.initialize(300.0);
-			this.m_rscene.addEntity(axis);
+			// let axis = new Axis3DEntity();
+			// axis.initialize(300.0);
+			// this.m_rscene.addEntity(axis);
+
 			let textures: TextureProxy[] = [];
 			textures.push(this.getImageTexByUrl("static/assets/default.jpg"));
 			// textures.push(this.getImageTexByUrl("static/assets/color_05.jpg"));
@@ -82,12 +83,12 @@ export class DemoParticleFollowGroup {
 			this.m_flowBill = this.m_followParticle.particleEntity;
 			// this.m_flowBill.setXYZ(0,);
 			this.m_rscene.addEntity(this.m_followParticle.particleEntity, 1);
-			//wood_02
-			let plane = new Plane3DEntity();
-			plane.initializeXOZ(-500.0, -500.0, 1000.0, 1000.0, [ this.getImageTexByUrl("static/assets/wood_02.jpg") ]);
-			plane.setXYZ(0, -50, 0);
-			//      //plane.toTransparentBlend(false);
-			this.m_rscene.addEntity(plane);
+
+			// let plane = new Plane3DEntity();
+			// plane.initializeXOZ(-500.0, -500.0, 1000.0, 1000.0, [ this.getImageTexByUrl("static/assets/wood_02.jpg") ]);
+			// plane.setXYZ(0, -50, 0);
+			// this.m_rscene.addEntity(plane);
+			
 			this.update();
 		}
 	}
