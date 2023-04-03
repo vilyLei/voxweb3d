@@ -58,6 +58,9 @@ class PNodeBuilder extends PoolNodeBuilder {
 	protected createNode(): IPoolNode {
 		return new ParticleNode();
 	}
+	getCurrNodes(): ParticleNode[] {
+		return this.m_currNodes;
+	}
 	hasFreeNode(): boolean {
 		if(this.m_currNodes.length > 0) {
 			return true;
@@ -130,6 +133,12 @@ class FollowParticle {
 			}
 		}
 		// force to build the bounds.
+		let ls = builder.getCurrNodes();
+		total = ls.length
+		let ab = this.particleEntity.getMesh().bounds;
+		for (let i = 0; i < total; ++i) {
+			
+		}
 	}
 	run(): void {
 		this.particleEntity.updateTime(1.0);
