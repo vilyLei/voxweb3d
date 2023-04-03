@@ -84,6 +84,12 @@ class PNodeBuilder extends PoolNodeBuilder {
 	getNodes(): ParticleNode[] {
 		return super.getNodes() as ParticleNode[];
 	}
+	
+    destroy(): void {
+		this.m_currNodes = [];
+		this.unlock = true;
+		super.destroy();
+	}
 }
 class FollowParticleParam {
 	textures: IRenderTexture[] = null;
@@ -101,7 +107,6 @@ class FollowParticle {
 	private m_nodeBuilder = new PNodeBuilder();
 	private m_total = 0;
 	private m_playOnce = true;
-	private m_textures: IRenderTexture[];
 	private m_param: FollowParticleParam = null;
 	particleEntity: Billboard3DFlowEntity = null;
 	constructor() { }
@@ -124,6 +129,7 @@ class FollowParticle {
 				break;
 			}
 		}
+		// force to build the bounds.
 	}
 	run(): void {
 		this.particleEntity.updateTime(1.0);
@@ -203,6 +209,9 @@ class FollowParticle {
 			builder.restore(nodes[i]);
 		}
 		builder.unlock = false;
+	}
+	destroy(): void {
+		this.m_nodeBuilder.destroy();
 	}
 }
 

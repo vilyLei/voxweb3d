@@ -9,10 +9,10 @@ import IPoolNode from "../../vox/base/IPoolNode";
 import IPoolNodeBuilder from "../../vox/base/IPoolNodeBuilder";
 
 export default class PoolNodeBuilder implements IPoolNodeBuilder {
-    private static S_BUSY: number = 1;
-    private static S_FREE: number = 0;
+    private static S_BUSY = 1;
+    private static S_FREE = 0;
 
-    private m_nodesTotal: number = 0;
+    private m_nodesTotal = 0;
     private m_nodes: IPoolNode[] = [];
     private m_flags: number[] = [];
 
@@ -28,9 +28,9 @@ export default class PoolNodeBuilder implements IPoolNodeBuilder {
      */
     protected restoreUid(uid: number): void {
     }
-	hasFreeNode(): boolean {
-		return this.m_freeIdList.length > 0;
-	}
+    hasFreeNode(): boolean {
+        return this.m_freeIdList.length > 0;
+    }
     getFreeId(): number {
         if (this.m_freeIdList.length > 0) {
             return this.m_freeIdList.pop();
@@ -40,9 +40,9 @@ export default class PoolNodeBuilder implements IPoolNodeBuilder {
     getNodeByUid(uid: number): IPoolNode {
         return this.m_nodes[uid];
     }
-	getNodes(): IPoolNode[] {
-		return this.m_nodes;
-	}
+    getNodes(): IPoolNode[] {
+        return this.m_nodes;
+    }
     create(): IPoolNode {
         let node: IPoolNode = null;
         let index: number = this.getFreeId();
@@ -80,5 +80,11 @@ export default class PoolNodeBuilder implements IPoolNodeBuilder {
             return true;
         }
         return false;
+    }
+    destroy(): void {
+        this.m_nodes = [];
+        this.m_freeIdList = [];
+        this.m_flags = [];
+        this.m_nodesTotal = 0;
     }
 }
