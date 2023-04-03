@@ -38,6 +38,9 @@
     #else
         v_texUV = vec4(a_uvs.xy, a_uvs.xy);
     #endif
-    
+
+    #ifdef VOX_VERTEX_COLOR
+        v_vtxColor = a_cvs;
+    #endif
     v_colorMult = u_billParam[1];
     v_colorOffset = u_billParam[2];

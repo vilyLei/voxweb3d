@@ -19,7 +19,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
     private m_flameTexture: IRenderTexture = null;
     private m_solidTexture: IRenderTexture = null;
     private m_clipMixEnabled: boolean = false;
-    
+
     materialPipeline: IMaterialPipeline = null;
     pipeTypes: MaterialPipeType[] = null;
     depthOffset: number = 0.0;
@@ -43,7 +43,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
             this.m_renderer = renderer;
             this.m_renderProcessI = processIndex;
 
-            let efSrc: EruptionEffect = new EruptionEffect();
+            let efSrc = new EruptionEffect();
             efSrc.gravityFactor = this.gravityFactor;
             efSrc.solidRN = this.solidRN;
             efSrc.solidCN = this.solidCN;
@@ -56,7 +56,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
     }
 
     appendEffectSrc(flameTotal: number, solidTotal: number, clipMixEnabled: boolean): void {
-        let efSrc: EruptionEffect = new EruptionEffect();
+        let efSrc = new EruptionEffect();
         efSrc.gravityFactor = this.gravityFactor;
         efSrc.solidRN = this.solidRN;
         efSrc.solidCN = this.solidCN;
@@ -67,7 +67,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
         this.m_efSrcList.push(efSrc);
     }
     appendEffect(flameTexture: IRenderTexture, solidTexture: IRenderTexture, srcIndex: number = -1): void {
-        let eff: EruptionEffect = new EruptionEffect();
+        let eff = new EruptionEffect();
         eff.gravityFactor = this.gravityFactor;
         eff.solidRN = this.solidRN;
         eff.solidCN = this.solidCN;
@@ -116,7 +116,7 @@ export default class EruptionEffectPool extends ParticleEffectPool {
             eff = this.m_freeEffList.pop() as EruptionEffect;
         }
         this.m_effList.push(eff);
-        let scale: number = 1.0;
+        let scale = 1.0;
         eff.setVisible(true);
         eff.setTime(0.0);
         //  eff.setPositionScale(Math.random() * 0.3 + 0.5);
@@ -125,24 +125,27 @@ export default class EruptionEffectPool extends ParticleEffectPool {
         //  eff.solidEntity.setRGBOffset3f(Math.random() * 0.2,Math.random() * 0.2,Math.random() * 0.2);
         //eff.solidEntity.setRGBOffset3f(this.solidColor.r, this.solidColor.g, this.solidColor.b);
         eff.solidEntity.setRGB3f(this.solidColor.r, this.solidColor.g, this.solidColor.b);
+
         //eff.solidEntity.setRGB3f(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2);
-        if (pv != null) {
-            
+
+        if (pv) {
+
             eff.setPosition(pv);
             pv.setXYZ(Math.random() + 0.2, Math.random() + 0.2, Math.random() + 0.2);
             pv.normalize();
             pv.scaleBy(2.5);
-            
+
             scale = Math.random() * 0.4 + 0.4;
-            eff.solidEntity.setScaleXY(scale, scale);
-            eff.solidEntity.setAcceleration(Math.random() * 0.01 - 0.005, -Math.random() * 0.002, Math.random() * 0.01 - 0.005);
-            eff.solidEntity.setRotationXYZ(0.0, Math.random() * 360.0, 0.0);
-            
-            if(eff.flameEntity != null) {
-                eff.flameEntity.setRGBOffset3f(Math.random() * 2.0 - 1.0, Math.random() * 2.0 - 1.0, Math.random() * 2.0 - 1.0);
-                eff.flameEntity.setRGB3f(pv.x, pv.y, pv.z);
-                eff.flameEntity.setAcceleration(Math.random() * 0.01 - 0.005, Math.random() * 0.002 - 0.001, Math.random() * 0.01 - 0.005);
-                eff.flameEntity.setRotationXYZ(0.0, Math.random() * 360.0, 0.0);
+			const es = eff.solidEntity;
+            es.setScaleXY(scale, scale);
+            es.setAcceleration(Math.random() * 0.01 - 0.005, -Math.random() * 0.002, Math.random() * 0.01 - 0.005);
+            es.setRotationXYZ(0.0, Math.random() * 360.0, 0.0);
+			const ef = eff.flameEntity;
+            if(ef) {
+                ef.setRGBOffset3f(Math.random() * 2.0 - 1.0, Math.random() * 2.0 - 1.0, Math.random() * 2.0 - 1.0);
+                ef.setRGB3f(pv.x, pv.y, pv.z);
+                ef.setAcceleration(Math.random() * 0.01 - 0.005, Math.random() * 0.002 - 0.001, Math.random() * 0.01 - 0.005);
+                ef.setRotationXYZ(0.0, Math.random() * 360.0, 0.0);
             }
         }
         eff.update();

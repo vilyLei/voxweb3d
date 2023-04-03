@@ -150,9 +150,15 @@
 
 //  import {DemoKeyboardEvt as Demo} from "./demo/DemoKeyboardEvt";
 
- import {DemoParticle as Demo} from "./demo/DemoParticle";
+//  import {DemoParticle as Demo} from "./demo/DemoParticle";
 
 //  import {DemoParticleMixTex as Demo} from "./demo/DemoParticleMixTex";
+
+//  import {DemoParticleFlareGroup as Demo} from "./demo/DemoParticleFlareGroup";
+
+//  import {DemoParticleFlowGroup as Demo} from "./demo/DemoParticleFlowGroup";
+
+ import {DemoParticleFollowGroup as Demo} from "./demo/DemoParticleFollowGroup";
 
 //  import {DemoParticleGroup as Demo} from "./demo/DemoParticleGroup";
 

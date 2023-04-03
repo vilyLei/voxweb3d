@@ -24,26 +24,25 @@ import { UVTool } from "../vox/utils/UVTool";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
 
 
-export class DemoParticleGroup {
+export class DemoParticleFlareGroup {
     constructor() { }
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
-    // private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
+
     private m_axis: Axis3DEntity = null;
     private m_textures: TextureProxy[] = null;
-    private m_viewRay: CameraViewRay = new CameraViewRay();
-    // private m_interaction: UserInteraction = new UserInteraction();
+    private m_viewRay = new CameraViewRay();
 
     getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+        let ptex = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
 
     initialize(): void {
-        console.log("DemoParticleGroup::initialize()......");
+        console.log("DemoParticleFlareGroup::initialize()......");
         if (this.m_rscene == null) {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
@@ -405,4 +404,4 @@ export class DemoParticleGroup {
     }
 
 }
-export default DemoParticleGroup;
+export default DemoParticleFlareGroup;

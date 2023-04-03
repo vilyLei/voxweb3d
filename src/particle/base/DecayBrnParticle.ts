@@ -14,21 +14,21 @@ export default class DecayBrnParticle {
     private m_tar: Billboard3DEntity = null;
     private m_isAlive: boolean = true;
     // brightness衰减速度
-    decaySpeed: number = 0.002;
-    spdV0: Vector3D = new Vector3D();
-    spdV1: Vector3D = new Vector3D();
-    spdV2: Vector3D = new Vector3D();
+    decaySpeed = 0.002;
+    spdV0 = new Vector3D();
+    spdV1 = new Vector3D();
+    spdV2 = new Vector3D();
 
-    spdV: Vector3D = new Vector3D();
-    position: Vector3D = new Vector3D();
-    brightness: number = 1.0;
-    scale: number = 0.5;
+    spdV = new Vector3D();
+    position = new Vector3D();
+    brightness = 1.0;
+    scale = 0.5;
     constructor(tar: Billboard3DEntity) {
         this.m_tar = tar;
     }
     static Initialize(size: number, textures: TextureProxy[], renderer: IRenderer): void {
         DecayBrnParticle.s_renderer = renderer;
-        let srcBillboard: Billboard3DEntity = new Billboard3DEntity();
+        let srcBillboard = new Billboard3DEntity();
         srcBillboard.initialize(size, size, [textures[0]]);
         DecayBrnParticle.s_textures = textures;
         DecayBrnParticle.s_srcBillboard = srcBillboard;

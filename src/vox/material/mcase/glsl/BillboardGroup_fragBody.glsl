@@ -4,11 +4,19 @@
     #endif
 
     vec3 offsetColor = getOffsetColor();
-    
+
     blendBrightnessORAlpha( color, offsetColor );
 
     #ifdef VOX_PREMULTIPLY_ALPHA
-        color.xyz *= color.a;
+        color.xyz *= color.aaa;
+    #endif
+    #ifdef VOX_VERTEX_COLOR
+		#ifdef VOX_BRIGHTNESS
+        	color.xyz *= v_vtxColor.xyz;
+        	color.xyz *= v_vtxColor.www;
+		#else
+        	color *= v_vtxColor;
+		#endif
     #endif
     FragColor0 = color;
     // for test

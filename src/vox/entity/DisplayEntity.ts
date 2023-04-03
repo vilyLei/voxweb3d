@@ -131,8 +131,9 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
 		return RSEntityFlag.GetRendererUid(this.__$rseFlag);
 	}
 
-	setMaterialPipeline(pipeline: IMaterialPipeline): void {
+	setMaterialPipeline(pipeline: IMaterialPipeline, pipeTypes: MaterialPipeType[] = null): void {
 		this.m_pipeLine = pipeline;
+		if (pipeTypes) this.pipeTypes = pipeTypes;
 	}
 	getMaterialPipeline(): IMaterialPipeline {
 		return this.m_pipeLine;

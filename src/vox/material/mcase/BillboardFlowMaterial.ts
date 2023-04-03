@@ -13,10 +13,10 @@ import BillboardGroupShaderBuffer from "../../../vox/material/mcase/BillboardGro
 
 class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
 
-    playOnce: boolean = false;
-    direcEnabled: boolean = false;
+    playOnce = false;
+    direcEnabled = false;
     // 因为速度增加，在x轴方向缩放(拉长或者缩短)
-    spdScaleEnabled: boolean = false;
+    spdScaleEnabled = false;
 
     constructor() {
         super();
@@ -44,11 +44,15 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
         coder.addVertLayout("vec4", "a_vs");
         coder.addVertLayout("vec2", "a_uvs");
         coder.addVertLayout("vec4", "a_nvs");
+		if(this.vtxColorEnabled) {
+			coder.addVertLayout("vec4", "a_cvs");
+			coder.addVarying("vec4", "v_vtxColor");
+		}
         coder.addVertLayout("vec4", "a_vs2");
         coder.addVertLayout("vec4", "a_uvs2");
         coder.addVertLayout("vec4", "a_nvs2");
 
-        let paramTotal: number = this.m_clipEnabled ? 5 : 4;
+        let paramTotal = this.m_clipEnabled ? 5 : 4;
         coder.addVertUniform("vec4", "u_billParam", paramTotal);
 
         if (this.direcEnabled) coder.addDefine("ROTATION_DIRECT");
@@ -58,9 +62,6 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
 
     }
 
-    toString(): string {
-        return "[BillboardFlowShaderBuffer()]";
-    }
     private static s_instance: BillboardFlowShaderBuffer = new BillboardFlowShaderBuffer();
     static GetInstance(): BillboardFlowShaderBuffer {
         if (BillboardFlowShaderBuffer.s_instance != null) {
@@ -73,24 +74,26 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer {
 
 export default class BillboardFlowMaterial extends MaterialBase {
 
-    private m_brightnessEnabled: boolean = true;
-    private m_alphaEnabled: boolean = false;
-    private m_clipEnabled: boolean = false;
-    private m_clipMixEnabled: boolean = false;
-    private m_playOnce: boolean = false;
-    private m_direcEnabled: boolean = false;
-    private m_spdScaleEnabled: boolean = false;
-    private m_time: number = 0;
+    private m_brightnessEnabled = true;
+    private m_alphaEnabled = false;
+    private m_clipEnabled = false;
+    private m_vtxColorEnabled = false;
+    private m_clipMixEnabled = false;
+    private m_playOnce = false;
+    private m_direcEnabled = false;
+    private m_spdScaleEnabled = false;
+    private m_time = 0;
     private m_uniformData: Float32Array = null;
-    private m_color: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
-    private m_brightness: number = 1.0;
-    premultiplyAlpha: boolean = false;
+    private m_color = new Color4(1.0, 1.0, 1.0, 1.0);
+    private m_brightness = 1.0;
+    premultiplyAlpha = false;
 
-    constructor(brightnessEnabled: boolean = true, alphaEnabled: boolean = false, clipEnabled: boolean = false) {
+    constructor(brightnessEnabled: boolean = true, alphaEnabled: boolean = false, clipEnabled: boolean = false, vtxColorEnabled: boolean = false) {
         super();
         this.m_brightnessEnabled = brightnessEnabled;
         this.m_alphaEnabled = alphaEnabled;
         this.m_clipEnabled = clipEnabled;
+        this.m_vtxColorEnabled = vtxColorEnabled;
         if (clipEnabled) {
             this.m_uniformData = new Float32Array([
                 1.0, 1.0, 0.0, 0.0,        // sx,sy,time, depth offset
@@ -124,6 +127,7 @@ export default class BillboardFlowMaterial extends MaterialBase {
         buf.spdScaleEnabled = this.m_spdScaleEnabled;
         buf.premultiplyAlpha = this.premultiplyAlpha;
         buf.brightnessEnabled = this.m_brightnessEnabled;
+        buf.vtxColorEnabled = this.m_vtxColorEnabled;
         buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled, this.m_clipEnabled, this.getTextureTotal() > 1);
     }
 

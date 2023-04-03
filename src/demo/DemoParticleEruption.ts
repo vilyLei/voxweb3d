@@ -27,6 +27,7 @@ import { UserInteraction } from "../vox/engine/UserInteraction";
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
 import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
+import { MouseInteraction } from "../vox/ui/MouseInteraction";
 
 export class DemoParticleEruption {
     constructor() { }
@@ -34,12 +35,11 @@ export class DemoParticleEruption {
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
 
-    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_axis: Axis3DEntity = null;
     private m_textures: TextureProxy[] = null;
     private m_eff0Pool: EruptionEffectPool = null;
     private m_eff1Pool: EruptionSmokePool = null;
-    private m_interaction: UserInteraction = new UserInteraction();
+	private m_viewRay = new CameraViewRay();
 
     // private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
@@ -114,14 +114,14 @@ export class DemoParticleEruption {
             entityBlock.initialize();
             //rscene.entityBlock = entityBlock;
 
-            this.m_interaction.initialize(this.m_rscene);
-            // this.m_viewRay.bindCameraAndStage(this.m_rscene.getCamera(), this.m_rscene.getStage3D());
-            // this.m_viewRay.setPlaneParam(new Vector3D(0.0, 1.0, 0.0), 0.0);
+			this.m_viewRay.initialize(this.m_rscene);
+            this.m_viewRay.setPlaneParam(new Vector3D(0.0, 1.0, 0.0), 0.0);
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
 
-            this.m_statusDisp.initialize();
+			new RenderStatusDisplay(this.m_rscene, true).setParams(true);
+			new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
             /*
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.name = "axis";
@@ -204,7 +204,7 @@ export class DemoParticleEruption {
                 this.m_eff0Pool.initialize(this.m_rscene, 3, 60, 50, texFlame, texSolid, true);
                 //  this.m_eff0Pool.createEffect(null);
             }
-            // if (this.m_eff1Pool == null) {    
+            // if (this.m_eff1Pool == null) {
             //     let texture: TextureProxy = this.m_textures[9];
             //     let colorTexture: TextureProxy = this.m_textures[10];
             //     this.m_eff1Pool = new EruptionSmokePool();
@@ -256,7 +256,7 @@ export class DemoParticleEruption {
     }
     mouseDownListener(evt: any): void {
         //console.log("mouseDownListener call, this.m_rscene: "+this.m_rscene.toString());
-        let viewRay = this.m_interaction.viewRay;
+        let viewRay = this.m_viewRay;
 
         this.initializeEffect();
         if (this.m_eff0Pool != null || this.m_eff1Pool != null) {
@@ -289,17 +289,17 @@ export class DemoParticleEruption {
             this.m_eff1Pool.run();
         }
 
-        const st = this.m_rscene.getRenderProxy().status;
-        this.m_statusDisp.statusInfo = "/" + st.drawCallTimes;
+        // const st = this.m_rscene.getRenderProxy().status;
+        // this.m_statusDisp.statusInfo = "/" + st.drawCallTimes;
 
     }
     run(): void {
 
-        this.m_interaction.run();
+        // this.m_interaction.run();
 
         this.m_rscene.run();
 
-        this.m_statusDisp.update();
+        // this.m_statusDisp.update();
     }
 }
 export default DemoParticleEruption;

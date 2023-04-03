@@ -28,6 +28,9 @@ export default class PoolNodeBuilder implements IPoolNodeBuilder {
      */
     protected restoreUid(uid: number): void {
     }
+	hasFreeNode(): boolean {
+		return this.m_freeIdList.length > 0;
+	}
     getFreeId(): number {
         if (this.m_freeIdList.length > 0) {
             return this.m_freeIdList.pop();
@@ -37,6 +40,9 @@ export default class PoolNodeBuilder implements IPoolNodeBuilder {
     getNodeByUid(uid: number): IPoolNode {
         return this.m_nodes[uid];
     }
+	getNodes(): IPoolNode[] {
+		return this.m_nodes;
+	}
     create(): IPoolNode {
         let node: IPoolNode = null;
         let index: number = this.getFreeId();

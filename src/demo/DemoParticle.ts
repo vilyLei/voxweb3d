@@ -22,9 +22,9 @@ export class DemoParticle {
     }
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
-    private m_equeue: EntityDispQueue = new EntityDispQueue();
-    private m_timeoutEnabled: boolean = true;
-    private m_intervalEnabled: boolean = false;
+    private m_equeue = new EntityDispQueue();
+    private m_timeoutEnabled = true;
+    private m_intervalEnabled = false;
     private m_timeoutId: any = -1;
     private m_timeIntervalId: any = -1;
 
@@ -93,8 +93,8 @@ export class DemoParticle {
         console.log("mouseDownListener call, this.m_rscene: " + this.m_rscene.toString());
         this.m_flagBoo = !this.m_flagBoo;
     }
-    position: Vector3D = new Vector3D();
-    delayTime: number = 10;
+    position = new Vector3D();
+    delayTime = 10;
     run(): void {
         this.m_equeue.run();
 
@@ -106,7 +106,7 @@ export class DemoParticle {
         if (!this.m_timeoutEnabled) {
             this.parRun();
         }
-		const st = this.m_rscene.getRenderProxy().status;
+		// const st = this.m_rscene.getRenderProxy().status;
         // this.m_statusDisp.statusInfo = "/" + st.drawCallTimes;
         // this.m_statusDisp.update();
     }

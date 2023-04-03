@@ -106,9 +106,6 @@ export default class Billboard3DEntity extends DisplayEntity {
         this.activeDisplay();
     }
     protected createBounds(): void {
-		// if(this.m_boundsBoo) {
-		// 	super.createBounds();
-		// }
     }
     protected __activeMesh(material: IRenderMaterial): void {
         if (this.getMesh() == null) {

@@ -15,15 +15,21 @@ import BillboardPlaneMesh from "../../vox/mesh/BillboardPlaneMesh";
 
 
 export default class Billboard3D3TexMixEntity extends DisplayEntity {
-    private m_brightnessEnabled: boolean = true;
-    private m_alphaEnabled: boolean = false;
-    private m_bw: number = 0;
-    private m_bh: number = 0;
+    private m_brightnessEnabled = true;
+    private m_alphaEnabled = false;
+    private m_bw = 0;
+    private m_bh = 0;
     private m_currMaterial: Billboard3TexMixMaterial = null;
     private m_billMesh: BillboardPlaneMesh = null;
-    flipVerticalUV: boolean = false;
-    constructor(transform: IROTransform = null) {
+    private m_boundsBoo = false;
+
+    flipVerticalUV = false;
+    constructor(transform: IROTransform = null, bounds: boolean = true) {
         super(transform);
+		this.m_boundsBoo = bounds;
+		if(this.m_boundsBoo) {
+			super.createBounds();
+		}
         this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
     }
     setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
@@ -147,12 +153,16 @@ export default class Billboard3D3TexMixEntity extends DisplayEntity {
     }
 
     setUV(pu: number, pv: number, du: number, dv: number): void {
-        if (this.m_billMesh != null) {
+        if (this.m_billMesh) {
             this.m_billMesh.setUV(pu, pv, du, dv);
         }
     }
     update(): void {
-        this.m_trs.update();
+		if(this.m_boundsBoo) {
+			super.update();
+		}else {
+			this.m_trs.update();
+		}
     }
     destroy(): void {
         this.m_currMaterial = null;

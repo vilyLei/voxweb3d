@@ -21,12 +21,12 @@ export default class EruptionEffect implements IParticleEffect {
     solidEntity: Billboard3DFlowEntity = null;
     materialPipeline: IMaterialPipeline = null;
     pipeTypes: MaterialPipeType[] = null;
-    gravityFactor: number = -1.5;
-    minSpeed: number = 1.5;
-    maxSpeed: number = 2.5;
+    gravityFactor = -1.5;
+    minSpeed = 1.5;
+    maxSpeed = 2.5;
 
-    solidRN: number = 2;
-    solidCN: number = 2;
+    solidRN = 2;
+    solidCN = 2;
     constructor() { }
     initialize(flameTotal: number, solidTotal: number, flameTexture: IRenderTexture, solidTexture: IRenderTexture, clipMixEnabled: boolean = false): void {
         if (this.solidEntity == null) {
@@ -47,8 +47,9 @@ export default class EruptionEffect implements IParticleEffect {
         let params: number[][] = UVTool.GetUVParamsByRNCN(this.solidRN, this.solidCN);
         let entity: Billboard3DFlowEntity = new Billboard3DFlowEntity();
 
-        entity.setMaterialPipeline(this.materialPipeline);
-        entity.pipeTypes = this.pipeTypes;
+        // entity.setMaterialPipeline(this.materialPipeline);
+        // entity.pipeTypes = this.pipeTypes;
+        entity.setMaterialPipeline(this.materialPipeline, this.pipeTypes);
 
         entity.premultiplyAlpha = tex.premultiplyAlpha;
         if (srcSolidEntity != null) {
@@ -58,7 +59,7 @@ export default class EruptionEffect implements IParticleEffect {
         else {
             entity.createGroup(total);
             let pv: Vector3D = new Vector3D();
-            let dtSpeed: number = this.maxSpeed - this.minSpeed; 
+            let dtSpeed: number = this.maxSpeed - this.minSpeed;
             for (let i: number = 0; i < total; ++i) {
                 size = Math.random() * Math.random() * Math.random() * 150 + 10.0;
                 //size = Math.random() * 40 + 10.0;
@@ -99,8 +100,8 @@ export default class EruptionEffect implements IParticleEffect {
 
         tex.premultiplyAlpha = tex.premultiplyAlpha;
         let entity: Billboard3DFlowEntity = new Billboard3DFlowEntity();
-        entity.setMaterialPipeline(this.materialPipeline);
-        entity.pipeTypes = this.pipeTypes;
+        entity.setMaterialPipeline(this.materialPipeline, this.pipeTypes);
+        // entity.pipeTypes = this.pipeTypes;
         entity.premultiplyAlpha = tex.premultiplyAlpha;
         entity.toBrightnessBlend();
         if (srcFlameEntity != null) {
@@ -109,15 +110,16 @@ export default class EruptionEffect implements IParticleEffect {
         }
         else {
             entity.createGroup(total);
-            let pv: Vector3D = new Vector3D();
-            for (let i: number = 0; i < total; ++i) {
+            let pv = new Vector3D();
+            for (let i = 0; i < total; ++i) {
                 size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
                 entity.setSizeAndScaleAt(i, size, size, 0.5, 1.0);
-                let uvparam: number[] = params[Math.floor((params.length - 1) * Math.random() + 0.5)];
+                let uvparam = params[Math.floor((params.length - 1) * Math.random() + 0.5)];
                 entity.setUVRectAt(i, uvparam[0], uvparam[1], uvparam[2], uvparam[3]);
                 entity.setTimeAt(i, 50.0 * Math.random() + 100, 0.4, 0.6, Math.random() * 10);
                 entity.setBrightnessAt(i, 1.0);
-                entity.setTimeSpeedAt(i, Math.random() * 1.0 + 0.5); pv.setTo(Math.random() * 60.0 - 30.0, Math.random() * 50.0 + 10.0, Math.random() * 60.0 - 30.0);
+                entity.setTimeSpeedAt(i, Math.random() * 1.0 + 0.5);
+				pv.setTo(Math.random() * 60.0 - 30.0, Math.random() * 50.0 + 10.0, Math.random() * 60.0 - 30.0);
                 entity.setPositionAt(i, pv.x, pv.y, pv.z);
                 entity.setAccelerationAt(i, 0.0, -0.01, 0.0);
                 pv.normalize();
