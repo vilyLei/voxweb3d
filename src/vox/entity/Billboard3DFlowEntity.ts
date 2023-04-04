@@ -37,6 +37,7 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
 			super.createBounds();
 		}
 		this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
+		this.vbWholeDataEnabled = false;
 	}
 	createGroup(billboardTotal: number): void {
 		this.m_mh = this.getMesh() as BillboardPlaneFlowMesh;

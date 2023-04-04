@@ -103,6 +103,7 @@ class FollowParticleParam {
 		[0.5, 0.5, 0.5, 0.5]
 	];
 	speedScale = 1.0;
+	timeScale = 1.0;
 	constructor() {
 	}
 }
@@ -179,7 +180,7 @@ class FollowParticle {
 			node = builder.create();
 			node.entity = billGroup;
 			node.index = i;
-			node.time.setTo(Math.random() + 50, 0.2, 0.8, 0.0);
+			node.time.setTo((Math.random() * 50 + 50) * this.m_param.timeScale, 0.2, 0.8, 0.0);
 			billGroup.setBrightnessAt(i, Math.random() * 0.8 + 0.8);
 			color.randomRGB();
 			// color.a = Math.random() * 1.2;

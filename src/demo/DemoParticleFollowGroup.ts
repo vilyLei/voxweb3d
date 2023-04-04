@@ -15,12 +15,13 @@ import { MouseInteraction } from "../vox/ui/MouseInteraction";
 import Color4 from "../vox/material/Color4";
 import { FollowParticleParam, FollowParticle } from "../particle/base/FollowParticle";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import PathTrack from "../voxnav/path/PathTrack";
 
 export class DemoParticleFollowGroup {
 	constructor() { }
 	private m_rscene: RendererScene = null;
 	private m_texLoader: ImageTextureLoader = null;
-
+	private m_pathTrack = new PathTrack();
 	private m_axis: Axis3DEntity = null;
 	private m_viewRay = new CameraViewRay();
 	private m_followParticle = new FollowParticle();
@@ -65,8 +66,9 @@ export class DemoParticleFollowGroup {
 			let fpParam = new FollowParticleParam();
 			fpParam.textures = texs;
 			fpParam.speedScale = 2.0;
+			fpParam.timeScale = 2.0;
 			// fpParam.uvParams = texs;
-			this.m_followParticle.initialize(20, fpParam);
+			this.m_followParticle.initialize(1000, fpParam);
 			this.m_flowBill = this.m_followParticle.particleEntity;
 			// this.m_flowBill.setXYZ(0,);
 			this.m_rscene.addEntity(this.m_followParticle.particleEntity, 1);
@@ -81,12 +83,40 @@ export class DemoParticleFollowGroup {
 	}
 	private m_flowBill: Billboard3DFlowEntity = null;
 	private m_timeoutId: any = -1;
+	private m_dis = 0;
+	private m_track = false;
 	position = new Vector3D();
 	mouseDownListener(evt: any): void {
 		console.log("mouseDownListener(), call ...");
 		this.m_viewRay.intersectPlane();
 		let pv = this.m_viewRay.position;
-		this.m_followParticle.createParticles(pv, Math.round(Math.random() * 5) + 1, 20);
+		// this.m_followParticle.createParticles(pv, Math.round(Math.random() * 3) + 1, 20);
+
+		const track = this.m_pathTrack;
+		track.addXYZ(pv.x, pv.y, pv.z);
+		if (track.getPosTotal() > 2 || this.m_track) {
+			let stepDis = 30;
+			// let pathNodes: Vector3D[] = [];
+			let time = Date.now();
+			let outV = new Vector3D();
+			for (let i = 0; i < 100; ++i) {
+				// let outV = new Vector3D();
+				const flag = track.calcNextPosByDis(outV, this.m_dis, false);
+				this.m_followParticle.createParticles(outV, Math.round(Math.random() * 3) + 1, 20);
+				this.m_dis += stepDis;
+				// pathNodes.push(outV);
+				if (flag == PathTrack.TRACK_END) {
+					// console.log("path search end.");
+					track.clear();
+					this.m_dis = stepDis;
+					track.addXYZ(pv.x, pv.y, pv.z);
+					break;
+				}
+			}
+			this.m_track = true;
+			console.log("loss time: ", Date.now() - time)
+		}
+
 	}
 	private update(): void {
 		if (this.m_timeoutId > -1) {

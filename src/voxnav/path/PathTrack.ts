@@ -81,7 +81,7 @@ class PathTrack {
 	getStepsTotal(stepDis: number): number {
 		return Math.ceil(this.m_pathDis / stepDis);
 	}
-	etPosAt(outV: Vector3D, i: number): void {
+	getPosAt(outV: Vector3D, i: number): void {
 		if (i >= 0 && i < this.m_segs.length) {
 			outV.copyFrom(this.m_segs[i].pos);
 		}
@@ -237,7 +237,7 @@ class PathTrack {
 	 * */
 	binQueryCloseLess(v: number, i0: number, i1: number, pvs: number[], minI: number, maxI: number): void {
 		//_steps ++;
-		let i: number = Math.round(0.5 * (i0 + i1));
+		let i = Math.round(0.5 * (i0 + i1));
 		if (pvs[i] < v) {
 			if ((i + 1) <= maxI) {
 				if (pvs[i + 1] < v) {
