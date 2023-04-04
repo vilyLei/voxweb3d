@@ -21,12 +21,11 @@ class PathFollowParticle extends FollowParticle {
 		track.addXYZ(pv.x, pv.y, pv.z);
 		if(track.getPosTotal() > 1) {
 			let outV = new Vector3D();
-			for (let i = 0; i < 50; ++i) {
+			for (let i = 0; i < 100; ++i) {
 				// let outV = new Vector3D();
 				const flag = track.calcNextPosByDis(outV, this.m_dis, false);
 				this.createParticles(outV, total, 20);
 				this.m_dis += stepDis;
-				// pathNodes.push(outV);
 				if (flag == PathTrack.TRACK_END) {
 					// console.log("path search end.");
 					track.clear();

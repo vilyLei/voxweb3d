@@ -12,6 +12,7 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraViewRay from "../vox/view/CameraViewRay";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
 import { FollowParticleParam, PathFollowParticle } from "../particle/base/PathFollowParticle";
+import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 
 export class DemoParticleFollowGroup2 {
 	constructor() { }
@@ -75,9 +76,20 @@ export class DemoParticleFollowGroup2 {
 			// plane.setXYZ(0, -50, 0);
 			// this.m_rscene.addEntity(plane);
 
+			let container = new DisplayEntityContainer();
+            container.setXYZ(100.0, 100.0, 100.0);
+            //plane.setRenderStateByName("ADD01");
+            //container.update();
+            let containerB = new DisplayEntityContainer();
+            containerB.addChild(container);
+            this.m_container = container;
+            this.m_containerMain = containerB;
+
 			this.update();
 		}
 	}
+    private m_container: DisplayEntityContainer = null;
+    private m_containerMain: DisplayEntityContainer = null;
 	private m_pathFollowEntity: PathFollowParticle = new PathFollowParticle();
 	private m_timeoutId: any = -1;
 	position = new Vector3D();
@@ -93,6 +105,16 @@ export class DemoParticleFollowGroup2 {
 		}
 		this.m_timeoutId = setTimeout(this.update.bind(this), 20); // 50 fps
 
+		
+		this.m_container.setRotationY(this.m_container.getRotationY() + 1.0);
+		this.m_containerMain.setRotationZ(this.m_containerMain.getRotationZ() + 1.0);
+		this.m_containerMain.update();
+
+		let pv = this.position;
+		pv.setXYZ(300.0, 10.0, 300.0);
+        this.m_container.localToGlobal(pv);
+		this.m_pathFollowEntity.addPosition(pv);
+		// console.log(pv);
 		this.m_pathFollowEntity.run();
 	}
 	run(): void {
