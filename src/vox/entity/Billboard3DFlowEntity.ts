@@ -13,6 +13,7 @@ import BillboardFlowMaterial from "../../vox/material/mcase/BillboardFlowMateria
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import BillboardPlaneFlowMesh from "../../vox/mesh/BillboardPlaneFlowMesh";
 import Color4 from "../material/Color4";
+import VtxDrawingInfo from "../render/vtx/VtxDrawingInfo";
 
 export default class Billboard3DFlowEntity extends DisplayEntity {
 	private m_mt: BillboardFlowMaterial = null;
@@ -190,6 +191,7 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
 	createMaterial(texList: IRenderTexture[]): void {
 		if (this.getMaterial() == null) {
 			this.m_mt = new BillboardFlowMaterial(this.m_brightnessEnabled, this.m_alphaEnabled, this.m_clipEnabled, this.vtxColorEnabled);
+			this.m_mt.vtxInfo = new VtxDrawingInfo();
 			this.m_mt.setPlayParam(this.m_playOnce, this.m_direcEnabled, this.m_clipMixEnabled, this.m_spdScaleEnabled);
 			this.m_mt.setTextureList(texList);
 			this.m_mt.premultiplyAlpha = this.premultiplyAlpha;
@@ -233,7 +235,7 @@ export default class Billboard3DFlowEntity extends DisplayEntity {
 	protected createBounds(): void {}
 	protected __activeMesh(material: IRenderMaterial): void {
 		if (this.getMesh() == null) {
-			let mesh: BillboardPlaneFlowMesh = this.m_mh;
+			let mesh = this.m_mh;
 			mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
 			mesh.flipVerticalUV = this.flipVerticalUV;
 			mesh.setBufSortFormat(material.getBufSortFormat());

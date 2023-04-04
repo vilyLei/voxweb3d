@@ -60,7 +60,7 @@ export class DemoParticleFollowGroup2 {
 			let texs = [this.getImageTexByUrl("static/assets/testEFT4_monochrome3.jpg")];
 			let fpParam = new FollowParticleParam();
 			fpParam.textures = texs;
-			fpParam.speedScale = 2.0;
+			fpParam.speedScale = 3.0;
 			fpParam.timeScale = 2.0;
 			// fpParam.uvParams = texs;
 			// this.m_followParticle.initialize(1000, fpParam);
@@ -78,8 +78,6 @@ export class DemoParticleFollowGroup2 {
 
 			let container = new DisplayEntityContainer();
             container.setXYZ(100.0, 100.0, 100.0);
-            //plane.setRenderStateByName("ADD01");
-            //container.update();
             let containerB = new DisplayEntityContainer();
             containerB.addChild(container);
             this.m_container = container;
@@ -97,7 +95,7 @@ export class DemoParticleFollowGroup2 {
 		console.log("mouseDownListener(), call ...");
 		this.m_viewRay.intersectPlane();
 		let pv = this.m_viewRay.position;
-		this.m_pathFollowEntity.addPosition(pv);
+		// this.m_pathFollowEntity.addPosition(pv);
 	}
 	private update(): void {
 		if (this.m_timeoutId > -1) {

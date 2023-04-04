@@ -55,7 +55,12 @@ class ParticleNode implements IPoolNode {
 }
 class PNodeBuilder extends PoolNodeBuilder {
 	private m_currNodes: ParticleNode[] = [];
+	entity: Billboard3DFlowEntity = null;
 	unlock = true;
+	minIndex = 0;
+	maxIndex = 0;
+	ivsIndex = 0;
+	ivsCount = 0;
 	constructor() {
 		super();
 	}
@@ -84,6 +89,22 @@ class PNodeBuilder extends PoolNodeBuilder {
 		if(super.hasFreeNode() || this.unlock) {
 			let node = super.create() as ParticleNode;
 			ls.push(node);
+
+			this.minIndex = 999999;
+			this.maxIndex = -999999;
+			for (let i = 0; i < ls.length; ++i) {
+				const node = ls[i];
+				if(this.minIndex > node.index) {
+					this.minIndex = node.index;
+				}else if(this.maxIndex < node.index) {
+					this.maxIndex = node.index;
+				}
+			}
+			if (this.minIndex > this.maxIndex) {
+				this.minIndex = this.maxIndex = 0;
+			}
+			this.ivsIndex = this.minIndex * 2;
+			this.ivsCount = (this.maxIndex - this.minIndex) * 2;
 			return node;
 		}
 		return null;
@@ -95,6 +116,7 @@ class PNodeBuilder extends PoolNodeBuilder {
     destroy(): void {
 		this.m_currNodes = [];
 		this.unlock = true;
+		this.entity = null;
 		super.destroy();
 	}
 }
@@ -122,6 +144,7 @@ class FollowParticle {
 		this.m_total = total;
 		this.m_param = param;
 		this.initTest();
+		this.m_nodeBuilder.entity = this.particleEntity;
 	}
 	createParticles(pos: Vector3D, total: number, range: number): void {
 
@@ -139,11 +162,13 @@ class FollowParticle {
 		}
 		// force to build the bounds.
 		let ls = builder.getCurrNodes();
-		total = ls.length
-		let ab = this.particleEntity.getMesh().bounds;
-		for (let i = 0; i < total; ++i) {
-			
-		}
+		total = ls.length;
+		// let ab = this.particleEntity.getMesh().bounds;
+		// for (let i = 0; i < total; ++i) {
+		// }
+		// console.log("builder.ivsIndex, builder.ivsCount: ", builder.ivsIndex, builder.ivsCount);
+		const et = builder.entity;
+		// et.getMaterial().vtxInfo.setIvsParam(builder.ivsIndex, builder.ivsCount);
 	}
 	run(): void {
 		this.particleEntity.updateTime(1.0);
