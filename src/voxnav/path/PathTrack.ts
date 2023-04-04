@@ -28,73 +28,73 @@ class TrackSeg {
 class PathTrack {
 	constructor() { }
 	// 记录计算结果的状态
-	public static readonly TRACK_INIT: number = -100;
-	public static readonly TRACK_ERROR: number = -1;
+	public static readonly TRACK_INIT = -100;
+	public static readonly TRACK_ERROR = -1;
 	// 在路径的端点
-	public static readonly TRACK_BEGIN: number = 0;
+	public static readonly TRACK_BEGIN = 0;
 	// 在路径中
-	public static readonly TRACK_AMONG: number = 1;
+	public static readonly TRACK_AMONG = 1;
 	// 在路径的终点
-	public static readonly TRACK_END: number = 2;
-	//
-	private _index: number = 0;
+	public static readonly TRACK_END = 2;
+	
+	private m_index = 0;
 	// 记录总路程
-	private _pathDis: number = 0;
+	private m_pathDis = 0;
 	// 记录每一个折点在整个路径中的路程值
-	private _posDisList: number[] = [];
+	private m_posDisList: number[] = [];
 	// 记录一点到下一点之间的连接段
-	private _segs: TrackSeg[] = [];
-	private _endSeg: TrackSeg = null;
-	//
-	private __tempV: Vector3D = new Vector3D();
-	//
+	private m_segs: TrackSeg[] = [];
+	private m_endSeg: TrackSeg = null;
+	
+	private m_tv = new Vector3D();
+	
 	addXYZ(px: number, py: number, pz: number): void {
 
 		let seg = new TrackSeg();
 		seg.pos.setTo(px, py, pz);
-		let i = this._segs.length;
+		let i = this.m_segs.length;
 		if (i > 0) {
 			//
-			let preseg = this._segs[i - 1];
+			let preseg = this.m_segs[i - 1];
 			preseg.tv.x = seg.pos.x - preseg.pos.x;
 			preseg.tv.y = seg.pos.y - preseg.pos.y;
 			preseg.tv.z = seg.pos.z - preseg.pos.z;
 			preseg.length = preseg.tv.getLength();
 			preseg.tv.normalize();
 
-			this._pathDis += preseg.length;
-			//
-			preseg.disB = this._pathDis;
+			this.m_pathDis += preseg.length;
+			
+			preseg.disB = this.m_pathDis;
 
-			seg.disA = this._pathDis;
-			this._posDisList.push(this._pathDis);
+			seg.disA = this.m_pathDis;
+			this.m_posDisList.push(this.m_pathDis);
 		} else {
 			seg.disA = 0;
-			this._posDisList.push(0);
+			this.m_posDisList.push(0);
 		}
-		this._segs.push(seg);
-		this._endSeg = seg;
+		this.m_segs.push(seg);
+		this.m_endSeg = seg;
 	}
 	getPathDistance(): number {
-		return this._pathDis;
+		return this.m_pathDis;
 	}
 	getStepsTotal(stepDis: number): number {
-		return Math.ceil(this._pathDis / stepDis);
+		return Math.ceil(this.m_pathDis / stepDis);
 	}
 	etPosAt(outV: Vector3D, i: number): void {
-		if (i >= 0 && i < this._segs.length) {
-			outV.copyFrom(this._segs[i].pos);
+		if (i >= 0 && i < this.m_segs.length) {
+			outV.copyFrom(this.m_segs[i].pos);
 		}
 	}
 	getCurrPosIndex(): number {
-		return this._index;
+		return this.m_index;
 	}
-	//this._posDisList
+	//this.m_posDisList
 	getDisProgrssInSeg(pdis: number): number {
-		if (this._index < this._posDisList.length) {
-			let k: number = pdis - this._posDisList[this._index];
+		if (this.m_index < this.m_posDisList.length) {
+			let k = pdis - this.m_posDisList[this.m_index];
 			if (k >= 0) {
-				let dis: number = this._segs[this._index].length;
+				let dis = this.m_segs[this.m_index].length;
 				return dis > 0.001 ? k / dis : 0.0;
 			}
 		}
@@ -102,27 +102,27 @@ class PathTrack {
 		return 0.0;
 	}
 	getPosTotal(): number {
-		return this._segs.length;
+		return this.m_segs.length;
 	}
 	etSqrtDistancePosEnd(px: number, py: number, pz: number) {
-		if (this._endSeg != null) {
-			this.__tempV.x = px - this._endSeg.pos.x;
-			this.__tempV.y = py - this._endSeg.pos.y;
-			this.__tempV.z = pz - this._endSeg.pos.z;
-			return this.__tempV.getLengthSquared();
+		if (this.m_endSeg != null) {
+			this.m_tv.x = px - this.m_endSeg.pos.x;
+			this.m_tv.y = py - this.m_endSeg.pos.y;
+			this.m_tv.z = pz - this.m_endSeg.pos.z;
+			return this.m_tv.getLengthSquared();
 		}
 		return -1;
 	}
 	clear(): void {
-		this._segs.length = 0;
-		this._posDisList.length = 0;
-		this._pathDis = 0;
-		this._index = 0;
-		this._endSeg = null;
+		this.m_segs.length = 0;
+		this.m_posDisList.length = 0;
+		this.m_pathDis = 0;
+		this.m_index = 0;
+		this.m_endSeg = null;
 	}
 	// 计算规则回到起点
 	toBegin(): void {
-		this._index = 0;
+		this.m_index = 0;
 	}
 	/// <summary>
 	/// 通过总路程来计算路径上对应的位置
@@ -132,28 +132,28 @@ class PathTrack {
 	/// <param name="recalc">是否对整个路径进行检测计算,默认是true</param>
 	/// <returns>返回 TRACK_ERROR(-1)表示路径为空, TRACK_BEGIN(0)表示处在路径的起点,TRACK_AMONG(1)表示处在路径中,TRACK_END(2)表示处在路径的终点</returns>
 	calcPosByDis(outV: Vector3D, pdis: number, recalc: boolean = true): number {
-		let len: number = this._segs.length;
+		let len: number = this.m_segs.length;
 		//
 		if (len > 0) {
-			if (pdis >= this._pathDis) {
-				this._index = len - 1;
-				outV.copyFrom(this._segs[this._index].pos);
+			if (pdis >= this.m_pathDis) {
+				this.m_index = len - 1;
+				outV.copyFrom(this.m_segs[this.m_index].pos);
 				// 表示到了尾部
 				return PathTrack.TRACK_END;// 2;
-			} else if (pdis <= this._segs[0].disA) {
-				outV.copyFrom(this._segs[0].pos);
-				this._index = 0;
+			} else if (pdis <= this.m_segs[0].disA) {
+				outV.copyFrom(this.m_segs[0].pos);
+				this.m_index = 0;
 				// 表示到了起点
 				return PathTrack.TRACK_BEGIN;// 0;
 			} else {
 
 				if (recalc) {
-					this._index = 0;
-					this.binQueryCloseLess(pdis, -1, len, this._posDisList, 0, len - 1);
+					this.m_index = 0;
+					this.binQueryCloseLess(pdis, -1, len, this.m_posDisList, 0, len - 1);
 				} else {
-					this.binQueryCloseLess(pdis, this._index - 1, len, this._posDisList, 0, len - 1);
+					this.binQueryCloseLess(pdis, this.m_index - 1, len, this.m_posDisList, 0, len - 1);
 				}
-				let seg = this._segs[this._index];
+				let seg = this.m_segs[this.m_index];
 
 				pdis -= seg.disA;
 				outV.x = seg.pos.x + seg.tv.x * pdis;
@@ -163,7 +163,7 @@ class PathTrack {
 				return PathTrack.TRACK_AMONG;// 1;
 			}
 		}
-		this._index = -1;
+		this.m_index = -1;
 		// 获取失败
 		return PathTrack.TRACK_ERROR;
 	}
@@ -176,41 +176,41 @@ class PathTrack {
 	/// <param name="recalc">是否对整个路径进行检测计算,默认是true</param>
 	/// <returns>返回 TRACK_ERROR(-1)表示路径为空, TRACK_BEGIN(0)表示处在路径的起点,TRACK_AMONG(1)表示处在路径中,TRACK_END(2)表示处在路径的终点</returns>
 	calcNextPosByDis(outV: Vector3D, pdis: number, recalc: boolean = false): number {
-		let len: number = this._segs.length;
+		let len: number = this.m_segs.length;
 		if (len > 0) {
-			if (pdis >= this._pathDis) {
-				this._index = len - 1;
-				outV.copyFrom(this._segs[this._index].pos);
+			if (pdis >= this.m_pathDis) {
+				this.m_index = len - 1;
+				outV.copyFrom(this.m_segs[this.m_index].pos);
 				// 表示到了尾部
 				return PathTrack.TRACK_END;
-			} else if (pdis <= this._segs[0].disA) {
-				outV.copyFrom(this._segs[0].pos);
-				this._index = 0;
+			} else if (pdis <= this.m_segs[0].disA) {
+				outV.copyFrom(this.m_segs[0].pos);
+				this.m_index = 0;
 				// 表示到了起点
 				return PathTrack.TRACK_BEGIN;
 			} else {
 				let seg = null;
 				if (recalc) {
-					this._index = 0;
-					this.binQueryCloseLess(pdis, -1, len, this._posDisList, 0, len - 1);
+					this.m_index = 0;
+					this.binQueryCloseLess(pdis, -1, len, this.m_posDisList, 0, len - 1);
 				} else {
 					// 检测 pdis 所表示的位置是不是在当前seg或者下一个seg之间
-					seg = this._segs[this._index];
+					seg = this.m_segs[this.m_index];
 					if (seg.disA > pdis) {
-						this._index = 0;
-						this.binQueryCloseLess(pdis, -1, len, this._posDisList, 0, len - 1);
-						seg = this._segs[this._index];
+						this.m_index = 0;
+						this.binQueryCloseLess(pdis, -1, len, this.m_posDisList, 0, len - 1);
+						seg = this.m_segs[this.m_index];
 					} else {
 						if (seg.disB < pdis) {
-							seg = this._segs[this._index + 1];
+							seg = this.m_segs[this.m_index + 1];
 							if (seg.disB < pdis) {
 								seg = null;
 							}
 						}
 						if (seg == null) {
 							//console.log("二分搜索临近点找到的..");
-							this.binQueryCloseLess(pdis, this._index - 1, len, this._posDisList, 0, len - 1);
-							seg = this._segs[this._index];
+							this.binQueryCloseLess(pdis, this.m_index - 1, len, this.m_posDisList, 0, len - 1);
+							seg = this.m_segs[this.m_index];
 						} else {
 							//console.log("在临近点找到的..");
 						}
@@ -225,7 +225,7 @@ class PathTrack {
 				return PathTrack.TRACK_AMONG;
 			}
 		}
-		this._index = -1;
+		this.m_index = -1;
 		// 获取失败
 		return PathTrack.TRACK_ERROR;
 	}
@@ -246,16 +246,16 @@ class PathTrack {
 						this.binQueryCloseLess(v, i, i1, pvs, minI, maxI);
 					} else {
 						//console.log("小于v(已经寻找到了A ), v: ", v, ",pvs[" + i + "]: " + pvs[i]);
-						this._index = i;
+						this.m_index = i;
 					}
 				} else {
 					//console.log("小于v(已经寻找到了B ), v: ", v, ",pvs[" + i + "]: " + pvs[i]);
-					this._index = i;
+					this.m_index = i;
 				}
 			} else {
 				// 已经到尾部了
 				//console.log("小于v(已经寻找到了C 且 已经到尾部了), v: ", v, ",pvs[" + i + "]: " + pvs[i]);
-				this._index = i;
+				this.m_index = i;
 			}
 
 		} else if (pvs[i] > v) {
@@ -267,23 +267,23 @@ class PathTrack {
 						this.binQueryCloseLess(v, i0, i, pvs, minI, maxI);
 					} else {
 						//console.log("大于v(已经寻找到了A ), v: ", v, ",pvs[" + i + "]: " + pvs[i]);
-						this._index = i;
+						this.m_index = i;
 					}
 				} else {
 					// 因为要寻找小于v的最近的值
 					i -= 1;
 					//console.log("大于v(已经寻找到了B ), v: ", v, ",pvs[" + i + "]: " + pvs[i]);
-					this._index = i;
+					this.m_index = i;
 				}
 			} else {
 				//console.log("大于v(已经到最小边界但是还是没有找到合适的), v: ", v, ",pvs[" + i + "]: " + pvs[i]);
-				this._index = i;
+				this.m_index = i;
 			}
 			//
 		} else {
 			// 恰好相等
 			//console.log("恰好相等(已经寻找到了), v: ", v, ",pvs[" + i + "]: " + pvs[i]);
-			this._index = i;
+			this.m_index = i;
 		}
 	}
 }
