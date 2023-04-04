@@ -21,6 +21,9 @@ class ParticleNode implements IPoolNode {
 	index = 0;
 	entity: Billboard3DFlowEntity = null;
 
+	lifeTimeBase = 50.0;
+	lifeTimeRange = 50.0;
+	lifeTimeScale = 1.0;
 	constructor() { }
 
 	uid = 0;
@@ -34,6 +37,7 @@ class ParticleNode implements IPoolNode {
 		pos.addBy(dstPos);
 
 		const t = this.time;
+		t.x = this.lifeTimeScale * (Math.random() * this.lifeTimeRange + this.lifeTimeBase);
 		t.w = this.entity.getTime();
 		const et = this.entity;
 		et.setPositionAt(this.index, pos.x, pos.y, pos.z);
@@ -168,11 +172,11 @@ class FollowParticle {
 		let node: ParticleNode;
 		let nodes: ParticleNode[] = [];
 		for (let i = 0; i < total; ++i) {
-			size = Math.random() * 80 + 30.0;
+			size = Math.random() * 40 + 10.0;
 			if (total < 2) {
 				size = 100.0;
 			}
-			billGroup.setSizeAndScaleAt(i, size, size, 0.5, 1.0);
+			billGroup.setSizeAndScaleAt(i, size, size, 0.2, 2.0);
 			if (!clipEnabled) {
 				let uparams = uvParams[Math.floor((uvParams.length - 1) * Math.random() + 0.5)];
 				billGroup.setUVRectAt(i, uparams[0], uparams[1], uparams[2], uparams[3]);
@@ -180,7 +184,9 @@ class FollowParticle {
 			node = builder.create();
 			node.entity = billGroup;
 			node.index = i;
-			node.time.setTo((Math.random() * 50 + 50) * this.m_param.timeScale, 0.2, 0.8, 0.0);
+			node.lifeTimeScale = this.m_param.timeScale;
+
+			node.time.setTo(50, 0.2, 0.5, 0.0);
 			billGroup.setBrightnessAt(i, Math.random() * 0.8 + 0.8);
 			color.randomRGB();
 			// color.a = Math.random() * 1.2;

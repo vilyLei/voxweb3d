@@ -158,7 +158,9 @@
 
 //  import {DemoParticleFlowGroup as Demo} from "./demo/DemoParticleFlowGroup";
 
- import {DemoParticleFollowGroup as Demo} from "./demo/DemoParticleFollowGroup";
+//  import {DemoParticleFollowGroup as Demo} from "./demo/DemoParticleFollowGroup";
+
+ import {DemoParticleFollowGroup2 as Demo} from "./demo/DemoParticleFollowGroup2";
 
 //  import {DemoParticleGroup as Demo} from "./demo/DemoParticleGroup";
 

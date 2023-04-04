@@ -17,7 +17,7 @@ import { FollowParticleParam, FollowParticle } from "../particle/base/FollowPart
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import PathTrack from "../voxnav/path/PathTrack";
 
-export class DemoParticleFollowGroup {
+export class DemoParticleFollowGroup2 {
 	constructor() { }
 	private m_rscene: RendererScene = null;
 	private m_texLoader: ImageTextureLoader = null;
@@ -33,7 +33,7 @@ export class DemoParticleFollowGroup {
 	}
 
 	initialize(): void {
-		console.log("DemoParticleFollowGroup::initialize()......");
+		console.log("DemoParticleFollowGroup2::initialize()......");
 		if (this.m_rscene == null) {
 			RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
@@ -130,4 +130,4 @@ export class DemoParticleFollowGroup {
 		this.m_rscene.run();
 	}
 }
-export default DemoParticleFollowGroup;
+export default DemoParticleFollowGroup2;
