@@ -68,7 +68,7 @@ export class DemoParticleFollowGroup2 {
 			// // this.m_flowBill.setXYZ(0,);
 			// this.m_rscene.addEntity(this.m_followParticle.particleEntity, 1);
 
-			this.m_pathFollowEntity.initialize(1000, fpParam);
+			this.m_pathFollowEntity.initialize(2000, fpParam);
 			this.m_rscene.addEntity(this.m_pathFollowEntity.particleEntity, 1);
 
 			// let plane = new Plane3DEntity();
@@ -95,14 +95,14 @@ export class DemoParticleFollowGroup2 {
 		console.log("mouseDownListener(), call ...");
 		this.m_viewRay.intersectPlane();
 		let pv = this.m_viewRay.position;
-		// this.m_pathFollowEntity.addPosition(pv);
+		this.m_pathFollowEntity.addPosition(pv, 1, 20);
 	}
 	private update(): void {
+
 		if (this.m_timeoutId > -1) {
 			clearTimeout(this.m_timeoutId);
 		}
 		this.m_timeoutId = setTimeout(this.update.bind(this), 20); // 50 fps
-
 		
 		this.m_container.setRotationY(this.m_container.getRotationY() + 1.0);
 		this.m_containerMain.setRotationZ(this.m_containerMain.getRotationZ() + 1.0);

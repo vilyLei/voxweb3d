@@ -34,6 +34,8 @@ class PathFollowParticle extends FollowParticle {
 					break;
 				}
 			}
+		}else {
+			this.createParticles(pv, total, spaceRange);
 		}
 	}
 	destroy(): void {

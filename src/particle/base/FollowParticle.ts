@@ -87,11 +87,13 @@ class PNodeBuilder extends PoolNodeBuilder {
 			}
 		}
 		if(super.hasFreeNode() || this.unlock) {
+
 			let node = super.create() as ParticleNode;
 			ls.push(node);
 
-			this.minIndex = 999999;
-			this.maxIndex = -999999;
+			this.minIndex = node.index;
+			this.maxIndex = node.index;
+			
 			for (let i = 0; i < ls.length; ++i) {
 				const node = ls[i];
 				if(this.minIndex > node.index) {
@@ -100,11 +102,8 @@ class PNodeBuilder extends PoolNodeBuilder {
 					this.maxIndex = node.index;
 				}
 			}
-			if (this.minIndex > this.maxIndex) {
-				this.minIndex = this.maxIndex = 0;
-			}
-			this.ivsIndex = this.minIndex * 2;
-			this.ivsCount = (this.maxIndex - this.minIndex) * 2;
+			this.ivsCount = (this.maxIndex - this.minIndex + 1) * 6;
+			this.ivsIndex = this.minIndex * 6;
 			return node;
 		}
 		return null;
@@ -168,7 +167,7 @@ class FollowParticle {
 		// }
 		// console.log("builder.ivsIndex, builder.ivsCount: ", builder.ivsIndex, builder.ivsCount);
 		const et = builder.entity;
-		// et.getMaterial().vtxInfo.setIvsParam(builder.ivsIndex, builder.ivsCount);
+		et.getMaterial().vtxInfo.setIvsParam(builder.ivsIndex, builder.ivsCount);
 	}
 	run(): void {
 		this.particleEntity.updateTime(1.0);
@@ -191,6 +190,9 @@ class FollowParticle {
 		this.particleEntity = billGroup;
 		billGroup.vtxColorEnabled = true;
 		billGroup.createGroup(total);
+
+		// billGroup.getMaterial().vtxInfo.set
+
 		let color = new Color4();
 		let pv = new Vector3D();
 		let builder = this.m_nodeBuilder;
@@ -217,7 +219,7 @@ class FollowParticle {
 			// color.a = Math.random() * 1.2;
 			billGroup.setColorAt(i, color);
 
-
+			// for test
 			// billGroup.setTimeAt(i, 100, 0.2, 0.8, 150.0);
 			if (total > 1) {
 				pv.setTo(Math.random() * 500.0 - 250.0, Math.random() * 50.0 + 50.0, Math.random() * 500.0 - 250.0);
