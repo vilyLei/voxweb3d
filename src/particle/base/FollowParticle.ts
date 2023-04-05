@@ -23,7 +23,12 @@ class FollowParticleParam {
 	];
 	speedScale = 1.0;
 	lifetimeScale = 1.0;
+	sizeParam = new Vector3D(30, 10, 0.2, 2.0);
+	accelerationScale = 0.001;
 	constructor() {
+	}
+	setSizeParam(sizeBase: number, sizeRange: number, sizeScaleMin: number = 0.2, sizeScaleMax: number = 2.0): void {
+		this.sizeParam.setTo(sizeBase, sizeRange, sizeScaleMin, sizeScaleMax);
 	}
 }
 class ParticleNode implements IPoolNode {
@@ -197,19 +202,18 @@ class FollowParticle {
 		billGroup.vtxColorEnabled = true;
 		billGroup.createGroup(total);
 
-		// billGroup.getMaterial().vtxInfo.set
-
 		let color = new Color4();
 		let pv = new Vector3D();
 		let builder = this.m_nodeBuilder;
 		let node: ParticleNode;
 		let nodes: ParticleNode[] = [];
+		let sizeParam = this.m_param.sizeParam;
 		for (let i = 0; i < total; ++i) {
-			size = Math.random() * 40 + 10.0;
+			size = Math.random() * sizeParam.y + sizeParam.x;
 			if (total < 2) {
 				size = 100.0;
 			}
-			billGroup.setSizeAndScaleAt(i, size, size, 0.2, 2.0);
+			billGroup.setSizeAndScaleAt(i, size, size, sizeParam.z, sizeParam.w);
 			if (!clipEnabled) {
 				let uparams = uvParams[Math.floor((uvParams.length - 1) * Math.random() + 0.5)];
 				billGroup.setUVRectAt(i, uparams[0], uparams[1], uparams[2], uparams[3]);
@@ -227,19 +231,20 @@ class FollowParticle {
 
 			// for test
 			// billGroup.setTimeAt(i, 100, 0.2, 0.8, 150.0);
-			if (total > 1) {
-				pv.setTo(Math.random() * 500.0 - 250.0, Math.random() * 50.0 + 50.0, Math.random() * 500.0 - 250.0);
-				billGroup.setPositionAt(i, pv.x, pv.y, pv.z);
-			} else {
-				billGroup.setPositionAt(0, 0, 0, 0);
-			}
+			// if (total > 1) {
+			// 	// pv.setTo(Math.random() * 500.0 - 250.0, Math.random() * 50.0 + 50.0, Math.random() * 500.0 - 250.0);
+			// 	// billGroup.setPositionAt(i, pv.x, pv.y, pv.z);
+			// } else {
+			// 	billGroup.setPositionAt(0, 0, 0, 0);
+			// }
 			pv.setXYZ(Math.random() * 0.6 - 0.3, Math.random() * 0.6 - 0.3, Math.random() * 0.6 - 0.3);
 			pv.scaleBy(this.m_param.speedScale);
-			billGroup.setAccelerationAt(i, 0.0, 0.0, 0.0);
 			billGroup.setVelocityAt(i, pv.x, pv.y, pv.z);
-			pv.normalize();
-			pv.scaleBy((Math.random() * 2.0 + 0.2) * -1.0);
-			//billGroup.setVelocityAt(i,pv.x,pv.y,pv.z);
+			
+			pv.setXYZ(Math.random() * 0.6 - 0.3, Math.random() * 0.6 - 0.3, Math.random() * 0.6 - 0.3);
+			pv.scaleBy(this.m_param.accelerationScale);
+			billGroup.setAccelerationAt(i, pv.x, pv.y, pv.z);
+
 			nodes.push(node);
 		}
 		billGroup.setPlayParam(playOnce, direcEnabled, clipMixEnabled);
