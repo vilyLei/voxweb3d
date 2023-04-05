@@ -26,21 +26,26 @@ export class DemoSphDepthFogRender {
 	private m_pbr = new PBRMateralBuilder();
 	private m_rscene: RendererScene = null;
 	private m_texLoader: ImageTextureLoader = null;
-	constructor() {}
+	constructor() { }
 
 	private applyPBRTex(param: PBRParam, texName: string, envMapEnabled: boolean = true): void {
 		param.envMap = envMapEnabled ? this.m_pbr.getEnvMap() : null;
-		param.diffuseMap = this.getTexByUrl(`pbr/${texName}/albedo.jpg`);
-		param.normalMap = this.getTexByUrl(`pbr/${texName}/normal.jpg`);
-		param.roughnessMap = this.getTexByUrl(`pbr/${texName}/roughness.jpg`);
-		param.metallicMap = this.getTexByUrl(`pbr/${texName}/metallic.jpg`);
-		param.aoMap = this.getTexByUrl(`pbr/${texName}/ao.jpg`);
+		param.diffuseMap = this.getAssetTexByUrl(`pbr/${texName}/albedo.jpg`);
+		param.normalMap = this.getAssetTexByUrl(`pbr/${texName}/normal.jpg`);
+		param.roughnessMap = this.getAssetTexByUrl(`pbr/${texName}/roughness.jpg`);
+		param.metallicMap = this.getAssetTexByUrl(`pbr/${texName}/metallic.jpg`);
+		param.aoMap = this.getAssetTexByUrl(`pbr/${texName}/ao.jpg`);
 	}
-	private getTexByUrl(pns: string): TextureProxy {
-		return this.getImageTexByUrl("static/assets/" + pns);
+	private getAssetTexByUrl(pns: string): TextureProxy {
+		return this.getTexByUrl("static/assets/" + pns);
 	}
-	private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-		let ptex = this.m_texLoader.getImageTexByUrl(purl);
+	private getTexByUrl(url: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+		let hostUrl = window.location.href;
+		if (hostUrl.indexOf(".artvily.") > 0) {
+			hostUrl = "http://www.artvily.com:9090/";
+			url = hostUrl + url;
+		}
+		let ptex = this.m_texLoader.getImageTexByUrl(url);
 		ptex.mipmapEnabled = mipmapEnabled;
 		if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
 
@@ -96,7 +101,7 @@ export class DemoSphDepthFogRender {
 		this.m_pbr.sharedLightColor = false;
 		this.m_pbr.initialize(this.m_rscene);
 
-		let tex3 = this.getImageTexByUrl("static/assets/flare_core_03.jpg");
+		let tex3 = this.getTexByUrl("static/assets/flare_core_03.jpg");
 
 		// add common 3d display entity ---------------------------------- begin
 
@@ -130,7 +135,7 @@ export class DemoSphDepthFogRender {
 		let src_particle = new Billboard3DEntity();
 		src_particle.initialize(100, 100, [tex3]);
 		let pv = new Vector3D();
-		for(let i = 0; i < 30; ++i) {
+		for (let i = 0; i < 30; ++i) {
 			let particle = new Billboard3DEntity();
 			particle.copyMeshFrom(src_particle);
 			particle.initialize(100, 100, [tex3]);
@@ -144,7 +149,8 @@ export class DemoSphDepthFogRender {
 		// add common 3d display entity ---------------------------------- end
 
 		let fogRenderNode = new SphDepthFogRenderNode();
-		fogRenderNode.texLoader = this.m_texLoader;
+		// fogRenderNode.texLoader = this.m_texLoader;
+		fogRenderNode.cloudTex = this.getAssetTexByUrl("cloud_01.jpg");
 		fogRenderNode.initialize(this.m_rscene, [0, 1], [particleProcIndex]);
 
 		let displayMaterial = fogRenderNode.createDisplayMaterial();

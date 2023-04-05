@@ -25,6 +25,7 @@ import RendererDevice from "../../../vox/render/RendererDevice";
 import { FogSphFactorMaterial } from "./FogSphFactorMaterial";
 import { SphDepthFogUnit } from "./SphDepthFogUnit";
 import { FogSphShowMaterial } from "./FogSphShowMaterial";
+import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 
 export class SphDepthFogRenderNode implements IRenderNode {
 	constructor() {}
@@ -33,18 +34,19 @@ export class SphDepthFogRenderNode implements IRenderNode {
 	private m_factorFBO: FBOInstance = null;
 	private m_commonFBO: FBOInstance = null;
 
-	texLoader: ImageTextureLoader = null;
+	cloudTex: IRenderTexture = null;
+	// texLoader: ImageTextureLoader = null;
 	factorEntityIndex = 0;
 	maxRadius = 800.0;
 
 	private m_factorEntity: Sphere3DEntity;
 	private m_fogFactorM: FogSphFactorMaterial;
-	private getImageTexByUrl(pns: string): TextureProxy {
-		let tex: TextureProxy = this.texLoader.getImageTexByUrl("static/assets/" + pns);
-		tex.setWrap(TextureConst.WRAP_REPEAT);
-		tex.mipmapEnabled = true;
-		return tex;
-	}
+	// private getImageTexByUrl(pns: string): TextureProxy {
+	// 	let tex: TextureProxy = this.texLoader.getImageTexByUrl("static/assets/" + pns);
+	// 	tex.setWrap(TextureConst.WRAP_REPEAT);
+	// 	tex.mipmapEnabled = true;
+	// 	return tex;
+	// }
 
 	private m_texs: IRTTTexture[] = [null, null, null, null, null, null];
 	public getTextureAt(index: number, float: boolean = false): IRTTTexture {
@@ -149,13 +151,13 @@ export class SphDepthFogRenderNode implements IRenderNode {
 		rState0 = RendererState.FRONT_TRANSPARENT_ALWAYS_STATE;
 		// rState1 = rState0;
 		// let tex3 = this.getImageTexByUrl("displacement_03.jpg");
-		let tex3 = this.getImageTexByUrl("cloud_01.jpg");
+		// let tex3 = this.getImageTexByUrl("cloud_01.jpg");
 		this.m_fogFactorM = new FogSphFactorMaterial();
 		// this.m_fogFactorM.setDensity(1.5);
 		this.m_factorEntity = new Sphere3DEntity();
 		this.m_factorEntity.setRenderState(rState0);
 		this.m_factorEntity.setMaterial(this.m_fogFactorM);
-		this.m_factorEntity.initialize(1.0, 20, 20, [this.m_commonFBO.getRTTAt(1), tex3]);
+		this.m_factorEntity.initialize(1.0, 20, 20, [this.m_commonFBO.getRTTAt(1), this.cloudTex]);
 
 		const fogM = this.m_fogFactorM;
 		fogM.setFactorRGB3f(1.0, 1.0, 1.0);
