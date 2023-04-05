@@ -160,7 +160,7 @@
 
 //  import {DemoParticleFollowGroup as Demo} from "./demo/DemoParticleFollowGroup";
 
- import {DemoParticleFollowGroup2 as Demo} from "./demo/DemoParticleFollowGroup2";
+//  import {DemoParticleFollowGroup2 as Demo} from "./demo/DemoParticleFollowGroup2";
 
 //  import {DemoParticleGroup as Demo} from "./demo/DemoParticleGroup";
 
@@ -400,7 +400,7 @@
 
 //  import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
 
-//  import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
+ import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
 
 //  import {DemoGraphStencil as Demo} from "./demo/DemoGraphStencil";
 
