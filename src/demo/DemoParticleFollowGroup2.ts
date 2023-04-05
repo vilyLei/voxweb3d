@@ -50,7 +50,7 @@ export class DemoParticleFollowGroup2 {
 
 			this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
 
-			new RenderStatusDisplay(this.m_rscene, true).setParams(true);
+			new RenderStatusDisplay(this.m_rscene, true).setParams(true, true);
 			new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
 
 			// let axis = new Axis3DEntity();
@@ -112,7 +112,7 @@ export class DemoParticleFollowGroup2 {
 		pv.setXYZ(300.0, 10.0, 300.0);
         this.m_container.localToGlobal(pv);
 		this.m_pathFollowEntity.addPosition(pv);
-		// console.log(pv);
+		
 		this.m_pathFollowEntity.run();
 	}
 	run(): void {

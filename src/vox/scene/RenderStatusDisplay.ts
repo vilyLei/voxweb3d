@@ -22,6 +22,7 @@ class RenderStatusDisplay {
     private m_height = 70;
     private m_auto = false;
 	private m_dcBoo = false;
+	private m_dtBoo = false;
     delayTime = 40;
     statusInfo = "";
     statusEnbled = true;
@@ -30,8 +31,9 @@ class RenderStatusDisplay {
             this.initialize(rsc, auto);
         }
     }
-	setParams(drawCallTimesEnabled: boolean): RenderStatusDisplay {
+	setParams(drawCallTimesEnabled: boolean, trisCountEnabled: boolean = false): RenderStatusDisplay {
 		this.m_dcBoo = drawCallTimesEnabled;
+		this.m_dtBoo = trisCountEnabled;
 		return this;
 	}
     initialize(rsc: IRendererScene = null, auto: boolean = false): void {
@@ -122,6 +124,9 @@ class RenderStatusDisplay {
 			let info = "";
 			if(this.m_dcBoo) {
 				info += "/" + st.drawCallTimes;
+			}
+			if(this.m_dtBoo) {
+				info += "/" + st.drawTrisNumber;
 			}
 			if(this.statusInfo != "") {
 				if(info != "") {
