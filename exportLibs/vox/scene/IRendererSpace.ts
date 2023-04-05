@@ -9,14 +9,14 @@
 import IVector3D from "../../vox/math/IVector3D";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
-import IRenderEntity from "../../vox/render/IRenderEntity";
+import IRenderEntityBase from "../../vox/render/IRenderEntityBase";
 import ISpaceCullingor from "../../vox/scene/ISpaceCullingor";
 import IRaySelector from "../../vox/scene/IRaySelector";
 import IRenderingEntitySet from "../../vox/scene/IRenderingEntitySet";
 import IEntity3DNode from "./IEntity3DNode";
 
 export default interface IRendererSpace {
-    
+
     /**
      * 正在被渲染的可渲染实体的集合
      */
@@ -26,9 +26,9 @@ export default interface IRendererSpace {
     getStage3D(): IRenderStage3D;
     setCamera(camera: IRenderCamera): void;
     getCamera(): IRenderCamera;
-    addEntity(entity: IRenderEntity): void;
-    removeEntity(entity: IRenderEntity): void;
-    updateEntity(entity: IRenderEntity): void;
+    addEntity(entity: IRenderEntityBase): void;
+    removeEntity(entity: IRenderEntityBase): void;
+    // updateEntity(entity: IRenderEntity): void;
     setSpaceCullingor(cullingor: ISpaceCullingor): void;
     setRaySelector(raySelector: IRaySelector): void;
     getPOVNumber(): number;

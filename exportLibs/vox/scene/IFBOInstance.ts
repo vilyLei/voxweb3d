@@ -12,9 +12,9 @@ import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderProcess from "../../vox/render/IRenderProcess";
-import IRendererNode from "./IRenderNode";
+import IRenderNode from "./IRenderNode";
 
-interface IFBOInstance extends IRendererNode {
+interface IFBOInstance extends IRenderNode {
 
     /**
      * unique name string
@@ -55,7 +55,7 @@ interface IFBOInstance extends IRendererNode {
     setGlobalRenderColorMask(colorMask: number): void;
     setGlobalRenderColorMaskByName(colorMaskNS: string): void;
     /**
-     * 
+     *
      * @param colorMask the default value is false
      */
     lockColorMask(colorMask?: number): void;
@@ -79,7 +79,7 @@ interface IFBOInstance extends IRendererNode {
 
     updateGlobalMaterialUniform(): void;
     /**
-     * 
+     *
      * @param clearDepth the default value is 1.0
      */
     clearDepth(clearDepth: number): void;
@@ -89,11 +89,11 @@ interface IFBOInstance extends IRendererNode {
     // if synFBOSizeWithViewport is true, fbo size = factor * view port size;
     setFBOSizeFactorWithViewPort(factor: number): void;
     /**
-     * 
+     *
      * @param fboIndex the default value is 0
      * @param enableDepth the default value is false
-     * @param enableStencil the default value is false 
-     * @param multisampleLevel the default value is 0 
+     * @param enableStencil the default value is false
+     * @param multisampleLevel the default value is 0
      */
     createViewportSizeFBOAt(fboIndex: number, enableDepth?: boolean, enableStencil?: boolean, multisampleLevel?: number): void;
 
@@ -193,7 +193,7 @@ interface IFBOInstance extends IRendererNode {
     setRenderToDepthTextureAt(systemDepthRTTTexIndex: number, outputIndex?: number): IRenderTexture;
     createRGBATexture(): IRenderTexture;
     /**
-     * 
+     *
      * @param clearColorBoo the default value is true
      * @param clearDepthBoo the default value is true
      * @param clearStencilBoo the default value is false
@@ -269,13 +269,13 @@ interface IFBOInstance extends IRendererNode {
      */
     blitStencilFrom(fboIns: IFBOInstance, filter?: number, clearType?: number, clearIndex?: number, dataArr?: number[]): void;
     /**
-     * 
+     *
      * @param i framebuffer object output attachment index
      * @param attachmentIndex the default value is 0
      */
     renderToTextureAt(i: number, attachmentIndex?: number): void;
     /**
-     * 
+     *
      * @param lockRenderState the defualt value is false
      * @param lockMaterial the defualt value is false
      * @param autoEnd the defualt value is true
@@ -283,8 +283,8 @@ interface IFBOInstance extends IRendererNode {
      */
     run(lockRenderState?: boolean, lockMaterial?: boolean, autoEnd?: boolean, autoRunBegin?: boolean): void;
     /**
-     * 
-     * @param index 
+     *
+     * @param index
      * @param autoRunBegin the defualt value is true
      */
     runAt(index: number, autoRunBegin?: boolean): void;
@@ -298,8 +298,8 @@ interface IFBOInstance extends IRendererNode {
     runBegin(): void;
     runEnd(): void;
     /**
-     * 
-     * @param camera 
+     *
+     * @param camera
      * @param syncCamView the default value is false
      */
     useCamera(camera: IRenderCamera, syncCamView?: boolean): void;
@@ -309,9 +309,9 @@ interface IFBOInstance extends IRendererNode {
     clone(): IFBOInstance;
     /**
      * @param lockRenderState the default value is false
-     * @param lockMaterial the default value is false 
-     * @param autoEnd the default value is true 
-     * @param autoRunBegin the default value is true 
+     * @param lockMaterial the default value is false
+     * @param autoEnd the default value is true
+     * @param autoRunBegin the default value is true
      */
     setRenderingState(lockRenderState?: boolean, lockMaterial?: boolean, autoEnd?: boolean, autoRunBegin?: boolean): void;
 	render(): void;

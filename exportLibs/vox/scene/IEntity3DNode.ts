@@ -6,8 +6,8 @@
 /***************************************************************************/
 
 import IAABB from "../../vox/geom/IAABB";
-import IRPONode from "../../vox/render/IRPONode";
-import IRenderEntity from "../../vox/render/IRenderEntity";
+import IRenderEntityBase from "../../vox/render/IRenderEntityBase";
+import IRPOUnit from "../render/IRPOUnit";
 
 export default interface IEntity3DNode {
 	uid: number;
@@ -16,14 +16,15 @@ export default interface IEntity3DNode {
 	drawEnabled: boolean;
 	prev: IEntity3DNode;
 	next: IEntity3DNode;
-	entity: IRenderEntity;
+	entity: IRenderEntityBase;
 	bounds: IAABB;
 	rayTestState: number;
-	rpoNode: IRPONode;
+	runit: IRPOUnit;
 	spaceId: number;
 	// 记录上一次摄像机裁剪自身的状态
 	camVisiSt: number;
 	// 记录摄像机可见状态,大于0表示不可见
 	camVisi: number;
+	isVisible(): boolean;
 	reset(): void;
 }

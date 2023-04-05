@@ -18,4 +18,7 @@ export default interface IPassProcess {
     createMaterialWrapper(m: IRenderMaterial, dstRUnit: IRPOUnit): IPassMaterialWrapper
     run(): void;
     destroy(): void;
+    
+	resetUniform(): void;
+	resetTransUniform(): void;
 }

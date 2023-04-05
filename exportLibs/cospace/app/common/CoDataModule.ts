@@ -31,12 +31,12 @@ export class CoDataModule {
 	 * 初始化
 	 * @param sysInitCallback the default value is null
 	 * @param urlChecker the default value is null
-	 * @param deferredInit the default value is false 
+	 * @param deferredInit the default value is false
 	 */
 	initialize(sysInitCallback: () => void = null, deferredInit: boolean = false): void {
 		if (this.m_init) {
 			this.m_init = false;
-			
+
 			this.m_sysInitCallback = sysInitCallback;
 			// this.m_urlChecker = urlChecker;
 			this.m_deferredInit = deferredInit;
@@ -44,7 +44,7 @@ export class CoDataModule {
 				{ url: "static/cospace/core/coapp/CoSpaceApp.umd.js", name: CoModuleNS.coSpaceApp, type: CoModuleFileType.JS },
 				{ url: "static/cospace/core/code/ThreadCore.umd.js", name: CoModuleNS.threadCore, type: CoModuleFileType.JS },
 				{ url: "static/cospace/modules/ctm/ModuleCTMGeomParser.umd.js", name: CoModuleNS.ctmParser, type: CoModuleFileType.JS },
-				{ url: "static/cospace/modules/obj/ModuleOBJGeomParser.umd.min.js", name: CoModuleNS.objParser, type: CoModuleFileType.JS },
+				{ url: "static/cospace/modules/obj/ModuleOBJGeomParser.umd.js", name: CoModuleNS.objParser, type: CoModuleFileType.JS },
 				{ url: "static/cospace/modules/png/ModulePNGParser.umd.js", name: CoModuleNS.pngParser, type: CoModuleFileType.JS },
 				{ url: "static/cospace/modules/fbxFast/ModuleFBXGeomFastParser.umd.js", name: CoModuleNS.fbxFastParser, type: CoModuleFileType.JS }
 			];

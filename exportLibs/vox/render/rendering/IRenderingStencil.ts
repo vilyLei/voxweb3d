@@ -5,8 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
+import { IRODrawState } from "./IRODrawState";
 interface IRenderingStencil {
 
+    // getRDST(): IRODrawState;
     setDepthTestEnable(enable: boolean): IRenderingStencil;
     /**
      * 设置 gpu stencilFunc 状态
@@ -30,5 +32,6 @@ interface IRenderingStencil {
     // reset(): IRenderingStencil;
     // clone(): IStencil;
     // copyFrom(src: IStencil): IStencil;
+
 }
 export { IRenderingStencil }

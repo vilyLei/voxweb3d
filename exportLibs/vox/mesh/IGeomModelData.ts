@@ -1,6 +1,8 @@
 
 export default interface IGeomModelData {
+	status?: number;
 	uuid?: string;
+	url?: string;
 	/**
 	 * vbWhole vtx buffer is whole data, or not, the default value is false.
 	 */
@@ -25,8 +27,8 @@ export default interface IGeomModelData {
 	 * the default value is undefined or null
 	 */
 	extraIndicesList?: {indices:(Uint16Array | Uint32Array), wireframe?: boolean, shape?:boolean}[];
-	
-	uvsList: Float32Array[];
+
+	uvsList?: Float32Array[];
 	vertices: Float32Array;
-	normals: Float32Array;
+	normals?: Float32Array;
 }

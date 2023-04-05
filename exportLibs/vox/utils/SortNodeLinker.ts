@@ -5,53 +5,43 @@
 /*                                                                         */
 /***************************************************************************/
 
-interface ISortNodeLinkerNode
-{
-	value:number;
-	uid:number;
-	prev:ISortNodeLinkerNode;
-	next:ISortNodeLinkerNode;
+interface ISortNodeLinkerNode {
+	value: number;
+	uid: number;
+	prev: ISortNodeLinkerNode;
+	next: ISortNodeLinkerNode;
 }
-class SortNodeLinkerNode implements ISortNodeLinkerNode
-{
-	value:number = 0;
-	uid:number = -1;
-	prev:ISortNodeLinkerNode = null;
-	next:ISortNodeLinkerNode = null;
-	constructor(){}
+class SortNodeLinkerNode implements ISortNodeLinkerNode {
+	value = 0;
+	uid = -1;
+	prev: ISortNodeLinkerNode = null;
+	next: ISortNodeLinkerNode = null;
+	constructor() {}
 }
-class SortNodeLinker
-{
-	private m_begin:ISortNodeLinkerNode = null;
-	private m_end:ISortNodeLinkerNode = null;
-	private m_next:ISortNodeLinkerNode = null;
-	private m_node:ISortNodeLinkerNode = null;
-	private m_nodes:ISortNodeLinkerNode[] = [];
-	private m_nodesTotal:number = 0;
-	constructor()
-	{
-	}
-	
-	showInfo():void
-	{
-		let info:string = "";
-		let next:ISortNodeLinkerNode = this.m_begin;
-		while(next != null)
-		{
-			info += "("+next.value+","+next.uid+"),";
+class SortNodeLinker {
+	private m_begin: ISortNodeLinkerNode = null;
+	private m_end: ISortNodeLinkerNode = null;
+	private m_next: ISortNodeLinkerNode = null;
+	private m_node: ISortNodeLinkerNode = null;
+	private m_nodes: ISortNodeLinkerNode[] = [];
+	private m_nodesTotal = 0;
+	constructor() {}
+
+	showInfo(): void {
+		let info: string = "";
+		let next: ISortNodeLinkerNode = this.m_begin;
+		while (next != null) {
+			info += "(" + next.value + "," + next.uid + "),";
 			//info += next.value+",";
 			next = next.next;
 		}
-		console.log("SortNodeLinker info: \n",info);
-		
-	}       
-	clear():void
-	{
+		console.log("SortNodeLinker info: \n", info);
+	}
+	clear(): void {
 		this.m_nodes = [];
-		let next:ISortNodeLinkerNode = this.m_begin;
-		let curr:ISortNodeLinkerNode = null;
-		while(next != null)
-		{
+		let next = this.m_begin;
+		let curr: ISortNodeLinkerNode = null;
+		while (next != null) {
 			curr = next;
 			next = next.next;
 			curr.prev = null;
@@ -60,20 +50,16 @@ class SortNodeLinker
 		this.m_begin = this.m_end = null;
 		this.m_nodesTotal = 0;
 	}
-	sort():void
-	{
-		if(this.m_nodesTotal > 0)
-		{
+	sort(): void {
+		if (this.m_nodesTotal > 0) {
 			//console.log("this.m_nodesTotal: ",this.m_nodesTotal);
 			// 如果是remove实际上是不需要排序的
-			let next:ISortNodeLinkerNode = this.m_begin;					
-			if(this.m_nodes.length < this.m_nodesTotal)
-			{
-				this.m_nodes = new Array( Math.round(this.m_nodesTotal * 1.1) + 1);
+			let next = this.m_begin;
+			if (this.m_nodes.length < this.m_nodesTotal) {
+				this.m_nodes = new Array(Math.round(this.m_nodesTotal * 1.1) + 1);
 			}
-			let i:number = 0;
-			while(next != null)
-			{
+			let i = 0;
+			while (next != null) {
 				this.m_nodes[i] = next;
 				next = next.next;
 				++i;
@@ -83,9 +69,8 @@ class SortNodeLinker
 			this.m_begin.uid = 2;
 			this.m_begin.next = null;
 			this.m_begin.prev = null;
-			let prev:ISortNodeLinkerNode = this.m_begin;
-			for(i = 1; i < this.m_nodesTotal; ++i)
-			{
+			let prev = this.m_begin;
+			for (i = 1; i < this.m_nodesTotal; ++i) {
 				next = this.m_nodes[i];
 				next.uid = 2 + i;
 				next.prev = prev;
@@ -97,19 +82,15 @@ class SortNodeLinker
 			this.m_next = this.m_begin;
 		}
 	}
-	private sorting(low:number,high:number):number
-	{
-		let arr:ISortNodeLinkerNode[] = this.m_nodes;
-		this.m_node = arr[low];                
-		while(low < high)
-		{
-			while(low < high && arr[high].value >= this.m_node.value)
-			{
+	private sorting(low: number, high: number): number {
+		let arr = this.m_nodes;
+		this.m_node = arr[low];
+		while (low < high) {
+			while (low < high && arr[high].value >= this.m_node.value) {
 				--high;
 			}
 			arr[low] = arr[high];
-			while(low < high && arr[low].value <= this.m_node.value)
-			{
+			while (low < high && arr[low].value <= this.m_node.value) {
 				++low;
 			}
 			arr[high] = arr[low];
@@ -117,55 +98,40 @@ class SortNodeLinker
 		arr[low] = this.m_node;
 		return low;
 	}
-	private snsort(low:number,high:number):void
-	{
-		if(low < high)
-		{
-			let pos:number = this.sorting(low, high);
+	private snsort(low: number, high: number): void {
+		if (low < high) {
+			let pos = this.sorting(low, high);
 			this.snsort(low, pos - 1);
 			this.snsort(pos + 1, high);
 		}
 	}
-	getNodesTotal():number
-	{
+	getNodesTotal(): number {
 		return this.m_nodesTotal;
 	}
-	getBegin():ISortNodeLinkerNode
-	{
+	getBegin(): ISortNodeLinkerNode {
 		this.m_next = this.m_begin;
 		return this.m_begin;
 	}
-	getNext():ISortNodeLinkerNode
-	{
-		if(this.m_next != null)
-		{
+	getNext(): ISortNodeLinkerNode {
+		if (this.m_next != null) {
 			this.m_next = this.m_next.next;
 		}
 		return this.m_next;
 	}
-	isEmpty():boolean
-	{
+	isEmpty(): boolean {
 		return this.m_nodesTotal < 1;
 		// return this.m_begin == null;
 	}
-	addNode(node:ISortNodeLinkerNode)
-	{
-		if(node.prev == null && node.next == null)
-		{
-			if (this.m_begin == null)
-			{
+	addNode(node: ISortNodeLinkerNode) {
+		if (node.prev == null && node.next == null) {
+			if (this.m_begin == null) {
 				this.m_end = this.m_begin = node;
-			}
-			else
-			{
-				if (this.m_end.prev != null)
-				{
+			} else {
+				if (this.m_end.prev != null) {
 					this.m_end.next = node;
 					node.prev = this.m_end;
 					this.m_end = node;
-				}
-				else
-				{
+				} else {
 					this.m_begin.next = node;
 					node.prev = this.m_end;
 					this.m_end = node;
@@ -176,29 +142,19 @@ class SortNodeLinker
 		}
 	}
 
-	removeNode(node:ISortNodeLinkerNode):void
-	{
-		if(node.prev != null || node.next != null)
-		{
-			if (node == this.m_begin)
-			{
-				if (node == this.m_end)
-				{
+	removeNode(node: ISortNodeLinkerNode): void {
+		if (node.prev != null || node.next != null) {
+			if (node == this.m_begin) {
+				if (node == this.m_end) {
 					this.m_begin = this.m_end = null;
-				}
-				else
-				{
+				} else {
 					this.m_begin = node.next;
 					this.m_begin.prev = null;
 				}
-			}
-			else if (node == this.m_end)
-			{
+			} else if (node == this.m_end) {
 				this.m_end = node.prev;
 				this.m_end.next = null;
-			}
-			else
-			{
+			} else {
 				node.next.prev = node.prev;
 				node.prev.next = node.next;
 			}
@@ -209,4 +165,4 @@ class SortNodeLinker
 	}
 }
 export default SortNodeLinker;
-export {ISortNodeLinkerNode,SortNodeLinkerNode,SortNodeLinker};
+export { ISortNodeLinkerNode, SortNodeLinkerNode, SortNodeLinker };

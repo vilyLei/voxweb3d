@@ -10,24 +10,35 @@ import IAABB from "../../vox/geom/IAABB";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import IRenderer from "../../vox/scene/IRenderer";
 import IRenderEntityBase from "./IRenderEntityBase";
+import IRenderEntity from "./IRenderEntity";
+import IDisplayEntityContainer from "../entity/IDisplayEntityContainer";
 
 export default interface IRenderEntityContainer extends IRenderEntityBase {
     uuid: string;
     // 自身所在的world的唯一id, 通过这个id可以找到对应的world
     __$wuid: number;
-    // render process uid
-    wprocuid: number;
+
+	/**
+	 * render process uid, the default value is -1
+	 */
+	__$wprocuid: number;
     // 记录自身是否再容器中(取值为0和1), 不允许外外面其他代码调用
     __$contId: number;
 
     __$setRenderer(renderer: IRenderer): void;
+    __$setRendering(r: boolean): void;
     getRenderer(): IRenderer;
 
     dispatchEvt(evt: any): number;
     getEvtDispatcher(evtClassType: number): IEvtDispatcher;
+
+	getParent(): IDisplayEntityContainer;
+
     getGlobalBounds(): IAABB;
     getChildrenTotal(): number;
-    getEntitysTotal(): number;
+    getEntitiesTotal(): number;
+    getEntities(): IRenderEntity[];
+    getContainers(): IDisplayEntityContainer[];
     setXYZ(px: number, py: number, pz: number): void;
     setPosition(pv: IVector3D): void;
     /**
@@ -37,7 +48,7 @@ export default interface IRenderEntityContainer extends IRenderEntityBase {
 
     setRotation3(rv: IVector3D): void;
     setRotationXYZ(rx: number, ry: number, rz: number): void;
-    
+
     setRotationX(r: number): void;
     setRotationY(r: number): void;
     setRotationZ(r: number): void;
@@ -46,7 +57,7 @@ export default interface IRenderEntityContainer extends IRenderEntityBase {
      */
     getRotationXYZ(rv?: IVector3D): IVector3D;
     setScaleXYZ(sx: number, sy: number, sz: number): void;
-    
+
     /**
      * @param sv the default value is null
      */
@@ -57,10 +68,5 @@ export default interface IRenderEntityContainer extends IRenderEntityBase {
     globalToLocal(pv: IVector3D): void;
     sphereIntersect(centerV: IVector3D, radius: number): boolean;
 
-    // update(): void;
-    // destroy(): void;
-    // getUid(): number;
-    // setVisible(boo: boolean): void;
-    // getVisible(): boolean;
-    // isVisible(): boolean;
+	isSpaceEnabled(): boolean;
 }

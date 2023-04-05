@@ -23,8 +23,9 @@ interface IVector3D {
      */
     w: number;
     clone(): IVector3D;
+	abs(): IVector3D;
     setTo(px: number, py: number, pz: number, pw?: number): IVector3D;
-    
+
     /**
      * example: [0],[1],[2],[3] => x,y,z,w
      */
@@ -68,6 +69,6 @@ interface IVector3D {
     subVecsTo(va: IVector3D, vb: IVector3D): IVector3D;
     addVecsTo(va: IVector3D, vb: IVector3D): IVector3D;
     crossVecsTo(va: IVector3D, vb: IVector3D): IVector3D;
-    
+
 }
 export default IVector3D;

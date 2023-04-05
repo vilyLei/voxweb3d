@@ -6,8 +6,6 @@
 /***************************************************************************/
 
 import IVector3D from "../../vox/math/IVector3D";
-import IMatrix4 from "../../vox/math/IMatrix4";
-import IAABB from "../../vox/geom/IAABB";
 // import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderProxy from "../../vox/render/IRenderProxy";
@@ -21,30 +19,6 @@ import IRenderEntityBase from "./IRenderEntityBase";
  * to be used in the renderer runtime
  */
 export default interface IRenderEntity extends IRenderEntityBase {
-    // /**
-    //  * mouse interaction enabled, the default value is false
-    //  */
-    // mouseEnabled: boolean;
-
-    /**
-     * renderer scene entity flag, be used by the renderer system
-     * 第0位到第19位总共20位存放自身在space中的 index id(最小值为1, 最大值为1048575,默认值是0, 也就是最多只能展示1048575个entitys),
-     * 第20位开始到26位为总共7位止存放在renderer中的状态数据(renderer unique id and others)
-     * 第27位存放是否在container里面
-     * 第28位开始到29位总共二位存放renderer 载入状态 的相关信息
-     * 第30位位存放是否渲染运行时排序
-     */
-    __$rseFlag: number;
-    /**
-     * 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMask, 默认只会有摄像机裁剪
-     * the default value is SpaceCullingMask.CAMERA
-     */
-    spaceCullMask: number;
-
-    /**
-     * recorde a draw status, the default value is false
-     */
-    drawEnabled: boolean;
 
     __$setRenderProxy(rc: IRenderProxy): void;
     __$getParent(): IRenderEntityContainer;
@@ -59,17 +33,6 @@ export default interface IRenderEntity extends IRenderEntityBase {
     isFree(): boolean;
     dispatchEvt(evt: any): number;
     getEvtDispatcher(evtClassType: number): IEvtDispatcher;
-    /**
-     * @param resultPos the default value is null
-     */
-    getPosition(resultPos?: IVector3D): IVector3D;
-    getGlobalBounds(): IAABB;
-    getLocalBounds(): IAABB;
-
-    /**
-     * @return 返回true表示当前DisplayEntity能被绘制
-     */
-    isDrawEnabled(): boolean;
 
     getRenderState(): number;
     setRenderState(renderState: number): IRenderEntity;
@@ -102,6 +65,10 @@ export default interface IRenderEntity extends IRenderEntityBase {
     updateMaterialToGpu(rc?: IRenderProxy, deferred?: boolean): void;
 
     setXYZ(px: number, py: number, pz: number): IRenderEntity;
+    /**
+     * @param resultPos the default value is null
+     */
+    getPosition(resultPos?: IVector3D): IVector3D;
     setPosition(pos: IVector3D): IRenderEntity;
     /**
      * @param pv the default value is null
@@ -111,7 +78,7 @@ export default interface IRenderEntity extends IRenderEntityBase {
     setRotation3(rv: IVector3D): IRenderEntity;
     setScaleXYZ(sx: number, sy: number, sz: number): IRenderEntity;
     setScale3(sv: IVector3D): IRenderEntity;
-    
+
     /**
      * @param sv the default value is null
      */
@@ -131,8 +98,6 @@ export default interface IRenderEntity extends IRenderEntityBase {
     setMaterial(material: IRenderMaterial): IRenderEntity;
     getMaterial(): IRenderMaterial;
     getDisplay(): IRODisplay;
-    getInvMatrix(): IMatrix4;
-    getMatrix(): IMatrix4;
     activeDisplay(): void;
 
     /**
@@ -150,11 +115,4 @@ export default interface IRenderEntity extends IRenderEntityBase {
 
     updateBounds(): void;
 
-
-    // update(): void;
-    // destroy(): void;
-    // getUid(): number;
-    // setVisible(boo: boolean): void;
-    // getVisible(): boolean;
-    // isVisible(): boolean;
 }

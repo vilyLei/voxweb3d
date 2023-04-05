@@ -17,6 +17,7 @@ import IRendererParam from "../../vox/scene/IRendererParam";
 import IRenderProcess from "../../vox/render/IRenderProcess";
 import {IRendererInstanceContext} from "../../vox/scene/IRendererInstanceContext";
 import IRenderer from "../../vox/scene/IRenderer";
+import IRenderEntityContainer from "../render/IRenderEntityContainer";
 
 /**
  * kernal system instance, it is the renderer instance for the renderer runtime, it is very very very important class.
@@ -56,6 +57,8 @@ export interface IRendererInstance extends IRenderer {
     updateAllProcess(): void;
     updateProcessAt(processIndex: number): void;
     setEntityManaListener(listener: any): void;
+    addContainer(container: IRenderEntityContainer, processIndex?: number): void;
+    removeContainer(container: IRenderEntityContainer, processIndex?: number): void;
     /**
      * add an entity to the renderer process of the renderer instance
      * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
@@ -107,6 +110,7 @@ export interface IRendererInstance extends IRenderer {
      * @param processFixedState the process is fix renderer state
      */
     createSeparatedProcess(batchEnabled?: boolean, processFixedState?: boolean): IRenderProcess;
+	setProcessEnabledAt(i: number, enabled: boolean): void;
     setRendererProcessParam(index: number, batchEnabled: boolean, processFixedState: boolean): void;
     getProcessAt(index: number): IRenderProcess;
     showInfoAt(index: number): void;
@@ -117,7 +121,7 @@ export interface IRendererInstance extends IRenderer {
      * 绘制已经完全加入渲染器了渲染资源已经准备完毕的entity
      * 要锁定Material才能用这种绘制方式,再者这个,这种方式比较耗性能，只能用在特殊的地方
      */
-    drawEntityByLockMaterial(entity: IRenderEntity, useGlobalUniform?: boolean, forceUpdateUniform?: boolean): void;
+    // drawEntityByLockMaterial(entity: IRenderEntity, useGlobalUniform?: boolean, forceUpdateUniform?: boolean): void;
     /**
      * 在任意阶段绘制一个指定的 entity,只要其资源数据准备完整
      */

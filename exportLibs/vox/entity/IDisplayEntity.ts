@@ -16,10 +16,10 @@ import IRenderEntity from "../../vox/render/IRenderEntity";
 
 export default interface IDisplayEntity extends IRenderEntity {
 
-    // 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMask, 默认只会有摄像机裁剪
-    spaceCullMask: number; // the default value is SpaceCullingMask.CAMERA.
-    // recorde a draw status
-    drawEnabled: boolean;// = false;
+    // // 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMask, 默认只会有摄像机裁剪
+    // spaceCullMask: number; // the default value is SpaceCullingMask.CAMERA.
+    // // recorde a draw status
+    // drawEnabled: boolean;// = false;
     // mouse interaction enabled
     mouseEnabled: boolean;// = false;
 
@@ -31,7 +31,7 @@ export default interface IDisplayEntity extends IRenderEntity {
 
 
     __$setDrawEnabled(boo: boolean): void;
-    isDrawEnabled(): boolean;
+    // isDrawEnabled(): boolean;
 
     setVisible(boo: boolean): IDisplayEntity;
     getVisible(): boolean;
