@@ -32,7 +32,7 @@ class FollowParticleParam {
 	}
 }
 class ParticleNode implements IPoolNode {
-	
+
 	pos = new Vector3D();
 	time = new Vector3D();
 	color = new Color4();
@@ -43,7 +43,7 @@ class ParticleNode implements IPoolNode {
 	lifeTimeRange = 50.0;
 
 	param: FollowParticleParam = null;
-
+	accVScale = -1.0;
 	constructor() { }
 
 	uid = 0;
@@ -53,19 +53,28 @@ class ParticleNode implements IPoolNode {
 		this.param = null;
 	}
 	update(dstPos: Vector3D, range: number): void {
+
+		const et = this.entity;
+		const pv = this.pos;
+		if (this.accVScale >= 0.0) {
+			pv.setXYZ(Math.random() * 0.6 - 0.3, Math.random() * 0.6 - 0.3, Math.random() * 0.6 - 0.3);
+			pv.scaleBy(this.accVScale);
+			et.setAccelerationAt(this.index, pv.x, pv.y, pv.z);
+			this.accVScale = -1.0;
+		}
 		const hr = 0.5 * range;
-		const pos = this.pos.setXYZ(Math.random() * range - hr, Math.random() * range + hr, Math.random() * range - hr);
-		pos.addBy(dstPos);
+		pv.setXYZ(Math.random() * range - hr, Math.random() * range + hr, Math.random() * range - hr);
+		pv.addBy(dstPos);
 
 		const t = this.time;
 		t.x = this.param.lifetimeScale * (Math.random() * this.lifeTimeRange + this.lifeTimeBase);
 		t.w = this.entity.getTime();
-		const et = this.entity;
-		et.setPositionAt(this.index, pos.x, pos.y, pos.z);
+		et.setPositionAt(this.index, pv.x, pv.y, pv.z);
 		et.setTimeAt(this.index, t.x, t.y, t.z, t.w);
 		et.updateData();
 		et.updateMeshToGpu();
-	}	isVisible(): boolean {
+	}
+	isVisible(): boolean {
 		const t = this.entity.getTime();
 		return t >= this.time.w && t <= this.time.w + this.time.x;
 	}
@@ -92,7 +101,7 @@ class PNodeBuilder extends PoolNodeBuilder {
 		return this.m_currNodes;
 	}
 	hasFreeNode(): boolean {
-		if(this.m_currNodes.length > 0) {
+		if (this.m_currNodes.length > 0) {
 			return true;
 		}
 		return super.hasFreeNode();
@@ -107,19 +116,19 @@ class PNodeBuilder extends PoolNodeBuilder {
 				}
 			}
 		}
-		if(super.hasFreeNode() || this.unlock) {
+		if (super.hasFreeNode() || this.unlock) {
 
 			let node = super.create() as ParticleNode;
 			ls.push(node);
 
 			this.minIndex = node.index;
 			this.maxIndex = node.index;
-			
+
 			for (let i = 0; i < ls.length; ++i) {
 				const node = ls[i];
-				if(this.minIndex > node.index) {
+				if (this.minIndex > node.index) {
 					this.minIndex = node.index;
-				}else if(this.maxIndex < node.index) {
+				} else if (this.maxIndex < node.index) {
 					this.maxIndex = node.index;
 				}
 			}
@@ -132,8 +141,8 @@ class PNodeBuilder extends PoolNodeBuilder {
 	getNodes(): ParticleNode[] {
 		return super.getNodes() as ParticleNode[];
 	}
-	
-    destroy(): void {
+
+	destroy(): void {
 		this.m_currNodes = [];
 		this.unlock = true;
 		this.entity = null;
@@ -156,13 +165,16 @@ class FollowParticle {
 	getParam(): FollowParticleParam {
 		return this.m_param;
 	}
-	createParticles(pos: Vector3D, total: number, range: number): void {
+	createParticles(pos: Vector3D, total: number, range: number, accelerationScale: number = -1.0): void {
 
 		const builder = this.m_nodeBuilder;
 		for (let i = 0; i < total; ++i) {
 			if (builder.hasFreeNode()) {
 				const node = builder.create();
-				if(node) {
+				if (node) {
+					if (accelerationScale >= 0.0) {
+						node
+					}
 					node.update(pos, range);
 				}
 			} else {
@@ -240,7 +252,7 @@ class FollowParticle {
 			pv.setXYZ(Math.random() * 0.6 - 0.3, Math.random() * 0.6 - 0.3, Math.random() * 0.6 - 0.3);
 			pv.scaleBy(this.m_param.speedScale);
 			billGroup.setVelocityAt(i, pv.x, pv.y, pv.z);
-			
+
 			pv.setXYZ(Math.random() * 0.6 - 0.3, Math.random() * 0.6 - 0.3, Math.random() * 0.6 - 0.3);
 			pv.scaleBy(this.m_param.accelerationScale);
 			billGroup.setAccelerationAt(i, pv.x, pv.y, pv.z);
@@ -269,4 +281,4 @@ class FollowParticle {
 	}
 }
 
-export {FollowParticleParam, FollowParticle}
+export { FollowParticleParam, FollowParticle }
