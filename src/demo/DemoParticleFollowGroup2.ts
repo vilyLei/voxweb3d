@@ -20,13 +20,22 @@ export class DemoParticleFollowGroup2 {
 	private m_texLoader: ImageTextureLoader = null;
 	private m_axis: Axis3DEntity = null;
 	private m_viewRay = new CameraViewRay();
-	getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-		let ptex = this.m_texLoader.getImageTexByUrl(purl);
+
+	private getAssetTexByUrl(pns: string): TextureProxy {
+		return this.getTexByUrl("static/assets/" + pns);
+	}
+	private getTexByUrl(url: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+		let hostUrl = window.location.href;
+		if (hostUrl.indexOf(".artvily.") > 0) {
+			hostUrl = "http://www.artvily.com:9090/";
+			url = hostUrl + url;
+		}
+		let ptex = this.m_texLoader.getImageTexByUrl(url);
 		ptex.mipmapEnabled = mipmapEnabled;
 		if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
+
 		return ptex;
 	}
-
 	initialize(): void {
 		console.log("DemoParticleFollowGroup2::initialize()......");
 		if (this.m_rscene == null) {
@@ -57,7 +66,7 @@ export class DemoParticleFollowGroup2 {
 			// axis.initialize(300.0);
 			// this.m_rscene.addEntity(axis);
 
-			let texs = [this.getImageTexByUrl("static/assets/testEFT4_monochrome3.jpg")];
+			let texs = [this.getTexByUrl("static/assets/testEFT4_monochrome3.jpg")];
 			let fpParam = new FollowParticleParam();
 			fpParam.textures = texs;
 			fpParam.speedScale = 3.0;

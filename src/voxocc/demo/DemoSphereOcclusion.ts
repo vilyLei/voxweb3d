@@ -23,6 +23,7 @@ import SpaceCullingor from '../../vox/scene/SpaceCullingor';
 import { MouseInteraction } from "../../vox/ui/MouseInteraction";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import DebugFlag from "../../vox/debug/DebugFlag";
+import TextureConst from "../../vox/texture/TextureConst";
 
 
 export class DemoSphereOcclusion {
@@ -38,6 +39,21 @@ export class DemoSphereOcclusion {
     private m_entities: DisplayEntity[] = [];
     private m_frameList: BillboardFrame[] = [];
 
+	private getAssetTexByUrl(pns: string): TextureProxy {
+		return this.getTexByUrl("static/assets/" + pns);
+	}
+	private getTexByUrl(url: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+		let hostUrl = window.location.href;
+		if (hostUrl.indexOf(".artvily.") > 0) {
+			hostUrl = "http://www.artvily.com:9090/";
+			url = hostUrl + url;
+		}
+		let ptex = this.m_texLoader.getImageTexByUrl(url);
+		ptex.mipmapEnabled = mipmapEnabled;
+		if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
+
+		return ptex;
+	}
     initialize(): void {
         console.log("DemoSphereOcclusion::initialize()......");
         if (this.m_rscene == null) {
@@ -59,8 +75,8 @@ export class DemoSphereOcclusion {
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-            let tex0 = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
-            let tex1 = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
+            let tex0 = this.getTexByUrl("static/assets/default.jpg");
+            let tex1 = this.getTexByUrl("static/assets/broken_iron.jpg");
 
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);

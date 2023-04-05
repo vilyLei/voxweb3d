@@ -22,6 +22,7 @@ import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import SpaceCullingor from '../../vox/scene/SpaceCullingor';
 import { MouseInteraction } from "../../vox/ui/MouseInteraction";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
+import TextureConst from "../../vox/texture/TextureConst";
 
 export class DemoOccPOVBuilding {
     constructor() {
@@ -37,6 +38,22 @@ export class DemoOccPOVBuilding {
     private m_rspace: IRendererSpace = null;
     private m_texList: TextureProxy[] = [];
 
+	private getAssetTexByUrl(pns: string): TextureProxy {
+		return this.getTexByUrl("static/assets/" + pns);
+	}
+	private getTexByUrl(url: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+		let hostUrl = window.location.href;
+		if (hostUrl.indexOf(".artvily.") > 0) {
+			hostUrl = "http://www.artvily.com:9090/";
+			url = hostUrl + url;
+		}
+        
+		let ptex = this.m_texLoader.getImageTexByUrl(url);
+		ptex.mipmapEnabled = mipmapEnabled;
+		if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
+
+		return ptex;
+	}
     initialize(): void {
 
         console.log("DemoOccPOVBuilding::initialize()......");
@@ -62,12 +79,12 @@ export class DemoOccPOVBuilding {
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
             let loader = this.m_texLoader;
-            let tex0 = loader.getImageTexByUrl("static/assets/box.jpg");
-            let tex1 = loader.getImageTexByUrl("static/assets/broken_iron.jpg");
-            let tex2 = loader.getImageTexByUrl("static/assets/metal_08.jpg");
-            let tex3 = loader.getImageTexByUrl("static/assets/wood_02.jpg");
-            let tex4 = loader.getImageTexByUrl("static/assets/metal_02.jpg");
-            let tex5 = loader.getImageTexByUrl("static/assets/a_02_c.jpg");
+            let tex0 = this.getTexByUrl("static/assets/box.jpg");
+            let tex1 = this.getTexByUrl("static/assets/box.jpg");
+            let tex2 = this.getTexByUrl("static/assets/box.jpg");
+            let tex3 = this.getTexByUrl("static/assets/box.jpg");
+            let tex4 = this.getTexByUrl("static/assets/metal_02.jpg");
+            let tex5 = this.getTexByUrl("static/assets/box.jpg");
 
             this.m_texList.push(tex0);
             this.m_texList.push(tex1);

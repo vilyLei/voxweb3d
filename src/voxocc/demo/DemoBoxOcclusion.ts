@@ -26,6 +26,7 @@ import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import IRenderEntityBase from "../../vox/render/IRenderEntityBase";
+import TextureConst from "../../vox/texture/TextureConst";
 
 export class DemoBoxOcclusion {
     constructor() {
@@ -42,6 +43,21 @@ export class DemoBoxOcclusion {
     private m_frameList: BillboardFrame[] = [];
     private m_occStatusList: number[] = [];
 
+	private getAssetTexByUrl(pns: string): TextureProxy {
+		return this.getTexByUrl("static/assets/" + pns);
+	}
+	private getTexByUrl(url: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+		let hostUrl = window.location.href;
+		if (hostUrl.indexOf(".artvily.") > 0) {
+			hostUrl = "http://www.artvily.com:9090/";
+			url = hostUrl + url;
+		}
+		let ptex = this.m_texLoader.getImageTexByUrl(url);
+		ptex.mipmapEnabled = mipmapEnabled;
+		if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
+
+		return ptex;
+	}
     initialize(): void {
         console.log("DemoBoxOcclusion::initialize()......");
         if (this.m_rscene == null) {
@@ -68,7 +84,7 @@ export class DemoBoxOcclusion {
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-            let tex1 = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
+            let tex1 = this.getTexByUrl("static/assets/broken_iron.jpg");
 
             RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
             RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
@@ -185,9 +201,9 @@ export class DemoBoxOcclusion {
     }
 
 	private createContainer(): void {
-		let tex0 = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
-		let tex1 = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
-		let tex2 = this.m_texLoader.getImageTexByUrl("static/assets/box.jpg");
+		let tex0 = this.getTexByUrl("static/assets/default.jpg");
+		let tex1 = this.getTexByUrl("static/assets/broken_iron.jpg");
+		let tex2 = this.getTexByUrl("static/assets/box.jpg");
 
 		let i = 0;
 
