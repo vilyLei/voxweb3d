@@ -61,7 +61,7 @@ export class DemoParticleFollowGroup2 {
 			let fpParam = new FollowParticleParam();
 			fpParam.textures = texs;
 			fpParam.speedScale = 3.0;
-			fpParam.timeScale = 2.0;
+			fpParam.lifetimeScale = 2.0;
 			// fpParam.uvParams = texs;
 			// this.m_followParticle.initialize(1000, fpParam);
 			// this.m_flowBill = this.m_followParticle.particleEntity;
@@ -95,7 +95,7 @@ export class DemoParticleFollowGroup2 {
 		console.log("mouseDownListener(), call ...");
 		this.m_viewRay.intersectPlane();
 		let pv = this.m_viewRay.position;
-		this.m_pathFollowEntity.addPosition(pv, 1, 20);
+		// this.m_pathFollowEntity.addPosition(pv, 1, 20);
 	}
 	private update(): void {
 
@@ -105,14 +105,17 @@ export class DemoParticleFollowGroup2 {
 		this.m_timeoutId = setTimeout(this.update.bind(this), 20); // 50 fps
 		
 		this.m_container.setRotationY(this.m_container.getRotationY() + 1.0);
-		this.m_containerMain.setRotationZ(this.m_containerMain.getRotationZ() + 1.0);
+		this.m_containerMain.setRotationZ(this.m_containerMain.getRotationZ() + 0.8);
+		this.m_containerMain.setRotationX(this.m_containerMain.getRotationX() + 0.8);
 		this.m_containerMain.update();
 
 		let pv = this.position;
 		pv.setXYZ(300.0, 10.0, 300.0);
         this.m_container.localToGlobal(pv);
-		const total = Math.random() * 3 + 1;
-		const spaceRange = Math.random() * 15 + 5;
+		const total = Math.random() * 2 + 1;
+		const spaceRange = Math.random() * 5 + 5;
+		let param = this.m_pathFollowEntity.getParam();
+		param.lifetimeScale = Math.random() * 1.5 + 0.5;
 		this.m_pathFollowEntity.addPosition(pv, total, spaceRange);
 		
 		this.m_pathFollowEntity.run();

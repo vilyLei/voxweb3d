@@ -66,7 +66,7 @@ export class DemoParticleFollowGroup {
 			let fpParam = new FollowParticleParam();
 			fpParam.textures = texs;
 			fpParam.speedScale = 2.0;
-			fpParam.timeScale = 2.0;
+			fpParam.lifetimeScale = 2.0;
 			// fpParam.uvParams = texs;
 			this.m_followParticle.initialize(1000, fpParam);
 			this.m_flowBill = this.m_followParticle.particleEntity;

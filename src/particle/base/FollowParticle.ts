@@ -13,6 +13,19 @@ import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import IPoolNode from "../../vox/base/IPoolNode";
 import PoolNodeBuilder from "../../vox/base/PoolNodeBuilder";
 
+class FollowParticleParam {
+	textures: IRenderTexture[] = null;
+	uvParams: number[][] = [
+		[0.0, 0.0, 0.5, 0.5],
+		[0.5, 0.0, 0.5, 0.5],
+		[0.0, 0.5, 0.5, 0.5],
+		[0.5, 0.5, 0.5, 0.5]
+	];
+	speedScale = 1.0;
+	lifetimeScale = 1.0;
+	constructor() {
+	}
+}
 class ParticleNode implements IPoolNode {
 	
 	pos = new Vector3D();
@@ -23,13 +36,16 @@ class ParticleNode implements IPoolNode {
 
 	lifeTimeBase = 50.0;
 	lifeTimeRange = 50.0;
-	lifeTimeScale = 1.0;
+
+	param: FollowParticleParam = null;
+
 	constructor() { }
 
 	uid = 0;
 	reset(): void { }
 	destroy(): void {
 		this.entity = null;
+		this.param = null;
 	}
 	update(dstPos: Vector3D, range: number): void {
 		const hr = 0.5 * range;
@@ -37,7 +53,7 @@ class ParticleNode implements IPoolNode {
 		pos.addBy(dstPos);
 
 		const t = this.time;
-		t.x = this.lifeTimeScale * (Math.random() * this.lifeTimeRange + this.lifeTimeBase);
+		t.x = this.param.lifetimeScale * (Math.random() * this.lifeTimeRange + this.lifeTimeBase);
 		t.w = this.entity.getTime();
 		const et = this.entity;
 		et.setPositionAt(this.index, pos.x, pos.y, pos.z);
@@ -119,19 +135,6 @@ class PNodeBuilder extends PoolNodeBuilder {
 		super.destroy();
 	}
 }
-class FollowParticleParam {
-	textures: IRenderTexture[] = null;
-	uvParams: number[][] = [
-		[0.0, 0.0, 0.5, 0.5],
-		[0.5, 0.0, 0.5, 0.5],
-		[0.0, 0.5, 0.5, 0.5],
-		[0.5, 0.5, 0.5, 0.5]
-	];
-	speedScale = 1.0;
-	timeScale = 1.0;
-	constructor() {
-	}
-}
 class FollowParticle {
 	private m_nodeBuilder = new PNodeBuilder();
 	private m_total = 0;
@@ -144,6 +147,9 @@ class FollowParticle {
 		this.m_param = param;
 		this.initTest();
 		this.m_nodeBuilder.entity = this.particleEntity;
+	}
+	getParam(): FollowParticleParam {
+		return this.m_param;
 	}
 	createParticles(pos: Vector3D, total: number, range: number): void {
 
@@ -211,7 +217,7 @@ class FollowParticle {
 			node = builder.create();
 			node.entity = billGroup;
 			node.index = i;
-			node.lifeTimeScale = this.m_param.timeScale;
+			node.param = this.m_param;
 
 			node.time.setTo(50, 0.2, 0.5, 0.0);
 			billGroup.setBrightnessAt(i, Math.random() * 0.8 + 0.8);
