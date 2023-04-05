@@ -114,7 +114,7 @@ export class DemoParticleFollowGroup2 {
 		pv.setXYZ(300.0, 10.0, 300.0);
         this.m_container.localToGlobal(pv);
 		const total = Math.random() * 2 + 1;
-		const spaceRange = Math.random() * 5 + 15;
+		const spaceRange = Math.random() * 15 + 15;
 		let param = this.m_pathFollowEntity.getParam();
 		param.lifetimeScale = Math.random() * 1.7 + 0.3;
 		this.m_pathFollowEntity.addPosition(pv, total, spaceRange, (Math.random() - 0.5) * (0.1 * Math.random() + 0.01));
