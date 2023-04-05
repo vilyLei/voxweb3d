@@ -11,6 +11,7 @@ import StencilOutlinePassItem from "./pass/StencilOutlinePassItem";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import IRenderTexture from "../vox/render/texture/IRenderTexture";
 import TextureResLoader from "../vox/assets/TextureResLoader";
+import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 
 export class DemoGraphStencil {
 	private m_init = true;
@@ -18,10 +19,21 @@ export class DemoGraphStencil {
 	private m_rscene: RendererScene = null;
 	constructor() {}
 
-	private getTexByUrl(purl: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
-		return this.m_texLoader.getTexByUrl(purl, preAlpha, wrapRepeat, mipmapEnabled);
-	}
+	// private getTexByUrl(purl: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+	// 	return this.m_texLoader.getTexByUrl(purl, preAlpha, wrapRepeat, mipmapEnabled);
+	// }
 
+	private getAssetTexByUrl(pns: string): IRenderTexture {
+		return this.getTexByUrl("static/assets/" + pns);
+	}
+	private getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+		let hostUrl = window.location.href;
+		if (hostUrl.indexOf(".artvily.") > 0) {
+			hostUrl = "http://www.artvily.com:9090/";
+			url = hostUrl + url;
+		}
+		return this.m_texLoader.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
+	}
 	initialize(): void {
 		console.log("DemoGraphStencil::initialize()......");
 		if (this.m_init) {
@@ -56,7 +68,7 @@ export class DemoGraphStencil {
 
 		let material = new Default3DMaterial();
 		material.normalEnabled = true;
-		material.setTextureList([this.getTexByUrl("static/assets/box.jpg", true)]);
+		material.setTextureList([this.getTexByUrl("static/assets/box.jpg")]);
 
 		/**
 		 * 应用material(pass) graph机制
@@ -65,9 +77,15 @@ export class DemoGraphStencil {
 
 		let sph = new Sphere3DEntity();
 		sph.setMaterial(material);
-		sph.initialize(80, 20, 20);
+		sph.initialize(110, 30, 30);
 		sph.setXYZ(-200, 0, -200);
 		rscene.addEntity(sph);
+
+		// let cly = new Cylinder3DEntity();
+		// cly.normalEnabled =  true;
+		// cly.initialize(70, 130, 30, [this.getTexByUrl("static/assets/box.jpg")]);
+		// cly.setXYZ(0, 0, 200);
+		// rscene.addEntity(cly);
 
 		let box = new Box3DEntity();
 		box.setMaterial(material);

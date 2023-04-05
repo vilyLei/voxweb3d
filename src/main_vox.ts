@@ -47,7 +47,7 @@
 
 //  import {DemoOccBoxWall2 as Demo} from "./voxocc/demo/DemoOccBoxWall2";
 
- import {DemoOccPOVBuilding as Demo} from "./voxocc/demo/DemoOccPOVBuilding";
+//  import {DemoOccPOVBuilding as Demo} from "./voxocc/demo/DemoOccPOVBuilding";
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -160,7 +160,7 @@
 
 //  import {DemoParticleFollowGroup as Demo} from "./demo/DemoParticleFollowGroup";
 
-//  import {DemoParticleFollowGroup2 as Demo} from "./demo/DemoParticleFollowGroup2";
+ import {DemoParticleFollowGroup2 as Demo} from "./demo/DemoParticleFollowGroup2";
 
 //  import {DemoParticleGroup as Demo} from "./demo/DemoParticleGroup";
 

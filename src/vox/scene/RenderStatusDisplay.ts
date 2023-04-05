@@ -120,21 +120,23 @@ class RenderStatusDisplay {
 
             this.m_ctx2D.clearRect(0, 0, this.m_width, this.m_height);
 
-			const st = this.m_rsc.getRenderProxy().status;
 			let info = "";
-			if(this.m_dcBoo) {
-				info += "/" + st.drawCallTimes;
-			}
-			if(this.m_dtBoo) {
-				info += "/" + st.drawTrisNumber;
-			}
-			if(this.statusInfo != "") {
-				if(info != "") {
-					info += "/" + this.statusInfo;
-				}else {
-					info = this.statusInfo;
-				}
-			}
+            if(this.m_rsc) {
+                const st = this.m_rsc.getRenderProxy().status;
+                if(this.m_dcBoo) {
+                    info += "/" + st.drawCallTimes;
+                }
+                if(this.m_dtBoo) {
+                    info += "/" + st.drawTrisNumber;
+                }
+                if(this.statusInfo != "") {
+                    if(info != "") {
+                        info += "/" + this.statusInfo;
+                    }else {
+                        info = this.statusInfo;
+                    }
+                }
+            }
             this.m_ctx2D.fillText(this.getFPSStr() + info, 5, 50);
             //  this.m_ctx2D.fillRect(0, 0, this.m_width, this.m_height);
         }

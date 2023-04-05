@@ -26,6 +26,7 @@ import { VertUniformComp } from "../vox/material/component/VertUniformComp";
 import PBRMaterial from "../pbr/material/PBRMaterial";
 import MaterialBase from "../vox/material/MaterialBase";
 import Color4 from "../vox/material/Color4";
+import { MouseInteraction } from "../vox/ui/MouseInteraction";
 
 class TrackWheelRole {
     private m_pz: number = Math.random() * 1000.0 - 500.00;
@@ -109,8 +110,6 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
     
-    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-    private m_interaction: UserInteraction =  new UserInteraction();
     private m_boxTrack: BoxGroupTrack = new BoxGroupTrack();
     private m_role0: TrackWheelRole = new TrackWheelRole();
     private m_role1: TrackWheelRole = new TrackWheelRole();
@@ -166,13 +165,11 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
             rparam.setCamPosition(1200.0, 1200.0, 1200.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
-            this.m_rscene.updateCamera();
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-
-            this.m_interaction.initialize( this.m_rscene );
-
-            this.m_statusDisp.initialize();
+            
+			new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
+			new RenderStatusDisplay(this.m_rscene, true);
 
             //initScene();
             this.initMaterialCtx();
@@ -321,7 +318,7 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         }
         //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
         this.m_timeoutId = setTimeout(this.update.bind(this), 30);// 33 fps
-        this.m_statusDisp.render();
+        // this.m_statusDisp.render();
 
         this.m_role0.run();
         // this.m_role1.run();
@@ -330,9 +327,9 @@ export class DemoBoxGroupTrack implements IShaderLibListener {
         if(this.m_track02 != null) this.m_track02.run();
     }
     run(): void {
-        this.m_interaction.run();
-        // show fps status
-        this.m_statusDisp.update(false);
+        // this.m_interaction.run();
+        // // show fps status
+        // this.m_statusDisp.update(false);
 
         this.m_rscene.run();
     }

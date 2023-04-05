@@ -15,14 +15,27 @@ import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
 import VtxDrawingInfo from "../vox/render/vtx/VtxDrawingInfo";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 
 export class DemoVtxDrawingInfo {
 	private m_init = true;
 	private m_texLoader: ImageTextureLoader = null;
 	constructor() { }
 
-	private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-		return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled) as TextureProxy;
+	// private getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+	// 	return this.m_texLoader.getTexByUrl(purl, wrapRepeat, mipmapEnabled) as TextureProxy;
+	// }
+	
+	private getAssetTexByUrl(pns: string): IRenderTexture {
+		return this.getTexByUrl("static/assets/" + pns);
+	}
+	private getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+		let hostUrl = window.location.href;
+		if (hostUrl.indexOf(".artvily.") > 0) {
+			hostUrl = "http://www.artvily.com:9090/";
+			url = hostUrl + url;
+		}
+		return this.m_texLoader.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
 	}
 
 	private initEvent(rscene: RendererScene): void {
