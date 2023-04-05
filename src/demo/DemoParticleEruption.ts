@@ -28,6 +28,7 @@ import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import { RenderableMaterialBlock } from "../vox/scene/block/RenderableMaterialBlock";
 import { RenderableEntityBlock } from "../vox/scene/block/RenderableEntityBlock";
 import { MouseInteraction } from "../vox/ui/MouseInteraction";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 
 export class DemoParticleEruption {
     constructor() { }
@@ -36,21 +37,25 @@ export class DemoParticleEruption {
     private m_texLoader: ImageTextureLoader = null;
 
     private m_axis: Axis3DEntity = null;
-    private m_textures: TextureProxy[] = null;
+    private m_textures: IRenderTexture[] = null;
     private m_eff0Pool: EruptionEffectPool = null;
     private m_eff1Pool: EruptionSmokePool = null;
-	private m_viewRay = new CameraViewRay();
+    private m_viewRay = new CameraViewRay();
 
     // private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
-    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        // return this.m_materialCtx.getTextureByUrl(purl, wrapRepeat, mipmapEnabled);
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
+    private m_posList: Vector3D[] = [new Vector3D(0, 0, 0, 40), new Vector3D(100, 0, 100, 50)];
+    private getAssetTexByUrl(pns: string): IRenderTexture {
+        return this.getTexByUrl("static/assets/" + pns);
     }
-
+    private getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+        let hostUrl = window.location.href;
+        if (hostUrl.indexOf(".artvily.") > 0) {
+            hostUrl = "http://www.artvily.com:9090/";
+            url = hostUrl + url;
+        }
+        return this.m_texLoader.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
+    }
     private initMaterialCtx(): void {
 
         let mcParam: MaterialContextParam = new MaterialContextParam();
@@ -65,28 +70,26 @@ export class DemoParticleEruption {
 
         this.m_materialCtx.addShaderLibListener(this);
         this.m_materialCtx.initialize(this.m_rscene, mcParam);
-
+        this.m_materialCtx.envLightModule.setFogDensity(0.0003);
         this.m_materialCtx.lightModule.update();
     }
     private initTex(): void {
 
-        let textures: TextureProxy[] = [];
-        textures.push(this.getImageTexByUrl("static/assets/wood_02.jpg"));
-        textures.push(this.getImageTexByUrl("static/assets/arrow01.png"));
-        textures.push(this.getImageTexByUrl("static/assets/partile_tex_001.jpg"));
-        textures.push(this.getImageTexByUrl("static/assets/stones_02.png"));
-
-        textures.push(this.getImageTexByUrl("static/assets/guangyun_H_0007.png"));
-        textures.push(this.getImageTexByUrl("static/assets/flare_core_01.jpg"));
-        textures.push(this.getImageTexByUrl("static/assets/flare_core_02.jpg"));
-        textures.push(this.getImageTexByUrl("static/assets/a_02_c.jpg"));
-
-        textures.push(this.getImageTexByUrl("static/assets/testEFT4.jpg"));
-        textures.push(this.getImageTexByUrl("static/assets/xulie_02_07.png"));
-        textures.push(this.getImageTexByUrl("static/assets/color_02.jpg"));
-        textures.push(this.getImageTexByUrl("static/assets/particle/xuelie/xulie_00046.png"));
-        textures.push(this.getImageTexByUrl("static/assets/testTex.png"));
-        this.m_textures = textures;
+        // let textures: IRenderTexture[] = [];
+        // textures.push(this.getTexByUrl("static/assets/wood_02.jpg"));
+        // textures.push(this.getTexByUrl("static/assets/arrow01.png"));
+        // textures.push(this.getTexByUrl("static/assets/partile_tex_001.jpg"));
+        // textures.push(this.getTexByUrl("static/assets/stones_02.png"));
+        // textures.push(this.getTexByUrl("static/assets/guangyun_H_0007.png"));
+        // textures.push(this.getTexByUrl("static/assets/flare_core_01.jpg"));
+        // textures.push(this.getTexByUrl("static/assets/flare_core_02.jpg"));
+        // textures.push(this.getTexByUrl("static/assets/a_02_c.jpg"));
+        // textures.push(this.getTexByUrl("static/assets/testEFT4.jpg"));
+        // textures.push(this.getTexByUrl("static/assets/xulie_02_07.png"));
+        // textures.push(this.getTexByUrl("static/assets/color_02.jpg"));
+        // textures.push(this.getTexByUrl("static/assets/particle/xuelie/xulie_00046.png"));
+        // textures.push(this.getTexByUrl("static/assets/testTex.png"));
+        // this.m_textures = textures;
     }
     initialize(): void {
         let boo0: any = true;
@@ -114,14 +117,14 @@ export class DemoParticleEruption {
             entityBlock.initialize();
             //rscene.entityBlock = entityBlock;
 
-			this.m_viewRay.initialize(this.m_rscene);
+            this.m_viewRay.initialize(this.m_rscene);
             this.m_viewRay.setPlaneParam(new Vector3D(0.0, 1.0, 0.0), 0.0);
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
 
-			new RenderStatusDisplay(this.m_rscene, true).setParams(true);
-			new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
+            new RenderStatusDisplay(this.m_rscene, true).setParams(true);
+            new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
             /*
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.name = "axis";
@@ -154,12 +157,12 @@ export class DemoParticleEruption {
     }
     private initScene(): void {
 
-        let textures = this.m_textures;
+        // let textures = this.m_textures;
         ///*
         let plane: Plane3DEntity = new Plane3DEntity();
         plane.pipeTypes = [MaterialPipeType.FOG_EXP2];
         plane.setMaterialPipeline(this.m_materialCtx.pipeline);
-        plane.initializeXOZ(-500.0, -500.0, 1000.0, 1000.0, [textures[0]]);
+        plane.initializeXOZ(-500.0, -500.0, 1000.0, 1000.0, [this.getTexByUrl("static/assets/wood_02.jpg")]);
         plane.setXYZ(0.0, -80.0, 0.0);
         this.m_rscene.addEntity(plane);
 
@@ -175,11 +178,12 @@ export class DemoParticleEruption {
         //this.initializeEffect();
         //this.initBillGroup();
 
+        this.applyEffectWithPos(new Vector3D(-150, 0, -150));
     }
 
     private initEnvBox(): void {
 
-        let envBox: Box3DEntity = new Box3DEntity();
+        let envBox = new Box3DEntity();
         envBox.pipeTypes = [MaterialPipeType.FOG_EXP2];
         envBox.setMaterialPipeline(this.m_materialCtx.pipeline);
         envBox.showFrontFace();
@@ -192,10 +196,10 @@ export class DemoParticleEruption {
         if (this.m_effInited) {
 
             if (this.m_eff0Pool == null) {
-                let texFlame: TextureProxy = this.m_textures[8];
+                let texFlame = this.getTexByUrl("static/assets/testEFT4.jpg");
                 //let texSolid: TextureProxy = this.m_textures[3];
                 //let texSolid: TextureProxy = this.getImageTexByUrl("static/assets/stones_02.png");
-                let texSolid: TextureProxy = this.getImageTexByUrl("static/assets/stones_04.png");
+                let texSolid = this.getTexByUrl("static/assets/stones_04.png");
                 this.m_eff0Pool = new EruptionEffectPool();
                 this.m_eff0Pool.solidCN = this.m_eff0Pool.solidRN = 2;
                 this.m_eff0Pool.materialPipeline = this.m_materialCtx.pipeline;
@@ -234,7 +238,7 @@ export class DemoParticleEruption {
 
         let size: number = 100;
         let params: number[][] = this.getUVParamsByRNCN(4, 4);
-        let tex: TextureProxy = this.getImageTexByUrl("static/assets/xulie_02_07.png");
+        let tex = this.getTexByUrl("static/assets/xulie_02_07.png");
         let total: number = 150;
         let billGroup: Billboard3DGroupEntity = new Billboard3DGroupEntity();
         billGroup.pipeTypes = [MaterialPipeType.FOG_EXP2];
@@ -254,25 +258,28 @@ export class DemoParticleEruption {
         billGroup.initialize([tex]);
         this.m_rscene.addEntity(billGroup, 2);
     }
-    mouseDownListener(evt: any): void {
-        //console.log("mouseDownListener call, this.m_rscene: "+this.m_rscene.toString());
-        let viewRay = this.m_viewRay;
+    private applyEffectWithPos(pv: Vector3D): void {
 
         this.initializeEffect();
         if (this.m_eff0Pool != null || this.m_eff1Pool != null) {
-            viewRay.intersectPlane();
 
             //this.m_eff0Pool.createEffect(viewRay.position);
             // this.m_eff1Pool.createEffect(viewRay.position);
             //return;
 
             if (Math.random() > -0.5) {
-                if (this.m_eff0Pool != null) this.m_eff0Pool.createEffect(viewRay.position);
+                if (this.m_eff0Pool != null) this.m_eff0Pool.createEffect(pv);
             }
             else {
-                if (this.m_eff1Pool != null) this.m_eff1Pool.createEffect(viewRay.position);
+                if (this.m_eff1Pool != null) this.m_eff1Pool.createEffect(pv);
             }
         }
+    }
+    mouseDownListener(evt: any): void {
+        //console.log("mouseDownListener call, this.m_rscene: "+this.m_rscene.toString());
+        let viewRay = this.m_viewRay;
+        viewRay.intersectPlane();
+        this.applyEffectWithPos(viewRay.position);
     }
     private m_timeoutId: any = -1;
     private update(): void {
@@ -288,18 +295,18 @@ export class DemoParticleEruption {
         if (this.m_eff1Pool != null) {
             this.m_eff1Pool.run();
         }
-
-        // const st = this.m_rscene.getRenderProxy().status;
-        // this.m_statusDisp.statusInfo = "/" + st.drawCallTimes;
-
+        if (this.m_posList.length > 0) {
+            let pv = this.m_posList[0];
+            if (pv.w < 0) {
+                this.m_posList.shift();
+                this.applyEffectWithPos(pv);
+            } else {
+                pv.w -= 1.0;
+            }
+        }
     }
     run(): void {
-
-        // this.m_interaction.run();
-
         this.m_rscene.run();
-
-        // this.m_statusDisp.update();
     }
 }
 export default DemoParticleEruption;

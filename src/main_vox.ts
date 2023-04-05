@@ -164,7 +164,7 @@
 
 //  import {DemoParticleGroup as Demo} from "./demo/DemoParticleGroup";
 
-//  import {DemoParticleEruption as Demo} from "./demo/DemoParticleEruption";
+ import {DemoParticleEruption as Demo} from "./demo/DemoParticleEruption";
 
 //  import {DemoParticleClips as Demo} from "./demo/DemoParticleClips";
 
@@ -400,7 +400,7 @@
 
 //  import {DemoGraphTransparent as Demo} from "./demo/DemoGraphTransparent";
 
- import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
+//  import {DemoGraphTwoMaterial as Demo} from "./demo/DemoGraphTwoMaterial";
 
 //  import {DemoGraphStencil as Demo} from "./demo/DemoGraphStencil";
 
