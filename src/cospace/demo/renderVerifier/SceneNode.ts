@@ -120,8 +120,11 @@ class SceneNode implements ISceneNode {
 			// console.log("initEntity lossTime: ", (Date.now() - this.m_time) + " ms");
 
 			let flag = false;
-			let uvErrorCheck = true;
-
+			let uvErrorCheck = false;
+			let hostUrl = window.location.href;
+			if(hostUrl.indexOf("uvCheck=true") > 0) {
+				uvErrorCheck = true;
+			}
 			if(uvErrorCheck) {
 				if(model.status != undefined && model.status > 0) {
 					console.log("Error model.status: ", model.status);
@@ -269,7 +272,7 @@ class SceneNode implements ISceneNode {
 							info += "</br><font color='#ee00aa'>注意: " + this.m_normalErrInfo + ",当前所见的法线由此程序生成</font>";
 						}
 
-						info += "</br><b><pre><font color='#eeFFaa'>shoLog(info)</font></pre></b>";
+						info += "</br><b><pre><font color='#eeFFaa'>printLog(info)</font></pre></b>";
 
 						this.initEntityFinish();
 					}
