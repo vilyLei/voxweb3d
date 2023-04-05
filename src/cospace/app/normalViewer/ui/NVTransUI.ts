@@ -189,7 +189,7 @@ class NVTransUI {
 		let px = 5;
 		pw = uiCfg.btnSize[0];
 		ph = uiCfg.btnSize[1];
-		let py = ph * 7;
+		let py = uiScene.getStage().stageHeight - ph * 5 - 200;
 		let defaultKey = "";
 		for (let i = 0; i < btnNames.length; ++i) {
 			const btn = ButtonBuilder.createPanelBtnWithCfg(uiScene, px, py - ph * i, i, uiCfg);
