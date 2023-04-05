@@ -96,9 +96,6 @@ export class DemoSphDepthFogRender {
 		this.m_pbr.sharedLightColor = false;
 		this.m_pbr.initialize(this.m_rscene);
 
-		let tex0 = this.getImageTexByUrl("static/assets/default.jpg");
-		let tex1 = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-		let tex2 = this.getImageTexByUrl("static/assets/flare_core_02.jpg");
 		let tex3 = this.getImageTexByUrl("static/assets/flare_core_03.jpg");
 
 		// add common 3d display entity ---------------------------------- begin
@@ -124,14 +121,14 @@ export class DemoSphDepthFogRender {
 		material = this.createMaterial(null, new Vector3D(0.0, 0.0, 5.0, 5.0), "rusted_iron");
 		bgBox.setMaterial(material);
 		bgBox.showFrontFace();
-		bgBox.initialize(new Vector3D(-size, -size, -size), new Vector3D(size, size, size), [tex1]);
+		bgBox.initialize(new Vector3D(-size, -size, -size), new Vector3D(size, size, size));
 		bgBox.setScaleXYZ(2.0, 2.0, 2.0);
 		this.m_rscene.addEntity(bgBox, 1);
 
 		let particleProcIndex = 2;
 		//*
 		let src_particle = new Billboard3DEntity();
-		src_particle.initialize(100, 100, [tex2]);
+		src_particle.initialize(100, 100, [tex3]);
 		let pv = new Vector3D();
 		for(let i = 0; i < 30; ++i) {
 			let particle = new Billboard3DEntity();
