@@ -19,10 +19,10 @@
 
     "build": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main.ts",
     "build:vox": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main_vox.ts",
-    "build:advanced": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/advanceddemo.ts",
+    "build:advanced": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main_advanced.ts",
     "build:animation": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main_animation.ts",
     "build:voxweb": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main_voxweb.ts",
-    "build:coSpace": "vue-cli-service build --target lib --name CoSpace --dest dist ./src/cospaceMain.ts",
+    "build:coSpace": "vue-cli-service build --target lib --name CoSpace --dest dist ./src/main_cospace.ts",
     "build:coEditApp": "vue-cli-service build --target lib --name CoEditApp --dest dist ./src/cospace/edit/coEditMain.ts",
 
     "build:baseRenderer": "vue-cli-service build --target lib --name VoxApp --dest dist/baseRenderer ./src/distribution/rendererIsolate/devBaseRenderer.ts",
@@ -73,9 +73,9 @@
     "dev": "vue-cli-service serve --type=dev[./src/main.ts]",
     "dev:vox": "vue-cli-service serve --type=dev[./src/main_vox.ts]",
     "dev:voxweb": "vue-cli-service serve --type=dev[./src/main_voxweb.ts]",
-    "dev:cospace": "vue-cli-service serve --type=dev[./src/cospaceMain.ts]",
+    "dev:cospace": "vue-cli-service serve --type=dev[./src/main_cospace.ts]",
     "dev:coedit": "vue-cli-service serve --type=dev[./src/cospace/edit/coEditMain.ts]",
-    "dev:advanced": "vue-cli-service serve --type=dev[./src/advanceddemo.ts]",    
+    "dev:advanced": "vue-cli-service serve --type=dev[./src/main_advanced.ts]",    
     "dev:animation": "vue-cli-service serve --type=dev[./src/main_animation.ts]"
   },
   "dependencies": {
