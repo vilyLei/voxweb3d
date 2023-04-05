@@ -20,6 +20,7 @@
     "build": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main.ts",
     "build:vox": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main_vox.ts",
     "build:advanced": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/advanceddemo.ts",
+    "build:animation": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main_animation.ts",
     "build:voxweb": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main_voxweb.ts",
     "build:coSpace": "vue-cli-service build --target lib --name CoSpace --dest dist ./src/cospaceMain.ts",
     "build:coEditApp": "vue-cli-service build --target lib --name CoEditApp --dest dist ./src/cospace/edit/coEditMain.ts",
@@ -74,7 +75,8 @@
     "dev:voxweb": "vue-cli-service serve --type=dev[./src/main_voxweb.ts]",
     "dev:cospace": "vue-cli-service serve --type=dev[./src/cospaceMain.ts]",
     "dev:coedit": "vue-cli-service serve --type=dev[./src/cospace/edit/coEditMain.ts]",
-    "dev:advanced": "vue-cli-service serve --type=dev[./src/advanceddemo.ts]"
+    "dev:advanced": "vue-cli-service serve --type=dev[./src/advanceddemo.ts]",    
+    "dev:animation": "vue-cli-service serve --type=dev[./src/main_animation.ts]"
   },
   "dependencies": {
     "@tweenjs/tween.js": "^18.4.2",
