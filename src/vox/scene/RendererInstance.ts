@@ -377,16 +377,6 @@ export class RendererInstance implements IRendererInstance {
         this.m_dataBuilder.getRenderShader().useUniformToCurrentShd(material.__$uniform);
     }
     /**
-     * Deprecated(废弃, 不推荐使用)
-     * 绘制已经完全加入渲染器了渲染资源已经准备完毕的entity
-     * 要锁定Material才能用这种绘制方式,再者这个,这种方式比较耗性能，只能用在特殊的地方
-     */
-    // drawEntityByLockMaterial(entity: IRenderEntity, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
-    //     if (entity != null && entity.getVisible() && entity.getRendererUid() == this.m_uid && !this.m_renderProxy.isContextLost()) {
-    //         this.m_fixProcess.drawLockMaterialByDisp(entity.getDisplay(), useGlobalUniform, forceUpdateUniform);
-    //     }
-    // }
-    /**
      * 在任意阶段绘制一个指定的 entity,只要其资源数据准备完整
      */
     drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
@@ -447,9 +437,6 @@ export class RendererInstance implements IRendererInstance {
     appendRenderNode(node: IRenderNode): void {
     }
     removeRenderNode(node: IRenderNode): void {
-    }
-    toString(): string {
-        return "[RendererInstance(uid = " + this.m_uid + ")]";
     }
 }
 

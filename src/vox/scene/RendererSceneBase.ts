@@ -730,10 +730,7 @@ export default class RendererSceneBase {
 	 * should call this function per frame
 	 */
 	update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
-		// if (this.m_runner) {
-		//     this.m_runner();
-		// }
-		// this.stage3D.enterFrame();
+		
 		const st = this.m_currStage3D;
 		if (st != null) {
 			st.enterFrame();
