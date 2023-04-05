@@ -112,6 +112,7 @@ class TextEntity implements ITextEntity{
     private createMaterial(texList: IRenderTexture[]): void {
         this.m_material.create();
         this.m_material.material.setTextureList(texList);
+        this.m_material.material.vtxInfo = CoRScene.createVtxDrawingInfo();
     }
     initialize(text: string, h5Text: IH5Text, texList: IRenderTexture[] = null): void {
         if (this.m_rentity == null) {
@@ -147,7 +148,7 @@ class TextEntity implements ITextEntity{
             this.m_rentity.update();
             if (this.m_rentity.getTransform() != null) {
                 if (this.m_dynamicEnbaled) {
-                    this.m_rentity.setIvsParam(0, this.m_mesh.vtCount);
+                    this.m_rentity.getMaterial().vtxInfo.setIvsParam(0, this.m_mesh.vtCount);
                 }
             }
         }

@@ -120,7 +120,7 @@ class ClipLabel extends ClipLabelBase implements IClipLabel {
 				let et = CoEntity.createDisplayEntity();
 				et.setMaterial(this.m_material);
 				et.setMesh(mesh);
-				et.setIvsParam(0, this.m_step);
+				this.m_material.vtxInfo.setIvsParam(0, this.m_step);
 				this.m_entities.push(et);
 
 				this.applyRST( et );

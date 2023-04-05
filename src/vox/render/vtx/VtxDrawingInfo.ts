@@ -91,11 +91,4 @@ export default class VtxDrawingInfo implements IVtxDrawingInfo {
 		}
 		return false;
 	}
-	// clone(): VtxDrawingInfo {
-	//     let rd = new VtxDrawingInfo();
-	//     rd.m_ivsIndex = this.m_ivsIndex;
-	//     rd.m_ivsCount = this.m_ivsCount;
-	//     rd.m_wireframe = this.m_wireframe;
-	//     return rd;
-	// }
 }
