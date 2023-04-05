@@ -15,7 +15,7 @@ class PathFollowParticle extends FollowParticle {
 	private m_dis = 0;
 	constructor() {super();}
 
-	addPosition(pv: Vector3D, total: number = 1, stepDis: number = 30): void {
+	addPosition(pv: Vector3D, total: number = 1, spaceRange: number = 20, stepDis: number = 30): void {
 		
 		const track = this.m_pathTrack;
 		track.addXYZ(pv.x, pv.y, pv.z);
@@ -24,7 +24,7 @@ class PathFollowParticle extends FollowParticle {
 			for (let i = 0; i < 100; ++i) {
 				// let outV = new Vector3D();
 				const flag = track.calcNextPosByDis(outV, this.m_dis, false);
-				this.createParticles(outV, total, 20);
+				this.createParticles(outV, total, spaceRange);
 				this.m_dis += stepDis;
 				if (flag == PathTrack.TRACK_END) {
 					// console.log("path search end.");
