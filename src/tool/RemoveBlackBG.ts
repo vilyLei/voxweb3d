@@ -62,12 +62,6 @@ export class RemoveBlackBG {
 		return this.getTexByUrl("static/assets/" + pns);
 	}
 	private getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
-		// let hostUrl = window.location.href;
-		// if (hostUrl.indexOf(".artvily.") > 0) {
-		// 	hostUrl = "http://www.artvily.com:9090/";
-		// 	url = hostUrl + url;
-		// }
-		// return this.m_texLoader.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
 		return this.m_aspParam.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
 	}
 
@@ -146,9 +140,9 @@ export class RemoveBlackBG {
 	initFileLoad(files: any[]): void {
 		// this.m_dropEnabled = false;
 		console.log("initFileLoad(), files.length: ", files.length);
-		let flag: number = 1;
+		let flag = 1;
 		if (files.length > 0) {
-			let name: string = "";
+			let name = "";
 			let urls: string[] = [];
 			for (let i = 0; i < files.length; i++) {
 				if (i == 0) name = files[i].name;
@@ -166,7 +160,7 @@ export class RemoveBlackBG {
 					flag = 31;
 				}
 				if(flag != 31) {
-					this.loadAImg(urls[0]);
+					this.loadAImg(urls[0], files[0].name);
 				}
 			} else {
 				flag = 31;
@@ -179,21 +173,26 @@ export class RemoveBlackBG {
 	isDropEnabled(): boolean {
 		return this.m_dropEnabled;
 	}
-	private loadAImg(url: string): void {
-		console.log("loadAImg, url: ", url);
+	private m_name = "";
+	private loadAImg(url: string, name: string): void {
+		// console.log("loadAImg A, url: ", url,", name: ", name);
+		if(name.indexOf(".") > 0) {
+			name = name.slice(0, name.indexOf("."));
+		}
+		console.log("loadAImg, url: ", url,", name: ", name);
+		this.m_name = name;
 		this.createAEntityByTexUrl(url);
 	}
 	private createCanvasData(): string {
 
 		let pw = this.m_currTexture.getWidth();
 		let ph = this.m_currTexture.getHeight();
-		console.log("pw, ph");
+		
 		const srcCanvas = this.m_rscene.getRenderProxy().getCanvas();
 		const canvas = document.createElement('canvas');
 		canvas.width = pw;
 		canvas.height = ph;
 		canvas.style.display = 'bolck';
-
 
 		const ctx2d = canvas.getContext('2d')!;
 		ctx2d.drawImage(
@@ -216,7 +215,7 @@ export class RemoveBlackBG {
 	private saveImage(): void {
 		const a = document.createElement('a');
 		a.href = this.createCanvasData();
-		a.download = "pngfile.png";
+		a.download = this.m_name != "" ? this.m_name + "_new.png": "pngfile.png";
 		document.body.appendChild(a);
 		(a as any).style = 'display: none';
 		a.click();
@@ -349,10 +348,6 @@ export class RemoveBlackBG {
 		div.style.width = pw + "px";
 		div.style.height = ph + "px";
 		(this.m_rscene as RendererScene).updateRenderBufferSize();
-		// if(this.m_currEntity) {
-		// 	this.m_currEntity.setScaleXYZ(0.5, 0.5, 1.0);
-		// 	this.m_currEntity.update();
-		// }
 		this.layoutEntity();
 	}
 	private layoutEntity(): void {
@@ -375,8 +370,6 @@ export class RemoveBlackBG {
 	}
 	run(): void {
 		if(this.m_loadingTex && this.m_loadingTex.isDataEnough()) {
-			// let pw = this.m_currTexture.getWidth();
-			// let ph = this.m_currTexture.getHeight();
 			this.layoutEntity();
 			this.m_loadingTex = null;
 		}
