@@ -19,7 +19,6 @@ import FBOInstance from "../../../vox/scene/FBOInstance";
 import RendererScene from "../../../vox/scene/RendererScene";
 
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
-import {FogPlaneGeomFactorMaterial} from "../../../advancedDemo/depthLight/material/FogPlaneGeomFactorMaterial";
 import {FogPlaneConeFactorMaterial} from "../../../advancedDemo/depthLight/material/FogPlaneConeFactorMaterial";
 import {FogUnit} from "../../../advancedDemo/depthLight/scene/FogUnit";
 

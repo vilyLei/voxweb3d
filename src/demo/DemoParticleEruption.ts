@@ -73,24 +73,6 @@ export class DemoParticleEruption {
         this.m_materialCtx.envLightModule.setFogDensity(0.0003);
         this.m_materialCtx.lightModule.update();
     }
-    private initTex(): void {
-
-        // let textures: IRenderTexture[] = [];
-        // textures.push(this.getTexByUrl("static/assets/wood_02.jpg"));
-        // textures.push(this.getTexByUrl("static/assets/arrow01.png"));
-        // textures.push(this.getTexByUrl("static/assets/partile_tex_001.jpg"));
-        // textures.push(this.getTexByUrl("static/assets/stones_02.png"));
-        // textures.push(this.getTexByUrl("static/assets/guangyun_H_0007.png"));
-        // textures.push(this.getTexByUrl("static/assets/flare_core_01.jpg"));
-        // textures.push(this.getTexByUrl("static/assets/flare_core_02.jpg"));
-        // textures.push(this.getTexByUrl("static/assets/a_02_c.jpg"));
-        // textures.push(this.getTexByUrl("static/assets/testEFT4.jpg"));
-        // textures.push(this.getTexByUrl("static/assets/xulie_02_07.png"));
-        // textures.push(this.getTexByUrl("static/assets/color_02.jpg"));
-        // textures.push(this.getTexByUrl("static/assets/particle/xuelie/xulie_00046.png"));
-        // textures.push(this.getTexByUrl("static/assets/testTex.png"));
-        // this.m_textures = textures;
-    }
     initialize(): void {
         let boo0: any = true;
         let boo1: any = false;
@@ -141,7 +123,6 @@ export class DemoParticleEruption {
             //*/
 
             this.m_rscene.setClearRGBColor3f(0.1, 0.1, 0.1);
-            this.initTex();
             this.initMaterialCtx();
             this.update();
         }

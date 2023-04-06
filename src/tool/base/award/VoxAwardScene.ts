@@ -8,7 +8,7 @@ class VoxAwardScene {
 	constructor() {}
 
 	initialize(uisc: IRendererScene, vasParam: IAwardSceneParam): void {
-		console.log("RemoveBlackBG::initialize()......");
+		
 		if (this.m_init) {
 			this.m_init = false;
 			this.m_uisc = uisc;

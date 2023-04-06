@@ -272,9 +272,6 @@ export class RemoveBlackBG {
 			this.m_savingImg = true;
 		}, true, false);
 		ui.addStatusItem("切换", "change_bg_color", "背景色", "背景色", false, (info: CtrlInfo): void => {
-			// if(this.m_currMaterial) {
-			// 	// this.m_currMaterial.setParam3(info.flag?0.0:1.0);
-			// }
 			this.m_bgColor.randomRGB(0.15);
 			this.m_rscene.setClearRGBAColor4f(this.m_bgColor.r,this.m_bgColor.g, this.m_bgColor.b, 0.0);
 		}, true, false);

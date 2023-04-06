@@ -56,9 +56,6 @@ class LoadingUI {
 			this.elementCenter(this.m_infoDiv);
 			this.m_bodyDiv.appendChild(this.m_infoDiv);
 		}
-		// this.m_bodyDiv.parentElement.removeChild(this.m_bodyDiv);
-		// this.m_bodyDiv.parentElement.removeChild(this.m_bodyDiv);
-		// document.body.appendChild(this.m_bodyDiv);
 		this.m_infoDiv.innerHTML = str;
 	}
 	showLoadProgressInfo(progress: number): void {
