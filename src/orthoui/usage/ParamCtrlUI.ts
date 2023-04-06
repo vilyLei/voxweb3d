@@ -20,11 +20,18 @@ import EventBase from "../../vox/event/EventBase";
 export default class ParamCtrlUI {
 
     private m_rscene: IRendererScene = null;
-
+	private m_closeBtnFlag = true;
     ruisc: IRendererScene = null;
     rgbPanel: RGBColorPanel;
 
-    constructor() { }
+    readonly fontColor: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
+    readonly fontBgColor: Color4 = new Color4(1.0, 1.0, 1.0, 0.3);
+
+	proBarBGBarAlpha = 0.3;
+	proBarBGPlaneAlpha = 0.25;
+    constructor(closeBtnFlag: boolean = true) {
+		this.m_closeBtnFlag = closeBtnFlag;
+	}
 
     initialize(rscene: IRendererScene, buildDisplay: boolean = true): void {
 
@@ -99,6 +106,8 @@ export default class ParamCtrlUI {
     private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
 
         let selectBar = new SelectionBar();
+		selectBar.fontColor.copyFrom(this.fontColor);
+		selectBar.fontBgColor.copyFrom(this.fontBgColor);
         selectBar.uuid = uuid;
         selectBar.initialize(this.ruisc, ns, selectNS, deselectNS, this.m_btnSize);
         selectBar.addEventListener(SelectionEvent.SELECT, this, this.selectChange);
@@ -122,6 +131,10 @@ export default class ParamCtrlUI {
     private createProgressBtn(ns: string, uuid: string, progress: number, visibleAlways: boolean = false): ProgressBar {
 
         let proBar = new ProgressBar();
+		proBar.fontColor.copyFrom(this.fontColor);
+		proBar.fontBgColor.copyFrom(this.fontBgColor);
+		proBar.bgBarAlpha = this.proBarBGBarAlpha;
+		proBar.bgPlaneAlpha = this.proBarBGPlaneAlpha;
         proBar.uuid = uuid;
         proBar.initialize(this.ruisc, ns, this.m_btnSize, this.m_bgLength);
         proBar.setProgress(progress, false);
@@ -141,6 +154,10 @@ export default class ParamCtrlUI {
     private createValueBtn(ns: string, uuid: string, value: number, minValue: number, maxValue: number, visibleAlways: boolean = false): ProgressBar {
 
         let proBar = new ProgressBar();
+		proBar.fontColor.copyFrom(this.fontColor);
+		proBar.fontBgColor.copyFrom(this.fontBgColor);
+		proBar.bgBarAlpha = this.proBarBGBarAlpha;
+		proBar.bgPlaneAlpha = this.proBarBGPlaneAlpha;
         proBar.uuid = uuid;
         proBar.initialize(this.ruisc, ns, this.m_btnSize, this.m_bgLength);
         proBar.minValue = minValue;
@@ -180,7 +197,9 @@ export default class ParamCtrlUI {
             this.m_btnPX += 32;
             this.m_btnSize = MathConst.CalcCeilPowerOfTwo(this.m_btnSize);
         }
-        this.m_menuBtn = this.createSelectBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
+		if(this.m_closeBtnFlag) {
+			this.m_menuBtn = this.createSelectBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
+		}
 
         this.m_selectPlane = new Plane3DEntity();
         this.m_selectPlane.vertColorEnabled = true;
@@ -276,17 +295,17 @@ export default class ParamCtrlUI {
             for (let i: number = 0; i < this.m_visiBtns.length; ++i) {
                 this.m_visiBtns[i].open();
             }
-            this.m_menuBtn.getPosition(this.m_pos);
+            if(this.m_menuBtn) this.m_menuBtn.getPosition(this.m_pos);
             this.m_pos.x = this.m_btnPX;
-            this.m_menuBtn.setPosition(this.m_pos);
+            if(this.m_menuBtn) this.m_menuBtn.setPosition(this.m_pos);
         }
         else if (this.m_visiBtns[0].isOpen()) {
             for (let i: number = 0; i < this.m_visiBtns.length; ++i) {
                 this.m_visiBtns[i].close();
             }
-            this.m_menuBtn.getPosition(this.m_pos);
+            if(this.m_menuBtn) this.m_menuBtn.getPosition(this.m_pos);
             this.m_pos.x = 0;
-            this.m_menuBtn.setPosition(this.m_pos);
+            if(this.m_menuBtn) this.m_menuBtn.setPosition(this.m_pos);
             this.m_selectPlane.setVisible(false);
         }
         if (this.rgbPanel != null) this.rgbPanel.close();

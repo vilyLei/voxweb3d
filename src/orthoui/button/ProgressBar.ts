@@ -21,6 +21,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import UIBarTool from "./UIBarTool";
 import Color4 from "../../vox/material/Color4";
 import AABB2D from "../../vox/geom/AABB2D";
+import IColorMaterial from "../../vox/material/mcase/IColorMaterial";
 
 export class ProgressBar {
     private m_ruisc: IRendererScene = null;
@@ -44,9 +45,10 @@ export class ProgressBar {
 
     private m_posZ: number = 0.0;
     private m_value: number = 0.0;
-    readonly fontColor: Color4 = new Color4(0.8, 0.8, 0.8, 1.0);
+    readonly fontColor: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
     readonly fontBgColor: Color4 = new Color4(1.0, 1.0, 1.0, 0.3);
-
+	bgBarAlpha = 0.3;
+	bgPlaneAlpha = 0.25;
     uuid: string = "ProgressBar";
     minValue: number = 0.0;
     maxValue: number = 1.0;
@@ -158,7 +160,7 @@ export class ProgressBar {
         bgPlane.initializeXOY(0, 0, 1, height, [CanvasTextureTool.GetInstance().createWhiteTex()]);
         bgPlane.setScaleXYZ(width, 1.0, 1.0);
         bgPlane.setXYZ(px, py, 0.0);
-        (bgPlane.getMaterial() as any).setAlpha(0.25);
+        (bgPlane.getMaterial() as any).setAlpha(this.bgPlaneAlpha);
         bgPlane.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         container.addEntity(bgPlane);
 
@@ -166,7 +168,9 @@ export class ProgressBar {
         barPlane.premultiplyAlpha = true;
         barPlane.initializeXOY(0, 0, 1, height, [CanvasTextureTool.GetInstance().createWhiteTex()]);
         barPlane.setXYZ(px, py, 0.0);
-        (barPlane.getMaterial() as any).setAlpha(0.3);
+		let c = this.fontBgColor;
+		(barPlane.getMaterial() as IColorMaterial).setRGB3f(c.r, c.g, c.b);
+        (barPlane.getMaterial() as any).setAlpha(this.bgBarAlpha);
         barPlane.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         container.addEntity(barPlane);
         this.m_barPlane = barPlane;
@@ -258,10 +262,10 @@ export class ProgressBar {
         this.m_autoDelay++;
     }
     private barMouseOver(evt: any): void {
-        (this.m_barPlane.getMaterial() as any).setAlpha(0.6);
+        (this.m_barPlane.getMaterial() as any).setAlpha(this.bgBarAlpha + 0.1);
     }
     private barMouseOut(evt: any): void {
-        (this.m_barPlane.getMaterial() as any).setAlpha(0.3);
+        (this.m_barPlane.getMaterial() as any).setAlpha(this.bgBarAlpha);
     }
     private btnMouseDown(evt: any): void {
         this.m_autoDelay = 0;
