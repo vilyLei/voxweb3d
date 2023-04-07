@@ -69,6 +69,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
 	protected m_renderProxy: IRenderProxy = null;
 	protected m_pipeLine: IMaterialPipeline = null;
 
+	intoRendererListener: () =>void = null;
 	/**
 	 * renderer scene entity flag, be used by the renderer system
 	 * 第0位到第19位总共20位存放自身在space中的 index id(最小值为1, 最大值为1048575,默认值是0, 也就是最多只能展示1048575个entitys),
@@ -768,6 +769,7 @@ export default class DisplayEntity implements IDisplayEntity, IEntityTransform, 
 			this.m_trw.destroy();
 			this.m_trw = null;
 		}
+		this.intoRendererListener = null;
 	}
 	toString(): string {
 		return "DisplayEntity(uuid=" + this.uuid + ",uid = " + this.m_uid + ", rseFlag = " + this.__$rseFlag + ")";

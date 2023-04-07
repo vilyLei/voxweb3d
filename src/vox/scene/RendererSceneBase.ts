@@ -256,8 +256,12 @@ export default class RendererSceneBase {
 		let srcCanvas = this.getCanvas();
 		dstCanvasCtx.drawImage(srcCanvas, px, py, width, height);
 	}
-	updateRenderBufferSize(): void {
-		this.m_adapter.updateRenderBufferSize();
+
+	/**
+	 * @param sync the default value is true
+	 */
+	updateRenderBufferSize(sync: boolean = true): void {
+		this.m_adapter.updateRenderBufferSize(sync);
 	}
 	setEvt3DController(evt3DCtr: IEvt3DController): void {
 		if (evt3DCtr != null) {
@@ -730,7 +734,7 @@ export default class RendererSceneBase {
 	 * should call this function per frame
 	 */
 	update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
-		
+
 		const st = this.m_currStage3D;
 		if (st != null) {
 			st.enterFrame();

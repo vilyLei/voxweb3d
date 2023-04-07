@@ -370,8 +370,11 @@ class RenderAdapter implements IRenderAdapter {
 	}
 	update(): void {
 	}
-	updateRenderBufferSize(): void {
-		this.m_rtx.updateRenderBufferSize();
+	/**
+	 * @param sync the default value is true
+	 */
+	updateRenderBufferSize(sync: boolean = true): void {
+		this.m_rtx.updateRenderBufferSize(sync);
 	}
 	destroy(): void {
 		this.m_rtx = null;

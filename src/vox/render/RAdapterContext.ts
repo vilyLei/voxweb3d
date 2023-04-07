@@ -315,15 +315,20 @@ class RAdapterContext implements IRAdapterContext {
     getDevicePixelRatio(): number {
         return this.m_devicePixelRatio;
     }
-    resizeBufferSize(pw: number, ph: number): void {
+	/**
+	 * @param pw buffer div width
+	 * @param ph buffer div height
+	 * @param sync the default value is true
+	 */
+    resizeBufferSize(pw: number, ph: number, sync: boolean = true): void {
         pw = Math.floor(pw);
         ph = Math.floor(ph);
-        let k = window.devicePixelRatio;
+        let k = sync ? window.devicePixelRatio : 1.0;
         let dprChanged = Math.abs(k - this.m_devicePixelRatio) > 0.01 || this.m_resizeFlag;
         this.m_devicePixelRatio = k;
         this.m_mouseEvtDisplather.dpr = k;
         RendererDevice.SetDevicePixelRatio(this.m_devicePixelRatio);
-        // console.log("this.m_devicePixelRatio: "+this.m_devicePixelRatio);
+        console.log("window.devicePixelRatio: ", this.m_devicePixelRatio, ", sync: ", sync, ", this.m_devicePixelRatio: ", this.m_devicePixelRatio);
         this.m_resizeFlag = false;
         if (this.m_displayWidth != pw || this.m_displayHeight != ph || dprChanged) {
 
@@ -420,13 +425,16 @@ class RAdapterContext implements IRAdapterContext {
     getRCanvasHeight(): number {
         return this.m_rcanvasHeight;
     }
-    updateRenderBufferSize(): void {
+	/**
+	 * @param sync the default value is true
+	 */
+    updateRenderBufferSize(sync: boolean = true): void {
         let rect = this.m_div.getBoundingClientRect();
         console.log("updateRenderBufferSize() rect.width, rect.height: ", rect.width, rect.height);
         this.m_canvas.style.width = Math.floor(rect.width) + 'px';
         this.m_canvas.style.height = Math.floor(rect.height) + 'px';
         rect = this.m_div.getBoundingClientRect();
-        this.resizeBufferSize(rect.width, rect.height);
+        this.resizeBufferSize(rect.width, rect.height, sync);
     }
 }
 export default RAdapterContext;

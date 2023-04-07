@@ -392,6 +392,9 @@ export default class RODataBuilder implements IRODataBuilder {
                     console.error("Error RODataBuilder::buildGpuDisp(), disp is unavailable !!!");
                     this.buildVtxRes(disp, runit, null);
                 }
+				if(rentity && rentity.intoRendererListener) {
+					rentity.intoRendererListener();
+				}
                 return true;
             }
             else {

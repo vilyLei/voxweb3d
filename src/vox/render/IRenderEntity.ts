@@ -26,6 +26,7 @@ export default interface IRenderEntity extends IRenderEntityBase {
     __$testContainerEnabled(): boolean;
     __$testRendererEnabled(): boolean;
 
+	intoRendererListener?: () =>void;
     getRendererUid(): number;
     /**
      * @returns 自身是否未被任何渲染器相关的系统使用

@@ -77,6 +77,7 @@ export default class PureEntity implements IDisplayEntity {
     mouseEnabled: boolean = false;
     //
     vbWholeDataEnabled: boolean = true;
+	intoRendererListener: () =>void = null;
 
 	hasParent(): boolean {
 		return false;
@@ -545,6 +546,7 @@ export default class PureEntity implements IDisplayEntity {
             this.m_renderProxy = null;
             this.__$rseFlag = RSEntityFlag.DEFAULT;
         }
+		this.intoRendererListener = null;
     }
     /**
      * 表示没有加入任何渲染场景或者渲染器
@@ -628,8 +630,5 @@ export default class PureEntity implements IDisplayEntity {
     update(): void {
         this.updateGlobalBounds();
         this.m_matChanged = false;
-    }
-    toString(): string {
-        return "PureEntity(uuid=" + this.uuid + ",uid = " + this.m_uid + ", rseFlag = " + this.__$rseFlag + ")";
     }
 }
