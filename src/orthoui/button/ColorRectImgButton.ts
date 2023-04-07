@@ -6,15 +6,15 @@ import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 
 export default class ColorRectImgButton extends Plane3DEntity {
-    private m_initFlag: boolean = true;
+    private m_initFlag = true;
     private m_dispatcher: MouseEvt3DDispatcher = null;
-    private m_width: number = 100.0;
-    private m_height: number = 100.0;
-    private m_posZ: number = 0.0;
-    readonly overColor: Color4 = new Color4(1.0, 0.5, 1.1, 1.0);
-    readonly downColor: Color4 = new Color4(1.0, 0.0, 1.0, 1.0);
-    readonly outColor: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
-    index: number = 0;
+    private m_width = 100.0;
+    private m_height = 100.0;
+    private m_posZ = 0.0;
+    readonly overColor = new Color4(1.0, 0.5, 1.1, 1.0);
+    readonly downColor = new Color4(1.0, 0.0, 1.0, 1.0);
+    readonly outColor = new Color4(1.0, 1.0, 1.0, 1.0);
+    index = 0;
     constructor() {
         super();
     }

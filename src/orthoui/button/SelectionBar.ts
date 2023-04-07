@@ -20,29 +20,29 @@ import AABB2D from "../../vox/geom/AABB2D";
 
 export class SelectionBar {
     private m_ruisc: IRendererScene = null;
-    private m_dispatcher: EventBaseDispatcher = new EventBaseDispatcher();
-    private m_currEvent: SelectionEvent = new SelectionEvent();
+    private m_dispatcher = new EventBaseDispatcher();
+    private m_currEvent = new SelectionEvent();
 
     private m_container: DisplayEntityContainer = null;
-    readonly selectionButton: ColorRectImgButton = new ColorRectImgButton();
+    readonly selectionButton = new ColorRectImgButton();
     readonly nameButton: ColorRectImgButton = null;
-    private m_rect: AABB2D = new AABB2D();
+    private m_rect = new AABB2D();
 
     private m_texObj0: CanvasTextureObject;
     private m_texObj1: CanvasTextureObject;
 
-    private m_btnSize: number = 64;
-    private m_flag: boolean = true;
-    private m_barName: string = "select";
-    private m_selectName: string = "Yes";
-    private m_deselectName: string = "No";
+    private m_btnSize = 64;
+    private m_flag = true;
+    private m_barName = "select";
+    private m_selectName = "Yes";
+    private m_deselectName = "No";
 
-    private m_posZ: number = 0.0;
-    private m_enabled: boolean = true;
+    private m_posZ = 0.0;
+    private m_enabled = true;
 
-    readonly fontColor: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
-    readonly fontBgColor: Color4 = new Color4(1.0, 1.0, 1.0, 0.3);
-    uuid: string = "selectionBar";
+    readonly fontColor = new Color4(1.0, 1.0, 1.0, 1.0);
+    readonly fontBgColor = new Color4(1.0, 1.0, 1.0, 0.3);
+    uuid = "selectionBar";
 
     constructor() { }
     setOverColor(color: Color4): void {
@@ -154,7 +154,7 @@ export class SelectionBar {
         image = CanvasTextureTool.GetInstance().createCharsImage(this.m_deselectName, size, this.fontColor.getCSSDecRGBAColor(), this.fontBgColor.getCSSDecRGBAColor());
         this.m_texObj1 = CanvasTextureTool.GetInstance().addImageToAtlas(keyStr, image);
 
-        let btn: ColorRectImgButton = this.selectionButton;
+        let btn = this.selectionButton;
         btn.uvs = this.m_texObj0.uvs;
         btn.initialize(0.0, 0.0, 1, 1, [this.m_texObj0.texture]);
         btn.setScaleXYZ(this.m_texObj0.getWidth(), this.m_texObj0.getHeight(), 1.0);
