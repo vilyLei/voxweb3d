@@ -272,6 +272,7 @@ class RenderProxy implements IRenderProxy {
     testRCViewPortChanged(px: number, py: number, pw: number, ph: number): boolean {
         return this.m_adapterContext.testViewPortChanged(px, py, pw, ph);
     }
+    getDevicePixelRatio(): number { return this.adapter.getDevicePixelRatio(); }
     getViewX(): number { return this.m_viewPortRect.x; }
     getViewY(): number { return this.m_viewPortRect.y; }
     getViewWidth(): number { return this.m_viewPortRect.width; }

@@ -32,7 +32,7 @@ class RAdapterContext implements IRAdapterContext {
     private m_viewPortRect = new AABB2D(0, 0, 800, 600);
     private m_maxWebGLVersion = 2;
     private m_webGLVersion = 2;
-    private m_devicePixelRatio = 1.0;
+    private m_dpr = 1.0;
 
     private m_viewEle = new RViewElement();
     // display 3d view buf size auto sync window size
@@ -100,15 +100,15 @@ class RAdapterContext implements IRAdapterContext {
         if (pdocument != null) {
             let div = param.getDiv();
             const rattr = param.getRenderContextAttri();
-            this.m_devicePixelRatio = window.devicePixelRatio;
-            RendererDevice.SetDevicePixelRatio(this.m_devicePixelRatio);
+            this.m_dpr = window.devicePixelRatio;
+            RendererDevice.SetDevicePixelRatio(this.m_dpr);
             this.m_viewEle.setDiv(div);
             this.m_viewEle.createViewEle(pdocument, this.autoSyncRenderBufferAndWindowSize, param.divW, param.divH);
             this.m_div = div = this.m_viewEle.getDiv();
             let canvas: any = this.m_canvas = this.m_viewEle.getCanvas();
 
-            this.m_devicePixelRatio = window.devicePixelRatio;
-            this.m_mouseEvtDisplather.dpr = this.m_devicePixelRatio;
+            this.m_dpr = window.devicePixelRatio;
+            this.m_mouseEvtDisplather.dpr = this.m_dpr;
 
             let attr: any = rattr;
             if (rattr == null) {
@@ -119,7 +119,7 @@ class RAdapterContext implements IRAdapterContext {
                 this.m_depthTestEnabled = attr.depth;
                 this.m_stencilTestEnabled = attr.stencil;
             }
-            console.log("this.m_devicePixelRatio: ", this.m_devicePixelRatio, ",rattr == null: ", (rattr == null));
+            console.log("this.m_dpr: ", this.m_dpr, ",rattr == null: ", (rattr == null));
             console.log("depthTestEnabled: ", attr.depth);
             console.log("stencilTestEnabled: ", attr.stencil);
             console.log("antialiasEnabled: ", attr.antialias);
@@ -301,7 +301,7 @@ class RAdapterContext implements IRAdapterContext {
         }
     }
     setScissorRect(px: number, py: number, pw: number, ph: number): void {
-        //this.m_gl.scissor(Math.floor(px*this.m_devicePixelRatio),Math.floor(py*this.m_devicePixelRatio), pw,ph);
+        //this.m_gl.scissor(Math.floor(px*this.m_dpr),Math.floor(py*this.m_dpr), pw,ph);
         this.m_gl.scissor(px, py, pw, ph);
     }
     private m_displayWidth: number = 0;
@@ -313,7 +313,7 @@ class RAdapterContext implements IRAdapterContext {
         this.m_resizeCallback = resizeCallback;
     }
     getDevicePixelRatio(): number {
-        return this.m_devicePixelRatio;
+        return this.m_dpr;
     }
 	/**
 	 * @param pw buffer div width
@@ -324,11 +324,11 @@ class RAdapterContext implements IRAdapterContext {
         pw = Math.floor(pw);
         ph = Math.floor(ph);
         let k = sync ? window.devicePixelRatio : 1.0;
-        let dprChanged = Math.abs(k - this.m_devicePixelRatio) > 0.01 || this.m_resizeFlag;
-        this.m_devicePixelRatio = k;
+        let dprChanged = Math.abs(k - this.m_dpr) > 0.01 || this.m_resizeFlag;
+        this.m_dpr = k;
         this.m_mouseEvtDisplather.dpr = k;
-        RendererDevice.SetDevicePixelRatio(this.m_devicePixelRatio);
-        console.log("window.devicePixelRatio: ", this.m_devicePixelRatio, ", sync: ", sync, ", this.m_devicePixelRatio: ", this.m_devicePixelRatio);
+        RendererDevice.SetDevicePixelRatio(this.m_dpr);
+        console.log("window.devicePixelRatio: ", this.m_dpr, ", sync: ", sync, ", this.m_dpr: ", this.m_dpr);
         this.m_resizeFlag = false;
         if (this.m_displayWidth != pw || this.m_displayHeight != ph || dprChanged) {
 
@@ -360,7 +360,7 @@ class RAdapterContext implements IRAdapterContext {
                 //  DivLog.ShowLogOnce("stageSize: "+this.m_stage.stageWidth+","+this.m_stage.stageHeight);
                 //  DivLog.ShowLog("canvasSize: "+this.m_canvas.width+","+this.m_canvas.height);
                 //  DivLog.ShowLog("dispSize: "+this.m_displayWidth+","+this.m_displayHeight);
-                //  DivLog.ShowLog("pixelRatio:"+this.m_devicePixelRatio);
+                //  DivLog.ShowLog("pixelRatio:"+this.m_dpr);
                 //  console.log("display size: "+this.m_displayWidth+","+this.m_displayHeight);
                 //  console.log("RAdapterContext::resize(), canvas.width:"+this.m_canvas.width+", canvas.height:"+this.m_canvas.height);
                 //  console.log("RAdapterContext::resize(), stageWidth:"+this.m_stage.stageWidth+", stageHeight:"+this.m_stage.stageHeight);
