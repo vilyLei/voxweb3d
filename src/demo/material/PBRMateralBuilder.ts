@@ -44,7 +44,7 @@ class PBRMateralBuilder {
 	private m_rscene: IRendererScene = null;
 	private static s_envMap: IRenderTexture;
 	sharedLightColor = true;
-	hdrBrnEnabled = false;
+	hdrBrnEnabled = true;
 	/**
 	 * 记录点光源灯光位置
 	 */

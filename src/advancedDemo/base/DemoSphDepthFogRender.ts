@@ -60,7 +60,8 @@ export class DemoSphDepthFogRender {
 		return material;
 	}
 	createMaterial(color: Color4 = null, uvParam: Vector3D = null, ns: string = ""): IRenderMaterial {
-		let param = new PBRParam(Math.random() * 1.2, Math.random() * 1.2, 1.2, new Color4(1.0, 1.0, 1.0));
+		let param = new PBRParam(Math.random() * 0.5, Math.random() * 1.2, 1.2, new Color4(1.0, 1.0, 1.0));
+		// let param = new PBRParam(0.1, Math.random() * 1.2, 1.2, new Color4(1.0, 1.0, 1.0));
 		param.depthFog = true;
 		if (uvParam != null) {
 			param.setUVOffset(uvParam.x, uvParam.y);

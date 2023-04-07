@@ -32,6 +32,7 @@ class BinaryTextureLoader {
         // return this.m_rc.textureBlock.createFloatCubeTex(32,32);
     }
     protected parseTextureBuffer(buffer: ArrayBuffer): void {
+        throw Error("illegal operations !!!");
         let begin = 0;
         let width = 128;
         let height = 128;
@@ -54,7 +55,14 @@ class SpecularEnvTextureLoader extends BinaryTextureLoader {
     constructor(rc: IRendererScene = null) {
         super(rc);
     }
-    
+    protected createTex(): IRenderTexture {
+        if(this.texture == null) {
+            let block = this.m_rc.textureBlock;
+            if(this.hdrBrnEnabled) this.texture = block.createBytesCubeTex(32, 32);
+            else this.texture = block.createFloatCubeTex(32, 32);
+        }
+        return this.texture;
+    }
     parseHdrBrn(buffer: ArrayBuffer): void {
 
         let data16: Uint16Array = new Uint16Array(buffer);
@@ -82,7 +90,6 @@ class SpecularEnvTextureLoader extends BinaryTextureLoader {
         }
     }
     protected parseTextureBuffer(buffer: ArrayBuffer): void {
-        console.log("XXXXX parseTextureBuffer(), this.hdrBrnEnabled: ", this.hdrBrnEnabled);
         if(this.hdrBrnEnabled) {
             this.parseHdrBrn(buffer);
             return;
