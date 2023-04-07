@@ -126,8 +126,10 @@ export default class Torus3DMesh extends MeshBase {
             this.m_vs = vs;
             this.m_uvs = uvs;
             this.m_ivs = ivs;
-
             this.bounds = this.geometry.bounds;
+            this.bounds.reset();
+            this.bounds.addFloat32Arr(this.m_vs);
+            this.bounds.update();
 
             this.vtCount = this.geometry.vtCount;
             this.trisNumber = this.geometry.trisNumber;
