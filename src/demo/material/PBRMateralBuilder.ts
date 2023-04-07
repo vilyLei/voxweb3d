@@ -44,6 +44,7 @@ class PBRMateralBuilder {
 	private m_rscene: IRendererScene = null;
 	private static s_envMap: IRenderTexture;
 	sharedLightColor = true;
+	hdrBrnEnabled = true;
 	/**
 	 * 记录点光源灯光位置
 	 */
@@ -56,7 +57,11 @@ class PBRMateralBuilder {
 		
 		if (PBRMateralBuilder.s_envMap == null) {
 			let envMapUrl = "static/bytes/spe.mdf";
+			if (this.hdrBrnEnabled) {
+                envMapUrl = "static/bytes/speBrn.bin";
+            }
 			let loader = new BinaryTextureLoader(this.m_rscene);
+			loader.hdrBrnEnabled = this.hdrBrnEnabled;
 			loader.loadTextureWithUrl(envMapUrl);
 			PBRMateralBuilder.s_envMap = loader.texture;
 		}
@@ -100,6 +105,7 @@ class PBRMateralBuilder {
 			this.initLightColor();
 		}
 		let wrapper = new PBREnvLightingMaterialWrapper();
+		wrapper.hdrBrnEnabled = this.hdrBrnEnabled;
 		wrapper.setTextureList([ this.getEnvMap() ]);
 
 		for (let i = 0; i < 4; ++i) {
@@ -121,6 +127,7 @@ class PBRMateralBuilder {
 			this.initLightColor();
 		}
 		let wrapper = new PBRTextureMaterialWrapper();
+		wrapper.hdrBrnEnabled = this.hdrBrnEnabled;
 		wrapper.depthFog = param.depthFog;
 		
 		let texList: IRenderTexture[] = [];

@@ -64,7 +64,12 @@ void main()
     #ifdef VOX_ENV_MAP
 	    vec3 envDir = -getWorldEnvDir(0.0, N, -V);
 	    envDir.x = -envDir.x;
-        vec3 specularEnvColor3 = VOX_TextureCubeLod(VOX_ENV_MAP, envDir, mipLv).xyz;
+        // vec3 specularEnvColor3 = VOX_TextureCubeLod(VOX_ENV_MAP, envDir, mipLv).xyz;
+        #ifdef VOX_HDR_BRN
+            vec3 specularEnvColor3 = vec3(rgbaToHdrBrn(VOX_TextureCubeLod(VOX_ENV_MAP, envDir, mipLv)));
+        #else
+            vec3 specularEnvColor3 = VOX_TextureCubeLod(VOX_ENV_MAP, envDir, mipLv).xyz;
+        #endif
         specularEnvColor3 = pow(specularEnvColor3, vec3(3.0));
         specularEnvColor3 = (1.0 - roughness) * LinearTosRGB(specularEnvColor3);
         specularColor += fresnelSchlick3(specularColor, dotNV, 0.25 * matReflectionIntensity) * specularEnvColor3;

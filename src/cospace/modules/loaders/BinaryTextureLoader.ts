@@ -3,11 +3,13 @@ import { IFloatCubeTexture } from "../../../vox/render/texture/IFloatCubeTexture
 import { HttpFileLoader } from "./HttpFileLoader";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import FloatCubeTextureProxy from "../../../vox/texture/FloatCubeTextureProxy";
+import { IBytesCubeTexture } from "../../../vox/render/texture/IBytesCubeTexture";
 
 class BinaryTextureLoader {
 
     protected m_rc: IRendererScene = null;
     texture: IRenderTexture = null;
+    hdrBrnEnabled = false;
     constructor(rc: IRendererScene = null) {
         this.m_rc = rc;
     }
@@ -52,7 +54,36 @@ class SpecularEnvTextureLoader extends BinaryTextureLoader {
         super(rc);
     }
     
+    parseHdrBrn(buffer: ArrayBuffer): void {
+
+        let data16: Uint16Array = new Uint16Array(buffer);
+        let currBytes: Uint8Array = new Uint8Array(buffer);
+        let begin: number = 0;
+        let width: number = data16[4];
+        let height: number = data16[5];
+        let mipMapMaxLv: number = data16[6];
+        console.log("parseHdrBrn, width: ",width, "height: ",height,"mipMapMaxLv: ",mipMapMaxLv);
+        let size: number = 0;
+        let bytes: Uint8Array = currBytes.subarray(32);
+        let tex: IBytesCubeTexture = this.texture as IBytesCubeTexture;
+        tex.mipmapEnabled = mipMapMaxLv <= 1;
+        // tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
+        // tex.magFilter = TextureConst.LINEAR;
+        for (let j: number = 0; j < mipMapMaxLv; j++) {
+            for (let i: number = 0; i < 6; i++) {
+                size = width * height * 4;
+                tex.setDataFromBytesToFaceAt(i, bytes.subarray(begin, begin + size), width, height, j);
+                begin += size;
+            }
+            width >>= 1;
+            height >>= 1;
+        }
+    }
     protected parseTextureBuffer(buffer: ArrayBuffer): void {
+        if(this.hdrBrnEnabled) {
+            this.parseHdrBrn(buffer);
+            return;
+        }
         let begin = 0;
         let width = 128;
         let height = 128;

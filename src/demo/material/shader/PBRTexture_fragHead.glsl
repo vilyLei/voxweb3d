@@ -223,3 +223,12 @@ vec3 getWorldEnvDir(float rotateAngle, vec3 worldNormal,vec3 worldInvE)
     worldR.zy *= vec2(-1.0);
 	return rotate(worldR, rotateAngle);
 }
+
+#ifdef VOX_HDR_BRN
+
+const vec4 hdrBrnDecodeVec4 = vec4(255.0, 2.55, 0.0255, 0.000255);
+float rgbaToHdrBrn(in vec4 color)
+{
+    return dot(hdrBrnDecodeVec4, color);
+}
+#endif

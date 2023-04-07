@@ -30,6 +30,7 @@ class PBRTextureMaterialWrapper {
 	metallicMapEnabled = false;
 	aoMapEnabled = false;
 	depthFog = false;
+	hdrBrnEnabled = false;
 	constructor() {}
 
 	setUVOffset(px: number, py: number): void {
@@ -64,7 +65,9 @@ class PBRTextureMaterialWrapper {
 			if (this.depthFog) {
 				uns += "depthFog_";
 			}
-
+			if (this.hdrBrnEnabled) {
+				uns += "hrBrn_";
+			}
 			uns = uns != "" ? "pbr_texture_shader" : "pbr_texture_shader_" + uns;
 			let material = new ShaderMaterial(uns);
 
@@ -94,6 +97,9 @@ class PBRTextureMaterialWrapper {
 				coder.addVarying("vec3", "v_camPos");
 				coder.addFragOutputHighp("vec4", "FragColor0");
 
+				if (this.hdrBrnEnabled) {
+					coder.addDefine("VOX_HDR_BRN", "1");
+				}
 				if (this.depthFog) {
 					coder.addDefine("VOX_DEPTH_FOG");
 					coder.addVarying("vec4", "v_fogParam");

@@ -24,6 +24,7 @@ class PBREnvLightingMaterialWrapper {
     private m_lightColors = new Float32Array(4 * 4);
     private m_material: IShaderMaterial = null;
 
+    hdrBrnEnabled = false;
     constructor() {
     }
     get material(): IRenderMaterial {
@@ -49,6 +50,13 @@ precision highp float;
                 fragCode +=
                     `
 #define VOX_TextureCubeLod textureLod
+`;
+            }
+
+            if (this.hdrBrnEnabled) {
+                fragCode +=
+                `
+#define VOX_HDR_BRN 1
 `;
             }
             fragCode += PBREnvLighting.frag_body;

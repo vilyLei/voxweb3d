@@ -231,6 +231,15 @@ vec3 getWorldEnvDir(float rotateAngle, vec3 worldNormal,vec3 worldInvE)
     worldR.zy *= vec2(-1.0);
 	return rotate(worldR, rotateAngle);
 }
+
+#ifdef VOX_HDR_BRN
+
+const vec4 hdrBrnDecodeVec4 = vec4(255.0, 2.55, 0.0255, 0.000255);
+float rgbaToHdrBrn(in vec4 color)
+{
+    return dot(hdrBrnDecodeVec4, color);
+}
+#endif
 // ----------------------------------------------------------------------------
 void main()
 {
@@ -267,7 +276,12 @@ void main()
 	vec3 envDir = -getWorldEnvDir(0.0/*envLightRotateAngle*/, N, -V); // env map upside down
 	envDir.x = -envDir.x;
     
-    vec3 specularEnvColor3 = VOX_TextureCubeLod(u_sampler0, envDir, mipLv).xyz;
+    // vec3 specularEnvColor3 = VOX_TextureCubeLod(u_sampler0, envDir, mipLv).xyz;
+    #ifdef VOX_HDR_BRN
+        vec3 specularEnvColor3 = vec3(rgbaToHdrBrn(VOX_TextureCubeLod(u_sampler0, envDir, mipLv)));
+    #else
+        vec3 specularEnvColor3 = VOX_TextureCubeLod(u_sampler0, envDir, mipLv).xyz;
+    #endif
     specularEnvColor3 = pow(specularEnvColor3, vec3(3.0));
     specularEnvColor3 = (1.0 - roughness) * LinearTosRGB(specularEnvColor3);
     specularColor += fresnelSchlick3(specularColor, dotNV, 0.25 * matReflectionIntensity) * specularEnvColor3;
