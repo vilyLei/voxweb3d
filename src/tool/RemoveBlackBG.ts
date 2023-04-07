@@ -126,9 +126,6 @@ export class RemoveBlackBG {
 		pdiv.width = 256;
 		pdiv.height = 64;
 		pdiv.style.backgroundColor = "#112211";
-		// pdiv.style.color = "去除黑色背景生成PNG图片:";
-
-		pdiv.innerHTML = "去除黑色背景生成PNG图片:";
 		pdiv.style.left = 10 + "px";
 		pdiv.style.top = 10 + "px";
 		pdiv.style.zIndex = "99999";
@@ -183,43 +180,8 @@ export class RemoveBlackBG {
 		this.m_name = name;
 		this.createAEntityByTexUrl(url);
 	}
-	private createCanvasData(): string {
-
-		let pw = this.m_currTexture.getWidth();
-		let ph = this.m_currTexture.getHeight();
-		
-		const srcCanvas = this.m_rscene.getRenderProxy().getCanvas();
-		const canvas = document.createElement('canvas');
-		canvas.width = pw;
-		canvas.height = ph;
-		canvas.style.display = 'bolck';
-
-		const ctx2d = canvas.getContext('2d')!;
-		ctx2d.drawImage(
-			srcCanvas,
-			0,
-			0,
-			srcCanvas.width,
-			srcCanvas.height,
-			0,
-			0,
-			canvas.width,
-			canvas.height,
-		);
-
-		return canvas.toDataURL('image/png');
-	}
 	private mouseDown(evt: any): void {
 		console.log("mouseDown() ...");
-	}
-	private saveImage(): void {
-		const a = document.createElement('a');
-		a.href = this.createCanvasData();
-		a.download = this.m_name != "" ? this.m_name + "_new.png": "pngfile.png";
-		document.body.appendChild(a);
-		(a as any).style = 'display: none';
-		a.click();
-		a.remove();
 	}
 	private m_currMaterial: RemoveBlackBGMaterial = null;
 	private m_currEntity: Plane3DEntity = null;
@@ -280,7 +242,7 @@ export class RemoveBlackBG {
 				this.m_currMaterial.setParam3(info.flag?0.0:1.0);
 			}
 		}, true, false);
-		ui.addStatusItem("恢复", "reset", "初始设置", "初始设置", true, (info: CtrlInfo): void => {
+		ui.addStatusItem("恢复", "reset", "默认设置", "默认设置", true, (info: CtrlInfo): void => {
 			this.resetCtrlValue();
 		}, true, false);
 		ui.addValueItem("透明度比例", "alpha_factor", 1.0, 0.0, 3.0, (info: CtrlInfo): void => {
@@ -324,10 +286,15 @@ export class RemoveBlackBG {
 		item.syncEnabled = true;
 		item.updateParamToUI();
 	}
+
+
 	private m_rflag = false;
 	private saveBegin(): void {
-		let pw = 768;
-		let ph = 768;
+		// let pw = 768;
+		// let ph = 768;
+
+		let pw = this.m_currTexture.getWidth();
+		let ph = this.m_currTexture.getHeight();
 		let div = this.m_div;
 		div.style.width = pw + "px";
 		div.style.height = ph + "px";
@@ -346,6 +313,41 @@ export class RemoveBlackBG {
 		div.style.height = ph + "px";
 		(this.m_rscene as RendererScene).updateRenderBufferSize();
 		this.layoutEntity();
+	}
+	private createCanvasData(): string {
+
+		let pw = this.m_currTexture.getWidth();
+		let ph = this.m_currTexture.getHeight();
+
+		const srcCanvas = this.m_rscene.getRenderProxy().getCanvas();
+		const canvas = document.createElement('canvas');
+		canvas.width = pw;
+		canvas.height = ph;
+		canvas.style.display = 'bolck';
+
+		const ctx2d = canvas.getContext('2d')!;
+		ctx2d.drawImage(
+			srcCanvas,
+			0,
+			0,
+			srcCanvas.width,
+			srcCanvas.height,
+			0,
+			0,
+			canvas.width,
+			canvas.height,
+		);
+
+		return canvas.toDataURL('image/png');
+	}
+	private saveImage(): void {
+		const a = document.createElement('a');
+		a.href = this.createCanvasData();
+		a.download = this.m_name != "" ? this.m_name + "_new.png": "pngfile.png";
+		document.body.appendChild(a);
+		(a as any).style = 'display: none';
+		a.click();
+		a.remove();
 	}
 	private layoutEntity(): void {
 		let pw = this.m_currTexture.getWidth();
