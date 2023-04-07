@@ -322,13 +322,6 @@ export class NormalMapVerifier {
 		(this.m_currMaterial.vertUniform as VertUniformComp).setUVScale(this.m_uv.x, this.m_uv.y);
 		ls[this.m_entityIndex].setVisible(true);
 
-		// // let entity = new Sphere3DEntity();
-		// // // entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-		// // entity.setMaterial( material );
-		// // entity.initialize(200, 30, 30);
-		// // this.m_rscene.addEntity(entity, 1);
-		// // this.m_currEntity = entity;
-
 	}
 	private showNextModel(): void {
 		let ls = this.m_baseEntities;

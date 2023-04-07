@@ -4,9 +4,9 @@
 //////////////////////////////     base    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
- import {RemoveBlackBG as Demo} from "./tool/RemoveBlackBG";
+//  import {RemoveBlackBG as Demo} from "./tool/RemoveBlackBG";
 
-//  import {NormalMapVerifier as Demo} from "./tool/NormalMapVerifier";
+ import {NormalMapVerifier as Demo} from "./tool/NormalMapVerifier";
 
 //  import {NormalMapBuilder as Demo} from "./tool/NormalMapBuilder";
 
