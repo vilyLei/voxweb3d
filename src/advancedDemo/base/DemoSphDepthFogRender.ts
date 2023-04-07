@@ -107,13 +107,19 @@ export class DemoSphDepthFogRender {
 
 		let material = this.createMaterial();
 
-		let planeSph = new Sphere3DEntity();
-		planeSph.meshMode = -1;
-		planeSph.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-		planeSph.setMaterial(material);
-		planeSph.initialize(220.0, 30, 30);
-		planeSph.setXYZ(0, -70, 0);
-		this.m_rscene.addEntity(planeSph);
+		// let planeSph = new Sphere3DEntity();
+		// planeSph.meshMode = -1;
+		// planeSph.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+		// planeSph.setMaterial(material);
+		// planeSph.initialize(220.0, 30, 30);
+		// planeSph.setXYZ(0, -70, 0);
+		// this.m_rscene.addEntity(planeSph);
+
+		let pl0 = new Plane3DEntity();
+		pl0.setMaterial(material);
+		pl0.initializeXOZSquare(700);
+		pl0.setXYZ(0, -170, 0);
+		this.m_rscene.addEntity(pl0);
 
 		let sph = new Sphere3DEntity();
 		sph.setMaterial(material);

@@ -67,6 +67,12 @@ void main()
         // vec3 specularEnvColor3 = VOX_TextureCubeLod(VOX_ENV_MAP, envDir, mipLv).xyz;
         #ifdef VOX_HDR_BRN
             vec3 specularEnvColor3 = vec3(rgbaToHdrBrn(VOX_TextureCubeLod(VOX_ENV_MAP, envDir, mipLv)));
+            FragColor0 = vec4(specularEnvColor3, 1.0);
+    
+    #ifdef VOX_DEPTH_FOG
+        FragColor1 = v_fogParam;
+    #endif
+    return;
         #else
             vec3 specularEnvColor3 = VOX_TextureCubeLod(VOX_ENV_MAP, envDir, mipLv).xyz;
         #endif

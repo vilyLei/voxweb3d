@@ -4,6 +4,7 @@ import { HttpFileLoader } from "./HttpFileLoader";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
 import FloatCubeTextureProxy from "../../../vox/texture/FloatCubeTextureProxy";
 import { IBytesCubeTexture } from "../../../vox/render/texture/IBytesCubeTexture";
+import TextureConst from "../../../vox/texture/TextureConst";
 
 class BinaryTextureLoader {
 
@@ -67,8 +68,9 @@ class SpecularEnvTextureLoader extends BinaryTextureLoader {
         let bytes: Uint8Array = currBytes.subarray(32);
         let tex: IBytesCubeTexture = this.texture as IBytesCubeTexture;
         tex.mipmapEnabled = mipMapMaxLv <= 1;
-        // tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
-        // tex.magFilter = TextureConst.LINEAR;
+        tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
+        tex.magFilter = TextureConst.LINEAR;
+        
         for (let j: number = 0; j < mipMapMaxLv; j++) {
             for (let i: number = 0; i < 6; i++) {
                 size = width * height * 4;
@@ -80,6 +82,7 @@ class SpecularEnvTextureLoader extends BinaryTextureLoader {
         }
     }
     protected parseTextureBuffer(buffer: ArrayBuffer): void {
+        console.log("XXXXX parseTextureBuffer(), this.hdrBrnEnabled: ", this.hdrBrnEnabled);
         if(this.hdrBrnEnabled) {
             this.parseHdrBrn(buffer);
             return;
@@ -94,8 +97,8 @@ class SpecularEnvTextureLoader extends BinaryTextureLoader {
         let tex = this.texture as IFloatCubeTexture;
         tex.toRGBFormat();
         tex.mipmapEnabled = false;
-        // tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
-        // tex.magFilter = TextureConst.LINEAR;
+        tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
+        tex.magFilter = TextureConst.LINEAR;
         
         for (let j = 0; j < 9; j++) {
             for (let i = 0; i < 6; i++) {

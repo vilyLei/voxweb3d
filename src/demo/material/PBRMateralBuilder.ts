@@ -3,7 +3,7 @@ import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import { PBREnvLightingMaterialWrapper } from "../material/PBREnvLightingMaterialWrapper";
 import { PBRTextureMaterialWrapper } from "../material/PBRTextureMaterialWrapper";
-import { BinaryTextureLoader } from "../../cospace/modules/loaders/BinaryTextureLoader";
+import { SpecularEnvTextureLoader, BinaryTextureLoader } from "../../cospace/modules/loaders/BinaryTextureLoader";
 import IColor4 from "../../vox/material/IColor4";
 import Vector3D from "../../vox/math/Vector3D";
 import Color4 from "../../vox/material/Color4";
@@ -44,7 +44,7 @@ class PBRMateralBuilder {
 	private m_rscene: IRendererScene = null;
 	private static s_envMap: IRenderTexture;
 	sharedLightColor = true;
-	hdrBrnEnabled = true;
+	hdrBrnEnabled = false;
 	/**
 	 * 记录点光源灯光位置
 	 */
@@ -60,7 +60,8 @@ class PBRMateralBuilder {
 			if (this.hdrBrnEnabled) {
                 envMapUrl = "static/bytes/speBrn.bin";
             }
-			let loader = new BinaryTextureLoader(this.m_rscene);
+			console.log(">>>>>>>>>>>>> 0-0bbb >>>>>>>>");
+			let loader = new SpecularEnvTextureLoader(this.m_rscene);
 			loader.hdrBrnEnabled = this.hdrBrnEnabled;
 			loader.loadTextureWithUrl(envMapUrl);
 			PBRMateralBuilder.s_envMap = loader.texture;
