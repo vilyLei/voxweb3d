@@ -90,6 +90,7 @@ export class DemoSphDepthFogRender2 {
 			// rparam.maxWebGLVersion = 1;
 			rparam.setCamProject(45.0, 1.0, 9000.0);
 			rparam.setCamPosition(2500.0, 2500.0, 2500.0);
+			rparam.setAttriAntialias(true);
 			this.m_rscene = this.m_graph.createScene(rparam);
 			this.m_rscene.initialize(rparam, 5);
 			this.m_rscene.updateCamera();

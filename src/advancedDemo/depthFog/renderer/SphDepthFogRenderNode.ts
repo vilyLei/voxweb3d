@@ -143,8 +143,8 @@ export class SphDepthFogRenderNode implements IRenderNode {
 		let fogUnit: SphDepthFogUnit;
 		for (i = 0; i < 40; ++i) {
 			fogUnit = new SphDepthFogUnit();
-			if (Math.random() > 0.9) fogUnit.rstate = rState0;
-			else fogUnit.rstate = rState1;
+			// if (Math.random() > 0.9) fogUnit.rstate = rState0;
+			// else fogUnit.rstate = rState1;
 			const range = 2000.0;
 			const halfR = range * 0.5;
 			fogUnit.initWithRandomParam(baseRadius, range);

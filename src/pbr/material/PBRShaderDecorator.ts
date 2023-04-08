@@ -30,33 +30,34 @@ export default class PBRShaderDecorator {
      */
     armMap: IRenderTexture = null;
     
-    glossinessEnabeld: boolean = true;
-    woolEnabled: boolean = true;
-    toneMappingEnabled: boolean = true;
-    specularEnvMapEnabled: boolean = true;
-    scatterEnabled: boolean = true;
-    specularBleedEnabled: boolean = true;
-    metallicCorrection: boolean = true;
-    gammaCorrection: boolean = true;
-    absorbEnabled: boolean = false;
-    normalNoiseEnabled: boolean = false;
-    pixelNormalNoiseEnabled: boolean = false;
-    mirrorProjEnabled: boolean = false;
-    mirrorMapLodEnabled: boolean = false;
-    diffuseMapEnabled: boolean = false;
-    normalMapEnabled: boolean = false;
-    aoMapEnabled: boolean = false;
-    indirectEnvMapEnabled: boolean = false;
-    hdrBrnEnabled: boolean = false;
-    vtxFlatNormal: boolean = false;
+    glossinessEnabeld = true;
+    woolEnabled = true;
+    toneMappingEnabled = true;
+    specularEnvMapEnabled = true;
+    scatterEnabled = true;
+    specularBleedEnabled = true;
+    metallicCorrection = true;
+    gammaCorrection = true;
+    absorbEnabled = false;
+    normalNoiseEnabled = false;
+    pixelNormalNoiseEnabled = false;
+    mirrorProjEnabled = false;
+    mirrorMapLodEnabled = false;
+    diffuseMapEnabled = false;
+    normalMapEnabled = false;
+    aoMapEnabled = false;
+    indirectEnvMapEnabled = false;
+    hdrBrnEnabled = false;
+    vtxFlatNormal = false;
 
-    lightEnabled: boolean = true;
-    shadowReceiveEnabled: boolean = false;
-    fogEnabled: boolean = false;
-    texturesTotal: number = 1;
+    lightEnabled = true;
+    shadowReceiveEnabled = false;
+    fogEnabled = false;
+    depthFogEnabled = false;
+    texturesTotal = 1;
     
-    fragLocalParamsTotal: number = 2;
-    parallaxParamIndex: number = 2;
+    fragLocalParamsTotal = 2;
+    parallaxParamIndex = 2;
 
     createTextureList(coder: IShaderCodeBuilder): IRenderTexture[] {
         //IShaderCodeBuilder
@@ -171,7 +172,7 @@ export default class PBRShaderDecorator {
 
         coder.useHighPrecious();
 
-        let mirrorProjEnabled: boolean = this.mirrorProjEnabled && this.texturesTotal > 0;
+        let mirrorProjEnabled = this.mirrorProjEnabled && this.texturesTotal > 0;
         if (this.normalNoiseEnabled) coder.addDefine("VOX_NORMAL_NOISE","1");
 
         if (this.woolEnabled) coder.addDefine("VOX_WOOL","1");
@@ -186,6 +187,7 @@ export default class PBRShaderDecorator {
         if (this.mirrorMapLodEnabled) coder.addDefine("VOX_MIRROR_MAP_LOD", "1");
         if (this.hdrBrnEnabled) coder.addDefine("VOX_HDR_BRN", "1");
         if (this.vtxFlatNormal) coder.addDefine("VOX_VTX_FLAT_NORMAL", "1");
+        if (this.depthFogEnabled) coder.addDefine("VOX_DEPTH_FOG", "1");
 
         coder.addFragUniform("vec4", "u_fragLocalParams", this.fragLocalParamsTotal);
         coder.addFragUniform("vec4", "u_pbrParams", 4);
