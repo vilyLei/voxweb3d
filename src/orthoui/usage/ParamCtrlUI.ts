@@ -16,6 +16,7 @@ import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import { CtrlInfo, ItemCallback, CtrlItemParam, CtrlItemObj } from "./ctrlui/CtrlItemObj";
 import IRendererScene from "../../vox/scene/IRendererScene";
 import EventBase from "../../vox/event/EventBase";
+import SelectionBarStyle from "../button/SelectionBarStyle";
 
 export default class ParamCtrlUI {
 
@@ -103,9 +104,10 @@ export default class ParamCtrlUI {
     private m_btns: (SelectionBar | ProgressBar)[] = [];
     private m_menuBtn: SelectionBar = null;
     private m_minBtnX = 10000;
-    private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
+    private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false, style: SelectionBarStyle = null): SelectionBar {
 
         let selectBar = new SelectionBar();
+        selectBar.style = style;
 		selectBar.fontColor.copyFrom(this.fontColor);
 		selectBar.fontBgColor.copyFrom(this.fontBgColor);
         selectBar.uuid = uuid;
@@ -221,7 +223,7 @@ export default class ParamCtrlUI {
     }
     private m_btnMap: Map<string, CtrlItemObj> = new Map();
     //"number_value"(数值调节按钮),"progress"(百分比调节按钮),"status_select"(状态选择按钮)
-    addItem(param: CtrlItemParam): void {
+    addItem(param: CtrlItemParam, style: any = null): void {
 
         let map = this.m_btnMap;
         if (!map.has(param.uuid)) {
@@ -266,7 +268,7 @@ export default class ParamCtrlUI {
                 case "status_select":
 
                     t.flag = t.flag ? t.flag : false;
-                    obj.btn = this.createSelectBtn(t.name, t.uuid, t.selectNS, t.deselectNS, t.flag, visibleAlways);
+                    obj.btn = this.createSelectBtn(t.name, t.uuid, t.selectNS, t.deselectNS, t.flag, visibleAlways, style ? style as SelectionBarStyle: null);
                     map.set(obj.uuid, obj);
                     obj.info = { type: param.type, uuid: param.uuid, values: [], flag: t.flag };
                     if(param.syncEnabled) {
@@ -389,7 +391,7 @@ export default class ParamCtrlUI {
         if (this.rgbPanel != null) this.rgbPanel.close();
     }
 
-    addStatusItem(name: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, callback: ItemCallback, visibleAlways: boolean = true, syncEnabled: boolean = true): void {
+    addStatusItem(name: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, callback: ItemCallback, visibleAlways: boolean = true, syncEnabled: boolean = true, style: SelectionBarStyle = null): void {
         let param: CtrlItemParam = {
             type: "status_select", name: name, uuid: uuid,
             selectNS: selectNS, deselectNS: deselectNS,
@@ -399,7 +401,7 @@ export default class ParamCtrlUI {
             callback: callback
         };
 
-        this.addItem(param);
+        this.addItem(param, style);
     }
     addProgressItem(name: string, uuid: string, progress: number, callback: ItemCallback, colorPick?: boolean, visibleAlways: boolean = true, syncEnabled: boolean = true): void {
         let param: CtrlItemParam = {

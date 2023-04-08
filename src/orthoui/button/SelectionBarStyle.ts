@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import Color4 from "../../vox/material/Color4";
+import ColorRectImgButton from "./ColorRectImgButton";
 
 export default class SelectionBarStyle {
 
@@ -22,7 +23,13 @@ export default class SelectionBarStyle {
     headVisible = true;
     bodyVisible = true;
     constructor() { }
-
+    applyToBtn(btn: ColorRectImgButton): void {
+        if(btn) {
+            btn.overColor.copyFrom(this.overColor);
+            btn.downColor.copyFrom(this.downColor);
+            btn.outColor.copyFrom(this.outColor);
+        }
+    }
     destroy(): void {
     }
     copyFrom(dst: SelectionBarStyle): void {

@@ -33,6 +33,7 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 import Torus3DEntity from "../vox/entity/Torus3DEntity";
 import Vector3D from "../vox/math/Vector3D";
+import SelectionBarStyle from "../orthoui/button/SelectionBarStyle";
 
 class AwardSceneParam implements IAwardSceneParam {
 	texLoader: TextureResLoader = null;
@@ -420,9 +421,13 @@ export class NormalMapVerifier {
 		ui.proBarBGPlaneAlpha = 0.7;
 		ui.initialize(this.m_rscene, true);
 
+		let selectBarStyle: SelectionBarStyle = null;
+		selectBarStyle = new SelectionBarStyle();
+		selectBarStyle.fontBgColor.setRGBA4f(0.7,0.8,0.6, 0.6);
+
 		ui.addStatusItem("恢复", "reset", "默认设置", "默认设置", true, (info: CtrlInfo): void => {
 			this.resetCtrlValue();
-		}, true, false);
+		}, true, false, selectBarStyle);
 
 		ui.addValueItem("UV缩放", "uv_scale", 1.0, 0.01, 30.0, (info: CtrlInfo): void => {
 			if(this.m_currMaterial) {
@@ -472,10 +477,10 @@ export class NormalMapVerifier {
 
 		ui.addStatusItem("切换", "change_model", "模型", "模型", true, (info: CtrlInfo): void => {
 			this.showNextModel();
-		}, true, false);
+		}, true, false, selectBarStyle);
 		ui.addStatusItem("加载", "load_tex", "Normal纹理", "Albedo纹理", true, (info: CtrlInfo): void => {
 			this.m_loadNormalMap = info.flag;
-		}, true, false);
+		}, true, false, selectBarStyle);
 
 		ui.updateLayout(true);
 

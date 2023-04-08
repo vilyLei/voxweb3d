@@ -25,7 +25,7 @@ export class SelectionBar {
     private m_currEvent = new SelectionEvent();
 
     private m_container: DisplayEntityContainer = null;
-    readonly selectionButton = new ColorRectImgButton();
+    readonly selectionButton: ColorRectImgButton = null;
     readonly nameButton: ColorRectImgButton = null;
     private m_rect = new AABB2D();
 
@@ -48,22 +48,22 @@ export class SelectionBar {
     constructor() { }
     setOverColor(color: Color4): void {
 
-        if (this.nameButton != null) {
+        if (this.nameButton) {
             this.nameButton.overColor.copyFrom(color);
             this.nameButton.setColor(color);
         }
-        if (this.selectionButton != null) {
+        if (this.selectionButton) {
             this.selectionButton.overColor.copyFrom(color);
             this.selectionButton.setColor(color);
         }
     }
     setOutColor(color: Color4): void {
 
-        if (this.nameButton != null) {
+        if (this.nameButton) {
             this.nameButton.outColor.copyFrom(color);
             this.nameButton.setColor(color);
         }
-        if (this.selectionButton != null) {
+        if (this.selectionButton) {
             this.selectionButton.outColor.copyFrom(color);
             this.selectionButton.setColor(color);
         }
@@ -111,24 +111,24 @@ export class SelectionBar {
     }
 
     setXY(px: number, py: number, force: boolean = true): void {
-        if (this.m_container != null) {
+        if (this.m_container) {
             this.m_container.setXYZ(px, py, this.m_posZ);
             if (force)
                 this.m_container.update();
         }
     }
     getPosition(pv: Vector3D): void {
-        if (this.m_container != null) {
+        if (this.m_container) {
             this.m_container.getPosition(pv);
         }
     }
     setPosition(pv: Vector3D): void {
-        if (this.m_container != null) {
+        if (this.m_container) {
             this.m_container.setPosition(pv);
         }
     }
     update(): void {
-        if (this.m_container != null) {
+        if (this.m_container) {
             this.m_container.update();
         }
     }
@@ -137,11 +137,16 @@ export class SelectionBar {
         let size: number = this.m_btnSize;
         let container: DisplayEntityContainer = new DisplayEntityContainer();
         this.m_container = container;
-        let keyStr: string;
-        let haveNameBt: boolean = this.m_barName != null && this.m_barName.length > 0;
+        let style: SelectionBarStyle = this.style;
+
+        let haveNameBt = this.m_barName && this.m_barName.length > 0 && (style == null || style.headVisible);
         let selfT: any = this;
         let fc = this.fontColor;
         let fbc = this.fontBgColor;
+        if(style) {
+            fc = style.fontColor;
+            fbc = style.fontBgColor;
+        }
         const ctt = CanvasTextureTool.GetInstance();
         if (haveNameBt) {
             selfT.nameButton = new ColorRectImgButton();
@@ -155,14 +160,9 @@ export class SelectionBar {
         this.m_texObj0 = ctt.createCharsImageToAtlas("", this.m_selectName, size, fc, fbc);
         this.m_texObj1 = ctt.createCharsImageToAtlas("", this.m_deselectName, size, fc, fbc);
 
-        // keyStr = this.m_selectName + "-" + size + "-" + fc.getCSSDecRGBAColor() + "-" + this.fontBgColor.getCSSDecRGBAColor();
-
-        // let image = ctt.createCharsImage(this.m_selectName, size, fc.getCSSDecRGBAColor(), this.fontBgColor.getCSSDecRGBAColor());
-        // keyStr = ctt.getCurrentKeyStr();
-        // this.m_texObj0 = ctt.addImageToAtlas(keyStr, image);
-        // image = ctt.createCharsImage(this.m_deselectName, size, fc.getCSSDecRGBAColor(), this.fontBgColor.getCSSDecRGBAColor());
-        // keyStr = ctt.getCurrentKeyStr();
-        // this.m_texObj1 = ctt.addImageToAtlas(keyStr, image);
+        if(style == null || style.bodyVisible) {
+            selfT.selectionButton = new ColorRectImgButton();
+        }
 
         let btn = this.selectionButton;
         btn.uvs = this.m_texObj0.uvs;
@@ -171,6 +171,10 @@ export class SelectionBar {
         btn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         container.addEntity(btn);
 
+        if(style) {
+            style.applyToBtn(this.nameButton);
+            style.applyToBtn(this.selectionButton);
+        }
         this.m_rect.x = 0;
         this.m_rect.y = 0;
         if (haveNameBt) {
@@ -228,7 +232,7 @@ export class SelectionBar {
     private updateState(): void {
 
         let texObj: CanvasTextureObject = this.m_flag ? this.m_texObj0 : this.m_texObj1;
-        if (texObj != null) {
+        if (texObj) {
             this.selectionButton.setUVS(texObj.uvs);
             this.selectionButton.reinitializeMesh();
             this.selectionButton.updateMeshToGpu();
@@ -246,8 +250,8 @@ export class SelectionBar {
     }
 
     destroy(): void {
-        if (this.selectionButton != null) {
-
+        if (this.m_dispatcher) {
+            this.style == null
             let self: any = this;
             self.selectionButton = null;
             self.nameButton = null;
@@ -257,6 +261,8 @@ export class SelectionBar {
 
             this.m_texObj0 = null;
             this.m_texObj1 = null;
+            this.m_dispatcher.destroy();
+            this.m_dispatcher = null;
         }
     }
 }
