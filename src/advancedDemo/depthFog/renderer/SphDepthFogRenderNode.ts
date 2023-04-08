@@ -26,11 +26,12 @@ import { FogSphFactorMaterial } from "./FogSphFactorMaterial";
 import { SphDepthFogUnit } from "./SphDepthFogUnit";
 import { FogSphShowMaterial } from "./FogSphShowMaterial";
 import IRenderTexture from "../../../vox/render/texture/IRenderTexture";
+import IRendererScene from "../../../vox/scene/IRendererScene";
 
 export class SphDepthFogRenderNode implements IRenderNode {
 	constructor() {}
 
-	private m_rc: RendererScene = null;
+	private m_rc: IRendererScene = null;
 	private m_factorFBO: FBOInstance = null;
 	private m_commonFBO: FBOInstance = null;
 
@@ -86,7 +87,7 @@ export class SphDepthFogRenderNode implements IRenderNode {
 		fbo.setRenderToTexture(this.getTextureAt(1, true), 1); // depth
 		fbo.setRProcessIDList(rpids, false);
 		fbo.setAutoRunning( true );
-		this.m_commonFBO = fbo;
+		this.m_commonFBO = fbo as FBOInstance;
 	}
 
 	private createParticleFBO(rpids: number[]): void {
@@ -104,7 +105,7 @@ export class SphDepthFogRenderNode implements IRenderNode {
 		fbo.setClearState(true, true, false);
 		fbo.setRenderToTexture(this.getTextureAt(2, false), 0);
 		fbo.setRenderToTexture(this.getTextureAt(3, false), 1);
-		this.m_factorFBO = fbo;
+		this.m_factorFBO = fbo as FBOInstance;
 	}
 	setFactorFBOSizeFactor(factor: number): void {
 		this.m_factorFBO.setFBOSizeFactorWithViewPort( factor );
@@ -120,7 +121,7 @@ export class SphDepthFogRenderNode implements IRenderNode {
 		);
 		return m;
 	}
-	initialize(rc: RendererScene, conmonPIds: number[], particlePIds: number[]): void {
+	initialize(rc: IRendererScene, conmonPIds: number[], particlePIds: number[]): void {
 
 		if (this.m_rc == null && rc) {
 
@@ -201,9 +202,10 @@ export class SphDepthFogRenderNode implements IRenderNode {
 				this.m_factorFBO.runBegin();
 
 				// for test: select a displaying mode
-				let st = this.m_rc.getStage3D();
-				let rtt = this.m_factorFBO.getRTTAt(0);
-				console.log("fbo rtt size: ", rtt.getWidth(), rtt.getHeight(),", st size: ", st.stageWidth, st.stageHeight);
+
+				// let st = this.m_rc.getStage3D();
+				// let rtt = this.m_factorFBO.getRTTAt(0);
+				// console.log("fbo rtt size: ", rtt.getWidth(), rtt.getHeight(),", st size: ", st.stageWidth, st.stageHeight);
 
 				const fogM = this.m_fogFactorM;
 				let fu: SphDepthFogUnit;
