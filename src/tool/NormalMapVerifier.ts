@@ -144,7 +144,7 @@ export class NormalMapVerifier {
 		pdiv.style.zIndex = "99999";
 		pdiv.style.position = "absolute";
 		document.body.appendChild(pdiv);
-		pdiv.innerHTML = "<font color='#eeee00'>将法线图拖入任意区域</font>";
+		pdiv.innerHTML = "<font color='#eeee00'>将Normal图或Albedo图拖入任意区域</font>";
 	}
 	private m_dropEnabled = true;
 	initFileLoad(files: any[]): void {
@@ -406,9 +406,10 @@ export class NormalMapVerifier {
 		//material.setTextureList(ptexList);
 		return material;
 	}
-	private m_initUI = true;
 	private m_uv = new Vector3D(1.0, 1.0);
 	private m_loadNormalMap = true;
+	
+	private m_initUI = true;
 	private initUI(): void {
 		if (!this.m_initUI) {
 			return;

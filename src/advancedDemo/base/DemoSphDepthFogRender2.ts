@@ -25,12 +25,16 @@ import MouseEvent from "../../vox/event/MouseEvent";
 import IRenderTexture from "../../vox/render/texture/IRenderTexture";
 import RendererSceneGraph from "../../vox/scene/RendererSceneGraph";
 import IRendererScene from "../../vox/scene/IRendererScene";
+import SelectionBarStyle from "../../orthoui/button/SelectionBarStyle";
+import { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../../orthoui/usage/ParamCtrlUI";
+import IRenderEntity from "../../vox/render/IRenderEntity";
 
 export class DemoSphDepthFogRender2 {
 	private m_pbr = new PBRMateralBuilder();
 	private m_rscene: IRendererScene = null;
 	private m_texLoader: ImageTextureLoader = null;
 	private m_graph = new RendererSceneGraph();
+	private m_ctrlui = new ParamCtrlUI(false);
 	constructor() { }
 
 	private applyPBRTex(param: PBRParam, texName: string, envMapEnabled: boolean = true): void {
@@ -98,6 +102,7 @@ export class DemoSphDepthFogRender2 {
 
 			this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 			this.buildFogScene();
+			this.initUI();
 			this.m_graph.setAutoRunning(true);
 		}
 	}
@@ -107,6 +112,8 @@ export class DemoSphDepthFogRender2 {
 		}
 	}
 	private m_fogRenderNode: SphDepthFogRenderNode = null;
+	private m_fogPlane: IRenderEntity = null;
+	private m_tipsEntities: IRenderEntity[] = [];
 	private buildFogScene(): void {
 
 		this.m_pbr.sharedLightColor = false;
@@ -173,10 +180,10 @@ export class DemoSphDepthFogRender2 {
 		let dstPlane = new Plane3DEntity();
 		dstPlane.setMaterial(displayMaterial);
 		dstPlane.initializeXOY(
-			// -1.0, -1.0, 2.0, 2.0
 			-0.5, -0.5, 1.0, 1.0
 		);
 		this.m_rscene.addEntity(dstPlane, 3);
+		this.m_fogPlane = dstPlane;
 
 		const commonFBO = fogRenderNode.getCommonFBO();
 		const factorFBO = fogRenderNode.getFactorFBO();
@@ -185,21 +192,93 @@ export class DemoSphDepthFogRender2 {
 		let scrPlane = new ScreenFixedAlignPlaneEntity();
 		scrPlane.initialize(-0.9, -0.9, 0.3, 0.3, [commonFBO.getRTTAt(0)]);
 		this.m_rscene.addEntity(scrPlane, tipsProcIndex);
+		this.m_tipsEntities.push(scrPlane);
 
 		// display the depth rtt rendering content
 		scrPlane = new ScreenFixedAlignPlaneEntity();
 		scrPlane.initialize(-0.55, -0.9, 0.3, 0.3, [commonFBO.getRTTAt(1)]);
 		this.m_rscene.addEntity(scrPlane, tipsProcIndex);
+		this.m_tipsEntities.push(scrPlane);
 
 		// display the fog factor rtt rendering content
 		scrPlane = new ScreenFixedAlignPlaneEntity();
 		scrPlane.initialize(-0.2, -0.9, 0.3, 0.3, [factorFBO.getRTTAt(0)]);
 		this.m_rscene.addEntity(scrPlane, tipsProcIndex);
+		this.m_tipsEntities.push(scrPlane);
 
 		// display the fog color rendering content
 		scrPlane = new ScreenFixedAlignPlaneEntity();
 		scrPlane.initialize(0.15, -0.9, 0.3, 0.3, [factorFBO.getRTTAt(1)]);
 		this.m_rscene.addEntity(scrPlane, tipsProcIndex);
+		this.m_tipsEntities.push(scrPlane);
 	}
+
+	private m_initUI = true;
+	private initUI(): void {
+		if (!this.m_initUI) {
+			return;
+		}
+		this.m_initUI = false;
+
+		let ui = this.m_ctrlui;
+		ui.fontBgColor.setRGBA4f(0.7, 0.8, 0.6, 0.6);
+		ui.proBarBGBarAlpha = 0.9;
+		ui.proBarBGPlaneAlpha = 0.7;
+		ui.initialize(this.m_rscene, true);
+
+		let selectBarStyle: SelectionBarStyle = null;
+		selectBarStyle = new SelectionBarStyle();
+		selectBarStyle.fontBgColor.setRGBA4f(0.7, 0.8, 0.6, 0.6);
+
+		ui.addStatusItem("渲染优化", "optimize", "是", "否", false, (info: CtrlInfo): void => {
+			if (this.m_fogRenderNode) {
+				this.m_fogRenderNode.setFactorFBOSizeFactor(info.flag ? 0.5 : 1.0);
+			}
+		}, true, false, selectBarStyle);
+
+		ui.addStatusItem("全屏展示", "fullscren", "是", "否", false, (info: CtrlInfo): void => {
+			this.setFullscreenStatus(info.flag);
+		}, true, false, selectBarStyle);
+
+		// ui.addValueItem("UV缩放", "uv_scale", 1.0, 0.01, 30.0, (info: CtrlInfo): void => {
+		// 	if(this.m_currMaterial) {
+		// 		this.m_uv.setXYZ(info.values[0], info.values[0], 0);
+		// 		(this.m_currMaterial.vertUniform as VertUniformComp).setUVScale(this.m_uv.x, this.m_uv.y);
+		// 	}
+		// }, false, true, null, false);
+
+		ui.updateLayout(true);
+
+		this.m_graph.addScene(ui.ruisc);
+
+		// this.m_vasScene.initialize(ui.ruisc, this.m_aspParam);
+	}
+	private setFullscreenStatus(flag: boolean): void {
+		let ls = this.m_tipsEntities;
+		for (let i = 0; i < ls.length; ++i) {
+			ls[i].setVisible(!flag);
+		}
+		if (flag) {
+			this.m_fogPlane.setScaleXYZ(2.0, 2.0, 1.0);
+		} else {
+			this.m_fogPlane.setScaleXYZ(1.0, 1.0, 1.0);
+		}
+	}
+	private setUIItemValue(ns: string, value: number, syncEnabled: boolean = true): void {
+		let item = this.m_ctrlui.getItemByUUID(ns);
+		item.param.value = value;
+		item.syncEnabled = syncEnabled;
+		item.updateParamToUI();
+	}
+	// private resetCtrlValue(): void {
+	// 	console.log("resetCtrlValue() ...");
+	// 	this.setUIItemValue("uv_u_scale", 			1.0);
+	// 	this.setUIItemValue("uv_v_scale", 			1.0);
+	// 	this.setUIItemValue("uv_scale", 			1.0);
+	// 	this.setUIItemValue("metallic", 			0.1);
+	// 	this.setUIItemValue("roughness", 			0.3);
+	// 	this.setUIItemValue("scatterIntensity", 	64);
+	// 	this.setUIItemValue("tone", 				5);
+	// }
 }
 export default DemoSphDepthFogRender2;
