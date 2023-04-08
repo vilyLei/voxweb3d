@@ -16,6 +16,11 @@ class BinaryTextureLoader {
     }
     
     loadTextureWithUrl(url: string): void {
+        let hostUrl = window.location.href;
+		if (hostUrl.indexOf(".artvily.") > 0) {
+			hostUrl = "http://www.artvily.com:9090/";
+			url = hostUrl + url;
+		}
         this.texture = this.createTex();
         let loader = new HttpFileLoader();
         loader.load(

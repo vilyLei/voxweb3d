@@ -24,6 +24,7 @@ import IColorMaterial from "../vox/material/mcase/IColorMaterial";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import IRODisplaySorter from "../vox/render/IRODisplaySorter";
 import IRPODisplay from "../vox/render/IRPODisplay";
+import IRenderTexture from "../vox/render/texture/IRenderTexture";
 
 class PosYDsistanceSorter implements IRODisplaySorter {
     sortRODisplay(nodes: IRPODisplay[], nodesTotal: number): number {
@@ -47,11 +48,23 @@ export class DemoRenderSortA {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private m_targets: DisplayEntity[] = [];
-    getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
+    // getTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+    //     let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+    //     ptex.mipmapEnabled = mipmapEnabled;
+    //     if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
+    //     return ptex;
+    // }
+
+    private getAssetTexByUrl(pns: string): IRenderTexture {
+        return this.getTexByUrl("static/assets/" + pns);
+    }
+    getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+        let hostUrl = window.location.href;
+        if (hostUrl.indexOf(".artvily.") > 0) {
+            hostUrl = "http://www.artvily.com:9090/";
+            url = hostUrl + url;
+        }
+        return this.m_texLoader.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
     }
     initialize(): void {
         console.log("DemoRenderSortA::initialize()......");
@@ -66,7 +79,7 @@ export class DemoRenderSortA {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
-            
+
             this.m_rscene.enableMouseEvent(true);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
@@ -118,13 +131,13 @@ export class DemoRenderSortA {
 
         // this.m_isChanged = !this.m_isChanged;
 
-        if(this.m_plane01 != null) {
-            let pv = this.m_plane01.getPosition();
-            pv.y += 10;
-            this.m_plane01.setPosition(pv);
-            console.log("mouse down, pos: ", this.m_plane01.getPosition());
-        }
-        console.log("mouse down, this.m_isChanged: ", this.m_isChanged);
+        // if(this.m_plane01 != null) {
+        //     let pv = this.m_plane01.getPosition();
+        //     pv.y += 10;
+        //     this.m_plane01.setPosition(pv);
+        //     console.log("mouse down, pos: ", this.m_plane01.getPosition());
+        // }
+        // console.log("mouse down, this.m_isChanged: ", this.m_isChanged);
 
         // this.m_rscene.setProcessSortEnabledAt(1, this.m_isChanged);
         // this.m_rscene.setProcessSortEnabledAt(0, true);
@@ -140,10 +153,16 @@ export class DemoRenderSortA {
             this.m_isChanged = !this.m_isChanged;
         }
     }
+    private m_time = -1.0;
+    private m_pv = new Vector3D();
     run(): void {
-        if(this.m_rscene != null) {
+        if (this.m_rscene != null) {
             this.m_statusDisp.update();
-    
+            if (this.m_plane01) {
+                this.m_pv.y = Math.cos(this.m_time) * 150;
+                this.m_plane01.setPosition(this.m_pv);
+                this.m_time += 0.02;
+            }
             this.m_stageDragSwinger.runWithYAxis();
             this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
             this.m_rscene.run();

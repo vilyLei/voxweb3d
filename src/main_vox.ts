@@ -188,7 +188,7 @@
 
 //  import {DemoRenderSort as Demo} from "./demo/DemoRenderSort";
 
-//  import {DemoRenderSortA as Demo} from "./demo/DemoRenderSortA";
+ import {DemoRenderSortA as Demo} from "./demo/DemoRenderSortA";
 
 //  import {DemoRenderSortContainerRender as Demo} from "./demo/DemoRenderSortContainerRender";
 
@@ -308,7 +308,7 @@
 
 //  import {DemoEntityContainerRender as Demo} from "./demo/DemoEntityContainerRender";
 
- import {DemoEntityContainerRender2 as Demo} from "./demo/DemoEntityContainerRender2";
+//  import {DemoEntityContainerRender2 as Demo} from "./demo/DemoEntityContainerRender2";
 
 //  import {DemoContainerToRSpace as Demo} from "./demo/DemoContainerToRSpace";
 

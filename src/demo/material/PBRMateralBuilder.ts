@@ -60,7 +60,6 @@ class PBRMateralBuilder {
 			if (this.hdrBrnEnabled) {
                 envMapUrl = "static/bytes/speBrn.bin";
             }
-			console.log(">>>>>>>>>>>>> 0-0bbb >>>>>>>>");
 			let loader = new SpecularEnvTextureLoader(this.m_rscene);
 			loader.hdrBrnEnabled = this.hdrBrnEnabled;
 			loader.loadTextureWithUrl(envMapUrl);
