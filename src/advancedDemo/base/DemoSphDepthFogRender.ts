@@ -21,6 +21,7 @@ import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
 import { SphDepthFogRenderNode } from "../../advancedDemo/depthFog/renderer/SphDepthFogRenderNode";
 import RendererState from "../../vox/render/RendererState";
+import MouseEvent from "../../vox/event/MouseEvent";
 
 export class DemoSphDepthFogRender {
 	private m_pbr = new PBRMateralBuilder();
@@ -94,9 +95,16 @@ export class DemoSphDepthFogRender {
 			new MouseInteraction().initialize(this.m_rscene, 0, true).setAutoRunning(true);
 			new RenderStatusDisplay(this.m_rscene, true);
 
+			this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 			this.buildFogScene();
 		}
 	}
+	private mouseDown(evt: any): void {
+		if(this.m_fogRenderNode) {
+			// this.m_fogRenderNode.setFactorFBOSizeFactor(0.5);
+		}
+	}
+	private m_fogRenderNode: SphDepthFogRenderNode = null;
 	private buildFogScene(): void {
 
 		this.m_pbr.sharedLightColor = false;
@@ -159,6 +167,7 @@ export class DemoSphDepthFogRender {
 		// fogRenderNode.texLoader = this.m_texLoader;
 		fogRenderNode.cloudTex = this.getAssetTexByUrl("cloud_01.jpg");
 		fogRenderNode.initialize(this.m_rscene, [0, 1], [particleProcIndex]);
+		this.m_fogRenderNode = fogRenderNode;
 
 		let displayMaterial = fogRenderNode.createDisplayMaterial();
 		let dstPlane = new Plane3DEntity();

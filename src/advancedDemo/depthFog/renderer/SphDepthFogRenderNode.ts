@@ -100,10 +100,14 @@ export class SphDepthFogRenderNode implements IRenderNode {
 		let fbo = this.m_rc.createFBOInstance();
 		fbo.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);
 		fbo.createViewportSizeFBOAt(1, true, false);
+		// fbo.setFBOSizeFactorWithViewPort(0.5);
 		fbo.setClearState(true, true, false);
 		fbo.setRenderToTexture(this.getTextureAt(2, false), 0);
 		fbo.setRenderToTexture(this.getTextureAt(3, false), 1);
 		this.m_factorFBO = fbo;
+	}
+	setFactorFBOSizeFactor(factor: number): void {
+		this.m_factorFBO.setFBOSizeFactorWithViewPort( factor );
 	}
 	createDisplayMaterial(): FogSphShowMaterial {
 		let m = new FogSphShowMaterial();
@@ -197,6 +201,9 @@ export class SphDepthFogRenderNode implements IRenderNode {
 				this.m_factorFBO.runBegin();
 
 				// for test: select a displaying mode
+				let st = this.m_rc.getStage3D();
+				let rtt = this.m_factorFBO.getRTTAt(0);
+				console.log("fbo rtt size: ", rtt.getWidth(), rtt.getHeight(),", st size: ", st.stageWidth, st.stageHeight);
 
 				const fogM = this.m_fogFactorM;
 				let fu: SphDepthFogUnit;
