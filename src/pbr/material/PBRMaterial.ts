@@ -24,7 +24,7 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static s_instance: PBRShaderBuffer = new PBRShaderBuffer();
+    private static s_instance = new PBRShaderBuffer();
     decorator: PBRShaderDecorator = null;
     texturesTotal: number = 0;
 
