@@ -17,6 +17,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import UIBarTool from "./UIBarTool";
 import Color4 from "../../vox/material/Color4";
 import AABB2D from "../../vox/geom/AABB2D";
+import SelectionBarStyle from "./SelectionBarStyle";
 
 export class SelectionBar {
     private m_ruisc: IRendererScene = null;
@@ -43,7 +44,7 @@ export class SelectionBar {
     readonly fontColor = new Color4(1.0, 1.0, 1.0, 1.0);
     readonly fontBgColor = new Color4(1.0, 1.0, 1.0, 0.3);
     uuid = "selectionBar";
-
+    style: SelectionBarStyle = null;
     constructor() { }
     setOverColor(color: Color4): void {
 
@@ -139,20 +140,29 @@ export class SelectionBar {
         let keyStr: string;
         let haveNameBt: boolean = this.m_barName != null && this.m_barName.length > 0;
         let selfT: any = this;
+        let fc = this.fontColor;
+        let fbc = this.fontBgColor;
+        const ctt = CanvasTextureTool.GetInstance();
         if (haveNameBt) {
             selfT.nameButton = new ColorRectImgButton();
-            UIBarTool.InitializeBtn(this.nameButton, this.m_barName, size, this.fontColor, this.fontBgColor);
+            UIBarTool.InitializeBtn(this.nameButton, this.m_barName, size, fc, this.fontBgColor);
             this.nameButton.setXYZ(-1.0 * this.nameButton.getWidth() - 1.0, 0.0, 0.0);
             container.addEntity(this.nameButton);
 
             this.nameButton.addEventListener(MouseEvent.MOUSE_DOWN, this, this.nameBtnMouseDown);
         }
-        keyStr = this.m_selectName + "-" + size + "-" + this.fontColor.getCSSDecRGBAColor() + "-" + this.fontBgColor.getCSSDecRGBAColor();
-        let image = CanvasTextureTool.GetInstance().createCharsImage(this.m_selectName, size, this.fontColor.getCSSDecRGBAColor(), this.fontBgColor.getCSSDecRGBAColor());
-        this.m_texObj0 = CanvasTextureTool.GetInstance().addImageToAtlas(keyStr, image);
-        keyStr = this.m_deselectName + "-" + size + "-" + this.fontColor.getCSSDecRGBAColor() + "-" + this.fontBgColor.getCSSDecRGBAColor();
-        image = CanvasTextureTool.GetInstance().createCharsImage(this.m_deselectName, size, this.fontColor.getCSSDecRGBAColor(), this.fontBgColor.getCSSDecRGBAColor());
-        this.m_texObj1 = CanvasTextureTool.GetInstance().addImageToAtlas(keyStr, image);
+        
+        this.m_texObj0 = ctt.createCharsImageToAtlas("", this.m_selectName, size, fc, fbc);
+        this.m_texObj1 = ctt.createCharsImageToAtlas("", this.m_deselectName, size, fc, fbc);
+
+        // keyStr = this.m_selectName + "-" + size + "-" + fc.getCSSDecRGBAColor() + "-" + this.fontBgColor.getCSSDecRGBAColor();
+
+        // let image = ctt.createCharsImage(this.m_selectName, size, fc.getCSSDecRGBAColor(), this.fontBgColor.getCSSDecRGBAColor());
+        // keyStr = ctt.getCurrentKeyStr();
+        // this.m_texObj0 = ctt.addImageToAtlas(keyStr, image);
+        // image = ctt.createCharsImage(this.m_deselectName, size, fc.getCSSDecRGBAColor(), this.fontBgColor.getCSSDecRGBAColor());
+        // keyStr = ctt.getCurrentKeyStr();
+        // this.m_texObj1 = ctt.addImageToAtlas(keyStr, image);
 
         let btn = this.selectionButton;
         btn.uvs = this.m_texObj0.uvs;

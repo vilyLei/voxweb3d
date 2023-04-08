@@ -159,6 +159,11 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		return canvas;
 	}
 	private static s_inputTF: HTMLInputElement = null;
+	private static s_keyStr = "";
+
+	static GetCurrentKeyStr(): string {
+		return ImageTextureAtlas.s_keyStr;
+	}
 	static CreateCharsTexture(
 		chars: string,
 		size: number,
@@ -168,8 +173,14 @@ export default class ImageTextureAtlas extends TextureAtlas {
 		if (chars == null || chars == "" || size < 8) {
 			return null;
 		}
-		let keyStr: string = chars + "_" + size + "_" + frontStyle + "_" + bgStyle;
-
+		if(frontStyle == "") {
+			frontStyle = "rgba(255,255,255,1.0)";
+		}
+		if(bgStyle == "") {
+			bgStyle = "rgba(255,255,255,0.3)";
+		}
+		const keyStr = chars + "-" + size + "-" + frontStyle + "-" + bgStyle;
+		ImageTextureAtlas.s_keyStr = keyStr;
 		if (ImageTextureAtlas.s_imgMap.has(keyStr)) {
 			return ImageTextureAtlas.s_imgMap.get(keyStr);
 		}

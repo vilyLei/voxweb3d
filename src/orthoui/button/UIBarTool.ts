@@ -48,11 +48,13 @@ export class UIBarTool {
         if(fontBgColor == null) {
             fontBgColor = UIBarTool.s_bgColor;
         }
-        let keyStr: string = btn_name +"-"+fontSize+"-"+fontColor.getCSSDecRGBAColor() +"-"+ fontBgColor.getCSSDecRGBAColor();
-        let texObj: CanvasTextureObject = CanvasTextureTool.GetInstance().getTextureObject( keyStr );
+        const ctt = CanvasTextureTool.GetInstance();
+        let keyStr = btn_name +"-"+fontSize+"-"+fontColor.getCSSDecRGBAColor() +"-"+ fontBgColor.getCSSDecRGBAColor();
+        let texObj = ctt.getTextureObject( keyStr );
         if(texObj == null) {
-            let image = CanvasTextureTool.GetInstance().createCharsImage(btn_name, fontSize, fontColor.getCSSDecRGBAColor(), fontBgColor.getCSSDecRGBAColor());
-            texObj = CanvasTextureTool.GetInstance().addImageToAtlas(keyStr, image);
+            texObj = ctt.createCharsImageToAtlas("", btn_name, fontSize, fontColor, fontBgColor);
+            // let image = ctt.createCharsImage(btn_name, fontSize, fontColor.getCSSDecRGBAColor(), fontBgColor.getCSSDecRGBAColor());
+            // texObj = ctt.addImageToAtlas(keyStr, image);
         }
         
         currBtn.uvs = texObj.uvs;

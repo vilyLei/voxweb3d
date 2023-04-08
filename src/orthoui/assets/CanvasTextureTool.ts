@@ -142,20 +142,34 @@ export class CanvasTextureTool {
         return null;
     }
 
-    createCharsImage(chars: string, size: number, frontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"): HTMLCanvasElement | HTMLImageElement {
+    createCharsImage(chars: string, size: number, frontStyle: string = "", bgStyle: string = ""): HTMLCanvasElement | HTMLImageElement {
 
         if (chars == null || chars == "" || size < 8) {
             return null;
         }
         return ImageTextureAtlas.CreateCharsTexture(chars, size, frontStyle, bgStyle);
     }
+    createCharsImageToAtlas(keyStr: string, chars: string, size: number, frontColor: Color4 = null, bgColor: Color4 = null): CanvasTextureObject {
+
+        let img = this.createCharsImage(chars, size, frontColor ? frontColor.getCSSDecRGBAColor() : "", bgColor ? bgColor.getCSSDecRGBAColor() : "");
+        if(!img) {
+            return null;
+        }
+        if(keyStr == "") {
+            keyStr = this.getCurrentKeyStr();
+        }
+        return this.addImageToAtlas(keyStr, img);
+    }
+	getCurrentKeyStr(): string {
+		return ImageTextureAtlas.GetCurrentKeyStr();
+	}
 
     private m_whiteTex: IRenderTexture = null;
     createWhiteTex(): IRenderTexture {
         if (this.m_whiteTex != null) {
             return this.m_whiteTex;
         }
-        let size: number = 16;
+        let size = 16;
         let canvas = document.createElement('canvas');
         canvas.width = size;
         canvas.height = size;
