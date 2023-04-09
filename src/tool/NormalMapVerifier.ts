@@ -226,7 +226,7 @@ export class NormalMapVerifier {
 		let pointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
 		if (pointLight != null) {
 			// pointLight.position.setXYZ(200.0, 180.0, 200.0);
-			pointLight.position.setXYZ(0.0, 300.0, -200.0);
+			pointLight.position.setXYZ(0.0, 450.0, -200.0);
 			// pointLight.color.setRGB3f(0.0, 1.5, 0.0);
 			pointLight.color.randomRGB(1.5);
 			pointLight.attenuationFactor1 = 0.00001;
@@ -236,7 +236,7 @@ export class NormalMapVerifier {
 		pointLight = this.m_materialCtx.lightModule.getPointLightAt(1);
 		if (pointLight != null) {
 			// pointLight.position.setXYZ(200.0, 180.0, 200.0);
-			pointLight.position.setXYZ(0.0, -400.0, 0.0);
+			pointLight.position.setXYZ(0.0, -500.0, 0.0);
 			// pointLight.color.setRGB3f(0.5, 0.2, 1.0);
 			pointLight.color.randomRGB(1.7);
 			pointLight.attenuationFactor1 = 0.00001;
@@ -298,7 +298,7 @@ export class NormalMapVerifier {
 
 			let entity4 = new Torus3DEntity();
 			entity4.normalEnabled = true;
-			entity4.initialize(300, 80, 30, 30, [tex]);
+			entity4.initialize(250, 80, 30, 30, [tex]);
 			this.m_baseEntities[4] = entity4;
 		}
 	}
