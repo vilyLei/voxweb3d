@@ -7,7 +7,10 @@ import TextureResLoader from "../vox/assets/TextureResLoader";
 import RemoveBlackBGMaterial from "./material/RemoveBlackBGMaterial";
 import MouseEvent from "../vox/event/MouseEvent";
 import IRendererScene from "../vox/scene/IRendererScene";
+
+import SelectionBarStyle from "../orthoui/button/SelectionBarStyle";
 import { CtrlInfo, ItemCallback, CtrlItemParam, ParamCtrlUI } from "../orthoui/usage/ParamCtrlUI";
+
 import RendererSceneGraph from "../vox/scene/RendererSceneGraph";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import { IDropFileListerner, DropFileController } from "./base/DropFileController";
@@ -27,10 +30,13 @@ class AwardSceneParam implements IAwardSceneParam {
 		return this.getTexByUrl("static/assets/" + pns);
 	}
 	getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
-		let hostUrl = window.location.href;
-		if (hostUrl.indexOf(".artvily.") > 0) {
-			hostUrl = "http://www.artvily.com:9090/";
-			url = hostUrl + url;
+		if(url.indexOf("blob:") < 0) {
+			console.log("use common tex url");
+			let hostUrl = window.location.href;
+			if (hostUrl.indexOf(".artvily.") > 0) {
+				hostUrl = "http://www.artvily.com:9090/";
+				url = hostUrl + url;
+			}
 		}
 		return this.texLoader.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
 	}
@@ -230,10 +236,15 @@ export class RemoveBlackBG2 {
 		ui.proBarBGBarAlpha = 0.9;
 		ui.proBarBGPlaneAlpha = 0.7;
 		ui.initialize(this.m_rscene, true);
+		
+		
+		let selectBarStyle: SelectionBarStyle = null;
+		selectBarStyle = new SelectionBarStyle();
+		selectBarStyle.fontBgColor.setRGBA4f(0.7,0.8,0.6, 0.6);
 
 		ui.addStatusItem("保存", "save", "图片", "图片", true, (info: CtrlInfo): void => {
 			this.m_savingImg = true;
-		}, true, false);
+		}, true, false, selectBarStyle);
 		ui.addStatusItem("切换", "change_bg_color", "背景色", "背景色", false, (info: CtrlInfo): void => {
 			this.m_bgColor.randomRGB(0.15);
 			this.m_rscene.setClearRGBAColor4f(this.m_bgColor.r,this.m_bgColor.g, this.m_bgColor.b, 0.0);

@@ -16,7 +16,7 @@ export default class SelectionBarStyle {
     readonly overColor = new Color4(1.0, 0.5, 1.1, 1.0);
     readonly downColor = new Color4(1.0, 0.0, 1.0, 1.0);
     readonly outColor = new Color4(1.0, 1.0, 1.0, 1.0);
-
+    // "left", "right"
     headAlignType = "";
     headAlignPosValue = 0;
     // distance = 2;
