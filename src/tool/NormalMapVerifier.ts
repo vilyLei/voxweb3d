@@ -42,12 +42,16 @@ class AwardSceneParam implements IAwardSceneParam {
 		return this.getTexByUrl("static/assets/" + pns);
 	}
 	getTexByUrl(url: string, preAlpha: boolean = false, wrapRepeat: boolean = true, mipmapEnabled = true): IRenderTexture {
+		console.log("getTexByUrl(), url: ", url);
 		if(url.indexOf("blob:") < 0) {
+			console.log("use common tex url");
 			let hostUrl = window.location.href;
 			if (hostUrl.indexOf(".artvily.") > 0) {
 				hostUrl = "http://www.artvily.com:9090/";
 				url = hostUrl + url;
 			}
+		}else {
+			console.log("use init tex url");
 		}
 		return this.texLoader.getTexByUrl(url, preAlpha, wrapRepeat, mipmapEnabled);
 	}
